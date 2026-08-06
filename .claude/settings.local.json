@@ -25,7 +25,9 @@
       "Bash(node icons.cjs item-chug-jug.png item-med-kit.png m1-shield-potion.png item-flopper.png wpn-chaos.png m1-pistol.png)",
       "WebFetch(domain:fortnite-api.com)",
       "Bash(node icons.cjs item-chug-jug.png item-med-kit.png m1-shield-potion.png item-flopper.png m1-pro-fishing-rod.png item-slurpfish.png m1-seven-power-gloves.png item-vault-key.png)",
-      "WebFetch(domain:dash.fortnite-api.com)"
+      "WebFetch(domain:dash.fortnite-api.com)",
+      "Bash(curl -s --max-time 30 -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\)\" -H \"Accept: image/png\" -o probe2.png \"https://static.wikia.nocookie.net/fortnite/images/b/b1/Medkit_-_Item_-_Fortnite.png\")",
+      "Bash(node resolve.cjs)"
     ]
   }
 }
