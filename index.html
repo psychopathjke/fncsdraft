@@ -1701,6 +1701,17 @@ function ratingForRank(rank, percentile, event){
   if(rank<=10) return clamp(Math.round(80 + pctFrac*9), 80, 89);
   return clamp(Math.round(70 + pctFrac*9), 70, 79);
 }
+// The rarity a player can actually verify.
+//
+// p.rarity comes from p.rating — the tournament result — but the big number on
+// the card is a.ovr, the weighted attribute total, and the two drift apart on
+// about 5% of cards (worst case 21 points). That produced purple cards reading
+// 61. Colour follows the number the player can see; p.rating still decides how
+// strong the card is in play, it just no longer decides its colour.
+function shownRarity(p){
+  return p ? rarityForRating(attrsFor(p).ovr) : 'common';
+}
+
 function rarityForRating(rating){
   if(rating>=100) return 'mythic';
   if(rating>=90) return 'legendary';
@@ -9968,7 +9979,7 @@ function portraitHTML(p, h, skin){
 function futCardHTML(p, opts){
   opts=opts||{};
   const a=attrsFor(p);
-  const skin=CARD_SKIN[p.rarity]||CARD_SKIN.common;
+  const skin=CARD_SKIN[shownRarity(p)]||CARD_SKIN.common;
   const wide=!!opts.wide;
   const flag=flagImg(p.nat, wide?18:15);
   const attrRows=ATTR_KEYS.map(k=>{
@@ -10347,7 +10358,7 @@ function generatePack(){
   // Grey commons stay in the pool — the lobby still fills with them — but they are
   // not offered to the player. Kept as a fallback only if a region has too few
   // cards above common to build a pack of four.
-  const aboveCommon = src.filter(p=>p.rarity!=='common');
+  const aboveCommon = src.filter(p=>shownRarity(p)!=='common');
   if(aboveCommon.length>=4) src = aboveCommon;
 
   let weighted = src.map(p=>({p, w: 1 + (p.rating/100)*3}));
@@ -10628,7 +10639,7 @@ function renderCandidates(list){
     {
       const c=document.createElement('div');
       c.style.cssText='display:flex;flex-direction:column;gap:2px;';
-      c.style.setProperty('--r-color', RARITY_COLOR[p.rarity]);
+      c.style.setProperty('--r-color', RARITY_COLOR[shownRarity(p)]);
       c.innerHTML=futCardHTML(p)+`<button class="pick-btn" style="width:100%;">${L().pickBtn}</button>`;
       c.querySelector('.pick-btn').onclick=()=>pick(p);
       el.appendChild(c);
@@ -10636,14 +10647,14 @@ function renderCandidates(list){
     }
     const c=document.createElement('div');
     c.className='pcard'+(p.rating===101?' s1ned-special':'');
-    c.style.setProperty('--r-color',RARITY_COLOR[p.rarity]);
+    c.style.setProperty('--r-color',RARITY_COLOR[shownRarity(p)]);
     const flag = flagImg(p.nat, 15);
     const statLine = p.placement!=null
       ? `${translateEventText(p.event)}<br>${translateDate(p.date)} — <b>#${p.placement}</b>`
       : `${translateEventText(p.event)}<br>${translateDate(p.date)} — <b>${L().placeholderNotPublished}</b>`;
     c.innerHTML = `
       <div class="pcard-top">
-        <div class="rarity-tag">${p.tier==='ranked'?p.rarity:L().qualifierTag}</div>
+        <div class="rarity-tag">${p.tier==='ranked'?shownRarity(p):L().qualifierTag}</div>
         <div class="rating-pill">${p.rating}</div>
       </div>
       <div class="p-handle">${flag}${p.handle}</div>
@@ -10697,7 +10708,7 @@ function renderSynergySvg(syn){
   }
   for(let i=0;i<n;i++){
     const p=drafted[i];
-    const color = p ? RARITY_COLOR[p.rarity].replace('var(','').replace(')','') : '--line';
+    const color = p ? RARITY_COLOR[shownRarity(p)].replace('var(','').replace(')','') : '--line';
     const fill = p ? `var(${color})` : 'var(--line)';
     nodes += `<circle cx="${pos[i].x}" cy="${pos[i].y}" r="22" fill="var(--panel2)" stroke="${fill}" stroke-width="2"/>`;
     const label = p ? (p.handle.length>8?p.handle.slice(0,7)+'…':p.handle) : '?';
@@ -10747,7 +10758,7 @@ function renderSlots(){
     const d=document.createElement('div');
     if(p){
       d.className='slot filled'+(p.rating===101?' s1ned-special':'');
-      d.style.setProperty('--r-color',RARITY_COLOR[p.rarity]);
+      d.style.setProperty('--r-color',RARITY_COLOR[shownRarity(p)]);
       const flag = flagImg(p.nat, 14);
       const a=attrsFor(p);
       d.innerHTML=`<div><div class="h">${flag}${p.handle}</div><div class="r">${L()[a.roleKey]} · ${regionName(p.region)}</div></div><div class="sr">${a.ovr}</div>`;
@@ -14086,7 +14097,7 @@ function realExtraRows(r){
 }
 
 function playerStatSheetHTML(team, idx, p){
-  const skinR=CARD_SKIN[p.rarity]||CARD_SKIN.common;
+  const skinR=CARD_SKIN[shownRarity(p)]||CARD_SKIN.common;
   const aR=attrsFor(p);
   const head=`<div style="display:flex;align-items:center;gap:9px;margin-bottom:3px;">
       <div class="fut-ovr" style="font-size:26px;color:${skinR.glow};">${aR.ovr}</div>
@@ -14560,7 +14571,7 @@ function shareResultImage(){
     ctx.font=`600 16px ${fam}`; ctx.fillStyle='#7d8a9a';
     ctx.fillText((p.nat?natDisplay(p.nat):'—')+'  ·  RATING '+p.rating, panelX+28, ry+50);
     // rarity dot
-    const rColor = {common:'#9aa0a6',uncommon:'#4ade80',rare:'#38bdf8',epic:'#b46eff',legendary:'#ffd166',mythic:'#ffd166'}[p.rarity]||'#9aa0a6';
+    const rColor = {common:'#9aa0a6',uncommon:'#4ade80',rare:'#38bdf8',epic:'#b46eff',legendary:'#ffd166',mythic:'#ffd166'}[shownRarity(p)]||'#9aa0a6';
     ctx.beginPath(); ctx.arc(panelX+panelW-32, ry+18, 8, 0, Math.PI*2); ctx.fillStyle=rColor; ctx.fill();
   });
 
