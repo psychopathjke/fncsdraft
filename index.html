@@ -12293,6 +12293,24 @@ const QUAL_TONES={
   purple:{q1:'#d98cff', q2:'#8e2bd6', q3:'#3d0b70', glow:'#c64cff'}
 };
 
+// A qualification card belongs to the tournament it was won in, so it takes the
+// colours of the mode being played rather than a colour fixed to the kind of
+// event. The tone name still arrives from the call site and stays the fallback
+// for anything outside a themed mode; how big the moment is now reads from the
+// confetti volume and the wording, which already differ per call.
+const MODE_QUAL={
+  allfncs:{q1:'#9db2ff', q2:'#3f62ca', q3:'#0e1a44', glow:'#6b88f0'},
+  m1:     {q1:'#9fe9e3', q2:'#17a3a8', q3:'#06333b', glow:'#5fd8d2'},
+  m2:     {q1:'#ffdb92', q2:'#d99a2c', q3:'#4a2f06', glow:'#ffc75a'},
+  duo:    {q1:'#f8df8f', q2:'#d6ad33', q3:'#4a3a08', glow:'#ecc95c'},
+  trio:   {q1:'#a3f2aa', q2:'#41c84d', q3:'#0d3f14', glow:'#6fe07a'},
+  squad:  {q1:'#ffcb80', q2:'#ed961d', q3:'#4a2b05', glow:'#ffb14d'}
+};
+
+function qualTone(name){
+  return MODE_QUAL[modeThemeKey()] || QUAL_TONES[name] || QUAL_TONES.green;
+}
+
 function confettiBurst(tone, count){
   const colors=[tone.q1, tone.q2, tone.glow, '#ffffff'];
   const nodes=[];
@@ -12314,7 +12332,7 @@ function confettiBurst(tone, count){
 
 async function celebrate(kicker, title, sub, toneName, confetti){
   if(skipAnimation) return;
-  const tone=QUAL_TONES[toneName]||QUAL_TONES.green;
+  const tone=qualTone(toneName);
   const ov=document.createElement('div');
   ov.className='qual-overlay';
   // Shards fly out at fixed angles, each a touch behind the last, so the card
