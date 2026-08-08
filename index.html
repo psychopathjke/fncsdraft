@@ -934,10 +934,6 @@
     <div id="eventPanel"></div>
 
     <div class="box-title" id="lobbyTitle"></div>
-    <button id="statCompareOpenBtn" onclick="openStatCompare(null)" style="display:none;margin-bottom:10px;
-      background:transparent;border:1px solid var(--accent);color:var(--accent);border-radius:20px;
-      padding:8px 16px;font-weight:800;font-size:12px;letter-spacing:.03em;cursor:pointer;"
-      data-i18n="statCompareBtn"></button>
     <div class="lobby-wrap">
       <table class="lobby-table">
         <thead><tr>
@@ -1035,26 +1031,25 @@
       <div></div><div style="text-align:center;">🏆</div><div style="text-align:center;">🎯</div>
     </div>
     <div id="matchHistoryRows"></div>
-    <button id="mhCompareBtn" onclick="closeMatchHistory();openStatCompare(window._mhTeam);" style="width:100%;margin-top:16px;padding:12px;border:none;border-radius:10px;
-      background:rgba(0,176,144,.85);color:#00281f;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
-      data-i18n="statCompareBtn"></button>
     <button onclick="closeMatchHistory()" style="width:100%;margin-top:10px;padding:12px;border:none;border-radius:10px;
       background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
       data-i18n="closeBtn"></button>
   </div>
 </div>
 
-<div id="statCompareModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:210;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) closeStatCompare();">
-  <div style="width:100%;max-width:660px;max-height:88vh;overflow-y:auto;border-radius:14px;
-    background:var(--panel);border:1px solid var(--line);padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;">
-      <div style="font-weight:900;font-size:16px;letter-spacing:.02em;" data-i18n="statCompareTitle"></div>
-      <button onclick="closeStatCompare()" style="background:transparent;border:1px solid var(--line);color:var(--ink-dim);
-        border-radius:6px;padding:4px 10px;font-size:14px;cursor:pointer;line-height:1;">✕</button>
-    </div>
-    <div id="statCompareBody"></div>
+<!-- Any card can be opened for a closer look — in the pack you are choosing
+     from, in the squad you have already drafted, and on the results screen.
+     It shows the same stat sheet the card gallery flips to. -->
+<div id="cardPeekModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:220;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) closeCardPeek();">
+  <div style="width:100%;max-width:420px;max-height:88vh;overflow-y:auto;border-radius:14px;
+    background:var(--panel);border:1px solid var(--line);padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+    <div id="cardPeekBody"></div>
+    <button onclick="closeCardPeek()" style="width:100%;margin-top:12px;padding:11px;border:none;border-radius:10px;
+      background:rgba(200,225,220,.18);color:#eaf5f3;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.02em;"
+      data-i18n="closeBtn"></button>
   </div>
 </div>
+
 
 <!-- The logo doubles as "back to menu", which is easy to hit by accident while
      a run is live. Nothing about a run is persisted, so leaving throws it away
@@ -1115,8 +1110,8 @@ ratingRow3:'Каждая неделя Division 1 Cup', ratingRow3b:'вес 0.15'
 ratingRow4:'Гранд-финал своего региона', ratingRow4b:'вес 2.0',
 ratingNote:'Рейтинг — это весь сезон игрока, а не один турнир. Все его результаты складываются со своими весами, поэтому чемпион, слабо отыгравший отборы, стоит ниже того, кто держался весь сезон. Сезоны не смешиваются: карточка Major 1 считается только по S40, карточка Major 2 — только по S41. Это разные патчи и разная мета, и результат из одного не влияет на другой. Внутри региона шкала растянута так, чтобы лучший игрок региона попал в потолок: 96 для Европы и NA Central, 85 для остальных — там поле слабее.',
 synergyTitle:'Синергия состава',
-synergyRow1:'Задрафтил настоящих тиммейтов вместе', synergyRow1b:'+12',
-synergyRow2:'Общее гражданство между игроками', synergyRow2b:'+5 / игрока',
+synergyRow1:'Задрафтил настоящих тиммейтов вместе', synergyRow1b:'+5',
+synergyRow2:'Общее гражданство между игроками', synergyRow2b:'+2 / игрока',
 synergyNote:'В реальности FNCS 2026 играется дуо — это и есть настоящий формат. Трио и сквад фэнтезийные: игроки настоящие, но состав собираешь сам. Синергия рисуется треугольником (трио) или квадратом (сквад), линии подсвечиваются, если это реальные партнёры или земляки.',
 attrTitle:'Шесть характеристик — что означают',
 attrRowAim:'СТР · Стрельба', attrRowAimB:'элиминаций за матч',
@@ -1144,7 +1139,7 @@ draftGradeLabel:'Оценка драфта', noHistoryYet:'Забегов пок
 gradeS:'S', gradeA:'A', gradeB:'B', gradeC:'C', gradeD:'D',
 achv_first_run_title:'Первый драфт', achv_first_run_desc:'Сыграй свой первый турнир',
 achv_victory_royale_title:'Victory Royale', achv_victory_royale_desc:'Займи 1-е место в обычном турнире (Дуо/Трио/Сквад)',
-achv_chemistry_title:'Химия', achv_chemistry_desc:'Собери состав с бонусом синергии +20 или больше',
+achv_chemistry_title:'Химия', achv_chemistry_desc:'Собери состав с бонусом синергии +5 или больше',
 achv_perfect_squad_title:'Идеальный сквад', achv_perfect_squad_desc:'Все игроки в составе — реальные тиммейты друг с другом',
 achv_squad_slayer_title:'Сборная-чемпион', achv_squad_slayer_desc:'Выиграй турнир составом целиком из одной национальности',
 achv_major_champion_title:'Чемпион Major', achv_major_champion_desc:'Стань чемпионом FNCS Major',
@@ -1170,7 +1165,7 @@ achv_twenty_runs_title:'Про-игрок', achv_twenty_runs_desc:'Сыграй 
 achv_fifty_runs_title:'Легенда FNCS', achv_fifty_runs_desc:'Сыграй 50 турниров',
 achv_major_finalist_title:'Финалист', achv_major_finalist_desc:'Дойди до Major Finals',
 achv_lcq_champion_title:'Трудный путь', achv_lcq_champion_desc:'Пройди через Last Chance Qualifier и всё равно стань чемпионом Major',
-achv_high_synergy_title:'Идеальная химия', achv_high_synergy_desc:'Собери состав с бонусом синергии +30 или больше',
+achv_high_synergy_title:'Идеальная химия', achv_high_synergy_desc:'Выжми максимум синергии для дуо: +7 — настоящие тиммейты и общее гражданство',
 achv_perfectionist_title:'Безупречная победа', achv_perfectionist_desc:'Выиграй турнир с оценкой драфта S',
 achv_iron_man_title:'Железный человек', achv_iron_man_desc:'Получи хотя бы 1 килл в каждой игре турнира',
 achv_highlight_reel_title:'Хайлайт', achv_highlight_reel_desc:'Сделай 15+ киллов за одну игру',
@@ -1275,7 +1270,7 @@ apiNote:'Все имена и регионы — реальные участни
 regionUnk:'Регион не подтверждён', allRegions:'Все регионы',
 pickBtn:'Задрафтить', placeholderNotPublished:'место не опубликовано', qualifierTag:'квалифайер',
 emptySlot:'пусто', squadCompleted:'Состав укомплектован. Жми "Выйти на турнир".',
-yourTeamPrefix:'Твой состав: ', synergyPartner:' — реальные тиммейты (+12)', synergyNation:' — общее гражданство: ', synergyLanguage:' — общий язык, без барьера: ', synergyBonusVictory:'Взяли Victory Royale — мгновенный проход',
+yourTeamPrefix:'Твой состав: ', synergyPartner:v=>' — реальные тиммейты (+'+v+')', synergyNation:' — общее гражданство: ', synergyLanguage:' — общий язык, без барьера: ', synergyBonusVictory:'Взяли Victory Royale — мгновенный проход',
 gameWord:'Игра', totalWord:'Итого', victoryRoyaleWord:'Victory Royale', place2plus:'место из ', teamsWord:' команд', feedElim:n=>'выбил(а) '+n, feedDied:n=>'погиб(ла) от '+n, feedNone:'без стычек',
 stagePassBadge:'Прошли', stageFailBadge:'Вылет', eliminatedBanner:'ВЫЛЕТ',
 matchesWord:'Матчи', winsWord:'Победы', avgElimsWord:'Avg Elims', avgPlaceWord:'Avg Place',
@@ -1287,9 +1282,15 @@ notPassedStage:s=>'Не прошли этап «'+s+'»',
 championMajor:'Чемпион FNCS Major!', placeInFinals:(p,n)=>p+' место из '+n+' в Major Finals',
 majorFinalsStageTitle:n=>'Гранд-финал региона ('+n+' команд, 12 игр)',
 gclcTitle:'🎟 Global Championship Last Chance — последний путь в Антверпен <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
-gclcIntro:(reg,slots)=>'В прямую квоту региона не попал. Остаётся Last Chance: три раунда по 11 игр, затем финал на 25 дуо, откуда на LAN едут топ-'+slots+' от региона '+reg+'. Первый раунд ты пропускаешь — оба игрока в топ-2000 Power Rankings, правила это разрешают.',
-gclcRound2Title:n=>'Last Chance · Раунд 2 ('+n+' дуо, 11 игр)',
-gclcRound3Title:n=>'Last Chance · Раунд 3 ('+n+' дуо, 11 игр)',
+gclcIntro:(reg,slots)=>'В прямую квоту региона не попал. Остаётся Last Chance: две квалификации по три раунда, из каждой в финал выходят топ-25 — 50 дуо на шесть игр, откуда на LAN едут топ-'+slots+' от региона '+reg+'. Первый раунд ты пропускаешь — оба игрока в топ-2000 Power Rankings, правила это разрешают.',
+gclcIntroQualified:(reg,slots)=>'Слот на LAN у тебя уже есть, но Last Chance играет весь регион — две квалификации по три раунда, из каждой топ-25 в общий финал на 50 дуо. Там разыгрываются ещё '+slots+' мест от региона '+reg+'. Второй слот тебе не дадут: если финишируешь в проходной зоне, место уйдёт ближайшему дуо без квоты.',
+gclcQualLabel:q=>'Last Chance · Квалификация '+q,
+gclcQual2Quiet:n=>'Квалификация 2 сыграна без тебя — её топ-'+n+' присоединяются к финалу.',
+gclcSeatRolls:(rank,who)=>'#'+rank+' — проходная позиция, но слот у тебя уже был. Место ушло дальше вниз: '+who+'.',
+gclcAlreadyIn:'Ты и так едешь на LAN — этот финал ничего у тебя не отнимает.',
+gclcOutNote:'Ты вылетел из Last Chance, но турнир доигрывается — эти дуо забирают оставшиеся места региона.',
+gclcRound2Title:n=>'Раунд 2 ('+n+' дуо, 11 игр)',
+gclcRound3Title:n=>'Раунд 3 ('+n+' дуо, 11 игр)',
 gclcFinalsTitle:(n,g)=>'Last Chance · Финал ('+n+' дуо, '+g+' игр)',
 gclcCutNote:n=>'Дальше проходят топ-'+n+' по сумме очков',
 gclcPass:(rank,slots)=>'#'+rank+' при '+slots+' слотах — едешь в Антверпен <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
@@ -1322,13 +1323,8 @@ lcqRound1Title:n=>'Last Chance Qualifier — Раунд 1 ('+n+' команд, 1
 lcqRound2Title:(n,g)=>'Last Chance Qualifier — Раунд 2 ('+n+' команд, '+g+' игр, победитель каждой уходит в гранд-финал)',
 lcqWinLabel:'Победа — прошли!', lcqAdvancedNote:'Выиграли попытку — слот в Major Finals', lcqFailedNote:g=>'Ни разу не выиграли ни одну из '+g+' игр', lcqTop50Label:'Топ-50 — прошли этап 1', lcqRound1FailedNote:'Не попали в топ-50 на первом этапе',
 skipBtn:'⏩ Скип этапа', skipPressed:'Этап скипнут…',
-statCompareBtn:'📊 Сравнить стату', statCompareTitle:'Сравнение статистики',
-statCompareWhole:'Вся команда', statPickTeam:'С кем сравнить',
-statPlacementRow:'Плейсмент', statElimRow:'Элиминации', statPointsWord:'очков',
-statNoData:'Нет данных — сначала сыграй турнир.',
-statCompareNote:'Стата генерируется по ходу симуляции на основе реальных событий матчей (места, элиминации, сила состава). Это не данные Epic.',
-statLastUpdate:'Сыграно матчей', statColStat:'Стат',
-s_elims:'Элиминации', s_assists:'Ассисты', s_dmgTo:'Урон по игрокам', s_dmgFrom:'Полученный урон',
+statPointsWord:'очков',
+statLastUpdate:'Сыграно матчей', s_elims:'Элиминации', s_assists:'Ассисты', s_dmgTo:'Урон по игрокам', s_dmgFrom:'Полученный урон',
 s_dmgRatio:'Соотношение урона', s_healthHealed:'Восстановлено ХП', s_shieldHealed:'Восстановлено щита',
 s_overshield:'Оверщит', s_hits:'Попаданий по игрокам', s_shots:'Выстрелов', s_headshots:'Хедшоты',
 s_playerAcc:'Точность по игрокам', s_overallAcc:'Общая точность', s_wpAcc:'Точность по слабым точкам',
@@ -1361,7 +1357,13 @@ attrCluSrc:'Victory Royale за матч',
 attrConSrc:'Очков за матч',
 attrFlatNote:'Нет поматчевой статистики — профиль ровный по рейтингу за место',
 roleFRG:'ФРГ', roleBLD:'БЛД', roleSRV:'ВЖВ', roleIGL:'ИГЛ', roleCLU:'КЛЧ', roleANC:'АНК',
-cardBackBtn:'Стата', cardFrontBtn:'Атрибуты',
+cardBackBtn:'Стата', cardFrontBtn:'Атрибуты', cardPeekHint:'Нажми, чтобы посмотреть стату карточки',
+brkTitle:'Из чего сложился рейтинг',
+brk_lan:'LAN Summit', brk_gf:'Гранд-финал', brk_heat:'Хит', brk_playin:'Play-In', brk_lcq:'Last Chance', brk_cup:'Кубок Div 1',
+brk_cup_nth:'неделя', brk_heat_nth:'группа',
+brkBlend:'Сумма / вес',
+brkNormalised:'После нормировки по региону',
+brkNote:'Каждый этап даёт балл по месту с поправкой на размер поля, дальше — среднее по весам. Вес показывает, насколько этап важен.',
 cardGalleryTitle:'Карточки состава', cardNoStats:'Стата появится после турнира.',
 realTitle:'Плей-ин — реальные данные', realTitleLcq:'Last Chance Qualifier — реальные данные',
 realTitleGf:'Гранд-финал — реальные данные', realRankGf:'Место в гранд-финале',
@@ -1376,9 +1378,15 @@ resetConfirmYes:'Leave',
 resetConfirmNo:'Cancel',
 majorFinalsStageTitle:n=>'Regional Grand Finals ('+n+' teams, 12 games)',
 gclcTitle:'🎟 Global Championship Last Chance — the last road to Antwerp <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
-gclcIntro:(reg,slots)=>'You missed your region\u2019s direct allocation. The Last Chance is what is left: three rounds of 11 games, then a 25-duo Finals where the top '+slots+' from '+reg+' fly to the LAN. Round 1 is skipped — both your players sit in the Power Rankings top 2,000, which the rules allow.',
-gclcRound2Title:n=>'Last Chance · Round 2 ('+n+' duos, 11 games)',
-gclcRound3Title:n=>'Last Chance · Round 3 ('+n+' duos, 11 games)',
+gclcIntro:(reg,slots)=>'You missed your region\u2019s direct allocation. The Last Chance is what is left: two qualifiers of three rounds each, the top 25 of both meeting in a 50-duo, six-game Finals where the top '+slots+' from '+reg+' fly to the LAN. Round 1 is skipped — both your players sit in the Power Rankings top 2,000, which the rules allow.',
+gclcIntroQualified:(reg,slots)=>'Your LAN seat is already booked, but the Last Chance is the whole region\u2019s event — two qualifiers of three rounds, the top 25 of each meeting in a 50-duo Finals for '+slots+' more '+reg+' seats. You cannot take a second one: finish in a qualifying spot and the seat rolls down to the nearest duo without one.',
+gclcQualLabel:q=>'Last Chance · Qualifier '+q,
+gclcQual2Quiet:n=>'Qualifier 2 played out without you — its top '+n+' join the Finals.',
+gclcSeatRolls:(rank,who)=>'#'+rank+' was a qualifying spot, but your seat was already booked. It rolled down to '+who+'.',
+gclcAlreadyIn:'You are going to the LAN either way — this Finals takes nothing away from you.',
+gclcOutNote:'You are out of the Last Chance, but the event plays on — these duos take the region\u2019s remaining seats.',
+gclcRound2Title:n=>'Round 2 ('+n+' duos, 11 games)',
+gclcRound3Title:n=>'Round 3 ('+n+' duos, 11 games)',
 gclcFinalsTitle:(n,g)=>'Last Chance · Finals ('+n+' duos, '+g+' games)',
 gclcCutNote:n=>'Top '+n+' by total points advance',
 gclcPass:(rank,slots)=>'#'+rank+' with '+slots+' slots — you are going to Antwerp <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
@@ -1432,8 +1440,8 @@ ratingRow3:'Each Division 1 Cup week', ratingRow3b:'weight 0.15',
 ratingRow4:'Grand Final of their own region', ratingRow4b:'weight 2.0',
 ratingNote:'A rating is a whole season, not one tournament. Every result a player has is blended by weight, so a champion who scraped through the qualifiers rates below someone who held form all season. Seasons never mix: a Major 1 card is rated on S40 alone and a Major 2 card on S41 alone — different patches, different meta, and a result in one cannot touch the other. Inside a region the ladder is stretched so its best player lands on the ceiling: 96 for Europe and NA Central, 85 elsewhere, where the field is thinner.',
 synergyTitle:'Squad synergy',
-synergyRow1:'Drafted real teammates together', synergyRow1b:'+12',
-synergyRow2:'Shared nationality between players', synergyRow2b:'+5 / player',
+synergyRow1:'Drafted real teammates together', synergyRow1b:'+5',
+synergyRow2:'Shared nationality between players', synergyRow2b:'+2 / player',
 synergyNote:'In reality FNCS 2026 is played in duos — that is the real format. Trio and Squad are fantasy: the players are real, but you build the roster yourself. Synergy is drawn as a triangle (trio) or square (squad), and the lines light up for real teammates or compatriots.',
 attrTitle:'The six attributes — what they mean',
 attrRowAim:'AIM · Aim', attrRowAimB:'eliminations per match',
@@ -1461,7 +1469,7 @@ draftGradeLabel:'Draft grade', noHistoryYet:'No runs yet — play your first tou
 gradeS:'S', gradeA:'A', gradeB:'B', gradeC:'C', gradeD:'D',
 achv_first_run_title:'First Draft', achv_first_run_desc:'Play your first tournament',
 achv_victory_royale_title:'Victory Royale', achv_victory_royale_desc:'Take 1st place in a regular tournament (Duo/Trio/Squad)',
-achv_chemistry_title:'Chemistry', achv_chemistry_desc:'Draft a squad with a synergy bonus of +20 or more',
+achv_chemistry_title:'Chemistry', achv_chemistry_desc:'Draft a squad with a synergy bonus of +5 or more',
 achv_perfect_squad_title:'Perfect Squad', achv_perfect_squad_desc:'Every player in your squad is a real teammate of every other',
 achv_squad_slayer_title:'National Champions', achv_squad_slayer_desc:'Win a tournament with a squad made entirely of one nationality',
 achv_major_champion_title:'Major Champion', achv_major_champion_desc:'Become an FNCS Major champion',
@@ -1487,7 +1495,7 @@ achv_twenty_runs_title:'Pro Player', achv_twenty_runs_desc:'Play 20 tournaments'
 achv_fifty_runs_title:'FNCS Legend', achv_fifty_runs_desc:'Play 50 tournaments',
 achv_major_finalist_title:'Finalist', achv_major_finalist_desc:'Reach the Major Finals',
 achv_lcq_champion_title:'The Hard Way', achv_lcq_champion_desc:'Go through the Last Chance Qualifier and still become Major champion',
-achv_high_synergy_title:'Perfect Chemistry', achv_high_synergy_desc:'Draft a squad with a synergy bonus of +30 or more',
+achv_high_synergy_title:'Perfect Chemistry', achv_high_synergy_desc:'Max out a duo’s synergy: +7 — real teammates who also share a passport',
 achv_perfectionist_title:'Flawless Victory', achv_perfectionist_desc:'Win a tournament with an S draft grade',
 achv_iron_man_title:'Iron Man', achv_iron_man_desc:'Get at least 1 kill in every single game of a tournament',
 achv_highlight_reel_title:'Highlight Reel', achv_highlight_reel_desc:'Get 15+ kills in a single game',
@@ -1592,7 +1600,7 @@ apiNote:'All names and regions are real FNCS participants. A rating is built fro
 regionUnk:'Region unconfirmed', allRegions:'All regions',
 pickBtn:'Draft', placeholderNotPublished:'placement not published', qualifierTag:'qualifier',
 emptySlot:'empty', squadCompleted:'Squad complete. Hit "Enter tournament".',
-yourTeamPrefix:'Your squad: ', synergyPartner:' — real teammates (+12)', synergyNation:' — shared nationality: ', synergyLanguage:' — no language barrier, both speak: ', synergyBonusVictory:'Got a Victory Royale — instant advance',
+yourTeamPrefix:'Your squad: ', synergyPartner:v=>' — real teammates (+'+v+')', synergyNation:' — shared nationality: ', synergyLanguage:' — no language barrier, both speak: ', synergyBonusVictory:'Got a Victory Royale — instant advance',
 gameWord:'Game', totalWord:'Total', victoryRoyaleWord:'Victory Royale', place2plus:'place of ', teamsWord:' teams', feedElim:n=>'eliminated '+n, feedDied:n=>'died to '+n, feedNone:'no fights',
 stagePassBadge:'Advanced', stageFailBadge:'Eliminated', eliminatedBanner:'ELIMINATED',
 matchesWord:'Matches', winsWord:'Wins', avgElimsWord:'Avg Elims', avgPlaceWord:'Avg Place',
@@ -1615,13 +1623,8 @@ lcqRound1Title:n=>'Last Chance Qualifier — Round 1 ('+n+' teams, 11 games, top
 lcqRound2Title:(n,g)=>'Last Chance Qualifier — Round 2 ('+n+' teams, '+g+' games, each winner takes a Grand Finals slot)',
 lcqWinLabel:'Win — advanced!', lcqAdvancedNote:'Won an attempt — Major Finals slot secured', lcqFailedNote:g=>'Never won any of the '+g+' games', lcqTop50Label:'Top 50 — cleared Round 1', lcqRound1FailedNote:'Missed the top 50 in Round 1',
 skipBtn:'⏩ Skip stage', skipPressed:'Stage skipped…',
-statCompareBtn:'📊 Compare stats', statCompareTitle:'Stat comparison',
-statCompareWhole:'Whole team', statPickTeam:'Compare against',
-statPlacementRow:'Placement', statElimRow:'Elimination', statPointsWord:'points',
-statNoData:'No data yet — play a tournament first.',
-statCompareNote:'Stats are generated during the simulation from real match events (placements, eliminations, squad power). This is not Epic data.',
-statLastUpdate:'Matches played', statColStat:'Stat',
-s_elims:'Eliminations', s_assists:'Assists', s_dmgTo:'Damage To Players', s_dmgFrom:'Damage From Players',
+statPointsWord:'points',
+statLastUpdate:'Matches played', s_elims:'Eliminations', s_assists:'Assists', s_dmgTo:'Damage To Players', s_dmgFrom:'Damage From Players',
 s_dmgRatio:'Damage Ratio', s_healthHealed:'Health Healed', s_shieldHealed:'Shield Healed',
 s_overshield:'Overshield Healed', s_hits:'Hits To Players', s_shots:'Shots', s_headshots:'Headshots',
 s_playerAcc:'Player Accuracy', s_overallAcc:'Overall Accuracy', s_wpAcc:'Weakpoint Accuracy',
@@ -1654,7 +1657,13 @@ attrCluSrc:'Victory Royales per match',
 attrConSrc:'Points per match',
 attrFlatNote:'No per-match data — flat profile at the rating the placement earned',
 roleFRG:'FRG', roleBLD:'BLD', roleSRV:'SRV', roleIGL:'IGL', roleCLU:'CLU', roleANC:'ANC',
-cardBackBtn:'Stats', cardFrontBtn:'Attributes',
+cardBackBtn:'Stats', cardFrontBtn:'Attributes', cardPeekHint:'Click to open this card\u2019s stat sheet',
+brkTitle:'How this rating was built',
+brk_lan:'Summit LAN', brk_gf:'Grand Final', brk_heat:'Heat', brk_playin:'Play-In', brk_lcq:'Last Chance', brk_cup:'Div 1 Cup',
+brk_cup_nth:'week', brk_heat_nth:'group',
+brkBlend:'Total / weight',
+brkNormalised:'After the region is normalised',
+brkNote:'Each stage scores the finish against the size of its field, then the stages are averaged by weight. The weight is how much that stage counts.',
 cardGalleryTitle:'Squad cards', cardNoStats:'Stats appear after the tournament.',
 realTitle:'Play-In — real data', realTitleLcq:'Last Chance Qualifier — real data',
 realTitleGf:'Grand Finals — real data', realRankGf:'Grand Finals rank',
@@ -3062,6 +3071,11 @@ GLOBALS2025_EXTRA.forEach(g=>{
 function applyS1nedMeme(withAttrs){
   PLAYERS_BASE.forEach(p=>{
     if(p.handle.toLowerCase()!=='s1ned') return;
+    // Major 1 and Major 2 are left alone. A card reading 101 outranks every real
+    // result, and it took first place in both competitive modes ahead of the
+    // players who actually won those seasons. There he is rated on his
+    // tournaments like everybody else; the joke keeps the older sets.
+    if(p.cardSet==='m1' || p.cardSet==='m2') return;
     p.rating=101; p.rarity='mythic'; p._targetOvr=101;
     if(!withAttrs) return;
     // The six bars stay inside the normal 99 ceiling; only the headline number
@@ -18195,15 +18209,25 @@ var RATING_FLOOR={};
   const rankMap=arr=>{ const m={};
     arr.forEach(e=>e.duo.forEach(n=>{ const k=String(n||'').toLowerCase(); if(k && m[k]===undefined) m[k]=e.rank; }));
     return m; };
-  const stage=(reg, arr, weight, top, spread)=>({map:rankMap(arr), weight,
+  // Every stage carries a label and its field size. The card shows the working
+  // behind its own rating, and a row reading "#30" means nothing without "of 150".
+  const stage=(reg, arr, weight, top, spread, label)=>({map:rankMap(arr), weight, label, field:arr.length,
     score:r=>curve(r, top-regDrop(reg), spread, arr.length)});
   // Heats rank is read straight off the standings, but its points column is not:
   // a Victory Royale there pays 944 because it is an instant qualification, so
   // the column says "won a game", not "how good".
   const byHandle=ranks=>Object.keys(ranks).reduce((o,n)=>(o[n.toLowerCase()]=ranks[n],o),{});
-  const heatStage=(reg,ranks)=>({map:byHandle(ranks), weight:0.9,
+  const heatStage=(reg,ranks,nth)=>({map:byHandle(ranks), weight:0.9, label:'heat', nth, field:50,
     score:r=>curve(r, 95-regDrop(reg), 20, 50)});
-  const cupWeek=(reg,ranks)=>({map:byHandle(ranks), weight:0.15,
+  // A Division 1 Cup final is fifty duos drawn from the region's top division —
+  // the same size of lobby as a Heat, and a harder room than the Play-In, which
+  // is open to everybody. At 0.15 a whole cup season, three or four finals, was
+  // worth about as much as a single Play-In run: 90 of the 172 European cards
+  // carrying cup results have no Grand Finals at all, so for them the strongest
+  // evidence on the card was the part the ledger almost ignored. One cup final
+  // now outweighs one Play-In, and still sits under a Heat, which decides who
+  // reaches the Grand Finals.
+  const cupWeek=(reg,ranks,nth)=>({map:byHandle(ranks), weight:0.6, label:'cup', nth, field:50,
     score:r=>curve(r, 94-regDrop(reg), 18, 50)});
   // The Grand Final outweighs everything below it by a wide margin. At 1.2 against
   // the Play-In's 0.7 it did not: winning a 150-duo Play-In scores higher than a
@@ -18211,24 +18235,28 @@ var RATING_FLOOR={};
   // with the champion — Kitoz took 35th in the Brazilian final and rated the same
   // as Diguera, who won it. The rounds that only decide who gets in are worth
   // less than the round that decides the title.
-  const trio=(reg,g,p,l)=>[stage(reg,g,2.0,98,20), stage(reg,p,0.5,92,26), stage(reg,l,0.4,86,24)];
+  // The Grand Finals spread was 20, so last of fifty in a final scored 78 — above
+  // the median card, and only twenty below the champion. Reaching a final is an
+  // achievement and the top of the curve reflects that, but the bottom of it has
+  // to be worse than a good Play-In run, or a bad final reads as a good season.
+  const trio=(reg,g,p,l)=>[stage(reg,g,2.0,98,30,'gf'), stage(reg,p,0.5,92,26,'playin'), stage(reg,l,0.4,86,24,'lcq')];
   const S41={
     EU:  trio('EU',_M2G,_M2P,_M2L).concat(
-          [heatStage('EU',H2E1_RANK), heatStage('EU',H2E2_RANK), heatStage('EU',H2E3_RANK),
-           cupWeek('EU',D1W1_RANK), cupWeek('EU',D1W2_RANK), cupWeek('EU',D1W3_RANK), cupWeek('EU',D1W4_RANK)]),
+          [heatStage('EU',H2E1_RANK,1), heatStage('EU',H2E2_RANK,2), heatStage('EU',H2E3_RANK,3),
+           cupWeek('EU',D1W1_RANK,1), cupWeek('EU',D1W2_RANK,2), cupWeek('EU',D1W3_RANK,3), cupWeek('EU',D1W4_RANK,4)]),
     NAC: trio('NAC',_N2G,_N2P,_N2L).concat(
-          [heatStage('NAC',H2N1_RANK), heatStage('NAC',H2N2_RANK), heatStage('NAC',H2N3_RANK),
-           cupWeek('NAC',N1W1_RANK), cupWeek('NAC',N1W2_RANK), cupWeek('NAC',N1W3_RANK), cupWeek('NAC',N1W4_RANK)]),
+          [heatStage('NAC',H2N1_RANK,1), heatStage('NAC',H2N2_RANK,2), heatStage('NAC',H2N3_RANK,3),
+           cupWeek('NAC',N1W1_RANK,1), cupWeek('NAC',N1W2_RANK,2), cupWeek('NAC',N1W3_RANK,3), cupWeek('NAC',N1W4_RANK,4)]),
     NAW: trio('NAW',_W2G,_W2P,_W2L).concat(
-          [heatStage('NAW',H_NAW1_RANK), heatStage('NAW',H_NAW2_RANK), cupWeek('NAW',C_NAW1_RANK), cupWeek('NAW',C_NAW2_RANK), cupWeek('NAW',C_NAW3_RANK), cupWeek('NAW',C_NAW4_RANK)]),
+          [heatStage('NAW',H_NAW1_RANK,1), heatStage('NAW',H_NAW2_RANK,2), cupWeek('NAW',C_NAW1_RANK,1), cupWeek('NAW',C_NAW2_RANK,2), cupWeek('NAW',C_NAW3_RANK,3), cupWeek('NAW',C_NAW4_RANK,4)]),
     BR:  trio('BR', _B2G,_B2P,_B2L).concat(
-          [heatStage('BR',H_BR1_RANK), heatStage('BR',H_BR2_RANK), cupWeek('BR',C_BR2_RANK), cupWeek('BR',C_BR3_RANK), cupWeek('BR',C_BR4_RANK)]),
+          [heatStage('BR',H_BR1_RANK,1), heatStage('BR',H_BR2_RANK,2), cupWeek('BR',C_BR2_RANK,2), cupWeek('BR',C_BR3_RANK,3), cupWeek('BR',C_BR4_RANK,4)]),
     ASIA:trio('ASIA',_A2G,_A2P,_A2L).concat(
-          [heatStage('ASIA',H_ASIA1_RANK), heatStage('ASIA',H_ASIA2_RANK), cupWeek('ASIA',C_ASIA1_RANK), cupWeek('ASIA',C_ASIA2_RANK), cupWeek('ASIA',C_ASIA3_RANK), cupWeek('ASIA',C_ASIA4_RANK)]),
+          [heatStage('ASIA',H_ASIA1_RANK,1), heatStage('ASIA',H_ASIA2_RANK,2), cupWeek('ASIA',C_ASIA1_RANK,1), cupWeek('ASIA',C_ASIA2_RANK,2), cupWeek('ASIA',C_ASIA3_RANK,3), cupWeek('ASIA',C_ASIA4_RANK,4)]),
     ME:  trio('ME', _E2G,_E2P,_E2L).concat(
-          [heatStage('ME',H_ME1_RANK), heatStage('ME',H_ME2_RANK), cupWeek('ME',C_ME1_RANK), cupWeek('ME',C_ME2_RANK), cupWeek('ME',C_ME3_RANK), cupWeek('ME',C_ME4_RANK)]),
+          [heatStage('ME',H_ME1_RANK,1), heatStage('ME',H_ME2_RANK,2), cupWeek('ME',C_ME1_RANK,1), cupWeek('ME',C_ME2_RANK,2), cupWeek('ME',C_ME3_RANK,3), cupWeek('ME',C_ME4_RANK,4)]),
     OCE: trio('OCE',_O2G,_O2P,_O2L).concat(
-          [heatStage('OCE',H_OCE1_RANK), heatStage('OCE',H_OCE2_RANK), cupWeek('OCE',C_OCE1_RANK), cupWeek('OCE',C_OCE2_RANK), cupWeek('OCE',C_OCE3_RANK), cupWeek('OCE',C_OCE4_RANK)])
+          [heatStage('OCE',H_OCE1_RANK,1), heatStage('OCE',H_OCE2_RANK,2), cupWeek('OCE',C_OCE1_RANK,1), cupWeek('OCE',C_OCE2_RANK,2), cupWeek('OCE',C_OCE3_RANK,3), cupWeek('OCE',C_OCE4_RANK,4)])
   };
   // Major 1 is rated the same way on its own season. The one extra source is
   // the Summit: the LAN that closed S40, a global field rather than a regional
@@ -18247,22 +18275,22 @@ var RATING_FLOOR={};
   // 69, which is a bigger claim than the data supports. The weight is
   // deliberately untouched — raising that would lift everyone who merely
   // attended the LAN, which is a different claim than rewarding the champion.
-  const summitStage={map:byHandle(SUMMIT_RANK), weight:3.0, score:r=>curve(r, 100, 24, 50)};
+  const summitStage={map:byHandle(SUMMIT_RANK), weight:3.0, label:'lan', field:50, score:r=>curve(r, 100, 24, 50)};
   const S40={
     EU:   trio('EU',_M1G,_M1P,_M1L).concat(
-          [heatStage('EU',G_EU1_RANK), heatStage('EU',G_EU2_RANK), heatStage('EU',G_EU3_RANK), cupWeek('EU',K_EU1_RANK), cupWeek('EU',K_EU2_RANK), cupWeek('EU',K_EU3_RANK), cupWeek('EU',K_EU4_RANK), cupWeek('EU',K_EU5_RANK)]),
+          [heatStage('EU',G_EU1_RANK,1), heatStage('EU',G_EU2_RANK,2), heatStage('EU',G_EU3_RANK,3), cupWeek('EU',K_EU1_RANK,1), cupWeek('EU',K_EU2_RANK,2), cupWeek('EU',K_EU3_RANK,3), cupWeek('EU',K_EU4_RANK,4), cupWeek('EU',K_EU5_RANK,5)]),
     NAC:  trio('NAC',_N1G,_N1P,_N1L).concat(
-          [heatStage('NAC',G_NAC1_RANK), heatStage('NAC',G_NAC2_RANK), heatStage('NAC',G_NAC3_RANK), cupWeek('NAC',K_NAC1_RANK), cupWeek('NAC',K_NAC2_RANK), cupWeek('NAC',K_NAC3_RANK), cupWeek('NAC',K_NAC4_RANK), cupWeek('NAC',K_NAC5_RANK)]),
+          [heatStage('NAC',G_NAC1_RANK,1), heatStage('NAC',G_NAC2_RANK,2), heatStage('NAC',G_NAC3_RANK,3), cupWeek('NAC',K_NAC1_RANK,1), cupWeek('NAC',K_NAC2_RANK,2), cupWeek('NAC',K_NAC3_RANK,3), cupWeek('NAC',K_NAC4_RANK,4), cupWeek('NAC',K_NAC5_RANK,5)]),
     NAW:  trio('NAW',_W1G,_W1P,_W1L).concat(
-          [heatStage('NAW',G_NAW1_RANK), heatStage('NAW',G_NAW2_RANK), cupWeek('NAW',K_NAW1_RANK), cupWeek('NAW',K_NAW2_RANK), cupWeek('NAW',K_NAW3_RANK), cupWeek('NAW',K_NAW4_RANK), cupWeek('NAW',K_NAW5_RANK)]),
+          [heatStage('NAW',G_NAW1_RANK,1), heatStage('NAW',G_NAW2_RANK,2), cupWeek('NAW',K_NAW1_RANK,1), cupWeek('NAW',K_NAW2_RANK,2), cupWeek('NAW',K_NAW3_RANK,3), cupWeek('NAW',K_NAW4_RANK,4), cupWeek('NAW',K_NAW5_RANK,5)]),
     BR:   trio('BR',_B1G,_B1P,_B1L).concat(
-          [heatStage('BR',G_BR1_RANK), heatStage('BR',G_BR2_RANK), cupWeek('BR',K_BR1_RANK), cupWeek('BR',K_BR2_RANK), cupWeek('BR',K_BR3_RANK), cupWeek('BR',K_BR4_RANK), cupWeek('BR',K_BR5_RANK)]),
+          [heatStage('BR',G_BR1_RANK,1), heatStage('BR',G_BR2_RANK,2), cupWeek('BR',K_BR1_RANK,1), cupWeek('BR',K_BR2_RANK,2), cupWeek('BR',K_BR3_RANK,3), cupWeek('BR',K_BR4_RANK,4), cupWeek('BR',K_BR5_RANK,5)]),
     ASIA: trio('ASIA',_A1G,_A1P,_A1L).concat(
-          [heatStage('ASIA',G_ASIA1_RANK), heatStage('ASIA',G_ASIA2_RANK), cupWeek('ASIA',K_ASIA1_RANK), cupWeek('ASIA',K_ASIA2_RANK), cupWeek('ASIA',K_ASIA3_RANK), cupWeek('ASIA',K_ASIA4_RANK), cupWeek('ASIA',K_ASIA5_RANK)]),
+          [heatStage('ASIA',G_ASIA1_RANK,1), heatStage('ASIA',G_ASIA2_RANK,2), cupWeek('ASIA',K_ASIA1_RANK,1), cupWeek('ASIA',K_ASIA2_RANK,2), cupWeek('ASIA',K_ASIA3_RANK,3), cupWeek('ASIA',K_ASIA4_RANK,4), cupWeek('ASIA',K_ASIA5_RANK,5)]),
     ME:   trio('ME',_E1G,_E1P,_E1L).concat(
-          [heatStage('ME',G_ME1_RANK), heatStage('ME',G_ME2_RANK), cupWeek('ME',K_ME1_RANK), cupWeek('ME',K_ME2_RANK), cupWeek('ME',K_ME3_RANK), cupWeek('ME',K_ME4_RANK), cupWeek('ME',K_ME5_RANK)]),
+          [heatStage('ME',G_ME1_RANK,1), heatStage('ME',G_ME2_RANK,2), cupWeek('ME',K_ME1_RANK,1), cupWeek('ME',K_ME2_RANK,2), cupWeek('ME',K_ME3_RANK,3), cupWeek('ME',K_ME4_RANK,4), cupWeek('ME',K_ME5_RANK,5)]),
     OCE:  trio('OCE',_O1G,_O1P,_O1L).concat(
-          [heatStage('OCE',G_OCE1_RANK), heatStage('OCE',G_OCE2_RANK), cupWeek('OCE',K_OCE1_RANK), cupWeek('OCE',K_OCE2_RANK), cupWeek('OCE',K_OCE3_RANK), cupWeek('OCE',K_OCE4_RANK), cupWeek('OCE',K_OCE5_RANK)])
+          [heatStage('OCE',G_OCE1_RANK,1), heatStage('OCE',G_OCE2_RANK,2), cupWeek('OCE',K_OCE1_RANK,1), cupWeek('OCE',K_OCE2_RANK,2), cupWeek('OCE',K_OCE3_RANK,3), cupWeek('OCE',K_OCE4_RANK,4), cupWeek('OCE',K_OCE5_RANK,5)])
   };
   Object.keys(S40).forEach(reg=>{ S40[reg]=S40[reg].concat([summitStage]); });
   const accS40={};
@@ -18270,9 +18298,12 @@ var RATING_FLOOR={};
     const t=accS40[reg]={};
     S40[reg].forEach(src=>{
       Object.entries(src.map).forEach(([k,r])=>{
-        const a=t[k]=t[k]||{sum:0, w:0, best:0};
-        a.sum+=src.score(r)*src.weight; a.w+=src.weight;
-        a.best=Math.max(a.best, src.score(r));
+        const a=t[k]=t[k]||{sum:0, w:0, best:0, parts:[]};
+        const sc=src.score(r);
+        a.sum+=sc*src.weight; a.w+=src.weight;
+        a.best=Math.max(a.best, sc);
+        // Kept so the card can show its own working instead of a bare number.
+        a.parts.push({label:src.label, nth:src.nth, rank:r, field:src.field, score:sc, weight:src.weight});
       });
     });
   });
@@ -18285,19 +18316,35 @@ var RATING_FLOOR={};
     const t=accS41[reg]={};
     S41[reg].forEach(src=>{
       Object.entries(src.map).forEach(([k,r])=>{
-        const a=t[k]=t[k]||{sum:0, w:0, best:0};
-        a.sum+=src.score(r)*src.weight; a.w+=src.weight;
-        a.best=Math.max(a.best, src.score(r));
+        const a=t[k]=t[k]||{sum:0, w:0, best:0, parts:[]};
+        const sc=src.score(r);
+        a.sum+=sc*src.weight; a.w+=src.weight;
+        a.best=Math.max(a.best, sc);
+        // Kept so the card can show its own working instead of a bare number.
+        a.parts.push({label:src.label, nth:src.nth, rank:r, field:src.field, score:sc, weight:src.weight});
       });
     });
   });
+  // The net that stops one rough night gutting a card. It used to read "nobody
+  // falls more than six points below their own best result", with best taken
+  // across every stage regardless of size — so a stage the ledger itself rates
+  // as minor could overrule the round that decides the title. It did, for 58 of
+  // 347 European cards, every one of them propped up by something lighter than
+  // the Grand Finals: Mald1s finished 49th of 50 in the final and was floored at
+  // 88 by a second place in a Heat (weight 0.9), and P1ng was floored at 86 by a
+  // cup week worth 0.15 after finishing 46th.
+  //
+  // The net now only counts stages carrying Grand Finals weight. A player who
+  // never reached one keeps the old protection over whatever they did play —
+  // there is nothing heavier of theirs for it to contradict.
+  const NET_MIN_WEIGHT=1.0;
   const settle=table=>{
     const out={};
     Object.entries(table).forEach(([k,a])=>{
       a.mean=a.sum/a.w;
-      // A rough patch at one event should dent a card, not gut it: nobody falls
-      // more than six points below their own best result.
-      out[k]=Math.max(Math.round(a.sum/a.w), a.best-6);
+      const heavy=(a.parts||[]).filter(x=>x.weight>=NET_MIN_WEIGHT);
+      const netBest = heavy.length ? Math.max(...heavy.map(x=>x.score)) : a.best;
+      out[k]=Math.max(Math.round(a.sum/a.w), netBest-6);
     });
     return out;
   };
@@ -18351,6 +18398,14 @@ var RATING_FLOOR={};
       const k=keyIn(s41,q);
       if(k===null) return;
       target=s41[k];
+      // The stages that produced this number, so the card can show its working.
+      // Sorted heaviest first, which is the order the explainer lists them in.
+      const led=(q.cardSet==='m2' ? accS41 : accS40)[q.region];
+      const acc=led && led[k];
+      if(acc && acc.parts) q._ratingParts={
+        parts:[...acc.parts].sort((a,b)=>b.weight-a.weight || (a.nth||0)-(b.nth||0) || a.rank-b.rank),
+        sum:acc.sum, w:acc.w, blended:acc.sum/acc.w
+      };
     } else {
       // Everything that is neither Major 1 nor Major 2 is a card from an older
       // season — Chapter 2, the 2021-2025 Majors, the Global Championships. The
@@ -18523,6 +18578,30 @@ function translateDate(dateStr){
 
 function regionName(code){ if(code==='UNK') return L().regionUnk; const r=REGIONS.find(r=>r.code===code); if(!r) return code; return LANG==='ru' ? r.nameRu : r.nameEn; }
 
+// ---------- Balance: what the modifiers are allowed to be worth ----------
+// Power is what the whole simulation ranks teams on, and the thing it should
+// mostly measure is who you drafted. Across realistic duos the OVR average runs
+// from about 74 to 86 — a twelve-point spread. Every bonus stacked on top has
+// to stay well inside that, or the draft stops mattering.
+//
+// It did not: real-teammate synergy alone was +12 (+17 with a shared passport),
+// a loadout roll was worth +4 to +22, and a landing zone another +1 to +10. Up
+// to +53 of mostly luck on an ~80 baseline, so a mediocre duo with the right
+// chemistry and a lucky drop beat an elite duo outright. These numbers shrink
+// the whole stack to roughly a third of that, which leaves it able to decide
+// close matchups without deciding the tournament.
+const SYN_TEAMMATES=5;   // was 12 — a pair who really played together
+const SYN_NATION=2;      // was 5  — per extra player sharing a nationality
+const SYN_LANGUAGE=1;    // was 3  — different passports, one shared language
+const SYN_POW_CAP=12;    // was 40 — the most synergy can ever add to power
+const ROLE_BONUS_STEP=3; // was 4  — per extra role covered (card mode)
+// The loadout is a dice roll, not a decision, so it is scaled down hardest:
+// a duo's raw item sum of 4-22 lands at +1 to +8 instead.
+const LOADOUT_POW_SCALE=0.35;
+// Landing zones were worth 1-10 by area. Now 1-4 — the drop still rewards
+// picking a big POI, but it can't outweigh the squad standing in it.
+const LANDING_POINTS_MAX=4;
+
 function computeSynergy(squad){
   let bonus=0; const details=[]; const links=[];
   const seenPairs=new Set();
@@ -18534,8 +18613,8 @@ function computeSynergy(squad){
       const wereTeammates=TEAMMATE_GROUPS.some(g=>g.includes(p.handle)&&g.includes(p2.handle));
       if(wereTeammates){
         seenPairs.add(pairKey);
-        bonus+=12; details.push(p.handle+' + '+p2.handle+L().synergyPartner);
-        links.push({a:p.handle,b:p2.handle,type:'partner',val:12});
+        bonus+=SYN_TEAMMATES; details.push(p.handle+' + '+p2.handle+L().synergyPartner(SYN_TEAMMATES));
+        links.push({a:p.handle,b:p2.handle,type:'partner',val:SYN_TEAMMATES});
       }
     });
   });
@@ -18544,11 +18623,11 @@ function computeSynergy(squad){
   Object.keys(natGroups).forEach(nat=>{
     const members=natGroups[nat];
     if(members.length>=2){
-      const b=5*(members.length-1);
+      const b=SYN_NATION*(members.length-1);
       bonus+=b;
       details.push(members.join(' + ')+L().synergyNation+natDisplay(nat)+' (+'+b+')');
       for(let i=0;i<members.length;i++) for(let j=i+1;j<members.length;j++)
-        links.push({a:members[i],b:members[j],type:'nation',val:5});
+        links.push({a:members[i],b:members[j],type:'nation',val:SYN_NATION});
     }
   });
 
@@ -18567,9 +18646,9 @@ function computeSynergy(squad){
         const key = a.handle<b2.handle ? a.handle+'|'+b2.handle : b2.handle+'|'+a.handle;
         if(seenPairs.has(key)) continue; // already real teammates — don't double up
         seenPairs.add(key);
-        bonus+=3;
-        details.push(a.handle+' + '+b2.handle+L().synergyLanguage+languageClusterName(cluster)+' (+3)');
-        links.push({a:a.handle,b:b2.handle,type:'language',val:3});
+        bonus+=SYN_LANGUAGE;
+        details.push(a.handle+' + '+b2.handle+L().synergyLanguage+languageClusterName(cluster)+' (+'+SYN_LANGUAGE+')');
+        links.push({a:a.handle,b:b2.handle,type:'language',val:SYN_LANGUAGE});
       }
     }
   });
@@ -19023,12 +19102,13 @@ function renderPicked(elId, cards, note){
     cell.style.cssText='display:flex;flex-direction:column;gap:2px;';
     cell.style.setProperty('--r-color', c.color);
     cell.innerHTML=c.html+`<div class="picked-tag">${L().draftedLabel}</div>`;
+    if(c.player) wireCardPeek(cell, c.player);
     el.appendChild(cell);
   });
 }
 
 const pickedItemCard=o=>({html:futItemCardHTML(o), color:o.color});
-const pickedPlayerCard=p=>({html:futCardHTML(p), color:RARITY_COLOR[shownRarity(p)]});
+const pickedPlayerCard=p=>({html:futCardHTML(p), color:RARITY_COLOR[shownRarity(p)], player:p});
 
 function pickWeapon(o){
   if(roundWeaponPicked) return;
@@ -19087,8 +19167,10 @@ function loadoutBonus(){
   // twice as many items as duo (2) and the raw sum came out roughly twice as
   // large just from headcount, not better luck. Scaling by 2/squadSize keeps
   // it an even comparison across modes, same approach as the kill-point fix.
+  // ...and LOADOUT_POW_SCALE then cuts what the roll is worth at all: the items
+  // are luck, so they get to nudge a close matchup, not decide it.
   const n = drafted.length || 1;
-  return Math.round(raw * (2/n));
+  return Math.round(raw * (2/n) * LOADOUT_POW_SCALE);
 }
 
 function randomLoadoutBonus(n){
@@ -19098,7 +19180,7 @@ function randomLoadoutBonus(n){
     const h=M2_CONSUMABLE_POOL[Math.floor(Math.random()*M2_CONSUMABLE_POOL.length)];
     total+=w.mod+h.mod;
   }
-  return Math.round(total * (2/n));
+  return Math.round(total * (2/n) * LOADOUT_POW_SCALE);
 }
 
 // ---------- Card mode: FIFA-style player attributes ----------
@@ -19698,10 +19780,8 @@ function attrsForRaw(p){
   return a;
 }
 
-// The season ledgers rewrote every Major card, S1neD's included — his Major 1
-// card had settled on 87 and his Major 2 card on 82. This runs below ATTR_KEYS
-// and attrsFor on purpose: calling it any earlier throws a temporal-dead-zone
-// error that kills the whole script, which is exactly what it did once already.
+// Runs below ATTR_KEYS and attrsFor on purpose: calling it any earlier throws a
+// temporal-dead-zone error that kills the whole script, which it did once.
 applyS1nedMeme(true);
 
 const CARD_SKIN={
@@ -20435,6 +20515,50 @@ const MAP_ART={
   m2:"art/map-m2.jpg"
 };
 const MAP_ASPECT={m1:'1100/1142', m2:'1100/970'};
+// ---------- Real drop-spot data (Kinch Premium competitive evals) ----------
+// Zone quality used to be guessed from the rectangle: bigger box = more points.
+// These are the published numbers for the seasons the two islands are from —
+// C7S1 (Duos VCC, OCE) for m1 and C7S3 (Eval, EU) for m2 — matched to each
+// rectangle by overlaying the app map on the source map and taking the POI the
+// rectangle covers. The rectangles themselves are untouched; this array is
+// index-parallel to ZONE_SETS.
+//   r     — Kinch Overall Rating for the spot that season
+//   loot  — items the spot yields
+//   teams — average number of teams that actually drop there (contest rate)
+//   surv  — share of drops that survive the landing
+// A handful of rectangles sit between two neighbouring POIs; those took the
+// nearer one, so their numbers can be a spot off. Everything else is a direct hit.
+const ZONE_STATS={
+  m1:[
+    {r:29,loot:68,teams:3.46,surv:51},{r:16,loot:23,teams:1.68,surv:58},{r:37,loot:53,teams:1.96,surv:57},
+    {r:29,loot:33,teams:1.38,surv:58},{r:55,loot:49,teams:1.74,surv:65},{r:48,loot:28,teams:0.78,surv:60},
+    {r:56,loot:42,teams:1.40,surv:65},{r:56,loot:27,teams:0.73,surv:75},{r:22,loot:26,teams:1.95,surv:59},
+    {r:41,loot:17,teams:0.67,surv:69},{r:87,loot:31,teams:0.45,surv:80},{r:82,loot:63,teams:2.03,surv:76},
+    {r:25,loot:29,teams:1.56,surv:63},{r:46,loot:44,teams:1.73,surv:62},{r:46,loot:44,teams:1.73,surv:62},
+    {r:68,loot:56,teams:1.47,surv:63},{r:29,loot:31,teams:2.02,surv:65},{r:28,loot:17,teams:0.62,surv:63},
+    {r:44,loot:49,teams:1.81,surv:59},{r:25,loot:29,teams:1.56,surv:63},{r:29,loot:31,teams:2.02,surv:65},
+    {r:130,loot:49,teams:0.87,surv:82},{r:38,loot:25,teams:1.19,surv:70},{r:38,loot:25,teams:1.19,surv:70},
+    {r:20,loot:26,teams:1.74,surv:51},{r:27,loot:31,teams:1.96,surv:68},{r:48,loot:42,teams:1.84,surv:67},
+    {r:48,loot:42,teams:1.84,surv:67},{r:75,loot:60,teams:1.78,surv:70},{r:25,loot:27,teams:1.57,surv:55},
+    {r:28,loot:20,teams:1.43,surv:74},{r:91,loot:34,teams:0.53,surv:69},{r:75,loot:60,teams:1.78,surv:70},
+    {r:27,loot:31,teams:1.96,surv:68},{r:97,loot:46,teams:0.82,surv:69},{r:97,loot:46,teams:0.82,surv:69},
+    {r:28,loot:20,teams:1.43,surv:74},{r:88,loot:38,teams:0.49,surv:62},{r:88,loot:38,teams:0.49,surv:62}
+  ],
+  m2:[
+    {r:90,loot:36,teams:0.55,surv:68},{r:66,loot:56,teams:1.66,surv:68},{r:34,loot:50,teams:1.81,surv:52},
+    {r:19,loot:42,teams:2.12,surv:44},{r:29,loot:46,teams:2.10,surv:50},{r:34,loot:40,teams:1.68,surv:57},
+    {r:40,loot:26,teams:0.57,surv:67},{r:51,loot:43,teams:1.08,surv:55},{r:79,loot:31,teams:0.63,surv:75},
+    {r:87,loot:101,teams:2.31,surv:64},{r:61,loot:46,teams:1.22,surv:64},{r:34,loot:35,teams:1.69,surv:63},
+    {r:25,loot:17,teams:0.80,surv:65},{r:29,loot:49,teams:1.60,surv:69},{r:32,loot:26,teams:1.35,surv:66},
+    {r:35,loot:51,teams:2.19,surv:55},{r:60,loot:67,teams:2.12,surv:63},{r:24,loot:27,teams:0.96,surv:57},
+    {r:72,loot:76,teams:1.84,surv:61},{r:28,loot:39,teams:2.28,surv:60},{r:30,loot:48,teams:2.42,surv:63},
+    {r:56,loot:52,teams:1.75,surv:69},{r:61,loot:68,teams:1.96,surv:61},{r:38,loot:28,teams:0.99,surv:64},
+    {r:30,loot:48,teams:2.42,surv:63},{r:49,loot:58,teams:2.03,surv:60},{r:83,loot:31,teams:0.48,surv:67},
+    {r:56,loot:52,teams:1.75,surv:69},{r:55,loot:38,teams:1.25,surv:66},{r:49,loot:58,teams:2.03,surv:60},
+    {r:70,loot:53,teams:1.04,surv:59},{r:61,loot:42,teams:1.20,surv:65},{r:42,loot:32,teams:1.42,surv:71},
+    {r:63,loot:45,teams:1.15,surv:66},{r:69,loot:60,teams:1.24,surv:57},{r:61,loot:42,teams:1.20,surv:65}
+  ]
+};
 const ZONE_SETS={
   m1:[
     {x:24.92,y:8.0,w:20.87,h:11.73},
@@ -20543,14 +20667,22 @@ function trimLandingZonesForMode(){
 
 function useLandingSet(key){
   const set = ZONE_SETS[key] ? key : 'm2';
+  const stats = ZONE_STATS[set] || [];
   ALL_LANDING_ZONES.length=0;
-  ZONE_SETS[set].forEach(z=>ALL_LANDING_ZONES.push({...z}));
-  // Bigger zone = more points, recomputed for whichever island is in play.
-  const areas=ALL_LANDING_ZONES.map(z=>z.w*z.h);
-  const min=Math.min(...areas), max=Math.max(...areas);
-  ALL_LANDING_ZONES.forEach((z,i)=>{
-    const t=(areas[i]-min)/(max-min || 1);
-    z.points=Math.max(1, Math.min(10, Math.round(1 + t*9)));
+  // The rectangle is copied through untouched; the season's real numbers ride
+  // along beside it.
+  ZONE_SETS[set].forEach((z,i)=>ALL_LANDING_ZONES.push({...z, ...(stats[i]||{})}));
+  // Zone value comes from that season's published drop-spot rating, not from
+  // how big the rectangle happens to be. Ratings are graded against the rest of
+  // the same island — a spot is worth what it is worth relative to its own
+  // season's field — so both maps span the full 1..LANDING_POINTS_MAX range and
+  // neither island is richer than the other just because its numbers run higher.
+  const rated=ALL_LANDING_ZONES.map(z=>z.r).filter(v=>v!=null).sort((a,b)=>a-b);
+  ALL_LANDING_ZONES.forEach(z=>{
+    if(z.teams==null) z.teams=1;
+    if(z.r==null || !rated.length){ z.points=1; return; }
+    const pct=rated.filter(v=>v<z.r).length/rated.length;
+    z.points=Math.max(1, Math.min(LANDING_POINTS_MAX, 1+Math.floor(pct*LANDING_POINTS_MAX)));
   });
   trimLandingZonesForMode();
   document.querySelectorAll('.map-frame').forEach(el=>{ el.style.aspectRatio=MAP_ASPECT[set]; });
@@ -20643,6 +20775,7 @@ function renderCandidates(list){
       c.style.setProperty('--r-color', RARITY_COLOR[shownRarity(p)]);
       c.innerHTML=futCardHTML(p)+`<button class="pick-btn" style="width:100%;">${L().pickBtn}</button>`;
       c.querySelector('.pick-btn').onclick=()=>pick(p);
+      wireCardPeek(c, p);
       el.appendChild(c);
       return;
     }
@@ -20763,6 +20896,9 @@ function renderSlots(){
       const flag = flagImg(p.nat, 14);
       const a=attrsFor(p);
       d.innerHTML=`<div><div class="h">${flag}${p.handle}</div><div class="r">${L()[a.roleKey]} · ${regionName(p.region)}</div></div><div class="sr">${a.ovr}</div>`;
+      d.style.cursor='zoom-in';
+      d.title=L().cardPeekHint;
+      d.onclick=()=>openCardPeek(p);
     } else {
       d.className='slot empty';
       d.textContent=L().emptySlot;
@@ -20799,13 +20935,84 @@ function fieldTarget(){ return CARD_MODE ? CARD_FIELD : PLAYIN_TARGET; }
 // per slot and takes the strongest one, with enough noise that lobbies are not
 // perfectly sorted by rating, plus a nudge toward covering a second role — the
 // same trade-off the player is making.
+// Duos that were already locked when this Major was played.
+//
+// Major 1 is an open field: everybody enters with whoever they like, so nothing
+// is fixed and the bots are pack-drafted exactly as before.
+//
+// Major 2 is not. The fifteen duos that came out of the Major 1 Summit already
+// held a seat at the Belgian LAN before Major 2 started, and a seat belongs to a
+// pair, not to two individuals — they are obliged to enter Major 2 together and
+// to turn up in Antwerp as the same duo. They used to be pack-drafted like
+// everyone else, which is how vic0 and Malibuca ended up on two different teams
+// in the same Play-In while the LAN roster still listed them as a pair.
+//
+// Everyone else in Major 2 is unlocked and drafted at random, the same as
+// Major 1. The one thing that breaks a locked pair is the player drafting one of
+// its two players: the pool handed in here already has the player's picks
+// removed, so the survivor simply never finds their partner — vic0 taken leaves
+// Malibuca needing somebody new, exactly as Pollo would if you took Peterbot.
+function lockedDuosForSet(){
+  return CARD_SET==='m2' ? GC_SUMMIT_DUOS : [];
+}
+// A LAN seat follows the pair, and the pair is whoever actually entered Major 2
+// together. Normally that is the duo off the Summit; when the player drafts one
+// of them the survivor enters with somebody new, and it is that new pair which
+// flies to Antwerp. Recorded as the lobby is built so the LAN roster can look it
+// up instead of dropping the stranded qualifier altogether.
+let LOCKED_DUO_SUBS=new Map();
+function seatLockedDuos(pool, teamCount){
+  const locked=lockedDuosForSet();
+  if(!locked.length) return {squads:[], rest:pool};
+  const byKey=new Map();
+  pool.forEach(pl=>{ const k=_gcNorm(pl.handle); if(!byKey.has(k)) byKey.set(k, pl); });
+  const look=h=>{ const k=_gcNorm(h); return byKey.get(k) || byKey.get(_gcNorm(GC_HANDLE_ALIAS[k]||'')); };
+  const intact=[], orphans=[], claimed=new Set();
+  locked.forEach(d=>{
+    const a=look(d[0]), b=look(d[1]);
+    if(a && b && a!==b && !claimed.has(hKey(a)) && !claimed.has(hKey(b))){
+      claimed.add(hKey(a)); claimed.add(hKey(b)); intact.push([a,b]);
+    } else if((a||b) && !claimed.has(hKey(a||b))){
+      const solo=a||b; claimed.add(hKey(solo)); orphans.push(solo);
+    }
+  });
+  const squads=[], used=new Set();
+  const orphanKeys=new Set(orphans.map(pl=>_gcNorm(pl.handle)));
+  const take=sq=>{
+    squads.push(sq); sq.forEach(pl=>used.add(hKey(pl)));
+    // if this seat was made for a stranded qualifier, remember the new pairing
+    sq.forEach(pl=>{ if(orphanKeys.has(_gcNorm(pl.handle))) LOCKED_DUO_SUBS.set(_gcNorm(pl.handle), sq.slice()); });
+  };
+  // The orphan is seated before the intact pairs, so a player the draft stranded
+  // cannot be squeezed out of their own tournament by the teams still together.
+  orphans.sort((a,b)=>attrsFor(b).ovr-attrsFor(a).ovr);
+  for(let k=0;k+1<orphans.length && squads.length<teamCount;k+=2) take([orphans[k],orphans[k+1]]);
+  if(orphans.length%2 && squads.length<teamCount){
+    const solo=orphans[orphans.length-1];
+    const mate=pool.filter(pl=>!claimed.has(hKey(pl)) && !used.has(hKey(pl)) && pl.region===solo.region)
+      .sort((a,b)=>attrsFor(b).ovr-attrsFor(a).ovr)[0];
+    if(mate) take([solo, mate]);
+  }
+  intact.forEach(d=>{ if(squads.length<teamCount) take(d); });
+  return {squads, rest: pool.filter(pl=>!used.has(hKey(pl)))};
+}
+
 function draftBotSquads(pool, teamCount, size){
-  // Region-locked drafting: each bot team is assigned a region and only ever
-  // sees cards from it, so no squad ends up half European and half American.
-  const byRegion={};
-  pool.forEach(p=>{ (byRegion[p.region]=byRegion[p.region]||[]).push(p); });
   const squads=[];
-  for(let i=0; i<teamCount; i++){
+  let remaining=pool;
+  // Duos first, and only for duo-sized squads — trio and squad modes are
+  // fantasy formats with no real pairings to preserve.
+  if(size===2 && CARD_MODE){
+    const seated=seatLockedDuos(remaining, teamCount);
+    squads.push(...seated.squads);
+    remaining=seated.rest;
+  }
+  // Region-locked drafting for whatever the real pairings did not cover: each
+  // bot team is assigned a region and only ever sees cards from it, so no squad
+  // ends up half European and half American.
+  const byRegion={};
+  remaining.forEach(p=>{ (byRegion[p.region]=byRegion[p.region]||[]).push(p); });
+  for(let i=squads.length; i<teamCount; i++){
     // Prefer whichever region still has the most players left, so the field
     // stays proportional to how many cards each region contributes.
     const codes=Object.keys(byRegion).filter(c=>byRegion[c].length>=size);
@@ -20836,6 +21043,7 @@ function draftBotSquads(pool, teamCount, size){
 }
 
 function buildFullLobby(){
+  LOCKED_DUO_SUBS=new Map();
   const usedHandles=new Set(drafted.map(hKey));
   const teams=[];
   const you=buildTeam(drafted);
@@ -20931,7 +21139,12 @@ function majorFormat(region, cardSet){
   if(DEEP_MAJOR_REGIONS.has(region) || !region){
     return {playInCut:150, heats:[{games:5,cut:15},{games:5,cut:15},{games:5,cut:15}], lclGames:5};
   }
-  const sixGameHeat2 = (cardSet==='m1' && (region==='OCE' || region==='ASIA'));
+  // The Middle East belongs in this list too. Its Major 1 Last Chance Lobby
+  // produced three winners, not four — checked against CARD_E1_LCQ_RAW — and a
+  // three-game Lobby is what a 47-qualifier heat bracket leaves room for. The
+  // app was sending 46 through the heats and running a four-game Lobby, which
+  // still added up to fifty but split them the wrong way.
+  const sixGameHeat2 = (cardSet==='m1' && (region==='OCE' || region==='ASIA' || region==='ME'));
   const heat2Games = sixGameHeat2 ? 6 : 5;
   return {
     playInCut:100,
@@ -20963,14 +21176,20 @@ function heatQualifiers(heatTeams, cut){
   });
   return new Set(through.slice(0, Math.max(cut, through.length)));
 }
-// Real LCQ Round 1 scoring (12-game stage): VR 9, top2-5 4, top6-25 2,
-// nothing past 25th. Kills are worth +1 each here — much lower than Heats'
-// scoring, since LCQ is a real 12-game grind rather than a VR-dominated stage.
+// Real LCQ Round 1 scoring, straight off Epic's ScoringRules for the
+// Last Chance Qualifier session (MatchRule "lte", so the tiers are
+// CUMULATIVE — every threshold you pass is banked): Victory Royale +9,
+// top 2-5 +4 each, top 6-25 +2 each. A win is therefore worth 65, 2nd 56,
+// 5th 44 and 25th 2 — the same table Play-In uses. Eliminations are +1 each
+// (killMult at the call site), which is what makes the real top-50 cut land
+// around 360 points over 11 games rather than the ~100 a flat 9/4/2 table
+// would produce.
 function lcqRound1PointsForPlace(place){
-  if(place===1) return 9;
-  if(place<=5) return 4;
-  if(place<=25) return 2;
-  return 0;
+  if(place>25) return 0;
+  let pts=2*(26-Math.max(place,6));          // Top 25 → Top 6, +2 a step
+  if(place<=5) pts+=4*(6-Math.max(place,2)); // Top 5 → Top 2, +4 a step
+  if(place===1) pts+=PLAYIN_VR_BONUS;
+  return pts;
 }
 function thresholdLabel(place){
   if(place===1) return L().victoryRoyaleWord;
@@ -21041,6 +21260,7 @@ function beginAnimatedStage(){
 //               cumulative across the whole stage
 async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefix, maxGap, squadKillDampen, zoneGroups, opts){
   opts=opts||{};
+  applyStageBias(pointsFn);
   beginAnimatedStage();
   const ptsKey=fieldPrefix+'Pts', elimsKey=fieldPrefix+'Elims';
   const logKey=fieldPrefix==='total' ? 'gameLog' : 'stageLog';
@@ -21139,9 +21359,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       const pool=teams.filter(t=>!(opts.stopOnWin && t.gotVR));
       const shuffled=pool.slice();
       for(let i=shuffled.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]; }
-      for(let s=0; s<shuffled.length; s+=opts.lobbySize){
-        const lobby=shuffled.slice(s, s+opts.lobbySize);
-        if(lobby.length<2) continue;
+      for(const lobby of splitIntoLobbies(shuffled, opts.lobbySize)){
         simulateGame(lobby).forEach((t,i)=>{
           const place=i+1;
           let elims=t._elims||0;
@@ -21205,11 +21423,17 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
 // the duo total; each player takes half.
 const PRIZE_TABLES={"EU":{"1":120000,"2":80000,"3":60000,"4":50000,"5":40000,"6":30000,"7":25000,"8":20000,"9":18000,"10":16000,"11":14000,"12":12000,"13":10000,"14":8000,"15":6000,"16":5500,"17":5000,"18":4500,"19":4000,"20":3500,"21":3000,"22":3000,"23":3000,"24":3000,"25":3000,"26":3000,"27":3000,"28":3000,"29":3000,"30":3000,"31":2000,"32":2000,"33":2000,"34":2000,"35":2000,"36":2000,"37":2000,"38":2000,"39":2000,"40":2000,"41":1000,"42":1000,"43":1000,"44":1000,"45":1000,"46":1000,"47":1000,"48":1000,"49":1000,"50":1000},"NAC":{"1":100000,"2":50000,"3":40000,"4":30000,"5":25000,"6":20000,"7":16000,"8":14000,"9":12000,"10":10000,"11":9000,"12":8000,"13":7000,"14":6000,"15":5000,"16":4500,"17":4000,"18":3500,"19":3000,"20":2500,"21":2000,"22":2000,"23":2000,"24":2000,"25":2000,"26":2000,"27":2000,"28":2000,"29":2000,"30":2000,"31":1500,"32":1500,"33":1500,"34":1500,"35":1500,"36":1500,"37":1500,"38":1500,"39":1500,"40":1500,"41":750,"42":750,"43":750,"44":750,"45":750,"46":750,"47":750,"48":750,"49":750,"50":750},"NAW":{"1":30000,"2":15000,"3":10000,"4":8000,"5":6000,"6":5000,"7":4000,"8":3500,"9":3000,"10":2500,"11":2000,"12":2000,"13":2000,"14":2000,"15":2000,"16":2000,"17":2000,"18":2000,"19":2000,"20":2000,"21":1500,"22":1500,"23":1500,"24":1500,"25":1500,"26":1500,"27":1500,"28":1500,"29":1500,"30":1500,"31":1000,"32":1000,"33":1000,"34":1000,"35":1000,"36":1000,"37":1000,"38":1000,"39":1000,"40":1000,"41":500,"42":500,"43":500,"44":500,"45":500,"46":500,"47":500,"48":500,"49":500,"50":500},"BR":{"1":30000,"2":15000,"3":10000,"4":8000,"5":6000,"6":5000,"7":4000,"8":3500,"9":3000,"10":2500,"11":2000,"12":2000,"13":2000,"14":2000,"15":2000,"16":2000,"17":2000,"18":2000,"19":2000,"20":2000,"21":1500,"22":1500,"23":1500,"24":1500,"25":1500,"26":1500,"27":1500,"28":1500,"29":1500,"30":1500,"31":1000,"32":1000,"33":1000,"34":1000,"35":1000,"36":1000,"37":1000,"38":1000,"39":1000,"40":1000,"41":500,"42":500,"43":500,"44":500,"45":500,"46":500,"47":500,"48":500,"49":500,"50":500},"ASIA":{"1":16000,"2":12000,"3":8000,"4":6000,"5":4000,"6":2000,"7":1800,"8":1600,"9":1400,"10":1200,"11":1000,"12":1000,"13":1000,"14":1000,"15":1000,"16":1000,"17":1000,"18":1000,"19":1000,"20":1000,"21":500,"22":500,"23":500,"24":500,"25":500,"26":500,"27":500,"28":500,"29":500,"30":500,"31":400,"32":400,"33":400,"34":400,"35":400,"36":400,"37":400,"38":400,"39":400,"40":400,"41":200,"42":200,"43":200,"44":200,"45":200,"46":200,"47":200,"48":200,"49":200,"50":200},"ME":{"1":16000,"2":12000,"3":8000,"4":6000,"5":4000,"6":2000,"7":1800,"8":1600,"9":1400,"10":1200,"11":1000,"12":1000,"13":1000,"14":1000,"15":1000,"16":1000,"17":1000,"18":1000,"19":1000,"20":1000,"21":500,"22":500,"23":500,"24":500,"25":500,"26":500,"27":500,"28":500,"29":500,"30":500,"31":400,"32":400,"33":400,"34":400,"35":400,"36":400,"37":400,"38":400,"39":400,"40":400,"41":200,"42":200,"43":200,"44":200,"45":200,"46":200,"47":200,"48":200,"49":200,"50":200},"OCE":{"1":16000,"2":12000,"3":8000,"4":6000,"5":4000,"6":2000,"7":1800,"8":1600,"9":1400,"10":1200,"11":1000,"12":1000,"13":1000,"14":1000,"15":1000,"16":1000,"17":1000,"18":1000,"19":1000,"20":1000,"21":500,"22":500,"23":500,"24":500,"25":500,"26":500,"27":500,"28":500,"29":500,"30":500,"31":400,"32":400,"33":400,"34":400,"35":400,"36":400,"37":400,"38":400,"39":400,"40":400,"41":200,"42":200,"43":200,"44":200,"45":200,"46":200,"47":200,"48":200,"49":200,"50":200},"SUMMIT":{"1":250000,"2":150000,"3":100000,"4":70000,"5":60000,"6":50000,"7":40000,"8":35000,"9":30000,"10":25000,"11":20000,"12":19000,"13":18000,"14":17000,"15":16000,"16":15000,"17":14000,"18":13000,"19":12000,"20":11000,"21":10000,"22":10000,"23":10000,"24":10000,"25":10000,"26":9000,"27":9000,"28":9000,"29":9000,"30":9000,"31":8000,"32":8000,"33":8000,"34":8000,"35":8000,"36":7000,"37":7000,"38":7000,"39":7000,"40":7000,"41":6000,"42":6000,"43":6000,"44":6000,"45":6000,"46":6000,"47":6000,"48":6000,"49":6000,"50":6000,"51":5000,"52":5000,"53":5000,"54":5000,"55":5000,"56":4000,"57":4000,"58":4000,"59":4000,"60":4000,"61":4000,"62":4000,"63":4000,"64":4000,"65":4000,"66":4000,"67":4000,"68":4000,"69":4000,"70":4000,"71":4000,"72":4000,"73":4000,"74":4000}};
 // Major 2 keeps its own payout table, taken from that event's finals page.
+// The Global Championship Last Chance pays out on its own table, straight off
+// Epic's PayoutTableV2 for the event: $20,000 for the win down to $200 at 50th,
+// banded 21-30, 31-40 and 41-50. It is why a duo that is already qualified still
+// turns up — the money is real and their seat rolling down costs them nothing.
+const GCLC_PRIZES={"1":20000,"2":12500,"3":10000,"4":8000,"5":6000,"6":5000,"7":4000,"8":3000,"9":2750,"10":2500,"11":2250,"12":2000,"13":1750,"14":1500,"15":1250,"16":1000,"17":900,"18":800,"19":700,"20":600,"21":500,"22":500,"23":500,"24":500,"25":500,"26":500,"27":500,"28":500,"29":500,"30":500,"31":300,"32":300,"33":300,"34":300,"35":300,"36":300,"37":300,"38":300,"39":300,"40":300,"41":200,"42":200,"43":200,"44":200,"45":200,"46":200,"47":200,"48":200,"49":200,"50":200};
 const PRIZE_TABLES_M2={"EU":M2_EU_PRIZES,"NAC":M2_NAC_PRIZES,"NAW":M2_NAW_PRIZES,"BR":M2_BR_PRIZES,"ASIA":M2_ASIA_PRIZES,"ME":M2_ME_PRIZES,"OCE":M2_OCE_PRIZES};
 
 const PRIZE_POOL_TOTAL={"EU":591500,"NAC":412000,"NAW":137000,"BR":137000,"ASIA":75000,"ME":75000,"OCE":75000,"SUMMIT":1296000};
 
 function prizeFor(table, rank){
+  if(table==='GCLC') return GCLC_PRIZES[String(rank)] || 0;
   const t=(CARD_SET==='m2' && PRIZE_TABLES_M2[table]) ? PRIZE_TABLES_M2[table] : PRIZE_TABLES[table];
   if(!t) return 0;
   return t[String(rank)] || 0;
@@ -21292,7 +21516,28 @@ function finalizeStageCard(shell, rank, total, points, passed, vr, note){
   shell.summaryEl.innerHTML = `${L().yourSquadTitle}: <b>#${rank}</b> ${L().place2plus}${total}${L().teamsWord}, <b>${points}</b> ${L().ptsHeader.toLowerCase()}${vrLine}${note?'<br>'+note:''}<br>` + shell.summaryEl.innerHTML;
 }
 
+// A match lobby caps at 50 duos, but a field almost never divides by 50 exactly.
+// Chunking it blindly leaves a stub: 105 teams becomes 50/50/5, and in that
+// five-team lobby somebody collects a Victory Royale and the whole top-5 sweep
+// for free. Keep the same number of lobbies the cap implies, but size them as
+// evenly as they go — 105 → 35/35/35, 103 → 34/34/35.
+function splitIntoLobbies(teams, maxSize){
+  const n=teams.length;
+  if(n<2) return [];
+  if(n<=maxSize) return [teams.slice()];
+  const count=Math.ceil(n/maxSize);
+  const lobbies=[];
+  let start=0;
+  for(let i=0;i<count;i++){
+    const size=Math.floor((n-start)/(count-i));
+    lobbies.push(teams.slice(start, start+size));
+    start+=size;
+  }
+  return lobbies.filter(l=>l.length>=2);
+}
+
 function simulateGames(teams, numGames, pointsFn, killMult){
+  applyStageBias(pointsFn);
   teams.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.stageLog=[]; t.gotVR=false; t.wins=0; });
   for(let g=0; g<numGames; g++){
     const order=simulateGame(teams);
@@ -21311,6 +21556,7 @@ function simulateGames(teams, numGames, pointsFn, killMult){
 // A team that wins a game (Victory Royale) is instantly qualified and doesn't play further
 // games in this stage — used for Heats and LCQ, where a win means immediate advancement.
 function simulateGamesStopOnWin(teams, numGames, pointsFn, killMult){
+  applyStageBias(pointsFn);
   teams.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.stageLog=[]; t.gotVR=false; t.wins=0; });
   for(let g=0; g<numGames; g++){
     const active=teams.filter(t=>!t.gotVR);
@@ -21331,11 +21577,11 @@ function simulateGamesStopOnWin(teams, numGames, pointsFn, killMult){
 // Any number of teams can be in the Play-In overall, but a single match lobby caps at 50 duos —
 // so each game we reshuffle everyone into fresh random lobbies of up to 50 teams.
 function simulateGamesRandomLobbies(teams, numGames, lobbySize, pointsFn, killMult){
+  applyStageBias(pointsFn);
   teams.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.stageLog=[]; t.gotVR=false; t.wins=0; });
   for(let g=0; g<numGames; g++){
     const shuffled=teams.slice().sort(()=>Math.random()-0.5);
-    for(let i=0;i<shuffled.length;i+=lobbySize){
-      const lobby=shuffled.slice(i,i+lobbySize);
+    for(const lobby of splitIntoLobbies(shuffled, lobbySize)){
       const order=simulateGame(lobby);
       order.forEach((t,idx)=>{
         const place=idx+1;
@@ -21498,10 +21744,37 @@ function clearLandingPow(teams){
   });
 }
 
+// Where the lobby actually drops. Every zone used to get exactly two slots, so
+// a dead corner of the map was landed on as often as the hottest POI. The real
+// evals publish an average team count per spot — 0.45 for a spot nobody wants,
+// 3.46 for the one everybody fights over — so slots are handed out in that
+// proportion instead.
+//
+// The size of the pool is what decides how much of the map ends up empty: teams
+// are dealt into the first `fieldSize` slots of the shuffled pool, so a pool
+// twice the size of the lobby leaves half the slots — and a lot of whole zones —
+// untouched. Scale it to the field instead of using a fixed slots-per-zone
+// number, or the map empties out as soon as the weights spread the slots around.
+// 1.3x the lobby is enough headroom for the deal to stay random while keeping
+// roughly the same number of free zones a flat two-per-zone pool produced.
+const LANDING_SLOT_OVERHEAD=1.3;
+function landingSlotPool(fieldSize){
+  const zones=ALL_LANDING_ZONES;
+  const weights=zones.map(z=>z.teams!=null ? z.teams : 1);
+  const sum=weights.reduce((a,b)=>a+b,0) || 1;
+  const field=Math.max(fieldSize||0, 2);
+  const k=field*LANDING_SLOT_OVERHEAD/sum;
+  const pool=[];
+  zones.forEach((z,idx)=>{
+    const slots=Math.max(1, Math.round(weights[idx]*k));
+    for(let s=0;s<slots;s++) pool.push(idx);
+  });
+  for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
+  return pool;
+}
+
 function buildBotLandingAssignment(bots){
-  const slotPool=[];
-  ALL_LANDING_ZONES.forEach((z,idx)=>{ slotPool.push(idx,idx); });
-  for(let i=slotPool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [slotPool[i],slotPool[j]]=[slotPool[j],slotPool[i]]; }
+  const slotPool=landingSlotPool(bots.length);
 
   const zoneGroups=new Map();
   bots.forEach((t,i)=>{
@@ -21840,10 +22113,6 @@ async function offerSquadChoice(stageName, you, allTeams){
   }
 }
 
-// Real structure: everyone dropped from Play-In OR Heats shares one Last
-// Chance pool. It's a single round — up to 5 games. Each game's winner
-// instantly locks a Major Finals slot and stops playing; everyone else who
-// didn't win keeps going into the next game. Up to 5 teams qualify this way.
 // Fill a field of AI teams. In card mode the whole field must come from one
 // region — each region runs its own tournament — and squads are drafted from
 // packs instead of paired at random. Returns the players left over.
@@ -21869,39 +22138,32 @@ function fillFieldTeams(remaining, needed, size, out){
   return rem;
 }
 
-// How big a Last Chance field the current region can actually supply. Padding a
-// 150-team lobby with reserve bots is fine for the 1900-player base, but in card
-// mode it would drown a region's leftovers in filler.
-function lcqFieldTarget(remaining, size){
-  if(!(CARD_MODE && cardRosterPlayers().length)) return 150;
-  const myRegion=(drafted[0] && drafted[0].region) || 'EU';
-  const n=remaining.filter(p=>p.region===myRegion).length;
-  return Math.max(12, Math.min(150, Math.floor(n/size)+1));
+// Who actually plays the Last Chance Qualifier: every team that started the
+// Major and is not one of the 45 already through to the Grand Finals off the
+// Heats. That is the real rule — "open to all players in all 5 Divisions" —
+// so the field is the tournament's own dropouts (Heats non-qualifiers plus
+// anyone who never cleared Play-In), never a lobby of freshly drafted
+// strangers and reserve bots.
+function lastChanceField(allTeams, qualifiedSet){
+  return allTeams.filter(t=>!qualifiedSet.has(t));
 }
 
-async function runLastChanceQualifier(stageName, you, excludeTeams, lclGames){
+// Real structure: everyone dropped from Play-In OR Heats shares one Last
+// Chance pool. Round 1 is 11 games and cuts to the top 50; the Last Chance
+// Lobby that follows is up to 5 games, where each game's winner instantly
+// locks a Major Finals slot and stops playing while everyone else who didn't
+// win keeps going into the next game. Up to 5 teams qualify this way.
+//
+// `field` is the real dropout field from lastChanceField() and already
+// contains `you`; `allTeams` is the whole Major field, used only so a squad
+// swap can't hand you a player who is already someone else's teammate.
+async function runLastChanceQualifier(stageName, you, allTeams, field, lclGames){
   lclGames = lclGames || 5;
-  await offerSquadChoice(stageName, you, excludeTeams);
+  await offerSquadChoice(stageName, you, allTeams);
 
-  const usedHandles=new Set();
-  excludeTeams.forEach(t=>t.squad.forEach(p=>usedHandles.add(hKey(p))));
-  you.squad.forEach(p=>usedHandles.add(hKey(p)));
-  let remaining=tournamentPool().filter(p=>!usedHandles.has(hKey(p)));
-  const lcqPoolTarget=lcqFieldTarget(remaining, 2);
-  const field=[you];
-  remaining=fillFieldTeams(remaining, lcqPoolTarget-field.length, 2, field);
-  // Play-In's 500-team target already draws on the whole real-player pool, so
-  // there's often little left for a separate LCQ field — pad with reserve
-  // bots the same way Play-In does, so the qualifier never collapses to a
-  // near-empty lobby.
-  while(field.length<lcqPoolTarget){
-    const chunk=[makeFiller(), makeFiller()];
-    const t=buildTeam(chunk); t.loadout=randomLoadoutBonus(chunk.length); t.pow+=t.loadout; t.name=teamLabel(chunk); field.push(t);
-  }
-
-  // Round 1: a 12-game cumulative-points stage (VR 9 / top2-5 4 / top6-25 2,
-  // +1 per kill, stop early on a Victory Royale) across the full field, and
-  // only the top 50 by points advance. Shown as its own stage card so it's
+  // Round 1: an 11-game cumulative-points stage (Epic's MatchCap for the LCQ
+  // session) — VR 65 / 2nd 56 / 5th 44 / 25th 2, +1 per kill — across the full
+  // field, and only the top 50 by points advance. Shown as its own stage card so it's
   // visually distinct from Round 2's win-a-game shootout, instead of one
   // merged list of up to 17 games.
   await simulateGamesLive(field, 11, lcqRound1PointsForPlace, 1, 'stage', 0, null, null, {lobbySize:50, stageName:L().liveLcq});
@@ -21941,23 +22203,17 @@ async function runLastChanceQualifier(stageName, you, excludeTeams, lclGames){
 }
 
 // Quiet version of the same LCQ process (no UI/log), used to fill the other LCQ slots
-// when "you" already qualified directly through Heats.
-function computeQuietLCQWinners(excludeTeams, lclGames){
+// when "you" already qualified directly through Heats. Takes the same real
+// dropout field the interactive version plays — teams already holding a Finals
+// slot are filtered out by the caller, so nobody can win a slot twice.
+function computeQuietLCQWinners(field, lclGames){
   lclGames = lclGames || 5;
-  const usedHandles=new Set();
-  excludeTeams.forEach(t=>t.squad.forEach(p=>usedHandles.add(hKey(p))));
-  let remaining=tournamentPool().filter(p=>!usedHandles.has(hKey(p)));
-  const quietTarget=lcqFieldTarget(remaining, 2);
-  const field=[];
-  remaining=fillFieldTeams(remaining, quietTarget, 2, field);
-  while(field.length<quietTarget){
-    const chunk=[makeFiller(), makeFiller()];
-    const t=buildTeam(chunk); t.loadout=randomLoadoutBonus(chunk.length); t.pow+=t.loadout; t.name=teamLabel(chunk); field.push(t);
-  }
-  if(field.length<2) return [];
-  // Same Round 1 as the interactive version: 6-game cumulative-points stage,
-  // top 50 by points survive to compete for slots.
-  simulateGames(field, 11, lcqRound1PointsForPlace, 1);
+  if(!field || field.length<2) return [];
+  // Same Round 1 as the interactive version: 11 games in reshuffled lobbies of
+  // up to 50, cumulative points, top 50 survive to compete for slots. It has to
+  // be the same lobby split, or the off-screen qualifier would score its teams
+  // on a different curve than the one the player just watched.
+  simulateGamesRandomLobbies(field, 11, 50, lcqRound1PointsForPlace, 1);
   let pool=field.slice().sort((a,b)=>b.stagePts-a.stagePts || b.stageElims-a.stageElims).slice(0,50);
   const winners=[];
   for(let g=1; g<=lclGames && pool.length>0; g++){
@@ -22011,10 +22267,23 @@ async function runMajorTournament(){
   let cameFromLcq=false;
   let lcqOtherWinners=[];
   let heatQualifiers45=[];
+  // The Last Chance field is the Major's own dropouts, so it can only be built
+  // once the Heats have decided who is already through — that is true even in
+  // the branch where you never reached the Heats yourself.
+  let lcqField=null;
 
   if(!passedPlayIn){
     ensureSkipButton();
-    const lcqResult=await runLastChanceQualifier('Play-In', you, teams, FMT.lclGames);
+    // The heats have to run first now: everyone they don't send through is a
+    // Last Chance entrant, and you can't fill the lobby before you know who
+    // that is.
+    const heats=seedHeats(advancedPlayIn, FMT.heats.length);
+    heats.forEach((heatTeams,hi)=>{ simulateGamesStopOnWin(heatTeams, FMT.heats[hi].games, heatsScoreForPlace, 3); });
+    heats.forEach((heatTeams,hi)=>{
+      heatQualifiers45=heatQualifiers45.concat([...heatQualifiers(heatTeams, FMT.heats[hi].cut)]);
+    });
+    lcqField=lastChanceField(teams, new Set(heatQualifiers45));
+    const lcqResult=await runLastChanceQualifier('Play-In', you, teams, lcqField, FMT.lclGames);
     if(!lcqResult.advanced){
       document.getElementById('finalSub').textContent=L().notPassedPlayInLCQ;
       finishMajorEliminatedAnim(you);
@@ -22022,13 +22291,6 @@ async function runMajorTournament(){
     }
     cameFromLcq=true;
     lcqOtherWinners=lcqResult.winners.filter(t=>t!==you);
-    // The heats still have to run for everyone who did clear Play-In, so the
-    // direct qualifiers are known before the Finals field is assembled.
-    const heats=seedHeats(advancedPlayIn, FMT.heats.length);
-    heats.forEach((heatTeams,hi)=>{ simulateGamesStopOnWin(heatTeams, FMT.heats[hi].games, heatsScoreForPlace, 3); });
-    heats.forEach((heatTeams,hi)=>{
-      heatQualifiers45=heatQualifiers45.concat([...heatQualifiers(heatTeams, FMT.heats[hi].cut)]);
-    });
   } else {
     const heats=seedHeats(advancedPlayIn, FMT.heats.length);
     const yourHeatIdx = heats.findIndex(h=>h.includes(you));
@@ -22057,7 +22319,8 @@ async function runMajorTournament(){
 
     if(!passedHeats){
       ensureSkipButton();
-      const lcqResult=await runLastChanceQualifier('Heat '+(yourHeatIdx+1), you, yourHeat, FMT.lclGames);
+      lcqField=lastChanceField(teams, new Set(heatQualifiers45));
+      const lcqResult=await runLastChanceQualifier('Heat '+(yourHeatIdx+1), you, teams, lcqField, FMT.lclGames);
       if(!lcqResult.advanced){
         document.getElementById('finalSub').textContent=L().notPassedHeatsLCQ;
         finishMajorEliminatedAnim(you);
@@ -22075,11 +22338,14 @@ async function runMajorTournament(){
     lcqOtherWinners.forEach(t=>{ if(!finalTeams.includes(t)) finalTeams.push(t); });
     const stillNeeded=FMT.lclGames-1-lcqOtherWinners.length;
     if(stillNeeded>0){
-      const extra=computeQuietLCQWinners(finalTeams, FMT.lclGames);
+      // Same Last Chance field, minus everyone who already holds a slot.
+      const extra=computeQuietLCQWinners(lastChanceField(lcqField, new Set(finalTeams)), FMT.lclGames);
       extra.forEach(t=>{ if(finalTeams.length<50 && !finalTeams.includes(t)) finalTeams.push(t); });
     }
   } else {
-    const lcqWinners=computeQuietLCQWinners(finalTeams, FMT.lclGames);
+    // You went straight through the Heats, so the Last Chance still runs — just
+    // off-screen — among the teams the Heats left behind.
+    const lcqWinners=computeQuietLCQWinners(lastChanceField(teams, new Set(heatQualifiers45)), FMT.lclGames);
     lcqWinners.forEach(t=>{ if(!finalTeams.includes(t)) finalTeams.push(t); });
   }
 
@@ -22140,14 +22406,18 @@ async function runMajorTournament(){
   // inside their region's Global Championship allocation — run after the
   // regional payout card, so the earnings for the Major itself are shown first.
   if(CARD_MODE && CARD_SET==='m2' && gfSlots){
-    if(youFinalRank<=gfSlots){
-      worlds=await runGlobalChampionship(you, youFinalRank, myGfRegion, null, finalTeams);
-    } else {
-      // Missed the region's direct allocation — the Global Championship Last
-      // Chance is the other way to Antwerp, and the rest of the region is in
-      // there fighting for the same seats.
-      const lc=await runGcLastChance(you, myGfRegion);
-      if(lc.advanced) worlds=await runGlobalChampionship(you, lc.rank, myGfRegion, lc.qualifiers);
+    // The Last Chance Major runs for the whole region right after the Grand
+    // Finals — it is a real event on the calendar, not something that only
+    // exists when you personally missed out. So it plays either way, and only
+    // then does anyone fly to Antwerp.
+    const directlyIn=youFinalRank<=gfSlots;
+    const seatHandles=[];
+    finalTeams.slice(0, gfSlots).forEach(t=>(t.squad||[]).forEach(p=>seatHandles.push(p.handle)));
+    const lc=await runGcLastChance(you, myGfRegion, {alreadyQualified:directlyIn, seatHandles});
+    if(directlyIn){
+      worlds=await runGlobalChampionship(you, youFinalRank, myGfRegion, lc.qualifiers, finalTeams);
+    } else if(lc.advanced){
+      worlds=await runGlobalChampionship(you, lc.rank, myGfRegion, lc.qualifiers);
     }
   }
 
@@ -22951,24 +23221,51 @@ function gcDrawDuos(entries, count, depth, taken){
 }
 
 function gcDrawSummitDuos(count, taken){
-  // The Summit field is the Major 1 winners from every region, so the pool is
-  // each region's Major 1 finals weighted by the slots that region actually had.
+  // The fifteen duos that actually came out of the Major 1 Summit are known —
+  // GC_SUMMIT_DUOS is that list. This used to ignore it completely and invent a
+  // field by drawing from each region's Major 1 *regional* finals instead, which
+  // seated duos that were never at the Summit (a Major 1 regional tenth place
+  // turning up on the Antwerp roster "via the Summit") while leaving out the
+  // ones that were. It also contradicted itself: the real list was still used to
+  // keep those players out of the Last Chance, so the game would say a duo was
+  // already at the LAN and then not seat them there.
+  const seen=taken||new Set();
   const picks=[];
+  GC_SUMMIT_DUOS.forEach(duo=>{
+    if(picks.length>=count) return;
+    const blocked=duo.filter(hd=>seen.has(_gcNorm(hd)));
+    if(blocked.length===duo.length) return;           // both already seated elsewhere
+    if(blocked.length){
+      // One of them was drafted by the player. The other still holds the seat —
+      // it travels with whoever they actually entered Major 2 alongside.
+      const solo=duo.find(hd=>!seen.has(_gcNorm(hd)));
+      const sub=solo && LOCKED_DUO_SUBS.get(_gcNorm(solo));
+      if(!sub) return;
+      const pair=sub.map(pl=>pl.handle);
+      if(pair.some(hd=>seen.has(_gcNorm(hd)))) return;
+      pair.forEach(hd=>seen.add(_gcNorm(hd)));
+      picks.push(pair);
+      return;
+    }
+    duo.forEach(hd=>seen.add(_gcNorm(hd)));
+    picks.push(duo);
+  });
+  if(picks.length>=count) return picks.slice(0, count);
+
+  // Only reached when the real list cannot fill the allocation — the player
+  // drafted one of those duos, so a seat opened up. Fill it the way the rest of
+  // the bracket is filled: from the Major 1 regional finals, weighted by the
+  // slots each region actually had.
   const regions=Object.keys(SUMMIT_SLOTS);
   const perRegion={};
   regions.forEach(r=>{ perRegion[r]=gcRegionFinals('m1', r); });
-  const totalSlots=regions.reduce((s,r)=>s+(SUMMIT_SLOTS[r]||0),0) || 1;
-  regions.forEach(r=>{
-    const share=Math.round(count*(SUMMIT_SLOTS[r]||0)/totalSlots);
-    if(share>0) picks.push(...gcDrawDuos(perRegion[r], share, 12, taken));
-  });
-  // rounding can leave the count a seat short or long
-  while(picks.length>count) picks.pop();
   let guard=0;
-  while(picks.length<count && guard++<40){
-    const r=regions[Math.floor(Math.random()*regions.length)];
-    const extra=gcDrawDuos(perRegion[r], 1, 12, taken)[0];
-    if(extra && !picks.some(d=>d[0]===extra[0])) picks.push(extra);
+  while(picks.length<count && guard++<60){
+    const totalSlots=regions.reduce((s,r)=>s+(SUMMIT_SLOTS[r]||0),0) || 1;
+    let r=Math.random()*totalSlots, reg=regions[0];
+    for(const x of regions){ r-=(SUMMIT_SLOTS[x]||0); if(r<=0){ reg=x; break; } }
+    const extra=gcDrawDuos(perRegion[reg], 1, 12, seen)[0];
+    if(extra) picks.push(extra);
   }
   return picks;
 }
@@ -22978,22 +23275,54 @@ function buildGlobalChampionshipField(you, region, lcqWinners, regionalFinal){
   // One shared set of handles, so nobody is seated twice across the three routes.
   const seated=new Set();
   (you.squad||[]).forEach(p=>seated.add(_gcNorm(p.handle)));
-  (regionalFinal||[]).slice(0, MAJOR2_GC_SLOTS[region]||0)
-    .forEach(t=>(t.squad||[]).forEach(p=>seated.add(_gcNorm(p.handle))));
+  // The Summit is seated first because it happened first: Major 1's LAN decided
+  // its fifteen before Major 2's regional finals were played. Reserving the
+  // region's Major 2 places up front — which is what used to happen here — had
+  // it backwards, and cost a Summit duo the seat it had already won whenever it
+  // also finished high in the simulated Major 2 final. The roll-down runs the
+  // other way: you keep the seat you qualified for first, and the later event's
+  // place passes down to whoever is not going yet.
   gcDrawSummitDuos(SUMMIT_GC_SLOTS, seated).forEach(d=>field.push(gcBuildTeam(d, null, 'summit', 88)));
   Object.keys(MAJOR2_GC_SLOTS).forEach(reg=>{
     // Your own region's seats come from the Grand Finals you just played, so the
     // duos flying out with you are the ones your run produced.
     if(reg===region && regionalFinal && regionalFinal.length) return;
-    const entries=gcRegionFinals('m2', reg);
     const slots=MAJOR2_GC_SLOTS[reg]||0;
-    const duos = entries.length ? gcDrawDuos(entries, slots, 18, seated) : (GC_MAJOR2_DUOS[reg]||[]);
+    // GC_MAJOR2_DUOS is who actually took each region's Major 2 seats, and it is
+    // NOT simply the top N of that region's final: a duo already qualified from
+    // the Summit keeps its finishing position and its prize money, but cannot
+    // take a second seat, so the seat rolls down to the next duo without one.
+    // In Europe that moved six of the nine seats — Sky & Scroll, Shxrk & t3eny,
+    // SwizzY & Pixie, Focus & Th0masHD and Tjino & PabloWingu all finished top
+    // nine and all were already going. Drawing from the standings instead of
+    // reading this list put those duos on the plane twice and left the ones who
+    // really qualified at home.
+    const real=(GC_MAJOR2_DUOS[reg]||[]).filter(d=>!d.some(hd=>seated.has(_gcNorm(hd))));
+    const duos=real.slice(0, slots);
+    duos.forEach(d=>d.forEach(hd=>seated.add(_gcNorm(hd))));
+    // Only if that list cannot fill the allocation do we fall back to the draw.
+    if(duos.length<slots){
+      const entries=gcRegionFinals('m2', reg);
+      if(entries.length) duos.push(...gcDrawDuos(entries, slots-duos.length, 18, seated));
+    }
     duos.forEach(d=>field.push(gcBuildTeam(d, reg, 'm2', 84)));
   });
 
   if(regionalFinal && regionalFinal.length){
     const slots=MAJOR2_GC_SLOTS[region]||0;
-    regionalFinal.filter(t=>t!==you).slice(0, Math.max(0, slots-1)).forEach(t=>{
+    // Same rule inside your own region: a duo that is already on the plane from
+    // the Summit finished where it finished, but its seat rolls down to the next
+    // one that isn't going yet. Without this the simulated final could seat a
+    // Summit duo a second time, since the bots are drafted from the same pool.
+    const holdsSeat=t=>(t.squad||[]).some(pl=>seated.has(_gcNorm(pl.handle)));
+    const taking=[];
+    regionalFinal.filter(t=>t!==you).forEach(t=>{
+      if(taking.length>=Math.max(0, slots-1)) return;
+      if(holdsSeat(t)) return;
+      (t.squad||[]).forEach(pl=>seated.add(_gcNorm(pl.handle)));
+      taking.push(t);
+    });
+    taking.forEach(t=>{
       t.gcRoute='m2'; t.summitRegion=region;
       field.push(t);
     });
@@ -23068,19 +23397,35 @@ function renderGcFieldCard(field){
 // everybody holding a Major card qualifies for that. So the field here is the
 // 1,000 teams Round 1 feeds into — real cards from the region first, then open
 // qualifier entrants, exactly as the bracket fills up in practice.
-const GCLC_R2_FIELD=1000, GCLC_R3_FIELD=300, GCLC_FINALS_FIELD=25;
+// Two qualifiers, three rounds each, and BOTH feed the same Finals: the top 25
+// of Qualifier 1 plus the top 25 of Qualifier 2 make a 50-duo, six-game Finals.
+// The event used to model a single qualifier, which is why its Finals only ever
+// had 25 teams in it.
+const GCLC_R2_FIELD=1000, GCLC_R3_FIELD=300, GCLC_QUAL_CUT=25;
+const GCLC_QUALIFIERS=2;
+const GCLC_FINALS_FIELD=GCLC_QUAL_CUT*GCLC_QUALIFIERS;   // 50
 const GCLC_ROUND_GAMES=11, GCLC_FINALS_GAMES=6;
 
-function gclcBuildField(you, region, size){
+// `you` may be null — Qualifier 2 is built and played without the player when
+// they already came through Qualifier 1.
+// The Last Chance Major is open to the whole region — including everyone who
+// already holds a Global Championship seat. This used to lock them out on the
+// grounds that they had "nothing left to play for", which was wrong twice over:
+// the event pays real money down to 50th ($20,000 for the win, $200 at the
+// bottom), so a qualified team has every reason to enter, and entering costs
+// nobody anything because a team that is already going cannot take a second
+// seat — its place rolls down. Keeping them out produced a field of nothing but
+// unknowns and quietly deleted the region's best duos from their own event.
+function gclcBuildField(you, region, size, excludeHandles){
   const used=new Set();
-  you.squad.forEach(p=>used.add(hKey(p)));
-  const field=[you];
-  // Real players from the region who are not already on the LAN roster.
-  const onLan=new Set();
-  GC_SUMMIT_DUOS.forEach(d=>d.forEach(hd=>onLan.add(_gcNorm(hd))));
-  Object.values(GC_MAJOR2_DUOS).forEach(list=>list.forEach(d=>d.forEach(hd=>onLan.add(_gcNorm(hd)))));
+  if(you) you.squad.forEach(p=>used.add(hKey(p)));
+  const field=you ? [you] : [];
+  // excludeHandles are duos already seated in THIS Finals lobby from the other
+  // qualifier — nobody plays the same Finals twice. Holding a LAN seat is not a
+  // reason to be excluded.
+  const already=new Set((excludeHandles||[]).map(_gcNorm));
   const avail=cardRosterPlayers().filter(p=>
-    p.region===region && !used.has(hKey(p)) && !onLan.has(_gcNorm(p.handle)));
+    p.region===region && !used.has(hKey(p)) && !already.has(_gcNorm(p.handle)));
   fillFieldTeams(avail, size-field.length, 2, field);
   while(field.length<size){
     const chunk=[makeFiller(), makeFiller()];
@@ -23090,12 +23435,40 @@ function gclcBuildField(you, region, size){
   return field;
 }
 
+const gclcByPoints=(a,b)=>b.stagePts-a.stagePts || b.stageElims-a.stageElims;
+
+// A whole qualifier resolved with no UI — used for Qualifier 2 when the player
+// already got through Qualifier 1, and for both of them when the player is out
+// of the event entirely but its seats still have to be handed to somebody.
+function computeQuietGclcQualifier(region, excludeHandles){
+  const field=gclcBuildField(null, region, GCLC_R2_FIELD, excludeHandles);
+  simulateGamesRandomLobbies(field, GCLC_ROUND_GAMES, 50, lcqRound1PointsForPlace, 1);
+  let pool=field.slice().sort(gclcByPoints).slice(0, GCLC_R3_FIELD);
+  simulateGamesRandomLobbies(pool, GCLC_ROUND_GAMES, 50, lcqRound1PointsForPlace, 1);
+  return pool.slice().sort(gclcByPoints).slice(0, GCLC_QUAL_CUT);
+}
+
+// Hand out the region's remaining Global Championship seats. A duo that already
+// holds one — the player who came through the Grand Finals, most obviously —
+// keeps its finishing position but cannot take a second seat, so the seat rolls
+// down to the next duo that isn't going yet, and keeps rolling if that one is
+// already in too.
+function gclcAwardSeats(ranked, slots, holdsSeat){
+  const seats=[];
+  for(const t of ranked){
+    if(seats.length>=slots) break;
+    if(holdsSeat(t)) continue;
+    seats.push(t);
+  }
+  return seats;
+}
+
 // One qualifier round: eleven matches in reshuffled 50-team lobbies, resolved
 // to a standings card rather than played out live — a thousand teams over
 // eleven games is not something worth watching row by row.
 async function gclcRound(you, field, title, cut, note){
   simulateGamesRandomLobbies(field, GCLC_ROUND_GAMES, 50, lcqRound1PointsForPlace, 1);
-  const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || b.stageElims-a.stageElims);
+  const ranked=field.slice().sort(gclcByPoints);
   const rank=ranked.indexOf(you)+1;
   const passed=rank<=cut;
   const shell=createStageCardShell(title);
@@ -23105,45 +23478,130 @@ async function gclcRound(you, field, title, cut, note){
   return {ranked, rank, passed};
 }
 
-async function runGcLastChance(you, region){
+// The Last Chance Major is the region's event, not the player's personal
+// consolation bracket: it runs after the Grand Finals whether or not the player
+// already has a seat, and its Finals hands out the region's remaining Global
+// Championship places either way.
+//
+// opts.alreadyQualified — the player took a seat in the Grand Finals. They may
+//   still enter, but cannot win a second seat (see gclcAwardSeats).
+// opts.seatHandles      — handles that already hold a seat, so they neither
+//   enter as bots nor take a seat if they somehow end up in the standings.
+async function runGcLastChance(you, region, opts){
+  opts=opts||{};
   const slots=GCLC_GC_SLOTS[region]||0;
+  const alreadyQualified=!!opts.alreadyQualified;
+  // Everyone who already has a seat in Antwerp, by whatever route: the duos off
+  // the Major 1 Summit, this region's Major 2 qualifiers, and whoever just took
+  // the region's places in the Grand Finals you played. They all enter and they
+  // all get paid for where they finish — they simply cannot win a second seat.
+  const seatHandles=new Set((opts.seatHandles||[]).map(_gcNorm));
+  GC_SUMMIT_DUOS.forEach(d=>d.forEach(hd=>seatHandles.add(_gcNorm(hd))));
+  (GC_MAJOR2_DUOS[region]||[]).forEach(d=>d.forEach(hd=>seatHandles.add(_gcNorm(hd))));
+  const holdsSeat=t=>{
+    if(t===you) return alreadyQualified;
+    return (t.squad||[]).some(p=>seatHandles.has(_gcNorm(p.handle)));
+  };
+  // Nobody is barred from entering; this only stops a duo playing both qualifiers.
+  const exclude=[];
+
   const container=document.getElementById('majorStages');
   const intro=document.createElement('div');
   intro.className='stage-card';
   intro.innerHTML=`<h4>${L().gclcTitle}</h4>
-    <div class="stage-detail">${L().gclcIntro(regionName(region), slots)}</div>`;
+    <div class="stage-detail">${alreadyQualified
+      ? L().gclcIntroQualified(regionName(region), slots)
+      : L().gclcIntro(regionName(region), slots)}</div>`;
   container.appendChild(intro);
   intro.scrollIntoView({block:'center', behavior:'smooth'});
   await sleep(600);
   ensureSkipButton();
 
-  const r2Field=gclcBuildField(you, region, GCLC_R2_FIELD);
-  const r2=await gclcRound(you, r2Field, L().gclcRound2Title(r2Field.length), GCLC_R3_FIELD,
-    L().gclcCutNote(GCLC_R3_FIELD));
-  if(!r2.passed){ removeSkipButton(); return {advanced:false, stage:2, rank:r2.rank, total:r2Field.length}; }
+  // Both qualifiers are three rounds. The player plays them in order and stops
+  // as soon as one of them puts them in the Finals; whichever they did not play
+  // is resolved quietly so the other 25 Finals seats are real results too.
+  const qualifierTops=[];
+  let youIn=false, lastRank=0, lastTotal=0, lastStage=2;
+  // A duo that has already taken a Finals seat is done — it does not enter the
+  // next qualifier. Carrying its handles forward is also what keeps the two
+  // 25-team blocks from overlapping: both qualifiers draw from the same regional
+  // card pool, so without this the same duo turns up in both and gets thrown out
+  // when the Finals lobby is assembled, leaving a short field.
+  const claimed=exclude.slice();
+  const claim=list=>list.forEach(t=>(t.squad||[]).forEach(p=>claimed.push(p.handle)));
+  for(let q=1; q<=GCLC_QUALIFIERS; q++){
+    if(youIn){
+      const quiet=computeQuietGclcQualifier(region, claimed);
+      qualifierTops.push(quiet); claim(quiet); continue;
+    }
+    const label=L().gclcQualLabel(q);
+    const r2Field=gclcBuildField(you, region, GCLC_R2_FIELD, claimed);
+    const r2=await gclcRound(you, r2Field, label+' · '+L().gclcRound2Title(r2Field.length),
+      GCLC_R3_FIELD, L().gclcCutNote(GCLC_R3_FIELD));
+    lastRank=r2.rank; lastTotal=r2Field.length; lastStage=2;
+    if(!r2.passed){
+      // You are out of this qualifier, but it still sends its own 25 through.
+      const top=r2.ranked.slice(0, GCLC_QUAL_CUT);
+      qualifierTops.push(top); claim(top); continue;
+    }
 
-  const r3Field=r2.ranked.slice(0, GCLC_R3_FIELD);
-  const r3=await gclcRound(you, r3Field, L().gclcRound3Title(r3Field.length), GCLC_FINALS_FIELD,
-    L().gclcCutNote(GCLC_FINALS_FIELD));
-  if(!r3.passed){ removeSkipButton(); return {advanced:false, stage:3, rank:r3.rank, total:r3Field.length}; }
+    const r3Field=r2.ranked.slice(0, GCLC_R3_FIELD);
+    const r3=await gclcRound(you, r3Field, label+' · '+L().gclcRound3Title(r3Field.length),
+      GCLC_QUAL_CUT, L().gclcCutNote(GCLC_QUAL_CUT));
+    lastRank=r3.rank; lastTotal=r3Field.length; lastStage=3;
+    const top=r3.ranked.slice(0, GCLC_QUAL_CUT);
+    qualifierTops.push(top); claim(top);
+    if(r3.passed) youIn=true;
+  }
 
-  // Finals: 25 duos, six matches, played live — this is the one that decides
-  // who takes the region's remaining Global Championship seats.
-  const finals=r3.ranked.slice(0, GCLC_FINALS_FIELD);
-  const zones=await showFinalsLandingPicker(finals, you);
+  // Finals: 25 from each qualifier, six matches. Dedupe by handle rather than by
+  // object — the landing picker rebuilds the lobby on the same rule, so a pair
+  // that slipped through here would silently vanish from the field there.
+  const finals=[], inFinals=new Set();
+  qualifierTops.forEach(list=>list.forEach(t=>{
+    if(finals.length>=GCLC_FINALS_FIELD) return;
+    const handles=(t.squad||[]).map(p=>_gcNorm(p.handle));
+    if(handles.some(h=>inFinals.has(h))) return;
+    handles.forEach(h=>inFinals.add(h));
+    finals.push(t);
+  }));
+  const zones = youIn ? await showFinalsLandingPicker(finals, you) : null;
   const shell=createStageCardShell(L().gclcFinalsTitle(finals.length, GCLC_FINALS_GAMES));
-  await simulateGamesLive(finals, GCLC_FINALS_GAMES, pointsForPlace, 4, 'stage', 0, null, zones,
-    {stageName:L().liveGclcFinals});
+  if(youIn){
+    await simulateGamesLive(finals, GCLC_FINALS_GAMES, pointsForPlace, 4, 'stage', 0, null, zones,
+      {stageName:L().liveGclcFinals});
+  } else {
+    // Player is out, but the event still decides who takes the seats.
+    simulateGames(finals, GCLC_FINALS_GAMES, pointsForPlace, 4);
+  }
   const ranked=summitStandings(finals);
+  const seats=gclcAwardSeats(ranked, slots, holdsSeat);
+  // Highlight who really got a seat rather than the top N. A duo that was
+  // already qualified keeps its finishing position and whatever the placement
+  // pays, but the seat itself passed down — so the table has to show the seat
+  // sitting further down than the standings order would suggest.
+  const seatSet=new Set(seats);
+  const seatCut=seats.length ? ranked.indexOf(seats[seats.length-1])+1 : slots;
+
+  if(!youIn){
+    finalizeStageCard(shell, 0, finals.length, 0, false, false, L().gclcOutNote);
+    await revealStandings(shell, ranked, you, seatCut, null, seatSet, 'GCLC');
+    removeSkipButton();
+    return {advanced:false, stage:lastStage, rank:lastRank, total:lastTotal, qualifiers:seats};
+  }
+
   const rank=ranked.indexOf(you)+1;
-  const advanced=rank<=slots;
+  const wonSeat=seats.includes(you);
+  const rolledDown=!wonSeat && alreadyQualified && rank<=slots;
   await revealStageLog(you, shell, true);
-  finalizeStageCard(shell, rank, finals.length, you.stagePts, advanced, you.gotVR,
-    advanced ? L().gclcPass(rank, slots) : L().gclcFail(slots));
-  await revealStandings(shell, ranked, you, slots);
+  const note = wonSeat ? L().gclcPass(rank, slots)
+    : rolledDown ? L().gclcSeatRolls(rank, (seats[seats.length-1]||{}).name || '—')
+    : alreadyQualified ? L().gclcAlreadyIn
+    : L().gclcFail(slots);
+  finalizeStageCard(shell, rank, finals.length, you.stagePts, wonSeat||alreadyQualified, you.gotVR, note);
+  await revealStandings(shell, ranked, you, seatCut, null, seatSet, 'GCLC');
   removeSkipButton();
-  return {advanced, rank, total:finals.length, stage:'finals',
-          qualifiers:ranked.slice(0, slots)};
+  return {advanced:wonSeat, rank, total:finals.length, stage:'finals', qualifiers:seats};
 }
 
 async function runGlobalChampionship(you, regionRank, region, lcqWinners, regionalFinal){
@@ -23230,7 +23688,7 @@ function buildTeam(squadArr){
   // Capping the amount synergy can add to power (not the displayed number,
   // which still shows the full total) keeps it a meaningful edge without
   // letting it single-handedly double a squad's power.
-  const powSynergy=Math.min(syn.bonus, 40);
+  const powSynergy=Math.min(syn.bonus, SYN_POW_CAP);
   let pow = Math.round((avg+powSynergy)*regionMult);
   if(CARD_MODE){
     // In card mode the six attributes drive power: a squad's OVR average sets the
@@ -23238,7 +23696,7 @@ function buildTeam(squadArr){
     // is worth real points, so drafting complementary cards beats stacking clones.
     const ovrAvg=squadArr.reduce((s,p)=>s+attrsFor(p).ovr,0)/squadArr.length;
     const roles=new Set(squadArr.map(p=>attrsFor(p).roleKey));
-    const roleBonus=(roles.size-1)*4;
+    const roleBonus=(roles.size-1)*ROLE_BONUS_STEP;
     pow = Math.round((ovrAvg+powSynergy+roleBonus)*regionMult);
   }
   return {squad:squadArr, syn, pow, regionMult};
@@ -23330,10 +23788,9 @@ function assignLandingZones(teams){
   const you=teams.find(t=>t.isYou);
   const chosenZone = (you && chosenLanding && chosenLanding.zone) ? chosenLanding.zone : null;
 
-  // Build the pool of available zone slots (2 per zone).
-  const slotPool=[];
-  ALL_LANDING_ZONES.forEach((z,idx)=>{ slotPool.push(idx,idx); });
-  for(let i=slotPool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [slotPool[i],slotPool[j]]=[slotPool[j],slotPool[i]]; }
+  // Zone slots, weighted by how often each spot really gets dropped on, and
+  // sized to this lobby so the map doesn't come out half empty.
+  const slotPool=landingSlotPool(teams.length);
 
   if(chosenZone){
     const chosenIdx=ALL_LANDING_ZONES.indexOf(chosenZone);
@@ -23436,12 +23893,96 @@ function pickWeighted(pool, weightFn, count){
 // down for smaller squad sizes keeps duo's calibration (already tuned per
 // feedback) while fixing squad's tendency to produce 5-7 wins out of 12 for
 // a merely-strong team, which real FNCS never looks like.
-const DUEL_POW_EXPONENT_BY_MODE={2:5, 3:4, 4:3};
+// How decisively a power edge settles a fight, and how well it keeps you out of
+// fights in the first place. Both were tuned against the real Grand Finals
+// results the card sets are built from (CARD_M*_GF_RAW): a 50-team final where
+// the winner takes ~4 Victory Royales in 12 games and averages 8th place, while
+// the bottom of the field scores almost nothing. The old values produced a
+// field far too flat — its winner averaged 16th and won barely one game.
+// Measured against the two real Grand Finals in the card sets (50 teams, 12
+// games, complete fields — so a like-for-like comparison, unlike the Play-In
+// arrays which are the top 150 of a field of thousands):
+//
+//                #1 pts   wins   avg place   elims/match   #10   #25   #50   top:bottom
+//   real m1         738      2        6.83          4.75   380   222    28        26x
+//   real m2         732      4        8.00          4.50   376   240     8        92x
+//   old 5 / 1       514   0.85       16.50          3.77   339   252    80         6x
+//   new 15 / 16     721   3.08        8.40          4.34   386   236    31        23x
+//
+// The old numbers were realistic in aggregate — field total points and the
+// league-wide elimination rate were already almost exact — but far too flat.
+// Its winner averaged 16th place and barely one Victory Royale in twelve games,
+// and its last-placed team still scored 80 points where a real one scores 8-28.
+// Raising both knobs pulls the shape of the standings onto the real one without
+// touching the scoring tables, which were never the problem.
+//
+// Trio and Squad have no real FNCS results to fit against — those modes are
+// explicitly fantasy — so their exponents keep the original relative ordering,
+// scaled by the same factor as Duo.
+const DUEL_POW_EXPONENT_BY_MODE={2:7, 3:6, 4:4};
+
+// Per-game form. Measured against all fourteen real Grand Finals, every other
+// number lined up — the winner's points, Victory Royales, and the whole body of
+// the table were inside 5% — but one did not: the winner's average placement.
+// Real winners average 12th, the simulation's averaged 8th, and no value of the
+// two knobs above moved it, because the mean was never the problem.
+//
+// The real shape is boom-or-bust: a winner takes a couple of Victory Royales
+// and rides the middle of the pack the rest of the time, which averages out to
+// 12th while the points come from the wins. The simulation gave every team the
+// exact same power in all twelve games, so its winner placed ~8th in every one
+// of them — same points, wrong shape, and far too steady.
+//
+// So each team rolls fresh form for each game: bad rotations, a contested drop,
+// a zone that never comes. It changes no team's average strength, only how much
+// any single game deviates from it.
+//
+// Measured, it helps the open stages and hurts the finals, so like the survival
+// bias it is set per stage type. In the Play-In it pulls the leader's Victory
+// Royales from 4.1 down onto the real 3.0; in a Grand Finals any amount of it
+// makes the fit worse across the board — 0.10 already costs five points of
+// accuracy, 0.28 costs twenty-three — because a final is 50 teams that are all
+// good, and noise there just flattens the table it took real separation to
+// shape. Finals stay deterministic.
+const FORM_SPREAD_OPEN=0.16, FORM_SPREAD_FINALS=0;
+let FORM_SPREAD=FORM_SPREAD_OPEN;
+function gameForm(){
+  // three uniforms average to a bell, bounded to 1 +/- FORM_SPREAD and cheap
+  return 1 + ((Math.random()+Math.random()+Math.random())/3 - 0.5) * 2 * FORM_SPREAD;
+}
+
+// How hard a power edge keeps you out of fights. This cannot be one number,
+// because the real results say the same players behave completely differently
+// depending on the stage:
+//
+//                       elims/match   avg place
+//   Play-In leader          9.8-12.8   16.9-17.8
+//   Grand Finals leader      4.5-4.75    6.8-8.0
+//
+// The open stages are a kill race across a huge, loose field — even the leaders
+// farm eliminations and die mid-pack. The finals are played for placement. A
+// single global value fits one and wrecks the other: tuned for the finals, the
+// best duo stopped being dragged into fights at all and won 16 of 22 Play-In
+// games where the real leader wins 3.
+//
+// Which one applies is read off the scoring table the stage runs on — every
+// placement-driven final scores on pointsForPlace, every qualifier does not —
+// so no call site has to remember to set it.
+const SURVIVAL_BIAS_OPEN=1, SURVIVAL_BIAS_FINALS=16;
+let SURVIVAL_BIAS=SURVIVAL_BIAS_OPEN;
+function applyStageBias(pointsFn){
+  const finals = (pointsFn===pointsForPlace);
+  SURVIVAL_BIAS = finals ? SURVIVAL_BIAS_FINALS : SURVIVAL_BIAS_OPEN;
+  FORM_SPREAD   = finals ? FORM_SPREAD_FINALS   : FORM_SPREAD_OPEN;
+}
 function simulateGame(teams){
   if(teams.length===0) return [];
   let alive=teams.slice();
   const eliminationOrder=[]; // first eliminated pushed first
-  alive.forEach(t=>{ t._elims=0; t._feed=[]; });
+  // _pf is this game's power: the squad's real strength shaded by its form for
+  // this game. Everything below reads _pf, never pow, so the roll applies to
+  // fighting, surviving and chaining alike.
+  alive.forEach(t=>{ t._elims=0; t._feed=[]; t._pf=Math.max(1, t.pow*gameForm()); });
   const lobbySquadSize=(teams[0].squad && teams[0].squad.length) || 2;
   const DUEL_POW_EXPONENT=DUEL_POW_EXPONENT_BY_MODE[lobbySquadSize]||5;
   let round=0;
@@ -23456,17 +23997,24 @@ function simulateGame(teams){
     if(fighterCount<2) fighterCount=2;
     if(fighterCount>cap) fighterCount=cap;
     // Weaker teams (lower pow) are disproportionately more likely to be the
-    // ones caught out and forced into a fight this round. The softening term
-    // scales with the field's own average power, so this bias works the same
-    // way regardless of squad size (duo/trio/squad have very different pow
-    // scales) instead of a fixed constant that only mattered at duo scale.
-    const avgPow = alive.reduce((s,t)=>s+t.pow,0)/alive.length || 1;
-    const fighters=pickWeighted(alive, t=>1/(t.pow+avgPow*0.2), fighterCount);
+    // ones caught out and forced into a fight this round — this is what a good
+    // squad's rotations and map awareness buy them, and it is the main thing
+    // that decides average placement.
+    //
+    // Weighting by 1/(pow + a constant) barely separated anyone: across a
+    // Grand Finals field, power runs about 83 to 104, so the best team was only
+    // ~20% less likely to be dragged into a fight than the worst. Real finals
+    // are nowhere near that flat. Weighting by (fieldAverage / pow) raised to
+    // SURVIVAL_BIAS makes the gap meaningful and, because it is a ratio against
+    // the field's own average, it behaves identically at duo/trio/squad power
+    // scales.
+    const avgPow = alive.reduce((s,t)=>s+t._pf,0)/alive.length || 1;
+    const fighters=pickWeighted(alive, t=>Math.pow(avgPow/Math.max(t._pf,1), SURVIVAL_BIAS), fighterCount);
     for(let i=fighters.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [fighters[i],fighters[j]]=[fighters[j],fighters[i]]; }
     for(let i=0;i<fighters.length;i+=2){
       const a=fighters[i], b=fighters[i+1];
       if(!alive.includes(a) || !alive.includes(b)) continue; // already caught in a chain this round
-      const wa=Math.pow(Math.max(a.pow,1),DUEL_POW_EXPONENT), wb=Math.pow(Math.max(b.pow,1),DUEL_POW_EXPONENT);
+      const wa=Math.pow(Math.max(a._pf,1),DUEL_POW_EXPONENT), wb=Math.pow(Math.max(b._pf,1),DUEL_POW_EXPONENT);
       const winner = Math.random()*(wa+wb) < wa ? a : b;
       const loser = winner===a ? b : a;
       const loserSize = (loser.squad && loser.squad.length) || 1;
@@ -23480,11 +24028,11 @@ function simulateGame(teams){
       // this same round instead of getting exactly one kill and stopping —
       // this is how dominant real squads rack up multi-kill games.
       let streaker=winner, chains=0;
-      while(chains<3 && alive.length>1 && Math.random()<clamp(streaker.pow/460,0.05,0.4)){
+      while(chains<3 && alive.length>1 && Math.random()<clamp(streaker._pf/460,0.05,0.4)){
         const candidates=alive.filter(t=>t!==streaker);
         if(!candidates.length) break;
-        const victim=pickWeighted(candidates, t=>1/(t.pow+30), 1)[0];
-        const sw=Math.pow(Math.max(streaker.pow,1),DUEL_POW_EXPONENT), vw=Math.pow(Math.max(victim.pow,1),DUEL_POW_EXPONENT);
+        const victim=pickWeighted(candidates, t=>1/(t._pf+30), 1)[0];
+        const sw=Math.pow(Math.max(streaker._pf,1),DUEL_POW_EXPONENT), vw=Math.pow(Math.max(victim._pf,1),DUEL_POW_EXPONENT);
         const chainWinner = Math.random()*(sw+vw)<sw ? streaker : victim;
         const chainLoser = chainWinner===streaker ? victim : streaker;
         const chainLoserSize=(chainLoser.squad && chainLoser.squad.length) || 1;
@@ -23691,8 +24239,6 @@ function renderLobby(teams, you){
   window.lastLobbyTeams=teams;
   window._youTeam=you||teams.find(t=>t.isYou);
   applyLobbyTheme();
-  const btn=document.getElementById('statCompareOpenBtn');
-  if(btn) btn.style.display = (CARD_MODE && teams.some(t=>t.mstats)) ? 'inline-block' : 'none';
   const body=document.getElementById('lobbyBody');
   const showDrop=teams.some(t=>t && t.landingZone);
   const headRow=body.parentElement.querySelector('thead tr');
@@ -23737,8 +24283,6 @@ function renderLobby(teams, you){
 function showMatchHistory(team, preferStage){
   window._mhTeam=team;
   window._mhPreferStage=!!preferStage;
-  const cbtn=document.getElementById('mhCompareBtn');
-  if(cbtn) cbtn.style.display = (CARD_MODE && team.mstats) ? 'block' : 'none';
   const modal=document.getElementById('matchHistoryModal');
   const nameEl=document.getElementById('matchHistoryTeamName');
   const rowsEl=document.getElementById('matchHistoryRows');
@@ -23915,112 +24459,6 @@ function fmtStat(kind, v){
   return fmtNum(v);
 }
 
-let cmpTeams=[], cmpLeft={team:0, player:null}, cmpRight={team:1, player:null};
-
-function openStatCompare(rivalTeam){
-  const teams=(window.lastLobbyTeams||[]).filter(t=>t.mstats);
-  if(!teams.length){ return; }
-  cmpTeams=teams;
-  const youIdx=Math.max(0, teams.findIndex(t=>t.isYou));
-  let rivalIdx=rivalTeam ? teams.indexOf(rivalTeam) : -1;
-  if(rivalIdx<0 || rivalIdx===youIdx) rivalIdx = youIdx===0 ? (teams.length>1?1:0) : 0;
-  cmpLeft={team:youIdx, player:null};
-  cmpRight={team:rivalIdx, player:null};
-  document.getElementById('statCompareModal').style.display='flex';
-  renderStatCompare();
-}
-function closeStatCompare(){ document.getElementById('statCompareModal').style.display='none'; }
-
-function cmpSidePicker(side){
-  const sel=cmpTeams[ (side==='L'?cmpLeft:cmpRight).team ];
-  const cur=(side==='L'?cmpLeft:cmpRight);
-  const sq=sel.squad||[];
-  let html='<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:6px;">';
-  html+=`<button onclick="setCmpPlayer('${side}',null)" style="${cmpChipStyle(cur.player===null)}">${L().statCompareWhole}</button>`;
-  sq.forEach((p,i)=>{
-    html+=`<button onclick="setCmpPlayer('${side}',${i})" style="${cmpChipStyle(cur.player===i)}">${p.handle}</button>`;
-  });
-  html+='</div>';
-  return html;
-}
-function cmpChipStyle(active){
-  return 'border:1px solid '+(active?'var(--accent)':'var(--line)')+';background:'+(active?'rgba(0,176,144,.12)':'transparent')+
-    ';color:'+(active?'var(--accent)':'var(--ink-dim)')+';border-radius:12px;padding:3px 9px;font-size:10px;font-weight:700;cursor:pointer;';
-}
-function setCmpPlayer(side, idx){
-  if(side==='L') cmpLeft.player=idx; else cmpRight.player=idx;
-  renderStatCompare();
-}
-function setCmpTeam(side, idx){
-  idx=parseInt(idx,10);
-  if(side==='L'){ cmpLeft={team:idx, player:null}; } else { cmpRight={team:idx, player:null}; }
-  renderStatCompare();
-}
-
-function renderStatCompare(){
-  const wrap=document.getElementById('statCompareBody');
-  if(!wrap) return;
-  const A=cmpTeams[cmpLeft.team], B=cmpTeams[cmpRight.team];
-  if(!A || !B){ wrap.innerHTML='<div style="padding:20px;color:var(--ink-dim);">'+L().statNoData+'</div>'; return; }
-  const va=statsForView(A, cmpLeft.player), vb=statsForView(B, cmpRight.player);
-
-  const nameOf=(t,pi)=> pi==null ? t.name : (flagFor(t.squad[pi])+t.squad[pi].handle);
-  const rankOf=t=>cmpTeams.indexOf(t)+1;
-
-  const selOpts=(sideIdx)=>cmpTeams.map((t,i)=>`<option value="${i}" ${i===sideIdx?'selected':''}>#${i+1} ${t.name.replace(/<[^>]+>/g,'')}</option>`).join('');
-
-  let html='';
-  // header block, tracker style
-  html+=`<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
-    background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:12px;">
-    <div style="font-weight:900;font-size:16px;">🏆 #${rankOf(A)} <span style="color:var(--ink-dim);font-weight:600;font-size:12px;">vs #${rankOf(B)}</span></div>
-    <div style="font-weight:900;font-size:16px;color:var(--accent);">${fmtNum(A.totalPts||0)} ${L().statPointsWord}</div>
-  </div>`;
-  html+=`<div style="display:grid;grid-template-columns:1fr auto;gap:6px;font-size:11px;color:var(--ink-dim);margin-bottom:14px;">
-    <div>${L().statPlacementRow}</div><div class="num">${fmtNum(va.s.placementPts)}</div>
-    <div>${L().statElimRow}</div><div class="num">${fmtNum(va.s.elimPts)}</div>
-    <div>${L().statLastUpdate}</div><div class="num">${va.s.games}</div>
-  </div>`;
-
-  // column headers with team selectors
-  html+=`<div style="display:grid;grid-template-columns:minmax(120px,1.3fr) 1fr 1fr;gap:8px;align-items:start;
-    border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:6px;">
-    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);padding-top:6px;">${L().statColStat}</div>
-    <div style="text-align:center;">
-      <div style="font-size:12px;font-weight:800;color:var(--accent);word-break:break-word;">${nameOf(A,cmpLeft.player)}</div>
-      ${cmpSidePicker('L')}
-    </div>
-    <div style="text-align:center;">
-      <select onchange="setCmpTeam('R',this.value)" style="max-width:100%;background:var(--panel2);color:var(--ink);
-        border:1px solid var(--line);border-radius:5px;font-size:11px;padding:3px 5px;">${selOpts(cmpRight.team)}</select>
-      ${cmpSidePicker('R')}
-    </div>
-  </div>`;
-
-  // rows
-  STAT_ROWS.forEach((row,i)=>{
-    const [key,lab,get,kind,higherBetter]=row;
-    const a=get(va.s, va.w), b=get(vb.s, vb.w);
-    const eps=Math.max(Math.abs(a),Math.abs(b))*0.0005;
-    let aBetter=null;
-    if(Math.abs(a-b)>eps) aBetter = higherBetter ? a>b : a<b;
-    const arrow=v=>v===null?'<span style="color:var(--ink-dimmer);">–</span>'
-      :(v?'<span style="color:#4ade80;">▲</span>':'<span style="color:#ff4d6d;">▼</span>');
-    html+=`<div style="display:grid;grid-template-columns:minmax(120px,1.3fr) 1fr 1fr;gap:8px;align-items:center;
-      padding:6px 4px;font-size:12px;background:${i%2===0?'rgba(255,255,255,.025)':'transparent'};border-radius:4px;">
-      <div style="color:var(--ink-dim);">${L()[lab]}</div>
-      <div style="display:flex;justify-content:center;align-items:center;gap:6px;font-weight:700;">
-        <span>${fmtStat(kind,a)}</span>${arrow(aBetter)}
-      </div>
-      <div style="display:flex;justify-content:center;align-items:center;gap:6px;color:var(--ink-dim);font-weight:700;">
-        <span>${fmtStat(kind,b)}</span>${arrow(aBetter===null?null:!aBetter)}
-      </div>
-    </div>`;
-  });
-
-  html+=`<div style="margin-top:14px;font-size:11px;color:var(--ink-dimmer);line-height:1.6;border-top:1px solid var(--line);padding-top:10px;">${L().statCompareNote}</div>`;
-  wrap.innerHTML=html;
-}
 
 function clearLandingResultsMap(){
   const section=document.getElementById('landingResultsSection');
@@ -24125,14 +24563,48 @@ function renderCardGallery(){
     } else {
       inner=futCardHTML(p, {wide:true});
     }
+    box.dataset.cardIdx=i;
     box.innerHTML=inner+`<button onclick="toggleCardFlip(${i})" style="width:100%;margin-top:8px;
       background:transparent;border:1px solid var(--line);color:var(--ink-dim);border-radius:8px;
       padding:7px;font-size:11px;font-weight:800;letter-spacing:.03em;cursor:pointer;">
       ${flipped?L().cardFrontBtn:L().cardBackBtn}</button>`;
+    if(!flipped) wireCardPeek(box, p);
     wrap.appendChild(box);
   });
 }
 function toggleCardFlip(i){ cardFlipped[i]=!cardFlipped[i]; renderCardGallery(); }
+
+// A card can be inspected wherever it appears. During the draft there is no
+// team and no match stats yet, so the sheet shows what matters for the pick —
+// the real Grand Finals and Play-In lines and how the rating was arrived at —
+// and says the simulation stats arrive after the tournament. Once a run has
+// been played, the same click on a drafted player adds their match stats.
+function openCardPeek(pl){
+  if(!pl) return;
+  // Only attach the played team when this really is one of its players: the
+  // reference survives into the next draft, and a stale one would show somebody
+  // else's numbers under this name.
+  const yt=window._youTeam;
+  const team=(yt && (yt.squad||[]).includes(pl)) ? yt : null;
+  const idx=team ? team.squad.indexOf(pl) : 0;
+  const body=document.getElementById('cardPeekBody');
+  if(!body) return;
+  body.innerHTML=playerStatSheetHTML(team, idx, pl);
+  document.getElementById('cardPeekModal').style.display='flex';
+}
+function closeCardPeek(){
+  const m=document.getElementById('cardPeekModal');
+  if(m) m.style.display='none';
+}
+// Makes the card art inside a container open that player, without swallowing
+// the Pick button underneath it.
+function wireCardPeek(container, pl){
+  const art=container.querySelector('.fut-card');
+  if(!art) return;
+  art.style.cursor='zoom-in';
+  art.title=L().cardPeekHint;
+  art.onclick=()=>openCardPeek(pl);
+}
 
 // Osirion reports total eliminations for a duo; Fortnite Tracker reports averages
 // per match instead. Show whichever the source for this card actually carries.
@@ -24143,6 +24615,36 @@ function realExtraRows(r){
   if(r.avgElims!=null) out+=`<div class="srow"><span>${L().realAvgElims}</span><b>${r.avgElims.toFixed(2)}</b></div>`;
   if(r.avgPlace!=null) out+=`<div class="srow"><span>${L().realAvgPlace}</span><b>${r.avgPlace.toFixed(2)}</b></div>`;
   return out;
+}
+
+// The working behind the rating. Every other number on the card is a result the
+// player can look up; this is the one the site computes, and until now it was
+// the only one you had to take on faith.
+function ratingBreakdownHTML(p, glow){
+  const rp=p && p._ratingParts;
+  if(!rp || !rp.parts.length) return '';
+  const L_=L();
+  const rows=rp.parts.map(x=>{
+    const word=L_['brk_'+x.label+'_nth'];
+    const name=(L_['brk_'+x.label] || x.label) + (x.nth ? (word ? ' · '+word+' '+x.nth : ' '+x.nth) : '');
+    const of=x.field && x.field>50 ? '<span style="opacity:.55;"> / '+x.field+'</span>' : '';
+    return `<div class="srow" style="padding:3px 0;">
+      <span style="text-transform:none;letter-spacing:0;">${name} <b style="color:var(--ink);font-weight:700;">#${x.rank}</b>${of}</span>
+      <b style="font-variant-numeric:tabular-nums;">${x.score} × ${x.weight} = ${(x.score*x.weight).toFixed(1)}</b>
+    </div>`;
+  }).join('');
+  const shown=attrsFor(p).ovr;
+  const norm = Math.round(rp.blended)!==shown
+    ? `<div class="srow" style="padding:3px 0;border:0;">
+         <span style="text-transform:none;letter-spacing:0;opacity:.75;">${L_.brkNormalised}</span>
+         <b style="font-variant-numeric:tabular-nums;">${shown}</b></div>` : '';
+  return `<div class="fut-foot" style="font-size:9px;margin:12px 0 6px;color:${glow};">${L_.brkTitle}</div>
+    ${rows}
+    <div class="srow" style="padding:5px 0 3px;border-top:1px solid var(--line);margin-top:3px;">
+      <span style="text-transform:none;letter-spacing:0;">${L_.brkBlend}</span>
+      <b style="font-variant-numeric:tabular-nums;">${rp.sum.toFixed(1)} / ${rp.w.toFixed(2)} = ${rp.blended.toFixed(1)}</b>
+    </div>${norm}
+    <div class="region-note" style="margin-top:6px;font-size:9px;">${L_.brkNote}</div>`;
 }
 
 function playerStatSheetHTML(team, idx, p){
@@ -24173,6 +24675,7 @@ function playerStatSheetHTML(team, idx, p){
     </div>` : '';
   if(!team || !team.mstats){
     return `<div class="fut-back" style="padding:15px 16px;">${head}${gfRows}${realRows}
+      ${ratingBreakdownHTML(p, skinR.glow)}
       <div class="fut-foot" style="font-size:9px;margin-top:12px;">${L().cardNoStats}</div></div>`;
   }
   const v=statsForView(team, idx);
@@ -24182,6 +24685,7 @@ function playerStatSheetHTML(team, idx, p){
     ${head}
     ${gfRows}
     ${realRows}
+    ${ratingBreakdownHTML(p, skinR.glow)}
     <div class="fut-foot" style="font-size:9px;margin:12px 0 6px;">${L().simTitle} · ${L().statLastUpdate}: ${v.s.games}</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:0 16px;">${rows}</div>
   </div>`;
@@ -24274,7 +24778,7 @@ const ACHIEVEMENTS=[
   }},
 
   {id:'victory_royale', icon:'👑', check:ctx=>!ctx.isMajor && ctx.place===1},
-  {id:'chemistry', icon:'🧪', check:ctx=>ctx.synergyBonus>=20},
+  {id:'chemistry', icon:'🧪', check:ctx=>ctx.synergyBonus>=5},
   {id:'perfect_squad', icon:'🤝', check:ctx=>{
     if(ctx.squad.length<2) return false;
     for(let i=0;i<ctx.squad.length;i++) for(let j=i+1;j<ctx.squad.length;j++){
@@ -24326,7 +24830,9 @@ const ACHIEVEMENTS=[
   {id:'fifty_runs', icon:'🎗️', check:ctx=>loadHistory().length>=50},
   {id:'major_finalist', icon:'🏟️', check:ctx=>ctx.isMajor && ctx.reachedFinals},
   {id:'lcq_champion', icon:'⚔️', check:ctx=>ctx.isMajor && ctx.cameFromLcq && ctx.championMajor},
-  {id:'high_synergy', icon:'⚡', check:ctx=>ctx.synergyBonus>=30},
+  // The duo ceiling: real teammates who also share a passport. Trio and squad
+  // clear it easily; in the Majors it is the most a pair can possibly have.
+  {id:'high_synergy', icon:'⚡', check:ctx=>ctx.synergyBonus>=7},
   {id:'perfectionist', icon:'✨', check:ctx=>ctx.place===1 && ctx.grade==='S'},
 
   {id:'iron_man', icon:'🦾', check:ctx=>{
@@ -24572,13 +25078,58 @@ function showShareButton(you, place, totalTeams, isMajor, allTeams){
   if(btn) btn.style.display='inline-block';
 }
 
-function shareResultImage(){
+// Portraits for the share card. Canvas cannot draw an <img> that has not
+// loaded yet, so they are fetched up front; a missing file resolves to null and
+// the card falls back to the same monogram the in-page portrait uses.
+function loadShareImage(url){
+  return new Promise(res=>{
+    if(!url) return res(null);
+    const img=new Image();
+    img.onload=()=>res(img);
+    img.onerror=()=>res(null);
+    img.src=url;
+  });
+}
+function drawSharePortrait(ctx, pl, img, x, y, w, h){
+  const fam="-apple-system,'Segoe UI',Roboto,Arial,sans-serif";
+  ctx.save();
+  roundRect(ctx, x, y, w, h, 12); ctx.clip();
+  const rnd=seededRng(hashStr(pl.handle+'|portrait'));
+  const hue=Math.floor(rnd()*360);
+  const g=ctx.createLinearGradient(x, y, x, y+h);
+  g.addColorStop(0, 'hsl('+hue+' 45% 34%)'); g.addColorStop(1, 'rgba(0,0,0,.75)');
+  ctx.fillStyle=g; ctx.fillRect(x, y, w, h);
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font='900 '+Math.round(h*0.4)+'px '+fam;
+  ctx.fillStyle='rgba(255,255,255,.92)';
+  ctx.fillText(initialsFor(pl.handle), x+w/2, y+h/2);
+  ctx.textBaseline='alphabetic';
+  if(img && img.width && img.height){
+    // cover-fit anchored to the top, matching the CSS object-position
+    const scale=Math.max(w/img.width, h/img.height);
+    const dw=img.width*scale, dh=img.height*scale;
+    ctx.drawImage(img, x+(w-dw)/2, y, dw, dh);
+  }
+  ctx.restore();
+  ctx.strokeStyle='rgba(255,255,255,.22)'; ctx.lineWidth=2;
+  roundRect(ctx, x, y, w, h, 12); ctx.stroke();
+}
+
+// The share card is built to read like the winners plate the run itself puts up:
+// a white headline band carrying the squad's faces, the team name, and a teal
+// stat strip, with the leaderboard underneath. The previous version was a
+// centred column of text with nobody's face on it, and its height was a fixed
+// guess that left roughly a third of the image empty.
+// The share card is drawn the way the FNCS broadcast draws its standings:
+// a light, faceted background, a heavy italic headline over a teal stage chip,
+// and a table of light rows led by a solid black rank square. The dark, rounded,
+// gradient-panel version it replaces looked like a UI screenshot; this looks
+// like the graphic the results actually go out on.
+async function shareResultImage(){
   if(!__shareCtx) return;
   const {you, place, totalTeams, isMajor, allTeams, earned}=__shareCtx;
-  const grade=(document.getElementById('gradeBadge')||{}).textContent||'';
 
   // Mini-leaderboard: up to 5 places above and 5 below your own rank.
-  // If you're #1 there's nothing above to show, same near the bottom.
   let lbRows=[];
   if(allTeams && allTeams.length){
     const youIdx=allTeams.indexOf(you);
@@ -24589,201 +25140,215 @@ function shareResultImage(){
     }
   }
 
+  const squad=(you.squad||[]).slice(0,4);
+  const imgs=await Promise.all(squad.map(pl=>loadShareImage(photoURL(pl))));
+
+  const fam="-apple-system,'Segoe UI',Roboto,Arial,sans-serif";
+  const INK='#10161c', TEAL='#00b090', MUTED='#5b6772';
   const W=1080;
-  const lbRowH=46, lbHeaderH=46;
-  const lbSectionH = lbRows.length ? (40+lbHeaderH+lbRows.length*lbRowH+30) : 0;
-  const H=1350+lbSectionH+((__shareCtx.earned||0)>0?118:0);
+  const HERO=284, LABELS=46, VALUES=96;
+  const prizeH = earned>0 ? 126 : 0;
+  const squadH = 44+squad.length*58+16;
+  const rowH=54, tblHead=40;
+  const tblH = lbRows.length ? (46+tblHead+lbRows.length*rowH+26) : 0;
+  const FOOT=70;
+  const H = HERO+LABELS+VALUES+prizeH+30+squadH+tblH+FOOT;
 
   const canvas=document.createElement('canvas');
   canvas.width=W; canvas.height=H;
   const ctx=canvas.getContext('2d');
 
-  const bgGrad=ctx.createLinearGradient(0,0,0,H);
-  bgGrad.addColorStop(0,'#161b22'); bgGrad.addColorStop(1,'#0e1116');
-  ctx.fillStyle=bgGrad; ctx.fillRect(0,0,W,H);
+  // ---- faceted light background ---------------------------------------
+  const bg=ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,'#ffffff'); bg.addColorStop(0.45,'#f1f4f6'); bg.addColorStop(1,'#e2e7ea');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
 
-  const glow=ctx.createRadialGradient(W/2,360,40,W/2,360,460);
-  glow.addColorStop(0,'rgba(0,176,144,0.20)'); glow.addColorStop(1,'rgba(0,176,144,0)');
-  ctx.fillStyle=glow; ctx.fillRect(0,0,W,H);
+  // Broad diagonal panels, the same shallow angle the broadcast wall uses.
+  const facet=(pts, fill)=>{
+    ctx.beginPath();
+    pts.forEach((pt,i)=>{ i?ctx.lineTo(pt[0],pt[1]):ctx.moveTo(pt[0],pt[1]); });
+    ctx.closePath(); ctx.fillStyle=fill; ctx.fill();
+  };
+  facet([[0,H*0.30],[W*0.42,H*0.16],[W*0.42,H*0.24],[0,H*0.38]], 'rgba(16,22,28,.035)');
+  facet([[W*0.58,H*0.05],[W,H*0.00],[W,H*0.09],[W*0.58,H*0.14]], 'rgba(16,22,28,.03)');
+  facet([[0,H*0.72],[W*0.30,H*0.62],[W*0.30,H*0.70],[0,H*0.80]], 'rgba(16,22,28,.03)');
+  // Teal facets in the lower-left corner.
+  facet([[0,H],[0,H*0.80],[W*0.20,H*0.86],[W*0.16,H]], 'rgba(0,176,144,.20)');
+  facet([[W*0.16,H],[W*0.20,H*0.86],[W*0.34,H*0.91],[W*0.30,H]], 'rgba(0,176,144,.13)');
+  facet([[0,H],[W*0.10,H],[0,H*0.93]], 'rgba(0,140,116,.28)');
 
-  ctx.textAlign='center'; ctx.textBaseline='alphabetic';
-  const fam="-apple-system,'Segoe UI',Roboto,Arial,sans-serif";
+  // ---- hero ------------------------------------------------------------
+  ctx.fillStyle=TEAL;
+  ctx.beginPath();
+  ctx.moveTo(W*0.60, HERO-8); ctx.lineTo(W*0.685, 0); ctx.lineTo(W, 0); ctx.lineTo(W, HERO-8);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle='rgba(10,16,20,.62)';
+  ctx.fillRect(W*0.70, 0, W*0.30, HERO-8);
 
-  // Logo: "FNCS " white + "DRAFT" accent, centered as one unit.
-  // Italic to match the wordmark in the page header.
-  ctx.font=`italic 900 40px ${fam}`;
-  const wFncs=ctx.measureText('FNCS ').width, wDraft=ctx.measureText('DRAFT').width;
-  const logoStartX=W/2-(wFncs+wDraft)/2;
-  ctx.textAlign='left';
-  ctx.fillStyle='#eef2f6'; ctx.fillText('FNCS ', logoStartX, 92);
-  ctx.fillStyle='#00b090'; ctx.fillText('DRAFT', logoStartX+wFncs, 92);
-  ctx.textAlign='center';
+  const headline = place===1 ? L().winnersWord : ('#'+place);
+  ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+  let hf=118;
+  ctx.font='italic 900 '+hf+'px '+fam;
+  while(ctx.measureText(headline).width > W*0.56-56 && hf>36){ hf-=4; ctx.font='italic 900 '+hf+'px '+fam; }
+  ctx.fillStyle=INK;
+  ctx.fillText(headline, 52, 128);
 
-  // Mode label
-  const modeLabel = isMajor ? 'FNCS MAJOR' : (you.squad.length===2?'DUO':you.squad.length===3?'TRIO':'SQUAD');
-  ctx.font=`700 20px ${fam}`; ctx.fillStyle='#7d8a9a';
-  ctx.fillText(modeLabel+' · '+totalTeams+' TEAMS', W/2, 130);
+  // stage chip, the teal slab under the headline
+  const f=winnersFigures(you);
+  const modeLabel = isMajor
+    ? (CARD_MODE ? (CARD_SET==='m1'?'FNCS MAJOR 1':'FNCS MAJOR 2') : 'FNCS MAJOR')
+    : (squad.length===2?'DUO':squad.length===3?'TRIO':'SQUAD');
+  const chipText=modeLabel+'  ·  '+totalTeams+(f.games?('  ·  '+L().wGames(f.games)):'');
+  ctx.font='italic 900 24px '+fam;
+  const chipW=ctx.measureText(chipText).width+40;
+  ctx.fillStyle=TEAL; ctx.fillRect(52, 150, chipW, 46);
+  ctx.fillStyle='#fff'; ctx.fillText(chipText, 72, 181);
 
-  // Huge placement
-  ctx.font=`900 220px ${fam}`;
-  ctx.fillStyle = place===1 ? '#ffd166' : '#00b090';
-  ctx.fillText('#'+place, W/2, 400);
+  // team name, black bar in broadcast style
+  ctx.font='900 30px '+fam;
+  let teamLine=squad.map(pl=>pl.handle).join(' + ').toUpperCase(), tf=30;
+  while(ctx.measureText(teamLine).width > W*0.60-40 && tf>16){ tf-=2; ctx.font='900 '+tf+'px '+fam; }
+  const nameW=ctx.measureText(teamLine).width+40;
+  ctx.fillStyle=INK; ctx.fillRect(52, 208, nameW, 52);
+  ctx.fillStyle='#fff'; ctx.fillText(teamLine, 72, 242);
 
-  // Subtitle
-  ctx.font=`800 30px ${fam}`; ctx.fillStyle='#eef2f6';
-  const subtitle = place===1 ? (isMajor?'MAJOR CHAMPION':'VICTORY ROYALE') : (isMajor && place<=5 ? 'TOP '+place+' FINISH' : 'FINISHED #'+place+' / '+totalTeams);
-  ctx.fillText(subtitle, W/2, 450);
+  // portraits
+  const pw = squad.length>2 ? 104 : 132, ph = squad.length>2 ? 134 : 172, gap=14;
+  const totalPW=squad.length*pw+(squad.length-1)*gap;
+  let px=W-40-totalPW;
+  const pyTop = squad.length>2 ? 36 : 24;
+  squad.forEach((pl,i)=>{
+    drawSharePortrait(ctx, pl, imgs[i], px, pyTop, pw, ph);
+    ctx.textAlign='center'; ctx.font='900 16px '+fam; ctx.fillStyle='#eef2f6';
+    let nm=pl.handle;
+    while(ctx.measureText(nm).width>pw-6 && nm.length>3) nm=nm.slice(0,-2);
+    ctx.fillText(nm.toUpperCase(), px+pw/2, pyTop+ph+26);
+    px+=pw+gap;
+  });
 
-  // Prize money, when the run actually paid one
+  // ---- teal stat strip -------------------------------------------------
+  const cells=winnersStatCells(f);
+  const colW=W/cells.length;
+  ctx.fillStyle=TEAL; ctx.fillRect(0, HERO, W, LABELS);
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0, HERO+LABELS, W, VALUES);
+  cells.forEach((c,i)=>{
+    const mid=colW*i+colW/2;
+    ctx.textAlign='center';
+    let lf=14; ctx.font='800 '+lf+'px '+fam;
+    while(ctx.measureText(c.lab).width>colW-16 && lf>9){ lf--; ctx.font='800 '+lf+'px '+fam; }
+    ctx.fillStyle='rgba(255,255,255,.96)';
+    ctx.fillText(c.lab, mid, HERO+30);
+    ctx.font='italic 900 54px '+fam; ctx.fillStyle=INK;
+    ctx.fillText(String(c.val), mid, HERO+LABELS+68);
+  });
+
+  let y = HERO+LABELS+VALUES;
+
+  // ---- prize -----------------------------------------------------------
   if(earned>0){
     const money='$'+earned.toLocaleString('en-US');
-    ctx.font=`900 46px ${fam}`;
-    const mw=ctx.measureText(money).width;
-    const padX=26, chipH=62, chipW=mw+padX*2;
-    ctx.fillStyle='rgba(255,209,102,.13)';
-    roundRect(ctx, W/2-chipW/2, 470, chipW, chipH, 14); ctx.fill();
-    ctx.strokeStyle='rgba(255,209,102,.55)'; ctx.lineWidth=2;
-    roundRect(ctx, W/2-chipW/2, 470, chipW, chipH, 14); ctx.stroke();
-    ctx.fillStyle='#ffd166';
-    ctx.fillText(money, W/2, 470+44);
-    ctx.font=`700 15px ${fam}`; ctx.fillStyle='#8a7a4a';
-    ctx.fillText('PRIZE MONEY  ·  $'+Math.round(earned/2).toLocaleString('en-US')+' PER PLAYER', W/2, 470+chipH+22);
+    ctx.textAlign='center'; ctx.font='italic 900 46px '+fam;
+    const cw=ctx.measureText(money).width+52, ch=62;
+    ctx.fillStyle=INK; ctx.fillRect(W/2-cw/2, y+22, cw, ch);
+    ctx.fillStyle='#ffd166'; ctx.fillText(money, W/2, y+22+46);
+    ctx.font='800 15px '+fam; ctx.fillStyle=MUTED;
+    ctx.fillText('$'+Math.round(earned/Math.max(1,squad.length)).toLocaleString('en-US')+' PER PLAYER',
+      W/2, y+22+ch+24);
+    y+=prizeH;
   }
+  y+=30;
 
-  // Squad panel
-  const prizeOffset = earned>0 ? 118 : 0;
-  const panelX=70, panelY=510+prizeOffset, panelW=W-140, rowH=64;
-  const panelH=42+you.squad.length*rowH+20;
-  ctx.fillStyle='#1d232c';
-  roundRect(ctx, panelX, panelY, panelW, panelH, 16); ctx.fill();
-  ctx.strokeStyle='#262e39'; ctx.lineWidth=2;
-  roundRect(ctx, panelX, panelY, panelW, panelH, 16); ctx.stroke();
-
-  ctx.textAlign='left'; ctx.font=`700 16px ${fam}`; ctx.fillStyle='#7d8a9a';
-  ctx.fillText('YOUR SQUAD', panelX+28, panelY+34);
-  ctx.textAlign='right'; ctx.font=`800 18px ${fam}`;
-  ctx.fillStyle='#7d8a9a'; ctx.fillText('TOTAL POWER', panelX+panelW-28-64, panelY+34);
-  ctx.fillStyle='#00b090'; ctx.fillText(String(Math.round(you.pow||0)), panelX+panelW-28, panelY+34);
+  // ---- squad strip -----------------------------------------------------
+  const panelX=52, panelW=W-104;
+  ctx.fillStyle='rgba(255,255,255,.86)'; ctx.fillRect(panelX, y, panelW, squadH);
+  ctx.fillStyle=TEAL; ctx.fillRect(panelX, y, 6, squadH);
+  ctx.textAlign='left'; ctx.font='800 14px '+fam; ctx.fillStyle=MUTED;
+  ctx.fillText(String(L().yourSquadTitle||'SQUAD').toUpperCase(), panelX+24, y+28);
+  ctx.textAlign='right'; ctx.font='italic 900 18px '+fam; ctx.fillStyle=TEAL;
+  ctx.fillText('PWR '+Math.round(you.pow||0), panelX+panelW-24, y+28);
   ctx.textAlign='left';
-
-  you.squad.forEach((p,i)=>{
-    const ry=panelY+58+i*rowH;
-    ctx.font=`800 26px ${fam}`; ctx.fillStyle='#eef2f6';
-    ctx.fillText(p.handle, panelX+28, ry+26);
-    ctx.font=`600 16px ${fam}`; ctx.fillStyle='#7d8a9a';
-    ctx.fillText((p.nat?natDisplay(p.nat):'—')+'  ·  RATING '+p.rating, panelX+28, ry+50);
-    // rarity dot
-    const rColor = {common:'#9aa0a6',uncommon:'#4ade80',rare:'#38bdf8',epic:'#b46eff',legendary:'#ffd166',mythic:'#ffd166'}[shownRarity(p)]||'#9aa0a6';
-    ctx.beginPath(); ctx.arc(panelX+panelW-32, ry+18, 8, 0, Math.PI*2); ctx.fillStyle=rColor; ctx.fill();
+  squad.forEach((pl,i)=>{
+    const ry=y+48+i*58;
+    ctx.font='900 24px '+fam; ctx.fillStyle=INK;
+    ctx.fillText(pl.handle.toUpperCase(), panelX+24, ry+22);
+    ctx.font='700 14px '+fam; ctx.fillStyle=MUTED;
+    ctx.fillText((pl.nat?natDisplay(pl.nat):'—')+'  ·  '+pl.rating, panelX+24, ry+42);
+    const rColor={common:'#9aa0a6',uncommon:'#3aa76a',rare:'#2b8fd0',epic:'#8b4ecc',legendary:'#d9a520',mythic:'#d9a520'}[shownRarity(pl)]||'#9aa0a6';
+    ctx.fillStyle=rColor; ctx.fillRect(panelX+panelW-38, ry+8, 14, 14);
   });
+  y+=squadH;
 
-  // Stats row
-  const statsY=panelY+panelH+70;
-  const totalPts = you.totalPts!=null?you.totalPts:you.stagePts||0;
-  const totalKills = you.totalElims!=null?you.totalElims:you.stageElims||0;
-  const stats=[
-    {label:'POINTS', value:String(totalPts)},
-    {label:'POWER', value:String(Math.round(you.pow||0))},
-    {label:'KILLS', value:String(totalKills)},
-    {label:'GRADE', value:grade||'—'},
-  ];
-  const statW=panelW/4;
-  stats.forEach((s,i)=>{
-    const cx=panelX+statW*i+statW/2;
-    ctx.textAlign='center';
-    ctx.font=`900 38px ${fam}`; ctx.fillStyle='#00b090';
-    ctx.fillText(s.value, cx, statsY);
-    ctx.font=`700 14px ${fam}`; ctx.fillStyle='#7d8a9a';
-    ctx.fillText(s.label, cx, statsY+28);
-  });
-
-  // Mini-leaderboard: 5 above, you, 5 below — now mirrors the in-app lobby
-  // table exactly: same 7 columns (rank/team/points/matches/wins/kills/
-  // power), same striped rows, same gold border on 1st place and green
-  // border on your own row, instead of the old 3-column PTS-only strip.
+  // ---- standings, broadcast style --------------------------------------
   if(lbRows.length){
-    const lbY=statsY+70;
-    ctx.textAlign='left'; ctx.font=`700 16px ${fam}`; ctx.fillStyle='#7d8a9a';
-    ctx.fillText('LEADERBOARD', panelX+4, lbY);
+    const tY=y+30;
+    ctx.textAlign='left'; ctx.font='italic 900 30px '+fam; ctx.fillStyle=INK;
+    ctx.fillText('STANDINGS', panelX, tY);
 
-    const lbTop=lbY+22;
-    const lbTotalH=lbHeaderH+lbRows.length*lbRowH;
-    const lbGrad=ctx.createLinearGradient(panelX, lbTop, panelX+panelW, lbTop+lbTotalH);
-    lbGrad.addColorStop(0,'#0a3a3a'); lbGrad.addColorStop(0.55,'#0e2f38'); lbGrad.addColorStop(1,'#0a2530');
-    ctx.fillStyle=lbGrad;
-    roundRect(ctx, panelX, lbTop, panelW, lbTotalH, 16); ctx.fill();
-    ctx.strokeStyle='rgba(120,200,190,.25)'; ctx.lineWidth=2;
-    roundRect(ctx, panelX, lbTop, panelW, lbTotalH, 16); ctx.stroke();
+    // column geometry: a solid rank square, the team, then four right-aligned
+    // numeric columns exactly as the broadcast orders them.
+    const rankW=58;
+    const teamX=panelX+rankW+20;
+    const right=panelX+panelW-22;
+    const numW=104;
+    const ptsR=right, plcR=right-numW, elimR=plcR-numW, vrR=elimR-numW;
+    const teamMax=vrR-30-teamX;
 
-    // Column layout: RANK / TEAM on the left, five right-aligned numeric
-    // columns on the right, same order as the live table.
-    const rankX=panelX+24, teamX=panelX+90;
-    const numColW=108;
-    const powerRight=panelX+panelW-24;
-    const killsRight=powerRight-numColW;
-    const winsRight=killsRight-numColW;
-    const matchesRight=winsRight-numColW;
-    const ptsRight=matchesRight-numColW;
-    const teamMaxWidth=ptsRight-24-teamX;
-
-    ctx.font=`700 12px ${fam}`; ctx.fillStyle='rgba(200,225,220,.65)';
-    ctx.textAlign='left'; ctx.fillText('RANK', rankX, lbTop+30); ctx.fillText('TEAM', teamX, lbTop+30);
-    ctx.textAlign='right';
-    ctx.fillText('POINTS', ptsRight, lbTop+30);
-    ctx.fillText('MATCHES', matchesRight, lbTop+30);
-    ctx.fillText('WINS', winsRight, lbTop+30);
-    ctx.fillText('KILLS', killsRight, lbTop+30);
-    ctx.fillText('POWER', powerRight, lbTop+30);
+    const headY=tY+30;
+    ctx.font='800 13px '+fam; ctx.fillStyle=MUTED; ctx.textAlign='right';
+    ctx.fillText('VRS', vrR, headY+18);
+    ctx.fillText('ELIMS', elimR, headY+18);
+    ctx.fillText('PLCMNT PTS', plcR, headY+18);
+    ctx.fillText('PTS', ptsR, headY+18);
     ctx.textAlign='left';
 
+    const bodyTop=headY+tblHead-12;
     lbRows.forEach((row,i)=>{
-      const ry=lbTop+lbHeaderH+i*lbRowH;
-      const isYou=row.team===you;
-      const isFirst=row.rank===1;
-      // Striped background, same as the live table's odd-row tint.
-      if(i%2===0){ ctx.fillStyle='rgba(255,255,255,.025)'; ctx.fillRect(panelX+2, ry, panelW-4, lbRowH); }
-      if(isFirst){
-        ctx.fillStyle='rgba(255,214,0,.08)'; ctx.fillRect(panelX+2, ry, panelW-4, lbRowH);
-        ctx.strokeStyle='#ffd600'; ctx.lineWidth=1.5; ctx.strokeRect(panelX+3, ry+1, panelW-6, lbRowH-2);
-      }
-      if(isYou){
-        ctx.fillStyle='rgba(0,176,144,.08)'; ctx.fillRect(panelX+2, ry, panelW-4, lbRowH);
-        ctx.strokeStyle='#00b090'; ctx.lineWidth=1.5; ctx.strokeRect(panelX+3, ry+1, panelW-6, lbRowH-2);
-      }
-
+      const ry=bodyTop+i*rowH;
       const t=row.team;
-      const rowPts = t.totalPts!=null?t.totalPts:(t.stagePts||0);
-      const rowElims = t.totalElims!=null?t.totalElims:(t.stageElims||0);
-      const rowWins = t.wins||0;
-      const rowMatches = t.gameLog ? t.gameLog.filter(g=>!g.isLandingBonus).length : (t.stageLog ? t.stageLog.filter(g=>!g.isLandingBonus).length : NUM_GAMES);
-      const rowPower = t.pow!=null ? Math.round(t.pow) : (t.displayPower!=null ? t.displayPower : (t.avgRating!=null ? t.avgRating : Math.round(t.squad.reduce((s,p)=>s+p.rating,0)/t.squad.length)));
+      const isYou=t===you;
+      // row bar
+      ctx.fillStyle = isYou ? 'rgba(0,176,144,.16)' : (i%2 ? '#eaeef1' : '#f7f9fa');
+      ctx.fillRect(panelX+rankW, ry, panelW-rankW, rowH-4);
+      if(isYou){ ctx.fillStyle=TEAL; ctx.fillRect(panelX+rankW, ry, 5, rowH-4); }
+      // rank square
+      ctx.fillStyle = row.rank===1 ? '#d9a520' : INK;
+      ctx.fillRect(panelX, ry, rankW, rowH-4);
+      ctx.textAlign='center'; ctx.font='italic 900 26px '+fam; ctx.fillStyle='#fff';
+      ctx.fillText(String(row.rank), panelX+rankW/2, ry+35);
 
-      const rankColor = isFirst ? '#ffd600' : (isYou?'#00b090':'rgba(200,225,220,.75)');
+      // team
       ctx.textAlign='left';
-      ctx.font=`800 17px ${fam}`; ctx.fillStyle=rankColor;
-      ctx.fillText('#'+row.rank, rankX, ry+30);
+      // the live table prefixes your own row with "Your squad:"; a broadcast
+      // standings row is just the team, so it comes off here.
+      let nm=t.name.replace(/<[^>]+>/g,'').replace(/&amp;/g,'&')
+        .replace(/^s*(Твой состав|Your squad)s*:s*/i,'')
+        .replace(/&/g,'+').toUpperCase();
+      let nf=21; ctx.font='900 '+nf+'px '+fam;
+      while(ctx.measureText(nm).width>teamMax && nf>12){ nf--; ctx.font='900 '+nf+'px '+fam; }
+      while(ctx.measureText(nm).width>teamMax && nm.length>4){ nm=nm.slice(0,-3)+'…'; }
+      ctx.fillStyle=INK;
+      ctx.fillText(nm, teamX, ry+33);
 
-      ctx.fillStyle = isYou ? '#00b090' : '#eaf5f3';
-      ctx.font = isYou ? `800 16px ${fam}` : `700 16px ${fam}`;
-      let teamName=t.name.replace(/<[^>]+>/g,'').replace(/&amp;/g,'&');
-      while(ctx.measureText(teamName).width > teamMaxWidth && teamName.length>3){ teamName=teamName.slice(0,-4)+'…'; }
-      ctx.fillText(teamName, teamX, ry+30);
-
-      ctx.textAlign='right';
-      ctx.font=`800 16px ui-monospace,Menlo,Consolas,monospace`; ctx.fillStyle='#fff';
-      ctx.fillText(String(rowPts), ptsRight, ry+30);
-      ctx.font=`600 15px ui-monospace,Menlo,Consolas,monospace`; ctx.fillStyle='rgba(200,225,220,.75)';
-      ctx.fillText(String(rowMatches), matchesRight, ry+30);
-      ctx.fillText(String(rowWins), winsRight, ry+30);
-      ctx.fillText(String(rowElims), killsRight, ry+30);
-      ctx.fillText(String(rowPower), powerRight, ry+30);
+      // numbers
+      const log=((t.stageLog&&t.stageLog.length)?t.stageLog:(t.gameLog||[])).filter(g=>!g.isLandingBonus);
+      const pts = t.totalPts!=null?t.totalPts:(t.stagePts||0);
+      const elimPts = log.reduce((a,g)=>a+(g.elimPts||0),0);
+      const plc = Math.max(0, pts-elimPts);
+      const vrs = log.filter(g=>g.place===1).length || (t.wins||0);
+      const elims = t.totalElims!=null?t.totalElims:(t.stageElims||0);
+      ctx.textAlign='right'; ctx.fillStyle=INK;
+      ctx.font='italic 900 25px '+fam;
+      ctx.fillText(String(vrs).padStart(2,'0'), vrR, ry+34);
+      ctx.fillText(String(elims), elimR, ry+34);
+      ctx.fillText(String(plc), plcR, ry+34);
+      ctx.fillText(String(pts), ptsR, ry+34);
       ctx.textAlign='left';
     });
   }
 
-  // Footer
-  ctx.font=`600 16px ${fam}`; ctx.fillStyle='#4d5866'; ctx.textAlign='center';
-  ctx.fillText('made by psychopath  ·  fncs draft simulator', W/2, H-40);
+  // ---- footer ----------------------------------------------------------
+  ctx.font='800 15px '+fam; ctx.fillStyle=MUTED; ctx.textAlign='center';
+  ctx.fillText('made by psychopath  ·  fncs draft simulator', W/2, H-26);
 
   const link=document.createElement('a');
   link.download='fncs-draft-result.png';
