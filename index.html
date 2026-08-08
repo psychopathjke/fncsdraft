@@ -20423,6 +20423,9 @@ function buildRegionFilter(){
 
 let currentCandidates=[];
 
+// How deep into the remaining pool a pack reaches. Small enough that every card
+// offered is a real option, wide enough that two runs do not deal the same four.
+const PACK_TOP_SLICE=80;
 function generatePack(){
   const remaining=squadSize-drafted.length;
   if(remaining<=0) return [];
@@ -20440,7 +20443,19 @@ function generatePack(){
   const aboveCommon = src.filter(p=>shownRarity(p)!=='common');
   if(aboveCommon.length>=4) src = aboveCommon;
 
-  let weighted = src.map(p=>({p, w: 1 + (p.rating/100)*3}));
+  // You draft before anybody else, so the pack is drawn from the strongest cards
+  // still available rather than from the whole region. The old weighting —
+  // 1 + rating/100*3 — made a 96 only about 1.4x likelier per slot than a 60,
+  // and across three hundred-odd cards that meant the region's best were almost
+  // never on the table: a pair rated in the high eighties came out at exactly
+  // the field's median strength and never reached the LAN.
+  //
+  // The slice keeps the pack a choice rather than a formality: the very best
+  // card is not guaranteed to appear, but everything offered is genuinely worth
+  // taking, and the bots get what you leave behind.
+  const byOvr = src.slice().sort((a,b)=>attrsFor(b).ovr-attrsFor(a).ovr);
+  const slice = byOvr.slice(0, Math.max(4, Math.min(byOvr.length, PACK_TOP_SLICE)));
+  let weighted = slice.map(p=>({p, w: 1 + (attrsFor(p).ovr/100)*3}));
   let picks=[];
   for(let i=0;i<4 && weighted.length>0;i++){
     const total=weighted.reduce((s,x)=>s+x.w,0);
@@ -23671,7 +23686,30 @@ function renderGameHistory(you){
 // Regional strength multiplier, based on how each region has actually
 // performed at real LANs/Global Championships — EU and NAC have been the
 // two dominant regions; everywhere else trails behind by varying degrees.
-const REGION_POW_MULT={EU:1, NAC:1, NAW:0.93, BR:0.85, OCE:0.85, ME:0.8, ASIA:0.75, GEN:0.85, UNK:0.85};
+// Read off where each region's players actually finished at the Major 1 Summit
+// — the one event that puts all seven regions in the same lobby. Every one of
+// the 99 players in the Summit standings resolves to a card, so this is the
+// complete field, not a sample of it:
+//
+//   region   players   mean finish (of 50)
+//   EU          44          21.1
+//   NAC         30          22.6
+//   BR           5          32.0
+//   OCE          6          34.7
+//   ME           6          38.3
+//   ASIA         6          42.7
+//
+// EU and NA Central anchor at 1.0 — they are the two strongest by the data and
+// what the rest are measured against. Everyone else drops by 0.6 of the gap
+// between their normalised finish and that anchor.
+//
+// NA West is the exception: its Summit sample is one duo, whose #22 finish would
+// read as EU-level strength off a single night. It keeps its standing value,
+// below the two anchors like the rest.
+//
+// The hand-set numbers this replaces were already close — only Brazil and
+// Oceania move, by 0.03 and 0.01.
+const REGION_POW_MULT={EU:1, NAC:1, NAW:0.93, BR:0.88, OCE:0.84, ME:0.8, ASIA:0.75, GEN:0.85, UNK:0.85};
 function regionMultFor(p){
   const region = p.region || regionForNatOrUnknown(p.nat);
   const m = REGION_POW_MULT[region];
