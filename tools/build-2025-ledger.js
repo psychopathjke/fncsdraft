@@ -128,6 +128,32 @@ for (const [set, season] of [['t2','S34'], ['t3','S36']]){
 const CFG = SEASONS[SET];
 if (!CFG) throw new Error('unknown set: ' + SET + ' (expected t1, t2 or t3)');
 
+// The Global Championship, for Major 3 only. It is the last thing the 2025
+// season played and the strongest field it ever put in one lobby, so it belongs
+// in a Major 3 card's rating -- the same place the Summit holds on a 2026 Major
+// 1 card.
+//
+// The standings are not copied here. GC2025_RANKED already carries all 33
+// placements in index.html; a second copy is a second thing to drift, so it is
+// read out of the page at build time.
+function globalChampionship(){
+  if (SET !== 't3') return null;
+  const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+  const at = html.indexOf('const GC2025_RANKED=[');
+  if (at < 0) return null;
+  const end = html.indexOf('\n];', at);
+  const body = html.slice(at, end);
+  const map = {};
+  let n = 0;
+  for (const m of body.matchAll(/\{trio:'([^']+)',\s*rank:(\d+)\}/g)){
+    const rank = +m[2];
+    m[1].split('&').forEach(h => { map[h.trim().toLowerCase()] = rank; });
+    n++;
+  }
+  return n ? { label: 'Global Championship', field: 33, map: map, teams: n } : null;
+}
+const GC = globalChampionship();
+
 const stagesFor = CFG.stages();
 const out = {};
 for (const reg of REG){
@@ -141,6 +167,18 @@ for (const reg of REG){
   add('Last Chance Qualifier', s.lcq);
   s.groups.forEach((rows, i) => add('Group ' + (i + 1), rows));
   add('Grand Finals', s.gf);
+  // The LAN is one global lobby, but a ledger is per region and the stretch that
+  // reads it works on the players inside one. So each region gets the LAN entries
+  // of its own players and nobody else's -- otherwise Europe's table would
+  // suddenly contain seventy players who never competed in Europe, and the
+  // stretch would rescale the region against them.
+  if (GC){
+    const mine = {};
+    const known = new Set();
+    list.forEach(src => Object.keys(src.map).forEach(h => known.add(h)));
+    Object.keys(GC.map).forEach(h => { if (known.has(h)) mine[h] = GC.map[h]; });
+    if (Object.keys(mine).length) list.push({ label: GC.label, field: GC.field, map: mine });
+  }
   out[reg] = list;
 }
 
