@@ -174,19 +174,35 @@ this spec took that at face value and had the groups sending 15 to a 33-team fin
 with Last Chance somehow finding 18 more. **That was wrong.** Matching group rosters
 against final rosters shows what actually happened:
 
-| Region | Groups | Through per group | From groups | From Last Chance | Final |
+| Region | Groups | Per group | From groups | From Last Chance | Final |
 |---|---|---|---|---|---|
-| EU | 3 | 12 / 11 / 10 | 30 | 3 | 33 |
-| NAC | 3 | 10 / 10 / 10 | 30 | 3 | 33 |
-| NAW | 2 | 15 / 15 | 30 | 3 | 33 |
-| BR | 2 | 16 / 15 | 30 | 3 | 33 |
-| ASIA | 2 | 15 / 14 | 29 | 3 | 33 |
-| ME | 2 | 14 / 13 | 27 | 2 | 30 |
-| OCE | 2 | 14 / 14 | 28 | 1 | 32 |
+| EU | 3 | 10 | 30 | 3 | 33 |
+| NAC | 3 | 10 | 30 | 3 | 33 |
+| NAW | 2 | 15 | 30 | 3 | 33 |
+| BR | 2 | 15 | 30 | 3 | 33 |
+| ASIA | 2 | 15 | 30 | 3 | 33 |
+| ME | 2 | 15 | 30 | 0 | 30 |
+| OCE | 2 | 15 | 30 | 2 | 32 |
 
-**Thirty from the groups, three from Last Chance.** The five teams per group
+**Every region sends exactly thirty out of the groups** — ten per group where there
+are three, fifteen where there are two, with no exceptions. The five teams per group
 carrying the +1000 flag are the Victory Royale instant-advance subset; the rest
 advance on points. "Top 5" described the flag, not the cut.
+
+Only the Last Chance top-up varies, and that is what makes two finals short of 33.
+The Middle East Lobby sent **nobody** — it was also the smallest Lobby of the seven,
+26 teams against 32–33 elsewhere — and Oceania sent two instead of three. Thin
+regions do not fill the fallback route, so the field never reaches its allocation.
+
+Reading this off the data needed one correction of method. Matching finalists to
+their group by exact roster loses teams that changed a player between stages: six
+across the seven regions, of which four are the same player under a new name
+(`Enzouzzawesomer` → `Enzouzz km 29 10`, `1ǃm` → `もうちょびっと`, `dvs tt adzyǃ` →
+`DVS FELL OFFǃ`, `32 is the Hero` → `Blessed 32`) and two are real substitutions.
+Matching on any two of three players traces **every** finalist in all seven regions,
+with none left over. An earlier pass that used exact matching reported Asia as three
+short of a full field; Asia's final is a complete 33 and the shortfall was the
+method, not the region.
 
 Two other things fall out of the same data:
 
@@ -204,8 +220,15 @@ So `majorFormat()` gains a branch on `cardSet`:
 
 // FNCS 2025 — everywhere else (Brazil's second group runs six)
 { playInCut:66, heats:[{games:5,cut:15},{games:region==='BR'?6:5,cut:15}],
-  lclGames:3, lcqWinners:3, gfGames:12 }
+  lclGames:3, lcqWinners:LCQ_WINNERS_2025[region], gfGames:12 }
+
+// What the Last Chance route actually delivered, per region.
+const LCQ_WINNERS_2025 = {EU:3, NAC:3, NAW:3, BR:3, ASIA:3, ME:0, OCE:2};
 ```
+
+The groups always contribute 30, so the field a region ends up with is
+`30 + LCQ_WINNERS_2025[region]` — 33 for five regions, 30 for the Middle East and
+32 for Oceania. Nothing here is tuned to hit a target; both terms are counted.
 
 `playInCut` follows the observed group rosters: 93–97 teams across three groups in
 the deep regions, 62–67 across two elsewhere.
@@ -219,11 +242,12 @@ Three things already line up and need no new code:
 - the Grand Finals already simulate 12 games at 4 points per elimination, which is
   what 2025 ran
 
-One new field is still needed. Today the count of Last Chance qualifiers is taken
-from `lclGames`, because in 2026 an *n*-game Lobby produced *n* winners. In 2025 the
-Lobby ran 3 matches and sent 3, so the two happen to agree — but they are different
-quantities and the spec should not rely on the coincidence. `lcqWinners` becomes
-explicit, defaulting to `lclGames` where absent, leaving 2026 untouched.
+One new field is still needed, and the data makes the case for it outright. Today
+the count of Last Chance qualifiers is taken from `lclGames`, because in 2026 an
+*n*-game Lobby produced *n* winners. Every 2025 Lobby ran three matches, but the
+Middle East sent nobody and Oceania sent two — so games and winners are plainly
+different quantities here, not the same number wearing two hats. `lcqWinners`
+becomes explicit, defaulting to `lclGames` where absent, leaving 2026 untouched.
 
 `gfGames` is likewise made explicit rather than left as the literal 12 in the call.
 
@@ -287,7 +311,8 @@ Still to check, once built:
 - Card ratings for each region's Grand Finals top three land inside the band
   `REGION_TOP` allows, with no card clipped at the 99 or 30 clamp.
 - The mode runs end to end in a browser for at least Europe and one two-group
-  region: the Play-In cut into groups, thirty out, Last Chance adding three, twelve
+  region: the Play-In cut into groups, thirty out, Last Chance adding its regional
+  count, twelve
   games, a champion.
 - `m1` and `m2` card ratings are byte-identical before and after, since `rowEntry`,
   `KILL_MULT` and `majorFormat` are all touched.
