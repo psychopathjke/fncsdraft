@@ -259,8 +259,10 @@ Run: `cd ~/Desktop/fncsdraftmajor && node tools/build-2025-rows.js`
 Expected, exactly:
 - `rows written      : 1627` — 700 Play-In (7 × 100), 700 LCQ (7 × 100) and 227
   finals (33, 33, 33, 33, 33, 30, 32)
-- `teams not of size 3: 5`, listing the five known entries (ASIA Play-In 78,
-  EU Play-In 80, NAC Play-In 50, NAW Play-In 32, NAW GF 15)
+- `teams not of size 3 : 9`. Five are the Play-In and Grand Finals entries already
+  catalogued in the spec (EU Play-In 80, NAC Play-In 50, NAW Play-In 32, NAW GF 15,
+  ASIA Play-In 78). The other four are in the Last Chance Qualifier, which the spec's
+  table predates: NAC LCQ 43, NAW LCQ 19, ASIA LCQ 60, OCE LCQ 8.
 - `country names added: 17`
 
 If the row count differs, the source JSON is not the validated harvest — stop and
