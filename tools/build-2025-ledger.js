@@ -173,10 +173,23 @@ for (const reg of REG){
   // suddenly contain seventy players who never competed in Europe, and the
   // stretch would rescale the region against them.
   if (GC){
+    // Liquipedia writes a clean nickname; Tracker's is the in-game name, which
+    // often carries a tag or a trailing space. The two are matched with
+    // everything but letters and digits stripped -- but the entry is written
+    // under Tracker's spelling, because that is the key the card is looked up
+    // by. Normalising the key itself would break every handle that has a space
+    // in it, which is most of them.
+    const norm = s => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
+    const known = new Map();
+    list.forEach(src => Object.keys(src.map).forEach(h => {
+      const k = norm(h);
+      if (k && !known.has(k)) known.set(k, h);
+    }));
     const mine = {};
-    const known = new Set();
-    list.forEach(src => Object.keys(src.map).forEach(h => known.add(h)));
-    Object.keys(GC.map).forEach(h => { if (known.has(h)) mine[h] = GC.map[h]; });
+    Object.keys(GC.map).forEach(h => {
+      const key = known.get(norm(h));
+      if (key !== undefined) mine[key] = GC.map[h];
+    });
     if (Object.keys(mine).length) list.push({ label: GC.label, field: GC.field, map: mine });
   }
   out[reg] = list;
