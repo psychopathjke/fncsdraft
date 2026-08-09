@@ -312,9 +312,14 @@
 
 
 /* ---------- Event results panel, styled after the in-game results screen ---------- */
-  .land-plot{position:absolute;box-sizing:border-box;z-index:2;overflow:hidden;
+  /* Both drop maps size their nicknames in cqh — one percent of the map frame's
+     own height, the same unit the rectangles are measured in. A name is then laid
+     out to its box rather than to the window, and reads the same on a phone as on
+     a monitor. */
+  .map-frame{container-type:size;}
+  .land-plot{position:absolute;box-sizing:border-box;z-index:2;overflow:visible;
     border:2px solid var(--accent);background:rgba(0,176,144,.16);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;text-align:center;padding:2px;}
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;text-align:center;padding:2px;}
   .land-plot span{color:#fff;font-weight:800;font-size:11px;line-height:1.25;
     text-shadow:0 0 3px #000,0 0 5px #000,1px 1px 2px #000;word-break:break-word;}
   .land-plot.contested{border-color:var(--danger);background:rgba(255,77,109,.28);box-shadow:0 0 8px 1px rgba(255,77,109,.4);}
@@ -325,14 +330,19 @@
 
   .land-zone{position:absolute;box-sizing:border-box;border:2.2px solid rgba(238,242,246,.55);
     background:rgba(238,242,246,.05);cursor:pointer;transition:filter .12s,box-shadow .12s,transform .1s;
-    display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;
-    gap:1px;padding:2px;overflow:hidden;}
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:0;padding:2px;overflow:visible;}
   /* Squad names sit on top of a busy satellite map, so they get the same heavy
      outline treatment as the results map: stacked, bold, and shadowed on all
-     sides rather than plain white text running side by side. */
-  .zone-name{font-weight:800;color:#fff;line-height:1.15;letter-spacing:.01em;
+     sides rather than plain white text running side by side. One nickname per
+     line, and the line is allowed to be wider than the rectangle — a trio's three
+     names side by side never fit a POI box, and cropping them to an ellipsis is
+     what made the map unreadable. */
+  .zone-name{font-weight:800;color:#fff;line-height:1.14;letter-spacing:.01em;
     text-shadow:0 0 3px #000, 0 0 5px #000, 1px 1px 2px #000, -1px 1px 2px #000;
-    max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;pointer-events:none;}
+    width:max-content;max-width:none;white-space:nowrap;pointer-events:none;
+    background:rgba(0,0,0,.38);border-radius:2px;padding:0 2px;}
+  .zone-name-you{color:var(--accent);background:rgba(0,0,0,.6);}
   .land-zone:hover{filter:brightness(1.3);}
   .land-zone.taken{border-style:dashed;}
   .land-zone.chosen{box-shadow:0 0 16px 4px rgba(0,176,144,.85), inset 0 0 0 1px rgba(0,0,0,.5) !important;transform:scale(1.015);}
@@ -1720,6 +1730,9 @@ stage1TitleCards:'Этап 1 — Сеединг (6 игр, лобби по 50 к
 landingFieldTitle:n=>'Лобби ('+n+' '+(squadSize===3?'трио':squadSize===4?'сквадов':'дуо')+')', stageGamesToggle:'Показать игры по одной', qualByVR:'Прошёл по Victory Royale', qualByPoints:'Прошёл по очкам', stage2NoteByVR:'Взял Victory Royale — мгновенный проход, игры на этом закончены',
 regionResultHeader:'Регионалка', dropHeader:'Высадка · счёт', prizeHeader:'Приз', prizeTitle:'💰 Призовые состава', prizePerPlayer:v=>'по '+v+' на игрока',
 prizeRegional:(reg,rank)=>'Гранд-финал '+reg+' · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
+prizeGc2025:rank=>'Global Championship, Лион · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
+runSummaryTitle:'📋 Итоги симуляции', runSummaryStage:'Этап', runSummaryEarned:'Заработано за симуляцию',
+runSummaryNoEarnings:'Призовых нет — до стадии с призовым фондом состав не дошёл.',
 rowHistoryHint:'Клик — матчи этой команды', stageTableTitle:'Таблица этапа', stageCutLabel:n=>'— линия отсечки: топ-'+n+' проходят —',
 stageTableTeam:'Команда', stageTableRegion:'Регион',
 summitFieldTitle:'Кто прошёл на Summit', summitRouteMain:'Гранд-финал', summitRouteScq:'Second Chance',
@@ -1784,7 +1797,20 @@ gcResultTitle:n=>'Global Championship, Антверпен <img src="https://flag
 liveWorlds:'Global Championship · Антверпен <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
 celWorldsTitle:'ЕДЕШЬ В АНТВЕРПЕН', celWorldsSub:'Fortnite Global Championship · Антверпен <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> · 26–27 сентября',
 celWorldChampTitle:'ЧЕМПИОН МИРА', celWorldChampSub:'Fortnite Global Championship 2026',
+gc2025QualifiedTitle:'🌍 Ты прошёл на LAN — FNCS 2025 Global Championship, Лион <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
+gc2025QualifiedNote:(reg,rank,slots)=>'Регион '+reg+' даёт '+slots+' слотов на Global Championship с Major 3. Твоё место в гранд-финале — #'+rank+'. Летишь во Францию.',
+gc2025FieldTitle:'Кто приехал в Лион <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gc2025FieldNote:'33 трио со всего мира, 6–7 сентября 2025, Лион-Десин. Призовой фонд — $2 001 000.',
+gc2025RouteM1:'Через гранд-финалы Major 1', gc2025RouteM1Short:'Major 1',
+gc2025RouteM2:'Через гранд-финалы Major 2', gc2025RouteM2Short:'Major 2',
+gc2025RouteM3:'Через гранд-финалы Major 3', gc2025RouteM3Short:'Major 3',
+gc2025StageTitle:n=>'Global Championship — гранд-финал ('+n+' игр за два дня, 33 трио)',
+gc2025Champion:'🏆 Чемпион мира — FNCS 2025 Global Championship',
+gc2025PlaceNote:rank=>'Место #'+rank+' на чемпионате мира в Лионе',
+gc2025ResultTitle:n=>'Global Championship, Лион <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> — '+n+' трио',
+celLyonTitle:'ЕДЕШЬ В ЛИОН', celLyonSub:'FNCS 2025 Global Championship · Лион <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> · 6–7 сентября',
+celWorldChamp2025Sub:'FNCS 2025 Global Championship · Лион <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
 majorFinalsSlotNote:n=>'На Summit едут топ-'+n+' этого региона.', major2GcSlotNote:n=>'На Global Championship в Бельгию едут топ-'+n+' этого региона.',
+major3GcSlotNote:n=>'На Global Championship в Лион <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> едут топ-'+n+' этого региона.',
 majorFinalsResultTitle:n=>'Major Finals — итоговая таблица ('+n+' команд)',
 victoryRoyaleResult:'Victory Royale', placeOfTeams:(p,n)=>p+' место из '+n+' команд',
 collectionTitle:'Топ-20 редчайших карточек', collectionProgress:(h,t)=>'Собрано '+h+' из '+t+' — задрафть их хотя бы раз, чтобы отметить',
@@ -1976,7 +2002,20 @@ gcResultTitle:n=>'Global Championship, Antwerp <img src="https://flagcdn.com/w20
 liveWorlds:'Global Championship · Antwerp <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
 celWorldsTitle:'YOU ARE GOING TO ANTWERP', celWorldsSub:'Fortnite Global Championship · Antwerp <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> · 26–27 September',
 celWorldChampTitle:'WORLD CHAMPION', celWorldChampSub:'Fortnite Global Championship 2026',
+gc2025QualifiedTitle:'🌍 You made the LAN — FNCS 2025 Global Championship, Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
+gc2025QualifiedNote:(reg,rank,slots)=>reg+' carries '+slots+' Global Championship seats out of Major 3. You finished #'+rank+' in the Grand Finals. You are flying to France.',
+gc2025FieldTitle:'Who made it to Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gc2025FieldNote:'33 trios from around the world, 6–7 September 2025, Lyon-Décines. The prize pool is $2,001,000.',
+gc2025RouteM1:'Through the Major 1 Grand Finals', gc2025RouteM1Short:'Major 1',
+gc2025RouteM2:'Through the Major 2 Grand Finals', gc2025RouteM2Short:'Major 2',
+gc2025RouteM3:'Through the Major 3 Grand Finals', gc2025RouteM3Short:'Major 3',
+gc2025StageTitle:n=>'Global Championship — Grand Finals ('+n+' games across two days, 33 trios)',
+gc2025Champion:'🏆 World Champion — FNCS 2025 Global Championship',
+gc2025PlaceNote:rank=>'#'+rank+' at the World Championship in Lyon',
+gc2025ResultTitle:n=>'Global Championship, Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> — '+n+' trios',
+celLyonTitle:'YOU ARE GOING TO LYON', celLyonSub:'FNCS 2025 Global Championship · Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> · 6–7 September',
+celWorldChamp2025Sub:'FNCS 2025 Global Championship · Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
 majorFinalsSlotNote:n=>'The top '+n+' of this region fly to the Summit.', major2GcSlotNote:n=>'The top '+n+' of this region fly to the Global Championship in Belgium.',
+major3GcSlotNote:n=>'The top '+n+' of this region fly to the Global Championship in Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">.',
 
 tagline:'Draft a squad of real players who qualified for an FNCS Grand Finals, and run a simulated tournament.',
 supportBtn:'Support',
@@ -2149,6 +2188,9 @@ stage1TitleCards:'Stage 1 — Seeding (6 games, 50-team lobbies)',
 landingFieldTitle:n=>'The lobby ('+n+' '+(squadSize===3?'trios':squadSize===4?'squads':'duos')+')', stageGamesToggle:'Show the game-by-game log', qualByVR:'Advanced on a Victory Royale', qualByPoints:'Advanced on points', stage2NoteByVR:'Victory Royale — instant qualification, no more games',
 regionResultHeader:'Regional', dropHeader:'Drop · record', prizeHeader:'Prize', prizeTitle:'💰 Squad earnings', prizePerPlayer:v=>v+' per player',
 prizeRegional:(reg,rank)=>reg+' Grand Finals · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
+prizeGc2025:rank=>'Global Championship, Lyon · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
+runSummaryTitle:'📋 Your run, stage by stage', runSummaryStage:'Stage', runSummaryEarned:'Earned across the run',
+runSummaryNoEarnings:'No prize money — the run ended before a stage that pays.',
 rowHistoryHint:'Click for this team\'s games', stageTableTitle:'Stage standings', stageCutLabel:n=>'— cut line: top '+n+' advance —',
 stageTableTeam:'Team', stageTableRegion:'Region',
 summitFieldTitle:'Who made the Summit', summitRouteMain:'Grand Finals', summitRouteScq:'Second Chance',
@@ -26315,8 +26357,34 @@ const PLAYER_ROLE={
   "ťrae":"I",
   "коро supero 289":"I"
 };
+// A role belongs to the player, not to the spelling of their name. The table is
+// keyed on the handle the fantasy tables printed, and the same person is written
+// differently from event to event — case, an org tag, a decorated character — so
+// an exact lookup gives a 2025 trio card a guessed role while that player's 2026
+// duo card carries the real one. Matching on the stripped handle as well carries
+// the role across both.
+//
+// Where two different people strip to the same key and disagree, the key is
+// dropped: a coin-flip between two real roles is worse than the attribute
+// fallback, which at least reads the player's own numbers.
+const _roleNorm=s=>String(s==null?'':s).toLowerCase().replace(/[^a-z0-9]/g,'');
+let _ROLE_BY_NORM=null;
+function roleByNorm(){
+  if(_ROLE_BY_NORM) return _ROLE_BY_NORM;
+  _ROLE_BY_NORM={};
+  Object.keys(PLAYER_ROLE).forEach(h=>{
+    const k=_roleNorm(h);
+    if(!k) return;
+    if(!(k in _ROLE_BY_NORM)) _ROLE_BY_NORM[k]=PLAYER_ROLE[h];
+    else if(_ROLE_BY_NORM[k]!==PLAYER_ROLE[h]) _ROLE_BY_NORM[k]=null;
+  });
+  return _ROLE_BY_NORM;
+}
 function realRoleKey(p){
-  const r=p && PLAYER_ROLE[p.handle];
+  const h=p && p.handle;
+  if(!h) return null;
+  const r=PLAYER_ROLE[h] || roleByNorm()[_roleNorm(h)]
+       || (p.liquiName && (PLAYER_ROLE[p.liquiName] || roleByNorm()[_roleNorm(p.liquiName)]));
   return r==='I' ? 'roleIGL' : (r==='F' ? 'roleFRG' : null);
 }
 
@@ -27586,6 +27654,42 @@ function useLandingSet(key){
 
 // Rating-tier colors (1-10 scale) — green = best drop, red = worst, matching
 // the classic Kinch-style landing-spot heatmap look.
+// Every nickname in a rectangle, one name per line, sized against the map rather
+// than against the screen. `cqh` is one percent of the map frame's height and the
+// rectangles are measured in exactly that unit, so the column is laid out to the
+// box it sits in at any window size.
+//
+// One name per line, not one team per line: a trio written out as
+// "Player & Player & Player" is three times wider than a POI box, so the old
+// single-line label had to shrink to 3-6px and was then cropped to an ellipsis —
+// which is to say the drop map printed nobody's name. Below the floor the column
+// is allowed to spill out of the rectangle instead of shrinking further; an
+// unreadable name in the box is worth less than a readable one just outside it.
+const ZONE_NAME_MIN_PX=7, ZONE_NAME_MAX_PX=13;
+function fillZoneNames(plot, teams, zone){
+  const lines=[];
+  (teams||[]).forEach((t,ti)=>{
+    const squad=t.squad||[];
+    const names=squad.length ? squad.map(p=>p.handle)
+                             : [String(t.name||'').replace(/<[^>]+>/g,'')];
+    names.forEach((n,i)=>lines.push({text:n, isYou:!!t.isYou, gap:i===0 && ti>0}));
+  });
+  if(!lines.length) return;
+  // 0.92 leaves the border and padding their two pixels; 2.0cqh is where a name
+  // stops growing, so a single squad in a huge box does not print a headline.
+  const k=Math.min(2.0, (zone.h*0.92)/lines.length);
+  const size='clamp('+ZONE_NAME_MIN_PX+'px, '+k.toFixed(2)+'cqh, '+ZONE_NAME_MAX_PX+'px)';
+  lines.forEach(l=>{
+    const el=document.createElement('div');
+    el.className='zone-name'+(l.isYou?' zone-name-you':'');
+    el.style.fontSize=size;
+    if(l.gap) el.style.marginTop='0.3em';
+    el.textContent=l.text;
+    el.title=l.text;
+    plot.appendChild(el);
+  });
+}
+
 function zoneRatingColors(points){
   if(points>=8) return {border:'#3ddc4a', bg:'rgba(61,220,74,.16)'};
   if(points>=6) return {border:'#e8d84a', bg:'rgba(232,216,74,.16)'};
@@ -27865,9 +27969,13 @@ function fieldTarget(){ return CARD_MODE ? CARD_FIELD : PLAYIN_TARGET; }
 // and the only way out is all three disbanding and forfeiting the seat. So the
 // trios that took a Global Championship seat out of Major 1 enter Major 2
 // together, exactly as the Summit duos enter 2026's Major 2 together.
+// The lock compounds: a Major 1 qualifier is held together through Major 2 *and*
+// Major 3, and by Major 3 the Major 2 qualifiers are locked as well. So Major 3's
+// lobby seats both sets of trios as they really entered it.
 function lockedTeamsForSet(){
   return CARD_SET==='m2' ? GC_SUMMIT_DUOS
-       : CARD_SET==='t2' ? GC2025_M1_TRIOS : [];
+       : CARD_SET==='t2' ? GC2025_M1_TRIOS
+       : CARD_SET==='t3' ? GC2025_M1_TRIOS.concat(GC2025_M2_TRIOS) : [];
 }
 // Every trio that really played this Major, deduplicated -- a team that reached
 // the Grand Final is recorded at both stages it played.
@@ -28434,15 +28542,37 @@ const PRIZE_TABLES_M2={"EU":M2_EU_PRIZES,"NAC":M2_NAC_PRIZES,"NAW":M2_NAW_PRIZES
 
 const PRIZE_POOL_TOTAL={"EU":591500,"NAC":412000,"NAW":137000,"BR":137000,"ASIA":75000,"ME":75000,"OCE":75000,"SUMMIT":1296000};
 
+// The 2025 season paid on its own tables and they are nothing like 2026's: a
+// trio Grand Final in Europe paid $180,000 for the win against the duo Major's
+// $120,000, and only the top 25 of 33 were paid at all. Read off Liquipedia's
+// prize-pool tables, one page per Major per region — see
+// tools/build-2025-prizes.js — and every region's table is checked against the
+// total that page declares before it is written here.
+//
+// GC2025_PRIZES is the Lyon Grand Finals: 33 places, $2,001,000, which is the
+// figure Epic published and exactly what these 33 numbers add up to.
+const GC2025_PRIZES={"1":450000,"2":300000,"3":225000,"4":180000,"5":135000,"6":90000,"7":75000,"8":60000,"9":45000,"10":36000,"11":33000,"12":30000,"13":27000,"14":27000,"15":24000,"16":24000,"17":21000,"18":21000,"19":18000,"20":18000,"21":15000,"22":15000,"23":15000,"24":15000,"25":15000,"26":12000,"27":12000,"28":12000,"29":12000,"30":12000,"31":9000,"32":9000,"33":9000};
+const PRIZE_TABLES_2025={t1:{}, t2:{}, t3:{}};
+
+function prizeTableFor(table){
+  if(table==='GCLC') return GCLC_PRIZES;
+  if(table==='GC2025') return GC2025_PRIZES;
+  if(PRIZE_TABLES_2025[CARD_SET]){
+    // A 2025 place is never paid off a 2026 table. A region whose table has not
+    // been read yet pays nothing and says so, rather than borrowing numbers from
+    // a different season and a different team size.
+    return PRIZE_TABLES_2025[CARD_SET][table] || null;
+  }
+  if(CARD_SET==='m2' && PRIZE_TABLES_M2[table]) return PRIZE_TABLES_M2[table];
+  return PRIZE_TABLES[table] || null;
+}
 function prizeFor(table, rank){
-  if(table==='GCLC') return GCLC_PRIZES[String(rank)] || 0;
-  const t=(CARD_SET==='m2' && PRIZE_TABLES_M2[table]) ? PRIZE_TABLES_M2[table] : PRIZE_TABLES[table];
-  if(!t) return 0;
-  return t[String(rank)] || 0;
+  const t=prizeTableFor(table);
+  return t ? (t[String(rank)] || 0) : 0;
 }
 function fmtMoney(v){ return '$'+Math.round(v).toLocaleString(LANG==='ru'?'ru-RU':'en-US'); }
 
-// A single earnings card: regional final, the Summit, and the duo total.
+// A single earnings card: regional final, the Summit, and the squad total.
 function renderPrizeCard(lines, total){
   const container=document.getElementById('majorStages');
   const card=document.createElement('div');
@@ -28451,7 +28581,7 @@ function renderPrizeCard(lines, total){
     <div class="prize-glow"></div>
     <h4>${L().prizeTitle}</h4>
     <div class="prize-total">${fmtMoney(total)}</div>
-    <div class="prize-sub">${L().prizePerPlayer(fmtMoney(total/2))}</div>
+    <div class="prize-sub">${L().prizePerPlayer(fmtMoney(total/(squadSize||2)))}</div>
     <div class="prize-rows">
       ${lines.map(l=>`<div class="prize-row">
         <span>${l.label}</span>
@@ -28460,6 +28590,43 @@ function renderPrizeCard(lines, total){
     </div>`;
   container.appendChild(card);
   card.scrollIntoView({block:'center', behavior:'smooth'});
+  return card;
+}
+
+// The whole run on one card: where the squad finished at every stage it played,
+// and what the run paid. A tournament used to end with the last stage card and a
+// two-line earnings box that only knew about the regional final and the Summit,
+// so a player had to scroll back through the page to answer "how did I do" and
+// could not answer "what did I earn" at all.
+function renderRunSummaryCard(){
+  if(!runPlaces.length) return null;
+  const total=runEarnings.reduce((s,l)=>s+l.amount,0);
+  const container=document.getElementById('majorStages');
+  const card=document.createElement('div');
+  card.className='stage-card';
+  const placeRows=runPlaces.map(p=>`<tr class="lobby-row">
+      <td>${esc(p.title)}</td>
+      <td class="num"><b style="color:${p.passed?'var(--accent)':'var(--ink-dim)'};">#${p.rank}</b>
+        <span style="color:var(--ink-dimmer);">/${p.total}</span></td>
+      <td class="num" style="color:var(--ink-dim);">${p.points}</td></tr>`).join('');
+  const moneyRows=runEarnings.map(l=>`<div class="prize-row">
+      <span>${l.label}</span><b>${fmtMoney(l.amount)}</b></div>`).join('');
+  card.innerHTML=`<h4>${L().runSummaryTitle}</h4>
+    <div class="lobby-wrap" style="margin-top:6px;">
+      <table class="lobby-table">
+        <thead><tr><th>${L().runSummaryStage}</th><th class="num">${L().placeHeader}</th><th class="num">${L().ptsHeader}</th></tr></thead>
+        <tbody>${placeRows}</tbody>
+      </table>
+    </div>
+    <div style="margin-top:14px;font-size:12px;font-weight:800;text-transform:uppercase;
+      letter-spacing:.06em;color:var(--accent);">${L().runSummaryEarned}</div>
+    ${total>0
+      ? `<div class="prize-rows" style="margin-left:0;">${moneyRows}
+         <div class="prize-row" style="border-top:1px solid var(--line);margin-top:6px;padding-top:8px;">
+           <span><b>${L().totalWord}</b></span><b>${fmtMoney(total)}</b></div></div>
+         <div class="prize-sub" style="text-align:left;">${L().prizePerPlayer(fmtMoney(total/(squadSize||2)))}</div>`
+      : `<div class="stage-detail">${L().runSummaryNoEarnings}</div>`}`;
+  container.appendChild(card);
   return card;
 }
 
@@ -28510,12 +28677,33 @@ async function revealStageLog(you, shell, instant){
   shell.summaryEl.innerHTML=`${L().matchesWord}: <b>${matches}</b> · ${L().winsWord}: <b>${you.wins||0}</b> · ${L().avgElimsWord}: <b>${avgElims}</b> · ${L().avgPlaceWord}: <b>${avgPlace}</b>`;
 }
 
+// The run's own record. Every stage card that gets finalised writes a placement
+// here, and every payout writes an earning — so the summary at the end is the
+// run as it actually happened rather than a second guess at it.
+let runPlaces=[], runEarnings=[];
+function resetRunRecord(){ runPlaces=[]; runEarnings=[]; }
+function recordPlace(title, rank, total, passed, points){
+  if(rank==null || !total) return;
+  runPlaces.push({title:String(title==null?'':title).replace(/<[^>]+>/g,'').trim(),
+                  rank, total, passed:!!passed, points:points||0});
+}
+function recordEarning(label, amount){
+  if(!(amount>0)) return;
+  runEarnings.push({label, amount});
+}
+
 function finalizeStageCard(shell, rank, total, points, passed, vr, note){
   const badge = passed ? '<span class="stage-badge pass">'+L().stagePassBadge+'</span>' : '<span class="stage-badge fail">'+L().stageFailBadge+'</span>';
   shell.badgeEl.innerHTML=badge;
   shell.card.classList.add(passed?'pass':'fail');
   const vrLine = vr ? '<br>'+L().synergyBonusVictory : '';
   shell.summaryEl.innerHTML = `${L().yourSquadTitle}: <b>#${rank}</b> ${L().place2plus}${total}${L().teamsWord}, <b>${points}</b> ${L().ptsHeader.toLowerCase()}${vrLine}${note?'<br>'+note:''}<br>` + shell.summaryEl.innerHTML;
+  // The stage's own heading is its name, so the summary never has to be told
+  // separately what each stage was called — and a stage added later shows up in
+  // the summary without anybody remembering to list it.
+  const h=shell.card.querySelector('h4');
+  const title=h ? h.textContent.replace(L().stagePassBadge,'').replace(L().stageFailBadge,'') : '';
+  recordPlace(title, rank, total, passed, points);
 }
 
 // A match lobby caps at 50 duos, but a field almost never divides by 50 exactly.
@@ -28600,6 +28788,9 @@ function simulateGamesRandomLobbies(teams, numGames, lobbySize, pointsFn, killMu
 
 function finishMajorEliminatedAnim(you){
   removeSkipButton();
+  // A run that ended early still has a story: it played stages and finished
+  // somewhere in each of them.
+  renderRunSummaryCard();
   document.getElementById('finalBanner').style.display='block';
   document.getElementById('finalPlace').textContent=L().eliminatedBanner;
   document.getElementById('lobbyTitle').textContent='';
@@ -28934,7 +29125,10 @@ async function pickInitialZone(you, bots){
     const plot=document.createElement('div');
     plot.className='land-zone'+(occupied?' taken contested':'');
     plot.style.left=z.x+'%'; plot.style.top=z.y+'%'; plot.style.width=z.w+'%'; plot.style.height=z.h+'%';
-    plot.style.zIndex = occupied ? '20' : '40';
+    // The occupied boxes carry the names, so they sit above the empty ones: a
+    // column that outgrows its rectangle has to paint over its neighbour rather
+    // than disappear behind it.
+    plot.style.zIndex = occupied ? '40' : '20';
     if(occupied){
       // Same read as the real FNCS drop map: red means a contested box, plain
       // dark means somebody is there but alone.
@@ -28947,19 +29141,7 @@ async function pickInitialZone(you, bots){
         plot.style.background='rgba(10,14,20,.55)';
         plot.style.boxShadow='inset 0 0 0 1px rgba(0,0,0,.55)';
       }
-      // Font follows the box: a tall stack of names in a small box needs to shrink,
-      // otherwise the last one is clipped away entirely.
-      const area=z.w*z.h;
-      const base=(area>140?11.5:area>70?10:8.5);
-      const fontPx=Math.max(6.5, base * (group.length>2 ? Math.pow(0.82, group.length-2) : 1));
-      group.forEach(t=>{
-        const label=document.createElement('div');
-        label.className='zone-name';
-        label.style.fontSize=fontPx.toFixed(1)+'px';
-        label.textContent=t.name.replace(/<[^>]+>/g,'');
-        label.title=label.textContent;
-        plot.appendChild(label);
-      });
+      fillZoneNames(plot, group, z);
     } else {
       // Nobody drops here — black box, so a free spot reads at a glance.
       plot.style.borderColor='#0a0a0a';
@@ -29237,6 +29419,7 @@ function computeQuietLCQWinners(field, lclGames){
 
 async function runMajorTournament(){
   skipAnimation=false;
+  resetRunRecord();
   document.getElementById('majorStages').innerHTML='';
   document.getElementById('lobbyTitle').textContent='';
   document.getElementById('lobbyBody').innerHTML='';
@@ -29381,10 +29564,15 @@ async function runMajorTournament(){
   const myGfRegion=(you.squad[0]||{}).region;
   const gfSlots = !CARD_MODE ? 0
     : CARD_SET==='m1' ? (SUMMIT_SLOTS[myGfRegion]||0)
-    : CARD_SET==='m2' ? (MAJOR2_GC_SLOTS[myGfRegion]||0) : 0;
+    : CARD_SET==='m2' ? (MAJOR2_GC_SLOTS[myGfRegion]||0)
+    // Major 3 is the last road to Lyon, and section 6 of the 2025 rules says how
+    // many seats each region carries down it.
+    : CARD_SET==='t3' ? (GC2025_M3_SEATS[myGfRegion]||0) : 0;
   finalizeStageCard(gfShell, youFinalRank, finalTeams.length, you.stagePts,
     gfSlots ? youFinalRank<=gfSlots : youFinalRank===1, you.gotVR,
-    gfSlots ? (CARD_SET==='m2' ? L().major2GcSlotNote(gfSlots) : L().majorFinalsSlotNote(gfSlots)) : '');
+    gfSlots ? (CARD_SET==='m2' ? L().major2GcSlotNote(gfSlots)
+             : CARD_SET==='t3' ? L().major3GcSlotNote(gfSlots)
+             : L().majorFinalsSlotNote(gfSlots)) : '');
   const gfPrize = CARD_MODE ? ((you.squad[0]||{}).region||null) : null;
   await revealStandings(gfShell, finalTeams, you, gfSlots || 0, null, null, gfPrize);
   if(gfPrize) lobbyPrizeTable=gfPrize;
@@ -29399,13 +29587,16 @@ async function runMajorTournament(){
   }
   let worlds=null;
   // Earnings card: what the regional final paid, plus the Summit if you made it.
-  if(CARD_MODE && (CARD_SET==='m1' || CARD_SET==='m2')){
+  // Every card set pays here, not just the two 2026 ones — the trio Majors have
+  // their own tables and used to run a whole season for nothing.
+  if(CARD_MODE){
     const myReg=(you.squad[0]||{}).region||'EU';
     const lines=[];
     const regional=prizeFor(myReg, youFinalRank);
     if(regional) lines.push({label:L().prizeRegional(regionName(myReg), youFinalRank), amount:regional});
     const summitPrize = summit ? prizeFor('SUMMIT', summit.rank) : 0;
     if(summitPrize) lines.push({label:L().prizeSummit(summit.rank), amount:summitPrize});
+    lines.forEach(l=>recordEarning(l.label, l.amount));
     const total=lines.reduce((s,l)=>s+l.amount,0);
     if(total>0){
       renderPrizeCard(lines, total);
@@ -29432,7 +29623,46 @@ async function runMajorTournament(){
     }
   }
 
+  // Major 3 2025 ends the season in Lyon. There is no Last Chance route into it —
+  // the 2025 rules fill all 33 seats off the three Majors' Finals Leaderboards —
+  // so the regional final is the only door.
+  let worlds2025=null;
+  if(CARD_MODE && CARD_SET==='t3' && gfSlots && youFinalRank<=gfSlots){
+    worlds2025=await runGlobalChampionship2025(you, youFinalRank, myGfRegion, finalTeams);
+  }
+
+  if(worlds2025){
+    // Lyon pays 33 places out of $2,001,000, so unlike Antwerp there is a real
+    // number to put on the board the moment the LAN ends.
+    const lyonPrize=prizeFor('GC2025', worlds2025.rank);
+    if(lyonPrize>0){
+      const line=[{label:L().prizeGc2025(worlds2025.rank), amount:lyonPrize}];
+      recordEarning(line[0].label, lyonPrize);
+      renderPrizeCard(line, lyonPrize);
+      if(!skipAnimation) await sleep(900);
+    }
+    renderRunSummaryCard();
+    finalTeams=worlds2025.ranked;
+    finalTeams.forEach(t=>{ t.totalPts=t.stagePts; t.totalElims=t.stageElims; });
+    you.gameLog=you.stageLog;
+    lobbyPrizeTable='GC2025';
+    document.getElementById('finalBanner').style.display='block';
+    document.getElementById('finalPlace').textContent='#'+worlds2025.rank;
+    document.getElementById('finalSub').textContent = worlds2025.champion
+      ? L().gc2025Champion : L().gc2025PlaceNote(worlds2025.rank);
+    document.getElementById('lobbyTitle').innerHTML=L().gc2025ResultTitle(worlds2025.total);
+    document.getElementById('lobbyTitle').scrollIntoView({block:'start', behavior:'smooth'});
+    renderLobby(finalTeams, you);
+    renderGameHistory(you);
+    renderStats();
+    finalizeRunStats(squadSize, true, worlds2025.rank, worlds2025.total, worlds2025.champion,
+                     cameFromLcq, true, you, finalTeams);
+    showShareButton(you, worlds2025.rank, worlds2025.total, true, finalTeams);
+    return;
+  }
+
   if(worlds){
+    renderRunSummaryCard();
     finalTeams=worlds.ranked;
     finalTeams.forEach(t=>{ t.totalPts=t.stagePts; t.totalElims=t.stageElims; });
     you.gameLog=you.stageLog;
@@ -29451,6 +29681,7 @@ async function runMajorTournament(){
   }
 
   if(summit){
+    renderRunSummaryCard();
     lastSummit=summit;
     lobbyPrizeTable='SUMMIT';
     finalTeams=summit.ranked;
@@ -29471,6 +29702,7 @@ async function runMajorTournament(){
     return;
   }
 
+  renderRunSummaryCard();
   document.getElementById('finalBanner').style.display='block';
   document.getElementById('finalPlace').textContent='#'+youFinalRank;
   document.getElementById('finalSub').textContent = youFinalRank===1 ? L().championMajor : L().placeInFinals(youFinalRank, finalTeams.length);
@@ -30158,6 +30390,47 @@ const GC2025_M1_TRIOS=[
   ['5aald','FKS','Hero']
 ];
 
+// ---------- FNCS 2025 Global Championship (LAN, Lyon) ----------
+// Epic's own 2025 rules, saved as ~/Desktop/GLOBAL 2025/gc2025-rules.json:
+// Lyon-Décines, 6–7 September 2025, 33 trios, 12 games over the two days, six a
+// day, $2,001,000. One cumulative leaderboard, like Antwerp and unlike the
+// Düsseldorf bracket.
+//
+// Section 6 allocates the 33 seats by Major and region. That table is what the
+// simulation runs on; what actually travelled was 8 / 13 / 12, because one Major
+// 1 seat went unused and the rules pass an unused advancement spot on. The real
+// field is what fills the seats, so both facts are kept rather than averaged.
+const GC2025_GAMES=12;
+const GC2025_FIELD_SIZE=33;
+const GC2025_M1_SEATS={EU:2, NAC:2, NAW:1, BR:1, ASIA:1, ME:1, OCE:1};   // 9 nominal, 8 travelled
+const GC2025_M2_SEATS={EU:5, NAC:3, NAW:1, BR:1, ASIA:1, ME:1, OCE:1};   // 13
+const GC2025_M3_SEATS={EU:4, NAC:2, NAW:1, BR:1, ASIA:1, ME:1, OCE:1};   // 11 nominal, 12 travelled
+
+// The other two Majors' qualifiers, from the same Liquipedia field
+// (~/Desktop/GLOBAL 2025/gc2025-qualification.json). These are never simulated —
+// they are real teams who won their seats at events this game does not replay,
+// which is the whole reason the Lyon field is worth having.
+const GC2025_M2_TRIOS=[
+  ['MariusCOW','Pixie','Vanyak3kk'], ['Fredoxie','PabloWingu','Tjino'],
+  ['Darm','Demus','pixx'], ['Merstach','Queasy','SwizzY'],
+  ['Chico','Hris','TaySon'], ['Clix','Eomzo','Higgs'],
+  ['Cooper','Curly','Reet'], ['Aminished','Braydz','Visxals'],
+  ['Ark','Salko','Sxhool'], ['Cadu','Stryker','Tisco'],
+  ['Kimkana','Raito','Razl'], ['Rew','saad','Snowy'],
+  ['alex','Anon','Resignz']
+];
+// Major 3's twelve, in the order Liquipedia lists them. Which region each one
+// took its seat in is not written on the field list, so it is read off the cards
+// themselves at run time (gc2025RegionOf) rather than typed in from a guess.
+const GC2025_M3_TRIOS=[
+  ['Japko','panzer','Setty'], ['FoCuS','Mikson','Upl'],
+  ['charyy','IDrop','Kami'], ['Chap','MrSavage','rezon ay'],
+  ['Boltz','Khanada','Rapid'], ['Muz','Shadow','Sphinx'],
+  ['EpikWhale','Paper','VicterV'], ['Gabzera','Scarpa','WeY'],
+  ['Buyuriru','Merem','wickesy'], ['Adapter','Balor','Mansour'],
+  ['Aspect','Cazi','Tinka'], ['Goofy','m0untain','VortexM']
+];
+
 const GC_SUMMIT_DUOS=[
   ['vic0','Malibuca'], ['Peterbot','Pollo'], ['shxrk','t3eny'], ['Sky','Scroll'],
   ['Acorn','Boltz'], ['Kingaling','Kraez'], ['Reet','Cooper'], ['Shadow','Vergo'],
@@ -30638,6 +30911,9 @@ async function runGcLastChance(you, region, opts){
   finalizeStageCard(shell, rank, finals.length, you.stagePts, wonSeat||alreadyQualified, you.gotVR, note);
   await revealStandings(shell, ranked, you, seatCut, null, seatSet, 'GCLC');
   removeSkipButton();
+  // The Last Chance Finals pay on their own table whether or not the seat comes
+  // with them, which is the whole reason an already-qualified duo turns up.
+  recordEarning(L().prizeGclc(rank), prizeFor('GCLC', rank));
   return {advanced:wonSeat, rank, total:finals.length, stage:'finals', qualifiers:seats};
 }
 
@@ -30668,6 +30944,194 @@ async function runGlobalChampionship(you, regionRank, region, lcqWinners, region
   await revealStandings(shell, ranked, you, 0);
   removeSkipButton();
   if(rank===1) await celebrate(L().celKicker, L().celWorldChampTitle, L().celWorldChampSub, 'gold', 160);
+  return {ranked, rank, total:field.length, champion:rank===1};
+}
+
+// ---------- FNCS 2025 Global Championship (Lyon) ----------
+// The 2025 season ends the way 2026's two halves do: a seat in your Major 3
+// Grand Final puts you on the plane. Lyon is one cumulative leaderboard over 12
+// games, so it is the Antwerp shape rather than the Düsseldorf bracket.
+
+// The Lyon field is written in Liquipedia's clean nicknames while the card pool
+// carries Tracker's raw in-game names, so the lookup normalises both. Only the
+// 2025 sets are indexed: every one of the 99 players at that LAN has a card from
+// the Majors they played that year, and a 2026 card of the same person is a
+// different result on a different season.
+let _GC2025_INDEX=null;
+function gc2025CardIndex(){
+  if(_GC2025_INDEX) return _GC2025_INDEX;
+  _GC2025_INDEX={};
+  PLAYERS.filter(p=>p.tier==='cardmode' && (p.cardSet==='t1'||p.cardSet==='t2'||p.cardSet==='t3'))
+    .forEach(p=>{
+      const k=_gcNorm(p.handle);
+      // Prefer the strongest card the person holds across the three Majors: the
+      // trio in Lyon is the one that just won a seat, not the one that went out
+      // in a Play-In in January.
+      if(!_GC2025_INDEX[k] || p.rating>_GC2025_INDEX[k].rating) _GC2025_INDEX[k]=p;
+    });
+  return _GC2025_INDEX;
+}
+function gc2025FindCard(handle, region, fallbackRating){
+  const idx=gc2025CardIndex();
+  const key=_gcNorm(handle);
+  const hit=idx[key] || idx[_gcNorm(GC_HANDLE_ALIAS[key]||'')];
+  if(hit) return hit;
+  // Nobody in the 2025 pool by that name — the seat was won at an event whose
+  // leaderboard was never imported. Keep the real person, rate them by the route
+  // they came through rather than dropping them from the field.
+  return {handle, nat:null, region:region||'EU', rating:fallbackRating,
+          rarity:rarityForRating(fallbackRating), tier:'cardmode', cardSet:CARD_SET,
+          event:'FNCS 2025 Global Championship', placement:null};
+}
+// Which region a real trio took its seat in. The field list does not say, so it
+// is read off the players' own cards — the region a card carries is the region
+// that leaderboard was played in.
+function gc2025RegionOf(handles){
+  const idx=gc2025CardIndex();
+  const votes={};
+  handles.forEach(h=>{ const c=idx[_gcNorm(h)]; if(c && c.region) votes[c.region]=(votes[c.region]||0)+1; });
+  let best=null;
+  Object.keys(votes).forEach(r=>{ if(best===null || votes[r]>votes[best]) best=r; });
+  return best;
+}
+function gc2025BuildTeam(handles, region, route, rating){
+  const squad=handles.map(hd=>gc2025FindCard(hd, region, rating));
+  const t=buildTeam(squad);
+  t.loadout=randomLoadoutBonus(squad.length); t.pow+=t.loadout;
+  t.name=teamLabel(squad);
+  t.gcRoute=route; t.summitRegion=region||gc2025RegionOf(handles);
+  return t;
+}
+
+// 33 trios: the eight that came out of Major 1 and the thirteen out of Major 2
+// exactly as they were, and twelve Major 3 seats — yours, the ones your own
+// region's final produced alongside you, and the real trios you did not displace.
+function buildGlobalChampionship2025Field(you, region, regionalFinal){
+  const field=[];
+  const seated=new Set();
+  (you.squad||[]).forEach(p=>seated.add(_gcNorm(p.handle)));
+  const seatReal=(trios, route, rating)=>{
+    trios.forEach(t=>{
+      // A trio the player broke into cannot fly as itself. Rule 4.1.7 already
+      // rebuilt it for this Major, so the seat travels with whoever they
+      // actually entered alongside; with no substitute recorded the seat is
+      // simply released and the fill below picks it up.
+      if(t.some(h=>seated.has(_gcNorm(h)))){
+        const solo=t.find(h=>!seated.has(_gcNorm(h)));
+        const sub=solo && LOCKED_TEAM_SUBS.get(_gcNorm(solo));
+        if(!sub) return;
+        const names=sub.map(pl=>pl.handle);
+        if(names.some(h=>seated.has(_gcNorm(h)))) return;
+        names.forEach(h=>seated.add(_gcNorm(h)));
+        field.push(gc2025BuildTeam(names, gc2025RegionOf(names), route, rating));
+        return;
+      }
+      t.forEach(h=>seated.add(_gcNorm(h)));
+      field.push(gc2025BuildTeam(t, gc2025RegionOf(t), route, rating));
+    });
+  };
+  seatReal(GC2025_M1_TRIOS, 'm1', 90);
+  seatReal(GC2025_M2_TRIOS, 'm2', 88);
+
+  // Major 3's seats. Your region sends what section 6 allocates it, and those
+  // teams are the ones you just played against — the rest of the Major's places
+  // go to the real trios from the other regions, then to any of your own
+  // region's real trios you did not take a seat from.
+  const mySeats=GC2025_M3_SEATS[region]||1;
+  const m3Total=GC2025_FIELD_SIZE-field.length-1;      // minus your own seat
+  const mine=[];
+  (regionalFinal||[]).forEach(t=>{
+    if(t===you || mine.length>=mySeats-1) return;
+    if((t.squad||[]).some(pl=>seated.has(_gcNorm(pl.handle)))) return;
+    (t.squad||[]).forEach(pl=>seated.add(_gcNorm(pl.handle)));
+    t.gcRoute='m3'; t.summitRegion=region;
+    mine.push(t);
+  });
+  mine.forEach(t=>field.push(t));
+
+  const realM3=GC2025_M3_TRIOS.map(t=>({handles:t, region:gc2025RegionOf(t)}));
+  const others=realM3.filter(t=>t.region!==region);
+  const home=realM3.filter(t=>t.region===region);
+  [...others, ...home].forEach(t=>{
+    if(field.length>=GC2025_FIELD_SIZE-1) return;
+    if(t.handles.some(h=>seated.has(_gcNorm(h)))) return;
+    t.handles.forEach(h=>seated.add(_gcNorm(h)));
+    field.push(gc2025BuildTeam(t.handles, t.region, 'm3', 86));
+  });
+
+  // Whatever the real field could not fill — the player displaced somebody and
+  // no substitute was recorded — comes off the same card pool the Major itself
+  // was drafted from, so the lobby is always the published size.
+  if(field.length<GC2025_FIELD_SIZE-1){
+    const taken=new Set();
+    field.forEach(t=>t.squad.forEach(p=>taken.add(hKey(p))));
+    (you.squad||[]).forEach(p=>taken.add(hKey(p)));
+    const avail=cardRosterPlayers().filter(p=>!taken.has(hKey(p)));
+    const before=field.length;
+    fillFieldTeams(avail, GC2025_FIELD_SIZE-1-field.length, 3, field);
+    for(let i=before;i<field.length;i++){
+      field[i].gcRoute='m3';
+      field[i].summitRegion=(field[i].squad[0]||{}).region||null;
+    }
+  }
+  you.gcRoute='m3'; you.summitRegion=region;
+  const capped=field.slice(0, GC2025_FIELD_SIZE-1);
+  capped.push(you);
+  return capped;
+}
+
+function renderGc2025FieldCard(field){
+  const container=document.getElementById('majorStages');
+  const card=document.createElement('div');
+  card.className='stage-card';
+  const group=route=>field.filter(t=>t.gcRoute===route);
+  const rowFor=(t,label)=>`<tr class="lobby-row${t.isYou?' lobby-you':''}">
+      <td>${t.isYou?'<b style="color:var(--lb-you);">'+t.name+'</b>':t.name}</td>
+      <td class="num" style="color:var(--ink-dimmer);font-size:12px;">${label}</td></tr>`;
+  const section=(title, teams, label)=>teams.length ? `<div style="margin-top:14px;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px;">
+        ${title} <span style="color:var(--ink-dimmer);font-weight:600;">(${teams.length})</span></div>
+      <div class="lobby-wrap"><table class="lobby-table"><tbody>
+        ${teams.map(t=>rowFor(t,label)).join('')}</tbody></table></div></div>` : '';
+  card.innerHTML=`<h4>${L().gc2025FieldTitle}</h4>
+    <div class="stage-detail">${L().gc2025FieldNote}</div>
+    ${section(L().gc2025RouteM1, group('m1'), L().gc2025RouteM1Short)}
+    ${section(L().gc2025RouteM2, group('m2'), L().gc2025RouteM2Short)}
+    ${section(L().gc2025RouteM3, group('m3'), L().gc2025RouteM3Short)}`;
+  container.appendChild(card);
+  card.scrollIntoView({block:'start', behavior:'smooth'});
+}
+
+async function runGlobalChampionship2025(you, regionRank, region, regionalFinal){
+  const container=document.getElementById('majorStages');
+  const intro=document.createElement('div');
+  intro.className='stage-card';
+  intro.innerHTML=`<h4>${L().gc2025QualifiedTitle}</h4>
+    <div class="stage-detail">${L().gc2025QualifiedNote(regionName(region), regionRank, GC2025_M3_SEATS[region]||0)}</div>`;
+  container.appendChild(intro);
+  intro.scrollIntoView({block:'center', behavior:'smooth'});
+  await celebrate(L().celKicker, L().celLyonTitle, L().celLyonSub, 'gold', 70);
+  ensureSkipButton();
+
+  const field=buildGlobalChampionship2025Field(you, region, regionalFinal);
+  renderGc2025FieldCard(field);
+  if(!skipAnimation) await sleep(900);
+
+  const zones=await showFinalsLandingPicker(field, you);
+  const shell=createStageCardShell(L().gc2025StageTitle(GC2025_GAMES));
+  // Four points an elimination — the value measured on all seven of the season's
+  // Grand Finals (T1_KILL.G). The LAN's own payload was never imported, so this
+  // is the season's final-stage ladder rather than a number read off Lyon.
+  await simulateGamesLive(field, GC2025_GAMES, pointsForPlace, T1_KILL.G, 'stage', 0, null, zones,
+    {stageName:L().liveWorlds});
+  const ranked=summitStandings(field);
+  const rank=ranked.indexOf(you)+1;
+  await revealStageLog(you, shell, true);
+  finalizeStageCard(shell, rank, field.length, you.stagePts, rank===1, you.gotVR,
+    rank===1 ? L().gc2025Champion : L().gc2025PlaceNote(rank));
+  await revealStandings(shell, ranked, you, 0, null, null, 'GC2025');
+  removeSkipButton();
+  if(rank===1) await celebrate(L().celKicker, L().celWorldChampTitle, L().celWorldChamp2025Sub, 'gold', 160);
   return {ranked, rank, total:field.length, champion:rank===1};
 }
 
@@ -31639,17 +32103,8 @@ function renderLandingResultsMap(teams){
     zoneMap.get(t.landingZone).push({t,i});
   });
 
-  // Squad-mode team names (4 handles) run much longer than duo/trio, so the
-  // same box needs noticeably smaller text to keep from overflowing/clipping.
-  const teamSquadSize=(teams[0] && teams[0].squad) ? teams[0].squad.length : 2;
-  const sizeFactor = teamSquadSize>=4 ? 0.6 : teamSquadSize===3 ? 0.7 : 0.92;
-
   zoneMap.forEach((entries,z)=>{
     const contested = entries.length>=2;
-    const area=z.w*z.h;
-    const baseFontPx = (area>200 ? 10 : area>120 ? 8 : area>60 ? 6.5 : 5);
-    const contestPenalty = contested ? Math.pow(0.68, entries.length-1) : 1;
-    const fontPx = baseFontPx * sizeFactor * contestPenalty;
     const plot=document.createElement('div');
     plot.className='land-plot'+(contested?' contested':'');
     if(!contested){
@@ -31658,13 +32113,11 @@ function renderLandingResultsMap(teams){
     plot.style.left=z.x+'%'; plot.style.top=z.y+'%';
     plot.style.width=z.w+'%'; plot.style.height=z.h+'%';
     plot.title=entries.map(({t,i})=>t.name.replace(/<[^>]+>/g,'')+' (#'+(i+1)+')').join(contested?' vs ':'');
-    entries.forEach(({t})=>{
-      const label=document.createElement('span');
-      label.style.fontSize=Math.max(fontPx, teamSquadSize>=4?3:teamSquadSize===3?3.5:4)+'px';
-      label.style.color = t.isYou ? 'var(--accent)' : '#fff';
-      label.textContent=t.name.replace(/<[^>]+>/g,'');
-      plot.appendChild(label);
-    });
+    // Same column as the picker map: one nickname per line, sized to the box in
+    // cqh. Squad mode used to need its own shrink factor here because four
+    // handles were written on a single line; per-line names make the squad size
+    // just another row count.
+    fillZoneNames(plot, entries.map(e=>e.t), z);
     layer.appendChild(plot);
   });
 
