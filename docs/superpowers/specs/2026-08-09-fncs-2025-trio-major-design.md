@@ -319,13 +319,34 @@ Already passed, before any code was written:
   bracket graphic — which is how the bracket's "top 5" was caught as a misreading.
 - Every team not returned at size three is enumerated above.
 
-Still to check, once built:
+Checked after building, headlessly:
+
+- All 4886 pre-existing cards were dumped before any edit and re-dumped after
+  each one. Ratings and rarities never moved. Five cards shift by one point of
+  overall, because experience is ranked against the whole dataset and a real
+  Major was added to it; proven to be the only cause by patching the 2025 stages
+  out of the experience tally, which makes the diff clean.
+- The mode starts at squad size three with a 3491-card roster across all seven
+  regions, and nationality resolves for 76% of it rather than Tracker's 68%,
+  because the existing cross-fill lends Liquipedia-verified countries to the
+  same handle in the same region.
+- Ratings top out at 96–97 in the deep regions and 85 in the thin ones, with
+  nothing clipped at either clamp and no card above 99. The last of those caught
+  a real bug: the S1neD meme pins a card to 101 and exempts the competitive sets
+  by name, so the new set walked past the exemption.
+- The bracket was run through the real tournament functions — seedHeats,
+  simulateGamesStopOnWin, heatQualifiers, computeQuietLCQWinners — for every
+  region. Thirty come out of the groups everywhere and the final field lands on
+  the published row count in all seven: 33, 33, 33, 33, 33, 30, 32.
+
+Still to check, by playing it:
 
 - Card ratings for each region's Grand Finals top three land inside the band
   `REGION_TOP` allows, with no card clipped at the 99 or 30 clamp.
-- The mode runs end to end in a browser for at least Europe and one two-group
-  region: the Play-In cut into groups, thirty out, Last Chance adding its regional
-  count, twelve
-  games, a champion.
-- `m1` and `m2` card ratings are byte-identical before and after, since `rowEntry`,
-  `KILL_MULT` and `majorFormat` are all touched.
+- A full interactive run in a real browser: the draft dealing three-player packs,
+  the stage cards reading correctly, the steel theme legible on every standings
+  screen, and a champion crowned. The Middle East is the case most worth watching,
+  because its Last Chance stage is skipped outright and no earlier set has ever
+  taken that path.
+- The console stays clean across a full run. The ten teams Tracker returned with
+  fewer than three accounts are the likeliest place a length assumption breaks.
