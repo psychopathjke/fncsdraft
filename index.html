@@ -21517,6 +21517,48 @@ const M1_CONSUMABLE_POOL=[
   {name:"Fishing Rod", rarity:"grey"},
   {name:"Small Fry", rarity:"grey"}
 ].map(w=>({...w, icon:'heal', mod:CONSUMABLE_MOD[w.rarity]}));
+// Chapter 6 Season 1 item art, pulled from the Fortnite Wiki by
+// tools/fetch-chapter6-art.js. Consulted only while the 2025 set is being
+// played: several names -- Chug Splash, Shield Potion, Med Kit -- also exist in
+// the 2026 maps with different pictures, so a plain name lookup would hand the
+// wrong season's art to whichever set asked second.
+const T1_ART={
+  "Fury Assault Rifle":"items/t1-fury-assault-rifle.webp",
+  "Holo Twister Assault Rifle":"items/t1-holo-twister-assault-rifle.webp",
+  "Ranger Assault Rifle":"items/t1-ranger-assault-rifle.webp",
+  "Sentinel Pump Shotgun":"items/t1-sentinel-pump-shotgun.webp",
+  "Oni Shotgun":"items/t1-oni-shotgun.webp",
+  "Twinfire Auto Shotgun":"items/t1-twinfire-auto-shotgun.webp",
+  "Veiled Precision SMG":"items/t1-veiled-precision-smg.webp",
+  "Surgefire SMG":"items/t1-surgefire-smg.webp",
+  "Suppressed Pistol":"items/t1-suppressed-pistol.webp",
+  "Lock On Pistol":"items/t1-lock-on-pistol.webp",
+  "Hunting Rifle":"items/t1-hunting-rifle.webp",
+  "Rail Gun":"items/t1-rail-gun.webp",
+  "Explosive Repeater Rifle":"items/t1-explosive-repeater-rifle.webp",
+  "Typhoon Blade":"items/t1-typhoon-blade.webp",
+  "Kinetic Blade":"items/t1-kinetic-blade.webp",
+  "Void Oni Mask":"items/t1-void-oni-mask.webp",
+  "Fire Oni Mask":"items/t1-fire-oni-mask.webp",
+  "Shockwave Grenade":"items/t1-shockwave-grenade.webp",
+  "Shield Bubble":"items/t1-shield-bubble.webp",
+  "Port-A-Bunker":"items/t1-port-a-bunker.webp",
+  "Big Bush Bomb":"items/t1-big-bush-bomb.webp",
+  "Shield Keg":"items/t1-shield-keg.webp",
+  "Chug Splash":"items/t1-chug-splash.webp",
+  "Med Kit":"items/t1-med-kit.webp",
+  "Shield Potion":"items/t1-shield-potion.webp",
+  "Small Shield Potion":"items/t1-small-shield-potion.webp",
+  "Bandages":"items/item-bandage.png",
+  // The boss mythics are the same models the floor loot uses, tinted gold, so
+  // they point at the base item rather than at a second copy of one picture.
+  "Night Rose's Veiled Precision SMG":"items/t1-veiled-precision-smg.webp",
+  "Night Rose's Void Oni Mask":"items/t1-void-oni-mask.webp",
+  "Shogun X Mythic Shotgun":"items/t1-oni-shotgun.webp",
+  "Typhoon Blade (Mythic)":"items/t1-typhoon-blade.webp",
+  "Fire Oni Mask (Mythic)":"items/t1-fire-oni-mask.webp"
+};
+
 const M1_ART={
   "Bandage":"items/m1-bandage.png",
   "Chaos Reloader Shotgun":"items/m1-chaos-reloader-shotgun.png",
@@ -21590,6 +21632,7 @@ const WEAPON_ART_BY_NAME={
 // are on screen in any given loot pack.
 function weaponIconHTML(o){
   const tag=src=>'<img alt="" loading="lazy" decoding="async" src="'+src+'">';
+  if(CARD_MODE && CARD_SET==='t1' && T1_ART[o.name]) return tag(T1_ART[o.name]);
   const m1=M1_ART[o.name];
   if(m1) return tag(m1);
   const w=WEAPON_ART[WEAPON_ART_BY_NAME[o.name]];
