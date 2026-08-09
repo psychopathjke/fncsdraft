@@ -26819,22 +26819,25 @@ const MODE_THEME={
            panel:'rgba(9,35,49,.62)', panel2:'rgba(12,44,60,.58)',
            inkDim:'#c4c8c4', inkDimmer:'#93a2a4', lineCol:'rgba(212,190,140,.24)'},
 
-  // FNCS 2025 is Chapter 6, whose in-game leaderboard was pale steel and
-  // lavender where Chapter 7 is teal. Sampled off the reference capture with
-  // tools/sample-palette.js rather than picked by eye:
-  //   backdrop, top right    #c6c7d0   pale steel, brightest corner
-  //   backdrop, left         #9ca3b4   mid steel — reused directly as inkDimmer
-  //   backdrop, bottom right #305170   the blue the world shows through
-  //   leader row             #e4e6e4   near white
-  //   alternating row        #a7a3bd   lavender — the hue lineCol and glow take
-  // Held in a dark register: the reference screen is light, and inverting a
-  // dark app to a light table means auditing every standings screen for colours
-  // hardcoded past these variables. The hues and their relationship to each
-  // other are the sampled ones; only the lightness is moved.
-  t1:     {glow:[[156,163,180,.50],[228,230,228,.36],[48,81,112,.72]],
-           pageBase:'linear-gradient(160deg,#2e3140 0%,#272a38 46%,#1c2735 100%)',
-           panel:'rgba(30,33,44,.62)', panel2:'rgba(39,42,56,.58)',
-           inkDim:'#c6c7d0', inkDimmer:'#9ca3b4', lineCol:'rgba(167,163,189,.24)'},
+  // FNCS 2025 is white, chrome and red where the 2026 Majors are teal and ice.
+  // These are not sampled off a screenshot: Epic publishes the season's own
+  // palette in the event metadata, which Tracker carries as imp_event.Colors,
+  // so this is the identity rather than my reading of a JPEG.
+  //   HighlightColor       #FF0040   the red slashes on the cover
+  //   PrimaryColor         #977EA5   mauve
+  //   BackgroundLeftColor  #829FA9   steel
+  //   BackgroundRightColor #FFFFFF   the white the whole set is built on
+  //   SecondaryColor       #161616   near black
+  // Two references agreeing is what settled it: #977EA5 is also, to within a
+  // shade, the lavender of the alternating rows sampled off the Chapter 6
+  // in-game leaderboard. Held in a dark register because the app is dark and
+  // the season is not — the hues are Epic's, only the lightness is moved, and
+  // the red stays at full strength on the hairlines where it reads as a
+  // signature rather than a wash.
+  t1:     {glow:[[255,0,64,.42],[255,255,255,.32],[22,22,22,.80]],
+           pageBase:'linear-gradient(160deg,#33303c 0%,#2a2731 46%,#1b1a1f 100%)',
+           panel:'rgba(28,26,33,.62)', panel2:'rgba(38,35,45,.58)',
+           inkDim:'#cfc9d6', inkDimmer:'#9b93a6', lineCol:'rgba(255,0,64,.26)'},
 
   allfncs:{accent:'#3f62ca', accentInk:'#0a1229', bg:['#0f1a38','#0d142b','#0a0f1f'],
            line:'rgba(130,160,240,.28)', soft:'rgba(130,160,240,.10)',
