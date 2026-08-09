@@ -23146,10 +23146,14 @@ const ZONE_SETS={
   // each image; both put the island at an aspect of 0.99, which is the check
   // that they describe the same thing.
   //
-  // Twenty-one, not the full grid. The detector reads black-outlined boxes from
-  // line segments and red translucent ones as filled regions, and a handful of
-  // boxes that share an edge still defeat it. Adding the rest is worth doing;
-  // twenty-one real spots beat forty invented ones in the meantime.
+  // Twenty-seven, which is every box the published map labels. Twenty-one came
+  // out of the detector -- black outlines read as line segments, red translucent
+  // ones as filled regions -- and the six it cannot separate were added by hand
+  // and checked by drawing all of them back over the source: the three stacked
+  // red boxes down the west coast, the red one in the middle, and the two large
+  // black ones at Tayson and Liwshe. Every one of those shares an edge with a
+  // neighbour, which is exactly what connected components and segment pairing
+  // both get wrong.
   t1:[
     {x:53.15,y:0,w:37.78,h:16.27},
     {x:36.02,y:1.18,w:13.76,h:18.2},
@@ -23162,8 +23166,14 @@ const ZONE_SETS={
     {x:36.02,y:19.38,w:13.76,h:8.88},
     {x:79.36,y:27.95,w:20.64,h:9.91},
     {x:33.53,y:28.85,w:15.23,h:12.28},
+    {x:52.42,y:31.07,w:20.94,h:15.68},
+    {x:2.64,y:32.25,w:21.23,h:17.01},
+    {x:80.97,y:39.35,w:19.03,h:21.75},
+    {x:36.16,y:42.6,w:15.23,h:23.37},
     {x:63.83,y:48.23,w:16.25,h:14.2},
+    {x:7.76,y:49.26,w:16.84,h:8.43},
     {x:25.32,y:55.92,w:10.98,h:5.03},
+    {x:2.64,y:57.69,w:20.5,h:17.46},
     {x:25.32,y:60.94,w:10.24,h:6.5},
     {x:81.7,y:61.83,w:18.01,h:17.46},
     {x:62.81,y:62.73,w:18.01,h:16.57},
