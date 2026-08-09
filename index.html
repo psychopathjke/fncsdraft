@@ -27109,9 +27109,14 @@ const POI_COORDS=[
 const MAP_ART={
   m1:"art/map-m1.jpg",
   m2:"art/map-m2.jpg",
-  t1:"art/map-t1.jpg"
+  t1:"art/map-t1.jpg",
+  // The islands Majors 2 and 3 were actually played on, taken from each Major's
+  // own Grand Final drop map and cropped to the island by tools/crop-map.js.
+  t2:"art/map-t2.jpg",
+  t3:"art/map-t3.jpg"
 };
-const MAP_ASPECT={m1:'1100/1142', m2:'1100/970', t1:'1701/1714'};
+const MAP_ASPECT={m1:'1100/1142', m2:'1100/970', t1:'1701/1714',
+                  t2:'1280/1170', t3:'1280/1220'};
 // ---------- Real drop-spot data (Kinch Premium competitive evals) ----------
 // Zone quality used to be guessed from the rectangle: bigger box = more points.
 // These are the published numbers for the seasons the two islands are from —
@@ -27204,6 +27209,19 @@ const ZONE_SETS={
     {x:64.71,y:79.74,w:30.9,h:20.26},
     {x:24.6,y:85.35,w:25.19,h:10.8}
   ],
+  // Majors 2 and 3 show their own island but borrow Major 1's grid, and that is
+  // a stated shortfall rather than a design. Their own Grand Final drop maps are
+  // in the source folder and are the right input, but the extractor reads the
+  // bright outlines on them and not the black ones: 12 of about 40 boxes on the
+  // Major 2 map. Loosening the darkness threshold does not fix it -- 60 finds 92
+  // rectangles and 80 finds 271, most of them map furniture -- so the detector
+  // needs real work rather than a tuned constant, and guessing 28 rectangles per
+  // island by eye would put invented numbers under the landing picker.
+  //
+  // Chapter 6 keeps the same landmass across Seasons 1 to 3, so these boxes sit
+  // on terrain rather than in the sea; they are simply not this season's POIs.
+  t2:null,   // filled below
+  t3:null,   // filled below
   m1:[
     {x:24.92,y:8.0,w:20.87,h:11.73},
     {x:46.73,y:9.88,w:10.91,h:11.59},
@@ -27284,6 +27302,12 @@ const ZONE_SETS={
   {x:8.5,y:87.9,w:17.46,h:6.32}
   ]
 };
+// Copied rather than aliased: useLandingSet spreads each rectangle into a fresh
+// object, but a shared array would still let a future per-island edit to one
+// Major silently move the other two.
+ZONE_SETS.t2=ZONE_SETS.t1.map(z=>({...z}));
+ZONE_SETS.t3=ZONE_SETS.t1.map(z=>({...z}));
+
 const ALL_LANDING_ZONES=[];
 
 // Populate once at load so anything reading the zones before a mode is picked

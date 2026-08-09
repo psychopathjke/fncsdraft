@@ -36,12 +36,13 @@ document.getElementById('i').onload = function(){
   // boxes are translucent FILLS, so treating them as outlines shreds each one
   // into a stack of stripes -- they are regions, and a region's bounding box is
   // already the rectangle.
+  var DARK = ${process.env.DARK || 42};
   var mask = new Uint8Array(W * H);     // black strokes only
   var fill = new Uint8Array(W * H);     // red washes
   for (var i = 0, p = 0; i < d.length; i += 4, p++){
     var r = d[i], gg = d[i+1], b = d[i+2];
     if (r > 95 && (r - gg) > 38 && (r - b) > 38) fill[p] = 1;
-    else if (r < 42 && gg < 42 && b < 42) mask[p] = 1;
+    else if (r < DARK && gg < DARK && b < DARK) mask[p] = 1;
   }
   var on = function(x, y){ return (x>=0 && y>=0 && x<W && y<H) ? mask[y*W+x] : 0; };
 
