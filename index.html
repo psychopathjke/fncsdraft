@@ -27575,6 +27575,14 @@ const DEEP_MAJOR_REGIONS=new Set(['EU','NAC']);
 // win -- and Oceania sent two. Games and qualifiers are different quantities
 // in 2025, which is why this exists separately from lclGames.
 const LCQ_WINNERS_2025={EU:3, NAC:3, NAW:3, BR:3, ASIA:3, ME:0, OCE:2};
+// Majors 2 and 3, counted the same way by tools/count-2025-bracket.js. A Lobby
+// leaderboard scores exactly 1000 for a team that advanced and exactly 0 for one
+// that did not -- placement and Victory Royale are worth nothing there -- so the
+// total is the flag, not a proxy for it. Every one of these qualifiers was then
+// found in its region's Grand Final, which is what makes the count safe to use.
+const LCQ_WINNERS_T2={EU:3, NAC:3, NAW:3, BR:3, ASIA:3, ME:3, OCE:2};
+const LCQ_WINNERS_T3={EU:3, NAC:3, NAW:2, BR:3, ASIA:3, ME:2, OCE:3};
+const LCQ_WINNERS_2025_BY_SET={t1:LCQ_WINNERS_2025, t2:LCQ_WINNERS_T2, t3:LCQ_WINNERS_T3};
 function majorFormat(region, cardSet){
   // FNCS 2025 ran groups, not heats: three in Europe and NA Central and two
   // everywhere else, the same split DEEP_MAJOR_REGIONS already describes.
@@ -27582,15 +27590,25 @@ function majorFormat(region, cardSet){
   // group where there are three and fifteen where there are two -- measured by
   // matching group rosters against final rosters, not read off the bracket,
   // which says "top 5" and means the Victory Royale flag.
-  if(cardSet==='t1'){
+  //
+  // All three Majors ran that same shape, counted independently for each. Two
+  // regions ended a man short of what it implies: Major 2's Middle East played
+  // its final with 30 teams and Major 3's Oceania with 32, when the groups plus
+  // the counted Lobby qualifiers come to 33 and 35. In both, every Lobby
+  // qualifier is present in the final, so what is missing is group qualifiers
+  // who did not turn up -- a no-show, not a different cut. The cut is modelled;
+  // the absence is not, exactly as Major 1's NA Central was left at 30.
+  if(LCQ_WINNERS_2025_BY_SET[cardSet]){
     const deep=DEEP_MAJOR_REGIONS.has(region) || !region;
+    const winners=LCQ_WINNERS_2025_BY_SET[cardSet];
     return {
       playInCut: deep ? 99 : 66,
       heats: deep ? [{games:5,cut:10},{games:5,cut:10},{games:5,cut:10}]
-                  // Brazil's second group ran six matches; everyone else five.
-                  : [{games:5,cut:15},{games:(region==='BR')?6:5,cut:15}],
+                  // Brazil's second group ran six matches in Major 1 and five in
+                  // both later Majors, so the quirk stays pinned to the set.
+                  : [{games:5,cut:15},{games:(cardSet==='t1' && region==='BR')?6:5,cut:15}],
       lclGames:3,
-      lcqWinners: (LCQ_WINNERS_2025[region]==null ? 3 : LCQ_WINNERS_2025[region]),
+      lcqWinners: (winners[region]==null ? 3 : winners[region]),
       gfGames:12
     };
   }
