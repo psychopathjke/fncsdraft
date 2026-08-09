@@ -26820,13 +26820,21 @@ const MODE_THEME={
            inkDim:'#c4c8c4', inkDimmer:'#93a2a4', lineCol:'rgba(212,190,140,.24)'},
 
   // FNCS 2025 is Chapter 6, whose in-game leaderboard was pale steel and
-  // lavender rather than Chapter 7's teal. Held in a dark register for now: the
-  // reference screen is light, and inverting a dark app to a light table means
-  // auditing every standings screen for colours hardcoded past these variables.
-  t1:     {glow:[[132,138,158,.50],[196,200,216,.38],[38,40,52,.78]],
-           pageBase:'linear-gradient(160deg,#2b2d3a 0%,#232530 46%,#1b1c25 100%)',
-           panel:'rgba(30,32,42,.62)', panel2:'rgba(38,40,52,.58)',
-           inkDim:'#c2c5d2', inkDimmer:'#9296a6', lineCol:'rgba(180,186,208,.22)'},
+  // lavender where Chapter 7 is teal. Sampled off the reference capture with
+  // tools/sample-palette.js rather than picked by eye:
+  //   backdrop, top right    #c6c7d0   pale steel, brightest corner
+  //   backdrop, left         #9ca3b4   mid steel — reused directly as inkDimmer
+  //   backdrop, bottom right #305170   the blue the world shows through
+  //   leader row             #e4e6e4   near white
+  //   alternating row        #a7a3bd   lavender — the hue lineCol and glow take
+  // Held in a dark register: the reference screen is light, and inverting a
+  // dark app to a light table means auditing every standings screen for colours
+  // hardcoded past these variables. The hues and their relationship to each
+  // other are the sampled ones; only the lightness is moved.
+  t1:     {glow:[[156,163,180,.50],[228,230,228,.36],[48,81,112,.72]],
+           pageBase:'linear-gradient(160deg,#2e3140 0%,#272a38 46%,#1c2735 100%)',
+           panel:'rgba(30,33,44,.62)', panel2:'rgba(39,42,56,.58)',
+           inkDim:'#c6c7d0', inkDimmer:'#9ca3b4', lineCol:'rgba(167,163,189,.24)'},
 
   allfncs:{accent:'#3f62ca', accentInk:'#0a1229', bg:['#0f1a38','#0d142b','#0a0f1f'],
            line:'rgba(130,160,240,.28)', soft:'rgba(130,160,240,.10)',
