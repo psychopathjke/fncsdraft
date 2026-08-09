@@ -23099,6 +23099,7 @@ let currentCandidates=[];
 // keeps both. Strong cards dominate the deal, but the tail is still there — some
 // packs come out thin, and a bad draft is a real outcome rather than something
 // the dealer protects you from.
+const PACK_SIZE=4;   // cards shown per pack, and candidates the AI weighs per slot
 let PACK_WEIGHT_EXPONENT=5, PACK_WEIGHT_FLOOR=45;
 // Per set, because the curve has to answer to the shape of the pool it deals
 // from. Measured, not guessed: with the 2026 numbers the 2025 pool returned a
@@ -23131,7 +23132,7 @@ function generatePack(){
   // the whole pool, not a protected slice of it, so a thin pack can still happen.
   let weighted = src.map(p=>({p, w: packWeightFor(p)}));
   let picks=[];
-  for(let i=0;i<4 && weighted.length>0;i++){
+  for(let i=0;i<PACK_SIZE && weighted.length>0;i++){
     const total=weighted.reduce((s,x)=>s+x.w,0);
     let r=Math.random()*total, idx=0;
     for(;idx<weighted.length;idx++){ r-=weighted[idx].w; if(r<=0) break; }
@@ -26537,13 +26538,43 @@ function buildTeam(squadArr){
 function flagFor(p){ return flagImg(p && p.nat, 15); }
 function teamLabel(squad){ return squad.map(p=>flagFor(p)+p.handle).join(' & '); }
 
+// Who the AI ends up with. This used to weight by 1 + rating/100*3, the same
+// curve the player's packs were moved off years ago because it makes a 96 only
+// about 1.4x likelier than a 60 -- which is to say the field was assembled
+// almost at random while the player was dealt the top of the pool and then got
+// to pick the best of four.
+//
+// On the 2026 islands that hid, because their pools are dense between 80 and 89
+// and even a near-random draw lands there. The 2025 pool has a hollow middle and
+// a median of 68, so the field collapsed to it: the player came out stronger
+// than every single AI team and won 9 of 22 games.
+//
+// Card mode now deals to the AI from the same curve it deals to the player, so
+// both sides see the same shape of pool. The free modes keep the old draw --
+// they are not a competition against a seeded field.
 function weightedPick(fromList){
-  const weighted = fromList.map(p=>({p, w: 1 + (p.rating/100)*3}));
+  const weighted = CARD_MODE
+    ? fromList.map(p=>({p, w: packWeightFor(p)}))
+    : fromList.map(p=>({p, w: 1 + (p.rating/100)*3}));
   const total = weighted.reduce((s,x)=>s+x.w,0);
-  let r=Math.random()*total, idx=0;
-  for(;idx<weighted.length;idx++){ r-=weighted[idx].w; if(r<=0) break; }
-  idx=Math.min(idx,weighted.length-1);
-  return idx;
+  const draw=()=>{
+    let r=Math.random()*total, i=0;
+    for(;i<weighted.length;i++){ r-=weighted[i].w; if(r<=0) break; }
+    return Math.min(i, weighted.length-1);
+  };
+  if(!CARD_MODE) return draw();
+  // The player is shown a pack of four and keeps one. Drawing once per slot
+  // handed the field a quarter of that choice, which is the other half of why
+  // the player outranked every AI team rather than merely most of them. The AI
+  // now sees the same four and keeps the best of them, so both sides are
+  // choosing rather than one choosing and one being dealt to.
+  let best=-1, bestOvr=-Infinity;
+  for(let k=0;k<PACK_SIZE;k++){
+    const i=draw();
+    const v=attrsFor(fromList[i]).ovr;
+    if(v>bestOvr){ bestOvr=v; best=i; }
+  }
+  return best;
 }
 
 // AI-built teams share a region, or belong to the English-speaking cluster (EU/NAC/NAW),
