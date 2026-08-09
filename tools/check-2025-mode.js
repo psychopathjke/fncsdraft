@@ -74,6 +74,22 @@ const BOOTSTRAP = `
       var withNat = roster.filter(function(p){ return !!p.nat; }).length;
       o.natCoverage = Math.round(100 * withNat / o.rosterSize) + '%';
       o.withOrg = roster.filter(function(p){ return !!p.org; }).length;
+
+      // Each Major was played on its own Chapter 6 season, so each has to draw
+      // its own loot. CARD_SET is what the getters switch on, so it is set here
+      // rather than passed.
+      var wasSet = CARD_SET, wasMode = CARD_MODE;
+      CARD_SET = set; CARD_MODE = true;
+      o.loot = {season: lootPoolSeasonName(),
+                weapons: activeWeaponPool().length,
+                weaponNames: new Set(activeWeaponPool().map(function(w){ return w.name; })).size,
+                consumables: T_CONSUMABLE_POOLS[set].length,
+                withArt: T_CONSUMABLE_POOLS[set].concat(activeWeaponPool())
+                          .filter(function(w){ return T_ART[set][w.name] || T1_ART[w.name] ||
+                                                      T2_ART[w.name] || T3_ART[w.name]; })
+                          .map(function(w){ return w.name; })
+                          .filter(function(v, i, a){ return a.indexOf(v) === i; }).length};
+      CARD_SET = wasSet; CARD_MODE = wasMode;
     });
 
     // Pool sizes only. Counting repeated trios would measure nothing: a trio

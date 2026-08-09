@@ -24973,7 +24973,7 @@ Object.keys(SEASON_LOOT).forEach(y=>{
 // Card modes are pinned to their own Major's season; everything else follows
 // whichever years the player left selected in the era filter.
 function activeWeaponPool(){
-  if(CARD_MODE && CARD_SET==='t1') return T1_WEAPON_POOL;
+  if(CARD_MODE && T_WEAPON_POOLS[CARD_SET]) return T_WEAPON_POOLS[CARD_SET];
   if(CARD_MODE && CARD_SET==='m1') return M1_WEAPON_POOL;
   if(CARD_MODE) return WEAPON_POOL;
   const years=(preSelectedYears||[]).filter(y=>SEASON_WEAPON_POOLS[y]);
@@ -24985,7 +24985,7 @@ function activeWeaponPool(){
 
 function lootPoolSeasonName(){
   const pick=y=>{ const s=SEASON_LOOT[y]; return s ? (LANG==='ru'?s.ru:s.en) : null; };
-  if(CARD_MODE && CARD_SET==='t1') return LANG==='ru' ? 'Глава 6, сезон 1' : 'Chapter 6, Season 1';
+  if(CARD_MODE && T_SEASON_NAME[CARD_SET]) return T_SEASON_NAME[CARD_SET][LANG==='ru' ? 0 : 1];
   if(CARD_MODE && CARD_SET==='m1') return LANG==='ru' ? 'Глава 7, сезон 2' : 'Chapter 7, Season 2';
   const years=(preSelectedYears||[]).filter(y=>SEASON_LOOT[y]).sort((a,b)=>a-b);
   if(!years.length) return pick(2026);
@@ -25038,7 +25038,7 @@ function generateWeaponPack(){
 }
 
 function generateHealPack(){
-  const src = (CARD_MODE && CARD_SET==='t1') ? T1_CONSUMABLE_POOL
+  const src = (CARD_MODE && T_CONSUMABLE_POOLS[CARD_SET]) ? T_CONSUMABLE_POOLS[CARD_SET]
             : (CARD_MODE && CARD_SET==='m1') ? M1_CONSUMABLE_POOL : M2_CONSUMABLE_POOL;
   return samplePack(src, 4)
     .map(w=>({name:w.name, rarity:w.rarity, icon:w.icon, mod:w.mod, color:CONSUMABLE_RARITY_COLOR[w.rarity]}));
@@ -25163,6 +25163,133 @@ const T1_CONSUMABLE_POOL=[
   {name:"Bandages", rarity:"grey", icon:'heal'}
 ].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
 
+// ---------- FNCS 2025 loot: Chapter 6 Season 2, Lawless ----------
+// The island Major 2 was played on. Taken from the season's own loot table on
+// the Fortnite Wiki, filtered to what was actually in the pool on the days the
+// Major ran: the Grand Finals were 26-27 April 2025, and an item counts if it
+// was added on or before that and vaulted no earlier than the season's end.
+// That filter is what keeps the one-day unvaultings out.
+//
+// Two exclusions, stated rather than silent. The crossover melee kits (Sub
+// Zero's and Scorpion's) are cosmetic-event items rather than season loot, and
+// the "Uncategorized" novelties are not weapons. Everything else the wiki lists
+// for the season is here.
+const T2_WEAPON_NAMES=[
+  ["Twin Mag Assault Rifle",'rifle'],
+  ["Holo Twister Assault Rifle",'rifle'],
+  ["Collateral Damage Assault Rifle",'rifle'],
+  ["Striker Burst Rifle",'rifle'],
+  ["Falcon Eye Sniper",'rifle'],
+  ["Sentinel Pump Shotgun",'shotgun'],
+  ["Infiltrator Pump Shotgun",'shotgun'],
+  ["Outlaw Shotgun",'shotgun'],
+  ["Twinfire Auto Shotgun",'shotgun'],
+  ["Pump & Dump",'shotgun'],
+  ["Veiled Precision SMG",'smg'],
+  ["Scoped Burst SMG",'smg'],
+  ["Suppressed Pistol",'pistol'],
+  ["Mammoth Pistol",'pistol']
+];
+// ---------- FNCS 2025 loot: Chapter 6 Season 3, Superhero ----------
+// The island Major 3 was played on -- Season 3, not Season 4. The Major's Grand
+// Finals were 2-3 August 2025 and Chapter 6 Season 4 did not begin until 7
+// August, so the season the tournament actually ran in is this one. Same filter:
+// in the pool on the day, which drops Season 3's long list of one-day
+// unvaultings and leaves the ten guns that were there all season.
+const T3_WEAPON_NAMES=[
+  ["Fury Assault Rifle",'rifle'],
+  ["Spire Rifle",'rifle'],
+  ["Deadeye DMR",'rifle'],
+  ["Sentinel Pump Shotgun",'shotgun'],
+  ["Outlaw Shotgun",'shotgun'],
+  ["Twinfire Auto Shotgun",'shotgun'],
+  ["Veiled Precision SMG",'smg'],
+  ["Surgefire SMG",'smg'],
+  ["Hyperburst Pistol",'pistol'],
+  ["Killswitch Revolvers",'pistol']
+];
+// Expanded across the same six-rarity ladder T1_WEAPON_POOL uses. The pack is a
+// draw from a rarity ladder rather than a claim about which variants shipped,
+// and the three 2025 modes have to be balanced against each other -- giving one
+// of them the wiki's exact per-weapon ladder and the others a flat six would
+// make their packs worth different amounts for no measured reason.
+const T2_WEAPON_POOL=[], T3_WEAPON_POOL=[];
+[[T2_WEAPON_NAMES, T2_WEAPON_POOL], [T3_WEAPON_NAMES, T3_WEAPON_POOL]].forEach(pair=>{
+  pair[0].forEach(([name,icon])=>{
+    ['common','uncommon','rare','epic','legendary','mythic'].forEach(rarity=>{
+      pair[1].push({name, rarity, icon, mod:RARITY_MOD[rarity]});
+    });
+  });
+});
+// Mobility, utility, healing and the POI mythics, with the wiki's own rarity
+// mapped onto the six the packs draw in: Mythic and Exotic are gold, then
+// Legendary, Epic, Rare, Uncommon and Common.
+const T2_CONSUMABLE_POOL=[
+  {name:"Baron's Double Down Pistol", rarity:"gold", icon:'pistol'},
+  {name:"Midas' Gilded Eye Drum Gun", rarity:"gold", icon:'smg'},
+  {name:"Brutus' Minigun", rarity:"gold", icon:'rifle'},
+  {name:"Enhanced Holo Twister Assault Rifle", rarity:"gold", icon:'rifle'},
+  {name:"Enhanced Sentinel Pump Shotgun", rarity:"gold", icon:'shotgun'},
+  {name:"Mythic Goldfish", rarity:"gold", icon:'heal'},
+  {name:"Chug Jug", rarity:"legendary", icon:'drink'},
+  {name:"Rocket Drill", rarity:"purple", icon:'rifle'},
+  {name:"Shockwave Grenade", rarity:"purple", icon:'shield'},
+  {name:"Pulse Scanner", rarity:"purple", icon:'shield'},
+  {name:"Business Turret", rarity:"purple", icon:'rifle'},
+  {name:"Rocket Ram", rarity:"blue", icon:'shield'},
+  {name:"Port-A-Cover", rarity:"blue", icon:'shield'},
+  {name:"Gold Splash", rarity:"blue", icon:'drink'},
+  {name:"Med-Mist Smoke Grenade", rarity:"blue", icon:'heal'},
+  {name:"Shield Potion", rarity:"blue", icon:'shield'},
+  {name:"Shield Fish", rarity:"blue", icon:'heal'},
+  {name:"Jellyfish", rarity:"blue", icon:'heal'},
+  {name:"Shield Bubble Jr.", rarity:"green", icon:'shield'},
+  {name:"Port-A-Bunker", rarity:"green", icon:'shield'},
+  {name:"Med Kit", rarity:"green", icon:'heal'},
+  {name:"Small Shield Potion", rarity:"green", icon:'shield'},
+  {name:"Flopper", rarity:"green", icon:'heal'},
+  {name:"Bandage", rarity:"grey", icon:'heal'},
+  {name:"Small Fries", rarity:"grey", icon:'heal'}
+].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
+// Season 3's superhero powers -- the Boons, the Sprites, and the crossover
+// calls -- are left out. They are the season's novelty layer rather than its
+// loot, and unlike everything above them there is no published competitive
+// sheet to say whether the Majors ran them. The Myst line is in: it is standard
+// utility loot in the wiki's own table.
+const T3_CONSUMABLE_POOL=[
+  {name:"Enhanced Spire Rifle", rarity:"gold", icon:'rifle'},
+  {name:"Kor's Deadeye DMR", rarity:"gold", icon:'rifle'},
+  {name:"Chug Jug", rarity:"legendary", icon:'drink'},
+  {name:"Ascended Myst", rarity:"legendary", icon:'shield'},
+  {name:"Shockwave Grenade", rarity:"purple", icon:'shield'},
+  {name:"Myst Gauntlets", rarity:"purple", icon:'shield'},
+  {name:"Myst Form", rarity:"purple", icon:'shield'},
+  {name:"Storm Beast's Pom Poms", rarity:"purple", icon:'shield'},
+  {name:"Tracking Visor", rarity:"blue", icon:'shield'},
+  {name:"Bass Boost", rarity:"blue", icon:'shield'},
+  {name:"Med-Mist Smoke Grenade", rarity:"blue", icon:'heal'},
+  {name:"Shield Potion", rarity:"blue", icon:'shield'},
+  {name:"Shield Fish", rarity:"blue", icon:'heal'},
+  {name:"Shield Bubble Jr.", rarity:"green", icon:'shield'},
+  {name:"Port-A-Bunker", rarity:"green", icon:'shield'},
+  {name:"Med Kit", rarity:"green", icon:'heal'},
+  {name:"Med-Mist", rarity:"green", icon:'heal'},
+  {name:"Small Shield Potion", rarity:"green", icon:'shield'},
+  {name:"Flopper", rarity:"green", icon:'heal'},
+  {name:"Bandage", rarity:"grey", icon:'heal'},
+  {name:"Small Fries", rarity:"grey", icon:'heal'}
+].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
+
+// Declared here rather than beside activeWeaponPool() above, which is where they
+// are read: these are values, not hoisted functions, so putting the table before
+// the pools it indexes throws on load and takes every declaration after it down
+// with it.
+const T_WEAPON_POOLS={t1:T1_WEAPON_POOL, t2:T2_WEAPON_POOL, t3:T3_WEAPON_POOL};
+const T_CONSUMABLE_POOLS={t1:T1_CONSUMABLE_POOL, t2:T2_CONSUMABLE_POOL, t3:T3_CONSUMABLE_POOL};
+const T_SEASON_NAME={t1:['Глава 6, сезон 1','Chapter 6, Season 1'],
+                     t2:['Глава 6, сезон 2','Chapter 6, Season 2'],
+                     t3:['Глава 6, сезон 3','Chapter 6, Season 3']};
+
 const M1_CONSUMABLE_POOL=[
   {name:"Mythic Goldfish", rarity:"gold"},
   {name:"Chug Jug", rarity:"legendary"},
@@ -25228,6 +25355,70 @@ const T1_ART={
   "Typhoon Blade (Mythic)":"items/t1-typhoon-blade.webp",
   "Fire Oni Mask (Mythic)":"items/t1-fire-oni-mask.webp"
 };
+
+// Major 2 and Major 3 art, resolved by tools/fetch-2025-art.js through the
+// wiki's own Special:FilePath rather than by pinning a CDN hash per item.
+// Ten of Major 2's items and seven of Major 3's resolve to nothing under any
+// spelling; several of those are items Major 1 already carries, which the
+// lookup falls back to, and the rest keep the built-in silhouette.
+const T2_ART={
+  "Striker Burst Rifle":"items/t2-striker-burst-rifle.webp",
+  "Falcon Eye Sniper":"items/t2-falcon-eye-sniper.webp",
+  "Sentinel Pump Shotgun":"items/t2-sentinel-pump-shotgun.webp",
+  "Infiltrator Pump Shotgun":"items/t2-infiltrator-pump-shotgun.webp",
+  "Outlaw Shotgun":"items/t2-outlaw-shotgun.webp",
+  "Twinfire Auto Shotgun":"items/t2-twinfire-auto-shotgun.webp",
+  "Pump & Dump":"items/t2-pump-dump.webp",
+  "Veiled Precision SMG":"items/t2-veiled-precision-smg.webp",
+  "Scoped Burst SMG":"items/t2-scoped-burst-smg.webp",
+  "Suppressed Pistol":"items/t2-suppressed-pistol.webp",
+  "Mammoth Pistol":"items/t2-mammoth-pistol.webp",
+  "Mythic Goldfish":"items/t2-mythic-goldfish.webp",
+  "Chug Jug":"items/t2-chug-jug.webp",
+  "Rocket Drill":"items/t2-rocket-drill.webp",
+  "Shockwave Grenade":"items/t2-shockwave-grenade.webp",
+  "Pulse Scanner":"items/t2-pulse-scanner.webp",
+  "Business Turret":"items/t2-business-turret.webp",
+  "Rocket Ram":"items/t2-rocket-ram.webp",
+  "Port-A-Cover":"items/t2-port-a-cover.webp",
+  "Gold Splash":"items/t2-gold-splash.webp",
+  "Med-Mist Smoke Grenade":"items/t2-med-mist-smoke-grenade.webp",
+  "Shield Potion":"items/t2-shield-potion.webp",
+  "Shield Fish":"items/t2-shield-fish.webp",
+  "Jellyfish":"items/t2-jellyfish.webp",
+  "Shield Bubble Jr.":"items/t2-shield-bubble-jr.webp",
+  "Port-A-Bunker":"items/t2-port-a-bunker.webp",
+  "Small Shield Potion":"items/t2-small-shield-potion.webp",
+  "Flopper":"items/t2-flopper.webp",
+  "Bandage":"items/t2-bandage.webp"
+};
+const T3_ART={
+  "Deadeye DMR":"items/t3-deadeye-dmr.webp",
+  "Sentinel Pump Shotgun":"items/t3-sentinel-pump-shotgun.webp",
+  "Outlaw Shotgun":"items/t3-outlaw-shotgun.webp",
+  "Twinfire Auto Shotgun":"items/t3-twinfire-auto-shotgun.webp",
+  "Veiled Precision SMG":"items/t3-veiled-precision-smg.webp",
+  "Surgefire SMG":"items/t3-surgefire-smg.webp",
+  "Hyperburst Pistol":"items/t3-hyperburst-pistol.webp",
+  "Killswitch Revolvers":"items/t3-killswitch-revolvers.webp",
+  "Chug Jug":"items/t3-chug-jug.webp",
+  "Ascended Myst":"items/t3-ascended-myst.webp",
+  "Shockwave Grenade":"items/t3-shockwave-grenade.webp",
+  "Myst Gauntlets":"items/t3-myst-gauntlets.webp",
+  "Myst Form":"items/t3-myst-form.webp",
+  "Storm Beast's Pom Poms":"items/t3-storm-beast-s-pom-poms.webp",
+  "Tracking Visor":"items/t3-tracking-visor.webp",
+  "Bass Boost":"items/t3-bass-boost.webp",
+  "Med-Mist Smoke Grenade":"items/t3-med-mist-smoke-grenade.webp",
+  "Shield Potion":"items/t3-shield-potion.webp",
+  "Shield Fish":"items/t3-shield-fish.webp",
+  "Shield Bubble Jr.":"items/t3-shield-bubble-jr.webp",
+  "Port-A-Bunker":"items/t3-port-a-bunker.webp",
+  "Small Shield Potion":"items/t3-small-shield-potion.webp",
+  "Flopper":"items/t3-flopper.webp",
+  "Bandage":"items/t3-bandage.webp"
+};
+const T_ART={t1:T1_ART, t2:T2_ART, t3:T3_ART};
 
 const M1_ART={
   "Bandage":"items/m1-bandage.png",
@@ -25302,7 +25493,14 @@ const WEAPON_ART_BY_NAME={
 // are on screen in any given loot pack.
 function weaponIconHTML(o){
   const tag=src=>'<img alt="" loading="lazy" decoding="async" src="'+src+'">';
-  if(CARD_MODE && CARD_SET==='t1' && T1_ART[o.name]) return tag(T1_ART[o.name]);
+  // The 2025 sets share most of their loot with each other, so a picture missing
+  // from one season's table is very often present in another's. Own set first,
+  // then the other two, then the silhouette.
+  if(CARD_MODE && T_ART[CARD_SET]){
+    for(const tbl of [T_ART[CARD_SET], T1_ART, T2_ART, T3_ART]){
+      if(tbl && tbl[o.name]) return tag(tbl[o.name]);
+    }
+  }
   const m1=M1_ART[o.name];
   if(m1) return tag(m1);
   const w=WEAPON_ART[WEAPON_ART_BY_NAME[o.name]];
