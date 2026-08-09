@@ -21072,6 +21072,15 @@ function translateDate(dateStr){
   return dateStr.replace(/(янв|фев|мар|апр|мая|июн|июл|авг|сен|окт|ноя|дек)/g, m=>MONTH_EN[m]||m);
 }
 
+// One place that knows what each card set is called. The old two-way ternary
+// read "Major 2" for anything that was not m1, so the 2025 mode announced
+// itself as Major 2 on its own start button.
+function cardSetName(set){
+  return set==='m1' ? 'FNCS Major 1'
+       : set==='t1' ? 'FNCS 2025 Major 1'
+       : 'FNCS Major 2';
+}
+
 function regionName(code){ if(code==='UNK') return L().regionUnk; const r=REGIONS.find(r=>r.code===code); if(!r) return code; return LANG==='ru' ? r.nameRu : r.nameEn; }
 
 // ---------- Balance: what the modifiers are allowed to be worth ----------
@@ -22932,7 +22941,7 @@ function startDraft(size, major){
   activeRegion='ALL'; round=0; rerollsLeft=2;
   isMajorMode=!!major;
   applyLobbyTheme();
-  const modeLabel = CARD_MODE ? (CARD_SET==='m1'?'FNCS Major 1':'FNCS Major 2')
+  const modeLabel = CARD_MODE ? cardSetName(CARD_SET)
     : (isMajorMode ? 'ALL FNCS' : (size===2?L().modeDuoTitle:(size===3?L().modeTrioTitle:L().modeSquadTitle)));
   const regionsLabel = preSelectedRegions.length>0 ? ' · '+preSelectedRegions.map(c=>regionName(c)).join(', ') : '';
   const eraLabel = preSelectedYears.length ? ' · '+preSelectedYears.slice().sort().join(', ') : '';
@@ -22940,7 +22949,7 @@ function startDraft(size, major){
   document.getElementById('squadTotal').textContent=size;
   document.getElementById('roundTotal').textContent=size;
   document.getElementById('goBtn').textContent = CARD_MODE
-    ? ((LANG==='ru'?'Начать ':'Start ')+(CARD_SET==='m1'?'FNCS Major 1':'FNCS Major 2'))
+    ? ((LANG==='ru'?'Начать ':'Start ')+cardSetName(CARD_SET))
     : (isMajorMode ? (LANG==='ru'?'Начать ALL FNCS':'Start ALL FNCS') : L().goToTournamentBtn);
   updateRerollUI();
   buildRegionFilter();
@@ -22995,6 +23004,16 @@ let currentCandidates=[];
 // packs come out thin, and a bad draft is a real outcome rather than something
 // the dealer protects you from.
 let PACK_WEIGHT_EXPONENT=5, PACK_WEIGHT_FLOOR=45;
+// Per set, because the curve has to answer to the shape of the pool it deals
+// from. Measured, not guessed: with the 2026 numbers the 2025 pool returned a
+// best-of-four of 94.5 and made 8.7% of packs elite from top to bottom, against
+// 0.1-0.6% for 2026. These bring it to 90.9 and 0.6%.
+const PACK_WEIGHTS={ t1:{exp:2, floor:35} };
+function packWeightFor(p){
+  const c=PACK_WEIGHTS[p.cardSet];
+  const exp=c?c.exp:PACK_WEIGHT_EXPONENT, floor=c?c.floor:PACK_WEIGHT_FLOOR;
+  return Math.pow(Math.max(1, attrsFor(p).ovr - floor), exp);
+}
 function generatePack(){
   const remaining=squadSize-drafted.length;
   if(remaining<=0) return [];
@@ -23014,8 +23033,7 @@ function generatePack(){
 
   // You draft before anybody else, so the deal leans hard on rating — but across
   // the whole pool, not a protected slice of it, so a thin pack can still happen.
-  let weighted = src.map(p=>({p,
-    w: Math.pow(Math.max(1, attrsFor(p).ovr - PACK_WEIGHT_FLOOR), PACK_WEIGHT_EXPONENT)}));
+  let weighted = src.map(p=>({p, w: packWeightFor(p)}));
   let picks=[];
   for(let i=0;i<4 && weighted.length>0;i++){
     const total=weighted.reduce((s,x)=>s+x.w,0);
