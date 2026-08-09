@@ -1076,6 +1076,16 @@
         <p data-i18n="modeCardsT1Desc"></p>
         <span class="mode-count" data-i18n="modeCardsT1Count"></span>
       </div>
+      <div class="mode-card" onclick="chooseMode(3, 'cards2025major2')">
+        <div class="ec-art" style="background-image:url(art/mode-major2-2025.jpg)"><span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span><span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateT2"></div><h3 class="ec-title" data-i18n="modeCardsT2Title"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubTrios"></span></div></div></div>
+        <p data-i18n="modeCardsT2Desc"></p>
+        <span class="mode-count" data-i18n="modeCardsT2Count"></span>
+      </div>
+      <div class="mode-card" onclick="chooseMode(3, 'cards2025major3')">
+        <div class="ec-art" style="background-image:url(art/mode-major3-2025.jpg)"><span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span><span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateT3"></div><h3 class="ec-title" data-i18n="modeCardsT3Title"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubTrios"></span></div></div></div>
+        <p data-i18n="modeCardsT3Desc"></p>
+        <span class="mode-count" data-i18n="modeCardsT3Count"></span>
+      </div>
     </div>
 
     <div class="mode-grid mode-grid-4" style="margin-top:16px;">
@@ -1555,6 +1565,8 @@ dataCreditText:'Флаги, составы и данные игроков — с
 badgeMode:'выбор режима',
 ecDateAll:'2021 — 2026', ecDateM1:'мар — май 2026', ecDateM2:'18 июл — 2 авг 2026',
 ecDateT1:'янв — фев 2025',
+ecDateT2:'апр 2025',
+ecDateT3:'июл — авг 2025',
 ecScopeAll:'Все регионы', ecScope7:'7 регионов', ecStCards:'Карточки',
 ecSubDuos:'Дуо', ecSubTrios:'Трио', ecSubSquads:'Сквад',
 modeDuoTitle:'Дуо', modeDuoDesc:'2 слота. Настоящий формат FNCS. Лобби из ~50 команд.', modeDuoCount:'2 игрока · цель 50 команд',
@@ -1594,7 +1606,7 @@ attrRowCon:'СТБ · Стабильность', attrRowConB:'очков за м
 attrRowClu:'КЛЧ · Клатч', attrRowCluB:'Victory Royale за матч',
 attrRowExp:'ОПТ · Опыт', attrRowExpB:'всего матчей FNCS',
 attrNote:'Каждая характеристика — место игрока среди тех, кто был с ним в том же лобби, а не абстрактная оценка. Случайных чисел нет ни в одной: наведи курсор на характеристику в карточке, и увидишь, из какой колонки таблицы она взята. Высокий ЭНД при низкой СТР — это игрок, который берёт местом, а не боем; наоборот — фраггер. Роль ФРГ или ИГЛ подписана под OVR.',
-sourcesNote:'<b>Источники карточек — с каких турниров реально взяты игроки:</b><br>Всего {EVENTS} турнира, {CARDS} карточек.<br><br>• <b>FNCS 2026 Major 2</b> — Play-In, Last Chance Qualifier и Grand Finals всех 7 регионов (18 июл — 2 авг 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> — Group Stage, Upper Bracket и Grand Finals (Дюссельдорф <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 мая 2026)<br>• <b>FNCS 2026 Major 1</b> — Play-In, Last Chance Qualifier и региональные Grand Finals всех 7 регионов (мар — май 2026)<br>• <b>FNCS 2025 Global Championship</b> — Grand Finals (Лион <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 сен 2025)<br>• <b>FNCS 2025 Major 3</b> — Grand Finals всех 7 регионов (2–3 авг 2025)<br>• <b>FNCS 2025 Major 1 / 2</b> — Europe Grand Finals (апр / июн 2025)<br>• <b>FNCS 2024 Global Championship</b> — Grand Finals (Форт-Уэрт <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 сен 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> — Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> — Grand Finals (Копенгаген <img src="https://flagcdn.com/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 окт 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> — Grand Finals Europe (мар / май / июн 2023)<br>• <b>FNCS Invitational 2022</b> — Grand Finals (Роли <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 ноя 2022)<br>• <b>FNCS 2021 Grand Royale</b> — Europe (21 ноя 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> — Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> — Solo Grand Finals Europe (26 июн 2021)<br><br>У каждого игрока в карточке видно, из какого именно турнира взят его результат. Один и тот же реальный человек может иметь несколько карточек — по одной на каждый турнир.<br><br><b>Редкость карточки:</b><br>Цвет идёт от того самого числа OVR, которое написано на карточке — что видишь, то и получаешь. Шкала фортнайтовская, цвета те же, что в игре.<br>• <b style="color:var(--mythic)">95+ · Мифический (золотой)</b><br>• <b style="color:var(--legendary)">90–94 · Легендарный (оранжевый)</b><br>• <b style="color:var(--epic)">80–89 · Эпический (фиолетовый)</b><br>• <b style="color:var(--rare)">70–79 · Редкий (синий)</b><br>• <b style="color:var(--uncommon)">60–69 · Необычный (зелёный)</b><br>• <b style="color:var(--common)">ниже 60 · Обычный (серый)</b><br>Мифик даётся только за сезон без слабых этапов — гранд-финал, хиты и кубки на одном уровне. Те же шесть цветов красят оружие и хилки в паках.',
+sourcesNote:'<b>Источники карточек — с каких турниров реально взяты игроки:</b><br>Всего {EVENTS} турнира, {CARDS} карточек.<br><br>• <b>FNCS 2026 Major 2</b> — Play-In, Last Chance Qualifier и Grand Finals всех 7 регионов (18 июл — 2 авг 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> — Group Stage, Upper Bracket и Grand Finals (Дюссельдорф <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 мая 2026)<br>• <b>FNCS 2026 Major 1</b> — Play-In, Last Chance Qualifier и региональные Grand Finals всех 7 регионов (мар — май 2026)<br>• <b>FNCS 2025 Global Championship</b> — Grand Finals (Лион <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 сен 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> — Play-In, Last Chance Qualifier и региональные Grand Finals всех 7 регионов, трио (янв — авг 2025)<br>• <b>FNCS 2024 Global Championship</b> — Grand Finals (Форт-Уэрт <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 сен 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> — Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> — Grand Finals (Копенгаген <img src="https://flagcdn.com/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 окт 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> — Grand Finals Europe (мар / май / июн 2023)<br>• <b>FNCS Invitational 2022</b> — Grand Finals (Роли <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 ноя 2022)<br>• <b>FNCS 2021 Grand Royale</b> — Europe (21 ноя 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> — Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> — Solo Grand Finals Europe (26 июн 2021)<br><br>У каждого игрока в карточке видно, из какого именно турнира взят его результат. Один и тот же реальный человек может иметь несколько карточек — по одной на каждый турнир.<br><br><b>Редкость карточки:</b><br>Цвет идёт от того самого числа OVR, которое написано на карточке — что видишь, то и получаешь. Шкала фортнайтовская, цвета те же, что в игре.<br>• <b style="color:var(--mythic)">95+ · Мифический (золотой)</b><br>• <b style="color:var(--legendary)">90–94 · Легендарный (оранжевый)</b><br>• <b style="color:var(--epic)">80–89 · Эпический (фиолетовый)</b><br>• <b style="color:var(--rare)">70–79 · Редкий (синий)</b><br>• <b style="color:var(--uncommon)">60–69 · Необычный (зелёный)</b><br>• <b style="color:var(--common)">ниже 60 · Обычный (серый)</b><br>Мифик даётся только за сезон без слабых этапов — гранд-финал, хиты и кубки на одном уровне. Те же шесть цветов красят оружие и хилки в паках.',
 confirmedNote:'<b>Что подтверждено:</b> имена и регион — из официальных таблиц участников и итоговых результатов (Liquipedia, Esports Earnings, esports.gg, fortnitetracker.com и присланные скриншоты).<br><br><b>Про размер лобби:</b> реальных игроков не хватает, чтобы ровно попасть в целевые числа команд — недостающие места в AI-лобби (кроме Grands) занимают явно помеченные резервные команды, без флага.<br><br><b>Флаги:</b> гражданство подтверждено не у всех — где источника нет, флаг просто не показан.',
 preregionTitleOne:'В каком регионе играешь?', preregionNoteOne:'Каждый регион проводит свой турнир — выбери один, весь драфт и всё лобби будут из него.',
 preregionTitle:'Из каких регионов набираешь состав?', preregionNote:'Отметь один или несколько регионов — в паках будут появляться только игроки из выбранных. Ничего не выберешь — по умолчанию участвуют все.', preregionBtn:'Продолжить к драфту',
@@ -1905,6 +1917,12 @@ modeCardsDesc:'Реальные составы FNCS Major 2 — все семь 
 modeCardsT1Title:'FNCS 2025 Major 1',
 modeCardsT1Desc:'Все семь регионов FNCS 2025 Major 1 в трио: плей-ин, Last Chance Qualifier и региональный финал в каждом. Атрибуты по настоящим результатам — элим стоит 1 очко в LCQ, 2 в плей-ине и 4 в финале.',
 modeCardsT1Count:'3 игрока · плей-ин, группы, региональный финал',
+modeCardsT2Title:'FNCS 2025 Major 2',
+modeCardsT2Desc:'Второй мейджор сезона, все семь регионов в трио. Своя карта и свой лут — Глава 6, сезон 2. Цена элима та же, что и в первом: 1 очко в LCQ, 2 в плей-ине, 4 в финале.',
+modeCardsT2Count:'3 игрока · плей-ин, группы, региональный финал',
+modeCardsT3Title:'FNCS 2025 Major 3',
+modeCardsT3Desc:'Последний мейджор перед Global Championship, все семь регионов в трио. Глава 6, сезон 3 — свой остров и свой лут. Элим стоит 1 очко в LCQ, 2 в плей-ине, 4 в финале.',
+modeCardsT3Count:'3 игрока · плей-ин, группы, региональный финал',
 modeCards1Title:'FNCS Major 1',
 modeCards1Desc:'Все семь регионов FNCS Major 1: по 150 дуо плей-ина и отборочный LCQ в каждом, дальше LAN в Дюссельдорфе <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">. Атрибуты по настоящим результатам.',
 modeCards1Count:'2 игрока · плей-ин, хиты, Дюссельдорф <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
@@ -1976,6 +1994,8 @@ dataCreditText:'Flags, squads and player data sourced from', dataCreditAnd:'and'
 badgeMode:'select mode',
 ecDateAll:'2021 — 2026', ecDateM1:'Mar — May 2026', ecDateM2:'18 Jul — 2 Aug 2026',
 ecDateT1:'Jan — Feb 2025',
+ecDateT2:'Apr 2025',
+ecDateT3:'Jul — Aug 2025',
 ecScopeAll:'All regions', ecScope7:'7 regions', ecStCards:'Cards',
 ecSubDuos:'Duos', ecSubTrios:'Trios', ecSubSquads:'Squads',
 modeDuoTitle:'Duo', modeDuoDesc:'2 slots. Real FNCS format. Lobby of ~50 teams.', modeDuoCount:'2 players · target 50 teams',
@@ -2015,7 +2035,7 @@ attrRowCon:'CON · Consistency', attrRowConB:'points per match',
 attrRowClu:'CLU · Clutch', attrRowCluB:'Victory Royales per match',
 attrRowExp:'EXP · Experience', attrRowExpB:'total FNCS matches played',
 attrNote:'Each attribute is where the player ranked among the people who were in that lobby with them, not an abstract score. None of them contain a random number: hover an attribute on a card to see which column of the standings it was read from. High END with low AIM is a player who scores by surviving rather than fighting; the reverse is a fragger. The FRG or IGL role is printed under the OVR.',
-sourcesNote:'<b>Card sources — which tournaments the players are actually pulled from:</b><br>{EVENTS} tournaments, {CARDS} cards in total.<br><br>• <b>FNCS 2026 Major 2</b> — Play-In, Last Chance Qualifier and Grand Finals across all 7 regions (18 Jul — 2 Aug 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> — Group Stage, Upper Bracket and Grand Finals (Düsseldorf <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 May 2026)<br>• <b>FNCS 2026 Major 1</b> — Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions (Mar — May 2026)<br>• <b>FNCS 2025 Global Championship</b> — Grand Finals (Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 Sep 2025)<br>• <b>FNCS 2025 Major 3</b> — Grand Finals across all 7 regions (2–3 Aug 2025)<br>• <b>FNCS 2025 Major 1 / 2</b> — Europe Grand Finals (Apr / Jun 2025)<br>• <b>FNCS 2024 Global Championship</b> — Grand Finals (Fort Worth <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 Sep 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> — Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> — Grand Finals (Copenhagen <img src="https://flagcdn.com/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 Oct 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> — Grand Finals Europe (Mar / May / Jun 2023)<br>• <b>FNCS Invitational 2022</b> — Grand Finals (Raleigh <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 Nov 2022)<br>• <b>FNCS 2021 Grand Royale</b> — Europe (21 Nov 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> — Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> — Solo Grand Finals Europe (26 Jun 2021)<br><br>Each player card shows exactly which tournament its result came from. The same real person can have multiple cards — one per tournament where a result was found.<br><br><b>Card rarity:</b><br>The colour comes from the very OVR printed on the card — what you see is what you get. The ladder is the one Fortnite uses and the colours match the game.<br>• <b style="color:var(--mythic)">95+ · Mythic (gold)</b><br>• <b style="color:var(--legendary)">90–94 · Legendary (orange)</b><br>• <b style="color:var(--epic)">80–89 · Epic (purple)</b><br>• <b style="color:var(--rare)">70–79 · Rare (blue)</b><br>• <b style="color:var(--uncommon)">60–69 · Uncommon (green)</b><br>• <b style="color:var(--common)">below 60 · Common (grey)</b><br>Mythic is for a season with no weak stage in it — the Grand Final, the heats and the cups all held at once. The same six colours tint the weapons and heals in the loot packs.',
+sourcesNote:'<b>Card sources — which tournaments the players are actually pulled from:</b><br>{EVENTS} tournaments, {CARDS} cards in total.<br><br>• <b>FNCS 2026 Major 2</b> — Play-In, Last Chance Qualifier and Grand Finals across all 7 regions (18 Jul — 2 Aug 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> — Group Stage, Upper Bracket and Grand Finals (Düsseldorf <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 May 2026)<br>• <b>FNCS 2026 Major 1</b> — Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions (Mar — May 2026)<br>• <b>FNCS 2025 Global Championship</b> — Grand Finals (Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 Sep 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> — Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions, trios (Jan — Aug 2025)<br>• <b>FNCS 2024 Global Championship</b> — Grand Finals (Fort Worth <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 Sep 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> — Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> — Grand Finals (Copenhagen <img src="https://flagcdn.com/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 Oct 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> — Grand Finals Europe (Mar / May / Jun 2023)<br>• <b>FNCS Invitational 2022</b> — Grand Finals (Raleigh <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 Nov 2022)<br>• <b>FNCS 2021 Grand Royale</b> — Europe (21 Nov 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> — Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> — Solo Grand Finals Europe (26 Jun 2021)<br><br>Each player card shows exactly which tournament its result came from. The same real person can have multiple cards — one per tournament where a result was found.<br><br><b>Card rarity:</b><br>The colour comes from the very OVR printed on the card — what you see is what you get. The ladder is the one Fortnite uses and the colours match the game.<br>• <b style="color:var(--mythic)">95+ · Mythic (gold)</b><br>• <b style="color:var(--legendary)">90–94 · Legendary (orange)</b><br>• <b style="color:var(--epic)">80–89 · Epic (purple)</b><br>• <b style="color:var(--rare)">70–79 · Rare (blue)</b><br>• <b style="color:var(--uncommon)">60–69 · Uncommon (green)</b><br>• <b style="color:var(--common)">below 60 · Common (grey)</b><br>Mythic is for a season with no weak stage in it — the Grand Final, the heats and the cups all held at once. The same six colours tint the weapons and heals in the loot packs.',
 confirmedNote:'<b>What\'s confirmed:</b> names and region come from official participant lists and final standings (Liquipedia, Esports Earnings, esports.gg, fortnitetracker.com, and screenshots you sent).<br><br><b>About lobby size:</b> there aren\'t enough real players to exactly hit the target team counts — missing AI-lobby slots (except in the Grands) are filled with clearly labeled reserve teams, shown without a flag.<br><br><b>Flags:</b> nationality isn\'t confirmed for everyone — where there\'s no source, no flag is shown.',
 preregionTitleOne:'Which region are you playing in?', preregionNoteOne:'Every region runs its own tournament — pick one, and both the draft and the lobby come from it.',
 preregionTitle:'Which regions do you want to draft from?', preregionNote:'Tick one or more regions — only players from the selected ones will appear in packs. Pick none and everyone is included by default.', preregionBtn:'Continue to draft',
@@ -2296,6 +2316,12 @@ modeCardsDesc:'The real FNCS Major 2 fields — all seven regions, from Europe t
 modeCardsT1Title:'FNCS 2025 Major 1',
 modeCardsT1Desc:'All seven regions of FNCS 2025 Major 1 in trios: a Play-In, a Last Chance Qualifier and a regional final in each. Attributes drawn from actual results — an elimination is worth 1 point in the LCQ, 2 in the Play-In and 4 in the final.',
 modeCardsT1Count:'3 players · play-in, groups, regional final',
+modeCardsT2Title:'FNCS 2025 Major 2',
+modeCardsT2Desc:'The season\'s second Major, all seven regions in trios. Its own island and its own loot — Chapter 6, Season 2. An elimination is worth what it was in the first: 1 point in the LCQ, 2 in the Play-In, 4 in the final.',
+modeCardsT2Count:'3 players · play-in, groups, regional final',
+modeCardsT3Title:'FNCS 2025 Major 3',
+modeCardsT3Desc:'The last Major before the Global Championship, all seven regions in trios. Chapter 6, Season 3 — its own island, its own loot. An elimination is worth 1 point in the LCQ, 2 in the Play-In and 4 in the final.',
+modeCardsT3Count:'3 players · play-in, groups, regional final',
 modeCards1Title:'FNCS Major 1',
 modeCards1Desc:'All seven FNCS Major 1 regions: 150 Play-In duos and an LCQ in each, then the Düsseldorf <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> LAN. Attributes drawn from actual results.',
 modeCards1Count:'2 players · play-in, heats, Düsseldorf <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
@@ -3319,7 +3345,10 @@ const M1_2025_EU_RANKED=[
 ];
 const M1_2025_EU_FIELD=33;
 const M1_2025_EU_EVENT='FNCS 2025 Major 1 — Europe Grand Finals';
-const M1_2025_EU_DATE='апр 2025';
+// Was 'апр 2025', which is Major 2's month. Epic's window metadata puts the
+// Major 1 Grand Finals on 15-16 February 2025, and the mode tile above has said
+// "янв — фев" all along.
+const M1_2025_EU_DATE='фев 2025';
 
 // FNCS 2025 Major 2 — Europe Grand Finals (33 trios, real results)
 const M2_2025_EU_RANKED=[
@@ -3343,7 +3372,8 @@ const M2_2025_EU_RANKED=[
 ];
 const M2_2025_EU_FIELD=33;
 const M2_2025_EU_EVENT='FNCS 2025 Major 2 — Europe Grand Finals';
-const M2_2025_EU_DATE='июн 2025';
+// Was 'июн 2025'. The Major 2 Grand Finals ran 26-27 April 2025.
+const M2_2025_EU_DATE='апр 2025';
 
 // Nationalities from the Country Representation tables of both events —
 // only fills handles that don't already have a nationality set elsewhere.
@@ -24747,7 +24777,7 @@ function translateDate(dateStr){
 // itself as Major 2 on its own start button.
 function cardSetName(set){
   return set==='m1' ? 'FNCS Major 1'
-       : set==='t1' ? 'FNCS 2025 Major 1'
+       : T_EVENT_NAME[set] ? T_EVENT_NAME[set]
        : 'FNCS Major 2';
 }
 
@@ -26681,10 +26711,14 @@ let pendingCardSet='m2';
 let preSelectedRegions=[];
 let preSelectedYears=[];   // empty means every year
 
+// Which card set each tile starts. Named rather than derived so a tile can be
+// renamed without silently falling through to Major 2.
+const TILE_CARD_SET={cards:'m2', cards1:'m1',
+                     cards2025:'t1', cards2025major2:'t2', cards2025major3:'t3'};
 function chooseMode(size, major){
   pendingSize=size; pendingMajor=!!major;
-  pendingCards = (major==='cards' || major==='cards1' || major==='cards2025');
-  pendingCardSet = (major==='cards1') ? 'm1' : (major==='cards2025') ? 't1' : 'm2';
+  pendingCards = TILE_CARD_SET[major]!==undefined;
+  pendingCardSet = TILE_CARD_SET[major] || 'm2';
   applyLobbyTheme(true);
   buildPreRegionChecks();
   buildMapChecks();
@@ -30960,7 +30994,13 @@ function modeThemeKey(pending){
   const set   = pending ? pendingCardSet : CARD_SET;
   const major = pending ? pendingMajor   : isMajorMode;
   const size  = pending ? pendingSize    : squadSize;
-  if(cards) return set==='m1' ? 'm1' : set==='t1' ? 't1' : 'm2';
+  // All three 2025 Majors share the t1 entry. Epic publishes the season's
+  // palette in imp_event.Colors, and the Grand Finals of Major 2 and Major 3
+  // carry the same block as Major 1's, byte for byte -- #FF0040, #977EA5,
+  // #829FA9, #FFFFFF, #161616. What varies in that metadata is the stage, not
+  // the Major. Giving each one an accent of my own would be inventing a colour
+  // Epic did not use; the tiles tell the modes apart instead.
+  if(cards) return set==='m1' ? 'm1' : T_EVENT_NAME[set] ? 't1' : 'm2';
   if(major) return 'allfncs';
   return size===3 ? 'trio' : (size===4 ? 'squad' : 'duo');
 }
