@@ -197,9 +197,22 @@ Two tiles in the 2025 row: `chooseMode(3, 'cards2025major2')` and
 `chooseMode(3, 'cards2025major3')`, each with its season's date range, art and
 subtitle, in both languages.
 
-`MODE_THEME` gains `t2` and `t3`. Both start from the steel Chapter 6 reading
-`t1` uses, with the accent sampled off each season's own map art so the three
-2025 modes read as one family without being identical.
+**The three Majors share one theme, because Epic gives them one palette.**
+`t1`'s colours came from `imp_event.Colors` in Tracker's payload rather than
+from anyone's eye, and the Major 2 and Major 3 Grand Finals pages carry that
+same block byte for byte:
+
+```
+HighlightColor #FF0040   PrimaryColor #977EA5   BackgroundLeftColor #829FA9
+BackgroundRightColor #FFFFFF   SecondaryColor #161616
+```
+
+What varies in the metadata is the stage, not the Major — a group-stage page
+reads `#08E164`, a divisional cup `#9C0013`, in every season alike. So
+`modeThemeKey()` returns `t1` for all three sets and `MODE_THEME` gains no new
+entry. Inventing a per-Major accent would be picking a colour Epic did not use.
+
+The tiles still tell the modes apart, because each carries its own season's art.
 
 The sources note gains both Majors with the stages they actually contribute, and
 the card and event counts in it are regenerated rather than edited by hand.
