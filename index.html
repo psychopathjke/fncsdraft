@@ -21303,6 +21303,7 @@ Object.keys(SEASON_LOOT).forEach(y=>{
 // Card modes are pinned to their own Major's season; everything else follows
 // whichever years the player left selected in the era filter.
 function activeWeaponPool(){
+  if(CARD_MODE && CARD_SET==='t1') return T1_WEAPON_POOL;
   if(CARD_MODE && CARD_SET==='m1') return M1_WEAPON_POOL;
   if(CARD_MODE) return WEAPON_POOL;
   const years=(preSelectedYears||[]).filter(y=>SEASON_WEAPON_POOLS[y]);
@@ -21314,6 +21315,7 @@ function activeWeaponPool(){
 
 function lootPoolSeasonName(){
   const pick=y=>{ const s=SEASON_LOOT[y]; return s ? (LANG==='ru'?s.ru:s.en) : null; };
+  if(CARD_MODE && CARD_SET==='t1') return LANG==='ru' ? 'Глава 6, сезон 1' : 'Chapter 6, Season 1';
   if(CARD_MODE && CARD_SET==='m1') return LANG==='ru' ? 'Глава 7, сезон 2' : 'Chapter 7, Season 2';
   const years=(preSelectedYears||[]).filter(y=>SEASON_LOOT[y]).sort((a,b)=>a-b);
   if(!years.length) return pick(2026);
@@ -21366,7 +21368,8 @@ function generateWeaponPack(){
 }
 
 function generateHealPack(){
-  const src = (CARD_MODE && CARD_SET==='m1') ? M1_CONSUMABLE_POOL : M2_CONSUMABLE_POOL;
+  const src = (CARD_MODE && CARD_SET==='t1') ? T1_CONSUMABLE_POOL
+            : (CARD_MODE && CARD_SET==='m1') ? M1_CONSUMABLE_POOL : M2_CONSUMABLE_POOL;
   return samplePack(src, 4)
     .map(w=>({name:w.name, rarity:w.rarity, icon:w.icon, mod:w.mod, color:CONSUMABLE_RARITY_COLOR[w.rarity]}));
 }
@@ -21440,6 +21443,56 @@ M1_WEAPON_NAMES.forEach(name=>{
     M1_WEAPON_POOL.push({name, rarity, icon:'rifle', mod:RARITY_MOD[rarity]});
   });
 });
+// ---------- FNCS 2025 loot: Chapter 6 Season 1, Demon Hunters ----------
+// The competitive pool the 2025 Majors were played on, straight off the
+// published sheet. Items added mid-season are in: they were part of the pool
+// by the time the Majors ran.
+const T1_WEAPON_NAMES=[
+  ["Fury Assault Rifle",'rifle'],
+  ["Holo Twister Assault Rifle",'rifle'],
+  ["Ranger Assault Rifle",'rifle'],
+  ["Sentinel Pump Shotgun",'shotgun'],
+  ["Oni Shotgun",'shotgun'],
+  ["Twinfire Auto Shotgun",'shotgun'],
+  ["Veiled Precision SMG",'smg'],
+  ["Surgefire SMG",'smg'],
+  ["Suppressed Pistol",'pistol'],
+  ["Lock On Pistol",'pistol'],
+  ["Hunting Rifle",'rifle'],
+  ["Rail Gun",'rifle'],
+  ["Explosive Repeater Rifle",'rifle']
+];
+const T1_WEAPON_POOL=[];
+T1_WEAPON_NAMES.forEach(([name,icon])=>{
+  ['common','uncommon','rare','epic','legendary','mythic'].forEach(rarity=>{
+    T1_WEAPON_POOL.push({name, rarity, icon, mod:RARITY_MOD[rarity]});
+  });
+});
+// Mobility, utility, healing and the boss mythics. Every entry carries an icon
+// key: unlike the 2026 pools these have no art in items/, so the built-in
+// silhouette is what draws them, and an entry without one renders as nothing.
+const T1_CONSUMABLE_POOL=[
+  {name:"Night Rose's Veiled Precision SMG", rarity:"gold", icon:'smg'},
+  {name:"Night Rose's Void Oni Mask", rarity:"gold", icon:'shield'},
+  {name:"Shogun X Mythic Shotgun", rarity:"gold", icon:'shotgun'},
+  {name:"Typhoon Blade (Mythic)", rarity:"gold", icon:'rifle'},
+  {name:"Fire Oni Mask (Mythic)", rarity:"gold", icon:'shield'},
+  {name:"Shield Keg", rarity:"legendary", icon:'drink'},
+  {name:"Fire Oni Mask", rarity:"legendary", icon:'shield'},
+  {name:"Kinetic Blade", rarity:"purple", icon:'rifle'},
+  {name:"Void Oni Mask", rarity:"purple", icon:'shield'},
+  {name:"Port-A-Bunker", rarity:"purple", icon:'shield'},
+  {name:"Typhoon Blade", rarity:"blue", icon:'rifle'},
+  {name:"Shield Bubble", rarity:"blue", icon:'shield'},
+  {name:"Shockwave Grenade", rarity:"blue", icon:'shield'},
+  {name:"Big Bush Bomb", rarity:"blue", icon:'shield'},
+  {name:"Chug Splash", rarity:"blue", icon:'drink'},
+  {name:"Shield Potion", rarity:"blue", icon:'shield'},
+  {name:"Med Kit", rarity:"green", icon:'heal'},
+  {name:"Small Shield Potion", rarity:"green", icon:'shield'},
+  {name:"Bandages", rarity:"grey", icon:'heal'}
+].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
+
 const M1_CONSUMABLE_POOL=[
   {name:"Mythic Goldfish", rarity:"gold"},
   {name:"Chug Jug", rarity:"legendary"},
