@@ -27869,6 +27869,33 @@ function lockedTeamsForSet(){
   return CARD_SET==='m2' ? GC_SUMMIT_DUOS
        : CARD_SET==='t2' ? GC2025_M1_TRIOS : [];
 }
+// Every trio that really played this Major, deduplicated -- a team that reached
+// the Grand Final is recorded at both stages it played.
+//
+// The lobby was being built out of invented trios while the real ones sat in
+// CARD_TRIOS_BY_SET unread, and that is what made the draft unbeatable: you take
+// a team that actually played together, with the synergy that carries, and the
+// field answers with strangers who have none. Measured, before this: a best
+// draft came out 11 power ahead of the whole Major 1 field and 14 ahead of
+// Major 3, against -5 in the 2026 Major 2, where the real pairs are seated.
+function realTeamsForSet(){
+  const trios=(typeof CARD_TRIOS_BY_SET!=='undefined') && CARD_TRIOS_BY_SET[CARD_SET];
+  if(!trios || !trios.length) return [];
+  const seen=new Set(), out=[];
+  trios.forEach(t=>{
+    const hs=t.handles||[];
+    if(hs.length<2) return;
+    const k=hs.map(h=>_gcNorm(h)).sort().join('|');
+    if(seen.has(k)) return;
+    seen.add(k); out.push(hs);
+  });
+  return out;
+}
+// Locked teams first — those are a rule, not a preference — then the rest of the
+// real field.
+function seatingTeamsForSet(){
+  return lockedTeamsForSet().concat(realTeamsForSet());
+}
 // A LAN seat follows the pair, and the pair is whoever actually entered Major 2
 // together. Normally that is the duo off the Summit; when the player drafts one
 // of them the survivor enters with somebody new, and it is that new pair which
@@ -27880,7 +27907,7 @@ let LOCKED_TEAM_SUBS=new Map();
 // the odd one given the best free player from their own region, then the teams
 // that are still whole.
 function seatLockedTeams(pool, teamCount, size){
-  const locked=lockedTeamsForSet();
+  const locked=seatingTeamsForSet();
   if(!locked.length) return {squads:[], rest:pool};
   const byKey=new Map();
   pool.forEach(pl=>{ const k=_gcNorm(pl.handle); if(!byKey.has(k)) byKey.set(k, pl); });
@@ -27928,7 +27955,7 @@ function draftBotSquads(pool, teamCount, size){
   // the grounds that trio and squad modes are fantasy formats with no real
   // pairings to preserve — true of the free modes, and not true of 2025, whose
   // Major 1 qualifiers are locked together by rule into Major 2.
-  if(CARD_MODE && lockedTeamsForSet().length){
+  if(CARD_MODE && seatingTeamsForSet().length){
     const seated=seatLockedTeams(remaining, teamCount, size);
     squads.push(...seated.squads);
     remaining=seated.rest;
