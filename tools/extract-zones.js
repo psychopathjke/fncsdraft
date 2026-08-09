@@ -39,6 +39,7 @@ document.getElementById('i').onload = function(){
   var DARK = ${process.env.DARK || 42};
   var STEP = ${process.env.STEP ? 1 : 0};
   var STEP_T = ${process.env.STEP_T || 16};
+  var COVER = ${process.env.COVER || 0.75};
   var mask = new Uint8Array(W * H);     // black strokes only
   var fill = new Uint8Array(W * H);     // red washes
   for (var i = 0, p = 0; i < d.length; i += 4, p++){
@@ -162,7 +163,29 @@ document.getElementById('i').onload = function(){
           if (Math.abs(vr2.c - x1) <= TOL){ rt = vr2; break; }
         }
         if (!lf || !rt) continue;
-        boxes.push({ x: x0, y: top.c, w: x1 - x0, h: bot.c - top.c });
+        // A rectangle assembled from four runs is only a claim. Check it: walk
+        // each of the four edges and require that most of it is actually drawn.
+        // Without this the matcher happily pairs the top of one box with the
+        // bottom of another three boxes away and calls the result a drop spot.
+        var y0 = top.c, y1b = bot.c;
+        var cover = function(n, hit){
+          var ok = 0, tot = 0;
+          for (var k = 0; k < n; k++){ tot++; if (hit(k)) ok++; }
+          return tot ? ok / tot : 0;
+        };
+        // A stroke is two or three pixels thick and wanders by one, so each test
+        // is allowed to look one row or column either side of where the run was
+        // found. Pinned to the exact line, this rejects almost everything.
+        var wSpan = x1 - x0, hSpan = y1b - y0;
+        var anyH = function(x, y){ for (var o = -1; o <= 1; o++) if (topEdge(x, y+o) || botEdge(x, y+o) || hLine(x, y+o)) return 1; return 0; };
+        var anyV = function(x, y){ for (var o = -1; o <= 1; o++) if (leftEdge(x+o, y) || rightEdge(x+o, y) || vLine(x+o, y)) return 1; return 0; };
+        var cTop = cover(Math.floor(wSpan/2), function(k){ return anyH(x0 + k*2, y0); });
+        var cBot = cover(Math.floor(wSpan/2), function(k){ return anyH(x0 + k*2, y1b); });
+        var cLef = cover(Math.floor(hSpan/2), function(k){ return anyV(x0, y0 + k*2); });
+        var cRig = cover(Math.floor(hSpan/2), function(k){ return anyV(x1, y0 + k*2); });
+        if (Math.min(cTop, cBot, cLef, cRig) < COVER) continue;
+        boxes.push({ x: x0, y: top.c, w: x1 - x0, h: bot.c - top.c,
+                     cover: +Math.min(cTop, cBot, cLef, cRig).toFixed(2) });
       }
     }
   }

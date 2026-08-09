@@ -86,7 +86,22 @@ console.error('clean     ' + b.W + 'x' + b.H + '  island x ' + b.x0 + '-' + b.x1
 
 const aw = a.x1 - a.x0, ah = a.y1 - a.y0;
 const bw = b.x1 - b.x0, bh = b.y1 - b.y0;
-console.error('scale x ' + (bw / aw).toFixed(4) + ', y ' + (bh / ah).toFixed(4));
+let sx = bw / aw, sy = bh / ah;
+console.error('scale x ' + sx.toFixed(4) + ', y ' + sy.toFixed(4));
+
+// A picture cropped tight to the island clips its own bounding box, and a
+// clipped box gives a scale that is too large on that axis. The island is the
+// same shape in both pictures, so the two scales have to agree; where they do
+// not, the axis whose bounds are not against the edge of the picture is the one
+// telling the truth.
+const EDGE = 4;
+const aClipX = a.x0 <= EDGE || a.x1 >= a.W - 1 - EDGE;
+const aClipY = a.y0 <= EDGE || a.y1 >= a.H - 1 - EDGE;
+if (Math.abs(sx - sy) / Math.max(sx, sy) > 0.02) {
+  if (aClipY && !aClipX) { console.error('  y bounds are clipped — using the x scale for both'); sy = sx; }
+  else if (aClipX && !aClipY) { console.error('  x bounds are clipped — using the y scale for both'); sx = sy; }
+  else { const s = Math.min(sx, sy); console.error('  scales disagree and neither axis is clean — using the smaller, ' + s.toFixed(4)); sx = sy = s; }
+}
 
 // Boxes arrive as percentages of the annotated image and leave as percentages of
 // the clean one.
@@ -94,9 +109,9 @@ const boxes = JSON.parse(fs.readFileSync(BOXES, 'utf8'));
 const out = boxes.map(z => {
   const px = z.x / 100 * a.W, py = z.y / 100 * a.H;
   const pw = z.w / 100 * a.W, ph = z.h / 100 * a.H;
-  const nx = b.x0 + (px - a.x0) * bw / aw;
-  const ny = b.y0 + (py - a.y0) * bh / ah;
-  const nw = pw * bw / aw, nh = ph * bh / ah;
+  const nx = b.x0 + (px - a.x0) * sx;
+  const ny = b.y0 + (py - a.y0) * sy;
+  const nw = pw * sx, nh = ph * sy;
   return {
     x: +(100 * nx / b.W).toFixed(2), y: +(100 * ny / b.H).toFixed(2),
     w: +(100 * nw / b.W).toFixed(2), h: +(100 * nh / b.H).toFixed(2)
