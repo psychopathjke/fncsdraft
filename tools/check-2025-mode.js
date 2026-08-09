@@ -19,49 +19,70 @@ const BOOTSTRAP = `
 <script>
 (function(){
   var out = {};
+  var TILES = {t1:'cards2025', t2:'cards2025major2', t3:'cards2025major3'};
   try {
-    chooseMode(3, 'cards2025');
-    out.pendingSize = pendingSize;
-    out.pendingCards = pendingCards;
-    out.pendingCardSet = pendingCardSet;
-    out.themeKey = modeThemeKey(true);
-    out.themeDefined = !!MODE_THEME[modeThemeKey(true)];
-    out.rosterSize = cardRosterPlayers('t1').length;
-    out.pendingPool = pendingPool().length;
+    Object.keys(TILES).forEach(function(set){
+      var o = out[set] = {};
+      chooseMode(3, TILES[set]);
+      o.pendingSize = pendingSize;
+      o.pendingCards = pendingCards;
+      o.pendingCardSet = pendingCardSet;
+      o.themeKey = modeThemeKey(true);
+      o.themeDefined = !!MODE_THEME[modeThemeKey(true)];
+      var roster = cardRosterPlayers(set);
+      o.rosterSize = roster.length;
+      o.pendingPool = pendingPool().length;
 
-    var regions = {};
-    cardRosterPlayers('t1').forEach(function(p){ regions[p.region] = (regions[p.region]||0)+1; });
-    out.regions = regions;
+      var regions = {};
+      roster.forEach(function(p){ regions[p.region] = (regions[p.region]||0)+1; });
+      o.regions = regions;
 
-    var fmt = {};
-    ['EU','NAC','NAW','BR','ASIA','ME','OCE'].forEach(function(r){
-      var f = majorFormat(r, 't1');
-      fmt[r] = { groups: f.heats.length,
-                 fromGroups: f.heats.reduce(function(s,h){ return s+h.cut; }, 0),
-                 lcq: f.lcqWinners, gfGames: f.gfGames,
-                 field: f.heats.reduce(function(s,h){ return s+h.cut; }, 0) + f.lcqWinners };
-    });
-    out.format = fmt;
+      var fmt = {};
+      ['EU','NAC','NAW','BR','ASIA','ME','OCE'].forEach(function(r){
+        var f = majorFormat(r, set);
+        fmt[r] = { groups: f.heats.length,
+                   fromGroups: f.heats.reduce(function(s,h){ return s+h.cut; }, 0),
+                   lcq: f.lcqWinners, gfGames: f.gfGames,
+                   field: f.heats.reduce(function(s,h){ return s+h.cut; }, 0) + f.lcqWinners };
+      });
+      o.format = fmt;
 
-    // Team sizes actually recorded for the set.
-    var sizes = {};
-    CARD_TRIOS_T1.forEach(function(t){ sizes[t.handles.length] = (sizes[t.handles.length]||0)+1; });
-    out.teamSizes = sizes;
+      // Team sizes actually recorded for the set.
+      var sizes = {};
+      CARD_TRIOS_BY_SET[set].forEach(function(t){ sizes[t.handles.length] = (sizes[t.handles.length]||0)+1; });
+      o.teamSizes = sizes;
 
-    // A sample card, to confirm attributes resolve rather than throw.
-    var sample = cardRosterPlayers('t1').filter(function(p){ return p.region==='EU'; })
-                  .sort(function(a,b){ return b.rating-a.rating; })[0];
-    if (sample) {
-      var a = attrsFor(sample);
-      out.sample = { handle: sample.handle, rating: sample.rating, rarity: sample.rarity,
-                     nat: sample.nat, event: sample.event, ovr: a.ovr, role: a.roleKey,
+      // Rating spread in decades: a set with no middle is the failure the
+      // season ledger exists to prevent, and it does not show up in a mean.
+      var decades = {};
+      roster.forEach(function(p){ var d = Math.floor(p.rating/10)*10; decades[d] = (decades[d]||0)+1; });
+      o.decades = decades;
+      o.ratingMax = Math.max.apply(null, roster.map(function(p){ return p.rating; }));
+      o.over99 = roster.filter(function(p){ return p.rating > 99; }).length;
+      o.atFloor = roster.filter(function(p){ return p.rating === 30; }).length;
+
+      // A sample card, to confirm attributes resolve rather than throw.
+      var sample = roster.filter(function(p){ return p.region==='EU'; })
+                    .sort(function(a,b){ return b.rating-a.rating; })[0];
+      if (sample) {
+        var a = attrsFor(sample);
+        o.sample = { handle: sample.handle, rating: sample.rating, rarity: sample.rarity,
+                     nat: sample.nat, event: sample.event, date: sample.date,
+                     ovr: a.ovr, role: a.roleKey,
                      attrs: [a.aim,a.end,a.sur,a.exp,a.clu,a.con] };
-    }
-    var withNat = cardRosterPlayers('t1').filter(function(p){ return !!p.nat; }).length;
-    out.natCoverage = Math.round(100 * withNat / out.rosterSize) + '%';
-    var withOrg = cardRosterPlayers('t1').filter(function(p){ return !!p.org; }).length;
-    out.withOrg = withOrg;
-    out.over99 = cardRosterPlayers('t1').filter(function(p){ return p.rating > 99; }).length;
+      }
+      var withNat = roster.filter(function(p){ return !!p.nat; }).length;
+      o.natCoverage = Math.round(100 * withNat / o.rosterSize) + '%';
+      o.withOrg = roster.filter(function(p){ return !!p.org; }).length;
+    });
+
+    // Pool sizes only. Counting repeated trios would measure nothing: a trio
+    // that reached the Grand Final is recorded at both stages it played, and the
+    // same three people playing two Majors together is a fact about them rather
+    // than a leak between the sets.
+    out.trioPools = {t1: CARD_TRIOS_BY_SET.t1.length,
+                     t2: CARD_TRIOS_BY_SET.t2.length,
+                     t3: CARD_TRIOS_BY_SET.t3.length};
   } catch (e) {
     out.error = String(e && e.stack || e);
   }
