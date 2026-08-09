@@ -14,8 +14,21 @@
 - **Source data is already harvested and validated.** `Desktop\2025\fncs-2025-major1.json` (Play-In and Grand Finals) and `Desktop\2025\fncs-2025-major1-stages.json` (LCQ, Lobby, groups). Do not re-fetch.
 - **The set key is `t1`. The event id is `S33_FNCSMajor1`.** Card `tier` is `'cardmode'`, matching `m1`/`m2`.
 - **Elimination points are per stage:** LCQ 1, Play-In 2, Grand Finals 4.
-- **Ratings of existing `m1` and `m2` cards must not move by a single point.** Any task that touches shared code re-runs the baseline dump and diffs.
-- **`pushCard` caps every non-LAN card at 90** via `tierCapForEvent`. 2025 finals are online regional events, so their top cards land at 90. This is existing, correct behaviour — do not "fix" it.
+- **Existing `m1` and `m2` ratings and rarities must not move.** Any task touching
+  shared code re-runs the dump and diffs.
+  **One accepted exception, measured in Task 5:** five of 4886 cards shift by one
+  point of `ovr` only — `m1|EU|Wifi`, `m1|EU|Borsuk`, `m2|EU|Adn`,
+  `m2|OCE|CABBAGE KING.`, `m2|OCE|Chonaz`. Experience is deliberately ranked
+  against the whole dataset ("how much FNCS this person has actually played"), so
+  adding a real Major to that dataset moves the percentile. Freezing it would rank
+  2025 players against a table that excludes 2025, which is worse. Proven by
+  patching the 2025 stages out of `registerExp`, which makes the diff clean.
+  From Task 6 onward diff against `tools/baseline-after-2025.json`, which carries
+  these five, so any *new* drift still fails loudly.
+- **`pushCard` caps at 90 via `tierCapForEvent`, but finalists are rewritten after
+  it** — `p.rating` is set directly in the finalist pass, which is how 2026 already
+  produces 92 cards above 90 topping out at 96. Expect the same shape from 2025, not
+  a flat 90 ceiling.
 - **Every commit message explains the reasoning**, matching the existing history. End with:
   `Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>`
 - **No `<script>`-injected literal backslashes** when driving the page through browser tooling — they do not survive injection. Use `String.fromCharCode(92)`.
@@ -637,11 +650,16 @@ for(const reg of Object.keys(by).sort()){
 ```
 
 Expected:
-- both `m1` and `m2` diffs report `0 moved, 0 missing`
-- seven `t1` regions appear
-- `max` is **90** in every region — `tierCapForEvent` caps online events, exactly as
-  it already does for 2026
+- both `m1` and `m2` diffs report exactly the five accepted `ovr` shifts listed in
+  the Global Constraints, and nothing else
+- seven `t1` regions appear, roughly 480–510 cards each
+- `max` is **96–97** in the deep regions and **85** in the five thin ones. Not 90:
+  `tierCapForEvent` caps at `pushCard` time, but the finalist pass rewrites
+  `p.rating` afterwards, which is why 2026 already has 92 cards above 90
 - `at 99: 0` and `at 30: 0` everywhere — nothing clipped at either clamp
+- **no card above 99.** If one reads 101 it is the S1neD meme leaking into a
+  competitive set, which its own comment argues against — the guard must be on
+  `tier==='cardmode'`, not on a list of set names
 
 - [ ] **Step 5: Commit**
 

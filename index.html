@@ -3716,11 +3716,14 @@ GLOBALS2025_EXTRA.forEach(g=>{
 function applyS1nedMeme(withAttrs){
   PLAYERS_BASE.forEach(p=>{
     if(p.handle.toLowerCase()!=='s1ned') return;
-    // Major 1 and Major 2 are left alone. A card reading 101 outranks every real
-    // result, and it took first place in both competitive modes ahead of the
-    // players who actually won those seasons. There he is rated on his
+    // Every card-mode Major is left alone. A card reading 101 outranks every
+    // real result, and it took first place in both competitive modes ahead of
+    // the players who actually won those seasons. There he is rated on his
     // tournaments like everybody else; the joke keeps the older sets.
-    if(p.cardSet==='m1' || p.cardSet==='m2') return;
+    // Written against the tier rather than a list of set names, so a set added
+    // later cannot reintroduce the problem by not being on the list — which is
+    // exactly what happened when the 2025 set arrived.
+    if(p.tier==='cardmode') return;
     p.rating=101; p.rarity='mythic'; p._targetOvr=101;
     if(!withAttrs) return;
     // The six bars stay inside the normal 99 ceiling; only the headline number
@@ -10384,6 +10387,133 @@ const o2GfBase     = r => REGION_TOP.OCE - ((r-1)/Math.max(_O2G.length-1,1))*(RE
     p.rarity=rarityForRating(p.rating);
   });
 })();
+
+
+
+// ---------- FNCS 2025 Major 1: parsed stages, bands, and one builder ----------
+// The fourteen 2026 builders above are ~340 lines each and differ in ten
+// values. Copying that seven more times would add roughly 2400 lines of
+// duplication for no new behaviour, so 2025 gets one parameterised builder
+// called once per region. The 2026 builders are deliberately left alone: they
+// are shipped and balanced, and rewriting them onto this function would risk
+// moving live ratings inside a commit that is supposed to add a mode.
+
+// Eliminations climb with the stage in 2025 -- 1 in the Last Chance Qualifier,
+// 2 in the Play-In, 4 in the Grand Finals. Measured off Epic's own point
+// breakdown in all seven regions, so these are readings, not settings.
+const T1_KILL={P:2, L:1, G:4};
+const T1_REGIONS=['EU','NAC','NAW','BR','ASIA','ME','OCE'];
+// Named explicitly rather than looked up: a top-level const is not a property
+// of window, so building these names as strings would silently yield undefined.
+const T1_RAW={
+  EU:  {P:CARD_T1EU_PLAYIN_RAW,   L:CARD_T1EU_LCQ_RAW,   G:CARD_T1EU_GF_RAW},
+  NAC: {P:CARD_T1NAC_PLAYIN_RAW,  L:CARD_T1NAC_LCQ_RAW,  G:CARD_T1NAC_GF_RAW},
+  NAW: {P:CARD_T1NAW_PLAYIN_RAW,  L:CARD_T1NAW_LCQ_RAW,  G:CARD_T1NAW_GF_RAW},
+  BR:  {P:CARD_T1BR_PLAYIN_RAW,   L:CARD_T1BR_LCQ_RAW,   G:CARD_T1BR_GF_RAW},
+  ASIA:{P:CARD_T1ASIA_PLAYIN_RAW, L:CARD_T1ASIA_LCQ_RAW, G:CARD_T1ASIA_GF_RAW},
+  ME:  {P:CARD_T1ME_PLAYIN_RAW,   L:CARD_T1ME_LCQ_RAW,   G:CARD_T1ME_GF_RAW},
+  OCE: {P:CARD_T1OCE_PLAYIN_RAW,  L:CARD_T1OCE_LCQ_RAW,  G:CARD_T1OCE_GF_RAW}
+};
+// regionName() is declared thousands of lines below this point, so the event
+// strings carry their own names, exactly as the 2026 sets do.
+const T1_REGION_NAME={EU:'Europe', NAC:'NA Central', NAW:'NA West', BR:'Brazil',
+                      ASIA:'Asia', ME:'Middle East', OCE:'Oceania'};
+const T1_STAGE_NAME={P:'Play-In Stage', L:'Last Chance Qualifier', G:'Grand Finals'};
+const T1_STAGE_DATE={P:'янв 2025', L:'фев 2025', G:'фев 2025'};
+
+const _T1={}, _ST1={};
+T1_REGIONS.forEach(reg=>{
+  _T1[reg]={};
+  ['P','L','G'].forEach(st=>{
+    _T1[reg][st]=T1_RAW[reg][st].map(r=>rowEntry(r, {killMult:T1_KILL[st], elimPtsAt:6}));
+  });
+  // Every stage is ranked against itself, so a card says "this good among the
+  // people who were in that lobby" -- same rule the 2026 sets use.
+  _ST1[reg]={P:mkSorts(_T1[reg].P), L:mkSorts(_T1[reg].L), G:mkSorts(_T1[reg].G)};
+});
+
+// Same bands as 2026: the Play-In and Grand Finals ceilings come from
+// REGION_TOP so the thin regions are compressed rather than clipped, and the
+// Last Chance band sits below every ceiling so it needs no compression.
+function t1Base(reg, st, rank){
+  const field=_T1[reg][st].length;
+  const ramp=(rank-1)/Math.max(field-1,1);
+  if(st==='L') return 62 - ramp*14;
+  const top=REGION_TOP[reg]||85;
+  return top - ramp*(top - (st==='G' ? 70 : 62));
+}
+
+const CARD_TRIOS_T1=[];
+function buildCardSetRegion(cfg){
+  const known=new Set();
+  const stageEvent=st=>'FNCS 2025 Major 1 — '+T1_STAGE_NAME[st]+' ('+T1_REGION_NAME[cfg.region]+')';
+  const add=(entry, st)=>{
+    CARD_TRIOS_T1.push({handles:entry.duo.slice()});
+    entry.duo.forEach(nm=>{
+      if(known.has(nm)) return;
+      known.add(nm);
+      const rating=Math.round(clamp(cfg.base(st, entry.rank), 30, 99));
+      const code=cfg.nat[nm]||'';
+      const card={
+        handle:nm, nat: code ? (CC_RU[code]||null) : null,
+        natSource:'tracker',
+        region:cfg.region, event:stageEvent(st), date:T1_STAGE_DATE[st],
+        placement:entry.rank, note:'',
+        tier:'cardmode', cardSet:cfg.set, rarity:rarityForRating(rating), rating,
+        org:null,
+        real:{rank:entry.rank, pts:entry.pts, matches:entry.matches, wins:entry.wins,
+              avgElims:entry.avgElims, avgPlace:entry.avgPlace, stage:st}
+      };
+      // One descriptor per card instead of one branch per region-stage in the
+      // attribute dispatch, which is already a chain of forty-odd.
+      card._t1={entry:entry, sorts:cfg.sorts[st]};
+      card._t1Stage=st;
+      pushCard(card);
+    });
+  };
+  cfg.stages.P.forEach(e=>{ TEAMMATE_GROUPS.push(e.duo.slice()); add(e,'P'); });
+  cfg.stages.L.forEach(e=>add(e,'L'));
+  cfg.stages.G.forEach(e=>add(e,'G'));
+
+  // Finalists are rebuilt from the Grand Finals; everyone else keeps their
+  // qualifying rating minus the miss penalty. Same rule as m1 and m2.
+  const byName={};
+  PLAYERS_BASE.filter(p=>p.cardSet===cfg.set && p.region===cfg.region)
+              .forEach(p=>{ byName[p.handle]=p; });
+  const finalists=new Set();
+  cfg.stages.G.forEach(entry=>{
+    CARD_TRIOS_T1.unshift({handles:entry.duo.slice()});
+    entry.duo.forEach(nm=>{
+      const p=byName[nm]; if(!p) return;
+      finalists.add(nm);
+      p._t1={entry:entry, sorts:cfg.sorts.G};
+      p._t1Stage='G'; p._attrs=null; p.gfEvent=stageEvent('G');
+      p.realGf={rank:entry.rank, pts:entry.pts, matches:entry.matches, wins:entry.wins,
+                avgElims:entry.avgElims, avgPlace:entry.avgPlace};
+      p.rating=Math.round(clamp(cfg.base('G', entry.rank), 30, 99));
+      p.rarity=rarityForRating(p.rating);
+    });
+  });
+  Object.keys(byName).forEach(nm=>{
+    if(finalists.has(nm)) return;
+    const p=byName[nm];
+    p.missedGf=true;
+    const base = p._t1Stage==='P' ? missedGfPlayinBase(p._t1.entry.rank, cfg.stages.P.length)
+               : p._t1Stage==='L' ? missedGfLcqBase(p._t1.entry.rank, cfg.stages.L.length)
+               : p.rating-NO_GF_PENALTY;
+    p.rating=Math.round(clamp(base, 30, 99));
+    p.rarity=rarityForRating(p.rating);
+    p._attrs=null;
+  });
+}
+
+T1_REGIONS.forEach(reg=>{
+  buildCardSetRegion({
+    set:'t1', region:reg, nat:T1_NAT,
+    stages:_T1[reg], sorts:_ST1[reg],
+    base:(st, rank)=>t1Base(reg, st, rank)
+  });
+});
 
 
 // Cross-fill nationalities. The Liquipedia tables I transcribed differ between
@@ -22051,6 +22181,20 @@ function hKey(p){ return String(p && p.handle || p || '').toLowerCase(); }
 
 function attrsForRaw(p){
   if(p._attrs) return p._attrs;
+  // Every 2025 card carries its own stage descriptor, so one branch covers all
+  // seven regions and three stages. The chain below is already forty-odd
+  // branches deep because the 2026 sets encode the stage in the property name;
+  // twenty-one more would have buried it.
+  if(p._t1){
+    const st=p._t1Stage;
+    const base = p.missedGf
+      ? (st==='P' ? missedGfPlayinBase(p._t1.entry.rank, _T1[p.region].P.length)
+        : st==='L' ? missedGfLcqBase(p._t1.entry.rank, _T1[p.region].L.length)
+        : t1Base(p.region, st, p._t1.entry.rank))
+      : t1Base(p.region, st, p._t1.entry.rank);
+    p._attrs=buildM1Attrs(p._t1.entry, p.handle, p._t1.sorts, base, 0);
+    return p._attrs;
+  }
   const pen = p.missedGf ? NO_GF_PENALTY : 0;
   if(p._m2Gf){ p._attrs=buildM1Attrs(p._m2Gf, p.handle, _S.m2g, m2GfBase(p._m2Gf.rank), 0); return p._attrs; }
   if(p._m2Playin){ p._attrs=buildM1Attrs(p._m2Playin, p.handle, _S.m2p,
