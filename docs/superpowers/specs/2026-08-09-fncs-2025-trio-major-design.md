@@ -174,35 +174,47 @@ this spec took that at face value and had the groups sending 15 to a 33-team fin
 with Last Chance somehow finding 18 more. **That was wrong.** Matching group rosters
 against final rosters shows what actually happened:
 
-| Region | Groups | Per group | From groups | From Last Chance | Final |
+A finalist came through Last Chance if it appears in that region's Lobby carrying
+the +1000 advancement flag. Everything else came out of a group:
+
+| Region | Groups | From groups | Per group | From Last Chance | Final |
 |---|---|---|---|---|---|
-| EU | 3 | 10 | 30 | 3 | 33 |
-| NAC | 3 | 10 | 30 | 3 | 33 |
-| NAW | 2 | 15 | 30 | 3 | 33 |
-| BR | 2 | 15 | 30 | 3 | 33 |
-| ASIA | 2 | 15 | 30 | 3 | 33 |
-| ME | 2 | 15 | 30 | 0 | 30 |
-| OCE | 2 | 15 | 30 | 2 | 32 |
+| EU | 3 | 30 | 10 | 3 | 33 |
+| NAC | 3 | **31** | 10.3 | 2 | 33 |
+| NAW | 2 | 30 | 15 | 3 | 33 |
+| BR | 2 | 30 | 15 | 3 | 33 |
+| ASIA | 2 | 30 | 15 | 3 | 33 |
+| ME | 2 | 30 | 15 | 0 | 30 |
+| OCE | 2 | 30 | 15 | 2 | 32 |
 
-**Every region sends exactly thirty out of the groups** — ten per group where there
-are three, fifteen where there are two, with no exceptions. The five teams per group
-carrying the +1000 flag are the Victory Royale instant-advance subset; the rest
-advance on points. "Top 5" described the flag, not the cut.
+**Six regions send thirty out of the groups** — ten per group where there are three,
+fifteen where there are two. NA Central reads 31, which is very likely a Lobby
+qualifier whose flag did not land rather than a different cut, but the flag is the
+only evidence available and it does not say so. The simulator uses a cut of 10 and
+15; NA Central's extra team is a known and accepted one-team discrepancy, not a
+modelled rule.
 
-Only the Last Chance top-up varies, and that is what makes two finals short of 33.
-The Middle East Lobby sent **nobody** — it was also the smallest Lobby of the seven,
-26 teams against 32–33 elsewhere — and Oceania sent two instead of three. Thin
-regions do not fill the fallback route, so the field never reaches its allocation.
+The five teams per group carrying the +1000 flag are the Victory Royale
+instant-advance subset; the rest advance on points. "Top 5" described the flag, not
+the cut.
 
-Reading this off the data needed one correction of method. Matching finalists to
-their group by exact roster loses teams that changed a player between stages: six
-across the seven regions, of which four are the same player under a new name
-(`Enzouzzawesomer` → `Enzouzz km 29 10`, `1ǃm` → `もうちょびっと`, `dvs tt adzyǃ` →
-`DVS FELL OFFǃ`, `32 is the Hero` → `Blessed 32`) and two are real substitutions.
-Matching on any two of three players traces **every** finalist in all seven regions,
-with none left over. An earlier pass that used exact matching reported Asia as three
-short of a full field; Asia's final is a complete 33 and the shortfall was the
-method, not the region.
+**The short fields are entirely a Last Chance story, and the Middle East proves it
+outright.** In every other region some Lobby teams played only one or two of the
+three matches, because winning ends a team's run — the same stop-on-win rule the
+groups use. In the Middle East all 26 Lobby teams played all three matches and not
+one carried the flag. Nobody advanced, so its final is exactly the thirty the groups
+sent. Oceania sent two instead of three. Group count does not explain this: NA West,
+Brazil and Asia also ran two groups and all three filled to 33.
+
+Two warnings for anyone re-deriving this. Matching finalists to a stage by exact
+roster loses teams that changed a player in between — six did, of which four are one
+player renaming himself (`Enzouzzawesomer` → `Enzouzz km 29 10`, `1ǃm` →
+`もうちょびっと`, `dvs tt adzyǃ` → `DVS FELL OFFǃ`, `32 is the Hero` → `Blessed 32`).
+But loosening to "any two of three players match" over-counts in the other
+direction: players move between trios across stages, so two genuinely different
+teams can share two members. An earlier pass using the loose rule alone credited
+teams to the Lobby that had scored zero points in it. The flag, not the roster, is
+what settles the leg.
 
 Two other things fall out of the same data:
 
@@ -228,7 +240,8 @@ const LCQ_WINNERS_2025 = {EU:3, NAC:3, NAW:3, BR:3, ASIA:3, ME:0, OCE:2};
 
 The groups always contribute 30, so the field a region ends up with is
 `30 + LCQ_WINNERS_2025[region]` — 33 for five regions, 30 for the Middle East and
-32 for Oceania. Nothing here is tuned to hit a target; both terms are counted.
+32 for Oceania. Both terms are counted rather than fitted; the one place the count
+is soft is NA Central, which shows 31 out of its groups and is simulated at 30.
 
 `playInCut` follows the observed group rosters: 93–97 teams across three groups in
 the deep regions, 62–67 across two elsewhere.
