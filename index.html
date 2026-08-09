@@ -27907,8 +27907,15 @@ let LOCKED_TEAM_SUBS=new Map();
 // the odd one given the best free player from their own region, then the teams
 // that are still whole.
 function seatLockedTeams(pool, teamCount, size){
+  const lockedOnly=lockedTeamsForSet();
   const locked=seatingTeamsForSet();
   if(!locked.length) return {squads:[], rest:pool};
+  // Only a locked team's survivors get the priority seat. Doing it for every
+  // real team fills the lobby with rebuilt fragments before a single intact team
+  // is placed — with eighteen hundred real trios in the list that seated none of
+  // the locked ones at all. A real team that cannot be seated whole simply steps
+  // aside and its players go back into the random fill.
+  const lockedKeys=new Set(lockedOnly.map(t=>t.map(h=>_gcNorm(h)).sort().join('|')));
   const byKey=new Map();
   pool.forEach(pl=>{ const k=_gcNorm(pl.handle); if(!byKey.has(k)) byKey.set(k, pl); });
   const look=h=>{ const k=_gcNorm(h); return byKey.get(k) || byKey.get(_gcNorm(GC_HANDLE_ALIAS[k]||'')); };
@@ -27919,9 +27926,9 @@ function seatLockedTeams(pool, teamCount, size){
     if(found.length===team.length){
       found.forEach(pl=>claimed.add(hKey(pl)));
       intact.push(found);
-    } else {
+    } else if(lockedKeys.has(team.map(h=>_gcNorm(h)).sort().join('|'))){
       // The rest of the team is gone -- drafted by the player, or simply not in
-      // this pool. Whoever is left is a survivor and needs a new team.
+      // this pool. A locked team's survivor keeps their seat and needs a new team.
       found.forEach(pl=>{ claimed.add(hKey(pl)); orphans.push(pl); });
     }
   });
