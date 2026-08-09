@@ -23711,7 +23711,31 @@ function heatsRank(a, b){
 //   OCE/ASIA M1 (5+18) + (6+18)     = 47, + 3 LCL games = 50
 //   others      (5+18) + (5+18)     = 46, + 4 LCL games = 50
 const DEEP_MAJOR_REGIONS=new Set(['EU','NAC']);
+// What the 2025 Last Chance route actually delivered, region by region. Every
+// Lobby ran three matches, but the Middle East sent nobody -- all 26 of its
+// teams played all three, where every other region had teams stop early on a
+// win -- and Oceania sent two. Games and qualifiers are different quantities
+// in 2025, which is why this exists separately from lclGames.
+const LCQ_WINNERS_2025={EU:3, NAC:3, NAW:3, BR:3, ASIA:3, ME:0, OCE:2};
 function majorFormat(region, cardSet){
+  // FNCS 2025 ran groups, not heats: three in Europe and NA Central and two
+  // everywhere else, the same split DEEP_MAJOR_REGIONS already describes.
+  // Thirty teams come out of the groups in every region, so the cut is ten per
+  // group where there are three and fifteen where there are two -- measured by
+  // matching group rosters against final rosters, not read off the bracket,
+  // which says "top 5" and means the Victory Royale flag.
+  if(cardSet==='t1'){
+    const deep=DEEP_MAJOR_REGIONS.has(region) || !region;
+    return {
+      playInCut: deep ? 99 : 66,
+      heats: deep ? [{games:5,cut:10},{games:5,cut:10},{games:5,cut:10}]
+                  // Brazil's second group ran six matches; everyone else five.
+                  : [{games:5,cut:15},{games:(region==='BR')?6:5,cut:15}],
+      lclGames:3,
+      lcqWinners: (LCQ_WINNERS_2025[region]==null ? 3 : LCQ_WINNERS_2025[region]),
+      gfGames:12
+    };
+  }
   if(DEEP_MAJOR_REGIONS.has(region) || !region){
     return {playInCut:150, heats:[{games:5,cut:15},{games:5,cut:15},{games:5,cut:15}], lclGames:5};
   }
@@ -24734,7 +24758,11 @@ function lastChanceField(allTeams, qualifiedSet){
 // contains `you`; `allTeams` is the whole Major field, used only so a squad
 // swap can't hand you a player who is already someone else's teammate.
 async function runLastChanceQualifier(stageName, you, allTeams, field, lclGames){
-  lclGames = lclGames || 5;
+  // One game per qualifying slot. A win here is a qualification, so the two
+  // numbers have to agree -- otherwise the stage hands out wins that do not
+  // count, which reads as a bug rather than as history.
+  lclGames = (lclGames==null) ? 5 : lclGames;
+  if(lclGames<=0) return {advanced:false, winners:[], noSlots:true};
   await offerSquadChoice(stageName, you, allTeams);
 
   // Round 1: an 11-game cumulative-points stage (Epic's MatchCap for the LCQ
@@ -24783,7 +24811,8 @@ async function runLastChanceQualifier(stageName, you, allTeams, field, lclGames)
 // dropout field the interactive version plays — teams already holding a Finals
 // slot are filtered out by the caller, so nobody can win a slot twice.
 function computeQuietLCQWinners(field, lclGames){
-  lclGames = lclGames || 5;
+  lclGames = (lclGames==null) ? 5 : lclGames;
+  if(lclGames<=0) return [];
   if(!field || field.length<2) return [];
   // Same Round 1 as the interactive version: 11 games in reshuffled lobbies of
   // up to 50, cumulative points, top 50 survive to compete for slots. It has to
@@ -24829,6 +24858,8 @@ async function runMajorTournament(){
   const realAdvancers=teams.filter(t=>!isFillerTeam(t));
   const cutPool = CARD_MODE ? teams : realAdvancers;
   const FMT=currentMajorFormat(you);
+  // 2026 sets carry no lcqWinners, so for them this is just the Lobby game count.
+  const lcqSlots=(FMT.lcqWinners==null) ? FMT.lclGames : FMT.lcqWinners;
   const playInCut=Math.min(FMT.playInCut, cutPool.length);
   const youPlayInRank=teams.indexOf(you)+1;
   const advancedPlayIn=cutPool.slice(0,playInCut);
@@ -24859,7 +24890,7 @@ async function runMajorTournament(){
       heatQualifiers45=heatQualifiers45.concat([...heatQualifiers(heatTeams, FMT.heats[hi].cut)]);
     });
     lcqField=lastChanceField(teams, new Set(heatQualifiers45));
-    const lcqResult=await runLastChanceQualifier('Play-In', you, teams, lcqField, FMT.lclGames);
+    const lcqResult=await runLastChanceQualifier('Play-In', you, teams, lcqField, lcqSlots);
     if(!lcqResult.advanced){
       document.getElementById('finalSub').textContent=L().notPassedPlayInLCQ;
       finishMajorEliminatedAnim(you);
@@ -24896,7 +24927,7 @@ async function runMajorTournament(){
     if(!passedHeats){
       ensureSkipButton();
       lcqField=lastChanceField(teams, new Set(heatQualifiers45));
-      const lcqResult=await runLastChanceQualifier('Heat '+(yourHeatIdx+1), you, teams, lcqField, FMT.lclGames);
+      const lcqResult=await runLastChanceQualifier('Heat '+(yourHeatIdx+1), you, teams, lcqField, lcqSlots);
       if(!lcqResult.advanced){
         document.getElementById('finalSub').textContent=L().notPassedHeatsLCQ;
         finishMajorEliminatedAnim(you);
@@ -24912,21 +24943,21 @@ async function runMajorTournament(){
   if(cameFromLcq){
     if(!finalTeams.includes(you)) finalTeams.push(you);
     lcqOtherWinners.forEach(t=>{ if(!finalTeams.includes(t)) finalTeams.push(t); });
-    const stillNeeded=FMT.lclGames-1-lcqOtherWinners.length;
+    const stillNeeded=lcqSlots-1-lcqOtherWinners.length;
     if(stillNeeded>0){
       // Same Last Chance field, minus everyone who already holds a slot.
-      const extra=computeQuietLCQWinners(lastChanceField(lcqField, new Set(finalTeams)), FMT.lclGames);
+      const extra=computeQuietLCQWinners(lastChanceField(lcqField, new Set(finalTeams)), lcqSlots);
       extra.forEach(t=>{ if(finalTeams.length<50 && !finalTeams.includes(t)) finalTeams.push(t); });
     }
   } else {
     // You went straight through the Heats, so the Last Chance still runs — just
     // off-screen — among the teams the Heats left behind.
-    const lcqWinners=computeQuietLCQWinners(lastChanceField(teams, new Set(heatQualifiers45)), FMT.lclGames);
+    const lcqWinners=computeQuietLCQWinners(lastChanceField(teams, new Set(heatQualifiers45)), lcqSlots);
     lcqWinners.forEach(t=>{ if(!finalTeams.includes(t)) finalTeams.push(t); });
   }
 
   const zoneGroups=await showFinalsLandingPicker(finalTeams, you);
-  await simulateGamesLive(finalTeams, 12, pointsForPlace, 4, 'stage', 0, null, zoneGroups, {stageName:L().liveRegionalFinals});
+  await simulateGamesLive(finalTeams, (FMT.gfGames||12), pointsForPlace, 4, 'stage', 0, null, zoneGroups, {stageName:L().liveRegionalFinals});
   // Landing zone + fight now happen fresh before every one of the 12 games
   // (see pickZoneForGame, called from inside simulateGamesLive) instead of
   // once before the whole stage — so the bonus/penalty is already folded
