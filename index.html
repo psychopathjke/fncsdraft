@@ -1712,7 +1712,7 @@ celWinTitle:'ПОБЕДА', celWinSub:'Первое место — состав 
 celPodiumTitle:r=>'ТОП-'+r, celPodiumSub:'Подиум турнира',
 celTop10Title:'ТОП-10', celTop10Sub:'Состав отработал сильно',
 stage1TitleCards:'Этап 1 — Сеединг (6 игр, лобби по 50 команд)',
-landingFieldTitle:n=>'Лобби ('+n+' дуо)', stageGamesToggle:'Показать игры по одной', qualByVR:'Прошёл по Victory Royale', qualByPoints:'Прошёл по очкам', stage2NoteByVR:'Взял Victory Royale — мгновенный проход, игры на этом закончены',
+landingFieldTitle:n=>'Лобби ('+n+' '+(squadSize===3?'трио':squadSize===4?'сквадов':'дуо')+')', stageGamesToggle:'Показать игры по одной', qualByVR:'Прошёл по Victory Royale', qualByPoints:'Прошёл по очкам', stage2NoteByVR:'Взял Victory Royale — мгновенный проход, игры на этом закончены',
 regionResultHeader:'Регионалка', dropHeader:'Высадка · счёт', prizeHeader:'Приз', prizeTitle:'💰 Призовые состава', prizePerPlayer:v=>'по '+v+' на игрока',
 prizeRegional:(reg,rank)=>'Гранд-финал '+reg+' · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 rowHistoryHint:'Клик — матчи этой команды', stageTableTitle:'Таблица этапа', stageCutLabel:n=>'— линия отсечки: топ-'+n+' проходят —',
@@ -2133,7 +2133,7 @@ celWinTitle:'VICTORY', celWinSub:'First place — your squad took the tournament
 celPodiumTitle:r=>'TOP '+r, celPodiumSub:'On the tournament podium',
 celTop10Title:'TOP 10', celTop10Sub:'Strong run from your squad',
 stage1TitleCards:'Stage 1 — Seeding (6 games, 50-team lobbies)',
-landingFieldTitle:n=>'The lobby ('+n+' duos)', stageGamesToggle:'Show the game-by-game log', qualByVR:'Advanced on a Victory Royale', qualByPoints:'Advanced on points', stage2NoteByVR:'Victory Royale — instant qualification, no more games',
+landingFieldTitle:n=>'The lobby ('+n+' '+(squadSize===3?'trios':squadSize===4?'squads':'duos')+')', stageGamesToggle:'Show the game-by-game log', qualByVR:'Advanced on a Victory Royale', qualByPoints:'Advanced on points', stage2NoteByVR:'Victory Royale — instant qualification, no more games',
 regionResultHeader:'Regional', dropHeader:'Drop · record', prizeHeader:'Prize', prizeTitle:'💰 Squad earnings', prizePerPlayer:v=>v+' per player',
 prizeRegional:(reg,rank)=>reg+' Grand Finals · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 rowHistoryHint:'Click for this team\'s games', stageTableTitle:'Stage standings', stageCutLabel:n=>'— cut line: top '+n+' advance —',
@@ -23146,29 +23146,32 @@ const ZONE_SETS={
   // each image; both put the island at an aspect of 0.99, which is the check
   // that they describe the same thing.
   //
-  // Eighteen, not the full grid. The detector reads black-outlined boxes from
+  // Twenty-one, not the full grid. The detector reads black-outlined boxes from
   // line segments and red translucent ones as filled regions, and a handful of
   // boxes that share an edge still defeat it. Adding the rest is worth doing;
-  // eighteen real spots beat forty invented ones in the meantime.
+  // twenty-one real spots beat forty invented ones in the meantime.
   t1:[
-    {x:52.21,y:0,w:38.8,h:16.43},
-    {x:0.48,y:4.55,w:20.3,h:21.46},
-    {x:21.77,y:4.55,w:11.12,h:22.76},
-    {x:49.76,y:14.31,w:13.58,h:14.79},
-    {x:78.9,y:14.63,w:21.1,h:14.31},
-    {x:34.21,y:19.19,w:14.08,h:8.46},
-    {x:0.65,y:26.83,w:19.96,h:20.16},
-    {x:28.81,y:28.62,w:18,h:15.61},
-    {x:51.05,y:30.41,w:27.17,h:16.43},
-    {x:37,y:47.47,w:18.5,h:14.14},
-    {x:8.51,y:47.97,w:14.73,h:9.26},
-    {x:62.68,y:47.97,w:16.86,h:14.47},
-    {x:24.39,y:55.12,w:11.46,h:11.7},
-    {x:81.18,y:61.95,w:18.33,h:17.56},
-    {x:61.7,y:62.93,w:18.5,h:16.58},
-    {x:23.4,y:67.64,w:25.54,h:17.72},
-    {x:3.44,y:77.07,w:18.98,h:18.22},
-    {x:61.22,y:80.16,w:19.32,h:19.84}
+    {x:53.15,y:0,w:37.78,h:16.27},
+    {x:36.02,y:1.18,w:13.76,h:18.2},
+    {x:3.07,y:4.59,w:19.76,h:13.76},
+    {x:23.87,y:5.02,w:10.84,h:22.48},
+    {x:50.37,y:14.5,w:13.62,h:14.35},
+    {x:79.5,y:14.94,w:20.5,h:12.28},
+    {x:65.16,y:15.09,w:13.18,h:15.09},
+    {x:3.51,y:18.94,w:19.33,h:11.68},
+    {x:36.02,y:19.38,w:13.76,h:8.88},
+    {x:79.36,y:27.95,w:20.64,h:9.91},
+    {x:33.53,y:28.85,w:15.23,h:12.28},
+    {x:63.83,y:48.23,w:16.25,h:14.2},
+    {x:25.32,y:55.92,w:10.98,h:5.03},
+    {x:25.32,y:60.94,w:10.24,h:6.5},
+    {x:81.7,y:61.83,w:18.01,h:17.46},
+    {x:62.81,y:62.73,w:18.01,h:16.57},
+    {x:25.62,y:68.79,w:24.16,h:15.24},
+    {x:50.95,y:74.26,w:11.13,h:21},
+    {x:6.73,y:78.4,w:16.7,h:16.12},
+    {x:64.71,y:79.74,w:30.9,h:20.26},
+    {x:24.6,y:85.35,w:25.19,h:10.8}
   ],
   m1:[
     {x:24.92,y:8.0,w:20.87,h:11.73},
@@ -23266,8 +23269,9 @@ function trimLandingZonesForMode(){
   if(share>=1) return;
   // The trim exists to stop a forty-box island reading as a wall of rectangles.
   // A set that is already sparse has nothing to declutter, and thinning it just
-  // stacks teams on top of each other.
-  if(ALL_LANDING_ZONES.length<=20) return;
+  // stacks teams on top of each other. The 2026 islands carry 36 and 39 boxes
+  // and still thin; the 2025 one carries 21 and is left whole.
+  if(ALL_LANDING_ZONES.length<=30) return;
   const keep=Math.max(12, Math.round(ALL_LANDING_ZONES.length*share));
   const ranked=ALL_LANDING_ZONES
     .map((z,i)=>({z, i, area:z.w*z.h}))
