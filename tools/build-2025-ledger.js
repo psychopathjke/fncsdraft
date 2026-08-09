@@ -128,16 +128,16 @@ for (const [set, season] of [['t2','S34'], ['t3','S36']]){
 const CFG = SEASONS[SET];
 if (!CFG) throw new Error('unknown set: ' + SET + ' (expected t1, t2 or t3)');
 
-// The Global Championship, for Major 3 only. It is the last thing the 2025
-// season played and the strongest field it ever put in one lobby, so it belongs
-// in a Major 3 card's rating -- the same place the Summit holds on a 2026 Major
-// 1 card.
+// The Global Championship, on all three Majors. It is the last thing the 2025
+// season played and the strongest field it ever put in one lobby, and every one
+// of its thirty-three trios earned the seat at a Major -- eight at Major 1,
+// thirteen at Major 2, twelve at Major 3. A card from any of them is a card of
+// somebody who went to Lyon, so it counts on all three.
 //
 // The standings are not copied here. GC2025_RANKED already carries all 33
 // placements in index.html; a second copy is a second thing to drift, so it is
 // read out of the page at build time.
 function globalChampionship(){
-  if (SET !== 't3') return null;
   const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
   const at = html.indexOf('const GC2025_RANKED=[');
   if (at < 0) return null;
