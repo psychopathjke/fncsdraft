@@ -548,8 +548,11 @@
 
 
   /* map on the left, the lobby you're about to face on the right */
-  .landing-split{display:grid;grid-template-columns:minmax(0,520px) minmax(0,1fr);gap:16px;align-items:start;}
-  @media(max-width:900px){.landing-split{grid-template-columns:1fr;}}
+  /* The drop map is the thing being read here -- team names sit inside boxes
+     that can be a few percent of the island wide -- so it gets the room and the
+     field list takes what is left. */
+  .landing-split{display:grid;grid-template-columns:minmax(0,760px) minmax(240px,1fr);gap:16px;align-items:start;}
+  @media(max-width:1100px){.landing-split{grid-template-columns:1fr;}}
 
 
   /* ---------- Prize money card ---------- */
@@ -24551,8 +24554,8 @@ async function pickInitialZone(you, bots){
     <div class="stage-detail">${L().landingPickPrompt}</div>
     <div class="landing-split">
       <div>
-        <div class="map-frame" style="position:relative;width:100%;aspect-ratio:1100/970;border-radius:8px;background:#000;border:1px solid var(--line);overflow:hidden;margin-top:10px;">
-          <img id="gameLandingMapImg" alt="Island map" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
+        <div class="map-frame" style="position:relative;width:100%;aspect-ratio:${MAP_ASPECT[CARD_SET]||'1100/970'};border-radius:8px;background:#000;border:1px solid var(--line);overflow:hidden;margin-top:10px;">
+          <img id="gameLandingMapImg" alt="Island map" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
           <div id="gameLandingLayer" style="position:absolute;inset:0;"></div>
         </div>
         <div id="gameLandingInfo" style="margin-top:10px;min-height:20px;font-size:13px;"></div>
@@ -24571,7 +24574,9 @@ async function pickInitialZone(you, bots){
 
   const mapImg=box.querySelector('#gameLandingMapImg');
   const pickerImg=document.querySelector('#landingMapWrap img');
-  if(mapImg && pickerImg) mapImg.src=pickerImg.src;
+  // Prefer the set's own art. Copying whatever the squad screen happened to be
+  // showing breaks the moment that screen was skipped.
+  if(mapImg) mapImg.src = MAP_ART[CARD_SET] || (pickerImg && pickerImg.src) || MAP_ART.m2;
   const layer=box.querySelector('#gameLandingLayer');
   const infoBox=box.querySelector('#gameLandingInfo');
   const confirmBtn=box.querySelector('#gameLandingConfirm');
