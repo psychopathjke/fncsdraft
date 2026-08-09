@@ -4071,18 +4071,37 @@ const REGION_TOP={EU:96, NAC:96, NAW:85, BR:85, OCE:85, ASIA:85, ME:85};
 // back into the two things that earned it, which is a real axis the leaderboard
 // does not print directly: who scores by fragging and who scores by surviving.
 const KILL_MULT=4;
-function m1Entry(r){
+// One parser for every set. 2026 rows carry two names and no elimination-points
+// column, so the split has to be inferred from the multiplier above. 2025 rows
+// carry three names and the column Epic actually publishes, so the split is
+// read instead — which matters because its group stage marks a qualified team
+// with a flat +1000, and inferring the share for those teams would hand a
+// fake-high Endgame to exactly the players the format already rewarded.
+// The multiplier is an argument because it is not a constant of the game: 2026
+// duos pay 4, and 2025 pays 1 in the Last Chance Qualifier, 2 in the Play-In
+// and 4 in the Grand Finals.
+function rowEntry(r, opts){
+  opts = opts || {};
+  const killMult = (opts.killMult==null) ? KILL_MULT : opts.killMult;
+  const at = (opts.elimPtsAt==null) ? -1 : opts.elimPtsAt;
   const matches=Math.max(r[2],1);
   const tpm=r[1]/matches;
+  // Names sit at the tail of the row, after whichever numeric columns the set
+  // carries, so two of them and three of them read the same way.
+  const names=r.slice(at>=0 ? at+1 : 6).filter(v=>typeof v==='string');
+  const elimPts = at>=0 ? r[at] : r[4]*matches*killMult;
   return {rank:r[0], pts:r[1], matches:r[2], wins:r[3], avgElims:r[4], avgPlace:r[5],
-          duo:[r[6], r[7]],
+          duo:names,
           wpm:r[3]/matches, tpm,
           survival:-r[5],   // lower average placement is better, so invert it
-          // Share of the points per match that came from placement rather than
-          // kills. Clamped because a low-scoring duo can out-earn its own point
+          // Share of the points that came from placement rather than kills.
+          // Clamped because a low-scoring team can out-earn its own point
           // total on eliminations alone, which would read as a negative share.
-          endShare: tpm>0 ? clamp((tpm - r[4]*KILL_MULT)/tpm, 0, 1) : 0};
+          endShare: r[1]>0 ? clamp((r[1]-elimPts)/r[1], 0, 1) : 0};
 }
+// The 2026 sets call through this. Same arithmetic as before, scaled top and
+// bottom by the match count, so every existing card is unmoved.
+function m1Entry(r){ return rowEntry(r); }
 const _M1P=CARD_M1_PLAYIN_RAW.map(m1Entry);
 const _M1L=CARD_M1_LCQ_RAW.map(m1Entry);
 const _M1G=CARD_M1_GF_RAW.map(m1Entry);
