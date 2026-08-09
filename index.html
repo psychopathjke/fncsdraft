@@ -1042,7 +1042,7 @@
   </div>
 
   <div class="screen active" id="screen-mode">
-    <div class="mode-grid mode-grid-3">
+    <div class="mode-grid mode-grid-4">
       <div class="mode-card" onclick="chooseMode(2, 'cards1')">
         <div class="ec-art" style="background-image:url(art/mode-major1.jpg)"><span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span><span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateM1"></div><h3 class="ec-title" data-i18n="modeCards1Title"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos"></span></div></div></div>
         <p data-i18n="modeCards1Desc"></p>
@@ -1052,6 +1052,11 @@
         <div class="ec-art" id="major2Art" style="background-image:url(art/mode-major1.jpg)"><span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span><span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateM2"></div><h3 class="ec-title" data-i18n="modeCardsTitle"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos"></span></div></div></div>
         <p data-i18n="modeCardsDesc"></p>
         <span class="mode-count" data-i18n="modeCardsCount"></span>
+      </div>
+      <div class="mode-card" onclick="chooseMode(3, 'cards2025')">
+        <div class="ec-art" style="background-image:url(art/mode-major1.jpg)"><span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span><span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateT1"></div><h3 class="ec-title" data-i18n="modeCardsT1Title"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubTrios"></span></div></div></div>
+        <p data-i18n="modeCardsT1Desc"></p>
+        <span class="mode-count" data-i18n="modeCardsT1Count"></span>
       </div>
       <div class="mode-card mode-card-soon" aria-disabled="true">
         <span class="soon-badge">SOON</span>
@@ -1543,6 +1548,7 @@ supportBtn:'Поддержать',
 dataCreditText:'Флаги, составы и данные игроков — с', dataCreditAnd:'и',
 badgeMode:'выбор режима',
 ecDateAll:'2021 — 2026', ecDateM1:'мар — май 2026', ecDateM2:'18 июл — 2 авг 2026',
+ecDateT1:'янв — фев 2025',
 ecScopeAll:'Все регионы', ecScope7:'7 регионов', ecStCards:'Карточки',
 ecSubDuos:'Дуо', ecSubTrios:'Трио', ecSubSquads:'Сквад',
 modeDuoTitle:'Дуо', modeDuoDesc:'2 слота. Настоящий формат FNCS. Лобби из ~50 команд.', modeDuoCount:'2 игрока · цель 50 команд',
@@ -1890,6 +1896,9 @@ modeCareerCount:'дивизион 5 → дивизион 1 · в разрабо�
 ecSubCareer:'Путь одного игрока',
 modeCardsTitle:'FNCS Major 2',
 modeCardsDesc:'Реальные составы FNCS Major 2 — все семь регионов, от Европы до Океании. Каждый игрок карточка с атрибутами по его настоящим результатам.',
+modeCardsT1Title:'FNCS 2025 Major 1',
+modeCardsT1Desc:'Все семь регионов FNCS 2025 Major 1 в трио: плей-ин, Last Chance Qualifier и региональный финал в каждом. Атрибуты по настоящим результатам — элим стоит 1 очко в LCQ, 2 в плей-ине и 4 в финале.',
+modeCardsT1Count:'3 игрока · плей-ин, группы, региональный финал',
 modeCards1Title:'FNCS Major 1',
 modeCards1Desc:'Все семь регионов FNCS Major 1: по 150 дуо плей-ина и отборочный LCQ в каждом, дальше LAN в Дюссельдорфе <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">. Атрибуты по настоящим результатам.',
 modeCards1Count:'2 игрока · плей-ин, хиты, Дюссельдорф <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
@@ -1960,6 +1969,7 @@ supportBtn:'Support',
 dataCreditText:'Flags, squads and player data sourced from', dataCreditAnd:'and',
 badgeMode:'select mode',
 ecDateAll:'2021 — 2026', ecDateM1:'Mar — May 2026', ecDateM2:'18 Jul — 2 Aug 2026',
+ecDateT1:'Jan — Feb 2025',
 ecScopeAll:'All regions', ecScope7:'7 regions', ecStCards:'Cards',
 ecSubDuos:'Duos', ecSubTrios:'Trios', ecSubSquads:'Squads',
 modeDuoTitle:'Duo', modeDuoDesc:'2 slots. Real FNCS format. Lobby of ~50 teams.', modeDuoCount:'2 players · target 50 teams',
@@ -2277,6 +2287,9 @@ modeCareerCount:'division 5 → division 1 · in development',
 ecSubCareer:'One player’s run',
 modeCardsTitle:'FNCS Major 2',
 modeCardsDesc:'The real FNCS Major 2 fields — all seven regions, from Europe to Oceania. Every player is a card with attributes drawn from their actual results.',
+modeCardsT1Title:'FNCS 2025 Major 1',
+modeCardsT1Desc:'All seven regions of FNCS 2025 Major 1 in trios: a Play-In, a Last Chance Qualifier and a regional final in each. Attributes drawn from actual results — an elimination is worth 1 point in the LCQ, 2 in the Play-In and 4 in the final.',
+modeCardsT1Count:'3 players · play-in, groups, regional final',
 modeCards1Title:'FNCS Major 1',
 modeCards1Desc:'All seven FNCS Major 1 regions: 150 Play-In duos and an LCQ in each, then the Düsseldorf <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> LAN. Attributes drawn from actual results.',
 modeCards1Count:'2 players · play-in, heats, Düsseldorf <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
@@ -22690,8 +22703,8 @@ let preSelectedYears=[];   // empty means every year
 
 function chooseMode(size, major){
   pendingSize=size; pendingMajor=!!major;
-  pendingCards = (major==='cards' || major==='cards1');
-  pendingCardSet = (major==='cards1') ? 'm1' : 'm2';
+  pendingCards = (major==='cards' || major==='cards1' || major==='cards2025');
+  pendingCardSet = (major==='cards1') ? 'm1' : (major==='cards2025') ? 't1' : 'm2';
   applyLobbyTheme(true);
   buildPreRegionChecks();
   buildMapChecks();
@@ -26806,6 +26819,15 @@ const MODE_THEME={
            panel:'rgba(9,35,49,.62)', panel2:'rgba(12,44,60,.58)',
            inkDim:'#c4c8c4', inkDimmer:'#93a2a4', lineCol:'rgba(212,190,140,.24)'},
 
+  // FNCS 2025 is Chapter 6, whose in-game leaderboard was pale steel and
+  // lavender rather than Chapter 7's teal. Held in a dark register for now: the
+  // reference screen is light, and inverting a dark app to a light table means
+  // auditing every standings screen for colours hardcoded past these variables.
+  t1:     {glow:[[132,138,158,.50],[196,200,216,.38],[38,40,52,.78]],
+           pageBase:'linear-gradient(160deg,#2b2d3a 0%,#232530 46%,#1b1c25 100%)',
+           panel:'rgba(30,32,42,.62)', panel2:'rgba(38,40,52,.58)',
+           inkDim:'#c2c5d2', inkDimmer:'#9296a6', lineCol:'rgba(180,186,208,.22)'},
+
   allfncs:{accent:'#3f62ca', accentInk:'#0a1229', bg:['#0f1a38','#0d142b','#0a0f1f'],
            line:'rgba(130,160,240,.28)', soft:'rgba(130,160,240,.10)',
            ink:'#eaeefb', dim:'rgba(205,215,245,.72)', row:'#121a30',
@@ -26834,7 +26856,7 @@ function modeThemeKey(pending){
   const set   = pending ? pendingCardSet : CARD_SET;
   const major = pending ? pendingMajor   : isMajorMode;
   const size  = pending ? pendingSize    : squadSize;
-  if(cards) return set==='m1' ? 'm1' : 'm2';
+  if(cards) return set==='m1' ? 'm1' : set==='t1' ? 't1' : 'm2';
   if(major) return 'allfncs';
   return size===3 ? 'trio' : (size===4 ? 'squad' : 'duo');
 }
