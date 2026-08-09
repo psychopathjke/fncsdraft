@@ -40,7 +40,10 @@ const mapOf = rows => {
   const m = {};
   for (const r of rows){
     for (let i = 7; i < r.length; i++){
-      const h = r[i];
+      // Lowercased because the lookup that reads this table lowercases the
+      // card's handle before asking. Leaving them mixed-case silently matched
+      // only the players who already wrote their name in lower case.
+      const h = String(r[i]).toLowerCase();
       if (m[h] == null || r[0] < m[h]) m[h] = r[0];
     }
   }
