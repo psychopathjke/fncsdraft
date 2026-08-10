@@ -10,6 +10,10 @@ const { execFileSync } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 const ATTEMPTS = +(process.argv[2] || 12);
+const ALL = process.env.ALL ? true : false;
+// Which slice of the region the player drafts from — 0 is the best three cards
+// available, which is the ceiling rather than a typical draft.
+const FROM = +(process.env.FROM || 0);
 const CHROME = [
   process.env.CHROME,
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
@@ -40,10 +44,10 @@ const BOOTSTRAP = `
                  .sort(function(a,b){ return b.rating - a.rating; });
 
   function once(n){
-    drafted = roster.slice(0, 3);
+    drafted = roster.slice(${FROM}, ${FROM} + 3);
     skipAnimation = true;
     return runMajorTournament().then(function(){
-      var cards = [].slice.call(document.querySelectorAll('#majorStages .stage-card'))
+      var cards = [].slice.call(document.querySelectorAll('#majorStages .stage-card, #runSummary .stage-card'))
         .map(function(c){ var h = c.querySelector('h4'); return h ? h.textContent.trim() : '(no title)'; });
       var reachedLyon = cards.some(function(t){ return /Лион|Lyon/.test(t); });
       var summary = cards.some(function(t){ return /Итоги симуляции|Your run, stage by stage/.test(t); });
@@ -51,7 +55,7 @@ const BOOTSTRAP = `
                          places: runPlaces.map(function(p){ return p.title + ' #' + p.rank + '/' + p.total; }),
                          earnings: runEarnings.map(function(e){ return e.label + ' = ' + e.amount; }),
                          totalEarned: runEarnings.reduce(function(s,e){ return s+e.amount; }, 0)});
-      if (reachedLyon || n >= ${ATTEMPTS}) { finish(); return; }
+      if ((reachedLyon && !${ALL}) || n >= ${ATTEMPTS}) { finish(); return; }
       return once(n + 1);
     }).catch(function(e){
       out.error = String(e && e.stack || e);
@@ -72,8 +76,12 @@ const dom = execFileSync(CHROME, [
   'file:///' + tmp.replace(/\\/g, '/')
 ], { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8' });
 
-const m = dom.match(/BEGINPROBE([\s\S]*?)ENDPROBE/);
-if (!m) { console.error('probe did not run'); process.exit(1); }
+// The bootstrap's own source is in the dumped DOM and carries the marker too, so
+// match the encoded payload rather than "anything between the markers" — which
+// otherwise matches the script text and reports a parse error instead of saying
+// the run never finished.
+const m = dom.match(/BEGINPROBE((?:%[0-9A-Fa-f]{2}|[A-Za-z0-9!'()*\-._~])+)ENDPROBE/);
+if (!m || !m[1]) { console.error('probe did not finish — raise --virtual-time-budget or lower the attempts'); process.exit(1); }
 const res = JSON.parse(decodeURIComponent(m[1]));
 if (res.error) { console.error(res.error); process.exit(1); }
 res.attempts.forEach(a => {

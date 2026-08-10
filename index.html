@@ -1431,6 +1431,11 @@
       <div id="unlockToasts"></div>
     </div>
 
+    <!-- The run's own record, under the result rather than above it: the whole
+         season on one card is the last thing you read, not something you scroll
+         back past on the way to the final placement. -->
+    <div id="runSummary"></div>
+
     <div class="box-title" id="cardGalleryTitle" style="display:none;" data-i18n="cardGalleryTitle"></div>
     <div id="cardGallery" style="display:none;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:8px;"></div>
 
@@ -25750,6 +25755,30 @@ const WEAPON_ART_BY_NAME={
 // The art maps now hold file paths rather than inline data, so the browser can
 // defer anything the player never scrolls to — only a handful of the 58 icons
 // are on screen in any given loot pack.
+// The loot the pools deal that had no picture at all — mostly Chapter 6 Season 2
+// and Season 3 guns that landed after the first art pass. Fetched by
+// tools/fetch-missing-item-art.js; tools/check-item-art.js is what found them.
+//
+// Five of these have no art of their own anywhere: an Enhanced gun is the base
+// weapon in a different tint, and a mythic named after a character is the base
+// gun with a skin on it — the wiki says so itself, its infobox for the Baron
+// pistol points at the Mammoth Pistol. Those carry the base weapon picture, and
+// the substitution is written down in the fetcher rather than hidden here.
+const EXTRA_ITEM_ART={
+ "Twin Mag Assault Rifle": "items/itm-twin-mag-assault-rifle.webp",
+ "Collateral Damage Assault Rifle": "items/itm-collateral-damage-assault-rifle.webp",
+ "Baron's Double Down Pistol": "items/itm-baron-s-double-down-pistol.webp",
+ "Midas' Gilded Eye Drum Gun": "items/itm-midas-gilded-eye-drum-gun.webp",
+ "Brutus' Minigun": "items/itm-brutus-minigun.webp",
+ "Enhanced Holo Twister Assault Rifle": "items/itm-enhanced-holo-twister-assault-rifle.webp",
+ "Enhanced Sentinel Pump Shotgun": "items/itm-enhanced-sentinel-pump-shotgun.webp",
+ "Spire Rifle": "items/itm-spire-rifle.webp",
+ "Enhanced Spire Rifle": "items/itm-enhanced-spire-rifle.webp",
+ "Kor's Deadeye DMR": "items/itm-kor-s-deadeye-dmr.webp",
+ "Med-Mist": "items/itm-med-mist.webp",
+ "Small Fries": "items/itm-small-fries.webp"
+};
+
 function weaponIconHTML(o){
   const tag=src=>'<img alt="" loading="lazy" decoding="async" src="'+src+'">';
   // The 2025 sets share most of their loot with each other, so a picture missing
@@ -25766,6 +25795,8 @@ function weaponIconHTML(o){
   if(w) return tag(w);
   const it=ITEM_ART[o.name];
   if(it) return tag(it);
+  const ex=EXTRA_ITEM_ART[o.name];
+  if(ex) return tag(ex);
   return WEAPON_ICON[o.icon];
 }
 
@@ -28705,7 +28736,10 @@ function renderPrizeCard(lines, total){
 function renderRunSummaryCard(){
   if(!runPlaces.length) return null;
   const total=runEarnings.reduce((s,l)=>s+l.amount,0);
-  const container=document.getElementById('majorStages');
+  // Under the final placement, not among the stage cards — it is the summary of
+  // everything above it.
+  const container=document.getElementById('runSummary') || document.getElementById('majorStages');
+  container.innerHTML='';
   const card=document.createElement('div');
   card.className='stage-card';
   const placeRows=runPlaces.map(p=>`<tr class="lobby-row">
@@ -29525,6 +29559,7 @@ async function runMajorTournament(){
   skipAnimation=false;
   resetRunRecord();
   document.getElementById('majorStages').innerHTML='';
+  const rsPrev=document.getElementById('runSummary'); if(rsPrev) rsPrev.innerHTML='';
   document.getElementById('lobbyTitle').textContent='';
   document.getElementById('lobbyBody').innerHTML='';
   clearEventPanel();
@@ -31799,7 +31834,9 @@ function simulateGame(teams){
 const NUM_GAMES=12;
 
 async function runTournament(){
+  resetRunRecord();
   document.getElementById('majorStages').innerHTML='';
+  const rsPrev2=document.getElementById('runSummary'); if(rsPrev2) rsPrev2.innerHTML='';
   document.getElementById('lobbyBody').innerHTML='';
   clearEventPanel();
   document.getElementById('finalBanner').style.display='none';
@@ -33266,6 +33303,8 @@ function requestReset(){
 }
 
 function resetAll(){
+  resetRunRecord();
+  const rsPrev3=document.getElementById('runSummary'); if(rsPrev3) rsPrev3.innerHTML='';
   lobbyPrizeTable=null;
   clearLobbyTheme();
   clearEventPanel();
