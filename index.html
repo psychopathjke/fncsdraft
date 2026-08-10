@@ -27387,6 +27387,17 @@ const MAP_ASPECT={m1:'1100/1142', m2:'1100/970', t1:'1701/1714',
 // A handful of rectangles sit between two neighbouring POIs; those took the
 // nearer one, so their numbers can be a spot off. Everything else is a direct hit.
 const ZONE_STATS={
+  // The three 2025 islands, rated by the loot the wiki counts inside each
+  // rectangle: every named location and landmark on the patch that Major was
+  // played on, placed by its real map coordinates, scored on chests plus ammo
+  // boxes. Written by tools/build-2025-zone-loot.js. A rectangle with no counted
+  // POI in it stays at zero and comes out as a one-point spot, which is what an
+  // empty field is worth. There is no "teams" or "surv" here: those come from
+  // competitive evals that exist for the 2026 islands and not for these, and
+  // useLandingSet already defaults the contest rate to 1 rather than inventing one.
+  t1:[{r:25,loot:25},{r:99,loot:99},{r:70,loot:70},{r:15,loot:15},{r:84,loot:84},{r:77,loot:77},{r:90,loot:90},{r:40,loot:40},{r:48,loot:48},{r:20,loot:20},{r:71,loot:71},{r:34,loot:34},{r:51,loot:51},{r:60,loot:60},{r:51,loot:51},{r:122,loot:122},{r:159,loot:159},{r:71,loot:71},{r:46,loot:46},{r:0,loot:0},{r:97,loot:97},{r:42,loot:42},{r:73,loot:73},{r:92,loot:92},{r:78,loot:78},{r:77,loot:77},{r:0,loot:0}],
+  t2:[{r:25,loot:25},{r:99,loot:99},{r:19,loot:19},{r:95,loot:95},{r:84,loot:84},{r:77,loot:77},{r:90,loot:90},{r:48,loot:48},{r:15,loot:15},{r:35,loot:35},{r:71,loot:71},{r:34,loot:34},{r:73,loot:73},{r:15,loot:15},{r:39,loot:39},{r:46,loot:46},{r:121,loot:121},{r:42,loot:42},{r:133,loot:133},{r:9,loot:9},{r:97,loot:97},{r:27,loot:27},{r:70,loot:70},{r:0,loot:0},{r:15,loot:15},{r:111,loot:111},{r:78,loot:78},{r:85,loot:85},{r:0,loot:0}],
+  t3:[{r:25,loot:25},{r:0,loot:0},{r:99,loot:99},{r:0,loot:0},{r:0,loot:0},{r:90,loot:90},{r:71,loot:71},{r:20,loot:20},{r:40,loot:40},{r:71,loot:71},{r:34,loot:34},{r:73,loot:73},{r:56,loot:56},{r:42,loot:42},{r:93,loot:93},{r:72,loot:72},{r:63,loot:63},{r:90,loot:90},{r:35,loot:35},{r:70,loot:70},{r:11,loot:11},{r:97,loot:97},{r:78,loot:78},{r:38,loot:38},{r:69,loot:69}],
   m1:[
     {r:29,loot:68,teams:3.46,surv:51},{r:16,loot:23,teams:1.68,surv:58},{r:37,loot:53,teams:1.96,surv:57},
     {r:29,loot:33,teams:1.38,surv:58},{r:55,loot:49,teams:1.74,surv:65},{r:48,loot:28,teams:0.78,surv:60},
