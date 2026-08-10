@@ -27623,8 +27623,14 @@ function trimLandingZonesForMode(){
   ranked.forEach(z=>ALL_LANDING_ZONES.push(z));
 }
 
+// Which island is actually loaded. In card mode it tracks CARD_SET, but the
+// normal cups let you pick a map of your own, and everything that draws the map
+// used to read CARD_SET regardless — so picking Chapter 6 Season 3 in a normal
+// duo cup laid that island's landing grid over last season's satellite photo.
+let ACTIVE_LANDING_SET='m2';
 function useLandingSet(key){
   const set = ZONE_SETS[key] ? key : 'm2';
+  ACTIVE_LANDING_SET=set;
   const stats = ZONE_STATS[set] || [];
   ALL_LANDING_ZONES.length=0;
   // The rectangle is copied through untouched; the season's real numbers ride
@@ -29126,7 +29132,7 @@ async function pickInitialZone(you, bots){
     <div class="stage-detail">${L().landingPickPrompt}</div>
     <div class="landing-split">
       <div>
-        <div class="map-frame" style="position:relative;width:100%;aspect-ratio:${MAP_ASPECT[CARD_SET]||'1100/970'};border-radius:8px;background:#000;border:1px solid var(--line);overflow:hidden;margin-top:10px;">
+        <div class="map-frame" style="position:relative;width:100%;aspect-ratio:${MAP_ASPECT[ACTIVE_LANDING_SET]||'1100/970'};border-radius:8px;background:#000;border:1px solid var(--line);overflow:hidden;margin-top:10px;">
           <img id="gameLandingMapImg" alt="Island map" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
           <div id="gameLandingLayer" style="position:absolute;inset:0;"></div>
         </div>
@@ -29148,7 +29154,7 @@ async function pickInitialZone(you, bots){
   const pickerImg=document.querySelector('#landingMapWrap img');
   // Prefer the set's own art. Copying whatever the squad screen happened to be
   // showing breaks the moment that screen was skipped.
-  if(mapImg) mapImg.src = MAP_ART[CARD_SET] || (pickerImg && pickerImg.src) || MAP_ART.m2;
+  if(mapImg) mapImg.src = MAP_ART[ACTIVE_LANDING_SET] || (pickerImg && pickerImg.src) || MAP_ART.m2;
   const layer=box.querySelector('#gameLandingLayer');
   const infoBox=box.querySelector('#gameLandingInfo');
   const confirmBtn=box.querySelector('#gameLandingConfirm');
@@ -29697,6 +29703,11 @@ async function runMajorTournament(){
 
   if(worlds){
     renderRunSummaryCard();
+    // A LAN is not paid on the table of the region you flew out of. The lobby
+    // kept the regional table it was given at the Grand Finals, so a player from
+    // Asia read the world final's placements against Asia's regional money.
+    // Antwerp has no published per-place split, so it shows none.
+    lobbyPrizeTable=null;
     finalTeams=worlds.ranked;
     finalTeams.forEach(t=>{ t.totalPts=t.stagePts; t.totalElims=t.stageElims; });
     you.gameLog=you.stageLog;
@@ -32116,7 +32127,7 @@ function renderLandingResultsMap(teams){
   const section=document.getElementById('landingResultsSection');
   const mapImg=document.getElementById('landingResultsMapImg');
   const pickerImg=document.querySelector('#landingMapWrap img');
-  if(mapImg && pickerImg && !mapImg.src) mapImg.src=pickerImg.src;
+  if(mapImg && !mapImg.src) mapImg.src = MAP_ART[ACTIVE_LANDING_SET] || (pickerImg && pickerImg.src) || '';
   const layer=document.getElementById('landingResultsMarkersLayer');
   const list=document.getElementById('landingResultsList');
   if(!layer || !list) return;
