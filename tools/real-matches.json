@@ -1,0 +1,6528 @@
+{
+ "source": "FNCS 2026 EU Grand Finals, three matches saved from the Match Details pages",
+ "note": "Coordinates are game units (1 unit = 1 cm). Times are seconds from match start. The storm schedule — every radius, every phase length, and from zone 5 the distance the centre moves — is identical in all three; only the direction it moves and where the first circle lands differ.",
+ "matches": [
+  {
+   "id": "f017a3a9-94df-4935-bc62-e5debd779da7",
+   "teamCount": 49,
+   "zones": [
+    {
+     "t": 124.9,
+     "radius": 95000,
+     "cx": -5379.4,
+     "cy": -22401.3
+    },
+    {
+     "t": 319.9,
+     "radius": 75000,
+     "cx": -13394.6,
+     "cy": -31945.5
+    },
+    {
+     "t": 469.9,
+     "radius": 52500,
+     "cx": 200.9,
+     "cy": -44882.4
+    },
+    {
+     "t": 619.9,
+     "radius": 32500,
+     "cx": 75.7,
+     "cy": -46172.8
+    },
+    {
+     "t": 774.9,
+     "radius": 20000,
+     "cx": 30882.6,
+     "cy": -35819.6
+    },
+    {
+     "t": 884.9,
+     "radius": 10000,
+     "cx": 31367.6,
+     "cy": -15825.5
+    },
+    {
+     "t": 994.9,
+     "radius": 5000,
+     "cx": 22927.6,
+     "cy": -3425.2
+    },
+    {
+     "t": 1090,
+     "radius": 2500,
+     "cx": 11417.3,
+     "cy": -32
+    },
+    {
+     "t": 1170.1,
+     "radius": 1650,
+     "cx": 1654,
+     "cy": 2130.9
+    },
+    {
+     "t": 1225.2,
+     "radius": 1100,
+     "cx": 6656.6,
+     "cy": 7515.8
+    },
+    {
+     "t": 1276.3,
+     "radius": 1000,
+     "cx": 10253.6,
+     "cy": 1106.1
+    }
+   ],
+   "teams": [
+    {
+     "placement": 1,
+     "timeAlive": 1292,
+     "elims": 7,
+     "damage": 1869,
+     "taken": 1422,
+     "travel": 999953,
+     "heals": 204,
+     "shields": 60
+    },
+    {
+     "placement": 2,
+     "timeAlive": 1289,
+     "elims": 2,
+     "damage": 1647,
+     "taken": 1753,
+     "travel": 691930,
+     "heals": 194,
+     "shields": 37
+    },
+    {
+     "placement": 3,
+     "timeAlive": 1259,
+     "elims": 6,
+     "damage": 1533,
+     "taken": 1927,
+     "travel": 930262,
+     "heals": 207,
+     "shields": 71
+    },
+    {
+     "placement": 4,
+     "timeAlive": 1254,
+     "elims": 4,
+     "damage": 2068,
+     "taken": 1036,
+     "travel": 718105,
+     "heals": 35,
+     "shields": 64
+    },
+    {
+     "placement": 5,
+     "timeAlive": 1243,
+     "elims": 3,
+     "damage": 1042,
+     "taken": 1280,
+     "travel": 811594,
+     "heals": 83,
+     "shields": 64
+    },
+    {
+     "placement": 6,
+     "timeAlive": 1247,
+     "elims": 3,
+     "damage": 851,
+     "taken": 1380,
+     "travel": 567211,
+     "heals": 60,
+     "shields": 60
+    },
+    {
+     "placement": 7,
+     "timeAlive": 1246,
+     "elims": 5,
+     "damage": 1196,
+     "taken": 2391,
+     "travel": 831640,
+     "heals": 233,
+     "shields": 102
+    },
+    {
+     "placement": 8,
+     "timeAlive": 1232,
+     "elims": 1,
+     "damage": 2463,
+     "taken": 933,
+     "travel": 753667,
+     "heals": 50,
+     "shields": 50
+    },
+    {
+     "placement": 9,
+     "timeAlive": 1210,
+     "elims": 8,
+     "damage": 3376,
+     "taken": 2203,
+     "travel": 726683,
+     "heals": 197,
+     "shields": 96
+    },
+    {
+     "placement": 10,
+     "timeAlive": 1228,
+     "elims": 5,
+     "damage": 1791,
+     "taken": 1275,
+     "travel": 879743,
+     "heals": 42,
+     "shields": 74
+    },
+    {
+     "placement": 11,
+     "timeAlive": 1217,
+     "elims": 4,
+     "damage": 1256,
+     "taken": 1460,
+     "travel": 800177,
+     "heals": 112,
+     "shields": 46
+    },
+    {
+     "placement": 12,
+     "timeAlive": 1213,
+     "elims": 1,
+     "damage": 606,
+     "taken": 1824,
+     "travel": 886800,
+     "heals": 163,
+     "shields": 50
+    },
+    {
+     "placement": 13,
+     "timeAlive": 1183,
+     "elims": 3,
+     "damage": 966,
+     "taken": 1795,
+     "travel": 830585,
+     "heals": 128,
+     "shields": 85
+    },
+    {
+     "placement": 14,
+     "timeAlive": 1170,
+     "elims": 2,
+     "damage": 916,
+     "taken": 2318,
+     "travel": 823264,
+     "heals": 266,
+     "shields": 71
+    },
+    {
+     "placement": 15,
+     "timeAlive": 1157,
+     "elims": 4,
+     "damage": 1061,
+     "taken": 1916,
+     "travel": 1080524,
+     "heals": 201,
+     "shields": 59
+    },
+    {
+     "placement": 16,
+     "timeAlive": 1144,
+     "elims": 1,
+     "damage": 332,
+     "taken": 1873,
+     "travel": 937767,
+     "heals": 148,
+     "shields": 52
+    },
+    {
+     "placement": 17,
+     "timeAlive": 1145,
+     "elims": 2,
+     "damage": 667,
+     "taken": 1813,
+     "travel": 721831,
+     "heals": 171,
+     "shields": 63
+    },
+    {
+     "placement": 18,
+     "timeAlive": 1134,
+     "elims": 4,
+     "damage": 1409,
+     "taken": 2057,
+     "travel": 820667,
+     "heals": 213,
+     "shields": 52
+    },
+    {
+     "placement": 19,
+     "timeAlive": 617,
+     "elims": 1,
+     "damage": 309,
+     "taken": 1916,
+     "travel": 718491,
+     "heals": 224,
+     "shields": 32
+    },
+    {
+     "placement": 20,
+     "timeAlive": 801,
+     "elims": 2,
+     "damage": 463,
+     "taken": 2317,
+     "travel": 697919,
+     "heals": 183,
+     "shields": 56
+    },
+    {
+     "placement": 21,
+     "timeAlive": 1109,
+     "elims": 1,
+     "damage": 229,
+     "taken": 1898,
+     "travel": 683690,
+     "heals": 196,
+     "shields": 45
+    },
+    {
+     "placement": 22,
+     "timeAlive": 1087,
+     "elims": 4,
+     "damage": 803,
+     "taken": 1971,
+     "travel": 784295,
+     "heals": 225,
+     "shields": 66
+    },
+    {
+     "placement": 23,
+     "timeAlive": 1053,
+     "elims": 1,
+     "damage": 426,
+     "taken": 1552,
+     "travel": 942219,
+     "heals": 62,
+     "shields": 100
+    },
+    {
+     "placement": 24,
+     "timeAlive": 1029,
+     "elims": 3,
+     "damage": 1875,
+     "taken": 1209,
+     "travel": 647017,
+     "heals": 53,
+     "shields": 56
+    },
+    {
+     "placement": 25,
+     "timeAlive": 1018,
+     "elims": 1,
+     "damage": 667,
+     "taken": 1829,
+     "travel": 670381,
+     "heals": 199,
+     "shields": 57
+    },
+    {
+     "placement": 26,
+     "timeAlive": 1018,
+     "elims": 0,
+     "damage": 331,
+     "taken": 1605,
+     "travel": 676421,
+     "heals": 135,
+     "shields": 47
+    },
+    {
+     "placement": 27,
+     "timeAlive": 1002,
+     "elims": 2,
+     "damage": 485,
+     "taken": 755,
+     "travel": 524564,
+     "heals": 3,
+     "shields": 54
+    },
+    {
+     "placement": 28,
+     "timeAlive": 994,
+     "elims": 4,
+     "damage": 1137,
+     "taken": 1715,
+     "travel": 849382,
+     "heals": 119,
+     "shields": 93
+    },
+    {
+     "placement": 29,
+     "timeAlive": 1007,
+     "elims": 0,
+     "damage": 592,
+     "taken": 1825,
+     "travel": 1097216,
+     "heals": 193,
+     "shields": 47
+    },
+    {
+     "placement": 30,
+     "timeAlive": 986,
+     "elims": 2,
+     "damage": 179,
+     "taken": 877,
+     "travel": 735378,
+     "heals": 13,
+     "shields": 52
+    },
+    {
+     "placement": 31,
+     "timeAlive": 968,
+     "elims": 1,
+     "damage": 999,
+     "taken": 1039,
+     "travel": 649094,
+     "heals": 70,
+     "shields": 33
+    },
+    {
+     "placement": 32,
+     "timeAlive": 947,
+     "elims": 1,
+     "damage": 385,
+     "taken": 2244,
+     "travel": 802514,
+     "heals": 211,
+     "shields": 93
+    },
+    {
+     "placement": 33,
+     "timeAlive": 957,
+     "elims": 0,
+     "damage": 98,
+     "taken": 1457,
+     "travel": 674681,
+     "heals": 121,
+     "shields": 41
+    },
+    {
+     "placement": 34,
+     "timeAlive": 904,
+     "elims": 0,
+     "damage": 2079,
+     "taken": 1779,
+     "travel": 740578,
+     "heals": 154,
+     "shields": 77
+    },
+    {
+     "placement": 35,
+     "timeAlive": 884,
+     "elims": 0,
+     "damage": 228,
+     "taken": 1547,
+     "travel": 834687,
+     "heals": 152,
+     "shields": 55
+    },
+    {
+     "placement": 36,
+     "timeAlive": 863,
+     "elims": 1,
+     "damage": 430,
+     "taken": 1007,
+     "travel": 271838,
+     "heals": 60,
+     "shields": 22
+    },
+    {
+     "placement": 37,
+     "timeAlive": 609,
+     "elims": 0,
+     "damage": 1912,
+     "taken": 1958,
+     "travel": 564329,
+     "heals": 138,
+     "shields": 80
+    },
+    {
+     "placement": 38,
+     "timeAlive": 838,
+     "elims": 0,
+     "damage": 258,
+     "taken": 1448,
+     "travel": 611213,
+     "heals": 134,
+     "shields": 20
+    },
+    {
+     "placement": 39,
+     "timeAlive": 838,
+     "elims": 1,
+     "damage": 198,
+     "taken": 1294,
+     "travel": 1203577,
+     "heals": 90,
+     "shields": 57
+    },
+    {
+     "placement": 40,
+     "timeAlive": 770,
+     "elims": 0,
+     "damage": 166,
+     "taken": 546,
+     "travel": 247781,
+     "heals": 16,
+     "shields": 30
+    },
+    {
+     "placement": 41,
+     "timeAlive": 776,
+     "elims": 0,
+     "damage": 340,
+     "taken": 2221,
+     "travel": 724382,
+     "heals": 203,
+     "shields": 51
+    },
+    {
+     "placement": 42,
+     "timeAlive": 605,
+     "elims": 0,
+     "damage": 388,
+     "taken": 1315,
+     "travel": 479633,
+     "heals": 177,
+     "shields": 22
+    },
+    {
+     "placement": 43,
+     "timeAlive": 397,
+     "elims": 0,
+     "damage": 384,
+     "taken": 736,
+     "travel": 778698,
+     "heals": 51,
+     "shields": 30
+    },
+    {
+     "placement": 44,
+     "timeAlive": 183,
+     "elims": 0,
+     "damage": 161,
+     "taken": 423,
+     "travel": 88831,
+     "heals": 1,
+     "shields": 7
+    },
+    {
+     "placement": 45,
+     "timeAlive": 131,
+     "elims": 1,
+     "damage": 62,
+     "taken": 396,
+     "travel": 39867,
+     "heals": 4,
+     "shields": 8
+    },
+    {
+     "placement": 46,
+     "timeAlive": 116,
+     "elims": 0,
+     "damage": 0,
+     "taken": 362,
+     "travel": 92367,
+     "heals": 0,
+     "shields": 0
+    },
+    {
+     "placement": 47,
+     "timeAlive": 98,
+     "elims": 0,
+     "damage": 193,
+     "taken": 265,
+     "travel": 30576,
+     "heals": 0,
+     "shields": 0
+    },
+    {
+     "placement": 48,
+     "timeAlive": 103,
+     "elims": 0,
+     "damage": 67,
+     "taken": 305,
+     "travel": 57922,
+     "heals": 0,
+     "shields": 13
+    },
+    {
+     "placement": 49,
+     "timeAlive": 56,
+     "elims": 0,
+     "damage": 214,
+     "taken": 324,
+     "travel": 11833,
+     "heals": 0,
+     "shields": 0
+    }
+   ],
+   "eliminations": [
+    {
+     "t": 82.9,
+     "dbno": true,
+     "cause": 4,
+     "vx": 53988.8,
+     "vy": 111661.2,
+     "ix": 37001.7,
+     "iy": 108055.6,
+     "self": false
+    },
+    {
+     "t": 89.2,
+     "dbno": false,
+     "cause": 4,
+     "vx": 57534.7,
+     "vy": 111515.1,
+     "ix": 36988,
+     "iy": 108127.8,
+     "self": false
+    },
+    {
+     "t": 92.2,
+     "dbno": true,
+     "cause": 4,
+     "vx": 32762.9,
+     "vy": -75469.8,
+     "ix": 31510.6,
+     "iy": -72096.2,
+     "self": false
+    },
+    {
+     "t": 93,
+     "dbno": true,
+     "cause": 2,
+     "vx": 63777.2,
+     "vy": -44646.9,
+     "ix": 62490.3,
+     "iy": -44769.1,
+     "self": false
+    },
+    {
+     "t": 95.6,
+     "dbno": true,
+     "cause": 5,
+     "vx": -44469.6,
+     "vy": 56042.4,
+     "ix": -44405.8,
+     "iy": 56353.1,
+     "self": false
+    },
+    {
+     "t": 96.3,
+     "dbno": false,
+     "cause": 2,
+     "vx": 64363.5,
+     "vy": -45093.5,
+     "ix": 64092.4,
+     "iy": -45311.1,
+     "self": false
+    },
+    {
+     "t": 98.3,
+     "dbno": false,
+     "cause": 5,
+     "vx": -44532.4,
+     "vy": 55962.3,
+     "ix": -44350.1,
+     "iy": 55829.9,
+     "self": false
+    },
+    {
+     "t": 99.1,
+     "dbno": true,
+     "cause": 4,
+     "vx": -44489.5,
+     "vy": 55867.4,
+     "ix": -44330.3,
+     "iy": 56450.1,
+     "self": false
+    },
+    {
+     "t": 101.3,
+     "dbno": false,
+     "cause": 4,
+     "vx": -44680.1,
+     "vy": 56046.4,
+     "ix": -44515.4,
+     "iy": 55604.4,
+     "self": false
+    },
+    {
+     "t": 103.7,
+     "dbno": false,
+     "cause": 4,
+     "vx": 32364.4,
+     "vy": -76086.3,
+     "ix": 31609.8,
+     "iy": -76102.2,
+     "self": false
+    },
+    {
+     "t": 113.4,
+     "dbno": true,
+     "cause": 3,
+     "vx": -62321.1,
+     "vy": -18026.9,
+     "ix": -62711,
+     "iy": -17714.3,
+     "self": false
+    },
+    {
+     "t": 113.7,
+     "dbno": true,
+     "cause": 3,
+     "vx": -62729.9,
+     "vy": -17733.3,
+     "ix": -62865.9,
+     "iy": -17838.8,
+     "self": false
+    },
+    {
+     "t": 114.4,
+     "dbno": true,
+     "cause": 3,
+     "vx": -95975.8,
+     "vy": 27090.3,
+     "ix": -95666.5,
+     "iy": 26236.3,
+     "self": false
+    },
+    {
+     "t": 117.1,
+     "dbno": false,
+     "cause": 3,
+     "vx": -62925.7,
+     "vy": -16909.9,
+     "ix": -62818.2,
+     "iy": -17063,
+     "self": false
+    },
+    {
+     "t": 141.4,
+     "dbno": true,
+     "cause": 3,
+     "vx": -12138.6,
+     "vy": 84675.1,
+     "ix": -11755.5,
+     "iy": 85560.3,
+     "self": false
+    },
+    {
+     "t": 142.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": -12102.4,
+     "vy": 84538,
+     "ix": -11914.8,
+     "iy": 85011.9,
+     "self": false
+    },
+    {
+     "t": 142.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": -12936.2,
+     "vy": 84507,
+     "ix": -11914.8,
+     "iy": 85011.9,
+     "self": false
+    },
+    {
+     "t": 149.3,
+     "dbno": true,
+     "cause": 3,
+     "vx": -96909.1,
+     "vy": 28278,
+     "ix": -95937.1,
+     "iy": 28894.9,
+     "self": false
+    },
+    {
+     "t": 151.8,
+     "dbno": false,
+     "cause": 3,
+     "vx": -95713.4,
+     "vy": 28238.8,
+     "ix": -97073.7,
+     "iy": 27925.2,
+     "self": false
+    },
+    {
+     "t": 151.8,
+     "dbno": false,
+     "cause": 4,
+     "vx": -96082.3,
+     "vy": 28990.2,
+     "ix": -95614,
+     "iy": 25495,
+     "self": false
+    },
+    {
+     "t": 172.3,
+     "dbno": false,
+     "cause": 4,
+     "vx": 100027.7,
+     "vy": -88747.4,
+     "ix": 92604.9,
+     "iy": -78990,
+     "self": false
+    },
+    {
+     "t": 177.4,
+     "dbno": false,
+     "cause": 3,
+     "vx": -96734.7,
+     "vy": 28364.6,
+     "ix": -96313.7,
+     "iy": 28064.1,
+     "self": false
+    },
+    {
+     "t": 184.4,
+     "dbno": false,
+     "cause": 3,
+     "vx": -99545.7,
+     "vy": 27193.8,
+     "ix": -98107.6,
+     "iy": 27570.9,
+     "self": false
+    },
+    {
+     "t": 239,
+     "dbno": false,
+     "cause": 3,
+     "vx": -78732.8,
+     "vy": -32356.7,
+     "ix": -79275.4,
+     "iy": -32872.7,
+     "self": false
+    },
+    {
+     "t": 347.9,
+     "dbno": true,
+     "cause": 2,
+     "vx": -2621.9,
+     "vy": -59535.7,
+     "ix": -2418.2,
+     "iy": -59469.4,
+     "self": false
+    },
+    {
+     "t": 349.5,
+     "dbno": true,
+     "cause": 3,
+     "vx": -2494.9,
+     "vy": -59440.3,
+     "ix": -2652.6,
+     "iy": -59189,
+     "self": false
+    },
+    {
+     "t": 354,
+     "dbno": false,
+     "cause": 2,
+     "vx": -2719.6,
+     "vy": -59515.6,
+     "ix": -2745,
+     "iy": -59574.5,
+     "self": false
+    },
+    {
+     "t": 447.2,
+     "dbno": false,
+     "cause": 2,
+     "vx": -2696.3,
+     "vy": -59294.3,
+     "ix": -2931.5,
+     "iy": -59293.2,
+     "self": false
+    },
+    {
+     "t": 458.4,
+     "dbno": true,
+     "cause": 0,
+     "vx": -87488.4,
+     "vy": 103111.7,
+     "ix": -87488.4,
+     "iy": 103111.7,
+     "self": true
+    },
+    {
+     "t": 467.6,
+     "dbno": true,
+     "cause": 2,
+     "vx": -67676.6,
+     "vy": -2988.2,
+     "ix": -67698.2,
+     "iy": -2930.9,
+     "self": false
+    },
+    {
+     "t": 475.4,
+     "dbno": false,
+     "cause": 2,
+     "vx": -68131.4,
+     "vy": -3461.8,
+     "ix": -67299.1,
+     "iy": -3459.3,
+     "self": false
+    },
+    {
+     "t": 480.4,
+     "dbno": true,
+     "cause": 0,
+     "vx": -86798.6,
+     "vy": 103645.9,
+     "ix": -83841.1,
+     "iy": 94731.4,
+     "self": false
+    },
+    {
+     "t": 503.4,
+     "dbno": true,
+     "cause": 0,
+     "vx": -87546.3,
+     "vy": 103238.8,
+     "ix": -87546.3,
+     "iy": 103238.8,
+     "self": true
+    },
+    {
+     "t": 520.4,
+     "dbno": true,
+     "cause": 0,
+     "vx": -87419.7,
+     "vy": 103386.2,
+     "ix": -87419.7,
+     "iy": 103386.2,
+     "self": true
+    },
+    {
+     "t": 547.4,
+     "dbno": true,
+     "cause": 0,
+     "vx": -87297.4,
+     "vy": 103421.1,
+     "ix": -87297.4,
+     "iy": 103421.1,
+     "self": true
+    },
+    {
+     "t": 562.4,
+     "dbno": true,
+     "cause": 0,
+     "vx": -84548.4,
+     "vy": 104140.3,
+     "ix": -84548.4,
+     "iy": 104140.3,
+     "self": true
+    },
+    {
+     "t": 587.3,
+     "dbno": true,
+     "cause": 0,
+     "vx": -77684.7,
+     "vy": 104763.4,
+     "ix": -77684.7,
+     "iy": 104763.4,
+     "self": true
+    },
+    {
+     "t": 629.3,
+     "dbno": true,
+     "cause": 3,
+     "vx": -76887.8,
+     "vy": 55858.9,
+     "ix": -76957.4,
+     "iy": 55789,
+     "self": false
+    },
+    {
+     "t": 631.8,
+     "dbno": false,
+     "cause": 3,
+     "vx": -76813.4,
+     "vy": 55654.8,
+     "ix": -76734.2,
+     "iy": 55744.7,
+     "self": false
+    },
+    {
+     "t": 650.7,
+     "dbno": false,
+     "cause": 4,
+     "vx": -77125.1,
+     "vy": 52814.3,
+     "ix": -77875.5,
+     "iy": 52801.3,
+     "self": false
+    },
+    {
+     "t": 735.1,
+     "dbno": true,
+     "cause": 3,
+     "vx": 28523.9,
+     "vy": -78815.3,
+     "ix": 28733.1,
+     "iy": -77866.3,
+     "self": false
+    },
+    {
+     "t": 739.3,
+     "dbno": false,
+     "cause": 3,
+     "vx": 28887.9,
+     "vy": -78917.1,
+     "ix": 28673.9,
+     "iy": -78452.5,
+     "self": false
+    },
+    {
+     "t": 760.3,
+     "dbno": true,
+     "cause": 4,
+     "vx": -67155.8,
+     "vy": -72490.6,
+     "ix": -64692.7,
+     "iy": -73456.1,
+     "self": false
+    },
+    {
+     "t": 762.4,
+     "dbno": true,
+     "cause": 4,
+     "vx": -74144.6,
+     "vy": -39516,
+     "ix": -74088.6,
+     "iy": -39588.9,
+     "self": false
+    },
+    {
+     "t": 764.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": -74184.9,
+     "vy": -39452.2,
+     "ix": -74415.6,
+     "iy": -39341.5,
+     "self": false
+    },
+    {
+     "t": 765.3,
+     "dbno": false,
+     "cause": 4,
+     "vx": -66916.7,
+     "vy": -72808.6,
+     "ix": -66189.4,
+     "iy": -72850.7,
+     "self": false
+    },
+    {
+     "t": 796,
+     "dbno": true,
+     "cause": 2,
+     "vx": -2775.9,
+     "vy": -59816.1,
+     "ix": -2803.8,
+     "iy": -59352.2,
+     "self": false
+    },
+    {
+     "t": 799.1,
+     "dbno": false,
+     "cause": 2,
+     "vx": -2677.9,
+     "vy": -59550.6,
+     "ix": -2729.3,
+     "iy": -59683.8,
+     "self": false
+    },
+    {
+     "t": 802.1,
+     "dbno": false,
+     "cause": 38,
+     "vx": -6161,
+     "vy": -21009.7,
+     "ix": -14719.5,
+     "iy": -17910.4,
+     "self": false
+    },
+    {
+     "t": 820.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": -2465.4,
+     "vy": -59059.7,
+     "ix": -2638,
+     "iy": -59387.6,
+     "self": false
+    },
+    {
+     "t": 821.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": -6037.3,
+     "vy": -21520.9,
+     "ix": -6024.2,
+     "iy": -21338.4,
+     "self": false
+    },
+    {
+     "t": 863.7,
+     "dbno": false,
+     "cause": 50,
+     "vx": 34088,
+     "vy": -18647.9,
+     "ix": 33774.8,
+     "iy": -10737.6,
+     "self": false
+    },
+    {
+     "t": 868.4,
+     "dbno": true,
+     "cause": 0,
+     "vx": -1646.5,
+     "vy": -10009,
+     "ix": -3911.6,
+     "iy": -22445.8,
+     "self": false
+    },
+    {
+     "t": 879.5,
+     "dbno": true,
+     "cause": 4,
+     "vx": 20134.4,
+     "vy": -17616.4,
+     "ix": 23082.7,
+     "iy": -22980.6,
+     "self": false
+    },
+    {
+     "t": 881.8,
+     "dbno": false,
+     "cause": 4,
+     "vx": 20592.3,
+     "vy": -18465.9,
+     "ix": 23174.6,
+     "iy": -17965.4,
+     "self": false
+    },
+    {
+     "t": 886.9,
+     "dbno": true,
+     "cause": 4,
+     "vx": 32065.5,
+     "vy": -55725.3,
+     "ix": 25979.1,
+     "iy": -47574.9,
+     "self": false
+    },
+    {
+     "t": 887.7,
+     "dbno": true,
+     "cause": 3,
+     "vx": 42053.1,
+     "vy": -21655,
+     "ix": 42063.7,
+     "iy": -21323.9,
+     "self": false
+    },
+    {
+     "t": 890,
+     "dbno": false,
+     "cause": 3,
+     "vx": 42065.2,
+     "vy": -21568.9,
+     "ix": 41817.7,
+     "iy": -21601.4,
+     "self": false
+    },
+    {
+     "t": 891.3,
+     "dbno": false,
+     "cause": 4,
+     "vx": 31654.8,
+     "vy": -55448.6,
+     "ix": 26002,
+     "iy": -47652,
+     "self": false
+    },
+    {
+     "t": 891.9,
+     "dbno": false,
+     "cause": 38,
+     "vx": 26076.4,
+     "vy": -50662.9,
+     "ix": 26979.9,
+     "iy": -49694.9,
+     "self": false
+    },
+    {
+     "t": 891.9,
+     "dbno": false,
+     "cause": 38,
+     "vx": 11322.4,
+     "vy": -38966.4,
+     "ix": 11872.7,
+     "iy": -30930.1,
+     "self": false
+    },
+    {
+     "t": 894.9,
+     "dbno": true,
+     "cause": 4,
+     "vx": 17031.1,
+     "vy": -18592.4,
+     "ix": 23181.3,
+     "iy": -22933.6,
+     "self": false
+    },
+    {
+     "t": 895.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": 26910,
+     "vy": -50456.7,
+     "ix": 26676.3,
+     "iy": -49729.4,
+     "self": false
+    },
+    {
+     "t": 896.7,
+     "dbno": false,
+     "cause": 0,
+     "vx": 4153.9,
+     "vy": -39726.7,
+     "ix": 4153.9,
+     "iy": -39726.7,
+     "self": true
+    },
+    {
+     "t": 897.5,
+     "dbno": false,
+     "cause": 4,
+     "vx": 17390.9,
+     "vy": -18642.7,
+     "ix": 25896.7,
+     "iy": -17289.5,
+     "self": false
+    },
+    {
+     "t": 899.5,
+     "dbno": false,
+     "cause": 4,
+     "vx": 18271.4,
+     "vy": -12803.4,
+     "ix": 17618.6,
+     "iy": -21445.8,
+     "self": false
+    },
+    {
+     "t": 902.1,
+     "dbno": false,
+     "cause": 38,
+     "vx": 20555.2,
+     "vy": -22077.1,
+     "ix": 17783.6,
+     "iy": -22491.1,
+     "self": false
+    },
+    {
+     "t": 905.3,
+     "dbno": true,
+     "cause": 0,
+     "vx": 17926.2,
+     "vy": -14026.5,
+     "ix": 25896.1,
+     "iy": -17313.4,
+     "self": false
+    },
+    {
+     "t": 908.9,
+     "dbno": false,
+     "cause": 17,
+     "vx": 20954.9,
+     "vy": -16110.1,
+     "ix": 25896,
+     "iy": -17299.2,
+     "self": false
+    },
+    {
+     "t": 920.4,
+     "dbno": false,
+     "cause": 3,
+     "vx": 18535.1,
+     "vy": -12880.5,
+     "ix": 18927.9,
+     "iy": -12591.2,
+     "self": false
+    },
+    {
+     "t": 932.7,
+     "dbno": false,
+     "cause": 0,
+     "vx": 10130.2,
+     "vy": -38999.1,
+     "ix": 23357.3,
+     "iy": -40539.2,
+     "self": false
+    },
+    {
+     "t": 950.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": 27684.1,
+     "vy": -35892.7,
+     "ix": 28227.1,
+     "iy": -35698.4,
+     "self": false
+    },
+    {
+     "t": 998,
+     "dbno": false,
+     "cause": 38,
+     "vx": 38491.6,
+     "vy": -22099,
+     "ix": 38491.6,
+     "iy": -22099,
+     "self": true
+    },
+    {
+     "t": 1002.3,
+     "dbno": true,
+     "cause": 4,
+     "vx": 28797.5,
+     "vy": -25434.6,
+     "ix": 29566.4,
+     "iy": -25486.4,
+     "self": false
+    },
+    {
+     "t": 1007,
+     "dbno": false,
+     "cause": 3,
+     "vx": 28430.5,
+     "vy": -25976.8,
+     "ix": 28788,
+     "iy": -25611.6,
+     "self": false
+    },
+    {
+     "t": 1008.1,
+     "dbno": false,
+     "cause": 38,
+     "vx": 23823.4,
+     "vy": -20796.8,
+     "ix": 25126.8,
+     "iy": -21113.1,
+     "self": false
+    },
+    {
+     "t": 1009.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": 24818.7,
+     "vy": -20763.4,
+     "ix": 24010,
+     "iy": -20955.9,
+     "self": false
+    },
+    {
+     "t": 1023,
+     "dbno": true,
+     "cause": 3,
+     "vx": 28306.8,
+     "vy": -25152.9,
+     "ix": 27729.1,
+     "iy": -24996.6,
+     "self": false
+    },
+    {
+     "t": 1023.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": 28314.6,
+     "vy": -25186,
+     "ix": 27679.6,
+     "iy": -25014.9,
+     "self": false
+    },
+    {
+     "t": 1023.2,
+     "dbno": false,
+     "cause": 2,
+     "vx": 29785.3,
+     "vy": -24549.2,
+     "ix": 37357.1,
+     "iy": -21911.6,
+     "self": false
+    },
+    {
+     "t": 1023.3,
+     "dbno": false,
+     "cause": 38,
+     "vx": 28456.1,
+     "vy": -24653.5,
+     "ix": 24743.9,
+     "iy": -21217.5,
+     "self": false
+    },
+    {
+     "t": 1042.1,
+     "dbno": true,
+     "cause": 3,
+     "vx": 40222.5,
+     "vy": -17923.3,
+     "ix": 39938.6,
+     "iy": -18330,
+     "self": false
+    },
+    {
+     "t": 1042.2,
+     "dbno": true,
+     "cause": 4,
+     "vx": 22340.4,
+     "vy": -16707,
+     "ix": 23447.2,
+     "iy": -9879,
+     "self": false
+    },
+    {
+     "t": 1043.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": 40653.4,
+     "vy": -17965.7,
+     "ix": 40576.3,
+     "iy": -18006.5,
+     "self": false
+    },
+    {
+     "t": 1043.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": 37259.1,
+     "vy": -13659.5,
+     "ix": 37521,
+     "iy": -13610.4,
+     "self": false
+    },
+    {
+     "t": 1044.8,
+     "dbno": false,
+     "cause": 4,
+     "vx": 23238.1,
+     "vy": -14040.7,
+     "ix": 26497.8,
+     "iy": -7859,
+     "self": false
+    },
+    {
+     "t": 1045,
+     "dbno": true,
+     "cause": 3,
+     "vx": 23135.4,
+     "vy": -14300.9,
+     "ix": 22961.9,
+     "iy": -14523.3,
+     "self": false
+    },
+    {
+     "t": 1045.6,
+     "dbno": false,
+     "cause": 0,
+     "vx": 40865.4,
+     "vy": -17575.9,
+     "ix": 0,
+     "iy": 0,
+     "self": false
+    },
+    {
+     "t": 1047.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": 22896.1,
+     "vy": -13698,
+     "ix": 23044.9,
+     "iy": -13807.6,
+     "self": false
+    },
+    {
+     "t": 1049.8,
+     "dbno": false,
+     "cause": 3,
+     "vx": 23637.1,
+     "vy": -16389.3,
+     "ix": 24223.9,
+     "iy": -16253.7,
+     "self": false
+    },
+    {
+     "t": 1061.6,
+     "dbno": true,
+     "cause": 0,
+     "vx": 34067.7,
+     "vy": -5276.3,
+     "ix": 33865.5,
+     "iy": -8149.6,
+     "self": false
+    },
+    {
+     "t": 1065.5,
+     "dbno": false,
+     "cause": 17,
+     "vx": 32464.5,
+     "vy": -5669.6,
+     "ix": 32581,
+     "iy": -5501.3,
+     "self": false
+    },
+    {
+     "t": 1069.4,
+     "dbno": true,
+     "cause": 2,
+     "vx": 25182.2,
+     "vy": -8266.6,
+     "ix": 24446.7,
+     "iy": -11938.4,
+     "self": false
+    },
+    {
+     "t": 1072.2,
+     "dbno": false,
+     "cause": 4,
+     "vx": 19987.9,
+     "vy": -8036,
+     "ix": 20880.4,
+     "iy": -6729.5,
+     "self": false
+    },
+    {
+     "t": 1073.7,
+     "dbno": false,
+     "cause": 2,
+     "vx": 25144.1,
+     "vy": -7837.3,
+     "ix": 24698.6,
+     "iy": -8877.2,
+     "self": false
+    },
+    {
+     "t": 1073.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 25106.3,
+     "vy": -8408,
+     "ix": 25259.7,
+     "iy": -8619.6,
+     "self": false
+    },
+    {
+     "t": 1075,
+     "dbno": false,
+     "cause": 3,
+     "vx": 24186.8,
+     "vy": -11827.5,
+     "ix": 24299.2,
+     "iy": -12583,
+     "self": false
+    },
+    {
+     "t": 1088.1,
+     "dbno": true,
+     "cause": 3,
+     "vx": 19847.6,
+     "vy": -7464,
+     "ix": 20286.3,
+     "iy": -7002.7,
+     "self": false
+    },
+    {
+     "t": 1092.1,
+     "dbno": false,
+     "cause": 3,
+     "vx": 19707.3,
+     "vy": -8044.7,
+     "ix": 20148.7,
+     "iy": -7328.5,
+     "self": false
+    },
+    {
+     "t": 1092.9,
+     "dbno": true,
+     "cause": 0,
+     "vx": 27438.2,
+     "vy": -5631.7,
+     "ix": 27438.2,
+     "iy": -5631.7,
+     "self": true
+    },
+    {
+     "t": 1098.5,
+     "dbno": false,
+     "cause": 17,
+     "vx": 27361.7,
+     "vy": -5833.6,
+     "ix": 27688.7,
+     "iy": -4670.7,
+     "self": false
+    },
+    {
+     "t": 1114.3,
+     "dbno": false,
+     "cause": 3,
+     "vx": 18026.4,
+     "vy": -3799.7,
+     "ix": 17844.2,
+     "iy": -3276.5,
+     "self": false
+    },
+    {
+     "t": 1134.1,
+     "dbno": false,
+     "cause": 4,
+     "vx": 16460.3,
+     "vy": -2628.4,
+     "ix": 17107.8,
+     "iy": -4077.3,
+     "self": false
+    },
+    {
+     "t": 1138.4,
+     "dbno": true,
+     "cause": 3,
+     "vx": 16123.9,
+     "vy": -3212.7,
+     "ix": 16212.2,
+     "iy": -2782.4,
+     "self": false
+    },
+    {
+     "t": 1141.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 16080,
+     "vy": -2344,
+     "ix": 16041.1,
+     "iy": -2560.7,
+     "self": false
+    },
+    {
+     "t": 1148.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 18271.2,
+     "vy": -1981.9,
+     "ix": 18363.9,
+     "iy": -3179.4,
+     "self": false
+    },
+    {
+     "t": 1167,
+     "dbno": true,
+     "cause": 2,
+     "vx": 10238.8,
+     "vy": 514.4,
+     "ix": 10252.3,
+     "iy": 280.8,
+     "self": false
+    },
+    {
+     "t": 1169.5,
+     "dbno": false,
+     "cause": 2,
+     "vx": 10164.7,
+     "vy": 1935.5,
+     "ix": 10278.1,
+     "iy": 1695.1,
+     "self": false
+    },
+    {
+     "t": 1175.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 12154.8,
+     "vy": -1424.6,
+     "ix": 12409.5,
+     "iy": -1456.6,
+     "self": false
+    },
+    {
+     "t": 1184.9,
+     "dbno": true,
+     "cause": 3,
+     "vx": 7077.8,
+     "vy": 1151,
+     "ix": 7276.6,
+     "iy": 2080.3,
+     "self": false
+    },
+    {
+     "t": 1187,
+     "dbno": false,
+     "cause": 3,
+     "vx": 6952.2,
+     "vy": 1123.4,
+     "ix": 7216.9,
+     "iy": 1098.4,
+     "self": false
+    },
+    {
+     "t": 1187.1,
+     "dbno": true,
+     "cause": 3,
+     "vx": 7948.8,
+     "vy": -1199.1,
+     "ix": 7822.4,
+     "iy": -975.2,
+     "self": false
+    },
+    {
+     "t": 1189.7,
+     "dbno": false,
+     "cause": 2,
+     "vx": 9618.3,
+     "vy": -154.1,
+     "ix": 7918.4,
+     "iy": -457.3,
+     "self": false
+    },
+    {
+     "t": 1192.3,
+     "dbno": false,
+     "cause": 3,
+     "vx": 7001.2,
+     "vy": -210.1,
+     "ix": 7184.2,
+     "iy": -41.5,
+     "self": false
+    },
+    {
+     "t": 1193.7,
+     "dbno": true,
+     "cause": 3,
+     "vx": 6171.9,
+     "vy": -458.2,
+     "ix": 6607.7,
+     "iy": -452.8,
+     "self": false
+    },
+    {
+     "t": 1195.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": 6359.7,
+     "vy": -695.9,
+     "ix": 6182.9,
+     "iy": -470.5,
+     "self": false
+    },
+    {
+     "t": 1196,
+     "dbno": false,
+     "cause": 3,
+     "vx": 6645.5,
+     "vy": -904.8,
+     "ix": 6378.9,
+     "iy": -948.8,
+     "self": false
+    },
+    {
+     "t": 1197.3,
+     "dbno": true,
+     "cause": 2,
+     "vx": 7135.3,
+     "vy": -817.2,
+     "ix": 6063.1,
+     "iy": -716.9,
+     "self": false
+    },
+    {
+     "t": 1200.1,
+     "dbno": false,
+     "cause": 2,
+     "vx": 7021.8,
+     "vy": -1239.8,
+     "ix": 6630.9,
+     "iy": -714.1,
+     "self": false
+    },
+    {
+     "t": 1202.3,
+     "dbno": false,
+     "cause": 0,
+     "vx": 5831.7,
+     "vy": -788.9,
+     "ix": 6441.4,
+     "iy": -1336.7,
+     "self": false
+    },
+    {
+     "t": 1205.4,
+     "dbno": true,
+     "cause": 3,
+     "vx": 6200.6,
+     "vy": 771,
+     "ix": 6438.8,
+     "iy": 725.7,
+     "self": false
+    },
+    {
+     "t": 1205.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": 6474.7,
+     "vy": 715.2,
+     "ix": 6875.7,
+     "iy": 678.6,
+     "self": false
+    },
+    {
+     "t": 1206.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": 5806.7,
+     "vy": 1311.1,
+     "ix": 6217.7,
+     "iy": 1548.6,
+     "self": false
+    },
+    {
+     "t": 1212.7,
+     "dbno": false,
+     "cause": 2,
+     "vx": 4904.6,
+     "vy": 117.6,
+     "ix": 3531.2,
+     "iy": 1933,
+     "self": false
+    },
+    {
+     "t": 1218.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": 6488.6,
+     "vy": 368.2,
+     "ix": 6488.6,
+     "iy": 368.2,
+     "self": true
+    },
+    {
+     "t": 1233.3,
+     "dbno": true,
+     "cause": 2,
+     "vx": 1566.8,
+     "vy": 3886.1,
+     "ix": 3044.2,
+     "iy": 3463.3,
+     "self": false
+    },
+    {
+     "t": 1233.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": 2865.9,
+     "vy": 1255.7,
+     "ix": 2867.2,
+     "iy": 1751.6,
+     "self": false
+    },
+    {
+     "t": 1234.6,
+     "dbno": true,
+     "cause": 4,
+     "vx": 3699.7,
+     "vy": 2886.9,
+     "ix": 3282.5,
+     "iy": 2570.4,
+     "self": false
+    },
+    {
+     "t": 1238.3,
+     "dbno": false,
+     "cause": 2,
+     "vx": 3414.8,
+     "vy": 2856,
+     "ix": 3645.6,
+     "iy": 2970.6,
+     "self": false
+    },
+    {
+     "t": 1240.4,
+     "dbno": false,
+     "cause": 17,
+     "vx": 990.3,
+     "vy": 3792.6,
+     "ix": 2986.1,
+     "iy": 3652.8,
+     "self": false
+    },
+    {
+     "t": 1242.1,
+     "dbno": true,
+     "cause": 3,
+     "vx": 4032.5,
+     "vy": 2979.2,
+     "ix": 3958.2,
+     "iy": 2856,
+     "self": false
+    },
+    {
+     "t": 1245.1,
+     "dbno": false,
+     "cause": 3,
+     "vx": 3941.9,
+     "vy": 3417,
+     "ix": 3881,
+     "iy": 2871.5,
+     "self": false
+    },
+    {
+     "t": 1246.4,
+     "dbno": true,
+     "cause": 4,
+     "vx": 4026.9,
+     "vy": 2873.9,
+     "ix": 4050.9,
+     "iy": 3573,
+     "self": false
+    },
+    {
+     "t": 1246.8,
+     "dbno": true,
+     "cause": 3,
+     "vx": 3006.8,
+     "vy": 3230.3,
+     "ix": 3071.2,
+     "iy": 3321.9,
+     "self": false
+    },
+    {
+     "t": 1249,
+     "dbno": false,
+     "cause": 3,
+     "vx": 2935.9,
+     "vy": 3094,
+     "ix": 3041.4,
+     "iy": 3185.3,
+     "self": false
+    },
+    {
+     "t": 1251,
+     "dbno": false,
+     "cause": 4,
+     "vx": 2685.1,
+     "vy": 4443.8,
+     "ix": 3577.6,
+     "iy": 4557.1,
+     "self": false
+    },
+    {
+     "t": 1253.6,
+     "dbno": false,
+     "cause": 4,
+     "vx": 4482.6,
+     "vy": 2980.8,
+     "ix": 4161.1,
+     "iy": 3954.1,
+     "self": false
+    },
+    {
+     "t": 1254.8,
+     "dbno": true,
+     "cause": 4,
+     "vx": 4598,
+     "vy": 4652.6,
+     "ix": 4273.9,
+     "iy": 6445.7,
+     "self": false
+    },
+    {
+     "t": 1257.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": 4604.1,
+     "vy": 4823.7,
+     "ix": 4314.4,
+     "iy": 4651,
+     "self": false
+    },
+    {
+     "t": 1258.8,
+     "dbno": false,
+     "cause": 3,
+     "vx": 4885.4,
+     "vy": 2761.7,
+     "ix": 4562.3,
+     "iy": 2969.6,
+     "self": false
+    },
+    {
+     "t": 1270.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 5214.8,
+     "vy": 7406.3,
+     "ix": 6044.1,
+     "iy": 7506.5,
+     "self": false
+    },
+    {
+     "t": 1270.8,
+     "dbno": false,
+     "cause": 2,
+     "vx": 6599.2,
+     "vy": 6261,
+     "ix": 5519.4,
+     "iy": 6940.2,
+     "self": false
+    },
+    {
+     "t": 1287.8,
+     "dbno": true,
+     "cause": 3,
+     "vx": 6525,
+     "vy": 6541.7,
+     "ix": 6846.5,
+     "iy": 6862.6,
+     "self": false
+    },
+    {
+     "t": 1287.9,
+     "dbno": false,
+     "cause": 0,
+     "vx": 3436.3,
+     "vy": 2694.2,
+     "ix": 3436.3,
+     "iy": 2694.2,
+     "self": true
+    },
+    {
+     "t": 1288.3,
+     "dbno": false,
+     "cause": 3,
+     "vx": 6855.4,
+     "vy": 6646,
+     "ix": 7283.6,
+     "iy": 5700.1,
+     "self": false
+    },
+    {
+     "t": 1293.1,
+     "dbno": false,
+     "cause": 2,
+     "vx": 6440.6,
+     "vy": 5953,
+     "ix": 6649.4,
+     "iy": 5999.6,
+     "self": false
+    },
+    {
+     "t": 1293.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 6749.3,
+     "vy": 6061.3,
+     "ix": 7090,
+     "iy": 6183.7,
+     "self": false
+    },
+    {
+     "t": 1294.3,
+     "dbno": true,
+     "cause": 3,
+     "vx": 7007.4,
+     "vy": 5768.1,
+     "ix": 7283.2,
+     "iy": 6044.9,
+     "self": false
+    },
+    {
+     "t": 1301,
+     "dbno": true,
+     "cause": 4,
+     "vx": 9160.9,
+     "vy": 6184,
+     "ix": 9134.7,
+     "iy": 6361.5,
+     "self": false
+    },
+    {
+     "t": 1303.4,
+     "dbno": false,
+     "cause": 4,
+     "vx": 8872.8,
+     "vy": 6237.5,
+     "ix": 8919.8,
+     "iy": 6260.9,
+     "self": false
+    },
+    {
+     "t": 1303.4,
+     "dbno": false,
+     "cause": 3,
+     "vx": 9664.4,
+     "vy": 5579.4,
+     "ix": 9548,
+     "iy": 5394.5,
+     "self": false
+    },
+    {
+     "t": 1305.1,
+     "dbno": true,
+     "cause": 2,
+     "vx": 7345.6,
+     "vy": 4286.6,
+     "ix": 7345.4,
+     "iy": 4688.9,
+     "self": false
+    },
+    {
+     "t": 1305.4,
+     "dbno": false,
+     "cause": 3,
+     "vx": 7115.4,
+     "vy": 5532.7,
+     "ix": 7392.7,
+     "iy": 4273.6,
+     "self": false
+    },
+    {
+     "t": 1305.4,
+     "dbno": false,
+     "cause": 0,
+     "vx": 7284.4,
+     "vy": 4591.2,
+     "ix": 7284.4,
+     "iy": 4591.2,
+     "self": true
+    },
+    {
+     "t": 1307.4,
+     "dbno": false,
+     "cause": 2,
+     "vx": 7655.9,
+     "vy": 4113.6,
+     "ix": 0,
+     "iy": 0,
+     "self": false
+    },
+    {
+     "t": 1307.4,
+     "dbno": false,
+     "cause": 2,
+     "vx": 8100.8,
+     "vy": 4244,
+     "ix": 8268.6,
+     "iy": 4542.4,
+     "self": false
+    },
+    {
+     "t": 1336.1,
+     "dbno": false,
+     "cause": 4,
+     "vx": 9950.1,
+     "vy": 1743.6,
+     "ix": 9747.2,
+     "iy": 2307,
+     "self": false
+    },
+    {
+     "t": 1336.3,
+     "dbno": false,
+     "cause": 50,
+     "vx": 9721.8,
+     "vy": 2301.4,
+     "ix": 9721.8,
+     "iy": 2301.4,
+     "self": true
+    },
+    {
+     "t": 1337.7,
+     "dbno": false,
+     "cause": 50,
+     "vx": 9712.8,
+     "vy": 1770.8,
+     "ix": 0,
+     "iy": 0,
+     "self": false
+    }
+   ],
+   "landingOffset": 48
+  },
+  {
+   "id": "24c56dba-8c31-4e26-ae65-9d00a75b6ff0",
+   "teamCount": 50,
+   "zones": [
+    {
+     "t": 121.4,
+     "radius": 95000,
+     "cx": 24528.8,
+     "cy": 3373.9
+    },
+    {
+     "t": 316.4,
+     "radius": 75000,
+     "cx": 43715.2,
+     "cy": 7556.1
+    },
+    {
+     "t": 466.4,
+     "radius": 52500,
+     "cx": 52603.6,
+     "cy": 7191.2
+    },
+    {
+     "t": 616.4,
+     "radius": 32500,
+     "cx": 46948.7,
+     "cy": -8469.4
+    },
+    {
+     "t": 771.4,
+     "radius": 20000,
+     "cx": 14929.5,
+     "cy": -14038.9
+    },
+    {
+     "t": 881.4,
+     "radius": 10000,
+     "cx": -192.3,
+     "cy": -27128.3
+    },
+    {
+     "t": 991.4,
+     "radius": 5000,
+     "cx": 14628.4,
+     "cy": -24815.9
+    },
+    {
+     "t": 1086.5,
+     "radius": 2500,
+     "cx": 12116.9,
+     "cy": -36550.2
+    },
+    {
+     "t": 1166.6,
+     "radius": 1650,
+     "cx": 16465.8,
+     "cy": -27545.3
+    },
+    {
+     "t": 1221.8,
+     "radius": 1100,
+     "cx": 9122,
+     "cy": -27243.6
+    },
+    {
+     "t": 1272.8,
+     "radius": 1000,
+     "cx": 3561.9,
+     "cy": -22436.5
+    }
+   ],
+   "teams": [
+    {
+     "placement": 1,
+     "timeAlive": 1319,
+     "elims": 5,
+     "damage": 1250,
+     "taken": 493,
+     "travel": 970850,
+     "heals": 14,
+     "shields": 60
+    },
+    {
+     "placement": 2,
+     "timeAlive": 1319,
+     "elims": 7,
+     "damage": 1781,
+     "taken": 2117,
+     "travel": 1062364,
+     "heals": 233,
+     "shields": 76
+    },
+    {
+     "placement": 3,
+     "timeAlive": 1299,
+     "elims": 5,
+     "damage": 1616,
+     "taken": 1918,
+     "travel": 708411,
+     "heals": 145,
+     "shields": 69
+    },
+    {
+     "placement": 4,
+     "timeAlive": 914,
+     "elims": 9,
+     "damage": 2278,
+     "taken": 2834,
+     "travel": 963396,
+     "heals": 253,
+     "shields": 77
+    },
+    {
+     "placement": 5,
+     "timeAlive": 1270,
+     "elims": 4,
+     "damage": 2211,
+     "taken": 1185,
+     "travel": 566341,
+     "heals": 45,
+     "shields": 51
+    },
+    {
+     "placement": 6,
+     "timeAlive": 1270,
+     "elims": 3,
+     "damage": 988,
+     "taken": 1351,
+     "travel": 654481,
+     "heals": 71,
+     "shields": 69
+    },
+    {
+     "placement": 7,
+     "timeAlive": 1242,
+     "elims": 6,
+     "damage": 1045,
+     "taken": 2559,
+     "travel": 935437,
+     "heals": 255,
+     "shields": 87
+    },
+    {
+     "placement": 8,
+     "timeAlive": 1253,
+     "elims": 7,
+     "damage": 1430,
+     "taken": 2054,
+     "travel": 1201822,
+     "heals": 259,
+     "shields": 54
+    },
+    {
+     "placement": 9,
+     "timeAlive": 1246,
+     "elims": 2,
+     "damage": 1072,
+     "taken": 1351,
+     "travel": 781020,
+     "heals": 55,
+     "shields": 71
+    },
+    {
+     "placement": 10,
+     "timeAlive": 1226,
+     "elims": 4,
+     "damage": 1029,
+     "taken": 1788,
+     "travel": 1223272,
+     "heals": 181,
+     "shields": 51
+    },
+    {
+     "placement": 11,
+     "timeAlive": 1227,
+     "elims": 1,
+     "damage": 787,
+     "taken": 1808,
+     "travel": 749901,
+     "heals": 173,
+     "shields": 58
+    },
+    {
+     "placement": 12,
+     "timeAlive": 1220,
+     "elims": 1,
+     "damage": 690,
+     "taken": 1462,
+     "travel": 987994,
+     "heals": 96,
+     "shields": 71
+    },
+    {
+     "placement": 13,
+     "timeAlive": 1197,
+     "elims": 3,
+     "damage": 3264,
+     "taken": 1089,
+     "travel": 739089,
+     "heals": 34,
+     "shields": 34
+    },
+    {
+     "placement": 14,
+     "timeAlive": 1193,
+     "elims": 4,
+     "damage": 1300,
+     "taken": 1196,
+     "travel": 950862,
+     "heals": 96,
+     "shields": 86
+    },
+    {
+     "placement": 15,
+     "timeAlive": 1194,
+     "elims": 0,
+     "damage": 409,
+     "taken": 1616,
+     "travel": 781920,
+     "heals": 147,
+     "shields": 89
+    },
+    {
+     "placement": 16,
+     "timeAlive": 1173,
+     "elims": 4,
+     "damage": 1202,
+     "taken": 1308,
+     "travel": 837838,
+     "heals": 33,
+     "shields": 96
+    },
+    {
+     "placement": 17,
+     "timeAlive": 1168,
+     "elims": 3,
+     "damage": 719,
+     "taken": 1680,
+     "travel": 902686,
+     "heals": 162,
+     "shields": 46
+    },
+    {
+     "placement": 18,
+     "timeAlive": 1137,
+     "elims": 1,
+     "damage": 479,
+     "taken": 1557,
+     "travel": 900963,
+     "heals": 84,
+     "shields": 59
+    },
+    {
+     "placement": 19,
+     "timeAlive": 1138,
+     "elims": 3,
+     "damage": 1700,
+     "taken": 2085,
+     "travel": 970047,
+     "heals": 176,
+     "shields": 100
+    },
+    {
+     "placement": 20,
+     "timeAlive": 1104,
+     "elims": 1,
+     "damage": 897,
+     "taken": 1298,
+     "travel": 655670,
+     "heals": 63,
+     "shields": 84
+    },
+    {
+     "placement": 21,
+     "timeAlive": 1081,
+     "elims": 2,
+     "damage": 1061,
+     "taken": 1818,
+     "travel": 951018,
+     "heals": 148,
+     "shields": 86
+    },
+    {
+     "placement": 22,
+     "timeAlive": 1070,
+     "elims": 2,
+     "damage": 559,
+     "taken": 1852,
+     "travel": 906554,
+     "heals": 187,
+     "shields": 65
+    },
+    {
+     "placement": 23,
+     "timeAlive": 1064,
+     "elims": 1,
+     "damage": 724,
+     "taken": 1201,
+     "travel": 886140,
+     "heals": 33,
+     "shields": 62
+    },
+    {
+     "placement": 24,
+     "timeAlive": 1059,
+     "elims": 0,
+     "damage": 341,
+     "taken": 1205,
+     "travel": 856098,
+     "heals": 47,
+     "shields": 79
+    },
+    {
+     "placement": 25,
+     "timeAlive": 1054,
+     "elims": 0,
+     "damage": 433,
+     "taken": 1134,
+     "travel": 780141,
+     "heals": 18,
+     "shields": 77
+    },
+    {
+     "placement": 26,
+     "timeAlive": 608,
+     "elims": 0,
+     "damage": 239,
+     "taken": 1985,
+     "travel": 815793,
+     "heals": 156,
+     "shields": 81
+    },
+    {
+     "placement": 27,
+     "timeAlive": 1016,
+     "elims": 1,
+     "damage": 332,
+     "taken": 2365,
+     "travel": 876127,
+     "heals": 290,
+     "shields": 46
+    },
+    {
+     "placement": 28,
+     "timeAlive": 1025,
+     "elims": 0,
+     "damage": 716,
+     "taken": 1181,
+     "travel": 685377,
+     "heals": 23,
+     "shields": 63
+    },
+    {
+     "placement": 29,
+     "timeAlive": 989,
+     "elims": 2,
+     "damage": 749,
+     "taken": 1990,
+     "travel": 757305,
+     "heals": 219,
+     "shields": 80
+    },
+    {
+     "placement": 30,
+     "timeAlive": 969,
+     "elims": 1,
+     "damage": 398,
+     "taken": 1287,
+     "travel": 697694,
+     "heals": 48,
+     "shields": 82
+    },
+    {
+     "placement": 31,
+     "timeAlive": 940,
+     "elims": 3,
+     "damage": 744,
+     "taken": 2091,
+     "travel": 1030679,
+     "heals": 271,
+     "shields": 59
+    },
+    {
+     "placement": 32,
+     "timeAlive": 896,
+     "elims": 0,
+     "damage": 526,
+     "taken": 926,
+     "travel": 724082,
+     "heals": 49,
+     "shields": 53
+    },
+    {
+     "placement": 33,
+     "timeAlive": 893,
+     "elims": 0,
+     "damage": 213,
+     "taken": 1841,
+     "travel": 945672,
+     "heals": 188,
+     "shields": 69
+    },
+    {
+     "placement": 34,
+     "timeAlive": 882,
+     "elims": 1,
+     "damage": 2545,
+     "taken": 1504,
+     "travel": 629201,
+     "heals": 26,
+     "shields": 107
+    },
+    {
+     "placement": 35,
+     "timeAlive": 646,
+     "elims": 2,
+     "damage": 1564,
+     "taken": 2181,
+     "travel": 882704,
+     "heals": 179,
+     "shields": 56
+    },
+    {
+     "placement": 36,
+     "timeAlive": 809,
+     "elims": 0,
+     "damage": 1459,
+     "taken": 1459,
+     "travel": 742336,
+     "heals": 160,
+     "shields": 38
+    },
+    {
+     "placement": 37,
+     "timeAlive": 748,
+     "elims": 0,
+     "damage": 224,
+     "taken": 1502,
+     "travel": 573386,
+     "heals": 166,
+     "shields": 26
+    },
+    {
+     "placement": 38,
+     "timeAlive": 344,
+     "elims": 1,
+     "damage": 241,
+     "taken": 229,
+     "travel": 192020,
+     "heals": 4,
+     "shields": 7
+    },
+    {
+     "placement": 39,
+     "timeAlive": 271,
+     "elims": 2,
+     "damage": 217,
+     "taken": 662,
+     "travel": 263567,
+     "heals": 0,
+     "shields": 43
+    },
+    {
+     "placement": 40,
+     "timeAlive": 191,
+     "elims": 0,
+     "damage": 98,
+     "taken": 491,
+     "travel": 170529,
+     "heals": 0,
+     "shields": 13
+    },
+    {
+     "placement": 41,
+     "timeAlive": 169,
+     "elims": 0,
+     "damage": 0,
+     "taken": 416,
+     "travel": 96301,
+     "heals": 2,
+     "shields": 8
+    },
+    {
+     "placement": 42,
+     "timeAlive": 150,
+     "elims": 2,
+     "damage": 675,
+     "taken": 748,
+     "travel": 124086,
+     "heals": 10,
+     "shields": 25
+    },
+    {
+     "placement": 43,
+     "timeAlive": 148,
+     "elims": 2,
+     "damage": 489,
+     "taken": 503,
+     "travel": 90375,
+     "heals": 1,
+     "shields": 2
+    },
+    {
+     "placement": 44,
+     "timeAlive": 105,
+     "elims": 0,
+     "damage": 0,
+     "taken": 515,
+     "travel": 70698,
+     "heals": 5,
+     "shields": 11
+    },
+    {
+     "placement": 45,
+     "timeAlive": 109,
+     "elims": 0,
+     "damage": 302,
+     "taken": 458,
+     "travel": 51879,
+     "heals": 0,
+     "shields": 16
+    },
+    {
+     "placement": 46,
+     "timeAlive": 82,
+     "elims": 0,
+     "damage": 214,
+     "taken": 531,
+     "travel": 69568,
+     "heals": 0,
+     "shields": 13
+    },
+    {
+     "placement": 47,
+     "timeAlive": 55,
+     "elims": 0,
+     "damage": 46,
+     "taken": 238,
+     "travel": 21565,
+     "heals": 0,
+     "shields": 0
+    },
+    {
+     "placement": 48,
+     "timeAlive": 49,
+     "elims": 1,
+     "damage": 226,
+     "taken": 374,
+     "travel": 23124,
+     "heals": 0,
+     "shields": 0
+    },
+    {
+     "placement": 49,
+     "timeAlive": 43,
+     "elims": 1,
+     "damage": 166,
+     "taken": 337,
+     "travel": 20212,
+     "heals": 0,
+     "shields": 5
+    },
+    {
+     "placement": 50,
+     "timeAlive": 29,
+     "elims": 0,
+     "damage": 72,
+     "taken": 208,
+     "travel": 8024,
+     "heals": 0,
+     "shields": 0
+    }
+   ],
+   "eliminations": [
+    {
+     "t": 65.6,
+     "dbno": true,
+     "cause": 3,
+     "vx": 26110.7,
+     "vy": -6540.6,
+     "ix": 26146.3,
+     "iy": -6234.9,
+     "self": false
+    },
+    {
+     "t": 70,
+     "dbno": true,
+     "cause": 4,
+     "vx": 26505.4,
+     "vy": -6488.4,
+     "ix": 26148.2,
+     "iy": -6106,
+     "self": false
+    },
+    {
+     "t": 74,
+     "dbno": false,
+     "cause": 4,
+     "vx": 26342.6,
+     "vy": -6289.3,
+     "ix": 26734.7,
+     "iy": -6534.6,
+     "self": false
+    },
+    {
+     "t": 75.9,
+     "dbno": true,
+     "cause": 3,
+     "vx": -16359.6,
+     "vy": 35813.7,
+     "ix": -16423,
+     "iy": 35796.4,
+     "self": false
+    },
+    {
+     "t": 82.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": -16852,
+     "vy": 36179.3,
+     "ix": -16832.5,
+     "iy": 37496.3,
+     "self": false
+    },
+    {
+     "t": 82.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": -17378.4,
+     "vy": 36925.2,
+     "ix": -17204.5,
+     "iy": 36814.7,
+     "self": false
+    },
+    {
+     "t": 87.6,
+     "dbno": true,
+     "cause": 4,
+     "vx": -36075.3,
+     "vy": 89454.8,
+     "ix": -13069.9,
+     "iy": 83401.7,
+     "self": false
+    },
+    {
+     "t": 87.6,
+     "dbno": false,
+     "cause": 2,
+     "vx": 26001,
+     "vy": -6008,
+     "ix": 25242.4,
+     "iy": -6418.4,
+     "self": false
+    },
+    {
+     "t": 88.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": 25715.7,
+     "vy": -6359.8,
+     "ix": 25174.4,
+     "iy": -4724.6,
+     "self": false
+    },
+    {
+     "t": 93.5,
+     "dbno": true,
+     "cause": 5,
+     "vx": -43479.6,
+     "vy": 54381.7,
+     "ix": -43666.7,
+     "iy": 55598.1,
+     "self": false
+    },
+    {
+     "t": 94.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": 25989.9,
+     "vy": -6267.3,
+     "ix": 26143,
+     "iy": -6312.2,
+     "self": false
+    },
+    {
+     "t": 108.6,
+     "dbno": true,
+     "cause": 4,
+     "vx": 62978.7,
+     "vy": 96272.2,
+     "ix": 62913.5,
+     "iy": 98614.7,
+     "self": false
+    },
+    {
+     "t": 111.1,
+     "dbno": false,
+     "cause": 5,
+     "vx": -42416.9,
+     "vy": 55663.6,
+     "ix": -43922.8,
+     "iy": 56152.8,
+     "self": false
+    },
+    {
+     "t": 111.1,
+     "dbno": false,
+     "cause": 3,
+     "vx": -43610.1,
+     "vy": 56114.5,
+     "ix": -43922.8,
+     "iy": 56152.8,
+     "self": false
+    },
+    {
+     "t": 113.4,
+     "dbno": true,
+     "cause": 4,
+     "vx": 61113.4,
+     "vy": 13721.2,
+     "ix": 66071.6,
+     "iy": 7206.8,
+     "self": false
+    },
+    {
+     "t": 118.3,
+     "dbno": false,
+     "cause": 4,
+     "vx": 65746.9,
+     "vy": 96060.1,
+     "ix": 63189.9,
+     "iy": 96239,
+     "self": false
+    },
+    {
+     "t": 127.9,
+     "dbno": false,
+     "cause": 4,
+     "vx": 58744.3,
+     "vy": 14781.1,
+     "ix": 59651.2,
+     "iy": 12454.9,
+     "self": false
+    },
+    {
+     "t": 132.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": 59252.5,
+     "vy": 15403.8,
+     "ix": 59946.9,
+     "iy": 15617.7,
+     "self": false
+    },
+    {
+     "t": 134,
+     "dbno": true,
+     "cause": 3,
+     "vx": 18341.9,
+     "vy": 38392.4,
+     "ix": 18187.9,
+     "iy": 38350.6,
+     "self": false
+    },
+    {
+     "t": 136.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 18216,
+     "vy": 38184,
+     "ix": 18663.7,
+     "iy": 38347.6,
+     "self": false
+    },
+    {
+     "t": 149.6,
+     "dbno": true,
+     "cause": 2,
+     "vx": -47605,
+     "vy": -15902.1,
+     "ix": -47733.6,
+     "iy": -15962.1,
+     "self": false
+    },
+    {
+     "t": 150,
+     "dbno": true,
+     "cause": 2,
+     "vx": -46528.4,
+     "vy": -17271.2,
+     "ix": -46672.1,
+     "iy": -17297.8,
+     "self": false
+    },
+    {
+     "t": 152.9,
+     "dbno": true,
+     "cause": 4,
+     "vx": -17739.2,
+     "vy": -17600.2,
+     "ix": -26492.7,
+     "iy": -4139.8,
+     "self": false
+    },
+    {
+     "t": 155.6,
+     "dbno": false,
+     "cause": 2,
+     "vx": -47078,
+     "vy": -17217.2,
+     "ix": -47118.7,
+     "iy": -16522.4,
+     "self": false
+    },
+    {
+     "t": 155.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": -47514.5,
+     "vy": -16545.2,
+     "ix": -47118.7,
+     "iy": -16522.4,
+     "self": false
+    },
+    {
+     "t": 163.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": 36865.7,
+     "vy": 107261,
+     "ix": 36850.8,
+     "iy": 106939.9,
+     "self": false
+    },
+    {
+     "t": 164.4,
+     "dbno": false,
+     "cause": 4,
+     "vx": -17795,
+     "vy": -19991,
+     "ix": -17977.5,
+     "iy": -18682.8,
+     "self": false
+    },
+    {
+     "t": 170.1,
+     "dbno": false,
+     "cause": 2,
+     "vx": -47730.5,
+     "vy": -16194.4,
+     "ix": -47647.9,
+     "iy": -16382.9,
+     "self": false
+    },
+    {
+     "t": 182.9,
+     "dbno": true,
+     "cause": 4,
+     "vx": 63516.1,
+     "vy": 26598.6,
+     "ix": 63331.4,
+     "iy": 27128,
+     "self": false
+    },
+    {
+     "t": 185,
+     "dbno": false,
+     "cause": 3,
+     "vx": 63443.4,
+     "vy": 26595.2,
+     "ix": 63357,
+     "iy": 26632.9,
+     "self": false
+    },
+    {
+     "t": 191.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": -47206.3,
+     "vy": -17480,
+     "ix": -46839.3,
+     "iy": -17908.8,
+     "self": false
+    },
+    {
+     "t": 195.6,
+     "dbno": false,
+     "cause": 4,
+     "vx": 65246.2,
+     "vy": 33645.8,
+     "ix": 65177.4,
+     "iy": 33862.9,
+     "self": false
+    },
+    {
+     "t": 215.3,
+     "dbno": false,
+     "cause": 3,
+     "vx": -19360.8,
+     "vy": -14289,
+     "ix": -19764.5,
+     "iy": -14352.4,
+     "self": false
+    },
+    {
+     "t": 221.8,
+     "dbno": true,
+     "cause": 3,
+     "vx": 83668.6,
+     "vy": -20280.2,
+     "ix": 83329.7,
+     "iy": -20992.9,
+     "self": false
+    },
+    {
+     "t": 224.1,
+     "dbno": false,
+     "cause": 3,
+     "vx": 83573.1,
+     "vy": -20431.1,
+     "ix": 83665.8,
+     "iy": -20860,
+     "self": false
+    },
+    {
+     "t": 234.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": 84053.2,
+     "vy": -20791.4,
+     "ix": 84185,
+     "iy": -20856.8,
+     "self": false
+    },
+    {
+     "t": 279.9,
+     "dbno": true,
+     "cause": 3,
+     "vx": -17760.4,
+     "vy": 41990.5,
+     "ix": -17551.2,
+     "iy": 42069.2,
+     "self": false
+    },
+    {
+     "t": 282,
+     "dbno": false,
+     "cause": 3,
+     "vx": -17831.9,
+     "vy": 41956.1,
+     "ix": -17577.8,
+     "iy": 41926.5,
+     "self": false
+    },
+    {
+     "t": 294.2,
+     "dbno": true,
+     "cause": 3,
+     "vx": -36904.4,
+     "vy": -29123.5,
+     "ix": -36398.4,
+     "iy": -29002.9,
+     "self": false
+    },
+    {
+     "t": 296.4,
+     "dbno": false,
+     "cause": 3,
+     "vx": -37061.3,
+     "vy": -28715.7,
+     "ix": -36905.5,
+     "iy": -28551.9,
+     "self": false
+    },
+    {
+     "t": 316.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": -32405.9,
+     "vy": -41167.5,
+     "ix": -32359.4,
+     "iy": -40979.1,
+     "self": false
+    },
+    {
+     "t": 323.5,
+     "dbno": false,
+     "cause": 31,
+     "vx": -27142.5,
+     "vy": 123064.2,
+     "ix": -27142.5,
+     "iy": 123064.2,
+     "self": true
+    },
+    {
+     "t": 371.5,
+     "dbno": true,
+     "cause": 3,
+     "vx": 28861.2,
+     "vy": -6153.1,
+     "ix": 28882.4,
+     "iy": -6335.1,
+     "self": false
+    },
+    {
+     "t": 374.3,
+     "dbno": false,
+     "cause": 3,
+     "vx": 28863.8,
+     "vy": -6046.3,
+     "ix": 29083.8,
+     "iy": -6037.9,
+     "self": false
+    },
+    {
+     "t": 404.4,
+     "dbno": false,
+     "cause": 3,
+     "vx": 13667.3,
+     "vy": 98812.9,
+     "ix": 14445.4,
+     "iy": 98037,
+     "self": false
+    },
+    {
+     "t": 443.8,
+     "dbno": true,
+     "cause": 3,
+     "vx": -15280.1,
+     "vy": 42376.7,
+     "ix": -14649.3,
+     "iy": 42193.3,
+     "self": false
+    },
+    {
+     "t": 446.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": -15421.7,
+     "vy": 42280,
+     "ix": -14632,
+     "iy": 42200,
+     "self": false
+    },
+    {
+     "t": 542.3,
+     "dbno": true,
+     "cause": 4,
+     "vx": -43004,
+     "vy": 59332.9,
+     "ix": -43156.9,
+     "iy": 59778.1,
+     "self": false
+    },
+    {
+     "t": 544.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": -43790.2,
+     "vy": 59183.8,
+     "ix": -43655.8,
+     "iy": 59329.4,
+     "self": false
+    },
+    {
+     "t": 794,
+     "dbno": true,
+     "cause": 3,
+     "vx": 8182.8,
+     "vy": 48701.1,
+     "ix": 8178.5,
+     "iy": 48186.1,
+     "self": false
+    },
+    {
+     "t": 799.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": 8227.6,
+     "vy": 48401.4,
+     "ix": 8136,
+     "iy": 48088,
+     "self": false
+    },
+    {
+     "t": 802.6,
+     "dbno": true,
+     "cause": 4,
+     "vx": -11560,
+     "vy": -59447.9,
+     "ix": -11807.1,
+     "iy": -59756.3,
+     "self": false
+    },
+    {
+     "t": 808.3,
+     "dbno": false,
+     "cause": 3,
+     "vx": 6549.9,
+     "vy": 50684.8,
+     "ix": 6410.4,
+     "iy": 50774.6,
+     "self": false
+    },
+    {
+     "t": 832.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": -10241.9,
+     "vy": -59654.4,
+     "ix": -10877.5,
+     "iy": -60035.9,
+     "self": false
+    },
+    {
+     "t": 846.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": -7193.6,
+     "vy": -59724.9,
+     "ix": -7241.3,
+     "iy": -59555.1,
+     "self": false
+    },
+    {
+     "t": 877.4,
+     "dbno": true,
+     "cause": 4,
+     "vx": 39284.7,
+     "vy": -18100,
+     "ix": 35346.1,
+     "iy": -15892.6,
+     "self": false
+    },
+    {
+     "t": 884.5,
+     "dbno": true,
+     "cause": 3,
+     "vx": 23263,
+     "vy": 2078.9,
+     "ix": 23425.9,
+     "iy": 2479.2,
+     "self": false
+    },
+    {
+     "t": 892.1,
+     "dbno": false,
+     "cause": 4,
+     "vx": 39927.4,
+     "vy": -18906,
+     "ix": 34393.2,
+     "iy": -16552,
+     "self": false
+    },
+    {
+     "t": 892.3,
+     "dbno": true,
+     "cause": 3,
+     "vx": 23336,
+     "vy": 2109.1,
+     "ix": 23632,
+     "iy": 2622.8,
+     "self": false
+    },
+    {
+     "t": 895.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": 23767.7,
+     "vy": 2344.1,
+     "ix": 23585.6,
+     "iy": 2474.1,
+     "self": false
+    },
+    {
+     "t": 908.7,
+     "dbno": false,
+     "cause": 4,
+     "vx": 39788,
+     "vy": -18516.6,
+     "ix": 42879.9,
+     "iy": -14935.5,
+     "self": false
+    },
+    {
+     "t": 908.9,
+     "dbno": true,
+     "cause": 4,
+     "vx": 7271.6,
+     "vy": -15869.4,
+     "ix": 9312.5,
+     "iy": -8631.3,
+     "self": false
+    },
+    {
+     "t": 918.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": 7362.2,
+     "vy": -16088,
+     "ix": 7168,
+     "iy": -15697.6,
+     "self": false
+    },
+    {
+     "t": 928.9,
+     "dbno": false,
+     "cause": 38,
+     "vx": 27013.8,
+     "vy": -28225.8,
+     "ix": 26821.8,
+     "iy": -30248.3,
+     "self": false
+    },
+    {
+     "t": 930.4,
+     "dbno": false,
+     "cause": 4,
+     "vx": 15159.7,
+     "vy": -4306.9,
+     "ix": 9177.1,
+     "iy": -22615.4,
+     "self": false
+    },
+    {
+     "t": 935.5,
+     "dbno": false,
+     "cause": 4,
+     "vx": 27099.1,
+     "vy": -28375.8,
+     "ix": 23172.9,
+     "iy": -26285,
+     "self": false
+    },
+    {
+     "t": 945.5,
+     "dbno": true,
+     "cause": 3,
+     "vx": -150.5,
+     "vy": -12138.9,
+     "ix": -553.4,
+     "iy": -12584.3,
+     "self": false
+    },
+    {
+     "t": 949.1,
+     "dbno": false,
+     "cause": 3,
+     "vx": 568.1,
+     "vy": -12334.4,
+     "ix": 296.1,
+     "iy": -12242.2,
+     "self": false
+    },
+    {
+     "t": 949.1,
+     "dbno": false,
+     "cause": 38,
+     "vx": 699.2,
+     "vy": -12584,
+     "ix": -484.3,
+     "iy": -12414.2,
+     "self": false
+    },
+    {
+     "t": 949.1,
+     "dbno": false,
+     "cause": 38,
+     "vx": 4392,
+     "vy": -17111.5,
+     "ix": 5231.9,
+     "iy": -18916.1,
+     "self": false
+    },
+    {
+     "t": 950.2,
+     "dbno": true,
+     "cause": 3,
+     "vx": 13789.9,
+     "vy": -21817.4,
+     "ix": 13319,
+     "iy": -21601.2,
+     "self": false
+    },
+    {
+     "t": 952.8,
+     "dbno": false,
+     "cause": 3,
+     "vx": 13656.4,
+     "vy": -21701.2,
+     "ix": 13699.9,
+     "iy": -21893.6,
+     "self": false
+    },
+    {
+     "t": 982.6,
+     "dbno": true,
+     "cause": 4,
+     "vx": 964.6,
+     "vy": -14533.3,
+     "ix": 1694,
+     "iy": -15658.5,
+     "self": false
+    },
+    {
+     "t": 984.9,
+     "dbno": false,
+     "cause": 4,
+     "vx": 947.9,
+     "vy": -14866.7,
+     "ix": 1460.7,
+     "iy": -15675.9,
+     "self": false
+    },
+    {
+     "t": 995.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": -52.7,
+     "vy": -17623.6,
+     "ix": 519.4,
+     "iy": -17382.4,
+     "self": false
+    },
+    {
+     "t": 1005.3,
+     "dbno": true,
+     "cause": 3,
+     "vx": 6727.9,
+     "vy": -32380.4,
+     "ix": 6824.5,
+     "iy": -31913.6,
+     "self": false
+    },
+    {
+     "t": 1006.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 6532.8,
+     "vy": -32317,
+     "ix": 7076.1,
+     "iy": -31698.2,
+     "self": false
+    },
+    {
+     "t": 1006.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 7992.2,
+     "vy": -31743.5,
+     "ix": 7909.5,
+     "iy": -31817.5,
+     "self": false
+    },
+    {
+     "t": 1023.7,
+     "dbno": false,
+     "cause": 38,
+     "vx": 6914,
+     "vy": -30815.8,
+     "ix": 3796.8,
+     "iy": -31642,
+     "self": false
+    },
+    {
+     "t": 1036.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": 6398.8,
+     "vy": -30912,
+     "ix": 6731.4,
+     "iy": -31555.9,
+     "self": false
+    },
+    {
+     "t": 1060.3,
+     "dbno": true,
+     "cause": 4,
+     "vx": 9883.7,
+     "vy": -19250.1,
+     "ix": 6519.7,
+     "iy": -19519.8,
+     "self": false
+    },
+    {
+     "t": 1067.1,
+     "dbno": false,
+     "cause": 3,
+     "vx": 10692.6,
+     "vy": -20034.7,
+     "ix": 10511.3,
+     "iy": -19211.2,
+     "self": false
+    },
+    {
+     "t": 1069.2,
+     "dbno": false,
+     "cause": 38,
+     "vx": 13073.3,
+     "vy": -21103.3,
+     "ix": 13319.7,
+     "iy": -21019.8,
+     "self": false
+    },
+    {
+     "t": 1073.9,
+     "dbno": true,
+     "cause": 3,
+     "vx": 5856.8,
+     "vy": -27500.3,
+     "ix": 6158.5,
+     "iy": -27669.4,
+     "self": false
+    },
+    {
+     "t": 1074.5,
+     "dbno": true,
+     "cause": 0,
+     "vx": 5246.4,
+     "vy": -27555.5,
+     "ix": 5246.4,
+     "iy": -27555.5,
+     "self": true
+    },
+    {
+     "t": 1077.2,
+     "dbno": false,
+     "cause": 17,
+     "vx": 5357.4,
+     "vy": -26908.1,
+     "ix": 5357.4,
+     "iy": -26908.1,
+     "self": true
+    },
+    {
+     "t": 1077.2,
+     "dbno": false,
+     "cause": 0,
+     "vx": 5080.6,
+     "vy": -27144.9,
+     "ix": 9068.9,
+     "iy": -22412.9,
+     "self": false
+    },
+    {
+     "t": 1085.9,
+     "dbno": false,
+     "cause": 17,
+     "vx": 2884.9,
+     "vy": -26348.3,
+     "ix": 2884.9,
+     "iy": -26348.3,
+     "self": true
+    },
+    {
+     "t": 1090.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 13551.3,
+     "vy": -29638.2,
+     "ix": 14025.8,
+     "iy": -29801.6,
+     "self": false
+    },
+    {
+     "t": 1093.5,
+     "dbno": true,
+     "cause": 2,
+     "vx": 10988.6,
+     "vy": -27991.6,
+     "ix": 11635.4,
+     "iy": -28359.9,
+     "self": false
+    },
+    {
+     "t": 1097.3,
+     "dbno": false,
+     "cause": 2,
+     "vx": 11245.2,
+     "vy": -28305.6,
+     "ix": 11713.2,
+     "iy": -28328.1,
+     "self": false
+    },
+    {
+     "t": 1098.6,
+     "dbno": false,
+     "cause": 38,
+     "vx": 10844.7,
+     "vy": -27836.5,
+     "ix": 11276.7,
+     "iy": -28315.7,
+     "self": false
+    },
+    {
+     "t": 1105.7,
+     "dbno": true,
+     "cause": 4,
+     "vx": 19008.1,
+     "vy": -24278.7,
+     "ix": 18856.8,
+     "iy": -27135.3,
+     "self": false
+    },
+    {
+     "t": 1107.9,
+     "dbno": false,
+     "cause": 2,
+     "vx": 19040.1,
+     "vy": -24327.1,
+     "ix": 15469,
+     "iy": -23048,
+     "self": false
+    },
+    {
+     "t": 1115.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": 13732.4,
+     "vy": -22062.3,
+     "ix": 13436.9,
+     "iy": -22013.1,
+     "self": false
+    },
+    {
+     "t": 1118.7,
+     "dbno": true,
+     "cause": 4,
+     "vx": 15784.1,
+     "vy": -27871.9,
+     "ix": 14322.9,
+     "iy": -28939.6,
+     "self": false
+    },
+    {
+     "t": 1118.9,
+     "dbno": false,
+     "cause": 38,
+     "vx": 16726.7,
+     "vy": -29127.9,
+     "ix": 17070.9,
+     "iy": -29333.8,
+     "self": false
+    },
+    {
+     "t": 1123.9,
+     "dbno": false,
+     "cause": 38,
+     "vx": 18089.2,
+     "vy": -25294.7,
+     "ix": 13085.2,
+     "iy": -27597.8,
+     "self": false
+    },
+    {
+     "t": 1124.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": 15658.2,
+     "vy": -28374.4,
+     "ix": 15905.6,
+     "iy": -28313.3,
+     "self": false
+    },
+    {
+     "t": 1129.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": 13731.6,
+     "vy": -25947.4,
+     "ix": 13630.4,
+     "iy": -26283.2,
+     "self": false
+    },
+    {
+     "t": 1133.8,
+     "dbno": false,
+     "cause": 3,
+     "vx": 16372.3,
+     "vy": -31253.3,
+     "ix": 16082.9,
+     "iy": -31505.2,
+     "self": false
+    },
+    {
+     "t": 1160.2,
+     "dbno": true,
+     "cause": 3,
+     "vx": 14214.4,
+     "vy": -33982.2,
+     "ix": 14325.9,
+     "iy": -35188.3,
+     "self": false
+    },
+    {
+     "t": 1160.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": 13189.9,
+     "vy": -36164.8,
+     "ix": 13600.5,
+     "iy": -36268.4,
+     "self": false
+    },
+    {
+     "t": 1163.4,
+     "dbno": false,
+     "cause": 3,
+     "vx": 13904.9,
+     "vy": -34349.6,
+     "ix": 13426.9,
+     "iy": -34099.6,
+     "self": false
+    },
+    {
+     "t": 1180,
+     "dbno": true,
+     "cause": 3,
+     "vx": 11560.4,
+     "vy": -33381.4,
+     "ix": 11581.3,
+     "iy": -32905.2,
+     "self": false
+    },
+    {
+     "t": 1180.2,
+     "dbno": true,
+     "cause": 2,
+     "vx": 11782.3,
+     "vy": -32698.3,
+     "ix": 11887.3,
+     "iy": -33480.4,
+     "self": false
+    },
+    {
+     "t": 1181.8,
+     "dbno": false,
+     "cause": 3,
+     "vx": 11672.8,
+     "vy": -33241.4,
+     "ix": 11571.5,
+     "iy": -33068.6,
+     "self": false
+    },
+    {
+     "t": 1181.8,
+     "dbno": false,
+     "cause": 2,
+     "vx": 11667.3,
+     "vy": -33125.4,
+     "ix": 12098,
+     "iy": -33360.5,
+     "self": false
+    },
+    {
+     "t": 1184.3,
+     "dbno": true,
+     "cause": 3,
+     "vx": 14721.9,
+     "vy": -33666.8,
+     "ix": 14274,
+     "iy": -32987.6,
+     "self": false
+    },
+    {
+     "t": 1189.6,
+     "dbno": true,
+     "cause": 4,
+     "vx": 13329.4,
+     "vy": -31265.1,
+     "ix": 13265.6,
+     "iy": -31250.7,
+     "self": false
+    },
+    {
+     "t": 1193.6,
+     "dbno": true,
+     "cause": 3,
+     "vx": 13400.6,
+     "vy": -31014,
+     "ix": 13633.9,
+     "iy": -31225.3,
+     "self": false
+    },
+    {
+     "t": 1197.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 14791.6,
+     "vy": -31448,
+     "ix": 14342.8,
+     "iy": -31291.6,
+     "self": false
+    },
+    {
+     "t": 1199.3,
+     "dbno": false,
+     "cause": 17,
+     "vx": 11289.5,
+     "vy": -32843.3,
+     "ix": 11289.5,
+     "iy": -32843.3,
+     "self": true
+    },
+    {
+     "t": 1199.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": 13502.8,
+     "vy": -31330.8,
+     "ix": 13446.1,
+     "iy": -31359.9,
+     "self": false
+    },
+    {
+     "t": 1200.4,
+     "dbno": false,
+     "cause": 4,
+     "vx": 13251.6,
+     "vy": -31348.9,
+     "ix": 13429.8,
+     "iy": -30664.3,
+     "self": false
+    },
+    {
+     "t": 1206.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 13392.5,
+     "vy": -30888.3,
+     "ix": 13515.8,
+     "iy": -30931.2,
+     "self": false
+    },
+    {
+     "t": 1206.7,
+     "dbno": true,
+     "cause": 2,
+     "vx": 13695,
+     "vy": -30160.1,
+     "ix": 15880.1,
+     "iy": -29613.2,
+     "self": false
+    },
+    {
+     "t": 1214.2,
+     "dbno": false,
+     "cause": 2,
+     "vx": 14039.9,
+     "vy": -28775.7,
+     "ix": 14040,
+     "iy": -29395.9,
+     "self": false
+    },
+    {
+     "t": 1216.1,
+     "dbno": false,
+     "cause": 0,
+     "vx": 13994.9,
+     "vy": -28682.6,
+     "ix": 14552,
+     "iy": -28968,
+     "self": false
+    },
+    {
+     "t": 1221.6,
+     "dbno": true,
+     "cause": 3,
+     "vx": 15908.5,
+     "vy": -26924.9,
+     "ix": 16015.3,
+     "iy": -26920,
+     "self": false
+    },
+    {
+     "t": 1226.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": 16040.6,
+     "vy": -27100.7,
+     "ix": 15964.8,
+     "iy": -27059.9,
+     "self": false
+    },
+    {
+     "t": 1230.9,
+     "dbno": true,
+     "cause": 2,
+     "vx": 16084.4,
+     "vy": -26212.9,
+     "ix": 16209,
+     "iy": -28222.2,
+     "self": false
+    },
+    {
+     "t": 1232.1,
+     "dbno": false,
+     "cause": 2,
+     "vx": 16069.6,
+     "vy": -26327.9,
+     "ix": 16256.5,
+     "iy": -27977.4,
+     "self": false
+    },
+    {
+     "t": 1232.1,
+     "dbno": false,
+     "cause": 3,
+     "vx": 16177.7,
+     "vy": -27747.3,
+     "ix": 16256.5,
+     "iy": -27977.4,
+     "self": false
+    },
+    {
+     "t": 1235.1,
+     "dbno": true,
+     "cause": 3,
+     "vx": 15816.9,
+     "vy": -27569.9,
+     "ix": 15957.4,
+     "iy": -27821.8,
+     "self": false
+    },
+    {
+     "t": 1236.4,
+     "dbno": true,
+     "cause": 3,
+     "vx": 14253.2,
+     "vy": -28551.1,
+     "ix": 14530.4,
+     "iy": -28946.9,
+     "self": false
+    },
+    {
+     "t": 1238.5,
+     "dbno": false,
+     "cause": 17,
+     "vx": 16243.5,
+     "vy": -27180.4,
+     "ix": 16222.1,
+     "iy": -27672.9,
+     "self": false
+    },
+    {
+     "t": 1239.6,
+     "dbno": false,
+     "cause": 2,
+     "vx": 14245.8,
+     "vy": -28576.4,
+     "ix": 14552,
+     "iy": -28558.8,
+     "self": false
+    },
+    {
+     "t": 1242.7,
+     "dbno": true,
+     "cause": 3,
+     "vx": 14593.5,
+     "vy": -28301.7,
+     "ix": 13835.1,
+     "iy": -27764.2,
+     "self": false
+    },
+    {
+     "t": 1243.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 14578.2,
+     "vy": -28165.6,
+     "ix": 13899.6,
+     "iy": -27882.8,
+     "self": false
+    },
+    {
+     "t": 1243.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 15530.8,
+     "vy": -27281.2,
+     "ix": 15816.2,
+     "iy": -27020.4,
+     "self": false
+    },
+    {
+     "t": 1249,
+     "dbno": false,
+     "cause": 3,
+     "vx": 16077.5,
+     "vy": -27629.6,
+     "ix": 15973.9,
+     "iy": -27820.7,
+     "self": false
+    },
+    {
+     "t": 1250.7,
+     "dbno": true,
+     "cause": 0,
+     "vx": 13508.4,
+     "vy": -26225.6,
+     "ix": 0,
+     "iy": 0,
+     "self": false
+    },
+    {
+     "t": 1256.6,
+     "dbno": true,
+     "cause": 3,
+     "vx": 11231.8,
+     "vy": -26317.5,
+     "ix": 12054.7,
+     "iy": -26433.9,
+     "self": false
+    },
+    {
+     "t": 1259.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": 11187.3,
+     "vy": -26612.7,
+     "ix": 11607.3,
+     "iy": -26440.7,
+     "self": false
+    },
+    {
+     "t": 1259.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": 11074.7,
+     "vy": -28456.1,
+     "ix": 10872.5,
+     "iy": -28466.5,
+     "self": false
+    },
+    {
+     "t": 1260.7,
+     "dbno": false,
+     "cause": 17,
+     "vx": 12829,
+     "vy": -25050.9,
+     "ix": 0,
+     "iy": 0,
+     "self": false
+    },
+    {
+     "t": 1280.8,
+     "dbno": false,
+     "cause": 0,
+     "vx": 9184,
+     "vy": -27463.7,
+     "ix": 9000.8,
+     "iy": -27335.3,
+     "self": false
+    },
+    {
+     "t": 1282.1,
+     "dbno": false,
+     "cause": 0,
+     "vx": 9462.3,
+     "vy": -27088.7,
+     "ix": 9223.7,
+     "iy": -27291,
+     "self": false
+    },
+    {
+     "t": 1293.6,
+     "dbno": true,
+     "cause": 4,
+     "vx": 6321.6,
+     "vy": -25715.8,
+     "ix": 6955.8,
+     "iy": -26207.4,
+     "self": false
+    },
+    {
+     "t": 1294.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 8298.3,
+     "vy": -25472.6,
+     "ix": 7818.6,
+     "iy": -25218.1,
+     "self": false
+    },
+    {
+     "t": 1296.5,
+     "dbno": false,
+     "cause": 4,
+     "vx": 6103.3,
+     "vy": -26757.1,
+     "ix": 6258.6,
+     "iy": -25788.2,
+     "self": false
+    },
+    {
+     "t": 1296.5,
+     "dbno": false,
+     "cause": 50,
+     "vx": 8027.4,
+     "vy": -25313.7,
+     "ix": 8027.4,
+     "iy": -25313.7,
+     "self": true
+    },
+    {
+     "t": 1302.2,
+     "dbno": false,
+     "cause": 0,
+     "vx": 5903.8,
+     "vy": -25951.2,
+     "ix": 6263.6,
+     "iy": -24751.9,
+     "self": false
+    },
+    {
+     "t": 1308.3,
+     "dbno": false,
+     "cause": 4,
+     "vx": 5315.1,
+     "vy": -23746,
+     "ix": 5571.9,
+     "iy": -24213.7,
+     "self": false
+    },
+    {
+     "t": 1311.4,
+     "dbno": false,
+     "cause": 3,
+     "vx": 5697.3,
+     "vy": -23188.4,
+     "ix": 5760.6,
+     "iy": -23042.8,
+     "self": false
+    },
+    {
+     "t": 1322,
+     "dbno": true,
+     "cause": 3,
+     "vx": 4327.6,
+     "vy": -22213.6,
+     "ix": 4667.8,
+     "iy": -22361.1,
+     "self": false
+    },
+    {
+     "t": 1325.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": 4303.1,
+     "vy": -22146.2,
+     "ix": 3895.3,
+     "iy": -22579.6,
+     "self": false
+    },
+    {
+     "t": 1325.9,
+     "dbno": true,
+     "cause": 4,
+     "vx": 3034.7,
+     "vy": -22465.7,
+     "ix": 3902.5,
+     "iy": -22271.6,
+     "self": false
+    },
+    {
+     "t": 1326.4,
+     "dbno": true,
+     "cause": 3,
+     "vx": 3288.2,
+     "vy": -21753.7,
+     "ix": 3595.3,
+     "iy": -21482.2,
+     "self": false
+    },
+    {
+     "t": 1326.8,
+     "dbno": false,
+     "cause": 2,
+     "vx": 3623.7,
+     "vy": -21418.4,
+     "ix": 3845.7,
+     "iy": -22100.7,
+     "self": false
+    },
+    {
+     "t": 1333.9,
+     "dbno": false,
+     "cause": 2,
+     "vx": 3213.5,
+     "vy": -21903.6,
+     "ix": 3844.6,
+     "iy": -22097.8,
+     "self": false
+    },
+    {
+     "t": 1341,
+     "dbno": false,
+     "cause": 17,
+     "vx": 3439.7,
+     "vy": -21490.8,
+     "ix": 4942.2,
+     "iy": -20714.5,
+     "self": false
+    },
+    {
+     "t": 1345.2,
+     "dbno": false,
+     "cause": 4,
+     "vx": 4392.5,
+     "vy": -20695.9,
+     "ix": 4824,
+     "iy": -20800.3,
+     "self": false
+    },
+    {
+     "t": 1359.6,
+     "dbno": false,
+     "cause": 0,
+     "vx": 5279.4,
+     "vy": -20312.4,
+     "ix": 3952.9,
+     "iy": -20849.9,
+     "self": false
+    },
+    {
+     "t": 1360.5,
+     "dbno": false,
+     "cause": 50,
+     "vx": 3886.4,
+     "vy": -20776.5,
+     "ix": 0,
+     "iy": 0,
+     "self": false
+    },
+    {
+     "t": 1360.6,
+     "dbno": false,
+     "cause": 50,
+     "vx": 5502.1,
+     "vy": -19165.9,
+     "ix": 5502.1,
+     "iy": -19165.9,
+     "self": true
+    }
+   ],
+   "landingOffset": 54
+  },
+  {
+   "id": "43224865-2428-4f9b-8462-e29d3e859956",
+   "teamCount": 50,
+   "zones": [
+    {
+     "t": 123.1,
+     "radius": 95000,
+     "cx": -18923.6,
+     "cy": -5176.7
+    },
+    {
+     "t": 318.1,
+     "radius": 75000,
+     "cx": -29814.3,
+     "cy": -14859.1
+    },
+    {
+     "t": 468.1,
+     "radius": 52500,
+     "cx": -31984.7,
+     "cy": -33731.9
+    },
+    {
+     "t": 618.1,
+     "radius": 32500,
+     "cx": -12764.9,
+     "cy": -38006.2
+    },
+    {
+     "t": 773.1,
+     "radius": 20000,
+     "cx": -24211,
+     "cy": -68423.9
+    },
+    {
+     "t": 883.1,
+     "radius": 10000,
+     "cx": -4454.1,
+     "cy": -71532.4
+    },
+    {
+     "t": 993.1,
+     "radius": 5000,
+     "cx": 10098.3,
+     "cy": -75169.4
+    },
+    {
+     "t": 1088.3,
+     "radius": 2500,
+     "cx": 869,
+     "cy": -82838.8
+    },
+    {
+     "t": 1168.4,
+     "radius": 1650,
+     "cx": -4401.4,
+     "cy": -91337.2
+    },
+    {
+     "t": 1223.5,
+     "radius": 1100,
+     "cx": -548.8,
+     "cy": -85077.8
+    },
+    {
+     "t": 1274.6,
+     "radius": 1000,
+     "cx": -2763.7,
+     "cy": -92086.1
+    }
+   ],
+   "teams": [
+    {
+     "placement": 1,
+     "timeAlive": 1336,
+     "elims": 7,
+     "damage": 1519,
+     "taken": 1781,
+     "travel": 943695,
+     "heals": 231,
+     "shields": 68
+    },
+    {
+     "placement": 2,
+     "timeAlive": 1338,
+     "elims": 2,
+     "damage": 2822,
+     "taken": 1453,
+     "travel": 874355,
+     "heals": 116,
+     "shields": 77
+    },
+    {
+     "placement": 3,
+     "timeAlive": 1332,
+     "elims": 9,
+     "damage": 3106,
+     "taken": 1533,
+     "travel": 783381,
+     "heals": 107,
+     "shields": 69
+    },
+    {
+     "placement": 4,
+     "timeAlive": 1319,
+     "elims": 7,
+     "damage": 1856,
+     "taken": 1662,
+     "travel": 896239,
+     "heals": 203,
+     "shields": 73
+    },
+    {
+     "placement": 5,
+     "timeAlive": 1288,
+     "elims": 4,
+     "damage": 1474,
+     "taken": 2104,
+     "travel": 966235,
+     "heals": 197,
+     "shields": 99
+    },
+    {
+     "placement": 6,
+     "timeAlive": 1243,
+     "elims": 4,
+     "damage": 1697,
+     "taken": 2209,
+     "travel": 1289319,
+     "heals": 168,
+     "shields": 78
+    },
+    {
+     "placement": 7,
+     "timeAlive": 1261,
+     "elims": 6,
+     "damage": 1330,
+     "taken": 1608,
+     "travel": 743733,
+     "heals": 153,
+     "shields": 49
+    },
+    {
+     "placement": 8,
+     "timeAlive": 1233,
+     "elims": 2,
+     "damage": 987,
+     "taken": 1002,
+     "travel": 883494,
+     "heals": 19,
+     "shields": 50
+    },
+    {
+     "placement": 9,
+     "timeAlive": 1215,
+     "elims": 0,
+     "damage": 907,
+     "taken": 1265,
+     "travel": 775909,
+     "heals": 75,
+     "shields": 53
+    },
+    {
+     "placement": 10,
+     "timeAlive": 1206,
+     "elims": 1,
+     "damage": 524,
+     "taken": 1644,
+     "travel": 572607,
+     "heals": 110,
+     "shields": 85
+    },
+    {
+     "placement": 11,
+     "timeAlive": 1185,
+     "elims": 4,
+     "damage": 1362,
+     "taken": 1869,
+     "travel": 878310,
+     "heals": 185,
+     "shields": 64
+    },
+    {
+     "placement": 12,
+     "timeAlive": 1179,
+     "elims": 1,
+     "damage": 760,
+     "taken": 1049,
+     "travel": 703073,
+     "heals": 42,
+     "shields": 42
+    },
+    {
+     "placement": 13,
+     "timeAlive": 1180,
+     "elims": 5,
+     "damage": 785,
+     "taken": 1557,
+     "travel": 655269,
+     "heals": 135,
+     "shields": 66
+    },
+    {
+     "placement": 14,
+     "timeAlive": 1154,
+     "elims": 3,
+     "damage": 487,
+     "taken": 1437,
+     "travel": 840967,
+     "heals": 145,
+     "shields": 44
+    },
+    {
+     "placement": 15,
+     "timeAlive": 1144,
+     "elims": 6,
+     "damage": 1300,
+     "taken": 2248,
+     "travel": 844241,
+     "heals": 195,
+     "shields": 71
+    },
+    {
+     "placement": 16,
+     "timeAlive": 1144,
+     "elims": 2,
+     "damage": 2536,
+     "taken": 1837,
+     "travel": 1034920,
+     "heals": 290,
+     "shields": 52
+    },
+    {
+     "placement": 17,
+     "timeAlive": 1137,
+     "elims": 3,
+     "damage": 686,
+     "taken": 1716,
+     "travel": 773489,
+     "heals": 226,
+     "shields": 57
+    },
+    {
+     "placement": 18,
+     "timeAlive": 1129,
+     "elims": 1,
+     "damage": 427,
+     "taken": 1045,
+     "travel": 791968,
+     "heals": 16,
+     "shields": 71
+    },
+    {
+     "placement": 19,
+     "timeAlive": 1103,
+     "elims": 4,
+     "damage": 1037,
+     "taken": 1590,
+     "travel": 689405,
+     "heals": 59,
+     "shields": 93
+    },
+    {
+     "placement": 20,
+     "timeAlive": 1139,
+     "elims": 1,
+     "damage": 502,
+     "taken": 2182,
+     "travel": 939296,
+     "heals": 259,
+     "shields": 62
+    },
+    {
+     "placement": 21,
+     "timeAlive": 1102,
+     "elims": 3,
+     "damage": 863,
+     "taken": 2328,
+     "travel": 967040,
+     "heals": 228,
+     "shields": 112
+    },
+    {
+     "placement": 22,
+     "timeAlive": 1096,
+     "elims": 2,
+     "damage": 988,
+     "taken": 1625,
+     "travel": 837496,
+     "heals": 75,
+     "shields": 86
+    },
+    {
+     "placement": 23,
+     "timeAlive": 1082,
+     "elims": 0,
+     "damage": 192,
+     "taken": 922,
+     "travel": 672394,
+     "heals": 14,
+     "shields": 39
+    },
+    {
+     "placement": 24,
+     "timeAlive": 1055,
+     "elims": 1,
+     "damage": 1107,
+     "taken": 1767,
+     "travel": 1133687,
+     "heals": 86,
+     "shields": 81
+    },
+    {
+     "placement": 25,
+     "timeAlive": 861,
+     "elims": 1,
+     "damage": 2038,
+     "taken": 1699,
+     "travel": 844282,
+     "heals": 146,
+     "shields": 79
+    },
+    {
+     "placement": 26,
+     "timeAlive": 1038,
+     "elims": 2,
+     "damage": 672,
+     "taken": 1605,
+     "travel": 707913,
+     "heals": 159,
+     "shields": 72
+    },
+    {
+     "placement": 27,
+     "timeAlive": 1006,
+     "elims": 0,
+     "damage": 328,
+     "taken": 1176,
+     "travel": 674814,
+     "heals": 75,
+     "shields": 56
+    },
+    {
+     "placement": 28,
+     "timeAlive": 871,
+     "elims": 4,
+     "damage": 779,
+     "taken": 4106,
+     "travel": 905912,
+     "heals": 201,
+     "shields": 126
+    },
+    {
+     "placement": 29,
+     "timeAlive": 991,
+     "elims": 0,
+     "damage": 883,
+     "taken": 1185,
+     "travel": 644927,
+     "heals": 44,
+     "shields": 66
+    },
+    {
+     "placement": 30,
+     "timeAlive": 987,
+     "elims": 1,
+     "damage": 660,
+     "taken": 2046,
+     "travel": 946356,
+     "heals": 240,
+     "shields": 57
+    },
+    {
+     "placement": 31,
+     "timeAlive": 949,
+     "elims": 0,
+     "damage": 659,
+     "taken": 1880,
+     "travel": 861915,
+     "heals": 171,
+     "shields": 78
+    },
+    {
+     "placement": 32,
+     "timeAlive": 927,
+     "elims": 1,
+     "damage": 537,
+     "taken": 2057,
+     "travel": 783994,
+     "heals": 206,
+     "shields": 63
+    },
+    {
+     "placement": 33,
+     "timeAlive": 900,
+     "elims": 1,
+     "damage": 368,
+     "taken": 2147,
+     "travel": 1000500,
+     "heals": 203,
+     "shields": 59
+    },
+    {
+     "placement": 34,
+     "timeAlive": 742,
+     "elims": 0,
+     "damage": 80,
+     "taken": 2252,
+     "travel": 881757,
+     "heals": 262,
+     "shields": 48
+    },
+    {
+     "placement": 35,
+     "timeAlive": 839,
+     "elims": 1,
+     "damage": 464,
+     "taken": 1159,
+     "travel": 607838,
+     "heals": 96,
+     "shields": 27
+    },
+    {
+     "placement": 36,
+     "timeAlive": 815,
+     "elims": 0,
+     "damage": 163,
+     "taken": 1075,
+     "travel": 447958,
+     "heals": 105,
+     "shields": 24
+    },
+    {
+     "placement": 37,
+     "timeAlive": 606,
+     "elims": 0,
+     "damage": 166,
+     "taken": 1401,
+     "travel": 565710,
+     "heals": 65,
+     "shields": 30
+    },
+    {
+     "placement": 38,
+     "timeAlive": 799,
+     "elims": 2,
+     "damage": 415,
+     "taken": 1421,
+     "travel": 1184243,
+     "heals": 121,
+     "shields": 33
+    },
+    {
+     "placement": 39,
+     "timeAlive": 790,
+     "elims": 0,
+     "damage": 0,
+     "taken": 439,
+     "travel": 186106,
+     "heals": 26,
+     "shields": 10
+    },
+    {
+     "placement": 40,
+     "timeAlive": 664,
+     "elims": 3,
+     "damage": 706,
+     "taken": 1024,
+     "travel": 539687,
+     "heals": 117,
+     "shields": 34
+    },
+    {
+     "placement": 41,
+     "timeAlive": 648,
+     "elims": 0,
+     "damage": 1278,
+     "taken": 574,
+     "travel": 390126,
+     "heals": 0,
+     "shields": 28
+    },
+    {
+     "placement": 42,
+     "timeAlive": 313,
+     "elims": 4,
+     "damage": 888,
+     "taken": 720,
+     "travel": 188383,
+     "heals": 39,
+     "shields": 21
+    },
+    {
+     "placement": 43,
+     "timeAlive": 304,
+     "elims": 1,
+     "damage": 404,
+     "taken": 592,
+     "travel": 263053,
+     "heals": 1,
+     "shields": 12
+    },
+    {
+     "placement": 44,
+     "timeAlive": 276,
+     "elims": 1,
+     "damage": 272,
+     "taken": 587,
+     "travel": 429894,
+     "heals": 0,
+     "shields": 25
+    },
+    {
+     "placement": 45,
+     "timeAlive": 187,
+     "elims": 0,
+     "damage": 35,
+     "taken": 591,
+     "travel": 110954,
+     "heals": 0,
+     "shields": 40
+    },
+    {
+     "placement": 46,
+     "timeAlive": 179,
+     "elims": 0,
+     "damage": 20,
+     "taken": 393,
+     "travel": 135359,
+     "heals": 0,
+     "shields": 17
+    },
+    {
+     "placement": 47,
+     "timeAlive": 184,
+     "elims": 0,
+     "damage": 247,
+     "taken": 473,
+     "travel": 81847,
+     "heals": 0,
+     "shields": 10
+    },
+    {
+     "placement": 48,
+     "timeAlive": 79,
+     "elims": 0,
+     "damage": 218,
+     "taken": 351,
+     "travel": 39337,
+     "heals": 1,
+     "shields": 0
+    },
+    {
+     "placement": 49,
+     "timeAlive": 47,
+     "elims": 0,
+     "damage": 33,
+     "taken": 196,
+     "travel": 8069,
+     "heals": 0,
+     "shields": 0
+    },
+    {
+     "placement": 50,
+     "timeAlive": 26,
+     "elims": 0,
+     "damage": 0,
+     "taken": 319,
+     "travel": 11985,
+     "heals": 0,
+     "shields": 0
+    }
+   ],
+   "eliminations": [
+    {
+     "t": 63.1,
+     "dbno": true,
+     "cause": 3,
+     "vx": 39868.4,
+     "vy": -18654.7,
+     "ix": 40540.8,
+     "iy": -18990.7,
+     "self": false
+    },
+    {
+     "t": 67.8,
+     "dbno": false,
+     "cause": 3,
+     "vx": 39919.9,
+     "vy": -19519.5,
+     "ix": 40274.3,
+     "iy": -19273.1,
+     "self": false
+    },
+    {
+     "t": 67.8,
+     "dbno": false,
+     "cause": 5,
+     "vx": 41153.3,
+     "vy": -20151.7,
+     "ix": 41408.8,
+     "iy": -19949.3,
+     "self": false
+    },
+    {
+     "t": 77.7,
+     "dbno": true,
+     "cause": 3,
+     "vx": 12045.2,
+     "vy": -55557.8,
+     "ix": 12202.8,
+     "iy": -55261.5,
+     "self": false
+    },
+    {
+     "t": 79.2,
+     "dbno": true,
+     "cause": 2,
+     "vx": 12789.7,
+     "vy": -55468.3,
+     "ix": 12098.8,
+     "iy": -54866.8,
+     "self": false
+    },
+    {
+     "t": 81.7,
+     "dbno": false,
+     "cause": 2,
+     "vx": 13015.3,
+     "vy": -55289.2,
+     "ix": 12927.9,
+     "iy": -55269.6,
+     "self": false
+    },
+    {
+     "t": 88.1,
+     "dbno": true,
+     "cause": 4,
+     "vx": -42189.9,
+     "vy": -6932.2,
+     "ix": -37705.4,
+     "iy": 8587.2,
+     "self": false
+    },
+    {
+     "t": 105.6,
+     "dbno": true,
+     "cause": 3,
+     "vx": -96402.3,
+     "vy": 27599.6,
+     "ix": -96441.6,
+     "iy": 27245.6,
+     "self": false
+    },
+    {
+     "t": 107.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": -96650.3,
+     "vy": 27658.4,
+     "ix": -96664.6,
+     "iy": 27313.7,
+     "self": false
+    },
+    {
+     "t": 107.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": -96789.7,
+     "vy": 28074.7,
+     "ix": -96664.6,
+     "iy": 27313.7,
+     "self": false
+    },
+    {
+     "t": 120.8,
+     "dbno": false,
+     "cause": 3,
+     "vx": 8898.7,
+     "vy": -63079.1,
+     "ix": 9689.9,
+     "iy": -63036.8,
+     "self": false
+    },
+    {
+     "t": 164.9,
+     "dbno": true,
+     "cause": 2,
+     "vx": -94281.2,
+     "vy": 104099.2,
+     "ix": -94737.1,
+     "iy": 104034,
+     "self": false
+    },
+    {
+     "t": 167,
+     "dbno": false,
+     "cause": 2,
+     "vx": -94281.2,
+     "vy": 104099.2,
+     "ix": -94324.8,
+     "iy": 104051.8,
+     "self": false
+    },
+    {
+     "t": 170.2,
+     "dbno": true,
+     "cause": 3,
+     "vx": -8961,
+     "vy": 20356.8,
+     "ix": -9093.3,
+     "iy": 20350.4,
+     "self": false
+    },
+    {
+     "t": 172.8,
+     "dbno": false,
+     "cause": 3,
+     "vx": -9210.9,
+     "vy": 19755.2,
+     "ix": -9214.5,
+     "iy": 20068.6,
+     "self": false
+    },
+    {
+     "t": 173.8,
+     "dbno": true,
+     "cause": 3,
+     "vx": -55128.7,
+     "vy": -26761.4,
+     "ix": -54526.9,
+     "iy": -26883,
+     "self": false
+    },
+    {
+     "t": 178,
+     "dbno": false,
+     "cause": 3,
+     "vx": -55732.8,
+     "vy": -25746.4,
+     "ix": -54993.7,
+     "iy": -26674.4,
+     "self": false
+    },
+    {
+     "t": 208.2,
+     "dbno": true,
+     "cause": 3,
+     "vx": -73863.2,
+     "vy": -96799.9,
+     "ix": -74308.9,
+     "iy": -97096.8,
+     "self": false
+    },
+    {
+     "t": 211.3,
+     "dbno": false,
+     "cause": 3,
+     "vx": -73665.6,
+     "vy": -96556.2,
+     "ix": -73811.3,
+     "iy": -96850.1,
+     "self": false
+    },
+    {
+     "t": 223,
+     "dbno": true,
+     "cause": 3,
+     "vx": -73236.5,
+     "vy": -97079.7,
+     "ix": -73145.1,
+     "iy": -97339.4,
+     "self": false
+    },
+    {
+     "t": 225.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": -73343.6,
+     "vy": -97384.8,
+     "ix": -73005.5,
+     "iy": -97293.6,
+     "self": false
+    },
+    {
+     "t": 236.5,
+     "dbno": true,
+     "cause": 3,
+     "vx": -35624,
+     "vy": 74456,
+     "ix": -35731.3,
+     "iy": 74332.9,
+     "self": false
+    },
+    {
+     "t": 239.8,
+     "dbno": false,
+     "cause": 3,
+     "vx": -35766.6,
+     "vy": 74097.8,
+     "ix": -35843.5,
+     "iy": 74408.5,
+     "self": false
+    },
+    {
+     "t": 239.8,
+     "dbno": false,
+     "cause": 4,
+     "vx": -35810.3,
+     "vy": 74593.6,
+     "ix": -36137.5,
+     "iy": 74663.4,
+     "self": false
+    },
+    {
+     "t": 246.9,
+     "dbno": true,
+     "cause": 4,
+     "vx": -84173.5,
+     "vy": 95339.7,
+     "ix": -84028.4,
+     "iy": 95915,
+     "self": false
+    },
+    {
+     "t": 249.1,
+     "dbno": false,
+     "cause": 3,
+     "vx": -83978.8,
+     "vy": 95043.4,
+     "ix": -83926.3,
+     "iy": 95171.6,
+     "self": false
+    },
+    {
+     "t": 250.2,
+     "dbno": false,
+     "cause": 5,
+     "vx": -83477.2,
+     "vy": 92400.5,
+     "ix": -83432.7,
+     "iy": 92542.1,
+     "self": false
+    },
+    {
+     "t": 288.5,
+     "dbno": true,
+     "cause": 3,
+     "vx": 10193.3,
+     "vy": -57130.3,
+     "ix": 10133.6,
+     "iy": -57399.8,
+     "self": false
+    },
+    {
+     "t": 290.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": 10201.9,
+     "vy": -57260.1,
+     "ix": 10232.4,
+     "iy": -57342.9,
+     "self": false
+    },
+    {
+     "t": 311.1,
+     "dbno": true,
+     "cause": 3,
+     "vx": -83594.6,
+     "vy": 93480.1,
+     "ix": -83376,
+     "iy": 93998.9,
+     "self": false
+    },
+    {
+     "t": 314.7,
+     "dbno": true,
+     "cause": 3,
+     "vx": -11965.9,
+     "vy": -59853.9,
+     "ix": -11723.5,
+     "iy": -59814.9,
+     "self": false
+    },
+    {
+     "t": 317.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": -82784.2,
+     "vy": 93728.4,
+     "ix": -82917.8,
+     "iy": 93552.1,
+     "self": false
+    },
+    {
+     "t": 318.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": -11899.7,
+     "vy": -59758.1,
+     "ix": -11822.8,
+     "iy": -59807.6,
+     "self": false
+    },
+    {
+     "t": 329.3,
+     "dbno": false,
+     "cause": 3,
+     "vx": -61314.7,
+     "vy": -21628.2,
+     "ix": -61620.5,
+     "iy": -21434.2,
+     "self": false
+    },
+    {
+     "t": 365.2,
+     "dbno": true,
+     "cause": 4,
+     "vx": -89052.8,
+     "vy": 92514.5,
+     "ix": -92675.5,
+     "iy": 87728.4,
+     "self": false
+    },
+    {
+     "t": 366.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": -87492.6,
+     "vy": 93027.2,
+     "ix": -87693.1,
+     "iy": 92820.7,
+     "self": false
+    },
+    {
+     "t": 368,
+     "dbno": false,
+     "cause": 4,
+     "vx": -88956.4,
+     "vy": 92502,
+     "ix": -93231.4,
+     "iy": 87760.8,
+     "self": false
+    },
+    {
+     "t": 374.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": -85404.7,
+     "vy": 93682.6,
+     "ix": -85586.7,
+     "iy": 93703.9,
+     "self": false
+    },
+    {
+     "t": 375.1,
+     "dbno": true,
+     "cause": 3,
+     "vx": 10735.9,
+     "vy": -25234.7,
+     "ix": 10575.1,
+     "iy": -25234.3,
+     "self": false
+    },
+    {
+     "t": 383.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": 11059.6,
+     "vy": -25031.8,
+     "ix": 10684.4,
+     "iy": -25056.9,
+     "self": false
+    },
+    {
+     "t": 479.9,
+     "dbno": true,
+     "cause": 1,
+     "vx": 91104.1,
+     "vy": 13964.4,
+     "ix": 91104.1,
+     "iy": 13964.4,
+     "self": true
+    },
+    {
+     "t": 486,
+     "dbno": false,
+     "cause": 17,
+     "vx": 91113.9,
+     "vy": 13734.1,
+     "ix": 91113.9,
+     "iy": 13734.1,
+     "self": true
+    },
+    {
+     "t": 577.8,
+     "dbno": true,
+     "cause": 0,
+     "vx": 91541.7,
+     "vy": 13987.5,
+     "ix": 91541.7,
+     "iy": 13987.5,
+     "self": true
+    },
+    {
+     "t": 582.4,
+     "dbno": false,
+     "cause": 17,
+     "vx": 91143.6,
+     "vy": 13890.9,
+     "ix": 91143.6,
+     "iy": 13890.9,
+     "self": true
+    },
+    {
+     "t": 623.2,
+     "dbno": true,
+     "cause": 4,
+     "vx": 91091,
+     "vy": 10511.4,
+     "ix": 91140.4,
+     "iy": 10597.4,
+     "self": false
+    },
+    {
+     "t": 625.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": 91010.3,
+     "vy": 10622.1,
+     "ix": 90906.4,
+     "iy": 10548.3,
+     "self": false
+    },
+    {
+     "t": 643.2,
+     "dbno": true,
+     "cause": 3,
+     "vx": -10463.9,
+     "vy": 85500.9,
+     "ix": -10151.8,
+     "iy": 85210.5,
+     "self": false
+    },
+    {
+     "t": 645.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": -10694.4,
+     "vy": 85448.1,
+     "ix": -10533.9,
+     "iy": 85480.6,
+     "self": false
+    },
+    {
+     "t": 672.8,
+     "dbno": true,
+     "cause": 3,
+     "vx": -45000.5,
+     "vy": 11269.5,
+     "ix": -45056.7,
+     "iy": 11300.9,
+     "self": false
+    },
+    {
+     "t": 674.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": -44992.9,
+     "vy": 11249.8,
+     "ix": -44897.3,
+     "iy": 11062.5,
+     "self": false
+    },
+    {
+     "t": 704.5,
+     "dbno": false,
+     "cause": 0,
+     "vx": -54780.8,
+     "vy": 14768,
+     "ix": -58396.9,
+     "iy": 20111.8,
+     "self": false
+    },
+    {
+     "t": 706,
+     "dbno": false,
+     "cause": 4,
+     "vx": 91369.7,
+     "vy": 10668.1,
+     "ix": 91188.9,
+     "iy": 10963.9,
+     "self": false
+    },
+    {
+     "t": 806.9,
+     "dbno": true,
+     "cause": 0,
+     "vx": -65425,
+     "vy": -16265.6,
+     "ix": -65425,
+     "iy": -16265.6,
+     "self": true
+    },
+    {
+     "t": 815.5,
+     "dbno": false,
+     "cause": 38,
+     "vx": -65910.1,
+     "vy": -17416.5,
+     "ix": -63533.4,
+     "iy": -12880.9,
+     "self": false
+    },
+    {
+     "t": 824.1,
+     "dbno": true,
+     "cause": 3,
+     "vx": -2582.9,
+     "vy": -59600.9,
+     "ix": -2650.1,
+     "iy": -59410.2,
+     "self": false
+    },
+    {
+     "t": 832.6,
+     "dbno": false,
+     "cause": 4,
+     "vx": 17350.8,
+     "vy": -44878.3,
+     "ix": 19237.1,
+     "iy": -46449.6,
+     "self": false
+    },
+    {
+     "t": 836.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": -2972.7,
+     "vy": -59634.7,
+     "ix": -2721.9,
+     "iy": -59689.2,
+     "self": false
+    },
+    {
+     "t": 841.1,
+     "dbno": false,
+     "cause": 3,
+     "vx": -10660.2,
+     "vy": -59577.9,
+     "ix": -10569.2,
+     "iy": -59373.7,
+     "self": false
+    },
+    {
+     "t": 845.1,
+     "dbno": false,
+     "cause": 3,
+     "vx": -62377.3,
+     "vy": -21575.3,
+     "ix": -62357.2,
+     "iy": -21158.7,
+     "self": false
+    },
+    {
+     "t": 850.1,
+     "dbno": true,
+     "cause": 3,
+     "vx": 41338.1,
+     "vy": -30758.3,
+     "ix": 41089.2,
+     "iy": -30507.9,
+     "self": false
+    },
+    {
+     "t": 853.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 41269.2,
+     "vy": -30724.5,
+     "ix": 41248.3,
+     "iy": -30210.3,
+     "self": false
+    },
+    {
+     "t": 853.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 41111.4,
+     "vy": -30663.3,
+     "ix": 41214.1,
+     "iy": -30879.4,
+     "self": false
+    },
+    {
+     "t": 854,
+     "dbno": true,
+     "cause": 4,
+     "vx": -3076.8,
+     "vy": -5689.4,
+     "ix": -7708.7,
+     "iy": -10594.9,
+     "self": false
+    },
+    {
+     "t": 856.4,
+     "dbno": false,
+     "cause": 4,
+     "vx": -2962.2,
+     "vy": -5425.9,
+     "ix": -2147.5,
+     "iy": -11084.5,
+     "self": false
+    },
+    {
+     "t": 883.3,
+     "dbno": true,
+     "cause": 4,
+     "vx": -11875.6,
+     "vy": -30938.6,
+     "ix": -12656.8,
+     "iy": -28510,
+     "self": false
+    },
+    {
+     "t": 887.2,
+     "dbno": false,
+     "cause": 4,
+     "vx": -13919.5,
+     "vy": -33033.5,
+     "ix": -11898.7,
+     "iy": -31162.4,
+     "self": false
+    },
+    {
+     "t": 887.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": -11742.7,
+     "vy": -31185,
+     "ix": -11898.7,
+     "iy": -31162.4,
+     "self": false
+    },
+    {
+     "t": 898.5,
+     "dbno": true,
+     "cause": 0,
+     "vx": 584,
+     "vy": -54990.4,
+     "ix": 584,
+     "iy": -54990.4,
+     "self": true
+    },
+    {
+     "t": 906.5,
+     "dbno": false,
+     "cause": 17,
+     "vx": -3238.7,
+     "vy": -58616.1,
+     "ix": -5207.1,
+     "iy": -66856.2,
+     "self": false
+    },
+    {
+     "t": 919.3,
+     "dbno": false,
+     "cause": 3,
+     "vx": -19461.8,
+     "vy": -52760.7,
+     "ix": -19247.5,
+     "iy": -51596.1,
+     "self": false
+    },
+    {
+     "t": 935,
+     "dbno": true,
+     "cause": 3,
+     "vx": -4840.9,
+     "vy": -62855.6,
+     "ix": -5290.2,
+     "iy": -62842.8,
+     "self": false
+    },
+    {
+     "t": 937.3,
+     "dbno": false,
+     "cause": 3,
+     "vx": -5307.4,
+     "vy": -62888,
+     "ix": -5205.5,
+     "iy": -62898.2,
+     "self": false
+    },
+    {
+     "t": 942.4,
+     "dbno": false,
+     "cause": 4,
+     "vx": -4740.9,
+     "vy": -61448.5,
+     "ix": -8485.1,
+     "iy": -56345.6,
+     "self": false
+    },
+    {
+     "t": 943.1,
+     "dbno": true,
+     "cause": 3,
+     "vx": -21924.3,
+     "vy": -64953.5,
+     "ix": -22079.7,
+     "iy": -65217.4,
+     "self": false
+    },
+    {
+     "t": 946.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": -21986.4,
+     "vy": -65008,
+     "ix": -21830.5,
+     "iy": -65005.8,
+     "self": false
+    },
+    {
+     "t": 950.4,
+     "dbno": true,
+     "cause": 3,
+     "vx": -8577.3,
+     "vy": -57326.2,
+     "ix": -8609.3,
+     "iy": -56958.1,
+     "self": false
+    },
+    {
+     "t": 955.3,
+     "dbno": false,
+     "cause": 3,
+     "vx": -8855.4,
+     "vy": -57153,
+     "ix": -8369.3,
+     "iy": -57204.7,
+     "self": false
+    },
+    {
+     "t": 978.2,
+     "dbno": true,
+     "cause": 3,
+     "vx": -398.7,
+     "vy": -62164.8,
+     "ix": -508.5,
+     "iy": -62593,
+     "self": false
+    },
+    {
+     "t": 981.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": -244.5,
+     "vy": -61751,
+     "ix": -363.4,
+     "iy": -62401.6,
+     "self": false
+    },
+    {
+     "t": 988.8,
+     "dbno": true,
+     "cause": 4,
+     "vx": -9620.5,
+     "vy": -61792.3,
+     "ix": -11824.2,
+     "iy": -63855.5,
+     "self": false
+    },
+    {
+     "t": 990,
+     "dbno": false,
+     "cause": 4,
+     "vx": -8826.2,
+     "vy": -63203.2,
+     "ix": -9801.6,
+     "iy": -63429.8,
+     "self": false
+    },
+    {
+     "t": 999.4,
+     "dbno": false,
+     "cause": 3,
+     "vx": -2625.7,
+     "vy": -62168,
+     "ix": -2776,
+     "iy": -62059.3,
+     "self": false
+    },
+    {
+     "t": 1002,
+     "dbno": false,
+     "cause": 17,
+     "vx": -9170.1,
+     "vy": -61386.5,
+     "ix": -11352.5,
+     "iy": -64411,
+     "self": false
+    },
+    {
+     "t": 1020.4,
+     "dbno": false,
+     "cause": 38,
+     "vx": -1458.6,
+     "vy": -64547.7,
+     "ix": 4477.9,
+     "iy": -69961.5,
+     "self": false
+    },
+    {
+     "t": 1023.1,
+     "dbno": true,
+     "cause": 4,
+     "vx": -12624.4,
+     "vy": -67496,
+     "ix": -8202.2,
+     "iy": -68200.2,
+     "self": false
+    },
+    {
+     "t": 1030.5,
+     "dbno": false,
+     "cause": 38,
+     "vx": -2420.6,
+     "vy": -63093.9,
+     "ix": -2420.6,
+     "iy": -63093.9,
+     "self": true
+    },
+    {
+     "t": 1035.1,
+     "dbno": false,
+     "cause": 4,
+     "vx": -12732.1,
+     "vy": -67446.8,
+     "ix": -7456.6,
+     "iy": -68261,
+     "self": false
+    },
+    {
+     "t": 1035.6,
+     "dbno": false,
+     "cause": 4,
+     "vx": -10772.3,
+     "vy": -67485.3,
+     "ix": -7599.4,
+     "iy": -62634.6,
+     "self": false
+    },
+    {
+     "t": 1035.6,
+     "dbno": false,
+     "cause": 38,
+     "vx": -7308.2,
+     "vy": -68417.4,
+     "ix": -7529.4,
+     "iy": -71629.6,
+     "self": false
+    },
+    {
+     "t": 1043.1,
+     "dbno": true,
+     "cause": 2,
+     "vx": -5980.9,
+     "vy": -70301.5,
+     "ix": -5995.7,
+     "iy": -70026,
+     "self": false
+    },
+    {
+     "t": 1045.9,
+     "dbno": false,
+     "cause": 2,
+     "vx": -6059.6,
+     "vy": -70298.3,
+     "ix": -5967.7,
+     "iy": -69797.5,
+     "self": false
+    },
+    {
+     "t": 1054.1,
+     "dbno": true,
+     "cause": 3,
+     "vx": -3288,
+     "vy": -68204.7,
+     "ix": -3104.2,
+     "iy": -68312,
+     "self": false
+    },
+    {
+     "t": 1054.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": -296,
+     "vy": -65718.2,
+     "ix": -688,
+     "iy": -65736.9,
+     "self": false
+    },
+    {
+     "t": 1055.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": -3237.6,
+     "vy": -68130.2,
+     "ix": -3066.9,
+     "iy": -68169.7,
+     "self": false
+    },
+    {
+     "t": 1055.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": -3456.1,
+     "vy": -68305.7,
+     "ix": -3066.9,
+     "iy": -68169.7,
+     "self": false
+    },
+    {
+     "t": 1079,
+     "dbno": true,
+     "cause": 2,
+     "vx": 4020.5,
+     "vy": -72296,
+     "ix": 5420.3,
+     "iy": -72085.3,
+     "self": false
+    },
+    {
+     "t": 1083.9,
+     "dbno": true,
+     "cause": 2,
+     "vx": 13247.5,
+     "vy": -73063.5,
+     "ix": 8794.3,
+     "iy": -71179.1,
+     "self": false
+    },
+    {
+     "t": 1086.3,
+     "dbno": true,
+     "cause": 0,
+     "vx": 3930.9,
+     "vy": -75229.5,
+     "ix": 4642.9,
+     "iy": -75208.2,
+     "self": false
+    },
+    {
+     "t": 1089.9,
+     "dbno": false,
+     "cause": 2,
+     "vx": 13997.9,
+     "vy": -74354.7,
+     "ix": 13760.7,
+     "iy": -74201,
+     "self": false
+    },
+    {
+     "t": 1091.8,
+     "dbno": false,
+     "cause": 2,
+     "vx": 5675.7,
+     "vy": -72679.8,
+     "ix": 5627.7,
+     "iy": -73327.5,
+     "self": false
+    },
+    {
+     "t": 1092,
+     "dbno": true,
+     "cause": 3,
+     "vx": 5631.3,
+     "vy": -73333.1,
+     "ix": 5294.3,
+     "iy": -73904.1,
+     "self": false
+    },
+    {
+     "t": 1094.4,
+     "dbno": false,
+     "cause": 17,
+     "vx": 4125.4,
+     "vy": -75048,
+     "ix": 5120.1,
+     "iy": -75270.9,
+     "self": false
+    },
+    {
+     "t": 1094.4,
+     "dbno": false,
+     "cause": 3,
+     "vx": 6156.2,
+     "vy": -74230.9,
+     "ix": 5999.3,
+     "iy": -74704.5,
+     "self": false
+    },
+    {
+     "t": 1095.3,
+     "dbno": false,
+     "cause": 38,
+     "vx": 11409.6,
+     "vy": -77997.5,
+     "ix": 13834.2,
+     "iy": -74181.2,
+     "self": false
+    },
+    {
+     "t": 1097.5,
+     "dbno": false,
+     "cause": 2,
+     "vx": 6685,
+     "vy": -72725.8,
+     "ix": 6057.7,
+     "iy": -72429.3,
+     "self": false
+    },
+    {
+     "t": 1108.9,
+     "dbno": false,
+     "cause": 2,
+     "vx": 5784.6,
+     "vy": -73672.1,
+     "ix": 5742.2,
+     "iy": -74123.6,
+     "self": false
+    },
+    {
+     "t": 1130.7,
+     "dbno": false,
+     "cause": 38,
+     "vx": 8700.1,
+     "vy": -76291.9,
+     "ix": 4764.1,
+     "iy": -74456,
+     "self": false
+    },
+    {
+     "t": 1134,
+     "dbno": true,
+     "cause": 3,
+     "vx": 4102.6,
+     "vy": -75288.8,
+     "ix": 4426.2,
+     "iy": -75196,
+     "self": false
+    },
+    {
+     "t": 1136.6,
+     "dbno": false,
+     "cause": 2,
+     "vx": 3654.7,
+     "vy": -77976.7,
+     "ix": 2938.4,
+     "iy": -78695.5,
+     "self": false
+    },
+    {
+     "t": 1136.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 4071.4,
+     "vy": -75464,
+     "ix": 4193.5,
+     "iy": -75307.1,
+     "self": false
+    },
+    {
+     "t": 1148.5,
+     "dbno": true,
+     "cause": 3,
+     "vx": 5391.2,
+     "vy": -81044.8,
+     "ix": 5402,
+     "iy": -79435.8,
+     "self": false
+    },
+    {
+     "t": 1151.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 4635.3,
+     "vy": -81404.3,
+     "ix": 5683.5,
+     "iy": -81073.2,
+     "self": false
+    },
+    {
+     "t": 1163.6,
+     "dbno": true,
+     "cause": 2,
+     "vx": 1192.3,
+     "vy": -79934.3,
+     "ix": 451.4,
+     "iy": -82155.4,
+     "self": false
+    },
+    {
+     "t": 1165.3,
+     "dbno": false,
+     "cause": 2,
+     "vx": 1133.6,
+     "vy": -79992.8,
+     "ix": 537.6,
+     "iy": -82159.3,
+     "self": false
+    },
+    {
+     "t": 1165.3,
+     "dbno": false,
+     "cause": 4,
+     "vx": 254,
+     "vy": -80004.8,
+     "ix": 630.9,
+     "iy": -82091.9,
+     "self": false
+    },
+    {
+     "t": 1176.7,
+     "dbno": true,
+     "cause": 4,
+     "vx": -1175.6,
+     "vy": -85708.6,
+     "ix": 1089,
+     "iy": -82357,
+     "self": false
+    },
+    {
+     "t": 1177.7,
+     "dbno": false,
+     "cause": 3,
+     "vx": 1280.9,
+     "vy": -82360.4,
+     "ix": 888,
+     "iy": -82062.4,
+     "self": false
+    },
+    {
+     "t": 1178.8,
+     "dbno": false,
+     "cause": 3,
+     "vx": -1045.6,
+     "vy": -85499.8,
+     "ix": -1077.6,
+     "iy": -85270.9,
+     "self": false
+    },
+    {
+     "t": 1182.9,
+     "dbno": true,
+     "cause": 3,
+     "vx": -527.2,
+     "vy": -85447,
+     "ix": -531.3,
+     "iy": -85548.3,
+     "self": false
+    },
+    {
+     "t": 1184.6,
+     "dbno": true,
+     "cause": 0,
+     "vx": 461.8,
+     "vy": -83146.3,
+     "ix": -65.6,
+     "iy": -83814,
+     "self": false
+    },
+    {
+     "t": 1185.3,
+     "dbno": false,
+     "cause": 3,
+     "vx": -466,
+     "vy": -85479.6,
+     "ix": -599.5,
+     "iy": -85469.8,
+     "self": false
+    },
+    {
+     "t": 1185.4,
+     "dbno": true,
+     "cause": 3,
+     "vx": 1167.5,
+     "vy": -85330.8,
+     "ix": 1344.6,
+     "iy": -84989.2,
+     "self": false
+    },
+    {
+     "t": 1186.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": 596.7,
+     "vy": -84358.8,
+     "ix": 263.2,
+     "iy": -84106.8,
+     "self": false
+    },
+    {
+     "t": 1188.2,
+     "dbno": false,
+     "cause": 4,
+     "vx": -2005.6,
+     "vy": -84911.4,
+     "ix": -221.8,
+     "iy": -85432.5,
+     "self": false
+    },
+    {
+     "t": 1189.2,
+     "dbno": true,
+     "cause": 2,
+     "vx": 808,
+     "vy": -85572.7,
+     "ix": 686,
+     "iy": -86352.8,
+     "self": false
+    },
+    {
+     "t": 1189.7,
+     "dbno": false,
+     "cause": 17,
+     "vx": 1623.4,
+     "vy": -83982.6,
+     "ix": -1166,
+     "iy": -84683.9,
+     "self": false
+    },
+    {
+     "t": 1190.5,
+     "dbno": false,
+     "cause": 3,
+     "vx": -215,
+     "vy": -85105.2,
+     "ix": -131.6,
+     "iy": -85112,
+     "self": false
+    },
+    {
+     "t": 1192,
+     "dbno": false,
+     "cause": 2,
+     "vx": 1072.2,
+     "vy": -85920.7,
+     "ix": 845.7,
+     "iy": -85386.7,
+     "self": false
+    },
+    {
+     "t": 1192.1,
+     "dbno": false,
+     "cause": 2,
+     "vx": 400,
+     "vy": -85621.9,
+     "ix": 728,
+     "iy": -86380.6,
+     "self": false
+    },
+    {
+     "t": 1192.1,
+     "dbno": false,
+     "cause": 0,
+     "vx": 852.2,
+     "vy": -85404.9,
+     "ix": 720.9,
+     "iy": -86471,
+     "self": false
+    },
+    {
+     "t": 1198.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": -953.8,
+     "vy": -85710.7,
+     "ix": -996.3,
+     "iy": -85772.6,
+     "self": false
+    },
+    {
+     "t": 1208.2,
+     "dbno": true,
+     "cause": 3,
+     "vx": -1733.8,
+     "vy": -89375.8,
+     "ix": -1737.4,
+     "iy": -88847.1,
+     "self": false
+    },
+    {
+     "t": 1210.3,
+     "dbno": false,
+     "cause": 3,
+     "vx": -2027.7,
+     "vy": -89465.3,
+     "ix": -2004.1,
+     "iy": -89375.6,
+     "self": false
+    },
+    {
+     "t": 1213,
+     "dbno": true,
+     "cause": 0,
+     "vx": -1866.4,
+     "vy": -87063,
+     "ix": -2086.2,
+     "iy": -87402.1,
+     "self": false
+    },
+    {
+     "t": 1213.1,
+     "dbno": false,
+     "cause": 17,
+     "vx": -1874.6,
+     "vy": -87064.4,
+     "ix": -2085.8,
+     "iy": -87401.9,
+     "self": false
+    },
+    {
+     "t": 1213.1,
+     "dbno": false,
+     "cause": 3,
+     "vx": -2140.3,
+     "vy": -87153.9,
+     "ix": -2085.8,
+     "iy": -87401.9,
+     "self": false
+    },
+    {
+     "t": 1228.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": -3284.8,
+     "vy": -89580.3,
+     "ix": -3597.7,
+     "iy": -89895.7,
+     "self": false
+    },
+    {
+     "t": 1231.2,
+     "dbno": false,
+     "cause": 3,
+     "vx": -3601.4,
+     "vy": -89111,
+     "ix": -4639.4,
+     "iy": -89259.5,
+     "self": false
+    },
+    {
+     "t": 1236.9,
+     "dbno": true,
+     "cause": 4,
+     "vx": -2043.1,
+     "vy": -90123.7,
+     "ix": -2311,
+     "iy": -89701.8,
+     "self": false
+    },
+    {
+     "t": 1237.1,
+     "dbno": true,
+     "cause": 4,
+     "vx": -3599.8,
+     "vy": -88527.6,
+     "ix": -2933.8,
+     "iy": -88404.4,
+     "self": false
+    },
+    {
+     "t": 1237.7,
+     "dbno": false,
+     "cause": 4,
+     "vx": -3676.6,
+     "vy": -88571.3,
+     "ix": -3025.6,
+     "iy": -88391.9,
+     "self": false
+    },
+    {
+     "t": 1237.7,
+     "dbno": false,
+     "cause": 2,
+     "vx": -3554.2,
+     "vy": -88379.9,
+     "ix": -3275.9,
+     "iy": -88336.9,
+     "self": false
+    },
+    {
+     "t": 1245.6,
+     "dbno": false,
+     "cause": 4,
+     "vx": -2550.4,
+     "vy": -87247.1,
+     "ix": -2659.2,
+     "iy": -88893.1,
+     "self": false
+    },
+    {
+     "t": 1245.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": -2767.9,
+     "vy": -89632.4,
+     "ix": -2219.7,
+     "iy": -89535,
+     "self": false
+    },
+    {
+     "t": 1254.2,
+     "dbno": false,
+     "cause": 0,
+     "vx": -3515,
+     "vy": -88258.3,
+     "ix": -3166.9,
+     "iy": -87103,
+     "self": false
+    },
+    {
+     "t": 1289.1,
+     "dbno": false,
+     "cause": 3,
+     "vx": -611.2,
+     "vy": -86398.2,
+     "ix": -567.3,
+     "iy": -86119.5,
+     "self": false
+    },
+    {
+     "t": 1295.2,
+     "dbno": true,
+     "cause": 2,
+     "vx": -484.2,
+     "vy": -87801.1,
+     "ix": -1813,
+     "iy": -87709.2,
+     "self": false
+    },
+    {
+     "t": 1298.4,
+     "dbno": true,
+     "cause": 3,
+     "vx": -2427.6,
+     "vy": -87689.3,
+     "ix": -2282.6,
+     "iy": -87957.5,
+     "self": false
+    },
+    {
+     "t": 1298.6,
+     "dbno": false,
+     "cause": 2,
+     "vx": -707.1,
+     "vy": -88265.9,
+     "ix": -580.4,
+     "iy": -88278.9,
+     "self": false
+    },
+    {
+     "t": 1300.2,
+     "dbno": true,
+     "cause": 4,
+     "vx": -2361.6,
+     "vy": -88097,
+     "ix": -2477,
+     "iy": -88327.4,
+     "self": false
+    },
+    {
+     "t": 1300.8,
+     "dbno": false,
+     "cause": 4,
+     "vx": -683.2,
+     "vy": -88134.9,
+     "ix": -474.3,
+     "iy": -88001.3,
+     "self": false
+    },
+    {
+     "t": 1301.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": -2390.9,
+     "vy": -88004.5,
+     "ix": -2530.4,
+     "iy": -88276.1,
+     "self": false
+    },
+    {
+     "t": 1301.6,
+     "dbno": false,
+     "cause": 2,
+     "vx": -2452.3,
+     "vy": -88182.8,
+     "ix": -2530.4,
+     "iy": -88276.1,
+     "self": false
+    },
+    {
+     "t": 1313.4,
+     "dbno": false,
+     "cause": 4,
+     "vx": -2858.6,
+     "vy": -88038.1,
+     "ix": 0,
+     "iy": 0,
+     "self": false
+    },
+    {
+     "t": 1342.3,
+     "dbno": true,
+     "cause": 3,
+     "vx": -3136,
+     "vy": -92456,
+     "ix": -3279.8,
+     "iy": -92884.1,
+     "self": false
+    },
+    {
+     "t": 1344.9,
+     "dbno": false,
+     "cause": 0,
+     "vx": -3266,
+     "vy": -92346.7,
+     "ix": -3494.3,
+     "iy": -93502.5,
+     "self": false
+    },
+    {
+     "t": 1347.4,
+     "dbno": false,
+     "cause": 17,
+     "vx": -3413,
+     "vy": -92326.6,
+     "ix": 0,
+     "iy": 0,
+     "self": false
+    },
+    {
+     "t": 1350.1,
+     "dbno": true,
+     "cause": 1,
+     "vx": -3363.7,
+     "vy": -95730.1,
+     "ix": -2978.4,
+     "iy": -95230.8,
+     "self": false
+    },
+    {
+     "t": 1357.4,
+     "dbno": false,
+     "cause": 17,
+     "vx": -3771.4,
+     "vy": -94908.3,
+     "ix": -3038.2,
+     "iy": -95610.4,
+     "self": false
+    },
+    {
+     "t": 1357.4,
+     "dbno": false,
+     "cause": 3,
+     "vx": -2746.7,
+     "vy": -95335.5,
+     "ix": -3038.2,
+     "iy": -95610.4,
+     "self": false
+    },
+    {
+     "t": 1375.9,
+     "dbno": false,
+     "cause": 3,
+     "vx": -4138.5,
+     "vy": -97469.9,
+     "ix": -4068.8,
+     "iy": -97237.2,
+     "self": false
+    },
+    {
+     "t": 1382.6,
+     "dbno": false,
+     "cause": 3,
+     "vx": -3487.4,
+     "vy": -98473.1,
+     "ix": -3697.7,
+     "iy": -98754.4,
+     "self": false
+    },
+    {
+     "t": 1385.1,
+     "dbno": false,
+     "cause": 50,
+     "vx": -3832,
+     "vy": -98654.3,
+     "ix": -3832,
+     "iy": -98654.3,
+     "self": true
+    },
+    {
+     "t": 1386.2,
+     "dbno": false,
+     "cause": 50,
+     "vx": -4111.5,
+     "vy": -98189.3,
+     "ix": -4111.5,
+     "iy": -98189.3,
+     "self": true
+    }
+   ],
+   "landingOffset": 54.5
+  }
+ ],
+ "clocks": "A team's timeAlive is counted from the moment it lands; the zone and elimination timestamps are counted from the start of the session. landingOffset is the gap, fitted per match by lining team death times up against the kill events: about fifty seconds of bus and freefall. Comparing the two without it makes every squad look fifty seconds shorter-lived than it was."
+}

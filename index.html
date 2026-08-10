@@ -684,6 +684,72 @@
   .stage-card.pass{border-left:4px solid var(--accent);}
   .stage-card.fail{border-left:4px solid var(--danger);}
   .stage-card h4{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.04em;}
+  /* The row that holds the map replay and the standings for a live stage.
+     Plain block flow by default — table alone, full width — which is also
+     what every mode without a replay gets, since nothing here ever adds the
+     modifier below for them. */
+  /* The map led so hard that the standings lost their last two columns: at
+     2fr/1fr the table had room for the rank, the name and the points and cut
+     wins and kills off the right edge, which are the two numbers anybody
+     watching a stage is actually tracking. The map is still the bigger half —
+     it is what is being watched — but the table now gets enough width to be
+     read rather than glimpsed. */
+  .stage-live-playing{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(390px,1fr);
+    align-items:start;gap:14px;}
+  /* Order, not source order, decides the columns: mount() appends the map
+     after the table already sitting in the markup, and re-parenting it first
+     would be a bigger change than this layout is worth. */
+  .stage-live-playing .zone-replay{order:1;
+    /* mount()'s own wrapper is capped at 520px inline, for every other place
+       it is used — a whole column is exactly the case that cap exists to
+       stop, so it is lifted for this layout only, without touching mount(). */
+    max-width:none!important;}
+  .stage-live-playing .lobby-wrap{order:2;}
+  /* Seven columns do not fit beside a map, so one steps out: the power rating,
+     which is the only one that cannot change while a stage is running. Rank,
+     team, points, matches, wins and kills all stay — every one of them moves
+     as the games go, and matches played is how you read the rest of them,
+     since a team resting on a Victory Royale stops accumulating. Power comes
+     back the moment the stage is over and the table has the card to itself. */
+  .stage-live-playing .lobby-table th:nth-child(7),
+  .stage-live-playing .lobby-table td:nth-child(7){display:none;}
+  /* Six columns in a narrow box need their elbows in. */
+  .stage-live-playing .lobby-table th,
+  .stage-live-playing .lobby-table td{padding-left:6px;padding-right:6px;}
+  @media(max-width:900px){.stage-live-playing{grid-template-columns:1fr;}
+    .stage-live-playing .lobby-table th:nth-child(7),
+    .stage-live-playing .lobby-table td:nth-child(7){display:table-cell;}}
+  /* The winner card, over the map. Slab, heading and strip are the broadcast's
+     shape — a light panel tilted off true, the number and the words on one
+     line, the stage and the team on a strip beneath it — drawn in this app's
+     own colours rather than copied. */
+  .vr-card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:0;pointer-events:none;z-index:5;
+    background:radial-gradient(120% 90% at 50% 45%, rgba(0,0,0,.62), rgba(0,0,0,.86));
+    opacity:0;transition:opacity .26s ease;}
+  .vr-card.vr-in{opacity:1;}
+  .vr-slab{background:linear-gradient(103deg,#fdfdff 0%,#eaf7f6 42%,#dff3ff 68%,#f7f0ff 100%);
+    color:#0d1016;padding:12px 26px 14px;border-radius:3px;transform:rotate(-2.2deg) scale(.88);
+    box-shadow:0 14px 40px rgba(0,0,0,.55);transition:transform .38s cubic-bezier(.2,.9,.25,1.15);
+    max-width:92%;}
+  .vr-card.vr-in .vr-slab{transform:rotate(-2.2deg) scale(1);}
+  .vr-title{font-size:clamp(20px,4.6vw,40px);line-height:1;font-weight:900;font-style:italic;
+    letter-spacing:-.02em;text-transform:uppercase;white-space:nowrap;}
+  .vr-hash{color:var(--accent);}
+  .vr-strip{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
+    background:rgba(247,250,255,.96);color:#0d1016;border-radius:3px;padding:7px 14px;max-width:94%;
+    transform:translateY(10px);opacity:0;transition:transform .34s ease .1s, opacity .34s ease .1s;}
+  .vr-card.vr-in .vr-strip{transform:none;opacity:1;}
+  .vr-stage,.vr-game{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;
+    color:#0d1016;border:1px solid rgba(13,16,22,.25);border-radius:2px;padding:2px 8px;}
+  .vr-stage{background:var(--accent);color:var(--accent-ink);border-color:transparent;}
+  .vr-team{font-size:clamp(13px,2.4vw,19px);font-weight:900;text-transform:uppercase;letter-spacing:.01em;}
+  .vr-team img{height:.85em;vertical-align:-1px;margin-left:5px;border-radius:2px;}
+  @media(prefers-reduced-motion:reduce){
+    .vr-card,.vr-slab,.vr-strip{transition:none;}
+    .vr-slab{transform:rotate(-2.2deg);}
+    .vr-strip{transform:none;opacity:1;}
+  }
   .stage-badge{display:inline-block;font-size:11px;text-transform:uppercase;font-weight:800;letter-spacing:.04em;
     padding:3px 10px;border-radius:20px;margin-left:8px;vertical-align:2px;}
   .stage-badge.pass{background:var(--accent);color:var(--accent-ink);}
@@ -709,6 +775,39 @@
   .skip-btn-prominent:disabled{opacity:.4; color:var(--ink-dimmer);
     border-color:var(--line); background:rgba(20,26,33,.8); cursor:default;}
   @media(max-width:640px){.skip-btn-prominent{right:10px; top:auto; bottom:14px; font-size:11px; padding:8px 13px;}}
+
+  /* The counter that runs while an unwatched stage is being played out. Same
+     chip as the skip button and directly under it, because they belong to the
+     same moment: something is happening, here is how far along it is, and here
+     is the button that cuts it short. */
+  .sim-progress{
+    position:fixed; right:18px; top:140px; z-index:60;
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(20,26,33,.92); color:var(--ink-dim);
+    border:1px solid var(--line); backdrop-filter:blur(4px);
+    font-weight:700; text-transform:uppercase; letter-spacing:.05em; font-size:11px;
+    padding:7px 13px; border-radius:20px;
+    box-shadow:0 4px 14px rgba(0,0,0,.45); pointer-events:none;
+    font-variant-numeric:tabular-nums;
+  }
+  @media(max-width:640px){.sim-progress{right:10px; top:auto; bottom:56px; font-size:10px;}}
+
+  /* Same fixed chip as skip, mirrored to the opposite corner since both can be
+     on screen at once, and filled solid in the accent colour rather than
+     ghosted — this one is an invitation to scroll down and drop, not a
+     control you press mid-flight. */
+  .landing-pick-prompt{
+    position:fixed; left:18px; top:96px; z-index:60;
+    display:inline-flex; align-items:center; gap:6px; width:auto; margin:0;
+    background:var(--accent); color:var(--accent-ink);
+    border:1px solid var(--accent);
+    font-weight:800; text-transform:uppercase; letter-spacing:.05em; font-size:12px;
+    padding:9px 15px; border-radius:20px; cursor:pointer; opacity:.92;
+    box-shadow:0 4px 14px rgba(0,0,0,.45);
+    transition:opacity .18s ease;
+  }
+  .landing-pick-prompt:hover{opacity:1;}
+  @media(max-width:640px){.landing-pick-prompt{left:10px; top:auto; bottom:14px; font-size:11px; padding:8px 13px;}}
 
   /* ---- Career: creation screen -------------------------------------------
      Deliberately light where the rest of the app is dark. This is the FNCS
@@ -1034,6 +1133,8 @@
     padding:8px 15px;border-radius:3px;cursor:pointer;}
   .ch-end:hover{background:#e0396a;color:#fff;}
   </style>
+<script src="zone-sim.js"></script>
+<script src="zone-replay.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -1773,6 +1874,8 @@ pickBtn:'Задрафтить', placeholderNotPublished:'место не опу�
 emptySlot:'пусто', squadCompleted:'Состав укомплектован. Жми "Выйти на турнир".',
 yourTeamPrefix:'Твой состав: ', synergyPartner:v=>' — реальные тиммейты (+'+v+')', synergyNation:' — общее гражданство: ', synergyLanguage:' — общий язык, без барьера: ', synergyBonusVictory:'Взяли Victory Royale — мгновенный проход',
 gameWord:'Игра', totalWord:'Итого', victoryRoyaleWord:'Victory Royale', place2plus:'место из ', teamsWord:' команд', feedElim:n=>'выбил(а) '+n, feedDied:n=>'погиб(ла) от '+n, feedNone:'без стычек',
+feedStorm:'☠ остался в шторме', feedSurge:'☠ выбит сёрджем',
+zoneWord:'ЗОНА', aliveWord:'в игре', stormWord:'шторм', surgeWord:'сёрдж',
 stagePassBadge:'Прошли', stageFailBadge:'Вылет', eliminatedBanner:'ВЫЛЕТ',
 matchesWord:'Матчи', winsWord:'Победы', avgElimsWord:'Avg Elims', avgPlaceWord:'Avg Place',
 stage1Title:'Этап 1 — Play-In (Day 1: 11 игр, Day 2: 11 игр, лобби по 50 команд каждую игру)', stage1Note:n=>'Топ-'+n+' по сумме очков проходят в Heats',
@@ -1839,7 +1942,9 @@ lcqQualTitle:'Last Chance Qualifier — квалификация (11 игр, т�
 lcqRound1Title:n=>'Last Chance Qualifier — Раунд 1 ('+n+' команд, 11 игр, топ-50 проходит дальше)',
 lcqRound2Title:(n,g)=>'Last Chance Qualifier — Раунд 2 ('+n+' команд, '+g+' игр, победитель каждой уходит в гранд-финал)',
 lcqWinLabel:'Победа — прошли!', lcqAdvancedNote:'Выиграли попытку — слот в Major Finals', lcqFailedNote:g=>'Ни разу не выиграли ни одну из '+g+' игр', lcqTop50Label:'Топ-50 — прошли этап 1', lcqRound1FailedNote:'Не попали в топ-50 на первом этапе',
-skipBtn:'⏩ Скип этапа', skipPressed:'Этап скипнут…',
+skipBtn:'⏩ Скип', skipPressed:'Скипнуто…', continueBtn:'▶ Дальше', gameOfWord:(n,t)=>'Игра '+n+' из '+t,
+simGamesProgress:(n,t)=>t ? 'Идут матчи — '+n+' из '+t : 'Идут матчи…',
+landingPromptBtn:'⬇ Выбери точку высадки',
 statPointsWord:'очков',
 statLastUpdate:'Сыграно матчей', s_elims:'Элиминации', s_assists:'Ассисты', s_dmgTo:'Урон по игрокам', s_dmgFrom:'Полученный урон',
 s_dmgRatio:'Соотношение урона', s_healthHealed:'Восстановлено ХП', s_shieldHealed:'Восстановлено щита',
@@ -2237,6 +2342,8 @@ pickBtn:'Draft', placeholderNotPublished:'placement not published', qualifierTag
 emptySlot:'empty', squadCompleted:'Squad complete. Hit "Enter tournament".',
 yourTeamPrefix:'Your squad: ', synergyPartner:v=>' — real teammates (+'+v+')', synergyNation:' — shared nationality: ', synergyLanguage:' — no language barrier, both speak: ', synergyBonusVictory:'Got a Victory Royale — instant advance',
 gameWord:'Game', totalWord:'Total', victoryRoyaleWord:'Victory Royale', place2plus:'place of ', teamsWord:' teams', feedElim:n=>'eliminated '+n, feedDied:n=>'died to '+n, feedNone:'no fights',
+feedStorm:'☠ caught by the storm', feedSurge:'☠ eliminated by Storm Surge',
+zoneWord:'ZONE', aliveWord:'alive', stormWord:'storm', surgeWord:'surge',
 stagePassBadge:'Advanced', stageFailBadge:'Eliminated', eliminatedBanner:'ELIMINATED',
 matchesWord:'Matches', winsWord:'Wins', avgElimsWord:'Avg Elims', avgPlaceWord:'Avg Place',
 stage1Title:'Stage 1 — Play-In (Day 1: 11 games, Day 2: 11 games, 50-team lobbies each game)', stage1Note:n=>'Top '+n+' by total points advance to Heats',
@@ -2257,7 +2364,9 @@ lcqQualTitle:'Last Chance Qualifier — qualification (11 games, top 50 advance)
 lcqRound1Title:n=>'Last Chance Qualifier — Round 1 ('+n+' teams, 11 games, top 50 advance)',
 lcqRound2Title:(n,g)=>'Last Chance Qualifier — Round 2 ('+n+' teams, '+g+' games, each winner takes a Grand Finals slot)',
 lcqWinLabel:'Win — advanced!', lcqAdvancedNote:'Won an attempt — Major Finals slot secured', lcqFailedNote:g=>'Never won any of the '+g+' games', lcqTop50Label:'Top 50 — cleared Round 1', lcqRound1FailedNote:'Missed the top 50 in Round 1',
-skipBtn:'⏩ Skip stage', skipPressed:'Stage skipped…',
+skipBtn:'⏩ Skip', skipPressed:'Skipped…', continueBtn:'▶ Continue', gameOfWord:(n,t)=>'Game '+n+' of '+t,
+simGamesProgress:(n,t)=>t ? 'Playing games — '+n+' of '+t : 'Playing games…',
+landingPromptBtn:'⬇ Pick your drop',
 statPointsWord:'points',
 statLastUpdate:'Matches played', s_elims:'Eliminations', s_assists:'Assists', s_dmgTo:'Damage To Players', s_dmgFrom:'Damage From Players',
 s_dmgRatio:'Damage Ratio', s_healthHealed:'Health Healed', s_shieldHealed:'Shield Healed',
@@ -27005,6 +27114,10 @@ function show(id){
     abandonRun();
     const btn=document.getElementById('majorSkipBtn');
     if(btn) btn.remove();
+    // The landing prompt is fixed to the body too, and only makes sense while
+    // its own card is still on screen waiting on a click — gone the moment
+    // that screen is.
+    removeLandingPrompt();
     document.querySelectorAll('.qual-overlay, .conf').forEach(o=>o.remove());
   }
 }
@@ -28473,6 +28586,92 @@ function removeSkipButton(){
   if(btn) btn.remove();
 }
 
+// The card the broadcast puts up when a game ends: who won it.
+//
+// It goes over the map rather than beside it, because the map is where the
+// question was — the circle closes on two arrows and it is genuinely hard to
+// tell which one was left. The strip underneath carries the stage and the game
+// number, so a card seen out of the corner of an eye still says which of twelve
+// games it belongs to.
+//
+// Timed with sleep(), which means a skipped stage passes through it without
+// stopping, and an abandoned run unwinds through it like everything else.
+async function showVictoryRoyale(host, stageName, gameNum, gamesTotal, winner){
+  if(!host || !winner) return;
+  const card=document.createElement('div');
+  card.className='vr-card';
+  card.innerHTML=`<div class="vr-slab">
+      <div class="vr-title"><span class="vr-hash">#1</span> ${L().victoryRoyaleWord}</div>
+    </div>
+    <div class="vr-strip">
+      <span class="vr-stage">${stageName}</span>
+      <span class="vr-game">${L().gameOfWord(gameNum, gamesTotal)}</span>
+      <span class="vr-team">${winner.name}</span>
+    </div>`;
+  host.appendChild(card);
+  // Reading a layout property commits the starting state, so the class that
+  // follows animates from it instead of being folded into the same frame.
+  // Waiting for an actual animation frame would have been the obvious way and
+  // is a trap: frames stop entirely in a hidden tab, and a run that is waiting
+  // for one there waits for ever — the same hazard the replay loop already had
+  // to be moved off.
+  void card.offsetHeight;
+  card.classList.add('vr-in');
+  await sleep(2200);
+  card.classList.remove('vr-in');
+  await sleep(260);
+  card.remove();
+}
+
+// Hold the finished stage on screen until the player says go on.
+//
+// The button that skipped the stage has nothing left to skip by the time this
+// is called, so it becomes the way out rather than a second control appearing
+// in the same corner. Its old handler is put back afterwards, because the next
+// stage will want it as a skip button again.
+//
+// A run the player has walked away from must never wait for a click that will
+// not come, so an abandoned run releases the wait the same way a click does —
+// what happens after is `sleep()`'s business, and it already rejects.
+function waitForContinue(){
+  const btn=document.getElementById('majorSkipBtn');
+  if(!btn) return Promise.resolve();
+  const gen=runGeneration, wasSkip=btn.onclick;
+  btn.disabled=false;
+  btn.innerHTML=L().continueBtn;
+  return new Promise(res=>{
+    let done=false;
+    const finish=()=>{
+      if(done) return;
+      done=true;
+      clearInterval(poll);
+      btn.onclick=wasSkip;
+      res();
+    };
+    btn.onclick=finish;
+    const poll=setInterval(()=>{ if(gen!==runGeneration) finish(); }, 200);
+  });
+}
+
+// A landing card gets appended below the standings and scrolled to once, but a
+// player already reading the standings can miss that scroll — the run then
+// just sits there awaiting a click nobody knows to make. This floating prompt
+// stays up for as long as a choice is outstanding and jumps the player to the
+// card on click, same idea as the skip chip but pointing at something to do
+// rather than something to cut short.
+function ensureLandingPrompt(target){
+  removeLandingPrompt();
+  const btn=document.createElement('button');
+  btn.id='landingPromptBtn'; btn.className='landing-pick-prompt';
+  btn.innerHTML=L().landingPromptBtn;
+  btn.onclick=()=>target.scrollIntoView({block:'start', behavior:'smooth'});
+  document.body.appendChild(btn);
+}
+function removeLandingPrompt(){
+  const btn=document.getElementById('landingPromptBtn');
+  if(btn) btn.remove();
+}
+
 // Skip is per-stage, not for the rest of the run: pressing it fast-forwards
 // whatever is playing right now, and the next stage starts animated again. So
 // you can skip a slow Play-In and still watch the Finals in full.
@@ -28487,6 +28686,11 @@ function beginAnimatedStage(){
 // points come in — like watching a real broadcast overlay update live.
 // opts:
 //   stopOnWin — a Victory Royale ends that team's stage (Heats rule)
+//   mapReplay — this stage plays its games out on the map above the standings.
+//               Off unless asked for: the map belongs to the stages that are
+//               about your own lobby — Heats, Last Chance round 2, the Regional
+//               Grand Finals and the LAN — and not to an open qualifier where
+//               your lobby is one of many
 //   lobbySize — each game is played in reshuffled lobbies of this size instead
 //               of one big field (Play-In / LCQ), while the leaderboard stays
 //               cumulative across the whole stage
@@ -28497,30 +28701,55 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   const ptsKey=fieldPrefix+'Pts', elimsKey=fieldPrefix+'Elims';
   const logKey=fieldPrefix==='total' ? 'gameLog' : 'stageLog';
   teams.forEach((t,i)=>{ t[ptsKey]=0; t[elimsKey]=0; t[logKey]=[]; t.gotVR=false; t.wins=0; t._uid=i; t.landingWins=0; t.landingLosses=0; t.multiKillLandingWins=0; });
-  // Zone-mates (from the single map pick at the start) fight it out again at
-  // the top of every game — a fresh coin flip each time, not a fixed outcome
-  // locked in once. Only groups with 2+ teams matter here.
-  const contestedGroups = zoneGroups ? [...zoneGroups.values()].filter(g=>g.length>=2) : [];
+  // Whether this stage's games are played on the map. When they are, the drop
+  // is played there too — the engine puts every squad on its own `landingZone`
+  // and the first forty seconds settle who shares with whom — so nothing is
+  // decided here. When they are not, the round-based model has no drop at all
+  // and the landing fights still have to be resolved up front, which is what
+  // contestedGroups is for: zone-mates from the picker, a fresh coin flip at
+  // the top of every game rather than one outcome locked in once.
+  const dropOnMap = useZoneSim(teams);
+  const contestedGroups = (zoneGroups && !dropOnMap)
+    ? [...zoneGroups.values()].filter(g=>g.length>=2) : [];
 
   const container=document.getElementById('majorStages');
   const shell=document.createElement('div');
   shell.className='stage-card';
+  // The map and the table share one row so they can sit side by side for the
+  // whole stage (stage-live-playing, added once below when a replay actually
+  // mounts) and fall back to plain block flow — table alone, full width —
+  // for every mode with no replay at all: nothing here turns that on for them.
   shell.innerHTML=`<h4 id="finalsLiveTitle"></h4>
-    <div class="lobby-wrap" style="margin-top:6px;max-height:520px;overflow-y:auto;">
-      <table class="lobby-table lobby-live">
-        <thead><tr><th>${L().rankHeader}</th><th>${L().teamHeader}</th><th class="num">${L().ptsHeader}</th><th class="num">${L().matchesWord}</th><th class="num">${L().winsWord}</th><th class="num">${L().killsHeader}</th><th class="num">${L().avgHeader}</th></tr></thead>
-        <tbody id="finalsLiveBody"></tbody>
-      </table>
+    <div class="stage-live">
+      <div class="lobby-wrap" style="margin-top:6px;max-height:520px;overflow-y:auto;">
+        <table class="lobby-table lobby-live">
+          <thead><tr><th>${L().rankHeader}</th><th>${L().teamHeader}</th><th class="num">${L().ptsHeader}</th><th class="num">${L().matchesWord}</th><th class="num">${L().winsWord}</th><th class="num">${L().killsHeader}</th><th class="num">${L().avgHeader}</th></tr></thead>
+          <tbody id="finalsLiveBody"></tbody>
+        </table>
+      </div>
     </div>`;
   container.appendChild(shell);
   shell.scrollIntoView({block:'start', behavior:'smooth'});
 
   const titleEl=document.getElementById('finalsLiveTitle');
   const body=document.getElementById('finalsLiveBody');
+  const stageLive=shell.querySelector('.stage-live');
   let currentGameNum=0;
 
+  // What the table shows while a game is being played out on the map. Keyed by
+  // _uid and never written into the team's own totals: those are awarded once,
+  // at the end, by the code that has always awarded them. This is a view, and a
+  // view that is wrong cannot take the standings with it.
+  let liveScore=null;   // Map uid -> {pts, elims} while a replay is running
+  const livePts   = t => liveScore ? (liveScore.get(t._uid)||{pts:0}).pts   + t[ptsKey]   : t[ptsKey];
+  const liveElims = t => liveScore ? (liveScore.get(t._uid)||{elims:0}).elims + t[elimsKey] : t[elimsKey];
+  // Rows carry their team's uid as a string. Looking the team up by scanning
+  // the field would be fifty scans of fifty teams on every frame, thirty-five
+  // times a second, for a lookup that never changes.
+  const byUid=new Map(teams.map(t=>[String(t._uid), t]));
+
   function renderRows(){
-    const sorted=teams.slice().sort((a,b)=>b[ptsKey]-a[ptsKey] || b[elimsKey]-a[elimsKey] || (b.wins||0)-(a.wins||0));
+    const sorted=teams.slice().sort((a,b)=>livePts(b)-livePts(a) || liveElims(b)-liveElims(a) || (b.wins||0)-(a.wins||0));
     body.innerHTML='';
     sorted.forEach((t,i)=>{
       const tr=document.createElement('tr');
@@ -28538,7 +28767,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
         + (done ? ' <span style="color:var(--accent);font-weight:900;" title="'+L().qualByVR+'">★</span>' : '');
       const powerVal = t.pow!=null ? Math.round(t.pow) : '—';
       if(done) tr.style.opacity='.72';
-      tr.innerHTML=`<td class="lobby-rank">#${i+1}</td><td>${nameStyled}</td><td class="num lobby-pts">${t[ptsKey]}</td><td class="num lobby-num">${played}</td><td class="num lobby-num">${t.wins||0}</td><td class="num lobby-num">${t[elimsKey]}</td><td class="num lobby-num">${powerVal}</td>`;
+      tr.innerHTML=`<td class="lobby-rank">#${i+1}</td><td>${nameStyled}</td><td class="num lobby-pts">${livePts(t)}</td><td class="num lobby-num">${played}</td><td class="num lobby-num">${t.wins||0}</td><td class="num lobby-num">${liveElims(t)}</td><td class="num lobby-num">${powerVal}</td>`;
       body.appendChild(tr);
     });
   }
@@ -28573,6 +28802,79 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   }
 
   renderRows();
+
+  // The map replay, for the mode that has one. It mounts into the same row as
+  // the standings and plays a game before that game's points land in the
+  // table, so the table updating is the result of what was just watched
+  // rather than a separate event.
+  const zoneSet    = (CARD_SET === 'm1') ? 'm1' : 'm2';
+  // Which stages get a map, asked for one at a time.
+  //
+  // It used to appear wherever the zone engine ran, which meant an open
+  // qualifier — hundreds of duos, your lobby one of many, nothing riding on the
+  // game in front of you — opened with a map nobody was watching for. The map
+  // is for the stages that are about your own lobby: the Heats, the Last
+  // Chance, the Regional Grand Finals and the LAN. Everything else plays out in
+  // the table, which is what those stages are actually read from.
+  //
+  // Opt-in rather than opt-out, so a stage added later has to say it wants one
+  // instead of inheriting it by accident.
+  const replayOn   = !!opts.mapReplay && typeof ZoneReplay !== 'undefined' && useZoneSim(teams);
+  const zoneRatio  = MAP_ASPECT[zoneSet].split('/');
+  const zoneAspect = Number(zoneRatio[1]) / Number(zoneRatio[0]);
+  const replay     = replayOn
+    ? ZoneReplay.mount(stageLive, MAP_ART[zoneSet], MAP_ASPECT[zoneSet].replace('/', ' / '), zoneAspect)
+    : null;
+  // Two columns for the whole stage, not just while a game is actually
+  // animating — added once here (only when there is a map to sit beside the
+  // table) so the card stops snapping between layouts every single game.
+  if(replay) stageLive.classList.add('stage-live-playing');
+  const replayLabels = {zone:L().zoneWord, alive:L().aliveWord, storm:L().stormWord, surge:L().surgeWord};
+
+  // The table, driven off the same frames the map is drawing.
+  //
+  // A squad's place is fixed the moment it dies and a living squad is currently
+  // in as many places as there are squads alive, so every frame carries enough
+  // to score the whole lobby. The last frame scores the same as the end of the
+  // game — tools/zone-sim-test.js asserts exactly that — so the table arrives at
+  // the right numbers rather than being corrected onto them.
+  let lastOrder='', lastMove=0;
+  function onZoneFrame(lobby, frame){
+    let alive=0;
+    for(const d of frame.dots) if(d.alive) alive++;
+    const next=new Map();
+    frame.dots.forEach((d,i)=>{
+      const t=lobby[i];
+      if(!t) return;
+      // Every squad in the lobby owns a dot, including the ones that lose their
+      // drop: the landing fight is played on the map now, so its kills are in
+      // d.e like any other and nothing has to be folded in from outside.
+      let elims=d.e;
+      if(squadKillDampen) elims=Math.max(0, Math.round(elims*squadKillDampen));
+      next.set(t._uid, {pts: pointsFn(d.p || alive) + elims*killMult, elims});
+    });
+    liveScore=next;
+
+    // Numbers first: writing text into rows that are already on screen moves
+    // nothing, so a kill can show the instant it lands.
+    const sorted=teams.slice().sort((a,b)=>livePts(b)-livePts(a) || liveElims(b)-liveElims(a) || (b.wins||0)-(a.wins||0));
+    for(const tr of body.children){
+      const t=byUid.get(tr.dataset.uid);
+      if(!t) continue;
+      const cells=tr.children;
+      cells[2].textContent=livePts(t);
+      cells[5].textContent=liveElims(t);
+    }
+
+    // Order second, and slowly. Rows that reorder faster than they can travel
+    // interrupt each other halfway, and the endgame is several deaths a second.
+    const order=sorted.map(t=>t._uid).join(',');
+    const now=Date.now();
+    if(order!==lastOrder && now-lastMove>=380){
+      lastOrder=order; lastMove=now;
+      animatedRerender();
+    }
+  }
 
   const liveLabel = opts.stageName || L().finalsLiveDefault;
   for(let g=0; g<numGames; g++){
@@ -28609,32 +28911,96 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       continue;
     }
 
+    // Off the map: settle the contested spots before the game starts and hand
+    // the round-based model the survivors.
+    //
+    // On the map this whole block is skipped — contestedGroups is empty there —
+    // and the whole lobby plays the whole game. Every game used to run through
+    // here: a power-weighted coin flip, the losers deleted, and the map then
+    // opening on a game that had already lost a sixth of its players before the
+    // first frame. The fight was real; it was just happening somewhere nobody
+    // could watch.
     const eliminatedAtStart=[];
-    const landingKillBonus=new Map();
+    const landingBonusElims=new Map();
     contestedGroups.forEach(group=>{
       const totalW=group.reduce((s,t)=>s+Math.pow(Math.max(t.pow,1),LANDING_POW_EXPONENT),0)||1;
       let r=Math.random()*totalW, winner=group[0];
       for(const t of group){ const w=Math.pow(Math.max(t.pow,1),LANDING_POW_EXPONENT); r-=w; if(r<=0){ winner=t; break; } }
-      landingKillBonus.set(winner, (group.length-1)*2);
+      landingBonusElims.set(winner, (group.length-1)*2);
       winner.landingWins++;
       if(group.length>=3) winner.multiKillLandingWins++;
       group.forEach(t=>{ if(t!==winner){ eliminatedAtStart.push(t); t.landingLosses++; } });
     });
     for(let i=eliminatedAtStart.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [eliminatedAtStart[i],eliminatedAtStart[j]]=[eliminatedAtStart[j],eliminatedAtStart[i]]; }
     const eliminatedSet=new Set(eliminatedAtStart);
-    const survivors=teams.filter(t=>!eliminatedSet.has(t) && !(opts.stopOnWin && t.gotVR));
+
+    const activeField=teams.filter(t=>!(opts.stopOnWin && t.gotVR));
+    const survivors=activeField.filter(t=>!eliminatedSet.has(t));
     eliminatedAtStart.forEach(t=>{ t._elims=0; t._feed=[L().landingFightLost]; });
     if(survivors.length<2){ await sleep(240); animatedRerender(); await sleep(160); continue; }
-    const order=[...simulateGame(survivors), ...eliminatedAtStart];
-    landingKillBonus.forEach((bonus,winner)=>{ winner._feed=[L().landingFightWon, ...(winner._feed||[])]; });
+    // Heats stop a squad's stage on a Victory Royale, so by the end of one the
+    // lobby can be down to a handful — and a map replay of two dots wandering an
+    // island is not worth watching. Below this the game still runs on the map,
+    // it just is not played back.
+    if(replay && !skipAnimation && survivors.length >= REPLAY_MIN_SQUADS) RECORD_NEXT_ZONE_GAME = true;
+    const order=[...simulateGame(survivors, {lobbySquads: activeField.length,
+      lobbyPlayers: activeField.reduce((s,t)=>s+((t.squad&&t.squad.length)||1), 0)}), ...eliminatedAtStart];
 
+    // On the map: who won and who lost their drop, read back off the game
+    // instead of decided before it. A squad the engine flagged as dropping out
+    // died inside that first window, and the squad named as its cause won that
+    // fight. A squad the storm took on the way down is not a landing loss, and
+    // falls out here on its own — there is no team by that name.
+    const byName=new Map(survivors.map(t=>[t.name, t]));
+    const landingWins=new Map();
+    if(dropOnMap) survivors.forEach(t=>{
+      if(!t._droppedOut) return;
+      const killer=byName.get(t._deathCause);
+      if(!killer) return;
+      t.landingLosses++;
+      t._feed=[L().landingFightLost, ...(t._feed||[])];
+      landingWins.set(killer, (landingWins.get(killer)||0)+1);
+    });
+    landingWins.forEach((n,winner)=>{
+      winner.landingWins++;
+      if(n>=2) winner.multiKillLandingWins++;
+      winner._feed=[L().landingFightWon, ...(winner._feed||[])];
+    });
+    // Off the map the win was already counted above, before the game; only the
+    // feed line has to wait, because the game rewrites _feed.
+    landingBonusElims.forEach((n,winner)=>{ winner._feed=[L().landingFightWon, ...(winner._feed||[])]; });
+    if(replay && LAST_ZONE_TIMELINE.length){
+      // The squads on the map, in the order the frames index them: the same
+      // list the engine was handed, which on the map is the whole lobby.
+      const shown = survivors;
+      lastOrder=''; lastMove=0;
+      // Cleared here rather than inside play(), so the feed is empty before the
+      // first frame draws instead of being wiped the instant play() starts.
+      // The landing kills write themselves into it from the frames now.
+      ZoneReplay.clearFeed(replay);
+      await ZoneReplay.play(replay, LAST_ZONE_TIMELINE,
+        {frameMs: 90, labels: replayLabels, roster: LAST_ZONE_ROSTER,
+         isSkipped: () => skipAnimation,
+         onFrame: f => onZoneFrame(shown, f)});
+      LAST_ZONE_TIMELINE = [];
+      // The real points land next, from the engine's own result. Dropping the
+      // view first means the table is never showing two answers at once.
+      liveScore=null;
+      // Then the card the broadcast puts up: who actually won the game. The map
+      // empties in the last seconds and it is easy to miss which of the last
+      // two arrows was still standing, so the winner is named before the table
+      // moves on. sleep() carries it, so a skipped stage passes straight
+      // through without stopping.
+      await showVictoryRoyale(replay.wrap, liveLabel, g+1, numGames, order[0]);
+    }
     order.forEach((t,i)=>{
       const place=i+1;
-      let elims=t._elims + (landingKillBonus.get(t)||0);
+      let elims=t._elims + (landingBonusElims.get(t)||0);
       if(squadKillDampen) elims=Math.max(0, Math.round(elims*squadKillDampen));
       const gamePts=pointsFn(place)+elims*killMult;
       t[ptsKey]+=gamePts; t[elimsKey]+=elims;
-      const landingOutcome = landingKillBonus.has(t) ? 'won' : (eliminatedSet.has(t) ? 'lost' : null);
+      const landingOutcome = (landingWins.has(t) || landingBonusElims.has(t)) ? 'won'
+                           : ((dropOnMap ? t._droppedOut : eliminatedSet.has(t)) ? 'lost' : null);
       t[logKey].push({game:g+1, place, elims, pts:gamePts, elimPts:elims*killMult, label:thresholdLabel(place), feed:t._feed, landingOutcome});
       if(place===1){ t.gotVR=true; t.wins++; }
     });
@@ -28646,6 +29012,18 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
 
   titleEl.innerHTML=L().finalsLiveDoneLabel(liveLabel);
   clearLandingPow(teams);
+  // Layout goes back to one column (table full width) in the same breath as
+  // the map itself coming down, so the table is what the scroll below lands on.
+  if(replay){ stageLive.classList.remove('stage-live-playing'); ZoneReplay.unmount(replay); }
+  // Skipping the animation is not the same as not wanting the result. The run
+  // used to tear this card down before anybody could read it: sleep() returns
+  // instantly while the skip flag is set, and the card is removed on the next
+  // line, so the table the player skipped to reach flashed past and was gone.
+  // A skipped stage now stops on its own standings and waits to be let go.
+  if(skipAnimation){
+    shell.scrollIntoView({block:'start', behavior:'smooth'});
+    await waitForContinue();
+  }
   await sleep(500);
   shell.remove();
 }
@@ -28925,24 +29303,70 @@ function simulateGamesStopOnWin(teams, numGames, pointsFn, killMult){
 
 // Any number of teams can be in the Play-In overall, but a single match lobby caps at 50 duos —
 // so each game we reshuffle everyone into fresh random lobbies of up to 50 teams.
-function simulateGamesRandomLobbies(teams, numGames, lobbySize, pointsFn, killMult){
+// Stages that are not watched, played out as fast as the machine can.
+//
+// The Play-In is 22 games across a field that is split into lobbies of 50, so
+// on a full Major it is over a hundred spatial games — a second of real work on
+// a quick machine and two on a slower one. It used to run in one unbroken
+// stretch, and because nothing yields, the browser never got to paint the
+// screen that had just been switched to: pressing "Start FNCS Major" froze on
+// the old screen for two seconds and then jumped straight to a finished
+// standings card.
+//
+// The work itself is not the problem and is not what changed — it is real
+// simulation and it is why the standings mean anything. What changed is that it
+// now comes up for air. Every 24 milliseconds it hands the thread back, which
+// lets the browser draw the screen and the counter below, and lets the run be
+// abandoned mid-stage like every other awaited step. The yields cost a few
+// milliseconds in total; the freeze cost the whole two seconds.
+async function simulateGamesRandomLobbies(teams, numGames, lobbySize, pointsFn, killMult){
   applyStageBias(pointsFn);
   teams.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.stageLog=[]; t.gotVR=false; t.wins=0; });
-  for(let g=0; g<numGames; g++){
-    const shuffled=teams.slice().sort(()=>Math.random()-0.5);
-    for(const lobby of splitIntoLobbies(shuffled, lobbySize)){
-      const order=simulateGame(lobby);
-      order.forEach((t,idx)=>{
-        const place=idx+1;
-        const elims=t._elims;
-        const gamePts=pointsFn(place)+elims*killMult;
-        t.stagePts+=gamePts; t.stageElims+=elims;
-        t.stageLog.push({game:g+1, place, elims, pts:gamePts, elimPts:elims*killMult, label:thresholdLabel(place), feed:t._feed});
-        if(place===1){ t.gotVR=true; t.wins++; }
-        accumulateMatchStats(t, place, order.length, pointsFn(place), elims*killMult);
-      });
+  const note=simProgressNote();
+  let lastYield=performance.now();
+  try {
+    for(let g=0; g<numGames; g++){
+      const shuffled=teams.slice().sort(()=>Math.random()-0.5);
+      for(const lobby of splitIntoLobbies(shuffled, lobbySize)){
+        const order=simulateGame(lobby);
+        order.forEach((t,idx)=>{
+          const place=idx+1;
+          const elims=t._elims;
+          const gamePts=pointsFn(place)+elims*killMult;
+          t.stagePts+=gamePts; t.stageElims+=elims;
+          t.stageLog.push({game:g+1, place, elims, pts:gamePts, elimPts:elims*killMult, label:thresholdLabel(place), feed:t._feed});
+          if(place===1){ t.gotVR=true; t.wins++; }
+          accumulateMatchStats(t, place, order.length, pointsFn(place), elims*killMult);
+        });
+      }
+      // Time, not a game count: a fast machine gets through the stage in a few
+      // yields and a slow one in more, and neither ends up choosing between a
+      // frozen page and a stage spent inside setTimeout.
+      if(performance.now()-lastYield > 24){
+        note.textContent=L().simGamesProgress(g+1, numGames);
+        // Not sleep(): sleep returns straight away while a stage is being
+        // skipped, and a resolved promise is a microtask, which the browser
+        // will not paint between. A real timeout is what hands the thread back.
+        await new Promise(res=>setTimeout(res, 0));
+        if(!runIsCurrent()) throw RUN_ABANDONED;
+        lastYield=performance.now();
+      }
     }
+  } finally {
+    note.remove();
   }
+}
+
+// The counter that runs while a stage is being played out off-screen. Created
+// on demand and removed when the stage ends, so nothing has to be cleaned up by
+// whoever calls it — including when a run is abandoned and the await above
+// throws.
+function simProgressNote(){
+  const el=document.createElement('div');
+  el.className='sim-progress';
+  el.textContent=L().simGamesProgress(0, 0);
+  document.body.appendChild(el);
+  return el;
 }
 
 function finishMajorEliminatedAnim(you){
@@ -29289,6 +29713,10 @@ async function pickInitialZone(you, bots){
     </div>`;
   container.appendChild(box);
   box.scrollIntoView({block:'start', behavior:'smooth'});
+  // The scroll above is easy to miss if the player is mid-read of the
+  // standings above it, and the run just waits forever on a click nobody
+  // knows is pending — so keep a floating prompt up until the pick lands.
+  ensureLandingPrompt(box);
 
   const fieldBox=box.querySelector('#gameLandingField');
   if(fieldBox){
@@ -29343,6 +29771,7 @@ async function pickInitialZone(you, bots){
   });
 
   const chosenIdx=await waitForZoneConfirm(zoneEls, ALL_LANDING_ZONES, zoneGroups, infoBox, confirmBtn);
+  removeLandingPrompt();
   const chosenZone=ALL_LANDING_ZONES[chosenIdx];
   box.remove();
 
@@ -29563,7 +29992,7 @@ async function runLastChanceQualifier(stageName, you, allTeams, field, lclGames)
   // your stage, which is why five games produce five qualifiers.
   const round2Field=round1Ranked.slice(0, 50);
   await simulateGamesLive(round2Field, lclGames, heatsScoreForPlace, 0, 'stage', 0, null, null,
-    {stopOnWin:true, stageName:L().liveLcqR2});
+    {stopOnWin:true, mapReplay:true, stageName:L().liveLcqR2});
   const winners=round2Field.filter(t=>t.gotVR);
   const youAdvanced=winners.includes(you);
 
@@ -29582,7 +30011,7 @@ async function runLastChanceQualifier(stageName, you, allTeams, field, lclGames)
 // when "you" already qualified directly through Heats. Takes the same real
 // dropout field the interactive version plays — teams already holding a Finals
 // slot are filtered out by the caller, so nobody can win a slot twice.
-function computeQuietLCQWinners(field, lclGames){
+async function computeQuietLCQWinners(field, lclGames){
   lclGames = (lclGames==null) ? 5 : lclGames;
   if(lclGames<=0) return [];
   if(!field || field.length<2) return [];
@@ -29590,7 +30019,7 @@ function computeQuietLCQWinners(field, lclGames){
   // up to 50, cumulative points, top 50 survive to compete for slots. It has to
   // be the same lobby split, or the off-screen qualifier would score its teams
   // on a different curve than the one the player just watched.
-  simulateGamesRandomLobbies(field, 11, 50, lcqRound1PointsForPlace, 1);
+  await simulateGamesRandomLobbies(field, 11, TEAM_TARGET[squadSize]||50, lcqRound1PointsForPlace, 1);
   let pool=field.slice().sort((a,b)=>b.stagePts-a.stagePts || b.stageElims-a.stageElims).slice(0,50);
   const winners=[];
   for(let g=1; g<=lclGames && pool.length>0; g++){
@@ -29625,7 +30054,7 @@ async function runMajorTournament(){
   // Play-In is 22 games across reshuffled lobbies — watching that live is a
   // long sit for a stage that mostly just seeds the Heats, so it resolves
   // straight to the standings card instead.
-  simulateGamesRandomLobbies(teams, 22, 50, playInPointsForPlace, 2);
+  await simulateGamesRandomLobbies(teams, 22, TEAM_TARGET[squadSize]||50, playInPointsForPlace, 2);
 
   teams.sort((a,b)=>b.stagePts-a.stagePts);
   const isFillerTeam=t=>t.squad.some(p=>p.tier==='filler');
@@ -29678,7 +30107,7 @@ async function runMajorTournament(){
     const yourHeat = heats[yourHeatIdx];
     for(let hi=0; hi<heats.length; hi++){
       const g=FMT.heats[hi].games;
-      if(hi===yourHeatIdx) await simulateGamesLive(heats[hi], g, heatsScoreForPlace, 3, 'stage', 0, null, null, {stopOnWin:true, stageName:L().liveHeat(yourHeatIdx+1)});
+      if(hi===yourHeatIdx) await simulateGamesLive(heats[hi], g, heatsScoreForPlace, 3, 'stage', 0, null, null, {stopOnWin:true, mapReplay:true, stageName:L().liveHeat(yourHeatIdx+1)});
       else simulateGamesStopOnWin(heats[hi], g, heatsScoreForPlace, 3);
     }
     yourHeat.sort(heatsRank);
@@ -29720,13 +30149,13 @@ async function runMajorTournament(){
     const stillNeeded=lcqSlots-1-lcqOtherWinners.length;
     if(stillNeeded>0){
       // Same Last Chance field, minus everyone who already holds a slot.
-      const extra=computeQuietLCQWinners(lastChanceField(lcqField, new Set(finalTeams)), lcqSlots);
+      const extra=await computeQuietLCQWinners(lastChanceField(lcqField, new Set(finalTeams)), lcqSlots);
       extra.forEach(t=>{ if(finalTeams.length<50 && !finalTeams.includes(t)) finalTeams.push(t); });
     }
   } else {
     // You went straight through the Heats, so the Last Chance still runs — just
     // off-screen — among the teams the Heats left behind.
-    const lcqWinners=computeQuietLCQWinners(lastChanceField(teams, new Set(heatQualifiers45)), lcqSlots);
+    const lcqWinners=await computeQuietLCQWinners(lastChanceField(teams, new Set(heatQualifiers45)), lcqSlots);
     lcqWinners.forEach(t=>{ if(!finalTeams.includes(t)) finalTeams.push(t); });
   }
 
@@ -30524,7 +30953,7 @@ async function runMajor1Summit(you, regionRank, myFinals){
     const upper=[you, ...main].slice(0, 50);
     zones=await showFinalsLandingPicker(upper, you);
     const upperShell=createStageCardShell(L().summitDay1Title);
-    await simulateGamesLive(upper, 6, pointsForPlace, 4, 'stage', 0, null, zones, {stageName:L().liveUpper});
+    await simulateGamesLive(upper, 6, pointsForPlace, 4, 'stage', 0, null, zones, {mapReplay:true, stageName:L().liveUpper});
     const upperRanked=summitStandings(upper);
     const youUpperRank=upperRanked.indexOf(you)+1;
     direct=upperRanked.slice(0, 25);
@@ -30547,7 +30976,7 @@ async function runMajor1Summit(you, regionRank, myFinals){
     if(!lower.includes(you)) lower.push(you);
     zones=await showFinalsLandingPicker(lower, you);
     const lowerShell=createStageCardShell(L().summitDay2Title);
-    await simulateGamesLive(lower, 6, pointsForPlace, 4, 'stage', 0, null, zones, {stageName:L().liveLower});
+    await simulateGamesLive(lower, 6, pointsForPlace, 4, 'stage', 0, null, zones, {mapReplay:true, stageName:L().liveLower});
     lowerQualified=lowerBracketQualifiers(lower);
     const youLower=lowerQualified.includes(you);
     const lowerRanked=summitStandings(lower);
@@ -30568,7 +30997,7 @@ async function runMajor1Summit(you, regionRank, myFinals){
   if(!grand.includes(you)) grand.push(you);
   zones=await showFinalsLandingPicker(grand, you);
   const grandShell=createStageCardShell(L().summitDay3Title);
-  await simulateGamesLive(grand, 8, pointsForPlace, 4, 'stage', 0, null, zones, {stageName:L().liveSummitFinals});
+  await simulateGamesLive(grand, 8, pointsForPlace, 4, 'stage', 0, null, zones, {mapReplay:true, stageName:L().liveSummitFinals});
   const ranked=summitStandings(grand);
   const rank=ranked.indexOf(you)+1;
   await revealStageLog(you, grandShell, true);
@@ -30973,11 +31402,11 @@ const gclcByPoints=(a,b)=>b.stagePts-a.stagePts || b.stageElims-a.stageElims;
 // A whole qualifier resolved with no UI — used for Qualifier 2 when the player
 // already got through Qualifier 1, and for both of them when the player is out
 // of the event entirely but its seats still have to be handed to somebody.
-function computeQuietGclcQualifier(region, excludeHandles){
+async function computeQuietGclcQualifier(region, excludeHandles){
   const field=gclcBuildField(null, region, GCLC_R2_FIELD, excludeHandles);
-  simulateGamesRandomLobbies(field, GCLC_ROUND_GAMES, 50, lcqRound1PointsForPlace, 1);
+  await simulateGamesRandomLobbies(field, GCLC_ROUND_GAMES, TEAM_TARGET[squadSize]||50, lcqRound1PointsForPlace, 1);
   let pool=field.slice().sort(gclcByPoints).slice(0, GCLC_R3_FIELD);
-  simulateGamesRandomLobbies(pool, GCLC_ROUND_GAMES, 50, lcqRound1PointsForPlace, 1);
+  await simulateGamesRandomLobbies(pool, GCLC_ROUND_GAMES, TEAM_TARGET[squadSize]||50, lcqRound1PointsForPlace, 1);
   return pool.slice().sort(gclcByPoints).slice(0, GCLC_QUAL_CUT);
 }
 
@@ -31033,7 +31462,7 @@ const gclcAwardSeats=awardSeats;
 // to a standings card rather than played out live — a thousand teams over
 // eleven games is not something worth watching row by row.
 async function gclcRound(you, field, title, cut, note){
-  simulateGamesRandomLobbies(field, GCLC_ROUND_GAMES, 50, lcqRound1PointsForPlace, 1);
+  await simulateGamesRandomLobbies(field, GCLC_ROUND_GAMES, TEAM_TARGET[squadSize]||50, lcqRound1PointsForPlace, 1);
   const ranked=field.slice().sort(gclcByPoints);
   const rank=ranked.indexOf(you)+1;
   const passed=rank<=cut;
@@ -31097,7 +31526,7 @@ async function runGcLastChance(you, region, opts){
   const claim=list=>list.forEach(t=>(t.squad||[]).forEach(p=>claimed.push(p.handle)));
   for(let q=1; q<=GCLC_QUALIFIERS; q++){
     if(youIn){
-      const quiet=computeQuietGclcQualifier(region, claimed);
+      const quiet=await computeQuietGclcQualifier(region, claimed);
       qualifierTops.push(quiet); claim(quiet); continue;
     }
     const label=L().gclcQualLabel(q);
@@ -31135,7 +31564,7 @@ async function runGcLastChance(you, region, opts){
   const shell=createStageCardShell(L().gclcFinalsTitle(finals.length, GCLC_FINALS_GAMES));
   if(youIn){
     await simulateGamesLive(finals, GCLC_FINALS_GAMES, pointsForPlace, 4, 'stage', 0, null, zones,
-      {stageName:L().liveGclcFinals});
+      {mapReplay:true, stageName:L().liveGclcFinals});
   } else {
     // Player is out, but the event still decides who takes the seats.
     simulateGames(finals, GCLC_FINALS_GAMES, pointsForPlace, 4);
@@ -31197,7 +31626,7 @@ async function runGlobalChampionship(you, regionRank, region, lcqWinners, region
   const zones=await showFinalsLandingPicker(field, you);
   const shell=createStageCardShell(L().gcStageTitle(GC_GAMES));
   await simulateGamesLive(field, GC_GAMES, pointsForPlace, 4, 'stage', 0, null, zones,
-    {stageName:L().liveWorlds});
+    {mapReplay:true, stageName:L().liveWorlds});
   const ranked=summitStandings(field);
   const rank=ranked.indexOf(you)+1;
   await revealStageLog(you, shell, true);
@@ -31807,9 +32236,113 @@ function applyStageBias(pointsFn){
   const finals = (pointsFn===pointsForPlace);
   SURVIVAL_BIAS = finals ? SURVIVAL_BIAS_FINALS : SURVIVAL_BIAS_OPEN;
   FORM_SPREAD   = finals ? FORM_SPREAD_FINALS   : FORM_SPREAD_OPEN;
+  // The zone engine needs the same split, for the same reason and off the same
+  // signal — an open stage is a kill race and a final is played for placement,
+  // and one setting cannot be both. Reading it off the scoring table here means
+  // no call site has to remember to set it, exactly as with the two above.
+  if(typeof ZoneSim !== 'undefined') ZoneSim.profile(finals ? 'finals' : 'open');
 }
-function simulateGame(teams){
+// The trade, on its own. It was written out twice inside simulateGame — once
+// for the pair loop and once for the hot streak — and the zone engine needs a
+// third caller, so it lives here now and there is exactly one copy of it.
+// Reads _pc, which is power as seen from inside a fight: form applied, plus the
+// ping edge, which is the only thing ping touches.
+function resolveDuel(a, b, exponent){
+  const wa = Math.pow(Math.max(a._pc, 1), exponent);
+  const wb = Math.pow(Math.max(b._pc, 1), exponent);
+  return Math.random() * (wa + wb) < wa ? a : b;
+}
+
+// Fewer squads than this and the game is simulated but not played back.
+const REPLAY_MIN_SQUADS = 8;
+let LAST_ZONE_TIMELINE = [];
+let LAST_ZONE_ROSTER = [];
+let RECORD_NEXT_ZONE_GAME = false;
+
+function useZoneSim(teams){
+  return typeof ZoneSim !== 'undefined'
+      && isMajorMode
+      // Every squad size the Majors and ALL FNCS are played at. The engine was
+      // written for duos and gated to them while it was being calibrated, but
+      // nothing in it counts to two: a squad carries its own player count for
+      // the header and for Storm Surge, and the duel it hands a fight to is the
+      // app's own, picked by size on the line below.
+      && squadSize >= 2 && squadSize <= 4
+      && teams.length >= 2
+      && ALL_LANDING_ZONES.length > 0;
+}
+
+// Bridges the app's team objects to the engine. The engine knows nothing about
+// this file: it is handed a random source, the island, where everyone dropped,
+// and how to settle a fight.
+//
+// lobbyOpts carries the size of the real lobby this game was drawn from, when
+// it differs from `teams`. It differs whenever a caller has already dropped
+// some of the field — the landing fight losers, for the live replay — before
+// ever handing survivors to the engine; without it the replay header counts
+// down from whoever is left rather than from the fifty who dropped.
+function simulateGameOnMap(teams, lobbyOpts){
+  teams.forEach(t=>{
+    t._elims=0; t._feed=[];
+    t._pf=Math.max(1, t.pow*gameForm());
+    t._pc=Math.max(1, t._pf+(t.closeEdge||0));
+  });
+
+  const set    = (CARD_SET === 'm1') ? 'm1' : 'm2';
+  const ratio  = MAP_ASPECT[set].split('/');
+  const aspect = Number(ratio[1]) / Number(ratio[0]);
+  const exponent = DUEL_POW_EXPONENT_BY_MODE[squadSize] || 5;
+
+  const result = ZoneSim.simulateZoneGame(teams, {
+    rng: Math.random,
+    land: ZONE_SETS[set],
+    aspect: aspect,
+    startOf: t => {
+      const z = t.landingZone;
+      if(z) return {x: z.x + z.w/2, y: z.y + z.h/2};
+      // No drop spot: the Heats and the Play-In never run the picker. Falling
+      // back to one point put all fifty squads on the same pixel, and they wiped
+      // each other out inside the first circle. So an unpicked squad gets a
+      // rectangle off the same grid — but it lands in the middle of it, not
+      // scattered across it. There are more squads than rectangles, so some of
+      // them share, and sharing is the point: a squad spread to a random corner
+      // of its own rectangle is out of contact range of the squad that drew the
+      // same one, and a Heat would play with no landing fights at all.
+      const grid = ZONE_SETS[set];
+      const r = grid[(t._uid != null ? t._uid : Math.floor(Math.random()*grid.length)) % grid.length];
+      return {x: r.x + r.w/2 + (Math.random()-0.5),
+              y: r.y + r.h/2 + (Math.random()-0.5)};
+    },
+    duel: (a, b) => resolveDuel(a, b, exponent),
+    record: RECORD_NEXT_ZONE_GAME,
+    lobbySquads: lobbyOpts && lobbyOpts.lobbySquads,
+    lobbyPlayers: lobbyOpts && lobbyOpts.lobbyPlayers
+  });
+
+  LAST_ZONE_TIMELINE = result.timeline;
+  LAST_ZONE_ROSTER = result.roster;
+  RECORD_NEXT_ZONE_GAME = false;
+
+  // Turn the causes the engine recorded into the feed lines the match history
+  // already knows how to print.
+  teams.forEach(t=>{
+    const cause = t._deathCause;
+    if(cause === 'storm')      t._feed.push(L().feedStorm);
+    else if(cause === 'surge') t._feed.push(L().feedSurge);
+    else if(cause)             t._feed.push(L().feedDied(String(cause).replace(/<[^>]+>/g,'')));
+  });
+
+  return result.order;
+}
+
+function simulateGame(teams, lobbyOpts){
   if(teams.length===0) return [];
+
+  // All FNCS duos play on the map. Everything else keeps the round-based model
+  // below. The branch lives here rather than at the call sites so that every
+  // stage of a run uses one model — a standings table assembled from two would
+  // drift, and the drift would surface as averages nobody could explain.
+  if(useZoneSim(teams)) return simulateGameOnMap(teams, lobbyOpts);
   let alive=teams.slice();
   const eliminationOrder=[]; // first eliminated pushed first
   // _pf is this game's power: the squad's real strength shaded by its form for
@@ -31856,8 +32389,7 @@ function simulateGame(teams){
     for(let i=0;i<fighters.length;i+=2){
       const a=fighters[i], b=fighters[i+1];
       if(!alive.includes(a) || !alive.includes(b)) continue; // already caught in a chain this round
-      const wa=Math.pow(Math.max(a._pc,1),DUEL_POW_EXPONENT), wb=Math.pow(Math.max(b._pc,1),DUEL_POW_EXPONENT);
-      const winner = Math.random()*(wa+wb) < wa ? a : b;
+      const winner = resolveDuel(a, b, DUEL_POW_EXPONENT);
       const loser = winner===a ? b : a;
       const loserSize = (loser.squad && loser.squad.length) || 1;
       winner._elims += loserSize;
@@ -31874,8 +32406,7 @@ function simulateGame(teams){
         const candidates=alive.filter(t=>t!==streaker);
         if(!candidates.length) break;
         const victim=pickWeighted(candidates, t=>1/(t._pf+30), 1)[0];
-        const sw=Math.pow(Math.max(streaker._pc,1),DUEL_POW_EXPONENT), vw=Math.pow(Math.max(victim._pc,1),DUEL_POW_EXPONENT);
-        const chainWinner = Math.random()*(sw+vw)<sw ? streaker : victim;
+        const chainWinner = resolveDuel(streaker, victim, DUEL_POW_EXPONENT);
         const chainLoser = chainWinner===streaker ? victim : streaker;
         const chainLoserSize=(chainLoser.squad && chainLoser.squad.length) || 1;
         chainWinner._elims += chainLoserSize;
@@ -33373,6 +33904,7 @@ function resetAll(){
   clearLobbyTheme();
   clearEventPanel();
   removeSkipButton();
+  removeLandingPrompt();
   skipAnimation=false;
   document.getElementById('topBadge').textContent=L().badgeMode;
   preSelectedRegions=[];
