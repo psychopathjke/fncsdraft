@@ -27319,12 +27319,25 @@ let PACK_WEIGHT_EXPONENT=5, PACK_WEIGHT_FLOOR=45;
 // 0.1-0.6% for 2026. These bring it to 90.9 and 0.6%.
 //
 // Major 2 and Major 3 landed after that was measured and were left on the 2026
-// curve, which is the same mistake in the same pool: 4000 packs each say Europe
-// deals two mythics or more 10.7% and 12.4% of the time and a pack that is 90+
-// top to bottom 2.4% and 2.8%, against 1.1% and 0.1% for the Major 1 curve and
-// 3.3%/0.1% and 6.8%/0.7% for the two 2026 sets. Three sets, one pool shape, one
-// curve — tools/check-pack-odds.js is what those numbers come from.
-const P2025_PACK={exp:2, floor:35};
+// curve, which is the same mistake in the same pool: Europe dealt two mythics or
+// more 12.4% of the time and a pack that was 90+ top to bottom 2.8% of the time.
+//
+// But the Major 1 curve overshot the other way — 22.6% of Europe packs held a
+// mythic against 29.5% and 40.3% in the two 2026 sets, so the 2025 season was
+// the stingiest thing in the game rather than the richest. Swept five settings
+// against what 2026 actually deals; exp 3 / floor 40 is the one that lands
+// inside that band on every measure at once:
+//
+//   Europe            1+ mythic   2+ mythic   all 90+   best of four
+//   2026 Major 1        29.5%       3.4%       0.2%        90.7
+//   2026 Major 2        40.3%       6.5%       0.6%        91.7
+//   2025 exp2 floor35   22.6%       1.8%       0.1%        89.2
+//   2025 exp3 floor40   31.9%       3.2%       0.2%        91.0   <- this
+//   2025 exp5 floor45   53.0%      13.2%       3.0%        93.5
+//
+// So a mythic turns up about as often as it does in 2026, and the 95/95/96 pack
+// is as rare. tools/check-pack-odds.js is where those numbers come from.
+const P2025_PACK={exp:3, floor:40};
 const PACK_WEIGHTS={ t1:P2025_PACK, t2:P2025_PACK, t3:P2025_PACK };
 function packWeightFor(p){
   const c=PACK_WEIGHTS[p.cardSet];
