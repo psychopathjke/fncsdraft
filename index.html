@@ -1774,6 +1774,7 @@ gclcIntro:(reg,slots)=>'В прямую квоту региона не попа�
 gclcIntroQualified:(reg,slots)=>'Слот на LAN у тебя уже есть, но Last Chance играет весь регион — две квалификации по три раунда, из каждой топ-25 в общий финал на 50 дуо. Там разыгрываются ещё '+slots+' мест от региона '+reg+'. Второй слот тебе не дадут: если финишируешь в проходной зоне, место уйдёт ближайшему дуо без квоты.',
 gclcQualLabel:q=>'Last Chance · Квалификация '+q,
 gclcQual2Quiet:n=>'Квалификация 2 сыграна без тебя — её топ-'+n+' присоединяются к финалу.',
+gclcSeatCutRolled:(slots,at)=>'— слотов: '+slots+' · выше линии команды, у которых слот уже был; последний слот ушёл на #'+at+' —',
 gclcSeatRolls:(rank,who)=>'#'+rank+' — проходная позиция, но слот у тебя уже был. Место ушло дальше вниз: '+who+'.',
 gclcAlreadyIn:'Ты и так едешь на LAN — этот финал ничего у тебя не отнимает.',
 gclcOutNote:'Ты вылетел из Last Chance, но турнир доигрывается — эти дуо забирают оставшиеся места региона.',
@@ -1979,6 +1980,7 @@ gclcIntro:(reg,slots)=>'You missed your region\u2019s direct allocation. The Las
 gclcIntroQualified:(reg,slots)=>'Your LAN seat is already booked, but the Last Chance is the whole region\u2019s event — two qualifiers of three rounds, the top 25 of each meeting in a 50-duo Finals for '+slots+' more '+reg+' seats. You cannot take a second one: finish in a qualifying spot and the seat rolls down to the nearest duo without one.',
 gclcQualLabel:q=>'Last Chance · Qualifier '+q,
 gclcQual2Quiet:n=>'Qualifier 2 played out without you — its top '+n+' join the Finals.',
+gclcSeatCutRolled:(slots,at)=>'— '+slots+' seat'+(slots===1?'':'s')+' · everyone above already had one; the last seat went to #'+at+' —',
 gclcSeatRolls:(rank,who)=>'#'+rank+' was a qualifying spot, but your seat was already booked. It rolled down to '+who+'.',
 gclcAlreadyIn:'You are going to the LAN either way — this Finals takes nothing away from you.',
 gclcOutNote:'You are out of the Last Chance, but the event plays on — these duos take the region\u2019s remaining seats.',
@@ -26393,6 +26395,15 @@ const PLAYER_ROLE={
 // dropped: a coin-flip between two real roles is worse than the attribute
 // fallback, which at least reads the player's own numbers.
 const _roleNorm=s=>String(s==null?'':s).toLowerCase().replace(/[^a-z0-9]/g,'');
+// The fantasy tables only cover the 2026 Major 2 lobbies in Europe and NA
+// Central, so a player who was not in one of those is left to the guess from
+// attributes — and the guess gets some of them plainly wrong. These are the
+// corrections, hand-labelled rather than scraped, each one a player whose role
+// is not in dispute in the scene. They win over both the table and the guess,
+// and the list is meant to grow as wrong ones are spotted.
+const PLAYER_ROLE_KNOWN={
+  "Queasy":"I"          // called for Merstach and SwizzY through the 2025 season
+};
 let _ROLE_BY_NORM=null;
 function roleByNorm(){
   if(_ROLE_BY_NORM) return _ROLE_BY_NORM;
@@ -26403,13 +26414,18 @@ function roleByNorm(){
     if(!(k in _ROLE_BY_NORM)) _ROLE_BY_NORM[k]=PLAYER_ROLE[h];
     else if(_ROLE_BY_NORM[k]!==PLAYER_ROLE[h]) _ROLE_BY_NORM[k]=null;
   });
+  // The hand-labelled ones go in last so a correction really corrects.
+  Object.keys(PLAYER_ROLE_KNOWN).forEach(h=>{
+    const k=_roleNorm(h);
+    if(k) _ROLE_BY_NORM[k]=PLAYER_ROLE_KNOWN[h];
+  });
   return _ROLE_BY_NORM;
 }
 function realRoleKey(p){
   const h=p && p.handle;
   if(!h) return null;
-  const r=PLAYER_ROLE[h] || roleByNorm()[_roleNorm(h)]
-       || (p.liquiName && (PLAYER_ROLE[p.liquiName] || roleByNorm()[_roleNorm(p.liquiName)]));
+  const r=roleByNorm()[_roleNorm(h)] || PLAYER_ROLE[h]
+       || (p.liquiName && (roleByNorm()[_roleNorm(p.liquiName)] || PLAYER_ROLE[p.liquiName]));
   return r==='I' ? 'roleIGL' : (r==='F' ? 'roleFRG' : null);
 }
 
@@ -30153,7 +30169,7 @@ async function renderWinnersPlate(shell, winner, you){
   await sleep(420);
 }
 
-async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, prizeTable){
+async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, prizeTable, cutLabel){
   const cap=maxRows||60;
   let view=ranked, truncated=false;
   if(ranked.length>cap){
@@ -30196,7 +30212,7 @@ async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, p
       const cl=document.createElement('tr');
       cl.className='st-row';
       cl.innerHTML=`<td colspan="10" style="text-align:center;color:var(--danger);font-size:11px;
-        text-transform:uppercase;letter-spacing:.06em;padding:6px 0;">${L().stageCutLabel(cut)}</td>`;
+        text-transform:uppercase;letter-spacing:.06em;padding:6px 0;">${cutLabel || L().stageCutLabel(cut)}</td>`;
       body.appendChild(cl);
     }
     const reg=t.summitRegion || (t.squad&&t.squad[0]||{}).region || '';
@@ -30974,10 +30990,16 @@ async function runGcLastChance(you, region, opts){
   // sitting further down than the standings order would suggest.
   const seatSet=new Set(seats);
   const seatCut=seats.length ? ranked.indexOf(seats[seats.length-1])+1 : slots;
+  // The line the table draws is where the last seat actually landed, which is
+  // not the same as the number of seats: a region with one seat can see it roll
+  // past two already-qualified duos and settle on third. Labelling that line
+  // "top 3 advance" reads as three seats, so when it has rolled the label says
+  // how many seats there really were and why the line is where it is.
+  const seatCutLabel = seatCut>slots ? L().gclcSeatCutRolled(slots, seatCut) : null;
 
   if(!youIn){
     finalizeStageCard(shell, 0, finals.length, 0, false, false, L().gclcOutNote);
-    await revealStandings(shell, ranked, you, seatCut, null, seatSet, 'GCLC');
+    await revealStandings(shell, ranked, you, seatCut, null, seatSet, 'GCLC', seatCutLabel);
     removeSkipButton();
     return {advanced:false, stage:lastStage, rank:lastRank, total:lastTotal, qualifiers:seats};
   }
@@ -30991,7 +31013,7 @@ async function runGcLastChance(you, region, opts){
     : alreadyQualified ? L().gclcAlreadyIn
     : L().gclcFail(slots);
   finalizeStageCard(shell, rank, finals.length, you.stagePts, wonSeat||alreadyQualified, you.gotVR, note);
-  await revealStandings(shell, ranked, you, seatCut, null, seatSet, 'GCLC');
+  await revealStandings(shell, ranked, you, seatCut, null, seatSet, 'GCLC', seatCutLabel);
   removeSkipButton();
   // The Last Chance Finals pay on their own table whether or not the seat comes
   // with them, which is the whole reason an already-qualified duo turns up.
