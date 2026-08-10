@@ -29125,13 +29125,40 @@ function landingSlotPool(fieldSize){
   return pool;
 }
 
-function buildBotLandingAssignment(bots){
-  const slotPool=landingSlotPool(bots.length);
+// What a squad gives up to share a box, in zone points. A contested drop is
+// worth taking when the spot is good enough: at 1.6, the best zone on the map is
+// still worth landing on with one team already there rather than dropping alone
+// on a 2-point field, and worth it with two only if it is a 4.
+const CONTEST_COST=2.4;
+// A little scatter so the same lobby does not lay out identically every game.
+const LANDING_NOISE=1.15;
 
+function buildBotLandingAssignment(bots){
+  // Strongest first, and each squad takes the best spot still worth taking.
+  //
+  // Seats used to be dealt at random out of a weighted pool, which produced the
+  // right amount of contact and none of the meaning: measured over 300 lobbies,
+  // 64% of the field shared a box, and the teams doing the sharing were exactly
+  // average (power 100 against a field of 100) on exactly average spots (2.43
+  // points against 2.44). So half the field lost a coin flip at the drop for no
+  // reason, and whoever won the tournament was usually whoever happened to land
+  // alone — the opposite of the real thing, where the drop map's contested boxes
+  // are the named POIs and the teams in them are the ones who go on to win.
+  //
+  // Now the good teams pick first and they want the same loot, so the contests
+  // land where the loot is. The real Global Championship map is the target: 33
+  // trios across about 27 boxes, four of them shared, roughly a third of the
+  // field contesting.
+  const order=bots.slice().sort((a,b)=>(b.pow||0)-(a.pow||0));
   const zoneGroups=new Map();
-  bots.forEach((t,i)=>{
-    const zoneIdx=slotPool[i % slotPool.length];
-    const zone=ALL_LANDING_ZONES[zoneIdx];
+  const countOf=z=>(zoneGroups.get(z)||[]).length;
+  order.forEach(t=>{
+    let best=null, bestScore=-Infinity;
+    ALL_LANDING_ZONES.forEach(z=>{
+      const score=z.points - countOf(z)*CONTEST_COST + Math.random()*LANDING_NOISE;
+      if(score>bestScore){ bestScore=score; best=z; }
+    });
+    const zone=best||ALL_LANDING_ZONES[0];
     t.landingZone=zone; t.landingResult=null; t.landingRival=null;
     t.avgRating=Math.round(t.squad.reduce((s,p)=>s+p.rating,0)/t.squad.length);
     applyLandingPow(t, zone.points);
