@@ -1774,6 +1774,7 @@ gclcIntro:(reg,slots)=>'В прямую квоту региона не попа�
 gclcIntroQualified:(reg,slots)=>'Слот на LAN у тебя уже есть, но Last Chance играет весь регион — две квалификации по три раунда, из каждой топ-25 в общий финал на 50 дуо. Там разыгрываются ещё '+slots+' мест от региона '+reg+'. Второй слот тебе не дадут: если финишируешь в проходной зоне, место уйдёт ближайшему дуо без квоты.',
 gclcQualLabel:q=>'Last Chance · Квалификация '+q,
 gclcQual2Quiet:n=>'Квалификация 2 сыграна без тебя — её топ-'+n+' присоединяются к финалу.',
+gcSeatCutRolled:(slots,at)=>'— слотов на LAN: '+slots+' · выше линии команды, которые уже квалифицированы; последний слот ушёл на #'+at+' —',
 gclcSeatCutRolled:(slots,at)=>'— слотов: '+slots+' · выше линии команды, у которых слот уже был; последний слот ушёл на #'+at+' —',
 gclcSeatRolls:(rank,who)=>'#'+rank+' — проходная позиция, но слот у тебя уже был. Место ушло дальше вниз: '+who+'.',
 gclcAlreadyIn:'Ты и так едешь на LAN — этот финал ничего у тебя не отнимает.',
@@ -1795,6 +1796,7 @@ gcStageTitle:n=>'Global Championship — гранд-финал ('+n+' игр з�
 gcChampion:'🏆 Чемпион мира — Fortnite Global Championship 2026',
 gcPlaceNote:rank=>'Место #'+rank+' на чемпионате мира',
 gcResultTitle:n=>'Global Championship, Антверпен <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> — '+n+' дуо',
+liveWorlds2025:'Global Championship · Лион <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
 liveWorlds:'Global Championship · Антверпен <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
 celWorldsTitle:'ЕДЕШЬ В АНТВЕРПЕН', celWorldsSub:'Fortnite Global Championship · Антверпен <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> · 26–27 сентября',
 celWorldChampTitle:'ЧЕМПИОН МИРА', celWorldChampSub:'Fortnite Global Championship 2026',
@@ -1980,6 +1982,7 @@ gclcIntro:(reg,slots)=>'You missed your region\u2019s direct allocation. The Las
 gclcIntroQualified:(reg,slots)=>'Your LAN seat is already booked, but the Last Chance is the whole region\u2019s event — two qualifiers of three rounds, the top 25 of each meeting in a 50-duo Finals for '+slots+' more '+reg+' seats. You cannot take a second one: finish in a qualifying spot and the seat rolls down to the nearest duo without one.',
 gclcQualLabel:q=>'Last Chance · Qualifier '+q,
 gclcQual2Quiet:n=>'Qualifier 2 played out without you — its top '+n+' join the Finals.',
+gcSeatCutRolled:(slots,at)=>'— '+slots+' LAN seat'+(slots===1?'':'s')+' · everyone above is already qualified; the last seat went to #'+at+' —',
 gclcSeatCutRolled:(slots,at)=>'— '+slots+' seat'+(slots===1?'':'s')+' · everyone above already had one; the last seat went to #'+at+' —',
 gclcSeatRolls:(rank,who)=>'#'+rank+' was a qualifying spot, but your seat was already booked. It rolled down to '+who+'.',
 gclcAlreadyIn:'You are going to the LAN either way — this Finals takes nothing away from you.',
@@ -2001,6 +2004,7 @@ gcStageTitle:n=>'Global Championship — Grand Finals ('+n+' games across two da
 gcChampion:'🏆 World Champion — Fortnite Global Championship 2026',
 gcPlaceNote:rank=>'#'+rank+' at the World Championship',
 gcResultTitle:n=>'Global Championship, Antwerp <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> — '+n+' duos',
+liveWorlds2025:'Global Championship · Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
 liveWorlds:'Global Championship · Antwerp <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
 celWorldsTitle:'YOU ARE GOING TO ANTWERP', celWorldsSub:'Fortnite Global Championship · Antwerp <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> · 26–27 September',
 celWorldChampTitle:'WORLD CHAMPION', celWorldChampSub:'Fortnite Global Championship 2026',
@@ -29668,13 +29672,25 @@ async function runMajorTournament(){
     // Major 3 is the last road to Lyon, and section 6 of the 2025 rules says how
     // many seats each region carries down it.
     : CARD_SET==='t3' ? (GC2025_M3_SEATS[myGfRegion]||0) : 0;
+  // A team that already holds a seat at the LAN cannot win a second one: it keeps
+  // the place it finished and the money that pays, and the seat passes down to
+  // the next team in the region without one. That is the rule the Last Chance
+  // already followed and the Grand Finals did not — so a Summit duo finishing
+  // fourth in Major 2 was silently eating one of Europe's nine Antwerp seats,
+  // and the duo that should have inherited it stayed home.
+  const gfSeats = gfSlots ? awardSeats(finalTeams, gfSlots, holdsLanSeat) : [];
+  const gfSeatSet = new Set(gfSeats);
+  const gfSeatCut = gfSeats.length ? finalTeams.indexOf(gfSeats[gfSeats.length-1])+1 : gfSlots;
+  const youQualified = gfSlots ? gfSeatSet.has(you) : youFinalRank===1;
   finalizeStageCard(gfShell, youFinalRank, finalTeams.length, you.stagePts,
-    gfSlots ? youFinalRank<=gfSlots : youFinalRank===1, you.gotVR,
+    youQualified, you.gotVR,
     gfSlots ? (CARD_SET==='m2' ? L().major2GcSlotNote(gfSlots)
              : CARD_SET==='t3' ? L().major3GcSlotNote(gfSlots)
              : L().majorFinalsSlotNote(gfSlots)) : '');
   const gfPrize = CARD_MODE ? ((you.squad[0]||{}).region||null) : null;
-  await revealStandings(gfShell, finalTeams, you, gfSlots || 0, null, null, gfPrize);
+  await revealStandings(gfShell, finalTeams, you, gfSlots ? gfSeatCut : 0, null,
+    gfSlots ? gfSeatSet : null, gfPrize,
+    (gfSlots && gfSeatCut>gfSlots) ? L().gcSeatCutRolled(gfSlots, gfSeatCut) : null);
   if(gfPrize) lobbyPrizeTable=gfPrize;
   removeSkipButton();
 
@@ -29712,9 +29728,11 @@ async function runMajorTournament(){
     // Finals — it is a real event on the calendar, not something that only
     // exists when you personally missed out. So it plays either way, and only
     // then does anyone fly to Antwerp.
-    const directlyIn=youFinalRank<=gfSlots;
+    const directlyIn=youQualified;
+    // The duos that really took the region's seats, not the top N of the table —
+    // the two are different the moment a seat rolls past somebody already going.
     const seatHandles=[];
-    finalTeams.slice(0, gfSlots).forEach(t=>(t.squad||[]).forEach(p=>seatHandles.push(p.handle)));
+    gfSeats.forEach(t=>(t.squad||[]).forEach(p=>seatHandles.push(p.handle)));
     const lc=await runGcLastChance(you, myGfRegion, {alreadyQualified:directlyIn, seatHandles});
     if(directlyIn){
       worlds=await runGlobalChampionship(you, youFinalRank, myGfRegion, lc.qualifiers, finalTeams);
@@ -29727,7 +29745,7 @@ async function runMajorTournament(){
   // the 2025 rules fill all 33 seats off the three Majors' Finals Leaderboards —
   // so the regional final is the only door.
   let worlds2025=null;
-  if(CARD_MODE && CARD_SET==='t3' && gfSlots && youFinalRank<=gfSlots){
+  if(CARD_MODE && CARD_SET==='t3' && gfSlots && youQualified){
     worlds2025=await runGlobalChampionship2025(you, youFinalRank, myGfRegion, finalTeams);
   }
 
@@ -30869,7 +30887,39 @@ function computeQuietGclcQualifier(region, excludeHandles){
 // keeps its finishing position but cannot take a second seat, so the seat rolls
 // down to the next duo that isn't going yet, and keeps rolling if that one is
 // already in too.
-function gclcAwardSeats(ranked, slots, holdsSeat){
+// Who is already going to the season's LAN before this Major is played. In 2026
+// that is the fifteen duos that came through the Major 1 Summit; in 2025 the
+// trios that took a Global Championship seat out of an earlier Major, which by
+// Major 3 means both of them. Major 1 has nobody above it, so nothing is held.
+function lanSeatHoldersForSet(){
+  return CARD_SET==='m2' ? GC_SUMMIT_DUOS
+       : CARD_SET==='t2' ? GC2025_M1_TRIOS
+       : CARD_SET==='t3' ? GC2025_M1_TRIOS.concat(GC2025_M2_TRIOS) : [];
+}
+let _LAN_SEAT_HANDLES=null, _LAN_SEAT_SET_FOR=null;
+function lanSeatHandles(){
+  if(_LAN_SEAT_SET_FOR===CARD_SET && _LAN_SEAT_HANDLES) return _LAN_SEAT_HANDLES;
+  _LAN_SEAT_HANDLES=new Set();
+  lanSeatHoldersForSet().forEach(team=>team.forEach(h=>_LAN_SEAT_HANDLES.add(_gcNorm(h))));
+  _LAN_SEAT_SET_FOR=CARD_SET;
+  return _LAN_SEAT_HANDLES;
+}
+// One player of a locked team is enough: the seat belongs to the team, and the
+// team is whoever they are entered with — the substitution rules already hold
+// them together.
+function holdsLanSeat(t){
+  if(!t || t.isYou) return false;
+  const held=lanSeatHandles();
+  if(!held.size) return false;
+  return (t.squad||[]).some(p=>held.has(_gcNorm(p.handle)));
+}
+
+// A seat is won by the highest-placed team that does not already have one. Epic
+// writes it the same way for every leaderboard that advances anybody: a team
+// already through keeps its placement and its prize money, and its advancement
+// spot passes to the next team in that region without one. Used by the Last
+// Chance and by the regional Grand Finals alike.
+function awardSeats(ranked, slots, holdsSeat){
   const seats=[];
   for(const t of ranked){
     if(seats.length>=slots) break;
@@ -30878,6 +30928,7 @@ function gclcAwardSeats(ranked, slots, holdsSeat){
   }
   return seats;
 }
+const gclcAwardSeats=awardSeats;
 
 // One qualifier round: eleven matches in reshuffled 50-team lobbies, resolved
 // to a standings card rather than played out live — a thousand teams over
@@ -31235,7 +31286,7 @@ async function runGlobalChampionship2025(you, regionRank, region, regionalFinal)
   // Grand Finals (T1_KILL.G). The LAN's own payload was never imported, so this
   // is the season's final-stage ladder rather than a number read off Lyon.
   await simulateGamesLive(field, GC2025_GAMES, pointsForPlace, T1_KILL.G, 'stage', 0, null, zones,
-    {stageName:L().liveWorlds});
+    {stageName:L().liveWorlds2025});
   const ranked=summitStandings(field);
   const rank=ranked.indexOf(you)+1;
   await revealStageLog(you, shell, true);
