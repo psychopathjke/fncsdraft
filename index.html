@@ -27282,7 +27282,15 @@ let PACK_WEIGHT_EXPONENT=5, PACK_WEIGHT_FLOOR=45;
 // from. Measured, not guessed: with the 2026 numbers the 2025 pool returned a
 // best-of-four of 94.5 and made 8.7% of packs elite from top to bottom, against
 // 0.1-0.6% for 2026. These bring it to 90.9 and 0.6%.
-const PACK_WEIGHTS={ t1:{exp:2, floor:35} };
+//
+// Major 2 and Major 3 landed after that was measured and were left on the 2026
+// curve, which is the same mistake in the same pool: 4000 packs each say Europe
+// deals two mythics or more 10.7% and 12.4% of the time and a pack that is 90+
+// top to bottom 2.4% and 2.8%, against 1.1% and 0.1% for the Major 1 curve and
+// 3.3%/0.1% and 6.8%/0.7% for the two 2026 sets. Three sets, one pool shape, one
+// curve — tools/check-pack-odds.js is what those numbers come from.
+const P2025_PACK={exp:2, floor:35};
+const PACK_WEIGHTS={ t1:P2025_PACK, t2:P2025_PACK, t3:P2025_PACK };
 function packWeightFor(p){
   const c=PACK_WEIGHTS[p.cardSet];
   const exp=c?c.exp:PACK_WEIGHT_EXPONENT, floor=c?c.floor:PACK_WEIGHT_FLOOR;

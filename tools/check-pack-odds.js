@@ -31,17 +31,27 @@ const BOOTSTRAP = `
       pool = byRegion[reg];
       var mythic = pool.filter(function(p){ return attrsFor(p).ovr >= 95; }).length;
       var legendary = pool.filter(function(p){ var o = attrsFor(p).ovr; return o >= 90 && o < 95; }).length;
-      var hits = 0, best = 0;
+      var hits = 0, best = 0, multi = 0, allElite = 0, mythSum = 0;
       for (var i = 0; i < TRIALS; i++) {
         drafted = [];
         var pack = generatePack();
-        var top = 0;
-        pack.forEach(function(p){ top = Math.max(top, attrsFor(p).ovr); });
+        var top = 0, myth = 0, elite = 0;
+        pack.forEach(function(p){
+          var v = attrsFor(p).ovr;
+          top = Math.max(top, v);
+          if (v >= 95) myth++;
+          if (v >= 90) elite++;
+        });
         if (top >= 95) hits++;
+        if (myth >= 2) multi++;
+        if (pack.length && elite === pack.length) allElite++;
+        mythSum += myth;
         best += top;
       }
       o.regions[reg] = {pool: pool.length, mythic: mythic, legendary: legendary,
                         packHasMythic: Math.round(1000 * hits / TRIALS) / 10 + '%',
+                        twoPlusMythic: Math.round(1000 * multi / TRIALS) / 10 + '%',
+                        allElite: Math.round(1000 * allElite / TRIALS) / 10 + '%',
                         avgBestInPack: Math.round(10 * best / TRIALS) / 10};
     });
   });
@@ -66,7 +76,9 @@ Object.keys(res).forEach(set => {
     const r = s.regions[reg];
     console.log('  ' + reg.padEnd(5) + ' pool ' + String(r.pool).padStart(4) +
                 '  mythic ' + String(r.mythic).padStart(3) + '  legendary ' + String(r.legendary).padStart(3) +
-                '  pack has a mythic ' + r.packHasMythic.padStart(6) +
+                '  1+ myth ' + r.packHasMythic.padStart(6) +
+                '  2+ myth ' + r.twoPlusMythic.padStart(6) +
+                '  all 90+ ' + r.allElite.padStart(6) +
                 '  best in pack ' + r.avgBestInPack);
   });
 });
