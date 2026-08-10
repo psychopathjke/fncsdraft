@@ -14408,6 +14408,31 @@ var RATING_FLOOR={};
   "t3enyy":"EvozA eSport",
   "worthy":"PWR"
   };
+  // The club a 2025 card shows has to be the club that player was on in 2025.
+  // Clubs reach the base from the 2026 rosters only and are then copied onto
+  // every other card of the same person, so a Major 1 2025 trio card was wearing
+  // next year's badge: measured against the real Lyon field, 48 of the 83
+  // players it could be checked against were wrong — SwizzY at Team HavoK when
+  // he won the season with Gentle Mates, Malibuca at BIG when he played for
+  // Gentle Mates, MrSavage at XSET when he was Red Bull.
+  //
+  // This is the Global Championship field as Liquipedia records it, which is
+  // September 2025 — the right club for Major 3 and the LAN, and for Major 1 in
+  // February the right season rather than the right week. Written by
+  // tools/build-2025-orgs.js off the saved event page. Per-Major rosters would
+  // pin the February transfers exactly; this does not pretend to.
+  const ORG_2025={"5aald":"Glory Esports","Acorn":"Dignitas","Adapter":"Al Ula","Ajerss":"Elite Esports","alex":"PWR","Aminished":"Past Bliss","Anon":"PWR","Ark":"SORIN","Aspect":"RVL ESPORT","Bacca":"Marine Region","Balor":"Al Ula","Boltz":"Xen","Buyuriru":"DetonatioN FocusMe","Cadu":"Flame Hard","Cazi":"Armour Esports","charyy":"RVL ESPORT","Chico":"Team Falcons","Clix":"XSET","Cold":"Twisted Minds","Cooper":"Dignitas","Curly":"Witness The Journey","Darm":"BIG","Eomzo":"Elite Esports","EpikWhale":"FaZe Clan","Fazer":"ShindeN","FKS":"Al Ula","Flickzy":"AIGHT","Gabzera":"T6 eSports","Goofy":"PWR","Hero":"Al Ula","Higgs":"XSET","Hris":"BK ROG Esports","IDrop":"Team HavoK","Japko":"Team Falcons","Kami":"Al Qadsiah","Khanada":"Dignitas","Kimkana":"Crazy Raccoon","Koyota":"ZETA DIVISION","m0untain":"Lethal Region","Malibuca":"Gentle Mates","Mansour":"Al Ula","MariusCOW":"Gentle Mates","Merem":"QT DIG","Merstach":"Gentle Mates","MrSavage":"Red Bull eSports","Muz":"XSET","P1ng":"Gentle Mates","panzer":"GLORE","Peterbot":"Team Falcons","Pixie":"Team HavoK","pixx":"Team HavoK","Pollo":"Gentle Mates","PXMP":"Elite Esports","Queasy":"Twisted Minds","Raito":"EDGE","Rapid":"Xen","Razl":"Crazy Raccoon","Reet":"JOGO","Resignz":"PWR","Rew":"Al Ula","Rise":"Riddle","Ritual":"XSET","saad":"RAFHA eSPORTS","Salko":"2AM Esports","Setty":"Team Falcons","Shadow":"Fear Esports","Snowy":"Team Stallions","Stryker":"Gremio Esports","SwizzY":"Gentle Mates","Sxhool":"TYT Esports","TaySon":"Team Falcons","Tinka":"JFT Esports","Tisco":"ShindeN","Upl":"Northern Star Gaming","Vanyak3kk":"Gentle Mates","Veno":"XSET","vic0":"BIG","VicterV":"FaZe Clan","Visxals":"Past Bliss","VortexM":"PWR","WeY":"T6 eSports","wickesy":"FISTERIA","Wox":"Team HavoK","yuma":"ZETA DIVISION"};
+  const _orgNorm=s=>String(s==null?'':s).toLowerCase().replace(/[^a-z0-9]/g,'');
+  const ORG_2025_BY_NORM={};
+  Object.keys(ORG_2025).forEach(h=>{ const k=_orgNorm(h); if(!(k in ORG_2025_BY_NORM)) ORG_2025_BY_NORM[k]=ORG_2025[h]; });
+  let org2025=0;
+  PLAYERS_BASE.forEach(q=>{
+    if(q.cardSet!=='t1' && q.cardSet!=='t2' && q.cardSet!=='t3') return;
+    const club=ORG_2025[q.handle] || ORG_2025_BY_NORM[_orgNorm(q.handle)];
+    if(club && club!==q.org){ q.org=club; org2025++; }
+  });
+  if(typeof console!=='undefined' && console.debug) console.debug('2025 clubs applied:', org2025);
+
   let fromLiqui=0;
   PLAYERS_BASE.forEach(q=>{
     if(q.org) return;
