@@ -1942,7 +1942,7 @@ lcqQualTitle:'Last Chance Qualifier — квалификация (11 игр, т�
 lcqRound1Title:n=>'Last Chance Qualifier — Раунд 1 ('+n+' команд, 11 игр, топ-50 проходит дальше)',
 lcqRound2Title:(n,g)=>'Last Chance Qualifier — Раунд 2 ('+n+' команд, '+g+' игр, победитель каждой уходит в гранд-финал)',
 lcqWinLabel:'Победа — прошли!', lcqAdvancedNote:'Выиграли попытку — слот в Major Finals', lcqFailedNote:g=>'Ни разу не выиграли ни одну из '+g+' игр', lcqTop50Label:'Топ-50 — прошли этап 1', lcqRound1FailedNote:'Не попали в топ-50 на первом этапе',
-outOfWord:'из', skipBtn:'⏩ Скип', skipPressed:'Скипнуто…', continueBtn:'▶ Дальше', gameOfWord:(n,t)=>'Игра '+n+' из '+t,
+outOfWord:'из', liveTournament:'Турнир', skipBtn:'⏩ Скип', skipPressed:'Скипнуто…', continueBtn:'▶ Дальше', gameOfWord:(n,t)=>'Игра '+n+' из '+t,
 simGamesProgress:(n,t)=>t ? 'Идут матчи — '+n+' из '+t : 'Идут матчи…',
 landingPromptBtn:'⬇ Выбери точку высадки',
 statPointsWord:'очков',
@@ -2364,7 +2364,7 @@ lcqQualTitle:'Last Chance Qualifier — qualification (11 games, top 50 advance)
 lcqRound1Title:n=>'Last Chance Qualifier — Round 1 ('+n+' teams, 11 games, top 50 advance)',
 lcqRound2Title:(n,g)=>'Last Chance Qualifier — Round 2 ('+n+' teams, '+g+' games, each winner takes a Grand Finals slot)',
 lcqWinLabel:'Win — advanced!', lcqAdvancedNote:'Won an attempt — Major Finals slot secured', lcqFailedNote:g=>'Never won any of the '+g+' games', lcqTop50Label:'Top 50 — cleared Round 1', lcqRound1FailedNote:'Missed the top 50 in Round 1',
-outOfWord:'of', skipBtn:'⏩ Skip', skipPressed:'Skipped…', continueBtn:'▶ Continue', gameOfWord:(n,t)=>'Game '+n+' of '+t,
+outOfWord:'of', liveTournament:'Tournament', skipBtn:'⏩ Skip', skipPressed:'Skipped…', continueBtn:'▶ Continue', gameOfWord:(n,t)=>'Game '+n+' of '+t,
 simGamesProgress:(n,t)=>t ? 'Playing games — '+n+' of '+t : 'Playing games…',
 landingPromptBtn:'⬇ Pick your drop',
 statPointsWord:'points',
@@ -32189,6 +32189,12 @@ function assignLandingZones(teams){
   // When two squads land on top of each other, they might scrap right there:
   // one gets an early-kill power boost, the other gets weakened. Sometimes
   // nothing happens and they just awkwardly share the zone.
+  //
+  // Only where the drop is not played on the map. Where it is, this same fight
+  // happens in the first forty seconds of the game with everybody watching, and
+  // nudging power here as well would settle it twice — once in secret before
+  // the game and once again on the island.
+  if(useZoneSim(teams)) return;
   zoneGroups.forEach(group=>{
     if(group.length<2) return;
     group.forEach(t=>{ t.landingResult='shared'; t.landingRival=group.find(o=>o!==t); });
@@ -32354,12 +32360,12 @@ let RECORD_NEXT_ZONE_GAME = false;
 
 function useZoneSim(teams){
   return typeof ZoneSim !== 'undefined'
-      && isMajorMode
-      // Every squad size the Majors and ALL FNCS are played at. The engine was
-      // written for duos and gated to them while it was being calibrated, but
-      // nothing in it counts to two: a squad carries its own player count for
-      // the header and for Storm Surge, and the duel it hands a fight to is the
-      // app's own, picked by size on the line below.
+      // Every mode and every squad size the app plays. The engine was written
+      // for duos in a Major and gated to exactly that while it was being
+      // calibrated, but nothing in it counts to two and nothing in it knows
+      // what a Major is: a squad carries its own player count for the header
+      // and for Storm Surge, the duel it hands a fight to is the app's own,
+      // picked by size on the line below, and a lobby is a lobby.
       && squadSize >= 2 && squadSize <= 4
       && teams.length >= 2
       && ALL_LANDING_ZONES.length > 0;
@@ -32548,7 +32554,8 @@ async function runTournament(){
   // contradicted the actual scoring table — squads legitimately rack up
   // more elim points because a wipe kills more players, and that's by
   // design in the real format, not a bug to normalize away.
-  await simulateGamesLive(teams, NUM_GAMES, pointsForPlace, 4, 'total', 0, null, zoneGroups);
+  await simulateGamesLive(teams, NUM_GAMES, pointsForPlace, 4, 'total', 0, null, zoneGroups,
+    {mapReplay:true, stageName:L().liveTournament});
   // Landing zone + fight now happen fresh before every one of the 12 games
   // (see pickZoneForGame, called from inside simulateGamesLive) instead of
   // once before the whole tournament — so the bonus/penalty is already
