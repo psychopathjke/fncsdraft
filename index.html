@@ -28154,11 +28154,40 @@ function renderSlots(){
 }
 
 const PLACEMENT_POINTS_DUO=[65,56,52,48,44,40,38,36,34,32,30,28,26,24,22,20,18,16,14,12,10,8,6,4,2];
-// Real FNCS-style trio placement points: VR 11, 2nd 6, 3rd–5th 4, 6th–17th 3,
-// nothing awarded past 17th.
-const PLACEMENT_POINTS_TRIO=[11,6,4,4,4,3,3,3,3,3,3,3,3,3,3,3,3];
-// Same shape as trio, just cut off at 13th instead of 17th (smaller squad lobby).
-const PLACEMENT_POINTS_SQUAD=[11,6,4,4,4,3,3,3,3,3,3,3,3];
+// Epic publishes placement scoring as thresholds you bank on the way up, not as
+// a payout for the finish you ended on: "Victory Royale +11, Reach Top 2 +6,
+// Reach Top 3 +4 …". A squad that wins reaches every one of those, so it banks
+// all of them — a Victory Royale is worth 65, not 11.
+//
+// The trio and squad tables were entered as the published increments and used
+// as if they were the totals, so a win paid 11 while a single elimination paid
+// 4: three kills outscored winning the game, and the whole trio standings were
+// a kill race with placement as a rounding error. The duo table above was
+// already written out in banked totals, which is why it starts at the same 65
+// and why duos never looked wrong.
+//
+// Kept as the published steps and added up here rather than as a hand-totalled
+// array, so the next table copied off a rules page cannot make the same mistake.
+function bankedPlacementTable(steps){
+  const last=steps.length ? steps[steps.length-1][0] : 0;
+  const table=[];
+  for(let place=1; place<=last; place++){
+    let sum=0;
+    steps.forEach(function(step){ if(place<=step[0]) sum+=step[1]; });
+    table.push(sum);
+  }
+  return table;
+}
+// FNCS 2025 trios, straight off the rules page: VR +11, Top 2 +6, Top 3-5 +4
+// each, Top 6-17 +3 each, nothing past 17th. Totals: 65, 54, 48, 44, 40, 36 …
+const PLACEMENT_POINTS_TRIO=bankedPlacementTable(
+  [[1,11],[2,6],[3,4],[4,4],[5,4]].concat(
+    Array.from({length:12}, (_, i) => [6+i, 3])));
+// Same shape, cut off at 13th instead of 17th — a squad lobby is 25 teams, not
+// 33, so the points stop higher up the table.
+const PLACEMENT_POINTS_SQUAD=bankedPlacementTable(
+  [[1,11],[2,6],[3,4],[4,4],[5,4]].concat(
+    Array.from({length:8}, (_, i) => [6+i, 3])));
 function placementTable(){
   return squadSize===3 ? PLACEMENT_POINTS_TRIO : squadSize===4 ? PLACEMENT_POINTS_SQUAD : PLACEMENT_POINTS_DUO;
 }
