@@ -58,6 +58,9 @@ const BOOTSTRAP = `
         });
       }
 
+      // The cell prints the record and nothing else — no zone number in front.
+      var cell = landingCellHTML(teams.filter(function(t){ return landingRecord(t); })[0] || teams[0]);
+      out.cellSample = cell;
       var records = teams.map(function(t){ return landingRecord(t); });
       var withRecord = records.filter(Boolean).length;
       var decided = teams.filter(function(t){ return (t.landingWins + t.landingLosses) > 0; }).length;
@@ -79,7 +82,9 @@ const BOOTSTRAP = `
       check(set + ': the record says something after twelve games',
         decided >= teams.length * 0.25,
         decided + ' of ' + teams.length + ' squads won or lost at least one drop');
-      check(set + ': wins and losses balance',
+      check(set + ': the cell carries no zone number',
+        cell.indexOf('#') < 0, 'cell reads ' + cell.replace(/<[^>]+>/g, ''));
+            check(set + ': wins and losses balance',
         teams.reduce(function(s,t){ return s + t.landingWins; }, 0) ===
         teams.reduce(function(s,t){ return s + t.landingLosses; }, 0),
         'wins ' + teams.reduce(function(s,t){ return s + t.landingWins; }, 0) +

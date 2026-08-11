@@ -1846,7 +1846,7 @@ celPodiumTitle:r=>'ТОП-'+r, celPodiumSub:'Подиум турнира',
 celTop10Title:'ТОП-10', celTop10Sub:'Состав отработал сильно',
 stage1TitleCards:'Этап 1 — Сеединг (6 игр, лобби по 50 команд)',
 landingFieldTitle:n=>'Лобби ('+n+' '+(squadSize===3?'трио':squadSize===4?'сквадов':'дуо')+')', stageGamesToggle:'Показать игры по одной', qualByVR:'Прошёл по Victory Royale', qualByPoints:'Прошёл по очкам', qualHereTag:'КВАЛ', alreadyQualTag:'УЖЕ КВАЛ', alreadyQualHint:'Слот на LAN у них уже есть — второй они взять не могут, и их место уходит вниз. Финиш сразу за такой командой всё равно даёт слот.', stage2NoteByVR:'Взял Victory Royale — мгновенный проход, игры на этом закончены',
-regionResultHeader:'Регионалка', dropHeader:'Высадка · счёт', landingNobodyElse:'Больше никто сюда не садился за всю стадию', prizeHeader:'Приз', prizeTitle:'💰 Призовые состава', prizePerPlayer:v=>'по '+v+' на игрока',
+regionResultHeader:'Регионалка', dropHeader:'Счёт на высадке', landingNobodyElse:'Больше никто сюда не садился за всю стадию', prizeHeader:'Приз', prizeTitle:'💰 Призовые состава', prizePerPlayer:v=>'по '+v+' на игрока',
 prizeRegional:(reg,rank)=>'Гранд-финал '+reg+' · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Лион · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
 runSummaryTitle:'📋 Итоги симуляции', lanSeatWon:'Место на LAN взято', lanSeatMissed:'Место на LAN не взято', lanSummit:'Summit', lanBelgium:'Global Championship, Бельгия', lanLyon:'Global Championship, Лион', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' в регионе '+reg+', мест: '+slots, lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', мест: '+slots, runSummaryStage:'Этап', runSummaryEarned:'Заработано за симуляцию',
@@ -2314,7 +2314,7 @@ celPodiumTitle:r=>'TOP '+r, celPodiumSub:'On the tournament podium',
 celTop10Title:'TOP 10', celTop10Sub:'Strong run from your squad',
 stage1TitleCards:'Stage 1 — Seeding (6 games, 50-team lobbies)',
 landingFieldTitle:n=>'The lobby ('+n+' '+(squadSize===3?'trios':squadSize===4?'squads':'duos')+')', stageGamesToggle:'Show the game-by-game log', qualByVR:'Advanced on a Victory Royale', qualByPoints:'Advanced on points', qualHereTag:'QUAL', alreadyQualTag:'ALREADY QUAL', alreadyQualHint:'Already holds a LAN seat — it cannot take a second one, so its place passes down. Finishing right behind this team still takes a seat.', stage2NoteByVR:'Victory Royale — instant qualification, no more games',
-regionResultHeader:'Regional', dropHeader:'Drop · record', landingNobodyElse:'Nobody else dropped here all stage', prizeHeader:'Prize', prizeTitle:'💰 Squad earnings', prizePerPlayer:v=>v+' per player',
+regionResultHeader:'Regional', dropHeader:'Drop record', landingNobodyElse:'Nobody else dropped here all stage', prizeHeader:'Prize', prizeTitle:'💰 Squad earnings', prizePerPlayer:v=>v+' per player',
 prizeRegional:(reg,rank)=>reg+' Grand Finals · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Lyon · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
 runSummaryTitle:'📋 Your run, stage by stage', lanSeatWon:'LAN seat taken', lanSeatMissed:'No LAN seat', lanSummit:'the Summit', lanBelgium:'the Global Championship, Belgium', lanLyon:'the Global Championship, Lyon', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' in '+reg+', '+slots+' seat'+(slots===1?'':'s'), lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', '+slots+' seat'+(slots===1?'':'s'), runSummaryStage:'Stage', runSummaryEarned:'Earned across the run',
@@ -26971,7 +26971,12 @@ function photoURL(p){
   // A career player uploads their own portrait, so it travels on the card
   // object rather than living in the photos folder.
   if(p && p._photo) return p._photo;
-  const f = PLAYER_PHOTO[p.handle+'@'+p.region] || PLAYER_PHOTO[p.handle];
+  // Trimmed, because some cards carry a trailing space in the handle — "Japko ",
+  // "5AALD ", "Braydz " — and an exact lookup missed a portrait that was sitting
+  // in the folder. It costs nothing and it matters more the more photos there
+  // are: a name keyed clean in the map never matches a card keyed with a space.
+  const h = String((p && p.handle) || '').trim();
+  const f = PLAYER_PHOTO[h+'@'+p.region] || PLAYER_PHOTO[h];
   return f ? PHOTO_DIR+f : null;
 }
 
@@ -30931,11 +30936,17 @@ function landingCellHTML(t){
   // settle it, so a stage takes 15.6% of a trio lobby and 30.6% of a duo one, and
   // twelve games leave a record worth reading.
   //
+  // Won and lost, and nothing else. The zone number used to lead the cell — "#22
+  // 7-5" — and it is the one thing in there nobody needs: which numbered
+  // rectangle a squad picked says nothing about how the stage went, the spots
+  // are re-picked every game anyway, and it read as clutter in front of the
+  // number that matters.
+  //
   // The dash is its own answer: nobody else dropped here all stage.
   const rec=landingRecord(t);
   return rec
-    ? `${zone} <span style="color:var(--accent);font-weight:800;">${rec}</span>`
-    : `${zone} <span style="color:var(--ink-dimmer);" title="${L().landingNobodyElse}">—</span>`;
+    ? `<span style="color:var(--accent);font-weight:800;">${rec}</span>`
+    : `<span style="color:var(--ink-dimmer);" title="${L().landingNobodyElse}">—</span>`;
 }
 
 // The plate the broadcast cuts to once a stage is done: who won it and the
@@ -31039,7 +31050,11 @@ async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, p
     truncated=true;
     if(youIdx>=cap) view=view.concat([null, you]);
   }
-  const showDrop=ranked.some(t=>t && t.landingZone);
+  // The column appears where there is a record to print, not where a zone was
+  // picked. Gating it on landingZone meant a stage that ran the picker but never
+  // resolved a landing fight still spent a column on dashes, while the column
+  // itself is now nothing but the record.
+  const showDrop=ranked.some(t=>t && landingRecord(t));
   const showRegion=ranked.some(t=>t && t.regionRank);
   const wrap=document.createElement('div');
   wrap.style.marginTop='8px';
@@ -32918,7 +32933,7 @@ function renderLobby(teams, you){
   window._youTeam=you||teams.find(t=>t.isYou);
   applyLobbyTheme();
   const body=document.getElementById('lobbyBody');
-  const showDrop=teams.some(t=>t && t.landingZone);
+  const showDrop=teams.some(t=>t && landingRecord(t));
   const headRow=body.parentElement.querySelector('thead tr');
   if(headRow){
     const dropTh=headRow.querySelector('th.drop-col');
