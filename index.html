@@ -29107,6 +29107,12 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
     // useless in the first place: sleep() returns instantly while the skip flag
     // is set, so the standings flashed past before anybody could read them.
     shell.scrollIntoView({block:'start', behavior:'smooth'});
+    // Left on the page, so its ids have to go. The next stage builds a card
+    // with the same ones - finalsLiveBody, finalsLiveTitle - and
+    // getElementById answers with the first match, so a kept card would quietly
+    // swallow the following stage rows and leave that stage looking at an empty
+    // table. The card is finished; nothing needs to find it by id again.
+    shell.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
   } else {
     await sleep(500);
     shell.remove();
