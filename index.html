@@ -1548,13 +1548,11 @@
     <div class="box-title" id="cardGalleryTitle" style="display:none;" data-i18n="cardGalleryTitle"></div>
     <div id="cardGallery" style="display:none;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:8px;"></div>
 
-    <div class="box-title" data-i18n="squadSourceTitle"></div>
-    <div class="lobby-wrap">
-      <table class="lobby-table">
-        <thead><tr><th data-i18n="playerHeader"></th><th data-i18n="regionHeader"></th><th data-i18n="tournamentHeader"></th><th class="num" data-i18n="placeHeader"></th><th class="num" data-i18n="ratingHeader"></th></tr></thead>
-        <tbody id="statBody"></tbody>
-      </table>
-    </div>
+    <!-- The per-player source table used to sit here and said nothing the
+         cards above it do not already say: region, tournament, date, placement
+         and rating are all printed on the card itself. Two readings of the same
+         four rows is one too many. renderStats below returns early when the
+         table is absent, so nothing else had to change. -->
 
     <button class="restart-btn new-draft-btn" onclick="requestReset()" data-i18n="newDraftBtn"></button>
 
@@ -33194,7 +33192,8 @@ function playerStatSheetHTML(team, idx, p){
 }
 
 function renderStats(){
-  const body=document.getElementById('statBody');
+  const body=document.getElementById('statBody');
+  if(!body) return;   // the source table was removed; the cards carry it all
   body.innerHTML='';
   drafted.forEach(p=>{
     const flag = flagImg(p.nat, 15);
