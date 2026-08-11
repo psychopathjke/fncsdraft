@@ -30822,19 +30822,29 @@ function landingCellHTML(t){
   if(!zone) return '—';
   // The spot, and nothing else.
   //
-  // A won-lost record beside it only means something if landing on somebody is
-  // a decision. On this map it is not: m2 has 19 landing boxes for 49 squads, so
-  // every squad shares one — measured over 200 lobbies, 100% of them, in groups
-  // averaging 2.9. The record can therefore be one of two things and neither is
-  // worth printing. Left as it is, a drop ends in a body about once in ten, so
-  // twelve games produce "1-0" and the column says nothing. Made decisive, every
-  // shared box would leave one survivor: 32 of 49 squads dead inside forty
-  // seconds, 35% of the lobby alive at the first circle against a real 95%, and
-  // a tournament settled by a coin flip before the first zone.
+  // The column needs a drop that decides something, and today's does not: a
+  // contested drop ends in a body about once in ten, so twelve games produce
+  // "1-0" and the number says nothing. That is what pulled it the first time.
   //
-  // The way to earn this column back is the map, not the odds — enough boxes
-  // that most squads land alone and contesting is a choice again. The counters
-  // are still kept on the team, so the day that happens this is one line.
+  // Measured over 200 lobbies through the app's own picker, at the real lobby
+  // size for each mode:
+  //
+  //   duos   36 boxes, 50 squads, 59.7% share a box, groups of 3 are 2% of them
+  //   trios  29 boxes, 33 squads, 30.5% share a box, 27 boxes occupied
+  //
+  // The trio numbers are what buildBotLandingAssignment aims at — "33 trios
+  // across about 27 boxes, four of them shared" — so the island is sized right
+  // and the crowding is deliberate. Making every contest lethal is what costs:
+  // one survivor per shared box is 15.6% of a trio lobby and 30.6% of a duo one,
+  // dead inside forty seconds, against the 4.7% the real matches report out
+  // before the first circle. Three to six times the real drop toll, on the one
+  // curve the whole engine is calibrated to.
+  //
+  // The narrow version is worth a look and is not this: a stack of three or more
+  // is 2% of groups, so forcing bodies there costs about a point of survival
+  // rather than eleven, and it is the case that reads as broken — three teams on
+  // one roof and all three alive. The counters are still on the team, so the day
+  // a drop decides something this is one line.
   return zone;
 }
 
