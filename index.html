@@ -25154,8 +25154,15 @@ const SYN_POW_CAP=12;    // was 40 — the most synergy can ever add to power
 // to make two fraggers unplayable.
 const ROLE_BONUS_STEP=4;
 // The loadout is a dice roll, not a decision, so it is scaled down hardest:
-// a duo's raw item sum of 4-22 lands at +1 to +8 instead.
-const LOADOUT_POW_SCALE=0.35;
+// a duo's raw item sum of 4-22 lands at +1 to +5 instead.
+//
+// It used to land at +1 to +8, and eight points is not a nudge. A card rated 84
+// and a card rated 96 are twelve points apart, so a lucky roll was worth
+// two-thirds of the whole distance between a decent player and an elite one —
+// and since the number the lobby list prints beside a squad has the loadout
+// folded into it, a trio of 84s could read 110 and look like the team to beat.
+// Five points still decides a close matchup and no longer decides a mismatch.
+const LOADOUT_POW_SCALE=0.22;
 // Landing zones were worth 1-10 by area. Now 1-4 — the drop still rewards
 // picking a big POI, but it can't outweigh the squad standing in it.
 const LANDING_POINTS_MAX=4;
