@@ -1839,7 +1839,7 @@ celWinTitle:'ПОБЕДА', celWinSub:'Первое место — состав 
 celPodiumTitle:r=>'ТОП-'+r, celPodiumSub:'Подиум турнира',
 celTop10Title:'ТОП-10', celTop10Sub:'Состав отработал сильно',
 stage1TitleCards:'Этап 1 — Сеединг (6 игр, лобби по 50 команд)',
-landingFieldTitle:n=>'Лобби ('+n+' '+(squadSize===3?'трио':squadSize===4?'сквадов':'дуо')+')', stageGamesToggle:'Показать игры по одной', qualByVR:'Прошёл по Victory Royale', qualByPoints:'Прошёл по очкам', stage2NoteByVR:'Взял Victory Royale — мгновенный проход, игры на этом закончены',
+landingFieldTitle:n=>'Лобби ('+n+' '+(squadSize===3?'трио':squadSize===4?'сквадов':'дуо')+')', stageGamesToggle:'Показать игры по одной', qualByVR:'Прошёл по Victory Royale', qualByPoints:'Прошёл по очкам', alreadyQualTag:'УЖЕ КВАЛ', alreadyQualHint:'Слот на LAN у них уже есть — второй они взять не могут, и их место уходит вниз. Финиш сразу за такой командой всё равно даёт слот.', stage2NoteByVR:'Взял Victory Royale — мгновенный проход, игры на этом закончены',
 regionResultHeader:'Регионалка', dropHeader:'Высадка · счёт', prizeHeader:'Приз', prizeTitle:'💰 Призовые состава', prizePerPlayer:v=>'по '+v+' на игрока',
 prizeRegional:(reg,rank)=>'Гранд-финал '+reg+' · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Лион · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
@@ -2307,7 +2307,7 @@ celWinTitle:'VICTORY', celWinSub:'First place — your squad took the tournament
 celPodiumTitle:r=>'TOP '+r, celPodiumSub:'On the tournament podium',
 celTop10Title:'TOP 10', celTop10Sub:'Strong run from your squad',
 stage1TitleCards:'Stage 1 — Seeding (6 games, 50-team lobbies)',
-landingFieldTitle:n=>'The lobby ('+n+' '+(squadSize===3?'trios':squadSize===4?'squads':'duos')+')', stageGamesToggle:'Show the game-by-game log', qualByVR:'Advanced on a Victory Royale', qualByPoints:'Advanced on points', stage2NoteByVR:'Victory Royale — instant qualification, no more games',
+landingFieldTitle:n=>'The lobby ('+n+' '+(squadSize===3?'trios':squadSize===4?'squads':'duos')+')', stageGamesToggle:'Show the game-by-game log', qualByVR:'Advanced on a Victory Royale', qualByPoints:'Advanced on points', alreadyQualTag:'ALREADY QUAL', alreadyQualHint:'Already holds a LAN seat — it cannot take a second one, so its place passes down. Finishing right behind this team still takes a seat.', stage2NoteByVR:'Victory Royale — instant qualification, no more games',
 regionResultHeader:'Regional', dropHeader:'Drop · record', prizeHeader:'Prize', prizeTitle:'💰 Squad earnings', prizePerPlayer:v=>v+' per player',
 prizeRegional:(reg,rank)=>reg+' Grand Finals · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Lyon · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
@@ -30953,10 +30953,16 @@ async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, p
     }
     const reg=t.summitRegion || (t.squad&&t.squad[0]||{}).region || '';
     const through = qualifiedSet ? qualifiedSet.has(t) : (cut ? i<cut : true);
+    // A team that already holds a LAN seat is not in qualifiedSet — awardSeats
+    // skips it, because it cannot win a second one — so without this it rendered
+    // dimmed, reading exactly like a team that missed out. It is the opposite:
+    // its place passes down, and that is the one thing a player reading this
+    // table needs to know, because finishing behind it still takes a seat.
+    const seated = qualifiedSet ? holdsLanSeat(t) : false;
     const tr=document.createElement('tr');
     tr.className='st-row'+(mine?' you':'');
     if(mine) tr.style.cssText='background:rgba(0,176,144,.12);font-weight:700;';
-    else if(!through) tr.style.opacity='.55';
+    else if(!through && !seated) tr.style.opacity='.55';
     // Any row opens that team's game-by-game log for this stage, the same way
     // the final standings table already worked.
     if(t.stageLog && t.stageLog.length){
@@ -30972,6 +30978,8 @@ async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, p
     const played=(t.stageLog||[]).filter(g=>!g.isLandingBonus).length;
     const mark = qualifiedSet && through
       ? ` <span style="color:var(--accent);font-weight:900;font-size:10px;" title="${t.gotVR?L().qualByVR:L().qualByPoints}">${t.gotVR?'★':'✓'}</span>`
+      : seated
+      ? ` <span style="color:#ffd166;font-weight:800;font-size:9px;letter-spacing:.05em;border:1px solid rgba(255,209,102,.45);border-radius:3px;padding:0 3px;white-space:nowrap;" title="${L().alreadyQualHint}">${L().alreadyQualTag}</span>`
       : '';
     tr.innerHTML=`<td class="num" style="width:44px;">#${i+1}</td>
       <td>${t.name}${mark}</td>
