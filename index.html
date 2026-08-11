@@ -1840,7 +1840,7 @@ celPodiumTitle:r=>'ТОП-'+r, celPodiumSub:'Подиум турнира',
 celTop10Title:'ТОП-10', celTop10Sub:'Состав отработал сильно',
 stage1TitleCards:'Этап 1 — Сеединг (6 игр, лобби по 50 команд)',
 landingFieldTitle:n=>'Лобби ('+n+' '+(squadSize===3?'трио':squadSize===4?'сквадов':'дуо')+')', stageGamesToggle:'Показать игры по одной', qualByVR:'Прошёл по Victory Royale', qualByPoints:'Прошёл по очкам', alreadyQualTag:'УЖЕ КВАЛ', alreadyQualHint:'Слот на LAN у них уже есть — второй они взять не могут, и их место уходит вниз. Финиш сразу за такой командой всё равно даёт слот.', stage2NoteByVR:'Взял Victory Royale — мгновенный проход, игры на этом закончены',
-regionResultHeader:'Регионалка', dropHeader:'Высадка · счёт', prizeHeader:'Приз', prizeTitle:'💰 Призовые состава', prizePerPlayer:v=>'по '+v+' на игрока',
+regionResultHeader:'Регионалка', dropHeader:'Высадка', prizeHeader:'Приз', prizeTitle:'💰 Призовые состава', prizePerPlayer:v=>'по '+v+' на игрока',
 prizeRegional:(reg,rank)=>'Гранд-финал '+reg+' · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Лион · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
 runSummaryTitle:'📋 Итоги симуляции', runSummaryStage:'Этап', runSummaryEarned:'Заработано за симуляцию',
@@ -1858,7 +1858,7 @@ celUpperTitle:'ТОП-25 ВЕРХНЕЙ СЕТКИ', celUpperSub:'Суббота
 celLowerTitle:'ПРОШЁЛ НИЖНЮЮ СЕТКУ', celLowerSub:'Воскресенье, гранд-финал Summit',
 celChampTitle:'ЧЕМПИОН SUMMIT', celChampSub:'И слот на Global Championship',
 celGcTitle:'СЛОТ НА GLOBAL CHAMPIONSHIP', celGcSub:r=>'Место #'+r+' в гранд-финале Summit',
-landingPowerLabel:'Power:', finalsLandingTitle:'Выбери точку высадки на Финалах', finalsLandingHint:'Остальные 49 команд уже сели на карту. Выбери одну из трёх доступных зон — синяя рамка уже занята ботом.',
+landingPowerLabel:'Power:', heatsLandingTitle:'Выбери точку высадки в Хите', finalsLandingTitle:'Выбери точку высадки на Финалах', finalsLandingHint:'Остальные 49 команд уже сели на карту. Выбери одну из трёх доступных зон — синяя рамка уже занята ботом.',
 teamHeader:'Команда', avgHeader:'Сила', ptsHeader:'Очки', killsHeader:'Килы', rankHeader:'Место', gameHistoryTitle:'История игр твоего состава', roundHeader:'Раунд', ptsGameHeader:'Очки за игру',
 squadSourceTitle:'Твой состав — источник данных по каждому игроку', playerHeader:'Игрок', regionHeader:'Регион', tournamentHeader:'Турнир / статус', placeHeader:'Место', ratingHeader:'Рейтинг',
 newDraftBtn:'Новый драфт',
@@ -2308,7 +2308,7 @@ celPodiumTitle:r=>'TOP '+r, celPodiumSub:'On the tournament podium',
 celTop10Title:'TOP 10', celTop10Sub:'Strong run from your squad',
 stage1TitleCards:'Stage 1 — Seeding (6 games, 50-team lobbies)',
 landingFieldTitle:n=>'The lobby ('+n+' '+(squadSize===3?'trios':squadSize===4?'squads':'duos')+')', stageGamesToggle:'Show the game-by-game log', qualByVR:'Advanced on a Victory Royale', qualByPoints:'Advanced on points', alreadyQualTag:'ALREADY QUAL', alreadyQualHint:'Already holds a LAN seat — it cannot take a second one, so its place passes down. Finishing right behind this team still takes a seat.', stage2NoteByVR:'Victory Royale — instant qualification, no more games',
-regionResultHeader:'Regional', dropHeader:'Drop · record', prizeHeader:'Prize', prizeTitle:'💰 Squad earnings', prizePerPlayer:v=>v+' per player',
+regionResultHeader:'Regional', dropHeader:'Drop', prizeHeader:'Prize', prizeTitle:'💰 Squad earnings', prizePerPlayer:v=>v+' per player',
 prizeRegional:(reg,rank)=>reg+' Grand Finals · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Lyon · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
 runSummaryTitle:'📋 Your run, stage by stage', runSummaryStage:'Stage', runSummaryEarned:'Earned across the run',
@@ -2326,7 +2326,7 @@ celUpperTitle:'TOP 25 UPPER BRACKET', celUpperSub:'Saturday skipped — straight
 celLowerTitle:'THROUGH THE LOWER BRACKET', celLowerSub:'Sunday, the Summit Grand Finals',
 celChampTitle:'SUMMIT CHAMPION', celChampSub:'And a Global Championship slot',
 celGcTitle:'GLOBAL CHAMPIONSHIP SLOT', celGcSub:r=>'#'+r+' in the Summit Grand Finals',
-landingPowerLabel:'Power:', finalsLandingTitle:'Choose your Finals landing spot', finalsLandingHint:'The other 49 teams have already dropped. Pick one of the three open spots — the red-bordered one already has a bot on it.',
+landingPowerLabel:'Power:', heatsLandingTitle:'Choose your Heat landing spot', finalsLandingTitle:'Choose your Finals landing spot', finalsLandingHint:'The other 49 teams have already dropped. Pick one of the three open spots — the red-bordered one already has a bot on it.',
 teamHeader:'Team', avgHeader:'Power', ptsHeader:'Points', killsHeader:'Kills', rankHeader:'Rank', gameHistoryTitle:'Your squad\'s game history', roundHeader:'Round', ptsGameHeader:'Points this game',
 squadSourceTitle:'Your squad — data source per player', playerHeader:'Player', regionHeader:'Region', tournamentHeader:'Tournament / status', placeHeader:'Place', ratingHeader:'Rating',
 newDraftBtn:'New draft',
@@ -29868,14 +29868,17 @@ function landingFieldHTML(you, bots){
   return html;
 }
 
-async function pickInitialZone(you, bots){
+// `title` names the stage the pick is for. Every stage that plays its games on
+// the map runs this — the Heats, the Last Chance, the Summit, the Finals — so a
+// header hard-coded to the Finals was wrong for most of them.
+async function pickInitialZone(you, bots, title){
   beginAnimatedStage();
   const {zoneGroups}=buildBotLandingAssignment(bots);
 
   const container=document.getElementById('majorStages');
   const box=document.createElement('div');
   box.className='stage-card';
-  box.innerHTML=`<h4>${L().finalsLandingTitle}</h4>
+  box.innerHTML=`<h4>${title || L().finalsLandingTitle}</h4>
     <div class="stage-detail">${L().landingPickPrompt}</div>
     <div class="landing-split">
       <div>
@@ -29982,7 +29985,7 @@ async function showRegularLandingPicker(){
   return {teams, zoneGroups};
 }
 
-async function showFinalsLandingPicker(finalTeams, you){
+async function showFinalsLandingPicker(finalTeams, you, title){
   // Dedupe roster, then pick a zone once — the fight itself is resolved
   // fresh every single Finals game inside simulateGamesLive.
   const seenHandles=new Set(you.squad.map(p=>p.handle));
@@ -29993,7 +29996,7 @@ async function showFinalsLandingPicker(finalTeams, you){
     return true;
   });
   finalTeams.length=0; finalTeams.push(you, ...bots);
-  return await pickInitialZone(you, bots);
+  return await pickInitialZone(you, bots, title);
 }
 
 async function offerSquadChoice(stageName, you, allTeams){
@@ -30282,9 +30285,16 @@ async function runMajorTournament(){
     const heats=seedHeats(advancedPlayIn, FMT.heats.length);
     const yourHeatIdx = heats.findIndex(h=>h.includes(you));
     const yourHeat = heats[yourHeatIdx];
+    // Your Heat is your own lobby and it plays on the map, so the drop is a
+    // decision here the same way it is in the Finals. It used to run without a
+    // pick: every squad fell back to a grid rectangle chosen off its index, so
+    // the one stage where a Victory Royale ends your night early was also the
+    // one where you had no say in where it started. Only your own Heat asks —
+    // the others are resolved headless and never reach the map.
+    const heatZones = await showFinalsLandingPicker(yourHeat, you, L().heatsLandingTitle);
     for(let hi=0; hi<heats.length; hi++){
       const g=FMT.heats[hi].games;
-      if(hi===yourHeatIdx) await simulateGamesLive(heats[hi], g, heatsScoreForPlace, 3, 'stage', 0, null, null, {stopOnWin:true, mapReplay:true, stageName:L().liveHeat(yourHeatIdx+1)});
+      if(hi===yourHeatIdx) await simulateGamesLive(heats[hi], g, heatsScoreForPlace, 3, 'stage', 0, null, heatZones, {stopOnWin:true, mapReplay:true, stageName:L().liveHeat(yourHeatIdx+1)});
       else simulateGamesStopOnWin(heats[hi], g, heatsScoreForPlace, 3);
     }
     yourHeat.sort(heatsRank);
