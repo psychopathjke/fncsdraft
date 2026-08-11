@@ -50,15 +50,18 @@ const BOOTSTRAP = `
 
     // Two worlds: the player picking last as the route order says, and the
     // player picking on power as they used to.
-    [["through Major 3", true], ["with the Major 1 seats", false]].forEach(function(mode){
-      var byRoute = mode[1];
+    [["M3, won my final", "top"], ["M3, scraped in", "bottom"], ["with the Major 1 seats", "m1"]].forEach(function(mode){
+      var how = mode[1];
       var spot = 0, alone = 0, place = 0, wins = 0, top3 = 0, RUNS = 120;
       for (var r = 0; r < RUNS; r++) {
         var f = lanField();
         var you = f.you, teams = f.teams;
         // Booked through Major 3, like the rest of that block — which is what
         // buildGlobalChampionship2025Field stamps on you.
-        you.gcRoute = byRoute ? 'm3' : 'm1';
+        you.gcRoute = (how === 'm1') ? 'm1' : 'm3';
+        // Where the regional final left you, which is the tiebreak inside a block.
+        teams.forEach(function(t, i){ t.stagePts = 200 + (i % 50); });
+        you.stagePts = (how === 'top') ? 400 : 0;
         var all = teams.concat([you]);
         var order = all.slice().sort(byQualOrder);
         var ahead = order.slice(0, order.indexOf(you));
@@ -97,7 +100,17 @@ const BOOTSTRAP = `
         titlePct: +(100 * wins / RUNS).toFixed(1), top3Pct: +(100 * top3 / RUNS).toFixed(1), runs: RUNS});
     });
 
-    var route = out.modes[0], power = out.modes[1];
+    var route = out.modes[0], scraped = out.modes[1], power = out.modes[2];
+    // The lever the player actually holds. Which Major sent you sets your block;
+    // how you finished sets your place inside it, and that is worth more than
+    // the block is. Winning your regional final buys a quiet box 95% of the
+    // time; scraping in means landing on somebody every single game.
+    check('winning your regional final is worth more than which Major sent you',
+      (route.place < scraped.place) && (route.place - power.place) < (scraped.place - route.place),
+      'won my final ' + route.place + ', scraped in ' + scraped.place + ', Major 1 block ' + power.place);
+    check('scraping in is punished, not merely noted',
+      scraped.alonePct < 20 && scraped.top3Pct < route.top3Pct,
+      'scraped in lands alone ' + scraped.alonePct + '% and makes the podium ' + scraped.top3Pct + '%');
     check('picking last costs the player a worse spot',
       route.spot < power.spot, 'route ' + route.spot + ' pts against ' + power.spot);
     // A title is a handful of events at this sample size and reads as noise;
