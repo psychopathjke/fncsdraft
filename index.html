@@ -1849,7 +1849,7 @@ landingFieldTitle:n=>'Лобби ('+n+' '+(squadSize===3?'трио':squadSize===
 regionResultHeader:'Регионалка', dropHeader:'Высадка · счёт', landingNobodyElse:'Больше никто сюда не садился за всю стадию', prizeHeader:'Приз', prizeTitle:'💰 Призовые состава', prizePerPlayer:v=>'по '+v+' на игрока',
 prizeRegional:(reg,rank)=>'Гранд-финал '+reg+' · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Лион · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
-runSummaryTitle:'📋 Итоги симуляции', runSummaryStage:'Этап', runSummaryEarned:'Заработано за симуляцию',
+runSummaryTitle:'📋 Итоги симуляции', lanSeatWon:'Место на LAN взято', lanSeatMissed:'Место на LAN не взято', lanSummit:'Summit', lanBelgium:'Global Championship, Бельгия', lanLyon:'Global Championship, Лион', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' в регионе '+reg+', мест: '+slots, lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', мест: '+slots, runSummaryStage:'Этап', runSummaryEarned:'Заработано за симуляцию',
 runSummaryNoEarnings:'Призовых нет — до стадии с призовым фондом состав не дошёл.',
 rowHistoryHint:'Клик — матчи этой команды', stageTableTitle:'Таблица этапа', stageCutLabel:n=>'— линия отсечки: топ-'+n+' проходят —',
 stageTableTeam:'Команда', stageTableRegion:'Регион',
@@ -2317,7 +2317,7 @@ landingFieldTitle:n=>'The lobby ('+n+' '+(squadSize===3?'trios':squadSize===4?'s
 regionResultHeader:'Regional', dropHeader:'Drop · record', landingNobodyElse:'Nobody else dropped here all stage', prizeHeader:'Prize', prizeTitle:'💰 Squad earnings', prizePerPlayer:v=>v+' per player',
 prizeRegional:(reg,rank)=>reg+' Grand Finals · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Lyon · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
-runSummaryTitle:'📋 Your run, stage by stage', runSummaryStage:'Stage', runSummaryEarned:'Earned across the run',
+runSummaryTitle:'📋 Your run, stage by stage', lanSeatWon:'LAN seat taken', lanSeatMissed:'No LAN seat', lanSummit:'the Summit', lanBelgium:'the Global Championship, Belgium', lanLyon:'the Global Championship, Lyon', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' in '+reg+', '+slots+' seat'+(slots===1?'':'s'), lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', '+slots+' seat'+(slots===1?'':'s'), runSummaryStage:'Stage', runSummaryEarned:'Earned across the run',
 runSummaryNoEarnings:'No prize money — the run ended before a stage that pays.',
 rowHistoryHint:'Click for this team\'s games', stageTableTitle:'Stage standings', stageCutLabel:n=>'— cut line: top '+n+' advance —',
 stageTableTeam:'Team', stageTableRegion:'Region',
@@ -29320,6 +29320,16 @@ function renderRunSummaryCard(){
       <td class="num" style="color:var(--ink-dim);">${p.points}</td></tr>`).join('');
   const moneyRows=runEarnings.map(l=>`<div class="prize-row">
       <span>${l.label}</span><b>${fmtMoney(l.amount)}</b></div>`).join('');
+  // The LAN line sits above the money, because it is the answer to what the run
+  // was for and the money is what it paid on the way.
+  const lan = runLanSeat ? `<div class="prize-row" style="margin-top:10px;padding:8px 10px;border-radius:8px;
+      background:${runLanSeat.got?'rgba(0,176,144,.12)':'rgba(255,59,59,.10)'};
+      border:1px solid ${runLanSeat.got?'rgba(0,176,144,.45)':'rgba(255,59,59,.35)'};">
+      <span><b style="color:${runLanSeat.got?'var(--accent)':'var(--danger)'};">
+        ${runLanSeat.got?L().lanSeatWon:L().lanSeatMissed}</b>
+        <span style="color:var(--ink-dim);"> · ${esc(runLanSeat.event)}</span>
+        ${runLanSeat.detail?`<div style="color:var(--ink-dimmer);font-size:11px;margin-top:2px;">${esc(runLanSeat.detail)}</div>`:''}
+      </span></div>` : '';
   card.innerHTML=`<h4>${L().runSummaryTitle}</h4>
     <div class="lobby-wrap" style="margin-top:6px;">
       <table class="lobby-table">
@@ -29327,6 +29337,7 @@ function renderRunSummaryCard(){
         <tbody>${placeRows}</tbody>
       </table>
     </div>
+    ${lan}
     <div style="margin-top:14px;font-size:12px;font-weight:800;text-transform:uppercase;
       letter-spacing:.06em;color:var(--accent);">${L().runSummaryEarned}</div>
     ${total>0
@@ -29389,8 +29400,14 @@ async function revealStageLog(you, shell, instant){
 // The run's own record. Every stage card that gets finalised writes a placement
 // here, and every payout writes an earning — so the summary at the end is the
 // run as it actually happened rather than a second guess at it.
-let runPlaces=[], runEarnings=[];
-function resetRunRecord(){ runPlaces=[]; runEarnings=[]; }
+let runPlaces=[], runEarnings=[], runLanSeat=null;
+function resetRunRecord(){ runPlaces=[]; runEarnings=[]; runLanSeat=null; }
+// Whether the run ends with a seat at the LAN, and which one. It is the thing a
+// Major is played for and the summary card did not say it: you had to scroll
+// back up to a stage card to find out whether you were going.
+function recordLanSeat(event, got, detail){
+  runLanSeat={event, got:!!got, detail:detail||''};
+}
 function recordPlace(title, rank, total, passed, points){
   if(rank==null || !total) return;
   runPlaces.push({title:String(title==null?'':title).replace(/<[^>]+>/g,'').trim(),
@@ -30448,6 +30465,13 @@ async function runMajorTournament(){
   const gfSeatSet = new Set(gfSeats);
   const gfSeatCut = gfSeats.length ? finalTeams.indexOf(gfSeats[gfSeats.length-1])+1 : gfSlots;
   const youQualified = gfSlots ? gfSeatSet.has(you) : youFinalRank===1;
+  // What the whole Major was for, written down so the summary card can say it.
+  if(gfSlots){
+    recordLanSeat(
+      CARD_SET==='m2' ? L().lanBelgium : CARD_SET==='t3' ? L().lanLyon : L().lanSummit,
+      youQualified,
+      L().lanSeatDetail(youFinalRank, gfSlots, regionName(myGfRegion)));
+  }
   finalizeStageCard(gfShell, youFinalRank, finalTeams.length, you.stagePts,
     youQualified, you.gotVR,
     gfSlots ? (CARD_SET==='m2' ? L().major2GcSlotNote(gfSlots)
@@ -31880,6 +31904,12 @@ async function runGcLastChance(you, region, opts){
 
   const rank=ranked.indexOf(you)+1;
   const wonSeat=seats.includes(you);
+  // The Last Chance is the other road to the same LAN, so it overwrites what the
+  // Grand Finals recorded — this is the later, final answer on whether you go.
+  if(wonSeat || !alreadyQualified){
+    recordLanSeat(L().lanBelgium, wonSeat || alreadyQualified,
+      L().lanSeatDetailLcq(rank, slots));
+  }
   const rolledDown=!wonSeat && alreadyQualified && rank<=slots;
   await revealStageLog(you, shell, true);
   const note = wonSeat ? L().gclcPass(rank, slots)
