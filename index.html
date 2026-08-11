@@ -1908,7 +1908,7 @@ gclcFail:slots=>'В топ-'+slots+' не попал. На Global Championship �
 liveGclcFinals:'Last Chance · Финал',
 gcQualifiedTitle:'🌍 Ты прошёл на LAN — Fortnite Global Championship, Антверпен <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
 gcQualifiedNote:(reg,rank,slots)=>'Регион '+reg+' даёт '+slots+' слотов на Global Championship. Твоё место в гранд-финале Major 2 — #'+rank+'. Летишь в Бельгию.',
-gcFieldTitle:'Кто приехал в Антверпен <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gcFieldNote:'50 дуо со всего мира, 26–27 сентября 2026. Призовой фонд — $2 000 000, разбивка по местам ещё не опубликована.',
+gcFieldTitle:'Кто приехал в Антверпен <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gcFieldNote:'50 дуо со всего мира, 26–27 сентября 2026. Призовой фонд — $2 000 000. Epic ещё не опубликовала разбивку по местам, так что платим по сетке Global Championship 2024: те же 50 мест и ровно та же сумма.',
 gcRouteSummit:'Через Major 1 Summit', gcRouteSummitShort:'Summit',
 gcRouteMajor2:'Через гранд-финалы Major 2', gcRouteMajor2Short:'Major 2',
 gcRouteLcq:'Через Global Championship Last Chance', gcRouteLcqShort:'Last Chance · идёт сейчас',
@@ -2118,7 +2118,7 @@ gclcFail:slots=>'Missed the top '+slots+'. No Global Championship this year.',
 liveGclcFinals:'Last Chance · Finals',
 gcQualifiedTitle:'🌍 You made the LAN — Fortnite Global Championship, Antwerp <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">',
 gcQualifiedNote:(reg,rank,slots)=>reg+' gets '+slots+' Global Championship slots. You finished #'+rank+' in the Major 2 Grand Finals. You are flying to Belgium.',
-gcFieldTitle:'Who made it to Antwerp <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gcFieldNote:'50 duos from around the world, 26–27 September 2026. The prize pool is $2,000,000; the per-place split has not been published yet.',
+gcFieldTitle:'Who made it to Antwerp <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gcFieldNote:'50 duos from around the world, 26–27 September 2026. The prize pool is $2,000,000. Epic has not published the per-place split, so this pays on the 2024 Global Championship grid: the same fifty places for exactly the same total.',
 gcRouteSummit:'Via the Major 1 Summit', gcRouteSummitShort:'Summit',
 gcRouteMajor2:'Via the Major 2 Grand Finals', gcRouteMajor2Short:'Major 2',
 gcRouteLcq:'Via the Global Championship Last Chance', gcRouteLcqShort:'Last Chance · still running',
@@ -29305,14 +29305,16 @@ const PRIZE_POOL_TOTAL={"EU":591500,"NAC":412000,"NAW":137000,"BR":137000,"ASIA"
 // GC2025_PRIZES is the Lyon Grand Finals: 33 places, $2,001,000, which is the
 // figure Epic published and exactly what these 33 numbers add up to.
 const GC2025_PRIZES={"1":450000,"2":300000,"3":225000,"4":180000,"5":135000,"6":90000,"7":75000,"8":60000,"9":45000,"10":36000,"11":33000,"12":30000,"13":27000,"14":27000,"15":24000,"16":24000,"17":21000,"18":21000,"19":18000,"20":18000,"21":15000,"22":15000,"23":15000,"24":15000,"25":15000,"26":12000,"27":12000,"28":12000,"29":12000,"30":12000,"31":9000,"32":9000,"33":9000};
-// Antwerp, 26-27 September 2026: 50 duos and a $2,000,000 pool, of which Epic
-// has published the total and not the per-place split. Fill this in — place
-// number to dollars, the shape GC2025_PRIZES has — and the LAN starts paying:
-// prizeTableFor picks it up, the standings print a prize column, the run
-// summary adds a line, and nothing else needs touching. Left empty rather than
-// filled from another year's numbers, which is what the file already refuses to
-// do one function down: "A 2025 place is never paid off a 2026 table."
-const GC2026_PRIZES={};
+// Antwerp, 26-27 September 2026: 50 duos and a $2,000,000 pool. Epic published
+// the total and not the split, so this is the 2024 Global Championship's split,
+// read off the Liquipedia page rather than typed from memory.
+//
+// It is a stand-in and a well-fitted one: 2024 paid fifty places and totalled
+// exactly $2,000,000 — exactly Antwerp's field and exactly Antwerp's pool.
+// Nothing had to be scaled or invented to make it fit, and those two facts
+// agreeing is the reason to trust the shape rather than the year. If Epic
+// publishes a different split, replace these numbers and nothing else changes.
+const GC2026_PRIZES={"1":400000,"2":300000,"3":200000,"4":160000,"5":120000,"6":90000,"7":60000,"8":50000,"9":40000,"10":30000,"11":24000,"12":24000,"13":24000,"14":24000,"15":24000,"16":20000,"17":20000,"18":20000,"19":20000,"20":20000,"21":16000,"22":16000,"23":16000,"24":16000,"25":16000,"26":14000,"27":14000,"28":14000,"29":14000,"30":14000,"31":12000,"32":12000,"33":12000,"34":12000,"35":12000,"36":10000,"37":10000,"38":10000,"39":10000,"40":10000,"41":8000,"42":8000,"43":8000,"44":8000,"45":8000,"46":6000,"47":6000,"48":6000,"49":6000,"50":6000};
 const P2025_PRIZES={"EU":{"1":180000,"2":120000,"3":81000,"4":60900,"5":47850,"6":34800,"7":34800,"8":34800,"9":34800,"10":34800,"11":17400,"12":17400,"13":17400,"14":17400,"15":17400,"16":8700,"17":8700,"18":8700,"19":8700,"20":8700,"21":4350,"22":4350,"23":4350,"24":4350,"25":4350},"NAC":{"1":180000,"2":76500,"3":51000,"4":35700,"5":28050,"6":20400,"7":20400,"8":20400,"9":20400,"10":20400,"11":10200,"12":10200,"13":10200,"14":10200,"15":10200,"16":5100,"17":5100,"18":5100,"19":5100,"20":5100,"21":2550,"22":2550,"23":2550,"24":2550,"25":2550},"NAW":{"1":45000,"2":27000,"3":18000,"4":15300,"5":11700,"6":7200,"7":7200,"8":7200,"9":7200,"10":7200,"11":3600,"12":3600,"13":3600,"14":3600,"15":3600,"16":1800,"17":1800,"18":1800,"19":1800,"20":1800},"BR":{"1":45000,"2":27000,"3":18000,"4":15300,"5":11700,"6":7200,"7":7200,"8":7200,"9":7200,"10":7200,"11":3600,"12":3600,"13":3600,"14":3600,"15":3600,"16":1800,"17":1800,"18":1800,"19":1800,"20":1800},"ASIA":{"1":27000,"2":13500,"3":9000,"4":7650,"5":5850,"6":3600,"7":3600,"8":3600,"9":3600,"10":3600,"11":1800,"12":1800,"13":1800,"14":1800,"15":1800},"ME":{"1":27000,"2":13500,"3":9000,"4":7650,"5":5850,"6":3600,"7":3600,"8":3600,"9":3600,"10":3600,"11":1800,"12":1800,"13":1800,"14":1800,"15":1800},"OCE":{"1":27000,"2":13500,"3":9000,"4":7650,"5":5850,"6":3600,"7":3600,"8":3600,"9":3600,"10":3600,"11":1800,"12":1800,"13":1800,"14":1800,"15":1800}};
 const PRIZE_TABLES_2025={t1:P2025_PRIZES, t2:P2025_PRIZES, t3:P2025_PRIZES};
 
@@ -29320,10 +29322,9 @@ function prizeTableFor(table){
   if(table==='GCLC') return GCLC_PRIZES_BY_REGION[myPrizeRegion()] || GCLC_PRIZES_BY_REGION.EU;
   if(table==='SCQ')  return SCQ_PRIZES_BY_REGION[myPrizeRegion()] || SCQ_PRIZES_BY_REGION.EU;
   if(table==='GC2025') return GC2025_PRIZES;
-  // Antwerp pays nothing until somebody fills GC2026_PRIZES in. Empty is not an
-  // oversight — Epic has published the $2,000,000 total and not the split — and
-  // an empty table returns null here, which pays 0 and prints a dash, exactly
-  // what the LAN does today.
+  // Antwerp, on the 2024 split — see GC2026_PRIZES. Still guarded on the table
+  // being non-empty, so emptying it goes back to paying nothing rather than
+  // paying zeroes.
   if(table==='GC2026') return Object.keys(GC2026_PRIZES).length ? GC2026_PRIZES : null;
   if(PRIZE_TABLES_2025[CARD_SET]){
     // A 2025 place is never paid off a 2026 table. A region whose table has not
