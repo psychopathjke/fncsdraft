@@ -78,8 +78,18 @@ function run(games, squadCount, grid, dropPressure){
   for(var g=0; g<games; g++){
     var rng = rng32(1000 + g);
     var teams = field(squadCount);
-    // Every squad picks a spot; sharers stand on the same ground.
-    var picks = teams.map(function(){ return grid[Math.floor(rng() * grid.length)]; });
+    // Every squad picks a spot; sharers stand on the same ground. Spots go round
+    // a shuffled grid rather than being drawn at random, because that is the
+    // shape the app's picker produces: it gives each squad the best box still
+    // worth taking, so the island fills before anybody doubles up. Drawing at
+    // random put 45% of the field on a shared box against the app's 30%, and
+    // every toll measured here ran high because of it.
+    var spots = grid.slice();
+    for(var si=spots.length-1; si>0; si--){
+      var sj = Math.floor(rng() * (si + 1));
+      var tmp = spots[si]; spots[si] = spots[sj]; spots[sj] = tmp;
+    }
+    var picks = teams.map(function(_, i){ return spots[i % spots.length]; });
     var seen = {};
     picks.forEach(function(r, i){
       var key = r.x + ',' + r.y;

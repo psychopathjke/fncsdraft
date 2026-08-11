@@ -737,17 +737,17 @@
         if(!o.alive || o.busy) continue;
         var fdx = s.x - o.x, fdy = s.y - o.y;
         if(fdx*fdx + fdy*fdy > CONTACT_RANGE * CONTACT_RANGE) continue;
-        // Three or more squads on one spot do not circle each other.
+        // Squads that land on each other fight. Not "may fight, on a roll" —
+        // they are on the same ground with nothing, and one of them leaves.
         //
-        // Two squads sharing a box is a fight both can walk away from, and the
-        // telemetry agrees: about one contested drop in ten leaves a body. A
-        // stack is a different thing, and leaving it to the same coin read as
-        // broken — three trios on one roof, all three alive, all three top four.
-        // So inside the drop window a squad with two others in contact range
-        // always engages, and the crowd settles itself. Groups of three or more
-        // are 2% of all shared boxes, so this costs about a point of survival
-        // rather than the eleven a guaranteed kill on every share would.
-        var stacked = crowd && crowd[a] >= 3 && crowd[b] >= 3;
+        // This was first written as three or more, on a measurement taken from
+        // the calibration harness, which drops squads on spots at random. The
+        // app does not: buildBotLandingAssignment spreads the field on purpose,
+        // so a stack of three happens 0.27 times a game in a trio lobby and the
+        // rule almost never fired. What the app does produce is 4.7 shared boxes
+        // a game in trios and 14.2 in duos, and those were the drops nobody was
+        // dying on.
+        var stacked = crowd && crowd[a] >= 2 && crowd[b] >= 2;
         // Either squad can start it, and starting one is its own event. The
         // first version multiplied both squads' exposure, which made avoiding
         // fights and getting kills the same skill: a squad that learned not to
