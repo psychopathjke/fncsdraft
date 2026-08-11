@@ -28827,7 +28827,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   beginAnimatedStage();
   const ptsKey=fieldPrefix+'Pts', elimsKey=fieldPrefix+'Elims';
   const logKey=fieldPrefix==='total' ? 'gameLog' : 'stageLog';
-  teams.forEach((t,i)=>{ t[ptsKey]=0; t[elimsKey]=0; t[logKey]=[]; t.gotVR=false; t.wins=0; t._uid=i; t.landingWins=0; t.landingLosses=0; t.multiKillLandingWins=0; t.landingContests=0; });
+  teams.forEach((t,i)=>{ t[ptsKey]=0; t[elimsKey]=0; t[logKey]=[]; t.gotVR=false; t.wins=0; t.qualByWin=false; t._uid=i; t.landingWins=0; t.landingLosses=0; t.multiKillLandingWins=0; t.landingContests=0; });
   // Whether this stage's games are played on the map. When they are, the drop
   // is played there too — the engine puts every squad on its own `landingZone`
   // and the first forty seconds settle who shares with whom — so nothing is
@@ -29034,7 +29034,9 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
           const gamePts=pointsFn(place)+elims*killMult;
           t[ptsKey]+=gamePts; t[elimsKey]+=elims;
           t[logKey].push({game:g+1, place, elims, pts:gamePts, elimPts:elims*killMult, label:thresholdLabel(place), feed:t._feed});
-          if(place===1){ t.gotVR=true; t.wins++; }
+          // Only where a win ends your stage is a win a qualification, and only
+          // then does it earn the first pick next time — see byQualOrder.
+          if(place===1){ t.gotVR=true; t.wins++; if(opts.stopOnWin) t.qualByWin=true; }
         });
       }
       if(maxGap) compressLeaderGap(teams, ptsKey, elimsKey, maxGap, logKey);
@@ -29156,7 +29158,8 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       const landingOutcome = (landingWins.has(t) || landingBonusElims.has(t)) ? 'won'
                            : ((dropOnMap ? t._droppedOut : eliminatedSet.has(t)) ? 'lost' : null);
       t[logKey].push({game:g+1, place, elims, pts:gamePts, elimPts:elims*killMult, label:thresholdLabel(place), feed:t._feed, landingOutcome});
-      if(place===1){ t.gotVR=true; t.wins++; }
+      // As above: a win is a qualification only where it ends the stage.
+      if(place===1){ t.gotVR=true; t.wins++; if(opts.stopOnWin) t.qualByWin=true; }
     });
     if(maxGap) compressLeaderGap(teams, ptsKey, elimsKey, maxGap, logKey);
     await sleep(380);
@@ -29453,7 +29456,7 @@ function simulateGames(teams, numGames, pointsFn, killMult){
 // games in this stage — used for Heats and LCQ, where a win means immediate advancement.
 function simulateGamesStopOnWin(teams, numGames, pointsFn, killMult){
   applyStageBias(pointsFn);
-  teams.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.stageLog=[]; t.gotVR=false; t.wins=0; });
+  teams.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.stageLog=[]; t.gotVR=false; t.wins=0; t.qualByWin=false; });
   for(let g=0; g<numGames; g++){
     const active=teams.filter(t=>!t.gotVR);
     if(active.length===0) break;
@@ -29464,7 +29467,9 @@ function simulateGamesStopOnWin(teams, numGames, pointsFn, killMult){
       const gamePts=pointsFn(place)+elims*killMult;
       t.stagePts+=gamePts; t.stageElims+=elims;
       t.stageLog.push({game:g+1, place, elims, pts:gamePts, elimPts:elims*killMult, label:thresholdLabel(place), feed:t._feed});
-      if(place===1){ t.gotVR=true; t.wins++; }
+      // A win here is the qualification, so it also fixes this squad's place in
+      // the next stage's pick queue — see byQualOrder.
+      if(place===1){ t.gotVR=true; t.qualByWin=true; t.wins++; }
       accumulateMatchStats(t, place, order.length, pointsFn(place), elims*killMult);
     });
   }
@@ -29490,7 +29495,10 @@ function simulateGamesStopOnWin(teams, numGames, pointsFn, killMult){
 // milliseconds in total; the freeze cost the whole two seconds.
 async function simulateGamesRandomLobbies(teams, numGames, lobbySize, pointsFn, killMult){
   applyStageBias(pointsFn);
-  teams.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.stageLog=[]; t.gotVR=false; t.wins=0; });
+  // qualByWin cleared with the rest: the Play-In advances everybody at once on
+  // cumulative points, so nobody qualifies early here and a flag left over from
+  // an earlier stage would hand somebody a pick they did not earn.
+  teams.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.stageLog=[]; t.gotVR=false; t.wins=0; t.qualByWin=false; });
   const note=simProgressNote();
   let lastYield=performance.now();
   try {
@@ -29737,15 +29745,23 @@ const LANDING_NOISE=1.15;
 
 // Who picks first: whoever was through first.
 //
-// A squad that took a Victory Royale qualified on the spot and everybody else
-// was still playing, so it gets the board to itself. After them it is the
-// standing they came out of the last stage on. This is read off the field as it
-// stands when the picker opens — the qualifying stage's stagePts and gotVR are
-// still on the teams, because the next stage does not reset them until it
-// starts — so it works for every stage that opens a picker without anything
-// having to be threaded through.
+// Not every stage has a "first". A Heat and the Last Chance Lobby do — a win
+// there is the qualification, the squad stops playing and everybody else is
+// still going — and those squads pick ahead of the field. That is qualByWin,
+// set only where a win ends the stage.
+//
+// The Play-In does not. Twenty-two games, cumulative points, and the top 99
+// advance together at the final whistle; nobody got through early, so there is
+// nothing for a Victory Royale to earn. Ordering on gotVR there would have put a
+// squad that won one game and finished eightieth ahead of the squad that topped
+// the stage. So where nobody qualified early the queue is simply the standing
+// they finished on, which is the honest reading of "who was best".
+//
+// Read off the field as it stands when the picker opens: the qualifying stage's
+// stagePts and flags are still on the teams, because the next stage does not
+// reset them until it starts.
 function byQualOrder(a, b){
-  return (a && a.gotVR ? 0 : 1) - (b && b.gotVR ? 0 : 1)
+  return (a && a.qualByWin ? 0 : 1) - (b && b.qualByWin ? 0 : 1)
       || (b.stagePts||0) - (a.stagePts||0)
       || (b.pow||0) - (a.pow||0);
 }

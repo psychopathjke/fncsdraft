@@ -44,9 +44,11 @@ const BOOTSTRAP = `
         var teams = [];
         fillFieldTeams(poolAll.slice(size), TEAM_TARGET[size] - 1, size, teams);
         teams.forEach(function(t, i){ t._uid = i; if(!t.name) t.name = 'T' + i; });
-        // A qualifying stage's leftovers: a couple of Victory Royales and a
-        // spread of points, which is what the picker reads the order off.
-        teams.forEach(function(t, i){ t.gotVR = (i % 17 === 0); t.stagePts = Math.round(Math.random() * 400); });
+        // A Heat's leftovers: a few squads through on a win, the rest on points.
+        teams.forEach(function(t, i){
+          t.qualByWin = (i % 17 === 0); t.gotVR = t.qualByWin;
+          t.stagePts = Math.round(Math.random() * 400);
+        });
 
         var order = teams.slice().sort(byQualOrder);
         // How much of the island is still empty when the last squad picks.
@@ -86,6 +88,22 @@ const BOOTSTRAP = `
       check(set + ': the good boxes are the contested ones',
         f.alonePct < md.alonePct,
         'first pick lands alone ' + f.alonePct + '% against the midfield\\'s ' + md.alonePct + '%');
+
+      // A Heat has a "first through". The Play-In does not: twenty-two games,
+      // cumulative points, everybody advances at the whistle. So there the queue
+      // has to be the standing and nothing else — a squad that won one game and
+      // finished eightieth must not pick ahead of the one that topped the stage.
+      var playIn = teams.slice(0, 20);
+      playIn.forEach(function(t, i){
+        t.qualByWin = false;             // nobody qualified early
+        t.gotVR = (i === 19);            // but the tail did win a game somewhere
+        t.stagePts = 500 - i * 10;       // and the field finished in this order
+      });
+      var q = playIn.slice().sort(byQualOrder);
+      check(set + ': after a Play-In the queue is the standing, not who won a game',
+        q[0] === playIn[0] && q[q.length-1] === playIn[19],
+        'top of the stage picks ' + (q.indexOf(playIn[0]) + 1) +
+        ', the game-winner who finished last picks ' + (q.indexOf(playIn[19]) + 1));
     });
   } catch (e) { out.error = String(e && e.stack || e); }
   document.getElementById('__po').textContent =
