@@ -753,7 +753,11 @@
         var pO = o.seek * Math.pow(caught(s, room), ENGAGE_BIAS) * eO;
         if(rng() >= ENGAGE_CHANCE * press * sizeScale * (pS + pO)) continue;
 
-        var winnerTeam = duel(s.team, o.team);
+        // The caller is told whether this fight is happening off the drop.
+        // Nothing in here changes on the answer — the engine settles no fight
+        // itself — but a fight in the first forty seconds is a different fight:
+        // both squads landed with nothing, so the app quotes it different odds.
+        var winnerTeam = duel(s.team, o.team, dropping);
         var winner = (winnerTeam === s.team) ? s : o;
         var loser  = (winner === s) ? o : s;
         var loserSize = (loser.team.squad && loser.team.squad.length) || 1;
@@ -793,7 +797,7 @@
             victim = v; break;
           }
           if(!victim) break;
-          var cwTeam = duel(streaker.team, victim.team);
+          var cwTeam = duel(streaker.team, victim.team, dropping);
           var cw = (cwTeam === streaker.team) ? streaker : victim;
           var cl = (cw === streaker) ? victim : streaker;
           var clSize = (cl.team.squad && cl.team.squad.length) || 1;

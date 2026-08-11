@@ -29021,9 +29021,19 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
     const eliminatedAtStart=[];
     const landingBonusElims=new Map();
     contestedGroups.forEach(group=>{
-      const totalW=group.reduce((s,t)=>s+Math.pow(Math.max(t.pow,1),LANDING_POW_EXPONENT),0)||1;
-      let r=Math.random()*totalW, winner=group[0];
-      for(const t of group){ const w=Math.pow(Math.max(t.pow,1),LANDING_POW_EXPONENT); r-=w; if(r<=0){ winner=t; break; } }
+      // Fought one rival at a time, on the same capped odds the picker quotes —
+      // landingWinChanceVs, so what the spot promised is what the spot pays. It
+      // used to be a single pow³ draw across the whole group, which let power
+      // decide a contested spot outright; off the spawn nobody has anything yet,
+      // so the better squad is favoured and never safe. Clearing three squads
+      // still means winning three times, which is what makes a busy spot a risk.
+      const order=group.slice();
+      for(let i=order.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [order[i],order[j]]=[order[j],order[i]]; }
+      let winner=order[0];
+      for(let i=1;i<order.length;i++){
+        const rival=order[i];
+        if(Math.random()>=landingWinChanceVs(winner, rival)) winner=rival;
+      }
       landingBonusElims.set(winner, (group.length-1)*2);
       winner.landingWins++;
       if(group.length>=3) winner.multiKillLandingWins++;
@@ -29755,17 +29765,23 @@ function buildBotLandingAssignment(bots){
   return {zoneGroups, lowZone, guaranteedZone};
 }
 
-// Power-weighted landing-fight odds — same shape as the main duel formula
-// but with its own (gentler) exponent, since everyone's still fresh off
-// spawn with no loadout edge yet. Facing multiple rivals in one zone means
-// clearing them one at a time, so the odds compound down fast — picking a
-// spot with 2 squads already fighting is meant to feel like a real risk,
-// not a coin flip.
+// Power-weighted landing-fight odds — same shape as the main duel formula but
+// with its own (gentler) exponent, since everyone's still fresh off spawn with
+// no loadout edge yet. Facing multiple rivals in one zone means clearing them
+// one at a time, so the odds compound down fast: a single spot is close to even,
+// and picking one with two squads already on it is still a real risk.
 const LANDING_POW_EXPONENT=3;
+// How far power is allowed to tilt a fight off the spawn. Everybody lands with
+// the same nothing — no loadout, no height, no information — so the spot is
+// mostly a coin flip, and the better squad is favoured without ever being safe.
+// Sixty-forty is the ceiling, reached only by the widest power gap in a lobby;
+// two squads of similar power land much closer to even. The exponent still
+// decides where inside that band a matchup sits.
+const LANDING_ODDS_CAP=0.60;
 function landingWinChanceVs(you, rival){
   const a=Math.pow(Math.max(you.pow,1), LANDING_POW_EXPONENT);
   const b=Math.pow(Math.max(rival.pow,1), LANDING_POW_EXPONENT);
-  return a/(a+b);
+  return clamp(a/(a+b), 1-LANDING_ODDS_CAP, LANDING_ODDS_CAP);
 }
 function resolveLandingFight(you, rivals){
   let survived=true;
@@ -30757,24 +30773,21 @@ function landingZoneLabel(t){
 function landingRecord(t){
   if(!t) return null;
   const w=t.landingWins||0, l=t.landingLosses||0, c=t.landingContests||0;
-  // Won-lost out of how many games the spot was shared. The first pair counts
-  // the fights that ended with somebody out; the third number is how often
-  // there was anybody to fight at all. Without it a record of 1-0 over twelve
-  // games reads as though the spot was almost always empty, when the truth is
-  // the opposite: it was busy nearly every game and the drops resolved
-  // peacefully, which is what real ones mostly do.
+  // Won and lost at the spot, and nothing else: 12-0, 7-5, 4-8. This used to
+  // carry a third number — how many games the spot was shared at all — and the
+  // two counted different things, so "0-0" and "0-0 of 12" sat side by side
+  // meaning opposites and were read wrong twice. One pair of numbers, one
+  // meaning: fights that ended with somebody out.
   if(!(w+l) && !c) return null;
-  return c > (w+l) ? (w+'-'+l+' '+L().outOfWord+' '+c) : (w+'-'+l);
+  return w+'-'+l;
 }
 function landingCellHTML(t){
   const zone=landingZoneLabel(t);
   if(!zone) return '—';
-  // The spot, and nothing else. The won-lost record used to sit beside it and
-  // was asked for, then read wrong twice — 0-0 next to 0-0 of 12 meant opposite
-  // things, and a stage of twelve games almost never produces more than one
-  // event, so the number said little and invited the wrong conclusion. The
-  // counters are still kept on the team, so putting it back is one line.
-  return zone;
+  const rec=landingRecord(t);
+  return rec
+    ? `${zone} <span style="color:var(--accent);font-weight:800;">${rec}</span>`
+    : `${zone} <span style="color:var(--ink-dimmer);" title="nobody else dropped here">—</span>`;
 }
 
 // The plate the broadcast cuts to once a stage is done: who won it and the
@@ -32427,6 +32440,18 @@ function resolveDuel(a, b, exponent){
   return Math.random() * (wa + wb) < wa ? a : b;
 }
 
+// A fight in the first forty seconds, settled on the same capped odds the
+// landing picker quotes. Off the spawn there is no loadout, no height and no
+// information, so power tilts the spot and never owns it — see LANDING_ODDS_CAP.
+// The engine tells us which fights those are; everything after runs on the
+// mode's own duel exponent, where a loadout and a position have been earned.
+function resolveDropDuel(a, b){
+  const wa = Math.pow(Math.max(a._pc, 1), LANDING_POW_EXPONENT);
+  const wb = Math.pow(Math.max(b._pc, 1), LANDING_POW_EXPONENT);
+  const p = clamp(wa / (wa + wb), 1 - LANDING_ODDS_CAP, LANDING_ODDS_CAP);
+  return Math.random() < p ? a : b;
+}
+
 // Fewer squads than this and the game is simulated but not played back.
 const REPLAY_MIN_SQUADS = 8;
 let LAST_ZONE_TIMELINE = [];
@@ -32489,7 +32514,7 @@ function simulateGameOnMap(teams, lobbyOpts){
       return {x: r.x + r.w/2 + (Math.random()-0.5),
               y: r.y + r.h/2 + (Math.random()-0.5)};
     },
-    duel: (a, b) => resolveDuel(a, b, exponent),
+    duel: (a, b, dropping) => dropping ? resolveDropDuel(a, b) : resolveDuel(a, b, exponent),
     record: RECORD_NEXT_ZONE_GAME,
     lobbySquads: lobbyOpts && lobbyOpts.lobbySquads,
     lobbyPlayers: lobbyOpts && lobbyOpts.lobbyPlayers
@@ -33100,7 +33125,7 @@ function renderLandingResultsMap(teams){
     const tagInfo=RESULT_TAG[t.landingResult];
     const resultTag=tagInfo?` <span style="color:${tagInfo.color};font-size:11px;">${tagInfo.text}</span>`:'';
     // Same record the standings show, so the two never disagree.
-    const rec=null;   // drop record is not printed any more; see landingCellHTML
+    const rec=landingRecord(t);
     const scoreTag = rec
       ? ` <span style="color:var(--ink-dimmer);font-size:11px;">⚔ ${rec}</span>`
       : '';
