@@ -27493,7 +27493,39 @@ function generatePack(){
   // the whole pool, not a protected slice of it, so a thin pack can still happen.
   let weighted = src.map(p=>({p, w: packWeightFor(p)}));
   let picks=[];
-  for(let i=0;i<PACK_SIZE && weighted.length>0;i++){
+
+  // One slot for a real partner, in the Majors whose field is real teams.
+  //
+  // A qualifying Major is played against rosters: measured in the 2025 Major 2,
+  // all 49 opponents carry teammate chemistry and average 16.7 of it against a
+  // cap of 12, so every one of them collects the full bonus. The player draws
+  // three cards out of packs and almost never reunites a real trio, which made
+  // them the only squad in the tournament that could not have chemistry at all —
+  // 11.4th of 50 on power before a shot. So once there is somebody to partner,
+  // a pack offers one of their real partners when the pool still has one. It is
+  // an offer, not a gift: the slot costs one of the four, and taking it means
+  // passing on whatever else was dealt.
+  //
+  // Not in an opener. There the field is assembled and carries no chemistry
+  // either (0.6 on average, and 37 of 49 teams have none), so handing the
+  // player some would put them ahead of a lobby that has none — which is the
+  // hole seatingTeamsForSet was just dug out of.
+  if(CARD_MODE && drafted.length>0 && seatingTeamsForSet().length){
+    const mine=new Set(drafted.map(p=>p.handle));
+    const partners=new Set();
+    TEAMMATE_GROUPS.forEach(g=>{
+      if(!g.some(h=>mine.has(h))) return;
+      g.forEach(h=>{ if(!mine.has(h)) partners.add(h); });
+    });
+    const mates=partners.size ? src.filter(p=>partners.has(p.handle)) : [];
+    if(mates.length){
+      const mate=mates[Math.floor(Math.random()*mates.length)];
+      picks.push(mate);
+      weighted=weighted.filter(x=>hKey(x.p)!==hKey(mate));
+    }
+  }
+
+  for(let i=picks.length;i<PACK_SIZE && weighted.length>0;i++){
     const total=weighted.reduce((s,x)=>s+x.w,0);
     let r=Math.random()*total, idx=0;
     for(;idx<weighted.length;idx++){ r-=weighted[idx].w; if(r<=0) break; }
