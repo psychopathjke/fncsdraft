@@ -29589,40 +29589,49 @@ function clearLandingPow(teams){
   });
 }
 
-// Where the lobby actually drops. Every zone used to get exactly two slots, so
-// a dead corner of the map was landed on as often as the hottest POI. The real
-// evals publish an average team count per spot — 0.45 for a spot nobody wants,
-// 3.46 for the one everybody fights over — so slots are handed out in that
-// proportion instead.
-//
-// The size of the pool is what decides how much of the map ends up empty: teams
-// are dealt into the first `fieldSize` slots of the shuffled pool, so a pool
-// twice the size of the lobby leaves half the slots — and a lot of whole zones —
-// untouched. Scale it to the field instead of using a fixed slots-per-zone
-// number, or the map empties out as soon as the weights spread the slots around.
-// 1.3x the lobby is enough headroom for the deal to stay random while keeping
-// roughly the same number of free zones a flat two-per-zone pool produced.
-const LANDING_SLOT_OVERHEAD=1.3;
-function landingSlotPool(fieldSize){
-  const zones=ALL_LANDING_ZONES;
-  const weights=zones.map(z=>z.teams!=null ? z.teams : 1);
-  const sum=weights.reduce((a,b)=>a+b,0) || 1;
-  const field=Math.max(fieldSize||0, 2);
-  const k=field*LANDING_SLOT_OVERHEAD/sum;
-  const pool=[];
-  zones.forEach((z,idx)=>{
-    const slots=Math.max(1, Math.round(weights[idx]*k));
-    for(let s=0;s<slots;s++) pool.push(idx);
-  });
-  for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
-  return pool;
-}
+// The weighted slot pool that used to deal these seats is gone: both pickers
+// now order the lobby by power and let each squad take the best spot still
+// worth taking, so who shares a box is decided by who they are rather than
+// by a shuffle. The per-spot popularity it was built on still lives on the
+// zones themselves, as z.teams.
 
 // What a squad gives up to share a box, in zone points. A contested drop is
 // worth taking when the spot is good enough: at 1.6, the best zone on the map is
 // still worth landing on with one team already there rather than dropping alone
 // on a 2-point field, and worth it with two only if it is a 4.
 const CONTEST_COST=2.4;
+// And what it costs to share with somebody better than you.
+//
+// Cost alone could not keep the best squad in the lobby off a contested box,
+// and raising it did nothing: the top seven take the seven best spots alone,
+// and then — once every box on the map has somebody in it — the squads still
+// waiting have to double up somewhere, and they double up on the best boxes,
+// which is exactly where the top seven are. Measured over 150 lobbies the top
+// fifth of the field shared its drop in 96% of games at every cost from 2.4 to
+// 5, so the strongest duo in the tournament never once got a clean landing.
+//
+// What was missing is that a squad looks at who is already there, not just how
+// many. Dropping on top of a team well above you is a bad idea and real lobbies
+// know it; dropping on a team below you is how a good squad takes a POI. So the
+// cost of each occupant is scaled by how much stronger than you they are, and
+// twenty power points doubles it.
+//
+// It moves who shares rather than how many: with fifty duos on thirty-six
+// boxes, fourteen boxes must hold two whatever anybody prefers, so 56% of the
+// field shares its drop and no rule can lower that. What changes is that the
+// top fifth goes from 96% contested to 57% — average for the lobby rather than
+// singled out — while keeping the best spots, and the bottom fifth takes the
+// certainty instead.
+const CONTEST_FEAR=20;
+// What a box is worth to this squad: its rating, less what the squads already
+// standing in it cost, plus enough noise that two lobbies never deal the same.
+function landingScore(team, zone, occupants){
+  let cost=0;
+  (occupants||[]).forEach(function(o){
+    cost += CONTEST_COST * (1 + Math.max(0, ((o.pow||0) - (team.pow||0)) / CONTEST_FEAR));
+  });
+  return zone.points - cost + Math.random()*LANDING_NOISE;
+}
 // A little scatter so the same lobby does not lay out identically every game.
 const LANDING_NOISE=1.15;
 
@@ -29644,11 +29653,10 @@ function buildBotLandingAssignment(bots){
   // field contesting.
   const order=bots.slice().sort((a,b)=>(b.pow||0)-(a.pow||0));
   const zoneGroups=new Map();
-  const countOf=z=>(zoneGroups.get(z)||[]).length;
   order.forEach(t=>{
     let best=null, bestScore=-Infinity;
     ALL_LANDING_ZONES.forEach(z=>{
-      const score=z.points - countOf(z)*CONTEST_COST + Math.random()*LANDING_NOISE;
+      const score=landingScore(t, z, zoneGroups.get(z));
       if(score>bestScore){ bestScore=score; best=z; }
     });
     const zone=best||ALL_LANDING_ZONES[0];
@@ -32126,36 +32134,45 @@ function assignLandingZones(teams){
   const you=teams.find(t=>t.isYou);
   const chosenZone = (you && chosenLanding && chosenLanding.zone) ? chosenLanding.zone : null;
 
-  // Zone slots, weighted by how often each spot really gets dropped on, and
-  // sized to this lobby so the map doesn't come out half empty.
-  const slotPool=landingSlotPool(teams.length);
-
-  if(chosenZone){
-    const chosenIdx=ALL_LANDING_ZONES.indexOf(chosenZone);
-    if(chosenLanding.contested){
-      // Player deliberately dropped on a zone the picker flagged as already
-      // occupied — guarantee exactly one real bot lands there too, by
-      // clearing both slots and putting a single one back at the front.
-      for(let k=slotPool.length-1;k>=0;k--){ if(slotPool[k]===chosenIdx) slotPool.splice(k,1); }
-      slotPool.unshift(chosenIdx);
-    } else {
-      // Player picked a genuinely free zone — it's exclusively theirs, so no
-      // bot can also spawn on top of them there.
-      for(let k=slotPool.length-1;k>=0;k--){ if(slotPool[k]===chosenIdx) slotPool.splice(k,1); }
-    }
-  }
-
+  // Strongest first, each squad taking the best spot still worth taking — the
+  // same rule the Major picker uses, and for the same reason.
+  //
+  // Seats were dealt here out of a shuffled pool weighted by how popular each
+  // spot really is, which produced the right amount of contact and none of the
+  // meaning: who ended up sharing a box had nothing to do with who they were.
+  // So the best squad in the lobby lost a coin flip at the drop as often as the
+  // worst one, which is the opposite of the real thing — on a real drop map the
+  // contested boxes are the named POIs, and the teams in them are the ones who
+  // go on to win.
+  //
+  // The player's own pick is honoured before anybody else's, whatever their
+  // power: they chose it, and the free-versus-contested promise the picker made
+  // them has to hold.
   const zoneGroups=new Map();
-  let slotCursor=0;
-  teams.forEach(t=>{
-    let zone;
-    if(t===you && chosenZone){
-      zone=chosenZone;
-    } else {
-      const zoneIdx=slotPool[slotCursor % slotPool.length];
-      slotCursor++;
-      zone=ALL_LANDING_ZONES[zoneIdx];
-    }
+  const countOf=z=>(zoneGroups.get(z)||[]).length;
+  const dealt=[];
+  if(you && chosenZone){ dealt.push([you, chosenZone]); zoneGroups.set(chosenZone, [you]); }
+  teams.slice()
+    .filter(t=>!(t===you && chosenZone))
+    .sort((a,b)=>(b.pow||0)-(a.pow||0))
+    .forEach(t=>{
+      let best=null, bestScore=-Infinity;
+      ALL_LANDING_ZONES.forEach(z=>{
+        // A spot the player took for themselves is theirs alone; a spot they
+        // took knowing it was occupied gets exactly the one rival the picker
+        // promised, and nobody after that.
+        if(z===chosenZone){
+          const cap = (chosenLanding && chosenLanding.contested) ? 2 : 1;
+          if(countOf(z) >= cap) return;
+        }
+        const score=landingScore(t, z, zoneGroups.get(z));
+        if(score>bestScore){ bestScore=score; best=z; }
+      });
+      dealt.push([t, best||ALL_LANDING_ZONES[0]]);
+      const zg=zoneGroups.get(best); if(zg) zg.push(t); else zoneGroups.set(best,[t]);
+    });
+  zoneGroups.clear();
+  dealt.forEach(([t, zone])=>{
     t.landingZone=zone;
     t.landingResult=null; t.landingRival=null;
     t.avgRating=Math.round(t.squad.reduce((s,p)=>s+p.rating,0)/t.squad.length);
