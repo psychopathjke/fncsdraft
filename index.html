@@ -30799,24 +30799,33 @@ function landingZoneLabel(t){
   const idx=ALL_LANDING_ZONES.indexOf(t.landingZone);
   return idx>=0 ? '#'+(idx+1) : null;
 }
+// Won and lost at the spot, as a plain 12-0 / 7-5 / 4-8. Nothing prints it: see
+// landingCellHTML for why, and putting it back is one line there.
 function landingRecord(t){
   if(!t) return null;
   const w=t.landingWins||0, l=t.landingLosses||0, c=t.landingContests||0;
-  // Won and lost at the spot, and nothing else: 12-0, 7-5, 4-8. This used to
-  // carry a third number — how many games the spot was shared at all — and the
-  // two counted different things, so "0-0" and "0-0 of 12" sat side by side
-  // meaning opposites and were read wrong twice. One pair of numbers, one
-  // meaning: fights that ended with somebody out.
   if(!(w+l) && !c) return null;
   return w+'-'+l;
 }
 function landingCellHTML(t){
   const zone=landingZoneLabel(t);
   if(!zone) return '—';
-  const rec=landingRecord(t);
-  return rec
-    ? `${zone} <span style="color:var(--accent);font-weight:800;">${rec}</span>`
-    : `${zone} <span style="color:var(--ink-dimmer);" title="nobody else dropped here">—</span>`;
+  // The spot, and nothing else.
+  //
+  // A won-lost record beside it only means something if landing on somebody is
+  // a decision. On this map it is not: m2 has 19 landing boxes for 49 squads, so
+  // every squad shares one — measured over 200 lobbies, 100% of them, in groups
+  // averaging 2.9. The record can therefore be one of two things and neither is
+  // worth printing. Left as it is, a drop ends in a body about once in ten, so
+  // twelve games produce "1-0" and the column says nothing. Made decisive, every
+  // shared box would leave one survivor: 32 of 49 squads dead inside forty
+  // seconds, 35% of the lobby alive at the first circle against a real 95%, and
+  // a tournament settled by a coin flip before the first zone.
+  //
+  // The way to earn this column back is the map, not the odds — enough boxes
+  // that most squads land alone and contesting is a choice again. The counters
+  // are still kept on the team, so the day that happens this is one line.
+  return zone;
 }
 
 // The plate the broadcast cuts to once a stage is done: who won it and the
@@ -33161,11 +33170,9 @@ function renderLandingResultsMap(teams){
     const nameStyled = t.isYou ? '<b style="color:var(--lb-you);">'+t.name+'</b>' : t.name;
     const tagInfo=RESULT_TAG[t.landingResult];
     const resultTag=tagInfo?` <span style="color:${tagInfo.color};font-size:11px;">${tagInfo.text}</span>`:'';
-    // Same record the standings show, so the two never disagree.
-    const rec=landingRecord(t);
-    const scoreTag = rec
-      ? ` <span style="color:var(--ink-dimmer);font-size:11px;">⚔ ${rec}</span>`
-      : '';
+    // Same record the standings show, so the two never disagree — and the
+    // standings do not show one. See landingCellHTML.
+    const scoreTag='';
     row.innerHTML=`<b style="color:var(--ink-dim);">${i+1}.</b> ${nameStyled} <span style="color:var(--ink-dimmer);">(${t.pow!=null?Math.round(t.pow):t.displayPower})</span>${resultTag}${scoreTag}`;
     list.appendChild(row);
   });
