@@ -28272,8 +28272,24 @@ function realTeamsForSet(){
 }
 // Locked teams first — those are a rule, not a preference — then the rest of the
 // real field.
+//
+// Except in the opener. A Major with nothing to lock is the first event of the
+// season: nobody has qualified, nobody is tied to anybody, and the lobby is a
+// field of entrants rather than a field of teams that won their way in. Seating
+// the real rosters there restored 49 opponents out of 49 from the results sheet,
+// so Major 1 was played against the finished season while the player was still
+// drafting one. From Major 2 the seats mean something — Major 1's qualifiers
+// enter Major 2 together, Major 1's and Major 2's enter Major 3 — and that is
+// where the real field belongs.
+//
+// This costs the opener the balance the real rosters were bringing: an assembled
+// field carries no teammate synergy, and the player can draft a trio that does.
+// tools/check-power-gap.js is where that shows up, and draftBotSquads answers it
+// by drafting for synergy rather than by being handed the answer.
 function seatingTeamsForSet(){
-  return lockedTeamsForSet().concat(realTeamsForSet());
+  const locked=lockedTeamsForSet();
+  if(!locked.length) return [];
+  return locked.concat(realTeamsForSet());
 }
 // A LAN seat follows the pair, and the pair is whoever actually entered Major 2
 // together. Normally that is the duo off the Summit; when the player drafts one
@@ -28361,8 +28377,25 @@ function draftBotSquads(pool, teamCount, size){
     const avail=byRegion[region];
     const squad=[];
     for(let s=0; s<size; s++){
-      const packSize=Math.min(4, avail.length);
+      const packSize=Math.min(PACK_SIZE, avail.length);
+      // Dealt off the same curve the player is dealt off. This used to draw
+      // uniformly out of the region's remaining cards, which is a pool with a
+      // long tail and a low median, so a bot team almost never collected three
+      // elite players while the player — whose packs are weighted (ovr-floor)^exp
+      // — routinely did. Measured in the 2025 Major 1 opener: the best draft
+      // averaged 96 OVR against a best bot team of 82-85, and finished 13 power
+      // clear of the entire field. weightedPick already says card mode deals to
+      // both sides off one curve; this is the path card mode actually takes.
       const picked=new Set();
+      const weights=avail.map(packWeightFor);
+      let total=weights.reduce((s,w)=>s+w,0);
+      let guard=0;
+      while(picked.size<packSize && guard++<packSize*40){
+        let r=Math.random()*total, idx=0;
+        for(;idx<avail.length;idx++){ r-=weights[idx]; if(r<=0) break; }
+        picked.add(Math.min(idx, avail.length-1));
+      }
+      // A degenerate pool (every weight equal to zero) still has to return a pack.
       while(picked.size<packSize) picked.add(Math.floor(Math.random()*avail.length));
       const have=new Set(squad.map(p=>attrsFor(p).roleKey));
       let best=null, bestScore=-Infinity;
