@@ -1943,9 +1943,9 @@ lcqSameBtn:'Играть тем же составом', lcqSwapBtn:'Замени
 lcqIntroSwapped:(a,b)=>'Заменили '+a+' → '+b+'. Играем Last Chance Qualifier.', lcqIntroNoCandidates:'Свободных замен не нашлось — играем тем же составом.', lcqIntroSame:'Играем Last Chance Qualifier тем же составом.',
 lcqWhoReplace:'Кого заменить?', lcqWhichRegion:o=>'Из какого региона искать замену для '+o+'?', lcqPickCandidate:o=>'Выбери замену для '+o+':', lcqNoCandidatesInRegion:o=>'В этом регионе свободных игроков не нашлось — остаёмся с '+o+'.',
 lcqQualTitle:'Last Chance Qualifier — квалификация (11 игр, топ-50 проходят)',
-lcqRound1Title:n=>'Last Chance Qualifier — Раунд 1 ('+n+' команд, 11 игр, топ-50 проходит дальше)',
+lcqRound1Title:(n,cut)=>'Last Chance Qualifier — Раунд 1 ('+n+' команд, 11 игр, топ-'+cut+' проходит дальше)',
 lcqRound2Title:(n,g)=>'Last Chance Qualifier — Раунд 2 ('+n+' команд, '+g+' игр, победитель каждой уходит в гранд-финал)',
-lcqWinLabel:'Победа — прошли!', lcqAdvancedNote:'Выиграли попытку — слот в Major Finals', lcqFailedNote:g=>'Ни разу не выиграли ни одну из '+g+' игр', lcqTop50Label:'Топ-50 — прошли этап 1', lcqRound1FailedNote:'Не попали в топ-50 на первом этапе',
+lcqWinLabel:'Победа — прошли!', lcqAdvancedNote:'Выиграли попытку — слот в Major Finals', lcqFailedNote:g=>'Ни разу не выиграли ни одну из '+g+' игр', lcqTopLabel:cut=>'Топ-'+cut+' — прошли этап 1', lcqRound1FailedNote:cut=>'Не попали в топ-'+cut+' на первом этапе',
 outOfWord:'из', liveTournament:'Турнир', skipBtn:'⏩ Скип', skipPressed:'Скипнуто…', continueBtn:'▶ Дальше', gameOfWord:(n,t)=>'Игра '+n+' из '+t,
 simGamesProgress:(n,t)=>t ? 'Идут матчи — '+n+' из '+t : 'Идут матчи…',
 landingPromptBtn:'⬇ Выбери точку высадки',
@@ -2365,9 +2365,9 @@ lcqSameBtn:'Play with the same squad', lcqSwapBtn:'Swap out one player',
 lcqIntroSwapped:(a,b)=>'Swapped '+a+' → '+b+'. Playing the Last Chance Qualifier.', lcqIntroNoCandidates:'No free replacements found — sticking with the current squad.', lcqIntroSame:'Playing the Last Chance Qualifier with the same squad.',
 lcqWhoReplace:'Who do we replace?', lcqWhichRegion:o=>'Which region should we pull a replacement for '+o+' from?', lcqPickCandidate:o=>'Pick a replacement for '+o+':', lcqNoCandidatesInRegion:o=>'No free players found in that region — sticking with '+o+'.',
 lcqQualTitle:'Last Chance Qualifier — qualification (11 games, top 50 advance)',
-lcqRound1Title:n=>'Last Chance Qualifier — Round 1 ('+n+' teams, 11 games, top 50 advance)',
+lcqRound1Title:(n,cut)=>'Last Chance Qualifier — Round 1 ('+n+' teams, 11 games, top '+cut+' advance)',
 lcqRound2Title:(n,g)=>'Last Chance Qualifier — Round 2 ('+n+' teams, '+g+' games, each winner takes a Grand Finals slot)',
-lcqWinLabel:'Win — advanced!', lcqAdvancedNote:'Won an attempt — Major Finals slot secured', lcqFailedNote:g=>'Never won any of the '+g+' games', lcqTop50Label:'Top 50 — cleared Round 1', lcqRound1FailedNote:'Missed the top 50 in Round 1',
+lcqWinLabel:'Win — advanced!', lcqAdvancedNote:'Won an attempt — Major Finals slot secured', lcqFailedNote:g=>'Never won any of the '+g+' games', lcqTopLabel:cut=>'Top '+cut+' — cleared Round 1', lcqRound1FailedNote:cut=>'Missed the top '+cut+' in Round 1',
 outOfWord:'of', liveTournament:'Tournament', skipBtn:'⏩ Skip', skipPressed:'Skipped…', continueBtn:'▶ Continue', gameOfWord:(n,t)=>'Game '+n+' of '+t,
 simGamesProgress:(n,t)=>t ? 'Playing games — '+n+' of '+t : 'Playing games…',
 landingPromptBtn:'⬇ Pick your drop',
@@ -30212,20 +30212,23 @@ async function runLastChanceQualifier(stageName, you, allTeams, field, lclGames)
 
   // Round 1: an 11-game cumulative-points stage (Epic's MatchCap for the LCQ
   // session) — VR 65 / 2nd 56 / 5th 44 / 25th 2, +1 per kill — across the full
-  // field, and only the top 50 by points advance. Shown as its own stage card so it's
-  // visually distinct from Round 2's win-a-game shootout, instead of one
-  // merged list of up to 17 games.
-  await simulateGamesLive(field, 11, lcqRound1PointsForPlace, 1, 'stage', 0, null, null, {lobbySize:50, stageName:L().liveLcq});
+  // field. What advances is one lobby's worth, because Round 2 is a single
+  // lobby shooting it out: fifty duos, thirty-three trios, twenty-five squads.
+  // That was written as a flat 50 and a player reported it — in trios the Last
+  // Chance Lobby is 33 teams, and we were sending fifty of them into a
+  // thirty-three seat room.
+  const lclLobby=TEAM_TARGET[squadSize]||50;
+  await simulateGamesLive(field, 11, lcqRound1PointsForPlace, 1, 'stage', 0, null, null, {lobbySize:lclLobby, stageName:L().liveLcq});
   const round1Ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || b.stageElims-a.stageElims);
   const round1Place=round1Ranked.indexOf(you)+1;
-  const advancedToTop50=round1Place<=50;
+  const advancedToLobby=round1Place<=lclLobby;
 
-  const round1Shell=createStageCardShell(L().lcqRound1Title(field.length));
+  const round1Shell=createStageCardShell(L().lcqRound1Title(field.length, lclLobby));
   await revealStageLog(you, round1Shell, true);
-  finalizeStageCard(round1Shell, round1Place, field.length, you.stagePts, advancedToTop50, false, advancedToTop50?L().lcqTop50Label:L().lcqRound1FailedNote);
-  await revealStandings(round1Shell, round1Ranked, you, Math.min(50, round1Ranked.length));
+  finalizeStageCard(round1Shell, round1Place, field.length, you.stagePts, advancedToLobby, false, advancedToLobby?L().lcqTopLabel(lclLobby):L().lcqRound1FailedNote(lclLobby));
+  await revealStandings(round1Shell, round1Ranked, you, Math.min(lclLobby, round1Ranked.length));
 
-  if(!advancedToTop50){
+  if(!advancedToLobby){
     return {advanced:false, winners:[]};
   }
 
@@ -30990,7 +30993,13 @@ async function renderWinnersPlate(shell, winner, you){
 }
 
 async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, prizeTable, cutLabel){
-  const cap=maxRows||60;
+  // Sixty rows, unless the cut line sits below that — then far enough to show
+  // it. A Play-In is 150 teams cutting to 99, and stopping at sixty meant the
+  // table never reached the line: the stage said "top 99 advance" and the
+  // standings under it ran out at 60 with nothing marking where 99 was. A
+  // player reported it as the Play-In not having 99 teams in it, which is
+  // exactly what it looked like.
+  const cap=Math.max(maxRows||60, cut ? cut+1 : 0);
   let view=ranked, truncated=false;
   if(ranked.length>cap){
     const youIdx=ranked.indexOf(you);
@@ -31028,7 +31037,10 @@ async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, p
     }
     const i=ranked.indexOf(t);
     const mine=t===you;
-    if(cut && i===cut && !truncated){
+    // Drawn whenever the view reaches it, which it now always does — the cap
+    // above is raised to clear the cut. The old guard was !truncated, so a
+    // table long enough to be trimmed lost its line entirely.
+    if(cut && i===cut && cut<cap){
       const cl=document.createElement('tr');
       cl.className='st-row';
       cl.innerHTML=`<td colspan="10" style="text-align:center;color:var(--danger);font-size:11px;
