@@ -29656,19 +29656,10 @@ function compressLeaderGap(teams, ptsKey, elimsKey, maxGap, logKey, topN=5){
   }
 }
 
-function pickLandingWinner(group){
-  if(group.length!==2){
-    const totalPow=group.reduce((s,t)=>s+t.pow,0)||1;
-    let r=Math.random()*totalPow, winner=group[0];
-    for(const t of group){ r-=t.pow; if(r<=0){ winner=t; break; } }
-    return winner;
-  }
-  const [a,b]=group;
-  const totalPow=(a.pow+b.pow)||1;
-  const diff=(a.pow-b.pow)/totalPow;
-  const skew=Math.max(-0.15, Math.min(0.15, diff*0.4));
-  return Math.random()<(0.5+skew) ? a : b;
-}
+// pickLandingWinner stood here and settled a shared box by a power-weighted coin
+// before the game started. It went with assignLandingZones, its only caller: the
+// drop is played on the map now and resolveDropDuel settles it there, on capped
+// odds, where it can be watched.
 
 // Same mechanic as the Major Finals landing picker — build the whole bot
 // lobby first, show the real map with everyone already dropped, then offer
@@ -29760,7 +29751,24 @@ const LANDING_NOISE=1.15;
 // Read off the field as it stands when the picker opens: the qualifying stage's
 // stagePts and flags are still on the teams, because the next stage does not
 // reset them until it starts.
+// At the LAN the queue is older than the tournament. Everyone in Lyon holds a
+// seat, but they did not win them at the same time: the Major 1 qualifiers were
+// booked while Major 2 was still being played, and the Major 3 field only got
+// there last week. gcRoute records which, so the room picks in the order it
+// filled. A player arriving out of the Major 3 regional final carries no route
+// and picks after all of them, which is the honest position for the last team
+// through the door.
+const GC_ROUTE_ORDER={m1:0, m2:1, m3:2};
+function gcRouteRank(t){
+  const r=t && GC_ROUTE_ORDER[t.gcRoute];
+  return r==null ? 3 : r;
+}
 function byQualOrder(a, b){
+  const routed=(a && a.gcRoute) || (b && b.gcRoute);
+  if(routed){
+    const d=gcRouteRank(a)-gcRouteRank(b);
+    if(d) return d;
+  }
   return (a && a.qualByWin ? 0 : 1) - (b && b.qualByWin ? 0 : 1)
       || (b.stagePts||0) - (a.stagePts||0)
       || (b.pow||0) - (a.pow||0);
@@ -31997,6 +32005,14 @@ function buildGlobalChampionship2025Field(you, region, regionalFinal){
   // region's real trios you did not take a seat from.
   const mySeats=GC2025_M3_SEATS[region]||1;
   const m3Total=GC2025_FIELD_SIZE-field.length-1;      // minus your own seat
+  // Your own seat came out of Major 3 like the rest of this block, and the drop
+  // queue reads gcRoute to decide who picks when. Leaving it unset filed you
+  // behind all thirty-two of them, which is not where you qualified: measured,
+  // picking dead last put the player on an occupied box in every single game —
+  // a 33-team room has more teams than boxes — and took the average finish from
+  // 5.8 to 11th with no title in sixty runs. Booked through Major 3, you pick
+  // with Major 3.
+  you.gcRoute='m3';
   const mine=[];
   (regionalFinal||[]).forEach(t=>{
     if(t===you || mine.length>=mySeats-1) return;
@@ -32287,127 +32303,14 @@ function pickTeamChunk(remaining, size){
   return {chunk, remaining:pool};
 }
 
-function generateLobby(){
-  const usedHandles=new Set(drafted.map(hKey));
-  const teams=[];
-  const you=buildTeam(drafted);
-  you.loadout=loadoutBonus();
-  you.pow+=you.loadout;
-  you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
-  teams.push(you);
-  const target=TEAM_TARGET[squadSize]||25;
-
-  let remaining=tournamentPool().filter(p=>!usedHandles.has(hKey(p)));
-  while(teams.length<target && remaining.length>=squadSize){
-    const {chunk, remaining:rest}=pickTeamChunk(remaining, squadSize);
-    remaining=rest;
-    const t=buildTeam(chunk); t.loadout=randomLoadoutBonus(chunk.length); t.pow+=t.loadout; t.name=teamLabel(chunk); teams.push(t);
-  }
-
-  assignLandingZones(teams);
-  return teams;
-}
-
-// Give every team (AI and you) a spot on the landing results map. Each of the
-// 33 zones can hold at most 2 squads at a time — with up to 50 teams that's
-// tight enough that bots frequently share a zone and can clash on drop. Used
-// both by the regular tournament lobby and the FNCS Major final stage.
-function assignLandingZones(teams){
-  // Defensive dedup: the same real player (by handle) should never end up on
-  // two different teams in the same lobby/results table, even if two of
-  // their different event-cards slipped past earlier pool-building. Keep the
-  // player's own team no matter what; for everyone else, first team with a
-  // given handle wins, later ones with the same handle are dropped.
-  const seenHandles=new Set();
-  const priorityOrder=teams.slice().sort((a,b)=>(b.isYou?1:0)-(a.isYou?1:0));
-  const kept=[];
-  priorityOrder.forEach(t=>{
-    const handles=t.squad.map(p=>p.handle);
-    if(handles.some(h=>seenHandles.has(h))) return;
-    handles.forEach(h=>seenHandles.add(h));
-    kept.push(t);
-  });
-  if(kept.length!==teams.length){
-    teams.length=0;
-    kept.forEach(t=>teams.push(t));
-  }
-
-  const you=teams.find(t=>t.isYou);
-  const chosenZone = (you && chosenLanding && chosenLanding.zone) ? chosenLanding.zone : null;
-
-  // Strongest first, each squad taking the best spot still worth taking — the
-  // same rule the Major picker uses, and for the same reason.
-  //
-  // Seats were dealt here out of a shuffled pool weighted by how popular each
-  // spot really is, which produced the right amount of contact and none of the
-  // meaning: who ended up sharing a box had nothing to do with who they were.
-  // So the best squad in the lobby lost a coin flip at the drop as often as the
-  // worst one, which is the opposite of the real thing — on a real drop map the
-  // contested boxes are the named POIs, and the teams in them are the ones who
-  // go on to win.
-  //
-  // The player's own pick is honoured before anybody else's, whatever their
-  // power: they chose it, and the free-versus-contested promise the picker made
-  // them has to hold.
-  const zoneGroups=new Map();
-  const countOf=z=>(zoneGroups.get(z)||[]).length;
-  const dealt=[];
-  if(you && chosenZone){ dealt.push([you, chosenZone]); zoneGroups.set(chosenZone, [you]); }
-  teams.slice()
-    .filter(t=>!(t===you && chosenZone))
-    .sort((a,b)=>(b.pow||0)-(a.pow||0))
-    .forEach(t=>{
-      let best=null, bestScore=-Infinity;
-      ALL_LANDING_ZONES.forEach(z=>{
-        // A spot the player took for themselves is theirs alone; a spot they
-        // took knowing it was occupied gets exactly the one rival the picker
-        // promised, and nobody after that.
-        if(z===chosenZone){
-          const cap = (chosenLanding && chosenLanding.contested) ? 2 : 1;
-          if(countOf(z) >= cap) return;
-        }
-        const score=landingScore(t, z, zoneGroups.get(z));
-        if(score>bestScore){ bestScore=score; best=z; }
-      });
-      dealt.push([t, best||ALL_LANDING_ZONES[0]]);
-      const zg=zoneGroups.get(best); if(zg) zg.push(t); else zoneGroups.set(best,[t]);
-    });
-  zoneGroups.clear();
-  dealt.forEach(([t, zone])=>{
-    t.landingZone=zone;
-    t.landingResult=null; t.landingRival=null;
-    t.avgRating=Math.round(t.squad.reduce((s,p)=>s+p.rating,0)/t.squad.length);
-    // Landing on a bigger zone banks a few extra power points — for bots and
-    // you alike, so it actually affects who wins games too. pow is now the
-    // one single power number used everywhere: the draft screen's "Total
-    // power", this results table, and the actual battle simulation below.
-    applyLandingPow(t, zone.points);
-    t.displayPower=t.pow;
-    if(!zoneGroups.has(zone)) zoneGroups.set(zone,[]);
-    zoneGroups.get(zone).push(t);
-  });
-
-  // When two squads land on top of each other, they might scrap right there:
-  // one gets an early-kill power boost, the other gets weakened. Sometimes
-  // nothing happens and they just awkwardly share the zone.
-  //
-  // Only where the drop is not played on the map. Where it is, this same fight
-  // happens in the first forty seconds of the game with everybody watching, and
-  // nudging power here as well would settle it twice — once in secret before
-  // the game and once again on the island.
-  if(useZoneSim(teams)) return;
-  zoneGroups.forEach(group=>{
-    if(group.length<2) return;
-    group.forEach(t=>{ t.landingResult='shared'; t.landingRival=group.find(o=>o!==t); });
-    if(Math.random()<0.6){
-      const winner=pickLandingWinner(group);
-      group.forEach(t=>{
-        if(t===winner){ t.landingResult='won'; t.pow=Math.round(t.pow*1.12); t.landingBonusElims=2; }
-        else{ t.landingResult='lost'; t.pow=Math.round(t.pow*0.82); }
-      });
-    }
-  });
-}
+// generateLobby and assignLandingZones used to live here: a second way to put
+// a lobby on the island, ordered by power, which honoured the player's pick by
+// fencing their box off so nobody could join it. Nothing called either of them -
+// generateLobby appeared exactly once in the file, in its own definition - and
+// every mode goes through pickInitialZone, which orders on how the field
+// qualified and lets the squads picking after you land on your head. Two rules
+// for one thing, one of them unreachable and the wrong one, is how somebody
+// ends up "fixing" the dead copy.
 
 function weightedOrder(teams){
   let pool=teams.slice();
