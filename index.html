@@ -28412,34 +28412,57 @@ function buildFullLobby(){
   return teams;
 }
 
-// Play-In scoring straight off the in-game table. The "Reach Top N" rows are
-// cumulative: every threshold you pass is banked, so a Victory Royale collects
-// all of them plus its own bonus. Top 25 down to Top 6 are +2 each, Top 5 to
-// Top 2 are +4 each, the Victory Royale itself is +9 — a win is worth 65 and
-// 25th place is worth 2. Eliminations are +2 (killMult at the call site).
-const PLAYIN_VR_BONUS=9;
-function playInPointsForPlace(place){
-  if(place>25) return 0;
-  let pts=2*(26-Math.max(place,6));          // Top 25 → Top 6, +2 a step
-  if(place<=5) pts+=4*(6-Math.max(place,2)); // Top 5 → Top 2, +4 a step
-  if(place===1) pts+=PLAYIN_VR_BONUS;
-  return pts;
+// Play-In and Heats, per squad size, on the same banked-threshold rule as the
+// finals: every "Reach Top N" a team passes is collected, so a Victory Royale
+// takes all of them plus its own bonus.
+//
+// Both stages used to be written out as the duo table and used at every squad
+// size, so a trio Major played its first two stages on one scale and its final
+// on another. These are the published tables instead — duo below, trio from the
+// 2025 rules page, and squads on the shape both of them share.
+//
+// The Top-N rows, without the Victory Royale, which is handled separately.
+const PLAYIN_STEPS={
+  2: [[2,4],[3,4],[4,4],[5,4]].concat(Array.from({length:20}, (_, i) => [6+i, 2])),
+  3: [[2,6],[3,4],[4,4],[5,4]].concat(Array.from({length:12}, (_, i) => [6+i, 3])),
+  4: [[2,6],[3,4],[4,4],[5,4]].concat(Array.from({length:8},  (_, i) => [6+i, 3]))
+};
+
+// What a won game is worth, whole. Not a constant anybody chose — it is what
+// the two published tables both come out at, and it is the reason the Victory
+// Royale bonus is the odd number it is.
+//
+//   Play-In duo:  9 + 4×4 + 2×20 = 65      Play-In trio: 11 + 6 + 4×3 + 3×12 = 65
+//   Heats   duo: 944 + 4×4 + 2×20 = 1000   Heats   trio: 946 + 6 + 4×3 + 3×12 = 1000
+//
+// Two modes, two stages, four exact hits — so the bonus is derived from the
+// total rather than copied per mode, and the squad column (which no rules page
+// covers) falls out of the same rule instead of being invented.
+const PLAYIN_WIN_TOTAL=65;
+// The Heats bonus is enormous on purpose: it is what makes one won game an
+// instant qualification rather than something a rival can grind past on points.
+const HEATS_WIN_TOTAL=1000;
+
+function bankedStageTable(steps, winTotal){
+  let below=0;
+  steps.forEach(function(step){ below+=step[1]; });
+  return bankedPlacementTable([[1, winTotal-below]].concat(steps));
 }
-// Heats scoring — VR is worth an overwhelming 944 points specifically so a
-// single Victory Royale always outscores anything else and is an instant
-// qualification, exactly like the real Heats stage rules.
-// Heats scoring, straight off the in-game table: every threshold you pass is
-// banked. Victory Royale +944, top 2-5 +4 each, top 6-25 +2 each, so a win is
-// worth 1000 and 2nd place 56. Eliminations are +3 (killMult at the call site).
-// The huge VR bonus is deliberate — it is what makes a single won game an
-// instant qualification rather than something you can grind past on points.
-const HEATS_VR_BONUS=944;
+const PLAYIN_TABLE={}, HEATS_TABLE={};
+[2,3,4].forEach(function(size){
+  PLAYIN_TABLE[size]=bankedStageTable(PLAYIN_STEPS[size], PLAYIN_WIN_TOTAL);
+  HEATS_TABLE[size] =bankedStageTable(PLAYIN_STEPS[size], HEATS_WIN_TOTAL);
+});
+const PLAYIN_VR_BONUS=PLAYIN_WIN_TOTAL-PLAYIN_STEPS[2].reduce((a,s)=>a+s[1],0);
+const HEATS_VR_BONUS =HEATS_WIN_TOTAL -PLAYIN_STEPS[2].reduce((a,s)=>a+s[1],0);
+
+function playInPointsForPlace(place){
+  const t=PLAYIN_TABLE[squadSize]||PLAYIN_TABLE[2];
+  return place<=t.length ? t[place-1] : 0;
+}
 function heatsScoreForPlace(place){
-  let pts=0;
-  if(place===1) pts+=HEATS_VR_BONUS;
-  for(let t=2;t<=5;t++)  if(place<=t) pts+=4;
-  for(let t=6;t<=25;t++) if(place<=t) pts+=2;
-  return pts;
+  const t=HEATS_TABLE[squadSize]||HEATS_TABLE[2];
+  return place<=t.length ? t[place-1] : 0;
 }
 
 // Heats standings are ordered on points, the way the real leaderboard reads.
