@@ -51,13 +51,16 @@ const BOOTSTRAP = `
           seating.length === 0,
           'seating holds ' + seating.length + ' teams (' + locked.length + ' locked, ' + real.length + ' real)');
       } else {
-        // A qualifying Major keeps every team that won its way in.
+        // A qualifying Major keeps every team that won its way in — and only
+        // those. A roster is free to change between Majors; the one thing that
+        // binds three players together is a seat they already hold.
         check(set + ': every qualified team is in the seating',
           locked.every(function(t){ return seating.some(function(s){ return norm(s) === norm(t); }); }),
           locked.length + ' locked teams');
-        check(set + ': the rest of the real field is seated too',
-          real.length === 0 || seating.length > locked.length,
-          'seating ' + seating.length + ' vs locked ' + locked.length);
+        check(set + ': nobody else is seated',
+          seating.length === locked.length,
+          'seating holds ' + seating.length + ' teams against ' + locked.length +
+          ' qualified (' + real.length + ' real rosters exist for this set)');
       }
 
       // And what that produces in a lobby.
@@ -69,23 +72,29 @@ const BOOTSTRAP = `
       var restored = teams.filter(function(t){
         return realKeys[norm(t.squad.map(function(p){ return p.handle; }))]; }).length;
 
+      // Only teams that hold a seat are counted as legitimately intact; a real
+      // roster that qualified for nothing has no claim on staying together.
+      var lockedKeys = {};
+      locked.forEach(function(t){ lockedKeys[norm(t)] = 1; });
+      var heldSeat = teams.filter(function(t){
+        return lockedKeys[norm(t.squad.map(function(p){ return p.handle; }))]; }).length;
+      var unearned = restored - heldSeat;
+
       if (opener) {
         // Assembly can rebuild a real trio by chance; it must not be the rule.
         check(set + ': the opener lobby is assembled, not restored',
           restored <= Math.ceil(teams.length * 0.1),
           restored + ' of ' + teams.length + ' opponents are real rosters');
-      } else if (real.length) {
-        // 2025 carries every trio that played, so a qualifying Major there is
-        // the real field top to bottom.
-        check(set + ': the qualifying lobby is the real field',
-          restored >= Math.floor(teams.length * 0.8),
-          restored + ' of ' + teams.length + ' opponents are real rosters');
       } else {
-        // 2026 records only who qualified, not the whole field, so the seats go
-        // to the qualifiers and the rest of the lobby is drafted.
         check(set + ': the qualifiers take their seats',
-          restored > 0,
-          restored + ' of ' + teams.length + ' opponents are qualified pairs');
+          heldSeat > 0,
+          heldSeat + ' of ' + teams.length + ' opponents are qualified teams');
+        // The rest of the lobby is drafted. A handful of real rosters can come
+        // back together by chance, the same as in an opener.
+        check(set + ': teams that qualified for nothing are not kept together',
+          unearned <= Math.ceil(teams.length * 0.1),
+          unearned + ' of ' + teams.length + ' opponents are intact real rosters ' +
+          'that hold no seat');
       }
     });
   } catch (e) { out.error = String(e && e.stack || e); }

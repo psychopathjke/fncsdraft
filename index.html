@@ -27501,37 +27501,14 @@ function generatePack(){
   let weighted = src.map(p=>({p, w: packWeightFor(p)}));
   let picks=[];
 
-  // One slot for a real partner, in the Majors whose field is real teams.
-  //
-  // A qualifying Major is played against rosters: measured in the 2025 Major 2,
-  // all 49 opponents carry teammate chemistry and average 16.7 of it against a
-  // cap of 12, so every one of them collects the full bonus. The player draws
-  // three cards out of packs and almost never reunites a real trio, which made
-  // them the only squad in the tournament that could not have chemistry at all —
-  // 11.4th of 50 on power before a shot. So once there is somebody to partner,
-  // a pack offers one of their real partners when the pool still has one. It is
-  // an offer, not a gift: the slot costs one of the four, and taking it means
-  // passing on whatever else was dealt.
-  //
-  // Not in an opener. There the field is assembled and carries no chemistry
-  // either (0.6 on average, and 37 of 49 teams have none), so handing the
-  // player some would put them ahead of a lobby that has none — which is the
-  // hole seatingTeamsForSet was just dug out of.
-  if(CARD_MODE && drafted.length>0 && seatingTeamsForSet().length){
-    const mine=new Set(drafted.map(p=>p.handle));
-    const partners=new Set();
-    TEAMMATE_GROUPS.forEach(g=>{
-      if(!g.some(h=>mine.has(h))) return;
-      g.forEach(h=>{ if(!mine.has(h)) partners.add(h); });
-    });
-    const mates=partners.size ? src.filter(p=>partners.has(p.handle)) : [];
-    if(mates.length){
-      const mate=mates[Math.floor(Math.random()*mates.length)];
-      picks.push(mate);
-      weighted=weighted.filter(x=>hKey(x.p)!==hKey(mate));
-    }
-  }
-
+  // No reserved slot for a real partner. One existed briefly, for a field that
+  // no longer exists: when a qualifying Major restored every real roster, all 49
+  // opponents carried full teammate chemistry and the player was the only squad
+  // that could have none, so a pack held one of their partners. Now that only
+  // the teams holding a seat are kept together, two to six opponents carry
+  // chemistry rather than all of them, and a guaranteed partner would be the
+  // thumb on the scale it was introduced to remove. Chemistry is back to being
+  // something you notice in a pack and take, or miss.
   for(let i=picks.length;i<PACK_SIZE && weighted.length>0;i++){
     const total=weighted.reduce((s,x)=>s+x.w,0);
     let r=Math.random()*total, idx=0;
@@ -28290,12 +28267,16 @@ function lockedTeamsForSet(){
 // Every trio that really played this Major, deduplicated -- a team that reached
 // the Grand Final is recorded at both stages it played.
 //
-// The lobby was being built out of invented trios while the real ones sat in
-// CARD_TRIOS_BY_SET unread, and that is what made the draft unbeatable: you take
-// a team that actually played together, with the synergy that carries, and the
-// field answers with strangers who have none. Measured, before this: a best
-// draft came out 11 power ahead of the whole Major 1 field and 14 ahead of
-// Major 3, against -5 in the 2026 Major 2, where the real pairs are seated.
+// These are not seated, and the distinction is the whole rule. Holding a seat is
+// what binds three players together: rule 4.1.7 locks a Global Championship
+// qualifier to the trio they won it with, and nothing binds anybody else. A trio
+// that entered Major 2 and qualified for nothing is free to be three different
+// people by Major 3, so restoring all 1309 of them filled the lobby with teams
+// that had earned no right to be intact — 47 of 49 opponents in Major 2, every
+// one of them carrying full teammate chemistry against a player who drafts.
+//
+// Kept because it is the honest count of what the results sheet holds, and
+// tools/check-field-seating.js reads it to prove those teams are not seated.
 function realTeamsForSet(){
   const trios=(typeof CARD_TRIOS_BY_SET!=='undefined') && CARD_TRIOS_BY_SET[CARD_SET];
   if(!trios || !trios.length) return [];
@@ -28309,26 +28290,22 @@ function realTeamsForSet(){
   });
   return out;
 }
-// Locked teams first — those are a rule, not a preference — then the rest of the
-// real field.
+// Who is seated: the teams that hold a seat, and nobody else.
 //
-// Except in the opener. A Major with nothing to lock is the first event of the
-// season: nobody has qualified, nobody is tied to anybody, and the lobby is a
-// field of entrants rather than a field of teams that won their way in. Seating
-// the real rosters there restored 49 opponents out of 49 from the results sheet,
-// so Major 1 was played against the finished season while the player was still
-// drafting one. From Major 2 the seats mean something — Major 1's qualifiers
-// enter Major 2 together, Major 1's and Major 2's enter Major 3 — and that is
-// where the real field belongs.
+// A seat is the only thing that binds three players together. Rule 4.1.7 locks a
+// Global Championship qualifier to the trio they won it with for that event and
+// every Major after it; everyone else may enter the next Major with whoever they
+// like, and mostly does. So Major 1 seats nobody — nobody has qualified yet —
+// and Majors 2 and 3 seat exactly their qualifiers, the eight trios out of Major
+// 1 and, by Major 3, the Major 2 trios as well.
 //
-// This costs the opener the balance the real rosters were bringing: an assembled
-// field carries no teammate synergy, and the player can draft a trio that does.
-// tools/check-power-gap.js is where that shows up, and draftBotSquads answers it
-// by drafting for synergy rather than by being handed the answer.
+// The rest of every lobby is drafted, in an opener and in a qualifying Major
+// alike. This used to also restore realTeamsForSet(), which is every trio the
+// results sheet records rather than every trio that won something, and it put
+// 47 intact rosters into a 49-team Major 2 lobby — each with full teammate
+// chemistry, against a player who is drafting one card at a time.
 function seatingTeamsForSet(){
-  const locked=lockedTeamsForSet();
-  if(!locked.length) return [];
-  return locked.concat(realTeamsForSet());
+  return lockedTeamsForSet();
 }
 // A LAN seat follows the pair, and the pair is whoever actually entered Major 2
 // together. Normally that is the duo off the Summit; when the player drafts one
