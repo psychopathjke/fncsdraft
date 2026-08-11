@@ -322,7 +322,11 @@
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;text-align:center;padding:2px;}
   .land-plot span{color:#fff;font-weight:800;font-size:11px;line-height:1.25;
     text-shadow:0 0 3px #000,0 0 5px #000,1px 1px 2px #000;word-break:break-word;}
-  .land-plot.contested{border-color:var(--danger);background:rgba(255,77,109,.28);box-shadow:0 0 8px 1px rgba(255,77,109,.4);}
+  /* The reference red: a flat red border and a red wash, no outer glow, and a
+     true red rather than the pink --danger carries. Same value the picker uses,
+     so a box that is contested looks the same on both maps. */
+  .land-plot.contested{border-color:#ff3b3b;background:rgba(255,59,59,.28);
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.55);}
   .land-marker-label{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:3px;
     font-size:9px;white-space:nowrap;color:var(--ink-dim);background:rgba(11,17,23,.75);
     padding:1px 5px;border-radius:3px;pointer-events:none;opacity:0;transition:opacity .12s;}
@@ -344,7 +348,9 @@
     background:rgba(0,0,0,.38);border-radius:2px;padding:0 2px;}
   .zone-name-you{color:var(--accent);background:rgba(0,0,0,.6);}
   .land-zone:hover{filter:brightness(1.3);}
-  .land-zone.taken{border-style:dashed;}
+  /* Solid, like the reference drop map. Occupied boxes used to be dashed, which
+     is not a line the real map draws anywhere. */
+  .land-zone.taken{border-style:solid;}
   .land-zone.chosen{box-shadow:0 0 16px 4px rgba(0,176,144,.85), inset 0 0 0 1px rgba(0,0,0,.5) !important;transform:scale(1.015);}
   .land-zone-label{font-size:8px;font-weight:700;color:#fff;background:rgba(0,0,0,.62);
     flex:0 0 auto;margin-top:auto;
@@ -29924,23 +29930,26 @@ async function pickInitialZone(you, bots, title){
     // than disappear behind it.
     plot.style.zIndex = occupied ? '40' : '20';
     if(occupied){
-      // Same read as the real FNCS drop map: red means a contested box, plain
-      // dark means somebody is there but alone.
+      // The reference drop map's own read: a box somebody is sitting in has a
+      // black border and a dark wash, a box two squads picked is red. No glow on
+      // either — the real map draws flat rectangles, and the halo was ours.
       if(group.length>=2){
         plot.style.borderColor='#ff3b3b';
-        plot.style.background='rgba(255,59,59,.30)';
-        plot.style.boxShadow='0 0 10px 2px rgba(255,59,59,.45), inset 0 0 0 1px rgba(0,0,0,.55)';
-      } else {
-        plot.style.borderColor='rgba(255,255,255,.85)';
-        plot.style.background='rgba(10,14,20,.55)';
+        plot.style.background='rgba(255,59,59,.28)';
         plot.style.boxShadow='inset 0 0 0 1px rgba(0,0,0,.55)';
+      } else {
+        plot.style.borderColor='#0a0a0a';
+        plot.style.background='rgba(0,0,0,.42)';
+        plot.style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.16)';
       }
       fillZoneNames(plot, group, z);
     } else {
-      // Nobody drops here — black box, so a free spot reads at a glance.
-      plot.style.borderColor='#0a0a0a';
-      plot.style.background='rgba(0,0,0,.55)';
-      plot.style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.18)';
+      // Nobody drops here. The reference never draws an empty box at all, so
+      // this one stays out of the way: the same black line, no wash, and the
+      // island reading straight through it.
+      plot.style.borderColor='rgba(10,10,10,.75)';
+      plot.style.background='transparent';
+      plot.style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.10)';
       const label=document.createElement('div');
       label.className='land-zone-label';
       label.textContent=L().landingPoints(z.points);
