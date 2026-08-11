@@ -32013,6 +32013,24 @@ function ageEdgeOf(squadArr){
   if(!squadArr || !squadArr.length) return 0;
   return squadArr.reduce((s,p)=>s+(p && p._ageEdge || 0),0)/squadArr.length;
 }
+// What the zone engine reads off a team. It asks for four attributes by name —
+// END, SUR, AIM, CLU — and quietly falls back to 50 for anything missing, so a
+// team built without them is not a weak team, it is an average one: every squad
+// in the lobby rotates identically, seeks fights identically, and looks equally
+// worth attacking. Only the duel could still tell a 96 from a 60, which is why
+// the leader used to finish 17th on average in a field it outclassed.
+//
+// The calibration harness sets these by hand, which is how the whole engine
+// suite stayed green while the app played a lobby of clones. tools/check-engine-inputs.js
+// checks this bridge rather than the engine.
+//
+// A squad's number is its cards averaged: the engine wants one 0-100 per team.
+function engineAttrs(squadArr){
+  if(!squadArr || !squadArr.length) return null;
+  const mean = k => Math.round(squadArr.reduce((s,p)=>s+attrsFor(p)[k],0)/squadArr.length);
+  return {END:mean('end'), SUR:mean('sur'), AIM:mean('aim'), CLU:mean('clu')};
+}
+
 function buildTeam(squadArr){
   const syn = computeSynergy(squadArr);
   const avg = Math.round(squadArr.reduce((s,p)=>s+p.rating,0)/squadArr.length);
@@ -32036,10 +32054,10 @@ function buildTeam(squadArr){
     const roleBonus=(roles.size-1)*ROLE_BONUS_STEP;
     pow = Math.round((ovrAvg+powSynergy+roleBonus)*regionMult + ageEdge);
     return {squad:squadArr, syn, pow, regionMult, roles, roleBonus, ovrAvg,
-            closeEdge:closeRangeEdge(squadArr)};
+            attrs:engineAttrs(squadArr), closeEdge:closeRangeEdge(squadArr)};
   }
   return {squad:squadArr, syn, pow, regionMult, roleBonus:0,
-          closeEdge:closeRangeEdge(squadArr)};
+          attrs:engineAttrs(squadArr), closeEdge:closeRangeEdge(squadArr)};
 }
 
 function flagFor(p){ return flagImg(p && p.nat, 15); }
