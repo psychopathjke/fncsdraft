@@ -30736,10 +30736,12 @@ function landingRecord(t){
 function landingCellHTML(t){
   const zone=landingZoneLabel(t);
   if(!zone) return '—';
-  const rec=landingRecord(t);
-  return rec
-    ? `${zone} <span style="color:var(--accent);font-weight:800;">${rec}</span>`
-    : `${zone} <span style="color:var(--ink-dimmer);" title="nobody else dropped here">—</span>`;
+  // The spot, and nothing else. The won-lost record used to sit beside it and
+  // was asked for, then read wrong twice — 0-0 next to 0-0 of 12 meant opposite
+  // things, and a stage of twelve games almost never produces more than one
+  // event, so the number said little and invited the wrong conclusion. The
+  // counters are still kept on the team, so putting it back is one line.
+  return zone;
 }
 
 // The plate the broadcast cuts to once a stage is done: who won it and the
@@ -33047,7 +33049,7 @@ function renderLandingResultsMap(teams){
     const tagInfo=RESULT_TAG[t.landingResult];
     const resultTag=tagInfo?` <span style="color:${tagInfo.color};font-size:11px;">${tagInfo.text}</span>`:'';
     // Same record the standings show, so the two never disagree.
-    const rec=landingRecord(t);
+    const rec=null;   // drop record is not printed any more; see landingCellHTML
     const scoreTag = rec
       ? ` <span style="color:var(--ink-dimmer);font-size:11px;">⚔ ${rec}</span>`
       : '';
