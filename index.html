@@ -1846,7 +1846,7 @@ celPodiumTitle:r=>'ТОП-'+r, celPodiumSub:'Подиум турнира',
 celTop10Title:'ТОП-10', celTop10Sub:'Состав отработал сильно',
 stage1TitleCards:'Этап 1 — Сеединг (6 игр, лобби по 50 команд)',
 landingFieldTitle:n=>'Лобби ('+n+' '+(squadSize===3?'трио':squadSize===4?'сквадов':'дуо')+')', stageGamesToggle:'Показать игры по одной', qualByVR:'Прошёл по Victory Royale', qualByPoints:'Прошёл по очкам', alreadyQualTag:'УЖЕ КВАЛ', alreadyQualHint:'Слот на LAN у них уже есть — второй они взять не могут, и их место уходит вниз. Финиш сразу за такой командой всё равно даёт слот.', stage2NoteByVR:'Взял Victory Royale — мгновенный проход, игры на этом закончены',
-regionResultHeader:'Регионалка', dropHeader:'Высадка', prizeHeader:'Приз', prizeTitle:'💰 Призовые состава', prizePerPlayer:v=>'по '+v+' на игрока',
+regionResultHeader:'Регионалка', dropHeader:'Высадка · счёт', landingNobodyElse:'Больше никто сюда не садился за всю стадию', prizeHeader:'Приз', prizeTitle:'💰 Призовые состава', prizePerPlayer:v=>'по '+v+' на игрока',
 prizeRegional:(reg,rank)=>'Гранд-финал '+reg+' · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Лион · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
 runSummaryTitle:'📋 Итоги симуляции', runSummaryStage:'Этап', runSummaryEarned:'Заработано за симуляцию',
@@ -2314,7 +2314,7 @@ celPodiumTitle:r=>'TOP '+r, celPodiumSub:'On the tournament podium',
 celTop10Title:'TOP 10', celTop10Sub:'Strong run from your squad',
 stage1TitleCards:'Stage 1 — Seeding (6 games, 50-team lobbies)',
 landingFieldTitle:n=>'The lobby ('+n+' '+(squadSize===3?'trios':squadSize===4?'squads':'duos')+')', stageGamesToggle:'Show the game-by-game log', qualByVR:'Advanced on a Victory Royale', qualByPoints:'Advanced on points', alreadyQualTag:'ALREADY QUAL', alreadyQualHint:'Already holds a LAN seat — it cannot take a second one, so its place passes down. Finishing right behind this team still takes a seat.', stage2NoteByVR:'Victory Royale — instant qualification, no more games',
-regionResultHeader:'Regional', dropHeader:'Drop', prizeHeader:'Prize', prizeTitle:'💰 Squad earnings', prizePerPlayer:v=>v+' per player',
+regionResultHeader:'Regional', dropHeader:'Drop · record', landingNobodyElse:'Nobody else dropped here all stage', prizeHeader:'Prize', prizeTitle:'💰 Squad earnings', prizePerPlayer:v=>v+' per player',
 prizeRegional:(reg,rank)=>reg+' Grand Finals · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Lyon · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
 runSummaryTitle:'📋 Your run, stage by stage', runSummaryStage:'Stage', runSummaryEarned:'Earned across the run',
@@ -30818,8 +30818,11 @@ function landingZoneLabel(t){
   const idx=ALL_LANDING_ZONES.indexOf(t.landingZone);
   return idx>=0 ? '#'+(idx+1) : null;
 }
-// Won and lost at the spot, as a plain 12-0 / 7-5 / 4-8. Nothing prints it: see
-// landingCellHTML for why, and putting it back is one line there.
+// Won and lost at the spot, as a plain 12-0 / 7-5 / 4-8. One pair of numbers,
+// one meaning: fights that ended with somebody out. It carried a third — how
+// often the spot was shared at all — and the two counted different things, so
+// "0-0" and "0-0 of 12" sat side by side meaning opposites and were read wrong
+// twice.
 function landingRecord(t){
   if(!t) return null;
   const w=t.landingWins||0, l=t.landingLosses||0, c=t.landingContests||0;
@@ -30829,35 +30832,20 @@ function landingRecord(t){
 function landingCellHTML(t){
   const zone=landingZoneLabel(t);
   if(!zone) return '—';
-  // The spot, and nothing else.
+  // The spot, and what happened on it.
   //
-  // The column needs a drop that decides something, and today's does not: a
-  // contested drop ends in a body about once in ten, so twelve games produce
-  // "1-0" and the number says nothing. That is what pulled it the first time.
+  // This column has been in twice and out twice, and both removals were right at
+  // the time: a drop that ended in a body once in ten produced "1-0" after twelve
+  // games, which says nothing and invites the wrong conclusion. It is in again
+  // because the drop changed under it — squads that land on each other now
+  // settle it, so a stage takes 15.6% of a trio lobby and 30.6% of a duo one, and
+  // twelve games leave a record worth reading.
   //
-  // Measured over 200 lobbies through the app's own picker, at the real lobby
-  // size for each mode:
-  //
-  //   duos   36 boxes, 50 squads, 59.7% share a box, groups of 3 are 2% of them
-  //   trios  29 boxes, 33 squads, 30.5% share a box, 27 boxes occupied
-  //
-  // The trio numbers are what buildBotLandingAssignment aims at — "33 trios
-  // across about 27 boxes, four of them shared" — so the island is sized right
-  // and the crowding is deliberate. Making every contest lethal is what costs:
-  // one survivor per shared box is 15.6% of a trio lobby and 30.6% of a duo one,
-  // dead inside forty seconds, against the 4.7% the real matches report out
-  // before the first circle. Three to six times the real drop toll, on the one
-  // curve the whole engine is calibrated to.
-  //
-  // Since then the engine settles crowded drops — a squad with two others in
-  // contact range always engages — and the drop takes about a fifth of the
-  // lobby rather than a twentieth. So the reason this column was pulled has
-  // gone: twelve games now produce a real record rather than "1-0". Putting it
-  // back is the one line below, and the only reason it is still commented out is
-  // that nobody has asked for it since.
-  //
-  //   return `${zone} <span style="color:var(--accent);font-weight:800;">${landingRecord(t)||'—'}</span>`;
-  return zone;
+  // The dash is its own answer: nobody else dropped here all stage.
+  const rec=landingRecord(t);
+  return rec
+    ? `${zone} <span style="color:var(--accent);font-weight:800;">${rec}</span>`
+    : `${zone} <span style="color:var(--ink-dimmer);" title="${L().landingNobodyElse}">—</span>`;
 }
 
 // The plate the broadcast cuts to once a stage is done: who won it and the
@@ -33202,9 +33190,11 @@ function renderLandingResultsMap(teams){
     const nameStyled = t.isYou ? '<b style="color:var(--lb-you);">'+t.name+'</b>' : t.name;
     const tagInfo=RESULT_TAG[t.landingResult];
     const resultTag=tagInfo?` <span style="color:${tagInfo.color};font-size:11px;">${tagInfo.text}</span>`:'';
-    // Same record the standings show, so the two never disagree — and the
-    // standings do not show one. See landingCellHTML.
-    const scoreTag='';
+    // Same record the standings show, so the two never disagree.
+    const rec=landingRecord(t);
+    const scoreTag = rec
+      ? ` <span style="color:var(--ink-dimmer);font-size:11px;">⚔ ${rec}</span>`
+      : '';
     row.innerHTML=`<b style="color:var(--ink-dim);">${i+1}.</b> ${nameStyled} <span style="color:var(--ink-dimmer);">(${t.pow!=null?Math.round(t.pow):t.displayPower})</span>${resultTag}${scoreTag}`;
     list.appendChild(row);
   });
