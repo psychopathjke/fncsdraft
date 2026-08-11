@@ -1942,7 +1942,7 @@ lcqQualTitle:'Last Chance Qualifier — квалификация (11 игр, т�
 lcqRound1Title:n=>'Last Chance Qualifier — Раунд 1 ('+n+' команд, 11 игр, топ-50 проходит дальше)',
 lcqRound2Title:(n,g)=>'Last Chance Qualifier — Раунд 2 ('+n+' команд, '+g+' игр, победитель каждой уходит в гранд-финал)',
 lcqWinLabel:'Победа — прошли!', lcqAdvancedNote:'Выиграли попытку — слот в Major Finals', lcqFailedNote:g=>'Ни разу не выиграли ни одну из '+g+' игр', lcqTop50Label:'Топ-50 — прошли этап 1', lcqRound1FailedNote:'Не попали в топ-50 на первом этапе',
-skipBtn:'⏩ Скип', skipPressed:'Скипнуто…', continueBtn:'▶ Дальше', gameOfWord:(n,t)=>'Игра '+n+' из '+t,
+outOfWord:'из', skipBtn:'⏩ Скип', skipPressed:'Скипнуто…', continueBtn:'▶ Дальше', gameOfWord:(n,t)=>'Игра '+n+' из '+t,
 simGamesProgress:(n,t)=>t ? 'Идут матчи — '+n+' из '+t : 'Идут матчи…',
 landingPromptBtn:'⬇ Выбери точку высадки',
 statPointsWord:'очков',
@@ -2364,7 +2364,7 @@ lcqQualTitle:'Last Chance Qualifier — qualification (11 games, top 50 advance)
 lcqRound1Title:n=>'Last Chance Qualifier — Round 1 ('+n+' teams, 11 games, top 50 advance)',
 lcqRound2Title:(n,g)=>'Last Chance Qualifier — Round 2 ('+n+' teams, '+g+' games, each winner takes a Grand Finals slot)',
 lcqWinLabel:'Win — advanced!', lcqAdvancedNote:'Won an attempt — Major Finals slot secured', lcqFailedNote:g=>'Never won any of the '+g+' games', lcqTop50Label:'Top 50 — cleared Round 1', lcqRound1FailedNote:'Missed the top 50 in Round 1',
-skipBtn:'⏩ Skip', skipPressed:'Skipped…', continueBtn:'▶ Continue', gameOfWord:(n,t)=>'Game '+n+' of '+t,
+outOfWord:'of', skipBtn:'⏩ Skip', skipPressed:'Skipped…', continueBtn:'▶ Continue', gameOfWord:(n,t)=>'Game '+n+' of '+t,
 simGamesProgress:(n,t)=>t ? 'Playing games — '+n+' of '+t : 'Playing games…',
 landingPromptBtn:'⬇ Pick your drop',
 statPointsWord:'points',
@@ -28700,7 +28700,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   beginAnimatedStage();
   const ptsKey=fieldPrefix+'Pts', elimsKey=fieldPrefix+'Elims';
   const logKey=fieldPrefix==='total' ? 'gameLog' : 'stageLog';
-  teams.forEach((t,i)=>{ t[ptsKey]=0; t[elimsKey]=0; t[logKey]=[]; t.gotVR=false; t.wins=0; t._uid=i; t.landingWins=0; t.landingLosses=0; t.multiKillLandingWins=0; });
+  teams.forEach((t,i)=>{ t[ptsKey]=0; t[elimsKey]=0; t[logKey]=[]; t.gotVR=false; t.wins=0; t._uid=i; t.landingWins=0; t.landingLosses=0; t.multiKillLandingWins=0; t.landingContests=0; });
   // Whether this stage's games are played on the map. When they are, the drop
   // is played there too — the engine puts every squad on its own `landingZone`
   // and the first forty seconds settle who shares with whom — so nothing is
@@ -28941,6 +28941,17 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
     const eliminatedSet=new Set(eliminatedAtStart);
 
     const activeField=teams.filter(t=>!(opts.stopOnWin && t.gotVR));
+
+    // How often a squad had company on its drop, whether or not anybody died
+    // there. Wins and losses only count fights that ended in a wipe, and since
+    // the drop was moved onto the map that is about one contested spot in ten —
+    // real, and measured against the telemetry, but it left the record on the
+    // standings reading "1-0" after twelve games and saying nothing about the
+    // eleven other times you landed on somebody and both of you walked away.
+    const sharedWith=new Map();
+    activeField.forEach(t=>{ if(t.landingZone) sharedWith.set(t.landingZone, (sharedWith.get(t.landingZone)||0)+1); });
+    activeField.forEach(t=>{ if(t.landingZone && sharedWith.get(t.landingZone)>1) t.landingContests=(t.landingContests||0)+1; });
+
     const survivors=activeField.filter(t=>!eliminatedSet.has(t));
     eliminatedAtStart.forEach(t=>{ t._elims=0; t._feed=[L().landingFightLost]; });
     if(survivors.length<2){ await sleep(240); animatedRerender(); await sleep(160); continue; }
@@ -30166,7 +30177,7 @@ async function runMajorTournament(){
   }
 
   const zoneGroups=await showFinalsLandingPicker(finalTeams, you);
-  await simulateGamesLive(finalTeams, (FMT.gfGames||12), pointsForPlace, 4, 'stage', 0, null, zoneGroups, {stageName:L().liveRegionalFinals});
+  await simulateGamesLive(finalTeams, (FMT.gfGames||12), pointsForPlace, 4, 'stage', 0, null, zoneGroups, {mapReplay:true, stageName:L().liveRegionalFinals});
   // Landing zone + fight now happen fresh before every one of the 12 games
   // (see pickZoneForGame, called from inside simulateGamesLive) instead of
   // once before the whole stage — so the bonus/penalty is already folded
@@ -30630,8 +30641,15 @@ function landingZoneLabel(t){
 }
 function landingRecord(t){
   if(!t) return null;
-  const w=t.landingWins||0, l=t.landingLosses||0;
-  return (w+l)>0 ? (w+'-'+l) : null;
+  const w=t.landingWins||0, l=t.landingLosses||0, c=t.landingContests||0;
+  // Won-lost out of how many games the spot was shared. The first pair counts
+  // the fights that ended with somebody out; the third number is how often
+  // there was anybody to fight at all. Without it a record of 1-0 over twelve
+  // games reads as though the spot was almost always empty, when the truth is
+  // the opposite: it was busy nearly every game and the drops resolved
+  // peacefully, which is what real ones mostly do.
+  if(!(w+l) && !c) return null;
+  return c > (w+l) ? (w+'-'+l+' '+L().outOfWord+' '+c) : (w+'-'+l);
 }
 function landingCellHTML(t){
   const zone=landingZoneLabel(t);
@@ -31820,7 +31838,7 @@ async function runGlobalChampionship2025(you, regionRank, region, regionalFinal)
   // Grand Finals (T1_KILL.G). The LAN's own payload was never imported, so this
   // is the season's final-stage ladder rather than a number read off Lyon.
   await simulateGamesLive(field, GC2025_GAMES, pointsForPlace, T1_KILL.G, 'stage', 0, null, zones,
-    {stageName:L().liveWorlds2025});
+    {mapReplay:true, stageName:L().liveWorlds2025});
   const ranked=summitStandings(field);
   const rank=ranked.indexOf(you)+1;
   await revealStageLog(you, shell, true);
@@ -32930,9 +32948,10 @@ function renderLandingResultsMap(teams){
     const nameStyled = t.isYou ? '<b style="color:var(--lb-you);">'+t.name+'</b>' : t.name;
     const tagInfo=RESULT_TAG[t.landingResult];
     const resultTag=tagInfo?` <span style="color:${tagInfo.color};font-size:11px;">${tagInfo.text}</span>`:'';
-    const totalLanding=(t.landingWins||0)+(t.landingLosses||0);
-    const scoreTag = totalLanding>0
-      ? ` <span style="color:var(--ink-dimmer);font-size:11px;">⚔ ${t.landingWins}-${t.landingLosses}</span>`
+    // Same record the standings show, so the two never disagree.
+    const rec=landingRecord(t);
+    const scoreTag = rec
+      ? ` <span style="color:var(--ink-dimmer);font-size:11px;">⚔ ${rec}</span>`
       : '';
     row.innerHTML=`<b style="color:var(--ink-dim);">${i+1}.</b> ${nameStyled} <span style="color:var(--ink-dimmer);">(${t.pow!=null?Math.round(t.pow):t.displayPower})</span>${resultTag}${scoreTag}`;
     list.appendChild(row);
