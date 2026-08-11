@@ -317,39 +317,34 @@
      out to its box rather than to the window, and reads the same on a phone as on
      a monitor. */
   .map-frame{container-type:size;}
-  /* Same read as the picker: the island shows through and the squads are
-     markers on it. The fill and the red contested state are gone — a third of
-     a lobby shares a spot in a normal game, so painting those boxes red covered
-     the map in alerts that meant nothing. */
   .land-plot{position:absolute;box-sizing:border-box;z-index:2;overflow:visible;
-    border:1px solid rgba(238,242,246,.22);background:transparent;
+    border:2px solid var(--accent);background:rgba(0,176,144,.16);
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;text-align:center;padding:2px;}
   .land-plot span{color:#fff;font-weight:800;font-size:11px;line-height:1.25;
     text-shadow:0 0 3px #000,0 0 5px #000,1px 1px 2px #000;word-break:break-word;}
+  .land-plot.contested{border-color:var(--danger);background:rgba(255,77,109,.28);box-shadow:0 0 8px 1px rgba(255,77,109,.4);}
   .land-marker-label{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:3px;
     font-size:9px;white-space:nowrap;color:var(--ink-dim);background:rgba(11,17,23,.75);
     padding:1px 5px;border-radius:3px;pointer-events:none;opacity:0;transition:opacity .12s;}
   .land-marker:hover .land-marker-label,.land-marker.chosen .land-marker-label{opacity:1;color:var(--ink);}
 
-  /* The island shows through. In the real drop map the map is the picture and
-     the teams are small markers on it — see the observer shot in Desktop/zone.
-     Ours used to paint every occupied box with a translucent fill and every
-     shared one bright red, which covered the island and made a normal lobby
-     read as a wall of alerts. The rectangle is now a hit area with a hairline
-     on it; what you see is where the squads are. */
-  .land-zone{position:absolute;box-sizing:border-box;border:1px solid rgba(238,242,246,.22);
-    background:transparent;cursor:pointer;transition:border-color .12s,box-shadow .12s;
+  .land-zone{position:absolute;box-sizing:border-box;border:2.2px solid rgba(238,242,246,.55);
+    background:rgba(238,242,246,.05);cursor:pointer;transition:filter .12s,box-shadow .12s,transform .1s;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     gap:0;padding:2px;overflow:visible;}
-  /* One marker per squad, clustered where they land. A diamond rather than a
-     dot so two of them side by side still read as two. */
-  .land-mark{position:absolute;width:9px;height:9px;transform:translate(-50%,-50%) rotate(45deg);
-    border:1px solid rgba(0,0,0,.7);border-radius:2px;pointer-events:none;
-    box-shadow:0 0 4px rgba(0,0,0,.55);}
-  .land-mark.you{width:13px;height:13px;border-color:#fff;
-    box-shadow:0 0 9px 2px rgba(0,176,144,.9);}
-  .land-zone:hover{border-color:rgba(255,255,255,.85);box-shadow:0 0 8px rgba(0,0,0,.6);}
-  .land-zone.taken{border-color:rgba(255,255,255,.42);}
+  /* Squad names sit on top of a busy satellite map, so they get the same heavy
+     outline treatment as the results map: stacked, bold, and shadowed on all
+     sides rather than plain white text running side by side. One nickname per
+     line, and the line is allowed to be wider than the rectangle — a trio's three
+     names side by side never fit a POI box, and cropping them to an ellipsis is
+     what made the map unreadable. */
+  .zone-name{font-weight:800;color:#fff;line-height:1.14;letter-spacing:.01em;
+    text-shadow:0 0 3px #000, 0 0 5px #000, 1px 1px 2px #000, -1px 1px 2px #000;
+    width:max-content;max-width:none;white-space:nowrap;pointer-events:none;
+    background:rgba(0,0,0,.38);border-radius:2px;padding:0 2px;}
+  .zone-name-you{color:var(--accent);background:rgba(0,0,0,.6);}
+  .land-zone:hover{filter:brightness(1.3);}
+  .land-zone.taken{border-style:dashed;}
   .land-zone.chosen{box-shadow:0 0 16px 4px rgba(0,176,144,.85), inset 0 0 0 1px rgba(0,0,0,.5) !important;transform:scale(1.015);}
   .land-zone-label{font-size:8px;font-weight:700;color:#fff;background:rgba(0,0,0,.62);
     flex:0 0 auto;margin-top:auto;
@@ -27930,39 +27925,39 @@ function useLandingSet(key){
 
 // Rating-tier colors (1-10 scale) — green = best drop, red = worst, matching
 // the classic Kinch-style landing-spot heatmap look.
-// Nicknames used to be written into the rectangles themselves, one name per
-// line, sized against the map. It was a lot of work to make forty boxes of text
-// legible over a satellite image, and the answer turned out to be not to: both
-// maps draw markers now and the names live in the panel and the rows beside
-// them. If a name ever belongs back on the island, it is one per squad and not
-// one per player.
-
-// A stable colour per squad, so the same team is the same dot every time you
-// look at the map. Hue off the name, kept bright and away from the island's own
-// greens so a marker never sinks into a field.
-function squadMarkColor(t){
-  const key=String((t.squad&&t.squad[0]&&t.squad[0].handle) || t.name || '');
-  let h=2166136261;
-  for(let i=0;i<key.length;i++){ h^=key.charCodeAt(i); h=Math.imul(h, 16777619); }
-  return 'hsl('+(Math.abs(h)%360)+',85%,62%)';
-}
-
-// Where the squads on this spot are drawn. They land on the same ground, so the
-// markers cluster: one in the middle, more of them spread along a short row that
-// stays inside the box however many turn up.
-function placeZoneMarkers(plot, teams){
-  const n=(teams||[]).length;
-  if(!n) return;
-  teams.forEach((t,i)=>{
-    const m=document.createElement('div');
-    m.className='land-mark'+(t.isYou?' you':'');
-    m.style.background=t.isYou ? 'var(--accent)' : squadMarkColor(t);
-    // Centred for one, otherwise spread evenly across the middle 70% of the box.
-    const x = n===1 ? 50 : 15 + (70*i)/(n-1);
-    m.style.left=x+'%';
-    m.style.top=(n>4 && i%2 ? 62 : 50)+'%';
-    m.title=String(t.name||'').replace(/<[^>]+>/g,'');
-    plot.appendChild(m);
+// Every nickname in a rectangle, one name per line, sized against the map rather
+// than against the screen. `cqh` is one percent of the map frame's height and the
+// rectangles are measured in exactly that unit, so the column is laid out to the
+// box it sits in at any window size.
+//
+// One name per line, not one team per line: a trio written out as
+// "Player & Player & Player" is three times wider than a POI box, so the old
+// single-line label had to shrink to 3-6px and was then cropped to an ellipsis —
+// which is to say the drop map printed nobody's name. Below the floor the column
+// is allowed to spill out of the rectangle instead of shrinking further; an
+// unreadable name in the box is worth less than a readable one just outside it.
+const ZONE_NAME_MIN_PX=7, ZONE_NAME_MAX_PX=13;
+function fillZoneNames(plot, teams, zone){
+  const lines=[];
+  (teams||[]).forEach((t,ti)=>{
+    const squad=t.squad||[];
+    const names=squad.length ? squad.map(p=>p.handle)
+                             : [String(t.name||'').replace(/<[^>]+>/g,'')];
+    names.forEach((n,i)=>lines.push({text:n, isYou:!!t.isYou, gap:i===0 && ti>0}));
+  });
+  if(!lines.length) return;
+  // 0.92 leaves the border and padding their two pixels; 2.0cqh is where a name
+  // stops growing, so a single squad in a huge box does not print a headline.
+  const k=Math.min(2.0, (zone.h*0.92)/lines.length);
+  const size='clamp('+ZONE_NAME_MIN_PX+'px, '+k.toFixed(2)+'cqh, '+ZONE_NAME_MAX_PX+'px)';
+  lines.forEach(l=>{
+    const el=document.createElement('div');
+    el.className='zone-name'+(l.isYou?' zone-name-you':'');
+    el.style.fontSize=size;
+    if(l.gap) el.style.marginTop='0.3em';
+    el.textContent=l.text;
+    el.title=l.text;
+    plot.appendChild(el);
   });
 }
 
@@ -29570,37 +29565,25 @@ function waitForAnyClick(elements){
 function waitForZoneConfirm(zoneEls, zones, zoneGroups, infoBox, confirmBtn){
   return new Promise(res=>{
     let selected=-1;
-    // `picked` separates reading a spot from choosing it: hovering fills the
-    // panel, only a click arms Confirm. Without that, hovering armed a button
-    // that then did nothing, because nothing was selected.
-    function renderPreview(i, picked){
+    function renderPreview(i){
       const z=zones[i];
       const rivals=zoneGroups.get(z);
       if(!rivals || !rivals.length){
         infoBox.innerHTML=`<div style="color:var(--accent);font-weight:700;">${L().landingFreePreview(z.points)}</div>`;
       } else {
         const rows=rivals.map(t=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:2px 0;">
-          <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;transform:rotate(45deg);
-            background:${t.isYou?'var(--accent)':squadMarkColor(t)};margin-right:7px;"></span>${t.name.replace(/<[^>]+>/g,'')}</span><span style="color:var(--ink-dim);">${L().landingPowerLabel} <b style="color:var(--ink);">${Math.round(t.pow)}</b></span></div>`).join('');
+          <span>${t.name.replace(/<[^>]+>/g,'')}</span><span style="color:var(--ink-dim);">${L().landingPowerLabel} <b style="color:var(--ink);">${Math.round(t.pow)}</b></span></div>`).join('');
         infoBox.innerHTML=`<div style="color:var(--danger);font-weight:700;margin-bottom:4px;">${L().landingOccupiedPreview(rivals.length)}</div>${rows}`;
       }
       confirmBtn.style.display='inline-block';
-      if(picked) confirmBtn.disabled=false;
+      confirmBtn.disabled=false;
     }
     zoneEls.forEach((el,i)=>{
       el.onclick=()=>{
         if(selected>=0) zoneEls[selected].classList.remove('chosen');
         selected=i;
         el.classList.add('chosen');
-        renderPreview(i, true);
-      };
-      // Reading the map is hovering it. The names used to be printed on the
-      // island itself; now they answer here, and a spot has to be hovered rather
-      // than clicked to be read — clicking is for choosing.
-      el.onmouseenter=()=>renderPreview(i);
-      el.onmouseleave=()=>{
-        if(selected>=0) renderPreview(selected, true);
-        else infoBox.innerHTML='';
+        renderPreview(i);
       };
     });
     confirmBtn.onclick=()=>{ if(selected>=0) res(selected); };
@@ -29940,13 +29923,24 @@ async function pickInitialZone(you, bots, title){
     // column that outgrows its rectangle has to paint over its neighbour rather
     // than disappear behind it.
     plot.style.zIndex = occupied ? '40' : '20';
-    // Markers, not fills. Who is on a spot is one marker each; who they are is
-    // in the panel under the map, which lists every squad on the box you hover
-    // with its power, and in the lobby list beside it. Nothing is hidden that
-    // was visible before — it moved off the island so the island can be seen.
     if(occupied){
-      placeZoneMarkers(plot, group);
+      // Same read as the real FNCS drop map: red means a contested box, plain
+      // dark means somebody is there but alone.
+      if(group.length>=2){
+        plot.style.borderColor='#ff3b3b';
+        plot.style.background='rgba(255,59,59,.30)';
+        plot.style.boxShadow='0 0 10px 2px rgba(255,59,59,.45), inset 0 0 0 1px rgba(0,0,0,.55)';
+      } else {
+        plot.style.borderColor='rgba(255,255,255,.85)';
+        plot.style.background='rgba(10,14,20,.55)';
+        plot.style.boxShadow='inset 0 0 0 1px rgba(0,0,0,.55)';
+      }
+      fillZoneNames(plot, group, z);
     } else {
+      // Nobody drops here — black box, so a free spot reads at a glance.
+      plot.style.borderColor='#0a0a0a';
+      plot.style.background='rgba(0,0,0,.55)';
+      plot.style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.18)';
       const label=document.createElement('div');
       label.className='land-zone-label';
       label.textContent=L().landingPoints(z.points);
@@ -33166,12 +33160,8 @@ function renderLandingResultsMap(teams){
     shared:{text:L().landingShared,     color:'var(--ink-dim)'},
   };
 
-  // One marker per squad, where it landed — the read the observer map gives.
-  // This used to fill the box: red when two squads shared it, dark otherwise,
-  // with every nickname stacked inside. On a lobby where a third of the field
-  // shares a spot that painted the island over and turned a normal drop into a
-  // wall of alerts. The names are on the rows below and in each marker's
-  // tooltip; what belongs on the island is where people are.
+  // One rectangle per zone. If two squads share it, the whole box just turns
+  // red and both nicknames are stacked inside it — no splitting into halves.
   const zoneMap=new Map();
   teams.forEach((t,i)=>{
     if(!t.landingZone) return;
@@ -33180,21 +33170,20 @@ function renderLandingResultsMap(teams){
   });
 
   zoneMap.forEach((entries,z)=>{
+    const contested = entries.length>=2;
     const plot=document.createElement('div');
-    plot.className='land-plot';
+    plot.className='land-plot'+(contested?' contested':'');
+    if(!contested){
+      plot.style.borderColor='#0a0a0a'; plot.style.background='rgba(0,0,0,.4)';
+    }
     plot.style.left=z.x+'%'; plot.style.top=z.y+'%';
     plot.style.width=z.w+'%'; plot.style.height=z.h+'%';
-    plot.title=entries.map(({t,i})=>t.name.replace(/<[^>]+>/g,'')+' (#'+(i+1)+')')
-      .join(entries.length>=2 ? ' vs ' : '');
-    placeZoneMarkers(plot, entries.map(e=>e.t));
-    // What happened here rides on the marker rather than on the box: a squad
-    // that lost its drop is hollowed out, the one that won it keeps its colour.
-    const marks=plot.querySelectorAll('.land-mark');
-    entries.forEach(({t}, mi)=>{
-      const m=marks[mi]; if(!m) return;
-      if(t.landingResult==='lost'){ m.style.background='transparent'; m.style.borderColor='var(--danger)'; }
-      else if(t.landingResult==='won'){ m.style.boxShadow='0 0 7px 2px rgba(0,176,144,.75)'; }
-    });
+    plot.title=entries.map(({t,i})=>t.name.replace(/<[^>]+>/g,'')+' (#'+(i+1)+')').join(contested?' vs ':'');
+    // Same column as the picker map: one nickname per line, sized to the box in
+    // cqh. Squad mode used to need its own shrink factor here because four
+    // handles were written on a single line; per-line names make the squad size
+    // just another row count.
+    fillZoneNames(plot, entries.map(e=>e.t), z);
     layer.appendChild(plot);
   });
 
