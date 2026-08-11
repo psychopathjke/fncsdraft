@@ -54,6 +54,21 @@ const BOOTSTRAP = `
         cut < cap, 'cut at ' + cut + ', table holds ' + cap + ' rows');
     });
 
+    // The free modes run majorFormat with no card set, which used to hand them
+    // the duo shape whatever size the squads were — the trio Major advanced 150
+    // when three heats of thirty-three seat 99. This is what a player reported.
+    CARD_MODE = false;
+    [[2, 150], [3, 99], [4, 75]].forEach(function(pair){
+      squadSize = pair[0];
+      var f = majorFormat(null, null);
+      check('free ' + (pair[0]===2?'duo':pair[0]===3?'trio':'squad') +
+        ' Major: the Play-In advances what the heats can seat',
+        f.playInCut === pair[1],
+        'advances ' + f.playInCut + ', ' + f.heats.length + ' heats of ' +
+        (TEAM_TARGET[pair[0]]) + ' seat ' + pair[1]);
+    });
+    CARD_MODE = true;
+
     // And end to end: build a real Play-In sized field, render the standings
     // the stage renders, and look for the line.
     CARD_MODE = true; CARD_SET = 't2'; squadSize = 3; isMajorMode = true;

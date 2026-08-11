@@ -55,6 +55,27 @@ const BOOTSTRAP = `
         'the earnings line went missing');
     });
 
+    // Only ever one landing picker on the page. The card is removed when a pick
+    // is confirmed and only then, so an abandoned picker used to stay put and the
+    // next stage opened a second one underneath it.
+    CARD_MODE = true; CARD_SET = 't2'; squadSize = 3;
+    var stages = document.getElementById('majorStages');
+    if (!stages) { stages = document.createElement('div'); stages.id = 'majorStages'; document.body.appendChild(stages); }
+    var poolAll = cardRosterPlayers('t2').slice();
+    pool = poolAll.slice(); drafted = poolAll.slice(0, 3);
+    var mk = function(){
+      var bots = []; fillFieldTeams(poolAll.slice(3), 8, 3, bots);
+      bots.forEach(function(t,i){ t._uid=i; if(!t.name) t.name='B'+i; });
+      var me = buildTeam(drafted); me.isYou = true; me.name='YOU';
+      pickInitialZone(me, bots, 'ONE');   // deliberately not awaited: abandoned
+    };
+    mk(); mk(); mk();
+    var open = document.querySelectorAll('.landing-picker').length;
+    check('only one landing picker is ever on the page',
+      open === 1, open + ' picker cards open at once');
+    document.querySelectorAll('.landing-picker').forEach(function(el){ el.remove(); });
+    removeLandingPrompt();
+
     // A run with no LAN on the line at all must not invent one.
     resetRunRecord();
     recordPlace('Tournament', 7, 50, false, 300);

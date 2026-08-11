@@ -28579,6 +28579,16 @@ const LCQ_WINNERS_2025={EU:3, NAC:3, NAW:3, BR:3, ASIA:3, ME:0, OCE:2};
 const LCQ_WINNERS_T2={EU:3, NAC:3, NAW:3, BR:3, ASIA:3, ME:3, OCE:2};
 const LCQ_WINNERS_T3={EU:3, NAC:3, NAW:2, BR:3, ASIA:3, ME:2, OCE:3};
 const LCQ_WINNERS_2025_BY_SET={t1:LCQ_WINNERS_2025, t2:LCQ_WINNERS_T2, t3:LCQ_WINNERS_T3};
+// What a Play-In advances is however many teams the Heats can seat: one lobby
+// per heat. Every number this file used to hard-code falls out of it — three
+// heats of fifty duos is 150, three of thirty-three trios is 99, two of each is
+// 100 and 66 — which is why it is computed rather than listed. A player reported
+// the trio Major sending 150 through when the answer is 99, and it was the free
+// modes doing it: they run majorFormat with no card set, so they were handed the
+// duo shape whatever size the squads were.
+function playInSeats(heatCount){
+  return heatCount * (TEAM_TARGET[squadSize] || 50);
+}
 function majorFormat(region, cardSet){
   // FNCS 2025 ran groups, not heats: three in Europe and NA Central and two
   // everywhere else, the same split DEEP_MAJOR_REGIONS already describes.
@@ -28598,7 +28608,7 @@ function majorFormat(region, cardSet){
     const deep=DEEP_MAJOR_REGIONS.has(region) || !region;
     const winners=LCQ_WINNERS_2025_BY_SET[cardSet];
     return {
-      playInCut: deep ? 99 : 66,
+      playInCut: playInSeats(deep ? 3 : 2),
       heats: deep ? [{games:5,cut:10},{games:5,cut:10},{games:5,cut:10}]
                   // Brazil's second group ran six matches in Major 1 and five in
                   // both later Majors, so the quirk stays pinned to the set.
@@ -28609,7 +28619,7 @@ function majorFormat(region, cardSet){
     };
   }
   if(DEEP_MAJOR_REGIONS.has(region) || !region){
-    return {playInCut:150, heats:[{games:5,cut:15},{games:5,cut:15},{games:5,cut:15}], lclGames:5};
+    return {playInCut:playInSeats(3), heats:[{games:5,cut:15},{games:5,cut:15},{games:5,cut:15}], lclGames:5};
   }
   // The Middle East belongs in this list too. Its Major 1 Last Chance Lobby
   // produced three winners, not four — checked against CARD_E1_LCQ_RAW — and a
@@ -28619,7 +28629,7 @@ function majorFormat(region, cardSet){
   const sixGameHeat2 = (cardSet==='m1' && (region==='OCE' || region==='ASIA' || region==='ME'));
   const heat2Games = sixGameHeat2 ? 6 : 5;
   return {
-    playInCut:100,
+    playInCut:playInSeats(2),
     heats:[{games:5, cut:23}, {games:heat2Games, cut:heat2Games+18}],
     lclGames: (cardSet==='m1' && sixGameHeat2) ? 3 : 4
   };
@@ -29401,7 +29411,12 @@ async function revealStageLog(you, shell, instant){
 // here, and every payout writes an earning — so the summary at the end is the
 // run as it actually happened rather than a second guess at it.
 let runPlaces=[], runEarnings=[], runLanSeat=null;
-function resetRunRecord(){ runPlaces=[]; runEarnings=[]; runLanSeat=null; }
+function resetRunRecord(){
+  runPlaces=[]; runEarnings=[]; runLanSeat=null;
+  // A new run starts with no picker on the page, whatever the last one left.
+  document.querySelectorAll('.landing-picker').forEach(el=>el.remove());
+  removeLandingPrompt();
+}
 // Whether the run ends with a seat at the LAN, and which one. It is the thing a
 // Major is played for and the summary card did not say it: you had to scroll
 // back up to a stage card to find out whether you were going.
@@ -29949,8 +29964,15 @@ async function pickInitialZone(you, bots, title){
   const pickSeat=ahead.length+1;
 
   const container=document.getElementById('majorStages');
+  // One picker on the page at a time. The card is removed when the pick is
+  // confirmed and only then, so any path that abandons a picker — an early
+  // return, a throw, a stage that never resolves — left it sitting there, and
+  // the next stage opened its own underneath. A player caught two: a Last Chance
+  // board of fifty above a Grand Finals board of thirty-three, both live, both
+  // asking to be clicked. Same defence ensureLandingPrompt already uses.
+  document.querySelectorAll('.landing-picker').forEach(el=>el.remove());
   const box=document.createElement('div');
-  box.className='stage-card';
+  box.className='stage-card landing-picker';
   box.innerHTML=`<h4>${title || L().finalsLandingTitle}</h4>
     <div class="stage-detail">${L().landingPickSeat(pickSeat, bots.length+1)} ${L().landingPickPrompt}</div>
     <div class="landing-split">
