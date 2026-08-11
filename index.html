@@ -1203,6 +1203,16 @@
         <p data-i18n="modeMajorDesc"></p>
         <span class="mode-count" data-i18n="modeMajorCount"></span>
       </div>
+      <div class="mode-card" onclick="chooseMode(3, true)">
+        <div class="ec-art" style="background-image:url(art/mode-all-fncs.jpg)"><span class="ec-pill ec-pill-l" data-i18n="ecScopeAll"></span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateAll"></div><h3 class="ec-title" data-i18n="modeMajorTitle"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubTrios"></span></div></div></div>
+        <p data-i18n="modeMajorDesc"></p>
+        <span class="mode-count" data-i18n="modeMajorCount"></span>
+      </div>
+      <div class="mode-card" onclick="chooseMode(4, true)">
+        <div class="ec-art" style="background-image:url(art/mode-all-fncs.jpg)"><span class="ec-pill ec-pill-l" data-i18n="ecScopeAll"></span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateAll"></div><h3 class="ec-title" data-i18n="modeMajorTitle"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubSquads"></span></div></div></div>
+        <p data-i18n="modeMajorDesc"></p>
+        <span class="mode-count" data-i18n="modeMajorCount"></span>
+      </div>
       <div class="mode-card" onclick="chooseMode(2)">
         <div class="ec-art" style="background-image:url(art/mode-duo.jpg)"><span class="ec-pill ec-pill-l" data-i18n="ecScopeAll"></span><div class="ec-foot"><h3 class="ec-title" data-i18n="modeDuoTitle"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos"></span></div></div></div>
         <p data-i18n="modeDuoDesc"></p>
@@ -27273,9 +27283,18 @@ function buildPreRegionChecks(){
   allBtn.className='rf-btn active'; allBtn.textContent=L().eraAll; allBtn.dataset.year='all';
   eraEl.appendChild(allBtn);
   const yearBtns=[allBtn];
+  // Labelled by the chapter each year actually was — "Chapter 6", not "2025".
+  // The mapping is the one SEASON_LOOT already keeps, so the button and the
+  // guns a pick hands you can never drift apart; the year rides along because
+  // it is what the cards themselves are stamped with, and the value behind the
+  // button stays the year so nothing downstream has to change.
   years.forEach(y=>{
+    const era=SEASON_LOOT[y];
+    const name=era ? (era[LANG] || era.en) : null;
     const b=document.createElement('button');
-    b.className='rf-btn'; b.textContent=y; b.dataset.year=String(y);
+    b.className='rf-btn';
+    b.textContent = name ? name + ' · ' + y : String(y);
+    b.dataset.year=String(y);
     eraEl.appendChild(b);
     yearBtns.push(b);
   });
