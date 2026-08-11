@@ -28807,7 +28807,13 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   // the standings and plays a game before that game's points land in the
   // table, so the table updating is the result of what was just watched
   // rather than a separate event.
-  const zoneSet    = (CARD_SET === 'm1') ? 'm1' : 'm2';
+  // Whichever island this stage is actually being played on. It used to be
+  // written out as a choice between the two 2026 Majors, which was true when
+  // there were only two — and quietly wrong the moment the app grew the 2025
+  // trio Majors, because t1, t2 and t3 all fell through to the duo island and
+  // a trio Major was played out on a map it never visits. useLandingSet
+  // already publishes what it picked; this reads that instead of guessing.
+  const zoneSet    = ZONE_SETS[ACTIVE_LANDING_SET] ? ACTIVE_LANDING_SET : 'm2';
   // Which stages get a map, asked for one at a time.
   //
   // It used to appear wherever the zone engine ran, which meant an open
@@ -32288,7 +32294,9 @@ function simulateGameOnMap(teams, lobbyOpts){
     t._pc=Math.max(1, t._pf+(t.closeEdge||0));
   });
 
-  const set    = (CARD_SET === 'm1') ? 'm1' : 'm2';
+  // The island this game is played on — the one the landing picker put
+  // everybody on, not a guess between the first two the app ever had.
+  const set    = ZONE_SETS[ACTIVE_LANDING_SET] ? ACTIVE_LANDING_SET : 'm2';
   const ratio  = MAP_ASPECT[set].split('/');
   const aspect = Number(ratio[1]) / Number(ratio[0]);
   const exponent = DUEL_POW_EXPONENT_BY_MODE[squadSize] || 5;
