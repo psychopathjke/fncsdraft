@@ -29097,11 +29097,20 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   // line, so the table the player skipped to reach flashed past and was gone.
   // A skipped stage now stops on its own standings and waits to be let go.
   if(skipAnimation){
+    // Skipping asks for the result, so the result is where it stops. The
+    // finished card stays on the page and the run carries straight on to what
+    // comes next. It used to stop here on a Continue button, and the complaint
+    // was fair: nothing said another press was needed, so the run looked stuck
+    // on a table it had already drawn.
+    //
+    // The card is deliberately not removed. That removal is what made skipping
+    // useless in the first place: sleep() returns instantly while the skip flag
+    // is set, so the standings flashed past before anybody could read them.
     shell.scrollIntoView({block:'start', behavior:'smooth'});
-    await waitForContinue();
+  } else {
+    await sleep(500);
+    shell.remove();
   }
-  await sleep(500);
-  shell.remove();
 }
 
 // Real prize money, straight from the Fortnite Tracker payout tables for each
