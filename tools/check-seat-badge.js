@@ -58,11 +58,21 @@ const BOOTSTRAP = `
       var html = host.innerHTML;
       var tag = L().alreadyQualTag;
       var badges = html.split(tag).length - 1;
+      // The other half of the read: who got through here. A row is one or the
+      // other, never both, and never a bare tick that says neither.
+      var hereTag = L().qualHereTag;
+      var hereBadges = html.split('>' + hereTag + '<').length - 1 +
+                       html.split('★ ' + hereTag + '<').length - 1;
 
       out.sets.push({set: set, slots: slots, cut: cut, seatedAbove: seatedAbove,
                      badges: badges, seatsAwarded: seats.length});
 
-      check(set + ': a seat holder is never awarded a second seat',
+      check(set + ': the teams that qualified here are labelled too',
+        hereBadges >= seats.length,
+        seats.length + ' won a seat here, ' + hereBadges + ' rows say so');
+      check(set + ': the two labels are different words',
+        hereTag !== tag, 'both read "' + tag + '"');
+            check(set + ': a seat holder is never awarded a second seat',
         seats.every(function(t){ return !holdsLanSeat(t); }),
         seats.length + ' seats awarded');
       if (seatedAbove > 0) {
