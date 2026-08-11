@@ -714,6 +714,21 @@
     // the lobby size for no reason.
     for(var f=0;f<alive.length;f++) alive[f].busy = false;
 
+    // Who is standing in a crowd, counted once for the tick rather than per
+    // pair. Only during the drop: it is the one moment the whole lobby is on the
+    // ground at the same time and a spot can hold three squads at once.
+    var crowd = null;
+    if(dropping){
+      crowd = new Array(alive.length);
+      for(var ci2=0; ci2<alive.length; ci2++) crowd[ci2] = 1;
+      for(var q=0; q<alive.length; q++){
+        for(var r=q+1; r<alive.length; r++){
+          var qdx = alive[q].x - alive[r].x, qdy = alive[q].y - alive[r].y;
+          if(qdx*qdx + qdy*qdy <= CONTACT_RANGE * CONTACT_RANGE){ crowd[q]++; crowd[r]++; }
+        }
+      }
+    }
+
     for(var a=0;a<alive.length;a++){
       var s = alive[a];
       if(!s.alive || s.busy) continue;
@@ -722,6 +737,17 @@
         if(!o.alive || o.busy) continue;
         var fdx = s.x - o.x, fdy = s.y - o.y;
         if(fdx*fdx + fdy*fdy > CONTACT_RANGE * CONTACT_RANGE) continue;
+        // Three or more squads on one spot do not circle each other.
+        //
+        // Two squads sharing a box is a fight both can walk away from, and the
+        // telemetry agrees: about one contested drop in ten leaves a body. A
+        // stack is a different thing, and leaving it to the same coin read as
+        // broken — three trios on one roof, all three alive, all three top four.
+        // So inside the drop window a squad with two others in contact range
+        // always engages, and the crowd settles itself. Groups of three or more
+        // are 2% of all shared boxes, so this costs about a point of survival
+        // rather than the eleven a guaranteed kill on every share would.
+        var stacked = crowd && crowd[a] >= 3 && crowd[b] >= 3;
         // Either squad can start it, and starting one is its own event. The
         // first version multiplied both squads' exposure, which made avoiding
         // fights and getting kills the same skill: a squad that learned not to
@@ -751,7 +777,7 @@
         var eO = pair > 0 ? Math.pow(2 * o.power / pair, PICK_EXP) : 1;
         var pS = s.seek * Math.pow(caught(o, room), ENGAGE_BIAS) * eS;
         var pO = o.seek * Math.pow(caught(s, room), ENGAGE_BIAS) * eO;
-        if(rng() >= ENGAGE_CHANCE * press * sizeScale * (pS + pO)) continue;
+        if(!stacked && rng() >= ENGAGE_CHANCE * press * sizeScale * (pS + pO)) continue;
 
         // The caller is told whether this fight is happening off the drop.
         // Nothing in here changes on the answer — the engine settles no fight

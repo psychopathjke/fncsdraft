@@ -30840,11 +30840,14 @@ function landingCellHTML(t){
   // before the first circle. Three to six times the real drop toll, on the one
   // curve the whole engine is calibrated to.
   //
-  // The narrow version is worth a look and is not this: a stack of three or more
-  // is 2% of groups, so forcing bodies there costs about a point of survival
-  // rather than eleven, and it is the case that reads as broken — three teams on
-  // one roof and all three alive. The counters are still on the team, so the day
-  // a drop decides something this is one line.
+  // Since then the engine settles crowded drops — a squad with two others in
+  // contact range always engages — and the drop takes about a fifth of the
+  // lobby rather than a twentieth. So the reason this column was pulled has
+  // gone: twelve games now produce a real record rather than "1-0". Putting it
+  // back is the one line below, and the only reason it is still commented out is
+  // that nobody has asked for it since.
+  //
+  //   return `${zone} <span style="color:var(--accent);font-weight:800;">${landingRecord(t)||'—'}</span>`;
   return zone;
 }
 

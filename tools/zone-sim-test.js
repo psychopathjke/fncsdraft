@@ -668,9 +668,18 @@ function dropOnGrid(teams, rng){
   };
 }
 
-test('the drop takes about as many squads as the real matches do', () => {
-  // 7 of 149 duos across the three logged matches are already out when the
-  // first circle closes — 4.7%. tools/drop-calibration.js is the same
+test('a crowded drop takes the toll the game asks for', () => {
+  // This one no longer tracks the telemetry, and that is a decision rather than
+  // a drift. 7 of 149 duos across the three logged matches are out when the
+  // first circle closes — 4.7% — and the engine matched it while a stack of
+  // three squads was resolved by the same coin as a two-way share. It read as
+  // broken at the table: three trios on one roof, all three alive, all three in
+  // the top four. So squads standing in a crowd at the drop now always engage,
+  // and the drop costs about a fifth of the lobby instead of a twentieth.
+  //
+  // The real number stays written down here because it is what the rest of the
+  // model is still built on, and because the day this is reconsidered, this is
+  // the line to reconsider it against. tools/drop-calibration.js is the same
   // measurement with a dial on it.
   let out = 0, total = 0;
   const RUNS = 20;
@@ -682,8 +691,9 @@ test('the drop takes about as many squads as the real matches do', () => {
     teams.forEach(t => { total++; if(t._droppedOut) out++; });
   }
   const share = out / total;
-  assert(share > 0.02 && share < 0.09,
-    (100*share).toFixed(1) + '% of the lobby lost its drop, against 4.7% in the real matches');
+  assert(share > 0.15 && share < 0.30,
+    (100*share).toFixed(1) + '% of the lobby lost its drop; the game asks for about 20%, ' +
+    'and the real matches report 4.7%');
 });
 
 test('a squad that loses its drop died in zone 1, to somebody in the lobby', () => {
