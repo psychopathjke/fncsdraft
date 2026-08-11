@@ -1849,7 +1849,7 @@ landingFieldTitle:n=>'Лобби ('+n+' '+(squadSize===3?'трио':squadSize===
 regionResultHeader:'Регионалка', dropHeader:'Счёт на высадке', landingNobodyElse:'Больше никто сюда не садился за всю стадию', prizeHeader:'Приз', prizeTitle:'💰 Призовые состава', prizePerPlayer:v=>'по '+v+' на игрока',
 prizeRegional:(reg,rank)=>'Гранд-финал '+reg+' · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Лион · #'+rank, prizeGc2026:rank=>'Global Championship, Антверпен · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
-runSummaryTitle:'📋 Итоги симуляции', nextStageHint:'Посмотри таблицу — дальше пойдём, когда нажмёшь.', nextStageHeats:n=>'Играть Хит '+n, nextStageFinals:'Играть Гранд-финал', nextStageLcq:'Играть Last Chance', nextStageLan:'Лететь на LAN', lanSeatWon:'Место на LAN взято', lanSeatMissed:'Место на LAN не взято', lanSummit:'Summit', lanBelgium:'Global Championship, Бельгия', lanLyon:'Global Championship, Лион', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' в регионе '+reg+', мест: '+slots, lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', мест: '+slots, runSummaryStage:'Этап', runSummaryEarned:'Заработано за симуляцию',
+runSummaryTitle:'📋 Итоги симуляции', lanSeatWon:'Место на LAN взято', lanSeatMissed:'Место на LAN не взято', lanSummit:'Summit', lanBelgium:'Global Championship, Бельгия', lanLyon:'Global Championship, Лион', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' в регионе '+reg+', мест: '+slots, lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', мест: '+slots, runSummaryStage:'Этап', runSummaryEarned:'Заработано за симуляцию',
 runSummaryNoEarnings:'Призовых нет — до стадии с призовым фондом состав не дошёл.',
 rowHistoryHint:'Клик — матчи этой команды', stageTableTitle:'Таблица этапа', stageCutLabel:n=>'— линия отсечки: топ-'+n+' проходят —',
 stageTableTeam:'Команда', stageTableRegion:'Регион',
@@ -2317,7 +2317,7 @@ landingFieldTitle:n=>'The lobby ('+n+' '+(squadSize===3?'trios':squadSize===4?'s
 regionResultHeader:'Regional', dropHeader:'Drop record', landingNobodyElse:'Nobody else dropped here all stage', prizeHeader:'Prize', prizeTitle:'💰 Squad earnings', prizePerPlayer:v=>v+' per player',
 prizeRegional:(reg,rank)=>reg+' Grand Finals · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Lyon · #'+rank, prizeGc2026:rank=>'Global Championship, Antwerp · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
-runSummaryTitle:'📋 Your run, stage by stage', nextStageHint:'Take the standings in — the run waits for you.', nextStageHeats:n=>'Play Heat '+n, nextStageFinals:'Play the Grand Finals', nextStageLcq:'Play the Last Chance', nextStageLan:'Fly to the LAN', lanSeatWon:'LAN seat taken', lanSeatMissed:'No LAN seat', lanSummit:'the Summit', lanBelgium:'the Global Championship, Belgium', lanLyon:'the Global Championship, Lyon', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' in '+reg+', '+slots+' seat'+(slots===1?'':'s'), lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', '+slots+' seat'+(slots===1?'':'s'), runSummaryStage:'Stage', runSummaryEarned:'Earned across the run',
+runSummaryTitle:'📋 Your run, stage by stage', lanSeatWon:'LAN seat taken', lanSeatMissed:'No LAN seat', lanSummit:'the Summit', lanBelgium:'the Global Championship, Belgium', lanLyon:'the Global Championship, Lyon', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' in '+reg+', '+slots+' seat'+(slots===1?'':'s'), lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', '+slots+' seat'+(slots===1?'':'s'), runSummaryStage:'Stage', runSummaryEarned:'Earned across the run',
 runSummaryNoEarnings:'No prize money — the run ended before a stage that pays.',
 rowHistoryHint:'Click for this team\'s games', stageTableTitle:'Stage standings', stageCutLabel:n=>'— cut line: top '+n+' advance —',
 stageTableTeam:'Team', stageTableRegion:'Region',
@@ -29650,36 +29650,6 @@ function waitForChoice(btnA, btnB){
   });
 }
 
-// A stage ends and the next one opens its map immediately, which means the
-// standings you just earned are shoved up the page before you have read them —
-// and reading them is most of the point. So a stage now finishes with a button
-// naming what comes next, and the run waits on it.
-//
-// Skip is honoured: a player who pressed it has said they do not want to sit
-// through the run, and stopping them at every stage to click on would be the
-// opposite of what they asked for.
-async function waitForNextStage(label){
-  if(skipAnimation) return;
-  const container=document.getElementById('majorStages');
-  if(!container) return;
-  const bar=document.createElement('div');
-  bar.className='stage-card next-stage';
-  bar.style.cssText='text-align:center;padding:14px;';
-  bar.innerHTML=`<div class="stage-detail" style="margin-bottom:10px;">${L().nextStageHint}</div>
-    <button class="go-btn" style="margin:0 auto;max-width:340px;">${label}</button>`;
-  container.appendChild(bar);
-  bar.scrollIntoView({block:'center', behavior:'smooth'});
-  await new Promise(res=>{
-    bar.querySelector('button').onclick=()=>res();
-    // Pressing Skip mid-wait releases it too, so the button is never a trap.
-    const poll=setInterval(()=>{ if(skipAnimation){ clearInterval(poll); res(); } }, 200);
-    bar.dataset.poll=String(poll);
-  });
-  const poll=Number(bar.dataset.poll||0);
-  if(poll) clearInterval(poll);
-  bar.remove();
-}
-
 function waitForAnyClick(elements){
   return new Promise(res=>{
     elements.forEach((el,i)=>{ el.onclick=()=>res(i); });
@@ -30441,7 +30411,6 @@ async function runMajorTournament(){
   await revealStageLog(you, shell1, true);
   finalizeStageCard(shell1, youPlayInRank, teams.length, you.stagePts, passedPlayIn, false, L().stage1Note(FMT.playInCut));
   await revealStandings(shell1, teams, you, playInCut);
-  await waitForNextStage(passedPlayIn ? L().nextStageHeats(1) : L().nextStageLcq);
 
   let cameFromLcq=false;
   let lcqOtherWinners=[];
@@ -30497,7 +30466,6 @@ async function runMajorTournament(){
     finalizeStageCard(shell2, youHeatRank, yourHeat.length, you.stagePts, passedHeats, you.gotVR,
       (passedHeats && !you.gotVR) ? L().stage2NoteByPoints(heatsCut) : '');
     await revealStandings(shell2, yourHeat, you, 0, null, qualifiedSet);
-    await waitForNextStage(passedHeats ? L().nextStageFinals : L().nextStageLcq);
     if(passedHeats) await celebrate(L().celKicker, L().celFinalsTitle, L().celFinalsSub, 'green', 40);
 
     heats.forEach((heatTeams,hi)=>{
