@@ -1848,7 +1848,7 @@ stage1TitleCards:'Этап 1 — Сеединг (6 игр, лобби по 50 к
 landingFieldTitle:n=>'Лобби ('+n+' '+(squadSize===3?'трио':squadSize===4?'сквадов':'дуо')+')', stageGamesToggle:'Показать игры по одной', qualByVR:'Прошёл по Victory Royale', qualByPoints:'Прошёл по очкам', qualHereTag:'КВАЛ', alreadyQualTag:'УЖЕ КВАЛ', alreadyQualHint:'Слот на LAN у них уже есть — второй они взять не могут, и их место уходит вниз. Финиш сразу за такой командой всё равно даёт слот.', stage2NoteByVR:'Взял Victory Royale — мгновенный проход, игры на этом закончены',
 regionResultHeader:'Регионалка', dropHeader:'Счёт на высадке', landingNobodyElse:'Больше никто сюда не садился за всю стадию', prizeHeader:'Приз', prizeTitle:'💰 Призовые состава', prizePerPlayer:v=>'по '+v+' на игрока',
 prizeRegional:(reg,rank)=>'Гранд-финал '+reg+' · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
-prizeGc2025:rank=>'Global Championship, Лион · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
+prizeGc2025:rank=>'Global Championship, Лион · #'+rank, prizeGc2026:rank=>'Global Championship, Антверпен · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
 runSummaryTitle:'📋 Итоги симуляции', lanSeatWon:'Место на LAN взято', lanSeatMissed:'Место на LAN не взято', lanSummit:'Summit', lanBelgium:'Global Championship, Бельгия', lanLyon:'Global Championship, Лион', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' в регионе '+reg+', мест: '+slots, lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', мест: '+slots, runSummaryStage:'Этап', runSummaryEarned:'Заработано за симуляцию',
 runSummaryNoEarnings:'Призовых нет — до стадии с призовым фондом состав не дошёл.',
 rowHistoryHint:'Клик — матчи этой команды', stageTableTitle:'Таблица этапа', stageCutLabel:n=>'— линия отсечки: топ-'+n+' проходят —',
@@ -2316,7 +2316,7 @@ stage1TitleCards:'Stage 1 — Seeding (6 games, 50-team lobbies)',
 landingFieldTitle:n=>'The lobby ('+n+' '+(squadSize===3?'trios':squadSize===4?'squads':'duos')+')', stageGamesToggle:'Show the game-by-game log', qualByVR:'Advanced on a Victory Royale', qualByPoints:'Advanced on points', qualHereTag:'QUAL', alreadyQualTag:'ALREADY QUAL', alreadyQualHint:'Already holds a LAN seat — it cannot take a second one, so its place passes down. Finishing right behind this team still takes a seat.', stage2NoteByVR:'Victory Royale — instant qualification, no more games',
 regionResultHeader:'Regional', dropHeader:'Drop record', landingNobodyElse:'Nobody else dropped here all stage', prizeHeader:'Prize', prizeTitle:'💰 Squad earnings', prizePerPlayer:v=>v+' per player',
 prizeRegional:(reg,rank)=>reg+' Grand Finals · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
-prizeGc2025:rank=>'Global Championship, Lyon · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
+prizeGc2025:rank=>'Global Championship, Lyon · #'+rank, prizeGc2026:rank=>'Global Championship, Antwerp · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
 runSummaryTitle:'📋 Your run, stage by stage', lanSeatWon:'LAN seat taken', lanSeatMissed:'No LAN seat', lanSummit:'the Summit', lanBelgium:'the Global Championship, Belgium', lanLyon:'the Global Championship, Lyon', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' in '+reg+', '+slots+' seat'+(slots===1?'':'s'), lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', '+slots+' seat'+(slots===1?'':'s'), runSummaryStage:'Stage', runSummaryEarned:'Earned across the run',
 runSummaryNoEarnings:'No prize money — the run ended before a stage that pays.',
 rowHistoryHint:'Click for this team\'s games', stageTableTitle:'Stage standings', stageCutLabel:n=>'— cut line: top '+n+' advance —',
@@ -29257,6 +29257,14 @@ const PRIZE_POOL_TOTAL={"EU":591500,"NAC":412000,"NAW":137000,"BR":137000,"ASIA"
 // GC2025_PRIZES is the Lyon Grand Finals: 33 places, $2,001,000, which is the
 // figure Epic published and exactly what these 33 numbers add up to.
 const GC2025_PRIZES={"1":450000,"2":300000,"3":225000,"4":180000,"5":135000,"6":90000,"7":75000,"8":60000,"9":45000,"10":36000,"11":33000,"12":30000,"13":27000,"14":27000,"15":24000,"16":24000,"17":21000,"18":21000,"19":18000,"20":18000,"21":15000,"22":15000,"23":15000,"24":15000,"25":15000,"26":12000,"27":12000,"28":12000,"29":12000,"30":12000,"31":9000,"32":9000,"33":9000};
+// Antwerp, 26-27 September 2026: 50 duos and a $2,000,000 pool, of which Epic
+// has published the total and not the per-place split. Fill this in — place
+// number to dollars, the shape GC2025_PRIZES has — and the LAN starts paying:
+// prizeTableFor picks it up, the standings print a prize column, the run
+// summary adds a line, and nothing else needs touching. Left empty rather than
+// filled from another year's numbers, which is what the file already refuses to
+// do one function down: "A 2025 place is never paid off a 2026 table."
+const GC2026_PRIZES={};
 const P2025_PRIZES={"EU":{"1":180000,"2":120000,"3":81000,"4":60900,"5":47850,"6":34800,"7":34800,"8":34800,"9":34800,"10":34800,"11":17400,"12":17400,"13":17400,"14":17400,"15":17400,"16":8700,"17":8700,"18":8700,"19":8700,"20":8700,"21":4350,"22":4350,"23":4350,"24":4350,"25":4350},"NAC":{"1":180000,"2":76500,"3":51000,"4":35700,"5":28050,"6":20400,"7":20400,"8":20400,"9":20400,"10":20400,"11":10200,"12":10200,"13":10200,"14":10200,"15":10200,"16":5100,"17":5100,"18":5100,"19":5100,"20":5100,"21":2550,"22":2550,"23":2550,"24":2550,"25":2550},"NAW":{"1":45000,"2":27000,"3":18000,"4":15300,"5":11700,"6":7200,"7":7200,"8":7200,"9":7200,"10":7200,"11":3600,"12":3600,"13":3600,"14":3600,"15":3600,"16":1800,"17":1800,"18":1800,"19":1800,"20":1800},"BR":{"1":45000,"2":27000,"3":18000,"4":15300,"5":11700,"6":7200,"7":7200,"8":7200,"9":7200,"10":7200,"11":3600,"12":3600,"13":3600,"14":3600,"15":3600,"16":1800,"17":1800,"18":1800,"19":1800,"20":1800},"ASIA":{"1":27000,"2":13500,"3":9000,"4":7650,"5":5850,"6":3600,"7":3600,"8":3600,"9":3600,"10":3600,"11":1800,"12":1800,"13":1800,"14":1800,"15":1800},"ME":{"1":27000,"2":13500,"3":9000,"4":7650,"5":5850,"6":3600,"7":3600,"8":3600,"9":3600,"10":3600,"11":1800,"12":1800,"13":1800,"14":1800,"15":1800},"OCE":{"1":27000,"2":13500,"3":9000,"4":7650,"5":5850,"6":3600,"7":3600,"8":3600,"9":3600,"10":3600,"11":1800,"12":1800,"13":1800,"14":1800,"15":1800}};
 const PRIZE_TABLES_2025={t1:P2025_PRIZES, t2:P2025_PRIZES, t3:P2025_PRIZES};
 
@@ -29264,6 +29272,11 @@ function prizeTableFor(table){
   if(table==='GCLC') return GCLC_PRIZES_BY_REGION[myPrizeRegion()] || GCLC_PRIZES_BY_REGION.EU;
   if(table==='SCQ')  return SCQ_PRIZES_BY_REGION[myPrizeRegion()] || SCQ_PRIZES_BY_REGION.EU;
   if(table==='GC2025') return GC2025_PRIZES;
+  // Antwerp pays nothing until somebody fills GC2026_PRIZES in. Empty is not an
+  // oversight — Epic has published the $2,000,000 total and not the split — and
+  // an empty table returns null here, which pays 0 and prints a dash, exactly
+  // what the LAN does today.
+  if(table==='GC2026') return Object.keys(GC2026_PRIZES).length ? GC2026_PRIZES : null;
   if(PRIZE_TABLES_2025[CARD_SET]){
     // A 2025 place is never paid off a 2026 table. A region whose table has not
     // been read yet pays nothing and says so, rather than borrowing numbers from
@@ -30587,8 +30600,16 @@ async function runMajorTournament(){
     // A LAN is not paid on the table of the region you flew out of. The lobby
     // kept the regional table it was given at the Grand Finals, so a player from
     // Asia read the world final's placements against Asia's regional money.
-    // Antwerp has no published per-place split, so it shows none.
-    lobbyPrizeTable=null;
+    // Antwerp shows a split the day GC2026_PRIZES has one, and shows none until
+    // then — the same run, the same code, waiting on numbers rather than on work.
+    const antwerpPrize=prizeFor('GC2026', worlds.rank);
+    if(antwerpPrize>0){
+      recordEarning(L().prizeGc2026(worlds.rank), antwerpPrize);
+      renderPrizeCard([{label:L().prizeGc2026(worlds.rank), amount:antwerpPrize}], antwerpPrize);
+      if(!skipAnimation) await sleep(900);
+      renderRunSummaryCard();
+    }
+    lobbyPrizeTable = antwerpPrize>0 ? 'GC2026' : null;
     finalTeams=worlds.ranked;
     finalTeams.forEach(t=>{ t.totalPts=t.stagePts; t.totalElims=t.stageElims; });
     you.gameLog=you.stageLog;
