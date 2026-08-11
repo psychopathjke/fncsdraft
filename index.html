@@ -24803,14 +24803,27 @@ var RATING_FLOOR={};
   const s2025Band=label=>(S2025_BAND[label] || [90,64]);   // the Division 1 cup finals
   // One accumulator per Major. Seasons never mix: a Major 2 card is rated on
   // S34 alone and a Major 3 card on S36 alone, the same way the 2026 sets are
-  // kept to their own year.
+  // kept to their own year. Each Major brings its own cups, groups, Play-In and
+  // Grand Finals, and those really are its own — the three ledgers share no
+  // result between them.
+  //
+  // With one exception, and it was a leak. The Global Championship is not part
+  // of a Major, it is what the season ends with, and the builder wrote it into
+  // all three ledgers: the same event, same ranks to the digit, differing only
+  // in which handles that set's pool happened to contain. On a Major 1 card that
+  // is a result from months in the future, carrying weight 4.5 — the heaviest
+  // line on the sheet — so a card opened in Major 1 was showing "Global
+  // Championship" as the biggest single term in its own rating. It belongs to
+  // Major 3, which is the Major that sent those trios there.
   const LEDGER_BY_SET={t1:S33_LEDGER, t2:S34_LEDGER, t3:S36_LEDGER};
+  const SEASON_END='Global Championship', SEASON_END_SET='t3';
   const accBySet={};
   Object.keys(LEDGER_BY_SET).forEach(set=>{
     const acc=accBySet[set]={};
     Object.keys(LEDGER_BY_SET[set]).forEach(reg=>{
       const t=acc[reg]={};
       LEDGER_BY_SET[set][reg].forEach((src,nth)=>{
+        if(src.label===SEASON_END && set!==SEASON_END_SET) return;
         const w=s2025Weight(src.label);
         Object.entries(src.map).forEach(([h,rank])=>{
           const bd=s2025Band(src.label);
