@@ -566,6 +566,40 @@ down, which puts this map at **4.2×** and would put a 1600-pixel one at 6.2×
 without another line being changed. Everything drawn on top is vector and stays
 sharp whatever the ceiling says; it is the island underneath that runs out.
 
+### What the zoom costs, and when
+
+Sharpness was bought with a repaint, and the bill came in as "в конце чет лагает
+когда 11 зона". Nothing is promoted, so **every transform written to the stage
+repaints the island at the size it is being shown at** — at the ceiling that is a
+seven-thousand-pixel raster. The renderer is not what costs anything here: one
+frame of the drawing is **0.5ms**, measured on zones 2 through 12 with the
+scheduler out of the way, and it does not vary with the zone. The repaint is.
+
+From zone 5 the camera pans on **every frame**, and zones 10 to 12 are played at
+half speed, so it sits there panning for a third of the replay. Measured over a
+whole game, the travel between one write and the next:
+
+| zone | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+|---|---|---|---|---|---|---|---|---|
+| px per write | 9.5 | 16.5 | 9.4 | 2.8 | 2.5 | 0.45 | 0.99 | 0.46 |
+| writes | 42 | 38 | 37 | 32 | 27 | 33 | 36 | 51 |
+
+In the last three zones that is thirty-odd repaints a zone to slide the map half
+a pixel. So a move of **less than half a pixel is not written**: the move is
+deferred rather than lost, since the ease keeps running and the write happens as
+soon as it adds up to something. Zone 10 went from 33 writes to 16 and zone 12
+from 51 to 28. Zone 11 is unchanged at 37 — its pans are a whole pixel, which is
+the camera following the game and has to be painted.
+
+For those, the stage is promoted to its own layer **while it is moving** and
+dropped again 180ms after it stops. That is `will-change` doing exactly what it
+was taken off for, and the reason it is safe here is the ceiling: from zone 7 the
+scale is pinned at `MAX_UPSCALE` and only the translation changes, so the layer
+is moved rather than stretched and there is nothing to re-rasterise. When it
+settles the promotion comes off and the browser paints it sharp at the scale it
+ended on. Soft while it moves — where it moves at all — and sharp while it is
+still, which is the way round it wants to be.
+
 The camera holds longer than the pacing does — two frames of lead, five of
 aftermath. A fight window is four frames, under half a second, and zooming in
 and back out inside that reads as a pump rather than as a camera. It eases over

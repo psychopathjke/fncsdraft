@@ -32,6 +32,46 @@
     };
   }
 
+  // Writing a transform on this stage is not free. The island under it is a
+  // photograph blown up to four or seven times its own size and nothing is
+  // promoted to a layer of its own, so every change repaints it at that size.
+  // The renderer is not what costs anything here — one frame of the drawing is
+  // half a millisecond, measured — the repaint is. Two things follow.
+  //
+  // A move of less than half a pixel is not written at all. Measured over a
+  // whole game, the camera in zones 10 to 12 travels 0.45px between one write
+  // and the next and writes about thirty-five times a zone: that is thirty-five
+  // repaints of a seven-thousand-pixel island to slide it half a pixel. The
+  // move is not lost, it is deferred — the ease keeps running and the write
+  // happens as soon as it adds up to something.
+  //
+  // And while it is moving the stage is promoted to its own layer. That is what
+  // will-change does and it is why it was taken off in the first place: a
+  // promoted layer is rasterised once and then stretched, which is the blur
+  // that was reported. So it is promoted only while the camera is actually
+  // moving and dropped again a fifth of a second after it stops, which
+  // re-rasterises the island sharp at the scale it ended on. Soft while it
+  // moves, sharp while it is still — which is the way round it wants to be,
+  // since from zone 5 the camera pans on every single frame and the endgame,
+  // played at half speed, sits there panning for a third of the replay.
+  var SETTLE_MS = 180, HAIR = 0.5;
+
+  function paint(handle, tx, ty, s){
+    var was = handle.painted;
+    if(was && was.s === s &&
+       Math.abs(was.tx - tx) < HAIR && Math.abs(was.ty - ty) < HAIR) return;
+    handle.painted = {tx: tx, ty: ty, s: s};
+    handle.stage.style.transform =
+      'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) scale(' + s.toFixed(4) + ')';
+    if(!handle.promoted){ handle.stage.style.willChange = 'transform'; handle.promoted = true; }
+    if(handle.settle) clearTimeout(handle.settle);
+    handle.settle = setTimeout(function(){
+      handle.settle = null;
+      handle.promoted = false;
+      handle.stage.style.willChange = '';
+    }, SETTLE_MS);
+  }
+
   // Wheel to zoom on the point under the cursor, drag to pan, double-click to
   // put it back. The pan is clamped so the edge of the island can never be
   // dragged into the middle of the frame — at any zoom the box stays full of
@@ -40,7 +80,9 @@
     var scale = 1, tx = 0, ty = 0, dragging = false, lastX = 0, lastY = 0, moved = false;
 
     function apply(){
-      stage.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+      if(handle) paint(handle, tx, ty, scale);
+      else stage.style.transform =
+        'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
       wrap.style.cursor = scale > 1 ? (dragging ? 'grabbing' : 'grab') : 'zoom-in';
       if(handle) handle.scale = scale;
       setView(handle, tx, ty, scale);
@@ -1326,8 +1368,7 @@
         ty = Math.min(0, Math.max(b.H - b.H*s, ty));
         handle.scale = s;
         setView(handle, tx, ty, s);
-        handle.stage.style.transform =
-          'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) scale(' + s.toFixed(4) + ')';
+        paint(handle, tx, ty, s);
       }
     };
   }
@@ -1428,6 +1469,9 @@
   }
 
   function unmount(handle){
+    // The settle timer holds the handle and would fire into a stage that is no
+    // longer on the page.
+    if(handle && handle.settle){ clearTimeout(handle.settle); handle.settle = null; }
     if(handle && handle.wrap && handle.wrap.parentNode) handle.wrap.parentNode.removeChild(handle.wrap);
   }
 
