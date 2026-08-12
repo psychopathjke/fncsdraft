@@ -27539,7 +27539,6 @@ function startDraft(size, major){
     : (isMajorMode ? 'ALL FNCS' : (size===2?L().modeDuoTitle:(size===3?L().modeTrioTitle:L().modeSquadTitle)));
   const regionsLabel = preSelectedRegions.length>0 ? ' · '+preSelectedRegions.map(c=>regionName(c)).join(', ') : '';
   const eraLabel = preSelectedYears.length ? ' · '+preSelectedYears.slice().sort().join(', ') : '';
-  document.getElementById('topBadge').textContent = modeLabel+regionsLabel+eraLabel;
   document.getElementById('squadTotal').textContent=size;
   document.getElementById('roundTotal').textContent=size;
   // A realistic run has one roster and `size` loot rounds; the pack label counts
@@ -27558,6 +27557,11 @@ function startDraft(size, major){
     packDesc.setAttribute('data-i18n', REALISTIC ? 'teamPickDesc' : 'packOpenDesc');
     applyStaticI18n();
   }
+  // After applyStaticI18n, never before it. #topBadge carries data-i18n="badgeMode",
+  // so the redraw above overwrites whatever is written here first — the badge
+  // read "select mode" on every run, in both modes, instead of the Major and
+  // region it is there to name. Same reason goBtn is written down here.
+  document.getElementById('topBadge').textContent = modeLabel+regionsLabel+eraLabel;
   document.getElementById('goBtn').textContent = CARD_MODE
     ? ((LANG==='ru'?'Начать ':'Start ')+cardSetName(CARD_SET))
     : (isMajorMode ? (LANG==='ru'?'Начать ALL FNCS':'Start ALL FNCS') : L().goToTournamentBtn);
