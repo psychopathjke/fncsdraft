@@ -299,7 +299,7 @@
   // And how far in the camera has to be before those names can live on the map
   // rather than beside it. Twelve squads spread across an island still smudge;
   // twelve in a circle that fills the box do not.
-  var NAME_ZOOM = 2.5;
+  var NAME_ZOOM = 2.2;
 
   // The squad marker: the arrowhead the real map uses, pointing the way the
   // squad is travelling. A heading is worth more than a dot here — the whole
@@ -427,7 +427,12 @@
   // than moving anybody anywhere the eye can measure. Only while zoomed in,
   // because at full map a two-unit nudge is 2% of the island and the overlap
   // was never the problem there.
-  var FAN = 2.2;                 // marker-widths of ring, in user units before the camera
+  var FAN = 2.2;                 // ring radius, in user units before the camera
+  // How close two squads have to be to count as one cluster. Wider than the
+  // fan, because what collides is the names and a name is several marker widths
+  // long: at the fan's own width it grouped only squads standing on the same
+  // pixel and left every pair a unit apart printing over each other.
+  var NAME_SEP = 4.2;
 
   function cluster(dots, scale){
     var out = [], i;
@@ -435,12 +440,21 @@
       for(i=0;i<dots.length;i++) if(dots[i].alive) out.push([i]);
       return out;
     }
-    var sep = 2.4 / scale, seen = {};
+    // Greedy against the group's first squad rather than a grid of buckets.
+    // Buckets were the first version and they miss the case they exist for: two
+    // squads a marker apart, either side of a bucket edge, are further apart in
+    // the index than two squads at opposite corners of the same bucket.
+    var sep = NAME_SEP / scale, heads = [];
     for(i=0;i<dots.length;i++){
       if(!dots[i].alive) continue;
-      var key = Math.round(dots[i].x / sep) + ',' + Math.round(dots[i].y / sep);
-      if(seen[key] == null){ seen[key] = out.length; out.push([i]); }
-      else out[seen[key]].push(i);
+      var joined = false;
+      for(var h=0;h<heads.length;h++){
+        var dx = dots[i].x - heads[h].x, dy = dots[i].y - heads[h].y;
+        if(dx*dx + dy*dy <= sep*sep){ out[h].push(i); joined = true; break; }
+      }
+      if(joined) continue;
+      heads.push(dots[i]);
+      out.push([i]);
     }
     return out;
   }
@@ -698,6 +712,14 @@
   // than a squad's heading can be followed across it. 1.6 keeps the saving
   // worth having without turning the mid-game into a flicker.
   var PACE_FAST = 1.6, PACE_SLOW = 1;
+  // And a gear between them, from the zone where the game changes character.
+  // Zones 1 to 4 close inside the circle they came from, so rotating is a
+  // choice of where to stand; from zone 5 the circle is smaller than its own
+  // drift and lands somewhere else entirely, so everybody has to cross the
+  // lobby. That is where a replay stops being fifty squads sitting on their
+  // ground and starts being the game, and it is worth a little more time.
+  var PACE_LATE = 1.2;
+  var LATE_ZONE = 5;
 
   // --- and where to point the camera
   //
@@ -720,6 +742,19 @@
   var FIGHT_MIN = 7;
   var LATE_MIN = 6.5;      // the endgame, where the circle itself is under a unit across
   var VIEW_MARGIN = 1.35;  // room around whatever is being fitted
+
+  // The smallest circle holding both of two circles. Used to keep the zone you
+  // are standing in and the one you are running to in the same shot.
+  function enclose(a, b){
+    if(!a) return b; if(!b) return a;
+    var dx = b.cx - a.cx, dy = b.cy - a.cy, d = Math.sqrt(dx*dx + dy*dy);
+    if(d + b.r <= a.r) return a;
+    if(d + a.r <= b.r) return b;
+    var r = (a.r + b.r + d) / 2;
+    // How far along the line from a to b the new centre sits.
+    var k = d ? (r - a.r) / d : 0;
+    return {cx: a.cx + dx * k, cy: a.cy + dy * k, r: r};
+  }
 
   // The smallest circle holding a set of points. Not the true one — the
   // bounding box's is a fraction wide — but a fight is two or three squads and
@@ -759,6 +794,7 @@
 
     for(i=0;i<n;i++){
       var f = timeline[i];
+      if(f.zone >= LATE_ZONE) out[i].pace = PACE_LATE;
       if(f.alive <= LABEL_BELOW) out[i].pace = PACE_SLOW;
       var ev = f.events;
       if(!ev || !ev.length) continue;
@@ -797,6 +833,27 @@
       if(fr.alive <= LABEL_BELOW){
         for(k=0;k<dots.length;k++) if(dots[k] && dots[k].alive) pts.push(dots[k]);
         out[i].view = fitAround(pts, LATE_MIN);
+        continue;
+      }
+      // From zone 5, the circle and the circle it is closing to, together.
+      //
+      // Both, and that is the whole of it. Zones 1 to 4 close inside the circle
+      // they came from, so framing the one you are standing in shows the one
+      // you are running to for free. From zone 5 the drift is larger than the
+      // new radius and the next circle lands somewhere else entirely — frame
+      // the current one and the map hides the only thing anybody is looking at.
+      // Held together, the shot opens at about 3.4x when the two are far apart
+      // and closes to the floor as they converge, which is the zoom-in this
+      // asks for arriving on its own rather than on a schedule.
+      if(fr.zone >= LATE_ZONE && fr.circle){
+        var v = enclose({cx: fr.circle.cx, cy: fr.circle.cy, r: fr.circle.radius},
+                        fr.next ? {cx: fr.next.cx, cy: fr.next.cy, r: fr.next.radius} : null);
+        // And your own squad, wherever it is. Late for the rotation is exactly
+        // when you want to see yourself, and a shot you have run out of is a
+        // shot of somebody else's game.
+        if(me >= 0 && dots[me] && dots[me].alive)
+          v = enclose(v, {cx: dots[me].x, cy: dots[me].y, r: 1.5});
+        out[i].view = {cx: v.cx, cy: v.cy, r: Math.max(LATE_MIN, v.r * 1.12)};
       }
     }
     return out;

@@ -463,9 +463,22 @@ interruption to it.
 
 One speed for the whole match spent the same eight seconds on the circle nobody
 fought in as on the endgame, and twelve of those is a minute and a half of
-mostly waiting. It now runs at 1.6× except where something is at stake, which
-takes a game from 7.6 seconds to 5.2 and a Grand Final from 91 seconds to 62,
-with 89% of the match played fast.
+mostly waiting. There are three gears now:
+
+| | speed | where |
+|---|---|---|
+| fast | 1.6× | zones 1 to 4, nothing happening to you |
+| late | 1.2× | from zone 5 |
+| real time | 1× | a fight of yours, and the endgame |
+
+A game takes 5.8 seconds against 7.6 flat, and a Grand Final 70 seconds against
+91.
+
+Zone 5 earns its own gear from the same fact the circles are built on: zones 1
+to 4 close **inside** the circle they came from, so rotating is a choice of
+where to stand, and from zone 5 the drift is larger than the new radius and
+everybody has to cross the lobby. That is where a replay stops being fifty
+squads sitting on their ground and starts being the game.
 
 The first setting was 2.4× and it was reported as rushed. The quiet stretch is
 not filler — it is where a rotation is legible — and at 38ms a frame the map
@@ -503,12 +516,30 @@ everywhere else.
 
 - **A fight of yours**: you and everyone within 6 world units of you, fitted with
   a floor of 7, which lands at about 6.3×.
+- **From zone 5**: the circle you are standing in and the circle it is closing
+  to, held in one shot, plus your own squad wherever it is.
 - **The endgame**: everybody still standing, floor 6.5, about 6.8×. It sits on
   the floor rather than tightening further, and that is the finding — by the
   time twelve squads are left they are inside a circle two units across, so what
   sets the shot is how close the map can usefully be read, not how close they
   are standing.
 - **Everything else**: the whole map, at 1×.
+
+**Both** circles, from zone 5, and that is the whole of the rule. Up to zone 4
+the new circle closes inside the old one, so framing where you are frames where
+you are going for free. From zone 5 it lands somewhere else entirely — frame
+only the circle you are in and the map hides the one thing everybody on it is
+looking at. Held together, the shot opens at about 3.4× when the two are far
+apart and closes to the floor as they converge, so the zoom-in arrives on its
+own rather than on a schedule:
+
+| zone | 2–4 | 5 | 6 | 7 | 8 | 9–11 |
+|---|---|---|---|---|---|---|
+| camera | 1.0× | 2.8× | 4.9× | 6.7× | 6.7× | 6.7× |
+
+Your own squad is enclosed with them, because being late for the rotation is
+exactly when you want to see yourself, and a shot you have run out of is a shot
+of somebody else's game.
 
 The camera holds longer than the pacing does — two frames of lead, five of
 aftermath. A fight window is four frames, under half a second, and zooming in
@@ -527,9 +558,9 @@ other at three times the size.
 
 Names on the map were ruled out because nine of them over a zone-9 circle read
 as a smudge. That is true of a circle drawn a centimetre across and false of the
-same circle filling the box, so they go up whenever the camera is past 2.5× —
-including a fight in a full lobby, where the question is the same one. The list
-beside the map covers the rest, and the two never show at once.
+same circle filling the box, so they go up whenever the camera is past 2.2× —
+which is zone 5 onward, a fight in a full lobby, and the endgame. The list
+beside the map covers everything wider, and the two never show at once.
 
 The collapse then produced something no amount of zoom fixes: it pulls every
 squad to one point, so the last five of a game are at *identical* coordinates —
@@ -540,6 +571,13 @@ beside it rather than above each arrow — a name is several times wider than th
 fan, so printed in place they would be exactly the smudge the fan just undid.
 Only while zoomed in: at full map a two-unit nudge is 2% of the island, and the
 overlap was never the problem there.
+
+What counts as a cluster is wider than the fan — a name is several marker widths
+long, so squads that do not overlap as arrows still overlap as labels — and it
+is found greedily against the group's first squad rather than by rounding into a
+grid of buckets. Buckets were the first version and they miss the case they
+exist for: two squads a marker apart either side of a bucket edge land in
+different groups, while two at opposite corners of one bucket land in the same.
 
 ### Every kill reaches the feed
 

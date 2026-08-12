@@ -1239,15 +1239,52 @@ test('a match with nobody in it, and one asked to play flat, both still play', (
 
 test('the camera stays on the whole map until something is worth seeing closer', () => {
   for(const seed of [4, 17, 33]){
-    const {timeline, views} = pacedGame(seed, 3);
+    const {timeline, views, beats} = pacedGame(seed, 3);
     timeline.forEach((f, i) => {
-      // Fifty squads alive, the first circle, and nothing happening to you is
-      // the widest a match ever is.
-      if(f.alive > 12 && f.zone <= 1 && !(f.events || []).length && i > 6)
+      // Zones 2 to 4 with nothing happening to you: fifty squads sitting on
+      // their own ground inside a circle that closes around them, which is the
+      // widest a match ever is.
+      if(f.zone >= 2 && f.zone < 5 && !beats[i].fight)
         assert(views[i] === null,
-          'seed ' + seed + ': the camera was in close on an empty first circle');
+          'seed ' + seed + ': the camera was in close on zone ' + f.zone + ' with nothing happening');
       if(f.alive <= 12) assert(views[i], 'seed ' + seed + ': the endgame played wide');
     });
+  }
+});
+
+// What zone 5 changes, and why the shot has to hold two circles rather than
+// one: up to zone 4 the new circle closes inside the old one, so framing where
+// you are frames where you are going. From zone 5 the centre moves further than
+// the new radius and the circle lands somewhere else entirely.
+test('from zone 5 the camera holds the circle and the one it is closing to', () => {
+  let checked = 0;
+  for(const seed of [4, 17, 33]){
+    const {timeline, views, beats} = pacedGame(seed, 3);
+    timeline.forEach((f, i) => {
+      if(f.zone < 5 || f.alive <= 12 || beats[i].fight || !f.next) return;
+      checked++;
+      const v = views[i];
+      assert(v, 'seed ' + seed + ': zone ' + f.zone + ' played on the whole map');
+      const holds = (c) => Math.hypot(c.cx - v.cx, c.cy - v.cy) + c.radius <= v.r + 0.001;
+      assert(holds(f.circle), 'seed ' + seed + ': frame ' + i + ' cut off the circle you are standing in');
+      assert(holds(f.next), 'seed ' + seed + ': frame ' + i + ' cut off the circle you are running to');
+    });
+  }
+  assert(checked > 30, 'only ' + checked + ' late-rotation frames to measure');
+});
+
+test('from zone 5 the replay runs slower than the mid-game and faster than a fight', () => {
+  for(const seed of [4, 17, 33]){
+    const {timeline, track} = pacedGame(seed, 3);
+    let early = 0, late = 0;
+    timeline.forEach((f, i) => {
+      if(f.alive <= 12) return;
+      if(f.zone >= 2 && f.zone < 5 && track[i] > 1) early = Math.max(early, track[i]);
+      if(f.zone >= 5 && track[i] > 1) late = Math.max(late, track[i]);
+    });
+    assert(early > late, 'seed ' + seed + ': zones 2 to 4 ran at ' + early +
+      ' and zone 5 onward at ' + late + '; the late game is meant to be the slower of the two');
+    assert(late > 1, 'seed ' + seed + ': zone 5 onward is at a full stop, not merely slower');
   }
 });
 
