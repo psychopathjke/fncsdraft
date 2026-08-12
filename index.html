@@ -657,15 +657,9 @@
      the tile past its own grid column. */
   .team-row-cards{display:flex;gap:6px;margin-bottom:7px;}
   .team-row-cards .fut-card{flex:1 1 0;min-width:0;}
-  /* The tile's own Take button. .pick-btn draws itself in --r-color, which the
-     pack sets per card from the player's rarity — a tile has no single rarity to
-     take it from, so the variable was never set and the button fell back to the
-     inherited text colour: a pale hairline 26px tall on what is the one action
-     of the whole tile. It gets the accent instead, and the size to match a
-     click target rather than a caption. */
-  .team-row .pick-btn{margin-top:0;font-size:12.5px;padding:10px 0;
-    border-color:var(--accent);color:var(--accent);background:transparent;}
-  .team-row .pick-btn:hover{background:var(--accent);color:var(--accent-ink);}
+  /* Nothing here for the Take button: it is the same .pick-btn the weapon and
+     consumable packs use, and it takes its colour the same way they do — from a
+     --r-color the tile sets on itself. See paintTeamPicker. */
 
   .bracket{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:24px 0;}
   @media(max-width:820px){.bracket{grid-template-columns:1fr;}}
@@ -28283,6 +28277,12 @@ function paintTeamPicker(query){
   shown.forEach(t=>{
     const row=document.createElement('div');
     row.className='team-row';
+    // The same thing the weapon and consumable packs do: the wrapper carries the
+    // rarity colour and .pick-btn draws itself from it. A player card takes that
+    // from its own rarity and an item from its own; a team has neither, so it
+    // takes it from the rating printed on the tile — which is the number the
+    // list is ordered by, so the button's colour rises through the list with it.
+    row.style.setProperty('--r-color', RARITY_COLOR[rarityForRating(Math.round(t.avg))]);
     row.innerHTML=
       '<div class="team-row-head"><b>' + Math.round(t.avg) + '</b>' +
         '<span class="team-row-who" title="' + esc(t.handles.join(' & ')) + '">' +
