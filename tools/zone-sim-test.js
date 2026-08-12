@@ -1214,9 +1214,11 @@ test('the replay slows down for every fight your squad is in, and before it', ()
         const cut = e.indexOf(':');
         if(e.slice(0, cut) !== mine && e.slice(cut + 1) !== mine) return;
         fights++;
-        assert(track[i] === 1, 'seed ' + seed + ': frame ' + i + ' is a fight of yours at speed ' + track[i]);
+        // At fight speed or slower. From zone 10 the last circles are slower
+        // still, and a fight there must not put the speed back up.
+        assert(track[i] <= 1, 'seed ' + seed + ': frame ' + i + ' is a fight of yours at speed ' + track[i]);
         // The run-up, where there is one to have.
-        if(i > 2) assert(track[i-1] === 1, 'seed ' + seed + ': frame ' + i + ' slowed only once it had happened');
+        if(i > 2) assert(track[i-1] <= 1, 'seed ' + seed + ': frame ' + i + ' slowed only once it had happened');
       });
     });
     assert(fights > 0, 'seed ' + seed + ': your squad was in no fight at all');
@@ -1230,7 +1232,11 @@ test('the replay runs fast where nothing is happening and slow at the end', () =
     timeline.forEach((f, i) => {
       frames++;
       if(track[i] > 1) fast++;
-      if(f.alive <= 12) assert(track[i] === 1, 'seed ' + seed + ': the endgame played fast');
+      if(f.alive <= 12) assert(track[i] <= 1, 'seed ' + seed + ': the endgame played fast');
+      // And the last circles are slower than a fight, because that is where a
+      // viewer is watching to find out whether their own squad comes through.
+      if(f.zone >= 10) assert(track[i] < 1,
+        'seed ' + seed + ': zone ' + f.zone + ' played at ' + track[i] + ', no slower than a fight');
     });
   }
   const share = fast / frames;
@@ -1244,7 +1250,10 @@ test('a match with nobody in it, and one asked to play flat, both still play', (
   const {timeline} = runGame(9, teams, true);
   const watched = ZoneReplay.directTrack(timeline, teams.map(t => ({name: t.name})));
   assert(watched.length === timeline.length, 'the track is not one beat per frame');
-  watched.forEach(b => assert(b.pace >= 1, 'a frame was given a speed below the base one'));
+  // Nothing plays below the base speed except the last circles, which do so on
+  // purpose and for every viewer, whether or not they had a squad in the game.
+  watched.forEach((b, i) => assert(b.pace >= (timeline[i].zone >= 10 ? 0.5 : 1),
+    'a frame was given a speed below the base one'));
 });
 
 // --- the camera

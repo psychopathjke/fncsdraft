@@ -729,6 +729,17 @@
   // count could never do.
   var INK = 0.18;
 
+  // The zone the rest of the field gets its names. Before it the map carries
+  // one name and it is yours, because until the circle is small the question a
+  // viewer has is "where am I and where is it closing to" and fifty answers to
+  // a question nobody asked is the wall this has been reported as twice. From
+  // zone 10 the question changes to who is left in there with you, and that is
+  // a question worth putting the names back for — the replay slows down at the
+  // same zone for the same reason.
+  //
+  // Yours is exempt at every zone. It is the one name that is never a crowd.
+  var NAME_ZONE = 10;
+
   // The eight places a plate is offered, in the order it is offered them:
   // above first, because that is where the game itself puts a nameplate and
   // where the eye looks for one, then the sides, then below, then the corners.
@@ -817,8 +828,10 @@
       return true;
     }
 
+    var others = frame.zone >= NAME_ZONE;
     for(var k=0;k<order.length;k++){
       var idx = order[k].i, who = roster[idx] || {}, p = at[idx];
+      if(idx !== me && !others) continue;
       // Off the edge of what the camera is showing: there is no point naming a
       // squad the viewer cannot see.
       if(p.x < view.x0 || p.x > view.x1 || p.y < view.y0 || p.y > view.y1) continue;
@@ -1136,6 +1149,16 @@
   // ground and starts being the game, and it is worth a little more time.
   var PACE_LATE = 1.2;
   var LATE_ZONE = 5;
+  // And a gear below the fight, for the last circles. From NAME_ZONE the map
+  // has the whole field's names on it and there are a dozen squads in a circle
+  // the size of a coin — the point of the replay by then is not what happened
+  // but whether yours is still in it, and that is watched rather than read. At
+  // 1 it goes by before the question lands. Half speed puts about two seconds
+  // on the last three zones, which is the part worth having.
+  //
+  // Applied last and as a floor rather than as an assignment, so a fight of
+  // yours in zone 11 cannot speed the replay back up to fight pace.
+  var PACE_CLOSE = 0.5;
 
   // --- and where to point the camera
   //
@@ -1227,6 +1250,11 @@
         }
       }
     }
+
+    // The last circles, after everything else has had its say: a floor on the
+    // speed rather than a setting of it, so nothing above can put it back up.
+    for(i=0;i<n;i++)
+      if(timeline[i].zone >= NAME_ZONE) out[i].pace = Math.min(out[i].pace, PACE_CLOSE);
 
     for(i=0;i<n;i++){
       var fr = timeline[i], dots = fr.dots, k, pts = [];

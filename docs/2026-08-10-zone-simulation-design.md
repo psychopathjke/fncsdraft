@@ -463,16 +463,24 @@ interruption to it.
 
 One speed for the whole match spent the same eight seconds on the circle nobody
 fought in as on the endgame, and twelve of those is a minute and a half of
-mostly waiting. There are three gears now:
+mostly waiting. There are four gears now:
 
 | | speed | where |
 |---|---|---|
 | fast | 1.6× | zones 1 to 4, nothing happening to you |
 | late | 1.2× | from zone 5 |
 | real time | 1× | a fight of yours, and the endgame |
+| close | 0.5× | from zone 10 |
 
-A game takes 5.8 seconds against 7.6 flat, and a Grand Final 70 seconds against
-91.
+A game takes 7.1 seconds against 7.6 flat. The total is nearly what it was flat
+and that is the point: zones 1 to 4 take 2.3 seconds against 3.5, and the time
+that saves is spent on zone 10 onward, which takes 2.2 seconds against 1.1. The
+mid-game is skipped through so the last circles can be lingered on.
+
+The close gear is a **floor**, applied after every other rule, so a fight of
+yours in zone 11 cannot put the speed back up to fight pace. By then the replay
+is not being read for what happened but watched to find out whether your own
+squad comes through, and at 1× that question goes by before it lands.
 
 Zone 5 earns its own gear from the same fact the circles are built on: zones 1
 to 4 close **inside** the circle they came from, so rotating is a choice of
@@ -580,11 +588,18 @@ does not when there is not, which is the only rule that holds at every zoom the
 camera reaches. The list beside the map carries whoever was left over, and the
 two never carry the same squad.
 
-**Every squad the map has room for is named on it.** Naming only yours was the
-version before this one, and it is what "не видно ников из-за стрелочек" came
-with a screenshot of: an island of anonymous arrows. Naming a fixed six was the
-version before *that*, and it was a wall. Both failed the same way — they decided
-the layout before looking at it.
+**Yours at every zone; everybody else from zone 10.** Before `NAME_ZONE` the map
+carries one name and it is yours, because until the circle is small the question
+a viewer has is where they are and where it is closing to — and fifty answers to
+a question nobody asked is the wall this was reported as twice. From zone 10 the
+question changes to who is left in there with you, and that is worth the names.
+The replay slows down at the same zone for the same reason; see the pacing above.
+
+**And from there, every squad the map has room for is named on it.** Naming only
+yours at every zone was the version before this one, and it is what "не видно
+ников из-за стрелочек" came with a screenshot of: an island of anonymous arrows.
+Naming a fixed six was the version before *that*, and it was a wall. Both failed
+the same way — they decided the layout before looking at it.
 
 So nothing is decided in advance. A name is offered **eight places around its own
 arrow** and takes the first one that is free: free of the plates already down,

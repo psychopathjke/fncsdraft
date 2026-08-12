@@ -89,7 +89,13 @@ function scaleOf(handle){
     var handle = ZoneReplay.mount(document.getElementById('box'), '', '1100 / 970', 970/1100);
     ZoneReplay.clearFeed(handle);
     var watch = function(f){
-      var s = scaleOf(handle);
+      var s = scaleOf(handle), t = performance.now();
+      // Where the wall clock was while each part of the match was on screen.
+      // The pacing is two claims, not one — the quiet stretch goes by faster
+      // than real time and the last circles go by slower — and a total only
+      // ever measures the two against each other.
+      if(f.zone >= 10){ if(out.lateFrom == null) out.lateFrom = t; out.lateTo = t; }
+      else if(f.zone < 5){ if(out.midFrom == null) out.midFrom = t; out.midTo = t; }
       // While the lobby is still full the camera does both things: it sits on
       // the whole map, and it comes in for a fight of yours. So both ends are
       // recorded — a mid-game that never reaches 1 is a map never shown whole,
@@ -106,6 +112,10 @@ function scaleOf(handle){
       // Sampled on every frame, not only in the endgame: your squad can be out
       // long before then, and its plate is what this is counting.
       out.namesOnMap = Math.max(out.namesOnMap || 0, plates.length);
+      // Before zone 10 the map carries one name and it is yours; from zone 10
+      // it carries the field.
+      if(f.zone < 10) out.earlyPlates = Math.max(out.earlyPlates || 0, plates.length);
+      else out.latePlates = Math.max(out.latePlates || 0, plates.length);
       var named = {}, a, b;
       for(a=0;a<plates.length;a++) named[plates[a].getAttribute('data-squad')] = 1;
       // Yours is the one name the map has always carried, at every zoom and
@@ -130,8 +140,14 @@ function scaleOf(handle){
         if(short > 0) out.unnamed = Math.max(out.unnamed || 0, short);
       }
     };
+    // What each stretch would take at one frame per frameMs, which is what
+    // the flat run plays, and what the numbers above are measured against.
+    out.lateFlat = game.timeline.filter(function(f){ return f.zone >= 10; }).length * FRAME_MS;
+    out.midFlat = game.timeline.filter(function(f){ return f.zone < 5; }).length * FRAME_MS;
     playOnce(handle, game, true, watch).then(function(ms){
       out.pacedMs = Math.round(ms);
+      out.lateMs = Math.round((out.lateTo || 0) - (out.lateFrom || 0));
+      out.midMs = Math.round((out.midTo || 0) - (out.midFrom || 0));
       out.feedLines = handle.feed.children.length;
       ZoneReplay.clearFeed(handle);
       return playOnce(handle, game, false);
@@ -168,8 +184,15 @@ if(r.error){ console.error('the replay threw: ' + r.error); process.exit(1); }
 
 const fails = [];
 if(!(r.pacedMs > 0 && r.flatMs > 0)) fails.push('a replay finished in no time at all, which means it never played');
-if(!(r.pacedMs < r.flatMs * 0.8)) fails.push('paced ' + r.pacedMs + 'ms against flat ' + r.flatMs +
-  'ms — the pacing is buying less than a fifth of the run');
+if(!(r.pacedMs < r.flatMs)) fails.push('paced ' + r.pacedMs + 'ms against flat ' + r.flatMs +
+  'ms — the pacing is buying nothing at all');
+// The quiet stretch is skipped through and the last circles are lingered on.
+// A total cannot say both: from zone 10 the replay is deliberately slower than
+// flat, and every second it spends there eats into what the mid-game saved.
+if(!(r.midMs < r.midFlat * 0.8)) fails.push('zones 1 to 4 took ' + r.midMs + 'ms against ' +
+  r.midFlat + 'ms flat — the quiet stretch is not being skipped through');
+if(!(r.lateMs > r.lateFlat * 1.5)) fails.push('zone 10 on took ' + r.lateMs + 'ms against ' +
+  r.lateFlat + 'ms flat — the last circles are not being lingered on');
 if(!(r.feedLines > 0)) fails.push('the kill feed printed nothing across a whole game');
 // The camera, as the stage's own transform reports it.
 if(!(r.wide < 1.05)) fails.push('the camera never came back out past ' + r.wide.toFixed(2) +
@@ -182,8 +205,10 @@ if(!(r.close > 2.5)) fails.push('the camera only reached ' + r.close.toFixed(2) 
 // with another. One plate is the old rule — an island of anonymous arrows with
 // your own name on it — and is what this is here to catch coming back.
 if(r.yoursMissing) fails.push('your own squad was alive and unnamed on ' + r.yoursMissing + ' frames');
-if(!(r.namesOnMap > 4)) fails.push('the map never carried more than ' + (r.namesOnMap || 0) +
-  ' names at once, so the arrows are anonymous again');
+if(r.earlyPlates > 1) fails.push(r.earlyPlates + ' names on the map before zone 10; ' +
+  'only your own belongs there until the last circles');
+if(!(r.latePlates > 1)) fails.push('the map carried ' + (r.latePlates || 0) +
+  ' names from zone 10 on, so the arrows are anonymous where it matters');
 if(r.namedTwice) fails.push(r.namedTwice + ' squads were named on the map and in the list beside it at once');
 if(r.unnamed) fails.push(r.unnamed + ' squads were left with no name at all in the endgame, ' +
   'on the map or beside it');
@@ -192,11 +217,14 @@ console.log('\n  frames          ' + r.frames +
             '\n  paced           ' + r.pacedMs + 'ms' +
             '\n  flat            ' + r.flatMs + 'ms' +
             '\n  saved           ' + (100 - Math.round(100*r.pacedMs/r.flatMs)) + '%' +
+            '\n  zones 1-4       ' + r.midMs + 'ms against ' + r.midFlat + 'ms flat' +
+            '\n  zone 10 on      ' + r.lateMs + 'ms against ' + r.lateFlat + 'ms flat' +
             '\n  feed lines      ' + r.feedLines + ' at the end' +
             '\n  camera, wide    ' + r.wide.toFixed(2) + 'x' +
             '\n  camera, a fight ' + r.fight.toFixed(2) + 'x' +
             '\n  camera, endgame ' + r.close.toFixed(2) + 'x' +
-            '\n  names on map    ' + (r.namesOnMap || 0) + ' at most' +
+            '\n  names on map    ' + (r.earlyPlates || 0) + ' before zone 10, ' +
+                                     (r.latePlates || 0) + ' from it' +
             '\n  names in list   ' + (r.sideRows || 0) + ' at most' +
             '\n  unnamed, late   ' + (r.unnamed || 0) + '\n');
 if(fails.length){ fails.forEach(f => console.error('  FAIL ' + f)); process.exit(1); }
