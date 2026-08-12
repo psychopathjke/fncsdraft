@@ -50,6 +50,10 @@ const BOOTSTRAP = `
         teamRows: document.querySelectorAll('#candidates .team-row').length,
         pickerBarShown: document.getElementById('teamPickBar').style.display !== 'none',
         candidatesDisplay: document.getElementById('candidates').style.display,
+        // The picker lays its tiles out with a class rather than an inline
+        // style, so the class is a second way the previous run can bleed
+        // through: it would put the four pack cards into three wide columns.
+        candidatesGrid: document.getElementById('candidates').classList.contains('team-grid'),
         searchValue: box.value,
         searchBound: !!box.oninput,
         teamPickListLen: teamPickList.length,
@@ -128,6 +132,9 @@ function checkDraftRun(where, s) {
   if (s.teamRows) fails.push(s.teamRows + ' team-picker rows are on screen, each with a live Take ' +
     'button that drafts a whole roster' + at);
   if (s.pickerBarShown) fails.push('the team picker bar is on screen in a draft run' + at);
+  if (s.candidatesGrid)
+    fails.push('#candidates still carries the team-grid class' + at +
+      ' — the picker set it and nothing put it back, so the player pack renders in its layout');
   if (s.candidatesDisplay !== '')
     fails.push('#candidates carries an inline display of "' + s.candidatesDisplay + '"' + at +
       ' — the picker set it and nothing put it back');

@@ -629,12 +629,35 @@
   .sim-btn p{margin:0;font-size:11.5px;line-height:1.35;}
   .sim-btn.active{background:var(--accent);border-color:var(--accent);}
   .sim-btn.active h5,.sim-btn.active p{color:var(--accent-ink);}
+  /* The team list runs across and then down, not one team per full-width row.
+     A duo tile is two cards wide, so three tiles to a line puts about nine
+     teams on screen at once against the two the stacked layout managed — which
+     matters for a list a hundred and seventy-nine long that is meant to be
+     scrolled and compared. The cards inside a tile share its width rather than
+     carrying one of their own, so they shrink with the column count instead of
+     needing a size of their own. */
+  .candidates.team-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:10px;align-items:start;}
+  @media(max-width:1100px){.candidates.team-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media(max-width:700px){.candidates.team-grid{grid-template-columns:minmax(0,1fr);}}
   .team-row{background:var(--panel2);border:1px solid var(--line);border-radius:10px;
-    padding:12px;margin-bottom:10px;}
-  .team-row-head{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:8px;}
-  .team-row-head b{color:var(--accent);font-size:16px;margin-right:6px;}
-  .team-row-stage{float:right;font-size:11px;font-weight:700;color:var(--ink-dim);}
-  .team-row-cards{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+    padding:9px;}
+  /* The head is one line now, because a tile is a third of the width it used to
+     be: the rating and the handles on the left, the finish pushed right, and
+     both allowed to be cut rather than to wrap the tile taller than its
+     neighbours. Tiles in a grid row are only as tall as the tallest of them. */
+  .team-row-head{display:flex;align-items:baseline;gap:5px;font-size:12px;font-weight:800;
+    color:var(--ink);margin-bottom:7px;}
+  .team-row-head b{color:var(--accent);font-size:15px;flex:none;}
+  .team-row-who{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+  .team-row-stage{margin-left:auto;flex:none;font-size:10.5px;font-weight:700;color:var(--ink-dim);}
+  /* No width of their own: each card takes an equal share of the tile, so the
+     whole list gets smaller by adding a column rather than by hunting for a
+     pixel size that suits duos and trios both. min-width:0 is what lets a flex
+     child shrink below its content — without it the cards keep their intrinsic
+     width and push the tile wider than its grid column. */
+  .team-row-cards{display:flex;gap:6px;margin-bottom:7px;}
+  .team-row-cards .fut-card{flex:1 1 0;min-width:0;}
 
   .bracket{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:24px 0;}
   @media(max-width:820px){.bracket{grid-template-columns:1fr;}}
@@ -27512,7 +27535,7 @@ function startDraft(size, major){
   const tpBar=document.getElementById('teamPickBar');
   if(tpBar) tpBar.style.display='none';
   const tpCands=document.getElementById('candidates');
-  if(tpCands) tpCands.style.display='';
+  if(tpCands){ tpCands.style.display=''; tpCands.classList.remove('team-grid'); }
   const tpSearch=document.getElementById('teamPickSearch');
   if(tpSearch){ tpSearch.value=''; tpSearch.oninput=null; }
   currentCandidates=[];
@@ -28232,7 +28255,12 @@ function paintTeamPicker(query){
   const shown=q ? teamPickList.filter(t=>t.handles.some(h=>h.toLowerCase().includes(q)))
                 : teamPickList;
   el.innerHTML='';
-  el.style.display='block';
+  // A class rather than an inline display, so the one thing that has to be
+  // cleared between runs is the one thing startDraft clears. #candidates is a
+  // four-column pack grid by default and the team tiles want three wider ones;
+  // both are grids, so nothing has to be switched off to switch the other on.
+  el.classList.add('team-grid');
+  if(!shown.length) el.classList.remove('team-grid');
   // An empty list must say it is empty. Rendering nothing leaves the player
   // looking at a blank panel with no way to tell a search that matched nobody
   // from a pool that holds no real roster at all.
@@ -28248,9 +28276,10 @@ function paintTeamPicker(query){
     const row=document.createElement('div');
     row.className='team-row';
     row.innerHTML=
-      '<div class="team-row-head"><b>' + Math.round(t.avg) + '</b> ' +
-        esc(t.handles.join(' & ')) +
-        ' <span class="team-row-stage">' + t.stage + ' #' + t.rank + ' · ' + t.pts + ' pts</span></div>' +
+      '<div class="team-row-head"><b>' + Math.round(t.avg) + '</b>' +
+        '<span class="team-row-who" title="' + esc(t.handles.join(' & ')) + '">' +
+          esc(t.handles.join(' & ')) + '</span>' +
+        '<span class="team-row-stage">' + t.stage + ' #' + t.rank + '</span></div>' +
       '<div class="team-row-cards">' + t.cards.map(c=>futCardHTML(c)).join('') + '</div>' +
       '<button class="pick-btn" style="width:100%;">' + L().teamPickBtn + '</button>';
     row.querySelector('.pick-btn').onclick=()=>pickTeam(t);
@@ -28267,7 +28296,9 @@ function pickTeam(team){
   team.cards.forEach(c=>{ pool=pool.filter(x=>x.handle!==c.handle); });
   roundPlayerPicked=true;
   document.getElementById('teamPickBar').style.display='none';
-  document.getElementById('candidates').style.display='';
+  const cands=document.getElementById('candidates');
+  cands.style.display='';
+  cands.classList.remove('team-grid');
   renderSlots();
   renderPicked('candidates', team.cards.map(c=>pickedPlayerCard(c)));
   maybeAdvanceRound();
