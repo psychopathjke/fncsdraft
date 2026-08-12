@@ -96,6 +96,44 @@ const BOOTSTRAP = `
     out.mineDuplicated = field.slice(1).filter(function(t){
       return t.squad.some(function(p){ return drafted.some(function(d){ return d.handle === p.handle; }); });
     }).length;
+    // No player may be in two rival teams at once. realTeamsFor keys a team by
+    // its roster, and eleven players in this data legitimately appear in two
+    // different real rosters across stages, so the field builder guards against
+    // it.
+    function countDoubleBooked(teams){
+      var seen = {}, n = 0;
+      teams.forEach(function(t){
+        t.squad.forEach(function(p){
+          if (seen[p.handle]) n++;
+          seen[p.handle] = 1;
+        });
+      });
+      return n;
+    }
+    out.doubleBooked = countDoubleBooked(field.slice(1));
+
+    // And the same guard where it can actually be seen working. At a 49-team
+    // lobby it never fires: every colliding pair's two rosters sit more than
+    // forty-nine places apart in the rating order — the nearest are ranks 29 and
+    // 77 — so the scan meets only one of each and removing the guard changes
+    // nothing. Measured at ninety: two collisions without the guard, none with
+    // it. Ninety is not a lobby size; it is the depth at which this guard is
+    // testable, and a guard that has never been seen to fail is not yet tested.
+    var wideField = [];
+    fillRealFieldTeams(pool, 90, 2, wideField);
+    out.wideFieldSize = wideField.length;
+    out.doubleBookedWide = countDoubleBooked(wideField);
+
+    // The shortfall path, which the full pool never reaches: ask for a lobby
+    // larger than the supply of whole rosters and the padding must happen AND
+    // say so.
+    var said = [], realLog = console.log;
+    console.log = function(){ said.push(Array.prototype.join.call(arguments, ' ')); };
+    var thinField = [];
+    fillRealFieldTeams(pool.slice(0, 60), 49, 2, thinField);
+    console.log = realLog;
+    out.shortField = thinField.length;
+    out.shortLogged = said.some(function(s){ return s.indexOf('[realistic]') >= 0; });
     // The loot rounds, which are the reason draftedEnough() counts rounds
     // instead of players. A realistic duo must get two of them: rivals roll a
     // weapon and a consumable per player, so one round would hand the player
@@ -181,6 +219,15 @@ if (!out.draftDoneAfterTwo)
 if (out.fieldSize !== 50) fails.push('the lobby has ' + out.fieldSize + ' teams, expected 50');
 if (out.mineDuplicated) fails.push('your own players turn up in ' + out.mineDuplicated + ' rival teams');
 if (out.assembled) fails.push(out.assembled + ' teams in a realistic lobby are assembled, not real');
+if (out.doubleBooked) fails.push(out.doubleBooked + ' players are in two rival teams in the lobby');
+if (out.doubleBookedWide)
+  fails.push(out.doubleBookedWide + ' players are in two rival teams once the field is deep ' +
+    'enough to reach a shared roster — the double-booking guard is not holding');
+if (out.wideFieldSize <= 49)
+  fails.push('the deep field only reached ' + out.wideFieldSize + ' teams, which is not past the ' +
+    'shallow scan, so the double-booking guard went unexercised again');
+if (!out.shortLogged) fails.push('a lobby padded with assembled teams said nothing about it');
+if (!out.shortField) fails.push('a short real field produced no lobby at all');
 
 if (fails.length) { fails.forEach(f => console.error('  FAIL ' + f)); process.exit(1); }
 console.log('\n  every real roster, once each, best first\n');
