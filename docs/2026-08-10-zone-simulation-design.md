@@ -577,13 +577,33 @@ for a label. A cluster of six or fewer gets its column; anything larger goes to
 the list beside the map, which carries **only** those, so nothing is named twice
 and nobody goes unnamed. Yours is drawn on the map either way.
 
-They are drawn as the kill feed draws them: a filled pill in the squad's colour
-with ink picked to be readable on it. Coloured text with a dark outline was the
-first version and it could not be read at all — the generated colours are one
-lightness by construction, the island underneath them is not, and an eleven-pixel
-letter in a mid-tone hue over grass, rock and water is a smudge with an outline
-around it. The feed has never had that problem, and now a line in the feed and a
-label on the map are the same object drawn twice.
+**And at most six squads are named on it at all.** Thirty-three duo names do not
+fit over a 400-pixel island at any size that can still be read: the map
+disappeared under its own labels, which is what "ПЛОХО ВИДНО" came with a
+screenshot of. The six are the ones nearest yours, because what a map is read for
+is who is around you; everyone else is named in the list, which is a column and
+does not fight the map for room. A handle longer than eleven characters is cut on
+the map and kept whole in the list — the field is made of `Aegis Kijarssf` and
+`asparoyel*ar0`, not of five-letter names, and a pill is as wide as its longest
+line.
+
+They are drawn as **the game's own nameplate**: a near-black plate, the handles
+on it in white, the squad's colour as a stripe down the left edge, and a health
+bar under the name.
+
+That is the third attempt and the reason the first two failed is the same one.
+Coloured text with a dark outline could not be read at all — the generated
+colours are one lightness by construction, the island underneath them is not.
+A pill filled with the squad's colour could be read and was reported unreadable
+anyway, because thirty-three of them are thirty-three bright rectangles over a
+map. A dark plate is legible against everything, and the colour goes where it
+costs nothing.
+
+The bar is real. `hp` is a number the engine has always tracked and the frames
+now carry it, so a short bar is a squad the storm caught out of position or one
+that surge is pushing — the two things that take health here, since a lost duel
+is a death rather than damage. It turns amber under 35%. A squad still standing
+is never recorded at zero, because an empty bar over a live arrow reads as a bug.
 
 The pill is sized off the character count, not off `getBBox()`, which would force
 a layout of the SVG per label per frame — fifty of them ten times a second. A

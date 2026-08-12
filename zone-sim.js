@@ -1026,7 +1026,17 @@
           var hx = s.target ? s.target.x - s.x : 0;
           var hy = s.target ? s.target.y - s.y : 0;
           if(hx || hy) s.heading = Math.atan2(hy, hx) * 180 / Math.PI;
+          // Health rides along because the replay draws the game's own
+          // nameplate, and a nameplate without the bar under it is half of one.
+          // It is the storm and the surge that move it — a lost duel is not
+          // damage, it is a death — so what the bar shows is a squad that is
+          // out of position or under surge, which is exactly what it shows in
+          // the game.
+          // Never rounded down to nothing while the squad is still standing: a
+          // squad on half a point of health is alive, and an empty bar over a
+          // live arrow reads as a bug rather than as a squad about to die.
           return {x: s.x, y: s.y, alive: s.alive, a: s.heading,
+                  h: s.alive ? Math.max(1, Math.round(s.hp)) : 0,
                   e: s.elims, p: s.alive ? 0 : (s.place || 0)};
         }),
         events: pendingEvents

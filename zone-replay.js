@@ -297,9 +297,18 @@
   var LABEL_BELOW = 12;
 
   // The largest cluster the map will label in place, and the largest field the
-  // list beside it will carry. Above the first, the names move off the map;
-  // above the second, there are none anywhere and the map is markers again.
-  var CLUSTER_MAX = 6, SIDE_MAX = 24;
+  // list beside it will carry. Above the first, those names move off the map;
+  // above the second, the list is longer than the box is tall and there is
+  // nowhere left to put them.
+  var CLUSTER_MAX = 6, SIDE_MAX = 28;
+
+  // And how many squads the map will name at all. Thirty-six duo names do not
+  // fit over a 400-pixel island at any size that can still be read — reported
+  // as unreadable, with a screenshot of the map disappearing under its own
+  // labels. The ones that go on it are the ones nearest yours, because what a
+  // map is being read for is who is around you; the rest are named in the list
+  // beside it, which is a column and does not fight the map for room.
+  var NAME_MAX = 6;
 
   // And how far in the camera has to be before those names can live on the map
   // rather than beside it. Twelve squads spread across an island still smudge;
@@ -501,27 +510,66 @@
   // belongs on a standings row, where it says which line is yours among a
   // hundred; on the map the white ring already says it, and the prefix is
   // three times the length of what it introduces.
-  function nameLines(name, isYou){
+  // Real handles are not five characters long. "Aegis Kijarssf" and
+  // "SNKGOATT" are what the field is actually made of, and a pill is as wide as
+  // its longest line — so the line is cut to something a map can carry and the
+  // list beside the map, which has a whole column to itself, keeps them whole.
+  var HANDLE_MAX = 11;
+
+  function clip(handle){
+    handle = handle.trim();
+    return handle.length > HANDLE_MAX ? handle.slice(0, HANDLE_MAX - 1) + '…' : handle;
+  }
+
+  function nameLines(name, isYou, full){
     var text = plain(name);
     if(isYou){
       var colon = text.indexOf(': ');
       if(colon > 0) text = text.slice(colon + 2);
     }
     var parts = text.split(' & ');
-    if(parts.length <= 2) return parts;
     // Trios and squads: the first handle, then the rest of the roster count,
     // because four names stacked is a column, not a label.
-    return [parts[0], '+' + (parts.length - 1)];
+    if(parts.length > 2) parts = [parts[0], '+' + (parts.length - 1)];
+    if(full) return parts;
+    for(var i=0;i<parts.length;i++) parts[i] = clip(parts[i]);
+    return parts;
   }
 
-  function namePill(x, y, lines, colour, isYou, scale, place){
+  // The nameplate the game itself draws over a player: a near-black plate, the
+  // name on it in white, and a health bar under the name. It replaces a pill
+  // filled with the squad's colour, which was reported unreadable twice — and
+  // it is the better answer for the reason the game arrived at it. A coloured
+  // fill has to be legible against fifty hues of island and against whatever
+  // ink the hue allows; a dark plate is legible against everything, and the
+  // colour goes where it costs nothing: a stripe down the edge, tying the plate
+  // back to its arrow.
+  //
+  // The bar is the squad's health, which the engine has always tracked and the
+  // frames now carry. Storm and surge are what move it, so a plate with a short
+  // bar is a squad that is out of position or being pushed by surge.
+  var PLATE_BG = 'rgba(9,12,20,.86)', PLATE_LINE = 'rgba(255,255,255,.18)';
+  var BAR_H = 0.42, BAR_GAP = 0.28, STRIPE = 0.5;   // fractions of the font size
+
+  // How tall a plate of this many lines comes out. Shared with the code that
+  // stacks them into a column, which used to carry its own guess at it and got
+  // it wrong the moment the plate grew a health bar — every row overlapped the
+  // one above.
+  function plateHeight(lineCount, fs){
+    return fs * (1 + (lineCount - 1) * LINE) + PAD_Y * fs * 2 + fs * BAR_H + fs * BAR_GAP;
+  }
+
+  function namePill(x, y, lines, colour, isYou, scale, place, hp){
     var s = scale || 1;
     var fs = NAME_SIZE / s;
     var widest = 0;
     for(var n=0;n<lines.length;n++) widest = Math.max(widest, lines[n].length);
-    var w = widest * CHAR_W * fs + PAD_X * fs * 2;
-    var h = fs * (1 + (lines.length - 1) * LINE) + PAD_Y * fs * 2;
-    // Where the pill hangs: above the marker, or out to its right for a line
+    var barH = fs * BAR_H;
+    var stripe = fs * STRIPE;
+    var textW = widest * CHAR_W * fs;
+    var w = textW + PAD_X * fs * 2 + stripe;
+    var h = plateHeight(lines.length, fs);
+    // Where the plate hangs: above the marker, or out to its right for a line
     // of a cluster's column.
     var left = place === 'right' ? x + 1.9 / s : x - w / 2;
     var top = place === 'right' ? y - h / 2 : y - 1.4 / s - h;
@@ -530,49 +578,103 @@
     var r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     r.setAttribute('x', left.toFixed(3)); r.setAttribute('y', top.toFixed(3));
     r.setAttribute('width', w.toFixed(3)); r.setAttribute('height', h.toFixed(3));
-    r.setAttribute('rx', (h * 0.28).toFixed(3));
-    r.setAttribute('fill', colour);
-    // Yours gets the white ring the feed gives it; everyone else gets a dark
-    // one, which is what holds the pill off pale ground.
-    r.setAttribute('stroke', isYou ? '#ffffff' : 'rgba(6,9,18,.85)');
-    r.setAttribute('stroke-width', isYou ? 1.6 : 1);
+    r.setAttribute('rx', (fs * 0.22).toFixed(3));
+    r.setAttribute('fill', PLATE_BG);
+    r.setAttribute('stroke', isYou ? '#ffffff' : PLATE_LINE);
+    r.setAttribute('stroke-width', isYou ? 1.5 : 0.75);
     r.setAttribute('vector-effect', 'non-scaling-stroke');
     g.appendChild(r);
 
-    var ink = inkOn(colour);
+    // The squad's colour, as a stripe down the left edge.
+    var key = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    key.setAttribute('x', (left + fs * 0.16).toFixed(3));
+    key.setAttribute('y', (top + fs * 0.2).toFixed(3));
+    key.setAttribute('width', (stripe * 0.55).toFixed(3));
+    key.setAttribute('height', (h - fs * 0.4).toFixed(3));
+    key.setAttribute('rx', (stripe * 0.27).toFixed(3));
+    key.setAttribute('fill', colour);
+    g.appendChild(key);
+
+    var textLeft = left + stripe + PAD_X * fs;
     var first = top + PAD_Y * fs + fs * 0.79;
     for(var k=0;k<lines.length;k++){
       var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      t.setAttribute('x', (left + w / 2).toFixed(3));
+      t.setAttribute('x', textLeft.toFixed(3));
       t.setAttribute('y', (first + k * fs * LINE).toFixed(3));
-      t.setAttribute('text-anchor', 'middle');
       t.setAttribute('font-size', fs.toFixed(3));
-      t.setAttribute('font-weight', '800');
-      t.setAttribute('fill', ink);
-      // The second handle is the same name, one rank quieter, so the pair reads
-      // as one label rather than as two squads stacked.
-      if(k) t.setAttribute('opacity', '.82');
+      t.setAttribute('font-weight', '700');
+      t.setAttribute('fill', '#ffffff');
+      // The second handle is the same name one rank quieter, so a duo reads as
+      // one plate rather than as two squads stacked.
+      if(k) t.setAttribute('opacity', '.78');
       t.textContent = lines[k];
       g.appendChild(t);
+    }
+
+    // The bar, on its own track, the way the game draws it.
+    var barY = top + h - PAD_Y * fs - barH;
+    var track = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    track.setAttribute('x', textLeft.toFixed(3)); track.setAttribute('y', barY.toFixed(3));
+    track.setAttribute('width', textW.toFixed(3)); track.setAttribute('height', barH.toFixed(3));
+    track.setAttribute('rx', (barH * 0.4).toFixed(3));
+    track.setAttribute('fill', 'rgba(255,255,255,.16)');
+    g.appendChild(track);
+
+    var frac = Math.max(0, Math.min(1, (hp == null ? 100 : hp) / 100));
+    if(frac > 0){
+      var bar = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      bar.setAttribute('x', textLeft.toFixed(3)); bar.setAttribute('y', barY.toFixed(3));
+      bar.setAttribute('width', (textW * frac).toFixed(3));
+      bar.setAttribute('height', barH.toFixed(3));
+      bar.setAttribute('rx', (barH * 0.4).toFixed(3));
+      // Green while it is health and amber once it is a problem, which is the
+      // one thing the game's own bar cannot say and this map can.
+      bar.setAttribute('fill', frac > 0.35 ? '#4ade80' : '#f0a537');
+      g.appendChild(bar);
     }
     return g;
   }
 
   // One line of a cluster's column, hung to the right of it and centred on it.
-  function stackedLabel(x, y, at, total, lines, colour, isYou, scale){
-    var s = scale || 1;
-    var line = (NAME_SIZE * (0.5 + lines.length * 0.78)) / s;
-    return namePill(x, y + (at - (total - 1) / 2) * line, lines, colour, isYou, s, 'right');
+  function stackedLabel(x, y, at, total, lines, colour, isYou, scale, hp){
+    var s = scale || 1, fs = NAME_SIZE / s;
+    var line = plateHeight(lines.length, fs) * 1.14;    // the plate, and a gap
+    return namePill(x, y + (at - (total - 1) / 2) * line, lines, colour, isYou, s, 'right', hp);
   }
 
-  function label(x, y, lines, colour, isYou, scale){
-    return namePill(x, y, lines, colour, isYou, scale, 'above');
+  function label(x, y, lines, colour, isYou, scale, hp){
+    return namePill(x, y, lines, colour, isYou, scale, 'above', hp);
   }
 
   function aliveIndices(frame){
     var out = [];
     for(var i=0;i<frame.dots.length;i++) if(frame.dots[i].alive) out.push(i);
     return out;
+  }
+
+  // The squads whose names the map will carry: yours and the ones nearest it,
+  // up to a limit. Returns a lookup by index rather than a list, because the
+  // drawing loop asks about one squad at a time.
+  //
+  // Nearest, rather than the strongest or the ones in the circle, because the
+  // map is read for who is around you. With nobody flagged as yours, the middle
+  // of the safe circle stands in for it — that is where the game is.
+  function nearestToYou(frame, roster, limit){
+    var mark = {}, i, me = -1;
+    roster = roster || [];
+    for(i=0;i<roster.length;i++) if(roster[i] && roster[i].you){ me = i; break; }
+    var from = (me >= 0 && frame.dots[me]) ? frame.dots[me]
+             : (frame.circle ? {x: frame.circle.cx, y: frame.circle.cy} : null);
+    if(!from) return mark;
+    var order = [];
+    for(i=0;i<frame.dots.length;i++){
+      if(!frame.dots[i].alive) continue;
+      var dx = frame.dots[i].x - from.x, dy = frame.dots[i].y - from.y;
+      order.push({i: i, d: (i === me ? -1 : dx*dx + dy*dy)});
+    }
+    order.sort(function(a, b){ return a.d - b.d; });
+    for(i=0;i<order.length && i<limit;i++) mark[order[i].i] = true;
+    return mark;
   }
 
   function draw(handle, frame, labels, roster){
@@ -620,12 +722,9 @@
     // measurement puts the tightest zone-5 shot at 2.23x against a threshold of
     // 2.2, so a map of another shape would blink the names off at exactly the
     // circle they were asked for.
-    //
-    // The forty squads elsewhere on the island are labelled too, and every one
-    // of those labels is off the edge of the box — which costs nothing to draw
-    // and saves the renderer having to know where the box is.
     var wanted = frame.zone >= LATE_ZONE || scale >= NAME_ZOOM;
     var groups = cluster(frame.dots, scale);
+    var near = nearestToYou(frame, roster, NAME_MAX);
 
     // A column beside a cluster works for a handful and not for a crowd: the
     // last circles can pile twenty squads onto one piece of ground, and twenty
@@ -652,13 +751,13 @@
         // Yours is named whatever the rest of the map is doing — following your
         // own squad is the reason to watch this, and one more label in a pile
         // is the one label in it worth having.
-        if(!fits){
-          if(who.you) handle.svg.appendChild(label(d.x, d.y, lines, colour, true, scale));
+        if(!fits || !near[i]){
+          if(who.you) handle.svg.appendChild(label(d.x, d.y, lines, colour, true, scale, d.h));
           else spare.push(i);
           continue;
         }
-        if(stack) stack.push({lines: lines, colour: colour, you: !!who.you});
-        else handle.svg.appendChild(label(d.x, d.y, lines, colour, who.you, scale));
+        if(stack) stack.push({lines: lines, colour: colour, you: !!who.you, hp: d.h});
+        else handle.svg.appendChild(label(d.x, d.y, lines, colour, who.you, scale, d.h));
       }
       // A cluster's names go in a column beside it rather than above each
       // arrow. Fanning the markers apart leaves them a marker's width from each
@@ -668,7 +767,7 @@
         var head = frame.dots[grp[0]];
         for(var s=0;s<stack.length;s++)
           handle.svg.appendChild(stackedLabel(head.x, head.y, s, stack.length,
-            stack[s].lines, stack[s].colour, stack[s].you, scale));
+            stack[s].lines, stack[s].colour, stack[s].you, scale, stack[s].hp));
       }
     }
 
@@ -684,7 +783,9 @@
         for(var kk=0;kk<listed.length;kk++){
           var k = listed[kk];
           var r = roster[k] || {};
-          var nm = nameLines(r.name, r.you).join(' & ');
+          // Whole handles here: the list has a column to itself and does not
+          // have to fit over anybody's ground.
+          var nm = nameLines(r.name, r.you, true).join(' & ');
           if(!nm) continue;
           var col = r.you ? 'var(--accent)' : colourFor(k);
           rows.push('<div style="display:flex;align-items:center;gap:4px;justify-content:flex-end;">' +
@@ -750,6 +851,10 @@
         y: moving ? lerp(d.y, e.y, k) : d.y,
         alive: d.alive,
         a: (d.a || 0) + turn * k,
+        // Health does slide between frames: it is a quantity that was on its
+        // way somewhere, unlike a kill or a place.
+        h: moving ? lerp(d.h == null ? 100 : d.h, e.h == null ? 100 : e.h, k)
+                  : (d.h == null ? 100 : d.h),
         // Not interpolated. A kill is a whole number that happened at a moment,
         // and a place is a fact; sliding either one between frames would put a
         // squad on two and a half eliminations and half of eighth place.

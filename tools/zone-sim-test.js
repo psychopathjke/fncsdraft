@@ -1173,6 +1173,23 @@ test('every elimination reaches the timeline, not one tick in eight of them', ()
   }
 });
 
+// The nameplate the replay draws carries a health bar, and a bar with nothing
+// behind it is decoration. This is the number behind it.
+test('every recorded frame carries each squad\'s health', () => {
+  for(const seed of [4, 17, 33]){
+    const teams = fakeField(50);
+    const {timeline} = runGame(seed, teams, true);
+    let moved = 0;
+    timeline.forEach((f, i) => f.dots.forEach((d, k) => {
+      assert(typeof d.h === 'number', 'seed ' + seed + ': frame ' + i + ' has no health for squad ' + k);
+      assert(d.h >= 0 && d.h <= 100, 'seed ' + seed + ': health of ' + d.h + ' is off the scale');
+      assert(!d.alive || d.h > 0, 'seed ' + seed + ': squad ' + k + ' is alive on no health');
+      if(d.alive && d.h < 100) moved++;
+    }));
+    assert(moved > 0, 'seed ' + seed + ': nobody in the whole match was ever hurt, so the bar is a prop');
+  }
+});
+
 // --- the replay's pacing, which reads those events
 require('../zone-replay.js');                 // attaches to globalThis rather than exporting
 const ZoneReplay = globalThis.ZoneReplay;
