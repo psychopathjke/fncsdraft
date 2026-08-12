@@ -101,14 +101,28 @@
     // The map and the drawing on it move together, so they share one transform
     // and the header, the roster and the kill feed sit outside it — those are
     // read, not inspected, and they should not slide off when the map does.
-    var stage = el('div', null,
-      'position:absolute;inset:0;transform-origin:0 0;will-change:transform;');
+    //
+    // No `will-change: transform`. It promotes this to its own composited layer,
+    // and a promoted layer is rasterised once and then stretched — which is
+    // exactly what a camera that zooms to nearly 7x must not do. Without it the
+    // browser re-rasterises the map at the scale it is actually being shown at,
+    // and the island stays as sharp as its own pixels allow. The camera moves a
+    // handful of times a match, so there is nothing here worth promoting for.
+    var stage = el('div', null, 'position:absolute;inset:0;transform-origin:0 0;');
     wrap.appendChild(stage);
 
     var img = el('img', null,
-      'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.85) brightness(.7);');
+      'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;');
     img.src = mapSrc;
     stage.appendChild(img);
+
+    // The map is darkened by a sheet laid over it rather than by a filter on
+    // it. A CSS filter is the other half of the same problem: it forces its own
+    // raster, and that raster is what gets stretched. This is a fill, and a
+    // fill has no resolution.
+    var tint = el('div', null,
+      'position:absolute;inset:0;background:rgba(9,12,24,.34);pointer-events:none;');
+    stage.appendChild(tint);
 
     // The viewBox is the map's own shape, not a square, so the frames' world
     // units map to the screen with one scale on both axes. A square viewBox
@@ -145,7 +159,14 @@
     wrap.appendChild(feed);
 
     var handle = {wrap:wrap, stage:stage, svg:svg, head:head, side:side, feed:feed,
-                  lines:[], scale:1};
+                  lines:[], scale:1, mapPixels:0};
+
+    // How many pixels across the map actually is. The camera reads it to decide
+    // how far in it is worth going: magnifying an island past its own
+    // resolution buys a larger blur and nothing else. Read off the image rather
+    // than written down, so a sharper map raises the ceiling by arriving.
+    img.addEventListener('load', function(){ handle.mapPixels = img.naturalWidth || 0; });
+    if(img.complete && img.naturalWidth) handle.mapPixels = img.naturalWidth;
 
     // Zooming in on the map, for when the circle is a coin and nine squads are
     // standing in it. Off unless the caller asks: taking the wheel away from a
@@ -1025,6 +1046,10 @@
   // not as a cut; short enough that a fight it is moving to is still on.
   var CAM_EASE_MS = 360;
 
+  // Screen pixels each pixel of the map may be stretched across before the
+  // camera stops going in. See ceiling() below.
+  var MAX_UPSCALE = 2;
+
   // Drives one handle's stage transform from a view. The view is in world
   // units and knows nothing about the box; this is the only part that does.
   //
@@ -1041,6 +1066,17 @@
       return {vbH: vbH, W: W, H: H};
     }
     function wide(b){ return {cx: 50, cy: b.vbH/2, r: b.vbH/2}; }
+
+    // The most the map can be magnified before it is mush. MAX_UPSCALE is how
+    // many screen pixels one of its own may be stretched across: at 1 the map
+    // is never enlarged at all and the endgame is too wide to read, at 3 it is
+    // the blur that was reported. 2 is the compromise, and it is measured
+    // rather than picked — a 1100-pixel island in a 520-pixel box gives 4.2x,
+    // and the same rule gives 6.2x the day a 1600-pixel map replaces it.
+    function ceiling(b){
+      if(!handle.mapPixels) return ZOOM_MAX;
+      return Math.max(1, (handle.mapPixels / b.W) * MAX_UPSCALE);
+    }
 
     return {
       // k is how much of the way to move this step; 1 cuts straight there.
@@ -1059,7 +1095,14 @@
         // The box holds the whole map at scale 1, so fitting a radius means
         // fitting it on the tighter of the two axes — the shorter one, since
         // the viewBox is the map's own shape.
-        var s = Math.max(1, Math.min(ZOOM_MAX, (b.vbH/2) / Math.max(0.001, at.r)));
+        //
+        // And never past what the map has pixels for. The island is 1100 across
+        // and the box about 520, so at 6.8x the camera was showing 162 source
+        // pixels stretched over 520 — a three-fold magnification, which is
+        // where "плохо видно при зуме" comes from. Everything drawn on top is
+        // vector and stays sharp whatever this says; it is the photograph
+        // underneath that runs out, so the ceiling is the photograph's.
+        var s = Math.max(1, Math.min(ZOOM_MAX, ceiling(b), (b.vbH/2) / Math.max(0.001, at.r)));
         var tx = b.W/2 - (at.cx/100) * b.W * s;
         var ty = b.H/2 - (at.cy/b.vbH) * b.H * s;
         tx = Math.min(0, Math.max(b.W - b.W*s, tx));

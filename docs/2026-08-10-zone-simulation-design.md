@@ -541,6 +541,23 @@ Your own squad is enclosed with them, because being late for the rotation is
 exactly when you want to see yourself, and a shot you have run out of is a shot
 of somebody else's game.
 
+### How close it can go, and why
+
+Three things were blurring the zoomed map and two of them were the renderer's
+own doing. `will-change: transform` promoted the stage to a composited layer,
+and a promoted layer is rasterised once and then stretched — the one thing a
+camera that zooms must not do. The `filter: saturate(.85) brightness(.7)` on the
+map was the same problem again, since a filter forces its own raster; the map is
+darkened by a plain fill laid over it now, and a fill has no resolution.
+
+The third is the photograph. `art/map-m2.jpg` is 1100 pixels across and the box
+is about 520, so at 6.8× the camera was showing 162 source pixels stretched over
+520 — a threefold magnification. So the ceiling is the map's own: `MAX_UPSCALE`
+screen pixels per map pixel, measured off `naturalWidth` rather than written
+down, which puts this map at **4.2×** and would put a 1600-pixel one at 6.2×
+without another line being changed. Everything drawn on top is vector and stays
+sharp whatever the ceiling says; it is the island underneath that runs out.
+
 The camera holds longer than the pacing does — two frames of lead, five of
 aftermath. A fight window is four frames, under half a second, and zooming in
 and back out inside that reads as a pump rather than as a camera. It eases over
