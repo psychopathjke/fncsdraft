@@ -9,3 +9,7 @@ logos/_MISSING.txt
 .DS_Store
 Thumbs.db
 *.swp
+
+# Screenshots of the replay, written by tools/shot-replay.js. Look at them and
+# throw them away; they are a way of seeing the map, not a record of it.
+shot-*.png
