@@ -1,0 +1,74 @@
+// The preview's own field, lifted out of replay-preview.html so a screenshot
+// and the preview are looking at the same game. Long handles on purpose: the
+// report that the map was unreadable came with a screenshot of
+// "Aegis Kijarssf & KPI HEL…" on it, and a field of five-character names is not
+// the field the app has.
+(function(root){
+  'use strict';
+  var ASPECT = 970 / 1100;
+var LAND = [
+  {x:20.18,y:4.0,w:12.45,h:17.71},  {x:33.4,y:8.53,w:8.09,h:14.28},  {x:42.26,y:8.53,w:9.88,h:12.91},
+  {x:59.33,y:14.99,w:9.76,h:16.61}, {x:69.86,y:18.42,w:19.64,h:15.38},{x:47.65,y:22.81,w:10.78,h:9.89},
+  {x:25.57,y:23.22,w:10.27,h:12.5}, {x:11.97,y:28.72,w:12.84,h:7.0},  {x:54.33,y:33.66,w:14.76,h:9.61},
+  {x:37.25,y:35.44,w:9.63,h:7.96},  {x:25.83,y:35.86,w:7.32,h:9.75},  {x:10.55,y:36.54,w:14.12,h:9.47},
+  {x:71.79,y:39.15,w:17.71,h:10.3}, {x:32.12,y:44.23,w:11.04,h:11.4}, {x:43.93,y:45.47,w:11.04,h:9.06},
+  {x:58.82,y:45.74,w:5.01,h:8.38},  {x:23.01,y:46.7,w:7.19,h:8.79},   {x:13.12,y:47.25,w:9.11,h:17.16},
+  {x:77.18,y:50.96,w:12.32,h:10.16},{x:64.47,y:51.37,w:12.07,h:12.22},{x:52.92,y:55.36,w:9.76,h:7.28},
+  {x:30.19,y:56.59,w:9.88,h:9.47},  {x:41.23,y:59.75,w:8.09,h:8.79},  {x:71.14,y:62.63,w:12.45,h:20.32},
+  {x:53.3,y:62.91,w:12.19,h:9.61},  {x:65.62,y:63.73,w:5.39,h:4.53},  {x:8.5,y:65.1,w:11.68,h:11.12},
+  {x:31.09,y:66.89,w:10.27,h:10.57},{x:20.95,y:67.16,w:6.16,h:6.04},  {x:66.14,y:68.4,w:5.01,h:6.87},
+  {x:50.99,y:73.76,w:14.51,h:20.19},{x:8.5,y:76.78,w:17.07,h:10.44},  {x:26.6,y:78.56,w:12.07,h:9.2},
+  {x:39.69,y:79.11,w:9.24,h:16.2},  {x:69.09,y:83.64,w:16.3,h:12.36}, {x:8.5,y:87.9,w:17.46,h:6.32}
+];
+
+var NAMES = ['Alaskq','Vico','Podasai','Th0masHD','Setty','Kami','Anas','Volx','Snayzy','Nayte',
+  'Queasy','Malibuca','Tayson','Veno','JannisZ','Pxlarized','Noward','Wolfiez','Chapix','Vanyak',
+  'Aegis Kijarssf','Andilex','Jamper','Trulex','Skite','Mongraal','Mero','Tschisch','Setz','Dexterz',
+  'PJAYYFN','Rezon','Klaus','Aloha','Fabinsky','Nyhrox','Fanene','Xsweeze','Zaros','Meru',
+  'Ed Blmbel','Reet','SNKGOATT','Baba','Ludo','asparoyel*ar0','Refsgaard','Sc0pez','Deyy','Toose'];
+
+
+var YOU = 6;
+// Named the way the app names a duo: both handles, joined — teamLabel() in
+// index.html is squad.map(p => flag + p.handle).join(' & '), and yours carries
+// the "your squad" prefix in front of it. A preview that invents one name a
+// team is a preview of a different game.
+//
+// Partners are drawn half a list away, so every pair is unique and no handle
+// is ever paired with itself.
+function nameOf(i){ return NAMES[i] + ' & ' + NAMES[(i + 25) % 50]; }
+
+function field(){
+  var out = [];
+  for(var i=0;i<50;i++){
+    var q = 1 - i/49, tilt = (i % 2 ? 1 : -1) * 10;
+    var a = 30 + q * 65, clamp = function(v){ return Math.max(5, Math.min(99, v)); };
+    out.push({name: (i === YOU ? 'Твоя команда: ' : '') + nameOf(i),
+      pow: 82 + q*20, squad: [{}, {}],
+      attrs: {END: clamp(a-tilt), SUR: clamp(a-tilt*0.6), AIM: clamp(a+tilt), CLU: clamp(a+tilt*0.6)}});
+  }
+  return out;
+}
+
+
+function record(seed){
+  var rng = ZoneSim.createRng(seed), teams = field();
+  var spots = LAND.slice();
+  for(var i=spots.length-1;i>0;i--){ var j = Math.floor(rng()*(i+1)); var s = spots[i]; spots[i] = spots[j]; spots[j] = s; }
+  var picks = teams.map(function(t, k){ return spots[k % spots.length]; });
+  var res = ZoneSim.simulateZoneGame(teams, {
+    rng: rng, land: LAND, aspect: ASPECT,
+    startOf: function(t){ var r = picks[teams.indexOf(t)]; return {x: r.x + r.w/2, y: r.y + r.h/2}; },
+    duel: function(a, b){
+      var wa = Math.pow(a.pow, 7), wb = Math.pow(b.pow, 7);
+      return rng() * (wa + wb) < wa ? a : b;
+    },
+    record: true
+  });
+  res.roster.forEach(function(r, k){ r.you = (k === YOU); });
+  return res;
+}
+
+
+  root.ShotField = {record: record, field: field, LAND: LAND, ASPECT: ASPECT, YOU: YOU};
+})(this);

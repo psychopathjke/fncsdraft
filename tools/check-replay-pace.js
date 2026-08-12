@@ -98,25 +98,36 @@ function scaleOf(handle){
         out.wide = Math.min(out.wide, s);
         out.fight = Math.max(out.fight, s);
       }
+      // Each squad the map named carries its own index, so the two halves of
+      // the naming can be compared without reading text back out of the SVG.
+      var plates = handle.svg.querySelectorAll('g[data-squad]');
+      var rows = handle.side.style.display === 'none'
+        ? [] : handle.side.querySelectorAll('div[data-squad]');
       // Sampled on every frame, not only in the endgame: your squad can be out
       // long before then, and its plate is what this is counting.
-      out.namesOnMap = Math.max(out.namesOnMap || 0, handle.svg.getElementsByTagName('text').length);
+      out.namesOnMap = Math.max(out.namesOnMap || 0, plates.length);
+      var named = {}, a, b;
+      for(a=0;a<plates.length;a++) named[plates[a].getAttribute('data-squad')] = 1;
+      // Yours is the one name the map has always carried, at every zoom and
+      // however full the lobby is — for as long as your squad is alive to
+      // carry it.
+      if(f.dots[3] && f.dots[3].alive){
+        if(named['3']) out.yoursNamed = (out.yoursNamed || 0) + 1;
+        else out.yoursMissing = (out.yoursMissing || 0) + 1;
+      }
+      for(b=0;b<rows.length;b++){
+        var who = rows[b].getAttribute('data-squad');
+        if(named[who]) out.namedTwice = (out.namedTwice || 0) + 1;
+        named[who] = 1;
+      }
       if(f.alive <= 12){
         out.close = Math.max(out.close, s);
-        // The map and the list beside it split the field between them: the list
-        // carries whoever was in a pile the map could not label. Nobody should
-        // appear in both, and that is the check — not that the list is hidden,
-        // which it no longer has to be.
-        if(handle.side.style.display !== 'none'){
-          var onMap = {}, ts = handle.svg.getElementsByTagName('text');
-          for(var a=0;a<ts.length;a++) onMap[ts[a].textContent] = 1;
-          var rows = handle.side.querySelectorAll('div');
-          for(var b=0;b<rows.length;b++){
-            var first = (rows[b].textContent || '').split(' & ')[0].trim();
-            if(first && onMap[first]) out.namedTwice = (out.namedTwice || 0) + 1;
-          }
-          out.sideRows = Math.max(out.sideRows || 0, rows.length);
-        }
+        out.sideRows = Math.max(out.sideRows || 0, rows.length);
+        // The map and the list beside it split the field between them, and
+        // between them they cover it: every squad still standing is named in
+        // one place or the other, and in only one of them.
+        var short = f.alive - Object.keys(named).length;
+        if(short > 0) out.unnamed = Math.max(out.unnamed || 0, short);
       }
     };
     playOnce(handle, game, true, watch).then(function(ms){
@@ -167,13 +178,15 @@ if(!(r.fight > 2.5)) fails.push('the camera only reached ' + r.fight.toFixed(2) 
   'x on a fight of yours in a full lobby, so it never came in for one');
 if(!(r.close > 2.5)) fails.push('the camera only reached ' + r.close.toFixed(2) +
   'x in the endgame, which is no closer than the names need');
-// One plate on the map, and it is yours: two handles, so two text nodes at
-// most. More than that means somebody else's name got onto the map.
-if(!(r.namesOnMap >= 1)) fails.push('your own squad was never named on the map');
-if(r.namesOnMap > 2) fails.push(r.namesOnMap + ' names on the map; only yours belongs there');
-if(!(r.sideRows > 3)) fails.push('the list beside the map carried only ' + (r.sideRows || 0) +
-  ' names in the endgame, so the arrows never got their names back');
+// The map names as many squads as it has room for, and never covers one name
+// with another. One plate is the old rule — an island of anonymous arrows with
+// your own name on it — and is what this is here to catch coming back.
+if(r.yoursMissing) fails.push('your own squad was alive and unnamed on ' + r.yoursMissing + ' frames');
+if(!(r.namesOnMap > 4)) fails.push('the map never carried more than ' + (r.namesOnMap || 0) +
+  ' names at once, so the arrows are anonymous again');
 if(r.namedTwice) fails.push(r.namedTwice + ' squads were named on the map and in the list beside it at once');
+if(r.unnamed) fails.push(r.unnamed + ' squads were left with no name at all in the endgame, ' +
+  'on the map or beside it');
 
 console.log('\n  frames          ' + r.frames +
             '\n  paced           ' + r.pacedMs + 'ms' +
@@ -184,7 +197,8 @@ console.log('\n  frames          ' + r.frames +
             '\n  camera, a fight ' + r.fight.toFixed(2) + 'x' +
             '\n  camera, endgame ' + r.close.toFixed(2) + 'x' +
             '\n  names on map    ' + (r.namesOnMap || 0) + ' at most' +
-            '\n  names in list   ' + (r.sideRows || 0) + ' at most\n');
+            '\n  names in list   ' + (r.sideRows || 0) + ' at most' +
+            '\n  unnamed, late   ' + (r.unnamed || 0) + '\n');
 if(fails.length){ fails.forEach(f => console.error('  FAIL ' + f)); process.exit(1); }
 console.log('  the replay plays, finishes, skips what is worth skipping,\n' +
             '  and moves in on what is not\n');

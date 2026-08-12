@@ -573,20 +573,55 @@ other at three times the size.
 
 ### Names, and squads standing on the same ground
 
-Names on the map were ruled out because nine of them over a zone-9 circle read
-as a smudge. That is true of a circle drawn a centimetre across and false of the
-same circle filling the box, so they go up whenever the camera is past 2.2× —
-which is zone 5 onward, a fight in a full lobby, and the endgame. The list
-beside the map covers everything wider, and the two never show at once.
+Names on the map were ruled out twice, on the grounds that nine of them over a
+zone-9 circle read as a smudge. They are back, and there is no zoom threshold
+and no count behind them: a name goes up when there is room on screen for it and
+does not when there is not, which is the only rule that holds at every zoom the
+camera reaches. The list beside the map carries whoever was left over, and the
+two never carry the same squad.
 
-**Only yours is on the map.** Every other arrangement was tried and reported
-unreadable, and the last one is why: plates for the six squads nearest you, over
-a four-hundred-pixel island. Six plates is six plates however well each one is
-drawn, and the map they sit on is the thing being watched. So the map carries one
-name and everybody else is an arrow — which is what an arrow is for: it says
-where a squad is and which way it is going in less room than a name takes to say
-who it is. The arrows get their names back in the list beside the map, once the
-field is short enough to list.
+**Every squad the map has room for is named on it.** Naming only yours was the
+version before this one, and it is what "не видно ников из-за стрелочек" came
+with a screenshot of: an island of anonymous arrows. Naming a fixed six was the
+version before *that*, and it was a wall. Both failed the same way — they decided
+the layout before looking at it.
+
+So nothing is decided in advance. A name is offered **eight places around its own
+arrow** and takes the first one that is free: free of the plates already down,
+free of everybody else's arrow, and inside what the camera is showing. Above
+first, because that is where the game puts a nameplate and where the eye looks
+for one, then the sides, then below, then the corners. A squad with nowhere to
+put its name keeps its arrow and is named in the list beside the map instead, so
+nobody goes unnamed and nothing is printed on top of anything else.
+
+Order decides who gets the good ground: **yours, then outwards from yours.** What
+a map is read for is who is around you, so a name that has to be given up is the
+one furthest from the fight. Yours is drawn even when nothing is free — it takes
+the place above its arrow, pulled inside the frame, and the arrows underneath
+give way to it. Plates are drawn after every arrow, so what a plate can cover is
+an arrow and never another name.
+
+The one number worth turning is **`INK`, the share of the visible box the plates
+may cover between them** — 0.18. At 0.35 the early game is the wall that was
+reported; at 0.08 the endgame loses names it has room for. It is a share of the
+box rather than a count of squads on purpose: the same rule then names twelve
+squads on a full island and five in a zone-12 circle, which no count could do.
+The header band and the kill feed are put down as occupied before any name is,
+and the list beside the map reserves its own column in a second pass — its height
+is not known until the first pass has said how many squads the map could not
+name.
+
+Each plate carries a thread back to its own arrow, drawn from the nearest point
+of the plate's edge. Where a plate sits straight above its squad the thread is a
+few pixels and invisible; in a circle with a dozen squads in it, it is the only
+thing that says whose name that is.
+
+Which squads are on screen at all is a question the SVG cannot answer on its own
+— the camera is a CSS transform on the stage, so the drawing inside it never
+learns that anything moved. `setView()` writes the visible rectangle onto the
+handle in the frames' own units, from both the camera and the hand-driven zoom,
+and the layout above reads it. A name for a squad off the left edge is a name
+nobody can read.
 
 The arrow itself is drawn twice: the same shape as a fat near-black stroke
 underneath, then the colour on top. One stroked path could not do it — a stroke
@@ -603,22 +638,14 @@ which is a shape a map has room for. The prefix is dropped on the map: it says
 which row is yours among a hundred on a standings table, and here the white ring
 already says it. Trios and squads take the first handle and a `+2`.
 
-Which names go on the map is decided **per cluster**, not per frame. Deciding it
-once for the whole map meant a single pile-up in a corner took the names off every
-squad on the island — most of them standing alone with all the room in the world
-for a label. A cluster of six or fewer gets its column; anything larger goes to
-the list beside the map, which carries **only** those, so nothing is named twice
-and nobody goes unnamed. Yours is drawn on the map either way.
+A handle longer than eleven characters is cut on the map and kept whole in the
+list — the field is made of `Aegis Kijarssf` and `asparoyel*ar0`, not of
+five-letter names, and a plate is as wide as its longest line.
 
-**And at most six squads are named on it at all.** Thirty-three duo names do not
-fit over a 400-pixel island at any size that can still be read: the map
-disappeared under its own labels, which is what "ПЛОХО ВИДНО" came with a
-screenshot of. The six are the ones nearest yours, because what a map is read for
-is who is around you; everyone else is named in the list, which is a column and
-does not fight the map for room. A handle longer than eleven characters is cut on
-the map and kept whole in the list — the field is made of `Aegis Kijarssf` and
-`asparoyel*ar0`, not of five-letter names, and a pill is as wide as its longest
-line.
+The list beside the map carries **only** the squads the map found no room for, so
+nothing is named twice and nobody goes unnamed. In a zone-12 circle the size of a
+coin that is most of them; on a full island at zone 2 it is nobody, and the list
+is not there at all.
 
 They are drawn as **the game's own nameplate**: a near-black plate, the handles
 on it in white, the squad's colour as a stripe down the left edge, and a health
@@ -652,11 +679,11 @@ The collapse then produced something no amount of zoom fixes: it pulls every
 squad to one point, so the last five of a game are at *identical* coordinates —
 one arrow drawn five times, under a header saying five are alive. A cluster is
 now fanned onto a ring the width of a marker, measured in screen terms so it is
-the same few pixels whatever the camera is doing, and its names go in a column
-beside it rather than above each arrow — a name is several times wider than the
-fan, so printed in place they would be exactly the smudge the fan just undid.
-Only while zoomed in: at full map a two-unit nudge is 2% of the island, and the
-overlap was never the problem there.
+the same few pixels whatever the camera is doing. Only while zoomed in: at full
+map a two-unit nudge is 2% of the island, and the overlap was never the problem
+there. The names of a pile like that are what the placement above cannot fit —
+a plate is several times wider than the fan — so they go to the list, which is
+where the endgame's names live.
 
 What counts as a cluster is wider than the fan — a name is several marker widths
 long, so squads that do not overlap as arrows still overlap as labels — and it
