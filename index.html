@@ -629,6 +629,12 @@
   .sim-btn p{margin:0;font-size:11.5px;line-height:1.35;}
   .sim-btn.active{background:var(--accent);border-color:var(--accent);}
   .sim-btn.active h5,.sim-btn.active p{color:var(--accent-ink);}
+  .team-row{background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+    padding:12px;margin-bottom:10px;}
+  .team-row-head{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:8px;}
+  .team-row-head b{color:var(--accent);font-size:16px;margin-right:6px;}
+  .team-row-stage{float:right;font-size:11px;font-weight:700;color:var(--ink-dim);}
+  .team-row-cards{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
 
   .bracket{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:24px 0;}
   @media(max-width:820px){.bracket{grid-template-columns:1fr;}}
@@ -1481,6 +1487,11 @@
             </div>
             <button class="restart-btn" id="rerollBtn" style="margin-left:auto;white-space:nowrap;" onclick="rerollAll()"><span data-i18n="rerollLabel"></span> (<span id="rerollCount">2</span>)</button>
           </div>
+          <div id="teamPickBar" style="display:none;margin-bottom:10px;">
+            <input id="teamPickSearch" type="search" style="width:100%;background:var(--panel2);
+              border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:9px 12px;font-size:13px;">
+            <div id="teamPickMeta" style="margin-top:6px;font-size:11.5px;color:var(--ink-dim);"></div>
+          </div>
           <div class="candidates" id="candidates"></div>
 
           <div class="pack-head" style="margin-top:18px;">
@@ -1851,6 +1862,10 @@ yourSquadTitle:'Твой состав', draftedLabel:'задрафчено', avg
 simRealisticTitle:'Реалистичная симуляция', simRealisticNote:'Выбираешь настоящее дуо мажора. Составы не меняются — все играют теми, с кем играли на самом деле.',
 simDraftTitle:'Драфт-симуляция', simDraftNote:'Собираешь свой состав из карточек игроков. Соперники собираются так же.',
 simModeTitle:'Режим симуляции',
+teamPickTitle:'Выбор состава', teamPickDesc:'Выбери настоящую команду мажора. Состав менять нельзя.',
+teamPickSearch:'Поиск по нику', teamPickCount:(n)=>n+' команд',
+teamPickDropped:(n)=>n===0?'':'Не показаны: '+n+' — кто-то из состава вне выбранного фильтра',
+teamPickBtn:'Взять',
 weaponPackTitle:'Оружейный пак', weaponPackDesc:'Выбери оружие — влияет на силу состава.', lootPoolNote:n=>'Лут-пул сезона: '+n, healPackTitle:'Пак хила', healPackDesc:'Выбери расходник — тоже влияет на силу состава.', weaponLabel:'Оружие', loadoutLabel:'Экипировка:', totalPowerLabel:'Итоговая сила:',
 landingTitle:'Выбери точку высадки', landingHint:'Кликни по любой зоне на карте — свободные дают очки, занятые дают риск и бонус за победу в стычке', landingChosenText:n=>'Точка высадки №'+n+' выбрана', landingTaken:'занято', landingZoneSuffix:n=>'зона '+n, landingPoints:n=>'+'+n+' очков', landingChosenPoints:(n,p)=>'Точка высадки №'+n+' выбрана — +'+p+' очков', landingResultsTitle:'Куда упали составы', landingChosenContested:(n,p)=>'Точка высадки №'+n+' выбрана — там уже отряд! +'+p+' очков, но риск стычки', landingFightWon:'⚔ выиграл стычку при высадке', landingFightLost:'💀 проиграл стычку при высадке', landingShared:'🤝 делили зону, всё обошлось', landingRiskTag:n=>n>=2?'2 команды здесь — высокий риск':'занято — риск стычки', landingConfirmBtn:'Подтвердить высадку', gameLandingTitle:(g,n)=>'Высадка — игра '+g+' из '+n, landingPickSeat:(n,total)=>'Ты выбираешь '+n+'-м из '+total+' — раньше квалифицировался, раньше ставишь метку.', landingPickPrompt:'Кликни по зоне, чтобы посмотреть, кто там, потом подтверди высадку', landingFreePreview:p=>'Свободная зона — +'+p+' очков, без риска', landingOccupiedPreview:n=>n>=2?'Внимание: там уже '+n+' команды — придётся победить обе':'Там уже отряд — будет стычка при высадке', scqTitle:'Second Chance Qualifier — последний шанс на LAN',
 scqIntro:(reg,rank,slots)=>'В гранд-финале '+reg+' ты занял #'+rank+', а на Summit едут топ-'+slots+'. Остаётся отборочный: он открыт всем из Division 1, кто не прошёл напрямую.',
@@ -2322,6 +2337,10 @@ yourSquadTitle:'Your squad', draftedLabel:'drafted', avgRatingLabel:'Average rat
 simRealisticTitle:'Realistic simulation', simRealisticNote:'Pick one of the Major\'s real duos. Rosters are fixed — everybody plays with the people they actually played with.',
 simDraftTitle:'Draft simulation', simDraftNote:'Build your own squad out of player cards. The rivals are built the same way.',
 simModeTitle:'Simulation mode',
+teamPickTitle:'Pick a squad', teamPickDesc:'Pick one of the Major\'s real teams. The roster is fixed.',
+teamPickSearch:'Search by handle', teamPickCount:(n)=>n+' teams',
+teamPickDropped:(n)=>n===0?'':'Not listed: '+n+' — a member is outside the chosen filter',
+teamPickBtn:'Take',
 weaponPackTitle:'Weapon pack', weaponPackDesc:'Pick a weapon — affects squad power.', lootPoolNote:n=>'Season loot pool: '+n, healPackTitle:'Heal pack', healPackDesc:'Pick a consumable — also affects squad power.', weaponLabel:'Weapon', loadoutLabel:'Loadout:', totalPowerLabel:'Total power:',
 landingTitle:'Choose your landing spot', landingHint:'Click any zone on the map — free ones give points, occupied ones carry risk plus a bonus if you win the scrap', landingChosenText:n=>'Landing spot #'+n+' selected', landingTaken:'taken', landingZoneSuffix:n=>'zone '+n, landingPoints:n=>'+'+n+' pts', landingChosenPoints:(n,p)=>'Landing spot #'+n+' selected — +'+p+' pts', landingResultsTitle:'Where the squads dropped', landingChosenContested:(n,p)=>'Landing spot #'+n+' selected — a squad is already there! +'+p+' pts, but risk of a fight', landingFightWon:'⚔ won a landing fight', landingFightLost:'💀 lost a landing fight', landingShared:'🤝 shared the zone, no clash', landingRiskTag:n=>n>=2?'2 squads here — high risk':'occupied — risk of a fight', landingConfirmBtn:'Confirm landing', gameLandingTitle:(g,n)=>'Landing — game '+g+' of '+n, landingPickSeat:(n,total)=>'You pick '+n+(n%10===1&&n%100!==11?'st':n%10===2&&n%100!==12?'nd':n%10===3&&n%100!==13?'rd':'th')+' of '+total+' — qualify earlier, choose earlier.', landingPickPrompt:'Click a zone to see who is there, then confirm your landing', landingFreePreview:p=>'Free zone — +'+p+' pts, no risk', landingOccupiedPreview:n=>n>=2?'Careful: '+n+' squads already there — you would need to beat both':'A squad is already there — expect a fight on landing', scqTitle:'Second Chance Qualifier — last route to the LAN',
 scqIntro:(reg,rank,slots)=>'You finished #'+rank+' in the '+reg+' Grand Finals and only the top '+slots+' fly out. The qualifier is still open — every Division 1 duo that missed the direct route is in it.',
@@ -26067,8 +26086,17 @@ const lastOf=a=>a[a.length-1];
 // Draft over: every pack area turns into the full run of picks it produced, one
 // card per round. A round rolls a player, a weapon and a consumable together,
 // so all three areas end up the same length and read as one finished loadout.
+//
+// Counted in rounds, not in players. A realistic run takes its whole roster in
+// the first round, and if the draft ended when the roster was full it would end
+// after one loot round — leaving the player with one weapon and one consumable
+// against a lobby whose teams roll a pair each, which is half the loadout in
+// duos and a third of it in trios.
+function draftedEnough(){
+  return REALISTIC ? round>=squadSize : drafted.length>=squadSize;
+}
 function draftIsComplete(){
-  return roundPlayerPicked && roundWeaponPicked && roundHealPicked && drafted.length>=squadSize;
+  return roundPlayerPicked && roundWeaponPicked && roundHealPicked && draftedEnough();
 }
 function renderDraftResult(){
   renderPicked('candidates', drafted.map(p=>pickedPlayerCard(p)), L().squadCompleted);
@@ -27469,6 +27497,16 @@ function startDraft(size, major){
   document.getElementById('topBadge').textContent = modeLabel+regionsLabel+eraLabel;
   document.getElementById('squadTotal').textContent=size;
   document.getElementById('roundTotal').textContent=size;
+  // A realistic run has one roster and `size` loot rounds; the pack label counts
+  // rounds, and the reroll is a player-pack control with nothing to reroll here.
+  const rb=document.getElementById('rerollBtn');
+  if(rb) rb.style.display = REALISTIC ? 'none' : '';
+  const packHead=document.querySelector('#screen-draft .pack-head h2[data-i18n="packOpenTitle"]');
+  if(packHead){
+    packHead.setAttribute('data-i18n', REALISTIC ? 'teamPickTitle' : 'packOpenTitle');
+    packHead.nextElementSibling.setAttribute('data-i18n', REALISTIC ? 'teamPickDesc' : 'packOpenDesc');
+    applyStaticI18n();
+  }
   document.getElementById('goBtn').textContent = CARD_MODE
     ? ((LANG==='ru'?'Начать ':'Start ')+cardSetName(CARD_SET))
     : (isMajorMode ? (LANG==='ru'?'Начать ALL FNCS':'Start ALL FNCS') : L().goToTournamentBtn);
@@ -27602,10 +27640,23 @@ function generatePack(){
 function nextRound(){
   round++;
   document.getElementById('roundNum').textContent=round;
-  if(squadSize-drafted.length<=0) return;
+  if(round>squadSize) return;
   roundPlayerPicked=false; roundWeaponPicked=false; roundHealPicked=false;
-  currentCandidates=generatePack();
-  renderCandidates(currentCandidates);
+  if(REALISTIC){
+    // The roster is taken once, in the first round; the rounds after it are
+    // loot only, so the player half of them is already settled and the squad
+    // that was taken stays on screen instead of the picker coming back.
+    if(drafted.length){
+      roundPlayerPicked=true;
+      document.getElementById('teamPickBar').style.display='none';
+      renderPicked('candidates', drafted.map(p=>pickedPlayerCard(p)));
+    } else {
+      renderTeamPicker();
+    }
+  } else {
+    currentCandidates=generatePack();
+    renderCandidates(currentCandidates);
+  }
   currentWeaponOptions=generateWeaponPack();
   renderItemPack(currentWeaponOptions, 'weaponCandidates', pickWeapon);
   updateLootPoolNote();
@@ -27616,7 +27667,7 @@ function nextRound(){
 
 function maybeAdvanceRound(){
   if(!roundPlayerPicked || !roundWeaponPicked || !roundHealPicked) return;
-  if(drafted.length>=squadSize){
+  if(draftedEnough()){
     // Last round resolved: the pack areas stop being packs and become the
     // finished squad and its loadout, all on screen at once.
     renderDraftResult();
@@ -28091,6 +28142,63 @@ function rerollAll(){
   if(!roundWeaponPicked){ currentWeaponOptions=generateWeaponPack(); renderItemPack(currentWeaponOptions, 'weaponCandidates', pickWeapon); }
   updateLootPoolNote();
   if(!roundHealPicked){ currentHealOptions=generateHealPack(); renderItemPack(currentHealOptions, 'healCandidates', pickHeal); }
+}
+
+// The Major's real teams, as cards, best first. This takes the place of the
+// player pack when the run is a realistic one: the pack asks which player you
+// want, and here that is not a question — a real team is a whole roster or it
+// is not that team.
+let teamPickList=[];
+
+function renderTeamPicker(){
+  const el=document.getElementById('candidates');
+  const bar=document.getElementById('teamPickBar');
+  const box=document.getElementById('teamPickSearch');
+  const built=realTeamsFor(pool);
+  teamPickList=built.teams;
+  bar.style.display='block';
+  box.placeholder=L().teamPickSearch;
+  document.getElementById('teamPickMeta').textContent =
+    L().teamPickCount(built.teams.length) +
+    (built.dropped ? ' · ' + L().teamPickDropped(built.dropped) : '');
+  box.oninput=()=>paintTeamPicker(box.value);
+  paintTeamPicker('');
+}
+
+function paintTeamPicker(query){
+  const el=document.getElementById('candidates');
+  const q=String(query||'').trim().toLowerCase();
+  const shown=q ? teamPickList.filter(t=>t.handles.some(h=>h.toLowerCase().includes(q)))
+                : teamPickList;
+  el.innerHTML='';
+  el.style.display='block';
+  shown.forEach(t=>{
+    const row=document.createElement('div');
+    row.className='team-row';
+    row.innerHTML=
+      '<div class="team-row-head"><b>' + Math.round(t.avg) + '</b> ' +
+        esc(t.handles.join(' & ')) +
+        ' <span class="team-row-stage">' + t.stage + ' #' + t.rank + ' · ' + t.pts + ' pts</span></div>' +
+      '<div class="team-row-cards">' + t.cards.map(c=>futCardHTML(c)).join('') + '</div>' +
+      '<button class="pick-btn" style="width:100%;">' + L().teamPickBtn + '</button>';
+    row.querySelector('.pick-btn').onclick=()=>pickTeam(t);
+    el.appendChild(row);
+  });
+}
+
+// Taking a team is the whole draft in one act: the roster goes into `drafted`
+// entire, which is what every later stage of the app reads. Nothing downstream
+// learns that this run was realistic.
+function pickTeam(team){
+  if(roundPlayerPicked) return;
+  drafted=team.cards.slice();
+  team.cards.forEach(c=>{ pool=pool.filter(x=>x.handle!==c.handle); });
+  roundPlayerPicked=true;
+  document.getElementById('teamPickBar').style.display='none';
+  document.getElementById('candidates').style.display='';
+  renderSlots();
+  renderPicked('candidates', team.cards.map(c=>pickedPlayerCard(c)));
+  maybeAdvanceRound();
 }
 
 function renderCandidates(list){

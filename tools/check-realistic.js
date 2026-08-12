@@ -71,6 +71,15 @@ const BOOTSTRAP = `
         return t.handles.indexOf(stranded) >= 0;
       })
     };
+    // Taking a team fills the squad with that whole roster and nothing else.
+    renderTeamPicker();
+    var target = teamPickList[0];
+    pickTeam(target);
+    out.draftedHandles = drafted.map(function(p){ return p.handle; });
+    out.targetHandles = target.handles.slice();
+    out.poolStillHasThem = target.handles.filter(function(h){
+      return pool.some(function(p){ return p.handle === h; });
+    }).length;
   } catch (e) { out = {error: String(e && e.stack || e)}; }
   document.getElementById('__real').textContent =
     'BEGINREAL' + encodeURIComponent(JSON.stringify(out)) + 'ENDREAL';
@@ -127,6 +136,10 @@ if (out.incomplete) fails.push(out.incomplete + ' listed teams have a member mis
 if (out.wrongSize) fails.push(out.wrongSize + ' teams are not duos in a duo Major');
 if (out.top[0] && out.top[0].who !== 'Sky & Scroll')
   fails.push('the top of the list is ' + out.top[0].who + ', not the team that won');
+if (out.draftedHandles.join('|') !== out.targetHandles.join('|'))
+  fails.push('taking ' + out.targetHandles.join(' & ') + ' drafted ' + out.draftedHandles.join(' & '));
+if (out.poolStillHasThem)
+  fails.push(out.poolStillHasThem + ' of the taken players are still in the pool for somebody else');
 
 if (fails.length) { fails.forEach(f => console.error('  FAIL ' + f)); process.exit(1); }
 console.log('\n  every real roster, once each, best first\n');
