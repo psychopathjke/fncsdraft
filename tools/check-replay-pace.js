@@ -112,6 +112,24 @@ function scaleOf(handle){
       // Sampled on every frame, not only in the endgame: your squad can be out
       // long before then, and its plate is what this is counting.
       out.namesOnMap = Math.max(out.namesOnMap || 0, plates.length);
+
+      // Where your squad stands, as the header actually prints it. Two claims:
+      // while you are alive it is the size of the lobby, because that is where
+      // you would finish if you went down now; once you are out it is the place
+      // the engine recorded and it stops moving.
+      var chip = handle.head.querySelector('[data-place]');
+      var mine = f.dots[3];
+      if(!chip){ out.placeMissing = (out.placeMissing || 0) + 1; }
+      else {
+        var shown = Number(chip.getAttribute('data-place'));
+        var settled = chip.getAttribute('data-settled') === '1';
+        if(mine.alive){
+          if(shown !== f.alive || settled) out.placeWrongAlive = (out.placeWrongAlive || 0) + 1;
+        } else {
+          if(shown !== mine.p || !settled) out.placeWrongDead = (out.placeWrongDead || 0) + 1;
+          out.placeFinal = shown;
+        }
+      }
       var named = {}, a, b;
       for(a=0;a<plates.length;a++) named[plates[a].getAttribute('data-squad')] = 1;
       // Yours is the one name the map has always carried, at every zoom and
@@ -180,8 +198,14 @@ if(r.error){ console.error('the replay threw: ' + r.error); process.exit(1); }
 
 const fails = [];
 if(!(r.pacedMs > 0 && r.flatMs > 0)) fails.push('a replay finished in no time at all, which means it never played');
-if(!(r.pacedMs < r.flatMs)) fails.push('paced ' + r.pacedMs + 'ms against flat ' + r.flatMs +
-  'ms — the pacing is buying nothing at all');
+// The paced run used to have to come in under the flat one, on the reading that
+// the pacing exists to save time. It does not. It exists to move time out of the
+// part nobody is watching and into the part everybody is, and which way the
+// total lands is an accident of how much of each a given match has. Once the
+// late game was slowed to under fight pace and the last circles to 0.35, the
+// total went over the flat one while every stretch of it was doing exactly what
+// it is meant to — so the total is reported and the two stretches are what is
+// actually checked, below.
 // The quiet stretch is skipped through and the last circles are lingered on.
 // A total cannot say both: from zone 10 the replay is deliberately slower than
 // flat, and every second it spends there eats into what the mid-game saved.
@@ -205,11 +229,20 @@ if(r.namesOnMap > 1) fails.push(r.namesOnMap + ' names on the map at once; only 
 if(r.namedTwice) fails.push(r.namedTwice + ' squads were named on the map and in the list beside it at once');
 if(r.unnamed) fails.push(r.unnamed + ' squads were left with no name at all in the endgame, ' +
   'on the map or beside it');
+// Your placement, which is the one counter in the header about you rather than
+// about the lobby.
+if(r.placeMissing) fails.push('the header carried no placement on ' + r.placeMissing +
+  ' frames of a game your squad was in');
+if(r.placeWrongAlive) fails.push('on ' + r.placeWrongAlive + ' frames your placement did not ' +
+  'match the squads still alive, which is where you would have finished on that frame');
+if(r.placeWrongDead) fails.push('on ' + r.placeWrongDead + ' frames after your squad went down ' +
+  'the placement was not the one the engine recorded, or was still shown as running');
 
 console.log('\n  frames          ' + r.frames +
             '\n  paced           ' + r.pacedMs + 'ms' +
             '\n  flat            ' + r.flatMs + 'ms' +
-            '\n  saved           ' + (100 - Math.round(100*r.pacedMs/r.flatMs)) + '%' +
+            '\n  against flat    ' + (r.pacedMs > r.flatMs ? '+' : '') +
+              (Math.round(100*r.pacedMs/r.flatMs) - 100) + '%  (not a target either way)' +
             '\n  zones 1-4       ' + r.midMs + 'ms against ' + r.midFlat + 'ms flat' +
             '\n  zone 10 on      ' + r.lateMs + 'ms against ' + r.lateFlat + 'ms flat' +
             '\n  feed lines      ' + r.feedLines + ' at the end' +
@@ -218,7 +251,9 @@ console.log('\n  frames          ' + r.frames +
             '\n  camera, endgame ' + r.close.toFixed(2) + 'x' +
             '\n  names on map    ' + (r.namesOnMap || 0) + ' at most' +
             '\n  names in list   ' + (r.sideRows || 0) + ' at most' +
-            '\n  unnamed, late   ' + (r.unnamed || 0) + '\n');
+            '\n  unnamed, late   ' + (r.unnamed || 0) +
+            '\n  your placement  ' + (r.placeFinal ? '#' + r.placeFinal + ' at the end' :
+              'still alive at the last frame') + '\n');
 if(fails.length){ fails.forEach(f => console.error('  FAIL ' + f)); process.exit(1); }
 console.log('  the replay plays, finishes, skips what is worth skipping,\n' +
             '  and moves in on what is not\n');

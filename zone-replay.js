@@ -44,15 +44,32 @@
   // as the endgame moving in steps, which is the opposite of the thing being
   // fixed. HAIR is small enough that nothing anybody can see is ever deferred.
   //
-  // And while it is moving the stage is promoted to its own layer. That is what
-  // will-change does and it is why it was taken off in the first place: a
-  // promoted layer is rasterised once and then stretched, which is the blur
-  // that was reported. So it is promoted only while the camera is actually
-  // moving and dropped again a fifth of a second after it stops, which
-  // re-rasterises the island sharp at the scale it ended on. Soft while it
-  // moves, sharp while it is still — which is the way round it wants to be,
-  // since from zone 5 the camera pans on every single frame and the endgame,
-  // played at half speed, sits there panning for a third of the replay.
+  // And while it is moving, the photograph is promoted to its own layer. That is
+  // what will-change does and it is why it was taken off in the first place: a
+  // promoted layer is rasterised once and then stretched, which is the blur that
+  // was reported. So it is promoted only while the camera is actually moving and
+  // dropped again a fifth of a second after it stops, which re-rasterises the
+  // island sharp at the scale it ended on.
+  //
+  // The photograph, and not the stage it sits on. This used to promote the whole
+  // stage, and the stage holds the SVG as well — every marker, every circle, and
+  // the nameplate. Promoting their parent puts them in the photograph's texture,
+  // so they were stretched along with it: "теперь когда зумишь ник хуже виден".
+  //
+  // It was a fair trade while the camera moved in steps, because the settle
+  // timer is 180ms and the camera stood still for longer than that between them,
+  // so the layer came back down and everything went sharp again between moves.
+  // Once the camera started moving on every refresh the timer stopped ever
+  // firing — measured in tools/check-name-legibility.js, the stage went from
+  // promoted for 60% of the endgame to 79%, in one unbroken stretch — and a
+  // trade that never settles is not a trade.
+  //
+  // Which half wants which treatment is not a close call. The photograph is
+  // expensive to repaint, and it is already being magnified past its own
+  // resolution — that is what MAX_UPSCALE is about — so a little more softness
+  // while it moves costs it nothing it had. Everything in the SVG is vector: it
+  // costs half a millisecond to redraw at the right size, and it is the half
+  // anybody is reading.
   var SETTLE_MS = 180, HAIR = 0.05;
 
   function paint(handle, tx, ty, s){
@@ -62,12 +79,13 @@
     handle.painted = {tx: tx, ty: ty, s: s};
     handle.stage.style.transform =
       'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) scale(' + s.toFixed(4) + ')';
-    if(!handle.promoted){ handle.stage.style.willChange = 'transform'; handle.promoted = true; }
+    var layer = handle.img || handle.stage;
+    if(!handle.promoted){ layer.style.willChange = 'transform'; handle.promoted = true; }
     if(handle.settle) clearTimeout(handle.settle);
     handle.settle = setTimeout(function(){
       handle.settle = null;
       handle.promoted = false;
-      handle.stage.style.willChange = '';
+      layer.style.willChange = '';
     }, SETTLE_MS);
   }
 
@@ -220,7 +238,13 @@
     wrap.appendChild(feed);
 
     var handle = {wrap:wrap, stage:stage, svg:svg, head:head, side:side, feed:feed,
-                  lines:[], scale:1, mapPixels:0};
+                  // The photograph, which is the only part of the stage that
+                  // wants to be a layer while the camera moves. See paint().
+                  img:img,
+                  lines:[], scale:1, mapPixels:0,
+                  // Where every marker's fan offset is now, and when it was last
+                  // moved. play() starts both over for each game it plays.
+                  fan:{}, fanAt:null, fanEase:FAN_EASE_MS};
 
     // How many pixels across the map actually is. The camera reads it to decide
     // how far in it is worth going: magnifying an island past its own
@@ -489,6 +513,44 @@
                     '<circle cx="8.6" cy="3.9" r="1.6" fill="#7de3a8" opacity=".75"/>' +
                     '<path d="M0.4 10.6c0-2.3 1.5-3.7 3.3-3.7s3.3 1.4 3.3 3.7z" fill="#7de3a8"/>' +
                     '<path d="M7.2 10.6c0-1.9 1-3 2.3-3s2.1 1.1 2.1 3z" fill="#7de3a8" opacity=".75"/>';
+  // A wreath, for the one counter that is about your squad and not the lobby.
+  var ICON_PLACE  = '<path d="M6 1.4 7.1 4h2.6L7.6 5.7l.8 2.6L6 6.8 3.6 8.3l.8-2.6L2.3 4h2.6z" ' +
+                    'fill="#ffd479"/>';
+
+  // Where your squad stands, which is two different facts wearing one number.
+  //
+  // While you are alive there is no such thing as your placement — the engine
+  // only writes one when a squad goes down, and every frame carries p: 0 for
+  // everybody still up. What there is instead is where you would finish if you
+  // went down on this frame, and that is exactly the number of squads still
+  // alive. So the counter reads the lobby while you are in it and your own
+  // recorded place once you are out, and the two are the same quantity measured
+  // a moment apart.
+  //
+  // Ringed once it is final, the way your plate is ringed on the map: while it
+  // is still moving it is a running total, and after it stops it is the answer.
+  function placeChip(place, settled, total){
+    // data-place carries the two facts a check needs without reading them back
+    // out of the text: which number is on it, and whether it has stopped moving.
+    return '<span data-place="' + place + '" data-settled="' + (settled ? 1 : 0) + '" ' +
+      'style="display:inline-flex;align-items:center;gap:3px;' +
+      'background:rgba(8,12,24,.62);border-radius:5px;padding:1px 6px 1px 4px;' +
+      (settled ? 'box-shadow:0 0 0 1.5px rgba(255,255,255,.7);' : '') + '">' +
+      '<svg viewBox="0 0 12 12" width="9" height="9" style="flex:none;">' + ICON_PLACE + '</svg>' +
+      '<b style="font-size:11px;">#' + place + '</b>' +
+      '<span style="font-size:9px;opacity:.62;">/' + total + '</span></span>';
+  }
+
+  // The place to print, or null when there is nothing to print: a replay
+  // watched rather than played has no squad of yours in it, and a counter about
+  // your squad has no business on somebody else's game.
+  function placeOf(frame, roster){
+    var me = yourSquad(roster);
+    if(me < 0 || !frame.dots[me]) return null;
+    var d = frame.dots[me];
+    return d.alive ? {place: frame.alive, settled: false}
+                   : (d.p ? {place: d.p, settled: true} : null);
+  }
 
   // Turns "cause:victim" strings into feed rows and appends them to the
   // handle's running feed. Shared by draw(), which reads events off a frame as
@@ -578,6 +640,41 @@
     return {dx: Math.cos(a) * r, dy: Math.sin(a) * r};
   }
 
+  // Where a marker actually sits, which is not where the fan says it should be.
+  //
+  // The fan above is a function of the group: a squad's place on the ring is its
+  // rank among the members divided by how many there are. Both of those are
+  // rebuilt from scratch every draw, and neither is continuous in time — a
+  // group of three losing one member sends the two left from 120° and 240° to
+  // 0° and 180°, and a squad drifting past the separation threshold goes from
+  // somewhere on the ring to the middle of it. The ring is about eleven screen
+  // pixels across whatever the camera is doing, so those are ten- and
+  // twenty-pixel jumps, and in the last circles they land on 9% of the markers
+  // on any given draw.
+  //
+  // That is "с 10 зоны модельки двигаются обрывисто", and it is the fan and not
+  // the frames: measured over eight games in tools/check-endgame-jitter.js, the
+  // interpolated positions change their step by 5.1px at the 99th percentile and
+  // never by 10, while the fan written straight in changes it by 19.3px and
+  // reaches 41.
+  //
+  // So the fan is a target rather than a position, and the marker glides to it.
+  // Nothing about which slot a squad is offered changes; what changes is that
+  // being moved to a new slot takes a sixth of a second instead of no time at
+  // all. Same measurement with the glide in: 5.1px at the 99th, max 9.7 against
+  // the frames' own 9.7 — the drawing stops adding anything they did not
+  // already have.
+  var FAN_EASE_MS = 150;
+
+  function fanTo(memory, i, want, dt, ms){
+    var s = memory[i];
+    if(!s || !ms) return (memory[i] = {dx: want.dx, dy: want.dy});
+    var w = Math.min(1, dt / ms);
+    s.dx += (want.dx - s.dx) * w;
+    s.dy += (want.dy - s.dy) * w;
+    return s;
+  }
+
   // --- names, as the kill feed writes them
   //
   // Coloured text with a dark outline was the first version and it is not
@@ -620,6 +717,27 @@
     return handle.length > HANDLE_MAX ? handle.slice(0, HANDLE_MAX - 1) + '…' : handle;
   }
 
+  // Every handle, one to a line — including the third and the fourth.
+  //
+  // Trios and squads used to collapse to the first handle and a count of the
+  // rest: "Tjino" over "+2". The reasoning was that four names stacked is a
+  // column rather than a label, and for a map carrying fifty of them it would
+  // be. This map carries one, and a count is not a name — the two players it
+  // stands for are as much the squad as the one that got printed.
+  //
+  // Stacking is what makes it affordable, and it is the stacking and not the
+  // count that was doing the work. Measured over the 1622 real trios in
+  // tools/2025-rows-t3.generated.js, at the zoom the endgame plays at: stacked,
+  // the plate is 88px wide whatever is on it, because its width is the longest
+  // single handle and clip() caps that at eleven characters. The same three
+  // handles written along one line run to 196px at the median and 247px at the
+  // 90th — half the width of the box, against a final circle nineteen pixels
+  // across. A plate that size never finds a free slot beside your arrow, so it
+  // would fall to the last-resort placement and sit on top of everybody else's
+  // — which is "не видно ников из-за стрелочек" arriving by another road.
+  //
+  // The cost of the extra lines is height, and only height: 39px for a duo,
+  // 51px for a trio, 64px for a squad of four, against a box 461px tall.
   function nameLines(name, isYou, full){
     var text = plain(name);
     if(isYou){
@@ -627,9 +745,6 @@
       if(colon > 0) text = text.slice(colon + 2);
     }
     var parts = text.split(' & ');
-    // Trios and squads: the first handle, then the rest of the roster count,
-    // because four names stacked is a column, not a label.
-    if(parts.length > 2) parts = [parts[0], '+' + (parts.length - 1)];
     if(full) return parts;
     for(var i=0;i<parts.length;i++) parts[i] = clip(parts[i]);
     return parts;
@@ -707,9 +822,17 @@
       t.setAttribute('font-size', fs.toFixed(3));
       t.setAttribute('font-weight', '700');
       t.setAttribute('fill', '#ffffff');
-      // The second handle is the same name one rank quieter, so a duo reads as
-      // one plate rather than as two squads stacked.
-      if(k) t.setAttribute('opacity', '.78');
+      // Every handle at the same weight. The second one used to be printed a
+      // rank quieter, so that a stacked duo read as one plate rather than as
+      // two squads on top of each other — but that is a hierarchy, and the
+      // players in a squad do not have one. On a duo it was quiet enough to
+      // pass for styling. On a trio it says the first player is the one that
+      // matters and the other two are footnotes, which is not true of any
+      // roster.
+      //
+      // The job it was doing is done by the plate itself: one background, one
+      // border, one colour stripe down the edge and one health bar under the
+      // lot. Nothing about three names inside that reads as three squads.
       t.textContent = lines[k];
       g.appendChild(t);
     }
@@ -934,13 +1057,24 @@
     var groups = cluster(frame.dots, scale);
     var at = [], i;
 
+    // How long since the last marker was drawn, for the fan's glide. Capped, so
+    // a tab that was in the background does not arrive with a step of several
+    // seconds and snap every fan open at once — and started at the full ease
+    // length, so the very first draw of a game puts everybody straight on their
+    // slot rather than sliding out of the middle.
+    var nowMs = (typeof performance !== 'undefined' && performance.now)
+      ? performance.now() : Date.now();
+    var since = handle.fanAt == null ? FAN_EASE_MS : Math.min(400, nowMs - handle.fanAt);
+    handle.fanAt = nowMs;
+    handle.fan = handle.fan || {};
+
     for(var g=0;g<groups.length;g++){
       var grp = groups[g];
       for(var m=0;m<grp.length;m++){
         var d;
         i = grp[m]; d = frame.dots[i];
         var who = roster[i] || {};
-        var off = offsetIn(grp, m, scale);
+        var off = fanTo(handle.fan, i, offsetIn(grp, m, scale), since, handle.fanEase);
         at[i] = {x: d.x + off.dx, y: d.y + off.dy};
         handle.svg.appendChild(marker(at[i].x, at[i].y, d.a || 0,
           who.you ? 'var(--accent)' : colourFor(i), who.you, scale));
@@ -1001,16 +1135,27 @@
           var k = listed[kk];
           var r = roster[k] || {};
           // Whole handles here: the list has a column to itself and does not
-          // have to fit over anybody's ground.
+          // have to fit over anybody's ground. Every one of them, too — this is
+          // the only place a squad's third and fourth players are written out
+          // in full, since the map clips each handle to eleven characters.
           var nm = nameLines(r.name, r.you, true).join(' & ');
           if(!nm) continue;
           var col = r.you ? 'var(--accent)' : colourFor(k);
-          rows.push('<div data-squad="' + k + '" style="display:flex;align-items:center;gap:4px;justify-content:flex-end;">' +
+          // One line per squad, whatever the name costs. The room the map keeps
+          // clear for this list is counted as ROW_PX per squad, so a name that
+          // wrapped would make the list taller than the space reserved for it
+          // and your own plate could be placed on top of it. Of the real trios,
+          // 7% are long enough to do that — "jewish tung tung & bloodhound
+          // moody & thundercal cloud" is 54 characters — so the row is held to
+          // one line and the tail of the longest few is cut by the browser.
+          rows.push('<div data-squad="' + k + '" style="display:flex;align-items:center;gap:4px;' +
+            'justify-content:flex-end;white-space:nowrap;">' +
             (r.you
-              ? '<span style="padding:0 5px;border-radius:3px;background:var(--accent);' +
+              ? '<span style="overflow:hidden;text-overflow:ellipsis;padding:0 5px;border-radius:3px;' +
+                'background:var(--accent);' +
                 'color:' + inkOn('var(--accent)') + ';box-shadow:0 0 0 1px rgba(255,255,255,.65);">' +
                 esc(nm) + '</span>'
-              : '<span>' + esc(nm) + '</span>') +
+              : '<span style="overflow:hidden;text-overflow:ellipsis;">' + esc(nm) + '</span>') +
             '<span style="width:0;height:0;flex:none;border-style:solid;' +
               'border-width:4px 0 4px 7px;border-color:transparent transparent transparent ' + col +
               ';filter:drop-shadow(0 0 1px rgba(0,0,0,.9));"></span></div>');
@@ -1023,12 +1168,14 @@
     var secs = frame.secondsLeft;
     var totS = roster.totalSquads || frame.dots.length;
     var totP = roster.totalPlayers || totS;
+    var mine = placeOf(frame, roster);
     handle.head.innerHTML =
       '<span style="display:flex;align-items:center;gap:7px;">' +
         '<span>' + esc(labels.zone) + ' ' + frame.zone + '</span>' +
         '<span style="opacity:.8;font-variant-numeric:tabular-nums;">' +
           Math.floor(secs/60) + ':' + pad2(secs % 60) + '</span></span>' +
       '<span style="display:flex;align-items:center;gap:5px;">' +
+        (mine ? placeChip(mine.place, mine.settled, totS) : '') +
         counter(ICON_PLAYER, (frame.players != null ? frame.players : frame.alive), totP) +
         counter(ICON_SQUAD, frame.alive, totS) + '</span>';
 
@@ -1103,9 +1250,49 @@
     return out;
   }
 
-  // Drawing more often than this buys nothing anybody can see and costs a full
-  // rebuild of the layer each time.
+  // The shortest frame worth interpolating at all. Below this a recorded frame
+  // is already about as long as a refresh and there is nothing to draw in
+  // between it and the next one.
+  //
+  // This used to be a floor on how often the map was allowed to redraw, on the
+  // grounds that drawing more often bought nothing and cost a rebuild of the
+  // layer. Both halves were wrong. It cost 0.4ms in the endgame and 1.1ms with
+  // the lobby still full — measured in tools/check-draw-cost.js, at most 7% of a
+  // refresh — and what it bought was the frame rate: with a 28ms floor and a
+  // timer firing every 14, the markers got a new position 33 times a second
+  // while the camera moved the map under them 61 times a second. The map slid
+  // and the arrows stepped, which is what "лагает, фпс мало" was.
   var MIN_DRAW_MS = 28;
+
+  // Next step of the replay, on the display's own schedule.
+  //
+  // requestAnimationFrame is what puts a picture on a refresh rather than
+  // somewhere between two of them, and it is the whole point of this: a timer
+  // at any interval that is not the refresh interval lands early on some
+  // refreshes and late on others, which reads as a torn picture however many
+  // frames a second it is nominally managing.
+  //
+  // But rAF stops dead in a hidden tab, and a tournament awaits this promise
+  // before it plays the next game — a run left in the background would never
+  // come back. So both are armed and the first to arrive wins: the refresh
+  // while anybody is looking, the timer as the way home when nobody is.
+  //
+  // The timer is set at the old drawing interval rather than at something
+  // longer. A refresh arrives in 17ms and beats it every time on a screen
+  // anybody is looking at, so it costs nothing there — and where rAF never
+  // arrives at all, which is a hidden tab and some headless browsers, what is
+  // left is exactly the cadence this had before, instead of a crawl.
+  function nextStep(fn){
+    var done = false;
+    function go(){
+      if(done) return;
+      done = true;
+      clearTimeout(timer);
+      fn();
+    }
+    var timer = setTimeout(go, MIN_DRAW_MS);
+    if(typeof requestAnimationFrame === 'function') requestAnimationFrame(go);
+  }
 
   // --- how fast to play each frame
   //
@@ -1143,18 +1330,28 @@
   // drift and lands somewhere else entirely, so everybody has to cross the
   // lobby. That is where a replay stops being fifty squads sitting on their
   // ground and starts being the game, and it is worth a little more time.
-  var PACE_LATE = 1.2;
+  //
+  // 1.2 was the first setting and it is not "a little more time" at all — it is
+  // still faster than the pace a fight gets, so the part of the match where
+  // everybody is crossing open ground went by quicker than the part where two
+  // squads are standing still shooting at each other. Under a second and a half
+  // of it, for a third of the recorded game. 0.9 puts the rotation just under
+  // fight pace, which is the order these two want to be in.
+  var PACE_LATE = 0.9;
   var LATE_ZONE = 5;
   // And a gear below the fight, for the last circles. By zone 10 there are a
   // dozen squads in a circle the size of a coin and the point of the replay is
   // not what happened but whether yours is still in it — which is watched
-  // rather than read. At 1 it goes by before the question lands. Half speed
-  // puts about two seconds on the last three zones, which is the part worth
-  // having.
+  // rather than read. At 1 it goes by before the question lands.
+  //
+  // Half speed was the first answer to that and it is still quick: the last
+  // three zones are eleven or twelve recorded frames, so half speed spends two
+  // seconds on the whole of the endgame. 0.35 spends three, which is a quarter
+  // of a second on each frame of the part everybody is actually watching.
   //
   // Applied last and as a floor rather than as an assignment, so a fight of
   // yours in zone 11 cannot speed the replay back up to fight pace.
-  var PACE_CLOSE = 0.5;
+  var PACE_CLOSE = 0.35;
   var CLOSE_ZONE = 10;
 
   // --- and where to point the camera
@@ -1223,15 +1420,23 @@
     for(i=0;i<roster.length;i++) if(roster[i] && roster[i].you){ me = i; break; }
     var mine = me >= 0 ? plain(roster[me].name) : null;
 
+    // Slowing down is a floor, not a setting. Written as an assignment it also
+    // speeds things up: a fight in a zone that was already running slower than
+    // fight pace would be handed PACE_SLOW and play quicker than the run-up to
+    // it. That is the same mistake PACE_CLOSE below already guards against, one
+    // gear up, and it only stopped being invisible when the late game dropped
+    // under 1.
+    function slowTo(i, pace){ out[i].pace = Math.min(out[i].pace, pace); }
+
     function markAround(at){
-      for(j = Math.max(0, at - LEAD); j <= Math.min(n - 1, at + TRAIL); j++) out[j].pace = PACE_SLOW;
+      for(j = Math.max(0, at - LEAD); j <= Math.min(n - 1, at + TRAIL); j++) slowTo(j, PACE_SLOW);
       for(j = Math.max(0, at - LEAD_CAM); j <= Math.min(n - 1, at + TRAIL_CAM); j++) out[j].fight = true;
     }
 
     for(i=0;i<n;i++){
       var f = timeline[i];
-      if(f.zone >= LATE_ZONE) out[i].pace = PACE_LATE;
-      if(f.alive <= LABEL_BELOW) out[i].pace = PACE_SLOW;
+      if(f.zone >= LATE_ZONE) slowTo(i, PACE_LATE);
+      if(f.alive <= LABEL_BELOW) slowTo(i, PACE_SLOW);
       var ev = f.events;
       if(!ev || !ev.length) continue;
       for(var e=0;e<ev.length;e++){
@@ -1416,11 +1621,30 @@
     // the game about to play.
     if(handle.side){ handle.side.innerHTML = ''; handle.side.style.display = 'none'; }
 
+    // Whether the page is allowed to animate anything of its own.
+    //
+    // This used to decide whether the frames were interpolated at all, and that
+    // was the wrong thing to hang on it. Nothing about a squad crossing the map
+    // is the page's invention — it is the recording, and it happens either way.
+    // What the preference bought was the same motion delivered in lumps: one
+    // picture per recorded frame, which in the last circles is one every 180ms.
+    // Five and a half a second, against the fifty-odd the mid-game gets. That
+    // is not less motion, it is the same motion in a slideshow, and it is what
+    // a reader on this setting has been looking at.
+    //
+    // So the frames are interpolated for everybody, and the preference turns
+    // off what it was always about: the eases. The camera arrives rather than
+    // glides, and the cluster fan is written straight in.
+    var calm = typeof matchMedia === 'function' &&
+               matchMedia('(prefers-reduced-motion: reduce)').matches;
     var smooth = opts.smooth !== false &&
                  timeline.length > 1 &&
-                 frameMs >= MIN_DRAW_MS * 1.5 &&
-                 !(typeof matchMedia === 'function' &&
-                   matchMedia('(prefers-reduced-motion: reduce)').matches);
+                 frameMs >= MIN_DRAW_MS * 1.5;
+
+    // A fan carried over from the previous game would open this one's first
+    // frame from wherever the last one's squads happened to be standing.
+    handle.fan = {}; handle.fanAt = null;
+    handle.fanEase = smooth && !calm ? FAN_EASE_MS : 0;
 
     return new Promise(function(resolve){
       function show(frame){
@@ -1452,16 +1676,16 @@
         return;
       }
 
-      // Driven by a timer against a clock rather than by animation frames.
-      // Animation frames stop dead in a hidden tab, and this promise is what a
-      // tournament waits on before it plays the next game — a run left in a
-      // background tab would never come back. A timer is throttled there
-      // instead of frozen, so the replay finishes slowly and the run goes on,
-      // which is the behaviour the page has always had.
+      // One picture per display refresh, and the camera and the markers both
+      // move on it. They used to run on two schedules — the camera on every
+      // timer tick, the markers only once 28ms had gone by — and two schedules
+      // on one screen is the thing that reads as lag: the island slides, the
+      // arrows on it step.
+      //
       // The clock accumulates rather than being read off the start time, because
       // the speed changes as it goes: elapsed-since-started only tells you where
       // you would be if it never had.
-      var last = null, at = 0, speed = null, shown = -1, lastDraw = -1e9;
+      var last = null, at = 0, speed = null, shown = -1;
       var clock = (typeof performance !== 'undefined' && performance.now)
         ? function(){ return performance.now(); } : function(){ return Date.now(); };
 
@@ -1478,16 +1702,16 @@
         // replay slowing down and not as a dropped frame.
         speed = speed === null ? beat0.pace
                                : speed + (beat0.pace - speed) * Math.min(1, dt / 220);
-        camera.to(viewAt(whole, at - whole), dt / CAM_EASE_MS);
+        // The target is interpolated either way, so arriving on it outright is
+        // a camera that follows exactly rather than one that cuts.
+        camera.to(viewAt(whole, at - whole), calm ? 1 : dt / CAM_EASE_MS);
         at += dt / frameMs * speed;
         var i = Math.floor(at);
         if(i >= timeline.length - 1){ finish(); return; }
         var fresh = i !== shown;
-        if(fresh || now - lastDraw >= MIN_DRAW_MS){
-          shown = i; lastDraw = now;
-          show(between(timeline[i], timeline[i+1], at - i, fresh));
-        }
-        setTimeout(step, MIN_DRAW_MS / 2);
+        shown = i;
+        show(between(timeline[i], timeline[i+1], at - i, fresh));
+        nextStep(step);
       })();
     });
   }
@@ -1525,5 +1749,9 @@
 
   root.ZoneReplay = {mount:mount, play:play, unmount:unmount,
                      between:between, show:show, clearFeed:clearFeed, note:note,
-                     directTrack:directTrack};
+                     directTrack:directTrack,
+                     // Pure, and the one part of the naming a browser is not
+                     // needed to check: how a squad's handles become the lines
+                     // of a plate. Exported for tools/zone-sim-test.js.
+                     nameLines:nameLines};
 })(typeof globalThis !== 'undefined' ? globalThis : this);

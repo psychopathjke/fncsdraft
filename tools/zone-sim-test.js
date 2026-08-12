@@ -1227,13 +1227,16 @@ test('the replay slows down for every fight your squad is in, and before it', ()
   }
 });
 
-test('the replay runs fast where nothing is happening and slow at the end', () => {
-  let fast = 0, frames = 0;
+test('the replay skips the quiet part and spends the time on the rest', () => {
+  // Stated as time rather than as a share of frames. A share only says how many
+  // frames ran quick, which stops meaning anything once more than one gear is
+  // below the base speed — the question was always where the seconds go.
+  let early = 0, earlyFlat = 0, rest = 0, restFlat = 0;
   for(const seed of [4, 17, 33]){
     const {timeline, track} = pacedGame(seed, 3);
     timeline.forEach((f, i) => {
-      frames++;
-      if(track[i] > 1) fast++;
+      if(f.zone < 5 && f.alive > 12){ early += 1 / track[i]; earlyFlat++; }
+      else { rest += 1 / track[i]; restFlat++; }
       if(f.alive <= 12) assert(track[i] <= 1, 'seed ' + seed + ': the endgame played fast');
       // And the last circles are slower than a fight, because that is where a
       // viewer is watching to find out whether their own squad comes through.
@@ -1241,10 +1244,10 @@ test('the replay runs fast where nothing is happening and slow at the end', () =
         'seed ' + seed + ': zone ' + f.zone + ' played at ' + track[i] + ', no slower than a fight');
     });
   }
-  const share = fast / frames;
-  assert(share > 0.7 && share < 0.95,
-    (100*share).toFixed(0) + '% of the match plays fast; the feature is worth nothing below ' +
-    'about 70% and is not a replay of your game above about 95%');
+  assert(early < earlyFlat * 0.8, 'the full lobby took ' + (early/earlyFlat).toFixed(2) +
+    ' of its flat length; the quiet stretch is not being skipped through');
+  assert(rest > restFlat * 1.1, 'everything from zone 5 took ' + (rest/restFlat).toFixed(2) +
+    ' of its flat length; the part worth watching is not being lingered on');
 });
 
 test('a match with nobody in it, and one asked to play flat, both still play', () => {
@@ -1252,10 +1255,17 @@ test('a match with nobody in it, and one asked to play flat, both still play', (
   const {timeline} = runGame(9, teams, true);
   const watched = ZoneReplay.directTrack(timeline, teams.map(t => ({name: t.name})));
   assert(watched.length === timeline.length, 'the track is not one beat per frame');
-  // Nothing plays below the base speed except the last circles, which do so on
-  // purpose and for every viewer, whether or not they had a squad in the game.
-  watched.forEach((b, i) => assert(b.pace >= (timeline[i].zone >= 10 ? 0.5 : 1),
-    'a frame was given a speed below the base one'));
+  // Nothing plays below the speed its own stretch of the match is entitled to,
+  // and every one of those is a deliberate gear rather than a squad of yours
+  // being somewhere: they apply to every viewer, whether or not they had one in
+  // the game. Zones 1 to 4 at the base speed, zone 5 on slower, the last
+  // circles slower again — and nothing below the slowest gear there is.
+  watched.forEach((b, i) => {
+    const z = timeline[i].zone;
+    const floor = z >= 10 ? 0.35 : z >= 5 ? 0.9 : 1;
+    assert(b.pace >= floor, 'zone ' + z + ' was given ' + b.pace +
+      ', below the ' + floor + ' its stretch of the match is entitled to');
+  });
 });
 
 // --- the camera
@@ -1301,18 +1311,26 @@ test('from zone 5 the camera holds the circle and the one it is closing to', () 
   assert(checked > 30, 'only ' + checked + ' late-rotation frames to measure');
 });
 
-test('from zone 5 the replay runs slower than the mid-game and faster than a fight', () => {
+test('from zone 5 the replay drops under fight pace and never climbs back', () => {
   for(const seed of [4, 17, 33]){
     const {timeline, track} = pacedGame(seed, 3);
-    let early = 0, late = 0;
+    let early = 0, fastest = 0, slowest = Infinity;
     timeline.forEach((f, i) => {
       if(f.alive <= 12) return;
-      if(f.zone >= 2 && f.zone < 5 && track[i] > 1) early = Math.max(early, track[i]);
-      if(f.zone >= 5 && track[i] > 1) late = Math.max(late, track[i]);
+      if(f.zone >= 2 && f.zone < 5) early = Math.max(early, track[i]);
+      if(f.zone >= 5 && f.zone < 10){
+        fastest = Math.max(fastest, track[i]);
+        slowest = Math.min(slowest, track[i]);
+      }
     });
-    assert(early > late, 'seed ' + seed + ': zones 2 to 4 ran at ' + early +
-      ' and zone 5 onward at ' + late + '; the late game is meant to be the slower of the two');
-    assert(late > 1, 'seed ' + seed + ': zone 5 onward is at a full stop, not merely slower');
+    assert(early > fastest, 'seed ' + seed + ': zones 2 to 4 ran at ' + early +
+      ' and zones 5 to 9 at ' + fastest + '; the late game is meant to be the slower of the two');
+    // The point of the floor in directTrack: a fight of yours inside these
+    // zones must not hand them back the speed they were slowed down from.
+    assert(fastest <= 1, 'seed ' + seed + ': zones 5 to 9 reached ' + fastest +
+      ', which is quicker than a fight — something is setting the pace instead of flooring it');
+    assert(slowest > 0.5, 'seed ' + seed + ': zones 5 to 9 fell to ' + slowest +
+      ', which is down among the last circles\' own gear and too slow for a rotation');
   }
 });
 
@@ -1371,6 +1389,54 @@ test('the endgame is close enough to carry the names on the map', () => {
     });
   }
   assert(checked > 20, 'only ' + checked + ' endgame frames to measure');
+});
+
+// --- how a squad's handles become a name
+//
+// A trio used to be printed as its first player and a count of the other two.
+// These say it is printed as three players, on the map and in the list beside
+// it, and that no count comes back by any route.
+
+test('every player in a squad gets their handle, not a headcount', () => {
+  const { nameLines } = ZoneReplay;
+  const cases = [
+    ['duo',   'Tayson & Xsweeze',                    2],
+    ['trio',  'Tjino & PabloWingu & Fredoxie',       3],
+    ['squad', 'IDrop & Sky & Scroll & Queasy',       4]
+  ];
+  for(const [what, name, want] of cases){
+    for(const full of [false, true]){
+      const lines = nameLines(name, false, full);
+      assert(lines.length === want, what + (full ? ' in the list' : ' on the map') +
+        ': ' + lines.length + ' lines from ' + want + ' players — ' + JSON.stringify(lines));
+      lines.forEach(l => assert(!/^\+\d+$/.test(l),
+        what + ': "' + l + '" is a headcount standing in for a player'));
+    }
+    // Every handle is present, in roster order, and the map's copy differs from
+    // the list's only by the clip.
+    const whole = name.split(' & ');
+    nameLines(name, false, true).forEach((l, i) => assert(l === whole[i],
+      what + ': the list changed "' + whole[i] + '" into "' + l + '"'));
+  }
+});
+
+test('the map clips a long handle and the list beside it does not', () => {
+  const { nameLines } = ZoneReplay;
+  const long = 'jewish tung tung & bloodhound moody & thundercal cloud';
+  const onMap = nameLines(long, false, false);
+  const inList = nameLines(long, false, true);
+  assert(onMap.length === 3 && inList.length === 3, 'a player went missing from a long trio');
+  onMap.forEach(l => assert(l.length <= 11,
+    'the map printed "' + l + '", ' + l.length + ' characters — the plate is as wide as its longest line'));
+  assert(onMap.some(l => /…$/.test(l)), 'nothing was clipped, so the clip is not running');
+  assert(inList.join(' & ') === long, 'the list clipped a handle it has the room for');
+});
+
+test('your squad loses the app\'s prefix on the map and keeps every player', () => {
+  const { nameLines } = ZoneReplay;
+  const lines = nameLines('Твоя команда: Tjino & PabloWingu & Fredoxie', true, true);
+  assert(lines.length === 3, 'the prefix ate a player: ' + JSON.stringify(lines));
+  assert(lines[0] === 'Tjino', 'the prefix is still on the plate: ' + lines[0]);
 });
 
 console.log('\n' + passed + ' passed, ' + failed + ' failed\n');

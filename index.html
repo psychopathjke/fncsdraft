@@ -750,6 +750,14 @@
     color:#0d1016;border:1px solid rgba(13,16,22,.25);border-radius:2px;padding:2px 8px;}
   .vr-stage{background:var(--accent);color:var(--accent-ink);border-color:transparent;}
   .vr-team{font-size:clamp(13px,2.4vw,19px);font-weight:900;text-transform:uppercase;letter-spacing:.01em;}
+  /* Your own finish, under the winner's strip and quieter than it: the game had
+     one winner and it is the headline, but the line a player is looking for is
+     this one. Same slab treatment so the two read as one card, a step down in
+     size so the order of the two is never in question. */
+  .vr-mine{margin-top:6px;padding:5px 12px;transition-delay:.2s;}
+  .vr-you{font-size:clamp(11px,1.9vw,14px);font-weight:900;text-transform:uppercase;
+    letter-spacing:.03em;color:#0d1016;}
+  .vr-you b{color:var(--accent);font-size:1.18em;}
   .vr-team img{height:.85em;vertical-align:-1px;margin-left:5px;border-radius:2px;}
   @media(prefers-reduced-motion:reduce){
     .vr-card,.vr-slab,.vr-strip{transition:none;}
@@ -28746,10 +28754,25 @@ function removeSkipButton(){
 //
 // Timed with sleep(), which means a skipped stage passes through it without
 // stopping, and an abandoned run unwinds through it like everything else.
-async function showVictoryRoyale(host, stageName, gameNum, gamesTotal, winner){
+// The card the broadcast puts up when a game ends: who won, and where you
+// finished.
+//
+// Naming the winner was the whole of it, and it answered somebody else's
+// question. The replay's own header carries your placement while the game is
+// running, but it is a chip in a corner and it goes when the map does — at the
+// moment the game actually ends, the one number a player wants is their own,
+// and it was nowhere on the screen. So the strip carries both: the squad that
+// won on one side, yours on the other.
+//
+// Not when you are the winner, because then they are the same squad and the
+// slab above already says #1 in letters an inch high.
+async function showVictoryRoyale(host, stageName, gameNum, gamesTotal, winner, myPlace, fieldSize){
   if(!host || !winner) return;
   const card=document.createElement('div');
   card.className='vr-card';
+  const mine = (myPlace > 1)
+    ? `<span class="vr-you">${L().yourSquadTitle} <b>#${myPlace}</b> ${L().place2plus}${fieldSize}${L().teamsWord}</span>`
+    : '';
   card.innerHTML=`<div class="vr-slab">
       <div class="vr-title"><span class="vr-hash">#1</span> ${L().victoryRoyaleWord}</div>
     </div>
@@ -28757,7 +28780,8 @@ async function showVictoryRoyale(host, stageName, gameNum, gamesTotal, winner){
       <span class="vr-stage">${stageName}</span>
       <span class="vr-game">${L().gameOfWord(gameNum, gamesTotal)}</span>
       <span class="vr-team">${winner.name}</span>
-    </div>`;
+    </div>
+    ${mine ? `<div class="vr-strip vr-mine">${mine}</div>` : ''}`;
   host.appendChild(card);
   // Reading a layout property commits the starting state, so the class that
   // follows animates from it instead of being folded into the same frame.
@@ -29196,7 +29220,11 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       // two arrows was still standing, so the winner is named before the table
       // moves on. sleep() carries it, so a skipped stage passes straight
       // through without stopping.
-      await showVictoryRoyale(replay.wrap, liveLabel, g+1, numGames, order[0]);
+      // Your own finish, read off the same order the table is about to be
+      // scored from, so the card and the standings can never disagree.
+      const mineIdx = order.findIndex(t => t.isYou);
+      await showVictoryRoyale(replay.wrap, liveLabel, g+1, numGames, order[0],
+                              mineIdx < 0 ? 0 : mineIdx + 1, order.length);
     }
     order.forEach((t,i)=>{
       const place=i+1;
@@ -33445,7 +33473,7 @@ function playerStatSheetHTML(team, idx, p){
 }
 
 function renderStats(){
-  const body=document.getElementById('statBody');
+  const body=document.getElementById('statBody');
   if(!body) return;   // the source table was removed; the cards carry it all
   body.innerHTML='';
   drafted.forEach(p=>{
