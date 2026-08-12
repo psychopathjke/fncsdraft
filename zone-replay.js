@@ -296,23 +296,10 @@
   // there is room for them.
   var LABEL_BELOW = 12;
 
-  // The largest cluster the map will label in place, and the largest field the
-  // list beside it will carry. Above the first, those names move off the map;
-  // above the second, the list is longer than the box is tall and there is
-  // nowhere left to put them.
-  var CLUSTER_MAX = 6, SIDE_MAX = 28;
+  // How long a list beside the map is allowed to get before there is nowhere
+  // left to put the names at all.
+  var SIDE_MAX = 28;
 
-  // And how many squads the map will name at all. Thirty-six duo names do not
-  // fit over a 400-pixel island at any size that can still be read — reported
-  // as unreadable, with a screenshot of the map disappearing under its own
-  // labels. The ones that go on it are the ones nearest yours, because what a
-  // map is being read for is who is around you; the rest are named in the list
-  // beside it, which is a column and does not fight the map for room.
-  var NAME_MAX = 6;
-
-  // And how far in the camera has to be before those names can live on the map
-  // rather than beside it. Twelve squads spread across an island still smudge;
-  // twelve in a circle that fills the box do not.
   var NAME_ZOOM = 2.2;
 
   // The squad marker: the arrowhead the real map uses, pointing the way the
@@ -322,24 +309,53 @@
   //
   // Drawn nose-right in local units and rotated into place, with a concave back
   // so it reads as a chevron rather than a wedge at the size these end up.
-  var MARKER = 'M 1.9 0 L -1.2 -1.25 L -0.55 0 L -1.2 1.25 Z';
+  //
+  // Longer in the nose and deeper in the notch than the first one, because with
+  // the names off the map the arrow is the only thing carrying a squad: which
+  // way it points has to be readable at a glance rather than worked out. The
+  // corners are rounded off by the join rather than by the path, so the shape
+  // stays one straight-edged silhouette and does not go soft at small sizes.
+  var MARKER = 'M 2.35 0 L -1.5 -1.55 L -0.75 0 L -1.5 1.55 Z';
 
   // Drawn against the camera, not with it. Zooming in is for telling two squads
   // apart when they are standing on the same roof — magnifying the arrows along
   // with the ground would put them back on top of each other, three times the
   // size. So the marker keeps its size on screen and the ground grows past it.
+  // Two paths, not one. The under-copy is the same shape drawn as a fat stroke
+  // in near-black, which puts a hard dark edge around the arrow whatever it is
+  // standing on — pale sand, dark water, or the purple wash of the storm. A
+  // single stroked path could not do it: a stroke straddles the outline, so
+  // half of it eats into the colour, and thickening it until the edge read
+  // turned a small arrow into a blob. Widths are in screen pixels, which is
+  // what non-scaling-stroke means, so the outline stays one crisp pixel-and-a-
+  // half at every zoom the camera reaches.
   function marker(x, y, angle, fill, isYou, scale){
+    var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    var where = 'translate(' + x.toFixed(3) + ' ' + y.toFixed(3) + ') ' +
+                'rotate(' + angle.toFixed(1) + ') ' +
+                'scale(' + ((isYou ? 1.3 : 0.95) / (scale || 1)).toFixed(4) + ')';
+    g.setAttribute('transform', where);
+
+    var under = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    under.setAttribute('d', MARKER);
+    under.setAttribute('fill', 'rgba(6,8,16,.92)');
+    under.setAttribute('stroke', 'rgba(6,8,16,.92)');
+    under.setAttribute('stroke-width', isYou ? 3 : 2.1);
+    under.setAttribute('stroke-linejoin', 'round');
+    under.setAttribute('vector-effect', 'non-scaling-stroke');
+    g.appendChild(under);
+
     var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     p.setAttribute('d', MARKER);
     p.setAttribute('fill', fill);
-    p.setAttribute('stroke', isYou ? '#ffffff' : 'rgba(8,10,18,.9)');
-    p.setAttribute('stroke-width', isYou ? 0.5 : 0.42);
+    // Yours carries a white rim on top of the dark one, the way it carries a
+    // white ring everywhere else it appears.
+    p.setAttribute('stroke', isYou ? '#ffffff' : fill);
+    p.setAttribute('stroke-width', isYou ? 1.5 : 0.5);
     p.setAttribute('stroke-linejoin', 'round');
-    p.setAttribute('transform',
-      'translate(' + x.toFixed(3) + ' ' + y.toFixed(3) + ') ' +
-      'rotate(' + angle.toFixed(1) + ') ' +
-      'scale(' + ((isYou ? 1.35 : 1) / (scale || 1)).toFixed(4) + ')');
-    return p;
+    p.setAttribute('vector-effect', 'non-scaling-stroke');
+    g.appendChild(p);
+    return g;
   }
 
   // --- kill feed, built the way the game's own feed is: a pill for each side
@@ -652,31 +668,6 @@
     return out;
   }
 
-  // The squads whose names the map will carry: yours and the ones nearest it,
-  // up to a limit. Returns a lookup by index rather than a list, because the
-  // drawing loop asks about one squad at a time.
-  //
-  // Nearest, rather than the strongest or the ones in the circle, because the
-  // map is read for who is around you. With nobody flagged as yours, the middle
-  // of the safe circle stands in for it — that is where the game is.
-  function nearestToYou(frame, roster, limit){
-    var mark = {}, i, me = -1;
-    roster = roster || [];
-    for(i=0;i<roster.length;i++) if(roster[i] && roster[i].you){ me = i; break; }
-    var from = (me >= 0 && frame.dots[me]) ? frame.dots[me]
-             : (frame.circle ? {x: frame.circle.cx, y: frame.circle.cy} : null);
-    if(!from) return mark;
-    var order = [];
-    for(i=0;i<frame.dots.length;i++){
-      if(!frame.dots[i].alive) continue;
-      var dx = frame.dots[i].x - from.x, dy = frame.dots[i].y - from.y;
-      order.push({i: i, d: (i === me ? -1 : dx*dx + dy*dy)});
-    }
-    order.sort(function(a, b){ return a.d - b.d; });
-    for(i=0;i<order.length && i<limit;i++) mark[order[i].i] = true;
-    return mark;
-  }
-
   function draw(handle, frame, labels, roster){
     roster = roster || [];
     handle.svg.innerHTML = '';
@@ -705,78 +696,41 @@
         'rgba(255,255,255,.96)', 1.6));
     }
 
-    // Names on the map were ruled out for a reason that the camera has since
-    // taken away: nine of them printed over a zone-9 circle land on top of each
-    // other and read as a smudge. That is true of a circle drawn a centimetre
-    // across, and false of the same circle filling the box. So the names go
-    // where the map is close enough to hold them, and the list beside the map
-    // covers the rest — the two never show at once, because that is the same
-    // information printed twice.
+    // Only yours is named on the map.
+    //
+    // Every other arrangement was tried and reported unreadable, and the last
+    // one is why: names for the six squads nearest you, in the game's own
+    // nameplate, over a four-hundred-pixel island. Six plates is six plates,
+    // however well each one is drawn, and the map they sit on is the thing
+    // being watched. So the map carries one name — yours — and everybody else
+    // is an arrow, which is what an arrow is for: it says where a squad is and
+    // which way it is going, in less room than a name takes to say who it is.
+    //
+    // Who the arrows are is answered beside the map, in the list, once the
+    // field is small enough for the answer to matter.
     var scale = handle.scale || 1;
-    // From zone 5 by the zone itself, and before it by how close the camera
-    // is — a fight in a full lobby is shown as close as the endgame, and there
-    // the question is the same one, so it gets the same answer.
-    //
-    // The zone is named outright rather than left to the camera because the two
-    // agree by a hair and that is not a thing to rest on: the camera's own
-    // measurement puts the tightest zone-5 shot at 2.23x against a threshold of
-    // 2.2, so a map of another shape would blink the names off at exactly the
-    // circle they were asked for.
-    var wanted = frame.zone >= LATE_ZONE || scale >= NAME_ZOOM;
     var groups = cluster(frame.dots, scale);
-    var near = nearestToYou(frame, roster, NAME_MAX);
 
-    // A column beside a cluster works for a handful and not for a crowd: the
-    // last circles can pile twenty squads onto one piece of ground, and twenty
-    // pills stacked is a wall with a map behind it.
-    //
-    // Decided per cluster rather than for the frame. Deciding it once for the
-    // whole map meant a single pile-up in the corner took the names off every
-    // squad on the island — which is most of them, standing on their own, with
-    // all the room in the world for a label. What will not fit goes to the list
-    // beside the map instead, and the list carries only those, so nothing is
-    // named twice and nobody goes unnamed.
-    var spare = [];
     for(var g=0;g<groups.length;g++){
       var grp = groups[g];
-      var fits = wanted && grp.length <= CLUSTER_MAX;
-      var stack = (fits && grp.length > 1) ? [] : null;
       for(var m=0;m<grp.length;m++){
         var i = grp[m], d = frame.dots[i], who = roster[i] || {};
         var off = offsetIn(grp, m, scale);
         var colour = who.you ? 'var(--accent)' : colourFor(i);
         handle.svg.appendChild(marker(d.x + off.dx, d.y + off.dy, d.a || 0, colour, who.you, scale));
-        var lines = nameLines(who.name, who.you);
-        if(!lines.length || !lines[0]) continue;
-        // Yours is named whatever the rest of the map is doing — following your
-        // own squad is the reason to watch this, and one more label in a pile
-        // is the one label in it worth having.
-        if(!fits || !near[i]){
-          if(who.you) handle.svg.appendChild(label(d.x, d.y, lines, colour, true, scale, d.h));
-          else spare.push(i);
-          continue;
-        }
-        if(stack) stack.push({lines: lines, colour: colour, you: !!who.you, hp: d.h});
-        else handle.svg.appendChild(label(d.x, d.y, lines, colour, who.you, scale, d.h));
-      }
-      // A cluster's names go in a column beside it rather than above each
-      // arrow. Fanning the markers apart leaves them a marker's width from each
-      // other, and a name is several times wider than that — printed in place
-      // they would be exactly the smudge the fan just undid.
-      if(stack && stack.length){
-        var head = frame.dots[grp[0]];
-        for(var s=0;s<stack.length;s++)
-          handle.svg.appendChild(stackedLabel(head.x, head.y, s, stack.length,
-            stack[s].lines, stack[s].colour, stack[s].you, scale, stack[s].hp));
+        if(!who.you) continue;
+        var lines = nameLines(who.name, true);
+        if(lines.length && lines[0])
+          handle.svg.appendChild(label(d.x, d.y, lines, colour, true, scale, d.h));
       }
     }
 
-    // The list beside the map carries whoever the map could not: the pile-ups
-    // while the names are wanted, and the whole field while they are not and it
-    // is small enough to list.
+    // The list beside the map is where the arrows get their names back, once
+    // the field is short enough to list. A swatch per line ties each name to
+    // the arrow wearing that colour.
     if(handle.side){
-      var listed = wanted ? spare : (frame.alive <= LABEL_BELOW ? aliveIndices(frame) : []);
-      if(!listed.length || listed.length > SIDE_MAX){
+      var listed = frame.alive <= SIDE_MAX ? aliveIndices(frame) : [];
+      if(!listed.length){
         handle.side.style.display = 'none'; handle.side.innerHTML = '';
       } else {
         var rows = [];

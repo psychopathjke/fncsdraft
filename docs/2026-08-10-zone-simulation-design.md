@@ -562,6 +562,22 @@ same circle filling the box, so they go up whenever the camera is past 2.2× —
 which is zone 5 onward, a fight in a full lobby, and the endgame. The list
 beside the map covers everything wider, and the two never show at once.
 
+**Only yours is on the map.** Every other arrangement was tried and reported
+unreadable, and the last one is why: plates for the six squads nearest you, over
+a four-hundred-pixel island. Six plates is six plates however well each one is
+drawn, and the map they sit on is the thing being watched. So the map carries one
+name and everybody else is an arrow — which is what an arrow is for: it says
+where a squad is and which way it is going in less room than a name takes to say
+who it is. The arrows get their names back in the list beside the map, once the
+field is short enough to list.
+
+The arrow itself is drawn twice: the same shape as a fat near-black stroke
+underneath, then the colour on top. One stroked path could not do it — a stroke
+straddles the outline, so half of it eats into the colour, and thickening it
+until the edge read turned a small arrow into a blob. Widths are screen pixels,
+so the outline is the same crisp pixel and a half at every zoom the camera
+reaches, against pale sand, dark water or the purple of the storm.
+
 **A duo is two handles.** The app names a team `A & B` — `teamLabel()` joins
 every member — and yours carries a "your squad" prefix in front of that. On one
 line that is a pill fifteen characters wide, half a circle across at the zoom the

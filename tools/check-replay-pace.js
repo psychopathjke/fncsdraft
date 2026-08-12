@@ -98,9 +98,11 @@ function scaleOf(handle){
         out.wide = Math.min(out.wide, s);
         out.fight = Math.max(out.fight, s);
       }
+      // Sampled on every frame, not only in the endgame: your squad can be out
+      // long before then, and its plate is what this is counting.
+      out.namesOnMap = Math.max(out.namesOnMap || 0, handle.svg.getElementsByTagName('text').length);
       if(f.alive <= 12){
         out.close = Math.max(out.close, s);
-        out.namesOnMap = Math.max(out.namesOnMap || 0, handle.svg.getElementsByTagName('text').length);
         // The map and the list beside it split the field between them: the list
         // carries whoever was in a pile the map could not label. Nobody should
         // appear in both, and that is the check — not that the list is hidden,
@@ -165,8 +167,12 @@ if(!(r.fight > 2.5)) fails.push('the camera only reached ' + r.fight.toFixed(2) 
   'x on a fight of yours in a full lobby, so it never came in for one');
 if(!(r.close > 2.5)) fails.push('the camera only reached ' + r.close.toFixed(2) +
   'x in the endgame, which is no closer than the names need');
-if(!(r.namesOnMap > 3)) fails.push('only ' + (r.namesOnMap || 0) +
-  ' names were drawn on the map in the endgame');
+// One plate on the map, and it is yours: two handles, so two text nodes at
+// most. More than that means somebody else's name got onto the map.
+if(!(r.namesOnMap >= 1)) fails.push('your own squad was never named on the map');
+if(r.namesOnMap > 2) fails.push(r.namesOnMap + ' names on the map; only yours belongs there');
+if(!(r.sideRows > 3)) fails.push('the list beside the map carried only ' + (r.sideRows || 0) +
+  ' names in the endgame, so the arrows never got their names back');
 if(r.namedTwice) fails.push(r.namedTwice + ' squads were named on the map and in the list beside it at once');
 
 console.log('\n  frames          ' + r.frames +
