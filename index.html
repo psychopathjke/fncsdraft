@@ -636,9 +636,8 @@
      scrolled and compared. The cards inside a tile share its width rather than
      carrying one of their own, so they shrink with the column count instead of
      needing a size of their own. */
-  .candidates.team-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  .candidates.team-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
     gap:10px;align-items:start;}
-  @media(max-width:1100px){.candidates.team-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
   @media(max-width:700px){.candidates.team-grid{grid-template-columns:minmax(0,1fr);}}
   .team-row{background:var(--panel2);border:1px solid var(--line);border-radius:10px;
     padding:9px;}
@@ -651,13 +650,15 @@
   .team-row-head b{color:var(--accent);font-size:15px;flex:none;}
   .team-row-who{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
   .team-row-stage{margin-left:auto;flex:none;font-size:10.5px;font-weight:700;color:var(--ink-dim);}
-  /* No width of their own: each card takes an equal share of the tile, so the
-     whole list gets smaller by adding a column rather than by hunting for a
-     pixel size that suits duos and trios both. min-width:0 is what lets a flex
-     child shrink below its content — without it the cards keep their intrinsic
-     width and push the tile wider than its grid column. */
+  /* Each card takes an equal share of the tile, up to a ceiling. Two teams to a
+     line means a tile is half the panel rather than a third of it, and without
+     the ceiling the cards would simply grow to fill it — the opposite of the
+     ask. Capped, a wider tile leaves a little air beside the pair instead of
+     inflating them. min-width:0 is what lets a flex child shrink below its
+     content; without it the cards keep their intrinsic width and push the tile
+     past its own grid column. */
   .team-row-cards{display:flex;gap:6px;margin-bottom:7px;}
-  .team-row-cards .fut-card{flex:1 1 0;min-width:0;}
+  .team-row-cards .fut-card{flex:1 1 0;min-width:0;max-width:150px;}
 
   .bracket{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:24px 0;}
   @media(max-width:820px){.bracket{grid-template-columns:1fr;}}
