@@ -1482,8 +1482,8 @@
           <div class="pack-head">
             <div class="pack-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.6-8 5.8V22h16v-2.2c0-3.2-3.6-5.8-8-5.8z"/></svg></div>
             <div>
-              <h2 data-i18n="packOpenTitle"></h2>
-              <p data-i18n="packOpenDesc"></p>
+              <h2 id="packHeadTitle" data-i18n="packOpenTitle"></h2>
+              <p id="packHeadDesc" data-i18n="packOpenDesc"></p>
             </div>
             <button class="restart-btn" id="rerollBtn" style="margin-left:auto;white-space:nowrap;" onclick="rerollAll()"><span data-i18n="rerollLabel"></span> (<span id="rerollCount">2</span>)</button>
           </div>
@@ -27477,10 +27477,6 @@ function startDraft(size, major){
   squadSize=size;
   drafted=[];
   draftedWeapons=[]; draftedHeals=[]; roundPlayerPicked=false; roundWeaponPicked=false; roundHealPicked=false;
-  // Cleared per run, not just per round: a realistic run never fills it, so a
-  // draft run's leftovers would still be sitting here and rerenderDraftPacks()
-  // would draw them.
-  currentCandidates=[]; currentWeaponOptions=[]; currentHealOptions=[];
   chosenLanding=null;
   __shareCtx=null;
   __runRecorded=false;
@@ -27510,10 +27506,16 @@ function startDraft(size, major){
   // rounds, and the reroll is a player-pack control with nothing to reroll here.
   const rb=document.getElementById('rerollBtn');
   if(rb) rb.style.display = REALISTIC ? 'none' : '';
-  const packHead=document.querySelector('#screen-draft .pack-head h2[data-i18n="packOpenTitle"]');
-  if(packHead){
+  // Found by id, never by the data-i18n value this then overwrites. Looking the
+  // heading up by `h2[data-i18n="packOpenTitle"]` works exactly once: the first
+  // realistic run renames the attribute, the selector stops matching, and every
+  // later run — draft runs included — silently keeps whichever caption it was
+  // last left with.
+  const packHead=document.getElementById('packHeadTitle');
+  const packDesc=document.getElementById('packHeadDesc');
+  if(packHead && packDesc){
     packHead.setAttribute('data-i18n', REALISTIC ? 'teamPickTitle' : 'packOpenTitle');
-    packHead.nextElementSibling.setAttribute('data-i18n', REALISTIC ? 'teamPickDesc' : 'packOpenDesc');
+    packDesc.setAttribute('data-i18n', REALISTIC ? 'teamPickDesc' : 'packOpenDesc');
     applyStaticI18n();
   }
   document.getElementById('goBtn').textContent = CARD_MODE
@@ -28160,7 +28162,6 @@ function rerollAll(){
 let teamPickList=[];
 
 function renderTeamPicker(){
-  const el=document.getElementById('candidates');
   const bar=document.getElementById('teamPickBar');
   const box=document.getElementById('teamPickSearch');
   const built=realTeamsFor(pool);
@@ -28171,7 +28172,7 @@ function renderTeamPicker(){
     L().teamPickCount(built.teams.length) +
     (built.dropped ? ' · ' + L().teamPickDropped(built.dropped) : '');
   box.oninput=()=>paintTeamPicker(box.value);
-  paintTeamPicker('');
+  paintTeamPicker(box.value);
 }
 
 function paintTeamPicker(query){

@@ -80,6 +80,20 @@ const BOOTSTRAP = `
     out.poolStillHasThem = target.handles.filter(function(h){
       return pool.some(function(p){ return p.handle === h; });
     }).length;
+    // The loot rounds, which are the reason draftedEnough() counts rounds
+    // instead of players. A realistic duo must get two of them: rivals roll a
+    // weapon and a consumable per player, so one round would hand the player
+    // half the lobby's loadout on every run, and nothing on screen would say so.
+    out.roundsAfterPick = round;
+    pickWeapon(currentWeaponOptions[0]);
+    pickHeal(currentHealOptions[0]);
+    out.roundAfterFirstLoot = round;
+    out.draftDoneAfterOne = draftIsComplete();
+    pickWeapon(currentWeaponOptions[0]);
+    pickHeal(currentHealOptions[0]);
+    out.weaponsTaken = draftedWeapons.length;
+    out.healsTaken = draftedHeals.length;
+    out.draftDoneAfterTwo = draftIsComplete();
   } catch (e) { out = {error: String(e && e.stack || e)}; }
   document.getElementById('__real').textContent =
     'BEGINREAL' + encodeURIComponent(JSON.stringify(out)) + 'ENDREAL';
@@ -140,6 +154,14 @@ if (out.draftedHandles.join('|') !== out.targetHandles.join('|'))
   fails.push('taking ' + out.targetHandles.join(' & ') + ' drafted ' + out.draftedHandles.join(' & '));
 if (out.poolStillHasThem)
   fails.push(out.poolStillHasThem + ' of the taken players are still in the pool for somebody else');
+if (out.draftDoneAfterOne)
+  fails.push('a realistic duo finished drafting after one loot round — it must get one per player, ' +
+    'or it goes into every tournament with half the lobby\'s loadout');
+if (out.weaponsTaken !== 2 || out.healsTaken !== 2)
+  fails.push('a realistic duo took ' + out.weaponsTaken + ' weapons and ' + out.healsTaken +
+    ' consumables, expected 2 and 2');
+if (!out.draftDoneAfterTwo)
+  fails.push('a realistic duo had not finished drafting after two full rounds');
 
 if (fails.length) { fails.forEach(f => console.error('  FAIL ' + f)); process.exit(1); }
 console.log('\n  every real roster, once each, best first\n');
