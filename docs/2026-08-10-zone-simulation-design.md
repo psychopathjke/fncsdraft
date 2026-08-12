@@ -588,48 +588,40 @@ does not when there is not, which is the only rule that holds at every zoom the
 camera reaches. The list beside the map carries whoever was left over, and the
 two never carry the same squad.
 
-**Yours at every zone; everybody else from zone 10.** Before `NAME_ZONE` the map
-carries one name and it is yours, because until the circle is small the question
-a viewer has is where they are and where it is closing to — and fifty answers to
-a question nobody asked is the wall this was reported as twice. From zone 10 the
-question changes to who is left in there with you, and that is worth the names.
-The replay slows down at the same zone for the same reason; see the pacing above.
+**One name on the map, and it is yours.** Three arrangements of many names were
+tried — coloured text, coloured pills, the game's own plate for the six nearest —
+and all three were reported unreadable. Naming every squad the map had room for
+was the fourth, and the counting is what settles it rather than the taste: the
+engine holds every surviving squad within a unit of one point, so the last
+circles are a knot of arrows a few dozen pixels across. At zone 12 with nine
+alive, four names fitted and five had nowhere to go. A map that names four of
+nine is not a named map, it is a map with four names dropped on it.
 
-**And from there, every squad the map has room for is named on it.** Naming only
-yours at every zone was the version before this one, and it is what "не видно
-ников из-за стрелочек" came with a screenshot of: an island of anonymous arrows.
-Naming a fixed six was the version before *that*, and it was a wall. Both failed
-the same way — they decided the layout before looking at it.
+So the map answers one question — where you are — and the list beside it answers
+the other, which is who else is left. The list is a column and does not fight the
+map for room.
 
-So nothing is decided in advance. A name is offered **eight places around its own
-arrow** and takes the first one that is free: free of the plates already down,
-free of everybody else's arrow, and inside what the camera is showing. Above
-first, because that is where the game puts a nameplate and where the eye looks
-for one, then the sides, then below, then the corners. A squad with nowhere to
-put its name keeps its arrow and is named in the list beside the map instead, so
-nobody goes unnamed and nothing is printed on top of anything else.
+What survives from the placement is the placement itself, and it still earns its
+keep for one plate. Yours is offered **eight places around its own arrow** and
+takes the first that is free: free of everybody else's arrow, free of the header
+band and the kill feed and the list's own column, and inside what the camera is
+showing. Above first, because that is where the game puts a nameplate and where
+the eye looks for one, then the sides, then below, then the corners. "Не видно
+ников из-за стрелочек" was an arrow drawn over the one name the map carried, and
+this is what stops it: plates are drawn after every arrow, and the slot search
+will not put one where an arrow already is.
 
-Order decides who gets the good ground: **yours, then outwards from yours.** What
-a map is read for is who is around you, so a name that has to be given up is the
-one furthest from the fight. Yours is drawn even when nothing is free — it takes
-the place above its arrow, pulled inside the frame, and the arrows underneath
-give way to it. Plates are drawn after every arrow, so what a plate can cover is
-an arrow and never another name.
+If nothing is free it goes above its arrow anyway, pulled inside the frame. In
+the last circles every place around your arrow has somebody else's arrow in it,
+and the one thing the map is there to answer cannot be given up for that. The
+slot it used is remembered and offered first next frame, so it does not flip from
+over the arrow to under it as a neighbour drifts past — a name blinking between
+two positions is harder to read than no name.
 
-The one number worth turning is **`INK`, the share of the visible box the plates
-may cover between them** — 0.18. At 0.35 the early game is the wall that was
-reported; at 0.08 the endgame loses names it has room for. It is a share of the
-box rather than a count of squads on purpose: the same rule then names twelve
-squads on a full island and five in a zone-12 circle, which no count could do.
-The header band and the kill feed are put down as occupied before any name is,
-and the list beside the map reserves its own column in a second pass — its height
-is not known until the first pass has said how many squads the map could not
-name.
-
-Each plate carries a thread back to its own arrow, drawn from the nearest point
-of the plate's edge. Where a plate sits straight above its squad the thread is a
-few pixels and invisible; in a circle with a dozen squads in it, it is the only
-thing that says whose name that is.
+The plate carries a thread back to its own arrow, drawn from the nearest point of
+its edge. Where it sits straight above the squad the thread is a few pixels and
+invisible; where the knot has pushed it out to one side, it is what says the name
+is still yours.
 
 Which squads are on screen at all is a question the SVG cannot answer on its own
 — the camera is a CSS transform on the stage, so the drawing inside it never
@@ -657,10 +649,10 @@ A handle longer than eleven characters is cut on the map and kept whole in the
 list — the field is made of `Aegis Kijarssf` and `asparoyel*ar0`, not of
 five-letter names, and a plate is as wide as its longest line.
 
-The list beside the map carries **only** the squads the map found no room for, so
-nothing is named twice and nobody goes unnamed. In a zone-12 circle the size of a
-coin that is most of them; on a full island at zone 2 it is nobody, and the list
-is not there at all.
+The list beside the map carries **everybody but you**, once the field is short
+enough to list — and you as well on the frames where the camera has left your
+squad off the edge, since a name nobody can see is not a name. Nothing is in both
+places at once, and nobody still standing goes unnamed.
 
 They are drawn as **the game's own nameplate**: a near-black plate, the handles
 on it in white, the squad's colour as a stripe down the left edge, and a health

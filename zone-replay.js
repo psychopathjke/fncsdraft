@@ -697,48 +697,28 @@
     return g;
   }
 
-  // --- where each name goes
+  // --- where the name goes
   //
-  // Every fixed arrangement of many names has been tried on this map and every
-  // one was reported unreadable, because they all decide the layout before
-  // looking at it: a plate hung above each arrow overlaps the moment two squads
-  // are a name apart, and a column beside a cluster is a wall of text the
-  // moment the cluster is ten squads deep. The fix for that was to stop drawing
-  // them, which left an island of anonymous arrows — and that was reported too.
+  // One name on the map, and it is yours. Every arrangement of many was tried
+  // and every one was reported unreadable, and the counting says why rather
+  // than the taste: the engine holds every surviving squad within a unit of one
+  // point, so the last circles are a knot of arrows a few dozen pixels across —
+  // at zone 12 with nine alive, four names fit and five had nowhere to go. A
+  // map that names four of nine is not a named map, it is a map with four names
+  // dropped on it. The field gets its names in the list beside the map, which
+  // is a column and does not fight the map for room.
   //
-  // So no arrangement is decided in advance. A name is offered eight places
-  // around its own arrow and takes the first one that is free — free of the
-  // other plates already down, free of everybody else's arrow, and inside what
-  // the camera is showing. A squad with nowhere to put its name keeps its arrow
-  // and is named in the list beside the map instead, so nobody goes unnamed and
-  // nothing is printed on top of anything else.
-  //
-  // Order matters, because the ones asked first get the good ground: yours, and
-  // then outwards from yours. What a map is read for is who is around you, and
-  // if a name has to be given up it should be the one furthest from the fight.
+  // What is left here is the placement, and it still earns its keep for one
+  // plate: yours is offered eight places around its own arrow and takes the
+  // first that is free — free of everybody else's arrow, free of the header and
+  // the feed and the list, and inside what the camera is showing. "Не видно
+  // ников из-за стрелочек" was an arrow drawn over the one name on the map, and
+  // this is what stops that happening. If nothing is free it goes above its
+  // arrow anyway, pulled inside the frame: it is drawn after every arrow, so
+  // what it can cover is an arrow and never a name.
   var GAP_PX = 6;        // between an arrow and its own plate, in screen pixels
   var ARROW_PX = 8;      // how much room an arrow keeps to itself, likewise
-  var PLATE_PX = 2;      // and between two plates, so they never touch
-
-  // The share of the visible box the plates may cover between them. This is the
-  // difference between a labelled map and a wall of labels, and it is the one
-  // number worth turning: at 0.35 the early game is the wall that was reported,
-  // at 0.08 the endgame loses names it has room for. It is a share of the box
-  // rather than a count of squads on purpose — the same rule then names four
-  // squads on a full island and eleven in a zone-8 circle, which is what a
-  // count could never do.
-  var INK = 0.18;
-
-  // The zone the rest of the field gets its names. Before it the map carries
-  // one name and it is yours, because until the circle is small the question a
-  // viewer has is "where am I and where is it closing to" and fifty answers to
-  // a question nobody asked is the wall this has been reported as twice. From
-  // zone 10 the question changes to who is left in there with you, and that is
-  // a question worth putting the names back for — the replay slows down at the
-  // same zone for the same reason.
-  //
-  // Yours is exempt at every zone. It is the one name that is never a crowd.
-  var NAME_ZONE = 10;
+  var PLATE_PX = 2;      // and between the plate and the chrome around the map
 
   // The eight places a plate is offered, in the order it is offered them:
   // above first, because that is where the game itself puts a nameplate and
@@ -785,41 +765,41 @@
            a.top  - pad < b.top  + b.h && b.top  - pad < a.top  + a.h;
   }
 
-  // Returns {plates: {index: {left, top, lines, hp}}, slots: {index: k}}. The
-  // slots come back so the next frame can offer each squad the place it had
-  // last time first: without that a plate flips from over its arrow to under it
-  // as a neighbour drifts past, and a map of names blinking between two
-  // positions is harder to read than no names at all.
+  // Returns {plates: {index: {left, top, lines, fs}}, slots: {index: k}} — the
+  // one plate, keyed by squad so the drawing loop and the list can ask about it
+  // the same way. The slot comes back so the next frame can offer the place it
+  // had last time first: without that the plate flips from over its arrow to
+  // under it as a neighbour drifts past, and a name blinking between two
+  // positions is harder to read than no name at all.
   function placeNames(frame, roster, at, scale, view, ux, uy, memory, reserved){
     var fs = NAME_SIZE / scale;
     var gx = GAP_PX * ux, gy = GAP_PX * uy;
     var ax = ARROW_PX * ux, ay = ARROW_PX * uy;
     var padX = PLATE_PX * ux;
-    var taken = reserved.slice(), plates = {}, slots = {}, i;
-    var budget = (view.x1 - view.x0) * (view.y1 - view.y0) * INK;
+    var plates = {}, slots = {}, i;
 
     var me = -1;
     for(i=0;i<roster.length;i++) if(roster[i] && roster[i].you){ me = i; break; }
-    // With nobody flagged as yours, the middle of the safe circle stands in for
-    // it: that is where the game is.
-    var from = (me >= 0 && at[me]) ? at[me]
-             : (frame.circle ? {x: frame.circle.cx, y: frame.circle.cy}
-                             : {x: 50, y: (view.y0 + view.y1) / 2});
-    var order = [];
-    for(i=0;i<frame.dots.length;i++){
-      if(!frame.dots[i].alive || !at[i]) continue;
-      var dx = at[i].x - from.x, dy = at[i].y - from.y;
-      order.push({i: i, d: (i === me ? -1 : dx*dx + dy*dy)});
-    }
-    order.sort(function(a, b){ return a.d - b.d; });
+    // A replay watched rather than played — a tournament card, somebody else's
+    // game — has no squad of yours in it and no name on the map at all. The
+    // list beside it carries the field, as it does here.
+    if(me < 0 || !at[me] || !frame.dots[me] || !frame.dots[me].alive)
+      return {plates: plates, slots: slots};
+    var p = at[me];
+    // Off the edge of what the camera is showing: there is no point naming a
+    // squad the viewer cannot see.
+    if(p.x < view.x0 || p.x > view.x1 || p.y < view.y0 || p.y > view.y1)
+      return {plates: plates, slots: slots};
+    var lines = nameLines((roster[me] || {}).name, true);
+    if(!lines.length || !lines[0]) return {plates: plates, slots: slots};
+    var box = plateSize(lines, fs);
 
-    function free(r, self){
+    function free(r){
       if(r.left < view.x0 || r.top < view.y0 ||
          r.left + r.w > view.x1 || r.top + r.h > view.y1) return false;
-      for(var t=0;t<taken.length;t++) if(overlaps(r, taken[t], padX)) return false;
-      for(var a=0;a<order.length;a++){
-        var j = order[a].i;
-        if(j === self) continue;
+      for(var t=0;t<reserved.length;t++) if(overlaps(r, reserved[t], padX)) return false;
+      for(var j=0;j<frame.dots.length;j++){
+        if(j === me || !frame.dots[j].alive || !at[j]) continue;
         var q = at[j];
         if(q.x < r.left - ax || q.x > r.left + r.w + ax) continue;
         if(q.y < r.top  - ay || q.y > r.top  + r.h + ay) continue;
@@ -828,61 +808,47 @@
       return true;
     }
 
-    var others = frame.zone >= NAME_ZONE;
-    for(var k=0;k<order.length;k++){
-      var idx = order[k].i, who = roster[idx] || {}, p = at[idx];
-      if(idx !== me && !others) continue;
-      // Off the edge of what the camera is showing: there is no point naming a
-      // squad the viewer cannot see.
-      if(p.x < view.x0 || p.x > view.x1 || p.y < view.y0 || p.y > view.y1) continue;
-      var lines = nameLines(who.name, who.you);
-      if(!lines.length || !lines[0]) continue;
-      var box = plateSize(lines, fs);
-      var ink = box.w * box.h;
-      // Yours is drawn whatever is left, because the one name the map has
-      // always carried is the one you are watching.
-      if(ink > budget && idx !== me) continue;
-      var tries = [], was = memory[idx];
-      if(was != null) tries.push(was);
-      for(var s=0;s<8;s++) if(s !== was) tries.push(s);
-      var spot = null;
-      for(var t=0;t<tries.length && !spot;t++){
-        var r = slotAt(tries[t], p.x, p.y, box.w, box.h, gx, gy);
-        r.w = box.w; r.h = box.h; r.k = tries[t];
-        if(free(r, idx)) spot = r;
-      }
-      // Yours is drawn even when there is nowhere for it. Everybody else gives
-      // their name up to the list rather than print it over a neighbour, but
-      // the squad the viewer is following is the one thing the map is answering
-      // — so it takes the place above its arrow, pulled inside the frame, and
-      // the arrows underneath give way to it. It is drawn after them, so what
-      // it covers is an arrow and never another name.
-      if(!spot && idx === me){
-        spot = slotAt(was == null ? 0 : was, p.x, p.y, box.w, box.h, gx, gy);
-        spot.w = box.w; spot.h = box.h; spot.k = was == null ? 0 : was;
-        spot.left = Math.min(Math.max(spot.left, view.x0), view.x1 - box.w);
-        spot.top  = Math.min(Math.max(spot.top,  view.y0), view.y1 - box.h);
-      }
-      if(!spot) continue;
-      taken.push(spot);
-      budget -= ink;
-      plates[idx] = {left: spot.left, top: spot.top, w: box.w, h: box.h,
-                     x: p.x, y: p.y, lines: lines, fs: fs};
-      slots[idx] = spot.k;
+    var tries = [], was = memory[me];
+    if(was != null) tries.push(was);
+    for(var s=0;s<8;s++) if(s !== was) tries.push(s);
+    var spot = null;
+    for(var t=0;t<tries.length && !spot;t++){
+      var r = slotAt(tries[t], p.x, p.y, box.w, box.h, gx, gy);
+      r.w = box.w; r.h = box.h; r.k = tries[t];
+      if(free(r)) spot = r;
     }
+    // Drawn even when there is nowhere for it. In the last circles every place
+    // around your arrow has somebody else's arrow in it, and the one thing the
+    // map is there to answer is where you are — so it takes the place above its
+    // arrow, pulled inside the frame, and the arrows underneath give way to it.
+    if(!spot){
+      spot = slotAt(was == null ? 0 : was, p.x, p.y, box.w, box.h, gx, gy);
+      spot.w = box.w; spot.h = box.h; spot.k = was == null ? 0 : was;
+      spot.left = Math.min(Math.max(spot.left, view.x0), view.x1 - box.w);
+      spot.top  = Math.min(Math.max(spot.top,  view.y0), view.y1 - box.h);
+    }
+    plates[me] = {left: spot.left, top: spot.top, w: box.w, h: box.h,
+                  x: p.x, y: p.y, lines: lines, fs: fs};
+    slots[me] = spot.k;
     return {plates: plates, slots: slots};
   }
 
-  function aliveIndices(frame){
-    var out = [];
-    for(var i=0;i<frame.dots.length;i++) if(frame.dots[i].alive) out.push(i);
-    return out;
+  function yourSquad(roster){
+    for(var i=0;i<roster.length;i++) if(roster[i] && roster[i].you) return i;
+    return -1;
   }
 
-  // The squads still standing that the map found no room to name.
-  function leftovers(frame, plates){
+  // The squads still standing that the map does not name. Asked twice: before
+  // the placement runs it is everybody but yours, which is what the list beside
+  // the map reserves its room from, and after it is whoever ended up with no
+  // plate — yours included on a frame where the camera has left it off the edge.
+  function leftovers(frame, plates, mine){
     var out = [];
-    for(var i=0;i<frame.dots.length;i++) if(frame.dots[i].alive && !plates[i]) out.push(i);
+    for(var i=0;i<frame.dots.length;i++){
+      if(!frame.dots[i].alive) continue;
+      if(plates ? plates[i] : i === mine) continue;
+      out.push(i);
+    }
     return out;
   }
 
@@ -954,41 +920,30 @@
       {left: view.x0, top: view.y1 - FEED_PX * uy, w: vw * 0.52, h: FEED_PX * uy}
     ];
 
-    // Twice, because the list beside the map is drawn where the plates want to
-    // be and its height is not known until the plates have been tried: the
-    // first pass says how many squads the map could not name, and the second
-    // keeps that many rows of the right-hand column clear for them.
-    var mem = handle.slots || {};
-    var put = placeNames(frame, roster, at, scale, view, ux, uy, mem, chrome);
-    var spare = leftovers(frame, put.plates);
-    if(spare.length && frame.alive <= SIDE_MAX){
-      var band = Math.min(vh - HEAD_PX * uy, spare.length * ROW_PX * uy);
-      put = placeNames(frame, roster, at, scale, view, ux, uy, mem,
-        chrome.concat([{left: view.x1 - vw * 0.46, top: view.y0 + HEAD_PX * uy,
-                        w: vw * 0.46, h: band}]));
-      spare = leftovers(frame, put.plates);
-    }
+    // The list beside the map is chrome too, and the only part of it whose size
+    // has to be worked out: as many rows as there are squads it will carry.
+    var mine = yourSquad(roster);
+    var willList = leftovers(frame, null, mine);
+    if(willList.length && frame.alive <= SIDE_MAX)
+      chrome.push({left: view.x1 - vw * 0.46, top: view.y0 + HEAD_PX * uy, w: vw * 0.46,
+                   h: Math.min(vh - HEAD_PX * uy, willList.length * ROW_PX * uy)});
+
+    var put = placeNames(frame, roster, at, scale, view, ux, uy, handle.slots || {}, chrome);
     handle.slots = put.slots;
 
-    // Threads first, then the plates, so a thread ends under the plate it
-    // belongs to and never crosses the name on it.
-    for(i=0;i<frame.dots.length;i++){
-      if(put.plates[i])
-        handle.svg.appendChild(leader(put.plates[i].x, put.plates[i].y, put.plates[i],
-          (roster[i] || {}).you ? '#ffffff' : colourFor(i)));
-    }
-
-    for(i=0;i<frame.dots.length;i++){
-      var pl = put.plates[i];
-      if(!pl) continue;
-      var node = plate(pl.left, pl.top, pl.lines,
-        (roster[i] || {}).you ? 'var(--accent)' : colourFor(i),
-        !!(roster[i] || {}).you, pl.fs, frame.dots[i].h);
-      // Which squad a plate belongs to, so the checks can tell the map's names
-      // from the list's without reading the text back out of them.
-      node.setAttribute('data-squad', i);
+    // The thread first, then the plate, so it ends under the plate it belongs
+    // to and never crosses the name on it.
+    var pl = put.plates[mine];
+    if(pl){
+      handle.svg.appendChild(leader(pl.x, pl.y, pl, '#ffffff'));
+      var node = plate(pl.left, pl.top, pl.lines, 'var(--accent)', true, pl.fs,
+        frame.dots[mine].h);
+      // Which squad the plate belongs to, so the checks can tell the map's name
+      // from the list's without reading the text back out of it.
+      node.setAttribute('data-squad', mine);
       handle.svg.appendChild(node);
     }
+    var spare = leftovers(frame, put.plates, mine);
 
     // The list beside the map is where the squads the map had no room for get
     // their names back, once the field is short enough to list. A swatch per
@@ -1149,16 +1104,17 @@
   // ground and starts being the game, and it is worth a little more time.
   var PACE_LATE = 1.2;
   var LATE_ZONE = 5;
-  // And a gear below the fight, for the last circles. From NAME_ZONE the map
-  // has the whole field's names on it and there are a dozen squads in a circle
-  // the size of a coin — the point of the replay by then is not what happened
-  // but whether yours is still in it, and that is watched rather than read. At
-  // 1 it goes by before the question lands. Half speed puts about two seconds
-  // on the last three zones, which is the part worth having.
+  // And a gear below the fight, for the last circles. By zone 10 there are a
+  // dozen squads in a circle the size of a coin and the point of the replay is
+  // not what happened but whether yours is still in it — which is watched
+  // rather than read. At 1 it goes by before the question lands. Half speed
+  // puts about two seconds on the last three zones, which is the part worth
+  // having.
   //
   // Applied last and as a floor rather than as an assignment, so a fight of
   // yours in zone 11 cannot speed the replay back up to fight pace.
   var PACE_CLOSE = 0.5;
+  var CLOSE_ZONE = 10;
 
   // --- and where to point the camera
   //
@@ -1254,7 +1210,7 @@
     // The last circles, after everything else has had its say: a floor on the
     // speed rather than a setting of it, so nothing above can put it back up.
     for(i=0;i<n;i++)
-      if(timeline[i].zone >= NAME_ZONE) out[i].pace = Math.min(out[i].pace, PACE_CLOSE);
+      if(timeline[i].zone >= CLOSE_ZONE) out[i].pace = Math.min(out[i].pace, PACE_CLOSE);
 
     for(i=0;i<n;i++){
       var fr = timeline[i], dots = fr.dots, k, pts = [];

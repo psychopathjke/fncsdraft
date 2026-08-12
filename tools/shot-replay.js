@@ -19,6 +19,11 @@ const OUT = process.env.SHOT_DIR || ROOT;
 
 const WANT = process.argv.slice(2).length ? process.argv.slice(2) : ['50', '20', '8'];
 
+// A seed your own squad survives, because the one name on the map is yours and
+// a screenshot of a game you died on landing in shows nothing at all. Seed 7
+// takes it to the last frame; SHOT_SEED picks another.
+const SEED = Number(process.env.SHOT_SEED) || 7;
+
 const PAGE = (mark) => `<!doctype html><meta charset="utf-8">
 <body style="margin:0;background:#0b0e18">
 <style>:root{--accent:#3f62ca;--lb-line:#2a3350}</style>
@@ -27,8 +32,9 @@ const PAGE = (mark) => `<!doctype html><meta charset="utf-8">
 <script src="zone-replay.js"><\/script>
 <script src="tools/shot-field.js"><\/script>
 <script>
+var SEED = ${SEED};
 var handle = ZoneReplay.mount(document.getElementById('box'), 'art/map-m2.jpg', '1100 / 970', 970/1100, {});
-var res = ShotField.record(17);
+var res = ShotField.record(SEED);
 var tl = res.timeline, cut = ${JSON.stringify(String(mark))}.charAt(0) === '#'
   ? Math.min(tl.length - 1, ${parseInt(String(mark).replace('#', ''), 10) || 0})
   : tl.length - 1;

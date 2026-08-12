@@ -112,10 +112,6 @@ function scaleOf(handle){
       // Sampled on every frame, not only in the endgame: your squad can be out
       // long before then, and its plate is what this is counting.
       out.namesOnMap = Math.max(out.namesOnMap || 0, plates.length);
-      // Before zone 10 the map carries one name and it is yours; from zone 10
-      // it carries the field.
-      if(f.zone < 10) out.earlyPlates = Math.max(out.earlyPlates || 0, plates.length);
-      else out.latePlates = Math.max(out.latePlates || 0, plates.length);
       var named = {}, a, b;
       for(a=0;a<plates.length;a++) named[plates[a].getAttribute('data-squad')] = 1;
       // Yours is the one name the map has always carried, at every zoom and
@@ -201,14 +197,11 @@ if(!(r.fight > 2.5)) fails.push('the camera only reached ' + r.fight.toFixed(2) 
   'x on a fight of yours in a full lobby, so it never came in for one');
 if(!(r.close > 2.5)) fails.push('the camera only reached ' + r.close.toFixed(2) +
   'x in the endgame, which is no closer than the names need');
-// The map names as many squads as it has room for, and never covers one name
-// with another. One plate is the old rule — an island of anonymous arrows with
-// your own name on it — and is what this is here to catch coming back.
+// One name on the map and it is yours, on every frame your squad is alive and
+// in shot. Everybody else is named in the list beside it, and nobody is in both.
 if(r.yoursMissing) fails.push('your own squad was alive and unnamed on ' + r.yoursMissing + ' frames');
-if(r.earlyPlates > 1) fails.push(r.earlyPlates + ' names on the map before zone 10; ' +
-  'only your own belongs there until the last circles');
-if(!(r.latePlates > 1)) fails.push('the map carried ' + (r.latePlates || 0) +
-  ' names from zone 10 on, so the arrows are anonymous where it matters');
+if(!(r.namesOnMap >= 1)) fails.push('your own squad was never named on the map at all');
+if(r.namesOnMap > 1) fails.push(r.namesOnMap + ' names on the map at once; only yours belongs there');
 if(r.namedTwice) fails.push(r.namedTwice + ' squads were named on the map and in the list beside it at once');
 if(r.unnamed) fails.push(r.unnamed + ' squads were left with no name at all in the endgame, ' +
   'on the map or beside it');
@@ -223,8 +216,7 @@ console.log('\n  frames          ' + r.frames +
             '\n  camera, wide    ' + r.wide.toFixed(2) + 'x' +
             '\n  camera, a fight ' + r.fight.toFixed(2) + 'x' +
             '\n  camera, endgame ' + r.close.toFixed(2) + 'x' +
-            '\n  names on map    ' + (r.earlyPlates || 0) + ' before zone 10, ' +
-                                     (r.latePlates || 0) + ' from it' +
+            '\n  names on map    ' + (r.namesOnMap || 0) + ' at most' +
             '\n  names in list   ' + (r.sideRows || 0) + ' at most' +
             '\n  unnamed, late   ' + (r.unnamed || 0) + '\n');
 if(fails.length){ fails.forEach(f => console.error('  FAIL ' + f)); process.exit(1); }
