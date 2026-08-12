@@ -26106,7 +26106,12 @@ function renderDraftResult(){
 
 function rerenderDraftPacks(){
   if(draftIsComplete()) return renderDraftResult();
-  if(currentCandidates.length){
+  if(REALISTIC){
+    // The roster is taken whole, so the finished half of it is the whole squad
+    // rather than the last card picked.
+    if(drafted.length) renderPicked('candidates', drafted.map(p=>pickedPlayerCard(p)));
+    else renderTeamPicker();
+  } else if(currentCandidates.length){
     if(roundPlayerPicked) renderPicked('candidates', [pickedPlayerCard(lastOf(drafted))]);
     else renderCandidates(currentCandidates);
   }
@@ -27472,6 +27477,10 @@ function startDraft(size, major){
   squadSize=size;
   drafted=[];
   draftedWeapons=[]; draftedHeals=[]; roundPlayerPicked=false; roundWeaponPicked=false; roundHealPicked=false;
+  // Cleared per run, not just per round: a realistic run never fills it, so a
+  // draft run's leftovers would still be sitting here and rerenderDraftPacks()
+  // would draw them.
+  currentCandidates=[]; currentWeaponOptions=[]; currentHealOptions=[];
   chosenLanding=null;
   __shareCtx=null;
   __runRecorded=false;
