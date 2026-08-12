@@ -30494,6 +30494,38 @@ function realTeamsFor(players){
   return {teams, dropped};
 }
 
+// The lobby, in real rosters. Same shape as fillFieldTeams so the call sites
+// differ by one word: takes the players still available, pushes teams onto
+// `out`, returns whoever is left over.
+//
+// Short fields are filled the old way rather than left small — a half-empty
+// lobby scores differently and would quietly change every placement — but the
+// number filled is logged, because a realistic lobby padded with invented teams
+// is a thing the player is entitled to know about.
+function fillRealFieldTeams(remaining, needed, size, out){
+  const {teams}=realTeamsFor(remaining);
+  const taken=new Set();
+  let placed=0;
+  for(const t of teams){
+    if(placed>=needed) break;
+    if(t.handles.length!==size) continue;
+    if(t.handles.some(h=>taken.has(h))) continue;
+    t.handles.forEach(h=>taken.add(h));
+    const team=buildTeam(t.cards);
+    team.loadout=randomLoadoutBonus(t.cards.length); team.pow+=team.loadout;
+    team.name=teamLabel(t.cards);
+    out.push(team);
+    placed++;
+  }
+  let rest=remaining.filter(p=>!taken.has(p.handle));
+  if(placed<needed){
+    console.log('[realistic] the field was ' + (needed-placed) + ' teams short of ' + needed +
+                '; the rest are assembled from players without a whole real roster left');
+    rest=fillFieldTeams(rest, needed-placed, size, out);
+  }
+  return rest;
+}
+
 // Fill a field of AI teams. In card mode the whole field must come from one
 // region — each region runs its own tournament — and squads are drafted from
 // packs instead of paired at random. Returns the players left over.
@@ -31534,7 +31566,7 @@ async function runSecondChanceQualifier(you, regionRank){
   const avail=cardRosterPlayers().filter(p=>p.region===region && !alreadyIn.has(hKey(p)));
 
   const field=[you];
-  fillFieldTeams(avail, 49, squadSize, field);
+  (REALISTIC ? fillRealFieldTeams : fillFieldTeams)(avail, 49, squadSize, field);
 
   const zones=await showFinalsLandingPicker(field, you);
   const shell=createStageCardShell(L().scqStageTitle(SCQ_GAMES));
@@ -31967,7 +31999,7 @@ function buildGlobalChampionshipField(you, region, lcqWinners, regionalFinal){
   field.forEach(t=>t.squad.forEach(p=>taken.add(hKey(p))));
   const avail=cardRosterPlayers().filter(p=>!taken.has(hKey(p)));
   const before=field.length;
-  fillFieldTeams(avail, 50-field.length, 2, field);
+  (REALISTIC ? fillRealFieldTeams : fillFieldTeams)(avail, 50-field.length, 2, field);
   for(let i=before; i<field.length; i++){
     field[i].gcRoute='lcq';
     field[i].summitRegion=(field[i].squad[0]||{}).region||null;
@@ -32045,7 +32077,7 @@ function gclcBuildField(you, region, size, excludeHandles){
   const already=new Set((excludeHandles||[]).map(_gcNorm));
   const avail=cardRosterPlayers().filter(p=>
     p.region===region && !used.has(hKey(p)) && !already.has(_gcNorm(p.handle)));
-  fillFieldTeams(avail, size-field.length, 2, field);
+  (REALISTIC ? fillRealFieldTeams : fillFieldTeams)(avail, size-field.length, 2, field);
   while(field.length<size){
     const chunk=[makeFiller(), makeFiller()];
     const t=buildTeam(chunk); t.loadout=randomLoadoutBonus(chunk.length); t.pow+=t.loadout;
@@ -32430,7 +32462,7 @@ function buildGlobalChampionship2025Field(you, region, regionalFinal){
     (you.squad||[]).forEach(p=>taken.add(hKey(p)));
     const avail=cardRosterPlayers().filter(p=>!taken.has(hKey(p)));
     const before=field.length;
-    fillFieldTeams(avail, GC2025_FIELD_SIZE-1-field.length, 3, field);
+    (REALISTIC ? fillRealFieldTeams : fillFieldTeams)(avail, GC2025_FIELD_SIZE-1-field.length, 3, field);
     for(let i=before;i<field.length;i++){
       field[i].gcRoute='m3';
       field[i].summitRegion=(field[i].squad[0]||{}).region||null;

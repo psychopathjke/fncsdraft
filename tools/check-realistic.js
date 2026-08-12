@@ -80,6 +80,22 @@ const BOOTSTRAP = `
     out.poolStillHasThem = target.handles.filter(function(h){
       return pool.some(function(p){ return p.handle === h; });
     }).length;
+    // The field the tournament plays: real rosters, the player's team not
+    // among them twice, and the lobby the right size.
+    var you = buildTeam(drafted); you.isYou = true;
+    var field = [you];
+    var leftover = fillRealFieldTeams(pool, 49, 2, field);
+    out.fieldSize = field.length;
+    out.fieldNames = field.map(function(t){ return t.name; });
+    var realKeys = {};
+    realTeamsFor(PLAYERS_BASE.filter(function(p){ return p.cardSet === 'm2' && p.region === 'EU'; }))
+      .teams.forEach(function(t){ realKeys[t.handles.slice().sort().join('|')] = 1; });
+    out.assembled = field.slice(1).filter(function(t){
+      return !realKeys[t.squad.map(function(p){ return p.handle; }).sort().join('|')];
+    }).length;
+    out.mineDuplicated = field.slice(1).filter(function(t){
+      return t.squad.some(function(p){ return drafted.some(function(d){ return d.handle === p.handle; }); });
+    }).length;
     // The loot rounds, which are the reason draftedEnough() counts rounds
     // instead of players. A realistic duo must get two of them: rivals roll a
     // weapon and a consumable per player, so one round would hand the player
@@ -162,6 +178,9 @@ if (out.weaponsTaken !== 2 || out.healsTaken !== 2)
     ' consumables, expected 2 and 2');
 if (!out.draftDoneAfterTwo)
   fails.push('a realistic duo had not finished drafting after two full rounds');
+if (out.fieldSize !== 50) fails.push('the lobby has ' + out.fieldSize + ' teams, expected 50');
+if (out.mineDuplicated) fails.push('your own players turn up in ' + out.mineDuplicated + ' rival teams');
+if (out.assembled) fails.push(out.assembled + ' teams in a realistic lobby are assembled, not real');
 
 if (fails.length) { fails.forEach(f => console.error('  FAIL ' + f)); process.exit(1); }
 console.log('\n  every real roster, once each, best first\n');
