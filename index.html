@@ -30485,6 +30485,12 @@ function realTeamsFor(players){
   const teams=[];
   let dropped=0;
   best.forEach(t=>{
+    // A roster the mode cannot field is not a team. Twenty-one rows across the
+    // 2025 sets carry fewer names than the mode plays — a trio row with one
+    // handle on it — and without this the picker offers a one-man trio and lets
+    // somebody take it into a trio Major. Counted as incomplete, because that is
+    // what it is, so the number held back is the one the screen already prints.
+    if(t.handles.length !== squadSize){ dropped++; return; }
     const cards=t.handles.map(h=>byHandle[h]).filter(Boolean);
     if(cards.length!==t.handles.length){ dropped++; return; }
     const avg=cards.reduce((s,c)=>s+c.rating, 0)/cards.length;

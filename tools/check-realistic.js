@@ -88,6 +88,12 @@ const BOOTSTRAP = `
     out.fieldSize = field.length;
     out.fieldNames = field.map(function(t){ return t.name; });
     var realKeys = {};
+    // realTeamsFor now drops any roster whose size does not match the module's
+    // squadSize global, and this call sits outside any startDraft — it was
+    // riding on squadSize still being 2 from the startDraft(2, false) above.
+    // Set it explicitly so this line means what it says regardless of what
+    // runs before it.
+    squadSize = 2;
     realTeamsFor(PLAYERS_BASE.filter(function(p){ return p.cardSet === 'm2' && p.region === 'EU'; }))
       .teams.forEach(function(t){ realKeys[t.handles.slice().sort().join('|')] = 1; });
     out.assembled = field.slice(1).filter(function(t){
@@ -248,6 +254,9 @@ if (!out.trio.count)
     'is not reading the shape those cards store');
 if (out.trio.sizes.length !== 1 || out.trio.sizes[0] !== 3)
   fails.push('the trio Major produced teams of size ' + out.trio.sizes.join(',') + ', expected 3');
+if (out.trio.count < 100)
+  fails.push('the 2025 trio Major offered only ' + out.trio.count + ' teams — the size rule ' +
+    'is throwing away rosters it should be keeping');
 
 if (fails.length) { fails.forEach(f => console.error('  FAIL ' + f)); process.exit(1); }
 console.log('\n  every real roster, once each, best first\n');
