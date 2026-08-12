@@ -72,6 +72,33 @@ showed up somewhere else in the model:
 | fighting range | "about sixty metres", worked out to 29 | 54 at the 90th percentile |
 | healing | none at all | 1,457 damage taken a match against 200 health |
 
+### When the lobby dies
+
+An eighth thing the log settles, and it was not read off it until a viewer asked
+why the last circles are a knot. Every team's `timeAlive` against every zone
+update's timestamp is the survival curve, exactly, team by team and circle by
+circle. Per fifty squads, averaged over the three matches:
+
+| circle | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| logged alive | 45.3 | 41.0 | 40.3 | 38.6 | 36.6 | 32.2 | 26.2 | 20.1 | 14.1 | 9.1 | 3.3 |
+| deaths since the last | 4.7 | 4.3 | 0.7 | 1.7 | 2.0 | 4.4 | 6.0 | 6.0 | 6.0 | 5.0 | 5.7 |
+
+The shape is the finding: **from circle 6 the lobby loses five or six squads
+every circle, all the way to the end.** It never stops and it never spikes. The
+engine did the opposite — a hump of 8.6 deaths around circle 7, then a trickle
+of two a circle, and eleven squads left standing when the last circle landed
+against a logged 3.3. That surplus is what a viewer sees as a knot of arrows in
+zone 10 that no layout can name and no camera can separate.
+
+`tools/survival-calibration.js` is this table with a dial on it: it prints the
+logged column against a simulated one and sweeps any one constant against it.
+
+The engine's phases are numbered one higher than the log's circles — its zone 1
+is the drop, before any circle exists — so its zone N begins when the log's
+circle N-1 lands. Checked against the clocks rather than assumed, and worth
+five squads of imaginary error when it was not.
+
 ### The storm is on rails
 
 The three matches agree about it and disagree about almost nothing else. **Every
@@ -114,16 +141,25 @@ So the first `DROP_SEC` = 40 seconds of the game are the drop. Nobody rotates
 during it: every squad is late to leave, which is a rule the engine already had.
 Two things that hold the mid-game apart are switched off — there is no room
 shortage, and there is nowhere to decline to when somebody else is on your roof,
-so `caught()` is 1 for everybody. What is left is the rate, `DROP_PRESSURE`, and
-it is small: 0.08, about half the base the mid-game starts from.
+so `caught()` is 1 for everybody. What is left is the rate, `DROP_PRESSURE`.
 
-`tools/drop-calibration.js` is where that number comes from. It builds the lobby
-the way the app does — every squad picks one of the picker's own rectangles and
-lands in the middle of it, so squads that picked the same one land on each other
-— and reports what the drop takes. At 0.08 it takes 4.2% of the field against a
-real 4.7%, and 95.2% of the lobby is alive when the first circle closes against
-a real 95%. Nearly half the lobby shares its ground with somebody; about one
-contested drop in ten produces a body.
+How many squads have to be on one spot before the fight is a certainty rather
+than a roll is `STACK_MIN`, and it is 3. It was 2 for a day, for a real reason —
+three trios on one roof, all three alive, all three in the top four, because a
+stack of three was resolved by the same coin as a two-way share. Two made every
+share a certainty, and the app's picker puts about 28% of the field on a shared
+box: the drop went from a filter to a decider and took **28% of the lobby
+against a logged 4.7%**. It also made `DROP_PRESSURE` dead — every contested
+pair skipped the roll it governs, so the constant could be set to sixty and
+change nothing.
+
+At 3 the complaint is answered where it was made: three squads on one spot
+always fight, two roll for it, and `DROP_PRESSURE` = 0.18 puts the drop at 4.8%
+against the logged 4.7%, with 94.8% of the lobby alive when the first circle
+closes against a real 95%. `tools/drop-calibration.js` is that measurement with
+a dial on it — it builds the lobby the way the app does, every squad picking one
+of the picker's own rectangles and landing in the middle of it, so squads that
+picked the same one land on each other.
 
 The app reads the result back rather than deciding it. The engine flags a squad
 that died inside the window with `_droppedOut`, and `_deathCause` names the
@@ -334,10 +370,27 @@ games in twelve in a real Grand Final.
 
 A duo that reads the map perfectly still cannot read its way out of a box with
 nine other squads in it. So the same measured room that decides how hard the
-circle is pressing also decides how much of a squad's edge survives, and the fit
-puts the loss of it in the final collapse and nowhere earlier. That one change
-takes the leader from 5.7 wins a tournament to 1.8 — the endgame is where the
-best squad can be beaten, and it has to be.
+circle is pressing also decides how much of a squad's edge survives. That one
+change takes the leader from 5.7 wins a tournament to 1.8 — the endgame is where
+the best squad can be beaten, and it has to be.
+
+`NOWHERE_ROOM` is the ground below which nobody can decline any more, and it was
+**0.06 square world units, which no circle in a real match ever reaches**. Put
+the logged survival numbers through it and the term is 0.00 at every circle
+including the last: the mechanism this section describes never fired at all, and
+the prose above claiming the edge is gone by zone 8 was describing something the
+constant did not do. With `ENGAGE_BIAS` at 8.5 the engagement term is
+`caught^8.5`, so a squad that keeps most of its edge is a squad that essentially
+cannot be made to fight — which is where the trickle of two deaths a circle came
+from, and why the pressure constants could not buy them back at any setting.
+`PRESSURE_MAX` from 3 to 50 moved the last circle by one squad; `PRESSURE_EXP`
+across its whole range moved it by nothing, because the cap was eating it.
+
+It is 0.15 now, fitted against the logged survival curve rather than guessed:
+the last circles run at 0.073 to 0.17, so the ground runs out over circles 8 to
+11 the way the section says it does. Measured, that is the last circle going
+from 11.9 squads standing to 6.1, and the whole curve from 4.2 squads off the
+log to 3.0.
 
 The trade itself is resolved by the **existing** formula: `_pc`,
 `DUEL_POW_EXPONENT_BY_MODE`, and the hot-streak chain of up to three. Every
@@ -1010,8 +1063,8 @@ reshuffled 50-team lobbies, the app's own Play-In scoring.
 
 | | open profile, now | when it was emptying the lobby | real |
 |---|---|---|---|
-| leader elims/match | 5.32 | 6.91 | 9.8–12.8 |
-| leader avg placement | 7.82 | 17.28 | 16.9–17.8 |
+| leader elims/match | 5.70 | 6.91 | 9.8–12.8 |
+| leader avg placement | 7.27 | 17.28 | 16.9–17.8 |
 | lobby alive at zone 3 | 88% | 21% | 81% |
 
 The middle column is what the profile used to produce, and it looks better on

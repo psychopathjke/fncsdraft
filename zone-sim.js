@@ -540,7 +540,7 @@
   // The ground a squad needs before it can still decline a fight. Below this
   // there is nowhere to decline to, and the best rotator in the lobby is as
   // catchable as anybody. Square world units, the same measure as ROOM.
-  var NOWHERE_ROOM = 0.06;
+  var NOWHERE_ROOM = 0.15;
 
   function exposure(squad){
     return EXPOSURE_FLOOR + (1 - EXPOSURE_FLOOR) * (1 - squad.skill);
@@ -605,7 +605,25 @@
   // treated as a decider when it is a filter. Nearly half the lobby shares its
   // ground with somebody; about one contested drop in ten produces a body.
   var DROP_SEC = 40;
-  var DROP_PRESSURE = 0.08;
+  var DROP_PRESSURE = 0.18;
+
+  // How many squads have to be standing on one spot before the fight is a
+  // certainty rather than a roll. Two was tried and it is what made the drop a
+  // decider again: the app's picker puts about 28% of the field on a shared box,
+  // in twos, so "two is a certainty" meant every one of those boxes produced a
+  // body and the drop took 28% of the lobby against a logged 4.7%. It also made
+  // DROP_PRESSURE dead — every contested pair skipped the roll it governs, so
+  // the constant could be set to sixty and change nothing.
+  //
+  // It was done for a real reason: the finals table was too flat and deleting a
+  // quarter of the lobby at the drop spread it out. That is the right symptom
+  // and the wrong cure. A lobby has to lose those squads — it just has to lose
+  // them where the log loses them, which is zones 6 to 11, not in the first
+  // forty seconds. See survival-calibration.js.
+  //
+  // At three, two duos on the same roof roll for it at DROP_PRESSURE and a spot
+  // that drew a third squad is a fight nobody gets out of.
+  var STACK_MIN = 3;
 
   function resolveContacts(squads, circle, rng, duel, onDeath, dropping){
     var alive = [];
@@ -747,7 +765,7 @@
         // rule almost never fired. What the app does produce is 4.7 shared boxes
         // a game in trios and 14.2 in duos, and those were the drops nobody was
         // dying on.
-        var stacked = crowd && crowd[a] >= 2 && crowd[b] >= 2;
+        var stacked = crowd && crowd[a] >= STACK_MIN && crowd[b] >= STACK_MIN;
         // Either squad can start it, and starting one is its own event. The
         // first version multiplied both squads' exposure, which made avoiding
         // fights and getting kills the same skill: a squad that learned not to
@@ -1263,6 +1281,7 @@
     if(v.PRESSURE_MAX   != null) PRESSURE_MAX   = v.PRESSURE_MAX;
     if(v.DROP_SEC       != null) DROP_SEC       = v.DROP_SEC;
     if(v.DROP_PRESSURE  != null) DROP_PRESSURE  = v.DROP_PRESSURE;
+    if(v.STACK_MIN      != null) STACK_MIN      = v.STACK_MIN;
     if(v.PICK_EXP       != null) PICK_EXP       = v.PICK_EXP;
     if(v.NOWHERE_ROOM   != null) NOWHERE_ROOM   = v.NOWHERE_ROOM;
     if(v.CHIP_RATE      != null) CHIP_RATE      = v.CHIP_RATE;
@@ -1272,7 +1291,7 @@
             CHAIN_MAX:CHAIN_MAX, LINGER_MAX:LINGER_MAX, SURGE_DPS:SURGE_DPS,
             ROOM:ROOM, PRESSURE_BASE:PRESSURE_BASE, PRESSURE_EXP:PRESSURE_EXP,
             PICK_EXP:PICK_EXP, CHIP_RATE:CHIP_RATE, HEAL_RATE:HEAL_RATE,
-            DROP_SEC:DROP_SEC, DROP_PRESSURE:DROP_PRESSURE};
+            DROP_SEC:DROP_SEC, DROP_PRESSURE:DROP_PRESSURE, STACK_MIN:STACK_MIN};
   }
 
   var ZoneSim = {
