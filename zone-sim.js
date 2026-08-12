@@ -956,6 +956,24 @@
       pendingEvents.push(sq.deathCause + ':' + sq.team.name);
     }
 
+    // Take a death back out of the feed: for the squad that dies on the same
+    // tick as the last one standing and is handed the win because of it. The
+    // line is usually still waiting to be drawn, but the tick it died on can
+    // have been a recorded one, so the last frame is checked too.
+    function unsay(name){
+      var suffix = ':' + name;
+      function drop(list){
+        for(var i=list.length-1;i>=0;i--)
+          if(list[i].length > suffix.length &&
+             list[i].indexOf(suffix, list[i].length - suffix.length) !== -1){
+            list.splice(i, 1); return true;
+          }
+        return false;
+      }
+      if(drop(pendingEvents)) return;
+      if(timeline.length) drop(timeline[timeline.length-1].events || []);
+    }
+
     function aliveCount(){
       var n = 0;
       for(var i=0;i<squads.length;i++) if(squads[i].alive) n++;
@@ -979,7 +997,14 @@
     // happens to be, because it is the one that shows a single squad left.
     function frame(circle, next, secondsLeft, force){
       tickIndex++;
-      if(!record || (!force && (tickIndex % RECORD_EVERY) !== 0)){ pendingEvents = []; return; }
+      if(!record){ pendingEvents = []; return; }
+      // A death on a tick that is not kept waits for the one that is, rather
+      // than being thrown away with the frame. Only every RECORD_EVERY-th tick
+      // is recorded, so clearing here dropped seven eliminations in eight: a
+      // fifty-duo game logs about forty-nine and the kill feed was printing
+      // four of them. Nothing else read this list, which is why it went unseen
+      // — the placements and the death causes come off the squads themselves.
+      if(!force && (tickIndex % RECORD_EVERY) !== 0) return;
       timeline.push({
         zone: currentZone,
         secondsLeft: Math.max(0, Math.round(secondsLeft)),
@@ -1107,13 +1132,19 @@
       revived.alive = true;
       revived.deathCause = null;
       survivors = [revived];
+      // Its death was announced a moment ago and has just been taken back, so
+      // the line has to come out of the feed as well — a champion listed among
+      // the eliminations reads as a bug whatever the placements say.
+      unsay(revived.team.name);
     }
+    // Through onDeath, like every other elimination. Written out by hand here,
+    // it did everything onDeath does except announce itself, so the last kill
+    // of the game — the one that decides it — was the one death the kill feed
+    // never printed.
     for(var s2 = survivors.length - 1; s2 >= 1; s2--){
-      survivors[s2].zoneReached = currentZone;
       survivors[s2].deathCause = survivors[0].team.name;
       survivors[s2].alive = false;
-      eliminationOrder.push(survivors[s2]);
-      survivors[s2].place = squads.length - eliminationOrder.length + 1;
+      onDeath(survivors[s2]);
     }
     var champion = survivors[0];
     champion.zoneReached = currentZone;

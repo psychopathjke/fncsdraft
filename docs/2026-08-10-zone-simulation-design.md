@@ -456,9 +456,54 @@ interpolated into the feed markup is escaped.
 
 Every one of the 12 games plays its replay, in order, above the standings table
 that is already there — the map for the game being played, then the table
-updating, then the next game. Around 10 frames a second, roughly eight seconds a
-game, so a full Grand Final runs about a minute and a half. That is the thing
-being watched, not an interruption to it.
+updating, then the next game. That is the thing being watched, not an
+interruption to it.
+
+### Not at one speed
+
+One speed for the whole match spent the same eight seconds on the circle nobody
+fought in as on the endgame, and twelve of those is a minute and a half of
+mostly waiting. It now runs at 2.4× except where something is at stake, which
+takes a game from 7.6 seconds to 3.6 and a Grand Final from 91 seconds to 44,
+with 89% of the match played fast.
+
+What counts as at stake is read off what happened, not off where anybody is
+standing. Standing next to somebody was the first rule and it does not work:
+measured over 120 recorded games, another squad is within contact range of yours
+in **half of all frames**, and dropping the range to two world units only takes
+that to 43%. It is the same finding the engine itself rests on — squads fight
+when the circle stops leaving them room, not when they are near each other — so
+proximity marks half the match and separates nothing.
+
+A fight your squad was in does separate it. Two frames of run-up and one of
+aftermath around every elimination naming your squad, plus the whole endgame,
+which starts at `LABEL_BELOW` — the same count that puts the names of who is
+left up beside the map, because the point the replay stops being a field and
+becomes a list of squads is the point it is worth watching at all. Measured,
+that catches 100% of your fights and slows down *before* rather than *on* them.
+The landing fight and the last trade of the game are the same rule; neither
+needs naming.
+
+`opts.pace: false` plays flat, and a replay with nobody flagged as yours slows
+for every elimination in the lobby, which is the same rule with the whole field
+as its subject.
+
+### Every kill reaches the feed
+
+The engine keeps every eighth tick, and until 12 August it threw the
+eliminations on the other seven away with the frame they would have been drawn
+on. A fifty-duo game logs about 49 and the feed was printing four. Nothing else
+read the list — placements, death causes and the drop bonus all come off the
+squads themselves — which is why it went unseen for as long as it did.
+
+Deaths on a tick that is not kept now wait for the one that is. The last
+elimination of the game was missing for a second reason: the squads still alive
+when the collapse runs out were eliminated by hand rather than through
+`onDeath`, so the kill that decides the match was the one death never announced.
+Both are checked by test across 300 seeds: 49 eliminations named, none twice,
+and never the champion — who, on the tick where the last two squads die together
+and the win is handed back to one of them, has the line taken out of the feed
+again.
 
 The existing skip button (`ensureSkipButton`) finishes the rest of the tournament
 headless and jumps straight to the result, exactly as it does now.

@@ -560,9 +560,75 @@
   // rebuild of the layer each time.
   var MIN_DRAW_MS = 28;
 
+  // --- how fast to play each frame
+  //
+  // One speed for the whole match spends the same eight seconds on the circle
+  // nobody fought in as on the endgame, and twelve of those is a minute and a
+  // half of mostly waiting. What is worth watching is the part you are in.
+  //
+  // Which part that is gets read off what happened, not off where anybody is
+  // standing. Standing next to somebody was the first rule and it does not
+  // work: measured over a hundred and twenty recorded games, another squad is
+  // within contact range of yours in half of all frames, and dropping the range
+  // to two world units only takes that to 43%. That is the same finding the
+  // engine itself rests on — squads fight when the circle stops leaving them
+  // room, not when they are merely near each other — so proximity marks half
+  // the match and separates nothing.
+  //
+  // A fight your squad was in does separate it. The landing fight, the
+  // third-party in zone 5 and the last trade of the game are all the same test,
+  // and it needs no list of key moments to name them.
+  //
+  // The endgame is slow whether or not you are still in it: by then everybody
+  // left is in the same circle and there is nothing left to skip past. Where it
+  // starts is LABEL_BELOW, the same count that puts the names of who is left up
+  // beside the map — the point the replay stops being a field and starts being
+  // a list of squads is the point it is worth watching at all.
+  var LEAD = 2, TRAIL = 1;      // frames of run-up and of aftermath around a fight of yours
+  var PACE_FAST = 2.4, PACE_SLOW = 1;
+
+  // The speed for every frame, worked out once. It has to be the whole timeline
+  // rather than a frame at a time, because slowing down on the frame a kill is
+  // printed is slowing down after it: the run-up is the part worth seeing.
+  function paceTrack(timeline, roster){
+    var n = timeline.length, out = new Array(n), i, j;
+    for(i=0;i<n;i++) out[i] = PACE_FAST;
+    roster = roster || [];
+    var me = -1;
+    for(i=0;i<roster.length;i++) if(roster[i] && roster[i].you){ me = i; break; }
+    var mine = me >= 0 ? plain(roster[me].name) : null;
+
+    function slowAround(at){
+      for(j = Math.max(0, at - LEAD); j <= Math.min(n - 1, at + TRAIL); j++) out[j] = PACE_SLOW;
+    }
+
+    for(i=0;i<n;i++){
+      var f = timeline[i];
+      if(f.alive <= LABEL_BELOW) out[i] = PACE_SLOW;
+      var ev = f.events;
+      if(!ev || !ev.length) continue;
+      for(var e=0;e<ev.length;e++){
+        var raw = plain(ev[e]), cut = raw.indexOf(':');
+        // Either side of it: the kill you got and the one that got you.
+        // With nobody flagged as yours — a replay watched rather than played —
+        // every death in the lobby counts, which is the same rule with the
+        // whole field as the subject.
+        if(mine == null ||
+           plain(raw.slice(0, cut)) === mine || plain(raw.slice(cut + 1)) === mine){
+          slowAround(i);
+          break;
+        }
+      }
+    }
+    return out;
+  }
+
   function play(handle, timeline, opts){
     opts = opts || {};
     var frameMs = opts.frameMs || 90;
+    // `pace: false` plays the whole match at one speed.
+    var track = opts.pace === false ? null : paceTrack(timeline, opts.roster);
+    function pace(i){ return track ? track[Math.max(0, Math.min(track.length-1, i))] : 1; }
     // Starting the feed over used to happen right here, unconditionally. That
     // breaks the moment a caller wants this game's feed to open on something
     // that never came from a frame — the landing fights, pushed via note()
@@ -599,7 +665,9 @@
         (function next(){
           if(i >= timeline.length || (opts.isSkipped && opts.isSkipped())){ finish(); return; }
           show(timeline[i++]);
-          setTimeout(next, frameMs);
+          // How long the frame is held, rather than how it is animated between
+          // — so this still varies for a reader who has asked for no motion.
+          setTimeout(next, frameMs / pace(i - 1));
         })();
         return;
       }
@@ -610,15 +678,26 @@
       // background tab would never come back. A timer is throttled there
       // instead of frozen, so the replay finishes slowly and the run goes on,
       // which is the behaviour the page has always had.
-      var started = null, shown = -1, lastDraw = -1e9;
+      // The clock accumulates rather than being read off the start time, because
+      // the speed changes as it goes: elapsed-since-started only tells you where
+      // you would be if it never had.
+      var last = null, at = 0, speed = null, shown = -1, lastDraw = -1e9;
       var clock = (typeof performance !== 'undefined' && performance.now)
         ? function(){ return performance.now(); } : function(){ return Date.now(); };
 
       (function step(){
         if(opts.isSkipped && opts.isSkipped()){ finish(); return; }
         var now = clock();
-        if(started === null) started = now;
-        var at = (now - started) / frameMs;
+        if(last === null) last = now;
+        // Capped: a tab that was in the background resumes where it left off
+        // instead of jumping the rest of the match in one step.
+        var dt = Math.min(now - last, 250);
+        last = now;
+        var target = pace(Math.floor(at));
+        // Eased into rather than switched, so a change of speed reads as the
+        // replay slowing down and not as a dropped frame.
+        speed = speed === null ? target : speed + (target - speed) * Math.min(1, dt / 220);
+        at += dt / frameMs * speed;
         var i = Math.floor(at);
         if(i >= timeline.length - 1){ finish(); return; }
         var fresh = i !== shown;
@@ -660,5 +739,6 @@
   }
 
   root.ZoneReplay = {mount:mount, play:play, unmount:unmount,
-                     between:between, show:show, clearFeed:clearFeed, note:note};
+                     between:between, show:show, clearFeed:clearFeed, note:note,
+                     paceTrack:paceTrack};
 })(typeof globalThis !== 'undefined' ? globalThis : this);

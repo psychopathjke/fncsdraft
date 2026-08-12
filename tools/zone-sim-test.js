@@ -1154,5 +1154,79 @@ test('a squad\'s live score never goes down', () => {
   });
 });
 
+// The kill feed is the only reader of the frames' events, so nothing else
+// noticed that a death on a tick which is not recorded used to be thrown away
+// with it. Every squad that dies is named exactly once, whichever tick it died
+// on, and the champion is not.
+test('every elimination reaches the timeline, not one tick in eight of them', () => {
+  for(const seed of [4, 17, 33]){
+    const teams = fakeField(50);
+    const {order, timeline} = runGame(seed, teams, true);
+    const named = [];
+    timeline.forEach(f => (f.events || []).forEach(e => named.push(e.slice(e.indexOf(':') + 1))));
+    assert(named.length === teams.length - 1,
+      'seed ' + seed + ': ' + named.length + ' eliminations in the feed, ' +
+      (teams.length - 1) + ' in the game');
+    assert(new Set(named).size === named.length, 'seed ' + seed + ': a squad was named twice');
+    assert(named.indexOf(order[0].name) === -1,
+      'seed ' + seed + ': the champion was in the kill feed');
+  }
+});
+
+// --- the replay's pacing, which reads those events
+require('../zone-replay.js');                 // attaches to globalThis rather than exporting
+const ZoneReplay = globalThis.ZoneReplay;
+
+function pacedGame(seed, seat){
+  const teams = fakeField(50);
+  const {timeline} = runGame(seed, teams, true);
+  const roster = teams.map((t, i) => ({name: t.name, you: i === seat}));
+  return {teams, timeline, roster, track: ZoneReplay.paceTrack(timeline, roster)};
+}
+
+test('the replay slows down for every fight your squad is in, and before it', () => {
+  for(const seed of [4, 17, 33]){
+    const seat = 3;
+    const {teams, timeline, track} = pacedGame(seed, seat);
+    const mine = teams[seat].name;
+    let fights = 0;
+    timeline.forEach((f, i) => {
+      (f.events || []).forEach(e => {
+        const cut = e.indexOf(':');
+        if(e.slice(0, cut) !== mine && e.slice(cut + 1) !== mine) return;
+        fights++;
+        assert(track[i] === 1, 'seed ' + seed + ': frame ' + i + ' is a fight of yours at speed ' + track[i]);
+        // The run-up, where there is one to have.
+        if(i > 2) assert(track[i-1] === 1, 'seed ' + seed + ': frame ' + i + ' slowed only once it had happened');
+      });
+    });
+    assert(fights > 0, 'seed ' + seed + ': your squad was in no fight at all');
+  }
+});
+
+test('the replay runs fast where nothing is happening and slow at the end', () => {
+  let fast = 0, frames = 0;
+  for(const seed of [4, 17, 33]){
+    const {timeline, track} = pacedGame(seed, 3);
+    timeline.forEach((f, i) => {
+      frames++;
+      if(track[i] > 1) fast++;
+      if(f.alive <= 12) assert(track[i] === 1, 'seed ' + seed + ': the endgame played fast');
+    });
+  }
+  const share = fast / frames;
+  assert(share > 0.7 && share < 0.95,
+    (100*share).toFixed(0) + '% of the match plays fast; the feature is worth nothing below ' +
+    'about 70% and is not a replay of your game above about 95%');
+});
+
+test('a match with nobody in it, and one asked to play flat, both still play', () => {
+  const teams = fakeField(50);
+  const {timeline} = runGame(9, teams, true);
+  const watched = ZoneReplay.paceTrack(timeline, teams.map(t => ({name: t.name})));
+  assert(watched.length === timeline.length, 'the track is not one speed per frame');
+  watched.forEach(v => assert(v >= 1, 'a frame was given a speed below the base one'));
+});
+
 console.log('\n' + passed + ' passed, ' + failed + ' failed\n');
 process.exit(failed ? 1 : 0);
