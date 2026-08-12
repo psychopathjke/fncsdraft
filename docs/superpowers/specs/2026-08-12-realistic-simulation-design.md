@@ -39,7 +39,7 @@ Measured on the live app, Major 2 · Europe:
 | rows across Play-In, LCQ and Grand Finals | 250 |
 | unique duos among them | 179 |
 | duos appearing on more than one stage | 66 |
-| duos whose every member is in the mode pool | 178 |
+| duos whose every member is in the mode pool | 179 — all of them |
 
 ## The four pieces
 
@@ -84,9 +84,12 @@ Rules the data forced:
   at GF #6 sits above `Shxrk & t3eny` at GF #2. Showing the finish makes that
   visible instead of looking like a sorting bug.
 - **A team with a member missing from the pool is not listed**, and the count of
-  those is printed on the screen. For Major 2 EU that is 1 of 179. Quietly
-  substituting an assembled team into a mode called realistic is the one thing
-  this feature must not do.
+  those is printed on the screen. For Major 2 EU with no era filter that count is
+  zero — every duo is whole — but a narrower filter can strand a player, and the
+  rule is what stops an assembled team being served under a name that promises
+  otherwise. An earlier draft of this spec claimed 1 of 179 was incomplete; that
+  came from a one-off browser session whose pool was a player short, and two
+  independent headless runs since put it at 179 of 179.
 - Search by handle; region comes from the filter already on the preview screen.
 
 Picking a team fills `drafted` with its roster. That is what keeps the change

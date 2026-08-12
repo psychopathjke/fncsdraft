@@ -202,6 +202,18 @@ const BOOTSTRAP = `
     }).length;
     // Every team is the right size for the mode.
     out.wrongSize = teams.filter(function(t){ return t.handles.length !== 2; }).length;
+    // The drop rule, exercised rather than hoped for: hold one player of the
+    // top team back and that team must vanish from the list.
+    var stranded = teams[0].handles[0];
+    var thinner = pool.filter(function(p){ return p.handle !== stranded; });
+    var reduced = realTeamsFor(thinner);
+    out.dropOnePool = {
+      count: reduced.teams.length,
+      dropped: reduced.dropped,
+      strandedListed: reduced.teams.some(function(t){
+        return t.handles.indexOf(stranded) >= 0;
+      })
+    };
   } catch (e) { out = {error: String(e && e.stack || e)}; }
   document.getElementById('__real').textContent =
     'BEGINREAL' + encodeURIComponent(JSON.stringify(out)) + 'ENDREAL';
@@ -231,11 +243,22 @@ out.top.forEach(t => console.log('  ' + String(t.avg).padStart(3) + '  ' + t.who
   '  [' + t.stage + ' #' + t.rank + ']'));
 
 const fails = [];
-// Measured on the live app while the spec was written: 179 real duos, 178 of
-// them with both players in the pool. A number that moves means the data moved
-// or the builder is dropping teams it should not.
-if (out.count !== 178) fails.push('offered ' + out.count + ' teams, expected 178');
-if (out.dropped !== 1) fails.push('dropped ' + out.dropped + ' teams, expected 1');
+// Measured twice, headless, on this branch: 179 real duos behind Major 2
+// Europe's 250 rows, and with no era filter every one of them is whole. A
+// number that moves means the card data moved or the builder is dropping teams
+// it should not. (An earlier draft of the plan said 178 and 1 dropped; that came
+// from a browser session whose pool was one player short and does not reproduce.)
+if (out.count !== 179) fails.push('offered ' + out.count + ' teams, expected 179');
+if (out.dropped !== 0) fails.push('dropped ' + out.dropped + ' teams, expected 0');
+// The drop rule matters more than the count, and the full pool never exercises
+// it. So it is exercised on purpose: take one player out and his team must
+// leave the list rather than be completed from somewhere else.
+if (out.dropOnePool.count !== 178)
+  fails.push('with one player held back the list has ' + out.dropOnePool.count + ' teams, expected 178');
+if (out.dropOnePool.dropped !== 1)
+  fails.push('with one player held back ' + out.dropOnePool.dropped + ' teams were dropped, expected 1');
+if (out.dropOnePool.strandedListed)
+  fails.push('the team missing a player was listed anyway');
 if (!out.ordered) fails.push('the list is not ordered by rating, high to low');
 if (out.dupes) fails.push(out.dupes + ' rosters appear more than once');
 if (out.incomplete) fails.push(out.incomplete + ' listed teams have a member missing from the pool');
@@ -321,7 +344,7 @@ function realTeamsFor(players){
 - [ ] **Step 4: Run the probe to verify it passes**
 
 Run: `node tools/check-realistic.js`
-Expected: `teams offered 178`, `dropped, roster incomplete 1`, top line `96  Sky & Scroll  [Gf #1]`, then `every real roster, once each, best first`.
+Expected: `teams offered 179`, `dropped, roster incomplete 0`, top line `96  Sky & Scroll  [Gf #1]`, then `every real roster, once each, best first`.
 
 - [ ] **Step 5: Verify nothing else moved**
 
@@ -527,17 +550,41 @@ second loot round dead.
 
 - [ ] **Step 7: Make the round total honest and hide the reroll**
 
-In `startDraft()` (`index.html:27406`), immediately after `document.getElementById('roundTotal').textContent=size;`, add:
+First give the pack's heading and its line of description stable ids, because
+what follows has to find them again on every run. In the markup at
+`index.html:1457-1458`, inside the first `.pack-head`, change
+
+```html
+              <h2 data-i18n="packOpenTitle"></h2>
+              <p data-i18n="packOpenDesc"></p>
+```
+
+to
+
+```html
+              <h2 id="packHeadTitle" data-i18n="packOpenTitle"></h2>
+              <p id="packHeadDesc" data-i18n="packOpenDesc"></p>
+```
+
+Then in `startDraft()` (`index.html:27406`), immediately after
+`document.getElementById('roundTotal').textContent=size;`, add:
 
 ```js
   // A realistic run has one roster and `size` loot rounds; the pack label counts
   // rounds, and the reroll is a player-pack control with nothing to reroll here.
   const rb=document.getElementById('rerollBtn');
   if(rb) rb.style.display = REALISTIC ? 'none' : '';
-  const packHead=document.querySelector('#screen-draft .pack-head h2[data-i18n="packOpenTitle"]');
-  if(packHead){
+  // Found by id, never by the data-i18n value this then overwrites. Looking the
+  // heading up by `h2[data-i18n="packOpenTitle"]` works exactly once: the first
+  // realistic run renames the attribute, the selector stops matching, and every
+  // later run — draft runs included — silently keeps whichever caption it was
+  // last left with. A draft pack captioned "pick your real team" is draft mode
+  // changing behaviour, which is the one thing this feature may not do.
+  const packHead=document.getElementById('packHeadTitle');
+  const packDesc=document.getElementById('packHeadDesc');
+  if(packHead && packDesc){
     packHead.setAttribute('data-i18n', REALISTIC ? 'teamPickTitle' : 'packOpenTitle');
-    packHead.nextElementSibling.setAttribute('data-i18n', REALISTIC ? 'teamPickDesc' : 'packOpenDesc');
+    packDesc.setAttribute('data-i18n', REALISTIC ? 'teamPickDesc' : 'packOpenDesc');
     applyStaticI18n();
   }
 ```
@@ -625,6 +672,60 @@ and the checks at the bottom:
 if (out.fieldSize !== 50) fails.push('the lobby has ' + out.fieldSize + ' teams, expected 50');
 if (out.mineDuplicated) fails.push('your own players turn up in ' + out.mineDuplicated + ' rival teams');
 if (out.assembled) fails.push(out.assembled + ' teams in a realistic lobby are assembled, not real');
+if (out.doubleBooked) fails.push(out.doubleBooked + ' players are in two rival teams in the lobby');
+if (out.doubleBookedWide)
+  fails.push(out.doubleBookedWide + ' players are in two rival teams once the field is deep ' +
+    'enough to reach a shared roster — the double-booking guard is not holding');
+if (out.wideFieldSize <= 49)
+  fails.push('the deep field only reached ' + out.wideFieldSize + ' teams, which is not past the ' +
+    'shallow scan, so the double-booking guard went unexercised again');
+if (!out.shortLogged) fails.push('a lobby padded with assembled teams said nothing about it');
+if (!out.shortField) fails.push('a short real field produced no lobby at all');
+```
+
+Two of those need their own setup, because the full pool exercises neither.
+Add this to the bootstrap after the field block:
+
+```js
+    // No player may be in two rival teams at once. realTeamsFor keys a team by
+    // its roster, and eleven players in this data legitimately appear in two
+    // different real rosters across stages, so the field builder guards against
+    // it.
+    function countDoubleBooked(teams){
+      var seen = {}, n = 0;
+      teams.forEach(function(t){
+        t.squad.forEach(function(p){
+          if (seen[p.handle]) n++;
+          seen[p.handle] = 1;
+        });
+      });
+      return n;
+    }
+    out.doubleBooked = countDoubleBooked(field.slice(1));
+
+    // And the same guard where it can actually be seen working. At a 49-team
+    // lobby it never fires: every colliding pair's two rosters sit more than
+    // forty-nine places apart in the rating order — the nearest are ranks 29 and
+    // 77 — so the scan meets only one of each and removing the guard changes
+    // nothing. Measured at ninety: two collisions without the guard, none with
+    // it. Ninety is not a lobby size; it is the depth at which this guard is
+    // testable, and a guard that has never been seen to fail is not yet tested.
+    var wideField = [];
+    fillRealFieldTeams(pool, 90, 2, wideField);
+    out.wideFieldSize = wideField.length;
+    out.doubleBookedWide = countDoubleBooked(wideField);
+
+    // The shortfall path, which the full pool never reaches: ask for a lobby
+    // larger than the supply of whole rosters and the padding must happen AND
+    // say so. A realistic lobby quietly filled with invented teams is the one
+    // failure this mode cannot be allowed to have.
+    var said = [], realLog = console.log;
+    console.log = function(){ said.push(Array.prototype.join.call(arguments, ' ')); };
+    var thinField = [];
+    fillRealFieldTeams(pool.slice(0, 60), 49, 2, thinField);
+    console.log = realLog;
+    out.shortField = thinField.length;
+    out.shortLogged = said.some(function(s){ return s.indexOf('[realistic]') >= 0; });
 ```
 
 - [ ] **Step 2: Run it to see it fail**
@@ -796,7 +897,94 @@ console.log('\n  draft mode is the mode it was\n');
 Run: `node tools/check-draft-unchanged.js`
 Expected: `pack cards 4 · reroll on · picked 1 of 2`, then `draft mode is the mode it was`.
 
-- [ ] **Step 3: Run everything**
+- [ ] **Step 3: Check that trios work at all**
+
+The spec promises realistic simulation for trios as well as duos, and nothing
+so far has run a single trio through it. The 2025 sets store their rosters in a
+different shape from the 2026 ones — one `_t1` property of the form
+`{entry, sorts}` rather than one property per stage — and `rosterEntriesOf`
+reads that branch by shape. That branch has never been executed. If it is
+wrong, realistic mode offers an empty list on every 2025 Major and the mode is
+broken for a third of the tiles with nothing to say so.
+
+Append this to the bootstrap of `tools/check-realistic.js`, after the field
+block and before the closing `} catch (e)`:
+
+```js
+    // The other era, whose cards carry their roster in a different shape.
+    pendingSize = 3; pendingCardSet = 't1'; pendingMapSet = 't1';
+    preSelectedRegions = ['EU'];
+    REALISTIC = true;
+    startDraft(3, false);
+    var trio = realTeamsFor(pool);
+    out.trio = {
+      count: trio.teams.length,
+      dropped: trio.dropped,
+      sizes: Array.from(new Set(trio.teams.map(function(t){ return t.handles.length; }))).sort(),
+      top: trio.teams.length ? trio.teams[0].handles.join(' & ') : null
+    };
+```
+
+and these checks beside the others at the bottom of the file:
+
+```js
+if (!out.trio.count)
+  fails.push('the 2025 trio Major offered no real teams at all — rosterEntriesOf ' +
+    'is not reading the shape those cards store');
+if (out.trio.sizes.length !== 1 || out.trio.sizes[0] !== 3)
+  fails.push('the trio Major produced teams of size ' + out.trio.sizes.join(',') + ', expected 3');
+```
+
+and print it in the summary:
+
+```js
+console.log('  2025 trio Major     ' + out.trio.count + ' teams, dropped ' + out.trio.dropped +
+            (out.trio.top ? ', top ' + out.trio.top : ''));
+```
+
+Run: `node tools/check-realistic.js`
+Expected: it still passes, and now prints a non-zero trio count with every team of size 3.
+
+If the trio count is zero, that is a real finding about `rosterEntriesOf` — report
+it, do not delete the check.
+
+- [ ] **Step 4: A roster the mode cannot field is not a team**
+
+Running the check above finds it: the 2025 sets return 177 real trios, but some
+of them are not trios. Twenty-one rows across Majors 1 to 3 and five regions
+have fewer than three names captured in the raw data, so `realTeamsFor` builds a
+one- or two-player "team" out of them. `fillRealFieldTeams` already refuses
+those (`if(t.handles.length!==size) continue;`), so a lobby is safe — but the
+picker has no such rule, and would offer a one-man trio and let somebody take it
+into a trio Major.
+
+That is the same fact as a member missing from the pool: a roster this mode
+cannot field. Give it the same treatment. In `realTeamsFor`, immediately above
+the existing `if(cards.length!==t.handles.length){ dropped++; return; }`, add:
+
+```js
+    // A roster the mode cannot field is not a team. Twenty-one rows across the
+    // 2025 sets carry fewer names than the mode plays — a trio row with one
+    // handle on it — and without this the picker offers a one-man trio and lets
+    // somebody take it into a trio Major. Counted as incomplete, because that is
+    // what it is, so the number held back is the one the screen already prints.
+    if(t.handles.length !== squadSize){ dropped++; return; }
+```
+
+Then tighten the trio check from Step 3: `out.trio.sizes` must be exactly `[3]`,
+and `out.trio.count` must still be large — a size rule that emptied the list
+would pass a sizes check and fail the mode:
+
+```js
+if (out.trio.count < 100)
+  fails.push('the 2025 trio Major offered only ' + out.trio.count + ' teams — the size rule ' +
+    'is throwing away rosters it should be keeping');
+```
+
+Run: `node tools/check-realistic.js`
+Expected: passes, with the trio line reporting size 3 only and a non-zero dropped count.
+
+- [ ] **Step 4: Run everything**
 
 Run:
 
@@ -810,7 +998,7 @@ Expected: every one clean; `zone-sim-test` reports `77 passed, 0 failed`.
 - [ ] **Step 4: Commit**
 
 ```bash
-git -c core.autocrlf=false add tools/check-draft-unchanged.js
+git -c core.autocrlf=false add tools/check-draft-unchanged.js tools/check-realistic.js
 git commit -m "test: guard that draft mode is unchanged by realistic simulation"
 ```
 
