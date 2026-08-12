@@ -1437,10 +1437,10 @@
       <h4 data-i18n="preregionTitle"></h4>
       <div class="region-note" data-i18n="preregionNote"></div>
     </div>
-    <div class="rating-explainer" style="margin-top:14px;">
+    <div class="rating-explainer" id="simModeHead" style="margin-top:14px;">
       <h4 data-i18n="simModeTitle"></h4>
     </div>
-    <div class="sim-modes">
+    <div class="sim-modes" id="simModes">
       <button class="sim-btn" id="simRealisticBtn" onclick="setSimMode(true)">
         <h5 data-i18n="simRealisticTitle"></h5>
         <p data-i18n="simRealisticNote"></p>
@@ -1863,8 +1863,12 @@ simRealisticTitle:'Реалистичная симуляция', simRealisticNot
 simDraftTitle:'Драфт-симуляция', simDraftNote:'Собираешь свой состав из карточек игроков. Соперники собираются так же.',
 simModeTitle:'Режим симуляции',
 teamPickTitle:'Выбор состава', teamPickDesc:'Выбери настоящую команду мажора. Состав менять нельзя.',
-teamPickSearch:'Поиск по нику', teamPickCount:(n)=>n+' команд',
-teamPickDropped:(n)=>n===0?'':'Не показаны: '+n+' — кто-то из состава вне выбранного фильтра',
+teamPickSearch:'Поиск по нику',
+teamPickCount:(n)=>n+' '+(n%10===1&&n%100!==11?'команда':(n%10>=2&&n%10<=4&&(n%100<12||n%100>14)?'команды':'команд')),
+teamPickDroppedSize:(n)=>n===0?'':'Не показаны: '+n+' — состав не того размера для этого режима',
+teamPickDroppedMissing:(n)=>n===0?'':'Не показаны: '+n+' — кто-то из состава вне выбранного фильтра',
+teamPickNone:'В этом наборе нет ни одной настоящей команды подходящего размера.',
+teamPickNoMatch:'По этому нику команд не нашлось.',
 teamPickBtn:'Взять',
 weaponPackTitle:'Оружейный пак', weaponPackDesc:'Выбери оружие — влияет на силу состава.', lootPoolNote:n=>'Лут-пул сезона: '+n, healPackTitle:'Пак хила', healPackDesc:'Выбери расходник — тоже влияет на силу состава.', weaponLabel:'Оружие', loadoutLabel:'Экипировка:', totalPowerLabel:'Итоговая сила:',
 landingTitle:'Выбери точку высадки', landingHint:'Кликни по любой зоне на карте — свободные дают очки, занятые дают риск и бонус за победу в стычке', landingChosenText:n=>'Точка высадки №'+n+' выбрана', landingTaken:'занято', landingZoneSuffix:n=>'зона '+n, landingPoints:n=>'+'+n+' очков', landingChosenPoints:(n,p)=>'Точка высадки №'+n+' выбрана — +'+p+' очков', landingResultsTitle:'Куда упали составы', landingChosenContested:(n,p)=>'Точка высадки №'+n+' выбрана — там уже отряд! +'+p+' очков, но риск стычки', landingFightWon:'⚔ выиграл стычку при высадке', landingFightLost:'💀 проиграл стычку при высадке', landingShared:'🤝 делили зону, всё обошлось', landingRiskTag:n=>n>=2?'2 команды здесь — высокий риск':'занято — риск стычки', landingConfirmBtn:'Подтвердить высадку', gameLandingTitle:(g,n)=>'Высадка — игра '+g+' из '+n, landingPickSeat:(n,total)=>'Ты выбираешь '+n+'-м из '+total+' — раньше квалифицировался, раньше ставишь метку.', landingPickPrompt:'Кликни по зоне, чтобы посмотреть, кто там, потом подтверди высадку', landingFreePreview:p=>'Свободная зона — +'+p+' очков, без риска', landingOccupiedPreview:n=>n>=2?'Внимание: там уже '+n+' команды — придётся победить обе':'Там уже отряд — будет стычка при высадке', scqTitle:'Second Chance Qualifier — последний шанс на LAN',
@@ -2338,8 +2342,11 @@ simRealisticTitle:'Realistic simulation', simRealisticNote:'Pick one of the Majo
 simDraftTitle:'Draft simulation', simDraftNote:'Build your own squad out of player cards. The rivals are built the same way.',
 simModeTitle:'Simulation mode',
 teamPickTitle:'Pick a squad', teamPickDesc:'Pick one of the Major\'s real teams. The roster is fixed.',
-teamPickSearch:'Search by handle', teamPickCount:(n)=>n+' teams',
-teamPickDropped:(n)=>n===0?'':'Not listed: '+n+' — a member is outside the chosen filter',
+teamPickSearch:'Search by handle', teamPickCount:(n)=>n+(n===1?' team':' teams'),
+teamPickDroppedSize:(n)=>n===0?'':'Not listed: '+n+' — the roster is not the size this mode plays',
+teamPickDroppedMissing:(n)=>n===0?'':'Not listed: '+n+' — a member is outside the chosen filter',
+teamPickNone:'This set has no real team of the right size for this mode.',
+teamPickNoMatch:'No team matches that handle.',
 teamPickBtn:'Take',
 weaponPackTitle:'Weapon pack', weaponPackDesc:'Pick a weapon — affects squad power.', lootPoolNote:n=>'Season loot pool: '+n, healPackTitle:'Heal pack', healPackDesc:'Pick a consumable — also affects squad power.', weaponLabel:'Weapon', loadoutLabel:'Loadout:', totalPowerLabel:'Total power:',
 landingTitle:'Choose your landing spot', landingHint:'Click any zone on the map — free ones give points, occupied ones carry risk plus a bonus if you win the scrap', landingChosenText:n=>'Landing spot #'+n+' selected', landingTaken:'taken', landingZoneSuffix:n=>'zone '+n, landingPoints:n=>'+'+n+' pts', landingChosenPoints:(n,p)=>'Landing spot #'+n+' selected — +'+p+' pts', landingResultsTitle:'Where the squads dropped', landingChosenContested:(n,p)=>'Landing spot #'+n+' selected — a squad is already there! +'+p+' pts, but risk of a fight', landingFightWon:'⚔ won a landing fight', landingFightLost:'💀 lost a landing fight', landingShared:'🤝 shared the zone, no clash', landingRiskTag:n=>n>=2?'2 squads here — high risk':'occupied — risk of a fight', landingConfirmBtn:'Confirm landing', gameLandingTitle:(g,n)=>'Landing — game '+g+' of '+n, landingPickSeat:(n,total)=>'You pick '+n+(n%10===1&&n%100!==11?'st':n%10===2&&n%100!==12?'nd':n%10===3&&n%100!==13?'rd':'th')+' of '+total+' — qualify earlier, choose earlier.', landingPickPrompt:'Click a zone to see who is there, then confirm your landing', landingFreePreview:p=>'Free zone — +'+p+' pts, no risk', landingOccupiedPreview:n=>n>=2?'Careful: '+n+' squads already there — you would need to beat both':'A squad is already there — expect a fight on landing', scqTitle:'Second Chance Qualifier — last route to the LAN',
@@ -27258,6 +27265,18 @@ function chooseMode(size, major){
   applyLobbyTheme(true);
   buildPreRegionChecks();
   buildMapChecks();
+  // The realistic simulation is built on the roster back-references the cards
+  // carry, and only card-set cards carry them: ALL FNCS, Duo, Trio and Squad
+  // draw from players with no roster attached, so the picker there is empty, no
+  // player is ever taken, and the run cannot be finished or left except through
+  // the logo. Squad is impossible on top of that — no roster in the data has
+  // four members. Asked of the data for this tile at this size rather than of a
+  // list of tile names, so a new card set is offered the choice automatically
+  // and a set that loses its rosters stops offering it.
+  const canReal=realTeamsExistFor(pendingPool(), pendingSize);
+  const simHead=document.getElementById('simModeHead'), simModes=document.getElementById('simModes');
+  if(simHead) simHead.style.display = canReal ? '' : 'none';
+  if(simModes) simModes.style.display = canReal ? '' : 'none';
   setSimMode(false);
   show('screen-preregion');
 }
@@ -27483,6 +27502,21 @@ function startDraft(size, major){
   const shareBtn=document.getElementById('shareResultBtn'); if(shareBtn) shareBtn.style.display='none';
   document.getElementById('locationPickerBox').style.display='none';
   document.getElementById('goBtn').disabled=true;
+  // Everything the team picker puts on screen or leaves in a global, cleared
+  // for every run whatever mode it is. A realistic run that was abandoned at the
+  // picker — opened, no team taken, back to the menu — used to leave the search
+  // box up, its oninput bound to the old list, and teamPickList still holding
+  // the previous run's teams; the next draft run then had a live Take button on
+  // screen that drafted a whole roster with REALISTIC false, and finished after
+  // one loot round because draftedEnough() counts players in draft mode.
+  const tpBar=document.getElementById('teamPickBar');
+  if(tpBar) tpBar.style.display='none';
+  const tpCands=document.getElementById('candidates');
+  if(tpCands) tpCands.style.display='';
+  const tpSearch=document.getElementById('teamPickSearch');
+  if(tpSearch){ tpSearch.value=''; tpSearch.oninput=null; }
+  currentCandidates=[];
+  teamPickList=[];
   CARD_MODE=pendingCards;
   CARD_SET=pendingCardSet;
   // Major 1 and Major 2 are played on different islands — load the matching
@@ -27492,6 +27526,12 @@ function startDraft(size, major){
   let base = preSelectedRegions.length>0 ? src.filter(p=>preSelectedRegions.includes(p.region)) : src.slice();
   if(preSelectedYears.length) base = base.filter(p=>preSelectedYears.includes(getPlayerYear(p)));
   pool = base;
+  // Belt and braces. chooseMode does not offer the realistic simulation where
+  // the data cannot serve it, but a run entered any other way must not strand
+  // the player: with no real roster in the pool the picker has nothing to take,
+  // roundPlayerPicked never turns true and the run has no way forward at all.
+  // Falling back to the draft is the one outcome that still gives a tournament.
+  if(REALISTIC && !realTeamsExistFor(pool, size)) REALISTIC=false;
   activeRegion='ALL'; round=0; rerollsLeft=2;
   isMajorMode=!!major;
   applyLobbyTheme();
@@ -27540,8 +27580,11 @@ function buildRegionFilter(){
   const el=document.getElementById('regionFilter');
   el.innerHTML='';
   // Card modes are already locked to one region, so the in-draft filter would
-  // only offer choices that do nothing.
-  if(CARD_MODE){ el.style.display='none'; activeRegion='ALL'; return; }
+  // only offer choices that do nothing. A realistic run has no player pack at
+  // all, and the chip handler repaints one: refreshFilterUI calls
+  // renderCandidates(currentCandidates), which would put a stale pack with live
+  // pick() buttons on top of the team picker.
+  if(CARD_MODE || REALISTIC){ el.style.display='none'; activeRegion='ALL'; return; }
   el.style.display='';
   const all=document.createElement('button');
   all.className='rf-btn active'; all.textContent=L().allRegions;
@@ -28168,9 +28211,13 @@ function renderTeamPicker(){
   teamPickList=built.teams;
   bar.style.display='block';
   box.placeholder=L().teamPickSearch;
+  // The two reasons a roster is held back read as two clauses, because one
+  // sentence about a filter was simply untrue for the twenty-one 2025 rows that
+  // are the wrong size for the mode.
   document.getElementById('teamPickMeta').textContent =
     L().teamPickCount(built.teams.length) +
-    (built.dropped ? ' · ' + L().teamPickDropped(built.dropped) : '');
+    (built.droppedSize ? ' · ' + L().teamPickDroppedSize(built.droppedSize) : '') +
+    (built.droppedMissing ? ' · ' + L().teamPickDroppedMissing(built.droppedMissing) : '');
   box.oninput=()=>paintTeamPicker(box.value);
   paintTeamPicker(box.value);
 }
@@ -28182,6 +28229,17 @@ function paintTeamPicker(query){
                 : teamPickList;
   el.innerHTML='';
   el.style.display='block';
+  // An empty list must say it is empty. Rendering nothing leaves the player
+  // looking at a blank panel with no way to tell a search that matched nobody
+  // from a pool that holds no real roster at all.
+  if(!shown.length){
+    const note=document.createElement('div');
+    note.className='region-note';
+    note.style.cssText='padding:14px 4px;';
+    note.textContent = teamPickList.length ? L().teamPickNoMatch : L().teamPickNone;
+    el.appendChild(note);
+    return;
+  }
   shown.forEach(t=>{
     const row=document.createElement('div');
     row.className='team-row';
@@ -30455,7 +30513,6 @@ async function offerSquadChoice(stageName, you, allTeams){
 // new set needs no change here.
 function rosterEntriesOf(card){
   const out=[];
-  const STAGE_OF={P:'Playin', L:'Lcq', G:'Gf'};
   for(const k in card){
     if(k.charAt(0)!=='_') continue;
     const modern=/^_([a-z]\d)(Playin|Lcq|Gf)$/.exec(k);
@@ -30464,21 +30521,47 @@ function rosterEntriesOf(card){
       continue;
     }
     if(/^_t[123]$/.test(k) && card[k] && card[k].entry && card[k].entry.duo)
-      out.push({stage:STAGE_OF[card[k+'Stage']] || 'Playin', entry:card[k].entry});
+      out.push({stage:REAL_STAGE_OF[card[k+'Stage']] || 'Playin', entry:card[k].entry});
   }
   return out;
 }
+
+// The letter a 2025 card stores its stage as, spelled out. Up here rather than
+// inside rosterEntriesOf, which rebuilds it once per card on every call — and
+// realTeamsFor calls it for every player in the pool.
+const REAL_STAGE_OF={P:'Playin', L:'Lcq', G:'Gf'};
 
 // Which showing of a team the list should print. A third of the field played
 // more than one stage, and a team is one team however many times it appeared.
 const REAL_STAGE_RANK={Gf:3, Lcq:2, Playin:1};
 
+// Is there a single real roster this pool could field at this size? The cheap
+// question behind "may this tile offer the realistic simulation at all" — it
+// stops at the first whole roster instead of building, rating and sorting the
+// list, and it reads the same data realTeamsFor does rather than a hardcoded
+// list of tiles. Takes the size as an argument because it is asked before
+// squadSize is set for the run.
+function realTeamsExistFor(players, size){
+  const have=new Set(players.map(p=>p.handle));
+  for(const p of players){
+    for(const {entry} of rosterEntriesOf(p)){
+      if(entry.duo.length!==size) continue;
+      if(entry.duo.every(h=>have.has(h))) return true;
+    }
+  }
+  return false;
+}
+
 // Every real roster in the pool, once each, strongest cards first.
 //
-// `dropped` is teams whose roster is not wholly in the pool — a region filter
-// or an era filter can leave one player behind. They are counted rather than
-// completed from elsewhere: a lobby of real teams with one invented member is
-// the one thing a mode called realistic must not quietly serve.
+// Two ways a roster is held back, counted apart because they are not the same
+// news. `droppedMissing` is a roster that is not wholly in the pool — a region
+// or era filter left a member behind. `droppedSize` is a roster the mode cannot
+// field at all: twenty-one rows across the 2025 sets carry fewer names than the
+// mode plays. Both are counted rather than completed from elsewhere — a lobby
+// of real teams with one invented member is the one thing a mode called
+// realistic must not quietly serve — and `dropped` is their total, which is what
+// the older callers ask for.
 function realTeamsFor(players){
   const byHandle={};
   players.forEach(p=>{ byHandle[p.handle]=p; });
@@ -30493,21 +30576,19 @@ function realTeamsFor(players){
     });
   });
   const teams=[];
-  let dropped=0;
+  let droppedSize=0, droppedMissing=0;
   best.forEach(t=>{
-    // A roster the mode cannot field is not a team. Twenty-one rows across the
-    // 2025 sets carry fewer names than the mode plays — a trio row with one
-    // handle on it — and without this the picker offers a one-man trio and lets
-    // somebody take it into a trio Major. Counted as incomplete, because that is
-    // what it is, so the number held back is the one the screen already prints.
-    if(t.handles.length !== squadSize){ dropped++; return; }
+    // A roster the mode cannot field is not a team — a trio row with one handle
+    // on it. Without this the picker offers a one-man trio and lets somebody
+    // take it into a trio Major.
+    if(t.handles.length !== squadSize){ droppedSize++; return; }
     const cards=t.handles.map(h=>byHandle[h]).filter(Boolean);
-    if(cards.length!==t.handles.length){ dropped++; return; }
+    if(cards.length!==t.handles.length){ droppedMissing++; return; }
     const avg=cards.reduce((s,c)=>s+c.rating, 0)/cards.length;
     teams.push({...t, cards, avg});
   });
   teams.sort((a,b)=>b.avg-a.avg || a.rank-b.rank);
-  return {teams, dropped};
+  return {teams, dropped:droppedSize+droppedMissing, droppedSize, droppedMissing};
 }
 
 // The lobby, in real rosters. Same shape as fillFieldTeams so the call sites
