@@ -1181,7 +1181,9 @@ function pacedGame(seed, seat){
   const teams = fakeField(50);
   const {timeline} = runGame(seed, teams, true);
   const roster = teams.map((t, i) => ({name: t.name, you: i === seat}));
-  return {teams, timeline, roster, track: ZoneReplay.paceTrack(timeline, roster)};
+  const beats = ZoneReplay.directTrack(timeline, roster);
+  return {teams, timeline, roster, beats,
+          track: beats.map(b => b.pace), views: beats.map(b => b.view)};
 }
 
 test('the replay slows down for every fight your squad is in, and before it', () => {
@@ -1223,9 +1225,87 @@ test('the replay runs fast where nothing is happening and slow at the end', () =
 test('a match with nobody in it, and one asked to play flat, both still play', () => {
   const teams = fakeField(50);
   const {timeline} = runGame(9, teams, true);
-  const watched = ZoneReplay.paceTrack(timeline, teams.map(t => ({name: t.name})));
-  assert(watched.length === timeline.length, 'the track is not one speed per frame');
-  watched.forEach(v => assert(v >= 1, 'a frame was given a speed below the base one'));
+  const watched = ZoneReplay.directTrack(timeline, teams.map(t => ({name: t.name})));
+  assert(watched.length === timeline.length, 'the track is not one beat per frame');
+  watched.forEach(b => assert(b.pace >= 1, 'a frame was given a speed below the base one'));
+});
+
+// --- the camera
+//
+// A view is world units — a point and a radius to show around it — so where the
+// camera points can be checked here, away from a browser. What only a browser
+// can answer is whether the transform it becomes is the one anybody wanted, and
+// that is tools/check-replay-pace.js.
+
+test('the camera stays on the whole map until something is worth seeing closer', () => {
+  for(const seed of [4, 17, 33]){
+    const {timeline, views} = pacedGame(seed, 3);
+    timeline.forEach((f, i) => {
+      // Fifty squads alive, the first circle, and nothing happening to you is
+      // the widest a match ever is.
+      if(f.alive > 12 && f.zone <= 1 && !(f.events || []).length && i > 6)
+        assert(views[i] === null,
+          'seed ' + seed + ': the camera was in close on an empty first circle');
+      if(f.alive <= 12) assert(views[i], 'seed ' + seed + ': the endgame played wide');
+    });
+  }
+});
+
+test('a fight of yours is in the shot', () => {
+  for(const seed of [4, 17, 33]){
+    const seat = 3;
+    const {teams, timeline, views} = pacedGame(seed, seat);
+    const mine = teams[seat].name;
+    timeline.forEach((f, i) => {
+      const ours = (f.events || []).some(e => {
+        const cut = e.indexOf(':');
+        return e.slice(0, cut) === mine || e.slice(cut + 1) === mine;
+      });
+      if(!ours) return;
+      const v = views[i];
+      assert(v, 'seed ' + seed + ': frame ' + i + ' is a fight of yours and the camera is on the map');
+      const d = f.dots[seat];
+      assert(Math.hypot(d.x - v.cx, d.y - v.cy) <= v.r,
+        'seed ' + seed + ': frame ' + i + ' put your own squad outside the shot');
+    });
+  }
+});
+
+test('the camera never asks for more than the map can give', () => {
+  for(const seed of [4, 17, 33]){
+    const {views} = pacedGame(seed, 3);
+    views.forEach((v, i) => {
+      if(!v) return;
+      assert(v.r >= 4, 'frame ' + i + ' asked for a shot ' + v.r.toFixed(2) +
+        ' units across, which is closer than the map has ground for');
+      assert(v.cx >= 0 && v.cx <= 100 && v.cy >= 0 && v.cy <= 100,
+        'frame ' + i + ' pointed the camera off the island');
+    });
+  }
+});
+
+// The endgame shot sits on its floor rather than tightening all the way down,
+// and that is the finding rather than a compromise: by the time twelve squads
+// are left they are already inside a circle a couple of units across, so what
+// decides the shot is how close the map can usefully be read, not how close
+// they are standing. What matters is that the floor is well past the zoom the
+// names need — that is the whole of "and put the nicknames up in the late
+// game", and it is checked here rather than left to the eye.
+test('the endgame is close enough to carry the names on the map', () => {
+  const VB_HALF = 100 * (970/1100) / 2;      // half the viewBox height, as the camera measures it
+  const NAME_ZOOM = 2.5;
+  let checked = 0;
+  for(const seed of [4, 17, 33]){
+    const {timeline, views} = pacedGame(seed, 3);
+    timeline.forEach((f, i) => {
+      if(f.alive > 12 || !views[i]) return;
+      checked++;
+      const scale = VB_HALF / views[i].r;
+      assert(scale >= NAME_ZOOM, 'seed ' + seed + ': ' + f.alive + ' squads left and the camera is at ' +
+        scale.toFixed(1) + 'x, which is too wide for the names to go on the map');
+    });
+  }
+  assert(checked > 20, 'only ' + checked + ' endgame frames to measure');
 });
 
 console.log('\n' + passed + ' passed, ' + failed + ' failed\n');

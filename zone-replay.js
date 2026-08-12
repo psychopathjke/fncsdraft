@@ -16,13 +16,17 @@
   // put it back. The pan is clamped so the edge of the island can never be
   // dragged into the middle of the frame — at any zoom the box stays full of
   // map, which is what stops a zoomed replay from getting lost.
-  function addZoom(wrap, stage){
+  function addZoom(wrap, stage, handle){
     var scale = 1, tx = 0, ty = 0, dragging = false, lastX = 0, lastY = 0, moved = false;
 
     function apply(){
       stage.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
       wrap.style.cursor = scale > 1 ? (dragging ? 'grabbing' : 'grab') : 'zoom-in';
+      if(handle) handle.scale = scale;
     }
+    // Set by the events rather than by apply(), which also runs once at mount
+    // and would hand the camera over before anybody had touched anything.
+    function touched(){ if(handle) handle.byHand = true; }
     function clampPan(){
       var w = wrap.clientWidth, h = wrap.clientHeight;
       tx = Math.min(0, Math.max(w - w * scale, tx));
@@ -40,13 +44,14 @@
     }
 
     wrap.addEventListener('wheel', function(e){
-      e.preventDefault();
+      e.preventDefault(); touched();
       var r = wrap.getBoundingClientRect();
       zoomAt(e.clientX - r.left, e.clientY - r.top, Math.exp(-e.deltaY * 0.0016));
     }, {passive:false});
 
     wrap.addEventListener('pointerdown', function(e){
       if(scale === 1) return;
+      touched();
       dragging = true; moved = false;
       lastX = e.clientX; lastY = e.clientY;
       wrap.setPointerCapture(e.pointerId);
@@ -69,7 +74,7 @@
     wrap.addEventListener('pointercancel', release);
 
     wrap.addEventListener('dblclick', function(e){
-      e.preventDefault();
+      e.preventDefault(); touched();
       if(scale > 1){ scale = 1; tx = 0; ty = 0; apply(); return; }
       var r = wrap.getBoundingClientRect();
       zoomAt(e.clientX - r.left, e.clientY - r.top, 3);
@@ -79,6 +84,7 @@
     wrap.addEventListener('click', function(e){
       if(moved || e.detail > 1) return;
       if(scale > 1) return;
+      touched();
       var r = wrap.getBoundingClientRect();
       zoomAt(e.clientX - r.left, e.clientY - r.top, 2.2);
     });
@@ -138,13 +144,19 @@
       'align-items:flex-start;gap:3px;pointer-events:none;');
     wrap.appendChild(feed);
 
+    var handle = {wrap:wrap, stage:stage, svg:svg, head:head, side:side, feed:feed,
+                  lines:[], scale:1};
+
     // Zooming in on the map, for when the circle is a coin and nine squads are
     // standing in it. Off unless the caller asks: taking the wheel away from a
     // page whose replay is one card among many is worse than not zooming.
-    if(opts.zoom) addZoom(wrap, stage);
+    //
+    // A hand on the wheel takes the camera off play() for good. Two things
+    // writing one transform is a fight the viewer always loses.
+    if(opts.zoom) addZoom(wrap, stage, handle);
 
     container.appendChild(wrap);
-    return {wrap:wrap, svg:svg, head:head, side:side, feed:feed, lines:[]};
+    return handle;
   }
 
   // Stroke widths are in screen pixels — non-scaling-stroke makes them so — and
@@ -284,6 +296,11 @@
   // there is room for them.
   var LABEL_BELOW = 12;
 
+  // And how far in the camera has to be before those names can live on the map
+  // rather than beside it. Twelve squads spread across an island still smudge;
+  // twelve in a circle that fills the box do not.
+  var NAME_ZOOM = 2.5;
+
   // The squad marker: the arrowhead the real map uses, pointing the way the
   // squad is travelling. A heading is worth more than a dot here — the whole
   // subject is rotations, and an arrow says who is already moving to the next
@@ -293,7 +310,11 @@
   // so it reads as a chevron rather than a wedge at the size these end up.
   var MARKER = 'M 1.9 0 L -1.2 -1.25 L -0.55 0 L -1.2 1.25 Z';
 
-  function marker(x, y, angle, fill, isYou){
+  // Drawn against the camera, not with it. Zooming in is for telling two squads
+  // apart when they are standing on the same roof — magnifying the arrows along
+  // with the ground would put them back on top of each other, three times the
+  // size. So the marker keeps its size on screen and the ground grows past it.
+  function marker(x, y, angle, fill, isYou, scale){
     var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     p.setAttribute('d', MARKER);
     p.setAttribute('fill', fill);
@@ -303,7 +324,7 @@
     p.setAttribute('transform',
       'translate(' + x.toFixed(3) + ' ' + y.toFixed(3) + ') ' +
       'rotate(' + angle.toFixed(1) + ') ' +
-      'scale(' + (isYou ? 1.35 : 1) + ')');
+      'scale(' + ((isYou ? 1.35 : 1) / (scale || 1)).toFixed(4) + ')');
     return p;
   }
 
@@ -393,15 +414,72 @@
     handle.feed.innerHTML = handle.lines.join('');
   }
 
-  function label(x, y, text, fill){
+  // --- squads standing on the same ground
+  //
+  // The collapse pulls everybody to one point, so the last five squads of a
+  // game are at identical coordinates: one arrow drawn five times, and a header
+  // that says five are alive above a map showing one. No amount of zoom
+  // separates coordinates that are equal.
+  //
+  // So a cluster is fanned onto a small ring — in screen terms, not map terms,
+  // which is what keeps it honest: the fan is the width of a marker, the same
+  // few pixels whatever the camera is doing, and it says "several here" rather
+  // than moving anybody anywhere the eye can measure. Only while zoomed in,
+  // because at full map a two-unit nudge is 2% of the island and the overlap
+  // was never the problem there.
+  var FAN = 2.2;                 // marker-widths of ring, in user units before the camera
+
+  function cluster(dots, scale){
+    var out = [], i;
+    if(scale < NAME_ZOOM){
+      for(i=0;i<dots.length;i++) if(dots[i].alive) out.push([i]);
+      return out;
+    }
+    var sep = 2.4 / scale, seen = {};
+    for(i=0;i<dots.length;i++){
+      if(!dots[i].alive) continue;
+      var key = Math.round(dots[i].x / sep) + ',' + Math.round(dots[i].y / sep);
+      if(seen[key] == null){ seen[key] = out.length; out.push([i]); }
+      else out[seen[key]].push(i);
+    }
+    return out;
+  }
+
+  function offsetIn(group, at, scale){
+    if(group.length < 2) return {dx: 0, dy: 0};
+    var r = FAN / scale, a = (at / group.length) * Math.PI * 2;
+    return {dx: Math.cos(a) * r, dy: Math.sin(a) * r};
+  }
+
+  // One line of a cluster's column of names, hung to the right of it and
+  // centred on it vertically.
+  function stackedLabel(x, y, at, total, text, fill, scale){
+    var s = scale || 1, line = 2.9 / s;
     var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    t.setAttribute('x', x); t.setAttribute('y', y - 1.6);
-    t.setAttribute('text-anchor', 'middle');
-    t.setAttribute('font-size', '2.4');
+    t.setAttribute('x', x + 3.4 / s);
+    t.setAttribute('y', y + (at - (total - 1) / 2) * line + line * 0.34);
+    t.setAttribute('text-anchor', 'start');
+    t.setAttribute('font-size', (2.2 / s).toFixed(3));
     t.setAttribute('font-weight', '800');
     t.setAttribute('paint-order', 'stroke');
     t.setAttribute('stroke', 'rgba(0,0,0,.85)');
-    t.setAttribute('stroke-width', '0.9');
+    t.setAttribute('stroke-width', (0.85 / s).toFixed(3));
+    t.setAttribute('stroke-linejoin', 'round');
+    t.setAttribute('fill', fill);
+    t.textContent = text;
+    return t;
+  }
+
+  function label(x, y, text, fill, scale){
+    var s = scale || 1;
+    var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', x); t.setAttribute('y', y - 1.6 / s);
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('font-size', (2.4 / s).toFixed(3));
+    t.setAttribute('font-weight', '800');
+    t.setAttribute('paint-order', 'stroke');
+    t.setAttribute('stroke', 'rgba(0,0,0,.85)');
+    t.setAttribute('stroke-width', (0.9 / s).toFixed(3));
     t.setAttribute('stroke-linejoin', 'round');
     t.setAttribute('fill', fill);
     t.textContent = text;
@@ -436,24 +514,54 @@
         'rgba(255,255,255,.96)', 1.6));
     }
 
-    var named = frame.alive <= LABEL_BELOW;
-    for(var i=0;i<frame.dots.length;i++){
-      var d = frame.dots[i];
-      if(!d.alive) continue;
-      var who = roster[i] || {};
-      handle.svg.appendChild(marker(d.x, d.y, d.a || 0,
-        who.you ? 'var(--accent)' : colourFor(i), who.you));
-      // Only yours is named on the map. Following your own squad across a
-      // rotation is the reason to watch this, and one label never collides.
-      if(who.you){
+    // Names on the map were ruled out for a reason that the camera has since
+    // taken away: nine of them printed over a zone-9 circle land on top of each
+    // other and read as a smudge. That is true of a circle drawn a centimetre
+    // across, and false of the same circle filling the box. So the names go
+    // where the map is close enough to hold them, and the list beside the map
+    // covers the rest — the two never show at once, because that is the same
+    // information printed twice.
+    var few = frame.alive <= LABEL_BELOW;
+    var scale = handle.scale || 1;
+    // The camera decides this on its own, without asking how many are left. A
+    // fight in a full lobby is shown as close as the endgame is, and there the
+    // question is the same one — who is that — so it gets the same answer. The
+    // forty squads elsewhere on the island are labelled too and every one of
+    // those labels is off the edge of the box, which costs nothing to draw and
+    // saves the renderer having to know where the box is.
+    var onMap = scale >= NAME_ZOOM;
+    var groups = cluster(frame.dots, scale);
+    for(var g=0;g<groups.length;g++){
+      var grp = groups[g], stack = grp.length > 1 ? [] : null;
+      for(var m=0;m<grp.length;m++){
+        var i = grp[m], d = frame.dots[i], who = roster[i] || {};
+        var off = offsetIn(grp, m, scale);
+        var colour = who.you ? 'var(--accent)' : colourFor(i);
+        handle.svg.appendChild(marker(d.x + off.dx, d.y + off.dy, d.a || 0, colour, who.you, scale));
         var name = plain(who.name);
-        if(name) handle.svg.appendChild(label(d.x, d.y, name, '#ffffff'));
+        // Yours is named whatever the camera is doing — following your own
+        // squad across a rotation is the reason to watch this, and one label
+        // never collides with anything.
+        if(!name || !(who.you || onMap)) continue;
+        if(stack) stack.push({name: name, colour: who.you ? '#ffffff' : colour, you: !!who.you});
+        else handle.svg.appendChild(label(d.x, d.y, name, who.you ? '#ffffff' : colour, scale));
+      }
+      // A cluster's names go in a column beside it rather than above each
+      // arrow. Fanning the markers apart leaves them a marker's width from each
+      // other, and a name is several times wider than that — printed in place
+      // they would be exactly the smudge the fan just undid.
+      if(stack && stack.length){
+        var head = frame.dots[grp[0]];
+        for(var s=0;s<stack.length;s++)
+          handle.svg.appendChild(stackedLabel(head.x, head.y, s, stack.length,
+            stack[s].name, stack[s].colour, scale));
       }
     }
 
-    // Everyone else gets the side list, once the field is small enough to fit.
+    // Everyone else gets the side list, once the field is small enough to fit
+    // and while the map is still too wide to carry the names itself.
     if(handle.side){
-      if(!named){ handle.side.style.display = 'none'; handle.side.innerHTML = ''; }
+      if(!few || onMap){ handle.side.style.display = 'none'; handle.side.innerHTML = ''; }
       else {
         var rows = [];
         for(var k=0;k<frame.dots.length;k++){
@@ -591,24 +699,67 @@
   // worth having without turning the mid-game into a flicker.
   var PACE_FAST = 1.6, PACE_SLOW = 1;
 
-  // The speed for every frame, worked out once. It has to be the whole timeline
-  // rather than a frame at a time, because slowing down on the frame a kill is
-  // printed is slowing down after it: the run-up is the part worth seeing.
-  function paceTrack(timeline, roster){
+  // --- and where to point the camera
+  //
+  // The same two moments, seen closer. A fifty-duo island drawn into 520 pixels
+  // gives a duo about four pixels of it, which is enough to follow a rotation
+  // and not enough to watch a fight: in the last circles the arrows overlap
+  // outright. So the map moves in on what the pacing already decided is worth
+  // the time, and everything else plays wide.
+  //
+  // The camera holds longer than the pacing does. A fight window is four frames
+  // — under half a second — and zooming in and back out inside that reads as a
+  // pump rather than as a camera. It leads by the same two frames and lingers
+  // for five.
+  var LEAD_CAM = 2, TRAIL_CAM = 5;
+  var FIGHT_NEAR = 6;      // world units — who else is in the shot when you are fighting
+  // The tightest the shot ever gets. 5 pinned it against ZOOM_MAX, which made
+  // every fight the closest the camera can physically go and read as a jump
+  // rather than a move; 7 lands a fight at about the same distance the endgame
+  // settles on, so the two look like one camera.
+  var FIGHT_MIN = 7;
+  var LATE_MIN = 6.5;      // the endgame, where the circle itself is under a unit across
+  var VIEW_MARGIN = 1.35;  // room around whatever is being fitted
+
+  // The smallest circle holding a set of points. Not the true one — the
+  // bounding box's is a fraction wide — but a fight is two or three squads and
+  // the margin is larger than the error.
+  function fitAround(pts, floor){
+    if(!pts.length) return null;
+    var minx = pts[0].x, maxx = minx, miny = pts[0].y, maxy = miny;
+    for(var i=1;i<pts.length;i++){
+      if(pts[i].x < minx) minx = pts[i].x; else if(pts[i].x > maxx) maxx = pts[i].x;
+      if(pts[i].y < miny) miny = pts[i].y; else if(pts[i].y > maxy) maxy = pts[i].y;
+    }
+    var dx = (maxx - minx) / 2, dy = (maxy - miny) / 2;
+    return {cx: minx + dx, cy: miny + dy,
+            r: Math.max(floor, Math.sqrt(dx*dx + dy*dy) * VIEW_MARGIN)};
+  }
+
+  // The speed and the shot for every frame, worked out once. It has to be the
+  // whole timeline rather than a frame at a time, because slowing down on the
+  // frame a kill is printed is slowing down after it: the run-up is the part
+  // worth seeing, and the camera has to already be there when it starts.
+  //
+  // A view is `{cx, cy, r}` in world units — show at least this much around
+  // this point — or null for the whole map. Turning that into a scale belongs
+  // to whoever knows the size of the box, which is not this.
+  function directTrack(timeline, roster){
     var n = timeline.length, out = new Array(n), i, j;
-    for(i=0;i<n;i++) out[i] = PACE_FAST;
+    for(i=0;i<n;i++) out[i] = {pace: PACE_FAST, view: null, fight: false};
     roster = roster || [];
     var me = -1;
     for(i=0;i<roster.length;i++) if(roster[i] && roster[i].you){ me = i; break; }
     var mine = me >= 0 ? plain(roster[me].name) : null;
 
-    function slowAround(at){
-      for(j = Math.max(0, at - LEAD); j <= Math.min(n - 1, at + TRAIL); j++) out[j] = PACE_SLOW;
+    function markAround(at){
+      for(j = Math.max(0, at - LEAD); j <= Math.min(n - 1, at + TRAIL); j++) out[j].pace = PACE_SLOW;
+      for(j = Math.max(0, at - LEAD_CAM); j <= Math.min(n - 1, at + TRAIL_CAM); j++) out[j].fight = true;
     }
 
     for(i=0;i<n;i++){
       var f = timeline[i];
-      if(f.alive <= LABEL_BELOW) out[i] = PACE_SLOW;
+      if(f.alive <= LABEL_BELOW) out[i].pace = PACE_SLOW;
       var ev = f.events;
       if(!ev || !ev.length) continue;
       for(var e=0;e<ev.length;e++){
@@ -619,20 +770,98 @@
         // whole field as the subject.
         if(mine == null ||
            plain(raw.slice(0, cut)) === mine || plain(raw.slice(cut + 1)) === mine){
-          slowAround(i);
+          markAround(i);
           break;
         }
+      }
+    }
+
+    for(i=0;i<n;i++){
+      var fr = timeline[i], dots = fr.dots, k, pts = [];
+      // Your fight: you and whoever is close enough to be in it. A squad
+      // already dead still has its last position, which is what the shot holds
+      // on for the seconds after you go down.
+      if(out[i].fight && me >= 0 && dots[me]){
+        var d = dots[me];
+        pts.push(d);
+        for(k=0;k<dots.length;k++){
+          if(k === me || !dots[k] || !dots[k].alive) continue;
+          var ax = dots[k].x - d.x, ay = dots[k].y - d.y;
+          if(ax*ax + ay*ay <= FIGHT_NEAR*FIGHT_NEAR) pts.push(dots[k]);
+        }
+        out[i].view = fitAround(pts, FIGHT_MIN);
+        continue;
+      }
+      // The endgame: everybody still standing, which tightens on its own as the
+      // circle collects them rather than needing a schedule.
+      if(fr.alive <= LABEL_BELOW){
+        for(k=0;k<dots.length;k++) if(dots[k] && dots[k].alive) pts.push(dots[k]);
+        out[i].view = fitAround(pts, LATE_MIN);
       }
     }
     return out;
   }
 
+  // How long the camera takes to arrive. Long enough to read as a camera and
+  // not as a cut; short enough that a fight it is moving to is still on.
+  var CAM_EASE_MS = 360;
+
+  // Drives one handle's stage transform from a view. The view is in world
+  // units and knows nothing about the box; this is the only part that does.
+  //
+  // The pan is clamped exactly as the hand-driven zoom clamps it, so the edge
+  // of the island can never be dragged into the middle of the frame — a squad
+  // fighting in the corner of the map is shown against the corner of the map.
+  function newCamera(handle){
+    var at = null;                      // {cx, cy, r}, where the camera is now
+
+    function box(){
+      var vbH = Number(handle.svg.dataset.vbh) || 100;
+      var W = handle.wrap.clientWidth || 520;
+      var H = handle.wrap.clientHeight || (W * vbH / 100);
+      return {vbH: vbH, W: W, H: H};
+    }
+    function wide(b){ return {cx: 50, cy: b.vbH/2, r: b.vbH/2}; }
+
+    return {
+      // k is how much of the way to move this step; 1 cuts straight there.
+      to: function(view, k){
+        if(handle.byHand) return;       // a hand on the wheel owns the transform
+        var b = box(), want = view || wide(b);
+        // The first frame of a game arrives where it is meant to be rather than
+        // sliding in from wherever the last game finished.
+        if(at === null) at = {cx: want.cx, cy: want.cy, r: want.r};
+        else {
+          k = Math.max(0, Math.min(1, k));
+          at.cx += (want.cx - at.cx) * k;
+          at.cy += (want.cy - at.cy) * k;
+          at.r  += (want.r  - at.r ) * k;
+        }
+        // The box holds the whole map at scale 1, so fitting a radius means
+        // fitting it on the tighter of the two axes — the shorter one, since
+        // the viewBox is the map's own shape.
+        var s = Math.max(1, Math.min(ZOOM_MAX, (b.vbH/2) / Math.max(0.001, at.r)));
+        var tx = b.W/2 - (at.cx/100) * b.W * s;
+        var ty = b.H/2 - (at.cy/b.vbH) * b.H * s;
+        tx = Math.min(0, Math.max(b.W - b.W*s, tx));
+        ty = Math.min(0, Math.max(b.H - b.H*s, ty));
+        handle.scale = s;
+        handle.stage.style.transform =
+          'translate(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px) scale(' + s.toFixed(4) + ')';
+      }
+    };
+  }
+
   function play(handle, timeline, opts){
     opts = opts || {};
     var frameMs = opts.frameMs || 90;
-    // `pace: false` plays the whole match at one speed.
-    var track = opts.pace === false ? null : paceTrack(timeline, opts.roster);
-    function pace(i){ return track ? track[Math.max(0, Math.min(track.length-1, i))] : 1; }
+    // `pace: false` plays the whole match at one speed and never moves the
+    // camera off the whole map.
+    var track = opts.pace === false ? null : directTrack(timeline, opts.roster);
+    function beat(i){
+      return track ? track[Math.max(0, Math.min(track.length-1, i))] : {pace:1, view:null};
+    }
+    var camera = newCamera(handle);
     // Starting the feed over used to happen right here, unconditionally. That
     // breaks the moment a caller wants this game's feed to open on something
     // that never came from a frame — the landing fights, pushed via note()
@@ -668,10 +897,12 @@
         var i = 0;
         (function next(){
           if(i >= timeline.length || (opts.isSkipped && opts.isSkipped())){ finish(); return; }
+          // Cut rather than glide, for a reader who has asked for no motion.
+          camera.to(beat(i).view, 1);
           show(timeline[i++]);
           // How long the frame is held, rather than how it is animated between
-          // — so this still varies for a reader who has asked for no motion.
-          setTimeout(next, frameMs / pace(i - 1));
+          // — so the pacing still applies where the interpolation does not.
+          setTimeout(next, frameMs / beat(i - 1).pace);
         })();
         return;
       }
@@ -697,10 +928,12 @@
         // instead of jumping the rest of the match in one step.
         var dt = Math.min(now - last, 250);
         last = now;
-        var target = pace(Math.floor(at));
+        var beat0 = beat(Math.floor(at));
         // Eased into rather than switched, so a change of speed reads as the
         // replay slowing down and not as a dropped frame.
-        speed = speed === null ? target : speed + (target - speed) * Math.min(1, dt / 220);
+        speed = speed === null ? beat0.pace
+                               : speed + (beat0.pace - speed) * Math.min(1, dt / 220);
+        camera.to(beat0.view, dt / CAM_EASE_MS);
         at += dt / frameMs * speed;
         var i = Math.floor(at);
         if(i >= timeline.length - 1){ finish(); return; }
@@ -744,5 +977,5 @@
 
   root.ZoneReplay = {mount:mount, play:play, unmount:unmount,
                      between:between, show:show, clearFeed:clearFeed, note:note,
-                     paceTrack:paceTrack};
+                     directTrack:directTrack};
 })(typeof globalThis !== 'undefined' ? globalThis : this);

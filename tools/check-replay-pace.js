@@ -68,21 +68,43 @@ const PAGE = `<!doctype html><meta charset="utf-8"><body style="margin:0">
 <script>
 ${FIELD}
 var FRAME_MS = 90;
-function playOnce(handle, game, paced){
+function playOnce(handle, game, paced, onFrame){
   var t0 = performance.now();
   return ZoneReplay.play(handle, game.timeline, {
     frameMs: FRAME_MS, labels: {zone: 'ZONE'}, roster: game.roster,
-    pace: paced ? undefined : false
+    pace: paced ? undefined : false, onFrame: onFrame
   }).then(function(){ return performance.now() - t0; });
 }
+// Where the camera got to, read off the stage rather than off the code that
+// moves it: the transform is the only thing the viewer actually sees.
+function scaleOf(handle){
+  var m = /scale\\(([\\d.]+)\\)/.exec(handle.stage.style.transform || '');
+  return m ? Number(m[1]) : 1;
+}
 (function(){
-  var out = {};
+  var out = {wide: 99, fight: 1, close: 1};
   try {
     var game = record(17);
     out.frames = game.timeline.length;
     var handle = ZoneReplay.mount(document.getElementById('box'), '', '1100 / 970', 970/1100);
     ZoneReplay.clearFeed(handle);
-    playOnce(handle, game, true).then(function(ms){
+    var watch = function(f){
+      var s = scaleOf(handle);
+      // While the lobby is still full the camera does both things: it sits on
+      // the whole map, and it comes in for a fight of yours. So both ends are
+      // recorded — a mid-game that never reaches 1 is a map never shown whole,
+      // and one that never leaves it is a camera that ignored your fights.
+      if(f.alive > 20){
+        out.wide = Math.min(out.wide, s);
+        out.fight = Math.max(out.fight, s);
+      }
+      if(f.alive <= 12){
+        out.close = Math.max(out.close, s);
+        out.namesOnMap = Math.max(out.namesOnMap || 0, handle.svg.getElementsByTagName('text').length);
+        out.sideShown = out.sideShown || handle.side.style.display !== 'none';
+      }
+    };
+    playOnce(handle, game, true, watch).then(function(ms){
       out.pacedMs = Math.round(ms);
       out.feedLines = handle.feed.children.length;
       ZoneReplay.clearFeed(handle);
@@ -123,11 +145,26 @@ if(!(r.pacedMs > 0 && r.flatMs > 0)) fails.push('a replay finished in no time at
 if(!(r.pacedMs < r.flatMs * 0.8)) fails.push('paced ' + r.pacedMs + 'ms against flat ' + r.flatMs +
   'ms — the pacing is buying less than a fifth of the run');
 if(!(r.feedLines > 0)) fails.push('the kill feed printed nothing across a whole game');
+// The camera, as the stage's own transform reports it.
+if(!(r.wide < 1.05)) fails.push('the camera never came back out past ' + r.wide.toFixed(2) +
+  'x with the lobby still full; the mid-game is meant to be the whole map');
+if(!(r.fight > 2.5)) fails.push('the camera only reached ' + r.fight.toFixed(2) +
+  'x on a fight of yours in a full lobby, so it never came in for one');
+if(!(r.close > 2.5)) fails.push('the camera only reached ' + r.close.toFixed(2) +
+  'x in the endgame, which is no closer than the names need');
+if(!(r.namesOnMap > 3)) fails.push('only ' + (r.namesOnMap || 0) +
+  ' names were drawn on the map in the endgame');
+if(r.sideShown) fails.push('the list beside the map and the names on it were shown at once');
 
-console.log('\n  frames        ' + r.frames +
-            '\n  paced         ' + r.pacedMs + 'ms' +
-            '\n  flat          ' + r.flatMs + 'ms' +
-            '\n  saved         ' + (100 - Math.round(100*r.pacedMs/r.flatMs)) + '%' +
-            '\n  feed lines    ' + r.feedLines + ' at the end\n');
+console.log('\n  frames          ' + r.frames +
+            '\n  paced           ' + r.pacedMs + 'ms' +
+            '\n  flat            ' + r.flatMs + 'ms' +
+            '\n  saved           ' + (100 - Math.round(100*r.pacedMs/r.flatMs)) + '%' +
+            '\n  feed lines      ' + r.feedLines + ' at the end' +
+            '\n  camera, wide    ' + r.wide.toFixed(2) + 'x' +
+            '\n  camera, a fight ' + r.fight.toFixed(2) + 'x' +
+            '\n  camera, endgame ' + r.close.toFixed(2) + 'x' +
+            '\n  names on map    ' + (r.namesOnMap || 0) + ' at most\n');
 if(fails.length){ fails.forEach(f => console.error('  FAIL ' + f)); process.exit(1); }
-console.log('  the replay plays, finishes, and skips what is worth skipping\n');
+console.log('  the replay plays, finishes, skips what is worth skipping,\n' +
+            '  and moves in on what is not\n');

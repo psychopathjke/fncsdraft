@@ -493,6 +493,54 @@ needs naming.
 for every elimination in the lobby, which is the same rule with the whole field
 as its subject.
 
+### The camera
+
+The same two moments, seen closer. A fifty-duo island drawn into 520 pixels
+gives a duo about four pixels of it — enough to follow a rotation, not enough to
+watch a fight, and in the last circles the arrows overlap outright. So the map
+moves in on whatever the pacing already decided is worth the time and plays wide
+everywhere else.
+
+- **A fight of yours**: you and everyone within 6 world units of you, fitted with
+  a floor of 7, which lands at about 6.3×.
+- **The endgame**: everybody still standing, floor 6.5, about 6.8×. It sits on
+  the floor rather than tightening further, and that is the finding — by the
+  time twelve squads are left they are inside a circle two units across, so what
+  sets the shot is how close the map can usefully be read, not how close they
+  are standing.
+- **Everything else**: the whole map, at 1×.
+
+The camera holds longer than the pacing does — two frames of lead, five of
+aftermath. A fight window is four frames, under half a second, and zooming in
+and back out inside that reads as a pump rather than as a camera. It eases over
+360ms and it snaps rather than glides on the first frame of a game, so game two
+does not slide in from wherever game one finished. A hand on the wheel, where
+the caller has asked for `{zoom: true}`, takes the camera for good: two things
+writing one transform is a fight the viewer always loses.
+
+Markers and labels are drawn **against** the camera, at a constant size on
+screen. Zooming in is for telling two squads apart when they are on the same
+roof; magnifying the arrows with the ground would put them back on top of each
+other at three times the size.
+
+### Names, and squads standing on the same ground
+
+Names on the map were ruled out because nine of them over a zone-9 circle read
+as a smudge. That is true of a circle drawn a centimetre across and false of the
+same circle filling the box, so they go up whenever the camera is past 2.5× —
+including a fight in a full lobby, where the question is the same one. The list
+beside the map covers the rest, and the two never show at once.
+
+The collapse then produced something no amount of zoom fixes: it pulls every
+squad to one point, so the last five of a game are at *identical* coordinates —
+one arrow drawn five times, under a header saying five are alive. A cluster is
+now fanned onto a ring the width of a marker, measured in screen terms so it is
+the same few pixels whatever the camera is doing, and its names go in a column
+beside it rather than above each arrow — a name is several times wider than the
+fan, so printed in place they would be exactly the smudge the fan just undid.
+Only while zoomed in: at full map a two-unit nudge is 2% of the island, and the
+overlap was never the problem there.
+
 ### Every kill reaches the feed
 
 The engine keeps every eighth tick, and until 12 August it threw the
