@@ -569,13 +569,20 @@
     // information printed twice.
     var few = frame.alive <= LABEL_BELOW;
     var scale = handle.scale || 1;
-    // The camera decides this on its own, without asking how many are left. A
-    // fight in a full lobby is shown as close as the endgame is, and there the
-    // question is the same one — who is that — so it gets the same answer. The
-    // forty squads elsewhere on the island are labelled too and every one of
-    // those labels is off the edge of the box, which costs nothing to draw and
-    // saves the renderer having to know where the box is.
-    var onMap = scale >= NAME_ZOOM;
+    // From zone 5 by the zone itself, and before it by how close the camera
+    // is — a fight in a full lobby is shown as close as the endgame, and there
+    // the question is the same one, so it gets the same answer.
+    //
+    // The zone is named outright rather than left to the camera because the two
+    // agree by a hair and that is not a thing to rest on: the camera's own
+    // measurement puts the tightest zone-5 shot at 2.23x against a threshold of
+    // 2.2, so a map of another shape would blink the names off at exactly the
+    // circle they were asked for.
+    //
+    // The forty squads elsewhere on the island are labelled too, and every one
+    // of those labels is off the edge of the box — which costs nothing to draw
+    // and saves the renderer having to know where the box is.
+    var onMap = frame.zone >= LATE_ZONE || scale >= NAME_ZOOM;
     var groups = cluster(frame.dots, scale);
     for(var g=0;g<groups.length;g++){
       var grp = groups[g], stack = grp.length > 1 ? [] : null;
