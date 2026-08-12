@@ -585,7 +585,11 @@
   // beside the map — the point the replay stops being a field and starts being
   // a list of squads is the point it is worth watching at all.
   var LEAD = 2, TRAIL = 1;      // frames of run-up and of aftermath around a fight of yours
-  var PACE_FAST = 2.4, PACE_SLOW = 1;
+  // 2.4x was the first setting and it reads as rushed: the quiet stretch is
+  // where a rotation is legible, and at 38ms a frame the map redraws faster
+  // than a squad's heading can be followed across it. 1.6 keeps the saving
+  // worth having without turning the mid-game into a flicker.
+  var PACE_FAST = 1.6, PACE_SLOW = 1;
 
   // The speed for every frame, worked out once. It has to be the whole timeline
   // rather than a frame at a time, because slowing down on the frame a kill is

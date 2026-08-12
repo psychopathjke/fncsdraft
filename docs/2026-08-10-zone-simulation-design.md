@@ -463,9 +463,14 @@ interruption to it.
 
 One speed for the whole match spent the same eight seconds on the circle nobody
 fought in as on the endgame, and twelve of those is a minute and a half of
-mostly waiting. It now runs at 2.4× except where something is at stake, which
-takes a game from 7.6 seconds to 3.6 and a Grand Final from 91 seconds to 44,
+mostly waiting. It now runs at 1.6× except where something is at stake, which
+takes a game from 7.6 seconds to 5.2 and a Grand Final from 91 seconds to 62,
 with 89% of the match played fast.
+
+The first setting was 2.4× and it was reported as rushed. The quiet stretch is
+not filler — it is where a rotation is legible — and at 38ms a frame the map
+redraws faster than a squad's heading can be followed across it. The saving is
+worth less than the thing being watched.
 
 What counts as at stake is read off what happened, not off where anybody is
 standing. Standing next to somebody was the first rule and it does not work:
