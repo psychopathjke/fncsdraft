@@ -38,12 +38,11 @@
   // The renderer is not what costs anything here — one frame of the drawing is
   // half a millisecond, measured — the repaint is. Two things follow.
   //
-  // A move of less than half a pixel is not written at all. Measured over a
-  // whole game, the camera in zones 10 to 12 travels 0.45px between one write
-  // and the next and writes about thirty-five times a zone: that is thirty-five
-  // repaints of a seven-thousand-pixel island to slide it half a pixel. The
-  // move is not lost, it is deferred — the ease keeps running and the write
-  // happens as soon as it adds up to something.
+  // A move too small to see is not written at all. This is the ease's own tail
+  // after it has arrived — hundredths of a pixel, for ever — and not a throttle
+  // on the camera: the first version held back half a pixel and that showed up
+  // as the endgame moving in steps, which is the opposite of the thing being
+  // fixed. HAIR is small enough that nothing anybody can see is ever deferred.
   //
   // And while it is moving the stage is promoted to its own layer. That is what
   // will-change does and it is why it was taken off in the first place: a
@@ -54,7 +53,7 @@
   // moves, sharp while it is still — which is the way round it wants to be,
   // since from zone 5 the camera pans on every single frame and the endgame,
   // played at half speed, sits there panning for a third of the replay.
-  var SETTLE_MS = 180, HAIR = 0.5;
+  var SETTLE_MS = 180, HAIR = 0.05;
 
   function paint(handle, tx, ty, s){
     var was = handle.painted;
@@ -1383,6 +1382,31 @@
       return track ? track[Math.max(0, Math.min(track.length-1, i))] : {pace:1, view:null};
     }
     var camera = newCamera(handle);
+
+    // Where the camera is asked to look, part-way between two recorded frames.
+    //
+    // The track holds one shot per recorded frame, and handing the camera that
+    // shot outright makes the target a staircase: it stands still for a frame
+    // and then
+    // jumps, and an exponential ease chasing a staircase is a surge and a settle
+    // per step. Measured in zone 11, where a frame lasts 180ms at half speed:
+    // the camera runs 160px/s, decays to 99, jumps back to 150, decays to 101 —
+    // five of those a second, which is what "с 10 зоны дёргаться начинается"
+    // is. It only shows up from zone 10 because that is where the pacing halves;
+    // at 90ms a frame the surges run into each other and read as motion.
+    //
+    // So the shot is interpolated between the two frames either side, the same
+    // way the squads on it are. A null view is "the whole map" rather than a
+    // point, and there is nothing to lerp with — that transition is the ease's
+    // own job, and it happens a handful of times a match rather than five times
+    // a second.
+    function viewAt(i, k){
+      var a = beat(i).view, b = beat(i + 1).view;
+      if(!a || !b) return a;
+      return {cx: a.cx + (b.cx - a.cx) * k,
+              cy: a.cy + (b.cy - a.cy) * k,
+              r:  a.r  + (b.r  - a.r ) * k};
+    }
     // Starting the feed over used to happen right here, unconditionally. That
     // breaks the moment a caller wants this game's feed to open on something
     // that never came from a frame — the landing fights, pushed via note()
@@ -1449,12 +1473,12 @@
         // instead of jumping the rest of the match in one step.
         var dt = Math.min(now - last, 250);
         last = now;
-        var beat0 = beat(Math.floor(at));
+        var whole = Math.floor(at), beat0 = beat(whole);
         // Eased into rather than switched, so a change of speed reads as the
         // replay slowing down and not as a dropped frame.
         speed = speed === null ? beat0.pace
                                : speed + (beat0.pace - speed) * Math.min(1, dt / 220);
-        camera.to(beat0.view, dt / CAM_EASE_MS);
+        camera.to(viewAt(whole, at - whole), dt / CAM_EASE_MS);
         at += dt / frameMs * speed;
         var i = Math.floor(at);
         if(i >= timeline.length - 1){ finish(); return; }

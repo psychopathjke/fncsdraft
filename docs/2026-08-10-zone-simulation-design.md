@@ -584,21 +584,38 @@ whole game, the travel between one write and the next:
 | px per write | 9.5 | 16.5 | 9.4 | 2.8 | 2.5 | 0.45 | 0.99 | 0.46 |
 | writes | 42 | 38 | 37 | 32 | 27 | 33 | 36 | 51 |
 
-In the last three zones that is thirty-odd repaints a zone to slide the map half
-a pixel. So a move of **less than half a pixel is not written**: the move is
-deferred rather than lost, since the ease keeps running and the write happens as
-soon as it adds up to something. Zone 10 went from 33 writes to 16 and zone 12
-from 51 to 28. Zone 11 is unchanged at 37 — its pans are a whole pixel, which is
-the camera following the game and has to be painted.
+So the stage is promoted to its own layer **while it is moving** and dropped
+again 180ms after it stops. That is `will-change` doing exactly what it was taken
+off for, and the reason it is safe here is the ceiling: from zone 7 the scale is
+pinned at `MAX_UPSCALE` and only the translation changes, so the layer is moved
+rather than stretched and there is nothing to re-rasterise. When it settles the
+promotion comes off and the browser paints it sharp at the scale it ended on.
+Soft while it moves, sharp while it is still, which is the way round it wants to
+be. A move smaller than `HAIR` — a twentieth of a pixel — is not written at all,
+which is the ease's own tail after it has arrived and nothing a viewer can see.
 
-For those, the stage is promoted to its own layer **while it is moving** and
-dropped again 180ms after it stops. That is `will-change` doing exactly what it
-was taken off for, and the reason it is safe here is the ceiling: from zone 7 the
-scale is pinned at `MAX_UPSCALE` and only the translation changes, so the layer
-is moved rather than stretched and there is nothing to re-rasterise. When it
-settles the promotion comes off and the browser paints it sharp at the scale it
-ended on. Soft while it moves — where it moves at all — and sharp while it is
-still, which is the way round it wants to be.
+The first version of that threshold was half a pixel, and it was wrong: in zones
+10 and 12 the camera travels less than that between writes, so it held the map
+still and then jumped it. A repaint saved by making the motion worse is not a
+saving.
+
+### The staircase
+
+The repaint was not the whole of it. "С 10 зоны дёргаться начинается" is a second
+fault with the same symptom: the track holds **one shot per recorded frame**, and
+handing the camera that shot outright makes its target a staircase. An
+exponential ease chasing a staircase is a surge and a settle per step. Sampled in
+zone 11, where half speed makes a frame last 180ms, the camera ran at 160px/s,
+decayed to 99, jumped back to 150, decayed to 101 — five surges a second. Before
+zone 10 the same steps are 90ms apart and run into each other, which is why it
+starts exactly where the pacing halves.
+
+So the shot is **interpolated between the two frames either side**, the same way
+the squads on it are. Sampled again in zone 11: 118, 122, 123, 123, 124, 121,
+125, 120, 123 px/s — a camera moving at one speed. A null view is "the whole
+map" rather than a point and has nothing to lerp with, so those transitions are
+left to the ease; they happen a handful of times a match rather than five times a
+second.
 
 The camera holds longer than the pacing does — two frames of lead, five of
 aftermath. A fight window is four frames, under half a second, and zooming in
