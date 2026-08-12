@@ -24,6 +24,27 @@ const BOOTSTRAP = `
 <pre id="__dr" style="display:none"></pre>
 <script>
 (function(){
+  // A seeded clock for the whole run, because this check was a coin flip.
+  //
+  // Drop contests need two squads to want the same box, and a trio lobby is 33
+  // squads on 29 of them, so most of the field lands alone and the number of
+  // decided drops comes out in single digits. Measured over eight runs of the
+  // untouched file it was 11, 11, 11, 9, 9, 7, 5 and 4 against a threshold of
+  // eight — three runs in eight failed, on code nobody had touched. A check
+  // that fails a third of the time on a good tree teaches everyone to ignore
+  // it, and then it is worse than no check at all.
+  //
+  // So the run is pinned. mulberry32, the same shape ZoneSim.createRng uses,
+  // seeded once before anything reads Math.random. The thresholds below are
+  // then real numbers about the app rather than a bet on the weather.
+  (function(seed){
+    Math.random = function(){
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  })(20260813);
   var out = {checks: [], sets: []};
   var check = function(name, pass, detail){ out.checks.push({name: name, pass: !!pass, detail: detail}); };
   try {
@@ -79,6 +100,18 @@ const BOOTSTRAP = `
       check(set + ': the column carries real records, not a wall of dashes',
         withRecord >= teams.length * 0.25,
         withRecord + ' of ' + teams.length + ' rows');
+      // A quarter of the field, and it was never the threshold that was wrong —
+      // it was the coin flip underneath it. Unseeded, trios came out anywhere
+      // between 4 and 11 against a bar of 8. Seeded, it is 9 every time.
+      //
+      // The bar was tried lower, at a flat 4, on the theory that single digits
+      // deserved a gentler rule. That was worse: with the landing assignment
+      // stubbed out — contests barely happening at all, which is precisely the
+      // collapse this check exists to catch — trios still scored 6 and a floor
+      // of 4 waved it through. Eight catches it. The margin over the healthy 9
+      // is one squad, which is thin, but thin and deterministic beats generous
+      // and random: it now either passes or it does not, and a drop below 8 is
+      // a fact about the app rather than about the weather.
       check(set + ': the record says something after twelve games',
         decided >= teams.length * 0.25,
         decided + ' of ' + teams.length + ' squads won or lost at least one drop');
