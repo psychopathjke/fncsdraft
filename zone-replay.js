@@ -465,39 +465,71 @@
     return {dx: Math.cos(a) * r, dy: Math.sin(a) * r};
   }
 
-  // One line of a cluster's column of names, hung to the right of it and
-  // centred on it vertically.
-  function stackedLabel(x, y, at, total, text, fill, scale){
-    var s = scale || 1, line = 2.9 / s;
+  // --- names, as the kill feed writes them
+  //
+  // Coloured text with a dark outline was the first version and it is not
+  // legible on this map. The generated colours are all one lightness by
+  // construction, the island underneath them is not, and a five-pixel letter
+  // in a mid-tone hue over grass, rock and water is a smudge with an outline
+  // around it. The feed has never had this problem, because the feed puts the
+  // name in a filled pill and picks ink that can be read on it — so the map
+  // does the same, and a line in the feed and a label on the map become the
+  // same object drawn twice.
+  //
+  // The pill is sized off the character count rather than off a measurement.
+  // getBBox() forces layout of the SVG per label per frame, which is fifty of
+  // them ten times a second, and a bold sans is close enough to 0.58em a
+  // character for a name that is a handful of them.
+  // 2.5 was the first size and it was legible and far too heavy: thirty-one
+  // pills over a zone-7 circle is a wall of labels with a map behind it. The
+  // fill is what makes a name readable here, not the size of it, so the size
+  // came back down until the markers were the loudest thing on the map again.
+  var NAME_SIZE = 2.05;        // user units before the camera, so ~11px on screen
+  var CHAR_W = 0.58, PAD_X = 0.55, PAD_Y = 0.36;
+
+  function namePill(x, y, text, colour, isYou, scale, place){
+    var s = scale || 1;
+    var fs = NAME_SIZE / s;
+    var w = text.length * CHAR_W * fs + PAD_X * fs * 2;
+    var h = fs + PAD_Y * fs * 2;
+    // Where the pill hangs: above the marker, or out to its right for a line
+    // of a cluster's column.
+    var left = place === 'right' ? x + 1.9 / s : x - w / 2;
+    var top = place === 'right' ? y - h / 2 : y - 1.4 / s - h;
+
+    var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    var r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    r.setAttribute('x', left.toFixed(3)); r.setAttribute('y', top.toFixed(3));
+    r.setAttribute('width', w.toFixed(3)); r.setAttribute('height', h.toFixed(3));
+    r.setAttribute('rx', (h * 0.28).toFixed(3));
+    r.setAttribute('fill', colour);
+    // Yours gets the white ring the feed gives it; everyone else gets a dark
+    // one, which is what holds the pill off pale ground.
+    r.setAttribute('stroke', isYou ? '#ffffff' : 'rgba(6,9,18,.85)');
+    r.setAttribute('stroke-width', isYou ? 1.6 : 1);
+    r.setAttribute('vector-effect', 'non-scaling-stroke');
+    g.appendChild(r);
+
     var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    t.setAttribute('x', x + 3.4 / s);
-    t.setAttribute('y', y + (at - (total - 1) / 2) * line + line * 0.34);
-    t.setAttribute('text-anchor', 'start');
-    t.setAttribute('font-size', (2.2 / s).toFixed(3));
+    t.setAttribute('x', (left + w / 2).toFixed(3));
+    t.setAttribute('y', (top + h / 2 + fs * 0.35).toFixed(3));
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('font-size', fs.toFixed(3));
     t.setAttribute('font-weight', '800');
-    t.setAttribute('paint-order', 'stroke');
-    t.setAttribute('stroke', 'rgba(0,0,0,.85)');
-    t.setAttribute('stroke-width', (0.85 / s).toFixed(3));
-    t.setAttribute('stroke-linejoin', 'round');
-    t.setAttribute('fill', fill);
+    t.setAttribute('fill', inkOn(colour));
     t.textContent = text;
-    return t;
+    g.appendChild(t);
+    return g;
   }
 
-  function label(x, y, text, fill, scale){
-    var s = scale || 1;
-    var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    t.setAttribute('x', x); t.setAttribute('y', y - 1.6 / s);
-    t.setAttribute('text-anchor', 'middle');
-    t.setAttribute('font-size', (2.4 / s).toFixed(3));
-    t.setAttribute('font-weight', '800');
-    t.setAttribute('paint-order', 'stroke');
-    t.setAttribute('stroke', 'rgba(0,0,0,.85)');
-    t.setAttribute('stroke-width', (0.9 / s).toFixed(3));
-    t.setAttribute('stroke-linejoin', 'round');
-    t.setAttribute('fill', fill);
-    t.textContent = text;
-    return t;
+  // One line of a cluster's column, hung to the right of it and centred on it.
+  function stackedLabel(x, y, at, total, text, colour, isYou, scale){
+    var s = scale || 1, line = (NAME_SIZE * 1.62) / s;
+    return namePill(x, y + (at - (total - 1) / 2) * line, text, colour, isYou, s, 'right');
+  }
+
+  function label(x, y, text, colour, isYou, scale){
+    return namePill(x, y, text, colour, isYou, scale, 'above');
   }
 
   function draw(handle, frame, labels, roster){
@@ -557,8 +589,8 @@
         // squad across a rotation is the reason to watch this, and one label
         // never collides with anything.
         if(!name || !(who.you || onMap)) continue;
-        if(stack) stack.push({name: name, colour: who.you ? '#ffffff' : colour, you: !!who.you});
-        else handle.svg.appendChild(label(d.x, d.y, name, who.you ? '#ffffff' : colour, scale));
+        if(stack) stack.push({name: name, colour: colour, you: !!who.you});
+        else handle.svg.appendChild(label(d.x, d.y, name, colour, who.you, scale));
       }
       // A cluster's names go in a column beside it rather than above each
       // arrow. Fanning the markers apart leaves them a marker's width from each
@@ -568,7 +600,7 @@
         var head = frame.dots[grp[0]];
         for(var s=0;s<stack.length;s++)
           handle.svg.appendChild(stackedLabel(head.x, head.y, s, stack.length,
-            stack[s].name, stack[s].colour, scale));
+            stack[s].name, stack[s].colour, stack[s].you, scale));
       }
     }
 

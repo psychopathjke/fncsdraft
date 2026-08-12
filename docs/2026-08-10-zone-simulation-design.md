@@ -562,6 +562,24 @@ same circle filling the box, so they go up whenever the camera is past 2.2× —
 which is zone 5 onward, a fight in a full lobby, and the endgame. The list
 beside the map covers everything wider, and the two never show at once.
 
+They are drawn as the kill feed draws them: a filled pill in the squad's colour
+with ink picked to be readable on it. Coloured text with a dark outline was the
+first version and it could not be read at all — the generated colours are one
+lightness by construction, the island underneath them is not, and an eleven-pixel
+letter in a mid-tone hue over grass, rock and water is a smudge with an outline
+around it. The feed has never had that problem, and now a line in the feed and a
+label on the map are the same object drawn twice.
+
+The pill is sized off the character count, not off `getBBox()`, which would force
+a layout of the SVG per label per frame — fifty of them ten times a second. A
+bold sans is close enough to 0.58em a character for a name a handful long.
+
+Size went 2.5 → 2.05 user units, about 11px on screen. The first size was legible
+and far too heavy: thirty-one pills over a zone-7 circle is a wall of labels with
+a map behind it. What makes a name readable here is the fill rather than the
+size, so the size came back down until the markers were the loudest thing on the
+map again.
+
 The collapse then produced something no amount of zoom fixes: it pulls every
 squad to one point, so the last five of a game are at *identical* coordinates —
 one arrow drawn five times, under a header saying five are alive. A cluster is
