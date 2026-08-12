@@ -35,8 +35,15 @@ const BOOTSTRAP = `
     out.top = teams.slice(0, 3).map(function(t){
       return {who: t.handles.join(' & '), avg: Math.round(t.avg), stage: t.stage, rank: t.rank};
     });
-    // Ordered, high to low.
+    // Ordered, high to low — and where two teams average the same rating, the
+    // better finish comes first. Ties are not hypothetical here: pairwise
+    // averages of integer ratings collide constantly, and the top of this very
+    // list has one.
     out.ordered = teams.every(function(t, i){ return i === 0 || teams[i-1].avg >= t.avg; });
+    out.tiesBroken = teams.every(function(t, i){
+      return i === 0 || teams[i-1].avg !== t.avg || teams[i-1].rank <= t.rank;
+    });
+    out.tieCount = teams.filter(function(t, i){ return i > 0 && teams[i-1].avg === t.avg; }).length;
     // Every roster once.
     var seen = {}, dupes = 0;
     teams.forEach(function(t){
@@ -89,6 +96,7 @@ if (out.error) { console.error(out.error); process.exit(2); }
 console.log('\nMajor 2 . Europe, duos');
 console.log('  teams offered      ' + out.count);
 console.log('  dropped, roster incomplete ' + out.dropped);
+console.log('  ties on rating            ' + out.tieCount);
 out.top.forEach(t => console.log('  ' + String(t.avg).padStart(3) + '  ' + t.who +
   '  [' + t.stage + ' #' + t.rank + ']'));
 
@@ -110,6 +118,10 @@ if (out.dropOnePool.dropped !== 1)
 if (out.dropOnePool.strandedListed)
   fails.push('the team missing a player was listed anyway');
 if (!out.ordered) fails.push('the list is not ordered by rating, high to low');
+if (!out.tiesBroken) fails.push('two teams on the same rating are not ordered by their finish');
+// A tiebreak nothing exercises is a tiebreak nobody is testing.
+if (!out.tieCount) fails.push('no two teams share a rating, so the tiebreak went unexercised — ' +
+  'the ordering check is weaker than it looks');
 if (out.dupes) fails.push(out.dupes + ' rosters appear more than once');
 if (out.incomplete) fails.push(out.incomplete + ' listed teams have a member missing from the pool');
 if (out.wrongSize) fails.push(out.wrongSize + ' teams are not duos in a duo Major');
