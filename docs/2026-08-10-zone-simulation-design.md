@@ -562,6 +562,21 @@ same circle filling the box, so they go up whenever the camera is past 2.2× —
 which is zone 5 onward, a fight in a full lobby, and the endgame. The list
 beside the map covers everything wider, and the two never show at once.
 
+**A duo is two handles.** The app names a team `A & B` — `teamLabel()` joins
+every member — and yours carries a "your squad" prefix in front of that. On one
+line that is a pill fifteen characters wide, half a circle across at the zoom the
+endgame plays at; stacked, it is as wide as the longer handle and twice as tall,
+which is a shape a map has room for. The prefix is dropped on the map: it says
+which row is yours among a hundred on a standings table, and here the white ring
+already says it. Trios and squads take the first handle and a `+2`.
+
+Which names go on the map is decided **per cluster**, not per frame. Deciding it
+once for the whole map meant a single pile-up in a corner took the names off every
+squad on the island — most of them standing alone with all the room in the world
+for a label. A cluster of six or fewer gets its column; anything larger goes to
+the list beside the map, which carries **only** those, so nothing is named twice
+and nobody goes unnamed. Yours is drawn on the map either way.
+
 They are drawn as the kill feed draws them: a filled pill in the squad's colour
 with ink picked to be readable on it. Coloured text with a dark outline was the
 first version and it could not be read at all — the generated colours are one

@@ -101,7 +101,20 @@ function scaleOf(handle){
       if(f.alive <= 12){
         out.close = Math.max(out.close, s);
         out.namesOnMap = Math.max(out.namesOnMap || 0, handle.svg.getElementsByTagName('text').length);
-        out.sideShown = out.sideShown || handle.side.style.display !== 'none';
+        // The map and the list beside it split the field between them: the list
+        // carries whoever was in a pile the map could not label. Nobody should
+        // appear in both, and that is the check — not that the list is hidden,
+        // which it no longer has to be.
+        if(handle.side.style.display !== 'none'){
+          var onMap = {}, ts = handle.svg.getElementsByTagName('text');
+          for(var a=0;a<ts.length;a++) onMap[ts[a].textContent] = 1;
+          var rows = handle.side.querySelectorAll('div');
+          for(var b=0;b<rows.length;b++){
+            var first = (rows[b].textContent || '').split(' & ')[0].trim();
+            if(first && onMap[first]) out.namedTwice = (out.namedTwice || 0) + 1;
+          }
+          out.sideRows = Math.max(out.sideRows || 0, rows.length);
+        }
       }
     };
     playOnce(handle, game, true, watch).then(function(ms){
@@ -154,7 +167,7 @@ if(!(r.close > 2.5)) fails.push('the camera only reached ' + r.close.toFixed(2) 
   'x in the endgame, which is no closer than the names need');
 if(!(r.namesOnMap > 3)) fails.push('only ' + (r.namesOnMap || 0) +
   ' names were drawn on the map in the endgame');
-if(r.sideShown) fails.push('the list beside the map and the names on it were shown at once');
+if(r.namedTwice) fails.push(r.namedTwice + ' squads were named on the map and in the list beside it at once');
 
 console.log('\n  frames          ' + r.frames +
             '\n  paced           ' + r.pacedMs + 'ms' +
@@ -164,7 +177,8 @@ console.log('\n  frames          ' + r.frames +
             '\n  camera, wide    ' + r.wide.toFixed(2) + 'x' +
             '\n  camera, a fight ' + r.fight.toFixed(2) + 'x' +
             '\n  camera, endgame ' + r.close.toFixed(2) + 'x' +
-            '\n  names on map    ' + (r.namesOnMap || 0) + ' at most\n');
+            '\n  names on map    ' + (r.namesOnMap || 0) + ' at most' +
+            '\n  names in list   ' + (r.sideRows || 0) + ' at most\n');
 if(fails.length){ fails.forEach(f => console.error('  FAIL ' + f)); process.exit(1); }
 console.log('  the replay plays, finishes, skips what is worth skipping,\n' +
             '  and moves in on what is not\n');

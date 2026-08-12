@@ -296,6 +296,11 @@
   // there is room for them.
   var LABEL_BELOW = 12;
 
+  // The largest cluster the map will label in place, and the largest field the
+  // list beside it will carry. Above the first, the names move off the map;
+  // above the second, there are none anywhere and the map is markers again.
+  var CLUSTER_MAX = 6, SIDE_MAX = 24;
+
   // And how far in the camera has to be before those names can live on the map
   // rather than beside it. Twelve squads spread across an island still smudge;
   // twelve in a circle that fills the box do not.
@@ -485,13 +490,37 @@
   // fill is what makes a name readable here, not the size of it, so the size
   // came back down until the markers were the loudest thing on the map again.
   var NAME_SIZE = 2.05;        // user units before the camera, so ~11px on screen
-  var CHAR_W = 0.58, PAD_X = 0.55, PAD_Y = 0.36;
+  var CHAR_W = 0.58, PAD_X = 0.55, PAD_Y = 0.36, LINE = 1.12;
 
-  function namePill(x, y, text, colour, isYou, scale, place){
+  // A duo is two handles, and the app joins them with an ampersand — which on
+  // one line is a pill fifteen characters wide, half a circle across at the
+  // zoom the endgame plays at. Stacked, the pill is as wide as the longer
+  // handle and twice as tall, which is the shape a map has room for.
+  //
+  // Yours arrives with the app's own "your squad" prefix in front of it. That
+  // belongs on a standings row, where it says which line is yours among a
+  // hundred; on the map the white ring already says it, and the prefix is
+  // three times the length of what it introduces.
+  function nameLines(name, isYou){
+    var text = plain(name);
+    if(isYou){
+      var colon = text.indexOf(': ');
+      if(colon > 0) text = text.slice(colon + 2);
+    }
+    var parts = text.split(' & ');
+    if(parts.length <= 2) return parts;
+    // Trios and squads: the first handle, then the rest of the roster count,
+    // because four names stacked is a column, not a label.
+    return [parts[0], '+' + (parts.length - 1)];
+  }
+
+  function namePill(x, y, lines, colour, isYou, scale, place){
     var s = scale || 1;
     var fs = NAME_SIZE / s;
-    var w = text.length * CHAR_W * fs + PAD_X * fs * 2;
-    var h = fs + PAD_Y * fs * 2;
+    var widest = 0;
+    for(var n=0;n<lines.length;n++) widest = Math.max(widest, lines[n].length);
+    var w = widest * CHAR_W * fs + PAD_X * fs * 2;
+    var h = fs * (1 + (lines.length - 1) * LINE) + PAD_Y * fs * 2;
     // Where the pill hangs: above the marker, or out to its right for a line
     // of a cluster's column.
     var left = place === 'right' ? x + 1.9 / s : x - w / 2;
@@ -510,26 +539,40 @@
     r.setAttribute('vector-effect', 'non-scaling-stroke');
     g.appendChild(r);
 
-    var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    t.setAttribute('x', (left + w / 2).toFixed(3));
-    t.setAttribute('y', (top + h / 2 + fs * 0.35).toFixed(3));
-    t.setAttribute('text-anchor', 'middle');
-    t.setAttribute('font-size', fs.toFixed(3));
-    t.setAttribute('font-weight', '800');
-    t.setAttribute('fill', inkOn(colour));
-    t.textContent = text;
-    g.appendChild(t);
+    var ink = inkOn(colour);
+    var first = top + PAD_Y * fs + fs * 0.79;
+    for(var k=0;k<lines.length;k++){
+      var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t.setAttribute('x', (left + w / 2).toFixed(3));
+      t.setAttribute('y', (first + k * fs * LINE).toFixed(3));
+      t.setAttribute('text-anchor', 'middle');
+      t.setAttribute('font-size', fs.toFixed(3));
+      t.setAttribute('font-weight', '800');
+      t.setAttribute('fill', ink);
+      // The second handle is the same name, one rank quieter, so the pair reads
+      // as one label rather than as two squads stacked.
+      if(k) t.setAttribute('opacity', '.82');
+      t.textContent = lines[k];
+      g.appendChild(t);
+    }
     return g;
   }
 
   // One line of a cluster's column, hung to the right of it and centred on it.
-  function stackedLabel(x, y, at, total, text, colour, isYou, scale){
-    var s = scale || 1, line = (NAME_SIZE * 1.62) / s;
-    return namePill(x, y + (at - (total - 1) / 2) * line, text, colour, isYou, s, 'right');
+  function stackedLabel(x, y, at, total, lines, colour, isYou, scale){
+    var s = scale || 1;
+    var line = (NAME_SIZE * (0.5 + lines.length * 0.78)) / s;
+    return namePill(x, y + (at - (total - 1) / 2) * line, lines, colour, isYou, s, 'right');
   }
 
-  function label(x, y, text, colour, isYou, scale){
-    return namePill(x, y, text, colour, isYou, scale, 'above');
+  function label(x, y, lines, colour, isYou, scale){
+    return namePill(x, y, lines, colour, isYou, scale, 'above');
+  }
+
+  function aliveIndices(frame){
+    var out = [];
+    for(var i=0;i<frame.dots.length;i++) if(frame.dots[i].alive) out.push(i);
+    return out;
   }
 
   function draw(handle, frame, labels, roster){
@@ -567,7 +610,6 @@
     // where the map is close enough to hold them, and the list beside the map
     // covers the rest — the two never show at once, because that is the same
     // information printed twice.
-    var few = frame.alive <= LABEL_BELOW;
     var scale = handle.scale || 1;
     // From zone 5 by the zone itself, and before it by how close the camera
     // is — a fight in a full lobby is shown as close as the endgame, and there
@@ -582,22 +624,41 @@
     // The forty squads elsewhere on the island are labelled too, and every one
     // of those labels is off the edge of the box — which costs nothing to draw
     // and saves the renderer having to know where the box is.
-    var onMap = frame.zone >= LATE_ZONE || scale >= NAME_ZOOM;
+    var wanted = frame.zone >= LATE_ZONE || scale >= NAME_ZOOM;
     var groups = cluster(frame.dots, scale);
+
+    // A column beside a cluster works for a handful and not for a crowd: the
+    // last circles can pile twenty squads onto one piece of ground, and twenty
+    // pills stacked is a wall with a map behind it.
+    //
+    // Decided per cluster rather than for the frame. Deciding it once for the
+    // whole map meant a single pile-up in the corner took the names off every
+    // squad on the island — which is most of them, standing on their own, with
+    // all the room in the world for a label. What will not fit goes to the list
+    // beside the map instead, and the list carries only those, so nothing is
+    // named twice and nobody goes unnamed.
+    var spare = [];
     for(var g=0;g<groups.length;g++){
-      var grp = groups[g], stack = grp.length > 1 ? [] : null;
+      var grp = groups[g];
+      var fits = wanted && grp.length <= CLUSTER_MAX;
+      var stack = (fits && grp.length > 1) ? [] : null;
       for(var m=0;m<grp.length;m++){
         var i = grp[m], d = frame.dots[i], who = roster[i] || {};
         var off = offsetIn(grp, m, scale);
         var colour = who.you ? 'var(--accent)' : colourFor(i);
         handle.svg.appendChild(marker(d.x + off.dx, d.y + off.dy, d.a || 0, colour, who.you, scale));
-        var name = plain(who.name);
-        // Yours is named whatever the camera is doing — following your own
-        // squad across a rotation is the reason to watch this, and one label
-        // never collides with anything.
-        if(!name || !(who.you || onMap)) continue;
-        if(stack) stack.push({name: name, colour: colour, you: !!who.you});
-        else handle.svg.appendChild(label(d.x, d.y, name, colour, who.you, scale));
+        var lines = nameLines(who.name, who.you);
+        if(!lines.length || !lines[0]) continue;
+        // Yours is named whatever the rest of the map is doing — following your
+        // own squad is the reason to watch this, and one more label in a pile
+        // is the one label in it worth having.
+        if(!fits){
+          if(who.you) handle.svg.appendChild(label(d.x, d.y, lines, colour, true, scale));
+          else spare.push(i);
+          continue;
+        }
+        if(stack) stack.push({lines: lines, colour: colour, you: !!who.you});
+        else handle.svg.appendChild(label(d.x, d.y, lines, colour, who.you, scale));
       }
       // A cluster's names go in a column beside it rather than above each
       // arrow. Fanning the markers apart leaves them a marker's width from each
@@ -607,20 +668,23 @@
         var head = frame.dots[grp[0]];
         for(var s=0;s<stack.length;s++)
           handle.svg.appendChild(stackedLabel(head.x, head.y, s, stack.length,
-            stack[s].name, stack[s].colour, stack[s].you, scale));
+            stack[s].lines, stack[s].colour, stack[s].you, scale));
       }
     }
 
-    // Everyone else gets the side list, once the field is small enough to fit
-    // and while the map is still too wide to carry the names itself.
+    // The list beside the map carries whoever the map could not: the pile-ups
+    // while the names are wanted, and the whole field while they are not and it
+    // is small enough to list.
     if(handle.side){
-      if(!few || onMap){ handle.side.style.display = 'none'; handle.side.innerHTML = ''; }
-      else {
+      var listed = wanted ? spare : (frame.alive <= LABEL_BELOW ? aliveIndices(frame) : []);
+      if(!listed.length || listed.length > SIDE_MAX){
+        handle.side.style.display = 'none'; handle.side.innerHTML = '';
+      } else {
         var rows = [];
-        for(var k=0;k<frame.dots.length;k++){
-          if(!frame.dots[k].alive) continue;
+        for(var kk=0;kk<listed.length;kk++){
+          var k = listed[kk];
           var r = roster[k] || {};
-          var nm = plain(r.name);
+          var nm = nameLines(r.name, r.you).join(' & ');
           if(!nm) continue;
           var col = r.you ? 'var(--accent)' : colourFor(k);
           rows.push('<div style="display:flex;align-items:center;gap:4px;justify-content:flex-end;">' +
