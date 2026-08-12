@@ -148,6 +148,19 @@ const BOOTSTRAP = `
     out.weaponsTaken = draftedWeapons.length;
     out.healsTaken = draftedHeals.length;
     out.draftDoneAfterTwo = draftIsComplete();
+
+    // The other era, whose cards carry their roster in a different shape.
+    pendingSize = 3; pendingCardSet = 't1'; pendingMapSet = 't1';
+    preSelectedRegions = ['EU'];
+    REALISTIC = true;
+    startDraft(3, false);
+    var trio = realTeamsFor(pool);
+    out.trio = {
+      count: trio.teams.length,
+      dropped: trio.dropped,
+      sizes: Array.from(new Set(trio.teams.map(function(t){ return t.handles.length; }))).sort(),
+      top: trio.teams.length ? trio.teams[0].handles.join(' & ') : null
+    };
   } catch (e) { out = {error: String(e && e.stack || e)}; }
   document.getElementById('__real').textContent =
     'BEGINREAL' + encodeURIComponent(JSON.stringify(out)) + 'ENDREAL';
@@ -176,6 +189,8 @@ console.log('  dropped, roster incomplete ' + out.dropped);
 console.log('  ties on rating            ' + out.tieCount);
 out.top.forEach(t => console.log('  ' + String(t.avg).padStart(3) + '  ' + t.who +
   '  [' + t.stage + ' #' + t.rank + ']'));
+console.log('  2025 trio Major     ' + out.trio.count + ' teams, dropped ' + out.trio.dropped +
+            (out.trio.top ? ', top ' + out.trio.top : ''));
 
 const fails = [];
 // Measured twice, headless, on this branch: 179 real duos behind Major 2
@@ -228,6 +243,11 @@ if (out.wideFieldSize <= 49)
     'shallow scan, so the double-booking guard went unexercised again');
 if (!out.shortLogged) fails.push('a lobby padded with assembled teams said nothing about it');
 if (!out.shortField) fails.push('a short real field produced no lobby at all');
+if (!out.trio.count)
+  fails.push('the 2025 trio Major offered no real teams at all — rosterEntriesOf ' +
+    'is not reading the shape those cards store');
+if (out.trio.sizes.length !== 1 || out.trio.sizes[0] !== 3)
+  fails.push('the trio Major produced teams of size ' + out.trio.sizes.join(',') + ', expected 3');
 
 if (fails.length) { fails.forEach(f => console.error('  FAIL ' + f)); process.exit(1); }
 console.log('\n  every real roster, once each, best first\n');
