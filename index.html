@@ -30316,6 +30316,66 @@ async function offerSquadChoice(stageName, you, allTeams){
   }
 }
 
+// --- the real rosters behind the cards
+//
+// Every card set is built from rows that were real teams, and the card keeps a
+// reference back to the row it came from. Two shapes, because the two eras were
+// built years apart: the 2026 sets hang one property per stage off the card
+// (_m2Playin, _n2Gf, and so on for all fourteen region-sets), while the 2025
+// trio sets hang a single _t1/_t2/_t3 holding the stage the card is currently
+// rated on, with _t1Stage saying which. Read by shape rather than by name, so a
+// new set needs no change here.
+function rosterEntriesOf(card){
+  const out=[];
+  const STAGE_OF={P:'Playin', L:'Lcq', G:'Gf'};
+  for(const k in card){
+    if(k.charAt(0)!=='_') continue;
+    const modern=/^_([a-z]\d)(Playin|Lcq|Gf)$/.exec(k);
+    if(modern){
+      if(card[k] && card[k].duo) out.push({stage:modern[2], entry:card[k]});
+      continue;
+    }
+    if(/^_t[123]$/.test(k) && card[k] && card[k].entry && card[k].entry.duo)
+      out.push({stage:STAGE_OF[card[k+'Stage']] || 'Playin', entry:card[k].entry});
+  }
+  return out;
+}
+
+// Which showing of a team the list should print. A third of the field played
+// more than one stage, and a team is one team however many times it appeared.
+const REAL_STAGE_RANK={Gf:3, Lcq:2, Playin:1};
+
+// Every real roster in the pool, once each, strongest cards first.
+//
+// `dropped` is teams whose roster is not wholly in the pool — a region filter
+// or an era filter can leave one player behind. They are counted rather than
+// completed from elsewhere: a lobby of real teams with one invented member is
+// the one thing a mode called realistic must not quietly serve.
+function realTeamsFor(players){
+  const byHandle={};
+  players.forEach(p=>{ byHandle[p.handle]=p; });
+  const best=new Map();
+  players.forEach(p=>{
+    rosterEntriesOf(p).forEach(({stage, entry})=>{
+      const key=entry.duo.slice().sort().join('|');
+      const prev=best.get(key);
+      if(prev && REAL_STAGE_RANK[stage] <= REAL_STAGE_RANK[prev.stage]) return;
+      best.set(key, {handles:entry.duo.slice(), stage,
+                     rank:entry.rank, pts:entry.pts, wins:entry.wins, matches:entry.matches});
+    });
+  });
+  const teams=[];
+  let dropped=0;
+  best.forEach(t=>{
+    const cards=t.handles.map(h=>byHandle[h]).filter(Boolean);
+    if(cards.length!==t.handles.length){ dropped++; return; }
+    const avg=cards.reduce((s,c)=>s+c.rating, 0)/cards.length;
+    teams.push({...t, cards, avg});
+  });
+  teams.sort((a,b)=>b.avg-a.avg || a.rank-b.rank);
+  return {teams, dropped};
+}
+
 // Fill a field of AI teams. In card mode the whole field must come from one
 // region — each region runs its own tournament — and squads are drafted from
 // packs instead of paired at random. Returns the players left over.
