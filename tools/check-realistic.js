@@ -131,15 +131,53 @@ const BOOTSTRAP = `
     out.doubleBookedWide = countDoubleBooked(wideField);
 
     // The shortfall path, which the full pool never reaches: ask for a lobby
-    // larger than the supply of whole rosters and the padding must happen AND
-    // say so.
+    // larger than the supply of whole rosters and the padding must happen, must
+    // say so, and must still hand back a full-size field.
+    //
+    // The pool is built for that on purpose. pool.slice(0, 60), which this
+    // used to use, has sixty players in it and can therefore make thirty duos
+    // and no more — the padding had nothing left to pad with, so "some teams
+    // came back" was the strongest thing that could be asked, and a padding path
+    // that filled in nothing at all passed. This takes the first thirty rosters
+    // whole and then every other player after them, so there are thirty real
+    // teams, two hundred players, and nobody else with a teammate left: the
+    // field must come out at exactly 49, thirty of them real and nineteen
+    // assembled.
     var said = [], realLog = console.log;
     console.log = function(){ said.push(Array.prototype.join.call(arguments, ' ')); };
+    var thin = pool.slice(0, 60).concat(pool.filter(function(p, i){ return i >= 60 && i % 2 === 1; }));
     var thinField = [];
-    fillRealFieldTeams(pool.slice(0, 60), 49, 2, thinField);
+    fillRealFieldTeams(thin, 49, 2, thinField);
     console.log = realLog;
     out.shortField = thinField.length;
     out.shortLogged = said.some(function(s){ return s.indexOf('[realistic]') >= 0; });
+    out.shortAssembled = thinField.filter(function(t){
+      return !realKeys[t.squad.map(function(p){ return p.handle; }).sort().join('|')];
+    }).length;
+    out.shortDoubleBooked = countDoubleBooked(thinField);
+
+    // And now the lobby the player actually plays. Everything above tests
+    // fillRealFieldTeams by calling it, which is exactly why nobody noticed that
+    // the Major itself never called it: buildFullLobby is the single source of
+    // the Play-In / Heats / LCQ / Grand Final field, and it had no realistic
+    // branch at all. Measured before the fix on this same setup: 150 in the
+    // lobby, 149 rivals, 138 of them assembled squads rather than real rosters.
+    // Asserted here at the level the player meets it.
+    var lobby = buildFullLobby();
+    out.lobby = {
+      size: lobby.length,
+      you: lobby.filter(function(t){ return t.isYou; }).length,
+      // Real-roster keys derived independently of the builder, same as
+      // out.assembled above.
+      assembled: lobby.slice(1).filter(function(t){
+        return !realKeys[t.squad.map(function(p){ return p.handle; }).sort().join('|')];
+      }).length,
+      mine: lobby.slice(1).filter(function(t){
+        return t.squad.some(function(p){ return drafted.some(function(d){ return d.handle === p.handle; }); });
+      }).length,
+      doubleBooked: countDoubleBooked(lobby),
+      sizes: Array.from(new Set(lobby.map(function(t){ return t.squad.length; }))).sort()
+    };
     // The loot rounds, which are the reason draftedEnough() counts rounds
     // instead of players. A realistic duo must get two of them: rivals roll a
     // weapon and a consumable per player, so one round would hand the player
@@ -195,6 +233,9 @@ console.log('  dropped, roster incomplete ' + out.dropped);
 console.log('  ties on rating            ' + out.tieCount);
 out.top.forEach(t => console.log('  ' + String(t.avg).padStart(3) + '  ' + t.who +
   '  [' + t.stage + ' #' + t.rank + ']'));
+console.log('  the Major\'s own lobby ' + out.lobby.size + ' teams, ' +
+            (out.lobby.size - 1 - out.lobby.assembled) + ' of ' + (out.lobby.size - 1) +
+            ' rivals real');
 console.log('  2025 trio Major     ' + out.trio.count + ' teams, dropped ' + out.trio.dropped +
             (out.trio.top ? ', top ' + out.trio.top : ''));
 
@@ -248,15 +289,47 @@ if (out.wideFieldSize <= 49)
   fails.push('the deep field only reached ' + out.wideFieldSize + ' teams, which is not past the ' +
     'shallow scan, so the double-booking guard went unexercised again');
 if (!out.shortLogged) fails.push('a lobby padded with assembled teams said nothing about it');
-if (!out.shortField) fails.push('a short real field produced no lobby at all');
+// Exactly 49, not merely non-zero. The whole point of the shortfall path is
+// that a lobby which cannot be filled with real rosters still comes out full
+// size — "some teams" would pass with a half-empty lobby, which scores
+// differently and would quietly move every placement in the run.
+if (out.shortField !== 49)
+  fails.push('a real field short of rosters came out at ' + out.shortField + ' teams, expected 49 — ' +
+    'the padding is not filling the lobby back up');
+// And the padding really did the filling — thirty real, nineteen assembled.
+if (out.shortAssembled !== 19)
+  fails.push('the padded field assembled ' + out.shortAssembled + ' of its 49 teams, expected 19 — ' +
+    'either the real rosters or the padding did not do their share');
+if (out.shortDoubleBooked)
+  fails.push(out.shortDoubleBooked + ' players are in two teams once a field is padded — the ' +
+    'assembled teams are being built out of players already seated in a real one');
+
+// The lobby the Major is actually played in. 150 teams, one of them yours, the
+// other 149 real rosters — the region has 167 disjoint whole duos left after
+// yours is taken, so there is no excuse for an assembled one.
+if (out.lobby.size !== 150) fails.push('the Major\'s lobby has ' + out.lobby.size + ' teams, expected 150');
+if (out.lobby.you !== 1) fails.push('the Major\'s lobby holds ' + out.lobby.you + ' teams marked as yours, expected 1');
+if (out.lobby.assembled)
+  fails.push(out.lobby.assembled + ' of the ' + (out.lobby.size - 1) + ' rivals in the Major\'s own lobby ' +
+    'are assembled squads, not real rosters — buildFullLobby is not building a realistic field');
+if (out.lobby.mine)
+  fails.push('your own players turn up in ' + out.lobby.mine + ' rival teams in the Major\'s lobby');
+if (out.lobby.doubleBooked)
+  fails.push(out.lobby.doubleBooked + ' players are in two teams in the Major\'s lobby');
+if (out.lobby.sizes.length !== 1 || out.lobby.sizes[0] !== 2)
+  fails.push('the Major\'s lobby holds teams of size ' + out.lobby.sizes.join(',') + ', expected 2');
 if (!out.trio.count)
   fails.push('the 2025 trio Major offered no real teams at all — rosterEntriesOf ' +
     'is not reading the shape those cards store');
 if (out.trio.sizes.length !== 1 || out.trio.sizes[0] !== 3)
   fails.push('the trio Major produced teams of size ' + out.trio.sizes.join(',') + ', expected 3');
-if (out.trio.count < 100)
-  fails.push('the 2025 trio Major offered only ' + out.trio.count + ' teams — the size rule ' +
-    'is throwing away rosters it should be keeping');
+// The live number, not a floor. "More than a hundred" would have passed just as
+// happily with the size rule quietly eating half the list; 176 is what the 2025
+// Chapter 6 Season 1 trio data actually yields, and a move in it means the data
+// moved or the builder started dropping rosters it should keep.
+if (out.trio.count !== 176)
+  fails.push('the 2025 trio Major offered ' + out.trio.count + ' teams, expected 176 — the size rule ' +
+    'is throwing away rosters it should be keeping, or the card data moved');
 
 if (fails.length) { fails.forEach(f => console.error('  FAIL ' + f)); process.exit(1); }
 console.log('\n  every real roster, once each, best first\n');

@@ -28645,12 +28645,22 @@ function buildFullLobby(){
     const sameRegion=remaining.filter(p=>p.region===myRegion);
     if(sameRegion.length>=squadSize*2) remaining=sameRegion;
     const need=fieldTarget()-teams.length;
-    const res=draftBotSquads(remaining, need, squadSize);
-    res.squads.forEach(sq=>{
-      const t=buildTeam(sq); t.loadout=randomLoadoutBonus(sq.length); t.pow+=t.loadout; t.name=teamLabel(sq);
-      teams.push(t);
-    });
-    remaining=res.rest;
+    // This is the Major itself — Play-In, Heats, LCQ and the Grand Final all
+    // read the field this builds. A realistic run plays it against the Major's
+    // own rosters, by the same rules the later stages use: whole real teams
+    // first, nobody in two of them, and whatever the pool cannot fill drafted
+    // the old way and logged. Routed through fillRealFieldTeams rather than
+    // reimplemented, so there is one description of what a real field is.
+    if(REALISTIC){
+      remaining=fillRealFieldTeams(remaining, need, squadSize, teams);
+    } else {
+      const res=draftBotSquads(remaining, need, squadSize);
+      res.squads.forEach(sq=>{
+        const t=buildTeam(sq); t.loadout=randomLoadoutBonus(sq.length); t.pow+=t.loadout; t.name=teamLabel(sq);
+        teams.push(t);
+      });
+      remaining=res.rest;
+    }
   }
   while(remaining.length>=2 && teams.length<fieldTarget()){
     const {chunk, remaining:rest}=pickTeamChunk(remaining, 2);
@@ -30515,15 +30525,20 @@ function fillRealFieldTeams(remaining, needed, size, out){
   for(const t of teams){
     if(placed>=needed) break;
     if(t.handles.length!==size) continue;
-    if(t.handles.some(h=>taken.has(h))) continue;
-    t.handles.forEach(h=>taken.add(h));
+    // Identity goes through hKey like every other "is this the same player"
+    // check in the file. The roster spells the same person more than one way
+    // across events, and the `rest` this hands to fillFieldTeams is compared
+    // with hKey there — matching on the raw handle here let a player already
+    // seated in a real team be drafted again into an assembled one.
+    if(t.handles.some(h=>taken.has(hKey(h)))) continue;
+    t.handles.forEach(h=>taken.add(hKey(h)));
     const team=buildTeam(t.cards);
     team.loadout=randomLoadoutBonus(t.cards.length); team.pow+=team.loadout;
     team.name=teamLabel(t.cards);
     out.push(team);
     placed++;
   }
-  let rest=remaining.filter(p=>!taken.has(p.handle));
+  let rest=remaining.filter(p=>!taken.has(hKey(p)));
   if(placed<needed){
     console.log('[realistic] the field was ' + (needed-placed) + ' teams short of ' + needed +
                 '; the rest are assembled from players without a whole real roster left');
