@@ -29875,7 +29875,18 @@ function splitIntoLobbies(teams, maxSize){
 
 function simulateGames(teams, numGames, pointsFn, killMult){
   applyStageBias(pointsFn);
-  teams.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.stageLog=[]; t.gotVR=false; t.wins=0; });
+  // The drop counters are cleared here as well as in simulateGamesLive, and the
+  // reason is a bug this fixes rather than symmetry for its own sake.
+  //
+  // This is the quiet path — the stage runs because it decides who takes the
+  // seats, but the player is not in it, so nothing is drawn and no landing spots
+  // are handed out. Nobody contests a drop here. Without the reset the teams
+  // walk in carrying whatever record they earned in the stage before, so the
+  // standings for a stage that had no drops at all grew a Drop Record column —
+  // shown because one leftover made showDrop true, and a dash on every other row
+  // because theirs had been earned somewhere else and not here.
+  teams.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.stageLog=[]; t.gotVR=false; t.wins=0;
+    t.landingWins=0; t.landingLosses=0; t.landingContests=0; t.multiKillLandingWins=0; });
   for(let g=0; g<numGames; g++){
     const order=simulateGame(teams);
     order.forEach((t,i)=>{
