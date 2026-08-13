@@ -1,7 +1,7 @@
 // Moves drop rectangles measured on an annotated map onto a clean map of the
 // same island.
 //
-//   node tools/align-zones.js <annotated.jpg> <clean.jpg> <boxes.json>
+//   node tools/align-zones.js <annotated.jpg> <clean.jpg> <boxes.json> [peraxis]
 //
 // The rectangles are read off a drop map, but the drop map is somebody's
 // screenshot with a caption bar and a watermark on it. What ships is the clean
@@ -97,8 +97,17 @@ console.error('scale x ' + sx.toFixed(4) + ', y ' + sy.toFixed(4));
 const EDGE = 4;
 const aClipX = a.x0 <= EDGE || a.x1 >= a.W - 1 - EDGE;
 const aClipY = a.y0 <= EDGE || a.y1 >= a.H - 1 - EDGE;
+// Sometimes neither axis is clipped and the two still disagree by a few per
+// cent, because the annotated map has its own island half-covered by the very
+// boxes being read off it, so the detector finds a slightly smaller island.
+// Forcing one scale onto both axes then squashes the whole grid — on the Elite
+// Stronghold map it pulled twelve boxes into the middle third of the island.
+// `peraxis` keeps each axis on its own measurement, which is right whenever
+// both bounding boxes are trustworthy; the overlay says whether they were.
+const PER_AXIS = (process.argv[5] || '') === 'peraxis';
 if (Math.abs(sx - sy) / Math.max(sx, sy) > 0.02) {
-  if (aClipY && !aClipX) { console.error('  y bounds are clipped — using the x scale for both'); sy = sx; }
+  if (PER_AXIS) { console.error('  scales disagree — keeping each axis on its own, x ' + sx.toFixed(4) + ' y ' + sy.toFixed(4)); }
+  else if (aClipY && !aClipX) { console.error('  y bounds are clipped — using the x scale for both'); sy = sx; }
   else if (aClipX && !aClipY) { console.error('  x bounds are clipped — using the y scale for both'); sx = sy; }
   else { const s = Math.min(sx, sy); console.error('  scales disagree and neither axis is clean — using the smaller, ' + s.toFixed(4)); sx = sy = s; }
 }
