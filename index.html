@@ -31404,16 +31404,32 @@ function landingZoneLabel(t){
   const idx=ALL_LANDING_ZONES.indexOf(t.landingZone);
   return idx>=0 ? '#'+(idx+1) : null;
 }
-// Won and lost at the spot, as a plain 12-0 / 7-5 / 4-8. One pair of numbers,
-// one meaning: fights that ended with somebody out. It carried a third — how
-// often the spot was shared at all — and the two counted different things, so
-// "0-0" and "0-0 of 12" sat side by side meaning opposites and were read wrong
-// twice.
+// Won and lost at the spot, as a plain 12-0 / 10-2 / 4-8. One pair of numbers
+// and one meaning: of the games you landed on somebody, the ones you walked
+// away from and the ones you did not.
+//
+// This is the third thing this pair has counted and the first that produces a
+// record worth the column. It used to count corpses — fights that ended with
+// somebody out — and on the map that is about one and a half drops decided per
+// game across a whole lobby: measured over twelve games of forty-nine duos,
+// nineteen. So a squad that landed on somebody in every one of its twelve games
+// still read "0-0", while another that never saw a soul read the same, and the
+// column said nothing about either. Before that it printed both, as "1-0 of
+// 12", and the two numbers meaning different things is what got it read wrong
+// and pulled.
+//
+// A contested drop you survived is a drop you won. That is not a claim about
+// who shot whom — it is the claim the column can actually support, and it is
+// the one a player is asking when they look at it: how often did I land on
+// somebody, and how often did it cost me. landingWins stays as it is for the
+// achievements that count kills; it is simply not what this cell reports.
 function landingRecord(t){
   if(!t) return null;
-  const w=t.landingWins||0, l=t.landingLosses||0, c=t.landingContests||0;
-  if(!(w+l) && !c) return null;
-  return w+'-'+l;
+  const l=t.landingLosses||0, c=t.landingContests||0;
+  if(!c && !l) return null;
+  // Losses are counted whether or not the spot registered as shared, so the
+  // subtraction is floored rather than trusted.
+  return Math.max(0, c - l) + '-' + l;
 }
 function landingCellHTML(t){
   const zone=landingZoneLabel(t);

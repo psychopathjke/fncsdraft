@@ -100,21 +100,23 @@ const BOOTSTRAP = `
       check(set + ': the column carries real records, not a wall of dashes',
         withRecord >= teams.length * 0.25,
         withRecord + ' of ' + teams.length + ' rows');
-      // A quarter of the field, and it was never the threshold that was wrong —
-      // it was the coin flip underneath it. Unseeded, trios came out anywhere
-      // between 4 and 11 against a bar of 8. Seeded, it is 9 every time.
+      // What the record now counts is contested drops survived, not corpses, so
+      // the question this check asks changed with it. Counting squads that had a
+      // fight end in a body was the old measure and it is no longer what the
+      // column reports — on the map that is about one and a half drops decided
+      // per game across the whole lobby, which is exactly why the column read
+      // "0-0" for everybody and why this was rewritten.
       //
-      // The bar was tried lower, at a flat 4, on the theory that single digits
-      // deserved a gentler rule. That was worse: with the landing assignment
-      // stubbed out — contests barely happening at all, which is precisely the
-      // collapse this check exists to catch — trios still scored 6 and a floor
-      // of 4 waved it through. Eight catches it. The margin over the healthy 9
-      // is one squad, which is thin, but thin and deterministic beats generous
-      // and random: it now either passes or it does not, and a drop below 8 is
-      // a fact about the app rather than about the weather.
+      // The thing worth guarding now is that somebody's record is substantial
+      // after a stage: if the busiest squad in the lobby cannot reach half the
+      // games with a contested drop, either the drop stopped being contested or
+      // the count stopped reaching the cell, and both are the failure this
+      // check exists for. Seeded, the busiest squad is well clear of it.
+      var busiest = teams.reduce(function(m, t){ return Math.max(m, t.landingContests || 0); }, 0);
       check(set + ': the record says something after twelve games',
-        decided >= teams.length * 0.25,
-        decided + ' of ' + teams.length + ' squads won or lost at least one drop');
+        busiest >= GAMES / 2,
+        'the busiest squad landed on somebody ' + busiest + ' times of ' + GAMES +
+        ', and ' + decided + ' of ' + teams.length + ' squads had a drop end in a body');
       check(set + ': the cell carries no zone number',
         cell.indexOf('#') < 0, 'cell reads ' + cell.replace(/<[^>]+>/g, ''));
             check(set + ': wins and losses balance',
