@@ -621,6 +621,21 @@
   .rf-btn{font-size:11px;text-transform:uppercase;letter-spacing:.04em;background:var(--panel2);
     border:1px solid var(--line);color:var(--ink-dim);padding:6px 11px;border-radius:20px;cursor:pointer;}
   .rf-btn.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700;}
+
+  /* Region plates. The code is the label and the long name is its caption —
+     the sport says EU and NAC, and the app was saying "Middle East" in eleven
+     pixels. Sized as something to hit rather than to aim at: 44px of target
+     against the chip's 26. */
+  #preRegionChecks{gap:8px;}
+  .rf-plate{display:inline-flex;flex-direction:column;align-items:flex-start;gap:1px;
+    padding:7px 13px;border-radius:9px;line-height:1.1;text-transform:none;letter-spacing:0;}
+  .rf-plate .rf-code{font-size:14px;font-weight:900;letter-spacing:.06em;color:var(--ink);}
+  .rf-plate .rf-name{font-size:10px;font-weight:600;letter-spacing:.02em;color:var(--ink-dim);}
+  .rf-plate:hover{border-color:var(--accent);}
+  .rf-plate.active .rf-code{color:var(--accent-ink);}
+  /* The caption keeps its own contrast on the filled state rather than
+     inheriting the ink, so the code still leads when the plate is chosen. */
+  .rf-plate.active .rf-name{color:var(--accent-ink);opacity:.72;}
   .sim-modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;}
   @media(max-width:640px){.sim-modes{grid-template-columns:1fr;}}
   .sim-btn{text-align:left;background:var(--panel2);border:1px solid var(--line);color:var(--ink-dim);
@@ -27370,6 +27385,18 @@ function buildMapChecks(){
   });
 }
 
+
+// A region plate: the code the scene actually uses, with the long name under it
+// as the caption rather than the label. Broadcast standings, brackets and every
+// conversation about a Major say EU and NAC; "Middle East" set in eleven pixels
+// inside a pill is the app's word for it, not the sport's. The code leads, the
+// name explains it once, and the target is a plate you can hit rather than a
+// chip you have to aim at.
+function regionPlateHTML(code){
+  if(code==='ALL') return '<span class="rf-code">' + esc(L().allRegions) + '</span>';
+  return '<span class="rf-code">' + esc(code) + '</span>' +
+         '<span class="rf-name">' + esc(regionName(code)) + '</span>';
+}
 function buildPreRegionChecks(){
   const src=pendingPool();
   const avail=new Set(src.map(p=>p.region));
@@ -27392,9 +27419,9 @@ function buildPreRegionChecks(){
     const list = regions.length ? regions : [{code:'ALL'}];
     list.forEach((r,i)=>{
       const b=document.createElement('button');
-      b.className='rf-btn'+(i===0?' active':'');
+      b.className='rf-btn rf-plate'+(i===0?' active':'');
       b.dataset.region=r.code;
-      b.textContent = r.code==='ALL' ? L().allRegions : regionName(r.code);
+      b.innerHTML = regionPlateHTML(r.code);
       b.onclick=()=>{
         el.querySelectorAll('.rf-btn').forEach(x=>x.classList.remove('active'));
         b.classList.add('active');
@@ -27405,7 +27432,7 @@ function buildPreRegionChecks(){
     });
   } else {
     const allRegionsBtn=document.createElement('button');
-    allRegionsBtn.className='rf-btn'; allRegionsBtn.textContent=L().allRegions; allRegionsBtn.dataset.region='ALL';
+    allRegionsBtn.className='rf-btn rf-plate'; allRegionsBtn.innerHTML=regionPlateHTML('ALL'); allRegionsBtn.dataset.region='ALL';
     regionBtns.push(allRegionsBtn);
     allRegionsBtn.onclick=()=>{
       const nowActive=!allRegionsBtn.classList.contains('active');
@@ -27417,7 +27444,7 @@ function buildPreRegionChecks(){
     el.appendChild(allRegionsBtn);
     regions.forEach(r=>{
       const b=document.createElement('button');
-      b.className='rf-btn'; b.textContent=regionName(r.code); b.dataset.region=r.code;
+      b.className='rf-btn rf-plate'; b.innerHTML=regionPlateHTML(r.code); b.dataset.region=r.code;
       b.onclick=()=>{ b.classList.toggle('active'); allRegionsBtn.classList.remove('active'); document.getElementById('regionWarning').style.display='none'; updateEraAvailability(); };
       regionBtns.push(b);
       el.appendChild(b);
