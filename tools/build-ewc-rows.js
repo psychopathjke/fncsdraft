@@ -32,12 +32,13 @@ const round2 = v => Math.round(v * 100) / 100;
 
 // ---------------------------------------------------------------- Epic payload
 // Which stage a window is. Cup 4 played its Opens and Play-Ins over two days
-// each; a stage is the stage, so the two days are merged the way the circuit
-// scores them — a team's better day is the one that seeded it.
+// each, and a stage is the stage: the two windows are merged below, added up
+// the way the circuit scores them.
 function stageOfWindow(id){
   const m = /ReloadEliteSeries(\d)(Open|PlayIn|Heat|Final)/.exec(id);
   if (!m) return null;
-  const cup = 'e' + m[1];
+  // The set keys the app uses: r for Reload, one per cup.
+  const cup = 'r' + m[1];
   if (m[2] === 'Open') return {cup, stage: 'open'};
   if (m[2] === 'PlayIn') return {cup, stage: 'playin'};
   if (m[2] === 'Final') return {cup, stage: 'final'};
@@ -167,7 +168,7 @@ function readTracker(){
     for (const f of fs.readdirSync(full).filter(f => f.toLowerCase().endsWith('.html'))){
       const stage = stageOfFile(f);
       if (!stage) continue;
-      const cup = cups['e' + dir] || (cups['e' + dir] = {stages: {}});
+      const cup = cups['r' + dir] || (cups['r' + dir] = {stages: {}});
       cup.stages[stage] = parsePage(fs.readFileSync(path.join(full, f), 'utf8'));
     }
   }
