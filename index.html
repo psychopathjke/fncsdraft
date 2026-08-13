@@ -2290,6 +2290,9 @@ brkNormalised:'После нормировки по региону',
 brkNote:'Каждый этап даёт балл по месту с поправкой на размер поля, дальше — среднее по весам. Вес показывает, насколько этап важен.',
 cardGalleryTitle:'Карточки состава', cardNoStats:'Стата появится после турнира.',
 realTitle:'Плей-ин — реальные данные', realTitleLcq:'Last Chance Qualifier — реальные данные',
+realTitleOpens:'Опены — реальные данные', realRankOpens:'Место в опенах',
+realTitleHeat:'Хит {N} — реальные данные', realRankHeat:'Место в хите {N}',
+realTitleFinal:'Финал — реальные данные', realRankFinal:'Место в финале',
 realTitleGf:'Гранд-финал — реальные данные', realRankGf:'Место в гранд-финале',
 missedGfNote:'Не попал в гранд-финал · −10 к карточке', simTitle:'Симуляция турнира',
 realRank:'Место в плей-ине', realRankLcq:'Место в LCQ', realAvgElims:'Элиминаций за матч', realAvgPlace:'Среднее место', realPts:'Очки', realMatches:'Матчей', realWins:'Побед', realKills:'Элиминаций (дуо)',
@@ -2742,6 +2745,9 @@ brkNormalised:'After the region is normalised',
 brkNote:'Each stage scores the finish against the size of its field, then the stages are averaged by weight. The weight is how much that stage counts.',
 cardGalleryTitle:'Squad cards', cardNoStats:'Stats appear after the tournament.',
 realTitle:'Play-In — real data', realTitleLcq:'Last Chance Qualifier — real data',
+realTitleOpens:'Opens — real data', realRankOpens:'Opens rank',
+realTitleHeat:'Heat {N} — real data', realRankHeat:'Heat {N} rank',
+realTitleFinal:'Final — real data', realRankFinal:'Final rank',
 realTitleGf:'Grand Finals — real data', realRankGf:'Grand Finals rank',
 missedGfNote:'Did not reach the Grand Finals · −10 to the card', simTitle:'Tournament simulation',
 realRank:'Play-In rank', realRankLcq:'LCQ rank', realAvgElims:'Avg eliminations', realAvgPlace:'Avg placement', realPts:'Points', realMatches:'Matches', realWins:'Wins', realKills:'Eliminations (duo)',
@@ -34475,6 +34481,20 @@ function wireCardPeek(container, pl){
 // Osirion reports total eliminations for a duo; Fortnite Tracker reports averages
 // per match instead. Show whichever the source for this card actually carries.
 function isLcqReal(r){ return !!(r && (r.lcq || r.stage==='Lcq')); }
+// What the real-data block on a card should call itself. It used to know two
+// stages — the Play-In and the Last Chance Qualifier — and printed "Play-In"
+// for anything else, which is how the winner of a Reload final ended up labelled
+// a Play-In result. A card carries the stage it was rated on, so it is asked.
+function realStageLabel(r){
+  const st = r && r.stage;
+  if(isLcqReal(r)) return {title:L().realTitleLcq, rank:L().realRankLcq};
+  if(st === 'G' || st === 'final') return {title:L().realTitleFinal, rank:L().realRankFinal};
+  if(st === 'open') return {title:L().realTitleOpens, rank:L().realRankOpens};
+  if(typeof st === 'string' && st.indexOf('heat') === 0)
+    return {title:L().realTitleHeat.replace('{N}', st.slice(4)),
+            rank:L().realRankHeat.replace('{N}', st.slice(4))};
+  return {title:L().realTitle, rank:L().realRank};
+}
 function realExtraRows(r){
   if(r.kills!=null) return `<div class="srow"><span>${L().realKills}</span><b>${fmtNum(r.kills)}</b></div>`;
   let out='';
@@ -34530,10 +34550,11 @@ function playerStatSheetHTML(team, idx, p){
       ${realExtraRows(p.realGf)}
     </div>` : (p.missedGf ? `
     <div class="fut-foot" style="font-size:9px;margin:10px 0 2px;color:var(--danger);">${L().missedGfNote}</div>` : '');
+  const realLbl = p.real ? realStageLabel(p.real) : null;
   const realRows = p.real ? `
-    <div class="fut-foot" style="font-size:9px;margin:10px 0 6px;color:${skinR.glow};">${isLcqReal(p.real)?L().realTitleLcq:L().realTitle}</div>
+    <div class="fut-foot" style="font-size:9px;margin:10px 0 6px;color:${skinR.glow};">${realLbl.title}</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:0 16px;">
-      <div class="srow"><span>${isLcqReal(p.real)?L().realRankLcq:L().realRank}</span><b>#${p.real.rank}</b></div>
+      <div class="srow"><span>${realLbl.rank}</span><b>#${p.real.rank}</b></div>
       <div class="srow"><span>${L().realPts}</span><b>${fmtNum(p.real.pts)}</b></div>
       <div class="srow"><span>${L().realMatches}</span><b>${p.real.matches}</b></div>
       <div class="srow"><span>${L().realWins}</span><b>${p.real.wins}</b></div>
