@@ -180,6 +180,51 @@ would score every placement in the cup wrong. There is no last chance either —
 FNCS hands its Play-In dropouts a Lobby, this circuit does not, so missing the
 eighty ends the run rather than inventing a stage the cup never played.
 
+## The Championship, and how the circuit ends
+
+The four cups are qualifiers. The circuit ends at the **Reload Elite Series
+Championship** at the Esports World Cup in Riyadh, on Epic's own event
+`epicgames_Escargo_Official`, four days, **18-21 August 2026** — which has not
+been played yet.
+
+**Who goes, off the official rules:** advancement is decided by each Qualifier's
+Finals leaderboard — EU 1st, 2nd and 3rd; NAC 1st and 2nd; one team each from
+OCE, ASIA, ME, BR and NAW. Ten a qualifier, **40 teams** in all. A team that
+cannot take its seat passes it to the next qualifier's leaderboard.
+
+Europe's twelve seats, read straight off the four finals this mode already
+holds:
+
+| cup | 1st | 2nd | 3rd |
+|---|---|---|---|
+| 1 | Shxrk & t3eny | Sky & Scroll | Tjino & PabloWingu |
+| 2 | Shxrk & t3eny | Japko & panzer | vic0 & Malibuca |
+| 3 | Darm & demus | charyy & Kami | SwizzY & Pixie |
+| 4 | Shxrk & t3eny | SwizzY & Pixie | Sky & Scroll |
+
+Twelve seats, **eight duos**: Shxrk & t3eny qualified three times over, Sky &
+Scroll and SwizzY & Pixie twice each. Nobody takes a second seat, so those four
+spots pass down the same leaderboard — which is the rule the app already draws
+as "already qualified" on a FNCS standings table.
+
+**Two islands, alternating.** The Championship is played on both Reload maps,
+not one: the circuit's own map pages split it into Group A on Slurp Rush, Group A
+on Elite Stronghold, Group B on each, and then the Finals. Those are the two
+islands this mode already ships — the green one the first two cups were played
+on is **Slurp Rush**, the frozen one from cup 3 is **Elite Stronghold** — so a
+Championship game changes island the way a qualifier game does not.
+
+### What that needs, and does not have yet
+
+- A field of 40 where the data names 12. The other 28 seats are other regions'
+  and this circuit published none of them here.
+- A map that changes between games. Every mode in the app so far picks one
+  island for a whole run.
+- The Championship's own format — groups, game counts, cuts — which the
+  qualifier rules do not cover and which Epic has not published as a rules
+  document.
+
+
 ## What is deliberately not in this pass
 
 - **Career.** The circuit is a mode, not a ladder. Career's division cups stay
