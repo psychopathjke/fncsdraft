@@ -183,31 +183,18 @@
     border:1px solid rgba(15,22,32,.14);border-radius:20px;padding:3px 10px;letter-spacing:.01em;}
   .ec-sub{font-size:12px;font-weight:700;color:#5b6773;font-style:italic;}
   @media (prefers-reduced-motion:reduce){ .ec-art{transition:none;} }
-  /* A circuit that is four cups rather than four tournaments gets one card and
-     lets the player pick the cup on it: a banner wide enough to read as a row
-     of its own, with the choice sitting where a tile's footer normally is. */
-  .mode-grid-1{grid-template-columns:1fr;}
-  .ec-art-wide{aspect-ratio:auto;height:190px;background-position:right 28%;background-size:auto 128%;}
-  .mode-card:hover .ec-art-wide{background-size:auto 134%;}
-  .ec-art-wide .ec-pill{z-index:2;}
-  /* Art with a subject that fills the frame is cropped; art with an emblem
-     floating in space is fitted, or the emblem loses its own edges. */
-  .ec-art-fit{background-size:auto 155%;background-position:right center;}
-  .mode-card:hover .ec-art-fit{background-size:auto 162%;}
-  .ec-foot-wide{background:linear-gradient(to right, rgba(255,255,255,.95) 34%, rgba(255,255,255,0) 66%);
-    top:0;display:flex;flex-direction:column;justify-content:center;padding:14px 18px;}
-  .ec-cups{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap;}
-  .ec-cup{font-size:12px;font-weight:900;letter-spacing:.02em;color:#0f1620;
-    background:rgba(255,255,255,.92);border:1px solid rgba(15,22,32,.2);border-radius:20px;
-    padding:6px 13px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s;
-    font-family:inherit;}
+  .ec-cups{display:flex;gap:8px;margin:12px 0 2px;flex-wrap:wrap;}
+  /* The picker sits on the card, under the art, so it wears the card's colours
+     rather than the plate's: one button per Major or cup, the date under the
+     name, and the accent on hover the way every other control here behaves. */
+  .ec-cup{font-size:11.5px;font-weight:900;letter-spacing:.02em;color:var(--ink);
+    background:var(--panel2);border:1px solid var(--line);border-radius:20px;
+    padding:5px 10px;cursor:pointer;text-align:left;font-family:inherit;
+    transition:background .15s,border-color .15s,color .15s,transform .15s;}
   .ec-cup:hover{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);transform:translateY(-1px);}
-  .ec-cup small{display:block;font-size:10px;font-weight:700;color:#5b6773;letter-spacing:.02em;}
+  .ec-cup small{display:block;font-size:9.5px;font-weight:700;color:var(--ink-dim);letter-spacing:.02em;}
   .ec-cup:hover small{color:var(--accent-ink);opacity:.85;}
-  @media(max-width:640px){ .ec-art-wide{height:230px;background-position:right -30px top 20%;}
-    /* on a phone the plate covers most of the card, so the emblem comes back
-       down to a badge in the corner rather than a wall behind the text. */
-    .ec-art-fit{background-size:auto 100%;background-position:right center;}
+      .ec-art-fit{background-size:auto 100%;background-position:right center;}
     .ec-foot-wide{background:linear-gradient(to right, rgba(255,255,255,.95) 74%, rgba(255,255,255,.25));} }
   @media (prefers-reduced-motion:reduce){ .ec-cup:hover{transform:none;} }
   .mode-card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:6px;
@@ -1269,71 +1256,67 @@
   </div>
 
   <div class="screen active" id="screen-mode">
-    <div class="mode-grid mode-grid-1">
+    <div class="mode-grid mode-grid-4">
       <div class="mode-card">
-        <div class="ec-art ec-art-wide ec-art-fit" id="major2Art" style="background-image:url(art/mode-major1.jpg)">
+        <div class="ec-art" id="major2Art" style="background-image:url(art/mode-major1.jpg)">
+          <span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span>
           <span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span>
-          <div class="ec-foot ec-foot-wide">
+          <div class="ec-foot">
             <div class="ec-when" data-i18n="ecDate2026"></div>
             <h3 class="ec-title" data-i18n="modeFncs2026Title"></h3>
             <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos"></span></div>
-            <div class="ec-cups">
-          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(2,'cards1')"><span data-i18n="majorPick1"></span><small data-i18n="ecDateM1"></small></button>
-          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(2,'cards')"><span data-i18n="majorPick2"></span><small data-i18n="ecDateM2"></small></button>
-            </div>
           </div>
+        </div>
+        <div class="ec-cups">
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(2,'cards1')"><span data-i18n="majorPick1"></span><small data-i18n="ecDateM1"></small></button>
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(2,'cards')"><span data-i18n="majorPick2"></span><small data-i18n="ecDateM2"></small></button>
         </div>
         <p data-i18n="modeFncs2026Desc"></p>
         <span class="mode-count" data-i18n="modeFncs2026Count"></span>
       </div>
-    </div>
-
-    <div class="mode-grid mode-grid-1" style="margin-top:16px;">
       <div class="mode-card">
-        <div class="ec-art ec-art-wide ec-art-fit" style="background-image:url(art/mode-major1-2025.jpg)">
+        <div class="ec-art" style="background-image:url(art/mode-major1-2025.jpg)">
+          <span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span>
           <span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span>
-          <div class="ec-foot ec-foot-wide">
+          <div class="ec-foot">
             <div class="ec-when" data-i18n="ecDate2025"></div>
             <h3 class="ec-title" data-i18n="modeFncs2025Title"></h3>
             <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubTrios"></span></div>
-            <div class="ec-cups">
-          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025')"><span data-i18n="majorPick1"></span><small data-i18n="ecDateT1"></small></button>
-          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025major2')"><span data-i18n="majorPick2"></span><small data-i18n="ecDateT2"></small></button>
-          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025major3')"><span data-i18n="majorPick3"></span><small data-i18n="ecDateT3"></small></button>
-            </div>
           </div>
+        </div>
+        <div class="ec-cups">
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025')"><span data-i18n="majorPick1"></span><small data-i18n="ecDateT1"></small></button>
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025major2')"><span data-i18n="majorPick2"></span><small data-i18n="ecDateT2"></small></button>
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025major3')"><span data-i18n="majorPick3"></span><small data-i18n="ecDateT3"></small></button>
         </div>
         <p data-i18n="modeFncs2025Desc"></p>
         <span class="mode-count" data-i18n="modeFncs2025Count"></span>
       </div>
-    </div>
-
-    <div class="mode-grid mode-grid-1" style="margin-top:16px;">
-      <div class="mode-card" id="ewcCard">
-        <div class="ec-art ec-art-wide" style="background-image:url(art/mode-ewc.jpg)">
+      <div class="mode-card">
+        <div class="ec-art" style="background-image:url(art/mode-ewc.jpg)">
+          <span class="ec-pill ec-pill-l" data-i18n="ecScopeEu"></span>
           <span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span>
-          <div class="ec-foot ec-foot-wide">
+          <div class="ec-foot">
             <div class="ec-when" data-i18n="ecDateEwc"></div>
             <h3 class="ec-title" data-i18n="modeEwcTitle"></h3>
             <div class="ec-mode"><span class="ec-chip">Reload</span><span class="ec-sub" data-i18n="ecSubEwc"></span></div>
-            <div class="ec-cups">
+          </div>
+        </div>
+        <div class="ec-cups">
           <button class="ec-cup" onclick="event.stopPropagation();chooseMode(2,'ewc1')"><span data-i18n="ewcCup1"></span><small data-i18n="ewcCup1When"></small></button>
           <button class="ec-cup" onclick="event.stopPropagation();chooseMode(2,'ewc2')"><span data-i18n="ewcCup2"></span><small data-i18n="ewcCup2When"></small></button>
           <button class="ec-cup" onclick="event.stopPropagation();chooseMode(2,'ewc3')"><span data-i18n="ewcCup3"></span><small data-i18n="ewcCup3When"></small></button>
           <button class="ec-cup" onclick="event.stopPropagation();chooseMode(2,'ewc4')"><span data-i18n="ewcCup4"></span><small data-i18n="ewcCup4When"></small></button>
-            </div>
-          </div>
         </div>
         <p data-i18n="modeEwcDesc"></p>
         <span class="mode-count" data-i18n="modeEwcCount"></span>
       </div>
-    </div>
-
-    <div class="mode-grid mode-grid-1" style="margin-top:16px;">
       <div class="mode-card mode-card-soon" aria-disabled="true">
         <span class="soon-badge">SOON</span>
-        <div class="ec-art ec-art-wide ec-art-fit" id="careerArt">
-          <div class="ec-foot ec-foot-wide">
+        <div class="ec-art" id="careerArt">
+          <span class="ec-pill ec-pill-l" data-i18n="ecScopeAll"></span>
+          <div class="ec-foot">
+            <div class="ec-when" data-i18n="ecDateCareer"></div>
             <h3 class="ec-title" data-i18n="modeCareerTitle"></h3>
             <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubCareer"></span></div>
           </div>
@@ -2251,6 +2234,7 @@ modeFncs2025Count:'3 игрока · плей-ин, группы, региона
 modeEwcDesc:'Европейская дорога на Esports World Cup: четыре капа в Reload, дуо. У каждого свой отбор — опены, плей-ин, четыре хита по 20 команд и финал на 20. Элим стоит 3 очка, а таблицу мест первый кап платил круче остальных. Карточки собраны по настоящим лидербордам, финал четвёртого капа — прямо из payload Epic.',
 modeEwcCount:'2 игрока · опены, плей-ин, хиты, финал',
 ecDateEwc:'фев — июн 2026 · Европа',
+ecDateCareer:'сезон за сезоном',
 ecScopeEu:'Европа',
 ecSubEwc:'дуо, свой остров',
 ewcCup1:'Кап 1', ewcCup1When:'7 фев',
@@ -2702,6 +2686,7 @@ modeFncs2025Count:'3 players · play-in, groups, regional final',
 modeEwcDesc:'The European road to the Esports World Cup: four cups on Reload, in duos. Each one qualifies its own way — Opens, a Play-In, four heats of 20 and a final of 20. An elimination is worth 3 points, and the first cup paid a steeper podium than the ones after it. The cards are built from the real leaderboards, and cup 4 comes straight out of the payload Epic itself serves.',
 modeEwcCount:'2 players · opens, play-in, heats, final',
 ecDateEwc:'Feb — Jun 2026 · Europe',
+ecDateCareer:'season after season',
 ecScopeEu:'Europe',
 ecSubEwc:'duos, an island of its own',
 ewcCup1:'Cup 1', ewcCup1When:'7 Feb',
