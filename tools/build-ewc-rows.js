@@ -61,6 +61,9 @@ function rowOfEntry(e){
   return {rank: e.rank, points: e.pointsEarned, matches: s.length, wins: wins,
           avgElims: round2(elims / matches), avgPlace: round2(places / matches),
           elimPts: elimPts,
+          // The totals the averages came from, kept so a stage played over two
+          // days can be added up exactly rather than by averaging averages.
+          _elims: elims, _places: places,
           players: names.map((n, i) => ({handle: String(n).trim(),
                                          nat: (e.customCountries || [])[i] || null, org: null}))};
 }
@@ -81,18 +84,34 @@ function readApi(){
     if (!entries.length) continue;
     const cup = cups[where.cup] || (cups[where.cup] = {stages: {}, dates: {}});
     const rows = entries.map(rowOfEntry).sort((a, b) => a.rank - b.rank);
-    // Two-day stages arrive as two windows. Keep a team's better day and
-    // re-rank, which is what the circuit's own seeding does.
+    // Two-day stages arrive as two windows, and the circuit scores them the way
+    // FNCS scores a Play-In: the days add up. So a team's two rows are summed —
+    // points, matches, wins, eliminations and the elimination points — and the
+    // averages are recomputed off those totals rather than averaged with each
+    // other, which would weight a three-game day like a twelve-game one.
+    // Measured: summing puts cup 4's Play-In field on 19-24 matches a team,
+    // which is what Tracker's own Play-In rows read for the first three cups.
     const prev = cup.stages[where.stage];
     if (prev){
-      const best = new Map();
+      const both = new Map();
       [...prev, ...rows].forEach(r => {
         const k = r.players.map(p => p.handle.toLowerCase()).sort().join('|');
-        const had = best.get(k);
-        if (!had || r.points > had.points) best.set(k, r);
+        const had = both.get(k);
+        if (!had){ both.set(k, Object.assign({}, r)); return; }
+        had.points += r.points;
+        had.matches += r.matches;
+        had.wins += r.wins;
+        had.elimPts += r.elimPts;
+        had._elims += r._elims;
+        had._places += r._places;
+        // Whichever day carried a nationality keeps it for the pair.
+        had.players = had.players.map((p, i) => p.nat ? p : (r.players[i] || p));
       });
-      cup.stages[where.stage] = [...best.values()].sort((a, b) => b.points - a.points)
-                                                  .map((r, i) => Object.assign({}, r, {rank: i + 1}));
+      cup.stages[where.stage] = [...both.values()]
+        .map(r => Object.assign(r, {avgElims: round2(r._elims / Math.max(r.matches, 1)),
+                                    avgPlace: round2(r._places / Math.max(r.matches, 1))}))
+        .sort((a, b) => b.points - a.points || a.avgPlace - b.avgPlace)
+        .map((r, i) => Object.assign(r, {rank: i + 1}));
     } else {
       cup.stages[where.stage] = rows;
     }
@@ -224,6 +243,32 @@ for (const cup of Object.keys(cups)){
     s.rows = s.rows.slice(0, WIDE_KEEP);
   }
 }
+
+// Epic's `customNames` are the handles a player typed in capitals — SHXRK,
+// T3ENY — while Tracker prints the spelling the scene uses. The same person
+// must not be one card in cup 1 and a shoutier one in cup 4, so every handle is
+// spelled the way it is most often spelled, and an all-caps spelling only wins
+// when it is the only one there is.
+const spelling = new Map();
+Object.values(cups).forEach(c => Object.values(c.stages).forEach(s => s.rows.forEach(r =>
+  r.players.forEach(p => {
+    const k = p.handle.toLowerCase();
+    const seen = spelling.get(k) || {};
+    seen[p.handle] = (seen[p.handle] || 0) + 1;
+    spelling.set(k, seen);
+  }))));
+const canonical = new Map();
+spelling.forEach((seen, k) => {
+  const forms = Object.keys(seen);
+  const mixed = forms.filter(f => f !== f.toUpperCase() || !/[A-Z]/.test(f));
+  const pick = (mixed.length ? mixed : forms).sort((a, b) => seen[b] - seen[a] || a.localeCompare(b))[0];
+  canonical.set(k, pick);
+});
+Object.values(cups).forEach(c => Object.values(c.stages).forEach(s => s.rows.forEach(r =>
+  r.players.forEach(p => { p.handle = canonical.get(p.handle.toLowerCase()) || p.handle; }))));
+const respelt = [...spelling.values()].filter(seen => Object.keys(seen).length > 1).length;
+console.log('\n' + respelt + ' handles were spelled more than one way across the circuit; ' +
+            'each now reads the way the scene spells it');
 
 if (OUT){
   const rowOf = r => [r.rank, r.points, r.matches, r.wins, r.avgElims, r.avgPlace, r.elimPts,

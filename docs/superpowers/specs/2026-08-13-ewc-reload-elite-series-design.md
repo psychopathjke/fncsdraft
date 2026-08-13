@@ -96,9 +96,23 @@ and a nationality on every seat.
 | stage | teams | note |
 |---|---|---|
 | Opens | — | Epic returns nothing for either Opens window |
-| Play-Ins | **1936** | both days, a team's better day kept |
+| Play-Ins | **1936** | both days, **added up** |
 | Heats 1-4 | 20 each | 8 games |
 | Final | 20 | 8 games |
+
+A Play-In runs over two days and, as in FNCS, the two days **add up** — points,
+matches, wins and eliminations — rather than the better one counting. The
+measurement says the same: summed, cup 4's Play-In teams have played 17 to 24
+games each, which is where Tracker's own Play-In rows put the first three cups
+(14-24). Taking the better day alone would have read 12, and would have rated
+the whole stage as if it were half a tournament. Averages are recomputed from
+the totals, not averaged with each other, so a three-game day does not weigh
+the same as a twelve-game one.
+
+Epic's payload spells a handle the way the player typed it, in capitals, while
+Tracker prints the spelling the scene uses. 126 handles were spelled both ways
+across the circuit; each is normalised to the spelling that is not a shout, so
+the same person is not one card in cup 1 and a louder one in cup 4.
 
 **Checked against what a human saw:** six rows across three heats — points,
 matches, wins, total eliminations and both handles — read off the screenshots of
