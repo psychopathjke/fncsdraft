@@ -625,8 +625,13 @@
   .go-btn:disabled{background:var(--panel2);color:var(--ink-dimmer);cursor:not-allowed;}
 
   .region-filter{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
-  .rf-btn{font-size:11px;text-transform:uppercase;letter-spacing:.04em;background:var(--panel2);
-    border:1px solid var(--line);color:var(--ink-dim);padding:6px 11px;border-radius:20px;cursor:pointer;}
+  /* One chip language. The years and the island names have no code to lead with
+     the way a region does, so they stay one line — but at the plates' weight and
+     height, so a row of them is the same object as a row of regions rather than
+     a second, smaller kind of button on the same page. */
+  .rf-btn{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+    background:var(--panel2);border:1px solid var(--line);color:var(--ink-dim);
+    padding:10px 13px;border-radius:9px;cursor:pointer;}
   .rf-btn.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700;}
 
   /* Region plates. The code is the label and the long name is its caption —
@@ -27658,13 +27663,15 @@ function buildRegionFilter(){
   // pick() buttons on top of the team picker.
   if(CARD_MODE || REALISTIC){ el.style.display='none'; activeRegion='ALL'; return; }
   el.style.display='';
+  // Same plates as the screen before this one. It is the same seven regions
+  // asked about twice, and they were reading as two different controls.
   const all=document.createElement('button');
-  all.className='rf-btn active'; all.textContent=L().allRegions;
+  all.className='rf-btn rf-plate active'; all.innerHTML=regionPlateHTML('ALL');
   all.onclick=()=>{activeRegion='ALL'; refreshFilterUI(all);};
   el.appendChild(all);
   REGIONS.forEach(r=>{
     const b=document.createElement('button');
-    b.className='rf-btn'; b.textContent=regionName(r.code);
+    b.className='rf-btn rf-plate'; b.innerHTML=regionPlateHTML(r.code);
     b.onclick=()=>{activeRegion=r.code; refreshFilterUI(b);};
     el.appendChild(b);
   });
