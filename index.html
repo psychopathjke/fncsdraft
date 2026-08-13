@@ -190,6 +190,10 @@
   .ec-art-wide{aspect-ratio:auto;height:190px;background-position:right 28%;background-size:auto 128%;}
   .mode-card:hover .ec-art-wide{background-size:auto 134%;}
   .ec-art-wide .ec-pill{z-index:2;}
+  /* Art with a subject that fills the frame is cropped; art with an emblem
+     floating in space is fitted, or the emblem loses its own edges. */
+  .ec-art-fit{background-size:auto 100%;background-position:right center;}
+  .mode-card:hover .ec-art-fit{background-size:auto 106%;}
   .ec-foot-wide{background:linear-gradient(to right, rgba(255,255,255,.94) 52%, rgba(255,255,255,0) 82%);
     top:0;display:flex;flex-direction:column;justify-content:center;padding:14px 18px;}
   .ec-cups{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap;}
@@ -1262,46 +1266,42 @@
   </div>
 
   <div class="screen active" id="screen-mode">
-    <div class="mode-grid mode-grid-3">
-      <div class="mode-card" onclick="chooseMode(2, 'cards1')">
-        <div class="ec-art" style="background-image:url(art/mode-major1.jpg)"><span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span><span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateM1"></div><h3 class="ec-title" data-i18n="modeCards1Title"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos"></span></div></div></div>
-        <p data-i18n="modeCards1Desc"></p>
-        <span class="mode-count" data-i18n="modeCards1Count"></span>
-      </div>
-      <div class="mode-card" onclick="chooseMode(2, 'cards')">
-        <div class="ec-art" id="major2Art" style="background-image:url(art/mode-major1.jpg)"><span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span><span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateM2"></div><h3 class="ec-title" data-i18n="modeCardsTitle"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos"></span></div></div></div>
-        <p data-i18n="modeCardsDesc"></p>
-        <span class="mode-count" data-i18n="modeCardsCount"></span>
-      </div>
-      <div class="mode-card mode-card-soon" aria-disabled="true">
-        <span class="soon-badge">SOON</span>
-        <div class="ec-art" id="careerArt">
-          <span class="ec-pill ec-pill-l" data-i18n="ecScopeAll"></span>
-          <div class="ec-foot">
-            <h3 class="ec-title" data-i18n="modeCareerTitle"></h3>
-            <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubCareer"></span></div>
+    <div class="mode-grid mode-grid-1">
+      <div class="mode-card">
+        <div class="ec-art ec-art-wide ec-art-fit" id="major2Art" style="background-image:url(art/mode-major1.jpg)">
+          <span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span>
+          <div class="ec-foot ec-foot-wide">
+            <div class="ec-when" data-i18n="ecDate2026"></div>
+            <h3 class="ec-title" data-i18n="modeFncs2026Title"></h3>
+            <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos"></span></div>
+            <div class="ec-cups">
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(2,'cards1')"><span data-i18n="majorPick1"></span><small data-i18n="ecDateM1"></small></button>
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(2,'cards')"><span data-i18n="majorPick2"></span><small data-i18n="ecDateM2"></small></button>
+            </div>
           </div>
         </div>
-        <p data-i18n="modeCareerDesc"></p>
-        <span class="mode-count" data-i18n="modeCareerCount"></span>
+        <p data-i18n="modeFncs2026Desc"></p>
+        <span class="mode-count" data-i18n="modeFncs2026Count"></span>
       </div>
     </div>
 
-    <div class="mode-grid mode-grid-3" style="margin-top:16px;">
-      <div class="mode-card" onclick="chooseMode(3, 'cards2025')">
-        <div class="ec-art" style="background-image:url(art/mode-major1-2025.jpg)"><span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span><span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateT1"></div><h3 class="ec-title" data-i18n="modeCardsT1Title"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubTrios"></span></div></div></div>
-        <p data-i18n="modeCardsT1Desc"></p>
-        <span class="mode-count" data-i18n="modeCardsT1Count"></span>
-      </div>
-      <div class="mode-card" onclick="chooseMode(3, 'cards2025major2')">
-        <div class="ec-art" style="background-image:url(art/mode-major2-2025.jpg)"><span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span><span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateT2"></div><h3 class="ec-title" data-i18n="modeCardsT2Title"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubTrios"></span></div></div></div>
-        <p data-i18n="modeCardsT2Desc"></p>
-        <span class="mode-count" data-i18n="modeCardsT2Count"></span>
-      </div>
-      <div class="mode-card" onclick="chooseMode(3, 'cards2025major3')">
-        <div class="ec-art" style="background-image:url(art/mode-major3-2025.jpg)"><span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span><span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateT3"></div><h3 class="ec-title" data-i18n="modeCardsT3Title"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubTrios"></span></div></div></div>
-        <p data-i18n="modeCardsT3Desc"></p>
-        <span class="mode-count" data-i18n="modeCardsT3Count"></span>
+    <div class="mode-grid mode-grid-1" style="margin-top:16px;">
+      <div class="mode-card">
+        <div class="ec-art ec-art-wide ec-art-fit" style="background-image:url(art/mode-major1-2025.jpg)">
+          <span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span>
+          <div class="ec-foot ec-foot-wide">
+            <div class="ec-when" data-i18n="ecDate2025"></div>
+            <h3 class="ec-title" data-i18n="modeFncs2025Title"></h3>
+            <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubTrios"></span></div>
+            <div class="ec-cups">
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025')"><span data-i18n="majorPick1"></span><small data-i18n="ecDateT1"></small></button>
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025major2')"><span data-i18n="majorPick2"></span><small data-i18n="ecDateT2"></small></button>
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025major3')"><span data-i18n="majorPick3"></span><small data-i18n="ecDateT3"></small></button>
+            </div>
+          </div>
+        </div>
+        <p data-i18n="modeFncs2025Desc"></p>
+        <span class="mode-count" data-i18n="modeFncs2025Count"></span>
       </div>
     </div>
 
@@ -1323,6 +1323,20 @@
         </div>
         <p data-i18n="modeEwcDesc"></p>
         <span class="mode-count" data-i18n="modeEwcCount"></span>
+      </div>
+    </div>
+
+    <div class="mode-grid mode-grid-1" style="margin-top:16px;">
+      <div class="mode-card mode-card-soon" aria-disabled="true">
+        <span class="soon-badge">SOON</span>
+        <div class="ec-art ec-art-wide ec-art-fit" id="careerArt">
+          <div class="ec-foot ec-foot-wide">
+            <h3 class="ec-title" data-i18n="modeCareerTitle"></h3>
+            <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubCareer"></span></div>
+          </div>
+        </div>
+        <p data-i18n="modeCareerDesc"></p>
+        <span class="mode-count" data-i18n="modeCareerCount"></span>
       </div>
     </div>
 
@@ -2222,6 +2236,15 @@ modeCardsT3Title:'FNCS 2025 Major 3',
 modeCardsT3Desc:'Последний мейджор перед Global Championship, все семь регионов в трио. Глава 6, сезон 3 — свой остров и свой лут. Элим стоит 1 очко в LCQ, 2 в плей-ине, 4 в финале. Global Championship в Лионе <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> — вершина сезона: 33 трио, 12 игр за два дня. Результат там весит в рейтинге больше любого другого турнира.',
 modeCardsT3Count:'3 игрока · плей-ин, группы, региональный финал',
 modeEwcTitle:'Reload Elite Series',
+ecDate2026:'сезон 2026 · семь регионов',
+ecDate2025:'сезон 2025 · семь регионов',
+majorPick1:'Мейджор 1', majorPick2:'Мейджор 2', majorPick3:'Мейджор 3',
+modeFncs2026Title:'FNCS 2026',
+modeFncs2026Desc:'Оба мейджора текущего сезона, все семь регионов в дуо. В каждом — 150 дуо плей-ина и отборочный LCQ, дальше LAN: Дюссельдорф <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> у первого, Антверпен <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> у второго. Каждый игрок — карточка с атрибутами по его настоящим результатам.',
+modeFncs2026Count:'2 игрока · плей-ин, хиты, LAN',
+modeFncs2025Title:'FNCS 2025',
+modeFncs2025Desc:'Весь прошлый сезон в трио: три мейджора, все семь регионов, у каждого свой остров и свой лут. Элим стоит 1 очко в LCQ, 2 в плей-ине и 4 в финале. Сезон заканчивается Global Championship в Лионе <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> — 33 трио и 12 игр за два дня.',
+modeFncs2025Count:'3 игрока · плей-ин, группы, региональный финал',
 modeEwcDesc:'Европейская дорога на Esports World Cup: четыре капа в Reload, дуо. У каждого свой отбор — опены, плей-ин, четыре хита по 20 команд и финал на 20. Элим стоит 3 очка, а таблицу мест первый кап платил круче остальных. Карточки собраны по настоящим лидербордам, финал четвёртого капа — прямо из payload Epic.',
 modeEwcCount:'2 игрока · опены, плей-ин, хиты, финал',
 ecDateEwc:'фев — июн 2026 · Европа',
@@ -2664,6 +2687,15 @@ modeCardsT3Title:'FNCS 2025 Major 3',
 modeCardsT3Desc:'The last Major before the Global Championship, all seven regions in trios. Chapter 6, Season 3 — its own island, its own loot. An elimination is worth 1 point in the LCQ, 2 in the Play-In and 4 in the final. The Global Championship in Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> is where the season ends: 33 trios, 12 games over two days. A result there counts for more in a rating than anything else in the year.',
 modeCardsT3Count:'3 players · play-in, groups, regional final',
 modeEwcTitle:'Reload Elite Series',
+ecDate2026:'2026 season · seven regions',
+ecDate2025:'2025 season · seven regions',
+majorPick1:'Major 1', majorPick2:'Major 2', majorPick3:'Major 3',
+modeFncs2026Title:'FNCS 2026',
+modeFncs2026Desc:'Both Majors of the current season, all seven regions in duos. Each has 150 Play-In duos and an LCQ, then the LAN: Düsseldorf <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> for the first, Antwerp <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> for the second. Every player is a card, with attributes drawn from what they actually did.',
+modeFncs2026Count:'2 players · play-in, heats, LAN',
+modeFncs2025Title:'FNCS 2025',
+modeFncs2025Desc:'The whole of last season in trios: three Majors, all seven regions, each on its own island with its own loot. An elimination is worth 1 point in the LCQ, 2 in the Play-In and 4 in the final. The season ends at the Global Championship in Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> — 33 trios, 12 games over two days.',
+modeFncs2025Count:'3 players · play-in, groups, regional final',
 modeEwcDesc:'The European road to the Esports World Cup: four cups on Reload, in duos. Each one qualifies its own way — Opens, a Play-In, four heats of 20 and a final of 20. An elimination is worth 3 points, and the first cup paid a steeper podium than the ones after it. The cards are built from the real leaderboards, and cup 4 comes straight out of the payload Epic itself serves.',
 modeEwcCount:'2 players · opens, play-in, heats, final',
 ecDateEwc:'Feb — Jun 2026 · Europe',
