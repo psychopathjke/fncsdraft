@@ -214,16 +214,40 @@ islands this mode already ships — the green one the first two cups were played
 on is **Slurp Rush**, the frozen one from cup 3 is **Elite Stronghold** — so a
 Championship game changes island the way a qualifier game does not.
 
-### What that needs, and does not have yet
+### The field, harvested
 
-- A field of 40 where the data names 12. The other 28 seats are other regions'
-  and this circuit published none of them here.
+All seven regions, not just Europe. Three sources, because no one of them has
+the circuit whole:
+
+- **Cup 4, everywhere**: Epic still serves it — heats and finals for EU, NAC,
+  NAW, BR, OCE and ME, with the match log behind every row.
+- **Cups 1-3 outside Europe**: Epic has dropped them, but Tracker still renders
+  them, so the finals were read out of `imp_leaderboard` in a browser tab the
+  way the FNCS 2025 harvest was, four rows deep per region — deep enough for the
+  seats to pass down.
+- **Cups 1-3 in Europe**: the saved Tracker pages this mode already ships.
+
+`tools/build-ewc-lan.js` fills the seats from those and applies the rule that a
+duo cannot hold two: **39 of the 40 are named**, and every pass-down is printed
+rather than silently absorbed. Nine seats went to a duo that had already
+qualified and fell to the next team on that leaderboard.
+
+The one gap is **cup 4's Asian seat**: Epic answers that window with Europe's
+rows and their match logs stripped, and Tracker does not carry cup 4 at all, so
+there is nothing to read. It is left empty and logged rather than filled with a
+guess.
+
+Asia is also why cup 4 ships six regions of cards rather than seven.
+
+### What the Championship still needs
+
 - A map that changes between games. Every mode in the app so far picks one
-  island for a whole run.
+  island for a whole run, and this one alternates Slurp Rush with Elite
+  Stronghold.
 - The Championship's own format — groups, game counts, cuts — which the
-  qualifier rules do not cover and which Epic has not published as a rules
-  document.
-
+  qualifier rules do not cover and Epic has not published as a rules document.
+  The circuit's own map pages imply two groups, each playing both islands,
+  before a final.
 
 ## What is deliberately not in this pass
 

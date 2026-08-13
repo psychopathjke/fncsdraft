@@ -22,6 +22,24 @@ const ONLY = process.argv[2] || null;
 // cup 4 in S41. Read from the calendar rather than assumed, but the seasons
 // themselves have to be named to ask for them.
 const SEASONS = ['S39', 'S40', 'S41'];
+// The circuit ran everywhere, not only in Europe. A window id carries its
+// region, so one harvest walks all seven by swapping the suffix.
+const REGIONS = ['EU', 'NAC', 'NAW', 'BR', 'OCE', 'ASIA', 'ME'];
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// Seven regions times nine windows is enough requests to be told to slow down,
+// and being told twice is not a reason to lose a cup. A 429 waits and asks
+// again rather than counting as a window that does not exist.
+async function getPolitely(pathname, tries){
+  for (let i = 0; i < (tries || 4); i++){
+    try { return await get(pathname); }
+    catch(e){
+      if (!/-> 429/.test(e.message) || i === (tries || 4) - 1) throw e;
+      await sleep(2000 * (i + 1));
+    }
+  }
+}
 
 function get(pathname){
   return new Promise((resolve, reject) => {
@@ -45,8 +63,9 @@ function get(pathname){
 const OLD = [];
 [['S39', 1], ['S39', 2], ['S40', 3]].forEach(([season, cup]) => {
   ['Open1', 'Open2', 'PlayInDay1', 'PlayInDay2', 'Heat1', 'Heat2', 'Heat3', 'Heat4', 'Final']
-    .forEach(stage => OLD.push({id: season + '_ReloadEliteSeries' + cup + stage + '_EU',
-                                event: null, date: '—', season: season}));
+    .forEach(stage => REGIONS.forEach(reg => OLD.push({
+      id: season + '_ReloadEliteSeries' + cup + stage + '_' + reg,
+      event: null, date: '—', season: season, region: reg})));
 });
 
 async function windows(){
@@ -56,8 +75,11 @@ async function windows(){
     const rows = await get('/APISYSTEMV2/calendar.php?season=' + season + '&region=EU');
     const arr = Array.isArray(rows) ? rows : (rows.events || rows.data || []);
     const found = arr.filter(e => /ReloadEliteSeries\d/.test(e.windowId || ''));
-    found.forEach(e => all.push({id: e.windowId, event: e.eventId, date: e.date,
-                                 begin: e.beginTime, end: e.endTime, season: season}));
+    // The calendar only answers for Europe, but every region played the same
+    // windows on the same days, so its list is re-pointed at each of them.
+    found.forEach(e => REGIONS.forEach(reg => all.push({
+      id: (e.windowId || '').replace(/_EU$/, '_' + reg), event: e.eventId, date: e.date,
+      begin: e.beginTime, end: e.endTime, season: season, region: reg})));
     if (!found.length) OLD.filter(w => w.season === season).forEach(w => all.push(w));
   }
   return all;
@@ -65,11 +87,11 @@ async function windows(){
 
 // A window can run to several pages; Epic says how many on the first one.
 async function leaderboard(id){
-  const first = await get('/APISYSTEMV2/leaderboard.php?eventWindowId=' + id);
+  const first = await getPolitely('/APISYSTEMV2/leaderboard.php?eventWindowId=' + id);
   const pages = first.totalPages || 1;
   const entries = (first.entries || []).slice();
   for (let p = 1; p < pages; p++){
-    const next = await get('/APISYSTEMV2/leaderboard.php?eventWindowId=' + id + '&page=' + p);
+    const next = await getPolitely('/APISYSTEMV2/leaderboard.php?eventWindowId=' + id + '&page=' + p);
     entries.push(...(next.entries || []));
   }
   return Object.assign({}, first, {entries: entries, harvestedPages: pages});
@@ -80,7 +102,19 @@ async function leaderboard(id){
   const list = await windows();
   console.log(list.length + ' windows of the Reload Elite Series\n');
   for (const w of list){
+    // A re-run is for filling gaps, not for asking again for what is already on
+    // disk with a match log behind it — the service starts refusing when it is
+    // asked sixty times in a row.
+    const already = path.join(OUT, w.id + '.json');
+    if (fs.existsSync(already)){
+      try{
+        const have = JSON.parse(fs.readFileSync(already, 'utf8'));
+        const real = ((have.leaderboard || {}).entries || []).filter(e => (e.sessionHistory || []).length > 0).length;
+        if (real){ console.log('  ' + w.id.padEnd(38) + w.date + '  already harvested, ' + real + ' teams'); continue; }
+      }catch(e){}
+    }
     try{
+      await sleep(400);
       const lb = await leaderboard(w.id);
       const file = path.join(OUT, w.id + '.json');
       fs.writeFileSync(file, JSON.stringify({window: w, leaderboard: lb}));
