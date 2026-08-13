@@ -60,7 +60,15 @@ function rowOfEntry(e){
   const matches = s.length || 1;
   const elims = s.reduce((n, x) => n + stat(x, 'TEAM_ELIMS_STAT_INDEX'), 0);
   const places = s.reduce((n, x) => n + stat(x, 'PLACEMENT_STAT_INDEX'), 0);
-  const names = (e.customNames && e.customNames.length ? e.customNames : e.teamAccountDisplayNames) || [];
+  // Epic carries two name fields and either seat can be blank in one of them,
+  // so they are read per seat rather than one list or the other. A seat blank
+  // in both is an account with no display name at all, and the row is dropped
+  // below rather than carrying an empty half of a duo.
+  const custom = e.customNames || [], display = e.teamAccountDisplayNames || [];
+  // An account with no display name comes back as its own id — thirty-two hex
+  // characters — which is not a handle and must not become a card.
+  const real = v => { const t = String(v || '').trim(); return /^[0-9a-f]{30,}$/i.test(t) ? '' : t; };
+  const names = (e.teamAccountIds || custom).map((_, i) => real(custom[i]) || real(display[i]) || '');
   return {rank: e.rank, points: e.pointsEarned, matches: s.length,
           wins: s.filter(x => stat(x, 'PLACEMENT_STAT_INDEX') === 1).length,
           avgElims: round2(elims / matches), avgPlace: round2(places / matches),
@@ -102,7 +110,14 @@ function readApi(){
     const entries = ((j.leaderboard || {}).entries || []).filter(e => (e.sessionHistory || []).length > 0);
     if (!entries.length) continue;
     const cup = slot(where.cup, where.reg);
-    const rows = entries.map(rowOfEntry).sort((a, b) => a.rank - b.rank);
+    const all = entries.map(rowOfEntry);
+    // A duo with a nameless half is not a duo the mode can deal, and inventing
+    // a handle for the missing seat would be inventing a player.
+    const rows = all.filter(r => r.players.length === 2 && r.players.every(p => p.handle))
+                    .sort((a, b) => a.rank - b.rank);
+    if (rows.length !== all.length)
+      console.log('  ' + where.cup + ' ' + where.reg + ' ' + where.stage + ': dropped ' +
+                  (all.length - rows.length) + ' row(s) with a seat Epic has no name for');
     cup.stages[where.stage] = cup.stages[where.stage] ? merge(cup.stages[where.stage], rows) : rows;
     cup.dates[where.stage] = (j.window || {}).date || cup.dates[where.stage] || null;
     cup.from[where.stage] = 'epic';

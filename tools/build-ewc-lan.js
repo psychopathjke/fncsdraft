@@ -26,44 +26,20 @@ const REGIONS = Object.keys(SEATS);
 // ---- Europe, out of the rows the mode already ships ------------------------
 const rowsFile = fs.readFileSync(path.join(__dirname, 'ewc-rows.generated.js'), 'utf8');
 const { EWC_RAW } = new Function(rowsFile + '; return {EWC_RAW};')();
-const finals = {EU: {}};
+// Every region's final, straight out of the rows the mode ships — which since
+// the circuit was harvested whole is all seven of them, so there is nothing
+// left to read out of a side file.
+const finals = {};
 [1, 2, 3, 4].forEach(cup => {
-  const f = (EWC_RAW['r' + cup] || {}).final || [];
-  finals.EU[cup] = f.map(r => ({rank: r[0], pts: r[1], matches: r[2], wins: r[3],
-                                avgElims: r[4], avgPlace: r[5], duo: r.slice(7)}));
+  const byRegion = EWC_RAW['r' + cup] || {};
+  Object.keys(byRegion).forEach(reg => {
+    const f = byRegion[reg].final || [];
+    if (!f.length) return;
+    (finals[reg] = finals[reg] || {})[cup] = f.map(r => ({
+      rank: r[0], pts: r[1], matches: r[2], wins: r[3],
+      avgElims: r[4], avgPlace: r[5], duo: r.slice(7)}));
+  });
 });
-
-// ---- cups 1-3 elsewhere, out of the browser harvest ------------------------
-const text = fs.readFileSync(path.join(SRC, 'regions-finals.txt'), 'utf8');
-text.split('\n').slice(1).filter(l => l.trim()).forEach(line => {
-  const p = line.split('~');
-  const cup = +p[0], reg = p[1];
-  const rec = {rank: +p[2], pts: +p[3], matches: +p[4], wins: +p[5],
-               avgElims: Math.round(+p[6] / Math.max(+p[4], 1) * 100) / 100,
-               avgPlace: Math.round(+p[7] / Math.max(+p[4], 1) * 100) / 100,
-               duo: [p[9], p[10]].filter(Boolean)};
-  ((finals[reg] = finals[reg] || {})[cup] = (finals[reg][cup] || [])).push(rec);
-});
-
-// ---- cup 4 elsewhere, out of Epic's payload --------------------------------
-const API = path.join(SRC, 'api');
-if (fs.existsSync(API)) {
-  for (const f of fs.readdirSync(API)) {
-    const m = /ReloadEliteSeries4Final_([A-Z]+)\.json$/.exec(f);
-    if (!m || m[1] === 'EU') continue;
-    const entries = (JSON.parse(fs.readFileSync(path.join(API, f), 'utf8')).leaderboard || {}).entries || [];
-    const rows = entries.filter(e => (e.sessionHistory || []).length > 0).map(e => {
-      const s = e.sessionHistory;
-      const stat = (x, k) => (x.trackedStats || {})[k] || 0;
-      return {rank: e.rank, pts: e.pointsEarned, matches: s.length,
-              wins: s.filter(x => stat(x, 'PLACEMENT_STAT_INDEX') === 1).length,
-              avgElims: Math.round(s.reduce((n, x) => n + stat(x, 'TEAM_ELIMS_STAT_INDEX'), 0) / s.length * 100) / 100,
-              avgPlace: Math.round(s.reduce((n, x) => n + stat(x, 'PLACEMENT_STAT_INDEX'), 0) / s.length * 100) / 100,
-              duo: (e.customNames && e.customNames.length ? e.customNames : e.teamAccountDisplayNames) || []};
-    }).sort((a, b) => a.rank - b.rank);
-    if (rows.length) (finals[m[1]] = finals[m[1]] || {})[4] = rows;
-  }
-}
 
 // ---- the seats ------------------------------------------------------------
 const key = duo => duo.map(h => String(h).trim().toLowerCase()).sort().join('|');
