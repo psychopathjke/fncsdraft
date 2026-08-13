@@ -596,16 +596,34 @@
   // the drop against a real 4.7%, with 95.2% still alive at the first circle
   // against a real 95%.
   //
-  // The first guess was seven hundred times this, on the reasoning that two
-  // duos on the same roof have to fight. They do — but a fight at the drop is
-  // two duos with grey guns and no shields, and it ends far more often with one
-  // of them leaving than with a wipe. At the high value nearly half the lobby
-  // was gone before the first circle closed, which is the same mistake the app
-  // made when it flipped a coin for every contested spot: the drop was being
-  // treated as a decider when it is a filter. Nearly half the lobby shares its
-  // ground with somebody; about one contested drop in ten produces a body.
+  // The first guess was a hundred and thirty times this, on the reasoning that
+  // two duos on the same roof have to fight. They do — but a fight at the drop
+  // is two duos with grey guns and no shields, and it ends far more often with
+  // one of them leaving than with a wipe. At that value the drop saturates: 28%
+  // of the lobby out before the first circle closes, whatever the number is
+  // raised to beyond it, which is the drop being treated as a decider when the
+  // telemetry says it is a filter.
+  //
+  // It sits at 1 rather than the 0.18 the telemetry alone asks for, and that is
+  // a decision rather than a measurement — the product owner asked three times
+  // for squads that land on each other to settle it, having watched a lobby
+  // where nothing happened for five circles. What the sweep found is that the
+  // ask costs less than it looks and buys more:
+  //
+  //   drop kills   z1    z2    z5    z9   mean error
+  //   0.18   3.8%  96%   95%   82%   31%     6.7
+  //   1     17.2%  83%   83%   75%   31%     4.2   <- here
+  //   3     26.8%  73%   73%   69%   30%     8.6
+  //   real   4.7%  95%   85%   75%   37%
+  //
+  // At 1 the first circle is 12 points light against the logged matches — too
+  // many die on the drop, which is the honest cost. Everything after it is
+  // closer than 0.18 managed, zone 5 lands exactly, and the curve as a whole
+  // fits the real finals better than the value chosen to fit the drop alone.
+  // The old setting bought an accurate first circle with four circles in which
+  // the lobby did not move.
   var DROP_SEC = 40;
-  var DROP_PRESSURE = 0.18;
+  var DROP_PRESSURE = 1;
 
   // How many squads have to be standing on one spot before the fight is a
   // certainty rather than a roll. Two was tried and it is what made the drop a
