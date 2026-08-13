@@ -146,3 +146,52 @@ cup 4's is a screenshot of the same map with the site's chrome around it.
 - **Nothing dated by hand.** Every date in the table above is the window's own
   `beginTime` — cup 4's from the calendar the site reads, cups 1-3 from the
   event payload behind their Tracker pages. No tile carries a guessed date.
+
+## What a card is worth
+
+A card is rated by **the deepest stage its player reached**, on a ramp from the
+top of that stage to its floor across the field that actually played it — the
+same shape `tBase` gives the FNCS sets. There is no miss penalty here because
+the stage bands already say where a player stopped.
+
+| stage | top | floor |
+|---|---|---|
+| Final | 96 (`REGION_TOP.EU`) | 74 |
+| Heat | 92 | 70 |
+| Play-Ins | 86 | 64 |
+| Opens | 78 | 50 |
+
+The bands are not chosen, they are fitted. 428 of these handles already have a
+FNCS card, so `tools/check-ewc-cards.js` puts each Reload card beside the same
+player's FNCS card **of the same depth** — a Final against a Grand Final, an
+Opens card against a Play-In card — and reports the gap. A player who reached a
+FNCS Grand Final and went out in the Reload Opens *should* read lower; what has
+to line up is like with like. After fitting:
+
+| Reload stage | vs FNCS | handles | median gap | within 5 |
+|---|---|---|---|---|
+| Final | Grand Final | 73 | **0** | 70% |
+| Heat | Grand Final | 74 | -3 | 62% |
+| Play-Ins | Play-In | 13 | -6 | 38% |
+| Opens | Play-In | 41 | -3 | 54% |
+
+The circuit therefore rates a shade under FNCS at the shallow end and exactly
+level at the top, which is the conservative direction: a Reload result cannot
+inflate anybody.
+
+### Two shared tables the circuit is kept out of
+
+- **Experience.** `mkSorts` tallies how much competition a handle has played,
+  ranked across every card in the game. Folding a second circuit into that pool
+  would move the Experience attribute of every FNCS card ever built. EWC stages
+  are ranked against themselves like any other stage but do not register, so a
+  player keeps the experience their FNCS record earned.
+- **The career average.** Cards are lifted toward a player's best three
+  results, and with the four cups feeding it, Sky and Scroll's FNCS 2025 Play-In
+  cards were lifted a point off a Reload result played a year later. The two
+  2025 Majors were muted for exactly this reason; the Reload sets join them. A
+  circuit may draw on a player's career number, it may not rewrite another
+  circuit's cards by existing.
+
+Guarded by `tools/dump-card-ratings.js` and `tools/diff-card-ratings.js`: with
+the four cups in, **15 191 existing cards checked, 0 moved**.
