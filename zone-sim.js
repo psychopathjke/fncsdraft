@@ -604,26 +604,36 @@
   // raised to beyond it, which is the drop being treated as a decider when the
   // telemetry says it is a filter.
   //
-  // It sits at 1 rather than the 0.18 the telemetry alone asks for, and that is
-  // a decision rather than a measurement — the product owner asked three times
+  // It sits at 1.35 rather than the 0.18 the telemetry alone asks for, and that
+  // is a decision rather than a measurement. The product owner asked repeatedly
   // for squads that land on each other to settle it, having watched a lobby
-  // where nothing happened for five circles. What the sweep found is that the
-  // ask costs less than it looks and buys more:
+  // where nothing happened for five circles, and then asked for four contested
+  // pairs in five. This is as close to that as the rest of the game survives:
   //
-  //   drop kills   z1    z2    z5    z9   mean error
-  //   0.18   3.8%  96%   95%   82%   31%     6.7
-  //   1     17.2%  83%   83%   75%   31%     4.2   <- here
-  //   3     26.8%  73%   73%   69%   30%     8.6
-  //   real   4.7%  95%   85%   75%   37%
+  //    DP    pairs settled   drop kills    z1    z2    z5   mean error
+  //   0.18        14%            3.8%     96%   95%   82%      6.7
+  //   1           62%           17.4%     83%   82%   75%      4.2
+  //   1.35        71%           19.8%     80%   80%   73%      5.0   <- here
+  //   1.5         74%           20.6%     79%   79%   73%      5.5   <- breaks below
+  //   1.75        80%           22.4%     78%   77%   73%      6.4
+  //   3           97%           27.1%     73%   73%   69%      8.5
+  //   real         —             4.7%     95%   85%   75%
   //
-  // At 1 the first circle is 12 points light against the logged matches — too
-  // many die on the drop, which is the honest cost. Everything after it is
-  // closer than 0.18 managed, zone 5 lands exactly, and the curve as a whole
-  // fits the real finals better than the value chosen to fit the drop alone.
-  // The old setting bought an accurate first circle with four circles in which
-  // the lobby did not move.
+  // The ceiling is not the curve, it is the tournament. From 1.5 up, the test
+  // 'the standings have the shape of a tournament' fails every run on its last
+  // assertion: the team that wins the Grand Final has not won a single game in
+  // it. Twenty per cent of the lobby dying in the first forty seconds is a
+  // filter; more than that and the drop is loud enough to out-shout twelve games
+  // of placement, and the trophy stops meaning anything about who played well.
+  // At 1.35 it holds across every run; at 1.5 it does not. That boundary was
+  // measured, not guessed, and it is the reason this is not the 80% that was
+  // asked for.
+  //
+  // Past 3 it saturates anyway: the drop takes 28% of the lobby however high the
+  // number goes, which is the mistake this file already made once from the other
+  // direction.
   var DROP_SEC = 40;
-  var DROP_PRESSURE = 1;
+  var DROP_PRESSURE = 1.35;
 
   // How many squads have to be standing on one spot before the fight is a
   // certainty rather than a roll. Two was tried and it is what made the drop a
