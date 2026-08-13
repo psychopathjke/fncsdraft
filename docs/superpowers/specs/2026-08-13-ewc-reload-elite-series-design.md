@@ -307,3 +307,19 @@ inflate anybody.
 
 Guarded by `tools/dump-card-ratings.js` and `tools/diff-card-ratings.js`: with
 the four cups in, **15 191 existing cards checked, 0 moved**.
+
+## What a Reload drop is worth
+
+Nothing published rates a spot on a Reload island: the evals cover Battle
+Royale and the wiki loot counts cover Chapter 6. What does exist is the drop map
+itself, and the size of the box a caster drew around a POI is a statement about
+that POI — the big rectangles are the towns, the small ones a fuel stop. So a
+Reload spot is rated by its own area, which is what this game's landing zones
+were rated on before the evals arrived, and `LANDING_POINTS_MAX` turns that into
+1 to 4 points by percentile exactly as it does everywhere else.
+
+Measured by `tools/check-reload-zones.js`: on every one of the four islands the
+biggest box pays 4 and the smallest pays 1, and a bigger box never pays less
+than a smaller one. FNCS is untouched and still rates a spot on its published
+eval rather than its size — on the Major 2 island the biggest rectangle is a
+one-point spot, which is the whole reason the evals replaced area there.
