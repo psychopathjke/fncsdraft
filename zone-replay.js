@@ -403,7 +403,20 @@
 
   // How long a list beside the map is allowed to get before there is nowhere
   // left to put the names at all.
-  var SIDE_MAX = 28;
+  //
+  // Zero, which switches the list off. It was there so that every squad still
+  // standing was named somewhere — on the map if a plate fitted beside its
+  // arrow, in this list if not — and at twenty-eight duos that was a column of
+  // short pairs down one edge. Trios broke it: once a roster printed all three
+  // handles instead of one and a count, a row read "Antetokounmpo & Clement &
+  // Doom", and twenty of those is not a list beside the map, it is a wall in
+  // front of it.
+  //
+  // What is lost is the guarantee. The map names your squad and nobody else's
+  // now, and the kill feed is where the other names appear — as they happen,
+  // which is when they mean something, rather than all at once because they are
+  // alive. Raise this above zero to bring the column back.
+  var SIDE_MAX = 0;
 
   // The zoom at which two squads standing on the same roof are far enough apart
   // on screen to be worth fanning out. See cluster().

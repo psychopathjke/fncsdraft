@@ -222,13 +222,18 @@ if(!(r.fight > 2.5)) fails.push('the camera only reached ' + r.fight.toFixed(2) 
 if(!(r.close > 2.5)) fails.push('the camera only reached ' + r.close.toFixed(2) +
   'x in the endgame, which is no closer than the names need');
 // One name on the map and it is yours, on every frame your squad is alive and
-// in shot. Everybody else is named in the list beside it, and nobody is in both.
+// in shot. That is the whole promise now.
+//
+// It used to be larger: everybody still standing was named somewhere, on the map
+// or in a list down the edge of it. The list is off — SIDE_MAX is 0 — because in
+// trios a row reads "Antetokounmpo & Clement & Doom" and twenty of those is a
+// wall in front of the map rather than a list beside it. So the assertion that
+// nobody goes unnamed is gone with it, deliberately, and the two that matter
+// stay: yours is always named, and it is the only one.
 if(r.yoursMissing) fails.push('your own squad was alive and unnamed on ' + r.yoursMissing + ' frames');
 if(!(r.namesOnMap >= 1)) fails.push('your own squad was never named on the map at all');
 if(r.namesOnMap > 1) fails.push(r.namesOnMap + ' names on the map at once; only yours belongs there');
 if(r.namedTwice) fails.push(r.namedTwice + ' squads were named on the map and in the list beside it at once');
-if(r.unnamed) fails.push(r.unnamed + ' squads were left with no name at all in the endgame, ' +
-  'on the map or beside it');
 // Your placement, which is the one counter in the header about you rather than
 // about the lobby.
 if(r.placeMissing) fails.push('the header carried no placement on ' + r.placeMissing +
