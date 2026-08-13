@@ -239,15 +239,45 @@ guess.
 
 Asia is also why cup 4 ships six regions of cards rather than seven.
 
-### What the Championship still needs
+### The Championship's own format
 
-- A map that changes between games. Every mode in the app so far picks one
-  island for a whole run, and this one alternates Slurp Rush with Elite
-  Stronghold.
-- The Championship's own format — groups, game counts, cuts — which the
-  qualifier rules do not cover and Epic has not published as a rules document.
-  The circuit's own map pages imply two groups, each playing both islands,
-  before a final.
+From Liquipedia's page for the series, and it is a different tournament from its
+own qualifiers:
+
+**Group Stage, 19-20 August.** 40 teams in two groups of twenty, **10 maps per
+pool**. Top 7 of each group go straight to the Finals; 8th to 17th drop to the
+Survival Stage; the bottom 3 of each group are out.
+
+**Survival Stage, 21 August.** The 20 who dropped, **10 maps**, top 6 through,
+the other 14 out.
+
+**Finals, 22 August.** The 20 survivors — fourteen from the groups, six from
+Survival — play **match point**: the first team to reach **350 points** and then
+take a Victory Crown Victory Royale is the champion. Everyone else is ranked on
+total points. **15 games maximum.**
+
+It is played offline in **Paris**, at the Paris Expo Porte de Versailles, for a
+**$1,025,000** prize pool:
+
+| place | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| USD | 260,000 | 150,000 | 90,000 | 60,000 | 45,000 | 35,000 | 30,000 | 28,000 | 26,000 | 24,000 |
+
+and down in steps — 22,000 at 11th, 20,000, 18,000, 16,000, 15,000, then a
+thousand a place to 10,000 at 20th, five hundred a place to 5,000 at 30th,
+4,500, 4,000, 3,500, 3,000 at 34th, and 2,500 / 2,250 / 2,000 for the pairs
+35-36, 37-38 and 39-40. Club points ride alongside for the top eight: 1,000 for
+the win, then 750, 500, 300, 200, 150, 100, 50.
+
+### What building it needs
+
+- **A map that changes between games**, which no mode here does yet: every run
+  picks one island and keeps it. The Championship alternates Slurp Rush with
+  Elite Stronghold, which is what "10 maps per pool" counts.
+- **Match point**, which nothing in this app has ever scored: a run that ends
+  when somebody wins a game while already past a points line, not when the
+  games run out.
+- The 40th seat, which is cup 4's Asian one and is not published anywhere.
 
 ## What is deliberately not in this pass
 
