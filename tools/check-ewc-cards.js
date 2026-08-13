@@ -36,9 +36,11 @@ const BOOT = `
     SETS.forEach(set => {
       const cards = PLAYERS.filter(p => p.cardSet === set);
       const row = {cards: cards.length, byStage: {}, dupes: 0, noAttrs: 0, noNat: 0, ratings: {}};
+      // One card a person per region: the same handle can appear in two
+      // regions the way it does in FNCS, and those are two cards by design.
       const seen = new Set();
       cards.forEach(p => {
-        const k = hKey(p);
+        const k = (p.region || "") + "|" + hKey(p);
         if(seen.has(k)) row.dupes++;
         seen.add(k);
         const a = attrsFor(p);
@@ -167,7 +169,7 @@ console.log('');
 Object.keys(out.sets).forEach(set => {
   const r = out.sets[set];
   say(r.cards > 0, set + ' built ' + r.cards + ' cards');
-  say(r.dupes === 0, set + ' has one card per person');
+  say(r.dupes === 0, set + ' has one card per person in a region');
   say(r.noAttrs === 0, set + ' rates every card');
   say(r.realDuos > 0, set + ' offers ' + r.realDuos + ' real duos to the realistic simulation');
 });
