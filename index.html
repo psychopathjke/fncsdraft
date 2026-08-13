@@ -149,6 +149,20 @@
   .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px;}
   @media(max-width:640px){.mode-grid{grid-template-columns:1fr;}}
   .mode-grid-3{grid-template-columns:repeat(3,1fr);}
+  /* Seasons are the top-level thing on this screen, so each gets its own row
+     with the year standing beside it. A year holding one competition stretches
+     that tile across the row rather than leaving two empty cells. */
+  .year-row{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:start;margin-top:16px;}
+  .year-label{font-size:30px;line-height:1;font-weight:900;color:var(--ink-dim);
+    letter-spacing:-.01em;transform:skewX(-7deg);padding-top:6px;text-align:right;
+    font-family:'Arial Narrow','Helvetica Neue Condensed',Impact,var(--font,sans-serif);}
+  .mode-card-span{grid-column:1/-1;}
+  /* A card with nothing to pick still keeps the picker's line, so the
+     descriptions of a row start level with each other. */
+  .ec-cups-hollow{height:31px;}
+  .mode-card-span .ec-art{aspect-ratio:auto;height:210px;background-position:center 38%;}
+  @media(max-width:900px){ .year-row{grid-template-columns:1fr;gap:4px;}
+    .year-label{text-align:left;font-size:24px;padding-top:0;} }
   .mode-grid-2{grid-template-columns:repeat(2,1fr);}
   .mode-grid-4{grid-template-columns:repeat(4,1fr);}
   @media(max-width:1100px){.mode-grid-4{grid-template-columns:repeat(2,1fr);}}
@@ -1256,7 +1270,9 @@
   </div>
 
   <div class="screen active" id="screen-mode">
-    <div class="mode-grid mode-grid-4">
+    <div class="year-row">
+      <div class="year-label">2026</div>
+      <div class="mode-grid mode-grid-3">
       <div class="mode-card">
         <div class="ec-art" id="major2Art" style="background-image:url(art/mode-major1.jpg)">
           <span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span>
@@ -1273,24 +1289,6 @@
         </div>
         <p data-i18n="modeFncs2026Desc"></p>
         <span class="mode-count" data-i18n="modeFncs2026Count"></span>
-      </div>
-      <div class="mode-card">
-        <div class="ec-art" style="background-image:url(art/mode-major1-2025.jpg)">
-          <span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span>
-          <span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span>
-          <div class="ec-foot">
-            <div class="ec-when" data-i18n="ecDate2025"></div>
-            <h3 class="ec-title" data-i18n="modeFncs2025Title"></h3>
-            <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubTrios"></span></div>
-          </div>
-        </div>
-        <div class="ec-cups">
-          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025')"><span data-i18n="majorPick1"></span><small data-i18n="ecDateT1"></small></button>
-          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025major2')"><span data-i18n="majorPick2"></span><small data-i18n="ecDateT2"></small></button>
-          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025major3')"><span data-i18n="majorPick3"></span><small data-i18n="ecDateT3"></small></button>
-        </div>
-        <p data-i18n="modeFncs2025Desc"></p>
-        <span class="mode-count" data-i18n="modeFncs2025Count"></span>
       </div>
       <div class="mode-card">
         <div class="ec-art" style="background-image:url(art/mode-ewc.jpg)">
@@ -1321,10 +1319,37 @@
             <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubCareer"></span></div>
           </div>
         </div>
+        <div class="ec-cups ec-cups-hollow" aria-hidden="true"></div>
         <p data-i18n="modeCareerDesc"></p>
         <span class="mode-count" data-i18n="modeCareerCount"></span>
       </div>
+      </div>
     </div>
+
+    <div class="year-row">
+      <div class="year-label">2025</div>
+      <div class="mode-grid mode-grid-3">
+      <div class="mode-card mode-card-span">
+        <div class="ec-art" style="background-image:url(art/mode-major1-2025.jpg)">
+          <span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span>
+          <span class="ec-pill ec-pill-r" data-i18n="ecStCards"></span>
+          <div class="ec-foot">
+            <div class="ec-when" data-i18n="ecDate2025"></div>
+            <h3 class="ec-title" data-i18n="modeFncs2025Title"></h3>
+            <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubTrios"></span></div>
+          </div>
+        </div>
+        <div class="ec-cups">
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025')"><span data-i18n="majorPick1"></span><small data-i18n="ecDateT1"></small></button>
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025major2')"><span data-i18n="majorPick2"></span><small data-i18n="ecDateT2"></small></button>
+          <button class="ec-cup" onclick="event.stopPropagation();chooseMode(3,'cards2025major3')"><span data-i18n="majorPick3"></span><small data-i18n="ecDateT3"></small></button>
+        </div>
+        <p data-i18n="modeFncs2025Desc"></p>
+        <span class="mode-count" data-i18n="modeFncs2025Count"></span>
+      </div>
+      </div>
+    </div>
+
 
     <div class="mode-grid mode-grid-4" style="margin-top:16px;">
       <div class="mode-card" onclick="chooseMode(2, true)">
