@@ -1,36 +1,113 @@
-// Turns the saved Fortnite Tracker pages for the Reload Elite Series into rows.
+// Turns the Reload Elite Series leaderboards into rows for index.html.
 //
-// The FNCS sets came out of Epic's own JSON payload. This circuit has no such
-// payload — what exists is the leaderboard Tracker renders, saved as HTML — so
-// this reads the rendered table instead. Everything it takes is printed on the
-// page: rank, points, matches, wins, average eliminations, average place, the
-// cash prize, both players' handles, their orgs and the flags Tracker puts
-// beside them.
+// Two sources, because no single one covers the circuit:
 //
-//   node tools/build-ewc-rows.js                      # measure, print, write nothing
-//   node tools/build-ewc-rows.js tools/ewc.generated.js
+//   - Epic's own payload, harvested by tools/fetch-ewc.js into ~/Desktop/ewc/api.
+//     Authoritative and complete — every match of every team, the elimination
+//     points as a column rather than an inference, and the handles and countries
+//     the entry carries. It holds all of cup 4 and the finals of cups 1-3;
+//     Epic has dropped every other older window.
+//   - The saved Fortnite Tracker pages in ~/Desktop/ewc/1..3, which is Tracker's
+//     rendered top 100 and is what the first three cups otherwise have.
 //
-// Row shape, the same one the 2025 sets use minus the third seat:
+// Epic wins wherever both have a stage, and the two are reconciled first: the
+// three finals exist in both, so the Tracker reader is checked against the
+// payload rather than trusted. A disagreement there means the HTML parse is
+// wrong, and everything built from it is suspect.
+//
+//   node tools/build-ewc-rows.js                      # measure, reconcile, write nothing
+//   node tools/build-ewc-rows.js tools/ewc-rows.generated.js
+//
+// Row shape, the 2025 sets' minus the third seat:
 //   [rank, points, matches, wins, avgElims, avgPlace, elimPoints, p1, p2]
-// elimPoints is the elimination half of the score, which this circuit pays at
-// three a kill — printed on every page under "Each Elimination".
 const fs = require('fs'), path = require('path');
 
 const HOME = process.env.USERPROFILE || process.env.HOME;
 const SRC = process.env.EWC_SRC || path.join(HOME, 'Desktop', 'ewc');
+const API = path.join(SRC, 'api');
 const OUT = process.argv[2] || null;
 
-// Which stage a saved file is, read off its name rather than a list of files,
-// so a page saved later under Tracker's own title lands in the right place.
-// The circuit spells its heats three ways across the four cups — "Heats 1",
-// "Heats2", "3 Heat 4" — which is why this matches a digit near the word.
-function stageOf(file){
+const ORDER = ['open', 'playin', 'heat1', 'heat2', 'heat3', 'heat4', 'final'];
+const round2 = v => Math.round(v * 100) / 100;
+
+// ---------------------------------------------------------------- Epic payload
+// Which stage a window is. Cup 4 played its Opens and Play-Ins over two days
+// each; a stage is the stage, so the two days are merged the way the circuit
+// scores them — a team's better day is the one that seeded it.
+function stageOfWindow(id){
+  const m = /ReloadEliteSeries(\d)(Open|PlayIn|Heat|Final)/.exec(id);
+  if (!m) return null;
+  const cup = 'e' + m[1];
+  if (m[2] === 'Open') return {cup, stage: 'open'};
+  if (m[2] === 'PlayIn') return {cup, stage: 'playin'};
+  if (m[2] === 'Final') return {cup, stage: 'final'};
+  const h = /Heat(\d)/.exec(id);
+  return {cup, stage: 'heat' + (h ? h[1] : '1')};
+}
+
+// One entry of Epic's payload as a row. Everything here is counted off the
+// entry's own match log rather than read off a rendered table: eight sessions
+// is eight matches, a Victory Royale is PLACEMENT_STAT_INDEX 1, and the
+// elimination points are the column Epic publishes.
+function rowOfEntry(e){
+  const s = e.sessionHistory || [];
+  const stat = (x, k) => (x.trackedStats || {})[k] || 0;
+  const matches = s.length || 1;
+  const elims = s.reduce((n, x) => n + stat(x, 'TEAM_ELIMS_STAT_INDEX'), 0);
+  const places = s.reduce((n, x) => n + stat(x, 'PLACEMENT_STAT_INDEX'), 0);
+  const wins = s.filter(x => stat(x, 'PLACEMENT_STAT_INDEX') === 1).length;
+  const elimPts = ((e.pointBreakdown || {})['TEAM_ELIMS_STAT_INDEX:1'] || {}).pointsEarned || 0;
+  const names = (e.customNames && e.customNames.length ? e.customNames : e.teamAccountDisplayNames) || [];
+  return {rank: e.rank, points: e.pointsEarned, matches: s.length, wins: wins,
+          avgElims: round2(elims / matches), avgPlace: round2(places / matches),
+          elimPts: elimPts,
+          players: names.map((n, i) => ({handle: String(n).trim(),
+                                         nat: (e.customCountries || [])[i] || null, org: null}))};
+}
+
+function readApi(){
+  const cups = {};
+  if (!fs.existsSync(API)) return cups;
+  for (const f of fs.readdirSync(API).filter(f => f.endsWith('.json'))){
+    const where = stageOfWindow(f);
+    if (!where) continue;
+    const j = JSON.parse(fs.readFileSync(path.join(API, f), 'utf8'));
+    const entries = ((j.leaderboard || {}).entries || [])
+      // Epic keeps the ranking of an old window long after it drops the match
+      // log behind it: the three older finals come back as twenty teams with
+      // no sessions, no points and no handles. A row with no match in it is
+      // not a result, so those stages fall through to the Tracker pages.
+      .filter(e => (e.sessionHistory || []).length > 0);
+    if (!entries.length) continue;
+    const cup = cups[where.cup] || (cups[where.cup] = {stages: {}, dates: {}});
+    const rows = entries.map(rowOfEntry).sort((a, b) => a.rank - b.rank);
+    // Two-day stages arrive as two windows. Keep a team's better day and
+    // re-rank, which is what the circuit's own seeding does.
+    const prev = cup.stages[where.stage];
+    if (prev){
+      const best = new Map();
+      [...prev, ...rows].forEach(r => {
+        const k = r.players.map(p => p.handle.toLowerCase()).sort().join('|');
+        const had = best.get(k);
+        if (!had || r.points > had.points) best.set(k, r);
+      });
+      cup.stages[where.stage] = [...best.values()].sort((a, b) => b.points - a.points)
+                                                  .map((r, i) => Object.assign({}, r, {rank: i + 1}));
+    } else {
+      cup.stages[where.stage] = rows;
+    }
+    cup.dates[where.stage] = (j.window || {}).date || cup.dates[where.stage] || null;
+  }
+  return cups;
+}
+
+// ------------------------------------------------------------- Tracker pages
+function stageOfFile(file){
   const n = file.replace(/ - Competitive Events.*$/, '');
-  if (/Play-Ins/i.test(n)) return {stage: 'playin', heat: 0};
-  if (/Opens/i.test(n)) return {stage: 'open', heat: 0};
-  if (/Finals/i.test(n)) return {stage: 'final', heat: 0};
-  const h = /Heats?\s*(\d)/i.exec(n) || /Heat\s*(\d)/i.exec(n);
-  if (/Heat/i.test(n)) return {stage: 'heat', heat: h ? parseInt(h[1], 10) : 1};
+  if (/Play-Ins/i.test(n)) return 'playin';
+  if (/Opens/i.test(n)) return 'open';
+  if (/Finals/i.test(n)) return 'final';
+  if (/Heat/i.test(n)){ const h = /Heats?\s*(\d)/i.exec(n); return 'heat' + (h ? h[1] : '1'); }
   return null;
 }
 
@@ -45,113 +122,126 @@ function parsePage(html){
   const rows = html.match(/<tr[^>]*trn-lb-entry[\s\S]*?<\/tr>/g) || [];
   const out = [];
   for (const tr of rows){
-    const cells = tr.match(/<td[^>]*trn-lb-entry__stat[^>]*>([\s\S]*?)<\/td>/g) || [];
-    const stats = cells.map(c => text(c));
+    const stats = (tr.match(/<td[^>]*trn-lb-entry__stat[^>]*>([\s\S]*?)<\/td>/g) || []).map(c => text(c));
     const rank = num(text((/<td[^>]*trn-lb-entry__rank[\s\S]*?<\/td>/.exec(tr) || [''])[0]));
-    // The handle is what sits between the tag and the next one. Trimmed of the
-    // markup's own whitespace, unlike the 2025 sets, where a trailing space is
-    // part of the handle Epic stores.
-    const grab = (src, cls) => (src.match(new RegExp(cls + '">([^<]*)<', 'g')) || [])
-                                 .map(m => text(m.slice(cls.length + 2, -1)));
-    const names = grab(tr, 'player-name');
-    const orgs = grab(tr, 'player-team');
-    const nats = (tr.match(/<img[^>]*alt="([A-Z]{2})"/g) || [])
-                   .map(m => (/alt="([A-Z]{2})"/.exec(m) || [])[1]);
+    const grab = cls => (tr.match(new RegExp(cls + '">([^<]*)<', 'g')) || [])
+                          .map(m => text(m.slice(cls.length + 2, -1)));
+    const names = grab('player-name'), orgs = grab('player-team');
+    const nats = (tr.match(/<img[^>]*alt="([A-Z]{2})"/g) || []).map(m => (/alt="([A-Z]{2})"/.exec(m) || [])[1]);
     if (rank == null || !names.length) continue;
-    out.push({
-      rank: rank,
-      points: num(stats[0]), matches: num(stats[1]), wins: num(stats[2]),
-      avgElims: num(stats[3]), avgPlace: num(stats[4]),
-      prize: stats[5] ? num(stats[5]) : 0,
-      players: names.map((n, i) => ({handle: n, org: orgs[i] || null, nat: nats[i] || null}))
-    });
+    const matches = num(stats[1]) || 1;
+    out.push({rank, points: num(stats[0]), matches: num(stats[1]), wins: num(stats[2]),
+              avgElims: num(stats[3]), avgPlace: num(stats[4]),
+              // Tracker prints no elimination column, so this circuit's three a
+              // kill turns the average into the same number Epic publishes.
+              elimPts: Math.round((num(stats[3]) || 0) * matches * 3),
+              players: names.map((n, i) => ({handle: n, org: orgs[i] || null, nat: nats[i] || null}))});
   }
   return out;
 }
 
-// What a page says it pays. Printed on every stage page, and it is not the same
-// across the four cups, so it is read rather than assumed.
-function scoringOf(html){
-  const block = /fne-scores[\s\S]*?<\/section>/.exec(html);
-  const src = block ? block[0] : html;
-  const out = {};
-  const re = /fne-scores__entry">\s*<span>([^<]+)<\/span>\s*<span>\s*\+?\s*([\d.]+)/g;
-  let m;
-  while ((m = re.exec(src))) out[text(m[1])] = parseFloat(m[2]);
-  return out;
+function readTracker(){
+  const cups = {};
+  for (const dir of fs.readdirSync(SRC).filter(d => /^\d$/.test(d))){
+    const full = path.join(SRC, dir);
+    if (!fs.statSync(full).isDirectory()) continue;
+    for (const f of fs.readdirSync(full).filter(f => f.toLowerCase().endsWith('.html'))){
+      const stage = stageOfFile(f);
+      if (!stage) continue;
+      const cup = cups['e' + dir] || (cups['e' + dir] = {stages: {}});
+      cup.stages[stage] = parsePage(fs.readFileSync(path.join(full, f), 'utf8'));
+    }
+  }
+  return cups;
 }
 
-const cups = fs.readdirSync(SRC).filter(d => /^\d$/.test(d) && fs.statSync(path.join(SRC, d)).isDirectory()).sort();
-const data = {};
-for (const cup of cups){
-  const dir = path.join(SRC, cup);
-  const files = fs.readdirSync(dir).filter(f => f.toLowerCase().endsWith('.html'));
-  if (!files.length){ console.log('cup ' + cup + ': no saved pages'); continue; }
-  data[cup] = {stages: {}, scoring: null};
-  for (const f of files){
-    const where = stageOf(f);
-    if (!where){ console.log('cup ' + cup + ': cannot place ' + f); continue; }
-    const html = fs.readFileSync(path.join(dir, f), 'utf8');
-    const key = where.stage === 'heat' ? 'heat' + where.heat : where.stage;
-    data[cup].stages[key] = parsePage(html);
-    if (where.stage === 'final') data[cup].scoring = scoringOf(html);
+// -------------------------------------------------------------- reconciliation
+const api = readApi(), trn = readTracker();
+
+console.log('Reload Elite Series — Epic where it answers, Tracker where it does not\n');
+let mismatches = 0;
+for (const cup of Object.keys(trn)){
+  for (const stage of ORDER){
+    const a = (api[cup] || {stages: {}}).stages[stage], t = trn[cup].stages[stage];
+    if (!a || !t) continue;
+    const key = r => r.players.map(p => p.handle.toLowerCase()).sort().join('|');
+    const byKey = new Map(t.map(r => [key(r), r]));
+    let checked = 0, off = [];
+    for (const r of a){
+      const m = byKey.get(key(r));
+      if (!m) continue;
+      checked++;
+      if (m.rank !== r.rank || m.points !== r.points || m.matches !== r.matches || m.wins !== r.wins)
+        off.push(key(r) + ' epic ' + [r.rank, r.points, r.matches, r.wins].join('/') +
+                 ' tracker ' + [m.rank, m.points, m.matches, m.wins].join('/'));
+    }
+    mismatches += off.length;
+    console.log('  ' + cup + ' ' + stage.padEnd(6) + ' both sources: ' + checked + ' of ' + a.length +
+                ' matched, ' + off.length + ' disagree' + (off.length ? '\n     ' + off.slice(0, 4).join('\n     ') : ''));
+  }
+}
+console.log(mismatches ? '\n' + mismatches + ' rows disagree — the HTML parse is suspect\n'
+                       : '\nthe two readings agree everywhere they overlap\n');
+
+// ------------------------------------------------------------------- the build
+const cups = {};
+for (const cup of new Set([...Object.keys(trn), ...Object.keys(api)])){
+  cups[cup] = {stages: {}, dates: (api[cup] || {}).dates || {}};
+  for (const stage of ORDER){
+    const a = (api[cup] || {stages: {}}).stages[stage];
+    const t = (trn[cup] || {stages: {}}).stages[stage];
+    const rows = a || t;
+    if (rows) cups[cup].stages[stage] = {rows, from: a ? 'epic' : 'tracker'};
   }
 }
 
-// ---- what the pages say, before anything is built out of them ----
-const ORDER = ['open', 'playin', 'heat1', 'heat2', 'heat3', 'heat4', 'final'];
-const key = p => p.handle.toLowerCase();
-const duoKey = r => r.players.map(key).sort().join('|');
+for (const cup of Object.keys(cups).sort()){
+  console.log(cup);
+  for (const stage of ORDER){
+    const s = cups[cup].stages[stage];
+    if (!s) { console.log('  ' + stage.padEnd(7) + '   —'); continue; }
+    const games = Math.max(...s.rows.map(r => r.matches || 0));
+    const seats = s.rows.reduce((n, r) => n + r.players.length, 0);
+    const nat = s.rows.reduce((n, r) => n + r.players.filter(p => p.nat).length, 0);
+    console.log('  ' + stage.padEnd(7) + String(s.rows.length).padStart(5) + ' teams   games ' +
+                String(games).padStart(2) + '   flags ' + String(Math.round(100 * nat / seats)).padStart(3) +
+                '%   from ' + s.from + (cups[cup].dates[stage] ? '   ' + cups[cup].dates[stage] : ''));
+  }
+}
 
-console.log('Reload Elite Series, as the saved pages have it\n');
-for (const cup of Object.keys(data)){
-  const st = data[cup].stages;
-  console.log('cup ' + cup);
-  for (const s of ORDER){
-    if (!st[s]) continue;
-    const rows = st[s];
-    const games = [...new Set(rows.map(r => r.matches))].sort((a, b) => b - a);
-    const paid = rows.filter(r => r.prize > 0).length;
-    const nat = rows.reduce((n, r) => n + r.players.filter(p => p.nat).length, 0);
-    const seats = rows.reduce((n, r) => n + r.players.length, 0);
-    console.log('  ' + s.padEnd(7) + String(rows.length).padStart(4) + ' teams' +
-                '   games ' + String(games[0]).padStart(2) +
-                '   flags ' + String(Math.round(100 * nat / seats)).padStart(3) + '%' +
-                (paid ? '   paid ' + paid : ''));
+// Cup 4's Play-Ins come back whole — 1936 duos, where Tracker showed the other
+// three cups' hundred. A card set of two thousand qualifier-level players would
+// be one cup shaped unlike the rest of the circuit, so the wide stages are cut
+// to the same hundred everywhere. The cut is printed rather than silent, and
+// the full harvest stays on disk.
+const WIDE_KEEP = 100;
+for (const cup of Object.keys(cups)){
+  for (const stage of ['open', 'playin']){
+    const s = cups[cup].stages[stage];
+    if (!s || s.rows.length <= WIDE_KEEP) continue;
+    console.log('\n' + cup + ' ' + stage + ': keeping the top ' + WIDE_KEEP + ' of ' + s.rows.length +
+                ' — the rest stay in the harvest, out of the card set');
+    s.rows = s.rows.slice(0, WIDE_KEEP);
   }
-  // How many of one stage's teams turn up in the next: the cut, counted rather
-  // than read off a bracket.
-  for (let i = 0; i + 1 < ORDER.length; i++){
-    const a = st[ORDER[i]], b = st[ORDER[i + 1]];
-    if (!a || !b) continue;
-    const inB = new Set(b.map(duoKey));
-    const survived = a.filter(r => inB.has(duoKey(r)));
-    const deepest = survived.length ? Math.max(...survived.map(r => r.rank)) : 0;
-    console.log('    ' + ORDER[i] + ' -> ' + ORDER[i + 1] + ': ' + survived.length + ' of ' +
-                b.length + ' came through, the deepest seeded ' + deepest);
-  }
-  if (data[cup].scoring) console.log('    pays ' + JSON.stringify(data[cup].scoring));
-  console.log('');
 }
 
 if (OUT){
-  const rowOf = r => [r.rank, r.points, r.matches, r.wins, r.avgElims, r.avgPlace,
-                      Math.round((r.avgElims || 0) * (r.matches || 0) * 3),
+  const rowOf = r => [r.rank, r.points, r.matches, r.wins, r.avgElims, r.avgPlace, r.elimPts,
                       ...r.players.map(p => p.handle)];
-  const nats = {};
-  const orgs = {};
-  Object.values(data).forEach(c => Object.values(c.stages).forEach(rows => rows.forEach(r =>
+  const nats = {}, orgs = {};
+  Object.values(cups).forEach(c => Object.values(c.stages).forEach(s => s.rows.forEach(r =>
     r.players.forEach(p => {
       if (p.nat) nats[p.handle] = p.nat;
       if (p.org) orgs[p.handle] = p.org;
     }))));
-  const body = 'const EWC_RAW={\n' + Object.keys(data).map(cup =>
-      '  e' + cup + ':{\n' + ORDER.filter(s => data[cup].stages[s]).map(s =>
-        '    ' + s + ':' + JSON.stringify(data[cup].stages[s].map(rowOf)) ).join(',\n') +
+  const body = 'const EWC_RAW={\n' + Object.keys(cups).sort().map(cup =>
+      '  ' + cup + ':{\n' + ORDER.filter(s => cups[cup].stages[s]).map(s =>
+        '    ' + s + ':' + JSON.stringify(cups[cup].stages[s].rows.map(rowOf))).join(',\n') +
       '\n  }').join(',\n') + '\n};\n' +
+    'const EWC_DATE=' + JSON.stringify(Object.fromEntries(Object.entries(cups).map(([k, c]) => [k, c.dates]))) + ';\n' +
     'const EWC_NAT=' + JSON.stringify(nats) + ';\n' +
     'const EWC_ORG=' + JSON.stringify(orgs) + ';\n';
   fs.writeFileSync(OUT, '// Generated by tools/build-ewc-rows.js — do not edit by hand.\n' + body);
-  console.log('wrote ' + OUT + ' (' + Object.keys(nats).length + ' handles with a flag, ' +
+  console.log('\nwrote ' + OUT + ' (' + Object.keys(nats).length + ' handles with a flag, ' +
               Object.keys(orgs).length + ' with an org)');
 }

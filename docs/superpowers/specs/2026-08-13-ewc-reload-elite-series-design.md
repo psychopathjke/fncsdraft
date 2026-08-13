@@ -8,12 +8,12 @@ A second circuit beside FNCS: the Reload Elite Series, the European road to the
 Esports World Cup. Four cups, duos, one region, played on the Reload island —
 its own row of tiles, its own card sets, its own bracket, its own scoring.
 
-| Set | Cup | Source |
-|---|---|---|
-| `r1` | Reload Elite Series 1 | Fortnite Tracker, seven saved stage pages |
-| `r2` | Reload Elite Series 2 | Fortnite Tracker, seven saved stage pages |
-| `r3` | Reload Elite Series 3 | Fortnite Tracker, seven saved stage pages |
-| `r4` | Reload Elite Series 4 | the series' own site, eleven screenshots |
+| Set | Cup | Played | Source |
+|---|---|---|---|
+| `r1` | Reload Elite Series 1 | heats 1 Feb, final 7 Feb 2026 | Fortnite Tracker, seven saved stage pages |
+| `r2` | Reload Elite Series 2 | heats 27 Feb, final 1 Mar 2026 | Fortnite Tracker, seven saved stage pages |
+| `r3` | Reload Elite Series 3 | final 17 May 2026 | Fortnite Tracker, seven saved stage pages |
+| `r4` | Reload Elite Series 4 | Opens 12/14 Jun, Play-Ins 19/21 Jun, heats 26 Jun, final 28 Jun 2026 | Epic's own leaderboard payload |
 
 The precedent is `2026-08-09-fncs-2025-major2-major3-design.md`. Everything it
 settled about a card set — `rowEntry`, the percentile attributes, the miss
@@ -23,11 +23,13 @@ different island and a different number of stages.
 
 ## Where the data comes from
 
-FNCS 2025 came out of Epic's own JSON. This circuit has no payload — what exists
-is what Tracker rendered, saved as HTML — so `tools/build-ewc-rows.js` reads the
-rendered leaderboard. Everything it takes is printed on the page: rank, points,
-matches, wins, average eliminations, average place, both handles, their orgs and
-the flags Tracker puts beside them.
+Two sources, because no single one covers the circuit. Epic's own payload is
+still being served for cup 4 and is read straight (see below); for the first
+three cups Epic has dropped everything but a ranking, and what exists is what
+Tracker rendered, saved as HTML. So `tools/build-ewc-rows.js` reads both and
+prefers the payload wherever it has a match log behind it. Everything the
+Tracker reader takes is printed on the page: rank, points, matches, wins,
+average eliminations, average place, both handles, their orgs and the flags.
 
 Measured over the twenty-one saved pages:
 
@@ -38,10 +40,11 @@ Measured over the twenty-one saved pages:
 | Heats 1-4 | 19/20/19/20, 8 games | 20/19/20/20, 8 | 20/20/20/20, 8 |
 | Finals | 20 teams, 8 games | 20, 8 | 20, 8 |
 
-897 rows in all, 440 handles carrying a nationality flag (60%, where the 2025
-sets' payload gave 67%) and 225 carrying an org. Opens and Play-Ins are Tracker's
-top 100, not the whole field — the pages say so themselves and the mode should
-not pretend the qualifier was a hundred teams deep.
+1097 rows in all across the four cups, 642 handles carrying a nationality — 60%
+of the seats Tracker rendered, and every seat of cup 4 — and 225 carrying an
+org. Opens and Play-Ins are the top 100, not the whole field: that is all
+Tracker shows, and cup 4's fuller field is cut to match rather than making one
+cup a different shape from the other three.
 
 Heat lobbies of 19 are the source's own: a team that did not turn up is absent
 rather than blank, exactly as the 2025 sets' short trios are kept short.
@@ -76,14 +79,40 @@ Three a kill throughout, which is what lets the elimination half of a score be
 split back out of the total the way `rowEntry` wants it. Cup 1 pays a steeper
 podium and stops paying at 12th; cups 2 and 3 pay flatter and further down.
 
-## Cup 4 has no Tracker pages
+## Cup 4 is not on Tracker, and did not need to be
 
-Eleven screenshots of the series' own site instead: Heats 1-4 and the Finals,
-twenty teams each, with points, matches, wins and eliminations, and the finals
-drop map. No Opens, no Play-Ins, and no average place — the site does not print
-one. So `r4` is built from the heats and the final only, and its cards say so:
-a card whose deepest stage is a heat is rated as a heat card, and nothing
-invents the two stages the screenshots do not carry.
+Tracker does not carry the fourth cup under any name: thirty event ids were
+tried across three seasons and every one came back 404, and the only other
+Reload event it knows is the Championship in Riyadh on 18 August. What it does
+carry is a dead end, not a missing page.
+
+The circuit's own site, eucompetitive.com, proxies **Epic's leaderboard service
+unchanged** — the same payload shape the FNCS 2025 harvest read. So `r4` is
+built from the source rather than from a rendering of it, by
+`tools/fetch-ewc.js`, and it is the best data in the mode: every match of every
+team, the elimination points as a published column rather than an inference,
+and a nationality on every seat.
+
+| stage | teams | note |
+|---|---|---|
+| Opens | — | Epic returns nothing for either Opens window |
+| Play-Ins | **1936** | both days, a team's better day kept |
+| Heats 1-4 | 20 each | 8 games |
+| Final | 20 | 8 games |
+
+**Checked against what a human saw:** six rows across three heats — points,
+matches, wins, total eliminations and both handles — read off the screenshots of
+the site and compared with the payload. None disagree.
+
+The same payload was asked for the first three cups too. Epic keeps the ranking
+of an old window long after it drops the match log behind it: those three finals
+come back as twenty teams with no sessions, no points and no handles. A row with
+no match in it is not a result, so cups 1-3 stay on the Tracker pages, and the
+builder refuses those shells rather than letting them overwrite good rows.
+
+Cup 4's Play-Ins are cut to the top 100 for the card set, which is the shape
+Tracker gives the other three cups. The cut is printed by the builder and the
+whole harvest stays on disk.
 
 ## The island
 
@@ -100,6 +129,6 @@ cup 4's is a screenshot of the same map with the site's chrome around it.
   FNCS.
 - **Regions.** Every page is Europe. The region picker does not open for this
   mode rather than offering six empty ones.
-- **Dates.** Only cup 4's screenshots carry any (heats 26.06, finals 28.06), and
-  a tile that says a date it guessed is worse than a tile that says the season
-  the source names: CH7 S3.
+- **Nothing dated by hand.** Every date in the table above is the window's own
+  `beginTime` — cup 4's from the calendar the site reads, cups 1-3 from the
+  event payload behind their Tracker pages. No tile carries a guessed date.
