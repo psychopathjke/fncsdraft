@@ -163,6 +163,15 @@ actually calls. No `ZONE_STATS`: the published evals cover the Battle Royale
 islands and the wiki loot counts cover Chapter 6, and nothing counts loot on a
 Reload island, so every spot is worth one point rather than an invented number.
 
+**A Victory Royale is not a ticket here.** FNCS ends a team's night on a
+win — take the game and you are through, whatever the table says. This circuit
+has no such rule: a heat is eight games for everybody and only the top five on
+points come out, so a win is 60 points and nothing more. Both rules now live
+behind one format flag, and tools/check-ewc-heats.js runs a heat under each to
+make sure neither circuit borrows the other's: measured, a Reload heat plays
+8 games for all twenty teams and its winners outside the five stay outside,
+while a FNCS heat still stops on a win and sends every winner through.
+
 **A Reload match seats twenty.** The bracket above is what `R_FORMAT` now says:
 the Play-In runs in lobbies of twenty and sends its top eighty into four heats
 of twenty, each heat is eight games and only its top five come out, and the

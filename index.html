@@ -29344,7 +29344,7 @@ function playInSeats(heatCount){
 // chance: miss the eighty and the cup is over.
 const R_FORMAT={playInGames:22, playInCut:80, lobby:20,
                 heats:[{games:8,cut:5},{games:8,cut:5},{games:8,cut:5},{games:8,cut:5}],
-                gfGames:8, gfKill:3, noLcq:true, lclGames:0};
+                gfGames:8, gfKill:3, noLcq:true, lclGames:0, winAdvances:false};
 function isReloadSet(set){ return /^r\d$/.test(set||''); }
 function majorFormat(region, cardSet){
   if(isReloadSet(cardSet)) return R_FORMAT;
@@ -29409,8 +29409,20 @@ function currentMajorFormat(you){
   return majorFormat(region, CARD_SET);
 }
 
-function heatQualifiers(heatTeams, cut){
-  const through=heatTeams.filter(t=>t.gotVR);
+// Does a Victory Royale qualify anybody in the run on screen? FNCS says yes,
+// the Reload Elite Series says no. The standings table and the stage card both
+// print the answer, so both ask here rather than reading gotVR and assuming.
+function winIsATicket(){
+  const f = CARD_MODE ? majorFormat(null, CARD_SET) : null;
+  return !(f && f.winAdvances === false);
+}
+function heatQualifiers(heatTeams, cut, winAdvances){
+  // FNCS qualifies a Victory Royale outright — win your heat and your night is
+  // over. The Reload Elite Series has no such rule: its heats are eight games
+  // and only the top five on points come out, so a win there is worth 60 points
+  // and nothing else. Passed in rather than read off a global so the two
+  // circuits cannot borrow each other's rule by accident.
+  const through=(winAdvances===false) ? [] : heatTeams.filter(t=>t.gotVR);
   heatTeams.slice().sort(heatsRank).forEach(t=>{
     if(through.length<cut && !through.includes(t)) through.push(t);
   });
@@ -31349,9 +31361,9 @@ async function runMajorTournament(){
     // Last Chance entrant, and you can't fill the lobby before you know who
     // that is.
     const heats=seedHeats(advancedPlayIn, FMT.heats.length);
-    heats.forEach((heatTeams,hi)=>{ simulateGamesStopOnWin(heatTeams, FMT.heats[hi].games, heatsScoreForPlace, 3); });
+    heats.forEach((heatTeams,hi)=>{ (FMT.winAdvances===false ? simulateGames : simulateGamesStopOnWin)(heatTeams, FMT.heats[hi].games, heatsScoreForPlace, 3); });
     heats.forEach((heatTeams,hi)=>{
-      heatQualifiers45=heatQualifiers45.concat([...heatQualifiers(heatTeams, FMT.heats[hi].cut)]);
+      heatQualifiers45=heatQualifiers45.concat([...heatQualifiers(heatTeams, FMT.heats[hi].cut, FMT.winAdvances)]);
     });
     lcqField=lastChanceField(teams, new Set(heatQualifiers45));
     const lcqResult=await runLastChanceQualifier('Play-In', you, teams, lcqField, lcqSlots);
@@ -31375,24 +31387,27 @@ async function runMajorTournament(){
     const heatZones = await showFinalsLandingPicker(yourHeat, you, L().heatsLandingTitle);
     for(let hi=0; hi<heats.length; hi++){
       const g=FMT.heats[hi].games;
-      if(hi===yourHeatIdx) await simulateGamesLive(heats[hi], g, heatsScoreForPlace, 3, 'stage', 0, null, heatZones, {stopOnWin:true, mapReplay:true, stageName:L().liveHeat(yourHeatIdx+1)});
-      else simulateGamesStopOnWin(heats[hi], g, heatsScoreForPlace, 3);
+      const stopOnWin=FMT.winAdvances!==false;
+      if(hi===yourHeatIdx) await simulateGamesLive(heats[hi], g, heatsScoreForPlace, 3, 'stage', 0, null, heatZones, {stopOnWin:stopOnWin, mapReplay:true, stageName:L().liveHeat(yourHeatIdx+1)});
+      else if(stopOnWin) simulateGamesStopOnWin(heats[hi], g, heatsScoreForPlace, 3);
+      else simulateGames(heats[hi], g, heatsScoreForPlace, 3);
     }
     yourHeat.sort(heatsRank);
     const heatsCut=FMT.heats[yourHeatIdx].cut;
     const youHeatRank=yourHeat.indexOf(you)+1;
-    const qualifiedSet=heatQualifiers(yourHeat, heatsCut);
+    const qualifiedSet=heatQualifiers(yourHeat, heatsCut, FMT.winAdvances);
     const passedHeats=qualifiedSet.has(you);
 
     const shell2=createStageCardShell(L().stage2Title(yourHeatIdx+1, FMT.heats[yourHeatIdx].games));
     await revealStageLog(you, shell2, true);
-    finalizeStageCard(shell2, youHeatRank, yourHeat.length, you.stagePts, passedHeats, you.gotVR,
-      (passedHeats && !you.gotVR) ? L().stage2NoteByPoints(heatsCut) : '');
+    const heatByVR = you.gotVR && winIsATicket();
+    finalizeStageCard(shell2, youHeatRank, yourHeat.length, you.stagePts, passedHeats, heatByVR,
+      (passedHeats && !heatByVR) ? L().stage2NoteByPoints(heatsCut) : '');
     await revealStandings(shell2, yourHeat, you, 0, null, qualifiedSet);
     if(passedHeats) await celebrate(L().celKicker, L().celFinalsTitle, L().celFinalsSub, 'green', 40);
 
     heats.forEach((heatTeams,hi)=>{
-      heatQualifiers45=heatQualifiers45.concat([...heatQualifiers(heatTeams, FMT.heats[hi].cut)]);
+      heatQualifiers45=heatQualifiers45.concat([...heatQualifiers(heatTeams, FMT.heats[hi].cut, FMT.winAdvances)]);
     });
 
     if(!passedHeats){
@@ -32143,8 +32158,9 @@ async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, p
       `border:1px solid ${border};border-radius:3px;padding:0 3px;white-space:nowrap;" ` +
       `title="${title}">${text}</span>`;
     const mark = qualifiedSet && through
-      ? tag((t.gotVR?'★ ':'')+L().qualHereTag, 'var(--accent)', 'rgba(0,176,144,.45)',
-            t.gotVR?L().qualByVR:L().qualByPoints)
+      ? (function(){ const byVR = t.gotVR && winIsATicket();
+          return tag((byVR?'★ ':'')+L().qualHereTag, 'var(--accent)', 'rgba(0,176,144,.45)',
+                     byVR?L().qualByVR:L().qualByPoints); })()
       : seated
       ? tag(L().alreadyQualTag, '#ffd166', 'rgba(255,209,102,.45)', L().alreadyQualHint)
       : '';
