@@ -192,9 +192,9 @@
   .ec-art-wide .ec-pill{z-index:2;}
   /* Art with a subject that fills the frame is cropped; art with an emblem
      floating in space is fitted, or the emblem loses its own edges. */
-  .ec-art-fit{background-size:auto 100%;background-position:right center;}
-  .mode-card:hover .ec-art-fit{background-size:auto 106%;}
-  .ec-foot-wide{background:linear-gradient(to right, rgba(255,255,255,.94) 52%, rgba(255,255,255,0) 82%);
+  .ec-art-fit{background-size:auto 155%;background-position:right center;}
+  .mode-card:hover .ec-art-fit{background-size:auto 162%;}
+  .ec-foot-wide{background:linear-gradient(to right, rgba(255,255,255,.95) 34%, rgba(255,255,255,0) 66%);
     top:0;display:flex;flex-direction:column;justify-content:center;padding:14px 18px;}
   .ec-cups{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap;}
   .ec-cup{font-size:12px;font-weight:900;letter-spacing:.02em;color:#0f1620;
@@ -205,6 +205,9 @@
   .ec-cup small{display:block;font-size:10px;font-weight:700;color:#5b6773;letter-spacing:.02em;}
   .ec-cup:hover small{color:var(--accent-ink);opacity:.85;}
   @media(max-width:640px){ .ec-art-wide{height:230px;background-position:right -30px top 20%;}
+    /* on a phone the plate covers most of the card, so the emblem comes back
+       down to a badge in the corner rather than a wall behind the text. */
+    .ec-art-fit{background-size:auto 100%;background-position:right center;}
     .ec-foot-wide{background:linear-gradient(to right, rgba(255,255,255,.95) 74%, rgba(255,255,255,.25));} }
   @media (prefers-reduced-motion:reduce){ .ec-cup:hover{transform:none;} }
   .mode-card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:6px;
