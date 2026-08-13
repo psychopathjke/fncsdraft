@@ -596,16 +596,44 @@
   // the drop against a real 4.7%, with 95.2% still alive at the first circle
   // against a real 95%.
   //
-  // The first guess was seven hundred times this, on the reasoning that two
-  // duos on the same roof have to fight. They do — but a fight at the drop is
-  // two duos with grey guns and no shields, and it ends far more often with one
-  // of them leaving than with a wipe. At the high value nearly half the lobby
-  // was gone before the first circle closed, which is the same mistake the app
-  // made when it flipped a coin for every contested spot: the drop was being
-  // treated as a decider when it is a filter. Nearly half the lobby shares its
-  // ground with somebody; about one contested drop in ten produces a body.
+  // The first guess was a hundred and thirty times this, on the reasoning that
+  // two duos on the same roof have to fight. They do — but a fight at the drop
+  // is two duos with grey guns and no shields, and it ends far more often with
+  // one of them leaving than with a wipe. At that value the drop saturates: 28%
+  // of the lobby out before the first circle closes, whatever the number is
+  // raised to beyond it, which is the drop being treated as a decider when the
+  // telemetry says it is a filter.
+  //
+  // It sits at 1.35 rather than the 0.18 the telemetry alone asks for, and that
+  // is a decision rather than a measurement. The product owner asked repeatedly
+  // for squads that land on each other to settle it, having watched a lobby
+  // where nothing happened for five circles, and then asked for four contested
+  // pairs in five. This is as close to that as the rest of the game survives:
+  //
+  //    DP    pairs settled   drop kills    z1    z2    z5   mean error
+  //   0.18        14%            3.8%     96%   95%   82%      6.7
+  //   1           62%           17.4%     83%   82%   75%      4.2
+  //   1.35        71%           19.8%     80%   80%   73%      5.0   <- here
+  //   1.5         74%           20.6%     79%   79%   73%      5.5   <- breaks below
+  //   1.75        80%           22.4%     78%   77%   73%      6.4
+  //   3           97%           27.1%     73%   73%   69%      8.5
+  //   real         —             4.7%     95%   85%   75%
+  //
+  // The ceiling is not the curve, it is the tournament. From 1.5 up, the test
+  // 'the standings have the shape of a tournament' fails every run on its last
+  // assertion: the team that wins the Grand Final has not won a single game in
+  // it. Twenty per cent of the lobby dying in the first forty seconds is a
+  // filter; more than that and the drop is loud enough to out-shout twelve games
+  // of placement, and the trophy stops meaning anything about who played well.
+  // At 1.35 it holds across every run; at 1.5 it does not. That boundary was
+  // measured, not guessed, and it is the reason this is not the 80% that was
+  // asked for.
+  //
+  // Past 3 it saturates anyway: the drop takes 28% of the lobby however high the
+  // number goes, which is the mistake this file already made once from the other
+  // direction.
   var DROP_SEC = 40;
-  var DROP_PRESSURE = 0.18;
+  var DROP_PRESSURE = 1.35;
 
   // How many squads have to be standing on one spot before the fight is a
   // certainty rather than a roll. Two was tried and it is what made the drop a

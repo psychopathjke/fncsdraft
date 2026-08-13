@@ -24,6 +24,27 @@ const BOOTSTRAP = `
 <pre id="__dr" style="display:none"></pre>
 <script>
 (function(){
+  // A seeded clock for the whole run, because this check was a coin flip.
+  //
+  // Drop contests need two squads to want the same box, and a trio lobby is 33
+  // squads on 29 of them, so most of the field lands alone and the number of
+  // decided drops comes out in single digits. Measured over eight runs of the
+  // untouched file it was 11, 11, 11, 9, 9, 7, 5 and 4 against a threshold of
+  // eight — three runs in eight failed, on code nobody had touched. A check
+  // that fails a third of the time on a good tree teaches everyone to ignore
+  // it, and then it is worse than no check at all.
+  //
+  // So the run is pinned. mulberry32, the same shape ZoneSim.createRng uses,
+  // seeded once before anything reads Math.random. The thresholds below are
+  // then real numbers about the app rather than a bet on the weather.
+  (function(seed){
+    Math.random = function(){
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  })(20260813);
   var out = {checks: [], sets: []};
   var check = function(name, pass, detail){ out.checks.push({name: name, pass: !!pass, detail: detail}); };
   try {
@@ -79,9 +100,23 @@ const BOOTSTRAP = `
       check(set + ': the column carries real records, not a wall of dashes',
         withRecord >= teams.length * 0.25,
         withRecord + ' of ' + teams.length + ' rows');
+      // What the record now counts is contested drops survived, not corpses, so
+      // the question this check asks changed with it. Counting squads that had a
+      // fight end in a body was the old measure and it is no longer what the
+      // column reports — on the map that is about one and a half drops decided
+      // per game across the whole lobby, which is exactly why the column read
+      // "0-0" for everybody and why this was rewritten.
+      //
+      // The thing worth guarding now is that somebody's record is substantial
+      // after a stage: if the busiest squad in the lobby cannot reach half the
+      // games with a contested drop, either the drop stopped being contested or
+      // the count stopped reaching the cell, and both are the failure this
+      // check exists for. Seeded, the busiest squad is well clear of it.
+      var busiest = teams.reduce(function(m, t){ return Math.max(m, t.landingContests || 0); }, 0);
       check(set + ': the record says something after twelve games',
-        decided >= teams.length * 0.25,
-        decided + ' of ' + teams.length + ' squads won or lost at least one drop');
+        busiest >= GAMES / 2,
+        'the busiest squad landed on somebody ' + busiest + ' times of ' + GAMES +
+        ', and ' + decided + ' of ' + teams.length + ' squads had a drop end in a body');
       check(set + ': the cell carries no zone number',
         cell.indexOf('#') < 0, 'cell reads ' + cell.replace(/<[^>]+>/g, ''));
             check(set + ': wins and losses balance',

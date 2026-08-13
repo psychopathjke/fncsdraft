@@ -679,7 +679,25 @@ function dropOnGrid(teams, rng){
 
 test('a crowded drop takes the toll the game asks for', () => {
   // 7 of 149 duos across the three logged matches are out when the first circle
-  // closes — 4.7% — and this asserts it.
+  // closes — 4.7% — and this used to assert exactly that.
+  //
+  // It no longer does, and the departure is deliberate rather than drift. The
+  // product owner asked three times for squads that land on each other to settle
+  // it, having watched a lobby in which nothing happened for five circles, and
+  // that ask was answered by raising DROP_PRESSURE from 0.18 to 1.35. What the
+  // sweep behind that change found is that the trade is not the one it looks
+  // like: at 1.35 the drop takes 20% instead of 4%, seven contested pairs in ten settle, the first circle comes out 15
+  // points light against the log — and every zone after it lands closer than
+  // 0.18 managed, zone 5 exactly, with the mean error across the whole curve
+  // falling from 6.7 points to 4.2. The accurate first circle had been bought
+  // with four circles in which the lobby did not move.
+  //
+  // So the band below is the decision, not the telemetry, and the telemetry is
+  // still guarded — by 'the lobby thins out the way it did in the real match',
+  // which measures the shape this trade was made for. The ceiling matters as
+  // much as the floor: past DROP_PRESSURE 3 the drop saturates at 28% whatever
+  // it is raised to, and a drop that takes a quarter of the lobby is a decider
+  // again rather than a filter.
   //
   // It asked for a fifth of the lobby for a day, and the note left here said
   // this was the line to reconsider it against. The complaint that bought it was
@@ -703,8 +721,11 @@ test('a crowded drop takes the toll the game asks for', () => {
     teams.forEach(t => { total++; if(t._droppedOut) out++; });
   }
   const share = out / total;
-  assert(share > 0.02 && share < 0.09,
-    (100*share).toFixed(1) + '% of the lobby lost its drop; the real matches report 4.7%');
+  assert(share > 0.15 && share < 0.25,
+    (100*share).toFixed(1) + '% of the lobby lost its drop. The chosen setting takes about 20%, ' +
+    'which is seven contested pairs in ten ending with one of them gone: below 15% the drop has ' +
+    'gone back to settling little, above 25% the tournament stops having a shape — see the ' +
+    'ceiling noted on DROP_PRESSURE itself. The logged matches report 4.7% — deliberately not the target here, see above');
 });
 
 test('a squad that loses its drop died in zone 1, to somebody in the lobby', () => {

@@ -45,6 +45,14 @@
 
 <style>
   :root{
+    /* The app already had a voice and used it in one place: the mode tiles on
+       the front screen are set in condensed caps with a slight skew, which is
+       what a broadcast lower-third looks like and what this sport looks like.
+       Every screen behind them was set in the same system sans as the body copy,
+       so the identity stopped at the door. Named here so the headings can carry
+       it too. The skew stays on the tiles — that is the signature, and a
+       signature repeated on every heading is just a slant. */
+    --font-display:'Arial Narrow','Helvetica Neue Condensed','Roboto Condensed',Impact,sans-serif;
     --bg:#0e1116; --panel:#161b22; --panel2:#1d232c;
     /* Row tone for the live leaderboard: one value, used both by the stylesheet
        and by the row-move animation, so a travelling row cannot change colour. */
@@ -238,7 +246,14 @@
     font-size:clamp(20px,3.6vw,32px);font-variant-numeric:tabular-nums;}
   .rating-explainer{margin-top:26px;background:var(--panel);border:1px solid var(--line);
     border-radius:8px;padding:18px 20px;}
-  .rating-explainer h4{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-dim);}
+  /* A heading is a label, and a label is not the colour of its own caption.
+     These sat in --ink-dim, the same grey as the .region-note directly beneath
+     them, so every block on every screen opened in one flat voice and the only
+     hierarchy left was size. Full ink and weight 900 for the label, dim for the
+     line that explains it — the same relationship the region plates use, which
+     is where this came from. */
+  .rating-explainer h4{margin:0 0 10px;font-family:var(--font-display);font-size:18px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.06em;color:var(--ink);}
   .re-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;
     border-top:1px solid var(--line);font-size:13px;}
   .re-row:first-of-type{border-top:none;}
@@ -282,7 +297,7 @@
      which is not the weapon pack. */
   .pack-icon{width:34px;height:34px;border-radius:6px;background:var(--accent);flex:none;
     display:flex;align-items:center;justify-content:center;color:var(--accent-ink);font-weight:900;font-size:15px;}
-  .pack-head h2{margin:0;font-size:17px;text-transform:uppercase;}
+  .pack-head h2{margin:0;font-family:var(--font-display);font-size:22px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;}
   .pack-head p{margin:2px 0 0;font-size:12px;color:var(--ink-dim);}
 
   /* minmax(0,1fr) instead of 1fr: a plain 1fr column refuses to shrink below its
@@ -618,9 +633,68 @@
   .go-btn:disabled{background:var(--panel2);color:var(--ink-dimmer);cursor:not-allowed;}
 
   .region-filter{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
-  .rf-btn{font-size:11px;text-transform:uppercase;letter-spacing:.04em;background:var(--panel2);
-    border:1px solid var(--line);color:var(--ink-dim);padding:6px 11px;border-radius:20px;cursor:pointer;}
+  /* One chip language. The years and the island names have no code to lead with
+     the way a region does, so they stay one line — but at the plates' weight and
+     height, so a row of them is the same object as a row of regions rather than
+     a second, smaller kind of button on the same page. */
+  .rf-btn{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+    background:var(--panel2);border:1px solid var(--line);color:var(--ink-dim);
+    padding:10px 13px;border-radius:9px;cursor:pointer;}
   .rf-btn.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700;}
+
+  /* Region plates. The code is the label and the long name is its caption —
+     the sport says EU and NAC, and the app was saying "Middle East" in eleven
+     pixels. Sized as something to hit rather than to aim at: 44px of target
+     against the chip's 26. */
+  #preRegionChecks{gap:8px;}
+  .rf-plate{display:inline-flex;flex-direction:column;align-items:flex-start;gap:1px;
+    padding:7px 13px;border-radius:9px;line-height:1.1;text-transform:none;letter-spacing:0;}
+  .rf-plate .rf-code{font-family:var(--font-display);font-size:17px;font-weight:700;letter-spacing:.06em;color:var(--ink);}
+  .rf-plate .rf-name{font-size:10px;font-weight:600;letter-spacing:.02em;color:var(--ink-dim);}
+  .rf-plate:hover{border-color:var(--accent);}
+  .rf-plate.active .rf-code{color:var(--accent-ink);}
+  /* The caption keeps its own contrast on the filled state rather than
+     inheriting the ink, so the code still leads when the plate is chosen. */
+  .rf-plate.active .rf-name{color:var(--accent-ink);opacity:.72;}
+  .sim-modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;}
+  @media(max-width:640px){.sim-modes{grid-template-columns:1fr;}}
+  .sim-btn{text-align:left;background:var(--panel2);border:1px solid var(--line);color:var(--ink-dim);
+    border-radius:10px;padding:13px 15px;cursor:pointer;transition:border-color .15s ease, background .15s ease;}
+  .sim-btn h5{margin:0 0 4px;font-family:var(--font-display);font-size:17px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink);}
+  .sim-btn p{margin:0;font-size:11.5px;line-height:1.35;}
+  .sim-btn.active{background:var(--accent);border-color:var(--accent);}
+  .sim-btn.active h5,.sim-btn.active p{color:var(--accent-ink);}
+  /* The team list runs across and then down, not one team per full-width row.
+     A duo tile is two cards wide, so three tiles to a line puts about nine
+     teams on screen at once against the two the stacked layout managed — which
+     matters for a list a hundred and seventy-nine long that is meant to be
+     scrolled and compared. The cards inside a tile share its width rather than
+     carrying one of their own, so they shrink with the column count instead of
+     needing a size of their own. */
+  .candidates.team-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;align-items:start;}
+  @media(max-width:700px){.candidates.team-grid{grid-template-columns:minmax(0,1fr);}}
+  .team-row{background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+    padding:9px;}
+  /* The head is one line now, because a tile is a third of the width it used to
+     be: the rating and the handles on the left, the finish pushed right, and
+     both allowed to be cut rather than to wrap the tile taller than its
+     neighbours. Tiles in a grid row are only as tall as the tallest of them. */
+  .team-row-head{display:flex;align-items:baseline;gap:5px;font-size:12px;font-weight:800;
+    color:var(--ink);margin-bottom:7px;}
+  .team-row-head b{color:var(--accent);font-size:15px;flex:none;}
+  .team-row-who{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+  .team-row-stage{margin-left:auto;flex:none;font-size:10.5px;font-weight:700;color:var(--ink-dim);}
+  /* Each card takes an equal share of the tile and no ceiling on top of it: two
+     teams to a line is a wider tile, and the width is meant to reach the cards
+     rather than pool beside them. min-width:0 is what lets a flex child shrink
+     below its content; without it the cards keep their intrinsic width and push
+     the tile past its own grid column. */
+  .team-row-cards{display:flex;gap:6px;margin-bottom:7px;}
+  .team-row-cards .fut-card{flex:1 1 0;min-width:0;}
+  /* Nothing here for the Take button: it is the same .pick-btn the weapon and
+     consumable packs use, and it takes its colour the same way they do — from a
+     --r-color the tile sets on itself. See paintTeamPicker. */
 
   .bracket{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:24px 0;}
   @media(max-width:820px){.bracket{grid-template-columns:1fr;}}
@@ -1419,9 +1493,27 @@
   </div>
 
   <div class="screen" id="screen-preregion">
-    <div class="rating-explainer">
-      <h4 data-i18n="preregionTitle"></h4>
-      <div class="region-note" data-i18n="preregionNote"></div>
+    <!-- The mode comes first because it changes what every question under it
+         means: in a realistic run the region decides which real teams you can
+         be, in a draft run it decides which cards you can draft. It also has to
+         sit above the region heading rather than between that heading and its
+         own chips, which is where it landed first and read as a broken page. -->
+    <div class="rating-explainer" id="simModeHead">
+      <h4 data-i18n="simModeTitle"></h4>
+    </div>
+    <div class="sim-modes" id="simModes">
+      <button class="sim-btn" id="simRealisticBtn" onclick="setSimMode(true)">
+        <h5 data-i18n="simRealisticTitle"></h5>
+        <p data-i18n="simRealisticNote"></p>
+      </button>
+      <button class="sim-btn active" id="simDraftBtn" onclick="setSimMode(false)">
+        <h5 data-i18n="simDraftTitle"></h5>
+        <p data-i18n="simDraftNote"></p>
+      </button>
+    </div>
+    <div class="rating-explainer" style="margin-top:18px;">
+      <h4 id="preregionTitle" data-i18n="preregionTitle"></h4>
+      <div class="region-note" id="preregionNote" data-i18n="preregionNote"></div>
     </div>
     <div class="region-filter" id="preRegionChecks" style="margin-top:14px;"></div>
     <div id="regionWarning" style="display:none;color:var(--danger);font-size:13px;font-weight:700;margin-top:10px;" data-i18n="regionWarningText"></div>
@@ -1455,10 +1547,15 @@
           <div class="pack-head">
             <div class="pack-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.6-8 5.8V22h16v-2.2c0-3.2-3.6-5.8-8-5.8z"/></svg></div>
             <div>
-              <h2 data-i18n="packOpenTitle"></h2>
-              <p data-i18n="packOpenDesc"></p>
+              <h2 id="packHeadTitle" data-i18n="packOpenTitle"></h2>
+              <p id="packHeadDesc" data-i18n="packOpenDesc"></p>
             </div>
             <button class="restart-btn" id="rerollBtn" style="margin-left:auto;white-space:nowrap;" onclick="rerollAll()"><span data-i18n="rerollLabel"></span> (<span id="rerollCount">2</span>)</button>
+          </div>
+          <div id="teamPickBar" style="display:none;margin-bottom:10px;">
+            <input id="teamPickSearch" type="search" style="width:100%;background:var(--panel2);
+              border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:9px 12px;font-size:13px;">
+            <div id="teamPickMeta" style="margin-top:6px;font-size:11.5px;color:var(--ink-dim);"></div>
           </div>
           <div class="candidates" id="candidates"></div>
 
@@ -1827,6 +1924,17 @@ achv_podium_squad_title:'Только пьедестал', achv_podium_squad_des
 unlockedToast:t=>'🏆 Достижение открыто: '+t,
 packLabel:'Пак', ofLabel:'из', packOpenTitle:'Пак игроков', packOpenDesc:'Выбери одного игрока в состав — остальные вернутся в пул.', rerollLabel:'Реролл',
 yourSquadTitle:'Твой состав', draftedLabel:'задрафчено', avgRatingLabel:'Средний рейтинг:', synergyLabel:'Синергия:', goToTournamentBtn:'Выйти на турнир',
+simRealisticTitle:'Реалистичная симуляция', simRealisticNote:'Выбираешь настоящее дуо мажора. Составы не меняются — все играют теми, с кем играли на самом деле.',
+simDraftTitle:'Драфт-симуляция', simDraftNote:'Собираешь свой состав из карточек игроков. Соперники собираются так же.',
+simModeTitle:'Режим симуляции',
+teamPickTitle:'Выбор состава', teamPickDesc:'Выбери настоящую команду мажора. Состав менять нельзя.',
+teamPickSearch:'Поиск по нику',
+teamPickCount:(n)=>n+' '+(n%10===1&&n%100!==11?'команда':(n%10>=2&&n%10<=4&&(n%100<12||n%100>14)?'команды':'команд')),
+teamPickDroppedSize:(n)=>n===0?'':'Не показаны: '+n+' — состав не того размера для этого режима',
+teamPickDroppedMissing:(n)=>n===0?'':'Не показаны: '+n+' — кто-то из состава вне выбранного фильтра',
+teamPickNone:'В этом наборе нет ни одной настоящей команды подходящего размера.',
+teamPickNoMatch:'По этому нику команд не нашлось.',
+teamPickBtn:'Взять',
 weaponPackTitle:'Оружейный пак', weaponPackDesc:'Выбери оружие — влияет на силу состава.', lootPoolNote:n=>'Лут-пул сезона: '+n, healPackTitle:'Пак хила', healPackDesc:'Выбери расходник — тоже влияет на силу состава.', weaponLabel:'Оружие', loadoutLabel:'Экипировка:', totalPowerLabel:'Итоговая сила:',
 landingTitle:'Выбери точку высадки', landingHint:'Кликни по любой зоне на карте — свободные дают очки, занятые дают риск и бонус за победу в стычке', landingChosenText:n=>'Точка высадки №'+n+' выбрана', landingTaken:'занято', landingZoneSuffix:n=>'зона '+n, landingPoints:n=>'+'+n+' очков', landingChosenPoints:(n,p)=>'Точка высадки №'+n+' выбрана — +'+p+' очков', landingResultsTitle:'Куда упали составы', landingChosenContested:(n,p)=>'Точка высадки №'+n+' выбрана — там уже отряд! +'+p+' очков, но риск стычки', landingFightWon:'⚔ выиграл стычку при высадке', landingFightLost:'💀 проиграл стычку при высадке', landingShared:'🤝 делили зону, всё обошлось', landingRiskTag:n=>n>=2?'2 команды здесь — высокий риск':'занято — риск стычки', landingConfirmBtn:'Подтвердить высадку', gameLandingTitle:(g,n)=>'Высадка — игра '+g+' из '+n, landingPickSeat:(n,total)=>'Ты выбираешь '+n+'-м из '+total+' — раньше квалифицировался, раньше ставишь метку.', landingPickPrompt:'Кликни по зоне, чтобы посмотреть, кто там, потом подтверди высадку', landingFreePreview:p=>'Свободная зона — +'+p+' очков, без риска', landingOccupiedPreview:n=>n>=2?'Внимание: там уже '+n+' команды — придётся победить обе':'Там уже отряд — будет стычка при высадке', scqTitle:'Second Chance Qualifier — последний шанс на LAN',
 scqIntro:(reg,rank,slots)=>'В гранд-финале '+reg+' ты занял #'+rank+', а на Summit едут топ-'+slots+'. Остаётся отборочный: он открыт всем из Division 1, кто не прошёл напрямую.',
@@ -1857,7 +1965,7 @@ landingFieldTitle:n=>'Лобби ('+n+' '+(squadSize===3?'трио':squadSize===
 regionResultHeader:'Регионалка', dropHeader:'Счёт на высадке', landingNobodyElse:'Больше никто сюда не садился за всю стадию', prizeHeader:'Приз', prizeTitle:'💰 Призовые состава', prizePerPlayer:v=>'по '+v+' на игрока',
 prizeRegional:(reg,rank)=>'Гранд-финал '+reg+' · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Лион · #'+rank, prizeGc2026:rank=>'Global Championship, Антверпен · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
-runSummaryTitle:'📋 Итоги симуляции', lanSeatWon:'Место на LAN взято', lanSeatMissed:'Место на LAN не взято', lanSummit:'Summit', lanBelgium:'Global Championship, Бельгия', lanLyon:'Global Championship, Лион', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' в регионе '+reg+', мест: '+slots, lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', мест: '+slots, runSummaryStage:'Этап', runSummaryEarned:'Заработано за симуляцию',
+runSummaryTitle:'📋 Итоги симуляции', lanSeatWon:'Место на LAN взято', lanSeatMissed:'Место на LAN не взято', lanSummit:'Summit', lanBelgium:'Global Championship, Бельгия', lanLyon:'Global Championship, Лион', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' в регионе '+reg+', мест: '+slots, lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', мест: '+slots, lanSeatHeld:(rank)=>'Слот был у команды до мажора — #'+rank+' в финале места не меняет', runSummaryStage:'Этап', runSummaryEarned:'Заработано за симуляцию',
 runSummaryNoEarnings:'Призовых нет — до стадии с призовым фондом состав не дошёл.',
 rowHistoryHint:'Клик — матчи этой команды', stageTableTitle:'Таблица этапа', stageCutLabel:n=>'— линия отсечки: топ-'+n+' проходят —',
 stageTableTeam:'Команда', stageTableRegion:'Регион',
@@ -2295,6 +2403,16 @@ achv_podium_squad_title:'Podium Only', achv_podium_squad_desc:'Draft a squad whe
 unlockedToast:t=>'🏆 Achievement unlocked: '+t,
 packLabel:'Pack', ofLabel:'of', packOpenTitle:'Player pack', packOpenDesc:'Pick one player for your squad — the rest go back into the pool.', rerollLabel:'Reroll',
 yourSquadTitle:'Your squad', draftedLabel:'drafted', avgRatingLabel:'Average rating:', synergyLabel:'Synergy:', goToTournamentBtn:'Enter tournament',
+simRealisticTitle:'Realistic simulation', simRealisticNote:'Pick one of the Major\'s real duos. Rosters are fixed — everybody plays with the people they actually played with.',
+simDraftTitle:'Draft simulation', simDraftNote:'Build your own squad out of player cards. The rivals are built the same way.',
+simModeTitle:'Simulation mode',
+teamPickTitle:'Pick a squad', teamPickDesc:'Pick one of the Major\'s real teams. The roster is fixed.',
+teamPickSearch:'Search by handle', teamPickCount:(n)=>n+(n===1?' team':' teams'),
+teamPickDroppedSize:(n)=>n===0?'':'Not listed: '+n+' — the roster is not the size this mode plays',
+teamPickDroppedMissing:(n)=>n===0?'':'Not listed: '+n+' — a member is outside the chosen filter',
+teamPickNone:'This set has no real team of the right size for this mode.',
+teamPickNoMatch:'No team matches that handle.',
+teamPickBtn:'Take',
 weaponPackTitle:'Weapon pack', weaponPackDesc:'Pick a weapon — affects squad power.', lootPoolNote:n=>'Season loot pool: '+n, healPackTitle:'Heal pack', healPackDesc:'Pick a consumable — also affects squad power.', weaponLabel:'Weapon', loadoutLabel:'Loadout:', totalPowerLabel:'Total power:',
 landingTitle:'Choose your landing spot', landingHint:'Click any zone on the map — free ones give points, occupied ones carry risk plus a bonus if you win the scrap', landingChosenText:n=>'Landing spot #'+n+' selected', landingTaken:'taken', landingZoneSuffix:n=>'zone '+n, landingPoints:n=>'+'+n+' pts', landingChosenPoints:(n,p)=>'Landing spot #'+n+' selected — +'+p+' pts', landingResultsTitle:'Where the squads dropped', landingChosenContested:(n,p)=>'Landing spot #'+n+' selected — a squad is already there! +'+p+' pts, but risk of a fight', landingFightWon:'⚔ won a landing fight', landingFightLost:'💀 lost a landing fight', landingShared:'🤝 shared the zone, no clash', landingRiskTag:n=>n>=2?'2 squads here — high risk':'occupied — risk of a fight', landingConfirmBtn:'Confirm landing', gameLandingTitle:(g,n)=>'Landing — game '+g+' of '+n, landingPickSeat:(n,total)=>'You pick '+n+(n%10===1&&n%100!==11?'st':n%10===2&&n%100!==12?'nd':n%10===3&&n%100!==13?'rd':'th')+' of '+total+' — qualify earlier, choose earlier.', landingPickPrompt:'Click a zone to see who is there, then confirm your landing', landingFreePreview:p=>'Free zone — +'+p+' pts, no risk', landingOccupiedPreview:n=>n>=2?'Careful: '+n+' squads already there — you would need to beat both':'A squad is already there — expect a fight on landing', scqTitle:'Second Chance Qualifier — last route to the LAN',
 scqIntro:(reg,rank,slots)=>'You finished #'+rank+' in the '+reg+' Grand Finals and only the top '+slots+' fly out. The qualifier is still open — every Division 1 duo that missed the direct route is in it.',
@@ -2325,7 +2443,7 @@ landingFieldTitle:n=>'The lobby ('+n+' '+(squadSize===3?'trios':squadSize===4?'s
 regionResultHeader:'Regional', dropHeader:'Drop record', landingNobodyElse:'Nobody else dropped here all stage', prizeHeader:'Prize', prizeTitle:'💰 Squad earnings', prizePerPlayer:v=>v+' per player',
 prizeRegional:(reg,rank)=>reg+' Grand Finals · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Lyon · #'+rank, prizeGc2026:rank=>'Global Championship, Antwerp · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
-runSummaryTitle:'📋 Your run, stage by stage', lanSeatWon:'LAN seat taken', lanSeatMissed:'No LAN seat', lanSummit:'the Summit', lanBelgium:'the Global Championship, Belgium', lanLyon:'the Global Championship, Lyon', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' in '+reg+', '+slots+' seat'+(slots===1?'':'s'), lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', '+slots+' seat'+(slots===1?'':'s'), runSummaryStage:'Stage', runSummaryEarned:'Earned across the run',
+runSummaryTitle:'📋 Your run, stage by stage', lanSeatWon:'LAN seat taken', lanSeatMissed:'No LAN seat', lanSummit:'the Summit', lanBelgium:'the Global Championship, Belgium', lanLyon:'the Global Championship, Lyon', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' in '+reg+', '+slots+' seat'+(slots===1?'':'s'), lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', '+slots+' seat'+(slots===1?'':'s'), lanSeatHeld:(rank)=>'The squad held its seat before the Major — finishing #'+rank+' does not change that', runSummaryStage:'Stage', runSummaryEarned:'Earned across the run',
 runSummaryNoEarnings:'No prize money — the run ended before a stage that pays.',
 rowHistoryHint:'Click for this team\'s games', stageTableTitle:'Stage standings', stageCutLabel:n=>'— cut line: top '+n+' advance —',
 stageTableTeam:'Team', stageTableRegion:'Region',
@@ -2554,8 +2672,10 @@ function refreshPreRegionLabels(){
   if(el && el.children.length){
     const singlePick = pendingCards || el.querySelectorAll('button').length<=1
       || !el.querySelector('[data-region="ALL"]');
-    const titleEl=document.querySelector('#screen-preregion h4');
-    const noteEl=document.querySelector('#screen-preregion .region-note');
+    // By id, not by position: this screen has two headings now and the first of
+  // them is the mode question, so 'the first h4' silently retitled the wrong one.
+  const titleEl=document.getElementById('preregionTitle');
+    const noteEl=document.getElementById('preregionNote');
     if(titleEl) titleEl.textContent = singlePick ? L().preregionTitleOne : L().preregionTitle;
     if(noteEl) noteEl.textContent = singlePick ? L().preregionNoteOne : L().preregionNote;
   }
@@ -26040,8 +26160,17 @@ const lastOf=a=>a[a.length-1];
 // Draft over: every pack area turns into the full run of picks it produced, one
 // card per round. A round rolls a player, a weapon and a consumable together,
 // so all three areas end up the same length and read as one finished loadout.
+//
+// Counted in rounds, not in players. A realistic run takes its whole roster in
+// the first round, and if the draft ended when the roster was full it would end
+// after one loot round — leaving the player with one weapon and one consumable
+// against a lobby whose teams roll a pair each, which is half the loadout in
+// duos and a third of it in trios.
+function draftedEnough(){
+  return REALISTIC ? round>=squadSize : drafted.length>=squadSize;
+}
 function draftIsComplete(){
-  return roundPlayerPicked && roundWeaponPicked && roundHealPicked && drafted.length>=squadSize;
+  return roundPlayerPicked && roundWeaponPicked && roundHealPicked && draftedEnough();
 }
 function renderDraftResult(){
   renderPicked('candidates', drafted.map(p=>pickedPlayerCard(p)), L().squadCompleted);
@@ -26051,7 +26180,12 @@ function renderDraftResult(){
 
 function rerenderDraftPacks(){
   if(draftIsComplete()) return renderDraftResult();
-  if(currentCandidates.length){
+  if(REALISTIC){
+    // The roster is taken whole, so the finished half of it is the whole squad
+    // rather than the last card picked.
+    if(drafted.length) renderPicked('candidates', drafted.map(p=>pickedPlayerCard(p)));
+    else renderTeamPicker();
+  } else if(currentCandidates.length){
     if(roundPlayerPicked) renderPicked('candidates', [pickedPlayerCard(lastOf(drafted))]);
     else renderCandidates(currentCandidates);
   }
@@ -27177,6 +27311,16 @@ let pendingCardSet='m2';
 let preSelectedRegions=[];
 let preSelectedYears=[];   // empty means every year
 
+// Which of the two simulations the next run is. Draft is the default because
+// it is what every existing tile did before this existed.
+let REALISTIC=false;
+function setSimMode(realistic){
+  REALISTIC=!!realistic;
+  const r=document.getElementById('simRealisticBtn'), d=document.getElementById('simDraftBtn');
+  if(r) r.classList.toggle('active', REALISTIC);
+  if(d) d.classList.toggle('active', !REALISTIC);
+}
+
 // Which card set each tile starts. Named rather than derived so a tile can be
 // renamed without silently falling through to Major 2.
 const TILE_CARD_SET={cards:'m2', cards1:'m1',
@@ -27188,6 +27332,19 @@ function chooseMode(size, major){
   applyLobbyTheme(true);
   buildPreRegionChecks();
   buildMapChecks();
+  // The realistic simulation is built on the roster back-references the cards
+  // carry, and only card-set cards carry them: ALL FNCS, Duo, Trio and Squad
+  // draw from players with no roster attached, so the picker there is empty, no
+  // player is ever taken, and the run cannot be finished or left except through
+  // the logo. Squad is impossible on top of that — no roster in the data has
+  // four members. Asked of the data for this tile at this size rather than of a
+  // list of tile names, so a new card set is offered the choice automatically
+  // and a set that loses its rosters stops offering it.
+  const canReal=realTeamsExistFor(pendingPool(), pendingSize);
+  const simHead=document.getElementById('simModeHead'), simModes=document.getElementById('simModes');
+  if(simHead) simHead.style.display = canReal ? '' : 'none';
+  if(simModes) simModes.style.display = canReal ? '' : 'none';
+  setSimMode(false);
   show('screen-preregion');
 }
 
@@ -27248,6 +27405,18 @@ function buildMapChecks(){
   });
 }
 
+
+// A region plate: the code the scene actually uses, with the long name under it
+// as the caption rather than the label. Broadcast standings, brackets and every
+// conversation about a Major say EU and NAC; "Middle East" set in eleven pixels
+// inside a pill is the app's word for it, not the sport's. The code leads, the
+// name explains it once, and the target is a plate you can hit rather than a
+// chip you have to aim at.
+function regionPlateHTML(code){
+  if(code==='ALL') return '<span class="rf-code">' + esc(L().allRegions) + '</span>';
+  return '<span class="rf-code">' + esc(code) + '</span>' +
+         '<span class="rf-name">' + esc(regionName(code)) + '</span>';
+}
 function buildPreRegionChecks(){
   const src=pendingPool();
   const avail=new Set(src.map(p=>p.region));
@@ -27259,8 +27428,10 @@ function buildPreRegionChecks(){
   // A card-mode tournament is one region's event, so the choice is exclusive
   // and there is no "all regions" option — same when only one region exists.
   const singlePick = pendingCards || regions.length<=1;
-  const titleEl=document.querySelector('#screen-preregion h4');
-  const noteEl=document.querySelector('#screen-preregion .region-note');
+  // By id, not by position: this screen has two headings now and the first of
+  // them is the mode question, so 'the first h4' silently retitled the wrong one.
+  const titleEl=document.getElementById('preregionTitle');
+  const noteEl=document.getElementById('preregionNote');
   if(titleEl) titleEl.textContent = singlePick ? L().preregionTitleOne : L().preregionTitle;
   if(noteEl) noteEl.textContent = singlePick ? L().preregionNoteOne : L().preregionNote;
 
@@ -27268,9 +27439,9 @@ function buildPreRegionChecks(){
     const list = regions.length ? regions : [{code:'ALL'}];
     list.forEach((r,i)=>{
       const b=document.createElement('button');
-      b.className='rf-btn'+(i===0?' active':'');
+      b.className='rf-btn rf-plate'+(i===0?' active':'');
       b.dataset.region=r.code;
-      b.textContent = r.code==='ALL' ? L().allRegions : regionName(r.code);
+      b.innerHTML = regionPlateHTML(r.code);
       b.onclick=()=>{
         el.querySelectorAll('.rf-btn').forEach(x=>x.classList.remove('active'));
         b.classList.add('active');
@@ -27281,7 +27452,7 @@ function buildPreRegionChecks(){
     });
   } else {
     const allRegionsBtn=document.createElement('button');
-    allRegionsBtn.className='rf-btn'; allRegionsBtn.textContent=L().allRegions; allRegionsBtn.dataset.region='ALL';
+    allRegionsBtn.className='rf-btn rf-plate'; allRegionsBtn.innerHTML=regionPlateHTML('ALL'); allRegionsBtn.dataset.region='ALL';
     regionBtns.push(allRegionsBtn);
     allRegionsBtn.onclick=()=>{
       const nowActive=!allRegionsBtn.classList.contains('active');
@@ -27293,7 +27464,7 @@ function buildPreRegionChecks(){
     el.appendChild(allRegionsBtn);
     regions.forEach(r=>{
       const b=document.createElement('button');
-      b.className='rf-btn'; b.textContent=regionName(r.code); b.dataset.region=r.code;
+      b.className='rf-btn rf-plate'; b.innerHTML=regionPlateHTML(r.code); b.dataset.region=r.code;
       b.onclick=()=>{ b.classList.toggle('active'); allRegionsBtn.classList.remove('active'); document.getElementById('regionWarning').style.display='none'; updateEraAvailability(); };
       regionBtns.push(b);
       el.appendChild(b);
@@ -27412,6 +27583,21 @@ function startDraft(size, major){
   const shareBtn=document.getElementById('shareResultBtn'); if(shareBtn) shareBtn.style.display='none';
   document.getElementById('locationPickerBox').style.display='none';
   document.getElementById('goBtn').disabled=true;
+  // Everything the team picker puts on screen or leaves in a global, cleared
+  // for every run whatever mode it is. A realistic run that was abandoned at the
+  // picker — opened, no team taken, back to the menu — used to leave the search
+  // box up, its oninput bound to the old list, and teamPickList still holding
+  // the previous run's teams; the next draft run then had a live Take button on
+  // screen that drafted a whole roster with REALISTIC false, and finished after
+  // one loot round because draftedEnough() counts players in draft mode.
+  const tpBar=document.getElementById('teamPickBar');
+  if(tpBar) tpBar.style.display='none';
+  const tpCands=document.getElementById('candidates');
+  if(tpCands){ tpCands.style.display=''; tpCands.classList.remove('team-grid'); }
+  const tpSearch=document.getElementById('teamPickSearch');
+  if(tpSearch){ tpSearch.value=''; tpSearch.oninput=null; }
+  currentCandidates=[];
+  teamPickList=[];
   CARD_MODE=pendingCards;
   CARD_SET=pendingCardSet;
   // Major 1 and Major 2 are played on different islands — load the matching
@@ -27421,6 +27607,12 @@ function startDraft(size, major){
   let base = preSelectedRegions.length>0 ? src.filter(p=>preSelectedRegions.includes(p.region)) : src.slice();
   if(preSelectedYears.length) base = base.filter(p=>preSelectedYears.includes(getPlayerYear(p)));
   pool = base;
+  // Belt and braces. chooseMode does not offer the realistic simulation where
+  // the data cannot serve it, but a run entered any other way must not strand
+  // the player: with no real roster in the pool the picker has nothing to take,
+  // roundPlayerPicked never turns true and the run has no way forward at all.
+  // Falling back to the draft is the one outcome that still gives a tournament.
+  if(REALISTIC && !realTeamsExistFor(pool, size)) REALISTIC=false;
   activeRegion='ALL'; round=0; rerollsLeft=2;
   isMajorMode=!!major;
   applyLobbyTheme();
@@ -27428,9 +27620,29 @@ function startDraft(size, major){
     : (isMajorMode ? 'ALL FNCS' : (size===2?L().modeDuoTitle:(size===3?L().modeTrioTitle:L().modeSquadTitle)));
   const regionsLabel = preSelectedRegions.length>0 ? ' · '+preSelectedRegions.map(c=>regionName(c)).join(', ') : '';
   const eraLabel = preSelectedYears.length ? ' · '+preSelectedYears.slice().sort().join(', ') : '';
-  document.getElementById('topBadge').textContent = modeLabel+regionsLabel+eraLabel;
   document.getElementById('squadTotal').textContent=size;
   document.getElementById('roundTotal').textContent=size;
+  // A realistic run has one roster and `size` loot rounds; the pack label counts
+  // rounds, and the reroll is a player-pack control with nothing to reroll here.
+  const rb=document.getElementById('rerollBtn');
+  if(rb) rb.style.display = REALISTIC ? 'none' : '';
+  // Found by id, never by the data-i18n value this then overwrites. Looking the
+  // heading up by `h2[data-i18n="packOpenTitle"]` works exactly once: the first
+  // realistic run renames the attribute, the selector stops matching, and every
+  // later run — draft runs included — silently keeps whichever caption it was
+  // last left with.
+  const packHead=document.getElementById('packHeadTitle');
+  const packDesc=document.getElementById('packHeadDesc');
+  if(packHead && packDesc){
+    packHead.setAttribute('data-i18n', REALISTIC ? 'teamPickTitle' : 'packOpenTitle');
+    packDesc.setAttribute('data-i18n', REALISTIC ? 'teamPickDesc' : 'packOpenDesc');
+    applyStaticI18n();
+  }
+  // After applyStaticI18n, never before it. #topBadge carries data-i18n="badgeMode",
+  // so the redraw above overwrites whatever is written here first — the badge
+  // read "select mode" on every run, in both modes, instead of the Major and
+  // region it is there to name. Same reason goBtn is written down here.
+  document.getElementById('topBadge').textContent = modeLabel+regionsLabel+eraLabel;
   document.getElementById('goBtn').textContent = CARD_MODE
     ? ((LANG==='ru'?'Начать ':'Start ')+cardSetName(CARD_SET))
     : (isMajorMode ? (LANG==='ru'?'Начать ALL FNCS':'Start ALL FNCS') : L().goToTournamentBtn);
@@ -27453,16 +27665,21 @@ function buildRegionFilter(){
   const el=document.getElementById('regionFilter');
   el.innerHTML='';
   // Card modes are already locked to one region, so the in-draft filter would
-  // only offer choices that do nothing.
-  if(CARD_MODE){ el.style.display='none'; activeRegion='ALL'; return; }
+  // only offer choices that do nothing. A realistic run has no player pack at
+  // all, and the chip handler repaints one: refreshFilterUI calls
+  // renderCandidates(currentCandidates), which would put a stale pack with live
+  // pick() buttons on top of the team picker.
+  if(CARD_MODE || REALISTIC){ el.style.display='none'; activeRegion='ALL'; return; }
   el.style.display='';
+  // Same plates as the screen before this one. It is the same seven regions
+  // asked about twice, and they were reading as two different controls.
   const all=document.createElement('button');
-  all.className='rf-btn active'; all.textContent=L().allRegions;
+  all.className='rf-btn rf-plate active'; all.innerHTML=regionPlateHTML('ALL');
   all.onclick=()=>{activeRegion='ALL'; refreshFilterUI(all);};
   el.appendChild(all);
   REGIONS.forEach(r=>{
     const b=document.createElement('button');
-    b.className='rf-btn'; b.textContent=regionName(r.code);
+    b.className='rf-btn rf-plate'; b.innerHTML=regionPlateHTML(r.code);
     b.onclick=()=>{activeRegion=r.code; refreshFilterUI(b);};
     el.appendChild(b);
   });
@@ -27564,10 +27781,23 @@ function generatePack(){
 function nextRound(){
   round++;
   document.getElementById('roundNum').textContent=round;
-  if(squadSize-drafted.length<=0) return;
+  if(round>squadSize) return;
   roundPlayerPicked=false; roundWeaponPicked=false; roundHealPicked=false;
-  currentCandidates=generatePack();
-  renderCandidates(currentCandidates);
+  if(REALISTIC){
+    // The roster is taken once, in the first round; the rounds after it are
+    // loot only, so the player half of them is already settled and the squad
+    // that was taken stays on screen instead of the picker coming back.
+    if(drafted.length){
+      roundPlayerPicked=true;
+      document.getElementById('teamPickBar').style.display='none';
+      renderPicked('candidates', drafted.map(p=>pickedPlayerCard(p)));
+    } else {
+      renderTeamPicker();
+    }
+  } else {
+    currentCandidates=generatePack();
+    renderCandidates(currentCandidates);
+  }
   currentWeaponOptions=generateWeaponPack();
   renderItemPack(currentWeaponOptions, 'weaponCandidates', pickWeapon);
   updateLootPoolNote();
@@ -27578,7 +27808,7 @@ function nextRound(){
 
 function maybeAdvanceRound(){
   if(!roundPlayerPicked || !roundWeaponPicked || !roundHealPicked) return;
-  if(drafted.length>=squadSize){
+  if(draftedEnough()){
     // Last round resolved: the pack areas stop being packs and become the
     // finished squad and its loadout, all on screen at once.
     renderDraftResult();
@@ -28055,6 +28285,91 @@ function rerollAll(){
   if(!roundHealPicked){ currentHealOptions=generateHealPack(); renderItemPack(currentHealOptions, 'healCandidates', pickHeal); }
 }
 
+// The Major's real teams, as cards, best first. This takes the place of the
+// player pack when the run is a realistic one: the pack asks which player you
+// want, and here that is not a question — a real team is a whole roster or it
+// is not that team.
+let teamPickList=[];
+
+function renderTeamPicker(){
+  const bar=document.getElementById('teamPickBar');
+  const box=document.getElementById('teamPickSearch');
+  const built=realTeamsFor(pool);
+  teamPickList=built.teams;
+  bar.style.display='block';
+  box.placeholder=L().teamPickSearch;
+  // The two reasons a roster is held back read as two clauses, because one
+  // sentence about a filter was simply untrue for the twenty-one 2025 rows that
+  // are the wrong size for the mode.
+  document.getElementById('teamPickMeta').textContent =
+    L().teamPickCount(built.teams.length) +
+    (built.droppedSize ? ' · ' + L().teamPickDroppedSize(built.droppedSize) : '') +
+    (built.droppedMissing ? ' · ' + L().teamPickDroppedMissing(built.droppedMissing) : '');
+  box.oninput=()=>paintTeamPicker(box.value);
+  paintTeamPicker(box.value);
+}
+
+function paintTeamPicker(query){
+  const el=document.getElementById('candidates');
+  const q=String(query||'').trim().toLowerCase();
+  const shown=q ? teamPickList.filter(t=>t.handles.some(h=>h.toLowerCase().includes(q)))
+                : teamPickList;
+  el.innerHTML='';
+  // A class rather than an inline display, so the one thing that has to be
+  // cleared between runs is the one thing startDraft clears. #candidates is a
+  // four-column pack grid by default and the team tiles want three wider ones;
+  // both are grids, so nothing has to be switched off to switch the other on.
+  el.classList.add('team-grid');
+  if(!shown.length) el.classList.remove('team-grid');
+  // An empty list must say it is empty. Rendering nothing leaves the player
+  // looking at a blank panel with no way to tell a search that matched nobody
+  // from a pool that holds no real roster at all.
+  if(!shown.length){
+    const note=document.createElement('div');
+    note.className='region-note';
+    note.style.cssText='padding:14px 4px;';
+    note.textContent = teamPickList.length ? L().teamPickNoMatch : L().teamPickNone;
+    el.appendChild(note);
+    return;
+  }
+  shown.forEach(t=>{
+    const row=document.createElement('div');
+    row.className='team-row';
+    // The same thing the weapon and consumable packs do: the wrapper carries the
+    // rarity colour and .pick-btn draws itself from it. A player card takes that
+    // from its own rarity and an item from its own; a team has neither, so it
+    // takes it from the rating printed on the tile — which is the number the
+    // list is ordered by, so the button's colour rises through the list with it.
+    row.style.setProperty('--r-color', RARITY_COLOR[rarityForRating(Math.round(t.avg))]);
+    row.innerHTML=
+      '<div class="team-row-head"><b>' + Math.round(t.avg) + '</b>' +
+        '<span class="team-row-who" title="' + esc(t.handles.join(' & ')) + '">' +
+          esc(t.handles.join(' & ')) + '</span>' +
+        '<span class="team-row-stage">' + t.stage + ' #' + t.rank + '</span></div>' +
+      '<div class="team-row-cards">' + t.cards.map(c=>futCardHTML(c)).join('') + '</div>' +
+      '<button class="pick-btn" style="width:100%;">' + L().teamPickBtn + '</button>';
+    row.querySelector('.pick-btn').onclick=()=>pickTeam(t);
+    el.appendChild(row);
+  });
+}
+
+// Taking a team is the whole draft in one act: the roster goes into `drafted`
+// entire, which is what every later stage of the app reads. Nothing downstream
+// learns that this run was realistic.
+function pickTeam(team){
+  if(roundPlayerPicked) return;
+  drafted=team.cards.slice();
+  team.cards.forEach(c=>{ pool=pool.filter(x=>x.handle!==c.handle); });
+  roundPlayerPicked=true;
+  document.getElementById('teamPickBar').style.display='none';
+  const cands=document.getElementById('candidates');
+  cands.style.display='';
+  cands.classList.remove('team-grid');
+  renderSlots();
+  renderPicked('candidates', team.cards.map(c=>pickedPlayerCard(c)));
+  maybeAdvanceRound();
+}
+
 function renderCandidates(list){
   const el=document.getElementById('candidates');
   el.innerHTML='';
@@ -28489,12 +28804,22 @@ function buildFullLobby(){
     const sameRegion=remaining.filter(p=>p.region===myRegion);
     if(sameRegion.length>=squadSize*2) remaining=sameRegion;
     const need=fieldTarget()-teams.length;
-    const res=draftBotSquads(remaining, need, squadSize);
-    res.squads.forEach(sq=>{
-      const t=buildTeam(sq); t.loadout=randomLoadoutBonus(sq.length); t.pow+=t.loadout; t.name=teamLabel(sq);
-      teams.push(t);
-    });
-    remaining=res.rest;
+    // This is the Major itself — Play-In, Heats, LCQ and the Grand Final all
+    // read the field this builds. A realistic run plays it against the Major's
+    // own rosters, by the same rules the later stages use: whole real teams
+    // first, nobody in two of them, and whatever the pool cannot fill drafted
+    // the old way and logged. Routed through fillRealFieldTeams rather than
+    // reimplemented, so there is one description of what a real field is.
+    if(REALISTIC){
+      remaining=fillRealFieldTeams(remaining, need, squadSize, teams);
+    } else {
+      const res=draftBotSquads(remaining, need, squadSize);
+      res.squads.forEach(sq=>{
+        const t=buildTeam(sq); t.loadout=randomLoadoutBonus(sq.length); t.pow+=t.loadout; t.name=teamLabel(sq);
+        teams.push(t);
+      });
+      remaining=res.rest;
+    }
   }
   while(remaining.length>=2 && teams.length<fieldTarget()){
     const {chunk, remaining:rest}=pickTeamChunk(remaining, 2);
@@ -30278,6 +30603,132 @@ async function offerSquadChoice(stageName, you, allTeams){
   }
 }
 
+// --- the real rosters behind the cards
+//
+// Every card set is built from rows that were real teams, and the card keeps a
+// reference back to the row it came from. Two shapes, because the two eras were
+// built years apart: the 2026 sets hang one property per stage off the card
+// (_m2Playin, _n2Gf, and so on for all fourteen region-sets), while the 2025
+// trio sets hang a single _t1/_t2/_t3 holding the stage the card is currently
+// rated on, with _t1Stage saying which. Read by shape rather than by name, so a
+// new set needs no change here.
+function rosterEntriesOf(card){
+  const out=[];
+  for(const k in card){
+    if(k.charAt(0)!=='_') continue;
+    const modern=/^_([a-z]\d)(Playin|Lcq|Gf)$/.exec(k);
+    if(modern){
+      if(card[k] && card[k].duo) out.push({stage:modern[2], entry:card[k]});
+      continue;
+    }
+    if(/^_t[123]$/.test(k) && card[k] && card[k].entry && card[k].entry.duo)
+      out.push({stage:REAL_STAGE_OF[card[k+'Stage']] || 'Playin', entry:card[k].entry});
+  }
+  return out;
+}
+
+// The letter a 2025 card stores its stage as, spelled out. Up here rather than
+// inside rosterEntriesOf, which rebuilds it once per card on every call — and
+// realTeamsFor calls it for every player in the pool.
+const REAL_STAGE_OF={P:'Playin', L:'Lcq', G:'Gf'};
+
+// Which showing of a team the list should print. A third of the field played
+// more than one stage, and a team is one team however many times it appeared.
+const REAL_STAGE_RANK={Gf:3, Lcq:2, Playin:1};
+
+// Is there a single real roster this pool could field at this size? The cheap
+// question behind "may this tile offer the realistic simulation at all" — it
+// stops at the first whole roster instead of building, rating and sorting the
+// list, and it reads the same data realTeamsFor does rather than a hardcoded
+// list of tiles. Takes the size as an argument because it is asked before
+// squadSize is set for the run.
+function realTeamsExistFor(players, size){
+  const have=new Set(players.map(p=>p.handle));
+  for(const p of players){
+    for(const {entry} of rosterEntriesOf(p)){
+      if(entry.duo.length!==size) continue;
+      if(entry.duo.every(h=>have.has(h))) return true;
+    }
+  }
+  return false;
+}
+
+// Every real roster in the pool, once each, strongest cards first.
+//
+// Two ways a roster is held back, counted apart because they are not the same
+// news. `droppedMissing` is a roster that is not wholly in the pool — a region
+// or era filter left a member behind. `droppedSize` is a roster the mode cannot
+// field at all: twenty-one rows across the 2025 sets carry fewer names than the
+// mode plays. Both are counted rather than completed from elsewhere — a lobby
+// of real teams with one invented member is the one thing a mode called
+// realistic must not quietly serve — and `dropped` is their total, which is what
+// the older callers ask for.
+function realTeamsFor(players){
+  const byHandle={};
+  players.forEach(p=>{ byHandle[p.handle]=p; });
+  const best=new Map();
+  players.forEach(p=>{
+    rosterEntriesOf(p).forEach(({stage, entry})=>{
+      const key=entry.duo.slice().sort().join('|');
+      const prev=best.get(key);
+      if(prev && REAL_STAGE_RANK[stage] <= REAL_STAGE_RANK[prev.stage]) return;
+      best.set(key, {handles:entry.duo.slice(), stage,
+                     rank:entry.rank, pts:entry.pts, wins:entry.wins, matches:entry.matches});
+    });
+  });
+  const teams=[];
+  let droppedSize=0, droppedMissing=0;
+  best.forEach(t=>{
+    // A roster the mode cannot field is not a team — a trio row with one handle
+    // on it. Without this the picker offers a one-man trio and lets somebody
+    // take it into a trio Major.
+    if(t.handles.length !== squadSize){ droppedSize++; return; }
+    const cards=t.handles.map(h=>byHandle[h]).filter(Boolean);
+    if(cards.length!==t.handles.length){ droppedMissing++; return; }
+    const avg=cards.reduce((s,c)=>s+c.rating, 0)/cards.length;
+    teams.push({...t, cards, avg});
+  });
+  teams.sort((a,b)=>b.avg-a.avg || a.rank-b.rank);
+  return {teams, dropped:droppedSize+droppedMissing, droppedSize, droppedMissing};
+}
+
+// The lobby, in real rosters. Same shape as fillFieldTeams so the call sites
+// differ by one word: takes the players still available, pushes teams onto
+// `out`, returns whoever is left over.
+//
+// Short fields are filled the old way rather than left small — a half-empty
+// lobby scores differently and would quietly change every placement — but the
+// number filled is logged, because a realistic lobby padded with invented teams
+// is a thing the player is entitled to know about.
+function fillRealFieldTeams(remaining, needed, size, out){
+  const {teams}=realTeamsFor(remaining);
+  const taken=new Set();
+  let placed=0;
+  for(const t of teams){
+    if(placed>=needed) break;
+    if(t.handles.length!==size) continue;
+    // Identity goes through hKey like every other "is this the same player"
+    // check in the file. The roster spells the same person more than one way
+    // across events, and the `rest` this hands to fillFieldTeams is compared
+    // with hKey there — matching on the raw handle here let a player already
+    // seated in a real team be drafted again into an assembled one.
+    if(t.handles.some(h=>taken.has(hKey(h)))) continue;
+    t.handles.forEach(h=>taken.add(hKey(h)));
+    const team=buildTeam(t.cards);
+    team.loadout=randomLoadoutBonus(t.cards.length); team.pow+=team.loadout;
+    team.name=teamLabel(t.cards);
+    out.push(team);
+    placed++;
+  }
+  let rest=remaining.filter(p=>!taken.has(hKey(p)));
+  if(placed<needed){
+    console.log('[realistic] the field was ' + (needed-placed) + ' teams short of ' + needed +
+                '; the rest are assembled from players without a whole real roster left');
+    rest=fillFieldTeams(rest, needed-placed, size, out);
+  }
+  return rest;
+}
+
 // Fill a field of AI teams. In card mode the whole field must come from one
 // region — each region runs its own tournament — and squads are drafted from
 // packs instead of paired at random. Returns the players left over.
@@ -30567,13 +31018,20 @@ async function runMajorTournament(){
   const gfSeats = gfSlots ? awardSeats(finalTeams, gfSlots, holdsLanSeat) : [];
   const gfSeatSet = new Set(gfSeats);
   const gfSeatCut = gfSeats.length ? finalTeams.indexOf(gfSeats[gfSeats.length-1])+1 : gfSlots;
-  const youQualified = gfSlots ? gfSeatSet.has(you) : youFinalRank===1;
+  // A seat you already hold is a seat. Pick one of the duos that took the Summit
+  // and you are on the plane before the Major starts — the season decides your
+  // placement, your prize money and your pride, and not whether you are going.
+  // awardSeats skips you for the same reason it skips them, so your finish rolls
+  // the region's seat down to the next team without one instead of eating it.
+  const youHoldSeat = holdsLanSeat(you);
+  const youQualified = youHoldSeat || (gfSlots ? gfSeatSet.has(you) : youFinalRank===1);
   // What the whole Major was for, written down so the summary card can say it.
   if(gfSlots){
     recordLanSeat(
       CARD_SET==='m2' ? L().lanBelgium : CARD_SET==='t3' ? L().lanLyon : L().lanSummit,
       youQualified,
-      L().lanSeatDetail(youFinalRank, gfSlots, regionName(myGfRegion)));
+      youHoldSeat ? L().lanSeatHeld(youFinalRank)
+                  : L().lanSeatDetail(youFinalRank, gfSlots, regionName(myGfRegion)));
   }
   finalizeStageCard(gfShell, youFinalRank, finalTeams.length, you.stagePts,
     youQualified, you.gotVR,
@@ -31011,16 +31469,32 @@ function landingZoneLabel(t){
   const idx=ALL_LANDING_ZONES.indexOf(t.landingZone);
   return idx>=0 ? '#'+(idx+1) : null;
 }
-// Won and lost at the spot, as a plain 12-0 / 7-5 / 4-8. One pair of numbers,
-// one meaning: fights that ended with somebody out. It carried a third — how
-// often the spot was shared at all — and the two counted different things, so
-// "0-0" and "0-0 of 12" sat side by side meaning opposites and were read wrong
-// twice.
+// Won and lost at the spot, as a plain 12-0 / 10-2 / 4-8. One pair of numbers
+// and one meaning: of the games you landed on somebody, the ones you walked
+// away from and the ones you did not.
+//
+// This is the third thing this pair has counted and the first that produces a
+// record worth the column. It used to count corpses — fights that ended with
+// somebody out — and on the map that is about one and a half drops decided per
+// game across a whole lobby: measured over twelve games of forty-nine duos,
+// nineteen. So a squad that landed on somebody in every one of its twelve games
+// still read "0-0", while another that never saw a soul read the same, and the
+// column said nothing about either. Before that it printed both, as "1-0 of
+// 12", and the two numbers meaning different things is what got it read wrong
+// and pulled.
+//
+// A contested drop you survived is a drop you won. That is not a claim about
+// who shot whom — it is the claim the column can actually support, and it is
+// the one a player is asking when they look at it: how often did I land on
+// somebody, and how often did it cost me. landingWins stays as it is for the
+// achievements that count kills; it is simply not what this cell reports.
 function landingRecord(t){
   if(!t) return null;
-  const w=t.landingWins||0, l=t.landingLosses||0, c=t.landingContests||0;
-  if(!(w+l) && !c) return null;
-  return w+'-'+l;
+  const l=t.landingLosses||0, c=t.landingContests||0;
+  if(!c && !l) return null;
+  // Losses are counted whether or not the spot registered as shared, so the
+  // subtraction is floored rather than trusted.
+  return Math.max(0, c - l) + '-' + l;
 }
 function landingCellHTML(t){
   const zone=landingZoneLabel(t);
@@ -31318,7 +31792,7 @@ async function runSecondChanceQualifier(you, regionRank){
   const avail=cardRosterPlayers().filter(p=>p.region===region && !alreadyIn.has(hKey(p)));
 
   const field=[you];
-  fillFieldTeams(avail, 49, squadSize, field);
+  (REALISTIC ? fillRealFieldTeams : fillFieldTeams)(avail, 49, squadSize, field);
 
   const zones=await showFinalsLandingPicker(field, you);
   const shell=createStageCardShell(L().scqStageTitle(SCQ_GAMES));
@@ -31751,7 +32225,7 @@ function buildGlobalChampionshipField(you, region, lcqWinners, regionalFinal){
   field.forEach(t=>t.squad.forEach(p=>taken.add(hKey(p))));
   const avail=cardRosterPlayers().filter(p=>!taken.has(hKey(p)));
   const before=field.length;
-  fillFieldTeams(avail, 50-field.length, 2, field);
+  (REALISTIC ? fillRealFieldTeams : fillFieldTeams)(avail, 50-field.length, 2, field);
   for(let i=before; i<field.length; i++){
     field[i].gcRoute='lcq';
     field[i].summitRegion=(field[i].squad[0]||{}).region||null;
@@ -31829,7 +32303,7 @@ function gclcBuildField(you, region, size, excludeHandles){
   const already=new Set((excludeHandles||[]).map(_gcNorm));
   const avail=cardRosterPlayers().filter(p=>
     p.region===region && !used.has(hKey(p)) && !already.has(_gcNorm(p.handle)));
-  fillFieldTeams(avail, size-field.length, 2, field);
+  (REALISTIC ? fillRealFieldTeams : fillFieldTeams)(avail, size-field.length, 2, field);
   while(field.length<size){
     const chunk=[makeFiller(), makeFiller()];
     const t=buildTeam(chunk); t.loadout=randomLoadoutBonus(chunk.length); t.pow+=t.loadout;
@@ -31876,11 +32350,30 @@ function lanSeatHandles(){
 // One player of a locked team is enough: the seat belongs to the team, and the
 // team is whoever they are entered with — the substitution rules already hold
 // them together.
+//
+// Your own squad is asked a stricter question, and the difference is not a
+// special case for the player — it is that the two are different claims. A bot
+// team IS one of the entered rosters, so any member of it identifies the seat.
+// Your squad might be anything: in a draft run it is assembled card by card, and
+// under the loose rule drafting one half of Sky & Scroll would hand you a seat
+// at the Global Championship for having picked a name. So yours counts only when
+// the whole roster is one of the locked teams — which is exactly what picking
+// that team in a realistic run gives you, and what no draft run reaches by
+// accident.
 function holdsLanSeat(t){
-  if(!t || t.isYou) return false;
+  if(!t) return false;
   const held=lanSeatHandles();
   if(!held.size) return false;
-  return (t.squad||[]).some(p=>held.has(_gcNorm(p.handle)));
+  if(!t.isYou) return (t.squad||[]).some(p=>held.has(_gcNorm(p.handle)));
+  return youAreALockedTeam(t);
+}
+function youAreALockedTeam(t){
+  const mine=(t.squad||[]).map(p=>_gcNorm(p.handle)).sort();
+  if(!mine.length) return false;
+  return lanSeatHoldersForSet().some(team=>{
+    const theirs=team.map(h=>_gcNorm(h)).sort();
+    return theirs.length===mine.length && theirs.every((h,i)=>h===mine[i]);
+  });
 }
 
 // A seat is won by the highest-placed team that does not already have one. Epic
@@ -32214,7 +32707,7 @@ function buildGlobalChampionship2025Field(you, region, regionalFinal){
     (you.squad||[]).forEach(p=>taken.add(hKey(p)));
     const avail=cardRosterPlayers().filter(p=>!taken.has(hKey(p)));
     const before=field.length;
-    fillFieldTeams(avail, GC2025_FIELD_SIZE-1-field.length, 3, field);
+    (REALISTIC ? fillRealFieldTeams : fillFieldTeams)(avail, GC2025_FIELD_SIZE-1-field.length, 3, field);
     for(let i=before;i<field.length;i++){
       field[i].gcRoute='m3';
       field[i].summitRegion=(field[i].squad[0]||{}).region||null;
