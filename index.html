@@ -14717,11 +14717,22 @@ R_SETS.forEach(set=>{
 // ceiling, so a thin region is compressed rather than clipped, exactly as the
 // FNCS sets do it. tools/check-ewc-cards.js measures the result against the
 // same players' FNCS cards.
-const R_BAND={final:[96, 74], heat:[92, 70], playin:[86, 64], open:[78, 50]};
+// The final is the stage that decides what a card is worth, and the ones before
+// it are the road to it. The bands used to sit four points apart at the top,
+// which made a heat winner all but a finalist; now they are pulled apart so the
+// worst seat in a final still outranks the best card that never left a heat.
+// Reaching the final is the achievement the circuit is about — everything
+// earlier says only how far somebody got.
+const R_BAND={final:[96, 79], heat:[78, 62], playin:[70, 55], open:[64, 46]};
 function rBandOf(st){ return R_BAND[st.indexOf('heat')===0 ? 'heat' : st]; }
 function rBase(set, reg, st, rank){
   const field=((_R[set][reg]||{})[st]||[]).length;
-  const ramp=(rank-1)/Math.max(field-1,1);
+  // A published rank can sit past the end of the table it came from — Tracker
+  // renders a heat with twenty-three rows where the lobby seated twenty, and a
+  // row dropped for having a nameless half leaves a gap behind it. Unclamped,
+  // such a rank ramps past the floor and a heat card comes out at 39, below
+  // every Opens card. The floor of a stage is the floor.
+  const ramp=Math.min(1, Math.max(0, (rank-1)/Math.max(field-1,1)));
   const band=rBandOf(st);
   const top=band[0]*((REGION_TOP[reg]||85)/REGION_TOP.EU);
   const floor=band[1]*((REGION_TOP[reg]||85)/REGION_TOP.EU);
