@@ -29305,7 +29305,18 @@ const LCQ_WINNERS_2025_BY_SET={t1:LCQ_WINNERS_2025, t2:LCQ_WINNERS_T2, t3:LCQ_WI
 function playInSeats(heatCount){
   return heatCount * (TEAM_TARGET[squadSize] || 50);
 }
+// Reload is not Battle Royale and its bracket is not FNCS's. A match is twenty
+// duos, not fifty; the Play-In sends its top eighty into four heats of twenty;
+// each heat is eight games and only its top five come out; the final is those
+// twenty over eight games. All of it counted off the circuit's own leaderboards
+// rather than read off a bracket page — see the spec. And there is no last
+// chance: miss the eighty and the cup is over.
+const R_FORMAT={playInGames:22, playInCut:80, lobby:20,
+                heats:[{games:8,cut:5},{games:8,cut:5},{games:8,cut:5},{games:8,cut:5}],
+                gfGames:8, noLcq:true, lclGames:0};
+function isReloadSet(set){ return /^r\d$/.test(set||''); }
 function majorFormat(region, cardSet){
+  if(isReloadSet(cardSet)) return R_FORMAT;
   // FNCS 2025 ran groups, not heats: three in Europe and NA Central and two
   // everywhere else, the same split DEEP_MAJOR_REGIONS already describes.
   // Thirty teams come out of the groups in every region, so the cut is ten per
@@ -31259,7 +31270,12 @@ async function runMajorTournament(){
   // Play-In is 22 games across reshuffled lobbies — watching that live is a
   // long sit for a stage that mostly just seeds the Heats, so it resolves
   // straight to the standings card instead.
-  await simulateGamesRandomLobbies(teams, 22, TEAM_TARGET[squadSize]||50, playInPointsForPlace, 2);
+  // The lobby is the mode's, not the game mode's: Battle Royale seats fifty and
+  // Reload seats twenty, and a stage played in the wrong-sized lobby scores
+  // every placement wrong.
+  const PLAYIN_FMT=currentMajorFormat(you);
+  await simulateGamesRandomLobbies(teams, PLAYIN_FMT.playInGames||22,
+    PLAYIN_FMT.lobby || TEAM_TARGET[squadSize] || 50, playInPointsForPlace, 2);
 
   teams.sort((a,b)=>b.stagePts-a.stagePts);
   const isFillerTeam=t=>t.squad.some(p=>p.tier==='filler');
@@ -31286,6 +31302,15 @@ async function runMajorTournament(){
   // once the Heats have decided who is already through — that is true even in
   // the branch where you never reached the Heats yourself.
   let lcqField=null;
+
+  // A circuit with no last chance ends here for anyone the Play-In cut. FNCS
+  // hands its dropouts a Lobby; the Reload Elite Series does not, and inventing
+  // one would be inventing a stage the cup never played.
+  if(!passedPlayIn && FMT.noLcq){
+    document.getElementById('finalSub').textContent=L().stage1Note(FMT.playInCut);
+    finishMajorEliminatedAnim(you);
+    return;
+  }
 
   if(!passedPlayIn){
     ensureSkipButton();

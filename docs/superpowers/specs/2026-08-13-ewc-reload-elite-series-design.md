@@ -128,14 +128,35 @@ Cup 4's Play-Ins are cut to the top 100 for the card set, which is the shape
 Tracker gives the other three cups. The cut is printed by the builder and the
 whole harvest stays on disk.
 
-## The island
+## The islands, and what a lobby seats
 
-Reload is not the Battle Royale island, so the mode carries its own map art and
-its own landing grid. The source is the same kind of picture the 2025 sets' grids
-came from — the series' published drop map for that cup, one per cup, with every
-team's box drawn on it — which is what lets the rectangles be percentages of the
-picture rather than a fitting exercise. Cups 1-3 have theirs as `map1-3.jpg`;
-cup 4's is a screenshot of the same map with the site's chrome around it.
+The circuit played two islands: cups 1 and 2 on the green Chapter 7 Season 3
+Reload island, cups 3 and 4 on the frozen one. What ships is the **season map**,
+plain — the app draws its own lobby over the map, and a picture with another
+tournament's duos printed across it is a picture of a different event.
+
+The rectangles were still measured on the drop maps, because that is where the
+spots are marked: `tools/extract-zones.js` reads a box off its borders, and
+`tools/align-zones.js` moves the result onto the clean map by framing both
+pictures on the island's own bounding box. Checked over the clean map by eye —
+the boxes sit on Steamy Stacks, Boomin Base, Logjam Logging, Dirty Docks, Fort
+Crumpet, Stilt Town and Lockdown Lighthouse; and on Hostile Hold, Top Tier
+Training, Chiseled Cubes, Elite Experiments and Elite Armory.
+
+15, 13, 14 and 12 rectangles. The detector only finds a box drawn as an outline,
+so the translucent ones over the hot POIs are still missing, and a box found
+inside a bigger one is dropped in favour of the bigger — the spot a team
+actually calls. No `ZONE_STATS`: the published evals cover the Battle Royale
+islands and the wiki loot counts cover Chapter 6, and nothing counts loot on a
+Reload island, so every spot is worth one point rather than an invented number.
+
+**A Reload match seats twenty.** The bracket above is what `R_FORMAT` now says:
+the Play-In runs in lobbies of twenty and sends its top eighty into four heats
+of twenty, each heat is eight games and only its top five come out, and the
+final is those twenty over eight games. A stage played in a fifty-duo lobby
+would score every placement in the cup wrong. There is no last chance either —
+FNCS hands its Play-In dropouts a Lobby, this circuit does not, so missing the
+eighty ends the run rather than inventing a stage the cup never played.
 
 ## What is deliberately not in this pass
 
