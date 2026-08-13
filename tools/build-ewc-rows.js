@@ -138,7 +138,9 @@ const num = s => {
   return isNaN(v) ? null : v;
 };
 
-function parsePage(html){
+const killAt = stage => (stage === 'open' || stage === 'playin') ? 2 : 3;
+
+function parsePage(html, stage){
   const rows = html.match(/<tr[^>]*trn-lb-entry[\s\S]*?<\/tr>/g) || [];
   const out = [];
   for (const tr of rows){
@@ -152,9 +154,12 @@ function parsePage(html){
     const matches = num(stats[1]) || 1;
     out.push({rank, points: num(stats[0]), matches: num(stats[1]), wins: num(stats[2]),
               avgElims: num(stats[3]), avgPlace: num(stats[4]),
-              // Tracker prints no elimination column, so this circuit's three a
-              // kill turns the average into the same number Epic publishes.
-              elimPts: Math.round((num(stats[3]) || 0) * matches * 3),
+              // Tracker prints no elimination column, so the published rate turns the
+              // average into the same number Epic does. The rate is the stage's, not the
+              // circuit's: Attachment A of the official rules pays 2 a kill in the Opens
+              // and the Play-Ins and 3 in the Heats and the Final, which is what Epic's
+              // own payload for cup 4 measures out to.
+              elimPts: Math.round((num(stats[3]) || 0) * matches * killAt(stage)),
               players: names.map((n, i) => ({handle: n, org: orgs[i] || null, nat: nats[i] || null}))});
   }
   return out;
@@ -169,7 +174,7 @@ function readTracker(){
       const stage = stageOfFile(f);
       if (!stage) continue;
       const cup = cups['r' + dir] || (cups['r' + dir] = {stages: {}});
-      cup.stages[stage] = parsePage(fs.readFileSync(path.join(full, f), 'utf8'));
+      cup.stages[stage] = parsePage(fs.readFileSync(path.join(full, f), 'utf8'), stage);
     }
   }
   return cups;

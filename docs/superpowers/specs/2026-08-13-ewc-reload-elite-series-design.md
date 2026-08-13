@@ -66,18 +66,31 @@ So the mode's own bracket is: Play-Ins → four heats of 20, eight games each,
 top 5 → Final of 20, eight games. The Opens sit before it as the open qualifier
 they were.
 
-## Scoring is the circuit's, and it changed between cups
+## Scoring: the same table said twice
 
-Read off each cup's own page rather than assumed:
+The official rules print what a placing is worth outright. The leaderboard
+prints the steps it is built from — "Reach Top 5: +5" — and they add up to each
+other exactly, which is how the two were reconciled rather than one of them
+being picked:
 
-| | Victory Royale | 2nd | 3rd | 4th-5th | 6th-12th | 13th-15th | elimination |
-|---|---|---|---|---|---|---|---|
-| cup 1 | 10 | 8 | 6 | 4 | 4 | — | 3 |
-| cups 2, 3 | 10 | 5 | 5 | 5 | 3 | 3 | 3 |
+| finish | 1st | 2nd | 3rd | 4th | 5th | 6th | 7th | 8th | 9th | 10th | 11th | 12th | 13th | 14th | 15th |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| cup 1 | 60 | 50 | 42 | 36 | 32 | 28 | 24 | 20 | 16 | 12 | 8 | 4 | — | — | — |
+| cups 2-4 | 60 | 50 | 45 | 40 | 35 | 30 | 27 | 24 | 21 | 18 | 15 | 12 | 9 | 6 | 3 |
 
-Three a kill throughout, which is what lets the elimination half of a score be
-split back out of the total the way `rowEntry` wants it. Cup 1 pays a steeper
-podium and stops paying at 12th; cups 2 and 3 pay flatter and further down.
+Nothing past the end of a row scores. Cup 1 paid a steeper podium and stopped
+at twelfth; the three after it pay flatter and further down. Cup 4 has no
+Tracker page, so its table was derived from Epic's own `pointBreakdown` — the
+same numbers, off 2314 counted eliminations and every placement in the cup.
+
+**A kill is worth 2 in the Opens and the Play-Ins and 3 in the Heats and the
+Final.** Attachment A of the rules says so and the payload measures out to it.
+That rate is what splits a published score back into the half a team earned by
+surviving and the half it earned by fragging, which is an axis the cards are
+built on — so a Play-In card reads 95% placement and a Final card 59%.
+
+FNCS is untouched by any of this: the table and the rates are picked by card
+set, and the whole card dump comes out identical — 15191 cards, 0 moved.
 
 ## Cup 4 is not on Tracker, and did not need to be
 
