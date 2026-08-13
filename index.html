@@ -238,7 +238,14 @@
     font-size:clamp(20px,3.6vw,32px);font-variant-numeric:tabular-nums;}
   .rating-explainer{margin-top:26px;background:var(--panel);border:1px solid var(--line);
     border-radius:8px;padding:18px 20px;}
-  .rating-explainer h4{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-dim);}
+  /* A heading is a label, and a label is not the colour of its own caption.
+     These sat in --ink-dim, the same grey as the .region-note directly beneath
+     them, so every block on every screen opened in one flat voice and the only
+     hierarchy left was size. Full ink and weight 900 for the label, dim for the
+     line that explains it — the same relationship the region plates use, which
+     is where this came from. */
+  .rating-explainer h4{margin:0 0 10px;font-size:14px;font-weight:900;
+    text-transform:uppercase;letter-spacing:.06em;color:var(--ink);}
   .re-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;
     border-top:1px solid var(--line);font-size:13px;}
   .re-row:first-of-type{border-top:none;}
@@ -282,7 +289,7 @@
      which is not the weapon pack. */
   .pack-icon{width:34px;height:34px;border-radius:6px;background:var(--accent);flex:none;
     display:flex;align-items:center;justify-content:center;color:var(--accent-ink);font-weight:900;font-size:15px;}
-  .pack-head h2{margin:0;font-size:17px;text-transform:uppercase;}
+  .pack-head h2{margin:0;font-size:17px;font-weight:900;letter-spacing:.03em;text-transform:uppercase;}
   .pack-head p{margin:2px 0 0;font-size:12px;color:var(--ink-dim);}
 
   /* minmax(0,1fr) instead of 1fr: a plain 1fr column refuses to shrink below its
