@@ -1458,11 +1458,12 @@
   </div>
 
   <div class="screen" id="screen-preregion">
-    <div class="rating-explainer">
-      <h4 data-i18n="preregionTitle"></h4>
-      <div class="region-note" data-i18n="preregionNote"></div>
-    </div>
-    <div class="rating-explainer" id="simModeHead" style="margin-top:14px;">
+    <!-- The mode comes first because it changes what every question under it
+         means: in a realistic run the region decides which real teams you can
+         be, in a draft run it decides which cards you can draft. It also has to
+         sit above the region heading rather than between that heading and its
+         own chips, which is where it landed first and read as a broken page. -->
+    <div class="rating-explainer" id="simModeHead">
       <h4 data-i18n="simModeTitle"></h4>
     </div>
     <div class="sim-modes" id="simModes">
@@ -1474,6 +1475,10 @@
         <h5 data-i18n="simDraftTitle"></h5>
         <p data-i18n="simDraftNote"></p>
       </button>
+    </div>
+    <div class="rating-explainer" style="margin-top:18px;">
+      <h4 id="preregionTitle" data-i18n="preregionTitle"></h4>
+      <div class="region-note" id="preregionNote" data-i18n="preregionNote"></div>
     </div>
     <div class="region-filter" id="preRegionChecks" style="margin-top:14px;"></div>
     <div id="regionWarning" style="display:none;color:var(--danger);font-size:13px;font-weight:700;margin-top:10px;" data-i18n="regionWarningText"></div>
@@ -1925,7 +1930,7 @@ landingFieldTitle:n=>'Лобби ('+n+' '+(squadSize===3?'трио':squadSize===
 regionResultHeader:'Регионалка', dropHeader:'Счёт на высадке', landingNobodyElse:'Больше никто сюда не садился за всю стадию', prizeHeader:'Приз', prizeTitle:'💰 Призовые состава', prizePerPlayer:v=>'по '+v+' на игрока',
 prizeRegional:(reg,rank)=>'Гранд-финал '+reg+' · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Лион · #'+rank, prizeGc2026:rank=>'Global Championship, Антверпен · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
-runSummaryTitle:'📋 Итоги симуляции', lanSeatWon:'Место на LAN взято', lanSeatMissed:'Место на LAN не взято', lanSummit:'Summit', lanBelgium:'Global Championship, Бельгия', lanLyon:'Global Championship, Лион', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' в регионе '+reg+', мест: '+slots, lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', мест: '+slots, runSummaryStage:'Этап', runSummaryEarned:'Заработано за симуляцию',
+runSummaryTitle:'📋 Итоги симуляции', lanSeatWon:'Место на LAN взято', lanSeatMissed:'Место на LAN не взято', lanSummit:'Summit', lanBelgium:'Global Championship, Бельгия', lanLyon:'Global Championship, Лион', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' в регионе '+reg+', мест: '+slots, lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', мест: '+slots, lanSeatHeld:(rank)=>'Слот был у команды до мажора — #'+rank+' в финале места не меняет', runSummaryStage:'Этап', runSummaryEarned:'Заработано за симуляцию',
 runSummaryNoEarnings:'Призовых нет — до стадии с призовым фондом состав не дошёл.',
 rowHistoryHint:'Клик — матчи этой команды', stageTableTitle:'Таблица этапа', stageCutLabel:n=>'— линия отсечки: топ-'+n+' проходят —',
 stageTableTeam:'Команда', stageTableRegion:'Регион',
@@ -2403,7 +2408,7 @@ landingFieldTitle:n=>'The lobby ('+n+' '+(squadSize===3?'trios':squadSize===4?'s
 regionResultHeader:'Regional', dropHeader:'Drop record', landingNobodyElse:'Nobody else dropped here all stage', prizeHeader:'Prize', prizeTitle:'💰 Squad earnings', prizePerPlayer:v=>v+' per player',
 prizeRegional:(reg,rank)=>reg+' Grand Finals · #'+rank, prizeSummit:rank=>'FNCS Major 1 Summit · #'+rank,
 prizeGc2025:rank=>'Global Championship, Lyon · #'+rank, prizeGc2026:rank=>'Global Championship, Antwerp · #'+rank, prizeScq:rank=>'Second Chance Qualifier · #'+rank, prizeGclc:rank=>'Global Championship Last Chance · #'+rank,
-runSummaryTitle:'📋 Your run, stage by stage', lanSeatWon:'LAN seat taken', lanSeatMissed:'No LAN seat', lanSummit:'the Summit', lanBelgium:'the Global Championship, Belgium', lanLyon:'the Global Championship, Lyon', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' in '+reg+', '+slots+' seat'+(slots===1?'':'s'), lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', '+slots+' seat'+(slots===1?'':'s'), runSummaryStage:'Stage', runSummaryEarned:'Earned across the run',
+runSummaryTitle:'📋 Your run, stage by stage', lanSeatWon:'LAN seat taken', lanSeatMissed:'No LAN seat', lanSummit:'the Summit', lanBelgium:'the Global Championship, Belgium', lanLyon:'the Global Championship, Lyon', lanSeatDetail:(rank,slots,reg)=>'#'+rank+' in '+reg+', '+slots+' seat'+(slots===1?'':'s'), lanSeatDetailLcq:(rank,slots)=>'Last Chance: #'+rank+', '+slots+' seat'+(slots===1?'':'s'), lanSeatHeld:(rank)=>'The squad held its seat before the Major — finishing #'+rank+' does not change that', runSummaryStage:'Stage', runSummaryEarned:'Earned across the run',
 runSummaryNoEarnings:'No prize money — the run ended before a stage that pays.',
 rowHistoryHint:'Click for this team\'s games', stageTableTitle:'Stage standings', stageCutLabel:n=>'— cut line: top '+n+' advance —',
 stageTableTeam:'Team', stageTableRegion:'Region',
@@ -2632,8 +2637,10 @@ function refreshPreRegionLabels(){
   if(el && el.children.length){
     const singlePick = pendingCards || el.querySelectorAll('button').length<=1
       || !el.querySelector('[data-region="ALL"]');
-    const titleEl=document.querySelector('#screen-preregion h4');
-    const noteEl=document.querySelector('#screen-preregion .region-note');
+    // By id, not by position: this screen has two headings now and the first of
+  // them is the mode question, so 'the first h4' silently retitled the wrong one.
+  const titleEl=document.getElementById('preregionTitle');
+    const noteEl=document.getElementById('preregionNote');
     if(titleEl) titleEl.textContent = singlePick ? L().preregionTitleOne : L().preregionTitle;
     if(noteEl) noteEl.textContent = singlePick ? L().preregionNoteOne : L().preregionNote;
   }
@@ -27374,8 +27381,10 @@ function buildPreRegionChecks(){
   // A card-mode tournament is one region's event, so the choice is exclusive
   // and there is no "all regions" option — same when only one region exists.
   const singlePick = pendingCards || regions.length<=1;
-  const titleEl=document.querySelector('#screen-preregion h4');
-  const noteEl=document.querySelector('#screen-preregion .region-note');
+  // By id, not by position: this screen has two headings now and the first of
+  // them is the mode question, so 'the first h4' silently retitled the wrong one.
+  const titleEl=document.getElementById('preregionTitle');
+  const noteEl=document.getElementById('preregionNote');
   if(titleEl) titleEl.textContent = singlePick ? L().preregionTitleOne : L().preregionTitle;
   if(noteEl) noteEl.textContent = singlePick ? L().preregionNoteOne : L().preregionNote;
 
@@ -30960,13 +30969,20 @@ async function runMajorTournament(){
   const gfSeats = gfSlots ? awardSeats(finalTeams, gfSlots, holdsLanSeat) : [];
   const gfSeatSet = new Set(gfSeats);
   const gfSeatCut = gfSeats.length ? finalTeams.indexOf(gfSeats[gfSeats.length-1])+1 : gfSlots;
-  const youQualified = gfSlots ? gfSeatSet.has(you) : youFinalRank===1;
+  // A seat you already hold is a seat. Pick one of the duos that took the Summit
+  // and you are on the plane before the Major starts — the season decides your
+  // placement, your prize money and your pride, and not whether you are going.
+  // awardSeats skips you for the same reason it skips them, so your finish rolls
+  // the region's seat down to the next team without one instead of eating it.
+  const youHoldSeat = holdsLanSeat(you);
+  const youQualified = youHoldSeat || (gfSlots ? gfSeatSet.has(you) : youFinalRank===1);
   // What the whole Major was for, written down so the summary card can say it.
   if(gfSlots){
     recordLanSeat(
       CARD_SET==='m2' ? L().lanBelgium : CARD_SET==='t3' ? L().lanLyon : L().lanSummit,
       youQualified,
-      L().lanSeatDetail(youFinalRank, gfSlots, regionName(myGfRegion)));
+      youHoldSeat ? L().lanSeatHeld(youFinalRank)
+                  : L().lanSeatDetail(youFinalRank, gfSlots, regionName(myGfRegion)));
   }
   finalizeStageCard(gfShell, youFinalRank, finalTeams.length, you.stagePts,
     youQualified, you.gotVR,
@@ -32285,11 +32301,30 @@ function lanSeatHandles(){
 // One player of a locked team is enough: the seat belongs to the team, and the
 // team is whoever they are entered with — the substitution rules already hold
 // them together.
+//
+// Your own squad is asked a stricter question, and the difference is not a
+// special case for the player — it is that the two are different claims. A bot
+// team IS one of the entered rosters, so any member of it identifies the seat.
+// Your squad might be anything: in a draft run it is assembled card by card, and
+// under the loose rule drafting one half of Sky & Scroll would hand you a seat
+// at the Global Championship for having picked a name. So yours counts only when
+// the whole roster is one of the locked teams — which is exactly what picking
+// that team in a realistic run gives you, and what no draft run reaches by
+// accident.
 function holdsLanSeat(t){
-  if(!t || t.isYou) return false;
+  if(!t) return false;
   const held=lanSeatHandles();
   if(!held.size) return false;
-  return (t.squad||[]).some(p=>held.has(_gcNorm(p.handle)));
+  if(!t.isYou) return (t.squad||[]).some(p=>held.has(_gcNorm(p.handle)));
+  return youAreALockedTeam(t);
+}
+function youAreALockedTeam(t){
+  const mine=(t.squad||[]).map(p=>_gcNorm(p.handle)).sort();
+  if(!mine.length) return false;
+  return lanSeatHoldersForSet().some(team=>{
+    const theirs=team.map(h=>_gcNorm(h)).sort();
+    return theirs.length===mine.length && theirs.every((h,i)=>h===mine[i]);
+  });
 }
 
 // A seat is won by the highest-placed team that does not already have one. Epic
