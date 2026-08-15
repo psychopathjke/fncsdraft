@@ -1,0 +1,152 @@
+// A day of training is worth half a point of rating.
+//
+// Every activity trains something different, and they are all worth the same
+// day: the gains are that half point spread over the attributes the activity
+// trains, weighted by ATTR_W. This holds the arithmetic — each row sums to
+// 0.500 on the weights, a spent day really moves the rating by it, the taper
+// still slows a career near its ceiling, and the desk and the coach still
+// multiply it.
+//
+//   node tools/check-career-day-value.js
+const fs = require('fs'), os = require('os'), path = require('path');
+const { execFileSync } = require('child_process');
+const ROOT = path.resolve(__dirname, '..');
+const CHROME = [process.env.CHROME,
+  'C:/Program Files/Google/Chrome/Application/chrome.exe',
+  'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+  (process.env.LOCALAPPDATA || '') + '/Google/Chrome/Application/chrome.exe'
+].find(p => p && fs.existsSync(p));
+if (!CHROME) throw new Error('Chrome not found');
+
+const BOOT = `
+<pre id="__out" style="display:none"></pre>
+<script>
+(function(){
+  const out = {fails: [], notes: {}, err: null};
+  const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
+  try {
+    const DAY = 0.5;
+    // On the weights, every training day is the same day.
+    const weighted = {};
+    CC_DAY_ACTS.filter(a => Object.keys(a.gain||{}).length).forEach(a => {
+      const w = Object.keys(a.gain).reduce((s,k) => s + a.gain[k]*ATTR_W[k], 0);
+      weighted[a.id] = Math.round(w*1000)/1000;
+      check('a ' + a.id + ' day is worth half a point', Math.abs(w - DAY) < 0.005, String(w));
+    });
+    out.notes.weighted = weighted;
+
+    // And a day actually spent moves the rating by it, well below the ceiling.
+    const fresh = (ovr, pot) => { CAREER = {player:{nick:'P', ovr:ovr, ovrExact:ovr, region:'EU',
+      role:'roleIGL', country:'de', age:16, attrs:ccRookieAttrs(ovr,'roleIGL'), potential:pot},
+      career:{season:1, day:'2026-02-10', division:3, balance:0, log:[], news:[]},
+      partner:null, gear:{own:[], train:0}};
+      // ccRookieAttrs builds the six around the rating; read the rating back off
+      // them first so the first day is measured from where the card really is.
+      CAREER.player.ovrExact = ATTR_KEYS.reduce((s,k)=>s+CAREER.player.attrs[k]*ATTR_W[k], 0);
+      CAREER.career.energy = CC_ENERGY_DAY; CAREER.career.did = {}; };
+    // The cap is the room's, so a Division 3 probe trains toward 72; measured
+    // from well below it.
+    fresh(60, 96);
+    let before = CAREER.player.ovrExact;
+    careerDoAct('aimlab');
+    const gain = CAREER.player.ovrExact - before;
+    out.notes.dayAt60 = Math.round(gain*1000)/1000;
+    check('a day well below the cap pays it', Math.abs(gain - DAY) < 0.03, String(gain));
+
+    // The taper still bites near the cap, and training stops at it.
+    fresh(71, 96);
+    before = CAREER.player.ovrExact;
+    careerDoAct('aimlab');
+    const near = CAREER.player.ovrExact - before;
+    out.notes.dayNearCeiling = Math.round(near*1000)/1000;
+    check('and near the cap it pays less', near > 0 && near < DAY*0.6, String(near));
+    // At the cap, a day of training moves nothing at all.
+    fresh(72, 96);
+    before = CAREER.player.ovrExact;
+    careerDoAct('aimlab');
+    out.notes.dayAtCap = Math.round((CAREER.player.ovrExact - before)*1000)/1000;
+    check('at the cap training stops', CAREER.player.ovrExact - before < 0.02,
+          String(CAREER.player.ovrExact - before));
+    check('the cap is the division band plus four', careerTrainCap() === CC_DIV_RATING[3]+4,
+          String(careerTrainCap()));
+    // ---- one store, spent by days and refilled by nights ----------------
+    fresh(60, 96);
+    check('a career starts rested', careerEnergy() === CC_ENERGY_DAY, String(careerEnergy()));
+    careerDoAct('aimlab');
+    check('a training day spends its cost',
+          careerEnergy() === CC_ENERGY_DAY - ccActById('aimlab').energy, String(careerEnergy()));
+    check('and the day is done', careerDoAct('customs') === null);
+    const beforeNight = careerEnergy();
+    careerAdvanceTo(ccAddDays(CAREER.career.day, 1));
+    check('a night gives some back', careerEnergy() === beforeNight + CC_ENERGY_NIGHT,
+          beforeNight + ' -> ' + careerEnergy());
+    // Run it down and the store, not the day, is what stops the work.
+    CAREER.career.energy = 10;
+    check('an empty store cannot train', careerDoAct('aimlab') === null);
+    check('but it can rest', careerDoAct('rest') !== null);
+    check('and resting refills', careerEnergy() === 10 + CC_ENERGY_REST, String(careerEnergy()));
+    out.notes.rested = careerEnergy();
+    // A tired day is worth exactly as much as a fresh one — the store is what
+    // runs out, not the value of the work.
+    fresh(60, 96); CAREER.career.energy = 100;
+    let b1 = CAREER.player.ovrExact; careerDoAct('aimlab');
+    const fresh1 = CAREER.player.ovrExact - b1;
+    fresh(60, 96); CAREER.career.energy = 31;
+    b1 = CAREER.player.ovrExact; careerDoAct('aimlab');
+    const low = CAREER.player.ovrExact - b1;
+    out.notes.freshVsLow = [Math.round(fresh1*1000)/1000, Math.round(low*1000)/1000];
+    check('a day is a day whatever the store holds', Math.abs(fresh1 - low) < 1e-9,
+          fresh1 + ' vs ' + low);
+
+    // The desk and the coach still multiply it.
+    fresh(60, 96);
+    CAREER.career.balance = 20000;
+    CAREER.gear = {own:['mouse','headset','keyboard','monitor','pcelite'], train:0.55};
+    if (!careerHireCoach('aim')) check('the probe could hire a coach', false);
+    before = CAREER.player.ovrExact;
+    careerDoAct('aimlab');
+    const kitted = CAREER.player.ovrExact - before;
+    out.notes.dayKitted = Math.round(kitted*1000)/1000;
+    check('a full desk and a coach are worth more than a bare day', kitted > gain*1.8,
+          kitted + ' vs ' + gain);
+    // ---- the seat next to you teaches ---------------------------------
+    // A partner above you drags you up, one below does not, and neither can
+    // replace playing well: the pull is capped both ways and touches only the
+    // development half of a result's growth.
+    fresh(70, 96);
+    check('no partner is no pull', Math.abs(careerMateFactor(70) - 1) < 1e-9);
+    const seat = ovr => { CAREER.partner = {card: {handle:'Mate', region:'EU', tier:'ranked',
+      rating: ovr, _targetOvr: ovr, _attrs: ccRookieAttrs(ovr,'roleFRG')}}; };
+    seat(80); const up = careerMateFactor(70);
+    seat(70); const same = careerMateFactor(70);
+    seat(60); const down = careerMateFactor(70);
+    seat(99); const cap = careerMateFactor(40);
+    seat(40); const floor = careerMateFactor(99);
+    out.notes.mate = {up: Math.round(up*100)/100, same: same,
+                      down: Math.round(down*100)/100, cap: cap, floor: floor};
+    check('ten above is worth half again', Math.abs(up - 1.5) < 1e-9, String(up));
+    check('the same rating teaches nothing extra', Math.abs(same - 1) < 1e-9, String(same));
+    check('ten below costs a third', Math.abs(down - 0.7) < 1e-9, String(down));
+    check('and the pull is capped both ways', cap === CC_MATE_MAX && floor === CC_MATE_MIN,
+          cap + ' / ' + floor);
+  } catch(e) { out.err = String(e && e.stack || e); }
+  document.getElementById('__out').textContent =
+    'PB' + 'EGIN' + encodeURIComponent(JSON.stringify(out)) + 'PE' + 'ND';
+})();
+<\/script>`;
+
+const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fncsday-'));
+const tmp = path.join(dir, 'index.html');
+fs.writeFileSync(tmp, src + BOOT);
+const dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandbox',
+  '--allow-file-access-from-files', '--virtual-time-budget=60000', '--dump-dom',
+  'file:///' + tmp.replace(/\\/g, '/')], { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8' });
+const m = dom.match(/PBEGIN([\s\S]*?)PEND/);
+if (!m) { console.error('probe did not run; copy at ' + tmp); process.exit(2); }
+const out = JSON.parse(decodeURIComponent(m[1]));
+if (out.err) { console.error(out.err); process.exit(1); }
+console.log(JSON.stringify(out.notes));
+if (out.fails.length) { out.fails.forEach(f => console.error('FAIL ' + f)); process.exit(1); }
+console.log('a day of training is half a point, and the ceiling still slows it');
+fs.rmSync(dir, { recursive: true, force: true });

@@ -1,0 +1,113 @@
+// The snapshot ladder: Division 1 is one Major's Play-In, whole, and nothing
+// real stands anywhere else.
+//
+// careerPools seats the current Major's Play-In set — 300 Europeans in exactly
+// 150 real pairs — and that is the only rung with real names in it: the Last
+// Chance and Reload sets were tried below it and taken out, because the people
+// in them are the same competitive circle Division 1 is drawn from. This checks
+// the seat counts, that the snapshot turns over with the Major, and that drawn
+// fields hold no duplicate people and no real names below Division 1.
+//
+//   node tools/check-career-pools.js
+const fs = require('fs'), os = require('os'), path = require('path');
+const { execFileSync } = require('child_process');
+const ROOT = path.resolve(__dirname, '..');
+const CHROME = [process.env.CHROME,
+  'C:/Program Files/Google/Chrome/Application/chrome.exe',
+  'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+  (process.env.LOCALAPPDATA || '') + '/Google/Chrome/Application/chrome.exe'
+].find(p => p && fs.existsSync(p));
+if (!CHROME) throw new Error('Chrome not found');
+
+const BOOT = `
+<pre id="__out" style="display:none"></pre>
+<script>
+(function(){
+  const fails = [], out = {fails: fails, snaps: {}};
+  const check = (name, ok, detail) => { if(!ok) fails.push(name + (detail ? ': ' + detail : '')); };
+  try {
+  // Both snapshots, by forcing the career day to either side of Major 2's
+  // Play-In weekend. CAREER is the page's own top-level binding, not a window
+  // property, so it is assigned directly.
+  CAREER = {player: {nick: 'ProbeMan', ovr: 68, region: 'EU'},
+            career: {season: 1, day: '2026-01-15', division: 3}};
+  ['2026-01-15', '2026-08-01'].forEach(day => {
+    CAREER.career.day = day;
+    CC_POOLS = null;
+    const pools = careerPools();
+    const tag = pools.tag;
+
+    // The Play-In whole: 150 duos, 300 people, nobody twice.
+    const keys = new Set(); let repeats = 0;
+    pools.players.forEach(p => { if(keys.has(p._k)) repeats++; keys.add(p._k); });
+    check(tag + ' nobody seated twice', repeats === 0, repeats + ' repeats');
+    check(tag + ' Division 1 is 150 real duos', pools.duos.length === 150, pools.duos.length);
+    check(tag + ' Division 1 is 300 people', pools.players.length === 300, pools.players.length);
+    const avg = Math.round(pools.duos.reduce((s,d)=>s+d.avg, 0) / pools.duos.length * 10) / 10;
+    out.snaps[tag] = {duos: pools.duos.length, avg: avg};
+    check(tag + ' reads as Division 1', avg >= 79 && avg <= 85, avg);
+  });
+
+  // The two snapshots differ — the season turned over.
+  CAREER.career.day = '2026-01-15'; CC_POOLS = null;
+  const a = new Set(careerPools().players.map(p => p._k));
+  CAREER.career.day = '2026-08-01'; CC_POOLS = null;
+  const b = new Set(careerPools().players.map(p => p._k));
+  let gone = 0; a.forEach(k => { if(!b.has(k)) gone++; });
+  out.turnover = {m1: a.size, m2: b.size, gone: gone};
+  check('the snapshot turns over with the Major', gone > 50, gone + ' left Division 1');
+
+  // A drawn field: Division 1 is all real and full, the divisions below hold
+  // not one real name, and nobody is anywhere twice.
+  const me = {handle: '__me', region: 'EU', nick: '__me'};
+  [1, 2, 3, 4, 5].forEach(d => {
+    CAREER.career.division = d;
+    const teams = careerCupField(CAREER.career, [me], CAREER_CUP_FIELD, '', false);
+    const seen = new Set(); let dup = 0, real = 0;
+    teams.forEach(t => (t.squad || []).forEach(c => {
+      const k = hKey(c); if(seen.has(k)) dup++; seen.add(k);
+      // A pool card carries _k; a generated ladder player does not.
+      if(c._k) real++;
+    }));
+    check('field D' + d + ' repeats nobody', dup === 0, dup + ' repeats');
+    check('field D' + d + ' is full', teams.length === CAREER_CUP_FIELD - 1, teams.length);
+    if(d === 1) check('field D1 is all real', real === (CAREER_CUP_FIELD - 1) * 2, real + ' real');
+    else check('field D' + d + ' is all ladder', real === 0, real + ' real');
+  });
+  const openTeams = careerCupField(CAREER.career, [me], CAREER_CUP_FIELD, 'op', true);
+  const okeys = new Set(); let odup = 0, oreal = 0;
+  openTeams.forEach(t => (t.squad || []).forEach(c => {
+    const k = hKey(c); if(okeys.has(k)) odup++; okeys.add(k);
+    if(c._k) oreal++;
+  }));
+  check('open field repeats nobody', odup === 0, odup + ' repeats');
+  // 149 teams besides your own, so 149 of the snapshot's 150 duos fit.
+  check('an open seats the snapshot', oreal === (CAREER_CUP_FIELD - 1) * 2, oreal + ' real');
+  } catch(e) { fails.push('threw: ' + (e && e.stack || e)); }
+
+  document.getElementById('__out').textContent =
+    'PB' + 'EGIN' + encodeURIComponent(JSON.stringify(out)) + 'PE' + 'ND';
+})();
+<\/script>`;
+
+const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fncspools-'));
+const tmp = path.join(dir, 'index.html');
+fs.writeFileSync(tmp, src + BOOT);
+const dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandbox',
+  '--allow-file-access-from-files', '--virtual-time-budget=60000', '--dump-dom',
+  'file:///' + tmp.replace(/\\/g, '/')], { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8' });
+const m = dom.match(/PBEGIN([\s\S]*?)PEND/);
+if (!m) { console.error('probe did not run; copy at ' + tmp); process.exit(2); }
+const out = JSON.parse(decodeURIComponent(m[1]));
+Object.keys(out.snaps).forEach(tag => {
+  console.log(tag + ': ' + out.snaps[tag].duos + ' duos, avg ' + out.snaps[tag].avg);
+});
+console.log('turnover: ' + JSON.stringify(out.turnover));
+if (out.fails.length) {
+  console.error('FAIL');
+  out.fails.forEach(f => console.error('  ' + f));
+  process.exit(1);
+}
+console.log('OK');
+fs.rmSync(dir, { recursive: true, force: true });

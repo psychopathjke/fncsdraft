@@ -1670,9 +1670,33 @@
         if(opts.onFrame){ try { opts.onFrame(frame); } catch(err){ } }
       }
 
-      function finish(){
-        if(timeline.length) show(timeline[timeline.length-1]);
-        resolve();
+      // Two ways for playback to be over, and they end on different pictures.
+      //
+      // Running out of timeline, or a player who has asked to skip, both want
+      // the end of the game: the last frame is drawn so the map agrees with the
+      // table that is about to be scored.
+      //
+      // `stopWhen` is the other one. A caller watching one squad — a career
+      // player, whose game is over the moment they are eliminated — wants the
+      // replay to end where they died, and jumping to the last frame there
+      // would hand them the finish of a game they are no longer in. So that
+      // path stops on the frame it is already showing.
+      //
+      // Which of the two happened is what play() resolves with, because the
+      // caller has a decision resting on it: the card naming the Victory
+      // Royale belongs at the end of a game that was watched to the end, and
+      // nowhere near one the player did not see.
+      function finish(cutShort){
+        if(!cutShort && timeline.length) show(timeline[timeline.length-1]);
+        resolve(!!cutShort);
+      }
+
+      // Asked of the recorded frame rather than an interpolated one: between()
+      // eases positions between two frames, and whether a squad is alive is not
+      // a thing to be half of.
+      function stopsHere(frame){
+        if(!opts.stopWhen || !frame) return false;
+        try { return !!opts.stopWhen(frame); } catch(err){ return false; }
       }
 
       if(!smooth){
@@ -1681,7 +1705,11 @@
           if(i >= timeline.length || (opts.isSkipped && opts.isSkipped())){ finish(); return; }
           // Cut rather than glide, for a reader who has asked for no motion.
           camera.to(beat(i).view, 1);
-          show(timeline[i++]);
+          var frame = timeline[i++];
+          show(frame);
+          // Drawn before the test, so the frame a squad dies on is the frame
+          // left on the screen rather than the one before it.
+          if(stopsHere(frame)){ finish(true); return; }
           // How long the frame is held, rather than how it is animated between
           // — so the pacing still applies where the interpolation does not.
           setTimeout(next, frameMs / beat(i - 1).pace);
@@ -1724,6 +1752,7 @@
         var fresh = i !== shown;
         shown = i;
         show(between(timeline[i], timeline[i+1], at - i, fresh));
+        if(stopsHere(timeline[i])){ finish(true); return; }
         nextStep(step);
       })();
     });

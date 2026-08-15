@@ -32,7 +32,23 @@ const BOOTSTRAP = `
       keys.forEach(function(k){ if (dict[k] === undefined) missing[lang].push(k); });
       LANG = was;
     });
-    out = {keys: keys.length, missing: missing};
+    // And every key the code itself reaches for. data-i18n is only half of it:
+    // most of this app writes its text through a property off the dictionary
+    // getter, and a key that was never added renders the word "undefined" into
+    // the page — which is how three tables shipped with a column headed
+    // UNDEFINED. (The pattern is built below rather than written out, because
+    // this probe is appended to the page it is scanning.)
+    var src = document.documentElement.innerHTML;
+    var used = [], re = /L\\(\\)\\.([A-Za-z][A-Za-z0-9_]*)/g, mm;
+    while ((mm = re.exec(src))) if (used.indexOf(mm[1]) < 0) used.push(mm[1]);
+    var codeMissing = {ru: [], en: []};
+    ['ru','en'].forEach(function(lang){
+      var was = LANG; LANG = lang;
+      var dict = L();
+      used.forEach(function(k){ if (dict[k] === undefined) codeMissing[lang].push(k); });
+      LANG = was;
+    });
+    out = {keys: keys.length, missing: missing, used: used.length, codeMissing: codeMissing};
   } catch (e) { out = {error: String(e && e.stack || e)}; }
   document.getElementById('__i18n').textContent =
     'BEGINI18N' + encodeURIComponent(JSON.stringify(out)) + 'ENDI18N';
@@ -55,11 +71,14 @@ const out = JSON.parse(decodeURIComponent(m[1]));
 fs.rmSync(dir, { recursive: true, force: true });
 
 if (out.error) { console.error(out.error); process.exit(2); }
-console.log(out.keys + ' keys used in the markup');
+console.log(out.keys + ' keys used in the markup, ' + out.used + ' reached through L() in the code');
 let bad = 0;
 ['ru','en'].forEach(lang => {
   const miss = out.missing[lang];
-  console.log('  ' + lang + ': ' + miss.length + ' missing' + (miss.length ? ' -> ' + miss.join(' ') : ''));
+  console.log('  ' + lang + ' markup: ' + miss.length + ' missing' + (miss.length ? ' -> ' + miss.join(' ') : ''));
   bad += miss.length;
+  const code = out.codeMissing[lang];
+  console.log('  ' + lang + ' code:   ' + code.length + ' missing' + (code.length ? ' -> ' + code.join(' ') : ''));
+  bad += code.length;
 });
 process.exit(bad ? 1 : 0);
