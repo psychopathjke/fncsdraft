@@ -1357,6 +1357,14 @@
   .cc-buy-img{flex:0 0 auto;width:54px;height:54px;object-fit:contain;border-radius:8px;
     background:#f2f4f8;padding:4px;}
   .cc-buy-img-wide{width:96px;height:54px;object-fit:cover;padding:0;background:#0b0f12;}
+  /* Newly within reach: outlined, and labelled once. The mark is cleared by
+     opening the shop, so it never becomes wallpaper. */
+  .cc-buy-new{position:relative;background:rgba(0,176,144,.10);
+    box-shadow:inset 0 0 0 1px rgba(0,176,144,.55);border-radius:10px;
+    padding-left:10px;padding-right:10px;}
+  .cc-buy-tag{position:absolute;top:-7px;left:10px;background:#00b090;color:#04241d;
+    font-size:8.5px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;
+    border-radius:3px;padding:1px 6px;}
   /* A day that arrived with something on it, above the seven buttons. */
   #screen-career-hub .cc-day-ev{background:rgba(0,176,144,.12);border:1px solid rgba(0,176,144,.45);
     border-radius:10px;padding:10px 12px;margin-bottom:8px;}
@@ -2439,7 +2447,7 @@
         <button class="ch-tab" data-tab="calendar" onclick="careerTab('calendar')" data-i18n="chTabCalendar"></button>
         <button class="ch-tab" data-tab="social" onclick="careerTab('social')"><span data-i18n="chTabSocial"></span><i class="ch-dot" id="chDmDot"></i></button>
         <button class="ch-tab" data-tab="table" onclick="careerTab('table')" data-i18n="chTabTable"></button>
-        <button class="ch-tab" data-tab="shop" onclick="careerTab('shop')" data-i18n="chTabShop"></button>
+        <button class="ch-tab" data-tab="shop" onclick="careerTab('shop')"><span data-i18n="chTabShop"></span><i class="ch-dot" id="chShopDot"></i></button>
         <button class="ch-tab" data-tab="log" onclick="careerTab('log')" data-i18n="chTabLog"></button>
       </div>
       <div class="ch-body" id="chBody"></div>
@@ -3128,6 +3136,7 @@ chDayFreeSub:'На этой неделе ничего не проводится'
 ccYearSub:{cup:'Одно окно, 11 игр', final:'Финал недели, только Дивизион 1',
   eval:'Два раунда за вечер, только Дивизион 1', major:'Плей-ин, хиты, ЛАН',
   gc:'Конец года', reload:'Отдельный круг, не FNCS',
+  summit:'Дюссельдорф, три дня, по итогам Мажора 1',
   victory:'Два раунда, $100 за каждую победу во втором'},
 ccResWfIn:'Топ-50 за неделю — в субботу финал недели',
 ccBankedSoFar:(p,of,pts)=>'После первой сессии: #'+p+' из '+of+', '+pts+' очков',
@@ -3168,10 +3177,13 @@ ccYearNames:{
   ReloadEliteSeries4Heats:'Reload · кап 4, хиты',   ReloadEliteSeries4Final:'Reload · кап 4, финал',
   Major1_PlayIn:'Мейджор 1 · плей-ин', Major1_Heats:'Мейджор 1 · хиты',
   Major1_LCQ:'Мейджор 1 · последний шанс', Major1_Final:'Мейджор 1 · финал',
+  Summit_Upper:'Саммит · верхняя сетка', Summit_Lower:'Саммит · нижняя сетка',
+  Summit_Final:'Саммит · гранд-финал',
   Major2_PlayIn:'Мейджор 2 · плей-ин', Major2_Heats:'Мейджор 2 · хиты',
   Major2_LCQ:'Мейджор 2 · последний шанс', Major2_Final:'Мейджор 2 · финал',
   GlobalChampionshipLastChance:'Мировой чемпионат · последний шанс',
-  ReloadChampionshipParis:'Reload Championship · Париж'
+  ReloadChampionshipParis:'Reload Championship · Париж',
+  GlobalChampionship:'Мировой чемпионат · Антверпен'
 },
 chWkMajor:'Мейджор',
 chWkGC:'ГЧ',
@@ -3356,8 +3368,9 @@ ccShopSpecpcpro:'Ryzen 7 9800X3D · RTX 5060 Ti · 16 ГБ DDR5',
 ccShopSpecpcelite:'Ryzen 7 9850X3D · RTX 5080 · 32 ГБ DDR5',
 ccShopSpeccamp:'Неделя на базе: залы, скримы, разборы',
 ccShopOwnedBetter:'Есть лучше', ccShopUntil:d=>'До '+d, ccShopMonth:'на месяц',
+ccShopNew:'НОВОЕ',
 ccShopCap:'Запас сил', ccShopchair:'Кресло Secretlab Titan', ccShopfitness:'Зал и тренер по здоровью',
-ccShopchairhm:'Herman Miller Embody', ccShopSpecchairhm:'То самое кресло, которое покупают с первых призовых',
+ccShopchairhm:'Herman Miller Embody', ccShopSpecchairhm:'Сетка и поддержка спины — сидеть можно весь день',
 ccShopdesk:'Стол с электрорегулировкой', ccShopSpecdesk:'Часть дня стоя — спина держится дольше',
 ccShopSpecchair:'Одиннадцать игр подряд без спины',
 ccShopSpecfitness:'Сон, спина, кисти — неделя перестаёт валить',
@@ -3389,6 +3402,19 @@ ccNewsCongrats:(n,ev)=>'Поздравляем '+n+' с победой — '+ev+
 ccNewsD1Table:w=>'Дивизион 1 после '+w+'-й недели — так выглядит гонка за место в сезоне',
 ccCongratsTable:'Дивизион 1 · таблица сезона',
 ccCongratsCup:'кубок Дивизиона 1', ccCongratsMajor:n=>'финал Major '+n,
+ccCongratsSummit:'Саммит в Дюссельдорфе',
+ccNewsSumThrough:(what,p,of)=>what+': #'+p+' из '+of+' — дальше',
+ccNewsSumOut:(what,p,of)=>what+': #'+p+' из '+of+' — на этом всё',
+ccNewsSumCash:(p,v)=>'Саммит: #'+p+' — $'+v,
+ccNewsSumNoCash:(p,of)=>'Саммит: #'+p+' из '+of+', без призовых',
+ccSumLocked:'Саммит собирают по итогам финала Мажора 1: топ-20 в верхнюю сетку, 21–28 во вторую попытку',
+ccCongratsGlobals:'Мировой чемпионат в Антверпене',
+ccNewsGlobCash:(p,v)=>'Мировой чемпионат: #'+p+' — $'+v,
+ccNewsGlobNoCash:(p,of)=>'Мировой чемпионат: #'+p+' из '+of,
+ccNewsGlobChamp:'ЧЕМПИОН МИРА 🌍🏆',
+ccGlobLocked:'В Антверпен едут топ-15 Саммита, топ-9 финала Мажора 2 и топ-3 последнего шанса',
+ccGlobSeatSummit:'место с Саммита', ccGlobSeatMajor:'место с финала Мажора 2',
+ccGlobSeatGclc:'место с последнего шанса',
 ccPostMateHappy:me=>'Хорошая неделя с @'+me+' 🔥',
 ccPostMateCross:()=>'Так играть нельзя. Разбираем повторы и заново',
 ccPostMateLeft:me=>'Дальше без @'+me+'. Спасибо за игры',
@@ -3421,6 +3447,7 @@ ccMoodHappy:'доволен',
 ccNews:'Что говорят',
 ccNewsEmpty:'Пока ничего не произошло.',
 ccNewsResult:(p,t,d,pts)=>'Кубок Див '+d+': #'+p+' из '+t+', '+pts+' очков',
+ccNewsResultWeek:(p,t,d,pts,g)=>'Кубок Див '+d+', итог недели: #'+p+' из '+t+', '+pts+' очков за '+g+' игр',
 ccNewsPromoted:d=>'Токен взят — теперь Дивизион '+d,
 ccNewsWage:v=>'Зарплата от клуба: $'+v, ccNewsWinner:n=>'Кубок забрали '+n,
 ccNewsRating:(a,b)=>'Рейтинг: '+a+' → '+b,
@@ -3909,6 +3936,7 @@ chDayFreeSub:'Nothing runs this week',
 ccYearSub:{cup:'One window, 11 games', final:'Weekly Final, Division 1 only',
   eval:'Two rounds in a night, Division 1 only', major:'Play-In, Heats, LAN',
   gc:'The end of the year', reload:'Its own circuit, not FNCS',
+  summit:'Düsseldorf, three days, off Major 1',
   victory:'Two rounds, $100 for every win in the second'},
 ccResWfIn:'Top fifty on the week — the Weekly Final is on Saturday',
 ccBankedSoFar:(p,of,pts)=>'After the first session: #'+p+' of '+of+', '+pts+' points',
@@ -3949,10 +3977,13 @@ ccYearNames:{
   ReloadEliteSeries4Heats:'Reload · cup 4 heats', ReloadEliteSeries4Final:'Reload · cup 4 final',
   Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heats',
   Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Final',
+  Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket',
+  Summit_Final:'Summit · Grand Finals',
   Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heats',
   Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Final',
   GlobalChampionshipLastChance:'Global Championship · Last Chance',
-  ReloadChampionshipParis:'Reload Championship · Paris'
+  ReloadChampionshipParis:'Reload Championship · Paris',
+  GlobalChampionship:'Global Championship · Antwerp'
 },
 chWkMajor:'Major',
 chWkGC:'GC',
@@ -4137,8 +4168,9 @@ ccShopSpecpcpro:'Ryzen 7 9800X3D · RTX 5060 Ti · 16GB DDR5',
 ccShopSpecpcelite:'Ryzen 7 9850X3D · RTX 5080 · 32GB DDR5',
 ccShopSpeccamp:'A week at the facility: rooms, scrims, reviews',
 ccShopOwnedBetter:'Have better', ccShopUntil:d=>'Until '+d, ccShopMonth:'for a month',
+ccShopNew:'NEW',
 ccShopCap:'Stamina', ccShopchair:'Secretlab Titan chair', ccShopfitness:'Gym and a health coach',
-ccShopchairhm:'Herman Miller Embody', ccShopSpecchairhm:'The chair people buy with their first prize money',
+ccShopchairhm:'Herman Miller Embody', ccShopSpecchairhm:'Mesh and real back support — sit in it all day',
 ccShopdesk:'Standing desk', ccShopSpecdesk:'Part of the day on your feet — the back holds longer',
 ccShopSpecchair:'Eleven games without your back deciding',
 ccShopSpecfitness:'Sleep, back, wrists — the week stops flattening you',
@@ -4170,6 +4202,19 @@ ccNewsCongrats:(n,ev)=>'Congratulations to '+n+' on the win — '+ev+'! 🏆',
 ccNewsD1Table:w=>'Division 1 after week '+w+' — this is how the season race looks',
 ccCongratsTable:'Division 1 · season table',
 ccCongratsCup:'the Division 1 cup', ccCongratsMajor:n=>'the Major '+n+' Finals',
+ccCongratsSummit:'the Summit in Düsseldorf',
+ccNewsSumThrough:(what,p,of)=>what+': #'+p+' of '+of+' — through',
+ccNewsSumOut:(what,p,of)=>what+': #'+p+' of '+of+' — that is the run',
+ccNewsSumCash:(p,v)=>'Summit: #'+p+' — $'+v,
+ccNewsSumNoCash:(p,of)=>'Summit: #'+p+' of '+of+', no prize money',
+ccSumLocked:'The Summit is filled off the Major 1 Final: top 20 to the Upper Bracket, 21-28 to the second chance',
+ccCongratsGlobals:'the Global Championship in Antwerp',
+ccNewsGlobCash:(p,v)=>'Global Championship: #'+p+' — $'+v,
+ccNewsGlobNoCash:(p,of)=>'Global Championship: #'+p+' of '+of,
+ccNewsGlobChamp:'WORLD CHAMPION 🌍🏆',
+ccGlobLocked:'Antwerp is the Summit top 15, the Major 2 Final top 9 and the Last Chance top 3',
+ccGlobSeatSummit:'a seat from the Summit', ccGlobSeatMajor:'a seat from the Major 2 Final',
+ccGlobSeatGclc:'a seat from the Last Chance',
 ccPostMateHappy:me=>'Good week with @'+me+' 🔥',
 ccPostMateCross:()=>'We cannot keep playing like this. Back to the VODs',
 ccPostMateLeft:me=>'Moving on from @'+me+'. Thanks for the games',
@@ -4202,6 +4247,7 @@ ccMoodHappy:'happy',
 ccNews:'What they are saying',
 ccNewsEmpty:'Nothing has happened yet.',
 ccNewsResult:(p,t,d,pts)=>'Div '+d+' Cup: #'+p+' of '+t+', '+pts+' points',
+ccNewsResultWeek:(p,t,d,pts,g)=>'Div '+d+' Cup, week total: #'+p+' of '+t+', '+pts+' points from '+g+' games',
 ccNewsPromoted:d=>'Token taken — Division '+d+' now',
 ccNewsWage:v=>'Club wages: $'+v, ccNewsWinner:n=>n+' won the cup',
 ccNewsRating:(a,b)=>'Rating: '+a+' → '+b,
@@ -32065,7 +32111,18 @@ function renderRunSummaryCard(){
   return card;
 }
 
+/* The live table is the stage while it plays; the stage card is the stage when
+   it is over, and it draws its own standings. A skipped stage keeps its live
+   card on the page so the player can read what they skipped to — which is
+   right until the card that replaces it appears, and then the page carries the
+   same table twice. So building a stage card takes the live one down. */
+function ccDropLiveCard(){
+  document.querySelectorAll('#majorStages .stage-card').forEach(c=>{
+    if(c.querySelector('.lobby-live')) c.remove();
+  });
+}
 function createStageCardShell(title){
+  ccDropLiveCard();
   const container=document.getElementById('majorStages');
   const card=document.createElement('div');
   card.className='stage-card';
@@ -33940,7 +33997,7 @@ async function renderWinnersPlate(shell, winner, you){
   await sleep(420);
 }
 
-async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, prizeTable, cutLabel){
+async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, prizeTable, cutLabel, winners){
   // Sixty rows, unless the cut line sits below that — then far enough to show
   // it. A Play-In is 150 teams cutting to 99, and stopping at sixty meant the
   // table never reached the line: the stage said "top 99 advance" and the
@@ -34069,7 +34126,12 @@ async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, p
     const shown=Math.min(view.length-firstVisible, 14);
     await sleep(420 + shown*38);
   }
-  await renderWinnersPlate(shell, ranked[0], you);
+  // The winners plate belongs to a final. In a draft run every stage ends in
+  // one and that is the run's own shape, but a career plays a cup a week and a
+  // champion's plate under every ordinary Tuesday makes the word meaningless:
+  // in a career it is drawn where the caller says the tournament ended.
+  if(winners===true || (winners===undefined && !CAREER_RUN))
+    await renderWinnersPlate(shell, ranked[0], you);
 }
 
 function summitQualifiersHTML(main, scq, you){
@@ -37660,6 +37722,9 @@ function ccStart(){
       handle: card?card.handle:null, cardRegion: card?card.region:null, nat: card?card.nat:null
     },
     career:{season:1, day:careerStartDay(), division: CC.div,
+            // A career that starts in Division 1 starts known: that room is
+            // 300 people the scene watches, and nobody is in it unread.
+            reach: CC.div===1 ? CC_REACH_D1 : 0,
             earnings:0, tokens:[], log:[]},
     // Taking a card takes the duo with it: you start with the partner they
     // really play with, off the card's own roster entries. A rookie, or a card
@@ -37705,7 +37770,7 @@ function careerExists(){
 // same week reads differently depending on where you are standing.
 //
 // CAREER_WEEKS moved down to the clock and became the measured year's own
-// thirty-eight. This still walks weeks because the ladder is weekly — a cup runs
+// forty-three. This still walks weeks because the ladder is weekly — a cup runs
 // Monday and Tuesday and those are two windows of one tournament, not two.
 function careerSchedule(){
   const div=CAREER && CAREER.career ? CAREER.career.division : 5;
@@ -37738,7 +37803,7 @@ function careerSchedule(){
 //
 // A Victory Cup outranks a Reload day but not the ladder: the ladder is what the
 // career is for, and a day holding both is a ladder day.
-const CC_KIND_RANK=['gc','major','cup','final','eval','victory','reload'];
+const CC_KIND_RANK=['globals','gc','summit','major','cup','final','eval','victory','reload'];
 function careerNext(){
   const days=careerEvents(), today=careerToday();
   for(let d=0; d<1; d++){
@@ -37849,7 +37914,13 @@ function careerEnd(){
 }
 
 let CH_TAB='centre';
-function careerTab(t){ CH_TAB=t; careerRenderHub(t); }
+function careerTab(t){
+  CH_TAB=t;
+  careerRenderHub(t);
+  // Opening the shop is what clears its mark: the render above still drew the
+  // new rows, and the next visit will not call them new again.
+  if(t==='shop') careerShopSeen();
+}
 
 function careerRenderHub(tab){
   CH_TAB=tab||CH_TAB;
@@ -37897,6 +37968,11 @@ function careerRenderHub(tab){
   // on this screen that asks to be clicked.
   const dot=document.getElementById('chDmDot');
   if(dot) dot.style.display = careerDmUnread() ? 'inline-block' : 'none';
+  // The same mark on the shop: something is affordable that was not the last
+  // time it was opened. A desk of twelve rows does not announce itself, and
+  // the money arrives on a payday the player was not looking at.
+  const sdot=document.getElementById('chShopDot');
+  if(sdot) sdot.style.display = careerShopNew().length ? 'inline-block' : 'none';
 
   const body=document.getElementById('chBody');
   if(CH_TAB==='calendar'){ body.innerHTML=careerCalendarHTML(); return; }
@@ -38041,6 +38117,8 @@ function careerCentreHTML(card, a){
             next.type==='reload' ? L().ccRelLocked
           : next.type==='final'  ? L().ccWfLocked
           : next.type==='major'  ? L().ccMajLocked
+          : next.type==='summit' ? L().ccSumLocked
+          : next.type==='globals'? L().ccGlobLocked
           : next.type==='gc'     ? (careerGclcOn(careerToday()) ? L().ccGcLocked : L().ccRcLocked)
                                  : L().chSoonHint)}">${L().chSkip}</button>`;
   const mate = careerPartnerCard();
@@ -38262,12 +38340,18 @@ const CAREER_CUT={1:'—', 2:'top 50', 3:'top 100', 4:'top 200', 5:'top 400'};
    run eleven weeks from a January Monday instead of the year Epic actually ran.
 
    The career year is the measured one: Monday 1 December 2025 to Sunday
-   23 August 2026, thirty-eight weeks. It opens on the week of S39's first
-   Performance Evaluation night and closes after the Reload Championship in
-   Paris, the last block in the year. Both ends were checked rather than
-   assumed — 1 December 2025 is a Monday, 21 August 2026 is a Friday, so the
-   last week runs to Sunday the 23rd. */
-const CAREER_WEEKS=38;
+   27 September 2026, forty-three weeks. It opens on the week of S39's first
+   Performance Evaluation night and closes on the Global Championship in
+   Antwerp, the last event of the season. Both ends were checked rather than
+   assumed — 1 December 2025 is a Monday and 27 September 2026 is a Sunday, so
+   the year is 301 days, which is 43 weeks to the day.
+
+   It used to stop at 38, on 23 August, two days after Paris. That was the last
+   block anyone had wired in, not the last block of the year: Antwerp is five
+   weeks later and it is what the whole ladder is for. The five weeks between
+   them carry nothing but training days and the wage on 1 September, which is
+   what that gap really is. */
+const CAREER_WEEKS=43;
 
 function careerToday(){
   return (CAREER && CAREER.career && CAREER.career.day) || CC_YEAR_FROM;
@@ -38569,7 +38653,7 @@ function careerDoAct(id){
   careerSave();
   return {id, moved, energy:careerEnergy()};
 }
-const CC_PLAYABLE=['cup','victory','eval','reload','final','major','gc'];
+const CC_PLAYABLE=['cup','victory','eval','reload','final','major','gc','summit','globals'];
 // The Major's Play-In and Heats belong to Division 1, but its Last Chance is
 // open to all five divisions in Epic's own words, so 'major' cannot be listed
 // here wholesale — careerMajorCan decides it stage by stage, and careerEvents
@@ -38793,7 +38877,16 @@ const CAREER_EV_ART={
    listed opens:['2026-01-08','2026-01-16'] as two dates, the new one read them
    as a range, and a cup with two Opens got nine. On the calendar it showed up
    as three play-ins for a cup that has two. */
-const CC_YEAR_FROM='2025-12-01', CC_YEAR_TO='2026-08-23';
+/* The year ends where the season does.
+   It used to end on 23 August, two days after Paris, and that cut the season's
+   own last event off the calendar: the Global Championship is in Antwerp on
+   26-27 September 2026, which is where every road in this mode has been going
+   all year. A career could win a seat there — the Summit, Major 2, the Last
+   Chance all hand one out — and then the year simply stopped before the flight.
+   The month between is the real gap between Paris and Antwerp, and it is
+   training days, wages on 1 September and nothing else, which is what that
+   month is. */
+const CC_YEAR_FROM='2025-12-01', CC_YEAR_TO='2026-09-27';
 const CAREER_YEAR=[
   ['2026-01-08','2026-01-16','ReloadEliteSeries1Opens','reload','pair'],
   ['2026-01-23','2026-01-28','ReloadEliteSeries1PlayIn','reload','pair'],
@@ -38807,6 +38900,13 @@ const CAREER_YEAR=[
   ['2026-04-17','2026-04-19','Major1_Heats','major'],
   ['2026-04-20','2026-04-21','Major1_LCQ','major'],
   ['2026-04-25','2026-04-26','Major1_Final','major'],
+  // The Major 1 Summit, off the roster's own cards: the Group Stage is dated
+  // 29 May 2026 and the Grand Finals 31 May, so the Lower Bracket sits between
+  // them. Three days in Düsseldorf, and until now the career watched them go
+  // past — the one FNCS event of the year it qualified for and never played.
+  ['2026-05-29','2026-05-29','Summit_Upper','summit'],
+  ['2026-05-30','2026-05-30','Summit_Lower','summit'],
+  ['2026-05-31','2026-05-31','Summit_Final','summit'],
   ['2026-05-01','2026-05-03','ReloadEliteSeries3Opens','reload','pair'],
   ['2026-05-08','2026-05-10','ReloadEliteSeries3PlayIn','reload','pair'],
   ['2026-05-15','2026-05-15','ReloadEliteSeries3Heats','reload'],
@@ -38822,7 +38922,11 @@ const CAREER_YEAR=[
   // The Global Championship Last Chance is seven days, not two: two qualifiers
   // of three rounds and then a final. They are in CC_GCLC, because a 'pair' row
   // could only ever hold the first day and the last.
-  ['2026-08-18','2026-08-21','ReloadChampionshipParis','gc']
+  ['2026-08-18','2026-08-21','ReloadChampionshipParis','gc'],
+  // Antwerp, 26-27 September 2026. One cumulative leaderboard over the two days
+  // rather than a bracket, so it is one stage and a career plays it on the
+  // Saturday — the same rule the Heats and the Play-In already run under.
+  ['2026-09-26','2026-09-27','GlobalChampionship','globals']
 ];
 // The Performance Evaluation, night by night rather than as a span: it is the
 // one event that runs every week of the year, and a career calendar has to put
@@ -40380,7 +40484,11 @@ function careerNews(kind, key, args, opt){
    a partner's mood is the partner speaking. Nothing new is stored for this: the
    key was already there, and it always knew whose line it was. */
 const CC_POST_BY={
-  ccNewsResult:'press', ccNewsPromoted:'press', ccNewsWinner:'press',
+  // Your own placing is your own post, in every division. The scene's account
+  // reports titles, the table and who moved clubs — not that somebody finished
+  // 103rd of 150, which is what it was doing and what a real one never does.
+  ccNewsResult:'you', ccNewsResultWeek:'you',
+  ccNewsPromoted:'press', ccNewsWinner:'press',
   ccNewsEvalCash:'press', ccNewsEvalNoWin:'press', ccNewsEvalOut:'press',
   ccNewsSigned:'press', ccNewsReleased:'press', ccNewsExtended:'press',
   ccNewsSeason:'press',
@@ -40398,8 +40506,10 @@ const CC_POST_BY={
   ccNewsDuoAgain:'you', ccNewsDuoSplit:'you', ccNewsDuoOutgrown:'you',
   ccNewsDuoAnnounce:'you',
   ccNewsMajThrough:'you', ccNewsMajOut:'you', ccNewsMajCash:'you', ccNewsMajNoCash:'you',
+  ccNewsSumThrough:'you', ccNewsSumOut:'you', ccNewsSumCash:'you', ccNewsSumNoCash:'you',
   ccNewsRcThrough:'you', ccNewsRcDrop:'you', ccNewsRcOut:'you', ccNewsRcCash:'you', ccNewsRcChamp:'you',
   ccNewsGcThrough:'you', ccNewsGcIn:'you', ccNewsGcOut:'you', ccNewsGcCash:'you', ccNewsGcNoCash:'you',
+  ccNewsGlobCash:'you', ccNewsGlobNoCash:'you', ccNewsGlobChamp:'you',
   ccNewsPartnerNew:'you', ccNewsDropped:'you',
   // The partner's mood stays with the press account, even though it is about
   // them. Every line in this feed is written as a report — "Rimo is unhappy with
@@ -40418,7 +40528,6 @@ const CC_POST_BY={
    which is who actually announces those things. */
 function ccPressWorthy(e){
   if(e.k==='ccNewsCongrats') return true;
-  if(e.k==='ccNewsResult')   return !!(e.a && e.a[2]===1);
   if(e.k==='ccNewsPromoted') return !!(e.a && e.a[0]===1);
   return (e.dv!=null ? e.dv : CAREER.career.division)===1;
 }
@@ -40462,10 +40571,69 @@ function careerReachAdd(n){
   cr.reach=Math.max(0, Math.round(was+n));
   return cr.reach-was;
 }
-function careerReachResult(place, of, div){
+/* What a result is worth to the audience.
+
+   Results always fed this — the cup, the Weekly Final, the Majors, Paris — but
+   the curve was cubed, so it paid for a near-win and for nothing else: a
+   Division 5 night in the middle of the room was fifteen followers against
+   twenty for a day of streaming, and the player's own reading was that only
+   streams grow it.
+
+   Softer, and worth more. At 2.2 a third of the way up the room still pays,
+   and the nine puts a good night ahead of a day at the desk rather than level
+   with it: in Division 5 a win is 180 against a stream's 20, the cut is 150,
+   a third of the room is 74. Which is the shape it should have — a career is
+   followed for playing well, and the stream is what fills the days between. */
+/* And what the event itself is worth, which is what the money says.
+
+   The multipliers used to be written at the call sites by hand — a Major twice
+   a cup, Paris three times — and they did not line up with anything. An
+   audience turns up for what is at stake, and this mode already knows what is
+   at stake: the top prize of each event.
+
+     divisional cup      pays nothing        x1     the ladder itself
+     Victory Cup         a hundred a win     x0.5   an open night, one game
+     Performance Eval    $400 a win          x0.5
+     Reload stage        a seat, no cash     x1.5
+     Weekly Final        $10,000             x2.5
+     Major final         $120,000            x5
+     Global Champ LC     a seat at the GC    x6
+     Reload Championship $260,000 of $1.02M  x8
+     Summit final        $250,000 of $1.29M  x9
+     Global Championship $2,000,000 in all   x14
+
+   The last two are the biggest nights the game has and neither is in a career
+   year yet: the mode's year ends on 23 August and Antwerp is 26-27 September,
+   while the Summit belongs to the 2025 sets the draft mode plays. Their weights
+   are written down anyway, because the number that decides them is published
+   and the day a career reaches one it should already know what it is worth.
+
+   So winning a divisional cup is worth a lot in the room it happens in, a
+   night at the Victory Cup is worth half of one, and Paris is worth eight —
+   which is the shape the user asked for and the shape the payouts already
+   had. */
+const CC_REACH_EVENT={cup:1, final:2.5, victory:0.5, eval:0.5, reload:1.5,
+                      major:5, gc:6, rc:8, summit:9, globals:14};
+function careerReachResult(place, of, div, kind){
   if(!(of>1)) return 0;
   const beat=clamp(1-(place-1)/(of-1), 0, 1);
-  return Math.round(Math.pow(beat,3)*CC_REACH_DIV(div)*6);
+  const w=CC_REACH_EVENT[kind]!=null ? CC_REACH_EVENT[kind] : 1;
+  return Math.round(Math.pow(beat,2.2)*CC_REACH_DIV(div)*9*w);
+}
+// Going up a rung is the thing people actually follow you for, and it happened
+// silently: the cup that promoted you paid its own placing and nothing for the
+// promotion. A rung is worth a fortnight of streaming in the room it lands in.
+//
+// And Division 1 carries a floor. Nobody is in that room unknown — it is 300
+// people the scene watches every week — so arriving there tops the count up to
+// ten thousand if a quiet career got there on results alone. Nothing is ever
+// taken away again: falling out of the division does not unfollow anybody,
+// which is the same rule the rest of this number lives by.
+const CC_REACH_D1=10000;
+function careerReachPromote(newDiv){
+  const got=careerReachAdd(CC_REACH_DIV(newDiv)*12);
+  if(newDiv===1 && careerReach()<CC_REACH_D1) return got+careerReachAdd(CC_REACH_D1-careerReach());
+  return got;
 }
 // K and M, the way a profile writes them.
 function ccFollowers(n){
@@ -41436,7 +41604,7 @@ const CC_SHOP=[
   {id:'pcbudget', cost:500,   train:0.10, img:'pc-budget.jpg', slot:'pc', rank:1},
   // A desk that goes up: standing through the dead hours is the cheapest hour
   // a career gets back, and like the chair it buys days rather than percent.
-  {id:'desk',     cost:700,   cap:8},
+  {id:'desk',     cost:700,   cap:8,  img:'desk.jpg'},
   {id:'monitor',  cost:600,   train:0.10, img:'monitor.jpg'},
   // The two that are not hardware are priced the way they are actually sold: a
   // bootcamp is about a thousand dollars a stay (the user's number), and a
@@ -41452,11 +41620,12 @@ const CC_SHOP=[
   //
   // The two chairs are one slot: an Embody replaces a Titan, pays the
   // difference in store, and the Titan reads "have better" afterwards.
-  {id:'chair',    cost:400,   cap:10, slot:'chair', rank:1},
-  {id:'chairhm',  cost:1000,  cap:20, slot:'chair', rank:2},
+  {id:'chair',    cost:400,   cap:10, img:'chair.jpg',    slot:'chair', rank:1},
+  {id:'chairhm',  cost:1000,  cap:20, img:'chair-hm.jpg', slot:'chair', rank:2},
   {id:'camp',     cost:1000,  train:0.45, img:'camp.jpg', wide:true, days:30},
   {id:'pcpro',    cost:1500,  train:0.20, img:'pc-pro.jpg',    slot:'pc', rank:2},
-  {id:'fitness',  cost:2000,  cap:15},
+  // A room, not a product: cropped wide like the bootcamp.
+  {id:'fitness',  cost:2000,  cap:15, img:'gym.jpg', wide:true},
   {id:'pcelite',  cost:3000,  train:0.30, img:'pc-elite.jpg',  slot:'pc', rank:3}
 ];
 /* The coach is not a thing on a desk, so he is not in the shop: he is a person
@@ -41559,8 +41728,27 @@ function careerBuy(id){
   careerRenderHub('shop');
   return true;
 }
+/* What is newly within reach: on the desk, not owned, and costing more than
+   the balance stood at the last time the shop was open. So a payday that puts
+   the first rig in reach marks itself, and nothing is marked twice — the mark
+   is cleared by looking, which is what careerTab does when the tab opens. */
+function careerShopNew(){
+  const cr=CAREER.career, bal=cr.balance||0, seen=cr.shopSeen||0;
+  return CC_SHOP.filter(it=>{
+    if(careerOwns(it.id)) return false;
+    if(it.days && ccStayOf(it.id)) return false;
+    if(it.slot && ccShopSlotRank(it.slot)>=it.rank) return false;
+    return it.cost<=bal && it.cost>seen;
+  });
+}
+function careerShopSeen(){
+  const cr=CAREER.career;
+  cr.shopSeen=Math.max(cr.shopSeen||0, cr.balance||0);
+  careerSave();
+}
 function careerShopHTML(){
   const cr=CAREER.career;
+  const fresh=new Set(careerShopNew().map(it=>it.id));
   const rows=CC_SHOP.map(function(it){
     const stay=it.days ? ccStayOf(it.id) : null;
     const own=careerOwns(it.id) || !!stay;
@@ -41574,7 +41762,9 @@ function careerShopHTML(){
     // place, so it is cropped wide rather than boxed square like a mouse.
     const shot=it.img ? '<img class="cc-buy-img'+(it.wide?' cc-buy-img-wide':'')+
       '" src="'+CC_DEVICE_DIR+it.img+'" alt="" loading="lazy" onerror="this.remove()">' : '';
-    return '<div class="cc-buy'+(own?' own':'')+(outranked?' cc-buy-old':'')+'">'+
+    return '<div class="cc-buy'+(own?' own':'')+(outranked?' cc-buy-old':'')+
+      (fresh.has(it.id)?' cc-buy-new':'')+'">'+
+      (fresh.has(it.id)?'<span class="cc-buy-tag">'+L().ccShopNew+'</span>':'')+
       shot+
       '<div class="cc-buy-in"><b>'+L()['ccShop'+it.id]+'</b>'+
       (spec ? '<i>'+spec+'</i>' : '')+
@@ -41607,6 +41797,8 @@ function careerCanPlayKind(kind){
   if(kind==='reload') return careerReloadCan(careerReloadOn(careerToday()));
   if(kind==='final')  return careerWeeklyFinalOn(careerToday());
   if(kind==='major')  return careerMajorCan(careerMajorOn(careerToday()));
+  if(kind==='summit') return careerSummitCan(careerSummitOn(careerToday()));
+  if(kind==='globals')return careerGlobalsCan(careerGlobalsOn(careerToday()));
   if(kind==='gc')     return careerGclcOn(careerToday())
                                ? careerGclcCan(careerGclcOn(careerToday()))
                                : careerRcCan(careerRcOn(careerToday()));
@@ -41617,6 +41809,8 @@ async function careerPlay(){
   const next=careerNext();
   if(!next) return;
   if(next.type==='cup')     return runCareerCup();
+  if(next.type==='summit')  return runCareerSummit();
+  if(next.type==='globals') return runCareerGlobals();
   if(next.type==='victory') return runCareerVictory();
   // Written months ago and never reachable: careerPlay only ever opened a cup,
   // so the Performance Evaluation sat on the Division 1 calendar with no way in.
@@ -42645,7 +42839,7 @@ async function runCareerEval(){
     await revealStageLog(you, shell2, true);
     finalizeStageCard(shell2, place2, r2.length, you.stagePts, wins>0, false,
       wins ? L().ccEvalCash(wins, cash) : L().ccEvalNoWin);
-    await revealStandings(shell2, ranked2, you, 0);
+    await revealStandings(shell2, ranked2, you, 0, null, null, null, null, true);
   }
   removeSkipButton();
 
@@ -42750,14 +42944,15 @@ async function runCareerGclc(){
   finalizeStageCard(shell, place, field.length, you.stagePts, ev.final?cash>0:through, false,
     ev.final ? (cash ? L().ccWfCash(cash.toLocaleString('en-US')) : L().ccWfNoCash)
              : through ? L().ccRelPass(st.cut) : L().ccRelFail(st.cut));
-  await revealStandings(shell, ranked, you, ev.final ? 10 : st.cut);
+  await revealStandings(shell, ranked, you, ev.final ? 10 : st.cut,
+    null, null, null, null, !!ev.final);
   careerPrAdd(ranked, {div:CAREER.career.division, kind:'gclc'});
 
   cr.gclc=cr.gclc||{};
   if(ev.final){
     careerMoneyAdd(ranked, gclcPrize);
     if(cash){ cr.earnings=(cr.earnings||0)+cash; cr.balance=(cr.balance||0)+cash; }
-    careerReachAdd(careerReachResult(place, field.length, 1)*2);
+    careerReachAdd(careerReachResult(place, field.length, 1, 'gc'));
     cr.gclc={q:0, round:0, through:false, done:true};
     careerNews(cash?'good':'flat', cash?'ccNewsGcCash':'ccNewsGcNoCash',
                cash?[place, cash.toLocaleString('en-US')]:[place, field.length]);
@@ -42856,7 +43051,7 @@ async function runCareerReloadChampionship(){
     : L().ccRelFail(ev.stage==='group'?CC_RC_GROUP.drop:CC_RC_SURV.cut);
   finalizeStageCard(shell, place, field.length, you.stagePts, through||champ, false, note);
   await revealStandings(shell, ranked, you, ev.stage==='group'?CC_RC_GROUP.direct:CC_RC_SURV.cut,
-    null, null, ev.stage==='final' ? rcPrize : null);
+    null, null, ev.stage==='final' ? rcPrize : null, null, ev.stage==='final');
   careerPrAdd(ranked, {div:CAREER.career.division, kind:'rc', stage:ev.stage});
 
   let cash=0;
@@ -42866,7 +43061,7 @@ async function runCareerReloadChampionship(){
     careerMoneyAdd(ranked, rcPrize);
     cash=rcPrize(place);
     if(cash){ cr.earnings=(cr.earnings||0)+cash; cr.balance=(cr.balance||0)+cash; }
-    careerReachAdd(careerReachResult(place, 40, 1)*3);
+    careerReachAdd(careerReachResult(place, 40, 1, 'rc'));
     cr.rc={got:'final', ticket:false, dropped:false};
     careerNews(champ?'good':cash?'good':'flat',
                champ?'ccNewsRcChamp':'ccNewsRcCash',
@@ -42895,6 +43090,453 @@ async function runCareerReloadChampionship(){
   careerReloadResultCard({label:ev.label, place:place, of:field.length,
     through:through||champ, cut:CC_RC_GROUP.direct, seat:false,
     money: ev.stage==='final' ? cash : null});
+}
+
+/* ===== Who is in the room at a LAN =========================================
+
+   Düsseldorf and Antwerp are world events and the career was playing them
+   against fifty Europeans. Everything below Division 1 is a European ladder and
+   that is right — the career plays Europe's season — but a LAN is the one place
+   where the other six regions turn up, and they are not invented here: every
+   one of their seats is a real duo off a real leaderboard, the same tables the
+   draft mode fills its own Antwerp field from.
+
+     the Summit    each region's Major 1 Grand Finals, top N by Epic's published
+                   allocation: SUMMIT_SLOTS (EU 20, NAC 13, BR 5, NAW/ASIA/ME/OCE
+                   3 each) and SUMMIT_SCQ_SLOTS for the Second Chance.
+     Antwerp       the three qualification lists themselves: GC_SUMMIT_DUOS is
+                   the fifteen who came out of the Summit and GC_MAJOR2_DUOS is
+                   the twenty-five who came out of the Major 2 regional finals.
+
+   Europe is the exception in both, and for the same reason: this career played
+   Europe's season itself, so Europe's seats are the duos it played them against
+   rather than the historical qualifiers. That is the rule the draft mode already
+   uses for the region you played in — see buildSummitField.
+
+   Foreign duos are built through careerTeam like every other pair in this mode,
+   so they carry the standing-pair synergy a career duo does. They are standing
+   pairs — they qualified for a LAN together — and building them any other way
+   would quietly dock every non-European seat five points of power. */
+// A real duo's cards, at the ratings the roster holds for them. gcFindCard is
+// the draft mode's lookup and it takes the strongest card a handle has, which
+// for a LAN qualifier is their Grand Finals card.
+// Null when either player is already in the room. The check is on the resolved
+// cards as well as on the names that were asked for: Liquipedia and Tracker
+// write four of these people differently and GC_HANDLE_ALIAS bridges them, so
+// two different spellings can land on one card and seat somebody twice.
+function ccLanTeam(duo, region, fallbackOvr, seated){
+  const cards=duo.map(h=>gcFindCard(h, region, fallbackOvr));
+  if(seated){
+    const keys=duo.map(_gcNorm).concat(cards.map(c=>_gcNorm(c.handle)));
+    if(keys.some(k=>seated.has(k))) return null;
+    keys.forEach(k=>seated.add(k));
+  }
+  const t=careerTeam(cards);
+  t.name=teamLabel(cards);
+  t.lanRegion=region;
+  return t;
+}
+// The top N duos of a leaderboard that are not already seated somewhere, built.
+// In finishing order rather than drawn: who qualified is a fact, not a roll.
+function ccLanSeats(entries, count, region, seated, ovr){
+  const out=[];
+  (entries||[]).forEach(e=>{
+    if(out.length>=count) return;
+    const duo=(e.duo||[]).slice(0, 2);
+    if(duo.length<2) return;
+    const t=ccLanTeam(duo, region, ovr==null?CC_LAN_OVR:ovr, seated);
+    if(t) out.push(t);
+  });
+  return out;
+}
+// A written-down list of duos, read the same way a leaderboard is.
+function ccLanRows(list){ return (list||[]).map(d=>({duo:d})); }
+// Nobody plays a LAN they are not in. A room built from allocations can leave
+// the player out of a stage they earned — the Grand Finals seats the Upper's
+// top 25 and the career's own seed is not what decided that — so the seat is
+// held open rather than hoped for.
+function ccSeatYou(room, you){
+  if(room.indexOf(you)<0) room[room.length-1]=you;
+  return room;
+}
+const CC_LAN_OVR=88;
+
+/* ===== The Summit, Düsseldorf ==============================================
+
+   Three days at the end of May, off Major 1's own standings, and the career
+   used to watch them go past — the one FNCS event of the year it qualified for
+   and never played.
+
+   The format is the one this app already holds for the draft mode, which is
+   Epic's own (see SUMMIT_SLOTS):
+
+     Upper Bracket   the 50 Major 1 qualifiers, 6 games, top 25 straight to the
+                     Grand Finals.
+     Lower Bracket   the 25 who dropped plus the 25 from the Second Chance
+                     Qualifier, 6 games, a Victory Royale advances instantly and
+                     the top 19 on points fill the rest.
+     Grand Finals    50 duos, 8 games, champion crowned.
+
+   Europe's allocation is Epic's own too: the top 20 of Major 1's European Grand
+   Finals go to the Upper Bracket and the next 8 to the Second Chance — so a
+   career walks in through the Major it already played, and the entry is read
+   off its own history row rather than stored.
+
+   The purse is PRIZE_TABLES.SUMMIT, $250,000 at the top of a $1,296,000 pool,
+   which is where the reach weight of x9 came from. */
+const CC_SUMMIT_STAGE={
+  upper:{games:6, kill:3, field:50, cut:25, pts:majorPoints},
+  lower:{games:6, kill:3, field:50, cut:19, pts:majorPoints},
+  final:{games:8, kill:4, field:50, cut:0,  pts:majorPoints}
+};
+const CC_SUMMIT_DAY={Upper:'upper', Lower:'lower', Final:'final'};
+const CC_SUMMIT_ORDER=['upper','lower','final'];
+const CC_SUMMIT_EU_MAIN=20, CC_SUMMIT_EU_SCQ=28;
+function careerSummitOn(iso){
+  const e=(careerYearDays().get(iso)||[]).find(x=>x.kind==='summit');
+  if(!e) return null;
+  const m=String(e.id||'').match(/^Summit_(Upper|Lower|Final)$/);
+  return m ? {stage:CC_SUMMIT_DAY[m[1]], id:e.id, label:e.label} : null;
+}
+// Where Major 1 left you: the placing in its European Grand Finals is the whole
+// entry list. Read off the log, so a career that skipped the Major has nothing
+// to show and stays home, which is what happens.
+function ccSummitSeat(){
+  const cr=CAREER.career;
+  const row=(cr.log||[]).slice().reverse()
+    .find(r=>r.kind==='major' && r.stage==='final');
+  if(!row || !row.place) return null;
+  if(row.place<=CC_SUMMIT_EU_MAIN) return 'main';
+  if(row.place<=CC_SUMMIT_EU_SCQ)  return 'scq';
+  return null;
+}
+function careerSummitCan(ev){
+  if(!ev) return false;
+  const cr=CAREER.career, s=cr.summit||{};
+  if(s.got && CC_SUMMIT_ORDER.indexOf(s.got)>=CC_SUMMIT_ORDER.indexOf(ev.stage)) return false;
+  const seat=ccSummitSeat();
+  if(ev.stage==='upper') return seat==='main';
+  // The Lower Bracket is the Second Chance seats plus whoever dropped out of
+  // the Upper: both are here for the same reason, one day later.
+  if(ev.stage==='lower') return seat==='scq' || (s.got==='upper' && !s.through);
+  if(ev.stage==='final') return !!s.ticket;
+  return false;
+}
+/* The seventy-five duos in Düsseldorf, and which fifty are in tonight's room.
+
+   Europe's twenty-eight are the career's own Division 1 — the region whose
+   Major 1 it played — and the other six regions' forty-seven are the real top
+   of their own Major 1 Grand Finals, by Epic's published allocation.
+
+   The three rooms follow from that. The Upper Bracket is the fifty direct
+   qualifiers. The Lower is the twenty-five from the Second Chance plus the
+   twenty-five who dropped out of the Upper, and since the whole Upper is not
+   simulated, the seeding stands in for who dropped: the bottom half of the
+   direct fifty. The Grand Finals is the Upper's top twenty-five and the
+   twenty-five who came through the Lower, by the same reading. */
+function careerSummitField(stage, you, drafted){
+  const cr=CAREER.career;
+  const lanCr=Object.assign({}, cr, {division:1});
+  const seated=new Set();
+  drafted.forEach(c=>seated.add(_gcNorm(c.handle)));
+  const main=[], scq=[];
+  // Europe: the duos this career has been playing the season against.
+  const eu=careerCupField(lanCr, drafted, CC_SUMMIT_EU_SCQ, 'summit');
+  eu.forEach(t=>(t.squad||[]).forEach(p=>seated.add(_gcNorm(p.handle))));
+  const mySeat=ccSummitSeat();
+  const euMain=eu.slice(0, CC_SUMMIT_EU_MAIN-(mySeat==='main'?1:0));
+  const euScq =eu.slice(euMain.length);
+  main.push(...euMain); scq.push(...euScq);
+  (mySeat==='scq' ? scq : main).push(you);
+  // Everybody else: their own leaderboard, in the order it was finished in.
+  Object.keys(SUMMIT_SLOTS).forEach(reg=>{
+    if(reg==='EU') return;
+    const n=SUMMIT_SLOTS[reg]||0, m=SUMMIT_SCQ_SLOTS[reg]||0;
+    const teams=ccLanSeats(gcRegionFinals('m1', reg), n+m, reg, seated);
+    main.push(...teams.slice(0, n));
+    scq.push(...teams.slice(n));
+  });
+  const seed=a=>a.slice().sort((x,y)=>(y.pow||0)-(x.pow||0));
+  const M=seed(main), S=seed(scq);
+  const half=Math.round(CC_SUMMIT_STAGE.upper.field/2);
+  if(stage==='upper') return ccSeatYou(M.slice(0, CC_SUMMIT_STAGE.upper.field), you);
+  const lower=S.concat(M.slice(half)).slice(0, CC_SUMMIT_STAGE.lower.field);
+  if(stage==='lower') return ccSeatYou(lower, you);
+  return ccSeatYou(M.slice(0, half).concat(lower.slice(0, half))
+                    .slice(0, CC_SUMMIT_STAGE.final.field), you);
+}
+// Epic's published Summit purse, read straight rather than through
+// prizeTableFor, which branches on CARD_SET — a global the career does not set.
+function summitPrize(place){
+  const t=(typeof PRIZE_TABLES!=='undefined' && PRIZE_TABLES.SUMMIT) || null;
+  return t ? (t[String(place)]||0) : 0;
+}
+async function runCareerSummit(){
+  const cr=CAREER.career;
+  const ev=careerSummitOn(careerToday());
+  if(!ev || !careerSummitCan(ev)) return;
+  const st=CC_SUMMIT_STAGE[ev.stage];
+  careerEnsurePartner();
+  const me=careerCard(), mate=careerPartnerCard();
+  if(!me || !mate) return;
+
+  const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
+  CARD_MODE=true; squadSize=2; drafted=[me, mate];
+
+  skipAnimation=false;
+  resetRunRecord();
+  document.getElementById('majorStages').innerHTML='';
+  const rsPrev=document.getElementById('runSummary'); if(rsPrev) rsPrev.innerHTML='';
+  document.getElementById('lobbyTitle').textContent='';
+  document.getElementById('lobbyBody').innerHTML='';
+  clearEventPanel();
+  document.getElementById('finalBanner').style.display='none';
+  clearLandingResultsMap();
+  CAREER_RUN=true;
+  show('screen-results');
+  ensureSkipButton();
+
+  const you=careerYouTeam(drafted);
+  you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
+  // A LAN is the world: Europe's seats are the season this career played, the
+  // other six regions' are their own Grand Finals. See careerSummitField.
+  const field=careerSummitField(ev.stage, you, drafted);
+
+  await simulateGamesLive(field, st.games, st.pts, st.kill, 'stage', 0, null, null,
+    {lobbySize:50, stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
+  const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || b.stageElims-a.stageElims);
+  const place=ranked.indexOf(you)+1;
+  let through = st.cut ? place<=st.cut : false;
+  // In the Lower Bracket a Victory Royale is a seat on its own, the way the
+  // Heats work: winning a game there is the whole point of the day.
+  if(ev.stage==='lower' && (you.wins||0)>0) through=true;
+  removeSkipButton();
+
+  const shell=createStageCardShell(ev.label+' — '+field.length);
+  await revealStageLog(you, shell, true);
+  finalizeStageCard(shell, place, field.length, you.stagePts, through, false,
+    st.cut ? (through ? L().ccRelPass(st.cut) : L().ccRelFail(st.cut)) : '');
+  await revealStandings(shell, ranked, you, st.cut||10, null, null,
+    ev.stage==='final' ? summitPrize : null, null, ev.stage==='final');
+  careerPrAdd(ranked, {div:1, kind:'summit', stage:ev.stage});
+
+  let cash=0;
+  if(ev.stage==='final'){
+    careerMoneyAdd(ranked, summitPrize);
+    cash=summitPrize(place);
+    if(cash){ cr.earnings=(cr.earnings||0)+cash; cr.balance=(cr.balance||0)+cash; }
+    careerReachAdd(careerReachResult(place, field.length, 1, 'summit'));
+    careerNews(cash?'good':'flat', cash?'ccNewsSumCash':'ccNewsSumNoCash',
+               cash?[place, cash.toLocaleString('en-US')]:[place, field.length]);
+    careerCongrats(ranked, you, L().ccCongratsSummit);
+    cr.summit={got:'final', ticket:false, through:false};
+  } else {
+    cr.summit={got:ev.stage, through:through,
+               ticket: through || !!(cr.summit && cr.summit.ticket)};
+    careerNews(through?'good':'flat', through?'ccNewsSumThrough':'ccNewsSumOut',
+               [ev.label, place, field.length]);
+  }
+
+  const places=(you.stageLog||[]).map(g=>g.place);
+  cr.log=cr.log||[];
+  cr.log.push({season:cr.season, day:careerToday(), div:1, place:place, of:field.length,
+               pts:you.stagePts, passed:through, ovr:CAREER.player.ovr,
+               games:st.games, wins:you.wins||0, elims:you.stageElims||0,
+               avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
+               mate: mate ? mate.handle : null, prize:cash, kind:'summit', stage:ev.stage});
+  careerMonthGoalCheck();
+  careerAdvanceTo(ccAddDays(careerToday(), 1));
+  careerSave();
+
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
+  careerRenderHub('centre');
+  careerTwoRoundResultCard({title:ev.label, place:place, through:through||cash>0,
+    wins:you.wins||0, cash:cash, cut:st.cut});
+}
+
+/* ===== The Global Championship, Antwerp ====================================
+
+   The end of the road, and until now the road stopped a month short of it. A
+   career could take a seat at Antwerp three different ways and the year ended
+   on 23 August without ever flying there.
+
+   The event, off Liquipedia's page and the same numbers the draft mode plays:
+   offline in Antwerp, 26-27 September 2026, 50 duos, $2,000,000, "scoring based
+   on placement and eliminations" — one cumulative leaderboard across the two
+   days rather than a bracket. So it is twelve games, six on the Saturday and
+   six on the Sunday, played as one stage the way the Heats and the Play-In are.
+
+   Who is there, off Epic's own allocation, which this file already holds as the
+   numbers the draft mode fills its field with:
+
+     the Summit          top 15          SUMMIT_GC_SLOTS
+     Major 2 Final       Europe's top 9  MAJOR2_GC_SLOTS.EU
+     the Last Chance     Europe's top 3  GCLC_GC_SLOTS.EU
+
+   All three are read back off the career's own history rather than stored, the
+   same way the Summit reads its seat: a career that never finished high enough
+   at any of them has no seat, and the day says which three doors it missed.
+
+   One thing is stated rather than papered over: the purse is GC2026_PRIZES, the
+   2024 Global Championship's split. Epic published Antwerp's total and not its
+   breakdown, and 2024 paid fifty places totalling exactly $2,000,000 — exactly
+   Antwerp's field and exactly Antwerp's pool.
+
+   The fifty duos are the real ones. See careerGlobalsField. */
+const CC_GLOB_GAMES=12, CC_GLOB_KILL=4, CC_GLOB_FIELD=50;
+function careerGlobalsOn(iso){
+  const e=(careerYearDays().get(iso)||[]).find(x=>x.kind==='globals');
+  return e ? {id:e.id, label:e.label} : null;
+}
+/* The seat, and where it came from.
+
+   Three separate reads of the log, in the order Epic fills the field. The Major
+   row does not record which Major it was — nothing needed it until now — so the
+   day it was played is asked instead, which is the calendar's own answer and
+   cannot drift out of step with it. */
+function ccGlobalsSeat(){
+  const log=(CAREER.career.log||[]).slice().reverse();
+  const summit=log.find(r=>r.kind==='summit' && r.stage==='final');
+  if(summit && summit.place && summit.place<=SUMMIT_GC_SLOTS)
+    return {via:'summit', place:summit.place, note:L().ccGlobSeatSummit};
+  const major=log.find(r=>{
+    if(r.kind!=='major' || r.stage!=='final') return false;
+    const ev=careerMajorOn(r.day);
+    return !!ev && ev.n===2;
+  });
+  if(major && major.place && major.place<=(MAJOR2_GC_SLOTS.EU||0))
+    return {via:'major2', place:major.place, note:L().ccGlobSeatMajor};
+  const gclc=log.find(r=>r.kind==='gclc' && r.stage==='final');
+  if(gclc && gclc.place && gclc.place<=(GCLC_GC_SLOTS.EU||0))
+    return {via:'gclc', place:gclc.place, note:L().ccGlobSeatGclc};
+  return null;
+}
+function careerGlobalsCan(ev){
+  if(!ev) return false;
+  if(CAREER.career.globals) return false;      // it is one tournament, played once
+  return !!ccGlobalsSeat();
+}
+/* The fifty duos in Antwerp.
+
+   Not a field to invent: two of the three routes are already decided and this
+   file already holds who took them. GC_SUMMIT_DUOS is the fifteen that came out
+   of the Summit — real names, all seven regions — and GC_MAJOR2_DUOS is the
+   twenty-five the Major 2 regional finals sent, region by region.
+
+   The last ten are the Global Championship Last Chance, which has not been
+   played. Rather than invent ten duos, they are the highest duos of each
+   region's own Major 2 leaderboard who are not already on the plane — which is
+   who actually enters that qualifier and who is actually favoured in it, with
+   Epic's own allocation deciding how many each region takes.
+
+   Your own seat displaces one duo on the route you came through, because only
+   one of you can hold it. */
+function careerGlobalsField(you, drafted, via){
+  const seated=new Set();
+  drafted.forEach(c=>seated.add(_gcNorm(c.handle)));
+  const field=[];
+  const add=(teams, route)=>teams.forEach(t=>{ t.gcRoute=route; field.push(t); });
+  // The Summit's fifteen first, because the Summit happened first: a duo that
+  // won its seat in May keeps it, and a later event's place rolls down to
+  // somebody not going yet. That is the order the draft mode seats them in too.
+  add(ccLanSeats(ccLanRows(GC_SUMMIT_DUOS), SUMMIT_GC_SLOTS, null, seated), 'summit');
+  Object.keys(MAJOR2_GC_SLOTS).forEach(reg=>{
+    const slots=MAJOR2_GC_SLOTS[reg]||0;
+    const real=ccLanSeats(ccLanRows(GC_MAJOR2_DUOS[reg]), slots, reg, seated);
+    // A qualifier the career itself took — the player, or their partner — leaves
+    // its region a seat short. It rolls down that region's own final, which is
+    // what an unclaimed slot does.
+    add(real, 'm2');
+    if(real.length<slots)
+      add(ccLanSeats(gcRegionFinals('m2', reg), slots-real.length, reg, seated), 'm2');
+  });
+  // The Last Chance, undecided: each region's own Major 2 leaderboard, top down.
+  Object.keys(GCLC_GC_SLOTS).forEach(reg=>
+    add(ccLanSeats(gcRegionFinals('m2', reg), GCLC_GC_SLOTS[reg]||0, reg, seated), 'lcq'));
+  // Your seat, taken off the route you won it on rather than added to the room.
+  const route = via==='summit' ? 'summit' : via==='gclc' ? 'lcq' : 'm2';
+  const mine=field.filter(t=>t.gcRoute===route);
+  const drop=mine.length ? mine[mine.length-1] : field[field.length-1];
+  if(drop) field.splice(field.indexOf(drop), 1);
+  you.gcRoute=route;
+  field.push(you);
+  return field.slice(0, CC_GLOB_FIELD);
+}
+// Antwerp's purse. GC2026_PRIZES rather than prizeTableFor('GC2026'), which
+// branches on CARD_SET — a global the career does not set.
+function gcPrize(place){
+  const t=(typeof GC2026_PRIZES!=='undefined' && GC2026_PRIZES) || null;
+  return t ? (t[String(place)]||0) : 0;
+}
+async function runCareerGlobals(){
+  const cr=CAREER.career;
+  const ev=careerGlobalsOn(careerToday());
+  if(!ev || !careerGlobalsCan(ev)) return;
+  const seat=ccGlobalsSeat();
+  careerEnsurePartner();
+  const me=careerCard(), mate=careerPartnerCard();
+  if(!me || !mate) return;
+
+  const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
+  CARD_MODE=true; squadSize=2; drafted=[me, mate];
+
+  skipAnimation=false;
+  resetRunRecord();
+  document.getElementById('majorStages').innerHTML='';
+  const rsPrev=document.getElementById('runSummary'); if(rsPrev) rsPrev.innerHTML='';
+  document.getElementById('lobbyTitle').textContent='';
+  document.getElementById('lobbyBody').innerHTML='';
+  clearEventPanel();
+  document.getElementById('finalBanner').style.display='none';
+  clearLandingResultsMap();
+  CAREER_RUN=true;
+  show('screen-results');
+  ensureSkipButton();
+
+  const you=careerYouTeam(drafted);
+  you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
+  // Fifty duos from all seven regions, off the three real qualification lists.
+  const field=careerGlobalsField(you, drafted, seat && seat.via);
+
+  await simulateGamesLive(field, CC_GLOB_GAMES, majorPoints, CC_GLOB_KILL,
+    'stage', 0, null, null,
+    {lobbySize:50, stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
+  const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || b.stageElims-a.stageElims);
+  const place=ranked.indexOf(you)+1;
+  removeSkipButton();
+
+  const shell=createStageCardShell(ev.label+' — '+field.length);
+  await revealStageLog(you, shell, true);
+  finalizeStageCard(shell, place, field.length, you.stagePts, place===1, false,
+    place===1 ? L().gcChampion : L().gcPlaceNote(place));
+  await revealStandings(shell, ranked, you, 10, null, null, gcPrize, null, true);
+  careerPrAdd(ranked, {div:1, kind:'globals'});
+
+  careerMoneyAdd(ranked, gcPrize);
+  const cash=gcPrize(place);
+  if(cash){ cr.earnings=(cr.earnings||0)+cash; cr.balance=(cr.balance||0)+cash; }
+  careerReachAdd(careerReachResult(place, field.length, 1, 'globals'));
+  if(place===1) careerNews('good', 'ccNewsGlobChamp', []);
+  careerNews(cash?'good':'flat', cash?'ccNewsGlobCash':'ccNewsGlobNoCash',
+             cash?[place, cash.toLocaleString('en-US')]:[place, field.length]);
+  careerCongrats(ranked, you, L().ccCongratsGlobals);
+  cr.globals={place:place, of:field.length, via:seat?seat.via:null, cash:cash};
+
+  const places=(you.stageLog||[]).map(g=>g.place);
+  cr.log=cr.log||[];
+  cr.log.push({season:cr.season, day:careerToday(), div:1, place:place, of:field.length,
+               pts:you.stagePts, passed:cash>0, ovr:CAREER.player.ovr,
+               games:CC_GLOB_GAMES, wins:you.wins||0, elims:you.stageElims||0,
+               avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
+               mate: mate ? mate.handle : null, prize:cash, kind:'globals', stage:'final'});
+  careerMonthGoalCheck();
+  careerAdvanceTo(ccAddDays(careerToday(), 1));
+  careerSave();
+
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
+  careerRenderHub('centre');
+  careerTwoRoundResultCard({title:ev.label, place:place, through:place===1||cash>0,
+    wins:you.wins||0, cash:cash, cut:0});
 }
 
 async function runCareerMajor(){
@@ -42947,7 +43589,7 @@ async function runCareerMajor(){
   finalizeStageCard(shell, place, field.length, you.stagePts, through, false,
     st.cut ? (through ? L().ccRelPass(st.cut) : L().ccRelFail(st.cut)) : '');
   await revealStandings(shell, ranked, you, st.cut||10, null, null,
-    ev.stage==='final' ? majorPrize : null);
+    ev.stage==='final' ? majorPrize : null, null, ev.stage==='final');
   careerPrAdd(ranked, {div:CAREER.career.division, kind:'major', stage:ev.stage});
 
   // The Last Chance Lobby: the fifty who came through, four matches, and only a
@@ -42978,7 +43620,7 @@ async function runCareerMajor(){
       cr.earnings=(cr.earnings||0)+cash;
       cr.balance=(cr.balance||0)+cash;
     }
-    careerReachAdd(careerReachResult(place, field.length, 1));
+    careerReachAdd(careerReachResult(place, field.length, 1, 'major'));
     careerNews(cash?'good':'flat', cash?'ccNewsMajCash':'ccNewsMajNoCash',
                cash?[ev.n, place, cash.toLocaleString('en-US')]:[ev.n, place, field.length]);
     careerCongrats(ranked, you, L().ccCongratsMajor(ev.n));
@@ -43053,7 +43695,7 @@ async function runCareerWeeklyFinal(){
   await revealStageLog(you, shell, true);
   finalizeStageCard(shell, place, field.length, you.stagePts, cash>0, false,
     cash ? L().ccWfCash(cash.toLocaleString('en-US')) : L().ccWfNoCash);
-  await revealStandings(shell, ranked, you, 10, null, null, wfPrize);
+  await revealStandings(shell, ranked, you, 10, null, null, wfPrize, null, true);
   careerPrAdd(ranked, {div:1, kind:'final'});
 
   if(cash){
@@ -43062,7 +43704,7 @@ async function runCareerWeeklyFinal(){
   }
   careerTableAdd(ranked);
   careerMoneyAdd(ranked, wfPrize);
-  careerReachAdd(careerReachResult(place, field.length, 1));
+  careerReachAdd(careerReachResult(place, field.length, 1, 'final'));
   careerNews(cash?'good':'flat', cash?'ccNewsWfCash':'ccNewsWfNoCash',
              cash?[place, cash.toLocaleString('en-US')]:[place, field.length]);
   careerCongrats(ranked, you, L().calWeeklyFinal);
@@ -43151,7 +43793,7 @@ async function runCareerReload(){
   await revealStageLog(you, shell, true);
   finalizeStageCard(shell, place, field.length, you.stagePts, through, false,
     through ? L().ccRelPass(st.cut) : L().ccRelFail(st.cut));
-  await revealStandings(shell, ranked, you, st.cut);
+  await revealStandings(shell, ranked, you, st.cut, null, null, null, null, ev.stage==='final');
 
   // A seat at the Esports World Cup is what the final is for. Epic gives Europe
   // first, second and third; nothing here pays cash, because the circuit does
@@ -43275,14 +43917,14 @@ async function runCareerVictory(){
     await revealStageLog(you, shell2, true);
     finalizeStageCard(shell2, place2, r2.length, you.stagePts, wins>0, false,
       wins ? L().ccVicCash(wins, cash) : L().ccVicNoWin);
-    await revealStandings(shell2, ranked2, you, 0);
+    await revealStandings(shell2, ranked2, you, 0, null, null, null, null, true);
   }
   removeSkipButton();
 
   if(cash){
     cr.earnings=(cr.earnings||0)+cash;
     cr.balance=(cr.balance||0)+cash;
-    careerReachAdd(careerReachResult(1, field.length, cr.division));
+    careerReachAdd(careerReachResult(1, field.length, cr.division, 'victory'));
     careerNews('good', 'ccNewsVicCash', [wins, cash]);
   } else if(through){
     careerNews('flat', 'ccNewsVicNoWin');
@@ -43351,6 +43993,11 @@ async function runCareerCup(){
   const place=ranked.indexOf(you)+1;
   careerPrAdd(ranked, {div:CAREER.career.division});
   const passed=place<=cut;
+  // The week's card carries the week's games: Monday's eleven in front of
+  // tonight's, renumbered so the list reads 1 to 22 and the running total is
+  // the one the table is sorted on.
+  if(carry && carry.log && carry.log.length)
+    you.stageLog=carry.log.concat((you.stageLog||[]).map(g=>({...g, game:g.game+carry.log.length})));
 
   // On the second evening the card is the week's, not the night's: twenty-two
   // games and the table that decides the Weekly Final.
@@ -43371,6 +44018,12 @@ async function runCareerCup(){
   if(banking){
     cr.d1={monday:careerMonday(careerToday()), pts:{}, elims:{}};
     field.forEach(t=>{ cr.d1.pts[t.name]=t.stagePts; cr.d1.elims[t.name]=t.stageElims; });
+    // Monday's eleven games, kept as they were played: Tuesday's card is the
+    // week's card, and a week is twenty-two rows you can read rather than a
+    // total with eleven of them missing. Only the player's own log is stored —
+    // the field's is a table of points, and nobody reads somebody else's games.
+    cr.d1.log=(you.stageLog||[]).map(g=>({game:g.game, place:g.place, elims:g.elims,
+                                          pts:g.pts, elimPts:g.elimPts, label:g.label}));
     careerAdvanceTo(careerAfterSession());
     careerSave();
     CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
@@ -43387,7 +44040,7 @@ async function runCareerCup(){
   const growth=careerApplyGrowth(place, field.length, you, field);
   const morale=careerApplyMorale(place, field.length, passed);
   const from=cr.division;
-  if(passed && cr.division>1) cr.division--;
+  if(passed && cr.division>1){ cr.division--; careerReachPromote(cr.division); }
   // In Division 1 there is nothing above to be promoted into: the cut buys a
   // seat at Saturday's Weekly Final instead, stamped with this week's Monday so
   // it cannot be spent on the next one.
@@ -43414,7 +44067,7 @@ async function runCareerCup(){
   // A result is seen by people, and how many depends on how loud it was. This
   // runs before the feed is written so the posts below carry the audience the
   // result itself just brought.
-  careerReachAdd(careerReachResult(place, field.length, from));
+  careerReachAdd(careerReachResult(place, field.length, from, 'cup'));
 
   // The picture everybody posts: the standings, with the poster in them. Five
   // rows and then your own if it fell below them.
@@ -43423,7 +44076,14 @@ async function runCareerCup(){
   if(place>5) shotRows.push({p:place, n:bare(you), s:you.stagePts});
 
   const winner=ranked[0];
-  const feed=[[passed?'good':'flat', 'ccNewsResult', [place, field.length, from, you.stagePts]]];
+  // Say which it is. In Division 1 a played Monday rides into Tuesday's table,
+  // so the number is the week's and the line says so with the games behind it;
+  // everywhere else — and on a Tuesday whose Monday was never played — it is
+  // one evening, and the plain line is the true one.
+  const feed=[carry
+    ? [passed?'good':'flat', 'ccNewsResultWeek',
+       [place, field.length, from, you.stagePts, CAREER_CUP_GAMES*2]]
+    : [passed?'good':'flat', 'ccNewsResult', [place, field.length, from, you.stagePts]]];
   if(passed && from>1) feed.push(['good', 'ccNewsPromoted', [from-1]]);
   else if(passed) feed.push(['good', 'ccNewsWfIn', [place]]);
   if(Math.round(growth.after)!==Math.round(growth.before))
@@ -43765,12 +44425,18 @@ function ccPrWeight(e){
     case 'reload':  return st==='final' ? 1.2 : 1.0;  // RES Qual Final, else Opens/PI/Heats
     case 'rc':      return 1.4;                       // the Reload Championship in Paris
     case 'major':   return st==='final' ? 1.4 : (st==='heats' ? 1.2 : 1.0);
+    // Epic's own table names the Summit twice: the brackets are x1.4 and the
+    // Grand Finals x1.6, the heaviest weight it publishes.
+    case 'summit':  return st==='final' ? 1.6 : 1.4;
+    // "Global Champs" on the same line as the Summit Final: x1.6, the top of
+    // Epic's table. There is nothing heavier to give it.
+    case 'globals': return 1.6;
     case 'gclc':    return 1.2;
     default:        return 1.0;                       // divisional cup, Victory Cup, evaluation
   }
 }
 // Which field a result was rated against.
-const CC_PR_TOP_KINDS=['major','rc','gclc'];
+const CC_PR_TOP_KINDS=['major','rc','gclc','summit','globals'];
 function ccPrField(e){
   const top = CC_PR_TOP_KINDS.indexOf(e.kind)>=0 || (e.kind==='reload' && e.stage==='final');
   const div = top ? 1 : clamp(e.div||5, 1, 5);

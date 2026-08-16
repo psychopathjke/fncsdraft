@@ -89,6 +89,64 @@ const BOOT = `
     check('and with no deal it says what would bring one',
           careerSponsorTileHTML().indexOf('10') >= 0);
 
+    // ---- the audience follows results, not only streams -----------------
+    // The curve used to be cubed, which paid for a near-win and nothing else:
+    // a Division 5 night in the middle of the room was worth less than a day
+    // of streaming. A good night should beat a day at the desk.
+    fresh(0);
+    const stream = CC_REACH_DIV(5);
+    check('a Division 5 win beats a stream day',
+          careerReachResult(1, 1000, 5) > stream * 5,
+          careerReachResult(1, 1000, 5) + ' vs ' + stream);
+    check('and so does making the cut',
+          careerReachResult(80, 1000, 5) > stream * 5,
+          String(careerReachResult(80, 1000, 5)));
+    check('a third of the way up still pays something',
+          careerReachResult(333, 1000, 5) >= stream * 3,
+          String(careerReachResult(333, 1000, 5)));
+    check('the middle of the room pays little',
+          careerReachResult(500, 1000, 5) < stream * 3,
+          String(careerReachResult(500, 1000, 5)));
+    check('and the bottom pays nothing at all',
+          careerReachResult(1000, 1000, 5) === 0,
+          String(careerReachResult(1000, 1000, 5)));
+    // A rung is the thing people follow you for.
+    fresh(0);
+    const wasReach = careerReach();
+    careerReachPromote(4);
+    check('a promotion is worth a fortnight of streaming',
+          careerReach() - wasReach === CC_REACH_DIV(4) * 12,
+          String(careerReach() - wasReach));
+    // What an event is worth is what its money says: a night at the Victory
+    // Cup is half a cup, a Major final five, Paris eight.
+    check('a cup win is worth more than a Victory Cup night',
+          careerReachResult(1, 150, 1, 'cup') > careerReachResult(1, 150, 1, 'victory'));
+    check('a Major final is worth more than a cup',
+          careerReachResult(1, 150, 1, 'major') > careerReachResult(1, 150, 1, 'cup') * 4);
+    check('and Paris is the loudest night of the year',
+          careerReachResult(1, 40, 1, 'rc') > careerReachResult(1, 150, 1, 'major'));
+    out.notes.events = {cupD5: careerReachResult(1, 1000, 5, 'cup'),
+      cupD1: careerReachResult(1, 150, 1, 'cup'),
+      wf: careerReachResult(1, 50, 1, 'final'),
+      victory: careerReachResult(1, 4200, 1, 'victory'),
+      major: careerReachResult(1, 150, 1, 'major'),
+      paris: careerReachResult(1, 40, 1, 'rc')};
+
+    // Division 1 is not a room anybody is in unread.
+    fresh(0); CAREER.career.division = 2;
+    careerReachPromote(1);
+    check('arriving in Division 1 tops the count up', careerReach() >= CC_REACH_D1,
+          String(careerReach()));
+    // A career that was already bigger keeps what it had.
+    fresh(60000); CAREER.career.division = 2;
+    careerReachPromote(1);
+    check('and a bigger audience is not cut back to it', careerReach() > CC_REACH_D1,
+          String(careerReach()));
+    out.notes.d1floor = CC_REACH_D1;
+    out.notes.reach = {win: careerReachResult(1, 1000, 5), cut: careerReachResult(80, 1000, 5),
+                       third: careerReachResult(333, 1000, 5), stream: stream,
+                       promote: CC_REACH_DIV(4) * 12};
+
     // ---- retirement at thirty -------------------------------------------
     check('the retirement age is thirty', careerRetireAge() === 30, String(careerRetireAge()));
     fresh(0); CAREER.player.age = 29;

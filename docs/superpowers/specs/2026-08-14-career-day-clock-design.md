@@ -22,12 +22,19 @@ the ordinary ones is the mode.
 longer stored. Where a screen wants to say which week it is, it counts from the
 start of the career year.
 
-The career year runs **Monday 1 December 2025 to Sunday 23 August 2026** — 38
+The career year runs **Monday 1 December 2025 to Sunday 27 September 2026** — 43
 weeks. It opens on the week of the first Performance Evaluation night of S39
-(4 December) and closes after the Reload Elite Series Championship in Paris
-(18-21 August), which is the last block in the measured year. Both ends were
-checked rather than assumed: 1 December 2025 is a Monday, and 21 August 2026 is
-a Friday, so the last week runs to Sunday the 23rd.
+(4 December) and closes on the **Global Championship in Antwerp** (26-27
+September), which is the last event of the measured year. Both ends were checked
+rather than assumed: 1 December 2025 is a Monday and 27 September 2026 is a
+Sunday, so the year is 301 days — 43 weeks to the day.
+
+It used to stop at 38 weeks, on 23 August, two days after the Reload Elite
+Series Championship in Paris (18-21 August). That was the last block anyone had
+wired in rather than the last block of the year: the Global Championship is five
+weeks later and it is what the whole ladder is for. The five weeks between them
+carry nothing but training days and the wage on 1 September, which is what that
+gap really is.
 
 `CAREER_WEEKS` and `careerDate(week, dow)` go. `careerEvents()` already returns
 a Map of date to what runs that day; it stops building half of that Map through

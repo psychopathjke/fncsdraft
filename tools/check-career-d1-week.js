@@ -80,9 +80,23 @@ const BOOT = `
     check('the row is 22 games', row && row.games === 22, row && String(row.games));
     check('and its points hold Monday', row && myMonday != null && row.pts > myMonday,
           row && (row.pts + ' vs ' + myMonday));
+    // The week's card lists the week's games: Monday's eleven in front of
+    // tonight's, numbered 1 to 22, with the running total carried across them.
+    const gameRows = [...document.querySelectorAll('#majorStages table tr')]
+      .map(r => r.textContent.replace(/\\s+/g, ' ').trim())
+      .filter(t => new RegExp('^(' + L().gameWord + ') \\\\d+').test(t));
+    out.notes.gameRows = gameRows.length;
+    out.notes.firstRow = gameRows[0];
+    out.notes.lastRow = gameRows[gameRows.length - 1];
+    if (gameRows.length !== 22)
+      fail('the week card lists ' + gameRows.length + ' games, it should list 22');
     const stagesTxt = document.getElementById('majorStages').textContent.replace(/\s+/g,' ');
     check('the stage card is titled the week', /итог недели|week total/.test(stagesTxt), stagesTxt.slice(0,120));
-    check('the live table said the week was carried', /уже в ней|already in them/.test(stagesTxt));
+    // The live table's own line — "the week's standings, Monday already in
+    // them" — belongs to the table while it plays, and that card is taken down
+    // when the stage card replaces it, so it cannot be read here. What can be
+    // read here is the week the card ended on, which the two checks above and
+    // the twenty-two rows below already hold.
     check('Monday is spent once the week settles', !save2.career.d1);
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =

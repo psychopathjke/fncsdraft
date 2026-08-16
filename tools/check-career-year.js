@@ -135,11 +135,15 @@ const BOOT = `
     if (careerWeekIndex(CC_YEAR_FROM) !== 1) fail('the year does not start in week 1');
     if (careerWeekIndex('2025-12-07') !== 1) fail('the Sunday of week 1 is not week 1');
     if (careerWeekIndex('2025-12-08') !== 2) fail('the Monday after is not week 2');
-    if (careerWeekIndex(CC_YEAR_TO) !== 38)
-      fail('the year is not 38 weeks (last week reads ' + careerWeekIndex(CC_YEAR_TO) + ')');
+    // Forty-three, not thirty-eight: the year runs to the Global Championship
+    // in Antwerp on 27 September rather than stopping two days after Paris.
+    if (careerWeekIndex(CC_YEAR_TO) !== CAREER_WEEKS)
+      fail('the year is not ' + CAREER_WEEKS + ' weeks (last week reads ' +
+           careerWeekIndex(CC_YEAR_TO) + ')');
+    if (CAREER_WEEKS !== 43) fail('the measured year is 43 weeks, CAREER_WEEKS says ' + CAREER_WEEKS);
     if (careerMonday('2026-01-23') !== '2026-01-19')
       fail('Monday of the week holding 23 Jan should be 19 Jan, got ' + careerMonday('2026-01-23'));
-    out.steps.push('the year is 38 weeks and every day knows which one it is in');
+    out.steps.push('the year is ' + CAREER_WEEKS + ' weeks and every day knows which one it is in');
 
     // An old save carries a week and no day, and must land on that week's Monday.
     localStorage.setItem('fncsdraft_career', JSON.stringify({
