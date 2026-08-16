@@ -32563,7 +32563,17 @@ const LANDING_NOISE=1.15;
 // filled. A player arriving out of the Major 3 regional final carries no route
 // and picks after all of them, which is the honest position for the last team
 // through the door.
-const GC_ROUTE_ORDER={m1:0, m2:1, m3:2};
+/* Two LANs, two vocabularies for the same idea.
+   Lyon 2025 fills from three Majors and labels its routes m1/m2/m3. Antwerp
+   2026 fills from the Summit, the Major 2 regional finals and the Last Chance,
+   and buildGlobalChampionshipField labels those summit/m2/lcq. Only the first
+   set was written down here, so at Antwerp the Summit's fifteen and the Last
+   Chance's ten both fell through to the unranked 3 — and Major 2, the only
+   label the table happened to share, picked its landing spots ahead of the duos
+   who had booked their seats four months earlier.
+   Both vocabularies, in the order the seats were actually won. m2 sits at 1 in
+   each and means the same thing in each. */
+const GC_ROUTE_ORDER={m1:0, summit:0, m2:1, m3:2, lcq:2};
 function gcRouteRank(t){
   const r=t && GC_ROUTE_ORDER[t.gcRoute];
   return r==null ? 3 : r;
@@ -42931,7 +42941,8 @@ async function runCareerGclc(){
   const size = ev.final ? CC_GCLC_FINAL.teams : CAREER_CUP_FIELD;
   const field=[you, ...careerCupField(lobbyCr, drafted, size)];
 
-  await simulateGamesLive(field, st.games, majorPoints, st.kill, 'stage', 0, null, null,
+  const zones = ev.final ? await careerLandingPick(field, you, ev.label) : null;
+  await simulateGamesLive(field, st.games, majorPoints, st.kill, 'stage', 0, null, zones,
     {lobbySize:50, stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
@@ -43017,7 +43028,8 @@ async function runCareerReloadChampionship(){
   const worldCr=Object.assign({}, cr, {division:1});
   const field=[you, ...careerCupField(worldCr, drafted, st.teams)];
 
-  await simulateGamesLive(field, st.games, rcPoints, CC_RC_KILL, 'stage', 0, null, null,
+  const zones = ev.stage==='final' ? await careerLandingPick(field, you, ev.label) : null;
+  await simulateGamesLive(field, st.games, rcPoints, CC_RC_KILL, 'stage', 0, null, zones,
     {lobbySize:20, stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
   removeSkipButton();
 
@@ -43090,6 +43102,32 @@ async function runCareerReloadChampionship(){
   careerReloadResultCard({label:ev.label, place:place, of:field.length,
     through:through||champ, cut:CC_RC_GROUP.direct, seat:false,
     money: ev.stage==='final' ? cash : null});
+}
+
+/* ===== The drop, when it is a final ========================================
+
+   A final is played on the map and the drop is the first decision in it — the
+   draft mode has asked for it since the Majors were built, and the career never
+   did: every career final fell into a rectangle chosen off an index, including
+   the ones with two million dollars on them.
+
+   So a final asks. Not every night: an ordinary divisional cup is a Tuesday and
+   a Weekly Final is what the Tuesdays were for, which is the line the player
+   drew — you pick where to land when you have qualified for something.
+
+   It is the same picker, which is the point. You choose in the order you
+   qualified: the duos already through have their markers down and you take what
+   is left, and whoever comes through behind you can drop on your head. At
+   Antwerp that order is the route — the Summit's fifteen picked their spots in
+   May, the Major 2 qualifiers in August, the Last Chance last week — because
+   careerGlobalsField stamps gcRoute and byQualOrder reads it. */
+async function careerLandingPick(field, you, title){
+  // The grid belongs to the island the stage is played on. Every career runner
+  // sets its own before it starts; this is the guard for the one case where a
+  // save opens straight into a final and nothing has picked a map yet.
+  if(!ALL_LANDING_ZONES.length) useLandingSet(ACTIVE_LANDING_SET);
+  const zones=await showFinalsLandingPicker(field, you, title);
+  return zones;
 }
 
 /* ===== Who is in the room at a LAN =========================================
@@ -43302,7 +43340,8 @@ async function runCareerSummit(){
   // other six regions' are their own Grand Finals. See careerSummitField.
   const field=careerSummitField(ev.stage, you, drafted);
 
-  await simulateGamesLive(field, st.games, st.pts, st.kill, 'stage', 0, null, null,
+  const zones = ev.stage==='final' ? await careerLandingPick(field, you, ev.label) : null;
+  await simulateGamesLive(field, st.games, st.pts, st.kill, 'stage', 0, null, zones,
     {lobbySize:50, stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
@@ -43498,8 +43537,9 @@ async function runCareerGlobals(){
   // Fifty duos from all seven regions, off the three real qualification lists.
   const field=careerGlobalsField(you, drafted, seat && seat.via);
 
+  const zones=await careerLandingPick(field, you, ev.label);
   await simulateGamesLive(field, CC_GLOB_GAMES, majorPoints, CC_GLOB_KILL,
-    'stage', 0, null, null,
+    'stage', 0, null, zones,
     {lobbySize:50, stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
@@ -43573,7 +43613,8 @@ async function runCareerMajor(){
   const lobbyCr = deep ? Object.assign({}, cr, {division:1}) : cr;
   const field=[you, ...careerCupField(lobbyCr, drafted, st.field)];
 
-  await simulateGamesLive(field, st.games, st.pts, st.kill, 'stage', 0, null, null,
+  const zones = ev.stage==='final' ? await careerLandingPick(field, you, ev.label) : null;
+  await simulateGamesLive(field, st.games, st.pts, st.kill, 'stage', 0, null, zones,
     {lobbySize:50, stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
@@ -43684,7 +43725,8 @@ async function runCareerWeeklyFinal(){
   // duos — careerCupField already seats them there.
   const field=[you, ...careerCupField(cr, drafted, CAREER_CUP_CUT)];
 
-  await simulateGamesLive(field, CC_WF_GAMES, wfPoints, CC_WF_KILL, 'stage', 0, null, null,
+  const zones=await careerLandingPick(field, you, L().calWeeklyFinal);
+  await simulateGamesLive(field, CC_WF_GAMES, wfPoints, CC_WF_KILL, 'stage', 0, null, zones,
     {lobbySize:50, stageName:L().calWeeklyFinal, mapReplay:true, stopOnYourDeath:true});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;

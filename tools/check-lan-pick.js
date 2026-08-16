@@ -120,6 +120,22 @@ const BOOTSTRAP = `
     check('the handicap is a handicap, not a wall',
       route.place - power.place < 8,
       'average finish ' + route.place + ' against ' + power.place);
+
+    // Both LANs fill from three routes and they label them differently: Lyon
+    // says m1/m2/m3, Antwerp says summit/m2/lcq. The order table only ever held
+    // Lyon's, so at Antwerp the Summit's fifteen and the Last Chance's ten both
+    // fell through to unranked and Major 2 picked ahead of duos who had booked
+    // four months earlier. Every label a field is built with has to rank, and in
+    // the order the seats were actually won.
+    var rankOf = function(r){ return gcRouteRank({gcRoute: r}); };
+    var lyon = ['m1','m2','m3'].map(function(r){ return rankOf(r); }).join(',');
+    var antwerp = ['summit','m2','lcq'].map(function(r){ return rankOf(r); }).join(',');
+    check('Lyon picks Major 1, then 2, then 3', lyon === '0,1,2', lyon);
+    check('Antwerp picks the Summit, then Major 2, then the Last Chance',
+      antwerp === '0,1,2', antwerp);
+    var labels = ['m1','m2','m3','summit','lcq'];
+    var unranked = labels.filter(function(r){ return rankOf(r) === rankOf('nonsense'); });
+    check('no route a field is built with is left unranked', !unranked.length, unranked.join(','));
   } catch (e) { out.error = String(e && e.stack || e); }
   document.getElementById('__lp').textContent =
     'BEGINLP' + encodeURIComponent(JSON.stringify(out)) + 'ENDLP';

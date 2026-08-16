@@ -22,6 +22,15 @@ const BOOT = `
 <pre id="__out" style="display:none"></pre>
 <script>
 (async function(){
+  // A final asks the player where to land. A harness is the player: answer it
+  // the moment a picker appears, always the first zone, so the run is the same
+  // every time. Without this a probe waits forever on a click nobody makes.
+  setInterval(function(){
+    const p=document.querySelector(".landing-picker"); if(!p) return;
+    const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
+    z[0].click();
+    const c=p.querySelector("#gameLandingConfirm"); if(c && !c.disabled) c.click();
+  }, 20);
   const out = {fails: [], notes: {}, err: null};
   const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
   const wait = ms => new Promise(r => setTimeout(r, ms));
