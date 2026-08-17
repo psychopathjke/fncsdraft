@@ -2502,6 +2502,16 @@
     </div>
     <div class="region-filter" id="preRegionChecks" style="margin-top:14px;"></div>
     <div id="regionWarning" style="display:none;color:var(--danger);font-size:13px;font-weight:700;margin-top:10px;" data-i18n="regionWarningText"></div>
+    <!-- A Major is one region's event even when the squad is drafted out of
+         several, so the second question is which one you turn up to. Hidden
+         unless it has something to ask: one region selected answers itself. -->
+    <div id="homeRegionBlock" style="display:none;">
+      <div class="rating-explainer" style="margin-top:14px;">
+        <h4 data-i18n="homeRegionTitle"></h4>
+        <div class="region-note" data-i18n="homeRegionNote"></div>
+      </div>
+      <div class="region-filter" id="homeRegionChecks" style="margin-top:10px;"></div>
+    </div>
 
     <div id="eraBlock">
       <div class="rating-explainer" style="margin-top:14px;">
@@ -2816,8 +2826,9 @@ attrRowExp:'ОПТ · Опыт', attrRowExpB:'всего матчей FNCS',
 attrNote:'Каждая характеристика — место игрока среди тех, кто был с ним в том же лобби, а не абстрактная оценка. Случайных чисел нет ни в одной: наведи курсор на характеристику в карточке, и увидишь, из какой колонки таблицы она взята. Высокий ЭНД при низкой СТР — это игрок, который берёт местом, а не боем; наоборот — фраггер. Роль ФРГ или ИГЛ подписана под OVR.',
 sourcesNote:'<b>Источники карточек — с каких турниров реально взяты игроки:</b><br>Всего {EVENTS} турнира, {CARDS} карточек.<br><br>• <b>FNCS 2026 Major 2</b> — Play-In, Last Chance Qualifier и Grand Finals всех 7 регионов (18 июл — 2 авг 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> — Group Stage, Upper Bracket и Grand Finals (Дюссельдорф <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 мая 2026)<br>• <b>FNCS 2026 Major 1</b> — Play-In, Last Chance Qualifier и региональные Grand Finals всех 7 регионов (мар — май 2026)<br>• <b>FNCS 2025 Global Championship</b> — Grand Finals (Лион <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 сен 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> — Play-In, Last Chance Qualifier и региональные Grand Finals всех 7 регионов, трио (янв — авг 2025)<br>• <b>FNCS 2024 Global Championship</b> — Grand Finals (Форт-Уэрт <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 сен 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> — Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> — Grand Finals (Копенгаген <img src="https://flagcdn.com/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 окт 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> — Grand Finals Europe (мар / май / июн 2023)<br>• <b>FNCS Invitational 2022</b> — Grand Finals (Роли <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 ноя 2022)<br>• <b>FNCS 2021 Grand Royale</b> — Europe (21 ноя 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> — Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> — Solo Grand Finals Europe (26 июн 2021)<br><br>У каждого игрока в карточке видно, из какого именно турнира взят его результат. Один и тот же реальный человек может иметь несколько карточек — по одной на каждый турнир.<br><br><b>Редкость карточки:</b><br>Цвет идёт от того самого числа OVR, которое написано на карточке — что видишь, то и получаешь. Шкала фортнайтовская, цвета те же, что в игре.<br>• <b style="color:var(--mythic)">95+ · Мифический (золотой)</b><br>• <b style="color:var(--legendary)">90–94 · Легендарный (оранжевый)</b><br>• <b style="color:var(--epic)">80–89 · Эпический (фиолетовый)</b><br>• <b style="color:var(--rare)">70–79 · Редкий (синий)</b><br>• <b style="color:var(--uncommon)">60–69 · Необычный (зелёный)</b><br>• <b style="color:var(--common)">ниже 60 · Обычный (серый)</b><br>Мифик даётся только за сезон без слабых этапов — гранд-финал, хиты и кубки на одном уровне. Те же шесть цветов красят оружие и хилки в паках.',
 confirmedNote:'<b>Что подтверждено:</b> имена и регион — из официальных таблиц участников и итоговых результатов (Liquipedia, Esports Earnings, esports.gg, fortnitetracker.com и присланные скриншоты).<br><br><b>Про размер лобби:</b> реальных игроков не хватает, чтобы ровно попасть в целевые числа команд — недостающие места в AI-лобби (кроме Grands) занимают явно помеченные резервные команды, без флага.<br><br><b>Флаги:</b> гражданство подтверждено не у всех — где источника нет, флаг просто не показан.',
-preregionTitleOne:'В каком регионе играешь?', preregionNoteOne:'Каждый регион проводит свой турнир — выбери один, весь драфт и всё лобби будут из него.',
-preregionTitle:'Из каких регионов набираешь состав?', preregionNote:'Отметь один или несколько регионов — в паках будут появляться только игроки из выбранных. Ничего не выберешь — по умолчанию участвуют все.', preregionBtn:'Продолжить к драфту',
+preregionTitleOne:'Кто может попасть к тебе в команду', preregionNoteOne:'В этом наборе один регион - игроки в паках будут только из него.',
+homeRegionTitle:'В каком турнире играешь', homeRegionNote:'Мейджор проводится в каждом регионе отдельно. Выбери, в чей ты заявляешься: его соперники, его сетка, его призовые и его слоты на LAN. Состав при этом может быть откуда угодно.',
+preregionTitle:'Кто может попасть к тебе в команду', preregionNote:'Отметь регионы, чьи игроки будут выпадать тебе в паках. Можно несколько или сразу все - на то, в каком турнире ты играешь, это не влияет.', preregionBtn:'Продолжить к драфту',
 evStageChip:'Финал', evYou:'Вы:', evPts:'оч.', evTopPct:n=>'топ '+n+'%', evStatsTitle:n=>n===3?'Статистика трио':n===4?'Статистика сквада':'Статистика пары', evMatches:'Сыграно матчей', evWins:'Королевские победы', evAvgElims:'Ср. фраги', evAvgPlace:'Ср. место', evAvgPts:'Ср. очки', evElims:'Фраги', evPlacement:'Место', evWith:'Состав',
 mapTitle:'Карта острова', mapNote:'Выбери, на какой карте пройдёт турнир. Точки высадки и их расположение зависят от карты.',
 eraTitle:'За какие сезоны набираешь игроков?', eraNote:'Отметь один или несколько годов — в паках будут только игроки с турниров этих сезонов. Год без игроков в выбранных регионах нажать нельзя.',
@@ -3663,8 +3674,9 @@ attrRowExp:'EXP · Experience', attrRowExpB:'total FNCS matches played',
 attrNote:'Each attribute is where the player ranked among the people who were in that lobby with them, not an abstract score. None of them contain a random number: hover an attribute on a card to see which column of the standings it was read from. High END with low AIM is a player who scores by surviving rather than fighting; the reverse is a fragger. The FRG or IGL role is printed under the OVR.',
 sourcesNote:'<b>Card sources — which tournaments the players are actually pulled from:</b><br>{EVENTS} tournaments, {CARDS} cards in total.<br><br>• <b>FNCS 2026 Major 2</b> — Play-In, Last Chance Qualifier and Grand Finals across all 7 regions (18 Jul — 2 Aug 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> — Group Stage, Upper Bracket and Grand Finals (Düsseldorf <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 May 2026)<br>• <b>FNCS 2026 Major 1</b> — Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions (Mar — May 2026)<br>• <b>FNCS 2025 Global Championship</b> — Grand Finals (Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 Sep 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> — Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions, trios (Jan — Aug 2025)<br>• <b>FNCS 2024 Global Championship</b> — Grand Finals (Fort Worth <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 Sep 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> — Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> — Grand Finals (Copenhagen <img src="https://flagcdn.com/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 Oct 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> — Grand Finals Europe (Mar / May / Jun 2023)<br>• <b>FNCS Invitational 2022</b> — Grand Finals (Raleigh <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 Nov 2022)<br>• <b>FNCS 2021 Grand Royale</b> — Europe (21 Nov 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> — Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> — Solo Grand Finals Europe (26 Jun 2021)<br><br>Each player card shows exactly which tournament its result came from. The same real person can have multiple cards — one per tournament where a result was found.<br><br><b>Card rarity:</b><br>The colour comes from the very OVR printed on the card — what you see is what you get. The ladder is the one Fortnite uses and the colours match the game.<br>• <b style="color:var(--mythic)">95+ · Mythic (gold)</b><br>• <b style="color:var(--legendary)">90–94 · Legendary (orange)</b><br>• <b style="color:var(--epic)">80–89 · Epic (purple)</b><br>• <b style="color:var(--rare)">70–79 · Rare (blue)</b><br>• <b style="color:var(--uncommon)">60–69 · Uncommon (green)</b><br>• <b style="color:var(--common)">below 60 · Common (grey)</b><br>Mythic is for a season with no weak stage in it — the Grand Final, the heats and the cups all held at once. The same six colours tint the weapons and heals in the loot packs.',
 confirmedNote:'<b>What\'s confirmed:</b> names and region come from official participant lists and final standings (Liquipedia, Esports Earnings, esports.gg, fortnitetracker.com, and screenshots you sent).<br><br><b>About lobby size:</b> there aren\'t enough real players to exactly hit the target team counts — missing AI-lobby slots (except in the Grands) are filled with clearly labeled reserve teams, shown without a flag.<br><br><b>Flags:</b> nationality isn\'t confirmed for everyone — where there\'s no source, no flag is shown.',
-preregionTitleOne:'Which region are you playing in?', preregionNoteOne:'Every region runs its own tournament — pick one, and both the draft and the lobby come from it.',
-preregionTitle:'Which regions do you want to draft from?', preregionNote:'Tick one or more regions — only players from the selected ones will appear in packs. Pick none and everyone is included by default.', preregionBtn:'Continue to draft',
+preregionTitleOne:'Who can end up in your squad', preregionNoteOne:'This set holds one region, so that is who the packs deal.',
+homeRegionTitle:'Which tournament you play', homeRegionNote:'Every region runs its own Major. Choose whose you enter: its opponents, its bracket, its prize table and its LAN slots. The squad can come from anywhere.',
+preregionTitle:'Who can end up in your squad', preregionNote:'Tick the regions whose players are dealt to you in packs. As many as you like, or all of them - it says nothing about which tournament you play.', preregionBtn:'Continue to draft',
 evStageChip:'Finals', evYou:'You:', evPts:'pts', evTopPct:n=>'top '+n+'%', evStatsTitle:n=>n===3?'Trio stats':n===4?'Squad stats':'Duo stats', evMatches:'Matches played', evWins:'Victory Royales', evAvgElims:'Avg. elims', evAvgPlace:'Avg. placement', evAvgPts:'Avg. pts', evElims:'Eliminations', evPlacement:'Placement', evWith:'With',
 mapTitle:'Island map', mapNote:'Choose which island the tournament is played on. The landing spots and their layout come with the map.',
 eraTitle:'Which seasons do you want to draft from?', eraNote:'Tick one or more years — packs will only contain players from those seasons. A year with no players in the selected regions can\'t be picked.',
@@ -29388,6 +29400,29 @@ let pendingSize=2, pendingMajor=false;
 let pendingCards=false;
 let pendingCardSet='m2';
 let preSelectedRegions=[];
+/* Which region's tournament a card run is actually playing.
+
+   His user's request, 17 August: let a Major be drafted out of several regions
+   the way the free modes already can. Which opens the question he asked back -
+   draft EU and NA, and whose tournament do you turn up to?
+
+   It has always had an answer and the answer was an accident: myPrizeRegion and
+   myGfRegion both read drafted[0].region, so the region deciding the field, the
+   prize table and the LAN allocation was whichever card you happened to open
+   first. That was harmless while the pool was one region and is not harmless the
+   moment two are allowed.
+
+   So it is asked out loud instead. The pool can be several regions; the event is
+   one, chosen on the same screen, and everything that used to read the first
+   card reads this. A Major stays a real regional event with its own real prize
+   table - the only fiction is the one every draft mode already runs on, that
+   this particular squad was assembled at all. */
+let preHomeRegion=null;
+function ccHomeRegion(){
+  if(preHomeRegion) return preHomeRegion;
+  return (drafted && drafted[0] && drafted[0].region)
+      || (preSelectedRegions && preSelectedRegions[0]) || 'EU';
+}
 let preSelectedYears=[];   // empty means every year
 
 // Which of the two simulations the next run is. Draft is the default because
@@ -29508,7 +29543,7 @@ function buildPreRegionChecks(){
 
   // A card-mode tournament is one region's event, so the choice is exclusive
   // and there is no "all regions" option — same when only one region exists.
-  const singlePick = pendingCards || regions.length<=1;
+  const singlePick = regions.length<=1;
   // By id, not by position: this screen has two headings now and the first of
   // them is the mode question, so 'the first h4' silently retitled the wrong one.
   const titleEl=document.getElementById('preregionTitle');
@@ -29527,7 +29562,7 @@ function buildPreRegionChecks(){
         el.querySelectorAll('.rf-btn').forEach(x=>x.classList.remove('active'));
         b.classList.add('active');
         document.getElementById('regionWarning').style.display='none';
-        updateEraAvailability();
+        updateEraAvailability(); buildHomeRegion();
       };
       el.appendChild(b);
     });
@@ -29540,17 +29575,21 @@ function buildPreRegionChecks(){
       regionBtns.forEach(b=>b.classList.remove('active'));
       if(nowActive) allRegionsBtn.classList.add('active');
       document.getElementById('regionWarning').style.display='none';
-      updateEraAvailability();
+      updateEraAvailability(); buildHomeRegion();
     };
     el.appendChild(allRegionsBtn);
     regions.forEach(r=>{
       const b=document.createElement('button');
       b.className='rf-btn rf-plate'; b.innerHTML=regionPlateHTML(r.code); b.dataset.region=r.code;
-      b.onclick=()=>{ b.classList.toggle('active'); allRegionsBtn.classList.remove('active'); document.getElementById('regionWarning').style.display='none'; updateEraAvailability(); };
+      b.onclick=()=>{ b.classList.toggle('active'); allRegionsBtn.classList.remove('active'); document.getElementById('regionWarning').style.display='none'; updateEraAvailability(); buildHomeRegion(); };
       regionBtns.push(b);
       el.appendChild(b);
     });
   }
+
+  // Drawn here as well as at the tail, because the era section below returns
+  // early when the pool is one era and the event question is not the era's.
+  buildHomeRegion();
 
   // The era filter only makes sense when the pool actually spans both eras.
   const hasOldAny=src.some(p=>{ const y=getPlayerYear(p); return y!==null && y<2024; });
@@ -29600,7 +29639,7 @@ function buildPreRegionChecks(){
       document.getElementById('eraWarning').style.display='none';
     };
   });
-  updateEraAvailability();
+  updateEraAvailability(); buildHomeRegion();
 }
 
 // Grey out (and deselect) any era option that would leave zero players for
@@ -29609,6 +29648,55 @@ function buildPreRegionChecks(){
 // Grey out (and deselect) any season that has no players for the currently
 // selected region(s) — picking Oceania shouldn't let you also pick a year with
 // no Oceania cards in it, since that would leave the pool empty.
+/* The second question: which region's tournament is this.
+
+   Only asked of a card run - a free mode has no regional event to belong to,
+   its field is whoever was drafted - and only when the pool spans more than one
+   region, because one region answers it by itself. The field, the prize table
+   and the LAN allocation all read the answer through ccHomeRegion.
+
+   Redrawn whenever the pool changes, keeping the current answer if it is still
+   one of the regions selected. */
+function buildHomeRegion(){
+  const block=document.getElementById('homeRegionBlock');
+  const el=document.getElementById('homeRegionChecks');
+  if(!block || !el) return;
+  const active=[...document.querySelectorAll('#preRegionChecks .rf-btn.active')];
+  const all=active.some(b=>b.dataset.region==='ALL');
+  const picked=all ? REGIONS.map(r=>r.code) : active.map(b=>b.dataset.region);
+  if(!pendingCards){ block.style.display='none'; preHomeRegion=null; return; }
+  /* Every region the set holds, whatever the pool is.
+
+     His question, 17 August: what if I want a European squad and Oceania's
+     tournament? The two are independent and the screen was tying them together -
+     it only asked which event when the pool spanned more than one region, so
+     ticking EU alone silently answered "Europe" for both.
+
+     They are separate questions about separate things: where the squad comes
+     from, and whose tournament it turns up to. An EU duo in the Oceanic Major is
+     a thing this mode can simulate and somebody will want to see. */
+  const src=pendingPool();
+  const avail=REGIONS.map(r=>r.code).filter(c=>src.some(p=>p.region===c));
+  if(avail.length<2){ block.style.display='none'; preHomeRegion=avail[0]||null; return; }
+  block.style.display='';
+  // Defaults to the pool when the pool is one region, which is what somebody who
+  // ticked one region and read no further would expect.
+  if(avail.indexOf(preHomeRegion)<0)
+    preHomeRegion = (picked.length===1 ? picked[0] : (picked[0]||avail[0]));
+  el.innerHTML='';
+  avail.forEach(code=>{
+    const b=document.createElement('button');
+    b.className='rf-btn rf-plate'+(code===preHomeRegion?' active':'');
+    b.dataset.region=code;
+    b.innerHTML=regionPlateHTML(code);
+    b.onclick=()=>{
+      preHomeRegion=code;
+      el.querySelectorAll('.rf-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+    };
+    el.appendChild(b);
+  });
+}
 function updateEraAvailability(){
   const activeRegionBtns=[...document.querySelectorAll('#preRegionChecks .rf-btn.active')];
   const regions = activeRegionBtns.some(b=>b.dataset.region==='ALL') ? [] : activeRegionBtns.map(b=>b.dataset.region);
@@ -29648,6 +29736,11 @@ function confirmRegionsAndStart(){
     return;
   }
   preSelectedRegions = active.some(b=>b.dataset.region==='ALL') ? [] : active.map(b=>b.dataset.region);
+  // And which of them the tournament is. One region answers itself; several were
+  // asked about on the screen; a free mode has no event to belong to.
+  const homeBtn=document.querySelector('#homeRegionChecks .rf-btn.active');
+  preHomeRegion = !pendingCards ? null
+    : (homeBtn ? homeBtn.dataset.region : (preHomeRegion || preSelectedRegions[0] || null));
   const yearBtns = eraShown ? [...document.querySelectorAll('#eraChecks .rf-btn.active')] : [];
   preSelectedYears = yearBtns.some(b=>b.dataset.year==='all') ? []
     : yearBtns.map(b=>parseInt(b.dataset.year,10)).filter(y=>!isNaN(y));
@@ -29823,9 +29916,8 @@ function generatePack(){
   // A squad has to come from one region — real duos never mix EU with NAC — so
   // once the first card is in, later packs only offer that region.
   let src=pool;
-  if(CARD_MODE && drafted.length>0){
-    const reg=drafted[0].region;
-    const same=pool.filter(p=>p.region===reg);
+  if(CARD_MODE && drafted.length>0 && preSelectedRegions && preSelectedRegions.length){
+    const same=pool.filter(p=>preSelectedRegions.indexOf(p.region)>=0);
     if(same.length>0) src=same;
   }
   // Grey commons stay in the pool — the lobby still fills with them — but they are
@@ -30999,7 +31091,7 @@ function buildFullLobby(){
   if(CARD_MODE && cardRosterPlayers().length){
     // Each region runs its own tournament, exactly like the real FNCS — so the
     // whole field is drawn from the region your own squad plays in.
-    const myRegion=(drafted[0] && drafted[0].region) || 'EU';
+    const myRegion=ccHomeRegion();
     const sameRegion=remaining.filter(p=>p.region===myRegion);
     if(sameRegion.length>=squadSize*2) remaining=sameRegion;
     const need=fieldTarget()-teams.length;
@@ -31982,7 +32074,7 @@ const SCQ_PRIZES_BY_REGION={
 };
 // Both of those are regional events, so the table follows the squad's own region.
 function myPrizeRegion(){
-  return (drafted && drafted[0] && drafted[0].region) || 'EU';
+  return ccHomeRegion();
 }
 const PRIZE_TABLES_M2={"EU":M2_EU_PRIZES,"NAC":M2_NAC_PRIZES,"NAW":M2_NAW_PRIZES,"BR":M2_BR_PRIZES,"ASIA":M2_ASIA_PRIZES,"ME":M2_ME_PRIZES,"OCE":M2_OCE_PRIZES};
 
@@ -33117,7 +33209,7 @@ function fillRealFieldTeams(remaining, needed, size, out){
 // packs instead of paired at random. Returns the players left over.
 function fillFieldTeams(remaining, needed, size, out){
   if(CARD_MODE && cardRosterPlayers().length){
-    const myRegion=(drafted[0] && drafted[0].region) || 'EU';
+    const myRegion=ccHomeRegion();
     const same=remaining.filter(p=>p.region===myRegion);
     const src = same.length>=size*2 ? same : [];
     const res=draftBotSquads(src, needed, size);
@@ -33402,7 +33494,7 @@ async function runMajorTournament(){
   // next. Give it a standings card of its own, like every other stage.
   const gfShell=createStageCardShell(L().majorFinalsStageTitle(finalTeams.length));
   await revealStageLog(you, gfShell, true);
-  const myGfRegion=(you.squad[0]||{}).region;
+  const myGfRegion=ccHomeRegion();
   const gfSlots = !CARD_MODE ? 0
     : CARD_SET==='m1' ? (SUMMIT_SLOTS[myGfRegion]||0)
     : CARD_SET==='m2' ? (MAJOR2_GC_SLOTS[myGfRegion]||0)
@@ -33438,7 +33530,7 @@ async function runMajorTournament(){
     gfSlots ? (CARD_SET==='m2' ? L().major2GcSlotNote(gfSlots)
              : CARD_SET==='t3' ? L().major3GcSlotNote(gfSlots)
              : L().majorFinalsSlotNote(gfSlots)) : '');
-  const gfPrize = CARD_MODE ? ((you.squad[0]||{}).region||null) : null;
+  const gfPrize = CARD_MODE ? ccHomeRegion() : null;
   await revealStandings(gfShell, finalTeams, you, gfSlots ? gfSeatCut : 0, null,
     gfSlots ? gfSeatSet : null, gfPrize,
     (gfSlots && gfSeatCut>gfSlots) ? L().gcSeatCutRolled(gfSlots, gfSeatCut) : null);
@@ -33457,7 +33549,7 @@ async function runMajorTournament(){
   // Every card set pays here, not just the two 2026 ones — the trio Majors have
   // their own tables and used to run a whole season for nothing.
   if(CARD_MODE){
-    const myReg=(you.squad[0]||{}).region||'EU';
+    const myReg=ccHomeRegion();
     const lines=[];
     const regional=prizeFor(myReg, youFinalRank);
     if(regional) lines.push({label:L().prizeRegional(regionName(myReg), youFinalRank), amount:regional});
@@ -33644,7 +33736,7 @@ function summitCardIndex(){
 function buildSummitField(you, myFinals){
   const idx=summitCardIndex();
   const mine=new Set(you.squad.map(hKey));
-  const myReg=(you.squad[0]||{}).region;
+  const myReg=ccHomeRegion();
   const main=[], scq=[];
   Object.keys(SUMMIT_SLOTS).forEach(reg=>{
     // Your own region sends the duos that actually finished above you in the
@@ -34158,7 +34250,7 @@ function summitQualifiersHTML(main, scq, you){
   };
   let html='';
   order.forEach(reg=>{
-    const m=main.filter(t=>t.summitRegion===reg || (t===you && (you.squad[0]||{}).region===reg));
+    const m=main.filter(t=>t.summitRegion===reg || (t===you && ccHomeRegion()===reg));
     const s=scq.filter(t=>t.summitRegion===reg);
     if(!m.length && !s.length) return;
     html+=`<div style="margin-top:14px;">
@@ -34242,7 +34334,7 @@ async function runMajor1Summit(you, regionRank, myFinals){
   if(main.length<10) return null;
   // You occupy one slot of your own region, so drop that region's last main
   // qualifier to keep the field at exactly 50 + 25.
-  const myReg=(you.squad[0]||{}).region;
+  const myReg=ccHomeRegion();
   for(let i=main.length-1;i>=0;i--){
     if(main.length<=49) break;
     if(main[i].summitRegion===myReg){ main.splice(i,1); }
