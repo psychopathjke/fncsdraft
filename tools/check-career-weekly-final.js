@@ -153,8 +153,9 @@ const BOOT = `
     if (!row || row.kind !== 'final') fail('the final wrote no row to the history');
     if (row.of !== 50) fail('the final seated ' + row.of + ' teams, should be 50');
     if (row.games !== 6) fail('the final ran ' + row.games + ' games, should be 6');
-    if (row.prize !== wfPrize(row.place))
-      fail('#' + row.place + ' was paid ' + row.prize + ', the table says ' + wfPrize(row.place));
+    // Epic pays a team and a duo is two people, so a career takes half.
+    if (row.prize !== Math.round(wfPrize(row.place)/2))
+      fail('#' + row.place + ' was paid ' + row.prize + ', half the table says ' + Math.round(wfPrize(row.place)/2));
     if ((s2.earnings||0) !== row.prize) fail('prize money did not reach earnings');
     if ((s2.balance||0) !== row.prize) fail('prize money did not reach the balance');
     if (s2.wf) fail('the seat was not spent');

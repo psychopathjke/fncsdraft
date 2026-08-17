@@ -91,14 +91,24 @@ const BOOT = `
             const me = careerCard(), mate = careerPartnerCard();
             const you = careerTeam([me, mate]);
             you.isYou = true; you.name = 'you';
-            const field = [you].concat(careerCupField(CAREER.career, [me, mate]));
+            // The room and the line across it are the division's own, which is
+            // the whole shape of the ladder: 1,000 duos and 80 through in
+            // Division 5, 150 and 10 in Division 2. This used to play a
+            // 150-duo lobby with a flat top 50 in every division — the sizes
+            // the mode had before the user set the real ones — so it measured
+            // a climb nobody plays: Division 2's ten seats were being handed
+            // out fifty at a time.
+            const div = CAREER.career.division;
+            const field = [you].concat(
+              careerCupField(CAREER.career, [me, mate], CC_CUP_ENTRANTS[div]));
             await simulateGamesRandomLobbies(field, CAREER_CUP_GAMES, 50, pointsForPlace, 4);
             const ranked = field.slice().sort((a, b) => b.stagePts - a.stagePts || b.stageElims - a.stageElims);
             const place = ranked.indexOf(you) + 1;
+            const cut = careerCupCut(div);
             careerApplyGrowth(place, field.length, you, field);
-            const mood = careerApplyMorale(place, field.length, place <= CAREER_CUP_CUT);
+            const mood = careerApplyMorale(place, field.length, place <= cut);
             if (mood && mood.left) arc.quits = (arc.quits || 0) + 1;
-            if (place <= CAREER_CUP_CUT && CAREER.career.division > 1) CAREER.career.division--;
+            if (place <= cut && CAREER.career.division > 1) CAREER.career.division--;
             if (CAREER.career.division === 1 && arc.reachedD1 === null) arc.reachedD1 = s;
             careerAdvanceTo(ccAddDays(today, 1));
           }

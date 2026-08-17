@@ -73,6 +73,29 @@ const BOOT = `
       fail('a duo that held said nothing: ' + f1.slice(0,3).join(' | '));
     out.steps.push('patience 70: held — "' + f1.find(t=>/running it back|тем же составом/i.test(t)) + '"');
 
+    /* ---- and an ordinary one is a decision rather than a formality ------- */
+    // His year, 17 August: a Division 5 career simulated a whole season and kept
+    // the same partner the entire time. It could not have done anything else -
+    // the only thing that moves a partner's patience is a result, by
+    // (percentile - 0.5) * 12, so finishing mid-table moves it by exactly zero.
+    // Forty-two cup nights, patience sixty at both ends, nobody unhappy, nobody
+    // outgrown, three season turns all a formality. Duos change at the turn of a
+    // season all the time without anybody falling out.
+    let held = 0, split = 0;
+    for (let n = 0; n < 40; n++) {
+      seed('2026-03-18', 60, 80);
+      CAREER.career.season = n + 1;              // a different career each time
+      const was = mate();
+      careerAdvanceTo('2026-03-19');
+      if (mate() === was) held++; else split++;
+    }
+    out.notes = out.notes || {};
+    out.notes.midTable = {held: held, split: split};
+    if (!split) fail('a mid-table duo never changes, which is the bug');
+    if (!held) fail('a mid-table duo always changes, which is the other one');
+    out.steps.push('patience 60 over forty careers: ' + held + ' ran it back, ' +
+                   split + ' moved on');
+
     // ---- an unhappy one leaves at the break ------------------------------
     seed('2026-03-18', 30, 80);
     const before2 = mate();
@@ -88,6 +111,30 @@ const BOOT = `
     if (own.a[1] !== ccHandle(mate()))
       fail('the announcement names @' + own.a[1] + ' but the partner is ' + mate());
     out.steps.push('patience 30: ' + before2 + ' -> ' + mate() + ' — "' + ccText(own) + '"');
+
+    /* ---- and one you outgrew yourself --------------------------------- */
+    // His career, 17 August: Division 5, a year fast-forwarded, he finished on 75
+    // and his partner was 58, and the duo never changed. The rule only ever
+    // asked whether the partner had outgrown the player - growing past your own
+    // partner was not something this mode could notice, so a career could improve
+    // by twenty points and drag the same duo through every cup of it.
+    seed('2026-03-18', 90, 58);
+    CAREER.player.ovr = 75; CAREER.player.ovrExact = 75;
+    const behindWas = mate();
+    careerAdvanceTo('2026-03-19');
+    if (mate() === behindWas)
+      fail('a 75 kept playing with a 58 because nobody asked the question');
+    const f4 = feed();
+    if (!f4.some(t => /somebody else|другим напарником/i.test(t)))
+      fail('outgrowing a partner was not announced: ' + f4.slice(0,3).join(' | '));
+    out.steps.push('75 beside a 58: ' + behindWas + ' -> ' + mate());
+    // But one rung is not a gap: a 75 and a 70 are still the same division.
+    seed('2026-03-18', 90, 70);
+    CAREER.player.ovr = 75; CAREER.player.ovrExact = 75;
+    const closeWas = mate();
+    careerAdvanceTo('2026-03-19');
+    if (mate() !== closeWas) fail('five points apart is not outgrowing anybody');
+    out.steps.push('75 beside a 70: held');
 
     // ---- one who outgrew you goes too ------------------------------------
     seed('2026-03-18', 90, 80 + CAREER_DM_REACH + 2);

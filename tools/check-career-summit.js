@@ -142,6 +142,24 @@ const BOOT = `
     check('and pays down to 74th', summitPrize(74) > 0 && summitPrize(75) === 0,
           summitPrize(74) + '/' + summitPrize(75));
     out.notes.prize = {first: summitPrize(1), last: summitPrize(74)};
+
+    /* ---- and the line across the final is the seats it hands out ---------- */
+    // His count, 17 August: about fifteen duos go from the Summit to the Global
+    // Championship, and the card drew its line at ten. Ten was a fallback typed
+    // in for a stage with no cut of its own - a Summit final does not cut, it
+    // crowns - so it drew a line that meant nothing over the one number the room
+    // is played for. The qualification itself was always read off SUMMIT_GC_SLOTS.
+    if (SUMMIT_GC_SLOTS !== 15)
+      check('the Summit sends fifteen to the Global Championship', false,
+            String(SUMMIT_GC_SLOTS));
+    const seatAt = n => { CAREER = {player:{}, career:{season:1, day:'2026-06-01',
+      division:1, log:[{season:1, day:'2026-06-01', kind:'summit', stage:'final',
+                        place:n, of:50}]}, partner:null};
+      return !!ccGlobalsSeat(); };
+    check('fifteenth at the Summit is a seat', seatAt(SUMMIT_GC_SLOTS));
+    check('and sixteenth is not', !seatAt(SUMMIT_GC_SLOTS + 1));
+    out.notes.gcLine = {fromSummit: SUMMIT_GC_SLOTS,
+                        fromMajor2: MAJOR2_GC_SLOTS.EU, fromLastChance: GCLC_GC_SLOTS.EU};
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =
     'PB' + 'EGIN' + encodeURIComponent(JSON.stringify(out)) + 'PE' + 'ND';

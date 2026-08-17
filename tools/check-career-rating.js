@@ -32,8 +32,14 @@ const BOOT = `
         who: label,
         'player.ovr': pl.ovr,
         'ovrExact': pl.ovrExact,
+        // What the hub prints, and what the card prints in its corner: both are
+        // the base plus what the connection and the birthday are worth. The
+        // base is printed under the card's number, and it is what rarity,
+        // colour and division read, so a good country cannot move a rung.
         'header shown': a ? Math.round(a.ovr + (card._pingEdge||0) + (card._ageEdge||0)) : pl.ovr,
+        'card shown': a ? Math.round(a.ovr + (card._pingEdge||0) + (card._ageEdge||0)) : pl.ovr,
         'card attrsFor.ovr': a ? a.ovr : null,
+        'edges': a ? Math.round(((card._pingEdge||0)+(card._ageEdge||0))*10)/10 : 0,
         'card _targetOvr': card ? card._targetOvr : null,
         'roster now ovr': (careerRosterNowEU().find(p => hKey(p) === hKey(pl.handle||pl.nick))||{})._ovr,
         'social bio': pl.ovr,
@@ -80,11 +86,22 @@ if (out.err) { console.error(out.err); process.exit(1); }
 let bad = 0;
 out.rows.forEach(r => {
   const want = r['player.ovr'];
-  const same = r['header shown'] === want && r['card attrsFor.ovr'] === want;
+  // The base is the career's own rating, everywhere it is read as a rating:
+  // the save, the card's attributes, the bio, the team's average.
+  const baseOk = r['card attrsFor.ovr'] === want;
+  // And the number a player is shown is that base plus what their country and
+  // their birthday are worth — the same on the hub and on the card, never one
+  // of each. That was the bug the two screenshots showed.
+  const shownOk = r['header shown'] === r['card shown'];
+  // Which is only the same number when nothing is riding on it.
+  const edgeOk = Math.abs(r['header shown'] - want - r['edges']) < 0.51;
+  const same = baseOk && shownOk && edgeOk;
   console.log((same ? '  ok   ' : '  FAIL ') + r.who + ': career ' + want +
-    ', header ' + r['header shown'] + ', card ' + r['card attrsFor.ovr']);
+    ', shown ' + r['header shown'] + ' (base ' + r['card attrsFor.ovr'] +
+    ' + ' + r['edges'] + ')');
   if (!same) bad++;
 });
-console.log(bad ? bad + ' failing' : 'the hub, the card and the career all print one rating');
+console.log(bad ? bad + ' failing'
+                : 'one base rating, and one shown number on the hub and the card');
 if (bad) process.exit(1);
 fs.rmSync(dir, { recursive: true, force: true });

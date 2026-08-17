@@ -41,19 +41,31 @@ const BOOT = `
     out.notes.unknownCareer = fans;
     check('an unwatched career hears from nobody', fans === 0, String(fans));
 
-    // A watched one hears something after good nights, and not after bad ones.
+    // A watched one hears a lot after a good night and a little after a bad one.
+    // Silence after a loss used to be the rule, and it meant the only messages
+    // waiting after a bad tournament were the haters' - the whole world agreeing
+    // with the worst reading of the evening. The people who were watching anyway
+    // are still watching, and far fewer of them write.
     fresh(50000);
     let good = 0, bad = 0;
+    const badKinds = {};
     for (let i = 0; i < 60; i++) {
       CAREER.career.day = ccAddDays('2026-01-05', i);
       CAREER.dms = [];
       if (careerFanDm(2, 150, true)) good++;
       CAREER.dms = [];
-      if (careerFanDm(140, 150, false)) bad++;
+      const b = careerFanDm(140, 150, false);
+      if (b) { bad++; badKinds[String(b.msgs[0].k).replace(/[1-9]$/, '')] = 1; }
     }
     out.notes.good = good; out.notes.bad = bad;
+    out.notes.badKinds = Object.keys(badKinds);
     check('a good night is written about often', good > 20, String(good));
-    check('a bad one is not written about at all', bad === 0, String(bad));
+    check('a bad one brings somebody', bad > 0, String(bad));
+    check('but far fewer of them', bad < good / 2, bad + ' vs ' + good);
+    check('and none of it is congratulations',
+          Object.keys(badKinds).every(k =>
+            k === 'dmFanChin' || k === 'dmFanStay' || k.indexOf('dmQ') === 0),
+          Object.keys(badKinds).join(','));
 
     // A fan thread is a fan thread: no rating, nothing to press, and it never
     // counts as somebody who would play with you.

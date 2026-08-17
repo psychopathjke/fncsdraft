@@ -146,8 +146,9 @@ const BOOT = `
     const r2 = (s2.log||[]).slice(-1)[0];
     if (r2.stage !== 'final') fail('the final wrote the wrong row');
     if (r2.games > 15) fail('the final ran ' + r2.games + ' maps, fifteen is the most');
-    if (r2.prize !== rcPrize(r2.place))
-      fail('#' + r2.place + ' was paid ' + r2.prize + ', the table says ' + rcPrize(r2.place));
+    // Epic pays a team and a duo is two people, so a career takes half.
+    if (r2.prize !== Math.round(rcPrize(r2.place)/2))
+      fail('#' + r2.place + ' was paid ' + r2.prize + ', half the table says ' + Math.round(rcPrize(r2.place)/2));
     if ((s2.earnings||0) !== r2.prize) fail('Paris money did not reach earnings');
     out.steps.push('final #' + r2.place + ' of 20 over ' + r2.games + ' maps — $' +
       r2.prize.toLocaleString('en-US'));

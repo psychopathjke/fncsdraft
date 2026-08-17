@@ -147,8 +147,9 @@ const BOOT = `
     if (r2.stage !== 'final') fail('the Final wrote the wrong row');
     if (r2.of !== 50) fail('the Final seated ' + r2.of + ', should be 50');
     if (r2.games !== 6) fail('the Final ran ' + r2.games + ' games');
-    if (r2.prize !== gclcPrize(r2.place))
-      fail('#' + r2.place + ' was paid ' + r2.prize + ', the table says ' + gclcPrize(r2.place));
+    // Epic pays a team and a duo is two people, so a career takes half.
+    if (r2.prize !== Math.round(gclcPrize(r2.place)/2))
+      fail('#' + r2.place + ' was paid ' + r2.prize + ', half the table says ' + Math.round(gclcPrize(r2.place)/2));
     if ((s2.earnings||0) !== r2.prize) fail('the money did not reach earnings');
     out.steps.push('final #' + r2.place + ' of 50 — $' + r2.prize.toLocaleString('en-US'));
 

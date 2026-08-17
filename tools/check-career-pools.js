@@ -37,12 +37,30 @@ const BOOT = `
     const pools = careerPools();
     const tag = pools.tag;
 
-    // The Play-In whole: 150 duos, 300 people, nobody twice.
+    /* Every pair the year recorded at Division 1's band, nobody twice.
+
+       His words, 17 August: Division 1 is all the name players we have. It was
+       the Major Play-In's own field and nothing else - 152 duos - while the year
+       holds 728 recorded European pairs across the other Major, the Reload
+       circuit and the qualifiers. Those are names and they were outside the one
+       division made of names.
+
+       Still recorded pairs and not invented ones: a Division 1 duo is two people
+       who actually played together, which anybody following this can check by
+       looking. That is what caps the room rather than a number. */
     const keys = new Set(); let repeats = 0;
     pools.players.forEach(p => { if(keys.has(p._k)) repeats++; keys.add(p._k); });
     check(tag + ' nobody seated twice', repeats === 0, repeats + ' repeats');
-    check(tag + ' Division 1 is 150 real duos', pools.duos.length === 150, pools.duos.length);
-    check(tag + ' Division 1 is 300 people', pools.players.length === 300, pools.players.length);
+    check(tag + ' Division 1 is every recorded pair at its band',
+          pools.duos.length > 180, pools.duos.length);
+    check(tag + ' and its people are two per duo',
+          pools.players.length === pools.duos.length * 2, pools.players.length);
+    // The Play-In's own field is in it, because that is this month's Division 1.
+    const playIn = new Set(ccPeopleOf(ccSnapshotNow().playIn).keys());
+    let seatedPlayIn = 0;
+    pools.players.forEach(p => { if (playIn.has(p._k)) seatedPlayIn++; });
+    check(tag + ' seats the Play-In field itself', seatedPlayIn >= 290,
+          seatedPlayIn + ' of ' + playIn.size);
     const avg = Math.round(pools.duos.reduce((s,d)=>s+d.avg, 0) / pools.duos.length * 10) / 10;
     out.snaps[tag] = {duos: pools.duos.length, avg: avg};
     check(tag + ' reads as Division 1', avg >= 79 && avg <= 85, avg);
@@ -55,7 +73,40 @@ const BOOT = `
   const b = new Set(careerPools().players.map(p => p._k));
   let gone = 0; a.forEach(k => { if(!b.has(k)) gone++; });
   out.turnover = {m1: a.size, m2: b.size, gone: gone};
-  check('the snapshot turns over with the Major', gone > 50, gone + ' left Division 1');
+  // Fewer leave than when the room was one event, because most of the year's
+  // pairs are in both snapshots - what turns over is the Play-In half of it.
+  check('the snapshot turns over with the Major', gone > 20, gone + ' left Division 1');
+
+  /* ---- and the half you did not take still plays ------------------------ */
+  // His question, 17 August: if I take Malibuca as my duo, who does vic0 play
+  // with? Nobody, and worse - measured, vic0 was not in Division 1 at all.
+  // Seating happens by pair, his pair had a member taken, so the pair was
+  // dropped and the room filled from the other two hundred and five. A 96
+  // disappeared out of the division for a season because somebody took his
+  // partner.
+  CAREER = {player:{region:'EU'}, career:{season:1, day:'2026-02-10', division:1},
+            partner:null};
+  CC_POOLS = null;
+  const mali = careerPools().players.find(p => /malibuca/i.test(p.handle));
+  const vico = careerPools().players.find(p => /^vic0$/i.test(p.handle));
+  if (!mali || !vico) fail('the pool has no Malibuca and vic0 to test with');
+  const taken = new Set([mali._k]);
+  const drawn = careerRealDuos(taken, careerRng(7), 1);
+  const seatedVico = drawn.slice(0, 199).find(d => d.cards.some(c => c._k === vico._k));
+  check('the half you did not take is still in the division', !!seatedVico,
+        'vic0 vanished');
+  if (seatedVico) {
+    const other = seatedVico.cards.find(c => c._k !== vico._k);
+    check('and their new partner is a real player', !!other && other.tier !== 'ladder',
+          other && other.tier);
+    check('and it is not the one who was taken', other._k !== mali._k, 'took them anyway');
+    out.orphan = {vico: vico.handle, now: other && other.handle};
+  }
+  // Nobody is in two duos after the re-pairing either.
+  const twice = {};
+  let dupes = 0;
+  drawn.forEach(d => d.cards.forEach(c => { if (twice[c._k]) dupes++; twice[c._k] = 1; }));
+  check('and nobody ended up in two duos', dupes === 0, dupes + ' repeats');
 
   // A drawn field: Division 1 is all real and full, the divisions below hold
   // not one real name, and nobody is anywhere twice.

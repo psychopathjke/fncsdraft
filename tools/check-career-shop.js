@@ -124,11 +124,11 @@ const BOOT = `
     // He pays into his own half of the game and nowhere else.
     const before = {...CAREER.player.attrs};
     CAREER.career.spentOn = null;
-    careerDoAct('aimlab');   // aim only
+    careerDoAct('trAim');   // aim only
     const aimGain = CAREER.player.attrs.aim - before.aim;
     fresh(20000); CAREER.career.spentOn = null;
     const bare = {...CAREER.player.attrs};
-    careerDoAct('aimlab');
+    careerDoAct('trAim');
     const bareGain = CAREER.player.attrs.aim - bare.aim;
     out.notes.aimlab = bareGain.toFixed(3) + ' -> ' + aimGain.toFixed(3);
     check('a mechanics coach speeds mechanics up', aimGain > bareGain * 1.3,
@@ -136,7 +136,7 @@ const BOOT = `
     // The endgame analyst does nothing for an aim day.
     fresh(20000); careerHireCoach('igl'); CAREER.career.spentOn = null;
     const iglBase = {...CAREER.player.attrs};
-    careerDoAct('aimlab');
+    careerDoAct('trAim');
     const iglGain = CAREER.player.attrs.aim - iglBase.aim;
     check('and an endgame analyst does not', Math.abs(iglGain - bareGain) < 1e-9,
           iglGain + ' vs ' + bareGain);
@@ -150,15 +150,35 @@ const BOOT = `
     fresh(100);
     check('an empty balance buys nothing', careerBuy('mouse') === false);
 
-    // The screen draws a photo for every device and marks the outranked rig.
+    /* The screen draws a photo for every row it draws, and a slot is one row.
+
+       The desk used to list all three rigs and both chairs, where buying the
+       better one replaced the worse and the worse then sat there saying HAVE
+       BETTER - a shop showing you its own bookkeeping. A slot shows the step up
+       and nothing else. */
     fresh(20000); careerBuy('pcpro');
     const html = careerShopHTML();
+    const shown = ccShopVisible();
+    out.notes.rows = {shown: shown.length, ofItems: CC_SHOP.length,
+                      ids: shown.map(i => i.id).join(',')};
     // The wide class contains the base class, so count the tags.
     const imgs = (html.match(/<img class="cc-buy-img/g) || []).length;
     out.notes.photos = imgs;
-    check('every device row carries its photo', imgs === CC_SHOP.filter(i => i.img).length,
-          imgs + ' of ' + CC_SHOP.filter(i => i.img).length);
-    check('the outranked rig is marked', /cc-buy-old/.test(html));
+    check('every row drawn carries its photo', imgs === shown.filter(i => i.img).length,
+          imgs + ' of ' + shown.filter(i => i.img).length);
+    check('a slot is one row', shown.filter(i => i.slot === 'pc').length === 1,
+          shown.filter(i => i.slot === 'pc').map(i => i.id).join(','));
+    check('and it is the step up from what is owned',
+          shown.some(i => i.id === 'pcelite'), out.notes.rows.ids);
+    check('the rig already bought is not offered again',
+          !shown.some(i => i.id === 'pcpro' || i.id === 'pcbudget'), out.notes.rows.ids);
+    check('nothing says HAVE BETTER any more', !/cc-buy-old/.test(html));
+    // A finished slot still says what is on the desk.
+    fresh(20000); careerBuy('pcbudget'); careerBuy('pcpro'); careerBuy('pcelite');
+    const done = ccShopVisible().filter(i => i.slot === 'pc');
+    check('a finished slot shows the one that is owned',
+          done.length === 1 && done[0].id === 'pcelite' && careerOwns(done[0].id),
+          done.map(i => i.id).join(','));
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =
     'PB' + 'EGIN' + encodeURIComponent(JSON.stringify(out)) + 'PE' + 'ND';

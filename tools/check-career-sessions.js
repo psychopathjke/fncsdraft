@@ -134,7 +134,10 @@ const BOOT = `
     // tears its live card down at the end, and a skipped one stops on its own
     // standings — which is the state the table can be read in.
     teams[4].isYou = true;
-    const carry = {pts: {}, elims: {}};
+    // Keyed by the row's name, which is what Division 1's own carry does - the
+    // Opens keys on the handles instead, because at nine thousand duos the name
+    // is a kilobyte of flag markup each. See ccRelKey.
+    const carry = {byName: true, pts: {}, elims: {}};
     teams.forEach((t, i) => { carry.pts[t.name] = 100 + i; carry.elims[t.name] = i; });
     // Same reset-then-seed order the live stage runs, read off the live stage's
     // own option rather than reimplemented: one game, then the totals.

@@ -75,15 +75,20 @@ const BOOT = `
     careerD1Posts(sunday);
     const rows = careerMoneyRows('all');
     if (!rows.length) fail('a Weekly Final paid nobody');
-    // Epic's table pays down to fortieth and nothing after, so forty rows.
-    if (rows.length !== 40)
-      fail('one Weekly Final should pay forty teams, the table holds ' + rows.length);
+    /* Epic's table pays down to fortieth and nothing after - and it pays a
+       team, which is two people. The board is a board of players, the way the
+       boards this scene is actually ranked on are, so forty paid duos are eighty
+       paid names. */
+    if (rows.length !== 80)
+      fail('forty paid duos are eighty paid players, the table holds ' + rows.length);
     let want = 0; for (let i = 1; i <= 50; i++) want += wfPrize(i);
     if (total('all') !== want)
       fail('the table holds $' + total('all') + ', the payout table paid $' + want);
-    out.steps.push('one Weekly Final: ' + rows.length + ' teams paid, $' +
+    out.steps.push('one Weekly Final: ' + rows.length + ' players paid, $' +
       total('all').toLocaleString('en-US') + ' — the whole purse, to the dollar');
-    if (rows[0].usd !== wfPrize(1)) fail('the leader is not on the winner\\'s cheque');
+    // The winner's cheque is split down the middle, because two people won it.
+    if (rows[0].usd !== Math.round(wfPrize(1)/2))
+      fail('the leader should hold half a winning cheque, holds $' + rows[0].usd);
     out.steps.push('leader ' + rows[0].name + ' on $' + rows[0].usd.toLocaleString('en-US'));
 
     // ---- the three scopes slice the same money ----------------------------

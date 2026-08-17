@@ -102,11 +102,20 @@ const BOOT = `
     out.steps.push('bracket: 12 games at 2 a kill, then heats of 20 over 8 at 3 a kill, top 5, final of 20');
 
     // ---- an open is open --------------------------------------------------
-    // Two Opens sessions feed a Play-In of a hundred, so fifty come out of each;
-    // the field they come out of has to be a funnel rather than one in three.
-    if (st.open.cut * 2 !== st.playin.field)
-      fail('two Opens of ' + st.open.cut + ' should fill a Play-In of ' + st.playin.field);
+    // The Opens advance Epic's top thousand, carried as a share of whatever the
+    // ladder holds, and the Play-In is exactly what they sent - the sessions are
+    // windows of one tournament, not two tournaments feeding one room.
+    if (st.playin.cut !== 80) fail('the Play-In has to fill four heats of twenty, not ' + st.playin.cut);
+    if (st.open.cut !== st.playin.field)
+      fail('the Play-In holds what the Opens sent: ' + st.open.cut + ' vs ' + st.playin.field);
+    if (st.playin.field <= st.playin.cut)
+      fail('a Play-In of ' + st.playin.field + ' cutting to ' + st.playin.cut + ' is not a stage');
+    const openShare = st.open.cut / st.open.field;
+    if (Math.abs(openShare - 0.1024) > 0.02)
+      fail('the Opens should advance about one in ten, not ' + (openShare * 100).toFixed(1) + '%');
     if (st.open.field < 400) fail('the Opens field is ' + st.open.field + ', which makes its cut a coin flip');
+    out.steps.push('opens: ' + st.open.cut + ' of ' + st.open.field + ' (' +
+                   (openShare * 100).toFixed(1) + '%), play-in ' + st.playin.field + ' to 80');
     // And the room is the region, not the player's own rung. This used to be a
     // Division 4 player's Opens: a hundred and fifty generated ladder duos, all
     // banded on Division 4, and not one real name in it.
@@ -169,13 +178,69 @@ const BOOT = `
     seed(days.open, null);
     const n = careerNext();
     if (n.type !== 'reload') fail(days.open + ' should be a Reload day, the hub says ' + n.type);
-    out.steps.push('opens: ' + await playThrough('the Opens'));
+    // Two evenings, one tournament: the first banks and settles nothing, the
+    // second carries it in and the cut is read off the pair.
+    out.steps.push('opens s1: ' + await playThrough('the Opens'));
+    const banked = save();
+    if ((banked.log||[]).some(r => r.stage === 'open'))
+      fail('the first Opens evening wrote a row; it settles nothing');
+    if (!banked.rel || banked.rel.id !== 'ReloadEliteSeries1Opens')
+      fail('the first Opens evening banked nothing');
+    if (banked.reload) fail('the first Opens evening recorded progress');
+    // And it has to fit in a save. The Opens is the biggest room in the mode and
+    // the banked evening carries a line for every duo in it, so this is the one
+    // place a career can quietly stop being written: careerSave never throws, it
+    // just does nothing, and every night after would be played on a save that no
+    // longer existed.
+    const raw = localStorage.getItem('fncsdraft_career') || '';
+    out.notes = out.notes || {};
+    const parsed = JSON.parse(raw);
+    const big = {};
+    Object.keys(parsed).forEach(k => { big[k] = Math.round(JSON.stringify(parsed[k]).length / 1024); });
+    Object.keys(parsed.career || {}).forEach(k => {
+      const n = Math.round(JSON.stringify(parsed.career[k]).length / 1024);
+      if (n > 20) big['career.' + k] = n;
+    });
+    out.notes.bankedSave = {kb: Math.round(raw.length / 1024), parts: big,
+                            carriedTeams: String(banked.rel.rows || '').split(';').length};
+    if (CC_SAVE_FAIL) fail('the banked Opens did not fit in a save: ' + CC_SAVE_FAIL);
+    if (raw.length > 2 * 1024 * 1024)
+      fail('the banked Opens save is ' + Math.round(raw.length / 1024) + 'kb');
+    if (out.notes.bankedSave.carriedTeams < ccOpenRoom())
+      fail('the banked evening carried only ' + out.notes.bankedSave.carriedTeams +
+           ' of ' + ccOpenRoom() + ' duos');
+    const openRow = CAREER_YEAR.find(r => r[2] === 'ReloadEliteSeries1Opens');
+    CAREER.career.day = openRow[1];
+    careerSave();
+    careerRenderHub('centre');
+    out.steps.push('opens s2: ' + await playThrough('the Opens, second session'));
     const s1 = save();
-    if (s1.day !== ccAddDays(days.open,1)) fail('the clock did not move a day after the Opens');
+    if (s1.day !== ccAddDays(openRow[1],1)) fail('the clock did not move a day after the Opens');
     const row = (s1.log||[]).slice(-1)[0];
     if (!row || row.kind !== 'reload' || row.stage !== 'open') fail('the Opens wrote no row');
-    if (row.games !== 12) fail('the Opens logged ' + row.games + ' games, should be 12');
+    if (row.games !== 24) fail('the Opens logged ' + row.games + ' games, and two sessions are 24');
     if (row.prize) fail('the circuit pays no cash: ' + row.prize);
+    /* An Opens is played in a sample and read out at the real thing's size.
+
+       His question, 17 August: why does the cut line say 215 when the top
+       thousand go through - and then, where would we get 9,766 duos from. Both
+       right. The room is his, 2,100 since he shrank it on the 16th because a
+       stage over five thousand measured 7.2 seconds; the real open is Tracker's
+       9,766, and the number anybody can recite is Epic's thousand. So the room
+       stays a sample and everything printed over it is multiplied out. */
+    if (row.of !== CC_LADDER_TRUE)
+      fail('an Opens result should read at the real open\\'s size, got ' + row.of);
+    // The room is a sample of the real open and the card says the real open's
+    // size, so the sample is capped where a stage stays watchable: 4,200 duos
+    // over twelve games measured 7.5 seconds, which is the lag that shrank the
+    // rooms in the first place.
+    if (CC_RELOAD_STAGE.open.field !== ccOpenRoom())
+      fail('the Opens is played in the sampled room, not ' + CC_RELOAD_STAGE.open.field);
+    if (ccOpenRoom() > CC_OPEN_ROOM)
+      fail('the Opens room is ' + ccOpenRoom() + ', which is a stage nobody waits through');
+    if (row.place < Math.round(ccOpenScale(careerLadderEntrants())))
+      fail('a place in an Opens should be multiplied out, got ' + row.place);
+    if (CC_RANK_SCALE !== 1) fail('the display scale was left switched on');
     out.steps.push('logged: #' + row.place + ' of ' + row.of + ', ' + row.games + ' games' +
                    (row.passed ? ', through' : ', out'));
     if (row.passed && (!s1.reload || s1.reload.got !== 'open'))
@@ -216,6 +281,7 @@ const m = dom.match(/BEGIN([\s\S]*?)END/);
 if (!m) { console.error('the probe produced no output'); process.exit(2); }
 const out = JSON.parse(decodeURIComponent(m[1]));
 out.steps.forEach(s => console.log('  ' + s));
+if (out.notes) console.log(JSON.stringify(out.notes, null, 1));
 if ((out.errs||[]).length) console.error('page errors: ' + out.errs.join(' | '));
 if (out.fail) { console.error('FAILED: ' + out.fail); process.exit(1); }
 if ((out.errs||[]).length) process.exit(1);

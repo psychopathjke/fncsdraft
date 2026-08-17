@@ -48,51 +48,60 @@ const BOOT = `
     // from well below it.
     fresh(60, 96);
     let before = CAREER.player.ovrExact;
-    careerDoAct('aimlab');
+    careerDoAct('trAim');
     const gain = CAREER.player.ovrExact - before;
     out.notes.dayAt60 = Math.round(gain*1000)/1000;
     check('a day well below the cap pays it', Math.abs(gain - DAY) < 0.03, String(gain));
 
-    // The taper still bites near the cap, and training stops at it.
-    fresh(71, 96);
-    before = CAREER.player.ovrExact;
-    careerDoAct('aimlab');
-    const near = CAREER.player.ovrExact - before;
-    out.notes.dayNearCeiling = Math.round(near*1000)/1000;
-    check('and near the cap it pays less', near > 0 && near < DAY*0.6, String(near));
-    // At the cap, a day of training moves nothing at all.
+    /* The only ceiling left is the scale's own.
+
+       His call, 17 August, with the ladder tile's line ringed in red: take the
+       ceiling off. Training used to stop at the division's band plus four, so a
+       Division 1 player on 84 was told the six buttons were nearly finished with
+       him. The taper against 99 stays - the last ten points come slowly whether
+       they come from a day at the aim trainer or from a Major - and the
+       division's part of it is gone. */
+    check('the ceiling is the top of the scale, not the division',
+          careerTrainCap() === CAREER_SCALE_TOP, String(careerTrainCap()));
     fresh(72, 96);
     before = CAREER.player.ovrExact;
-    careerDoAct('aimlab');
-    out.notes.dayAtCap = Math.round((CAREER.player.ovrExact - before)*1000)/1000;
-    check('at the cap training stops', CAREER.player.ovrExact - before < 0.02,
-          String(CAREER.player.ovrExact - before));
-    check('the cap is the division band plus four', careerTrainCap() === CC_DIV_RATING[3]+4,
-          String(careerTrainCap()));
+    careerDoAct('trAim');
+    out.notes.dayPastOldCap = Math.round((CAREER.player.ovrExact - before)*1000)/1000;
+    check('a day four points over the division band still pays',
+          Math.abs(out.notes.dayPastOldCap - DAY) < 0.03,
+          String(out.notes.dayPastOldCap));
+    // And the last ten points before 99 are slow, wherever they come from.
+    fresh(95, 96);
+    before = CAREER.player.ovrExact;
+    careerDoAct('trAim');
+    const late = CAREER.player.ovrExact - before;
+    out.notes.dayNearNinetyNine = Math.round(late*1000)/1000;
+    check('and the last stretch to 99 pays less', late > 0 && late < DAY*0.6,
+          String(late));
     // ---- one store, spent by days and refilled by nights ----------------
     fresh(60, 96);
     check('a career starts rested', careerEnergy() === CC_ENERGY_DAY, String(careerEnergy()));
-    careerDoAct('aimlab');
+    careerDoAct('trAim');
     check('a training day spends its cost',
-          careerEnergy() === CC_ENERGY_DAY - ccActById('aimlab').energy, String(careerEnergy()));
-    check('and the day is done', careerDoAct('customs') === null);
+          careerEnergy() === CC_ENERGY_DAY - ccActById('trAim').energy, String(careerEnergy()));
+    check('and the day is done', careerDoAct('trCon') === null);
     const beforeNight = careerEnergy();
     careerAdvanceTo(ccAddDays(CAREER.career.day, 1));
     check('a night gives some back', careerEnergy() === beforeNight + CC_ENERGY_NIGHT,
           beforeNight + ' -> ' + careerEnergy());
     // Run it down and the store, not the day, is what stops the work.
     CAREER.career.energy = 10;
-    check('an empty store cannot train', careerDoAct('aimlab') === null);
+    check('an empty store cannot train', careerDoAct('trAim') === null);
     check('but it can rest', careerDoAct('rest') !== null);
     check('and resting refills', careerEnergy() === 10 + CC_ENERGY_REST, String(careerEnergy()));
     out.notes.rested = careerEnergy();
     // A tired day is worth exactly as much as a fresh one — the store is what
     // runs out, not the value of the work.
     fresh(60, 96); CAREER.career.energy = 100;
-    let b1 = CAREER.player.ovrExact; careerDoAct('aimlab');
+    let b1 = CAREER.player.ovrExact; careerDoAct('trAim');
     const fresh1 = CAREER.player.ovrExact - b1;
     fresh(60, 96); CAREER.career.energy = 31;
-    b1 = CAREER.player.ovrExact; careerDoAct('aimlab');
+    b1 = CAREER.player.ovrExact; careerDoAct('trAim');
     const low = CAREER.player.ovrExact - b1;
     out.notes.freshVsLow = [Math.round(fresh1*1000)/1000, Math.round(low*1000)/1000];
     check('a day is a day whatever the store holds', Math.abs(fresh1 - low) < 1e-9,
@@ -104,7 +113,7 @@ const BOOT = `
     CAREER.gear = {own:['mouse','headset','keyboard','monitor','pcelite'], train:0.55};
     if (!careerHireCoach('aim')) check('the probe could hire a coach', false);
     before = CAREER.player.ovrExact;
-    careerDoAct('aimlab');
+    careerDoAct('trAim');
     const kitted = CAREER.player.ovrExact - before;
     out.notes.dayKitted = Math.round(kitted*1000)/1000;
     check('a full desk and a coach are worth more than a bare day', kitted > gain*1.8,
@@ -115,7 +124,7 @@ const BOOT = `
     // development half of a result's growth.
     fresh(70, 96);
     check('no partner is no pull', Math.abs(careerMateFactor(70) - 1) < 1e-9);
-    const seat = ovr => { CAREER.partner = {card: {handle:'Mate', region:'EU', tier:'ranked',
+    const seat = ovr => { CAREER.partner = {card: {handle:'Mate', region:'EU', tier:'trSur',
       rating: ovr, _targetOvr: ovr, _attrs: ccRookieAttrs(ovr,'roleFRG')}}; };
     seat(80); const up = careerMateFactor(70);
     seat(70); const same = careerMateFactor(70);

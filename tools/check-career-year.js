@@ -182,9 +182,14 @@ const BOOT = `
     while (!CAREER.career.seasonOver && guard++ < 400) careerSkipWeek();
     if (!CAREER.career.seasonOver) fail('the year did not end in ' + guard + ' days');
     const paid = CAREER.career.wages || 0;
-    out.steps.push('a 12,000 season contract paid ' + paid + ' across the year');
-    if (Math.abs(paid - 12000) > pays.length)
-      fail('a season of wages should add up to the contract, got ' + paid);
+    // A monthly wage is paid monthly. This used to expect a year of wages to add
+    // up to the salary, which is the bug behind 'they offer very little': the
+    // offer said twelve thousand a month, the club paid a thousand, and a season
+    // of that was the monthly figure once.
+    const owed = 12000 * pays.length;
+    out.steps.push('a 12,000 a month contract paid ' + paid + ' across ' + pays.length + ' paydays');
+    if (paid !== owed)
+      fail('a season of wages is the wage times the paydays, wanted ' + owed + ', got ' + paid);
     if ((CAREER.career.earnings || 0) !== 0)
       fail('wages leaked into prize money: ' + CAREER.career.earnings);
     out.steps.push('and none of it landed in prize money');

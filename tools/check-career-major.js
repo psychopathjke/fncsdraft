@@ -120,14 +120,41 @@ const BOOT = `
     out.steps.push('play-in: Division 1 only');
     if (!can(4, d.lcq))
       fail('the Last Chance is open to all five divisions and a Division 4 player was refused');
-    out.steps.push('last chance: open to Division 4');
+    /* But not to somebody who is already through this Major.
+
+       His rule, 17 August: come out of the Play-In into the Heats and you do not
+       play this Major's Last Chance, because you have a place. There are two
+       things called a last chance here - the one open to everybody, qualified or
+       not, is the Global Championship's, where first pays 40,000 and a duo with a
+       seat still turns up because their seat rolling down costs them nothing.
+       This is a Major's own back door, and it exists to fill the Final. */
+    if (can(1, d.lcq, {n:1, got:'heats', pass:'heats', ticket:true}))
+      fail('a duo already in the Major Final was offered the same Major Last Chance');
+    if (!can(1, d.lcq, {n:1, got:'heats', pass:null, ticket:false}))
+      fail('a duo the Heats knocked out was refused the Last Chance');
+    if (can(1, d.lcq, {n:1, got:'lcq', pass:'lcq', ticket:true}))
+      fail('the Last Chance was offered twice');
+    // And the panel says which of the two it is, rather than telling somebody who
+    // has just earned a seat that seats have to be earned.
+    seed(1, d.lcq, {n:1, got:'heats', pass:'heats', ticket:true});
+    if (ccMajWhyLocked() !== L().ccMajHaveTicket)
+      fail('a ticket-holder is told the Major has to be earned: ' + ccMajWhyLocked());
+    seed(1, d.lcq, undefined);
+    out.steps.push('last chance: open to Division 4, shut to a ticket');
     if (can(1, d.heats)) fail('the Heats opened to somebody who never played the Play-In');
-    if (!can(1, d.heats, {n:1, got:'playin', ticket:false})) fail('the Play-In did not open the Heats');
-    if (can(1, d.final, {n:1, got:'heats', ticket:false})) fail('the Final opened to a team with no ticket');
-    if (!can(1, d.final, {n:1, got:'heats', ticket:true})) fail('a ticket did not open the Final');
+    // Cleared, not merely played: a Play-In finished outside the cut is not a
+    // place in the Heats, and got records the last stage played rather than the
+    // last one passed. His Division 4 career was told it held a Major slot
+    // because it had entered the Last Chance and lost.
+    if (!can(1, d.heats, {n:1, got:'playin', pass:'playin', ticket:false}))
+      fail('coming through the Play-In did not open the Heats');
+    if (can(1, d.heats, {n:1, got:'playin', pass:null, ticket:false}))
+      fail('playing the Play-In and going out opened the Heats');
+    if (can(1, d.final, {n:1, got:'heats', pass:null, ticket:false})) fail('the Final opened to a team with no ticket');
+    if (!can(1, d.final, {n:1, got:'heats', pass:'heats', ticket:true})) fail('a ticket did not open the Final');
     out.steps.push('heats need the play-in, the final needs a ticket');
-    if (can(1, d.heats, {n:1, got:'heats', ticket:true})) fail('a stage already played was offered again');
-    if (can(1, d.heats, {n:2, got:'playin', ticket:true})) fail('Major 2 progress opened Major 1\\'s heats');
+    if (can(1, d.heats, {n:1, got:'heats', pass:'heats', ticket:true})) fail('a stage already played was offered again');
+    if (can(1, d.heats, {n:2, got:'playin', pass:'playin', ticket:true})) fail('Major 2 progress opened Major 1\\'s heats');
     out.steps.push('a stage is played once, and the chain is per Major');
 
     // ---- play the Play-In ------------------------------------------------
@@ -147,6 +174,10 @@ const BOOT = `
     const s2 = save();
     const r2 = (s2.log||[]).slice(-1)[0];
     if (r2.stage !== 'lcq') fail('the Last Chance wrote the wrong row');
+    // And it pays nothing, which is right: the last chances that pay are the
+    // Global Championship's and the Major 1 Second Chance, both named over
+    // GCLC_PRIZES_BY_REGION. A Major's own back door is a qualifier.
+    if (r2.prize) fail('the Major Last Chance paid ' + r2.prize);
     if (r2.passed !== !!(s2.major && s2.major.ticket))
       fail('the ticket and the row disagree about whether it was won');
     out.steps.push('division 4 in the lobby: ' + (s2.major && s2.major.ticket
@@ -154,15 +185,16 @@ const BOOT = `
       ' (' + r2.wins + ' wins)');
 
     // ---- and the Final ---------------------------------------------------
-    seed(1, d.final, {n:1, got:'heats', ticket:true});
+    seed(1, d.final, {n:1, got:'heats', pass:'heats', ticket:true});
     out.steps.push('final: ' + await playThrough('the Major Final'));
     const s3 = save();
     const r3 = (s3.log||[]).slice(-1)[0];
     if (r3.stage !== 'final') fail('the Final wrote the wrong row');
     if (r3.of !== 50) fail('the Final seated ' + r3.of + ' duos, should be 50');
     if (r3.games !== 12) fail('the Final ran ' + r3.games + ' games');
-    if (r3.prize !== majorPrize(r3.place))
-      fail('#' + r3.place + ' was paid ' + r3.prize + ', the table says ' + majorPrize(r3.place));
+    // Epic pays a team and a duo is two people, so a career takes half.
+    if (r3.prize !== Math.round(majorPrize(r3.place)/2))
+      fail('#' + r3.place + ' was paid ' + r3.prize + ', half the table says ' + Math.round(majorPrize(r3.place)/2));
     if ((s3.earnings||0) !== r3.prize) fail('the Major prize did not reach earnings');
     out.steps.push('final #' + r3.place + ' of 50 — $' + r3.prize.toLocaleString('en-US') +
                    ', earnings $' + (s3.earnings||0).toLocaleString('en-US'));
@@ -191,4 +223,4 @@ out.steps.forEach(s => console.log('  ' + s));
 if ((out.errs||[]).length) console.error('page errors: ' + out.errs.join(' | '));
 if (out.fail) { console.error('FAILED: ' + out.fail); process.exit(1); }
 if ((out.errs||[]).length) process.exit(1);
-console.log('the Major plays, and the Last Chance really is open to everybody');
+console.log('the Major plays, and its Last Chance is shut to a duo already through');

@@ -102,9 +102,20 @@ const BOOT = `
     await playOut();
     out.notes.finalPicker = seen;
     check('the Weekly Final asks where to land', !!seen);
-    check('and it draws the island\\u2019s whole grid',
+    // The whole island, not the half of it a squad lobby is thinned to.
+    // trimLandingZonesForMode keeps the biggest 52% of the boxes for a
+    // four-player lobby, it runs once at page load with squadSize still at the
+    // squad default, and nothing rebuilt it — so a duo career was picking from
+    // 19 of the island's 36 boxes and the map had holes all over it.
+    const full = ZONE_SETS[ACTIVE_LANDING_SET].length;
+    out.notes.grid = {drawn: seen && seen.zones, loaded: ALL_LANDING_ZONES.length,
+                      island: full, set: ACTIVE_LANDING_SET};
+    check('and it draws every box that is loaded',
           seen && seen.zones === ALL_LANDING_ZONES.length,
           seen && (seen.zones + '/' + ALL_LANDING_ZONES.length));
+    check('which is the whole island, not a squad-thinned half of it',
+          ALL_LANDING_ZONES.length === full,
+          ALL_LANDING_ZONES.length + ' of ' + full);
 
     // ---- the pick is on the team, and it is worth something ---------------
     // careerLandingPick hands the zone map back to the simulation; the proof it

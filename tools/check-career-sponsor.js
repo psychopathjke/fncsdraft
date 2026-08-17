@@ -42,47 +42,98 @@ const BOOT = `
     fresh(150000);
     check('a hundred and fifty brings the brand', (ccSponsorOffer()||{}).id === 'brand');
 
-    // Signing pays monthly, through the same payday the wages use.
+    /* Signing pays per stream night, not per month.
+
+       It used to be a cheque on the first for a follower count that goes up on
+       its own, which made it the second thing converting an audience into money
+       and the worse of the two: nothing anybody decided. A brand buys a slot in
+       front of an audience, and the slot exists on the nights there is a
+       stream. */
     fresh(50000, 4);
     check('signing works', careerSignSponsor('isp') === true);
     // A save signed under the old name still finds its deal.
     CAREER.sponsor.id = 'drink';
     check('an old save keeps its deal', (ccSponsor()||{}).id === 'isp');
     check('and it is the one working', (ccSponsor()||{}).id === 'isp');
-    const before = CAREER.career.balance;
-    // A month of the career year, with no club at all: every cent is the
-    // sponsor's, which is the point below Division 1.
+    const idle = CAREER.career.balance;
+    // A month in which nobody streamed: a brand pays for slots, and there were
+    // none.
     careerAdvanceTo('2026-02-05');
+    out.notes.monthIdle = CAREER.career.balance - idle;
+    check('a month with no streams pays no brand',
+          CAREER.career.balance === idle, String(CAREER.career.balance - idle));
+    // And a night that does stream pays the slot on top of the subs.
+    const before = CAREER.career.balance;
+    careerDoAct('stream');
     const paid = CAREER.career.balance - before;
-    out.notes.monthPaid = paid;
-    check('a month pays the fee with no club', paid === 1200, String(paid));
-    check('and the tile counts it', CAREER.sponsor.paid === paid, String(CAREER.sponsor.paid));
+    out.notes.streamPaid = paid;
+    check('a stream night pays the subs and the slot',
+          paid === Math.round(careerReach()/CC_STREAM_PER) + ccSponsor().pay, String(paid));
+    check('and the tile counts what the brand paid',
+          CAREER.sponsor.paid === ccSponsor().pay, String(CAREER.sponsor.paid));
     check('the sponsor money is kept apart from the club wage',
-          CAREER.career.sponsored === paid && !CAREER.career.wages,
+          CAREER.career.sponsored === ccSponsor().pay && !CAREER.career.wages,
           CAREER.career.sponsored + ' / ' + CAREER.career.wages);
 
+    /* ---- the slot is priced on the people in front of it ------------------ */
+    // His words, 17 August: they offer very little. They did, and they went on
+    // offering the same very little - the fee was written next to a tier, so
+    // four times the audience was the same cheque.
+    fresh(10000, 3);
+    const rate = r => { CAREER.career.reach = r; return (ccSponsorOffer()||{}).pay; };
+    const curve = [10000, 25000, 49000].map(rate);
+    out.notes.gearCurve = curve;
+    check('a bigger audience is worth a bigger slot',
+          curve[0] < curve[1] && curve[1] < curve[2], JSON.stringify(curve));
+    check('and the first deal is not an insult', curve[0] >= 50, String(curve[0]));
+    // The tier is a ceiling as well as a doorway, so a channel that grows into
+    // the millions does not quietly out-earn the whole of Division 1.
+    CAREER.career.reach = 5000000;
+    check('a brand deal has a top', (ccSponsorOffer()||{}).pay === CC_SPONSORS[2].cap,
+          String((ccSponsorOffer()||{}).pay));
+    // A signed deal keeps the rate it was signed at, because that is a deal.
+    fresh(20000, 3);
+    careerSignSponsor('gear');
+    const signed = ccSponsor().pay;
+    CAREER.career.reach = 40000;
+    check('a signed rate does not drift with the audience',
+          ccSponsor().pay === signed, signed + ' -> ' + ccSponsor().pay);
+    // But somebody writes again once it has been outgrown by a clear margin.
+    check('and growing brings a better offer from the same brand',
+          (ccSponsorOffer()||{}).pay >= signed * CC_AD_STEP,
+          signed + ' vs ' + JSON.stringify(ccSponsorOffer()));
+    CAREER.career.reach = 21000;
+    check('a rate barely better than the signed one is not news',
+          ccSponsorOffer() === null, JSON.stringify(ccSponsorOffer()));
+
     // An audience that outgrows its deal gets the better one offered.
+    fresh(50000, 4);
+    careerSignSponsor('isp');
     CAREER.career.reach = 150000;
     check('outgrowing the deal brings a better one', (ccSponsorOffer()||{}).id === 'brand');
     CAREER.career.reach = 50000;
     check('and a smaller one is not offered back', ccSponsorOffer() === null);
 
-    // A club and a sponsor both pay, and the tile draws.
+    // A club pays on the first and a brand pays on the night, and the two
+    // land in one balance without being the same money.
     fresh(150000, 1);
     careerSignSponsor('brand');
     CAREER.org = {name:'FOKUS', tier:88, salary:1200, goal:{type:'place',target:20},
                   since:1, paid:0};
     const b2 = CAREER.career.balance;
     careerAdvanceTo('2026-02-05');
+    // A monthly wage is a month's money. It used to be divided by the year's
+    // paydays before any of it was handed over, so a club that said 1200 a month
+    // paid a hundred and nine - which is what 'they offer very little' was.
+    const clubMonth = 1200;
+    check('the club pays on the first and the brand does not',
+          CAREER.career.balance - b2 === clubMonth,
+          (CAREER.career.balance - b2) + ' vs ' + clubMonth);
+    careerDoAct('stream');
     out.notes.bothPaid = CAREER.career.balance - b2;
-    // The club's own month is its season salary split over the year's paydays.
-    const clubMonth = Math.round(1200 / careerWagePaydays().length);
     check('and each source is counted where it belongs',
-          CAREER.career.wages === clubMonth && CAREER.career.sponsored === 4000,
+          CAREER.career.wages === clubMonth && CAREER.career.sponsored === ccSponsor().pay,
           CAREER.career.wages + ' / ' + CAREER.career.sponsored);
-    check('the club and the sponsor both pay',
-          CAREER.career.balance - b2 === 4000 + clubMonth,
-          (CAREER.career.balance - b2) + ' vs ' + (4000 + clubMonth));
     const tile = careerSponsorTileHTML();
     check('the tile names the deal', tile.indexOf(L().ccSponsorbrand) >= 0);
     fresh(0);
