@@ -1497,6 +1497,12 @@
   #screen-career-hub .cc-day-locked{font-size:11.5px;font-weight:800;color:#ffb300;
     background:rgba(255,179,0,.10);border:1px solid rgba(255,179,0,.35);border-radius:8px;
     padding:7px 10px;margin-bottom:8px;}
+  /* A career that is no longer being written. It sits above everything because
+     every press after it is work the player is about to lose. */
+  .cc-save-fail{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:9000;
+    max-width:min(560px,calc(100vw - 24px));font-size:12px;font-weight:800;line-height:1.35;
+    color:#ffd9d4;background:#5a1712;border:1px solid rgba(255,125,112,.6);border-radius:10px;
+    padding:10px 13px;box-shadow:0 8px 24px rgba(0,0,0,.45);}
   .cc-buy-in{display:flex;flex-direction:column;line-height:1.3;min-width:0;flex:1 1 auto;}
   .cc-buy-in b{color:#fff;font-size:13.5px;font-weight:900;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -3482,6 +3488,11 @@ chEarnings:'Призовые', chWages:'Зарплата',
 chNext:'Далее',
 chWkCup:'Кубок', chWkReload:'Reload', chDayFree:'Свободный день',
 ccDayTag:'ДЕНЬ', ccDayMust:'Выбери, на что уходит день', ccDayDone:'Следующий день',
+ccDayOver:v=>'День уже потрачен: '+v+'. Энергия останется до завтра — жми «Следующий день»',
+ccDayOverAny:'День уже потрачен. Энергия останется до завтра — жми «Следующий день»',
+ccRestFull:'энергия и так полная',
+ccSaveFail:v=>'Карьера не сохраняется ('+v+'). В браузере кончилось место под сохранения — '+
+  'очисти данные сайта или удали лишний слот карьеры, иначе всё сыгранное пропадёт при перезагрузке',
 ccEnergyMark:'⚡', ccRingEnergy:'Энергия', ccRingFatigue:'Усталость', ccRingMood:'Настрой',
 ccActtrAim:'KovaaK\'s', ccActtrSur:'Ранкед', ccActtrCon:'Зал и режим',
 ccActtrClu:'1v1', ccActtrExp:'Разбор реплеев', ccActtrEnd:'Кастомки Noble',
@@ -4714,6 +4725,11 @@ chEarnings:'Prize money', chWages:'Wages',
 chNext:'Next up',
 chWkCup:'Cup', chWkReload:'Reload', chDayFree:'Free day',
 ccDayTag:'DAY', ccDayMust:'Choose what the day goes on', ccDayDone:'Next day',
+ccDayOver:v=>'The day is already spent: '+v+'. The energy keeps until tomorrow — press Next day',
+ccDayOverAny:'The day is already spent. The energy keeps until tomorrow — press Next day',
+ccRestFull:'energy is already full',
+ccSaveFail:v=>'This career is not being saved ('+v+'). The browser is out of room for saves — '+
+  'clear this site\'s data or delete a career slot you are not using, or everything played will be gone on reload',
 ccEnergyMark:'⚡', ccRingEnergy:'Energy', ccRingFatigue:'Fatigue', ccRingMood:'Morale',
 ccActtrAim:'KovaaK\'s', ccActtrSur:'Ranked', ccActtrCon:'Gym and routine',
 ccActtrClu:'1v1s', ccActtrExp:'Watch replays', ccActtrEnd:'Noble endgames',
@@ -39434,6 +39450,21 @@ function careerSave(){
     CC_SAVE_FAIL=String(e&&e.name||e);
     if(typeof console!=='undefined') console.warn('career save failed: '+CC_SAVE_FAIL);
   }
+  careerSaveWarn();
+}
+/* And it says so on the screen, not only in the console.
+
+   A console warning is a warning nobody reads. The player's report, 17 August:
+   "the saves do not work" — and everything after that point was a career being
+   played on a save that was never being written, which reads from the inside as
+   the day resetting itself every time the page is opened. */
+function careerSaveWarn(){
+  const old=document.getElementById('ccSaveFail');
+  if(!CC_SAVE_FAIL){ if(old) old.remove(); return; }
+  const box=old || document.createElement('div');
+  box.id='ccSaveFail'; box.className='cc-save-fail';
+  box.textContent=L().ccSaveFail(CC_SAVE_FAIL);
+  if(!old) document.body.appendChild(box);
 }
 function careerExists(){
   try{ return !!localStorage.getItem(LS_SLOT(ccSlot())); }catch(e){ return false; }
@@ -39962,6 +39993,13 @@ function careerCentreHTML(card, a){
           : next.type==='reload' ? L().ccRelLocked
           : next.type==='final'  ? L().ccWfLocked
           : next.type==='major'  ? ccMajWhyLocked()
+          // The Summit and the Globals were in the Skip button's chain above and
+          // not in this one, so the panel fell through to a placeholder from
+          // before the Majors were built and told a player standing on Summit
+          // day that Majors are not wired into a career yet. His report,
+          // 17 August. The two chains say the same thing now.
+          : next.type==='summit' ? L().ccSumLocked
+          : next.type==='globals'? L().ccGlobLocked(ccLanCity('globals'))
           : next.type==='gc'     ? (careerGclcOn(careerToday()) ? L().ccGcLocked : L().ccRcLocked)
                                  : L().chSoonHint})
         : `<div class="ch-art" style="background-image:url(${art});">
@@ -40588,6 +40626,10 @@ function careerDoAct(id){
   // that take all of it say when there is none left. See careerDayClosed.
   if(careerDayClosed()) return null;
   if(careerEnergy()<act.energy) return null;
+  // A rest on a full store restores nothing and takes the whole day with it.
+  // The button already says so; this is the same rule where the day is spent,
+  // so no other caller can hand a player an evening for nothing.
+  if(act.rest && careerEnergy()>=careerEnergyMax()) return null;
   careerSpend(act.energy);
   if(act.rest) careerRestore(act.rest);
   // The same taper the cup's own growth uses. Without it training ran at full
@@ -46102,6 +46144,20 @@ function careerDayPanelHTML(locked){
   // Whether there is any of the day left to spend, which is not the same as
   // whether anything has been spent: sessions run until the store runs out.
   const closed=careerDayClosed();
+  /* And what closed it, said out loud.
+
+     Nine buttons at a third of their opacity over a full energy ring is a screen
+     that reads as broken, and it was read that way: "I joined a club and now I
+     cannot do anything", 17 August, with a hundred energy in the ring. The day
+     was simply over — a scrim, a stream, a rest or an evening that arrived with
+     something on it takes all of it — and nothing on the panel said so. The
+     store staying full is the confusing part, so the line says that too: the
+     energy is not lost, the day is. */
+  const closedBy=closed
+    ? (done.find(id=>CC_DAY_WHOLE[id] || String(id).indexOf('ev:')===0)||'') : '';
+  const closedName=String(closedBy).indexOf('ev:')===0
+    ? (L()['ccDayEv'+String(closedBy).slice(3)]||'')
+    : (L()['ccAct'+closedBy]||'');
   // A day that arrived with something on it asks about that first; the seven
   // buttons stay under it, and taking the offer spends the day the same way
   // training would.
@@ -46131,10 +46187,15 @@ function careerDayPanelHTML(locked){
     // A ninety-nine cannot be trained: the day would be spent on a number that
     // cannot move, so the button says so rather than taking the energy.
     const maxed=keys.length>0 && keys.every(function(k){ return (six[k]||0)>=99; });
+    // Resting on a full store is the one button that costs a whole day and pays
+    // nothing: it restores energy that is already there, and the day is gone.
+    // His report, 17 August: "I joined a club and now I cannot do anything" —
+    // the day had been spent on a rest that changed no number on the screen.
+    const restFull=!!a.rest && left>=careerEnergyMax();
     // Affordable, and the day still open. As many sessions as the store can pay
     // for — the day ends when something takes all of it, or when the player
     // says it is over.
-    const can=!closed && left>=a.energy && !maxed;
+    const can=!closed && left>=a.energy && !maxed && !restFull;
     const gains=keys.map(function(k){
       const from=six[k]!=null ? six[k] : 50;
       const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1);
@@ -46145,11 +46206,14 @@ function careerDayPanelHTML(locked){
       const num=v=>(Math.round(v*10)/10).toFixed(1);
       return '<i>'+(L()['ccAttr'+k.toUpperCase()]||k.toUpperCase())+' '+
         num(from)+' → '+num(to)+'</i>';
-    }).join('')+(maxed ? '<i class="cc-give-cost">'+L().ccAttrMaxed+'</i>' : '');
+    }).join('')+(maxed ? '<i class="cc-give-cost">'+L().ccAttrMaxed+'</i>' : '')+
+      (restFull ? '<i class="cc-give-cost">'+L().ccRestFull+'</i>' : '');
     const extra=[];
     if(a.reach)   extra.push('<i class="cc-give-reach">'+L().ccGiveReach+'</i>');
     if(a.morale)  extra.push('<i class="cc-give-mood">'+L().ccGiveMood+'</i>');
-    if(a.rest)    extra.push('<i class="cc-give-rest">'+L().ccGiveRest+'</i>');
+    // "+ energy" is a promise, so it is not printed beside the line saying the
+    // store is already full.
+    if(a.rest && !restFull) extra.push('<i class="cc-give-rest">'+L().ccGiveRest+'</i>');
     if(a.focus)   extra.push('<i class="cc-give-cost">'+L().ccGiveNoImprove+'</i>');
     return '<button class="cc-act'+(can?'':' off')+(done.indexOf(a.id)>=0?' did':'')+'" '+
       (can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
@@ -46163,6 +46227,9 @@ function careerDayPanelHTML(locked){
       '</span></div>'+
     '<div class="ch-art-in cc-day-in">'+
       (locked ? '<div class="cc-day-locked">'+esc(locked.why)+'</div>' : '')+
+      (closed ? '<div class="cc-day-locked">'+
+                  esc(closedName ? L().ccDayOver(closedName) : L().ccDayOverAny)+
+                '</div>' : '')+
       // Said where the day is chosen. It used to mean the division's own
       // ceiling; the only one left is the scale's, so it is the last thing a
       // career ever reads rather than something it meets in Division 5.
@@ -47504,6 +47571,41 @@ function careerNewSeason(){
   // A second career year is the same measured year again: only 2026 was
   // measured, and a 2027 does not exist to copy.
   cr.season++; cr.day=careerStartDay(); cr.seasonOver=false;
+  /* And a year's tournaments belong to that year.
+
+     Every gate that asks "have you already been here" reads a field that was
+     never cleared: careerGlobalsCan refuses outright once cr.globals exists,
+     and careerSummitCan and careerRcCan compare against the furthest stage
+     reached, which after a final is every stage. So a career that actually
+     played its LANs in season two could not enter one of them ever again, and
+     because the calendar hides the days that are not this player's, they did
+     not come back as locked rows — they disappeared. His report, 17 August:
+     "in the same career all the LANs were there in year two and by year three
+     they were gone", which is the shape of a career being punished for having
+     got there.
+
+     The three seats, the circuit run behind them, and the seats given up.
+     Alongside them the three banks that belong to a week inside the year that
+     just ended — a Monday's points, a first Opens evening, a Weekly Final seat
+     stamped with a Monday that is now last year's. The division token and the
+     ladder are not here: those are what a career keeps.
+
+     And `did`, which is the one that was breaking the mode outright.
+
+     A new season is the same measured year again, so the clock goes back to
+     careerStartDay() — the same 5 January it started on. The day's record is
+     keyed on the date alone, so every date in the new year already held what
+     was done on it in the old one: careerDayClosed read last season's scrim and
+     closed a day nobody had spent yet. Day one of season two opened with all
+     nine buttons dead, and pressing Next day walked into another of last year's
+     evenings, which is why it read as "it worked once and then stopped again".
+     The player worked it out himself, 17 August: "I get when this bug happens —
+     when a new season starts."
+
+     `mg` goes with it for the same reason: the month goal is keyed "2026-01"
+     with no season in it, so January's bonus came back already paid. */
+  ['summit','globals','rc','ewc','reload','gaveUp','rel','d1','wf','did','mg']
+    .forEach(k=>{ delete cr[k]; });
   pl.age=(pl.age||0)+1;
   pl.ageEdge=ccAgeEdge(pl.age);
   careerNews('flat', 'ccNewsSeason', [cr.season, ccPlayerAge()]);
@@ -48733,7 +48835,16 @@ function careerSoloField(cr, mine, size, open){
 }
 
 const CC_EVAL_R1_GAMES=8, CC_EVAL_R1_KILL=1, CC_EVAL_CUT=50;
-const CC_EVAL_R2_GAMES=4, CC_EVAL_WIN_PTS=100, CC_EVAL_WIN_CASH=400;
+/* The win money, as a team wins it.
+
+   Every prize figure in this file is what Epic pays a team, because that is the
+   unit Epic publishes and ccShareOf halves it where it is won. This one was
+   written as $400 — which is the per-player number, $400 each and $800 to the
+   duo — so it was halved a second time and a win banked $200 while the hub tile
+   beside it promised $400. His report, 17 August. Stated in the same unit as
+   everything else it sits next to, and the two lines the player reads say their
+   own half rather than the pair's. */
+const CC_EVAL_R2_GAMES=4, CC_EVAL_WIN_PTS=100, CC_EVAL_WIN_CASH=800;
 function evalRound2Points(place){ return place===1 ? CC_EVAL_WIN_PTS : 0; }
 
 // The field is drawn from Division 1 the way the division cup draws it — real
@@ -48802,7 +48913,7 @@ async function runCareerEval(){
     const shell2=createStageCardShell(L().ccEvalR2Title(r2.length));
     await revealStageLog(you, shell2, true);
     finalizeStageCard(shell2, place2, r2.length, you.stagePts, wins>0, false,
-      wins ? L().ccEvalCash(wins, cash) : L().ccEvalNoWin);
+      wins ? L().ccEvalCash(wins, ccShareOf(cash, you)) : L().ccEvalNoWin);
     await revealStandings(shell2, ranked2, you, 0, null, null, null, null, true);
   }
   removeSkipButton();
@@ -48810,7 +48921,7 @@ async function runCareerEval(){
   if(cash){
     const mine=ccShareOf(cash, you);
     ccPayIn(mine);
-    careerNews('good', 'ccNewsEvalCash', [wins, cash]);
+    careerNews('good', 'ccNewsEvalCash', [wins, mine]);
   } else {
     if(through) careerNews('flat', 'ccNewsEvalNoWin');
     else careerNews('flat', 'ccNewsEvalOut', [place1]);
@@ -48973,6 +49084,7 @@ async function runCareerReloadChampionship(){
   if(!me || !mate) return;
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
+  const prevSet=ACTIVE_LANDING_SET;
   CARD_MODE=true; squadSize=2; drafted=[me, mate];
   // Paris is the same circuit, and the same ten. See ccKillPts.
   CC_KILL_CAP=CC_RELOAD_KILL_CAP;
@@ -48983,6 +49095,15 @@ async function runCareerReloadChampionship(){
   // night was played on a map with seventeen of its thirty-six boxes missing.
   // Rebuilding with squadSize already 2 is what puts the island back.
   useLandingSet(ACTIVE_LANDING_SET);
+  /* And Paris is played on the circuit's island, not on the Major's.
+
+     The Elite Series runner switches the map a line below the same comment —
+     useLandingSet(ev.set) — and this one never did, so the Championship rebuilt
+     whatever set happened to be active and dropped its duos onto the Battle
+     Royale map. His report, 17 August: "Reload on the BR map". The crown of the
+     circuit is played on the island its last two cups are played on, which is
+     the one runCareerVictory already sends its own Reload cups to. */
+  useLandingSet('r4');
 
   // A new event is watched again: the skip a player pressed last night was for
   // last night. CC_SKIP_RUN is what makes one press cover a whole tournament.
@@ -49076,7 +49197,9 @@ async function runCareerReloadChampionship(){
   careerAdvanceTo(ccAddDays(careerToday(), 1));
   careerSave();
 
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
+  // Put the map back where it was, the way every other runner does.
+  useLandingSet(prevSet); CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerReloadResultCard({label:ev.label, place:place, of:field.length,
     through:through||champ, cut:CC_RC_GROUP.direct, seat:false,
@@ -50162,8 +50285,14 @@ async function runCareerCup(){
   // is stable because the field is: the same seed draws the same duos. Handed
   // to the live stage rather than added after it, so the table on screen is the
   // week's table all evening and the line across it is the real cut.
-  const carry=(cr.division===1 && careerCupSession()===2 && cr.d1 &&
-               cr.d1.monday===careerMonday(careerToday())) ? cr.d1 : null;
+  const banked=(cr.division===1 && careerCupSession()===2 && cr.d1 &&
+                cr.d1.monday===careerMonday(careerToday())) ? cr.d1 : null;
+  // Unpacked back into the four maps the field builder already reads, so nothing
+  // downstream knows the difference. A Monday banked before the rows were packed
+  // is keyed on the row's name and is read as it stands.
+  const carry=!banked ? null
+            : !banked.rows ? Object.assign({}, banked, {byName:true})
+            : Object.assign(ccRelUnpack(banked.rows), {log:banked.log});
 
   /* The drop belongs to a final and to nothing else - his call, 17 August.
 
@@ -50211,14 +50340,24 @@ async function runCareerCup(){
   // feed and the ladder all wait for it — a cup is one result, and half of one
   // is not a small result, it is no result.
   if(banking){
-    // Keyed by the row's name here, which is affordable at a hundred and fifty
-    // duos and is not at the Opens' nine thousand - see ccRelKey, where the same
-    // carry is keyed on the handles instead because the name is flag markup.
-    cr.d1={monday:careerMonday(careerToday()), byName:true,
-           pts:{}, elims:{}, games:{}, wins:{}};
-    field.forEach(t=>{ cr.d1.pts[t.name]=t.stagePts; cr.d1.elims[t.name]=t.stageElims;
-                       cr.d1.games[t.name]=(t.stageLog||[]).length;
-                       cr.d1.wins[t.name]=t.wins||0; });
+    /* One packed row per duo, keyed on the handles — the same shape the Opens
+       bank in, and for the same reason.
+
+       This used to be four objects keyed on t.name, on the reading that a name
+       is affordable at a hundred and fifty duos. Two things were wrong with it.
+       A Division 1 cup is careerCupSize(1) — two hundred, not a hundred and
+       fifty — and a name is not a name: it is the row's display markup, two
+       flagcdn images with widths and titles and inline styles around two
+       handles, which measures 377 characters a duo. Four maps of that is 315KB
+       written every Monday, against about 40KB for the whole rest of a season's
+       save, and careerSave swallows a quota error: the save stops happening and
+       the career silently stops existing between sessions. The player's report,
+       17 August, was "the saves do not work".
+
+       ccRelPack writes the handles once with the four numbers behind them.
+       simulateGamesLive already reads either shape — see the byName branch — so
+       a Monday banked in the old one still opens on its Tuesday. */
+    cr.d1={monday:careerMonday(careerToday()), rows:ccRelPack(field)};
     // Monday's eleven games, kept as they were played: Tuesday's card is the
     // week's card, and a week is twenty-two rows you can read rather than a
     // total with eleven of them missing. Only the player's own log is stored —
