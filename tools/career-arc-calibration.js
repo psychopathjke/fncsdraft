@@ -87,7 +87,7 @@ const BOOT = `
             // The partner persists and can walk out, exactly as in the hub:
             // careerEnsurePartner only assigns when there is nobody there, and
             // careerApplyMorale is what empties the seat.
-            careerEnsurePartner();
+            (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
             const me = careerCard(), mate = careerPartnerCard();
             const you = careerTeam([me, mate]);
             you.isYou = true; you.name = 'you';

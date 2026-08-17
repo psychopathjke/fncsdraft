@@ -39,6 +39,13 @@ const BOOT = `
     z[0].click();
     const c=p.querySelector("#gameLandingConfirm"); if(c && !c.disabled) c.click();
   }, 20);
+  // The seat is the player's to fill now: somebody free wrote, and the button
+  // under their message seats them. Same door a player goes through.
+  const ccProbeSeat = () => {
+    if (careerPartnerCard()) return;
+    const s = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+    if (s) { careerDmAccept(s.id); careerRenderHub('centre'); }
+  };
   const out = {steps: [], errs: null, fail: null};
   const fail = m => { out.fail = m; throw new Error(m); };
   const seed = (div, day) => {
@@ -63,7 +70,7 @@ const BOOT = `
     // ---- an empty table says so rather than drawing nothing --------------
     seed(1, finals[0]);
     if (careerTableRows().length) fail('a fresh career already has a season table');
-    careerEntry(); careerTab('table');
+    careerEntry(); ccProbeSeat(); careerTab('table');
     let html = document.getElementById('chBody').textContent;
     if (!/Weekly Final has been played|финал/i.test(html)) fail('the empty table says nothing');
     out.steps.push('empty table: ' + html.replace(/\\s+/g,' ').trim().slice(0, 70));
@@ -103,7 +110,7 @@ const BOOT = `
     seed(1, finals[0]);
     CAREER.career.wf = {monday: careerMonday(finals[0])};
     careerSave();
-    careerEntry();
+    careerEntry(); ccProbeSeat();
     if (careerNext().type !== 'final') fail('the seeded Saturday is not a Weekly Final');
     const sk = setInterval(() => { const b=document.getElementById('majorSkipBtn'); if(b&&!b.disabled) b.click(); }, 20);
     document.querySelector('#screen-career-hub .ch-play').click();

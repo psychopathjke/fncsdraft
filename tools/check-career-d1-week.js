@@ -31,6 +31,13 @@ const BOOT = `
     z[0].click();
     const c=p.querySelector("#gameLandingConfirm"); if(c && !c.disabled) c.click();
   }, 20);
+  // The seat is the player's to fill now: somebody free wrote, and the button
+  // under their message seats them. Same door a player goes through.
+  const ccProbeSeat = () => {
+    if (careerPartnerCard()) return;
+    const s = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+    if (s) { careerDmAccept(s.id); careerRenderHub('centre'); }
+  };
   const out = {fails: [], notes: {}, err: null};
   const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
   const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -49,7 +56,7 @@ const BOOT = `
       career:{season:1, day:monday, division:1, earnings:0, balance:0, tokens:[], log:[]},
       partner:null
     }));
-    careerEntry();
+    careerEntry(); ccProbeSeat();
     out.notes.monday = monday;
 
     const play = async () => {

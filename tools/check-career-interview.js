@@ -40,7 +40,7 @@ const BOOT = `
       partner:null
     }));
     careerLoad();
-    if (withMate) careerEnsurePartner();
+    if (withMate) (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
     else CAREER.partner = null;
   };
   try {

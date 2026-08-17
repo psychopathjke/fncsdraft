@@ -45,6 +45,13 @@ const BOOT = `
     z[0].click();
     const c=p.querySelector("#gameLandingConfirm"); if(c && !c.disabled) c.click();
   }, 20);
+  // The seat is the player's to fill now: somebody free wrote, and the button
+  // under their message seats them. Same door a player goes through.
+  const ccProbeSeat = () => {
+    if (careerPartnerCard()) return;
+    const s = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+    if (s) { careerDmAccept(s.id); careerRenderHub('centre'); }
+  };
   const out = {steps: [], errs: null, fail: null};
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const fail = m => { out.fail = m; throw new Error(m); };
@@ -121,7 +128,7 @@ const BOOT = `
 
     // ---- play a solo Victory Cup ----------------------------------------
     seed(4, '2026-03-22', 70);
-    careerEntry();
+    careerEntry(); ccProbeSeat();
     const next = careerNext();
     if (next.type !== 'victory') fail('22 March is a Solo Victory Cup, the hub says ' + next.type);
     out.steps.push('hub on 22 March: ' + next.title);
@@ -147,7 +154,7 @@ const BOOT = `
 
     // ---- play the duos one, which does seat a partner --------------------
     seed(4, '2026-01-12', 70);
-    careerEntry();
+    careerEntry(); ccProbeSeat();
     if (careerNext().type !== 'victory') fail('12 January is a Duos Victory Cup');
     const card2 = await playThrough('duos Victory Cup');
     card2.querySelector('button[onclick*="careerBackToHub"]').click();
@@ -159,7 +166,7 @@ const BOOT = `
 
     // ---- the Performance Evaluation, which had no way in -----------------
     seed(1, '2026-03-05', 88);
-    careerEntry();
+    careerEntry(); ccProbeSeat();
     const ev = careerNext();
     if (ev.type !== 'eval') fail('5 March is an evaluation night in Division 1, the hub says ' + ev.type);
     const card3 = await playThrough('Performance Evaluation');
@@ -177,7 +184,7 @@ const BOOT = `
 
     // ---- and it stays Division 1's -------------------------------------
     seed(4, '2026-03-05', 70);
-    careerEntry();
+    careerEntry(); ccProbeSeat();
     if (careerNext().type === 'eval') fail('a Division 4 player was offered the evaluation');
     out.steps.push('below Division 1 the evaluation is not offered');
   } catch(e){ if(!out.fail) out.fail = String(e && e.message || e); }

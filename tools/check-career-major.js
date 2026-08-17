@@ -6,8 +6,9 @@
 //   Heats    5 matches, a kill worth 3, top 10 of a group — and a Victory Royale
 //            is worth 944, which is Epic writing "instantly qualified" as a
 //            number, so a heat win scores 1,000.
-//   LCQ      open to all five divisions, four matches in the Last Chance Lobby,
-//            and only a win takes a ticket.
+//   LCQ      open to all five divisions, so the room is the whole ladder and not
+//            the Play-In's 150: eleven matches to a top fifty, then four matches
+//            in the Last Chance Lobby where only a win takes a ticket.
 //   Finals   50 duos, 12 matches, a kill worth 4, and Epic's European payout —
 //            $120,000 for first, which the app already holds as PRIZE_TABLES.EU.
 //
@@ -43,6 +44,13 @@ const BOOT = `
     z[0].click();
     const c=p.querySelector("#gameLandingConfirm"); if(c && !c.disabled) c.click();
   }, 20);
+  // The seat is the player's to fill now: somebody free wrote, and the button
+  // under their message seats them. Same door a player goes through.
+  const ccProbeSeat = () => {
+    if (careerPartnerCard()) return;
+    const s = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+    if (s) { careerDmAccept(s.id); careerRenderHub('centre'); }
+  };
   const out = {steps: [], errs: null, fail: null};
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const fail = m => { out.fail = m; throw new Error(m); };
@@ -56,7 +64,7 @@ const BOOT = `
     const s = JSON.parse(localStorage.getItem('fncsdraft_career'));
     s.player.attrs = ccRookieAttrs(96, 'roleIGL');
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
-    careerEntry();
+    careerEntry(); ccProbeSeat();
   };
   const playThrough = async (what) => {
     const play = document.querySelector('#screen-career-hub .ch-play');
@@ -95,7 +103,16 @@ const BOOT = `
     if (S.playin.games !== 22 || S.playin.kill !== 2) fail('the Play-In is 22 matches at 2 a kill');
     if (S.heats.games !== 5  || S.heats.kill !== 3)  fail('the Heats are 5 matches at 3 a kill');
     if (S.heats.cut !== 10) fail('ten of a group come through the Heats in Europe');
-    if (S.lcq.games !== 4) fail('the Last Chance Lobby is four matches');
+    // His screenshot, 17 August: the qualifier is eleven matches in a room the
+    // whole ladder may enter, and the four matches are the lobby after it.
+    if (S.lcq.games !== 11) fail('the Last Chance qualifier is eleven matches');
+    if (S.lcq.cut !== CAREER_CUP_CUT) fail('fifty come through it');
+    if (CC_MAJOR_LC_LOBBY_GAMES !== 4) fail('the Last Chance Lobby is four matches');
+    if (S.lcq.field !== careerLadderEntrants())
+      fail('the Last Chance seats the whole ladder, got ' + S.lcq.field +
+           ' against ' + careerLadderEntrants());
+    if (S.lcq.field <= S.playin.field)
+      fail('a room every division may enter cannot be the Play-In\\u2019s size');
     if (S.final.games !== 12 || S.final.kill !== 4) fail('the Final is 12 matches at 4 a kill');
     if (majorPoints(1) !== 65 || majorPoints(25) !== 2 || majorPoints(26) !== 0)
       fail('the FNCS ladder pays 65 for a win and 2 at twenty-fifth');

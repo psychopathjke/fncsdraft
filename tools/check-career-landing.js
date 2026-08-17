@@ -24,6 +24,13 @@ const BOOT = `
 <pre id="__out" style="display:none"></pre>
 <script>
 (async function(){
+  // The seat is the player's to fill now: somebody free wrote, and the button
+  // under their message seats them. Same door a player goes through.
+  const ccProbeSeat = () => {
+    if (careerPartnerCard()) return;
+    const s = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+    if (s) { careerDmAccept(s.id); careerRenderHub('centre'); }
+  };
   const out = {fails: [], notes: {}, err: null};
   const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
   const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -75,7 +82,7 @@ const BOOT = `
               wf: wfMonday ? {monday:wfMonday} : undefined},
       partner:null
     }));
-    careerEntry();
+    careerEntry(); ccProbeSeat();
   };
   try {
     const days = careerYearDays();
@@ -121,7 +128,7 @@ const BOOT = `
     // careerLandingPick hands the zone map back to the simulation; the proof it
     // was used is on the player's own team afterwards.
     seed(find('final'), 1, null, careerMonday(find('final')));
-    careerEnsurePartner();
+    (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
     const mine = [careerCard(), careerPartnerCard()];
     const me = careerYouTeam(mine);
     me.isYou = true;
@@ -149,7 +156,7 @@ const BOOT = `
     // seats in May, the Major 2 qualifiers in August, the Last Chance last week.
     seed('2026-09-26', 1, [{season:1, day:'2026-05-31', div:1, place:4, of:50,
                             kind:'summit', stage:'final', passed:true, prize:0}]);
-    careerEnsurePartner();
+    (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
     const mine2 = [careerCard(), careerPartnerCard()];
     const ahead = (via) => {
       const t = careerYouTeam(mine2); t.isYou = true;

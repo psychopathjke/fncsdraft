@@ -37,6 +37,13 @@ const BOOT = `
     z[0].click();
     const c=p.querySelector("#gameLandingConfirm"); if(c && !c.disabled) c.click();
   }, 20);
+  // The seat is the player's to fill now: somebody free wrote, and the button
+  // under their message seats them. Same door a player goes through.
+  const ccProbeSeat = () => {
+    if (careerPartnerCard()) return;
+    const s = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+    if (s) { careerDmAccept(s.id); careerRenderHub('centre'); }
+  };
   const out = {steps: [], errs: null, fail: null};
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const fail = m => { out.fail = m; throw new Error(m); };
@@ -58,7 +65,7 @@ const BOOT = `
     // ---- an empty table says so ------------------------------------------
     seed('2026-03-20');
     if (careerMoneyRows('all').length) fail('a fresh career already has prize money in it');
-    careerEntry(); careerTab('table');
+    careerEntry(); ccProbeSeat(); careerTab('table');
     if (!/Nobody has won|никто ничего/i.test(document.getElementById('chBody').textContent))
       fail('the empty money table says nothing');
     out.steps.push('empty: says so');
@@ -131,7 +138,7 @@ const BOOT = `
     seed('2026-02-08');
     CAREER.career.wf = {monday: careerMonday('2026-02-08')};
     careerSave();
-    careerEntry();
+    careerEntry(); ccProbeSeat();
     if (careerNext().type !== 'final') fail('7 February should be a Weekly Final');
     const sk = setInterval(() => { const b=document.getElementById('majorSkipBtn'); if(b&&!b.disabled) b.click(); }, 20);
     document.querySelector('#screen-career-hub .ch-play').click();

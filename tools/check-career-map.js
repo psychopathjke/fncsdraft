@@ -60,6 +60,13 @@ const BOOT = `
     z[0].click();
     const c=p.querySelector("#gameLandingConfirm"); if(c && !c.disabled) c.click();
   }, 20);
+  // The seat is the player's to fill now: somebody free wrote, and the button
+  // under their message seats them. Same door a player goes through.
+  const ccProbeSeat = () => {
+    if (careerPartnerCard()) return;
+    const s = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+    if (s) { careerDmAccept(s.id); careerRenderHub('centre'); }
+  };
   const out = {steps: [], errs: null, fail: null};
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const fail = m => { out.fail = m; throw new Error(m); };
@@ -154,7 +161,7 @@ const BOOT = `
     s.player.attrs = ccRookieAttrs(54, 'roleIGL');
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
 
-    careerEntry();
+    careerEntry(); ccProbeSeat();
     const play = document.querySelector('#screen-career-hub .ch-play');
     if (!play || play.disabled) fail('play button is not usable');
 

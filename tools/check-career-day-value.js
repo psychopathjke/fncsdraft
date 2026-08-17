@@ -1,11 +1,12 @@
-// A day of training is worth half a point of rating.
+// A day of training is worth half a point of the attribute it trains.
 //
-// Every activity trains something different, and they are all worth the same
-// day: the gains are that half point spread over the attributes the activity
-// trains, weighted by ATTR_W. This holds the arithmetic — each row sums to
-// 0.500 on the weights, a spent day really moves the rating by it, the taper
-// still slows a career near its ceiling, and the desk and the coach still
-// multiply it.
+// His number, 17 August, and meant literally: +0.5 on the stat, not half a point
+// of rating spread into it. What that is worth in rating is the stat's own
+// weight — 0.11 on aim, 0.05 on experience — so the six sessions are no longer
+// interchangeable and a card is a season of choices. This holds the arithmetic:
+// every session moves its own stat by 0.5, the rating by that stat's weight, the
+// taper still slows a career near the top of the scale, and the desk and the
+// coach still multiply it.
 //
 //   node tools/check-career-day-value.js
 const fs = require('fs'), os = require('os'), path = require('path');
@@ -26,14 +27,20 @@ const BOOT = `
   const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
   try {
     const DAY = 0.5;
-    // On the weights, every training day is the same day.
-    const weighted = {};
+    // Half a point of the stat, whichever stat the session is for. The scrim is
+    // the one that splits it, a quarter into each of the four it plays.
+    const moved = {};
     CC_DAY_ACTS.filter(a => Object.keys(a.gain||{}).length).forEach(a => {
-      const w = Object.keys(a.gain).reduce((s,k) => s + a.gain[k]*ATTR_W[k], 0);
-      weighted[a.id] = Math.round(w*1000)/1000;
-      check('a ' + a.id + ' day is worth half a point', Math.abs(w - DAY) < 0.005, String(w));
+      const total = Object.keys(a.gain).reduce((s,k) => s + a.gain[k], 0);
+      const rating = Object.keys(a.gain).reduce((s,k) => s + a.gain[k]*ATTR_W[k], 0);
+      moved[a.id] = {stat: Math.round(total*1000)/1000, rating: Math.round(rating*1000)/1000};
+      check('a ' + a.id + ' day moves half a point of stat', Math.abs(total - DAY) < 0.005,
+            String(total));
     });
-    out.notes.weighted = weighted;
+    out.notes.moved = moved;
+    check('and a session is the same half point whichever stat it is for',
+          Math.abs(ccStep('aim') - ccStep('exp')) < 1e-9,
+          ccStep('aim') + ' vs ' + ccStep('exp'));
 
     // And a day actually spent moves the rating by it, well below the ceiling.
     const fresh = (ovr, pot) => { CAREER = {player:{nick:'P', ovr:ovr, ovrExact:ovr, region:'EU',
@@ -48,10 +55,15 @@ const BOOT = `
     // from well below it.
     fresh(60, 96);
     let before = CAREER.player.ovrExact;
+    const aimBefore = CAREER.player.attrs.aim;
     careerDoAct('trAim');
     const gain = CAREER.player.ovrExact - before;
-    out.notes.dayAt60 = Math.round(gain*1000)/1000;
-    check('a day well below the cap pays it', Math.abs(gain - DAY) < 0.03, String(gain));
+    out.notes.dayAt60 = {stat: Math.round((CAREER.player.attrs.aim - aimBefore)*1000)/1000,
+                         rating: Math.round(gain*1000)/1000};
+    check('a day well below the top moves the stat by half a point',
+          Math.abs((CAREER.player.attrs.aim - aimBefore) - DAY) < 0.005, String(gain));
+    check('and the rating by that stat’s weight',
+          Math.abs(gain - DAY*ATTR_W.aim) < 0.005, String(gain));
 
     /* The only ceiling left is the scale's own.
 
@@ -68,7 +80,7 @@ const BOOT = `
     careerDoAct('trAim');
     out.notes.dayPastOldCap = Math.round((CAREER.player.ovrExact - before)*1000)/1000;
     check('a day four points over the division band still pays',
-          Math.abs(out.notes.dayPastOldCap - DAY) < 0.03,
+          Math.abs(out.notes.dayPastOldCap - DAY*ATTR_W.aim) < 0.005,
           String(out.notes.dayPastOldCap));
     // And the last ten points before 99 are slow, wherever they come from.
     fresh(95, 96);
@@ -76,7 +88,7 @@ const BOOT = `
     careerDoAct('trAim');
     const late = CAREER.player.ovrExact - before;
     out.notes.dayNearNinetyNine = Math.round(late*1000)/1000;
-    check('and the last stretch to 99 pays less', late > 0 && late < DAY*0.6,
+    check('and the last stretch to 99 pays less', late > 0 && late < DAY*ATTR_W.aim*0.6,
           String(late));
     // ---- one store, spent by days and refilled by nights ----------------
     fresh(60, 96);
@@ -84,7 +96,20 @@ const BOOT = `
     careerDoAct('trAim');
     check('a training day spends its cost',
           careerEnergy() === CC_ENERGY_DAY - ccActById('trAim').energy, String(careerEnergy()));
-    check('and the day is done', careerDoAct('trCon') === null);
+    // His question, 17 August: a hundred energy and a session costs thirty, so
+    // what is the rest of it for. The store is the limit now, not the calendar.
+    check('a second session is allowed while the store can pay',
+          careerDoAct('trCon') !== null);
+    check('and a third', careerDoAct('trClu') !== null);
+    check('until it cannot', careerDoAct('trSur') === null,
+          'energy ' + careerEnergy());
+    // The three that are not an hour still take the whole day.
+    CAREER.career.energy = CC_ENERGY_DAY; CAREER.career.did = {};
+    check('resting closes the day', careerDoAct('rest') !== null);
+    check('and nothing follows it', careerDoAct('trAim') === null);
+    CAREER.career.energy = CC_ENERGY_DAY; CAREER.career.did = {};
+    check('a stream closes it too', careerDoAct('stream') !== null);
+    check('and nothing follows that either', careerDoAct('trAim') === null);
     const beforeNight = careerEnergy();
     careerAdvanceTo(ccAddDays(CAREER.career.day, 1));
     check('a night gives some back', careerEnergy() === beforeNight + CC_ENERGY_NIGHT,

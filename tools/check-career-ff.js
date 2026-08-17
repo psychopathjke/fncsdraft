@@ -26,6 +26,13 @@ const BOOT = `
 <pre id="__out" style="display:none"></pre>
 <script>
 (async function(){
+  // The seat is the player's to fill now: somebody free wrote, and the button
+  // under their message seats them. Same door a player goes through.
+  const ccProbeSeat = () => {
+    if (careerPartnerCard()) return;
+    const s = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+    if (s) { careerDmAccept(s.id); careerRenderHub('centre'); }
+  };
   const out = {fails: [], notes: {}, err: null};
   const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
   const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -40,7 +47,7 @@ const BOOT = `
               tokens:[], log:[]},
       partner:null
     }));
-    careerEntry();
+    careerEntry(); ccProbeSeat();
   };
   try {
     const days = careerYearDays();
@@ -105,7 +112,12 @@ const BOOT = `
     const dmsBefore = careerDms().length;
     const balBefore = CAREER.career.balance || 0;
     await careerFastForward(CC_FF_MONTH);
-    for (let i = 0; i < 900 && CC_FF; i++) await wait(25);
+    // Four minutes: a month of a career plays eleven tournaments, and a machine
+    // running the rest of the suite beside this one takes its time over them.
+    let waited = 0;
+    for (; waited < 9600 && CC_FF; waited++) await wait(25);
+    if (CC_FF) check('the month finished inside four minutes', false,
+                     'still playing after ' + Math.round(waited * 25 / 1000) + ' seconds');
     const c2 = CAREER.career;
     out.notes.month = {day: c2.day, div: c2.division, rows: (c2.log||[]).length,
                        dms: careerDms().length};

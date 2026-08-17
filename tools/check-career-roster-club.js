@@ -28,6 +28,13 @@ const BOOT = `
 <pre id="__out" style="display:none"></pre>
 <script>
 (function(){
+  // The seat is the player's to fill now: somebody free wrote, and the button
+  // under their message seats them. Same door a player goes through.
+  const ccProbeSeat = () => {
+    if (careerPartnerCard()) return;
+    const s = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+    if (s) { careerDmAccept(s.id); careerRenderHub('centre'); }
+  };
   const out = {fails: [], notes: {}, err: null};
   const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
   const seed = (ovr, div) => {
@@ -41,7 +48,7 @@ const BOOT = `
               reach:0, tokens:[], log:[], news:[]},
       partner:null
     }));
-    careerEntry();
+    careerEntry(); ccProbeSeat();
   };
   try {
     // ---- how many of the roster wear a jersey at all ---------------------

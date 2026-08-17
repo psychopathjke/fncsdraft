@@ -41,6 +41,13 @@ const BOOT = `
     z[0].click();
     const c=p.querySelector("#gameLandingConfirm"); if(c && !c.disabled) c.click();
   }, 20);
+  // The seat is the player's to fill now: somebody free wrote, and the button
+  // under their message seats them. Same door a player goes through.
+  const ccProbeSeat = () => {
+    if (careerPartnerCard()) return;
+    const s = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+    if (s) { careerDmAccept(s.id); careerRenderHub('centre'); }
+  };
   const out = {steps: [], errs: null, fail: null};
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const fail = m => { out.fail = m; throw new Error(m); };
@@ -56,7 +63,7 @@ const BOOT = `
     const s = JSON.parse(localStorage.getItem('fncsdraft_career'));
     s.player.attrs = ccRookieAttrs(92, 'roleIGL');
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
-    careerEntry();
+    careerEntry(); ccProbeSeat();
   };
   const playThrough = async (what) => {
     const play = document.querySelector('#screen-career-hub .ch-play');
@@ -102,17 +109,24 @@ const BOOT = `
     out.steps.push('bracket: 12 games at 2 a kill, then heats of 20 over 8 at 3 a kill, top 5, final of 20');
 
     // ---- an open is open --------------------------------------------------
-    // The Opens advance Epic's top thousand, carried as a share of whatever the
-    // ladder holds, and the Play-In is exactly what they sent - the sessions are
-    // windows of one tournament, not two tournaments feeding one room.
+    // The Opens advance what Epic's own event page says they advance - "Top
+    // 2,000 EU; Top 1,000 NAC; Top 500 OCE, ASIA, ME, BR, NAW", read off the
+    // page on 17 August - carried as a share of whatever the ladder holds. The
+    // Play-In is exactly what they sent: the sessions are windows of one
+    // tournament, not two tournaments feeding one room.
     if (st.playin.cut !== 80) fail('the Play-In has to fill four heats of twenty, not ' + st.playin.cut);
     if (st.open.cut !== st.playin.field)
       fail('the Play-In holds what the Opens sent: ' + st.open.cut + ' vs ' + st.playin.field);
     if (st.playin.field <= st.playin.cut)
       fail('a Play-In of ' + st.playin.field + ' cutting to ' + st.playin.cut + ' is not a stage');
     const openShare = st.open.cut / st.open.field;
-    if (Math.abs(openShare - 0.1024) > 0.02)
-      fail('the Opens should advance about one in ten, not ' + (openShare * 100).toFixed(1) + '%');
+    const want = ccOpenAdvance() / CC_LADDER_TRUE;
+    out.steps.push('opens: ' + ccCareerRegion() + ' sends ' + ccOpenAdvance() + ' of ' +
+                   CC_LADDER_TRUE + ' — ' + (openShare * 100).toFixed(1) + '% of the room');
+    if (Math.abs(openShare - want) > 0.02)
+      fail('the Opens advance ' + ccOpenAdvance() + ' of ' + CC_LADDER_TRUE + ', which is ' +
+           (want * 100).toFixed(1) + '%, not ' + (openShare * 100).toFixed(1) + '%');
+    if (ccOpenAdvance() !== 2000) fail('Europe sends two thousand, not ' + ccOpenAdvance());
     if (st.open.field < 400) fail('the Opens field is ' + st.open.field + ', which makes its cut a coin flip');
     out.steps.push('opens: ' + st.open.cut + ' of ' + st.open.field + ' (' +
                    (openShare * 100).toFixed(1) + '%), play-in ' + st.playin.field + ' to 80');

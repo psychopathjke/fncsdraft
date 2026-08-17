@@ -32,6 +32,13 @@ const BOOT = `
     z[0].click();
     const c=p.querySelector("#gameLandingConfirm"); if(c && !c.disabled) c.click();
   }, 20);
+  // The seat is the player's to fill now: somebody free wrote, and the button
+  // under their message seats them. Same door a player goes through.
+  const ccProbeSeat = () => {
+    if (careerPartnerCard()) return;
+    const s = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+    if (s) { careerDmAccept(s.id); careerRenderHub('centre'); }
+  };
   const out = {fails: [], notes: {}, err: null};
   const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
   const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -90,7 +97,7 @@ const BOOT = `
 
     // ---- and it plays ----------------------------------------------------
     seed([row('2026-05-31','summit','final', 4)]);
-    careerEntry();
+    careerEntry(); ccProbeSeat();
     const next = careerNext();
     out.notes.next = next.type + ' / ' + next.label;
     check('the hub offers Antwerp', next.type === 'globals');
@@ -123,7 +130,7 @@ const BOOT = `
     // ---- and the room is the world ---------------------------------------
     // Fifty duos off the three real qualification lists, not fifty Europeans.
     seed([row('2026-05-31','summit','final', 4)]);
-    careerEnsurePartner();
+    (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
     const mine = [careerCard(), careerPartnerCard()];
     const meTeam = careerYouTeam(mine);
     meTeam.isYou = true;

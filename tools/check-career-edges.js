@@ -88,7 +88,7 @@ const BOOT = `
           me._pingEdge > CC_PING_EDGE*0.9, String(me._pingEdge));
 
     // The duo averages it: a real partner brings none, so the pair carries half.
-    careerEnsurePartner();
+    (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
     const mate = careerPartnerCard();
     const pair = closeRangeEdge([me, mate]);
     out.notes.duo = {solo: me._pingEdge, pair: pair, mate: mate && mate.handle};

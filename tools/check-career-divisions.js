@@ -135,7 +135,7 @@ const BOOT = `
 
         // ---- the duo the mode hands you ------------------------------------
         CAREER.partner = null;
-        careerEnsurePartner();
+        (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
         const auto = careerPartnerCard();
         check('D' + div + '/' + mode + ': a partner is assigned', !!auto);
         if (auto) {

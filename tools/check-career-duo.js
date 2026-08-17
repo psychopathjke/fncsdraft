@@ -101,16 +101,25 @@ const BOOT = `
     const before2 = mate();
     careerAdvanceTo('2026-03-19');
     if (mate() === before2) fail('a partner below the unhappy line stayed');
-    if (!CAREER.partner) fail('the seat was left empty instead of refilled');
+    // The seat stays empty: who plays beside you is not handed out any more.
+    // What arrives instead is somebody offering to take it.
+    if (CAREER.partner) fail('the seat was refilled instead of left to the player');
+    const offer = careerDms().find(t => t.state === 'offer' && !t.who.org && !t.who.brand);
+    if (!offer) fail('nobody wrote to the empty seat');
+    if (offer && !offer.msgs.some(m => m.from === 'them'))
+      fail('the offer thread carries no message from them');
     const f2 = feed();
     if (!f2.some(t => /Parting ways|Расходимся/i.test(t))) fail('the split was not announced');
+    // And taking the offer is one press, with no day of waiting in between.
+    if (offer) careerDmAccept(offer.id);
+    if (!CAREER.partner) fail('taking the offer did not seat them');
     // The player's own announcement, not one of the scene's — those carry an
     // author and are filed on top of it.
-    const own = (CAREER.career.news||[]).find(n => n.k === 'ccNewsDuoAnnounce' && !n.by);
+    const own = (CAREER.career.news||[]).find(n => n.k === 'ccNewsPartnerNew' && !n.by);
     if (!own) fail('the new duo was not announced by the player');
-    if (own.a[1] !== ccHandle(mate()))
-      fail('the announcement names @' + own.a[1] + ' but the partner is ' + mate());
-    out.steps.push('patience 30: ' + before2 + ' -> ' + mate() + ' — "' + ccText(own) + '"');
+    if (own && own.a[0] !== mate())
+      fail('the announcement names @' + own.a[0] + ' but the partner is ' + mate());
+    out.steps.push('patience 30: ' + before2 + ' -> empty seat -> took ' + mate() + ' in one press');
 
     /* ---- and one you outgrew yourself --------------------------------- */
     // His career, 17 August: Division 5, a year fast-forwarded, he finished on 75

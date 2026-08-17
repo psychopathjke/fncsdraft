@@ -70,6 +70,14 @@ const BOOT = `
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
 
     careerEntry();
+    // The seat is the player's to fill now, and an empty one locks the cup:
+    // somebody free has written, and the button under their message seats them.
+    (() => {
+      if (careerPartnerCard()) return;
+      careerSeatTopUp();
+      const s2 = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+      if (s2) { careerDmAccept(s2.id); careerRenderHub('centre'); }
+    })();
     const skipper = setInterval(() => {
       const b = document.getElementById('majorSkipBtn');
       if (b && !b.disabled) b.click();

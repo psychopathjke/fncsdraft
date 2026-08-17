@@ -39,6 +39,13 @@ const BOOT = `
     z[0].click();
     const c=p.querySelector("#gameLandingConfirm"); if(c && !c.disabled) c.click();
   }, 20);
+  // The seat is the player's to fill now: somebody free wrote, and the button
+  // under their message seats them. Same door a player goes through.
+  const ccProbeSeat = () => {
+    if (careerPartnerCard()) return;
+    const s = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+    if (s) { careerDmAccept(s.id); careerRenderHub('centre'); }
+  };
   const out = {steps: [], errs: null, fail: null};
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const fail = m => { out.fail = m; throw new Error(m); };
@@ -53,7 +60,7 @@ const BOOT = `
     const s = JSON.parse(localStorage.getItem('fncsdraft_career'));
     s.player.attrs = ccRookieAttrs(95, 'roleIGL');
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
-    careerEntry();
+    careerEntry(); ccProbeSeat();
   };
   const playThrough = async (what) => {
     const play = document.querySelector('#screen-career-hub .ch-play');
@@ -132,7 +139,7 @@ const BOOT = `
     const banked = save();
     if (!banked.d1) fail('the Monday session banked nothing');
     if (banked.day !== ccAddDays(cupDay, 1)) fail('the clock did not reach Tuesday');
-    careerEntry();
+    careerEntry(); ccProbeSeat();
     if (careerNext().type !== 'cup') fail('Tuesday should be the second session');
     out.steps.push('session 2: ' + await playThrough('the Tuesday session'));
     const afterCup = save();
@@ -181,7 +188,7 @@ const BOOT = `
         ageEdge:4, photo:null, handle:null, cardRegion:null, nat:null},
       career:{season:1, day:finals[0], division:3, earnings:0, balance:0, reach:0,
               tokens:[], log:[], news:[]}, partner:null}));
-    careerEntry();
+    careerEntry(); ccProbeSeat();
     if (careerNext().type === 'final') fail('a Division 3 player was shown the Weekly Final');
     out.steps.push('below Division 1 the final is not on the calendar');
   } catch(e){ if(!out.fail) out.fail = String(e && e.message || e); }

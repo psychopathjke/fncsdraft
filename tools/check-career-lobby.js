@@ -28,6 +28,13 @@ const BOOT = `
 <pre id="__out" style="display:none"></pre>
 <script>
 (async function(){
+  // The seat is the player's to fill now: somebody free wrote, and the button
+  // under their message seats them. Same door a player goes through.
+  const ccProbeSeat = () => {
+    if (careerPartnerCard()) return;
+    const s = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+    if (s) { careerDmAccept(s.id); careerRenderHub('centre'); }
+  };
   const out = {fails: [], notes: {}, err: null};
   const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
   const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -98,7 +105,7 @@ const BOOT = `
               tokens:[], log:[], news:[]},
       partner:null
     }));
-    careerEntry();
+    careerEntry(); ccProbeSeat();
     const next = careerNext();
     check('the day is a Reload Opens', next && next.type === 'reload',
           next && next.type);

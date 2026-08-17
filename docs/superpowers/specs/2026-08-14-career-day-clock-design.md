@@ -140,15 +140,22 @@ because a day nobody decided is a day that may as well not be in the calendar.
 
 Every option says on its face what it gives. No option is a mystery box.
 
+One session, one attribute, half a point of it — and each one is named after the
+thing a player actually does for that attribute. His list, 17 August, with the
+routine put against consistency because that is what consistency is: the same
+warm-up, the same sleep, and no night at the back because of either.
+
 | | energy | what it gives |
 |---|---|---|
-| **NOBL customs** | 2 | aim and clutch — real fights against people who can play |
-| **Ranked** | 2 | survival and consistency, the grind that makes a floor |
-| **Watch replays** | 1 | experience and survival: rotations, where you died and why |
-| **Aim trainer** | 1 | aim, and only aim |
-| **Scrim with your partner** | 2 | a little of everything, and partner morale |
-| **Stream** | 2 | followers — and **nothing else**. No improvement, and less focus tomorrow. |
-| **Rest** | 3 | takes fatigue off |
+| **KovaaK's** | 30 | aim |
+| **Noble endgames** | 26 | endgame |
+| **Ranked** | 30 | survival |
+| **Gym and routine** | 30 | consistency |
+| **1v1s** | 30 | clutch |
+| **Watch replays** | 22 | experience |
+| **Scrim with your partner** | 38 | a quarter each into aim, survival, clutch and consistency, and partner morale |
+| **Stream** | 18 | followers — and **nothing else**. No improvement, and less focus tomorrow. |
+| **Rest** | 0 | puts the store back |
 
 Streaming is the one that costs something real rather than merely spending the
 day: it is the trade the mode is about. Reach pays, and the hours it takes are

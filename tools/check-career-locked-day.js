@@ -24,10 +24,15 @@ const BOOT = `
   const out = {fails: [], notes: {}, err: null};
   const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
   try {
+    // Seated, because an empty seat is now a lock of its own and this probe is
+    // about the calendar's locks. The empty one is checked on its own below.
+    const mate = () => ({card:{handle:'Probemate', nat:'de', region:'EU', org:null, tier:'ladder',
+      event:'', date:'-', placement:null, rating:70, _targetOvr:70,
+      _attrs:ccRookieAttrs(70,'roleFRG')}, patience:80});
     const seed = (div, day) => { CAREER = {player:{nick:'Probe', ovr:70, region:'EU', role:'roleIGL',
       country:'de', age:16, attrs:ccRookieAttrs(70,'roleIGL')},
       career:{season:1, day:day, division:div, earnings:0, balance:0, tokens:[], log:[], news:[]},
-      partner:null}; };
+      partner:mate()}; };
     // Find days the calendar carries an event this career cannot enter.
     seed(4, CC_YEAR_FROM);
     const days = careerYearDays();
@@ -56,6 +61,19 @@ const BOOT = `
     const cupHtml = careerCentreHTML(careerCard(), attrsFor(careerCard()));
     check('a playable day still shows the match card', /careerPlay\\(\\)/.test(cupHtml));
     check('and not the day panel', !/cc-day-in/.test(cupHtml));
+    // And the seat is a lock like any other: the same cup, nobody beside you.
+    CAREER.partner = null;
+    const aloneHtml = careerCentreHTML(careerCard(), attrsFor(careerCard()));
+    check('an empty seat locks the cup', !/careerPlay\\(\\)/.test(aloneHtml));
+    check('and says so on the day panel', /cc-day-locked/.test(aloneHtml));
+    check('with the reason a player can read',
+      aloneHtml.indexOf(L().ccNoMate) >= 0, 'ccNoMate is not on the panel');
+    // Solo is solo — the Victory Cup that is played alone does not ask.
+    const soloDay = (() => { for (let d = CC_YEAR_FROM; d <= CC_YEAR_TO; d = ccAddDays(d, 1)) {
+      const ev = careerVictoryOn(d); if (ev && ev.mode === 'solo') return d; } return null; })();
+    out.notes.solo = soloDay;
+    if (soloDay) { CAREER.career.day = soloDay;
+      check('a solo cup is playable with nobody in the seat', careerCanPlayKind('victory')); }
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =
     'PB' + 'EGIN' + encodeURIComponent(JSON.stringify(out)) + 'PE' + 'ND';

@@ -1719,6 +1719,13 @@
   .x-me-in{display:flex;flex-direction:column;min-width:0;line-height:1.25;}
   .x-me-in b{color:#fff;font-size:13px;font-weight:900;}
   .x-me-in span{color:#8094c4;font-size:11.5px;font-weight:700;}
+  /* The one post a career makes, where the composer sits on the real thing. */
+  .x-compose{margin-bottom:10px;}
+  .x-compose-in{display:flex;align-items:center;gap:11px;}
+  .x-compose-txt{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.3;}
+  .x-compose-txt b{color:#fff;font-size:14px;font-weight:900;}
+  .x-compose-txt span{color:#8094c4;font-size:11.5px;font-weight:700;}
+  .x-compose-on{flex:0 0 auto;color:#8ea6d6;font-size:11.5px;font-weight:800;}
   /* Who to write to, in the place X keeps who to follow. */
   .x-sug{display:flex;align-items:center;gap:9px;padding:8px 0;}
   .x-sug-in{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.25;}
@@ -2495,11 +2502,12 @@
         <p data-i18n="modeEwcDesc"></p>
         <span class="mode-count" data-i18n="modeEwcCount"></span>
       </div>
-      <!-- Locked to SOON here, open in the career build: the mode is finished
-           enough to ship its code, and going live is a separate decision — one
-           line, this one, whenever it is made. -->
-      <div class="mode-card mode-card-soon" aria-disabled="true">
-        <span class="soon-badge">SOON</span>
+      <!-- Live since 17 August 2026, his call: the mode was finished enough to
+           ship its code a day earlier and going live was always a separate
+           decision, which is this line. It is the tile the career build has had
+           open all along, brought across whole. -->
+      <div class="mode-card mode-card-new" onclick="careerEntry()">
+        <span class="new-badge" data-i18n="modeNewBadge"></span>
         <div class="ec-art" id="careerArt">
           <span class="ec-pill ec-pill-l" data-i18n="ecScopeAll"></span>
           <div class="ec-foot">
@@ -3118,10 +3126,10 @@ tagline:'Задрафть сквад из реальных игроков, кв�
 supportBtn:'Поддержать',
 dataCreditText:'Флаги, составы и данные игроков — с', dataCreditAnd:'и',
 badgeMode:'выбор режима',
-ecDateAll:'2021 — 2026', ecDateM1:'мар — май 2026', ecDateM2:'18 июл — 2 авг 2026',
-ecDateT1:'янв — фев 2025',
+ecDateAll:'2021 - 2026', ecDateM1:'мар - май 2026', ecDateM2:'18 июл - 2 авг 2026',
+ecDateT1:'янв - фев 2025',
 ecDateT2:'апр 2025',
-ecDateT3:'июл — авг 2025',
+ecDateT3:'июл - авг 2025',
 ecScopeAll:'Все регионы', ecScope7:'7 регионов', ecStCards:'Карточки',
 ecSubDuos:'Дуо', ecSubTrios:'Трио', ecSubSquads:'Сквад',
 modeDuoTitle:'Дуо', modeDuoDesc:'2 слота. Настоящий формат FNCS. Лобби из ~50 команд.', modeDuoCount:'2 игрока · цель 50 команд',
@@ -3129,40 +3137,40 @@ modeTrioTitle:'Трио', modeTrioDesc:'3 слота. Синергия рису�
 modeSquadTitle:'Сквад', modeSquadDesc:'4 слота. Синергия рисуется квадратом. Лобби из ~25 команд.', modeSquadCount:'4 игрока · цель 25 команд',
 modeMajorTitle:'ALL FNCS', modeMajorDesc:'Весь пул базы за все сезоны FNCS. Только дуо: Play-In → Heats → Major Finals одним составом, вылет возможен на любом этапе.', modeMajorCount:'2 игрока · весь пул базы',
 majorExplainerTitle:'Как устроен режим FNCS Major',
-majorRow1:'Play-In — 2 дня, очки складываются', majorRow1b:'топ-150 проходят',
-majorRow2:'Heats — 3 хита по 5 игр, победа в игре = мгновенный проход', majorRow2b:'иначе топ-15 по очкам',
+majorRow1:'Play-In - 2 дня, очки складываются', majorRow1b:'топ-150 проходят',
+majorRow2:'Heats - 3 хита по 5 игр, победа в игре = мгновенный проход', majorRow2b:'иначе топ-15 по очкам',
 majorRow3:'Не прошёл Play-In или Heats', majorRow3b:'Last Chance Qualifier',
-majorRow4:'Major Finals — 12 игр, 45 с хитов + 5 с LCQ', majorRow4b:'финальное место',
-majorExplainerNote:'Один и тот же дуо должен пройти все стадии подряд — если не проходишь этап, забег останавливается и показывается, на чём именно вылетели. В Play-In может участвовать сколько угодно команд (реальные + резервные для масштаба), но дальше Play-In резервные команды пройти не могут — в хитах и грандах только реальные игроки.',
-scoringTitle:'Очки за турнир — система как на fortnitetracker.com',
+majorRow4:'Major Finals - 12 игр, 45 с хитов + 5 с LCQ', majorRow4b:'финальное место',
+majorExplainerNote:'Один и тот же дуо должен пройти все стадии подряд - если не проходишь этап, забег останавливается и показывается, на чём именно вылетели. В Play-In может участвовать сколько угодно команд (реальные + резервные для масштаба), но дальше Play-In резервные команды пройти не могут - в хитах и грандах только реальные игроки.',
+scoringTitle:'Очки за турнир - система как на fortnitetracker.com',
 scoreVR:'Победа (Victory Royale)', scoreTop25:'Каждый порог в топ 2–5', scoreTop625:'Каждый порог в топ 6–25', scoreTop26:'Топ 26 и ниже', scoreElim:'Каждая элиминация',
-scoringNote:'Это накопительная система: очки за место — сумма всех порогов, которые команда прошла (например, 1-е место = 9 за победу + 4×4 за топ2–5 + 2×20 за топ6–25 = 65 очков). Итоговые числа (65/56/52…2/0) совпадают с реальной таблицей мест FNCS Grand Finals.',
-howToTitle:'Что делать — четыре шага',
+scoringNote:'Это накопительная система: очки за место - сумма всех порогов, которые команда прошла (например, 1-е место = 9 за победу + 4×4 за топ2–5 + 2×20 за топ6–25 = 65 очков). Итоговые числа (65/56/52…2/0) совпадают с реальной таблицей мест FNCS Grand Finals.',
+howToTitle:'Что делать - четыре шага',
 howToRow1:'1. Выбери режим, регион и сезоны', howToRow1b:'20 секунд',
 howToRow2:'2. Открывай паки и бери по одной карточке', howToRow2b:'остальные уходят в пул',
-howToRow3:'3. Добери оружие и хилку — они дают силу составу', howToRow3b:'+1…+5',
+howToRow3:'3. Добери оружие и хилку - они дают силу составу', howToRow3b:'+1…+5',
 howToRow4:'4. Запусти турнир и смотри, куда дойдёшь', howToRow4b:'до 12 игр',
-howToNote:'Смысл в том, чтобы собрать состав сильнее лобби. На карточке слева большое число — это OVR, общая сила игрока; под ним шесть характеристик. Выбирай не только по числу: два игрока с одинаковым OVR играют по-разному, потому что у них разные сильные стороны. Реролл пака есть, но их всего два за драфт. Уже задрафтованных игроков в следующих паках не будет.',
+howToNote:'Смысл в том, чтобы собрать состав сильнее лобби. На карточке слева большое число - это OVR, общая сила игрока; под ним шесть характеристик. Выбирай не только по числу: два игрока с одинаковым OVR играют по-разному, потому что у них разные сильные стороны. Реролл пака есть, но их всего два за драфт. Уже задрафтованных игроков в следующих паках не будет.',
 ratingTitle:'Откуда берётся рейтинг',
-ratingRow1:'LAN Summit — только для карточек Major 1', ratingRow1b:'вес 3.0',
+ratingRow1:'LAN Summit - только для карточек Major 1', ratingRow1b:'вес 3.0',
 ratingRow2:'Хиты · Play-In · Last Chance', ratingRow2b:'0.9 · 0.5 · 0.4',
 ratingRow3:'Каждая неделя Division 1 Cup', ratingRow3b:'вес 0.15',
 ratingRow4:'Гранд-финал своего региона', ratingRow4b:'вес 2.0',
-ratingNote:'Рейтинг — это весь сезон игрока, а не один турнир. Все его результаты складываются со своими весами, поэтому чемпион, слабо отыгравший отборы, стоит ниже того, кто держался весь сезон. Сезоны не смешиваются: карточка Major 1 считается только по S40, карточка Major 2 — только по S41. Это разные патчи и разная мета, и результат из одного не влияет на другой. Внутри региона шкала растянута так, чтобы лучший игрок региона попал в потолок: 96 для Европы и NA Central, 85 для остальных — там поле слабее.',
+ratingNote:'Рейтинг - это весь сезон игрока, а не один турнир. Все его результаты складываются со своими весами, поэтому чемпион, слабо отыгравший отборы, стоит ниже того, кто держался весь сезон. Сезоны не смешиваются: карточка Major 1 считается только по S40, карточка Major 2 - только по S41. Это разные патчи и разная мета, и результат из одного не влияет на другой. Внутри региона шкала растянута так, чтобы лучший игрок региона попал в потолок: 96 для Европы и NA Central, 85 для остальных - там поле слабее.',
 synergyTitle:'Синергия состава',
 synergyRow1:'Задрафтил настоящих тиммейтов вместе', synergyRow1b:'+5',
 synergyRow2:'Общее гражданство между игроками', synergyRow2b:'+2 / игрока',
-synergyNote:'В реальности FNCS 2026 играется дуо — это и есть настоящий формат. Трио и сквад фэнтезийные: игроки настоящие, но состав собираешь сам. Синергия рисуется треугольником (трио) или квадратом (сквад), линии подсвечиваются, если это реальные партнёры или земляки.',
-attrTitle:'Шесть характеристик — что означают',
+synergyNote:'В реальности FNCS 2026 играется дуо - это и есть настоящий формат. Трио и сквад фэнтезийные: игроки настоящие, но состав собираешь сам. Синергия рисуется треугольником (трио) или квадратом (сквад), линии подсвечиваются, если это реальные партнёры или земляки.',
+attrTitle:'Шесть характеристик - что означают',
 attrRowAim:'СТР · Стрельба', attrRowAimB:'элиминаций за матч',
 attrRowEnd:'ЭНД · Эндгейм', attrRowEndB:'доля очков за место, а не за фраги',
 attrRowSur:'ВЖВ · Выживаемость', attrRowSurB:'среднее место',
 attrRowCon:'СТБ · Стабильность', attrRowConB:'очков за матч',
 attrRowClu:'КЛЧ · Клатч', attrRowCluB:'Victory Royale за матч',
 attrRowExp:'ОПТ · Опыт', attrRowExpB:'всего матчей FNCS',
-attrNote:'Каждая характеристика — место игрока среди тех, кто был с ним в том же лобби, а не абстрактная оценка. Случайных чисел нет ни в одной: наведи курсор на характеристику в карточке, и увидишь, из какой колонки таблицы она взята. Высокий ЭНД при низкой СТР — это игрок, который берёт местом, а не боем; наоборот — фраггер. Роль ФРГ или ИГЛ подписана под OVR.',
-sourcesNote:'<b>Источники карточек — с каких турниров реально взяты игроки:</b><br>Всего {EVENTS} турнира, {CARDS} карточек.<br><br>• <b>FNCS 2026 Major 2</b> — Play-In, Last Chance Qualifier и Grand Finals всех 7 регионов (18 июл — 2 авг 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> — Group Stage, Upper Bracket и Grand Finals (Дюссельдорф <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 мая 2026)<br>• <b>FNCS 2026 Major 1</b> — Play-In, Last Chance Qualifier и региональные Grand Finals всех 7 регионов (мар — май 2026)<br>• <b>FNCS 2025 Global Championship</b> — Grand Finals (Лион <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 сен 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> — Play-In, Last Chance Qualifier и региональные Grand Finals всех 7 регионов, трио (янв — авг 2025)<br>• <b>FNCS 2024 Global Championship</b> — Grand Finals (Форт-Уэрт <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 сен 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> — Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> — Grand Finals (Копенгаген <img src="https://flagcdn.com/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 окт 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> — Grand Finals Europe (мар / май / июн 2023)<br>• <b>FNCS Invitational 2022</b> — Grand Finals (Роли <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 ноя 2022)<br>• <b>FNCS 2021 Grand Royale</b> — Europe (21 ноя 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> — Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> — Solo Grand Finals Europe (26 июн 2021)<br><br>У каждого игрока в карточке видно, из какого именно турнира взят его результат. Один и тот же реальный человек может иметь несколько карточек — по одной на каждый турнир.<br><br><b>Редкость карточки:</b><br>Цвет идёт от того самого числа OVR, которое написано на карточке — что видишь, то и получаешь. Шкала фортнайтовская, цвета те же, что в игре.<br>• <b style="color:var(--mythic)">95+ · Мифический (золотой)</b><br>• <b style="color:var(--legendary)">90–94 · Легендарный (оранжевый)</b><br>• <b style="color:var(--epic)">80–89 · Эпический (фиолетовый)</b><br>• <b style="color:var(--rare)">70–79 · Редкий (синий)</b><br>• <b style="color:var(--uncommon)">60–69 · Необычный (зелёный)</b><br>• <b style="color:var(--common)">ниже 60 · Обычный (серый)</b><br>Мифик даётся только за сезон без слабых этапов — гранд-финал, хиты и кубки на одном уровне. Те же шесть цветов красят оружие и хилки в паках.',
-confirmedNote:'<b>Что подтверждено:</b> имена и регион — из официальных таблиц участников и итоговых результатов (Liquipedia, Esports Earnings, esports.gg, fortnitetracker.com и присланные скриншоты).<br><br><b>Про размер лобби:</b> реальных игроков не хватает, чтобы ровно попасть в целевые числа команд — недостающие места в AI-лобби (кроме Grands) занимают явно помеченные резервные команды, без флага.<br><br><b>Флаги:</b> гражданство подтверждено не у всех — где источника нет, флаг просто не показан.',
+attrNote:'Каждая характеристика - место игрока среди тех, кто был с ним в том же лобби, а не абстрактная оценка. Случайных чисел нет ни в одной: наведи курсор на характеристику в карточке, и увидишь, из какой колонки таблицы она взята. Высокий ЭНД при низкой СТР - это игрок, который берёт местом, а не боем; наоборот - фраггер. Роль ФРГ или ИГЛ подписана под OVR.',
+sourcesNote:'<b>Источники карточек - с каких турниров реально взяты игроки:</b><br>Всего {EVENTS} турнира, {CARDS} карточек.<br><br>• <b>FNCS 2026 Major 2</b> - Play-In, Last Chance Qualifier и Grand Finals всех 7 регионов (18 июл - 2 авг 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> - Group Stage, Upper Bracket и Grand Finals (Дюссельдорф <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 мая 2026)<br>• <b>FNCS 2026 Major 1</b> - Play-In, Last Chance Qualifier и региональные Grand Finals всех 7 регионов (мар - май 2026)<br>• <b>FNCS 2025 Global Championship</b> - Grand Finals (Лион <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 сен 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> - Play-In, Last Chance Qualifier и региональные Grand Finals всех 7 регионов, трио (янв - авг 2025)<br>• <b>FNCS 2024 Global Championship</b> - Grand Finals (Форт-Уэрт <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 сен 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> - Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> - Grand Finals (Копенгаген <img src="https://flagcdn.com/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 окт 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> - Grand Finals Europe (мар / май / июн 2023)<br>• <b>FNCS Invitational 2022</b> - Grand Finals (Роли <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 ноя 2022)<br>• <b>FNCS 2021 Grand Royale</b> - Europe (21 ноя 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> - Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> - Solo Grand Finals Europe (26 июн 2021)<br><br>У каждого игрока в карточке видно, из какого именно турнира взят его результат. Один и тот же реальный человек может иметь несколько карточек - по одной на каждый турнир.<br><br><b>Редкость карточки:</b><br>Цвет идёт от того самого числа OVR, которое написано на карточке - что видишь, то и получаешь. Шкала фортнайтовская, цвета те же, что в игре.<br>• <b style="color:var(--mythic)">95+ · Мифический (золотой)</b><br>• <b style="color:var(--legendary)">90–94 · Легендарный (оранжевый)</b><br>• <b style="color:var(--epic)">80–89 · Эпический (фиолетовый)</b><br>• <b style="color:var(--rare)">70–79 · Редкий (синий)</b><br>• <b style="color:var(--uncommon)">60–69 · Необычный (зелёный)</b><br>• <b style="color:var(--common)">ниже 60 · Обычный (серый)</b><br>Мифик даётся только за сезон без слабых этапов - гранд-финал, хиты и кубки на одном уровне. Те же шесть цветов красят оружие и хилки в паках.',
+confirmedNote:'<b>Что подтверждено:</b> имена и регион - из официальных таблиц участников и итоговых результатов (Liquipedia, Esports Earnings, esports.gg, fortnitetracker.com и присланные скриншоты).<br><br><b>Про размер лобби:</b> реальных игроков не хватает, чтобы ровно попасть в целевые числа команд - недостающие места в AI-лобби (кроме Grands) занимают явно помеченные резервные команды, без флага.<br><br><b>Флаги:</b> гражданство подтверждено не у всех - где источника нет, флаг просто не показан.',
 homeRegionTitle:'В каком турнире играешь', homeRegionNote:'Мейджор проводится в каждом регионе отдельно. Выбери, в чей ты заявляешься: его соперники, его сетка, его призовые и его слоты на LAN. Состав при этом может быть откуда угодно.',
 preregionTitleOne:'Кто может попасть к тебе в команду', preregionNoteOne:'В этом наборе один регион — игроки в паках будут только из него.',
 preregionTitle:'Кто может попасть к тебе в команду', preregionNote:'Отметь регионы, чьи игроки будут выпадать тебе в паках. Можно несколько или сразу все — на то, в каком турнире ты играешь, это не влияет.', preregionBtn:'Продолжить к драфту',
@@ -3172,7 +3180,7 @@ eraTitle:'За какие сезоны набираешь игроков?', eraN
 eraAll:'Все годы', yearEmptyHint:'В этом году у выбранных регионов игроков нет', eraOld:'🏛️ Классика (2021–2023)', eraNow:'🔥 Текущий состав (2024–2026)',
 eraWarningText:'⚠️ Сначала выбери период — обязательно',
 regionWarningText:'⚠️ Сначала выбери регион — обязательно',
-detailsSummary:'ℹ️ Что делать и как всё устроено — характеристики, рейтинг, очки, источники',
+detailsSummary:'ℹ️ Что делать и как всё устроено - характеристики, рейтинг, очки, источники',
 historyBtn:'📊 История и достижения', backBtn:'← Назад',
 achievementsTitle:'Достижения', historyTitle:'История забегов',
 historyDateHeader:'Дата', historyModeHeader:'Режим', historyResultHeader:'Результат', historyGradeHeader:'Оценка',
@@ -3475,19 +3483,46 @@ chNext:'Далее',
 chWkCup:'Кубок', chWkReload:'Reload', chDayFree:'Свободный день',
 ccDayTag:'ДЕНЬ', ccDayMust:'Выбери, на что уходит день', ccDayDone:'Следующий день',
 ccEnergyMark:'⚡', ccRingEnergy:'Энергия', ccRingFatigue:'Усталость', ccRingMood:'Настрой',
-ccActtrAim:'Аим-тренажёр', ccActtrSur:'Ранкед на выживание', ccActtrCon:'Кастомки NOBL',
-ccActtrClu:'Клатч-ситуации', ccActtrExp:'Разбор реплеев', ccActtrEnd:'Зал и режим',
+ccActtrAim:'KovaaK\'s', ccActtrSur:'Ранкед', ccActtrCon:'Зал и режим',
+ccActtrClu:'1v1', ccActtrExp:'Разбор реплеев', ccActtrEnd:'Кастомки Noble',
 ccActscrim:'Скримы с напарником', ccActstream:'Стрим', ccActrest:'Отдых',
 ccGiveReach:'+ медийка', ccGiveMood:'+ настрой напарника', ccGiveRest:'+ энергия',
 ccGiveNoImprove:'без прокачки, минус фокус',
+ccAttrMaxed:'99 — выше этой характеристики нет',
+ccChem:'Сыгранность',
+ccCity:{Dus:'Дюссельдорф', Ant:'Антверпен', Lyo:'Лион', Cph:'Копенгаген',
+        Ftw:'Форт-Уэрт', Rdu:'Роли', Par:'Париж', Ryd:'Эр-Рияд', Nyc:'Нью-Йорк',
+        Tok:'Токио', Bel:'Белград', Kat:'Катовице', Sto:'Стокгольм', Mad:'Мадрид',
+        Ams:'Амстердам', Sao:'Сан-Паулу', Seo:'Сеул', Tor:'Торонто', Syd:'Сидней',
+        Mex:'Мехико', Dub:'Дубай', Ist:'Стамбул', Mil:'Милан', Lon:'Лондон',
+        Sin:'Сингапур'},
+ccCityIn:{Dus:'Дюссельдорфе', Ant:'Антверпене', Lyo:'Лионе', Cph:'Копенгагене',
+          Ftw:'Форт-Уэрте', Rdu:'Роли', Par:'Париже', Ryd:'Эр-Рияде', Nyc:'Нью-Йорке',
+          Tok:'Токио', Bel:'Белграде', Kat:'Катовице', Sto:'Стокгольме', Mad:'Мадриде',
+          Ams:'Амстердаме', Sao:'Сан-Паулу', Seo:'Сеуле', Tor:'Торонто', Syd:'Сиднее',
+          Mex:'Мехико', Dub:'Дубае', Ist:'Стамбуле', Mil:'Милане', Lon:'Лондоне',
+          Sin:'Сингапуре'},
+dmAgent:(cut,r)=>'Занимаюсь игроками. Беру '+cut+'% с призовых и зарплаты, взамен тебя смотрят клубы на '+r+' выше и платят больше. Работаем?',
+dmAgentYes:'Отлично. С этого дня разговариваю с клубами я.',
+dmAgentEnd:'Дальше сам.',
+ccAgentSign:'Работаем',
+ccAgentEnd:'Разорвать',
+ccAgentOn:n=>'Агент: '+n,
+ccAgentTerms:(cut,r)=>cut+'% с денег · клубы смотрят на '+r+' выше · оффер щедрее',
+ccAgentPaid:'Агенту',
+ccNewsAgent:n=>'Теперь меня представляет '+n,
+ccNewsAgentCut:v=>'Агенту ушло $'+v,
+ccChemDays:d=>d+' дн. вместе',
 ccAttrAIM:'СТР', ccAttrEND:'ЭНД', ccAttrSUR:'ВЖВ', ccAttrEXP:'ОПТ', ccAttrCLU:'КЛЧ', ccAttrCON:'СТБ',
 chLiveNow:'Сегодня', chLiveTag:'LIVE', chLiveSoonTag:'СКОРО', chMatchOf:n=>'Матч 1 из '+n,
 calMonthsShort:['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'],
+calMonthsOf:['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'],
+calDowsFull:['понедельник','вторник','среда','четверг','пятница','суббота','воскресенье'],
 chDayFreeSub:'На этой неделе ничего не проводится',
 ccYearSub:{cup:'Одно окно, 11 игр', final:'Финал недели, только Дивизион 1',
   eval:'Два раунда за вечер, только Дивизион 1', major:'Плей-ин, хиты, ЛАН',
   gc:'Конец года', reload:'Отдельный круг, не FNCS',
-  summit:'Дюссельдорф, три дня, по итогам Мажора 1',
+  summit:'LAN на три дня, по итогам Мажора 1',
   victory:'Два раунда, $100 за каждую победу во втором'},
 ccResWfIn:'Топ-50 за неделю — в субботу финал недели',
 ccBankedSoFar:(p,of,pts)=>'После первой сессии: '+ccTop(p)+' из '+of+', '+ruPts(pts),
@@ -3502,6 +3537,13 @@ ccRelPass:n=>'Топ-'+n+' — проход дальше',
 ccRelFail:n=>'Мимо топ-'+n+' — круг закончен',
 ccRelSeat:'Место на Esports World Cup',
 ccRelLocked:'Сюда надо было пройти — предыдущая стадия не взята',
+ccNoMate:'Турнир играется в дуо — одному не заявиться. В личке есть те, кто свободен',
+ccNoMateShort:'Нет напарника',
+ccLfdTitle:'Ищу дуо',
+ccLfdWhat:'Пост на всю ленту: его увидят и те, кто на пару очков выше тебя',
+ccLfdBtn:'Запостить',
+ccLfdOnUntil:d=>'Пост висит до '+d,
+ccNewsLfd:(d,o)=>'Ищу дуо. Дивизион '+d+', '+o+' овера — пишите 🤝',
 ccNewsRelThrough:(what,p)=>what+': '+ccTop(p)+', проход дальше',
 ccNewsRelOut:(what,p,of)=>what+': '+ccTop(p)+' из '+of+', круг закончен',
 ccNewsRelSeat:(cup,p)=>'Финал Reload '+cup+': '+ccTop(p)+' — место на Esports World Cup',
@@ -3533,8 +3575,8 @@ ccYearNames:{
   Major2_PlayIn:'Мейджор 2 · плей-ин', Major2_Heats:'Мейджор 2 · хиты',
   Major2_LCQ:'Мейджор 2 · последний шанс', Major2_Final:'Мейджор 2 · финал',
   GlobalChampionshipLastChance:'Мировой чемпионат · последний шанс',
-  ReloadChampionshipParis:'Reload Championship · Париж',
-  GlobalChampionship:'Мировой чемпионат · Антверпен'
+  ReloadChampionshipParis:'Reload Championship · {CITY}',
+  GlobalChampionship:'Мировой чемпионат · {CITY}'
 },
 chWkMajor:'Мейджор',
 chWkGC:'ГЧ',
@@ -3557,8 +3599,8 @@ ccBankedCarry:(p,g)=>'В сумму недели идут '+ruPts(p)+' за '+ru
 ccLiveWeekNote:'Таблица недели: очки понедельника уже в ней',
 ccCupBanked:'Сессия 1 в зачёт — таблицу решает вторник',
 ccRelBanked:'Сессия 1 в зачёт — отбор решает вторая',
-dmOrgWait:d=>'Обсудим с руководством, ответим к '+d+'.',
-dmOrgDeadline:d=>'Предложение в силе до '+d+'.',
+dmOrgWait:d=>'Обсудим с руководством, ответим к '+ccDayLabel(d)+'.',
+dmOrgDeadline:d=>'Предложение в силе до '+ccDayLabel(d)+'.',
 dmOrgExpired:o=>o+': больше ждать не можем, снимаем предложение.',
 ccOfferUntil:d=>'в силе до '+d,
 ccYearsOld:n=>n+' '+ruPlural(n,'год','года','лет'),
@@ -3871,7 +3913,7 @@ dmQBack4:'Ясно. Спасибо',
 dmFanFoot:'Просто написали посмотреть',
 dmFanFootQ:'Ждёт ответа',
 dmAnswerBtn:'Ответить', dmAnswerWhat:'Живой ответ расходится дальше, чем спасибо',
-dmThinking:d=>'Дай подумать, отвечу к '+d,
+dmThinking:d=>'Дай подумать, отвечу к '+ccDayLabel(d),
 ccFormTable:(p,of)=>ccTopC(p)+' в таблице из '+of,
 ccFormBest:b=>'лучшее '+ccTop(b),
 ccBuyout:c=>'Разорвать контракт — '+c,
@@ -3920,10 +3962,6 @@ dmArgForm:(p,o)=>'Последний забег: '+ccTop(p)+' из '+o+'. Пос
 dmArgroleBtn:'Возьму твою роль',
 dmArgroleWhat:'Поменять свою роль на противоположную. Убеждает сильнее всего и стоит перекроя всех атрибутов',
 dmArgRole:r=>'Могу играть '+r+', если тебе так удобнее',
-dmArgscrimBtn:'Сыграем скрим',
-dmArgscrimWhat:'Сет на 12 раундов прямо сейчас, 30 энергии. Выиграл — соглашается, проиграл — разговор окончен',
-dmArgScrim:(a,b)=>'Давай сет. '+a+':'+b,
-dmArgScrimLost:'Ну вот и ответ. Удачи',
 dmThanksBtn:'Поблагодарить', dmThanksWhat:'Такие расходятся — аудитория чуть подрастёт',
 dmThanks:'Спасибо, что смотришь', dmThanksBack:'Всегда пожалуйста, го дальше',
 dmThanksBack1:'Да не за что', dmThanksBack2:'Ого, ты ответил. Спасибо, буду смотреть дальше',
@@ -4016,7 +4054,7 @@ ccPostBday:(h,a)=>'С днём рождения, @'+h+'! Сегодня '+a+' �
 ccPostBdayMe:a=>'Мне сегодня '+a+' 🎂',
 ccCongratsTable:'Дивизион 1 · таблица сезона',
 ccCongratsCup:'кубок Дивизиона 1', ccCongratsMajor:n=>'финал Major '+n,
-ccCongratsSummit:'Саммит в Дюссельдорфе',
+ccCongratsSummit:c=>'Саммит в '+c,
 ccNewsSumThrough:(what,p,of)=>what+': '+ccTop(p)+' из '+of+' — дальше',
 ccNewsSumOut:(what,p,of)=>what+': '+ccTop(p)+' из '+of+' — на этом всё',
 ccNewsSumCash:(p,v)=>'Саммит: '+ccTop(p)+' — $'+v,
@@ -4119,11 +4157,11 @@ ccFfDone:d=>'Перемотано '+ruDays(d),
 ccFfPlayed:n=>'Сыграно турниров: '+n,
 ccFfNothing:'Турниров в эти дни не было',
 ccFfTrained:'Тренировочных дней',
-ccCongratsGlobals:'Мировой чемпионат в Антверпене',
+ccCongratsGlobals:c=>'Мировой чемпионат в '+c,
 ccNewsGlobCash:(p,v)=>'Мировой чемпионат: '+ccTop(p)+' — $'+v,
 ccNewsGlobNoCash:(p,of)=>'Мировой чемпионат: '+ccTop(p)+' из '+of,
 ccNewsGlobChamp:'ЧЕМПИОН МИРА 🌍🏆',
-ccGlobLocked:'В Антверпен едут топ-15 Саммита, топ-9 финала Мажора 2 и топ-3 последнего шанса',
+ccGlobLocked:c=>'В '+c+' едут топ-15 Саммита, топ-9 финала Мажора 2 и топ-3 последнего шанса',
 ccGlobSeatSummit:'место с Саммита', ccGlobSeatMajor:'место с финала Мажора 2',
 ccGlobSeatGclc:'место с последнего шанса',
 ccPostMateHappy:me=>'Хорошая неделя с @'+me+' 🔥',
@@ -4178,6 +4216,8 @@ dmYes:'Го. Я свободен.',
 dmNo:(o,d)=>'Спасибо, но я '+o+' и сижу в Дивизионе '+(d>1?d-1:1)+'. Пока не вариант.',
 dmNoDuo:m=>'Спасибо, но у меня дуо с '+m+' — мы продолжаем.',
 dmNoPartner:o=>'Слышал, ты без напарника. Я '+o+', тоже свободен. Скинемся?',
+dmSeatSour:(o,m)=>'С '+m+' сезон не идёт, ищу куда уйти. Я '+o+' — если у тебя место свободно, я в деле',
+dmLfd:o=>'Видел твой пост. Я '+o+', место есть — пробуем?',
 dmPodium:(p,t)=>ccTopC(p)+' из '+t+' — сильно сыграли. Если что, я свободен.',
 dmPoach:(o,p)=>'Видел ваш '+ccTop(p)+'. Я '+o+' овера, свободен — если надумаешь что-то менять, пиши.',
 dmReachUp:(o,p)=>'Смотрел твой '+ccTop(p)+'. Я '+o+' овера — обычно я бы не писал, но ты играешь выше своего рейтинга. Попробуем вместе?',
@@ -4243,7 +4283,7 @@ ccNoCards:'Никого не нашлось',
 ccSavedLabel:'Карьера создана',
 ccSavedNote:'Игрок сохранён. Хаб карьеры, кубки дивизионов и поиск напарника — следующий этап.',
 modeNewBadge:'NEW', modeCareerTitle:'FNCS Career',
-modeCareerDesc:'Карьера одного игрока. Создаёшь себя — страна, роль, дивизион — и лезешь с пятого дивизиона через кубки и мейджоры к ЛАНу. Страна задаёт пинг, пинг решает ближние бои.',
+modeCareerDesc:'Карьера одного игрока. Создаёшь себя - страна, роль, дивизион - и лезешь с пятого дивизиона через кубки и мейджоры к ЛАНу. Страна задаёт пинг, пинг решает ближние бои.',
 modeCareerCount:'дивизион 5 → дивизион 1 · в разработке',
 ecSubCareer:'Путь одного игрока',
 modeCardsTitle:'FNCS Major 2',
@@ -4262,14 +4302,14 @@ ecDate2026:'сезон 2026 · семь регионов',
 ecDate2025:'сезон 2025 · семь регионов',
 majorPick1:'Мейджор 1', majorPick2:'Мейджор 2', majorPick3:'Мейджор 3',
 modeFncs2026Title:'FNCS 2026',
-modeFncs2026Desc:'Оба мейджора текущего сезона, все семь регионов в дуо. В каждом — 150 дуо плей-ина и отборочный LCQ, дальше LAN: Дюссельдорф <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> у первого, Антверпен <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> у второго. Каждый игрок — карточка с атрибутами по его настоящим результатам.',
+modeFncs2026Desc:'Оба мейджора текущего сезона, все семь регионов в дуо. В каждом - 150 дуо плей-ина и отборочный LCQ, дальше LAN: Дюссельдорф <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> у первого, Антверпен <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> у второго. Каждый игрок - карточка с атрибутами по его настоящим результатам.',
 modeFncs2026Count:'2 игрока · плей-ин, хиты, LAN',
 modeFncs2025Title:'FNCS 2025',
-modeFncs2025Desc:'Весь прошлый сезон в трио: три мейджора, все семь регионов, у каждого свой остров и свой лут. Элим стоит 1 очко в LCQ, 2 в плей-ине и 4 в финале. Сезон заканчивается Global Championship в Лионе <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> — 33 трио и 12 игр за два дня.',
+modeFncs2025Desc:'Весь прошлый сезон в трио: три мейджора, все семь регионов, у каждого свой остров и свой лут. Элим стоит 1 очко в LCQ, 2 в плей-ине и 4 в финале. Сезон заканчивается Global Championship в Лионе <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> - 33 трио и 12 игр за два дня.',
 modeFncs2025Count:'3 игрока · плей-ин, группы, региональный финал',
 modeEwcDesc:'Дорога на Esports World Cup: четыре капа в Reload, дуо, все семь регионов. У каждого свой отбор: опены, плей-ин, четыре хита по 20 команд и финал на 20. Карточки собраны по настоящим лидербордам.',
 modeEwcCount:'2 игрока · семь регионов, опены, плей-ин, хиты, финал',
-ecDateEwc:'фев — июн 2026 · семь регионов',
+ecDateEwc:'фев - июн 2026 · семь регионов',
 ecDateCareer:'сезон за сезоном',
 ecScopeEu:'Европа',
 ecSubEwc:'дуо, свои острова',
@@ -4365,10 +4405,10 @@ tagline:'Draft a squad of real players who qualified for an FNCS Grand Finals, a
 supportBtn:'Support',
 dataCreditText:'Flags, squads and player data sourced from', dataCreditAnd:'and',
 badgeMode:'select mode',
-ecDateAll:'2021 — 2026', ecDateM1:'Mar — May 2026', ecDateM2:'18 Jul — 2 Aug 2026',
-ecDateT1:'Jan — Feb 2025',
+ecDateAll:'2021 - 2026', ecDateM1:'Mar - May 2026', ecDateM2:'18 Jul - 2 Aug 2026',
+ecDateT1:'Jan - Feb 2025',
 ecDateT2:'Apr 2025',
-ecDateT3:'Jul — Aug 2025',
+ecDateT3:'Jul - Aug 2025',
 ecScopeAll:'All regions', ecScope7:'7 regions', ecStCards:'Cards',
 ecSubDuos:'Duos', ecSubTrios:'Trios', ecSubSquads:'Squads',
 modeDuoTitle:'Duo', modeDuoDesc:'2 slots. Real FNCS format. Lobby of ~50 teams.', modeDuoCount:'2 players · target 50 teams',
@@ -4376,31 +4416,31 @@ modeTrioTitle:'Trio', modeTrioDesc:'3 slots. Synergy drawn as a triangle. Lobby 
 modeSquadTitle:'Squad', modeSquadDesc:'4 slots. Synergy drawn as a square. Lobby of ~25 teams.', modeSquadCount:'4 players · target 25 teams',
 modeMajorTitle:'ALL FNCS', modeMajorDesc:'The whole roster across every FNCS season. Duo only: Play-In → Heats → Major Finals with one squad, elimination possible at any stage.', modeMajorCount:'2 players · whole roster pool',
 majorExplainerTitle:'How FNCS Major mode works',
-majorRow1:'Play-In — 2 days, points add up', majorRow1b:'top 150 advance',
-majorRow2:'Heats — 3 heats of 5 games, winning a game = instant advance', majorRow2b:'otherwise top 15 by points',
+majorRow1:'Play-In - 2 days, points add up', majorRow1b:'top 150 advance',
+majorRow2:'Heats - 3 heats of 5 games, winning a game = instant advance', majorRow2b:'otherwise top 15 by points',
 majorRow3:'Failed Play-In or Heats', majorRow3b:'Last Chance Qualifier',
-majorRow4:'Major Finals — 12 games, 45 from heats + 5 from LCQ', majorRow4b:'final placement',
-majorExplainerNote:'The same duo has to clear every stage in a row — fail a stage and the run stops, showing exactly where you were eliminated. Any number of teams can be in Play-In (real players plus reserve teams for scale), but reserve teams can never advance past Play-In — only real players reach Heats and the Grands.',
-scoringTitle:'Tournament scoring — same system as fortnitetracker.com',
+majorRow4:'Major Finals - 12 games, 45 from heats + 5 from LCQ', majorRow4b:'final placement',
+majorExplainerNote:'The same duo has to clear every stage in a row - fail a stage and the run stops, showing exactly where you were eliminated. Any number of teams can be in Play-In (real players plus reserve teams for scale), but reserve teams can never advance past Play-In - only real players reach Heats and the Grands.',
+scoringTitle:'Tournament scoring - same system as fortnitetracker.com',
 scoreVR:'Victory Royale', scoreTop25:'Each threshold in top 2–5', scoreTop625:'Each threshold in top 6–25', scoreTop26:'Top 26 and below', scoreElim:'Each elimination',
 scoringNote:'This is a cumulative bracket system: your placement score is the sum of every threshold you cleared (e.g. 1st place = 9 for the win + 4×4 for top2–5 + 2×20 for top6–25 = 65 points). The resulting numbers (65/56/52…2/0) match the real FNCS Grand Finals placement table.',
-howToTitle:'What to do — four steps',
+howToTitle:'What to do - four steps',
 howToRow1:'1. Pick a mode, a region and the seasons', howToRow1b:'20 seconds',
 howToRow2:'2. Open packs and keep one card from each', howToRow2b:'the rest go back',
-howToRow3:'3. Add a weapon and a heal — both add squad power', howToRow3b:'+1…+5',
+howToRow3:'3. Add a weapon and a heal - both add squad power', howToRow3b:'+1…+5',
 howToRow4:'4. Run the tournament and see how far you get', howToRow4b:'up to 12 games',
-howToNote:'The goal is a squad stronger than the lobby. The big number on a card is OVR, the player\'s overall power; the six attributes sit under it. Do not draft on the number alone — two players with the same OVR play very differently because their strengths differ. You get two pack rerolls per draft, and anyone already drafted will not appear again.',
+howToNote:'The goal is a squad stronger than the lobby. The big number on a card is OVR, the player\'s overall power; the six attributes sit under it. Do not draft on the number alone - two players with the same OVR play very differently because their strengths differ. You get two pack rerolls per draft, and anyone already drafted will not appear again.',
 ratingTitle:'Where the rating comes from',
-ratingRow1:'The Summit LAN — Major 1 cards only', ratingRow1b:'weight 3.0',
+ratingRow1:'The Summit LAN - Major 1 cards only', ratingRow1b:'weight 3.0',
 ratingRow2:'Heats · Play-In · Last Chance', ratingRow2b:'0.9 · 0.5 · 0.4',
 ratingRow3:'Each Division 1 Cup week', ratingRow3b:'weight 0.15',
 ratingRow4:'Grand Final of their own region', ratingRow4b:'weight 2.0',
-ratingNote:'A rating is a whole season, not one tournament. Every result a player has is blended by weight, so a champion who scraped through the qualifiers rates below someone who held form all season. Seasons never mix: a Major 1 card is rated on S40 alone and a Major 2 card on S41 alone — different patches, different meta, and a result in one cannot touch the other. Inside a region the ladder is stretched so its best player lands on the ceiling: 96 for Europe and NA Central, 85 elsewhere, where the field is thinner.',
+ratingNote:'A rating is a whole season, not one tournament. Every result a player has is blended by weight, so a champion who scraped through the qualifiers rates below someone who held form all season. Seasons never mix: a Major 1 card is rated on S40 alone and a Major 2 card on S41 alone - different patches, different meta, and a result in one cannot touch the other. Inside a region the ladder is stretched so its best player lands on the ceiling: 96 for Europe and NA Central, 85 elsewhere, where the field is thinner.',
 synergyTitle:'Squad synergy',
 synergyRow1:'Drafted real teammates together', synergyRow1b:'+5',
 synergyRow2:'Shared nationality between players', synergyRow2b:'+2 / player',
-synergyNote:'In reality FNCS 2026 is played in duos — that is the real format. Trio and Squad are fantasy: the players are real, but you build the roster yourself. Synergy is drawn as a triangle (trio) or square (squad), and the lines light up for real teammates or compatriots.',
-attrTitle:'The six attributes — what they mean',
+synergyNote:'In reality FNCS 2026 is played in duos - that is the real format. Trio and Squad are fantasy: the players are real, but you build the roster yourself. Synergy is drawn as a triangle (trio) or square (squad), and the lines light up for real teammates or compatriots.',
+attrTitle:'The six attributes - what they mean',
 attrRowAim:'AIM · Aim', attrRowAimB:'eliminations per match',
 attrRowEnd:'END · Endgame', attrRowEndB:'share of points from placement, not kills',
 attrRowSur:'SUR · Survival', attrRowSurB:'average placement',
@@ -4408,8 +4448,8 @@ attrRowCon:'CON · Consistency', attrRowConB:'points per match',
 attrRowClu:'CLU · Clutch', attrRowCluB:'Victory Royales per match',
 attrRowExp:'EXP · Experience', attrRowExpB:'total FNCS matches played',
 attrNote:'Each attribute is where the player ranked among the people who were in that lobby with them, not an abstract score. None of them contain a random number: hover an attribute on a card to see which column of the standings it was read from. High END with low AIM is a player who scores by surviving rather than fighting; the reverse is a fragger. The FRG or IGL role is printed under the OVR.',
-sourcesNote:'<b>Card sources — which tournaments the players are actually pulled from:</b><br>{EVENTS} tournaments, {CARDS} cards in total.<br><br>• <b>FNCS 2026 Major 2</b> — Play-In, Last Chance Qualifier and Grand Finals across all 7 regions (18 Jul — 2 Aug 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> — Group Stage, Upper Bracket and Grand Finals (Düsseldorf <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 May 2026)<br>• <b>FNCS 2026 Major 1</b> — Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions (Mar — May 2026)<br>• <b>FNCS 2025 Global Championship</b> — Grand Finals (Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 Sep 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> — Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions, trios (Jan — Aug 2025)<br>• <b>FNCS 2024 Global Championship</b> — Grand Finals (Fort Worth <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 Sep 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> — Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> — Grand Finals (Copenhagen <img src="https://flagcdn.com/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 Oct 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> — Grand Finals Europe (Mar / May / Jun 2023)<br>• <b>FNCS Invitational 2022</b> — Grand Finals (Raleigh <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 Nov 2022)<br>• <b>FNCS 2021 Grand Royale</b> — Europe (21 Nov 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> — Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> — Solo Grand Finals Europe (26 Jun 2021)<br><br>Each player card shows exactly which tournament its result came from. The same real person can have multiple cards — one per tournament where a result was found.<br><br><b>Card rarity:</b><br>The colour comes from the very OVR printed on the card — what you see is what you get. The ladder is the one Fortnite uses and the colours match the game.<br>• <b style="color:var(--mythic)">95+ · Mythic (gold)</b><br>• <b style="color:var(--legendary)">90–94 · Legendary (orange)</b><br>• <b style="color:var(--epic)">80–89 · Epic (purple)</b><br>• <b style="color:var(--rare)">70–79 · Rare (blue)</b><br>• <b style="color:var(--uncommon)">60–69 · Uncommon (green)</b><br>• <b style="color:var(--common)">below 60 · Common (grey)</b><br>Mythic is for a season with no weak stage in it — the Grand Final, the heats and the cups all held at once. The same six colours tint the weapons and heals in the loot packs.',
-confirmedNote:'<b>What\'s confirmed:</b> names and region come from official participant lists and final standings (Liquipedia, Esports Earnings, esports.gg, fortnitetracker.com, and screenshots you sent).<br><br><b>About lobby size:</b> there aren\'t enough real players to exactly hit the target team counts — missing AI-lobby slots (except in the Grands) are filled with clearly labeled reserve teams, shown without a flag.<br><br><b>Flags:</b> nationality isn\'t confirmed for everyone — where there\'s no source, no flag is shown.',
+sourcesNote:'<b>Card sources - which tournaments the players are actually pulled from:</b><br>{EVENTS} tournaments, {CARDS} cards in total.<br><br>• <b>FNCS 2026 Major 2</b> - Play-In, Last Chance Qualifier and Grand Finals across all 7 regions (18 Jul - 2 Aug 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> - Group Stage, Upper Bracket and Grand Finals (Düsseldorf <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 May 2026)<br>• <b>FNCS 2026 Major 1</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions (Mar - May 2026)<br>• <b>FNCS 2025 Global Championship</b> - Grand Finals (Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 Sep 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions, trios (Jan - Aug 2025)<br>• <b>FNCS 2024 Global Championship</b> - Grand Finals (Fort Worth <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 Sep 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> - Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> - Grand Finals (Copenhagen <img src="https://flagcdn.com/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 Oct 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> - Grand Finals Europe (Mar / May / Jun 2023)<br>• <b>FNCS Invitational 2022</b> - Grand Finals (Raleigh <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 Nov 2022)<br>• <b>FNCS 2021 Grand Royale</b> - Europe (21 Nov 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> - Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> - Solo Grand Finals Europe (26 Jun 2021)<br><br>Each player card shows exactly which tournament its result came from. The same real person can have multiple cards - one per tournament where a result was found.<br><br><b>Card rarity:</b><br>The colour comes from the very OVR printed on the card - what you see is what you get. The ladder is the one Fortnite uses and the colours match the game.<br>• <b style="color:var(--mythic)">95+ · Mythic (gold)</b><br>• <b style="color:var(--legendary)">90–94 · Legendary (orange)</b><br>• <b style="color:var(--epic)">80–89 · Epic (purple)</b><br>• <b style="color:var(--rare)">70–79 · Rare (blue)</b><br>• <b style="color:var(--uncommon)">60–69 · Uncommon (green)</b><br>• <b style="color:var(--common)">below 60 · Common (grey)</b><br>Mythic is for a season with no weak stage in it - the Grand Final, the heats and the cups all held at once. The same six colours tint the weapons and heals in the loot packs.',
+confirmedNote:'<b>What\'s confirmed:</b> names and region come from official participant lists and final standings (Liquipedia, Esports Earnings, esports.gg, fortnitetracker.com, and screenshots you sent).<br><br><b>About lobby size:</b> there aren\'t enough real players to exactly hit the target team counts - missing AI-lobby slots (except in the Grands) are filled with clearly labeled reserve teams, shown without a flag.<br><br><b>Flags:</b> nationality isn\'t confirmed for everyone - where there\'s no source, no flag is shown.',
 preregionTitleOne:'Who can end up in your squad', preregionNoteOne:'This set holds one region, so that is who the packs deal.',
 homeRegionTitle:'Which tournament you play', homeRegionNote:'Every region runs its own Major. Choose whose you enter: its opponents, its bracket, its prize table and its LAN slots. The squad can come from anywhere.',
 preregionTitle:'Who can end up in your squad', preregionNote:'Tick the regions whose players are dealt to you in packs. As many as you like, or all of them — it says nothing about which tournament you play.', preregionBtn:'Continue to draft',
@@ -4419,7 +4459,7 @@ eraTitle:'Which seasons do you want to draft from?', eraNote:'Tick one or more y
 eraAll:'All years', yearEmptyHint:'No players from the selected regions in this year', eraOld:'🏛️ Classic (2021–2023)', eraNow:'🔥 Current roster (2024–2026)',
 eraWarningText:'⚠️ Pick a time period first — it\'s required',
 regionWarningText:'⚠️ Pick a region first — it\'s required',
-detailsSummary:'ℹ️ What to do and how it works — attributes, rating, scoring, sources',
+detailsSummary:'ℹ️ What to do and how it works - attributes, rating, scoring, sources',
 historyBtn:'📊 History & Achievements', backBtn:'← Back',
 achievementsTitle:'Achievements', historyTitle:'Run history',
 historyDateHeader:'Date', historyModeHeader:'Mode', historyResultHeader:'Result', historyGradeHeader:'Grade',
@@ -4675,19 +4715,46 @@ chNext:'Next up',
 chWkCup:'Cup', chWkReload:'Reload', chDayFree:'Free day',
 ccDayTag:'DAY', ccDayMust:'Choose what the day goes on', ccDayDone:'Next day',
 ccEnergyMark:'⚡', ccRingEnergy:'Energy', ccRingFatigue:'Fatigue', ccRingMood:'Morale',
-ccActtrAim:'Aim trainer', ccActtrSur:'Ranked, survival', ccActtrCon:'NOBL customs',
-ccActtrClu:'Clutch drills', ccActtrExp:'Watch replays', ccActtrEnd:'Gym and routine',
+ccActtrAim:'KovaaK\'s', ccActtrSur:'Ranked', ccActtrCon:'Gym and routine',
+ccActtrClu:'1v1s', ccActtrExp:'Watch replays', ccActtrEnd:'Noble endgames',
 ccActscrim:'Scrim with your duo', ccActstream:'Stream', ccActrest:'Rest',
 ccGiveReach:'+ reach', ccGiveMood:'+ partner morale', ccGiveRest:'+ energy',
 ccGiveNoImprove:'no improvement, focus down',
+ccAttrMaxed:'99 — there is nothing above it',
+ccChem:'Chemistry',
+ccCity:{Dus:'Düsseldorf', Ant:'Antwerp', Lyo:'Lyon', Cph:'Copenhagen',
+        Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riyadh', Nyc:'New York',
+        Tok:'Tokyo', Bel:'Belgrade', Kat:'Katowice', Sto:'Stockholm', Mad:'Madrid',
+        Ams:'Amsterdam', Sao:'São Paulo', Seo:'Seoul', Tor:'Toronto', Syd:'Sydney',
+        Mex:'Mexico City', Dub:'Dubai', Ist:'Istanbul', Mil:'Milan', Lon:'London',
+        Sin:'Singapore'},
+ccCityIn:{Dus:'Düsseldorf', Ant:'Antwerp', Lyo:'Lyon', Cph:'Copenhagen',
+          Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riyadh', Nyc:'New York',
+          Tok:'Tokyo', Bel:'Belgrade', Kat:'Katowice', Sto:'Stockholm', Mad:'Madrid',
+          Ams:'Amsterdam', Sao:'São Paulo', Seo:'Seoul', Tor:'Toronto', Syd:'Sydney',
+          Mex:'Mexico City', Dub:'Dubai', Ist:'Istanbul', Mil:'Milan', Lon:'London',
+          Sin:'Singapore'},
+dmAgent:(cut,r)=>'I represent players. I take '+cut+'% of prize money and wages, and clubs '+r+' above you start looking, and paying more. Shall we work?',
+dmAgentYes:'Good. From today I do the talking with clubs.',
+dmAgentEnd:'I will take it from here.',
+ccAgentSign:'Let us work',
+ccAgentEnd:'End it',
+ccAgentOn:n=>'Agent: '+n,
+ccAgentTerms:(cut,r)=>cut+'% of the money · clubs '+r+' above you look · better offers',
+ccAgentPaid:'To the agent',
+ccNewsAgent:n=>'Represented by '+n+' from today',
+ccNewsAgentCut:v=>'$'+v+' to the agent',
+ccChemDays:d=>d+' days together',
 ccAttrAIM:'AIM', ccAttrEND:'END', ccAttrSUR:'SUR', ccAttrEXP:'EXP', ccAttrCLU:'CLU', ccAttrCON:'CON',
 chLiveNow:'Today', chLiveTag:'LIVE', chLiveSoonTag:'SOON', chMatchOf:n=>'Match 1 of '+n,
 calMonthsShort:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+calMonthsOf:['January','February','March','April','May','June','July','August','September','October','November','December'],
+calDowsFull:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
 chDayFreeSub:'Nothing runs this week',
 ccYearSub:{cup:'One window, 11 games', final:'Weekly Final, Division 1 only',
   eval:'Two rounds in a night, Division 1 only', major:'Play-In, Heats, LAN',
   gc:'The end of the year', reload:'Its own circuit, not FNCS',
-  summit:'Düsseldorf, three days, off Major 1',
+  summit:'Three days of LAN, off Major 1',
   victory:'Two rounds, $100 for every win in the second'},
 ccResWfIn:'Top fifty on the week — the Weekly Final is on Saturday',
 ccBankedSoFar:(p,of,pts)=>'After the first session: '+ccTop(p)+' of '+of+', '+pts+' points',
@@ -4702,6 +4769,13 @@ ccRelPass:n=>'Top '+n+' — through to the next stage',
 ccRelFail:n=>'Outside the top '+n+' — the run ends here',
 ccRelSeat:'A seat at the Esports World Cup',
 ccRelLocked:'You had to come through the stage before this one',
+ccNoMate:'This is played in duos — an empty seat cannot enter one. Somebody free is writing to you in the inbox',
+ccNoMateShort:'No partner',
+ccLfdTitle:'Looking for a duo',
+ccLfdWhat:'A post to the whole feed: people a couple of points above you read it too',
+ccLfdBtn:'Post it',
+ccLfdOnUntil:d=>'The post stands until '+d,
+ccNewsLfd:(d,o)=>'LFD. Division '+d+', '+o+' OVR — my DMs are open 🤝',
 ccNewsRelThrough:(what,p)=>what+': '+ccTop(p)+', through',
 ccNewsRelOut:(what,p,of)=>what+': '+ccTop(p)+' of '+of+', the run ends',
 ccNewsRelSeat:(cup,p)=>'Reload '+cup+' final: '+ccTop(p)+' — a seat at the Esports World Cup',
@@ -4733,8 +4807,8 @@ ccYearNames:{
   Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heats',
   Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Final',
   GlobalChampionshipLastChance:'Global Championship · Last Chance',
-  ReloadChampionshipParis:'Reload Championship · Paris',
-  GlobalChampionship:'Global Championship · Antwerp'
+  ReloadChampionshipParis:'Reload Championship · {CITY}',
+  GlobalChampionship:'Global Championship · {CITY}'
 },
 chWkMajor:'Major',
 chWkGC:'GC',
@@ -4757,8 +4831,8 @@ ccBankedCarry:(p,g)=>p+' points from '+g+' games go into the week',
 ccLiveWeekNote:'Week standings — Monday is already in them',
 ccCupBanked:'Session 1 banked — Tuesday decides the table',
 ccRelBanked:'Session 1 banked — the second session decides the cut',
-dmOrgWait:d=>'We will take it upstairs and come back to you by '+d+'.',
-dmOrgDeadline:d=>'The offer stands until '+d+'.',
+dmOrgWait:d=>'We will take it upstairs and come back to you by '+ccDayLabel(d)+'.',
+dmOrgDeadline:d=>'The offer stands until '+ccDayLabel(d)+'.',
 dmOrgExpired:o=>o+': we cannot hold the seat any longer, the offer is off.',
 ccOfferUntil:d=>'stands until '+d,
 ccYearsOld:n=>n+' y/o',
@@ -5072,7 +5146,7 @@ dmQBack4:'Right. Thanks',
 dmFanFoot:'Just somebody who watched',
 dmFanFootQ:'Waiting on an answer',
 dmAnswerBtn:'Answer', dmAnswerWhat:'A real answer travels further than a thank you',
-dmThinking:d=>'Let me think about it, I will get back to you by '+d,
+dmThinking:d=>'Let me think about it, I will get back to you by '+ccDayLabel(d),
 ccFormTable:(p,of)=>ccTopC(p)+' of '+of+' in the table',
 ccFormBest:b=>'best '+ccTop(b),
 ccBuyout:c=>'Buy out the contract — '+c,
@@ -5121,10 +5195,6 @@ dmArgForm:(p,o)=>'Last run: '+ccTop(p)+' of '+o+'. Have a look',
 dmArgroleBtn:'I will play your role',
 dmArgroleWhat:'Switch to the other half of the duo. The most convincing thing on the list, and it rebuilds all six of your attributes',
 dmArgRole:r=>'I can play '+r+' if that suits you better',
-dmArgscrimBtn:'Play me for it',
-dmArgscrimWhat:'Twelve rounds right now, 30 energy. Win and they take it, lose and the conversation is over',
-dmArgScrim:(a,b)=>'Set for it. '+a+'-'+b,
-dmArgScrimLost:'Well, there is your answer. Good luck',
 dmThanksBtn:'Say thanks', dmThanksWhat:'These travel — the audience grows a little',
 dmThanks:'Thanks for watching', dmThanksBack:'Any time, go get them',
 dmThanksBack1:'No worries', dmThanksBack2:'Oh you actually replied. Thank you, I will keep watching',
@@ -5217,7 +5287,7 @@ ccPostBday:(h,a)=>'Happy birthday @'+h+'! '+a+' today 🎂',
 ccPostBdayMe:a=>a+' today 🎂',
 ccCongratsTable:'Division 1 · season table',
 ccCongratsCup:'the Division 1 cup', ccCongratsMajor:n=>'the Major '+n+' Finals',
-ccCongratsSummit:'the Summit in Düsseldorf',
+ccCongratsSummit:c=>'the Summit in '+c,
 ccNewsSumThrough:(what,p,of)=>what+': '+ccTop(p)+' of '+of+' — through',
 ccNewsSumOut:(what,p,of)=>what+': '+ccTop(p)+' of '+of+' — that is the run',
 ccNewsSumCash:(p,v)=>'Summit: '+ccTop(p)+' — $'+v,
@@ -5320,11 +5390,11 @@ ccFfDone:d=>d+' days skipped',
 ccFfPlayed:n=>'Tournaments played: '+n,
 ccFfNothing:'No tournaments in those days',
 ccFfTrained:'Days trained',
-ccCongratsGlobals:'the Global Championship in Antwerp',
+ccCongratsGlobals:c=>'the Global Championship in '+c,
 ccNewsGlobCash:(p,v)=>'Global Championship: '+ccTop(p)+' — $'+v,
 ccNewsGlobNoCash:(p,of)=>'Global Championship: '+ccTop(p)+' of '+of,
 ccNewsGlobChamp:'WORLD CHAMPION 🌍🏆',
-ccGlobLocked:'Antwerp is the Summit top 15, the Major 2 Final top 9 and the Last Chance top 3',
+ccGlobLocked:c=>c+' is the Summit top 15, the Major 2 Final top 9 and the Last Chance top 3',
 ccGlobSeatSummit:'a seat from the Summit', ccGlobSeatMajor:'a seat from the Major 2 Final',
 ccGlobSeatGclc:'a seat from the Last Chance',
 ccPostMateHappy:me=>'Good week with @'+me+' 🔥',
@@ -5377,6 +5447,8 @@ dmYes:'Yeah, I am free. Let us do it.',
 dmNo:(o,d)=>'Thanks, but I am '+o+' and sitting in Division '+(d>1?d-1:1)+'. Not right now.',
 dmNoDuo:m=>'Thanks, but I have a duo with '+m+' — we are running it back.',
 dmNoPartner:o=>'Heard you have no duo. I am '+o+' and free. Want to run it?',
+dmSeatSour:(o,m)=>'The season with '+m+' is not working and I am looking to move. I am '+o+' — if your seat is open, I am in',
+dmLfd:o=>'Saw your post. I am '+o+' and I have room — want to try it?',
 dmPodium:(p,t)=>ccTopC(p)+' of '+t+' — that was strong. I am free if you ever need one.',
 dmPoach:(o,p)=>'Saw your '+ccTop(p)+'. I am '+o+' OVR and free — if you ever change things up, write me.',
 dmReachUp:(o,p)=>'Watched your '+ccTop(p)+'. I am '+o+' OVR — normally I would not be writing, but you are playing above your rating. Want to run it together?',
@@ -5442,7 +5514,7 @@ ccNoCards:'Nobody found',
 ccSavedLabel:'Career created',
 ccSavedNote:'Player saved. The career hub, division cups and the partner market come next.',
 modeNewBadge:'NEW', modeCareerTitle:'FNCS Career',
-modeCareerDesc:'One player’s career. Build yourself — country, role, division — then climb from Division 5 through the cups and the Majors to a LAN. Country sets your ping, and ping decides close-range fights.',
+modeCareerDesc:'One player’s career. Build yourself - country, role, division - then climb from Division 5 through the cups and the Majors to a LAN. Country sets your ping, and ping decides close-range fights.',
 modeCareerCount:'division 5 → division 1 · in development',
 ecSubCareer:'One player’s run',
 modeCardsTitle:'FNCS Major 2',
@@ -5464,11 +5536,11 @@ modeFncs2026Title:'FNCS 2026',
 modeFncs2026Desc:'Both Majors of the current season, all seven regions in duos. Each has 150 Play-In duos and an LCQ, then the LAN: Düsseldorf <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> for the first, Antwerp <img src="https://flagcdn.com/w20/be.png" alt="" title="Belgium" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> for the second. Every player is a card, with attributes drawn from what they actually did.',
 modeFncs2026Count:'2 players · play-in, heats, LAN',
 modeFncs2025Title:'FNCS 2025',
-modeFncs2025Desc:'The whole of last season in trios: three Majors, all seven regions, each on its own island with its own loot. An elimination is worth 1 point in the LCQ, 2 in the Play-In and 4 in the final. The season ends at the Global Championship in Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> — 33 trios, 12 games over two days.',
+modeFncs2025Desc:'The whole of last season in trios: three Majors, all seven regions, each on its own island with its own loot. An elimination is worth 1 point in the LCQ, 2 in the Play-In and 4 in the final. The season ends at the Global Championship in Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> - 33 trios, 12 games over two days.',
 modeFncs2025Count:'3 players · play-in, groups, regional final',
 modeEwcDesc:'The road to the Esports World Cup: four cups on Reload, in duos, across all seven regions. Each one qualifies its own way: Opens, a Play-In, four heats of 20 and a final of 20. The cards are built from the real leaderboards.',
 modeEwcCount:'2 players · seven regions, opens, play-in, heats, final',
-ecDateEwc:'Feb — Jun 2026 · seven regions',
+ecDateEwc:'Feb - Jun 2026 · seven regions',
 ecDateCareer:'season after season',
 ecScopeEu:'Europe',
 ecSubEwc:'duos, islands of its own',
@@ -32697,6 +32769,32 @@ function beginAnimatedStage(){
 //   lobbySize — each game is played in reshuffled lobbies of this size instead
 //               of one big field (Play-In / LCQ), while the leaderboard stays
 //               cumulative across the whole stage
+/* What a match's eliminations are worth, which is not always all of them.
+
+   The Reload circuit stops counting at ten in a match — measured off Epic's own
+   Opens leaderboards on 17 August, where the arithmetic does not close without
+   it: shxrk & t3eny scored 991 over twenty-four matches with 351 eliminations,
+   and at two apiece uncapped that is 702 points of kills alone, leaving forty-
+   nine for twenty non-winning matches at an average placement of eleventh. With
+   ten a match it leaves three hundred and eleven, which is fifteen and a half a
+   match — exactly what the placement table pays at eleventh. Three other duos on
+   the same board close the same way.
+
+   One game disagrees and it is worth writing down rather than hiding: the Q4
+   Europe final has shxrk & t3eny taking eleven in a match, and their 402 is only
+   402 if all eleven counted. So either the final does not cap or the cap is not
+   ten there. His rule is ten and Epic's rules page says ten, so ten it is
+   everywhere on the circuit, and this paragraph is what to re-read if a final
+   ever looks three points light. */
+const CC_RELOAD_KILL_CAP=10;
+let CC_KILL_CAP=0;
+function ccKillPts(elims, mult){
+  // Set by the career's own Reload runners; the free Reload modes are known by
+  // their placement table, which only exists for a Reload card set.
+  const cap = CC_KILL_CAP>0 ? CC_KILL_CAP
+            : (reloadPlacementTable() ? CC_RELOAD_KILL_CAP : 0);
+  return (cap>0 ? Math.min(elims, cap) : elims)*mult;
+}
 async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefix, maxGap, squadKillDampen, zoneGroups, opts){
   opts=opts||{};
   applyStageBias(pointsFn);
@@ -32938,7 +33036,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       // d.e like any other and nothing has to be folded in from outside.
       let elims=d.e;
       if(squadKillDampen) elims=Math.max(0, Math.round(elims*squadKillDampen));
-      next.set(t._uid, {pts: pointsFn(d.p || alive) + elims*killMult, elims});
+      next.set(t._uid, {pts: pointsFn(d.p || alive) + ccKillPts(elims, killMult), elims});
     });
     liveScore=next;
 
@@ -33002,9 +33100,9 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
           const place=i+1;
           let elims=t._elims||0;
           if(squadKillDampen) elims=Math.max(0, Math.round(elims*squadKillDampen));
-          const gamePts=pointsFn(place)+elims*killMult;
+          const gamePts=pointsFn(place)+ccKillPts(elims, killMult);
           t[ptsKey]+=gamePts; t[elimsKey]+=elims;
-          t[logKey].push({game:g+1, place, elims, pts:gamePts, elimPts:elims*killMult, label:thresholdLabel(place), feed:t._feed});
+          t[logKey].push({game:g+1, place, elims, pts:gamePts, elimPts:ccKillPts(elims, killMult), label:thresholdLabel(place), feed:t._feed});
           // Only where a win ends your stage is a win a qualification, and only
           // then does it earn the first pick next time — see byQualOrder.
           if(place===1){ t.gotVR=true; t.wins++; if(opts.stopOnWin) t.qualByWin=true; }
@@ -33193,11 +33291,11 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       const place=i+1;
       let elims=t._elims + (landingBonusElims.get(t)||0);
       if(squadKillDampen) elims=Math.max(0, Math.round(elims*squadKillDampen));
-      const gamePts=pointsFn(place)+elims*killMult;
+      const gamePts=pointsFn(place)+ccKillPts(elims, killMult);
       t[ptsKey]+=gamePts; t[elimsKey]+=elims;
       const landingOutcome = (landingWins.has(t) || landingBonusElims.has(t)) ? 'won'
                            : ((dropOnMap ? t._droppedOut : eliminatedSet.has(t)) ? 'lost' : null);
-      t[logKey].push({game:g+1, place, elims, pts:gamePts, elimPts:elims*killMult, label:thresholdLabel(place), feed:t._feed, landingOutcome});
+      t[logKey].push({game:g+1, place, elims, pts:gamePts, elimPts:ccKillPts(elims, killMult), label:thresholdLabel(place), feed:t._feed, landingOutcome});
       // As above: a win is a qualification only where it ends the stage.
       if(place===1){ t.gotVR=true; t.wins++; if(opts.stopOnWin) t.qualByWin=true; }
     });
@@ -33544,11 +33642,11 @@ function simulateGames(teams, numGames, pointsFn, killMult){
     order.forEach((t,i)=>{
       const place=i+1;
       const elims=t._elims;
-      const gamePts=pointsFn(place)+elims*killMult;
+      const gamePts=pointsFn(place)+ccKillPts(elims, killMult);
       t.stagePts+=gamePts; t.stageElims+=elims;
-      t.stageLog.push({game:g+1, place, elims, pts:gamePts, elimPts:elims*killMult, label:thresholdLabel(place), feed:t._feed});
+      t.stageLog.push({game:g+1, place, elims, pts:gamePts, elimPts:ccKillPts(elims, killMult), label:thresholdLabel(place), feed:t._feed});
       if(place===1){ t.gotVR=true; t.wins++; }
-      accumulateMatchStats(t, place, order.length, pointsFn(place), elims*killMult);
+      accumulateMatchStats(t, place, order.length, pointsFn(place), ccKillPts(elims, killMult));
     });
   }
 }
@@ -33565,13 +33663,13 @@ function simulateGamesStopOnWin(teams, numGames, pointsFn, killMult){
     order.forEach((t,i)=>{
       const place=i+1;
       const elims=t._elims;
-      const gamePts=pointsFn(place)+elims*killMult;
+      const gamePts=pointsFn(place)+ccKillPts(elims, killMult);
       t.stagePts+=gamePts; t.stageElims+=elims;
-      t.stageLog.push({game:g+1, place, elims, pts:gamePts, elimPts:elims*killMult, label:thresholdLabel(place), feed:t._feed});
+      t.stageLog.push({game:g+1, place, elims, pts:gamePts, elimPts:ccKillPts(elims, killMult), label:thresholdLabel(place), feed:t._feed});
       // A win here is the qualification, so it also fixes this squad's place in
       // the next stage's pick queue — see byQualOrder.
       if(place===1){ t.gotVR=true; t.qualByWin=true; t.wins++; }
-      accumulateMatchStats(t, place, order.length, pointsFn(place), elims*killMult);
+      accumulateMatchStats(t, place, order.length, pointsFn(place), ccKillPts(elims, killMult));
     });
   }
 }
@@ -33610,11 +33708,11 @@ async function simulateGamesRandomLobbies(teams, numGames, lobbySize, pointsFn, 
         order.forEach((t,idx)=>{
           const place=idx+1;
           const elims=t._elims;
-          const gamePts=pointsFn(place)+elims*killMult;
+          const gamePts=pointsFn(place)+ccKillPts(elims, killMult);
           t.stagePts+=gamePts; t.stageElims+=elims;
-          t.stageLog.push({game:g+1, place, elims, pts:gamePts, elimPts:elims*killMult, label:thresholdLabel(place), feed:t._feed});
+          t.stageLog.push({game:g+1, place, elims, pts:gamePts, elimPts:ccKillPts(elims, killMult), label:thresholdLabel(place), feed:t._feed});
           if(place===1){ t.gotVR=true; t.wins++; }
-          accumulateMatchStats(t, place, order.length, pointsFn(place), elims*killMult);
+          accumulateMatchStats(t, place, order.length, pointsFn(place), ccKillPts(elims, killMult));
         });
       }
       // Time, not a game count: a fast machine gets through the stage in a few
@@ -38822,6 +38920,25 @@ function ccRookieAttrs(rating, roleKey){
   return a;
 }
 
+/* The player's own six, from the card they are actually playing.
+
+   A built player carries them in the save from the day they were made. A taken
+   card does not: its shape is the roster's, derived by attrsFor from the real
+   standings and scaled onto whatever the career is rated today. So the first
+   time one trains, the shape is copied out of the card and becomes theirs —
+   which is what training a real player ought to mean anyway. From that day the
+   six are the career's own rather than a record of somebody's season. */
+function ccOwnAttrs(){
+  const pl=CAREER.player;
+  const c=careerCard(), a=c?attrsFor(c):null;
+  if(!a) return ccRookieAttrs(Math.round(pl.ovr), pl.role);
+  const out={};
+  ATTR_KEYS.forEach(k=>{ out[k]=a[k]; });
+  out.ovr=Math.round(ATTR_KEYS.reduce((s,k)=>s+out[k]*ATTR_W[k],0));
+  out.roleKey=a.roleKey; out.bestAttr=a.bestAttr;
+  return out;
+}
+
 // flagImg keys on the roster's Russian country names. Our map keys on ISO codes,
 // and a dozen of them — Montenegro, Iceland, Azerbaijan — never appear in the
 // roster, so they have no name to look up. Fill the gaps once, using the map's
@@ -39209,7 +39326,10 @@ function ccStart(){
     // usual assignment at the first cup.
     partner:(()=>{
       const mate=card ? ccRealMateOf(card) : null;
-      return mate ? {handle:mate.handle, cardRegion:mate.region, patience:CAREER_PATIENCE_START} : null;
+      // A taken card arrives with the duo it really plays in, and that duo has
+      // been one for a while: it starts on a season of chemistry rather than none.
+      return mate ? {handle:mate.handle, cardRegion:mate.region, patience:CAREER_PATIENCE_START,
+                     since:ccAddDays(careerStartDay(), -CC_CHEM_DAYS)} : null;
     })()
   };
   /* The jersey comes with the card.
@@ -39383,7 +39503,7 @@ function ccNextShape(next){
     const st=ev && CC_RELOAD_STAGE[ev.stage];
     if(!st) return cup;
     return ev.stage==='open'
-      ? {games:st.games, cut:CC_OPEN_ADVANCE, of:CC_LADDER_TRUE}
+      ? {games:st.games, cut:ccOpenAdvance(), of:CC_LADDER_TRUE}
       : {games:st.games, cut:st.cut, of:st.field};
   }
   if(k==='major')   return stage(CC_MAJOR_STAGE, careerMajorOn(careerToday()));
@@ -39452,6 +39572,10 @@ function careerCard(){
     // a cached set ignores the _targetOvr set below — which is how the hub and
     // the card printed 92 for a 96 career, and stayed at 92 while it grew.
     if(base){ delete base._attrs; delete base._ovr; }
+    // Unless the career has trained: once a real card has six numbers of its
+    // own they are the card, because they are what the player has been working
+    // on. Before that it reads the roster, which is where a taken card starts.
+    if(base && pl.attrs) base._attrs={...pl.attrs, _floored:false};
   }
   if(!base){
     base={ handle:pl.nick, nat:CC_NAT_BY_CODE[pl.country]||pl.nat||null,
@@ -39498,6 +39622,9 @@ function careerCard(){
 
 function openCareerHub(){
   if(!careerLoad()){ openCareerCreate(); return; }
+  // A career whose seat is empty finds the offers already in the inbox rather
+  // than tomorrow — including a brand new one, which is the whole point.
+  careerSeatTopUp();
   show('screen-career-hub');
   careerRenderHub('centre');
 }
@@ -39807,11 +39934,12 @@ function careerCentreHTML(card, a){
     : playable
       ? `<button class="ch-play" onclick="careerPlay()">${L().chPlay}</button>`
       : `<button class="ch-play" onclick="careerSkipWeek()" title="${esc(
-            next.type==='reload' ? L().ccRelLocked
+            careerNoMate(next.type) ? L().ccNoMate
+          : next.type==='reload' ? L().ccRelLocked
           : next.type==='final'  ? L().ccWfLocked
           : next.type==='major'  ? ccMajWhyLocked()
           : next.type==='summit' ? L().ccSumLocked
-          : next.type==='globals'? L().ccGlobLocked
+          : next.type==='globals'? L().ccGlobLocked(ccLanCity('globals'))
           : next.type==='gc'     ? (careerGclcOn(careerToday()) ? L().ccGcLocked : L().ccRcLocked)
                                  : L().chSoonHint)}">${L().chSkip}</button>`;
   const mate = careerPartnerCard();
@@ -39830,7 +39958,8 @@ function careerCentreHTML(card, a){
       ${cr.seasonOver ? '' : careerInterviewHTML()}
       ${(!cr.seasonOver && (next.type==='free' || !playable))
         ? careerDayPanelHTML(next.type==='free' ? null : {label:next.label||next.title, why:
-            next.type==='reload' ? L().ccRelLocked
+            careerNoMate(next.type) ? L().ccNoMate
+          : next.type==='reload' ? L().ccRelLocked
           : next.type==='final'  ? L().ccWfLocked
           : next.type==='major'  ? ccMajWhyLocked()
           : next.type==='gc'     ? (careerGclcOn(careerToday()) ? L().ccGcLocked : L().ccRcLocked)
@@ -39906,6 +40035,11 @@ function careerCentreHTML(card, a){
                  (()=>{ const a=ccAgeOf(mate.handle);
                    return a ? `<div class="ch-row"><em>${L().ccAge}</em><b>${L().ccYearsOld(a)}</b></div>` : ''; })()+
                  `<div class="ch-row"><em>${L().ccMood}</em><b>${L()[careerMoodKey(careerPatience())]}</b></div>`+
+                 // How long the two of you have been the two of you, and what it
+                 // is worth in the lobby. A pair is not two ratings — see
+                 // careerChem.
+                 `<div class="ch-row"><em>${L().ccChem}</em><b class="${careerChem()>0?'ch-goal-met':''}">+${
+                    careerChem()} · ${L().ccChemDays(careerChemDays())}</b></div>`+
                  // What the seat is worth to your own growth, in the words the
                  // day panel uses for everything else: a number you can act on.
                  (()=>{ const f=careerMateFactor(CAREER.player.ovrExact!=null?CAREER.player.ovrExact:CAREER.player.ovr);
@@ -40237,7 +40371,14 @@ const CC_ENERGY_NIGHT=12, CC_ENERGY_REST=45;
 
    Six sessions now, one per attribute, half a point each. That is a number a
    player can hold in their head and plan with, and the card has six bars, so the
-   screen already says what the six buttons are for. Gear and the coach still
+   screen already says what the six buttons are for.
+
+   Each one is named after the thing a player actually does for that attribute,
+   his list of 17 August: KovaaK's for aim, Noble's endgames for the endgame,
+   ranked for survival, replays for experience, 1v1s for clutch. Consistency is
+   the one he had no name for, and it keeps the gym and the routine: consistency
+   is points per match, which is not a mechanic but the absence of a bad night —
+   the same warm-up, the same sleep, the same evening every evening. Gear and the coach still
    multiply it and the taper still slows the last stretch, which is what stops a
    career finishing its ceiling inside a season.
 
@@ -40259,8 +40400,24 @@ const CC_ENERGY_NIGHT=12, CC_ENERGY_REST=45;
    So the structure is his and the value is the measured one: pick a stat, and
    the session is worth half a point of rating in it, which is 2.27 of aim or 5
    of experience. tools/check-career-day-value.js holds that invariant. */
+/* His number, said again on 17 August and meant literally: half a point of the
+   ATTRIBUTE. "0.5 к характеристикам, к AIM например."
+
+   It was read as half a point of rating the first time — 2.27 of aim, 5.00 of
+   experience — and the argument for that reading was the ceiling: training
+   stopped four points above the division's band, the band was four points wide,
+   and at 0.11 of a rating a day it would have taken ninety sessions to cross a
+   room the career leaves in a fortnight. That argument died with the ceiling, on
+   his call the same morning: there is nothing to cross now, only a scale that
+   runs to 99, and a career has years to walk up it.
+
+   So a session is +0.5 on the stat it trains, and what that is worth in rating
+   is the stat's own weight: 0.11 on aim, 0.10 on endgame and survival, 0.08 on
+   consistency, 0.06 on clutch, 0.05 on experience. A day is a day rather than a
+   number to farm, and the shape of a card is a season of choices instead of a
+   fortnight of them. tools/check-career-day-value.js holds the invariant. */
 const CC_TRAIN_DAY=0.5;
-const ccStep=k=>Math.round(CC_TRAIN_DAY/ATTR_W[k]*100)/100;
+const ccStep=k=>CC_TRAIN_DAY;
 const CC_DAY_ACTS=[
   {id:'trAim', energy:30, gain:{aim:ccStep('aim')}},
   {id:'trSur', energy:30, gain:{sur:ccStep('sur')}},
@@ -40389,6 +40546,29 @@ function careerDayDone(){
   const cr=CAREER.career;
   return ((cr.did||{})[careerToday()]||[]).length>0;
 }
+/* What actually stops a day, which is the store and not the calendar.
+
+   His question, 17 August: a day carries a hundred energy and a session costs
+   thirty, so what is the rest of it for. It was for nothing — one thing a day
+   was the rule, the other seventy sat there, and a store that cannot be spent is
+   a number on a ring.
+
+   So the six sessions are an hour each and you take as many as you can pay for:
+   two aim sessions in a day is a day spent on aim, and the day after it you have
+   forty energy and a decision to make. The arithmetic that paces a career does
+   not move, because it never was the day — it is the income: twelve a night and
+   forty-five for a day given to rest. Burning a hundred in one evening buys the
+   same fortnight it always did, in a different shape.
+
+   Three things still take the whole day, because they are not an hour: a scrim
+   is somebody else's evening, a stream is the one that pays instead of trains,
+   and rest is the night itself — without that, resting three times in a day
+   would print energy. A day that arrives with something on it is the same. */
+const CC_DAY_WHOLE={scrim:1, stream:1, rest:1};
+function careerDayClosed(){
+  const list=((CAREER.career.did||{})[careerToday()]||[]);
+  return list.some(id=>CC_DAY_WHOLE[id] || String(id).indexOf('ev:')===0);
+}
 
 /* Doing one.
 
@@ -40404,8 +40584,9 @@ function careerDayGear(){ return 1 + ((CAREER.gear && CAREER.gear.train) || 0) +
 function careerDoAct(id){
   const act=ccActById(id); if(!act) return null;
   const cr=CAREER.career, pl=CAREER.player;
-  // One thing a day, and only what the store can pay for.
-  if(careerDayDone()) return null;
+  // The store is what says how much of a day there is, and the three things
+  // that take all of it say when there is none left. See careerDayClosed.
+  if(careerDayClosed()) return null;
   if(careerEnergy()<act.energy) return null;
   careerSpend(act.energy);
   if(act.rest) careerRestore(act.rest);
@@ -40438,7 +40619,14 @@ function careerDoAct(id){
   // in the shape of the card and not only in how fast it grows.
   const coach=ccCoach();
   const moved={};
-  if(pl.attrs){
+  // A career with no six numbers of its own spent every training day on nothing:
+  // the block below was skipped, the energy was gone and neither an attribute nor
+  // the rating moved, silently, for as long as the save lasted. That is an old
+  // save, and it is every career played as a real card — their shape lives on the
+  // roster. Both get their own copy the first time they train, taken from the
+  // card they are actually playing, so the day is always worth something.
+  if(!pl.attrs) pl.attrs=ccOwnAttrs();
+  {
     Object.keys(act.gain||{}).forEach(k=>{
       const by=act.gain[k]*mult*versus*(coach && coach.keys.indexOf(k)>=0 ? 1+coach.train : 1);
       pl.attrs[k]=clamp((pl.attrs[k]||50)+by, 35, 99);
@@ -40450,6 +40638,11 @@ function careerDoAct(id){
       // above its room's band keeps what it won, it just stops learning there.
       pl.ovrExact=clamp(Math.max(now, Math.min(raw, careerTrainCap())), 40, 99);
       pl.ovr=Math.round(pl.ovrExact);
+      // And the six carry their own rating, because the card reads it: attrsFor
+      // lifts a card onto _targetOvr starting from the ovr stored beside the
+      // attributes, and a stale one there is a first shift of thirty points that
+      // clamps every high attribute at 99 and flattens the shape for good.
+      pl.attrs.ovr=Math.round(raw);
     }
   }
   // Everything tires except the thing that is for not tiring.
@@ -40656,8 +40849,12 @@ function careerAdvanceTo(iso){
   // same clock.
   careerOrgDays(cr.day, to);
   careerDmDays(cr.day, to);
+  // And the seat, if it is empty, hears from somebody who is free.
+  careerSeatDms(cr.day, to);
   // And a brand that has decided the audience is now worth a slot.
   careerSponsorDm();
+  // And somebody who would like to do the talking with the clubs.
+  careerAgentDm();
   if(iso>CC_YEAR_TO){ cr.seasonOver=true; cr.day=CC_YEAR_TO; }
   else cr.day=iso;
   // A month that has ended gets its award, and a year that has ended gets its
@@ -40938,10 +41135,124 @@ function careerYearDays(){
   CC_YEAR_DAYS=out;
   return out;
 }
+/* ---- Where the LAN is, which is not the same place twice ---------------------
+
+   His question, 17 August: do the Summit and the Global Championship happen in
+   different countries in the years after the first. They did not — the career
+   replays the measured 2026 calendar every season, so a player in their eighth
+   year had flown to Düsseldorf and Antwerp eight times each, which is the one
+   thing about a LAN that is never true.
+
+   Nothing about a future year is knowable, so nothing is invented: the pool is
+   the cities that have actually held a Fortnite LAN. New York for the 2019 World
+   Cup, Raleigh for the 2022 Invitational, Copenhagen 2023, Fort Worth 2024, Lyon
+   2025, Düsseldorf and Antwerp in 2026, Paris for the Reload Championship, and
+   Riyadh, where the Esports World Cup takes the circuit. Nine real rooms.
+
+   The first year is the measured one and does not move. Every year after it
+   draws three of the nine, seeded off the season so a save reads the same twice,
+   and never repeats the city that held the same event the year before — which is
+   the whole of what he asked for. */
+/* The first nine are the rooms this game has really been played in — New York
+   2019, Raleigh 2022, Copenhagen 2023, Fort Worth 2024, Lyon 2025, Düsseldorf
+   and Antwerp 2026, Paris for the Reload Championship, Riyadh for the Esports
+   World Cup. The rest are his, 17 August: a LAN does not have to go back where
+   it has been, and these are cities that hold events of this size. */
+const CC_LAN_HOSTS=[
+  {key:'Dus', nat:'de'}, {key:'Ant', nat:'be'}, {key:'Lyo', nat:'fr'},
+  {key:'Cph', nat:'dk'}, {key:'Ftw', nat:'us'}, {key:'Rdu', nat:'us'},
+  {key:'Par', nat:'fr'}, {key:'Ryd', nat:'sa'}, {key:'Nyc', nat:'us'},
+  {key:'Tok', nat:'jp'}, {key:'Bel', nat:'rs'}, {key:'Kat', nat:'pl'},
+  {key:'Sto', nat:'se'}, {key:'Mad', nat:'es'}, {key:'Ams', nat:'nl'},
+  {key:'Sao', nat:'br'}, {key:'Seo', nat:'kr'}, {key:'Tor', nat:'ca'},
+  {key:'Syd', nat:'au'}, {key:'Mex', nat:'mx'}, {key:'Dub', nat:'ae'},
+  {key:'Ist', nat:'tr'}, {key:'Mil', nat:'it'}, {key:'Lon', nat:'gb'},
+  {key:'Sin', nat:'sg'}
+];
+// How far back a country is remembered. One year was the rule when there were
+// six of them and it was all six could carry; twenty-one hold two comfortably,
+// so a career does not see the same flag twice in three seasons.
+const CC_LAN_LOOKBACK=2;
+const CC_LAN_FIRST={summit:'Dus', globals:'Ant', rc:'Par'};
+// The countries there are, in the order the roster lists their cities.
+function ccLanNats(){
+  const out=[];
+  CC_LAN_HOSTS.forEach(h=>{ if(out.indexOf(h.nat)<0) out.push(h.nat); });
+  return out;
+}
+function ccLanShuffle(list, rnd){
+  const pool=list.slice();
+  for(let i=pool.length-1;i>0;i--){
+    const j=Math.floor(rnd()*(i+1));
+    const t=pool[i]; pool[i]=pool[j]; pool[j]=t;
+  }
+  return pool;
+}
+/* A year is settled as a year, and settled on countries.
+
+   His rule, said again after the first version shipped: a new country every
+   year, not merely a new city — Lyon after Paris is still France, and going
+   back to Germany the season after Düsseldorf is going back to Germany.
+
+   So the draw picks three of the six countries the nine rooms sit in, none of
+   which held anything last year, and then a city inside each. Six countries and
+   three events a year means the two halves alternate, which is what nine real
+   rooms allow — and the halves do not look alike, because the United States has
+   three of them and France two, so the same country is a different building.
+
+   Memoised, so asking for season twelve does not redraw eleven years every time
+   a label is rendered. */
+const CC_LAN_YEARS={};
+function ccLanFixed(season){
+  const s=Math.max(1, season|0);
+  if(s<=1) return CC_LAN_FIRST;
+  if(CC_LAN_YEARS[s]) return CC_LAN_YEARS[s];
+  const prev=ccLanFixed(s-1);
+  const seats=['summit','globals','rc'];
+  const was=[];
+  for(let back=1; back<=CC_LAN_LOOKBACK && s-back>=1; back++)
+    seats.forEach(k=>was.push(ccLanNat(k, s-back)));
+  const rnd=careerRng(ccHashStr('lan|'+s));
+  const nats=ccLanShuffle(ccLanNats(), rnd);
+  const pick=nats.filter(n=>was.indexOf(n)<0).slice(0, seats.length);
+  // Fewer than three left is not possible with six countries and three seats,
+  // and if a city is ever added or removed it fills up rather than throwing.
+  nats.forEach(n=>{ if(pick.length<seats.length && pick.indexOf(n)<0) pick.push(n); });
+  const out={};
+  seats.forEach(function(kind, i){
+    const inNat=CC_LAN_HOSTS.filter(h=>h.nat===pick[i]).map(h=>h.key);
+    out[kind]=inNat[Math.floor(rnd()*inNat.length)] || prev[kind];
+  });
+  CC_LAN_YEARS[s]=out;
+  return out;
+}
+function ccLanHostKey(kind, season){
+  const s=season || ((CAREER && CAREER.career && CAREER.career.season) || 1);
+  return ccLanFixed(s)[kind] || CC_LAN_FIRST[kind] || CC_LAN_FIRST.summit;
+}
+function ccLanNat(kind, season){
+  const k=ccLanHostKey(kind, season);
+  const h=CC_LAN_HOSTS.find(x=>x.key===k);
+  return h ? h.nat : 'de';
+}
+// The city, in the two shapes a sentence needs it in: named, and travelled to.
+function ccLanCity(kind, season){
+  const k=ccLanHostKey(kind, season);
+  return (L().ccCity && L().ccCity[k]) || k;
+}
+function ccLanCityIn(kind, season){
+  const k=ccLanHostKey(kind, season);
+  return (L().ccCityIn && L().ccCityIn[k]) || ccLanCity(kind, season);
+}
 // What a day of a multi-day block is called. A three-day Heats block wants
 // "Heats 2" rather than three identical rows.
 function ccYearLabel(id, day, from){
-  const base=(L().ccYearNames && L().ccYearNames[id]) || id;
+  let base=(L().ccYearNames && L().ccYearNames[id]) || id;
+  // The two rows that name a city name whichever city it is this year.
+  if(base.indexOf('{CITY}')>=0){
+    const kind = /Reload/.test(id) ? 'rc' : 'globals';
+    base=base.split('{CITY}').join(ccLanCity(kind));
+  }
   if(day===from) return base;
   let n=1;
   for(let d=from; d<day; d=ccAddDays(d,1)) n++;
@@ -41964,69 +42275,73 @@ function careerCupField(cr, mine, size, salt, open){
 /* ---- The partner ----------------------------------------------------------
    The market is not written yet, so one is assigned: somebody of your own band,
    and always a real card off the roster, whatever division the career is in. */
-function careerEnsurePartner(){
-  if(CAREER.partner && (CAREER.partner.card || CAREER.partner.handle)) return;
-  const cr=CAREER.career, me=careerCard();
-  const rnd=careerRng(careerSeed(cr,'partner'));
-  // Who plays with you follows your rating, not your division — the design says
-  // so ("in Division 5 the strong ones say no"), and the arc harness showed what
-  // happens when it does not: a partner pinned to the division band carried a
-  // below-band player, the duo's power read higher than the player was, and the
-  // growth term docked them for underperforming a number their partner earned.
-  // Careers that started at 22 gained a point and a half a season less than
-  // their own development rate. A partner half a rung above you is the most a
-  // good week can talk somebody into.
-  const band=clamp(Math.round(attrsFor(me).ovr)+2, 40, 96);
-  // The partner plays the role you do not. buildTeam pays ROLE_BONUS_STEP for
-  // covering both, and it is worth four points of team power — the calibration
-  // harness ran a duo of two IGLs against a field that was half mixed and it
-  // finished 99th of 150 while rated exactly at the field's own band. A duo
-  // that stacks the same role is not a duo, and the engine already says so.
-  const mineRole = attrsFor(me).roleKey;
-  const want = mineRole==='roleFRG' ? 'roleIGL' : 'roleFRG';
-  // A real card, whatever division the career stands in — the user's rule: a
-  // teammate is offered by rating, from anywhere on the ladder, and never
-  // invented. The roster reaches down to the Reload Opens' 45s, so there is
-  // somebody real at every rating a career can hold. The window widens before
-  // the role requirement gives, because a real name in the wrong role is still
-  // a real name, and the generated fallback exists only for a roster this
-  // code cannot see at all.
-  const mine=new Set([hKey(me)]);
-  // As they stand now - the newest 2026 card, not a peak from another era. And
-  // only where real names belong: below Division 1 the ladder is generated, and
-  // the partner comes off the same ladder the lobby does.
-  const pool=ccRealNamesHere() ? careerRosterNowEU().filter(p=>!mine.has(hKey(p))) : [];
-  const near=[pool.filter(p=>Math.abs(p._ovr-band)<=6  && attrsFor(p).roleKey===want),
-              pool.filter(p=>Math.abs(p._ovr-band)<=12 && attrsFor(p).roleKey===want),
-              pool.filter(p=>Math.abs(p._ovr-band)<=6)].find(t=>t.length)||[];
-  const pick=near.length ? near[Math.floor(rnd()*near.length)] : null;
-  if(pick){
-    CAREER.partner={handle:pick.handle, cardRegion:pick.region, patience:CAREER_PATIENCE_START};
-    careerNews('good', 'ccNewsPartnerNew', [pick.handle, pick._ovr]);
-    careerSave(); return;
-  }
-  /* The same ceiling the inbox holds, and found the same way - by the division
-     sweep, one door over. A 96 career walking Division 5 was handed a generated
-     partner rated 80, which is the invented 99 again with a smaller number on
-     it: the rung decides what the room can hold, whatever the career reads. */
-  const ovr=clamp(Math.round(band+careerGauss(rnd)*CC_BAND_SD), 35, ccDivCeil(cr.division));
-  const card=careerLadderPlayer(rnd, ovr, new Set([hKey(me)]));
-  card._attrs=ccRookieAttrs(ovr, want);
-  CAREER.partner={card, patience:CAREER_PATIENCE_START};
-  careerNews('good', 'ccNewsPartnerNew', [card.handle, ovr]);
-  careerSave();
+/* ---- The other half of the duo ----------------------------------------------
+
+   His pick, 17 August, and the hole it fills: the seat beside a career was a
+   rating that never moved. A player went from 54 to 90 over eight seasons and
+   their partner was the same 84 in the last one as in the first, so the rule
+   about outgrowing each other could only ever fire in one direction and a duo
+   that started level always ended lopsided.
+
+   They play the same nights, so they grow on the same terms: careerDevelopBase
+   at their own age, the same taper against the top of the scale, the same pull
+   from the gap between the two of you — careerMateFactor with the sign the other
+   way round, because a partner beside somebody better learns exactly the way you
+   do — and the same share of the result, since it is the result they both got.
+   An old partner declines, for the same reason an old career does.
+
+   Their age is the roster's where the roster knows it (69 of them do) and the
+   scene's median otherwise, which is measured off the birthdays there are rather
+   than picked. What is stored is the movement, not the rating: the card is still
+   the roster's card, lifted or lowered by what this career did to it. */
+let CC_SCENE_AGE=null;
+function ccSceneAge(){
+  if(CC_SCENE_AGE!=null) return CC_SCENE_AGE;
+  const ages=Object.keys(CC_BORN).map(h=>ccAgeOf(h)).filter(a=>a>0).sort((a,b)=>a-b);
+  CC_SCENE_AGE = ages.length ? ages[Math.floor(ages.length/2)] : 20;
+  return CC_SCENE_AGE;
+}
+function careerMateDev(){ return (CAREER && CAREER.partner && CAREER.partner.dev) || 0; }
+function careerMateGrow(actual, expected){
+  const pr=CAREER && CAREER.partner;
+  if(!pr) return 0;
+  const card=careerPartnerCard();
+  if(!card) return 0;
+  const now=(card._ovr!=null ? card._ovr : (attrsFor(card)||{}).ovr);
+  if(!(now>0)) return 0;
+  const taper=clamp((CAREER_SCALE_TOP-now)/CAREER_TAPER, 0, 1);
+  const base=careerDevelopBase(ccAgeOf(pr.handle) || ccSceneAge());
+  // The gap read from their side of the seat.
+  const gap=(CAREER.player.ovrExact!=null?CAREER.player.ovrExact:CAREER.player.ovr)-now;
+  const pull=clamp(1+(gap>0 ? gap*CC_MATE_UP : gap*CC_MATE_DOWN), CC_MATE_MIN, CC_MATE_MAX);
+  const delta=base*(base>0?taper:1)*pull + (actual-expected)*CAREER_GROWTH_MAX;
+  pr.dev=clamp(careerMateDev()+delta, -40, 40);
+  return delta;
 }
 function careerPartnerCard(){
   const pr=CAREER && CAREER.partner;
   if(!pr) return null;
-  if(pr.card) return pr.card;
+  // What this career has done to them since they took the seat, applied to a
+  // copy: the roster's card is the roster's, and attrsFor lifts the six numbers
+  // onto whatever rating it is handed.
+  const lift=c=>{
+    const dev=careerMateDev();
+    if(!dev || !c) return c;
+    const base=(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr);
+    if(!(base>0)) return c;
+    const to=clamp(Math.round(base+dev), 35, CAREER_SCALE_TOP);
+    const out={...c, _targetOvr:to, rating:to};
+    delete out._attrs; delete out._ovr;
+    return out;
+  };
+  if(pr.card) return lift(pr.card);
   // The newest 2026 card first — a handle used to resolve to whichever card of
   // that person PLAYERS happened to list first, any era — then the whole
   // roster for a legacy save whose partner has no card this year.
   const now=careerRosterNowEU().find(x=>x.handle===pr.handle);
-  if(now) return {...now};
+  if(now) return lift({...now});
   const found=PLAYERS.find(x=>x.handle===pr.handle && x.region===(pr.cardRegion||'EU'));
-  return found ? {...found} : null;
+  return found ? lift({...found}) : null;
 }
 
 /* ---- Growth ---------------------------------------------------------------
@@ -42207,11 +42522,40 @@ function careerFormFade(nights){
   const f=cr.form;
   cr.form = f>0 ? Math.max(0, f-nights*CC_FORM_DECAY) : Math.min(0, f+nights*CC_FORM_DECAY);
 }
-// The player's own team, with the week they are having on it. Every event
-// builds it through here, so form applies once and everywhere.
+/* ---- What a duo is, beyond two ratings --------------------------------------
+
+   His pick, 17 August: chemistry. The draft has had it all along and the career
+   never did — computeSynergy pays SYN_TEAMMATES to a pair the roster records as
+   having actually played together, because a real duo is worth more than the two
+   cards in it. In the career the seat beside you was a rating and nothing else,
+   so leaving a partner for somebody two points better was free and always right.
+
+   It is the same five points, earned rather than granted: a pair is worth
+   nothing on the night it forms and the full SYN_TEAMMATES once it has played a
+   Fortnite season together, which is the length the mode already measures its
+   world in. Straight line between, because there is nothing to curve it with
+   that is not invented.
+
+   And it resets to nothing when the seat changes, which is the whole point: a
+   better card now costs a season of knowing each other. A taken card starts
+   with the duo it really plays in, so that one starts full — those two have
+   been playing together for a year before the career opened. */
+const CC_CHEM_DAYS=91, CC_CHEM_MAX=SYN_TEAMMATES;
+function careerChemDays(){
+  const pr=CAREER && CAREER.partner;
+  if(!pr || !pr.since) return 0;
+  return Math.max(0, ccDaysBetween(pr.since, careerToday()));
+}
+function careerChem(){
+  if(!careerPartnerCard()) return 0;
+  return Math.round(Math.min(1, careerChemDays()/CC_CHEM_DAYS)*CC_CHEM_MAX*10)/10;
+}
+// The player's own team, with the week they are having on it and the time they
+// have had together. Every event builds it through here, so both apply once and
+// everywhere.
 function careerYouTeam(cards){
   const t=careerTeam(cards);
-  t.pow=Math.round(t.pow+careerForm());
+  t.pow=Math.round(t.pow+careerForm()+careerChem());
   return t;
 }
 const CAREER_TAPER=10;
@@ -42272,6 +42616,8 @@ function careerApplyGrowth(place, total, you, field){
   const after = clamp(before+delta, 40, 99);
   pl.ovrExact = after;
   pl.ovr = Math.round(after);
+  // The seat beside them played the same night and grows on the same terms.
+  careerMateGrow(actual, expected);
   /* A result pays into all six, rather than rebuilding them.
 
      His design, 17 August: train one stat at a time, and let the tournaments pay
@@ -42284,11 +42630,16 @@ function careerApplyGrowth(place, total, you, field){
      rating by exactly that delta: the growth calibration is untouched, and what
      survives is the difference between an aim player and an endurance player,
      which is the only reason to choose a session at all. */
-  if(!pl.handle){
+  // A taken card that has never trained has no six of its own and keeps reading
+  // the roster's, so this only runs where there is something to pay into.
+  if(!pl.handle || pl.attrs){
     if(!pl.attrs) pl.attrs=ccRookieAttrs(pl.ovr, pl.role);
     ATTR_KEYS.forEach(k=>{ pl.attrs[k]=clamp((pl.attrs[k]||50)+delta, 35, 99); });
     pl.ovrExact=clamp(ATTR_KEYS.reduce((s,k)=>s+pl.attrs[k]*ATTR_W[k], 0), 40, 99);
     pl.ovr=Math.round(pl.ovrExact);
+    // The rating the six add up to, kept beside them: attrsFor starts its lift
+    // from this number, and a stale one flattens the card. See careerDoAct.
+    pl.attrs.ovr=Math.round(pl.ovrExact);
   }
   return {delta, develop, before, after, expected, actual, taper};
 }
@@ -42552,7 +42903,10 @@ function careerOrgOffers(){
   // there until its own deadline; this only stops new ones arriving.
   if(!careerWindowNow()) return CAREER.offers||[];
   const rnd=careerRng(careerSeed(cr,'org'));
-  const eligible=careerOrgPool().filter(o=>pl.ovr>=o.tier-CAREER_ORG_REACH);
+  // Somebody whose job it is gets you looked at by clubs that would not have
+  // looked. See careerAgent.
+  const reach=CAREER_ORG_REACH+(careerAgent()?CC_AGENT_REACH:0);
+  const eligible=careerOrgPool().filter(o=>pl.ovr>=o.tier-reach);
   if(!eligible.length) return [];
   // The best three that will have you, with a little noise so two careers at the
   // same rating do not get the same three names.
@@ -42564,7 +42918,9 @@ function careerOrgOffers(){
     // between what the club is and what the player is decides which roster the
     // offer is for: reaching well above yourself gets you the junior side.
     const academy = o.tier - pl.ovr >= 4;
-    const wage = careerOrgSalary(o.tier, cr.division, cr.reach);
+    // And asks for more than the player would have been offered cold.
+    const wage = Math.round(careerOrgSalary(o.tier, cr.division, cr.reach)*
+                            (careerAgent()?CC_AGENT_WAGE:1));
     return {
       name:o.name, tier:o.tier, academy:academy,
       // An academy deal pays the bottom of the band. It is a place to be seen,
@@ -42720,7 +43076,16 @@ function careerPayWages(fromISO, toISO){
 
      So it pays per stream now, in careerDoAct, and this day is the club and the
      rent alone. */
-  if(paid) CAREER.career.balance=(CAREER.career.balance||0)+paid;
+  if(paid){
+    // The agent's share of a month's wage, taken the way it is taken off a
+    // prize: the club paid what the club paid, and the cut is a line of its own.
+    const cut=careerAgent() ? Math.round(paid*CC_AGENT_CUT) : 0;
+    if(cut){
+      CAREER.career.agentPaid=(CAREER.career.agentPaid||0)+cut;
+      careerNews('flat', 'ccNewsAgentCut', [cut.toLocaleString('en-US')]);
+    }
+    CAREER.career.balance=(CAREER.career.balance||0)+(paid-cut);
+  }
   /* And what the month costs. A career that has moved pays the rent of the
      country it moved to on the same day the wages land, so the first of the
      month is one row and not two — money in, money out, one balance.
@@ -42830,6 +43195,86 @@ function ccSponsorOffer(){
    ever been sponsored by a tile. They write, they say what they want on the
    stream and what the slot pays, and it sits in the inbox with the clubs, which
    is where offers live. */
+/* ---- The agent --------------------------------------------------------------
+
+   His pick, 17 August. Everything a career earns it earns by winning it, and
+   everything a club offers it offers cold: nobody in this mode ever worked on
+   the player's behalf, which is not how the scene works and is the one job in it
+   that pays for itself.
+
+   Ten per cent, which is the bottom of the real range — agencies in this scene
+   take ten to twenty — and it comes off the money as it lands rather than off
+   the winnings: what you won stays what you won on the board and in the log, and
+   the cut is an expense with a line of its own, the way the rent is.
+
+   What it buys is the thing a player cannot do from inside their own career:
+   being spoken for. Clubs look three points further down than they otherwise
+   would (CAREER_ORG_REACH plus CC_AGENT_REACH — a 71 is looked at by clubs that
+   sign 80s), and what they put on the table is a fifth better, because somebody
+   whose job it is asked for more. Neither of those is a number the player could
+   move by playing.
+
+   It is signed and ended in the inbox, where every other deal in this mode is.
+   Ending it is free and immediate: an agent nobody wants is not a contract, it
+   is a relationship. */
+const CC_AGENT_CUT=0.1, CC_AGENT_REACH=3, CC_AGENT_WAGE=1.2, CC_AGENT_FROM=68;
+function careerAgent(){ return (CAREER && CAREER.agent) || null; }
+// Who writes. Real agencies represent this scene, and naming one would be
+// putting words in a real company's mouth, so it is a person the way the
+// ladder's own people are: the generator this mode already has.
+function ccAgentName(){
+  const rnd=careerRng(ccHashStr('agent|'+(CAREER.career.season||1)));
+  return careerLadderPlayer(rnd, 60, new Set()).handle;
+}
+function careerAgentDm(){
+  if(careerAgent()) return null;
+  const ovr=CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr;
+  // Nobody represents a career nobody is looking at. The line is the one the
+  // clubs already use for looking at all — see careerOrgOffers.
+  if(ovr<CC_AGENT_FROM) return null;
+  const have=careerDms().find(t=>t.who && t.who.agent);
+  if(have) return have;
+  const name=ccAgentName();
+  const t=careerDmThread({handle:name, ovr:null, role:'roleIGL', roster:false,
+                          org:true, agent:true});
+  t.state='agent';
+  careerDmPush(t, 'them', 'dmAgent', [Math.round(CC_AGENT_CUT*100), CC_AGENT_REACH]);
+  careerSave();
+  return t;
+}
+function careerSignAgentFromDm(id){
+  const t=careerDms().find(x=>x.id===id);
+  if(!t || !t.who || !t.who.agent || careerAgent()) return;
+  CAREER.agent={name:t.who.handle, cut:CC_AGENT_CUT, since:careerToday()};
+  t.state='agentOn';
+  careerDmPush(t, 'them', 'dmAgentYes');
+  careerNews('good', 'ccNewsAgent', [t.who.handle]);
+  careerSave();
+  careerRenderHub('social');
+}
+function careerEndAgentFromDm(id){
+  const t=careerDms().find(x=>x.id===id);
+  if(!t || !careerAgent()) return;
+  CAREER.agent=null;
+  t.state='agentOff';
+  careerDmPush(t, 'you', 'dmAgentEnd');
+  careerSave();
+  careerRenderHub('social');
+}
+// What lands in the hand, and what the agent takes out of it on the way. The
+// winnings are untouched: a board of prize money is a board of prize money.
+function ccPayIn(mine){
+  const cr=CAREER.career;
+  if(!(mine>0)) return 0;
+  cr.earnings=(cr.earnings||0)+mine;
+  const cut=careerAgent() ? Math.round(mine*CC_AGENT_CUT) : 0;
+  if(cut){
+    cr.agentPaid=(cr.agentPaid||0)+cut;
+    careerNews('flat', 'ccNewsAgentCut', [cut.toLocaleString('en-US')]);
+  }
+  cr.balance=(cr.balance||0)+(mine-cut);
+  return mine-cut;
+}
 function careerSponsorDm(){
   const offer=ccSponsorOffer();
   if(!offer) return null;
@@ -43184,6 +43629,12 @@ const CC_POST_BY={
   // reports titles, the table and who moved clubs — not that somebody finished
   // 103rd of 150, which is what it was doing and what a real one never does.
   ccNewsResult:'you', ccNewsResultWeek:'you',
+  // LFD is the player saying it out loud. Nobody else posts that for you.
+  ccNewsLfd:'you',
+  // And so is an injury: a wrist is the player's own week, not a transfer the
+  // scene reports. The room finds out because they said so.
+  // Who represents you and what they took: the player's own week again.
+  ccNewsAgent:'you', ccNewsAgentCut:'you',
   ccNewsPromoted:'press', ccNewsWinner:'press',
   // The Performance Evaluation is a Division 1 night, so the press gate let
   // these through — but what they say is where the player finished, and a
@@ -43929,7 +44380,7 @@ function careerDmPool(){
   // first: no standing pair, then pairs whose season has soured, then the rest
   // — writable, but they will say who they already play with.
   const seatRank=p=>{ const m=ccRealMateOf(p);
-    return !m ? 0 : careerDmBadSeason({handle:p.handle}) ? 1 : 2; };
+    return !m ? 0 : careerDuoBeatsYou({handle:p.handle}) ? 2 : 1; };
   near.sort((a,b)=>seatRank(a)-seatRank(b));
   /* Two seats held for the best people in the window, whatever their seat.
 
@@ -44036,12 +44487,26 @@ function careerDmMateOf(who){
   const card=careerRosterNowEU().find(p=>hKey(p)===hKey(who.handle));
   return card ? ccRealMateOf(card) : null;
 }
-function careerDmBadSeason(who){
-  const rows=careerTableRows();
-  if(rows.length<10) return false;
-  const k=hKey(who.handle);
-  const i=rows.findIndex(r=>String(r.name||'').split(/\s*[+&]\s*/).some(h=>hKey(h)===k));
-  return i>=0 && i+1>rows.length*2/3;
+/* Whether the duo somebody is already in is better than the one you are
+   offering — which is the whole of the question, from their side.
+
+   His rule, 17 August: a player looks at results, or at the rating when there
+   are no results to look at, and if the pair they are in is going better than
+   you are there is nothing for them to think about.
+
+   The old answer was the bottom third of the season table, which said a duo in
+   eleventh place is unhappy and one in tenth is not, whoever happened to be
+   asking. It never compared the two things a person actually compares. This
+   does: their table place against yours where a table exists, and their
+   partner's rating against yours where it does not. With neither, the seat
+   stays where it is — a standing duo is not for sale to a stranger. */
+function careerDuoBeatsYou(who){
+  const theirs=ccDuoForm(who.handle);
+  const mine=careerTablePlace();
+  if(theirs && mine) return theirs.place < mine;
+  const mate=careerDmMateOf(who);
+  const his=mate ? (mate._ovr!=null ? mate._ovr : (attrsFor(mate)||{}).ovr) : null;
+  return isFinite(his) ? his>=CAREER.player.ovr : true;
 }
 // Would they play with you. The seat first: a player standing in a real duo
 // does not leave it for a stranger with a better number — the user's rule —
@@ -44571,8 +45036,155 @@ function careerDmInbound(place, total, passed, from){
   if(!line) return;
   const t=careerDmFind(pick.handle) || careerDmThread(pick);
   careerDmPush(t, 'them', line[0], line[1]);
-  if(reachUp) t.state='offer';
+  // An offer is an offer whoever sent it. Somebody free writing to an empty seat
+  // has already answered the only question the button asks, and making them
+  // wait for you to write back and then for them to think it over is asking it
+  // twice — see careerSeatDm.
+  if(reachUp || (!CAREER.partner && !careerDmMateOf(pick))) t.state='offer';
   careerSave();
+}
+
+/* ---- The empty seat ---------------------------------------------------------
+
+   Nobody wrote to a career that had not played yet: every line in the inbox
+   above is tied to a result, so a career starting on a Tuesday with a cup on
+   Saturday had exactly one way to fill its seat — write to somebody, wait a day
+   for the answer, and hope it was yes. That was survivable while the game
+   quietly seated a partner the first time Play was pressed. It is not, now that
+   an empty seat is a tournament you cannot enter (careerNoMate).
+
+   So the people who are already free write first, and what they write is the
+   offer: one press under the message and they are in the seat.
+
+   The same door guards it as guards writing first. Only somebody with no duo of
+   their own, and only somebody who would have said yes anyway — careerDmMargin
+   is not asked twice and nobody above your reach is handed to you. Among the
+   ones who would come, the one who plays the half you do not comes first:
+   buildTeam pays four points of team power for covering both roles, and the
+   calibration harness put a duo of two IGLs 99th of 150 while rated at the
+   field's own band.
+
+   Three stand open at once and one arrives a day, so the seat is never a dead
+   end and never a menu of the whole division either. */
+const CC_SEAT_DMS=3;
+/* ---- Saying it out loud -----------------------------------------------------
+
+   His idea, 17 August: post LFD. The seat is a thing this scene announces — the
+   feed already carries duos forming and splitting — and a career with an empty
+   one had no way to say so except writing to people one at a time.
+
+   A post is not a message, and what it buys is the difference between the two:
+   somebody a couple of points above you would not answer a cold DM, and reads a
+   post anyway. So while it stands, the line careerDmMargin draws moves by three
+   — the same three CAREER_DM_REACH is worth, so the post is worth exactly one
+   reach of persuasion and no more. It cannot be spammed into a partner: it holds
+   for a week, and nothing else about it is free either, because the people it
+   brings are the people who were nearly saying yes already.
+
+   Only with the seat empty, because that is what the post says. */
+const CC_LFD_DAYS=7, CC_LFD_REACH=CAREER_DM_REACH;
+function careerLfdUntil(){
+  const d=CAREER && CAREER.career && CAREER.career.lfd;
+  return d ? ccAddDays(d, CC_LFD_DAYS) : null;
+}
+function careerLfdOn(){
+  const u=careerLfdUntil();
+  return !!u && u>=careerToday() && !careerPartnerCard();
+}
+function careerLfdPost(){
+  if(!CAREER || careerPartnerCard() || careerLfdOn()) return;
+  const cr=CAREER.career;
+  cr.lfd=careerToday();
+  careerNews('good', 'ccNewsLfd', [cr.division, CAREER.player.ovr]);
+  // Somebody is reading it the same evening.
+  careerSeatDm('lfd|'+careerToday());
+  careerSave();
+  careerRenderHub('social');
+}
+function careerSeatDmOpen(){
+  return careerDms().filter(t=>t.state==='offer' && !t.who.org && !t.who.brand).length;
+}
+function careerSeatDm(tag){
+  if(!CAREER || !CAREER.career || careerPartnerCard()) return false;
+  // A post that stands brings more people in than a quiet week does — otherwise
+  // a career already holding three hellos gets nothing at all for posting.
+  const lfd=careerLfdOn();
+  if(careerSeatDmOpen() >= (lfd ? CC_SEAT_DMS+2 : CC_SEAT_DMS)) return false;
+  /* Who would come, which careerDmMargin already answers: somebody standing in
+     a duo whose season is going fine is -99 and never appears here, so "would
+     accept" is the same thing as "is available" and asking both would be asking
+     twice. It matters most in Division 1, where 887 of the 901 people on the
+     roster are in a recorded pair — filter to free agents there and a career
+     that lost its partner hears from nobody at all, which is the one thing this
+     must never do now that an empty seat cannot enter a tournament. */
+  // And the post moves that line by one reach while it stands.
+  const line=lfd ? -CC_LFD_REACH : 0;
+  const rnd=careerRng(ccHashStr('seat|'+CAREER.career.season+'|'+tag));
+  /* Somebody the rung does not hold, reading a post.
+
+     Below Division 1 the week's list is generated and capped at the band of the
+     division above — his rule, and the reason a post changed nothing there when
+     it only moved the acceptance line: everybody in the list was already under
+     it, so the button did nothing at all. Measured over twenty careers at 66 in
+     Division 4: not one offer above the reach, posted or quiet.
+
+     A post is read outside your rung, so it draws its own reader — one reach
+     above what the list can hold, never further, and never past the ceiling
+     nothing generated may cross. That is the whole of what it buys. */
+  if(lfd && !ccRealNamesHere() && rnd()<0.5){
+    const div=CAREER.career.division;
+    const top=Math.min(CC_GEN_TOP, ccDivCeil(div)+CC_LFD_REACH);
+    const ovr=clamp(Math.round(CAREER.player.ovr+CAREER_DM_REACH+1+rnd()*CC_LFD_REACH), 35, top);
+    if(ovr>CAREER.player.ovr+CAREER_DM_REACH){
+      const card=careerLadderPlayer(rnd, ovr, new Set(careerDms().map(t=>hKey(t.who.handle))));
+      const who={handle:card.handle, ovr:ovr, nat:card.nat, role:attrsFor(card).roleKey,
+                 roster:false, card:card, club:null, pay:0};
+      const t=careerDmThread(who);
+      careerDmPush(t, 'them', 'dmLfd', [ovr]);
+      t.state='offer';
+      return true;
+    }
+  }
+  const open=careerDmPool().filter(w=>!careerDmFind(w.handle) && careerDmMargin(w)>=line);
+  if(!open.length) return false;
+  const me=careerCard();
+  const want = me && attrsFor(me).roleKey==='roleFRG' ? 'roleIGL' : 'roleFRG';
+  /* The ones with an empty seat write before the ones leaving somebody, and the
+     one who plays the half you do not writes before the one who plays yours.
+
+     While the post stands, the one furthest above you writes first — that is
+     what it was posted for, and a post that keeps producing the same 54 the
+     quiet week already produced is a button that does nothing. */
+  const rank=w=>(careerDmMateOf(w)?2:0)+(w.role===want?0:1)+
+                (lfd ? Math.max(0, Math.round(careerDmMargin(w)))*4 : 0);
+  const best=Math.min.apply(null, open.map(rank));
+  const from=open.filter(w=>rank(w)===best);
+  const pick=from[Math.floor(rnd()*from.length)];
+  const mate=careerDmMateOf(pick);
+  const t=careerDmThread(pick);
+  /* What they say is why they are writing: somebody who read the post says so,
+     a free agent is free, and somebody leaving a pair says whose. The post's
+     own line is used for the people it actually reached — anybody the reach
+     would have refused — so a career that posted still hears the ordinary
+     hello from the ordinary free agent. */
+  if(lfd && careerDmMargin(pick)<0) careerDmPush(t, 'them', 'dmLfd', [pick.ovr]);
+  else if(mate) careerDmPush(t, 'them', 'dmSeatSour', [pick.ovr, mate.handle]);
+  else          careerDmPush(t, 'them', 'dmNoPartner', [pick.ovr]);
+  t.state='offer';
+  return true;
+}
+// Every day a career moves through brings one, up to the three that stand at
+// once — a week skipped is not a week nobody wrote in.
+function careerSeatDms(fromISO, toISO){
+  for(let d=ccAddDays(fromISO,1); d<=toISO; d=ccAddDays(d,1))
+    if(!careerSeatDm(d)) return;
+}
+// And the seat is not empty in silence on the way in: a career opened with
+// nobody beside it has its offers waiting rather than arriving tomorrow.
+function careerSeatTopUp(){
+  let wrote=false;
+  for(let n=0; n<CC_SEAT_DMS; n++){ if(!careerSeatDm(careerToday()+'|'+n)) break; wrote=true; }
+  if(wrote) careerSave();
 }
 
 // You writing first. One line, because there is one thing to ask, and the reply
@@ -44584,10 +45196,16 @@ function careerDmInbound(place, total, passed, from){
    it takes a fortnight and two arguments; the person you are going to play
    eleven games a night with took no time at all.
 
-   So it is a conversation. You write, they answer tomorrow - a person is faster
-   than a club, which has a management to ask - and a no is not the end of it,
-   because a no from somebody rated three points over you is a starting position
-   and everybody in this scene knows it.
+   So it is a conversation. It ran on a clock for a day — you wrote, they slept
+   on it, and the answer landed the next morning — and his rule, 17 August, took
+   the clock back out: a player writing to a player gets the answer in the
+   conversation, and negotiates in it. The waiting belongs to the clubs, where
+   there is a management to ask and an offer that stands for a fortnight; the
+   person sat in the same lobby as you answers now.
+
+   What is not instant is the deal. A no is not the end of it, because a no from
+   somebody rated three points over you is a starting position and everybody in
+   this scene knows it — and the arguments are where the time goes instead.
 
    What you can say after a no is three things, and all three are things a
    player actually has:
@@ -44606,7 +45224,7 @@ function careerDmInbound(place, total, passed, from){
    Two arguments, then it is answered. The point is not that a no can be talked
    around - it is that talking around it costs something. */
 const CC_DM_DAYS=1, CC_DM_ARGS=2;
-const CC_ARG_GAIN={form:4, role:5, scrim:6};
+const CC_ARG_GAIN={form:4, role:5};
 // The margin, as a number rather than a yes or no, so an argument has something
 // to move. Positive is a yes.
 function careerDmMargin(who){
@@ -44617,8 +45235,9 @@ function careerDmMargin(who){
     if(last.place<=3) pull+=3;
     else if(last.passed) pull+=2;
   }
+  // The seat they are in, judged the way they would judge it.
   const mate=careerDmMateOf(who);
-  if(mate && !careerDmBadSeason(who) && !(pull>who.ovr)) return -99;
+  if(mate && careerDuoBeatsYou(who)) return -99;
   return pull-(who.ovr-CAREER_DM_REACH);
 }
 function careerDmWrite(handle){
@@ -44630,16 +45249,29 @@ function careerDmWrite(handle){
   const t=existing || careerDmThread(who);
   CH_DM=t.id;
   careerDmPush(t, 'you', 'dmAsk');
-  // They think about it. A day, because a person is not a board of directors.
-  t.pending={kind:'duo', due:ccAddDays(careerToday(), CC_DM_DAYS)};
+  /* And they answer. His rule, 17 August: a player writing to a player is a
+     message, not a submission — the reply comes back in the same conversation
+     and the negotiation happens there and then.
+
+     The day of waiting was borrowed from the clubs, where it belongs: a club has
+     a management to ask and an offer that stands for a fortnight. A person sat
+     on the other side of the same lobby does not. Nothing else about the deal
+     changed — the margin is the same margin, a no is still a starting position,
+     and the two arguments still cost what they cost. See careerDmArgue. */
   t.args=0;
-  careerDmPush(t, 'them', 'dmThinking', [ccDayLabel(t.pending.due)]);
+  t.pending=null;
+  careerDmAnswer(t, 0);
   careerSave();
   careerRenderHub('social');
 }
 // What they say when the day comes. Split out because an argument uses it again.
 function careerDmAnswer(t, boost){
   const who=t.who;
+  // What the last thing said was worth, kept on the thread. It used to sit in
+  // t.pending until the day came round; with the answer arriving in the
+  // conversation there is nowhere else for it to be read from, and an argument
+  // whose price cannot be read is an argument nothing can check.
+  t.boost=boost||0;
   CAREER.dmBoost=boost||0;
   const yes=careerDmMargin(who)>=0;
   CAREER.dmBoost=0;
@@ -44649,12 +45281,15 @@ function careerDmAnswer(t, boost){
     return true;
   }
   const mate=careerDmMateOf(who);
-  if(mate && !careerDmBadSeason(who)) careerDmPush(t, 'them', 'dmNoDuo', [mate.handle]);
+  if(mate && careerDuoBeatsYou(who)) careerDmPush(t, 'them', 'dmNoDuo', [mate.handle]);
   else careerDmPush(t, 'them', 'dmNo', [who.ovr, CAREER.career.division]);
   t.state='declined';
   return false;
 }
 // The clock's own hook, beside the clubs'.
+// Nothing new waits any more — a player answers in the conversation. This is
+// what a save written before that rule is owed: an answer that was already due
+// still lands rather than hanging in the inbox for the rest of the career.
 function careerDmDays(fromISO, toISO){
   if(!(toISO>fromISO)) return;
   careerDms().forEach(t=>{
@@ -44674,10 +45309,8 @@ function careerDmArgs(t){
   // Only worth offering when you are both the same half of a duo.
   const card=careerCard();
   if(!used.role && card && attrsFor(card).roleKey===t.who.role) out.push('role');
-  if(!used.scrim && careerEnergy()>=CC_ARG_SCRIM_COST) out.push('scrim');
   return out;
 }
-const CC_ARG_SCRIM_COST=30;
 function careerDmArgue(id, kind){
   const t=careerDms().find(x=>x.id===id);
   if(!t || careerDmArgs(t).indexOf(kind)<0) return;
@@ -44699,26 +45332,12 @@ function careerDmArgue(id, kind){
     CAREER.player.role=want;
     if(CAREER.player.attrs) CAREER.player.attrs=ccRookieAttrs(Math.round(CAREER.player.ovr), want);
     careerDmPush(t, 'you', 'dmArgRole', [L()[want]]);
-  } else {
-    careerSpend(CC_ARG_SCRIM_COST);
-    const rnd=careerRng(ccHashStr('argscrim|'+t.id+'|'+careerToday()));
-    const p=clamp(0.5+((CAREER.player.ovr-t.who.ovr)/CC_BAND_SD)*0.14, 0.15, 0.85);
-    let won=0;
-    for(let i=0;i<CC_SCRIM_ROUNDS;i++) if(rnd()<p) won++;
-    const lost=CC_SCRIM_ROUNDS-won;
-    careerDmPush(t, 'you', 'dmArgScrim', [won, lost]);
-    if(won<=lost){
-      // Losing the set you asked for is the end of it, and that is what made it
-      // worth offering.
-      careerDmPush(t, 'them', 'dmArgScrimLost');
-      t.state='declined'; t.args=CC_DM_ARGS;
-      careerSave(); careerRenderHub('social');
-      return;
-    }
   }
+  // And the answer to the argument comes back in the conversation too, on the
+  // same rule as the first one.
   t.state='open';
-  t.pending={kind:'duo', due:ccAddDays(careerToday(), CC_DM_DAYS), boost:boost};
-  careerDmPush(t, 'them', 'dmThinking', [ccDayLabel(t.pending.due)]);
+  t.pending=null;
+  careerDmAnswer(t, boost);
   careerSave();
   careerRenderHub('social');
 }
@@ -44790,9 +45409,12 @@ function careerDmAccept(id){
   // reputation against the loud half, which is blaming somebody in public.
   if(old){ careerNews('bad', 'ccNewsDropped', [old.handle]); careerRepAdd(-1); }
   const who=t.who;
+  // The day it started, because what a duo is worth is partly how long it has
+  // been one. See careerChem.
   CAREER.partner = who.roster
-    ? {handle:who.handle, cardRegion:who.cardRegion||'EU', patience:CAREER_PATIENCE_START}
-    : {card:who.card, patience:CAREER_PATIENCE_START};
+    ? {handle:who.handle, cardRegion:who.cardRegion||'EU', patience:CAREER_PATIENCE_START,
+       since:careerToday()}
+    : {card:who.card, patience:CAREER_PATIENCE_START, since:careerToday()};
   t.state='partner';
   t.unread=false;
   careerNews('good', 'ccNewsPartnerNew', [who.handle, who.ovr]);
@@ -44961,7 +45583,7 @@ function careerAskMore(id){
   const want=Math.round(t.offer.salary*(1+CC_ASK_RAISE)/50)*50;
   careerDmPush(t, 'you', 'dmAskMore', [want.toLocaleString('en-US')]);
   ccAskSend(id, 'more').pending.want=want;
-  careerDmPush(t, 'them', 'dmOrgWait', [ccDayLabel(t.pending.due)]);
+  careerDmPush(t, 'them', 'dmOrgWait', [t.pending.due]);
   careerSave();
   careerRenderHub('social');
 }
@@ -44970,7 +45592,7 @@ function careerAskPerk(id){
   if(!careerAskOpen(t) || t.offer.perk) return;
   careerDmPush(t, 'you', 'dmAskPerk');
   ccAskSend(id, 'perk');
-  careerDmPush(t, 'them', 'dmOrgWait', [ccDayLabel(t.pending.due)]);
+  careerDmPush(t, 'them', 'dmOrgWait', [t.pending.due]);
   careerSave();
   careerRenderHub('social');
 }
@@ -45059,7 +45681,7 @@ function careerOrgDm(offer, index){
   careerDmPush(t, 'them',
     offer.academy ? 'dmOrgAcademy' : 'dmOrgMain',
     [offer.name, offer.salary.toLocaleString('en-US')]);
-  careerDmPush(t, 'them', 'dmOrgDeadline', [ccDayLabel(t.offer.until)]);
+  careerDmPush(t, 'them', 'dmOrgDeadline', [t.offer.until]);
   return t;
 }
 // Every offer on the table becomes a conversation. Called where the offers are
@@ -45219,6 +45841,16 @@ function careerSocialHTML(){
             title="${esc(open.q ? L().dmAnswerWhat : L().dmThanksWhat)}">${
             open.q ? L().dmAnswerBtn : L().dmThanksBtn}</button>`}
         </div>`
+      : open.who.agent ? (careerAgent()
+          ? `<div class="dm-foot dm-offer">
+              <div class="dm-offer-terms"><span>${esc(L().ccAgentOn(careerAgent().name))}</span>
+                <span>${esc(L().ccAgentTerms(Math.round(CC_AGENT_CUT*100), CC_AGENT_REACH))}</span></div>
+              <button class="ch-decline" onclick="careerEndAgentFromDm('${open.id}')">${L().ccAgentEnd}</button>
+            </div>`
+          : `<div class="dm-foot dm-offer">
+              <div class="dm-offer-terms"><span>${esc(L().ccAgentTerms(Math.round(CC_AGENT_CUT*100), CC_AGENT_REACH))}</span></div>
+              <button class="ch-sign" onclick="careerSignAgentFromDm('${open.id}')">${L().ccAgentSign}</button>
+            </div>`)
       : open.sponsor ? `<div class="dm-foot dm-offer">
           <div class="dm-offer-terms"><span>$${open.sponsor.pay.toLocaleString('en-US')}${L().ccPerStream}</span>
             <span>${L().ccSponsorSlot}</span></div>
@@ -45377,6 +46009,21 @@ function careerSocialHTML(){
       : `<div class="ch-empty">${L().xNoPosts}</div>`}</div>
   </div>`;
 
+  /* The composer, and it only ever writes one thing.
+
+     A feed you can only read is a scoreboard. This is the one post a career
+     actually needs to make, and it is above the timeline where the box that
+     asks what is happening lives on the real thing — with the seat empty,
+     because that is the only time it has anything to say. */
+  const lfdBox = mate ? '' : `<div class="ch-tile x-compose">
+    <div class="x-compose-in">${meAv('')}
+      <div class="x-compose-txt"><b>${L().ccLfdTitle}</b><span>${L().ccLfdWhat}</span></div>
+      ${careerLfdOn()
+        ? `<span class="x-compose-on">${esc(L().ccLfdOnUntil(ccDayLabel(careerLfdUntil())))}</span>`
+        : `<button class="ch-sign" onclick="careerLfdPost()">${L().ccLfdBtn}</button>`}
+    </div>
+  </div>`;
+
   return `<div class="x-wrap">
     <nav class="x-rail">
       ${rail('feed', L().ccFeedTab, CC_X_HOME)}
@@ -45390,7 +46037,7 @@ function careerSocialHTML(){
     <main class="x-main">
       ${view==='dms' ? inbox
         : view==='me' ? profile
-        : `<div class="ch-tile ch-feedfull">${careerNewsHTML(CAREER_NEWS_KEEP)}</div>`}
+        : lfdBox+`<div class="ch-tile ch-feedfull">${careerNewsHTML(CAREER_NEWS_KEEP)}</div>`}
     </main>
     <aside class="x-side">
       <div class="ch-tile">
@@ -45418,8 +46065,9 @@ function careerDmKind(k){
 }
 /* Changing your duo means talking to somebody, so the button goes to the inbox
    rather than emptying the seat here. Dropping a partner with nobody lined up
-   only means careerEnsurePartner hands you a stranger before the next cup —
-   which is not a decision, it is a shuffle. */
+   used to mean a stranger was handed to you before the next cup, which is not a
+   decision but a shuffle; now it means no cup at all until somebody is in the
+   seat — see careerNoMate — so the inbox is even more the place to start. */
 function careerFindDuo(){
   CH_SOCIAL='dms';
   careerTab('social');
@@ -45451,10 +46099,13 @@ function careerDayPanelHTML(locked){
   const left=careerEnergy();
   const done=(cr.did && cr.did[careerToday()]) || [];
   const spent=careerDayDone();
+  // Whether there is any of the day left to spend, which is not the same as
+  // whether anything has been spent: sessions run until the store runs out.
+  const closed=careerDayClosed();
   // A day that arrived with something on it asks about that first; the seven
   // buttons stay under it, and taking the offer spends the day the same way
   // training would.
-  const dayEv=spent ? null : ccDayEventOn(careerToday());
+  const dayEv=closed ? null : ccDayEventOn(careerToday());
   const evBox=dayEv ? '<div class="cc-day-ev">'+
       '<b>'+esc(L()['ccDayEv'+dayEv.id])+'</b>'+
       '<span>'+esc(L()['ccDayEv'+dayEv.id+'Sub'])+'</span>'+
@@ -45464,13 +46115,37 @@ function careerDayPanelHTML(locked){
         '<button class="ch-decline" onclick="careerDayEvent(\''+dayEv.id+'\',false)">'+
           L()['ccDayEv'+dayEv.id+'No']+'</button>'+
       '</div></div>' : '';
+  /* What a session is worth today, on the button.
+
+     It used to print the step itself — "СТР +2.27" — which is the number before
+     the taper, before the gear and before the coach, and it never said what it
+     was 2.27 of. His question, 17 August: where do these numbers come from. So
+     the button reads the attribute now and where the session leaves it, which is
+     the same arithmetic the day actually does. */
+  const nowOvr = CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr;
+  const dayMult = careerDayGear()*clamp((careerTrainCap()-nowOvr)/CAREER_TAPER, 0, 1);
+  const dayCoach = ccCoach();
+  const six = CAREER.player.attrs || ccOwnAttrs();
   const rows=CC_DAY_ACTS.map(function(a){
-    // Affordable, and the day still open: one thing a day, and the store is
-    // what says whether that thing can be this one.
-    const can=!spent && left>=a.energy;
-    const gains=Object.keys(a.gain||{}).map(function(k){
-      return '<i>'+(L()['ccAttr'+k.toUpperCase()]||k.toUpperCase())+' +'+a.gain[k].toFixed(2)+'</i>';
-    }).join('');
+    const keys=Object.keys(a.gain||{});
+    // A ninety-nine cannot be trained: the day would be spent on a number that
+    // cannot move, so the button says so rather than taking the energy.
+    const maxed=keys.length>0 && keys.every(function(k){ return (six[k]||0)>=99; });
+    // Affordable, and the day still open. As many sessions as the store can pay
+    // for — the day ends when something takes all of it, or when the player
+    // says it is over.
+    const can=!closed && left>=a.energy && !maxed;
+    const gains=keys.map(function(k){
+      const from=six[k]!=null ? six[k] : 50;
+      const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1);
+      const to=clamp(from+by, 35, 99);
+      // To one decimal, because half a point is what a session is: rounded to
+      // the card's own whole numbers this line would read "75 → 75" on every
+      // other day and the button would look broken.
+      const num=v=>(Math.round(v*10)/10).toFixed(1);
+      return '<i>'+(L()['ccAttr'+k.toUpperCase()]||k.toUpperCase())+' '+
+        num(from)+' → '+num(to)+'</i>';
+    }).join('')+(maxed ? '<i class="cc-give-cost">'+L().ccAttrMaxed+'</i>' : '');
     const extra=[];
     if(a.reach)   extra.push('<i class="cc-give-reach">'+L().ccGiveReach+'</i>');
     if(a.morale)  extra.push('<i class="cc-give-mood">'+L().ccGiveMood+'</i>');
@@ -45482,8 +46157,10 @@ function careerDayPanelHTML(locked){
       '<span class="cc-act-g">'+gains+extra.join('')+'</span></button>';
   }).join('');
   return '<div class="ch-art cc-day" style="background-image:url('+CAREER_EV_ART.cup+');">'+
+    // Which day it is, beside what is on it: his ask, 17 August.
     '<div class="ch-livebar"><b class="ch-live-soon">'+L().ccDayTag+'</b><span>'+
-      (locked ? esc(locked.label) : L().chDayFree)+'</span></div>'+
+      esc(ccDayFull(careerToday()))+' · '+(locked ? esc(locked.label) : L().chDayFree)+
+      '</span></div>'+
     '<div class="ch-art-in cc-day-in">'+
       (locked ? '<div class="cc-day-locked">'+esc(locked.why)+'</div>' : '')+
       // Said where the day is chosen. It used to mean the division's own
@@ -45497,9 +46174,9 @@ function careerDayPanelHTML(locked){
         careerRingHTML(L().ccRingMood, CAREER.partner?careerPatience():0, 100, 'mood')+
       '</div>'+
       '<div class="cc-acts">'+rows+'</div>'+
-      // The day ends when it has been spent on something, not when the store
-      // is empty: a career with twenty energy left can still rest, and one
-      // that has trained is done whatever the bar says.
+      // The day ends when the player says so, and it can be said as soon as
+      // anything has been done: a day nobody decided may as well not be in the
+      // calendar, and after that it is theirs to keep spending or to close.
       (!spent ? '<div class="cc-day-hint">'+L().ccDayMust+'</div>'
               : '<button class="ch-play" onclick="careerNextDay()">'+L().ccDayDone+'</button>')+
     '</div></div>';
@@ -45876,7 +46553,25 @@ function ccShowYear(y){
   const s=(CAREER && CAREER.career && CAREER.career.season) || 1;
   return Number(y)+Math.max(0, s-1);
 }
+/* The day, said the way a person says it: "пятница, 5 сентября". The mode is
+   played on a calendar whose whole shape is weekdays — the cups are Monday and
+   Tuesday, the Weekly Final is Saturday — and until his screenshot of 17 August
+   the only place a career could read the date was the calendar screen. */
+function ccDayOfWeek(iso){
+  // Monday first, because the week this mode is played in starts there.
+  const d=new Date(iso+'T00:00:00Z');
+  return (L().calDowsFull||L().calDows||[])[(d.getUTCDay()+6)%7] || '';
+}
+function ccDayFull(iso){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(String(iso||''))) return String(iso||'');
+  const d=new Date(iso+'T00:00:00Z');
+  const month=(L().calMonthsOf||L().calMonthsShort||[])[d.getUTCMonth()]||'';
+  return ccDayOfWeek(iso)+', '+d.getUTCDate()+' '+month;
+}
 function ccDayLabel(iso){
+  // A save written before the messages stored days rather than labels carries
+  // "7 янв" where the day should be. It is already a label: print it.
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(String(iso||''))) return String(iso||'');
   const d=new Date(iso+'T00:00:00Z');
   return d.getUTCDate()+' '+L().calMonthsShort[d.getUTCMonth()];
 }
@@ -46550,7 +47245,10 @@ function careerFfButtonsHTML(){
     '</div></div>';
 }
 // The best rating a day's energy can buy, by the same weighting the card is
-// built from. One thing a day — careerDoAct enforces that, and so does the hub.
+// built from. One thing a day, deliberately: a player may now spend the whole
+// store in an evening, and an auto-pilot that did the same would be a career
+// played by nobody. It takes the best value it can afford and rests when it
+// cannot afford anything, which is what the store allows over a season anyway.
 function careerFfSpendDay(){
   if(careerDayDone()) return null;
   const afford=CC_DAY_ACTS
@@ -46702,9 +47400,30 @@ function careerFfDigest(ff){
 
 /* ---- Playing one ---------------------------------------------------------- */
 
+/* Two seats, and one of them empty.
+
+   His rule, 17 August: a career with nobody beside it does not play. The mode
+   filled the seat on the way into the room — careerEnsurePartner stood at the
+   top of every runner — so a career never had to choose who it played with, and
+   somebody appeared in the duo tile the first time Play was pressed. That is the
+   one thing in this mode the player cannot be handed: the whole inbox is about
+   who will play with you, and it was decoration while the game seated somebody
+   anyway.
+
+   So the seat is the player's to fill, and the door out of it is not writing and
+   waiting either — the people who are actually free write first, and their
+   message is the offer. See careerSeatDm.
+
+   Solo is solo: the year's solo Victory Cup asks nobody for a partner. */
+function careerNeedsMate(kind){
+  if(kind==='victory'){ const ev=careerVictoryOn(careerToday()); return !!ev && ev.mode!=='solo'; }
+  return true;
+}
+function careerNoMate(kind){ return careerNeedsMate(kind) && !careerPartnerCard(); }
 // Asked of a kind rather than of careerNext, because careerNext asks this back.
 function careerCanPlayKind(kind){
   if(CC_PLAYABLE.indexOf(kind)<0) return false;
+  if(careerNoMate(kind)) return false;
   if(kind==='reload') return careerReloadCan(careerReloadOn(careerToday()));
   if(kind==='final')  return careerWeeklyFinalOn(careerToday());
   if(kind==='major')  return careerMajorCan(careerMajorOn(careerToday()));
@@ -46905,9 +47624,10 @@ function careerDuoHolds(){
 
    A duo that holds says so — running it back is a thing players post about, and
    it is the only line in this feed that is about nothing happening. A duo that
-   splits leaves an empty seat, and careerEnsurePartner fills it the way it fills
-   it at the start of a career, so the announcement of the new pair is the same
-   announcement a new career gets. */
+   splits leaves an empty seat, and it stays empty: who plays beside you is the
+   one thing this mode does not hand out any more. The offers start arriving the
+   next morning instead (careerSeatDm), and the announcement is made when one of
+   them is taken. */
 function careerSeasonTurn(season){
   const cr=CAREER.career;
   if(cr.seasonTurn===season.id) return null;
@@ -46922,14 +47642,11 @@ function careerSeasonTurn(season){
     careerNews('flat', verdict.why==='outgrown' ? 'ccNewsDuoOutgrown'
                     : verdict.why==='behind' ? 'ccNewsDuoBehind' : 'ccNewsDuoSplit',
                [ccHandle(mate.handle), season.id]);
-    careerEnsurePartner();
-    const now=careerPartnerCard();
-    out.split=true; out.to=now?now.handle:null;
-    if(now) careerNews('good', 'ccNewsDuoAnnounce', [season.id, ccHandle(now.handle)]);
+    out.split=true; out.to=null;
+    careerSeatDm('turn|'+season.id);
   } else {
-    careerEnsurePartner();
-    const now=careerPartnerCard();
-    out.to=now?now.handle:null;
+    out.to=null;
+    careerSeatDm('turn|'+season.id);
   }
   // And the rest of the scene does the same thing on the same day. Two real
   // pairs off the roster, announced the way the player announces theirs.
@@ -47320,10 +48037,25 @@ function majorHeatPoints(place){
   // 944 replaces the 9, and everything below the win is unchanged: 944 + 56.
   return place===1 ? CC_MAJOR_HEAT_VR+56 : wfPoints(place);
 }
+/* The Last Chance is the one stage of a Major that anybody can enter.
+
+   His screenshot, 17 August: the career's Last Chance was running 150 teams over
+   four games, which is the Play-In's room and the lobby's game count wearing the
+   wrong label. Every division plays this one — that is what makes it the back
+   door — so the room is the whole ladder the opens draw, the same 2,480 duos a
+   Victory Cup seats, and the qualifier is eleven games to a top fifty. The four
+   games belong to what comes after it: the Last Chance Lobby, where the fifty
+   who came through play for the ticket and only a win is worth anything.
+
+   Which is Epic's own shape, and the draft mode already had it written down —
+   lcqQualTitle says "11 games, top 50 advance" on the other side of this file. */
+const CC_MAJOR_LC_GAMES=11, CC_MAJOR_LC_LOBBY_GAMES=4;
 const CC_MAJOR_STAGE={
   playin:{games:22, kill:2, field:CAREER_CUP_FIELD, cut:CAREER_CUP_CUT, pts:majorPoints},
   heats :{games:5,  kill:3, field:50,               cut:10,             pts:majorHeatPoints},
-  lcq   :{games:4,  kill:2, field:CAREER_CUP_FIELD, cut:CAREER_CUP_CUT, pts:majorPoints},
+  // Read rather than typed, because the ladder's size is read rather than typed.
+  lcq   :{games:CC_MAJOR_LC_GAMES, kill:2, cut:CAREER_CUP_CUT, pts:majorPoints,
+          get field(){ return careerLadderEntrants(); }},
   final :{games:12, kill:4, field:50,               cut:0,              pts:majorPoints}
 };
 const CC_MAJOR_DAY={PlayIn:'playin', Heats:'heats', LCQ:'lcq', Final:'final'};
@@ -47711,7 +48443,15 @@ function ccReloadLobby(teamSize){
 
    So the Play-In holds what the Opens sent it, and cuts to the eighty the heats
    actually seat - four heats of twenty, which is a real count and not a share. */
-const CC_LADDER_TRUE=9766, CC_OPEN_ADVANCE=1000;
+/* And how many the Opens actually send, read off Epic's own event page on
+   17 August rather than remembered: "the top players on the Open cumulative
+   leaderboard will qualify for the Play-Ins — Top 2,000 EU; Top 1,000 NAC;
+   Top 500 OCE, ASIA, ME, BR, NAW." The thousand that stood here was NAC's.
+   The career can be played in any region now, so the number follows the region
+   the way the roster does. */
+const CC_LADDER_TRUE=9766;
+const CC_OPEN_CUT={EU:2000, NAC:1000, NAE:1000, NAW:500, OCE:500, ASIA:500, ME:500, BR:500};
+function ccOpenAdvance(){ return CC_OPEN_CUT[ccCareerRegion()] || 500; }
 /* His question, 17 August: why does the cut line say 215 when the top thousand
    go through. And then: where would we get 9,766 duos from.
 
@@ -47757,7 +48497,7 @@ const CC_LADDER_TRUE=9766, CC_OPEN_ADVANCE=1000;
 const CC_OPEN_ROOM=2100;
 function ccOpenRoom(){ return Math.min(CC_OPEN_ROOM, careerLadderEntrants()); }
 function ccReloadOpenCut(){
-  return Math.max(20, Math.round(ccOpenRoom()*CC_OPEN_ADVANCE/CC_LADDER_TRUE));
+  return Math.max(20, Math.round(ccOpenRoom()*ccOpenAdvance()/CC_LADDER_TRUE));
 }
 // How much bigger the real open is than the room we play it in. Display only:
 // the cut, the field size and a place read off it. Nothing decided by it.
@@ -48002,7 +48742,6 @@ function evalRound2Points(place){ return place===1 ? CC_EVAL_WIN_PTS : 0; }
 async function runCareerEval(){
   const cr=CAREER.career;
   if(cr.division!==1) return;
-  careerEnsurePartner();
   const me=careerCard(), mate=careerPartnerCard();
   if(!me || !mate) return;
 
@@ -48070,8 +48809,7 @@ async function runCareerEval(){
 
   if(cash){
     const mine=ccShareOf(cash, you);
-    cr.earnings=(cr.earnings||0)+mine;
-    cr.balance=(cr.balance||0)+mine;
+    ccPayIn(mine);
     careerNews('good', 'ccNewsEvalCash', [wins, cash]);
   } else {
     if(through) careerNews('flat', 'ccNewsEvalNoWin');
@@ -48091,7 +48829,7 @@ async function runCareerEval(){
   careerAdvanceTo(ccAddDays(careerToday(), 1));
   careerSave();
 
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerTwoRoundResultCard({title:L().calPerfEval, place:place2||place1, through:through,
     wins:wins, cash:cash, cut:CC_EVAL_CUT});
@@ -48128,7 +48866,6 @@ async function runCareerGclc(){
   const ev=careerGclcOn(careerToday());
   if(!ev || !careerGclcCan(ev)) return;
   const st = ev.final ? CC_GCLC_FINAL : CC_GCLC_ROUND[ev.round];
-  careerEnsurePartner();
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('gc', ev.id||ev.label||'');
   const me=careerCard(), mate=careerPartnerCard();
@@ -48191,7 +48928,7 @@ async function runCareerGclc(){
   if(ev.final){
     careerMoneyAdd(ranked, gclcPrize);
     if(cash){ const mine=ccShareOf(cash, you);
-      cr.earnings=(cr.earnings||0)+mine; cr.balance=(cr.balance||0)+mine; }
+      ccPayIn(mine); }
     careerReachAdd(careerReachResult(place, field.length, 1, 'gc'));
     cr.gclc={q:0, round:0, through:false, done:true};
     careerNews(cash?'good':'flat', cash?'ccNewsGcCash':'ccNewsGcNoCash',
@@ -48218,7 +48955,7 @@ async function runCareerGclc(){
   careerAdvanceTo(ccAddDays(careerToday(), 1));
   careerSave();
 
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerReloadResultCard({label:ev.label, place:place, of:field.length,
     through: ev.final ? cash>0 : through, cut:st.cut||CAREER_CUP_CUT, seat:false,
@@ -48230,7 +48967,6 @@ async function runCareerReloadChampionship(){
   const ev=careerRcOn(careerToday());
   if(!ev || !careerRcCan(ev)) return;
   const st = ev.stage==='group' ? CC_RC_GROUP : ev.stage==='survival' ? CC_RC_SURV : CC_RC_FINAL;
-  careerEnsurePartner();
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('rc', ev.id||ev.label||'');
   const me=careerCard(), mate=careerPartnerCard();
@@ -48238,6 +48974,8 @@ async function runCareerReloadChampionship(){
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
   CARD_MODE=true; squadSize=2; drafted=[me, mate];
+  // Paris is the same circuit, and the same ten. See ccKillPts.
+  CC_KILL_CAP=CC_RELOAD_KILL_CAP;
   // A duo lobby drops on the whole island. The grid is thinned for squads —
   // trimLandingZonesForMode keeps the biggest 52% of the boxes so a four-player
   // lobby is not a wall of rectangles — and it was baked in at page load, when
@@ -48313,7 +49051,7 @@ async function runCareerReloadChampionship(){
     careerMoneyAdd(ranked, rcPrize);
     cash=rcPrize(place);
     if(cash){ const mine=ccShareOf(cash, you);
-      cr.earnings=(cr.earnings||0)+mine; cr.balance=(cr.balance||0)+mine; }
+      ccPayIn(mine); }
     careerReachAdd(careerReachResult(place, 40, 1, 'rc'));
     cr.rc={got:'final', ticket:false, dropped:false};
     careerNews(champ?'good':cash?'good':'flat',
@@ -48338,7 +49076,7 @@ async function runCareerReloadChampionship(){
   careerAdvanceTo(ccAddDays(careerToday(), 1));
   careerSave();
 
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerReloadResultCard({label:ev.label, place:place, of:field.length,
     through:through||champ, cut:CC_RC_GROUP.direct, seat:false,
@@ -48576,7 +49314,6 @@ async function runCareerSummit(){
   const ev=careerSummitOn(careerToday());
   if(!ev || !careerSummitCan(ev)) return;
   const st=CC_SUMMIT_STAGE[ev.stage];
-  careerEnsurePartner();
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('summit', ev.id||ev.label||'');
   const me=careerCard(), mate=careerPartnerCard();
@@ -48646,11 +49383,11 @@ async function runCareerSummit(){
     careerMoneyAdd(ranked, summitPrize);
     cash=summitPrize(place);
     if(cash){ const mine=ccShareOf(cash, you);
-      cr.earnings=(cr.earnings||0)+mine; cr.balance=(cr.balance||0)+mine; }
+      ccPayIn(mine); }
     careerReachAdd(careerReachResult(place, field.length, 1, 'summit'));
     careerNews(cash?'good':'flat', cash?'ccNewsSumCash':'ccNewsSumNoCash',
                cash?[place, cash.toLocaleString('en-US')]:[place, field.length]);
-    careerCongrats(ranked, you, L().ccCongratsSummit);
+    careerCongrats(ranked, you, L().ccCongratsSummit(ccLanCityIn('summit')));
     cr.summit={got:'final', ticket:false, through:false};
   } else {
     cr.summit={got:ev.stage, through:through,
@@ -48670,7 +49407,7 @@ async function runCareerSummit(){
   careerAdvanceTo(ccAddDays(careerToday(), 1));
   careerSave();
 
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerTwoRoundResultCard({title:ev.label, place:place, through:through||cash>0,
     wins:you.wins||0, cash:cash, cut:st.cut});
@@ -48795,7 +49532,6 @@ async function runCareerGlobals(){
   const ev=careerGlobalsOn(careerToday());
   if(!ev || !careerGlobalsCan(ev)) return;
   const seat=ccGlobalsSeat();
-  careerEnsurePartner();
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('globals', ev.id||ev.label||'');
   const me=careerCard(), mate=careerPartnerCard();
@@ -48849,12 +49585,12 @@ async function runCareerGlobals(){
   careerMoneyAdd(ranked, gcPrize);
   const cash=gcPrize(place);
   if(cash){ const mine=ccShareOf(cash, you);
-    cr.earnings=(cr.earnings||0)+mine; cr.balance=(cr.balance||0)+mine; }
+    ccPayIn(mine); }
   careerReachAdd(careerReachResult(place, field.length, 1, 'globals'));
   if(place===1) careerNews('good', 'ccNewsGlobChamp', []);
   careerNews(cash?'good':'flat', cash?'ccNewsGlobCash':'ccNewsGlobNoCash',
              cash?[place, cash.toLocaleString('en-US')]:[place, field.length]);
-  careerCongrats(ranked, you, L().ccCongratsGlobals);
+  careerCongrats(ranked, you, L().ccCongratsGlobals(ccLanCityIn('globals')));
   cr.globals={place:place, of:field.length, via:seat?seat.via:null, cash:cash};
 
   const places=(you.stageLog||[]).map(g=>g.place);
@@ -48868,7 +49604,7 @@ async function runCareerGlobals(){
   careerAdvanceTo(ccAddDays(careerToday(), 1));
   careerSave();
 
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerTwoRoundResultCard({title:ev.label, place:place, through:place===1||cash>0,
     wins:you.wins||0, cash:cash, cut:0});
@@ -48879,7 +49615,6 @@ async function runCareerMajor(){
   const ev=careerMajorOn(careerToday());
   if(!ev || !careerMajorCan(ev)) return;
   const st=CC_MAJOR_STAGE[ev.stage];
-  careerEnsurePartner();
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('major', ev.id||ev.label||'');
   const me=careerCard(), mate=careerPartnerCard();
@@ -48917,7 +49652,10 @@ async function runCareerMajor(){
   // from Division 4 walk into it.
   const deep = ev.stage!=='playin' && ev.stage!=='lcq';
   const lobbyCr = deep ? Object.assign({}, cr, {division:1}) : cr;
-  const field=[you, ...careerCupField(lobbyCr, drafted, st.field)];
+  // And the Last Chance draws its field the way an open does: every rung of the
+  // ladder weighted by how big that room really is, rather than the division the
+  // player happens to stand on.
+  const field=[you, ...careerCupField(lobbyCr, drafted, st.field, null, ev.stage==='lcq')];
 
   const zones = ev.stage==='final' ? await careerLandingPick(field, you, ev.label) : null;
   await simulateGamesLive(field, st.games, st.pts, st.kill, 'stage', 0, null, zones,
@@ -48945,7 +49683,7 @@ async function runCareerMajor(){
   if(ev.stage==='lcq' && through){
     const lobby=ranked.slice(0, CAREER_CUP_CUT);
     ensureSkipButton();
-    await simulateGamesLive(lobby, CC_MAJOR_STAGE.lcq.games, victoryR2Points, 0,
+    await simulateGamesLive(lobby, CC_MAJOR_LC_LOBBY_GAMES, victoryR2Points, 0,
       'stage', 0, null, null,
       {lobbySize:50, stageName:L().ccMajLobby, mapReplay:true, stopOnYourDeath:true});
     removeSkipButton();
@@ -48965,8 +49703,7 @@ async function runCareerMajor(){
     cash=majorPrize(place);
     if(cash){
       const mine=ccShareOf(cash, you);
-      cr.earnings=(cr.earnings||0)+mine;
-      cr.balance=(cr.balance||0)+mine;
+      ccPayIn(mine);
     }
     careerReachAdd(careerReachResult(place, field.length, 1, 'major'));
     careerNews(cash?'good':'flat', cash?'ccNewsMajCash':'ccNewsMajNoCash',
@@ -49007,7 +49744,7 @@ async function runCareerMajor(){
   careerAdvanceTo(ccAddDays(careerToday(), 1));
   careerSave();
 
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerReloadResultCard({label:ev.label, place:lobbyPlace||place, of:field.length,
     through: ev.stage==='lcq' ? ticket : (ev.stage==='final' ? cash>0 : through),
@@ -49019,7 +49756,6 @@ async function runCareerMajor(){
 async function runCareerWeeklyFinal(){
   const cr=CAREER.career;
   if(!careerWeeklyFinalOn(careerToday())) return;
-  careerEnsurePartner();
   const me=careerCard(), mate=careerPartnerCard();
   if(!me || !mate) return;
 
@@ -49071,8 +49807,7 @@ async function runCareerWeeklyFinal(){
 
   if(cash){
     const mine=ccShareOf(cash, you);
-    cr.earnings=(cr.earnings||0)+mine;
-    cr.balance=(cr.balance||0)+mine;
+    ccPayIn(mine);
   }
   careerTableAdd(ranked);
   careerMoneyAdd(ranked, wfPrize);
@@ -49094,7 +49829,7 @@ async function runCareerWeeklyFinal(){
   careerAdvanceTo(ccAddDays(careerToday(), 1));
   careerSave();
 
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerReloadResultCard({label:L().calWeeklyFinal, place:place, of:field.length,
     through:cash>0, cut:40,
@@ -49106,12 +49841,13 @@ async function runCareerReload(){
   const ev=careerReloadOn(careerToday());
   if(!ev || !careerReloadCan(ev)) return;
   const st=CC_RELOAD_STAGE[ev.stage];
-  careerEnsurePartner();
   const me=careerCard(), mate=careerPartnerCard();
   if(!me || !mate) return;
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted, prevSet=ACTIVE_LANDING_SET;
   CARD_MODE=true; squadSize=2; drafted=[me, mate];
+  // The circuit stops counting a match's eliminations at ten. See ccKillPts.
+  CC_KILL_CAP=CC_RELOAD_KILL_CAP;
   // A duo lobby drops on the whole island. The grid is thinned for squads —
   // trimLandingZonesForMode keeps the biggest 52% of the boxes so a four-player
   // lobby is not a wall of rectangles — and it was baked in at page load, when
@@ -49194,7 +49930,7 @@ async function runCareerReload(){
   const openRoom = ev.stage==='open';
   const showOf = openRoom ? CC_LADDER_TRUE : field.length;
   const showPlace = openRoom ? ccOpenShow(place, field.length) : place;
-  const showCut = openRoom ? CC_OPEN_ADVANCE : st.cut;
+  const showCut = openRoom ? ccOpenAdvance() : st.cut;
   CC_RANK_SCALE = openRoom ? ccOpenScale(field.length) : 1;
 
   const shell=createStageCardShell(ev.label+' - '+showOf);
@@ -49215,7 +49951,7 @@ async function runCareerReload(){
                                            pts:g.pts, elimPts:g.elimPts, label:g.label}));
     careerAdvanceTo(ccAddDays(careerToday(), 1));
     careerSave();
-    CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet);
+    CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet); CC_KILL_CAP=0;
     CAREER_RUN=false;
     careerRenderHub('centre');
     careerBankedCard(showPlace, showOf, you.stagePts, L().ccRelBanked, st.games);
@@ -49256,7 +49992,7 @@ async function runCareerReload(){
   careerAdvanceTo(ccAddDays(careerToday(), 1));
   careerSave();
 
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet);
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet); CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerReloadResultCard({label:ev.label, place:showPlace, of:showOf,
                           through:through, cut:showCut, seat:seat});
@@ -49287,7 +50023,7 @@ async function runCareerVictory(){
   const me=careerCard();
   if(!me) return;
   let mate=null;
-  if(!solo){ careerEnsurePartner(); mate=careerPartnerCard(); if(!mate) return; }
+  if(!solo){ mate=careerPartnerCard(); if(!mate) return; }
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
   const prevSet=ACTIVE_LANDING_SET;
@@ -49357,8 +50093,7 @@ async function runCareerVictory(){
 
   if(cash){
     const mine=ccShareOf(cash, you);
-    cr.earnings=(cr.earnings||0)+mine;
-    cr.balance=(cr.balance||0)+mine;
+    ccPayIn(mine);
     careerReachAdd(careerReachResult(1, field.length, cr.division, 'victory'));
     careerNews('good', 'ccNewsVicCash', [wins, cash]);
   } else if(through){
@@ -49379,7 +50114,7 @@ async function runCareerVictory(){
   careerAdvanceTo(ccAddDays(careerToday(), 1));
   careerSave();
 
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet);
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet); CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerTwoRoundResultCard({title:(ev.mode==='duo'?L().calVictoryDuo:L().calVictorySolo)+' '+ev.n,
     place:place2||place1, through:through, wins:wins, cash:cash, cut:vCut});
@@ -49387,7 +50122,6 @@ async function runCareerVictory(){
 
 async function runCareerCup(){
   const cr=CAREER.career;
-  careerEnsurePartner();
   const me=careerCard(), mate=careerPartnerCard();
   if(!me || !mate) return;
 
@@ -49493,7 +50227,7 @@ async function runCareerCup(){
                                           pts:g.pts, elimPts:g.elimPts, label:g.label}));
     careerAdvanceTo(careerAfterSession());
     careerSave();
-    CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
+    CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
     CAREER_RUN=false;
     // Monday settles nothing, but it still has to end somewhere. This branch used
     // to return straight out and leave a Division 1 player standing on the
@@ -49626,7 +50360,7 @@ async function runCareerCup(){
 
   if(passed && from>1) await celebrate(L().celKicker, L().ccCelebPass, L().ccCelebPassSub(from-1), 'gold', 80);
 
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
   careerCupResultCard({place, total:field.length, pts:you.stagePts, passed, from, growth, morale});
 }
 

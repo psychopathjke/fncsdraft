@@ -5,9 +5,11 @@
 // while the contract next to it took a fortnight and two arguments. And the
 // viewers and the haters were the only threads with nothing to press at all.
 //
-// What this holds: a person takes a day to answer, a no can be argued with
-// twice, each argument costs the thing it is made of, losing the set you asked
-// for ends it, and answering the room moves the two numbers the room is made of.
+// What this holds: a person answers in the conversation and negotiates in it, a
+// no can be argued with twice, each argument costs the thing it is made of,
+// nobody is played for a seat, somebody whose own duo is going better than you
+// does not move, and answering the room moves the two numbers the room is made
+// of.
 //
 //   node tools/check-career-talk.js
 const fs = require('fs'), os = require('os'), path = require('path');
@@ -52,13 +54,15 @@ const BOOT = `
     check('somebody in the list would play with you', !!easy);
     careerDmWrite(easy.handle);
     let t = careerDmFind(easy.handle);
-    check('writing does not settle it on the spot', !!t.pending && t.state !== 'offer',
+    // His rule, 17 August: a player answers a player in the conversation.
+    check('writing is answered on the spot', !t.pending && t.state === 'offer',
           t.state + '/' + JSON.stringify(t.pending));
-    check('and the thread says when the answer is due',
-          t.msgs.some(m => m.k === 'dmThinking'));
-    days(CC_DM_DAYS);
-    check('the answer comes when the day does', !t.pending && t.state === 'offer',
-          t.state);
+    check('and nobody is left waiting for a day',
+          !t.msgs.some(m => m.k === 'dmThinking'));
+    // Their own voice, so the key carries the variant they speak in.
+    check('the answer is in the thread',
+          t.msgs.some(m => m.from === 'them' && /^dmYes/.test(m.k)),
+          t.msgs.map(m => m.k).join(','));
     check('and it can be taken', (careerDmAccept(t.id), !!careerPartnerCard()));
 
     /* ---- and they do not all talk the same ------------------------------- */
@@ -147,7 +151,7 @@ const BOOT = `
     // Everybody wrote to this career except the one who matters. The seat used
     // to empty silently between one cup and the next.
     seed(70);
-    careerEnsurePartner();
+    (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
     let mate = careerPartnerCard();
     check('there is somebody to talk to', !!mate);
     // Happy and a good night: he says so, and saying it makes it truer.
@@ -165,7 +169,7 @@ const BOOT = `
 
     // Nearly out: he says so first rather than vanishing.
     seed(70);
-    careerEnsurePartner();
+    (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
     mate = careerPartnerCard();
     CAREER.partner.patience = CAREER_PATIENCE_QUIT + 4;
     CAREER.dms = [];
@@ -200,7 +204,7 @@ const BOOT = `
     }
     // Run out of arguments and he goes, and the seat is empty.
     seed(70);
-    careerEnsurePartner();
+    (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
     CAREER.partner.patience = CAREER_PATIENCE_QUIT + 1;
     CAREER.career.balance = 0;              // no bootcamp to offer
     CAREER.dms = [];
@@ -225,8 +229,7 @@ const BOOT = `
           String(hard.ovr));
     careerDmWrite(hard.handle);
     t = careerDmFind(hard.handle);
-    days(CC_DM_DAYS);
-    check('and they say no', t.state === 'declined', t.state);
+    check('and they say no, there and then', t.state === 'declined', t.state);
     const args = careerDmArgs(t);
     out.notes.args = args;
     check('but there is something left to say', args.length > 0, args.join(','));
@@ -236,22 +239,22 @@ const BOOT = `
     seed(70, 3, [{season:1, day:'2026-02-09', place:1, of:150, passed:true, kind:'cup'}]);
     pool = careerDmPool();
     const h2 = pool.slice().sort((a,b) => b.ovr - a.ovr)[0];
-    careerDmWrite(h2.handle); t = careerDmFind(h2.handle); days(CC_DM_DAYS);
+    careerDmWrite(h2.handle); t = careerDmFind(h2.handle);
     if (t.state === 'declined' && careerDmArgs(t).indexOf('form') >= 0) {
       careerDmArgue(t.id, 'form');
-      check('pointing at a result asks again', !!t.pending, JSON.stringify(t.pending));
-      check('and a win is worth persuading with', t.pending.boost === CC_ARG_GAIN.form,
-            String(t.pending.boost));
-      out.notes.formBoost = t.pending.boost;
+      check('pointing at a result is answered too', !t.pending, JSON.stringify(t.pending));
+      check('and a win is worth persuading with', t.boost === CC_ARG_GAIN.form,
+            String(t.boost));
+      out.notes.formBoost = t.boost;
     }
     seed(70, 3, [{season:1, day:'2026-02-09', place:148, of:150, passed:false, kind:'cup'}]);
     pool = careerDmPool();
     const h3 = pool.slice().sort((a,b) => b.ovr - a.ovr)[0];
-    careerDmWrite(h3.handle); t = careerDmFind(h3.handle); days(CC_DM_DAYS);
+    careerDmWrite(h3.handle); t = careerDmFind(h3.handle);
     if (t.state === 'declined' && careerDmArgs(t).indexOf('form') >= 0) {
       careerDmArgue(t.id, 'form');
-      check('and a bad night is worse than saying nothing', t.pending.boost < 0,
-            String(t.pending.boost));
+      check('and a bad night is worse than saying nothing', t.boost < 0,
+            String(t.boost));
     }
 
     /* ---- the role argument costs the six numbers ------------------------- */
@@ -260,7 +263,7 @@ const BOOT = `
     const same = pool.find(w => w.role === attrsFor(careerCard()).roleKey &&
                                 !careerDmWouldAccept(w));
     if (same) {
-      careerDmWrite(same.handle); t = careerDmFind(same.handle); days(CC_DM_DAYS);
+      careerDmWrite(same.handle); t = careerDmFind(same.handle);
       const before = CAREER.player.role, aimBefore = CAREER.player.attrs.aim;
       if (careerDmArgs(t).indexOf('role') >= 0) {
         careerDmArgue(t.id, 'role');
@@ -272,30 +275,46 @@ const BOOT = `
               CAREER.player.attrs.aim !== aimBefore,
               aimBefore + ' -> ' + CAREER.player.attrs.aim);
         check('and it is the most convincing thing on the list',
-              t.pending.boost === CC_ARG_GAIN.role, String(t.pending.boost));
+              t.boost === CC_ARG_GAIN.role, String(t.boost));
       }
     }
 
-    /* ---- the scrim is a real offer, so it can be lost -------------------- */
-    // Far below them, so the set is lost and the conversation with it.
+    /* ---- there is no set to play for it ---------------------------------- */
+    // His rule, 17 August: nobody in this scene settles a seat with a box fight.
+    // A player looks at results, or at the rating, and both of those are already
+    // on the table when the message is written.
     seed(50, 3);
     pool = careerDmPool();
     const way = pool.slice().sort((a,b) => b.ovr - a.ovr)[0];
-    careerDmWrite(way.handle); t = careerDmFind(way.handle); days(CC_DM_DAYS);
+    careerDmWrite(way.handle); t = careerDmFind(way.handle);
     const energyBefore = careerEnergy();
-    if (careerDmArgs(t).indexOf('scrim') >= 0) {
-      careerDmArgue(t.id, 'scrim');
-      out.notes.scrim = {state: t.state, energy: [energyBefore, careerEnergy()],
-                         msgs: t.msgs.map(m => m.k)};
-      check('a scrim costs the energy it costs',
-            energyBefore - careerEnergy() === CC_ARG_SCRIM_COST,
-            String(energyBefore - careerEnergy()));
-      check('losing the set you asked for ends it',
-            t.state === 'declined' && !t.pending &&
-            t.msgs.some(m => m.k === 'dmArgScrimLost'),
-            t.state);
-      check('and there is nothing left to say', careerDmArgs(t).length === 0);
-    }
+    out.notes.args50 = careerDmArgs(t);
+    check('nobody is played for a seat', careerDmArgs(t).indexOf('scrim') < 0,
+          careerDmArgs(t).join(','));
+    check('and arguing costs no energy at all', careerEnergy() === energyBefore,
+          energyBefore + ' -> ' + careerEnergy());
+
+    /* ---- a duo doing better than you does not move ----------------------- */
+    // What the person being asked actually compares: the pair they are in
+    // against the one on offer. Where a table exists it is the table; where it
+    // does not it is their partner's rating against yours.
+    seed(70, 1);
+    pool = careerDmPool();
+    const paired = pool.filter(w => !!careerDmMateOf(w));
+    out.notes.paired = paired.length;
+    paired.forEach(w => {
+      const mate = careerDmMateOf(w);
+      const his = mate && (mate._ovr != null ? mate._ovr : (attrsFor(mate)||{}).ovr);
+      if (!isFinite(his) || careerTablePlace()) return;
+      // No table yet, so it is the rating: a partner at or above you is a seat
+      // worth keeping, and one below you is a conversation worth having.
+      check('a partner better than you keeps the seat',
+            (his >= CAREER.player.ovr) === careerDuoBeatsYou(w),
+            w.handle + ': mate ' + his + ' vs you ' + CAREER.player.ovr);
+      if (his >= CAREER.player.ovr)
+        check('and that is a no however good your night was',
+              careerDmMargin(w) === -99, w.handle + ' margin ' + careerDmMargin(w));
+    });
 
     /* ---- two arguments and no more --------------------------------------- */
     seed(70, 3, [{season:1, day:'2026-02-09', place:1, of:150, passed:true, kind:'cup'}]);
@@ -558,7 +577,7 @@ const BOOT = `
     // walk on a Tuesday holding half a LAN seat, and the career would arrive at
     // the biggest night of its year alone.
     seed(90, 1);
-    careerEnsurePartner();
+    (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
     const mate0 = careerPartnerCard().handle;
     check('a career with nothing pending is free to move', !careerSlotHeld());
     CAREER.career.major = {n:1, got:'playin', pass:'playin', ticket:false};

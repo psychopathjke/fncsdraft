@@ -33,6 +33,13 @@ const BOOT = `
     z[0].click();
     const c=p.querySelector("#gameLandingConfirm"); if(c && !c.disabled) c.click();
   }, 20);
+  // The seat is the player's to fill now: somebody free wrote, and the button
+  // under their message seats them. Same door a player goes through.
+  const ccProbeSeat = () => {
+    if (careerPartnerCard()) return;
+    const s = careerDms().find(x => x.state === 'offer' && !x.who.org && !x.who.brand);
+    if (s) { careerDmAccept(s.id); careerRenderHub('centre'); }
+  };
   const out = {fails: [], notes: {}, err: null};
   const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
   const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -79,7 +86,7 @@ const BOOT = `
 
     // ---- and it plays, through the interface -----------------------------
     seed(3);
-    careerEntry();
+    careerEntry(); ccProbeSeat();
     const next = careerNext();
     out.notes.firstDay = next.type + ' / ' + next.label;
     check('the hub offers the Upper Bracket', next.type === 'summit');
@@ -108,7 +115,7 @@ const BOOT = `
     // Epic's allocation, region by region: Europe's 28 are the season this
     // career played, the other six regions' 47 are their own Major 1 finals.
     seed(3);
-    careerEnsurePartner();
+    (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
     const mine = [careerCard(), careerPartnerCard()];
     const meTeam = careerYouTeam(mine);
     meTeam.isYou = true;
