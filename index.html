@@ -46915,8 +46915,28 @@ function careerPayWages(fromISO, toISO){
 
    Case and accents are ignored, so aCE files under A and João under J rather
    than after Z. */
+/* The word a person is actually called.
+
+   Half these rows print an organisation in front of the name — Lyost Clap, MGA
+   Alexi, GLORE errie, Poyo Naaxo — and sorting on the printed string files them
+   all under their club instead of themselves: four Lyost people in a row under
+   L, and Alexi nowhere near A. His own lists never write them that way; he
+   wrote Clap, Naaxo, Alexi, errie. So the org comes off for sorting and stays
+   on for display, and the row files under the name he uses for the person.
+
+   A title works the same way — Coach Dias sorts under Dias. Only a leading word
+   is dropped, and only one, so AgentChesses stays whole: it is one word and one
+   name, not a club and a person. */
+const CC_NAME_PREFIX=['lyost','mga','glore','g2','poyo','coach'];
+function ccSortName(x){
+  const full=String((x&&x.name)||(x&&x.at)||'').trim();
+  const sp=full.indexOf(' ');
+  if(sp<0) return full;
+  const head=full.slice(0, sp).toLowerCase();
+  return CC_NAME_PREFIX.indexOf(head)<0 ? full : full.slice(sp+1).trim();
+}
 function ccByHand(list){
-  const key=x=>String((x&&x.name)||(x&&x.at)||'');
+  const key=x=>ccSortName(x);
   // Index carried alongside, so two identical names keep their own table's
   // order rather than whatever the sort happens to do with equal keys.
   return list.map((x,i)=>({x:x,i:i}))
