@@ -46935,14 +46935,45 @@ function ccSortName(x){
   const head=full.slice(0, sp).toLowerCase();
   return CC_NAME_PREFIX.indexOf(head)<0 ? full : full.slice(sp+1).trim();
 }
+/* And one pair sits where he put it rather than where the alphabet would.
+
+   His socials list writes Lumos and Ugo on a single line, the two of them
+   together, directly under Sandora — and when asked whether that meant one
+   person under two names, his answer was that it is two people who belong side
+   by side. The alphabet would put them at opposite ends of the window, L and U,
+   with four rows in between.
+
+   So the pair is lifted out of the sorted list, kept in alphabetical order
+   between themselves, and set back down immediately after the row he anchored
+   them to. If the anchor is ever removed from the data they go to the end
+   together rather than silently splitting up. */
+const CC_PAIRED=[{after:'SandoraFN', both:['CmLumos','UgoComm']}];
+function ccAtIs(x, handle){
+  return String((x&&x.at)||'').toLowerCase()===String(handle).toLowerCase();
+}
+function ccPinPairs(sorted){
+  let out=sorted;
+  CC_PAIRED.forEach(p=>{
+    const pair=out.filter(x=>p.both.some(h=>ccAtIs(x,h)));
+    // One of them missing is not a pair, and moving a single row would be a
+    // silent re-order nobody asked for.
+    if(pair.length<2) return;
+    const rest=out.filter(x=>pair.indexOf(x)<0);
+    const at=rest.findIndex(x=>ccAtIs(x,p.after));
+    out = at<0 ? rest.concat(pair)
+               : rest.slice(0,at+1).concat(pair, rest.slice(at+1));
+  });
+  return out;
+}
 function ccByHand(list){
   const key=x=>ccSortName(x);
   // Index carried alongside, so two identical names keep their own table's
   // order rather than whatever the sort happens to do with equal keys.
-  return list.map((x,i)=>({x:x,i:i}))
+  const sorted=list.map((x,i)=>({x:x,i:i}))
              .sort((a,b)=>key(a.x).localeCompare(key(b.x), 'en',
                             {sensitivity:'base', numeric:true}) || (a.i-b.i))
              .map(o=>o.x);
+  return ccPinPairs(sorted);
 }
 
 const CC_AD_PER=6, CC_AD_STEP=1.25;
