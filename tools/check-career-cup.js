@@ -62,7 +62,7 @@ const BOOT = `
       // same date until the Victory Cup made 5 January enterable, and this
       // harness is about the divisional cup specifically.
       career: {season: 1, day: ccFirstCupDay(), division: 5, earnings: 0, tokens: [], log: []},
-      partner: null
+      partners: []
     }));
     // The save above leaves attrs null the way an old save might; the hub has to
     // survive that, so build them the way ccStart does before opening.
@@ -127,12 +127,12 @@ const BOOT = `
     const rows = [...document.querySelectorAll('#chBody .dm-item')];
     out.steps.push('dm threads + candidates: ' + rows.length);
     if (!rows.length) { out.fail = 'the inbox is empty after a cup — nothing to check'; throw new Error(out.fail); }
-    const before = JSON.parse(localStorage.getItem('fncsdraft_career')).partner;
+    const before = (JSON.parse(localStorage.getItem('fncsdraft_career')).partners || [])[0];
     const beforeName = before && (before.handle || (before.card && before.card.handle));
     const take = document.querySelector('#chBody .dm-foot .ch-sign');
     if (take && take.getAttribute('onclick').indexOf('careerDmAccept') === 0) {
       take.click();
-      const after = JSON.parse(localStorage.getItem('fncsdraft_career')).partner;
+      const after = (JSON.parse(localStorage.getItem('fncsdraft_career')).partners || [])[0];
       const afterName = after && (after.handle || (after.card && after.card.handle));
       if (afterName === beforeName) { out.fail = 'taking a DM duo did not change the partner'; throw new Error(out.fail); }
       out.steps.push('dm duo taken: ' + beforeName + ' -> ' + afterName);
@@ -166,7 +166,7 @@ const BOOT = `
     out.save = {day: saved.career.day, division: saved.career.division,
                 ovr: saved.player.ovr, potential: saved.player.potential,
                 logged: (saved.career.log || []).length,
-                partner: saved.partner && (saved.partner.handle || (saved.partner.card && saved.partner.card.handle))};
+                partner: (function(m){ return m && (m.handle || (m.card && m.card.handle)); })((saved.partners || [])[0])};
   } catch(e){ if(!out.fail) out.fail = String(e && e.stack || e); }
   out.errs = window.__errs;
   document.getElementById('__out').textContent = 'BEGIN' + encodeURIComponent(JSON.stringify(out)) + 'END';

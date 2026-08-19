@@ -28,9 +28,9 @@ const BOOT = `
     const seed = (div, ovr, day) => { CAREER = {
       player:{nick:'Probe', ovr:ovr, region:'EU', role:'roleIGL', country:'de', age:16,
               attrs:ccRookieAttrs(ovr,'roleIGL')},
-      career:{season:1, day:day||'2026-01-20', division:div, earnings:0, balance:0,
+      career:{season:1, size:2, day:day||'2026-01-20', division:div, earnings:0, balance:0,
               tokens:[], log:[], news:[], rep:0},
-      dms:[], partner:null}; };
+      dms:[], partners:[]}; };
 
     // ---- the offers arrive on their own ---------------------------------
     seed(5, 54);
@@ -77,12 +77,12 @@ const BOOT = `
     // The post only exists while the seat is empty, and it says so.
     seed(4, 66);
     check('with a partner there is nothing to post', (() => {
-      CAREER.partner = {card:{handle:'Held', nat:'de', region:'EU', org:null, tier:'ladder',
+      CAREER.partners = [{card:{handle:'Held', nat:'de', region:'EU', org:null, tier:'ladder',
         event:'', date:'-', placement:null, rating:66, _targetOvr:66,
-        _attrs:ccRookieAttrs(66,'roleFRG')}, patience:80};
+        _attrs:ccRookieAttrs(66,'roleFRG')}, patience:80}];
       careerLfdPost();
       const posted = (CAREER.career.news||[]).some(n => n.k === 'ccNewsLfd');
-      CAREER.partner = null;
+      CAREER.partners = [];
       return !posted;
     })());
 

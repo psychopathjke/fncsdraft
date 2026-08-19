@@ -37,11 +37,11 @@ const BOOT = `
               handle:null, cardRegion:null, nat:null},
       career:{season:1, day:'2026-02-04', division:2, earnings:0, balance:0,
               reach:5000, form:0, tokens:[], log:log||[], news:[]},
-      partner:null
+      partners:[]
     }));
     careerLoad();
     if (withMate) (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
-    else CAREER.partner = null;
+    else CAREER.partners = [];
   };
   try {
     // ---- the question follows the result ---------------------------------
@@ -80,15 +80,15 @@ const BOOT = `
     // ---- answering it ----------------------------------------------------
     // Credit to the duo: your partner reads it.
     seed([row(1, 150, true)], true);
-    const mate0 = CAREER.partner.patience;
+    const mate0 = CAREER.partners[0].patience;
     const reach0 = careerReach();
     careerInterviewSay('duo');
     out.notes.duo = {reach: reach0 + ' -> ' + careerReach(),
-                     patience: mate0 + ' -> ' + CAREER.partner.patience,
+                     patience: mate0 + ' -> ' + CAREER.partners[0].patience,
                      form: careerForm()};
     check('crediting the duo is worth an audience', careerReach() > reach0);
     check('and your partner stays longer for it',
-          CAREER.partner.patience > mate0, JSON.stringify(out.notes.duo));
+          CAREER.partners[0].patience > mate0, JSON.stringify(out.notes.duo));
 
     // The boast travels furthest, and it is the one that costs nothing.
     seed([row(1, 150, true)], true);
@@ -106,11 +106,11 @@ const BOOT = `
 
     // Blame costs the partner, which is the whole point of it being offered.
     seed([row(140, 150, false)], true);
-    const mateB = CAREER.partner.patience;
+    const mateB = CAREER.partners[0].patience;
     careerInterviewSay('blame');
-    out.notes.blame = {patience: mateB + ' -> ' + CAREER.partner.patience};
+    out.notes.blame = {patience: mateB + ' -> ' + CAREER.partners[0].patience};
     check('blaming your duo costs you your duo',
-          CAREER.partner.patience < mateB, JSON.stringify(out.notes.blame));
+          CAREER.partners[0].patience < mateB, JSON.stringify(out.notes.blame));
 
     // ---- what is offered -------------------------------------------------
     seed([row(1, 150, true)], true);

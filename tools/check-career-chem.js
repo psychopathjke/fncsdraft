@@ -33,7 +33,7 @@ const BOOT = `
               age:17, attrs:ccRookieAttrs(70,'roleIGL')},
       career:{season:1, day:day||'2026-02-01', division:3, earnings:0, balance:0,
               tokens:[], log:[], news:[], form:0, grind:0},
-      dms:[], partner:mate(), gear:{own:[], train:0}}; };
+      dms:[], partners:[mate()], gear:{own:[], train:0}}; };
 
     // ---- nothing on the first night, everything after a season -------------
     seed('2026-02-01');
@@ -69,23 +69,23 @@ const BOOT = `
     careerDmPush(t, 'them', 'dmNoPartner', [74]);
     t.state = 'offer';
     careerDmAccept(t.id);
-    out.notes.afterSwap = {chem: careerChem(), since: CAREER.partner.since};
+    out.notes.afterSwap = {chem: careerChem(), since: CAREER.partners[0].since};
     check('a better card costs the season you had', careerChem() === 0, String(careerChem()));
-    check('and the new pair starts today', CAREER.partner.since === careerToday(),
-          String(CAREER.partner.since));
+    check('and the new pair starts today', CAREER.partners[0].since === careerToday(),
+          String(CAREER.partners[0].since));
 
     // ---- a taken card arrives already played in ----------------------------
     // Those two have been a duo for a year before the career opened, so they do
     // not start as strangers: ccStart seats the real pairing with a season
     // already behind it, which is this date.
     seed(careerStartDay());
-    CAREER.partner.since = ccAddDays(careerStartDay(), -CC_CHEM_DAYS);
-    out.notes.taken = {since: CAREER.partner.since, day: careerToday(), chem: careerChem()};
+    CAREER.partners[0].since = ccAddDays(careerStartDay(), -CC_CHEM_DAYS);
+    out.notes.taken = {since: CAREER.partners[0].since, day: careerToday(), chem: careerChem()};
     check('a taken card starts on a full season of it', careerChem() === CC_CHEM_MAX,
           String(careerChem()));
     // And a save from before any of this has no date on its duo, which must read
     // as a pair that has not played together rather than as a crash.
-    delete CAREER.partner.since;
+    delete CAREER.partners[0].since;
     check('an older save reads as no chemistry rather than breaking',
           careerChem() === 0 && careerChemDays() === 0, String(careerChem()));
   } catch(e) { out.err = String(e && e.stack || e); }

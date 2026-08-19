@@ -28,8 +28,8 @@ const BOOT = `
       country:'de', age:16, attrs:ccRookieAttrs(70,'roleIGL')},
       career:{season:1, day:CC_YEAR_FROM, division:3, balance:0, earnings:0, reach:60000,
               energy:CC_ENERGY_DAY, did:{}, log:[], news:[]},
-      partner:{card:{handle:'Mate', region:'EU', tier:'ranked', rating:70, _targetOvr:70,
-                     _attrs:ccRookieAttrs(70,'roleFRG')}, patience:60},
+      partners:[{card:{handle:'Mate', region:'EU', tier:'ranked', rating:70, _targetOvr:70,
+                     _attrs:ccRookieAttrs(70,'roleFRG')}, patience:60}],
       gear:{own:[], train:0}, sponsor:{id:'drink', since:1, paid:0}}; };
 
     // How often, and only on days the calendar leaves alone.
@@ -82,7 +82,7 @@ const BOOT = `
     check('and the offer does not come back', ccDayEventOn(someDay) === null);
 
     // A stand-in offer needs a partner; a video needs a sponsor.
-    fresh(); CAREER.partner = null; CAREER.sponsor = null;
+    fresh(); CAREER.partners = []; CAREER.sponsor = null;
     let scrim = 0, promo = 0;
     for (let d = CC_YEAR_FROM; d <= CC_YEAR_TO; d = ccAddDays(d, 1)) {
       CAREER.career.day = d;

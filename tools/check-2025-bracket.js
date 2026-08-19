@@ -34,13 +34,14 @@ if (!CHROME) throw new Error('Chrome not found — set the CHROME environment va
 const BOOTSTRAP = `
 <pre id="__br" style="display:none"></pre>
 <script>
-(function(){
+(async function(){
   var out = {};
   try {
     var SET = ${JSON.stringify(SET)};
     var REG = ['EU','NAC','NAW','BR','ASIA','ME','OCE'];
     var published = ${JSON.stringify(PUBLISHED)};
-    REG.forEach(function(reg){
+    for (var ri = 0; ri < REG.length; ri++) {
+      var reg = REG[ri];
       var FMT = majorFormat(reg, SET);
       var pool = cardRosterPlayers(SET).filter(function(p){ return p.region===reg; });
       // The app's own team builder, so the teams carry every field the
@@ -60,7 +61,7 @@ const BOOTSTRAP = `
       var slots = (FMT.lcqWinners==null) ? FMT.lclGames : FMT.lcqWinners;
       var rest = teams.filter(function(t){ return through.indexOf(t) < 0; });
       rest.forEach(function(t){ t.stagePts=0; t.stageElims=0; t.gotVR=false; });
-      var lcqWinners = computeQuietLCQWinners(rest, slots);
+      var lcqWinners = await computeQuietLCQWinners(rest, slots);
       var modelled = FMT.heats.reduce(function(s,h){ return s+h.cut; }, 0) + slots;
       out[reg] = {
         playInCut: FMT.playInCut,
@@ -74,7 +75,7 @@ const BOOTSTRAP = `
         gfGames: FMT.gfGames,
         ok: (through.length + lcqWinners.length) === modelled
       };
-    });
+    }
   } catch (e) { out.error = String(e && e.stack || e); }
   document.getElementById('__br').textContent =
     'BEGINBR' + encodeURIComponent(JSON.stringify(out)) + 'ENDBR';

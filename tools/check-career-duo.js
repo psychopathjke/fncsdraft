@@ -38,10 +38,10 @@ const BOOT = `
         photo:null, handle:null, cardRegion:null, nat:null},
       career:{season:1, day:day, division:2, earnings:0, balance:0, reach:0,
               tokens:[], log:[], news:[]},
-      partner:{card:{handle:'Buddy', region:'EU', rating:mateOvr, _ovr:mateOvr,
+      partners:[{card:{handle:'Buddy', region:'EU', rating:mateOvr, _ovr:mateOvr,
                      nat:'de', tier:'ladder', event:'ladder', placement:null,
                      rarity:'common', partner:null},
-               patience:patience}}));
+               patience:patience}]}));
     const s = JSON.parse(localStorage.getItem('fncsdraft_career'));
     s.player.attrs = ccRookieAttrs(80, 'roleIGL');
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
@@ -103,7 +103,7 @@ const BOOT = `
     if (mate() === before2) fail('a partner below the unhappy line stayed');
     // The seat stays empty: who plays beside you is not handed out any more.
     // What arrives instead is somebody offering to take it.
-    if (CAREER.partner) fail('the seat was refilled instead of left to the player');
+    if (careerMateRec()) fail('the seat was refilled instead of left to the player');
     const offer = careerDms().find(t => t.state === 'offer' && !t.who.org && !t.who.brand);
     if (!offer) fail('nobody wrote to the empty seat');
     if (offer && !offer.msgs.some(m => m.from === 'them'))
@@ -112,7 +112,7 @@ const BOOT = `
     if (!f2.some(t => /Parting ways|Расходимся/i.test(t))) fail('the split was not announced');
     // And taking the offer is one press, with no day of waiting in between.
     if (offer) careerDmAccept(offer.id);
-    if (!CAREER.partner) fail('taking the offer did not seat them');
+    if (!careerMateRec()) fail('taking the offer did not seat them');
     // The player's own announcement, not one of the scene's — those carry an
     // author and are filed on top of it.
     const own = (CAREER.career.news||[]).find(n => n.k === 'ccNewsPartnerNew' && !n.by);

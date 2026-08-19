@@ -160,6 +160,24 @@ const BOOT = `
     if ((s2.earnings||0) !== r2.prize) fail('the money did not reach earnings');
     out.steps.push('final #' + r2.place + ' of 50 — $' + r2.prize.toLocaleString('en-US'));
 
+    /* What the Final is for, which is not the money.
+
+       Europe's table pays all fifty places, so "was anybody paid" was true for
+       everybody and the Final called every finish a pass — green card, "through"
+       on the result card, passed in the log — while the seat itself was never
+       mentioned. A player read that as qualifying and then found Antwerp locked.
+       The row is the seat now, and the calendar has to agree with it. */
+    const slots = ccGcSlots(GCLC_GC_SLOTS);
+    const wonSeat = r2.place <= slots;
+    if (r2.passed !== wonSeat)
+      fail('#' + r2.place + ' of ' + slots + ' seats was logged ' +
+           (r2.passed ? 'passed' : 'failed'));
+    if (!!ccGlobalsSeat() !== wonSeat)
+      fail('the Final said ' + (wonSeat?'seat':'no seat') + ' and the calendar disagrees');
+    out.steps.push(wonSeat
+      ? 'top ' + slots + ' — the seat, and Antwerp opens'
+      : 'paid but no seat, and the row says so rather than calling it a pass');
+
     // ---- and Paris still works, on the same kind --------------------------
     const parisRow = CAREER_YEAR.find(r => r[2] === 'ReloadChampionshipParis');
     seed(1, parisRow[0], undefined);

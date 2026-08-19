@@ -32,7 +32,7 @@ const BOOT = `
     const seed = (div, day) => { CAREER = {player:{nick:'Probe', ovr:70, region:'EU', role:'roleIGL',
       country:'de', age:16, attrs:ccRookieAttrs(70,'roleIGL')},
       career:{season:1, day:day, division:div, earnings:0, balance:0, tokens:[], log:[], news:[]},
-      partner:mate()}; };
+      partners:[mate()]}; };
     // Find days the calendar carries an event this career cannot enter.
     seed(4, CC_YEAR_FROM);
     const days = careerYearDays();
@@ -62,12 +62,19 @@ const BOOT = `
     check('a playable day still shows the match card', /careerPlay\\(\\)/.test(cupHtml));
     check('and not the day panel', !/cc-day-in/.test(cupHtml));
     // And the seat is a lock like any other: the same cup, nobody beside you.
-    CAREER.partner = null;
+    CAREER.partners = [];
     const aloneHtml = careerCentreHTML(careerCard(), attrsFor(careerCard()));
     check('an empty seat locks the cup', !/careerPlay\\(\\)/.test(aloneHtml));
     check('and says so on the day panel', /cc-day-locked/.test(aloneHtml));
+    /* The sentence now counts what is missing, because a trio can be one short
+       or two, and a day with a seat empty is a day with a job on it rather than
+       a free one — his call, 19 August. So the panel says how many and carries
+       the button that goes and finds them. */
     check('with the reason a player can read',
-      aloneHtml.indexOf(L().ccNoMate) >= 0, 'ccNoMate is not on the panel');
+      aloneHtml.indexOf(L().ccNoMateN(careerMatesShort())) >= 0,
+      'the count is not on the panel');
+    check('and a way to do something about it', /cc-day-find/.test(aloneHtml),
+      'no find button on a locked day');
     // Solo is solo — the Victory Cup that is played alone does not ask.
     const soloDay = (() => { for (let d = CC_YEAR_FROM; d <= CC_YEAR_TO; d = ccAddDays(d, 1)) {
       const ev = careerVictoryOn(d); if (ev && ev.mode === 'solo') return d; } return null; })();

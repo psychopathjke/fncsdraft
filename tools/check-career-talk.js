@@ -35,7 +35,7 @@ const BOOT = `
                         attrs:ccRookieAttrs(ovr,'roleIGL'), photo:null, handle:null},
         career:{season:1, day:'2026-02-10', division:div||3, earnings:0, balance:0,
                 reach:120000, rep:0, tokens:[], log:log||[], news:[], newsN:0, newsSeen:0},
-        partner:null, gear:{own:[], train:0}, dms:[]};
+        partners:[], gear:{own:[], train:0}, dms:[]};
       CH_DM = null;
     };
     // A day moves the way careerAdvanceTo moves it, without the wages and the
@@ -155,7 +155,7 @@ const BOOT = `
     let mate = careerPartnerCard();
     check('there is somebody to talk to', !!mate);
     // Happy and a good night: he says so, and saying it makes it truer.
-    CAREER.partner.patience = 80;
+    careerMateRec().patience = 80;
     CAREER.dms = [];
     let said = null;
     for (let i = 0; i < 20 && !said; i++) {
@@ -171,14 +171,15 @@ const BOOT = `
     seed(70);
     (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
     mate = careerPartnerCard();
-    CAREER.partner.patience = CAREER_PATIENCE_QUIT + 4;
+    careerMateRec().patience = CAREER_PATIENCE_QUIT + 4;
     CAREER.dms = [];
     const going = careerMateDm(140, 150, false);
     check('a partner on his way out says so first', !!going && going.state === 'leaving',
           going && going.state);
     if (going) {
-      check('and the feed says it too',
-            (CAREER.career.news || []).some(n => n.k === 'ccNewsMateWobbling'));
+      check('and he says it in the conversation',
+            (going.msgs || []).some(m => m.from === 'them' && /^dmMateLeaving/.test(m.k)),
+            (going.msgs || []).map(m => m.k).join(','));
       const ways = careerMateKeepable(going);
       out.notes.keep = {ways: ways, patience: careerPatience()};
       check('there is something to say back', ways.length > 0, ways.join(','));
@@ -205,7 +206,7 @@ const BOOT = `
     // Run out of arguments and he goes, and the seat is empty.
     seed(70);
     (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();
-    CAREER.partner.patience = CAREER_PATIENCE_QUIT + 1;
+    careerMateRec().patience = CAREER_PATIENCE_QUIT + 1;
     CAREER.career.balance = 0;              // no bootcamp to offer
     CAREER.dms = [];
     const gone = careerMateDm(150, 150, false);
@@ -583,7 +584,7 @@ const BOOT = `
     CAREER.career.major = {n:1, got:'playin', pass:'playin', ticket:false};
     out.notes.slot = {held: careerSlotHeld() && careerSlotHeld().what};
     check('coming out of the Play-In is a commitment', !!careerSlotHeld());
-    CAREER.partner.patience = 5;
+    careerMateRec().patience = 5;
     careerMatePoach(1, 150, true);
     check('nobody poaches half of a qualified duo',
           careerPartnerCard() && careerPartnerCard().handle === mate0,
@@ -605,9 +606,9 @@ const BOOT = `
           careerPartnerCard().handle !== mate0, 'still stuck with ' + mate0);
     check('and the slot is gone with the duo that won it', !careerSlotHeld(),
           String(careerSlotHeld() && careerSlotHeld().what));
-    check('and it is said out loud',
-          (CAREER.career.news||[]).some(n => n.k === 'ccNewsSlotGone'),
-          ((CAREER.career.news||[])[0]||{}).k);
+    check('and it is written into the timeline',
+          (CAREER.career.events||[]).some(e => e.k === 'tlSlotGone'),
+          (CAREER.career.events||[]).map(e => e.k).join(','));
     check('and the Major will not have them back',
           !careerMajorCan({n:1, stage:'heats'}), 'walked back into the Heats');
     /* And playing a Major is not being in one.
@@ -667,6 +668,10 @@ const BOOT = `
     // the brand it had already heard from.
     seed(90, 1);
     CAREER.career.reach = 60000;
+    // A brand is sold to now rather than attracted, so somebody has to be out
+    // there doing it before one writes at all. See CC_MARKETING.
+    CAREER.mkt = {id:'probe', name:'Probe', at:null, photo:null, cost:0, rate:1,
+                  from:CAREER.career.day, until:'2026-12-31'};
     LANG = 'ru';
     const ru = careerSponsorDm();
     LANG = 'en';

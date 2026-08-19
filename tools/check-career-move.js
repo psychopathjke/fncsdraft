@@ -32,7 +32,7 @@ const BOOT = `
                          age:16, role:'roleIGL', attrs:ccRookieAttrs(82,'roleIGL'),
                          source: taken ? 'card' : 'rookie', handle: taken || null},
         career: {season:1, day:'2026-02-10', division:1, balance:money, earnings:money,
-                 log:[], news:[]}, partner:null, gear:{own:[], train:0}};
+                 log:[], news:[]}, partners:[], gear:{own:[], train:0}};
       CH_MOVE = false; CH_MOVE_PICK = null;
     };
 
@@ -158,7 +158,7 @@ const BOOT = `
     // A region move is the only thing in this mode that takes something away,
     // so what it takes has to actually go.
     fresh(50000, 'ge');
-    CAREER.partner = {card:{handle:'GONE', region:'EU', rating:60, _targetOvr:60}, patience:60};
+    CAREER.partners = [{card:{handle:'GONE', region:'EU', rating:60, _targetOvr:60}, patience:60}];
     CAREER.org = {name:'Probe Esports', salary:100, goal:{type:'cut'}, tier:70, paid:0};
     CAREER.career.rival = {season:1, div:1, card:{handle:'RIV'}, mate:{handle:'RIV2'}};
     const euRoster = careerRosterNowEU().length;
@@ -173,7 +173,7 @@ const BOOT = `
           euRoster + ' -> ' + careerRosterNowEU().length);
     check('nobody from the old region is in it',
           !careerRosterNowEU().some(p => (p.region||'') !== 'NAC'), 'mixed roster');
-    check('the duo does not come', CAREER.partner == null);
+    check('the duo does not come', careerMateRec() == null);
     check('the club does not come', CAREER.org == null);
     check('the rival does not come', CAREER.career.rival == null);
     check('the first month is paid', balBefore2 - CAREER.career.balance === 1500,
@@ -193,10 +193,63 @@ const BOOT = `
     check('and the roster is Europe again', careerRosterNowEU().length === euRoster,
           careerRosterNowEU().length + ' vs ' + euRoster);
 
+    /* Starting there is not moving there.
+
+       A player's report, 19 August: start a career on a region other than Europe
+       and it drags you back, on two saves and two regions, around the end of
+       January. That is the rent. ccRentNow charged CC_REGION_RENT to anybody
+       whose region was not Europe, which is right for somebody who flew out and
+       is paying to live there, and wrong for somebody who was always there:
+       nobody in NA Central is renting a flat abroad by being in NA Central. A new
+       career has no money on 5 January, the first wage day is 1 February, and it
+       was evicted on that morning — losing its duo, its club and its rival with
+       the region. */
+    fresh(0, 'us');
+    CAREER.player.region = 'NAC';
+    CAREER.player.homeRegion = 'NAC';
+    CAREER.career.day = careerStartDay();
+    check('living where you are from costs nothing', ccRentNow() === 0,
+          String(ccRentNow()));
+    for (var d = careerToday(); d <= '2026-02-05'; d = ccAddDays(d, 1)) careerAdvanceTo(d);
+    check('and a broke career that started abroad is not sent home',
+          CAREER.player.region === 'NAC', String(CAREER.player.region));
+
+    // Moving away from home still costs, and still evicts when it cannot be paid.
+    fresh(50000, 'us');
+    CAREER.player.region = 'NAC';
+    CAREER.player.homeRegion = 'NAC';
+    check('moving on from home goes through', careerMoveRegion('OCE') === true);
+    check('and that one is rented', ccRentNow() === CC_REGION_RENT.OCE, String(ccRentNow()));
+    CAREER.career.balance = 0;
+    careerMoveEvict();
+    check('an eviction goes home, not to Europe by default',
+          CAREER.player.region === 'NAC', String(CAREER.player.region));
+
     // A taken card is not sold a flight that would change nothing about them:
     // careerCard gives it no ping edge at all.
     fresh(50000, 'ge', 'Sky');
-    check('a taken card is not offered the move', careerMoveHTML() === '', 'tile drawn');
+    // It is still not offered one — but silence was the wrong way to say so, and
+    // the tile now carries the reason instead of not existing. What has to hold
+    // is that it carries no way to act: no map, no region buttons, no open.
+    var takenTile = careerMoveHTML();
+    check('a taken card is told why rather than shown nothing', takenTile !== '');
+    check('and is told which rule it is', takenTile.indexOf(L().ccMoveOnlyBuilt) >= 0);
+    // The rule moved on 18 August: a real card may cross an ocean, it just cannot
+    // shop for a ping. So the regions are open to it and the country map is not.
+    // Picking a region is a look first and a departure second, so the row calls
+    // careerMoveShowRegion; what has to hold is that the regions are on offer and
+    // that the way out of the continent still exists for a taken card.
+    check('and is offered the regions', takenTile.indexOf('careerMoveShowRegion') >= 0);
+    CH_MOVE_REG = 'OCE';
+    check('and picking one gives it the button that goes',
+          careerMoveHTML().indexOf('careerMoveRegion') >= 0);
+    CH_MOVE_REG = null;
+    check('but not the country map', takenTile.indexOf('careerMoveOpen') < 0,
+          'the map got through');
+    const wasRegion = ccCareerRegion();
+    check('and it can actually cross', careerMoveRegion('NAC') === true);
+    check('and the region really changed', ccCareerRegion() === 'NAC',
+          wasRegion + ' -> ' + ccCareerRegion());
     check('and cannot take it anyway', careerMoveTo('de') === false);
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =
@@ -205,9 +258,15 @@ const BOOT = `
 <\/script>`;
 
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fncsmove-'));
+// Inside the project: the page loads maps.js by a relative path now.
+const dir = fs.mkdtempSync(path.join(ROOT, 'probe-move-'));
 const tmp = path.join(dir, 'index.html');
-fs.writeFileSync(tmp, src + BOOT);
+// The maps load on demand on the site; a probe wants them present from the
+// first line, so it asks for them up front and says they have arrived.
+const MAPSJS = '<script src="maps.js"></' + 'script><script>CC_MAPS_STATE="ready";</' + 'script>';
+fs.writeFileSync(tmp, src + MAPSJS + BOOT);
+// The page fetches maps.js beside itself, so the probe needs its own copy.
+fs.copyFileSync(path.join(ROOT, 'maps.js'), path.join(dir, 'maps.js'));
 const dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandbox',
   '--allow-file-access-from-files', '--virtual-time-budget=60000', '--dump-dom',
   'file:///' + tmp.replace(/\\/g, '/')], { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8' });

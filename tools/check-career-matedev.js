@@ -32,7 +32,7 @@ const BOOT = `
               country:'de', age:17, attrs:ccRookieAttrs(mine,'roleIGL')},
       career:{season:1, day:'2026-02-02', division:3, earnings:0, balance:0,
               tokens:[], log:[], news:[], form:0, grind:0},
-      dms:[], partner:mate(theirs), gear:{own:[], train:0}}; };
+      dms:[], partners:[mate(theirs)], gear:{own:[], train:0}}; };
     const ovrOf = () => attrsFor(careerPartnerCard()).ovr;
     // A season of cups, played at the field's own level so the result term is
     // neither a gift nor a punishment.
@@ -48,8 +48,8 @@ const BOOT = `
     check('a partner grows over a season', after > before, before + ' -> ' + after);
     check('and not by more than a career does',
           after - before <= 6, before + ' -> ' + after);
-    check('the movement is stored, not the rating', CAREER.partner.card.rating === 70,
-          String(CAREER.partner.card.rating));
+    check('the movement is stored, not the rating', CAREER.partners[0].card.rating === 70,
+          String(CAREER.partners[0].card.rating));
 
     // ---- the gap is read from their side ----------------------------------
     // Beside somebody far better they learn faster; beside somebody far worse,
@@ -64,7 +64,7 @@ const BOOT = `
     // careerDevelopBase turns negative past thirty-six, and the partner reads it
     // the same way the player does.
     seed(70, 70);
-    CAREER.partner.handle = 'OldTimer';
+    CAREER.partners[0].handle = 'OldTimer';
     const old = careerDevelopBase(38);
     check('the scene knows what an old player does', old < 0, String(old));
     // Nothing to measure through a handle the roster has no birthday for, so the
@@ -74,7 +74,7 @@ const BOOT = `
 
     // ---- a save from before this reads as it always did --------------------
     seed(70, 70);
-    delete CAREER.partner.dev;
+    delete CAREER.partners[0].dev;
     check('no movement stored is no movement', careerMateDev() === 0);
     check('and the card is the roster\\'s own', ovrOf() === 70, String(ovrOf()));
   } catch(e) { out.err = String(e && e.stack || e); }

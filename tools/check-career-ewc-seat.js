@@ -30,9 +30,9 @@ const BOOT = `
               reach:0, log:[], news:[], ewc:ewc},
       // Seated: this probe is about the seat at the Championship, not the one
       // beside the player, and an empty duo now locks every tournament there is.
-      partner:{card:{handle:'Probemate', nat:'de', region:'EU', org:null, tier:'ladder',
+      partners:[{card:{handle:'Probemate', nat:'de', region:'EU', org:null, tier:'ladder',
                event:'', date:'-', placement:null, rating:88, _targetOvr:88,
-               _attrs:ccRookieAttrs(88,'roleFRG')}, patience:80},
+               _attrs:ccRookieAttrs(88,'roleFRG')}, patience:80}],
       gear:{own:[], train:0}}; };
 
     // No seat, no Championship.

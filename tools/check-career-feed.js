@@ -46,7 +46,7 @@ const BOOT = `
               handle:null, cardRegion:null, nat:null},
       career:{season:1, day:'2026-02-10', division:div, earnings:0, balance:0,
               reach:9000, tokens:[], log:[], news:[]},
-      partner:null
+      partners:[]
     }));
     careerLoad();
   };

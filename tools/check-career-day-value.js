@@ -46,7 +46,7 @@ const BOOT = `
     const fresh = (ovr, pot) => { CAREER = {player:{nick:'P', ovr:ovr, ovrExact:ovr, region:'EU',
       role:'roleIGL', country:'de', age:16, attrs:ccRookieAttrs(ovr,'roleIGL'), potential:pot},
       career:{season:1, day:'2026-02-10', division:3, balance:0, log:[], news:[]},
-      partner:null, gear:{own:[], train:0}};
+      partners:[], gear:{own:[], train:0}};
       // ccRookieAttrs builds the six around the rating; read the rating back off
       // them first so the first day is measured from where the card really is.
       CAREER.player.ovrExact = ATTR_KEYS.reduce((s,k)=>s+CAREER.player.attrs[k]*ATTR_W[k], 0);
@@ -104,8 +104,12 @@ const BOOT = `
     check('until it cannot', careerDoAct('trSur') === null,
           'energy ' + careerEnergy());
     // The three that are not an hour still take the whole day.
-    CAREER.career.energy = CC_ENERGY_DAY; CAREER.career.did = {};
-    check('resting closes the day', careerDoAct('rest') !== null);
+    // A night off is refused when there is nothing to sleep off — see the rest
+    // branch in careerDoAct and the ccRestFull line it puts on the screen — so
+    // the day this is asked of has to be a day with some of it spent.
+    CAREER.career.energy = 20; CAREER.career.did = {};
+    check('resting closes the day', careerDoAct('rest') !== null,
+          'energy ' + careerEnergy() + '/' + careerEnergyMax());
     check('and nothing follows it', careerDoAct('trAim') === null);
     CAREER.career.energy = CC_ENERGY_DAY; CAREER.career.did = {};
     check('a stream closes it too', careerDoAct('stream') !== null);
@@ -136,7 +140,8 @@ const BOOT = `
     fresh(60, 96);
     CAREER.career.balance = 20000;
     CAREER.gear = {own:['mouse','headset','keyboard','monitor','pcelite'], train:0.55};
-    if (!careerHireCoach('aim')) check('the probe could hire a coach', false);
+    const COACH = CC_COACHES.filter(function(c){ return c.keys.indexOf('aim') >= 0; })[0];
+    if (!careerHireCoach(COACH.id)) check('the probe could hire a coach', false);
     before = CAREER.player.ovrExact;
     careerDoAct('trAim');
     const kitted = CAREER.player.ovrExact - before;
@@ -149,8 +154,8 @@ const BOOT = `
     // development half of a result's growth.
     fresh(70, 96);
     check('no partner is no pull', Math.abs(careerMateFactor(70) - 1) < 1e-9);
-    const seat = ovr => { CAREER.partner = {card: {handle:'Mate', region:'EU', tier:'trSur',
-      rating: ovr, _targetOvr: ovr, _attrs: ccRookieAttrs(ovr,'roleFRG')}}; };
+    const seat = ovr => { CAREER.partners = [{card: {handle:'Mate', region:'EU', tier:'trSur',
+      rating: ovr, _targetOvr: ovr, _attrs: ccRookieAttrs(ovr,'roleFRG')}}]; };
     seat(80); const up = careerMateFactor(70);
     seat(70); const same = careerMateFactor(70);
     seat(60); const down = careerMateFactor(70);

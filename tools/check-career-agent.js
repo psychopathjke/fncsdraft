@@ -54,15 +54,41 @@ const BOOT = `
     check('signing is what makes an agent', !!careerAgent());
     ccPayIn(gross);
     const repped = {earn: CAREER.career.earnings, bal: CAREER.career.balance,
-                    paid: CAREER.career.agentPaid};
+                    paid: CAREER.career.agentPaid,
+                    cut: careerAgentTerms().cut,
+                    who: careerAgent() && careerAgent().name};
     out.notes.money = {plain: plain, repped: repped};
     check('what you won is what you won', repped.earn === plain.earn,
           repped.earn + ' vs ' + plain.earn);
-    check('and a tenth of it never reaches the balance',
-          plain.bal - repped.bal === Math.round(gross * CC_AGENT_CUT),
-          plain.bal + ' vs ' + repped.bal);
-    check('which is written down where it went', repped.paid === Math.round(gross * CC_AGENT_CUT),
-          String(repped.paid));
+    // The cut is the signed manager's own — CC_AGENT_CUT is only the fallback for
+    // one who has not named his terms — so the test asks what was actually agreed
+    // rather than assuming the founder's ten per cent. Adding people to CC_AGENTS
+    // moves who the season draws, which is what caught this.
+    const cut = repped.cut;
+    /* And a board is not where he is paid from.
+
+       His correction, 19 August: the cut of prize money belongs to the club, not
+       to the manager. A manager is paid out of the wage he negotiated — see
+       careerPayWages, where his cut still comes off — and this used to take it
+       off the winnings as well, which is two people's terms on one person.
+
+       So what has to hold here is the opposite of what it used to: signing a
+       manager changes nothing about what a board pays into the balance. */
+    check('a board is untouched by having a manager',
+          repped.bal === plain.bal,
+          plain.bal + ' vs ' + repped.bal + ' at ' + Math.round(cut*100) + '%');
+    check('and nothing is written down as paid to him for it',
+          !repped.paid, String(repped.paid));
+    // The club is the one that takes a share of a board, and only if one is signed.
+    CAREER.org = {name:'Probe', tier:90, salary:1000, cut:careerOrgCutFor(90), paid:0};
+    const beforeOrg = CAREER.career.balance;
+    ccPayIn(gross);
+    check('a club takes its share of the board',
+          CAREER.career.balance - beforeOrg === gross - Math.round(gross*careerOrgCut()),
+          String(CAREER.career.balance - beforeOrg));
+    check('and that share is written down where it went',
+          CAREER.career.orgCut === Math.round(gross*careerOrgCut()),
+          String(CAREER.career.orgCut));
 
     // ---- and the wage is money too -----------------------------------------
     seed(75);

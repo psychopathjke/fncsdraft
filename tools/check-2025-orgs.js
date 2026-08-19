@@ -9,6 +9,16 @@ const fs = require('fs'), os = require('os'), path = require('path');
 const { execFileSync } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
+// This one is a measurement, not a regression test: it needs a scraped
+// Liquipedia file to compare against and the repository does not carry one. Say
+// so rather than dying on readFileSync(undefined), which reads as a broken test
+// to anybody running the whole tools directory in a loop. Exit 2 is what the
+// other probes here use for could-not-run, as against 1 for found-a-problem.
+if (!process.argv[2]) {
+  console.error('usage: node tools/check-2025-orgs.js <gc2025-orgs.json>');
+  console.error('Needs a scraped Global Championship club list; see build-2025-orgs.js.');
+  process.exit(2);
+}
 const ORGS = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
 const CHROME = [
   process.env.CHROME,
