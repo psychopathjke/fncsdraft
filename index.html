@@ -1139,7 +1139,15 @@
   .cc-mp.cc-here{stroke:#ffd166;stroke-width:2.2;}
   .cc-mp.on{stroke:#00ffd0;stroke-width:2.4;}
   .cc-mp.off{opacity:.28;}
-  .cc-lead{stroke:#12212e;stroke-width:1.1;}
+  /* Decoration, and decoration must not take a click.
+
+     The leader lines are drawn after the shapes, so each one lies on top of the
+     country it points away from. On Andorra and Malta — small enough that the
+     line crosses the whole country — the cursor was over the line rather than
+     the country, and ccMapClick, finding no data-code above it, dropped the
+     click: those two could not be picked at all. Luxembourg and Cyprus have
+     room either side of theirs and were always fine. His report, 20 August. */
+  .cc-lead{stroke:#12212e;stroke-width:1.1;pointer-events:none;}
   .cc-badge{fill:#12212e;stroke:#fff;stroke-width:1.4;cursor:pointer;}
   .cc-badge.on{stroke:#00ffd0;stroke-width:2.4;}
   .cc-num{fill:#fff;stroke:#000;stroke-width:3.2;paint-order:stroke;
@@ -3851,7 +3859,7 @@ ccDuoWith:n=>'дуо с '+n,
 ccDuoNobody:'Никого не нашлось',
 ccDuoFound:n=>n+(n%10===1&&n%100!==11?' игрок':(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?' игрока':' игроков')),
 ccDuoYouWrote:'Ты уже писал',
-ccSwapDuo:'Сменить напарника', ccFindDuo:'Найти напарника',
+ccMateReplace:'Найти нового', ccFindDuo:'Найти напарника',
 chSquadHint:'Ты и напарник', chSquadHintTrio:'Ты и два напарника',
 chNoPartner:'Напарника пока нет',
 ccSeatEmpty:'Место свободно', ccSeasonDuos:'Сезон в дуо', ccSeasonTrios:'Сезон в трио',
@@ -5201,7 +5209,7 @@ ccDuoWith:n=>'duo with '+n,
 ccDuoNobody:'Nobody found',
 ccDuoFound:n=>n+(n===1?' player':' players'),
 ccDuoYouWrote:'Already written',
-ccSwapDuo:'Change a partner', ccFindDuo:'Find a partner',
+ccMateReplace:'Find a new one', ccFindDuo:'Find a partner',
 chSquadHint:'You and your partner', chSquadHintTrio:'You and your two partners',
 chNoPartner:'No partner yet',
 ccSeatEmpty:'Seat open', ccSeasonDuos:'A duos season', ccSeasonTrios:'A trios season',
@@ -7256,7 +7264,7 @@ ccDuoWrite:'Écrire',
 ccDuoFree:'sans duo',
 ccDuoNobody:'Personne trouvé',
 ccDuoYouWrote:'Déjà écrit',
-ccSwapDuo:'Changer de partenaire',
+ccMateReplace:'En trouver un nouveau',
 ccFindDuo:'Trouver un partenaire',
 ccSeatEmpty:'Place libre',
 ccSeasonDuos:'Saison en duos',
@@ -43101,11 +43109,10 @@ function careerDuoTileHTML(){
                const pct=Math.round((f-1)*100);
                return `<div class="ch-row"><em>${L().ccMateLearn}</em><b class="${pct>0?'ch-goal-met':pct<0?'cc-pen bad':''}">${pct>0?'+':''}${pct}%</b></div>`; })()
            : `<div class="ch-empty">${L().chNoPartner}</div>`}
-    <!-- Find while a chair is open, swap only once the squad is full: with one
-         of three seats empty this said "change a partner", which is not the thing
-         the player needs to do. His report, 19 August. -->
-    <button class="ch-swap" onclick="ccDuoFindOpen()">${
-      mates.length>=seats ? L().ccSwapDuo : L().ccFindDuo}</button>
+    <!-- The one button that used to sit here asked for somebody without saying
+         which chair it meant, so in a trio there was no way to say "this one,
+         not that one" — it took whoever was rated lowest. It now sits under each
+         card instead, one per chair. His report, 20 August. See careerMeHTML. -->
     </div></div>
   </div>`;
 }
@@ -43127,12 +43134,23 @@ function careerMeHTML(){
       <h4>${esc(CAREER.player.nick||'')}</h4>
       <div class="ch-cardwrap">${card?futCardHTML(card,{wide:true}):''}</div>
     </div>`];
+  /* One button per chair, under the card sitting in it.
+
+     Asking from under a card is asking for that card to be replaced, and the
+     seat travels with the request: through the search, into the conversation,
+     and out the other side on the day they say yes. An empty chair asks to be
+     filled instead, which is the same button with the other word on it.
+
+     His report, 20 August: with one button above all of them there was no way
+     to say which of two partners he wanted gone. See careerMateSeat. */
   for(let i=0;i<seats;i++){
     const m=mates[i];
     cardTiles.push(`<div class="ch-tile ch-tile-card">
       <h4>${L().ccResPartner}</h4>
       <div class="ch-cardwrap">${m?futCardHTML(m,{wide:true})
         :`<div class="ch-empty ch-empty-seat">${(i===0 && !mates.length)?L().chNoPartner:L().ccSeatEmpty}</div>`}</div>
+      <button class="ch-swap" onclick="ccDuoFindOpen(${i})">${
+        m ? L().ccMateReplace : L().ccFindDuo}</button>
     </div>`);
   }
   return `<div class="ch-grid ch-grid-me">
@@ -45728,9 +45746,19 @@ function careerMateDrop(handle){
    — dropping the one you had longest instead would cost the chemistry twice.
 
    Never more people than the season is played by. */
-function careerMateSeat(rec){
+function careerMateSeat(rec, seat){
   if(!CAREER || !rec) return false;
   CAREER.partners=(CAREER.partners||[]).filter(Boolean).slice(0, careerMateSeats());
+  /* A named chair is answered exactly, whatever is sitting in it.
+
+     The rule underneath — the weakest one goes — is for when nobody said which,
+     and it is the right rule then. It is the wrong one the moment the player
+     points at a card: he looked at both and decided, and taking the other one
+     because it happens to be rated lower is the mode overruling him. */
+  if(typeof seat==='number' && seat>=0 && seat<careerMateSeats()){
+    if(seat<CAREER.partners.length){ CAREER.partners[seat]=rec; return true; }
+    CAREER.partners.push(rec); return true;
+  }
   if(CAREER.partners.length<careerMateSeats()){ CAREER.partners.push(rec); return true; }
   const rate=p=>{ const c=ccMateCardOf(p); if(!c) return -Infinity;
                   const o=(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr);
@@ -49514,7 +49542,7 @@ function careerDmMargin(who){
   if(mate && careerDuoBeatsYou(who)) return -99;
   return pull-(who.ovr-CAREER_DM_REACH);
 }
-function careerDmWrite(handle){
+function careerDmWrite(handle, seat){
   const existing=careerDmFind(handle);
   // Asking twice is not a second chance — the thread already carries the answer.
   if(existing && existing.msgs.some(m=>m.from==='you')){ careerDmOpen(existing.id); return; }
@@ -49524,6 +49552,12 @@ function careerDmWrite(handle){
     || careerDuoSearchPool().find(w=>hKey(w.handle)===hKey(handle));
   if(!who) return;
   const t=existing || careerDmThread(who);
+  /* Which chair this was asked for, carried by the conversation itself.
+
+     They answer on the day they answer, and the screen that asked is long gone
+     by then — the thread is the only thing left that remembers which card the
+     player was looking at when he wrote. Null means nobody was named. */
+  t.seat=(typeof seat==='number') ? seat : null;
   CH_DM=t.id;
   careerDmPush(t, 'you', 'dmAsk');
   /* And they answer. His rule, 17 August: a player writing to a player is a
@@ -49699,7 +49733,15 @@ function careerHaterReply(id){
 // loud in the feed rather than happening quietly.
 function careerDmAccept(id){
   const t=careerDms().find(x=>x.id===id); if(!t) return;
-  const old=careerPartnerCard();
+  /* Who actually loses the chair.
+
+     Asked for from under a card, it is that card. Asked for with nothing named,
+     it is the partner the mode has always meant by "the partner". Both the feed
+     line and the forfeited slot below have to name the person who really left —
+     a trio announcing the wrong departure is worse than announcing none. */
+  const mateRecs=careerMateRecords();
+  const seatAt=(typeof t.seat==='number' && t.seat>=0 && t.seat<mateRecs.length) ? t.seat : null;
+  const old=(seatAt!=null) ? ccMateCardOf(mateRecs[seatAt]) : careerPartnerCard();
   // And the door swings both ways. A career holding a seat with somebody cannot
   // walk out of it either - the qualification is the pair's, and dropping your
   // half of it in the week before a Major is the thing the rule exists to stop.
@@ -49719,7 +49761,7 @@ function careerDmAccept(id){
   careerMateSeat(who.roster
     ? {handle:who.handle, cardRegion:who.cardRegion||'EU', patience:CAREER_PATIENCE_START,
        since:careerToday()}
-    : {card:who.card, patience:CAREER_PATIENCE_START, since:careerToday()});
+    : {card:who.card, patience:CAREER_PATIENCE_START, since:careerToday()}, seatAt);
   t.state='partner';
   t.unread=false;
   careerNews('good', 'ccNewsPartnerNew', [who.handle, who.ovr]);
@@ -50547,8 +50589,13 @@ function careerDuoSearchPool(){
 }
 // The search list, filtered by whatever is typed into it.
 let CC_DUO_Q='';
-function ccDuoFindOpen(){
+/* The chair the search was opened from, if it was opened from one. Null is "any
+   chair", which is what the day panel means when it says the squad is a player
+   short — there, the player has not picked anybody to lose. */
+let CC_DUO_SEAT=null;
+function ccDuoFindOpen(seat){
   CC_DUO_Q='';
+  CC_DUO_SEAT=(typeof seat==='number' && seat>=0 && seat<careerMateSeats()) ? seat : null;
   ccDuoFindRender();
   document.getElementById('duoFindModal').style.display='flex';
   document.addEventListener('keydown', ccDuoFindKey);
@@ -50557,11 +50604,15 @@ function ccDuoFindOpen(){
 function ccDuoFindClose(){
   const m=document.getElementById('duoFindModal');
   if(m) m.style.display='none';
+  // A chair is only chosen for as long as the search that chose it is open. Left
+  // set, the next search opened from the day panel would quietly aim at it.
+  CC_DUO_SEAT=null;
   document.removeEventListener('keydown', ccDuoFindKey);
 }
 function ccDuoFindKey(e){ if(e.key==='Escape') ccDuoFindClose(); }
 function ccDuoFindQ(v){ CC_DUO_Q=String(v||''); ccDuoFindRender(true); }
-function ccDuoFindWrite(handle){ ccDuoFindClose(); careerDmWrite(handle); }
+// Read the seat before closing, because closing is what clears it.
+function ccDuoFindWrite(handle){ const seat=CC_DUO_SEAT; ccDuoFindClose(); careerDmWrite(handle, seat); }
 function ccDuoFindRender(keepFocus){
   const q=CC_DUO_Q.trim().toLowerCase();
   const all=careerDuoSearchPool();
