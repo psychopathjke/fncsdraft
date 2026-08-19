@@ -42020,6 +42020,9 @@ function careerLoad(){
   // at the hub with an empty seat and a person sat in it.
   if(CAREER){ careerNotesMigrate(); careerMigrateSize(); careerMigratePartners();
               careerMigrateHome(); careerMigrateDiff(); }
+  // A different career is a different place to live. What the last one was
+  // looking at in the flat list belongs to the last one. See CH_FLAT_PLACE.
+  CH_FLAT_PLACE=null;
   return CAREER;
 }
 // A save that cannot be written is the career quietly ceasing to exist, and this
@@ -42364,6 +42367,9 @@ function careerSlotDrop(n){
 let CH_TAB='centre';
 function careerTab(t){
   CH_TAB=t;
+  // The shop opens where the career is living, every time. Whatever was being
+  // looked at last visit was a look, not a decision. See CH_FLAT_PLACE.
+  if(t==='shop') CH_FLAT_PLACE=null;
   careerRenderHub(t);
   // Opening the shop is what clears its mark: the render above still drew the
   // new rows, and the next visit will not call them new again.
@@ -51901,6 +51907,17 @@ function careerMoveEvict(){
   pl.livesIn=null;
   careerNews('bad', 'ccNewsRentGone', [ccCountryName(was), ccCountryName(pl.country)]);
 }
+/* Which place the flat list is being read against, when it is not the one the
+   career is standing in.
+
+   It is null almost always, and null means here. Browsing what a place costs
+   somewhere else is a thing this list is for — the rents are the reason a career
+   moves at all — but the browsing is a look, and a look should not outlive the
+   visit: left set, it followed the player out of the shop, across a move, and
+   into the next career, so the panel opened on NA West for somebody living in
+   Germany and offered to buy him a flat four thousand miles from where he
+   sleeps. His report, 20 August. See careerTab and careerLoad, which both put it
+   back to here. */
 let CH_FLAT_PLACE=null;
 function ccFlatPlace(){ return CH_FLAT_PLACE || ccPlaceNow(); }
 function careerFlatPlacePick(code){
@@ -51996,12 +52013,30 @@ function careerMoveHTML(){
     <button class="ch-swap" onclick="careerMoveOpen()">${
       CH_MOVE ? L().ccMoveClose : away ? L().ccMoveAgain : L().ccMoveOpen}</button>
     ${CH_MOVE ? careerRegionRowsHTML() : ''}
-    ${CH_MOVE ? (ccMapsReady(function(){ careerRenderHub('shop'); })
+    ${CH_MOVE ? (function(){
+      /* Looking at your own region is looking at home, not planning to leave it.
+
+         The region rows were given a map on 19 August so that choosing where to
+         go lights the place up, and the map that comes with them is display-only
+         — which is right for a continent you do not live on, where the move is
+         the whole continent at one price and there is no country to choose.
+
+         It was wrong for your own. Pressing Europe while living in Europe killed
+         the country map stone dead and put a "move to Europe" button under it,
+         so the one screen where countries have their own rents was the one
+         screen where you could not pick one. His report, 20 August: you cannot
+         choose a country to move to and pay that country's price.
+
+         So the row for the region you are in is a look at your own map, with
+         every country live and the panel that answers a click. */
+      const elsewhere = CH_MOVE_REG && CH_MOVE_REG!==ccCareerRegion();
+      const map = ccMapsReady(function(){ careerRenderHub('shop'); })
         ? `<div class="cc-movemap">${ccBuildMap(
-             CH_MOVE_REG ? 'void 0' : 'ccMoveMapClick(event)', ccMoveShownRegion())}</div>`
-        : `<div class="cc-note">${L().ccMapLoading}</div>`)+
-        (CH_MOVE_REG ? careerMoveGoHTML()
-                     : `<div id="ccMovePanel">${careerMovePanelHTML()}</div>`) : ''}
+             elsewhere ? 'void 0' : 'ccMoveMapClick(event)', ccMoveShownRegion())}</div>`
+        : `<div class="cc-note">${L().ccMapLoading}</div>`;
+      return map + (elsewhere ? careerMoveGoHTML()
+                              : `<div id="ccMovePanel">${careerMovePanelHTML()}</div>`);
+    })() : ''}
   </div>`;
 }
 /* The other continents, under the map of this one.
