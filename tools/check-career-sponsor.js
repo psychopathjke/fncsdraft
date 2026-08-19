@@ -27,7 +27,18 @@ const BOOT = `
     const fresh = (reach, div) => { CAREER = {player:{nick:'Probe', ovr:70, region:'EU',
       role:'roleIGL', country:'de', age:16, attrs:ccRookieAttrs(70,'roleIGL')},
       career:{season:1, day:'2026-01-05', division:div||4, balance:0, earnings:0, wages:0,
-              reach:reach, log:[], news:[]}, partner:null, gear:{own:[], train:0}}; };
+              reach:reach, log:[], news:[]}, partner:null, gear:{own:[], train:0}};
+      // A brand is sold to now, not attracted: an offer only exists while
+      // somebody is out there working the brands. See CC_MARKETING. The plain
+      // one, so the rate is the audience's own and nothing is multiplied.
+      CAREER.mkt = {id:'probe', name:'Probe', at:null, photo:null, cost:0, rate:1,
+                    from:'2026-01-05', until:'2026-12-31'}; };
+
+    // Without one, nothing is on the table however big the audience is.
+    fresh(200000);
+    CAREER.mkt = null;
+    check('no marketing manager, no offer', ccSponsorOffer() === null);
+    check('and nothing can be signed', careerSignSponsor('brand') === false);
 
     // Nobody offers to an unknown career.
     fresh(0);

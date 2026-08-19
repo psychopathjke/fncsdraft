@@ -249,13 +249,19 @@ const BOOT = `
           !careerRosterNowEU().some(p => (p.region||'') !== 'NAC'), 'mixed');
     check('and the card picked before does not follow', CC.card == null);
 
-    // A rookie still chooses nothing, starts at sixteen, and starts in Europe.
+    // A rookie still chooses nothing and starts at sixteen — but since
+    // 19 August they no longer have to start in Europe. Every region has a map
+    // now (tools/build-region-maps.js), so the gate that kept a built player in
+    // Europe is open and the region survives the switch out of card mode.
     ccSetMode('rookie');
     check('a rookie starts at sixteen', field.value === '16', field.value);
     check('and a rookie can still type in the box', field.disabled === false);
-    check('and a rookie is European, because the map is', CC.region === 'EU', CC.region);
-    check('with the other regions closed to them',
-          CC_REGIONS.filter(r => r !== 'EU').every(r => !ccRegionReady(r)), 'open');
+    check('and a rookie keeps the region that was being looked at',
+          CC.region === 'NAC', CC.region);
+    check('with every region open to them',
+          CC_REGIONS.every(r => ccRegionReady(r)), 'some closed');
+    check('and that region has a map to pick a country on',
+          !!(ccMapHere('NAC') || {}).c && ccCountriesHere('NAC').length > 4);
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =
     'PB' + 'EGIN' + encodeURIComponent(JSON.stringify(out)) + 'PE' + 'ND';
@@ -263,9 +269,15 @@ const BOOT = `
 <\/script>`;
 
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fncsedge-'));
+// Inside the project: the page loads maps.js by a relative path now.
+const dir = fs.mkdtempSync(path.join(ROOT, 'probe-edges-'));
 const tmp = path.join(dir, 'index.html');
-fs.writeFileSync(tmp, '<base href="file:///' + ROOT + '/">' + src + BOOT);
+// The maps load on demand on the site; a probe wants them present from the
+// first line, so it asks for them up front and says they have arrived.
+const MAPSJS = '<script src="maps.js"></' + 'script><script>CC_MAPS_STATE="ready";</' + 'script>';
+fs.writeFileSync(tmp, '<base href="file:///' + ROOT + '/">' + src + MAPSJS + BOOT);
+// The page fetches maps.js beside itself, so the probe needs its own copy.
+fs.copyFileSync(path.join(ROOT, 'maps.js'), path.join(dir, 'maps.js'));
 const dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandbox',
   '--allow-file-access-from-files', '--virtual-time-budget=300000', '--dump-dom',
   'file:///' + tmp.replace(/\\/g, '/')], { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8' });

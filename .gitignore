@@ -5,6 +5,12 @@
 # rather than tracking it; it changes every time a logo is added.
 logos/_MISSING.txt
 
+# Probe copies of the page, written inside the project because index.html now
+# loads maps.js by a relative path. The harnesses delete them; one that fails
+# early may not, and a stray copy of a three-megabyte page is not a change to
+# the site.
+probe-*/
+
 # Editor and OS noise
 .DS_Store
 Thumbs.db

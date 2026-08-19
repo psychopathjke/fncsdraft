@@ -9,7 +9,7 @@
    GISCO uses the EU's country codes rather than ISO: EL for Greece, UK for the
    United Kingdom. Everything else matches. */
 const fs=require('fs');
-const SRC=__dirname+'/gisco_10M.geojson';
+const SRC=process.env.GISCO || __dirname+'/gisco_10M.geojson';
 const geo=JSON.parse(fs.readFileSync(SRC,'utf8'));
 
 const WANT={
@@ -20,8 +20,70 @@ const WANT={
   by:'BY', is:'IS', es:'ES', md:'MD', ie:'IE', ua:'UA', pt:'PT', tr:'TR',
   cy:'CY', ru:'RU', ge:'GE', am:'AM', az:'AZ'
 };
+const LON0=-26, LON1=82, LAT0=22, LAT1=71.6;              // the frame
+const WLON0=-40, WLON1=96, WLAT0=12, WLAT1=81;            // where we actually cut
+
 const byId={};
 geo.features.forEach(f=>{ byId[f.properties.CNTR_ID]=f; });
+
+/* Everybody else inside the frame who is inside the reach. The ping for a
+   country nobody measured is the fit in tools/build-ping-fit.js — the same
+   curve the other six regions are drawn with — and the reach is 150 ms, which
+   is his line for where a duo stops being playable at all. */
+const REACH=150;
+const FIT=JSON.parse(fs.readFileSync(__dirname+'/ping-fit.json','utf8'));
+const PLACES=process.env.NE_PLACES;
+const CITY={};
+if(PLACES && fs.existsSync(PLACES)){
+  JSON.parse(fs.readFileSync(PLACES,'utf8')).features.forEach(f=>{
+    const pr=f.properties, c=String(pr.ISO_A2||'').toLowerCase(), pop=+pr.POP_MAX||0;
+    if(!c || c.length!==2 || !pop || !f.geometry) return;
+    const [lon,lat]=f.geometry.coordinates;
+    (CITY[c]=CITY[c]||[]).push({pop,lat,lon});
+  });
+}
+const FRA=FIT.servers.EU, RAD=6371, TT=Math.PI/180;
+function gkm(a,b){
+  const dLat=(b.lat-a.lat)*TT, dLon=(b.lon-a.lon)*TT;
+  const q=Math.sin(dLat/2)**2+Math.cos(a.lat*TT)*Math.cos(b.lat*TT)*Math.sin(dLon/2)**2;
+  return 2*RAD*Math.asin(Math.min(1,Math.sqrt(q)));
+}
+// The anchor the fit was made on: the nearest city over a million, or the
+// largest where a country has none.
+// The same anchor, measured to any server rather than only to Frankfurt.
+function anchorTo(c, to){
+  const cs=CITY[c]; if(!cs||!cs.length) return null;
+  const big=cs.filter(x=>x.pop>=1000000);
+  const use=big.length?big:[cs.slice().sort((x,y)=>y.pop-x.pop)[0]];
+  return use.reduce((b,x)=>gkm(x,to)<gkm(b,to)?x:b);
+}
+function anchor(c){
+  const cs=CITY[c]; if(!cs||!cs.length) return null;
+  const big=cs.filter(x=>x.pop>=1000000);
+  const use=big.length?big:[cs.slice().sort((x,y)=>y.pop-x.pop)[0]];
+  return use.reduce((b,x)=>gkm(x,FRA)<gkm(b,FRA)?x:b);
+}
+function seat(c){
+  const cs=CITY[c]; return cs&&cs.length ? cs.slice().sort((x,y)=>y.pop-x.pop)[0] : null;
+}
+// GISCO's id for a two-letter code, where the two differ.
+const GID={gb:'UK', gr:'EL'};
+const NEW=[];
+Object.keys(CITY).forEach(c=>{
+  if(WANT[c]) return;
+  const id=(GID[c]||c.toUpperCase());
+  if(!byId[id]) return;
+  const p=seat(c), a=anchor(c);
+  if(!p||!a) return;
+  if(p.lon<LON0||p.lon>LON1||p.lat<LAT0||p.lat>LAT1) return;
+  const ping=Math.max(1, Math.round(FIT.a+FIT.b*gkm(a,FRA)));
+  if(ping>REACH) return;
+  WANT[c]=id; NEW.push({c, ping});
+});
+NEW.sort((a,b)=>a.ping-b.ping);
+console.log('joined the map ('+NEW.length+'): '+NEW.map(x=>x.c+' '+x.ping).join(' '));
+fs.writeFileSync(__dirname+'/eu-new-pings.json', JSON.stringify(NEW));
+
 const missing=Object.entries(WANT).filter(([,id])=>!byId[id]);
 if(missing.length){ console.log('NOT FOUND:', missing); process.exit(1); }
 
@@ -32,8 +94,7 @@ function polysOf(f){
   return [];
 }
 
-const LON0=-26, LON1=51, LAT0=33.2, LAT1=71.6;            // the frame
-const WLON0=-38, WLON1=66, WLAT0=26, WLAT1=81;            // where we actually cut
+
 
 // Russia's outline crosses the antimeridian, so its ring jumps from +180 to
 // -180 and back. Clipped as-is that jump draws a band straight across the map.
@@ -203,7 +264,7 @@ for(const [code,id] of Object.entries(WANT)){
       }
     });
   });
-  if(!d){ console.log('EMPTY', code); continue; }
+  if(!d){ console.log('too small to draw, dropped:', code); delete WANT[code]; continue; }
   const pole=poleOfInaccessibility(framed, H);
   const cx=pole.x, cy=pole.y;
   // The flag fills the biggest visible piece, not the whole bounding box. Russia

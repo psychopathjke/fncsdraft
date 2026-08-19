@@ -108,18 +108,23 @@ const BOOT = `
     out.notes.energyMax = careerEnergyMax();
 
     // ---- the coach, beside the duo ---------------------------------------
+    // The coaches are named people now, so the test asks the roster for the two
+    // shapes it needs rather than naming anybody: one who teaches aim, one who
+    // does not, and whatever they charge.
+    const COACH = CC_COACHES.filter(function(c){ return c.keys.indexOf('aim') >= 0; })[0];
+    const NOAIM = CC_COACHES.filter(function(c){ return c.keys.indexOf('aim') < 0; })[0];
     fresh(20000);
     check('a career starts with no coach', ccCoach() === null);
-    check('hiring costs the fee', careerHireCoach('aim') === true &&
-          CAREER.career.balance === 20000 - 2500, String(CAREER.career.balance));
-    check('and the hired one is the one working', (ccCoach()||{}).id === 'aim');
-    check('hiring the same coach twice is refused', careerHireCoach('aim') === false);
+    check('hiring costs the fee', careerHireCoach(COACH.id) === true &&
+          CAREER.career.balance === 20000 - COACH.cost, String(CAREER.career.balance));
+    check('and the hired one is the one working', (ccCoach()||{}).id === COACH.id);
+    check('hiring the same coach twice is refused', careerHireCoach(COACH.id) === false);
     // He is paid by the month, like the bootcamp: when it is out he stops
     // working and the same button pays for the next one.
     CAREER.career.day = ccAddDays(CAREER.career.day, 31);
     check('a month later the coach has stopped', ccCoach() === null);
-    check('and can be paid again', careerHireCoach('aim') === true &&
-          CAREER.career.balance === 20000 - 5000, String(CAREER.career.balance));
+    check('and can be paid again', careerHireCoach(COACH.id) === true &&
+          CAREER.career.balance === 20000 - COACH.cost * 2, String(CAREER.career.balance));
     CAREER.career.day = ccAddDays(CAREER.career.day, -31);
     // He pays into his own half of the game and nowhere else.
     const before = {...CAREER.player.attrs};
@@ -134,17 +139,26 @@ const BOOT = `
     check('a mechanics coach speeds mechanics up', aimGain > bareGain * 1.3,
           out.notes.aimlab);
     // The endgame analyst does nothing for an aim day.
-    fresh(20000); careerHireCoach('igl'); CAREER.career.spentOn = null;
+    fresh(20000); careerHireCoach(NOAIM.id); CAREER.career.spentOn = null;
     const iglBase = {...CAREER.player.attrs};
     careerDoAct('trAim');
     const iglGain = CAREER.player.attrs.aim - iglBase.aim;
     check('and an endgame analyst does not', Math.abs(iglGain - bareGain) < 1e-9,
           iglGain + ' vs ' + bareGain);
-    // The column draws every coach, one of them marked.
+    // The tile shows the man you hired; the roster is behind the press.
     const col = careerCoachColHTML();
-    check('the column lists every coach',
-          CC_COACHES.every(c => col.indexOf(L()['ccCoach' + c.id]) >= 0));
-    check('and marks the hired one', /ch-coach on/.test(col));
+    // Whoever is working by the time we get here — the block above hires more
+    // than one of them.
+    const working = ccCoach();
+    check('the tile names the coach you hired',
+          !!working && col.indexOf(working.name) >= 0,
+          (working && working.name) + ' / ' + col.slice(0, 100));
+    ccCoachPickOpen();
+    const pick = document.getElementById('coachPickBody').innerHTML;
+    check('the picker lists every coach',
+          CC_COACHES.every(c => pick.indexOf(c.name) >= 0));
+    check('and marks the hired one', /cc-buy own/.test(pick));
+    ccCoachPickClose();
 
     // Nothing can be bought without the money.
     fresh(100);

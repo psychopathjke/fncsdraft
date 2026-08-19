@@ -47,7 +47,10 @@ const BOOT = `
       ['2026-02-07', 'reload'],   // Reload 1 final
       ['2026-04-06', 'major'],    // Major 1 Play-In
       ['2026-04-25', 'major'],    // Major 1 Final
-      ['2026-08-18', 'gc'],       // Reload Championship, Paris
+      // The Championship is a LAN and a LAN moves — it has already gone from the
+      // 18th to the 19th once. Read the day off the constant that owns it so the
+      // next hall it books does not read as a hole in the calendar.
+      [CC_RC_DAY, 'gc'],          // Reload Championship, wherever it is held
       ['2025-12-04', 'eval']      // first Performance Evaluation night of S39
     ];
     for (const [d, kind] of must) {

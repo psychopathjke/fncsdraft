@@ -91,16 +91,23 @@ const BOOT = `
     CAREER.offers = [{name:'Falcons', tier:90, academy:false, salary:4000,
                       goal:{type:'place', target:20}, perk:'coach'}];
     careerSign(0);
+    // The coaches are named people now, so the test asks the roster for the two
+    // shapes it needs rather than naming anybody: one who teaches aim, one who
+    // does not, and whatever they charge.
+    const COACH = CC_COACHES.filter(function(c){ return c.keys.indexOf('aim') >= 0; })[0];
+    const NOAIM = CC_COACHES.filter(function(c){ return c.keys.indexOf('aim') < 0; })[0];
     check('the club is paying', ccOrgPaysCoach() === true);
-    check('and a broke career can hire', careerHireCoach('aim') === true);
+    check('and a broke career can hire', careerHireCoach(COACH.id) === true);
     check('with no money taken', CAREER.career.balance === 0, String(CAREER.career.balance));
-    check('and the coach is working', (ccCoach()||{}).id === 'aim');
-    // The column says who is paying rather than a price.
-    const col = careerCoachColHTML();
-    check('the column names the payer', col.indexOf('Falcons') >= 0);
+    check('and the coach is working', (ccCoach()||{}).id === COACH.id);
+    // The picker says who is paying rather than a price, on every button.
+    ccCoachPickOpen();
+    const pick = document.getElementById('coachPickBody').innerHTML;
+    check('the picker names the payer', pick.indexOf('Falcons') >= 0, pick.slice(0, 140));
+    ccCoachPickClose();
     // Without a club, a broke career cannot.
     fresh(0);
-    check('and without a club it costs money', careerHireCoach('aim') === false);
+    check('and without a club it costs money', careerHireCoach(COACH.id) === false);
 
     // The offer says what it carries, on the tile and in the DMs.
     fresh(0);

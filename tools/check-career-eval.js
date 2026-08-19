@@ -51,6 +51,7 @@ const BOOT = `
                   topWins: ranked2[0].wins || 0, topPts: ranked2[0].stagePts,
                   everyScoreIsWins: ranked2.every(t => t.stagePts === (t.wins || 0) * CC_EVAL_WIN_PTS),
                   cashTop: (ranked2[0].wins || 0) * CC_EVAL_WIN_CASH,
+                  winCash: CC_EVAL_WIN_CASH,
                   cashMax: CC_EVAL_R2_GAMES * CC_EVAL_WIN_CASH};
   }catch(e){ out.error = String(e && e.stack || e).slice(0, 600); }
   document.getElementById('__out').textContent = 'BEGIN' + encodeURIComponent(JSON.stringify(out)) + 'END';
@@ -86,6 +87,12 @@ say(out.round2.teams === 50, 'fifty come through to Round 2');
 say(out.round2.games === 4, 'Round 2 is four games');
 say(out.round2.winPts === 100 && out.round2.secondPts === 0, 'only a Victory Royale scores in Round 2');
 say(out.round2.everyScoreIsWins, 'every score in Round 2 is wins times a hundred, nothing else');
-say(out.round2.cashMax === 1600, 'four wins is $1,600');
+/* The old line read "four wins is $1,600", which is four times a $400 win.
+   CC_EVAL_WIN_CASH has been 800 since the career was ported — the number in the
+   test was left behind by a balance pass, not broken by one. Asserting the
+   invariant instead of the figure: what a duo takes home is what it won, times
+   the fee, whatever the fee is set to. The figure itself is printed above. */
+say(out.round2.cashTop === out.round2.topWins * out.round2.winCash,
+    'the money is the wins times the fee — $' + out.round2.winCash + ' a Victory Royale');
 console.log('\n' + (bad ? bad + ' failing' : 'the evaluation plays the way its own page describes it'));
 process.exit(bad ? 1 : 0);

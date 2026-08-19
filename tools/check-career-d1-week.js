@@ -78,8 +78,11 @@ const BOOT = `
     const save1 = JSON.parse(localStorage.getItem('fncsdraft_career'));
     check('Monday banked instead of settling', !!save1.career.d1, JSON.stringify(save1.career.d1||null).slice(0,60));
     check('Monday wrote no history row', (save1.career.log||[]).length === 0);
-    const myMonday = save1.career.d1 ? Object.keys(save1.career.d1.pts)
-      .filter(n => /Probe/.test(n)).map(n => save1.career.d1.pts[n])[0] : null;
+    // Monday's field is packed now — one string of "name|pts|elims|games|wins"
+    // rows rather than a map per column. ccRelUnpack gives back the old shape.
+    const banked = save1.career.d1 ? ccRelUnpack(save1.career.d1.rows) : null;
+    const myMonday = banked ? Object.keys(banked.pts)
+      .filter(n => /Probe/.test(n)).map(n => banked.pts[n])[0] : null;
     out.notes.mondayPts = myMonday;
     check('and the banked card says what carries', /идут|go into the week/.test(mondayTxt));
 
