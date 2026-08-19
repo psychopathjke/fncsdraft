@@ -42769,7 +42769,10 @@ function careerCoachColHTML(){
    of them. */
 function ccCoachPickOpen(){
   const cr=CAREER.career, working=ccCoach(), paid=ccOrgPaysCoach();
-  const rows=CC_COACHES.map(c=>{
+  // His order too, 20 August — the same list the other three windows read, so
+  // the coaches stop being the one window whose order is the file's. The
+  // grouping the table keeps, heads before specialists, is still the table's.
+  const rows=ccByHand(CC_COACHES).map(c=>{
     const on=!!working && working.id===c.id;
     const can=!on && (paid || (cr.balance||0)>=c.cost);
     const what=c.keys.length>=ATTR_KEYS.length ? L().ccCoachAll
@@ -46892,8 +46895,51 @@ function careerPayWages(fromISO, toISO){
    the notes on those rows are the history of it. Coaches are not in this: they
    have no follower count and their list is deliberately grouped, heads first
    and then the specialists, who are all one price on purpose. */
-function ccByFollowers(list){
-  return list.slice().sort((a,b)=>(b.x||0)-(a.x||0));
+/* And then he wrote the order out himself, 20 August, on all four lists.
+
+   Follower count is a measurement and a running order is a preference, and they
+   are not the same thing: his marketing list is the follower order upside down.
+   So the number stays the measurement it was — ccAgentWeight still reads it for
+   the cut and for how far above a career the clubs look — and the running order
+   becomes his.
+
+   One list for all four windows, because a person moves between them: an SMM
+   who starts managing is one line moved, not a row rewritten. Handles rather
+   than ids, since that is what he wrote and what the screenshots show.
+
+   Anybody not named here falls to the end, keeping the order their own table
+   holds them in. That is deliberate: a person added to the data and forgotten
+   here shows up at the bottom of the window rather than vanishing into the
+   middle of it, and being last is a visible thing to fix. */
+const CC_SHOP_ORDER=[
+  // Managers
+  'alhasarda','JoaovEU','ElyxxM','OliverChesses','IdziU97','RemssMNG','AlybiSaCE',
+  'Th0masNL','ZedroxMNG','50taruns','DamlosMNG','ClapMNG','errieMNG','PixelzMNG',
+  'NaaxoMNG','Kiinywz0',
+  // Socials
+  'v1nteroFN','SandoraFN','UgoComm','Pyp4ingS','veltrixx10','Lair_Fn',
+  // Marketing
+  'PyraxMGMT','Goalkikermng','KaizenMNG','murlotron',
+  // Coaches
+  'RazZzero0oFN','SvenSE_','Coach_F0x','tallami1','diaspaulin_','stormyrite',
+  'BoopNL_','At0m_GG','kha0rz','xpl0t','Gripeyy','ValentaynL','EgeXJerG',
+  'Rabidfn','CoachEsteh','ZykomaTV','spidryx','PeanutBrainTS'
+];
+const CC_SHOP_RANK=(function(){
+  const m={};
+  CC_SHOP_ORDER.forEach((h,i)=>{ m[String(h).toLowerCase()]=i; });
+  return m;
+})();
+function ccByHand(list){
+  const rank=x=>{
+    const i=CC_SHOP_RANK[String((x&&x.at)||'').toLowerCase()];
+    return i==null ? CC_SHOP_ORDER.length : i;
+  };
+  // Index carried alongside, so everyone unplaced keeps their own table's order
+  // rather than whatever the sort happens to do with equal keys.
+  return list.map((x,i)=>({x:x,i:i}))
+             .sort((a,b)=>(rank(a.x)-rank(b.x)) || (a.i-b.i))
+             .map(o=>o.x);
 }
 const CC_AD_PER=6, CC_AD_STEP=1.25;
 const CC_MKT_DAYS=30;
@@ -46948,7 +46994,7 @@ function careerEndMkt(){
 }
 function ccMktPickOpen(){
   const cr=CAREER.career, on=ccMkt();
-  const rows=ccByFollowers(CC_MARKETING).map(m=>{
+  const rows=ccByHand(CC_MARKETING).map(m=>{
     const t=ccMktTermsOf(m);
     const mine=on && on.id===m.id;
     const can=!on && (cr.balance||0)>=t.cost;
@@ -47134,7 +47180,28 @@ const CC_AGENTS=[
   {name:'Kiinywz0',     at:'Kiinywz0',      nat:null, photo:'Kiinywz0.jpg',      x:841},
   // Talent manager for Questmind, agent of talents, Pau. Named the way his own
   // profile names him, without the club in front of it.
-  {name:'Yeekzie',      at:'Yeekzie7',      nat:'fr', photo:'Yeekzie.jpg',       x:3088}
+  {name:'Yeekzie',      at:'Yeekzie7',      nat:'fr', photo:'Yeekzie.jpg',       x:3088},
+  /* Eight more, 20 August, off his own screenshots. Every number is the follower
+     count the profile showed on the day it was saved, read the same way the nine
+     above were — nothing here is hand-priced, so ccAgentWeight still does the
+     arithmetic for the cut and for how far above a career the clubs look. */
+  // Partnership manager and agent at Lyost.
+  {name:'Lyost Clap',   at:'ClapMNG',       nat:'rs', photo:'ClapMNG.jpg',       x:4100},
+  // Talent agent at Proxy: EpikWhale, anonzr and Crylix are his.
+  {name:'aCE',          at:'AlybiSaCE',     nat:null, photo:'AlybiSaCE.jpg',     x:3114},
+  // Fortnite manager at Lyost.
+  {name:'IdziU',        at:'IdziU97',       nat:'pl', photo:'IdziU97.jpg',       x:3110},
+  // Esports talent agent, and the only one here whose own line is a management
+  // service rather than a roster of names.
+  {name:'Th0masNL',     at:'Th0masNL',      nat:'nl', photo:'Th0masNL.jpg',      x:2311},
+  // Head of Fortnite for Lyost.
+  {name:'Lyost Remss',  at:'RemssMNG',      nat:null, photo:'RemssMNG.jpg',      x:2085},
+  // Founder of AL Management, Lille.
+  {name:'Adam',         at:'DamlosMNG',     nat:'fr', photo:'DamlosMNG.jpg',     x:1654},
+  // Head of Fortnite at MGA.
+  {name:'MGA Alexi',    at:'ZedroxMNG',     nat:'fr', photo:'ZedroxMNG.jpg',     x:1376},
+  // Head of Fortnite at GLORE.
+  {name:'GLORE errie',  at:'errieMNG',      nat:'pl', photo:'errieMNG.jpg',      x:1184}
 ];
 // The fallback, for a row added before anybody has read its account: fifteen per
 // cent, which is the middle of the real range, and one draw like everybody else.
@@ -47270,7 +47337,7 @@ function careerSignAgent(name){
 function ccAgentPickOpen(){
   const ovr=CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr;
   const on=careerAgent();
-  const rows=ccByFollowers(CC_AGENTS).map(a=>{
+  const rows=ccByHand(CC_AGENTS).map(a=>{
     const t=ccAgentTermsOf(a);
     const cut=t.cut, reach=t.reach, wage=t.wage;
     const mine=on && on.name===a.name;
@@ -47922,7 +47989,7 @@ function careerHireSmm(id){
    a face, what they are for, and one button. */
 function ccSmmPickOpen(){
   const cr=CAREER.career;
-  const rows=ccByFollowers(CC_SMM).map(m=>{
+  const rows=ccByHand(CC_SMM).map(m=>{
     const t=ccSmmTermsOf(m);
     const can=(cr.balance||0)>=t.cost && !ccSmm();
     return `<div class="cc-buy">
@@ -51217,6 +51284,30 @@ const CC_COACHES=[
   {id:'tsknows',name:'TSknows',    at:'PeanutBrainTS',reg:null,    cost:2500, train:0.35, keys:['aim','exp'], photo:'PeanutBrainTS.jpg'},
   // Organisational rather than individual: he ran a roster at the EWC, which is
   // the duo half of the job.
+  /* Five more, 20 August, and read off their own lines the same way.
+
+     Gripey lists who he coaches and lists them in pairs — three duos, named two
+     at a time — which is the clearest duo evidence on the whole list, so he
+     takes the chemistry the rule above describes and the breadth that coaching
+     whole teams means. Egexjerg names two players who play together, which is
+     the same evidence one duo deep.
+
+     Val is not a Fortnite coach at all by his own line: "Coach Performance,
+     Mental & Physical Trainer, Sport & Esport". That is the trainer archetype
+     this file started with, and it is the two attributes that are not aim and
+     not game knowledge — holding up across a long session, and holding your
+     nerve inside it.
+
+     kha0rz and Xplot say only that they coach: no specialism, no pair of
+     subjects, nothing to read. Rather than invent one they take the specialist
+     price and rate every specialist here takes, on the two subjects their
+     scenes are known for — and the moment either publishes a line about what he
+     teaches, that is one field to correct. */
+  {id:'gripey', name:'Coach Gripey',at:'Gripeyy',    reg:'EU',    cost:3000, train:0.28, keys:ATTR_KEYS.slice(), chem:0.4, photo:'Gripeyy.jpg'},
+  {id:'val',    name:'Val',        at:'ValentaynL',  reg:'EU',    cost:2500, train:0.35, keys:['con','sur'], photo:'ValentaynL.jpg'},
+  {id:'egex',   name:'Egexjerg',   at:'EgeXJerG',    reg:'EU',    cost:2500, train:0.35, keys:['aim','sur'], chem:0.2, photo:'EgeXJerG.jpg'},
+  {id:'khaorz', name:'kha0rz',     at:'kha0rz',      reg:'EU',    cost:2500, train:0.35, keys:['aim','clu'], photo:'kha0rz.jpg'},
+  {id:'xplot',  name:'Xplot',      at:'xpl0t',       reg:'EU',    cost:2500, train:0.35, keys:['end','exp'], photo:'xpl0t.jpg'}
 ];
 /* Three of them on the tile, not twenty.
 
