@@ -46895,53 +46895,36 @@ function careerPayWages(fromISO, toISO){
    the notes on those rows are the history of it. Coaches are not in this: they
    have no follower count and their list is deliberately grouped, heads first
    and then the specialists, who are all one price on purpose. */
-/* And then he wrote the order out himself, 20 August, on all four lists.
+/* Alphabetical, his call, 20 August — the same people his lists name, in the
+   order a reader can predict.
 
-   Follower count is a measurement and a running order is a preference, and they
-   are not the same thing: his marketing list is the follower order upside down.
-   So the number stays the measurement it was — ccAgentWeight still reads it for
-   the cut and for how far above a career the clubs look — and the running order
-   becomes his.
+   It was the follower count, then it was his own running order, and now it is
+   neither: a count is a measurement and a hand-written order is a preference,
+   and both make a reader scan the whole window to find one name. The alphabet
+   does not — you know where to look before you look.
 
-   One list for all four windows, because a person moves between them: an SMM
-   who starts managing is one line moved, not a row rewritten. Handles rather
-   than ids, since that is what he wrote and what the screenshots show.
+   The number stays the measurement it always was. ccAgentWeight still reads it
+   for the cut and for how far above a career the clubs look; what stopped
+   reading it is the running order.
 
-   Anybody not named here falls to the end, keeping the order their own table
-   holds them in. That is deliberate: a person added to the data and forgotten
-   here shows up at the bottom of the window rather than vanishing into the
-   middle of it, and being last is a visible thing to fix. */
-const CC_SHOP_ORDER=[
-  // Managers. Yeekzie last, his call, 20 August — placed rather than left to
-  // fall there, so the end of this list is a decision and not an omission.
-  'alhasarda','JoaovEU','ElyxxM','OliverChesses','IdziU97','RemssMNG','AlybiSaCE',
-  'Th0masNL','ZedroxMNG','50taruns','DamlosMNG','ClapMNG','errieMNG','PixelzMNG',
-  'NaaxoMNG','Kiinywz0','Yeekzie7',
-  // Socials, with Sweety second — his call, same day.
-  'v1nteroFN','SweetyyFN','SandoraFN','UgoComm','Pyp4ingS','veltrixx10','Lair_Fn',
-  // Marketing
-  'PyraxMGMT','Goalkikermng','KaizenMNG','murlotron',
-  // Coaches
-  'RazZzero0oFN','SvenSE_','Coach_F0x','tallami1','diaspaulin_','stormyrite',
-  'BoopNL_','At0m_GG','kha0rz','xpl0t','Gripeyy','ValentaynL','EgeXJerG',
-  'Rabidfn','CoachEsteh','ZykomaTV','spidryx','PeanutBrainTS'
-];
-const CC_SHOP_RANK=(function(){
-  const m={};
-  CC_SHOP_ORDER.forEach((h,i)=>{ m[String(h).toLowerCase()]=i; });
-  return m;
-})();
+   Sorted on the name the row actually prints, because that is the word a reader
+   scans for. It means the ones who carry an org in front of their name file
+   under the org — Lyost Clap under L, Coach Gripey under C — which is where a
+   list sorted by what it displays has to put them. Sorting on the handle
+   instead is this one function.
+
+   Case and accents are ignored, so aCE files under A and João under J rather
+   than after Z. */
 function ccByHand(list){
-  const rank=x=>{
-    const i=CC_SHOP_RANK[String((x&&x.at)||'').toLowerCase()];
-    return i==null ? CC_SHOP_ORDER.length : i;
-  };
-  // Index carried alongside, so everyone unplaced keeps their own table's order
-  // rather than whatever the sort happens to do with equal keys.
+  const key=x=>String((x&&x.name)||(x&&x.at)||'');
+  // Index carried alongside, so two identical names keep their own table's
+  // order rather than whatever the sort happens to do with equal keys.
   return list.map((x,i)=>({x:x,i:i}))
-             .sort((a,b)=>(rank(a.x)-rank(b.x)) || (a.i-b.i))
+             .sort((a,b)=>key(a.x).localeCompare(key(b.x), 'en',
+                            {sensitivity:'base', numeric:true}) || (a.i-b.i))
              .map(o=>o.x);
 }
+
 const CC_AD_PER=6, CC_AD_STEP=1.25;
 const CC_MKT_DAYS=30;
 const CC_MARKETING=[
