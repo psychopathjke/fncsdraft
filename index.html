@@ -2227,7 +2227,11 @@
   #screen-career-hub .ch-next-head h3{font-size:23px;}
   #screen-career-hub .ch-weeks{border-top:1px solid rgba(255,255,255,.14);}
   #screen-career-hub .ch-week{border-right:1px solid rgba(255,255,255,.1);}
-  #screen-career-hub .ch-week.now{background:#00b090;}
+  /* The solid teal fill this used to be is gone — his call, 20 August: with
+     today carrying its own frame, a filled Monday next to a framed Tuesday
+     read as two things claiming the same attention. The next thing you will
+     play still stands out, quietly: full-strength text and its white pip
+     (kept below), nothing painted behind it. */
   #screen-career-hub .ch-week.now em,
   #screen-career-hub .ch-week.now span{opacity:1;}
   #screen-career-hub .ch-week b{font-style:italic;}
@@ -3879,7 +3883,7 @@ chSquadHint:'Ты и напарник', chSquadHintTrio:'Ты и два напа
 chNoPartner:'Напарника пока нет',
 ccSeatEmpty:'Место свободно', ccSeasonDuos:'Сезон в дуо', ccSeasonTrios:'Сезон в трио',
 ccWordDuos:'дуо', ccWordTrios:'трио', calVictoryTrio:'Трио Виктори Кап',
-ccMateKeep:'Оставить', chToday:'сегодня',
+ccMateKeep:'Оставить', chToday:'сегодня', ccShopConf:'Уверенность',
 ccMoveGoCity:(c,r)=>'Переехать: '+c+' ('+r+')', ccScoutOff:'Не искать клуб', ccScoutOn:'Искать клуб', ccMateOver:'Сезон в дуо, а вас трое. Выбери, кто остаётся — второй уйдёт, и вход в турниры закрыт, пока не решишь',
 ccSquadTrio:'Трио',
 chLadder:'Лестница',
@@ -4133,12 +4137,36 @@ ccMoveNoCash:'Не хватает на первый месяц',
 ccMoveEdge:v=>'+'+v+' к ближнему бою',
 ccShopHint:'Призовые тратятся на то, что делает тренировки весомее',
 ccShopTrain:'Прокачка за день', ccShopOwned:'куплено',
-ccShopmouse:'Razer Viper V3 Pro', ccShopmonitor:'BenQ ZOWIE XL2566K 360 Гц',
-ccShopmouse2:'Logitech G PRO X2 SUPERSTRIKE', ccShopSpecmouse2:'Тактильный клик без физической кнопки — актуация, какую выставишь',
-ccShopmonitor2:'BenQ ZOWIE XL2586X 540 Гц', ccShopSpecmonitor2:'540 Гц и DyAc 2 — в клатче видно каждый кадр',
-ccShopkeyboard2:'Wooting 60HE+', ccShopSpeckeyboard2:'Магнитные свитчи, rapid trigger — строишь быстрее, чем думаешь',
-ccShopheadset2:'Logitech G PRO X 2 LIGHTSPEED', ccShopSpecheadset2:'Графеновые драйверы — шаги за два бокса, выживаешь до того, как увидел',
-ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3', ccShopheadset:'Razer BlackShark V2 Pro',
+ccShopmouse3:'Finalmouse UltralightX', ccShopkeyboard3:'Wooting 60HE v2', ccShopkeyboard4:'Custom HE Keyboard',
+ccShopheadset3:'Audeze LCD-GX', ccShopheadset4:'Audeze LCD-3',
+ccShopmonitor3:'ZOWIE XL2586X+', ccShopmonitor4:'ASUS ROG Swift Pro PG248QP',
+ccShopstreamdeck:'Elgato Stream Deck MK.2', ccShopstreamfx:'Sony FX3',
+ccShopchair0:'Старое офисное кресло', ccShopchair1:'IKEA MATCHSPEL', ccShopchairvm:'Herman Miller Vantum',
+ccShopcar1:'Volkswagen Golf (с рук)', ccShopcar2:'Volkswagen Golf GTI', ccShopcar3:'BMW M3',
+ccShopcar4:'Porsche 911 Turbo S', ccShopcar5:'Lamborghini Revuelto',
+ccShopSpecmouse3:'59 граммов и ничего лишнего — бутик про-сцены',
+ccShopSpeckeyboard3:'60% и rapid trigger — эталон движения',
+ccShopSpeckeyboard4:'Собрана под твою руку — дальше некуда',
+ccShopSpecheadset3:'Планары для игр — слышно всё и сразу',
+ccShopSpecheadset4:'Студийные планары — звук, каким его слышит звукорежиссёр',
+ccShopSpecmonitor3:'600 Гц DyAc — быстрее уже некуда',
+ccShopSpecmonitor4:'540 Гц G-SYNC — витрина турниров',
+ccShopSpecchair0:'Скрипит, но держит — с чего-то надо начинать',
+ccShopSpecchair1:'Первое игровое — спина скажет спасибо',
+ccShopSpecchairvm:'Сетка и осанка — почти Embody',
+ccShopSpecstreamdeck:'Сцены в одну кнопку — эфир выглядит взрослым',
+ccShopSpecstreamfx:'Кинокамера — картинка, которую репостят',
+ccShopSpeccar1:'Заводится не всегда, зато твоя',
+ccShopSpeccar2:'Первая машина, за которую не стыдно',
+ccShopSpeccar3:'Клип с парковки соберёт больше, чем катка',
+ccShopSpeccar4:'Весь чат в одном слове: «911»',
+ccShopSpeccar5:'Дальше только вертолёт',
+ccShopmouse:'Logitech G PRO X Superlight 2', ccShopmonitor:'ZOWIE XL2566K',
+ccShopmouse2:'Razer Viper V4 Pro', ccShopSpecmouse2:'Тактильный клик без физической кнопки — актуация, какую выставишь',
+ccShopmonitor2:'ZOWIE XL2566X+', ccShopSpecmonitor2:'540 Гц и DyAc 2 — в клатче видно каждый кадр',
+ccShopkeyboard2:'Wooting 80HE', ccShopSpeckeyboard2:'Магнитные свитчи, rapid trigger — строишь быстрее, чем думаешь',
+ccShopheadset2:'Audeze Maxwell', ccShopSpecheadset2:'Графеновые драйверы — шаги за два бокса, выживаешь до того, как увидел',
+ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3', ccShopheadset:'Razer BlackShark V3 Pro',
 ccShoppcbudget:'Бюджетный ПК · 144 FPS', ccShoppcpro:'PRO-сборка · 240+ FPS',
 ccShoppcelite:'ELITE-сборка · 360 Гц',
 ccShoppc:'Новый ПК', ccShopcoach:'Коуч', ccShopcamp:'Буткемп',
@@ -4165,13 +4193,13 @@ ccShopOwnedBetter:'Есть лучше', ccShopUntil:d=>'До '+d, ccShopMonth:'
 ccShopNew:'НОВОЕ',
 ccShopCap:'Запас сил',
 ccShopReach:'Подписчики за стрим',
-ccShopstreamcam:'Вебка и кольцевой свет',
+ccShopstreamcam:'Logitech C920',
 ccShopSpecstreamcam:'Тебя видно и слышно — на стрим начинают заходить',
-ccShopstreamkit:'Микрофон и стрим-дека',
+ccShopstreamkit:'HyperX QuadCast 2',
 ccShopSpecstreamkit:'Звук как у взрослых, сцены переключаются одной кнопкой',
-ccShopstreamlab:'Студийный свет и звук',
-ccShopSpecstreamlab:'Комната под съёмку. Дальше растёт только контент', ccShopchair:'Кресло Secretlab Titan', ccShopfitness:'Зал и тренер по здоровью',
-ccShopchairhm:'Herman Miller Embody', ccShopSpecchairhm:'Сетка и поддержка спины — сидеть можно весь день',
+ccShopstreamlab:'Sony ZV-E10 II',
+ccShopSpecstreamlab:'Настоящая камера в кадре — эфир перестаёт быть вебкой', ccShopchair:'Secretlab TITAN Evo', ccShopfitness:'Зал и тренер по здоровью',
+ccShopchairhm:'Herman Miller Embody Gaming', ccShopSpecchairhm:'Сетка и поддержка спины — сидеть можно весь день',
 ccShopdesk:'Стол с электрорегулировкой', ccShopSpecdesk:'Часть дня стоя — спина держится дольше',
 ccShopSpecchair:'Одиннадцать игр подряд без спины',
 ccShopSpecfitness:'Сон, спина, кисти — неделя перестаёт валить',
@@ -5236,7 +5264,7 @@ chSquadHint:'You and your partner', chSquadHintTrio:'You and your two partners',
 chNoPartner:'No partner yet',
 ccSeatEmpty:'Seat open', ccSeasonDuos:'A duos season', ccSeasonTrios:'A trios season',
 ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Trios Victory Cup',
-ccMateKeep:'Keep', chToday:'today',
+ccMateKeep:'Keep', chToday:'today', ccShopConf:'Confidence',
 ccMoveGoCity:(c,r)=>'Move to '+c+' ('+r+')', ccScoutOff:'Stop looking for clubs', ccScoutOn:'Look for clubs', ccMateOver:'A duos season, and there are three of you. Choose who stays — the other leaves, and nothing can be entered until you decide',
 ccSquadTrio:'Trio',
 chLadder:'The ladder',
@@ -5490,12 +5518,36 @@ ccMoveNoCash:'Not enough for the first month',
 ccMoveEdge:v=>'+'+v+' close range',
 ccShopHint:'Prize money buys the things that make a training day count',
 ccShopTrain:'Training gain', ccShopOwned:'owned',
-ccShopmouse:'Razer Viper V3 Pro', ccShopmonitor:'BenQ ZOWIE XL2566K 360Hz',
-ccShopmouse2:'Logitech G PRO X2 SUPERSTRIKE', ccShopSpecmouse2:'Haptic click with no physical button — actuation set to taste',
-ccShopmonitor2:'BenQ ZOWIE XL2586X 540Hz', ccShopSpecmonitor2:'540Hz with DyAc 2 — a clutch shows you every frame',
-ccShopkeyboard2:'Wooting 60HE+', ccShopSpeckeyboard2:'Magnetic switches, rapid trigger — you build faster than you think',
-ccShopheadset2:'Logitech G PRO X 2 LIGHTSPEED', ccShopSpecheadset2:'Graphene drivers — footsteps two boxes away, you survive what you never saw',
-ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3', ccShopheadset:'Razer BlackShark V2 Pro',
+ccShopmouse3:'Finalmouse UltralightX', ccShopkeyboard3:'Wooting 60HE v2', ccShopkeyboard4:'Custom HE Keyboard',
+ccShopheadset3:'Audeze LCD-GX', ccShopheadset4:'Audeze LCD-3',
+ccShopmonitor3:'ZOWIE XL2586X+', ccShopmonitor4:'ASUS ROG Swift Pro PG248QP',
+ccShopstreamdeck:'Elgato Stream Deck MK.2', ccShopstreamfx:'Sony FX3',
+ccShopchair0:'Old Office Chair', ccShopchair1:'IKEA MATCHSPEL', ccShopchairvm:'Herman Miller Vantum',
+ccShopcar1:'Used Volkswagen Golf', ccShopcar2:'Volkswagen Golf GTI', ccShopcar3:'BMW M3',
+ccShopcar4:'Porsche 911 Turbo S', ccShopcar5:'Lamborghini Revuelto',
+ccShopSpecmouse3:'59 grams and nothing else — the pro scene’s boutique',
+ccShopSpeckeyboard3:'60% and rapid trigger — the movement benchmark',
+ccShopSpeckeyboard4:'Built for your hand alone — nowhere further to go',
+ccShopSpecheadset3:'Gaming planars — everything, at once',
+ccShopSpecheadset4:'Studio planars — the mix the sound engineer hears',
+ccShopSpecmonitor3:'600Hz DyAc — there is no faster',
+ccShopSpecmonitor4:'540Hz G-SYNC — the tournament showcase',
+ccShopSpecchair0:'It creaks, it holds — everyone starts somewhere',
+ccShopSpecchair1:'The first gaming chair — your back says thanks',
+ccShopSpecchairvm:'Mesh and posture — nearly an Embody',
+ccShopSpecstreamdeck:'Scenes on one key — the stream looks grown up',
+ccShopSpecstreamfx:'A cinema camera — the picture people repost',
+ccShopSpeccar1:'Starts most days, and it is yours',
+ccShopSpeccar2:'The first car you are not embarrassed by',
+ccShopSpeccar3:'A car-park clip outdraws a tournament win',
+ccShopSpeccar4:'The whole chat in one word: 911',
+ccShopSpeccar5:'After this, the only upgrade is a helicopter',
+ccShopmouse:'Logitech G PRO X Superlight 2', ccShopmonitor:'ZOWIE XL2566K',
+ccShopmouse2:'Razer Viper V4 Pro', ccShopSpecmouse2:'Haptic click with no physical button — actuation set to taste',
+ccShopmonitor2:'ZOWIE XL2566X+', ccShopSpecmonitor2:'540Hz with DyAc 2 — a clutch shows you every frame',
+ccShopkeyboard2:'Wooting 80HE', ccShopSpeckeyboard2:'Magnetic switches, rapid trigger — you build faster than you think',
+ccShopheadset2:'Audeze Maxwell', ccShopSpecheadset2:'Graphene drivers — footsteps two boxes away, you survive what you never saw',
+ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3', ccShopheadset:'Razer BlackShark V3 Pro',
 ccShoppcbudget:'Budget PC · 144 FPS', ccShoppcpro:'PRO build · 240+ FPS',
 ccShoppcelite:'ELITE build · 360Hz',
 ccShoppc:'New PC', ccShopcoach:'Coach', ccShopcamp:'Bootcamp',
@@ -5522,13 +5574,13 @@ ccShopOwnedBetter:'Have better', ccShopUntil:d=>'Until '+d, ccShopMonth:'for a m
 ccShopNew:'NEW',
 ccShopCap:'Stamina',
 ccShopReach:'Followers per stream',
-ccShopstreamcam:'Webcam and ring light',
+ccShopstreamcam:'Logitech C920',
 ccShopSpecstreamcam:'They can see and hear you — people start turning up',
-ccShopstreamkit:'Microphone and stream deck',
+ccShopstreamkit:'HyperX QuadCast 2',
 ccShopSpecstreamkit:'Grown-up sound, and scenes on one key',
-ccShopstreamlab:'Studio light and sound',
-ccShopSpecstreamlab:'A room built to broadcast from. After this only the content grows', ccShopchair:'Secretlab Titan chair', ccShopfitness:'Gym and a health coach',
-ccShopchairhm:'Herman Miller Embody', ccShopSpecchairhm:'Mesh and real back support — sit in it all day',
+ccShopstreamlab:'Sony ZV-E10 II',
+ccShopSpecstreamlab:'A real camera in the frame — the stream stops looking like a webcam', ccShopchair:'Secretlab TITAN Evo', ccShopfitness:'Gym and a health coach',
+ccShopchairhm:'Herman Miller Embody Gaming', ccShopSpecchairhm:'Mesh and real back support — sit in it all day',
 ccShopdesk:'Standing desk', ccShopSpecdesk:'Part of the day on your feet — the back holds longer',
 ccShopSpecchair:'Eleven games without your back deciding',
 ccShopSpecfitness:'Sleep, back, wrists — the week stops flattening you',
@@ -6637,18 +6689,42 @@ achv_grand_slam_title:'Grand Chelem',
 achv_grand_slam_desc:'Gagne un tournoi classique dans les trois modes — Duo, Trio et Squad',
 achv_double_major_title:'Double champion',
 achv_double_major_desc:'Deviens champion d’un Major FNCS deux fois',
-ccShopmouse:'Razer Viper V3 Pro',
-ccShopmonitor:'BenQ ZOWIE XL2566K 360 Hz',
-ccShopmouse2:'Logitech G PRO X2 SUPERSTRIKE',
+ccShopmouse3:'Finalmouse UltralightX', ccShopkeyboard3:'Wooting 60HE v2', ccShopkeyboard4:'Custom HE Keyboard',
+ccShopheadset3:'Audeze LCD-GX', ccShopheadset4:'Audeze LCD-3',
+ccShopmonitor3:'ZOWIE XL2586X+', ccShopmonitor4:'ASUS ROG Swift Pro PG248QP',
+ccShopstreamdeck:'Elgato Stream Deck MK.2', ccShopstreamfx:'Sony FX3',
+ccShopchair0:'Vieille chaise de bureau', ccShopchair1:'IKEA MATCHSPEL', ccShopchairvm:'Herman Miller Vantum',
+ccShopcar1:'Volkswagen Golf d’occasion', ccShopcar2:'Volkswagen Golf GTI', ccShopcar3:'BMW M3',
+ccShopcar4:'Porsche 911 Turbo S', ccShopcar5:'Lamborghini Revuelto',
+ccShopSpecmouse3:'59 grammes et rien d’autre — la boutique de la scène pro',
+ccShopSpeckeyboard3:'60% et rapid trigger — la référence du mouvement',
+ccShopSpeckeyboard4:'Monté pour ta main — rien au-dessus',
+ccShopSpecheadset3:'Planars gaming — tout, tout de suite',
+ccShopSpecheadset4:'Planars studio — le mix de l’ingénieur du son',
+ccShopSpecmonitor3:'600 Hz DyAc — il n’y a pas plus rapide',
+ccShopSpecmonitor4:'540 Hz G-SYNC — la vitrine des tournois',
+ccShopSpecchair0:'Ça grince, ça tient — il faut bien commencer',
+ccShopSpecchair1:'La première chaise gaming — ton dos dit merci',
+ccShopSpecchairvm:'Résille et posture — presque une Embody',
+ccShopSpecstreamdeck:'Les scènes sur une touche — le stream fait adulte',
+ccShopSpecstreamfx:'Une caméra de cinéma — l’image qu’on reposte',
+ccShopSpeccar1:'Démarre presque chaque matin, et elle est à toi',
+ccShopSpeccar2:'La première voiture dont tu n’as pas honte',
+ccShopSpeccar3:'Un clip de parking bat une victoire de tournoi',
+ccShopSpeccar4:'Tout le chat en un mot : 911',
+ccShopSpeccar5:'Après ça, il ne reste que l’hélicoptère',
+ccShopmouse:'Logitech G PRO X Superlight 2',
+ccShopmonitor:'ZOWIE XL2566K',
+ccShopmouse2:'Razer Viper V4 Pro',
 ccShopSpecmouse2:'Clic haptique sans bouton physique — l’actuation se règle',
-ccShopmonitor2:'BenQ ZOWIE XL2586X 540 Hz',
+ccShopmonitor2:'ZOWIE XL2566X+',
 ccShopSpecmonitor2:'540 Hz et DyAc 2 — en clutch, chaque frame se voit',
-ccShopkeyboard2:'Wooting 60HE+',
+ccShopkeyboard2:'Wooting 80HE',
 ccShopSpeckeyboard2:'Switchs magnétiques, rapid trigger — tu construis plus vite que tu ne penses',
-ccShopheadset2:'Logitech G PRO X 2 LIGHTSPEED',
+ccShopheadset2:'Audeze Maxwell',
 ccShopSpecheadset2:'Drivers graphène — les pas à deux box, tu survis à ce que tu n’as pas vu',
 ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3',
-ccShopheadset:'Razer BlackShark V2 Pro',
+ccShopheadset:'Razer BlackShark V3 Pro',
 ccShoppcbudget:'PC d’entrée de gamme · 144 FPS',
 ccShoppcpro:'Configuration PRO · 240+ FPS',
 ccShoppcelite:'Configuration ÉLITE · 360 Hz',
@@ -7044,15 +7120,15 @@ ccShopMonth:'pour un mois',
 ccShopNew:'NOUVEAU',
 ccShopCap:'Endurance',
 ccShopReach:'Abonnés par stream',
-ccShopstreamcam:'Webcam et anneau lumineux',
+ccShopstreamcam:'Logitech C920',
 ccShopSpecstreamcam:'Ils te voient et t’entendent — les gens commencent à venir',
-ccShopstreamkit:'Micro et stream deck',
+ccShopstreamkit:'HyperX QuadCast 2',
 ccShopSpecstreamkit:'Un son adulte, et les scènes sur une touche',
-ccShopstreamlab:'Éclairage et son de studio',
+ccShopstreamlab:'Sony ZV-E10 II',
 ccShopSpecstreamlab:'Une pièce faite pour diffuser. Après ça, seul le contenu grandit',
-ccShopchair:'Fauteuil Secretlab Titan',
+ccShopchair:'Secretlab TITAN Evo',
 ccShopfitness:'Salle de sport et coach santé',
-ccShopchairhm:'Herman Miller Embody',
+ccShopchairhm:'Herman Miller Embody Gaming',
 ccShopSpecchairhm:'Résille et vrai maintien lombaire — tenable toute la journée',
 ccShopdesk:'Bureau assis-debout',
 ccShopSpecdesk:'Une partie de la journée debout — le dos tient plus longtemps',
@@ -7305,7 +7381,7 @@ ccMateReplace:'En trouver un nouveau',
 ccFindDuo:'Trouver un partenaire',
 ccSeatEmpty:'Place libre',
 ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Victory Cup trios',
-ccMateKeep:'Garder', chToday:'aujourd’hui',
+ccMateKeep:'Garder', chToday:'aujourd’hui', ccShopConf:'Confiance',
 ccMoveGoCity:(c,r)=>'S’installer : '+c+' ('+r+')', ccScoutOff:'Ne plus chercher de club', ccScoutOn:'Chercher un club', ccMateOver:'Une saison en duos, et vous êtes trois. Choisis qui reste — l’autre part, et rien ne peut être joué avant de décider',
 ccSeasonDuos:'Saison en duos',
 ccSeasonTrios:'Saison en trios',
@@ -46223,7 +46299,10 @@ function careerBurnout(){
   return over>0 ? Math.min(CC_GRIND_MAX, Math.round(over*CC_GRIND_STEP*10)/10) : 0;
 }
 function careerForm(){
-  return clamp((CAREER.career.form||0)-careerBurnout(), -CC_FORM_MAX, CC_FORM_MAX);
+  // Confidence holds the floor and never the ceiling. See the cars in CC_SHOP.
+  const conf=(CAREER.gear && CAREER.gear.conf) || 0;
+  return clamp((CAREER.career.form||0)-careerBurnout(),
+               Math.min(0, -CC_FORM_MAX+conf), CC_FORM_MAX);
 }
 function careerFormAdd(place, of){
   if(!(of>1)) return 0;
@@ -46918,6 +46997,9 @@ function careerGearSkill(){
   });
   CAREER.gear=CAREER.gear||{own:[], train:0};
   CAREER.gear.skill=skill;
+  // And the confidence in the garage: the best car owned, nothing stacked.
+  CAREER.gear.conf=CC_SHOP.reduce((v,it)=>
+    (it.conf && careerOwns(it.id) && it.conf>v) ? it.conf : v, 0);
 }
 // Whether the club is paying for the coach this month.
 function ccOrgPaysCoach(){ return !!(CAREER.org && CAREER.org.perk==='coach'); }
@@ -49718,6 +49800,8 @@ function careerDmInbound(place, total, passed, from){
    Three stand open at once and one arrives a day, so the seat is never a dead
    end and never a menu of the whole division either. */
 const CC_SEAT_DMS=3;
+// How long a "no" stands before the person will hear you out again.
+const CC_ASK_AGAIN_DAYS=14;
 /* ---- Saying it out loud -----------------------------------------------------
 
    His idea, 17 August: post LFD. The seat is a thing this scene announces — the
@@ -49908,8 +49992,30 @@ function careerDmMargin(who){
 }
 function careerDmWrite(handle, seat){
   const existing=careerDmFind(handle);
-  // Asking twice is not a second chance — the thread already carries the answer.
-  if(existing && existing.msgs.some(m=>m.from==='you')){ careerDmOpen(existing.id); return; }
+  /* Asking twice is not a second chance — the same evening. A no was for the
+     player who asked, and two weeks later that is not the same player: the
+     rating has moved, the results are different, the seat may have emptied.
+     His report, 20 August: playing as a 96 he could not sign anybody — every
+     thread was a refusal from the weeks when he was not one yet, and pressing
+     Ask only reopened it. So a refusal ages out: after CC_ASK_AGAIN_DAYS the
+     button asks again and the answer is computed off who is asking today.
+     A thread that is anything but a refusal still just opens. */
+  if(existing && existing.msgs.some(m=>m.from==='you')){
+    const lastNo = existing.state==='declined'
+      ? existing.msgs.filter(m=>m.from==='them').slice(-1)[0] : null;
+    const aged = lastNo && lastNo.day
+      && ccDaysBetween(lastNo.day, careerToday())>=CC_ASK_AGAIN_DAYS;
+    if(!aged){ careerDmOpen(existing.id); return; }
+    CH_DM=existing.id;
+    if(typeof seat==='number') existing.seat=seat;
+    careerDmPush(existing, 'you', 'dmAsk');
+    existing.args=0;
+    existing.pending=null;
+    careerDmAnswer(existing, 0);
+    careerSave();
+    careerRenderHub('social');
+    return;
+  }
   const who=(existing && existing.who)
     || careerDmPool().find(w=>hKey(w.handle)===hKey(handle))
     // Anybody in the region, which is what the search offers. See careerDuoSearchPool.
@@ -51513,48 +51619,71 @@ function careerNextDay(){
    trains harder with every purchase is the opposite of that, and
    check-career-shop holds the full desk at the +55% it has always been. */
 const CC_SHOP=[
-  {id:'mouse',    cost:180,   train:0.05, img:'mouse.jpg',    slot:'mouse', rank:1, skill:{aim:1}},
-  {id:'mouse2',   cost:450,   train:0.05, slot:'mouse',    rank:2, skill:{aim:2}},
-  {id:'headset',  cost:180,   train:0.05, img:'headset.jpg', slot:'headset', rank:1, skill:{sur:1}},
-  {id:'headset2', cost:420,   train:0.05, slot:'headset',  rank:2, skill:{sur:2}},
-  {id:'keyboard', cost:240,   train:0.05, img:'keyboard.jpg', slot:'keyboard', rank:1, skill:{end:1}},
-  {id:'keyboard2',cost:520,   train:0.05, slot:'keyboard', rank:2, skill:{end:2}},
-  {id:'pcbudget', cost:500,   train:0.10, img:'pc-budget.jpg', slot:'pc', rank:1, skill:{con:1}},
-  // A desk that goes up: standing through the dead hours is the cheapest hour
-  // a career gets back, and like the chair it buys days rather than percent.
-  {id:'desk',     cost:700,   cap:8,  img:'desk.jpg'},
-  {id:'monitor',  cost:600,   train:0.10, img:'monitor.jpg', slot:'monitor', rank:1, skill:{clu:1}},
-  {id:'monitor2', cost:1400,  train:0.10, slot:'monitor', rank:2, skill:{clu:2}},
-  // The two that are not hardware are priced the way they are actually sold: a
-  // bootcamp is about a thousand dollars a stay (the user's number), and a
-  // coach is a monthly retainer rather than a one-off, so it stands above it.
-  // The bootcamp is a stay, not a thing you own: paid for a month, and when the
-  // month is out it is over and can be paid for again. Everything else on this
-  // list is bought once and stands on the desk forever.
-  // The ones that buy days instead of percentages: a chair you can sit in for
-  // eleven games without your back deciding otherwise, the one people actually
-  // buy when the prize money starts, and the trainer who makes the week
-  // survivable. They raise the store rather than the value of a day — +10 is
-  // about a third of a training day a week, +20 is two thirds, +15 is half.
-  //
-  // The two chairs are one slot: an Embody replaces a Titan, pays the
-  // difference in store, and the Titan reads "have better" afterwards.
-  {id:'chair',    cost:400,   cap:10, img:'chair.jpg',    slot:'chair', rank:1},
-  {id:'chairhm',  cost:1000,  cap:20, img:'chair-hm.jpg', slot:'chair', rank:2},
-  {id:'camp',     cost:1000,  train:0.45, img:'camp.jpg', wide:true, days:30},
-  {id:'pcpro',    cost:1500,  train:0.20, img:'pc-pro.jpg',    slot:'pc', rank:2, skill:{con:2}},
-  // A room, not a product: cropped wide like the bootcamp.
-  {id:'fitness',  cost:2000,  cap:15, img:'gym.jpg', wide:true},
-  {id:'pcelite',  cost:3000,  train:0.30, img:'pc-elite.jpg',  slot:'pc', rank:3, skill:{con:3}},
-  // Bought again and again: the cheap thing a Division 5 career can afford.
+  /* His images and his prices, 20 August: a folder of thirty product shots
+     with the price in every filename, and the instruction that nothing without
+     a picture stays on the shelf. The three imageless stream rungs went; the
+     rest of the desk became ladders.
 
-  /* The audience, which nothing else on this list touches. None of the four
-     names a picture: check-career-shop holds every item to having the file it
-     names, and none of these exist yet. When they do, dropping them into
-     devices/ and writing one img: on each line is the whole change. */
-  {id:'streamcam',cost:400,   reach:0.35, slot:'stream', rank:1},
-  {id:'streamkit',cost:1200,  reach:0.80, slot:'stream', rank:2},
-  {id:'streamlab',cost:3000,  reach:1.50, slot:'stream', rank:3}
+     The rungs are priced by his filenames and ranked by those prices. Training
+     stays flat up a device's ladder — the whole desk still sums to the +55%
+     check-career-shop holds, because the same review that asked for more items
+     also said the game is over too fast. What a rung buys is its skill: one
+     more point of the attribute that device serves. Chairs buy stamina, the
+     stream gear buys audience, and the cars are what prize money is for once
+     the desk is full — they buy nothing but being seen, which is reach.
+
+     Ids are inherited wherever an old item had one, so a save that owned a
+     mouse still owns rung one of the mouse ladder. */
+  // Mice — AIM. The hand's half of the game.
+  {id:'mouse',    cost:160,   train:0.05, img:'mouse-sl2.png',        slot:'mouse', rank:1, skill:{aim:1}},
+  {id:'mouse2',   cost:180,   train:0.05, img:'mouse-viper4.webp',    slot:'mouse', rank:2, skill:{aim:2}},
+  {id:'mouse3',   cost:200,   train:0.05, img:'mouse-ultralightx.jpg',slot:'mouse', rank:3, skill:{aim:3}},
+  // Keyboards — END. The builds that decide an endgame.
+  {id:'keyboard', cost:200,   train:0.05, img:'keyboard-apex.jpg',    slot:'keyboard', rank:1, skill:{end:1}},
+  {id:'keyboard2',cost:220,   train:0.05, img:'keyboard-w80he.webp',  slot:'keyboard', rank:2, skill:{end:2}},
+  {id:'keyboard3',cost:250,   train:0.05, img:'keyboard-w60he2.webp', slot:'keyboard', rank:3, skill:{end:3}},
+  {id:'keyboard4',cost:400,   train:0.05, img:'keyboard-custom.webp', slot:'keyboard', rank:4, skill:{end:4}},
+  // Headsets — SUR. Hearing the fight before seeing it.
+  {id:'headset',  cost:200,   train:0.05, img:'headset-bsv3.jpg',     slot:'headset', rank:1, skill:{sur:1}},
+  {id:'headset2', cost:400,   train:0.05, img:'headset-maxwell.webp', slot:'headset', rank:2, skill:{sur:2}},
+  {id:'headset3', cost:900,   train:0.05, img:'headset-lcdgx.jpg',    slot:'headset', rank:3, skill:{sur:3}},
+  {id:'headset4', cost:2000,  train:0.05, img:'headset-lcd3.webp',    slot:'headset', rank:4, skill:{sur:4}},
+  // Monitors — CLU. What you can actually see in a clutch.
+  {id:'monitor',  cost:500,   train:0.10, img:'monitor-2566k.webp',   slot:'monitor', rank:1, skill:{clu:1}},
+  {id:'monitor2', cost:650,   train:0.10, img:'monitor-2566xp.webp',  slot:'monitor', rank:2, skill:{clu:2}},
+  {id:'monitor3', cost:1000,  train:0.10, img:'monitor-2586xp.webp',  slot:'monitor', rank:3, skill:{clu:3}},
+  {id:'monitor4', cost:1200,  train:0.10, img:'monitor-pg248qp.jpg',  slot:'monitor', rank:4, skill:{clu:4}},
+  // PCs — CON. Frames are consistency.
+  {id:'pcbudget', cost:500,   train:0.10, img:'pc-budget.jpg', slot:'pc', rank:1, skill:{con:1}},
+  {id:'pcpro',    cost:1500,  train:0.20, img:'pc-pro.jpg',    slot:'pc', rank:2, skill:{con:2}},
+  {id:'pcelite',  cost:3000,  train:0.30, img:'pc-elite.jpg',  slot:'pc', rank:3, skill:{con:3}},
+  // Chairs — stamina, from a $20 start to the one people buy with prize money.
+  {id:'chair0',   cost:20,    cap:2,  img:'chair-old.jpg',    slot:'chair', rank:1},
+  {id:'chair1',   cost:150,   cap:5,  img:'chair-ikea.jpg',   slot:'chair', rank:2},
+  {id:'chair',    cost:550,   cap:10, img:'chair-titan.webp', slot:'chair', rank:3},
+  {id:'chairvm',  cost:1000,  cap:15, img:'chair-vantum.jpg', slot:'chair', rank:4},
+  {id:'chairhm',  cost:2000,  cap:20, img:'chair-embody.webp',slot:'chair', rank:5},
+  // The desk that stands and the rooms that are not products.
+  {id:'desk',     cost:700,   cap:8,  img:'desk.jpg'},
+  {id:'camp',     cost:1000,  train:0.45, img:'camp.jpg', wide:true, days:30},
+  {id:'fitness',  cost:2000,  cap:15, img:'gym.jpg', wide:true},
+  // The stream corner — audience, from a webcam to a cinema camera.
+  {id:'streamcam', cost:70,   reach:0.35, img:'stream-c920.jpg',     slot:'stream', rank:1},
+  {id:'streamkit', cost:150,  reach:0.80, img:'stream-quadcast.webp',slot:'stream', rank:2},
+  {id:'streamdeck',cost:150,  reach:1.10, img:'stream-deck.jpg',     slot:'stream', rank:3},
+  {id:'streamlab', cost:1000, reach:1.50, img:'stream-zve10.jpg',    slot:'stream', rank:4},
+  {id:'streamfx',  cost:3900, reach:2.20, img:'stream-fx3.jpg',      slot:'stream', rank:5},
+  /* The cars — confidence, his word for it. A car does not make anybody aim
+     better, so it pays into nothing a training day touches. What it does is
+     hold the floor: form runs from -3 to +3 and lands straight on the team's
+     strength, and a bad fortnight used to take the whole -3. Confidence lifts
+     the bottom of that — a Revuelto owner never tilts below -0.5 — and never
+     the top, because the car stops the spiral and wins nothing itself. */
+  {id:'car1', cost:8000,   conf:0.5, img:'car-golf-used.avif', slot:'car', rank:1, wide:true},
+  {id:'car2', cost:35000,  conf:1.0, img:'car-gti.png',        slot:'car', rank:2, wide:true},
+  {id:'car3', cost:80000,  conf:1.5, img:'car-m3.jpg',         slot:'car', rank:3, wide:true},
+  {id:'car4', cost:250000, conf:2.0, img:'car-911.webp',       slot:'car', rank:4, wide:true},
+  {id:'car5', cost:600000, conf:2.5, img:'car-revuelto.png',   slot:'car', rank:5, wide:true}
 ];
 /* The coach is not a thing on a desk, so he is not in the shop: he is a person
    you pick, and he stands in his own tile beside the duo.
@@ -52533,6 +52662,7 @@ function careerShopHTML(){
       '<div class="cc-buy-in"><b>'+L()['ccShop'+it.id]+'</b>'+
       (spec ? '<i>'+spec+'</i>' : '')+
       '<span>'+(it.reach ? L().ccShopReach+' +'+Math.round(it.reach*100)+'%'
+               : it.conf ? L().ccShopConf+' +'+it.conf
                : it.cap ? L().ccShopCap+' +'+it.cap
                         : L().ccShopTrain+' +'+Math.round(it.train*100)+'%')+
         // What the device pays into on the card itself. See CC_SHOP.
