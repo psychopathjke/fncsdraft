@@ -1132,7 +1132,17 @@
   .cc-map{display:block;width:100%;height:auto;border-radius:4px;}
   .cc-sea{fill:#5a97d1;}
   .cc-land{fill:#e9edf0;stroke:#cbd3d9;stroke-width:.6;}
-  .cc-mp{stroke:#12212e;stroke-width:.7;cursor:pointer;transition:opacity .12s;}
+  /* A country is clickable because it is a country, not because its flag has
+     arrived. The fill is a pattern holding an image off flagcdn, and the
+     default pointer-events counts a hit only where something is painted — so
+     until that image loads, the painted part of a country is its outline, and
+     a click in the middle of Germany does nothing. A player wrote it up
+     exactly that way, 20 August: "если я буду нажимать в центр Германии,
+     ничего не будет, мне надо нажать на контур страны". On a fast connection
+     the window is milliseconds, which is why it never reproduced on this
+     machine; on his it is the whole experience. */
+  .cc-mp{stroke:#12212e;stroke-width:.7;cursor:pointer;transition:opacity .12s;
+         pointer-events:all;}
   .cc-mp:hover{stroke:#fff;stroke-width:1.6;}
   /* Where the career is sitting today, on the move map. Written before .on so
      the country being considered still wins the outline it is being given. */
@@ -1415,6 +1425,11 @@
 
   .ch-weeks.ch-days{grid-template-columns:repeat(7,1fr);}
   .ch-day{padding:7px 12px 9px;}
+  /* Today, unmissable. The white ring stays what it was — the next thing you
+     will play — and today is the teal cell you are standing in. */
+  .ch-day.ch-today{box-shadow:inset 0 0 0 2px #00ffd0;border-radius:10px;
+    background:rgba(0,255,208,.08);}
+  .ch-day.ch-today em{opacity:1;color:#00ffd0;font-weight:800;}
   /* The date is the headline. Everything else in the cell is a caption on it. */
   .ch-day em{font-size:9px;opacity:.7;margin-bottom:-2px;}
   .ch-day b{display:block;font-size:27px;font-weight:900;line-height:1.05;
@@ -3864,7 +3879,7 @@ chSquadHint:'Ты и напарник', chSquadHintTrio:'Ты и два напа
 chNoPartner:'Напарника пока нет',
 ccSeatEmpty:'Место свободно', ccSeasonDuos:'Сезон в дуо', ccSeasonTrios:'Сезон в трио',
 ccWordDuos:'дуо', ccWordTrios:'трио', calVictoryTrio:'Трио Виктори Кап',
-ccMateKeep:'Оставить', ccScoutOff:'Не искать клуб', ccScoutOn:'Искать клуб', ccMateOver:'Сезон в дуо, а вас трое. Выбери, кто остаётся — второй уйдёт, и вход в турниры закрыт, пока не решишь',
+ccMateKeep:'Оставить', chToday:'сегодня', ccScoutOff:'Не искать клуб', ccScoutOn:'Искать клуб', ccMateOver:'Сезон в дуо, а вас трое. Выбери, кто остаётся — второй уйдёт, и вход в турниры закрыт, пока не решишь',
 ccSquadTrio:'Трио',
 chLadder:'Лестница',
 chLadderHint:'Где ты и что дальше',
@@ -4118,6 +4133,10 @@ ccMoveEdge:v=>'+'+v+' к ближнему бою',
 ccShopHint:'Призовые тратятся на то, что делает тренировки весомее',
 ccShopTrain:'Прокачка за день', ccShopOwned:'куплено',
 ccShopmouse:'Logitech G PRO X2 SUPERSTRIKE', ccShopmonitor:'BenQ ZOWIE XL2566K 360 Гц',
+ccShopmouse2:'Razer Viper V3 Pro', ccShopSpecmouse2:'54 грамма, 8000 Гц опрос — рука перестаёт быть лимитом',
+ccShopmonitor2:'BenQ ZOWIE XL2586X 540 Гц', ccShopSpecmonitor2:'540 Гц и DyAc 2 — в клатче видно каждый кадр',
+ccShopkeyboard2:'Wooting 60HE+', ccShopSpeckeyboard2:'Магнитные свитчи, rapid trigger — строишь быстрее, чем думаешь',
+ccShopheadset2:'Razer BlackShark V2 Pro', ccShopSpecheadset2:'Слышно шаги за два бокса — выживаешь до того, как увидел',
 ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3', ccShopheadset:'Logitech G PRO X Wireless',
 ccShoppcbudget:'Бюджетный ПК · 144 FPS', ccShoppcpro:'PRO-сборка · 240+ FPS',
 ccShoppcelite:'ELITE-сборка · 360 Гц',
@@ -5216,7 +5235,7 @@ chSquadHint:'You and your partner', chSquadHintTrio:'You and your two partners',
 chNoPartner:'No partner yet',
 ccSeatEmpty:'Seat open', ccSeasonDuos:'A duos season', ccSeasonTrios:'A trios season',
 ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Trios Victory Cup',
-ccMateKeep:'Keep', ccScoutOff:'Stop looking for clubs', ccScoutOn:'Look for clubs', ccMateOver:'A duos season, and there are three of you. Choose who stays — the other leaves, and nothing can be entered until you decide',
+ccMateKeep:'Keep', chToday:'today', ccScoutOff:'Stop looking for clubs', ccScoutOn:'Look for clubs', ccMateOver:'A duos season, and there are three of you. Choose who stays — the other leaves, and nothing can be entered until you decide',
 ccSquadTrio:'Trio',
 chLadder:'The ladder',
 chLadderHint:'Where you stand',
@@ -5470,6 +5489,10 @@ ccMoveEdge:v=>'+'+v+' close range',
 ccShopHint:'Prize money buys the things that make a training day count',
 ccShopTrain:'Training gain', ccShopOwned:'owned',
 ccShopmouse:'Logitech G PRO X2 SUPERSTRIKE', ccShopmonitor:'BenQ ZOWIE XL2566K 360Hz',
+ccShopmouse2:'Razer Viper V3 Pro', ccShopSpecmouse2:'54 grams, 8000Hz polling — the hand stops being the limit',
+ccShopmonitor2:'BenQ ZOWIE XL2586X 540Hz', ccShopSpecmonitor2:'540Hz with DyAc 2 — a clutch shows you every frame',
+ccShopkeyboard2:'Wooting 60HE+', ccShopSpeckeyboard2:'Magnetic switches, rapid trigger — you build faster than you think',
+ccShopheadset2:'Razer BlackShark V2 Pro', ccShopSpecheadset2:'Footsteps two boxes away — you survive what you never saw',
 ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3', ccShopheadset:'Logitech G PRO X Wireless',
 ccShoppcbudget:'Budget PC · 144 FPS', ccShoppcpro:'PRO build · 240+ FPS',
 ccShoppcelite:'ELITE build · 360Hz',
@@ -6614,6 +6637,14 @@ achv_double_major_title:'Double champion',
 achv_double_major_desc:'Deviens champion d’un Major FNCS deux fois',
 ccShopmouse:'Logitech G PRO X2 SUPERSTRIKE',
 ccShopmonitor:'BenQ ZOWIE XL2566K 360 Hz',
+ccShopmouse2:'Razer Viper V3 Pro',
+ccShopSpecmouse2:'54 grammes, 8000 Hz — la main cesse d’être la limite',
+ccShopmonitor2:'BenQ ZOWIE XL2586X 540 Hz',
+ccShopSpecmonitor2:'540 Hz et DyAc 2 — en clutch, chaque frame se voit',
+ccShopkeyboard2:'Wooting 60HE+',
+ccShopSpeckeyboard2:'Switchs magnétiques, rapid trigger — tu construis plus vite que tu ne penses',
+ccShopheadset2:'Razer BlackShark V2 Pro',
+ccShopSpecheadset2:'Les pas s’entendent à deux box — tu survis à ce que tu n’as pas vu',
 ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3',
 ccShopheadset:'Logitech G PRO X Wireless',
 ccShoppcbudget:'PC d’entrée de gamme · 144 FPS',
@@ -7272,7 +7303,7 @@ ccMateReplace:'En trouver un nouveau',
 ccFindDuo:'Trouver un partenaire',
 ccSeatEmpty:'Place libre',
 ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Victory Cup trios',
-ccMateKeep:'Garder', ccScoutOff:'Ne plus chercher de club', ccScoutOn:'Chercher un club', ccMateOver:'Une saison en duos, et vous êtes trois. Choisis qui reste — l’autre part, et rien ne peut être joué avant de décider',
+ccMateKeep:'Garder', chToday:'aujourd’hui', ccScoutOff:'Ne plus chercher de club', ccScoutOn:'Chercher un club', ccMateOver:'Une saison en duos, et vous êtes trois. Choisis qui reste — l’autre part, et rien ne peut être joué avant de décider',
 ccSeasonDuos:'Saison en duos',
 ccSeasonTrios:'Saison en trios',
 ccSquadTrio:'Trio',
@@ -41493,7 +41524,8 @@ function ccRookieAttrs(rating, roleKey){
    six are the career's own rather than a record of somebody's season. */
 function ccOwnAttrs(){
   const pl=CAREER.player;
-  const c=careerCard(), a=c?attrsFor(c):null;
+  // raw: the player without the desk. See the gear note in careerCard.
+  const c=careerCard(true), a=c?attrsFor(c):null;
   if(!a) return ccRookieAttrs(Math.round(pl.ovr), pl.role);
   const out={};
   ATTR_KEYS.forEach(k=>{ out[k]=a[k]; });
@@ -42025,7 +42057,11 @@ function careerLoad(){
   // point, and one that still holds the old single `partner` field would arrive
   // at the hub with an empty seat and a person sat in it.
   if(CAREER){ careerNotesMigrate(); careerMigrateSize(); careerMigratePartners();
-              careerMigrateHome(); careerMigrateDiff(); }
+              careerMigrateHome(); careerMigrateDiff();
+              // A save from before the desk touched the card owns the devices
+              // and not the skill they now carry. Recounted, not migrated: the
+              // same recount every purchase runs. See careerGearSkill.
+              careerGearSkill(); }
   // A different career is a different place to live. What the last one was
   // looking at in the flat list belongs to the last one. See CH_FLAT_PLACE.
   CH_FLAT_PLACE=null;
@@ -42199,7 +42235,7 @@ function careerNext(){
 // The player as a card. A taken card is looked up in the roster rather than
 // copied into the save, so it always reads whatever the roster says today; the
 // connection is layered on top without touching the roster object.
-function careerCard(){
+function careerCard(raw){
   if(!CAREER || !CAREER.player) return null;
   const pl=CAREER.player;
   let base;
@@ -42260,6 +42296,23 @@ function careerCard(){
   base._ageEdge  = built ? ccAgeEdge(pl.age) : 0;
   base._age      = ccPlayerAge();
   base._pingMs   = ccPingNow();
+  /* The desk, on the card. Each owned device pays its point or two into the
+     attribute it serves — see CC_SHOP — visible on the card's six numbers and
+     read by the engine with them. Applied to this copy only, never written
+     back: `raw` is how ccOwnAttrs samples the player without the desk, so a
+     career's first training day does not bake the gear in and then double it
+     on every read after. The rating is untouched — a mouse buys aim, not a
+     number at the top of the card. */
+  const gs=!raw && CAREER.gear && CAREER.gear.skill;
+  if(gs && Object.keys(gs).length){
+    const a=attrsFor(base);
+    const bumped={...(base._attrs||a)};
+    ATTR_KEYS.forEach(k=>{
+      if(gs[k]) bumped[k]=clamp(Math.round((bumped[k]!=null?bumped[k]:a[k])+gs[k]), 35, 99);
+    });
+    bumped._floored=false;
+    base._attrs=bumped;
+  }
   return base;
 }
 
@@ -42544,18 +42597,28 @@ function careerCentreHTML(card, a){
     const iso=ccAddDays(monday, d);
     const when=new Date(iso+'T00:00:00Z');
     const on=dayEvents.get(iso)||[];
-    const head=`<em>${L().calDows[d]}</em><b>${when.getUTCDate()}</b>`;
+    /* The day you are standing in, said on the strip itself.
+
+       The ring already on this strip marks the next thing you will play, which
+       is a different question — and the only place that said what today IS was
+       the small date in the corner. A player wrote it up, 20 August: "почти не
+       понятно какой сегодня день... надо всматриваться слева в маленький
+       текст". So today's cell carries the word, and the styling below makes it
+       the loudest thing on the row. */
+    const today=iso===careerToday();
+    const head=`<em>${L().calDows[d]}${today?' · '+L().chToday:''}</em><b>${when.getUTCDate()}</b>`;
+    const cls=(today?' ch-today':'');
     // A free day says it once. The line under it is where what you decided to
     // do with the day will go, and until there is something to decide it stays
     // empty rather than repeating the headline in smaller type.
     if(!on.length)
-      return `<div class="ch-week ch-day ch-day-free">${head}`+
+      return `<div class="ch-week ch-day ch-day-free${cls}">${head}`+
              `<span class="ch-day-what">${L().chDayFree}</span></div>`;
     // A day can carry more than one thing — a divisional cup window and a
     // Reload session land on the same evening more than once in a season — so
     // the first is named and the rest are counted rather than dropped.
     const more=on.length>1 ? ` +${on.length-1}` : '';
-    return `<div class="ch-week ch-day${d===firstBusy?' now':''}">${head}`+
+    return `<div class="ch-week ch-day${d===firstBusy?' now':''}${cls}">${head}`+
            `<span class="ch-day-what"><i class="ch-pip-${on[0].kind||'cup'}"></i>`+
            `${KIND_WORD[on[0].kind]||L().chWkCup}</span>`+
            `<span class="ch-day-sub">${on[0].label}${more}</span></div>`;
@@ -43754,8 +43817,19 @@ function careerDoAct(id){
   // card they are actually playing, so the day is always worth something.
   if(!pl.attrs) pl.attrs=ccOwnAttrs();
   {
+    /* And the difficulty sits on the training too.
+
+       It sat only on careerDevelopNow — the age curve — which the composition
+       measurement of 19 August showed is a sliver of actual growth: a career is
+       built in the training room, so a Legend career was 7% longer, not five
+       times. A player then finished the whole game in three or four hours and
+       said the improving is too fast; his answer was to make the harder modes
+       cut what a session pays. Same factor the develop term already uses, so
+       one setting means one thing everywhere: Easy 1.00, Pro 0.50, Elite 0.25,
+       Legend 0.10. Easy is untouched. */
     Object.keys(act.gain||{}).forEach(k=>{
-      const by=act.gain[k]*mult*(coach && coach.keys.indexOf(k)>=0 ? 1+coach.train : 1);
+      const by=act.gain[k]*mult*(coach && coach.keys.indexOf(k)>=0 ? 1+coach.train : 1)
+               *careerDiff().age;
       pl.attrs[k]=clamp((pl.attrs[k]||50)+by, 35, 99);
       moved[k]=by;
     });
@@ -46823,6 +46897,24 @@ function careerOrgKitOut(){
     slots[it.slot]=it.train;
     return s+gain;
   }, 0);
+  careerGearSkill();
+}
+/* What the desk is worth on the card: per slot the best rung owned, the same
+   rule the training bonus uses, so an upgrade replaces rather than stacks.
+   Recounted from scratch on every change — buying and being kitted out both
+   come through here — and read by careerCard. */
+function careerGearSkill(){
+  const bySlot={}, skill={};
+  CC_SHOP.forEach(it=>{
+    if(!it.skill || !careerOwns(it.id)) return;
+    const key=it.slot||it.id;
+    if(!bySlot[key] || (it.rank||0)>(bySlot[key].rank||0)) bySlot[key]=it;
+  });
+  Object.values(bySlot).forEach(it=>{
+    Object.keys(it.skill).forEach(k=>{ skill[k]=(skill[k]||0)+it.skill[k]; });
+  });
+  CAREER.gear=CAREER.gear||{own:[], train:0};
+  CAREER.gear.skill=skill;
 }
 // Whether the club is paying for the coach this month.
 function ccOrgPaysCoach(){ return !!(CAREER.org && CAREER.org.perk==='coach'); }
@@ -49214,7 +49306,9 @@ function careerHaterDm(place, of, passed){
   const rnd=careerRng(ccHashStr('hate|'+cr.season+'|'+careerToday()+'|'+place));
   const chance=clamp(careerReach()/60000, 0, 0.6);
   if(rnd()>=chance) return null;
-  const taken=new Set(careerDms().map(t=>hKey(t.who.handle)));
+  // Open threads and everybody blocked: a blocked hater must not respawn under
+  // the same name the day after the button was pressed.
+  const taken=new Set([...careerDms().map(t=>hKey(t.who.handle)), ...ccBlockedSet()]);
   const c=careerLadderPlayer(rnd, 40+Math.floor(rnd()*40), taken);
   const who={handle:c.handle, ovr:null, nat:c.nat, role:null, roster:false, hater:true};
   const t=careerDmThread(who);
@@ -49705,7 +49799,9 @@ function careerSeatDm(tag){
       return true;
     }
   }
-  const open=careerDmPool().filter(w=>!careerDmFind(w.handle) && careerDmMargin(w)>=line);
+  // Blocked stays blocked: no thread, no fresh hello. See careerDmBlock.
+  const open=careerDmPool().filter(w=>!ccBlocked(w.handle) &&
+                                      !careerDmFind(w.handle) && careerDmMargin(w)>=line);
   if(!open.length) return false;
   const me=careerCard();
   const want = me && attrsFor(me).roleKey==='roleFRG' ? 'roleIGL' : 'roleFRG';
@@ -50421,6 +50517,28 @@ function careerDmClose(id){
   careerSave();
   careerRenderHub('social');
 }
+/* Blocked is remembered; closed is only tidied away.
+
+   Closing a thread deletes it, and deleting it is what let the same person
+   write the same hello every week: the "already has a thread" filter had
+   nothing left to hold on to. A player finished the year, kept hearing from
+   one man, and asked for the button, 20 August.
+
+   The list holds handles rather than threads so it survives everything a
+   thread does not — the close, the season turn, the save. Blocking a hater
+   goes through here too, so the loud one stays gone instead of respawning. */
+function ccBlockedSet(){
+  return new Set(((CAREER && CAREER.blocked) || []).map(h=>String(h).toLowerCase()));
+}
+function ccBlocked(handle){ return ccBlockedSet().has(hKey(handle)); }
+function careerDmBlock(id){
+  const t=careerDms().find(x=>x.id===id);
+  if(!t || !t.who || !t.who.handle) return;
+  CAREER.blocked=(CAREER.blocked||[]);
+  const k=hKey(t.who.handle);
+  if(CAREER.blocked.indexOf(k)<0) CAREER.blocked.push(k);
+  careerDmClose(id);
+}
 function careerDmOpen(id){
   const t=careerDms().find(x=>x.id===id);
   if(t) t.unread=false;
@@ -50570,7 +50688,7 @@ function careerSocialHTML(){
           <div class="dm-ask">
             ${open.answered ? '' : `<button class="cc-back" onclick="careerHaterReply('${open.id}')"
               title="${esc(L().dmClapbackWhat)}">${L().dmClapbackBtn}</button>`}
-            <button class="ch-decline" onclick="careerDmClose('${open.id}')">${L().dmBlock}</button>
+            <button class="ch-decline" onclick="careerDmBlock('${open.id}')">${L().dmBlock}</button>
           </div>
         </div>`
       : open.who.fan ? `<div class="dm-foot dm-foot-hate">
@@ -50636,8 +50754,12 @@ function careerSocialHTML(){
         ? (()=>{ const held=careerPartnerCard() ? careerSlotHeld() : null;
             // The button still works. What it costs is written over it, because
             // this is the one press in the mode that gives a qualification away.
+            // And the other button: closing a thread only deleted it, and the
+            // next week the same person wrote the same hello — a player asked
+            // for a real block, 20 August. This one is remembered.
             return `<div class="dm-foot">${held ? `<div class="dm-asked">${
               L().ccSlotLoseHint(careerPartnerCard().handle, held.what)}</div>` : ''}
+              <button class="ch-decline" onclick="careerDmBlock('${open.id}')">${L().dmBlock}</button>
               <button class="ch-sign" onclick="careerDmAccept('${open.id}')">${L().dmTakeIt}</button></div>`; })()
         : `<div class="dm-foot"><button class="ch-sign" onclick="careerDmWrite('${esc(open.who.handle)}')">${L().dmAskBtn}</button></div>`}`
     : `<div class="ch-empty">${L().dmPickThread}</div>`;
@@ -51366,15 +51488,40 @@ function careerNextDay(){
    The three PCs are one slot, not three purchases: a rig replaces a rig, so
    buying the PRO build after the budget one pays the difference in training,
    and the budget box reads "have better" once something above it is in. */
+/* What a device is worth on the card itself.
+
+   A player's ask, 20 August, answered directly: more than one of each device,
+   and let the gear touch the skills — the mouse pays into AIM, the monitor into
+   CLU, and so on. So the four devices became slots the way the chair already
+   was, each with a step up, and every rung carries a small `skill` — one or two
+   points into the attribute that device actually serves. The mouse is your
+   hands, the monitor is what you can see in a fight, the keyboard is the
+   endgame builds, the headset is hearing them first, and the PC is frames,
+   which is consistency.
+
+   The points ride on the card rather than being trained into it — sell the
+   idea, not the number: they show on the six attributes and feed the engine,
+   they do not move the rating, and a career that never buys a mouse is one or
+   two points of AIM behind one that did, which is what owning a better mouse
+   is actually worth.
+
+   The step up is skill only. A rank-2 device keeps its rank-1 training bonus,
+   because the same player also said the game is over too fast — a desk that
+   trains harder with every purchase is the opposite of that, and
+   check-career-shop holds the full desk at the +55% it has always been. */
 const CC_SHOP=[
-  {id:'mouse',    cost:180,   train:0.05, img:'mouse.jpg'},
-  {id:'headset',  cost:180,   train:0.05, img:'headset.jpg'},
-  {id:'keyboard', cost:240,   train:0.05, img:'keyboard.jpg'},
-  {id:'pcbudget', cost:500,   train:0.10, img:'pc-budget.jpg', slot:'pc', rank:1},
+  {id:'mouse',    cost:180,   train:0.05, img:'mouse.jpg',    slot:'mouse', rank:1, skill:{aim:1}},
+  {id:'mouse2',   cost:450,   train:0.05, slot:'mouse',    rank:2, skill:{aim:2}},
+  {id:'headset',  cost:180,   train:0.05, img:'headset.jpg', slot:'headset', rank:1, skill:{sur:1}},
+  {id:'headset2', cost:420,   train:0.05, slot:'headset',  rank:2, skill:{sur:2}},
+  {id:'keyboard', cost:240,   train:0.05, img:'keyboard.jpg', slot:'keyboard', rank:1, skill:{end:1}},
+  {id:'keyboard2',cost:520,   train:0.05, slot:'keyboard', rank:2, skill:{end:2}},
+  {id:'pcbudget', cost:500,   train:0.10, img:'pc-budget.jpg', slot:'pc', rank:1, skill:{con:1}},
   // A desk that goes up: standing through the dead hours is the cheapest hour
   // a career gets back, and like the chair it buys days rather than percent.
   {id:'desk',     cost:700,   cap:8,  img:'desk.jpg'},
-  {id:'monitor',  cost:600,   train:0.10, img:'monitor.jpg'},
+  {id:'monitor',  cost:600,   train:0.10, img:'monitor.jpg', slot:'monitor', rank:1, skill:{clu:1}},
+  {id:'monitor2', cost:1400,  train:0.10, slot:'monitor', rank:2, skill:{clu:2}},
   // The two that are not hardware are priced the way they are actually sold: a
   // bootcamp is about a thousand dollars a stay (the user's number), and a
   // coach is a monthly retainer rather than a one-off, so it stands above it.
@@ -51392,10 +51539,10 @@ const CC_SHOP=[
   {id:'chair',    cost:400,   cap:10, img:'chair.jpg',    slot:'chair', rank:1},
   {id:'chairhm',  cost:1000,  cap:20, img:'chair-hm.jpg', slot:'chair', rank:2},
   {id:'camp',     cost:1000,  train:0.45, img:'camp.jpg', wide:true, days:30},
-  {id:'pcpro',    cost:1500,  train:0.20, img:'pc-pro.jpg',    slot:'pc', rank:2},
+  {id:'pcpro',    cost:1500,  train:0.20, img:'pc-pro.jpg',    slot:'pc', rank:2, skill:{con:2}},
   // A room, not a product: cropped wide like the bootcamp.
   {id:'fitness',  cost:2000,  cap:15, img:'gym.jpg', wide:true},
-  {id:'pcelite',  cost:3000,  train:0.30, img:'pc-elite.jpg',  slot:'pc', rank:3},
+  {id:'pcelite',  cost:3000,  train:0.30, img:'pc-elite.jpg',  slot:'pc', rank:3, skill:{con:3}},
   // Bought again and again: the cheap thing a Division 5 career can afford.
 
   /* The audience, which nothing else on this list touches. None of the four
@@ -51706,6 +51853,8 @@ function careerBuy(id){
   CAREER.gear.own=(CAREER.gear.own||[]).concat(id);
   CAREER.gear.train=Math.max(0,(CAREER.gear.train||0)+gain);
   CAREER.gear.reach=Math.max(0,(CAREER.gear.reach||0)+reachGain);
+  // The card's own share of the desk. See careerGearSkill.
+  careerGearSkill();
   careerSave();
   careerRenderHub('shop');
   return true;
@@ -52328,6 +52477,9 @@ function careerShopHTML(){
       '<span>'+(it.reach ? L().ccShopReach+' +'+Math.round(it.reach*100)+'%'
                : it.cap ? L().ccShopCap+' +'+it.cap
                         : L().ccShopTrain+' +'+Math.round(it.train*100)+'%')+
+        // What the device pays into on the card itself. See CC_SHOP.
+        (it.skill ? Object.keys(it.skill).map(function(k){
+            return ' · +'+it.skill[k]+' '+(L()[ATTR_LABEL[k]]||k.toUpperCase()); }).join('') : '')+
         (it.days ? ' · '+L().ccShopMonth : '')+'</span></div>'+
       (stay ? '<span class="cc-owned">'+L().ccShopUntil(ccDayLabel(stay.until))+'</span>'
            : own ? '<span class="cc-owned">'+L().ccShopOwned+'</span>'
