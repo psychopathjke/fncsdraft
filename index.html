@@ -3879,7 +3879,8 @@ chSquadHint:'Ты и напарник', chSquadHintTrio:'Ты и два напа
 chNoPartner:'Напарника пока нет',
 ccSeatEmpty:'Место свободно', ccSeasonDuos:'Сезон в дуо', ccSeasonTrios:'Сезон в трио',
 ccWordDuos:'дуо', ccWordTrios:'трио', calVictoryTrio:'Трио Виктори Кап',
-ccMateKeep:'Оставить', chToday:'сегодня', ccScoutOff:'Не искать клуб', ccScoutOn:'Искать клуб', ccMateOver:'Сезон в дуо, а вас трое. Выбери, кто остаётся — второй уйдёт, и вход в турниры закрыт, пока не решишь',
+ccMateKeep:'Оставить', chToday:'сегодня',
+ccMoveGoCity:(c,r)=>'Переехать: '+c+' ('+r+')', ccScoutOff:'Не искать клуб', ccScoutOn:'Искать клуб', ccMateOver:'Сезон в дуо, а вас трое. Выбери, кто остаётся — второй уйдёт, и вход в турниры закрыт, пока не решишь',
 ccSquadTrio:'Трио',
 chLadder:'Лестница',
 chLadderHint:'Где ты и что дальше',
@@ -4132,12 +4133,12 @@ ccMoveNoCash:'Не хватает на первый месяц',
 ccMoveEdge:v=>'+'+v+' к ближнему бою',
 ccShopHint:'Призовые тратятся на то, что делает тренировки весомее',
 ccShopTrain:'Прокачка за день', ccShopOwned:'куплено',
-ccShopmouse:'Logitech G PRO X2 SUPERSTRIKE', ccShopmonitor:'BenQ ZOWIE XL2566K 360 Гц',
-ccShopmouse2:'Razer Viper V3 Pro', ccShopSpecmouse2:'54 грамма, 8000 Гц опрос — рука перестаёт быть лимитом',
+ccShopmouse:'Razer Viper V3 Pro', ccShopmonitor:'BenQ ZOWIE XL2566K 360 Гц',
+ccShopmouse2:'Logitech G PRO X2 SUPERSTRIKE', ccShopSpecmouse2:'Тактильный клик без физической кнопки — актуация, какую выставишь',
 ccShopmonitor2:'BenQ ZOWIE XL2586X 540 Гц', ccShopSpecmonitor2:'540 Гц и DyAc 2 — в клатче видно каждый кадр',
 ccShopkeyboard2:'Wooting 60HE+', ccShopSpeckeyboard2:'Магнитные свитчи, rapid trigger — строишь быстрее, чем думаешь',
-ccShopheadset2:'Razer BlackShark V2 Pro', ccShopSpecheadset2:'Слышно шаги за два бокса — выживаешь до того, как увидел',
-ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3', ccShopheadset:'Logitech G PRO X Wireless',
+ccShopheadset2:'Logitech G PRO X 2 LIGHTSPEED', ccShopSpecheadset2:'Графеновые драйверы — шаги за два бокса, выживаешь до того, как увидел',
+ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3', ccShopheadset:'Razer BlackShark V2 Pro',
 ccShoppcbudget:'Бюджетный ПК · 144 FPS', ccShoppcpro:'PRO-сборка · 240+ FPS',
 ccShoppcelite:'ELITE-сборка · 360 Гц',
 ccShoppc:'Новый ПК', ccShopcoach:'Коуч', ccShopcamp:'Буткемп',
@@ -4152,10 +4153,10 @@ ccPerkRow:'От клуба', ccPerkgear:'Клуб выдаёт девайсы и
 ccOrgPays:n=>n+' платит',
 ccNewsOrgKit:n=>n+' выдал сетап: девайсы и ПК',
 ccNewsOrgCoach:n=>n+' берёт коуча на себя',
-ccShopSpecmouse:'Беспроводная, 1 кг усилия на клик',
+ccShopSpecmouse:'54 грамма, 8000 Гц опрос — стандарт про-сцены',
 ccShopSpecmonitor:'TN, 360 Гц, DyAc 2',
 ccShopSpeckeyboard:'OmniPoint 3.0, точка срабатывания 0.1 мм',
-ccShopSpecheadset:'LIGHTSPEED, шумодав на микрофоне',
+ccShopSpecheadset:'Стандарт киберспорта — позиционный звук и шумодав',
 ccShopSpecpcbudget:'Ryzen 5 5600 · RX 6600 · 16 ГБ DDR4',
 ccShopSpecpcpro:'Ryzen 7 9800X3D · RTX 5060 Ti · 16 ГБ DDR5',
 ccShopSpecpcelite:'Ryzen 7 9850X3D · RTX 5080 · 32 ГБ DDR5',
@@ -5235,7 +5236,8 @@ chSquadHint:'You and your partner', chSquadHintTrio:'You and your two partners',
 chNoPartner:'No partner yet',
 ccSeatEmpty:'Seat open', ccSeasonDuos:'A duos season', ccSeasonTrios:'A trios season',
 ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Trios Victory Cup',
-ccMateKeep:'Keep', chToday:'today', ccScoutOff:'Stop looking for clubs', ccScoutOn:'Look for clubs', ccMateOver:'A duos season, and there are three of you. Choose who stays — the other leaves, and nothing can be entered until you decide',
+ccMateKeep:'Keep', chToday:'today',
+ccMoveGoCity:(c,r)=>'Move to '+c+' ('+r+')', ccScoutOff:'Stop looking for clubs', ccScoutOn:'Look for clubs', ccMateOver:'A duos season, and there are three of you. Choose who stays — the other leaves, and nothing can be entered until you decide',
 ccSquadTrio:'Trio',
 chLadder:'The ladder',
 chLadderHint:'Where you stand',
@@ -5488,12 +5490,12 @@ ccMoveNoCash:'Not enough for the first month',
 ccMoveEdge:v=>'+'+v+' close range',
 ccShopHint:'Prize money buys the things that make a training day count',
 ccShopTrain:'Training gain', ccShopOwned:'owned',
-ccShopmouse:'Logitech G PRO X2 SUPERSTRIKE', ccShopmonitor:'BenQ ZOWIE XL2566K 360Hz',
-ccShopmouse2:'Razer Viper V3 Pro', ccShopSpecmouse2:'54 grams, 8000Hz polling — the hand stops being the limit',
+ccShopmouse:'Razer Viper V3 Pro', ccShopmonitor:'BenQ ZOWIE XL2566K 360Hz',
+ccShopmouse2:'Logitech G PRO X2 SUPERSTRIKE', ccShopSpecmouse2:'Haptic click with no physical button — actuation set to taste',
 ccShopmonitor2:'BenQ ZOWIE XL2586X 540Hz', ccShopSpecmonitor2:'540Hz with DyAc 2 — a clutch shows you every frame',
 ccShopkeyboard2:'Wooting 60HE+', ccShopSpeckeyboard2:'Magnetic switches, rapid trigger — you build faster than you think',
-ccShopheadset2:'Razer BlackShark V2 Pro', ccShopSpecheadset2:'Footsteps two boxes away — you survive what you never saw',
-ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3', ccShopheadset:'Logitech G PRO X Wireless',
+ccShopheadset2:'Logitech G PRO X 2 LIGHTSPEED', ccShopSpecheadset2:'Graphene drivers — footsteps two boxes away, you survive what you never saw',
+ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3', ccShopheadset:'Razer BlackShark V2 Pro',
 ccShoppcbudget:'Budget PC · 144 FPS', ccShoppcpro:'PRO build · 240+ FPS',
 ccShoppcelite:'ELITE build · 360Hz',
 ccShoppc:'New PC', ccShopcoach:'Coach', ccShopcamp:'Bootcamp',
@@ -5508,10 +5510,10 @@ ccPerkRow:'From the club', ccPerkgear:'Club provides the gear and the PC', ccPer
 ccOrgPays:n=>n+' pays',
 ccNewsOrgKit:n=>n+' kitted me out: devices and a PC',
 ccNewsOrgCoach:n=>n+' is covering the coach',
-ccShopSpecmouse:'Wireless, 1kg actuation force',
+ccShopSpecmouse:'54 grams, 8000Hz polling — the pro-scene standard',
 ccShopSpecmonitor:'TN, 360Hz, DyAc 2',
 ccShopSpeckeyboard:'OmniPoint 3.0, 0.1mm actuation',
-ccShopSpecheadset:'LIGHTSPEED, noise-cancelling mic',
+ccShopSpecheadset:'The esports standard — positional audio, noise-cancelling mic',
 ccShopSpecpcbudget:'Ryzen 5 5600 · RX 6600 · 16GB DDR4',
 ccShopSpecpcpro:'Ryzen 7 9800X3D · RTX 5060 Ti · 16GB DDR5',
 ccShopSpecpcelite:'Ryzen 7 9850X3D · RTX 5080 · 32GB DDR5',
@@ -6635,18 +6637,18 @@ achv_grand_slam_title:'Grand Chelem',
 achv_grand_slam_desc:'Gagne un tournoi classique dans les trois modes — Duo, Trio et Squad',
 achv_double_major_title:'Double champion',
 achv_double_major_desc:'Deviens champion d’un Major FNCS deux fois',
-ccShopmouse:'Logitech G PRO X2 SUPERSTRIKE',
+ccShopmouse:'Razer Viper V3 Pro',
 ccShopmonitor:'BenQ ZOWIE XL2566K 360 Hz',
-ccShopmouse2:'Razer Viper V3 Pro',
-ccShopSpecmouse2:'54 grammes, 8000 Hz — la main cesse d’être la limite',
+ccShopmouse2:'Logitech G PRO X2 SUPERSTRIKE',
+ccShopSpecmouse2:'Clic haptique sans bouton physique — l’actuation se règle',
 ccShopmonitor2:'BenQ ZOWIE XL2586X 540 Hz',
 ccShopSpecmonitor2:'540 Hz et DyAc 2 — en clutch, chaque frame se voit',
 ccShopkeyboard2:'Wooting 60HE+',
 ccShopSpeckeyboard2:'Switchs magnétiques, rapid trigger — tu construis plus vite que tu ne penses',
-ccShopheadset2:'Razer BlackShark V2 Pro',
-ccShopSpecheadset2:'Les pas s’entendent à deux box — tu survis à ce que tu n’as pas vu',
+ccShopheadset2:'Logitech G PRO X 2 LIGHTSPEED',
+ccShopSpecheadset2:'Drivers graphène — les pas à deux box, tu survis à ce que tu n’as pas vu',
 ccShopkeyboard:'SteelSeries Apex Pro TKL Gen 3',
-ccShopheadset:'Logitech G PRO X Wireless',
+ccShopheadset:'Razer BlackShark V2 Pro',
 ccShoppcbudget:'PC d’entrée de gamme · 144 FPS',
 ccShoppcpro:'Configuration PRO · 240+ FPS',
 ccShoppcelite:'Configuration ÉLITE · 360 Hz',
@@ -7029,10 +7031,10 @@ ccCoachHired:'Travaille avec toi',
 ccPerkRow:'Fourni par le club',
 ccPerkgear:'Le club fournit le matériel et le PC',
 ccPerkcoach:'Le club paie le coach',
-ccShopSpecmouse:'Sans fil, actuation 1 kg',
+ccShopSpecmouse:'54 grammes, 8000 Hz — le standard de la scène pro',
 ccShopSpecmonitor:'TN, 360 Hz, DyAc 2',
 ccShopSpeckeyboard:'OmniPoint 3.0, actuation 0,1 mm',
-ccShopSpecheadset:'LIGHTSPEED, micro antibruit',
+ccShopSpecheadset:'Le standard esport — audio positionnel, micro antibruit',
 ccShopSpecpcbudget:'Ryzen 5 5600 · RX 6600 · 16 Go DDR4',
 ccShopSpecpcpro:'Ryzen 7 9800X3D · RTX 5060 Ti · 16 Go DDR5',
 ccShopSpecpcelite:'Ryzen 7 9850X3D · RTX 5080 · 32 Go DDR5',
@@ -7303,7 +7305,8 @@ ccMateReplace:'En trouver un nouveau',
 ccFindDuo:'Trouver un partenaire',
 ccSeatEmpty:'Place libre',
 ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Victory Cup trios',
-ccMateKeep:'Garder', chToday:'aujourd’hui', ccScoutOff:'Ne plus chercher de club', ccScoutOn:'Chercher un club', ccMateOver:'Une saison en duos, et vous êtes trois. Choisis qui reste — l’autre part, et rien ne peut être joué avant de décider',
+ccMateKeep:'Garder', chToday:'aujourd’hui',
+ccMoveGoCity:(c,r)=>'S’installer : '+c+' ('+r+')', ccScoutOff:'Ne plus chercher de club', ccScoutOn:'Chercher un club', ccMateOver:'Une saison en duos, et vous êtes trois. Choisis qui reste — l’autre part, et rien ne peut être joué avant de décider',
 ccSeasonDuos:'Saison en duos',
 ccSeasonTrios:'Saison en trios',
 ccSquadTrio:'Trio',
@@ -51988,7 +51991,15 @@ const CC_PING_HOME=10;
 const CC_REGION_RENT={NAC:1500, NAW:2000, BR:400, ASIA:900, ME:1200, OCE:1500};
 function ccPingNow(){
   const pl=CAREER.player;
-  if((pl.region||'EU')!=='EU') return CC_PING_HOME;
+  /* Outside Europe the ping used to be one number for the whole continent,
+     because a region move never said where in it you lived. Now it can — his
+     ask, 20 August: pick a country inside the region and go there — so a
+     career that chose one plays on that country's own ping, read off the
+     region's own table. One that never chose keeps the old regional number. */
+  if((pl.region||'EU')!=='EU'){
+    const p=pl.livesIn ? ccPingOf(pl.livesIn, pl.region) : null;
+    return p!=null ? p : CC_PING_HOME;
+  }
   return pl.livesIn ? ccPingOf(pl.livesIn) : pl.countryPing;
 }
 /* Bought once, in one place. See the note above careerFlatBuy. */
@@ -52003,7 +52014,10 @@ function ccFlatOf(id){ return CC_FLATS.find(f=>f.id===id) || null; }
 // outside it. What a flat is bought against, and what it is checked against.
 function ccPlaceNow(){
   const pl=CAREER.player, reg=pl.region||'EU';
-  return reg==='EU' ? (ccLivesIn()||'de') : reg;
+  // Where you live, which outside Europe is the country you picked when you
+  // flew out — his line, 20 August: где живёшь, там квартира. A career that
+  // moved to the continent without naming a country still buys against it.
+  return reg==='EU' ? (ccLivesIn()||'de') : (pl.livesIn||reg);
 }
 // The month this place asks for, whether or not the career is being charged it.
 function ccRentBase(place){
@@ -52064,8 +52078,14 @@ function ccRentNow(){
   if(ccFlatHere()) return 0;
   const reg=pl.region||'EU';
   // At home there is no lease to lose, wherever home is.
-  if(reg===ccCareerHomeRegion()) return reg==='EU' && pl.livesIn ? (ccRentOf(pl.livesIn)||0) : 0;
-  if(reg!=='EU') return CC_REGION_RENT[reg]||0;
+  // At home there is no lease to lose — unless you took one: an Australian
+  // living in New Zealand pays New Zealand, now that a home region is a map
+  // you can move around rather than one free address.
+  if(reg===ccCareerHomeRegion()) return pl.livesIn ? (ccRentOf(pl.livesIn)||0) : 0;
+  // A country chosen inside the region pays that country's rent; a career
+  // that only ever moved to the continent keeps paying the flat.
+  if(reg!=='EU') return pl.livesIn ? (ccRentOf(pl.livesIn)||CC_REGION_RENT[reg]||0)
+                                   : (CC_REGION_RENT[reg]||0);
   return pl.livesIn ? (ccRentOf(pl.livesIn)||0) : 0;
 }
 function ccMoveMatters(){
@@ -52160,8 +52180,14 @@ function ccPaintMoveMap(){
 }
 function careerMoveTo(code){
   const pl=CAREER.player, cr=CAREER.career;
-  if(!ccMoveMatters() || ccPingOf(code)==null) return false;
+  // The ping is read off the region the career actually plays in. It read the
+  // EU table by name, so a career born in Oceania clicked Sydney's neighbours
+  // and the button silently did nothing — every code came back null.
+  const reg=pl.region||'EU';
+  if(!ccMoveMatters() || ccPingOf(code, reg)==null) return false;
   if(code===ccLivesIn()) return false;
+  // Your passport is home on whichever map holds it — an Australian going
+  // back to Australia ends the lease the same way a German going home does.
   const home = code===pl.country;
   const rent = home ? 0 : (ccRentOf(code)||0);
   // A month up front, the way a lease is signed. It is also the guard: a career
@@ -52173,8 +52199,8 @@ function careerMoveTo(code){
   }
   pl.livesIn = home ? null : code;
   careerNews(home?'flat':'good', home?'ccNewsMovedHome':'ccNewsMoved',
-             [ccCountryName(code), ccPingOf(code)]);
-  careerEvent('tlMoved', [ccCountryName(code), ccPingOf(code)]);
+             [ccCountryName(code), ccPingOf(code, reg)]);
+  careerEvent('tlMoved', [ccCountryName(code), ccPingOf(code, reg)]);
   CH_MOVE=false; CH_MOVE_PICK=null;
   careerSave();
   careerRenderHub('shop');
@@ -52197,12 +52223,27 @@ function careerMoveTo(code){
    money comes, because prize money is prize money.
 
    The first month is paid on the way in, the same as any move. */
-function careerMoveRegion(code){
+/* Moving to a region can now name the country inside it.
+
+   His ask, 20 August: choosing a region to move to should let you choose a
+   country and go there — the way Europe already works. The country decides the
+   rent and the ping (each region carries its own ping table); everything a
+   region move costs a career — the squad, the club, the rival, the seat — it
+   still costs, because the continent changed whatever city you landed in.
+   Without a country it is the move it always was: the flat regional rent and
+   the regional connection. */
+function careerMoveRegion(code, country){
   const pl=CAREER.player, cr=CAREER.career;
   const to=code==='EU' ? 'EU' : code;
   if(!CC_REGION_RENT.hasOwnProperty(to) && to!=='EU') return false;
   if(to===(pl.region||'EU')) return false;
-  const rent=to==='EU' ? 0 : (CC_REGION_RENT[to]||0);
+  // A named country must be real in that region, and going home to your own
+  // passport inside Europe is not a lease.
+  const place=country && ccPingOf(country, to)!=null
+              && !(to==='EU' && country===pl.country) ? country : null;
+  const rent=to==='EU' ? (place ? (ccRentOf(place)||0) : 0)
+                       : (place ? (ccRentOf(place)||CC_REGION_RENT[to]||0)
+                                : (CC_REGION_RENT[to]||0));
   if(rent && (cr.balance||0)<rent) return false;
   if(rent){ cr.balance-=rent; cr.rent=(cr.rent||0)+rent; }
   const from=pl.region||'EU';
@@ -52210,7 +52251,8 @@ function careerMoveRegion(code){
   const seat=careerSlotHeld() ? careerSlotGiveUp() : null;
   if(seat) careerNews('bad', 'ccNewsSlotRegion', [seat.what, regionName(from)]);
   pl.region=to;
-  pl.livesIn=null;
+  // The city inside the continent, when one was named. See the note above.
+  pl.livesIn=place;
   // Everything that was a relationship with Europe. The duo and the rival are
   // redrawn on the next cup out of the new region's own people; the club is a
   // contract in a place you no longer live.
@@ -52368,12 +52410,14 @@ function careerMoveHTML(){
          So the row for the region you are in is a look at your own map, with
          every country live and the panel that answers a click. */
       const elsewhere = CH_MOVE_REG && CH_MOVE_REG!==ccCareerRegion();
+      /* Another region's map takes clicks now too — his ask, 20 August: pick a
+         country inside the region and go there. The panel starts as the
+         whole-region move it always was, and a click swaps it for the country. */
       const map = ccMapsReady(function(){ careerRenderHub('shop'); })
-        ? `<div class="cc-movemap">${ccBuildMap(
-             elsewhere ? 'void 0' : 'ccMoveMapClick(event)', ccMoveShownRegion())}</div>`
+        ? `<div class="cc-movemap">${ccBuildMap('ccMoveMapClick(event)', ccMoveShownRegion())}</div>`
         : `<div class="cc-note">${L().ccMapLoading}</div>`;
-      return map + (elsewhere ? careerMoveGoHTML()
-                              : `<div id="ccMovePanel">${careerMovePanelHTML()}</div>`);
+      return map + `<div id="ccMovePanel">${
+        (elsewhere && !CH_MOVE_PICK) ? careerMoveGoHTML() : careerMovePanelHTML()}</div>`;
     })() : ''}
   </div>`;
 }
@@ -52409,21 +52453,35 @@ function careerMovePanelHTML(){
   const here=ccLivesIn(), ping=ccPingNow();
   const flag=c=>flagImg(CC_NAT_BY_CODE[c], 15);
   if(!CH_MOVE_PICK) return `<div class="ch-hint cc-move-hint">${L().ccMovePickHint}</div>`;
-  const c=CH_MOVE_PICK, home=c===pl.country, on=c===here;
+  /* Which region's map the click landed on. Inside your own it is the move this
+     panel has always sold; on another continent's map it is the same panel with
+     the bigger button — the country's ping off that region's own table, the
+     country's rent, and a move that costs what a region move costs. His ask,
+     20 August: pick a country and go there. */
+  const reg=ccMoveShownRegion(), abroad=reg!==ccCareerRegion();
+  const c=CH_MOVE_PICK;
+  const home=!abroad && c===pl.country;
+  const on=!abroad && c===((pl.region||'EU')==='EU' ? here : (pl.livesIn||null));
   const cost=home?0:(ccRentOf(c)||0);
-  const gain=ccMoveGain(c);
+  const gain=Math.round((ccPingEdge(ccPingOf(c, reg))-ccPingEdge(ping))*10)/10;
   const can=!on && (!cost || (cr.balance||0)>=cost);
   return `<div class="cc-move-pick">
-    <div class="cc-move-pick-h">${flag(c)}<b>${esc(ccCountryName(c))}</b>
+    <div class="cc-move-pick-h">${flag(c)}<b>${esc(ccCountryName(c))}${
+      abroad ? ' · '+esc(regionName(reg)) : ''}</b>
       ${home?`<em>${L().ccMoveHome}</em>`:''}</div>
-    <div class="ch-row"><em>${L().ccMovePing}</em><b>${ping} ms → ${ccPingOf(c)} ms</b></div>
+    <div class="ch-row"><em>${L().ccMovePing}</em><b>${ping} ms → ${ccPingOf(c, reg)} ms</b></div>
     <div class="ch-row"><em>${L().ccMoveGain}</em><b class="${
       gain>0?'ch-goal-met':gain<0?'cc-pen bad':''}">${gain>0?'+':''}${gain}</b></div>
     <div class="ch-row"><em>${L().ccMoveRent}</em><b>${
       cost?ccMoney(cost)+L().ccPerMonth:'-'}</b></div>
+    ${abroad ? `<div class="ch-hint">${L().ccMoveRegionHint}</div>` : ''}
     ${on ? `<div class="ch-empty">${L().ccMoveAlready}</div>`
-         : `<button class="ch-sign"${can?'':' disabled'} onclick="careerMoveTo('${c}')">${
-             home ? L().ccMoveGoHome : L().ccMoveDo(ccNum(cost))}</button>`}
+         : abroad
+           ? `<button class="ch-sign"${can?'':' disabled'}
+                onclick="careerMoveRegion('${reg}','${c}')">${
+                L().ccMoveGoCity(ccCountryName(c), regionName(reg))}</button>`
+           : `<button class="ch-sign"${can?'':' disabled'} onclick="careerMoveTo('${c}')">${
+               home ? L().ccMoveGoHome : L().ccMoveDo(ccNum(cost))}</button>`}
     ${!on && !can ? `<div class="ch-hint">${L().ccMoveNoCash}</div>` : ''}
   </div>`;
 }
