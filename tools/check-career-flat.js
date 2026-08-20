@@ -11,8 +11,9 @@
 // left home still has a reason to buy one.
 //
 // What this holds: the price follows the local rent, the rent stops, the rooms
-// count, a place bought in Skopje does nothing for a career living in Dublin,
-// and a smaller flat cannot replace a bigger one.
+// count, a smaller flat cannot replace a bigger one — and since 20 August the
+// flat is sold only where the career lives: его правило, где живёшь — там
+// квартира. A flat left behind by a move stops nothing until you move back.
 //
 //   node tools/check-career-flat.js
 const fs = require('fs'), os = require('os'), path = require('path');
@@ -87,24 +88,23 @@ const BOOT = [
 '      check("a studio cannot replace three rooms", careerFlatBuy("studio") === false);',
 '      check("and the same one twice is refused", careerFlatBuy("three") === false);',
 '',
-'      // Every country on the map is on the shelf, and one can be bought before',
-'      // the career has moved there — which is the point of buying at all.',
+'      // The shelf holds one place now: the one the career lives in. His rule,',
+'      // 20 August — где живёшь, там квартира — after the browser offered him',
+'      // a lease in Japan while he was standing in Europe. Moving is what',
+'      // changes where the flat is for sale.',
 '      fresh(500000, "ru");',
-'      var places = ccFlatPlaces();',
-'      out.notes.places = {n: places.length, cheapest: places[0].name + " $" + places[0].rent,',
-'                          dearest: places[places.length-1].name + " $" + places[places.length-1].rent};',
-'      check("every country and region is on the shelf",',
-'            places.length === Object.keys(CC_RENT).length + Object.keys(CC_REGION_RENT).length,',
-'            String(places.length));',
-'      check("and the list starts at the cheapest", places[0].rent <= places[1].rent);',
-'',
-'      careerFlatPlacePick("de");',
-'      check("a flat can be bought where you do not live", careerFlatBuy("studio") === true);',
-'      check("and it is bought there", CAREER.flat.place === "de", String(CAREER.flat && CAREER.flat.place));',
-'      check("but the rent at home is untouched until you move",',
-'            ccFlatHere() === null);',
+'      check("the flat is sold where you live", ccFlatPlace() === ccPlaceNow(),',
+'            ccFlatPlace() + " vs " + ccPlaceNow());',
 '      careerMoveTo("de");',
-'      check("and moving in stops it", ccRentNow() === 0, String(ccRentNow()));',
+'      check("and follows a move", ccFlatPlace() === "de", String(ccFlatPlace()));',
+'      check("buying lands where you stand", careerFlatBuy("studio") === true &&',
+'            CAREER.flat.place === "de", String(CAREER.flat && CAREER.flat.place));',
+'      check("and the rent stops on the spot", ccRentNow() === 0, String(ccRentNow()));',
+'      careerMoveTo("pl");',
+'      check("a flat left behind stops nothing", ccRentNow() === (ccRentOf("pl")||0),',
+'            String(ccRentNow()));',
+'      careerMoveTo("de");',
+'      check("and moving back in stops it again", ccRentNow() === 0, String(ccRentNow()));',
 '',
 '      // And a career with no money is not sold one.',
 '      fresh(100, "ru");',

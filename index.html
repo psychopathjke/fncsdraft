@@ -3883,7 +3883,7 @@ chSquadHint:'Ты и напарник', chSquadHintTrio:'Ты и два напа
 chNoPartner:'Напарника пока нет',
 ccSeatEmpty:'Место свободно', ccSeasonDuos:'Сезон в дуо', ccSeasonTrios:'Сезон в трио',
 ccWordDuos:'дуо', ccWordTrios:'трио', calVictoryTrio:'Трио Виктори Кап',
-ccMateKeep:'Оставить', chToday:'сегодня', ccShopConf:'Уверенность',
+ccMateKeep:'Оставить', chToday:'сегодня', ccShopConf:'Уверенность', ccConfFloor:n=>'форма не ниже −'+n,
 arcTitle:'Прошлые сезоны', arcYou:'это ты',
 arcHint:'Кто что выиграл — по каждому сезону и каждому региону. Твои победы отмечены',
 arcNone:'Первый сезон ещё идёт — история появится, когда он закончится',
@@ -5267,7 +5267,7 @@ chSquadHint:'You and your partner', chSquadHintTrio:'You and your two partners',
 chNoPartner:'No partner yet',
 ccSeatEmpty:'Seat open', ccSeasonDuos:'A duos season', ccSeasonTrios:'A trios season',
 ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Trios Victory Cup',
-ccMateKeep:'Keep', chToday:'today', ccShopConf:'Confidence',
+ccMateKeep:'Keep', chToday:'today', ccShopConf:'Confidence', ccConfFloor:n=>'form never below −'+n,
 arcTitle:'Past seasons', arcYou:'that is you',
 arcHint:'Who won what — every season, every region. Your own wins are marked',
 arcNone:'The first season is still running — the history starts when it ends',
@@ -7387,7 +7387,7 @@ ccMateReplace:'En trouver un nouveau',
 ccFindDuo:'Trouver un partenaire',
 ccSeatEmpty:'Place libre',
 ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Victory Cup trios',
-ccMateKeep:'Garder', chToday:'aujourd’hui', ccShopConf:'Confiance',
+ccMateKeep:'Garder', chToday:'aujourd’hui', ccShopConf:'Confiance', ccConfFloor:n=>'forme jamais sous −'+n,
 arcTitle:'Saisons passées', arcYou:'c’est toi',
 arcHint:'Qui a gagné quoi — chaque saison, chaque région. Tes victoires sont marquées',
 arcNone:'La première saison est en cours — l’histoire commence quand elle se termine',
@@ -42593,6 +42593,12 @@ function careerRenderHub(tab){
     (()=>{ const f=careerForm(); if(!f) return '';
       return `<div><em>${L().ccForm}</em><b class="${f>0?'ch-goal-met':'cc-pen bad'}">${
         L()[f>0?'ccFormHot':'ccFormCold']} ${(f>0?'+':'')+(Math.round(f*10)/10)}</b></div>`; })()+
+    // The garage, said where the form is said — confidence is the floor under
+    // it, and a number nobody can see is a number that does not exist. His
+    // report, 20 August: confidence нигде не пишется.
+    (()=>{ const c=(CAREER.gear && CAREER.gear.conf)||0; if(!c) return '';
+      return `<div><em>${L().ccShopConf}</em><b class="ch-goal-met">+${c} · ${
+        L().ccConfFloor(Math.round((CC_FORM_MAX-c)*10)/10)}</b></div>`; })()+
     (()=>{ const r=careerRep(); if(!r) return '';
       return `<div><em>${L().ccRep}</em><b class="${r>0?'ch-goal-met':'cc-pen bad'}">${
         L()[careerRepKey()]} ${r>0?'+':''}${r}</b></div>`; })()+
@@ -52437,7 +52443,9 @@ function careerMoveEvict(){
    sleeps. His report, 20 August. See careerTab and careerLoad, which both put it
    back to here. */
 let CH_FLAT_PLACE=null;
-function ccFlatPlace(){ return CH_FLAT_PLACE || ccPlaceNow(); }
+// One answer now: the place the career lives. The browser that let this differ
+// is gone — его правило, 20 August: где живёшь, там квартира.
+function ccFlatPlace(){ return ccPlaceNow(); }
 function careerFlatPlacePick(code){
   CH_FLAT_PLACE=code||null;
   careerRenderHub('shop');
@@ -52480,14 +52488,13 @@ function careerFlatHTML(){
   return `<div class="ch-tile cc-shop">
     <h4>${L().ccFlatTitle}</h4>
     <div class="ch-hint">${L().ccFlatHint}</div>
-    <select class="cc-flat-where" onchange="careerFlatPlacePick(this.value)">
-      ${ccFlatPlaces().map(p=>`<option value="${p.code}"${p.code===place?' selected':''}>${
-        esc(p.name)} · ${ccMoney(p.rent)}${L().ccPerMonth}</option>`).join('')}
-    </select>
+    <!-- One place, the one you live in. The browser this used to be offered a
+         lease in every country on earth, and his call, 20 August, is the rule
+         the panel already preached: где живёшь — там квартира. Moving is what
+         changes where that is. -->
+    <div class="ch-row"><em>${L().ccMoveWhere}</em><b>${esc(ccPlaceName(place))}</b></div>
     <div class="ch-row"><em>${L().ccMoveRent}</em><b>${
       rent ? ccMoney(rent)+L().ccPerMonth : L().ccMoveHome}</b></div>
-    ${living ? '' : `<div class="ch-hint" style="margin:6px 0 0;">${
-      L().ccFlatNotHere(esc(ccPlaceName(place)))}</div>`}
     ${away ? `<div class="ch-hint" style="margin:6px 0 0;">${
       L().ccFlatElsewhere(L()['ccFlat'+any.id], regionName(any.place)||ccCountryName(any.place))}</div>` : ''}
     <div class="cc-buys">${rows}</div>
@@ -52502,6 +52509,12 @@ function careerMoveHTML(){
      without offering the ping-shopping the rule denies them. Without this the
      rows set a region and nothing on the screen ever acted on it, which took the
      move away from taken cards entirely. */
+  /* A taken card cannot ping-shop inside Europe — that rule stands. What it can
+     do now is what the region rows always offered, said properly: pick a
+     country inside the region it is leaving for. His report, 20 August, playing
+     as Sky: "нельзя выбрать страну, не континент". The map for another region
+     takes the click and the same panel answers it; the card's own region shows
+     no map at all, exactly as before. */
   if(!ccMoveMatters()) return `<div class="ch-tile cc-shop cc-move">
     <h4>${L().ccMoveTitle}</h4>
     <div class="ch-hint">${L().ccMoveOnlyBuilt}</div>
@@ -52509,8 +52522,8 @@ function careerMoveHTML(){
       esc(regionName(ccCareerRegion()))}</b></div>
     ${careerRegionRowsHTML()}
     ${CH_MOVE_REG ? (ccMapsReady(function(){ careerRenderHub('shop'); })
-        ? `<div class="cc-movemap">${ccBuildMap('void 0', CH_MOVE_REG)}</div>` : '')+
-        careerMoveGoHTML() : ''}
+        ? `<div class="cc-movemap">${ccBuildMap('ccMoveMapClick(event)', CH_MOVE_REG)}</div>` : '')+
+        `<div id="ccMovePanel">${CH_MOVE_PICK ? careerMovePanelHTML() : careerMoveGoHTML()}</div>` : ''}
   </div>`;
   const cr=CAREER.career, pl=CAREER.player;
   const here=ccLivesIn(), ping=ccPingNow(), rent=ccRentNow();
@@ -52693,6 +52706,8 @@ function careerShopHTML(){
     // What today's training is actually multiplied by, the stay included, so
     // the number on the screen is the number the day loop uses.
     '<div class="ch-row"><em>'+L().ccShopTrain+'</em><b>+'+Math.round((careerDayGear()-1)*100)+'%</b></div>'+
+    ((CAREER.gear && CAREER.gear.conf) ? '<div class="ch-row"><em>'+L().ccShopConf+'</em><b>+'+
+      CAREER.gear.conf+' · '+L().ccConfFloor(Math.round((CC_FORM_MAX-CAREER.gear.conf)*10)/10)+'</b></div>' : '')+
     rows+'</div>'+
     // The one thing on this tab that is not a thing on a desk. It sits under the
     // desk rather than in it: a rig is a purchase, a move is a decision.
@@ -56932,23 +56947,29 @@ function ccArcRoster(reg){
 }
 // A champion team out of a region: a top-band card, its recorded partner when
 // the roster holds one, and the next best hands until the season's size is met.
-function ccArcTeam(reg, size, rng){
+function ccArcTeam(reg, size, rng, skip){
   const roster=ccArcRoster(reg);
   if(!roster.length) return null;
   const band=roster.slice(0, Math.max(6, Math.min(16, Math.floor(roster.length/4))));
-  const first=band[Math.floor(rng()*band.length)];
+  const out=h=>(skip && skip.has(hKey(h)));
+  const free=band.filter(c=>!out(c));
+  const first=(free.length?free:band)[Math.floor(rng()*(free.length?free.length:band.length))];
   const team=[first];
-  const has=h=>team.some(c=>hKey(c)===hKey(h));
+  const has=h=>team.some(c=>hKey(c)===hKey(h)) || out(h);
   if(first.partner){
     const mate=roster.find(c=>hKey(c)===hKey(first.partner));
     if(mate && !has(mate)) team.push(mate);
   }
+  /* Filled from the top of the roster MINUS everybody already spoken for.
+     It used to fill from index nought unconditionally, which dealt the same
+     two top names into every team it built — so a season's three standing
+     teams collapsed into one and every region read as a dynasty. */
   let i=0;
   while(team.length<size && i<roster.length){
     const c=roster[i++];
     if(!has(c)) team.push(c);
   }
-  return team.slice(0, size);
+  return team.length>=Math.min(size, 1) ? team.slice(0, size) : null;
 }
 function ccArcName(team){ return team ? team.map(c=>c.handle).join(' & ') : '—'; }
 // The regions a LAN's winner is drawn from, weighted the way the scene is.
@@ -56982,27 +57003,68 @@ function careerArchiveSeason(sn){
     if(e.kind==='rc' && e.stage==='final') wins.paris=meTeam;
     if(e.kind==='globals') wins.gc=meTeam;
   });
+  /* The season has a scene, and the scene persists.
+
+     His correction, 20 August: три мейджора одного года не выигрывают три
+     случайные тройки — команда, взявшая слот на LAN, доигрывает год тем же
+     составом, чтобы слот не потерять. So each region gets ONE seeded top
+     scene for the whole season — three standing teams — and every event's
+     winner comes out of it, with the champion defending more often than not.
+     The LANs are won by the teams that qualified for them: the Summit by
+     some region's Major 1 champion, the Global Championship by a team that
+     won its way there that same year. */
   const majors=size===3?[1,2,3]:[1,2];
-  const regional=majors.map(n=>{
+  const scene={};
+  REGIONS.forEach(r=>{
+    const rng=seed('scene|'+r.code);
+    const teams=[]; const used=new Set();
+    for(let i=0;i<3;i++){
+      const t=ccArcTeam(r.code, size, rng, used);
+      if(t && t.length===size){ t.forEach(c=>used.add(hKey(c))); teams.push(t); }
+    }
+    // The champions of the year's majors, drawn from that one scene: the
+    // winner defends the next major six times in ten, and loses it to the
+    // second team of the same scene otherwise.
+    const champs=[]; let hold=0;
+    majors.forEach((n,i)=>{
+      if(i===0){ champs.push(0); return; }
+      const r2=rng();
+      // Defends a little under half the time: squads persist, dynasties are rare.
+      hold = r2<0.45 ? champs[i-1] : (champs[i-1]+1+Math.floor(r2*10)%Math.max(1,teams.length-1))%teams.length;
+      champs.push(hold);
+    });
+    scene[r.code]={teams, champs};
+  });
+  const nameOf=(reg,i)=>{const sc=scene[reg]; const t=sc.teams[Math.min(i, sc.teams.length-1)];
+    return ccArcName(t);};
+  const regional=majors.map((n,mi)=>{
     const perReg={};
     REGIONS.forEach(r=>{
       const own=r.code===mine && wins.majors[n];
       perReg[r.code]=own ? {name:wins.majors[n], you:true}
-                         : {name:ccArcName(ccArcTeam(r.code, size, seed('m'+n+'|'+r.code)))};
+                         : {name:nameOf(r.code, scene[r.code].champs[mi])};
     });
-    return {label:L().ccSlotMajor(n), perReg};
+    return {label:L().ccSlotMajor(n), perReg, mi};
   });
-  const lan=(tag, taken, cityKey)=>{
-    const rng=seed(tag);
-    const reg=taken ? mine : ccArcLanRegion(rng);
-    return {reg, name: taken || ccArcName(ccArcTeam(reg, size, rng)), you:!!taken};
-  };
   const global=[];
   if(size===2){
-    global.push({label:'Summit', win:lan('summit', wins.summit)});
-    global.push({label:'Reload Championship', win:lan('paris', wins.paris)});
+    // The Summit is Major 1's LAN, so its champion IS somebody's Major 1
+    // champion — the strongest scenes more often.
+    const sr=wins.summit ? mine : ccArcLanRegion(seed('summit'));
+    global.push({label:'Summit',
+      win:{reg:sr, name:wins.summit||nameOf(sr, scene[sr].champs[0]), you:!!wins.summit}});
+    // Paris is the Reload circuit's own final — its winner is that scene's
+    // second team as often as its first.
+    const pr=wins.paris ? mine : ccArcLanRegion(seed('paris'));
+    const pi=seed('paris|i')()<0.5?0:1;
+    global.push({label:'Reload Championship',
+      win:{reg:pr, name:wins.paris||nameOf(pr, pi), you:!!wins.paris}});
   }
-  global.push({label:'Global Championship', win:lan('gc', wins.gc)});
+  // The Global Championship is won by a team that won its way there that
+  // year: the region's last major champion.
+  const gr=wins.gc ? mine : ccArcLanRegion(seed('gc'));
+  global.push({label:'Global Championship',
+    win:{reg:gr, name:wins.gc||nameOf(gr, scene[gr].champs[majors.length-1]), you:!!wins.gc}});
   return {size, regional, global};
 }
 let CH_ARC_S=null, CH_ARC_R=null;
