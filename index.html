@@ -3864,6 +3864,7 @@ chSquadHint:'Ты и напарник', chSquadHintTrio:'Ты и два напа
 chNoPartner:'Напарника пока нет',
 ccSeatEmpty:'Место свободно', ccSeasonDuos:'Сезон в дуо', ccSeasonTrios:'Сезон в трио',
 ccWordDuos:'дуо', ccWordTrios:'трио', calVictoryTrio:'Трио Виктори Кап',
+ccMateKeep:'Оставить', ccScoutOff:'Не искать клуб', ccScoutOn:'Искать клуб', ccMateOver:'Сезон в дуо, а вас трое. Выбери, кто остаётся — второй уйдёт, и вход в турниры закрыт, пока не решишь',
 ccSquadTrio:'Трио',
 chLadder:'Лестница',
 chLadderHint:'Где ты и что дальше',
@@ -5215,6 +5216,7 @@ chSquadHint:'You and your partner', chSquadHintTrio:'You and your two partners',
 chNoPartner:'No partner yet',
 ccSeatEmpty:'Seat open', ccSeasonDuos:'A duos season', ccSeasonTrios:'A trios season',
 ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Trios Victory Cup',
+ccMateKeep:'Keep', ccScoutOff:'Stop looking for clubs', ccScoutOn:'Look for clubs', ccMateOver:'A duos season, and there are three of you. Choose who stays — the other leaves, and nothing can be entered until you decide',
 ccSquadTrio:'Trio',
 chLadder:'The ladder',
 chLadderHint:'Where you stand',
@@ -7270,6 +7272,7 @@ ccMateReplace:'En trouver un nouveau',
 ccFindDuo:'Trouver un partenaire',
 ccSeatEmpty:'Place libre',
 ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Victory Cup trios',
+ccMateKeep:'Garder', ccScoutOff:'Ne plus chercher de club', ccScoutOn:'Chercher un club', ccMateOver:'Une saison en duos, et vous êtes trois. Choisis qui reste — l’autre part, et rien ne peut être joué avant de décider',
 ccSeasonDuos:'Saison en duos',
 ccSeasonTrios:'Saison en trios',
 ccSquadTrio:'Trio',
@@ -42625,7 +42628,7 @@ function careerCentreHTML(card, a){
     : playable
       ? `<button class="ch-play" onclick="careerPlay()">${L().chPlay}</button>`
       : `<button class="ch-play" onclick="careerSkipWeek()" title="${esc(
-            careerNoMate(next.type) ? L().ccNoMateN(careerMatesShort())
+            careerNoMate(next.type) ? (careerMatesOver()>0 ? L().ccMateOver : L().ccNoMateN(careerMatesShort()))
           : next.type==='reload' ? L().ccRelLocked
           : next.type==='final'  ? L().ccWfLocked
           : next.type==='major'  ? ccMajWhyLocked()
@@ -42661,7 +42664,7 @@ function careerCentreHTML(card, a){
       ${cr.seasonOver ? '' : careerInterviewHTML()}
       ${(!cr.seasonOver && (next.type==='free' || !playable))
         ? careerDayPanelHTML(next.type==='free' ? null : {label:next.label||next.title, why:
-            careerNoMate(next.type) ? L().ccNoMateN(careerMatesShort())
+            careerNoMate(next.type) ? (careerMatesOver()>0 ? L().ccMateOver : L().ccNoMateN(careerMatesShort()))
           : next.type==='reload' ? L().ccRelLocked
           : next.type==='final'  ? L().ccWfLocked
           : next.type==='major'  ? ccMajWhyLocked()
@@ -43155,6 +43158,39 @@ function careerMeHTML(){
 
      His report, 20 August: with one button above all of them there was no way
      to say which of two partners he wanted gone. See careerMateSeat. */
+  /* Too many for the season: the year turned from trios to duos with both
+     partners still held. Every one of them is drawn, and the button under each
+     says the only thing there is to decide — who stays. Nothing else on these
+     tiles works until it is decided, because there is no squad to work on. */
+  if(careerMatesOver()>0){
+    const all=(CAREER.partners||[]).filter(Boolean);
+    all.forEach((pr, i)=>{
+      const m=ccMateCardOf(pr);
+      cardTiles.push(`<div class="ch-tile ch-tile-card">
+        <h4>${L().ccResPartner}</h4>
+        <div class="ch-cardwrap">${m?futCardHTML(m,{wide:true}):''}</div>
+        <button class="ch-sign" onclick="careerMateChoose(${i})">${L().ccMateKeep}</button>
+      </div>`);
+    });
+    return `<div class="ch-grid ch-grid-me">
+      <div class="ch-col">
+        <div class="ch-tile"><h4>${L().chSquad}</h4>
+          <div class="ch-hint">${L().ccMateOver}</div></div>
+        <div class="ch-pair ch-pair-cards ch-pair-trio">${cardTiles.join('')}</div>
+      </div>
+      <div class="ch-col">
+        <div class="ch-pair">
+          ${careerAgentTileHTML()}
+          ${careerOrgTileHTML()}
+        </div>
+        <div class="ch-pair">
+          ${careerMktTileHTML()}
+          ${careerSmmTileHTML()}
+          ${careerCoachColHTML()}
+        </div>
+      </div>
+    </div>`;
+  }
   for(let i=0;i<seats;i++){
     const m=mates[i];
     cardTiles.push(`<div class="ch-tile ch-tile-card">
@@ -43264,6 +43300,11 @@ function careerOrgTileHTML(){
         // than behind the press, because that is the decision.
         return `<button class="ch-decline"${can?'':' disabled'} onclick="careerLeaveOrg()"
           title="${esc(L().ccBuyoutWhat)}">${L().ccBuyout(ccNum(cost))}</button>`; })()}
+      <!-- Signed, and the offers kept coming anyway — every window another
+           unread mark for a contract he was never going to take. The switch
+           sits on the club tile because the club is the reason to press it. -->
+      <button class="ch-swap" onclick="careerScoutToggle()">${
+        CAREER.scoutOff ? L().ccScoutOn : L().ccScoutOff}</button>
     </div>`;
   }
   if(offers.length){
@@ -46228,6 +46269,27 @@ function careerMateFactor(myOvr){
   const f=1 + (gap>0 ? gap*CC_MATE_UP : gap*CC_MATE_DOWN);
   return clamp(f, CC_MATE_MIN, CC_MATE_MAX);
 }
+/* Every night you play teaches you something.
+
+   careerApplyGrowth was called from exactly one place — the division cup — so
+   that was the only evening in the year that moved a rating. A Division 1
+   career plays thirty cups, thirty-one performance evaluations and sixteen
+   Victory Cups, plus whatever it qualifies for: six nights in ten taught it
+   nothing at all, and the seat beside it nothing either, because the partner
+   grows off the same call. A player wrote in and said it plainly — however much
+   you play, he does not develop. Measured 20 August, and he was right.
+
+   So every runner grows off its own result now. The arithmetic is untouched:
+   the same (actual − expected) against the same field, on the same taper. What
+   changed is how often a career is asked the question.
+
+   Guarded, because these nine callers are less uniform than the cup: a stage
+   with one team in it, or a runner that has moved on from its field by the time
+   it writes the row, gets nothing rather than a divide by zero. */
+function careerGrowEvent(place, total, you, field){
+  if(!(place>0) || !(total>1) || !you) return 0;
+  return careerApplyGrowth(place, total, you, (field && field.length) ? field : [you]);
+}
 function careerApplyGrowth(place, total, you, field){
   const pl=CAREER.player;
   // The week that just happened is remembered before it is scored.
@@ -46631,6 +46693,17 @@ function careerOrgOffers(){
      does rather than what the tile says. */
   const wageDiv=ccWageDiv(pl.ovrExact!=null ? pl.ovrExact : pl.ovr) || cr.division;
   if(CC_WAGE_CAP.hasOwnProperty(wageDiv) && !CC_WAGE_CAP[wageDiv]) return [];
+  /* And a player who said "stop looking" is not looked for.
+
+     A viewer's ask, 20 August, relayed with the screenshot: signed with a club,
+     every window still filled the inbox with offers he was never going to take,
+     and each one arrived as an unread mark he had to go and clear. So the
+     looking is a switch. Off, no new offer is generated — what is already on
+     the table keeps its own deadline, exactly like the closed window below —
+     and the signed club's own contract talk is untouched, because renewals and
+     the goal do not come through this. On is the default: a career that never
+     touches the switch behaves as it always has. */
+  if(CAREER.scoutOff) return CAREER.offers||[];
   // And clubs are not signing in March. What is already on the table stays
   // there until its own deadline; this only stops new ones arriving.
   if(!careerWindowNow()) return CAREER.offers||[];
@@ -52640,7 +52713,52 @@ function careerNeedsMate(kind){
 function careerMatesShort(){
   return Math.max(0, careerMateSeats()-careerMates().length);
 }
-function careerNoMate(kind){ return careerNeedsMate(kind) && careerMatesShort()>0; }
+/* The other direction: more people than the season has chairs.
+
+   A trios year ends and the duos year begins with both partners still held.
+   careerMateRecords slices to the seats, so the mode used to pick for you —
+   whoever happened to sit first stayed, the other quietly stopped existing on
+   screen without a word said. His ask, 20 August: after 2027 you have to drop a
+   teammate, and it needs to be a choice of whom.
+
+   So the overflow is a state the career stands in: every held partner is shown,
+   each with a button, entry to anything that needs a squad is closed — the same
+   gate an empty chair uses — and nothing is dropped until the player says who
+   stays. */
+// The switch itself. Off stops new offers arriving; nothing already on the
+// table is touched. See careerOrgOffers, where it gates.
+function careerScoutToggle(){
+  CAREER.scoutOff=!CAREER.scoutOff;
+  careerSave();
+  careerRenderHub(CH_TAB||'me');
+}
+function careerMatesOver(){
+  const held=((CAREER && CAREER.partners) || []).filter(Boolean).length;
+  return Math.max(0, held-careerMateSeats());
+}
+// Keep this one seat. Everyone else held beyond the season's chairs leaves, and
+// the leaving is said out loud — a person is not a row to be trimmed.
+// Not careerMateKeep: that name is taken by talking a leaving partner into
+// staying, and this file is one scope — the collision silently replaced it
+// and check-career-talk caught the persuasion failing.
+function careerMateChoose(at){
+  const list=((CAREER && CAREER.partners) || []).filter(Boolean);
+  if(at<0 || at>=list.length) return false;
+  const keep=[list[at]];
+  const season=careerFncsSeason(careerToday());
+  list.forEach(function(pr, i){
+    if(i===at) return;
+    const c=ccMateCardOf(pr);
+    if(c) careerNews('bad', 'ccNewsDuoSplit', [ccHandle(c.handle), season?season.id:'']);
+  });
+  CAREER.partners=keep;
+  careerSave();
+  careerRenderHub(CH_TAB||'me');
+  return true;
+}
+function careerNoMate(kind){
+  return careerNeedsMate(kind) && (careerMatesShort()>0 || careerMatesOver()>0);
+}
 // Asked of a kind rather than of careerNext, because careerNext asks this back.
 function careerCanPlayKind(kind){
   if(CC_PLAYABLE.indexOf(kind)<0) return false;
@@ -54210,6 +54328,8 @@ async function runCareerEval(){
   }
   const places=(you.stageLog||[]).map(g=>g.place);
   cr.log=cr.log||[];
+  // The night is played, so the night teaches. See careerGrowEvent.
+  careerGrowEvent(place2||place1, through?CC_EVAL_CUT:field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:1, place:place2||place1,
                of:through?CC_EVAL_CUT:field.length, pts:you.stagePts, passed:through,
                ovr:CAREER.player.ovr, games:through?CC_EVAL_R1_GAMES+CC_EVAL_R2_GAMES:CC_EVAL_R1_GAMES,
@@ -54374,6 +54494,8 @@ async function runCareerGclc(){
 
   const places=(you.stageLog||[]).map(g=>g.place);
   cr.log=cr.log||[];
+  // The night is played, so the night teaches. See careerGrowEvent.
+  careerGrowEvent(place, field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:place,
                of:field.length, pts:you.stagePts, passed:ev.final?wonSeat:through,
                ovr:CAREER.player.ovr, games:st.games, wins:you.wins||0,
@@ -54553,6 +54675,8 @@ async function runCareerReloadChampionship(){
 
   const places=(you.stageLog||[]).map(g=>g.place);
   cr.log=cr.log||[];
+  // The night is played, so the night teaches. See careerGrowEvent.
+  careerGrowEvent(place, field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:place,
                of:field.length, pts:you.stagePts, passed:through||champ,
                ovr:CAREER.player.ovr, games:games, wins:you.wins||0,
@@ -54899,6 +55023,8 @@ async function runCareerSummit(){
 
   const places=(you.stageLog||[]).map(g=>g.place);
   cr.log=cr.log||[];
+  // The night is played, so the night teaches. See careerGrowEvent.
+  careerGrowEvent(place, field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:1, place:place, of:field.length,
                pts:you.stagePts, passed:through, ovr:CAREER.player.ovr,
                games:st.games, wins:you.wins||0, elims:you.stageElims||0,
@@ -55126,6 +55252,8 @@ async function runCareerGlobals(){
 
   const places=(you.stageLog||[]).map(g=>g.place);
   cr.log=cr.log||[];
+  // The night is played, so the night teaches. See careerGrowEvent.
+  careerGrowEvent(place, field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:1, place:place, of:field.length,
                pts:you.stagePts, passed:cash>0, ovr:CAREER.player.ovr,
                games:CC_GLOB_GAMES, wins:you.wins||0, elims:you.stageElims||0,
@@ -55292,6 +55420,8 @@ async function runCareerMajor(){
 
   const places=(you.stageLog||[]).map(g=>g.place);
   cr.log=cr.log||[];
+  // The night is played, so the night teaches. See careerGrowEvent.
+  careerGrowEvent(lobbyPlace||place, field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:cr.division,
                place:lobbyPlace||place, of:field.length, pts:you.stagePts,
                passed: ev.stage==='lcq' ? ticket : (ev.stage==='final' ? cash>0 : through),
@@ -55408,6 +55538,8 @@ async function runCareerWeeklyFinal(){
 
   const places=(you.stageLog||[]).map(g=>g.place);
   cr.log=cr.log||[];
+  // The night is played, so the night teaches. See careerGrowEvent.
+  careerGrowEvent(place, field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:1, place:place, of:field.length,
                pts:you.stagePts, passed:cash>0, ovr:CAREER.player.ovr, games:CC_WF_GAMES,
                wins:you.wins||0, elims:you.stageElims||0,
@@ -55589,6 +55721,8 @@ async function runCareerReload(){
 
   const places=(you.stageLog||[]).map(g=>g.place);
   cr.log=cr.log||[];
+  // The night is played, so the night teaches. See careerGrowEvent.
+  careerGrowEvent(showPlace, showOf, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:showPlace,
                of:showOf, pts:you.stagePts, passed:through, ovr:CAREER.player.ovr,
                // Two evenings are one tournament, so the row says what was
@@ -55734,6 +55868,8 @@ async function runCareerVictory(){
 
   const places=(you.stageLog||[]).map(g=>g.place);
   cr.log=cr.log||[];
+  // The night is played, so the night teaches. See careerGrowEvent.
+  careerGrowEvent(place2||place1, through?vCut:field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:place2||place1,
                of:through?vCut:field.length, pts:you.stagePts, passed:through,
                ovr:CAREER.player.ovr,

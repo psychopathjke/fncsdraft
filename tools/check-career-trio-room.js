@@ -123,6 +123,26 @@ const BOOT = `
     if (Math.abs(one[0] - devs[0]) > 1e-9)
       fail('the duo seat moved by ' + one[0] + ' where it used to move by ' + devs[0]);
     out.steps.push('a duo seat still grows by exactly what it did: ' + one[0].toFixed(3));
+    // ---- the year turns back to duos, and the player says who stays --------
+    // His mechanic, 20 August: after the trios year you have to drop a
+    // teammate, and it has to be a choice. Until it is made, nothing that
+    // needs a squad can be entered; making it announces the one who leaves.
+    seed(3);
+    CAREER.career.season = 2; CAREER.career.seasonOver = true;
+    careerNewSeason();
+    if (careerSquadSize() !== 2) fail('season 3 should be duos, size says ' + careerSquadSize());
+    if (careerMatesOver() !== 1) fail('two held in a duos year should overflow by 1, got ' + careerMatesOver());
+    if (!careerNoMate('cup')) fail('a cup was enterable while the squad was oversized');
+    careerMateChoose(1);
+    const left = (CAREER.partners || []).filter(Boolean).map(p => p.card.handle);
+    if (left.length !== 1 || left[0] !== 'M2')
+      fail('kept seat 1 (M2) and the squad is ' + left.join(' / '));
+    if (careerNoMate('cup')) fail('the cup is still locked after the choice was made');
+    const said = (CAREER.career.news || []).some(n => n.k === 'ccNewsDuoSplit' &&
+      n.a && String(n.a[0]).toLowerCase() === 'm1');
+    if (!said) fail('the one who left was not announced');
+    out.steps.push('back to duos: both shown, cup locked, kept M2, M1 announced out');
+
   } catch(e){ if(!out.fail) out.fail = String(e && e.message || e); }
   out.errs = window.__errs;
   document.getElementById('__out').textContent =
