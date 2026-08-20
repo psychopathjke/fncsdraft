@@ -3690,8 +3690,8 @@ calSession:'Сессия {N}', calRound:'Раунд {N}',
 calNow:'Сейчас',
 calPerfEval:'Перфоманс',
 ccEvalR1Live:'Перфоманс — раунд 1', ccEvalR2Live:'Перфоманс — раунд 2',
-ccEvalR1Title:n=>'Перфоманс, раунд 1 — '+n+' дуо, 8 игр',
-ccEvalR2Title:n=>'Перфоманс, раунд 2 — '+n+' дуо, 4 игры, платят только победы',
+ccEvalR1Title:n=>'Перфоманс, раунд 1 — '+n+' '+ccSquadWord()+', 8 игр',
+ccEvalR2Title:n=>'Перфоманс, раунд 2 — '+n+' '+ccSquadWord()+', 4 игры, платят только победы',
 ccEvalPass:n=>'Топ-'+n+' — во второй раунд',
 ccEvalFail:n=>'Мимо топ-'+n+' — вечер закончен',
 ccEvalCash:(w,c)=>w+(w===1?' победа':' победы')+' — $'+c,
@@ -3863,6 +3863,7 @@ ccMateReplace:'Найти нового', ccFindDuo:'Найти напарник�
 chSquadHint:'Ты и напарник', chSquadHintTrio:'Ты и два напарника',
 chNoPartner:'Напарника пока нет',
 ccSeatEmpty:'Место свободно', ccSeasonDuos:'Сезон в дуо', ccSeasonTrios:'Сезон в трио',
+ccWordDuos:'дуо', ccWordTrios:'трио', calVictoryTrio:'Трио Виктори Кап',
 ccSquadTrio:'Трио',
 chLadder:'Лестница',
 chLadderHint:'Где ты и что дальше',
@@ -3874,8 +3875,8 @@ chSoonHint:'Мейджоры в карьере ещё не подключены 
 chSkip:'Пропустить неделю',
 ccLadderEvent:'Игрок лестницы (сгенерирован, не участник FNCS)',
 ccCupLive:'Кубок дивизиона',
-ccCupTitle:(d,n)=>'Кубок Дивизиона '+d+' — 11 игр, '+n+' дуо',
-ccCupTitleWeek:(d,n,g)=>'Кубок Дивизиона '+d+' — итог недели: '+g+' игр, '+n+' дуо',
+ccCupTitle:(d,n)=>'Кубок Дивизиона '+d+' — 11 игр, '+n+' '+ccSquadWord(),
+ccCupTitleWeek:(d,n,g)=>'Кубок Дивизиона '+d+' — итог недели: '+g+' игр, '+n+' '+ccSquadWord(),
 ccBankedCarry:(p,g)=>'В сумму недели идут '+ruPts(p)+' за '+ruGames(g),
 ccLiveWeekNote:'Таблица недели: очки понедельника уже в ней',
 ccCupBanked:'Сессия 1 в зачёт — таблицу решает вторник',
@@ -5040,8 +5041,8 @@ calSession:'Session {N}', calRound:'Round {N}',
 calNow:'Today',
 calPerfEval:'Perf Eval',
 ccEvalR1Live:'Performance Evaluation — Round 1', ccEvalR2Live:'Performance Evaluation — Round 2',
-ccEvalR1Title:n=>'Evaluation, Round 1 — '+n+' duos, 8 games',
-ccEvalR2Title:n=>'Evaluation, Round 2 — '+n+' duos, 4 games, only wins pay',
+ccEvalR1Title:n=>'Evaluation, Round 1 — '+n+' '+ccSquadWord()+', 8 games',
+ccEvalR2Title:n=>'Evaluation, Round 2 — '+n+' '+ccSquadWord()+', 4 games, only wins pay',
 ccEvalPass:n=>'Top '+n+' — through to Round 2',
 ccEvalFail:n=>'Missed the top '+n+' — the night is over',
 ccEvalCash:(w,c)=>w+(w===1?' win':' wins')+' — $'+c,
@@ -5213,6 +5214,7 @@ ccMateReplace:'Find a new one', ccFindDuo:'Find a partner',
 chSquadHint:'You and your partner', chSquadHintTrio:'You and your two partners',
 chNoPartner:'No partner yet',
 ccSeatEmpty:'Seat open', ccSeasonDuos:'A duos season', ccSeasonTrios:'A trios season',
+ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Trios Victory Cup',
 ccSquadTrio:'Trio',
 chLadder:'The ladder',
 chLadderHint:'Where you stand',
@@ -5224,8 +5226,8 @@ chSoonHint:'Majors are not wired into a career yet — that is the next step.',
 chSkip:'Skip the week',
 ccLadderEvent:'Ladder player (generated, not an FNCS competitor)',
 ccCupLive:'Division cup',
-ccCupTitle:(d,n)=>'Division '+d+' Cup — 11 games, '+n+' duos',
-ccCupTitleWeek:(d,n,g)=>'Division '+d+' Cup — week total: '+g+' games, '+n+' duos',
+ccCupTitle:(d,n)=>'Division '+d+' Cup — 11 games, '+n+' '+ccSquadWord(),
+ccCupTitleWeek:(d,n,g)=>'Division '+d+' Cup — week total: '+g+' games, '+n+' '+ccSquadWord(),
 ccBankedCarry:(p,g)=>p+' points from '+g+' games go into the week',
 ccLiveWeekNote:'Week standings — Monday is already in them',
 ccCupBanked:'Session 1 banked — Tuesday decides the table',
@@ -6848,8 +6850,8 @@ ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:'';
   if(p<=3)  return [''+ccTop(p)+' 💪'+a, ''+ccTop(p)+a+' 🔥', ''+ccTop(p)+', tellement près'+a][(v||0)%3];
   return ''+ccTop(p)+' — Division '+d+a;},
 ccSynergyDuo:v=>' — un duo établi (+'+v+')',
-ccEvalR1Title:n=>'Évaluation, Manche 1 — '+n+' duos, 8 parties',
-ccEvalR2Title:n=>'Évaluation, Manche 2 — '+n+' duos, 4 parties, seules les victoires paient',
+ccEvalR1Title:n=>'Évaluation, Manche 1 — '+n+' '+ccSquadWord()+', 8 parties',
+ccEvalR2Title:n=>'Évaluation, Manche 2 — '+n+' '+ccSquadWord()+', 4 parties, seules les victoires paient',
 ccEvalPass:n=>'Top '+n+' — qualifié pour la Manche 2',
 ccEvalFail:n=>'Top '+n+' manqué — la soirée est finie',
 ccEvalCash:(w,c)=>w+(w===1?' victoire':' victoires')+' — '+c,
@@ -6897,8 +6899,8 @@ ccNewsVicOut:(p,of)=>'Victory Cup : '+ccTop(p)+' sur '+of+', pas de Manche 2',
 ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens coupe 1',ReloadEliteSeries1PlayIn:'Reload · play-in coupe 1',ReloadEliteSeries1Heats:'Reload · heats coupe 1',ReloadEliteSeries1Final:'Reload · finale coupe 1',ReloadEliteSeries2Opens:'Reload · opens coupe 2',ReloadEliteSeries2PlayIn:'Reload · play-in coupe 2',ReloadEliteSeries2Heats:'Reload · heats coupe 2',ReloadEliteSeries2Final:'Reload · finale coupe 2',ReloadEliteSeries3Opens:'Reload · opens coupe 3',ReloadEliteSeries3PlayIn:'Reload · play-in coupe 3',ReloadEliteSeries3Heats:'Reload · heats coupe 3',ReloadEliteSeries3Final:'Reload · finale coupe 3',ReloadEliteSeries4Opens:'Reload · opens coupe 4',ReloadEliteSeries4PlayIn:'Reload · play-in coupe 4',ReloadEliteSeries4Heats:'Reload · heats coupe 4',ReloadEliteSeries4Final:'Reload · finale coupe 4',Major1_PlayIn:'Major 1 · Play-In',Major1_Heats:'Major 1 · Heats',Major1_LCQ:'Major 1 · Last Chance',Major1_Final:'Major 1 · Finale',Summit_Upper:'Summit · Upper Bracket',Summit_Lower:'Summit · Lower Bracket',Summit_Final:'Summit · Grandes Finales',Major2_PlayIn:'Major 2 · Play-In',Major2_Heats:'Major 2 · Heats',Major2_LCQ:'Major 2 · Last Chance',Major2_Final:'Major 2 · Finale',GlobalChampionshipLastChance:'Global Championship · Last Chance',ReloadChampionshipParis:'Reload Championship · {CITY}',GlobalChampionship:'Global Championship · {CITY}'},
 ccDuoWith:n=>'duo avec '+n,
 ccDuoFound:n=>n+(n===1?' joueur':' joueurs'),
-ccCupTitle:(d,n)=>'Coupe Division '+d+' — 11 parties, '+n+' duos',
-ccCupTitleWeek:(d,n,g)=>'Coupe Division '+d+' — total de la semaine : '+g+' parties, '+n+' duos',
+ccCupTitle:(d,n)=>'Coupe Division '+d+' — 11 parties, '+n+' '+ccSquadWord(),
+ccCupTitleWeek:(d,n,g)=>'Coupe Division '+d+' — total de la semaine : '+g+' parties, '+n+' '+ccSquadWord(),
 ccBankedCarry:(p,g)=>p+' points sur '+g+' parties comptent pour la semaine',
 ccOfferUntil:d=>'tient jusqu’au '+d,
 ccYearsOld:n=>n+' ans',
@@ -7267,6 +7269,7 @@ ccDuoYouWrote:'Déjà écrit',
 ccMateReplace:'En trouver un nouveau',
 ccFindDuo:'Trouver un partenaire',
 ccSeatEmpty:'Place libre',
+ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Victory Cup trios',
 ccSeasonDuos:'Saison en duos',
 ccSeasonTrios:'Saison en trios',
 ccSquadTrio:'Trio',
@@ -44405,7 +44408,7 @@ function careerYearDays(){
   CC_GCLC.forEach(v=>add(v.day, 'gc',
     v.q===0 ? L().ccGcFinal : L().ccGcRound(v.q, v.round), 'GlobalChampionshipLastChance'));
   CC_VICTORY.forEach(v=>add(v.day, 'victory',
-    (v.mode==='duo'?L().calVictoryDuo:L().calVictorySolo)+' '+v.n, v.id));
+    (v.mode==='duo'?ccVictoryCupName():L().calVictorySolo)+' '+v.n, v.id));
   CC_YEAR_DAYS=out;
   return out;
 }
@@ -44802,6 +44805,24 @@ function ccScaleStage(st){
 function ccTeams(duoCount){
   if(!(duoCount>0)) return duoCount;
   return careerSquadSize()===3 ? Math.round(duoCount*2/3) : duoCount;
+}
+/* What this season calls a team, in the language on screen.
+
+   The counts were converted for the trios season and the words were not, so a
+   trios night said "Division 1 Cup — 11 games, 133 duos" over a lobby of trios,
+   and the calendar called the Victory Cup a duos cup all year. His report,
+   20 August.
+
+   Only the career's own words go through here. The lines about the real FNCS —
+   which is played in duos, and says so on the mode tiles and in the summit and
+   Global Championship notes — are statements about a real tournament and are
+   left alone. */
+function ccSquadWord(){
+  return careerSquadSize()===3 ? L().ccWordTrios : L().ccWordDuos;
+}
+// The Victory Cup is the season's own, so its name is too.
+function ccVictoryCupName(){
+  return careerSquadSize()===3 ? L().calVictoryTrio : L().calVictoryDuo;
 }
 function ccCupField(div){ return ccTeams(CC_CUP_ENTRANTS[div] || CAREER_CUP_FIELD); }
 function ccCupCut(div){ return ccTeams(CC_CUP_QUOTA[div] || CAREER_CUP_CUT); }
@@ -46119,6 +46140,15 @@ function careerChem(){
 function careerYouTeam(cards){
   const t=careerTeam(cards);
   t.pow=Math.round(t.pow+careerForm()+careerChem());
+  /* The region this team plays in is the career's, not the card's.
+
+     Every row in a lobby is labelled with the region of its first card, which is
+     right for a field drawn out of that region and wrong for the one team that
+     was not drawn at all. A career playing in NA West as a card whose real
+     result was NA Central sat in a table of NA West teams with NA Central
+     printed beside its own name. His report, 20 August: a career competes where
+     it lives, and where its passport was stamped is a different question. */
+  t.summitRegion=ccCareerRegion();
   return t;
 }
 const CAREER_TAPER=10;
@@ -54052,11 +54082,24 @@ function evalRound2Points(place){ return place===1 ? CC_EVAL_WIN_PTS : 0; }
 async function runCareerEval(){
   const cr=CAREER.career;
   if(cr.division!==1) return;
-  const me=careerCard(), mate=careerPartnerCard();
-  if(!me || !mate) return;
+  /* The squad this season is played in, not a duo.
+
+     Every one of these nine runners took the player and one partner and set
+     squadSize to two by hand. In a trios season that put a duo in a lobby of
+     trios: his own row showed two names beside everybody else's three, the
+     lobby was built to the duo count of fifty rather than thirty-three, and
+     the labels underneath said duos all night. His report, 20 August.
+
+     careerMates is the seats the season actually has. An incomplete squad does
+     not enter at all, which is the rule the day panel already states. */
+  const me=careerCard(), mates=careerMates();
+  if(!me || mates.length<careerMateSeats() || mates.some(function(m){ return !m; })) return;
+  // The first seat, which is what the result records and the feed lines below
+  // have always meant by the partner. A trio names the rest through mates.
+  const mate=mates[0]||null;
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
-  CARD_MODE=true; squadSize=2; drafted=[me, mate];
+  CARD_MODE=true; squadSize=careerSquadSize(); drafted=[me].concat(mates);
   // A duo lobby drops on the whole island. The grid is thinned for squads —
   // trimLandingZonesForMode keeps the biggest 52% of the boxes so a four-player
   // lobby is not a wall of rectangles — and it was baked in at page load, when
@@ -54179,11 +54222,24 @@ async function runCareerGclc(){
   const st = ccScaleStage(ev.final ? CC_GCLC_FINAL : CC_GCLC_ROUND[ev.round]);
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('gc', ev.id||ev.label||'');
-  const me=careerCard(), mate=careerPartnerCard();
-  if(!me || !mate) return;
+  /* The squad this season is played in, not a duo.
+
+     Every one of these nine runners took the player and one partner and set
+     squadSize to two by hand. In a trios season that put a duo in a lobby of
+     trios: his own row showed two names beside everybody else's three, the
+     lobby was built to the duo count of fifty rather than thirty-three, and
+     the labels underneath said duos all night. His report, 20 August.
+
+     careerMates is the seats the season actually has. An incomplete squad does
+     not enter at all, which is the rule the day panel already states. */
+  const me=careerCard(), mates=careerMates();
+  if(!me || mates.length<careerMateSeats() || mates.some(function(m){ return !m; })) return;
+  // The first seat, which is what the result records and the feed lines below
+  // have always meant by the partner. A trio names the rest through mates.
+  const mate=mates[0]||null;
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
-  CARD_MODE=true; squadSize=2; drafted=[me, mate];
+  CARD_MODE=true; squadSize=careerSquadSize(); drafted=[me].concat(mates);
   // A duo lobby drops on the whole island. The grid is thinned for squads —
   // trimLandingZonesForMode keeps the biggest 52% of the boxes so a four-player
   // lobby is not a wall of rectangles — and it was baked in at page load, when
@@ -54303,12 +54359,25 @@ async function runCareerReloadChampionship(){
   const st = ev.stage==='group' ? CC_RC_GROUP : ev.stage==='survival' ? CC_RC_SURV : CC_RC_FINAL;
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('rc', ev.id||ev.label||'');
-  const me=careerCard(), mate=careerPartnerCard();
-  if(!me || !mate) return;
+  /* The squad this season is played in, not a duo.
+
+     Every one of these nine runners took the player and one partner and set
+     squadSize to two by hand. In a trios season that put a duo in a lobby of
+     trios: his own row showed two names beside everybody else's three, the
+     lobby was built to the duo count of fifty rather than thirty-three, and
+     the labels underneath said duos all night. His report, 20 August.
+
+     careerMates is the seats the season actually has. An incomplete squad does
+     not enter at all, which is the rule the day panel already states. */
+  const me=careerCard(), mates=careerMates();
+  if(!me || mates.length<careerMateSeats() || mates.some(function(m){ return !m; })) return;
+  // The first seat, which is what the result records and the feed lines below
+  // have always meant by the partner. A trio names the rest through mates.
+  const mate=mates[0]||null;
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
   const prevSet=ACTIVE_LANDING_SET;
-  CARD_MODE=true; squadSize=2; drafted=[me, mate];
+  CARD_MODE=true; squadSize=careerSquadSize(); drafted=[me].concat(mates);
   // Paris is the same circuit, and the same ten. See ccKillPts.
   CC_KILL_CAP=CC_RELOAD_KILL_CAP;
   // A duo lobby drops on the whole island. The grid is thinned for squads —
@@ -54695,11 +54764,24 @@ async function runCareerSummit(){
   const st=CC_SUMMIT_STAGE[ev.stage];
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('summit', ev.id||ev.label||'');
-  const me=careerCard(), mate=careerPartnerCard();
-  if(!me || !mate) return;
+  /* The squad this season is played in, not a duo.
+
+     Every one of these nine runners took the player and one partner and set
+     squadSize to two by hand. In a trios season that put a duo in a lobby of
+     trios: his own row showed two names beside everybody else's three, the
+     lobby was built to the duo count of fifty rather than thirty-three, and
+     the labels underneath said duos all night. His report, 20 August.
+
+     careerMates is the seats the season actually has. An incomplete squad does
+     not enter at all, which is the rule the day panel already states. */
+  const me=careerCard(), mates=careerMates();
+  if(!me || mates.length<careerMateSeats() || mates.some(function(m){ return !m; })) return;
+  // The first seat, which is what the result records and the feed lines below
+  // have always meant by the partner. A trio names the rest through mates.
+  const mate=mates[0]||null;
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
-  CARD_MODE=true; squadSize=2; drafted=[me, mate];
+  CARD_MODE=true; squadSize=careerSquadSize(); drafted=[me].concat(mates);
   // A duo lobby drops on the whole island. The grid is thinned for squads —
   // trimLandingZonesForMode keeps the biggest 52% of the boxes so a four-player
   // lobby is not a wall of rectangles — and it was baked in at page load, when
@@ -54930,11 +55012,24 @@ async function runCareerGlobals(){
   const seat=ccGlobalsSeat();
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('globals', ev.id||ev.label||'');
-  const me=careerCard(), mate=careerPartnerCard();
-  if(!me || !mate) return;
+  /* The squad this season is played in, not a duo.
+
+     Every one of these nine runners took the player and one partner and set
+     squadSize to two by hand. In a trios season that put a duo in a lobby of
+     trios: his own row showed two names beside everybody else's three, the
+     lobby was built to the duo count of fifty rather than thirty-three, and
+     the labels underneath said duos all night. His report, 20 August.
+
+     careerMates is the seats the season actually has. An incomplete squad does
+     not enter at all, which is the rule the day panel already states. */
+  const me=careerCard(), mates=careerMates();
+  if(!me || mates.length<careerMateSeats() || mates.some(function(m){ return !m; })) return;
+  // The first seat, which is what the result records and the feed lines below
+  // have always meant by the partner. A trio names the rest through mates.
+  const mate=mates[0]||null;
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
-  CARD_MODE=true; squadSize=2; drafted=[me, mate];
+  CARD_MODE=true; squadSize=careerSquadSize(); drafted=[me].concat(mates);
   // A duo lobby drops on the whole island. The grid is thinned for squads —
   // trimLandingZonesForMode keeps the biggest 52% of the boxes so a four-player
   // lobby is not a wall of rectangles — and it was baked in at page load, when
@@ -55015,11 +55110,24 @@ async function runCareerMajor(){
   const st=ccScaleStage(CC_MAJOR_STAGE[ev.stage]);
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('major', ev.id||ev.label||'');
-  const me=careerCard(), mate=careerPartnerCard();
-  if(!me || !mate) return;
+  /* The squad this season is played in, not a duo.
+
+     Every one of these nine runners took the player and one partner and set
+     squadSize to two by hand. In a trios season that put a duo in a lobby of
+     trios: his own row showed two names beside everybody else's three, the
+     lobby was built to the duo count of fifty rather than thirty-three, and
+     the labels underneath said duos all night. His report, 20 August.
+
+     careerMates is the seats the season actually has. An incomplete squad does
+     not enter at all, which is the rule the day panel already states. */
+  const me=careerCard(), mates=careerMates();
+  if(!me || mates.length<careerMateSeats() || mates.some(function(m){ return !m; })) return;
+  // The first seat, which is what the result records and the feed lines below
+  // have always meant by the partner. A trio names the rest through mates.
+  const mate=mates[0]||null;
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
-  CARD_MODE=true; squadSize=2; drafted=[me, mate];
+  CARD_MODE=true; squadSize=careerSquadSize(); drafted=[me].concat(mates);
   // A duo lobby drops on the whole island. The grid is thinned for squads —
   // trimLandingZonesForMode keeps the biggest 52% of the boxes so a four-player
   // lobby is not a wall of rectangles — and it was baked in at page load, when
@@ -55182,11 +55290,24 @@ async function runCareerMajor(){
 async function runCareerWeeklyFinal(){
   const cr=CAREER.career;
   if(!careerWeeklyFinalOn(careerToday())) return;
-  const me=careerCard(), mate=careerPartnerCard();
-  if(!me || !mate) return;
+  /* The squad this season is played in, not a duo.
+
+     Every one of these nine runners took the player and one partner and set
+     squadSize to two by hand. In a trios season that put a duo in a lobby of
+     trios: his own row showed two names beside everybody else's three, the
+     lobby was built to the duo count of fifty rather than thirty-three, and
+     the labels underneath said duos all night. His report, 20 August.
+
+     careerMates is the seats the season actually has. An incomplete squad does
+     not enter at all, which is the rule the day panel already states. */
+  const me=careerCard(), mates=careerMates();
+  if(!me || mates.length<careerMateSeats() || mates.some(function(m){ return !m; })) return;
+  // The first seat, which is what the result records and the feed lines below
+  // have always meant by the partner. A trio names the rest through mates.
+  const mate=mates[0]||null;
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
-  CARD_MODE=true; squadSize=2; drafted=[me, mate];
+  CARD_MODE=true; squadSize=careerSquadSize(); drafted=[me].concat(mates);
   // A duo lobby drops on the whole island. The grid is thinned for squads —
   // trimLandingZonesForMode keeps the biggest 52% of the boxes so a four-player
   // lobby is not a wall of rectangles — and it was baked in at page load, when
@@ -55267,11 +55388,24 @@ async function runCareerReload(){
   const ev=careerReloadOn(careerToday());
   if(!ev || !careerReloadCan(ev)) return;
   const st=CC_RELOAD_STAGE[ev.stage];
-  const me=careerCard(), mate=careerPartnerCard();
-  if(!me || !mate) return;
+  /* The squad this season is played in, not a duo.
+
+     Every one of these nine runners took the player and one partner and set
+     squadSize to two by hand. In a trios season that put a duo in a lobby of
+     trios: his own row showed two names beside everybody else's three, the
+     lobby was built to the duo count of fifty rather than thirty-three, and
+     the labels underneath said duos all night. His report, 20 August.
+
+     careerMates is the seats the season actually has. An incomplete squad does
+     not enter at all, which is the rule the day panel already states. */
+  const me=careerCard(), mates=careerMates();
+  if(!me || mates.length<careerMateSeats() || mates.some(function(m){ return !m; })) return;
+  // The first seat, which is what the result records and the feed lines below
+  // have always meant by the partner. A trio names the rest through mates.
+  const mate=mates[0]||null;
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted, prevSet=ACTIVE_LANDING_SET;
-  CARD_MODE=true; squadSize=2; drafted=[me, mate];
+  CARD_MODE=true; squadSize=careerSquadSize(); drafted=[me].concat(mates);
   // The circuit stops counting a match's eliminations at ten. See ccKillPts.
   CC_KILL_CAP=CC_RELOAD_KILL_CAP;
   // A duo lobby drops on the whole island. The grid is thinned for squads —
@@ -55467,12 +55601,23 @@ async function runCareerVictory(){
   const solo=ev.mode==='solo';
   const me=careerCard();
   if(!me) return;
-  let mate=null;
-  if(!solo){ mate=careerPartnerCard(); if(!mate) return; }
+  /* The tenth runner, and the only one with a solo night in it.
+
+     A solo cup is one player whatever the season is. The other one is the
+     season's own squad, so in a trios year it is a trio — and the calendar
+     calls it a trios cup to match. See ccVictoryCupName. */
+  let mates=[], mate=null;
+  if(!solo){
+    mates=careerMates();
+    if(mates.length<careerMateSeats() || mates.some(function(m){ return !m; })) return;
+    mate=mates[0]||null;
+  }
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
   const prevSet=ACTIVE_LANDING_SET;
-  CARD_MODE=true; squadSize=solo?1:2; drafted=solo?[me]:[me,mate];
+  CARD_MODE=true;
+  squadSize=solo?1:careerSquadSize();
+  drafted=solo?[me]:[me].concat(mates);
   // Three of the year's Victory Cups are Reload ones — the mode, not the
   // squad size — and they are played on the Reload island like the circuit is.
   useLandingSet(/Reload/.test(ev.id) ? 'r4' : 'm2');
@@ -55561,17 +55706,30 @@ async function runCareerVictory(){
 
   CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet); CC_KILL_CAP=0;
   careerRenderHub('centre');
-  careerTwoRoundResultCard({title:(ev.mode==='duo'?L().calVictoryDuo:L().calVictorySolo)+' '+ev.n,
+  careerTwoRoundResultCard({title:(ev.mode==='duo'?ccVictoryCupName():L().calVictorySolo)+' '+ev.n,
     place:place2||place1, through:through, wins:wins, cash:cash, cut:vCut});
 }
 
 async function runCareerCup(){
   const cr=CAREER.career;
-  const me=careerCard(), mate=careerPartnerCard();
-  if(!me || !mate) return;
+  /* The squad this season is played in, not a duo.
+
+     Every one of these nine runners took the player and one partner and set
+     squadSize to two by hand. In a trios season that put a duo in a lobby of
+     trios: his own row showed two names beside everybody else's three, the
+     lobby was built to the duo count of fifty rather than thirty-three, and
+     the labels underneath said duos all night. His report, 20 August.
+
+     careerMates is the seats the season actually has. An incomplete squad does
+     not enter at all, which is the rule the day panel already states. */
+  const me=careerCard(), mates=careerMates();
+  if(!me || mates.length<careerMateSeats() || mates.some(function(m){ return !m; })) return;
+  // The first seat, which is what the result records and the feed lines below
+  // have always meant by the partner. A trio names the rest through mates.
+  const mate=mates[0]||null;
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
-  CARD_MODE=true; squadSize=2; drafted=[me, mate];
+  CARD_MODE=true; squadSize=careerSquadSize(); drafted=[me].concat(mates);
   // A duo lobby drops on the whole island. The grid is thinned for squads —
   // trimLandingZonesForMode keeps the biggest 52% of the boxes so a four-player
   // lobby is not a wall of rectangles — and it was baked in at page load, when
