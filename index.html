@@ -48879,7 +48879,9 @@ function careerDmPool(){
   // The list is headed "looking for a duo", so the people actually looking come
   // first: no standing pair, then pairs whose season has soured, then the rest
   // — writable, but they will say who they already play with.
-  const seatRank=p=>{ const m=ccRealMateOf(p);
+  // Through the scene's eyes, not the roster's: a seat held by the player's own
+  // card is a free seat. See ccSceneMateOf.
+  const seatRank=p=>{ const m=ccSceneMateOf(p);
     return !m ? 0 : careerDuoBeatsYou({handle:p.handle}) ? 2 : 1; };
   near.sort((a,b)=>seatRank(a)-seatRank(b));
   /* Two seats held for the best people in the window, whatever their seat.
@@ -48983,9 +48985,26 @@ function ccDuoFormLabel(handle){
   if(!f) return '';
   return L().ccFormTable(f.place, f.of)+(f.best!=null ? ' · '+L().ccFormBest(f.best) : '');
 }
+/* The roster's answer, minus you.
+
+   ccRealMateOf reads the 2026 pairings, and a career played as a taken card is
+   standing inside them: take Sky, write to Scroll, and the roster says Scroll's
+   duo is Sky — so Scroll turned the player down with "I play with Sky. We are
+   fine as we are", said to Sky. His screenshot, 20 August: refused in your own
+   name, for your own seat.
+
+   So anywhere the scene asks "who do they already play with", the answer is
+   never the player himself. That seat is not taken, it is this conversation. */
+function ccSceneMateOf(card){
+  const m=card ? ccRealMateOf(card) : null;
+  if(!m) return null;
+  const pl=CAREER && CAREER.player;
+  if(pl && pl.handle && hKey(m)===hKey(pl.handle)) return null;
+  return m;
+}
 function careerDmMateOf(who){
   const card=careerRosterNowEU().find(p=>hKey(p)===hKey(who.handle));
-  return card ? ccRealMateOf(card) : null;
+  return card ? ccSceneMateOf(card) : null;
 }
 /* Whether the duo somebody is already in is better than the one you are
    offering — which is the whole of the question, from their side.
@@ -50866,7 +50885,8 @@ function ccDuoFindRender(keepFocus){
   const rows=list.map(w=>{
     const said=careerDmFind(w.handle);
     const wrote=!!(said && said.msgs && said.msgs.some(m=>m.from==='you'));
-    const mate=ccRealMateOf ? ccRealMateOf(w.card||{handle:w.handle}) : null;
+    // The scene's answer, so a row never reads "duo with you" said about you.
+    const mate=ccSceneMateOf(w.card||{handle:w.handle});
     const under=[L()[w.role]||'', mate ? L().ccDuoWith(esc(mate.handle||'')) : L().ccDuoFree,
                  w.club ? esc(w.club) : ''].filter(Boolean).join(' · ');
     return `<div class="cc-buy">
