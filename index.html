@@ -46901,86 +46901,81 @@ function careerPayWages(fromISO, toISO){
    the notes on those rows are the history of it. Coaches are not in this: they
    have no follower count and their list is deliberately grouped, heads first
    and then the specialists, who are all one price on purpose. */
-/* Alphabetical, his call, 20 August — the same people his lists name, in the
-   order a reader can predict.
+/* The order the four windows run in, his own, off the two screenshots.
 
-   It was the follower count, then it was his own running order, and now it is
-   neither: a count is a measurement and a hand-written order is a preference,
-   and both make a reader scan the whole window to find one name. The alphabet
-   does not — you know where to look before you look.
+   It has been three things now: the follower count, then his hand-written
+   order, then the alphabet. This is the hand-written one back, because it is
+   the one he keeps writing out — and this time the numbers follow it rather
+   than argue with it. See ccRankPull.
 
-   The number stays the measurement it always was. ccAgentWeight still reads it
-   for the cut and for how far above a career the clubs look; what stopped
-   reading it is the running order.
+   One list for all four, keyed by handle, because a person moves between them:
+   an SMM who starts managing is one line moved rather than a row rewritten.
 
-   Sorted on the name the row actually prints, because that is the word a reader
-   scans for. It means the ones who carry an org in front of their name file
-   under the org — Lyost Clap under L, Coach Gripey under C — which is where a
-   list sorted by what it displays has to put them. Sorting on the handle
-   instead is this one function.
+   Anybody not named falls to the end keeping their own table’s order. A person
+   added to the data and forgotten here shows up at the bottom of the window
+   rather than somewhere in the middle of it, and last is a visible thing to fix.
+*/
+const CC_SHOP_ORDER=[
+  // Managers. Yeekzie last, his call — placed rather than left to fall there,
+  // so the end of this list is a decision and not an omission.
+  'alhasarda','JoaovEU','ElyxxM','OliverChesses','IdziU97','RemssMNG','AlybiSaCE',
+  'Th0masNL','ZedroxMNG','50taruns','DamlosMNG','ClapMNG','errieMNG','PixelzMNG',
+  'NaaxoMNG','Kiinywz0','Yeekzie7',
+  // Socials. Sweety second and Lumos beside Ugo under Sandora, both his call:
+  // his own list writes those two on a single line.
+  'v1nteroFN','SweetyyFN','SandoraFN','CmLumos','UgoComm','Pyp4ingS','veltrixx10','Lair_Fn',
+  // Marketing
+  'PyraxMGMT','Goalkikermng','KaizenMNG','murlotron',
+  // Coaches
+  'RazZzero0oFN','SvenSE_','Coach_F0x','tallami1','diaspaulin_','stormyrite',
+  'BoopNL_','At0m_GG','kha0rz','xpl0t','Gripeyy','ValentaynL','EgeXJerG',
+  'Rabidfn','CoachEsteh','ZykomaTV','spidryx','PeanutBrainTS'
+];
+const CC_SHOP_RANK=(function(){
+  const m={};
+  CC_SHOP_ORDER.forEach((h,i)=>{ m[String(h).toLowerCase()]=i; });
+  return m;
+})();
+function ccShopKey(x){ return String((x&&x.at)||(x&&x.id)||'').toLowerCase(); }
+/* Where a row sits in his order, as the nought-to-one every window already
+   prices on.
 
-   Case and accents are ignored, so aCE files under A and João under J rather
-   than after Z. */
-/* The word a person is actually called.
+   Each of these four lists turns one number between 0 and 1 into everything it
+   charges and everything it gives — the manager's cut, his reach, the wage he
+   argues for, what a marketer asks and lands, what an SMM asks and boosts. That
+   number used to be the follower count on a log curve, which is a measurement
+   and reads as one: honest, and in no order anybody can see.
 
-   Half these rows print an organisation in front of the name — Lyost Clap, MGA
-   Alexi, GLORE errie, Poyo Naaxo — and sorting on the printed string files them
-   all under their club instead of themselves: four Lyost people in a row under
-   L, and Alexi nowhere near A. His own lists never write them that way; he
-   wrote Clap, Naaxo, Alexi, errie. So the org comes off for sorting and stays
-   on for display, and the row files under the name he uses for the person.
+   His call, 20 August: the list is his and the numbers run down it. So the
+   nought-to-one is now the place in the list — one at the top, nought at the
+   bottom, evenly spread — and every term stays inside exactly the range it had.
+   Nothing in this shop got stronger or weaker; the ladder simply runs the way
+   the list does, so the top of a window is the best of it and the bottom is the
+   cheapest, and a player can read either end without doing arithmetic.
 
-   A title works the same way — Coach Dias sorts under Dias. Only a leading word
-   is dropped, and only one, so AgentChesses stays whole: it is one word and one
-   name, not a club and a person. */
-const CC_NAME_PREFIX=['lyost','mga','glore','g2','poyo','coach'];
-function ccSortName(x){
-  const full=String((x&&x.name)||(x&&x.at)||'').trim();
-  const sp=full.indexOf(' ');
-  if(sp<0) return full;
-  const head=full.slice(0, sp).toLowerCase();
-  return CC_NAME_PREFIX.indexOf(head)<0 ? full : full.slice(sp+1).trim();
-}
-/* And one pair sits where he put it rather than where the alphabet would.
-
-   His socials list writes Lumos and Ugo on a single line, the two of them
-   together, directly under Sandora — and when asked whether that meant one
-   person under two names, his answer was that it is two people who belong side
-   by side. The alphabet would put them at opposite ends of the window, L and U,
-   with four rows in between.
-
-   So the pair is lifted out of the sorted list, kept in alphabetical order
-   between themselves, and set back down immediately after the row he anchored
-   them to. If the anchor is ever removed from the data they go to the end
-   together rather than silently splitting up. */
-const CC_PAIRED=[{after:'SandoraFN', both:['CmLumos','UgoComm']}];
-function ccAtIs(x, handle){
-  return String((x&&x.at)||'').toLowerCase()===String(handle).toLowerCase();
-}
-function ccPinPairs(sorted){
-  let out=sorted;
-  CC_PAIRED.forEach(p=>{
-    const pair=out.filter(x=>p.both.some(h=>ccAtIs(x,h)));
-    // One of them missing is not a pair, and moving a single row would be a
-    // silent re-order nobody asked for.
-    if(pair.length<2) return;
-    const rest=out.filter(x=>pair.indexOf(x)<0);
-    const at=rest.findIndex(x=>ccAtIs(x,p.after));
-    out = at<0 ? rest.concat(pair)
-               : rest.slice(0,at+1).concat(pair, rest.slice(at+1));
-  });
-  return out;
+   Matched by handle rather than by identity, because a signed agent is a copy
+   held in the save. Anybody not in the list gets null, which is the plain-terms
+   fallback each window already has. */
+function ccRankPull(list, item){
+  if(!item || !list || list.length<2) return null;
+  const key=ccShopKey(item);
+  const rows=ccByHand(list);
+  const i=rows.findIndex(r=>ccShopKey(r)===key);
+  if(i<0) return null;
+  return (rows.length-1-i)/(rows.length-1);
 }
 function ccByHand(list){
-  const key=x=>ccSortName(x);
-  // Index carried alongside, so two identical names keep their own table's
-  // order rather than whatever the sort happens to do with equal keys.
-  const sorted=list.map((x,i)=>({x:x,i:i}))
-             .sort((a,b)=>key(a.x).localeCompare(key(b.x), 'en',
-                            {sensitivity:'base', numeric:true}) || (a.i-b.i))
+  const rank=x=>{
+    const i=CC_SHOP_RANK[ccShopKey(x)];
+    return i==null ? CC_SHOP_ORDER.length : i;
+  };
+  // Index carried alongside, so everyone unplaced keeps their own table’s order
+  // rather than whatever the sort happens to do with equal keys.
+  return list.map((x,i)=>({x:x,i:i}))
+             .sort((a,b)=>(rank(a.x)-rank(b.x)) || (a.i-b.i))
              .map(o=>o.x);
-  return ccPinPairs(sorted);
 }
+
 
 const CC_AD_PER=6, CC_AD_STEP=1.25;
 const CC_MKT_DAYS=30;
@@ -47002,7 +46997,7 @@ function ccMktPull(x){
   return clamp((Math.log(x)-lo)/(hi-lo), 0, 1);
 }
 function ccMktTermsOf(m){
-  const k=m ? ccMktPull(m.x) : null;
+  const k=ccRankPull(CC_MARKETING, m);
   return {cost: m && m.cost!=null ? m.cost
                 : Math.round((CC_MKT_BASE*(1+(k==null?0:k*1.5)))/50)*50,
           rate: m && m.rate!=null ? m.rate : (1+(k==null?0:k*0.6))};
@@ -47257,7 +47252,7 @@ function ccAgentPull(x){
 }
 // The three terms an account buys. A written-in term always wins: see the note.
 function ccAgentTermsOf(a){
-  const k=a ? ccAgentPull(a.x) : null;
+  const k=ccRankPull(CC_AGENTS, a);
   const base = k==null ? CC_AGENT_PLAIN : {
     cut:  Math.round((0.12+k*0.06)*100)/100,
     reach: 2+Math.round(k*3),
@@ -47279,7 +47274,7 @@ function ccAgentTermsOf(a){
    wins where one exists, the same as a written-in term does. */
 function ccAgentWeight(a){
   if(a && a.weight!=null) return a.weight;
-  const k=ccAgentPull(a && a.x);
+  const k=ccRankPull(CC_AGENTS, a);
   return k==null ? CC_AGENT_PLAIN.weight
                  : Math.round((1+k*4)*10)/10;
 }
@@ -47990,7 +47985,7 @@ function ccSmmPull(x){
    the way it does for the player's manager, so one of them can be tuned by hand
    without the curve arguing back. */
 function ccSmmTermsOf(m){
-  const k=m ? ccSmmPull(m.x) : null;
+  const k=ccRankPull(CC_SMM, m);
   const t=(k==null) ? {cost:600, boost:0.22}
                     : {cost:Math.round((400+k*1100)/50)*50, boost:+(0.18+k*0.42).toFixed(2)};
   return {cost: m && m.cost!=null ? m.cost : t.cost,
@@ -51350,6 +51345,37 @@ const CC_COACHES=[
   {id:'khaorz', name:'kha0rz',     at:'kha0rz',      reg:'EU',    cost:2500, train:0.35, keys:['aim','clu'], photo:'kha0rz.jpg'},
   {id:'xplot',  name:'Xplot',      at:'xpl0t',       reg:'EU',    cost:2500, train:0.35, keys:['end','exp'], photo:'xpl0t.jpg'}
 ];
+/* The coaches run down their list too.
+
+   The other three windows compute their terms every time they are drawn, so
+   moving them onto the order was one line each. A coach carries his numbers in
+   his own row and is copied into the save when he is hired, which means both
+   the window and every career already holding a coach have to agree — so the
+   rows themselves are set here, once, before anybody reads one.
+
+   The ranges are the ones this file already used: $3,500 down to $2,500,
+   thirty-five per cent down to twenty-eight, and the chemistry a coach who
+   works with duos adds, four tenths down to nothing. Top of his list is the
+   dearest and the best; the bottom is the cheapest and the plainest.
+
+   What each one teaches is not on the ladder and is not touched. That is read
+   off the man's own line — an endgame analyst is not a worse mechanics coach,
+   he is a different one — and it is the thing that still makes the choice a
+   choice rather than a price list read top to bottom. */
+const CC_COACH_TOP={cost:3500, train:0.35, chem:0.4};
+const CC_COACH_LOW={cost:2500, train:0.28, chem:0};
+(function ccCoachRankTerms(){
+  const span=(a,b,k)=>b+(a-b)*k;
+  CC_COACHES.forEach(c=>{
+    const k=ccRankPull(CC_COACHES, c);
+    if(k==null) return;
+    c.cost  = Math.round(span(CC_COACH_TOP.cost,  CC_COACH_LOW.cost,  k)/100)*100;
+    c.train = Math.round(span(CC_COACH_TOP.train, CC_COACH_LOW.train, k)*100)/100;
+    const chem=Math.round(span(CC_COACH_TOP.chem, CC_COACH_LOW.chem, k)*10)/10;
+    if(chem>0) c.chem=chem; else delete c.chem;
+  });
+})();
+
 /* Three of them on the tile, not twenty.
 
    The screen shows the choice side by side because the choice is the point, and

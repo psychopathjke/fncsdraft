@@ -1,13 +1,20 @@
-// A manager's terms are read off his account, not handed out.
+// A manager's terms run down his list.
 //
-// Six of the seven carried CC_AGENT_PLAIN because nobody had written them terms,
+// They were read off his follower count from 18 August, which is a measurement
+// and reads as one: honest, and in no order anybody can see. His call, 20
+// August: the running order is his and the numbers follow it. Same ranges, same
+// curve shape, different input — the place in CC_SHOP_ORDER rather than the size
+// of the account. See ccRankPull.
+//
+// So the top of the window opens more doors and gets more on the table, charges
+// more for it, and writes more often; the bottom is the cheapest of them. A
+// hand-written term still wins, and a row that is not in the list at all still
+// falls back to the ordinary deal rather than breaking.
+//
+// How it got here. Six of the seven carried CC_AGENT_PLAIN because nobody had written them terms,
 // so the list was João and six identical strangers. His call, 18 August: take it
 // off their followers — which is the same measure the mode already prices for the
 // player in CC_XFOLLOW.
-//
-// A bigger account opens more doors and gets more on the table, and charges more
-// for it, so the trade is real rather than a straight upgrade. A hand-written
-// term still wins where one exists.
 //
 // His ask, 19 August: the account should decide the whole of what a manager is,
 // not only what he charges. So it also decides how often he is the one who
@@ -46,14 +53,26 @@ const BOOT = [
 '        return x + ": " + Math.round(t.cut*100) + "% · +" + t.reach + " · +" +',
 '               Math.round((t.wage-1)*100) + "%"; });',
 '',
-'      var small = ccAgentTermsOf({x: 600});',
-'      var big = ccAgentTermsOf({x: 20000});',
-'      check("a bigger account opens more doors", big.reach > small.reach,',
+'      // Top of his list against the bottom of it. The terms came off the',
+'      // follower count until 20 August and come off the running order now —',
+'      // his call — so this asks the question the new rule answers: does the',
+'      // list run downhill? A synthetic {x:600} would tell us nothing, because',
+'      // a row that is not in the list has no place in it.',
+'      var rows = ccByHand(CC_AGENTS);',
+'      var small = ccAgentTermsOf(rows[rows.length-1]);',
+'      var big = ccAgentTermsOf(rows[0]);',
+'      check("the top of the list opens more doors", big.reach > small.reach,',
 '            small.reach + " vs " + big.reach);',
 '      check("and gets more on the table", big.wage > small.wage,',
 '            small.wage + " vs " + big.wage);',
 '      check("and charges more for it", big.cut > small.cut,',
 '            small.cut + " vs " + big.cut);',
+'',
+'      // And it runs downhill the whole way, not only at the ends.',
+'      var cuts = rows.map(function(a){ return ccAgentTermsOf(a).cut; });',
+'      var slipped = cuts.filter(function(c, i){ return i && cuts[i-1] < c; });',
+'      check("every step down the list is a step down in terms",',
+'            slipped.length === 0, cuts.join(" "));',
 '',
 '      // An account nobody has read yet falls back rather than breaking.',
 '      var none = ccAgentTermsOf({});',
@@ -73,9 +92,9 @@ const BOOT = [
 '            JSON.stringify(h));',
 '',
 '      // And how often he is the one who writes, which is the other half of it.',
-'      check("a bigger account writes more often",',
-'            ccAgentWeight({x: 20000}) > ccAgentWeight({x: 600}),',
-'            ccAgentWeight({x: 600}) + " vs " + ccAgentWeight({x: 20000}));',
+'      check("the top of the list writes more often",',
+'            ccAgentWeight(rows[0]) > ccAgentWeight(rows[rows.length-1]),',
+'            ccAgentWeight(rows[rows.length-1]) + " vs " + ccAgentWeight(rows[0]));',
 '      check("an unread account draws the ordinary once",',
 '            ccAgentWeight({}) === CC_AGENT_PLAIN.weight, String(ccAgentWeight({})));',
 '      check("a written-in weight wins too", ccAgentWeight(byHand) === 3,',
