@@ -4711,6 +4711,16 @@ ccNewsMateLeftFort:m=>'@'+m+' ушёл в другой сквад',
 ccDuoFreet:'без сквада',
 ccDuoWitht:n=>'в скваде с '+n,
 ccRivalHintt:'Один сквад, который сидит в каждом твоём кубке весь сезон',
+ccNoMatet:'Состав неполный — заявиться нельзя. Найди игроков: в личке есть те, кто свободен',
+ccNoMateShortt:'Не хватает игрока',
+ccFindDuot:'Найти игрока', ccMateReplacet:'Найти другого',
+dmDuot:'состав', dmTakeItt:'Взять в состав', dmAskBtnt:'Написать: «трио?»',
+dmLookingt:'Ищут состав',
+ccNewsDuoAgaint:(sn,m)=>sn+': идём тем же составом, @'+m+' 🤝',
+ccNewsDuoBehindt:(m,sn)=>'Спасибо @'+m+' за сезон. Дальше пробую с другими',
+ccNewsDuoAnnouncet:(sn,m)=>sn+': играю с @'+m+' 🤝',
+tlDuot:m=>'Новый состав: @'+m,
+tlDuoPoachedt:m=>'@'+m+' ушёл в другой сквад',
 ccMood:'Настрой',
 ccMoodEdge:'на грани',
 ccMoodUnhappy:'недоволен',
@@ -6140,6 +6150,16 @@ ccNewsMateLeftFort:m=>'@'+m+' has left for another squad',
 ccDuoFreet:'no squad',
 ccDuoWitht:n=>'squad with '+n,
 ccRivalHintt:'One squad, in every cup you play, all season',
+ccNoMatet:'The squad is short — you cannot enter. Find somebody: the inbox has people who are free',
+ccNoMateShortt:'A seat is empty',
+ccFindDuot:'Find a player', ccMateReplacet:'Find another',
+dmDuot:'squad', dmTakeItt:'Take them in', dmAskBtnt:'Write: "trio?"',
+dmLookingt:'Looking for a squad',
+ccNewsDuoAgaint:(sn,m)=>sn+': running it back with @'+m+' 🤝',
+ccNewsDuoBehindt:(m,sn)=>'Thanks @'+m+' for the season. Trying it with somebody else now',
+ccNewsDuoAnnouncet:(sn,m)=>sn+': playing with @'+m+' 🤝',
+tlDuot:m=>'New squad: @'+m,
+tlDuoPoachedt:m=>'@'+m+' left for another squad',
 ccMood:'Mood',
 ccMoodEdge:'on the edge',
 ccMoodUnhappy:'unhappy',
@@ -7736,6 +7756,16 @@ ccNewsMateLeftFort:m=>'@'+m+' est parti dans une autre équipe',
 ccDuoFreet:'sans équipe',
 ccDuoWitht:n=>'équipe avec '+n,
 ccRivalHintt:'Une équipe, dans chaque coupe que tu joues, toute la saison',
+ccNoMatet:'L’équipe est incomplète — impossible de s’inscrire. Trouve quelqu’un : des joueurs libres t’écrivent',
+ccNoMateShortt:'Une place est vide',
+ccFindDuot:'Trouver un joueur', ccMateReplacet:'En trouver un autre',
+dmDuot:'équipe', dmTakeItt:'Le prendre', dmAskBtnt:'Écrire : « trio ? »',
+dmLookingt:'Cherchent une équipe',
+ccNewsDuoAgaint:(sn,m)=>sn+' : on repart avec @'+m+' 🤝',
+ccNewsDuoBehindt:(m,sn)=>'Merci @'+m+' pour la saison. Je vais tenter avec d’autres',
+ccNewsDuoAnnouncet:(sn,m)=>sn+' : je joue avec @'+m+' 🤝',
+tlDuot:m=>'Nouvelle équipe : @'+m,
+tlDuoPoachedt:m=>'@'+m+' est parti dans une autre équipe',
 dmAgentYes:'Bien. À partir d’aujourd’hui, c’est moi qui parle aux clubs.',
 dmAgentEnd:'Je prends le relais.',
 dmOrgYesPerkAgent:'Le setup est pour eux. Moi, je signerais.',
@@ -43612,7 +43642,7 @@ function careerMeHTML(){
       <div class="ch-cardwrap">${m?futCardHTML(m,{wide:true})
         :`<div class="ch-empty ch-empty-seat">${(i===0 && !mates.length)?L().chNoPartner:L().ccSeatEmpty}</div>`}</div>
       <button class="ch-swap" onclick="ccDuoFindOpen(${i})">${
-        m ? L().ccMateReplace : L().ccFindDuo}</button>
+        m ? ccSay('ccMateReplace') : ccSay('ccFindDuo')}</button>
     </div>`);
   }
   return `<div class="ch-grid ch-grid-me">
@@ -49899,14 +49929,14 @@ function careerDmPush(t, from, key, args){
   const cr=CAREER.career;
   // Their line in their own voice. Only what they say - the player's own
   // messages are the player's, and there is only one of them.
-  // And in the season's own words: a trio year does not ask anybody to duo.
-  // See ccSquadKey.
-  let k=ccSquadKey(key);
-  key=k;
+  let k=key;
   if(from==='them' && t && t.who){
     const v=ccVoiceOf(t.who.handle);
     if(L()[key+v]) k=key+v;
   }
+  // And in the season's own words: a trio year does not ask anybody to duo. The
+  // voice is chosen first, so a duo season keeps all four of them. See ccSquadKey.
+  k=ccSquadKey(k);
   t.msgs.push({from, k:k, a:args||[], season:cr.season, day:careerToday()});
   /* Unread means you have not seen it, and a conversation open on the screen has
      been seen. Their answer used to raise the badge under the player's own eyes:
@@ -51190,7 +51220,7 @@ function careerSocialHTML(){
       <span class="dm-item-in">
         <b>${esc(ccDmName(t.who))}${(t.who.agent||t.who.viaAgent)?`<em class="dm-tag-agent">${L().ccAgentTag}</em>`
           :t.who.org?`<em class="dm-tag-org">${L().ccOrg}</em>`
-          :`${t.who.ovr!=null?`<i>${t.who.ovr}</i>`:''}${hKey(t.who.handle)===hKey(mate&&mate.handle)?`<em>${L().dmDuo}</em>`:''}`}</b>
+          :`${t.who.ovr!=null?`<i>${t.who.ovr}</i>`:''}${hKey(t.who.handle)===hKey(mate&&mate.handle)?`<em>${ccSay('dmDuo')}</em>`:''}`}</b>
         <span>${last?esc(ccText(last)):''}</span>
       </span></button>
       <button class="dm-x" title="${esc(L().dmClose)}" aria-label="${esc(L().dmClose)}"
@@ -51349,8 +51379,8 @@ function careerSocialHTML(){
             return `<div class="dm-foot">${held ? `<div class="dm-asked">${
               L().ccSlotLoseHint(careerPartnerCard().handle, held.what)}</div>` : ''}
               <button class="ch-decline" onclick="careerDmBlock('${open.id}')">${L().dmBlock}</button>
-              <button class="ch-sign" onclick="careerDmAccept('${open.id}')">${L().dmTakeIt}</button></div>`; })()
-        : `<div class="dm-foot"><button class="ch-sign" onclick="careerDmWrite('${esc(open.who.handle)}')">${L().dmAskBtn}</button></div>`}`
+              <button class="ch-sign" onclick="careerDmAccept('${open.id}')">${ccSay('dmTakeIt')}</button></div>`; })()
+        : `<div class="dm-foot"><button class="ch-sign" onclick="careerDmWrite('${esc(open.who.handle)}')">${ccSay('dmAskBtn')}</button></div>`}`
     : `<div class="ch-empty">${L().dmPickThread}</div>`;
 
   /* And why everybody writing to you is worse than you.
@@ -51360,7 +51390,7 @@ function careerSocialHTML(){
      that is not in Division 3. Which is right, and reads as broken unless it is
      said out loud. */
   const overRung=!ccRealNamesHere() && CAREER.player.ovr>ccDivCeil(CAREER.career.division);
-  const looking=`<div class="dm-side-h">${L().dmLooking}</div>`+
+  const looking=`<div class="dm-side-h">${ccSay('dmLooking')}</div>`+
     (overRung ? `<div class="ch-hint dm-over">${
       L().dmOverRung(CAREER.career.division, ccDivCeil(CAREER.career.division))}</div>` : '')+
     pool.slice(0,6).map(w=>`<button class="dm-item dm-new" onclick="careerDmWrite('${esc(w.handle)}')">
@@ -51428,7 +51458,7 @@ function careerSocialHTML(){
   const suggest=pool.slice(0,4).map(w=>
     `<div class="x-sug">${avatar(w,32)}
       <span class="x-sug-in"><b>${esc(w.handle)}</b><span>${L()[w.role]||''} · ${w.ovr}</span></span>
-      <button class="x-follow" onclick="careerDmWrite('${esc(w.handle)}')">${L().dmAskBtn}</button>
+      <button class="x-follow" onclick="careerDmWrite('${esc(w.handle)}')">${ccSay('dmAskBtn')}</button>
     </div>`).join('');
 
   // A profile is an account, not a stat sheet: who you are, how many people read
@@ -51492,7 +51522,7 @@ function careerSocialHTML(){
     </main>
     <aside class="x-side">
       <div class="ch-tile">
-        <h4>${L().dmLooking}</h4>
+        <h4>${ccSay('dmLooking')}</h4>
         ${suggest || `<div class="ch-empty">${L().dmEmpty}</div>`}
       </div>
     </aside>
@@ -51781,7 +51811,7 @@ function careerDayPanelHTML(locked){
            on the panel rather than three tabs away, so the answer to "you cannot
            enter this" is in the same place as the sentence. */
         (careerMatesShort() ? '<button class="ch-sign cc-day-find" '+
-          'onclick="ccDuoFindOpen()">'+esc(L().ccFindDuo)+'</button>' : '') : '')+
+          'onclick="ccDuoFindOpen()">'+esc(ccSay('ccFindDuo'))+'</button>' : '') : '')+
       (closed ? '<div class="cc-day-locked">'+
                   esc(closedName ? L().ccDayOver(closedName) : L().ccDayOverAny)+
                 '</div>' : '')+
@@ -53324,7 +53354,16 @@ function ccMyPeople(){
    and store it — so a message written in a trio season keeps its trio wording
    for ever, which is right: it was said then. */
 function ccSquadKey(key){
-  return (careerSquadSize()>2 && L()[key+'t']) ? key+'t' : key;
+  if(careerSquadSize()<=2) return key;
+  if(L()[key+'t']) return key+'t';
+  /* A voice variant falls back to the trio line the whole scene shares.
+
+     Four people say "I have no partner" four different ways — dmNoPartner1 to 4,
+     see ccVoiceOf — and writing a trio version of each of them would be sixteen
+     lines to say one thing. Where a variant has no trio wording of its own the
+     plain trio line is used, which is a voice lost and a season kept. */
+  const base=String(key).replace(/[1-4]$/, '');
+  return (base!==key && L()[base+'t']) ? base+'t' : key;
 }
 // The same, resolved for a screen rather than for a stored line.
 function ccSay(key){
@@ -54025,11 +54064,33 @@ function careerWorldDuos(season){
   const mine=ccMyPeople();
   const pool=careerRealDuos(mine, rnd, 1).slice(0, 40);
   if(pool.length<2) return;
+  /* And the scene announces the squad the season is played in.
+
+     Two pairs said "playing with @X" all through a trio year, which is the whole
+     scene contradicting the mode it is standing in. His report, 20 August. The
+     third name comes off the back of the same queue the lobbies take theirs
+     from — see careerCupField — and is spent, so the pair it came out of is not
+     announced as a duo on the same day. */
+  const per=careerSquadSize();
+  const used=new Set();
+  const third=()=>{
+    for(let j=2; j<pool.length; j++){
+      if(used.has(j)) continue;
+      const c=pool[j] && pool[j].cards && pool[j].cards[0];
+      if(!c) continue;
+      used.add(j);
+      return c;
+    }
+    return null;
+  };
   for(let i=1; i>=0; i--){
     const d=pool[i];
     if(!d || d.cards.length<2) continue;
+    used.add(i);
     const a=d.cards[0], b=d.cards[1];
-    careerNews('flat', 'ccNewsDuoAnnounce', [season.id, ccHandle(b.handle)], {
+    const names=[ccHandle(b.handle)];
+    if(per>2){ const c=third(); if(c) names.push(ccHandle(c.handle)); }
+    careerNews('flat', 'ccNewsDuoAnnounce', [season.id, names.join(L().ccListAnd+'@')], {
       by:{name:a.handle, ovr:a._ovr,
           card:a.region?{handle:a.handle, region:a.region}:null}
     });
@@ -56325,7 +56386,26 @@ function careerGlobalsField(you, drafted, via){
   if(drop) field.splice(field.indexOf(drop), 1);
   you.gcRoute=route;
   field.push(you);
-  return field.slice(0, ccGlobField());
+  /* And the room is full.
+
+     The three routes add up to the field on paper and not always in fact: a duo
+     is skipped where the same person is already seated under another spelling —
+     Liquipedia and Tracker write four of these people differently — and nothing
+     replaced them, so Antwerp went out at forty-nine. His report, 20 August.
+
+     What fills it is the same thing an unclaimed slot rolls down to: each
+     region's own Major 2 board, then Major 1's, taken in finishing order across
+     the regions until the plane is full. Marked 'lcq', because the Last Chance
+     is the road that decides the seats nobody has claimed. */
+  const want=ccGlobField();
+  if(field.length<want){
+    const regions=Object.keys(MAJOR2_GC_SLOTS);
+    ['m2','m1'].forEach(set=>regions.forEach(reg=>{
+      if(field.length>=want) return;
+      add(ccLanSeats(gcRegionFinals(set, reg), want-field.length, reg, seated), 'lcq');
+    }));
+  }
+  return field.slice(0, want);
 }
 // Antwerp's purse. GC2026_PRIZES rather than prizeTableFor('GC2026'), which
 // branches on CARD_SET — a global the career does not set.
@@ -57666,7 +57746,9 @@ const CC_EVENTS_KEEP=150;
 function careerEvent(kind, args){
   const cr=CAREER.career;
   cr.events=cr.events||[];
-  cr.events.push({day:careerToday(), season:cr.season, k:kind, a:args||[]});
+  // The timeline is written in the words of the season it happened in, the way
+  // the feed and the inbox are. See ccSquadKey.
+  cr.events.push({day:careerToday(), season:cr.season, k:ccSquadKey(kind), a:args||[]});
   if(cr.events.length>CC_EVENTS_KEEP) cr.events.splice(0, cr.events.length-CC_EVENTS_KEEP);
 }
 // Which finals are worth a line of their own when they go well.
