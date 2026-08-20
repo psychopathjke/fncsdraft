@@ -45511,7 +45511,9 @@ function careerRivalMake(){
   if(have) return have;
   const rnd=careerRng(careerSeed(cr, 'rival|'+cr.division));
   const mine=new Set([hKey(me)]);
-  const mate=careerPartnerCard(); if(mate) mine.add(hKey(mate));
+  // The whole squad, not the first seat. A trio's second partner was not in
+  // this set, so he could be drawn as the rival the player was chasing.
+  careerMates().forEach(function(m){ if(m) mine.add(hKey(m)); });
   // Close enough that the week is in doubt: within three points, either way.
   const band=clamp(Math.round(CAREER.player.ovr+(rnd()*6-3)), 35, 99);
   const copy=p=>({handle:p.handle, region:p.region, nat:p.nat,
@@ -45536,10 +45538,25 @@ function careerRivalMake(){
      rivalry would seat a generated player in the one room that is entirely real
      - the division sweep caught exactly that, an invented 80 sitting in a
      Division 1 cup because the rival needed a partner. */
-  let mateCard=realMate;
-  if(!mateCard) mateCard=careerLadderPlayer(rnd, Math.min(band, ccDivCeil(cr.division)),
-                                            new Set([...mine, hKey(card)]));
-  cr.rival={season:cr.season, div:cr.division, card:card, mate:mateCard,
+  /* And the rival is a team the size the season plays.
+
+     He was a pair, always, so a trios year seated him as two men in a lobby of
+     threes — the one team in the room that could not have been real. The rest
+     of the seats are drawn the way the first one is, off the same ladder and
+     out of the same used set, so nobody appears twice.
+
+     `mate` stays for the saves and the readers that mean "his partner"; `mates`
+     is the whole of him. His report, 20 August. */
+  const used=new Set([...mine, hKey(card)]);
+  const mates=[];
+  if(realMate){ mates.push(realMate); used.add(hKey(realMate)); }
+  while(mates.length<careerMateSeats()){
+    const p=careerLadderPlayer(rnd, Math.min(band, ccDivCeil(cr.division)), used);
+    if(!p) break;
+    used.add(hKey(p));
+    mates.push(p);
+  }
+  cr.rival={season:cr.season, div:cr.division, card:card, mate:mates[0]||null, mates:mates,
             ovr:attrsFor(card).ovr, w:0, l:0, met:0};
   careerSave();
   return cr.rival;
@@ -45584,7 +45601,11 @@ function careerCupField(cr, mine, size, salt, open){
      region and are not the season being raced, so they are left alone. */
   const rv=!open ? careerRival() : null;
   if(rv && !rv.card._gone){
-    const pair=[rv.card, rv.mate];
+    // His whole team, which in a trios season is three of them. A save written
+    // before the rival had a squad still has the one partner. See careerRival.
+    const pair=[rv.card].concat(
+      (rv.mates && rv.mates.length) ? rv.mates : (rv.mate ? [rv.mate] : [])
+    ).filter(Boolean);
     if(!pair.some(c=>taken.has(hKey(c)))){
       pair.forEach(c=>taken.add(hKey(c)));
       const t=careerTeam(pair);
@@ -45799,21 +45820,38 @@ function careerMateSeat(rec, seat){
   return true;
 }
 function careerMateDev(){ return (careerMateRec() || {}).dev || 0; }
+/* Everybody in the squad has the week, so everybody in the squad grows from it.
+
+   This read careerMateRec and careerPartnerCard — both of which mean seat one —
+   so in a trios season the second seat never moved: a career could play a whole
+   year beside somebody and leave them exactly where they were found, while the
+   first seat climbed. The note under ccMateLift already promised a trio's two
+   seats would not share one development number; the lift kept that promise and
+   the growth never gave it anything to lift. His report, 20 August.
+
+   The sum comes back rather than one seat's delta, because the only caller
+   ignores it and a total is the honest answer to "how much did the squad
+   improve". */
 function careerMateGrow(actual, expected){
-  const pr=careerMateRec();
-  if(!pr) return 0;
-  const card=careerPartnerCard();
-  if(!card) return 0;
-  const now=(card._ovr!=null ? card._ovr : (attrsFor(card)||{}).ovr);
-  if(!(now>0)) return 0;
-  const taper=clamp((CAREER_SCALE_TOP-now)/CAREER_TAPER, 0, 1);
-  const base=careerDevelopNow(ccAgeOf(pr.handle) || ccSceneAge());
-  // The gap read from their side of the seat.
-  const gap=(CAREER.player.ovrExact!=null?CAREER.player.ovrExact:CAREER.player.ovr)-now;
-  const pull=clamp(1+(gap>0 ? gap*CC_MATE_UP : gap*CC_MATE_DOWN), CC_MATE_MIN, CC_MATE_MAX);
-  const delta=base*(base>0?taper:1)*pull + (actual-expected)*careerGrowthMax();
-  pr.dev=clamp(careerMateDev()+delta, -40, 40);
-  return delta;
+  const recs=careerMateRecords();
+  if(!recs.length) return 0;
+  const mine=(CAREER.player.ovrExact!=null?CAREER.player.ovrExact:CAREER.player.ovr);
+  let total=0;
+  recs.forEach(function(pr){
+    const card=ccMateCardOf(pr);
+    if(!card) return;
+    const now=(card._ovr!=null ? card._ovr : (attrsFor(card)||{}).ovr);
+    if(!(now>0)) return;
+    const taper=clamp((CAREER_SCALE_TOP-now)/CAREER_TAPER, 0, 1);
+    const base=careerDevelopNow(ccAgeOf(pr.handle) || ccSceneAge());
+    // The gap read from their side of the seat.
+    const gap=mine-now;
+    const pull=clamp(1+(gap>0 ? gap*CC_MATE_UP : gap*CC_MATE_DOWN), CC_MATE_MIN, CC_MATE_MAX);
+    const delta=base*(base>0?taper:1)*pull + (actual-expected)*careerGrowthMax();
+    pr.dev=clamp((pr.dev||0)+delta, -40, 40);
+    total+=delta;
+  });
+  return total;
 }
 // What this career has done to them since they took the seat, applied to a
 // copy: the roster's card is the roster's, and attrsFor lifts the six numbers
@@ -48747,7 +48785,9 @@ function careerDmPool(){
   // conversations are filtered out where the list is drawn, so that removing
   // somebody cannot change who the other five are.
   const mine=new Set([hKey(me)]);
-  const mate=careerPartnerCard(); if(mate) mine.add(hKey(mate));
+  // The whole squad, not the first seat. A trio's second partner was not in
+  // this set, so he could be drawn as the rival the player was chasing.
+  careerMates().forEach(function(m){ if(m) mine.add(hKey(m)); });
   /* Below Division 1 this is the ladder, not the roster.
 
      It was the roster at every rung for a while, matched on rating, and the
@@ -53981,8 +54021,8 @@ const CC_VICTORY_R1_GAMES=6, CC_VICTORY_R1_KILL=2, CC_VICTORY_R2_GAMES=3;
 // seats forty players however the tournament pairs them up — so a Reload solo
 // cup is forty in the lobby and a Battle Royale solo cup is a hundred.
 function ccVictoryLobby(ev, solo){
-  if(/Reload/.test(String((ev&&ev.id)||''))) return ccReloadLobby(solo?1:2);
-  return solo ? 100 : 50;
+  if(/Reload/.test(String((ev&&ev.id)||''))) return ccReloadLobby(solo?1:careerSquadSize());
+  return solo ? 100 : ccTeams(50);
 }
 /* How many reach Round 2: four thousand, which is Epic's own number rather than
    a share of it — the same call the divisional quotas got. Tracker's leaderboard
@@ -54130,7 +54170,7 @@ async function runCareerEval(){
   // Round 1: the ordinary ladder, a kill worth one.
   // No drop here either: see the note in the divisional cup.
   await simulateGamesLive(field, CC_EVAL_R1_GAMES, pointsForPlace, CC_EVAL_R1_KILL, 'stage', 0, null, null,
-    {lobbySize:50, stageName:L().ccEvalR1Live, mapReplay:true, stopOnYourDeath:true});
+    {lobbySize:ccTeams(50), stageName:L().ccEvalR1Live, mapReplay:true, stopOnYourDeath:true});
   const ranked1=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place1=ranked1.indexOf(you)+1;
   const through=place1<=CC_EVAL_CUT;
@@ -54274,7 +54314,7 @@ async function runCareerGclc(){
 
   const zones = ev.final ? await careerLandingPick(field, you, ev.label) : null;
   await simulateGamesLive(field, st.games, majorPoints, st.kill, 'stage', 0, null, zones,
-    {lobbySize:50, stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
+    {lobbySize:ccTeams(50), stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
   const through = ev.final ? false : place<=st.cut;
@@ -54422,7 +54462,7 @@ async function runCareerReloadChampionship(){
 
   const zones = ev.stage==='final' ? await careerLandingPick(field, you, ev.label) : null;
   await simulateGamesLive(field, st.games, rcPoints, CC_RC_KILL, 'stage', 0, null, zones,
-    {lobbySize:20, stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
+    {lobbySize:ccTeams(20), stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
   removeSkipButton();
 
   let place, ranked, champ=false, games=st.games;
@@ -54813,7 +54853,7 @@ async function runCareerSummit(){
 
   const zones = ev.stage==='final' ? await careerLandingPick(field, you, ev.label) : null;
   await simulateGamesLive(field, st.games, st.pts, st.kill, 'stage', 0, null, zones,
-    {lobbySize:50, stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
+    {lobbySize:ccTeams(50), stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
   let through = st.cut ? place<=st.cut : false;
@@ -55061,7 +55101,7 @@ async function runCareerGlobals(){
   const zones=await careerLandingPick(field, you, ev.label);
   await simulateGamesLive(field, CC_GLOB_GAMES, majorPoints, CC_GLOB_KILL,
     'stage', 0, null, zones,
-    {lobbySize:50, stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
+    {lobbySize:ccTeams(50), stageName:ev.label, mapReplay:true, stopOnYourDeath:true});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
   removeSkipButton();
@@ -55176,7 +55216,7 @@ async function runCareerMajor(){
      it is what makes a win a ticket rather than something grindable. Taking it
      twice is. */
   await simulateGamesLive(field, st.games, st.pts, st.kill, 'stage', 0, null, zones,
-    {lobbySize:50, stageName:ev.label, mapReplay:true, stopOnYourDeath:true,
+    {lobbySize:ccTeams(50), stageName:ev.label, mapReplay:true, stopOnYourDeath:true,
      stopOnWin: ev.stage==='heats'});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
@@ -55203,7 +55243,7 @@ async function runCareerMajor(){
     ensureSkipButton();
     await simulateGamesLive(lobby, CC_MAJOR_LC_LOBBY_GAMES, victoryR2Points, 0,
       'stage', 0, null, null,
-      {lobbySize:50, stageName:L().ccMajLobby, mapReplay:true, stopOnYourDeath:true});
+      {lobbySize:ccTeams(50), stageName:L().ccMajLobby, mapReplay:true, stopOnYourDeath:true});
     removeSkipButton();
     const lr=lobby.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0));
     lobbyPlace=lr.indexOf(you)+1;
@@ -55339,7 +55379,7 @@ async function runCareerWeeklyFinal(){
 
   const zones=await careerLandingPick(field, you, L().calWeeklyFinal);
   await simulateGamesLive(field, CC_WF_GAMES, wfPoints, CC_WF_KILL, 'stage', 0, null, zones,
-    {lobbySize:50, stageName:L().calWeeklyFinal, mapReplay:true, stopOnYourDeath:true});
+    {lobbySize:ccTeams(50), stageName:L().calWeeklyFinal, mapReplay:true, stopOnYourDeath:true});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
   const cash=wfPrize(place);
@@ -55464,7 +55504,7 @@ async function runCareerReload(){
   const banking=careerReloadBanking(ev), carry=careerReloadCarry(ev);
   await simulateGamesLive(field, st.games, reloadCareerPoints(ev.set), st.kill,
     'stage', 0, null, zones,
-    {lobbySize:Math.min(st.field, ccReloadLobby(2)), stageName:ev.label,
+    {lobbySize:Math.min(st.field, ccReloadLobby(careerSquadSize())), stageName:ev.label,
      mapReplay:true, stopOnYourDeath:true,
      carry:carry, cutAt: banking ? 0 : st.cut});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
@@ -55782,7 +55822,7 @@ async function runCareerCup(){
      stage the mode stops and asks about, and a cup is eleven games nobody wants
      to be asked about eleven times. Passing no zones is what keeps it that way. */
   await simulateGamesLive(field, CAREER_CUP_GAMES, pointsForPlace, 4, 'stage', 0, null, null,
-    {lobbySize:50, stageName:L().ccCupLive, mapReplay:true, stopOnYourDeath:true,
+    {lobbySize:ccTeams(50), stageName:L().ccCupLive, mapReplay:true, stopOnYourDeath:true,
      carry:carry, cutAt: careerBanking() ? 0 : cut});
   removeSkipButton();
 
