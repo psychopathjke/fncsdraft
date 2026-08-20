@@ -1277,6 +1277,28 @@
   // and the arrows stepped, which is what "лагает, фпс мало" was.
   var MIN_DRAW_MS = 28;
 
+  /* And the other half of that, which only a phone feels.
+
+     Drawing on every refresh is right on a machine where a redraw is 1ms of a
+     16ms budget. A phone draws the same map with a tenth of the power, so the
+     same "one picture per refresh" rule spends most of the frame on the map and
+     the rest of the page — the table beside it, the scroll under it — starts to
+     stutter. His report, 20 August: it lags on the phone.
+
+     So on a small screen the map is held to about thirty pictures a second. The
+     recording is unchanged, the interpolation is unchanged, and every refresh
+     the map skips is a refresh the browser spends on everything else. Read once:
+     a session does not change screens halfway through. */
+  var FRAME_FLOOR = (function(){
+    try{
+      return (typeof matchMedia === 'function' && matchMedia('(max-width: 820px)').matches) ? 32 : 0;
+    }catch(e){ return 0; }
+  })();
+  var lastDrawAt = 0;
+  function drawClock(){
+    return (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+  }
+
   // Next step of the replay, on the display's own schedule.
   //
   // requestAnimationFrame is what puts a picture on a refresh rather than
@@ -1297,13 +1319,30 @@
   // left is exactly the cadence this had before, instead of a crawl.
   function nextStep(fn){
     var done = false;
+    var timer = null;
     function go(){
       if(done) return;
+      /* On a small screen, hand back the refreshes that arrive too soon after
+         the last picture — see FRAME_FLOOR.
+
+         Both ways home are re-armed when that happens, not just the refresh: a
+         hidden tab and some headless browsers never send another rAF, and
+         returning on the strength of one would leave the promise unresolved and
+         a tournament waiting on it for ever. */
+      var now = drawClock();
+      var wait = FRAME_FLOOR - (now - lastDrawAt);
+      if(FRAME_FLOOR && wait > 0){
+        clearTimeout(timer);
+        timer = setTimeout(go, Math.max(2, wait));
+        if(typeof requestAnimationFrame === 'function') requestAnimationFrame(go);
+        return;
+      }
       done = true;
+      lastDrawAt = now;
       clearTimeout(timer);
       fn();
     }
-    var timer = setTimeout(go, MIN_DRAW_MS);
+    timer = setTimeout(go, MIN_DRAW_MS);
     if(typeof requestAnimationFrame === 'function') requestAnimationFrame(go);
   }
 

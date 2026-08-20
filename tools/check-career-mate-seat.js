@@ -140,7 +140,9 @@ const BOOT = `
     seed(3, [['Keeper', 90], ['Weakest', 60]]);
     const inc5 = stranger().handle;
     askFromSeat(0, inc5);
-    const dropped = (CAREER.career.news||[]).filter(n => n.k === 'ccNewsDropped');
+    // The wording follows the season now — see ccSquadKey — so the post is
+    // ccNewsDropped in a duo year and ccNewsDroppedt in a trio one.
+    const dropped = (CAREER.career.news||[]).filter(n => /^ccNewsDroppedt?$/.test(n.k));
     if (!dropped.length) fail('nobody was said to have left');
     const named = dropped[dropped.length-1].a[0];
     if (named !== 'Keeper')

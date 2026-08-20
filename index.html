@@ -1857,6 +1857,10 @@
   .cc-hon{padding:8px 0;border-bottom:1px solid rgba(29,41,66,.7);font-size:12.5px;
     font-weight:700;color:#c6d5f0;}
   .cc-hon:last-of-type{border-bottom:0;}
+  /* The second heading inside the last screen's honours tile: the nights
+     themselves, under the best-of lines. See careerBigRuns. */
+  .cc-board-h{margin-top:14px;}
+  .cc-board .ch-row em{max-width:62%;}
   .cc-over-act{margin-top:14px;}
   .ch-retire{margin-left:8px;background:transparent;border:1px solid #2b3a5c;
     color:#8ea6d6;}
@@ -2653,6 +2657,41 @@
     font-weight:900;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
     padding:8px 15px;border-radius:3px;cursor:pointer;}
   .ch-end:hover{background:#e0396a;color:#fff;}
+
+  /* ---- What a phone does not have to paint ---------------------------------
+
+     His report, 20 August: it lags on the phone. Nothing here changes what the
+     mode does or what it looks like from a metre away — it drops the three
+     kinds of work a phone GPU is worst at and a desktop never notices.
+
+     A blurred layer is the expensive one. .fut-card::after is a 38px blur on
+     every card on screen, and a lobby, the gallery and the draft board put
+     dozens up at once: each one is a separate composited layer that is
+     re-blurred on every scroll frame. The sheen it draws is a soft white glow,
+     so the same shape without the blur radius reads almost identically and
+     costs nothing. backdrop-filter is worse again — it re-samples whatever is
+     behind it every frame — and the three chips that use it sit over a flat
+     panel anyway.
+
+     Then the long scrolling lists: content-visibility lets the browser skip
+     layout and paint for the rows that are off screen, which is most of them in
+     a 60-row standings table or a feed. The intrinsic sizes are there so the
+     scrollbar does not jump as they come into view.
+
+     Under prefers-reduced-motion the same rules apply on any width — a machine
+     asking for less movement is usually asking for less work. */
+  @media (max-width:820px), (prefers-reduced-motion:reduce){
+    .fut-card::after{filter:none;opacity:.14;}
+    .prize-glow{filter:none;opacity:.22;}
+    .skip-btn-prominent, .sim-progress, .ch-ffbtn, .qual-overlay{backdrop-filter:none;}
+  }
+  @media (max-width:820px){
+    .lobby-wrap{content-visibility:auto;contain-intrinsic-size:520px;}
+    .ch-newsgrid{content-visibility:auto;contain-intrinsic-size:600px;}
+    .ct tbody{content-visibility:auto;contain-intrinsic-size:900px;}
+    /* A card is a card, not a stack of shadows, at this size. */
+    .fut-card{box-shadow:none;}
+  }
   </style>
 <script src="zone-sim.js"></script>
 <script src="zone-replay.js"></script>
@@ -3982,6 +4021,18 @@ ccSumParis:p=>'Париж: '+ccTop(p),
 ccSumSeats:n=>'Мест на Reload Championship: '+n,
 ccSumOrgs:list=>'Клубы: '+list,
 ccSumNone:'Ни одного финала за карьеру',
+ccSumSummit:(p,n)=>'Лучший саммит: '+ccTop(p)+' (сыграно: '+n+')',
+ccSumGlobals:(p,n)=>'Лучшие глобалы: '+ccTop(p)+' (сыграно: '+n+')',
+ccSumGclc:p=>'Финал GC Last Chance: '+ccTop(p),
+ccBoardTitle:'Гранды и ланы',
+ccBoardPlace:(p,of)=>ccTopC(p)+' из '+of,
+ccBoardSeason:s=>'Сезон '+s,
+ccBoardNone:'Ни одного гранда и ни одного лана',
+ccRunMajor:'Гранд-финал мейджора',
+ccRunSummit:city=>'Саммит · '+city,
+ccRunGlobals:city=>'Глобалы · '+city,
+ccRunRc:city=>'Reload Championship · '+city,
+ccRunGclc:'GC Last Chance · финал',
 ccNewCareer:'Новая карьера',
 ccNewCareerAsk:'Начать новую карьеру? Эта будет стёрта.',
 ccNewsRetired:(age,season)=>'Завершение карьеры в '+age+', после '+season+' сезонов',
@@ -4487,6 +4538,25 @@ ccIvSaidblame1:(m,p)=>'Разбор нужен не мне'+(m?', @'+m:''),
 ccIvSaidblame2:(m,p)=>'Тащил один. '+ccTop(p),
 ccIvSaidblame3:(m,p)=>'С другим напарником было бы выше',
 ccIvSaidblame4:(m,p)=>'Свою часть я отработал'+(m?', @'+m:''),
+// Трио: те же три ответа, но про сквад из трёх, а не про дуо. Имена приходят
+// уже готовыми — см. ccMateNames.
+ccListAnd:' и ',
+ccIvAduowint1:m=>'Это заслуга сквада'+(m?' — '+m:''),
+ccIvAduopodiumt1:m=>'Отработали втроём'+(m?', '+m+' тащили':''),
+ccIvAduopasst1:m=>'Прошли за счёт сквада'+(m?' с '+m:''),
+ccIvAduomisst1:m=>'Ошибки общие, разберём втроём',
+ccIvAblamewint1:m=>'Выиграл вопреки'+(m?', '+m+' знают':''),
+ccIvAblamepodiumt1:m=>'Могли выше, если бы не ошибки парней',
+ccIvAblamepasst1:m=>'Тащил один'+(m?', '+m+' были пассажирами':''),
+ccIvAblamemisst1:m=>'Меня тащили вниз'+(m?', '+m+' знают':''),
+ccIvSaidduot1:(m,p)=>'Весь сквад. Играем дальше'+(m?' с '+m:''),
+ccIvSaidduot2:(m,p)=>'Втроём вывезли'+(m?'. '+m+' 🔥':''),
+ccIvSaidduot3:(m,p)=>'Сквад решает'+(m?'. '+m:''),
+ccIvSaidduot4:(m,p)=>'Хорошая работа втроём'+(m?' с '+m:''),
+ccIvSaidblamet1:(m,p)=>'Разбор нужен не мне'+(m?', '+m:''),
+ccIvSaidblamet2:(m,p)=>'Тащил один. '+ccTop(p),
+ccIvSaidblamet3:(m,p)=>'С другим сквадом было бы выше',
+ccIvSaidblamet4:(m,p)=>'Свою часть я отработал'+(m?', '+m:''),
 ccAskMore:'Просить больше', ccAskPerk:'Просить железо',
 ccAskOdds:p=>'Шанс, что согласятся: '+p+'%',
 ccAskedAlready:'Ты уже торговался по этому контракту',
@@ -4626,6 +4696,21 @@ dmProps4:(p,t)=>'вы сейчас в прайме, реально',
 dmPoach:(o,p)=>'Видел ваш '+ccTop(p)+'. Я '+o+' овера, свободен — если надумаешь что-то менять, пиши.',
 dmReachUp:(o,p)=>'Смотрел твой '+ccTop(p)+'. Я '+o+' овера — обычно я бы не писал, но ты играешь выше своего рейтинга. Попробуем вместе?',
 dmPromoted:(d,o)=>'Поздравляю с Дивизионом '+d+'. Я '+o+', ищу дуо на этот сезон.',
+/* Год в трио, теми же голосами. Строка берётся по ключу с «t» на конце —
+   см. ccSquadKey — и пишется только там, где дуо стоит в самих словах. */
+dmAskt:'Здарова. Ищу тиму, го трио?',
+dmNoDuot:m=>'Спасибо, но у меня состав с '+m+' — мы продолжаем.',
+dmNoPartnert:o=>'Слышал, у тебя место в скваде свободно. Я '+o+', тоже свободен. Скинемся?',
+dmPromotedt:(d,o)=>'Поздравляю с Дивизионом '+d+'. Я '+o+', ищу трио на этот сезон.',
+dmMateLeaving3t:'Меня зовут в другой сквад. Дай причину остаться',
+dmHateMate4t:m=>'Треть сквада работает. Не твоя',
+ccLfdTitlet:'Ищу трио',
+ccNewsLfdt:(d,o)=>'Ищу трио. Дивизион '+d+', '+o+' овера — пишите 🤝',
+ccNewsDroppedt:n=>'Больше не играю с @'+n+'. Ищу состав',
+ccNewsMateLeftFort:m=>'@'+m+' ушёл в другой сквад',
+ccDuoFreet:'без сквада',
+ccDuoWitht:n=>'в скваде с '+n,
+ccRivalHintt:'Один сквад, который сидит в каждом твоём кубке весь сезон',
 ccMood:'Настрой',
 ccMoodEdge:'на грани',
 ccMoodUnhappy:'недоволен',
@@ -5366,6 +5451,18 @@ ccSumParis:p=>'Paris: '+ccTop(p),
 ccSumSeats:n=>'Seats at the Reload Championship: '+n,
 ccSumOrgs:list=>'Clubs: '+list,
 ccSumNone:'No final was ever reached',
+ccSumSummit:(p,n)=>'Best Summit: '+ccTop(p)+' (played: '+n+')',
+ccSumGlobals:(p,n)=>'Best Global Championship: '+ccTop(p)+' (played: '+n+')',
+ccSumGclc:p=>'Global Championship Last Chance final: '+ccTop(p),
+ccBoardTitle:'Grand Finals and LANs',
+ccBoardPlace:(p,of)=>ccTopC(p)+' of '+of,
+ccBoardSeason:s=>'Season '+s,
+ccBoardNone:'No Grand Final and no LAN',
+ccRunMajor:'Major Grand Finals',
+ccRunSummit:city=>'Summit · '+city,
+ccRunGlobals:city=>'Global Championship · '+city,
+ccRunRc:city=>'Reload Championship · '+city,
+ccRunGclc:'GC Last Chance · final',
 ccNewCareer:'New career',
 ccNewCareerAsk:'Start a new career? This one is erased.',
 ccNewsRetired:(age,season)=>'Retired at '+age+', after '+season+' seasons',
@@ -5872,6 +5969,25 @@ ccIvSaidblame1:(m,p)=>'I am not the one who needs the VOD'+(m?', @'+m:''),
 ccIvSaidblame2:(m,p)=>'Carried that one. '+ccTop(p),
 ccIvSaidblame3:(m,p)=>'With a different partner that is higher',
 ccIvSaidblame4:(m,p)=>'I did my half'+(m?', @'+m:''),
+// The trio season, where the same three answers are about three people. The
+// names arrive written out — see ccMateNames.
+ccListAnd:' and ',
+ccIvAduowint1:m=>'That one is on the squad'+(m?' — '+m:''),
+ccIvAduopodiumt1:m=>'All three of us worked for that'+(m?', '+m+' carried':''),
+ccIvAduopasst1:m=>'We got through as a squad'+(m?' with '+m:''),
+ccIvAduomisst1:m=>'The mistakes are shared, all three of us will watch it back',
+ccIvAblamewint1:m=>'I won that in spite of it'+(m?', '+m+' know':''),
+ccIvAblamepodiumt1:m=>'We would be higher without the mistakes around me',
+ccIvAblamepasst1:m=>'I carried that'+(m?', '+m+' were passengers':''),
+ccIvAblamemisst1:m=>'I was being dragged down'+(m?', '+m+' know it':''),
+ccIvSaidduot1:(m,p)=>'All squad. On to the next one'+(m?' with '+m:''),
+ccIvSaidduot2:(m,p)=>'The three of us dragged that one out'+(m?'. '+m+' 🔥':''),
+ccIvSaidduot3:(m,p)=>'The squad is the whole thing'+(m?'. '+m:''),
+ccIvSaidduot4:(m,p)=>'Good work out there'+(m?' with '+m:''),
+ccIvSaidblamet1:(m,p)=>'I am not the one who needs the VOD'+(m?', '+m:''),
+ccIvSaidblamet2:(m,p)=>'Carried that one. '+ccTop(p),
+ccIvSaidblamet3:(m,p)=>'With a different squad that is higher',
+ccIvSaidblamet4:(m,p)=>'I did my third'+(m?', '+m:''),
 ccAskMore:'Ask for more', ccAskPerk:'Ask for the gear',
 ccAskOdds:p=>'Odds they say yes: '+p+'%',
 ccAskedAlready:'You have already been back to them on this one',
@@ -6009,6 +6125,21 @@ dmProps4:(p,t)=>'you two are in your prime right now',
 dmPoach:(o,p)=>'Saw your '+ccTop(p)+'. I am '+o+' OVR and free — if you ever change things up, write me.',
 dmReachUp:(o,p)=>'Watched your '+ccTop(p)+'. I am '+o+' OVR — normally I would not be writing, but you are playing above your rating. Want to run it together?',
 dmPromoted:(d,o)=>'Congrats on Division '+d+'. I am '+o+', looking for a duo this season.',
+// The trio year, in the same voices. Keyed with a `t` — see ccSquadKey — and
+// written only where the duo is in the words themselves.
+dmAskt:'Hey. Looking for a third — you in?',
+dmNoDuot:m=>'Thanks, but I am in a squad with '+m+' — we are running it back.',
+dmNoPartnert:o=>'Heard you have a seat open. I am '+o+' and free. Want to run it?',
+dmPromotedt:(d,o)=>'Congrats on Division '+d+'. I am '+o+', looking for a trio this season.',
+dmMateLeaving3t:'Another squad wants me. Give me a reason to stay',
+dmHateMate4t:m=>'A third of that squad works. Not your third',
+ccLfdTitlet:'Looking for a trio',
+ccNewsLfdt:(d,o)=>'LFT. Division '+d+', '+o+' OVR — my DMs are open 🤝',
+ccNewsDroppedt:n=>'Not playing with @'+n+' any more. Looking for a squad',
+ccNewsMateLeftFort:m=>'@'+m+' has left for another squad',
+ccDuoFreet:'no squad',
+ccDuoWitht:n=>'squad with '+n,
+ccRivalHintt:'One squad, in every cup you play, all season',
 ccMood:'Mood',
 ccMoodEdge:'on the edge',
 ccMoodUnhappy:'unhappy',
@@ -6848,6 +6979,25 @@ ccIvSaidblame1:(m,p)=>'Ce n’est pas moi qui ai besoin du VOD'+(m?', @'+m:''),
 ccIvSaidblame2:(m,p)=>'J’ai porté celle-là. '+ccTop(p),
 ccIvSaidblame3:(m,p)=>'Avec un autre partenaire, c’est plus haut',
 ccIvSaidblame4:(m,p)=>'J’ai fait ma moitié'+(m?', @'+m:''),
+// La saison en trios : les mêmes réponses, mais à trois. Les noms arrivent
+// déjà écrits — voir ccMateNames.
+ccListAnd:' et ',
+ccIvAduowint1:m=>'C’est l’équipe'+(m?' — '+m:''),
+ccIvAduopodiumt1:m=>'On a bossé à trois pour ça'+(m?', '+m+' ont porté':''),
+ccIvAduopasst1:m=>'On est passés en équipe'+(m?' avec '+m:''),
+ccIvAduomisst1:m=>'Les erreurs sont partagées, on va revoir ça à trois',
+ccIvAblamewint1:m=>'J’ai gagné ça malgré tout'+(m?', '+m+' le savent':''),
+ccIvAblamepodiumt1:m=>'On serait plus haut sans les erreurs autour de moi',
+ccIvAblamepasst1:m=>'C’est moi qui ai porté'+(m?', '+m+' étaient passagers':''),
+ccIvAblamemisst1:m=>'On me tirait vers le bas'+(m?', '+m+' le savent':''),
+ccIvSaidduot1:(m,p)=>'Toute l’équipe. On passe à la suite'+(m?' avec '+m:''),
+ccIvSaidduot2:(m,p)=>'On a sorti ça à trois'+(m?'. '+m+' 🔥':''),
+ccIvSaidduot3:(m,p)=>'L’équipe, c’est tout'+(m?'. '+m:''),
+ccIvSaidduot4:(m,p)=>'Du bon boulot à trois'+(m?' avec '+m:''),
+ccIvSaidblamet1:(m,p)=>'Ce n’est pas moi qui ai besoin du VOD'+(m?', '+m:''),
+ccIvSaidblamet2:(m,p)=>'J’ai porté celle-là. '+ccTop(p),
+ccIvSaidblamet3:(m,p)=>'Avec une autre équipe, c’est plus haut',
+ccIvSaidblamet4:(m,p)=>'J’ai fait mon tiers'+(m?', '+m:''),
 ccAskOdds:p=>'Chances qu’ils disent oui : '+p+' %',
 ccNewsOfferGone:n=>'L’offre de '+n+' n’est plus sur la table',
 ccNewsAward:(n,m)=>'Joueur du mois ('+m+') — '+n,
@@ -7201,6 +7351,18 @@ ccSumTopDiv:'Division la plus haute',
 ccSumWins:'Parties gagnées',
 ccSumHonours:'Ce qui s’est passé',
 ccSumNone:'Aucune finale atteinte',
+ccSumSummit:(p,n)=>'Meilleur Summit : '+ccTop(p)+' (jouées : '+n+')',
+ccSumGlobals:(p,n)=>'Meilleur Championnat mondial : '+ccTop(p)+' (jouées : '+n+')',
+ccSumGclc:p=>'Finale du GC Last Chance : '+ccTop(p),
+ccBoardTitle:'Finales majeures et LAN',
+ccBoardPlace:(p,of)=>ccTopC(p)+' sur '+of,
+ccBoardSeason:s=>'Saison '+s,
+ccBoardNone:'Aucune finale majeure, aucun LAN',
+ccRunMajor:'Finale du Major',
+ccRunSummit:city=>'Summit · '+city,
+ccRunGlobals:city=>'Championnat mondial · '+city,
+ccRunRc:city=>'Reload Championship · '+city,
+ccRunGclc:'GC Last Chance · finale',
 ccNewCareer:'Nouvelle carrière',
 ccNewCareerAsk:'Commencer une nouvelle carrière ? Celle-ci est effacée.',
 ccNewSeason:'Nouvelle saison',
@@ -7559,6 +7721,21 @@ dmProps4:(p,t)=>'vous êtes en pleine forme tous les deux en ce moment',
 dmPoach:(o,p)=>'J’ai vu ton '+ccTop(p)+'. Je suis '+o+' d’OVR et libre — si tu changes un jour, écris-moi.',
 dmReachUp:(o,p)=>'J’ai regardé ton '+ccTop(p)+'. Je suis '+o+' d’OVR — normalement je n’écrirais pas, mais tu joues au-dessus de ta note. On tente ensemble ?',
 dmPromoted:(d,o)=>'Bravo pour la Division '+d+'. Je suis '+o+', je cherche un duo cette saison.',
+// La saison en trios, avec les mêmes voix. Clé suffixée d’un « t » — voir
+// ccSquadKey — et écrite là où le duo est dans les mots eux-mêmes.
+dmAskt:'Salut. Je cherche un troisième — ça te dit ?',
+dmNoDuot:m=>'Merci, mais je suis en équipe avec '+m+' — on continue.',
+dmNoPartnert:o=>'J’ai entendu que tu avais une place libre. Je suis '+o+' et libre. On tente ?',
+dmPromotedt:(d,o)=>'Bravo pour la Division '+d+'. Je suis '+o+', je cherche un trio cette saison.',
+dmMateLeaving3t:'Une autre équipe me veut. Donne-moi une raison de rester',
+dmHateMate4t:m=>'Un tiers de cette équipe fonctionne. Pas le tien',
+ccLfdTitlet:'Cherche un trio',
+ccNewsLfdt:(d,o)=>'LFT. Division '+d+', '+o+' d’OVR — mes DM sont ouverts 🤝',
+ccNewsDroppedt:n=>'Je ne joue plus avec @'+n+'. Je cherche une équipe',
+ccNewsMateLeftFort:m=>'@'+m+' est parti dans une autre équipe',
+ccDuoFreet:'sans équipe',
+ccDuoWitht:n=>'équipe avec '+n,
+ccRivalHintt:'Une équipe, dans chaque coupe que tu joues, toute la saison',
 dmAgentYes:'Bien. À partir d’aujourd’hui, c’est moi qui parle aux clubs.',
 dmAgentEnd:'Je prends le relais.',
 dmOrgYesPerkAgent:'Le setup est pour eux. Moi, je signerais.',
@@ -41904,10 +42081,47 @@ function ccPickCard(handle){
 }
 
 function ccPickPhoto(){ document.getElementById('ccPhotoInput').click(); }
+/* A portrait, at the size a portrait is drawn at.
+
+   It was the file, as a data URL, straight into the save. A phone camera writes
+   three to five megabytes and base64 adds a third — so one photograph is bigger
+   than everything localStorage will hold for a whole site, the write throws
+   QuotaExceededError, and from the inside the career simply stops being saved.
+   His screenshot, 20 August, on the phone: the red box over a Division 5 season
+   one, which cannot possibly have filled a quota with anything else.
+
+   The picture is never shown larger than a card, so it is stored at that size:
+   the long edge down to CC_PHOTO_MAX and re-encoded as JPEG, which is tens of
+   kilobytes rather than megabytes. Drawn on a canvas rather than resized by CSS,
+   because CSS does not change what is written down.
+
+   If anything about that fails — a format the canvas will not take, a browser
+   that taints it — the original is kept, because a portrait that is too big is
+   still better than no portrait, and careerSave now survives the quota anyway. */
+const CC_PHOTO_MAX=320, CC_PHOTO_Q=0.85;
+function ccPhotoShrink(dataUrl, then){
+  const img=new Image();
+  img.onload=function(){
+    try{
+      const w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
+      if(!(w>0 && h>0)) return then(dataUrl);
+      const k=Math.min(1, CC_PHOTO_MAX/Math.max(w, h));
+      const c=document.createElement('canvas');
+      c.width=Math.max(1, Math.round(w*k)); c.height=Math.max(1, Math.round(h*k));
+      const ctx=c.getContext('2d');
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      const out=c.toDataURL('image/jpeg', CC_PHOTO_Q);
+      then(out && out.length<dataUrl.length ? out : dataUrl);
+    }catch(e){ then(dataUrl); }
+  };
+  img.onerror=function(){ then(dataUrl); };
+  img.src=dataUrl;
+}
 function ccPhotoChosen(input){
   const f=input.files && input.files[0]; if(!f) return;
   const r=new FileReader();
-  r.onload=()=>{ CC.photo=r.result; ccRenderPhoto(); };
+  r.onload=()=>{ ccPhotoShrink(String(r.result||''), function(url){
+    CC.photo=url; ccRenderPhoto(); }); };
   r.readAsDataURL(f);
   input.value='';
 }
@@ -42129,7 +42343,10 @@ function ccSlotCard(n){
   // ccPlayerAge - it works the same answer out off the save's own two fields.
   const born=s.player.handle ? ccBornOf(s.player.handle) : null;
   const onDay=s.career.day||CC_YEAR_FROM;
-  const real=born ? ccAgeOn(born, onDay) : null;
+  // Plus the seasons that have run, which is the correction ccAgeNow makes for
+  // everybody else: the clock goes back to January every year and a birthday
+  // read against it stands still.
+  const real=born ? ccAgeOn(born, onDay)+Math.max(0, (s.career.season||1)-1) : null;
   return {nick:s.player.nick||'', ovr:s.player.ovr||0, age:real!=null?real:(s.player.age||0),
           div:s.career.division||5, season:s.career.season||1,
           day:s.career.day||CC_YEAR_FROM, earnings:s.career.earnings||0,
@@ -42149,7 +42366,10 @@ function careerLoad(){
               // A save from before the desk touched the card owns the devices
               // and not the skill they now carry. Recounted, not migrated: the
               // same recount every purchase runs. See careerGearSkill.
-              careerGearSkill(); }
+              careerGearSkill();
+              // And a save written while somebody in the squad still had an open
+              // offer standing carries it. See careerDmSquadTidy.
+              careerDmSquadTidy(); }
   // A different career is a different place to live. What the last one was
   // looking at in the flat list belongs to the last one. See CH_FLAT_PLACE.
   CH_FLAT_PLACE=null;
@@ -42161,15 +42381,46 @@ function careerLoad(){
 // a save that was never being written. It still must not throw, because failing
 // to save is not a reason to stop the tournament on screen, but it says so.
 let CC_SAVE_FAIL=null;
+/* What a career can lose without losing the career.
+
+   In order, cheapest first. The feed's attached tables are screenshots of nights
+   that have already been read; the feed itself is forty posts of which the last
+   twenty-five are history; the banked Opens evening is one evening's carry; the
+   inbox keeps its threads but not every line of them. The log is never touched —
+   it is the honours, the money, the Power Ranking and the qualification routes,
+   and a career without it is a career that did not happen.
+
+   Each step returns whether it actually freed anything, so the retry loop stops
+   the moment there is nothing left to give rather than spinning. */
+const CC_SAVE_TRIM=[
+  function(cr){ let n=0; (cr.news||[]).forEach(function(e){ if(e.tbl){ delete e.tbl; n++; } }); return n>0; },
+  function(cr){ if(!(cr.news||[]).length || cr.news.length<=15) return false;
+                cr.news.length=15; return true; },
+  function(cr){ if(!cr.rel) return false; delete cr.rel; return true; },
+  function(cr){ let n=0;
+                (CAREER.dms||[]).forEach(function(t){
+                  if((t.msgs||[]).length>4){ t.msgs=t.msgs.slice(-4); n++; } });
+                return n>0; },
+  function(cr){ if(!(cr.news||[]).length) return false; cr.news.length=0; return true; }
+];
 function careerSave(){
   if(!CAREER) return;
-  try{
-    localStorage.setItem(LS_SLOT(ccSlot()), JSON.stringify(CAREER));
-    CC_SAVE_FAIL=null;
-  }catch(e){
-    CC_SAVE_FAIL=String(e&&e.name||e);
-    if(typeof console!=='undefined') console.warn('career save failed: '+CC_SAVE_FAIL);
+  const key=LS_SLOT(ccSlot());
+  for(let step=0; step<=CC_SAVE_TRIM.length; step++){
+    try{
+      localStorage.setItem(key, JSON.stringify(CAREER));
+      CC_SAVE_FAIL=null;
+      careerSaveWarn();
+      return;
+    }catch(e){
+      CC_SAVE_FAIL=String(e&&e.name||e);
+      // Out of room rather than broken: give something up and write it again.
+      // Anything else is not a size problem and trimming will not fix it.
+      if(!/quota|exceed/i.test(CC_SAVE_FAIL) || step===CC_SAVE_TRIM.length) break;
+      if(!CC_SAVE_TRIM[step](CAREER.career)) continue;
+    }
   }
+  if(typeof console!=='undefined') console.warn('career save failed: '+CC_SAVE_FAIL);
   careerSaveWarn();
 }
 /* And it says so on the screen, not only in the console.
@@ -42247,21 +42498,24 @@ function ccNextShape(next){
   const div=cr ? cr.division : 5;
   const cup={games:CAREER_CUP_GAMES, cut:careerCupCut(div), of:careerCupSize(div)};
   const k=next && next.type;
-  const stage=(tbl, ev)=>{ const st=ev && tbl[ev.stage];
+  // In this season's teams, the way the runners read the same tables. Without
+  // it the card over a trio night promised a room of fifty and a cut of
+  // twenty-five and the night played thirty-three and seventeen.
+  const stage=(tbl, ev)=>{ const st=ev && ccScaleStage(tbl[ev.stage]);
     return st ? {games:st.games, cut:st.cut, of:st.field} : cup; };
   if(k==='reload'){
     const ev=careerReloadOn(careerToday());
-    const st=ev && CC_RELOAD_STAGE[ev.stage];
+    const st=ev && ccScaleStage(CC_RELOAD_STAGE[ev.stage]);
     if(!st) return cup;
     return ev.stage==='open'
-      ? {games:st.games, cut:ccOpenAdvance(), of:CC_LADDER_TRUE}
+      ? {games:st.games, cut:ccOpenAdvanceNow(), of:ccOpenTrue()}
       : {games:st.games, cut:st.cut, of:st.field};
   }
   if(k==='major')   return stage(CC_MAJOR_STAGE, careerMajorOn(careerToday()));
   if(k==='summit')  return stage(CC_SUMMIT_STAGE, careerSummitOn(careerToday()));
   // The Weekly Final pays its top ten, which is the line the card draws.
   if(k==='final')   return {games:CC_WF_GAMES, cut:10, of:ccTeams(CAREER_CUP_CUT)};
-  if(k==='eval')    return {games:CC_EVAL_R1_GAMES, cut:CC_EVAL_CUT, of:ccTeams(CAREER_CUP_FIELD)};
+  if(k==='eval')    return {games:CC_EVAL_R1_GAMES, cut:ccTeams(CC_EVAL_CUT), of:ccTeams(CAREER_CUP_FIELD)};
   if(k==='victory'){
     // A Victory Cup runs solo or duo depending on the day, and the two are
     // different rooms - twice the entrants and twice the cut in solo.
@@ -42283,15 +42537,15 @@ function ccNextShape(next){
        nothing read the shape until the next-up card asked it to. */
     const lc=careerGclcOn(careerToday());
     if(lc) return lc.final
-      ? {games:CC_GCLC_FINAL.games, cut:0, of:CC_GCLC_FINAL.teams}
+      ? {games:CC_GCLC_FINAL.games, cut:0, of:ccTeams(CC_GCLC_FINAL.teams)}
       : {games:(CC_GCLC_ROUND[lc.round]||{}).games,
          cut:ccTeams((CC_GCLC_ROUND[lc.round]||{}).cut), of:ccTeams(CAREER_CUP_FIELD)};
     const g=careerRcOn(careerToday());
     const st=g && g.stage;
     // Two pools of twenty is a field of forty, which is what a player is in.
-    if(st==='group')    return {games:CC_RC_GROUP.games, cut:CC_RC_GROUP.direct, of:CC_RC_GROUP.teams*2};
-    if(st==='survival') return {games:CC_RC_SURV.games,  cut:CC_RC_SURV.cut,     of:CC_RC_SURV.teams};
-    if(st==='final')    return {games:CC_RC_FINAL.games, cut:0,                  of:CC_RC_FINAL.teams};
+    if(st==='group')    return {games:CC_RC_GROUP.games, cut:ccTeams(CC_RC_GROUP.direct), of:ccTeams(CC_RC_GROUP.teams*2)};
+    if(st==='survival') return {games:CC_RC_SURV.games,  cut:ccTeams(CC_RC_SURV.cut),     of:ccTeams(CC_RC_SURV.teams)};
+    if(st==='final')    return {games:CC_RC_FINAL.games, cut:0,                           of:ccTeams(CC_RC_FINAL.teams)};
   }
   return cup;
 }
@@ -42855,7 +43109,10 @@ function careerCentreHTML(card, a){
             ${btn}${careerFfButtonsHTML()}
           </div>
         </div>`}
-      ${cr.seasonOver ? '' : careerShopPeekHTML()}
+      <!-- At the boundary the shop is shut and the year is the thing worth
+           reading: where this career finished at its Grand Finals and its LANs.
+           His report, 20 August. See careerSeasonBoardHTML. -->
+      ${cr.seasonOver ? careerSeasonBoardHTML() : careerShopPeekHTML()}
     </div>
     <div class="ch-col">
       <!-- The ladder tile stood here and is gone, his call, 18 August: division,
@@ -43261,7 +43518,7 @@ function ccMateBlockHTML(mate, rec){
   const pat = rec && rec.patience!=null ? rec.patience : CAREER_PATIENCE_START;
   return `<div class="ch-row"><em>${L().ccResPartner}</em><b>${flagFor(mate)}${esc(mate.handle)} (${attrsFor(mate).ovr})</b></div>`+
     `<div class="ch-row"><em>${L().ccRole}</em><b>${L()[attrsFor(mate).roleKey]||''}</b></div>`+
-    (()=>{ const a=ccAgeOf(mate.handle);
+    (()=>{ const a=ccAgeNow(mate.handle);
       return a ? `<div class="ch-row"><em>${L().ccAge}</em><b>${L().ccYearsOld(a)}</b></div>` : ''; })()+
     `<div class="ch-row"><em>${L().ccMood}</em><b>${L()[careerMoodKey(pat)]}</b></div>`;
 }
@@ -45790,7 +46047,7 @@ function careerRivalHTML(){
   const a=attrsFor(r.card);
   return `<div class="ch-tile">
     <h4>${L().ccRival}</h4>
-    <div class="ch-hint">${L().ccRivalHint}</div>
+    <div class="ch-hint">${ccSay("ccRivalHint")}</div>
     <div class="ch-row"><em>${L().ccResPartner}</em><b>${flagFor(r.card)}${esc(r.card.handle)} (${a.ovr})</b></div>
     <div class="ch-row"><em>${L().ccRivalH2H}</em><b class="${
       (r.w||0)>(r.l||0)?'ch-goal-met':(r.w||0)<(r.l||0)?'cc-pen bad':''}">${r.w||0} - ${r.l||0}</b></div>
@@ -45951,10 +46208,15 @@ function careerCupField(cr, mine, size, salt, open){
    the roster's card, lifted or lowered by what this career did to it. */
 let CC_SCENE_AGE=null;
 function ccSceneAge(){
-  if(CC_SCENE_AGE!=null) return CC_SCENE_AGE;
-  const ages=Object.keys(CC_BORN).map(h=>ccAgeOf(h)).filter(a=>a>0).sort((a,b)=>a-b);
-  CC_SCENE_AGE = ages.length ? ages[Math.floor(ages.length/2)] : 20;
-  return CC_SCENE_AGE;
+  // The median is a property of the roster and is measured once; the seasons on
+  // top of it are the career's and are added every time it is asked. Caching the
+  // sum would have frozen the stand-in age the way the birthdays were frozen —
+  // see ccAgeNow.
+  if(CC_SCENE_AGE==null){
+    const ages=Object.keys(CC_BORN).map(h=>ccAgeOf(h)).filter(a=>a>0).sort((a,b)=>a-b);
+    CC_SCENE_AGE = ages.length ? ages[Math.floor(ages.length/2)] : 20;
+  }
+  return CC_SCENE_AGE+ccSeasonsIn();
 }
 /* The seat next to you, which in a trio year is two seats.
 
@@ -45976,10 +46238,26 @@ function careerMateRec(){ return careerMateRecords()[0] || null; }
 // One record becomes a list of one. A career that has played a whole season in a
 // duo keeps the person it played it with, in the seat they were already in.
 function careerMigratePartners(){
-  if(!CAREER || CAREER.partners) return;
-  CAREER.partners = CAREER.partner ? [CAREER.partner] : [];
-  delete CAREER.partner;
-  careerSave();
+  if(!CAREER) return;
+  if(!CAREER.partners){
+    CAREER.partners = CAREER.partner ? [CAREER.partner] : [];
+    delete CAREER.partner;
+    careerSave();
+  }
+  /* And a save that already holds the same person twice keeps one of them.
+
+     careerMateSeat cannot let it happen any more, but the ones it did happen to
+     are on disk — his squad of himself, Scroll and Sky came back as himself,
+     Sky and Sky. The first chair is the one kept, because that is the one they
+     were sitting in when the second was opened. */
+  const seen=new Set(), out=[];
+  (CAREER.partners||[]).filter(Boolean).forEach(p=>{
+    const k=ccMateKeyOf(p);
+    if(k && seen.has(k)) return;
+    if(k) seen.add(k);
+    out.push(p);
+  });
+  if(out.length!==(CAREER.partners||[]).length){ CAREER.partners=out; careerSave(); }
 }
 // One person leaves, not the squad. A poach takes the player it names and the
 // other seats are untouched — which is the whole difference between losing a
@@ -46006,9 +46284,39 @@ function careerMateDrop(handle){
    — dropping the one you had longest instead would cost the chemistry twice.
 
    Never more people than the season is played by. */
+// A seat record names its person one of two ways — a roster handle, or a whole
+// card for somebody the roster does not hold. This is that person, either way.
+function ccMateKeyOf(rec){
+  if(!rec) return '';
+  return hKey({handle: rec.handle || (rec.card && rec.card.handle) || ''});
+}
+/* Nobody sits in two chairs.
+
+   His report, 20 August, in a trios season: the squad was him, Scroll and Sky,
+   he pressed Scroll to change that seat, and what he got was a second Sky. The
+   pools all hold the rule — careerDmPool and careerDuoSearchPool both filter the
+   squad out — but a conversation that was already open does not go through a
+   pool, and a named chair was answered exactly as asked: whoever was handed over
+   went into that chair, including somebody sitting in the chair beside it.
+
+   So the rule is where the seating happens rather than in the six places that
+   lead to it: somebody already in the squad cannot be seated again. Asked for a
+   chair they are not in, the answer is no — the seat they hold is the seat they
+   hold, and swapping the two would be a shuffle nobody asked for. */
 function careerMateSeat(rec, seat){
   if(!CAREER || !rec) return false;
   CAREER.partners=(CAREER.partners||[]).filter(Boolean).slice(0, careerMateSeats());
+  const key=ccMateKeyOf(rec);
+  if(key){
+    const at=CAREER.partners.findIndex(p=>ccMateKeyOf(p)===key);
+    if(at>=0){
+      // Already here. A fresh record for the same person updates the chair they
+      // are in — their patience or their card may have moved — and never opens
+      // a second one.
+      CAREER.partners[at]=rec;
+      return (typeof seat!=='number') || seat===at;
+    }
+  }
   /* A named chair is answered exactly, whatever is sitting in it.
 
      The rule underneath — the weakest one goes — is for when nobody said which,
@@ -46027,6 +46335,24 @@ function careerMateSeat(rec, seat){
   CAREER.partners.forEach((p,i)=>{ if(rate(p)<rate(CAREER.partners[worst])) worst=i; });
   CAREER.partners[worst]=rec;
   return true;
+}
+/* Nobody in the squad is still asking to play with you.
+
+   A conversation that stands as an offer keeps its accept button, and a seat can
+   be taken in a different thread — you write to one person while another one is
+   still waiting on an answer, or the second chair of a trio is filled from the
+   search list. The people who ended up beside you went on offering a duo to the
+   person they already play with. His report, 20 August.
+
+   Called wherever a chair changes hands rather than at render, so the save is
+   the thing that is right and the screen only draws it. */
+function careerDmSquadTidy(){
+  if(!CAREER || !CAREER.dms) return;
+  const mine=ccMyPeople();
+  careerDms().forEach(t=>{
+    if(t.state==='offer' && t.who && !t.who.org && !t.who.brand &&
+       mine.has(hKey(t.who.handle))) t.state='partner';
+  });
 }
 function careerMateDev(){ return (careerMateRec() || {}).dev || 0; }
 /* Everybody in the squad has the week, so everybody in the squad grows from it.
@@ -46052,7 +46378,7 @@ function careerMateGrow(actual, expected){
     const now=(card._ovr!=null ? card._ovr : (attrsFor(card)||{}).ovr);
     if(!(now>0)) return;
     const taper=clamp((CAREER_SCALE_TOP-now)/CAREER_TAPER, 0, 1);
-    const base=careerDevelopNow(ccAgeOf(pr.handle) || ccSceneAge());
+    const base=careerDevelopNow(ccAgeNow(pr.handle) || ccSceneAge());
     // The gap read from their side of the seat.
     const gap=mine-now;
     const pull=clamp(1+(gap>0 ? gap*CC_MATE_UP : gap*CC_MATE_DOWN), CC_MATE_MIN, CC_MATE_MAX);
@@ -46916,11 +47242,36 @@ function careerOrgOffers(){
 
      So the candidates are drawn from both sides: the biggest that will have you,
      and the ones at your own level who will actually start you. */
-  const above=eligible.filter(o=>o.tier>pl.ovr).slice(0, 5);
-  const level=eligible.filter(o=>o.tier<=pl.ovr).slice(0, 3);
-  const cand=above.length+level.length ? above.concat(level) : eligible.slice(0, 8);
-  const shuffled=cand.sort(()=>rnd()-0.5).slice(0, 3)
-    .sort((a,b)=>b.tier-a.tier);
+  /* Three of them, drawn rather than taken off the top.
+
+     His report, 20 August: the manager writes to the same three clubs every
+     week. He was right and it was not the seed — that changes with the week. It
+     was the shortlist: the five biggest that would have him and the three at his
+     own level, off a pool sorted by tier, which at a settled rating is the same
+     eight names every time. Three shuffled out of eight the same eight times
+     over reads as a manager with three phone numbers.
+
+     So every eligible club is in the draw, weighted toward the ones near the
+     player — a club far above is a story rather than a weekly occurrence — and
+     whoever wrote last week is weighted down hard, so the list turns over
+     instead of circling. Nobody is excluded outright: a club that wants you can
+     come back, it just does not come back first. */
+  const lastWeek=(cr.orgRecent && cr.orgRecent.week!==careerWeek())
+    ? (cr.orgRecent.names||[]) : [];
+  const weightOf=o=>{
+    const gap=Math.abs(o.tier-pl.ovr);
+    return (1/(1+gap*0.35)) * (lastWeek.indexOf(o.name)>=0 ? 0.15 : 1);
+  };
+  const pool=eligible.slice();
+  const shuffled=[];
+  while(shuffled.length<3 && pool.length){
+    const total=pool.reduce((s,o)=>s+weightOf(o), 0);
+    let r=rnd()*total, at=0;
+    for(; at<pool.length; at++){ r-=weightOf(pool[at]); if(r<=0) break; }
+    shuffled.push(pool.splice(Math.min(at, pool.length-1), 1)[0]);
+  }
+  shuffled.sort((a,b)=>b.tier-a.tier);
+  cr.orgRecent={week:careerWeek(), names:shuffled.map(o=>o.name)};
   return shuffled.map(o=>{
     /* A big club does not put an unproven player on its main roster — it signs
        them to the academy and moves them up when they earn it. So the gap
@@ -48024,12 +48375,57 @@ function careerPatience(){
   if(pr.patience==null) pr.patience=CAREER_PATIENCE_START;
   return pr.patience;
 }
+/* Whichever seat is closest to a decision.
+
+   The messages after a night and the people who come for your partner both used
+   to mean chair one, so a trio's second seat could not be unhappy out loud and
+   could not be taken. The least patient of them is the one with something to
+   say — in a duo that is the only one there is, so nothing about a duo season
+   moves. */
+function ccMateAtRisk(){
+  const recs=careerMateRecords(), cards=careerMates();
+  if(!recs.length) return null;
+  const pat=r=>(r && r.patience!=null) ? r.patience : CAREER_PATIENCE_START;
+  let at=0;
+  recs.forEach((r,i)=>{ if(pat(r)<pat(recs[at])) at=i; });
+  return {rec:recs[at], card:cards[at], at:at, patience:pat(recs[at])};
+}
 function careerMoodKey(p){
   return p<25 ? 'ccMoodEdge' : p<45 ? 'ccMoodUnhappy' : p<70 ? 'ccMoodSteady' : 'ccMoodHappy';
 }
 // Returns what happened to the partner, so the news can report it and the result
 // card can say the duo is over.
+/* What the night did to the people in the seats.
+
+   Every seat, not the first one. This read careerMateRec — which means chair one
+   — so in a trio season the second partner sat through a whole year of bad
+   nights at the mood he arrived with: he never got happier, never got tired of
+   the player, and could not walk out. The same half-written shape as the poach
+   and the messages beside it, and his report of 20 August is all three at once.
+
+   The return is still chair one's, because the result card prints one number and
+   that is the number it has always printed. Whoever actually left is in the feed
+   and in the timeline, the way a departure always was. */
 function careerApplyMorale(place, total, passed){
+  const recs=careerMateRecords();
+  const mates=careerMates();
+  if(recs.length>1){
+    const perfAll = total>1 ? 1-(place-1)/(total-1) : 0.5;
+    const moveAll = clamp(Math.round((perfAll-0.5)*12) + (passed?2:0), -5, 6);
+    // Backwards, so dropping one does not renumber the seats still to be read.
+    for(let i=recs.length-1; i>=1; i--){
+      const rec=recs[i];
+      const was=rec.patience!=null ? rec.patience : CAREER_PATIENCE_START;
+      rec.patience=clamp(was+moveAll, 0, 100);
+      if(rec.patience<CAREER_PATIENCE_QUIT){
+        const card=mates[i];
+        careerMateDrop(rec.handle || (card && card.handle));
+        careerRepAdd(-2);
+        careerEvent('tlDuoQuit', [card ? card.handle : '']);
+        careerNews('bad', 'ccNewsMateLeftFor', [card ? card.handle : '']);
+      }
+    }
+  }
   const pr=careerMateRec();
   if(!pr) return null;
   const perf = total>1 ? 1-(place-1)/(total-1) : 0.5;
@@ -48102,6 +48498,8 @@ function ccStamp(e){
 function careerNews(kind, key, args, opt){
   const cr=CAREER.career;
   cr.news=cr.news||[];
+  // In the words of the season it is posted in. See ccSquadKey.
+  key=ccSquadKey(key);
   // The division the line was written in, stamped on the entry: the press gate
   // reads it, and a post from a Division 4 week must not change its author
   // because the career has since climbed.
@@ -48211,6 +48609,9 @@ const CC_POST_BY={
   ccIvSaidduo1:'you', ccIvSaidduo2:'you', ccIvSaidduo3:'you', ccIvSaidduo4:'you',
   ccIvSaidboast1:'you', ccIvSaidboast2:'you', ccIvSaidboast3:'you', ccIvSaidboast4:'you',
   ccIvSaidblame1:'you', ccIvSaidblame2:'you', ccIvSaidblame3:'you', ccIvSaidblame4:'you',
+  // And the trio wordings of the same three, which are the same post.
+  ccIvSaidduot1:'you', ccIvSaidduot2:'you', ccIvSaidduot3:'you', ccIvSaidduot4:'you',
+  ccIvSaidblamet1:'you', ccIvSaidblamet2:'you', ccIvSaidblamet3:'you', ccIvSaidblamet4:'you',
   ccNewsAward:'press', ccNewsAwardYou:'press',
   ccNewsAwardSeason:'press', ccNewsAwardSeasonYou:'press',
   ccNewsPartnerNew:'you', ccNewsDropped:'you',
@@ -48995,8 +49396,8 @@ function ccPlayerAge(){
      they were in the first year: five seasons as Sky and he is still sixteen,
      while a built player next to him is twenty-one. The seasons are the thing
      that actually passed. */
-  const real = pl.handle ? ccAgeOf(pl.handle) : null;
-  return real!=null ? real+Math.max(0, (cr && cr.season || 1)-1) : (pl.age||0);
+  const real = pl.handle ? ccAgeNow(pl.handle) : null;
+  return real!=null ? real : (pl.age||0);
 }
 // How old they are on the day the career is standing in, which is the only day
 // an age is true on.
@@ -49008,6 +49409,26 @@ function ccAgeOn(born, iso){
 }
 function ccAgeOf(handle, iso){
   return ccAgeOn(ccBornOf(handle), iso||careerToday());
+}
+/* How many years this career has run, which the calendar cannot say.
+
+   Every season replays the measured 2026, so the clock goes back to January and
+   a birthday read against it is the age somebody was in year one, for ever. The
+   career itself already carried the correction — see ccPlayerAge — and nobody
+   else did: Scroll was born in July 2009, so a ninth season, played out under
+   2034 on the hub, still printed sixteen over the seat beside the player and
+   developed him on a sixteen-year-old's curve. His report, 20 August.
+
+   So the correction is one function and everybody reads it: the scene ages at
+   the same rate the career does, which is a season a season. */
+function ccSeasonsIn(){
+  const cr=CAREER && CAREER.career;
+  return Math.max(0, ((cr && cr.season) || 1)-1);
+}
+// The age of somebody on the roster, in the season the career is standing in.
+function ccAgeNow(handle, iso){
+  const a=ccAgeOf(handle, iso);
+  return a!=null ? a+ccSeasonsIn() : null;
 }
 const CC_DM_LADDER_OFF=[7, 4, 1, -1, -3, -6];
 /* And what the rung can hold.
@@ -49102,7 +49523,7 @@ function careerDmPool(){
         .slice(0, CAREER_DM_POOL-near.length).forEach(p=>near.push(p));
   }
   return near.slice(0, CAREER_DM_POOL).map(p=>({handle:p.handle, ovr:p._ovr, nat:p.nat,
-    role:attrsFor(p).roleKey, roster:true, cardRegion:p.region, age:ccAgeOf(p.handle),
+    role:attrsFor(p).roleKey, roster:true, cardRegion:p.region, age:ccAgeNow(p.handle),
     // `club`, not `org`: a thread with org set on it IS a club writing to you,
     // and the inbox sorts by that. This is the jersey the person is wearing.
     club:p.org||null, pay:ccPlayerPay(p)}));
@@ -49478,7 +49899,10 @@ function careerDmPush(t, from, key, args){
   const cr=CAREER.career;
   // Their line in their own voice. Only what they say - the player's own
   // messages are the player's, and there is only one of them.
-  let k=key;
+  // And in the season's own words: a trio year does not ask anybody to duo.
+  // See ccSquadKey.
+  let k=ccSquadKey(key);
+  key=k;
   if(from==='them' && t && t.who){
     const v=ccVoiceOf(t.who.handle);
     if(L()[key+v]) k=key+v;
@@ -49582,7 +50006,10 @@ function careerSlotGiveUp(mate){
   return held;
 }
 function careerMatePoach(place, of, passed){
-  const cr=CAREER.career, mate=careerPartnerCard();
+  const cr=CAREER.career;
+  // Whichever seat is likeliest to go, not chair one. See ccMateAtRisk.
+  const risk=ccMateAtRisk();
+  const mate=risk && risk.card;
   if(!mate || !(of>1)) return null;
   // Nobody takes half of a qualified duo: the seat is the pair's and the pair
   // has to play it out. See careerSlotHeld.
@@ -49595,7 +50022,8 @@ function careerMatePoach(place, of, passed){
     handle:mate.handle, ovr:(mate._ovr!=null?mate._ovr:(attrsFor(mate)||{}).ovr),
     nat:mate.nat, role:attrsFor(mate).roleKey, roster:true, cardRegion:mate.region,
     club:mate.org||null, pay:ccPlayerPay(mate)});
-  const patience=careerPatience();
+  // Their own patience, which is the seat's rather than the squad's.
+  const patience=risk.patience;
   const stays=patience>=CC_POACH_SAFE;
   careerDmPush(t, 'them', stays ? 'dmMatePoachStay' : 'dmMatePoachGo', [place]);
   if(!stays){
@@ -49634,10 +50062,13 @@ function careerMatePoach(place, of, passed){
    the next. Now it tells you first, and you get to answer. */
 const CC_MATE_HAPPY=70, CC_MATE_CROSS=38;
 function careerMateDm(place, of, passed){
-  const cr=CAREER.career, mate=careerPartnerCard();
+  const cr=CAREER.career;
+  // The seat with something to say, which in a trio is not always the first.
+  const risk=ccMateAtRisk();
+  const mate=risk && risk.card;
   if(!mate || !(of>1)) return null;
-  const pr=careerMateRec();
-  const p=careerPatience();
+  const pr=risk.rec;
+  const p=risk.patience;
   const beat=1-(place-1)/(of-1);
   const rnd=careerRng(ccHashStr('mate|'+cr.season+'|'+careerToday()+'|'+place));
   // Not every night is worth a message. A good one from a happy partner and a
@@ -49989,6 +50420,12 @@ function careerSeatTopUp(){
    Two arguments, then it is answered. The point is not that a no can be talked
    around - it is that talking around it costs something. */
 const CC_DM_DAYS=1, CC_DM_ARGS=2;
+/* What a standing pair costs you when you are asking for the third chair.
+
+   Five points, which is the same size as the reach itself: it turns "no" into
+   "you would have to be clearly better than the seat is worth", rather than
+   into either a closed door or a free yes. See careerDmMargin. */
+const CC_TRIO_THIRD_PULL=5;
 const CC_ARG_GAIN={form:4, role:5};
 // The margin, as a number rather than a yes or no, so an argument has something
 // to move. Positive is a yes.
@@ -50002,7 +50439,21 @@ function careerDmMargin(who){
   }
   // The seat they are in, judged the way they would judge it.
   const mate=careerDmMateOf(who);
-  if(mate && careerDuoBeatsYou(who)) return -99;
+  if(mate && careerDuoBeatsYou(who)){
+    /* In a duo season that is the end of it: the seat is taken and a standing
+       pair is not for sale to a stranger.
+
+       A trio season is asking a different question. The scene's pairs are the
+       recorded 2026 duos — everybody worth writing to has one — and the chair
+       being asked for is the third, which none of them are sitting in. So a pair
+       that is going better than you is a reason for them to be picky rather than
+       a closed door, and it costs a few points of persuasion instead of ending
+       the conversation. Without this a trio career could not sign anybody good
+       at all: every answer in the inbox was "I already have a duo". His report,
+       20 August. */
+    if(careerSquadSize()<=2) return -99;
+    pull-=CC_TRIO_THIRD_PULL;
+  }
   return pull-(who.ovr-CAREER_DM_REACH);
 }
 function careerDmWrite(handle, seat){
@@ -50218,6 +50669,18 @@ function careerHaterReply(id){
 // loud in the feed rather than happening quietly.
 function careerDmAccept(id){
   const t=careerDms().find(x=>x.id===id); if(!t) return;
+  /* Somebody already in the squad has nothing to accept.
+
+     The thread can outlive the question: they wrote asking for a seat, they took
+     one somewhere else in the meantime, and the button was still sitting there
+     offering to seat them again. See careerMateSeat, which holds the same rule
+     one level down, and careerDmSquadTidy, which closes the thread. */
+  if(t.who && ccMyPeople().has(hKey(t.who.handle))){
+    careerDmSquadTidy();
+    careerDmOpen(id);
+    careerSave();
+    return;
+  }
   /* Who actually loses the chair.
 
      Asked for from under a card, it is that card. Asked for with nothing named,
@@ -50249,6 +50712,8 @@ function careerDmAccept(id){
     : {card:who.card, patience:CAREER_PATIENCE_START, since:careerToday()}, seatAt);
   t.state='partner';
   t.unread=false;
+  // And nobody else in the squad is left standing as an open offer.
+  careerDmSquadTidy();
   careerNews('good', 'ccNewsPartnerNew', [who.handle, who.ovr]);
   careerEvent('tlDuo', [who.handle]);
   careerSave();
@@ -50781,7 +51246,7 @@ function careerSocialHTML(){
           : open.who.hater ? L().dmSechaters
           : open.who.fan ? L().dmSecfans
           : [L()[open.who.role]||'', L().ccRoOvr+' '+open.who.ovr,
-             (()=>{ const a=ccAgeOf(open.who.handle); return a ? L().ccYearsOld(a) : ''; })(),
+             (()=>{ const a=ccAgeNow(open.who.handle); return a ? L().ccYearsOld(a) : ''; })(),
              ccDuoFormLabel(open.who.handle),
              open.who.club ? esc(open.who.club) : '',
              ccPayLabel(open.who.pay)].filter(Boolean).join(' · ')}</span></div>
@@ -51003,7 +51468,7 @@ function careerSocialHTML(){
      because that is the only time it has anything to say. */
   const lfdBox = mate ? '' : `<div class="ch-tile x-compose">
     <div class="x-compose-in">${meAv('')}
-      <div class="x-compose-txt"><b>${L().ccLfdTitle}</b><span>${L().ccLfdWhat}</span></div>
+      <div class="x-compose-txt"><b>${ccSay("ccLfdTitle")}</b><span>${L().ccLfdWhat}</span></div>
       ${careerLfdOn()
         ? `<span class="x-compose-on">${esc(L().ccLfdOnUntil(ccDayLabel(careerLfdUntil())))}</span>`
         : `<button class="ch-sign" onclick="careerLfdPost()">${L().ccLfdBtn}</button>`}
@@ -51073,8 +51538,9 @@ function careerDmKind(k){
    still there to spend. This only widens who you may ask. */
 const CC_DUO_SEARCH_GEN=48;
 function careerDuoSearchPool(){
-  const me=careerCard(), mine=new Set([hKey(me)]);
-  const mate=careerPartnerCard(); if(mate) mine.add(hKey(mate));
+  // Everybody already in the squad, not merely the first seat: a trio's second
+  // partner stood in this list and could be written to for a duo. See ccMyPeople.
+  const mine=ccMyPeople();
   if(ccRealNamesHere()){
     return careerRosterNowEU().filter(p=>!mine.has(hKey(p)))
       .map(p=>({handle:p.handle, ovr:p._ovr!=null?p._ovr:attrsFor(p).ovr, nat:p.nat,
@@ -51133,7 +51599,7 @@ function ccDuoFindRender(keepFocus){
     const wrote=!!(said && said.msgs && said.msgs.some(m=>m.from==='you'));
     // The scene's answer, so a row never reads "duo with you" said about you.
     const mate=ccSceneMateOf(w.card||{handle:w.handle});
-    const under=[L()[w.role]||'', mate ? L().ccDuoWith(esc(mate.handle||'')) : L().ccDuoFree,
+    const under=[L()[w.role]||'', mate ? ccSay("ccDuoWith", esc(mate.handle||"")) : ccSay("ccDuoFree"),
                  w.club ? esc(w.club) : ''].filter(Boolean).join(' · ');
     return `<div class="cc-buy">
       ${(function(){ const u=w.card ? photoURL(w.card) : null;
@@ -51363,10 +51829,14 @@ function careerPickDay(id){
    last week's table again. */
 function careerWorldD1(iso){
   const rnd=careerRng(ccHashStr('d1|'+iso));
-  // The player and their partner were not in it — they are in their own division.
-  const taken=new Set();
-  const mate=careerPartnerCard();
-  if(mate) taken.add(hKey(mate));
+  /* The player and everybody in their squad were not in it — they played this
+     week themselves, in their own room.
+
+     It held back the first seat alone, so a trio's second partner turned up in
+     the world's own Division 1 night playing the same Weekly Final beside
+     somebody else, and the season table carried both rows. His report,
+     20 August. See ccMyPeople. */
+  const taken=ccMyPeople();
   // The fifty who came through this week, not the fifty best on paper: drawn
   // from the eighty strongest duos and shuffled on the date, so a season table
   // built out of these nights has more than fifty names in it and the regulars
@@ -51403,8 +51873,8 @@ function careerCongrats(ranked, you, label){
   const bare=t=>String(t.name||'').replace(/<[^>]*>/g,'');
   let handles;
   if(you && w===you){
-    const mate=careerPartnerCard();
-    handles=[CAREER.player.nick, mate && mate.handle];
+    // Everybody who won it, which in a trio season is three names.
+    handles=[CAREER.player.nick].concat(careerMates().map(c=>c && c.handle));
   } else {
     handles=(w._cards||w.cards||w.squad||[]).map(c=>c && c.handle);
   }
@@ -51425,8 +51895,8 @@ function careerCongrats(ranked, you, label){
      called from are the ones where third is a result and not a near miss. */
   if(you && ranked.indexOf(you)>=0 && ranked.indexOf(you)<3){
     const place=ranked.indexOf(you)+1;
-    const mate=careerPartnerCard();
-    const at=mate ? ccHandle(mate.handle) : null;
+    // The seats beside you, all of them. See ccMateTagArg.
+    const at=ccMateTagArg() || null;
     const v=careerWeek();
     careerNews('good', place===1 ? 'ccPostWon' : 'ccPostPodium',
                place===1 ? [label, at, v] : [place, label, at, v],
@@ -51562,7 +52032,8 @@ function careerBirthdays(fromISO, toISO){
       const k=hKey(p);
       if(seen.has(k) || (mine && hKey({handle:mine})===k)) continue;
       seen.add(k); n++;
-      careerNews('good', 'ccPostBday', [ccHandle(p.handle), ccAgeOn(born, d)], {day:d});
+      // The scene's birthdays age with the career, for the reason ccAgeNow gives.
+      careerNews('good', 'ccPostBday', [ccHandle(p.handle), ccAgeOn(born, d)+ccSeasonsIn()], {day:d});
     }
   }
 }
@@ -52805,13 +53276,95 @@ function careerInterview(){
   const q=CC_IV.find(x=>x.when(row));
   return q ? {key:ccIvKey(row), id:q.id, v:ccIvVariant(row), row:row} : null;
 }
+/* Who is in the seats beside you, named the way a sentence names them.
+
+   The interview handed every line one name — careerPartnerCard, the first mate
+   — and every answer was written about two people: "that one is on the duo",
+   "we both worked for that", "I carried, he was a passenger". In a trio season
+   the player was answering as if they had played a duo. His report, 20 August.
+
+   `at` is for the posts, which write the answer into the feed as the player's
+   own words and mention whoever it is about. A list cannot be handed to a line
+   that puts the @ on itself, so the trio wordings take the names already
+   written out and the duo ones are left exactly as they were. */
+/* Everybody who is already in this career's squad, as the keys a pool filters on.
+
+   Half a dozen places asked careerPartnerCard — the first seat — and meant "the
+   people I play with". In a duo those are the same thing and in a trio they are
+   not, so the second chair went on living its own life in the scene: it turned
+   up in the season table playing the same Weekly Final beside somebody else, it
+   announced a new duo at the season break, and it stood in the list of people
+   you can write to asking for a duo. His report, 20 August.
+
+   The player is in it too, under both names: the nickname the hub prints and,
+   for a career played as somebody real, the handle the roster knows them by. */
+function ccMyPeople(){
+  const out=new Set();
+  const me=careerCard(); if(me) out.add(hKey(me));
+  const pl=CAREER && CAREER.player;
+  if(pl && pl.handle) out.add(hKey({handle:pl.handle}));
+  if(pl && pl.nick) out.add(hKey({handle:pl.nick}));
+  careerMates().forEach(m=>{ if(m) out.add(hKey(m)); });
+  return out;
+}
+/* The same line, said for the season it is said in.
+
+   Half the mode talks about a duo because a duo is what it was written for: the
+   inbox opens with "looking for a partner — duo?", the post says LFD, a mate who
+   walks out has "left for another duo", the rival tile calls itself one duo. In a
+   trio season every one of those is the wrong word, and his report of 20 August
+   is exactly that — you play trios and you write to people asking to duo.
+
+   Rather than branching at thirty call sites, the wording is a key: where a trio
+   version of a line exists it is written with a `t` on the end, and this picks it
+   when the season is one. Where it does not exist the duo line still reads,
+   because most of them are about a person rather than about a pair.
+
+   Two hooks carry nearly all of it — careerDmPush and careerNews both take a key
+   and store it — so a message written in a trio season keeps its trio wording
+   for ever, which is right: it was said then. */
+function ccSquadKey(key){
+  return (careerSquadSize()>2 && L()[key+'t']) ? key+'t' : key;
+}
+// The same, resolved for a screen rather than for a stored line.
+function ccSay(key){
+  const f=L()[ccSquadKey(key)];
+  return typeof f==='function' ? f.apply(null, [].slice.call(arguments, 1)) : (f||'');
+}
+/* The squad written as one argument for the lines that put the @ on themselves.
+
+   ccPostWon and its podium sibling take a handle and write " @" in front of it,
+   in three languages and seven wordings. Joining the seats with " @" hands them
+   the whole squad without any of those lines having to know how many chairs the
+   season has. */
+function ccMateTagArg(){
+  return careerMates().filter(Boolean).map(c=>ccHandle(c.handle)).join(' @');
+}
+function ccMateNames(at){
+  const names=careerMates().filter(Boolean).map(c=>(at?'@':'')+c.handle);
+  if(names.length<2) return names[0]||'';
+  return names.slice(0, -1).join(', ')+L().ccListAnd+names[names.length-1];
+}
 // One line out of the set written for this kind of night. Falls back to the
 // first, so a variant that is not written yet reads as the one that is rather
-// than as nothing at all.
+// than as nothing at all — and in a trio season a trio wording, marked with a
+// t, is tried before the duo one it replaces.
 function ccIvLine(prefix, id, v, args){
   const l=L();
-  const f=l[prefix+id+v] || l[prefix+id+'1'] || l[prefix+id];
+  const trio=careerSquadSize()>2;
+  const f=(trio && (l[prefix+id+'t'+v] || l[prefix+id+'t1'])) ||
+          l[prefix+id+v] || l[prefix+id+'1'] || l[prefix+id];
   return typeof f==='function' ? f.apply(null, args||[]) : (f||'');
+}
+/* The post an answer becomes, in the season's own voice.
+
+   Same rule as the buttons and one thing more: the trio wording is only used
+   when it exists, because the arguments differ. A duo line writes "@" itself
+   and is handed a handle; a trio line is handed "@Sky and @Scroll" already
+   written out, and handing that to a duo line would print "@@Sky and @Scroll". */
+function ccIvSaidKey(aid, v){
+  const trio=careerSquadSize()>2;
+  return (trio && L()['ccIvSaid'+aid+'t'+v]) ? 'ccIvSaid'+aid+'t'+v : 'ccIvSaid'+aid+v;
 }
 function careerInterviewSay(which){
   const iv=careerInterview(); if(!iv) return;
@@ -52826,8 +53379,12 @@ function careerInterviewSay(which){
   // The answer is a post, in the player's own voice, because that is whose it
   // is — and the post is the wording that was on the button, not a fourth line
   // that says something else.
-  careerNews(a.id==='blame' ? 'bad' : 'good', 'ccIvSaid'+a.id+iv.v,
-             [careerPartnerCard() ? careerPartnerCard().handle : '', iv.row.place]);
+  const said=ccIvSaidKey(a.id, iv.v);
+  // A trio wording is handed the whole squad, written out; a duo one the one
+  // handle it has always been handed. See ccIvSaidKey.
+  const who = /t\d$/.test(said) ? ccMateNames(true)
+            : (careerPartnerCard() ? careerPartnerCard().handle : '');
+  careerNews(a.id==='blame' ? 'bad' : 'good', said, [who, iv.row.place]);
   careerSave();
   careerRenderHub('centre');
   return got;
@@ -52841,12 +53398,15 @@ function careerInterviewPass(){
 function careerInterviewHTML(){
   const iv=careerInterview(); if(!iv) return '';
   const mate=careerPartnerCard();
+  // Everybody in the squad, because that is who an answer is about in a trio
+  // season. In a duo it is the one name it always was. See ccMateNames.
+  const who=careerSquadSize()>2 ? ccMateNames(false) : (mate ? mate.handle : '');
   return '<div class="ch-tile cc-iv"><h4>'+L().ccIvTitle+'</h4>'+
     '<div class="ch-hint">'+esc(ccIvLine('ccIvQ', iv.id, iv.v, [iv.row.place, iv.row.of]))+'</div>'+
     '<div class="cc-iv-acts">'+
       CC_IV_ANSWERS.filter(a=>a.id!=='blame' || mate).map(a=>
         '<button class="cc-act" onclick="careerInterviewSay(\''+a.id+'\')">'+
-          esc(ccIvLine('ccIvA'+a.id, iv.id, iv.v, [mate ? mate.handle : '', iv.row.place]))+
+          esc(ccIvLine('ccIvA'+a.id, iv.id, iv.v, [who, iv.row.place]))+
         '</button>').join('')+
       '<button class="cc-back cc-iv-skip" onclick="careerInterviewPass()">'+
         L().ccIvPass+'</button>'+
@@ -53460,9 +54020,9 @@ function careerWorldDuos(season){
 
      Only those two are held back. Whoever walked out is free to turn up with
      somebody new — that is the point of them leaving. */
-  const mine=new Set();
-  const me=careerCard(); if(me) mine.add(hKey(me));
-  const myMate=careerPartnerCard(); if(myMate) mine.add(hKey(myMate));
+  // The whole squad, not the first seat — otherwise a trio's second partner
+  // announced a duo with somebody else while still sitting beside you.
+  const mine=ccMyPeople();
   const pool=careerRealDuos(mine, rnd, 1).slice(0, 40);
   if(pool.length<2) return;
   for(let i=1; i>=0; i--){
@@ -53506,6 +54066,11 @@ function careerRetiredHTML(){
   const money=n=>ccMoney(n||0);
   const honours=[
     sm.bestMajor!=null ? L().ccSumMajor(sm.bestMajor, sm.majorsPlayed) : null,
+    // Düsseldorf and Antwerp, which a career flies to at most once a year and
+    // which this screen did not mention at all until his report of 20 August.
+    sm.bestGlobals!=null ? L().ccSumGlobals(sm.bestGlobals, sm.globalsPlayed) : null,
+    sm.bestSummit!=null ? L().ccSumSummit(sm.bestSummit, sm.summitsPlayed) : null,
+    sm.bestGclc!=null ? L().ccSumGclc(sm.bestGclc) : null,
     sm.bestWf!=null ? L().ccSumWf(sm.bestWf, sm.wfPlayed) : null,
     sm.paris!=null ? L().ccSumParis(sm.paris) : null,
     sm.seats ? L().ccSumSeats(sm.seats) : null,
@@ -53533,6 +54098,14 @@ function careerRetiredHTML(){
   <div class="ch-tile"><h4>${L().ccSumHonours}</h4>
     ${honours.length ? honours.map(h=>`<div class="cc-hon">${h}</div>`).join('')
                     : `<div class="ch-empty">${L().ccSumNone}</div>`}
+    <!-- And the nights themselves, season by season: a best-of line says how
+         high a career reached and not what it did. See careerBigRuns. -->
+    <h4 class="cc-board-h">${L().ccBoardTitle}</h4>
+    ${(()=>{ const rows=careerBigRuns(null);
+      return rows.length
+        ? rows.map(r=>`<div class="ch-row"><em>${L().ccBoardSeason(r.season)} · ${
+            esc(careerRunLabel(r))}</em><b>${L().ccBoardPlace(r.place, r.of)}</b></div>`).join('')
+        : `<div class="ch-empty">${L().ccBoardNone}</div>`; })()}
     <div class="cc-over-act"><button class="ch-play" onclick="careerWipe()">${L().ccNewCareer}</button></div>
   </div></div>`;
 }
@@ -53577,6 +54150,56 @@ function careerRetire(forced){
   careerRenderHub('centre');
 }
 
+/* ---- The big nights, said out loud -----------------------------------------
+
+   His report, 20 August: at the end of a season and at the end of a career the
+   places at the Grand Finals and the LANs are not shown anywhere. They were in
+   the log the whole time — every runner writes its row — and nothing read them
+   back: the season ended on a card that said "season over" and a button, and the
+   retirement screen named a best Major and a best Weekly Final and stopped.
+
+   These are the five rooms a career is remembered for. A divisional cup is not
+   here and neither is a Victory Cup: they happen every week, they are in the
+   history tab, and a list that holds everything says nothing. */
+const CC_BIG_RUNS=[
+  {kind:'major',   stage:'final', key:'ccRunMajor'},
+  {kind:'summit',  stage:'final', key:'ccRunSummit',  lan:'summit'},
+  {kind:'gclc',    stage:'final', key:'ccRunGclc'},
+  {kind:'rc',      stage:'final', key:'ccRunRc',      lan:'rc'},
+  {kind:'globals', stage:null,    key:'ccRunGlobals', lan:'globals'}
+];
+function ccBigRunOf(row){
+  return CC_BIG_RUNS.find(x=>x.kind===row.kind &&
+    (!x.stage || x.stage===(row.stage||'final'))) || null;
+}
+// Every one of them a season held, in the order they were played.
+function careerBigRuns(season){
+  return (CAREER.career.log||[])
+    .filter(r=>r.place && (season==null || r.season===season) && ccBigRunOf(r));
+}
+// What to call one. The LANs name the city they were in that season, which is
+// not the city they are in this one — see ccLanFixed.
+function careerRunLabel(row){
+  const m=ccBigRunOf(row);
+  if(!m) return '';
+  const line=L()[m.key];
+  return m.lan ? line(ccLanCity(m.lan, row.season)) : line;
+}
+/* The season's own, on the card that says the season is over.
+
+   It sits where the shop tile sits during the year, because the shop is shut at
+   the boundary and this is the one screen a player looks at before pressing on
+   to the next season. */
+function careerSeasonBoardHTML(){
+  const cr=CAREER.career;
+  const rows=careerBigRuns(cr.season);
+  return `<div class="ch-tile cc-board">
+    <h4>${L().ccBoardTitle}</h4>
+    ${rows.length ? rows.map(r=>`<div class="ch-row"><em>${esc(careerRunLabel(r))}</em><b>${
+        L().ccBoardPlace(r.place, r.of)}${r.prize ? ' · '+ccMoney(r.prize) : ''}</b></div>`).join('')
+      : `<div class="ch-empty">${L().ccBoardNone}</div>`}
+  </div>`;
+}
 /* What a career amounted to, read out of what it recorded rather than tallied
    as it went — every line below is already in the save, which is why there is
    no honours list kept anywhere: the log is the honours list. */
@@ -53603,6 +54226,13 @@ function careerSummary(){
     wfPlayed: wf.length,
     bestMajor: best(majors),
     majorsPlayed: majors.length,
+    // The LANs, which the last screen used to leave out entirely. His report,
+    // 20 August. Read the same way everything else here is: off the log.
+    bestSummit: best(by('summit').filter(r=>r.stage==='final')),
+    summitsPlayed: by('summit').filter(r=>r.stage==='final').length,
+    bestGlobals: best(by('globals')),
+    globalsPlayed: by('globals').length,
+    bestGclc: best(by('gclc').filter(r=>r.stage==='final')),
     seats: (cr.ewc||[]).length,
     paris: best(by('rc').filter(r=>r.stage==='final')),
     orgs: (cr.orgs||[]).slice(),
@@ -53734,6 +54364,19 @@ const CC_RC_GROUP={teams:20, games:10, direct:7, drop:17};
 const CC_RC_SURV ={teams:20, games:10, cut:6};
 const CC_RC_FINAL={teams:20, games:15, line:350};
 const CC_RC_KILL=3;
+/* A Paris stage, counted in this season's teams.
+
+   Twenty duos is a Reload lobby, and a Reload lobby is forty players — so a trio
+   season plays the same room thirteen teams wide, with the group's two lines
+   moving with it. ccScaleStage does the same job for the tables that name their
+   field `field`; this one knows Paris's own names. `games` and `line` are not
+   team counts and are left alone. */
+function ccRcStage(st){
+  if(!st) return st;
+  const out=Object.assign({}, st);
+  ['teams','direct','drop','cut'].forEach(k=>{ if(out[k]!=null) out[k]=ccTeams(out[k]); });
+  return out;
+}
 /* The published purse, place by place. It steps: a thousand a place from
    fifteenth to twentieth, five hundred a place to thirtieth, then the tail. */
 function rcPrize(place){
@@ -54325,14 +54968,50 @@ function ccOpenAdvance(){ return CC_OPEN_CUT[ccCareerRegion()] || 500; }
      2,000 duos x 11      3,745ms
      4,200 duos x 12      7,527ms  */
 const CC_OPEN_ROOM=2100;
-function ccOpenRoom(){ return Math.min(CC_OPEN_ROOM, careerLadderEntrants()); }
+/* And what a phone can hold, which is not the same number.
+
+   The room is already a sample of the real open — 9,766 duos read out of 2,100
+   played, see ccOpenScale — so its size decides how finely that sample is cut
+   and nothing else. On a desktop 2,100 is four seconds of work; on a phone the
+   same twelve games are a stall long enough to look like the page has died, and
+   his report of 20 August is exactly that. Two-fifths of the room is the same
+   tournament at the same odds, read out at the same 9,766 and the same thousand,
+   in a fraction of the time.
+
+   Measured once and kept: a career does not move between devices mid-session,
+   and asking matchMedia on every field build would be its own cost. */
+const CC_OPEN_ROOM_SMALL=900;
+let CC_SMALL_DEVICE=null;
+function ccSmallDevice(){
+  if(CC_SMALL_DEVICE!=null) return CC_SMALL_DEVICE;
+  let small=false;
+  try{
+    small = (window.matchMedia && window.matchMedia('(max-width: 820px)').matches) ||
+            (navigator.hardwareConcurrency>0 && navigator.hardwareConcurrency<=4) ||
+            /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'');
+  }catch(e){ small=false; }
+  CC_SMALL_DEVICE=small;
+  return small;
+}
+function ccOpenRoom(){
+  return Math.min(ccSmallDevice() ? CC_OPEN_ROOM_SMALL : CC_OPEN_ROOM, careerLadderEntrants());
+}
 function ccReloadOpenCut(){
   return Math.max(20, Math.round(ccOpenRoom()*ccOpenAdvance()/CC_LADDER_TRUE));
 }
+/* The real open and its cut, counted in this season's teams.
+
+   Epic's 9,766 and Epic's thousand are duos, and the room they are read against
+   is converted for a trio season by ccScaleStage — so without these two the
+   sample was multiplied out against a duo-sized open and a trio's place in the
+   Opens read half as good again as it was. The share is untouched: it is the
+   same people either way, described in the unit the season plays in. */
+function ccOpenTrue(){ return ccTeams(CC_LADDER_TRUE); }
+function ccOpenAdvanceNow(){ return ccTeams(ccOpenAdvance()); }
 // How much bigger the real open is than the room we play it in. Display only:
 // the cut, the field size and a place read off it. Nothing decided by it.
 function ccOpenScale(fieldSize){
-  return (fieldSize>0) ? CC_LADDER_TRUE/fieldSize : 1;
+  return (fieldSize>0) ? ccOpenTrue()/fieldSize : 1;
 }
 function ccOpenShow(n, fieldSize){
   return Math.max(1, Math.round(n*ccOpenScale(fieldSize)));
@@ -54537,8 +55216,18 @@ function ccVictoryLobby(ev, solo){
 // Epic's 4,000 belonged to the 19,532-player room; the share is what carries
 // to the user's smaller ladder: 20.5% of 4,200 solo players is 860.
 const CC_VICTORY_R2_PLAYERS=860;
-function careerVictoryField(solo){ return careerLadderEntrants()*(solo?2:1); }
-function careerVictoryCut(solo){ return solo ? CC_VICTORY_R2_PLAYERS : CC_VICTORY_R2_PLAYERS/2; }
+/* The room and the quota, in the teams this season plays in.
+
+   careerLadderEntrants is the ladder counted in duos, and the quota is 860
+   people: a solo cup is those people, a duo cup is half of them and a trio cup a
+   third. Both were duo counts whatever season it was, so a trio Victory Cup ran
+   a duo-sized room and advanced a duo-sized quota out of it. See ccTeams. */
+function careerVictoryField(solo){
+  return solo ? careerLadderEntrants()*2 : ccTeams(careerLadderEntrants());
+}
+function careerVictoryCut(solo){
+  return solo ? CC_VICTORY_R2_PLAYERS : ccTeams(CC_VICTORY_R2_PLAYERS/2);
+}
 const CC_VICTORY_WIN_PTS=100, CC_VICTORY_CASH_SOLO=100, CC_VICTORY_CASH_DUO=200;
 // Cumulative "reach top N", so the points for a place are every tier at or below
 // it. Written as the sum rather than a 50-row table, because that is how Epic
@@ -54667,7 +55356,9 @@ async function runCareerEval(){
 
   const you=careerYouTeam(drafted);
   you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
-  const field=[you, ...careerCupField(cr, drafted)];
+  // The evaluation's room and its cut are this season's, like every other night.
+  const field=[you, ...careerCupField(cr, drafted, ccTeams(CAREER_CUP_FIELD))];
+  const evalCut=ccTeams(CC_EVAL_CUT);
 
   // Round 1: the ordinary ladder, a kill worth one.
   // No drop here either: see the note in the divisional cup.
@@ -54675,19 +55366,19 @@ async function runCareerEval(){
     {lobbySize:ccTeams(50), stageName:L().ccEvalR1Live, mapReplay:true, stopOnYourDeath:true});
   const ranked1=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place1=ranked1.indexOf(you)+1;
-  const through=place1<=CC_EVAL_CUT;
+  const through=place1<=evalCut;
 
   const shell1=createStageCardShell(L().ccEvalR1Title(field.length));
   await revealStageLog(you, shell1, true);
   finalizeStageCard(shell1, place1, field.length, you.stagePts, through, false,
-    through ? L().ccEvalPass(CC_EVAL_CUT) : L().ccEvalFail(CC_EVAL_CUT));
-  await revealStandings(shell1, ranked1, you, CC_EVAL_CUT);
+    through ? L().ccEvalPass(evalCut) : L().ccEvalFail(evalCut));
+  await revealStandings(shell1, ranked1, you, evalCut);
   careerPrAdd(ranked1, {div:1, kind:'eval'});
 
   let wins=0, cash=0, place2=null;
   if(through){
     // Round 2 is the fifty who came through, in one lobby, and only a win scores.
-    const r2=ranked1.slice(0, CC_EVAL_CUT);
+    const r2=ranked1.slice(0, evalCut);
     await simulateGamesLive(r2, CC_EVAL_R2_GAMES, evalRound2Points, 0, 'stage', 0, null, null,
       {stageName:L().ccEvalR2Live, mapReplay:true, stopOnYourDeath:true});
     const ranked2=r2.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0));
@@ -54713,9 +55404,9 @@ async function runCareerEval(){
   const places=(you.stageLog||[]).map(g=>g.place);
   cr.log=cr.log||[];
   // The night is played, so the night teaches. See careerGrowEvent.
-  careerGrowEvent(place2||place1, through?CC_EVAL_CUT:field.length, you, field);
+  careerGrowEvent(place2||place1, through?evalCut:field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:1, place:place2||place1,
-               of:through?CC_EVAL_CUT:field.length, pts:you.stagePts, passed:through,
+               of:through?evalCut:field.length, pts:you.stagePts, passed:through,
                ovr:CAREER.player.ovr, games:through?CC_EVAL_R1_GAMES+CC_EVAL_R2_GAMES:CC_EVAL_R1_GAMES,
                wins:you.wins||0, elims:you.stageElims||0,
                avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
@@ -54729,7 +55420,7 @@ async function runCareerEval(){
   CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerTwoRoundResultCard({title:L().calPerfEval, place:place2||place1, through:through,
-    wins:wins, cash:cash, cut:CC_EVAL_CUT});
+    wins:wins, cash:cash, cut:evalCut});
 }
 
 /* Playing one.
@@ -54902,7 +55593,11 @@ async function runCareerReloadChampionship(){
   const cr=CAREER.career;
   const ev=careerRcOn(careerToday());
   if(!ev || !careerRcCan(ev)) return;
-  const st = ev.stage==='group' ? CC_RC_GROUP : ev.stage==='survival' ? CC_RC_SURV : CC_RC_FINAL;
+  // Paris in this season's teams. Its three stages hold their counts under names
+  // ccScaleStage does not know — the field is `teams`, the group cuts twice —
+  // so they convert here, and the match point stays what it is: a points total.
+  const RCG=ccRcStage(CC_RC_GROUP), RCS=ccRcStage(CC_RC_SURV), RCF=ccRcStage(CC_RC_FINAL);
+  const st = ev.stage==='group' ? RCG : ev.stage==='survival' ? RCS : RCF;
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('rc', ev.id||ev.label||'');
   /* The squad this season is played in, not a duo.
@@ -55011,10 +55706,10 @@ async function runCareerReloadChampionship(){
     place=ranked.indexOf(you)+1;
   }
 
-  const through = ev.stage==='group' ? place<=CC_RC_GROUP.direct
-                : ev.stage==='survival' ? place<=CC_RC_SURV.cut
+  const through = ev.stage==='group' ? place<=RCG.direct
+                : ev.stage==='survival' ? place<=RCS.cut
                 : false;
-  const dropped = ev.stage==='group' && !through && place<=CC_RC_GROUP.drop;
+  const dropped = ev.stage==='group' && !through && place<=RCG.drop;
 
   /* The final says what its rule is.
 
@@ -55028,11 +55723,11 @@ async function runCareerReloadChampionship(){
   await revealStageLog(you, shell, true);
   const note = ev.stage==='final'
     ? (champ ? L().ccRcChamp : L().ccRcRanked(place))
-    : through ? L().ccRelPass(ev.stage==='group'?CC_RC_GROUP.direct:CC_RC_SURV.cut)
+    : through ? L().ccRelPass(ev.stage==='group'?RCG.direct:RCS.cut)
     : dropped ? L().ccRcDropped
-    : L().ccRelFail(ev.stage==='group'?CC_RC_GROUP.drop:CC_RC_SURV.cut);
+    : L().ccRelFail(ev.stage==='group'?RCG.drop:RCS.cut);
   finalizeStageCard(shell, place, field.length, you.stagePts, through||champ, false, note);
-  await revealStandings(shell, ranked, you, ev.stage==='group'?CC_RC_GROUP.direct:CC_RC_SURV.cut,
+  await revealStandings(shell, ranked, you, ev.stage==='group'?RCG.direct:RCS.cut,
     null, null, ev.stage==='final' ? rcPrize : null, null, ev.stage==='final');
   careerPrAdd(ranked, {div:CAREER.career.division, kind:'rc', stage:ev.stage});
 
@@ -55075,7 +55770,7 @@ async function runCareerReloadChampionship(){
   useLandingSet(prevSet); CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerReloadResultCard({label:ev.label, place:place, of:field.length,
-    through:through||champ, cut:CC_RC_GROUP.direct, seat:false,
+    through:through||champ, cut:RCG.direct, seat:false,
     money: ev.stage==='final' ? cash : null});
 }
 
@@ -55157,12 +55852,76 @@ async function careerLandingPick(field, you, title){
 // cards as well as on the names that were asked for: Liquipedia and Tracker
 // write four of these people differently and GC_HANDLE_ALIAS bridges them, so
 // two different spellings can land on one card and seat somebody twice.
+/* The third chair at a LAN, which a trio season has and the qualification lists
+   do not.
+
+   Every seat at Düsseldorf and Antwerp is a real duo — GC_SUMMIT_DUOS and
+   GC_MAJOR2_DUOS are who actually went, and gcRegionFinals is each region's own
+   leaderboard — and in a trio season the player walks in with three names while
+   every other row has two. His screenshot, 20 August: "и на глобалах 3v2".
+
+   The rule is careerCupField's, which decided this question for the divisional
+   cups on 19 August and should not be answered twice: the recorded pair stays
+   whole and a third is drawn in beside them, because nobody has played these
+   events in threes and inventing a trio would throw away the one real thing in
+   the room. Where the third comes from is the same answer too — the back of the
+   region's own queue, read from the bottom up, so a player who is going to be
+   somebody's core is not taken to fill a chair. What the queue cannot cover is
+   ladder, exactly as a cup lobby's third is. */
+let CC_LAN_THIRD_POOL={};
+function ccLanPool(reg){
+  const key=String(reg||'EU');
+  if(CC_LAN_THIRD_POOL[key]) return CC_LAN_THIRD_POOL[key];
+  const out=[];
+  // Major 2's leaderboard first because it is the more recent month, then Major
+  // 1's for the regions whose Major 2 list is short. Reversed: the bottom of a
+  // qualifier is who is left once the seats are taken.
+  ['m2','m1'].forEach(set=>gcRegionFinals(set, key)
+    .forEach(e=>(e.duo||[]).forEach(h=>out.push(h))));
+  out.reverse();
+  CC_LAN_THIRD_POOL[key]=out;
+  return out;
+}
+function ccLanThird(reg, seated, ovr){
+  const pool=ccLanPool(reg);
+  for(let i=0;i<pool.length;i++){
+    const h=pool[i];
+    if(seated.has(_gcNorm(h))) continue;
+    const c=gcFindCard(h, reg, ovr==null?CC_LAN_OVR:ovr);
+    if(!c || seated.has(_gcNorm(c.handle))) continue;
+    seated.add(_gcNorm(h)); seated.add(_gcNorm(c.handle));
+    return c;
+  }
+  // Nobody left on that region's boards. A made-up name is better than a duo in
+  // a trio lobby, and it is what a cup field falls back to as well.
+  const rnd=careerRng(careerSeed(CAREER.career, 'lan3:'+String(reg||'EU')));
+  const taken=new Set(Array.from(seated));
+  const c=careerLadderPlayer(rnd, ovr==null?CC_LAN_OVR:ovr, taken);
+  seated.add(_gcNorm(c.handle));
+  return c;
+}
 function ccLanTeam(duo, region, fallbackOvr, seated){
   const cards=duo.map(h=>gcFindCard(h, region, fallbackOvr));
   if(seated){
     const keys=duo.map(_gcNorm).concat(cards.map(c=>_gcNorm(c.handle)));
     if(keys.some(k=>seated.has(k))) return null;
     keys.forEach(k=>seated.add(k));
+  }
+  /* And in a trio season, the seats the season has.
+
+     The region is the one the seat came through where the caller knows it; the
+     Summit's fifteen are a list of all seven regions at once, so the card's own
+     region answers for them. */
+  const per=careerSquadSize();
+  if(per>cards.length){
+    const room=seated || new Set(cards.map(c=>_gcNorm(c.handle)));
+    const reg=region || (cards[0] && cards[0].region) || 'EU';
+    const avg=Math.round(cards.reduce((s,c)=>s+attrsFor(c).ovr,0)/cards.length);
+    while(cards.length<per){
+      const x=ccLanThird(reg, room, avg);
+      if(!x) break;
+      cards.push(x);
+    }
   }
   const t=careerTeam(cards);
   t.name=teamLabel(cards);
@@ -55239,8 +55998,12 @@ function ccSummitSeat(){
   const row=(cr.log||[]).slice().reverse()
     .find(r=>r.kind==='major' && r.stage==='final');
   if(!row || !row.place) return null;
-  if(row.place<=CC_SUMMIT_EU_MAIN) return 'main';
-  if(row.place<=CC_SUMMIT_EU_SCQ)  return 'scq';
+  // Epic's twenty and twenty-eight are places in a fifty-duo Grand Final. The
+  // Major a trio season plays is thirty-three teams wide, so the two lines move
+  // with it — otherwise the top twenty of thirty-three walked into Düsseldorf,
+  // which is a third of the region rather than Epic's share of it. See ccTeams.
+  if(row.place<=ccTeams(CC_SUMMIT_EU_MAIN)) return 'main';
+  if(row.place<=ccTeams(CC_SUMMIT_EU_SCQ))  return 'scq';
   return null;
 }
 function careerSummitCan(ev){
@@ -55274,30 +56037,38 @@ function careerSummitField(stage, you, drafted){
   const seated=new Set();
   drafted.forEach(c=>seated.add(_gcNorm(c.handle)));
   const main=[], scq=[];
+  /* Every allocation here is Epic's, and Epic's are written in duos: fifty in
+     the bracket, Europe's top twenty into the Upper and the next eight into the
+     Second Chance. A trio season seats the same people in fewer teams, so the
+     numbers convert on the way through rather than being written twice. See
+     ccTeams; the room went on being fifty in a trio year until his report of
+     20 August. */
+  const stField=ccTeams(CC_SUMMIT_STAGE.upper.field);
+  const euMainN=ccTeams(CC_SUMMIT_EU_MAIN), euScqN=ccTeams(CC_SUMMIT_EU_SCQ);
   // Europe: the duos this career has been playing the season against.
-  const eu=careerCupField(lanCr, drafted, CC_SUMMIT_EU_SCQ, 'summit');
+  const eu=careerCupField(lanCr, drafted, euScqN, 'summit');
   eu.forEach(t=>(t.squad||[]).forEach(p=>seated.add(_gcNorm(p.handle))));
   const mySeat=ccSummitSeat();
-  const euMain=eu.slice(0, CC_SUMMIT_EU_MAIN-(mySeat==='main'?1:0));
+  const euMain=eu.slice(0, euMainN-(mySeat==='main'?1:0));
   const euScq =eu.slice(euMain.length);
   main.push(...euMain); scq.push(...euScq);
   (mySeat==='scq' ? scq : main).push(you);
   // Everybody else: their own leaderboard, in the order it was finished in.
   Object.keys(SUMMIT_SLOTS).forEach(reg=>{
     if(reg==='EU') return;
-    const n=SUMMIT_SLOTS[reg]||0, m=SUMMIT_SCQ_SLOTS[reg]||0;
+    const n=ccTeams(SUMMIT_SLOTS[reg]||0), m=ccTeams(SUMMIT_SCQ_SLOTS[reg]||0);
     const teams=ccLanSeats(gcRegionFinals('m1', reg), n+m, reg, seated);
     main.push(...teams.slice(0, n));
     scq.push(...teams.slice(n));
   });
   const seed=a=>a.slice().sort((x,y)=>(y.pow||0)-(x.pow||0));
   const M=seed(main), S=seed(scq);
-  const half=Math.round(CC_SUMMIT_STAGE.upper.field/2);
-  if(stage==='upper') return ccSeatYou(M.slice(0, CC_SUMMIT_STAGE.upper.field), you);
-  const lower=S.concat(M.slice(half)).slice(0, CC_SUMMIT_STAGE.lower.field);
+  const half=Math.round(stField/2);
+  if(stage==='upper') return ccSeatYou(M.slice(0, stField), you);
+  const lower=S.concat(M.slice(half)).slice(0, stField);
   if(stage==='lower') return ccSeatYou(lower, you);
   return ccSeatYou(M.slice(0, half).concat(lower.slice(0, half))
-                    .slice(0, CC_SUMMIT_STAGE.final.field), you);
+                    .slice(0, stField), you);
 }
 // Epic's published Summit purse, read straight rather than through
 // prizeTableFor, which branches on CARD_SET — a global the career does not set.
@@ -55309,7 +56080,8 @@ async function runCareerSummit(){
   const cr=CAREER.career;
   const ev=careerSummitOn(careerToday());
   if(!ev || !careerSummitCan(ev)) return;
-  const st=CC_SUMMIT_STAGE[ev.stage];
+  // In this season's teams, like every other stage a career plays. See ccTeams.
+  const st=ccScaleStage(CC_SUMMIT_STAGE[ev.stage]);
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('summit', ev.id||ev.label||'');
   /* The squad this season is played in, not a duo.
@@ -55383,7 +56155,7 @@ async function runCareerSummit(){
      for. SUMMIT_GC_SLOTS is fifteen and it is what ccGlobalsSeat already reads,
      so the qualification was right all along and only the line was wrong. */
   await revealStandings(shell, ranked, you,
-    st.cut || (ev.stage==='final' ? SUMMIT_GC_SLOTS : 10), null, null,
+    st.cut || (ev.stage==='final' ? ccTeams(SUMMIT_GC_SLOTS) : 10), null, null,
     ev.stage==='final' ? summitPrize : null, null, ev.stage==='final');
   careerPrAdd(ranked, {div:1, kind:'summit', stage:ev.stage});
 
@@ -55473,14 +56245,18 @@ function careerGlobalsOn(iso){
    own region never had. This is the same table the standings card draws its cut
    line from, which is the point: what the player was shown during the event and
    what the calendar checks afterwards have to be the same number. */
+/* Epic's allocation is written in duos, like every other count in this file, so
+   a trio season reads it in trios: nine European seats out of fifty duos is six
+   out of thirty-three trios, and handing out nine would put a fifth of Europe's
+   Major 2 field on the plane. See ccTeams. */
 function ccGcSlots(table){
   const r=careerPrizeRegion();
-  return table[r]!=null ? table[r] : (table.EU||0);
+  return ccTeams(table[r]!=null ? table[r] : (table.EU||0));
 }
 function ccGlobalsSeat(){
   const log=(CAREER.career.log||[]).slice().reverse();
   const summit=log.find(r=>r.kind==='summit' && r.stage==='final');
-  if(summit && summit.place && summit.place<=SUMMIT_GC_SLOTS)
+  if(summit && summit.place && summit.place<=ccTeams(SUMMIT_GC_SLOTS))
     return {via:'summit', place:summit.place, note:L().ccGlobSeatSummit};
   const major=log.find(r=>{
     if(r.kind!=='major' || r.stage!=='final') return false;
@@ -55526,9 +56302,11 @@ function careerGlobalsField(you, drafted, via){
   // The Summit's fifteen first, because the Summit happened first: a duo that
   // won its seat in May keeps it, and a later event's place rolls down to
   // somebody not going yet. That is the order the draft mode seats them in too.
-  add(ccLanSeats(ccLanRows(GC_SUMMIT_DUOS), SUMMIT_GC_SLOTS, null, seated), 'summit');
+  // Counted in this season's teams, so the three routes still add up to the
+  // field rather than being cut off by the slice at the bottom. See ccTeams.
+  add(ccLanSeats(ccLanRows(GC_SUMMIT_DUOS), ccTeams(SUMMIT_GC_SLOTS), null, seated), 'summit');
   Object.keys(MAJOR2_GC_SLOTS).forEach(reg=>{
-    const slots=MAJOR2_GC_SLOTS[reg]||0;
+    const slots=ccTeams(MAJOR2_GC_SLOTS[reg]||0);
     const real=ccLanSeats(ccLanRows(GC_MAJOR2_DUOS[reg]), slots, reg, seated);
     // A qualifier the career itself took — the player, or their partner — leaves
     // its region a seat short. It rolls down that region's own final, which is
@@ -55539,7 +56317,7 @@ function careerGlobalsField(you, drafted, via){
   });
   // The Last Chance, undecided: each region's own Major 2 leaderboard, top down.
   Object.keys(GCLC_GC_SLOTS).forEach(reg=>
-    add(ccLanSeats(gcRegionFinals('m2', reg), GCLC_GC_SLOTS[reg]||0, reg, seated), 'lcq'));
+    add(ccLanSeats(gcRegionFinals('m2', reg), ccTeams(GCLC_GC_SLOTS[reg]||0), reg, seated), 'lcq'));
   // Your seat, taken off the route you won it on rather than added to the room.
   const route = via==='summit' ? 'summit' : via==='gclc' ? 'lcq' : 'm2';
   const mine=field.filter(t=>t.gcRoute===route);
@@ -55943,7 +56721,10 @@ async function runCareerReload(){
   const cr=CAREER.career;
   const ev=careerReloadOn(careerToday());
   if(!ev || !careerReloadCan(ev)) return;
-  const st=CC_RELOAD_STAGE[ev.stage];
+  // In this season's teams: a Reload lobby is forty players, which is twenty
+  // duos or thirteen trios, and the circuit's fields and cuts are written in
+  // duos like everything else here. See ccTeams.
+  const st=ccScaleStage(CC_RELOAD_STAGE[ev.stage]);
   /* The squad this season is played in, not a duo.
 
      Every one of these nine runners took the player and one partner and set
@@ -56044,9 +56825,9 @@ async function runCareerReload(){
      "through" was settled on the room's own cut two lines above. See
      ccOpenScale. */
   const openRoom = ev.stage==='open';
-  const showOf = openRoom ? CC_LADDER_TRUE : field.length;
+  const showOf = openRoom ? ccOpenTrue() : field.length;
   const showPlace = openRoom ? ccOpenShow(place, field.length) : place;
-  const showCut = openRoom ? ccOpenAdvance() : st.cut;
+  const showCut = openRoom ? ccOpenAdvanceNow() : st.cut;
   CC_RANK_SCALE = openRoom ? ccOpenScale(field.length) : 1;
 
   const shell=createStageCardShell(ev.label+' - '+showOf);
