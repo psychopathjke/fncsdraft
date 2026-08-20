@@ -3884,6 +3884,9 @@ chNoPartner:'Напарника пока нет',
 ccSeatEmpty:'Место свободно', ccSeasonDuos:'Сезон в дуо', ccSeasonTrios:'Сезон в трио',
 ccWordDuos:'дуо', ccWordTrios:'трио', calVictoryTrio:'Трио Виктори Кап',
 ccMateKeep:'Оставить', chToday:'сегодня', ccShopConf:'Уверенность',
+arcTitle:'Прошлые сезоны', arcYou:'это ты',
+arcHint:'Кто что выиграл — по каждому сезону и каждому региону. Твои победы отмечены',
+arcNone:'Первый сезон ещё идёт — история появится, когда он закончится',
 ccMoveGoCity:(c,r)=>'Переехать: '+c+' ('+r+')', ccScoutOff:'Не искать клуб', ccScoutOn:'Искать клуб', ccMateOver:'Сезон в дуо, а вас трое. Выбери, кто остаётся — второй уйдёт, и вход в турниры закрыт, пока не решишь',
 ccSquadTrio:'Трио',
 chLadder:'Лестница',
@@ -5265,6 +5268,9 @@ chNoPartner:'No partner yet',
 ccSeatEmpty:'Seat open', ccSeasonDuos:'A duos season', ccSeasonTrios:'A trios season',
 ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Trios Victory Cup',
 ccMateKeep:'Keep', chToday:'today', ccShopConf:'Confidence',
+arcTitle:'Past seasons', arcYou:'that is you',
+arcHint:'Who won what — every season, every region. Your own wins are marked',
+arcNone:'The first season is still running — the history starts when it ends',
 ccMoveGoCity:(c,r)=>'Move to '+c+' ('+r+')', ccScoutOff:'Stop looking for clubs', ccScoutOn:'Look for clubs', ccMateOver:'A duos season, and there are three of you. Choose who stays — the other leaves, and nothing can be entered until you decide',
 ccSquadTrio:'Trio',
 chLadder:'The ladder',
@@ -7382,6 +7388,9 @@ ccFindDuo:'Trouver un partenaire',
 ccSeatEmpty:'Place libre',
 ccWordDuos:'duos', ccWordTrios:'trios', calVictoryTrio:'Victory Cup trios',
 ccMateKeep:'Garder', chToday:'aujourd’hui', ccShopConf:'Confiance',
+arcTitle:'Saisons passées', arcYou:'c’est toi',
+arcHint:'Qui a gagné quoi — chaque saison, chaque région. Tes victoires sont marquées',
+arcNone:'La première saison est en cours — l’histoire commence quand elle se termine',
 ccMoveGoCity:(c,r)=>'S’installer : '+c+' ('+r+')', ccScoutOff:'Ne plus chercher de club', ccScoutOn:'Chercher un club', ccMateOver:'Une saison en duos, et vous êtes trois. Choisis qui reste — l’autre part, et rien ne peut être joué avant de décider',
 ccSeasonDuos:'Saison en duos',
 ccSeasonTrios:'Saison en trios',
@@ -56897,10 +56906,141 @@ function careerTimelineHTML(){
     </div>`).join('')}
   </div>`;
 }
+/* ===== The seasons that already happened =================================
+
+   His ask, 20 August: a history of past seasons — who won what, every event,
+   and every region, because a career played in Europe should still be able to
+   look up who took the Asian Major.
+
+   Nothing here is stored. A season's winners are computed when the screen asks,
+   off a seed that never changes for this career — so the archive reads the same
+   on every visit without a byte added to the save, and an old career gets its
+   whole past for free the first time it opens the tab. The player's own wins
+   are the exception: those really happened, they are in the log, and they
+   overwrite the generated name wherever the log says place one. */
+function ccArcRoster(reg){
+  if(CC_NOW_CARDS[reg]) return CC_NOW_CARDS[reg];
+  const now=new Map();
+  PLAYERS.forEach(p=>{
+    if((p.region||'')!==reg || ccCardYear(p)!==CC_NOW_YEAR) return;
+    const k=hKey(p), day=ccCardDay(p) || CC_NOW_YEAR*10000;
+    const cur=now.get(k);
+    if(!cur || day>cur._day){ const c={...p}; c._day=day; c._ovr=attrsFor(p).ovr; now.set(k, c); }
+  });
+  CC_NOW_CARDS[reg]=[...now.values()].sort((a,b)=>b._ovr-a._ovr);
+  return CC_NOW_CARDS[reg];
+}
+// A champion team out of a region: a top-band card, its recorded partner when
+// the roster holds one, and the next best hands until the season's size is met.
+function ccArcTeam(reg, size, rng){
+  const roster=ccArcRoster(reg);
+  if(!roster.length) return null;
+  const band=roster.slice(0, Math.max(6, Math.min(16, Math.floor(roster.length/4))));
+  const first=band[Math.floor(rng()*band.length)];
+  const team=[first];
+  const has=h=>team.some(c=>hKey(c)===hKey(h));
+  if(first.partner){
+    const mate=roster.find(c=>hKey(c)===hKey(first.partner));
+    if(mate && !has(mate)) team.push(mate);
+  }
+  let i=0;
+  while(team.length<size && i<roster.length){
+    const c=roster[i++];
+    if(!has(c)) team.push(c);
+  }
+  return team.slice(0, size);
+}
+function ccArcName(team){ return team ? team.map(c=>c.handle).join(' & ') : '—'; }
+// The regions a LAN's winner is drawn from, weighted the way the scene is.
+const CC_ARC_LAN_W=[['EU',4],['NAC',3],['NAW',2],['BR',2],['ASIA',1],['ME',1],['OCE',1]];
+function ccArcLanRegion(rng){
+  const total=CC_ARC_LAN_W.reduce((s,w)=>s+w[1],0);
+  let roll=rng()*total;
+  for(const [reg,w] of CC_ARC_LAN_W){ roll-=w; if(roll<0) return reg; }
+  return 'EU';
+}
+// Which major a final the log holds belongs to, read off its month: the year
+// is the same measured calendar every season, so May is always Major 1's
+// window and August Major 2's, and the trios year splits in thirds.
+function ccArcMajorOf(day, size){
+  const m=+String(day||'').slice(5,7)||1;
+  if(size===3) return m<=4 ? 1 : m<=7 ? 2 : 3;
+  return m<=6 ? 1 : 2;
+}
+function careerArchiveSeason(sn){
+  const cr=CAREER.career;
+  const size=(sn%2)?2:3;
+  const seed=tag=>careerRng(ccHashStr('arc|'+(CAREER.player.nick||'')+'|'+sn+'|'+tag));
+  const mine=ccCareerRegion();
+  // What the player actually won that season, straight off the log.
+  const wins={majors:{}, summit:null, paris:null, gc:null};
+  (cr.log||[]).forEach(e=>{
+    if(e.season!==sn || e.place!==1) return;
+    const meTeam=[CAREER.player.nick].concat(e.mate?[e.mate]:[]).join(' & ');
+    if(e.kind==='major' && e.stage==='final') wins.majors[ccArcMajorOf(e.day, size)]=meTeam;
+    if(e.kind==='summit' && e.stage==='final') wins.summit=meTeam;
+    if(e.kind==='rc' && e.stage==='final') wins.paris=meTeam;
+    if(e.kind==='globals') wins.gc=meTeam;
+  });
+  const majors=size===3?[1,2,3]:[1,2];
+  const regional=majors.map(n=>{
+    const perReg={};
+    REGIONS.forEach(r=>{
+      const own=r.code===mine && wins.majors[n];
+      perReg[r.code]=own ? {name:wins.majors[n], you:true}
+                         : {name:ccArcName(ccArcTeam(r.code, size, seed('m'+n+'|'+r.code)))};
+    });
+    return {label:L().ccSlotMajor(n), perReg};
+  });
+  const lan=(tag, taken, cityKey)=>{
+    const rng=seed(tag);
+    const reg=taken ? mine : ccArcLanRegion(rng);
+    return {reg, name: taken || ccArcName(ccArcTeam(reg, size, rng)), you:!!taken};
+  };
+  const global=[];
+  if(size===2){
+    global.push({label:'Summit', win:lan('summit', wins.summit)});
+    global.push({label:'Reload Championship', win:lan('paris', wins.paris)});
+  }
+  global.push({label:'Global Championship', win:lan('gc', wins.gc)});
+  return {size, regional, global};
+}
+let CH_ARC_S=null, CH_ARC_R=null;
+function careerArcPick(sn){ CH_ARC_S=sn; careerRenderHub('log'); }
+function careerArcReg(r){ CH_ARC_R=r; careerRenderHub('log'); }
+function careerArchiveHTML(){
+  const cr=CAREER.career;
+  const doneSeasons=[];
+  for(let n=1;n<=cr.season;n++) if(n<cr.season || cr.seasonOver) doneSeasons.push(n);
+  if(!doneSeasons.length)
+    return `<div class="ch-tile"><h4>${L().arcTitle}</h4>
+      <div class="ch-empty">${L().arcNone}</div></div>`;
+  const sn=doneSeasons.indexOf(CH_ARC_S)>=0 ? CH_ARC_S : doneSeasons[doneSeasons.length-1];
+  const reg=CH_ARC_R || ccCareerRegion();
+  const a=careerArchiveSeason(sn);
+  const chipsS=doneSeasons.map(n=>`<button class="cc-back${n===sn?' cc-on':''}"
+    onclick="careerArcPick(${n})">${esc(L().ccMoneySeason(n))}</button>`).join('');
+  const chipsR=REGIONS.map(r=>`<button class="cc-back${r.code===reg?' cc-on':''}"
+    onclick="careerArcReg('${r.code}')">${esc(regionName(r.code))}</button>`).join('');
+  const rowsR=a.regional.map(ev=>{const w=ev.perReg[reg];
+    return `<div class="ch-row"><em>${esc(ev.label)}</em><b class="${w.you?'ch-goal-met':''}">${
+      esc(w.name)}${w.you?' · '+L().arcYou:''}</b></div>`;}).join('');
+  const rowsG=a.global.map(ev=>`<div class="ch-row"><em>${esc(ev.label)}</em>
+    <b class="${ev.win.you?'ch-goal-met':''}">${esc(ev.win.name)} · ${esc(regionName(ev.win.reg))}${
+      ev.win.you?' · '+L().arcYou:''}</b></div>`).join('');
+  return `<div class="ch-tile"><h4>${L().arcTitle}</h4>
+    <div class="ch-hint">${L().arcHint}</div>
+    <div class="cc-chips">${chipsS}</div>
+    <div class="ch-row"><em>${L().chSquad}</em><b>${a.size===3?L().ccSeasonTrios:L().ccSeasonDuos}</b></div>
+    ${rowsG}
+    <div class="cc-chips cc-chips-reg">${chipsR}</div>
+    ${rowsR}
+  </div>`;
+}
 function careerHistoryHTML(){
   const log=(CAREER.career.log||[]).slice().reverse();
   const pl=CAREER.player;
-  if(!log.length) return careerTimelineHTML()+`<div class="ch-grid" style="grid-template-columns:1fr;">`+
+  if(!log.length) return careerArchiveHTML()+careerTimelineHTML()+`<div class="ch-grid" style="grid-template-columns:1fr;">`+
     `<div class="ch-tile"><h4>${L().chLogTitle}</h4><div class="ch-empty">${L().chLogEmpty}</div></div></div>`;
 
   const sum=(k)=>log.reduce((s,e)=>s+(e[k]||0),0);
@@ -56932,7 +57072,8 @@ function careerHistoryHTML(){
     </tr>`;
   }).join('');
 
-  return careerTimelineHTML()+`<div class="ev-wrap">
+  // The seasons already played sit above the personal log. See careerArchiveHTML.
+  return careerArchiveHTML()+careerTimelineHTML()+`<div class="ev-wrap">
     <div class="ev-head">
       <div class="ev-hero">
         <em>${L().ccRoOvr}</em>
