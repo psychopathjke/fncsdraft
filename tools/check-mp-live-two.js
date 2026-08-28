@@ -32,6 +32,7 @@ const SOLO = process.env.CC_SOLO || '';
 const HIDE_A = Number(process.env.CC_HIDE_A || 0), HIDE_B = Number(process.env.CC_HIDE_B || 0);   // через сколько мс вкладка «уходит в фон» (0 — не уходит)
 const RELOAD = process.env.CC_RELOAD === '1';
 const NIGHTS = Number(process.env.CC_NIGHTS || 1);
+const FF = process.env.CC_FF || '';                 // перемотка на двоих до этой даты вместо вечера
 const CAREER_PATCH = process.env.CC_CAREER ? JSON.parse(process.env.CC_CAREER) : null;   // JSON, вливается в career обоих сейвов (билеты, этапы)   // сколько вечеров подряд сыграть (кубок дивизиона: 2 сессии)    // Reload: предыдущий этап серии уже пройден, чтобы день открылся
 const SLASH = String.fromCharCode(92);
 
@@ -113,6 +114,20 @@ const boot = (who) => `
       const btns=[...document.querySelectorAll('#screen-career-hub button')].filter(b=>b.offsetParent!==null).map(b=>b.textContent.trim().slice(0,30)).join(' | ');
       throw new Error('вечер не начался: '+out.notes.why+' · день '+CAREER.career.day+' · экран '+shown+' · кнопки '+btns);
     };
+    if(${JSON.stringify(FF)}){
+      // Перемотка на двоих: оба голосуют за дату, ждём, пока календарь дойдёт; сравнивается журнал.
+      careerRenderHub('calendar'); await wait(300);
+      careerFfToDay(${JSON.stringify(FF)});
+      out.notes.ffVoted=true;
+      const tf=Date.now();
+      while(Date.now()-tf<${BUDGET_MS} && (CAREER.career.day<${JSON.stringify(FF)} || CC_FF)) await wait(500);
+      out.notes.table=(CAREER.career.log||[]).map(r=>[r.day, r.kind||'cup', r.stage||'', r.place, r.of, r.pts, r.wins, r.elims].join(' '));
+      out.notes.split=[...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent);
+      out.notes.rolls=CC_MP_ROLLS; out.notes.dayAfter=CAREER.career.day; out.notes.head='перемотка до '+${JSON.stringify(FF)}+' · строк журнала '+out.notes.table.length;
+      out.notes.mine=(CAREER.career.log||[]).slice(-1)[0]||{};
+      document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
+      return;
+    }
     const how0=await pressPlay();
     if(how0!=='play') throw new Error('первый день без вечера: '+how0);
     out.notes.build=CC_BUILD;
@@ -250,9 +265,9 @@ async function runOne(tag, who, port){
   if(a.fail || b.fail) bad++;
   if(hash(a.notes.table)!==hash(b.notes.table)){ const at=rowsOf(a.notes.table).findIndex((r,i)=>norm(r)!==norm(rowsOf(b.notes.table)[i])); console.log('FAIL таблицы разные, строка '+(at+1)+'\n  A: '+(a.notes.table||[])[at]+'\n  B: '+(b.notes.table||[])[at]); bad++; }
   if((a.notes.split||[]).length || (b.notes.split||[]).length){ console.log('FAIL есть красная строка'); bad++; }
-  const want=ccAddDaysNode(DAY, NIGHTS);
+  const want=FF || ccAddDaysNode(DAY, NIGHTS);
   for(const [n, r] of [['A', a], ['B', b]]) if(r.notes.dayAfter!==want){ console.log('FAIL '+n+': день после вечера '+r.notes.dayAfter+', ждали '+want); bad++; }
-  if(a.notes.rolls!==b.notes.rolls){ console.log('FAIL броски разные: '+a.notes.rolls+' / '+b.notes.rolls); bad++; }
+  if(!FF && a.notes.rolls!==b.notes.rolls){ console.log('FAIL броски разные: '+a.notes.rolls+' / '+b.notes.rolls); bad++; }
   if(bad) process.exit(1);
   console.log('два живых клиента через настоящий воркер сыграли один и тот же вечер');
 })().catch(e=>{ console.error(e.message||e); process.exit(2); });
