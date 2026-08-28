@@ -32,7 +32,8 @@ const SOLO = process.env.CC_SOLO || '';
 const HIDE_A = Number(process.env.CC_HIDE_A || 0), HIDE_B = Number(process.env.CC_HIDE_B || 0);   // через сколько мс вкладка «уходит в фон» (0 — не уходит)
 const RELOAD = process.env.CC_RELOAD === '1';
 const NIGHTS = Number(process.env.CC_NIGHTS || 1);
-const FF = process.env.CC_FF || '';                 // перемотка на двоих до этой даты вместо вечера
+const FF = process.env.CC_FF || '';
+const RELOAD_A = Number(process.env.CC_RELOAD_A || 0), RELOAD_B = Number(process.env.CC_RELOAD_B || 0);   // через сколько мс вкладка перезагружается посреди вечера                 // перемотка на двоих до этой даты вместо вечера
 const CAREER_PATCH = process.env.CC_CAREER ? JSON.parse(process.env.CC_CAREER) : null;   // JSON, вливается в career обоих сейвов (билеты, этапы)   // сколько вечеров подряд сыграть (кубок дивизиона: 2 сессии)    // Reload: предыдущий этап серии уже пройден, чтобы день открылся
 const SLASH = String.fromCharCode(92);
 
@@ -60,6 +61,28 @@ const boot = (who) => `
     const c=p.querySelector("#gameLandingConfirm"); if(c && !c.disabled) c.click();
   }, 40);
   try{
+    // После перезагрузки посреди вечера: сейв уже на месте, лобби в нём, вечер догоняется сам (ccMpResume).
+    if(sessionStorage.getItem('cc_reloaded')){
+      out.notes.reloaded=true;
+      careerEntry();
+      const t0=Date.now();
+      let card=null;
+      while(Date.now()-t0<${BUDGET_MS} && !card){
+        await wait(300);
+        card=[...document.querySelectorAll('#majorStages .stage-card')].find(c=>c.querySelector('button[onclick*="careerBackToHub"]'));
+      }
+      if(!card) throw new Error('после перезагрузки результат не пришёл за бюджет · день '+CAREER.career.day+' · rand '+!!CC_MP_RAND+' · replay '+CC_MP_REPLAY);
+      out.notes.table=[...document.querySelectorAll('#majorStages .stage-card table.lobby-table tbody tr')]
+        .filter(tr=>/^#/.test((tr.children[0]||{}).textContent||''))
+        .map(tr=>[...tr.children].map(td=>td.textContent.trim()).join(' '));
+      out.notes.head=[...document.querySelectorAll('#majorStages .stage-card h4')].map(h=>h.textContent.replace(/\\s+/g,' ').trim()).join(' | ');
+      out.notes.split=[...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent);
+      out.notes.rolls=CC_MP_ROLLS; out.notes.dayAfter=CAREER.career.day;
+      const log=(CAREER.career.log||[]); const last=log[log.length-1]||{};
+      out.notes.mine={place:last.place, of:last.of, pts:last.pts, wins:last.wins, elims:last.elims};
+      document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
+      return;
+    }
     localStorage.setItem('fncsdraft_career', JSON.stringify({
       v:1, player:{nick:${JSON.stringify(who.nick)}, age:${who.age}, source:'rookie', country:${JSON.stringify(who.country)}, countryPing:15,
         closeRangeEdge:${who.close}, region:'EU', ovr:${who.ovr}, role:${JSON.stringify(who.role)}, attrs:null, ageEdge:${who.ageEdge},
@@ -73,7 +96,7 @@ const boot = (who) => `
     s.player.attrs=ccRookieAttrs(${who.ovr}, ${JSON.stringify(who.role)});
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
     careerEntry();
-    if(${RELOAD}){ const ev=careerReloadOn(careerToday()); if(ev){ CAREER.career.reload={series:ev.series, got:CC_RELOAD_ORDER[CC_RELOAD_ORDER.indexOf(ev.stage)-1]}; careerSave(); } }
+    if(${RELOAD}){ for(let k=0;k<8;k++){ const ev=careerReloadOn(ccAddDays(careerToday(), k)); if(ev){ CAREER.career.reload={series:ev.series, got:CC_RELOAD_ORDER[CC_RELOAD_ORDER.indexOf(ev.stage)-1]}; careerSave(); break; } } }
     const ok=await ccMpEnter({code:${JSON.stringify(CODE)}, role:${JSON.stringify(who.role_mp)}});
     out.notes.entered=ok; out.notes.link=MP.state;
     if(!ok){
@@ -142,6 +165,8 @@ const boot = (who) => `
     const skipAt=${who.skipAt};
     if(skipAt>0) setTimeout(function(){ const b=document.getElementById('majorSkipBtn'); if(b && !b.disabled){ b.click(); out.notes.skipPressed=true; } }, skipAt);
     // Уход в фон: как Chrome — document.hidden и visibilitychange; rAF при этом headless и так не даёт.
+    const reloadAt=${who.reloadAt};
+    if(reloadAt>0) setTimeout(function(){ sessionStorage.setItem('cc_reloaded','1'); location.reload(); }, reloadAt);
     const hideAt=${who.hideAt};
     if(hideAt>0) setTimeout(function(){ Object.defineProperty(document, 'hidden', {get:()=>true, configurable:true}); Object.defineProperty(document, 'visibilityState', {get:()=>'hidden', configurable:true}); document.dispatchEvent(new Event('visibilitychange')); out.notes.hidden=true; }, hideAt);
     // След хода вечера: где стоим, чего ждём, что последнее послали.
@@ -193,8 +218,8 @@ const boot = (who) => `
 
 const ccAddDaysNode=(iso, n)=>{ const d=new Date(iso+'T00:00:00Z'); d.setUTCDate(d.getUTCDate()+n); return d.toISOString().slice(0,10); };
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-const A = {nick:'LiveA', age:17, ageEdge:4, country:'de', close:6, ovr:90, role:'roleIGL', role_mp:'a', money:48000, reach:20000, form:3, grind:12, skipAt:SKIP_A, hideAt:HIDE_A};
-const B = {nick:'LiveB', age:24, ageEdge:0, country:'br', close:1, ovr:86, role:'roleFRG', role_mp:'b', money:0,     reach:0,     form:0, grind:0,  skipAt:SKIP_B, hideAt:HIDE_B};
+const A = {nick:'LiveA', age:17, ageEdge:4, country:'de', close:6, ovr:90, role:'roleIGL', role_mp:'a', money:48000, reach:20000, form:3, grind:12, skipAt:SKIP_A, hideAt:HIDE_A, reloadAt:RELOAD_A};
+const B = {nick:'LiveB', age:24, ageEdge:0, country:'br', close:1, ovr:86, role:'roleFRG', role_mp:'b', money:0,     reach:0,     form:0, grind:0,  skipAt:SKIP_B, hideAt:HIDE_B, reloadAt:RELOAD_B};
 
 function cdp(port){
   return new Promise((res, rej)=>{
@@ -253,7 +278,7 @@ async function runOne(tag, who, port){
   const hash=t=>crypto.createHash('sha1').update(rowsOf(t).map(norm).join('\n')).digest('hex').slice(0,12);
   for(const [n, r] of [['A', a], ['B', b]]){
     console.log(n+': '+(r.fail ? 'FAIL '+r.fail : (r.notes.head||'')) + ' · строк '+((r.notes.table||[]).length)+' · хеш '+hash(r.notes.table)+
-      ' · своё '+JSON.stringify(r.notes.mine)+' · броски '+r.notes.rolls+' · pow '+r.notes.youPow+' · скип '+!!r.notes.skipPressed+' · фон '+!!r.notes.hidden+' · own/other '+r.notes.own+'/'+r.notes.other+' · '+JSON.stringify(r.notes.engine)+' · team '+JSON.stringify(r.notes.team));
+      ' · своё '+JSON.stringify(r.notes.mine)+' · броски '+r.notes.rolls+' · pow '+r.notes.youPow+' · скип '+!!r.notes.skipPressed+' · фон '+!!r.notes.hidden+' · перезагрузка '+!!r.notes.reloaded+' · own/other '+r.notes.own+'/'+r.notes.other+' · '+JSON.stringify(r.notes.engine)+' · team '+JSON.stringify(r.notes.team));
     if(r.notes.split && r.notes.split.length) console.log('   красная строка: '+r.notes.split.join(' || '));
     if(r.notes.days && r.notes.days.length>1) console.log('   дни: '+r.notes.days.join(' → '));
     if(r.notes.marks) console.log('   метки: '+r.notes.marks.slice(0, r.notes.split && r.notes.split.length ? 60 : 14).join(' | '));
@@ -267,7 +292,7 @@ async function runOne(tag, who, port){
   if((a.notes.split||[]).length || (b.notes.split||[]).length){ console.log('FAIL есть красная строка'); bad++; }
   const want=FF || ccAddDaysNode(DAY, NIGHTS);
   for(const [n, r] of [['A', a], ['B', b]]) if(r.notes.dayAfter!==want){ console.log('FAIL '+n+': день после вечера '+r.notes.dayAfter+', ждали '+want); bad++; }
-  if(!FF && a.notes.rolls!==b.notes.rolls){ console.log('FAIL броски разные: '+a.notes.rolls+' / '+b.notes.rolls); bad++; }
+  if(!FF && !RELOAD_A && !RELOAD_B && a.notes.rolls!==b.notes.rolls){ console.log('FAIL броски разные: '+a.notes.rolls+' / '+b.notes.rolls); bad++; }
   if(bad) process.exit(1);
   console.log('два живых клиента через настоящий воркер сыграли один и тот же вечер');
 })().catch(e=>{ console.error(e.message||e); process.exit(2); });

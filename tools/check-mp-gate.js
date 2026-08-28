@@ -69,8 +69,8 @@ const BOOT = `
     await careerFastForward(30);
     check('перемотка в командной карьере не двигает день',
           careerToday() === wasDay && !CC_FF, careerToday() + ' / ' + JSON.stringify(CC_FF));
-    check('и кнопки перемотки называют причину',
-          careerFfButtonsHTML().indexOf(L().ccMpNoFf) >= 0, careerFfButtonsHTML());
+    check('и кнопки перемотки объясняют два подтверждения',
+          careerFfButtonsHTML().indexOf(L().ccMpFfHint) >= 0 && careerFfButtonsHTML().indexOf('careerFfConfirm(')>=0, careerFfButtonsHTML());
     // А в одиночной карьере она как была.
     delete CAREER.career.mp;
     check('в одиночной карьере кнопки перемотки на месте',

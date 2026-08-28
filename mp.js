@@ -20,7 +20,20 @@ var SOCK=null, CODE=null, ID=null, SEEN=0, HANDLERS={}, PEER=null;
    очередь копила бы его собственные ответы. Чистится на старте и закрытии
    вечера, а сверх шестидесяти четырёх — самое старое выбрасывается: очередь
    это буфер на секунды, а не журнал. */
-var ACTS=[], ACTS_MAX=64;
+/* Очередь чужих ответов и — после перезагрузки — СВОИХ (OWN): вечер догоняется
+   по ним, не спрашивая заново. Лимит вырос: за длинный вечер с барьером на
+   каждую игру и тремя вопросами ленты набегает больше шестидесяти четырёх. */
+var ACTS=[], ACTS_MAX=512, OWN=[];
+function findIn(list, kind, q, take){
+  for(var i=0;i<list.length;i++){
+    var a=list[i];
+    if(a.kind!==kind) continue;
+    var aq=(a.payload && a.payload.q);
+    if(aq!=null && q!=null && aq<q){ list.splice(i,1); i--; continue; }
+    if(aq==null || q==null || aq===q) return take ? list.splice(i,1)[0] : a;
+  }
+  return null;
+}
 // Когда напарник последний раз подавал голос — любым сообщением. См. MP.peerSeen.
 var LAST_PEER=0;
 /* Состояние связи — четыре слова, и все четыре видны игроку.
@@ -182,7 +195,7 @@ var MP={
        очередь решений не попадает: он ничего не решает и вытеснял бы из неё
        настоящие ответы (ACTS_MAX). */
     if(m.by && m.by!==ID) LAST_PEER=(new Date()).getTime();
-    if(m.t==='act' && m.kind==='hb') return;
+    if(m.t==='act' && m.kind==='hb'){ if(m.by && m.by!==ID) MP.peerHb=m.payload||null; return; }
     /* Полное состояние команды. Применяется только если команда наша: с
        чужим дивизионом оно переписало бы карьеру вошедшего. Решает это
        index.html — здесь про дивизионы знать нечего. См. ccMpStateOk. */
@@ -201,6 +214,22 @@ var MP={
       if(typeof ccMpStateOk!=='function' || ccMpStateOk(m.team)) ccApplyTeamState(m.team);
       // Состояние принято — но напарник может оказаться тобой же.
       if(typeof ccMpPeerCheck==='function' && ccMpOn && ccMpOn()) ccMpPeerCheck();
+      /* Вечер у сервера идёт — вкладке он либо нужен заново (перезагрузка),
+         либо она ждала старта, который пропустила (обрыв). А если вечера нет,
+         но было закрытие, — его мог пропустить тот, кто ждал close. */
+      if(m.evening && typeof ccMpResume==='function'){
+        var feed=m.feed||[], mine=[], theirs=[];
+        var myId=(typeof ccMpId==='function') ? ccMpId() : ID;
+        for(var i=0;i<feed.length;i++){
+          var e=feed[i];
+          if(!e || e.t!=='act' || e.kind==='hb') continue;
+          if(e.n>SEEN) SEEN=e.n;
+          if(e.by===myId) mine.push(e); else theirs.push(e);
+        }
+        ccMpResume(m.evening, mine, theirs);
+      } else if(!m.evening && m.closed && typeof ccMpClosedLate==='function'){
+        ccMpClosedLate(m.closed);
+      }
     }
     if(m.t==='card'){
       PEER=m.card;
@@ -215,7 +244,7 @@ var MP={
        нет, а после обрыва не знает и своей. */
     if(m.t==='ready'){ MP.waiting={day:m.day, n:m.ready||0, of:m.of||2}; redraw(); }
     // Вечер начался — ждать больше нечего.
-    if(m.t==='start'){ MP.waiting=null; ACTS.length=0; redraw(); }
+    if(m.t==='start'){ MP.waiting=null; if(!m.resume){ ACTS.length=0; OWN.length=0; } redraw(); }
     // Состояние, которое напарник изменил прямо сейчас: метка на карте, взятый
     // третий, что угодно командное. Применяется и показывается сразу — см.
     // ccMpApplyRemote, там же глушится отправка обратно.
@@ -224,7 +253,7 @@ var MP={
       ACTS.push(m);
       if(ACTS.length>ACTS_MAX) ACTS.shift();
     }
-    if(m.t==='close'){ MP.waiting=null; ACTS.length=0; ccApplyTeamState(m.team); }
+    if(m.t==='close'){ MP.waiting=null; ACTS.length=0; OWN.length=0; ccApplyTeamState(m.team); }
     /* «До свидания» по версии — единственный отказ, из которого не
        переподключаются: пока страница не обновлена, код у нас всё тот же, и
        лобби скажет то же самое. Разрыв дуо ('part') связь не ломает: его
@@ -302,15 +331,13 @@ var MP={
    *
    * Сообщения без номера (старая сборка, проверки) принимаются как есть — на
    * них правило не распространяется. */
-  find:function(kind, q, take){
-    for(var i=0;i<ACTS.length;i++){
-      var a=ACTS[i];
-      if(a.kind!==kind) continue;
-      var aq=(a.payload && a.payload.q);
-      if(aq!=null && q!=null && aq<q){ ACTS.splice(i,1); i--; continue; }
-      if(aq==null || q==null || aq===q) return take ? ACTS.splice(i,1)[0] : a;
-    }
-    return null;
+  find:function(kind, q, take){ return findIn(ACTS, kind, q, take); },
+  /* Свой ответ из ленты вечера — после перезагрузки. См. ccMpResume. */
+  own:function(kind, q){ return findIn(OWN, kind, q, true); },
+  preload:function(mine, theirs){
+    OWN.length=0; (mine||[]).forEach(function(a){ OWN.push(a); });
+    (theirs||[]).forEach(function(a){ if(!ACTS.some(function(b){ return b.n===a.n; })) ACTS.push(a); });
+    while(ACTS.length>ACTS_MAX) ACTS.shift();
   },
   // Заглянуть, не забирая: ответ ещё нужен самому вопросу.
   peek:function(kind, q){ return MP.find(kind, q, false); },

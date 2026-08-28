@@ -110,5 +110,27 @@ const late=C.join('B',{build:'aaaa1111',card:CARD}).find(x=>x.msg.t==='state');
 check('вошедший позже получает свежее состояние', late && late.msg.team.day==='2026-03-03',
       late && JSON.stringify(late.msg.team));
 
+// ---- вечер переживает обрыв и перезагрузку ----------------------------------
+// Его слово, 29 августа: «нужно добавить 3» — обрыв посреди вечера.
+let V=createLobby({build:'aaaa1111', seed:'team-6', team:{day:'2026-02-02'}});
+V.join('A',{build:'aaaa1111',card:CARD}); V.join('B',{build:'aaaa1111',card:CARD});
+check('до вечера состояние без вечера', V.join('A',{build:'aaaa1111',card:CARD}).find(x=>x.msg.t==='state').msg.evening===null);
+V.ready('A','2026-02-02'); const st0=V.ready('B','2026-02-02');
+check('старт у обоих', st0[0].msg.t==='start' && st0[0].to==='all');
+V.act('A','loot',{v:'take',q:1}); V.act('B','late',{v:'hg',q:1});
+// Перезагрузка A: hello заново — состояние несёт вечер и ленту.
+const re=V.join('A',{build:'aaaa1111',card:CARD}).find(x=>x.msg.t==='state').msg;
+check('вечер в состоянии', re.evening && re.evening.day==='2026-02-02' && re.evening.seed===st0[0].msg.seed, JSON.stringify(re.evening));
+check('лента в состоянии', re.feed.length===2 && re.feed[0].by==='A' && re.feed[1].by==='B', JSON.stringify(re.feed));
+// Готовность в идущем вечере — тот же старт, только ему.
+const again=V.ready('A','2026-02-02');
+check('готовность в идущем вечере — старт себе', again.length===1 && again[0].to==='self' && again[0].msg.t==='start' && again[0].msg.resume===true && again[0].msg.seed===st0[0].msg.seed, JSON.stringify(again));
+check('и вечер не перезаведён', V.state.evening.n===st0[0].msg.n);
+// Закрытие остаётся в состоянии для того, кто его не получил.
+V.digest('A','h',{day:'2026-02-02'}); V.digest('B','h',{day:'2026-02-02'});
+const after=V.join('B',{build:'aaaa1111',card:CARD}).find(x=>x.msg.t==='state').msg;
+check('после закрытия вечера нет, а закрытие есть', after.evening===null && after.closed && after.closed.team.day==='2026-02-02', JSON.stringify(after.closed));
+check('лента после закрытия пуста', after.feed.length===0);
+
 if(fails.length){ fails.forEach(f=>console.error('FAIL '+f)); process.exit(1); }
 console.log('лобби нумерует и рассылает, ничего не считая');

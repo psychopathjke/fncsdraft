@@ -22,13 +22,21 @@ function createLobby(opts){
     n:0,                 // последний выданный номер
     evening:null,        // {seed, n} пока вечер идёт
     digests:{},          // id -> {hash, team}
+    last:null,           // {team, n} последнего закрытия — для того, кто закрытие не получил
     seen:0,              // когда лобби трогали в последний раз
     over:false           // дуо разорвано
   };
   const ids=()=>Object.keys(st.cards);
   const peerOf=id=>ids().find(x=>x!==id)||null;
+  /* Состояние несёт и ВЕЧЕР: идёт ли он (сид, номер, день) и вся его лента.
+     Вкладка, перезагруженная посреди вечера, приходит с пустой памятью — по
+     этому она понимает, что вечер есть, и догоняет его по своим же ответам
+     (см. ccMpResume). Кому вечер не нужен, тот ленту просто не читает. */
   const stateMsg=id=>({t:'state', team:st.team, seed:st.seed,
-                       peer:st.cards[peerOf(id)]||null});
+                       peer:st.cards[peerOf(id)]||null,
+                       evening:st.evening||null,
+                       feed:st.evening ? st.feed.slice() : [],
+                       closed:st.last||null});
 
   return {
     get state(){ return st; },
@@ -94,6 +102,11 @@ function createLobby(opts){
        Знаменатель всегда 2, а не число подключённых: команда — это двое, и
        пока второй не вошёл, честный ответ «1 из 2», а не «1 из 1». */
     ready(id, day){
+      /* Вечер этого дня уже идёт — это переподключение или перезагрузка
+         посреди вечера. Старт тот же, с тем же сидом, и только ему:
+         напарник его уже получил и считает. */
+      if(st.evening && st.evening.day===day)
+        return [{to:'self', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day, resume:true}}];
       st.ready[id]=day;
       const all=ids();
       const both=all.length===2 && all.every(x=>st.ready[x]===day);
@@ -101,7 +114,7 @@ function createLobby(opts){
       if(!both) return [{to:'all', msg:{t:'ready', by:id, day:day, ready:n, of:2}}];
       st.ready={};
       st.feed=[]; st.digests={};
-      st.evening={seed:st.seed+'|'+day, n:++st.n};
+      st.evening={seed:st.seed+'|'+day, n:++st.n, day:day};
       return [{to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day}}];
     },
 
@@ -128,6 +141,7 @@ function createLobby(opts){
       const win=st.digests[all[0]].seq<=st.digests[all[1]].seq ? all[0] : all[1];
       const same=st.digests[all[0]].hash===st.digests[all[1]].hash;
       st.team=st.digests[win].team||st.team;
+      st.last={team:st.team, n:st.n};
       st.evening=null; st.feed=[]; st.digests={};
       const msg={t:'close', team:st.team};
       if(!same) msg.split=true;
