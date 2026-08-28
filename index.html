@@ -47684,6 +47684,7 @@ async function ccAskLoot(you, ui){
           Math.round(CC_LOOT_POI_ODDS*100)), pack:other}],
       ui && ui.map)).id;
   }, function(v){ return v==='swap' ? L().ccLootSwap : L().ccLootTake; })).v;
+  ccMpMark('a3:'+pickId);
   // Остался на своей — ничего не выиграл и ничего не потерял. Сказать об этом
   // всё равно надо: молчащая панель читается как «выбор не засчитался».
   if(pickId!=='swap'){
@@ -47695,6 +47696,7 @@ async function ccAskLoot(you, ui){
   // добираешь круг битым.
   const won=Math.random()<CC_LOOT_POI_ODDS;
   ccAddGamePow(you, won ? CC_LOOT_POI_BONUS : -CC_LOOT_POI_FAIL);
+  ccMpMark('w3:'+(won?1:0));
   const line = won ? L().ccLootGot(CC_LOOT_POI_BONUS) : L().ccLootHurt(CC_LOOT_POI_FAIL);
   if(ui && ui.note) ui.note(line);
   await ccChoiceResult(ui && ui.map, line, won);
@@ -47712,10 +47714,12 @@ async function ccAskLate(you, ui){
       ui && ui.map)).id;
   }, function(v){ return v==='hg' ? L().ccLateHg
                        : v==='refresh' ? L().ccLateRefresh : L().ccLateLg; })).v;
+  ccMpMark('a8:'+pickId);
   const move=ccLateMove(pickId);
   const won=Math.random()<move.odds;
   if(won) ccAddGamePow(you, move.pow);
   else if(move.fail) ccAddGamePow(you, -move.fail);
+  ccMpMark('w8:'+(won?1:0));
   /* Что сказать про исход. Хайграунд — единственный ход с монеткой, и только
      он бывает «не удался»; рефреш и низ всегда выходят так, как обещали, но
      назвать прибавку всё равно стоит — иначе непонятно, что вообще случилось. */
@@ -51445,7 +51449,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='7db9554f';
+const CC_BUILD='927e16a4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -73073,6 +73077,7 @@ async function careerLandingPick(field, you, title, kinds, o){
      номер игры берётся из журнала своей команды. */
   ((you.stageLog||[]).length+1)+'|'+ccTableHash(field)+'|'+CC_MP_ROLLS);
   const said=vote.v;
+  ccMpMark('dv:'+String(said.id)+(said.at!=null ? '@'+said.at : ''));
   if(said.id!=='contest') return await careerDropQuick(field, you, said.id, home, pre);
   /* Коробку нажимали ОБА, а сядет команда в одну.
 
