@@ -42823,7 +42823,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       // карта возвращается к целому виду до вопроса. См. ZoneReplay.whole.
       if(replay && ZoneReplay.whole) ZoneReplay.whole(replay);
       const fresh=await opts.dropEachGame(g+1, myLobby);
-      ccMpMark('drop');
+      ccMpMark('drop', myLobby||teams);
       if(fresh) zoneGroups=fresh;
       /* Чужие лобби — своими комнатами. Раньше им хватало общей раздачи, но
          своей у них теперь нет: вопрос разложил только твоё. Каждое лобби
@@ -47417,7 +47417,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
     t._pc=Math.max(1, t._pf+(t.closeEdge||0));
   });
   const you=teams.find(t=>t.isYou);
-  ccMpMark('pf');
+  ccMpMark('pf', teams);
   /* Люди в лобби — в порядке ников: в соло на двоих вопрос задаётся каждому,
      и у обоих клиентов в одном и том же порядке. См. runCareerSoloSeries. */
   const humans=teams.filter(t=>t.isYou||t.isMate)
@@ -47455,11 +47455,13 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
   let dead=false;
   for(const stop of CC_GAME_STOPS){
     game.playTo(stop.zone);
+    ccMpMark('p'+stop.zone, teams);
     if(ui && ui.show && !dead) dead=await ui.show(game.frames());
+    ccMpMark('s'+stop.zone, teams);
     // Комната делает свой ход всегда — она играет и тогда, когда игрок уже
     // выбыл или смотрит перемотку.
     if(stop.room) stop.room(teams, sim ? null : you);
-    ccMpMark('r'+stop.zone);
+    ccMpMark('r'+stop.zone, teams);
     /* Спрашивать или нет — решает ИГРА, а не показ.
 
        Здесь стояло ещё и `!dead`, и это была последняя щель того же сорта.
@@ -47485,10 +47487,10 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
         if((game.squads.find(s=>s.team===h)||{}).alive) await stop.ask(h, ui);
       }
     }
-    ccMpMark('q'+stop.zone);
+    ccMpMark('q'+stop.zone, teams);
   }
   const res=game.finish();
-  ccMpMark('fin');
+  ccMpMark('fin', teams);
   // И остаток матча — тем же куском, если игрок ещё смотрит.
   if(ui && ui.show && !dead) await ui.show(res.timeline);
   LAST_ZONE_TIMELINE=res.timeline;
@@ -51443,7 +51445,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='647d3d91';
+const CC_BUILD='7db9554f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -51621,7 +51623,23 @@ let CC_MP_RAND=null;
    и есть место. Вне командного вечера книга пуста и ничего не стоит. */
 let CC_MP_LEDGER=[];
 function ccMpLedgerReset(){ CC_MP_LEDGER=[]; }
-function ccMpMark(name){ if(CC_MP_RAND) CC_MP_LEDGER.push(name+'='+CC_MP_ROLLS); }
+/* Отметка: фаза=броски[/отпечаток состояния]. Отпечаток — сила в игре
+   (_pf/_pc) и коробка каждой команды: равные броски при разном отпечатке
+   значат, что разъехалось СОСТОЯНИЕ, а не поток. */
+function ccMpMark(name, teams){
+  if(!CC_MP_RAND) return;
+  var sig='';
+  if(teams && teams.length){
+    var acc='';
+    for(var i=0;i<teams.length;i++){
+      var t=teams[i];
+      acc+=(t._pf!=null ? Math.round(t._pf*100) : '-')+':'+(t._pc!=null ? Math.round(t._pc*100) : '-')+':'+
+           (t.landingZone && typeof ALL_LANDING_ZONES!=='undefined' ? ALL_LANDING_ZONES.indexOf(t.landingZone) : '-')+'|';
+    }
+    sig='/'+String(ccHashStr(acc)).slice(0,6);
+  }
+  CC_MP_LEDGER.push(name+'='+CC_MP_ROLLS+sig);
+}
 /* Сколько бросков вечер уже потратил. Едет в сверку барьера рядом с хешем
    таблицы (см. careerLandingPick): две одинаковые таблицы при разном числе
    бросков — это уже расхождение, просто ещё не доехавшее до очков, и красная
@@ -62841,7 +62859,16 @@ const CAREER_PATIENCE_START=60, CAREER_PATIENCE_QUIT=18;
    твоей рукой остались как были. Настроение тоже живёт как жило — он может
    быть недоволен и говорить об этом, он не может только уйти. */
 function ccMateStays(pr){ return !!(pr && pr.movedWith); }
+/* В команде настрой — ОБЩИЙ: от стажа дуо (chemSince — ключ команды), а не
+   от терпения бота-напарника из личного списка. Его слова 28 августа:
+   «настрой ещё не общий у тимейтов» — «общую делай». Растёт с днями вместе,
+   от стартового значения до ста за CC_CHEM_DAYS; одинаков у обоих по
+   построению. Одиночная карьера — как была. */
 function careerPatience(){
+  if(typeof ccMpTeam==='function' && ccMpTeam()){
+    const d=careerChemDays();
+    return Math.round(Math.min(100, CAREER_PATIENCE_START+(100-CAREER_PATIENCE_START)*Math.min(1, d/CC_CHEM_DAYS)));
+  }
   const pr=careerMateRec();
   if(!pr) return CAREER_PATIENCE_START;
   if(pr.patience==null) pr.patience=CAREER_PATIENCE_START;
@@ -67367,7 +67394,7 @@ function careerDayPanelHTML(locked){
       evBox+
       '<div class="cc-rings">'+
         careerRingHTML(L().ccRingEnergy, left, careerEnergyMax(), 'energy')+
-        careerRingHTML(L().ccRingMood, careerMateRec()?careerPatience():0, 100, 'mood')+
+        careerRingHTML(L().ccRingMood, (careerMateRec() || (typeof ccMpTeam==='function' && ccMpTeam()))?careerPatience():0, 100, 'mood')+
       '</div>'+
       '<div class="cc-acts">'+rows+'</div>'+
       careerJobHTML(closed, left)+

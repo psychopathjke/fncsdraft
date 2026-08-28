@@ -58,6 +58,15 @@ const BOOT = `
     check('бот ушёл на место второго', lobbies[1].map(t=>t.name).indexOf('t3')>=0, JSON.stringify(lobbies[1].map(t=>t.name)));
     const same=[[A, B, mk(7)]]; ccLobbiesTogether(same, [A, B]);
     check('уже вместе — без изменений', same[0][0]===A && same[0][1]===B);
+    // 3б. Настрой в команде — общий: от стажа дуо, не от бота из личного списка.
+    CAREER.partners=[{handle:'bot', patience:13, since:'2026-01-01'}];
+    CAREER.career.chemSince=ccAddDays(careerToday(), -45);
+    const p1=careerPatience();
+    CAREER.partners=[{handle:'other', patience:77, since:'2025-01-01'}];
+    check('настрой в команде не зависит от личного списка', careerPatience()===p1, p1+' / '+careerPatience());
+    check('и растёт со стажем дуо', p1>CAREER_PATIENCE_START && p1<100, String(p1));
+    CAREER.career.chemSince=careerToday();
+    check('в день сбора — стартовый', careerPatience()===CAREER_PATIENCE_START, String(careerPatience()));
     // 4. Фоновая вкладка: паузы нулевые, сторож реплея не голосует за пропуск.
     Object.defineProperty(document, 'hidden', {get:()=>true, configurable:true});
     skipAnimation=false;
