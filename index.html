@@ -51449,7 +51449,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='927e16a4';
+const CC_BUILD='2c36bb8a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -75314,6 +75314,8 @@ async function runCareerReload(){
                avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
                mate: mate ? mate.handle : null, mates: ccLogMates(mates), prize:ccShareOf(cash, you),
                kind:'reload', stage:ev.stage});
+  // Командный вечер закрывает сервер — и только после этого шаг «завтра» слышен. См. ccMpClose.
+  await ccMpClose(ranked);
   careerAdvanceTo(ccAddDays(careerToday(), 1));
   careerSave();
 
@@ -76079,6 +76081,11 @@ async function runCareerCup(){
   careerDmInbound(place, field.length, passed, from);
   careerAcademyStep(place, field.length);
   careerRaiseStep();
+  /* Вторая сессия и финал кубка тоже закрываются сервером. Его отчёт, 29 августа:
+     «две сессии сыграл — после него опять дивижен»: этот путь двигал день без
+     закрытия, а в команде такой шаг глух (CC_MP_DAY_DUE) — день стоял, и кубок
+     предлагался снова. Сторож: check-mp-close, каждый шаг дня в раннере — после close. */
+  await ccMpClose(ranked);
   careerAdvanceTo(careerAfterSession());
   // A free agent hears from clubs after a result, not out of nowhere: the offers
   // are rebuilt on the week you have just moved into.

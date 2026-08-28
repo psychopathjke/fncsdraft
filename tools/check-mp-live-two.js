@@ -30,7 +30,8 @@ const BUDGET_MS = Number(process.env.CC_BUDGET || 12 * 60000);
 const CONTEST = process.env.CC_CONTEST === '1';   // жать ПОСЛЕДНИЙ вариант (контест, своп лута) вместо первого
 const SOLO = process.env.CC_SOLO || '';
 const HIDE_A = Number(process.env.CC_HIDE_A || 0), HIDE_B = Number(process.env.CC_HIDE_B || 0);   // через сколько мс вкладка «уходит в фон» (0 — не уходит)
-const RELOAD = process.env.CC_RELOAD === '1';    // Reload: предыдущий этап серии уже пройден, чтобы день открылся
+const RELOAD = process.env.CC_RELOAD === '1';
+const NIGHTS = Number(process.env.CC_NIGHTS || 1);   // сколько вечеров подряд сыграть (кубок дивизиона: 2 сессии)    // Reload: предыдущий этап серии уже пройден, чтобы день открылся
 const SLASH = String.fromCharCode(92);
 
 const BASE = '<base href="file:///' + ROOT.split(SLASH).join('/') + '/">';
@@ -85,15 +86,18 @@ const boot = (who) => `
     if(!MP.peer) throw new Error('напарник не пришёл');
     careerRenderHub('centre');
     // Жмём «играть», пока вечер не начался (сервер ждёт двоих).
-    let pressed=0;
-    for(let i=0;i<900 && !CC_MP_RAND;i++){
-      const play=document.querySelector('#screen-career-hub .ch-play');
-      // Свой голос — один раз; «1/2» от напарника не повод молчать.
-      if(play && !play.disabled && (play.getAttribute('onclick')||'').indexOf('careerPlay')>=0 && pressed===0){ play.click(); pressed++; await wait(1500); continue; }
-      await wait(200);
-    }
-    out.notes.pressed=pressed; out.notes.started=!!CC_MP_RAND; out.notes.why=(typeof ccMpBlockWhy==='function')?ccMpBlockWhy():null;
-    if(!CC_MP_RAND) throw new Error('вечер не начался: '+out.notes.why);
+    const pressPlay=async function(){
+      let pressed=0;
+      for(let i=0;i<900 && !CC_MP_RAND;i++){
+        const play=document.querySelector('#screen-career-hub .ch-play');
+        // Свой голос — один раз; «1/2» от напарника не повод молчать.
+        if(play && !play.disabled && (play.getAttribute('onclick')||'').indexOf('careerPlay')>=0 && pressed===0){ play.click(); pressed++; await wait(1500); continue; }
+        await wait(200);
+      }
+      out.notes.pressed=pressed; out.notes.started=!!CC_MP_RAND; out.notes.why=(typeof ccMpBlockWhy==='function')?ccMpBlockWhy():null;
+      if(!CC_MP_RAND) throw new Error('вечер не начался: '+out.notes.why);
+    };
+    await pressPlay();
     out.notes.build=CC_BUILD;
     out.notes.team={seed:CAREER.career.seed, day:CAREER.career.day, div:CAREER.career.division, region:CAREER.career.region, spots:JSON.stringify(CAREER.career.spots||null), devKeys:Object.keys(CAREER.dev||{}).length, chemSince:CAREER.career.chemSince};
     out.notes.engine={zoneSim:typeof ZoneSim, zoneReplay:typeof ZoneReplay, squadSize:squadSize, zones:ALL_LANDING_ZONES.length, set:ACTIVE_LANDING_SET, sim:careerSimOn(), diff:JSON.stringify(CAREER.career.diff||null)};
@@ -123,16 +127,27 @@ const boot = (who) => `
       out.notes.trace.push(Math.round((Date.now()-t0)/1000)+'s · '+(t?t.textContent.trim():'-')+' · wait['+CC_MP_WAIT.map(w=>w.t).join('; ')+'] · rolls '+CC_MP_ROLLS+' · link '+MP.state+' · skip '+skipAnimation+' · own '+window.__own+' other '+window.__other+' · split '+CC_MP_SPLIT_AT+' '+[...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent).join('|')+' · qn '+JSON.stringify(CC_MP_QN)+' · acts['+(MP.peek?[]:[]).length+']'+(function(){ try{ return JSON.stringify((window.__acts||[]).slice(-6)); }catch(e){ return '?'; } })()+' · sent '+sent.join(','));
       if(out.notes.trace.length>40) out.notes.trace.shift();
     }, 10000);
-    let card=null;
     const t0=Date.now();
-    while(Date.now()-t0<${BUDGET_MS} && !card){
-      await wait(300);
-      card=[...document.querySelectorAll('#majorStages .stage-card')].find(c=>c.querySelector('button[onclick*="careerBackToHub"]'));
+    const waitCard=async function(){
+      let card=null; const t1=Date.now();
+      while(Date.now()-t1<${BUDGET_MS} && !card){
+        await wait(300);
+        card=[...document.querySelectorAll('#majorStages .stage-card')].find(c=>c.querySelector('button[onclick*="careerBackToHub"]'));
+      }
+      if(!card) throw new Error('результат не пришёл за бюджет');
+      out.notes.table=[...document.querySelectorAll('#majorStages .stage-card table.lobby-table tbody tr')]
+        .filter(tr=>/^#/.test((tr.children[0]||{}).textContent||''))
+        .map(tr=>[...tr.children].map(td=>td.textContent.trim()).join(' '));
+    };
+    await waitCard();
+    // Следующие вечера подряд: в хаб, «играть», ждать итог. Кубок дивизиона — две сессии.
+    out.notes.days=[CAREER.career.day];
+    for(let k=1;k<${NIGHTS};k++){
+      careerBackToHub(); await wait(800);
+      await pressPlay();
+      await waitCard();
+      out.notes.days.push(CAREER.career.day);
     }
-    if(!card) throw new Error('результат не пришёл за бюджет');
-    out.notes.table=[...document.querySelectorAll('#majorStages .stage-card table.lobby-table tbody tr')]
-      .filter(tr=>/^#/.test((tr.children[0]||{}).textContent||''))
-      .map(tr=>[...tr.children].map(td=>td.textContent.trim()).join(' '));
     out.notes.head=[...document.querySelectorAll('#majorStages .stage-card h4')].map(h=>h.textContent.replace(/\\s+/g,' ').trim()).join(' | ');
     out.notes.split=[...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent);
     out.notes.rolls=CC_MP_ROLLS; out.notes.splitAt=CC_MP_SPLIT_AT; out.notes.dayAfter=CAREER.career.day; out.notes.own=window.__own; out.notes.other=window.__other;
@@ -194,7 +209,7 @@ async function runOne(tag, who, port){
   return out;
 }
 (async ()=>{
-  console.log('лобби '+CODE+' · день '+DAY+' · скип A '+SKIP_A+' мс, B '+SKIP_B+' мс · контест '+CONTEST);
+  console.log('лобби '+CODE+' · день '+DAY+' · вечеров '+NIGHTS+' · скип A '+SKIP_A+' мс, B '+SKIP_B+' мс · контест '+CONTEST);
   const P0=9400+Math.floor(Math.random()*400);
   const [a, b]=await Promise.all([runOne('A', A, P0), runOne('B', B, P0+1)]);
   // Своя строка у каждого подписана «я & напарник» — порядок косметический, ники сравниваем как множество.
@@ -217,7 +232,7 @@ async function runOne(tag, who, port){
   if(a.fail || b.fail) bad++;
   if(hash(a.notes.table)!==hash(b.notes.table)){ const at=rowsOf(a.notes.table).findIndex((r,i)=>norm(r)!==norm(rowsOf(b.notes.table)[i])); console.log('FAIL таблицы разные, строка '+(at+1)+'\n  A: '+(a.notes.table||[])[at]+'\n  B: '+(b.notes.table||[])[at]); bad++; }
   if((a.notes.split||[]).length || (b.notes.split||[]).length){ console.log('FAIL есть красная строка'); bad++; }
-  const want=ccAddDaysNode(DAY, 1);
+  const want=ccAddDaysNode(DAY, NIGHTS);
   for(const [n, r] of [['A', a], ['B', b]]) if(r.notes.dayAfter!==want){ console.log('FAIL '+n+': день после вечера '+r.notes.dayAfter+', ждали '+want); bad++; }
   if(a.notes.rolls!==b.notes.rolls){ console.log('FAIL броски разные: '+a.notes.rolls+' / '+b.notes.rolls); bad++; }
   if(bad) process.exit(1);
