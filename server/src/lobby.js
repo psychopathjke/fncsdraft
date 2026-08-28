@@ -105,8 +105,28 @@ function createLobby(opts){
       /* Вечер этого дня уже идёт — это переподключение или перезагрузка
          посреди вечера. Старт тот же, с тем же сидом, и только ему:
          напарник его уже получил и считает. */
-      if(st.evening && st.evening.day===day)
+      if(st.evening && st.evening.day===day){
+        /* Кто уже заявлял готовность в ЭТОТ вечер и заявляет снова — жмёт
+           «играть» заново (вечер завис, оба вернулись). Первому — догон, а
+           когда заново готовы оба — вечер заводится с чистого листа: старая
+           лента застрявшего вечера никому не нужна. */
+        st.evening.readied=st.evening.readied||{};
+        const again=!!st.evening.readied[id];
+        st.evening.readied[id]=true;
+        if(again){
+          st.ready[id]=day;
+          const all2=ids();
+          if(all2.length===2 && all2.every(x=>st.ready[x]===day)){
+            st.ready={}; st.feed=[]; st.digests={};
+            st.evening={seed:st.seed+'|'+day+'|'+(++st.n), n:st.n, day:day, readied:{}};
+            all2.forEach(x=>{ st.evening.readied[x]=true; });
+            return [{to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day, fresh:true}}];
+          }
+        }
         return [{to:'self', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day, resume:true}}];
+      }
+      // Готовность на ДРУГОЙ день при идущем вечере: тот вечер брошен, команда ушла дальше.
+      if(st.evening && st.evening.day!==day){ st.evening=null; st.feed=[]; st.digests={}; }
       st.ready[id]=day;
       const all=ids();
       const both=all.length===2 && all.every(x=>st.ready[x]===day);
@@ -114,7 +134,8 @@ function createLobby(opts){
       if(!both) return [{to:'all', msg:{t:'ready', by:id, day:day, ready:n, of:2}}];
       st.ready={};
       st.feed=[]; st.digests={};
-      st.evening={seed:st.seed+'|'+day, n:++st.n, day:day};
+      st.evening={seed:st.seed+'|'+day, n:++st.n, day:day, readied:{}};
+      all.forEach(x=>{ st.evening.readied[x]=true; });
       return [{to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day}}];
     },
 

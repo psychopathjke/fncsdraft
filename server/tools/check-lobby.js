@@ -132,5 +132,20 @@ const after=V.join('B',{build:'aaaa1111',card:CARD}).find(x=>x.msg.t==='state').
 check('после закрытия вечера нет, а закрытие есть', after.evening===null && after.closed && after.closed.team.day==='2026-02-02', JSON.stringify(after.closed));
 check('лента после закрытия пуста', after.feed.length===0);
 
+// ---- оба нажали «играть» заново в застрявшем вечере — новый вечер ------------
+let W=createLobby({build:'aaaa1111', seed:'team-7', team:{day:'2026-02-02'}});
+W.join('A',{build:'aaaa1111',card:CARD}); W.join('B',{build:'aaaa1111',card:CARD});
+W.ready('A','2026-02-02'); const s1=W.ready('B','2026-02-02')[0].msg;
+W.act('A','loot',{v:'take',q:1});
+const rA=W.ready('A','2026-02-02');
+check('первый повтор — догон себе', rA.length===1 && rA[0].to==='self' && rA[0].msg.resume===true);
+const rB=W.ready('B','2026-02-02');
+check('второй повтор — свежий старт всем', rB.length===1 && rB[0].to==='all' && rB[0].msg.fresh===true && rB[0].msg.seed!==s1.seed, JSON.stringify(rB));
+check('лента застрявшего вечера выброшена', W.state.feed.length===0);
+// Готовность на другой день бросает идущий вечер.
+W.act('A','loot',{v:'take',q:1});
+const rC=W.ready('A','2026-02-03');
+check('готовность на другой день — вечер брошен, ждём второго', rC[0].msg.t==='ready' && W.state.evening===null && W.state.feed.length===0, JSON.stringify(rC));
+
 if(fails.length){ fails.forEach(f=>console.error('FAIL '+f)); process.exit(1); }
 console.log('лобби нумерует и рассылает, ничего не считая');
