@@ -68,8 +68,17 @@ const BOOT = `
     /* И после закрытия раннер двигает день — один раз. Его отчёт, 28 августа:
        «дуо виктори кап 1 я могу только играть, дальше не идёт карьера». */
     check('закрытие открыло окно для шага дня', CC_MP_DAY_DUE===true);
+    /* Между закрытием и шагом наверх ничего не уходит: сохранение до строки
+       cr.day=завтра увезло бы напарнику вчерашний день (соло-хиты, 28 августа). */
+    let pushed=0; MP.push=function(){ pushed++; };
+    careerSave();
+    check('после закрытия, до шага — сохранение не уходит наверх', pushed===0, String(pushed));
+    const mgc0=careerMonthGoalCheck; careerMonthGoalCheck=function(){ careerSave(); return mgc0.apply(this, arguments); };
     careerAdvanceTo(ccAddDays(careerToday(), 1));
+    careerMonthGoalCheck=mgc0;
     check('день после закрытия сдвинулся на один', CAREER.career.day === '2026-02-10', CAREER.career.day);
+    check('внутри шага наверх не уходило, после шага ушло один раз', pushed===1, String(pushed));
+
     careerAdvanceTo(ccAddDays(careerToday(), 1));
     check('второй шаг без нового закрытия глух', CAREER.career.day === '2026-02-10', CAREER.career.day);
 

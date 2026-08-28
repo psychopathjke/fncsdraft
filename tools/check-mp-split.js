@@ -64,7 +64,7 @@ const BOOT = `
           ['beefs','chemSince','coach','d1','day','dev','diff','division','duoSplits','duoStreak',
            'events','ewc','gcSeed','gclc','globals','lft','log','major','majorSeed',
            'mates','mp','rc','region','rel','relSeed','reload','season','seasonOver',
-           'seasonTurn','seed','sizes','solo','splits','spots','summit','summitSeed',
+           'seasonTurn','seed','sizes','solo','soloBy','splits','spots','summit','summitSeed',
            'table','tokens','trios','wf'].join(','),
           out.notes.team.join(','));
     check('журнал команды уехал', Array.isArray(t.log) && t.log.length === 1);

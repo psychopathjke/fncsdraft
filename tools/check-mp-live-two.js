@@ -28,6 +28,7 @@ const SKIP_A = Number(process.env.CC_SKIP_A != null ? process.env.CC_SKIP_A : 20
 const SKIP_B = Number(process.env.CC_SKIP_B != null ? process.env.CC_SKIP_B : 25000);
 const BUDGET_MS = Number(process.env.CC_BUDGET || 12 * 60000);
 const CONTEST = process.env.CC_CONTEST === '1';   // жать ПОСЛЕДНИЙ вариант (контест, своп лута) вместо первого
+const SOLO = process.env.CC_SOLO || '';          // 'qual'/'heats' — оба уже прошли этот этап Solo Series
 const SLASH = String.fromCharCode(92);
 
 const BASE = '<base href="file:///' + ROOT.split(SLASH).join('/') + '/">';
@@ -59,7 +60,8 @@ const boot = (who) => `
         closeRangeEdge:${who.close}, region:'EU', ovr:${who.ovr}, role:${JSON.stringify(who.role)}, attrs:null, ageEdge:${who.ageEdge},
         photo:null, handle:null, cardRegion:null, nat:null},
       career:{season:1, day:${JSON.stringify(DAY)}, division:1, earnings:${who.money}, balance:${who.money}, reach:${who.reach},
-              tokens:[], log:[], news:[], form:${who.form}, grind:${who.grind}},
+              tokens:[], log:[], news:[], form:${who.form}, grind:${who.grind},
+              soloBy:${JSON.stringify(SOLO ? {livea:{got:SOLO, pass:SOLO}, liveb:{got:SOLO, pass:SOLO}} : undefined)||'undefined'}},
       partners:[]}));
     const s=JSON.parse(localStorage.getItem('fncsdraft_career'));
     s.player.attrs=ccRookieAttrs(${who.ovr}, ${JSON.stringify(who.role)});
@@ -190,8 +192,12 @@ async function runOne(tag, who, port){
   const P0=9400+Math.floor(Math.random()*400);
   const [a, b]=await Promise.all([runOne('A', A, P0), runOne('B', B, P0+1)]);
   // Своя строка у каждого подписана «я & напарник» — порядок косметический, ники сравниваем как множество.
-  const norm=r=>String(r).replace(/(LiveA & LiveB|LiveB & LiveA)/g, 'LiveA+LiveB');
-  const hash=t=>crypto.createHash('sha1').update((t||[]).map(norm).join('\n')).digest('hex').slice(0,12);
+  const norm=r=>String(r).replace(/(LiveA & LiveB|LiveB & LiveA)/g, 'LiveA+LiveB').replace(/(Твой состав|Your squad):\s*/g, '');
+  // Своя строка внизу таблицы — у каждого своя (в соло на двоих их две разные): последняя строка,
+  // если её место не идёт следом за предыдущей, — это она; своя строка ВНУТРИ верха сравнивается как все.
+  const rank=r=>Number((String(r).match(/^#(\d+)/)||[])[1]||0);
+  const rowsOf=t=>(t||[]).filter((r,i,all)=>!(i===all.length-1 && i>0 && rank(r)!==rank(all[i-1])+1));
+  const hash=t=>crypto.createHash('sha1').update(rowsOf(t).map(norm).join('\n')).digest('hex').slice(0,12);
   for(const [n, r] of [['A', a], ['B', b]]){
     console.log(n+': '+(r.fail ? 'FAIL '+r.fail : (r.notes.head||'')) + ' · строк '+((r.notes.table||[]).length)+' · хеш '+hash(r.notes.table)+
       ' · своё '+JSON.stringify(r.notes.mine)+' · броски '+r.notes.rolls+' · pow '+r.notes.youPow+' · скип '+!!r.notes.skipPressed+' · own/other '+r.notes.own+'/'+r.notes.other+' · '+JSON.stringify(r.notes.engine)+' · team '+JSON.stringify(r.notes.team));
@@ -203,7 +209,7 @@ async function runOne(tag, who, port){
   }
   let bad=0;
   if(a.fail || b.fail) bad++;
-  if(hash(a.notes.table)!==hash(b.notes.table)){ const at=(a.notes.table||[]).findIndex((r,i)=>norm(r)!==norm((b.notes.table||[])[i])); console.log('FAIL таблицы разные, строка '+(at+1)+'\n  A: '+(a.notes.table||[])[at]+'\n  B: '+(b.notes.table||[])[at]); bad++; }
+  if(hash(a.notes.table)!==hash(b.notes.table)){ const at=rowsOf(a.notes.table).findIndex((r,i)=>norm(r)!==norm(rowsOf(b.notes.table)[i])); console.log('FAIL таблицы разные, строка '+(at+1)+'\n  A: '+(a.notes.table||[])[at]+'\n  B: '+(b.notes.table||[])[at]); bad++; }
   if((a.notes.split||[]).length || (b.notes.split||[]).length){ console.log('FAIL есть красная строка'); bad++; }
   const want=ccAddDaysNode(DAY, 1);
   for(const [n, r] of [['A', a], ['B', b]]) if(r.notes.dayAfter!==want){ console.log('FAIL '+n+': день после вечера '+r.notes.dayAfter+', ждали '+want); bad++; }

@@ -874,6 +874,7 @@
   .lobby-table tr.lobby-cut td{border-bottom:2px solid #ffd23f;}
   /* Said once, above the table: these points are the week's, not the night's. */
   .live-note{font-size:11px;font-weight:800;color:#ffd23f;letter-spacing:.03em;margin:2px 0 -2px;}
+  .lobby-table tr.lobby-mate td{background:rgba(255,255,255,.04);}
   .lobby-table tr.lobby-you td{background:rgba(255,255,255,.10);
     box-shadow:inset 0 1.5px 0 0 var(--lb-you), inset 0 -1.5px 0 0 var(--lb-you);}
   .lobby-table tr.lobby-you td:first-child{border-top-left-radius:8px;border-bottom-left-radius:8px;
@@ -41960,11 +41961,27 @@ let runGeneration=0, currentRunGen=0;
 function abandonRun(){ runGeneration++; }
 function runIsCurrent(){ return currentRunGen===runGeneration; }
 
+/* Показ выключен — пропуском или тем, что смотреть некому.
+
+   Его слова, 28 августа: «я пошёл в другое окно, и у меня поломалось — может,
+   проблема, что когда окно не открыто, не работает симуляция». Так и было:
+   в фоновой вкладке Chrome не даёт кадров (rAF стоит) и режет таймеры до
+   одного в секунду, а через пять минут — до одного в минуту. Вечер в фоне
+   полз, напарник ждал на барьере, а сторож реплея (45 с) включал у фоновой
+   вкладки ОБЩИЙ пропуск в одиночку — и дальше двое считали разные вечера.
+
+   В команде показ у скрытой вкладки просто не ждётся: паузы нулевые, реплей
+   мотается до конца, а вопросы по-прежнему ждут человека — он вернётся.
+   Одиночная карьера этого не видит: там некому ждать. */
+function ccShowOff(){
+  return skipAnimation || (typeof ccMpOn==='function' && ccMpOn() &&
+                           typeof document!=='undefined' && document.hidden===true);
+}
 function sleep(ms){
   const gen=runGeneration;
   return new Promise((res,rej)=>{
     const settle=()=> gen===runGeneration ? res() : rej(RUN_ABANDONED);
-    if(skipAnimation){ settle(); return; }
+    if(ccShowOff()){ settle(); return; }
     setTimeout(settle, ms);
   });
 }
@@ -42045,13 +42062,35 @@ function removeSkipButton(){
 // let, а не const: пробе нужно уметь укоротить ожидание, иначе проверка
 // сторожа стоила бы сорок пять секунд на ровном месте.
 let REPLAY_GUARD_MS=45000;
+/* Двое в одной сотне (Solo Series в команде): кого разбросало по другим
+   лобби, меняется местами с последним ботом из лобби первого. Один и тот же
+   шаг с обеих сторон — расклад у двоих один. Сторож: check-mp-solo-shared. */
+function ccLobbiesTogether(lobbies, together){
+  const home=lobbies.find(l=>l.indexOf(together[0])>=0);
+  if(!home) return lobbies;
+  together.slice(1).forEach(t=>{
+    const from=lobbies.find(l=>l.indexOf(t)>=0);
+    if(!from || from===home) return;
+    let j=home.length-1;
+    while(j>=0 && together.indexOf(home[j])>=0) j--;
+    if(j<0) return;
+    const b=home[j]; home[j]=t; from[from.indexOf(t)]=b;
+  });
+  return lobbies;
+}
 function playReplayGuarded(handle, timeline, opts){
   return new Promise(function(resolve){
     let done=false;
     const finish=v=>{ if(done) return; done=true; resolve(v); };
+    /* В команде пропуск — общий голос (ccMpSkipSaw), и сторож его не отдаёт:
+       он обрезает только ЭТОТ показ, локальным флагом в isSkipped. */
+    let cut=false;
+    const was=opts && opts.isSkipped;
+    if(opts) opts.isSkipped=function(){ return cut || ccShowOff() || !!(was && was()); };
     const timer=setTimeout(function(){
       if(done) return;
-      skipAnimation=true;                 // play() сам увидит и закроется
+      if(ccMpOn()) cut=true;
+      else skipAnimation=true;            // play() сам увидит и закроется
       finish(false);
     }, REPLAY_GUARD_MS);
     Promise.resolve(ZoneReplay.play(handle, timeline, opts))
@@ -42442,7 +42481,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       // The line the evening is played for, drawn under the last qualifying row
       // — the same rule the standings card uses when the stage ends, so a
       // player can read "am I through" off the live table instead of counting.
-      const cls='lobby-row'+(t.isYou?' lobby-you':'')+
+      const cls='lobby-row'+(t.isYou?' lobby-you':'')+(t.isMate?' lobby-mate':'')+
         (opts.cutAt && t._liveRank===opts.cutAt ? ' lobby-cut' : '');
       if(tr.className!==cls) tr.className=cls;
       // A Victory Royale ends that team's stage, so they stop at whatever game
@@ -42771,6 +42810,10 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       const shuffled=pool.slice();
       for(let i=shuffled.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]; }
       gameLobbies=[...splitIntoLobbies(shuffled, opts.lobbySize)];
+      /* Двое в одной сотне (Solo Series в команде): кого разбросало по другим
+         лобби, меняется местами с последним ботом из лобби первого. Один и тот
+         же шаг с обеих сторон — расклад у двоих один. */
+      if(opts.together && opts.together.length>1) ccLobbiesTogether(gameLobbies, opts.together);
       myLobby=gameLobbies.find(l=>l.some(t=>t.isYou))||null;
     }
     if(typeof opts.dropEachGame==='function'){
@@ -47366,6 +47409,10 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
     t._pc=Math.max(1, t._pf+(t.closeEdge||0));
   });
   const you=teams.find(t=>t.isYou);
+  /* Люди в лобби — в порядке ников: в соло на двоих вопрос задаётся каждому,
+     и у обоих клиентов в одном и том же порядке. См. runCareerSoloSeries. */
+  const humans=teams.filter(t=>t.isYou||t.isMate)
+    .sort((a,b)=>String(a.mpTag||a.name)<String(b.mpTag||b.name) ? -1 : 1);
   const game=ZoneSim.simulateZoneGame(teams, {
     rng: Math.random, land: ZONE_SETS[set], aspect: aspect,
     startOf: t => { const z=t.landingZone;
@@ -47423,7 +47470,11 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
        `alive()` покрывает и то, ради чего `dead` тут стоял: у выбывшего нет
        ни лута, ни высокой земли. Показ при этом остаётся показом — `dead`
        по-прежнему решает, рисовать ли дальше кадры. */
-    if(!sim && alive() && game.aliveCount()>1) await stop.ask(you, ui);
+    if(!sim && game.aliveCount()>1){
+      for(const h of humans){
+        if((game.squads.find(s=>s.team===h)||{}).alive) await stop.ask(h, ui);
+      }
+    }
   }
   const res=game.finish();
   // И остаток матча — тем же куском, если игрок ещё смотрит.
@@ -47469,7 +47520,7 @@ function ccRoomEdge(field){
 function ccRoomLoot(field, you){
   const edgeOf=ccRoomEdge(field);
   field.forEach(t=>{
-    if(t===you) return;
+    if(you && (t===you || t.isMate)) return;   // людям — вопрос, не бросок
     if(Math.random() < clamp(0.35+edgeOf(t)*4, 0.1, 0.75))
       ccAddGamePow(t, Math.random()<CC_LOOT_POI_ODDS ? CC_LOOT_POI_BONUS : -CC_LOOT_POI_FAIL);
   });
@@ -47477,7 +47528,7 @@ function ccRoomLoot(field, you){
 function ccRoomLate(field, you){
   const edgeOf=ccRoomEdge(field);
   field.forEach(t=>{
-    if(t===you) return;
+    if(you && (t===you || t.isMate)) return;
     // Сильные лезут на высоту, слабые ищут рефреш или сидят снизу — и это же
     // решает, чем для них кончится размен.
     const wantHg=Math.random() < clamp(0.35+edgeOf(t)*4, 0.1, 0.75);
@@ -47611,7 +47662,7 @@ async function ccAskLoot(you, ui){
      что счёт вызовов Math.random у двоих не разъезжается; монетка на
      несогласии тратит по одному у каждого, и оба доходят до неё одинаково.
      Спрашивают одного — того, чья это роль. См. ccMpChoose и ccMpSeedOn. */
-  const pickId=(await ccMpChoose('loot', async function(){
+  const pickId=(await ccMpChoose('loot'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(L().ccLootTitle, L().ccLootHint,
       [{id:'take', title:L().ccLootTake, note:listOf(mine)+' — '+L().ccLootTakeSafe, pack:mine},
        {id:'swap', title:L().ccLootSwap,
@@ -47639,7 +47690,7 @@ async function ccAskLoot(you, ui){
 async function ccAskLate(you, ui){
   if(!you) return;
   // Одно решение на команду, как и на луте: см. ccAskLoot.
-  const pickId=(await ccMpChoose('late', async function(){
+  const pickId=(await ccMpChoose('late'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(L().ccLateTitle, L().ccLateHint,
       [{id:'hg',      title:L().ccLateHg,      note:L().ccLateHgNote(CC_HG_POW)},
        {id:'refresh', title:L().ccLateRefresh, note:L().ccLateRefreshNote(CC_REFRESH_POW)},
@@ -51380,7 +51431,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='c4dc4796';
+const CC_BUILD='79e297f3';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -51436,7 +51487,7 @@ const CC_TEAM_KEYS=['seed','day','season','division','diff','tokens','seasonOver
                     'sizes','trios','log','mp','region','mates','spots','seasonTurn',
                     'majorSeed','summitSeed','relSeed','gcSeed','duoSplits','table',
                     'events','d1','major','summit','globals','reload','rel','wf','rc',
-                    'gclc','solo','ewc'];
+                    'gclc','solo','soloBy','ewc'];
 /* Командное, которое лежит не в career, а прямо в CAREER.
 
    Книга роста сцены значилась командной с первого дня — и не ездила ни разу:
@@ -51469,8 +51520,22 @@ function ccMpMateRecs(){
   if(!Array.isArray(cr.mates)) cr.mates=[];
   return cr.mates.filter(Boolean).slice(0, ccMpBotSeats());
 }
-function ccMpOn(){
+/* Команда есть (лобби в сейве) — и команда СЧИТАЕТ вечер (локстеп). Это
+   почти всегда одно и то же; расходятся они на один случай — см. CC_MP_ALONE. */
+function ccMpTeam(){
   return !!(CAREER && CAREER.career && CAREER.career.mp && CAREER.career.mp.code);
+}
+/* Вечер, который в команде играет ОДИН.
+
+   Solo Series — личный турнир: в хиты и финал каждый проходит сам. Прошёл
+   один — второму в этот день играть нечего, а локстеп ждёт обоих: гейт ждёт
+   «готов», барьеры ждут хеш, вопросы ждут ответ. Поэтому такой вечер
+   считается как одиночный — без сида, без барьеров, без закрытия, — а итог
+   (день, журнал, проход) уезжает напарнику обычным состоянием команды.
+   Ставится раннером Solo Series на вход и снимается перед сохранением. */
+let CC_MP_ALONE=false;
+function ccMpOn(){
+  return ccMpTeam() && !CC_MP_ALONE;
 }
 /* Вечер начинается, когда готовы оба.
 
@@ -51625,6 +51690,14 @@ function ccMpRoleKey(c){
 }
 function ccMpMine(kind){
   if(!ccMpOn()) return true;
+  /* Вопрос С АДРЕСАТОМ: 'loot:<ник>' — мой, если ник мой. Так спрашивает
+     Solo Series в команде: двое в одном лобби, у каждого свой дроп, лут и
+     высота, и роль тут ни при чём. См. runCareerSoloSeries. */
+  var at=String(kind).indexOf(':');
+  if(at>=0){
+    var meC=(typeof careerCard==='function') ? careerCard() : null;
+    return !!(meC && hKey(meC)===String(kind).slice(at+1));
+  }
   const owner=(CAREER.career.mp.role||'a')==='a';
   const me=(typeof careerCard==='function') ? careerCard() : null;
   const peer=(typeof MP!=='undefined' && MP.peer) || null;
@@ -52028,7 +52101,9 @@ function ccMpStartNew(){
    ли поле» должен отвечаться на первой же игре. Сюда же остров: раннеры
    берут его из ACTIVE_LANDING_SET, а это состояние вкладки. */
 function ccFieldSig(teams){
-  var s=(teams||[]).map(function(t){ return String(t.name||'')+':'+Math.round(t.pow||0); }).join('|');
+  // По никам (в одном порядке — у дуо состав у каждого свой первый), не по имени:
+  // своя строка подписана «Твой состав», а у напарника в соло она без подписи.
+  var s=(teams||[]).map(function(t){ var sq=(t.squad||[]).map(hKey).sort().join('+'); return (sq||String(t.name||''))+':'+Math.round(t.pow||0); }).join('|');
   return String(ccHashStr(s))+'.'+String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : '')+'.'+
          String(typeof ALL_LANDING_ZONES!=='undefined' ? ALL_LANDING_ZONES.length : 0);
 }
@@ -52073,6 +52148,7 @@ function ccMpClose(ranked){
       ccMpSeedOff();
       if(m && m.team) ccApplyTeamState(m.team);
       CC_MP_DAY_DUE=true;            // раннер сразу за этим двигает день
+      CC_MP_HOLD=true;               // и до того шага наверх ничего не уходит
       res();
     };
     off=MP.on('close', finish);
@@ -52236,6 +52312,16 @@ let CC_MP_PEER_DONE=false, CC_MP_WAITERS=[];
    одно окно на один вызов careerAdvanceTo; второй вызов без нового закрытия
    по-прежнему глух. */
 let CC_MP_DAY_DUE=false;
+/* Между закрытием вечера и шагом «завтра» состояние наверх НЕ уходит.
+
+   Живой сторож соло-хитов, 28 августа: у одного день сдвинулся, у второго
+   остался. Гонка: после close сид снят, и любое careerSave до строки
+   cr.day=завтра (careerMonthGoalCheck, зарплаты, письма — всё внутри
+   careerAdvanceTo) уезжает напарнику с ВЧЕРАШНИМ днём; тот уже шагнул и
+   применяет чужое вчера поверх своего завтра. Держится от close до конца
+   careerAdvanceTo. (Запрет «день назад» в ccApplyTeamState не годится: при
+   входе в лобби со свежим сейвом день команды законно раньше своего.) */
+let CC_MP_HOLD=false;
 function ccMpWaitReset(){ CC_MP_PEER_DONE=false; CC_MP_WAITERS.length=0; }
 /* Связь оборвалась — ждать напарника тоже больше нечего.
 
@@ -52684,7 +52770,7 @@ function careerSave(){
 
      Признак «идёт вечер» — подменённый генератор: он ставится на старте и
      снимается на закрытии (CC_MP_RAND). */
-  if(ccMpOn() && !CC_MP_ADVANCE && !CC_MP_RAND && typeof MP!=='undefined' && MP.push)
+  if(ccMpOn() && !CC_MP_ADVANCE && !CC_MP_RAND && !CC_MP_HOLD && typeof MP!=='undefined' && MP.push)
     MP.push(ccTeamState());
   const key=LS_SLOT(ccSlot());
   for(let step=0; step<=CC_SAVE_TRIM.length; step++){
@@ -55594,6 +55680,12 @@ function careerAdvanceTo(iso){
     if(!CC_MP_DAY_DUE) return;
     CC_MP_DAY_DUE=false;
   }
+  CC_MP_HOLD=true;
+  try{ careerAdvanceBody(iso); }
+  finally{ CC_MP_HOLD=false; }
+  careerSave();
+}
+function careerAdvanceBody(iso){
   const cr=CAREER.career;
   // The month's objective is judged before the clock leaves the day that may
   // have met it: every runner writes its history row and then moves the day,
@@ -55629,7 +55721,6 @@ function careerAdvanceTo(iso){
   // over once the day is in the next one.
   careerAwardCheck();
   if(cr.seasonOver) careerAwardSeason();
-  careerSave();
 }
 // An old save carries a week and no day, and it is brought forward rather than
 // thrown away — a career in progress is somebody's season.
@@ -72768,7 +72859,8 @@ async function runCareerReloadChampionship(){
    Antwerp that order is the route — the Summit's fifteen picked their spots in
    May, the Major 2 qualifiers in August, the Last Chance last week — because
    careerGlobalsField stamps gcRoute and byQualOrder reads it. */
-async function careerLandingPick(field, you, title, kinds){
+async function careerLandingPick(field, you, title, kinds, o){
+  o=o||{};
   // The grid belongs to the island the stage is played on. Every career runner
   // sets its own before it starts; this is the guard for the one case where a
   // save opens straight into a final and nothing has picked a map yet.
@@ -72813,9 +72905,12 @@ async function careerLandingPick(field, you, title, kinds){
      (kinds), и очередь читается с последней из них; дивизионный кубок пишет
      строку без kind, и его называют словом 'cup'. */
   const rows=(CAREER.career.log||[]);
+  // Строки с адресатом (who) — чужие не считаются: у соло в команде журнал общий.
+  const myKey=you && you.mpTag ? you.mpTag.slice(1) : hKey(careerCard());
   let last=null;
   if(kinds && kinds.length){
     for(let i=rows.length-1; i>=0 && !last; i--){
+      if(rows[i].who && rows[i].who!==myKey) continue;
       const k=rows[i].kind;
       if(kinds.indexOf(k)>=0 || (k==null && kinds.indexOf('cup')>=0)) last=rows[i];
     }
@@ -72863,9 +72958,15 @@ async function careerLandingPick(field, you, title, kinds){
 
      Комната расставляется здесь один раз и передаётся дальше в careerDropQuick
      — иначе число на кнопке было бы от одной раздачи, а высадка от другой. */
-  careerSpotFearOn(you);
-  const pre=buildBotLandingAssignment(field.filter(t=>t!==you)).zoneGroups;
-  careerSpotFearOff();
+  let pre=o.pre||null;
+  if(pre){
+    // Комната уже разложена первым вопросом; свой игрок снимается с бот-коробки.
+    pre.forEach(function(list){ const at=list.indexOf(you); if(at>=0) list.splice(at, 1); });
+  } else {
+    careerSpotFearOn(you);
+    pre=buildBotLandingAssignment(field.filter(t=>t!==you)).zoneGroups;
+    careerSpotFearOff();
+  }
   const rivals=home ? (pre.get(home)||[]).length : 0;
   /* Где стоит вопрос — на карте, если карта уже идёт.
 
@@ -72891,7 +72992,7 @@ async function careerLandingPick(field, you, title, kinds){
      Коробка называется своим МЕСТОМ в ALL_LANDING_ZONES: собственного номера
      у зоны нет (человеку показывается i+1, см. landingZoneSuffix), а сетка у
      обоих одна — тот же остров, тот же размер лобби. */
-  const vote=await ccMpChoose('drop', async function(){
+  const vote=await ccMpChoose('drop'+(o.tag||''), async function(){
     const p=await ccChoiceBox(L().ccDropTitle, L().ccDropHint,
       [ home ? {id:'home', title:L().ccDropHome, note:L().ccDropHomeNote(aura, rivals)}
              : {id:'quiet', title:L().ccDropQuiet, note:L().ccDropQuietNote},
@@ -75423,9 +75524,31 @@ function careerSoloSeriesOn(iso){
 // The qualifier is open to everybody — that is the event's whole point; the
 // Heats are for who came through it, the Final for who came through them.
 // A stage is played once, the rule every other runner already lives by.
+/* Проход по Solo Series — ЛИЧНЫЙ.
+
+   В одиночной карьере он лежит в cr.solo. В команде их два — по одному на
+   игрока, под ником, в cr.soloBy (ключ команды: оба видят оба). Раннер пишет
+   обе строки с обеих сторон, из одной и той же таблицы, поэтому состояние у
+   двоих одно. Читается по КОМАНДЕ, а не по локстепу (ccMpTeam, не ccMpOn):
+   вечер «один играет» тоже должен писать в свою строку. */
+function ccSoloOf(card){
+  const cr=CAREER && CAREER.career;
+  if(!cr || !card) return null;
+  if(!ccMpTeam()) return cr.solo||null;
+  return (cr.soloBy||{})[hKey(card)]||null;
+}
+function ccSoloSet(card, v){
+  const cr=CAREER && CAREER.career;
+  if(!cr || !card) return;
+  if(!ccMpTeam()){ cr.solo=v; return; }
+  cr.soloBy=cr.soloBy||{};
+  cr.soloBy[hKey(card)]=v;
+}
 function careerSoloSeriesCan(ev){
+  return careerSoloSeriesCanFor(ev, ccSoloOf(careerCard()));
+}
+function careerSoloSeriesCanFor(ev, s){
   if(!ev) return false;
-  const s=CAREER && CAREER.career && CAREER.career.solo;
   const done=s ? s.got : null;
   if(done && CC_SOLO_ORDER.indexOf(done)>=CC_SOLO_ORDER.indexOf(ev.stage)) return false;
   if(ev.stage==='qual')  return true;
@@ -75438,10 +75561,32 @@ async function runCareerSoloSeries(){
   const cr=CAREER.career;
   const ev=careerSoloSeriesOn(careerToday());
   if(!ev || !careerSoloSeriesCan(ev)) return;
-  // Командный вечер ждёт напарника. См. ccMpGate.
-  const mpStart=ccMpOn() ? await ccMpGate() : null;
   const me=careerCard();
   if(!me) return;
+  /* В команде — ОДНО лобби на двоих.
+
+     Его отчёт, 28 августа («neeww»): «solo series тоже разные лобби играют»,
+     и красная строка называла поле: field 631721272 vs 1390373631 при тех же
+     острове и бросках. Так и было по построению: каждый клиент собирал
+     drafted=[я] и поле [я, боты] — два разных поля из одного сида. Его выбор
+     тем же вечером: «одно лобби на двоих» — оба в одной сотне, каждый своим
+     игроком, каждый отвечает на свои вопросы, таблица одна.
+
+     Состав поля у двоих один: люди впереди в порядке ников (как MP.teamOf),
+     боты из careerSoloField без обоих ников. Вопросы — с адресатом
+     (mpTag → 'drop:<ник>'), см. ccMpMine; ответ напарника приезжает очередью
+     и ставится его игроку тем же кодом. Лобби внутри вечера — общее:
+     opts.together держит двоих в одной сотне.
+
+     Прошёл в хиты один — второй в этот день не играет, и вечер считается
+     одиночным (CC_MP_ALONE), итог уезжает состоянием команды. */
+  const peerCard=(ccMpTeam() && typeof MP!=='undefined' && MP.peer) ? MP.peer : null;
+  const peerIn=!!(peerCard && careerSoloSeriesCanFor(ev, ccSoloOf(peerCard)));
+  const alone=ccMpTeam() && !peerIn;
+  if(alone) CC_MP_ALONE=true;
+  const mpStart=ccMpOn() ? await ccMpGate() : null;
+  const two=ccMpOn() && peerIn;
+  const pc=two ? (MP.peer||peerCard) : null;   // карточка после гейта — свежая
 
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
   const prevSet=ACTIVE_LANDING_SET;
@@ -75463,17 +75608,32 @@ async function runCareerSoloSeries(){
   show('screen-results');
   ensureSkipButton();
 
-  const you=careerYouTeam(drafted);
-  you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
-  // The qualifier is the whole region's solo ladder; from the Heats on it is
-  // the hundred best left standing, which is a Division 1 room read as people.
+  /* Свой игрок в соло — своя форма, без химии и без средней с напарником:
+     careerYouTeam считает команду, а тут двое по отдельности. */
+  const soloYou=function(card, form, label){
+    const t=careerTeam([card], true);
+    t.pow=Math.round(t.pow+form);
+    t.summitRegion=ccCareerRegion();
+    t.name=label; t.mpTag=':'+hKey(card);
+    return t;
+  };
+  let you, mate=null;
+  if(two){
+    you=soloYou(me, careerForm(), L().yourTeamPrefix+teamLabel(drafted));
+    mate=soloYou(pc, Number(pc.formPow)||0, teamLabel([pc]));
+    mate.isMate=true;
+  } else {
+    you=careerYouTeam(drafted);
+    you.name=L().yourTeamPrefix+teamLabel(drafted);
+  }
+  you.isYou=true;
+  const humans=mate ? (hKey(me)<hKey(pc) ? [you, mate] : [mate, you]) : [you];
   const open=ev.stage==='qual';
   const lobbyCr=open ? cr : Object.assign({}, cr, {division:1});
   const size=open ? careerVictoryField(true) : CC_SOLO_FIELD;
-  const field=[you, ...careerSoloField(lobbyCr, drafted, size, open)];
+  const field=[...humans, ...careerSoloField(lobbyCr, mate ? [me, pc] : drafted,
+                                             size-(humans.length-1), open)];
 
-  // The drop is picked in the Heats and the Final — rooms of one hundred-player
-  // lobby — and dealt in the open qualifier, his rule for every circuit here.
   const kindsForDrop=['solo'];
   const zones=null;
   const games=ev.stage==='qual' ? CC_SOLO_QUAL_GAMES
@@ -75482,30 +75642,41 @@ async function runCareerSoloSeries(){
     ev.stage==='heats' ? soloHeatsPoints : victoryR1Points, CC_SOLO_KILL,
     'stage', 0, null, zones,
     {lobbySize:100, stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
-     dropEachGame:(g,room)=>open ? null : careerLandingPick(room||field, you, ev.label, kindsForDrop)});
+     together: mate ? humans : null,
+     dropEachGame:(g,room)=>open ? null : ccSoloDrops(room||field, humans, ev.label, kindsForDrop)});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
   careerPrAdd(ranked, {div:cr.division, kind:'solo', stage:ev.stage});
   const cut=ev.stage==='qual' ? soloSeriesQualCut()
           : ev.stage==='heats' ? soloSeriesHeatCut() : 0;
-  let through=cut ? place<=cut : false;
-  // A Victory Royale in the Heats is the ticket itself, Epic's own rule.
-  if(ev.stage==='heats' && (you.wins||0)>0) through=true;
+  const passOf=function(t){
+    let th=cut ? (ranked.indexOf(t)+1)<=cut : false;
+    if(ev.stage==='heats' && (t.wins||0)>0) th=true;
+    return th;
+  };
+  const through=passOf(you);
   removeSkipButton();
 
   const shell=createStageCardShell(ev.label+' — '+field.length);
   await revealStageLog(you, shell, true);
   let cash=0;
+  const cashOf=function(t){ return ev.stage==='final' ? (soloSeriesPrize(ranked.indexOf(t)+1)||0) : 0; };
   if(ev.stage==='final'){
     careerMoneyAdd(ranked, soloSeriesPrize);
-    cash=soloSeriesPrize(place);
+    cash=cashOf(you);
     if(cash){ const mine=ccShareOf(cash, you); ccPayIn(mine); }
     careerReachAdd(careerReachResult(place, field.length, 1, 'solo'));
     careerNews(cash?'good':'flat', cash?'ccNewsSoloCash':'ccNewsSoloOut',
                cash?[place, ccNum(cash)]:[ev.label, place, field.length]);
-    cr.solo={got:'final', pass:'final'};
+    ccSoloSet(me, {got:'final', pass:'final'});
+    if(mate) ccSoloSet(pc, {got:'final', pass:'final'});
   } else {
-    cr.solo={got:ev.stage, pass: through ? ev.stage : (cr.solo && cr.solo.pass)||null};
+    const next=function(card, t){
+      const was=ccSoloOf(card);
+      return {got:ev.stage, pass: passOf(t) ? ev.stage : (was && was.pass)||null};
+    };
+    ccSoloSet(me, next(me, you));
+    if(mate) ccSoloSet(pc, next(pc, mate));
     careerNews(through?'good':'flat', through?'ccNewsSoloThrough':'ccNewsSoloOut',
                [ev.label, place, field.length]);
   }
@@ -75515,26 +75686,46 @@ async function runCareerSoloSeries(){
   await revealStandings(shell, ranked, you, cut, null, null,
     ev.stage==='final' ? soloSeriesPrize : null, null, ev.stage==='final');
 
-  const places=(you.stageLog||[]).map(g=>g.place);
   cr.log=cr.log||[];
   careerGrowEvent(place, field.length, you, field);
-  cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:place,
-               of:field.length, pts:you.stagePts, passed:through||cash>0,
-               ovr:CAREER.player.ovr, games:games, wins:you.wins||0,
-               elims:you.stageElims||0,
-               avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
-               mate:null, mates:null, prize:ccShareOf(cash, you),
-               kind:'solo', stage:ev.stage, solo:true});
+  /* Строка журнала — на КАЖДОГО из людей, с обеих сторон, в одном порядке:
+     журнал общий, и две разные строки от двух клиентов перетёрли бы друг
+     друга при закрытии. Чужой рейтинг берётся из его карточки. */
+  humans.forEach(function(t){
+    const places=(t.stageLog||[]).map(g=>g.place);
+    const isMe=(t===you);
+    const cashT=cashOf(t);
+    cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:ranked.indexOf(t)+1,
+                 of:field.length, pts:t.stagePts, passed:passOf(t)||cashT>0,
+                 ovr: isMe ? CAREER.player.ovr : Math.round(pc._targetOvr||pc.rating||0),
+                 games:games, wins:t.wins||0,
+                 elims:t.stageElims||0,
+                 avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
+                 mate:null, mates:null, prize:ccShareOf(cashT, t),
+                 kind:'solo', stage:ev.stage, solo:true,
+                 who: mate ? t.mpTag.slice(1) : undefined});
+  });
   careerMonthGoalCheck();
-  // Командный вечер закрывает сервер: он же двигает день. См. ccMpClose.
   await ccMpClose(ranked);
   careerAdvanceTo(ccAddDays(careerToday(), 1));
+  CC_MP_ALONE=false;               // итог одиночного вечера уезжает команде
   careerSave();
 
   CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet); CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerTwoRoundResultCard({title:ev.label, place:place, through:through||cash>0,
     wins:you.wins||0, cash:cash, cut:cut});
+}
+
+/* Дроп двоих в одном лобби — по очереди, в порядке ников, каждый на свой
+   вопрос; комната после первого передаётся второму как есть. */
+async function ccSoloDrops(room, humans, title, kinds){
+  if(humans.length<2) return careerLandingPick(room, humans[0], title, kinds);
+  let groups=null;
+  for(const h of humans){
+    groups=await careerLandingPick(room, h, title, kinds, {tag:h.mpTag, pre:groups});
+  }
+  return groups;
 }
 
 async function runCareerCup(){
