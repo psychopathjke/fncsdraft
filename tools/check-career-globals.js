@@ -27,6 +27,7 @@ const BOOT = `
   // the moment a picker appears, always the first zone, so the run is the same
   // every time. Without this a probe waits forever on a click nobody makes.
   setInterval(function(){
+    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
     z[0].click();
@@ -143,10 +144,37 @@ const BOOT = `
     }));
     out.notes.routes = routes;
     out.notes.regions = regions;
+    // Кто у игрока в напарниках: маршруты считаются после того, как его пара
+    // занимает свои ники, поэтому это первое, на что надо смотреть, если
+    // расклад по маршрутам поехал.
+    out.notes.mine = mine.map(p => p && p.handle);
+    /* Сколько пар Саммита развалил сам игрок, забрав себе одну половину.
+
+       Тут стояло «ровно пятнадцать из Саммита и ровно десять из ласт ченса», и
+       это было не свойство мода, а везение жребия: напарника игроку выдаёт пул,
+       и пока им оказывался кто-то посторонний, числа сходились. Стоило пулу
+       чуть измениться — напарником стал Scaryy, то есть половина реальной пары
+       Саммита Syaaz + Scary, — и тест покраснел на поведении, которое как раз
+       правильное: эта пара больше не может сесть целиком, а её место честно
+       скатывается вниз, в ласт ченс.
+
+       Проверяется поэтому связь, а не число: сколько игрок забрал, на столько
+       меньше мест у Саммита и на столько больше у ласт ченса. Всего всё равно
+       пятьдесят, и Мейджор 2 своих двадцати пяти не отдаёт. */
+    const brokeBy = (() => {
+      const keys = new Set(mine.map(p => _gcNorm(String((p && p.handle) || ''))));
+      return GC_SUMMIT_DUOS.filter(d => d.some(hd => {
+        const k = _gcNorm(hd);
+        return keys.has(k) || keys.has(_gcNorm(GC_HANDLE_ALIAS[k] || ''));
+      })).length;
+    })();
+    out.notes.brokeBy = brokeBy;
     check('fifty seats in Antwerp', gcField.length === 50, String(gcField.length));
-    check('fifteen of them came out of the Summit', routes.summit === 15, String(routes.summit));
+    check('fifteen from the Summit, less the ones the player broke up',
+          routes.summit === 15 - brokeBy, routes.summit + ' при ' + brokeBy);
     check('twenty-five out of the Major 2 finals', routes.m2 === 25, String(routes.m2));
-    check('and ten out of the Last Chance', routes.lcq === 10, String(routes.lcq));
+    check('and the Last Chance picks up whatever the Summit could not seat',
+          routes.lcq === 10 + brokeBy, routes.lcq + ' при ' + brokeBy);
     check('every region is in the room', Object.keys(regions).length >= 5,
           Object.keys(regions).join(','));
     check('and it is not a European field',

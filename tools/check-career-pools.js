@@ -51,10 +51,22 @@ const BOOT = `
     const keys = new Set(); let repeats = 0;
     pools.players.forEach(p => { if(keys.has(p._k)) repeats++; keys.add(p._k); });
     check(tag + ' nobody seated twice', repeats === 0, repeats + ' repeats');
-    check(tag + ' Division 1 is every recorded pair at its band',
-          pools.duos.length > 180, pools.duos.length);
-    check(tag + ' and its people are two per duo',
-          pools.players.length === pools.duos.length * 2, pools.players.length);
+    /* Дивизион — это те, кто в него квалифицировался, а не все, у кого
+       рейтинг дорос. Его правило, 21 августа: Плей-Ин, Ласт Ченс и финалы
+       недели самого дивизиона; пары, записанные где-то ещё за год, сюда больше
+       не заходят. Комната от этого меньше и честнее. */
+    check(tag + ' Division 1 is who qualified into it',
+          pools.duos.length > 150, pools.duos.length);
+    /* Контракт изменился 22 августа («расширь»): players — это пары плюс весь
+       остальной ростер свободными агентами, чтобы третьим к реальной паре в
+       трио-сезоне садился настоящий человек, а не выдуманный. Пары в players
+       по-прежнему целиком, повторов по-прежнему ноль — это выше; здесь
+       проверяется, что обе половины контракта на месте. */
+    const inPlayers = new Set(pools.players.map(p => p._k));
+    const halves = pools.duos.every(d => d.cards.every(c => inPlayers.has(c._k)));
+    check(tag + ' every duo half is in players', halves, 'a duo half is missing');
+    check(tag + ' plus the roster as free agents',
+          pools.players.length > pools.duos.length * 2, pools.players.length);
     // The Play-In's own field is in it, because that is this month's Division 1.
     const playIn = new Set(ccPeopleOf(ccSnapshotNow().playIn).keys());
     let seatedPlayIn = 0;
@@ -63,14 +75,18 @@ const BOOT = `
           seatedPlayIn + ' of ' + playIn.size);
     const avg = Math.round(pools.duos.reduce((s,d)=>s+d.avg, 0) / pools.duos.length * 10) / 10;
     out.snaps[tag] = {duos: pools.duos.length, avg: avg};
-    check(tag + ' reads as Division 1', avg >= 79 && avg <= 85, avg);
+    check(tag + ' reads as Division 1', avg >= 76 && avg <= 82, avg);
   });
 
-  // The two snapshots differ — the season turned over.
+  // The two snapshots differ — the season turned over. Считается по парам
+  // дивизиона, не по players: с 22 августа players держит весь ростер
+  // свободными агентами, и он в обоих снимках один — а меняется именно
+  // дивизион, то есть кто в записанных парах.
+  const duoKeys = () => new Set(careerPools().duos.flatMap(d => d.cards.map(c => c._k)));
   CAREER.career.day = '2026-01-15'; CC_POOLS = null;
-  const a = new Set(careerPools().players.map(p => p._k));
+  const a = duoKeys();
   CAREER.career.day = '2026-08-01'; CC_POOLS = null;
-  const b = new Set(careerPools().players.map(p => p._k));
+  const b = duoKeys();
   let gone = 0; a.forEach(k => { if(!b.has(k)) gone++; });
   out.turnover = {m1: a.size, m2: b.size, gone: gone};
   // Fewer leave than when the room was one event, because most of the year's

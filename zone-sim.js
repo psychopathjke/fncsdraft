@@ -1145,12 +1145,61 @@
       }
     }
 
+    /* The circles, one at a time — and stoppable between them.
+
+       The game used to run its whole plan inside one call, which is all a
+       spectator needs and not enough for a player: the career asks what to do
+       at the loot phase and again on the high ground, and a question can only
+       be asked while the game is standing still. So the loop is a method, and
+       playPhases(untilZone) returns as soon as the next circle to run is the
+       one the caller wants to be asked about. Everything the phases build —
+       squads, timeline, elimination order, the circle itself — lives in this
+       closure and simply waits.
+
+       Nothing about a full run changes: simulateZoneGame calls it once with no
+       limit and finishes, which is what every existing caller does. */
     var circle = {cx: plan[0].fromCx, cy: plan[0].fromCy, radius: plan[0].fromRadius};
-    for(var p=0; p<plan.length && aliveCount() > 1; p++){
-      var ph = plan[p];
-      runPhase(circle, {cx: ph.cx, cy: ph.cy, radius: ph.radius}, ph);
-      circle = {cx: ph.cx, cy: ph.cy, radius: ph.radius};
+    var phaseAt = 0;
+    function playPhases(untilZone){
+      for(; phaseAt<plan.length && aliveCount() > 1; phaseAt++){
+        var ph = plan[phaseAt];
+        if(untilZone != null && ph.zone >= untilZone) return false;   // ждём решения
+        runPhase(circle, {cx: ph.cx, cy: ph.cy, radius: ph.radius}, ph);
+        circle = {cx: ph.cx, cy: ph.cy, radius: ph.radius};
+      }
+      return true;
     }
+    // В пошаговом режиме ничего не играем до первого playTo: вся суть в том,
+    // что вопрос задаётся раньше круга, о котором спрашивают.
+    if(!opts.stepwise) playPhases(opts.untilZone);
+    if(opts.stepwise) return {
+      // Доиграть остаток и собрать результат — тем же кодом, что и полный
+      // прогон: хвост ниже вынесен в finish(), а не скопирован.
+      playTo: function(zone){ return playPhases(zone); },
+      finish: function(){ playPhases(null); return finish(); },
+      aliveCount: aliveCount,
+      // Кадры, записанные к этой секунде. Растут по мере игры, поэтому вызвавший
+      // может показать ровно тот кусок, который только что просчитан, — на этом
+      // стоит показ игры между вопросами.
+      frames: function(){ return timeline; },
+      // И подписи к точкам — те же, что отдаёт finish(). Нужны раньше него:
+      // показ первого куска идёт задолго до конца матча, а рисовать дот без
+      // имени нельзя.
+      roster: function(){ return buildRoster(); },
+      squads: squads,
+      // Кто где стоит сейчас — по этому карьера считает, у кого высокое место
+      // и кто рядом, когда спрашивает игрока на восьмой зоне.
+      circle: function(){ return circle; },
+      zone: function(){ return currentZone; }
+    };
+    return finish();
+
+    /* ---- хвост игры: коллапс, чемпион, запись результата --------------------
+       Вынесен в функцию, чтобы им заканчивались оба пути — и полный прогон, и
+       пошаговый; раньше это был просто конец simulateZoneGame. Объявление
+       поднимается, поэтому оно может стоять ниже своего вызова и хвост читается
+       там же, где читался всегда. */
+    function finish(){
 
     // The collapse. Zone 9 is a box, but two squads can still both be standing
     // in it, so the circle closes to zero and the last contact settles it.
@@ -1224,24 +1273,31 @@
     // colour are carried once rather than restamped onto fifty dots eighty-five
     // times. Sent even when nothing is recorded — it costs one small array and
     // it means a caller never has to reach back into the teams to label a dot.
-    var totalSquads = squads.length, totalPlayers = 0;
-    for(var tp=0; tp<squads.length; tp++){
-      totalPlayers += (squads[tp].team.squad && squads[tp].team.squad.length) || 1;
+    return {order: order, timeline: timeline, roster: buildRoster(), aspect: aspect};
     }
-    var roster = squads.map(function(s){
-      return {name: s.team.name, you: !!s.team.isYou,
-              size: (s.team.squad && s.team.squad.length) || 1};
-    });
-    // These are what the header counts down from, and by default they are just
-    // this call's own squads — which is wrong the moment a caller drops some of
-    // the lobby before ever handing it to the engine. A landing-fight loser is
-    // gone before simulateZoneGame is called, so `squads` only ever holds the
-    // survivors, and the header would report the lobby as whatever is left
-    // rather than what it started as. The caller knows the real lobby size, so
-    // it can say so; a caller that does not is unaffected.
-    roster.totalSquads = (opts.lobbySquads != null) ? opts.lobbySquads : totalSquads;
-    roster.totalPlayers = (opts.lobbyPlayers != null) ? opts.lobbyPlayers : totalPlayers;
-    return {order: order, timeline: timeline, roster: roster, aspect: aspect};
+
+    /* Подписи к точкам: индекс в индекс с dots каждого кадра, поэтому имя и
+       размер отряда несутся один раз, а не штампуются на пятьдесят точек по
+       восемьдесят пять раз за матч. Вынесено из finish(), потому что показ
+       матча кусками просит их задолго до его конца.
+
+       totalSquads/totalPlayers — то, от чего считает шапка, и по умолчанию это
+       просто отряды этого вызова. Что неверно, как только вызвавший выкинул
+       часть лобби до движка: проигравший высадку уходит раньше, и шапка
+       считала бы лобби по остатку, а не по тому, чем оно было. Вызвавший знает
+       настоящий размер и может его назвать. */
+    function buildRoster(){
+      var totalPlayers = 0;
+      for(var tp=0; tp<squads.length; tp++)
+        totalPlayers += (squads[tp].team.squad && squads[tp].team.squad.length) || 1;
+      var roster = squads.map(function(s){
+        return {name: s.team.name, you: !!s.team.isYou,
+                size: (s.team.squad && s.team.squad.length) || 1};
+      });
+      roster.totalSquads = (opts.lobbySquads != null) ? opts.lobbySquads : squads.length;
+      roster.totalPlayers = (opts.lobbyPlayers != null) ? opts.lobbyPlayers : totalPlayers;
+      return roster;
+    }
   }
 
   // Stage profiles. index.html already carries this idea for the engine being

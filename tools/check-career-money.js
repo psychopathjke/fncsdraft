@@ -32,6 +32,7 @@ const BOOT = `
   // the moment a picker appears, always the first zone, so the run is the same
   // every time. Without this a probe waits forever on a click nobody makes.
   setInterval(function(){
+    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
     z[0].click();
@@ -162,16 +163,21 @@ const BOOT = `
     careerTab('table');
     const body = document.getElementById('chBody');
     if (!body.querySelector('.cm')) fail('the money table did not draw');
-    if (!body.querySelector('.ct:not(.cm)')) fail('the season table left the tab');
-    // Two windows, not three: the tally still keeps an all-time figure and the
-    // header reads it, but a standing that never resets is not shown.
+    // Сезонной таблицы на вкладке больше нет — его слово, 23 августа: вкладка
+    // держит деньги и Power Ranking, и ничего третьего.
+    if (/ещё не было|Weekly Final has been played/i.test(body.textContent))
+      fail('the season table is back on the tab');
+    // Три окна — его скрин, 23 августа: «перестали считаться призовые за
+    // фнкс и саммит». Саммит в S40, финал Мейджора в S41, и сезонное окно
+    // S42 честно пустело; год открывается первым, «За всё время» добавлено.
     const tabs = body.querySelectorAll('.cm-tab').length;
-    if (tabs !== 2) fail('two readings, ' + tabs + ' buttons');
+    if (tabs !== 3) fail('three readings, ' + tabs + ' buttons');
     careerMoneyTab('year');
     if (!document.querySelector('#chBody .cm-tab.on')) fail('switching scope drew nothing');
     careerMoneyTab('all');
-    if (document.querySelectorAll('#chBody .cm-tab.on').length !== 1)
-      fail('an all-time scope should fall back to the season, and exactly one button should be lit');
+    const lit = document.querySelectorAll('#chBody .cm-tab.on');
+    if (lit.length !== 1 || lit[0]!==document.querySelectorAll('#chBody .cm-tab')[2])
+      fail('the all-time scope should light its own button, and exactly one');
     out.steps.push('screen: both standings on one tab, ' + tabs + ' scope buttons, switching redraws');
   } catch(e){ if(!out.fail) out.fail = String(e && e.message || e); }
   out.errs = window.__errs;

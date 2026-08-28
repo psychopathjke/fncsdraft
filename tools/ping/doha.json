@@ -1,0 +1,19 @@
+{
+ "server": "Doha",
+ "region": "ME",
+ "source": "wondernetwork.com/pings/Doha",
+ "read": "2026-08-20",
+ "unit": "ms round trip, probe to probe",
+ "used": false,
+ "note": "Read when he said the Middle East server is Qatar now, and kept unused. The Doha probe is not well connected and the region shows it: Bahrain is 150 km away and answers in 34 ms, Dubai in 94, Muscat in 99, Riyadh in 56 — while the Manama probe reads the same four cities at 34-nothing, 18, 17 and 19. A server 150 km away cannot be five times further in milliseconds, so this is the host and not the region. The ME table is built from manama.json instead, with the server placed at Doha: 150 km apart is about two and a half milliseconds by the ruler, which is inside the rounding.",
+ "rows": [
+  ["Manama","bh",33.84],["Riyadh","sa",55.70],["Dubai","ae",93.95],["Muscat","om",99.31],
+  ["Karachi","pk",103.21],["Lahore","pk",130.10],["Mumbai","in",124.16],["Tunis","tn",135.47],
+  ["London","gb",139.10],["Frankfurt","de",140.88],["Fez","ma",154.02],["Hyderabad","in",155.36],
+  ["Bangalore","in",156.13],["Athens","gr",159.65],["Cairo","eg",168.84],["New Delhi","in",173.59],
+  ["Algiers","dz",177.23],["Jerusalem","il",181.94],["Tokyo","jp",182.48],["Tel Aviv","il",183.04],
+  ["Baghdad","iq",188.96],["Tbilisi","ge",188.72],["Yerevan","am",193.79],["Kathmandu","np",195.55],
+  ["Johannesburg","za",196.58],["Nairobi","ke",212.01],["Tashkent","uz",215.06],
+  ["Moscow","ru",237.99],["Beirut","lb",319.02],["Singapore","sg",92.36]
+ ]
+}

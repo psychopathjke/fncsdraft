@@ -115,10 +115,12 @@ const BOOT = `
     if (!careerMateRec()) fail('taking the offer did not seat them');
     // The player's own announcement, not one of the scene's — those carry an
     // author and are filed on top of it.
-    const own = (CAREER.career.news||[]).find(n => n.k === 'ccNewsPartnerNew' && !n.by);
+    // Анонс теперь про-форматом «DUO @X» (ccNewsSquadNew) — 23 августа.
+    const own = (CAREER.career.news||[]).find(n => n.k === 'ccNewsSquadNew' && !n.by);
     if (!own) fail('the new duo was not announced by the player');
-    if (own && own.a[0] !== mate())
-      fail('the announcement names @' + own.a[0] + ' but the partner is ' + mate());
+    if (own.a && !/^@/.test(String(own.a[1]||''))) fail('the announce does not tag the mate: ' + own.a[1]);
+    if (own && String(own.a[1]||'').toLowerCase().indexOf(String(mate()||'').toLowerCase()) < 0)
+      fail('the announcement tags "' + own.a[1] + '" but the partner is ' + mate());
     out.steps.push('patience 30: ' + before2 + ' -> empty seat -> took ' + mate() + ' in one press');
 
     /* ---- and one you outgrew yourself --------------------------------- */

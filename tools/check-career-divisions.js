@@ -53,35 +53,10 @@ const BOOT = `
         const row = {div, mode, ovr, ceil: ccDivCeil(div)};
 
         // ---- the cup ------------------------------------------------------
-        // The rival is drawn before the room, the way the cup runner does it,
-        // so this measures the field a career actually plays.
-        const rival = careerRivalMake();
+        // Соперника больше нет — его слово, 23 августа. Поле меряется как
+        // есть, без первой посадки.
         const me = careerCard(), mate = {...me, handle:'PROBE_MATE'};
         const field = careerCupField(CAREER.career, [me, mate], careerCupSize(div));
-        check('D' + div + '/' + mode + ': a rival is drawn', !!rival);
-        if (rival) {
-          row.rival = attrsFor(rival.card).ovr;
-          const key = hKey(rival.card);
-          const seated = field.some(t => (t.squad||[]).some(p => p && hKey(p) === key));
-          check('D' + div + '/' + mode + ': and is in the room, not beside it', seated,
-                rival.card.handle);
-          // A race, where the rung can hold one. A 96 walking Division 5 cannot
-          // be raced by anybody in Division 5, and the rival sits at the
-          // ceiling instead - which is the true answer, not a near one.
-          if (mode === 'atBand')
-            check('D' + div + '/' + mode + ': the rival is close enough to be a race',
-                  Math.abs(row.rival - ovr) <= 8, row.rival + ' vs ' + ovr);
-          else
-            check('D' + div + '/' + mode + ': the rival is the best the rung holds',
-                  row.rival >= ccDivCeil(div) - 3, row.rival + ' vs ' + ccDivCeil(div));
-          check('D' + div + '/' + mode + ': and is real only in Division 1',
-                div === 1 ? rosterNames.has(String(rival.card.handle).toLowerCase())
-                          : !rosterNames.has(String(rival.card.handle).toLowerCase()),
-                rival.card.handle);
-          if (div > 1)
-            check('D' + div + '/' + mode + ': and fits the rung',
-                  row.rival <= ccDivCeil(div), row.rival + ' vs ' + ccDivCeil(div));
-        }
         const men = [];
         field.forEach(t => (t.squad||[]).forEach(p => men.push(p)));
         const gen = men.filter(p => p.tier === 'ladder');

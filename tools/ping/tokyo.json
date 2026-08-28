@@ -1,0 +1,25 @@
+{
+ "server": "Tokyo",
+ "region": "ASIA",
+ "source": "wondernetwork.com/pings/Tokyo",
+ "read": "2026-08-20",
+ "unit": "ms round trip, probe to probe",
+ "note": "Asia is Tokyo. Rows are Asia and Oceania in full plus the anchors the fill model needs at long range. Hong Kong and Singapore are listed by the source without a country and are read as their own.",
+ "rows": [
+  ["Koto","jp",1.40],["Osaka","jp",8.44],
+  ["Taipei","tw",30.60],["Seoul","kr",31.43],["Khabarovsk","ru",33.86],["Dagupan","ph",52.88],
+  ["Singapore","sg",66.06],["Phnom Penh","kh",67.66],["Kuala Lumpur","my",73.91],
+  ["Bangkok","th",79.75],["Hanoi","vn",90.79],["Ho Chi Minh City","vn",90.88],["Jakarta","id",93.39],
+  ["Yangon","mm",100.77],["Hyderabad","in",110.07],["Chennai","in",111.34],["Perth","au",112.26],
+  ["Mumbai","in",126.78],["Pune","in",130.32],["Shenzhen","cn",134.58],["Kathmandu","np",134.96],
+  ["Adelaide","au",137.94],["Christchurch","nz",137.76],["Muscat","om",139.72],["Indore","in",141.26],
+  ["Wellington","nz",142.02],["Shanghai","cn",142.03],["Hong Kong","hk",149.44],
+  ["Melbourne","au",149.63],["New Delhi","in",150.91],["Manila","ph",156.48],["Sydney","au",157.69],
+  ["Dhaka","bd",157.80],["Doha","qa",166.54],["Clark","ph",174.77],["Auckland","nz",184.16],
+  ["Bangalore","in",232.88],["Dubai","ae",237.93],
+  ["Tashkent","uz",240.15],["Almaty","kz",266.44],["Karaganda","kz",424.32],["Bishkek","kg",333.89],
+  ["Karachi","pk",333.05],["Lahore","pk",354.16],
+  ["Honolulu","us",150.40],["Seattle","us",94.60],["Los Angeles","us",105.42],
+  ["Moscow","ru",264.26],["Frankfurt","de",230.91],["London","gb",234.81],["Sao Paulo","br",298.47]
+ ]
+}

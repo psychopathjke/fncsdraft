@@ -1813,6 +1813,32 @@
     draw(handle, frame, opts.labels, opts.roster);
   }
 
+  /* Остров целиком и пустой — как перед началом игры.
+
+     Между играми карта стоит на последнем нарисованном кадре: камера уехала в
+     финальный круг и увеличила его в несколько раз, поэтому в паузе видно
+     фиолетовое пятно, а не остров. Пока пауза была мгновенной, это никого не
+     касалось; с 25 августа в ней задаётся вопрос «куда падаем» — и смотреть
+     на пятно, выбирая точку, нельзя (его слова: «карту показывает не полностью
+     заполненную почему-то»).
+
+     Камера живёт внутри play() и для каждой игры начинается заново, так что
+     здесь достаточно вернуть трансформ и стереть нарисованное: следующая игра
+     всё равно приедет со своим первым кадром.
+
+     Рука на колесе не трогается: если зритель сам увёл карту (byHand), это
+     его карта. */
+  function whole(handle){
+    if(!handle || handle.byHand) return;
+    handle.svg.innerHTML = '';
+    // И шапка: 'ЗОНА 12 0:00' над пустым островом — это счёт прошлой игры.
+    if(handle.head) handle.head.innerHTML = '';
+    if(handle.side){ handle.side.innerHTML = ''; handle.side.style.display = 'none'; }
+    handle.painted = null;
+    paint(handle, 0, 0, 1);
+    setView(handle, 0, 0, 1);
+  }
+
   // Start the feed over: for a scrub, where the frames about to arrive are not
   // the ones that filled it.
   function clearFeed(handle){
@@ -1830,6 +1856,7 @@
 
   root.ZoneReplay = {mount:mount, play:play, unmount:unmount,
                      between:between, show:show, clearFeed:clearFeed, note:note,
+                     whole:whole,
                      directTrack:directTrack,
                      // Pure, and the one part of the naming a browser is not
                      // needed to check: how a squad's handles become the lines

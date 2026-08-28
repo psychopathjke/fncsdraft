@@ -92,9 +92,23 @@ const BOOT = `
           !document.getElementById('ccFfBox'));
     check('the hub is what the player comes back to',
           document.getElementById('screen-career-hub').style.display !== 'none');
-    const digest = document.querySelector('.cc-ff-card');
+    /* Итог перемотки — слой поверх хаба, а не карточка внутри него.
+
+       Тут стоял селектор cc-ff-card, и это был не признак итога, а его адрес:
+       карточку вставляли первой в тело хаба. Его правка 22 августа — «поверх
+       главного меню, чтоб крестик нажать или продолжить нажать» — адрес и
+       поменяла.
+
+       Проверяется поэтому то, что осталось истиной и до, и после: итог показан,
+       и из него есть чем выйти. Старый селектор оставлен запасным на случай
+       отката. */
+    const digest = document.querySelector('.cc-ffo') || document.querySelector('.cc-ff-card');
     out.notes.digest = digest && digest.textContent.replace(/\\s+/g, ' ').slice(0, 120);
+    out.notes.ffTiles = digest ? digest.querySelectorAll('.cc-ffo-t').length : 0;
     check('with a digest of what happened', !!digest);
+    check('and a way out of it', !!(digest && (digest.querySelector('.cc-ffo-go') ||
+                                               digest.querySelector('.cc-ffo-x') ||
+                                               digest.classList.contains('cc-ff-card'))));
 
     // ---- energy is real, not refunded ------------------------------------
     // A fast-forward that ignored the store would train thirty days straight

@@ -33,9 +33,15 @@ const BOOT = `
       gear:{own:[], train:0}, sponsor:{id:'drink', since:1, paid:0}}; };
 
     // How often, and only on days the calendar leaves alone.
+    /* Бросок дня теперь случайный (cr.luck, его правка 23 августа: «может в
+       случайно день эти события пусть происходят»), и одного года мало: на
+       163 свободных днях доля гуляет на ±3 события чистым шумом. Год
+       проходится двенадцать раз — каждый проход кидает заново — и доля
+       встаёт на место. Порог не двигаем, двигаем выборку. */
     fresh();
     let free = 0, withEv = 0, onEventDay = 0;
     const kinds = {};
+    for (let pass = 0; pass < 12; pass++)
     for (let d = CC_YEAR_FROM; d <= CC_YEAR_TO; d = ccAddDays(d, 1)) {
       CAREER.career.day = d;
       const busy = (careerYearDays().get(d)||[]).length > 0;
@@ -51,7 +57,8 @@ const BOOT = `
     check('and every kind shows up', Object.keys(kinds).length === CC_DAY_EVENTS.length,
           JSON.stringify(kinds));
 
-    // The same day offers the same thing, twice.
+    // The same day offers the same thing, twice: the roll is stored in
+    // cr.luck, not thrown again on every open.
     const someDay = (() => { for (let d = CC_YEAR_FROM; d <= CC_YEAR_TO; d = ccAddDays(d,1)) {
       CAREER.career.day = d; if (ccDayEventOn(d)) return d; } return null; })();
     CAREER.career.day = someDay;
@@ -63,9 +70,14 @@ const BOOT = `
     // has nothing to draw into: stub it the way the other harnesses do.
     careerRenderHub = function(){};
 
-    // Taking one spends the day and pays what it says.
+    // Taking one spends the day and pays what it says. КАКОЙ день приносит
+    // оффер — теперь случайность; ЧТО делает взятый оффер — нет. Поэтому
+    // бросок подсаживается в cr.luck руками, и меряется механика.
+    const ev = CC_DAY_EVENTS.find(e => e.id === 'show');
     fresh(); CAREER.career.day = someDay;
-    const ev = ccDayEventOn(someDay);
+    CAREER.career.luck = {day:someDay, woe:null, ev:'show'};
+    check('the planted offer is on the day',
+          (ccDayEventOn(someDay)||{}).id === 'show');
     const beforeE = careerEnergy(), beforeCash = CAREER.career.balance;
     check('taking it works', careerDayEvent(ev.id, true) === true);
     check('and the day is spent', careerDayDone() === true);
@@ -77,6 +89,7 @@ const BOOT = `
 
     // Turning one down also spends the day, and the offer is gone.
     fresh(); CAREER.career.day = someDay;
+    CAREER.career.luck = {day:someDay, woe:null, ev:'show'};
     check('passing works', careerDayEvent(ev.id, false) === true);
     check('the day is spent either way', careerDayDone() === true);
     check('and the offer does not come back', ccDayEventOn(someDay) === null);

@@ -51,7 +51,10 @@ const BOOT = `
   // Anything else Latin in a Russian feed is still a failure. This exempts a
   // named list, not a shape, so a line that genuinely did not translate cannot
   // slip through by carrying an emoji.
-  const SAME_IN_BOTH = /\\b(W|TOP)\\b/g;
+  // DUO и TRIO — оттуда же: анонс состава (ccNewsSquadNew, 23 августа) пишется
+  // «DUO @a» / «TRIO @a @b» во всех трёх локалях, это его формулировка, а не
+  // непереведённая строка.
+  const SAME_IN_BOTH = /\\b(W|TOP|DUO|TRIO)\\b/g;
   const translatable = t => String(t)
     .replace(/@[^\\s]+/g, ' ')
     .replace(SAME_IN_BOTH, ' ');
@@ -81,6 +84,13 @@ const BOOT = `
     const skipper = setInterval(() => {
       const b = document.getElementById('majorSkipBtn');
       if (b && !b.disabled) b.click();
+      // И вопрос про метку дома (careerSpotGate): «сыграть без метки», иначе
+      // окно стоит вечно и вечер не начинается.
+      const am = document.getElementById('ccAskModal');
+      if (am && am.style.display === 'flex') {
+        const no = document.getElementById('ccAskNo');
+        if (no && no.textContent === L().ccSpotGatePlay) no.click();
+      }
     }, 20);
     document.querySelector('#screen-career-hub .ch-play').click();
     let card = null;

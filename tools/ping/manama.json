@@ -1,0 +1,19 @@
+{
+ "server": "Manama",
+ "region": "ME",
+ "source": "wondernetwork.com/pings/Manama",
+ "read": "2026-08-20",
+ "unit": "ms round trip, probe to probe",
+ "note": "The Middle East is Bahrain. This matrix is noisier than the others — several probes in the region route the long way round and read three or four times what the distance allows (Beirut 309 ms to a server 1,600 km away, Baghdad 162, New Delhi 245 against Bangalore's 72). The outlier guard drops those and the fill model stands in, and every one it drops is printed.",
+ "rows": [
+  ["Muscat","om",16.91],["Dubai","ae",18.39],["Riyadh","sa",18.52],["Doha","qa",33.79],
+  ["Bangalore","in",72.26],["Pune","in",74.99],["Singapore","sg",85.77],["Frankfurt","de",87.19],
+  ["Fez","ma",88.40],["Algiers","dz",95.04],["Cairo","eg",107.53],["Tunis","tn",110.86],
+  ["Istanbul","tr",116.63],["Mumbai","in",124.08],["Athens","gr",129.42],["London","gb",137.67],
+  ["Izmir","tr",149.16],["Moscow","ru",149.44],["Bursa","tr",152.15],["Jerusalem","il",155.68],
+  ["Ankara","tr",156.68],["Baghdad","iq",161.50],["Yerevan","am",165.68],["Bishkek","kg",179.98],
+  ["Tel Aviv","il",184.63],["Tokyo","jp",184.98],["Tbilisi","ge",195.35],["Tashkent","uz",196.36],
+  ["Almaty","kz",204.18],["Nairobi","ke",235.72],["Johannesburg","za",240.92],
+  ["New Delhi","in",245.12],["Beirut","lb",308.74]
+ ]
+}

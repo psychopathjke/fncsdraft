@@ -58,7 +58,10 @@ const BOOT = `
     const balBefore = CAREER.career.balance;
     check('the move goes through', careerMoveTo('de') === true);
     out.notes.moved = {from:'ge', to:'de', gain, edge:careerCard()._pingEdge};
-    check('the connection is the one moved to', ccPingNow() === 1, String(ccPingNow()));
+    // Read off the table rather than written down: the milliseconds are measured
+    // now and a hand-typed 1 was Germany before anybody had measured it.
+    check('the connection is the one moved to', ccPingNow() === ccPingOf('de'),
+          ccPingNow() + ' vs ' + ccPingOf('de'));
     check('and the card reads it', Math.abs(careerCard()._pingEdge - CC_PING_EDGE) < 0.05,
           String(careerCard()._pingEdge));
     check('the first month is paid on the way in',
@@ -108,7 +111,8 @@ const BOOT = `
     fresh(50000, 'ge');
     const tile = careerMoveHTML();
     check('the tile is drawn for a built player', /cc-move/.test(tile));
-    check('and it says what the connection is worth', tile.indexOf('82 ms') >= 0);
+    check('and it says what the connection is worth',
+          tile.indexOf(ccPingOf('ge') + ' ms') >= 0, ccPingOf('ge') + ' ms');
     CH_MOVE = true;
     const withMap = careerMoveHTML();
     const shapes = (withMap.match(/class="cc-mp"/g) || []).length;
@@ -225,32 +229,47 @@ const BOOT = `
     check('an eviction goes home, not to Europe by default',
           CAREER.player.region === 'NAC', String(CAREER.player.region));
 
-    // A taken card is not sold a flight that would change nothing about them:
-    // careerCard gives it no ping edge at all.
+    /* A taken card may move now too.
+
+       It used to be told why it could not: careerCard gave it no ping edge, so
+       there was no flight worth selling — and the result read as a hole, since
+       the same card could cross to Oceania but not go from France to Germany.
+       His rule, 21 August: give it the possibility, and pay it for the move
+       rather than for where it happens to have been born. So the whole tile is
+       on offer, the country map with it, and the edge on the card is the
+       difference the move made — nothing at all while it stays home. */
     fresh(50000, 'ge', 'Sky');
-    // It is still not offered one — but silence was the wrong way to say so, and
-    // the tile now carries the reason instead of not existing. What has to hold
-    // is that it carries no way to act: no map, no region buttons, no open.
     var takenTile = careerMoveHTML();
-    check('a taken card is told why rather than shown nothing', takenTile !== '');
-    check('and is told which rule it is', takenTile.indexOf(L().ccMoveOnlyBuilt) >= 0);
-    // The rule moved on 18 August: a real card may cross an ocean, it just cannot
-    // shop for a ping. So the regions are open to it and the country map is not.
-    // Picking a region is a look first and a departure second, so the row calls
-    // careerMoveShowRegion; what has to hold is that the regions are on offer and
-    // that the way out of the continent still exists for a taken card.
-    check('and is offered the regions', takenTile.indexOf('careerMoveShowRegion') >= 0);
+    check('a taken card is offered the move', takenTile !== '');
+    check('and the way into the country map with it',
+          takenTile.indexOf('careerMoveOpen') >= 0);
+    check('at home its card is paid nothing for living there',
+          (careerCard()._pingEdge || 0) === 0, String(careerCard()._pingEdge));
+    check('and it can move inside its own region', careerMoveTo('de') === true);
+    var movedEdge = careerCard()._pingEdge;
+    check('and the move is what the card is paid for', movedEdge > 0, String(movedEdge));
+    check('and it is the difference, not the whole connection',
+          Math.abs(movedEdge - (ccPingEdge(ccPingOf('de')) - ccPingEdge(ccPingOf('ge')))) < 0.15,
+          String(movedEdge));
+    // Nothing about the ocean changed with it: the regions are still on offer
+    // under the same button, and the crossing still goes through.
+    CH_MOVE = true;
+    check('and is offered the regions',
+          careerMoveHTML().indexOf('careerMoveShowRegion') >= 0);
     CH_MOVE_REG = 'OCE';
+    /* Кнопка зовётся careerMoveAsk, а не careerMoveRegion.
+       Переезд БЕЗ команды сжигает место на ЛАНе, и с 26 августа он сначала
+       спрашивает об этом (см. ccSlotAsk и check-career-slot-warn.js). Сам
+       переезд по-прежнему делает careerMoveRegion — просто уже после «да».
+       Отъезд ВМЕСТЕ место сохраняет и потому спрашивает по-прежнему ничего. */
     check('and picking one gives it the button that goes',
+          careerMoveHTML().indexOf('careerMoveAsk') >= 0 ||
           careerMoveHTML().indexOf('careerMoveRegion') >= 0);
-    CH_MOVE_REG = null;
-    check('but not the country map', takenTile.indexOf('careerMoveOpen') < 0,
-          'the map got through');
+    CH_MOVE_REG = null; CH_MOVE = false;
     const wasRegion = ccCareerRegion();
     check('and it can actually cross', careerMoveRegion('NAC') === true);
     check('and the region really changed', ccCareerRegion() === 'NAC',
           wasRegion + ' -> ' + ccCareerRegion());
-    check('and cannot take it anyway', careerMoveTo('de') === false);
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =
     'PB' + 'EGIN' + encodeURIComponent(JSON.stringify(out)) + 'PE' + 'ND';
@@ -259,7 +278,10 @@ const BOOT = `
 
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 // Inside the project: the page loads maps.js by a relative path now.
-const dir = fs.mkdtempSync(path.join(ROOT, 'probe-move-'));
+// Во временную папку системы и с уборкой на любом выходе — см. разбор в
+// check-career-edges.js.
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'probe-move-'));
+process.on('exit', () => { try{ fs.rmSync(dir, {recursive:true, force:true}); }catch(e){} });
 const tmp = path.join(dir, 'index.html');
 // The maps load on demand on the site; a probe wants them present from the
 // first line, so it asks for them up front and says they have arrived.

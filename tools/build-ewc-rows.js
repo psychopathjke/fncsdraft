@@ -160,6 +160,12 @@ function stageOfFile(file){
   return null;
 }
 
+// Tracker takes the club off the player's own tag, so one org can arrive in two
+// spellings. Zabo, Mxxi and 1P Jakobreyli wrote "Avora Gaming" while Shxrk and
+// t3eny wrote "Aurora Gaming" in the same leaderboard — that shipped as two
+// clubs, one of them without a crest, since only Aurora_Gaming.png is on disk.
+const ORG_FIX = {'Avora Gaming': 'Aurora Gaming'};
+
 const text = s => s.replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/&#39;/g, "'")
                    .replace(/&quot;/g, '"').replace(/\s+/g, ' ').trim();
 const num = s => {
@@ -182,7 +188,8 @@ function parsePage(html, stage){
     out.push({rank, points: num(stats[0]), matches: num(stats[1]), wins: num(stats[2]),
               avgElims: num(stats[3]), avgPlace: num(stats[4]),
               elimPts: Math.round((num(stats[3]) || 0) * matches * killAt(stage)),
-              players: names.map((n, i) => ({handle: n, org: orgs[i] || null, nat: nats[i] || null}))});
+              players: names.map((n, i) => ({handle: n, org: ORG_FIX[orgs[i]] || orgs[i] || null,
+                                            nat: nats[i] || null}))});
   }
   return out;
 }

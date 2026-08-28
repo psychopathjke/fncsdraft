@@ -1,0 +1,1578 @@
+{
+ "lastMile": 8,
+ "outlier": 2.8,
+ "regions": {
+  "EU": {
+   "server": {
+    "file": "frankfurt.json",
+    "name": "Frankfurt",
+    "lat": 50.11,
+    "lon": 8.68
+   },
+   "fit": {
+    "a": 15.342697563039044,
+    "b": 0.016675786306274594,
+    "n": 137,
+    "r2": 0.8269495058024205,
+    "slopeFrom": "its own probes"
+   },
+   "dropped": [
+    {
+     "c": "lb",
+     "city": "Beirut",
+     "ms": 216.25,
+     "expect": 63
+    }
+   ],
+   "rows": [
+    {
+     "c": "lu",
+     "ping": 13,
+     "from": "median of 1"
+    },
+    {
+     "c": "de",
+     "ping": 18,
+     "from": "people over 6"
+    },
+    {
+     "c": "ch",
+     "ping": 19,
+     "from": "people over 6"
+    },
+    {
+     "c": "nl",
+     "ping": 20,
+     "from": "people over 7"
+    },
+    {
+     "c": "cz",
+     "ping": 21,
+     "from": "people over 3"
+    },
+    {
+     "c": "sk",
+     "ping": 22,
+     "from": "people over 1"
+    },
+    {
+     "c": "hu",
+     "ping": 24,
+     "from": "people over 1"
+    },
+    {
+     "c": "dk",
+     "ping": 26,
+     "from": "median of 1"
+    },
+    {
+     "c": "hr",
+     "ping": 26,
+     "from": "people over 1"
+    },
+    {
+     "c": "fr",
+     "ping": 27,
+     "from": "people over 6"
+    },
+    {
+     "c": "be",
+     "ping": 27,
+     "from": "people over 3"
+    },
+    {
+     "c": "gb",
+     "ping": 28,
+     "from": "people over 11"
+    },
+    {
+     "c": "at",
+     "ping": 28,
+     "from": "people over 2"
+    },
+    {
+     "c": "si",
+     "ping": 28,
+     "from": "people over 1"
+    },
+    {
+     "c": "li",
+     "ping": 29,
+     "from": "model"
+    },
+    {
+     "c": "pl",
+     "ping": 31,
+     "from": "people over 2"
+    },
+    {
+     "c": "ie",
+     "ping": 31,
+     "from": "people over 2"
+    },
+    {
+     "c": "im",
+     "ping": 33,
+     "from": "median of 1"
+    },
+    {
+     "c": "fi",
+     "ping": 33,
+     "from": "people over 2"
+    },
+    {
+     "c": "no",
+     "ping": 33,
+     "from": "people over 2"
+    },
+    {
+     "c": "ro",
+     "ping": 35,
+     "from": "people over 3"
+    },
+    {
+     "c": "ee",
+     "ping": 36,
+     "from": "people over 1"
+    },
+    {
+     "c": "lv",
+     "ping": 36,
+     "from": "people over 1"
+    },
+    {
+     "c": "ba",
+     "ping": 37,
+     "from": "median of 1"
+    },
+    {
+     "c": "it",
+     "ping": 38,
+     "from": "people over 5"
+    },
+    {
+     "c": "bg",
+     "ping": 38,
+     "from": "people over 2"
+    },
+    {
+     "c": "lt",
+     "ping": 39,
+     "from": "people over 2"
+    },
+    {
+     "c": "rs",
+     "ping": 40,
+     "from": "people over 1"
+    },
+    {
+     "c": "tn",
+     "ping": 40,
+     "from": "people over 1"
+    },
+    {
+     "c": "ad",
+     "ping": 40,
+     "from": "model"
+    },
+    {
+     "c": "es",
+     "ping": 41,
+     "from": "people over 4"
+    },
+    {
+     "c": "se",
+     "ping": 41,
+     "from": "people over 2"
+    },
+    {
+     "c": "ua",
+     "ping": 41,
+     "from": "people over 2"
+    },
+    {
+     "c": "me",
+     "ping": 43,
+     "from": "model"
+    },
+    {
+     "c": "md",
+     "ping": 44,
+     "from": "people over 1"
+    },
+    {
+     "c": "gr",
+     "ping": 45,
+     "from": "people over 2"
+    },
+    {
+     "c": "ma",
+     "ping": 46,
+     "from": "people over 1"
+    },
+    {
+     "c": "by",
+     "ping": 46,
+     "from": "model"
+    },
+    {
+     "c": "al",
+     "ping": 47,
+     "from": "people over 1"
+    },
+    {
+     "c": "mk",
+     "ping": 48,
+     "from": "people over 1"
+    },
+    {
+     "c": "tr",
+     "ping": 48,
+     "from": "people over 4"
+    },
+    {
+     "c": "mt",
+     "ping": 51,
+     "from": "people over 1"
+    },
+    {
+     "c": "is",
+     "ping": 54,
+     "from": "median of 1"
+    },
+    {
+     "c": "ly",
+     "ping": 56,
+     "from": "model"
+    },
+    {
+     "c": "pt",
+     "ping": 58,
+     "from": "people over 1"
+    },
+    {
+     "c": "cy",
+     "ping": 62,
+     "from": "median of 1"
+    },
+    {
+     "c": "dz",
+     "ping": 63,
+     "from": "people over 1"
+    },
+    {
+     "c": "il",
+     "ping": 63,
+     "from": "people over 2"
+    },
+    {
+     "c": "ru",
+     "ping": 64,
+     "from": "people over 5"
+    },
+    {
+     "c": "sy",
+     "ping": 69,
+     "from": "model"
+    },
+    {
+     "c": "eg",
+     "ping": 70,
+     "from": "people over 1"
+    },
+    {
+     "c": "am",
+     "ping": 70,
+     "from": "people over 1"
+    },
+    {
+     "c": "lb",
+     "ping": 71,
+     "from": "model"
+    },
+    {
+     "c": "ge",
+     "ping": 73,
+     "from": "people over 1"
+    },
+    {
+     "c": "ps",
+     "ping": 73,
+     "from": "model"
+    },
+    {
+     "c": "jo",
+     "ping": 74,
+     "from": "model"
+    },
+    {
+     "c": "eh",
+     "ping": 75,
+     "from": "model"
+    },
+    {
+     "c": "iq",
+     "ping": 77,
+     "from": "people over 1"
+    },
+    {
+     "c": "az",
+     "ping": 77,
+     "from": "people over 1"
+    },
+    {
+     "c": "ir",
+     "ping": 77,
+     "from": "model"
+    },
+    {
+     "c": "kw",
+     "ping": 90,
+     "from": "model"
+    },
+    {
+     "c": "tm",
+     "ping": 92,
+     "from": "model"
+    },
+    {
+     "c": "bh",
+     "ping": 95,
+     "from": "people over 1"
+    },
+    {
+     "c": "uz",
+     "ping": 97,
+     "from": "people over 1"
+    },
+    {
+     "c": "kg",
+     "ping": 100,
+     "from": "people over 1"
+    },
+    {
+     "c": "tj",
+     "ping": 104,
+     "from": "model"
+    },
+    {
+     "c": "af",
+     "ping": 109,
+     "from": "model"
+    },
+    {
+     "c": "sa",
+     "ping": 119,
+     "from": "people over 1"
+    },
+    {
+     "c": "om",
+     "ping": 128,
+     "from": "people over 1"
+    },
+    {
+     "c": "ae",
+     "ping": 131,
+     "from": "people over 1"
+    },
+    {
+     "c": "pk",
+     "ping": 139,
+     "from": "people over 2"
+    },
+    {
+     "c": "kz",
+     "ping": 145,
+     "from": "people over 2"
+    },
+    {
+     "c": "qa",
+     "ping": 148,
+     "from": "people over 1"
+    }
+   ]
+  },
+  "NAC": {
+   "server": {
+    "file": "dallas.json",
+    "name": "Dallas",
+    "lat": 32.78,
+    "lon": -96.8
+   },
+   "fit": {
+    "a": 13.54012107399132,
+    "b": 0.015622773303580674,
+    "n": 94,
+    "r2": 0.9358674373065072,
+    "slopeFrom": "its own probes"
+   },
+   "dropped": [],
+   "rows": [
+    {
+     "c": "us-tx",
+     "ping": 17,
+     "from": "people over 3"
+    },
+    {
+     "c": "us-la",
+     "ping": 20,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-ga",
+     "ping": 25,
+     "from": "people over 2"
+    },
+    {
+     "c": "us-ok",
+     "ping": 27,
+     "from": "model"
+    },
+    {
+     "c": "us-wy",
+     "ping": 27,
+     "from": "median of 1"
+    },
+    {
+     "c": "us-ms",
+     "ping": 28,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-az",
+     "ping": 30,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-il",
+     "ping": 31,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-in",
+     "ping": 32,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-mo",
+     "ping": 33,
+     "from": "people over 2"
+    },
+    {
+     "c": "us-ks",
+     "ping": 33,
+     "from": "model"
+    },
+    {
+     "c": "us-co",
+     "ping": 34,
+     "from": "people over 2"
+    },
+    {
+     "c": "us-wi",
+     "ping": 36,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-fl",
+     "ping": 36,
+     "from": "people over 4"
+    },
+    {
+     "c": "us-ne",
+     "ping": 36,
+     "from": "model"
+    },
+    {
+     "c": "us-oh",
+     "ping": 37,
+     "from": "people over 2"
+    },
+    {
+     "c": "us-ia",
+     "ping": 38,
+     "from": "people over 1"
+    },
+    {
+     "c": "mx",
+     "ping": 38,
+     "from": "people over 2"
+    },
+    {
+     "c": "us-nm",
+     "ping": 38,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-mi",
+     "ping": 39,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-al",
+     "ping": 39,
+     "from": "median of 1"
+    },
+    {
+     "c": "us-ut",
+     "ping": 39,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-sd",
+     "ping": 40,
+     "from": "model"
+    },
+    {
+     "c": "us-nv",
+     "ping": 41,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-mn",
+     "ping": 43,
+     "from": "model"
+    },
+    {
+     "c": "us-ca",
+     "ping": 43,
+     "from": "people over 5"
+    },
+    {
+     "c": "us-ny",
+     "ping": 44,
+     "from": "people over 3"
+    },
+    {
+     "c": "us-tn",
+     "ping": 44,
+     "from": "people over 2"
+    },
+    {
+     "c": "us-dc",
+     "ping": 45,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-wv",
+     "ping": 45,
+     "from": "model"
+    },
+    {
+     "c": "us-nd",
+     "ping": 46,
+     "from": "model"
+    },
+    {
+     "c": "us-sc",
+     "ping": 47,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-mt",
+     "ping": 47,
+     "from": "median of 1"
+    },
+    {
+     "c": "us-pa",
+     "ping": 48,
+     "from": "people over 2"
+    },
+    {
+     "c": "us-nc",
+     "ping": 49,
+     "from": "people over 2"
+    },
+    {
+     "c": "cu",
+     "ping": 49,
+     "from": "model"
+    },
+    {
+     "c": "ca",
+     "ping": 50,
+     "from": "people over 10"
+    },
+    {
+     "c": "us-ma",
+     "ping": 51,
+     "from": "people over 1"
+    },
+    {
+     "c": "bz",
+     "ping": 51,
+     "from": "model"
+    },
+    {
+     "c": "us-va",
+     "ping": 52,
+     "from": "people over 1"
+    },
+    {
+     "c": "bs",
+     "ping": 54,
+     "from": "model"
+    },
+    {
+     "c": "ky",
+     "ping": 55,
+     "from": "model"
+    },
+    {
+     "c": "us-md",
+     "ping": 57,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-ct",
+     "ping": 57,
+     "from": "model"
+    },
+    {
+     "c": "pr",
+     "ping": 57,
+     "from": "people over 1"
+    },
+    {
+     "c": "hn",
+     "ping": 57,
+     "from": "model"
+    },
+    {
+     "c": "us-vt",
+     "ping": 59,
+     "from": "model"
+    },
+    {
+     "c": "gt",
+     "ping": 59,
+     "from": "median of 1"
+    },
+    {
+     "c": "us-wa",
+     "ping": 59,
+     "from": "people over 2"
+    },
+    {
+     "c": "ni",
+     "ping": 61,
+     "from": "model"
+    },
+    {
+     "c": "jm",
+     "ping": 62,
+     "from": "model"
+    },
+    {
+     "c": "us-or",
+     "ping": 62,
+     "from": "people over 2"
+    },
+    {
+     "c": "us-me",
+     "ping": 63,
+     "from": "model"
+    },
+    {
+     "c": "us-id",
+     "ping": 63,
+     "from": "people over 1"
+    },
+    {
+     "c": "sv",
+     "ping": 65,
+     "from": "people over 1"
+    },
+    {
+     "c": "tc",
+     "ping": 66,
+     "from": "model"
+    },
+    {
+     "c": "ht",
+     "ping": 67,
+     "from": "model"
+    },
+    {
+     "c": "bm",
+     "ping": 68,
+     "from": "model"
+    },
+    {
+     "c": "do",
+     "ping": 68,
+     "from": "model"
+    },
+    {
+     "c": "aw",
+     "ping": 77,
+     "from": "model"
+    },
+    {
+     "c": "cw",
+     "ping": 79,
+     "from": "model"
+    },
+    {
+     "c": "kn",
+     "ping": 81,
+     "from": "model"
+    },
+    {
+     "c": "ag",
+     "ping": 83,
+     "from": "model"
+    },
+    {
+     "c": "dm",
+     "ping": 85,
+     "from": "model"
+    },
+    {
+     "c": "lc",
+     "ping": 87,
+     "from": "model"
+    },
+    {
+     "c": "vc",
+     "ping": 87,
+     "from": "model"
+    },
+    {
+     "c": "gd",
+     "ping": 88,
+     "from": "model"
+    },
+    {
+     "c": "bb",
+     "ping": 90,
+     "from": "model"
+    }
+   ]
+  },
+  "NAW": {
+   "server": {
+    "file": "portland.json",
+    "name": "Portland",
+    "lat": 45.52,
+    "lon": -122.68
+   },
+   "fit": {
+    "a": 10.48150616644608,
+    "b": 0.018372771700314487,
+    "n": 58,
+    "r2": 0.8494405948138379,
+    "slopeFrom": "its own probes"
+   },
+   "dropped": [],
+   "rows": [
+    {
+     "c": "us-wa",
+     "ping": 12,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-or",
+     "ping": 18,
+     "from": "model"
+    },
+    {
+     "c": "us-id",
+     "ping": 29,
+     "from": "model"
+    },
+    {
+     "c": "us-ca",
+     "ping": 34,
+     "from": "people over 4"
+    },
+    {
+     "c": "us-ut",
+     "ping": 37,
+     "from": "model"
+    },
+    {
+     "c": "us-mt",
+     "ping": 39,
+     "from": "model"
+    },
+    {
+     "c": "us-nv",
+     "ping": 41,
+     "from": "model"
+    },
+    {
+     "c": "us-co",
+     "ping": 41,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-az",
+     "ping": 45,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-nm",
+     "ping": 46,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-wy",
+     "ping": 46,
+     "from": "model"
+    },
+    {
+     "c": "us-nd",
+     "ping": 55,
+     "from": "model"
+    },
+    {
+     "c": "us-sd",
+     "ping": 56,
+     "from": "model"
+    },
+    {
+     "c": "ca",
+     "ping": 57,
+     "from": "people over 9"
+    },
+    {
+     "c": "us-ne",
+     "ping": 59,
+     "from": "model"
+    },
+    {
+     "c": "us-il",
+     "ping": 60,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-ks",
+     "ping": 61,
+     "from": "model"
+    },
+    {
+     "c": "us-mn",
+     "ping": 61,
+     "from": "model"
+    },
+    {
+     "c": "us-ia",
+     "ping": 62,
+     "from": "model"
+    },
+    {
+     "c": "us-la",
+     "ping": 62,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-mo",
+     "ping": 63,
+     "from": "model"
+    },
+    {
+     "c": "us-ok",
+     "ping": 64,
+     "from": "model"
+    },
+    {
+     "c": "us-wi",
+     "ping": 69,
+     "from": "model"
+    },
+    {
+     "c": "us-tx",
+     "ping": 72,
+     "from": "people over 2"
+    },
+    {
+     "c": "us-tn",
+     "ping": 73,
+     "from": "model"
+    },
+    {
+     "c": "us-in",
+     "ping": 74,
+     "from": "model"
+    },
+    {
+     "c": "us-pa",
+     "ping": 75,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-ny",
+     "ping": 75,
+     "from": "people over 2"
+    },
+    {
+     "c": "us-ms",
+     "ping": 76,
+     "from": "model"
+    },
+    {
+     "c": "us-oh",
+     "ping": 77,
+     "from": "model"
+    },
+    {
+     "c": "us-mi",
+     "ping": 77,
+     "from": "model"
+    },
+    {
+     "c": "us-ma",
+     "ping": 78,
+     "from": "people over 1"
+    },
+    {
+     "c": "mx",
+     "ping": 82,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-al",
+     "ping": 82,
+     "from": "model"
+    },
+    {
+     "c": "us-wv",
+     "ping": 82,
+     "from": "model"
+    },
+    {
+     "c": "us-ga",
+     "ping": 83,
+     "from": "model"
+    },
+    {
+     "c": "us-sc",
+     "ping": 87,
+     "from": "model"
+    },
+    {
+     "c": "us-md",
+     "ping": 88,
+     "from": "model"
+    },
+    {
+     "c": "us-nc",
+     "ping": 89,
+     "from": "model"
+    },
+    {
+     "c": "us-dc",
+     "ping": 89,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-vt",
+     "ping": 89,
+     "from": "model"
+    },
+    {
+     "c": "us-fl",
+     "ping": 91,
+     "from": "people over 1"
+    },
+    {
+     "c": "us-va",
+     "ping": 91,
+     "from": "model"
+    },
+    {
+     "c": "us-ct",
+     "ping": 91,
+     "from": "model"
+    },
+    {
+     "c": "us-me",
+     "ping": 94,
+     "from": "model"
+    },
+    {
+     "c": "cu",
+     "ping": 99,
+     "from": "model"
+    },
+    {
+     "c": "bz",
+     "ping": 100,
+     "from": "model"
+    },
+    {
+     "c": "gt",
+     "ping": 102,
+     "from": "model"
+    },
+    {
+     "c": "pr",
+     "ping": 102,
+     "from": "people over 1"
+    },
+    {
+     "c": "bs",
+     "ping": 103,
+     "from": "model"
+    },
+    {
+     "c": "sv",
+     "ping": 105,
+     "from": "model"
+    },
+    {
+     "c": "ky",
+     "ping": 106,
+     "from": "model"
+    },
+    {
+     "c": "hn",
+     "ping": 107,
+     "from": "model"
+    },
+    {
+     "c": "ni",
+     "ping": 111,
+     "from": "model"
+    },
+    {
+     "c": "bm",
+     "ping": 112,
+     "from": "model"
+    },
+    {
+     "c": "jm",
+     "ping": 114,
+     "from": "model"
+    },
+    {
+     "c": "tc",
+     "ping": 117,
+     "from": "model"
+    },
+    {
+     "c": "ht",
+     "ping": 119,
+     "from": "model"
+    },
+    {
+     "c": "do",
+     "ping": 120,
+     "from": "model"
+    },
+    {
+     "c": "aw",
+     "ping": 131,
+     "from": "model"
+    },
+    {
+     "c": "cw",
+     "ping": 134,
+     "from": "model"
+    }
+   ]
+  },
+  "BR": {
+   "server": {
+    "file": "saopaulo.json",
+    "name": "Sao Paulo",
+    "lat": -23.55,
+    "lon": -46.63
+   },
+   "fit": {
+    "a": 28.007752193430814,
+    "b": 0.015431423523520595,
+    "n": 60,
+    "r2": 0.639804805185463,
+    "slopeFrom": "its own probes"
+   },
+   "dropped": [],
+   "rows": [
+    {
+     "c": "br",
+     "ping": 23,
+     "from": "people over 2"
+    },
+    {
+     "c": "py",
+     "ping": 27,
+     "from": "people over 1"
+    },
+    {
+     "c": "ar",
+     "ping": 38,
+     "from": "people over 1"
+    },
+    {
+     "c": "uy",
+     "ping": 45,
+     "from": "people over 1"
+    },
+    {
+     "c": "cl",
+     "ping": 57,
+     "from": "people over 1"
+    },
+    {
+     "c": "bo",
+     "ping": 68,
+     "from": "people over 1"
+    },
+    {
+     "c": "pe",
+     "ping": 87,
+     "from": "people over 1"
+    },
+    {
+     "c": "sr",
+     "ping": 88,
+     "from": "model"
+    },
+    {
+     "c": "gy",
+     "ping": 92,
+     "from": "model"
+    },
+    {
+     "c": "tt",
+     "ping": 100,
+     "from": "model"
+    },
+    {
+     "c": "gd",
+     "ping": 102,
+     "from": "model"
+    },
+    {
+     "c": "bb",
+     "ping": 103,
+     "from": "model"
+    },
+    {
+     "c": "vc",
+     "ping": 104,
+     "from": "model"
+    },
+    {
+     "c": "cw",
+     "ping": 108,
+     "from": "model"
+    },
+    {
+     "c": "aw",
+     "ping": 109,
+     "from": "model"
+    },
+    {
+     "c": "ve",
+     "ping": 125,
+     "from": "people over 1"
+    },
+    {
+     "c": "co",
+     "ping": 132,
+     "from": "people over 2"
+    },
+    {
+     "c": "ec",
+     "ping": 133,
+     "from": "people over 1"
+    },
+    {
+     "c": "pa",
+     "ping": 168,
+     "from": "median of 1"
+    }
+   ]
+  },
+  "ASIA": {
+   "server": {
+    "file": "tokyo.json",
+    "name": "Tokyo",
+    "lat": 35.68,
+    "lon": 139.69
+   },
+   "fit": {
+    "a": 22.4200580037693,
+    "b": 0.01817,
+    "n": 32,
+    "r2": 0.17728795815171006,
+    "slopeFrom": "Europe, height by median residual (its own line was R2 0.270)"
+   },
+   "dropped": [
+    {
+     "c": "kz",
+     "city": "Karaganda",
+     "ms": 424.32,
+     "expect": 119
+    }
+   ],
+   "rows": [
+    {
+     "c": "jp",
+     "ping": 16,
+     "from": "people over 2"
+    },
+    {
+     "c": "kr",
+     "ping": 39,
+     "from": "people over 1"
+    },
+    {
+     "c": "tw",
+     "ping": 39,
+     "from": "people over 1"
+    },
+    {
+     "c": "kp",
+     "ping": 54,
+     "from": "model"
+    },
+    {
+     "c": "sg",
+     "ping": 74,
+     "from": "people over 1"
+    },
+    {
+     "c": "gu",
+     "ping": 76,
+     "from": "model"
+    },
+    {
+     "c": "kh",
+     "ping": 76,
+     "from": "people over 1"
+    },
+    {
+     "c": "my",
+     "ping": 82,
+     "from": "people over 1"
+    },
+    {
+     "c": "mn",
+     "ping": 85,
+     "from": "model"
+    },
+    {
+     "c": "pw",
+     "ping": 88,
+     "from": "model"
+    },
+    {
+     "c": "th",
+     "ping": 88,
+     "from": "people over 1"
+    },
+    {
+     "c": "vn",
+     "ping": 99,
+     "from": "people over 2"
+    },
+    {
+     "c": "id",
+     "ping": 101,
+     "from": "people over 1"
+    },
+    {
+     "c": "la",
+     "ping": 106,
+     "from": "model"
+    },
+    {
+     "c": "bn",
+     "ping": 108,
+     "from": "model"
+    },
+    {
+     "c": "mm",
+     "ping": 109,
+     "from": "people over 1"
+    },
+    {
+     "c": "bt",
+     "ping": 117,
+     "from": "model"
+    },
+    {
+     "c": "pg",
+     "ping": 123,
+     "from": "model"
+    },
+    {
+     "c": "tl",
+     "ping": 124,
+     "from": "model"
+    },
+    {
+     "c": "in",
+     "ping": 138,
+     "from": "people over 7"
+    },
+    {
+     "c": "np",
+     "ping": 143,
+     "from": "people over 1"
+    },
+    {
+     "c": "cn",
+     "ping": 148,
+     "from": "people over 2"
+    },
+    {
+     "c": "hk",
+     "ping": 157,
+     "from": "people over 1"
+    },
+    {
+     "c": "ph",
+     "ping": 164,
+     "from": "people over 3"
+    },
+    {
+     "c": "bd",
+     "ping": 166,
+     "from": "people over 1"
+    },
+    {
+     "c": "uz",
+     "ping": 248,
+     "from": "people over 1"
+    },
+    {
+     "c": "kz",
+     "ping": 274,
+     "from": "people over 1"
+    },
+    {
+     "c": "kg",
+     "ping": 342,
+     "from": "people over 1"
+    },
+    {
+     "c": "pk",
+     "ping": 350,
+     "from": "people over 2"
+    }
+   ]
+  },
+  "ME": {
+   "server": {
+    "file": "manama.json",
+    "name": "Doha",
+    "lat": 25.29,
+    "lon": 51.53
+   },
+   "fit": {
+    "a": 72.75129893784013,
+    "b": 0.01817,
+    "n": 26,
+    "r2": 0.07071570808957273,
+    "slopeFrom": "Europe, height by median residual (its own line was R2 0.069)"
+   },
+   "dropped": [
+    {
+     "c": "lb",
+     "city": "Beirut",
+     "ms": 308.74,
+     "expect": 106
+    }
+   ],
+   "rows": [
+    {
+     "c": "om",
+     "ping": 25,
+     "from": "people over 1"
+    },
+    {
+     "c": "ae",
+     "ping": 26,
+     "from": "people over 1"
+    },
+    {
+     "c": "sa",
+     "ping": 27,
+     "from": "people over 1"
+    },
+    {
+     "c": "qa",
+     "ping": 42,
+     "from": "people over 1"
+    },
+    {
+     "c": "bh",
+     "ping": 83,
+     "from": "model"
+    },
+    {
+     "c": "ir",
+     "ping": 90,
+     "from": "model"
+    },
+    {
+     "c": "kw",
+     "ping": 91,
+     "from": "model"
+    },
+    {
+     "c": "ye",
+     "ping": 105,
+     "from": "model"
+    },
+    {
+     "c": "tm",
+     "ping": 109,
+     "from": "model"
+    },
+    {
+     "c": "pk",
+     "ping": 109,
+     "from": "model"
+    },
+    {
+     "c": "jo",
+     "ping": 111,
+     "from": "model"
+    },
+    {
+     "c": "az",
+     "ping": 111,
+     "from": "model"
+    },
+    {
+     "c": "sy",
+     "ping": 112,
+     "from": "model"
+    },
+    {
+     "c": "er",
+     "ping": 112,
+     "from": "model"
+    },
+    {
+     "c": "lb",
+     "ping": 114,
+     "from": "model"
+    },
+    {
+     "c": "ps",
+     "ping": 114,
+     "from": "model"
+    },
+    {
+     "c": "eg",
+     "ping": 116,
+     "from": "people over 1"
+    },
+    {
+     "c": "af",
+     "ping": 117,
+     "from": "model"
+    },
+    {
+     "c": "cy",
+     "ping": 118,
+     "from": "model"
+    },
+    {
+     "c": "tj",
+     "ping": 121,
+     "from": "model"
+    },
+    {
+     "c": "sd",
+     "ping": 122,
+     "from": "model"
+    },
+    {
+     "c": "tr",
+     "ping": 144,
+     "from": "people over 4"
+    },
+    {
+     "c": "iq",
+     "ping": 170,
+     "from": "people over 1"
+    },
+    {
+     "c": "am",
+     "ping": 174,
+     "from": "people over 1"
+    },
+    {
+     "c": "il",
+     "ping": 185,
+     "from": "people over 2"
+    },
+    {
+     "c": "ge",
+     "ping": 203,
+     "from": "people over 1"
+    },
+    {
+     "c": "uz",
+     "ping": 204,
+     "from": "people over 1"
+    }
+   ]
+  },
+  "OCE": {
+   "server": {
+    "file": "sydney.json",
+    "name": "Sydney",
+    "lat": -33.87,
+    "lon": 151.21
+   },
+   "fit": {
+    "a": 10.507108680146787,
+    "b": 0.01817,
+    "n": 26,
+    "r2": 0.38023341354763496,
+    "slopeFrom": "Europe, height by median residual (its own line was R2 0.417)"
+   },
+   "dropped": [],
+   "rows": [
+    {
+     "c": "au",
+     "ping": 21,
+     "from": "people over 5"
+    },
+    {
+     "c": "nz",
+     "ping": 39,
+     "from": "people over 3"
+    },
+    {
+     "c": "nc",
+     "ping": 54,
+     "from": "model"
+    },
+    {
+     "c": "vu",
+     "ping": 63,
+     "from": "model"
+    },
+    {
+     "c": "pg",
+     "ping": 68,
+     "from": "model"
+    },
+    {
+     "c": "sb",
+     "ping": 70,
+     "from": "model"
+    },
+    {
+     "c": "fj",
+     "ping": 77,
+     "from": "model"
+    },
+    {
+     "c": "tl",
+     "ping": 88,
+     "from": "model"
+    }
+   ]
+  }
+ }
+}

@@ -270,7 +270,17 @@ const BOOT = `
 
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 // Inside the project: the page loads maps.js by a relative path now.
-const dir = fs.mkdtempSync(path.join(ROOT, 'probe-edges-'));
+/* Копия страницы — во временную папку системы, и убирается всегда.
+
+   Стояло mkdtempSync(path.join(ROOT, ...)), то есть прямо в корне проекта, а
+   rmSync в самом конце — после всех выходов по ошибке. Проба красная, значит
+   до уборки дело не доходит никогда, и каждый прогон оставлял в корне 4.5 МБ.
+   К 22 августа там лежало 95 таких папок на 414 мегабайт: их видно только
+   когда собираешь проект на выгрузку и архив оказывается в сто раз больше
+   сайта. Копия рядом с maps.js по-прежнему нужна — страница тянет его соседом,
+   — но «рядом» значит в своей папке, а не в чужой. */
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'probe-edges-'));
+process.on('exit', () => { try{ fs.rmSync(dir, {recursive:true, force:true}); }catch(e){} });
 const tmp = path.join(dir, 'index.html');
 // The maps load on demand on the site; a probe wants them present from the
 // first line, so it asks for them up front and says they have arrived.

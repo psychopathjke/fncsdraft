@@ -109,6 +109,14 @@ const BOOT = `
     const next = careerNext();
     check('the day is a Reload Opens', next && next.type === 'reload',
           next && next.type);
+    // Вечер без метки дома спрашивает до раннера (careerSpotGate): проба
+    // отвечает «сыграть без метки» — тем же выходом, каким вечер шёл раньше.
+    const asker = setInterval(() => {
+      const am = document.getElementById('ccAskModal');
+      if (!am || am.style.display !== 'flex') return;
+      const no = document.getElementById('ccAskNo');
+      if (no && no.textContent === L().ccSpotGatePlay) no.click();
+    }, 20);
     document.querySelector('#screen-career-hub .ch-play').click();
     let card = null;
     for (let i = 0; i < 1200 && !card; i++) {
@@ -117,6 +125,7 @@ const BOOT = `
       card = [...document.querySelectorAll('#majorStages .stage-card')]
         .find(c => c.querySelector('button[onclick*="careerBackToHub"]'));
     }
+    clearInterval(asker);
     if (!card) throw new Error('no result card came back from the Opens');
     const row = (JSON.parse(localStorage.getItem('fncsdraft_career')).career.log||[]).slice(-1)[0];
     out.notes.row = row && {kind:row.kind, of:row.of, games:row.games, place:row.place};

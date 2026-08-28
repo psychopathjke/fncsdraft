@@ -2,8 +2,9 @@
 //
 // The audience grew off streams and results and was read by nothing but a
 // club's wage offer, so a stream day cost a day of training and bought nothing
-// spendable. A sponsor is what it is worth: three tiers on the follower count,
-// paid monthly on the same day wages land — and below Division 1, where the
+// spendable. A sponsor is what it is worth: a rung of CC_SPONSORS read off the
+// follower count (девять брендов с 23 августа, было три архетипа), paid on the
+// nights there is a stream to put the slot in — and below Division 1, where the
 // ladder pays nothing at all, it is the first money a career ever sees.
 //
 //   node tools/check-career-sponsor.js
@@ -23,6 +24,13 @@ const BOOT = `
 (function(){
   const out = {fails: [], notes: {}, err: null};
   const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
+  /* Ступень лесенки по охвату — тем же правилом, каким её берёт ccSponsorOffer.
+     Раньше здесь стояли имена архетипов ('gear', 'isp', 'brand'); 23 августа
+     спонсоров стало девять и у каждого своё имя, а проверка осталась мерить
+     трёх — и падала на первом же careerSignSponsor, потому что подписать
+     несуществующий id нельзя. Читаем ступень с самой лесенки: тогда добавление
+     десятого бренда ничего здесь не ломает. */
+  const tier = reach => CC_SPONSORS.filter(s => reach >= s.need).slice(-1)[0] || null;
   try {
     const fresh = (reach, div) => { CAREER = {player:{nick:'Probe', ovr:70, region:'EU',
       role:'roleIGL', country:'de', age:16, attrs:ccRookieAttrs(70,'roleIGL')},
@@ -38,20 +46,20 @@ const BOOT = `
     fresh(200000);
     CAREER.mkt = null;
     check('no marketing manager, no offer', ccSponsorOffer() === null);
-    check('and nothing can be signed', careerSignSponsor('brand') === false);
+    check('and nothing can be signed', careerSignSponsor(tier(200000).id) === false);
 
     // Nobody offers to an unknown career.
     fresh(0);
     check('an unknown career has no offer', ccSponsorOffer() === null);
-    check('and cannot sign one anyway', careerSignSponsor('gear') === false);
+    check('and cannot sign one anyway', careerSignSponsor(CC_SPONSORS[0].id) === false);
 
     // Each tier opens on its own follower count.
     fresh(10000);
-    check('ten thousand brings the gear brand', (ccSponsorOffer()||{}).id === 'gear');
+    check('ten thousand brings its rung', (ccSponsorOffer()||{}).id === tier(10000).id);
     fresh(50000);
-    check('fifty thousand brings the provider', (ccSponsorOffer()||{}).id === 'isp');
+    check('fifty thousand brings the provider', (ccSponsorOffer()||{}).id === tier(50000).id);
     fresh(150000);
-    check('a hundred and fifty brings the brand', (ccSponsorOffer()||{}).id === 'brand');
+    check('a hundred and fifty brings a higher rung', (ccSponsorOffer()||{}).id === tier(150000).id);
 
     /* Signing pays per stream night, not per month.
 
@@ -61,11 +69,11 @@ const BOOT = `
        front of an audience, and the slot exists on the nights there is a
        stream. */
     fresh(50000, 4);
-    check('signing works', careerSignSponsor('isp') === true);
+    check('signing works', careerSignSponsor(tier(50000).id) === true);
     // A save signed under the old name still finds its deal.
     CAREER.sponsor.id = 'drink';
-    check('an old save keeps its deal', (ccSponsor()||{}).id === 'isp');
-    check('and it is the one working', (ccSponsor()||{}).id === 'isp');
+    check('an old save keeps its deal', (ccSponsor()||{}).id === tier(50000).id);
+    check('and it is the one working', (ccSponsor()||{}).id === tier(50000).id);
     const idle = CAREER.career.balance;
     // A month in which nobody streamed: a brand pays for slots, and there were
     // none.
@@ -73,13 +81,22 @@ const BOOT = `
     out.notes.monthIdle = CAREER.career.balance - idle;
     check('a month with no streams pays no brand',
           CAREER.career.balance === idle, String(CAREER.career.balance - idle));
-    // And a night that does stream pays the slot on top of the subs.
+    // And a night that does stream pays the slot on top of the subs — и донаты
+    // с эфира: с 22 августа у стрима свой твич и своя аудитория в комнате
+    // (пункт 8 страницы «ы»), и её донаты падают в тот же баланс. Твич берётся
+    // ДО эфира: сам эфир его растит.
     const before = CAREER.career.balance;
+    const twBefore = CAREER.career.twitch || 0;
     careerDoAct('stream');
     const paid = CAREER.career.balance - before;
     out.notes.streamPaid = paid;
-    check('a stream night pays the subs and the slot',
-          paid === Math.round(careerReach()/CC_STREAM_PER) + ccSponsor().pay, String(paid));
+    const subs = Math.round(careerReach() / CC_STREAM_PER);
+    const viewers = Math.max(3, Math.round(twBefore * 0.06 + careerReach() * 0.008));
+    const dono = Math.round(viewers * 0.04);
+    out.notes.streamParts = {subs: subs, slot: ccSponsor().pay, dono: dono};
+    check('a stream night pays the subs, the slot and the donations',
+          paid === subs + ccSponsor().pay + dono,
+          paid + ' vs ' + JSON.stringify(out.notes.streamParts));
     check('and the tile counts what the brand paid',
           CAREER.sponsor.paid === ccSponsor().pay, String(CAREER.sponsor.paid));
     check('the sponsor money is kept apart from the club wage',
@@ -100,11 +117,11 @@ const BOOT = `
     // The tier is a ceiling as well as a doorway, so a channel that grows into
     // the millions does not quietly out-earn the whole of Division 1.
     CAREER.career.reach = 5000000;
-    check('a brand deal has a top', (ccSponsorOffer()||{}).pay === CC_SPONSORS[2].cap,
+    check('a brand deal has a top', (ccSponsorOffer()||{}).pay === tier(5000000).cap,
           String((ccSponsorOffer()||{}).pay));
     // A signed deal keeps the rate it was signed at, because that is a deal.
     fresh(20000, 3);
-    careerSignSponsor('gear');
+    careerSignSponsor(tier(20000).id);
     const signed = ccSponsor().pay;
     CAREER.career.reach = 40000;
     check('a signed rate does not drift with the audience',
@@ -119,16 +136,16 @@ const BOOT = `
 
     // An audience that outgrows its deal gets the better one offered.
     fresh(50000, 4);
-    careerSignSponsor('isp');
+    careerSignSponsor(tier(50000).id);
     CAREER.career.reach = 150000;
-    check('outgrowing the deal brings a better one', (ccSponsorOffer()||{}).id === 'brand');
+    check('outgrowing the deal brings a better one', (ccSponsorOffer()||{}).id === tier(150000).id);
     CAREER.career.reach = 50000;
     check('and a smaller one is not offered back', ccSponsorOffer() === null);
 
     // A club pays on the first and a brand pays on the night, and the two
     // land in one balance without being the same money.
     fresh(150000, 1);
-    careerSignSponsor('brand');
+    careerSignSponsor(tier(150000).id);
     CAREER.org = {name:'FOKUS', tier:88, salary:1200, goal:{type:'place',target:20},
                   since:1, paid:0};
     const b2 = CAREER.career.balance;
@@ -146,10 +163,13 @@ const BOOT = `
           CAREER.career.wages === clubMonth && CAREER.career.sponsored === ccSponsor().pay,
           CAREER.career.wages + ' / ' + CAREER.career.sponsored);
     const tile = careerSponsorTileHTML();
-    check('the tile names the deal', tile.indexOf(L().ccSponsorbrand) >= 0);
+    check('the tile names the deal', tile.indexOf(L()['ccSponsor'+tier(150000).id]) >= 0);
     fresh(0);
+    // Первая ступень лесенки, а не «10 000» словом: их девять, и нижняя
+    // с 23 августа — пять тысяч.
     check('and with no deal it says what would bring one',
-          careerSponsorTileHTML().indexOf('10') >= 0);
+          careerSponsorTileHTML().indexOf(ccFollowers(CC_SPONSORS[0].need)) >= 0,
+          ccFollowers(CC_SPONSORS[0].need));
 
     // ---- the audience follows results, not only streams -----------------
     // The curve used to be cubed, which paid for a near-win and nothing else:

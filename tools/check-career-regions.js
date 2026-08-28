@@ -74,13 +74,17 @@ const BOOT = [
 '        if(reg!=="EU") check(reg+" is not Europe again", codes.join(",")!==euCodes);',
 '        // The map is an SVG that actually renders shapes for this region.',
 '        var svg=ccBuildMap(null, reg);',
-'        check(reg+" builds an svg", svg.indexOf("<svg")===0 && svg.indexOf("cc-mp")>0);',
+'        check(reg+" builds an svg inside its zoom box", svg.indexOf("cc-mapzoom")===0 && svg.indexOf("<svg")>0 && svg.indexOf("cc-mp")>0);',
 '      });',
 '',
 '      // ---- North America is one continent on two servers ---------------',
 '      var nac=ccCountriesHere("NAC"), naw=ccCountriesHere("NAW");',
-'      var nacUs=nac.find(function(e){return e.c==="us";});',
-'      var nawUs=naw.find(function(e){return e.c==="us";});',
+// The United States stopped being one shape on 20 August — it is fifty zones
+// now, so "the server is local to the States" is read off the state nearest it
+// rather than off a country code that no longer sits in these tables.
+'      var best=function(t){return t.filter(function(e){return e.c.indexOf("us-")===0;})',
+'          .reduce(function(a,b){return !a||b.ping<a.ping?b:a;},null);};',
+'      var nacUs=best(nac), nawUs=best(naw);',
 '      var nacCa=nac.find(function(e){return e.c==="ca";});',
 '      var nawCa=naw.find(function(e){return e.c==="ca";});',
 '      out.notes.northAmerica={usCentral:nacUs&&nacUs.ping, usWest:nawUs&&nawUs.ping,',
@@ -145,7 +149,11 @@ const BOOT = [
 
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 // Inside the project: the page loads maps.js by a relative path now.
-const dir = fs.mkdtempSync(path.join(ROOT, 'probe-regions-'));
+// Во временную папку системы и с уборкой на любом выходе — см. тот же разбор
+// в check-career-edges.js: красная проба до финального rmSync не доходит, и
+// корень проекта зарастает копиями по 4.5 МБ.
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'probe-regions-'));
+process.on('exit', () => { try{ fs.rmSync(dir, {recursive:true, force:true}); }catch(e){} });
 const tmp = path.join(dir, 'probe.html');
 fs.writeFileSync(tmp, src.replace('</body>', BOOT + '</body>'));
 // The page fetches maps.js beside itself, so the probe needs its own copy.

@@ -43,8 +43,11 @@ const BOOT = `
           ccStep('aim') + ' vs ' + ccStep('exp'));
 
     // And a day actually spent moves the rating by it, well below the ceiling.
+    // Взрослый: школьнику 13-18 лет школа режет дневной запас на десять
+    // (пункт 5 страницы «ы», careerEnergyMax), а этот харнесс меряет
+    // арифметику тренировок, не расписание уроков.
     const fresh = (ovr, pot) => { CAREER = {player:{nick:'P', ovr:ovr, ovrExact:ovr, region:'EU',
-      role:'roleIGL', country:'de', age:16, attrs:ccRookieAttrs(ovr,'roleIGL'), potential:pot},
+      role:'roleIGL', country:'de', age:20, attrs:ccRookieAttrs(ovr,'roleIGL'), potential:pot},
       career:{season:1, day:'2026-02-10', division:3, balance:0, log:[], news:[]},
       partners:[], gear:{own:[], train:0}};
       // ccRookieAttrs builds the six around the rating; read the rating back off
@@ -111,9 +114,13 @@ const BOOT = `
     check('resting closes the day', careerDoAct('rest') !== null,
           'energy ' + careerEnergy() + '/' + careerEnergyMax());
     check('and nothing follows it', careerDoAct('trAim') === null);
+    // Стрим день больше не закрывает — его пункт 16 со страницы «ы»,
+    // 22 августа: «пусть 30 энергии тратят». Это занятие из магазина дня,
+    // после него тренировка идёт, пока запас платит.
     CAREER.career.energy = CC_ENERGY_DAY; CAREER.career.did = {};
-    check('a stream closes it too', careerDoAct('stream') !== null);
-    check('and nothing follows that either', careerDoAct('trAim') === null);
+    check('a stream is an activity, not the day', careerDoAct('stream') !== null);
+    check('and a session still follows it', careerDoAct('trAim') !== null,
+          'energy ' + careerEnergy());
     const beforeNight = careerEnergy();
     careerAdvanceTo(ccAddDays(CAREER.career.day, 1));
     check('a night gives some back', careerEnergy() === beforeNight + CC_ENERGY_NIGHT,

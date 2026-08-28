@@ -31,6 +31,10 @@ window.addEventListener('error', function(e){ window.__errs.push(String(e.messag
 window.addEventListener('unhandledrejection', function(e){ window.__errs.push('rejection: ' + String(e.reason && e.reason.message || e.reason)); });
 <\/script>`;
 
+// Регион по умолчанию европейский — три хита. CC_REGION=OCE прогоняет тот же
+// самый Мейджор в регионе с двумя хитами: сетка там своя, и раннер обязан
+// доехать до конца на ней тоже. См. ccMajorHeat.
+const REGION = process.env.CC_REGION || 'EU';
 const BOOT = `
 <pre id="__out" style="display:none"></pre>
 <script>
@@ -39,6 +43,7 @@ const BOOT = `
   // the moment a picker appears, always the first zone, so the run is the same
   // every time. Without this a probe waits forever on a click nobody makes.
   setInterval(function(){
+    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
     z[0].click();
@@ -57,7 +62,7 @@ const BOOT = `
   const seed = (div, day, major) => {
     localStorage.setItem('fncsdraft_career', JSON.stringify({
       v:1, player:{nick:'Majorman', age:20, source:'rookie', country:'de', countryPing:15,
-        closeRangeEdge:6, region:'EU', ovr:96, role:'roleIGL', attrs:null, ageEdge:4,
+        closeRangeEdge:6, region:'${REGION}', ovr:96, role:'roleIGL', attrs:null, ageEdge:4,
         photo:null, handle:null, cardRegion:null, nat:null},
       career:{season:1, day:day, division:div, earnings:0, balance:0, reach:0,
               tokens:[], log:[], news:[], major:major}, partner:null}));
@@ -66,7 +71,21 @@ const BOOT = `
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
     careerEntry(); ccProbeSeat();
   };
-  const playThrough = async (what) => {
+  // Самое большое число в колонке побед карточки этапа — то есть сколько
+  // победных игр записано лучшему составу комнаты.
+  const maxWins = (card) => {
+    const ths = [...card.querySelectorAll('thead th')].map(t => t.textContent.trim());
+    const at = ths.indexOf(L().winsWord);
+    if (at < 0) return null;
+    let worst = 0;
+    [...card.querySelectorAll('tbody tr')].forEach(tr => {
+      const td = tr.children[at]; if (!td) return;
+      const n = parseInt(td.textContent, 10);
+      if (n > worst) worst = n;
+    });
+    return worst;
+  };
+  const playThrough = async (what, peek) => {
     const play = document.querySelector('#screen-career-hub .ch-play');
     if (!play) fail(what + ': no button at all');
     if ((play.getAttribute('onclick')||'').indexOf('careerPlay') < 0)
@@ -85,6 +104,8 @@ const BOOT = `
     clearInterval(sk);
     if (!card) fail(what + ': no result card came back');
     const head = card.querySelector('h4').textContent.replace(/\\s+/g,' ').trim();
+    // Карточки живут до возврата в хаб — кому нужны таблицы, смотрит здесь.
+    if (peek) peek();
     card.querySelector('button[onclick*="careerBackToHub"]').click();
     return head;
   };
@@ -102,7 +123,9 @@ const BOOT = `
     const S = CC_MAJOR_STAGE;
     if (S.playin.games !== 22 || S.playin.kill !== 2) fail('the Play-In is 22 matches at 2 a kill');
     if (S.heats.games !== 5  || S.heats.kill !== 3)  fail('the Heats are 5 matches at 3 a kill');
-    if (S.heats.cut !== 10) fail('ten of a group come through the Heats in Europe');
+    // Отсечка хита зависит от региона, а региона здесь ещё нет — карьера не
+    // сидирована, и ccCareerRegion честно отвечает «EU». Проверка стоит ниже,
+    // сразу после первого seed. См. «сетка этого региона».
     // His screenshot, 17 August: the qualifier is eleven matches in a room the
     // whole ladder may enter, and the four matches are the lobby after it.
     if (S.lcq.games !== 11) fail('the Last Chance qualifier is eleven matches');
@@ -119,9 +142,14 @@ const BOOT = `
     if (majorHeatPoints(1) !== 1000) fail('a heat win is 944 + 56 = 1000, got ' + majorHeatPoints(1));
     if (majorHeatPoints(2) !== majorPoints(2)) fail('only the win differs in the Heats');
     out.steps.push('stages: 22/2, 5/3 top 10, lobby of 4, final 12/4 — heat win 1000, everything else 65');
-    if (majorPrize(1) !== 120000 || majorPrize(50) !== 1000 || majorPrize(51) !== 0)
-      fail('the Final pays $120,000 first and $1,000 at fiftieth');
-    out.steps.push('final payout: $120,000 first, $1,000 fiftieth, nothing after');
+    // Кошелёк финала — европейский, и спрашивать его надо только в Европе:
+    // у каждого региона своя таблица (PRIZE_TABLES), и в Океании эти числа
+    // другие по делу, а не по ошибке.
+    if (ccCareerRegion() === 'EU') {
+      if (majorPrize(1) !== 120000 || majorPrize(50) !== 1000 || majorPrize(51) !== 0)
+        fail('the Final pays $120,000 first and $1,000 at fiftieth');
+      out.steps.push('final payout: $120,000 first, $1,000 fiftieth, nothing after');
+    }
 
     // ---- who may enter what ---------------------------------------------
     const d = {playin:dayOf(1,'playin'), heats:dayOf(1,'heats'), lcq:dayOf(1,'lcq'), final:dayOf(1,'final')};
@@ -174,8 +202,37 @@ const BOOT = `
     if (can(1, d.heats, {n:2, got:'playin', pass:'playin', ticket:true})) fail('Major 2 progress opened Major 1\\'s heats');
     out.steps.push('a stage is played once, and the chain is per Major');
 
-    // ---- play the Play-In ------------------------------------------------
+    // ---- сетка этого региона ---------------------------------------------
+    /* Отсечка хита — не число, а число ЭТОГО региона.
+
+       В карьере стояла десятка, и её поймал его игрок 26 августа: «in duos its
+       top 15 not top 10 and trios was top 10 not 7». Но и пятнадцать — не
+       константа: три хита по пятнадцать гоняют только Европа и NA Central,
+       остальные пять регионов гоняют два по двадцать три. Спрашивается это у
+       majorFormat, то есть у режима драфта: один турнир — одна сетка, где бы её
+       ни считали. Регион в регион перебирает check-career-heat-cut.js; здесь
+       нужен сам факт, что карьера читает СВОЙ регион, а не европейский.
+
+       Стоит после seed: до него карьеры нет, ccCareerRegion отвечает «EU», и
+       сравнение вышло бы само с собой. */
     seed(1, d.playin, undefined);
+    squadSize = 2;
+    const FMT = majorFormat(ccCareerRegion(), 'm2');
+    if (ccCareerRegion() !== '${REGION}')
+      fail('the career loaded in ' + ccCareerRegion() + ', not ${REGION}');
+    if (ccMajorHeats() !== FMT.heats.length)
+      fail('the region runs ' + FMT.heats.length + ' heats, the career ' + ccMajorHeats());
+    if (ccScaleStage(CC_MAJOR_STAGE.heats).cut !== FMT.heats[0].cut)
+      fail('the heat cut is the draft\\u2019s: ' +
+           ccScaleStage(CC_MAJOR_STAGE.heats).cut + ' vs ' + FMT.heats[0].cut);
+    if (ccScaleStage(CC_MAJOR_STAGE.playin).cut !== FMT.playInCut)
+      fail('the play-in cut is the draft\\u2019s: ' +
+           ccScaleStage(CC_MAJOR_STAGE.playin).cut + ' vs ' + FMT.playInCut);
+    out.steps.push('${REGION}: ' + ccMajorHeats() + ' heats, top ' +
+                   ccScaleStage(CC_MAJOR_STAGE.heats).cut + ', play-in cuts to ' +
+                   ccScaleStage(CC_MAJOR_STAGE.playin).cut);
+
+    // ---- play the Play-In ------------------------------------------------
     out.steps.push('play-in: ' + await playThrough('the Play-In'));
     const s1 = save();
     const r1 = (s1.log||[]).slice(-1)[0];
@@ -187,7 +244,66 @@ const BOOT = `
 
     // ---- the Last Chance, from Division 4 --------------------------------
     seed(4, d.lcq, undefined);
-    out.steps.push('last chance: ' + await playThrough('the Last Chance'));
+    /* И в нём нет тех, у кого место в финале уже есть.
+
+       Его слово, 28 августа: «можно сделать, чтобы ласт ченс не могли играть
+       те, кто уже квальнулся в финалы». Игроку это правило поставлено с
+       17 августа (careerMajorCan), а комната собиралась открытым полем и
+       сажала прошедших хиты наравне со всеми. Кто прошёл — лежит в
+       majorSeed.through, из этого же списка собирается зал финала.
+       См. ccMajorSeatedHandles. */
+    (function(){
+      const cr = CAREER.career;
+      cr.majorSeed = {n:1, season:cr.season, size:careerSquadSize(),
+                      through:[['Sky','Scroll'], ['Malibuca','vic0'], ['Shxrk','t3eny']]};
+      const gone = ccMajorSeatedHandles(careerMajorOn(d.lcq));
+      if (gone.length !== 6) fail('the seated list read ' + gone.length + ' handles, not 6');
+      const seats = f => { const s = new Set();
+        f.forEach(t => (t.squad||[]).forEach(c => s.add(hKey(c)))); return s; };
+      // Контроль: без списка они в комнате есть — иначе проверка ничего не мерит.
+      const loose = seats(careerCupField(cr, [], 400, 'lcqctl', true, 0));
+      if (!gone.some(h => loose.has(hKey(h))))
+        fail('control: nobody already through turned up in an open room anyway');
+      const shut = seats(careerCupField(cr, [].concat(gone), 400, 'lcqctl', true, 0));
+      const back = gone.filter(h => shut.has(hKey(h)));
+      if (back.length) fail('already in the Final and seated in the Last Chance: ' + back.join(', '));
+      out.steps.push('last chance room: the six already through stay out, and the control puts them back');
+      delete cr.majorSeed;
+    })();
+    /* А в лобби Ласт Ченса победа — это билет, и второй раз её не берут.
+
+       Его слово, 28 августа: «кто катку в ласт ченс выиграл не мог играть
+       дальше, потому что у них по 2 победы, хотя в игре такого быть не может».
+       Тот же stopOnWin, что стоит на хитах. */
+    let lobbyWins = null;
+    out.steps.push('last chance: ' + await playThrough('the Last Chance', () => {
+      const lob = [...document.querySelectorAll('#majorStages .stage-card')]
+        .filter(c => (c.querySelector('h4')||{textContent:''}).textContent.indexOf(L().ccMajLobby) >= 0)
+        .pop();
+      if (lob) lobbyWins = maxWins(lob);
+    }));
+    if (lobbyWins !== null && lobbyWins > 1)
+      fail('the Last Chance Lobby let a duo win ' + lobbyWins + ' matches for one ticket');
+    out.steps.push('lobby: ' + (lobbyWins === null
+      ? 'not reached from Division 4 this run' : 'nobody above one win (' + lobbyWins + ')'));
+    /* Из Дивизиона 4 в полусотню попадают не каждый прогон, а правило проверять
+       надо всегда — поэтому та же комната гоняется напрямую, с правилом и без.
+       Десять игр вместо четырёх взяты у контроля: без правила две победы на
+       один состав должны выпасть наверняка, иначе проверка меряет удачу. */
+    {
+      const runRoom = async (stop, games) => {
+        const room = careerCupField(CAREER.career, [], 50, 'lobbyrule', true, 0);
+        skipAnimation = true; CC_SKIP_RUN = true;
+        resetRunRecord();
+        await simulateGamesLive(room, games, victoryR2Points, 0, 'stage', 0, null, null,
+          {lobbySize: ccTeams(50), stageName: 'lobby rule', mapReplay: true, stopOnWin: stop});
+        return room.reduce((w, t) => Math.max(w, t.wins || 0), 0);
+      };
+      const on = await runRoom(true, 10), off = await runRoom(false, 10);
+      if (on > 1) fail('a win is the ticket, and stopOnWin still left a duo with ' + on + ' of them');
+      if (off < 2) fail('control: nobody won twice even with the rule off — the check measures nothing');
+      out.steps.push('lobby rule: with it, one win at most; without it, ' + off + ' to the same room');
+    }
     const s2 = save();
     const r2 = (s2.log||[]).slice(-1)[0];
     if (r2.stage !== 'lcq') fail('the Last Chance wrote the wrong row');

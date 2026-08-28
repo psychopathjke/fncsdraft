@@ -15,7 +15,10 @@ const ROOT = path.resolve(__dirname, '..');
 // Division 1's band is 82, and the field it draws has read 82.5 since the cards
 // below the Division 2 band were cut out of it. The window is the band either
 // side of that: a Division 1 lobby that reads 79 is Division 2 wearing its name.
-const CC1_MIN = 80, CC1_MAX = 85;
+// Комната дивизиона 1 измеряется, а не задаётся: она собрана из тех, кто был
+// в Плей-Ине или прошёл Ласт Ченс, и рейтинг в ней сезонный. Окно снято с неё
+// и держит ccBand(1)=78 в середине. См. CC_DIV_RATING.
+const CC1_MIN = 76, CC1_MAX = 82;
 const CHROME = [process.env.CHROME,
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
   'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',

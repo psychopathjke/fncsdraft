@@ -4,10 +4,16 @@
 // did: every career final dropped into a rectangle chosen off an index,
 // including the ones with two million dollars on them.
 //
-// This holds the line the player drew — a final asks, an ordinary Tuesday does
-// not — and the thing that makes the pick mean something: you choose in the
-// order you qualified, so at Antwerp the Summit's fifteen have their markers
-// down before the Last Chance's ten see the board.
+// Спрашивают теперь везде, кроме Опенов, — его правка 25 августа: «боты могут
+// на любые локации падать, хочу такую же возможность сделать игроку: перед
+// игрой спрашивают, на свою или контест». До неё дивизионный кубок — вечер,
+// который играют дважды в неделю, — раскидывал всех по острову случайно, и
+// здесь стояла проверка ровно на это («обычный вторник не спрашивает»).
+//
+// Осталась вторая половина, та, ради которой всё и делалось: очередь. Ты
+// выбираешь в том порядке, в каком квалифицировался, поэтому в Антверпене
+// пятнадцать с Саммита ставят метки раньше, чем десять из Ласт Ченса увидят
+// доску.
 //
 //   node tools/check-career-landing.js
 const fs = require('fs'), os = require('os'), path = require('path');
@@ -38,11 +44,36 @@ const BOOT = `
   // about it: which zone was taken, and how many duos had already picked.
   let seen = null;
   const answer = () => {
+    /* Вечер без метки дома спрашивает ДО раннера (careerSpotGate, 24 августа).
+       Проба про пикер финала, а не про дом, поэтому здесь всегда «сыграть без
+       метки» — тот же вечер, каким он был до появления окна. Без ответа окно
+       стоит вечно и проба ждёт карточку, которой неоткуда взяться. */
+    const am = document.getElementById('ccAskModal');
+    if (am && am.style.display === 'flex') {
+      const no = document.getElementById('ccAskNo');
+      if (no && no.textContent === L().ccSpotGatePlay) { no.click(); return; }
+    }
+    /* Оффспавн теперь спрашивает раньше карты: своя точка, контест или карта.
+       Эта проба про КАРТУ, поэтому здесь всегда выбирается последняя кнопка —
+       «выбрать на карте». Первая («сесть спокойно») закрыла бы вопрос без
+       пикера, и проба решила бы, что финал перестал спрашивать. */
+    const ask = document.querySelector('.cc-choice');
+    if (ask) {
+      const btns = ask.querySelectorAll('.cc-choice-btn');
+      if (btns.length) { btns[btns.length - 1].click(); return; }
+    }
     const p = document.querySelector('.landing-picker');
     if (!p) return;
     const z = p.querySelectorAll('.land-zone');
     if (!z.length) return;
-    if (!seen) seen = {zones: z.length, detail: (p.querySelector('.stage-detail')||{}).textContent||''};
+    /* Сколько коробок ЗАНЯТО в тот момент, когда карту показали. Его правка,
+       25 августа, снимком пикера: «карта опять пустая» — сажались только те,
+       кто квалифицировался раньше тебя, и выбирающий шестнадцатым видел
+       пятнадцать никами и двадцать один пустой прямоугольник. Комната садится
+       целиком до показа; замер до правки: 15 коробок из 36. */
+    const busy = [...z].filter(el => (el.textContent||'').replace(/[+ds]|pts|очкS*/g, '').trim().length > 0).length;
+    if (!seen) seen = {zones: z.length, busy: busy,
+                       detail: (p.querySelector('.stage-detail')||{}).textContent||''};
     z[0].click();
     const c = p.querySelector('#gameLandingConfirm');
     if (c && !c.disabled) c.click();
@@ -61,7 +92,22 @@ const BOOT = `
     for (let i = 0; i < (limit||900); i++) {
       await wait(25);
       answer();
-      skipAnimation = true;
+      /* Пропуск включается ПОСЛЕ того, как пикер увиден, а не сразу.
+
+         ccChoiceBox под skipAnimation отвечает сам и ничего не рисует (см. его
+         первую ветку). Пока эта строка стояла безусловно, проба каждые 25 мс
+         возвращала пропуск в true, и вопрос о высадке рисовался только по
+         везению фазы — по тому, успел ли раннер дойти до него между двумя
+         тиками пробы. 26 августа фазу сдвинул ОДИН лишний await в раннере
+         (командный гейт), и недельный финал «перестал спрашивать», хотя в
+         живом прогоне спрашивал как спрашивал. Настоящую причину починили в
+         index.html — в одиночной карьере гейт не уступает такт вовсе, — но
+         гонку эта строка снимает насовсем: следующий await не будет стоить
+         полдня разбирательств.
+
+         Проба про пикер, значит пропуск ей нужен только после него: вопрос
+         стоит перед первой игрой, ускорение теряется на полсекунды. */
+      if (seen) skipAnimation = true;
       const card = [...document.querySelectorAll('#majorStages .stage-card')]
         .find(c => c.querySelector('button[onclick*="careerBackToHub"]'));
       if (card) return card;
@@ -92,12 +138,12 @@ const BOOT = `
       return null;
     };
 
-    // ---- an ordinary cup night does not ask ------------------------------
+    // ---- дивизионный кубок тоже спрашивает --------------------------------
     seen = null;
     seed(find('cup'), 3);
     await playOut();
-    out.notes.cupAsked = !!seen;
-    check('a divisional cup night does not ask where to land', seen === null,
+    out.notes.cupAsked = seen;
+    check('дивизионный кубок спрашивает, куда падать', !!seen,
           JSON.stringify(seen));
 
     // ---- the Weekly Final does --------------------------------------------
@@ -145,6 +191,10 @@ const BOOT = `
           me.pow === Math.round(before + me.landingZone.points),
           before + ' + ' + (me.landingZone||{}).points + ' = ' + me.pow);
     check('everybody in the room is on the board', !!zones && zones.size > 0);
+    out.notes.busyOnScreen = seen && seen.busy + '/' + seen.zones;
+    check('остров на экране заселён, а не наполовину пуст',
+          !!seen && seen.busy >= Math.round(seen.zones * 0.8),
+          seen && (seen.busy + ' из ' + seen.zones));
     let placed = 0;
     if (zones) zones.forEach(g => { placed += g.length; });
     out.notes.placed = placed;

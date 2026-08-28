@@ -84,21 +84,28 @@ const BOOT = `
 
     // ---- the two that buy days rather than percentages ------------------
     fresh(20000);
-    check('a bare career has the plain store', careerEnergyMax() === CC_ENERGY_DAY,
+    /* Контракт изменился 22 августа (пункт 5 страницы «ы»): школьник 13–18
+       живёт после уроков, минус десять от запаса. Карьера-проба здесь
+       семнадцатилетняя, так что база — CC_ENERGY_DAY-10, и это проверяется
+       отдельно как правило, а не как дрейф. */
+    const school = (ccPlayerAge()>=13 && ccPlayerAge()<=18) ? 10 : 0;
+    check('a schoolkid pays ten to the school day', school === 10, 'age '+ccPlayerAge());
+    const base = CC_ENERGY_DAY - school;
+    check('a bare career has the plain store', careerEnergyMax() === base,
           String(careerEnergyMax()));
     careerBuy('chair');
-    check('the chair raises it', careerEnergyMax() === CC_ENERGY_DAY + 10, String(careerEnergyMax()));
+    check('the chair raises it', careerEnergyMax() === base + 10, String(careerEnergyMax()));
     careerBuy('fitness');
-    check('and the trainer raises it again', careerEnergyMax() === CC_ENERGY_DAY + 25,
+    check('and the trainer raises it again', careerEnergyMax() === base + 25,
           String(careerEnergyMax()));
     // Two chairs are one chair: the Embody replaces the Titan rather than
     // stacking with it, and the Titan is not for sale afterwards.
     careerBuy('chairhm');
-    check('a better chair replaces the first', careerEnergyMax() === CC_ENERGY_DAY + 35,
+    check('a better chair replaces the first', careerEnergyMax() === base + 35,
           String(careerEnergyMax()));
     check('and the lesser one cannot be bought back', careerBuy('chair') === false);
     careerBuy('desk');
-    check('the standing desk adds its own', careerEnergyMax() === CC_ENERGY_DAY + 43,
+    check('the standing desk adds its own', careerEnergyMax() === base + 43,
           String(careerEnergyMax()));
     check('neither touches what a day is worth', CAREER.gear.train === 0, String(CAREER.gear.train));
     // The store fills to the new ceiling rather than staying at the old one.

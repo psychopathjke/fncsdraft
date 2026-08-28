@@ -52,7 +52,11 @@ const BOOT = `
   };
   const seated = () => careerMates().map(c => c && c.handle);
   // Somebody from the region who is not already in the squad.
-  const stranger = () => {
+  // Somebody the squad could actually seat in that chair: since 21 August the
+  // search only offers the half of a squad that would leave it with one IGL, and
+  // which half that is depends on the chair being emptied. See ccSeatRoleWanted.
+  const stranger = seat => {
+    CC_DUO_SEAT = (typeof seat === 'number') ? seat : null;
     const taken = seated().map(h => hKey(h));
     const w = careerDuoSearchPool().find(x => taken.indexOf(hKey(x.handle)) < 0);
     if (!w) fail('the region has nobody left to ask');
@@ -81,7 +85,7 @@ const BOOT = `
     // the player's choice point at different people. That is the whole test.
     seed(3, [['Keeper', 90], ['Weakest', 60]]);
     if (careerMateSeats() !== 2) fail('a trio should hold two mates, it holds ' + careerMateSeats());
-    const inc = stranger().handle;
+    const inc = stranger(0).handle;
     askFromSeat(0, inc);
     const after = seated();
     if (after[0] !== inc) fail('asked from under seat 0 and seat 0 still holds ' + after[0]);
@@ -93,7 +97,7 @@ const BOOT = `
     // Pointing at the WEAKER card is what the old rule would have done anyway,
     // so point at the stronger one from the other side: seat 1 is the 90 now.
     seed(3, [['Weakest', 60], ['Keeper', 90]]);
-    const inc2 = stranger().handle;
+    const inc2 = stranger(1).handle;
     askFromSeat(1, inc2);
     const after2 = seated();
     if (after2[1] !== inc2)
@@ -105,7 +109,7 @@ const BOOT = `
 
     // ---- an empty chair is filled, not swapped ---------------------------
     seed(3, [['Alone', 70]]);
-    const inc3 = stranger().handle;
+    const inc3 = stranger(1).handle;
     askFromSeat(1, inc3);
     const after3 = seated();
     if (after3.length !== 2) fail('the squad holds ' + after3.length + ' after filling a chair');
@@ -138,7 +142,7 @@ const BOOT = `
 
     // ---- the feed names the person who actually left ---------------------
     seed(3, [['Keeper', 90], ['Weakest', 60]]);
-    const inc5 = stranger().handle;
+    const inc5 = stranger(0).handle;
     askFromSeat(0, inc5);
     // The wording follows the season now — see ccSquadKey — so the post is
     // ccNewsDropped in a duo year and ccNewsDroppedt in a trio one.
@@ -152,7 +156,7 @@ const BOOT = `
     // ---- a duo still behaves like a duo ----------------------------------
     seed(2, [['OnlyOne', 70]]);
     if (careerMateSeats() !== 1) fail('a duo should hold one mate, it holds ' + careerMateSeats());
-    const inc6 = stranger().handle;
+    const inc6 = stranger(0).handle;
     askFromSeat(0, inc6);
     if (seated().join('') !== inc6) fail('a duo ended up as ' + seated().join(' / '));
     out.steps.push('a duo has one chair and asking from under it swaps the one partner');

@@ -1,0 +1,21 @@
+{
+ "server": "Sydney",
+ "region": "OCE",
+ "source": "wondernetwork.com/pings/Sydney",
+ "read": "2026-08-20",
+ "unit": "ms round trip, probe to probe",
+ "note": "Oceania is Sydney. Rows are Oceania and Asia plus the long anchors. Oceania's own map is eight countries and five of them have no probe anywhere — New Caledonia, Vanuatu, Papua New Guinea, the Solomons, Timor-Leste — so most of that map is the fill model, and it is now a model fitted from Sydney rather than one borrowed from Frankfurt.",
+ "rows": [
+  ["Canberra","au",5.65],["Melbourne","au",9.76],["Brisbane","au",11.75],["Adelaide","au",19.01],
+  ["Auckland","nz",28.47],["Wellington","nz",36.35],["Christchurch","nz",40.39],["Perth","au",46.12],
+  ["Singapore","sg",91.61],["Kuala Lumpur","my",98.58],["Koto","jp",100.02],["Bangkok","th",115.45],
+  ["Chennai","in",122.91],["Manila","ph",128.54],["Taipei","tw",132.26],["Clark","ph",134.11],
+  ["Hyderabad","in",134.51],["Jakarta","id",139.94],["Hong Kong","hk",143.25],["Bangalore","in",146.68],
+  ["Dagupan","ph",150.25],["Tokyo","jp",157.70],["Indore","in",159.15],["Kathmandu","np",159.16],
+  ["Vientiane","la",162.53],["Osaka","jp",164.55],["Yangon","mm",169.04],["Hanoi","vn",170.90],
+  ["Seoul","kr",177.86],["Doha","qa",180.89],["Honolulu","us",206.85],["Ho Chi Minh City","vn",251.67],
+  ["Dhaka","bd",255.91],["Dubai","ae",266.33],["Shanghai","cn",348.70],["Shenzhen","cn",381.82],
+  ["San Francisco","us",148.89],["Seattle","us",158.22],["Los Angeles","us",159.56],
+  ["Frankfurt","de",249.81],["London","gb",266.31],["Sao Paulo","br",311.51]
+ ]
+}

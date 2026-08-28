@@ -34,6 +34,7 @@ const BOOT = `
   // the moment a picker appears, always the first zone, so the run is the same
   // every time. Without this a probe waits forever on a click nobody makes.
   setInterval(function(){
+    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
     z[0].click();
@@ -67,13 +68,16 @@ const BOOT = `
     for (let d = CC_YEAR_FROM; d <= CC_YEAR_TO; d = ccAddDays(d,1))
       if ((days.get(d)||[]).some(e => e.kind === 'final')) finals.push(d);
 
-    // ---- an empty table says so rather than drawing nothing --------------
+    // ---- an empty table is no tile at all — his call, 23 August ----------
     seed(1, finals[0]);
     if (careerTableRows().length) fail('a fresh career already has a season table');
     careerEntry(); ccProbeSeat(); careerTab('table');
     let html = document.getElementById('chBody').textContent;
-    if (!/Weekly Final has been played|финал/i.test(html)) fail('the empty table says nothing');
-    out.steps.push('empty table: ' + html.replace(/\\s+/g,' ').trim().slice(0, 70));
+    if (/Weekly Final has been played|ещё не было/i.test(html)) fail('the empty-table tile is still drawn');
+    // careerTableHTML удалена целиком — его слово, 23 августа: «убери эту
+    // таблицу». Живы только строки для скриншотов ленты.
+    if (typeof careerTableHTML !== 'undefined') fail('careerTableHTML is back from the dead');
+    out.steps.push('empty table: no tile, tab shows ' + html.replace(/\\s+/g,' ').trim().slice(0, 50));
 
     // ---- five weeks of Europe playing without the player -----------------
     seed(1, finals[0]);
@@ -98,13 +102,13 @@ const BOOT = `
       if (rows[i-1].pts < rows[i].pts) fail('the table is not sorted by points at row ' + i);
     out.steps.push('sorted by points, then finals played, then best night');
 
-    // ---- the screen draws it --------------------------------------------
+    // ---- the screen no longer draws it — его слово, 23 августа -----------
     careerTab('table');
     const body = document.getElementById('chBody');
-    const trs = body.querySelectorAll('.ct tbody tr');
-    if (!trs.length) fail('the table screen drew no rows');
-    if (!body.querySelector('.ct tr.cut')) fail('no line under the fiftieth place');
-    out.steps.push('screen: ' + trs.length + ' rows drawn, cut line at ' + CC_TABLE_KEEP);
+    if (/ещё не было|Weekly Final has been played/i.test(body.textContent))
+      fail('the season table tile is back on the tab');
+    if (!body.querySelector('.cm')) fail('money/PR did not take the tab over');
+    out.steps.push('screen: no season table, the tab holds money and PR');
 
     // ---- the player's own final counts, and only once --------------------
     seed(1, finals[0]);
@@ -130,15 +134,46 @@ const BOOT = `
     if (me == null) fail('the player is not in the table after playing a final');
     out.steps.push('own final: one week counted, player at #' + me + ' of ' + careerTableRows().length);
 
-    // ---- the season boundary reads it ------------------------------------
-    // Below the line: relegated to Division 2.
+    // ---- your row is you, not what the duo is called ---------------------
+    // The name is yourTeamPrefix plus the partner's handles, so changing the duo
+    // mid-season — or the language — used to open a second row and split the
+    // season's points across the two. Under a fifty-team cut that is a
+    // relegation nobody earned, and it is the only way out of Division 1.
+    seed(1, CC_YEAR_TO);
+    careerTableAdd([{name: 'Yours: Tabler + Alpha', stagePts: 120, wins: 1, isYou: true}]);
+    careerTableAdd([{name: 'Yours: Tabler + Beta',  stagePts: 100, wins: 0, isYou: true}]);
+    const mineRows = careerTableRows().filter(r => r.you);
+    if (mineRows.length !== 1)
+      fail('a duo change split the player across ' + mineRows.length + ' rows of the season table');
+    if (mineRows[0].pts !== 220)
+      fail('a duo change lost points from the season table: ' + mineRows[0].pts + ' of 220');
+    if (mineRows[0].weeks !== 2)
+      fail('a duo change lost a final from the season table: ' + mineRows[0].weeks + ' of 2');
+    if (mineRows[0].name !== 'Yours: Tabler + Beta')
+      fail('the table does not print the duo the player is in now: ' + mineRows[0].name);
+    out.steps.push('a duo change keeps one row: 220 points over 2 finals, named for the duo now');
+
+    /* ---- the season boundary reads it ------------------------------------
+
+       Ниже отсечки дивизион всё равно остаётся. Его решение, 22 августа:
+       «сделай, чтоб игрок не мог вылетить из 1 дивизиона».
+
+       Тут стояло обратное — «упал во второй», — и это правило мода изменилось,
+       а не тест сломался. Проверяется теперь то, что осталось истиной: сезон
+       ниже отсечки называется слабым в ленте, а токен дивизиона не отбирают.
+       Так тест по-прежнему стережёт, что граница сезона вообще читает таблицу:
+       если careerTablePlace однажды перестанет считать, строка не появится. */
     seed(1, CC_YEAR_TO);
     for (let i = 0; i < 4; i++) careerD1Posts(finals[i]);   // a table with no player in it
     CAREER.career.seasonOver = true;
     careerNewSeason();
-    if (CAREER.career.division !== 2)
-      fail('a season with no Weekly Final in it kept Division 1');
-    out.steps.push('never reached a final: down to Division 2');
+    if (CAREER.career.division !== 1)
+      fail('дивизион 1 отобрали за слабый сезон: ' + CAREER.career.division);
+    // Правила «топ-N остаётся» больше нет совсем — его слово, 23 августа:
+    // «не надо это правило». Ни вылета, ни строки про отсечку в ленте.
+    if ((CAREER.career.news || []).some(n => n.k === 'ccNewsKeptD1Low' || n.k === 'ccNewsKeptD1'))
+      fail('лента всё ещё меряет сезон отменённой отсечкой');
+    out.steps.push('никакого финала за сезон: дивизион остался, отсечка не упоминается');
     // Above the line: kept.
     seed(1, CC_YEAR_TO);
     careerTable().rows['Tabler'] = {pts: 99999, weeks: 20, best: 1, wins: 9, you: true};

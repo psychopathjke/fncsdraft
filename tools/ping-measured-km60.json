@@ -1,0 +1,1578 @@
+{
+ "lastMile": 8,
+ "outlier": 2.8,
+ "regions": {
+  "EU": {
+   "server": {
+    "file": "frankfurt.json",
+    "name": "Frankfurt",
+    "lat": 50.11,
+    "lon": 8.68
+   },
+   "fit": {
+    "a": 15.342697563039044,
+    "b": 0.016675786306274594,
+    "n": 137,
+    "r2": 0.8283410346775126,
+    "slopeFrom": "its own probes"
+   },
+   "dropped": [
+    {
+     "c": "lb",
+     "city": "Beirut",
+     "ms": 216.25,
+     "expect": 63
+    }
+   ],
+   "rows": [
+    {
+     "c": "lu",
+     "ping": 3,
+     "from": "ruler"
+    },
+    {
+     "c": "be",
+     "ping": 5,
+     "from": "ruler"
+    },
+    {
+     "c": "ch",
+     "ping": 6,
+     "from": "ruler"
+    },
+    {
+     "c": "nl",
+     "ping": 6,
+     "from": "ruler"
+    },
+    {
+     "c": "li",
+     "ping": 6,
+     "from": "ruler"
+    },
+    {
+     "c": "cz",
+     "ping": 7,
+     "from": "ruler"
+    },
+    {
+     "c": "de",
+     "ping": 7,
+     "from": "ruler"
+    },
+    {
+     "c": "fr",
+     "ping": 8,
+     "from": "ruler"
+    },
+    {
+     "c": "at",
+     "ping": 10,
+     "from": "ruler"
+    },
+    {
+     "c": "si",
+     "ping": 10,
+     "from": "ruler"
+    },
+    {
+     "c": "sk",
+     "ping": 11,
+     "from": "ruler"
+    },
+    {
+     "c": "gb",
+     "ping": 11,
+     "from": "ruler"
+    },
+    {
+     "c": "dk",
+     "ping": 11,
+     "from": "ruler"
+    },
+    {
+     "c": "hr",
+     "ping": 12,
+     "from": "ruler"
+    },
+    {
+     "c": "hu",
+     "ping": 14,
+     "from": "ruler"
+    },
+    {
+     "c": "pl",
+     "ping": 15,
+     "from": "ruler"
+    },
+    {
+     "c": "it",
+     "ping": 16,
+     "from": "ruler"
+    },
+    {
+     "c": "im",
+     "ping": 17,
+     "from": "ruler"
+    },
+    {
+     "c": "ba",
+     "ping": 17,
+     "from": "ruler"
+    },
+    {
+     "c": "ad",
+     "ping": 17,
+     "from": "ruler"
+    },
+    {
+     "c": "ie",
+     "ping": 18,
+     "from": "ruler"
+    },
+    {
+     "c": "no",
+     "ping": 18,
+     "from": "ruler"
+    },
+    {
+     "c": "rs",
+     "ping": 18,
+     "from": "ruler"
+    },
+    {
+     "c": "se",
+     "ping": 20,
+     "from": "ruler"
+    },
+    {
+     "c": "me",
+     "ping": 20,
+     "from": "ruler"
+    },
+    {
+     "c": "lv",
+     "ping": 21,
+     "from": "ruler"
+    },
+    {
+     "c": "lt",
+     "ping": 21,
+     "from": "ruler"
+    },
+    {
+     "c": "al",
+     "ping": 22,
+     "from": "ruler"
+    },
+    {
+     "c": "mk",
+     "ping": 22,
+     "from": "ruler"
+    },
+    {
+     "c": "bg",
+     "ping": 23,
+     "from": "ruler"
+    },
+    {
+     "c": "by",
+     "ping": 23,
+     "from": "ruler"
+    },
+    {
+     "c": "es",
+     "ping": 24,
+     "from": "ruler"
+    },
+    {
+     "c": "ro",
+     "ping": 24,
+     "from": "ruler"
+    },
+    {
+     "c": "ee",
+     "ping": 24,
+     "from": "ruler"
+    },
+    {
+     "c": "fi",
+     "ping": 25,
+     "from": "ruler"
+    },
+    {
+     "c": "tn",
+     "ping": 25,
+     "from": "ruler"
+    },
+    {
+     "c": "md",
+     "ping": 25,
+     "from": "ruler"
+    },
+    {
+     "c": "ua",
+     "ping": 26,
+     "from": "ruler"
+    },
+    {
+     "c": "dz",
+     "ping": 26,
+     "from": "ruler"
+    },
+    {
+     "c": "mt",
+     "ping": 27,
+     "from": "ruler"
+    },
+    {
+     "c": "gr",
+     "ping": 30,
+     "from": "ruler"
+    },
+    {
+     "c": "pt",
+     "ping": 32,
+     "from": "ruler"
+    },
+    {
+     "c": "ly",
+     "ping": 32,
+     "from": "ruler"
+    },
+    {
+     "c": "ru",
+     "ping": 34,
+     "from": "ruler"
+    },
+    {
+     "c": "ma",
+     "ping": 37,
+     "from": "ruler"
+    },
+    {
+     "c": "tr",
+     "ping": 37,
+     "from": "ruler"
+    },
+    {
+     "c": "is",
+     "ping": 40,
+     "from": "ruler"
+    },
+    {
+     "c": "cy",
+     "ping": 43,
+     "from": "ruler"
+    },
+    {
+     "c": "lb",
+     "ping": 47,
+     "from": "ruler"
+    },
+    {
+     "c": "eg",
+     "ping": 49,
+     "from": "ruler"
+    },
+    {
+     "c": "ge",
+     "ping": 49,
+     "from": "ruler"
+    },
+    {
+     "c": "sy",
+     "ping": 49,
+     "from": "ruler"
+    },
+    {
+     "c": "ps",
+     "ping": 49,
+     "from": "ruler"
+    },
+    {
+     "c": "am",
+     "ping": 50,
+     "from": "ruler"
+    },
+    {
+     "c": "il",
+     "ping": 50,
+     "from": "ruler"
+    },
+    {
+     "c": "jo",
+     "ping": 50,
+     "from": "ruler"
+    },
+    {
+     "c": "eh",
+     "ping": 52,
+     "from": "ruler"
+    },
+    {
+     "c": "az",
+     "ping": 56,
+     "from": "ruler"
+    },
+    {
+     "c": "iq",
+     "ping": 58,
+     "from": "ruler"
+    },
+    {
+     "c": "ir",
+     "ping": 63,
+     "from": "ruler"
+    },
+    {
+     "c": "kw",
+     "ping": 67,
+     "from": "ruler"
+    },
+    {
+     "c": "tm",
+     "ping": 69,
+     "from": "ruler"
+    },
+    {
+     "c": "kz",
+     "ping": 71,
+     "from": "ruler"
+    },
+    {
+     "c": "sa",
+     "ping": 72,
+     "from": "ruler"
+    },
+    {
+     "c": "bh",
+     "ping": 74,
+     "from": "ruler"
+    },
+    {
+     "c": "qa",
+     "ping": 76,
+     "from": "ruler"
+    },
+    {
+     "c": "uz",
+     "ping": 78,
+     "from": "ruler"
+    },
+    {
+     "c": "tj",
+     "ping": 80,
+     "from": "ruler"
+    },
+    {
+     "c": "ae",
+     "ping": 81,
+     "from": "ruler"
+    },
+    {
+     "c": "kg",
+     "ping": 82,
+     "from": "ruler"
+    },
+    {
+     "c": "af",
+     "ping": 85,
+     "from": "ruler"
+    },
+    {
+     "c": "om",
+     "ping": 86,
+     "from": "ruler"
+    },
+    {
+     "c": "pk",
+     "ping": 91,
+     "from": "ruler"
+    }
+   ]
+  },
+  "NAC": {
+   "server": {
+    "file": "dallas.json",
+    "name": "Dallas",
+    "lat": 32.78,
+    "lon": -96.8
+   },
+   "fit": {
+    "a": 13.54012107399132,
+    "b": 0.015622773303580674,
+    "n": 94,
+    "r2": 0.9351831464793657,
+    "slopeFrom": "its own probes"
+   },
+   "dropped": [],
+   "rows": [
+    {
+     "c": "us-tx",
+     "ping": 1,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ok",
+     "ping": 6,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ms",
+     "ping": 10,
+     "from": "ruler"
+    },
+    {
+     "c": "us-tn",
+     "ping": 11,
+     "from": "ruler"
+    },
+    {
+     "c": "us-la",
+     "ping": 12,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ks",
+     "ping": 12,
+     "from": "ruler"
+    },
+    {
+     "c": "us-mo",
+     "ping": 15,
+     "from": "ruler"
+    },
+    {
+     "c": "us-al",
+     "ping": 16,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ne",
+     "ping": 16,
+     "from": "ruler"
+    },
+    {
+     "c": "us-nm",
+     "ping": 16,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ia",
+     "ping": 17,
+     "from": "ruler"
+    },
+    {
+     "c": "us-co",
+     "ping": 18,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ga",
+     "ping": 19,
+     "from": "ruler"
+    },
+    {
+     "c": "us-in",
+     "ping": 20,
+     "from": "ruler"
+    },
+    {
+     "c": "us-sd",
+     "ping": 20,
+     "from": "ruler"
+    },
+    {
+     "c": "us-wy",
+     "ping": 20,
+     "from": "ruler"
+    },
+    {
+     "c": "us-il",
+     "ping": 22,
+     "from": "ruler"
+    },
+    {
+     "c": "us-wi",
+     "ping": 23,
+     "from": "ruler"
+    },
+    {
+     "c": "us-mn",
+     "ping": 23,
+     "from": "ruler"
+    },
+    {
+     "c": "us-sc",
+     "ping": 24,
+     "from": "ruler"
+    },
+    {
+     "c": "us-az",
+     "ping": 24,
+     "from": "ruler"
+    },
+    {
+     "c": "us-wv",
+     "ping": 25,
+     "from": "ruler"
+    },
+    {
+     "c": "mx",
+     "ping": 25,
+     "from": "ruler"
+    },
+    {
+     "c": "us-nd",
+     "ping": 26,
+     "from": "ruler"
+    },
+    {
+     "c": "us-oh",
+     "ping": 27,
+     "from": "ruler"
+    },
+    {
+     "c": "us-mi",
+     "ping": 27,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ut",
+     "ping": 27,
+     "from": "ruler"
+    },
+    {
+     "c": "us-nc",
+     "ping": 28,
+     "from": "ruler"
+    },
+    {
+     "c": "us-mt",
+     "ping": 29,
+     "from": "ruler"
+    },
+    {
+     "c": "us-nv",
+     "ping": 29,
+     "from": "ruler"
+    },
+    {
+     "c": "us-fl",
+     "ping": 30,
+     "from": "ruler"
+    },
+    {
+     "c": "cu",
+     "ping": 30,
+     "from": "ruler"
+    },
+    {
+     "c": "us-dc",
+     "ping": 32,
+     "from": "ruler"
+    },
+    {
+     "c": "us-md",
+     "ping": 32,
+     "from": "ruler"
+    },
+    {
+     "c": "us-va",
+     "ping": 32,
+     "from": "ruler"
+    },
+    {
+     "c": "bz",
+     "ping": 32,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ca",
+     "ping": 33,
+     "from": "ruler"
+    },
+    {
+     "c": "us-pa",
+     "ping": 35,
+     "from": "ruler"
+    },
+    {
+     "c": "bs",
+     "ping": 35,
+     "from": "ruler"
+    },
+    {
+     "c": "gt",
+     "ping": 35,
+     "from": "ruler"
+    },
+    {
+     "c": "us-id",
+     "ping": 35,
+     "from": "ruler"
+    },
+    {
+     "c": "ky",
+     "ping": 36,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ny",
+     "ping": 37,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ct",
+     "ping": 38,
+     "from": "ruler"
+    },
+    {
+     "c": "ca",
+     "ping": 38,
+     "from": "ruler"
+    },
+    {
+     "c": "hn",
+     "ping": 38,
+     "from": "ruler"
+    },
+    {
+     "c": "sv",
+     "ping": 38,
+     "from": "ruler"
+    },
+    {
+     "c": "us-vt",
+     "ping": 40,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ma",
+     "ping": 42,
+     "from": "ruler"
+    },
+    {
+     "c": "ni",
+     "ping": 42,
+     "from": "ruler"
+    },
+    {
+     "c": "jm",
+     "ping": 43,
+     "from": "ruler"
+    },
+    {
+     "c": "us-me",
+     "ping": 44,
+     "from": "ruler"
+    },
+    {
+     "c": "us-or",
+     "ping": 44,
+     "from": "ruler"
+    },
+    {
+     "c": "us-wa",
+     "ping": 45,
+     "from": "ruler"
+    },
+    {
+     "c": "tc",
+     "ping": 47,
+     "from": "ruler"
+    },
+    {
+     "c": "ht",
+     "ping": 48,
+     "from": "ruler"
+    },
+    {
+     "c": "bm",
+     "ping": 50,
+     "from": "ruler"
+    },
+    {
+     "c": "do",
+     "ping": 52,
+     "from": "ruler"
+    },
+    {
+     "c": "pr",
+     "ping": 57,
+     "from": "ruler"
+    },
+    {
+     "c": "aw",
+     "ping": 59,
+     "from": "ruler"
+    },
+    {
+     "c": "cw",
+     "ping": 61,
+     "from": "ruler"
+    },
+    {
+     "c": "kn",
+     "ping": 64,
+     "from": "ruler"
+    },
+    {
+     "c": "ag",
+     "ping": 65,
+     "from": "ruler"
+    },
+    {
+     "c": "dm",
+     "ping": 68,
+     "from": "ruler"
+    },
+    {
+     "c": "lc",
+     "ping": 70,
+     "from": "ruler"
+    },
+    {
+     "c": "vc",
+     "ping": 70,
+     "from": "ruler"
+    },
+    {
+     "c": "gd",
+     "ping": 71,
+     "from": "ruler"
+    },
+    {
+     "c": "bb",
+     "ping": 73,
+     "from": "ruler"
+    }
+   ]
+  },
+  "NAW": {
+   "server": {
+    "file": "portland.json",
+    "name": "Portland",
+    "lat": 45.52,
+    "lon": -122.68
+   },
+   "fit": {
+    "a": 10.48150616644608,
+    "b": 0.018372771700314487,
+    "n": 58,
+    "r2": 0.8338985699542818,
+    "slopeFrom": "its own probes"
+   },
+   "dropped": [],
+   "rows": [
+    {
+     "c": "us-or",
+     "ping": 1,
+     "from": "ruler"
+    },
+    {
+     "c": "us-wa",
+     "ping": 4,
+     "from": "ruler"
+    },
+    {
+     "c": "us-id",
+     "ping": 9,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ut",
+     "ping": 17,
+     "from": "ruler"
+    },
+    {
+     "c": "us-mt",
+     "ping": 18,
+     "from": "ruler"
+    },
+    {
+     "c": "us-nv",
+     "ping": 20,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ca",
+     "ping": 22,
+     "from": "ruler"
+    },
+    {
+     "c": "us-wy",
+     "ping": 25,
+     "from": "ruler"
+    },
+    {
+     "c": "us-co",
+     "ping": 26,
+     "from": "ruler"
+    },
+    {
+     "c": "us-az",
+     "ping": 27,
+     "from": "ruler"
+    },
+    {
+     "c": "us-nm",
+     "ping": 30,
+     "from": "ruler"
+    },
+    {
+     "c": "us-nd",
+     "ping": 33,
+     "from": "ruler"
+    },
+    {
+     "c": "us-sd",
+     "ping": 34,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ne",
+     "ping": 37,
+     "from": "ruler"
+    },
+    {
+     "c": "us-mn",
+     "ping": 38,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ks",
+     "ping": 39,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ia",
+     "ping": 39,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ok",
+     "ping": 41,
+     "from": "ruler"
+    },
+    {
+     "c": "us-tx",
+     "ping": 44,
+     "from": "ruler"
+    },
+    {
+     "c": "us-mo",
+     "ping": 46,
+     "from": "ruler"
+    },
+    {
+     "c": "us-wi",
+     "ping": 46,
+     "from": "ruler"
+    },
+    {
+     "c": "us-il",
+     "ping": 47,
+     "from": "ruler"
+    },
+    {
+     "c": "us-tn",
+     "ping": 50,
+     "from": "ruler"
+    },
+    {
+     "c": "us-in",
+     "ping": 50,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ms",
+     "ping": 52,
+     "from": "ruler"
+    },
+    {
+     "c": "us-mi",
+     "ping": 53,
+     "from": "ruler"
+    },
+    {
+     "c": "us-la",
+     "ping": 55,
+     "from": "ruler"
+    },
+    {
+     "c": "us-oh",
+     "ping": 55,
+     "from": "ruler"
+    },
+    {
+     "c": "us-al",
+     "ping": 57,
+     "from": "ruler"
+    },
+    {
+     "c": "us-wv",
+     "ping": 57,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ga",
+     "ping": 58,
+     "from": "ruler"
+    },
+    {
+     "c": "mx",
+     "ping": 60,
+     "from": "ruler"
+    },
+    {
+     "c": "ca",
+     "ping": 60,
+     "from": "ruler"
+    },
+    {
+     "c": "us-sc",
+     "ping": 62,
+     "from": "ruler"
+    },
+    {
+     "c": "us-dc",
+     "ping": 63,
+     "from": "ruler"
+    },
+    {
+     "c": "us-md",
+     "ping": 63,
+     "from": "ruler"
+    },
+    {
+     "c": "us-nc",
+     "ping": 64,
+     "from": "ruler"
+    },
+    {
+     "c": "us-vt",
+     "ping": 64,
+     "from": "ruler"
+    },
+    {
+     "c": "us-pa",
+     "ping": 65,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ny",
+     "ping": 65,
+     "from": "ruler"
+    },
+    {
+     "c": "us-va",
+     "ping": 66,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ct",
+     "ping": 66,
+     "from": "ruler"
+    },
+    {
+     "c": "us-ma",
+     "ping": 68,
+     "from": "ruler"
+    },
+    {
+     "c": "us-me",
+     "ping": 68,
+     "from": "ruler"
+    },
+    {
+     "c": "us-fl",
+     "ping": 72,
+     "from": "ruler"
+    },
+    {
+     "c": "cu",
+     "ping": 73,
+     "from": "ruler"
+    },
+    {
+     "c": "bz",
+     "ping": 74,
+     "from": "ruler"
+    },
+    {
+     "c": "gt",
+     "ping": 76,
+     "from": "ruler"
+    },
+    {
+     "c": "bs",
+     "ping": 77,
+     "from": "ruler"
+    },
+    {
+     "c": "sv",
+     "ping": 79,
+     "from": "ruler"
+    },
+    {
+     "c": "hn",
+     "ping": 80,
+     "from": "ruler"
+    },
+    {
+     "c": "ky",
+     "ping": 80,
+     "from": "ruler"
+    },
+    {
+     "c": "ni",
+     "ping": 84,
+     "from": "ruler"
+    },
+    {
+     "c": "bm",
+     "ping": 85,
+     "from": "ruler"
+    },
+    {
+     "c": "jm",
+     "ping": 87,
+     "from": "ruler"
+    },
+    {
+     "c": "tc",
+     "ping": 89,
+     "from": "ruler"
+    },
+    {
+     "c": "ht",
+     "ping": 92,
+     "from": "ruler"
+    },
+    {
+     "c": "do",
+     "ping": 95,
+     "from": "ruler"
+    },
+    {
+     "c": "pr",
+     "ping": 100,
+     "from": "ruler"
+    },
+    {
+     "c": "aw",
+     "ping": 102,
+     "from": "ruler"
+    },
+    {
+     "c": "cw",
+     "ping": 104,
+     "from": "ruler"
+    }
+   ]
+  },
+  "BR": {
+   "server": {
+    "file": "saopaulo.json",
+    "name": "Sao Paulo",
+    "lat": -23.55,
+    "lon": -46.63
+   },
+   "fit": {
+    "a": 28.007752193430814,
+    "b": 0.015431423523520595,
+    "n": 60,
+    "r2": 0.6380937404311395,
+    "slopeFrom": "its own probes"
+   },
+   "dropped": [],
+   "rows": [
+    {
+     "c": "br",
+     "ping": 15,
+     "from": "ruler"
+    },
+    {
+     "c": "py",
+     "ping": 19,
+     "from": "ruler"
+    },
+    {
+     "c": "uy",
+     "ping": 26,
+     "from": "ruler"
+    },
+    {
+     "c": "ar",
+     "ping": 28,
+     "from": "ruler"
+    },
+    {
+     "c": "bo",
+     "ping": 33,
+     "from": "ruler"
+    },
+    {
+     "c": "cl",
+     "ping": 43,
+     "from": "ruler"
+    },
+    {
+     "c": "sr",
+     "ping": 57,
+     "from": "ruler"
+    },
+    {
+     "c": "pe",
+     "ping": 58,
+     "from": "ruler"
+    },
+    {
+     "c": "gy",
+     "ping": 60,
+     "from": "ruler"
+    },
+    {
+     "c": "tt",
+     "ping": 69,
+     "from": "ruler"
+    },
+    {
+     "c": "gd",
+     "ping": 71,
+     "from": "ruler"
+    },
+    {
+     "c": "ec",
+     "ping": 72,
+     "from": "ruler"
+    },
+    {
+     "c": "bb",
+     "ping": 72,
+     "from": "ruler"
+    },
+    {
+     "c": "co",
+     "ping": 72,
+     "from": "ruler"
+    },
+    {
+     "c": "ve",
+     "ping": 73,
+     "from": "ruler"
+    },
+    {
+     "c": "vc",
+     "ping": 73,
+     "from": "ruler"
+    },
+    {
+     "c": "cw",
+     "ping": 77,
+     "from": "ruler"
+    },
+    {
+     "c": "aw",
+     "ping": 79,
+     "from": "ruler"
+    },
+    {
+     "c": "pa",
+     "ping": 85,
+     "from": "ruler"
+    }
+   ]
+  },
+  "ASIA": {
+   "server": {
+    "file": "tokyo.json",
+    "name": "Tokyo",
+    "lat": 35.68,
+    "lon": 139.69
+   },
+   "fit": {
+    "a": 22.4200580037693,
+    "b": 0.01817,
+    "n": 32,
+    "r2": 0.15661659019914997,
+    "slopeFrom": "Europe, height by median residual (its own line was R2 0.270)"
+   },
+   "dropped": [
+    {
+     "c": "kz",
+     "city": "Karaganda",
+     "ms": 424.32,
+     "expect": 119
+    }
+   ],
+   "rows": [
+    {
+     "c": "jp",
+     "ping": 1,
+     "from": "ruler"
+    },
+    {
+     "c": "kr",
+     "ping": 19,
+     "from": "ruler"
+    },
+    {
+     "c": "kp",
+     "ping": 21,
+     "from": "ruler"
+    },
+    {
+     "c": "cn",
+     "ping": 35,
+     "from": "ruler"
+    },
+    {
+     "c": "tw",
+     "ping": 35,
+     "from": "ruler"
+    },
+    {
+     "c": "gu",
+     "ping": 42,
+     "from": "ruler"
+    },
+    {
+     "c": "hk",
+     "ping": 48,
+     "from": "ruler"
+    },
+    {
+     "c": "ph",
+     "ping": 50,
+     "from": "ruler"
+    },
+    {
+     "c": "mn",
+     "ping": 50,
+     "from": "ruler"
+    },
+    {
+     "c": "pw",
+     "ping": 53,
+     "from": "ruler"
+    },
+    {
+     "c": "vn",
+     "ping": 61,
+     "from": "ruler"
+    },
+    {
+     "c": "la",
+     "ping": 69,
+     "from": "ruler"
+    },
+    {
+     "c": "bn",
+     "ping": 71,
+     "from": "ruler"
+    },
+    {
+     "c": "kh",
+     "ping": 73,
+     "from": "ruler"
+    },
+    {
+     "c": "mm",
+     "ping": 77,
+     "from": "ruler"
+    },
+    {
+     "c": "th",
+     "ping": 77,
+     "from": "ruler"
+    },
+    {
+     "c": "bt",
+     "ping": 80,
+     "from": "ruler"
+    },
+    {
+     "c": "bd",
+     "ping": 81,
+     "from": "ruler"
+    },
+    {
+     "c": "pg",
+     "ping": 85,
+     "from": "ruler"
+    },
+    {
+     "c": "tl",
+     "ping": 86,
+     "from": "ruler"
+    },
+    {
+     "c": "np",
+     "ping": 86,
+     "from": "ruler"
+    },
+    {
+     "c": "my",
+     "ping": 89,
+     "from": "ruler"
+    },
+    {
+     "c": "sg",
+     "ping": 89,
+     "from": "ruler"
+    },
+    {
+     "c": "kg",
+     "ping": 92,
+     "from": "ruler"
+    },
+    {
+     "c": "kz",
+     "ping": 93,
+     "from": "ruler"
+    },
+    {
+     "c": "id",
+     "ping": 96,
+     "from": "ruler"
+    },
+    {
+     "c": "in",
+     "ping": 97,
+     "from": "ruler"
+    },
+    {
+     "c": "pk",
+     "ping": 100,
+     "from": "ruler"
+    },
+    {
+     "c": "uz",
+     "ping": 100,
+     "from": "ruler"
+    }
+   ]
+  },
+  "ME": {
+   "server": {
+    "file": "manama.json",
+    "name": "Doha",
+    "lat": 25.29,
+    "lon": 51.53
+   },
+   "fit": {
+    "a": 72.75129893784013,
+    "b": 0.01817,
+    "n": 26,
+    "r2": 0.028953521505930335,
+    "slopeFrom": "Europe, height by median residual (its own line was R2 0.069)"
+   },
+   "dropped": [
+    {
+     "c": "lb",
+     "city": "Beirut",
+     "ms": 308.74,
+     "expect": 106
+    }
+   ],
+   "rows": [
+    {
+     "c": "qa",
+     "ping": 1,
+     "from": "ruler"
+    },
+    {
+     "c": "bh",
+     "ping": 2,
+     "from": "ruler"
+    },
+    {
+     "c": "ae",
+     "ping": 5,
+     "from": "ruler"
+    },
+    {
+     "c": "sa",
+     "ping": 8,
+     "from": "ruler"
+    },
+    {
+     "c": "kw",
+     "ping": 10,
+     "from": "ruler"
+    },
+    {
+     "c": "om",
+     "ping": 12,
+     "from": "ruler"
+    },
+    {
+     "c": "ir",
+     "ping": 19,
+     "from": "ruler"
+    },
+    {
+     "c": "iq",
+     "ping": 19,
+     "from": "ruler"
+    },
+    {
+     "c": "ye",
+     "ping": 22,
+     "from": "ruler"
+    },
+    {
+     "c": "tm",
+     "ping": 26,
+     "from": "ruler"
+    },
+    {
+     "c": "jo",
+     "ping": 28,
+     "from": "ruler"
+    },
+    {
+     "c": "az",
+     "ping": 28,
+     "from": "ruler"
+    },
+    {
+     "c": "sy",
+     "ping": 29,
+     "from": "ruler"
+    },
+    {
+     "c": "il",
+     "ping": 29,
+     "from": "ruler"
+    },
+    {
+     "c": "er",
+     "ping": 29,
+     "from": "ruler"
+    },
+    {
+     "c": "lb",
+     "ping": 30,
+     "from": "ruler"
+    },
+    {
+     "c": "am",
+     "ping": 30,
+     "from": "ruler"
+    },
+    {
+     "c": "ps",
+     "ping": 30,
+     "from": "ruler"
+    },
+    {
+     "c": "ge",
+     "ping": 32,
+     "from": "ruler"
+    },
+    {
+     "c": "af",
+     "ping": 33,
+     "from": "ruler"
+    },
+    {
+     "c": "eg",
+     "ping": 34,
+     "from": "ruler"
+    },
+    {
+     "c": "cy",
+     "ping": 34,
+     "from": "ruler"
+    },
+    {
+     "c": "tj",
+     "ping": 36,
+     "from": "ruler"
+    },
+    {
+     "c": "pk",
+     "ping": 38,
+     "from": "ruler"
+    },
+    {
+     "c": "sd",
+     "ping": 38,
+     "from": "ruler"
+    },
+    {
+     "c": "tr",
+     "ping": 40,
+     "from": "ruler"
+    },
+    {
+     "c": "uz",
+     "ping": 40,
+     "from": "ruler"
+    }
+   ]
+  },
+  "OCE": {
+   "server": {
+    "file": "sydney.json",
+    "name": "Sydney",
+    "lat": -33.87,
+    "lon": 151.21
+   },
+   "fit": {
+    "a": 10.507108680146787,
+    "b": 0.01817,
+    "n": 26,
+    "r2": 0.3977309504015917,
+    "slopeFrom": "Europe, height by median residual (its own line was R2 0.417)"
+   },
+   "dropped": [],
+   "rows": [
+    {
+     "c": "au",
+     "ping": 4,
+     "from": "ruler"
+    },
+    {
+     "c": "nc",
+     "ping": 33,
+     "from": "ruler"
+    },
+    {
+     "c": "nz",
+     "ping": 37,
+     "from": "ruler"
+    },
+    {
+     "c": "vu",
+     "ping": 41,
+     "from": "ruler"
+    },
+    {
+     "c": "pg",
+     "ping": 46,
+     "from": "ruler"
+    },
+    {
+     "c": "sb",
+     "ping": 48,
+     "from": "ruler"
+    },
+    {
+     "c": "fj",
+     "ping": 54,
+     "from": "ruler"
+    },
+    {
+     "c": "tl",
+     "ping": 64,
+     "from": "ruler"
+    }
+   ]
+  }
+ }
+}

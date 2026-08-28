@@ -76,20 +76,9 @@ const BOOT = `
                    ', Reload ' + duo.reload + '→' + trio.reload +
                    ', Victory ' + duo.victory + '→' + trio.victory);
 
-    // ---- the rival is a team, not a pair ---------------------------------
+    // Соперника больше нет — его слово, 23 августа. Комната меряется без него.
     seed(3);
-    const rv = careerRivalMake();
-    if (!rv) fail('no rival was drawn at all');
-    const squad = [rv.card].concat((rv.mates && rv.mates.length) ? rv.mates
-                                   : (rv.mate ? [rv.mate] : [])).filter(Boolean);
-    if (squad.length !== careerSquadSize())
-      fail('the rival is ' + squad.length + ' in a season of ' + careerSquadSize() +
-           ': ' + squad.map(c => c.handle).join(' & '));
-    const uniq = new Set(squad.map(c => hKey(c)));
-    if (uniq.size !== squad.length) fail('the rival has the same person twice');
-    out.steps.push('the rival is a ' + squad.length + ': ' + squad.map(c => c.handle).join(' & '));
-
-    // ---- and he arrives in the field at that size ------------------------
+    // ---- every team in the field is the season's size -------------------
     const you = [careerCard()].concat(careerMates());
     const field = careerCupField(CAREER.career, you, careerSquadSize(), 'trioroom|1', false);
     const wrong = field.filter(t => (t.squad || []).length !== careerSquadSize());

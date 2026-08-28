@@ -84,6 +84,24 @@ const BOOT = `
     check('the scene posts the Division 1 table',
           author('ccNewsD1Table', [7]) === 'press');
     check('the scene reports a signing', author('ccNewsSigned', ['Org', '500']) === 'press');
+
+    // ---- and it posts with a face ----------------------------------------
+    // His edit, 24 August: the one account in the feed that is not a player had
+    // no avatar, because avatars come off a card and the scene has no card.
+    seed(1);
+    careerNews('flat', 'ccNewsSigned', ['Org', '500']);
+    const pressPost = ccPostHTML(CAREER.career.news[0]);
+    // Без регулярки нарочно: этот файл — шаблонная строка Node, и косая черта
+    // внутри /.../ закрыла бы регулярку раньше времени.
+    const avAt = pressPost.indexOf('photos/FNCompetitive.png');
+    out.notes.pressAv = avAt >= 0 ? 'photos/FNCompetitive.png' : null;
+    check('the scene\\u2019s post carries its avatar', avAt > 0,
+          pressPost.slice(0, 160));
+    check('and the avatar sits in the post\\u2019s avatar slot',
+          avAt > pressPost.indexOf('x-av') && pressPost.indexOf('x-av') >= 0);
+    // The player's own post still wears the player's face and not the scene's.
+    const mine = ccPostHTML({k:'ccPostPlaced', a:[3], d:careerToday()});
+    check('and the player\\u2019s post does not', mine.indexOf('FNCompetitive') < 0);
     check('the scene reports a move between clubs',
           author('ccNewsLeft', ['A', 'B']) === 'press');
     check('and a promotion out of the academy',

@@ -62,6 +62,55 @@ geo.features.forEach(f => {
   if (!BY_CODE[code]) BY_CODE[code] = f;
 });
 
+/* ---- The United States, by state ------------------------------------------
+ *
+ * His ask, 20 August, and the North America maps are the reason: the country is
+ * four thousand kilometres wide with a server at each end, so one number for it
+ * is wrong at both. On NA-West the United States read 89 ms off Washington
+ * while Seattle answers Oregon in 4 and Vancouver in 8. There is no single
+ * honest number, and the fix is not to pick a better city — it is to stop
+ * pretending the country is one place.
+ *
+ * Everything the map needs is already keyed by code, so a state is a country as
+ * far as the rest of this file is concerned: shapes from Natural Earth's
+ * admin-1, cities bucketed by ADM1NAME, and a code of `us-ca` — which is also
+ * exactly what flagcdn serves a state flag under, so the map gets its stripes
+ * for free.
+ *
+ * Off by default: `--states` turns it on, so the six maps that do not care are
+ * not rebuilt differently by accident.
+ */
+const STATES = process.argv.includes('--states');
+const ADMIN1 = process.env.NE_ADMIN1 || path.join(SCRATCH, 'ne_admin1.geojson');
+const STATE_OF = {};   // "California" -> "us-ca"
+if (STATES) {
+  if (!fs.existsSync(ADMIN1)) { console.error('missing ' + ADMIN1); process.exit(2); }
+  JSON.parse(fs.readFileSync(ADMIN1, 'utf8')).features.forEach(f => {
+    const p = f.properties;
+    if (String(p.iso_a2 || '').toUpperCase() !== 'US') return;
+    const postal = String(p.postal || '').toLowerCase();
+    if (!postal || postal.length !== 2) return;
+    const code = 'us-' + postal;
+    BY_CODE[code] = f;
+    STATE_OF[String(p.name || '')] = code;
+  });
+  // Every American city goes to its own state, and the country itself stops
+  // being a shape anybody can pick.
+  places.features.forEach(f => {
+    const pr = f.properties;
+    if (String(pr.ISO_A2 || '') !== 'US') return;
+    const pop = +pr.POP_MAX || 0;
+    const code = STATE_OF[String(pr.ADM1NAME || '')];
+    if (!code || !pop || !f.geometry) return;
+    const [lon, lat] = f.geometry.coordinates;
+    (CITY[code] = CITY[code] || []).push({ pop, lat, lon });
+    POP[code] = (POP[code] || 0) + pop;
+  });
+  delete CITY.us; delete POP.us; delete BY_CODE.us;
+  console.log('states: ' + Object.keys(STATE_OF).length + ' shapes, ' +
+              Object.keys(CITY).filter(c => c.startsWith('us-')).length + ' of them with a city');
+}
+
 const R = 6371;
 function km(a, b) {
   const t = Math.PI / 180;
@@ -215,6 +264,13 @@ const SHORT_EN = {cn:'China', kr:'South Korea', vc:'St Vincent', kn:'St Kitts',
 function nameInto(code) {
   const p = BY_CODE[code] && BY_CODE[code].properties;
   if (!p) return;
+  // Natural Earth writes a country's names in capitals and a state's in lower
+  // case, so a state is read off its own keys.
+  if (code.indexOf('-') > 0) {
+    names.ru[code] = p.name_ru || p.name_en || p.name || code.toUpperCase();
+    names.en[code] = p.name_en || p.name || code.toUpperCase();
+    return;
+  }
   names.ru[code] = SHORT_RU[code] || p.NAME_RU || p.NAME_EN || p.NAME || code.toUpperCase();
   names.en[code] = SHORT_EN[code] || p.NAME_EN || p.NAME || code.toUpperCase();
 }

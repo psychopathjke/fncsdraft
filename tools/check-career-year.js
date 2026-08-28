@@ -76,15 +76,17 @@ const BOOT = `
     // Measured on Epic's own schedule pages, Division 1 and Divisions 2-5.
     // The span these replaced ran straight through April and July and invented
     // seven cup weeks that never happened.
-    if (CC_CUP_WEEKS.length !== 17)
-      fail('the year holds 17 measured cup weeks, the table has ' + CC_CUP_WEEKS.length);
+    // 17 недель S39–S41 + 4 недели Division 1 Practice S42, снятые с его
+    // Tracker-сейвов 23 августа (одна сессия + финал, only:'d1').
+    if (CC_CUP_WEEKS.length !== 21)
+      fail('the year holds 21 measured cup weeks (17 + 4 S42 Practice), the table has ' + CC_CUP_WEEKS.length);
     const finals = [...days.keys()].filter(k => (days.get(k)||[]).some(e => e.kind === 'final'));
-    if (finals.length !== 15) fail('15 Weekly Finals in the year, got ' + finals.length);
+    if (finals.length !== 19) fail('19 Weekly Finals in the year (15 + 4 S42), got ' + finals.length);
     // Three of them are not on a Saturday, and they are these three.
     const odd = finals.filter(k => (new Date(k + 'T00:00:00Z')).getUTCDay() !== 6);
     if (odd.join() !== '2026-02-08,2026-04-02,2026-07-17')
       fail('the finals off a Saturday should be 8 Feb, 2 Apr and 17 Jul, got ' + odd.join(', '));
-    out.steps.push('15 Weekly Finals, and the three off a Saturday are the measured ones');
+    out.steps.push('19 Weekly Finals, and the three off a Saturday are the measured ones');
 
     // What each division sees on the two Play-In weeks: Division 1 is away at
     // the Major, everyone below it plays an ordinary week.
@@ -143,7 +145,8 @@ const BOOT = `
     if (careerWeekIndex(CC_YEAR_TO) !== CAREER_WEEKS)
       fail('the year is not ' + CAREER_WEEKS + ' weeks (last week reads ' +
            careerWeekIndex(CC_YEAR_TO) + ')');
-    if (CAREER_WEEKS !== 43) fail('the measured year is 43 weeks, CAREER_WEEKS says ' + CAREER_WEEKS);
+    // 47 с хвостом S42 до 22 октября — его Tracker-сейвы, 23 августа.
+    if (CAREER_WEEKS !== 47) fail('the measured year is 47 weeks, CAREER_WEEKS says ' + CAREER_WEEKS);
     if (careerMonday('2026-01-23') !== '2026-01-19')
       fail('Monday of the week holding 23 Jan should be 19 Jan, got ' + careerMonday('2026-01-23'));
     out.steps.push('the year is ' + CAREER_WEEKS + ' weeks and every day knows which one it is in');

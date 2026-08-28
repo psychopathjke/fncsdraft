@@ -96,8 +96,11 @@ const BOOT = `
     out.notes.div1 = {people: people1, generated: made1,
                       poolDuos: careerPools().duos.length};
     check('Division 1 seats nobody generated', made1 === 0, made1 + ' of ' + people1);
-    check('and it is every pair the year recorded, not one event out of it',
-          people1 > 380, String(people1));
+    /* И это состав дивизиона, а не срез по рейтингу: Плей-Ин, Ласт Ченс и
+       финалы недели дивизиона 1. Пары из опенов Reload отсюда ушли — опен не
+       квалифицирует в дивизион. */
+    check('and it is everybody who qualified into the division',
+          people1 > 300, String(people1));
 
     // ---- and the top of an open belongs to the real names ------------------
     // An open takes the whole ladder, so it is the one room where invented

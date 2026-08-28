@@ -9,7 +9,7 @@
 // to settle and then asks each tile what it is actually painted with.
 //
 //   node tools/check-mode-art.js
-const fs = require('fs'), path = require('path');
+const fs = require('fs'), os = require('os'), path = require('path');
 const { execFileSync } = require('child_process');
 const ROOT = path.resolve(__dirname, '..');
 const CHROME = [process.env.CHROME,
@@ -57,7 +57,10 @@ const BOOT = [
 
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 // Inside the project, or every relative art path resolves to nowhere.
-const dir = fs.mkdtempSync(path.join(ROOT, 'probe-art-'));
+// Во временную папку системы и с уборкой на любом выходе — см. разбор в
+// check-career-edges.js.
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'probe-art-'));
+process.on('exit', () => { try{ fs.rmSync(dir, {recursive:true, force:true}); }catch(e){} });
 const tmp = path.join(dir, 'probe.html');
 fs.writeFileSync(tmp, src.replace('</body>', BOOT + '</body>'));
 // The page fetches maps.js beside itself, so the probe needs its own copy.

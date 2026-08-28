@@ -222,12 +222,20 @@ const BOOT = `
 
     /* ---- a no can be argued with ---------------------------------------- */
     // Somebody well above the reach, so the first answer is no.
-    seed(70);
+    //
+    // With a night in the log: since 21 August the inbox only writes to you
+    // with the half of a duo you are missing — one IGL per squad — so the
+    // 'I will move over' argument no longer turns up here, and what is left to
+    // say is the result. See ccSquadRoleWanted.
+    seed(70, 3, [{season:1, day:'2026-02-09', place:120, of:150, passed:false, kind:'cup'}]);
     pool = careerDmPool();
-    const hard = pool.slice().sort((a,b) => b.ovr - a.ovr)[0];
-    out.notes.hard = {ovr: hard.ovr, you: 70};
-    check('somebody in the list is out of reach', !careerDmWouldAccept(hard),
-          String(hard.ovr));
+    // The strongest person in the list who would actually turn this career down.
+    // Since 21 August the seat offers come from the half of a duo the squad is
+    // missing, so who is at the top of the list is no longer a given.
+    const hard = pool.filter(w => !careerDmWouldAccept(w)).sort((a,b) => b.ovr - a.ovr)[0];
+    out.notes.hard = hard && {ovr: hard.ovr, role: hard.role, you: 70};
+    check('somebody in the list is out of reach', !!hard,
+          JSON.stringify(pool.map(w => w.ovr)));
     careerDmWrite(hard.handle);
     t = careerDmFind(hard.handle);
     check('and they say no, there and then', t.state === 'declined', t.state);
@@ -680,10 +688,12 @@ const BOOT = `
                        threads: careerDms().filter(t => t.who && t.who.brand).length};
     check('a brand writing twice is one thread', ru && en && ru.id === en.id,
           JSON.stringify(out.notes.brand));
-    check('and it is named in the language on screen',
-          ccDmName(ru.who) === L().ccSponsorisp, ccDmName(ru.who));
+    // Спонсоры теперь именные (23 августа): имя бренда — имя собственное,
+    // одно и то же на любом языке экрана.
+    check('and it is named after the offered brand',
+          ccDmName(ru.who) === L()['ccSponsor'+ru.who.brand], ccDmName(ru.who));
     LANG = 'ru';
-    check('in the other one too', ccDmName(ru.who) === L().ccSponsorisp, ccDmName(ru.who));
+    check('in the other one too', ccDmName(ru.who) === L()['ccSponsor'+ru.who.brand], ccDmName(ru.who));
     LANG = 'en';
 
     /* ---- a quiet inbox says why it is quiet ------------------------------ */

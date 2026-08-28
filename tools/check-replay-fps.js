@@ -199,9 +199,18 @@ server.listen(0, async () => {
     const ratio = set.paints.n ? set.draws.n / set.paints.n : 0;
     if(!(ratio > 0.9)) fails.push(tag + ': ' + set.draws.n + ' draws against ' +
       set.paints.n + ' camera writes — the map is moving oftener than the arrows on it');
-    // And the endgame has to get more than a slideshow.
-    if(!(set.drawsLate.fps > 40)) fails.push(tag + ': zone 10 on ran at ' +
-      set.drawsLate.fps + ' pictures a second');
+    /* And the endgame has to get more than a slideshow.
+
+       Against the whole match's own rate, not against a fixed forty. Forty was
+       a number off a real machine, and this runs in headless Chrome, which
+       paints at a flat 30 — so the check was failing on the harness's refresh
+       rate rather than on anything the replay does. The bug it exists to catch
+       is the endgame degrading while the rest of the match is fine, and that is
+       a comparison: zone 10 has to draw about as often as the match does. */
+    const share = set.draws.fps ? set.drawsLate.fps / set.draws.fps : 0;
+    if(!(share > 0.9)) fails.push(tag + ': zone 10 on ran at ' +
+      set.drawsLate.fps + ' pictures a second against ' + set.draws.fps +
+      ' for the whole match');
   }
   if(fails.length){
     console.log('\n' + fails.map(f => '  ' + f).join('\n'));

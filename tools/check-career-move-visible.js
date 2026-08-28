@@ -1,10 +1,11 @@
 // Whether a career can find the way out of its own region.
 //
-// The move lives at the bottom of the shop tab, under the desk, and it is gated:
-// ccMoveMatters is false for a career played as a real card, because the ping
-// edge it sells only exists on a player who was built. So half the careers open
-// the shop, scroll to the end and find nothing — and nothing on the screen says
-// why, which reads as a missing feature rather than a rule.
+// The move lives at the bottom of the shop tab, under the desk. It used to be
+// gated: ccMoveMatters was false for a career played as a real card, so a taken
+// card could cross to Asia and could not move from France to Germany. His rule,
+// 21 August: give it the possibility. Every career with a country can move, and
+// a taken card is paid for the move itself — the difference between the
+// connection it moved to and the one it came from, nothing for standing still.
 //
 //   node tools/check-career-move-visible.js
 const fs = require('fs'), os = require('os'), path = require('path');
@@ -44,10 +45,14 @@ const BOOT = [
 '        CAREER.career.balance = 50000;',
 '        careerTab("shop");',
 '        var html = document.getElementById("chBody").innerHTML;',
+'        // Открытая плитка: строки регионов и карта живут под кнопкой.',
+'        CH_MOVE = false;',
+'        if(ccMoveMatters()) careerMoveOpen();',
+'        var open = document.getElementById("chBody").innerHTML;',
 '        return {started:true, matters: ccMoveMatters(),',
 '                tileInShop: html.indexOf("cc-move") >= 0,',
 '                saysWhy: html.indexOf(L().ccMoveOnlyBuilt) >= 0,',
-'                regions: html.indexOf("careerMoveShowRegion") >= 0,',
+'                regions: open.indexOf("careerMoveShowRegion") >= 0,',
 '                opensMap: html.indexOf("careerMoveOpen") >= 0,',
 '                who: CAREER.player.handle || CAREER.player.nick};',
 '      }',
@@ -55,10 +60,10 @@ const BOOT = [
 '      out.notes.takenCard = look(true);',
 '      if(!out.notes.built.tileInShop) out.fails.push("a built player cannot find the move");',
 '      if(!out.notes.takenCard.tileInShop) out.fails.push("a taken card is told nothing at all");',
-'      if(!out.notes.takenCard.saysWhy) out.fails.push("a taken card is not told why it cannot move");',
+'      if(!out.notes.takenCard.matters) out.fails.push("a taken card still cannot move");',
+'      if(!out.notes.takenCard.opensMap) out.fails.push("a taken card has no way into the country map");',
 '      if(!out.notes.takenCard.regions) out.fails.push("a taken card is not offered the regions");',
-'      // A built player reaches them through the map button, which is where the',
-'      // country picker lives too; a taken card has no map, so its regions are open.',
+'      // Both reach the regions and the country map through the same button now.',
 '      if(!out.notes.built.opensMap) out.fails.push("a built player lost the way into the map");',
 '      done();',
 '    }catch(e){ out.err = String(e && e.stack || e); done(); }',
