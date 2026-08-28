@@ -64,6 +64,26 @@ const BOOT = `
     // 6. Голос за вчерашнюю дату глух.
     MP.say({t:'act', kind:'ff', by:'peer', n:11, payload:{by:'peer', day:day0, until:'2026-02-09'}});
     check('вчерашний голос не считается', ccMpFfPending()===null);
+    // 6б. Перемотка встала у напарника — встаёт и у нас, гейт отпускает с ошибкой.
+    CC_FF={until:'2026-03-01', played:[], trained:0, from:{day:careerToday()}};
+    let gateErr=null; const gp=ccMpGate().catch(e=>{ gateErr=String(e.message||e); });
+    await new Promise(r=>setTimeout(r, 20));
+    check('гейт ждёт', MP.gate===true && typeof MP.gateCancel==='function');
+    MP.say({t:'act', kind:'fferr', by:'peer', n:12, payload:{by:'peer', day:careerToday(), text:'boom'}});
+    await gp;
+    check('гейт отпущен с текстом напарника', gateErr && gateErr.indexOf('boom')>=0, String(gateErr));
+    check('и перемотка помечена к остановке', CC_FF.stop && CC_FF.stop.text.indexOf('boom')>=0);
+    CC_FF=null; MP.gate=false;
+    // 6в. Ожидание в вечере отпускает, если напарник из вечера вышел.
+    CC_MP_LEAVE_MS=50; ccMpSeedOn('seed-l');
+    MP.peerHb={rand:false, day:careerToday()}; MP.peerSeenSet && MP.peerSeenSet(Date.now());
+    let fired=false; ccMpDeadline(function(){ fired=true; });
+    await new Promise(r=>setTimeout(r, 1300));
+    check('ушедший напарник отпускает ожидание', fired===true);
+    const keep=function(){ fired='close'; }; keep.onlyLost=true; fired=false; ccMpDeadline(keep);
+    await new Promise(r=>setTimeout(r, 1300));
+    check('закрытие ушедшего не отпускает', fired===false);
+    ccMpSeedOff(); MP.peerHb=null; CC_MP_LEAVE_MS=40000;
     // 7. Одиночная — как была: сразу перемотка.
     delete CAREER.career.mp; ran=null;
     careerFfToDay('2026-02-07');
