@@ -31,7 +31,8 @@ const CONTEST = process.env.CC_CONTEST === '1';   // жать ПОСЛЕДНИЙ
 const SOLO = process.env.CC_SOLO || '';
 const HIDE_A = Number(process.env.CC_HIDE_A || 0), HIDE_B = Number(process.env.CC_HIDE_B || 0);   // через сколько мс вкладка «уходит в фон» (0 — не уходит)
 const RELOAD = process.env.CC_RELOAD === '1';
-const NIGHTS = Number(process.env.CC_NIGHTS || 1);   // сколько вечеров подряд сыграть (кубок дивизиона: 2 сессии)    // Reload: предыдущий этап серии уже пройден, чтобы день открылся
+const NIGHTS = Number(process.env.CC_NIGHTS || 1);
+const CAREER_PATCH = process.env.CC_CAREER ? JSON.parse(process.env.CC_CAREER) : null;   // JSON, вливается в career обоих сейвов (билеты, этапы)   // сколько вечеров подряд сыграть (кубок дивизиона: 2 сессии)    // Reload: предыдущий этап серии уже пройден, чтобы день открылся
 const SLASH = String.fromCharCode(92);
 
 const BASE = '<base href="file:///' + ROOT.split(SLASH).join('/') + '/">';
@@ -67,6 +68,7 @@ const boot = (who) => `
               soloBy:${JSON.stringify(SOLO ? {livea:{got:SOLO, pass:SOLO}, liveb:{got:SOLO, pass:SOLO}} : undefined)||'undefined'}},
       partners:[]}));
     const s=JSON.parse(localStorage.getItem('fncsdraft_career'));
+    Object.assign(s.career, ${JSON.stringify(CAREER_PATCH)}||{});
     s.player.attrs=ccRookieAttrs(${who.ovr}, ${JSON.stringify(who.role)});
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
     careerEntry();
@@ -86,18 +88,33 @@ const boot = (who) => `
     if(!MP.peer) throw new Error('напарник не пришёл');
     careerRenderHub('centre');
     // Жмём «играть», пока вечер не начался (сервер ждёт двоих).
+    // Возвращает 'play' (вечер начался) или 'next' (день без вечера сдвинут голосом «следующий день»).
     const pressPlay=async function(){
-      let pressed=0;
-      for(let i=0;i<900 && !CC_MP_RAND;i++){
+      let pressed=0, voted=0; const day0=CAREER.career.day;
+      for(let i=0;i<900;i++){
+        if(CC_MP_RAND) return 'play';
+        if(voted && CAREER.career.day!==day0) return 'next';
         const play=document.querySelector('#screen-career-hub .ch-play');
+        const oc=(play && play.getAttribute('onclick'))||'';
         // Свой голос — один раз; «1/2» от напарника не повод молчать.
-        if(play && !play.disabled && (play.getAttribute('onclick')||'').indexOf('careerPlay')>=0 && pressed===0){ play.click(); pressed++; await wait(1500); continue; }
+        if(play && !play.disabled && oc.indexOf('careerPlay')>=0 && pressed===0){ play.click(); pressed++; await wait(1500); continue; }
+        if(play && !play.disabled && oc.indexOf('careerNextDay')>=0 && pressed===0 && voted===0){ play.click(); voted++; await wait(1500); continue; }
+        // Пустой день: дневное событие — «пропустить», занятие — первое доступное; тогда появится «следующий день».
+        if(!play || play.disabled){
+          const ev=[...document.querySelectorAll('#screen-career-hub button')].find(b=>(b.getAttribute('onclick')||'').indexOf('careerDayEvent(')>=0 && (b.getAttribute('onclick')||'').indexOf('false')>=0);
+          if(ev){ ev.click(); await wait(600); continue; }
+          const act=[...document.querySelectorAll('#screen-career-hub button')].find(b=>!b.disabled && (b.getAttribute('onclick')||'').indexOf('careerPickDay(')>=0);
+          if(act){ act.click(); await wait(600); continue; }
+        }
         await wait(200);
       }
-      out.notes.pressed=pressed; out.notes.started=!!CC_MP_RAND; out.notes.why=(typeof ccMpBlockWhy==='function')?ccMpBlockWhy():null;
-      if(!CC_MP_RAND) throw new Error('вечер не начался: '+out.notes.why);
+      out.notes.pressed=pressed; out.notes.voted=voted; out.notes.why=(typeof ccMpBlockWhy==='function')?ccMpBlockWhy():null;
+      const shown=[...document.querySelectorAll('.screen')].filter(e=>e.offsetParent!==null).map(e=>e.id).join(',');
+      const btns=[...document.querySelectorAll('#screen-career-hub button')].filter(b=>b.offsetParent!==null).map(b=>b.textContent.trim().slice(0,30)).join(' | ');
+      throw new Error('вечер не начался: '+out.notes.why+' · день '+CAREER.career.day+' · экран '+shown+' · кнопки '+btns);
     };
-    await pressPlay();
+    const how0=await pressPlay();
+    if(how0!=='play') throw new Error('первый день без вечера: '+how0);
     out.notes.build=CC_BUILD;
     out.notes.team={seed:CAREER.career.seed, day:CAREER.career.day, div:CAREER.career.division, region:CAREER.career.region, spots:JSON.stringify(CAREER.career.spots||null), devKeys:Object.keys(CAREER.dev||{}).length, chemSince:CAREER.career.chemSince};
     out.notes.engine={zoneSim:typeof ZoneSim, zoneReplay:typeof ZoneReplay, squadSize:squadSize, zones:ALL_LANDING_ZONES.length, set:ACTIVE_LANDING_SET, sim:careerSimOn(), diff:JSON.stringify(CAREER.career.diff||null)};
@@ -144,9 +161,9 @@ const boot = (who) => `
     out.notes.days=[CAREER.career.day];
     for(let k=1;k<${NIGHTS};k++){
       careerBackToHub(); await wait(800);
-      await pressPlay();
-      await waitCard();
-      out.notes.days.push(CAREER.career.day);
+      const how=await pressPlay();
+      if(how==='play') await waitCard();
+      out.notes.days.push(CAREER.career.day+':'+how);
     }
     out.notes.head=[...document.querySelectorAll('#majorStages .stage-card h4')].map(h=>h.textContent.replace(/\\s+/g,' ').trim()).join(' | ');
     out.notes.split=[...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent);
@@ -223,6 +240,7 @@ async function runOne(tag, who, port){
     console.log(n+': '+(r.fail ? 'FAIL '+r.fail : (r.notes.head||'')) + ' · строк '+((r.notes.table||[]).length)+' · хеш '+hash(r.notes.table)+
       ' · своё '+JSON.stringify(r.notes.mine)+' · броски '+r.notes.rolls+' · pow '+r.notes.youPow+' · скип '+!!r.notes.skipPressed+' · фон '+!!r.notes.hidden+' · own/other '+r.notes.own+'/'+r.notes.other+' · '+JSON.stringify(r.notes.engine)+' · team '+JSON.stringify(r.notes.team));
     if(r.notes.split && r.notes.split.length) console.log('   красная строка: '+r.notes.split.join(' || '));
+    if(r.notes.days && r.notes.days.length>1) console.log('   дни: '+r.notes.days.join(' → '));
     if(r.notes.marks) console.log('   метки: '+r.notes.marks.slice(0, r.notes.split && r.notes.split.length ? 60 : 14).join(' | '));
     if(r.fail && r.notes.trace) console.log('   след:' + String.fromCharCode(10) + '     ' + r.notes.trace.slice(-12).join(String.fromCharCode(10) + '     '));
     if(r.errs && r.errs.length) console.log('   ошибки страницы: '+r.errs.join(' | '));
