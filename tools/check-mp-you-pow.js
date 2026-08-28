@@ -71,6 +71,8 @@ const BOOT = `
     out.notes.name = {A:youA.name, B:youB.name};
     check('сила своей команды одна на двоих', youA.pow === youB.pow,
           youA.pow + ' против ' + youB.pow);
+    check('состав в одном порядке у обоих', youA.squad.map(c=>c.handle).join('+')===youB.squad.map(c=>c.handle).join('+'), youA.squad.map(c=>c.handle).join('+')+' / '+youB.squad.map(c=>c.handle).join('+'));
+    check('атрибуты команды одни', JSON.stringify(youA.attrs||null)===JSON.stringify(youB.attrs||null));
     check('ближний бой один', (youA.closeEdge||0) === (youB.closeEdge||0),
           (youA.closeEdge||0) + ' против ' + (youB.closeEdge||0));
 

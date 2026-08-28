@@ -3435,13 +3435,13 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=e19e5da2"></script>
+<script src="zone-sim.js?v=6846baa2"></script>
 <script src="zone-replay.js?v=bd107a55"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
      файл и разойдётся с напарником. -->
-<script src="mp.js?v=eb93261c"></script>
+<script src="mp.js?v=f238657c"></script>
 </head>
 <body>
 <div class="wrap">
@@ -42687,8 +42687,10 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
        начинается с «я дошёл» и несёт номер, хеш таблицы и счётчик бросков:
        разойдётся — красная строка назовёт игру и покажет, кто потратил
        больше. Цена — один круг по сети на игру. */
-    if(ccMpOn() && typeof ccMpSync==='function')
-      await ccMpSync('game', (g+1)+'|'+ccTableHash(teams)+'|'+CC_MP_ROLLS, ccMpQn('game'));
+    if(ccMpOn() && typeof ccMpSync==='function'){
+      CC_MP_GAME++;
+      await ccMpSync('game', (g+1)+'|'+ccTableHash(teams)+'|'+CC_MP_ROLLS+'|'+ccFieldSig(teams), ccMpQn('game'));
+    }
 
     /* Остров ЭТОЙ игры, если вечер играется на двух.
 
@@ -51378,7 +51380,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e841cdb2';
+const CC_BUILD='c4dc4796';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -51539,6 +51541,9 @@ let CC_MP_RAND=null;
    потратил больше. Замер ночи 28 августа показал, что без числа причина
    ищется по одному отчёту за раз. */
 let CC_MP_ROLLS=0;
+// Номер игры В ВЕЧЕРЕ (сквозной через этапы): по нему барьеры понимают, что
+// напарник уже дальше. Ставится в simulateGamesLive, сбрасывается на старте.
+let CC_MP_GAME=0;
 function ccMpSeedOn(seed){
   ccMpSeedOff();
   // Новый вечер — пропуск снова спрашивается у обоих, вопросы считаются заново.
@@ -51548,6 +51553,7 @@ function ccMpSeedOn(seed){
   if(!seed) return;
   CC_MP_RAND=Math.random;
   CC_MP_ROLLS=0;
+  CC_MP_GAME=0;
   /* Жетон этапа — с нуля на каждый командный вечер.
 
      CC_DROP_STAGE_N — счётчик ЭТАПОВ ЗА ЖИЗНЬ ВКЛАДКИ: он входит в жетон
@@ -51918,6 +51924,12 @@ function ccMpEnter(mp){
   if(!CAREER || !CAREER.career) return Promise.resolve(false);
   var was=CAREER.career.mp;
   CAREER.career.mp=mp;
+  /* Обработчики решений — ДО подключения, как в ccMpBoot. Раньше их вешал
+     только ccMpBoot при загрузке сохранённой командной карьеры: кто завёл
+     лобби и сразу играл, не перезагружая страницу, не считал ни голоса
+     «пропустить», ни предложения третьего. Живой сторож 28 августа
+     (check-mp-live-two): два голоса в очереди — и «скип 0/2». */
+  if(typeof ccMpThirdWire==='function') ccMpThirdWire();
   /* Регион команды ставит тот, кто её создал. Вошедшему вторым он приедет от
      сервера вместе с днём и перезапишет этот — так и надо: команда играет там,
      где её завели. */
@@ -52006,6 +52018,20 @@ function ccMpStartNew(){
    сравнивать надо результат, а не подписи. Порядок строк уже задан сортировкой
    таблицы, поэтому дополнительной сортировки здесь нет — если порядок
    разъехался, это и есть расхождение, и хеш обязан его показать. */
+/* Подпись ПОЛЯ — состав и сила каждой команды, а не только очки.
+
+   На старте этапа таблица — одни нули, и её хеш совпадает у двоих при
+   любом составе комнаты: расхождение поля вылезало только через игру, как
+   «разошлись на игре 2». Его отчёты 28 августа: Перфоманс и Solo Series
+   расходятся, Victory и кубок Д1 — нет; живой сторож на свежих вкладках
+   сходится везде, значит дело в состоянии вкладок — и первый вопрос «то же
+   ли поле» должен отвечаться на первой же игре. Сюда же остров: раннеры
+   берут его из ACTIVE_LANDING_SET, а это состояние вкладки. */
+function ccFieldSig(teams){
+  var s=(teams||[]).map(function(t){ return String(t.name||'')+':'+Math.round(t.pow||0); }).join('|');
+  return String(ccHashStr(s))+'.'+String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : '')+'.'+
+         String(typeof ALL_LANDING_ZONES!=='undefined' ? ALL_LANDING_ZONES.length : 0);
+}
 function ccTableHash(ranked){
   var s=(ranked||[]).map(function(t,i){
     return i+':'+(t.stagePts||0)+':'+(t.wins||0)+':'+(t.stageElims||0);
@@ -52046,6 +52072,7 @@ function ccMpClose(ranked){
       // Вечер закрыт — генератор вкладки возвращается себе.
       ccMpSeedOff();
       if(m && m.team) ccApplyTeamState(m.team);
+      CC_MP_DAY_DUE=true;            // раннер сразу за этим двигает день
       res();
     };
     off=MP.on('close', finish);
@@ -52054,6 +52081,7 @@ function ccMpClose(ranked){
       ccMpSlowSeen();
       finish(null);
     };
+    giveUp.onlyLost=true;          // см. ccMpPeerDone
     t=ccMpDeadline(giveUp);
     CC_MP_WAITERS.push(giveUp);
     MP.digest(ccTableHash(ranked), ccTeamState());
@@ -52192,6 +52220,22 @@ function ccMpHeartbeat(on){
    Ожидания, которые УЖЕ идут, надо разбудить, иначе они так и останутся
    висеть: отсюда список будильников. */
 let CC_MP_PEER_DONE=false, CC_MP_WAITERS=[];
+/* День после командного вечера двигает КЛИЕНТ — но только сразу после
+   закрытия и только один раз.
+
+   Его отчёт, 28 августа: «дуо виктори кап 1 я могу только играть, дальше не
+   идёт карьера». Так и было: раннер после ccMpClose зовёт
+   careerAdvanceTo(завтра), а тот в команде принимает день только от сервера
+   (CC_MP_ADVANCE) — сервер же дней не знает и возвращает в close то самое
+   состояние, что клиент прислал в digest, с тем же днём. Вечер закрывался,
+   день стоял, кнопка снова предлагала тот же кубок.
+
+   Закрытие — это одно и то же состояние у обоих (сервер отдал первый хеш),
+   и шаг «завтра» от него у обоих один и тот же: всё, что он двигает в
+   командной половине, сеется общим сидом. Поэтому после close открывается
+   одно окно на один вызов careerAdvanceTo; второй вызов без нового закрытия
+   по-прежнему глух. */
+let CC_MP_DAY_DUE=false;
 function ccMpWaitReset(){ CC_MP_PEER_DONE=false; CC_MP_WAITERS.length=0; }
 /* Связь оборвалась — ждать напарника тоже больше нечего.
 
@@ -52207,8 +52251,15 @@ function ccMpLinkLost(){
 function ccMpPeerDone(){
   if(CC_MP_PEER_DONE) return;
   CC_MP_PEER_DONE=true;
-  const list=CC_MP_WAITERS.slice();
+  /* Ожидание ЗАКРЫТИЯ вечера «он досчитал» не будит: его хеш — это как раз то,
+     чего закрытие ждёт, и сервер закроет обоих, как только придёт второй.
+     Живой сторож 28 августа: таблицы сошлись до байта, а на экране «напарник
+     не дошёл до вопроса» — это закрытие сдалось от чужого хеша. Такие
+     ожидания помечены onlyLost и ждут либо сервера, либо обрыва. */
+  const keep=CC_MP_WAITERS.filter(function(fn){ return fn && fn.onlyLost; });
+  const list=CC_MP_WAITERS.filter(function(fn){ return !(fn && fn.onlyLost); });
   CC_MP_WAITERS.length=0;
+  keep.forEach(function(fn){ CC_MP_WAITERS.push(fn); });
   list.forEach(function(fn){ try{ fn(); }catch(e){} });
 }
 let CC_MP_QN={};
@@ -52253,9 +52304,13 @@ function ccMpSplitSeen(n, detail){
 function ccMpSumSeen(mine, theirs){
   if(!mine || !theirs || mine===theirs) return;
   var a=String(mine).split('|'), b=String(theirs).split('|');
-  // game|hash|rolls — короткий хеш и броски с обеих сторон.
+  // game|hash|rolls|field — короткий хеш и броски с обеих сторон, и ЧТО именно разошлось.
   var short=function(p){ return String(p[1]||'').slice(0,6)+'/'+String(p[2]||'?'); };
-  ccMpSplitSeen(a[0], 'me '+short(a)+' · mate '+short(b)+' · '+String(typeof CC_BUILD!=='undefined' ? CC_BUILD : ''));
+  var what=[];
+  if(a[3]!==b[3]) what.push('field '+String(a[3]||'?')+' vs '+String(b[3]||'?'));
+  if(a[1]!==b[1]) what.push('table');
+  if(a[2]!==b[2]) what.push('rolls');
+  ccMpSplitSeen(a[0], (what.length ? what.join(',')+' · ' : '')+'me '+short(a)+' · mate '+short(b)+' · '+String(typeof CC_BUILD!=='undefined' ? CC_BUILD : ''));
 }
 function ccMpSync(kind, sum, qn){
   if(!ccMpOn() || typeof MP==='undefined') return Promise.resolve();
@@ -52272,7 +52327,26 @@ function ccMpSync(kind, sum, qn){
 
      Сказать «я дошёл» стоит одного сообщения и не стоит ничего больше.
      Пропускать можно ОЖИДАНИЕ, но не объявление. */
-  MP.act(at, {by:me, sum:sum, q:qn});
+  /* Номер игры едет с приходом: по нему видно, что напарник УЖЕ ДАЛЬШЕ.
+
+     Дедлок, пойманный живым сторожем 28 августа (tools/check-mp-live-two.js):
+     во второй игре у одного клиента был вопрос о луте, у другого — нет (его
+     состав в его версии игры погиб раньше третьей зоны). Число вопросов
+     разошлось: один ждёт прихода к вопросу, которого у второго не будет,
+     второй ждёт прихода к третьей игре, до которой первый не дойдёт. Пока
+     потолок был по секундомеру, это распутывалось через три минуты; с
+     пульсом — стояло насмерть.
+
+     Поэтому приход к ЛЮБОМУ барьеру более поздней игры отпускает ожидание:
+     ждать уже некого, это расхождение, и оно так и называется. */
+  var myG=(CC_MP_GAME||null);
+  MP.act(at, {by:me, sum:sum, q:qn, g:myG});
+  // Его «я дальше» могло приехать РАНЬШЕ, чем мы сюда дошли, — оно в очереди.
+  var aheadQ=MP.ahead ? MP.ahead(myG) : null;
+  if(aheadQ){
+    ccMpSplitSeen(myG, 'peer ahead · '+aheadQ.kind+'#'+(aheadQ.payload||{}).q+' g'+(aheadQ.payload||{}).g+' · rolls '+CC_MP_ROLLS+' · '+CC_BUILD);
+    return Promise.resolve();
+  }
   /* Он уже ответил на ЭТОТ вопрос — значит и дошёл. Ждать нечего, но его
      приход мог остаться в очереди, и сверку он несёт с собой. */
   if(MP.peek && MP.peek(kind, qn)){
@@ -52292,14 +52366,23 @@ function ccMpSync(kind, sum, qn){
   var close=ccMpWaitBox(L().ccMpWaitAt, true);
   return new Promise(function(res){
     var t=null, off=null;
+    var settled=false;
     var done=function(){
+      if(settled) return; settled=true;
+      var i=CC_MP_WAITERS.indexOf(done); if(i>=0) CC_MP_WAITERS.splice(i, 1);
       if(t) clearInterval(t);
       if(off) off();
       close();
       res();
     };
     off=MP.on('act', function(m){
-      if(m.kind!==at || !m.payload || m.payload.by===me) return;
+      if(!m.payload || m.payload.by===me) return;
+      // Напарник дошёл до барьера более поздней игры — нас он уже не ждёт.
+      if(/@$/.test(String(m.kind||'')) && m.payload.g!=null && myG!=null && m.payload.g>myG){
+        ccMpSplitSeen(myG, 'peer ahead · '+m.kind+'#'+m.payload.q+' g'+m.payload.g+' · rolls '+CC_MP_ROLLS+' · '+CC_BUILD);
+        done(); return;
+      }
+      if(m.kind!==at) return;
       // Чужой вопрос — не наш барьер.
       if(m.payload.q!=null && qn!=null && m.payload.q!==qn) return;
       // Он дошёл — и заодно сказал, что у него в таблице.
@@ -52461,18 +52544,46 @@ function ccMpChoose(kind, mineFn, label, sum){
     var close=ccMpWaitBox(L().ccMpWaitPick, true);
     return new Promise(function(res, rej){
       var t=null;
+      /* Ожидание решается ОДИН РАЗ. Его giveUp лежит и в CC_MP_WAITERS, а тот
+         список чистится только «он досчитал»/«связь упала» — то есть все
+         giveUp'ы вечера доживали до конца и в конце срабатывали разом:
+         красная строка «timeout · q late#1» на последних бросках вечера при
+         сошедшихся таблицах (живой сторож 28 августа). */
+      var settled=false;
+      var settle=function(){ if(settled) return false; settled=true;
+        var i=CC_MP_WAITERS.indexOf(giveUp); if(i>=0) CC_MP_WAITERS.splice(i, 1); return true; };
+      var myG=(CC_MP_GAME||null);
+      // То же — по очереди, на входе: см. ccMpSync.
+      var aheadQ=MP.ahead ? MP.ahead(myG) : null;
+      if(aheadQ){
+        ccMpSplitSeen(myG, 'peer ahead · '+aheadQ.kind+'#'+(aheadQ.payload||{}).q+' g'+(aheadQ.payload||{}).g+' · q '+kind+'#'+qn+' · '+CC_BUILD);
+        Promise.resolve(ask()).then(function(v){ res({v:v, mine:true}); }, rej);
+        return;
+      }
       var off=MP.on('act', function(m){
-        if(m.kind!==kind || !m.payload || m.payload.by===me) return;
+        if(!m.payload || m.payload.by===me) return;
+        // Он уже в следующей игре — ответа на этот вопрос не будет. См. ccMpSync.
+        if(/@$/.test(String(m.kind||'')) && m.payload.g!=null && myG!=null && m.payload.g>myG){
+          if(!settle()) return;
+          if(off) off(); if(t) clearInterval(t);
+          ccMpSplitSeen(myG, 'peer ahead · '+m.kind+'#'+m.payload.q+' g'+m.payload.g+' · q '+kind+'#'+qn+' · '+CC_BUILD);
+          if(MP.take) MP.take(kind, qn);
+          Promise.resolve(ask()).then(function(v){ res({v:v, mine:true}); }, rej);
+          return;
+        }
+        if(m.kind!==kind) return;
         // Ответ на другой вопрос — не наш.
         if(m.payload.q!=null && m.payload.q!==qn) return;
+        if(!settle()) return;
         if(off) off();
         if(t) clearInterval(t);
         if(MP.take) MP.take(kind, qn);
         res({v:m.payload.v, mine:false});
       });
       var giveUp=function(){
+        if(!settle()) return;
         if(off) off();
-        if(t) clearTimeout(t);
+        if(t) clearInterval(t);
         ccMpSlowSeen();
         ccMpSplitSeen('?', 'timeout · q '+kind+'#'+qn+' · rolls '+CC_MP_ROLLS+' · '+CC_BUILD);
         // Своё решение — единственное, что осталось.
@@ -52531,13 +52642,27 @@ function ccMpApplyRemote(team){
   if(typeof careerRenderHub==='function' && document.getElementById('chBody'))
     careerRenderHub(CH_TAB||'centre');
 }
+/* Сид лобби — истина для cr.seed. Ставится из каждого 'state' сервера (см.
+   mp.js), помнится отдельно (lobbySeed, личное поле — у обоих одно и то же
+   значение от одного сервера) и после ЛЮБОГО применения командного состояния
+   возвращается на место: пришедший seed мог быть чьим-то ленивым ником. */
+function ccMpLobbySeed(seed){
+  const cr=CAREER && CAREER.career;
+  if(!cr || !seed) return;
+  if(cr.lobbySeed===seed && cr.seed===seed) return;
+  cr.lobbySeed=seed;
+  cr.seed=seed;
+  if(typeof ccWorldReset==='function') ccWorldReset();
+}
 function ccApplyTeamState(t){
   if(!t || !CAREER || !CAREER.career) return;
   // Единственное окно, в котором командной карьере разрешено двигать день:
   // см. careerAdvanceTo.
   CC_MP_ADVANCE=true;
   try{ CC_TEAM_KEYS.forEach(function(k){ if(t[k]!==undefined) CAREER.career[k]=t[k]; });
-       CC_TEAM_TOP.forEach(function(k){ if(t[k]!==undefined) CAREER[k]=t[k]; }); }
+       CC_TEAM_TOP.forEach(function(k){ if(t[k]!==undefined) CAREER[k]=t[k]; });
+       // Сид лобби старше присланного. См. ccMpLobbySeed.
+       if(CAREER.career.lobbySeed) CAREER.career.seed=CAREER.career.lobbySeed; }
   finally{ CC_MP_ADVANCE=false; }
   ccWorldReset();
 }
@@ -55465,7 +55590,10 @@ function careerAdvanceTo(iso){
      расхождение уже никакой хеш не поймает, потому что вечера у них будут
      разные. Дверь открывает ccApplyTeamState на время своей работы: день,
      пришедший от сервера, — единственный, который здесь принимается. */
-  if(ccMpOn() && !CC_MP_ADVANCE) return;
+  if(ccMpOn() && !CC_MP_ADVANCE){
+    if(!CC_MP_DAY_DUE) return;
+    CC_MP_DAY_DUE=false;
+  }
   const cr=CAREER.career;
   // The month's objective is judged before the clock leaves the day that may
   // have met it: every runner writes its history row and then moves the day,
@@ -59523,6 +59651,7 @@ function ccMpThirdWire(){
     /* «Пропустить» — голос, и свой считается здесь же, а не при клике: так
        он включается у двоих от одного сообщения. См. ccMpSkipAsk. */
     if(m.kind==='skip'){ ccMpSkipSaw(m.payload.by); return; }
+    if(m.kind==='nextday'){ ccMpNextSaw(m.payload); return; }
     if(m.kind==='third'){
       // Своё же предложение вернулось эхом — ждём ответа, окно уже открыто.
       if(m.payload.by===ccMpId()) return;
@@ -60393,7 +60522,18 @@ function ccTeamFormPow(){
   return (mine+(isFinite(theirs) ? theirs : 0))/2;
 }
 function careerYouTeam(cards){
-  const t=careerTeam(cards, true);
+  /* В команде состав — В ОДНОМ ПОРЯДКЕ у обоих.
+
+     Каждый клиент собирает свой состав как [я, напарник]: у A это «A & B»,
+     у B — «B & A». Всё, что читает состав по порядку — первая карточка,
+     склейка атрибутов, любой цикл по squad, — у двоих выходит разным, и
+     вечер расходится с первой игры при одинаковых входах. Живой сторож 28
+     августа (check-mp-live-two): та же сила, тот же сид, те же броски на
+     старте — и разные первые игры. MP.teamOf сортирует по нику — тем же
+     ключом здесь. Одиночная карьера порядок не меняет. */
+  const ordered=(ccMpOn() && typeof MP!=='undefined' && MP.teamOf && cards && cards.length===2)
+    ? MP.teamOf(cards[0], cards[1]) : cards;
+  const t=careerTeam(ordered, true);
   /* В команде форма — ОБЩАЯ, среднее из двух. См. ccTeamFormPow. */
   t.pow=Math.round(t.pow+ccTeamFormPow()+careerChem());
   /* The region this team plays in is the career's, not the card's.
@@ -67119,7 +67259,7 @@ function careerDayPanelHTML(locked){
          отдаёт кнопку сразу. */
       (!spent && !closed
               ? '<div class="cc-day-hint">'+L().ccDayMust+'</div>'
-              : '<button class="ch-play" onclick="careerNextDay()">'+L().ccDayDone+'</button>')+
+              : '<button class="ch-play" onclick="careerNextDay()">'+L().ccDayDone+(typeof ccMpNextTag==='function' ? ccMpNextTag() : '')+'</button>')+
     '</div></div>';
 }
 function careerPickDay(id){
@@ -67469,7 +67609,41 @@ function careerWorldTurns(fromISO, toISO){
   // Соседние хиты круга Reload — в любой из дней до финала, но не в твой вечер.
   ccRelWorldHeats();
 }
+/* «Следующий день» в команде — голос, как «играть» и «пропустить».
+
+   Его отчёт, 28 августа (страница «neeww»): «СЛЕДУЮЩИЙ ДЕНЬ не нажимается» —
+   в команде день двигает только сервер, и кнопка молча делала ничего. Его
+   слово тем же вечером: «пусть там тоже будет 0/2». Так и сделано: нажатие
+   — голос за сегодняшний день, на кнопке n/2, и день сдвигается у обоих от
+   одного и того же второго голоса (эхо сервера, как у пропуска). Второй
+   клиент к этому моменту может ещё не дойти до кнопки — его голос догонит.
+
+   Голос за ДЕНЬ, а не «готов»: у 'ready' сервер заводит вечер с сидом, и
+   пара «один хочет спать, второй хочет играть» столкнулась бы двумя разными
+   действиями от одного 'start'. */
+let CC_MP_NEXT={day:null, mine:false, theirs:false};
+function ccMpNextTag(){
+  if(!ccMpOn() || typeof MP==='undefined') return '';
+  const v=(CC_MP_NEXT.day===careerToday()) ? ((CC_MP_NEXT.mine?1:0)+(CC_MP_NEXT.theirs?1:0)) : 0;
+  return ' '+v+'/'+CC_MP_HUMANS;
+}
+function ccMpNextSaw(p){
+  if(!p || !p.day || p.day!==careerToday()) return;
+  if(CC_MP_NEXT.day!==p.day) CC_MP_NEXT={day:p.day, mine:false, theirs:false};
+  if(p.by===ccMpId()) CC_MP_NEXT.mine=true; else CC_MP_NEXT.theirs=true;
+  if(CC_MP_NEXT.mine && CC_MP_NEXT.theirs){
+    CC_MP_NEXT={day:null, mine:false, theirs:false};
+    CC_MP_DAY_DUE=true;                    // окно на один шаг, как после close
+    careerAdvanceTo(ccAddDays(careerToday(), 1));
+  }
+  careerRenderHub('centre');
+}
 function careerNextDay(){
+  if(ccMpOn() && typeof MP!=='undefined' && MP.act){
+    if(CC_MP_NEXT.day===careerToday() && CC_MP_NEXT.mine) return;   // уже голосовал
+    MP.act('nextday', {by:ccMpId(), day:careerToday()});
+    return;
+  }
   careerAdvanceTo(ccAddDays(careerToday(), 1));
   careerRenderHub('centre');
 }
@@ -69671,6 +69845,13 @@ function careerSpotGate(next){
 }
 function careerPlayRun(next){
   if(!next) return;
+  /* В команде остров вечера — от СОБЫТИЯ, не от вкладки. Раннеры Перфоманса,
+     Мейджора, финала недели и другие берут useLandingSet(ACTIVE_LANDING_SET),
+     а это то, что вкладка показывала последним: у одного драфт на другой
+     карте — и у двоих разные острова с первой игры. Одиночная как была. */
+  if(ccMpOn() && typeof careerNightSet==='function'){
+    try{ const set=careerNightSet(next); if(set && ZONE_SETS[set]) useLandingSet(set); }catch(e){}
+  }
   if(next.type==='cup')     return runCareerCup();
   if(next.type==='summit')  return runCareerSummit();
   if(next.type==='globals') return runCareerGlobals();

@@ -65,6 +65,13 @@ const BOOT = `
     closeFn({t:'close', team:{day:'2026-02-09'}});
     await p;
     check('день пришёл от сервера', CAREER.career.day === '2026-02-09', CAREER.career.day);
+    /* И после закрытия раннер двигает день — один раз. Его отчёт, 28 августа:
+       «дуо виктори кап 1 я могу только играть, дальше не идёт карьера». */
+    check('закрытие открыло окно для шага дня', CC_MP_DAY_DUE===true);
+    careerAdvanceTo(ccAddDays(careerToday(), 1));
+    check('день после закрытия сдвинулся на один', CAREER.career.day === '2026-02-10', CAREER.career.day);
+    careerAdvanceTo(ccAddDays(careerToday(), 1));
+    check('второй шаг без нового закрытия глух', CAREER.career.day === '2026-02-10', CAREER.career.day);
 
     /* И вторая половина того же правила: пока сервер не закрыл вечер, день
        не двигается ничем другим. Иначе один клиент ушёл бы в завтра, а

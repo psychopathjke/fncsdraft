@@ -188,6 +188,16 @@ var MP={
        index.html — здесь про дивизионы знать нечего. См. ccMpStateOk. */
     if(m.t==='state'){
       PEER=m.peer||PEER;
+      /* Сид команды — ОТ СЕРВЕРА, и он старше всего, что лежит в сейве.
+
+         Живой сторож 28 августа (check-mp-live-two): у двоих в одном лобби
+         разные cr.seed — «LiveA» у одного, «LiveB» у другого. Сид рождался
+         лениво из НИКА (ccCareerSeed), каждый успевал завести свой до первого
+         обмена состоянием, а потом два состояния перетирали друг друга в
+         порядке прихода. От сида считается всё поле вечера — двое собирали
+         разные комнаты с первой игры при одном сиде генератора. Лобби своим
+         сидом делится в каждом 'state'; здесь он и ставится. */
+      if(m.seed && typeof ccMpLobbySeed==='function') ccMpLobbySeed(m.seed);
       if(typeof ccMpStateOk!=='function' || ccMpStateOk(m.team)) ccApplyTeamState(m.team);
       // Состояние принято — но напарник может оказаться тобой же.
       if(typeof ccMpPeerCheck==='function' && ccMpOn && ccMpOn()) ccMpPeerCheck();
@@ -304,6 +314,16 @@ var MP={
   },
   // Заглянуть, не забирая: ответ ещё нужен самому вопросу.
   peek:function(kind, q){ return MP.find(kind, q, false); },
+  /* Напарник уже в более поздней игре? Смотрит в очередь приходов: барьер
+     ('kind@') с номером игры больше названного. См. ccMpSync — «peer ahead». */
+  ahead:function(g){
+    if(g==null) return null;
+    for(var i=0;i<ACTS.length;i++){
+      var a=ACTS[i], p=a.payload||{};
+      if(/@$/.test(String(a.kind||'')) && p.g!=null && p.g>g) return a;
+    }
+    return null;
+  },
   // Забрать чужое решение этого вопроса, если оно уже приехало.
   take:function(kind, q){ return MP.find(kind, q, true); },
   send:function(m){ if(SOCK && SOCK.readyState===1) SOCK.send(JSON.stringify(m)); },
