@@ -42728,7 +42728,8 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
        больше. Цена — один круг по сети на игру. */
     if(ccMpOn() && typeof ccMpSync==='function'){
       CC_MP_GAME++;
-      await ccMpSync('game', (g+1)+'|'+ccTableHash(teams)+'|'+CC_MP_ROLLS+'|'+ccFieldSig(teams), ccMpQn('game'));
+      await ccMpSync('game', (g+1)+'|'+ccTableHash(teams)+'|'+CC_MP_ROLLS+'|'+ccFieldSig(teams)+'|'+CC_MP_LEDGER.join(','), ccMpQn('game'));
+      ccMpLedgerReset();
     }
 
     /* Остров ЭТОЙ игры, если вечер играется на двух.
@@ -42815,12 +42816,14 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
          же шаг с обеих сторон — расклад у двоих один. */
       if(opts.together && opts.together.length>1) ccLobbiesTogether(gameLobbies, opts.together);
       myLobby=gameLobbies.find(l=>l.some(t=>t.isYou))||null;
+      ccMpMark('lob');
     }
     if(typeof opts.dropEachGame==='function'){
       // Спрашивают, глядя на остров, а не на последний круг прошлой игры:
       // карта возвращается к целому виду до вопроса. См. ZoneReplay.whole.
       if(replay && ZoneReplay.whole) ZoneReplay.whole(replay);
       const fresh=await opts.dropEachGame(g+1, myLobby);
+      ccMpMark('drop');
       if(fresh) zoneGroups=fresh;
       /* Чужие лобби — своими комнатами. Раньше им хватало общей раздачи, но
          своей у них теперь нет: вопрос разложил только твоё. Каждое лобби
@@ -42908,6 +42911,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
           const off=simulateGame(lobby);
           if(dropOnMap) creditLandingFights(lobby);
           score(off);
+          ccMpMark('oth');
           if(performance.now()-lastYield > 24){
             await new Promise(res=>setTimeout(res, 0));
             if(yieldGen!==runGeneration) throw RUN_ABANDONED;
@@ -42954,6 +42958,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
                // Сама карта: вопрос ложится на неё, а не под неё.
                map:(replay && replay.wrap) || null})
           : simulateGame(lobby, lobbyInfo);
+        ccMpMark('own');
         // Своё лобби считает стычки там же, где и чужие, — до реплея: кадры
         // рисуют то, что уже случилось, а не решают его.
         if(dropOnMap) creditLandingFights(lobby);
@@ -42989,17 +42994,20 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
         LAST_ZONE_TIMELINE=[];
         liveScore=null;
         score(order);
+        ccMpMark('score');
         const mineIdx=order.findIndex(t=>t.isYou);
         // Named only when you watched the game out. After your own death the
         // card stands between you and the next of eleven games.
         if(!cutShort)
           await showVictoryRoyale(replay.wrap, liveLabel, g+1, numGames, order[0],
                                   mineIdx < 0 ? 0 : mineIdx + 1, order.length);
+        ccMpMark('vr');
       }
       if(maxGap) compressLeaderGap(teams, ptsKey, elimsKey, maxGap, logKey);
       await sleep(mine ? 380 : 320);
       animatedRerender();
       await sleep(mine ? 260 : 220);
+      ccMpMark('end');
       continue;
     }
 
@@ -47409,6 +47417,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
     t._pc=Math.max(1, t._pf+(t.closeEdge||0));
   });
   const you=teams.find(t=>t.isYou);
+  ccMpMark('pf');
   /* Люди в лобби — в порядке ников: в соло на двоих вопрос задаётся каждому,
      и у обоих клиентов в одном и том же порядке. См. runCareerSoloSeries. */
   const humans=teams.filter(t=>t.isYou||t.isMate)
@@ -47450,6 +47459,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
     // Комната делает свой ход всегда — она играет и тогда, когда игрок уже
     // выбыл или смотрит перемотку.
     if(stop.room) stop.room(teams, sim ? null : you);
+    ccMpMark('r'+stop.zone);
     /* Спрашивать или нет — решает ИГРА, а не показ.
 
        Здесь стояло ещё и `!dead`, и это была последняя щель того же сорта.
@@ -47475,8 +47485,10 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
         if((game.squads.find(s=>s.team===h)||{}).alive) await stop.ask(h, ui);
       }
     }
+    ccMpMark('q'+stop.zone);
   }
   const res=game.finish();
+  ccMpMark('fin');
   // И остаток матча — тем же куском, если игрок ещё смотрит.
   if(ui && ui.show && !dead) await ui.show(res.timeline);
   LAST_ZONE_TIMELINE=res.timeline;
@@ -51431,7 +51443,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='79e297f3';
+const CC_BUILD='647d3d91';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -51599,6 +51611,17 @@ function ccMpGate(){
    Одиночная карьера этого не видит вовсе: без лобби подмены нет.
    Сторож — tools/check-mp-seed.js. */
 let CC_MP_RAND=null;
+/* Книга бросков одной игры — по фазам.
+
+   Его снимок 28 августа (Reload, хиты, игра 4): таблицы у двоих одинаковые,
+   броски 54971 против 54969 — два лишних броска на одной стороне, и красная
+   строка не говорила, где. Теперь каждая игра ведёт книгу «фаза=броски»
+   (лобби, дроп, комната лута, вопрос, своё лобби, чужие, счёт, VR, конец), и
+   книга едет с барьером следующей игры: первая строка, где числа разошлись,
+   и есть место. Вне командного вечера книга пуста и ничего не стоит. */
+let CC_MP_LEDGER=[];
+function ccMpLedgerReset(){ CC_MP_LEDGER=[]; }
+function ccMpMark(name){ if(CC_MP_RAND) CC_MP_LEDGER.push(name+'='+CC_MP_ROLLS); }
 /* Сколько бросков вечер уже потратил. Едет в сверку барьера рядом с хешем
    таблицы (см. careerLandingPick): две одинаковые таблицы при разном числе
    бросков — это уже расхождение, просто ещё не доехавшее до очков, и красная
@@ -52395,8 +52418,17 @@ function ccMpSumSeen(mine, theirs){
   var what=[];
   if(a[3]!==b[3]) what.push('field '+String(a[3]||'?')+' vs '+String(b[3]||'?'));
   if(a[1]!==b[1]) what.push('table');
-  if(a[2]!==b[2]) what.push('rolls');
-  ccMpSplitSeen(a[0], (what.length ? what.join(',')+' · ' : '')+'me '+short(a)+' · mate '+short(b)+' · '+String(typeof CC_BUILD!=='undefined' ? CC_BUILD : ''));
+  if(a[2]!==b[2]){
+    // Книга прошлой игры: первая фаза, где числа разошлись, — это место.
+    var la=String(a[4]||'').split(',').filter(Boolean), lb=String(b[4]||'').split(',').filter(Boolean);
+    var where='';
+    for(var i=0;i<Math.max(la.length, lb.length);i++){
+      if(la[i]!==lb[i]){ where=(la[i]||'-')+' vs '+(lb[i]||'-'); break; }
+    }
+    what.push('rolls'+(where ? ' @ '+where : ''));
+  }
+  var flags=' · skip '+(typeof skipAnimation!=='undefined' && skipAnimation ? 1 : 0)+' hid '+(typeof document!=='undefined' && document.hidden ? 1 : 0);
+  ccMpSplitSeen(a[0], (what.length ? what.join(',')+' · ' : '')+'me '+short(a)+' · mate '+short(b)+flags+' · '+String(typeof CC_BUILD!=='undefined' ? CC_BUILD : ''));
 }
 function ccMpSync(kind, sum, qn){
   if(!ccMpOn() || typeof MP==='undefined') return Promise.resolve();

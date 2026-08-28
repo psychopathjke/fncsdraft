@@ -28,7 +28,9 @@ const SKIP_A = Number(process.env.CC_SKIP_A != null ? process.env.CC_SKIP_A : 20
 const SKIP_B = Number(process.env.CC_SKIP_B != null ? process.env.CC_SKIP_B : 25000);
 const BUDGET_MS = Number(process.env.CC_BUDGET || 12 * 60000);
 const CONTEST = process.env.CC_CONTEST === '1';   // жать ПОСЛЕДНИЙ вариант (контест, своп лута) вместо первого
-const SOLO = process.env.CC_SOLO || '';          // 'qual'/'heats' — оба уже прошли этот этап Solo Series
+const SOLO = process.env.CC_SOLO || '';
+const HIDE_A = Number(process.env.CC_HIDE_A || 0), HIDE_B = Number(process.env.CC_HIDE_B || 0);   // через сколько мс вкладка «уходит в фон» (0 — не уходит)
+const RELOAD = process.env.CC_RELOAD === '1';    // Reload: предыдущий этап серии уже пройден, чтобы день открылся
 const SLASH = String.fromCharCode(92);
 
 const BASE = '<base href="file:///' + ROOT.split(SLASH).join('/') + '/">';
@@ -67,6 +69,7 @@ const boot = (who) => `
     s.player.attrs=ccRookieAttrs(${who.ovr}, ${JSON.stringify(who.role)});
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
     careerEntry();
+    if(${RELOAD}){ const ev=careerReloadOn(careerToday()); if(ev){ CAREER.career.reload={series:ev.series, got:CC_RELOAD_ORDER[CC_RELOAD_ORDER.indexOf(ev.stage)-1]}; careerSave(); } }
     const ok=await ccMpEnter({code:${JSON.stringify(CODE)}, role:${JSON.stringify(who.role_mp)}});
     out.notes.entered=ok; out.notes.link=MP.state;
     if(!ok){
@@ -102,6 +105,9 @@ const boot = (who) => `
     // Пропуск — в своё время.
     const skipAt=${who.skipAt};
     if(skipAt>0) setTimeout(function(){ const b=document.getElementById('majorSkipBtn'); if(b && !b.disabled){ b.click(); out.notes.skipPressed=true; } }, skipAt);
+    // Уход в фон: как Chrome — document.hidden и visibilitychange; rAF при этом headless и так не даёт.
+    const hideAt=${who.hideAt};
+    if(hideAt>0) setTimeout(function(){ Object.defineProperty(document, 'hidden', {get:()=>true, configurable:true}); Object.defineProperty(document, 'visibilityState', {get:()=>'hidden', configurable:true}); document.dispatchEvent(new Event('visibilitychange')); out.notes.hidden=true; }, hideAt);
     // След хода вечера: где стоим, чего ждём, что последнее послали.
     out.notes.trace=[]; const sent=[];
     window.__acts=[]; const say0=MP.say; MP.say=function(m){ if(m && m.t==='act' && m.kind!=='hb') window.__acts.push((m.by||'?')+':'+m.kind+(m.payload&&m.payload.q!=null?'#'+m.payload.q:'')); return say0.apply(MP, arguments); };
@@ -140,8 +146,8 @@ const boot = (who) => `
 
 const ccAddDaysNode=(iso, n)=>{ const d=new Date(iso+'T00:00:00Z'); d.setUTCDate(d.getUTCDate()+n); return d.toISOString().slice(0,10); };
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-const A = {nick:'LiveA', age:17, ageEdge:4, country:'de', close:6, ovr:90, role:'roleIGL', role_mp:'a', money:48000, reach:20000, form:3, grind:12, skipAt:SKIP_A};
-const B = {nick:'LiveB', age:24, ageEdge:0, country:'br', close:1, ovr:86, role:'roleFRG', role_mp:'b', money:0,     reach:0,     form:0, grind:0,  skipAt:SKIP_B};
+const A = {nick:'LiveA', age:17, ageEdge:4, country:'de', close:6, ovr:90, role:'roleIGL', role_mp:'a', money:48000, reach:20000, form:3, grind:12, skipAt:SKIP_A, hideAt:HIDE_A};
+const B = {nick:'LiveB', age:24, ageEdge:0, country:'br', close:1, ovr:86, role:'roleFRG', role_mp:'b', money:0,     reach:0,     form:0, grind:0,  skipAt:SKIP_B, hideAt:HIDE_B};
 
 function cdp(port){
   return new Promise((res, rej)=>{
@@ -200,9 +206,9 @@ async function runOne(tag, who, port){
   const hash=t=>crypto.createHash('sha1').update(rowsOf(t).map(norm).join('\n')).digest('hex').slice(0,12);
   for(const [n, r] of [['A', a], ['B', b]]){
     console.log(n+': '+(r.fail ? 'FAIL '+r.fail : (r.notes.head||'')) + ' · строк '+((r.notes.table||[]).length)+' · хеш '+hash(r.notes.table)+
-      ' · своё '+JSON.stringify(r.notes.mine)+' · броски '+r.notes.rolls+' · pow '+r.notes.youPow+' · скип '+!!r.notes.skipPressed+' · own/other '+r.notes.own+'/'+r.notes.other+' · '+JSON.stringify(r.notes.engine)+' · team '+JSON.stringify(r.notes.team));
+      ' · своё '+JSON.stringify(r.notes.mine)+' · броски '+r.notes.rolls+' · pow '+r.notes.youPow+' · скип '+!!r.notes.skipPressed+' · фон '+!!r.notes.hidden+' · own/other '+r.notes.own+'/'+r.notes.other+' · '+JSON.stringify(r.notes.engine)+' · team '+JSON.stringify(r.notes.team));
     if(r.notes.split && r.notes.split.length) console.log('   красная строка: '+r.notes.split.join(' || '));
-    if(r.notes.marks) console.log('   метки: '+r.notes.marks.slice(0,14).join(' | '));
+    if(r.notes.marks) console.log('   метки: '+r.notes.marks.slice(0, r.notes.split && r.notes.split.length ? 60 : 14).join(' | '));
     if(r.fail && r.notes.trace) console.log('   след:' + String.fromCharCode(10) + '     ' + r.notes.trace.slice(-12).join(String.fromCharCode(10) + '     '));
     if(r.errs && r.errs.length) console.log('   ошибки страницы: '+r.errs.join(' | '));
     if(r.fail) console.log('   заметки: '+JSON.stringify({entered:r.notes.entered, link:r.notes.link, peer:r.notes.peer, pressed:r.notes.pressed, why:r.notes.why}));
