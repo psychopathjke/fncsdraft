@@ -51584,7 +51584,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='dbb15753';
+const CC_BUILD='d0a24c29';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -53440,7 +53440,11 @@ function ccSlotsFilled(){
   for(let n=1; n<=CC_SLOTS; n++) if(ccSlotCard(n)) k++;
   return k;
 }
-function careerEntry(){
+/* direct=true — слот уже выбран, спрашивать нечего: так входит «Продолжить»
+   с плитки. Без этого выбор карьеры замыкался на себя: нажатие звало
+   careerEntry, тот видел две карьеры и снова рисовал выбор. Его отчёт,
+   29 августа: «подключился по коду, но зайти не могу, continue жму». */
+function careerEntry(direct){
   // Вход одиночной дверью — значит, вдвоём здесь ничего не заводится. См. ccMpNewCancel.
   CC_MP_NEW=null;
   /* Держишь больше одной карьеры — карточка сначала спрашивает, какую.
@@ -53448,7 +53452,7 @@ function careerEntry(){
      карьере в открытом слоте карточка молча уводила в лобби, и до пустого
      слота (то есть до новой одиночной) дороги с главного экрана не было.
      Одна карьера открывается сразу, как и открывалась. */
-  if(ccSlotsFilled()>1){ openCareerSlots(); return; }
+  if(!direct && ccSlotsFilled()>1){ openCareerSlots(); return; }
   // A save from before the clock became a date is brought forward on the way in,
   // so nothing downstream has to know two shapes.
   /* Командная карьера подключается к своему лобби на входе — и БЕЗ await:
@@ -53574,7 +53578,7 @@ function careerRenderSlots(){
 }
 function careerSlotOpen(n){
   ccSlotUse(n);
-  careerEntry();
+  careerEntry(true);   // выбор уже сделан этой самой кнопкой
 }
 function careerSlotNew(n){
   ccSlotUse(n);

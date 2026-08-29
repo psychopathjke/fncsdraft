@@ -125,6 +125,18 @@ const BOOT = `
     check('with two careers the tile opens the picker too',
           SHOWN_SCREEN === 'screen-career-slots', SHOWN_SCREEN);
 
+    /* А «Продолжить» на плитке открывает саму карьеру. Его отчёт 29 августа:
+       «подключился по коду, но зайти не могу, continue жму» — кнопка звала
+       careerEntry, тот видел две карьеры и снова рисовал выбор. */
+    careerSlotOpen(1);
+    check('continue on a tile opens the career itself',
+          SHOWN_SCREEN === 'screen-career-hub', SHOWN_SCREEN);
+    check('and it is the slot that was pressed', ccSlot() === 1, String(ccSlot()));
+    careerSlotOpen(2);
+    check('and the other tile opens the other career',
+          SHOWN_SCREEN === 'screen-career-hub' && ccSlot() === 2,
+          SHOWN_SCREEN + ' slot ' + ccSlot());
+
     // And with nothing at all it still goes straight to creating one.
     localStorage.clear();
     careerEntry();
