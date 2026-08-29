@@ -51450,7 +51450,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a543ce3d';
+const CC_BUILD='94201e8e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -73127,6 +73127,16 @@ async function runCareerReloadChampionship(){
    Antwerp that order is the route — the Summit's fifteen picked their spots in
    May, the Major 2 qualifiers in August, the Last Chance last week — because
    careerGlobalsField stamps gcRoute and byQualOrder reads it. */
+function ccSoloHomeZone(you){
+  if(!you || !you.isYou) return null;                  // чужой дом нам не известен — придёт с голосом
+  const cr=CAREER && CAREER.career; if(!cr || !cr.soloHome) return null;
+  const at=cr.soloHome[ACTIVE_LANDING_SET];
+  return (at!=null && ALL_LANDING_ZONES[at]) ? ALL_LANDING_ZONES[at] : null;
+}
+function ccSoloHomeSet(at){
+  const cr=CAREER && CAREER.career; if(!cr) return;
+  cr.soloHome=cr.soloHome||{}; cr.soloHome[ACTIVE_LANDING_SET]=at;
+}
 async function careerLandingPick(field, you, title, kinds, o){
   o=o||{};
   // The grid belongs to the island the stage is played on. Every career runner
@@ -73214,9 +73224,16 @@ async function careerLandingPick(field, you, title, kinds, o){
      «пусть вот также будет». Фотография своей точки узнаётся по названию не
      хуже, а вопрос теперь везде одного размера: и на карте, и в ленте перед
      первой игрой. */
-  const spot=careerSpotOn(ACTIVE_LANDING_SET);
-  const home=careerSpotZone(ACTIVE_LANDING_SET);
-  const aura=careerSpotAura(ACTIVE_LANDING_SET);
+  /* Solo Series в команде — не командный турнир: своя точка у КАЖДОГО. Его
+     слово, 29 августа: «для соло каждому игроку нужно свою локацию выбрать».
+     Метки команды (cr.spots) тут не годятся — они общие. У соло-игрока своя
+     точка личная (cr.soloHome, по острову): ставится первым выбором на карте
+     («законтестить») и дальше предлагается как «своя». Напарнику свой дом
+     не виден — его голос «домой» несёт номер коробки (at). */
+  const solo=!!(you && you.mpTag);
+  const spot=solo ? null : careerSpotOn(ACTIVE_LANDING_SET);
+  const home=solo ? ccSoloHomeZone(you) : careerSpotZone(ACTIVE_LANDING_SET);
+  const aura=solo ? 0 : careerSpotAura(ACTIVE_LANDING_SET);
   /* Кто летит к тебе — ДО того, как выбирать.
 
      Его правка, 24 августа: «перед турниром игрок понимал, конят ли его или
@@ -73265,13 +73282,15 @@ async function careerLandingPick(field, you, title, kinds, o){
       [ home ? {id:'home', title:L().ccDropHome, note:L().ccDropHomeNote(aura, rivals)}
              : {id:'quiet', title:L().ccDropQuiet, note:L().ccDropQuietNote},
         {id:'contest', title:L().ccDropContest, note:L().ccDropContestNote}], onMap);
-    if(p.id!=='contest') return {id:p.id};
+    if(p.id!=='contest') return {id:p.id, at:(p.id==='home' && home) ? ALL_LANDING_ZONES.indexOf(home) : -1};
     /* Та же комната, что и на кнопке. pre посчитан выше — им и показывается
        остров, иначе «к тебе летят двое» и карта были бы двумя разными
        бросками одного и того же вечера. */
     await showFinalsLandingPicker(field, you, title, seat, pre);
     // Пикер уже поставил метку на you — её место в сетке и есть решение.
-    return {id:'contest', at:ALL_LANDING_ZONES.indexOf(you.landingZone)};
+    const at=ALL_LANDING_ZONES.indexOf(you.landingZone);
+    if(solo && you.isYou && at>=0) ccSoloHomeSet(at);   // выбранная коробка становится своей точкой
+    return {id:'contest', at:at};
   }, function(v){
     if(!v) return '';
     if(v.id==='contest') return L().ccDropContest;
@@ -73283,7 +73302,9 @@ async function careerLandingPick(field, you, title, kinds, o){
   ((you.stageLog||[]).length+1)+'|'+ccTableHash(field)+'|'+CC_MP_ROLLS);
   const said=vote.v;
   ccMpMark('dv:'+String(said.id)+(said.at!=null ? '@'+said.at : ''));
-  if(said.id!=='contest') return await careerDropQuick(field, you, said.id, home, pre);
+  // Свой дом в соло приезжает номером коробки — и у напарника, и у себя.
+  const homeZ=(solo && said.id==='home' && said.at>=0) ? ALL_LANDING_ZONES[said.at] : home;
+  if(said.id!=='contest') return await careerDropQuick(field, you, said.id, homeZ, pre);
   /* Коробку нажимали ОБА, а сядет команда в одну.
 
      Пикер каждого уже поставил свою метку: pickInitialZone пишет landingZone,
