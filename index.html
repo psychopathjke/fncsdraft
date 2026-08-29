@@ -51568,7 +51568,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='21337319';
+const CC_BUILD='3c2297dd';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -53401,6 +53401,7 @@ function careerCard(raw){
 }
 
 function openCareerHub(){
+  CH_MONTH=null;   // календарь закрыт вместе с прошлым визитом; см. careerTab
   if(!careerLoad()){ openCareerCreate(); return; }
   // A career whose seat is empty finds the offers already in the inbox rather
   // than tomorrow — including a brand new one, which is the whole point.
@@ -53574,6 +53575,12 @@ function careerSlotDrop(n){
 
 let CH_TAB='centre';
 function careerTab(t){
+  /* Ушёл с календаря — он забывает, куда ты его листал. Его слово, 29 августа:
+     «когда закрываешь календарь, пусть всегда перемещает на то место, где ты
+     сейчас». Пролистанный на июль календарь так и открывался июлём, и «Сейчас»
+     приходилось жать руками каждый раз. CH_MONTH=null означает «текущий
+     месяц» — см. careerCalendarHTML. */
+  if(CH_TAB==='calendar' && t!=='calendar') CH_MONTH=null;   // календарь закрыт
   CH_TAB=t;
   // The shop opens where the career is living, every time. Whatever was being
   // looked at last visit was a look, not a decision. See CH_FLAT_PLACE.
