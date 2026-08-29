@@ -3036,6 +3036,13 @@
     line-height:1;}
   .cc-slot-ovr small{display:block;font-size:9px;font-weight:800;letter-spacing:.06em;
     text-transform:uppercase;color:#6b7883;margin-top:2px;}
+  /* Напарник: сколько ещё держится в запасе — приглушённым, а «вдвоём»
+     (живой человек в лобби) — бирюзовой меткой, как «открыта». */
+  .cc-slot-more{font-style:normal;font-weight:800;color:#6b7883;}
+  .cc-slot-none-i{font-style:normal;font-weight:800;color:#8b98a5;}
+  .cc-slot-duo{margin-left:6px;font-size:9px;font-weight:800;letter-spacing:.06em;
+    text-transform:uppercase;color:#00846d;background:rgba(0,176,144,.12);
+    border-radius:20px;padding:2px 7px;vertical-align:1px;}
   .cc-slot .ch-play{margin-top:12px;width:100%;}
   .cc-slot-del{margin-top:6px;width:100%;font-size:11px;color:#6b7883;}
   .cc-slot-del.armed{border-color:var(--danger);color:var(--danger);}
@@ -5591,7 +5598,7 @@ ccAwards:'Награды', ccAwardMonth:'Игрок месяца', ccAwardSeason
 ccSlots:'Карьеры', ccSlotsTitle:'Карьеры', ccSlotsSub:'Шесть сохранений. Играется то, что открыл последним',
 ccSlotEmpty:'Пусто', ccSlotStart:'Начать', ccSlotOpen:'Продолжить', ccSlotDelete:'Удалить',
 ccSlotDropSure:'Точно удалить?', ccSlotHere:'открыта', ccSlotSeason:'Сезон',
-ccSlotWhen:'Дата', ccSlotClub:'Клуб', ccSlotRetired:'Карьера завершена',
+ccSlotWhen:'Дата', ccSlotClub:'Клуб', ccSlotNoMate:'нет', ccSlotDuoLive:'вдвоём', ccSlotRetired:'Карьера завершена',
 ccSlotSeasonOver:'Сезон окончен',
 ccTimeline:'Что было в карьере',
 ccTimelineHint:'Только то, что произошло здесь. Настоящие результаты игрока — на экране выбора',
@@ -7173,7 +7180,7 @@ ccAwards:'Awards', ccAwardMonth:'Player of the Month', ccAwardSeason:'Player of 
 ccSlots:'Careers', ccSlotsTitle:'Careers', ccSlotsSub:'Six saves. The tile opens whichever you played last',
 ccSlotEmpty:'Empty', ccSlotStart:'Start', ccSlotOpen:'Continue', ccSlotDelete:'Delete',
 ccSlotDropSure:'Delete for good?', ccSlotHere:'open', ccSlotSeason:'Season',
-ccSlotWhen:'Date', ccSlotClub:'Club', ccSlotRetired:'Career over',
+ccSlotWhen:'Date', ccSlotClub:'Club', ccSlotNoMate:'none', ccSlotDuoLive:'with a friend', ccSlotRetired:'Career over',
 ccSlotSeasonOver:'Season over',
 ccTimeline:'What happened in this career',
 ccTimelineHint:'Only what happened here. Their real results are on the picker',
@@ -8066,7 +8073,7 @@ ccSlotDropSure:'Supprimer définitivement ?',
 ccSlotHere:'libre',
 ccSlotSeason:'Saison',
 ccSlotWhen:'Date',
-ccSlotClub:'Club',
+ccSlotClub:'Club', ccSlotNoMate:'aucun', ccSlotDuoLive:'à deux',
 ccSlotRetired:'Carrière terminée',
 ccSlotSeasonOver:'Saison terminée',
 ccTimeline:'Ce qui s’est passé dans cette carrière',
@@ -11629,7 +11636,7 @@ ccSlotDropSure:"Eliminare per sempre?",
 ccSlotHere:"aperta",
 ccSlotSeason:"Stagione",
 ccSlotWhen:"Data",
-ccSlotClub:"Club",
+ccSlotClub:"Club", ccSlotNoMate:'nessuno', ccSlotDuoLive:'in due',
 ccSlotRetired:"Carriera finita",
 ccSlotSeasonOver:"Stagione finita",
 ccTimeline:"Cosa è successo in questa carriera",
@@ -13850,7 +13857,7 @@ ccSlotDropSure:"Apagar de vez?",
 ccSlotHere:"aberta",
 ccSlotSeason:"Temporada",
 ccSlotWhen:"Data",
-ccSlotClub:"Clube",
+ccSlotClub:"Clube", ccSlotNoMate:'ninguém', ccSlotDuoLive:'a dois',
 ccSlotRetired:"Carreira encerrada",
 ccSlotSeasonOver:"Temporada encerrada",
 ccTimeline:"O que aconteceu nesta carreira",
@@ -51396,8 +51403,15 @@ function ccSlotCard(n){
     || (s.player.handle ? photoURL({handle:s.player.handle,
                                     region:s.player.cardRegion||s.player.region,
                                     _photo:null}) : null);
+  /* Напарник — чтобы карьеры различались не только ником своего игрока.
+     Его слово, 29 августа: «а тимейта можно указать, типо чтоб понимали».
+     Живой напарник из лобби лежит в тех же CAREER.partners (см. ccMpBoot),
+     поэтому читается одинаково; командную карьеру выдаёт cr.mp. */
+  const held=(s.partners||[]).filter(Boolean);
+  const mate=held[0] ? (held[0].handle||held[0].nick||null) : null;
   return {nick:s.player.nick||'', ovr:s.player.ovr||0, age:real!=null?real:(s.player.age||0),
           face:face, country:s.player.country||null,
+          mate:mate, mates:held.length, team:!!(s.career && s.career.mp),
           div:s.career.division||5, season:s.career.season||1,
           day:s.career.day||CC_YEAR_FROM, earnings:s.career.earnings||0,
           org:(s.org&&s.org.name)||null, over:!!s.career.seasonOver,
@@ -51541,7 +51555,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='93be2cd4';
+const CC_BUILD='fbe3340e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -53478,6 +53492,11 @@ function careerRenderSlots(){
       '</div>'+
       '<div class="ch-row"><em>'+L().ccDivision+'</em><b>'+c.div+'</b></div>'+
       '<div class="ch-row"><em>'+L().ccSlotSeason+'</em><b>'+c.season+'</b></div>'+
+      '<div class="ch-row"><em>'+L().ccResPartner+'</em><b>'+
+        (c.mate ? esc(c.mate)+(c.mates>1 ? ' <i class="cc-slot-more">+'+(c.mates-1)+'</i>' : '')
+                : '<i class="cc-slot-none-i">'+L().ccSlotNoMate+'</i>')+
+        (c.team ? '<span class="cc-slot-duo">'+L().ccSlotDuoLive+'</span>' : '')+
+      '</b></div>'+
       '<div class="ch-row"><em>'+L().ccSlotWhen+'</em><b>'+esc(state)+'</b></div>'+
       '<div class="ch-row"><em>'+L().chEarnings+'</em><b>$'+ccNum(c.earnings)+'</b></div>'+
       (c.org ? '<div class="ch-row"><em>'+L().ccSlotClub+'</em><b>'+esc(c.org)+'</b></div>' : '')+
