@@ -51450,7 +51450,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6c766f8d';
+const CC_BUILD='71083bdf';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -51616,6 +51616,11 @@ function ccMpGate(){
 function ccMpGateDayWhy(){
   var hb=(typeof MP!=='undefined' && MP.peerHb) || null;
   if(!hb || !hb.day || hb.day===careerToday()) return null;
+  /* Напарник на другом дне, но В ВЕЧЕРЕ — он доигрывает свой (соло в одиночку,
+     где нас нет) и придёт. Его снимок 29 августа: перемотка встала на 22 янв с
+     «напарник на 11 янв», пока тот играл соло-квалификацию. Сдаёмся только на
+     напарника, который стоит в хабе на другом дне. */
+  if(hb.rand!==false) return null;
   return L().ccMpOtherDay(ccDayLabel(hb.day));
 }
 function ccMpFfErrSaw(p){
