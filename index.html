@@ -51450,7 +51450,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='94201e8e';
+const CC_BUILD='e9c6f85c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -52224,7 +52224,8 @@ function ccFieldSig(teams){
    бросках и равном поле — и ни одной цифры. */
 function ccTableTop(teams){
   var top=(teams||[]).slice().sort(function(a,b){ return (b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0); }).slice(0, 8);
-  return top.map(function(t){ return (t.stagePts||0)+'.'+(t.wins||0)+'.'+(t.stageElims||0)+(t.isYou?'*':''); }).join(' ');
+  // Без пометки своей строки: у двоих «своя» — разные строки, и сумма расходилась бы на ровном месте.
+  return top.map(function(t){ return (t.stagePts||0)+'.'+(t.wins||0)+'.'+(t.stageElims||0); }).join(' ');
 }
 function ccTableHash(ranked){
   var s=(ranked||[]).map(function(t,i){
@@ -52551,6 +52552,8 @@ function ccMpSumSeen(mine, theirs){
   if(a[2]!==b[2]) what.push('rolls'+(where ? ' @ '+where : ''));
   else if(where) what.push('state @ '+where);
   if(a[1]!==b[1] && (a[5]||b[5])) what.push('top me '+String(a[5]||'-')+' | mate '+String(b[5]||'-'));
+  // Расхождение — это таблица, броски или поле. Всё остальное в сумме (книга, верх таблицы) — только пояснение.
+  if(a[1]===b[1] && a[2]===b[2] && a[3]===b[3]) return;
   var flags=' · skip '+(typeof skipAnimation!=='undefined' && skipAnimation ? 1 : 0)+' hid '+(typeof document!=='undefined' && document.hidden ? 1 : 0);
   ccMpSplitSeen(a[0], (what.length ? what.join(',')+' · ' : '')+'me '+short(a)+' · mate '+short(b)+flags+' · '+String(typeof CC_BUILD!=='undefined' ? CC_BUILD : ''));
 }
