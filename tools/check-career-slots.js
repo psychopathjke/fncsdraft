@@ -100,7 +100,8 @@ const BOOT = `
     out.notes.drawn = {cells: cells.length, empty: empties.length,
                        here: grid.querySelectorAll('.cc-slot.on').length};
     check('the picker draws a card per slot', cells.length === CC_SLOTS, String(cells.length));
-    check('the deleted one is drawn as empty', empties.length === 1, String(empties.length));
+    // Два слота заняты, остальные пусты — сколько бы их ни было (CC_SLOTS теперь 6).
+    check('the deleted one is drawn as empty', empties.length === CC_SLOTS - 2, String(empties.length));
     check('and the open one is marked',
           grid.querySelectorAll('.cc-slot.on').length === 1);
     check('an empty slot offers to start a career',
@@ -141,5 +142,5 @@ const out = JSON.parse(decodeURIComponent(m[1]));
 if (out.err) { console.error(out.err); process.exit(1); }
 console.log(JSON.stringify(out.notes, null, 1));
 if (out.fails.length) { out.fails.forEach(f => console.error('FAIL ' + f)); process.exit(1); }
-console.log('three careers, side by side, and the old save carried into the first');
+console.log('six careers, side by side, and the old save carried into the first');
 fs.rmSync(dir, { recursive: true, force: true });

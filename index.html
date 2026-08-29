@@ -3007,8 +3007,10 @@
   .cc-slot-h{margin:0 0 4px;font-size:22px;font-weight:900;font-style:italic;
     text-transform:uppercase;letter-spacing:.04em;color:#0b0f12;}
   .cc-slot-sub{color:#6b7883;font-size:12px;font-weight:700;margin-bottom:18px;}
-  .cc-slot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  .cc-slot-grid{display:grid;grid-template-columns:repeat(3,1fr);
     gap:16px;margin-bottom:18px;}
+  @media(max-width:900px){.cc-slot-grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:560px){.cc-slot-grid{grid-template-columns:1fr;}}
   .cc-slot{background:#fbfcfc;border:none;border-radius:6px;padding:14px;
     box-shadow:0 12px 30px rgba(11,15,18,.13);display:flex;flex-direction:column;gap:2px;
     color:#0b0f12;min-width:0;}
@@ -3020,10 +3022,20 @@
   .cc-slot.on .cc-slot-n{color:#00846d;}
   .cc-slot-none{color:#8b98a5;font-size:11px;font-weight:800;letter-spacing:.05em;
     text-transform:uppercase;}
-  .cc-slot-who{display:flex;justify-content:space-between;align-items:baseline;
-    gap:8px;margin-bottom:8px;}
-  .cc-slot-who b{font-size:18px;font-weight:900;font-style:italic;color:#0b0f12;}
-  .cc-slot-who span{font-size:20px;font-weight:900;color:#00846d;}
+  .cc-slot-who{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .cc-slot-face{width:44px;height:44px;border-radius:4px;object-fit:cover;
+    background:#dfe4e7;flex:none;}
+  .cc-slot-id{min-width:0;flex:1 1 auto;}
+  .cc-slot-id b{display:block;font-size:17px;font-weight:900;font-style:italic;color:#0b0f12;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cc-slot-id em{display:flex;align-items:center;gap:5px;font-style:normal;font-size:11px;
+    font-weight:800;color:#6b7883;}
+  .cc-slot-flag{height:9px;width:auto;border-radius:2px;}
+  /* Рейтинг подписан, а то большое число рядом с ником читалось как что угодно. */
+  .cc-slot-ovr{flex:none;text-align:right;font-size:22px;font-weight:900;color:#00846d;
+    line-height:1;}
+  .cc-slot-ovr small{display:block;font-size:9px;font-weight:800;letter-spacing:.06em;
+    text-transform:uppercase;color:#6b7883;margin-top:2px;}
   .cc-slot .ch-play{margin-top:12px;width:100%;}
   .cc-slot-del{margin-top:6px;width:100%;font-size:11px;color:#6b7883;}
   .cc-slot-del.armed{border-color:var(--danger);color:var(--danger);}
@@ -5576,7 +5588,7 @@ ccNewsAwardYou:m=>'Игрок месяца ('+m+') 🏅',
 ccNewsAwardSeason:(n,s)=>'Игрок сезона '+s+' — '+n,
 ccNewsAwardSeasonYou:s=>'Игрок сезона '+s+' 🏆',
 ccAwards:'Награды', ccAwardMonth:'Игрок месяца', ccAwardSeason:'Игрок сезона',
-ccSlots:'Карьеры', ccSlotsTitle:'Карьеры', ccSlotsSub:'Три сохранения. Играется то, что открыл последним',
+ccSlots:'Карьеры', ccSlotsTitle:'Карьеры', ccSlotsSub:'Шесть сохранений. Играется то, что открыл последним',
 ccSlotEmpty:'Пусто', ccSlotStart:'Начать', ccSlotOpen:'Продолжить', ccSlotDelete:'Удалить',
 ccSlotDropSure:'Точно удалить?', ccSlotHere:'открыта', ccSlotSeason:'Сезон',
 ccSlotWhen:'Дата', ccSlotClub:'Клуб', ccSlotRetired:'Карьера завершена',
@@ -7158,7 +7170,7 @@ ccNewsAwardYou:m=>'Player of the Month ('+m+') 🏅',
 ccNewsAwardSeason:(n,s)=>'Player of Season '+s+' — '+n,
 ccNewsAwardSeasonYou:s=>'Player of Season '+s+' 🏆',
 ccAwards:'Awards', ccAwardMonth:'Player of the Month', ccAwardSeason:'Player of the Season',
-ccSlots:'Careers', ccSlotsTitle:'Careers', ccSlotsSub:'Three saves. The tile opens whichever you played last',
+ccSlots:'Careers', ccSlotsTitle:'Careers', ccSlotsSub:'Six saves. The tile opens whichever you played last',
 ccSlotEmpty:'Empty', ccSlotStart:'Start', ccSlotOpen:'Continue', ccSlotDelete:'Delete',
 ccSlotDropSure:'Delete for good?', ccSlotHere:'open', ccSlotSeason:'Season',
 ccSlotWhen:'Date', ccSlotClub:'Club', ccSlotRetired:'Career over',
@@ -9474,7 +9486,7 @@ chTabLog:'Profil', chTabHist:'Historique',
 ccSlots:'Carrières',
 chEnd:'Terminer la carrière',
 ccSlotsTitle:'Carrières',
-ccSlotsSub:'Trois sauvegardes. La tuile ouvre celle jouée en dernier',
+ccSlotsSub:'Six sauvegardes. La tuile ouvre celle jouée en dernier',
 backBtn:'← Retour',
 achievementsTitle:'Succès',
 collectionTitle:'Top 20 des cartes les plus rares',
@@ -9668,7 +9680,7 @@ chTabHist:"Storico",
 ccSlots:"Carriere",
 chEnd:"Chiudi la carriera",
 ccSlotsTitle:"Carriere",
-ccSlotsSub:"Tre salvataggi. Il riquadro apre l'ultima che hai giocato",
+ccSlotsSub:"Sei salvataggi. Il riquadro apre l'ultima che hai giocato",
 backBtn:"← Indietro",
 achievementsTitle:"Obiettivi",
 collectionTitle:"Le 20 carte più rare",
@@ -11889,7 +11901,7 @@ chTabHist:"Histórico",
 ccSlots:"Carreiras",
 chEnd:"Encerrar carreira",
 ccSlotsTitle:"Carreiras",
-ccSlotsSub:"Três saves. O bloco abre a última que você jogou",
+ccSlotsSub:"Seis saves. O bloco abre a última que você jogou",
 backBtn:"← Voltar",
 achievementsTitle:"Conquistas",
 collectionTitle:"As 20 cartas mais raras",
@@ -51345,7 +51357,10 @@ let CAREER=null;
    the new ones sit beside it. A career somebody has played a season into is not
    something to move and hope, and the cheapest way to not lose it is to leave
    it exactly where it is. */
-const CC_SLOTS=3;
+/* Шесть карьер, а было три. Его слово, 29 августа: «может сделать больше
+   сохранений». Слот №1 по-прежнему лежит в старом ключе (LS_SLOT), поэтому
+   число можно менять, ничего не переписывая: новые слоты просто пустые. */
+const CC_SLOTS=6;
 const LS_SLOT=n=>n===1 ? LS_CAREER : 'fncsdraft_career_s'+n;
 const LS_ACTIVE='fncsdraft_career_active';
 function ccSlot(){
@@ -51374,7 +51389,15 @@ function ccSlotCard(n){
   // everybody else: the clock goes back to January every year and a birthday
   // read against it stands still.
   const real=born ? ccAgeOn(born, onDay)+Math.max(0, (s.career.season||1)-1) : null;
+  /* Лицо и флаг — чтобы плитку узнавали, не читая. Его слово, 29 августа:
+     «понятней, что за карьера, мб фото игрока и рейтинг». Портрет берётся
+     так же, как везде: свой загруженный снимок, иначе — портрет карточки. */
+  const face=s.player.photo
+    || (s.player.handle ? photoURL({handle:s.player.handle,
+                                    region:s.player.cardRegion||s.player.region,
+                                    _photo:null}) : null);
   return {nick:s.player.nick||'', ovr:s.player.ovr||0, age:real!=null?real:(s.player.age||0),
+          face:face, country:s.player.country||null,
           div:s.career.division||5, season:s.career.season||1,
           day:s.career.day||CC_YEAR_FROM, earnings:s.career.earnings||0,
           org:(s.org&&s.org.name)||null, over:!!s.career.seasonOver,
@@ -51518,7 +51541,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='84a58bbb';
+const CC_BUILD='93be2cd4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -53443,7 +53466,16 @@ function careerRenderSlots(){
                             : ccDayLabel(c.day);
     cells.push('<div class="cc-slot'+(n===here?' on':'')+'">'+
       '<div class="cc-slot-n">'+n+(n===here?' · '+L().ccSlotHere:'')+'</div>'+
-      '<div class="cc-slot-who"><b>'+esc(c.nick)+'</b><span>'+c.ovr+'</span></div>'+
+      '<div class="cc-slot-who">'+
+        (c.face ? '<img class="cc-slot-face" src="'+esc(c.face)+'" alt="" loading="lazy" onerror="this.remove()">'
+                : '<span class="cc-slot-face"></span>')+
+        '<div class="cc-slot-id"><b>'+esc(c.nick)+'</b>'+
+          '<em>'+[c.age?c.age:'',
+                  c.country ? '<img class="cc-slot-flag" src="https://flagcdn.com/w20/'+
+                    esc(ccCountryOf(String(c.country).toLowerCase()))+'.png" alt="">' : ''
+                 ].filter(Boolean).join(' ')+'</em></div>'+
+        '<span class="cc-slot-ovr">'+c.ovr+'<small>'+L().ccRoOvr+'</small></span>'+
+      '</div>'+
       '<div class="ch-row"><em>'+L().ccDivision+'</em><b>'+c.div+'</b></div>'+
       '<div class="ch-row"><em>'+L().ccSlotSeason+'</em><b>'+c.season+'</b></div>'+
       '<div class="ch-row"><em>'+L().ccSlotWhen+'</em><b>'+esc(state)+'</b></div>'+
