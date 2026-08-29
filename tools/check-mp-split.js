@@ -62,7 +62,7 @@ const BOOT = `
     check('состав командных полей ровно такой, как в спеке',
           out.notes.team.join(',') ===
           ['beefs','chemSince','coach','d1','day','dev','diff','division','duoSplits','duoStreak',
-           'events','ewc','gcSeed','gclc','globals','lft','log','major','majorSeed',
+           'events','ewc','gcSeed','gclc','gifts','globals','lft','log','major','majorSeed',
            'mates','mp','rc','region','rel','relSeed','reload','season','seasonOver',
            'seasonTurn','seed','sizes','solo','soloBy','splits','spots','summit','summitSeed',
            'table','tokens','trios','wf'].join(','),
