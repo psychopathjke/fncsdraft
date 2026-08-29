@@ -273,6 +273,7 @@ async function runOne(tag, who, port){
   const norm=r=>String(r).replace(/(LiveA & LiveB|LiveB & LiveA)/g, 'LiveA+LiveB').replace(/(Твой состав|Your squad):\s*/g, '');
   // Своя строка внизу таблицы — у каждого своя (в соло на двоих их две разные): последняя строка,
   // если её место не идёт следом за предыдущей, — это она; своя строка ВНУТРИ верха сравнивается как все.
+  const own=r=>/Your squad|Твой состав/.test(String(r)) && !/LiveA\+LiveB/.test(norm(r));
   const rank=r=>Number((String(r).match(/^#(\d+)/)||[])[1]||0);
   // Своя строка внизу — та, чьё место больше числа строк над ней (верх таблицы + свой хвост).
   const rowsOf=t=>(t||[]).filter((r,i,all)=>!(i===all.length-1 && i>0 && own(r) && rank(r)>i));
