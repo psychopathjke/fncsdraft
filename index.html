@@ -303,10 +303,13 @@
   /* Две двери в командную карьеру, прямо на карточке. Держатся отдельной
      строкой под описанием: карточка целиком — кнопка одиночной карьеры, и эти
      две обязаны выглядеть как ДРУГОЙ выбор, а не как её продолжение. */
-  .mode-mp{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
-  .mode-mp-btn{flex:1 1 auto;min-width:120px;cursor:pointer;font:inherit;font-weight:900;
-    font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:9px 12px;
-    border-radius:5px;border:1px solid var(--accent);background:transparent;color:var(--accent);}
+  .mode-mp{display:block;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);}
+  .mode-mp[hidden]{display:none;}
+  .mode-mp-desc{margin:0 0 10px;color:var(--ink-dim);font-size:12.5px;line-height:1.5;}
+  .mode-mp-btns{display:flex;gap:8px;flex-wrap:wrap;}
+  .mode-mp-btn{flex:1 1 auto;min-width:120px;cursor:pointer;font-family:ui-monospace,Menlo,Consolas,monospace;
+    font-size:12px;font-weight:700;padding:5px 10px;
+    border-radius:3px;border:1px solid var(--accent);background:transparent;color:var(--accent);}
   .mode-mp-btn:hover{background:var(--accent);color:var(--accent-ink);}
 
   /* Broadcast-style winners plate, the graphic the stream cuts to after a
@@ -3480,7 +3483,7 @@
   <div class="screen active" id="screen-mode">
     <div class="year-row">
       <div class="year-label">2026</div>
-      <div class="mode-grid mode-grid-3" id="modeGrid2026">
+      <div class="mode-grid mode-grid-3">
       <div class="mode-card">
         <div class="ec-art" id="major2Art" data-art="art/mode-major1.jpg">
           <span class="ec-pill ec-pill-l" data-i18n="ecScope7"></span>
@@ -3541,31 +3544,20 @@
              и где они молчали, пока форма не заполнена.
              stopPropagation обязателен: вся карточка — одна большая кнопка
              «одиночная карьера», и без него нажатие уходило бы ей. -->
-      </div>
-      <!-- Карьера вдвоём — своя карточка, как у всех режимов. Его слово,
-           29 августа: «на главном экране в стиле нашем, чтоб дуо и описание,
-           где зелёное». Раньше две двери стояли строкой на карточке одиночной
-           карьеры. Карточка целиком заводит команду; «войти по коду» — второй
-           кнопкой. Видна только при открытой двери (CC_MP_OPEN, см. setLang). -->
-      <div class="mode-card mode-card-new mode-card-duo" id="modeDuoCard" hidden onclick="careerMpNew()">
-        <span class="new-badge" data-i18n="modeNewBadge"></span>
-        <div class="ec-art" data-art="art/mode-duo.jpg">
-          <span class="ec-pill ec-pill-l" data-i18n="ecScopeAll"></span>
-          <div class="ec-foot">
-            <div class="ec-when" data-i18n="ecDateDuo"></div>
-            <h3 class="ec-title" data-i18n="modeCareerDuoTitle"></h3>
-            <div class="ec-mode"><span class="ec-chip">Duo</span><span class="ec-sub" data-i18n="ecSubDuo"></span></div>
+        <!-- Двери в карьеру вдвоём — на карточке карьеры, в языке её зелёной
+             плашки. Его слово, 29 августа: «сделай как в карьере эти кнопки»
+             (отдельная карточка ему не понравилась). Видны только при открытой
+             двери (CC_MP_OPEN, см. setLang). -->
+        <div class="mode-mp" id="modeMpRow" hidden>
+          <p class="mode-mp-desc" data-i18n="modeCareerDuoDesc"></p>
+          <div class="mode-mp-btns">
+            <button class="mode-mp-btn" data-i18n="ccMpMake"
+              onclick="event.stopPropagation();careerMpNew()"></button>
+            <button class="mode-mp-btn" data-i18n="ccMpEnter"
+              onclick="event.stopPropagation();careerMpJoinNew()"></button>
           </div>
         </div>
-        <div class="ec-cups ec-cups-hollow" aria-hidden="true"></div>
-        <p data-i18n="modeCareerDuoDesc"></p>
-        <span class="mode-count" data-i18n="modeCareerDuoCount"></span>
-        <div class="mode-mp" id="modeMpRow" hidden>
-          <button class="mode-mp-btn" data-i18n="ccMpMake"
-            onclick="event.stopPropagation();careerMpNew()"></button>
-          <button class="mode-mp-btn" data-i18n="ccMpEnter"
-            onclick="event.stopPropagation();careerMpJoinNew()"></button>
-        </div>
+      </div>
       </div>
       </div>
     </div>
@@ -5783,7 +5775,7 @@ ccBack:'Назад',
 ccNoCards:'Никого не нашлось',
 ccSavedLabel:'Карьера создана',
 ccSavedNote:'Игрок сохранён. Хаб карьеры, кубки дивизионов и поиск напарника — следующий этап.',
-modeNewBadge:'NEW', modeCareerTitle:'FNCS Career', modeCareerDuoTitle:'FNCS Career · Duo', modeCareerDuoDesc:'Карьера вдвоём. Один заводит команду, второй входит по коду — и дальше всё как в карьере, только напарник живой: один календарь, одни вечера, свои деньги и тренировки у каждого.', modeCareerDuoCount:'двое · один календарь', ecSubDuo:'Путь двоих', ecDateDuo:'вместе с напарником',
+modeNewBadge:'NEW', modeCareerTitle:'FNCS Career', modeCareerDuoDesc:'Вдвоём: один заводит команду, второй входит по коду. Один календарь и одни вечера на двоих, деньги и тренировки у каждого свои.',
 modeCareerDesc:'Карьера одного игрока. Создаёшь себя или берёшь настоящую карточку, ищешь напарника и лезешь с пятого дивизиона через кубки, мейджоры и Reload к ЛАНу. Клубы, деньги, форма и репутация - по настоящему календарю сезона.',
 modeCareerCount:'дивизион 5 → мировой чемпионат',
 ecSubCareer:'Путь одного игрока',
@@ -7363,7 +7355,7 @@ ccBack:'Back',
 ccNoCards:'Nobody found',
 ccSavedLabel:'Career created',
 ccSavedNote:'Player saved. The career hub, division cups and the partner market come next.',
-modeNewBadge:'NEW', modeCareerTitle:'FNCS Career', modeCareerDuoTitle:'FNCS Career · Duo', modeCareerDuoDesc:'A career for two. One starts the team, the other joins by code — and it is the career with a living partner: one calendar, the same nights, your own money and training each.', modeCareerDuoCount:'two players · one calendar', ecSubDuo:'A run for two', ecDateDuo:'with your partner',
+modeNewBadge:'NEW', modeCareerTitle:'FNCS Career', modeCareerDuoDesc:'For two: one starts the team, the other joins by code. One calendar and the same nights, money and training your own.',
 modeCareerDesc:'One player’s career. Build yourself or take a real card, find a duo, and climb from Division 5 through the cups, the Majors and the Reload circuit to a LAN. Clubs, money, form and reputation, on the season’s real calendar.',
 modeCareerCount:'division 5 → the Global Championship',
 ecSubCareer:'One player’s run',
@@ -9340,7 +9332,7 @@ modeEwcCount:'2 joueurs · sept régions, opens, play-in, heats, finale',
 modeNewBadge:'NOUVEAU',
 ecScopeAll:'Toutes les régions',
 ecDateCareer:'saison après saison',
-modeCareerTitle:'Carrière FNCS', modeCareerDuoTitle:'Carrière FNCS · Duo', modeCareerDuoDesc:'Une carrière à deux. L’un crée l’équipe, l’autre rejoint par code — et c’est la carrière avec un vrai coéquipier : un calendrier, les mêmes soirées, argent et entraînement à chacun.', modeCareerDuoCount:'deux joueurs · un calendrier', ecSubDuo:'Le parcours de deux', ecDateDuo:'avec ton coéquipier',
+modeCareerTitle:'Carrière FNCS', modeCareerDuoDesc:'À deux : l’un crée l’équipe, l’autre rejoint par code. Un calendrier et les mêmes soirées, argent et entraînement à chacun.',
 ecSubCareer:'Le parcours d’un joueur',
 modeCareerDesc:'La carrière d’un joueur. Crée-toi ou prends une vraie carte, trouve un duo, et grimpe de la Division 5 à travers les coupes, les Majors et le circuit Reload jusqu’à une LAN. Clubs, argent, forme et réputation, sur le vrai calendrier de la saison.',
 modeCareerCount:'division 5 → le Global Championship',
@@ -9548,7 +9540,7 @@ modeEwcCount:"2 giocatori · sette regioni, open, play-in, heat, finale",
 modeNewBadge:"NUOVO",
 ecScopeAll:"Tutte le regioni",
 ecDateCareer:"stagione dopo stagione",
-modeCareerTitle:"Carriera FNCS", modeCareerDuoTitle:'Carriera FNCS · Duo', modeCareerDuoDesc:'Una carriera in due. Uno crea la squadra, l’altro entra con il codice — ed è la carriera con un compagno vero: un calendario, le stesse serate, soldi e allenamento propri per ciascuno.', modeCareerDuoCount:'due giocatori · un calendario', ecSubDuo:'Il percorso di due', ecDateDuo:'con il tuo compagno',
+modeCareerTitle:"Carriera FNCS", modeCareerDuoDesc:'In due: uno crea la squadra, l’altro entra con il codice. Un calendario e le stesse serate, soldi e allenamento propri.',
 ecSubCareer:"Il percorso di un giocatore",
 modeCareerCount:"dalla divisione 5 al Global Championship",
 ecDate2025:"stagione 2025 · sette regioni",
@@ -11769,7 +11761,7 @@ modeEwcCount:"2 jogadores · sete regiões, opens, play-in, heats, final",
 modeNewBadge:"NOVO",
 ecScopeAll:"Todas as regiões",
 ecDateCareer:"temporada após temporada",
-modeCareerTitle:"Carreira FNCS", modeCareerDuoTitle:'Carreira FNCS · Duo', modeCareerDuoDesc:'Uma carreira a dois. Um cria a equipe, o outro entra pelo código — e é a carreira com um parceiro de verdade: um calendário, as mesmas noites, dinheiro e treino de cada um.', modeCareerDuoCount:'dois jogadores · um calendário', ecSubDuo:'A trajetória de dois', ecDateDuo:'com seu parceiro',
+modeCareerTitle:"Carreira FNCS", modeCareerDuoDesc:'A dois: um cria a equipe, o outro entra pelo código. Um calendário e as mesmas noites, dinheiro e treino de cada um.',
 ecSubCareer:"A trajetória de um jogador",
 modeCareerCount:"da divisão 5 ao Global Championship",
 ecDate2025:"temporada 2025 · sete regiões",
@@ -14093,11 +14085,7 @@ function setLang(lang, persist){
      зовётся на загрузке и проходит по всем data-i18n: подписи кнопок
      проставляются тем же обходом, что и остальное меню. */
   (function(){ const r=document.getElementById('modeMpRow');
-               if(r) r.hidden=!CC_MP_OPEN;
-               const c=document.getElementById('modeDuoCard');
-               if(c) c.hidden=!CC_MP_OPEN;
-               const g=document.getElementById('modeGrid2026');
-               if(g){ g.classList.toggle('mode-grid-4', !!CC_MP_OPEN); g.classList.toggle('mode-grid-3', !CC_MP_OPEN); } })();
+               if(r) r.hidden=!CC_MP_OPEN; })();
   if(persist!==false){ try{ localStorage.setItem(LS_LANG, lang); }catch(e){} }
   // Keep the declared language honest, otherwise search engines and screen
   // readers go on trusting whatever <html lang> said at load.
@@ -51486,7 +51474,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a95d2451';
+const CC_BUILD='a84207a6';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
