@@ -2851,6 +2851,15 @@
     text-transform:uppercase;padding:8px 14px;border-radius:4px;
     backdrop-filter:blur(2px);}
   .ch-ffbtn i{font-style:normal;font-size:12px;line-height:1;opacity:.85;}
+  /* Подпись про перемотку вдвоём стоит на тёмной полосе недели, а носила класс
+     светлой подсказки хаба (.ch-hint, серый текст на белом) — и читалась как
+     чужой кусок. Его слово, 29 августа: «в не нашем дизайне будто». Теперь она
+     одета как кнопки рядом: та же полупрозрачная плашка, тот же кегль. */
+  .ch-ffnote{display:flex;align-items:flex-start;gap:7px;margin-top:8px;max-width:520px;
+    border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.42);border-radius:4px;
+    padding:7px 10px;backdrop-filter:blur(2px);}
+  .ch-ffnote i{font-style:normal;font-size:11px;line-height:1.5;opacity:.8;}
+  .ch-ffnote span{color:rgba(255,255,255,.78);font-size:11px;font-weight:700;line-height:1.5;}
   .ch-ffbtn:hover{border-color:var(--accent);color:#fff;background:rgba(0,0,0,.7);}
   /* Кто играет этот вечер — ты или симуляция. Его правка, 24 августа: «надо
      дать выбор игроку: сыграть самому или простимулировать, можно это на
@@ -51559,7 +51568,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ffd5821d';
+const CC_BUILD='21337319';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -70037,7 +70046,7 @@ function careerFfButtonsHTML(){
   return '<div class="ch-ffwrap"><span class="ch-ffcap">'+L().ccFfCap+'</span>'+
     (ccMpOn() ? ccMpFfOfferHTML() : '')+
     '<div class="ch-ff">'+btn('CC_FF_WEEK', L().ccFfWeek)+btn('CC_FF_MONTH', L().ccFfMonth)+
-    '</div>'+(ccMpOn() ? '<div class="ch-hint" style="margin:0;">'+esc(L().ccMpFfHint)+'</div>' : '')+'</div>';
+    '</div>'+(ccMpOn() ? '<div class="ch-ffnote"><i>&#128101;</i><span>'+esc(L().ccMpFfHint)+'</span></div>' : '')+'</div>';
 }
 // The best rating a day's energy can buy, by the same weighting the card is
 // built from. One thing a day, deliberately: a player may now spend the whole
