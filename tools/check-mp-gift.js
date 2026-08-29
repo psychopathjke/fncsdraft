@@ -38,8 +38,16 @@ const BOOT = `
     const html=careerShopHTML();
     check('в магазине кнопка «в подарок»', html.indexOf("careerGift('"+item.id+"')")>=0);
     const mood0=careerPatience(), bal0=CAREER.career.balance;
+    // 0. Кнопка размером с ценник, своего цвета; без подтверждения деньги не уходят.
+    check('кнопка подарка — тот же ch-sign', html.indexOf('class="ch-sign cc-gift"')>=0);
+    check('без «точно» — вопрос', careerGift(item.id)==='ask');
+    const askM=document.getElementById('ccAskModal');
+    check('вопрос открыт и в нём ценник', askM.style.display==='flex' && document.getElementById('ccAskText').textContent.indexOf(ccNum(item.cost))>=0);
+    check('на кнопке «Подарить» тоже ценник', document.getElementById('ccAskYes').textContent.indexOf(ccNum(item.cost))>=0);
+    ccAskGo(false);
+    check('после «нет» деньги на месте', CAREER.career.balance===bal0);
     // 1. Подарок: платим, шлём, запись в команде, настрой вырос.
-    check('подарок ушёл', careerGift(item.id)===true);
+    check('подарок ушёл', careerGift(item.id, true)===true);
     check('деньги списаны', CAREER.career.balance===bal0-item.cost, CAREER.career.balance+' / '+(bal0-item.cost));
     check('по проводу — gift', sent.some(m=>m.kind==='gift' && m.payload.item===item.id));
     check('запись в командном состоянии', Array.isArray(CAREER.career.gifts) && CAREER.career.gifts.length===1 && CAREER.career.gifts[0].item===item.id);
@@ -47,7 +55,7 @@ const BOOT = `
     check('настрой вырос', careerPatience()>mood0, mood0+' -> '+careerPatience());
     check('себе вещь не легла', !careerOwns(item.id));
     check('напарнику она теперь есть', ccPeerOwns(item.id));
-    check('второй раз тот же подарок не уходит', careerGift(item.id)===false);
+    check('второй раз тот же подарок не уходит', careerGift(item.id, true)===false);
     check('в магазине теперь «у напарника есть»', careerShopHTML().indexOf(L().ccGiftHas)>=0);
     // 2. Подарок от напарника: вещь ложится на стол без оплаты.
     const other=CC_SHOP.find(x=>!x.days && x.slot && x.id!==item.id && x.slot!==item.slot);
