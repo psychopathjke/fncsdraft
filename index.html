@@ -3038,6 +3038,10 @@
     text-transform:uppercase;color:#6b7883;margin-top:2px;}
   /* Напарник: сколько ещё держится в запасе — приглушённым, а «вдвоём»
      (живой человек в лобби) — бирюзовой меткой, как «открыта». */
+  .cc-mp-note-x{margin-left:8px;border:none;background:none;cursor:pointer;font:inherit;
+    font-size:11px;font-weight:800;letter-spacing:.04em;color:#8b98a5;text-decoration:underline;
+    text-underline-offset:2px;padding:0;}
+  .cc-mp-note-x:hover{color:#0b0f12;}
   .cc-slot-more{font-style:normal;font-weight:800;color:#6b7883;}
   .cc-slot-none-i{font-style:normal;font-weight:800;color:#8b98a5;}
   .cc-slot-duo{margin-left:6px;font-size:9px;font-weight:800;letter-spacing:.06em;
@@ -3830,7 +3834,7 @@
       </div>
 
       <div class="cc-foot">
-        <button class="cc-back" onclick="show('screen-mode')" data-i18n="ccBack"></button>
+        <button class="cc-back" onclick="ccMpNewCancel();show('screen-mode')" data-i18n="ccBack"></button>
         <div class="cc-readout" id="ccReadout"></div>
         <!-- Что здесь заводится: обычная карьера или половина команды. Двери в
              командную стоят на карточке карьеры в меню (см. .mode-mp), а сюда
@@ -3891,7 +3895,7 @@
       <div class="cc-slot-grid" id="ccSlotGrid"></div>
       </div>
       <div class="ch-foot">
-        <button class="cc-back" onclick="show('screen-mode')" data-i18n="ccBack"></button>
+        <button class="cc-back" onclick="ccMpNewCancel();show('screen-mode')" data-i18n="ccBack"></button>
       </div>
     </div>
   </div>
@@ -5166,7 +5170,7 @@ ccMpTitle:'Команда', ccMpCode:'Код лобби', ccMpAlone:'Напар�
 ccMpWaitPick:'Ждём голос напарника…', ccMpThirdAsk:n=>'Напарник зовёт '+n+' третьим. Берём в команду?', ccMpThirdYes:'Берём', ccMpThirdNo:'Нет', ccMpThirdWait:'Ждём ответа напарника…', ccMpNoFf:'В команде день идёт вдвоём — перематывать его нельзя', ccCodeTitle:'Войти по коду', ccCodeHint:'Шесть знаков — напарник видит их на плитке команды', ccCodeGo:'Войти',  ccGiftBtn:'В подарок', ccGiftAsk:(n,c)=>'Подарить напарнику «'+n+'» за $'+c+'? Вещь ляжет ему на стол, настрой команды поднимется.', ccGiftYes:c=>'Подарить · $'+c, ccGiftSent:n=>'Подарок отправлен: '+n, ccGiftGot:n=>'Напарник подарил: '+n, ccGiftHas:'у напарника есть', ccNewsGiftGot:n=>'Напарник подарил '+n, ccNewsGiftSent:n=>'Ты подарил напарнику '+n,  ccSpotSoloTab:'Соло', ccMpOtherCareer:d=>'Эта карьера с другого дня ('+d+'), а команда — на своём. Для входа по коду заведи новую карьеру', ccMpCatchUp:d=>'Напарник уже на '+d, ccMpCatchUpBtn:'Догнать',  ccMpOtherDay:d=>'Напарник на другом дне: '+d, ccMpFfLink:'Перемотка ждёт связь с напарником…',  ccMpFfPeerBroke:t=>'У напарника перемотка встала: '+t, ccMpLeft:'Напарник вышел из вечера — играем дальше без него',  ccMpResume:'Вечер продолжается — догоняем напарника…',  ccMpFfOffer:d=>'Напарник предлагает доиграть до '+d, ccMpFfWait:d=>'Доиграть до '+d+' — 1/2, ждём напарника', ccMpFfYes:'Доиграть вместе', ccMpFfNo:'Отклонить', ccMpFfHint:'В команде перемотка по двум подтверждениям: выберите день, напарник подтвердит — и вечера сыграются у обоих',  ccMpModeDiff:'Разные режимы — вечер не начнётся, пока не выберете один', ccMpModeMate:n=>'У напарника: '+n, ccMpDivDiff:(a,b)=>'В это лобби нельзя: у тебя дивизион '+a+', у команды '+b+'. Карьера осталась одиночной', ccTellOk:'Понятно', ccMpSameCard:n=>'Вы оба играете за '+n+' — возьмите разных игроков', ccMpMatePicked:n=>n?('Напарник выбрал: '+n):'Напарник уже выбрал', ccMpWaitAt:'Ждём напарника…', ccMpRolesBad:'В команде нужны игл и фраггер — одному надо сменить роль', ccMpSplitAt:n=>'Вечера разошлись на игре '+n+' — таблицы у вас разные', ccNewsMpSplit:n=>'Вечера разошлись на игре '+n, ccMpSlow:'Напарник не дошёл до вопроса — играем дальше без него', ccMpLink:'Связь', ccMpLive:'есть', ccMpWait:'подключаемся…', ccMpLost:'нет связи с лобби', ccMpOld:'у вас разные версии — обновите страницу',
 ccMpThirdOk:'Третьего берёшь как обычно — он будет общим, у напарника тот же',
 ccMpOnlyMate:'Кресло только для напарника: в команде случайных не набирают',
-ccMpNewNote:'Создаёшь команду: карьера заведётся, и на плитке команды появится код для напарника', ccMpJoinNote:c=>'Входишь в лобби '+c+': карьера заведётся и подключится к напарнику',
+ccMpNewNote:'Создаёшь команду: карьера заведётся, и на плитке команды появится код для напарника', ccMpNoteOff:'обычная карьера', ccMpJoinNote:c=>'Входишь в лобби '+c+': карьера заведётся и подключится к напарнику',
 ccMpMake:'Играть вдвоём', ccMpEnter:'Войти по коду', ccMpAskCode:'Код лобби — шесть знаков',
 ccAgentHave:'У тебя уже есть менеджер — с клубами говорит он', ccScoutOffHint:'Поиск клуба выключен тобой — клубы не пишут, пока он выключен',
 ccSpotAuraNone:'Пока никто не знает, чьё это место',
@@ -6747,7 +6751,7 @@ ccMpTitle:'The team', ccMpCode:'Lobby code', ccMpAlone:'Your partner is offline'
 ccMpWaitPick:'Waiting for your partner’s pick…', ccMpThirdAsk:n=>'Your partner wants '+n+' as the third. Take them?', ccMpThirdYes:'Take them', ccMpThirdNo:'No', ccMpThirdWait:'Waiting for your partner…', ccMpNoFf:'In a team the day moves for both — no fast-forward', ccCodeTitle:'Join by code', ccCodeHint:'Six characters — your partner sees them on the team tile', ccCodeGo:'Join',  ccGiftBtn:'As a gift', ccGiftAsk:(n,c)=>'Give your partner “'+n+'” for $'+c+'? It lands on their desk and lifts the team’s mood.', ccGiftYes:c=>'Give · $'+c, ccGiftSent:n=>'Gift sent: '+n, ccGiftGot:n=>'Your partner gave you: '+n, ccGiftHas:'your partner has it', ccNewsGiftGot:n=>'Your partner gave you '+n, ccNewsGiftSent:n=>'You gave your partner '+n,  ccSpotSoloTab:'Solo', ccMpOtherCareer:d=>'This career is on another day ('+d+') than the team. Start a new career to join by code', ccMpCatchUp:d=>'Your partner is already on '+d, ccMpCatchUpBtn:'Catch up',  ccMpOtherDay:d=>'Your partner is on another day: '+d, ccMpFfLink:'Fast-forward is waiting for the link to your partner…',  ccMpFfPeerBroke:t=>'Your partner’s fast-forward broke: '+t, ccMpLeft:'Your partner left the night — going on without them',  ccMpResume:'The night carries on — catching up with your partner…',  ccMpFfOffer:d=>'Your partner wants to play through to '+d, ccMpFfWait:d=>'Play through to '+d+' — 1/2, waiting for your partner', ccMpFfYes:'Play it together', ccMpFfNo:'Decline', ccMpFfHint:'In a team a fast-forward takes two confirmations: pick a day, your partner confirms, and the nights play for both',  ccMpModeDiff:'Different modes — the night will not start until you pick one', ccMpModeMate:n=>'Your partner: '+n, ccMpDivDiff:(a,b)=>'You cannot join: you are in division '+a+', the team is in '+b+'. Your career stays solo', ccTellOk:'Got it', ccMpSameCard:n=>'You are both playing as '+n+' — pick different players', ccMpMatePicked:n=>n?('Your partner picked: '+n):'Your partner has picked', ccMpWaitAt:'Waiting for your partner…', ccMpRolesBad:'A team needs one IGL and one fragger — one of you must switch', ccMpSplitAt:n=>'The nights split at game '+n+' — your tables differ', ccNewsMpSplit:n=>'The nights split at game '+n, ccMpSlow:'Your partner never reached the question — going on without them', ccMpLink:'Link', ccMpLive:'live', ccMpWait:'connecting…', ccMpLost:'no link to the lobby', ccMpOld:'your builds differ — refresh the page',
 ccMpThirdOk:'You take a third the usual way — they are shared, your partner gets the same one',
 ccMpOnlyMate:'The seat is your partner’s: a team does not take strangers',
-ccMpNewNote:'You are creating a team: the career starts and the team tile shows the code for your partner', ccMpJoinNote:c=>'Joining lobby '+c+': the career starts and connects to your partner',
+ccMpNewNote:'You are creating a team: the career starts and the team tile shows the code for your partner', ccMpNoteOff:'make it a solo career', ccMpJoinNote:c=>'Joining lobby '+c+': the career starts and connects to your partner',
 ccMpMake:'Play as a duo', ccMpEnter:'Join by code', ccMpAskCode:'Lobby code — six characters',
 ccAgentHave:'You already have a manager — he is the one talking to clubs', ccScoutOffHint:'You switched club scouting off — no club writes while it is off',
 ccSpotAuraNone:'Nobody knows whose place this is yet',
@@ -8514,7 +8518,7 @@ ccMpTitle:'L’équipe', ccMpCode:'Code du lobby', ccMpAlone:'Ton coéquipier es
 ccMpWaitPick:'En attente du choix de ton coéquipier…', ccMpThirdAsk:n=>'Ton coéquipier veut '+n+' comme troisième. On le prend ?', ccMpThirdYes:'On le prend', ccMpThirdNo:'Non', ccMpThirdWait:'En attente de ton coéquipier…', ccMpNoFf:'En équipe la journée avance à deux — pas d’avance rapide', ccCodeTitle:'Rejoindre par code', ccCodeHint:'Six caractères — ton coéquipier les voit sur la tuile d’équipe', ccCodeGo:'Rejoindre',  ccGiftBtn:'Offrir', ccGiftAsk:(n,c)=>'Offrir « '+n+' » à ton coéquipier pour '+c+' $ ? L’objet arrive chez lui et le moral de l’équipe monte.', ccGiftYes:c=>'Offrir · '+c+' $', ccGiftSent:n=>'Cadeau envoyé : '+n, ccGiftGot:n=>'Ton coéquipier t’a offert : '+n, ccGiftHas:'ton coéquipier l’a déjà', ccNewsGiftGot:n=>'Ton coéquipier t’a offert '+n, ccNewsGiftSent:n=>'Tu as offert à ton coéquipier '+n,  ccSpotSoloTab:'Solo', ccMpOtherCareer:d=>'Cette carrière est à un autre jour ('+d+') que l’équipe. Crée une nouvelle carrière pour rejoindre par code', ccMpCatchUp:d=>'Ton coéquipier est déjà au '+d, ccMpCatchUpBtn:'Rattraper',  ccMpOtherDay:d=>'Ton coéquipier est à un autre jour : '+d, ccMpFfLink:'L’avance rapide attend la liaison avec ton coéquipier…',  ccMpFfPeerBroke:t=>'L’avance rapide du coéquipier a échoué : '+t, ccMpLeft:'Ton coéquipier a quitté la soirée — on continue sans lui',  ccMpResume:'La soirée continue — on rattrape ton coéquipier…',  ccMpFfOffer:d=>'Ton coéquipier propose de jouer jusqu’au '+d, ccMpFfWait:d=>'Jouer jusqu’au '+d+' — 1/2, en attente du coéquipier', ccMpFfYes:'Jouer ensemble', ccMpFfNo:'Refuser', ccMpFfHint:'En équipe l’avance rapide demande deux confirmations : choisis un jour, ton coéquipier confirme, et les soirées se jouent pour les deux',  ccMpModeDiff:'Modes différents — la soirée ne commencera pas tant que vous n’en choisissez pas un', ccMpModeMate:n=>'Ton coéquipier : '+n, ccMpDivDiff:(a,b)=>'Entrée impossible : toi en division '+a+', l’équipe en '+b+'. Ta carrière reste en solo', ccTellOk:'Compris', ccMpSameCard:n=>'Vous jouez tous les deux '+n+' — prenez des joueurs différents', ccMpMatePicked:n=>n?('Ton coéquipier a choisi : '+n):'Ton coéquipier a choisi', ccMpWaitAt:'En attente de ton coéquipier…', ccMpRolesBad:'Une équipe a besoin d’un IGL et d’un fragger — l’un de vous doit changer', ccMpSplitAt:n=>'Les soirées ont divergé à la partie '+n+' — vos tableaux diffèrent', ccNewsMpSplit:n=>'Les soirées ont divergé à la partie '+n, ccMpSlow:'Ton coéquipier n’est pas arrivé à la question — on continue sans lui', ccMpLink:'Lien', ccMpLive:'établi', ccMpWait:'connexion…', ccMpLost:'pas de lien avec le lobby', ccMpOld:'vos versions diffèrent — actualise la page',
 ccMpThirdOk:'Tu prends un troisième comme d’habitude — il est commun, ton coéquipier a le même',
 ccMpOnlyMate:'La place est celle de ton coéquipier : une équipe ne prend personne d’autre',
-ccMpNewNote:'Tu crées une équipe : la carrière démarre et la tuile d’équipe affiche le code pour ton coéquipier', ccMpJoinNote:c=>'Tu rejoins le lobby '+c+' : la carrière démarre et se connecte à ton coéquipier',
+ccMpNewNote:'Tu crées une équipe : la carrière démarre et la tuile d’équipe affiche le code pour ton coéquipier', ccMpNoteOff:'carrière solo', ccMpJoinNote:c=>'Tu rejoins le lobby '+c+' : la carrière démarre et se connecte à ton coéquipier',
 ccMpMake:'Jouer à deux', ccMpEnter:'Rejoindre par code', ccMpAskCode:'Code du lobby — six caractères',
 ccAgentHave:'Tu as déjà un manager — c’est lui qui parle aux clubs', ccScoutOffHint:'Tu as coupé la recherche de club — aucun club n’écrit tant qu’elle est coupée',
 ccSpotAuraNone:'Personne ne sait encore à qui est cette place',
@@ -11358,7 +11362,7 @@ ccMpTitle:'La squadra', ccMpCode:'Codice lobby', ccMpAlone:'Il tuo compagno è o
 ccMpWaitPick:'In attesa della scelta del tuo compagno…', ccMpThirdAsk:n=>'Il tuo compagno vuole '+n+' come terzo. Lo prendiamo?', ccMpThirdYes:'Prendiamolo', ccMpThirdNo:'No', ccMpThirdWait:'In attesa del tuo compagno…', ccMpNoFf:'In squadra la giornata avanza in due — niente avanzamento rapido', ccCodeTitle:'Entra con il codice', ccCodeHint:'Sei caratteri — il compagno li vede sulla scheda della squadra', ccCodeGo:'Entra',  ccGiftBtn:'In regalo', ccGiftAsk:(n,c)=>'Regalare «'+n+'» al compagno per '+c+' $? L’oggetto arriva sul suo tavolo e il morale della squadra sale.', ccGiftYes:c=>'Regala · '+c+' $', ccGiftSent:n=>'Regalo inviato: '+n, ccGiftGot:n=>'Il compagno ti ha regalato: '+n, ccGiftHas:'il compagno ce l’ha già', ccNewsGiftGot:n=>'Il compagno ti ha regalato '+n, ccNewsGiftSent:n=>'Hai regalato al compagno '+n,  ccSpotSoloTab:'Solo', ccMpOtherCareer:d=>'Questa carriera è a un altro giorno ('+d+') rispetto alla squadra. Crea una nuova carriera per entrare con il codice', ccMpCatchUp:d=>'Il compagno è già al '+d, ccMpCatchUpBtn:'Raggiungi',  ccMpOtherDay:d=>'Il compagno è a un altro giorno: '+d, ccMpFfLink:'L’avanzamento attende il collegamento con il compagno…',  ccMpFfPeerBroke:t=>'L’avanzamento del compagno si è fermato: '+t, ccMpLeft:'Il compagno ha lasciato la serata — si continua senza di lui',  ccMpResume:'La serata continua — raggiungiamo il compagno…',  ccMpFfOffer:d=>'Il tuo compagno propone di giocare fino al '+d, ccMpFfWait:d=>'Giocare fino al '+d+' — 1/2, in attesa del compagno', ccMpFfYes:'Giochiamo insieme', ccMpFfNo:'Rifiuta', ccMpFfHint:'In squadra l’avanzamento rapido richiede due conferme: scegli un giorno, il compagno conferma e le serate si giocano per entrambi',  ccMpModeDiff:'Modalità diverse — la serata non inizia finché non ne scegliete una', ccMpModeMate:n=>'Il tuo compagno: '+n, ccMpDivDiff:(a,b)=>'Non puoi entrare: tu sei in divisione '+a+', la squadra in '+b+'. La tua carriera resta in solitaria', ccTellOk:'Ho capito', ccMpSameCard:n=>'State giocando entrambi come '+n+' — scegliete giocatori diversi', ccMpMatePicked:n=>n?('Il tuo compagno ha scelto: '+n):'Il tuo compagno ha scelto', ccMpWaitAt:'In attesa del tuo compagno…', ccMpRolesBad:'Una squadra ha bisogno di un IGL e di un fragger — uno dei due deve cambiare', ccMpSplitAt:n=>'Le serate si sono divise alla partita '+n+' — le tabelle differiscono', ccNewsMpSplit:n=>'Le serate si sono divise alla partita '+n, ccMpSlow:'Il tuo compagno non è arrivato alla domanda — si va avanti senza di lui', ccMpLink:'Collegamento', ccMpLive:'attivo', ccMpWait:'connessione…', ccMpLost:'nessun collegamento alla lobby', ccMpOld:'avete versioni diverse — ricarica la pagina',
 ccMpThirdOk:'Il terzo lo prendi come sempre — è in comune, il compagno ha lo stesso',
 ccMpOnlyMate:'Il posto è del tuo compagno: una squadra non prende sconosciuti',
-ccMpNewNote:'Stai creando una squadra: la carriera parte e sulla tessera squadra compare il codice per il compagno', ccMpJoinNote:c=>'Entri nella lobby '+c+': la carriera parte e si collega al compagno',
+ccMpNewNote:'Stai creando una squadra: la carriera parte e sulla tessera squadra compare il codice per il compagno', ccMpNoteOff:'carriera in solitaria', ccMpJoinNote:c=>'Entri nella lobby '+c+': la carriera parte e si collega al compagno',
 ccMpMake:'Giocare in due', ccMpEnter:'Entra con il codice', ccMpAskCode:'Codice lobby — sei caratteri',
 ccAgentHave:'Hai già un manager — è lui che parla con i club', ccScoutOffHint:'Hai disattivato la ricerca del club — nessun club scrive finché è spenta',
 ccSpotAuraNone:"Nessuno sa ancora di chi è questo posto",
@@ -13579,7 +13583,7 @@ ccMpTitle:'O time', ccMpCode:'Código da sala', ccMpAlone:'Seu parceiro está of
 ccMpWaitPick:'Aguardando a escolha do seu parceiro…', ccMpThirdAsk:n=>'Seu parceiro quer '+n+' como terceiro. Aceitamos?', ccMpThirdYes:'Aceitar', ccMpThirdNo:'Não', ccMpThirdWait:'Aguardando seu parceiro…', ccMpNoFf:'Em equipe o dia avança para os dois — sem avanço rápido', ccCodeTitle:'Entrar com código', ccCodeHint:'Seis caracteres — seu parceiro os vê no card da equipe', ccCodeGo:'Entrar',  ccGiftBtn:'De presente', ccGiftAsk:(n,c)=>'Dar “'+n+'” ao parceiro por $'+c+'? O item vai para a mesa dele e o ânimo da equipe sobe.', ccGiftYes:c=>'Presentear · $'+c, ccGiftSent:n=>'Presente enviado: '+n, ccGiftGot:n=>'Seu parceiro te deu: '+n, ccGiftHas:'seu parceiro já tem', ccNewsGiftGot:n=>'Seu parceiro te deu '+n, ccNewsGiftSent:n=>'Você deu ao parceiro '+n,  ccSpotSoloTab:'Solo', ccMpOtherCareer:d=>'Esta carreira está em outro dia ('+d+') que a equipe. Crie uma nova carreira para entrar pelo código', ccMpCatchUp:d=>'Seu parceiro já está em '+d, ccMpCatchUpBtn:'Alcançar',  ccMpOtherDay:d=>'Seu parceiro está em outro dia: '+d, ccMpFfLink:'O avanço aguarda a conexão com o parceiro…',  ccMpFfPeerBroke:t=>'O avanço do parceiro parou: '+t, ccMpLeft:'Seu parceiro saiu da noite — seguimos sem ele',  ccMpResume:'A noite continua — alcançando seu parceiro…',  ccMpFfOffer:d=>'Seu parceiro propõe jogar até '+d, ccMpFfWait:d=>'Jogar até '+d+' — 1/2, aguardando o parceiro', ccMpFfYes:'Jogar juntos', ccMpFfNo:'Recusar', ccMpFfHint:'Em equipe o avanço rápido pede duas confirmações: escolha um dia, o parceiro confirma e as noites são jogadas para os dois',  ccMpModeDiff:'Modos diferentes — a noite não começa até escolherem um', ccMpModeMate:n=>'Seu parceiro: '+n, ccMpDivDiff:(a,b)=>'Não dá para entrar: você na divisão '+a+', a equipe na '+b+'. Sua carreira continua solo', ccTellOk:'Entendi', ccMpSameCard:n=>'Vocês dois estão jogando como '+n+' — escolham jogadores diferentes', ccMpMatePicked:n=>n?('Seu parceiro escolheu: '+n):'Seu parceiro já escolheu', ccMpWaitAt:'Aguardando seu parceiro…', ccMpRolesBad:'Um time precisa de um IGL e um fragger — um de vocês deve trocar', ccMpSplitAt:n=>'As noites divergiram no jogo '+n+' — as tabelas são diferentes', ccNewsMpSplit:n=>'As noites divergiram no jogo '+n, ccMpSlow:'Seu parceiro não chegou à pergunta — seguindo sem ele', ccMpLink:'Conexão', ccMpLive:'ativa', ccMpWait:'conectando…', ccMpLost:'sem conexão com a sala', ccMpOld:'suas versões são diferentes — recarregue a página',
 ccMpThirdOk:'Você pega o terceiro como sempre — ele é do time, e seu parceiro tem o mesmo',
 ccMpOnlyMate:'A vaga é do seu parceiro: um time não recruta desconhecidos',
-ccMpNewNote:'Você está criando um time: a carreira começa e o quadro do time mostra o código para o parceiro', ccMpJoinNote:c=>'Entrando na sala '+c+': a carreira começa e conecta ao parceiro',
+ccMpNewNote:'Você está criando um time: a carreira começa e o quadro do time mostra o código para o parceiro', ccMpNoteOff:'carreira solo', ccMpJoinNote:c=>'Entrando na sala '+c+': a carreira começa e conecta ao parceiro',
 ccMpMake:'Jogar em dupla', ccMpEnter:'Entrar com código', ccMpAskCode:'Código da sala — seis caracteres',
 ccAgentHave:'Você já tem um manager — é ele quem fala com os clubes', ccScoutOffHint:'Você desligou a busca por clube — nenhum clube escreve enquanto estiver desligada',
 ccSpotAuraNone:"Ninguém sabe ainda de quem é este lugar",
@@ -51555,7 +51559,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='fbe3340e';
+const CC_BUILD='ffd5821d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -52291,8 +52295,22 @@ function ccMpNoteDraw(){
   if(!el) return;
   const t=!CC_MP_NEW ? '' : (CC_MP_NEW.role==='b'
     ? L().ccMpJoinNote(CC_MP_NEW.code) : L().ccMpNewNote);
-  el.innerHTML=t ? '<span>'+esc(t)+'</span>' : '';
+  el.innerHTML=t ? '<span>'+esc(t)+'</span>'+
+    '<button type="button" class="cc-mp-note-x" onclick="ccMpNewCancel()">✕ '+
+    esc(L().ccMpNoteOff)+'</button>' : '';
   el.hidden=!t;
+}
+/* Снять намерение «вдвоём».
+
+   Его слово, 29 августа: «а соло карьеру можно запустить? то везде этот код».
+   CC_MP_NEW ставился нажатием на дверь и снимался ТОЛЬКО в ccStart — то есть
+   игрок, который нажал «войти по коду», передумал и ушёл назад, уносил
+   намерение с собой: следующая заведённая карьера снова оказывалась половиной
+   команды и снова просила код. Теперь намерение снимается крестиком на метке,
+   кнопкой «назад» на обоих экранах и самим входом в одиночную карьеру. */
+function ccMpNewCancel(){
+  CC_MP_NEW=null;
+  ccMpNoteDraw();
 }
 function careerMpNew(){
   if(!CC_MP_OPEN) return;
@@ -53383,7 +53401,20 @@ function openCareerHub(){
 }
 
 // Clicking the career tile picks up where you left off, or starts a new one.
+function ccSlotsFilled(){
+  let k=0;
+  for(let n=1; n<=CC_SLOTS; n++) if(ccSlotCard(n)) k++;
+  return k;
+}
 function careerEntry(){
+  // Вход одиночной дверью — значит, вдвоём здесь ничего не заводится. См. ccMpNewCancel.
+  CC_MP_NEW=null;
+  /* Держишь больше одной карьеры — карточка сначала спрашивает, какую.
+     Его слово, 29 августа: «а соло карьеру можно запустить?» — при командной
+     карьере в открытом слоте карточка молча уводила в лобби, и до пустого
+     слота (то есть до новой одиночной) дороги с главного экрана не было.
+     Одна карьера открывается сразу, как и открывалась. */
+  if(ccSlotsFilled()>1){ openCareerSlots(); return; }
   // A save from before the clock became a date is brought forward on the way in,
   // so nothing downstream has to know two shapes.
   /* Командная карьера подключается к своему лобби на входе — и БЕЗ await:

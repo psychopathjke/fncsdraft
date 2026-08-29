@@ -92,6 +92,20 @@ const BOOT = `
             screenNow() + ', намерение=' + JSON.stringify(CC_MP_NEW));
     }
 
+    /* Намерение «вдвоём» не липнет к следующей карьере. Его слово 29 августа:
+       «а соло карьеру можно запустить? то везде этот код». */
+    CC_MP_NEW={role:'b', code:'ABC123'};
+    ccMpNoteDraw();
+    check('метку «вдвоём» можно снять крестиком',
+          !!document.querySelector('#ccMpNote .cc-mp-note-x'));
+    ccMpNewCancel();
+    check('после крестика намерения нет', CC_MP_NEW === null, JSON.stringify(CC_MP_NEW));
+    CC_MP_NEW={role:'a'};
+    careerEntry();
+    await wait(150);
+    check('одиночная дверь снимает намерение', CC_MP_NEW === null, JSON.stringify(CC_MP_NEW));
+    show('screen-mode');
+
     // ---- 2. нажатие ведёт в создание, а не в одиночную карьеру -----------
     openDoor(0);
     await wait(200);

@@ -118,6 +118,13 @@ const BOOT = `
     out.notes.entered = shown;
     check('an empty slot with careers elsewhere opens the picker',
           shown === 'screen-career-slots', shown);
+    /* Две карьеры и больше — карточка режима открывает выбор, а не последнюю.
+       Его слово 29 августа: «а соло карьеру можно запустить?» */
+    ccSlotUse(1);
+    careerEntry();
+    check('with two careers the tile opens the picker too',
+          SHOWN_SCREEN === 'screen-career-slots', SHOWN_SCREEN);
+
     // And with nothing at all it still goes straight to creating one.
     localStorage.clear();
     careerEntry();
