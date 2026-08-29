@@ -210,8 +210,10 @@ var MP={
          порядке прихода. От сида считается всё поле вечера — двое собирали
          разные комнаты с первой игры при одном сиде генератора. Лобби своим
          сидом делится в каждом 'state'; здесь он и ставится. */
+      // Знакома ли команда: сид лобби уже лежит в сейве (своя команда) или нет (вход в чужую).
+      var known=!!(typeof CAREER!=='undefined' && CAREER && CAREER.career && m.seed && CAREER.career.lobbySeed===m.seed);
       if(m.seed && typeof ccMpLobbySeed==='function') ccMpLobbySeed(m.seed);
-      if(typeof ccMpStateOk!=='function' || ccMpStateOk(m.team)) ccApplyTeamState(m.team);
+      if(typeof ccMpStateOk!=='function' || ccMpStateOk(m.team, known)) ccApplyTeamState(m.team);
       // Состояние принято — но напарник может оказаться тобой же.
       if(typeof ccMpPeerCheck==='function' && ccMpOn && ccMpOn()) ccMpPeerCheck();
       /* Вечер у сервера идёт — вкладке он либо нужен заново (перезагрузка),
