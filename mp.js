@@ -260,6 +260,15 @@ var MP={
        переподключаются: пока страница не обновлена, код у нас всё тот же, и
        лобби скажет то же самое. Разрыв дуо ('part') связь не ломает: его
        разбирает careerPart, а состояние остаётся живым. */
+    /* Отказ по дивизиону: лобби не наше и им не станет. Связь закрывается
+       насовсем, а словами это скажет ccMpByeDiv на той стороне. */
+    if(m.t==='bye' && m.reason==='div'){
+      CODE=null;
+      setState('off');
+      try{ if(SOCK) SOCK.close(); }catch(e){}
+      SOCK=null;
+      try{ if(typeof ccMpByeDiv==='function') ccMpByeDiv(m.got, m.have); }catch(e){}
+    }
     if(m.t==='bye' && m.reason==='build'){
       CODE=null;
       MP.builds={have:m.have||null, got:m.got||CC_BUILD};
@@ -284,7 +293,11 @@ var MP={
       sock.onopen=function(){
         TRY=0;
         setState('live');
-        sock.send(JSON.stringify({t:'hello', build:CC_BUILD, card:MP.card()}));
+        /* Дивизион и сид команды — вместе с приветствием: по ним лобби решает,
+           пускать ли вошедшего (см. lobby.join). Сид говорит «это моя команда»,
+           дивизион — «мы одного уровня». */
+        sock.send(JSON.stringify({t:'hello', build:CC_BUILD, card:MP.card(),
+                                  div:MP.div(), seed:MP.seed()}));
         // Вернулся — догнал по номерам, ничего не переспрашивая.
         if(SEEN) sock.send(JSON.stringify({t:'since', n:SEEN}));
         res();
@@ -369,6 +382,15 @@ var MP={
      сообщений на сокете сохраняется, поэтому карточка гарантированно приходит
      напарнику раньше, чем сервер объявит старт. */
   sendCard:function(){ MP.send({t:'card', card:MP.card()}); },
+  // Чем карьера представляется лобби на входе. Пусто — значит нечем сверять.
+  div:function(){
+    var cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career)||null;
+    return (cr && cr.division) || null;
+  },
+  seed:function(){
+    var cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career)||null;
+    return (cr && cr.seed) || null;
+  },
   ready:function(day){ MP.send({t:'ready', day:day}); },
   act:function(kind, payload){ MP.send({t:'act', kind:kind, payload:payload}); },
   digest:function(hash, team){ MP.send({t:'digest', hash:hash, team:team}); },

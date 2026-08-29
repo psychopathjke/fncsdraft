@@ -3507,7 +3507,7 @@
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
      файл и разойдётся с напарником. -->
-<script src="mp.js?v=0e3de6f4"></script>
+<script src="mp.js?v=b1250115"></script>
 </head>
 <body>
 <div class="wrap">
@@ -51568,7 +51568,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='3c2297dd';
+const CC_BUILD='dcf84b73';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -52115,6 +52115,14 @@ function ccMpLeaveBad(why){
   try{ careerSave(); }catch(e){}
   ccMpRedraw();
   if(why) ccTell(why);
+}
+/* Лобби отказало по дивизиону — тем же окном и тем же откатом, что и отказ,
+   пойманный уже внутри. Разница только в том, что теперь отказ приходит с
+   порога: см. lobby.join. */
+function ccMpByeDiv(mine, theirs){
+  CC_MP_DIV_BAD={mine:mine||((CAREER&&CAREER.career&&CAREER.career.division)||'?'), team:theirs||'?'};
+  ccMpLeaveBad(L().ccMpDivDiff(CC_MP_DIV_BAD.mine, CC_MP_DIV_BAD.team));
+  CC_MP_DIV_BAD=null;
 }
 function ccMpDivWhy(){
   if(!ccMpOn() || !CC_MP_DIV_BAD) return null;

@@ -23,6 +23,7 @@ function createLobby(opts){
     evening:null,        // {seed, n} пока вечер идёт
     digests:{},          // id -> {hash, team}
     last:null,           // {team, n} последнего закрытия — для того, кто закрытие не получил
+    div:o.div||null,     // дивизион команды: с ним сверяется каждый входящий
     seen:0,              // когда лобби трогали в последний раз
     over:false           // дуо разорвано
   };
@@ -57,6 +58,22 @@ function createLobby(opts){
       if(st.build && msg && msg.build!==st.build)
         return [{to:'self', msg:{t:'bye', reason:'build', have:st.build, got:msg.build}},
                 {to:'peer', msg:{t:'stale', build:msg.build, have:st.build}}];
+      /* ЧУЖОЙ ДИВИЗИОН НЕ ВХОДИТ ВОВСЕ.
+
+         Его слово, 29 августа: «запретить присоединяться, когда 1 и 5 див,
+         чтоб даже в лобби не пускало». Клиент это уже ловил — но ПОСЛЕ входа:
+         сокет открывался, приезжало состояние, и только тогда карьера
+         откатывалась назад (см. ccMpStateOk). То есть на секунду двое всё-таки
+         оказывались в одной команде, и у создателя мигала чужая карточка.
+
+         Здесь отказ до всего: пришедший не попадает в st.cards, напарник о нём
+         не узнаёт, лобби остаётся таким, каким было. Свой же входит всегда —
+         сид лобби у него совпал (st.seed), а дивизион мог разойтись из-за
+         повышения, которое он ещё не дочитал. */
+      const own=msg && msg.seed && st.seed && msg.seed===st.seed;
+      if(!own && st.div && msg && msg.div && msg.div!==st.div)
+        return [{to:'self', msg:{t:'bye', reason:'div', have:st.div, got:msg.div}}];
+      if(msg && msg.div && !st.div) st.div=msg.div;
       if(ids().length>=2 && !st.cards[id])
         return [{to:'self', msg:{t:'bye', reason:'full'}}];
       st.cards[id]=(msg&&msg.card)||null;
@@ -84,6 +101,9 @@ function createLobby(opts){
     team(id, t){
       if(!t) return [];
       st.team=t;
+      // Команда поднялась или упала — лобби запоминает новый дивизион, иначе
+      // вернувшийся после повышения получил бы отказ по собственной команде.
+      if(t.division) st.div=t.division;
       return [{to:'peer', msg:{t:'team', team:st.team, by:id}}];
     },
 

@@ -24,6 +24,29 @@ check('в отказе названы обе версии',
    а раньше он не получал ничего и продолжал держать лобби на старом коде. */
 check('и сидящему в лобби сказано, что он устарел',
       o.some(x=>x.to==='peer' && x.msg.t==='stale'), JSON.stringify(o));
+/* ---- чужой дивизион не входит вовсе ---------------------------------
+   Его слово, 29 августа: «запретить присоединяться, когда 1 и 5 див, чтоб даже
+   в лобби не пускало». Раньше это ловил клиент — но уже войдя. */
+let Ld=createLobby({build:'aaaa1111', seed:'team-d'});
+Ld.join('A',{build:'aaaa1111', card:CARD, div:1, seed:'own-a'});
+let od=Ld.join('B',{build:'aaaa1111', card:CARD, div:5, seed:'own-b'});
+check('чужой дивизион не пускается', od[0] && od[0].msg.t==='bye' && od[0].msg.reason==='div',
+      JSON.stringify(od));
+check('и в отказе названы оба дивизиона', od[0].msg.have===1 && od[0].msg.got===5,
+      JSON.stringify(od[0].msg));
+check('отказанного нет в лобби', Object.keys(Ld.state.cards).length===1,
+      JSON.stringify(Object.keys(Ld.state.cards)));
+check('свой дивизион входит', Ld.join('B',{build:'aaaa1111', card:CARD, div:1, seed:'own-b'})
+      .some(x=>x.msg.t==='state'));
+// Свой же — по сиду команды, даже если его сейв отстал на повышение.
+let Lo=createLobby({build:'aaaa1111', seed:'team-o'});
+Lo.join('A',{build:'aaaa1111', card:CARD, div:2, seed:'own-a'});
+check('свой по сиду лобби входит с любым дивизионом',
+      Lo.join('B',{build:'aaaa1111', card:CARD, div:3, seed:'team-o'}).some(x=>x.msg.t==='state'));
+// Повышение команды двигает дивизион лобби.
+Lo.team('A',{division:1});
+check('повышение переписывает дивизион лобби', Lo.state.div===1, String(Lo.state.div));
+
 o=L.join('B',{build:'aaaa1111', card:Object.assign({},CARD,{handle:'b'})});
 check('второй вошёл', o.some(x=>x.msg.t==='state'));
 check('и обоим разослали карточку напарника', o.some(x=>x.to==='all'||x.to==='peer'));

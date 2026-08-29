@@ -74,6 +74,24 @@ const BOOT = `
     await ccMpBoot();
     check('открытие командной карьеры подключается', asked && asked.code === 'ABC123');
 
+    /* Отказ лобби по дивизиону: карьера откатывается в одиночную прямо на
+       входе. Его слово, 29 августа: «запретить присоединяться, когда 1 и 5 див,
+       чтоб даже в лобби не пускало» — сам отказ выдаёт сервер (см.
+       server/tools/check-lobby.js), здесь стережётся, что клиент его слушает. */
+    seed('EU', 2);
+    await careerMpJoin('zzz999');
+    check('вошли в лобби перед отказом', !!(CAREER.career.mp), JSON.stringify(CAREER.career.mp||null));
+    ccMpByeDiv(CAREER.career.division, 5);
+    check('после отказа карьера снова одиночная', !CAREER.career.mp, JSON.stringify(CAREER.career.mp||null));
+    check('и дивизион свой остался', CAREER.career.division===1, String(CAREER.career.division));
+    check('и сказано, чей дивизион чужой',
+          (document.getElementById('ccAskText')||{}).textContent.indexOf('5')>=0,
+          (document.getElementById('ccAskText')||{}).textContent||'');
+    ccAskGo(false);
+    // Что уезжает в лобби на входе: дивизион и сид команды.
+    check('в приветствии едет дивизион', MP.div()===1, String(MP.div()));
+    check('и сид карьеры', typeof MP.seed()==='string' || MP.seed()===null, String(MP.seed()));
+
     // А одиночная не трогает сеть вовсе.
     delete CAREER.career.mp;
     asked = null;
