@@ -268,7 +268,7 @@
   .mode-card-soon .ec-art{filter:grayscale(1) brightness(.62);}
   .mode-card-soon:hover .ec-art{background-size:cover;}
   .mode-card-soon p{opacity:.55;}
-  .mode-card-soon .mode-count{color:var(--ink-dimmer);border-color:var(--line);opacity:.75;}
+  .mode-card-soon .mode-count{opacity:.75;}
   .soon-badge{position:absolute;top:20px;right:20px;z-index:2;
     background:var(--accent);color:var(--accent-ink);font-size:10px;font-weight:900;
     letter-spacing:.14em;padding:5px 12px;border-radius:20px;text-transform:uppercase;
@@ -298,8 +298,18 @@
   }
   .mode-card h3{margin:0 0 6px;font-size:22px;text-transform:uppercase;letter-spacing:-0.3px;}
   .mode-card p{margin:0;color:var(--ink-dim);font-size:13px;line-height:1.5;}
-  .mode-count{display:inline-block;margin-top:14px;font-family:ui-monospace,Menlo,Consolas,monospace;
-    font-size:12px;color:var(--accent);border:1px solid var(--accent);padding:3px 9px;border-radius:3px;}
+  /* Строка «что это за турнир» — ряд пилюль, как даты мейджоров выше на той же
+     карточке. Его слово, 29 августа: «эти фигни замени на норм дизайн, как в
+     карьере». Была одна зелёная моноширинная коробка, которая на длинном
+     перечислении («2 игрока · семь регионов, опены, плей-ин, хиты, финал»)
+     переносилась на две строки и читалась как кусок кода. Режется по «·»
+     в ccModeCountPills. */
+  .mode-count{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
+  .mode-count i{font-style:normal;font-size:11.5px;font-weight:800;letter-spacing:.02em;
+    color:var(--ink-dim);background:var(--panel2);border:1px solid var(--line);
+    border-radius:20px;padding:4px 10px;}
+  .mode-count i:first-child{color:var(--ink);border-color:rgba(0,201,164,.45);}
+  .mode-card-soon .mode-count i{opacity:.75;}
   /* Две двери в командную карьеру, прямо на карточке. Держатся отдельной
      строкой под описанием: карточка целиком — кнопка одиночной карьеры, и эти
      две обязаны выглядеть как ДРУГОЙ выбор, а не как её продолжение. */
@@ -2988,25 +2998,34 @@
     .cc-ffo{backdrop-filter:none;-webkit-backdrop-filter:none;}
   }
   /* The career picker: three cards, the open one lit. */
-  .cc-slot-h{margin:26px 0 4px;font-size:22px;font-weight:900;font-style:italic;
-    text-transform:uppercase;letter-spacing:.04em;}
-  .cc-slot-sub{color:var(--ink-dim);font-size:13px;margin-bottom:18px;}
+  /* Экран стоит на светлой сцене хаба (.ch-stage), а плитки были одеты в
+     тёмную тему сайта: белый текст на белом, рамки в ноль и пустая плитка,
+     которую не видно. Его скрин 29 августа: «этот дизайн мне тоже не
+     нравится». Теперь это плитки хаба — те же .ch-tile: белые, с тенью,
+     с чёрной шапкой номера; открытая помечена бирюзовым кольцом. */
+  #screen-career-slots .ch-stage{min-height:0;}
+  .cc-slot-h{margin:0 0 4px;font-size:22px;font-weight:900;font-style:italic;
+    text-transform:uppercase;letter-spacing:.04em;color:#0b0f12;}
+  .cc-slot-sub{color:#6b7883;font-size:12px;font-weight:700;margin-bottom:18px;}
   .cc-slot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:14px;margin-bottom:18px;}
-  .cc-slot{border:1px solid var(--line);border-radius:8px;padding:16px;
-    background:rgba(255,255,255,.03);display:flex;flex-direction:column;gap:2px;}
-  .cc-slot.on{border-color:var(--accent);background:rgba(0,201,164,.07);}
+    gap:16px;margin-bottom:18px;}
+  .cc-slot{background:#fbfcfc;border:none;border-radius:6px;padding:14px;
+    box-shadow:0 12px 30px rgba(11,15,18,.13);display:flex;flex-direction:column;gap:2px;
+    color:#0b0f12;min-width:0;}
+  .cc-slot.on{box-shadow:0 12px 30px rgba(11,15,18,.13), 0 0 0 2px #00b090;}
   .cc-slot-empty{align-items:center;justify-content:center;gap:12px;
-    border-style:dashed;min-height:200px;}
-  .cc-slot-n{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--ink-dimmer);margin-bottom:6px;}
-  .cc-slot-none{color:var(--ink-dimmer);font-size:13px;}
+    background:rgba(251,252,252,.5);box-shadow:none;border:1px dashed #b9c4ca;min-height:200px;}
+  .cc-slot-n{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+    color:#6b7883;margin-bottom:6px;}
+  .cc-slot.on .cc-slot-n{color:#00846d;}
+  .cc-slot-none{color:#8b98a5;font-size:11px;font-weight:800;letter-spacing:.05em;
+    text-transform:uppercase;}
   .cc-slot-who{display:flex;justify-content:space-between;align-items:baseline;
     gap:8px;margin-bottom:8px;}
-  .cc-slot-who b{font-size:18px;font-weight:900;font-style:italic;}
-  .cc-slot-who span{font-size:20px;font-weight:900;color:var(--accent);}
+  .cc-slot-who b{font-size:18px;font-weight:900;font-style:italic;color:#0b0f12;}
+  .cc-slot-who span{font-size:20px;font-weight:900;color:#00846d;}
   .cc-slot .ch-play{margin-top:12px;width:100%;}
-  .cc-slot-del{margin-top:6px;width:100%;font-size:11px;}
+  .cc-slot-del{margin-top:6px;width:100%;font-size:11px;color:#6b7883;}
   .cc-slot-del.armed{border-color:var(--danger);color:var(--danger);}
   /* Going back to a club about their offer, before signing it. */
   .dm-ask{display:flex;gap:8px;margin:8px 0 4px;flex-wrap:wrap;}
@@ -3847,9 +3866,11 @@
   <div class="screen" id="screen-career-slots">
     <div class="ch-stage">
       <div class="ch-facets"><i class="cc-f1"></i><i class="cc-f2"></i><i class="cc-f3"></i><i class="cc-f4"></i></div>
+      <div class="ch-body">
       <h2 class="cc-slot-h" data-i18n="ccSlotsTitle"></h2>
       <div class="cc-slot-sub" data-i18n="ccSlotsSub"></div>
       <div class="cc-slot-grid" id="ccSlotGrid"></div>
+      </div>
       <div class="ch-foot">
         <button class="cc-back" onclick="show('screen-mode')" data-i18n="ccBack"></button>
       </div>
@@ -14053,6 +14074,19 @@ function applyStaticI18n(){
     const key=el.getAttribute('data-i18n');
     const val=L()[key];
     if(typeof val==='string') el.innerHTML=val.replace(/\{CARDS\}/g,cards).replace(/\{EVENTS\}/g,events);
+  });
+  ccModeCountPills();
+}
+/* Строка через «·» — это перечисление, и выглядеть оно должно рядом пилюль,
+   а не одной длинной плашкой. Режется после перевода: в словаре строка живёт
+   целиком и по-своему в каждом языке, а разделитель у них общий. */
+function ccModeCountPills(){
+  document.querySelectorAll('.mode-count').forEach(function(el){
+    const txt=(el.textContent||'').trim();
+    if(!txt) return;
+    el.innerHTML=txt.split('·').map(function(p){
+      return '<i>'+esc(p.trim())+'</i>';
+    }).join('');
   });
 }
 function refreshPreRegionLabels(){
@@ -51484,7 +51518,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4595ae2f';
+const CC_BUILD='84a58bbb';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
