@@ -4668,7 +4668,7 @@ ccAgentOn:n=>'Менеджер: '+n,
 ccSmm:'СММ',
 ccSmmGain:'Подписчиков больше на',
 ccSmmHint:'Человек, который занимается твоими соцсетями. Растёт всё — победы, стримы, ответы зрителям.',
-ccSmmHire:'Нанять · ',
+ccSmmHire:'Нанять · ', ccSmmChange:'Сменить СММ',
 ccSmmNone:'Никто не ведёт соцсети',
 ccFrom:'от ',
 ccSmmBio:n=>'СММ '+n,
@@ -6249,7 +6249,7 @@ ccAgentOn:n=>'Manager: '+n,
 ccSmm:'Social',
 ccSmmGain:'Followers up by',
 ccSmmHint:'Somebody who runs your socials. Everything grows — wins, streams, answers to viewers.',
-ccSmmHire:'Hire · ',
+ccSmmHire:'Hire · ', ccSmmChange:'Change the SMM',
 ccSmmNone:'Nobody is running your socials',
 ccFrom:'from ',
 ccSmmBio:n=>'social by '+n,
@@ -8766,7 +8766,7 @@ dmPitchOk:'Compris. Je passe voir tous ceux que tu peux viser, et un peu au-dess
 ccSmm:'Réseaux',
 ccSmmGain:'Audience en hausse de',
 ccSmmHint:'Quelqu’un qui gère tes réseaux. Tout grandit — victoires, streams, réponses aux spectateurs.',
-ccSmmHire:'Engager · ',
+ccSmmHire:'Engager · ', ccSmmChange:'Changer de SMM',
 ccSmmNone:'Personne ne gère tes réseaux',
 ccFrom:'à partir de ',
 ccAgentPaid:'Au manager',
@@ -10671,7 +10671,7 @@ ccPitchWho:"A chi scrivere:",
 ccSmm:"Social",
 ccSmmGain:"Follower in più",
 ccSmmHint:"Qualcuno che ti gestisce i social. Cresce tutto — vittorie, stream, risposte agli spettatori.",
-ccSmmHire:"Assumi · ",
+ccSmmHire:"Assumi · ", ccSmmChange:"Cambia SMM",
 ccSmmNone:"Nessuno ti gestisce i social",
 ccFrom:"da ",
 ccAgentPaid:"Al manager",
@@ -12892,7 +12892,7 @@ ccPitchWho:"Para quem escrever:",
 ccSmm:"Social",
 ccSmmGain:"Seguidores a mais",
 ccSmmHint:"Alguém que cuida das suas redes. Tudo cresce — vitórias, streams, respostas aos espectadores.",
-ccSmmHire:"Contratar · ",
+ccSmmHire:"Contratar · ", ccSmmChange:"Trocar de SMM",
 ccSmmNone:"Ninguém cuida das suas redes",
 ccFrom:"de ",
 ccAgentPaid:"Para o empresário",
@@ -51450,7 +51450,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='58c5341a';
+const CC_BUILD='6c766f8d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -54024,6 +54024,7 @@ function careerSmmTileHTML(){
     <div class="ch-row"><em>${L().ccWage}</em><b>${
       ccNum((m.cost||CC_SMM_FROM))}${L().ccPerSeason}</b></div>
     <div class="ch-row"><em>${L().ccCoachUntil}</em><b>${ccDayLabel(m.until)}</b></div>
+    <button class="ch-swap" onclick="ccSmmPickOpen()">${L().ccSmmChange}</button>
     <button class="ch-swap" onclick="careerEndSmm()">${L().ccAgentEnd}</button>
   </div>`;
   const can=(CAREER.career.balance||0)>=CC_SMM_FROM;
@@ -63521,7 +63522,8 @@ function ccSmmGot(){ return Math.round((CAREER && CAREER.career && CAREER.career
 function careerHireSmm(id){
   const cr=CAREER.career;
   const who=ccSmmOf(id) || CC_SMM[0];
-  if(ccSmm()) return false;
+  // Смена, как у коуча и маркетолога: его слово, 29 августа — «СММ сделай такую же кнопку, чтоб мог выбирать».
+  if(ccSmm() && ccSmm().id===who.id) return false;
   const t=ccSmmTermsOf(who);
   if((cr.balance||0)<t.cost) return false;
   cr.balance-=t.cost;
@@ -63542,16 +63544,17 @@ function ccSmmPickOpen(){
   const cr=CAREER.career;
   const rows=ccByHand(CC_SMM).map(m=>{
     const t=ccSmmTermsOf(m);
-    const can=(cr.balance||0)>=t.cost && !ccSmm();
-    return `<div class="cc-buy">
+    const on=!!ccSmm() && ccSmm().id===m.id;
+    const can=!on && (cr.balance||0)>=t.cost;
+    return `<div class="cc-buy${on?' own':''}">
       <img class="cc-buy-img cc-buy-face" src="${PHOTO_DIR}${esc(m.photo)}" alt=""
            loading="lazy" onerror="this.remove()">
       <div class="cc-buy-in"><b>${esc(m.name)}</b>
         <i>@${esc(m.at)}${m.x ? ' · '+ccFollowers(m.x) : ''}${
           m.org ? ' · '+esc(m.org) : ''}</i>
         <span>${L().ccSmmGain} +${Math.round(t.boost*100)}% · ${L().ccShopMonth}</span></div>
-      <button class="ch-sign"${can?'':' disabled'} onclick="careerHireSmm('${m.id}')">$${
-        ccNum(t.cost)}</button>
+      ${on ? `<span class="cc-owned">${L().ccShopUntil(ccDayLabel(CAREER.smm.until))}</span>`
+           : `<button class="ch-sign"${can?'':' disabled'} onclick="careerHireSmm('${m.id}')">${ccNum(t.cost)}</button>`}
     </div>`;
   }).join('');
   document.getElementById('smmPickBody').innerHTML=
