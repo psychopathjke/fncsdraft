@@ -307,10 +307,15 @@
   .mode-mp[hidden]{display:none;}
   .mode-mp-desc{margin:0 0 10px;color:var(--ink-dim);font-size:12.5px;line-height:1.5;}
   .mode-mp-btns{display:flex;gap:8px;flex-wrap:wrap;}
-  .mode-mp-btn{flex:1 1 auto;min-width:120px;cursor:pointer;font-family:ui-monospace,Menlo,Consolas,monospace;
-    font-size:12px;font-weight:700;padding:5px 10px;
-    border-radius:3px;border:1px solid var(--accent);background:transparent;color:var(--accent);}
-  .mode-mp-btn:hover{background:var(--accent);color:var(--accent-ink);}
+  /* Кнопки — как в хабе карьеры (#screen-career-hub .ch-sign): жёлтые, капсом.
+     Его слово, 29 августа: «не нравится дизайн, который сейчас, сделай как в
+     карьере». Зелёная моно-плашка ему не зашла. */
+  .mode-mp-btn{flex:1 1 auto;min-width:120px;cursor:pointer;border:none;background:#ffdd00;
+    color:#0b0f12;border-radius:5px;padding:9px 12px;font:inherit;font-weight:900;font-size:12px;
+    letter-spacing:.07em;text-transform:uppercase;}
+  .mode-mp-btn:hover{background:#ffe95c;}
+  .mode-mp-btn.mode-mp-join{background:rgba(255,255,255,.08);border:1px solid rgba(140,175,255,.28);color:#dfe8fb;}
+  .mode-mp-btn.mode-mp-join:hover{background:rgba(255,255,255,.16);color:#fff;}
 
   /* Broadcast-style winners plate, the graphic the stream cuts to after a
      stage. Light panel, FNCS teal wedge and heavy italic type, deliberately
@@ -3559,11 +3564,10 @@
           <div class="mode-mp-btns">
             <button class="mode-mp-btn" data-i18n="ccMpMake"
               onclick="event.stopPropagation();careerMpNew()"></button>
-            <button class="mode-mp-btn" data-i18n="ccMpEnter"
+            <button class="mode-mp-btn mode-mp-join" data-i18n="ccMpEnter"
               onclick="event.stopPropagation();careerMpJoinNew()"></button>
           </div>
         </div>
-      </div>
       </div>
       </div>
     </div>
@@ -51218,7 +51222,7 @@ function ccStart(){
             reach: CC.div===1 ? CC_REACH_D1 : 0,
             // Очки прокачки в карьере не живут: они розданы на экране
             // создания и уже лежат в статах. Его правка, 23 августа.
-            earnings:0, tokens:[], log:[],
+            earnings:0, wages:0, tokens:[], log:[],
             /* Своя соль этой карьеры — см. ccCareerSeed. Без неё первые, кто
                написал в инбокс, были одни и те же в каждой новой карьере:
                бросок сеялся сезоном и днём, а они у всех одинаковые. */
@@ -51480,7 +51484,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='05227d6a';
+const CC_BUILD='4595ae2f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -70141,7 +70145,14 @@ function careerFfDigest(ff){
   ccFfClose();
   const cr=CAREER.career, pl=CAREER.player;
   const now=(pl.ovrExact!=null?pl.ovrExact:pl.ovr);
-  const money=(cr.earnings||0)-ff.from.earnings;
+  /* «Призовые» — то, что лежит на плитках, а не разница cr.earnings.
+     Его скрин, 29 августа: в шапке «+$700», а по плиткам 100+400+250 = 750.
+     Разница earnings ловит и то, что к плиткам не относится (в частности,
+     careerMigrateMoney на сейве без wages вычитает из earnings клубные
+     выплаты); плитки же — ровно те вечера, что отыграны перемоткой, и их
+     сумма обязана сходиться с шапкой. Без плиток с призом — по-старому. */
+  const tilesCash=ff.played.reduce((a,r)=>a+(r && r.prize>0 ? r.prize : 0), 0);
+  const money=tilesCash || ((cr.earnings||0)-ff.from.earnings);
   const days=ccDaysBetween(ff.from.day, careerToday());
 
   const tiles=ff.played.map((r,i)=>{
