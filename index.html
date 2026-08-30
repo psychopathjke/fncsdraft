@@ -61476,8 +61476,101 @@ const CC_ORG_NEW=[
   // Both have Fortnite rosters, so the pool derives them and the dedupe below
   // drops these. Left in place so the list reads as the full crossover set.
   {name:'Team Falcons',   tier:92, n:0, newcomer:true},
-  {name:'Tundra Esports', tier:87, n:0, newcomer:true}
+  {name:'Tundra Esports', tier:87, n:0, newcomer:true},
+  /* Его четыре, 30 августа («на рабочем столе орги, добавил новые»): гербы
+     легли в logos/. Уровни — по тому же ряду призовых esportsearnings, что и
+     выше: TSM (~$15M за историю) рядом с Vitality/Cloud9, Gambit (~$18M, но
+     без активного состава) чуть ниже. Eleven и COOLER стояли «у полосы
+     Tundra» на глаз — и глаз ошибся: по Fortnite-призовым (CC_ORG_EARN,
+     30 августа) COOLER — вторая команда за всю историю игры ($3.33M, выше
+     FaZe и Liquid), Eleven — 21-я ($642k, между Falcons и Cloud9). У этих
+     двоих нет другой дисциплины, по которой их можно было бы оценить, так
+     что их уровень — ccOrgEarnLevel от этой суммы, как у клубов из ростера. */
+  {name:'TSM',            tier:92, n:0, newcomer:true},
+  {name:'Gambit Esports', tier:90, n:0, newcomer:true},
+  {name:'Eleven Gaming',  tier:88, n:0, newcomer:true},  // $642k  → 88.5
+  {name:'COOLER Esport',  tier:94, n:0, newcomer:true}   // $3.33M → 94.2
 ];
+/* Призовые команд по Fortnite — esportsearnings.com/games/534-fortnite/top-teams,
+   снято 30 августа 2026, топ-100 целиком (список кончается на $31k).
+
+   Зачем: уровень клуба «по двум сильнейшим» делал из BIG с двумя людьми клуб
+   уровня Liquid, а Falcons, Guild и NiP — с одним-двумя слабыми европейцами
+   в снимке — ставил ниже Lyost. Его слово, 30 августа: «забалансить по тирам
+   орги, мб по ирнингу». Ростер говорит, кого клуб выставляет сейчас; призовые
+   — что клуб в этой игре значит. Нужны оба.
+
+   Шкала: 82 + 8·log10(призовые / $100k). Якоря — $31k (100-я команда) → 78,
+   $100k → 82, $300k → 86, $1M → 90, $3.6M (Lazarus, первая) → 94.5. Логарифм,
+   потому что призовые растут в разы, а уровень — на единицы.
+
+   Клуб из списка: (ростер + призовые) / 2. Клуб вне списка заработал в
+   Fortnite меньше $31k — это тоже замер, но только в одну сторону: он не
+   поднимает слабый клуб (78 «пола» тянул Fortnite Noobs с 61 на 70 — так было
+   в первом прогоне), а прижимает клуб из одной-двух звёзд к 78 наполовину,
+   из трёх-пяти — на четверть, от шести человек ростер верят целиком (XP42 с
+   одиннадцатью людьми в списке нет только потому, что esportsearnings не
+   успел за 2025-26).
+
+   Пул считается по региону, поэтому таблица хранится целиком: в NA сработают
+   Sentinels, 100 Thieves, NRG. Имена — как на сайте; сопоставление через
+   ccOrgKey (строчные буквы и цифры), Cooler Esport ↔ COOLER Esport и
+   Manchester City eSports ↔ …Esports сходятся сами. */
+const CC_ORG_EARN={
+  'Lazarus':3618205,'Cooler Esport':3328635,'Sentinels':3327512,'FaZe Clan':2432777,
+  '100 Thieves':2359564,'NRG':2222262,'TSM':2040027,'Counter Logic Gaming':1901035,
+  'Team Liquid':1455588,'LeStream Esport':1358030,'Guild Esports':1316511,
+  'Ghost Gaming':1260674,'Become Legends':1065515,'9z Team':1048800,'Kungarna':753676,
+  'Wave Esports':739135,'Solary':724472,'Valhalla Vikings':719800,'Team Falcons':707948,
+  'XSET':648150,'Eleven Gaming':642225,'Team Atlantis':584729,'Cloud9':478448,
+  'Twisted Minds':427350,'Crazy Raccoon':395842,'Misfits':394200,'Virtus.pro':336333,
+  'Gaimin Gladiators':323900,'TrainHard eSport':316831,'MCES':312245,
+  'Gambit Esports':312234,'Team Vitality':292200,'Dignitas':289010,'Team GO':270180,
+  'World Best Gaming':262500,'Karmine Corp':259350,'T1':254575,
+  'Luminosity Gaming':229483,'Nigma Galaxy':212649,'Team Secret':209725,
+  'GameWith':196040,'Fnatic':187730,'Gentside Esports Club':180276,
+  'Team Kinguin':177548,'Built By Gamers':169783,'Complexity Gaming':168550,
+  'Executors One':155650,'Tundra Esports':155000,'Team Envy':151000,
+  'Triple Esports':150000,'Excel Esports':135900,'Millenium':133602,
+  'Tempo Storm':120200,'PWR':118257,'Helsinki REDS':117030,'Natus Vincere':114305,
+  'Supremacy':113817,'G2 Esports':113350,'AGO Esports':110850,'Riddle':106245,
+  'Newbee':105100,'World Elite':104500,'Riot Squad Esports':100000,
+  'Team Singularity':99682,'Heroic':99650,'Grizi Esport':96935,'Renegades':94018,
+  'Team Vikings':93300,'Ninjas in Pyjamas':86441,'Gentle Mates':83593,'Astralis':83300,
+  'Copenhagen Flames':82105,'Team Heretics':81429,'Raised by Kings':77218,
+  'Optimal Ambition':74696,'Alliance':73445,'Chiefs Esports Club':71430,
+  'Ovation eSports':70500,'M10 Esports':69000,'Enterprise Gaming':67700,
+  'FunPlus Phoenix':65947,'Team Queso':65600,'Valiant':61750,'Oserv Esport':59856,
+  'Dynamind':55950,'Manchester City eSports':55689,'GODSENT':54470,
+  'Stratum Esports':50300,'Tricked eSports':50200,'FURIA':50000,'GamerLegion':50000,
+  'MOUZ':49500,'Team Sniper Gang':42000,'Spectrum ESC':40250,'R8 Esports':40000,
+  'Gamma Gaming':39775,'Elite Esports':37785,'Team BDS':33513,'BIG':31500,
+  'Rise Nation':31350
+};
+const CC_ORG_EARN_FLOOR=78;   // уровень 100-й команды списка; ниже него список не видит
+let CC_ORG_EARN_KEYS=null;
+function ccOrgKey(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,''); }
+// Призовые клуба по Fortnite или null, если его нет в топ-100.
+function ccOrgEarn(name){
+  if(!CC_ORG_EARN_KEYS){
+    CC_ORG_EARN_KEYS=new Map();
+    Object.keys(CC_ORG_EARN).forEach(k=>CC_ORG_EARN_KEYS.set(ccOrgKey(k), CC_ORG_EARN[k]));
+  }
+  const v=CC_ORG_EARN_KEYS.get(ccOrgKey(name));
+  return v==null ? null : v;
+}
+function ccOrgEarnLevel(usd){ return 82+8*Math.log10(usd/1e5); }
+/* Ростерный уровень + призовые → уровень клуба. n — сколько людей в снимке. */
+function ccOrgTier(name, roster, n){
+  const usd=ccOrgEarn(name);
+  let t;
+  if(usd!=null) t=(roster+ccOrgEarnLevel(usd))/2;
+  else{
+    const w=n>=6 ? 0 : n>=3 ? 0.25 : 0.5;
+    t=roster-Math.max(0, roster-CC_ORG_EARN_FLOOR)*w;
+  }
+  return Math.min(96, Math.round(t));
+}
 /* Контракты годичные, и часть игроков каждое межсезонье меняет орг.
 
    Его слово, 27 августа: «пусть организации меняются у настоящих игроков, не
@@ -61536,11 +61629,28 @@ function careerOrgPool(){
     g.names.set(p.org, (g.names.get(p.org)||0)+1);
     g.ovrs.push(p._ovr);
   });
-  CC_ORG_POOL[reg]=[...by.values()].map(g=>({
-    name:[...g.names.entries()].sort((a,b)=>b[1]-a[1])[0][0],
-    n:g.ovrs.length,
-    tier:Math.round(g.ovrs.reduce((s,v)=>s+v,0)/g.ovrs.length)
-  }));
+  /* Уровень клуба — то, что он ВЫСТАВЛЯЕТ, а не среднее по списку.
+
+     Средним арифметическим клуб с одним игроком 95 выходил ровно 95 («Aurora
+     tier 95 будто точно» — его слово, 30 августа), а Team HavoK с восемью
+     людьми от 94 до 77 — 88, ниже клуба из двух 96-х. Глубина состава
+     наказывалась, а одна звезда делала «клуб мирового уровня».
+
+     Теперь: средняя двух сильнейших (дуо, которое клуб реально сажает), минус
+     два у клуба с одним игроком (непроверенный), плюс глубина — +1 от четырёх
+     человек, +2 от восьми. Потолок 96, как у верха сцены.
+
+     Это ростерная половина. Вторая — призовые клуба по Fortnite, ccOrgTier
+     над CC_ORG_EARN: там же сказано, почему двух звёзд мало для уровня Liquid.
+     `roster` в строке клуба — ростерная половина без призовых, для проверок. */
+  CC_ORG_POOL[reg]=[...by.values()].map(g=>{
+    const o=g.ovrs.slice().sort((a,b)=>b-a);
+    const top=o.length>=2 ? (o[0]+o[1])/2 : o[0]-2;
+    const depth=o.length>=8 ? 2 : o.length>=4 ? 1 : 0;
+    const name=[...g.names.entries()].sort((a,b)=>b[1]-a[1])[0][0];
+    const roster=Math.min(96, Math.round(top+depth));
+    return {name, n:o.length, roster, tier:ccOrgTier(name, roster, o.length), earn:ccOrgEarn(name)};
+  });
   // A newcomer only enters if the roster has not already produced it — Falcons
   // and Virtus.pro do have Fortnite players, so they are derived, not typed, and
   // must not appear twice.
