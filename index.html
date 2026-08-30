@@ -3740,6 +3740,53 @@
     /* A card is a card, not a stack of shadows, at this size. */
     .fut-card{box-shadow:none;}
   }
+
+  /* ============================================================
+     ОКРУГЛЫЙ вариант, 30 августа: «я скинул референс, я хочу чтоб такой
+     дизайн был округлённый, на главном также». Срезанные углы и
+     параллелограммы уходят, остаётся стекло, лучи и Oswald; углы — как у
+     карточек в самом Fortnite (Compete), радиус --r. Один блок в самом
+     конце стилей, чтобы побеждать порядком: --cut:none гасит все срезы
+     через var(--cut) разом, остальное перебивается адресно.
+     ============================================================ */
+  :root{--r:16px;--r-sm:10px;--cut:none;}
+  /* Главная */
+  .hero{clip-path:none;border-radius:var(--r);}
+  .hero-btn,.hero-btn:hover,.hero-btn:focus-visible{transform:none;border-radius:999px;padding:12px 26px 11px;}
+  .hero-btn-go:hover,.hero-btn-go:focus-visible{transform:translateY(-1px);}
+  .hero-btn>span{transform:none;}
+  .mode-card{clip-path:none;border-radius:var(--r);}
+  .ec-art{border-radius:var(--r) var(--r) 0 0;}
+  .ec-cup{border-radius:var(--r-sm);}
+  .ec-cup-arted::before{clip-path:none;}
+  .ec-pill,.ec-chip{border-radius:999px;}
+  .mode-count i{border-radius:999px;}
+  .mode-mp-btn{border-radius:999px;}
+  .badge,.support-top,.lang-btn,.lang-chip{border-radius:999px;}
+  .restart-btn,.new-draft-btn{border-radius:var(--r-sm);}
+  /* Драфт и прогон */
+  .rating-explainer,.pack-panel,.squad-panel,.stage-card,.sim-btn{border-radius:var(--r);clip-path:none;}
+  .pcard,.synergy-svg-wrap,.slot,.rf-btn,.rf-plate,.pick-btn{border-radius:var(--r-sm);}
+  .pack-icon{transform:none;border-radius:var(--r-sm);}
+  .pack-icon>svg{transform:none;}
+  .go-btn{clip-path:none;border-radius:999px;}
+  .zone-replay{border-radius:var(--r)!important;}
+  #landingMapWrap{border-radius:var(--r)!important;}
+  .lobby-wrap,.lobby-table{border-radius:var(--r-sm);}
+  /* Карьера */
+  #screen-career-create .cc-stage,#screen-career-hub .ch-stage{clip-path:none;border-radius:var(--r);}
+  #screen-career-create .cc-panel,#screen-career-hub .ch-tile,#screen-career-hub .ch-next{clip-path:none;border-radius:var(--r);}
+  #screen-career-hub .ch-offer,#screen-career-hub .ch-art{border-radius:var(--r-sm);}
+  #screen-career-hub .ch-tab,.cc-tab{transform:none;border-radius:999px;}
+  #screen-career-hub .ch-day.ch-today{border-radius:var(--r-sm);}
+  #screen-career-hub .ch-ovr{clip-path:none;border-radius:var(--r-sm);margin:8px 6px;}
+  .cc-buys .ch-sign,
+  #duoFindModal .ch-sign, #smmPickModal .ch-sign, #coachPickModal .ch-sign,
+  #agentPickModal .ch-sign, #mktPickModal .ch-sign, #clubPickModal .ch-sign,
+  #screen-career-hub .ch-sign{clip-path:none;border-radius:999px;}
+  #screen-career-hub .ch-play,.ch-play{clip-path:none;border-radius:999px;}
+  #screen-career-create .cc-slab{clip-path:none;border-radius:999px;padding:7px 16px;}
+  #screen-career-create .cc-map{border-radius:var(--r-sm);}
   </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
 
