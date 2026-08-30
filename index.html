@@ -54922,7 +54922,10 @@ function careerSmmTileHTML(){
     <h4>${L().ccSmm}</h4>
     <div class="ch-hint">${L().ccSmmHint}</div>
     <div class="ch-empty">${L().ccSmmNone}</div>
-    <button class="ch-sign"${can?'':' disabled'} onclick="ccSmmPickOpen()">${
+    <!-- Голубая, как «посмотреть маркетологов» в соседней плитке: его слово,
+         30 августа, «в social сделай так же как у других кнопка» — жёлтая
+         «нанять» выбивалась из ряда плиток. -->
+    <button class="ch-swap"${can?'':' disabled'} onclick="ccSmmPickOpen()">${
       L().ccSmmHire}${L().ccFrom}${ccNum(CC_SMM_FROM)}${L().ccPerSeason}</button>
     ${can ? '' : `<div class="ch-hint ch-need">${L().ccNeedCash(ccNum(CC_SMM_FROM))}</div>`}
   </div>`;
