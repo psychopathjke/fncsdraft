@@ -13,7 +13,11 @@
 const fs = require('fs'), os = require('os'), path = require('path');
 const { execFileSync } = require('child_process');
 
-const DIR = process.argv[2] || path.resolve(__dirname, '..', '..', 'fncsdraft-deploy-24.08');
+/* Абсолютный путь обязателен: адрес для Chrome собирается как
+   file:/// + папка, и относительное «../fncsdraft-preview-…» превращалось в
+   file:///../… — страницу ошибки Chrome, которую проверка читала как
+   «страница из папки не поднялась». 30 августа это полдня считалось флейком. */
+const DIR = path.resolve(process.argv[2] || path.resolve(__dirname, '..', '..', 'fncsdraft-deploy-24.08'));
 if (!fs.existsSync(path.join(DIR, 'index.html'))) {
   console.error('в папке нет index.html: ' + DIR); process.exit(2);
 }

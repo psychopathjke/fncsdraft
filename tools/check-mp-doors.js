@@ -47,7 +47,19 @@ const BOOT = `
      пройти ту же дорогу мимо сторожа на кнопке. Иначе проверка меряла бы
      только флаг и перестала бы стеречь сам путь до лобби. */
   const openDoor = n => {
-    if(CC_MP_OPEN){ el('modeMpRow').querySelectorAll('button')[n].click(); return; }
+    if(CC_MP_OPEN){
+      el('modeMpRow').querySelectorAll('button')[n].click();
+      /* С 29 августа код вводится в своей модалке (ccCodeOpen), а не в
+         prompt(): при открытой двери проверка красила «войти по коду», ждя
+         prompt. Стаб prompt остаётся источником кода, модалка проходится
+         как игроком: вбить, подтвердить — или закрыть, если кода нет. */
+      if(n === 1){
+        const c = window.prompt();
+        if(!(c && /^[A-Za-z0-9]{6}$/.test(c.trim()))){ ccCodeClose(); return; }
+        el('ccCodeInput').value = c.trim(); ccCodeTyped(); el('ccCodeYes').click();
+      }
+      return;
+    }
     if(n === 0){ CC_MP_NEW = {role:'a'}; ccMpStartNew(); return; }
     const c = window.prompt();
     if(!(c && /^[A-Za-z0-9]{6}$/.test(c.trim()))) return;
