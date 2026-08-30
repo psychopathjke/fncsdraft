@@ -40151,6 +40151,7 @@ function chooseMode(size, major){
   pendingSize=size; pendingMajor=!!major;
   pendingCards = TILE_CARD_SET[major]!==undefined;
   MODE_ART_NOW=modeArtFor(size, major);
+  CC_DRAFT_RUN=true;   // драфт, не командный вечер — мультиплеер молчит (см. ccMpOn)
   pendingCardSet = TILE_CARD_SET[major] || 'm2';
   applyLobbyTheme(true);
   buildPreRegionChecks();
@@ -51935,8 +51936,16 @@ function ccMpTeam(){
    (день, журнал, проход) уезжает напарнику обычным состоянием команды.
    Ставится раннером Solo Series на вход и снимается перед сохранением. */
 let CC_MP_ALONE=false;
+/* Обычный драфт — не командный вечер. Его скрин, 30 августа: «waiting for
+   your partner пишет» в драфте. CAREER с командой остаётся загруженным после
+   входа в карьеру, и все барьеры/вопросы simulateGamesLive (ccMpSync,
+   ccMpChoose, гейт скипа) видели «команду» и ждали напарника в турнире, к
+   которому напарник не имеет отношения. Флаг ставит chooseMode (вход в
+   драфт), снимают вход в карьеру и запуск карьерного вечера.
+   Сторож — tools/check-mp-draft-quiet.js. */
+let CC_DRAFT_RUN=false;
 function ccMpOn(){
-  return ccMpTeam() && !CC_MP_ALONE;
+  return ccMpTeam() && !CC_MP_ALONE && !CC_DRAFT_RUN;
 }
 /* Вечер начинается, когда готовы оба.
 
@@ -53695,12 +53704,14 @@ function ccSlotsFilled(){
 function careerEntry(direct){
   // Вход одиночной дверью — значит, вдвоём здесь ничего не заводится. См. ccMpNewCancel.
   CC_MP_NEW=null;
-  /* Держишь больше одной карьеры — карточка сначала спрашивает, какую.
-     Его слово, 29 августа: «а соло карьеру можно запустить?» — при командной
-     карьере в открытом слоте карточка молча уводила в лобби, и до пустого
-     слота (то есть до новой одиночной) дороги с главного экрана не было.
-     Одна карьера открывается сразу, как и открывалась. */
-  if(!direct && ccSlotsFilled()>1){ openCareerSlots(); return; }
+  CC_DRAFT_RUN=false;   // карьера — командный код снова в силе (см. ccMpOn)
+  /* Карточка режима открывает ТЕКУЩУЮ карьеру, сколько бы их ни было.
+
+     Утром 29 августа она при двух карьерах открывала выбор слота («а соло
+     карьеру можно запустить?»), и к вечеру он же сказал: «захожу в карьеру и
+     меня выкидывает, ещё раз нужно жать». Дорога к другим слотам и к новой
+     карьере есть из хаба — кнопка «Карьеры» (openCareerSlots) — и с дверей
+     «вдвоём» на карточке; с главного экрана — сразу в игру. */
   // A save from before the clock became a date is brought forward on the way in,
   // so nothing downstream has to know two shapes.
   /* Командная карьера подключается к своему лобби на входе — и БЕЗ await:
@@ -70919,6 +70930,7 @@ function careerSpotGate(next){
 }
 function careerPlayRun(next){
   if(!next) return;
+  CC_DRAFT_RUN=false;   // карьерный вечер — не драфт (см. ccMpOn)
   // Этапы вечера нумеруются с нуля у каждого раннера — жетон высадки
   // (CC_DROP_STAGE) считается от дня и номера этапа, а не от жизни вкладки.
   if(typeof CC_DROP_STAGE_N!=='undefined') CC_DROP_STAGE_N=0;
