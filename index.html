@@ -42416,7 +42416,16 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   /* Жетон этапа — им и держится раздача высадки все игры подряд (ccLandingRoll).
      Свой у каждого прогона: два кубка подряд не обязаны лечь одинаково, а
      двенадцать игр одного финала — обязаны. */
-  CC_DROP_STAGE='s'+(++CC_DROP_STAGE_N)+'|'+fieldPrefix;
+  /* Жетон — от ДНЯ и СЕЗОНА карьеры, а счётчик только нумерует этапы внутри
+     вечера. Его скрины 30 августа (перемотка, fc5067f6): «rolls @ #2 drop=184/394265
+     vs drop=184/146114» — броски равны, раздача разная, то есть разошёлся не
+     поток, а соль разброса высадки (ccLandingRoll солится этим жетоном).
+     Счётчик сбрасывается на старте вечера (ccMpSeedOn) и на старте раннера
+     (careerPlayRun), поэтому перезапуск раннера посреди вечера (resume/fresh)
+     нумерует этапы так же, как у напарника. Вне карьеры — как было. */
+  const stageDay=(typeof CAREER!=='undefined' && CAREER && CAREER.career && typeof careerToday==='function')
+    ? careerToday()+'|'+(CAREER.career.season||1)+'|' : '';
+  CC_DROP_STAGE=stageDay+'s'+(++CC_DROP_STAGE_N)+'|'+fieldPrefix;
   applyStageBias(pointsFn);
   beginAnimatedStage();
   const ptsKey=fieldPrefix+'Pts', elimsKey=fieldPrefix+'Elims';
@@ -42933,7 +42942,8 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
          же шаг с обеих сторон — расклад у двоих один. */
       if(opts.together && opts.together.length>1) ccLobbiesTogether(gameLobbies, opts.together);
       myLobby=gameLobbies.find(l=>l.some(t=>t.isYou))||null;
-      ccMpMark('lob');
+      // Жетон этапа в книге: разошёлся он — красная строка назовёт его на #1.
+      ccMpMark('lob~'+String(CC_DROP_STAGE||'').replace(/[|,]/g,'/'));
     }
     if(typeof opts.dropEachGame==='function'){
       // Спрашивают, глядя на остров, а не на последний круг прошлой игры:
@@ -61069,7 +61079,14 @@ function careerYouTeam(cards){
     ? MP.teamOf(cards[0], cards[1]) : cards;
   const t=careerTeam(ordered, true);
   /* В команде форма — ОБЩАЯ, среднее из двух. См. ccTeamFormPow. */
-  t.pow=Math.round(t.pow+ccTeamFormPow()+careerChem());
+  const basePow=t.pow, formPow=ccTeamFormPow(), chemPow=careerChem();
+  t.pow=Math.round(basePow+formPow+chemPow);
+  /* Слагаемые — в сверку игры (payload yp): его скрины 30 августа —
+     «diff 1 of 170: #1 flickzy+malibuca:106 vs :107» — сила своей команды
+     разошлась на единицу, а из чего она сложилась, не видно никому. */
+  if(typeof CC_MP_YOU_PARTS!=='undefined')
+    CC_MP_YOU_PARTS=Math.round(basePow*10)/10+'+'+Math.round(formPow*10)/10+'+'+Math.round(chemPow*10)/10+
+      '='+t.pow+(ordered && ordered.length ? ' ['+ordered.map(c=>String((c&&c.handle)||'?')+':'+Math.round(ccCardOvr(c)*10)/10).join(' ')+']' : '');
   /* The region this team plays in is the career's, not the card's.
 
      Every row in a lobby is labelled with the region of its first card, which is
@@ -70664,6 +70681,9 @@ function careerSpotGate(next){
 }
 function careerPlayRun(next){
   if(!next) return;
+  // Этапы вечера нумеруются с нуля у каждого раннера — жетон высадки
+  // (CC_DROP_STAGE) считается от дня и номера этапа, а не от жизни вкладки.
+  if(typeof CC_DROP_STAGE_N!=='undefined') CC_DROP_STAGE_N=0;
   /* В команде остров вечера — от СОБЫТИЯ, не от вкладки. Раннеры Перфоманса,
      Мейджора, финала недели и другие берут useLandingSet(ACTIVE_LANDING_SET),
      а это то, что вкладка показывала последним: у одного драфт на другой
