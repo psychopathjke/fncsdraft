@@ -3787,6 +3787,69 @@
   #screen-career-hub .ch-play,.ch-play{clip-path:none;border-radius:999px;}
   #screen-career-create .cc-slab{clip-path:none;border-radius:999px;padding:7px 16px;}
   #screen-career-create .cc-map{border-radius:var(--r-sm);}
+
+  /* ============================================================
+     Цвета Fortnite в карьере, 30 августа. Референс — его скрины лобби игры
+     (страница Notion «fortnite»: Compete, Quests, Settings): тёмно-синий
+     градиент, полупрозрачные голубые панели, белые курсивные заголовки,
+     вкладки-пилюли со СВЕТЛОЙ активной, жёлтая primary-кнопка, голубые
+     secondary, при наведении — белый контур. «Может в карьере сделать такие
+     же цвета, как на референсе» + «кнопки такие же, когда наводишься —
+     контур». Тот же блок в конце стилей, побеждает порядком.
+     ============================================================ */
+  :root{--fn-ink:#eaf0ff;--fn-dim:#b7c3e6;--fn-panel:rgba(126,150,224,.22);--fn-line:rgba(180,200,255,.2);
+    --fn-deep:rgba(8,18,50,.72);--fn-yellow:#ffe600;--fn-btn:rgba(150,180,255,.28);}
+  /* Сцена: синий градиент лобби, лучи и осколки — голубые. */
+  #screen-career-create .cc-stage,
+  #screen-career-hub .ch-stage{
+    background:linear-gradient(160deg,#1d3b8c 0%,#13265f 46%,#0b1640 100%);
+    color:var(--fn-ink);box-shadow:inset 0 0 0 1px rgba(180,200,255,.16);}
+  #screen-career-create .cc-stage::before,
+  #screen-career-hub .ch-stage::before{
+    background:repeating-linear-gradient(112deg,transparent 0 150px,rgba(150,180,255,.05) 150px 220px);}
+  #screen-career-create .cc-f1, #screen-career-hub .cc-f1{background:#4a6fd6;opacity:.22;}
+  #screen-career-create .cc-f2, #screen-career-hub .cc-f2{background:#5b7fe0;opacity:.18;}
+  #screen-career-create .cc-f3, #screen-career-hub .cc-f3{background:#bcd0ff;opacity:.08;}
+  #screen-career-create .cc-f4, #screen-career-hub .cc-f4{background:#3b5bc4;opacity:.2;}
+  #screen-career-hub .ch-facets::before, #screen-career-hub .ch-facets::after{background:#bcd0ff;opacity:.06;}
+  /* Панели — голубое стекло, как карточки квестов. */
+  #screen-career-create .cc-panel,
+  #screen-career-hub .ch-tile{background:var(--fn-panel);border:1px solid var(--fn-line);}
+  #screen-career-hub .ch-tile h4{color:#fff;}
+  #screen-career-hub .ch-tile .ch-hint,#screen-career-hub .ch-row em,#screen-career-hub .ch-empty,
+  #screen-career-create .cc-field label,#screen-career-create .cc-brand{color:var(--fn-dim);}
+  #screen-career-hub .ch-row{border-bottom-color:rgba(180,200,255,.16);}
+  #screen-career-hub .ch-offer{border-color:var(--fn-line);background:rgba(8,18,50,.35);}
+  #screen-career-create .cc-field input,#screen-career-create .cc-search{background:rgba(8,18,50,.5);
+    border:1px solid var(--fn-line);color:#fff;}
+  /* Шапка и календарь — глубокий синий. */
+  #screen-career-hub .ch-top{background:var(--fn-deep);box-shadow:inset 0 -1px 0 rgba(180,200,255,.18);}
+  #screen-career-hub .ch-purse-now .ch-cash{color:#9fe1ff;}
+  #screen-career-hub .ch-next{background:var(--fn-deep);border-color:var(--fn-line);}
+  #screen-career-hub .ch-next::before,
+  #screen-career-hub .ch-grid-main .ch-art::before{background:#9fbcff;}
+  #screen-career-hub .ch-weeks{border-top-color:rgba(180,200,255,.2);}
+  #screen-career-hub .ch-week{border-right-color:rgba(180,200,255,.12);}
+  #screen-career-hub .ch-day.ch-today{box-shadow:inset 0 0 0 2px var(--fn-yellow);background:rgba(255,230,0,.08);}
+  #screen-career-hub .ch-day.ch-today em{color:var(--fn-yellow);}
+  /* Вкладки: пилюли, активная светлая с тёмным текстом — как COMPETE в игре. */
+  #screen-career-hub .ch-tab,.cc-tab{background:transparent;border:1px solid transparent;color:#e6ecff;opacity:1;}
+  #screen-career-hub .ch-tab:hover,.cc-tab:hover{background:rgba(255,255,255,.12);border-color:transparent;color:#fff;opacity:1;}
+  #screen-career-hub .ch-tab.on,.cc-tab.on{background:#e4ebf7;color:#0b1a3a;border-color:#e4ebf7;}
+  /* Рейтинг и primary — жёлтый Fortnite; secondary — голубые пилюли. */
+  #screen-career-hub .ch-ovr,#screen-career-create .cc-slab{background:var(--fn-yellow);color:#0b1a3a;}
+  .cc-buys .ch-sign,
+  #duoFindModal .ch-sign, #smmPickModal .ch-sign, #coachPickModal .ch-sign,
+  #agentPickModal .ch-sign, #mktPickModal .ch-sign, #clubPickModal .ch-sign,
+  #screen-career-hub .ch-sign{background:var(--fn-yellow);color:#0b1a3a;}
+  #screen-career-hub .ch-swap,#screen-career-hub .ch-decline,.cc-back{background:var(--fn-btn);color:#fff;
+    border:none;border-radius:999px;}
+  /* Контур при наведении — на всех кнопках сайта, как в лобби игры:
+     «когда наводишься, появляется контур». outline идёт по радиусу. */
+  .hero-btn:hover,.mode-mp-btn:hover,.ec-cup:hover,.go-btn:hover,.rf-btn:hover,.sim-btn:hover,
+  .restart-btn:hover,.pick-btn:hover,.ch-tab:hover,.cc-tab:hover,.ch-play:not(:disabled):hover,
+  .ch-sign:hover,.ch-swap:hover,.ch-decline:hover,.cc-back:hover,.lang-btn:hover,.support-top:hover{
+    outline:3px solid rgba(255,255,255,.92);outline-offset:0;}
   </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
 
