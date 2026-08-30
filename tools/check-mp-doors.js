@@ -74,6 +74,22 @@ const BOOT = `
     check('и её видимость совпадает с флагом двери', row && shown(row) === CC_MP_OPEN,
           'hidden=' + (row && row.hidden) + ', display=' + (row && getComputedStyle(row).display) + ', видна=' + shown(row) + ', открыто=' + CC_MP_OPEN);
     out.notes.открыто = CC_MP_OPEN;
+    /* Третья дверь — в герое главной (heroDuo), его слово 30 августа: «на
+       кнопки карьеры должен быть ещё дуо мод». Тот же флаг, та же мерка
+       видимости, та же подпись про игру вдвоём. */
+    const hero = el('heroDuo');
+    check('дверь «вдвоём» есть в герое', !!hero);
+    check('и её видимость совпадает с флагом двери', hero && shown(hero) === CC_MP_OPEN,
+          'hidden=' + (hero && hero.hidden) + ', видна=' + shown(hero) + ', открыто=' + CC_MP_OPEN);
+    check('и она подписана', hero && hero.textContent.trim() === L().heroDuo && L().heroDuo.length > 2,
+          JSON.stringify(hero && hero.textContent.trim()));
+    // «Есть код от напарника? Войти по коду» — строка под кнопками, тот же флаг.
+    const code = el('heroCode');
+    check('строка «войти по коду» есть в герое', !!code);
+    check('и её видимость совпадает с флагом двери', code && shown(code) === CC_MP_OPEN,
+          'hidden=' + (code && code.hidden) + ', видна=' + shown(code) + ', открыто=' + CC_MP_OPEN);
+    check('и она подписана', code && code.textContent.trim() === L().heroCode && L().heroCode.length > 2,
+          JSON.stringify(code && code.textContent.trim()));
     const btns = row ? [...row.querySelectorAll('button')] : [];
     out.notes.кнопки = btns.map(b => b.textContent.trim());
     check('дверей две', btns.length === 2, String(btns.length));
