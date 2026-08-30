@@ -305,6 +305,22 @@
   /* Seasons are the top-level thing on this screen, so each gets its own row
      with the year standing beside it. A year holding one competition stretches
      that tile across the row rather than leaving two empty cells. */
+  /* Одна панель под всеми плитками режимов — тот же стеклянный крой, что у
+     героя (градиент, бирюзовая кромка, лучи, срезанный угол), чтобы главная
+     читалась как два одинаковых прямоугольника, а не герой плюс россыпь.
+     Плитки внутри — полупрозрачные, чтобы не спорить с панелью. */
+  .modes-panel{position:relative;isolation:isolate;margin:10px 0 14px;padding:18px 22px 22px;
+    background:linear-gradient(112deg,#06222a 0%,#0a3a3a 52%,#0d3542 100%);
+    box-shadow:inset 0 0 0 1px rgba(126,240,221,.28);
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%);}
+  .modes-panel::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:repeating-linear-gradient(112deg,transparent 0 150px,rgba(126,240,221,.045) 150px 220px);}
+  .modes-panel>*{position:relative;z-index:1;}
+  .modes-panel .year-row:first-child{margin-top:0;}
+  .modes-panel .mode-card{background:rgba(6,14,20,.5);border-color:rgba(126,240,221,.16);}
+  .modes-panel .mode-card:hover{border-color:var(--accent);}
+  .modes-panel .year-label{color:#9fc9c9;}
+  @media(max-width:760px){ .modes-panel{padding:14px 12px 18px;clip-path:none;} }
   .year-row{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:start;margin-top:16px;}
   .year-label{font-size:30px;line-height:1;font-weight:900;color:var(--ink-dim);
     letter-spacing:-.01em;transform:skewX(-7deg);padding-top:6px;text-align:right;
@@ -3720,6 +3736,11 @@
       </div>
       <div class="hero-art" style="background-image:url(art/fncs-2026-major1.jpg)" role="img" aria-label="FNCS 2026 Major 1"></div>
     </section>
+    <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Его
+         скрин, 30 августа (красная рамка вокруг всех рядов): «с этими
+         прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
+         первый выделяется». -->
+    <section class="modes-panel">
     <div class="year-row" id="modeYears">
       <div class="year-label">2026</div>
       <div class="mode-grid mode-grid-3">
