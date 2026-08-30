@@ -3972,8 +3972,9 @@
   .lobby-table{border-collapse:separate;border-spacing:0 6px;}
   .lobby-table th{border-bottom:none;color:#9fd6d3;font-weight:800;text-transform:none;letter-spacing:0;
     font-size:13px;padding:8px 14px 2px;}
-  .lobby-table td{border-bottom:none;background:rgba(5,38,42,.8);color:#eefbfa;padding:10px 14px;}
-  .lobby-table:not(.lobby-live) tbody tr:nth-child(even) td{background:rgba(22,96,100,.6);}
+  /* Без чередования — одна бирюза на все строки. Его слово, 30 августа:
+     «не нравится чередование это, пусть бирюзовым будет». */
+  .lobby-table td{border-bottom:none;background:rgba(22,96,100,.62);color:#eefbfa;padding:10px 14px;}
   .lobby-table.lobby-live tbody tr,.lobby-table.lobby-live tbody tr:nth-child(odd){background:transparent;}
   .lobby-table tbody tr:hover td{background:rgba(40,120,124,.6);}
   .lobby-table td:first-child{border-radius:8px 0 0 8px;}
