@@ -3974,9 +3974,16 @@
     font-size:13px;padding:8px 14px 2px;}
   /* Без чередования — одна бирюза на все строки. Его слово, 30 августа:
      «не нравится чередование это, пусть бирюзовым будет». */
-  .lobby-table td{border-bottom:none;background:rgba(22,96,100,.62);color:#eefbfa;padding:10px 14px;}
+  /* Непрозрачно: при перестановке строка летит с фоном --lobby-row (тот же
+     цвет, см. :root ниже), и сквозь полупрозрачные ячейки он просвечивал —
+     «цвет меняется, когда меняются плейсы». */
+  .lobby-table td{border-bottom:none;background:#12595e;color:#eefbfa;padding:10px 14px;}
   .lobby-table.lobby-live tbody tr,.lobby-table.lobby-live tbody tr:nth-child(odd){background:transparent;}
-  .lobby-table tbody tr:hover td{background:rgba(40,120,124,.6);}
+  .lobby-table tbody tr:hover td{background:#1d7075;}
+  /* Цвет перелёта строки — тот же, что у ячеек, и он же перекрывает
+     инлайн-цвет режима (applyLobbyTheme ставит --lobby-row на html). */
+  .lobby-table tbody tr[style*="--lobby-row"]{background:#12595e!important;}
+  :root{--lobby-row:#12595e;}
   .lobby-table td:first-child{border-radius:8px 0 0 8px;}
   .lobby-table td:last-child{border-radius:0 8px 8px 0;}
   .lobby-table td.lobby-rank{color:#fff;font-weight:900;}
@@ -3985,7 +3992,7 @@
   /* Жёлтая рамка вокруг СВОЕЙ строки и лидера — по ячейкам (outline на tr
      Chrome не рисует): верх и низ у всех, левый/правый край у крайних. */
   /* tr.you — итоговая таблица этапа (st-row you), tr.lobby-you — живая. */
-  .lobby-table tr.lobby-you td,.lobby-table tr.you td,.lobby-table tr.lobby-first td{background:rgba(255,255,255,.14);
+  .lobby-table tr.lobby-you td,.lobby-table tr.you td,.lobby-table tr.lobby-first td{background:#256a70;
     box-shadow:inset 0 2px 0 #ffe600,inset 0 -2px 0 #ffe600;}
   .lobby-table tr.lobby-you td:first-child,.lobby-table tr.you td:first-child,.lobby-table tr.lobby-first td:first-child{
     box-shadow:inset 2px 0 0 #ffe600,inset 0 2px 0 #ffe600,inset 0 -2px 0 #ffe600;}
