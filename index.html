@@ -3978,11 +3978,12 @@
   .lobby-table td.lobby-num{color:#bfe4e2;font-family:inherit;}
   /* Жёлтая рамка вокруг СВОЕЙ строки и лидера — по ячейкам (outline на tr
      Chrome не рисует): верх и низ у всех, левый/правый край у крайних. */
-  .lobby-table tr.lobby-you td,.lobby-table tr.lobby-first td{background:rgba(255,255,255,.14);
+  /* tr.you — итоговая таблица этапа (st-row you), tr.lobby-you — живая. */
+  .lobby-table tr.lobby-you td,.lobby-table tr.you td,.lobby-table tr.lobby-first td{background:rgba(255,255,255,.14);
     box-shadow:inset 0 2px 0 #ffe600,inset 0 -2px 0 #ffe600;}
-  .lobby-table tr.lobby-you td:first-child,.lobby-table tr.lobby-first td:first-child{
+  .lobby-table tr.lobby-you td:first-child,.lobby-table tr.you td:first-child,.lobby-table tr.lobby-first td:first-child{
     box-shadow:inset 2px 0 0 #ffe600,inset 0 2px 0 #ffe600,inset 0 -2px 0 #ffe600;}
-  .lobby-table tr.lobby-you td:last-child,.lobby-table tr.lobby-first td:last-child{
+  .lobby-table tr.lobby-you td:last-child,.lobby-table tr.you td:last-child,.lobby-table tr.lobby-first td:last-child{
     box-shadow:inset -2px 0 0 #ffe600,inset 0 2px 0 #ffe600,inset 0 -2px 0 #ffe600;}
   .lobby-table tr.lobby-first td{background:rgba(255,230,0,.1);}
   .lobby-table tr.lobby-cut td{border-bottom:2px solid #ffd23f;}
