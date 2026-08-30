@@ -3930,6 +3930,31 @@
   .screen.active{animation:fnIn .22s ease-out;}
   @media (prefers-reduced-motion:reduce){ .screen.active{animation:none;} }
   @media(max-width:760px){ .site-nav{order:3;width:100%;justify-content:center;} .nav-pill{padding:7px 12px;font-size:14px;} }
+
+  /* ---- Третий заход, «что ещё осталось» → «давай» ----------------------
+     Шапка хаба — мини-герой: арт сезона за ником под синей вуалью слева
+     направо; день турнира в календаре — арт события фоном; ближайший —
+     лаймовая пилюля «Next up»; тренировки — группами с заголовками и
+     цветной кромкой слева по группе. */
+  #screen-career-hub .ch-top{
+    background:linear-gradient(90deg,rgba(8,18,50,.97) 0%,rgba(8,18,50,.9) 45%,rgba(8,18,50,.72) 100%),
+      url(art/fncs-2026-major1.jpg) right 30%/cover no-repeat;}
+  #screen-career-hub .ch-name{font-size:26px;}
+  #screen-career-hub .ch-day.ch-day-art{position:relative;isolation:isolate;overflow:hidden;}
+  #screen-career-hub .ch-day.ch-day-art::before{content:'';position:absolute;inset:0;z-index:-1;
+    background:linear-gradient(180deg,rgba(8,18,50,.72) 0%,rgba(8,18,50,.9) 100%),var(--day-art) center/cover no-repeat;}
+  #screen-career-hub .ch-day.now{position:relative;}
+  #screen-career-hub .ch-day.now::after{content:attr(data-next);position:absolute;right:8px;top:7px;
+    background:#d7ff3a;color:#0b1a3a;border-radius:999px;padding:2px 8px;font-size:9px;font-weight:900;
+    letter-spacing:.06em;text-transform:uppercase;}
+  #screen-career-hub .ch-day.now.ch-today::after{display:none;}
+  .cc-act-grp{margin:12px 0 6px;font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.08em;
+    text-transform:uppercase;color:#b7c3e6;}
+  .cc-act-grp:first-child{margin-top:0;}
+  #screen-career-hub .cc-act{border-left:4px solid rgba(180,200,255,.35);}
+  #screen-career-hub .cc-act.g-train{border-left-color:#9fe1ff;}
+  #screen-career-hub .cc-act.g-team{border-left-color:#d7ff3a;}
+  #screen-career-hub .cc-act.g-life{border-left-color:#ffe600;}
   </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
 
@@ -4831,6 +4856,7 @@ heroTitle:'Задрафть настоящих про. <em>Разыграй се
 heroCareer:'Начать карьеру',
 heroDuo:'Вдвоём',
 navCareer:'Карьера', navDraft:'Драфт', navHistory:'История',
+ccActGrpTrain:'Тренировки', ccActGrpTeam:'Команда', ccActGrpLife:'Стрим и отдых',
 heroCode:'Есть код от напарника? Войти по коду',
 heroDraft:'К драфту',
 supportBtn:'Поддержать',
@@ -6465,6 +6491,7 @@ heroTitle:'Draft real pros. <em>Play the season.</em>',
 heroCareer:'Start a career',
 heroDuo:'Play as a duo',
 navCareer:'Career', navDraft:'Draft', navHistory:'History',
+ccActGrpTrain:'Training', ccActGrpTeam:'Team', ccActGrpLife:'Stream and rest',
 heroCode:'Got a code from your partner? Join by code',
 heroDraft:'Go to draft',
 supportBtn:'Support',
@@ -9879,6 +9906,7 @@ heroTitle:'Drafte de vrais pros. <em>Joue la saison.</em>',
 heroCareer:'Lancer une carrière',
 heroDuo:'Jouer à deux',
 navCareer:'Carrière', navDraft:'Draft', navHistory:'Historique',
+ccActGrpTrain:'Entraînement', ccActGrpTeam:'Équipe', ccActGrpLife:'Stream et repos',
 heroCode:'Tu as un code de ton coéquipier ? Rejoindre par code',
 heroDraft:'Vers le draft',
 badgeMode:'choisis un mode',
@@ -10098,6 +10126,7 @@ heroTitle:"Scegli veri pro. <em>Gioca la stagione.</em>",
 heroCareer:"Inizia la carriera",
 heroDuo:"In due",
 navCareer:"Carriera", navDraft:"Draft", navHistory:"Storico",
+ccActGrpTrain:"Allenamento", ccActGrpTeam:"Squadra", ccActGrpLife:"Stream e riposo",
 heroCode:"Hai un codice dal compagno? Entra con il codice",
 heroDraft:"Al draft",
 badgeMode:"scegli la modalità",
@@ -12325,6 +12354,7 @@ heroTitle:"Convoque os pros. <em>Jogue a temporada.</em>",
 heroCareer:"Começar carreira",
 heroDuo:"Em dupla",
 navCareer:"Carreira", navDraft:"Draft", navHistory:"Histórico",
+ccActGrpTrain:"Treino", ccActGrpTeam:"Time", ccActGrpLife:"Stream e descanso",
 heroCode:"Tem um código do parceiro? Entrar com código",
 heroDraft:"Ir ao draft",
 badgeMode:"escolha o modo",
@@ -54429,7 +54459,13 @@ function careerCentreHTML(card, a){
        шрифтом. Счётчик остальных событий дня при этом остаётся — он несёт своё. */
     const word=KIND_WORD[on[0].kind]||L().chWkCup;
     const sub=String(on[0].label||'')===word ? '' : on[0].label;
-    return `<div class="ch-week ch-day${d===firstBusy?' now':''}${cls}">${head}`+
+    /* День турнира несёт арт своего события (CAREER_EV_ART по виду) фоном
+       клетки, а ближайший к игре — лаймовую пилюлю «Next up», как первая
+       карточка Compete в лобби. Его «давай» на 3-й пункт, 30 августа. */
+    const dayArt=(typeof CAREER_EV_ART!=='undefined' && CAREER_EV_ART[on[0].kind]) || '';
+    const artAttr=dayArt ? ` style="--day-art:url(${dayArt})"` : '';
+    const nextAttr=d===firstBusy ? ` data-next="${esc(L().chNext)}"` : '';
+    return `<div class="ch-week ch-day${dayArt?' ch-day-art':''}${d===firstBusy?' now':''}${cls}"${artAttr}${nextAttr}>${head}`+
            `<span class="ch-day-what"><i class="ch-pip-${on[0].kind||'cup'}"></i>`+
            `${word}</span>`+
            `<span class="ch-day-sub">${sub}${more}</span></div>`;
@@ -68423,7 +68459,12 @@ function careerDayPanelHTML(locked){
     // store is already full.
     if(a.rest && !restFull) extra.push('<i class="cc-give-rest">'+L().ccGiveRest+'</i>');
     if(a.focus)   extra.push('<i class="cc-give-cost">'+L().ccGiveNoImprove+'</i>');
-    return '<button class="cc-act'+(can?'':' off')+(done.indexOf(a.id)>=0?' did':'')+'" '+
+    /* Группы, как список квестов в лобби: заголовок перед первой строкой
+       группы и цветная кромка слева по группе (g-train/g-team/g-life). */
+    const grp=String(a.id).indexOf('tr')===0 ? 'train' : (a.id==='scrim'||a.id==='talk') ? 'team' : 'life';
+    const grpHead=(a.id==='trAim'||a.id==='scrim'||a.id==='stream')
+      ? '<div class="cc-act-grp">'+(L()['ccActGrp'+grp.charAt(0).toUpperCase()+grp.slice(1)]||'')+'</div>' : '';
+    return grpHead+'<button class="cc-act g-'+grp+(can?'':' off')+(done.indexOf(a.id)>=0?' did':'')+'" '+
       (can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
       '<span class="cc-act-h"><b>'+L()['ccAct'+a.id]+'</b><em>'+a.energy+L().ccEnergyMark+'</em></span>'+
       '<span class="cc-act-g">'+gains+extra.join('')+'</span></button>';
