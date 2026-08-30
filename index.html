@@ -3850,6 +3850,86 @@
   .restart-btn:hover,.pick-btn:hover,.ch-tab:hover,.cc-tab:hover,.ch-play:not(:disabled):hover,
   .ch-sign:hover,.ch-swap:hover,.ch-decline:hover,.cc-back:hover,.lang-btn:hover,.support-top:hover{
     outline:3px solid rgba(255,255,255,.92);outline-offset:0;}
+
+  /* ============================================================
+     Синий на всю площадку, 30 августа: «что ещё можно в дизайне» → «давай».
+     Главная, драфт и прогон уходят в палитру лобби (та же, что карьера
+     выше), шапка получает навбар-пилюли, хаб — светлые строки тренировок,
+     аватар в круге с точкой онлайн и лайм «сегодня», карточки игроков —
+     лучи локера, экраны — короткое появление. Последний блок стилей.
+     ============================================================ */
+  :root{--panel:#13265f;--panel2:#1a2f70;--line:rgba(180,200,255,.2);--ink-dim:#b7c3e6;--ink-dimmer:#8fa0cc;
+    --lobby-row:#13265f;--page-base:#0b1640;
+    --glow-a:rgba(60,100,220,.5);--glow-a0:rgba(60,100,220,0);
+    --glow-b:rgba(150,180,255,.3);--glow-b0:rgba(150,180,255,0);
+    --glow-c:rgba(30,50,140,.6);--glow-c0:rgba(30,50,140,0);
+    /* Прогон: таблица лобби и панель этапа жили на бирюзовых --lb-*. */
+    --lb-bg:linear-gradient(135deg,#1d3b8c 0%,#13265f 55%,#0b1640 100%);
+    --lb-line:rgba(180,200,255,.3);--lb-line-soft:rgba(180,200,255,.12);
+    --lb-ink:#eaf0ff;--lb-dim:#b7c3e6;}
+  html{background:#0b1640;}
+  body{background-color:#0b1640;}
+  /* Герой и плитки — синее стекло. */
+  .hero,.mode-card{background:linear-gradient(160deg,#1d3b8c 0%,#13265f 46%,#0b1640 100%);
+    box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);border-color:rgba(180,200,255,.18);}
+  .hero::before,.mode-card::before{background:repeating-linear-gradient(112deg,transparent 0 150px,rgba(150,180,255,.05) 150px 220px);}
+  .hero-art::after{background:linear-gradient(90deg,rgba(19,38,95,.62) 0%,rgba(19,38,95,.18) 30%,rgba(19,38,95,0) 55%);}
+  .hero-title em{color:#9fe1ff;}
+  .hero-sub{color:#c9d5f0;}
+  .hero-btn-alt{background:rgba(150,180,255,.22);border-color:transparent;}
+  .hero-btn-duo{background:rgba(150,180,255,.14);border-color:#9fe1ff;color:#9fe1ff;}
+  .hero-link{color:#9fe1ff;text-decoration-color:rgba(159,225,255,.5);}
+  .ec-foot{background:linear-gradient(to top,rgba(19,38,95,.97) 38%,rgba(19,38,95,.55) 70%,rgba(19,38,95,0));}
+  .ec-when{color:#b7c3e6;} .ec-sub{color:#c9d5f0;}
+  .ec-cup{background:rgba(150,180,255,.18);border-color:rgba(180,200,255,.2);color:#fff;}
+  .ec-cup small{color:#c9d5f0;}
+  .mode-count i{background:rgba(150,180,255,.18);border-color:rgba(180,200,255,.2);color:#e6ecff;}
+  .mode-count i:first-child{border-color:#9fe1ff;}
+  .mode-mp-btn.mode-mp-join{background:rgba(150,180,255,.28);border:none;color:#fff;}
+  .mode-mp{border-top-color:rgba(180,200,255,.2);}
+  .mode-card-new{border-color:#9fe1ff;box-shadow:0 0 0 1px rgba(159,225,255,.45),0 10px 30px rgba(60,100,220,.25);}
+  .year-label{color:#b7c3e6;}
+  .site-foot{color:#8fa0cc;} .site-foot a{color:#b7c3e6;}
+  /* Шапка: навбар-пилюли. */
+  .top{border-bottom-color:rgba(180,200,255,.15);}
+  /* Свой ряд под логотипом на любой ширине: рядом с соцсетями и языками
+     навбар не помещался в 1280 и ронял языки на вторую строку. */
+  .site-nav{display:flex;gap:4px;flex-wrap:wrap;order:3;flex-basis:100%;margin-top:4px;}
+  .nav-pill{border:none;cursor:pointer;background:transparent;color:#e6ecff;font-family:var(--font-display);
+    font-weight:600;font-size:15px;letter-spacing:.06em;text-transform:uppercase;padding:8px 16px;border-radius:999px;
+    transition:background .12s;}
+  .nav-pill:hover{background:rgba(255,255,255,.12);outline:3px solid rgba(255,255,255,.92);}
+  .nav-pill.on{background:#e4ebf7;color:#0b1a3a;}
+  /* Драфт и прогон. */
+  .rating-explainer,.pack-panel,.squad-panel,.stage-card,.sim-btn{background:rgba(126,150,224,.18);border-color:rgba(180,200,255,.2);}
+  .pcard{background:rgba(8,18,50,.5);border-color:rgba(180,200,255,.2);}
+  .rf-btn,.rf-plate{background:rgba(150,180,255,.18);border-color:rgba(180,200,255,.2);color:#e6ecff;}
+  .rf-plate .rf-code{color:#fff;}
+  .rf-btn.active,.rf-plate.active,.sim-btn.active{background:#e4ebf7;color:#0b1a3a;border-color:#e4ebf7;}
+  .rf-plate.active .rf-code,.rf-plate.active .rf-name,.sim-btn.active h5,.sim-btn.active p{color:#0b1a3a;}
+  .slot{border-color:rgba(180,200,255,.3);}
+  .synergy-svg-wrap{background:rgba(8,18,50,.4);border-color:rgba(180,200,255,.2);}
+  /* Хаб: строки тренировок светлые, как Daily quests; аватар в круге с точкой
+     онлайн; «сегодня» — лаймовая пилюля, как NEXT UP. */
+  #screen-career-hub .cc-act{background:rgba(126,150,224,.22);border-color:rgba(180,200,255,.2);border-radius:12px;}
+  #screen-career-hub .cc-act:hover:not(:disabled){background:rgba(150,180,255,.38);border-color:#fff;}
+  #screen-career-hub .cc-act.did{border-color:#d7ff3a;}
+  #screen-career-hub .cc-day-ev{background:rgba(255,230,0,.12);border-color:rgba(255,230,0,.5);}
+  #screen-career-hub .ch-face{border-radius:50%;box-shadow:0 0 0 2px #fff;}
+  #screen-career-hub .ch-who{position:relative;}
+  #screen-career-hub .ch-who::after{content:'';position:absolute;left:52px;top:44px;width:10px;height:10px;border-radius:50%;
+    background:#3ddc5c;box-shadow:0 0 0 2px #0b1a3a;}
+  #screen-career-hub .ch-day.ch-today em{display:inline-block;background:#d7ff3a;color:#0b1a3a;border-radius:999px;
+    padding:2px 8px;opacity:1;font-weight:900;}
+  #screen-career-hub .ch-empty{padding:14px 10px;text-align:center;opacity:.85;}
+  /* Карточки игроков: лучи локера вместо мягкого блика. */
+  .fut-card::after{top:0;left:0;width:100%;height:100%;border-radius:0;filter:none;opacity:.28;
+    background:repeating-conic-gradient(from 200deg at 50% -10%,rgba(255,255,255,.22) 0 5deg,transparent 5deg 15deg);}
+  /* Появление экрана, коротко; с reduced motion — без него. */
+  @keyframes fnIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  .screen.active{animation:fnIn .22s ease-out;}
+  @media (prefers-reduced-motion:reduce){ .screen.active{animation:none;} }
+  @media(max-width:760px){ .site-nav{order:3;width:100%;justify-content:center;} .nav-pill{padding:7px 12px;font-size:14px;} }
   </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
 
@@ -3900,6 +3980,14 @@
         </a>
       </div>
     </div>
+    <!-- Навбар, как в лобби игры (PLAY · SHOP · COMPETE…): три двери сайта
+         пилюлями, активная светлая — ставит show(). Его слово, 30 августа:
+         «давай» на «шапка сайта как навбар игры». -->
+    <nav class="site-nav" aria-label="site">
+      <button class="nav-pill" data-nav="career" type="button" onclick="careerEntry()" data-i18n="navCareer"></button>
+      <button class="nav-pill on" data-nav="draft" type="button" onclick="requestReset()" data-i18n="navDraft"></button>
+      <button class="nav-pill" data-nav="history" type="button" onclick="openHistoryScreen()" data-i18n="navHistory"></button>
+    </nav>
     <div style="display:flex;align-items:center;gap:10px;">
       <div class="badge" id="topBadge" data-i18n="badgeMode"></div>
       <div style="display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden;">
@@ -4742,6 +4830,7 @@ tagline:'Задрафть сквад из реальных игроков, кв�
 heroTitle:'Задрафть настоящих про. <em>Разыграй сезон.</em>',
 heroCareer:'Начать карьеру',
 heroDuo:'Вдвоём',
+navCareer:'Карьера', navDraft:'Драфт', navHistory:'История',
 heroCode:'Есть код от напарника? Войти по коду',
 heroDraft:'К драфту',
 supportBtn:'Поддержать',
@@ -6375,6 +6464,7 @@ tagline:'Draft a squad of real players who qualified for an FNCS Grand Finals, a
 heroTitle:'Draft real pros. <em>Play the season.</em>',
 heroCareer:'Start a career',
 heroDuo:'Play as a duo',
+navCareer:'Career', navDraft:'Draft', navHistory:'History',
 heroCode:'Got a code from your partner? Join by code',
 heroDraft:'Go to draft',
 supportBtn:'Support',
@@ -9788,6 +9878,7 @@ tagline:'Compose une équipe de vrais joueurs qualifiés pour une Grande Finale 
 heroTitle:'Drafte de vrais pros. <em>Joue la saison.</em>',
 heroCareer:'Lancer une carrière',
 heroDuo:'Jouer à deux',
+navCareer:'Carrière', navDraft:'Draft', navHistory:'Historique',
 heroCode:'Tu as un code de ton coéquipier ? Rejoindre par code',
 heroDraft:'Vers le draft',
 badgeMode:'choisis un mode',
@@ -10006,6 +10097,7 @@ tagline:"Crea una squadra di giocatori reali qualificati a una Gran Finale FNCS 
 heroTitle:"Scegli veri pro. <em>Gioca la stagione.</em>",
 heroCareer:"Inizia la carriera",
 heroDuo:"In due",
+navCareer:"Carriera", navDraft:"Draft", navHistory:"Storico",
 heroCode:"Hai un codice dal compagno? Entra con il codice",
 heroDraft:"Al draft",
 badgeMode:"scegli la modalità",
@@ -12232,6 +12324,7 @@ tagline:"Monte um time de jogadores reais que se classificaram para uma Grande F
 heroTitle:"Convoque os pros. <em>Jogue a temporada.</em>",
 heroCareer:"Começar carreira",
 heroDuo:"Em dupla",
+navCareer:"Carreira", navDraft:"Draft", navHistory:"Histórico",
 heroCode:"Tem um código do parceiro? Entrar com código",
 heroDraft:"Ir ao draft",
 badgeMode:"escolha o modo",
@@ -40249,6 +40342,11 @@ function show(id){
   SHOWN_SCREEN=id;
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  // Навбар: светлая пилюля — тот раздел, чей экран показан.
+  try{
+    const nav = /career/.test(id) ? 'career' : (id==='screen-history' ? 'history' : 'draft');
+    document.querySelectorAll('.nav-pill').forEach(b=>b.classList.toggle('on', b.dataset.nav===nav));
+  }catch(e){}
   if(moved) window.scrollTo(0, 0);
   // Tiles on a screen that was display:none have no box to intersect, so the
   // lazy-art pass gets another look the moment a screen is put up.
