@@ -53608,7 +53608,10 @@ function ccMpChoose(kind, mineFn, label, sum){
     if(ccMpMine(kind)){
       // После перезагрузки — свой же ответ из ленты, без вопроса и без повтора по проводу.
       var own=MP.own && MP.own(kind, qn);
-      if(own && own.payload) return Promise.resolve({v:own.payload.v, mine:true});
+      // Метка в книгу и здесь: без неё книга догнавшего короче на строку, и
+      // сверка звала это расхождением («oth vs c2:mine»). Ярлык свой,
+      // сравнение его снимает вместе с mine/take/wait/late.
+      if(own && own.payload){ ccMpMark('c2:own'); return Promise.resolve({v:own.payload.v, mine:true}); }
       if(CC_MP_REPLAY) CC_MP_REPLAY=false;      // свои ответы кончились — догнали
       return ask().then(function(val){
         MP.act(kind, {v:val, by:me, q:qn});
@@ -53942,7 +53945,17 @@ function careerNext(){
       const sorted=on.slice().sort((a,b)=>rank(a)-rank(b));
       // Something enterable beats something merely important: a day that offers a
       // Major nobody can play and a final they can should offer the final.
-      on=[sorted.find(e=>careerCanPlayKind(e.kind)) || sorted[0]];
+      /* В КОМАНДЕ — всегда СТАРШИЙ турнир дня, без оглядки на «могу ли я».
+         «Могу» у двоих разное: напарник, отыгравший свою соло-сессию, получал
+         от того же дня Reload, второй — соло-квал, оба жали «Играть», и
+         вечер вставал на два разных турнира («field …m2.58.n4900h59+59 vs
+         …r1.15.n900h68», его страница «баги», 30 августа, 2fbbde90; жалобы
+         игроков — «разные капы играют»). Его слово: «в один день запретить
+         2 капа, оставить где больше призов или значительный». Старший — по
+         CC_KIND_RANK; кто в него не может, видит причину на кнопке, а день
+         уходит перемоткой по двум подтверждениям. Одиночная — как была. */
+      on=[ccMpOn() ? sorted[0]
+                   : (sorted.find(e=>careerCanPlayKind(e.kind)) || sorted[0])];
     }
     if(on.length){
       const div=CAREER && CAREER.career ? CAREER.career.division : 5;
@@ -61657,7 +61670,15 @@ function careerChemDays(){
      См. ccTeamFormPow, та же история. */
   if(ccMpOn()){
     const cr=CAREER.career;
-    return cr.chemSince ? Math.max(0, ccDaysBetween(cr.chemSince, careerToday())) : 0;
+    /* Обе стороны считают от РАННЕЙ из двух дат. Свой chemSince у вошедшего
+       вторым появляется только с первым 'state' — до этого он считал химию
+       нулём, а напарник уже нет: «you me 68+0+0 | mate 68+0+0.2» (его
+       страница «баги», 30 августа) — сила своей команды расходится на
+       единицу («…:106 vs …:107»). Дата напарника едет в его карточке. */
+    const theirs=(typeof MP!=='undefined' && MP.peer && MP.peer.chemSince) || null;
+    const mine=cr.chemSince || null;
+    const since=(mine && theirs) ? (mine<theirs ? mine : theirs) : (mine || theirs);
+    return since ? Math.max(0, ccDaysBetween(since, careerToday())) : 0;
   }
   /* The shortest of them, not the average.
 
