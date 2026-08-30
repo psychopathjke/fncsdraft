@@ -3459,6 +3459,95 @@
   #screen-career-hub .cal-today{border-color:#35e0ff;color:#35e0ff;}
   #screen-career-hub .cal-today:hover{background:#35e0ff;color:#0b1030;}
 
+  /* ============================================================
+     Карьера под Fortnite, 30 августа. Его слово: «и в самой карьере, что
+     можно изменить в дизайне?» → «давай». Карьера сидела на своей
+     сине-индиговой гамме, меню и драфт — на бирюзовом стекле; это читалось
+     как два разных сайта. Ниже — один материал на всё: градиент героя,
+     бирюзовая кромка, лучи, срезанные углы, Oswald с наклоном в заголовках,
+     жёлтая primary-кнопка со срезом. Стоит ПОСЛЕ всех правил хаба, чтобы
+     побеждать порядком, а не !important.
+     ============================================================ */
+  /* 1. Палитра сцены — создание и хаб. */
+  #screen-career-create .cc-stage,
+  #screen-career-hub .ch-stage{
+    background:linear-gradient(112deg,#06222a 0%,#0a3a3a 52%,#0d3542 100%);
+    color:#e6f3f2;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(126,240,221,.28);
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%);}
+  #screen-career-create .cc-stage::before,
+  #screen-career-hub .ch-stage::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:repeating-linear-gradient(112deg,transparent 0 150px,rgba(126,240,221,.045) 150px 220px);}
+  #screen-career-create .cc-f1, #screen-career-hub .cc-f1{background:#0f6f5f;opacity:.35;}
+  #screen-career-create .cc-f2, #screen-career-hub .cc-f2{background:#138973;opacity:.3;}
+  #screen-career-create .cc-f3, #screen-career-hub .cc-f3{background:#7ef0dd;opacity:.06;}
+  #screen-career-create .cc-f4, #screen-career-hub .cc-f4{background:#0f6f5f;opacity:.25;}
+  #screen-career-hub .ch-facets::before, #screen-career-hub .ch-facets::after{background:#7ef0dd;opacity:.05;}
+  /* 2. Шапка хаба — стекло темнее сцены, рейтинг жёлтым слэбом, ник Oswald. */
+  #screen-career-hub .ch-top{background:rgba(3,16,20,.78);box-shadow:inset 0 -1px 0 rgba(126,240,221,.22);}
+  #screen-career-hub .ch-name{font-family:var(--font-display);font-weight:700;font-size:22px;
+    text-transform:uppercase;letter-spacing:.01em;transform:skewX(-7deg);transform-origin:left;}
+  #screen-career-hub .ch-ovr{background:var(--go);color:var(--go-ink);font-family:var(--font-display);
+    font-style:normal;font-weight:700;font-size:34px;}
+  #screen-career-hub .ch-ovr small{opacity:.75;}
+  #screen-career-hub .ch-purse-now .ch-cash{color:#7ef0dd;}
+  /* 3. Вкладки — параллелограммы, как кнопки героя; активная жёлтая. */
+  #screen-career-hub .ch-tabs{padding:12px 14px 0;gap:8px;}
+  #screen-career-hub .ch-tab{border-radius:2px;padding:8px 16px;transform:skewX(-8deg);
+    font-family:var(--font-display);font-weight:600;font-size:14px;letter-spacing:.07em;
+    border:1px solid rgba(126,240,221,.28);color:#c9dfe0;background:rgba(255,255,255,.04);}
+  #screen-career-hub .ch-tab:hover{color:#fff;border-color:#7ef0dd;background:rgba(126,240,221,.1);}
+  #screen-career-hub .ch-tab.on{background:var(--go);color:var(--go-ink);border-color:var(--go);}
+  /* Радужная полоса над «Next up» и над артом — бирюзовая. */
+  #screen-career-hub .ch-next::before,
+  #screen-career-hub .ch-grid-main .ch-art::before{background:#7ef0dd;height:3px;}
+  /* 4. Календарь: панель того же стекла, сегодня — жёлтая рамка. */
+  #screen-career-hub .ch-next{background:rgba(3,16,20,.78);border-radius:3px;
+    border:1px solid rgba(126,240,221,.2);
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);}
+  #screen-career-hub .ch-next-head h3{font-family:var(--font-display);font-style:normal;font-weight:700;
+    text-transform:uppercase;letter-spacing:.02em;transform:skewX(-7deg);transform-origin:left;}
+  #screen-career-hub .ch-weeks{border-top-color:rgba(126,240,221,.22);}
+  #screen-career-hub .ch-week{border-right-color:rgba(126,240,221,.12);}
+  #screen-career-hub .ch-day.ch-today{box-shadow:inset 0 0 0 2px var(--go);border-radius:2px;
+    background:rgba(255,221,0,.07);}
+  #screen-career-hub .ch-day.ch-today em{color:var(--go);}
+  /* 5. Плитки и панели — срезанный угол, кромка, заголовки Oswald. */
+  #screen-career-hub .ch-tile{background:rgba(4,20,26,.6);border:1px solid rgba(126,240,221,.18);
+    border-radius:3px;box-shadow:none;clip-path:var(--cut);}
+  #screen-career-hub .ch-tile h4{font-family:var(--font-display);font-style:normal;font-weight:700;
+    font-size:19px;text-transform:uppercase;letter-spacing:.02em;color:#fff;
+    transform:skewX(-7deg);transform-origin:left;}
+  #screen-career-hub .ch-tile .ch-hint{color:#9fc9c9;}
+  #screen-career-hub .ch-row{border-bottom-color:rgba(126,240,221,.12);}
+  #screen-career-hub .ch-row em{color:#9fc9c9;}
+  #screen-career-hub .ch-empty{color:#7fa3a5;}
+  #screen-career-hub .ch-offer{border-radius:3px;border-color:rgba(126,240,221,.18);}
+  #screen-career-hub .ch-art{border-radius:3px;}
+  #screen-career-hub .ch-play{border-radius:3px;
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);}
+  /* 6. Экран создания: панель, вкладки, поля. */
+  #screen-career-create .cc-panel{background:rgba(4,20,26,.6);border:1px solid rgba(126,240,221,.18);
+    border-radius:3px;box-shadow:none;clip-path:var(--cut);}
+  #screen-career-create .cc-brand{color:#9fc9c9;}
+  #screen-career-create .cc-field label{color:#9fc9c9;}
+  #screen-career-create .cc-slab{background:var(--go);color:var(--go-ink);font-family:var(--font-display);
+    font-style:normal;font-weight:600;font-size:14px;letter-spacing:.07em;}
+  #screen-career-create .cc-title{font-family:var(--font-display);font-style:normal;font-weight:700;
+    letter-spacing:.005em;transform:skewX(-7deg);transform-origin:left;}
+  .cc-tab{transform:skewX(-8deg);font-family:var(--font-display);font-style:normal;font-weight:600;
+    font-size:14px;letter-spacing:.06em;border-radius:2px;}
+  .cc-tabs{gap:8px;}
+  .cc-tab.on{background:var(--go);color:var(--go-ink);}
+  #screen-career-create .cc-map{border-radius:3px;}
+  /* 7. Жёлтые кнопки — со срезом, Oswald. Тот же список селекторов, что у
+     исходного правила, потому что модалки живут вне #screen-career-hub. */
+  .cc-buys .ch-sign,
+  #duoFindModal .ch-sign, #smmPickModal .ch-sign, #coachPickModal .ch-sign,
+  #agentPickModal .ch-sign, #mktPickModal .ch-sign, #clubPickModal .ch-sign,
+  #screen-career-hub .ch-sign{border-radius:2px;font-family:var(--font-display);font-weight:600;
+    font-size:14px;letter-spacing:.07em;
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%);}
+
   /* ---- History, the Tracker profile shape ----------------------------------
      Summary strip on top — the number the page is about with its own curve
      behind it, then the totals — and every event as a row under it. Dense on
@@ -3789,7 +3878,9 @@
         <span class="new-badge" data-i18n="modeNewBadge"></span>
         <!-- Карьера — это остров через весь сезон, поэтому её обложка карта,
              а не тот же герб, что у соседней карточки Major 1. -->
-        <div class="ec-art" id="careerArt" style="background-image:url(art/map-m1.jpg);background-position:center 45%">
+        <!-- Самая новая карта — остров 42-го сезона. Его слово, 30 августа:
+             «на фнкс кареера превью будто другое должно быть… или новая карта самая». -->
+        <div class="ec-art" id="careerArt" style="background-image:url(art/map-s42.jpg);background-position:center 45%">
           <span class="ec-pill ec-pill-l" data-i18n="ecScopeAll"></span>
           <div class="ec-foot">
             <div class="ec-when" data-i18n="ecDateCareer"></div>
