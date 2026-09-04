@@ -63,7 +63,11 @@ const BOOT = `
     const splits0=JSON.stringify(cr.duoSplits||{});
 
     careerNewSeason();
-    const after=Object.keys(cr.trios||{}).length;
+    /* Считаем ТОЛЬКО свои сто ключей: с 4 сентября стык года ещё и
+       пересобирает сцену (careerTrioRaids) и пишет в ту же память третьих
+       по всему миру. Проверка здесь про ПЕРЕНОС, а не про размер книги. */
+    const mine=o=>Object.keys(o||{}).filter(k=>k.charAt(0)==='a' && k.indexOf('+b')>0);
+    const after=mine(cr.trios).length;
     out.notes.before=before; out.notes.after=after;
     check('память троек пережила сезон', after>0, after+' из '+before);
     check('но не целиком — часть распалась', after<before, after+' из '+before);
@@ -75,7 +79,7 @@ const BOOT = `
 
     /* И сквозная: тот же бросок при перезагрузке даёт тот же результат —
        иначе межсезонье пересобиралось бы на каждый заход в карьеру. */
-    const snapshot=JSON.stringify(cr.trios);
+    const snapshot=JSON.stringify(mine(cr.trios).sort().map(k=>k+':'+cr.trios[k]));
     cr.trios=Object.assign({}, memo);
     // Разводы тоже назад: их стирает сам careerNewSeason, и без них второй
     // проход считал бы другое межсезонье — не потому, что бросок пляшет.
@@ -84,7 +88,8 @@ const BOOT = `
     CC_POOLS=null;
     cr.season--;                       // назад на сезон и ещё раз
     careerNewSeason();
-    check('межсезонье повторяемо', JSON.stringify(cr.trios)===snapshot);
+    check('межсезонье повторяемо',
+          JSON.stringify(mine(cr.trios).sort().map(k=>k+':'+cr.trios[k]))===snapshot);
 
     /* И плохой трио-сезон разводит пару на стыке года.
 

@@ -43,7 +43,7 @@ const BOOT = `
   // the moment a picker appears, always the first zone, so the run is the same
   // every time. Without this a probe waits forever on a click nobody makes.
   setInterval(function(){
-    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
+    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
     z[0].click();
@@ -331,6 +331,11 @@ const BOOT = `
     if ((s3.earnings||0) !== r3.prize) fail('the Major prize did not reach earnings');
     out.steps.push('final #' + r3.place + ' of 50 — $' + r3.prize.toLocaleString('en-US') +
                    ', earnings $' + (s3.earnings||0).toLocaleString('en-US'));
+    /* Лента переехала в соцсеть: на центре с 2 сентября новостной хаб —
+       заголовки и одна новость крупно, постов там нет. Проверка про содержимое
+       ленты, поэтому открывает ту вкладку, где лента живёт. */
+    CH_SOCIAL = 'feed';
+    careerTab('social');
     const feed = [...document.querySelectorAll('#chBody .x-post-in p')].map(b=>b.textContent.trim());
     if (!feed.length) fail('the feed is empty after a Major Final');
     out.steps.push('feed: ' + feed.slice(0,2).join(' / '));

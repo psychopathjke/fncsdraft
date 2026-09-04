@@ -80,15 +80,25 @@ const BOOT = `
       fail('открылся не тот остров: '+careerSpotShown());
     out.steps.push('«поставить метку» открывает карту своего острова, вечер отложен');
 
-    // ---- 3. «сыграть без метки» действительно играет ----------------------
+    // ---- 3. без метки сыграть НЕЛЬЗЯ: «отмена» оставляет на хабе -----------
+    // Его слово, 29 августа: «сделай, чтоб без метки нельзя было начать игру».
     seed(day);
     ran=0;
     careerPlay();
     if(!open()) fail('второй раз окно не встало');
+    if(document.getElementById('ccAskNo').textContent===L().ccSpotGatePlay || L().ccSpotGatePlay)
+      fail('кнопка «сыграть без метки» всё ещё есть');
     ccAskGo(false);
     await wait(30);
-    if(ran!==1) fail('«сыграть без метки» не запустил вечер (ran='+ran+')');
-    out.steps.push('«сыграть без метки» запускает вечер');
+    if(ran!==0) fail('«отмена» запустила вечер без метки (ran='+ran+')');
+    if(open()) fail('окно не закрылось по отмене');
+    out.steps.push('без метки вечер не начать: отмена оставляет на хабе');
+    // Дверь для харнессов: careerSpotEnsure ставит метку на сегодняшнюю карту.
+    if(careerSpotEnsure()!==true || !careerSpotList(careerBrSet()).length) fail('careerSpotEnsure не поставил метку');
+    ran=0; careerPlay();
+    if(open()) fail('после careerSpotEnsure окно всё равно встало');
+    if(ran!==1) fail('после careerSpotEnsure вечер не стартовал');
+    out.steps.push('careerSpotEnsure ставит метку, и вечер идёт');
 
     // ---- 4. с меткой окна нет ---------------------------------------------
     seed(day);

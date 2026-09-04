@@ -54,6 +54,34 @@ const BOOT = `
       const was = careerToday(); careerAdvanceTo(ccAddDays(was, 1));
       return careerToday() !== was; })(), careerToday());
     check('состояние связи названо', MP.state === 'lost', String(MP.state));
+    /* Отказ виден на хабе, а не проглочен. Его отчёт 29 августа, в день,
+       когда лобби лежало: «как только создаёшь карьеру, нет кода» — плитки
+       команды не было вовсе, и о том, что лобби не ответило, не говорил никто. */
+    const failTile = careerMpTileHTML();
+    check('плитка команды стоит и после отказа', failTile !== '', 'пусто');
+    check('и говорит, что лобби не ответило', failTile.indexOf(L().ccMpFailLink) >= 0 &&
+          failTile.indexOf(L().ccMpFailNew) >= 0, failTile.replace(/<[^>]+>/g, ' ').slice(0, 200));
+    check('с кнопкой попробовать снова', failTile.indexOf('ccMpRetry()') >= 0);
+    check('транспорт отпущен — стучаться в лобби по таймеру больше некуда',
+          typeof MP.drop === 'function' && MP.state === 'lost');
+    // Повтор — та же попытка с тем же кодом; когда лобби отвечает, команда заводится.
+    MP.connect = function(code, id){ out.notes.retryCode = code; MP.state = 'live'; return Promise.resolve(); };
+    await ccMpRetry();
+    check('повтор заводит команду', ccMpOn() === true, JSON.stringify(CAREER.career.mp));
+    check('плитка отказа ушла', careerMpTileHTML().indexOf(L().ccMpFailLink) < 0);
+    // Отказаться — карьера одиночная, и плитки нет.
+    seed();
+    MP.connect = function(){ return Promise.reject(new Error('нет лобби')); };
+    await careerMpCreate();
+    ccMpFailOff();
+    check('«оставить одиночную» убирает плитку', careerMpTileHTML() === '', careerMpTileHTML().slice(0, 80));
+    check('и карьера одиночная', ccMpOn() === false);
+    // Вход по чужому коду отказ называет вместе с кодом.
+    seed();
+    await careerMpJoin('abc123');
+    check('отказ входа называет код', careerMpTileHTML().indexOf('ABC123') >= 0,
+          careerMpTileHTML().replace(/<[^>]+>/g, ' ').slice(0, 200));
+    ccMpFailOff();
 
     // ---- 2. подключились — код записан, связь живая -----------------------
     seed();

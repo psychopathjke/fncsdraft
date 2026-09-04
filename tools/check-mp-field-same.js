@@ -72,7 +72,22 @@ const BOOT = `
     const cupA=names(careerCupField(CAREER.career, squadA, ccTeams(50), 'same', false, 0));
     const sumA=names(careerSummitField('final', youA, squadA));
 
+    // Соло-хиты: сотня одна на двоих — те же боты у обоих, напарник в ней участником.
+    const soloA=names(careerSoloField(Object.assign({}, CAREER.career, {division:1}), [cardA, wireB], CC_SOLO_FIELD-2, false));
+    const qualA=names(careerSoloField(CAREER.career, [cardA, wireB], careerVictoryField(true)-1, true));
+
     asPlayer('Bravo', 'au', 'OCE');
+    const soloB=names(careerSoloField(Object.assign({}, CAREER.career, {division:1}), [cardB, wireA], CC_SOLO_FIELD-2, false));
+    const qualB=names(careerSoloField(CAREER.career, [cardB, wireA], careerVictoryField(true)-1, true));
+    out.notes.квал={совпало:qualA===qualB, размер:qualA.split('|').length, первые:qualA.split('|').slice(0,3), уВторого:qualB.split('|').slice(0,3)};
+    // Красная строка называет первую разошедшуюся строку поля. См. ccMpFieldDiff.
+    check('разница поля называет строку', ccMpFieldDiff('a:1|b:2|c:3','a:1|b:4|c:3')===' · diff 1 of 3: #2 b:2 vs b:4', ccMpFieldDiff('a:1|b:2|c:3','a:1|b:4|c:3'));
+    check('одинаковые поля — пусто', ccMpFieldDiff('a:1|b:2','a:1|b:2')==='');
+    check('открытый квал соло у двоих один и тот же', qualA===qualB, qualA.split('|').slice(0,3).join(' | ')+'  ПРОТИВ  '+qualB.split('|').slice(0,3).join(' | '));
+    out.notes.соло={первые:soloA.split('|').slice(0,3), совпало:soloA===soloB, размер:soloA.split('|').length};
+    check('сотня соло-хитов у двоих одна и та же', soloA===soloB,
+          soloA.split('|').slice(0,3).join(' | ') + '  ПРОТИВ  ' + soloB.split('|').slice(0,3).join(' | '));
+    check('и в ней нет ни меня, ни напарника — они стоят отдельно', soloA.indexOf(cardA.handle)<0 && soloA.indexOf(cardB.handle)<0);
     check('и у второго тоже, хотя сам он из Океании',
           ccCareerRegion()==='EU' && CAREER.player.region==='OCE',
           ccCareerRegion() + ' / ' + CAREER.player.region);
@@ -97,6 +112,23 @@ const BOOT = `
     check('и поле Саммита тоже', sumA===sumB,
           sumA.split('|').slice(0,3).join(' | ') + '  ПРОТИВ  ' +
           sumB.split('|').slice(0,3).join(' | '));
+
+    /* Комната открытого квала Reload не зависит от устройства, пока карьера
+       командная. Его скрин 29 августа: «field …n2100h68 vs …n900h68» — ноутбук
+       собрал 2100 дуо, телефон 900, и это два разных турнира с первой игры. */
+    CC_SMALL_DEVICE=false; const roomBig=ccOpenRoom();
+    CC_SMALL_DEVICE=true;  const roomSmall=ccOpenRoom();
+    out.notes.комната={команда:[roomBig, roomSmall]};
+    check('комната Reload в команде одна на ноутбуке и телефоне', roomBig===roomSmall,
+          roomBig + ' / ' + roomSmall);
+    // Контроль: одиночная карьера по-прежнему выбирает комнату по устройству.
+    const mpWas=CAREER.career.mp; delete CAREER.career.mp;
+    CC_SMALL_DEVICE=false; const soloBig=ccOpenRoom();
+    CC_SMALL_DEVICE=true;  const soloSmall=ccOpenRoom();
+    CAREER.career.mp=mpWas; CC_SMALL_DEVICE=null;
+    out.notes.комната.одиночная=[soloBig, soloSmall];
+    check('контроль: в одиночной комната по устройству разная', soloBig>soloSmall,
+          soloBig + ' / ' + soloSmall);
 
     /* Контроль: без командного региона поля обязаны РАЗЪЕХАТЬСЯ. Иначе первая
        половина проверки зелёная просто потому, что регион в поле не участвует. */

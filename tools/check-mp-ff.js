@@ -84,6 +84,20 @@ const BOOT = `
     await new Promise(r=>setTimeout(r, 1300));
     check('закрытие ушедшего не отпускает', fired===false);
     ccMpSeedOff(); MP.peerHb=null; CC_MP_LEAVE_MS=40000;
+    /* 6б. День команды идёт только вперёд. Его слово 30 августа: «после
+       перемотки моргает 3 и 4 день туда-сюда» — два клиента мотали сами и
+       перекидывали друг другу вчерашний день. Чужое состояние с более ранним
+       днём не применяется; с более поздним — применяется. */
+    {
+      const dHere=careerToday();
+      const older=ccTeamState(); older.day=ccAddDays(dHere, -1);
+      ccMpApplyRemote(older);
+      check('вчерашний день напарника не откатывает', careerToday()===dHere, careerToday()+' / '+dHere);
+      const newer=ccTeamState(); newer.day=ccAddDays(dHere, 1);
+      ccMpApplyRemote(newer);
+      check('завтрашний день напарника применяется', careerToday()===ccAddDays(dHere, 1), careerToday());
+      CAREER.career.day=dHere;
+    }
     // 7. Одиночная — как была: сразу перемотка.
     delete CAREER.career.mp; ran=null;
     careerFfToDay('2026-02-07');

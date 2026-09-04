@@ -66,9 +66,16 @@ const BOOT = `
     cr.beefs=[{h:face.handle, w:0, l:2, met:3, since:careerToday(), last:careerToday(), hot:true}];
     const hot=lay();
     out.notes.zone={cold:cold, hot:hot, home:ALL_LANDING_ZONES.indexOf(home)};
-    check('биф решает дроп соперника (иначе ключ незачем)', cold!==hot || hot===out.notes.zone.home,
-          'без бифа коробка '+cold+', с бифом '+hot);
-    check('с бифом соперник падает на дом', hot===out.notes.zone.home, 'упал в '+hot+', дом '+out.notes.zone.home);
+    /* 30 августа бифы выключены (CC_BEEFS_ON=false, «убери бифы с игры»):
+       ссора в сейве раскладку своего лобби больше не меняет. Ключ 'beefs' в
+       командном состоянии оставлен — состояние двоих должно совпадать целиком. */
+    if(CC_BEEFS_ON){
+      check('биф решает дроп соперника (иначе ключ незачем)', cold!==hot || hot===out.notes.zone.home,
+            'без бифа коробка '+cold+', с бифом '+hot);
+      check('с бифом соперник падает на дом', hot===out.notes.zone.home, 'упал в '+hot+', дом '+out.notes.zone.home);
+    } else {
+      check('бифы выключены: ссора в сейве раскладку не меняет', cold===hot, 'без бифа коробка '+cold+', с бифом '+hot);
+    }
     // И это едет по проводу.
     check("'beefs' — командный ключ", CC_TEAM_KEYS.indexOf('beefs')>=0, CC_TEAM_KEYS.join(','));
     const wire=ccTeamState();

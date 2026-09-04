@@ -27,6 +27,14 @@ const BOOT = `
 <script>
 (function(){
   var tab = ${JSON.stringify(TAB)}, month = ${JSON.stringify(MONTH)};
+  // Вкладка «Контент-мейкер» на экране создания: играть за живого стримера.
+  if (tab === 'creator') {
+    localStorage.removeItem('fncsdraft_career');
+    openCareerCreate();
+    ccSetMode('creator');
+    if (month) ccPickCreator(month);
+    return;
+  }
   if (tab === 'create') {
     localStorage.removeItem('fncsdraft_career');
     openCareerCreate();
@@ -74,6 +82,69 @@ const BOOT = `
   if (club === 'offers') { CAREER.offers = careerOrgOffers(); careerSave(); careerRenderHub('centre'); }
   if (club === 'signed') { CAREER.offers = careerOrgOffers(); careerSign(0); CAREER.org.paid = 1200; careerSave(); careerRenderHub('centre'); }
   if (club === 'dm') { careerDmInbound(3,150,true,3); var w=careerDmPool()[1]; if(w) careerDmWrite(w.handle); }
+  // Экран выбора карьер с залом славы под сеткой (3 сентября 2026).
+  if (tab === 'slots') { openCareerSlots(); return; }
+  // Пост с объявленной точкой высадки: вырезка карты вокруг коробки.
+  if (tab === 'drop') {
+    useLandingSet(careerBrSet());
+    careerNews('flat', 'ccPostDropCall', ['Malibuca', 3],
+               {day:careerToday(), zone:3, set:ACTIVE_LANDING_SET});
+    careerSave(); careerTab('social');
+    return;
+  }
+  // Вкладка стримов в дизайне Twitch.
+  // Эфир включён: только так видно плашку LIVE на аватаре — его правка 4.09.
+  // Третьим аргументом 'part' — канал с выслуженной партнёркой (галочка).
+  if (tab === 'streams') {
+    CAREER.career.twitch = 4200;
+    if (month === 'part') {
+      var rows = [];
+      for (var i = 1; i <= 12; i++) rows.push({d: ccAddDays(careerToday(), -i), v: 140, h: 4});
+      CAREER.career.streamLog = rows; careerTwTick();
+    }
+    careerStreamGo('grind'); careerTab('streams'); return;
+  }
+  // Приглашение на Про-Ам в личных сообщениях и выбор напарника.
+  // Третьим аргументом 'pick' — уже согласился, выбирает креатора.
+  if (tab === 'proam') {
+    CAREER.career.reach = CC_PROAM_REACH;
+    CAREER.career.day = ccAddDays('2026-07-12', -CC_PROAM_INVITE_DAYS);
+    var inv = careerProAmInviteTick();
+    if (month === 'pick') careerProAmYes(inv.id);
+    CH_SOCIAL = 'dms';
+    careerTab('social');
+    careerDmOpen(inv.id);
+    return;
+  }
+  // Поле ответа под чужим постом: его скрин «когда реплай нажимаю».
+  if (tab === 'reply') {
+    // В сейве снимка своя лента; чужой пост подсаживаем, чтобы под ним была
+    // кнопка ответа (под своим её нет — см. ccPostActsHTML).
+    // Автор задан прямо: ниже первого дивизиона пресса о победах не пишет
+    // (ccPressWorthy), и без этого пост оказался бы своим, а под своим
+    // кнопки ответа нет.
+    careerNews('flat', 'ccNewsWinner', ['Malibuca & vic0'],
+      {by:{name:'Malibuca', handle:'malibuca', ovr:96}});
+    careerTab('social');
+    var post = (CAREER.career.news || []).find(function(n){ return !ccPostAuthor(n).you; });
+    if (post) careerReplyOpen(post.id);
+    return;
+  }
+  // Разговор с напарником: ветка в инбоксе с четырьмя темами.
+  if (tab === 'mate') {
+    careerMateTalk('night');
+    careerMateOpen();
+    careerRenderHub('social');
+    return;
+  }
+  // Развилка дня с тремя ответами: вчера провал, напарник на тильте.
+  if (tab === 'event') {
+    CAREER.career.day = '2026-02-18';
+    CAREER.career.log.push({season:1, day:'2026-02-17', div:4, place:40, of:50, pts:120, ovr:57,
+      games:11, wins:0, elims:12, avg:30.1, mate:'Rimo', prize:0, kind:'cup'});
+    CAREER.career.luck = {day:'2026-02-18', woe:null, ev:'tilt'};
+    careerSave(); careerRenderHub('centre'); return;
+  }
   if (tab !== 'centre') careerTab(tab);
   if (month) {
     var p = month.split('-');

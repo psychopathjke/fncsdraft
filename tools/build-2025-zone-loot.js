@@ -34,7 +34,17 @@ const SETS = {
   // the season ended as.
   t1: {map: 'Map:Chapter 6: Season 1 (33.20)', art: 'art/map-t1.jpg'},
   t2: {map: 'Map:Chapter 6: Season 2 (34.30)', art: 'art/map-t2.jpg'},
-  t3: {map: 'Map:Chapter 6: Season 3 (36.30)', art: 'art/map-t3.jpg'}
+  t3: {map: 'Map:Chapter 6: Season 3 (36.30)', art: 'art/map-t3.jpg'},
+  /* Остров нынешнего сезона. Его правка 2 сентября 2026: «забалансить не по
+     квадрату размера, а по луту» — и он прав: у s42 рейтинг стоял на глаз с
+     картинки, а сотня соло-клеток унаследовала его от ближайшей из тридцати
+     трёх старых зон, то есть половина сетки не различалась вовсе.
+
+     s42solo — та же карта, но своя сетка на сотню клеток, поэтому лут по ней
+     раскладывается отдельно: у мелкой клетки свой счёт, а не счёт большого
+     соседа. */
+  s42:     {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
+  s42solo: {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'}
 };
 const WANT = process.argv.slice(2).filter(a => SETS[a]);
 const TARGETS = WANT.length ? WANT : Object.keys(SETS);

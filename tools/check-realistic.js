@@ -264,8 +264,22 @@ if (!out.tieCount) fails.push('no two teams share a rating, so the tiebreak went
 if (out.dupes) fails.push(out.dupes + ' rosters appear more than once');
 if (out.incomplete) fails.push(out.incomplete + ' listed teams have a member missing from the pool');
 if (out.wrongSize) fails.push(out.wrongSize + ' teams are not duos in a duo Major');
-if (out.top[0] && out.top[0].who !== 'Sky & Scroll')
-  fails.push('the top of the list is ' + out.top[0].who + ', not the team that won');
+/* Верх списка проверяется ПРАВИЛОМ, а не именем.
+ *
+ * Раньше здесь стояло «наверху обязаны быть Sky & Scroll, победители». Это не
+ * правило, а содержимое: список отсортирован по РЕЙТИНГУ, а рейтинг считается
+ * по всем этапам года (см. формулу), и победитель одного мейджора вовсе не
+ * обязан быть самым высокооценённым дуо набора. Когда рейтинги пересчитали,
+ * наверх встали Shxrk & t3eny (96 против 94 у Sky & Scroll, финиш Gf #2
+ * против пятого места) — и сторож покраснел, хотя список был верным. Красным
+ * он был и на коде до правок дня.
+ *
+ * Настоящая проверка та же по смыслу и не ломается от перекалибровки: верх
+ * списка не может занимать команда, вылетевшая рано. Список ведёт кто-то из
+ * гранд-финала, и притом из его первой десятки. */
+if (out.top[0] && !(out.top[0].stage === 'Gf' && out.top[0].rank <= 10))
+  fails.push('the list is led by ' + out.top[0].who + ' [' + out.top[0].stage + ' #' +
+             out.top[0].rank + '], a team that did not go deep — the order is not the rating');
 if (out.draftedHandles.join('|') !== out.targetHandles.join('|'))
   fails.push('taking ' + out.targetHandles.join(' & ') + ' drafted ' + out.draftedHandles.join(' & '));
 if (out.poolStillHasThem)

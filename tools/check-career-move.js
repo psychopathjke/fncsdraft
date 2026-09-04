@@ -85,6 +85,22 @@ const BOOT = `
     check('a thin balance cannot sign a lease', careerMoveTo('de') === false);
     check('and stays where it was', CAREER.player.livesIn == null);
 
+    /* Команда: переезд ВМЕСТЕ двигает регион вечеров (cr.region), переезд
+       одному — нет. Его слово, 30 августа: «переезжаю на другой регион с
+       тимейтом, но играю на ЕУ». */
+    fresh(200000, 'ge');
+    CAREER.career.mp={code:'MOVE01', role:'a'}; CAREER.career.region='EU';
+    if(typeof MP==='undefined') window.MP={};   // проба грузится без mp.js — напарник хватает и так
+    MP.peer={handle:'Zed', nat:'ru', region:'EU', rating:88, _targetOvr:88, _attrs:null, _roleKey:'roleFRG'};
+    check('команда: до переезда играет в EU', ccCareerRegion()==='EU', ccCareerRegion());
+    check('команда: переезд вместе проходит', careerMoveRegion('NAC', null, true)===true);
+    check('команда: и вечера переехали', CAREER.career.region==='NAC' && ccCareerRegion()==='NAC', ccCareerRegion());
+    fresh(200000, 'ge');
+    CAREER.career.mp={code:'MOVE01', role:'a'}; CAREER.career.region='EU';
+    check('команда: переезд одному проходит', careerMoveRegion('NAC', null, false)===true);
+    check('команда: но вечера остались в EU', CAREER.career.region==='EU' && ccCareerRegion()==='EU', ccCareerRegion());
+    delete CAREER.career.mp; MP.peer=null;
+
     // The payday charges the rent, on the same day the wages land.
     fresh(50000, 'ge');
     careerMoveTo('de');

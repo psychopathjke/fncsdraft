@@ -36,7 +36,7 @@ const BOOT = `
   // the moment a picker appears, always the first zone, so the run is the same
   // every time. Without this a probe waits forever on a click nobody makes.
   setInterval(function(){
-    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
+    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
     z[0].click();
@@ -274,6 +274,9 @@ const BOOT = `
     if (row2.place > 3 && seats) fail('a seat was taken from outside the top three');
     out.steps.push('final: #' + row2.place + ' of ' + row2.of +
                    (seats ? ' — seat at the Esports World Cup taken' : ' — no seat'));
+    /* Лента живёт в соцсети: центр с 2 сентября — новостной хаб. */
+    CH_SOCIAL = 'feed';
+    careerTab('social');
     const feed = [...document.querySelectorAll('#chBody .x-post-in p')].map(b=>b.textContent.trim());
     if (!feed.length) fail('the feed is empty after a Reload stage');
     out.steps.push('feed: ' + feed.slice(0,2).join(' / '));

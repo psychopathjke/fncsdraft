@@ -27,8 +27,17 @@ const BOOT = `
     // карточка показывает «пропустить», и смотреть на ней нечего.
     const days=careerYearDays();
     let day=null;
-    for(let d=CC_YEAR_FROM; d<=CC_YEAR_TO; d=ccAddDays(d,1))
-      if((days.get(d)||[]).some(e=>e.kind==='cup')){ day=d; break; }
+    /* Какой вечер снимать: по умолчанию первый кубок года, но SHOT_KIND и
+       SHOT_DAY позволяют навести на любой — обложки событий проверяются глазами
+       именно так (SHOT_KIND=solo ловит соло-вечер). */
+    /* Подставляются ИЗ НОДЫ в шаблон: сам этот код исполняется в браузере,
+       где process не существует. Наступил на это 2 сентября — снимок вернул
+       ReferenceError вместо карточки. */
+    const wantKind=${JSON.stringify(process.env.SHOT_KIND||'cup')};
+    const wantDay=${JSON.stringify(process.env.SHOT_DAY||'')};
+    if(wantDay) day=wantDay;
+    else for(let d=CC_YEAR_FROM; d<=CC_YEAR_TO; d=ccAddDays(d,1))
+      if((days.get(d)||[]).some(e=>e.kind===wantKind)){ day=d; break; }
     localStorage.setItem('fncsdraft_career', JSON.stringify({
       v:1, player:{nick:'Probe', age:20, source:'rookie', country:'de', countryPing:15,
         closeRangeEdge:6, region:'EU', ovr:92, role:'roleIGL', attrs:null, ageEdge:4,

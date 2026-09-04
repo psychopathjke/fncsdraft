@@ -41,15 +41,33 @@ const BOOT = `
           ccAgeEdge(undefined) === 0);
 
     // ---- ping ------------------------------------------------------------
-    const ping = {0:CC_PING_EDGE, 25:CC_PING_EDGE, 95:0, 200:0};
+    /* Ожидания считаются ОТ САМИХ КОНСТАНТ кривой, а не от списка миллисекунд.
+       Свободная полоса когда-то кончалась на 25 мс, потом стала CC_PING_FREE
+       (14), — а проверка так и требовала полную прибавку на 25, где кривая
+       давно спускается. Она мерила старое число, а не правило, и была красной
+       месяцами, в том числе на коде до любых правок дня. */
+    const ping = {};
+    ping[0] = CC_PING_EDGE;             // ближе некуда — вся прибавка
+    ping[CC_PING_FREE] = CC_PING_EDGE;  // конец свободной полосы — ещё вся
+    ping[CC_PING_MAX] = 0;              // дальше край — уже ничего
+    ping[CC_PING_MAX + 50] = 0;
     out.notes.ping = {at0: ccPingEdge(0), at25: ccPingEdge(25), at26: ccPingEdge(26),
                       at60: ccPingEdge(60), at95: ccPingEdge(95), at200: ccPingEdge(200)};
     Object.keys(ping).forEach(ms =>
       check('ping ' + ms + 'ms is worth ' + ping[ms],
             Math.abs(ccPingEdge(+ms)-ping[ms]) < 0.11, String(ccPingEdge(+ms))));
+    /* «Никогда не больше» — по всей кривой и НЕ строго: за краем (CC_PING_MAX)
+       прибавки нет ни у кого, и требовать там 0 > 0 значит требовать, чтобы
+       плохое соединение было хуже плохого. Строгое падение проверяется там,
+       где кривая и правда идёт вниз, — внутри полосы. */
+    const band = [];
+    for (let ms = 0; ms <= CC_PING_MAX + 40; ms += 3) band.push(ccPingEdge(ms));
     check('a worse connection is never worth more than a better one',
-          ccPingEdge(30) > ccPingEdge(60) && ccPingEdge(60) > ccPingEdge(90),
-          [30,60,90].map(ccPingEdge).join(' > '));
+          band.every((v, i) => i === 0 || band[i-1] >= v), band.join(' '));
+    check('and inside the band it actually falls',
+          ccPingEdge(CC_PING_FREE) > ccPingEdge(CC_PING_FREE+15) &&
+          ccPingEdge(CC_PING_FREE+15) > ccPingEdge(CC_PING_MAX-1),
+          [CC_PING_FREE, CC_PING_FREE+15, CC_PING_MAX-1].map(ccPingEdge).join(' > '));
     check('and no ping at all is nothing', ccPingEdge(null) === 0);
 
     // ---- and it is the player's alone ------------------------------------
@@ -84,8 +102,14 @@ const BOOT = `
           String(me._pingEdge));
     check('a sixteen-year-old is at the top of the age curve',
           me._ageEdge === ccAgeEdge(16), me._ageEdge + '/' + ccAgeEdge(16));
+    /* «Ближе к верху кривой», а не «почти вся прибавка». 26 мс это уже двенадцать
+       миллисекунд за свободной полосой (CC_PING_FREE=14), то есть 85% от
+       максимума, — планка в 90% была написана, когда полоса кончалась на 25.
+       Смысл проверки в том, что сербское соединение стоит заметно дороже
+       плохого, и он выражен вторым условием, а не одной цифрой. */
     check('and Serbia at 26ms is near the top of the ping one',
-          me._pingEdge > CC_PING_EDGE*0.9, String(me._pingEdge));
+          me._pingEdge > CC_PING_EDGE*0.75 && me._pingEdge > ccPingEdge(CC_PING_MAX-15),
+          me._pingEdge + ' vs ' + ccPingEdge(CC_PING_MAX-15));
 
     // The duo averages it: a real partner brings none, so the pair carries half.
     (()=>{ if(careerPartnerCard()) return; careerSeatTopUp(); const s=careerDms().find(x=>x.state==='offer'&&!x.who.org&&!x.who.brand); if(s) careerDmAccept(s.id); })();

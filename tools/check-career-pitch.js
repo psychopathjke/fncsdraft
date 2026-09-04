@@ -97,9 +97,8 @@ const BOOT = `
     check('контроль: без просьбы — не всегда', ctrl<hits, ctrl+' из '+TRIES);
 
     /* ---- 3. клуб не по уровню отказывает, и просьба закрывается ----------
-       Чипсы такой клуб и не покажут — careerPitchClubs фильтрует по охвату, —
-       поэтому уровень игрока здесь опускается: проверяется сама защита, а не
-       список. Иначе шаг мерил бы согласие и назывался бы отказом. */
+       Уровень игрока опускается, чтобы проверить саму защиту: список теперь
+       полный (30 августа), а отказывает просьба. */
     CAREER.pitch=null;
     CAREER.player.ovr=70; CAREER.player.ovrExact=70;
     const far=careerOrgPool().slice().sort((x,y)=>y.tier-x.tier)[0];
@@ -107,8 +106,11 @@ const BOOT = `
     careerAgentPitch(dm, far.name);
     check('клуб заметно выше уровня отказывает', !careerPitchOn(),
           JSON.stringify(CAREER.pitch));
-    check('и такой клуб в списке не предлагается',
-          !careerPitchClubs().some(c=>c.name===far.name));
+    /* Его слово 30 августа: «чтоб там все были» — список полный, клуб выше
+       уровня В НЁМ ЕСТЬ, а отказывает сама просьба (шаг выше). */
+    check('и такой клуб в списке всё равно есть', careerPitchClubs().some(c=>c.name===far.name));
+    check('список — весь пул без своего клуба', careerPitchClubs().length===careerOrgPool().filter(o=>o.name!==((CAREER.org&&CAREER.org.name)||null)).length);
+    check('новые клубы в списке', ['TSM','Gambit Esports','Eleven Gaming','COOLER Esport'].every(n=>careerPitchClubs().some(c=>c.name===n)), careerPitchClubs().map(c=>c.name).join(','));
 
     /* ---- 4. меню, а не ряд фишек, и доклад о переговорах ----------------
        Его правка, 25 августа: «а менеджера как попросить, чтоб оргу нашёл —

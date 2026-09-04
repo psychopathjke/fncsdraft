@@ -35,7 +35,7 @@ const BOOT = `
       const am=document.getElementById('ccAskModal');
       if(am && am.style.display==='flex'){
         const no=document.getElementById('ccAskNo');
-        if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; }
+        if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; }
       }
       // Вопрос о высадке — первой кнопкой («домой»), это и есть «метка».
       document.querySelectorAll('.cc-choice-btn').forEach(b=>b.click());

@@ -1,15 +1,15 @@
-// Ссора за локацию: как заводится, что даёт и как гаснет.
+// Бифы выключены — и выключены везде, а не только в ленте.
 //
-// Его правка, 24 августа: «бифы в твиттере и за локации, ауру фармить».
-// Проверяется вся цепочка, потому что каждое звено в ней может тихо не
-// сработать и биф останется украшением:
-//   1) одна встреча — ещё не ссора, вторая на СВОЕЙ точке — уже биф, и он
-//      приходит в ленту постом соперника, а не твоим;
-//   2) чужая коробка ссоры не заводит: биф — за локацию;
-//   3) пока биф жив, соперника тянет именно на твой дом (landingScore);
-//   4) вечер, в котором вы сошлись, стоит вдвое — и в плюс, и в минус;
-//   5) ответить — громко и ссора живёт; промолчать — гаснет;
-//   6) месяц тишины гасит сам.
+// Его слово, 30 августа (страница «playin»): «убери бифы с игры». Скрин: семь
+// одинаковых постов «@swizzy опять сел нам на голову» за один вечер. Ключ
+// CC_BEEFS_ON=false должен закрыть всю цепочку разом, потому что у неё пять
+// выходов и любой из них может остаться торчать:
+//   1) две встречи дома больше не записываются и поста не рождают;
+//   2) даже горячая ссора в сейве не тянет соперника на дом (landingScore);
+//   3) и не рисуется ярлыком на плитке точки;
+//   4) старые посты ссор и сами ссоры вычищаются из сейва при загрузке;
+//   5) вечер против «врага» больше не стоит вдвое.
+// Если ключ когда-нибудь вернут в true — проба скажет об этом и выйдет.
 //
 //   node tools/check-career-beef.js
 const fs = require('fs'), os = require('os'), path = require('path');
@@ -23,29 +23,22 @@ const CHROME = [
   (process.env.LOCALAPPDATA || '') + '/Google/Chrome/Application/chrome.exe'
 ].find(p => p && fs.existsSync(p));
 if (!CHROME) throw new Error('Chrome not found');
-
-const HEAD = `<script>
-window.__errs=[];
-window.addEventListener('error', e=>window.__errs.push(String(e.message)+' @'+e.lineno));
-<\/script>`;
+const SL = String.fromCharCode(92);
 
 const BOOT = `
 <pre id="__out" style="display:none"></pre>
 <script>
 (function(){
-  const out={steps:[], errs:null, fail:null};
-  const fail=m=>{ if(!out.fail) out.fail=m; throw new Error(m); };
-  /* useLandingSet пересобирает ALL_LANDING_ZONES новыми объектами, поэтому дом
-     и чужая коробка берутся ЗАНОВО после каждого посева: сравнение зон идёт по
-     тождеству, и старый объект после пересборки не равен ничему. */
+  const out={fails:[], notes:{}, err:null, skipped:false};
+  const check=(n, ok, d)=>{ if(!ok) out.fails.push(n+(d?': '+d:'')); };
   let home=null, away=null;
-  const seed=()=>{
+  const seed=(extra)=>{
     localStorage.setItem('fncsdraft_career', JSON.stringify({
       v:1, player:{nick:'Beefer', age:20, source:'rookie', country:'de', countryPing:15,
         closeRangeEdge:6, region:'EU', ovr:92, role:'roleIGL', attrs:null, ageEdge:4,
         photo:null, handle:null, cardRegion:null, nat:null},
-      career:{season:1, day:'2026-02-02', division:1, earnings:0, balance:1000, reach:0,
-              tokens:[], log:[], news:[]},
+      career:Object.assign({season:1, day:'2026-02-02', division:1, earnings:0, balance:1000, reach:0,
+              tokens:[], log:[], news:[]}, extra||{}),
       partner:null}));
     careerEntry();
     useLandingSet(careerBrSet());
@@ -53,9 +46,6 @@ const BOOT = `
     home=careerSpotZone(careerBrSet());
     away=ALL_LANDING_ZONES.find(z=>z!==home);
   };
-  // Один вечер на карте, разыгранный руками: кто где сел и кто кого вынес.
-  // Настоящий движок здесь не нужен — creditLandingFights читает ровно эти
-  // три поля, и проба говорит с ним на его языке.
   const night=(zone, rivalCard, youWin)=>{
     const you={isYou:true, name:'you', squad:[{handle:'Beefer'}], landingZone:zone};
     const foe={name:'foe', squad:[rivalCard], landingZone:zone};
@@ -65,123 +55,65 @@ const BOOT = `
     return you;
   };
   try{
+    if(typeof CC_BEEFS_ON==='undefined') throw new Error('ключа CC_BEEFS_ON нет');
+    if(CC_BEEFS_ON){ out.skipped=true; throw new Error('CC_BEEFS_ON=true: бифы включены, проба выключенных бифов не о том'); }
     seed();
     const foeCard=careerRosterNowEU()[0];
-    if(!home || !away || !foeCard) fail('нечем играть: дом, чужая коробка или соперник не нашлись');
+    if(!home || !away || !foeCard) throw new Error('нечем играть: дом, чужая коробка или соперник не нашлись');
 
-    // ---- 1. первая встреча — ещё не ссора --------------------------------
-    night(home, foeCard, true);
-    let b=careerBeefOf(foeCard.handle);
-    if(!b) fail('первая встреча вообще не записалась');
-    if(b.hot) fail('биф завёлся с одной встречи');
-    if((CAREER.career.news||[]).some(n=>n.beef)) fail('пост ссоры вышел раньше самой ссоры');
-    out.steps.push('одна встреча — ещё не ссора');
+    // 1. Две встречи дома — ни записи, ни поста.
+    night(home, foeCard, true); night(home, foeCard, true); night(home, foeCard, false);
+    check('встречи дома не записываются', careerBeefOf(foeCard.handle)===null, JSON.stringify(careerBeefs()));
+    check('поста ссоры нет', !(CAREER.career.news||[]).some(n=>n && n.beef));
+    check('живых ссор нет', careerBeefHot().length===0);
 
-    // ---- 2. вторая на своей точке — биф и его пост -----------------------
-    night(home, foeCard, true);
-    b=careerBeefOf(foeCard.handle);
-    if(!b.hot) fail('вторая встреча дома не завела биф');
-    const post=(CAREER.career.news||[]).find(n=>n.beef);
-    if(!post) fail('биф есть, а поста нет');
-    if(!post.by || String(post.by.handle||'').toLowerCase()!==ccHandle(foeCard.handle))
-      fail('пост ссоры написан не соперником: '+JSON.stringify(post.by));
-    const html=ccPostHTML(post);
-    if(html.indexOf('x-beef-hit')<0) fail('под постом ссоры нет кнопки ответа');
-    out.steps.push('вторая встреча дома — биф, и пост пишет он: @'+post.by.handle);
-
-    // ---- 3. чужая коробка ссоры не заводит -------------------------------
-    seed();
-    const other=careerRosterNowEU()[1];
-    night(away, other, true);
-    night(away, other, true);
-    if((careerBeefOf(other.handle)||{}).hot) fail('биф завёлся на чужой коробке');
-    out.steps.push('на чужой коробке ссора не заводится');
-
-    // ---- 4. пока биф жив, его тянет на твой дом --------------------------
-    seed();
-    night(home, foeCard, true); night(home, foeCard, true);
+    // 2. Горячая ссора, подложенная в сейв, не тянет на дом и не рисуется.
+    CAREER.career.beefs=[{h:foeCard.handle, w:2, l:0, met:3, since:careerToday(), last:careerToday(), hot:true}];
+    check('careerBeefHot пуст при горячей записи', careerBeefHot().length===0);
+    careerSpotFearOn({pow:100});
+    check('набор ссор не выставляется', CC_BEEF_SET===null, String(CC_BEEF_SET && [...CC_BEEF_SET]));
     const foeTeam={pow:100, squad:[foeCard]};
     const calm={pow:100, squad:[careerRosterNowEU()[5]]};
-    // Шум в landingScore случайный, поэтому сравниваются средние.
     const avg=(team, zone)=>{ let s=0; for(let i=0;i<400;i++) s+=landingScore(team, zone, []); return s/400; };
-    careerSpotFearOn({pow:100});
-    if(!CC_BEEF_SET) fail('набор ссор не выставился: живых '+careerBeefHot().length+
-      ', всего '+JSON.stringify(careerBeefs())+', сегодня '+careerToday());
-    if(!CC_BEEF_ZONES || !CC_BEEF_ZONES.has(home)) fail('дом не попал в набор зон ссоры');
-    if(!CC_BEEF_SET.has(hKey(foeCard))) fail('соперника нет в наборе: '+[...CC_BEEF_SET].join(','));
     const pullFoe=avg(foeTeam, home)-avg(foeTeam, away);
     const pullCalm=avg(calm, home)-avg(calm, away);
     careerSpotFearOff();
-    if(!(pullFoe-pullCalm > CC_BEEF_PULL*0.5))
-      fail('биф не тянет соперника на дом: '+pullFoe.toFixed(2)+' против '+pullCalm.toFixed(2));
-    out.steps.push('соперника по бифу тянет на дом сильнее на '+
-      (pullFoe-pullCalm).toFixed(1)+' очка карты');
+    out.notes.pull={foe:+pullFoe.toFixed(2), calm:+pullCalm.toFixed(2)};
+    check('на дом никого не тянет сильнее других', Math.abs(pullFoe-pullCalm) < CC_BEEF_PULL*0.5,
+          pullFoe.toFixed(2)+' против '+pullCalm.toFixed(2));
+    // 3. Ярлык на плитке.
+    const tile=String(careerNightSpotHTML ? careerNightSpotHTML() : '');
+    check('ярлыка «Биф с @…» на плитке нет', tile.indexOf('ch-spot-beef')<0);
 
-    // ---- 5. вечер против него стоит вдвое --------------------------------
-    seed();
-    const plain=careerSpotNight(6, 1, careerBrSet(), 0, false);
-    seed();
-    const hot=careerSpotNight(6, 1, careerBrSet(), 0, true);
-    if(!(hot===plain*CC_BEEF_AURA)) fail('аура за вечер с бифом не удвоилась: '+plain+' → '+hot);
-    /* И проигранный вечер тоже удваивается: ссора — ставка в обе стороны,
-       иначе она была бы бесплатной. Ауру надо поднять заранее — с нуля минус
-       упирается в пол, и проверка стала бы пустой. */
-    seed();
-    careerSpotList(careerBrSet())[0].aura=5;
-    const badPlain=careerSpotNight(1, 6, careerBrSet(), 0, false);
-    seed();
-    careerSpotList(careerBrSet())[0].aura=5;
-    const badHot=careerSpotNight(1, 6, careerBrSet(), 0, true);
-    if(badPlain===0) fail('проверка минуса пустая: аура упёрлась в пол');
-    if(badHot!==badPlain*CC_BEEF_AURA)
-      fail('минус за ссору не удвоился: '+badPlain+' → '+badHot);
-    out.steps.push('вечер с бифом: аура '+plain+' → '+hot+', минус '+badPlain+' → '+badHot);
+    // 4. Старые посты и ссоры вычищаются при загрузке.
+    seed({beefs:[{h:foeCard.handle, w:2, l:0, met:3, since:'2026-02-01', last:'2026-02-01', hot:true}],
+          news:[{season:1, day:'2026-02-01', kind:'bad', k:'ccBeefStart', a:['beefer'], f:0, id:'n1',
+                 by:{name:foeCard.handle, handle:ccHandle(foeCard.handle), verified:false, ovr:90}, beef:foeCard.handle},
+                {season:1, day:'2026-02-01', kind:'good', k:'ccBeefHit', a:['x'], f:0, id:'n2'},
+                {season:1, day:'2026-02-01', kind:'flat', k:'ccNewsWelcome', a:[], f:0, id:'n3'}]});
+    const news=CAREER.career.news||[];
+    check('пост ссоры вычищен из сейва', !news.some(n=>n && n.beef), JSON.stringify(news.map(n=>n.k)));
+    check('остальные посты на месте', news.length===2, String(news.length));
+    check('сами ссоры вычищены', Array.isArray(CAREER.career.beefs) && CAREER.career.beefs.length===0);
+    check('кнопок ответа в ленте нет', String(careerNewsHTML(10)).indexOf('x-beef')<0);
 
-    // ---- 6. ответить или промолчать --------------------------------------
+    // 5. Вечер против «врага» больше не идёт по двойному счёту: careerSpotNight
+    //    удваивает по метке _beefMet, а её ставит только careerBeefNight.
     seed();
-    night(home, foeCard, true); night(home, foeCard, true);
-    const p2=(CAREER.career.news||[]).find(n=>n.beef);
-    const reachWas=CAREER.career.reach||0;
-    careerBeefAnswer(p2.id, 'hit');
-    if(!(CAREER.career.reach>reachWas)) fail('ответ не принёс подписчиков');
-    if(!careerBeefOf(foeCard.handle).hot) fail('после ответа ссора погасла');
-    if(!(CAREER.career.news||[]).some(n=>n.k && String(n.k).indexOf('ccBeefHit')>=0))
-      fail('твоего ответа нет в ленте');
-    if(ccPostHTML((CAREER.career.news||[]).find(n=>n.beef)).indexOf('x-beef-hit')>=0)
-      fail('кнопки остались после ответа');
-
-    seed();
-    night(home, foeCard, true); night(home, foeCard, true);
-    const p3=(CAREER.career.news||[]).find(n=>n.beef);
-    careerBeefAnswer(p3.id, 'quiet');
-    if(careerBeefOf(foeCard.handle).hot) fail('молчание не погасило ссору');
-    out.steps.push('ответить — громко и ссора жива; промолчать — гаснет');
-
-    // ---- 7. и месяц тишины гасит сам --------------------------------------
-    seed();
-    night(home, foeCard, true); night(home, foeCard, true);
-    if(!careerBeefHot().length) fail('свежая ссора не считается живой');
-    careerBeefOf(foeCard.handle).last=ccAddDays(careerToday(), -(CC_BEEF_COOL+5));
-    if(careerBeefHot().length) fail('ссора месячной давности всё ещё живая');
-    out.steps.push('месяц без встреч — и ссора гаснет сама');
-  }catch(e){ if(!out.fail) out.fail=String(e && e.message || e); }
-  out.errs=window.__errs;
-  document.getElementById('__out').textContent='BEGIN'+encodeURIComponent(JSON.stringify(out))+'END';
+    CAREER.career.beefs=[{h:foeCard.handle, w:2, l:0, met:3, since:careerToday(), last:careerToday(), hot:true}];
+    const you=night(home, foeCard, true);
+    check('метки двойного счёта нет', !you._beefMet);
+  }catch(e){ out.err=String(e && e.stack || e); }
+  document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
 })();
-<\/script>`;
-
-const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ccbeef-'));
-const tmp = path.join(dir, 'index.html');
-fs.writeFileSync(tmp, '<base href="file:///' + ROOT.replace(/\\/g,'/') + '/">' + HEAD +
-  fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8') + BOOT);
-const dom = execFileSync(CHROME, ['--headless=new','--disable-gpu','--no-sandbox',
-  '--allow-file-access-from-files','--virtual-time-budget=120000','--dump-dom',
-  'file:///' + tmp.replace(/\\/g,'/')], {maxBuffer:512*1024*1024, encoding:'utf8', stdio:['ignore','pipe','ignore']});
-fs.rmSync(dir, {recursive:true, force:true});
-const m = dom.match(/BEGIN([\s\S]*?)END/);
-if (!m) { console.error('проба не дала вывода'); process.exit(2); }
-const out = JSON.parse(decodeURIComponent(m[1]));
-out.steps.forEach(s=>console.log('  '+s));
-if((out.errs||[]).length) console.error('ОШИБКИ: '+out.errs.join(' | '));
-if(out.fail){ console.error('FAILED: '+out.fail); process.exit(1); }
-console.log('ссора за локацию заводится картой, кормит ауру и гаснет сама');
+<` + `/script>`;
+const dir=fs.mkdtempSync(path.join(os.tmpdir(),'ccbeefoff-')); const tmp=path.join(dir,'index.html');
+fs.writeFileSync(tmp, '<base href="file:///'+ROOT.split(SL).join('/')+'/">'+fs.readFileSync(path.join(ROOT,'index.html'),'utf8')+BOOT);
+const dom=execFileSync(CHROME, ['--headless=new','--disable-gpu','--no-sandbox','--allow-file-access-from-files','--virtual-time-budget=120000','--dump-dom','file:///'+tmp.split(SL).join('/')], {maxBuffer:512*1024*1024, encoding:'utf8', stdio:['ignore','pipe','ignore']});
+fs.rmSync(dir,{recursive:true,force:true});
+const m=dom.match(/PBEGIN([\s\S]*?)PEND/); if(!m){ console.error('проба не отработала'); process.exit(2); }
+const out=JSON.parse(decodeURIComponent(m[1]));
+if(out.skipped){ console.log('CC_BEEFS_ON=true — бифы включены, проба выключенных бифов пропущена'); process.exit(0); }
+if(out.err){ console.error('ERR: '+out.err); process.exit(1); }
+out.fails.forEach(f=>console.log(' FAIL '+f)); if(out.fails.length) process.exit(1);
+console.log('бифы выключены везде: встречи, тяга, ярлык, старые посты, удвоение вечера · '+JSON.stringify(out.notes));

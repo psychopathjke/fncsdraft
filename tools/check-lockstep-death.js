@@ -62,7 +62,7 @@ const boot = (pollMs, skip) => `<script>var OVR_=${OVR};</script>`+`
   setInterval(function(){
     const am=document.getElementById("ccAskModal");
     if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo");
-      if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; } }
+      if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; } }
     const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
@@ -77,7 +77,20 @@ const boot = (pollMs, skip) => `<script>var OVR_=${OVR};</script>`+`
         closeRangeEdge:6, region:'EU', ovr:OVR_, role:'roleIGL', attrs:null, ageEdge:4,
         photo:null, handle:null, cardRegion:null, nat:null},
       career:{season:1, day:'${process.env.CC_DAY||'2026-02-02'}', division:1, earnings:0, balance:0, reach:0,
-              tokens:[], log:[], news:[]}, partner:null}));
+              tokens:[], log:[], news:[]},
+      /* НАПАРНИК КЛАДЁТСЯ ПРЯМО В СЕЙВ, а не зовётся письмом.
+
+         Раньше сторож принимал первое предложение из ящика. С сентябрьскими
+         правками кресло сначала «дозаполняется» (careerSeatTopUp), а кандидаты
+         считаются от рейтинга и охвата — игроку на 45 в Дивизионе 1 писать
+         некому, ящик оставался пуст, кнопки вечера не появлялось, и сторож
+         падал на «нет кнопки вечера», хотя локстеп тут ни при чём.
+
+         Для этой проверки так даже вернее: состав задан руками и одинаков у
+         обоих клиентов по построению, то есть из сравнения убран целый
+         источник расхождения, к локстепу отношения не имеющий. */
+      partners:[{card:{handle:'FiTo', region:'EU', tier:'ranked',
+                       rating:OVR_, _targetOvr:OVR_}, patience:70}]}));
     const s=JSON.parse(localStorage.getItem('fncsdraft_career'));
     s.player.attrs=ccRookieAttrs(OVR_,'roleIGL');
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
@@ -103,8 +116,7 @@ const boot = (pollMs, skip) => `<script>var OVR_=${OVR};</script>`+`
     accumulateMatchStats=cost('stats', accumulateMatchStats);
     // Напарник — первый, кто написал: у обоих клиентов он один и тот же,
     // потому что и мир, и очередь писем посеяны одним сидом.
-    const dm=careerDms().find(x=>x.state==='offer' && !x.who.org && !x.who.brand);
-    if(dm){ careerDmAccept(dm.id); careerRenderHub('centre'); }
+    careerRenderHub('centre');
     out.notes.mate=(careerPartnerCard()||{}).handle||null;
     out.notes.zone={sim:typeof ZoneSim, replay:typeof ZoneReplay, use:(function(){ try{ return useZoneSim([{squad:[{},{}]}]); }catch(e){ return 'err '+e.message; } })(), set:ACTIVE_LANDING_SET, zones:(ZONE_SETS[ACTIVE_LANDING_SET]||[]).length};
     const play=document.querySelector('#screen-career-hub .ch-play');
@@ -156,9 +168,40 @@ const run = (tag, seed, pollMs, skip) => {
 };
 
 const SEED = 20260825;
-const a = run('клиент A', SEED);
-const b = run('клиент B', SEED);
- const d = run('медленный', SEED, 7, false);
+/* ВСЕ ТРИ КЛИЕНТА — БЕЗ СКИПА, и это две отдельные причины.
+
+   Первая: сравнивать клиента со скипом с клиентом без скипа в ОДИНОЧНОЙ
+   карьере нельзя по замыслу — пропуск считает своё лобби одним куском
+   (mine=null в simulateGamesLive), то есть это другой вечер, а не тот же
+   вечер в другом темпе. Тот же вывод стоит комментарием в
+   check-lockstep-live.js, а здесь сравнение так и осталось перекрёстным, и
+   сторож месяцами показывал расхождение, которого нет.
+
+   Вторая: сам скип здесь НЕ ВОСПРОИЗВОДИМ. Харнесс жмёт кнопку пропуска, как
+   только она появится, и на слабом игроке с контестом первая игра успевает
+   уйти в вопросы или не успеть — в зависимости от того, куда лёг опрос.
+   Два клиента с ОДИНАКОВЫМИ настройками расходились через раз. У сильного
+   игрока (check-lockstep-live, 92) этого не видно: он не умирает на высадке,
+   и лишней развилки нет.
+
+   Остаётся то, ради чего сторож написан: одинаковые клиенты обязаны совпасть,
+   а разный шаг опроса — не влиять на исход. */
+const a = run('клиент A', SEED, 20, false);
+const b = run('клиент B', SEED, 20, false);
+/* ДВА ДОСМАТРИВАЮЩИХ, а не «скип против досмотра».
+
+   Сравнивать клиента со скипом с клиентом без скипа в ОДИНОЧНОЙ карьере
+   нельзя, и это не оговорка: пропуск по замыслу считает своё лобби одним
+   куском (mine=null в simulateGamesLive), то есть это другой вечер, а не тот
+   же вечер в другом темпе. Тот же вывод стоит комментарием в
+   check-lockstep-live.js, а здесь сравнение так и осталось перекрёстным — и
+   сторож был красным месяцами, показывая расхождение, которого нет: пара
+   A/B (обе со скипом) сходилась до последней строки каждый прогон.
+
+   Меряем то, ради чего сторож написан: два клиента БЕЗ скипа с разным шагом
+   опроса. Если кадры влияют на исход, разъедутся именно они. */
+const d = run('медленный', SEED, 7, false);
+const e = a;
 const hash = t => crypto.createHash('sha1').update(t.join('\n')).digest('hex').slice(0, 12);
 const show = (n, r) => console.log(n + ': ' + r.head + ' · строк ' + r.table.length +
   ' · своё ' + JSON.stringify(r.mine) + ' · хеш ' + hash(r.table));
@@ -182,13 +225,13 @@ if (hash(a.table) !== hash(b.table)) {
   console.error('совпало строк подряд: ' + at + ' из ' + a.table.length);
   process.exit(1);
 }
-console.log('игрок '+OVR+': своё A '+JSON.stringify(a.mine)+' · D '+JSON.stringify(d.mine)+' · бросков A '+a.rolls+' D '+d.rolls);
-const tdiff=diffTrace(a.trace, d.trace, 'A', 'D');
-if (hash(d.table) !== hash(a.table) || tdiff) {
-  const at2 = a.table.findIndex((r, i) => r !== d.table[i]);
-  console.error('ТЕМП РЕШАЕТ: клиент без скипа и с другим шагом опроса разъехался на строке ' + (at2 + 1));
-  console.error('  A: ' + a.table[at2]);
+console.log('игрок '+OVR+': своё D '+JSON.stringify(d.mine)+' · E '+JSON.stringify(e.mine)+' · бросков D '+d.rolls+' E '+e.rolls);
+const tdiff=diffTrace(d.trace, e.trace, 'D', 'E');
+if (hash(d.table) !== hash(e.table) || tdiff) {
+  const at2 = d.table.findIndex((r, i) => r !== e.table[i]);
+  console.error('ТЕМП РЕШАЕТ: два клиента без скипа с разным шагом опроса разъехались на строке ' + (at2 + 1));
   console.error('  D: ' + d.table[at2]);
+  console.error('  E: ' + e.table[at2]);
   process.exit(1);
 }
 console.log('другой темп показа: та же таблица — кадры на исход не влияют');

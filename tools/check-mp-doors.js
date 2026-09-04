@@ -1,4 +1,5 @@
-// Дверь в командную карьеру — на карточке карьеры, ровно настолько, насколько
+// Дверь в командную карьеру — в полосе карьеры на главной (.cstrip, с 4
+// сентября 2026; до этого была на карточке карьеры), ровно настолько, насколько
 // её открывает CC_MP_OPEN. С 27 августа 2026 флаг снят: кнопок игрок не видит,
 // и проверка идёт той же дорогой мимо сторожа (см. openDoor), чтобы путь до
 // лобби не остался без сторожа, пока дверь закрыта.
@@ -46,9 +47,13 @@ const BOOT = `
      (CC_MP_OPEN=false, снята 27 августа по его слову «убрать дуо кнопки»),
      пройти ту же дорогу мимо сторожа на кнопке. Иначе проверка меряла бы
      только флаг и перестала бы стеречь сам путь до лобби. */
+  /* Двери переехали из подвала карточки карьеры в полосу под героем
+     (.cstrip) — его слово 4 сентября: «тогда можно это убрать». Нумерация та
+     же, что была у ряда на карточке: 0 — «вдвоём», 1 — «войти по коду». */
+  const doorId = n => (n === 0 ? 'cstripDuo' : n === 1 ? 'cstripCode' : 'cstripRace');
   const openDoor = n => {
     if(CC_MP_OPEN){
-      el('modeMpRow').querySelectorAll('button')[n].click();
+      el(doorId(n)).click();
       /* С 29 августа код вводится в своей модалке (ccCodeOpen), а не в
          prompt(): при открытой двери проверка красила «войти по коду», ждя
          prompt. Стаб prompt остаётся источником кода, модалка проходится
@@ -75,16 +80,19 @@ const BOOT = `
   try {
     localStorage.clear();
     // ---- 1. кнопки есть, видны и подписаны -------------------------------
-    const row = el('modeMpRow');
+    const strip0 = document.querySelector('.cstrip');
     /* Меряем ВИДИМОСТЬ, а не атрибут. hidden=true при .mode-mp{display:flex}
        не прячет ничего: браузерное [hidden]{display:none} слабее класса. Так
        27 августа 2026 кнопки уехали на прод «убранными», проверка была зелёной,
        а он написал «он есть до сих пор». Лечится правилом [hidden] в стилях,
        стережётся этой строкой. */
     const shown = e => !!(e && e.offsetParent !== null);
-    check('строка с дверями есть на карточке карьеры', !!row);
-    check('и её видимость совпадает с флагом двери', row && shown(row) === CC_MP_OPEN,
-          'hidden=' + (row && row.hidden) + ', display=' + (row && getComputedStyle(row).display) + ', видна=' + shown(row) + ', открыто=' + CC_MP_OPEN);
+    check('полоса карьеры есть на главной', !!strip0);
+    check('и командные двери в ней ходят за флагом',
+          !!el('cstripDuo') && shown(el('cstripDuo')) === CC_MP_OPEN,
+          'hidden=' + (el('cstripDuo') && el('cstripDuo').hidden) + ', видна=' +
+          shown(el('cstripDuo')) + ', открыто=' + CC_MP_OPEN);
+    check('а на карточке карьеры дверей больше нет', !el('modeMpRow'));
     out.notes.открыто = CC_MP_OPEN;
     /* Третья дверь — в герое главной (heroDuo), его слово 30 августа: «на
        кнопки карьеры должен быть ещё дуо мод». Тот же флаг, та же мерка
@@ -102,14 +110,38 @@ const BOOT = `
           'hidden=' + (code && code.hidden) + ', видна=' + shown(code) + ', открыто=' + CC_MP_OPEN);
     check('и она подписана', code && code.textContent.trim() === L().heroCode && L().heroCode.length > 2,
           JSON.stringify(code && code.textContent.trim()));
-    const btns = row ? [...row.querySelectorAll('button')] : [];
+
+    /* ПОЛОСА КАРЬЕРЫ под героем — его правка 4 сентября: «не видно кнопок
+       карьеры сразу… может на главном прямоугольник добавить», и следом
+       «тогда можно это убрать» про ряд на карточке. Четыре двери в одной
+       строке: одиночная открыта всегда, три командные — общим флагом. */
+    const strip = strip0;
+    const solo = strip && strip.querySelector('.cstrip-btn-go');
+    check('в ней открыта одиночная дверь', !!solo && shown(solo) && !solo.hidden,
+          solo ? solo.textContent.trim() : 'нет кнопки');
+    ['cstripDuo', 'cstripRace', 'cstripCode'].forEach(id => {
+      const b = el(id);
+      check('дверь ' + id + ' есть', !!b);
+      check('и её видимость совпадает с флагом двери', b && shown(b) === CC_MP_OPEN,
+            'hidden=' + (b && b.hidden) + ', видна=' + shown(b) + ', открыто=' + CC_MP_OPEN);
+      check('и она подписана', b && b.textContent.trim().length > 2,
+            JSON.stringify(b && b.textContent.trim()));
+    });
+    out.notes.полоса = strip
+      ? [...strip.querySelectorAll('button')].map(b => b.textContent.trim()) : null;
+    const btns = ['cstripDuo','cstripCode','cstripRace'].map(el).filter(Boolean);
     out.notes.кнопки = btns.map(b => b.textContent.trim());
-    check('дверей две', btns.length === 2, String(btns.length));
-    check('и обе подписаны', btns.every(b => b.textContent.trim().length > 2),
+    /* Дверей четыре с 4 сентября: к командной карьере добавилась ГОНКА
+       (каждый играет свою, лобби сравнивает). Порядок важен — первыми стоят
+       двери команды, за ними гонки, и подписи проверяются ниже поимённо. */
+    check('командных дверей три: вдвоём, код, гонка', btns.length === 3, String(btns.length));
+    check('и все подписаны', btns.every(b => b.textContent.trim().length > 2),
           JSON.stringify(out.notes.кнопки));
     check('подписи — про игру вдвоём',
-          btns[0].textContent.trim() === L().ccMpMake &&
+          btns[0].textContent.trim() === L().heroDuo &&
           btns[1].textContent.trim() === L().ccMpEnter, JSON.stringify(out.notes.кнопки));
+    check('и про гонку карьер',
+          btns[2].textContent.trim() === L().ccRaceMake, JSON.stringify(out.notes.кнопки));
 
     // Дверь закрыта — кнопки должны быть немы, а не просто спрятаны.
     if(!CC_MP_OPEN){
@@ -209,6 +241,6 @@ if (out.err) { console.error(out.err); process.exit(1); }
 console.log(JSON.stringify(out.notes, null, 1));
 if (out.fails.length) { out.fails.forEach(f => console.error('FAIL ' + f)); process.exit(1); }
 console.log(out.notes.открыто
-  ? 'дверь вдвоём стоит на карточке карьеры и доводит до лобби'
+  ? 'двери карьеры стоят в полосе на главной и доводят до лобби'
   : 'дверь вдвоём закрыта и нема, дорога до лобби цела');
 fs.rmSync(dir, { recursive: true, force: true });

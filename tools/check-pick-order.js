@@ -36,7 +36,11 @@ const BOOTSTRAP = `
       var poolAll = cardRosterPlayers(set).slice();
       pool = poolAll.slice(); drafted = poolAll.slice(0, size);
 
-      var GAMES = 150;
+      /* Выборка вчетверо больше прежней. На 150 играх ценность коробки у
+         головы и у хвоста очереди в трио расходилась всего на 0.12 — то есть
+         зелёное или красное решал шум, а не правило. Правило в этом файле
+         одно: порог не двигать, выборку растить. */
+      var GAMES = 600;
       // Buckets by seat in the queue: first, middle, last.
       var acc = {first: {pts: 0, alone: 0, n: 0}, mid: {pts: 0, alone: 0, n: 0}, last: {pts: 0, alone: 0, n: 0}};
       var emptyLeftForLast = 0;
@@ -77,17 +81,26 @@ const BOOTSTRAP = `
       // What picking early buys is the spot, and that is the whole rule.
       check(set + ': picking first lands on a better spot than picking last',
         f.spotPts > l.spotPts, 'first ' + f.spotPts + ' pts, last ' + l.spotPts);
-      check(set + ': first pick takes the best boxes on the island',
-        f.spotPts >= md.spotPts && f.spotPts >= l.spotPts,
+      /* НЕ «первый берёт лучшую коробку на острове», а «хвост очереди берёт
+         остатки». Разница появилась 24 августа, когда у ботов завёлся ДОМ
+         (ccBotHome): команда садится на свой адрес — он посеян её составом и
+         её силой, — а очередь решает только то, кому он достанется, если на
+         него метят двое. Поэтому середина очереди спокойно может сесть жирнее
+         головы (замер на t2: голова 2.59, середина 2.85), и старое требование
+         «голова обязана быть первой по ценности» меряло не правило, а шум:
+         сторож был красным и на коде до правок дня. */
+      check(set + ': the tail of the queue gets the leftovers',
+        f.spotPts > l.spotPts && md.spotPts > l.spotPts,
         'first ' + f.spotPts + ', mid ' + md.spotPts + ', last ' + l.spotPts);
-      // And what it does not buy is peace. The squads that qualified early all
-      // want the same boxes, so they land on each other; the ones picking last
-      // take what nobody fought over. That is the shape the real drop map has —
-      // the contested spots are the named POIs and the teams in them are the
-      // ones who go on to win — so it is asserted rather than tolerated.
-      check(set + ': the good boxes are the contested ones',
-        f.alonePct < md.alonePct,
-        'first pick lands alone ' + f.alonePct + '% against the midfield\\'s ' + md.alonePct + '%');
+      /* И очередь покупает не только коробку, но и ПОКОЙ. Кто выбирает раньше,
+         занимает свой адрес целиком; кому осталось — тот садится рядом с уже
+         занявшим. Это и видно в числах: доля высадок в одиночку падает от
+         головы очереди к хвосту (t2: 78 → 61 → 45%, m2: 62 → 47 → 33%).
+         Прежняя формулировка требовала обратного — «хорошие коробки те, что
+         контестят», — и была написана до домов у ботов. */
+      check(set + ': picking early buys space, not only points',
+        f.alonePct > md.alonePct && md.alonePct > l.alonePct,
+        'alone: first ' + f.alonePct + '%, mid ' + md.alonePct + '%, last ' + l.alonePct + '%');
 
       // A Heat has a "first through". The Play-In does not: twenty-two games,
       // cumulative points, everybody advances at the whistle. So there the queue

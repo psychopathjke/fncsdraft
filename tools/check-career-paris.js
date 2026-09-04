@@ -33,7 +33,7 @@ const BOOT = `
   // the moment a picker appears, always the first zone, so the run is the same
   // every time. Without this a probe waits forever on a click nobody makes.
   setInterval(function(){
-    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
+    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
     z[0].click();
@@ -154,12 +154,39 @@ const BOOT = `
     const r2 = (s2.log||[]).slice(-1)[0];
     if (r2.stage !== 'final') fail('the final wrote the wrong row');
     if (r2.games > 15) fail('the final ran ' + r2.games + ' maps, fifteen is the most');
+    /* И вечер ОСТАНАВЛИВАЕТСЯ на матч-поинте, а не доигрывает пятнадцать и
+       режет таблицу задним числом. Его слово, 30 августа: «я выиграл игру
+       после 350 поинтов, но кап не закончился, просто дальше симуляция». */
+    const rcSrc = String(runCareerReloadChampionship);
+    if (rcSrc.indexOf("stopWhen: ev.stage==='final'") < 0 || rcSrc.indexOf('rcMatchPoint(ts, CC_RC_FINAL.line).champ') < 0)
+      fail('the final does not hand simulateGamesLive a match-point stop');
+    const liveSrc = String(simulateGamesLive);
+    if (liveSrc.split('opts.stopWhen(teams, g+1)) break;').length < 4)
+      fail('simulateGamesLive does not stop the run on every exit of a game (lobby path, no-survivors path, tail)');
+    /* И живьём: поле на двадцать в лобби на двадцать (путь лобби, как у Парижа),
+       правило «стоп после второй игры» — журнал у каждой команды из двух игр,
+       а не из шести. Его слово, 30 августа: «15 игр опять прошло, и в конце ток
+       на 12 показал». */
+    {
+      skipAnimation = true; CC_SKIP_RUN = true;
+      const cr2 = CAREER.career, me2 = careerCard();
+      const fld = careerCupField(Object.assign({}, cr2, {division:1}), [me2], 20, null, false, 0);
+      fld.forEach(t => { t.stagePts = 0; t.stageElims = 0; t.stageLog = []; t.wins = 0; });
+      await simulateGamesLive(fld, 6, rcPoints, CC_RC_KILL, 'stage', 0, null, null,
+        {lobbySize:20, stageName:'stop-probe', mapReplay:false, choices:false,
+         stopWhen:(ts, g) => g >= 2});
+      const played = Math.max.apply(null, fld.map(t => (t.stageLog||[]).length));
+      if (played !== 2) fail('the live run played ' + played + ' games past a stop at two');
+    }
     // Epic pays a team and a duo is two people, so a career takes half.
     if (r2.prize !== Math.round(rcPrize(r2.place)/2))
       fail('#' + r2.place + ' was paid ' + r2.prize + ', half the table says ' + Math.round(rcPrize(r2.place)/2));
     if ((s2.earnings||0) !== r2.prize) fail('Paris money did not reach earnings');
     out.steps.push('final #' + r2.place + ' of 20 over ' + r2.games + ' maps — $' +
       r2.prize.toLocaleString('en-US'));
+    /* Лента живёт в соцсети: центр с 2 сентября — новостной хаб. */
+    CH_SOCIAL = 'feed';
+    careerTab('social');
     const feed = [...document.querySelectorAll('#chBody .x-post-in p')].map(b=>b.textContent.trim());
     if (!feed.length) fail('the feed is empty after Paris');
     out.steps.push('feed: ' + feed.slice(0,1).join(' / '));

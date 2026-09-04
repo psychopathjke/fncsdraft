@@ -64,7 +64,12 @@ const BOOT = `
           ['beefs','chemSince','coach','d1','day','dev','diff','division','duoSplits','duoStreak',
            'events','ewc','gcSeed','gclc','gifts','globals','lft','log','major','majorSeed',
            'mates','mp','rc','region','rel','relSeed','reload','season','seasonOver',
-           'seasonTurn','seed','sizes','solo','soloBy','splits','spots','summit','summitSeed',
+           /* solos/solosBy — квалификация соло-серии: вечер играется в три
+              сессии и его допуск общий на команду, как и у solo/soloBy. Поля
+              стоят в списке командных (ccTeamState), а спека здесь про них
+              не знала — контракт протух, а не поле лишнее. */
+           'seasonTurn','seed','sizes','solo','soloBy','solos','solosBy',
+           'splits','spots','summit','summitSeed',
            'table','tokens','trios','wf'].join(','),
           out.notes.team.join(','));
     check('журнал команды уехал', Array.isArray(t.log) && t.log.length === 1);

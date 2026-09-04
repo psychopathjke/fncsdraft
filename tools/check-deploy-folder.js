@@ -36,6 +36,12 @@ const html = fs.readFileSync(path.join(DIR, 'index.html'), 'utf8');
 const asked = new Set();
 [...html.matchAll(/(?:src|href)="([^"#?:]+\.(?:js|css|png|jpg|jpeg|webp|ico|svg))(?:\?[^"]*)?"/g)]
   .forEach(m => asked.add(m[1]));
+/* И то, что просит СТИЛЬ, — url(...) в <style>. Шрифт заголовков переехал
+   2 сентября из Google к нам в fonts/, а тегов у него нет: папка без этой
+   папки собралась бы зелёной, и заголовки на боевом сайте молча упали бы в
+   Arial Narrow. Кавычки внутри url() необязательны, поэтому они снимаются. */
+[...html.matchAll(/url\(\s*['"]?([^'")?:]+\.(?:woff2|woff|ttf|otf|png|jpg|jpeg|webp|svg))[^)]*\)/g)]
+  .forEach(m => { if (!/^(?:https?:)?\/\//.test(m[1]) && !m[1].startsWith('data:')) asked.add(m[1]); });
 asked.forEach(rel => {
   if (!fs.existsSync(path.join(DIR, rel))) fails.push('нет файла из разметки: ' + rel);
 });

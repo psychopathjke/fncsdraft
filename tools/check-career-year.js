@@ -145,8 +145,9 @@ const BOOT = `
     if (careerWeekIndex(CC_YEAR_TO) !== CAREER_WEEKS)
       fail('the year is not ' + CAREER_WEEKS + ' weeks (last week reads ' +
            careerWeekIndex(CC_YEAR_TO) + ')');
-    // 47 с хвостом S42 до 22 октября — его Tracker-сейвы, 23 августа.
-    if (CAREER_WEEKS !== 47) fail('the measured year is 47 weeks, CAREER_WEEKS says ' + CAREER_WEEKS);
+    // 48 с хвостом до финала FNCS Solos 27 октября (правила Epic, 1 сентября
+    // 2026). Было 47, когда год кончался Перфомансом 9 — 22 октября.
+    if (CAREER_WEEKS !== 48) fail('the measured year is 48 weeks, CAREER_WEEKS says ' + CAREER_WEEKS);
     if (careerMonday('2026-01-23') !== '2026-01-19')
       fail('Monday of the week holding 23 Jan should be 19 Jan, got ' + careerMonday('2026-01-23'));
     out.steps.push('the year is ' + CAREER_WEEKS + ' weeks and every day knows which one it is in');

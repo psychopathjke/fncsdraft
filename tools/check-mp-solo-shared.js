@@ -48,6 +48,83 @@ const BOOT = `
     check('свой проход открывает', careerSoloSeriesCan(ev)===true);
     check('лежит под ником в soloBy', !!(CAREER.career.soloBy && CAREER.career.soloBy[hKey(me)]) && !CAREER.career.solo);
     check('soloBy — ключ команды', CC_TEAM_KEYS.indexOf('soloBy')>=0);
+    /* 2б. Личный вечер, общий день. Его слова 29 августа: «зачем друг друга
+       ждать, когда это соло» / «личный вечер, но турнир один и тот же».
+       Соло в команде — всегда одиночный вечер: гейт не спрашивается, а день
+       шагает, когда отыграли оба (или второму играть нечего). */
+    const day0=careerToday();
+    CAREER.career.soloBy={};
+    ccSoloSet(MP.peer, {got:'qual', pass:'qual'});   // напарник прошёл в хиты, но хиты ещё не играл
+    check('пока сам не играл — день стоит', ccSoloTeamSettle()===false && careerToday()===day0);
+    ccSoloSet(me, {got:'heats', pass:'heats'});       // я отыграл хиты
+    check('панель дня знает, что ждём напарника', ccSoloWaitingPeer()===true && ccMpBlockWhy()===L().ccMpSoloWait, String(ccMpBlockWhy()));
+    check('напарник ещё может сыграть — день стоит', ccSoloTeamSettle()===false && careerToday()===day0, careerToday());
+    ccSoloSet(MP.peer, {got:'heats', pass:null});     // приехал его итог
+    check('отыграли оба — день шагнул', ccSoloTeamSettle()===true && careerToday()===ccAddDays(day0, 1), careerToday());
+    /* Напарник-бот в сотне — только когда он допущен на этап и ещё не играл.
+       Его скрин 30 августа (вкладка напарника, финал): Малибука третьим в
+       финале, куда сам не прошёл. */
+    {
+      const q=careerSoloSeriesOn('2026-01-06'), h=careerSoloSeriesOn('2026-01-17'), f=careerSoloSeriesOn('2026-01-24');
+      check('квал: напарник в сотне', ccSoloPeerSeat(q, null)===true);
+      check('квал: уже прошёл — в сотне не стоит', ccSoloPeerSeat(q, {got:'qual', pass:'qual', day:'2026-01-06'})===false);
+      check('хиты: не прошёл квал — в сотне не стоит', ccSoloPeerSeat(h, null)===false && ccSoloPeerSeat(h, {got:'qual', pass:null})===false);
+      check('хиты: прошёл квал — стоит', ccSoloPeerSeat(h, {got:'qual', pass:'qual'})===true);
+      check('финал: не прошёл хиты — не стоит', ccSoloPeerSeat(f, {got:'heats', pass:'qual'})===false);
+      check('финал: прошёл хиты — стоит', ccSoloPeerSeat(f, {got:'heats', pass:'heats'})===true);
+      check('финал: уже отыграл — не стоит', ccSoloPeerSeat(f, {got:'final', pass:'final', day:'2026-01-24'})===false);
+      /* Состояние напарника берётся через ccSoloStateOf, а не через ccSoloOf:
+         со 2 сентября у соло два круга — январская Solo Series и FNCS Solos, —
+         и лежат они в разных полях сейва. Строка сверки отстала от этой
+         правки и держала сторож красным. */
+      check('раннер сажает бота через допуск',
+            String(runCareerSoloSeries).indexOf('ccSoloPeerSeat(ev, ccSoloStateOf(ev, peerCard))')>=0);
+      // И подсказка закрытого соло — про этап, а не про Мейджоры.
+      const keepDay=CAREER.career.day, keepSolo=CAREER.career.soloBy;
+      CAREER.career.day='2026-01-24'; CAREER.career.soloBy={};
+      check('закрытый финал объясняется хитами', ccSoloWhyLocked()===L().ccSoloNeedHeats, String(ccSoloWhyLocked()));
+      CAREER.career.day='2026-01-17';
+      check('закрытые хиты объясняются квалом', ccSoloWhyLocked()===L().ccSoloNeedQual, String(ccSoloWhyLocked()));
+      CAREER.career.day=keepDay; CAREER.career.soloBy=keepSolo;
+    }
+    /* Слова ожидания — по причине. Его скрин 30 августа (сессия 2 квала):
+       «ты отыграл своё соло», а он в этот день не играл — прошёл в первой. */
+    {
+      const keep=CAREER.career.day;
+      CAREER.career.day='2026-01-10';   // сессия 2 квала
+      ccSoloSet(me, {got:'qual', pass:'qual', day:'2026-01-06'});
+      ccSoloSet(MP.peer, null);
+      check('прошёл раньше — панель говорит «уже в хитах»', ccSoloWaitingPeer()===true && ccMpBlockWhy()===L().ccMpSoloThrough, String(ccMpBlockWhy()));
+      ccSoloSet(me, {got:'qual', pass:null, day:'2026-01-10'});
+      check('сыграл сегодня — панель говорит «отыграл»', ccSoloWaitingPeer()===true && ccMpBlockWhy()===L().ccMpSoloWait, String(ccMpBlockWhy()));
+      CAREER.career.day=keep;
+      CAREER.career.soloBy={};
+      ccSoloSet(MP.peer, {got:'heats', pass:null}); ccSoloSet(me, {got:'heats', pass:'heats'});
+    }
+    // Хиты идут два дня (17-18 января): второй день обоим играть нечего — шагает и он; дальше соло нет — стоп.
+    check('второй день хитов, обоим нечего играть — шагает', ccSoloTeamSettle()===true && careerToday()===ccAddDays(day0, 2), careerToday());
+    check('а дальше не соло — не шагает', ccSoloTeamSettle()===false && careerToday()===ccAddDays(day0, 2), careerToday());
+    // Напарнику играть нечего (не прошёл) — ждать его незачем.
+    CAREER.career.day=day0; CAREER.career.soloBy={};
+    ccSoloSet(me, {got:'heats', pass:'heats'}); ccSoloSet(MP.peer, {got:'qual', pass:null});
+    check('напарник не прошёл — день шагает сразу', ccSoloTeamSettle()===true && careerToday()===ccAddDays(day0, 1), careerToday());
+    // Чужой итог приезжает командным состоянием — день шагает оттуда же.
+    CAREER.career.day=day0; CAREER.career.soloBy={};
+    ccSoloSet(me, {got:'heats', pass:'heats'});
+    const remote=ccTeamState(); remote.soloBy=Object.assign({}, remote.soloBy); remote.soloBy[hKey(MP.peer)]={got:'heats', pass:'heats'};
+    ccMpApplyRemote(remote);
+    check('итог напарника приехал состоянием — день шагнул', careerToday()===ccAddDays(day0, 1), careerToday());
+    CAREER.career.day=day0; CAREER.career.soloBy={};
+    // Гейт в соло не спрашивается: раннер ставит CC_MP_ALONE до него.
+    const src=document.documentElement.outerHTML; const at=src.indexOf('async function runCareerSoloSeries(');
+    const body=src.slice(at, at+20000);
+    check('соло-раннер: локстеп, когда играют оба, одиночный вечер — когда второму нечего', /const alone=ccMpTeam\\(\\) && !peerIn;/.test(body) && body.indexOf('ccSoloTeamSettle()')>=0);
+    // Из сотни вычитаются ОБА человека (тёзки обоих). Его Sky и Scroll, 29 августа: «diff 1 of 4900: #278 scroll:96 vs sky:96».
+    check('сотня строится без обоих людей', body.indexOf('careerSoloField(lobbyCr, mate ? [me, pc]')>=0);
+    // Соло-Victory Cup в команде — та же схема: оба человека, тёзки обоих вычтены, вопросы адресные.
+    const atV=src.indexOf('async function runCareerVictory('); const bodyV=src.slice(atV, atV+20000);
+    check('соло-Victory Cup: оба в сотне и тёзки вычтены', bodyV.indexOf('careerSoloField(cr, pc ? [me, pc] : drafted')>=0 && bodyV.indexOf('soloMate.isMate=true')>=0 && bodyV.indexOf('ccSoloDrops(')>=0);
+    check('соло-вечер узнаётся по виду, а не по типу', careerNightSolo({type:'victory', day:'2026-03-08'})===true && careerNightSolo({type:'cup', day:'2026-03-08'})===false);
     // 3. Двое в одной сотне.
     const mk=n=>({name:'t'+n});
     const A=mk('A'), B=mk('B');
@@ -97,5 +174,6 @@ fs.rmSync(dir,{recursive:true,force:true});
 const m=dom.match(/PBEGIN([\s\S]*?)PEND/); if(!m){ console.error('проба не отработала'); process.exit(2); }
 const out=JSON.parse(decodeURIComponent(m[1]));
 if(out.err){ console.error('ERR: '+out.err); process.exit(1); }
+if(out.notes.second) console.log(JSON.stringify(out.notes.second));
 out.fails.forEach(f=>console.log(' FAIL '+f)); if(out.fails.length) process.exit(1);
 console.log('соло в команде: адресные вопросы, проход на каждого, одна сотня на двоих; фон не голосует за пропуск');

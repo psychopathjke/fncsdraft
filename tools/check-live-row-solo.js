@@ -100,10 +100,15 @@ const BOOT = `
       await wait(20);
       // Вечер без метки дома спрашивает до раннера (careerSpotGate): отвечаем
       // «сыграть без метки», иначе окно стоит вечно и таблицы не будет вовсе.
+      // НЕ «return» — см. тот же комментарий в check-live-row.js: здесь это
+      // await-цикл, и выход из него убивал всю пробу.
       const am=document.getElementById('ccAskModal');
       if(am && am.style.display==='flex'){
+        const yes=document.getElementById('ccAskYes');
         const no=document.getElementById('ccAskNo');
-        if(no && no.textContent===L().ccSpotGatePlay) no.click(); }
+        if(yes && yes.textContent===L().ccSpotGateSet){
+          careerSpotEnsure(); am.style.display='none'; careerPlay(); continue; }
+        if(no && no.textContent===L().ccSpotGatePlay){ no.click(); continue; } }
       const ask=document.querySelector('.cc-choice');
       if(ask){ const b=ask.querySelectorAll('.cc-choice-btn'); if(b.length) b[0].click(); }
       const pick=document.querySelector('.landing-picker .land-zone');
@@ -148,7 +153,8 @@ const BOOT = `
     out.steps.push('сила двигалась в '+powMoving+' играх из '+rows.length);
   }catch(e){ if(!out.fail) out.fail=String(e && e.message || e); }
   out.errs=window.__errs;
-  document.getElementById('__out').textContent='BEGIN'+encodeURIComponent(JSON.stringify(out))+'END';
+  // Метка режется пополам — см. тот же комментарий в check-live-row.js.
+  document.getElementById('__out').textContent='BE'+'GIN'+encodeURIComponent(JSON.stringify(out))+'E'+'ND';
 })();
 <\/script>`;
 

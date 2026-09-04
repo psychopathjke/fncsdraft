@@ -43,9 +43,11 @@ const BOOT = `
     // ---- название карты над каждым прямоугольником -------------------------
     let t=tile(); if(!t) fail('плитки точки нет в хабе');
     const names=[...t.querySelectorAll('.cc-spot-card-map')].map(e=>e.textContent.trim());
-    // Три карты — три подписи: занятые и свободная. Пустой слот теперь тоже
-    // квадрат с названием карты и сам открывает её (его правка 24 августа).
-    if(names.length!==3) fail('подписей карт '+names.length+', ждали три');
+    /* Четыре карты — четыре подписи: три острова и соло-турнир. Пустой слот
+       тоже квадрат с названием карты и сам открывает её (его правка 24
+       августа). Соло-карта добавилась в одиночную карьеру 2 сентября — см.
+       careerSpotSets. */
+    if(names.length!==4) fail('подписей карт '+names.length+', ждали четыре');
     // Острова, а не круги: 1-2 — одна карта, 3-4 — другая (его правка 24 авг).
     if(names[0]!==L().ccSpotSeasonTab || names[1]!==L().ccSpotReloadA)
       fail('подписи карт не те: '+names.join('/'));
@@ -58,7 +60,13 @@ const BOOT = `
        карты, что и пустые квадраты. Нажимают теперь на сам квадрат. */
     if(pick.length) fail('строка выбора карт осталась под рядом: '+pick.join(', '));
     const empty=[...t.querySelectorAll('.cc-spot-card-empty')];
-    if(empty.length!==1) fail('пустых слотов '+empty.length+', ждали один');
+    /* Два пустых: третий остров, куда сейв нарочно не селится, и соло-турнир.
+       Соло-карта появилась в одиночной карьере 2 сентября 2026 — до неё пустой
+       был ровно один. Считается от числа карт, а не числом, чтобы следующая
+       карта не роняла сторож на арифметике. */
+    const filled=careerSpotSets().filter(x=>careerSpotList(x.key).length).length;
+    if(empty.length!==careerSpotSets().length-filled)
+      fail('пустых слотов '+empty.length+', ждали '+(careerSpotSets().length-filled));
     if(!empty[0].getAttribute('onclick')) fail('пустой слот не нажимается');
     if(!empty[0].querySelector('.cc-spot-card-map')) fail('на пустом слоте нет названия карты');
     if(t.querySelectorAll('.cc-spot-card-empty .cc-spot-pick').length)

@@ -36,7 +36,7 @@ const BOOT = `
   // The Heats and the Final ask where to land; a harness answers with the
   // first zone the moment a picker appears, so a run never waits on a click.
   setInterval(function(){
-    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
+    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
     z[0].click();
@@ -127,7 +127,7 @@ const tmp = path.join(dir, 'index.html');
 fs.writeFileSync(tmp, '<base href="file:///' + ROOT.replace(/\\/g,'/') + '/">' + HEAD +
   fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8') + BOOT);
 const dom = execFileSync(CHROME, ['--headless=new','--disable-gpu','--no-sandbox',
-  '--allow-file-access-from-files','--virtual-time-budget=300000','--dump-dom',
+  '--allow-file-access-from-files','--virtual-time-budget=900000','--dump-dom',
   'file:///' + tmp.replace(/\\/g,'/')], {maxBuffer:512*1024*1024, encoding:'utf8', stdio:['ignore','pipe','ignore']});
 fs.rmSync(dir, {recursive:true, force:true});
 

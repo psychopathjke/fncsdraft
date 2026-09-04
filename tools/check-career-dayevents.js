@@ -27,7 +27,7 @@ const BOOT = `
     const fresh = () => { CAREER = {player:{nick:'Probe', ovr:70, region:'EU', role:'roleIGL',
       country:'de', age:16, attrs:ccRookieAttrs(70,'roleIGL')},
       career:{season:1, day:CC_YEAR_FROM, division:3, balance:0, earnings:0, reach:60000,
-              energy:CC_ENERGY_DAY, did:{}, log:[], news:[]},
+              energy:CC_ENERGY_DAY, did:{}, log:[], news:[], school:'in'},
       partners:[{card:{handle:'Mate', region:'EU', tier:'ranked', rating:70, _targetOvr:70,
                      _attrs:ccRookieAttrs(70,'roleFRG')}, patience:60}],
       gear:{own:[], train:0}, sponsor:{id:'drink', since:1, paid:0}}; };
@@ -39,6 +39,10 @@ const BOOT = `
        проходится двенадцать раз — каждый проход кидает заново — и доля
        встаёт на место. Порог не двигаем, двигаем выборку. */
     fresh();
+    /* Кастомка приходит только тем, кого зовут: порог по PR (CC_CUSTOM_PR) —
+       это и есть её условие, ровно как у промо условие «есть спонсор». Чтобы
+       проверка ниже видела все виды, у пробной карьеры PR набран. */
+    careerPrTally().rows[CAREER.player.nick] = {v: [[CC_CUSTOM_PR + 5000, 5]], n: 1, you: true};
     let free = 0, withEv = 0, onEventDay = 0;
     const kinds = {};
     for (let pass = 0; pass < 12; pass++)
@@ -54,8 +58,64 @@ const BOOT = `
     check('nothing lands on a tournament day', onEventDay === 0, String(onEventDay));
     check('about one free day in six carries something',
           Math.abs(withEv/free - 1/6) < 0.05, (withEv/free).toFixed(3));
-    check('and every kind shows up', Object.keys(kinds).length === CC_DAY_EVENTS.length,
+    /* Виды с условием (when) и принудительные (forced) в жребии не участвуют
+       или гаснут без своего условия — их проверяют ниже по одному. Здесь —
+       всё, что приходит просто так. */
+    const plain = CC_DAY_EVENTS.filter(e => !e.forced && !e.when).map(e => e.id);
+    check('and every plain kind shows up', plain.every(id => kinds[id] > 0),
           JSON.stringify(kinds));
+
+    /* Развилки с условием, 3 сентября: у каждой своё «когда». Условие
+       выставляется руками, бросок подсаживается, и событие обязано прийти —
+       а без условия обязано не прийти. */
+    const gated = CC_DAY_EVENTS.filter(e => !e.forced && typeof e.when === 'function');
+    const arrange = {
+      mateSpot: () => { CAREER.career.spots = {m2:[{i:3, aura:2, won:1, day:CC_YEAR_FROM}]}; },
+      orgLate:  () => { CAREER.org = {name:'Probe Org', salary:500, goal:{type:'promote', target:2}, since:1, paid:0}; },
+      leak:     () => { CAREER.org = {name:'Probe Org', salary:500, goal:{type:'promote', target:2}, since:1, paid:0}; },
+      house:    () => { CAREER.career.reach = 60000; },
+      coachFree:() => { CAREER.coach = null; },
+      tilt:     () => { CAREER.career.log.push({season:1, day:ccAddDays(someFree(), -1), div:3, place:40, of:50, kind:'cup', pts:10}); }
+    };
+    const disarm = {
+      mateSpot: () => { CAREER.career.spots = {}; },
+      orgLate:  () => { CAREER.org = null; },
+      leak:     () => { CAREER.org = null; },
+      house:    () => { CAREER.career.reach = 100; },
+      coachFree:() => { CAREER.coach = {id:CC_COACHES[0].id, until:'2099-01-01'}; },
+      tilt:     () => { CAREER.career.log = []; }
+    };
+    function someFree(){ for (let d = CC_YEAR_FROM; d <= CC_YEAR_TO; d = ccAddDays(d,1))
+      if (!(careerYearDays().get(d)||[]).length) return d; return CC_YEAR_FROM; }
+    gated.forEach(e => {
+      fresh(); const d = someFree(); CAREER.career.day = d;
+      if (arrange[e.id]) arrange[e.id]();
+      CAREER.career.luck = {day:d, woe:null, ev:e.id};
+      check('gated "' + e.id + '" arrives when its condition holds',
+            (ccDayEventOn(d)||{}).id === e.id, JSON.stringify(ccDayEventOn(d)||null));
+      fresh(); CAREER.career.day = d;
+      if (disarm[e.id]) disarm[e.id]();
+      CAREER.career.luck = {day:d, woe:null, ev:e.id};
+      check('and stays away without it: ' + e.id, ccDayEventOn(d) === null);
+    });
+    check('every gated kind has an arrangement here',
+          gated.every(e => arrange[e.id] && disarm[e.id]), gated.map(e => e.id).join(','));
+
+    /* Школа приходит по делу: шестнадцать лет, вопрос не задан — первый же
+       свободный день, и только один раз. Ответ снимает его навсегда. */
+    fresh(); delete CAREER.career.school;
+    const d0 = someFree(); CAREER.career.day = d0;
+    check('a sixteen-year-old is asked about school on the first free day',
+          (ccDayEventOn(d0)||{}).id === 'school');
+    careerRenderHub = function(){};
+    check('answering it works', careerDayEvent('school', 'online') === true);
+    check('and the answer is written down', CAREER.career.school === 'online');
+    const d1 = ccAddDays(d0, 1); CAREER.career.day = d1;
+    check('and the question does not come back', (ccDayEventOn(d1)||{}).id !== 'school');
+    check('online school costs five, not ten', ccSchoolCap(16) === 5);
+    CAREER.career.school = 'out';
+    check('dropping out costs nothing', ccSchoolCap(16) === 0);
+    fresh();
 
     // The same day offers the same thing, twice: the roll is stored in
     // cr.luck, not thrown again on every open.

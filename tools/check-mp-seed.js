@@ -47,7 +47,7 @@ const boot = (seed, skip) => `
   setInterval(function(){
     const am=document.getElementById("ccAskModal");
     if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo");
-      if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; } }
+      if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; } }
     const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;

@@ -115,7 +115,7 @@ const BOOT = `
       const am = document.getElementById('ccAskModal');
       if (!am || am.style.display !== 'flex') return;
       const no = document.getElementById('ccAskNo');
-      if (no && no.textContent === L().ccSpotGatePlay) no.click();
+      if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; }
     }, 20);
     document.querySelector('#screen-career-hub .ch-play').click();
     let card = null;

@@ -44,7 +44,18 @@ const BOOT = `
       const off=ALL_LANDING_ZONES.filter(z=>z.x<0||z.y<0||z.x+z.w>100||z.y+z.h>100).length;
       out.maps[key]={duo:duo, solo:solo, small:small, off:off,
                      areaKept:Math.abs(soloArea-duoArea)<0.01};
-      if(solo<=duo) fail(key+': solo grid is '+solo+' boxes against duo\\'s '+duo);
+      /* Набор, уже нарисованный под соло (s42solo — его карта с сотней клеток),
+         не дробится: сотня клеток на сотню игроков и есть та сетка, которую
+         просили перенести. От такого ждём равенства, а не роста. */
+      if(ZONE_SETS_SOLO_READY[key]){
+        if(solo!==duo) fail(key+': a solo-ready set changed from '+duo+' to '+solo);
+      }
+      /* Соло-сетка — клетка на игрока лобби, на КАЖДОЙ карте. Его правка
+         2 сентября 2026: «сделай подобные квадратики для всех карт», по образцу
+         присланной им карты сотни дропов. До неё коэффициент 1.6 давал от
+         девятнадцати клеток на островах Reload до шестидесяти двух на m1. */
+      else if(solo!==CC_SOLO_GRID)
+        fail(key+': the solo grid is '+solo+' boxes, not the '+CC_SOLO_GRID+' a solo lobby needs');
       if(off) fail(key+': '+off+' solo boxes fall off the island');
       if(small) fail(key+': '+small+' solo boxes are too small to read');
       if(!out.maps[key].areaKept) fail(key+': splitting changed the island area');

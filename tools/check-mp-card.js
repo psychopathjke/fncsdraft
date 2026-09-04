@@ -72,6 +72,15 @@ const BOOT = `
           typeof drew === 'string' && drew.indexOf('БРОСИЛО') < 0, String(drew).slice(0, 120));
     check('и на ней его ник', String(drew).indexOf(mine.handle) >= 0,
           String(drew).slice(0, 120));
+    /* И карточка БЕЗ турнира тоже рисуется. Его скрин 29 августа: то же
+       «reading 'replace'» на хабе командной карьеры — карточки приходят
+       отовсюду (провод, запись о взятом, старый сейв), и рисовалка обязана
+       переживать любую, а не только ту, что везёт провод сегодня. */
+    const bare = Object.assign({}, mine); delete bare.event; delete bare.gfEvent; delete bare.realGf;
+    let drewBare = null;
+    try { drewBare = futCardHTML(bare, {}); } catch(e) { drewBare = 'БРОСИЛО: ' + (e && e.message); }
+    check('карточка без поля event рисуется без падения',
+          typeof drewBare === 'string' && drewBare.indexOf('БРОСИЛО') < 0, String(drewBare).slice(0, 120));
     // Личного в ней нет: деньги напарника на мой расчёт не влияют и ему не видны.
     ['balance','earnings','log','dms','flat'].forEach(k =>
       check('личное поле ' + k + ' не уехало', mine[k] === undefined, String(mine[k])));

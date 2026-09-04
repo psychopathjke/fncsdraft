@@ -75,6 +75,15 @@ const BOOT = `
     out.rows.push({what:'хайграунд с монеткой', add:CC_HG_POW, coin:true,
       ...run(CC_HG_POW, true)});
     out.rows.push({what:'штраф за провал', add:-CC_HG_FAIL, ...run(-CC_HG_FAIL)});
+    // Остальные ходы меню — из самого CC_LATE_MOVES, а не по именам констант:
+    // список менялся уже дважды (три хода, потом пять, потом снова три
+    // 1 сентября), и проба, перечисляющая ходы руками, каждый раз падала бы на
+    // несуществующей константе. Меряются теми же половинками, что и высота:
+    // сколько стоит взять и сколько стоит не взять.
+    CC_LATE_MOVES.filter(m=>m.id!=='hg' && m.pow>0).forEach(function(m){
+      out.rows.push({what:m.id+' зашло', add:m.pow, ...run(m.pow)});
+      if(m.fail>0) out.rows.push({what:m.id+' провалено', add:-m.fail, ...run(-m.fail)});
+    });
     out.rows.push({what:'лут середины', add:4, ...run(4)});
   }catch(e){ out.errs.push(String(e && e.stack || e)); }
   document.getElementById('__out').textContent='BEGIN'+encodeURIComponent(JSON.stringify(out))+'END';

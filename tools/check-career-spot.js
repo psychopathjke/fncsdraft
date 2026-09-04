@@ -108,9 +108,16 @@ const BOOT = `
     if(careerSpotList('r2')[0]!==careerSpotList('r1')[0])
       fail('у первого и второго круга разные записи дома');
     if(!careerSpotList('r4').length) fail('дом третьего круга не виден на четвёртом');
-    // Четвёртой карты под дом нет вовсе: островов всего три.
-    if(careerSpotSets().length!==CC_SPOT_SLOTS)
-      fail('карт под дом не три, а '+careerSpotSets().length);
+    /* Карт под дом ЧЕТЫРЕ: три командных острова плюс соло-турнир.
+       Со 2 сентября 2026 соло-карта есть и в одиночной карьере тоже (его
+       правка «чтоб можно было выбрать метку на карте в соло и дуо карьере»);
+       раньше она появлялась только при открытой команде. Командных слотов
+       по-прежнему CC_SPOT_SLOTS — соло в них не считается и лежит отдельно,
+       в cr.soloSpots. */
+    if(careerSpotSets().length!==CC_SPOT_SLOTS+1)
+      fail('карт под дом не '+(CC_SPOT_SLOTS+1)+', а '+careerSpotSets().length);
+    if(careerSpotSets().filter(s=>s.key!=='solo').length!==CC_SPOT_SLOTS)
+      fail('командных карт не '+CC_SPOT_SLOTS);
     // Ауры раздельные: вечер на Релоаде не трогает карту сезона.
     careerSpotList('r1')[0].aura=4;
     if(careerSpotAura(set,0)!==CC_SPOT_AURA_MAX) fail('аура протекла между картами');

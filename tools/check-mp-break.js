@@ -47,6 +47,7 @@ const BOOT = `
     // Напарник — тот, чья карточка сейчас в лобби: именно он и должен остаться
     // ботом на своём месте.
     MP.peer = {handle:'howly', nat:'ru', age:20, ovr:91, role:'roleFRG', attrs:{},
+               event:'FNCS 2026 Major 1 — Grand Finals (Europe)', placement:12, tier:'gold', rating:91,
                org:null, form:0, tired:0, sick:false, camp:null, gear:[]};
     let told = false;
     MP.part = function(){ told = true; };
@@ -59,6 +60,19 @@ const BOOT = `
     check('место напарника занято ботом с его карточкой',
           careerPartnerCard() && careerPartnerCard().handle === 'howly',
           JSON.stringify(careerPartnerCard()));
+    /* И эта карточка — целиком, и рисуется. Его скрин 29 августа, хаб после
+       разрыва: «reading 'replace'» — вкладка «Я» рисует бывшего напарника, а
+       собранная вручную карточка не везла event. */
+    check('карточка бывшего напарника везёт турнир',
+          careerPartnerCard() && careerPartnerCard().event === MP.peer.event,
+          JSON.stringify((careerPartnerCard()||{}).event));
+    let drewEx = null;
+    try { drewEx = futCardHTML(careerPartnerCard(), {wide:true}); } catch(e) { drewEx = 'БРОСИЛО: ' + (e && e.message); }
+    check('и рисуется без падения', typeof drewEx === 'string' && drewEx.indexOf('БРОСИЛО') < 0, String(drewEx).slice(0, 120));
+    let drewMe = null;
+    try { careerRenderHub('me'); drewMe = (document.getElementById('chBody')||{}).innerHTML || ''; } catch(e) { drewMe = 'БРОСИЛО: ' + (e && e.message); }
+    check('вкладка «Я» после разрыва рисуется', typeof drewMe === 'string' && drewMe.indexOf('БРОСИЛО') < 0 && drewMe.indexOf('howly') >= 0,
+          String(drewMe).replace(/<[^>]+>/g, ' ').slice(0, 120));
     // И день снова двигается сам.
     const was = careerToday();
     careerAdvanceTo(ccAddDays(was, 1));

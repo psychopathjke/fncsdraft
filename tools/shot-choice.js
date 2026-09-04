@@ -75,10 +75,12 @@ const BOOT = (what) => `
             L().ccLootSwapRisk(CC_LOOT_POI_BONUS, CC_LOOT_POI_FAIL,
               Math.round(CC_LOOT_POI_ODDS*100))}], map);
     } else if(WHAT==='late'){
+      // Меню берётся ОТТУДА ЖЕ, откуда его берёт сама игра (CC_LATE_MOVES). Пока
+      // тут стоял свой список из трёх ходов, снимок показывал три даже после
+      // того, как в игре их стало пять, — то есть врал ровно про то, ради чего
+      // его и делают.
       ccChoiceBox(L().ccLateTitle, L().ccLateHint,
-        [{id:'hg', title:L().ccLateHg, note:L().ccLateHgNote(CC_HG_POW)},
-         {id:'refresh', title:L().ccLateRefresh, note:L().ccLateRefreshNote(CC_REFRESH_POW)},
-         {id:'lg', title:L().ccLateLg, note:L().ccLateLgNote}], map);
+        CC_LATE_MOVES.map(m=>({id:m.id, title:L()[CC_LATE_NAME[m.id]], note:ccLateNote(m)})), map);
     } else {
       /* Плашка исхода гасит себя двумя setTimeout на 1.5 и 1.9 сек, а
          виртуальное время headless'а проматывает их до первого кадра — снимок

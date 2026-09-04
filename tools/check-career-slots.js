@@ -95,15 +95,23 @@ const BOOT = `
     ccSlotUse(1);
     careerRenderSlots();
     const grid = document.getElementById('ccSlotGrid');
-    const cells = grid.querySelectorAll('.cc-slot');
-    const empties = grid.querySelectorAll('.cc-slot-empty');
-    out.notes.drawn = {cells: cells.length, empty: empties.length,
-                       here: grid.querySelectorAll('.cc-slot.on').length};
-    check('the picker draws a card per slot', cells.length === CC_SLOTS, String(cells.length));
-    // Два слота заняты, остальные пусты — сколько бы их ни было (CC_SLOTS теперь 6).
-    check('the deleted one is drawn as empty', empties.length === CC_SLOTS - 2, String(empties.length));
+    /* Экран переделан 2 сентября 2026 в ростер: строка на карьеру, а пустые
+       слоты схлопнуты в ОДНУ строку «новая карьера» со счётом свободных. Раньше
+       шесть равных коробок весили одинаково, и три пустых занимали половину
+       экрана. Поэтому считаются занятые строки и одна строка добора, а не
+       «карточка на слот». */
+    const cells = grid.querySelectorAll('.cc-car:not(.cc-car-new)');
+    const newRow = grid.querySelectorAll('.cc-car-new');
+    out.notes.drawn = {cells: cells.length, newRow: newRow.length,
+                       here: grid.querySelectorAll('.cc-car.on').length};
+    check('the picker draws a row per career', cells.length === 2, String(cells.length));
+    check('and the free slots collapse into one row', newRow.length === 1, String(newRow.length));
+    // Сколько слотов свободно — числом в самой строке добора, на любом языке.
+    check('which says how many are free',
+          (newRow[0].textContent||'').indexOf(String(CC_SLOTS-2)) >= 0,
+          (newRow[0] && newRow[0].textContent || '').replace(/s+/g,' ').trim());
     check('and the open one is marked',
-          grid.querySelectorAll('.cc-slot.on').length === 1);
+          grid.querySelectorAll('.cc-car.on').length === 1);
     check('an empty slot offers to start a career',
           /onclick="careerSlotNew/.test(grid.innerHTML));
 
@@ -118,12 +126,29 @@ const BOOT = `
     out.notes.entered = shown;
     check('an empty slot with careers elsewhere opens the picker',
           shown === 'screen-career-slots', shown);
-    /* Две карьеры и больше — карточка режима открывает выбор, а не последнюю.
-       Его слово 29 августа: «а соло карьеру можно запустить?» */
+    /* ПОВЕДЕНИЕ РАЗВЁРНУТО 2 сентября 2026, по его слову: «когда игрок нажимает
+       начать карьеру, ему дают на выбор сразу его карьеры, которые создал или
+       свободные».
+
+       До этого карточка режима открывала текущую карьеру мимо выбора — и это
+       была его же правка от 29 августа («захожу в карьеру и меня выкидывает,
+       ещё раз нужно жать»). Мешал тогда сам экран: белые плитки-таблицы, из
+       которых не было видно, что за карьера. Экран переделан в ростер, и дверь
+       снова ведёт в него. Красная строка тут значила бы возврат старого
+       поведения, а не поломку. */
+    /* Кнопка и функция входа — разные двери, и это принципиально: careerEntry
+       грузит карьеру (через него заходят и все сторожа), а выбор живёт на
+       careerStart, которую зовут три кнопки главного экрана. Проверяются обе. */
     ccSlotUse(1);
+    careerStart();
+    check('with careers saved the button opens the picker',
+          SHOWN_SCREEN === 'screen-career-slots', SHOWN_SCREEN + ' / slot ' + ccSlot());
     careerEntry();
-    check('with two careers the tile opens the picker too',
-          SHOWN_SCREEN === 'screen-career-slots', SHOWN_SCREEN);
+    check('and careerEntry still loads the career itself',
+          SHOWN_SCREEN === 'screen-career-hub' && ccSlot() === 1 && !!CAREER,
+          SHOWN_SCREEN + ' / slot ' + ccSlot());
+    check('and the hub keeps a way to the picker',
+          (document.getElementById('screen-career-hub').innerHTML || '').indexOf('openCareerSlots()') >= 0);
 
     /* А «Продолжить» на плитке открывает саму карьеру. Его отчёт 29 августа:
        «подключился по коду, но зайти не могу, continue жму» — кнопка звала

@@ -49,11 +49,15 @@ const boot = (who) => `
 (async function(){
   const out={notes:{who:${JSON.stringify(who.nick)}}, errs:null, fail:null};
   const wait=ms=>new Promise(r=>setTimeout(r, ms));
+  window.__f1=null; if(typeof ccMpFieldList==='function'){ const f0=ccMpFieldList; ccMpFieldList=function(teams){ if(!window.__f1) window.__f1=teams.slice(); return f0(teams); }; }
+  window.__teams=0; if(typeof MP!=='undefined' && MP.say){ const s0=MP.say; MP.say=function(m){ if(m && m.t==='team') window.__teams++; return s0.apply(this, arguments); }; }
+  // CC_HOST=ws://127.0.0.1:8787 — гонять против локального wrangler dev, а не прода.
+  if(${JSON.stringify(process.env.CC_HOST||"")}) MP.host=${JSON.stringify(process.env.CC_HOST||"")};
   // Харнесс-человек: первая зона, первый выбор, метку не ставить.
   setInterval(function(){
     const am=document.getElementById("ccAskModal");
     if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo");
-      if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; } }
+      if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; } }
     const cbs=document.querySelectorAll(".cc-choice-btn"); if(cbs.length){ (${CONTEST ? "cbs[cbs.length-1]" : "cbs[0]"}).click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
@@ -77,7 +81,8 @@ const boot = (who) => `
         .map(tr=>[...tr.children].map(td=>td.textContent.trim()).join(' '));
       out.notes.head=[...document.querySelectorAll('#majorStages .stage-card h4')].map(h=>h.textContent.replace(/\\s+/g,' ').trim()).join(' | ');
       out.notes.split=[...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent);
-      out.notes.rolls=CC_MP_ROLLS; out.notes.dayAfter=CAREER.career.day;
+      if(${process.env.CC_TABLES_DIFFER==='1'}){ for(let i=0;i<300 && CAREER.career.day===${JSON.stringify(DAY)};i++) await wait(300); }   // личный вечер: день шагает, когда отыграет и второй
+      out.notes.rolls=CC_MP_ROLLS; out.notes.dayAfter=CAREER.career.day; out.notes.dbg={rand:!!CC_MP_RAND, hold:CC_MP_HOLD, alone:CC_MP_ALONE, state:MP.state, teams:window.__teams||0, soloBy:CAREER.career.soloBy, peer:(MP.peer||{}).handle, settle:(typeof ccSoloTeamSettle==='function')?ccSoloTeamSettle():null, dayNow:CAREER.career.day};
       const log=(CAREER.career.log||[]); const last=log[log.length-1]||{};
       out.notes.mine={place:last.place, of:last.of, pts:last.pts, wins:last.wins, elims:last.elims};
       document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
@@ -117,6 +122,8 @@ const boot = (who) => `
       let pressed=0, voted=0; const day0=CAREER.career.day;
       for(let i=0;i<900;i++){
         if(CC_MP_RAND) return 'play';
+        // Личный вечер в команде (соло): сида от сервера нет, но вечер идёт — экран результатов открыт.
+        if(pressed && typeof CAREER_RUN!=='undefined' && CAREER_RUN) return 'play';
         if(voted && CAREER.career.day!==day0) return 'next';
         const play=document.querySelector('#screen-career-hub .ch-play');
         const oc=(play && play.getAttribute('onclick'))||'';
@@ -146,7 +153,8 @@ const boot = (who) => `
       while(Date.now()-tf<${BUDGET_MS} && (CAREER.career.day<${JSON.stringify(FF)} || CC_FF)) await wait(500);
       out.notes.table=(CAREER.career.log||[]).map(r=>[r.day, r.kind||'cup', r.stage||'', r.place, r.of, r.pts, r.wins, r.elims].join(' '));
       out.notes.split=[...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent);
-      out.notes.rolls=CC_MP_ROLLS; out.notes.dayAfter=CAREER.career.day; out.notes.head='перемотка до '+${JSON.stringify(FF)}+' · строк журнала '+out.notes.table.length;
+      if(${process.env.CC_TABLES_DIFFER==='1'}){ for(let i=0;i<300 && CAREER.career.day===${JSON.stringify(DAY)};i++) await wait(300); }   // личный вечер: день шагает, когда отыграет и второй
+      out.notes.rolls=CC_MP_ROLLS; out.notes.dayAfter=CAREER.career.day; out.notes.dbg={rand:!!CC_MP_RAND, hold:CC_MP_HOLD, alone:CC_MP_ALONE, state:MP.state, teams:window.__teams||0, soloBy:CAREER.career.soloBy, peer:(MP.peer||{}).handle, settle:(typeof ccSoloTeamSettle==='function')?ccSoloTeamSettle():null, dayNow:CAREER.career.day}; out.notes.head='перемотка до '+${JSON.stringify(FF)}+' · строк журнала '+out.notes.table.length;
       out.notes.mine=(CAREER.career.log||[]).slice(-1)[0]||{};
       document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
       return;
@@ -205,9 +213,20 @@ const boot = (who) => `
       if(how==='play') await waitCard();
       out.notes.days.push(CAREER.career.day+':'+how);
     }
+    /* ПР каждого клиента — своими глазами, ПОСЛЕ вечера. Отчёт игрока
+       1 сентября: «me and my friend made a duo carreer and we have same pr even
+       if there are solo cups». ПР не в CC_TEAM_KEYS, значит у каждого он свой;
+       здесь видно, что в нём лежит на самом деле. */
+    out.notes.pr=(typeof careerPrRows==='function')
+      ? careerPrRows().slice(0,8).map(r=>(r.you?'*':' ')+r.name+' '+r.pr+' ('+r.events+')')
+      : null;
     out.notes.head=[...document.querySelectorAll('#majorStages .stage-card h4')].map(h=>h.textContent.replace(/\\s+/g,' ').trim()).join(' | ');
     out.notes.split=[...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent);
+    // Личный вечер (соло в команде): день шагает, когда отыграет и второй, — ждём его.
+    if(${process.env.CC_TABLES_DIFFER==='1'}){ for(let i=0;i<300 && CAREER.career.day===${JSON.stringify(DAY)};i++) await wait(300); }
     out.notes.rolls=CC_MP_ROLLS; out.notes.splitAt=CC_MP_SPLIT_AT; out.notes.dayAfter=CAREER.career.day; out.notes.own=window.__own; out.notes.other=window.__other;
+    if(window.__f1){ const f=window.__f1; const hk=x=>(x.squad||[]).map(hKey).join('+'); out.notes.f1={n:f.length, you:f.findIndex(x=>x.isYou), mate:f.findIndex(x=>x.isMate), youKey:hk(f[f.findIndex(x=>x.isYou)]||{}), mateKey:hk(f[f.findIndex(x=>x.isMate)]||{}), sky:f.map(hk).indexOf('sky'), scroll:f.map(hk).indexOf('scroll'), skyAll:f.map((x,i)=>hk(x)==='sky'?i:-1).filter(i=>i>=0), scrollAll:f.map((x,i)=>hk(x)==='scroll'?i:-1).filter(i=>i>=0)}; }
+    out.notes.dbg={rand:!!CC_MP_RAND, hold:CC_MP_HOLD, alone:CC_MP_ALONE, state:MP.state, teams:window.__teams||0, soloBy:CAREER.career.soloBy, peer:(MP.peer||{}).handle, settle:(typeof ccSoloTeamSettle==='function')?ccSoloTeamSettle():null, dayNow:CAREER.career.day, errs:(window.__errs||[]).slice(0,3)};
     const log=(CAREER.career.log||[]); const last=log[log.length-1]||{};
     out.notes.mine={place:last.place, of:last.of, pts:last.pts, wins:last.wins, elims:last.elims};
   }catch(e){ out.fail=String(e && e.message || e); }
@@ -218,8 +237,8 @@ const boot = (who) => `
 
 const ccAddDaysNode=(iso, n)=>{ const d=new Date(iso+'T00:00:00Z'); d.setUTCDate(d.getUTCDate()+n); return d.toISOString().slice(0,10); };
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-const A = {nick:'LiveA', age:17, ageEdge:4, country:'de', close:6, ovr:90, role:'roleIGL', role_mp:'a', money:48000, reach:20000, form:3, grind:12, skipAt:SKIP_A, hideAt:HIDE_A, reloadAt:RELOAD_A};
-const B = {nick:'LiveB', age:24, ageEdge:0, country:'br', close:1, ovr:86, role:'roleFRG', role_mp:'b', money:0,     reach:0,     form:0, grind:0,  skipAt:SKIP_B, hideAt:HIDE_B, reloadAt:RELOAD_B};
+const A = {nick:process.env.CC_NICK_A||'LiveA', age:17, ageEdge:4, country:'de', close:6, ovr:90, role:'roleIGL', role_mp:'a', money:48000, reach:20000, form:3, grind:12, skipAt:SKIP_A, hideAt:HIDE_A, reloadAt:RELOAD_A};
+const B = {nick:process.env.CC_NICK_B||'LiveB', age:24, ageEdge:0, country:'br', close:1, ovr:86, role:'roleFRG', role_mp:'b', money:0,     reach:0,     form:0, grind:0,  skipAt:SKIP_B, hideAt:HIDE_B, reloadAt:RELOAD_B};
 
 function cdp(port){
   return new Promise((res, rej)=>{
@@ -270,7 +289,8 @@ async function runOne(tag, who, port){
   const P0=9400+Math.floor(Math.random()*400);
   const [a, b]=await Promise.all([runOne('A', A, P0), runOne('B', B, P0+1)]);
   // Своя строка у каждого подписана «я & напарник» — порядок косметический, ники сравниваем как множество.
-  const norm=r=>String(r).replace(/(LiveA & LiveB|LiveB & LiveA)/g, 'LiveA+LiveB').replace(/(Твой состав|Your squad):\s*/g, '');
+  // Пара «X & Y» приводится к одному порядку: свой состав каждый пишет себя первым.
+  const norm=r=>String(r).replace(/(LiveA & LiveB|LiveB & LiveA)/g, 'LiveA+LiveB').replace(/(Твой состав|Your squad):\s*/g, '').replace(/(\S+) & (\S+)/g, (m,x,y)=>[x,y].sort().join('+'));
   // Своя строка внизу таблицы — у каждого своя (в соло на двоих их две разные): последняя строка,
   // если её место не идёт следом за предыдущей, — это она; своя строка ВНУТРИ верха сравнивается как все.
   const own=r=>/Your squad|Твой состав/.test(String(r)) && !/LiveA\+LiveB/.test(norm(r));
@@ -280,21 +300,24 @@ async function runOne(tag, who, port){
   const hash=t=>crypto.createHash('sha1').update(rowsOf(t).map(norm).join('\n')).digest('hex').slice(0,12);
   for(const [n, r] of [['A', a], ['B', b]]){
     console.log(n+': '+(r.fail ? 'FAIL '+r.fail : (r.notes.head||'')) + ' · строк '+((r.notes.table||[]).length)+' · хеш '+hash(r.notes.table)+
-      ' · своё '+JSON.stringify(r.notes.mine)+' · броски '+r.notes.rolls+' · pow '+r.notes.youPow+' · скип '+!!r.notes.skipPressed+' · фон '+!!r.notes.hidden+' · перезагрузка '+!!r.notes.reloaded+' · own/other '+r.notes.own+'/'+r.notes.other+' · '+JSON.stringify(r.notes.engine)+' · team '+JSON.stringify(r.notes.team));
+      ' · своё '+JSON.stringify(r.notes.mine)+' · броски '+r.notes.rolls+' · pow '+r.notes.youPow+' · скип '+!!r.notes.skipPressed+' · фон '+!!r.notes.hidden+' · перезагрузка '+!!r.notes.reloaded+' · own/other '+r.notes.own+'/'+r.notes.other+' · '+JSON.stringify(r.notes.engine)+' · team '+JSON.stringify(r.notes.team)+' · dbg '+JSON.stringify(r.notes.dbg)+' · f1 '+JSON.stringify(r.notes.f1));
     if(r.notes.split && r.notes.split.length) console.log('   красная строка: '+r.notes.split.join(' || '));
     if(r.notes.days && r.notes.days.length>1) console.log('   дни: '+r.notes.days.join(' → '));
     if(r.notes.marks) console.log('   метки: '+r.notes.marks.slice(0, r.notes.split && r.notes.split.length ? 60 : 14).join(' | '));
     if(r.fail && r.notes.trace) console.log('   след:' + String.fromCharCode(10) + '     ' + r.notes.trace.slice(-12).join(String.fromCharCode(10) + '     '));
     if(r.errs && r.errs.length) console.log('   ошибки страницы: '+r.errs.join(' | '));
     if(r.fail) console.log('   заметки: '+JSON.stringify({entered:r.notes.entered, link:r.notes.link, peer:r.notes.peer, pressed:r.notes.pressed, why:r.notes.why}));
+    if(r.notes.pr) console.log('   ПР: '+r.notes.pr.join(' | '));
   }
   let bad=0;
   if(a.fail || b.fail) bad++;
-  if(hash(a.notes.table)!==hash(b.notes.table)){ const at=rowsOf(a.notes.table).findIndex((r,i)=>norm(r)!==norm(rowsOf(b.notes.table)[i])); console.log('FAIL таблицы разные, строка '+(at+1)+'\n  A: '+(a.notes.table||[])[at]+'\n  B: '+(b.notes.table||[])[at]); bad++; }
+  // CC_TABLES_DIFFER=1 — личные вечера (соло в команде): таблицы и броски у двоих свои, сверяется только день.
+  const DIFFER=process.env.CC_TABLES_DIFFER==='1';
+  if(!DIFFER && hash(a.notes.table)!==hash(b.notes.table)){ const at=rowsOf(a.notes.table).findIndex((r,i)=>norm(r)!==norm(rowsOf(b.notes.table)[i])); console.log('FAIL таблицы разные, строка '+(at+1)+'\n  A: '+(a.notes.table||[])[at]+'\n  B: '+(b.notes.table||[])[at]); bad++; }
   if((a.notes.split||[]).length || (b.notes.split||[]).length){ console.log('FAIL есть красная строка'); bad++; }
   const want=FF || ccAddDaysNode(DAY, NIGHTS);
   for(const [n, r] of [['A', a], ['B', b]]) if(r.notes.dayAfter!==want){ console.log('FAIL '+n+': день после вечера '+r.notes.dayAfter+', ждали '+want); bad++; }
-  if(!FF && !RELOAD_A && !RELOAD_B && a.notes.rolls!==b.notes.rolls){ console.log('FAIL броски разные: '+a.notes.rolls+' / '+b.notes.rolls); bad++; }
+  if(!DIFFER && !FF && !RELOAD_A && !RELOAD_B && a.notes.rolls!==b.notes.rolls){ console.log('FAIL броски разные: '+a.notes.rolls+' / '+b.notes.rolls); bad++; }
   if(bad) process.exit(1);
   console.log('два живых клиента через настоящий воркер сыграли один и тот же вечер');
 })().catch(e=>{ console.error(e.message||e); process.exit(2); });

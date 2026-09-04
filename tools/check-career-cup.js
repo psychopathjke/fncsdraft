@@ -31,7 +31,7 @@ const BOOT = `
   // the moment a picker appears, always the first zone, so the run is the same
   // every time. Without this a probe waits forever on a click nobody makes.
   setInterval(function(){
-    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
+    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
     z[0].click();
@@ -104,6 +104,13 @@ const BOOT = `
 
     card.querySelector('button[onclick*="careerBackToHub"]').click();
     out.steps.push('back on hub: ' + document.getElementById('screen-career-hub').classList.contains('active'));
+    /* Лента живёт в соцсети, а не на центре: 2 сентября центр стал новостным
+       хабом (заголовки плюс одна новость крупно), и постов там больше нет.
+       Проверка про АВТОРОВ, а не про то, на какой вкладке они нарисованы, —
+       поэтому она открывает ту вкладку, где лента, и читает её там. */
+    // Именно ленту: соцсеть открывается на личке, когда там есть непрочитанное.
+    CH_SOCIAL = 'feed';
+    careerTab('social');
     const feed = [...document.querySelectorAll('#chBody .x-post-in p')].map(b => b.textContent.trim());
     // Who the feed says posted each line. A result is the scene's own account, a
     // rating is you, a partner's mood is the partner — all off the key the save

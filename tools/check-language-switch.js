@@ -89,7 +89,7 @@ const BOOT = `
       const am = document.getElementById('ccAskModal');
       if (am && am.style.display === 'flex') {
         const no = document.getElementById('ccAskNo');
-        if (no && no.textContent === L().ccSpotGatePlay) no.click();
+        if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; }
       }
     }, 20);
     document.querySelector('#screen-career-hub .ch-play').click();
@@ -104,6 +104,11 @@ const BOOT = `
     card.querySelector('button[onclick*="careerBackToHub"]').click();
     await wait(200);
 
+    /* Лента живёт в соцсети: центр с 2 сентября — новостной хаб. Проверка
+       про язык постов, поэтому открывает вкладку, где посты есть. */
+    CH_SOCIAL = 'feed';
+    careerTab('social');
+    await wait(200);
     const ru = feedText();
     out.steps.push('feed in Russian: ' + ru.slice(0, 3).join(' / '));
     if (!ru.length) fail('the cup left an empty feed');
@@ -120,7 +125,7 @@ const BOOT = `
     // ---- switch, and read it back --------------------------------------
     setLang('en');
     await wait(60);
-    careerTab('centre');
+    careerTab('social');
     await wait(200);
     const en = feedText();
     out.steps.push('feed in English: ' + en.slice(0, 3).join(' / '));
@@ -147,7 +152,7 @@ const BOOT = `
     // ---- and back again, so the switch is not one-way -------------------
     setLang('ru');
     await wait(60);
-    careerTab('centre');
+    careerTab('social');
     await wait(200);
     const back = feedText();
     const leftEnglish = back.filter(t => !CYR.test(t) && LAT.test(translatable(t)));
@@ -163,6 +168,10 @@ const BOOT = `
     setLang('en');
     careerEntry();
     await wait(200);
+    // careerEntry открывает центр — а лента в соцсети.
+    CH_SOCIAL = 'feed';
+    careerTab('social');
+    await wait(150);
     const legacy = feedText();
     if (!legacy.some(t => t.indexOf('Старая запись') >= 0))
       fail('an entry written before the keys was dropped instead of shown as it was');

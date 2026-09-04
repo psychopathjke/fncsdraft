@@ -46,19 +46,32 @@ const BOOT = `
 
     // Командная — ждёт, пока сервер не скажет «оба».
     CAREER.career.mp = {code:'ABC123', role:'a'};
-    let sent = null;
-    MP.ready = function(d){ sent = d; };
-    let fired = null;
-    MP.on = function(t, fn){ if(t === 'start') fired = fn; };
-    const p = ccMpGate();
+    let sent = null, sentKind = null;
+    MP.ready = function(d, k){ sent = d; sentKind = k; };
+    let fired = null, onReady = null;
+    MP.on = function(t, fn){ if(t === 'start') fired = fn; if(t === 'ready') onReady = fn; return function(){}; };
+    const p = ccMpGate('cup');
     let done = false; p.then(() => { done = true; });
     await new Promise(r => setTimeout(r, 60));
     check('готовность заявлена', sent === careerToday(), String(sent));
+    check('и с видом вечера', sentKind === 'cup', String(sentKind));
     check('и вечер НЕ начался', done === false);
     fired({t:'start', seed:'team-1|2026-02-02', n:7});
     const got = await p;
     check('старт от сервера открывает гейт', got && got.seed === 'team-1|2026-02-02',
           JSON.stringify(got));
+    /* Двое нажали РАЗНЫЕ турниры — сервер отвечает clash, гейт снимается, и
+       игроку сказано, кто что нажал. Его скрин 29 августа: Solo Series против
+       открытого квала Reload в один день. */
+    let told = null; const tellWas = ccMpTell; ccMpTell = function(t){ told = t; };
+    const p2 = ccMpGate('solo');
+    await new Promise(r => setTimeout(r, 30));
+    const clash = {}; clash[ccMpId()] = 'solo'; clash['other-id'] = 'reload';
+    onReady({t:'ready', day:careerToday(), ready:0, of:2, clash:clash});
+    let rejected = null; try { await p2; } catch(e) { rejected = String(e && e.message); }
+    ccMpTell = tellWas;
+    check('разные турниры — гейт снят', rejected !== null, String(rejected));
+    check('и сказано, кто что нажал', told === L().ccMpKindClash('solo', 'reload'), String(told));
 
     /* Перемотка в командной карьере отказывается — следствие того же
        правила, что и гейт. День двигает только close от сервера
@@ -82,8 +95,9 @@ const BOOT = `
      'runCareerReload','runCareerReloadChampionship','runCareerWeeklyFinal','runCareerEval',
      'runCareerVictory','runCareerSoloSeries'].forEach(fn => {
       const at = src.indexOf('async function ' + fn + '(');
-      const body = at < 0 ? '' : src.slice(at, at + 1800);
-      check(fn + ' спрашивает гейт', body.indexOf('ccMpGate()') >= 0, at < 0 ? 'функции нет' : 'нет вызова');
+      const body = at < 0 ? '' : src.slice(at, at + 6000);
+      // И называет свой вид вечера: ccMpGate('cup'), не ccMpGate(). См. lobby.ready и его скрин 29 августа.
+      check(fn + ' спрашивает гейт и называет вид', /ccMpGate\\('[a-z]+'\\)/.test(body), at < 0 ? 'функции нет' : 'нет вызова с видом');
     });
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =

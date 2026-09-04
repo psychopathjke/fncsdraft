@@ -27,7 +27,7 @@ const BOOT = `
   // the moment a picker appears, always the first zone, so the run is the same
   // every time. Without this a probe waits forever on a click nobody makes.
   setInterval(function(){
-    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
+    const am=document.getElementById("ccAskModal"); if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"); if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; } } const c0=document.querySelector(".cc-choice-btn"); if(c0){ c0.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
     z[0].click();
@@ -203,8 +203,11 @@ const BOOT = `
     check('with $400,000 at the top', gcPrize(1) === 400000, String(gcPrize(1)));
 
     // Epic's own multiplier table puts the Global Championship on its top line.
-    check('and PR rates it x1.6', ccPrWeight({kind:'globals'}) === 1.6,
-          String(ccPrWeight({kind:'globals'})));
+    // Со 2 сентября 2026 ПР считается по модели Tracker: важность события —
+    // множитель x1…x10, а не Epic'ов вес 0.8–1.6. Мировой чемпионат остаётся
+    // вершиной шкалы, и договор тот же — выше него нет ничего.
+    check('and PR rates it the top of the scale, x10', ccPrMult({kind:'globals'}) === 10,
+          String(ccPrMult({kind:'globals'})));
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =
     'PB' + 'EGIN' + encodeURIComponent(JSON.stringify(out)) + 'PE' + 'ND';
