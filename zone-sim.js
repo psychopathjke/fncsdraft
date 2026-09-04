@@ -242,7 +242,9 @@
         hp: 100,
         alive: true,
         skill: rotationSkill(team),
-        seek: aggression(team),
+        // _seekMul — план на вечер у своей команды (careerPlanAsk): «на элимы»
+        // ищет драку чаще, «на место» реже. У всех остальных единица.
+        seek: aggression(team) * (typeof team._seekMul === 'number' ? team._seekMul : 1),
         power: strength(team),
         target: null,
         heading: 0,
