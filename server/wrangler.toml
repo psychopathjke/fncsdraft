@@ -2,6 +2,13 @@ name = "fncsdraft-mp"
 main = "src/worker.js"
 compatibility_date = "2026-08-26"
 
+# Свой поддомен вместо *.workers.dev: workers.dev в РФ блокируют целиком,
+# и дуо-карьера оттуда не подключалась. Старый адрес продолжает работать.
+# ВАЖНО: top-level ключи в TOML должны стоять ДО первой [[секции]].
+routes = [
+  { pattern = "mp.fncsdraft.com", custom_domain = true }
+]
+
 [[durable_objects.bindings]]
 name = "LOBBY"
 class_name = "Lobby"

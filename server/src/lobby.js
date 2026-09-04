@@ -10,6 +10,13 @@
  */
 'use strict';
 
+/* Сколько человек пускает лобби. Командная карьера — двое и только двое:
+   локстеп написан на пару. Гонка карьер общего счёта не ведёт, там людей
+   может быть больше — шестеро; дальше таблица «кто впереди» перестаёт
+   читаться с одного взгляда, а лобби начинает возить шесть сводок на каждый
+   прожитый день. См. join и CC_RACE_MAX на клиенте. */
+const RACE_MAX=6;
+
 function createLobby(opts){
   const o=opts||{};
   const st={
@@ -25,7 +32,8 @@ function createLobby(opts){
     last:null,           // {team, n} последнего закрытия — для того, кто закрытие не получил
     div:o.div||null,     // дивизион команды: с ним сверяется каждый входящий
     seen:0,              // когда лобби трогали в последний раз
-    over:false           // дуо разорвано
+    over:false,          // дуо разорвано
+    race:false           // лобби гонки: людей больше двух, дивизион не сверяется
   };
   const ids=()=>Object.keys(st.cards);
   const peerOf=id=>ids().find(x=>x!==id)||null;
@@ -70,11 +78,25 @@ function createLobby(opts){
          не узнаёт, лобби остаётся таким, каким было. Свой же входит всегда —
          сид лобби у него совпал (st.seed), а дивизион мог разойтись из-за
          повышения, которое он ещё не дочитал. */
+      /* ГОНКА — ЛОББИ ДРУГОЙ ПОРОДЫ, и это решается здесь, на входе.
+
+         Его вопрос 4 сентября: «а можно больше игроков сделать одновременно?».
+         Командная карьера — ровно двое: весь вечер стоит на локстепе, где двое
+         считают один прогон и сверяют каждый бросок; третьему в нём места нет.
+         А гонка не считает ничего общего — у каждого своя карьера, ездит одна
+         сводка, — поэтому в ней людей может быть сколько угодно в пределах
+         разумного. Отсюда два порога вместо одного.
+
+         Дивизион в гонке тоже не сверяется: сойтись должны хоть первый с
+         пятым, в этом её смысл. Комната помечается гонкой первым же вошедшим
+         (msg.race) и остаётся ею — командный клиент в неё не попадёт, потому
+         что кода он не знает. */
+      if(msg && msg.race) st.race=true;
       const own=msg && msg.seed && st.seed && msg.seed===st.seed;
-      if(!own && st.div && msg && msg.div && msg.div!==st.div)
+      if(!st.race && !own && st.div && msg && msg.div && msg.div!==st.div)
         return [{to:'self', msg:{t:'bye', reason:'div', have:st.div, got:msg.div}}];
-      if(msg && msg.div && !st.div) st.div=msg.div;
-      if(ids().length>=2 && !st.cards[id])
+      if(!st.race && msg && msg.div && !st.div) st.div=msg.div;
+      if(ids().length>=(st.race ? RACE_MAX : 2) && !st.cards[id])
         return [{to:'self', msg:{t:'bye', reason:'full'}}];
       st.cards[id]=(msg&&msg.card)||null;
       const out=[{to:'self', msg:stateMsg(id)}];
@@ -121,7 +143,7 @@ function createLobby(opts){
 
        Знаменатель всегда 2, а не число подключённых: команда — это двое, и
        пока второй не вошёл, честный ответ «1 из 2», а не «1 из 1». */
-    ready(id, day){
+    ready(id, day, kind){
       /* Вечер этого дня уже идёт — это переподключение или перезагрузка
          посреди вечера. Старт тот же, с тем же сидом, и только ему:
          напарник его уже получил и считает. */
@@ -148,10 +170,39 @@ function createLobby(opts){
       // Готовность на ДРУГОЙ день при идущем вечере: тот вечер брошен, команда ушла дальше.
       if(st.evening && st.evening.day!==day){ st.evening=null; st.feed=[]; st.digests={}; }
       st.ready[id]=day;
+      /* ВИД вечера — тоже. Его скрин 29 августа, 11 января: один нажал Solo
+         Series, второй — открытый квал Reload того же дня, лобби завело вечер
+         на двоих, и они считали два разных турнира с первой игры («field
+         …m2.58.n4900 vs …r1.15.n900»). День совпал — этого мало. Клиент без
+         вида (старая сборка) считается согласным на что угодно. */
+      st.kinds=st.kinds||{};
+      if(kind) st.kinds[id]=kind; else delete st.kinds[id];
       const all=ids();
       const both=all.length===2 && all.every(x=>st.ready[x]===day);
       const n=all.filter(x=>st.ready[x]===day).length;
       if(!both) return [{to:'all', msg:{t:'ready', by:id, day:day, ready:n, of:2}}];
+      const named=all.filter(x=>st.kinds[x]);
+      if(named.length===2 && st.kinds[named[0]]!==st.kinds[named[1]]){
+        // Разные турниры — старта нет, и готовность снимается с обоих: пусть
+        // договорятся и нажмут заново одно и то же.
+        const clash={}; all.forEach(x=>{ clash[x]=st.kinds[x]; });
+        st.ready={}; st.kinds={};
+        return [{to:'all', msg:{t:'ready', by:id, day:day, ready:0, of:2, clash:clash}}];
+      }
+      /* Смесь сборок: у одного вид есть, у другого нет. «Без вида — согласен
+         на всё» пропускало старую вкладку в вечер с новым календарём, и пара
+         опять считала два разных турнира с первой игры (его страница «баги»,
+         скрины 8-9, 31 августа, 4179a04f: соло-квал n4900 против дуо Victory
+         Cup n2450 в один день; игрок в ЛС — «duo vcc против ewc»). Старта
+         нет: новому клиенту в clash приезжает пустой вид напарника — он
+         объяснит про старую версию; старый увидит сброс готовности. Пара из
+         ДВУХ вкладок без вида консистентна между собой — её не трогаем. */
+      if(named.length===1){
+        const clash={}; all.forEach(x=>{ clash[x]=st.kinds[x]||''; });
+        st.ready={}; st.kinds={};
+        return [{to:'all', msg:{t:'ready', by:id, day:day, ready:0, of:2, clash:clash}}];
+      }
+      st.kinds={};
       st.ready={};
       st.feed=[]; st.digests={};
       st.evening={seed:st.seed+'|'+day, n:++st.n, day:day, readied:{}};

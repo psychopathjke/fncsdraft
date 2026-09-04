@@ -171,6 +171,21 @@ var MP={
        пропуск. Поэтому режим ездит вместе с карточкой, и вечер с разными
        режимами не начинается (см. ccMpModeWhy). */
     out.sim = !!cr.sim;
+    /* Стаж дуо — вход силы (careerChem). Ключ командный, но у вошедшего
+       вторым он появляется только с первым 'state': до этого химия нулевая
+       и сила своей команды расходится на единицу. Оба берут РАННЮЮ из двух
+       дат — см. careerChemDays. */
+    out.chemSince = cr.chemSince || null;
+    /* Своя соло-точка (метка) — центром коробки: у соло сетка дроблёная, и
+       индекс на чужой стороне значил бы другое место. Напарник сажает нас на
+       неё ДО раздачи ботов, как мы его. См. ccSoloHomeZoneOf. */
+    var sh=(typeof careerSpotOn==='function') ? careerSpotOn('solo') : null;
+    if(sh && (sh.cx==null || sh.cy==null) && typeof careerSpotGrid==='function' && typeof ZONE_SETS!=='undefined'){
+      // Старая запись без центра — центр её крупной коробки.
+      var box=(ZONE_SETS[careerSpotGrid('solo')]||[])[sh.i];
+      if(box) sh={i:sh.i, cx:box.x+box.w/2, cy:box.y+box.h/2};
+    }
+    out.soloHome = sh ? {i:sh.i, cx:sh.cx, cy:sh.cy} : null;
     return out;
   },
 
@@ -244,7 +259,7 @@ var MP={
        написано 1/2 если жмет кто-то или 0/2». Считает сервер, здесь только
        запоминается и перерисовывается: свою готовность клиент знает, чужую —
        нет, а после обрыва не знает и своей. */
-    if(m.t==='ready'){ MP.waiting={day:m.day, n:m.ready||0, of:m.of||2}; redraw(); }
+    if(m.t==='ready'){ MP.waiting={day:m.day, n:m.ready||0, of:m.of||2, clash:m.clash||null}; redraw(); }
     // Вечер начался — ждать больше нечего.
     if(m.t==='start'){ MP.waiting=null; if(!m.resume){ ACTS.length=0; OWN.length=0; } redraw(); }
     // Состояние, которое напарник изменил прямо сейчас: метка на карте, взятый
@@ -284,7 +299,11 @@ var MP={
     CODE=code; ID=id;
     setState('wait');
     return new Promise(function(res, rej){
-      var url=(MP.host||'wss://fncsdraft-mp.keegorka.workers.dev')+
+      /* Свой поддомен вместо *.workers.dev: workers.dev в РФ блокируют
+         целиком, и дуо-карьера оттуда не подключалась (его отчёт 30 августа:
+         «с рф проблемы с заходом»). Старый адрес жив — старые вкладки
+         доиграют; воркер тот же, домен добавлен в wrangler.toml. */
+      var url=(MP.host||'wss://mp.fncsdraft.com')+
               '/lobby/'+code+'?id='+encodeURIComponent(id)+'&build='+CC_BUILD;
       var sock;
       try{ sock=new WebSocket(url); }
@@ -296,8 +315,11 @@ var MP={
         /* Дивизион и сид команды — вместе с приветствием: по ним лобби решает,
            пускать ли вошедшего (см. lobby.join). Сид говорит «это моя команда»,
            дивизион — «мы одного уровня». */
+        /* И ГОНКА ЛИ ЭТО. Лобби гонки — другой породы: людей в нём больше
+           двух и дивизионы не сверяются (см. lobby.join). Первый вошедший
+           метит комнату, остальные просто попадают в уже помеченную. */
         sock.send(JSON.stringify({t:'hello', build:CC_BUILD, card:MP.card(),
-                                  div:MP.div(), seed:MP.seed()}));
+                                  div:MP.div(), seed:MP.seed(), race:MP.race()}));
         // Вернулся — догнал по номерам, ничего не переспрашивая.
         if(SEEN) sock.send(JSON.stringify({t:'since', n:SEEN}));
         res();
@@ -368,6 +390,13 @@ var MP={
   },
   // Забрать чужое решение этого вопроса, если оно уже приехало.
   take:function(kind, q){ return MP.find(kind, q, true); },
+  /* Напарник уже стоит на барьере, которого мы ещё не прошли: в очереди лежит
+     его приход ('kind@'), не забранный нашим ccMpSync. Значит, всё, что мы
+     сейчас показываем, держит его. См. ccMpHurry. */
+  waitingOnMe:function(){
+    for(var i=0;i<ACTS.length;i++){ if(/@$/.test(String(ACTS[i].kind||''))) return true; }
+    return false;
+  },
   send:function(m){ if(SOCK && SOCK.readyState===1) SOCK.send(JSON.stringify(m)); },
   push:function(team){ MP.send({t:'team', team:team}); },
   /* Свежая карточка напарнику.
@@ -383,15 +412,27 @@ var MP={
      напарнику раньше, чем сервер объявит старт. */
   sendCard:function(){ MP.send({t:'card', card:MP.card()}); },
   // Чем карьера представляется лобби на входе. Пусто — значит нечем сверять.
+  /* Гонка ли это. По этому полю лобби решает, сколько людей пускать и сверять
+     ли дивизион, — см. lobby.join и ccRaceOn. */
+  race:function(){
+    return (typeof ccRaceOn==='function') ? !!ccRaceOn() : false;
+  },
+  /* В ГОНКЕ дивизион и сид НЕ ЕДУТ. Так это и было задумано с самого начала
+     (комментарий в careerRaceEnter), но отправлял их всё равно этот файл — он
+     про гонку ничего не знал, и лобби отбивало вход «reason:div» ровно там,
+     где гонка и должна сходиться: первый дивизион против пятого. */
   div:function(){
+    if(MP.race()) return null;
     var cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career)||null;
     return (cr && cr.division) || null;
   },
   seed:function(){
+    if(MP.race()) return null;
     var cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career)||null;
     return (cr && cr.seed) || null;
   },
-  ready:function(day){ MP.send({t:'ready', day:day}); },
+  // Вид вечера едет вместе с днём: двое обязаны нажать ОДИН турнир. См. ccMpGate.
+  ready:function(day, kind){ MP.send({t:'ready', day:day, kind:kind||null}); },
   act:function(kind, payload){ MP.send({t:'act', kind:kind, payload:payload}); },
   digest:function(hash, team){ MP.send({t:'digest', hash:hash, team:team}); },
   part:function(){ MP.send({t:'part'}); }

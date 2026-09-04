@@ -158,17 +158,79 @@ check('лента после закрытия пуста', after.feed.length===0
 // ---- оба нажали «играть» заново в застрявшем вечере — новый вечер ------------
 let W=createLobby({build:'aaaa1111', seed:'team-7', team:{day:'2026-02-02'}});
 W.join('A',{build:'aaaa1111',card:CARD}); W.join('B',{build:'aaaa1111',card:CARD});
-W.ready('A','2026-02-02'); const s1=W.ready('B','2026-02-02')[0].msg;
+W.ready('A','2026-02-02','cup'); const s1=W.ready('B','2026-02-02','cup')[0].msg;
 W.act('A','loot',{v:'take',q:1});
-const rA=W.ready('A','2026-02-02');
+const rA=W.ready('A','2026-02-02','cup');
 check('первый повтор — догон себе', rA.length===1 && rA[0].to==='self' && rA[0].msg.resume===true);
-const rB=W.ready('B','2026-02-02');
+const rB=W.ready('B','2026-02-02','cup');
 check('второй повтор — свежий старт всем', rB.length===1 && rB[0].to==='all' && rB[0].msg.fresh===true && rB[0].msg.seed!==s1.seed, JSON.stringify(rB));
 check('лента застрявшего вечера выброшена', W.state.feed.length===0);
 // Готовность на другой день бросает идущий вечер.
 W.act('A','loot',{v:'take',q:1});
-const rC=W.ready('A','2026-02-03');
+const rC=W.ready('A','2026-02-03','cup');
 check('готовность на другой день — вечер брошен, ждём второго', rC[0].msg.t==='ready' && W.state.evening===null && W.state.feed.length===0, JSON.stringify(rC));
+
+// ---- двое нажали РАЗНЫЕ турниры одного дня — старта нет ---------------------
+// Его скрин 29 августа, 11 января: Solo Series против открытого квала Reload.
+let X=createLobby({build:'aaaa1111', seed:'team-x', team:{day:'2026-01-11'}});
+X.join('A',{build:'aaaa1111',card:CARD}); X.join('B',{build:'aaaa1111',card:CARD});
+X.ready('A','2026-01-11','solo');
+const xB=X.ready('B','2026-01-11','reload');
+check('разные виды — старта нет', !xB.some(x=>x.msg.t==='start'), JSON.stringify(xB));
+check('и обоим сказано, кто что нажал', xB.length===1 && xB[0].to==='all' && xB[0].msg.clash &&
+      xB[0].msg.clash.A==='solo' && xB[0].msg.clash.B==='reload', JSON.stringify(xB));
+check('готовность снята с обоих', Object.keys(X.state.ready).length===0, JSON.stringify(X.state.ready));
+// Договорились — нажали одно и то же, вечер пошёл.
+const x1=X.ready('A','2026-01-11','solo');
+check('после сброса первый снова один', x1[0].msg.t==='ready' && x1[0].msg.ready===1);
+const x2=X.ready('B','2026-01-11','solo');
+check('один и тот же вид — старт', x2.some(x=>x.msg.t==='start'), JSON.stringify(x2));
+/* Смесь сборок больше НЕ стартует: «без вида — согласен на всё» пропускало
+   старую вкладку в вечер с новым календарём (скрины 8-9 страницы «баги»,
+   31 августа: соло-квал n4900 против дуо Victory Cup n2450 в один день).
+   В clash у старого клиента вид пустой — новый по нему объясняет про версию. */
+let Y=createLobby({build:'aaaa1111', seed:'team-y', team:{day:'2026-01-11'}});
+Y.join('A',{build:'aaaa1111',card:CARD}); Y.join('B',{build:'aaaa1111',card:CARD});
+Y.ready('A','2026-01-11','solo');
+const yB=Y.ready('B','2026-01-11');
+check('вид только у одного — старта нет', !yB.some(x=>x.msg.t==='start'), JSON.stringify(yB));
+check('и в clash у старого пусто', yB.length===1 && yB[0].msg.clash && yB[0].msg.clash.A==='solo' && yB[0].msg.clash.B==='', JSON.stringify(yB));
+check('готовность снята с обоих (смесь)', Object.keys(Y.state.ready).length===0, JSON.stringify(Y.state.ready));
+// Пара из двух вкладок без вида консистентна между собой — стартует как раньше.
+let Z=createLobby({build:'aaaa1111', seed:'team-z', team:{day:'2026-01-11'}});
+Z.join('A',{build:'aaaa1111',card:CARD}); Z.join('B',{build:'aaaa1111',card:CARD});
+Z.ready('A','2026-01-11');
+check('оба без вида — старт как раньше', Z.ready('B','2026-01-11').some(x=>x.msg.t==='start'));
+
+/* ---- ГОНКА: людей больше двух и дивизион не сверяется --------------------
+   Его вопрос 4 сентября: «а можно больше игроков сделать одновременно?».
+   Командная карьера остаётся парой — локстеп написан на двоих; гонка общего
+   счёта не ведёт, поэтому её лобби пускает до шести. Метит комнату первый
+   вошедший полем race. */
+let R=createLobby({build:'aaaa1111', seed:'race-1'});
+check('первый в гонке вошёл',
+      R.join('A',{build:'aaaa1111', card:CARD, race:true, div:1}).some(x=>x.msg.t==='state'));
+check('комната помечена гонкой', R.state.race===true);
+check('второй из ДРУГОГО дивизиона тоже входит',
+      R.join('B',{build:'aaaa1111', card:CARD, race:true, div:5}).some(x=>x.msg.t==='state'),
+      'дивизион в гонке не сверяется');
+check('и третий', R.join('C',{build:'aaaa1111', card:CARD, race:true}).some(x=>x.msg.t==='state'));
+['D','E','F'].forEach(id=>R.join(id,{build:'aaaa1111', card:CARD, race:true}));
+check('шестеро помещаются', Object.keys(R.state.cards).length===6,
+      String(Object.keys(R.state.cards).length));
+const seventh=R.join('G',{build:'aaaa1111', card:CARD, race:true});
+check('седьмой уже нет', seventh[0] && seventh[0].msg.t==='bye' && seventh[0].msg.reason==='full',
+      JSON.stringify(seventh));
+// А командное лобби осталось парой.
+let T2=createLobby({build:'aaaa1111', seed:'team-2'});
+T2.join('A',{build:'aaaa1111', card:CARD});
+T2.join('B',{build:'aaaa1111', card:CARD});
+const third=T2.join('C',{build:'aaaa1111', card:CARD});
+check('в командной карьере третьего не пускают',
+      third[0] && third[0].msg.t==='bye' && third[0].msg.reason==='full', JSON.stringify(third));
+// И голоса гонки (act) расходятся всем, а не одному.
+const votes=R.act ? R.act('A',{kind:'nextday', payload:{by:'A', day:'2026-03-02'}}) : null;
+if(votes) check('голос за день уходит всем', votes.some(x=>x.to==='all'), JSON.stringify(votes));
 
 if(fails.length){ fails.forEach(f=>console.error('FAIL '+f)); process.exit(1); }
 console.log('лобби нумерует и рассылает, ничего не считая');

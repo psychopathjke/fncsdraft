@@ -3,7 +3,20 @@
  * Здесь не принимается ни одного решения. Всё, что этот файл делает, —
  * достаёт лобби по коду, отдаёт сообщение машине и рассылает то, что она
  * вернула. Логика живёт в lobby.js и проверяется без сети.
- */
+ *
+ * СОКЕТЫ СПЯТ (WebSocket Hibernation API). 29 августа 2026 лобби легло на
+ * весь день с «Exceeded allowed duration in Durable Objects free tier»:
+ * каждое подключение держало объект в памяти, а бесплатный тариф считает
+ * именно время жизни объекта — открытая вкладка с лобби тратила его
+ * круглые сутки, и двух вкладок хватало, чтобы к вечеру квота кончилась и
+ * ни одна команда не могла даже завестись. С гибернацией объект спит между
+ * сообщениями, а сокеты держит платформа: спящее лобби не стоит ничего.
+ *
+ * Отсюда два правила. Память объекта между сообщениями НЕ переживает сон —
+ * поэтому состояние лобби читается из storage на каждом пробуждении
+ * (boot) и пишется после каждого сообщения (touch -> keep), а список
+ * сокетов не хранится вовсе: его отдаёт платформа (getWebSockets), а кто
+ * есть кто, лежит в attachment самого сокета. */
 import { createLobby } from './lobby.js';
 
 export class Lobby {
@@ -11,7 +24,6 @@ export class Lobby {
   static TTL = 30*86400000;
   constructor(state, env){
     this.state=state; this.env=env;
-    this.socks=new Map();               // clientId -> WebSocket
     this.lobby=null;
   }
   async boot(){
@@ -45,11 +57,29 @@ export class Lobby {
     }
     await this.state.storage.setAlarm(Date.now()+Lobby.TTL);
   }
+  /* Кто сейчас на связи: id -> сокет.
+
+     Один id — один живой сокет, последний по времени. Вкладка, которая
+     переподключилась раньше, чем закрылся старый сокет (перезагрузка,
+     повторный вход в карьеру), оставляет его висеть: раньше новый просто
+     затирал старый в карте, и старый молчал до самой смерти. Здесь то же
+     самое: старый помечается мёртвым в своём attachment (см. fetch) и в
+     список не попадает. Закрывать его нельзя — клиент на закрытие отвечает
+     переподключением, и два сокета гонялись бы друг за другом без конца. */
+  socks(){
+    const m=new Map();
+    for(const ws of this.state.getWebSockets()){
+      let a=null; try{ a=ws.deserializeAttachment(); }catch(e){}
+      if(a && a.id && !a.dead) m.set(a.id, ws);
+    }
+    return m;
+  }
   fanout(id, sends){
+    const socks=this.socks();
     for(const s of sends){
       const raw=JSON.stringify(s.msg);
-      if(s.to==='self'){ this.socks.get(id)?.send(raw); continue; }
-      for(const [cid, sock] of this.socks){
+      if(s.to==='self'){ try{ socks.get(id)?.send(raw); }catch(e){} continue; }
+      for(const [cid, sock] of socks){
         if(s.to==='peer' && cid===id) continue;
         try{ sock.send(raw); }catch(e){}
       }
@@ -74,29 +104,42 @@ export class Lobby {
 
        Поэтому версию ставит первый вошедший в ПУСТОЕ лобби. Гарантия при этом
        целая: пришедший вторым сверяется с ним и с чужой сборкой не проходит.
-       Здесь socks ещё не содержит текущего клиента — он добавляется ниже,
-       после рукопожатия, — так что пустота означает именно «он первый». */
-    if(!this.lobby.state.build || this.socks.size===0) this.lobby.state.build=build;
+       Текущий клиент ещё не принят — он принимается ниже, — так что пустота
+       означает именно «он первый». */
+    if(!this.lobby.state.build || this.socks().size===0) this.lobby.state.build=build;
+    // Прежний сокет этого же id — мёртв: см. socks.
+    for(const old of this.state.getWebSockets(id)){
+      try{ old.serializeAttachment({id:id, dead:true}); }catch(e){}
+    }
     const pair=new WebSocketPair();
     const [client, server]=Object.values(pair);
-    server.accept();
-    this.socks.set(id, server);
-    server.addEventListener('message', async ev=>{
-      let m=null; try{ m=JSON.parse(ev.data); }catch(e){ return; }
-      let sends=[];
-      if(m.t==='hello')       sends=this.lobby.join(id, m);
-      else if(m.t==='card')   sends=this.lobby.card(id, m.card);
-      else if(m.t==='team')   sends=this.lobby.team(id, m.team);
-      else if(m.t==='ready')  sends=this.lobby.ready(id, m.day);
-      else if(m.t==='act')    sends=this.lobby.act(id, m.kind, m.payload);
-      else if(m.t==='digest') sends=this.lobby.digest(id, m.hash, m.team);
-      else if(m.t==='since')  { for(const e of this.lobby.since(id, m.n)) server.send(JSON.stringify(e)); }
-      else if(m.t==='part')   sends=this.lobby.part(id);
-      this.fanout(id, sends);
-      await this.touch();
-    });
-    server.addEventListener('close', ()=>{ this.socks.delete(id); });
+    server.serializeAttachment({id:id});
+    this.state.acceptWebSocket(server, [id]);
     return new Response(null, {status:101, webSocket:client});
+  }
+  async webSocketMessage(ws, data){
+    await this.boot();
+    let a=null; try{ a=ws.deserializeAttachment(); }catch(e){}
+    if(!a || !a.id || a.dead) return;
+    const id=a.id;
+    let m=null; try{ m=JSON.parse(data); }catch(e){ return; }
+    let sends=[];
+    if(m.t==='hello')       sends=this.lobby.join(id, m);
+    else if(m.t==='card')   sends=this.lobby.card(id, m.card);
+    else if(m.t==='team')   sends=this.lobby.team(id, m.team);
+    else if(m.t==='ready')  sends=this.lobby.ready(id, m.day, m.kind);
+    else if(m.t==='act')    sends=this.lobby.act(id, m.kind, m.payload);
+    else if(m.t==='digest') sends=this.lobby.digest(id, m.hash, m.team);
+    else if(m.t==='since')  { for(const e of this.lobby.since(id, m.n)) { try{ ws.send(JSON.stringify(e)); }catch(err){} } }
+    else if(m.t==='part')   sends=this.lobby.part(id);
+    this.fanout(id, sends);
+    await this.touch();
+  }
+  async webSocketClose(ws, code, reason, wasClean){
+    try{ ws.close(1000, 'closing'); }catch(e){}
+  }
+  async webSocketError(ws, err){
+    try{ ws.close(1011, 'error'); }catch(e){}
   }
 }
 
