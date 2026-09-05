@@ -269,6 +269,18 @@ const BOOT = `
     check('and the tally line counts them', evTxt === L().ccTvEvSum(CC_TV_EV.fol, CC_TV_EV.subs, Math.round(CC_TV_EV.cash)), evTxt);
     check('the chat keeps moving: newest lines are kept, oldest dropped', CC_TV_MSGS.length <= 40 && CC_TV_MSGS.length >= 20, String(CC_TV_MSGS.length));
     check('the frame shows followed channels', document.querySelectorAll('#ccTvFrame .cc-tv-srow').length >= 1);
+    /* Кто в чате — его правка 5 сентября: «в основном рандомные ники, без
+       циферок, маленькими буквами; про и креаторы могут иногда». Считается
+       по списку людей эфира: не меньше двух третей — выдуманные строчные
+       без цифр, и хоть один настоящий (напарник сидит в чате всегда). */
+    const nicks = CC_TV_WHO.map(w => w.who);
+    const plain = nicks.filter(h => /^[a-z]+$/.test(h)).length;
+    out.steps.push('chat people: ' + nicks.slice(0, 12).join(', ') + ' … plain ' + plain + '/' + nicks.length);
+    check('the chat is mostly random lowercase nicks without digits', plain >= Math.ceil(nicks.length * 2 / 3), plain + '/' + nicks.length);
+    // Цифры и заглавные — только у настоящих (vic0 остаётся vic0), то есть у меньшинства.
+    const real = nicks.filter(h => !/^[a-z]+$/.test(h));
+    check('the scene is the minority in the chat', real.length <= Math.floor(nicks.length / 3), real.join(','));
+    check('and a made-up nick never carries a digit', Array.from({length: 50}, () => ccChatNick()).every(h => /^[a-z]+$/.test(h)));
     check('and the uptime clock', /^\\d+:\\d\\d$/.test((document.getElementById('ccTvUp')||{}).textContent || ''),
           (document.getElementById('ccTvUp')||{}).textContent);
     ccTvFold();

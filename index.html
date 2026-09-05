@@ -87515,7 +87515,19 @@ function careerStreamChat(n){
   (ccFollows()||[]).forEach(add);
   careerLiveNow(8).forEach(s=>add(s.name));
   try{ careerRosterNowEU().slice(0, 40).forEach(p=>{ if(rnd()<0.3) add(p.handle); }); }catch(e){}
-  if(!who.length) return [];
+  /* КТО ПИШЕТ — В ОСНОВНОМ НИКТО. Его правка 5 сентября: «фоловятся и в чат
+     пишут не про-игроки и контент-мейкеры, могут иногда, но в основном
+     рандомные ники, и сделай ники без циферок маленькими буквами». Так и на
+     настоящем Twitch: чат — это зрители, а не сцена. Люди сцены остаются в
+     списке, но один на семерых; остальные — выдуманные ники, посеянные днём,
+     как и всё в этом чате. */
+  const CC_CHAT_REAL=0.15;
+  const fake=[]; const seen=new Set(who.map(hKey));
+  for(let i=0;i<40 && fake.length<32;i++){
+    const h=ccChatNick(rnd);
+    if(!seen.has(h)){ seen.add(h); fake.push(h); }
+  }
+  if(!who.length && !fake.length) return [];
   const bank=L().ccStreamChatLines||[];
   const hhmm=i=>{
     const m=(3*60+11+i)%1440;                     // «03:11», как на его скрине
@@ -87523,11 +87535,33 @@ function careerStreamChat(n){
   };
   const out=[];
   for(let i=0;i<(n||10);i++){
-    const h=who[Math.floor(rnd()*who.length)];
+    const real=who.length && (!fake.length || rnd()<CC_CHAT_REAL);
+    const h=real ? who[Math.floor(rnd()*who.length)] : fake[Math.floor(rnd()*fake.length)];
     const t=bank.length ? bank[Math.floor(rnd()*bank.length)] : '';
-    out.push({who:ccHandle(h), text:t, at:hhmm(i), c:ccChatColor(h)});
+    out.push({who:real ? ccHandle(h) : h, text:t, at:hhmm(i), c:ccChatColor(h)});
   }
   return out;
+}
+/* Выдуманный ник зрителя: строчные латинские буквы, без цифр — его слово.
+   Собирается из трёх корзин (приставка, корень, хвост), как ники и собирают:
+   «sleepyfox», «notkev», «mrnoodlettv». Бросок — снаружи, чтобы список дня
+   был одним и тем же при перерисовке. */
+const CC_NICK_A=['sleepy','tiny','big','dark','cold','lucky','shy','loud','mr','not','just','the','lil',
+  'old','soft','wild','dry','pale','lazy','mad','sir','fake','real','sad','okay','late','only','no',
+  'cozy','ghost','grim','kinda','ex','pro','ur','my','og','low','high','sus'];
+const CC_NICK_B=['fox','kev','moon','ash','pepper','noodle','bean','cat','wolf','pixel','storm','maple',
+  'taco','rice','frog','pine','cloud','neon','sock','wren','otter','mint','crow','dust','lime','fern',
+  'vex','zed','rune','koi','max','leo','nova','ivy','milo','bear','duck','pie','jam','yoshi','remy',
+  'kai','luna','pug','toast','waffle','mango','kiwi','ziggy','bones'];
+const CC_NICK_C=['','','','','','','tv','yt','ttv','lol','pls','gg','x','z','er','y','ie','o','s'];
+function ccChatNick(rnd){
+  const r=rnd||Math.random;
+  const pick=a=>a[Math.floor(r()*a.length)];
+  const shape=r();
+  const nick = shape<0.55 ? pick(CC_NICK_A)+pick(CC_NICK_B)+pick(CC_NICK_C)
+             : shape<0.8  ? pick(CC_NICK_B)+pick(CC_NICK_C)
+             : pick(CC_NICK_B)+pick(CC_NICK_B);
+  return nick.toLowerCase().replace(/[^a-z]/g,'');
 }
 // Цвет ника в чате — из самого ника, как у Twitch: один и тот же человек
 // всегда одного цвета.
