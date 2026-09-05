@@ -504,6 +504,10 @@
   }
 
   function pill(name, colour, isYou){
+    // The game's feed is plain text: a coloured name, no pill behind it.
+    if(PLAIN) return '<span style="display:inline-block;color:' + (isYou ? '#ffe45c' : colour) +
+      ';font-size:11px;font-weight:800;white-space:nowrap;max-width:170px;overflow:hidden;' +
+      'text-overflow:ellipsis;text-shadow:0 1px 2px #000,0 0 2px #000;">' + esc(name) + '</span>';
     return '<span style="display:inline-block;padding:2px 7px;border-radius:4px;' +
       'background:' + colour + ';color:' + inkOn(colour) + ';font-size:10.5px;font-weight:800;' +
       'white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis;' +
@@ -779,6 +783,12 @@
   // frames now carry. Storm and surge are what move it, so a plate with a short
   // bar is a squad that is out of position or being pushed by surge.
   var PLATE_BG = 'rgba(9,12,20,.86)', PLATE_LINE = 'rgba(255,255,255,.18)';
+  // The game's own look, switched on by the app for the career map: nameplates
+  // without the dark box (white text with a dark stroke and the bar under it)
+  // and a kill feed of plain lines instead of pills. Off, the draft keeps the
+  // plates it always had.
+  var PLAIN = false;
+  function setPlain(v){ PLAIN = !!v; }
   var BAR_H = 0.42, BAR_GAP = 0.28, STRIPE = 0.5;   // fractions of the font size
 
   // How tall a plate of this many lines comes out. Shared with the code that
@@ -809,25 +819,27 @@
     var stripe = size.stripe, textW = size.textW, w = size.w, h = size.h;
 
     var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    var r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    r.setAttribute('x', left.toFixed(3)); r.setAttribute('y', top.toFixed(3));
-    r.setAttribute('width', w.toFixed(3)); r.setAttribute('height', h.toFixed(3));
-    r.setAttribute('rx', (fs * 0.22).toFixed(3));
-    r.setAttribute('fill', PLATE_BG);
-    r.setAttribute('stroke', isYou ? '#ffffff' : PLATE_LINE);
-    r.setAttribute('stroke-width', isYou ? 1.5 : 0.75);
-    r.setAttribute('vector-effect', 'non-scaling-stroke');
-    g.appendChild(r);
+    if(!PLAIN){
+      var r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      r.setAttribute('x', left.toFixed(3)); r.setAttribute('y', top.toFixed(3));
+      r.setAttribute('width', w.toFixed(3)); r.setAttribute('height', h.toFixed(3));
+      r.setAttribute('rx', (fs * 0.22).toFixed(3));
+      r.setAttribute('fill', PLATE_BG);
+      r.setAttribute('stroke', isYou ? '#ffffff' : PLATE_LINE);
+      r.setAttribute('stroke-width', isYou ? 1.5 : 0.75);
+      r.setAttribute('vector-effect', 'non-scaling-stroke');
+      g.appendChild(r);
 
-    // The squad's colour, as a stripe down the left edge.
-    var key = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    key.setAttribute('x', (left + fs * 0.16).toFixed(3));
-    key.setAttribute('y', (top + fs * 0.2).toFixed(3));
-    key.setAttribute('width', (stripe * 0.55).toFixed(3));
-    key.setAttribute('height', (h - fs * 0.4).toFixed(3));
-    key.setAttribute('rx', (stripe * 0.27).toFixed(3));
-    key.setAttribute('fill', colour);
-    g.appendChild(key);
+      // The squad's colour, as a stripe down the left edge.
+      var key = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      key.setAttribute('x', (left + fs * 0.16).toFixed(3));
+      key.setAttribute('y', (top + fs * 0.2).toFixed(3));
+      key.setAttribute('width', (stripe * 0.55).toFixed(3));
+      key.setAttribute('height', (h - fs * 0.4).toFixed(3));
+      key.setAttribute('rx', (stripe * 0.27).toFixed(3));
+      key.setAttribute('fill', colour);
+      g.appendChild(key);
+    }
 
     var textLeft = left + stripe + PAD_X * fs;
     var first = top + PAD_Y * fs + fs * 0.79;
@@ -849,6 +861,15 @@
       // The job it was doing is done by the plate itself: one background, one
       // border, one colour stripe down the edge and one health bar under the
       // lot. Nothing about three names inside that reads as three squads.
+      // Without the box the text carries its own edge, the way the game's
+      // nameplate does: white over a dark stroke, your own squad in colour.
+      if(PLAIN){
+        t.setAttribute('stroke', 'rgba(0,0,0,.85)');
+        t.setAttribute('stroke-width', (fs * 0.18).toFixed(3));
+        t.setAttribute('paint-order', 'stroke');
+        t.setAttribute('stroke-linejoin', 'round');
+        if(isYou) t.setAttribute('fill', '#ffe45c');
+      }
       t.textContent = lines[k];
       g.appendChild(t);
     }
@@ -1871,5 +1892,5 @@
                      // Pure, and the one part of the naming a browser is not
                      // needed to check: how a squad's handles become the lines
                      // of a plate. Exported for tools/zone-sim-test.js.
-                     nameLines:nameLines};
+                     nameLines:nameLines, setPlain:setPlain};
 })(typeof globalThis !== 'undefined' ? globalThis : this);

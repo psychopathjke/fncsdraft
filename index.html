@@ -2665,7 +2665,8 @@
      число справа, и только когда он бьёт. Шрифт — Oswald со скосом. */
   .zr-kit{position:absolute;inset:0;pointer-events:none;
     font-family:'Oswald','Arial Narrow',Impact,sans-serif;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.9);}
-  .zr-kit b{font-weight:700;}
+  /* Числа — тяжёлые, с тёмной обводкой, как Burbank в игре. */
+  .zr-kit b{font-weight:700;-webkit-text-stroke:.6px rgba(0,0,0,.7);paint-order:stroke fill;}
   /* Щит и здоровье: иконка · прямая полоса со срезанным правым краем · число. */
   .zr-kit .zk-vitals{position:absolute;left:12px;bottom:10px;display:flex;flex-direction:column;align-items:flex-start;}
   .zr-kit .zk-bars{display:flex;flex-direction:column;gap:4px;width:250px;}
@@ -2755,12 +2756,14 @@
   .zr-kit .zk-hotbar{padding-bottom:12px;}
   .zr-kit .zk-slot.empty{border-style:dashed;opacity:.5;}
   .zr-kit .zk-slot.zk-pick em{color:#dfe8ff;}
-  .zr-kit .zk-slot.r-common{border-color:var(--common);}
-  .zr-kit .zk-slot.r-uncommon{border-color:var(--uncommon);background:linear-gradient(180deg,rgba(91,212,31,.35),rgba(16,20,40,.95));}
-  .zr-kit .zk-slot.r-rare{border-color:var(--rare);background:linear-gradient(180deg,rgba(18,167,255,.35),rgba(16,20,40,.95));}
-  .zr-kit .zk-slot.r-epic{border-color:var(--epic);background:linear-gradient(180deg,rgba(177,75,244,.35),rgba(16,20,40,.95));}
-  .zr-kit .zk-slot.r-legendary{border-color:var(--legendary);background:linear-gradient(180deg,rgba(255,140,26,.35),rgba(16,20,40,.95));}
-  .zr-kit .zk-slot.r-mythic{border-color:var(--mythic);background:linear-gradient(180deg,rgba(255,210,0,.35),rgba(16,20,40,.95));}
+  /* Ячейка в цвете редкости целиком, как в игре: ярко сверху, темнее к низу. */
+  .zr-kit .zk-slot.r-common{border-color:#d8dde6;background:linear-gradient(180deg,#8f97a3,#4d545e);}
+  .zr-kit .zk-slot.r-uncommon{border-color:#b9f58f;background:linear-gradient(180deg,#5bd41f,#237a12);}
+  .zr-kit .zk-slot.r-rare{border-color:#9fd8ff;background:linear-gradient(180deg,#12a7ff,#0b4f9c);}
+  .zr-kit .zk-slot.r-epic{border-color:#dcb3ff;background:linear-gradient(180deg,#b14bf4,#5a1f8f);}
+  .zr-kit .zk-slot.r-legendary{border-color:#ffd39a;background:linear-gradient(180deg,#ff8c1a,#9a4a05);}
+  .zr-kit .zk-slot.r-mythic{border-color:#fff0a0;background:linear-gradient(180deg,#ffd200,#a67f00);}
+  .zr-kit .zk-slot{border-width:1.5px;}
   .zr-kit .zk-dead{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) skewX(-8deg);
     font-size:22px;letter-spacing:.06em;text-transform:uppercase;color:#ffb3b3;
     text-shadow:0 0 12px rgba(255,77,77,.8),0 1px 2px #000;}
@@ -5159,7 +5162,7 @@
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
 <script src="zone-sim.js?v=3aa9e8c6"></script>
-<script src="zone-replay.js?v=94d105d4"></script>
+<script src="zone-replay.js?v=4bcc8689"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -51665,6 +51668,10 @@ function ccKitPanel(lobby, frame){
     const feed=map.querySelector('.zr-feed'); if(feed) feed.style.bottom='78px';
     // Счётчики шапки справа гасим: их место занимает столбик в раскладке игры.
     const head=map.querySelector('.zr-head'); if(head) head.classList.add('zr-head-quiet');
+    // Вид игры у самого проигрывателя: нейм-плейты без чёрной коробки, килфид
+    // строками, а не пилюлями. См. ZoneReplay.setPlain.
+    if(typeof ZoneReplay!=='undefined' && ZoneReplay.setPlain) ZoneReplay.setPlain(true);
+    if(feed) feed.classList.add('zr-feed-plain');
   }
   const T=L();
   if(!d.alive){ box.innerHTML='<div class="zk-dead"><b>'+esc(T.ccKitOut)+'</b></div>'; return; }
