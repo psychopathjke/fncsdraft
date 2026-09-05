@@ -48,6 +48,9 @@ const BOOT = `
     ccKitPanel(lobby, {zone:1, players:100, surgeAt:0, secondsLeft:125, dots:[dot(), dot({h:80, e:3}), dot()]});
     const top=[...map.querySelectorAll('.zk-top-row b')].map(b=>b.textContent);
     check('справа сверху — элимы, живые и время', top.join('|')==='3|100|2:05', top.join('|'));
+    // Компас сверху: курс из направления стрелки (a=0 — восток → курс 90).
+    check('компас показывает курс отряда', (map.querySelector('.zk-heading')||{}).textContent==='90' && map.querySelectorAll('.zk-compass .card').length>=1,
+          (map.querySelector('.zk-heading')||{}).textContent);
     const q=s=>map.querySelector(s);
     check('здоровье — из кадра', q('.zk-vitals') && q('.zk-vitals').dataset.hp==='80', (q('.zk-vitals')||{}).outerHTML);
     // 80 очков отряда — щит 60 и здоровье 100, как на HUD (верхняя половина — щит).

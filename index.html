@@ -2669,20 +2669,24 @@
   .zr-kit b{font-weight:700;-webkit-text-stroke:.6px rgba(0,0,0,.7);paint-order:stroke fill;}
   /* Щит и здоровье: иконка · прямая полоса со срезанным правым краем · число. */
   .zr-kit .zk-vitals{position:absolute;left:12px;bottom:10px;display:flex;flex-direction:column;align-items:flex-start;}
-  .zr-kit .zk-bars{display:flex;flex-direction:column;gap:4px;width:250px;}
-  .zr-kit .zk-row{display:flex;align-items:center;gap:6px;}
+  /* Полосы как в игре (его скрин 5.09, 1919×1079): скруглённые прямоугольники
+     на тёмной полупрозрачной подложке, щит тоньше сверху, здоровье толще, число
+     справа жирным белым; щит на нуле — серый ноль. */
+  .zr-kit .zk-bars{display:flex;flex-direction:column;gap:5px;width:300px;}
+  .zr-kit .zk-row{display:flex;align-items:center;gap:7px;}
   .zr-kit .zk-ico{width:13px;height:13px;flex:none;display:flex;align-items:center;justify-content:center;
-    font-style:normal;font-weight:900;font-size:14px;line-height:1;color:#dfe8ff;}
-  .zr-kit .zk-ico-shield{background:#a9c8ff;clip-path:polygon(50% 0,100% 18%,92% 62%,50% 100%,8% 62%,0 18%);}
-  .zr-kit .zk-ico-plus{color:#c9f7cf;}
-  .zr-kit .zk-bar{position:relative;flex:1;height:13px;background:rgba(14,18,34,.78);
-    clip-path:polygon(0 0,100% 0,calc(100% - 6px) 100%,0 100%);overflow:hidden;}
+    font-style:normal;font-weight:900;font-size:15px;line-height:1;color:#e8eefc;}
+  .zr-kit .zk-ico-shield{background:#cfe0ff;clip-path:polygon(50% 0,100% 18%,92% 62%,50% 100%,8% 62%,0 18%);}
+  .zr-kit .zk-ico-plus{color:#d9f9dc;}
+  .zr-kit .zk-bar{position:relative;flex:1;height:16px;border-radius:3px;background:rgba(10,12,22,.55);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);overflow:hidden;}
   .zr-kit .zk-shield{height:9px;}
-  .zr-kit .zk-bar i{display:block;height:100%;}
-  .zr-kit .zk-shield i{background:linear-gradient(90deg,#2f7dff,#6fb6ff);}
-  .zr-kit .zk-health i{background:linear-gradient(90deg,#43c95b,#a6f57f);}
-  .zr-kit .zk-row b{width:36px;text-align:left;font-size:15px;transform:skewX(-8deg);
+  .zr-kit .zk-bar i{display:block;height:100%;border-radius:2px;}
+  .zr-kit .zk-shield i{background:linear-gradient(180deg,#8cc4ff,#2f7dff);}
+  .zr-kit .zk-health i{background:linear-gradient(180deg,#b9f57a 0 35%,#5ed13f 35%);}
+  .zr-kit .zk-row b{width:40px;text-align:left;font-size:17px;transform:skewX(-6deg);
     font-variant-numeric:tabular-nums;}
+  .zr-kit .zk-row:first-child b,.zr-kit .zk-shield+b{font-size:13px;color:#b9c2d6;}
   /* Золотой шестиугольник справа от полосок — в игре уровень, у нас рейтинг. */
   .zr-kit .zk-pts{position:absolute;left:300px;bottom:2px;width:30px;height:30px;display:flex;
     align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#3a2600;
@@ -2745,16 +2749,33 @@
     clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);}
   .zr-kit .zk-builds span:first-child i{background:rgba(120,190,255,.95);}
   .zr-kit .zk-builds u{text-decoration:none;font-size:8px;color:#cfd8ea;font-weight:700;}
-  .zr-kit .zk-hotbar{display:flex;gap:4px;}
-  .zr-kit .zk-slot{position:relative;width:46px;height:40px;background:linear-gradient(180deg,rgba(40,48,80,.92),rgba(16,20,40,.96));
-    border:2px solid rgba(255,255,255,.28);border-radius:3px;
+  /* Хотбар как в игре: светлые полупрозрачные квадраты, ячейка с предметом
+     залита цветом редкости, подпись PICKAXE слева от первого слота. */
+  .zr-kit .zk-hotbar{display:flex;gap:5px;align-items:flex-end;}
+  .zr-kit .zk-slot{position:relative;width:48px;height:44px;background:rgba(190,200,220,.28);
+    border:1.5px solid rgba(255,255,255,.35);border-radius:3px;
     display:flex;align-items:center;justify-content:center;padding:2px 3px 8px;}
+  .zr-kit .zk-slot.zk-pick::before{content:attr(data-cap);position:absolute;right:calc(100% + 4px);top:50%;
+    transform:translateY(-50%);font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:#dfe8ff;
+    font-weight:700;white-space:nowrap;}
   .zr-kit .zk-slot em{font-style:normal;font-size:8px;line-height:1.1;font-weight:700;text-align:center;
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .zr-kit .zk-slot u{position:absolute;left:0;right:0;bottom:-13px;text-align:center;text-decoration:none;
     font-size:8px;color:#cfd8ea;font-weight:700;}
   .zr-kit .zk-hotbar{padding-bottom:12px;}
-  .zr-kit .zk-slot.empty{border-style:dashed;opacity:.5;}
+  .zr-kit .zk-slot.empty{opacity:.7;}
+  .zr-kit .zk-slot.zk-pick{background:rgba(230,236,250,.85);border-color:#fff;}
+  .zr-kit .zk-slot.zk-pick .zk-pickaxe{background:#4a5468;}
+  /* Компас сверху по центру: курс своего отряда, стороны света и градусы. */
+  .zr-kit .zk-compass{position:absolute;left:50%;top:6px;transform:translateX(-50%);width:300px;height:26px;
+    overflow:hidden;font-weight:700;color:#e8eefc;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 20%,#000 80%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 20%,#000 80%,transparent);}
+  .zr-kit .zk-compass span{position:absolute;top:8px;transform:translateX(-50%);font-size:9px;letter-spacing:.04em;}
+  .zr-kit .zk-compass span.card{font-size:12px;top:5px;}
+  .zr-kit .zk-compass .zk-heading{position:absolute;left:50%;top:0;transform:translateX(-50%);font-size:13px;
+    color:#fff;padding:0 6px;background:rgba(10,12,22,.55);border-radius:3px;line-height:16px;}
+  .zr-kit .zk-compass .zk-tick{position:absolute;top:0;width:1px;height:4px;background:rgba(255,255,255,.7);}
   .zr-kit .zk-slot.zk-pick em{color:#dfe8ff;}
   /* Ячейка в цвете редкости целиком, как в игре: ярко сверху, темнее к низу. */
   .zr-kit .zk-slot.r-common{border-color:#d8dde6;background:linear-gradient(180deg,#8f97a3,#4d545e);}
@@ -51706,7 +51727,7 @@ function ccKitPanel(lobby, frame){
   // всплывающей подсказке; без картинки — имя текстом.
   const art=o=>{ let h=''; try{ h=(typeof weaponIconHTML==='function' && weaponIconHTML(o))||''; }catch(e){ h=''; }
     return h ? '<span class="zk-art">'+h+'</span>' : '<em>'+esc(o.name)+'</em>'; };
-  const slots='<span class="zk-slot r-common zk-pick" title="'+esc(T.ccKitPickaxe)+'"><span class="zk-art zk-pickaxe"></span><u>1</u></span>'+
+  const slots='<span class="zk-slot zk-pick" data-cap="'+esc(T.ccKitPickaxe)+'" title="'+esc(T.ccKitPickaxe)+'"><span class="zk-art zk-pickaxe"></span><u>1</u></span>'+
     [0,1,2,3,4].map(k=>{
       const o=pack[k];
       const r=o && o.rarity ? ' r-'+ccRarityKey(o.rarity) : '';
@@ -51738,7 +51759,26 @@ function ccKitPanel(lobby, frame){
   const meKey=(typeof hKey==='function' && CAREER && CAREER.player) ? hKey(careerCard()||CAREER.player.nick) : '';
   const mates=(you.squad||[]).map(c=>c && c.handle).filter(h=>h && (!meKey || hKey(h)!==meKey)).slice(0, 2);
   const mateRows=mates.map(h=>'<div class="zk-mate"><b>'+esc(h)+'</b><i><span style="width:'+hp+'%"></span></i></div>').join('');
+  /* Компас сверху по центру, как в игре: курс отряда в градусах (0 — север) и
+     стороны света вокруг. Курс — из направления стрелки на кадре (d.a, градусы
+     математические, 0 — восток). */
+  const headDeg=((90-(Number(d.a)||0))%360+360)%360;
+  const compass=(()=>{
+    const W=300, span=120;  // видимый сектор ±60°
+    const px=deg=>W/2+((((deg-headDeg)+540)%360)-180)*(W/span);
+    const cards=[[0,'N'],[45,'NE'],[90,'E'],[135,'SE'],[180,'S'],[225,'SW'],[270,'W'],[315,'NW']];
+    let h='';
+    for(let g=0; g<360; g+=15){
+      const x=px(g); if(x<-10||x>W+10) continue;
+      const card=cards.find(c=>c[0]===g);
+      if(card) h+='<span class="card" style="left:'+x.toFixed(1)+'px">'+card[1]+'</span>';
+      else if(g%30===0) h+='<span style="left:'+x.toFixed(1)+'px">'+g+'</span>';
+      else h+='<i class="zk-tick" style="left:'+x.toFixed(1)+'px"></i>';
+    }
+    return '<div class="zk-compass">'+h+'<b class="zk-heading">'+Math.round(headDeg)+'</b></div>';
+  })();
   box.innerHTML=
+    compass+
     '<div class="zk-top">'+
       '<div class="zk-top-row"><b>'+(d.e||0)+'</b><i class="zk-ico-skull"></i></div>'+
       '<div class="zk-top-row"><b>'+(frame.players!=null?frame.players:frame.alive||0)+'</b><i class="zk-ico-man"></i></div>'+
