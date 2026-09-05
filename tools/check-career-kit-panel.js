@@ -31,6 +31,8 @@ const BOOT = `
   try{
     LANG='ru'; CC_L_CACHE={};
     const T=L();
+    // Карьеры проба не заводит; шестиугольнику рейтинга хватает карточки игрока.
+    CAREER={player:{nick:'Caller', ovr:88}, career:{}};
     const map=document.createElement('div'); document.body.appendChild(map);
     CC_RUN_MAP=map;
     const you={isYou:true, name:'ME', _mats:220, _loot:null};
@@ -58,14 +60,17 @@ const BOOT = `
     check('три стопки в сумме дают ресы', stacks.length===3 && stacks.reduce((a,b)=>a+b,0)===440, stacks.join('+'));
     check('лут до третьей зоны — пять пустых слотов', map.querySelectorAll('.zk-slot.empty').length===5 &&
           (q('.zk-hotbar').title||'')===T.ccKitLootNone, String(map.querySelectorAll('.zk-slot.empty').length));
-    check('сёрдж на первой зоне выключен', txt().indexOf(T.ccKitSurgeOff)>=0, txt());
+    // Пока сёрдж никого не бьёт — на экране про него ничего, как в игре.
+    check('сёрдж на первой зоне не показан', !map.querySelector('.zk-thresh') && !map.querySelector('.zk-banner'));
+    check('золотой шестиугольник — рейтинг карточки', (q('.zk-level')||{}).textContent===String(Math.round(CAREER.player.ovr)), (q('.zk-level')||{}).textContent);
+    check('хотбар: кирка и пять слотов с номерами', map.querySelectorAll('.zk-slot').length===6 && !!q('.zk-slot.zk-pick') &&
+          [...map.querySelectorAll('.zk-slot u')].map(u=>u.textContent).join('')==='123456');
 
     // ---- зона 3: ресы как есть, сёрдж активен, ты над порогом -----------------
     ccKitPanel(lobby, {zone:3, players:84, surgeAt:90, surgeLine:null, dots:[dot(), dot({h:64}), dot()]});
     out.notes.push('z3: '+txt());
     check('ресы на зоне остановки — как в модели', q('.zk-mats').dataset.total==='220', q('.zk-mats').dataset.total);
-    check('сёрдж ещё не бьёт — порог и живые', txt().indexOf(T.ccKitSurgeAt(90, 84))>=0, txt());
-    check('и без баннера, пока порог не пройден', !map.querySelector('.zk-banner') && !map.querySelector('.zk-thresh.on'));
+    check('сёрдж ещё не бьёт — ни баннера, ни числа', !map.querySelector('.zk-banner') && !map.querySelector('.zk-thresh'));
 
     // ---- сёрдж включился, ты над порогом: баннер и «269 над порогом урона» ----
     ccKitPanel(lobby, {zone:4, players:80, surgeAt:74, surgeLine:-30, dots:[dot(), dot({h:64, n:239}), dot()]});
@@ -83,7 +88,8 @@ const BOOT = `
     check('мало ресов — жёлтая пометка', !!map.querySelector('.zk-mats.low') && (q('.zk-mats').title||'').indexOf(T.ccKitLow)>=0, q('.zk-mats').title);
     check('под сёржем — красный баннер и сколько до порога', !!q('.zk-banner.on') && q('.zk-banner b').textContent===T.ccKitUnderBanner &&
           !!q('.zk-thresh.on') && q('.zk-thresh b').textContent==='40' && q('.zk-thresh span').textContent===T.ccKitBelowCap, txt());
-    check('слот носит редкость предмета', !!map.querySelector('.zk-slot.r-rare') || !!map.querySelector('.zk-slot.r-legendary') || map.querySelectorAll('.zk-slot:not(.empty)').length===5);
+    check('все шесть слотов заняты: кирка и пять предметов', map.querySelectorAll('.zk-slot:not(.empty)').length===6,
+          String(map.querySelectorAll('.zk-slot:not(.empty)').length));
 
     // ---- выбыли ----------------------------------------------------------------
     ccKitPanel(lobby, {zone:6, players:50, surgeAt:50, dots:[dot(), dot({alive:false, h:0, p:23}), dot()]});
