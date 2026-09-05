@@ -2683,7 +2683,7 @@
   .zr-kit .zk-row b{width:36px;text-align:left;font-size:15px;transform:skewX(-8deg);
     font-variant-numeric:tabular-nums;}
   /* Золотой шестиугольник справа от полосок — в игре уровень, у нас рейтинг. */
-  .zr-kit .zk-level{position:absolute;left:300px;bottom:2px;width:30px;height:30px;display:flex;
+  .zr-kit .zk-pts{position:absolute;left:300px;bottom:2px;width:30px;height:30px;display:flex;
     align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#3a2600;
     background:linear-gradient(180deg,#ffd75e,#d89b12);
     clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);text-shadow:none;}
@@ -2725,16 +2725,18 @@
   .zr-kit .zk-ico-clock::after{content:'';position:absolute;left:4px;top:1px;width:2px;height:5px;background:#e6ecf7;}
   /* Ресы, ряд построек и хотбар справа внизу. */
   .zr-kit .zk-right{position:absolute;right:12px;bottom:10px;display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
-  .zr-kit .zk-mats{display:flex;gap:12px;}
-  .zr-kit .zk-mats span{display:inline-flex;align-items:center;gap:4px;}
-  .zr-kit .zk-mats b{font-size:14px;transform:skewX(-8deg);font-variant-numeric:tabular-nums;}
-  .zr-kit .zk-mats i{display:block;width:14px;height:14px;border-radius:2px;}
-  .zr-kit .m-wood i{background:linear-gradient(180deg,#d59a5c 0 30%,#b57a44 30% 60%,#d59a5c 60%);}
-  .zr-kit .m-brick i{background:
-    linear-gradient(90deg,transparent 46%,#7e3b30 46% 54%,transparent 54%) 0 0/100% 50%,
-    linear-gradient(90deg,#7e3b30 0 8%,transparent 8% 92%,#7e3b30 92%) 0 50%/100% 50%,#c46a55;background-repeat:no-repeat;}
-  .zr-kit .m-metal i{background:linear-gradient(135deg,#c7d1dc,#8a97a8);}
+  /* Ресы как в игре: иконка материала, число под ней, три столбика в ряд. */
+  .zr-kit .zk-mats{display:flex;gap:14px;margin-right:2px;}
+  .zr-kit .zk-mats span{display:flex;flex-direction:column;align-items:center;gap:1px;}
+  .zr-kit .zk-mats svg{width:22px;height:22px;display:block;filter:drop-shadow(0 1px 1px rgba(0,0,0,.8));}
+  .zr-kit .zk-mats b{font-size:13px;transform:skewX(-8deg);font-variant-numeric:tabular-nums;}
   .zr-kit .zk-mats.low b{color:#ffd54a;}
+  /* Картинка предмета в слоте — те же арты, что в лоадауте драфта. */
+  .zr-kit .zk-art{display:flex;align-items:center;justify-content:center;width:38px;height:26px;color:#fff;}
+  .zr-kit .zk-art img{max-width:100%;max-height:100%;object-fit:contain;display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.8));}
+  .zr-kit .zk-art svg{width:24px;height:24px;}
+  .zr-kit .zk-pickaxe{width:20px;height:22px;background:#dfe8ff;
+    clip-path:polygon(40% 0,60% 0,60% 20%,100% 30%,100% 40%,60% 34%,60% 100%,40% 100%,40% 34%,0 40%,0 30%,40% 20%);}
   /* Ряд построек Q F V T: четыре ромба, как на HUD (стена, пол, лестница, конус). */
   .zr-kit .zk-builds{display:flex;gap:10px;margin-right:4px;}
   .zr-kit .zk-builds span{display:flex;flex-direction:column;align-items:center;gap:2px;}
@@ -2762,7 +2764,7 @@
   .zr-kit .zk-dead{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) skewX(-8deg);
     font-size:22px;letter-spacing:.06em;text-transform:uppercase;color:#ffb3b3;
     text-shadow:0 0 12px rgba(255,77,77,.8),0 1px 2px #000;}
-  @media(max-width:760px){.zr-kit .zk-hotbar,.zr-kit .zk-builds,.zr-kit .zk-level{display:none;} .zr-kit .zk-bars{width:150px;}
+  @media(max-width:760px){.zr-kit .zk-hotbar,.zr-kit .zk-builds,.zr-kit .zk-pts{display:none;} .zr-kit .zk-bars{width:150px;}
     .zr-kit .zk-banner b{font-size:13px;} .zr-kit .zk-thresh b{font-size:18px;}}
 
   #screen-career-hub .tv-last{margin-top:12px;}
@@ -46388,8 +46390,6 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   function onZoneFrame(lobby, frame){
     let alive=0;
     for(const d of frame.dots) if(d.alive) alive++;
-    // Строка набора под шапкой карты: здоровье, ресы, лут, сёрдж. См. ccKitPanel.
-    try{ ccKitPanel(lobby, frame); }catch(e){}
     const next=new Map();
     frame.dots.forEach((d,i)=>{
       const t=lobby[i];
@@ -46402,6 +46402,14 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       next.set(t._uid, {pts: pointsFn(d.p || alive) + ccKillPts(elims, killMult), elims});
     });
     liveScore=next;
+    /* HUD набора на карте — после того как посчитан живой счёт: золотой
+       шестиугольник у полосок показывает очки сессии (этап плюс текущая игра),
+       как «поинты» на турнирном HUD. См. ccKitPanel. */
+    try{
+      const meT=lobby.find(t=>t && t.isYou);
+      CC_KIT_PTS=meT ? Math.round(livePts(meT)) : null;
+      ccKitPanel(lobby, frame);
+    }catch(e){}
 
     // Numbers first: writing text into rows that are already on screen moves
     // nothing, so a kill can show the instant it lands.
@@ -51629,6 +51637,20 @@ function ccKitInit(teams){
    к тому, что осталось после остановки, прибавляется по кругу за каждую ещё
    не показанную зону. CC_KIT_ZONE — зона последней остановки. */
 let CC_KIT_ZONE=0;
+// Очки сессии своей команды на текущем кадре — пишет onZoneFrame из живого счёта.
+let CC_KIT_PTS=null;
+// Редкость предмета — к ключу цвета: пулы пишут её и словом Epic'а, и цветом.
+function ccRarityKey(r){
+  const s=String(r||'').toLowerCase();
+  return ({purple:'epic', blue:'rare', green:'uncommon', grey:'common', gray:'common',
+           orange:'legendary', gold:'mythic'})[s] || s.replace(/[^a-z]/g,'');
+}
+// Иконки ресов — как в игре: брёвна, кирпичи, слиток.
+const CC_KIT_ICON={
+  wood:'<svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="6" rx="3" fill="#c8894a"/><rect x="2" y="13" width="20" height="6" rx="3" fill="#a86a33"/><circle cx="5" cy="8" r="2" fill="#e9b77d"/><circle cx="19" cy="16" r="2" fill="#e9b77d"/></svg>',
+  brick:'<svg viewBox="0 0 24 24"><rect x="2" y="4" width="9" height="5" fill="#c5624d"/><rect x="13" y="4" width="9" height="5" fill="#c5624d"/><rect x="2" y="10" width="20" height="5" fill="#b3523e"/><rect x="2" y="16" width="9" height="5" fill="#c5624d"/><rect x="13" y="16" width="9" height="5" fill="#c5624d"/></svg>',
+  metal:'<svg viewBox="0 0 24 24"><path d="M4 8h16l2 8H2z" fill="#b7c3d1"/><path d="M4 8h16l-1-3H5z" fill="#e2e9f1"/><path d="M2 16h20v3H2z" fill="#8a97a8"/></svg>'
+};
 function ccKitPanel(lobby, frame){
   const map=CC_RUN_MAP;
   if(!map || !map.isConnected || !frame) return;
@@ -51673,11 +51695,15 @@ function ccKitPanel(lobby, frame){
   /* Хотбар как в игре: первый слот — кирка, дальше пять предметов, номер слота
      под ячейкой; слот носит цвет редкости предмета, пустой — пунктиром. Над
      хотбаром ряд построек Q F V T — четыре ромба, как на HUD. */
-  const slots='<span class="zk-slot r-common zk-pick"><em>'+esc(T.ccKitPickaxe)+'</em><u>1</u></span>'+
+  // В слоте — картинка предмета (те же арты, что в лоадауте драфта), имя во
+  // всплывающей подсказке; без картинки — имя текстом.
+  const art=o=>{ let h=''; try{ h=(typeof weaponIconHTML==='function' && weaponIconHTML(o))||''; }catch(e){ h=''; }
+    return h ? '<span class="zk-art">'+h+'</span>' : '<em>'+esc(o.name)+'</em>'; };
+  const slots='<span class="zk-slot r-common zk-pick" title="'+esc(T.ccKitPickaxe)+'"><span class="zk-art zk-pickaxe"></span><u>1</u></span>'+
     [0,1,2,3,4].map(k=>{
       const o=pack[k];
-      const r=o && o.rarity ? ' r-'+String(o.rarity).replace(/[^a-z]/gi,'') : '';
-      return '<span class="zk-slot'+(o?r:' empty')+'">'+(o?'<em>'+esc(o.name)+'</em>':'')+'<u>'+(k+2)+'</u></span>';
+      const r=o && o.rarity ? ' r-'+ccRarityKey(o.rarity) : '';
+      return '<span class="zk-slot'+(o?r:' empty')+'"'+(o?' title="'+esc(o.name)+'"':'')+'>'+(o?art(o):'')+'<u>'+(k+2)+'</u></span>';
     }).join('');
   const builds='<div class="zk-builds">'+['Q','F','V','T'].map(k=>'<span><i></i><u>'+k+'</u></span>').join('')+'</div>';
   /* Сёрдж — как на HUD самой игры (его скрин 5.09): баннер «STORM SURGE
@@ -51693,8 +51719,9 @@ function ccKitPanel(lobby, frame){
     ? '<div class="zk-banner'+(d.u?' on':'')+'">'+tri+'<b>'+esc(d.u ? T.ccKitUnderBanner : T.ccKitSurgeBanner)+'</b></div>'+
       '<div class="zk-thresh'+(d.u?' on':' ok')+'">'+tri+'<div><b>'+Math.abs(Math.round(gap))+'</b><span>'+esc(d.u ? T.ccKitBelowCap : T.ccKitAboveCap)+'</span></div></div>'
     : '';
-  // Золотой шестиугольник у полосок — в игре там уровень; у нас — рейтинг карточки.
-  const level=(CAREER && CAREER.player && CAREER.player.ovr) ? Math.round(CAREER.player.ovr) : '';
+  // Золотой шестиугольник у полосок — очки сессии («поинты» турнирного HUD):
+  // этап плюс текущая игра, из живого счёта таблицы (CC_KIT_PTS), иначе этап.
+  const level=CC_KIT_PTS!=null ? CC_KIT_PTS : Math.round(you.stagePts||0);
   /* Верхний правый столбик игры: элиминации, живые игроки, время фазы. Своя
      шапка проигрывателя («ЗОНА N · время» слева) остаётся, её правые счётчики
      гаснут (.zr-head-quiet). Напарники — строкой над полосками, как в игре
@@ -51716,12 +51743,14 @@ function ccKitPanel(lobby, frame){
         '<div class="zk-row"><i class="zk-ico zk-ico-shield"></i><div class="zk-bar zk-shield"><i style="width:'+shield+'%"></i></div><b>'+shield+'</b></div>'+
         '<div class="zk-row"><i class="zk-ico zk-ico-plus">+</i><div class="zk-bar zk-health"><i style="width:'+health+'%"></i></div><b>'+health+'</b></div>'+
       '</div>'+
-      (level!=='' ? '<span class="zk-level">'+level+'</span>' : '')+
+      '<span class="zk-pts">'+level+'</span>'+
     '</div>'+
     surge+
     '<div class="zk-right">'+
       '<div class="zk-mats'+(low?' low':'')+'" data-total="'+mats+'" title="'+esc(T.ccKitMats(mats))+(low?' · '+esc(T.ccKitLow):'')+'">'+
-        '<span class="m-wood"><i></i><b>'+st[0]+'</b></span><span class="m-brick"><i></i><b>'+st[1]+'</b></span><span class="m-metal"><i></i><b>'+st[2]+'</b></span>'+
+        '<span class="m-wood">'+CC_KIT_ICON.wood+'<b>'+st[0]+'</b></span>'+
+        '<span class="m-brick">'+CC_KIT_ICON.brick+'<b>'+st[1]+'</b></span>'+
+        '<span class="m-metal">'+CC_KIT_ICON.metal+'<b>'+st[2]+'</b></span>'+
       '</div>'+
       builds+
       '<div class="zk-hotbar"'+(pack.length?'':' title="'+esc(T.ccKitLootNone)+'"')+'>'+slots+'</div>'+

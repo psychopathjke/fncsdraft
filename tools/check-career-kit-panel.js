@@ -62,7 +62,13 @@ const BOOT = `
           (q('.zk-hotbar').title||'')===T.ccKitLootNone, String(map.querySelectorAll('.zk-slot.empty').length));
     // Пока сёрдж никого не бьёт — на экране про него ничего, как в игре.
     check('сёрдж на первой зоне не показан', !map.querySelector('.zk-thresh') && !map.querySelector('.zk-banner'));
-    check('золотой шестиугольник — рейтинг карточки', (q('.zk-level')||{}).textContent===String(Math.round(CAREER.player.ovr)), (q('.zk-level')||{}).textContent);
+    // Золотой шестиугольник — очки сессии из живого счёта таблицы.
+    CC_KIT_PTS=8;
+    ccKitPanel(lobby, {zone:1, players:100, surgeAt:0, secondsLeft:125, dots:[dot(), dot({h:80, e:3}), dot()]});
+    check('золотой шестиугольник — очки сессии', (q('.zk-pts')||{}).textContent==='8', (q('.zk-pts')||{}).textContent);
+    CC_KIT_PTS=null; you.stagePts=41;
+    ccKitPanel(lobby, {zone:1, players:100, surgeAt:0, secondsLeft:125, dots:[dot(), dot({h:80, e:3}), dot()]});
+    check('без живого счёта — очки этапа', (q('.zk-pts')||{}).textContent==='41', (q('.zk-pts')||{}).textContent);
     check('хотбар: кирка и пять слотов с номерами', map.querySelectorAll('.zk-slot').length===6 && !!q('.zk-slot.zk-pick') &&
           [...map.querySelectorAll('.zk-slot u')].map(u=>u.textContent).join('')==='123456');
 
@@ -84,7 +90,9 @@ const BOOT = `
     you._mats=100; CC_KIT_ZONE=5;
     ccKitPanel(lobby, {zone:5, players:70, surgeAt:60, surgeLine:-80, dots:[dot(), dot({h:41, u:1, n:-120}), dot()]});
     out.notes.push('z5: '+txt());
-    check('лут — пять слотов с именами', /Pump.*AR.*Minis.*Medkit.*Sliders/.test(txt()) && map.querySelectorAll('.zk-slot.empty').length===0, txt());
+    const titles=[...map.querySelectorAll('.zk-slot[title]')].map(s=>s.title).join('|');
+    check('лут — пять слотов с предметами (имя в подсказке)', /Pump\|AR\|Minis\|Medkit\|Sliders/.test(titles) && map.querySelectorAll('.zk-slot.empty').length===0, titles);
+    check('редкость цветом — и когда пул зовёт её цветом', (()=>{ const o={name:'Slurpfish', rarity:'purple'}; return ccRarityKey(o.rarity)==='epic' && ccRarityKey('rare')==='rare'; })());
     check('мало ресов — жёлтая пометка', !!map.querySelector('.zk-mats.low') && (q('.zk-mats').title||'').indexOf(T.ccKitLow)>=0, q('.zk-mats').title);
     check('под сёржем — красный баннер и сколько до порога', !!q('.zk-banner.on') && q('.zk-banner b').textContent===T.ccKitUnderBanner &&
           !!q('.zk-thresh.on') && q('.zk-thresh b').textContent==='40' && q('.zk-thresh span').textContent===T.ccKitBelowCap, txt());
