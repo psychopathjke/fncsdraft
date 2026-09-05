@@ -55596,7 +55596,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='3cd1aba8';
+const CC_BUILD='4f89b60f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -87412,6 +87412,20 @@ function careerHallHTML(){
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();
+})();
+</script>
+<!-- ВТОРОЙ ЗАХОД ОТКРЫВАЕТСЯ ДАЖЕ БЕЗ СЕТИ. Почему это понадобилось и по каким
+     правилам кэшируется — в самом sw.js. Регистрация стоит здесь, в оболочке,
+     а не в приложении: она должна случиться, даже если app.js в этот раз так и
+     не доедет. Только https: с file:// воркеры не ставятся вовсе, поэтому все
+     триста харнессов, которые открывают копию страницы файлом, этого кода
+     просто не замечают. -->
+<script>
+(function(){
+  if(!('serviceWorker' in navigator) || location.protocol!=='https:') return;
+  addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
 })();
 </script>
 </body>

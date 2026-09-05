@@ -33,7 +33,7 @@ if (fs.existsSync(OUT) && fs.readdirSync(OUT).length)
    рантайме ('photos/'+handle), выборочно класть нельзя. Чего тут нет — tools/,
    docs/, .git, README, shot-*.png, replay-preview.html: 270 харнессов и проб
    съедают лимит Cloudflare в 1000 файлов на drag&drop, а сайту не нужны. */
-const FILES = ['index.html', '404.html', 'maps.js', 'zone-sim.js', 'zone-replay.js', 'mp.js',
+const FILES = ['index.html', '404.html', 'maps.js', 'zone-sim.js', 'zone-replay.js', 'mp.js', 'sw.js',
   'logo.png', 'og-image.png', 'robots.txt', 'sitemap.xml', '_headers',
   'favicon.ico', 'favicon-48.png', 'favicon-96.png', 'favicon-192.png'];
 const DIRS = ['art', 'items', 'logos', 'photos', 'devices', 'fonts'];
@@ -148,6 +148,34 @@ function prefillI18n(dir) {
   return filled;
 }
 const prefilled = prefillI18n(OUT);
+
+/* ---- ВОРКЕРУ — ВЕРСИЯ И СПИСОК ТОГО, ЧТО КЛАСТЬ СРАЗУ -------------------
+ *
+ * sw.js в репозитории лежит с метками вместо версии: там ей взяться неоткуда,
+ * а хеши скриптов известны только здесь. Версия — хеш app.js, поэтому у новой
+ * сборки другие имена кэшей и старые чистятся сами (см. activate).
+ *
+ * В список кладётся то, без чего страница не откроется: сама оболочка, четыре
+ * скрипта и шрифты. Фото и арт сюда НЕ попадают — их двадцать пять мегабайт,
+ * и качать их наперёд ради второго захода незачем: они лягут в кэш по дороге,
+ * когда понадобятся. */
+(function stampSw() {
+  const swPath = path.join(OUT, 'sw.js');
+  if (!fs.existsSync(swPath)) return;
+  const shell = fs.readFileSync(path.join(OUT, 'index.html'), 'utf8');
+  const scripts = [];
+  const re = /<script[^>]*src="([^"]+\.js\?v=[0-9a-f]+)"/g;
+  let m;
+  while ((m = re.exec(shell))) scripts.push('./' + m[1]);
+  const fonts = fs.existsSync(path.join(OUT, 'fonts'))
+    ? fs.readdirSync(path.join(OUT, 'fonts')).map(f => './fonts/' + f) : [];
+  const core = ['./'].concat(scripts, fonts);
+  const sw = fs.readFileSync(swPath, 'utf8')
+    .replace("'__VERSION__'", JSON.stringify(hash))
+    .replace('__CORE__', JSON.stringify(core));
+  fs.writeFileSync(swPath, sw, 'utf8');
+  console.log('воркер: версия ' + hash + ', в список положено ' + core.length + ' адресов');
+})();
 
 const count = (function walk(d) {
   return fs.readdirSync(d, { withFileTypes: true })
