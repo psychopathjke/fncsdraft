@@ -2656,49 +2656,83 @@
     .cc-tvs-tile:nth-child(4n){border-right:1px solid #26262c;}
     .cc-tvs-tile:nth-child(2n){border-right:none;}}
   /* Строка набора на карте: здоровье, ресы, лут, сёрдж — под шапкой ЗОНА/время. */
-  /* Строка набора — по HUD Fortnite (его скрин 5.09): щит и здоровье слева,
-     сёрдж в центре, ресы и хотбар справа, вдоль нижнего края карты. */
-  .zr-kit{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:flex-end;
-    justify-content:space-between;gap:8px;padding:6px 7px;pointer-events:none;
-    font-size:10px;font-weight:800;letter-spacing:.02em;color:#eef2fb;text-shadow:0 1px 2px #000;
-    background:linear-gradient(0deg,rgba(0,0,0,.55),rgba(0,0,0,0));}
-  .zr-kit .zk-vitals{display:flex;flex-direction:column;gap:3px;width:150px;flex:0 0 auto;}
-  .zr-kit .zk-bar{position:relative;height:11px;border-radius:2px;background:rgba(0,0,0,.6);
-    border:1px solid rgba(255,255,255,.18);overflow:hidden;}
+  /* HUD НАБОРА — в стиле Fortnite, по его скрину 5.09 («измени дизайн, чтоб в
+     фортнайт стиле выглядело, и сёрдж сделай как на референсе»). Контейнер
+     лежит на всю карту и ничего не ловит; внутри четыре угла: щит и здоровье
+     слева внизу, ресы и хотбар справа внизу, баннер сёржа сверху по центру,
+     число над порогом — справа по середине. Шрифт — Oswald со скосом, как у
+     заголовков сайта (Burbank у нас нет). */
+  .zr-kit{position:absolute;inset:0;pointer-events:none;
+    font-family:'Oswald','Arial Narrow',Impact,sans-serif;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.9);}
+  .zr-kit b{font-weight:700;}
+  /* Щит и здоровье: строка = иконка · скошенная полоса · число. */
+  .zr-kit .zk-vitals{position:absolute;left:10px;bottom:9px;display:flex;flex-direction:column;gap:4px;width:220px;}
+  .zr-kit .zk-row{display:flex;align-items:center;gap:6px;}
+  .zr-kit .zk-ico{width:14px;height:14px;flex:none;display:flex;align-items:center;justify-content:center;
+    font-style:normal;font-weight:900;font-size:13px;line-height:1;color:#dfe8ff;}
+  .zr-kit .zk-ico-shield{background:#9fc4ff;clip-path:polygon(50% 0,100% 18%,92% 62%,50% 100%,8% 62%,0 18%);}
+  .zr-kit .zk-ico-plus{color:#b9f5c0;}
+  .zr-kit .zk-bar{position:relative;flex:1;height:12px;background:rgba(10,14,30,.72);
+    transform:skewX(-14deg);border:1px solid rgba(255,255,255,.22);overflow:hidden;}
+  .zr-kit .zk-shield{height:8px;}
   .zr-kit .zk-bar i{display:block;height:100%;}
-  .zr-kit .zk-shield i{background:linear-gradient(90deg,#3b8bff,#5fb0ff);}
-  .zr-kit .zk-health i{background:linear-gradient(90deg,#4fd36a,#8ff08a);}
-  .zr-kit .zk-bar b{position:absolute;right:4px;top:-1px;font-size:10px;font-variant-numeric:tabular-nums;}
-  .zr-kit .zk-surge{display:flex;align-items:center;gap:6px;padding:3px 9px;border-radius:4px;
-    background:rgba(0,0,0,.6);min-width:0;flex:0 1 auto;text-align:left;}
-  .zr-kit .zk-surge b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;}
-  .zr-kit .zk-surge span{display:block;font-size:10px;font-weight:700;opacity:.9;}
-  .zr-kit .zk-bolt{width:14px;height:14px;flex:none;border-radius:3px;background:#9147ff;
-    clip-path:polygon(55% 0,20% 58%,48% 58%,40% 100%,80% 42%,52% 42%,62% 0);}
-  .zr-kit .zk-surge.ok{color:#e9dcff;}
-  .zr-kit .zk-surge.ok b{color:#c9a6ff;}
-  .zr-kit .zk-surge.on{background:rgba(120,40,200,.85);color:#fff;}
-  .zr-kit .zk-surge.on .zk-bolt{background:#fff;}
-  .zr-kit .zk-surge.armed{color:#cfd8ea;font-weight:600;}
-  .zr-kit .zk-surge.armed .zk-bolt,.zr-kit .zk-surge.off .zk-bolt{background:#6b7590;}
-  .zr-kit .zk-surge.off{color:#9aa4b8;font-weight:600;}
-  .zr-kit .zk-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 0 auto;}
-  .zr-kit .zk-mats{display:flex;gap:8px;font-variant-numeric:tabular-nums;font-size:11px;}
+  .zr-kit .zk-shield i{background:linear-gradient(90deg,#2f7dff,#6fb6ff);}
+  .zr-kit .zk-health i{background:linear-gradient(90deg,#43c95b,#a6f57f);}
+  .zr-kit .zk-row b{width:34px;text-align:left;font-size:15px;transform:skewX(-8deg);
+    font-variant-numeric:tabular-nums;}
+  /* Баннер сёржа: треугольник с молнией и надпись, сверху по центру. */
+  .zr-kit .zk-tri{position:relative;display:block;width:22px;height:20px;flex:none;
+    background:#a35cff;clip-path:polygon(50% 0,100% 100%,0 100%);}
+  .zr-kit .zk-tri::after{content:'';position:absolute;left:8px;top:6px;width:6px;height:11px;background:#fff;
+    clip-path:polygon(60% 0,0 55%,45% 55%,30% 100%,100% 40%,55% 40%,70% 0);}
+  .zr-kit .zk-banner{position:absolute;left:50%;top:34px;transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .zr-kit .zk-banner .zk-tri{width:34px;height:30px;}
+  .zr-kit .zk-banner .zk-tri::after{left:13px;top:9px;width:9px;height:17px;}
+  .zr-kit .zk-banner b{font-size:17px;letter-spacing:.04em;text-transform:uppercase;transform:skewX(-8deg);
+    color:#f1e7ff;text-shadow:0 0 10px rgba(163,92,255,.9),0 1px 2px #000;}
+  .zr-kit .zk-banner.on .zk-tri{background:#ff4d4d;}
+  .zr-kit .zk-banner.on b{color:#ffe1e1;text-shadow:0 0 10px rgba(255,77,77,.9),0 1px 2px #000;}
+  /* Число над порогом — справа по середине: треугольник, крупное число, подпись. */
+  .zr-kit .zk-thresh{position:absolute;right:10px;top:38%;display:flex;align-items:center;gap:8px;text-align:right;}
+  .zr-kit .zk-thresh>div{display:flex;flex-direction:column;align-items:flex-end;}
+  .zr-kit .zk-thresh b{font-size:24px;line-height:1;transform:skewX(-8deg);font-variant-numeric:tabular-nums;}
+  .zr-kit .zk-thresh span{font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#dfe8ff;}
+  .zr-kit .zk-thresh.on b,.zr-kit .zk-thresh.on span{color:#ffb3b3;}
+  .zr-kit .zk-thresh.on .zk-tri{background:#ff4d4d;}
+  .zr-kit .zk-thresh.armed span,.zr-kit .zk-thresh.off span{text-transform:none;letter-spacing:0;color:#b9c2d6;font-weight:600;}
+  .zr-kit .zk-thresh.armed .zk-tri{background:#6b7590;}
+  /* Ресы и хотбар справа внизу. */
+  .zr-kit .zk-right{position:absolute;right:10px;bottom:9px;display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+  .zr-kit .zk-mats{display:flex;gap:10px;}
   .zr-kit .zk-mats span{display:inline-flex;align-items:center;gap:4px;}
-  .zr-kit .zk-mats i{display:block;width:10px;height:10px;border-radius:2px;}
-  .zr-kit .m-wood i{background:#c58a4a;}
-  .zr-kit .m-brick i{background:#b8574a;}
-  .zr-kit .m-metal i{background:#9aa6b4;}
-  .zr-kit .zk-mats.low{color:#ffd54a;}
+  .zr-kit .zk-mats b{font-size:15px;transform:skewX(-8deg);font-variant-numeric:tabular-nums;}
+  .zr-kit .zk-mats i{display:block;width:15px;height:15px;border-radius:2px;}
+  .zr-kit .m-wood i{background:linear-gradient(180deg,#d59a5c 0 30%,#b57a44 30% 60%,#d59a5c 60%);}
+  .zr-kit .m-brick i{background:
+    linear-gradient(90deg,transparent 46%,#7e3b30 46% 54%,transparent 54%) 0 0/100% 50%,
+    linear-gradient(90deg,#7e3b30 0 8%,transparent 8% 92%,#7e3b30 92%) 0 50%/100% 50%,#c46a55;background-repeat:no-repeat;}
+  .zr-kit .m-metal i{background:linear-gradient(135deg,#c7d1dc,#8a97a8);}
+  .zr-kit .zk-mats.low b{color:#ffd54a;}
   .zr-kit .zk-hotbar{display:flex;gap:3px;}
-  .zr-kit .zk-slot{position:relative;width:54px;height:30px;border-radius:3px;background:rgba(0,0,0,.62);
-    border:1px solid rgba(255,255,255,.2);font-size:8.5px;font-weight:700;line-height:1.1;
-    display:flex;align-items:flex-end;padding:2px 3px;overflow:hidden;color:#eef2fb;}
-  .zr-kit .zk-slot.empty{border-style:dashed;opacity:.55;}
-  .zr-kit .zk-slot i{position:absolute;left:3px;top:1px;font-style:normal;font-size:8px;opacity:.7;}
-  .zr-kit .zk-dead{color:#ff9b9b;background:rgba(0,0,0,.6);border-radius:4px;padding:3px 9px;}
-  @media(max-width:760px){.zr-kit .zk-hotbar{display:none;} .zr-kit .zk-vitals{width:110px;}
-    .zr-kit .zk-surge b{font-size:10px;}}
+  .zr-kit .zk-slot{position:relative;width:52px;height:40px;background:linear-gradient(180deg,rgba(40,48,80,.9),rgba(16,20,40,.95));
+    border:2px solid rgba(255,255,255,.28);border-radius:3px;overflow:hidden;
+    display:flex;align-items:flex-end;padding:3px 3px;}
+  .zr-kit .zk-slot em{font-style:normal;font-size:8.5px;line-height:1.1;font-weight:700;letter-spacing:.01em;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .zr-kit .zk-slot i{position:absolute;left:3px;top:1px;font-style:normal;font-size:8px;opacity:.75;}
+  .zr-kit .zk-slot.empty{border-style:dashed;opacity:.5;}
+  .zr-kit .zk-slot.r-common{border-color:var(--common);}
+  .zr-kit .zk-slot.r-uncommon{border-color:var(--uncommon);background:linear-gradient(180deg,rgba(91,212,31,.35),rgba(16,20,40,.95));}
+  .zr-kit .zk-slot.r-rare{border-color:var(--rare);background:linear-gradient(180deg,rgba(18,167,255,.35),rgba(16,20,40,.95));}
+  .zr-kit .zk-slot.r-epic{border-color:var(--epic);background:linear-gradient(180deg,rgba(177,75,244,.35),rgba(16,20,40,.95));}
+  .zr-kit .zk-slot.r-legendary{border-color:var(--legendary);background:linear-gradient(180deg,rgba(255,140,26,.35),rgba(16,20,40,.95));}
+  .zr-kit .zk-slot.r-mythic{border-color:var(--mythic);background:linear-gradient(180deg,rgba(255,210,0,.35),rgba(16,20,40,.95));}
+  .zr-kit .zk-dead{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) skewX(-8deg);
+    font-size:22px;letter-spacing:.06em;text-transform:uppercase;color:#ffb3b3;
+    text-shadow:0 0 12px rgba(255,77,77,.8),0 1px 2px #000;}
+  @media(max-width:760px){.zr-kit .zk-hotbar{display:none;} .zr-kit .zk-vitals{width:140px;}
+    .zr-kit .zk-banner b{font-size:13px;} .zr-kit .zk-thresh b{font-size:18px;}}
 
   #screen-career-hub .tv-last{margin-top:12px;}
   #screen-career-hub .tv-last .ch-hint{color:#adadb8;}
@@ -6994,8 +7028,9 @@ ccKitLine:(m,low,loot)=>'Ресы '+m+(low?' · '+low:'')+(loot?' · '+loot:''),
 // Панель набора на карте — его правка 5.09: «добавить на симуляцию ресурсы, лут и сёрдж».
 ccKitMats:m=>'Ресы '+m, ccKitLootNone:'лут: свой пак', ccKitOut:'выбыли',
 ccKitSurgeOff:'сёрдж выключен', ccKitSurgeAt:(a,p)=>'сёрдж с '+a+' игроков · в игре '+p,
-ccKitSurgeAbove:n=>'СЁРДЖ АКТИВЕН · +'+n+' над порогом урона',
-ccKitSurgeUnder:n=>'ПОД СЁРЖЕМ · −'+n+' до порога урона',
+// Баннер и подпись под числом — как на HUD игры («STORM SURGE ACTIVE!» и «269 ABOVE DAMAGE THRESHOLD»).
+ccKitSurgeBanner:'СЁРДЖ АКТИВЕН!', ccKitUnderBanner:'ТЫ ПОД СЁРЖЕМ!',
+ccKitAboveCap:'над порогом урона', ccKitBelowCap:'до порога урона',
 ccMatsTitle:'Ресы кончаются', ccMatsGo:'Идти за рефрешем', ccMatsStay:'Ротейтить тем, что есть',
 ccMatsGoNote:(v,f,p)=>p+'%: нашёл — +'+v+' и полные ресы, нет — минус '+f,
 ccMatsStayNote:v=>'Ничего не тратишь, но в концовке без ресов минус '+v,
@@ -8886,8 +8921,8 @@ ccLateRefreshWon:v=>'Refresh found, +'+v+' power and full mats', ccLateRefreshLo
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'low',
 ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: own pack', ccKitOut:'eliminated',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge from '+a+' players · alive '+p,
-ccKitSurgeAbove:n=>'STORM SURGE ACTIVE · '+n+' above damage threshold',
-ccKitSurgeUnder:n=>'UNDER SURGE · '+n+' below damage threshold',
+ccKitSurgeBanner:'STORM SURGE ACTIVE!', ccKitUnderBanner:'YOU ARE UNDER SURGE!',
+ccKitAboveCap:'above damage threshold', ccKitBelowCap:'below damage threshold',
 ccMatsTitle:'Running out of mats', ccMatsGo:'Go for a refresh', ccMatsStay:'Rotate with what you have',
 ccMatsGoNote:(v,f,p)=>p+'%: found it — +'+v+' and full mats, did not — minus '+f,
 ccMatsStayNote:v=>'Costs nothing now, but an endgame without mats is minus '+v,
@@ -10925,8 +10960,8 @@ ccLateRefreshWon:v=>'Refresh trouvé, +'+v+' de puissance et mats pleins', ccLat
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'peu',
 ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot : ton pack', ccKitOut:'éliminés',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge dès '+a+' joueurs · en vie '+p,
-ccKitSurgeAbove:n=>'STORM SURGE ACTIF · +'+n+' au-dessus du seuil',
-ccKitSurgeUnder:n=>'SOUS SURGE · −'+n+' sous le seuil de dégâts',
+ccKitSurgeBanner:'STORM SURGE ACTIF !', ccKitUnderBanner:'TU ES SOUS SURGE !',
+ccKitAboveCap:'au-dessus du seuil de dégâts', ccKitBelowCap:'sous le seuil de dégâts',
 ccMatsTitle:'Les mats s\'épuisent', ccMatsGo:'Aller chercher un refresh', ccMatsStay:'Tourner avec ce qu\'on a',
 ccMatsGoNote:(v,f,p)=>p+' % : trouvé — +'+v+' et mats pleins, sinon — moins '+f,
 ccMatsStayNote:v=>'Ça ne coûte rien maintenant, mais une fin de partie sans mats coûte '+v,
@@ -12824,8 +12859,8 @@ ccLateRefreshWon:v=>'Refresh trovato, +'+v+' di forza e mats pieni', ccLateRefre
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' \u00b7 '+low:'')+(loot?' \u00b7 '+loot:''), ccKitLow:"pochi",
 ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: il tuo pack', ccKitOut:'eliminati',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge da '+a+' giocatori \u00b7 vivi '+p,
-ccKitSurgeAbove:n=>'STORM SURGE ATTIVO \u00b7 +'+n+' sopra la soglia',
-ccKitSurgeUnder:n=>'SOTTO SURGE \u00b7 \u2212'+n+' sotto la soglia di danni',
+ccKitSurgeBanner:'STORM SURGE ATTIVO!', ccKitUnderBanner:'SEI SOTTO SURGE!',
+ccKitAboveCap:'sopra la soglia di danni', ccKitBelowCap:'sotto la soglia di danni',
 ccMatsTitle:"I mats stanno finendo", ccMatsGo:"Andare a cercare un refresh", ccMatsStay:"Ruotare con quello che c'\u00e8",
 ccMatsGoNote:(v,f,p)=>p+'%: trovato \u2014 +'+v+' e mats pieni, no \u2014 meno '+f,
 ccMatsStayNote:v=>'Ora non costa nulla, ma un finale senza mats costa '+v,
@@ -15286,8 +15321,8 @@ ccLateRefreshWon:v=>'Refresh achado, +'+v+' de força e mats cheios', ccLateRefr
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:"pouco",
 ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: seu pack', ccKitOut:'eliminados',
 ccKitSurgeOff:'surge desligado', ccKitSurgeAt:(a,p)=>'surge a partir de '+a+' jogadores · vivos '+p,
-ccKitSurgeAbove:n=>'STORM SURGE ATIVO · +'+n+' acima do limite',
-ccKitSurgeUnder:n=>'SOB SURGE · −'+n+' abaixo do limite de dano',
+ccKitSurgeBanner:'STORM SURGE ATIVO!', ccKitUnderBanner:'VOCÊ ESTÁ SOB SURGE!',
+ccKitAboveCap:'acima do limite de dano', ccKitBelowCap:'abaixo do limite de dano',
 ccMatsTitle:"Os mats estão acabando", ccMatsGo:"Ir atrás de um refresh", ccMatsStay:"Rotacionar com o que tem",
 ccMatsGoNote:(v,f,p)=>p+'%: achou — +'+v+' e mats cheios, não — menos '+f,
 ccMatsStayNote:v=>'Agora não custa nada, mas um final sem mats custa '+v,
@@ -51583,7 +51618,7 @@ function ccKitPanel(lobby, frame){
     const feed=map.querySelector('.zr-feed'); if(feed) feed.style.bottom='64px';
   }
   const T=L();
-  if(!d.alive){ box.innerHTML='<div class="zk-dead">'+esc(T.ccKitOut)+'</div>'; return; }
+  if(!d.alive){ box.innerHTML='<div class="zk-dead"><b>'+esc(T.ccKitOut)+'</b></div>'; return; }
   /* Пока на карте стоит вопрос, ресы — ровно те, по которым он задан (модель
      уже списала круги до остановки), иначе подсказка говорит «ресы 0», а
      строка внизу — 110, и это читается как две правды. */
@@ -51608,32 +51643,36 @@ function ccKitPanel(lobby, frame){
      пополняет модель. */
   const st=ccKitSplitMats(mats);
   const pack=you._loot ? [...(you._loot.weapons||[]), ...(you._loot.heals||[]), you._loot.move].filter(Boolean) : [];
+  // Слот хотбара носит цвет редкости предмета, как в игре; пустой — пунктиром.
   const slots=[0,1,2,3,4].map(k=>{
     const o=pack[k];
-    return '<span class="zk-slot'+(o?'':' empty')+'"><i>'+(k+1)+'</i>'+(o?esc(o.name):'')+'</span>';
+    const r=o && o.rarity ? ' r-'+String(o.rarity).replace(/[^a-z]/gi,'') : '';
+    return '<span class="zk-slot'+(o?r:' empty')+'"><i>'+(k+1)+'</i>'+(o?'<em>'+esc(o.name)+'</em>':'')+'</span>';
   }).join('');
-  /* Сёрдж — как на HUD самой игры (его скрин 5.09: «STORM SURGE ACTIVE · 269
-     ABOVE DAMAGE THRESHOLD»): пока порог не пройден — с какого числа игроков
-     он включится и сколько в живых; включился — на сколько урона ты над
-     линией отсечки или под ней (n точки минус surgeLine кадра). Словарная
-     строка режется по « · »: заголовок плашкой, число строкой под ним. */
+  /* Сёрдж — как на HUD самой игры (его скрин 5.09): баннер «STORM SURGE
+     ACTIVE!» с треугольником-молнией сверху по центру и справа крупное число
+     «N ABOVE DAMAGE THRESHOLD» — на сколько урона ты над линией отсечки (n точки
+     минус surgeLine кадра). Под сёржем баннер и число краснеют, подпись — «до
+     порога». Пока порог не пройден — тихая строка справа: с какого числа
+     игроков включится и сколько в живых. */
   const active = frame.surgeAt>0 && frame.surgeLine!=null;
   const gap = active ? (Number(d.n)||0)-frame.surgeLine : 0;
-  const two=s=>{ const p=String(s).split(' · '); return '<b>'+esc(p[0])+'</b>'+(p[1]?'<span>'+esc(p.slice(1).join(' · '))+'</span>':''); };
+  const tri='<i class="zk-tri"></i>';
   const surge = active
-    ? '<div class="zk-surge'+(d.u?' on':' ok')+'"><i class="zk-bolt"></i>'+two(d.u ? T.ccKitSurgeUnder(Math.abs(gap)) : T.ccKitSurgeAbove(Math.max(0, gap)))+'</div>'
+    ? '<div class="zk-banner'+(d.u?' on':'')+'">'+tri+'<b>'+esc(d.u ? T.ccKitUnderBanner : T.ccKitSurgeBanner)+'</b></div>'+
+      '<div class="zk-thresh'+(d.u?' on':' ok')+'">'+tri+'<div><b>'+Math.abs(Math.round(gap))+'</b><span>'+esc(d.u ? T.ccKitBelowCap : T.ccKitAboveCap)+'</span></div></div>'
     : frame.surgeAt>0
-      ? '<div class="zk-surge armed"><i class="zk-bolt"></i><span>'+esc(T.ccKitSurgeAt(frame.surgeAt, frame.players))+'</span></div>'
-      : '<div class="zk-surge off"><i class="zk-bolt"></i><span>'+esc(T.ccKitSurgeOff)+'</span></div>';
+      ? '<div class="zk-thresh armed">'+tri+'<span>'+esc(T.ccKitSurgeAt(frame.surgeAt, frame.players))+'</span></div>'
+      : '<div class="zk-thresh off"><span>'+esc(T.ccKitSurgeOff)+'</span></div>';
   box.innerHTML=
-    '<div class="zk-vitals" data-hp="'+hp+'">'+
-      '<div class="zk-bar zk-shield"><i style="width:'+shield+'%"></i><b>'+shield+'</b></div>'+
-      '<div class="zk-bar zk-health"><i style="width:'+health+'%"></i><b>'+health+'</b></div>'+
+    '<div class="zk-vitals" data-hp="'+hp+'" data-shield="'+shield+'" data-health="'+health+'">'+
+      '<div class="zk-row"><i class="zk-ico zk-ico-shield"></i><div class="zk-bar zk-shield"><i style="width:'+shield+'%"></i></div><b>'+shield+'</b></div>'+
+      '<div class="zk-row"><i class="zk-ico zk-ico-plus">+</i><div class="zk-bar zk-health"><i style="width:'+health+'%"></i></div><b>'+health+'</b></div>'+
     '</div>'+
     surge+
     '<div class="zk-right">'+
       '<div class="zk-mats'+(low?' low':'')+'" data-total="'+mats+'" title="'+esc(T.ccKitMats(mats))+(low?' · '+esc(T.ccKitLow):'')+'">'+
-        '<span class="m-wood"><i></i>'+st[0]+'</span><span class="m-brick"><i></i>'+st[1]+'</span><span class="m-metal"><i></i>'+st[2]+'</span>'+
+        '<span class="m-wood"><i></i><b>'+st[0]+'</b></span><span class="m-brick"><i></i><b>'+st[1]+'</b></span><span class="m-metal"><i></i><b>'+st[2]+'</b></span>'+
       '</div>'+
       '<div class="zk-hotbar"'+(pack.length?'':' title="'+esc(T.ccKitLootNone)+'"')+'>'+slots+'</div>'+
     '</div>';

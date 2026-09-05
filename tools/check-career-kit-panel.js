@@ -45,10 +45,12 @@ const BOOT = `
     const q=s=>map.querySelector(s);
     check('здоровье — из кадра', q('.zk-vitals') && q('.zk-vitals').dataset.hp==='80', (q('.zk-vitals')||{}).outerHTML);
     // 80 очков отряда — щит 60 и здоровье 100, как на HUD (верхняя половина — щит).
-    check('щит и здоровье разложены как в игре', q('.zk-shield b').textContent==='60' && q('.zk-health b').textContent==='100',
-          q('.zk-shield b').textContent+'/'+q('.zk-health b').textContent);
+    check('щит и здоровье разложены как в игре', q('.zk-vitals').dataset.shield==='60' && q('.zk-vitals').dataset.health==='100',
+          q('.zk-vitals').dataset.shield+'/'+q('.zk-vitals').dataset.health);
+    check('и оба числа написаны', [...map.querySelectorAll('.zk-row b')].map(b=>b.textContent).join('/')==='60/100',
+          [...map.querySelectorAll('.zk-row b')].map(b=>b.textContent).join('/'));
     check('ресы на первой зоне — полные минус один круг', q('.zk-mats') && q('.zk-mats').dataset.total==='440', (q('.zk-mats')||{}).outerHTML);
-    const stacks=[...map.querySelectorAll('.zk-mats span')].map(s=>+s.textContent);
+    const stacks=[...map.querySelectorAll('.zk-mats b')].map(s=>+s.textContent);
     check('три стопки в сумме дают ресы', stacks.length===3 && stacks.reduce((a,b)=>a+b,0)===440, stacks.join('+'));
     check('лут до третьей зоны — пять пустых слотов', map.querySelectorAll('.zk-slot.empty').length===5 &&
           (q('.zk-hotbar').title||'')===T.ccKitLootNone, String(map.querySelectorAll('.zk-slot.empty').length));
@@ -59,14 +61,14 @@ const BOOT = `
     out.notes.push('z3: '+txt());
     check('ресы на зоне остановки — как в модели', q('.zk-mats').dataset.total==='220', q('.zk-mats').dataset.total);
     check('сёрдж ещё не бьёт — порог и живые', txt().indexOf(T.ccKitSurgeAt(90, 84))>=0, txt());
-    check('и не красный, пока бьют не тебя', !map.querySelector('.zk-surge.on'));
+    check('и без баннера, пока порог не пройден', !map.querySelector('.zk-banner') && !map.querySelector('.zk-thresh.on'));
 
-    // ---- сёрдж включился, ты над порогом: как на HUD игры, «+N над порогом» ----
+    // ---- сёрдж включился, ты над порогом: баннер и «269 над порогом урона» ----
     ccKitPanel(lobby, {zone:4, players:80, surgeAt:74, surgeLine:-30, dots:[dot(), dot({h:64, n:239}), dot()]});
     out.notes.push('z4: '+txt());
-    // Словарная строка режется по « · »: заголовок плашкой, число строкой под ним.
-    check('над порогом — на сколько урона', txt().replace(/\\s+/g,' ').indexOf(T.ccKitSurgeAbove(269).split(' · ').join(''))>=0 ||
-          (q('.zk-surge b') && q('.zk-surge span') && (q('.zk-surge b').textContent+' · '+q('.zk-surge span').textContent)===T.ccKitSurgeAbove(269)), txt());
+    check('баннер сёржа стоит', !!q('.zk-banner') && q('.zk-banner b').textContent===T.ccKitSurgeBanner, (q('.zk-banner')||{}).textContent);
+    check('справа — число над порогом и подпись', !!q('.zk-thresh.ok') && q('.zk-thresh b').textContent==='269' &&
+          q('.zk-thresh span').textContent===T.ccKitAboveCap, (q('.zk-thresh')||{}).textContent);
 
     // ---- лут выбран, ресы кончились, под сёржем -------------------------------
     you._loot={weapons:[{name:'Pump'},{name:'AR'}], heals:[{name:'Minis'},{name:'Medkit'}], move:{name:'Sliders'}};
@@ -75,8 +77,9 @@ const BOOT = `
     out.notes.push('z5: '+txt());
     check('лут — пять слотов с именами', /Pump.*AR.*Minis.*Medkit.*Sliders/.test(txt()) && map.querySelectorAll('.zk-slot.empty').length===0, txt());
     check('мало ресов — жёлтая пометка', !!map.querySelector('.zk-mats.low') && (q('.zk-mats').title||'').indexOf(T.ccKitLow)>=0, q('.zk-mats').title);
-    check('под сёржем — плашка и сколько до порога', !!map.querySelector('.zk-surge.on') &&
-          (q('.zk-surge b').textContent+' · '+q('.zk-surge span').textContent)===T.ccKitSurgeUnder(40), txt());
+    check('под сёржем — красный баннер и сколько до порога', !!q('.zk-banner.on') && q('.zk-banner b').textContent===T.ccKitUnderBanner &&
+          !!q('.zk-thresh.on') && q('.zk-thresh b').textContent==='40' && q('.zk-thresh span').textContent===T.ccKitBelowCap, txt());
+    check('слот носит редкость предмета', !!map.querySelector('.zk-slot.r-rare') || !!map.querySelector('.zk-slot.r-legendary') || map.querySelectorAll('.zk-slot:not(.empty)').length===5);
 
     // ---- выбыли ----------------------------------------------------------------
     ccKitPanel(lobby, {zone:6, players:50, surgeAt:50, dots:[dot(), dot({alive:false, h:0, p:23}), dot()]});
