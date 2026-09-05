@@ -232,7 +232,8 @@
       'pointer-events:none;max-width:44%;text-align:right;');
     wrap.appendChild(side);
 
-    var feed = el('div', null,
+    // Named, so the kit strip the app lays along the bottom can lift it clear.
+    var feed = el('div', 'zr-feed',
       'position:absolute;left:7px;bottom:6px;display:flex;flex-direction:column;' +
       'align-items:flex-start;gap:3px;pointer-events:none;');
     wrap.appendChild(feed);

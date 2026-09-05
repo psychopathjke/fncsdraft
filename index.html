@@ -2645,22 +2645,49 @@
     .cc-tvs-tile:nth-child(4n){border-right:1px solid #26262c;}
     .cc-tvs-tile:nth-child(2n){border-right:none;}}
   /* Строка набора на карте: здоровье, ресы, лут, сёрдж — под шапкой ЗОНА/время. */
-  .zr-kit{position:absolute;left:7px;top:26px;display:flex;flex-wrap:wrap;gap:4px;
-    pointer-events:none;max-width:56%;font-size:10px;font-weight:800;letter-spacing:.02em;}
-  .zr-kit>span{display:inline-flex;align-items:center;gap:5px;background:rgba(0,0,0,.62);
-    color:#eef2fb;border-radius:4px;padding:2px 6px;text-shadow:0 1px 2px #000;}
-  .zr-kit .zk-hp{padding-left:4px;}
-  .zr-kit .zk-hp i{display:block;width:100%;height:5px;border-radius:3px;background:#3bd37b;
-    min-width:2px;max-width:46px;flex:0 0 auto;}
-  .zr-kit .zk-hp{position:relative;}
-  .zr-kit .zk-hp b{font-variant-numeric:tabular-nums;}
-  .zr-kit .zk-mats.low{color:#ffd54a;}
-  .zr-kit .zk-loot{font-weight:600;color:#cfd8ea;}
-  .zr-kit .zk-surge.ok{color:#ffd9a3;}
+  /* Строка набора — по HUD Fortnite (его скрин 5.09): щит и здоровье слева,
+     сёрдж в центре, ресы и хотбар справа, вдоль нижнего края карты. */
+  .zr-kit{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:flex-end;
+    justify-content:space-between;gap:8px;padding:6px 7px;pointer-events:none;
+    font-size:10px;font-weight:800;letter-spacing:.02em;color:#eef2fb;text-shadow:0 1px 2px #000;
+    background:linear-gradient(0deg,rgba(0,0,0,.55),rgba(0,0,0,0));}
+  .zr-kit .zk-vitals{display:flex;flex-direction:column;gap:3px;width:150px;flex:0 0 auto;}
+  .zr-kit .zk-bar{position:relative;height:11px;border-radius:2px;background:rgba(0,0,0,.6);
+    border:1px solid rgba(255,255,255,.18);overflow:hidden;}
+  .zr-kit .zk-bar i{display:block;height:100%;}
+  .zr-kit .zk-shield i{background:linear-gradient(90deg,#3b8bff,#5fb0ff);}
+  .zr-kit .zk-health i{background:linear-gradient(90deg,#4fd36a,#8ff08a);}
+  .zr-kit .zk-bar b{position:absolute;right:4px;top:-1px;font-size:10px;font-variant-numeric:tabular-nums;}
+  .zr-kit .zk-surge{display:flex;align-items:center;gap:6px;padding:3px 9px;border-radius:4px;
+    background:rgba(0,0,0,.6);min-width:0;flex:0 1 auto;text-align:left;}
+  .zr-kit .zk-surge b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;}
+  .zr-kit .zk-surge span{display:block;font-size:10px;font-weight:700;opacity:.9;}
+  .zr-kit .zk-bolt{width:14px;height:14px;flex:none;border-radius:3px;background:#9147ff;
+    clip-path:polygon(55% 0,20% 58%,48% 58%,40% 100%,80% 42%,52% 42%,62% 0);}
+  .zr-kit .zk-surge.ok{color:#e9dcff;}
+  .zr-kit .zk-surge.ok b{color:#c9a6ff;}
+  .zr-kit .zk-surge.on{background:rgba(120,40,200,.85);color:#fff;}
+  .zr-kit .zk-surge.on .zk-bolt{background:#fff;}
   .zr-kit .zk-surge.armed{color:#cfd8ea;font-weight:600;}
-  .zr-kit .zk-surge.on{background:rgba(232,160,32,.85);color:#111;}
+  .zr-kit .zk-surge.armed .zk-bolt,.zr-kit .zk-surge.off .zk-bolt{background:#6b7590;}
   .zr-kit .zk-surge.off{color:#9aa4b8;font-weight:600;}
-  .zr-kit .zk-dead{color:#ff9b9b;}
+  .zr-kit .zk-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 0 auto;}
+  .zr-kit .zk-mats{display:flex;gap:8px;font-variant-numeric:tabular-nums;font-size:11px;}
+  .zr-kit .zk-mats span{display:inline-flex;align-items:center;gap:4px;}
+  .zr-kit .zk-mats i{display:block;width:10px;height:10px;border-radius:2px;}
+  .zr-kit .m-wood i{background:#c58a4a;}
+  .zr-kit .m-brick i{background:#b8574a;}
+  .zr-kit .m-metal i{background:#9aa6b4;}
+  .zr-kit .zk-mats.low{color:#ffd54a;}
+  .zr-kit .zk-hotbar{display:flex;gap:3px;}
+  .zr-kit .zk-slot{position:relative;width:54px;height:30px;border-radius:3px;background:rgba(0,0,0,.62);
+    border:1px solid rgba(255,255,255,.2);font-size:8.5px;font-weight:700;line-height:1.1;
+    display:flex;align-items:flex-end;padding:2px 3px;overflow:hidden;color:#eef2fb;}
+  .zr-kit .zk-slot.empty{border-style:dashed;opacity:.55;}
+  .zr-kit .zk-slot i{position:absolute;left:3px;top:1px;font-style:normal;font-size:8px;opacity:.7;}
+  .zr-kit .zk-dead{color:#ff9b9b;background:rgba(0,0,0,.6);border-radius:4px;padding:3px 9px;}
+  @media(max-width:760px){.zr-kit .zk-hotbar{display:none;} .zr-kit .zk-vitals{width:110px;}
+    .zr-kit .zk-surge b{font-size:10px;}}
 
   #screen-career-hub .tv-last{margin-top:12px;}
   #screen-career-hub .tv-last .ch-hint{color:#adadb8;}
@@ -5054,7 +5081,7 @@
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
 <script src="zone-sim.js?v=0a54cf8e"></script>
-<script src="zone-replay.js?v=3df2bc61"></script>
+<script src="zone-replay.js?v=8ad66275"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -51539,30 +51566,67 @@ function ccKitPanel(lobby, frame){
   const you=lobby[i], d=(frame.dots||[])[i];
   if(!you || !d) return;
   let box=map.querySelector('.zr-kit');
-  if(!box){ box=document.createElement('div'); box.className='zr-kit'; map.appendChild(box); }
+  if(!box){
+    box=document.createElement('div'); box.className='zr-kit'; map.appendChild(box);
+    // Килфид живёт в том же углу — поднимаем его над полосками.
+    const feed=map.querySelector('.zr-feed'); if(feed) feed.style.bottom='64px';
+  }
   const T=L();
-  if(!d.alive){ box.innerHTML='<span class="zk-dead">'+esc(T.ccKitOut)+'</span>'; return; }
+  if(!d.alive){ box.innerHTML='<div class="zk-dead">'+esc(T.ccKitOut)+'</div>'; return; }
   const mats=Math.max(0, ccMats(you)+CC_MATS_ZONE*Math.max(0, CC_KIT_ZONE-(frame.zone||0)));
   const low=mats<CC_MATS_LOW;
-  const loot=you._loot
-    ? [...(you._loot.weapons||[]), ...(you._loot.heals||[]), you._loot.move].filter(Boolean).map(o=>o.name).join(' · ')
-    : T.ccKitLootNone;
   const hp=Math.max(0, Math.min(100, d.h||0));
+  /* ПО РЕФЕРЕНСУ — его скрин HUD Fortnite (5.09) и слово «можешь как на референсе
+     сделать». Слева щит и здоровье полосками с числами, в центре плашка сёржа с
+     молнией, справа ресы тремя стопками и хотбар с пятью слотами.
+
+     Сто очков отряда в движке — это здоровье одного игрока со щитом (см.
+     zone-sim: «the squad's 100 points stand for one»). На экране они лежат как в
+     игре, двумя полосками по сто: верхняя половина очков — щит, нижняя —
+     здоровье. Это раскладка ОДНОГО числа, а не второй запас: щит уходит первым,
+     здоровье — за ним, и сумма всегда равна тому, что считает движок. */
+  const shield=Math.max(0, Math.min(100, Math.round((hp-50)*2)));
+  const health=Math.max(0, Math.min(100, Math.round(hp*2)));
+  /* Ресы — тоже одно число модели, разложенное на дерево, кирпич и металл в
+     привычной пропорции 40/35/25; сумма стопок равна числу, которое тратит и
+     пополняет модель. */
+  const st=ccKitSplitMats(mats);
+  const pack=you._loot ? [...(you._loot.weapons||[]), ...(you._loot.heals||[]), you._loot.move].filter(Boolean) : [];
+  const slots=[0,1,2,3,4].map(k=>{
+    const o=pack[k];
+    return '<span class="zk-slot'+(o?'':' empty')+'"><i>'+(k+1)+'</i>'+(o?esc(o.name):'')+'</span>';
+  }).join('');
   /* Сёрдж — как на HUD самой игры (его скрин 5.09: «STORM SURGE ACTIVE · 269
      ABOVE DAMAGE THRESHOLD»): пока порог не пройден — с какого числа игроков
      он включится и сколько в живых; включился — на сколько урона ты над
-     линией отсечки или под ней (n точки минус surgeLine кадра). */
+     линией отсечки или под ней (n точки минус surgeLine кадра). Словарная
+     строка режется по « · »: заголовок плашкой, число строкой под ним. */
   const active = frame.surgeAt>0 && frame.surgeLine!=null;
   const gap = active ? (Number(d.n)||0)-frame.surgeLine : 0;
+  const two=s=>{ const p=String(s).split(' · '); return '<b>'+esc(p[0])+'</b>'+(p[1]?'<span>'+esc(p.slice(1).join(' · '))+'</span>':''); };
   const surge = active
-    ? '<span class="zk-surge'+(d.u?' on':' ok')+'">'+esc(d.u ? T.ccKitSurgeUnder(Math.abs(gap)) : T.ccKitSurgeAbove(Math.max(0, gap)))+'</span>'
+    ? '<div class="zk-surge'+(d.u?' on':' ok')+'"><i class="zk-bolt"></i>'+two(d.u ? T.ccKitSurgeUnder(Math.abs(gap)) : T.ccKitSurgeAbove(Math.max(0, gap)))+'</div>'
     : frame.surgeAt>0
-      ? '<span class="zk-surge armed">'+esc(T.ccKitSurgeAt(frame.surgeAt, frame.players))+'</span>'
-      : '<span class="zk-surge off">'+esc(T.ccKitSurgeOff)+'</span>';
+      ? '<div class="zk-surge armed"><i class="zk-bolt"></i><span>'+esc(T.ccKitSurgeAt(frame.surgeAt, frame.players))+'</span></div>'
+      : '<div class="zk-surge off"><i class="zk-bolt"></i><span>'+esc(T.ccKitSurgeOff)+'</span></div>';
   box.innerHTML=
-    '<span class="zk-hp"><i style="width:'+hp+'%"></i><b>'+hp+'</b></span>'+
-    '<span class="zk-mats'+(low?' low':'')+'">'+esc(T.ccKitMats(mats))+(low?' · '+esc(T.ccKitLow):'')+'</span>'+
-    '<span class="zk-loot">'+esc(loot)+'</span>'+surge;
+    '<div class="zk-vitals" data-hp="'+hp+'">'+
+      '<div class="zk-bar zk-shield"><i style="width:'+shield+'%"></i><b>'+shield+'</b></div>'+
+      '<div class="zk-bar zk-health"><i style="width:'+health+'%"></i><b>'+health+'</b></div>'+
+    '</div>'+
+    surge+
+    '<div class="zk-right">'+
+      '<div class="zk-mats'+(low?' low':'')+'" data-total="'+mats+'" title="'+esc(T.ccKitMats(mats))+(low?' · '+esc(T.ccKitLow):'')+'">'+
+        '<span class="m-wood"><i></i>'+st[0]+'</span><span class="m-brick"><i></i>'+st[1]+'</span><span class="m-metal"><i></i>'+st[2]+'</span>'+
+      '</div>'+
+      '<div class="zk-hotbar"'+(pack.length?'':' title="'+esc(T.ccKitLootNone)+'"')+'>'+slots+'</div>'+
+    '</div>';
+}
+// Одно число ресов — тремя стопками, как на HUD: 40% дерево, 35% кирпич, остаток металл.
+function ccKitSplitMats(m){
+  const t=Math.max(0, Math.round(m||0));
+  const w=Math.round(t*0.4), b=Math.round(t*0.35);
+  return [w, b, Math.max(0, t-w-b)];
 }
 // Круг прошёл — ресы потрачены. Считается всем, включая комнату.
 function ccKitSpend(teams, n){
