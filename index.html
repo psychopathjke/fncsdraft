@@ -42559,9 +42559,29 @@ function clubLogoFile(org){
   const slug=String(org).replace(/[^A-Za-z0-9.\-]+/g,'_').replace(/^_+|_+$/g,'');
   return slug ? slug+'.png' : null;
 }
+/* ЕСТЬ ЛИ ТАКОЙ ФАЙЛ ВООБЩЕ.
+ *
+ * Имя файла строится из названия клуба, поэтому его можно построить для
+ * любого — в том числе для тех двухсот тридцати двух, чьего герба у нас нет.
+ * Карточка ставила <img> всё равно и полагалась на onerror: картинка тихо
+ * исчезала, а запрос уходил и возвращался 404. Столько же раз, сколько такая
+ * карточка нарисована.
+ *
+ * Замер по Observatory зоны 5 сентября 2026: 19,18 тысячи ответов 4xx с
+ * origin за сутки при 5% попаданий в кэш. Проба tools/check-missing-files.js
+ * называет виновника: гербов на ростере 299, файлов в logos/ — 83.
+ *
+ * Список CAREER_CRESTS — это и есть содержимое папки (его генерирует
+ * tools/career-org-check.js). Карьера сверялась с ним всегда, драфт — нет.
+ * Через try, потому что объявлен он ниже по файлу: до его строки обращение к
+ * const бросает, и тогда честнее вести себя как раньше. */
+function ccHasCrest(f){
+  if(!f) return false;
+  try{ return CAREER_CRESTS.has(f); }catch(e){ return true; }
+}
 function clubLogoHTML(org, wide){
   const f=org && clubLogoFile(org);
-  if(!f) return '';
+  if(!ccHasCrest(f)) return '';
   const h=wide?12:10;
   // Crests come in wildly different proportions — some are square, some are wide
   // banners. Height alone would let a banner run three times the width of a
@@ -42576,7 +42596,7 @@ function clubLogoHTML(org, wide){
 // keeps a fixed height, so cards without a crest still line up with the rest.
 function clubCrestHTML(org, wide){
   const f=org && clubLogoFile(org);
-  if(!f) return '';
+  if(!ccHasCrest(f)) return '';
   const solid=(typeof ccCrestSolid==='function') && ccCrestSolid(f);
   return `<img class="${solid?'crest-tile':''}" src="${LOGO_DIR}${f}" alt="" onerror="this.remove()"
     style="max-height:${wide?30:24}px;max-width:${wide?50:42}px;object-fit:contain;
@@ -55596,7 +55616,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4f89b60f';
+const CC_BUILD='1fafc95f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
