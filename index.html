@@ -119,12 +119,6 @@
        so the interface sits in the same palette as the crest and the mode covers. */
     --accent:#00b090; --accent-ink:#00281f; --danger:#ff4d6d; --line:#262e39;
     --common:#b1b1b1; --uncommon:#5bd41f; --rare:#12a7ff; --epic:#b14bf4; --legendary:#ff8c1a; --mythic:#ffd200;
-    /* Exotic — редкость самой игры, и цвет её же: #70C7F8, снят из CSS
-       фортнайтовской вики (класс .exotic-tbg на странице Rarity), а не подобран
-       на глаз. Его правка 4 сентября со ссылкой на список Exotic-предметов:
-       такой картой ходят контент-мейкеры Про-Ама — они в этой комнате не про и
-       не ладдер, у них своя редкость. */
-    --exotic:#70C7F8;
     /* Ambient glows behind the page. Each needs its own transparent twin so the
        gradient fades to the same hue instead of drifting through grey. */
     --glow-a:rgba(18,181,164,.34);  --glow-a0:rgba(18,181,164,0);
@@ -261,8 +255,8 @@
   .hero-btn-alt:hover,.hero-btn-alt:focus-visible{background:rgba(255,255,255,.14);border-color:#fff;}
   /* Дверь «вдвоём» — бирюзовая, между жёлтой карьерой и контурным драфтом:
      тот же режим, что карьера, но ДРУГОЙ выбор, а не её повтор. Двойная
-     чёрточка перед словом — «2P». [hidden] прописан явно: браузерное
-     [hidden] уже проигрывало классу (см. check-mp-doors). */
+     чёрточка перед словом — «2P». [hidden] прописан явно: у .mode-mp
+     браузерное [hidden] уже проигрывало классу (см. check-mp-doors). */
   .hero-btn-duo{background:rgba(126,240,221,.10);border-color:#7ef0dd;color:#7ef0dd;}
   /* Значок — два силуэта, не две чёрточки: чёрточки читались как «пауза»
      (его скрин, 30 августа: «странно кнопка выглядит»). Маска красится в
@@ -282,57 +276,6 @@
   /* «Есть код от напарника? Войти по коду» — строка-ссылка под кнопками. */
   .hero-code{margin:-2px 0 0;font-size:13px;}
   .hero-code[hidden]{display:none;}
-  /* ---- Полоса карьеры под героем (см. .cstrip в разметке) ----------------
-     Тот же крой, что у героя: панель во всю ширину, арт справа, текст слева.
-     Ниже героя и выше годов — первое, что видно после заголовка. */
-  .cstrip{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.5fr);
-    min-height:168px;margin:10px 0 4px;overflow:hidden;isolation:isolate;
-    background:linear-gradient(112deg,#0b1a3a 0%,#123055 55%,#0e2747 100%);
-    box-shadow:inset 0 0 0 1px rgba(255,221,0,.28);}
-  .cstrip-body{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;
-    gap:8px;padding:18px 10px 18px 32px;}
-  .cstrip-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .cstrip-tag{font-family:var(--font-display);font-weight:700;font-size:10px;letter-spacing:.1em;
-    text-transform:uppercase;color:#0b0f12;background:#ffdd00;padding:3px 8px;border-radius:999px;}
-  .cstrip-title{margin:0;font-family:var(--font-display);font-weight:600;font-style:italic;
-    font-size:26px;letter-spacing:.02em;text-transform:uppercase;color:#fff;line-height:1;}
-  .cstrip-sub{margin:0;max-width:640px;font-size:13px;line-height:1.5;color:var(--ink-dim);}
-  /* Плашки «из чего состоит карьера» — того же кроя, что чипы на плитках. */
-  .cstrip-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
-  .cstrip-chip{font-size:11px;font-weight:700;letter-spacing:.04em;color:#dfe8fb;
-    background:rgba(255,255,255,.08);border:1px solid rgba(140,175,255,.28);
-    border-radius:999px;padding:4px 10px;white-space:nowrap;}
-  .cstrip-cta{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
-  .cstrip-btn{font-family:var(--font-display);font-weight:600;font-size:14px;letter-spacing:.06em;
-    text-transform:uppercase;line-height:1;padding:11px 18px 10px;cursor:pointer;border-radius:999px;
-    border:1.5px solid transparent;transition:filter .15s,background .15s,color .15s;}
-  .cstrip-btn[hidden]{display:none;}
-  .cstrip-btn-go{background:#ffdd00;color:#0b0f12;border-color:#ffdd00;}
-  .cstrip-btn-go:hover,.cstrip-btn-go:focus-visible{filter:brightness(1.06);}
-  .cstrip-btn-duo{background:rgba(126,240,221,.10);border-color:#7ef0dd;color:#7ef0dd;}
-  .cstrip-btn-duo:hover,.cstrip-btn-duo:focus-visible{background:rgba(126,240,221,.22);color:#fff;border-color:#fff;}
-  .cstrip-btn-code{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.45);color:#fff;}
-  .cstrip-btn-code:hover,.cstrip-btn-code:focus-visible{background:rgba(255,255,255,.16);border-color:#fff;}
-  /* Диагональный срез слева — тот же, что у арта героя: две панели подряд
-     должны читаться как одна вещь, а не как панель и карточка. */
-  /* Кадрируется по ширине (cover): герб на этой полосе должен быть крупным,
-     а не аккуратно вписанным — contain оставлял его маленьким и с видимым швом
-     собственного фона картинки. Крылья по краям срезаются, и это правильный
-     срез: смотрят на герб. */
-  .cstrip-art{position:relative;z-index:0;min-height:168px;background-color:#14336b;
-    background-size:cover;background-position:center 45%;background-repeat:no-repeat;
-    clip-path:polygon(16% 0,100% 0,100% 100%,0 100%);}
-  /* Вуаль только у левого края — дальше карта сезона должна быть видна: она
-     здесь не фон, а то, по чему играют весь год. */
-  .cstrip-art::after{content:'';position:absolute;inset:0;
-    background:linear-gradient(90deg,rgba(11,26,58,.98) 0%,rgba(11,26,58,.35) 38%,rgba(11,26,58,0) 100%);}
-  @media(max-width:760px){
-    .cstrip{grid-template-columns:1fr;}
-    /* На телефоне арт сверху и без среза — резать нечего. */
-    .cstrip-art{order:-1;min-height:110px;clip-path:none;}
-    .cstrip-art::after{background:linear-gradient(180deg,rgba(11,26,58,0) 40%,rgba(11,26,58,.92) 100%);}
-    .cstrip-body{padding:16px 18px 20px;}
-  }
   .hero-link{background:none;border:none;padding:0;cursor:pointer;font:inherit;color:#7ef0dd;
     text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(126,240,221,.5);}
   .hero-link:hover,.hero-link:focus-visible{color:#fff;text-decoration-color:#fff;}
@@ -557,7 +500,19 @@
   /* Две двери в командную карьеру, прямо на карточке. Держатся отдельной
      строкой под описанием: карточка целиком — кнопка одиночной карьеры, и эти
      две обязаны выглядеть как ДРУГОЙ выбор, а не как её продолжение. */
-  /* Ряд дверей на карточке карьеры убран 4 сентября — см. .cstrip. */
+  .mode-mp{display:block;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);}
+  .mode-mp[hidden]{display:none;}
+  .mode-mp-desc{margin:0 0 10px;color:var(--ink-dim);font-size:12.5px;line-height:1.5;}
+  .mode-mp-btns{display:flex;gap:8px;flex-wrap:wrap;}
+  /* Кнопки — как в хабе карьеры (#screen-career-hub .ch-sign): жёлтые, капсом.
+     Его слово, 29 августа: «не нравится дизайн, который сейчас, сделай как в
+     карьере». Зелёная моно-плашка ему не зашла. */
+  .mode-mp-btn{flex:1 1 auto;min-width:120px;cursor:pointer;border:none;background:#ffdd00;
+    color:#0b0f12;border-radius:3px;padding:9px 12px;font:inherit;font-family:var(--font-display);
+    font-weight:600;font-size:14px;letter-spacing:.07em;text-transform:uppercase;}
+  .mode-mp-btn:hover{background:#ffe95c;}
+  .mode-mp-btn.mode-mp-join{background:rgba(255,255,255,.08);border:1px solid rgba(140,175,255,.28);color:#dfe8fb;}
+  .mode-mp-btn.mode-mp-join:hover{background:rgba(255,255,255,.16);color:#fff;}
 
   /* Broadcast-style winners plate, the graphic the stream cuts to after a
      stage. Light panel, FNCS teal wedge and heavy italic type, deliberately
@@ -2362,212 +2317,6 @@
   #screen-career-hub .cc-day-ev-btns{display:flex;gap:8px;margin-top:8px;}
   #screen-career-hub .cc-day-ev-btns .ch-sign,
   #screen-career-hub .cc-day-ev-btns .ch-decline{width:auto;flex:1;padding:8px 12px;margin:0;}
-  /* Развилки дня: три ответа в ряд, на узком экране — столбиком. */
-  #screen-career-hub .cc-day-ev-opts{flex-wrap:wrap;}
-  #screen-career-hub .cc-day-ev-opts button{min-width:120px;}
-  /* ВКЛАДКА СТРИМОВ — в цветах Twitch, а не хаба.
-     Его правка: «используй дизайн твича». Оттуда взято ровно то, что делает
-     страницу узнаваемой: почти чёрный фон #0e0e10, карточки #18181b,
-     фиолетовый #9146ff на активном, красная плашка LIVE, круглые аватарки с
-     красным кольцом у того, кто в эфире, и сетка превью с числом зрителей в
-     углу. Остальное — наша вёрстка: это карьера, а не копия сайта. */
-  /* Три колонки страницы канала: отслеживаемые слева, плеер в центре, чат
-     справа — раскладка с его скрина. На узком экране колонки складываются
-     в столбец, чат уходит вниз. */
-  #screen-career-hub .tv-wrap{display:grid;grid-template-columns:236px minmax(0,1fr) 300px;gap:0;
-    background:#0e0e10;border-radius:10px;overflow:hidden;color:#efeff1;}
-  @media(max-width:1100px){#screen-career-hub .tv-wrap{grid-template-columns:minmax(0,1fr);}}
-  #screen-career-hub .tv-side{background:#1f1f23;padding:10px 8px;min-width:0;}
-  #screen-career-hub .tv-side-h{font-size:11px;font-weight:800;letter-spacing:.06em;
-    text-transform:uppercase;color:#adadb8;padding:4px 8px 8px;}
-  #screen-career-hub .tv-srow{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:4px;}
-  #screen-career-hub .tv-srow:hover{background:#26262c;}
-  #screen-career-hub .tv-sin{flex:1;min-width:0;}
-  #screen-career-hub .tv-sin b{display:block;font-size:13px;color:#efeff1;overflow:hidden;
-    text-overflow:ellipsis;white-space:nowrap;}
-  #screen-career-hub .tv-sin em{font-style:normal;font-size:11.5px;color:#adadb8;}
-  #screen-career-hub .tv-vv{font-size:12px;color:#efeff1;display:flex;align-items:center;gap:4px;}
-  #screen-career-hub .tv-vv i{width:7px;height:7px;border-radius:50%;background:#eb0400;display:block;}
-  #screen-career-hub .tv-off{font-size:12px;color:#adadb8;}
-  #screen-career-hub .tv-more{color:#bf94ff;font-size:12.5px;padding:8px;cursor:default;}
-  /* Плеер: кадр 16/9 с артом события и HUD поверх — зрители, подписки, время. */
-  #screen-career-hub .tv-player{position:relative;aspect-ratio:16/9;background:#000 center/cover no-repeat;
-    display:flex;align-items:center;justify-content:center;}
-  #screen-career-hub .tv-player::after{content:'';position:absolute;inset:0;
-    background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.7));}
-  #screen-career-hub .tv-hud{position:absolute;left:10px;top:10px;display:flex;gap:8px;z-index:2;}
-  #screen-career-hub .tv-hud span{background:rgba(0,0,0,.65);border-radius:4px;padding:3px 8px;
-    font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;}
-  #screen-career-hub .tv-hud-v i{width:7px;height:7px;border-radius:50%;background:#eb0400;display:block;}
-  #screen-career-hub .tv-go-wrap{position:relative;z-index:2;text-align:center;max-width:560px;padding:0 12px;}
-  #screen-career-hub .tv-go-h{font-size:13px;font-weight:800;letter-spacing:.06em;
-    text-transform:uppercase;color:#efeff1;margin-bottom:10px;}
-  #screen-career-hub .tv-go-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
-  #screen-career-hub .tv-go-off{color:#adadb8;font-size:13px;}
-  /* Строка канала под плеером: аватар с LIVE, ник с галочкой, заголовок,
-     категория и язык, справа кнопки Twitch. */
-  #screen-career-hub .tv-chanrow{display:flex;align-items:flex-start;gap:10px;padding:12px;
-    background:#0e0e10;}
-  #screen-career-hub .tv-chan-av{position:relative;flex:none;}
-  #screen-career-hub .tv-chan-av .tv-av{width:44px;height:44px;}
-  #screen-career-hub .tv-live{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);
-    background:#eb0400;color:#fff;font-size:8.5px;font-weight:900;letter-spacing:.06em;
-    padding:1px 5px;border-radius:3px;font-style:normal;}
-  #screen-career-hub .tv-chan-in{flex:1;min-width:0;}
-  #screen-career-hub .tv-chan-in b{font-size:15px;color:#efeff1;display:flex;align-items:center;gap:5px;}
-  #screen-career-hub .tv-tick{color:#bf94ff;font-style:normal;font-size:11px;}
-  /* Компаньон галочки не носит — у него плашка; ниже строка «до партнёрки». */
-  #screen-career-hub .tv-aff{font-style:normal;font-size:9.5px;font-weight:800;
-    letter-spacing:.05em;color:#dcd3ff;background:#3a2a55;padding:1px 5px;border-radius:3px;}
-  /* «Путь к компаньону» под стримом: на каждое требование своя шкала. */
-  #screen-career-hub .tv-path{padding:10px 12px 12px;background:#0e0e10;border-top:1px solid #26262c;}
-  #screen-career-hub .tv-path .tw-h{font-size:11px;font-weight:800;letter-spacing:.06em;
-    text-transform:uppercase;color:#adadb8;margin-bottom:8px;}
-  #screen-career-hub .tw-goal{display:flex;align-items:center;gap:10px;margin-top:6px;}
-  #screen-career-hub .tw-k{flex:0 0 150px;font-size:12px;color:#efeff1;}
-  #screen-career-hub .tw-bar{flex:1;min-width:60px;height:6px;border-radius:3px;background:#26262c;
-    overflow:hidden;}
-  #screen-career-hub .tw-bar i{display:block;height:100%;background:#9147ff;border-radius:3px;}
-  #screen-career-hub .tw-n{flex:0 0 auto;font-size:12px;font-weight:700;color:#efeff1;
-    font-variant-numeric:tabular-nums;}
-  #screen-career-hub .tw-n em{font-style:normal;font-weight:400;color:#adadb8;}
-  #screen-career-hub .tw-goal.on .tw-bar i{background:#00b884;}
-  #screen-career-hub .tw-goal.on .tw-n{color:#00b884;}
-  #screen-career-hub .tv-title{font-size:13px;color:#efeff1;margin:2px 0 4px;}
-  #screen-career-hub .tv-cat{display:flex;gap:8px;align-items:center;}
-  #screen-career-hub .tv-cat-l{color:#bf94ff;font-size:12.5px;}
-  #screen-career-hub .tv-lang{background:#26262c;color:#adadb8;font-size:10.5px;padding:1px 6px;border-radius:4px;}
-  #screen-career-hub .tv-acts{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-  #screen-career-hub .tv-acts span{background:#26262c;color:#efeff1;font-size:11.5px;font-weight:700;
-    padding:5px 9px;border-radius:4px;}
-  #screen-career-hub .tv-heart,#screen-career-hub .tv-bell{color:#bf94ff;}
-  #screen-career-hub .tv-sub{background:#9146ff;}
-  #screen-career-hub .tv-stats{display:flex;gap:14px;flex-wrap:wrap;padding:0 12px 12px;
-    font-size:12px;color:#adadb8;}
-  #screen-career-hub .tv-stats b{color:#efeff1;margin-left:4px;}
-  #screen-career-hub .tv-stats .tv-last{color:#adadb8;}
-  /* Чат: закреплённое сверху, строки со временем, поле ввода внизу. */
-  #screen-career-hub .tv-chat{background:#18181b;border-left:1px solid #26262c;
-    display:flex;flex-direction:column;min-width:0;}
-  #screen-career-hub .tv-chat-h{text-align:center;font-size:12.5px;font-weight:700;color:#efeff1;
-    padding:9px;border-bottom:1px solid #26262c;}
-  #screen-career-hub .tv-pin{background:#26262c;border-radius:4px;margin:8px;padding:8px;}
-  #screen-career-hub .tv-pin i{display:block;font-style:normal;font-size:10.5px;color:#adadb8;margin-bottom:4px;}
-  #screen-career-hub .tv-pin b{font-size:12px;color:#bf94ff;font-weight:700;}
-  #screen-career-hub .tv-msgs{flex:1;overflow:hidden;padding:0 8px 8px;}
-  #screen-career-hub .tv-msg{font-size:12.5px;line-height:1.5;color:#efeff1;margin-bottom:3px;}
-  #screen-career-hub .tv-msg i{font-style:normal;color:#7a7a85;font-size:10.5px;margin-right:5px;}
-  #screen-career-hub .tv-msg b{font-weight:700;}
-  #screen-career-hub .tv-say{margin:8px;padding:8px 10px;border-radius:4px;background:#26262c;
-    color:#7a7a85;font-size:12px;}
-  #screen-career-hub .tv-main{min-width:0;}
-  #screen-career-hub .tv-chan{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-  #screen-career-hub .tv-chan b{display:block;font-size:15px;color:#efeff1;}
-  #screen-career-hub .tv-chan em{font-style:normal;font-size:11.5px;color:#adadb8;}
-  #screen-career-hub .tv-av{width:38px;height:38px;border-radius:50%;flex:none;overflow:hidden;
-    display:flex;align-items:center;justify-content:center;background:#3a3a3d;color:#efeff1;
-    font-weight:800;font-size:12px;}
-  #screen-career-hub .tv-av img{width:100%;height:100%;object-fit:cover;}
-  #screen-career-hub .tv-av.on{box-shadow:0 0 0 2px #eb0400, 0 0 0 4px #18181b;}
-  #screen-career-hub .tv-side .ch-row{border-color:rgba(255,255,255,.08);}
-  #screen-career-hub .tv-side .ch-row em{color:#adadb8;}
-  #screen-career-hub .tv-side .ch-row b{color:#efeff1;}
-  #screen-career-hub .tv-golive{margin-top:12px;}
-  #screen-career-hub .tv-golive h4,#screen-career-hub .tv-last h4,#screen-career-hub .tv-head h4{
-    margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#adadb8;}
-  #screen-career-hub .tv-go{display:block;width:100%;text-align:left;margin-bottom:6px;
-    background:#9146ff;color:#fff;border:none;border-radius:4px;padding:8px 10px;cursor:pointer;
-    font:inherit;}
-  #screen-career-hub .tv-go:hover{background:#a970ff;}
-  #screen-career-hub .tv-go.off{background:#3a3a3d;color:#8f8f96;cursor:default;}
-  #screen-career-hub .tv-go b{display:block;font-size:13px;font-weight:800;}
-  #screen-career-hub .tv-go em{font-style:normal;font-size:11px;opacity:.85;}
-  /* Турнирный эфир — не один из четырёх видов дня, а сам вечер: красный, как
-     плашка LIVE, и стоит первым. См. careerPlayLive. */
-  #screen-career-hub .tv-go-cup{background:#eb0400;}
-  #screen-career-hub .tv-go-cup:hover{background:#ff2a26;}
-  /* ---- Окошко трансляции поверх вечера (ccTvMini*) ---------------------------
-     Живёт на body, а не в хабе: во время турнира хаб скрыт, а окно должно
-     висеть над экраном результатов. Ниже любой модалки (z-index 200+), выше
-     самой игры — окно смотрят, а не жмут. */
-  .cc-tvm{position:fixed;right:14px;bottom:14px;width:252px;z-index:180;
-    background:#18181b;color:#efeff1;border:1px solid #26262c;border-radius:8px;
-    box-shadow:0 18px 40px rgba(0,0,0,.45);overflow:hidden;
-    font-family:inherit;font-size:12px;}
-  .cc-tvm-h{display:flex;align-items:center;gap:8px;padding:7px 8px;background:#0e0e10;
-    border-bottom:1px solid #26262c;}
-  .cc-tvm-live{background:#eb0400;color:#fff;font-size:9px;font-weight:900;letter-spacing:.06em;
-    padding:2px 5px;border-radius:3px;}
-  .cc-tvm-v{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;
-    font-variant-numeric:tabular-nums;}
-  .cc-tvm-v i{width:7px;height:7px;border-radius:50%;background:#eb0400;display:block;}
-  .cc-tvm-x{margin-left:auto;background:none;border:none;color:#adadb8;font:inherit;
-    font-size:15px;line-height:1;cursor:pointer;padding:0 4px;}
-  .cc-tvm-x:hover{color:#efeff1;}
-  .cc-tvm.fold .cc-tvm-b{display:none;}
-  .cc-tvm-b{padding:8px;}
-  .cc-tvm-title{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
-    color:#bf94ff;margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .cc-tvm-run{display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;
-    background:#0e0e10;border-radius:4px;padding:6px 8px;margin-bottom:6px;
-    font-variant-numeric:tabular-nums;}
-  .cc-tvm-run b{font-size:13px;font-weight:900;color:#efeff1;}
-  .cc-tvm-run span{font-size:11.5px;color:#adadb8;}
-  .cc-tvm-run .cc-tvm-w{color:#ffd54a;font-weight:700;}
-  /* Полоса вечера: сколько игр из скольких сыграно. */
-  .cc-tvm-bar{height:3px;border-radius:2px;background:#26262c;overflow:hidden;margin-bottom:6px;}
-  .cc-tvm-bar i{display:block;height:100%;width:0;background:#9147ff;}
-  /* Полоска игр вечера: квадратик на игру, цвет за место. */
-  .cc-tvm-pips{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px;}
-  .cc-tvm-pips i{width:12px;height:6px;border-radius:2px;background:#3a3a3d;display:block;}
-  .cc-tvm-pips i.w{background:#ffd54a;}
-  .cc-tvm-pips i.a{background:#00b884;}
-  .cc-tvm-pips i.b{background:#4d7fd6;}
-  .cc-tvm-pips i.c{background:#3a3a3d;}
-  .cc-tvm-pips i.n{background:#1f1f23;}
-  /* Табло трансляции: тройка сверху и своя строка. */
-  .cc-tvm-board{margin-bottom:6px;font-variant-numeric:tabular-nums;}
-  .cc-tvm-row{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#adadb8;
-    padding:1px 0;}
-  .cc-tvm-row i{font-style:normal;width:22px;color:#7a7a85;}
-  .cc-tvm-row b{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;
-    white-space:nowrap;}
-  .cc-tvm-row em{font-style:normal;font-weight:800;color:#efeff1;}
-  .cc-tvm-row.me{color:#efeff1;background:rgba(145,71,255,.18);border-radius:3px;}
-  .cc-tvm-row.me i,.cc-tvm-row.me b{color:#bf94ff;}
-  .cc-tvm-cut{font-size:10.5px;margin-top:3px;}
-  .cc-tvm-cut.in{color:#00b884;}
-  .cc-tvm-cut.out{color:#ff6b6b;}
-  .cc-tvm-chat{height:86px;overflow:hidden;line-height:1.35;}
-  .cc-tvm-msg{font-size:11.5px;color:#efeff1;margin-bottom:2px;word-break:break-word;}
-  .cc-tvm-msg b{font-weight:700;}
-  .cc-tvm-f{display:flex;justify-content:space-between;gap:8px;margin-top:6px;
-    padding-top:6px;border-top:1px solid #26262c;font-size:11px;color:#adadb8;}
-  @media(max-width:760px){.cc-tvm{width:190px;right:8px;bottom:8px;}
-    .cc-tvm-chat{height:74px;}}
-  #screen-career-hub .tv-last{margin-top:12px;}
-  #screen-career-hub .tv-last .ch-hint{color:#adadb8;}
-  #screen-career-hub .tv-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
-  #screen-career-hub .tv-head span{font-size:11.5px;color:#bf94ff;}
-  /* 4 сентября, его скрин с красной рамкой вокруг значка LIVE: правило .tv-live
-     было объявлено ДВАЖДЫ — здесь лежал остаток витрины каналов (сетка плиток),
-     которую сменила страница канала, и его «слева сверху» перебивало нужное
-     «по центру под аватаром». Мёртвая сетка удалена целиком. */
-  #screen-career-hub .tv-f{display:block;font-size:10.5px;color:#7a7a85;}
-  /* Таблицы статистики уже плитки: у журнала min-width 760, здесь шесть
-     колонок, и без сброса две правые срезались краем плитки. */
-  #screen-career-hub .cc-st-table{min-width:0;}
-  #screen-career-hub .cc-st-table th,#screen-career-hub .cc-st-table td{white-space:nowrap;}
-  /* Зал славы одет как плитки слотов над ним: тёмное стекло, не белая карточка. */
-  #screen-career-slots .cc-hall{margin:18px 0 0;max-width:none;text-align:left;
-    background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);border-radius:14px;
-    padding:14px 16px;color:#fff;box-shadow:none;}
-  #screen-career-slots .cc-hall h4{color:#fff;margin:0 0 10px;}
-  #screen-career-slots .cc-hall .ch-row{border-color:rgba(255,255,255,.08);}
-  #screen-career-slots .cc-hall .ch-row em{color:rgba(255,255,255,.55);}
-  #screen-career-slots .cc-hall .ch-row b{color:#fff;}
-  #screen-career-slots .cc-hall-rec{margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.12);}
-  #screen-career-slots .cc-hall-row b{font-weight:600;font-size:12px;opacity:.85;}
   /* Why today's tournament is playing without you, above the day's choices. */
   #screen-career-hub .cc-day-find{margin-top:8px;width:auto;padding:8px 18px;}
   #screen-career-hub .cc-day-locked{font-size:11.5px;font-weight:800;color:#ffb300;
@@ -2799,22 +2548,12 @@
   /* Что пишут под постом. Тише самого поста — это чужие голоса, а не твой. */
   .x-co{margin-top:7px;padding-left:10px;border-left:2px solid rgba(140,175,255,.16);
     display:flex;flex-direction:column;gap:3px;}
-  /* Тем же весом, что и всё вокруг: его правка 3 сентября — «шрифт нормальный
-     как везде в сошиал». Комментарии стояли обычным тонким начертанием в
-     двенадцать пикселей посреди хаба, где всё написано жирным. */
-  .x-co-r{font-size:12.5px;line-height:1.4;color:#b9c6e4;font-weight:700;}
+  .x-co-r{font-size:12px;line-height:1.35;color:#b9c6e4;}
   .x-co-r b{color:#8ea3cf;font-weight:800;margin-right:6px;}
   /* Настоящий человек из сцены отличается от зрителя — это и есть та похвала,
      ради которой всё затевалось. */
   .x-co-r.pro b{color:#00ffd0;}
   .x-co-r.pro{color:#e6edfb;}
-  /* Клуб отвечает с галочкой; ответ автора на чей-то комментарий стоит
-     ступенькой ниже, как ветка; хейтер — серым, чтобы не путать с похвалой. */
-  .x-co-r b .x-tick{margin-left:3px;vertical-align:1px;}
-  .x-co-r.sub{margin-left:16px;}
-  .x-co-r.sub::before{content:'↳';color:#67799f;margin-right:5px;}
-  .x-co-r.hate{color:#8d95a8;}
-  .x-co-r.hate b{color:#6f7a93;}
   .x-co-more{font-size:11px;color:#67799f;margin-top:1px;}
   .x-acts span{display:inline-flex;align-items:center;gap:6px;}
   .x-acts b{font-weight:700;font-variant-numeric:tabular-nums;}
@@ -2843,100 +2582,6 @@
   .x-shot-r.win b{color:#ffd166;}
   .x-shot-r.me{background:rgba(62,233,184,.08);}
   .x-shot-r.me b{color:#3ee9b8;}
-  /* Широкий вид — тот, который постят: слева места с матчами, победами и
-     киллами, справа очки и сводка. См. ccStageShot. */
-  .x-shot-body{display:grid;grid-template-columns:minmax(0,1fr) 132px;}
-  .x-shot:not(.x-shot-sum-on) .x-shot-body{grid-template-columns:minmax(0,1fr);}
-  @media(max-width:560px){.x-shot-body{grid-template-columns:minmax(0,1fr);}}
-  .x-shot-rows{min-width:0;}
-  /* Колонки шире подписей: «MATCHES / WINS / KILLS» в двадцать пикселей
-     наезжали друг на друга. Числа выровнены по правому краю, как в таблице. */
-  .x-shot-wide .x-shot-r{grid-template-columns:26px minmax(0,1fr) 54px 38px 42px 46px;gap:4px;}
-  .x-shot-r u{text-decoration:none;font-size:11px;color:#8ea6d6;text-align:right;
-    font-variant-numeric:tabular-nums;}
-  .x-shot-wide .x-shot-r em{text-align:right;}
-  .x-shot-head{background:rgba(0,0,0,.25);font-size:7.5px;text-transform:uppercase;
-    letter-spacing:.02em;color:#7c90b8;}
-  /* Размер подписи задаётся ЗДЕСЬ, а не на строке: у ячеек свой размер
-     (.x-shot-r u), и он весомее по специфичности — из-за этого «MATCHES»
-     рисовался одиннадцатым кеглем и не влезал. */
-  .x-shot-head u,.x-shot-head em{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-    font-size:7.5px;letter-spacing:0;}
-  .x-shot-head b,.x-shot-head u,.x-shot-head em,.x-shot-head i{color:#7c90b8;font-weight:800;}
-  .x-shot-side{border-left:1px solid rgba(140,175,255,.14);padding:9px 10px;min-width:0;}
-  .x-shot-pts b{display:block;font-size:24px;font-weight:900;font-style:italic;color:#fff;
-    line-height:1;font-variant-numeric:tabular-nums;}
-  .x-shot-pts span{font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
-    color:#7c90b8;}
-  .x-shot-sum{margin-top:7px;display:flex;flex-direction:column;gap:3px;}
-  .x-shot-sum span{display:flex;justify-content:space-between;gap:8px;font-size:10.5px;
-    font-weight:700;color:#8ea6d6;}
-  .x-shot-sum b{color:#d8e6ff;font-variant-numeric:tabular-nums;}
-  /* Статус рядом с ником — то, что настоящие носят прямо в имени аккаунта:
-     «F/A», «LFT», клуб. Свободный агент подсвечен, клуб — приглушён: первое
-     значит «его можно позвать», второе просто говорит, где он играет. */
-  .x-who{font-style:normal;font-size:9.5px;font-weight:900;letter-spacing:.08em;
-    text-transform:uppercase;padding:1px 7px;border-radius:999px;margin-left:5px;
-    border:1px solid rgba(140,175,255,.24);color:#8ea6d6;white-space:nowrap;}
-  .x-who-fa,.x-who-lft{color:#3ee9b8;border-color:rgba(62,233,184,.5);
-    background:rgba(62,233,184,.1);}
-  /* Карточка человека под постом — тот самый скрин PR-профиля, который
-     прикладывают к объявлению: био строкой, число, за сезон и за год, кривая. */
-  .x-card{margin-top:9px;border:1px solid #24314e;border-radius:14px;padding:10px 12px;
-    background:linear-gradient(180deg,#0d1526,#0a1120);}
-  .x-card-bio{font-size:11.5px;font-weight:700;color:#8ea6d6;line-height:1.45;}
-  .x-card-num{display:flex;align-items:baseline;gap:8px;margin-top:6px;}
-  .x-card-num b{font-size:26px;font-weight:900;font-style:italic;color:#fff;
-    letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
-  .x-card-num span{font-size:10px;font-weight:900;letter-spacing:.1em;
-    text-transform:uppercase;color:#7183b0;}
-  .x-card-cols{display:flex;gap:18px;margin-top:4px;}
-  .x-card-cols span{font-size:10px;font-weight:900;letter-spacing:.08em;
-    text-transform:uppercase;color:#7183b0;}
-  .x-card-cols i{display:block;font-style:normal;font-size:15px;font-weight:900;
-    color:#c6d5f0;letter-spacing:0;font-variant-numeric:tabular-nums;}
-  .x-spark{display:block;width:100%;height:26px;margin-top:6px;}
-  /* Арт события под постом — то, что у настоящих фотография с ЛАНа. */
-  .x-art{margin-top:9px;border:1px solid #24314e;border-radius:14px;overflow:hidden;
-    aspect-ratio:16/7;background-size:cover;background-position:center 35%;}
-  /* Цитата — пост внутри поста, в рамке и потише основного. */
-  .x-quote{margin-top:9px;border:1px solid #24314e;border-radius:14px;padding:9px 11px;
-    background:rgba(4,20,26,.5);}
-  .x-quote-h{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:800;color:#8ea6d6;}
-  .x-quote-h .x-av{width:22px;height:22px;font-size:9px;}
-  .x-quote-h b{color:#d8ecec;}
-  .x-quote p{margin:5px 0 0;font-size:13px;line-height:1.4;color:#c6d5f0;}
-  .x-quoting{display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:800;
-    color:#7fa3a5;margin-bottom:8px;}
-  .x-replybox{display:flex;gap:8px;align-items:flex-end;margin-top:8px;}
-  /* Кнопка «Отправить» — своей ширины, не хабовской. Ровно та же поправка, что
-     у композера выше: #screen-career-hub .ch-sign{width:100%} раскатывал её на
-     всю плитку, а поле ответа схлопывалось в вертикальную полоску в один знак.
-     Его скрин «когда реплай нажимаю», 3 сентября. */
-  #screen-career-hub .x-replybox .ch-sign,
-  .x-replybox .ch-sign{flex:0 0 auto;width:auto;padding:9px 22px;white-space:nowrap;}
-  .x-replybox textarea{flex:1 1 auto;width:100%;min-width:0;resize:vertical;min-height:38px;border-radius:10px;
-    border:1px solid rgba(126,240,221,.2);background:rgba(0,0,0,.3);color:#eafcfa;
-    font:inherit;padding:7px 10px;}
-  .x-who-link{cursor:pointer;}
-  .x-who-link:hover{text-decoration:underline;}
-  /* Карта под объявлением высадки: остров картинкой, точка — рамкой на нём. */
-  .x-map{position:relative;margin-top:9px;border:1px solid #24314e;border-radius:14px;
-    overflow:hidden;aspect-ratio:16/9;background-size:cover;background-position:center;}
-  .x-map i{position:absolute;border:2px solid #ffdd00;border-radius:3px;
-    background:rgba(255,221,0,.18);box-shadow:0 0 0 9999px rgba(3,10,20,.42);}
-  /* Вырезка вокруг коробки вместо целого острова: кадр в ширину примерно как
-     картинка в его образце, слой — карта, растянутая в zoom раз. Ширину держим
-     в узде, иначе пост снова становится картинкой на полэкрана. */
-  .x-map-shot{aspect-ratio:11/10;width:min(100%, 300px);background-color:#04101c;}
-  .x-map-in{position:absolute;left:50%;top:50%;
-    background-size:100% 100%;background-repeat:no-repeat;}
-  /* Анкета в списке «кому написать»: чего человек хочет, и красным — если
-     этого у тебя нет. */
-  .cc-buy-ad{display:block;font-style:normal;font-size:10.5px;font-weight:800;
-    letter-spacing:.04em;color:#3ee9b8;margin-top:2px;}
-  .cc-buy-ad.no{color:#ff8a8a;}
-  .cc-ad-no{color:#ff8a8a;}
   /* X's three panes: a rail you navigate with, the feed, and what is going on
      beside it. The rail replaces the pair of pills that used to sit above the
      feed — in the reference the navigation is a column with your own account
@@ -2967,15 +2612,6 @@
   .cc-hon:last-of-type{border-bottom:0;}
   /* The second heading inside the last screen's honours tile: the nights
      themselves, under the best-of lines. See careerBigRuns. */
-  /* Церемония игрока года: победитель крупно, четверо под ним. */
-  .cc-goty-win{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;
-    background:rgba(255,221,0,.10);border:1px solid rgba(255,221,0,.45);margin-bottom:8px;}
-  .cc-goty-win b{display:block;font-size:17px;font-weight:900;color:#fff;}
-  .cc-goty-win em{display:block;font-style:normal;font-size:11.5px;color:var(--ink-dim);}
-  .cc-goty-ball{font-size:26px;line-height:1;}
-  .cc-goty-win.me{background:rgba(255,221,0,.22);border-color:#ffdd00;}
-  .cc-goty-row i{display:inline-block;width:18px;font-style:normal;color:var(--ink-dimmer);}
-  .cc-goty-row.me b,.cc-goty-row.me em{color:#ffdd00;}
   .cc-board-h{margin-top:14px;}
   .cc-board .ch-row em{max-width:62%;}
   .cc-over-act{margin-top:14px;}
@@ -3580,11 +3216,6 @@
   .cc-ffo-err b{display:block;font-size:12px;font-weight:900;color:#ff8c9c;}
   .cc-ffo-err span{display:block;margin-top:3px;font-size:11px;line-height:1.4;
     color:var(--ink-dim);word-break:break-word;}
-  /* Метка сборки под текстом ошибки: по одному скриншоту сразу видно, какая
-     версия сломалась. См. CC_HUB_ERR_FULL и кнопку «скопировать ошибку». */
-  .cc-ffo-err .cc-ffo-build{margin-top:5px;font-size:10px;font-weight:800;
-    letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dimmer);}
-  .cc-err-copy{margin-left:8px;}
   @media (max-width:560px){
     .cc-ffo{padding:0;}
     .cc-ffo-panel{border-radius:0;height:100%;width:100%;}
@@ -3683,12 +3314,6 @@
   .dm-ask{display:flex;gap:8px;margin:8px 0 4px;flex-wrap:wrap;}
   .dm-ask .cc-back{font-size:11px;padding:6px 12px;}
   .dm-asked{font-size:11px;color:var(--ink-dimmer);margin:8px 0 4px;font-style:italic;}
-  /* Выбор напарника на Про-Ам: имя и под ним его аудитория — по ней и
-     выбирают, поэтому число стоит отдельной строкой, а не липнет к нику. */
-  .dm-ask-wide{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
-  .dm-ask-wide .cc-back{text-align:left;line-height:1.25;}
-  .dm-ask-wide .cc-back i{display:block;font-style:normal;font-weight:400;
-    font-size:10.5px;opacity:.65;letter-spacing:0;}
   /* How long the seat is held. It sits with the terms rather than in the
      messages, because it is a term. */
   .dm-until{color:#ffd166;}
@@ -3811,12 +3436,6 @@
   #screen-career-hub .cc-back:hover{background:rgba(255,255,255,.18);color:#fff;}
   #screen-career-hub .ch-end{margin-left:auto;color:#ff8c9c;border-color:rgba(255,110,130,.35);}
   #screen-career-hub .ch-end:hover{background:#e8283f;border-color:#e8283f;color:#fff;}
-  /* «Играть в эфире» — та же кнопка вечера, но в цветах твича: рядом с жёлтым
-     «Играть» фиолетовое читается как другой вход в тот же вечер, а не как
-     вторая главная кнопка. См. careerPlayLive. */
-  #screen-career-hub .ch-play.ch-live-go{background:#9147ff;color:#fff;margin-top:6px;}
-  #screen-career-hub .ch-play.ch-live-go:not(:disabled):hover{background:#a970ff;color:#fff;}
-  #screen-career-hub .ch-play.ch-live-go:disabled{background:rgba(255,255,255,.16);color:#8fa1cc;}
 
   /* ---- The calendar, in the lobby's colours ---------------------------------
      A month of white squares on a white plate is a spreadsheet. The lobby is
@@ -4014,313 +3633,6 @@
   #screen-career-hub .ch-sign{border-radius:2px;font-family:var(--font-display);font-weight:600;
     font-size:14px;letter-spacing:.07em;
     clip-path:polygon(0 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%);}
-
-  /* 8. СОЦСЕТЬ — форма X, материал наш.
-     ------------------------------------------------------------------
-     Его правка, 2 сентября: «дизайн сошиал сделал как в X, ток под наши
-     панельки». Форма и была X — рельс слева, лента посередине, кто пишет
-     справа, — а материал остался от прежней сине-индиговой карьеры: круглые
-     аватарки, синие ссылки, скруглённые на 14 пикселей вложения. Рядом с
-     панелями хаба это читалось как чужой экран, вклеенный в наш.
-
-     Меняется только кожа. Ни одного нового цвета: та же бирюзовая кромка, тот
-     же срез угла, Oswald с наклоном в именах и жёлтая primary. Ссылки, лайки
-     и цифры переезжают на бирюзу с жёлтым — то есть на палитру сцены, а не на
-     твиттеровскую синь. */
-  /* Рельс — те же параллелограммы, что вкладки хаба; активный жёлтый. */
-  /* Рельс, кнопки под постами и вкладки лички — СКРУГЛЁННЫЕ, его правка со
-     скриншотами: «сделай округлые». Срез и наклон остаются у панелей — у того,
-     что держит содержимое; всё, что нажимается, теперь пилюля. */
-  #screen-career-hub .x-nav{font-family:var(--font-display);font-weight:600;font-size:15px;
-    letter-spacing:.06em;text-transform:uppercase;color:#c9dfe0;border-radius:999px;
-    padding:9px 16px;transform:none;border:1px solid transparent;clip-path:none;}
-  #screen-career-hub .x-nav>*{transform:skewX(8deg);}
-  #screen-career-hub .x-nav:hover{background:rgba(126,240,221,.1);border-color:#7ef0dd;color:#fff;}
-  #screen-career-hub .x-nav.on{background:var(--go);color:var(--go-ink);border-color:var(--go);}
-  #screen-career-hub .x-nav i{background:#7ef0dd;}
-  #screen-career-hub .x-nav.on i{background:var(--go-ink);}
-  #screen-career-hub .x-me{background:rgba(4,20,26,.6);border:1px solid rgba(126,240,221,.18);
-    border-radius:999px;clip-path:none;}
-  #screen-career-hub .x-me-in b{font-family:var(--font-display);font-weight:600;letter-spacing:.03em;}
-  #screen-career-hub .x-me-in span{color:#7fa3a5;}
-  /* Пост — строка ленты, а не карточка: нить снизу и подсветка под курсором,
-     ровно как в X. Имя — Oswald с наклоном, ник и время приглушены. */
-  /* Лента держит сто двадцать записей (CAREER_NEWS_KEEP), и рисовать их все
-     сразу незачем: то, что за экраном, браузер пропускает и достраивает при
-     подходе. Высота-подсказка — рост обычного поста без вложения. */
-  #screen-career-hub .x-post{padding:12px 4px;border-bottom-color:rgba(126,240,221,.12);
-    transition:background .12s ease;content-visibility:auto;contain-intrinsic-size:auto 118px;}
-  #screen-career-hub .x-post:hover{background:rgba(126,240,221,.045);}
-  /* Имя в ленте — наш Oswald, но БЕЗ наклона: его правка, 3 сентября —
-     «шрифт в social сделай нормальный как наш». Наклон у нас носят заголовки
-     панелей, а ник в ленте это не заголовок, и косой он читался как курсив. */
-  #screen-career-hub .x-post header b{font-family:var(--font-display);font-weight:600;
-    font-size:15.5px;letter-spacing:.02em;color:#fff;}
-  #screen-career-hub .x-post header span{color:#7fa3a5;}
-  #screen-career-hub .x-post p{color:#e2f4f2;}
-  #screen-career-hub .x-at{color:#7ef0dd;}
-  #screen-career-hub .x-tick{background:#7ef0dd;color:#04121a;}
-  #screen-career-hub .x-acts{color:#7fa3a5;}
-  #screen-career-hub .x-like:hover{color:#7ef0dd;}
-  #screen-career-hub .x-like.on{color:var(--go);}
-  #screen-career-hub .x-co{border-left-color:rgba(126,240,221,.22);}
-  #screen-career-hub .x-co-r{color:#bfdcd9;}
-  #screen-career-hub .x-co-more{color:#7fa3a5;}
-  /* Аватарка — квадрат со срезом, как герб клуба: круг был единственным
-     кругом на всём экране. */
-  #screen-career-hub .x-av,#screen-career-hub .dm-av{border-radius:3px;
-    clip-path:polygon(0 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%);}
-  #screen-career-hub .x-av-you{background:#0f6f5f;color:#eafffb;}
-  /* Вложения — таблица вечера и карточка человека — те же панели сцены. */
-  #screen-career-hub .x-art,#screen-career-hub .x-quote{border-radius:3px;
-    border-color:rgba(126,240,221,.2);
-    clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);}
-  #screen-career-hub .x-quote p{color:#d8ecec;}
-  #screen-career-hub .x-quote-h{color:#7fa3a5;}
-  #screen-career-hub .x-map{border-radius:3px;border-color:rgba(126,240,221,.2);
-    clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);}
-  #screen-career-hub .x-card{border-radius:3px;
-    border-color:rgba(126,240,221,.2);background:rgba(3,16,20,.82);
-    clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);}
-  /* Таблица под постом — СКРИНШОТ ЛЕДДЕРБОРДА, а не панель хаба.
-
-     Его правка, 3 сентября: «сделай таблицы как постят игроки в твитере». Они
-     постят снимок таблицы с fortnite.com/competitive или Tracker: чёрное
-     полотно без бирюзы и срезанных углов, номер места крупной узкой цифрой,
-     имена белым, очки жирно справа, своя строка залита жёлтым от края до края,
-     а сверху — название события заглавными и тонкая жёлтая линия. Снимок —
-     прямоугольник с мягкими углами, поэтому clip-path у него нет. */
-  #screen-career-hub .x-shot{border-radius:8px;border:1px solid #1c2230;
-    background:#0b0e14;box-shadow:0 8px 24px rgba(0,0,0,.35);}
-  #screen-career-hub .x-shot-h{background:#12161f;color:#f3f5f9;
-    border-bottom:2px solid var(--go);font-family:var(--font-display);
-    font-weight:600;font-size:13px;letter-spacing:.08em;padding:9px 14px;}
-  #screen-career-hub .x-shot-h span:last-child{color:#8a93a6;font-size:10.5px;letter-spacing:.14em;}
-  #screen-career-hub .x-shot-r{color:#f3f5f9;padding:7px 14px;font-size:13px;
-    border-left:3px solid transparent;}
-  #screen-career-hub .x-shot-r+.x-shot-r{border-top-color:#171c27;}
-  #screen-career-hub .x-shot-r i{font-family:var(--font-display);font-weight:600;
-    font-size:16px;color:#8a93a6;letter-spacing:.02em;}
-  #screen-career-hub .x-shot-r b{font-weight:800;color:#f3f5f9;}
-  #screen-career-hub .x-shot-r em{font-family:var(--font-display);font-weight:600;
-    font-size:15px;color:#f3f5f9;}
-  #screen-career-hub .x-shot-r u{color:#8a93a6;font-size:11.5px;font-weight:700;}
-  #screen-career-hub .x-shot-r.win i{color:var(--go);}
-  #screen-career-hub .x-shot-r.win b{color:#f3f5f9;}
-  #screen-career-hub .x-shot-r.me{background:rgba(255,214,0,.14);border-left-color:var(--go);}
-  #screen-career-hub .x-shot-r.me i,#screen-career-hub .x-shot-r.me b,
-  #screen-career-hub .x-shot-r.me em{color:var(--go);}
-  #screen-career-hub .x-shot-head{background:#0e1119;}
-  #screen-career-hub .x-shot-head,#screen-career-hub .x-shot-head b,
-  #screen-career-hub .x-shot-head u,#screen-career-hub .x-shot-head em,
-  #screen-career-hub .x-shot-head i{font-family:var(--font-display);font-weight:500;
-    font-size:9px;letter-spacing:.12em;color:#6c7488;}
-  #screen-career-hub .x-shot-side{border-left-color:#1c2230;background:#0e1119;padding:12px 12px;}
-  #screen-career-hub .x-shot-pts b{font-family:var(--font-display);font-style:normal;
-    font-size:30px;color:var(--go);}
-  #screen-career-hub .x-shot-pts span{font-family:var(--font-display);font-weight:500;
-    letter-spacing:.14em;color:#8a93a6;}
-  #screen-career-hub .x-shot-sum span{color:#8a93a6;font-size:11px;}
-  #screen-career-hub .x-shot-sum b{color:#f3f5f9;font-family:var(--font-display);
-    font-weight:600;font-size:13px;}
-  #screen-career-hub .x-card-bio{color:#9fc9c9;}
-  #screen-career-hub .x-card-num b{font-family:var(--font-display);font-weight:700;font-style:normal;}
-  #screen-career-hub .x-card-num span,#screen-career-hub .x-card-cols span{color:#7fa3a5;}
-  #screen-career-hub .x-card-cols i{color:#d8ecec;}
-  /* Композер и «ищу дуо» — панели, а не поля на пустом месте. */
-  #screen-career-hub .x-compose-box{background:rgba(0,0,0,.3);color:#eafcfa;
-    border-color:rgba(126,240,221,.2);border-radius:3px;}
-  #screen-career-hub .x-compose-box::placeholder{color:#6f9698;}
-  #screen-career-hub .x-compose-txt b{font-family:var(--font-display);font-weight:600;
-    font-size:15px;letter-spacing:.04em;text-transform:uppercase;}
-  #screen-career-hub .x-compose-txt span,#screen-career-hub .x-compose-left,
-  #screen-career-hub .x-compose-on{color:#7fa3a5;}
-  /* Кто пишет и кому написать. */
-  #screen-career-hub .x-sug-in b{font-family:var(--font-display);font-weight:600;letter-spacing:.03em;}
-  #screen-career-hub .x-sug-in span{color:#7fa3a5;}
-  /* Кнопка «написать» стоит на светлой панели справа, поэтому она тёмная:
-     тот же контраст, что у кнопок на самой сцене, а не бледная рамка. */
-  #screen-career-hub .x-follow{border-radius:999px;padding:6px 14px;border:1px solid rgba(126,240,221,.4);
-    background:rgba(4,20,26,.72);color:#eafcfa;
-    font-family:var(--font-display);font-weight:600;letter-spacing:.05em;}
-  #screen-career-hub .x-follow:hover{background:rgba(126,240,221,.18);border-color:#7ef0dd;color:#fff;}
-  #screen-career-hub .x-profile-head b{font-family:var(--font-display);font-weight:700;font-size:23px;
-    letter-spacing:.01em;color:#fff;}
-  #screen-career-hub .x-profile-head>div>span{color:#7fa3a5;}
-  #screen-career-hub .x-bio{color:#9fc9c9;}
-  #screen-career-hub .x-counts{border-color:rgba(126,240,221,.14);}
-  #screen-career-hub .x-counts span{color:#7fa3a5;}
-  #screen-career-hub .x-counts b{font-family:var(--font-display);font-weight:700;color:#fff;}
-  /* Переписка. Полоса сверху — бирюзовая, как кромка панелей; своя реплика
-     бирюзовая, чужая — стекло сцены. */
-  #screen-career-hub .dm-wrap{border-color:rgba(126,240,221,.18);border-radius:3px;
-    clip-path:polygon(0 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%);}
-  #screen-career-hub .dm-wrap::before{background:#7ef0dd;height:3px;}
-  #screen-career-hub .dm-side{border-right-color:rgba(126,240,221,.14);}
-  #screen-career-hub .dm-side-h{color:#7fa3a5;letter-spacing:.14em;}
-  #screen-career-hub .dm-tab{font-family:var(--font-display);font-weight:600;letter-spacing:.05em;
-    border-radius:999px;padding:6px 14px;border-color:rgba(126,240,221,.22);color:#c9dfe0;}
-  #screen-career-hub .dm-tab.on{background:rgba(126,240,221,.14);border-color:#7ef0dd;color:#fff;}
-  #screen-career-hub .dm-tab em{color:#7fa3a5;}
-  #screen-career-hub .dm-item.on{background:rgba(126,240,221,.1);box-shadow:inset 3px 0 0 #7ef0dd;}
-  #screen-career-hub .dm-item-in b{font-family:var(--font-display);font-weight:600;letter-spacing:.03em;}
-  #screen-career-hub .dm-item-in>span{color:#7fa3a5;}
-  #screen-career-hub .dm-head{border-bottom-color:rgba(126,240,221,.14);}
-  /* Имя и строка под ним умеют ужиматься, кнопка блокировки — нет: без этого
-     «BLOCK» растягивался во всю шапку, а метаданные ломались по слогам. */
-  #screen-career-hub .dm-head>div{min-width:0;flex:1;}
-  #screen-career-hub .dm-head>div b{font-family:var(--font-display);font-weight:600;font-size:17px;
-    letter-spacing:.02em;}
-  #screen-career-hub .dm-head>div span{color:#7fa3a5;}
-  #screen-career-hub .dm-head-block{width:auto;min-width:0;flex:0 0 auto;align-self:center;}
-  #screen-career-hub .dm-msg.dm-them span{background:rgba(4,20,26,.75);
-    border:1px solid rgba(126,240,221,.16);color:#e2f4f2;border-radius:3px;}
-  #screen-career-hub .dm-msg.dm-you span{background:rgba(126,240,221,.14);
-    border:1px solid rgba(126,240,221,.34);color:#eafffb;border-radius:3px;}
-  #screen-career-hub .dm-msg i{color:#6f9698;}
-  #screen-career-hub .dm-offer-terms span{border-color:rgba(126,240,221,.2);color:#d8ecec;}
-  #screen-career-hub .dm-asked{color:#7fa3a5;}
-  /* 8.1 СКРОЛЛ — СВОЙ, А НЕ ХРОМОВСКИЙ.
-
-     Его правка, 2 сентября: «скролл сделай не от хрома а в нашем стиле». На
-     скриншоте списка новостей стояла серая системная полоса со стрелками —
-     единственная деталь на экране, нарисованная не нами. Полоса тонкая, без
-     кнопок-стрелок, ползунок бирюзовый и под курсором жёлтый: те же два цвета,
-     что у всей сцены.
-
-     Правило общее для страницы, а не только для хаба: сайт тёмный целиком, и
-     светлая системная полоса чужая на любом его экране. Firefox понимает
-     scrollbar-width/scrollbar-color, WebKit — псевдоэлементы; здесь есть оба. */
-  html{scrollbar-width:thin;scrollbar-color:#3fb9a5 rgba(2,12,16,.55);}
-  ::-webkit-scrollbar{width:10px;height:10px;}
-  ::-webkit-scrollbar-track{background:rgba(2,12,16,.55);}
-  ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#7ef0dd,#2b9d8a);
-    border:2px solid rgba(2,12,16,.85);border-radius:2px;}
-  ::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--go),#c9a400);}
-  ::-webkit-scrollbar-corner{background:transparent;}
-  /* Стрелки Chrome рисует сам и в наш стиль не приводятся — их просто нет. */
-  ::-webkit-scrollbar-button{display:none;width:0;height:0;}
-
-  /* 9. Новостной хаб на центре — форма новостей FIFA, материал наш: слева
-     список заголовков, справа одна новость крупно, с артом события. */
-  #screen-career-hub .nh-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px;}
-  /* Чипы полок — СКРУГЛЁННЫЕ, его правка со скриншотом: «сделай округленные».
-     Срез и наклон отсюда ушли: они у плашек, которые несут действие, а это
-     переключатель — и в хабе такой уже есть, белая пилюля активной вкладки.
-     Осталось от плашки только тёмное стекло и бирюзовая кромка. */
-  #screen-career-hub .nh-tab{font-family:var(--font-display);font-weight:600;font-size:13px;
-    letter-spacing:.06em;text-transform:uppercase;padding:7px 16px;border-radius:999px;
-    border:1px solid rgba(126,240,221,.28);color:#c9dfe0;
-    background:rgba(3,16,20,.62);cursor:pointer;transform:none;clip-path:none;}
-  #screen-career-hub .nh-tab:hover{border-color:#7ef0dd;color:#fff;background:rgba(126,240,221,.1);}
-  #screen-career-hub .nh-tab.on{background:var(--go);color:var(--go-ink);border-color:var(--go);}
-  #screen-career-hub .nh-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);
-    gap:12px;align-items:start;}
-  @media(max-width:1000px){#screen-career-hub .nh-wrap{grid-template-columns:minmax(0,1fr);}}
-  #screen-career-hub .nh-list{display:flex;flex-direction:column;max-height:420px;overflow-y:auto;
-    background:rgba(3,16,20,.4);border:1px solid rgba(126,240,221,.14);border-radius:3px;
-    clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);}
-  /* Строка списка — дата сверху, заголовок под ней, автор третьей строкой:
-     тот же порядок, что у них, и по нему видно, чья это новость. */
-  #screen-career-hub .nh-row{display:block;width:100%;text-align:left;cursor:pointer;
-    background:none;border:0;border-bottom:1px solid rgba(126,240,221,.12);
-    padding:9px 10px 9px 12px;font:inherit;color:#d8ecec;}
-  #screen-career-hub .nh-row:hover{background:rgba(126,240,221,.06);}
-  #screen-career-hub .nh-row.on{background:rgba(126,240,221,.1);box-shadow:inset 3px 0 0 var(--go);}
-  #screen-career-hub .nh-row em{display:block;font-style:normal;font-size:9.5px;font-weight:900;
-    letter-spacing:.12em;text-transform:uppercase;color:#7fa3a5;}
-  #screen-career-hub .nh-row b{display:block;font-weight:700;font-size:13px;line-height:1.35;
-    margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
-  #screen-career-hub .nh-row>span{display:block;font-size:11px;font-weight:800;color:#7fa3a5;margin-top:3px;}
-  /* Новость. Картинка — арт события, лицо или герб; под ней текст. */
-  /* Карточка новости — панель сцены: бирюзовая кромка сверху, срез угла снизу.
-     Без кромки она читалась просто чёрным прямоугольником. */
-  #screen-career-hub .nh-lead{background:rgba(3,16,20,.78);border:1px solid rgba(126,240,221,.18);
-    border-radius:3px;overflow:hidden;position:relative;
-    clip-path:polygon(0 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%);}
-  #screen-career-hub .nh-lead::before{content:'';position:absolute;left:0;right:0;top:0;height:3px;
-    background:#7ef0dd;z-index:2;}
-  #screen-career-hub .nh-art{height:190px;background-size:cover;background-position:center 32%;
-    position:relative;}
-  #screen-career-hub .nh-art::after{content:'';position:absolute;inset:0;
-    background:linear-gradient(180deg,rgba(3,16,20,0) 30%,rgba(3,16,20,.92) 100%);}
-  /* Лицо и герб — не афиша: они мельче и не режутся по краям. */
-  /* Фотография человека — портрет, и на всю ширину карточки она превращается в
-     лицо крупным планом. Ниже ростом и взята сверху: видно голову и плечи, а не
-     одну щёку. */
-  #screen-career-hub .nh-art-face{background-size:cover;background-position:center 12%;height:132px;}
-  #screen-career-hub .nh-art-crest{background-size:auto 62%;background-repeat:no-repeat;
-    background-position:center;background-color:rgba(0,0,0,.3);height:150px;}
-  #screen-career-hub .nh-lead-in{padding:12px 14px 14px;}
-  #screen-career-hub .nh-kicker{display:block;font-style:normal;font-size:9.5px;font-weight:900;
-    letter-spacing:.13em;text-transform:uppercase;color:#7ef0dd;}
-  #screen-career-hub .nh-lead-in h5{margin:5px 0 9px;font-family:var(--font-display);font-weight:700;
-    font-size:21px;line-height:1.15;letter-spacing:.01em;color:#fff;}
-  #screen-career-hub .nh-by{display:flex;align-items:center;gap:9px;font-size:11.5px;
-    font-weight:800;color:#7fa3a5;}
-  #screen-career-hub .nh-by b{color:#d8ecec;margin-right:5px;}
-  #screen-career-hub .nh-open{margin-top:11px;}
-  /* Карусель: карточка проявляется, точки под ней говорят, сколько новостей и
-     где мы сейчас. При reduced-motion затухания нет — сама смена остаётся. */
-  #screen-career-hub .nh-side{min-width:0;}
-  #screen-career-hub .nh-lead.nh-in{animation:nhIn .28s ease-out;}
-  @keyframes nhIn{from{opacity:.35;} to{opacity:1;}}
-  @media (prefers-reduced-motion:reduce){
-    #screen-career-hub .nh-lead.nh-in{animation:none;}
-  }
-  #screen-career-hub .nh-dots{display:flex;gap:6px;justify-content:flex-end;margin-top:8px;}
-  /* Точки карусели — тоже скруглённые, заодно с чипами. */
-  #screen-career-hub .nh-dot{width:22px;height:5px;border:0;padding:0;cursor:pointer;
-    background:rgba(126,240,221,.25);border-radius:999px;}
-  #screen-career-hub .nh-dot:hover{background:rgba(126,240,221,.6);}
-  #screen-career-hub .nh-dot.on{background:var(--go);}
-  /* Кнопки под постом: написать, поручиться, ответить на комментарии. */
-  #screen-career-hub .x-acts2{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;}
-  #screen-career-hub .x-act{font-family:var(--font-display);font-weight:600;font-size:12px;
-    letter-spacing:.05em;text-transform:uppercase;padding:5px 13px;border-radius:999px;
-    border:1px solid rgba(126,240,221,.34);background:rgba(3,16,20,.6);color:#c9dfe0;cursor:pointer;
-    clip-path:none;}
-  #screen-career-hub .x-act:hover{border-color:#7ef0dd;color:#fff;background:rgba(126,240,221,.14);}
-  #screen-career-hub .x-act-done{font-size:11px;font-weight:800;letter-spacing:.05em;
-    text-transform:uppercase;color:#7fa3a5;align-self:center;}
-  /* Короткий ответ — не команда, а реплика: без caps и пошире буквой. */
-  #screen-career-hub .x-act-re{text-transform:none;letter-spacing:.02em;font-size:13px;padding:5px 14px;}
-  /* Своя строка в комментариях подсвечена — её видно среди чужих. */
-  #screen-career-hub .x-co-mine b{color:#7ef0dd;}
-  #screen-career-hub .x-co-mine span{color:#e2f4f2;}
-  /* Уведомления — список строк с датой и одним действием. */
-  #screen-career-hub .x-note{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-    padding:10px 2px;border-bottom:1px solid rgba(126,240,221,.12);}
-  #screen-career-hub .x-note b{font-weight:700;font-size:13px;color:#e2f4f2;min-width:0;}
-  /* Строка уведомления как в X: глиф, лицо, текст с куском поста, картинка. */
-  #screen-career-hub .x-note-g{display:flex;align-items:center;color:#7fa3a5;flex:0 0 auto;}
-  #screen-career-hub .x-note-g svg{width:15px;height:15px;}
-  #screen-career-hub .x-note-like .x-note-g{color:#f4477f;}
-  #screen-career-hub .x-note-repost .x-note-g{color:#3ee9b8;}
-  #screen-career-hub .x-note-av{flex:0 0 auto;}
-  #screen-career-hub .x-note-av .x-av{width:26px;height:26px;font-size:10px;}
-  #screen-career-hub .x-note-in{flex:1;min-width:140px;display:flex;flex-direction:column;gap:2px;}
-  #screen-career-hub .x-note-post{font-size:11.5px;color:#8fb0b2;overflow:hidden;
-    text-overflow:ellipsis;white-space:nowrap;max-width:100%;}
-  #screen-career-hub .x-note-art{flex:0 0 auto;width:46px;height:30px;border-radius:6px;
-    background-size:cover;background-position:center;}
-  /* Своя строка в таблице под постом, приколотая внизу, — как в самой игре. */
-  .x-shot-r.pin{border-top:2px solid rgba(255,209,102,.5);background:rgba(255,209,102,.08);}
-  .x-shot-r.pin b{color:#ffd166;}
-  .x-shot-r b img{vertical-align:-2px;}
-  /* Отметка «квал на ЛАН» рядом с заработком в профиле. */
-  #screen-career-hub .x-lanq{color:#3ee9b8;}
-  #screen-career-hub .x-lanq b{color:#3ee9b8;}
-  #screen-career-hub .x-note em{font-style:normal;font-size:10px;font-weight:900;
-    letter-spacing:.1em;text-transform:uppercase;color:#7fa3a5;}
-  #screen-career-hub .x-follow.on{border-color:rgba(126,240,221,.25);color:#7fa3a5;}
-  /* На узком экране рельс ложится строкой чипов: три кнопки во всю ширину
-     съедали первый экран, а ник и так стоит в шапке хаба. */
-  @media(max-width:1000px){
-    #screen-career-hub .x-rail{flex-direction:row;flex-wrap:wrap;gap:6px;position:static;}
-    #screen-career-hub .x-nav{flex:1 1 auto;justify-content:center;padding:8px 10px;font-size:13.5px;}
-    #screen-career-hub .x-me{display:none;}
-  }
 
   /* ---- History, the Tracker profile shape ----------------------------------
      Summary strip on top — the number the page is about with its own curve
@@ -4526,9 +3838,6 @@
   :root{--r:16px;--r-sm:10px;--cut:none;}
   /* Главная */
   .hero{clip-path:none;border-radius:var(--r);}
-  /* Полоса карьеры — того же кроя, что герой и плитки. */
-  .cstrip{border-radius:var(--r);}
-  .cstrip-btn{border-radius:999px;}
   .hero-btn,.hero-btn:hover,.hero-btn:focus-visible{transform:none;border-radius:999px;padding:12px 26px 11px;}
   .hero-btn-go:hover,.hero-btn-go:focus-visible{transform:translateY(-1px);}
   .hero-btn>span{transform:none;}
@@ -4538,6 +3847,7 @@
   .ec-cup-arted::before{clip-path:none;}
   .ec-pill,.ec-chip{border-radius:999px;}
   .mode-count i{border-radius:999px;}
+  .mode-mp-btn{border-radius:999px;}
   .badge,.support-top,.lang-btn,.lang-chip{border-radius:999px;}
   .restart-btn,.new-draft-btn{border-radius:var(--r-sm);}
   /* Драфт и прогон */
@@ -4622,7 +3932,7 @@
     border:none;border-radius:999px;}
   /* Контур при наведении — на всех кнопках сайта, как в лобби игры:
      «когда наводишься, появляется контур». outline идёт по радиусу. */
-  .hero-btn:hover,.ec-cup:hover,.go-btn:hover,.rf-btn:hover,.sim-btn:hover,
+  .hero-btn:hover,.mode-mp-btn:hover,.ec-cup:hover,.go-btn:hover,.rf-btn:hover,.sim-btn:hover,
   .restart-btn:hover,.pick-btn:hover,.ch-tab:hover,.cc-tab:hover,.ch-play:not(:disabled):hover,
   .ch-sign:hover,.ch-swap:hover,.ch-decline:hover,.cc-back:hover,.lang-btn:hover,.support-top:hover{
     outline:3px solid rgba(255,255,255,.92);outline-offset:0;}
@@ -4661,25 +3971,19 @@
   .ec-cup small{color:#c9d5f0;}
   .mode-count i{background:rgba(150,180,255,.18);border-color:rgba(180,200,255,.2);color:#e6ecff;}
   .mode-count i:first-child{border-color:#9fe1ff;}
+  .mode-mp-btn.mode-mp-join{background:rgba(150,180,255,.28);border:none;color:#fff;}
+  .mode-mp{border-top-color:rgba(180,200,255,.2);}
   .mode-card-new{border-color:#9fe1ff;box-shadow:0 0 0 1px rgba(159,225,255,.45),0 10px 30px rgba(60,100,220,.25);}
   .year-label{color:#b7c3e6;}
   .site-foot{color:#8fa0cc;} .site-foot a{color:#b7c3e6;}
   /* Шапка: навбар-пилюли. */
   .top{border-bottom-color:rgba(180,200,255,.15);}
-  /* НА ОДНОЙ СТРОКЕ С ЛОГОТИПОМ — его правка 4 сентября: «хочу чтоб режим
-     карьера был выше, на уровне прямоугольника верхнего».
-
-     Раньше навбар стоял своим рядом под логотипом: в 1280 он не помещался
-     рядом с соцсетями и языками и ронял языки на вторую строку. Теперь он в
-     той же строке, а не помещается — жмётся сам: пилюли чуть меньше, а на
-     узком экране (см. медиазапросы ниже) уходят подписи соцсетей и «Режим»,
-     потому что двери сайта важнее их. Ряд ломается только на телефоне. */
-  /* order:0 — по порядку разметки, то есть между логотипом и языками. С
-     order:2 навбар уезжал ЗА языки: у соседей порядок нулевой. */
-  .site-nav{display:flex;gap:4px;flex-wrap:nowrap;order:0;flex-basis:auto;margin-top:0;}
+  /* Свой ряд под логотипом на любой ширине: рядом с соцсетями и языками
+     навбар не помещался в 1280 и ронял языки на вторую строку. */
+  .site-nav{display:flex;gap:4px;flex-wrap:wrap;order:3;flex-basis:100%;margin-top:4px;}
   .nav-pill{border:none;cursor:pointer;background:transparent;color:#e6ecff;font-family:var(--font-display);
-    font-weight:600;font-size:15px;letter-spacing:.06em;text-transform:uppercase;padding:8px 14px;border-radius:999px;
-    white-space:nowrap;transition:background .12s;}
+    font-weight:600;font-size:15px;letter-spacing:.06em;text-transform:uppercase;padding:8px 16px;border-radius:999px;
+    transition:background .12s;}
   .nav-pill:hover{background:rgba(255,255,255,.12);outline:3px solid rgba(255,255,255,.92);}
   .nav-pill.on{background:#e4ebf7;color:#0b1a3a;}
   /* Драфт и прогон. */
@@ -4711,14 +4015,6 @@
   @keyframes fnIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
   .screen.active{animation:fnIn .22s ease-out;}
   @media (prefers-reduced-motion:reduce){ .screen.active{animation:none;} }
-  /* Тесно — но ряд держится: сначала уходят подписи соцсетей (иконки
-     остаются), потом плашка «Режим» и логотип становится меньше. Двери сайта
-     стоят на месте до самого телефона. */
-  @media(max-width:1500px){ .x-top-name{display:none;} .nav-pill{padding:8px 12px;} }
-  /* У кнопки поддержки прячется подпись, а не значок: остаются сердце и
-     валюта — по ним она и узнаётся. */
-  @media(max-width:1180px){ .top #topBadge{display:none;} .support-top span + span{display:none;}
-    .logo{font-size:26px;} .nav-pill{font-size:14px;padding:7px 10px;} }
   @media(max-width:760px){ .site-nav{order:3;width:100%;justify-content:center;} .nav-pill{padding:7px 12px;font-size:14px;} }
 
   /* ---- Третий заход, «что ещё осталось» → «давай» ----------------------
@@ -4792,133 +4088,6 @@
   #screen-career-hub .ch-tab{position:relative;}
   #screen-career-hub .ch-dot{position:absolute;top:5px;right:9px;width:6px;height:6px;margin:0;
     background:#d7ff3a;box-shadow:0 0 0 2px rgba(11,26,58,.6);}
-
-  /* ---- Шапка карьеры одета как полоса карьеры на главной (4 сентября) -----
-     Его правка: «сделай карьере дизайн нового ФНКС, как выше панелька». Полоса
-     .cstrip и шапка хаба были двумя разными вещами: там градиент с жёлтой
-     кромкой и капсовый курсив, здесь — синяя вуаль поверх арта Мейджора и
-     обычный жирный ник. Теперь это одна вещь: тот же ключевой арт сезона
-     (art/fncs-2026.jpg — белый скол и хромированный герб; общий золотой знак
-     FNCS всех лет он обвёл красным, см. комментарий у .cstrip-head), та же
-     вуаль слева направо и та же жёлтая кромка. */
-  #screen-career-hub .ch-top{
-    background:linear-gradient(96deg,rgba(11,26,58,.98) 0%,rgba(18,48,85,.92) 44%,rgba(14,39,71,.5) 100%),
-      url(art/fncs-2026.jpg) 72% 45%/cover no-repeat;
-    box-shadow:inset 0 -1px 0 rgba(255,221,0,.34);}
-  /* Ник — тем же капсовым курсивом, что заголовок полосы (.cstrip-title). */
-  #screen-career-hub .ch-name{font-family:var(--font-display);font-weight:600;font-style:italic;
-    letter-spacing:.02em;text-transform:uppercase;}
-
-  /* ---- Церемония закрытия сезона (см. ccGalaDraw) ------------------------
-     Одета как полоса карьеры на главной и как шапка хаба: тот же градиент,
-     та же жёлтая кромка, тот же герб и тот же арт со срезом справа. Четыре
-     экрана листаются кнопками, полоска внизу говорит, сколько осталось. */
-  .cc-gala-wrap{position:fixed;inset:0;z-index:120;display:flex;align-items:center;
-    justify-content:center;padding:18px;background:rgba(4,10,28,.86);}
-  .cc-gala{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.42fr);
-    width:min(860px,100%);max-height:92vh;overflow:hidden;border-radius:var(--r);
-    background:linear-gradient(112deg,#0b1a3a 0%,#123055 55%,#0e2747 100%);
-    box-shadow:inset 0 0 0 1px rgba(255,221,0,.32),0 24px 60px rgba(0,0,0,.55);}
-  .cc-gala-body{position:relative;z-index:1;display:flex;flex-direction:column;gap:12px;
-    padding:20px 18px 20px 26px;overflow:auto;}
-  .cc-gala-art{position:relative;z-index:0;background-color:#14336b;background-size:cover;
-    background-position:center 45%;background-repeat:no-repeat;
-    clip-path:polygon(18% 0,100% 0,100% 100%,0 100%);}
-  .cc-gala-art::after{content:'';position:absolute;inset:0;
-    background:linear-gradient(90deg,rgba(11,26,58,.98) 0%,rgba(11,26,58,.3) 42%,rgba(11,26,58,0) 100%);}
-  .cc-gala-head{display:flex;align-items:center;gap:10px;}
-  .cc-gala-tag{font-family:var(--font-display);font-weight:700;font-size:10px;letter-spacing:.1em;
-    text-transform:uppercase;color:#ffdd00;}
-  .cc-gala h3{margin:0;font-family:var(--font-display);font-weight:600;font-style:italic;
-    font-size:21px;letter-spacing:.02em;text-transform:uppercase;color:#fff;line-height:1.05;}
-  .cc-gala h4{margin:0 0 6px;font-family:var(--font-display);font-weight:700;font-size:13px;
-    letter-spacing:.08em;text-transform:uppercase;color:#dfe8fb;font-style:normal;}
-  .cc-gala .cc-gala-h2{margin-top:14px;}
-  .cc-gala-slide{min-height:212px;}
-  .cc-gala-big{font-family:var(--font-display);font-weight:600;font-style:italic;font-size:76px;
-    line-height:.9;color:#ffdd00;}
-  .cc-gala-line{margin-top:6px;font-size:14px;font-weight:800;color:#fff;}
-  .cc-gala-hint{margin-top:6px;font-size:12.5px;color:var(--ink-dim);}
-  .cc-gala-nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
-  .cc-gala-num{background:rgba(255,255,255,.06);border:1px solid rgba(140,175,255,.24);
-    border-radius:10px;padding:8px 10px;}
-  .cc-gala-num b{display:block;font-size:19px;font-weight:900;color:#fff;}
-  .cc-gala-num em{display:block;font-style:normal;font-size:10px;font-weight:800;
-    letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dimmer);}
-  .cc-gala-row{display:flex;align-items:center;justify-content:space-between;gap:10px;
-    padding:7px 0;border-bottom:1px solid rgba(180,200,255,.16);}
-  .cc-gala-row em{font-style:normal;font-size:12.5px;color:var(--ink-dim);}
-  .cc-gala-row b{font-size:13px;font-weight:900;color:#fff;white-space:nowrap;}
-  .cc-gala-row b i{font-style:normal;font-size:11px;font-weight:800;color:#7ef0dd;margin-left:6px;}
-  .cc-gala-row.me em{color:#ffdd00;}
-  .cc-gala-dots{display:flex;gap:6px;}
-  .cc-gala-dots i{width:16px;height:3px;border-radius:2px;background:rgba(255,255,255,.22);}
-  .cc-gala-dots i.on{background:#ffdd00;}
-  .cc-gala-cta{display:flex;flex-wrap:wrap;gap:8px;}
-  /* Плитка игрока года приезжает сюда из хаба, а её тёмная одежда живёт под
-     #screen-career-hub — за пределами хаба она осталась бы белой. */
-  .cc-gala .ch-tile{background:var(--fn-panel);border:1px solid var(--fn-line);
-    box-shadow:none;margin:0;}
-  .cc-gala .ch-tile h4{color:#fff;}
-  .cc-gala .ch-tile .ch-hint{color:var(--fn-dim);}
-  .cc-gala .ch-row{border-bottom-color:rgba(180,200,255,.16);}
-  .cc-gala .ch-row em{color:var(--fn-dim);}
-  .cc-gala .ch-row b{color:#fff;}
-  @media(max-width:760px){
-    .cc-gala{grid-template-columns:1fr;}
-    .cc-gala-art{display:none;}
-    .cc-gala-body{padding:16px;}
-    .cc-gala-big{font-size:56px;}
-    .cc-gala-nums{grid-template-columns:repeat(2,minmax(0,1fr));}
-  }
-
-  /* ---- Превью карьер в стиле FNCS 2026 (его правка 4 сентября) ------------
-     «Дизайн превью карьеры сделай в стиле фнкс 2026». Экран «Карьеры» —
-     единственный в режиме, оставшийся от бирюзового захода: зелёная кнопка
-     «Продолжить», зелёная шкала года, серые плашки на плоском тёмном фоне.
-     Всё остальное давно синее с жёлтым. Здесь он одевается так же, как полоса
-     карьеры на главной, шапка хаба и церемония: тот же градиент сцены, жёлтая
-     кромка, знак карьеры и метка сезона в шапке, голубое стекло на строках,
-     жёлтые дивизион, шкала и главная кнопка. */
-  #screen-career-slots .ch-stage{
-    background:linear-gradient(160deg,#1d3b8c 0%,#13265f 46%,#0b1640 100%);
-    box-shadow:inset 0 0 0 1px rgba(255,221,0,.22);}
-  .cc-slot-head{display:flex;align-items:center;gap:11px;margin-bottom:5px;}
-  .cc-slot-tag{font-family:var(--font-display);font-weight:700;font-size:10px;letter-spacing:.12em;
-    text-transform:uppercase;color:#ffdd00;line-height:1;margin-bottom:3px;}
-  #screen-career-slots .cc-slot-h{margin:0;font-style:italic;font-weight:600;letter-spacing:.02em;}
-  #screen-career-slots .cc-slot-sub{color:var(--fn-dim);}
-  /* Строка карьеры — голубое стекло, как плитки хаба; открытая последней
-     обведена жёлтым, а не бирюзой. */
-  #screen-career-slots .cc-car{background:var(--fn-panel);border:1px solid var(--fn-line);
-    border-radius:var(--r-sm);}
-  #screen-career-slots .cc-car.on{border-color:#ffdd00;background:rgba(255,221,0,.10);}
-  #screen-career-slots .cc-car-face{border-radius:var(--r-sm);background:rgba(8,18,50,.55);}
-  #screen-career-slots .cc-car-id em{color:var(--fn-dim);}
-  #screen-career-slots .cc-car-duo{color:#0b1a3a;background:#ffdd00;}
-  #screen-career-slots .cc-car-ovr{color:#dfe8fb;}
-  #screen-career-slots .cc-car-div{color:#ffdd00;}
-  #screen-career-slots .cc-car-ovr small,
-  #screen-career-slots .cc-car-div small{color:#8fa0cc;}
-  #screen-career-slots .ch-play{background:var(--fn-yellow);color:#0b1a3a;border-radius:999px;}
-  #screen-career-slots .cc-car-open{border-radius:999px;border-color:rgba(180,200,255,.35);
-    color:#e6ecff;}
-  #screen-career-slots .cc-car-open:hover{border-color:#ffdd00;color:#ffdd00;}
-  #screen-career-slots .cc-car-del{border-radius:999px;border-color:rgba(180,200,255,.28);
-    color:#9fb0dd;}
-  /* Шкала года — жёлтая на обеих строках: она про то, докуда дошёл год, а не
-     про то, какая карьера открыта. */
-  #screen-career-slots .cc-car-rail{background:rgba(255,255,255,.09);}
-  #screen-career-slots .cc-car-rail i,
-  #screen-career-slots .cc-car.on .cc-car-rail i{background:#ffdd00;}
-  #screen-career-slots .cc-car-new{border-color:rgba(180,200,255,.3);}
-  #screen-career-slots .cc-car-new:hover{border-color:#ffdd00;}
-  #screen-career-slots .cc-car-new b{color:#fff;}
-  #screen-career-slots .cc-car-new em,#screen-career-slots .cc-car-free{color:var(--fn-dim);}
-  #screen-career-slots .cc-hall{background:var(--fn-panel);border:1px solid var(--fn-line);
-    border-radius:var(--r-sm);box-shadow:none;}
-  #screen-career-slots .cc-hall .ch-row{border-color:rgba(180,200,255,.16);}
-  #screen-career-slots .cc-hall .ch-row em{color:var(--fn-dim);}
   </style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
 
@@ -4934,13 +4103,13 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=318a3cb4"></script>
+<script src="zone-sim.js?v=6846baa2"></script>
 <script src="zone-replay.js?v=bd107a55"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
      файл и разойдётся с напарником. -->
-<script src="mp.js?v=3d67d192"></script>
+<script src="mp.js?v=66d45795"></script>
 </head>
 <body>
 <div class="wrap">
@@ -5015,63 +4184,6 @@
       </div>
       <div class="hero-art" style="background-image:url(art/fncs-2026-major1.jpg)" role="img" aria-label="FNCS 2026 Major 1"></div>
     </section>
-    <!-- КАРЬЕРА ОТДЕЛЬНЫМ ПРЯМОУГОЛЬНИКОМ — его правка 4 сентября: «не видно
-         кнопок карьеры сразу, не бросается в глаза, мб подвинуть выше куда-то»
-         и следом «может на главном прямоугольник добавить».
-
-         Двери карьеры были разбросаны: одиночная и «вдвоём» — кнопками в
-         герое, гонка и вход по коду — в подвале карточки карьеры, ниже
-         описания, то есть за пределами первого экрана ноутбука. Здесь они все
-         четыре, в одной полосе сразу под героем: широкий прямоугольник с
-         картой сезона справа, названием слева и кнопками в строку.
-
-         Три двери из четырёх открываются флагом CC_MP_OPEN (см. setLang) —
-         тем же, что и остальные командные. Карта — арт того же сезона, что и
-         на карточке карьеры, чтобы полоса читалась как её продолжение. -->
-    <section class="cstrip" aria-labelledby="cstripTitle">
-      <div class="cstrip-body">
-        <div class="cstrip-head">
-          <!-- ЗНАКА КАРЬЕРЫ ЗДЕСЬ БОЛЬШЕ НЕТ. Он был нарисован 4 сентября по
-               его просьбе («новый логотип в карьере сделай») — щит с лестницей
-               дивизионов, — и в тот же вечер обведён красным на его скрине
-               рядом со словами «что убрать и изменить… в стиле фнкс 2026».
-               Придуманный герб спорил с настоящим: справа на этой же полосе
-               стоит хромированный знак FNCS 2026, и два герба в одной строке
-               читаются как чужие друг другу. Осталась метка NEW и заголовок. -->
-          <span class="cstrip-tag" data-i18n="modeNewBadge">NEW</span>
-          <h2 class="cstrip-title" id="cstripTitle" data-i18n="modeCareerTitle">FNCS Career</h2>
-        </div>
-        <p class="cstrip-sub" data-i18n="cstripSub">One player, one season, the real calendar. Train by day, play the nights, climb from Division 5 to Division 1.</p>
-        <!-- Из чего состоит карьера — четырьмя плашками, а не абзацем. Его
-             правка 4 сентября: «может ещё как-то лучше карьеру оформить».
-             Читается за секунду и говорит то, ради чего в неё идут: лестница,
-             большие турниры, круг Reload и жизнь вокруг игры. -->
-        <div class="cstrip-chips">
-          <span class="cstrip-chip" data-i18n="cstripChipDivs">Divisions 5 → 1</span>
-          <span class="cstrip-chip" data-i18n="cstripChipMajors">Majors and LANs</span>
-          <span class="cstrip-chip" data-i18n="cstripChipReload">The Reload circuit</span>
-          <span class="cstrip-chip" data-i18n="cstripChipLife">Clubs, money, form</span>
-        </div>
-        <div class="cstrip-cta">
-          <button class="cstrip-btn cstrip-btn-go" type="button" onclick="careerStart()" data-i18n="heroCareer">Start a career</button>
-          <button class="cstrip-btn cstrip-btn-duo" id="cstripDuo" type="button" hidden onclick="careerMpNew()" data-i18n="heroDuo">Play as a duo</button>
-          <button class="cstrip-btn cstrip-btn-duo" id="cstripRace" type="button" hidden onclick="careerRaceNew()" data-i18n="ccRaceMake">Start a race</button>
-          <button class="cstrip-btn cstrip-btn-code" id="cstripCode" type="button" hidden onclick="careerMpJoinNew()" data-i18n="ccMpEnter">Join by code</button>
-        </div>
-      </div>
-      <!-- Не карта, а ключевой арт сезона — его слово 4 сентября: «мне
-           аватарка карты не нравится». Карта острова на этом размере читалась
-           тёмным пятном с мелкими подписями.
-
-           И НЕ ЗОЛОТОЙ ГЕРБ: его скрин с двумя красными рамками (4 сентября,
-           «что убрать и изменить… в стиле фнкс 2026») обводил как раз его.
-           art/mode-all-fncs.jpg — общий знак FNCS всех лет; сезон 2026 выглядит
-           иначе, и его собственный ключевой арт лежит рядом: белый скол,
-           хромированный герб, бирюзовая сетка. Это тот же файл, который
-           карьера носит на кубковых вечерах (CAREER_EV_ART.cup), то есть
-           панель одета в то же, что и сам режим. -->
-      <div class="cstrip-art" style="background-image:url(art/fncs-2026.jpg)" role="img" aria-label="FNCS 2026"></div>
-    </section>
     <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Его
          скрин, 30 августа (красная рамка вокруг всех рядов): «с этими
          прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
@@ -5079,8 +4191,7 @@
     <section class="modes-panel">
     <div class="year-row" id="modeYears">
       <div class="year-label">2026</div>
-      <!-- Две карточки, а не три: карьера уехала в свою полосу под героем. -->
-      <div class="mode-grid mode-grid-2">
+      <div class="mode-grid mode-grid-3">
       <div class="mode-card">
         <div class="ec-art" id="major2Art" style="background-image:url(art/mode-major1.jpg)">
           <span class="ec-pill ec-pill-l" data-i18n="ecScope7">7 regions</span>
@@ -5123,11 +4234,48 @@
         <p data-i18n="modeEwcDesc">The road to the Esports World Cup: four cups on Reload, in duos, across all seven regions. Each one qualifies its own way: Opens, a Play-In, four heats of 20 and a final of 20. The cards are built from the real leaderboards.</p>
         <span class="mode-count" data-i18n="modeEwcCount"><i>2 players</i><i>seven regions, opens, play-in, heats, final</i></span>
       </div>
-      <!-- КАРТОЧКИ КАРЬЕРЫ ЗДЕСЬ БОЛЬШЕ НЕТ — его слово 4 сентября: «убрать
-           вообще панельку fncs career… внизу типо». Карьера переехала в свою
-           полосу под героем (.cstrip): там её название, строка и все четыре
-           двери. Ряд 2026 остался тем, чем был до 17 августа, — турнирами
-           этого года, и стоит теперь в две колонки. -->
+      <!-- Live since 17 August 2026, his call: the mode was finished enough to
+           ship its code a day earlier and going live was always a separate
+           decision, which is this line. It is the tile the career build has had
+           open all along, brought across whole. -->
+      <div class="mode-card mode-card-new" onclick="careerStart()">
+        <span class="new-badge" data-i18n="modeNewBadge">NEW</span>
+        <!-- Карьера — это остров через весь сезон, поэтому её обложка карта,
+             а не тот же герб, что у соседней карточки Major 1. -->
+        <!-- Самая новая карта — остров 42-го сезона. Его слово, 30 августа:
+             «на фнкс кареера превью будто другое должно быть… или новая карта самая». -->
+        <div class="ec-art" id="careerArt" style="background-image:url(art/map-s42.jpg);background-position:center 45%">
+          <span class="ec-pill ec-pill-l" data-i18n="ecScopeAll">All regions</span>
+          <div class="ec-foot">
+            <div class="ec-when" data-i18n="ecDateCareer">season after season</div>
+            <h3 class="ec-title" data-i18n="modeCareerTitle">FNCS Career</h3>
+            <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubCareer">One player’s run</span></div>
+          </div>
+        </div>
+        <div class="ec-cups ec-cups-hollow" aria-hidden="true"></div>
+        <p data-i18n="modeCareerDesc">One player’s career. Build yourself or take a real card, find a duo, and climb from Division 5 through the cups, the Majors and the Reload circuit to a LAN. Clubs, money, form and reputation, on the season’s real calendar.</p>
+        <span class="mode-count" data-i18n="modeCareerCount"><i>division 5 → the Global Championship</i></span>
+        <!-- Вдвоём — здесь же, на карточке карьеры. Его слово, 26 августа:
+             «как то не понятно, что это мультиплеер, мб отдельную кнопку в
+             главном меню… рядом с карьерой… или прям на карьере». Раньше две
+             двери стояли внизу экрана СОЗДАНИЯ карьеры, где их никто не искал
+             и где они молчали, пока форма не заполнена.
+             stopPropagation обязателен: вся карточка — одна большая кнопка
+             «одиночная карьера», и без него нажатие уходило бы ей. -->
+        <!-- Двери в карьеру вдвоём — на карточке карьеры, в языке её зелёной
+             плашки. Его слово, 29 августа: «сделай как в карьере эти кнопки»
+             (отдельная карточка ему не понравилась). Видны только при открытой
+             двери (CC_MP_OPEN, см. setLang). -->
+        <div class="mode-mp" id="modeMpRow" hidden>
+          <p class="mode-mp-desc" data-i18n="modeCareerDuoDesc">For two: one starts the team, the other joins by code. One calendar and the same nights, money and training your own.</p>
+          <div class="mode-mp-btns">
+            <button class="mode-mp-btn" data-i18n="ccMpMake"
+              onclick="event.stopPropagation();careerMpNew()">Play as a duo</button>
+            <button class="mode-mp-btn mode-mp-join" data-i18n="ccMpEnter"
+              onclick="event.stopPropagation();careerMpJoinNew()">Join by code</button>
+          </div>
+        </div>
+      </div>
       </div>
     </div>
 
@@ -5249,7 +4397,7 @@
         <div class="region-note" data-i18n="synergyNote">In reality FNCS 2026 is played in duos - that is the real format. Trio and Squad are fantasy: the players are real, but you build the roster yourself. Synergy is drawn as a triangle (trio) or square (squad), and the lines light up for real teammates or compatriots.</div>
       </div>
 
-      <div class="roster-note" data-i18n="sourcesNote"><b>Card sources - which tournaments the players are actually pulled from:</b><br>258 tournaments, 22175 cards in total.<br><br>• <b>FNCS 2026 Major 2</b> - Play-In, Last Chance Qualifier and Grand Finals across all 7 regions (18 Jul - 2 Aug 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> - Group Stage, Upper Bracket and Grand Finals (Düsseldorf <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 May 2026)<br>• <b>FNCS 2026 Major 1</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions (Mar - May 2026)<br>• <b>FNCS 2025 Global Championship</b> - Grand Finals (Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 Sep 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions, trios (Jan - Aug 2025)<br>• <b>FNCS 2024 Global Championship</b> - Grand Finals (Fort Worth <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 Sep 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> - Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> - Grand Finals (Copenhagen <img src="https://flagcdn.com/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 Oct 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> - Grand Finals Europe (Mar / May / Jun 2023)<br>• <b>FNCS Invitational 2022</b> - Grand Finals (Raleigh <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 Nov 2022)<br>• <b>FNCS 2021 Grand Royale</b> - Europe (21 Nov 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> - Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> - Solo Grand Finals Europe (26 Jun 2021)<br><br>Each player card shows exactly which tournament its result came from. The same real person can have multiple cards - one per tournament where a result was found.<br><br><b>Card rarity:</b><br>The colour comes from the very OVR printed on the card - what you see is what you get. The ladder is the one Fortnite uses and the colours match the game.<br>• <b style="color:var(--mythic)">95+ · Mythic (gold)</b><br>• <b style="color:var(--legendary)">90–94 · Legendary (orange)</b><br>• <b style="color:var(--epic)">80–89 · Epic (purple)</b><br>• <b style="color:var(--rare)">70–79 · Rare (blue)</b><br>• <b style="color:var(--uncommon)">60–69 · Uncommon (green)</b><br>• <b style="color:var(--common)">below 60 · Common (grey)</b><br>Mythic is for a season with no weak stage in it - the Grand Final, the heats and the cups all held at once. The same six colours tint the weapons and heals in the loot packs.</div>
+      <div class="roster-note" data-i18n="sourcesNote"><b>Card sources - which tournaments the players are actually pulled from:</b><br>258 tournaments, 22190 cards in total.<br><br>• <b>FNCS 2026 Major 2</b> - Play-In, Last Chance Qualifier and Grand Finals across all 7 regions (18 Jul - 2 Aug 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> - Group Stage, Upper Bracket and Grand Finals (Düsseldorf <img src="https://flagcdn.com/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 May 2026)<br>• <b>FNCS 2026 Major 1</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions (Mar - May 2026)<br>• <b>FNCS 2025 Global Championship</b> - Grand Finals (Lyon <img src="https://flagcdn.com/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 Sep 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions, trios (Jan - Aug 2025)<br>• <b>FNCS 2024 Global Championship</b> - Grand Finals (Fort Worth <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 Sep 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> - Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> - Grand Finals (Copenhagen <img src="https://flagcdn.com/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 Oct 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> - Grand Finals Europe (Mar / May / Jun 2023)<br>• <b>FNCS Invitational 2022</b> - Grand Finals (Raleigh <img src="https://flagcdn.com/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 Nov 2022)<br>• <b>FNCS 2021 Grand Royale</b> - Europe (21 Nov 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> - Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> - Solo Grand Finals Europe (26 Jun 2021)<br><br>Each player card shows exactly which tournament its result came from. The same real person can have multiple cards - one per tournament where a result was found.<br><br><b>Card rarity:</b><br>The colour comes from the very OVR printed on the card - what you see is what you get. The ladder is the one Fortnite uses and the colours match the game.<br>• <b style="color:var(--mythic)">95+ · Mythic (gold)</b><br>• <b style="color:var(--legendary)">90–94 · Legendary (orange)</b><br>• <b style="color:var(--epic)">80–89 · Epic (purple)</b><br>• <b style="color:var(--rare)">70–79 · Rare (blue)</b><br>• <b style="color:var(--uncommon)">60–69 · Uncommon (green)</b><br>• <b style="color:var(--common)">below 60 · Common (grey)</b><br>Mythic is for a season with no weak stage in it - the Grand Final, the heats and the cups all held at once. The same six colours tint the weapons and heals in the loot packs.</div>
       <div class="roster-note" style="margin-top:14px;" data-i18n="confirmedNote"><b>What's confirmed:</b> names and region come from official participant lists and final standings (Liquipedia, Esports Earnings, esports.gg, fortnitetracker.com, and screenshots you sent).<br><br><b>About lobby size:</b> there aren't enough real players to exactly hit the target team counts - missing AI-lobby slots (except in the Grands) are filled with clearly labeled reserve teams, shown without a flag.<br><br><b>Flags:</b> nationality isn't confirmed for everyone - where there's no source, no flag is shown.</div>
     </details>
   </div>
@@ -5267,9 +4415,6 @@
       <div class="cc-tabs">
         <button class="cc-tab on" id="ccTabRookie" onclick="ccSetMode('rookie')" data-i18n="ccTabRookie">Rookie</button>
         <button class="cc-tab" id="ccTabCard" onclick="ccSetMode('card')" data-i18n="ccTabCard">Existing card</button>
-        <!-- Третьим — контент-мейкеры, его правка 4 сентября: «добавь рядом
-             ещё контент-мейкеры, чтоб могли выбрать за них играть». -->
-        <button class="cc-tab" id="ccTabCreator" onclick="ccSetMode('creator')" data-i18n="ccTabCreator">Content creator</button>
       </div>
 
       <div class="cc-body">
@@ -5362,7 +4507,7 @@
         <button class="cc-back" onclick="ccMpNewCancel();show('screen-mode')" data-i18n="ccBack">Back</button>
         <div class="cc-readout" id="ccReadout"></div>
         <!-- Что здесь заводится: обычная карьера или половина команды. Двери в
-             командную стоят в полосе карьеры на главной (см. .cstrip), а сюда
+             командную стоят на карточке карьеры в меню (см. .mode-mp), а сюда
              доезжает только намерение — строкой, чтобы игрок видел, что он
              создаёт. См. CC_MP_NEW. -->
         <div class="cc-readout" id="ccMpNote" hidden></div>
@@ -5375,8 +4520,6 @@
     <div class="ch-stage">
       <div class="ch-facets"><i class="cc-f1"></i><i class="cc-f2"></i><i class="cc-f3"></i><i class="cc-f4"></i></div>
       <div class="ch-top">
-        <!-- Придуманный знак карьеры отсюда убран вместе с тем, что стоял на
-             полосе главной, — см. комментарий у .cstrip-head. -->
         <div class="ch-who" id="chWho"></div>
         <div class="ch-ovr" id="chOvr"></div>
         <!-- Today's two numbers sit next to the player rather than out at the
@@ -5398,13 +4541,9 @@
         <button class="ch-tab" data-tab="me" onclick="careerTab('me')" data-i18n="chTabMe">Career</button>
         <button class="ch-tab" data-tab="calendar" onclick="careerTab('calendar')" data-i18n="chTabCalendar">Calendar</button>
         <button class="ch-tab" data-tab="social" onclick="careerTab('social')"><span data-i18n="chTabSocial">Social</span><i class="ch-dot" id="chDmDot"></i></button>
-        <!-- Стримы стоят сразу за соцсетями — его правка: это одна и та же
-             половина жизни игрока, лента и эфир. -->
-        <button class="ch-tab" data-tab="streams" onclick="careerTab('streams')" data-i18n="chTabStreams">Streams</button>
         <button class="ch-tab" data-tab="table" onclick="careerTab('table')" data-i18n="chTabTable">Table</button>
         <button class="ch-tab" data-tab="shop" onclick="careerTab('shop')"><span data-i18n="chTabShop">Shop</span><i class="ch-dot" id="chShopDot"></i></button>
         <button class="ch-tab" data-tab="hist" onclick="careerTab('hist')" data-i18n="chTabHist">History</button>
-        <button class="ch-tab" data-tab="stats" onclick="careerTab('stats')" data-i18n="chTabStats">Stats</button>
       </div>
       <div class="ch-body" id="chBody"></div>
       <div class="ch-foot">
@@ -5421,20 +4560,9 @@
     <div class="ch-stage">
       <div class="ch-facets"><i class="cc-f1"></i><i class="cc-f2"></i><i class="cc-f3"></i><i class="cc-f4"></i></div>
       <div class="ch-body">
-      <!-- Шапка экрана — того же кроя, что полоса карьеры на главной: жёлтая
-           метка сезона и капсовый курсив. «FNCS 2026» — имя сезона, оно
-           одинаково во всех языках и поэтому стоит прямо в разметке, а не в
-           словаре. Придуманного знака карьеры здесь нет по той же причине,
-           что и на полосе, — см. комментарий у .cstrip-head. -->
-      <div class="cc-slot-head">
-        <div>
-          <div class="cc-slot-tag">FNCS 2026</div>
-          <h2 class="cc-slot-h" data-i18n="ccSlotsTitle">Careers</h2>
-        </div>
-      </div>
+      <h2 class="cc-slot-h" data-i18n="ccSlotsTitle">Careers</h2>
       <div class="cc-slot-sub" data-i18n="ccSlotsSub">Pick the one to go back to, or start a new one</div>
       <div class="cc-slot-grid" id="ccSlotGrid"></div>
-      <div id="ccHall"></div>
       </div>
       <div class="ch-foot">
         <button class="cc-back" onclick="ccMpNewCancel();show('screen-mode')" data-i18n="ccBack">Back</button>
@@ -5849,7 +4977,7 @@
   </div>
 </div>
 
-<script src="app.js?v=30a37ff0"></script>
+<script src="app.js?v=2fadb7a4"></script>
 <script>
 /* Mode-tile art, fetched a screen ahead of the scroll rather than all at once.
    See the note on data-art: seven tiles were 368KB before the first screen had
@@ -5887,12 +5015,6 @@
   else start();
 })();
 </script>
-<!-- ВТОРОЙ ЗАХОД ОТКРЫВАЕТСЯ ДАЖЕ БЕЗ СЕТИ. Почему это понадобилось и по каким
-     правилам кэшируется — в самом sw.js. Регистрация стоит здесь, в оболочке,
-     а не в приложении: она должна случиться, даже если app.js в этот раз так и
-     не доедет. Только https: с file:// воркеры не ставятся вовсе, поэтому все
-     триста харнессов, которые открывают копию страницы файлом, этого кода
-     просто не замечают. -->
 <script>
 (function(){
   if(!('serviceWorker' in navigator) || location.protocol!=='https:') return;
