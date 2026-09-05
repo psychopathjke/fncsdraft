@@ -2657,6 +2657,7 @@
   .zr-kit .zk-mats.low{color:#ffd54a;}
   .zr-kit .zk-loot{font-weight:600;color:#cfd8ea;}
   .zr-kit .zk-surge.ok{color:#ffd9a3;}
+  .zr-kit .zk-surge.armed{color:#cfd8ea;font-weight:600;}
   .zr-kit .zk-surge.on{background:rgba(232,160,32,.85);color:#111;}
   .zr-kit .zk-surge.off{color:#9aa4b8;font-weight:600;}
   .zr-kit .zk-dead{color:#ff9b9b;}
@@ -5052,8 +5053,8 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=f28ba3e3"></script>
-<script src="zone-replay.js?v=9f0631ea"></script>
+<script src="zone-sim.js?v=0a54cf8e"></script>
+<script src="zone-replay.js?v=3df2bc61"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -6955,7 +6956,8 @@ ccKitLine:(m,low,loot)=>'Ресы '+m+(low?' · '+low:'')+(loot?' · '+loot:''),
 // Панель набора на карте — его правка 5.09: «добавить на симуляцию ресурсы, лут и сёрдж».
 ccKitMats:m=>'Ресы '+m, ccKitLootNone:'лут: свой пак', ccKitOut:'выбыли',
 ccKitSurgeOff:'сёрдж выключен', ccKitSurgeAt:(a,p)=>'сёрдж с '+a+' игроков · в игре '+p,
-ccKitSurgeUnder:'ПОД СЁРЖЕМ — мало урона',
+ccKitSurgeAbove:n=>'СЁРДЖ АКТИВЕН · +'+n+' над порогом урона',
+ccKitSurgeUnder:n=>'ПОД СЁРЖЕМ · −'+n+' до порога урона',
 ccMatsTitle:'Ресы кончаются', ccMatsGo:'Идти за рефрешем', ccMatsStay:'Ротейтить тем, что есть',
 ccMatsGoNote:(v,f,p)=>p+'%: нашёл — +'+v+' и полные ресы, нет — минус '+f,
 ccMatsStayNote:v=>'Ничего не тратишь, но в концовке без ресов минус '+v,
@@ -8846,7 +8848,8 @@ ccLateRefreshWon:v=>'Refresh found, +'+v+' power and full mats', ccLateRefreshLo
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'low',
 ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: own pack', ccKitOut:'eliminated',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge from '+a+' players · alive '+p,
-ccKitSurgeUnder:'UNDER SURGE — too little damage',
+ccKitSurgeAbove:n=>'STORM SURGE ACTIVE · '+n+' above damage threshold',
+ccKitSurgeUnder:n=>'UNDER SURGE · '+n+' below damage threshold',
 ccMatsTitle:'Running out of mats', ccMatsGo:'Go for a refresh', ccMatsStay:'Rotate with what you have',
 ccMatsGoNote:(v,f,p)=>p+'%: found it — +'+v+' and full mats, did not — minus '+f,
 ccMatsStayNote:v=>'Costs nothing now, but an endgame without mats is minus '+v,
@@ -10884,7 +10887,8 @@ ccLateRefreshWon:v=>'Refresh trouvé, +'+v+' de puissance et mats pleins', ccLat
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'peu',
 ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot : ton pack', ccKitOut:'éliminés',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge dès '+a+' joueurs · en vie '+p,
-ccKitSurgeUnder:'SOUS SURGE — trop peu de dégâts',
+ccKitSurgeAbove:n=>'STORM SURGE ACTIF · +'+n+' au-dessus du seuil',
+ccKitSurgeUnder:n=>'SOUS SURGE · −'+n+' sous le seuil de dégâts',
 ccMatsTitle:'Les mats s\'épuisent', ccMatsGo:'Aller chercher un refresh', ccMatsStay:'Tourner avec ce qu\'on a',
 ccMatsGoNote:(v,f,p)=>p+' % : trouvé — +'+v+' et mats pleins, sinon — moins '+f,
 ccMatsStayNote:v=>'Ça ne coûte rien maintenant, mais une fin de partie sans mats coûte '+v,
@@ -12782,7 +12786,8 @@ ccLateRefreshWon:v=>'Refresh trovato, +'+v+' di forza e mats pieni', ccLateRefre
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' \u00b7 '+low:'')+(loot?' \u00b7 '+loot:''), ccKitLow:"pochi",
 ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: il tuo pack', ccKitOut:'eliminati',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge da '+a+' giocatori \u00b7 vivi '+p,
-ccKitSurgeUnder:'SOTTO SURGE \u2014 troppo pochi danni',
+ccKitSurgeAbove:n=>'STORM SURGE ATTIVO \u00b7 +'+n+' sopra la soglia',
+ccKitSurgeUnder:n=>'SOTTO SURGE \u00b7 \u2212'+n+' sotto la soglia di danni',
 ccMatsTitle:"I mats stanno finendo", ccMatsGo:"Andare a cercare un refresh", ccMatsStay:"Ruotare con quello che c'\u00e8",
 ccMatsGoNote:(v,f,p)=>p+'%: trovato \u2014 +'+v+' e mats pieni, no \u2014 meno '+f,
 ccMatsStayNote:v=>'Ora non costa nulla, ma un finale senza mats costa '+v,
@@ -15243,7 +15248,8 @@ ccLateRefreshWon:v=>'Refresh achado, +'+v+' de força e mats cheios', ccLateRefr
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:"pouco",
 ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: seu pack', ccKitOut:'eliminados',
 ccKitSurgeOff:'surge desligado', ccKitSurgeAt:(a,p)=>'surge a partir de '+a+' jogadores · vivos '+p,
-ccKitSurgeUnder:'SOB SURGE — pouco dano',
+ccKitSurgeAbove:n=>'STORM SURGE ATIVO · +'+n+' acima do limite',
+ccKitSurgeUnder:n=>'SOB SURGE · −'+n+' abaixo do limite de dano',
 ccMatsTitle:"Os mats estão acabando", ccMatsGo:"Ir atrás de um refresh", ccMatsStay:"Rotacionar com o que tem",
 ccMatsGoNote:(v,f,p)=>p+'%: achou — +'+v+' e mats cheios, não — menos '+f,
 ccMatsStayNote:v=>'Agora não custa nada, mas um final sem mats custa '+v,
@@ -51542,9 +51548,17 @@ function ccKitPanel(lobby, frame){
     ? [...(you._loot.weapons||[]), ...(you._loot.heals||[]), you._loot.move].filter(Boolean).map(o=>o.name).join(' · ')
     : T.ccKitLootNone;
   const hp=Math.max(0, Math.min(100, d.h||0));
-  const surge = frame.surgeAt>0
-    ? '<span class="zk-surge'+(d.u?' on':' ok')+'">'+esc(d.u ? T.ccKitSurgeUnder : T.ccKitSurgeAt(frame.surgeAt, frame.players))+'</span>'
-    : '<span class="zk-surge off">'+esc(T.ccKitSurgeOff)+'</span>';
+  /* Сёрдж — как на HUD самой игры (его скрин 5.09: «STORM SURGE ACTIVE · 269
+     ABOVE DAMAGE THRESHOLD»): пока порог не пройден — с какого числа игроков
+     он включится и сколько в живых; включился — на сколько урона ты над
+     линией отсечки или под ней (n точки минус surgeLine кадра). */
+  const active = frame.surgeAt>0 && frame.surgeLine!=null;
+  const gap = active ? (Number(d.n)||0)-frame.surgeLine : 0;
+  const surge = active
+    ? '<span class="zk-surge'+(d.u?' on':' ok')+'">'+esc(d.u ? T.ccKitSurgeUnder(Math.abs(gap)) : T.ccKitSurgeAbove(Math.max(0, gap)))+'</span>'
+    : frame.surgeAt>0
+      ? '<span class="zk-surge armed">'+esc(T.ccKitSurgeAt(frame.surgeAt, frame.players))+'</span>'
+      : '<span class="zk-surge off">'+esc(T.ccKitSurgeOff)+'</span>';
   box.innerHTML=
     '<span class="zk-hp"><i style="width:'+hp+'%"></i><b>'+hp+'</b></span>'+
     '<span class="zk-mats'+(low?' low':'')+'">'+esc(T.ccKitMats(mats))+(low?' · '+esc(T.ccKitLow):'')+'</span>'+

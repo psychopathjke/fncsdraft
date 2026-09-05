@@ -906,11 +906,15 @@
     for(var i=0;i<squads.length;i++){
       var s = squads[i];
       s.surged = false;
+      // Net damage as surge saw it this tick. The frame is recorded after the
+      // fights of the same tick, so the number it shows next to the surge line
+      // has to be the one the line was drawn against.
+      s.surgeNet = Math.round(s.dealt - s.taken);
       if(!s.alive) continue;
       alive.push(s);
       players += (s.team.squad && s.team.squad.length) || 1;
     }
-    if(players <= surgeAt || !alive.length) return;
+    if(players <= surgeAt || !alive.length) return null;
 
     // Surge is aimed at the excess, not at everybody under the average. The
     // average was what this used to use, and it had a hole underneath it: in a
@@ -948,6 +952,11 @@
         onDeath(t);
       }
     }
+    // The damage threshold as the game's HUD states it: the net damage of the
+    // first squad surge does not reach. "269 above damage threshold" on a real
+    // screen is a squad's net damage minus this line. Returned for the frame.
+    var edge = alive[below.length] || alive[alive.length - 1];
+    return edge ? Math.round(edge.dealt - edge.taken) : null;
   }
 
   // Simulation granularity. Two seconds is fine enough that nobody teleports
@@ -993,6 +1002,9 @@
     // The surge threshold of the phase being played, for the frame. Infinity
     // while surge is off (zone 1), and a frame carries 0 for that.
     var currentSurgeAt = Infinity;
+    // The damage line surge is drawn at on the current tick, null while surge
+    // is not hitting anybody. See applySurge.
+    var currentSurgeLine = null;
     // True only inside the first DROP_SEC of the game. Deaths that happen then
     // are landing fights, and the app needs to be able to tell them apart from
     // the rest of zone 1 — it awards a bonus for winning your drop and it
@@ -1069,6 +1081,8 @@
         // The surge threshold in players for this phase, 0 when surge is off.
         // With `players` above, a viewer can see how far the lobby is over it.
         surgeAt: isFinite(currentSurgeAt) ? currentSurgeAt : 0,
+        // Net damage at which surge is cut this tick, null while it hits nobody.
+        surgeLine: currentSurgeLine,
         // World units, not map percent. World space is isotropic — that is the
         // whole reason it exists — so a circle drawn in it is round and a
         // rotated marker is not sheared. Converting back to percent-of-height
@@ -1100,7 +1114,7 @@
                   // Under surge right now, and net damage (dealt minus taken):
                   // the two numbers surge itself is decided on.
                   u: (s.alive && s.surged) ? 1 : 0,
-                  n: Math.round(s.dealt - s.taken)};
+                  n: s.surgeNet != null ? s.surgeNet : Math.round(s.dealt - s.taken)};
         }),
         events: pendingEvents
       });
@@ -1139,7 +1153,7 @@
         stepMovement(squads, TICK_SEC, from);
         applyHealing(squads, from, TICK_SEC);
         applyStorm(squads, from, phase.dps, TICK_SEC, onDeath);
-        applySurge(squads, phase.surgeAt, TICK_SEC, onDeath);
+        currentSurgeLine = applySurge(squads, phase.surgeAt, TICK_SEC, onDeath);
         resolveContacts(squads, from, rng, duel, onDeath, inDrop);
         frame(from, to, phase.waitSec - t + phase.shrinkSec);
         if(aliveCount() <= 1) return;
@@ -1156,7 +1170,7 @@
         stepMovement(squads, TICK_SEC, cur);
         applyHealing(squads, cur, TICK_SEC);
         applyStorm(squads, cur, phase.dps, TICK_SEC, onDeath);
-        applySurge(squads, phase.surgeAt, TICK_SEC, onDeath);
+        currentSurgeLine = applySurge(squads, phase.surgeAt, TICK_SEC, onDeath);
         resolveContacts(squads, cur, rng, duel, onDeath);
         frame(cur, to, phase.shrinkSec - t);
         if(aliveCount() <= 1) return;

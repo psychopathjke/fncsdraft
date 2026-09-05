@@ -1247,6 +1247,7 @@
     return {
       zone: a.zone,
       surgeAt: a.surgeAt || 0,
+      surgeLine: a.surgeLine == null ? null : a.surgeLine,
       // The clock only runs down inside a phase; across a phase boundary it
       // resets upward, and sliding it there would run the timer backwards.
       secondsLeft: b.secondsLeft <= a.secondsLeft

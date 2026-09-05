@@ -1480,6 +1480,17 @@ test('frames carry the surge threshold and every dot says if it is under surge',
   const hit = timeline.some(f => f.dots.some(d => d.u === 1));
   assert(hit, 'a fifty-squad game never had a squad under surge');
   timeline.forEach(f => f.dots.forEach(d => { if(!d.alive) assert(d.u === 0, 'a dead squad is under surge'); }));
+  // The damage line: present exactly when somebody is under surge, and every
+  // squad under it has done no more than the line, everybody safe no less.
+  timeline.forEach(f => {
+    const anyUnder = f.dots.some(d => d.u === 1);
+    if(anyUnder) assert(typeof f.surgeLine === 'number', 'surge hits somebody but the frame has no line');
+    if(typeof f.surgeLine === 'number') f.dots.forEach(d => {
+      if(!d.alive) return;
+      if(d.u === 1) assert(d.n <= f.surgeLine, 'a squad under surge (' + d.n + ') sits above the line ' + f.surgeLine);
+      else assert(d.n >= f.surgeLine, 'a safe squad (' + d.n + ') sits below the line ' + f.surgeLine);
+    });
+  });
 });
 
 console.log('\n' + passed + ' passed, ' + failed + ' failed\n');
