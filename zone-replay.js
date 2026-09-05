@@ -1236,11 +1236,17 @@
         // and a place is a fact; sliding either one between frames would put a
         // squad on two and a half eliminations and half of eighth place.
         e: d.e || 0,
-        p: d.p || 0
+        p: d.p || 0,
+        // Surge is a state, not a quantity: carried from the recorded frame as
+        // is, so the kit panel does not read "surge off" between two frames
+        // that both say otherwise.
+        u: d.u || 0,
+        n: d.n || 0
       });
     }
     return {
       zone: a.zone,
+      surgeAt: a.surgeAt || 0,
       // The clock only runs down inside a phase; across a phase boundary it
       // resets upward, and sliding it there would run the timer backwards.
       secondsLeft: b.secondsLeft <= a.secondsLeft

@@ -1,0 +1,101 @@
+// Строка набора на карте: здоровье, ресы, лут, сёрдж.
+//
+// Его правка 5 сентября 2026: «я бы хотел на симуляцию добавить ресурсы, лут,
+// который есть, и сёрдж». Всё это считалось и раньше, но видно было только в
+// подсказке к вопросу. Проверяется сама панель (ccKitPanel) на собранном
+// кадре — без вечера, потому что панель читает только кадр и свою команду:
+//   ресы досчитываются по зоне кадра от последней остановки;
+//   лут — свой пак, пока не выбран, потом имена предметов;
+//   сёрдж — порог фазы и «под сёржем», когда движок бьёт тебя;
+//   выбывший отряд — одна строка «выбыли».
+//
+//   node tools/check-career-kit-panel.js
+const fs = require('fs'), os = require('os'), path = require('path');
+const { execFileSync } = require('child_process');
+const ROOT = path.resolve(__dirname, '..');
+const CHROME = [
+  process.env.CHROME,
+  'C:/Program Files/Google/Chrome/Application/chrome.exe',
+  'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+  (process.env.LOCALAPPDATA || '') + '/Google/Chrome/Application/chrome.exe'
+].find(p => p && fs.existsSync(p));
+if (!CHROME) throw new Error('Chrome not found');
+
+const BOOT = `
+<pre id="__out" style="display:none"></pre>
+<script>
+(function(){
+  const out={fails:[], notes:[], err:null};
+  const check=(n, ok, d)=>{ if(!ok) out.fails.push(n+(d?': '+d:'')); };
+  const txt=()=>((CC_RUN_MAP.querySelector('.zr-kit')||{}).textContent||'').replace(/\\s+/g,' ').trim();
+  try{
+    LANG='ru'; CC_L_CACHE={};
+    const T=L();
+    const map=document.createElement('div'); document.body.appendChild(map);
+    CC_RUN_MAP=map;
+    const you={isYou:true, name:'ME', _mats:220, _loot:null};
+    const lobby=[{name:'A'}, you, {name:'B'}];
+    const dot=(o)=>Object.assign({x:0,y:0,alive:true,a:0,h:100,e:0,p:0,u:0,n:0}, o||{});
+    CC_KIT_ZONE=3;   // остановка третьей зоны прошла: потрачено три круга
+
+    // ---- зона 1 на кадре: ресы досчитаны назад на два круга -----------------
+    ccKitPanel(lobby, {zone:1, players:100, surgeAt:0, dots:[dot(), dot({h:80}), dot()]});
+    out.notes.push('z1: '+txt());
+    check('панель встала на карте', !!map.querySelector('.zr-kit'));
+    check('здоровье — из кадра', txt().indexOf('80')>=0, txt());
+    check('ресы на первой зоне — полные минус один круг', txt().indexOf(T.ccKitMats(440))>=0, txt());
+    check('лут до третьей зоны — свой пак', txt().indexOf(T.ccKitLootNone)>=0, txt());
+    check('сёрдж на первой зоне выключен', txt().indexOf(T.ccKitSurgeOff)>=0, txt());
+
+    // ---- зона 3: ресы как есть, сёрдж активен, ты над порогом -----------------
+    ccKitPanel(lobby, {zone:3, players:84, surgeAt:90, dots:[dot(), dot({h:64}), dot()]});
+    out.notes.push('z3: '+txt());
+    check('ресы на зоне остановки — как в модели', txt().indexOf(T.ccKitMats(220))>=0, txt());
+    check('сёрдж называет порог и живых', txt().indexOf(T.ccKitSurgeAt(90, 84))>=0, txt());
+    check('и не красный, пока бьют не тебя', !map.querySelector('.zk-surge.on'));
+
+    // ---- лут выбран, ресы кончились, под сёржем -------------------------------
+    you._loot={weapons:[{name:'Pump'},{name:'AR'}], heals:[{name:'Minis'},{name:'Medkit'}], move:{name:'Sliders'}};
+    you._mats=100; CC_KIT_ZONE=5;
+    ccKitPanel(lobby, {zone:5, players:70, surgeAt:60, dots:[dot(), dot({h:41, u:1, n:-120}), dot()]});
+    out.notes.push('z5: '+txt());
+    check('лут — имена предметов', /Pump.*AR.*Minis.*Medkit.*Sliders/.test(txt()), txt());
+    check('мало ресов — жёлтая пометка', !!map.querySelector('.zk-mats.low') && txt().indexOf(T.ccKitLow)>=0, txt());
+    check('под сёржем — красная плашка', !!map.querySelector('.zk-surge.on') && txt().indexOf(T.ccKitSurgeUnder)>=0, txt());
+
+    // ---- выбыли ----------------------------------------------------------------
+    ccKitPanel(lobby, {zone:6, players:50, surgeAt:50, dots:[dot(), dot({alive:false, h:0, p:23}), dot()]});
+    check('выбывший отряд — одна строка', txt()===T.ccKitOut, txt());
+
+    // ---- без карты панель молчит и не падает -----------------------------------
+    CC_RUN_MAP=null;
+    ccKitPanel(lobby, {zone:7, players:40, surgeAt:40, dots:[dot(), dot(), dot()]});
+    check('без карты ничего не рисуется', document.querySelectorAll('.zr-kit').length===1);
+
+    // ---- и по-английски -----------------------------------------------------
+    LANG='en'; CC_L_CACHE={}; CC_RUN_MAP=map; you._mats=300; CC_KIT_ZONE=3;
+    ccKitPanel(lobby, {zone:3, players:84, surgeAt:90, dots:[dot(), dot({h:90}), dot()]});
+    out.notes.push('en: '+txt());
+    check('английская строка — без кириллицы', !/[А-Яа-я]/.test(txt()), txt());
+  }catch(e){ out.err=String(e && e.stack || e); }
+  document.getElementById('__out').textContent='BEGIN'+encodeURIComponent(JSON.stringify(out))+'END';
+})();
+<\/script>`;
+
+const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fncskit-'));
+const tmp = path.join(dir, 'index.html');
+const BASE = '<base href="file:///' + ROOT.split(path.sep).join('/') + '/">';
+fs.writeFileSync(tmp, BASE + src + BOOT);
+const dom = execFileSync(CHROME, [
+  '--headless=new', '--disable-gpu', '--no-sandbox', '--allow-file-access-from-files',
+  '--virtual-time-budget=30000', '--dump-dom', 'file:///' + tmp.replace(/\\/g, '/')
+], { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8' });
+const m = dom.match(/BEGIN([\s\S]*?)END/);
+if (!m) { console.error('probe did not run; copy at ' + tmp); process.exit(2); }
+const out = JSON.parse(decodeURIComponent(m[1]));
+out.notes.forEach(n => console.log('  ' + n));
+if (out.err) { console.error('ERROR: ' + out.err); process.exit(1); }
+if (out.fails.length) { out.fails.forEach(f => console.error('FAILED: ' + f)); process.exit(1); }
+console.log('the map shows what you carry: health, mats, loot and the surge');
+fs.rmSync(dir, { recursive: true, force: true });

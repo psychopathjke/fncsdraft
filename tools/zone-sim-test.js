@@ -1460,5 +1460,27 @@ test('your squad loses the app\'s prefix on the map and keeps every player', () 
   assert(lines[0] === 'Tjino', 'the prefix is still on the plate: ' + lines[0]);
 });
 
+// The kit panel on the map (index.html, ccKitPanel) reads the surge off the
+// frame: the phase threshold, and per squad whether surge is on it right now.
+test('frames carry the surge threshold and every dot says if it is under surge', () => {
+  const teams = fakeField(50);
+  const { timeline } = runGame(3, teams, true);
+  assert(timeline.length > 20, 'too few frames recorded: ' + timeline.length);
+  timeline.forEach(f => {
+    assert(typeof f.surgeAt === 'number', 'a frame has no surgeAt');
+    f.dots.forEach(d => {
+      assert(d.u === 0 || d.u === 1, 'dot.u is ' + d.u);
+      assert(typeof d.n === 'number', 'dot.n is ' + d.n);
+    });
+  });
+  const zone1 = timeline.filter(f => f.zone === 1);
+  assert(zone1.length && zone1.every(f => f.surgeAt === 0), 'surge threshold shown in zone 1');
+  const later = timeline.filter(f => f.zone >= 2);
+  assert(later.length && later.every(f => f.surgeAt > 0), 'no surge threshold after zone 1');
+  const hit = timeline.some(f => f.dots.some(d => d.u === 1));
+  assert(hit, 'a fifty-squad game never had a squad under surge');
+  timeline.forEach(f => f.dots.forEach(d => { if(!d.alive) assert(d.u === 0, 'a dead squad is under surge'); }));
+});
+
 console.log('\n' + passed + ' passed, ' + failed + ' failed\n');
 process.exit(failed ? 1 : 0);

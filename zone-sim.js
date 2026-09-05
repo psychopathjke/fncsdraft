@@ -254,6 +254,9 @@
         elims: 0,
         dealt: 0,
         taken: 0,
+        // Under surge damage on the current tick. Read by the replay frame so
+        // the kit panel on the map can say so; the engine itself never reads it.
+        surged: false,
         // Which squad surge takes first when several have done equally little.
         // A stable per-squad draw rather than array order, because the callers
         // hand teams over in rating order and array order would quietly mean
@@ -902,6 +905,7 @@
     var players = 0;
     for(var i=0;i<squads.length;i++){
       var s = squads[i];
+      s.surged = false;
       if(!s.alive) continue;
       alive.push(s);
       players += (s.team.squad && s.team.squad.length) || 1;
@@ -935,6 +939,7 @@
 
     for(var k=0;k<below.length;k++){
       var t = below[k];
+      t.surged = true;
       t.hp -= SURGE_DPS * seconds;
       if(t.hp <= 0){
         t.hp = 0;
@@ -985,6 +990,9 @@
     var pendingEvents = [];
     var timeline = [];
     var currentZone = 1;
+    // The surge threshold of the phase being played, for the frame. Infinity
+    // while surge is off (zone 1), and a frame carries 0 for that.
+    var currentSurgeAt = Infinity;
     // True only inside the first DROP_SEC of the game. Deaths that happen then
     // are landing fights, and the app needs to be able to tell them apart from
     // the rest of zone 1 — it awards a bonus for winning your drop and it
@@ -1058,6 +1066,9 @@
         secondsLeft: Math.max(0, Math.round(secondsLeft)),
         alive: aliveCount(),
         players: alivePlayers(),
+        // The surge threshold in players for this phase, 0 when surge is off.
+        // With `players` above, a viewer can see how far the lobby is over it.
+        surgeAt: isFinite(currentSurgeAt) ? currentSurgeAt : 0,
         // World units, not map percent. World space is isotropic — that is the
         // whole reason it exists — so a circle drawn in it is round and a
         // rotated marker is not sheared. Converting back to percent-of-height
@@ -1085,7 +1096,11 @@
           // live arrow reads as a bug rather than as a squad about to die.
           return {x: s.x, y: s.y, alive: s.alive, a: s.heading,
                   h: s.alive ? Math.max(1, Math.round(s.hp)) : 0,
-                  e: s.elims, p: s.alive ? 0 : (s.place || 0)};
+                  e: s.elims, p: s.alive ? 0 : (s.place || 0),
+                  // Under surge right now, and net damage (dealt minus taken):
+                  // the two numbers surge itself is decided on.
+                  u: (s.alive && s.surged) ? 1 : 0,
+                  n: Math.round(s.dealt - s.taken)};
         }),
         events: pendingEvents
       });
@@ -1097,6 +1112,7 @@
     // which is what makes leaving late expensive rather than merely untidy.
     function runPhase(from, to, phase){
       currentZone = phase.zone;
+      currentSurgeAt = phase.surgeAt;
       var total = phase.waitSec + phase.shrinkSec;
       for(var i=0;i<squads.length;i++) if(squads[i].alive){
         var s0 = squads[i];

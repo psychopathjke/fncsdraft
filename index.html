@@ -2644,6 +2644,22 @@
   @media(max-width:640px){.cc-tvs-tiles{grid-template-columns:repeat(2,1fr);}
     .cc-tvs-tile:nth-child(4n){border-right:1px solid #26262c;}
     .cc-tvs-tile:nth-child(2n){border-right:none;}}
+  /* Строка набора на карте: здоровье, ресы, лут, сёрдж — под шапкой ЗОНА/время. */
+  .zr-kit{position:absolute;left:7px;top:26px;display:flex;flex-wrap:wrap;gap:4px;
+    pointer-events:none;max-width:56%;font-size:10px;font-weight:800;letter-spacing:.02em;}
+  .zr-kit>span{display:inline-flex;align-items:center;gap:5px;background:rgba(0,0,0,.62);
+    color:#eef2fb;border-radius:4px;padding:2px 6px;text-shadow:0 1px 2px #000;}
+  .zr-kit .zk-hp{padding-left:4px;}
+  .zr-kit .zk-hp i{display:block;width:100%;height:5px;border-radius:3px;background:#3bd37b;
+    min-width:2px;max-width:46px;flex:0 0 auto;}
+  .zr-kit .zk-hp{position:relative;}
+  .zr-kit .zk-hp b{font-variant-numeric:tabular-nums;}
+  .zr-kit .zk-mats.low{color:#ffd54a;}
+  .zr-kit .zk-loot{font-weight:600;color:#cfd8ea;}
+  .zr-kit .zk-surge.ok{color:#ffd9a3;}
+  .zr-kit .zk-surge.on{background:rgba(232,160,32,.85);color:#111;}
+  .zr-kit .zk-surge.off{color:#9aa4b8;font-weight:600;}
+  .zr-kit .zk-dead{color:#ff9b9b;}
 
   #screen-career-hub .tv-last{margin-top:12px;}
   #screen-career-hub .tv-last .ch-hint{color:#adadb8;}
@@ -5036,8 +5052,8 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=318a3cb4"></script>
-<script src="zone-replay.js?v=bd107a55"></script>
+<script src="zone-sim.js?v=f28ba3e3"></script>
+<script src="zone-replay.js?v=9f0631ea"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -6936,6 +6952,10 @@ ccLateEdge:'Играть за зоной', ccLateEdgeNote:(v,f,p)=>p+'%: лов�
 ccLateEdgeWon:v=>'За зоной сработало — +'+v+' к силе', ccLateEdgeLost:v=>'Шторм добрал, −'+v+' к силе',
 ccLateRefreshWon:v=>'Рефреш найден, +'+v+' к силе и полные ресы', ccLateRefreshLost:v=>'Рефреша нет, вернулся последним: −'+v+' к силе',
 ccKitLine:(m,low,loot)=>'Ресы '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'мало',
+// Панель набора на карте — его правка 5.09: «добавить на симуляцию ресурсы, лут и сёрдж».
+ccKitMats:m=>'Ресы '+m, ccKitLootNone:'лут: свой пак', ccKitOut:'выбыли',
+ccKitSurgeOff:'сёрдж выключен', ccKitSurgeAt:(a,p)=>'сёрдж с '+a+' игроков · в игре '+p,
+ccKitSurgeUnder:'ПОД СЁРЖЕМ — мало урона',
 ccMatsTitle:'Ресы кончаются', ccMatsGo:'Идти за рефрешем', ccMatsStay:'Ротейтить тем, что есть',
 ccMatsGoNote:(v,f,p)=>p+'%: нашёл — +'+v+' и полные ресы, нет — минус '+f,
 ccMatsStayNote:v=>'Ничего не тратишь, но в концовке без ресов минус '+v,
@@ -8824,6 +8844,9 @@ ccLateEdge:'Play outside the zone', ccLateEdgeNote:(v,f,p)=>p+'%: catch them com
 ccLateEdgeWon:v=>'Outside the zone worked — +'+v+' power', ccLateEdgeLost:v=>'The storm got you, −'+v+' power',
 ccLateRefreshWon:v=>'Refresh found, +'+v+' power and full mats', ccLateRefreshLost:v=>'No refresh, back in last: −'+v+' power',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'low',
+ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: own pack', ccKitOut:'eliminated',
+ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge from '+a+' players · alive '+p,
+ccKitSurgeUnder:'UNDER SURGE — too little damage',
 ccMatsTitle:'Running out of mats', ccMatsGo:'Go for a refresh', ccMatsStay:'Rotate with what you have',
 ccMatsGoNote:(v,f,p)=>p+'%: found it — +'+v+' and full mats, did not — minus '+f,
 ccMatsStayNote:v=>'Costs nothing now, but an endgame without mats is minus '+v,
@@ -10859,6 +10882,9 @@ ccLateEdge:'Jouer hors zone', ccLateEdgeNote:(v,f,p)=>p+' % : tu prends ceux qui
 ccLateEdgeWon:v=>'Hors zone, ça a marché — +'+v+' de puissance', ccLateEdgeLost:v=>'La tempête t\'a eu, −'+v+' de puissance',
 ccLateRefreshWon:v=>'Refresh trouvé, +'+v+' de puissance et mats pleins', ccLateRefreshLost:v=>'Pas de refresh, rentré en dernier : −'+v+' de puissance',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'peu',
+ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot : ton pack', ccKitOut:'éliminés',
+ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge dès '+a+' joueurs · en vie '+p,
+ccKitSurgeUnder:'SOUS SURGE — trop peu de dégâts',
 ccMatsTitle:'Les mats s\'épuisent', ccMatsGo:'Aller chercher un refresh', ccMatsStay:'Tourner avec ce qu\'on a',
 ccMatsGoNote:(v,f,p)=>p+' % : trouvé — +'+v+' et mats pleins, sinon — moins '+f,
 ccMatsStayNote:v=>'Ça ne coûte rien maintenant, mais une fin de partie sans mats coûte '+v,
@@ -12754,6 +12780,9 @@ ccLateEdge:"Giocare fuori zona", ccLateEdgeNote:(v,f,p)=>p+'%: prendi chi entra 
 ccLateEdgeWon:v=>'Fuori zona ha funzionato \u2014 +'+v+' di forza', ccLateEdgeLost:v=>'La tempesta ti ha preso, \u2212'+v+' di forza',
 ccLateRefreshWon:v=>'Refresh trovato, +'+v+' di forza e mats pieni', ccLateRefreshLost:v=>'Niente refresh, rientrato per ultimo: \u2212'+v+' di forza',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' \u00b7 '+low:'')+(loot?' \u00b7 '+loot:''), ccKitLow:"pochi",
+ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: il tuo pack', ccKitOut:'eliminati',
+ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge da '+a+' giocatori \u00b7 vivi '+p,
+ccKitSurgeUnder:'SOTTO SURGE \u2014 troppo pochi danni',
 ccMatsTitle:"I mats stanno finendo", ccMatsGo:"Andare a cercare un refresh", ccMatsStay:"Ruotare con quello che c'\u00e8",
 ccMatsGoNote:(v,f,p)=>p+'%: trovato \u2014 +'+v+' e mats pieni, no \u2014 meno '+f,
 ccMatsStayNote:v=>'Ora non costa nulla, ma un finale senza mats costa '+v,
@@ -15212,6 +15241,9 @@ ccLateEdge:"Jogar fora da zona", ccLateEdgeNote:(v,f,p)=>p+'%: pega quem entra �
 ccLateEdgeWon:v=>'Fora da zona funcionou — +'+v+' de força', ccLateEdgeLost:v=>'A tempestade te pegou, −'+v+' de força',
 ccLateRefreshWon:v=>'Refresh achado, +'+v+' de força e mats cheios', ccLateRefreshLost:v=>'Sem refresh, voltou por último: −'+v+' de força',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:"pouco",
+ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: seu pack', ccKitOut:'eliminados',
+ccKitSurgeOff:'surge desligado', ccKitSurgeAt:(a,p)=>'surge a partir de '+a+' jogadores · vivos '+p,
+ccKitSurgeUnder:'SOB SURGE — pouco dano',
 ccMatsTitle:"Os mats estão acabando", ccMatsGo:"Ir atrás de um refresh", ccMatsStay:"Rotacionar com o que tem",
 ccMatsGoNote:(v,f,p)=>p+'%: achou — +'+v+' e mats cheios, não — menos '+f,
 ccMatsStayNote:v=>'Agora não custa nada, mas um final sem mats custa '+v,
@@ -46252,6 +46284,8 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   function onZoneFrame(lobby, frame){
     let alive=0;
     for(const d of frame.dots) if(d.alive) alive++;
+    // Строка набора под шапкой карты: здоровье, ресы, лут, сёрдж. См. ccKitPanel.
+    try{ ccKitPanel(lobby, frame); }catch(e){}
     const next=new Map();
     frame.dots.forEach((d,i)=>{
       const t=lobby[i];
@@ -51395,6 +51429,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
     // Круги, прошедшие с прошлой остановки, стоят стройки — всем одинаково.
     ccKitSpend(teams, CC_MATS_ZONE*Math.max(1, stop.zone-zoneWas));
     zoneWas=stop.zone;
+    CC_KIT_ZONE=zoneWas;   // панель на карте досчитывает ресы по зоне кадра, см. ccKitPanel
     // Концовка без ресов стоит силы, и комнате тоже. См. CC_MATS_PEN.
     if(stop.zone>=8) ccMatsPenalty(teams);
     ccMpMark('p'+stop.zone, teams);
@@ -51474,6 +51509,46 @@ const CC_MATS_FULL=550, CC_MATS_ZONE=110, CC_MATS_LOW=160, CC_MATS_PEN=3;
 const CC_MATS_HG_EXTRA=90;   // высокая земля строится, и это дороже обычного круга
 function ccKitInit(teams){
   (teams||[]).forEach(t=>{ t._mats=CC_MATS_FULL; t._loot=null; t._matsPen=false; });
+  CC_KIT_ZONE=0;
+}
+/* ПАНЕЛЬ НАБОРА НА КАРТЕ — его правка 5 сентября: «я бы хотел на симуляцию
+   добавить ресурсы, лут, который есть, и сёрдж».
+
+   Всё это уже считалось, но игрок видел ресы и лут только в подсказке к
+   вопросу, а сёрдж — никогда. Теперь под шапкой карты стоит строка: здоровье
+   отряда (из кадра), ресы, лут после третьей зоны и сёрдж — порог этой фазы в
+   игроках, сколько в живых, и красным «под сёржем», когда движок бьёт именно
+   тебя (флаг u в точке кадра, см. zone-sim applySurge).
+
+   Ресы модель тратит кусками на остановках (ccKitSpend перед показом), а
+   круги идут один за другим — поэтому на кадре они досчитываются по зоне:
+   к тому, что осталось после остановки, прибавляется по кругу за каждую ещё
+   не показанную зону. CC_KIT_ZONE — зона последней остановки. */
+let CC_KIT_ZONE=0;
+function ccKitPanel(lobby, frame){
+  const map=CC_RUN_MAP;
+  if(!map || !map.isConnected || !frame) return;
+  const i=(lobby||[]).findIndex(t=>t && t.isYou);
+  if(i<0) return;
+  const you=lobby[i], d=(frame.dots||[])[i];
+  if(!you || !d) return;
+  let box=map.querySelector('.zr-kit');
+  if(!box){ box=document.createElement('div'); box.className='zr-kit'; map.appendChild(box); }
+  const T=L();
+  if(!d.alive){ box.innerHTML='<span class="zk-dead">'+esc(T.ccKitOut)+'</span>'; return; }
+  const mats=Math.max(0, ccMats(you)+CC_MATS_ZONE*Math.max(0, CC_KIT_ZONE-(frame.zone||0)));
+  const low=mats<CC_MATS_LOW;
+  const loot=you._loot
+    ? [...(you._loot.weapons||[]), ...(you._loot.heals||[]), you._loot.move].filter(Boolean).map(o=>o.name).join(' · ')
+    : T.ccKitLootNone;
+  const hp=Math.max(0, Math.min(100, d.h||0));
+  const surge = frame.surgeAt>0
+    ? '<span class="zk-surge'+(d.u?' on':' ok')+'">'+esc(d.u ? T.ccKitSurgeUnder : T.ccKitSurgeAt(frame.surgeAt, frame.players))+'</span>'
+    : '<span class="zk-surge off">'+esc(T.ccKitSurgeOff)+'</span>';
+  box.innerHTML=
+    '<span class="zk-hp"><i style="width:'+hp+'%"></i><b>'+hp+'</b></span>'+
+    '<span class="zk-mats'+(low?' low':'')+'">'+esc(T.ccKitMats(mats))+(low?' · '+esc(T.ccKitLow):'')+'</span>'+
+    '<span class="zk-loot">'+esc(loot)+'</span>'+surge;
 }
 // Круг прошёл — ресы потрачены. Считается всем, включая комнату.
 function ccKitSpend(teams, n){
