@@ -2647,6 +2647,8 @@
 
   #screen-career-hub .tv-last{margin-top:12px;}
   #screen-career-hub .tv-last .ch-hint{color:#adadb8;}
+  /* Цена эфира под кнопкой «Играть в эфире» — фиолетовая, как сама кнопка. */
+  #screen-career-hub .ch-live-hint{color:#bf94ff;margin:6px 0 0;text-align:center;font-weight:700;}
   #screen-career-hub .tv-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
   #screen-career-hub .tv-head span{font-size:11.5px;color:#bf94ff;}
   /* 4 сентября, его скрин с красной рамкой вокруг значка LIVE: правило .tv-live
@@ -58855,7 +58857,10 @@ function careerCentreHTML(card, a){
         (onToday && !ccMpOn() ? (()=>{ const why=ccStreamCupWhy();
            return `<button class="ch-play ch-live-go"${why?' disabled':''} onclick="careerPlayLive()"
              title="${esc(why||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}">${
-             L().ccStreamCupGo}</button>`; })() : '')
+             L().ccStreamCupGo}</button>`+
+             /* Цена эфира — строкой под кнопкой, а не только во всплывающей
+                подсказке: его слово 5 сентября «и это должно быть написано». */
+             `<div class="ch-hint ch-live-hint">${esc(why||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}</div>`; })() : '')
       : `<button class="ch-play" onclick="careerSkipAsk()" title="${esc(
             careerNoMate(next.type) ? (careerMatesOver()>0 ? L().ccMateOver : L().ccNoMateN(careerMatesShort()))
           : next.type==='reload' ? L().ccRelLocked
@@ -86610,8 +86615,9 @@ const CC_STREAM_KINDS=[
 
    ЧЕМ ПЛАТИШЬ — силой. Стрим забирает внимание: своя команда в этот вечер
    слабее на CC_STREAM_POW, и это ровно та же валюта, в которой считаются
-   форма (±3), перегруз (−2) и химия дуо (+5). Два очка — заметно и не
-   смертельно: вечер в эфире стоит примерно всей своей формы.
+   форма (±3), перегруз (−2) и химия дуо (+5). Десять — больше формы и химии
+   вместе: его слово 5 сентября «−10 будто», см. CC_STREAM_POW. Вечер в эфире —
+   размен места на аудиторию, и он должен быть виден в таблице.
 
    Дешевле по энергии, чем обычный эфир (20 против 30): играть ты собирался и
    так, эфир здесь — включённая камера, а не отдельный вечер. Зато перегруз
@@ -86671,8 +86677,14 @@ function careerStreamGo(id){
 
    3. В КОМАНДНОЙ КАРЬЕРЕ ЭФИРА НЕТ. Сила своей команды у двоих обязана
       сойтись до единицы (см. CC_MP_YOU_PARTS): один в эфире, второй нет — и
-      это разные вечера с первой игры. Кнопка там гаснет и говорит почему. */
-const CC_STREAM_POW=2;
+      это разные вечера с первой игры. Кнопка там гаснет и говорит почему.
+
+   ЦЕНА — ДЕСЯТЬ. Стояло два («заметно и не смертельно»); его слово 5 сентября:
+   «мне кажется больше силы должно уменьшаться, −10 будто, и это должно быть
+   написано». Десять — это больше всей формы (±3) и химии (+5) вместе: эфир с
+   турнира — осознанный размен места на аудиторию, а не бесплатная камера.
+   Число живёт здесь одно, все подписи (кнопка, рамка, хаб) читают его. */
+const CC_STREAM_POW=10;
 let CC_STREAM_LIVE=false;
 // Своя команда сегодняшнего вечера — её читает окошко трансляции. Пишется в
 // careerYouTeam, то есть одинаково для всех девяти раннеров.

@@ -84,6 +84,14 @@ const BOOT = `
     if (!live) { out.fail = 'no live button on a cup day'; throw new Error(out.fail); }
     check('and it is pressable', !live.disabled, live.title);
     out.steps.push('live button: ' + live.textContent.trim());
+    /* Цена написана под кнопкой, не только в подсказке при наведении — его
+       слово 5 сентября: «−10 будто, и это должно быть написано». */
+    const liveHint = document.querySelector('#screen-career-hub .ch-live-hint');
+    check('the price of the air is written under the button', !!liveHint &&
+          liveHint.textContent.indexOf(L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW)) >= 0,
+          liveHint ? liveHint.textContent : 'no hint');
+    check('and the price is ten', CC_STREAM_POW === 10, String(CC_STREAM_POW));
+    out.steps.push('hint under the button: ' + (liveHint ? liveHint.textContent : '—'));
 
     // ---- вкладка стримов знает про сегодняшний турнир ------------------------
     careerTab('streams');
