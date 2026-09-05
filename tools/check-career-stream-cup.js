@@ -228,6 +228,30 @@ const BOOT = `
     const width = (document.getElementById('ccTvBar')||{}).style.width;
     check('the evening has a progress bar', width === '27%', String(width));
     check('a win fills the chat', chatN >= 3, String(chatN));
+    /* ---- чат смотрит игру ------------------------------------------------------
+       Его правка 5 сентября: «когда выбор, то в чате что-то подобное, и после
+       победы www или goat». Победа в первой игре лога — спам с «W»; вопрос —
+       чат выкрикивает варианты; исход — хвалит или «говорил же». Вне эфира
+       чат на вопросы не отвечает. */
+    check('a win is spammed with W or GOAT',
+          CC_TV_MSGS.some(m => !m.ev && /^W{3,}$|GOAT|W W W/.test(m.text)),
+          CC_TV_MSGS.map(m => m.text).join(' | ').slice(0, 200));
+    CC_STREAM_LIVE = true;
+    const before = CC_TV_MSGS.length;
+    ccTvOnChoice([{title: 'HIGHGROUNDX'}, {title: 'REFRESHX'}]);
+    const shouted = CC_TV_MSGS.slice(before).map(m => m.text);
+    check('chat shouts the options of a question', shouted.some(t => /HIGHGROUNDX|REFRESHX/i.test(t)) && shouted.length >= 3,
+          shouted.join(' | '));
+    ccTvOnResult(true);
+    const praised = CC_TV_MSGS[CC_TV_MSGS.length - 1].text;
+    check('and praises a call that worked', L().ccTvChatCallGood.indexOf(praised) >= 0, praised);
+    ccTvOnResult(false);
+    const scolded = CC_TV_MSGS[CC_TV_MSGS.length - 1].text;
+    check('and told you so when it did not', L().ccTvChatCallBad.indexOf(scolded) >= 0, scolded);
+    CC_STREAM_LIVE = false;
+    const quiet = CC_TV_MSGS.length;
+    ccTvOnChoice([{title: 'X'}]);
+    check('off air the chat does not answer questions', CC_TV_MSGS.length === quiet);
     /* ---- события канала: фолловеры, сабы, донаты ----------------------------
        Его правка 5 сентября: «во время лайва чат двигается и тд, фоловки,
        сабки, платные донаты». Бюджет событий — из тех же чисел, что платит

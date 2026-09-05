@@ -7657,7 +7657,13 @@ ccTvSumTitle:'Итоги эфира', ccTvSumAvg:'Средний онлайн', 
 ccTvSumFol:'Фолловеры', ccTvSumSubs:'Сабы', ccTvSumCash:'Заработано', ccTvSumTime:'В эфире',
 ccTvSumChatters:'Писали в чат', ccTvSumChart:'Зрители по ходу вечера', ccTvSumHours:h=>h+' ч',
 ccTvSumPlace:(p,of)=>'место '+p+' из '+of,
-ccTvChatWin:['ПОБЕДА','W','вот это игра','клип в тг','гоооол','изи катка','красава'],
+ccTvChatWin:['ПОБЕДА','W','вот это игра','клип в тг','гоооол','изи катка','красава','WWWWWWW','GOAT','ГОУТ','КЛИП','ИЗИИИИ','ПОГ','W W W W W','лучший в мире','ааааааа','это чемпион'],
+// Чат отвечает на игру — его правка 5.09 «чат реалистичней сделать: когда
+// выбор, то в чате что-то подобное, и после победы www или goat».
+ccTvChatChoice:['быстрее решай','не тупи','го контест','дом бери','рефреш пж','ХАЙГРАУНД','это пикай','слушай чат','я бы контестил','не рискуй','давай давай','время идёт'],
+ccTvChatPicked:['ок ок','траст','ну посмотрим','W колл','нооооо','ладно','верим','рискованно','вот это я понимаю'],
+ccTvChatCallGood:['W КОЛЛ','я же говорил','чат гений','имба решение','красава','вот так и надо','гений'],
+ccTvChatCallBad:['говорил же','F','ну зачем','надо было слушать чат','не повезло','ауч','ну блин'],
 ccTvChatGood:['красиво','+','чисто','достойно','сильно','вот так и надо'],
 ccTvChatBad:['F','ну бывает','что это было','ой','не повезло','го дальше','третьят опять'],
 ccNewsStreamCup:(p,of,f)=>'Отстримил турнир: '+p+' из '+of+' · +'+f+' фолловеров твича',
@@ -9532,7 +9538,11 @@ ccTvSumTitle:'Stream summary', ccTvSumAvg:'Average viewers', ccTvSumPeak:'Peak v
 ccTvSumFol:'Follows', ccTvSumSubs:'Subs', ccTvSumCash:'Earned', ccTvSumTime:'Time streamed',
 ccTvSumChatters:'Unique chatters', ccTvSumChart:'Viewers through the evening', ccTvSumHours:h=>h+' h',
 ccTvSumPlace:(p,of)=>'placed '+p+' of '+of,
-ccTvChatWin:['VICTORY','W','what a game','clip it','LETS GOOO','ez dub','insane'],
+ccTvChatWin:['VICTORY','W','what a game','clip it','LETS GOOO','ez dub','insane','WWWWWWW','GOAT','GOATED','CLIP IT','EZZZZZ','POG','W W W W W','best in the world','aaaaaaa','that is a champion'],
+ccTvChatChoice:['decide faster','dont overthink','contest it','take home','refresh pls','HIGH GROUND','pick this','listen to chat','i would contest','dont risk it','go go go','clock is ticking'],
+ccTvChatPicked:['ok ok','trust','we will see','W call','nooooo','fine','we believe','risky','now that is a play'],
+ccTvChatCallGood:['W CALL','told you','chat is a genius','insane call','well played','that is how','genius'],
+ccTvChatCallBad:['told you','F','why though','should have listened to chat','unlucky','ouch','oh no'],
 ccTvChatGood:['clean','+','nice','solid','strong','that is how'],
 ccTvChatBad:['F','it happens','what was that','oof','unlucky','next one','third partied again'],
 ccNewsStreamCup:(p,of,f)=>'Streamed the tournament: '+p+' of '+of+' · +'+f+' twitch followers',
@@ -51642,6 +51652,8 @@ function ccChoiceBox(title, hint, options, onMap){
     let done=false;
     const answer=o=>{ if(done) return; done=true;
       clearInterval(watch); clearTimeout(bell);
+      // Чат эфира видел вопрос — видит и ответ. Только там, где вопрос стоял.
+      if(box && typeof ccTvOnChosen==='function') ccTvOnChosen(o);
       if(box && box.isConnected) box.remove();
       resolve(o); };
     const auto=()=>answer(options[0]);
@@ -51661,6 +51673,8 @@ function ccChoiceBox(title, hint, options, onMap){
            ${o.art||''}<b>${esc(o.title)}</b><em>${o.note||''}</em></button>`).join('')}</div>`+
       `<div class="cc-choice-bar"><i></i></div>`;
     host.appendChild(box);
+    // Чат эфира видит вопрос и начинает советовать. См. ccTvOnChoice.
+    if(typeof ccTvOnChoice==='function') ccTvOnChoice(options);
     if(!onMap) box.scrollIntoView({block:'center',
       behavior:(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
         ? 'auto' : 'smooth'});
@@ -51695,6 +51709,8 @@ function ccChoiceResult(map, text, ok){
     tag.className='cc-choice-out'+(ok===false?' bad':(ok?' good':''));
     tag.innerHTML=`<b>${esc(text)}</b>`;
     map.appendChild(tag);
+    // И чат эфира знает, чем кончилось. См. ccTvOnResult.
+    if(typeof ccTvOnResult==='function') ccTvOnResult(ok);
     setTimeout(()=>{ tag.classList.add('out'); }, 1500);
     setTimeout(()=>{ tag.remove(); resolve(); }, 1900);
   });
@@ -86946,6 +86962,10 @@ function ccTvOpen(next){
   CC_TV_HYPE=0; CC_TV_SEEN=0; CC_TV_MSGS=[]; CC_TV_RUN=null; CC_TV_INCUT=null;
   CC_TV_T0=Date.now(); CC_TV_EV={fol:0, subs:0, cash:0}; CC_TV_BURST=0;
   CC_TV_SUM={n:0, sum:0}; CC_TV_HIST=[]; CC_TV_CHATTERS=new Set();
+  // Команда вечера придёт из careerYouTeam, когда вечер начнётся. Прошлая —
+  // с её одиннадцатью играми — иначе прочитывалась первым же тиком как
+  // «только что сыгранное», и чат открывался чужими реакциями.
+  CC_TV_YOU=null;
   /* Кто сидит в чате — те же люди, что и на вкладке стримов. Пустым он быть
      не может: у совсем новой карьеры нет ни друзей, ни подписок, и тогда в
      эфире сидит она сама. */
@@ -87034,6 +87054,53 @@ function ccTvSay(bank){
   CC_TV_CHATTERS.add(who.who);
   ccTvPush({who:who.who, c:who.c, text:bank[Math.floor(Math.random()*bank.length)]});
 }
+// Строка своим текстом — от случайного человека в чате.
+function ccTvSayText(text){
+  if(!text || !CC_TV_WHO.length) return;
+  const who=CC_TV_WHO[Math.floor(Math.random()*CC_TV_WHO.length)];
+  CC_TV_CHATTERS.add(who.who);
+  ccTvPush({who:who.who, c:who.c, text:String(text)});
+}
+/* ЧАТ СМОТРИТ ИГРУ — его правка 5 сентября: «чат реалистичней сделать: когда
+   выбор, то в чате что-то подобное, и после победы www или goat».
+
+   Вопрос по ходу матча (ccChoiceBox) чат видит и начинает советовать: часть
+   строк — названия самих вариантов, выкрикнутые как в чате («ХАЙГРАУНД»,
+   «Рефреш!!!»), часть — общее «не тупи», «слушай чат». На выбор отвечает
+   («траст», «нооооо»), на исход — «W КОЛЛ» или «говорил же». Всё через
+   ccTvSay/ccTvSayText, то есть теми же людьми и в тот же чат; вне эфира и без
+   рамки молчит. Названия вариантов приходят уже на языке экрана. */
+function ccTvLive(){ return CC_STREAM_LIVE && !!document.getElementById('ccTvFrame'); }
+function ccTvShout(t){
+  const s=String(t||'').trim(); if(!s) return '';
+  const r=Math.random();
+  return r<0.35 ? s.toUpperCase() : r<0.6 ? s+'!!!' : r<0.8 ? s+' '+s : s.toLowerCase();
+}
+function ccTvOnChoice(options){
+  if(!ccTvLive()) return;
+  const T=L();
+  const titles=(options||[]).map(o=>o && o.title).filter(Boolean);
+  const n=3+Math.floor(Math.random()*3);
+  for(let i=0;i<n;i++){
+    if(titles.length && Math.random()<0.6) ccTvSayText(ccTvShout(titles[Math.floor(Math.random()*titles.length)]));
+    else ccTvSay(T.ccTvChatChoice);
+  }
+}
+function ccTvOnChosen(o){
+  if(!ccTvLive()) return;
+  const T=L();
+  ccTvSay(T.ccTvChatPicked);
+  if(o && o.title && Math.random()<0.5) ccTvSayText(ccTvShout(o.title));
+  if(Math.random()<0.5) ccTvSay(T.ccTvChatPicked);
+}
+function ccTvOnResult(ok){
+  if(!ccTvLive()) return;
+  const T=L();
+  const bank=ok===false ? T.ccTvChatCallBad : ok ? T.ccTvChatCallGood : null;
+  if(!bank) return;
+  ccTvSay(bank); ccTvSay(bank);
+  if(ok) CC_TV_HYPE+=0.2;
+}
 // Событие канала: фолловер, саб, донат. Копится в CC_TV_EV — это и есть то, что
 // вечер потом зачтёт (см. ccStreamCupAfter).
 function ccTvEvent(kind, amt, say){
@@ -87089,7 +87156,10 @@ function ccTvTick(){
     const p=g.place||0;
     if(p===1){
       CC_TV_HYPE+=1.2; CC_TV_BURST=4;
-      ccTvSay(T.ccTvChatWin); ccTvSay(T.ccTvChatWin);
+      // Победа — это спам: полдюжины строк подряд, и среди них обязательно «W».
+      for(let k=0;k<6;k++) ccTvSay(T.ccTvChatWin);
+      ccTvSayText('W'.repeat(3+Math.floor(Math.random()*6)));
+      ccTvSayText(Math.random()<0.5 ? 'GOAT' : 'W W W W W');
       if(Math.random()<0.6) ccTvEvent('dono');
     }
     else if(p && p<=5){ CC_TV_HYPE+=0.45; ccTvSay(T.ccTvChatGood); }
