@@ -75,6 +75,17 @@ const BOOT = `
       .filter(p => p.tier === 'cardmode').length, 0);
     out.notes.div5RealCards = cards5;
     check('Division 5 seats no real cards', cards5 === 0, String(cards5));
+    /* Его правка 5 сентября: «с 5 дива по 2 никнеймы без цифр и маленькими
+       буквами». Всё выдуманное в Дивизионах 5 и 2 — только строчные латинские. */
+    [5, 2].forEach(div => {
+      const f = div === 5 ? f5 : careerCupField(CAREER.career, seed(cupDay, div), careerCupSize(div));
+      const made = [];
+      f.forEach(t => (t.squad||[]).forEach(p => { if (p.tier === 'ladder') made.push(String(p.handle)); }));
+      const odd = made.filter(h => !/^[a-z]+$/.test(h));
+      out.notes['plain' + div] = {made: made.length, odd: odd.slice(0, 5), sample: made.slice(0, 5)};
+      check('Division ' + div + ' nicks are lowercase without digits', made.length > 0 && odd.length === 0,
+            JSON.stringify(out.notes['plain' + div]));
+    });
 
     /* Division 1 is the other half of the same rule: all real, none generated.
 

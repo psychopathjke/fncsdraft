@@ -63386,7 +63386,8 @@ function ccLadderSeason(cr, open, need){
       const o = open ? ccOpenFillOvr(rnd)
               : cr.division===1 ? ccD1FillOvr(rnd)
                                 : ccBand(cr.division)+careerGauss(rnd)*CC_BAND_SD;
-      const c=careerLadderPlayer(rnd, o, seen);
+      // Дивизионы 2–5 — строчными без цифр (см. careerLadderPlayer, plain).
+      const c=careerLadderPlayer(rnd, o, seen, null, null, null, !open && (cr.division||1)>=2);
       if(!c) break;
       out.push(c);
     }
@@ -63400,14 +63401,25 @@ function ccLadderSeason(cr, open, need){
     const t=pool[i]; pool[i]=pool[j]; pool[j]=t; }
   return pool;
 }
-function careerLadderPlayer(rnd, ovr, taken, natHint, roleWant, topOvr){
+/* plain — ник строчными и без цифр. Его правка 5 сентября: «пусть с 5 дива по 2
+   будут никнеймы без цифр и маленькими буквами». Так выглядят ники в нижних
+   дивизионах и у зрителей; заглавная и «Nekо47» остаются за опенами. Чтобы
+   625 сочетаний двух слогов не кончались на большой комнате, у plain-ника
+   иногда три слога. */
+function careerLadderPlayer(rnd, ovr, taken, natHint, roleWant, topOvr, plain){
   let h='';
   const real=ccRealNames();
   for(let guard=0; guard<40; guard++){
     const a=CC_LAD_A[Math.floor(rnd()*CC_LAD_A.length)];
     const b=CC_LAD_B[Math.floor(rnd()*CC_LAD_B.length)];
-    h=a.charAt(0).toUpperCase()+a.slice(1)+b;
-    if(rnd()<0.45) h+=String(10+Math.floor(rnd()*89));
+    if(plain){
+      h=a+b;
+      if(rnd()<0.35) h+=CC_LAD_B[Math.floor(rnd()*CC_LAD_B.length)];
+      h=h.toLowerCase();
+    } else {
+      h=a.charAt(0).toUpperCase()+a.slice(1)+b;
+      if(rnd()<0.45) h+=String(10+Math.floor(rnd()*89));
+    }
     const low=h.toLowerCase();
     if(!taken.has(low) && !real.has(low) && !real.has(hKey({handle:h}))) break;
   }
@@ -65200,7 +65212,8 @@ function careerCupField(cr, mine, size, salt, open, sharp){
     // a flag the people beside it play with.
     // Третий к реальной паре может встать выше общего потолка. См. ccTrioGenTop.
     return careerLadderPlayer(prnd, nearOvr!=null ? nearOvr : o, taken, ccCoreNat(core, prnd),
-                              null, nearOvr!=null ? ccTrioGenTop(nearOvr) : null);
+                              null, nearOvr!=null ? ccTrioGenTop(nearOvr) : null,
+                              !open && (cr.division||1)>=2);
   };
   cores.forEach(d=>{
     if(teams.length>=need) return;
@@ -65284,7 +65297,7 @@ function careerCupField(cr, mine, size, salt, open, sharp){
     const o = open ? ccOpenFillOvr(rnd)
             : cr.division===1 ? ccD1FillOvr(rnd)
                               : ccBand(cr.division)+careerGauss(rnd)*CC_BAND_SD;
-    players.push(careerLadderPlayer(rnd, o, taken));
+    players.push(careerLadderPlayer(rnd, o, taken, null, null, null, !open && (cr.division||1)>=2));
   }
   // Teams are rating-matched, the way real pairs are: sort, then take
   // neighbours — two of them in a duo season and three in a trio one. These are
@@ -71489,7 +71502,7 @@ function ccDmLadderPool(rnd, mine){
   const offs=over ? CC_DM_LADDER_UNDER : CC_DM_LADDER_OFF;
   const out=offs.slice(0, CAREER_DM_POOL).map(off=>{
     const ovr=clamp(Math.round(band+off+(rnd()*2-1)), 35, ceil);
-    const card=careerLadderPlayer(rnd, ovr, taken, null, ccSquadRoleWanted());
+    const card=careerLadderPlayer(rnd, ovr, taken, null, ccSquadRoleWanted(), null, div>=2);
     return {handle:card.handle, ovr, nat:card.nat, role:attrsFor(card).roleKey,
             roster:false, card, club:null, pay:0};
   });
@@ -71821,7 +71834,8 @@ function careerFanDm(place, of, passed){
   const chance=clamp(careerReach()/40000, 0, 0.85)*(good ? 1 : 0.34);
   if(rnd()>=chance) return null;
   const taken=new Set(careerDms().map(t=>hKey(t.who.handle)));
-  const c=careerLadderPlayer(rnd, 40+Math.floor(rnd()*40), taken);
+  // Фан — зритель, а зрители пишут строчными без цифр (то же правило, что в чате).
+  const c=careerLadderPlayer(rnd, 40+Math.floor(rnd()*40), taken, null, null, null, true);
   const who={handle:c.handle, ovr:null, nat:c.nat, role:null, roster:false, fan:true};
   const t=careerDmThread(who);
   const sub=ccFanSubject(who.handle, place, of, beat, passed);
@@ -80275,7 +80289,7 @@ function careerSoloField(cr, mine, size, open){
     const o = open ? ccOpenFillOvr(rnd)
             : cr.division===1 ? ccD1FillOvr(rnd)
                               : ccBand(cr.division)+careerGauss(rnd)*CC_BAND_SD;
-    players.push(careerLadderPlayer(rnd, o, taken));
+    players.push(careerLadderPlayer(rnd, o, taken, null, null, null, !open && (cr.division||1)>=2));
   }
   return players.map(x=>{ const t=careerTeam([x]); t.name=teamLabel([x]); return t; });
 }
