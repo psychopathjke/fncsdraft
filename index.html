@@ -2480,32 +2480,73 @@
     font:inherit;}
   #screen-career-hub .tv-go:hover{background:#a970ff;}
   #screen-career-hub .tv-go.off{background:#3a3a3d;color:#8f8f96;cursor:default;}
+  /* Причина отказа — красным, чтобы выключенная кнопка не читалась сломанной. */
+  #screen-career-hub .tv-go.off em{color:#ff9b9b;opacity:1;}
   #screen-career-hub .tv-go b{display:block;font-size:13px;font-weight:800;}
   #screen-career-hub .tv-go em{font-style:normal;font-size:11px;opacity:.85;}
   /* Турнирный эфир — не один из четырёх видов дня, а сам вечер: красный, как
      плашка LIVE, и стоит первым. См. careerPlayLive. */
   #screen-career-hub .tv-go-cup{background:#eb0400;}
   #screen-career-hub .tv-go-cup:hover{background:#ff2a26;}
-  /* ---- Окошко трансляции поверх вечера (ccTvMini*) ---------------------------
+  /* ---- Окошко трансляции поверх вечера (ccTv*) ---------------------------
      Живёт на body, а не в хабе: во время турнира хаб скрыт, а окно должно
      висеть над экраном результатов. Ниже любой модалки (z-index 200+), выше
      самой игры — окно смотрят, а не жмут. */
-  .cc-tvm{position:fixed;right:14px;bottom:14px;width:252px;z-index:180;
-    background:#18181b;color:#efeff1;border:1px solid #26262c;border-radius:8px;
-    box-shadow:0 18px 40px rgba(0,0,0,.45);overflow:hidden;
-    font-family:inherit;font-size:12px;}
+  /* ЭФИР — РАМКА ВОКРУГ ВЕЧЕРА, как twitch.tv/<канал>: слева канал и
+     отслеживаемые, справа LIVE, ход вечера, табло и живой чат, в середине идёт
+     сам турнир (экран прогона отодвинут полями body.cc-onair). См. ccTvOpen. */
+  .cc-tv{position:fixed;inset:0;z-index:180;pointer-events:none;
+    color:#efeff1;font-family:inherit;font-size:12px;}
+  .cc-tv aside{pointer-events:auto;position:absolute;top:0;bottom:0;background:#18181b;
+    box-shadow:0 0 40px rgba(0,0,0,.45);display:flex;flex-direction:column;min-height:0;}
+  .cc-tv-left{left:0;width:236px;border-right:1px solid #26262c;background:#1f1f23;
+    padding:10px 8px;overflow:auto;}
+  .cc-tv-right{right:0;width:316px;border-left:1px solid #26262c;}
+  /* Экран прогона встаёт в «плеер» между колонками, чип пропуска — к его краю. */
+  body.cc-onair .wrap.wrap-wide{margin-left:236px;margin-right:316px;}
+  body.cc-onair .skip-btn-prominent{right:334px;}
+  body.cc-onair.cc-onair-fold .wrap.wrap-wide{margin-left:0;margin-right:0;}
+  body.cc-onair.cc-onair-fold .skip-btn-prominent{right:18px;}
+  /* Свёрнуто: остаётся плашка LIVE со зрителями в углу. */
+  .cc-tv.fold .cc-tv-left,.cc-tv.fold .cc-tvm-b,.cc-tv.fold .cc-tv-chat-h,
+  .cc-tv.fold .cc-tvm-chat,.cc-tv.fold .cc-tvm-f{display:none;}
+  .cc-tv.fold .cc-tv-right{top:auto;bottom:14px;right:14px;width:252px;border-radius:8px;
+    border:1px solid #26262c;overflow:hidden;}
+  .cc-tv-chan{display:flex;align-items:flex-start;gap:8px;padding:6px 6px 12px;position:relative;
+    border-bottom:1px solid #26262c;margin-bottom:8px;}
+  .cc-tv-av{width:38px;height:38px;border-radius:50%;flex:none;overflow:hidden;display:flex;
+    align-items:center;justify-content:center;background:#3a3a3d;font-weight:800;font-size:12px;}
+  .cc-tv-av img{width:100%;height:100%;object-fit:cover;}
+  .cc-tv-livetag{position:absolute;left:25px;top:38px;transform:translateX(-50%);background:#eb0400;
+    color:#fff;font-size:8.5px;font-weight:900;letter-spacing:.06em;padding:1px 5px;border-radius:3px;
+    font-style:normal;}
+  .cc-tv-chan-in{flex:1;min-width:0;}
+  .cc-tv-chan-in b{display:block;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cc-tv-chan-in em{display:block;font-style:normal;font-size:11.5px;color:#efeff1;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap;}
+  .cc-tv-chan-in span{font-size:11.5px;color:#bf94ff;}
+  .cc-tv-side-h{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+    color:#adadb8;padding:4px 8px 8px;}
+  .cc-tv-srow{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:4px;}
+  .cc-tv-srow .cc-tv-av{width:30px;height:30px;font-size:10px;}
+  .cc-tv-sin{flex:1;min-width:0;}
+  .cc-tv-sin b{display:block;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cc-tv-sin em{font-style:normal;font-size:11px;color:#adadb8;}
+  .cc-tv-vv{font-size:11.5px;display:flex;align-items:center;gap:4px;}
+  .cc-tv-vv i{width:7px;height:7px;border-radius:50%;background:#eb0400;display:block;}
+  .cc-tv-off{font-size:11.5px;color:#adadb8;}
   .cc-tvm-h{display:flex;align-items:center;gap:8px;padding:7px 8px;background:#0e0e10;
-    border-bottom:1px solid #26262c;}
+    border-bottom:1px solid #26262c;flex:none;}
   .cc-tvm-live{background:#eb0400;color:#fff;font-size:9px;font-weight:900;letter-spacing:.06em;
     padding:2px 5px;border-radius:3px;}
   .cc-tvm-v{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;
     font-variant-numeric:tabular-nums;}
   .cc-tvm-v i{width:7px;height:7px;border-radius:50%;background:#eb0400;display:block;}
+  .cc-tv-up{font-size:11.5px;color:#adadb8;font-variant-numeric:tabular-nums;}
   .cc-tvm-x{margin-left:auto;background:none;border:none;color:#adadb8;font:inherit;
     font-size:15px;line-height:1;cursor:pointer;padding:0 4px;}
   .cc-tvm-x:hover{color:#efeff1;}
-  .cc-tvm.fold .cc-tvm-b{display:none;}
-  .cc-tvm-b{padding:8px;}
+  .cc-tvm-b{padding:8px;flex:none;}
   .cc-tvm-title{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
     color:#bf94ff;margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .cc-tvm-run{display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;
@@ -2538,13 +2579,34 @@
   .cc-tvm-cut{font-size:10.5px;margin-top:3px;}
   .cc-tvm-cut.in{color:#00b884;}
   .cc-tvm-cut.out{color:#ff6b6b;}
-  .cc-tvm-chat{height:86px;overflow:hidden;line-height:1.35;}
-  .cc-tvm-msg{font-size:11.5px;color:#efeff1;margin-bottom:2px;word-break:break-word;}
+  /* Счёт эфира: фолловеры, сабы, донаты — растёт на глазах. */
+  .cc-tv-ev{font-size:11px;color:#bf94ff;font-weight:700;padding-top:6px;border-top:1px solid #26262c;
+    font-variant-numeric:tabular-nums;}
+  .cc-tv-chat-h{text-align:center;font-size:12px;font-weight:700;padding:7px;flex:none;
+    border-top:1px solid #26262c;border-bottom:1px solid #26262c;}
+  /* Чат живой: строки приходят снизу и уезжают вверх. */
+  .cc-tvm-chat{flex:1;min-height:0;overflow:auto;padding:6px 8px;line-height:1.4;}
+  .cc-tvm-msg{font-size:11.5px;color:#efeff1;margin-bottom:3px;word-break:break-word;}
   .cc-tvm-msg b{font-weight:700;}
-  .cc-tvm-f{display:flex;justify-content:space-between;gap:8px;margin-top:6px;
-    padding-top:6px;border-top:1px solid #26262c;font-size:11px;color:#adadb8;}
-  @media(max-width:760px){.cc-tvm{width:190px;right:8px;bottom:8px;}
-    .cc-tvm-chat{height:74px;}}
+  /* События канала — как у Twitch: фолловер строкой, саб фиолетовой плашкой,
+     донат зелёной с текстом под суммой. */
+  .cc-tv-ev-fol{color:#bf94ff;font-weight:600;}
+  .cc-tv-ev-sub{color:#fff;font-weight:700;background:rgba(145,71,255,.25);border-left:3px solid #9147ff;
+    padding:3px 6px;border-radius:3px;}
+  .cc-tv-ev-dono{color:#fff;font-weight:700;background:rgba(0,184,132,.18);border-left:3px solid #00b884;
+    padding:3px 6px;border-radius:3px;}
+  .cc-tv-ev-dono span{display:block;color:#adadb8;font-weight:400;}
+  .cc-tvm-f{flex:none;display:flex;justify-content:space-between;gap:8px;padding:6px 8px;
+    border-top:1px solid #26262c;font-size:11px;color:#adadb8;}
+  @media(max-width:1100px){
+    .cc-tv-left{display:none;}
+    body.cc-onair .wrap.wrap-wide{margin-left:0;}}
+  @media(max-width:760px){
+    .cc-tv-right{top:auto;left:0;width:auto;height:230px;border-left:none;border-top:1px solid #26262c;}
+    .cc-tv-right .cc-tvm-b{display:none;}
+    body.cc-onair .wrap.wrap-wide{margin-right:0;padding-bottom:240px;}
+    body.cc-onair .skip-btn-prominent{right:10px;}}
+
   #screen-career-hub .tv-last{margin-top:12px;}
   #screen-career-hub .tv-last .ch-hint{color:#adadb8;}
   #screen-career-hub .tv-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
@@ -6355,6 +6417,10 @@ ccRev:'V', ccRegl:'gl', ccRehbd:'hbd goat 🐐', ccRew:'W', ccReclap:'🙌',
 ccReDone:t=>'Ты ответил: '+t,
 ccPostThanks:ev=>'спасибо за турнир — '+ev+'. и напарникам, весь ивент 🙏',
 ccPostOneOff:ev=>'одного места не хватило. '+ev+'. я в порядке (нет)',
+// Квал из хитов — свой пост и посты прошедших ботов, с точкой высадки на
+// финал («qual grands, land X» — так пишут после хитов). w: grands | finals.
+ccPostQualGrands:(z,w)=>(w==='finals'?'КВАЛ В ФИНАЛ 🏆':'КВАЛ НА ГРАНДЫ 🏆')+(z?' · сажусь '+ccZoneName(z):''),
+ccPostBotQualGrands:(h,z,w)=>(w==='finals'?'квал финал 🙏':'квал грандс 🙏')+(z?' · лендю '+ccZoneName(z):''),
 ccReplyBtn:'Ответить', ccReplyPh:'Ответить…', ccReplySend:'Отправить',
 ccShotVr:'Victory Royale', ccShotTop5:'Топ-5', ccShotTop10:'Топ-10',
 ccRepostBtn:'Репост', ccRepostDone:'Репостнул', ccQuoteBtn:'Цитата',
@@ -7537,6 +7603,15 @@ ccTvGame:n=>'Игра '+n, ccTvGameOf:(n,of)=>'Игра '+n+'/'+of, ccTvLast:p=>
 ccTvWins:w=>'W×'+w, ccTvCut:(c,of)=>'проходит топ-'+c+' из '+of,
 ccTvPts:p=>p+' очков', ccTvKills:k=>k+' килов',
 ccTvPeak:n=>'пик '+n, ccTvPow:p=>'−'+p+' к силе', ccTvFold:'Свернуть',
+// Причина, а не цена: «20 энергии» под выключенной кнопкой читалось как
+// стоимость, и кнопка казалась сломанной (его «в трио не работает кнопка»).
+ccStreamNeed:(need,have)=>'не хватает энергии: '+have+' из '+need,
+// События эфира — то, что Twitch показывает в чате между сообщениями.
+ccTvEvFollow:h=>h+' подписался на канал',
+ccTvEvSub:h=>h+' оформил саб · Tier 1',
+ccTvEvDono:(h,m)=>h+' задонатил $'+m,
+ccTvEvSum:(f,s,m)=>'+'+f+' фолловеров · '+s+' сабов · $'+m,
+ccTvDonoLines:['на новую мышку','за W','ты лучший','квальни пж','с меня кофе','го дальше','респект за игру','люблю стримы'],
 ccTvChatWin:['ПОБЕДА','W','вот это игра','клип в тг','гоооол','изи катка','красава'],
 ccTvChatGood:['красиво','+','чисто','достойно','сильно','вот так и надо'],
 ccTvChatBad:['F','ну бывает','что это было','ой','не повезло','го дальше','третьят опять'],
@@ -8221,6 +8296,8 @@ ccRev:'V', ccRegl:'gl', ccRehbd:'hbd goat 🐐', ccRew:'W', ccReclap:'🙌',
 ccReDone:t=>'You replied: '+t,
 ccPostThanks:ev=>'thanks for the event — '+ev+'. and my teammates throughout it 🙏',
 ccPostOneOff:ev=>'one spot off. '+ev+'. im fine (im not)',
+ccPostQualGrands:(z,w)=>(w==='finals'?'QUALIFIED TO FINALS 🏆':'QUALIFIED TO GRANDS 🏆')+(z?' · landing '+ccZoneName(z):''),
+ccPostBotQualGrands:(h,z,w)=>(w==='finals'?'qual finals 🙏':'qual grands 🙏')+(z?' land '+ccZoneName(z):''),
 ccReplyBtn:'Reply', ccReplyPh:'Reply…', ccReplySend:'Send',
 ccShotVr:'Victory Royales', ccShotTop5:'Top 5s', ccShotTop10:'Top 10s',
 ccRepostBtn:'Repost', ccRepostDone:'Reposted', ccQuoteBtn:'Quote',
@@ -9400,6 +9477,12 @@ ccTvGame:n=>'Game '+n, ccTvGameOf:(n,of)=>'Game '+n+'/'+of, ccTvLast:p=>'last #'
 ccTvWins:w=>'W×'+w, ccTvCut:(c,of)=>'top '+c+' of '+of+' go through',
 ccTvPts:p=>p+' pts', ccTvKills:k=>k+' elims',
 ccTvPeak:n=>'peak '+n, ccTvPow:p=>'−'+p+' power', ccTvFold:'Collapse',
+ccStreamNeed:(need,have)=>'not enough energy: '+have+' of '+need,
+ccTvEvFollow:h=>h+' just followed',
+ccTvEvSub:h=>h+' subscribed · Tier 1',
+ccTvEvDono:(h,m)=>h+' donated $'+m,
+ccTvEvSum:(f,s,m)=>'+'+f+' followers · '+s+' subs · $'+m,
+ccTvDonoLines:['for a new mouse','for the W','you are the best','qual it pls','coffee on me','keep going','respect for the game','love the streams'],
 ccTvChatWin:['VICTORY','W','what a game','clip it','LETS GOOO','ez dub','insane'],
 ccTvChatGood:['clean','+','nice','solid','strong','that is how'],
 ccTvChatBad:['F','it happens','what was that','oof','unlucky','next one','third partied again'],
@@ -10556,6 +10639,8 @@ ccRev:'V', ccRegl:'gl', ccRehbd:'hbd goat 🐐', ccRew:'W', ccReclap:'🙌',
 ccReDone:t=>'Tu as répondu : '+t,
 ccPostThanks:ev=>'merci pour le tournoi — '+ev+'. et à mes coéquipiers 🙏',
 ccPostOneOff:ev=>'à une place près. '+ev+'. ça va (non)',
+ccPostQualGrands:(z,w)=>(w==='finals'?'QUALIFIÉ EN FINALE 🏆':'QUALIFIÉ POUR LES GRANDS 🏆')+(z?' · je drop '+ccZoneName(z):''),
+ccPostBotQualGrands:(h,z,w)=>(w==='finals'?'qual finale 🙏':'qual grands 🙏')+(z?' land '+ccZoneName(z):''),
 ccReplyBtn:'Répondre', ccReplyPh:'Répondre…', ccReplySend:'Envoyer',
 ccShotVr:'Victory Royales', ccShotTop5:'Top 5', ccShotTop10:'Top 10',
 ccRepostBtn:'Repost', ccRepostDone:'Reposté', ccQuoteBtn:'Citer',
@@ -11758,7 +11843,7 @@ chTabLog:'Profil', chTabHist:'Historique',
 chTabStats:'Stats', chTabStreams:'Streams',
 ccStreamGoLive:'Passer en direct', ccStreamLiveNow:'En direct', ccStreamLast:'Dernier live',
 ccStreamViewers:'Spectateurs habituels', ccStreamDayGone:'La journée est prise — live demain',
-ccStreamCost:e=>e+" d'énergie",
+ccStreamCost:e=>e+" d'énergie", ccStreamNeed:(need,have)=>"pas assez d'énergie : "+have+' sur '+need,
 ccStream_grind:'Ranked', ccStream_grindNote:"une soirée normale, l'audience grandit",
 ccStream_chat:'Discussion', ccStream_chatNote:'paie mieux, grandit moins vite',
 ccStream_colab:'Collab', ccStream_colabNote:'à deux — ses spectateurs viennent',
@@ -12090,7 +12175,7 @@ chTabStats:"Statistiche",
 chTabStreams:"Stream",
 ccStreamGoLive:"Andare in diretta", ccStreamLiveNow:"In diretta ora", ccStreamLast:"Ultima diretta",
 ccStreamViewers:"Spettatori di solito", ccStreamDayGone:"La giornata è presa — diretta domani",
-ccStreamCost:e=>e+' di energia',
+ccStreamCost:e=>e+' di energia', ccStreamNeed:(need,have)=>'energia insufficiente: '+have+' su '+need,
 ccStream_grind:"Ranked", ccStream_grindNote:"una serata normale, il pubblico cresce",
 ccStream_chat:"Chiacchiere", ccStream_chatNote:"paga meglio, cresce più lentamente",
 ccStream_colab:"Collab", ccStream_colabNote:"in due — arrivano i suoi spettatori",
@@ -12396,6 +12481,8 @@ ccRev:"V", ccRegl:"gl", ccRehbd:"hbd goat 🐐", ccRew:"W", ccReclap:"🙌",
 ccReDone:t=>'Hai risposto: '+t,
 ccPostThanks:ev=>'grazie per il torneo — '+ev+'. e ai miei compagni 🙏',
 ccPostOneOff:ev=>'un posto sotto. '+ev+'. tutto bene (no)',
+ccPostQualGrands:(z,w)=>(w==='finals'?'QUALIFICATO ALLA FINALE 🏆':'QUALIFICATO AI GRANDS 🏆')+(z?' · atterro su '+ccZoneName(z):''),
+ccPostBotQualGrands:(h,z,w)=>(w==='finals'?'qual finale 🙏':'qual grands 🙏')+(z?' land '+ccZoneName(z):''),
 ccReplyBtn:"Rispondi", ccReplyPh:"Rispondi…", ccReplySend:"Invia",
 ccShotVr:"Victory Royale", ccShotTop5:"Top 5", ccShotTop10:"Top 10",
 ccRepostBtn:"Repost", ccRepostDone:"Repostato", ccQuoteBtn:"Cita",
@@ -14546,7 +14633,7 @@ chTabStats:"Estatísticas",
 chTabStreams:"Streams",
 ccStreamGoLive:"Entrar ao vivo", ccStreamLiveNow:"Ao vivo agora", ccStreamLast:"Última live",
 ccStreamViewers:"Espectadores de sempre", ccStreamDayGone:"O dia acabou — live amanhã",
-ccStreamCost:e=>e+' de energia',
+ccStreamCost:e=>e+' de energia', ccStreamNeed:(need,have)=>'energia insuficiente: '+have+' de '+need,
 ccStream_grind:"Ranked", ccStream_grindNote:"uma noite normal, o público cresce",
 ccStream_chat:"Bate-papo", ccStream_chatNote:"paga melhor, cresce mais devagar",
 ccStream_colab:"Collab", ccStream_colabNote:"a dois — os espectadores dele vêm junto",
@@ -14852,6 +14939,8 @@ ccRev:"V", ccRegl:"gl", ccRehbd:"hbd goat 🐐", ccRew:"W", ccReclap:"🙌",
 ccReDone:t=>'Você respondeu: '+t,
 ccPostThanks:ev=>'obrigado pelo torneio — '+ev+'. e aos meus parceiros 🙏',
 ccPostOneOff:ev=>'faltou uma posição. '+ev+'. tô bem (não)',
+ccPostQualGrands:(z,w)=>(w==='finals'?'CLASSIFICADO PRA FINAL 🏆':'CLASSIFICADO PROS GRANDS 🏆')+(z?' · caio em '+ccZoneName(z):''),
+ccPostBotQualGrands:(h,z,w)=>(w==='finals'?'qual final 🙏':'qual grands 🙏')+(z?' land '+ccZoneName(z):''),
 ccReplyBtn:"Responder", ccReplyPh:"Responder…", ccReplySend:"Enviar",
 ccShotVr:"Victory Royales", ccShotTop5:"Top 5", ccShotTop10:"Top 10",
 ccRepostBtn:"Repost", ccRepostDone:"Repostado", ccQuoteBtn:"Citar",
@@ -45747,7 +45836,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   teams.forEach((t,i)=>{ t[ptsKey]=0; t[elimsKey]=0; t[logKey]=[]; t.gotVR=false; t.wins=0; t.qualByWin=false; t.qualSeat=0; t._uid=i; t.landingWins=0; t.landingLosses=0; t.multiKillLandingWins=0; t.landingContests=0; });
   /* Вечер в эфир: окошко трансляции читает этап отсюда — поле, ключ очков,
      сколько игр и где отсечка. Один вход на все раннеры, потому что живой этап
-     у всех один и тот же. См. ccTvMiniTick. */
+     у всех один и тот же. См. ccTvTick. */
   if(typeof CC_STREAM_LIVE!=='undefined' && CC_STREAM_LIVE)
     CC_TV_RUN={teams:teams, pts:ptsKey, n:numGames, cut:opts.cutAt||0,
                name:opts.stageName||''};
@@ -68916,6 +69005,8 @@ const CC_POST_BY={
   // Анкету свободного агента пишет он сам — как и всё остальное про себя.
   // Точку высадки объявляет тоже он.
   ccPostLfdWant:'arg0', ccPostDropCall:'arg0',
+  // Квал из хитов: свой — свой, прошедший бот — от своего имени (первый аргумент).
+  ccPostQualGrands:'you', ccPostBotQualGrands:'arg0',
   // Кастомка — свой вечер и своя строка о нём. Пост про титул подписывает
   // клуб: он назван первым аргументом, и его берёт CC_ORG_POST_ARG, но автор
   // должен быть решён и здесь — иначе ключ считается забытым (check-career-feed).
@@ -69871,6 +69962,36 @@ function ccDropCalls(pre, you, stage){
   });
   return said.map(c=>'@'+ccHandle(c.h)+' → '+L().landingZoneSuffix(c.at+1)).join(' · ');
 }
+/* «qual grands, land X» — посты после хитов.
+
+   Его слово, 5 сентября: «во время хитов в сошиал ещё можно писать qual grands
+   land туда, где метка стоит у игрока… также и боты, которые квальнулись,
+   могут писать». Так это и выглядит у настоящих после хитов: «QUALIFIED TO
+   GRANDS» и следом точка, куда сядут в финале.
+
+   Точка — та, где команда САДИЛАСЬ в последней игре хитов (landingZone): у
+   игрока это его метка, у бота — его место в комнате. Как и у объявления
+   точки (ccDropCalls), уезжает НОМЕР зоны и остров, имя строится на показе.
+   Пишут не все прошедшие, а трое сильнейших: лента после хитов — это несколько
+   громких постов, а не сорок пять одинаковых. `what` — grands у Мейджора,
+   finals у соло-серии: словарь ставит нужное слово сам. */
+function ccGrandsCalls(what, you, through, passers){
+  const zoneNo=t=>{
+    const at=ALL_LANDING_ZONES.indexOf(t && t.landingZone);
+    return at>=0 ? at+1 : null;
+  };
+  const opt=z=>z ? {zone:z-1, set:ACTIVE_LANDING_SET} : {};
+  if(through){ const z=zoneNo(you); careerNews('good', 'ccPostQualGrands', [z, what], opt(z)); }
+  const bots=(passers||[]).filter(t=>t && t!==you && !t.isYou && !t.isMate)
+    .sort((a,b)=>(Number(b.pow)||0)-(Number(a.pow)||0)).slice(0, 3);
+  bots.forEach(t=>{
+    const h=((t.squad||[])[0]||{}).handle;
+    if(!h) return;
+    const z=zoneNo(t);
+    careerNews('flat', 'ccPostBotQualGrands', [ccHandle(h), z, what], opt(z));
+  });
+  return bots.length+(through?1:0);
+}
 /* Картинка под постом — арт события.
 
    Титул уходил в ленту таблицей, а у настоящих это фотография со сцены и
@@ -70265,6 +70386,7 @@ const CC_CO_BY_KIND=[
   [/^ccNewsD1Table/, 'Table'],
   [/^ccNewsStream|^ccPostStreamD1/, 'Stream'],
   [/^ccPostDropCall/, 'Drop'],
+  [/^ccPostQualGrands|^ccPostBotQualGrands/, 'Pod'],
   [/^ccPostCustomsOpen/, 'Cust'],
   [/^ccNewsRetired/, 'Bye'],
   [/^ccNewsBanned|^ccPostBanSad/, 'Ban'],
@@ -82720,6 +82842,8 @@ async function runCareerMajor(){
     careerNews(won?'good':'flat', won?'ccNewsMajThrough':'ccNewsMajOut',
                [ev.label, place, field.length],
                {tbl:ccStageShot(ranked, you, 1, stageLabel)});
+    // «qual grands, land X» — свой пост и посты прошедших из комнаты. См. ccGrandsCalls.
+    if(ev.stage==='heats') ccGrandsCalls('grands', you, won, [...heatQualifiers(field, st.cut, winIsATicket())]);
     /* «Одного места не хватило» — отдельная строка, и говорит её сам игрок.
 
        Снято с живой ленты (@MrSavage, 31 августа: «i was one spot off globals
@@ -84458,6 +84582,8 @@ async function runCareerSoloSeries(){
     const moved=spec ? !!seatOf(you) : through;
     careerNews(moved?'good':'flat', moved?'ccNewsSoloThrough':'ccNewsSoloOut',
                [ev.label, place, field.length]);
+    // Хиты соло — те же «квальнулся, сажусь туда-то», только в финал. См. ccGrandsCalls.
+    if(ev.stage==='heats' && !spec) ccGrandsCalls('finals', you, moved, field.filter(passOf));
   }
   finalizeStageCard(shell, place, field.length, you.stagePts,
     ccStagePassed(through, {cut:cut}, place, prizeFn),
@@ -86433,7 +86559,7 @@ const CC_STREAM_KINDS=[
    и идёт играть свой турнир. Поэтому кнопки на плеере у него нет — она стоит
    там, где начинается вечер (панель дня, рядом с «Играть»), а сама симуляция
    идёт как обычно, только поверх неё висит окошко трансляции: зрители, чат,
-   счёт по играм. См. careerPlayLive и ccTvMini*.
+   счёт по играм. См. careerPlayLive и ccTv*.
 
    ЧЕМ ПЛАТИШЬ — силой. Стрим забирает внимание: своя команда в этот вечер
    слабее на CC_STREAM_POW, и это ровно та же валюта, в которой считаются
@@ -86514,7 +86640,10 @@ function ccStreamCupWhy(){
   if(!next || next.day!==careerToday() || !careerCanPlay(next) || CAREER.career.seasonOver)
     return T.ccTvNoEvent;
   if(careerDayClosed()) return T.ccStreamDayGone;
-  if(careerEnergy()<CC_STREAM_CUP.energy) return T.ccStreamCost(CC_STREAM_CUP.energy);
+  /* Причина, а не цена. Его скрин 5 сентября («в трио не работает кнопка»):
+     под выключенной кнопкой стояло «20 energy» — та же строка, что и цена на
+     включённой, — и кнопка читалась сломанной. Ей не хватало энергии. */
+  if(careerEnergy()<CC_STREAM_CUP.energy) return T.ccStreamNeed(CC_STREAM_CUP.energy, careerEnergy());
   return null;
 }
 function ccStreamCupCan(){ return !ccStreamCupWhy(); }
@@ -86529,15 +86658,15 @@ async function careerPlayLive(){
   if(CC_STREAM_CUP.grind) cr.grind=(cr.grind||0)+CC_STREAM_CUP.grind;
   careerSave();
   CC_STREAM_LIVE=true; CC_TV_YOU=null;
-  ccTvMiniOpen(next);
+  ccTvOpen(next);
   /* Вечер может и не доиграться — игрок ушёл с раннера, вкладка сменилась
      (RUN_ABANDONED). Эфир к этому моменту уже оплачен и посчитан, поэтому
-     снимаем окно и досчитываем результат в finally: если турнир не оставил
+     снимаем рамку и досчитываем результат в finally: если турнир не оставил
      строки в журнале, ccStreamCupAfter просто ничего не найдёт. */
   try{ await careerPlay(); }
   finally{
     CC_STREAM_LIVE=false;
-    ccTvMiniClose();
+    ccTvClose();
     ccStreamCupAfter(day);
   }
   return true;
@@ -86553,8 +86682,14 @@ function ccStreamCupAfter(day){
   if(!row) return null;
   const beat=clamp(1-(row.place-1)/(row.of-1), 0, 1);
   const v=CC_TV_VIEW||ccStreamViewersNow();
-  const fol=Math.max(1, Math.round(v*0.25*beat));
-  const cash=Math.round(v*0.06*beat);
+  /* Что показано — то и получено. Вживую события чата (фолловеры, сабы,
+     донаты — CC_TV_EV) идут из того же бюджета, что и эта формула, и итог
+     берёт большее из двух: под перемоткой тиков мало и правит формула, а на
+     вечере, просмотренном целиком, зритель не увидит в чате больше, чем ему
+     потом начислят. */
+  const ev=(typeof CC_TV_EV==='object' && CC_TV_EV) || {fol:0, cash:0};
+  const fol=Math.max(1, Math.round(v*0.25*beat), ev.fol||0);
+  const cash=Math.max(Math.round(v*0.06*beat), Math.round(ev.cash||0));
   cr.twitch=(cr.twitch||0)+fol;
   if(cash){
     cr.balance=(cr.balance||0)+cash;
@@ -86584,20 +86719,41 @@ function ccStreamCupAfter(day){
   careerRenderHub('centre');
   return {fol:fol, cash:cash};
 }
-/* ---- ОКОШЕЧКО ТРАНСЛЯЦИИ ----------------------------------------------------
+/* ---- ОКОШЕЧКО ТРАНСЛЯЦИИ → ЭФИР ВОКРУГ ВЕЧЕРА -------------------------------
 
-   «в окошечке будет симуляция турнира» — окно висит поверх вечера и показывает
-   его глазами зрителя: сколько смотрит, какая игра идёт, какое место в
-   последней, сколько очков, и чат, который на это отвечает.
+   Четвёртого сентября это было окошко в углу: LIVE, зрители, «игра 6/11»,
+   табло и семь строк чата поверх вечера. Его правка 5 сентября (скрин вкладки
+   стримов с плеером): «может в этом окошке быть симуляция во время лайва… во
+   время лайва чат двигается и тд, фоловки, сабки, платные донаты».
 
-   Ничего своего оно не считает: игра идёт там же, где шла, окно только читает
-   свою команду (CC_TV_YOU) раз в секунду. Поэтому его можно свернуть, закрыть
-   вместе с вечером и никогда не бояться, что оно что-то сдвинет.
+   То есть эфир — не окошко поверх вечера, а ВЕЧЕР ВНУТРИ ЭФИРА. Так устроен
+   twitch.tv/<канал>: в плеере идёт игра, слева отслеживаемые каналы, справа
+   чат. Сделано рамкой: турнир идёт там же, где шёл (экран прогона, со всеми
+   его кнопками и вопросами), а по бокам встают две колонки Twitch — слева
+   канал и отслеживаемые, справа LIVE, зрители, время в эфире, ход вечера,
+   табло и живой чат. Экран прогона отодвигается полями (body.cc-onair), ничего
+   не переносится и не масштабируется — модалки и пикер как были.
 
-   Зрители растут от того, что видно в кадре: победа в игре — всплеск, топ —
-   прибавка, ранний вылет — отток. Это hype, и он же решает, что напишут в чат. */
+   Рамка ничего своего не считает: игра читается через CC_TV_YOU (пишет
+   careerYouTeam) и CC_TV_RUN (пишет simulateGamesLive) раз в 0.6 с.
+
+   ЧАТ ДВИГАЕТСЯ: строки приходят каждые полсекунды-секунду и уезжают вверх, а
+   между ними события канала — «подписался», «оформил саб · Tier 1», «задонатил
+   $5». Их частота — из тех же чисел, которыми вечер платит (ccStreamCupAfter):
+   бюджет фолловеров v·0.25·beat и денег v·0.06·beat раскладывается на ожидаемое
+   число тиков вечера, плюс всплеск после победы в игре. Что показано — то и
+   получено: итог вечера берёт большее из формулы и того, что прошло в чате.
+   Под перемоткой тиков мало, и правит формула; вживую — чат. */
 let CC_TV_T=null, CC_TV_VIEW=0, CC_TV_PEAK=0, CC_TV_HYPE=0,
-    CC_TV_BASE=0, CC_TV_SEEN=0, CC_TV_WHO=[], CC_TV_MSGS=[], CC_TV_RUN=null, CC_TV_INCUT=null;
+    CC_TV_BASE=0, CC_TV_SEEN=0, CC_TV_WHO=[], CC_TV_MSGS=[], CC_TV_RUN=null, CC_TV_INCUT=null,
+    CC_TV_T0=0, CC_TV_EV={fol:0, subs:0, cash:0}, CC_TV_BURST=0;
+const CC_TV_TICK=600;
+// Сколько тиков живёт одна игра, когда вечер смотрят вживую, — по этому числу
+// раскладывается бюджет событий (см. ccTvEvents).
+const CC_TV_TICKS_PER_GAME=45;
+// Доля стримера с саба Tier 1 и чеки донатов — как на Twitch.
+const CC_TV_SUB_USD=2.5;
+const CC_TV_DONO=[2,3,5,5,5,10,10,20,50];
 /* Таблица вечера глазами трансляции: где ты стоишь прямо сейчас, кто наверху и
    докуда идёт отсечка. Считается ОДНИМ проходом по полю, без сортировки: поле
    бывает и в шесть тысяч строк, а окно перерисовывается два раза в секунду. */
@@ -86622,77 +86778,164 @@ function ccTvBoard(){
   return {place:above+1, of:run.teams.length, top:top,
           cut:run.cut||0, pts:mine, n:run.n||0};
 }
-function ccTvMiniOpen(next){
-  ccTvMiniClose();
+function ccTvOpen(next){
+  ccTvClose();
   if(typeof document==='undefined' || !document.body) return;
-  const T=L();
+  const T=L(), me=(CAREER && CAREER.player)||{};
   CC_TV_BASE=Math.max(3, ccStreamViewersNow());
   CC_TV_VIEW=CC_TV_BASE; CC_TV_PEAK=CC_TV_BASE;
   CC_TV_HYPE=0; CC_TV_SEEN=0; CC_TV_MSGS=[]; CC_TV_RUN=null; CC_TV_INCUT=null;
+  CC_TV_T0=Date.now(); CC_TV_EV={fol:0, subs:0, cash:0}; CC_TV_BURST=0;
   /* Кто сидит в чате — те же люди, что и на вкладке стримов. Пустым он быть
      не может: у совсем новой карьеры нет ни друзей, ни подписок, и тогда в
      эфире сидит она сама. */
-  CC_TV_WHO=careerStreamChat(14);
+  CC_TV_WHO=careerStreamChat(30);
   if(!CC_TV_WHO.length){
-    const me=(CAREER && CAREER.player && CAREER.player.nick) || 'viewer';
-    CC_TV_WHO=[{who:ccHandle(me), c:ccChatColor(me)}];
+    const nick=me.nick||'viewer';
+    CC_TV_WHO=[{who:ccHandle(nick), c:ccChatColor(nick)}];
   }
+  const label=(next && (next.label||next.title))||T.ccStreamCupTitle;
+  const av=(url, name)=>'<span class="cc-tv-av">'+
+    (url ? '<img src="'+esc(url)+'" alt="" onerror="this.remove()">'
+         : esc(String(name||'?').slice(0,2).toUpperCase()))+'</span>';
+  let mine=null;
+  try{ mine=photoURL(me.photo ? {_photo:me.photo} : careerCard()); }catch(e){ mine=null; }
+  // Отслеживаемые — та же витрина, что на вкладке: шесть в эфире, трое не в сети.
+  let side=[];
+  try{ side=careerLiveNow(9); }catch(e){ side=[]; }
+  const rows=side.map((s,i)=>'<div class="cc-tv-srow">'+
+      av(s.card ? photoURL(s.card) : (s.ava||null), s.name)+
+      '<div class="cc-tv-sin"><b>'+esc(s.name)+'</b><em>'+esc(T[s.cat]||'')+'</em></div>'+
+      (i<6 ? '<span class="cc-tv-vv"><i></i>'+ccNum(s.v)+'</span>'
+           : '<span class="cc-tv-off">'+esc(T.ccStreamOffline)+'</span>')+
+    '</div>').join('');
   const box=document.createElement('div');
-  box.id='ccTvMini'; box.className='cc-tvm';
+  box.id='ccTvFrame'; box.className='cc-tv';
   box.innerHTML=
-    '<div class="cc-tvm-h"><span class="cc-tvm-live">'+esc(T.chLiveTag)+'</span>'+
-      '<span class="cc-tvm-v"><i></i><b id="ccTvV">'+ccNum(CC_TV_VIEW)+'</b></span>'+
-      '<button class="cc-tvm-x" id="ccTvFold" onclick="ccTvMiniFold()" aria-label="'+
-        esc(T.ccTvFold)+'" title="'+esc(T.ccTvFold)+'">–</button></div>'+
-    '<div class="cc-tvm-b">'+
-      '<div class="cc-tvm-title">'+esc((next && (next.label||next.title))||T.ccStreamCupTitle)+'</div>'+
-      '<div class="cc-tvm-bar"><i id="ccTvBar"></i></div>'+
-      '<div class="cc-tvm-run" id="ccTvRun">'+esc(T.ccTvWait)+'</div>'+
-      '<div class="cc-tvm-pips" id="ccTvPips"></div>'+
-      '<div class="cc-tvm-board" id="ccTvBoard"></div>'+
+    '<aside class="cc-tv-left">'+
+      '<div class="cc-tv-chan">'+av(mine, me.nick)+
+        '<i class="cc-tv-livetag">'+esc(T.chLiveTag)+'</i>'+
+        '<div class="cc-tv-chan-in"><b>'+esc(me.nick||'')+'</b><em>'+esc(label)+'</em>'+
+          '<span>'+esc(T.ccStreamCatFn)+'</span></div></div>'+
+      '<div class="cc-tv-side-h">'+esc(T.ccStreamFollowed)+'</div>'+rows+
+    '</aside>'+
+    '<aside class="cc-tv-right">'+
+      '<div class="cc-tvm-h"><span class="cc-tvm-live">'+esc(T.chLiveTag)+'</span>'+
+        '<span class="cc-tvm-v"><i></i><b id="ccTvV">'+ccNum(CC_TV_VIEW)+'</b></span>'+
+        '<span class="cc-tv-up" id="ccTvUp">0:00</span>'+
+        '<button class="cc-tvm-x" id="ccTvFold" onclick="ccTvFold()" aria-label="'+
+          esc(T.ccTvFold)+'" title="'+esc(T.ccTvFold)+'">–</button></div>'+
+      '<div class="cc-tvm-b">'+
+        '<div class="cc-tvm-title">'+esc(label)+'</div>'+
+        '<div class="cc-tvm-bar"><i id="ccTvBar"></i></div>'+
+        '<div class="cc-tvm-run" id="ccTvRun">'+esc(T.ccTvWait)+'</div>'+
+        '<div class="cc-tvm-pips" id="ccTvPips"></div>'+
+        '<div class="cc-tvm-board" id="ccTvBoard"></div>'+
+        '<div class="cc-tv-ev" id="ccTvEv">'+esc(T.ccTvEvSum(0, 0, 0))+'</div>'+
+      '</div>'+
+      '<div class="cc-tv-chat-h">'+esc(T.ccStreamChat)+'</div>'+
       '<div class="cc-tvm-chat" id="ccTvChat"></div>'+
       '<div class="cc-tvm-f"><span id="ccTvPeak"></span><span id="ccTvPow">'+
         esc(T.ccTvPow(CC_STREAM_POW))+'</span></div>'+
-    '</div>';
+    '</aside>';
   document.body.appendChild(box);
+  document.body.classList.add('cc-onair');
   // Чат не начинается с пустоты: люди уже сидят в эфире, когда он включается.
   ccTvSay(T.ccStreamChatLines); ccTvSay(T.ccStreamChatLines); ccTvSay(T.ccStreamChatLines);
-  ccTvMiniTick();
-  CC_TV_T=setInterval(ccTvMiniTick, 700);
+  ccTvTick();
+  CC_TV_T=setInterval(ccTvTick, CC_TV_TICK);
 }
-function ccTvMiniFold(){
-  const box=document.getElementById('ccTvMini'); if(!box) return;
-  box.classList.toggle('fold');
+// Свернуть — колонки уходят, остаётся плашка LIVE со зрителями в углу; вечер
+// расправляется на всю ширину. Ещё раз — вернуть.
+function ccTvFold(){
+  const box=document.getElementById('ccTvFrame'); if(!box) return;
+  const fold=box.classList.toggle('fold');
+  document.body.classList.toggle('cc-onair-fold', fold);
   const b=document.getElementById('ccTvFold');
-  if(b) b.textContent=box.classList.contains('fold') ? '+' : '–';
+  if(b) b.textContent=fold ? '+' : '–';
 }
-function ccTvMiniClose(){
+function ccTvClose(){
   CC_TV_RUN=null;
   if(CC_TV_T){ clearInterval(CC_TV_T); CC_TV_T=null; }
-  const box=document.getElementById('ccTvMini');
+  const box=document.getElementById('ccTvFrame');
   if(box && box.parentNode) box.parentNode.removeChild(box);
+  if(typeof document!=='undefined' && document.body){
+    document.body.classList.remove('cc-onair'); document.body.classList.remove('cc-onair-fold');
+  }
+}
+function ccTvPush(m){
+  CC_TV_MSGS.push(m);
+  if(CC_TV_MSGS.length>40) CC_TV_MSGS.shift();
 }
 // Строка в чат: кто (из тех же людей, что и на вкладке стримов) и что.
 function ccTvSay(bank){
   if(!bank || !bank.length || !CC_TV_WHO.length) return;
   const who=CC_TV_WHO[Math.floor(Math.random()*CC_TV_WHO.length)];
-  CC_TV_MSGS.push({who:who.who, c:who.c, text:bank[Math.floor(Math.random()*bank.length)]});
-  if(CC_TV_MSGS.length>7) CC_TV_MSGS.shift();
+  ccTvPush({who:who.who, c:who.c, text:bank[Math.floor(Math.random()*bank.length)]});
 }
-function ccTvMiniTick(){
-  const box=document.getElementById('ccTvMini'); if(!box) return;
+// Событие канала: фолловер, саб, донат. Копится в CC_TV_EV — это и есть то, что
+// вечер потом зачтёт (см. ccStreamCupAfter).
+function ccTvEvent(kind, amt, say){
+  const T=L();
+  if(!CC_TV_WHO.length) return;
+  const who=CC_TV_WHO[Math.floor(Math.random()*CC_TV_WHO.length)];
+  if(kind==='fol'){
+    CC_TV_EV.fol++;
+    if(say!==false) ccTvPush({ev:'fol', text:T.ccTvEvFollow(who.who)});
+  } else if(kind==='sub'){
+    CC_TV_EV.subs++; CC_TV_EV.cash+=CC_TV_SUB_USD;
+    ccTvPush({ev:'sub', text:T.ccTvEvSub(who.who)});
+  } else {
+    const m=amt||CC_TV_DONO[Math.floor(Math.random()*CC_TV_DONO.length)];
+    CC_TV_EV.cash+=m;
+    const lines=T.ccTvDonoLines||[];
+    ccTvPush({ev:'dono', text:T.ccTvEvDono(who.who, m),
+              note: lines.length ? lines[Math.floor(Math.random()*lines.length)] : ''});
+  }
+}
+/* Сколько событий на тик. Бюджет вечера — те же числа, что в ccStreamCupAfter
+   (фолловеры v·0.25·beat, деньги v·0.06·beat), делённые на ожидаемое число
+   тиков; хайп после хороших игр ускоряет, всплеск после победы (CC_TV_BURST)
+   даёт несколько фолловеров подряд — так это и выглядит на настоящем эфире.
+   Деньги пополам: сабы по 2.5 и донаты со средним чеком около двенадцати. */
+function ccTvEvents(board, games){
+  const v=CC_TV_VIEW;
+  let beat=0.5;
+  if(board && board.of>1) beat=1-(board.place-1)/(board.of-1);
+  const ticks=Math.max(60, (games||11)*CC_TV_TICKS_PER_GAME);
+  const folBudget=v*0.25*beat, cashBudget=v*0.06*beat;
+  let pFol=folBudget/ticks*(1+0.5*CC_TV_HYPE)+(CC_TV_BURST>0 ? 0.5 : 0);
+  /* Фолловеры считаются все, а строкой в чат идёт не каждый: у канала на
+     десять тысяч зрителей их по пять на тик, и чат состоял бы из одного
+     «подписался». Одна строка на тик, и не на каждый — как у настоящего
+     чата, где оповещения тонут в сообщениях. */
+  let nFol=0;
+  while(pFol>0){ if(Math.random()<Math.min(1, pFol)) nFol++; pFol-=1; }
+  if(nFol){ CC_TV_EV.fol+=nFol-1; ccTvEvent('fol', null, Math.random()<0.4); }
+  const pSub=(cashBudget*0.5/CC_TV_SUB_USD)/ticks*(1+0.5*CC_TV_HYPE);
+  if(Math.random()<pSub) ccTvEvent('sub');
+  const pDono=(cashBudget*0.5/12)/ticks*(1+CC_TV_HYPE);
+  if(Math.random()<pDono) ccTvEvent('dono');
+  CC_TV_BURST=Math.max(0, CC_TV_BURST-1);
+}
+function ccTvTick(){
+  const box=document.getElementById('ccTvFrame'); if(!box) return;
   const T=L(), you=CC_TV_YOU;
   const log=(you && you.stageLog) || [];
   // Новая игра в логе — это то, что зрители только что посмотрели.
   while(CC_TV_SEEN<log.length){
     const g=log[CC_TV_SEEN++]||{};
     const p=g.place||0;
-    if(p===1){ CC_TV_HYPE+=1.2; ccTvSay(T.ccTvChatWin); ccTvSay(T.ccTvChatWin); }
+    if(p===1){
+      CC_TV_HYPE+=1.2; CC_TV_BURST=4;
+      ccTvSay(T.ccTvChatWin); ccTvSay(T.ccTvChatWin);
+      if(Math.random()<0.6) ccTvEvent('dono');
+    }
     else if(p && p<=5){ CC_TV_HYPE+=0.45; ccTvSay(T.ccTvChatGood); }
     else if(p && p>=25){ CC_TV_HYPE=Math.max(0, CC_TV_HYPE-0.25); ccTvSay(T.ccTvChatBad); }
     else ccTvSay(T.ccStreamChatLines);
   }
-  if(Math.random()<0.45) ccTvSay(T.ccStreamChatLines);
+  if(Math.random()<0.55) ccTvSay(T.ccStreamChatLines);
   const board=ccTvBoard();
   // Черта отсечки — событие эфира: чат замечает, когда ты в неё входишь и
   // когда из неё вываливаешься, а не только конец игры.
@@ -86713,10 +86956,13 @@ function ccTvMiniTick(){
   const want=CC_TV_BASE*Math.max(0.4, 1+0.05*log.length+0.3*CC_TV_HYPE+seat)*(0.95+Math.random()*0.1);
   CC_TV_VIEW=Math.max(3, Math.round(CC_TV_VIEW+(want-CC_TV_VIEW)*0.5));
   CC_TV_PEAK=Math.max(CC_TV_PEAK, CC_TV_VIEW);
+  const games=board && board.n ? board.n : 0;
+  ccTvEvents(board, games);
   const set=(id,html)=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; };
   set('ccTvV', ccNum(CC_TV_VIEW));
+  const sec=Math.max(0, Math.floor((Date.now()-CC_TV_T0)/1000));
+  set('ccTvUp', Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'));
   const lastG=log.length ? log[log.length-1] : null;
-  const games=board && board.n ? board.n : 0;
   const bar=document.getElementById('ccTvBar');
   if(bar) bar.style.width=(games ? Math.min(100, Math.round(log.length/games*100)) : 0)+'%';
   set('ccTvRun', !log.length ? esc(T.ccTvWait)
@@ -86740,8 +86986,10 @@ function ccTvMiniTick(){
      ради неё. Отсечка красит её — в квоте или мимо. */
   if(board){
     const inCut=board.cut ? board.place<=board.cut : null;
+    // Имя команды в поле несёт разметку (флаги картинками) — табло берёт текст.
+    const bare=s=>String(s||'').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim();
     const rowHTML=(n, name, pts, me)=>
-      '<div class="cc-tvm-row'+(me?' me':'')+'"><i>'+n+'</i><b>'+esc(String(name).slice(0, 22))+
+      '<div class="cc-tvm-row'+(me?' me':'')+'"><i>'+n+'</i><b>'+esc(bare(name).slice(0, 22))+
       '</b><em>'+ccNum(pts)+'</em></div>';
     set('ccTvBoard',
       board.top.map((r,i)=>rowHTML(i+1, r.name, r.p, r.you)).join('')+
@@ -86750,8 +86998,10 @@ function ccTvMiniTick(){
       (board.cut ? '<div class="cc-tvm-cut'+(inCut?' in':' out')+'">'+
          esc(T.ccTvCut(board.cut, board.of))+'</div>' : ''));
   }
-  set('ccTvChat', CC_TV_MSGS.map(m=>
-    '<div class="cc-tvm-msg"><b style="color:'+esc(m.c)+'">'+esc(m.who)+'</b>: '+esc(m.text)+'</div>').join(''));
+  set('ccTvEv', esc(T.ccTvEvSum(CC_TV_EV.fol, CC_TV_EV.subs, Math.round(CC_TV_EV.cash))));
+  set('ccTvChat', CC_TV_MSGS.map(m=> m.ev
+    ? '<div class="cc-tvm-msg cc-tv-ev-'+m.ev+'">'+esc(m.text)+(m.note ? '<span>'+esc(m.note)+'</span>' : '')+'</div>'
+    : '<div class="cc-tvm-msg"><b style="color:'+esc(m.c)+'">'+esc(m.who)+'</b>: '+esc(m.text)+'</div>').join(''));
   set('ccTvPeak', esc(T.ccTvPeak(ccNum(CC_TV_PEAK))));
   const chat=document.getElementById('ccTvChat');
   if(chat) chat.scrollTop=chat.scrollHeight;
@@ -86911,10 +87161,12 @@ function careerStreamsHTML(){
   const btn=k=>{
     const can=!closed && careerEnergy()>=k.energy;
     const extra=(k.mate && mate) ? ' · @'+esc(ccHandle(mate.name)) : '';
+    // Выключенная кнопка называет причину, а не повторяет цену. См. ccStreamCupWhy.
+    const why=can ? null : (closed ? T.ccStreamDayGone : T.ccStreamNeed(k.energy, careerEnergy()));
     return `<button class="tv-go${can?'':' off'}" ${can?'':'disabled'}
       onclick="careerStreamGo('${k.id}')">
       <b>${esc(T['ccStream_'+k.id])}${extra}</b>
-      <em>${esc(T.ccStreamCost(k.energy))} · ${esc(T['ccStream_'+k.id+'Note'])}</em></button>`;
+      <em>${esc(why || T.ccStreamCost(k.energy))} · ${esc(T['ccStream_'+k.id+'Note'])}</em></button>`;
   };
   /* Пятая кнопка — турнирный вечер, и стоит она только в тот день, когда есть
      что стримить: в остальные дни стримить турнир нечего, и пустая кнопка с

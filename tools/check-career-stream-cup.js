@@ -90,6 +90,21 @@ const BOOT = `
     const cupBtn = document.querySelector('#chBody .tv-go-cup');
     check('the streams tab offers tonight tournament', !!cupBtn,
           cupBtn ? '' : 'no .tv-go-cup on a cup day');
+    /* Причина, а не цена. Его скрин 5 сентября («в трио не работает кнопка»):
+       под выключенной кнопкой стояло «20 energy» — та же строка, что цена на
+       включённой. Теперь строка говорит, сколько есть и сколько нужно, и её
+       несут и турнирная кнопка, и обычные виды эфира. */
+    const eKeep = CAREER.career.energy;
+    CAREER.career.energy = 5;
+    careerTab('streams');
+    const offBtn = document.querySelector('#chBody .tv-go-cup');
+    check('the streams tab button is off on 5 energy', !!offBtn && offBtn.disabled);
+    check('and carries the reason, not the price', !!offBtn && offBtn.textContent.indexOf(L().ccStreamNeed(CC_STREAM_CUP.energy, 5)) >= 0,
+          offBtn ? offBtn.textContent.replace(/\\s+/g, ' ').trim() : 'no button');
+    const offRanked = document.querySelector('#chBody .tv-go:not(.tv-go-cup)');
+    check('so does an ordinary stream button', !!offRanked && offRanked.textContent.indexOf(L().ccStreamNeed(30, 5)) >= 0,
+          offRanked ? offRanked.textContent.replace(/\\s+/g, ' ').trim() : 'no button');
+    CAREER.career.energy = eKeep;
     careerTab('centre');
 
     // ---- метка ставится до эфира, иначе окно метки съело бы вечер -----------
@@ -102,12 +117,14 @@ const BOOT = `
     }, 20);
     document.querySelector('#screen-career-hub .ch-live-go').click();
 
-    let card = null, sawMini = false, sawChat = false, sawRun = false;
+    let card = null, sawMini = false, sawChat = false, sawRun = false, sawOnAir = false;
     for (let i = 0; i < 4000 && !card; i++) {
       await wait(25);
-      if (document.getElementById('ccTvMini')) {
+      if (document.getElementById('ccTvFrame')) {
         sawMini = true;
-        if (document.querySelectorAll('#ccTvMini .cc-tvm-msg').length) sawChat = true;
+        // Рамка отодвигает экран прогона полями — это класс на body.
+        if (document.body.classList.contains('cc-onair')) sawOnAir = true;
+        if (document.querySelectorAll('#ccTvFrame .cc-tvm-msg').length) sawChat = true;
         const run = document.getElementById('ccTvRun');
         if (run && /\\d/.test(run.textContent) && run.textContent.indexOf(L().ccTvWait) < 0) sawRun = true;
       }
@@ -123,7 +140,9 @@ const BOOT = `
 
     card.querySelector('button[onclick*="careerBackToHub"]').click();
     await wait(60);
-    check('the window is gone when the evening is', !document.getElementById('ccTvMini'));
+    check('the window is gone when the evening is', !document.getElementById('ccTvFrame'));
+    check('the page was on air while the frame stood', sawOnAir);
+    check('and the page is back to its width', !document.body.classList.contains('cc-onair'));
     check('and the career is off air', CC_STREAM_LIVE === false);
 
     const cr = CAREER.career;
@@ -144,7 +163,7 @@ const BOOT = `
     // ---- окошко показывает сам турнир, а не только заголовок ----------------
     // Отдельно от вечера: под скипом вечер проскакивает быстрее, чем окно
     // успевает перерисоваться, и проверять там было бы проверкой скорости.
-    ccTvMiniOpen({label: 'PROBE CUP'});
+    ccTvOpen({label: 'PROBE CUP'});
     CC_TV_YOU = {name: 'ME & MATE', stagePts: 87, stageElims: 9, wins: 1,
                  stageLog: [{game:1, place:1}, {game:2, place:14}, {game:3, place:3}]};
     // Поле вечера — как его отдаёт simulateGamesLive: свои очки, чужие очки,
@@ -155,10 +174,10 @@ const BOOT = `
                    {name:'TOP THREE', stagePts:99, wins:0},
                    {name:'BELOW', stagePts:12, wins:0}],
                  pts: 'stagePts', n: 11, cut: 3, name: 'PROBE'};
-    ccTvMiniTick();
+    ccTvTick();
     const runTxt = (document.getElementById('ccTvRun')||{}).textContent || '';
     const boardTxt = (document.getElementById('ccTvBoard')||{}).textContent || '';
-    const chatN = document.querySelectorAll('#ccTvMini .cc-tvm-msg').length;
+    const chatN = document.querySelectorAll('#ccTvFrame .cc-tvm-msg').length;
     out.steps.push('window: "' + runTxt.replace(/\\s+/g, ' ').trim() + '"');
     out.steps.push('board: "' + boardTxt.replace(/\\s+/g, ' ').trim() + '", chat lines ' + chatN);
     check('the window counts the games out of the evening',
@@ -167,20 +186,41 @@ const BOOT = `
     check('and carries the points', runTxt.indexOf('87') >= 0, runTxt);
     check('the board shows who is winning', boardTxt.indexOf('TOP ONE') >= 0, boardTxt);
     check('and where you stand', boardTxt.indexOf('ME & MATE') >= 0, boardTxt);
-    const meRow = document.querySelector('#ccTvMini .cc-tvm-row.me');
+    const meRow = document.querySelector('#ccTvFrame .cc-tvm-row.me');
     check('a fourth of five is fourth',
           !!meRow && meRow.querySelector('i').textContent === '4',
           meRow ? meRow.textContent : 'no row of your own');
     check('and the cut is drawn as missed',
-          !!document.querySelector('#ccTvMini .cc-tvm-cut.out'),
-          (document.querySelector('#ccTvMini .cc-tvm-cut')||{}).className || 'no cut line');
+          !!document.querySelector('#ccTvFrame .cc-tvm-cut.out'),
+          (document.querySelector('#ccTvFrame .cc-tvm-cut')||{}).className || 'no cut line');
     const width = (document.getElementById('ccTvBar')||{}).style.width;
     check('the evening has a progress bar', width === '27%', String(width));
     check('a win fills the chat', chatN >= 3, String(chatN));
-    ccTvMiniFold();
-    check('the window folds', document.getElementById('ccTvMini').classList.contains('fold'));
-    ccTvMiniClose();
-    check('and closes', !document.getElementById('ccTvMini'));
+    /* ---- события канала: фолловеры, сабы, донаты ----------------------------
+       Его правка 5 сентября: «во время лайва чат двигается и тд, фоловки,
+       сабки, платные донаты». Бюджет событий — из тех же чисел, что платит
+       вечер, поэтому за сотню тиков с двумя сотнями зрителей и победой в
+       кадре что-то обязано прийти, и счёт эфира обязан это показать. */
+    CC_TV_VIEW = 3000; CC_TV_BASE = 3000; CC_TV_BURST = 4;
+    // Ты наверху таблицы — доля поля полная, бюджет событий тоже.
+    CC_TV_YOU.stagePts = 200;
+    for (let i = 0; i < 120; i++) ccTvTick();
+    const evN = document.querySelectorAll('#ccTvFrame .cc-tv-ev-fol, #ccTvFrame .cc-tv-ev-sub, #ccTvFrame .cc-tv-ev-dono').length;
+    const evTxt = (document.getElementById('ccTvEv')||{}).textContent || '';
+    out.steps.push('events after 120 ticks: ' + evN + ' in chat, tally "' + evTxt + '", CC_TV_EV=' + JSON.stringify(CC_TV_EV));
+    check('the channel gets followers, subs or donations during the evening', evN > 0 && CC_TV_EV.fol > 0,
+          evN + ' / ' + JSON.stringify(CC_TV_EV));
+    check('and the tally line counts them', evTxt === L().ccTvEvSum(CC_TV_EV.fol, CC_TV_EV.subs, Math.round(CC_TV_EV.cash)), evTxt);
+    check('the chat keeps moving: newest lines are kept, oldest dropped', CC_TV_MSGS.length <= 40 && CC_TV_MSGS.length >= 20, String(CC_TV_MSGS.length));
+    check('the frame shows followed channels', document.querySelectorAll('#ccTvFrame .cc-tv-srow').length >= 1);
+    check('and the uptime clock', /^\\d+:\\d\\d$/.test((document.getElementById('ccTvUp')||{}).textContent || ''),
+          (document.getElementById('ccTvUp')||{}).textContent);
+    ccTvFold();
+    check('the window folds', document.getElementById('ccTvFrame').classList.contains('fold'));
+    check('and folding gives the page its width back', document.body.classList.contains('cc-onair-fold'));
+    ccTvClose();
+    check('and closes', !document.getElementById('ccTvFrame'));
+    check('closing takes the on-air class off the page', !document.body.classList.contains('cc-onair'));
 
     /* ---- цена вида, а не плоские тридцать ----------------------------------
        Турнирный эфир стоит двадцати, и с двадцатью пятью в запасе он обязан
@@ -199,6 +239,12 @@ const BOOT = `
     cr.energy = 5;
     out.steps.push('why not on 5 energy: ' + (ccStreamCupWhy() || 'still allowed'));
     check('an empty day cannot go live', !!ccStreamCupWhy());
+    /* Причина, а не цена. Его скрин 5 сентября («в трио не работает кнопка»):
+       под выключенной кнопкой стояло «20 energy» — та же строка, что цена на
+       включённой. Теперь строка говорит, сколько есть и сколько нужно, и
+       кнопка на вкладке стримов несёт её же. */
+    check('the reason names the shortfall, not the price',
+          ccStreamCupWhy() === L().ccStreamNeed(CC_STREAM_CUP.energy, 5), ccStreamCupWhy());
 
   } catch(e){ if(!out.fail) out.fail = String(e && e.stack || e); }
   out.errs = window.__errs;
