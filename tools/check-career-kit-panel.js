@@ -42,6 +42,10 @@ const BOOT = `
     ccKitPanel(lobby, {zone:1, players:100, surgeAt:0, dots:[dot(), dot({h:80}), dot()]});
     out.notes.push('z1: '+txt());
     check('панель встала на карте', !!map.querySelector('.zr-kit'));
+    // Верхний правый столбик игры: элимы, живые, время фазы.
+    ccKitPanel(lobby, {zone:1, players:100, surgeAt:0, secondsLeft:125, dots:[dot(), dot({h:80, e:3}), dot()]});
+    const top=[...map.querySelectorAll('.zk-top-row b')].map(b=>b.textContent);
+    check('справа сверху — элимы, живые и время', top.join('|')==='3|100|2:05', top.join('|'));
     const q=s=>map.querySelector(s);
     check('здоровье — из кадра', q('.zk-vitals') && q('.zk-vitals').dataset.hp==='80', (q('.zk-vitals')||{}).outerHTML);
     // 80 очков отряда — щит 60 и здоровье 100, как на HUD (верхняя половина — щит).

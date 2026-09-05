@@ -2728,6 +2728,22 @@
   .zr-kit .zk-slot.r-epic{border-color:var(--epic);background:linear-gradient(180deg,rgba(177,75,244,.35),rgba(16,20,40,.95));}
   .zr-kit .zk-slot.r-legendary{border-color:var(--legendary);background:linear-gradient(180deg,rgba(255,140,26,.35),rgba(16,20,40,.95));}
   .zr-kit .zk-slot.r-mythic{border-color:var(--mythic);background:linear-gradient(180deg,rgba(255,210,0,.35),rgba(16,20,40,.95));}
+  /* Верхний правый столбик: элимы · живые · время, числа справа налево к иконке. */
+  .zr-head-quiet>span:last-child{visibility:hidden;}
+  .zr-kit .zk-top{position:absolute;right:10px;top:8px;display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
+  .zr-kit .zk-top-row{display:flex;align-items:center;gap:6px;}
+  .zr-kit .zk-top-row b{font-size:15px;transform:skewX(-8deg);font-variant-numeric:tabular-nums;min-width:26px;text-align:right;}
+  .zr-kit .zk-top-row i{display:block;width:14px;height:14px;flex:none;background:#e6ecf7;}
+  .zr-kit .zk-ico-skull{clip-path:polygon(20% 0,80% 0,100% 30%,100% 62%,84% 70%,84% 100%,60% 100%,60% 84%,40% 84%,40% 100%,16% 100%,16% 70%,0 62%,0 30%);}
+  .zr-kit .zk-ico-man{clip-path:polygon(35% 0,65% 0,72% 28%,55% 36%,90% 55%,90% 100%,10% 100%,10% 55%,45% 36%,28% 28%);}
+  .zr-kit .zk-ico-clock{border-radius:50%;background:transparent;border:2px solid #e6ecf7;width:10px;height:10px;position:relative;}
+  .zr-kit .zk-ico-clock::after{content:'';position:absolute;left:4px;top:1px;width:2px;height:5px;background:#e6ecf7;}
+  /* Напарник над полосками: имя и своя полоса, как нейм-плейт тиммейта. */
+  .zr-kit .zk-mate{display:flex;flex-direction:column;gap:2px;margin-bottom:3px;padding-left:20px;}
+  .zr-kit .zk-mate b{font-size:11px;font-weight:700;color:#e6ecf7;transform:skewX(-6deg);}
+  .zr-kit .zk-mate i{display:block;height:5px;width:120px;background:rgba(10,14,30,.7);border:1px solid rgba(255,255,255,.2);
+    transform:skewX(-14deg);overflow:hidden;}
+  .zr-kit .zk-mate i span{display:block;height:100%;background:linear-gradient(90deg,#43c95b,#a6f57f);}
   .zr-kit .zk-dead{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) skewX(-8deg);
     font-size:22px;letter-spacing:.06em;text-transform:uppercase;color:#ffb3b3;
     text-shadow:0 0 12px rgba(255,77,77,.8),0 1px 2px #000;}
@@ -5125,8 +5141,8 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=4f5bb4e4"></script>
-<script src="zone-replay.js?v=8ad66275"></script>
+<script src="zone-sim.js?v=3aa9e8c6"></script>
+<script src="zone-replay.js?v=94d105d4"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -51609,7 +51625,9 @@ function ccKitPanel(lobby, frame){
   if(!box){
     box=document.createElement('div'); box.className='zr-kit'; map.appendChild(box);
     // Килфид живёт в том же углу — поднимаем его над полосками.
-    const feed=map.querySelector('.zr-feed'); if(feed) feed.style.bottom='64px';
+    const feed=map.querySelector('.zr-feed'); if(feed) feed.style.bottom='78px';
+    // Счётчики шапки справа гасим: их место занимает столбик в раскладке игры.
+    const head=map.querySelector('.zr-head'); if(head) head.classList.add('zr-head-quiet');
   }
   const T=L();
   if(!d.alive){ box.innerHTML='<div class="zk-dead"><b>'+esc(T.ccKitOut)+'</b></div>'; return; }
@@ -51658,8 +51676,23 @@ function ccKitPanel(lobby, frame){
     : frame.surgeAt>0
       ? '<div class="zk-thresh armed">'+tri+'<span>'+esc(T.ccKitSurgeAt(frame.surgeAt, frame.players))+'</span></div>'
       : '<div class="zk-thresh off"><span>'+esc(T.ccKitSurgeOff)+'</span></div>';
+  /* Верхний правый столбик игры: элиминации, живые игроки, время фазы. Своя
+     шапка проигрывателя («ЗОНА N · время» слева) остаётся, её правые счётчики
+     гаснут (.zr-head-quiet). Напарники — строкой над полосками, как в игре
+     нейм-плейт тиммейта с полосой здоровья; здоровье у отряда одно на всех. */
+  const sec=Math.max(0, frame.secondsLeft||0);
+  const clock=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');
+  const meKey=(typeof hKey==='function' && CAREER && CAREER.player) ? hKey(careerCard()||CAREER.player.nick) : '';
+  const mates=(you.squad||[]).map(c=>c && c.handle).filter(h=>h && (!meKey || hKey(h)!==meKey)).slice(0, 2);
+  const mateRows=mates.map(h=>'<div class="zk-mate"><b>'+esc(h)+'</b><i><span style="width:'+hp+'%"></span></i></div>').join('');
   box.innerHTML=
+    '<div class="zk-top">'+
+      '<div class="zk-top-row"><b>'+(d.e||0)+'</b><i class="zk-ico-skull"></i></div>'+
+      '<div class="zk-top-row"><b>'+(frame.players!=null?frame.players:frame.alive||0)+'</b><i class="zk-ico-man"></i></div>'+
+      '<div class="zk-top-row"><b>'+clock+'</b><i class="zk-ico-clock"></i></div>'+
+    '</div>'+
     '<div class="zk-vitals" data-hp="'+hp+'" data-shield="'+shield+'" data-health="'+health+'">'+
+      mateRows+
       '<div class="zk-row"><i class="zk-ico zk-ico-shield"></i><div class="zk-bar zk-shield"><i style="width:'+shield+'%"></i></div><b>'+shield+'</b></div>'+
       '<div class="zk-row"><i class="zk-ico zk-ico-plus">+</i><div class="zk-bar zk-health"><i style="width:'+health+'%"></i></div><b>'+health+'</b></div>'+
     '</div>'+

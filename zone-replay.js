@@ -216,7 +216,9 @@
     svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
     stage.appendChild(svg);
 
-    var head = el('div', null,
+    // Named, so the app's kit HUD can quiet its right-hand counters and draw
+    // its own cluster in the game's layout.
+    var head = el('div', 'zr-head',
       'position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;' +
       'align-items:center;padding:5px 7px;font-size:11px;font-weight:800;color:#fff;' +
       'letter-spacing:.04em;background:linear-gradient(180deg,rgba(0,0,0,.72),rgba(0,0,0,0));');
