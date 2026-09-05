@@ -1463,11 +1463,14 @@
   /* Чем кончилось: плашка на том же месте, где стоял вопрос. Бирюзовая, когда
      вышло, красная — когда монетка легла не так; те же два цвета, которыми хаб
      помечает живое и опасное. */
-  .cc-choice-out{position:absolute; left:0; right:0; bottom:0; z-index:21;
-    padding:12px 14px; text-align:center; border-top:1px solid var(--cc-ui-line);
-    border-radius:0 0 10px 10px;
+  /* Плашка исхода — там же, где стоял вопрос: по центру карты, не поверх
+     строки набора. */
+  .cc-choice-out{position:absolute; left:14px; right:14px; top:50%; bottom:auto; z-index:21;
+    transform:translateY(-50%);
+    padding:12px 14px; text-align:center; border:1px solid var(--cc-ui-line);
+    border-radius:10px;
     background:linear-gradient(180deg, rgba(13,18,48,.90), rgba(21,27,64,.99));
-    animation:ccChoiceUp .18s ease-out; transition:opacity .3s ease;}
+    animation:ccChoiceMid .18s ease-out; transition:opacity .3s ease;}
   .cc-choice-out b{font-size:17px; font-weight:900; font-style:italic;
     letter-spacing:.02em; text-transform:uppercase; color:var(--cc-ui-ink);}
   .cc-choice-out.good{border-top-color:var(--cc-ui-live);
@@ -1483,10 +1486,15 @@
   /* Подложка почти сплошная и с размытием: под ней лежат метки лобби и
      подписи POI, и сквозь полупрозрачную панель они читались вместе с
      текстом вопроса — в один слой, друг поверх друга. */
-  .cc-choice-map{position:absolute; left:0; right:0; bottom:0; z-index:20;
-    padding:12px 14px 12px; border:none;
-    border-top:1px solid var(--cc-ui-line);
-    border-radius:0 0 10px 10px; color:var(--cc-ui-ink);
+  /* ПО СЕРЕДИНЕ КАРТЫ, а не по нижнему краю — его правка 5 сентября: «во время
+     выбора не видно панельки… пусть будет поверх экрана выбор, или по
+     середине». Внизу теперь лежит строка набора (щит, ресы, сёрдж), и вопрос,
+     стоявший там же, закрывал ровно то, по чему решают. Карточка стоит по
+     центру острова с полями по бокам; строка набора и шапка остаются видны. */
+  .cc-choice-map{position:absolute; left:14px; right:14px; top:50%; bottom:auto; z-index:20;
+    transform:translateY(-50%);
+    padding:12px 14px 12px; border:1px solid var(--cc-ui-line);
+    border-radius:10px; color:var(--cc-ui-ink);
     background:linear-gradient(180deg, rgba(13,18,48,.72) 0%, rgba(21,27,64,.97) 18%,
                                        rgba(28,36,85,.99) 100%);
     box-shadow:0 -14px 34px rgba(6,10,30,.45);
@@ -1496,12 +1504,15 @@
        выше и так почти сплошной (0.97-0.99), то есть размытие не было видно
        и платили за него зря. */
     contain:layout paint;
-    animation:ccChoiceUp .22s ease-out;}
-  /* Плашка заголовка идёт во всю ширину панели, а у панели скруглён только
-     низ — значит наверху её надо обрезать по прямому углу, иначе чёрный слэб
-     торчит из-под края на пиксель. */
-  .cc-choice-map .cc-choice-head b{margin:-12px -14px 9px;}
+    animation:ccChoiceMid .22s ease-out;}
+  /* Плашка заголовка идёт во всю ширину карточки; карточка скруглена со всех
+     сторон, поэтому у плашки скруглён верх — иначе чёрный слэб торчит из-под
+     края на пиксель. */
+  .cc-choice-map .cc-choice-head b{margin:-12px -14px 9px; border-radius:9px 9px 0 0;}
   @keyframes ccChoiceUp{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+  /* Та же анимация для карточки по центру: она уже стоит на translateY(-50%),
+     и анимировать transform без этого сдвига значит уронить её вниз на кадр. */
+  @keyframes ccChoiceMid{from{opacity:0; transform:translateY(-50%) translateY(10px);} to{opacity:1; transform:translateY(-50%);}}
   @media(prefers-reduced-motion:reduce){
     .cc-choice-map{animation:none;}
     .cc-choice-btn:hover{transform:none;}
@@ -51573,7 +51584,12 @@ function ccKitPanel(lobby, frame){
   }
   const T=L();
   if(!d.alive){ box.innerHTML='<div class="zk-dead">'+esc(T.ccKitOut)+'</div>'; return; }
-  const mats=Math.max(0, ccMats(you)+CC_MATS_ZONE*Math.max(0, CC_KIT_ZONE-(frame.zone||0)));
+  /* Пока на карте стоит вопрос, ресы — ровно те, по которым он задан (модель
+     уже списала круги до остановки), иначе подсказка говорит «ресы 0», а
+     строка внизу — 110, и это читается как две правды. */
+  const asking=!!map.querySelector('.cc-choice-map');
+  const mats=asking ? ccMats(you)
+    : Math.max(0, ccMats(you)+CC_MATS_ZONE*Math.max(0, CC_KIT_ZONE-(frame.zone||0)));
   const low=mats<CC_MATS_LOW;
   const hp=Math.max(0, Math.min(100, d.h||0));
   /* ПО РЕФЕРЕНСУ — его скрин HUD Fortnite (5.09) и слово «можешь как на референсе
