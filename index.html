@@ -2606,6 +2606,44 @@
     .cc-tv-right .cc-tvm-b{display:none;}
     body.cc-onair .wrap.wrap-wide{margin-right:0;padding-bottom:240px;}
     body.cc-onair .skip-btn-prominent{right:10px;}}
+  /* СВОДКА ПОСЛЕ ЭФИРА — «Stream Summary» из дашборда Twitch (его скрин 5.09):
+     ряд плиток число-подпись, под ним график зрителей. Та же разметка живёт
+     на вкладке стримов под статистикой канала (.tv-sum). */
+  .cc-tvs{position:fixed;inset:0;z-index:250;background:rgba(0,0,0,.72);display:flex;
+    align-items:center;justify-content:center;padding:16px;}
+  .cc-tvs-box{width:100%;max-width:640px;background:#18181b;color:#efeff1;border:1px solid #26262c;
+    border-radius:12px;box-shadow:0 24px 70px rgba(0,0,0,.6);overflow:hidden;font-size:12px;}
+  .cc-tvs-h{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#0e0e10;
+    border-bottom:1px solid #26262c;}
+  .cc-tvs-h b{font-size:15px;font-weight:900;}
+  .cc-tvs-h em{font-style:normal;color:#adadb8;margin-left:auto;font-size:12px;text-align:right;}
+  .cc-tvs-tiles{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #26262c;}
+  .cc-tvs-tile{padding:12px 10px 10px;text-align:center;border-right:1px solid #26262c;
+    border-bottom:1px solid #26262c;}
+  .cc-tvs-tile:nth-child(4n){border-right:none;}
+  .cc-tvs-tile b{display:block;font-size:22px;font-weight:800;color:#bf94ff;line-height:1.1;
+    font-variant-numeric:tabular-nums;}
+  .cc-tvs-tile.up b{color:#00b884;}
+  .cc-tvs-tile.main{box-shadow:inset 0 -3px 0 #9147ff;}
+  .cc-tvs-tile span{display:block;margin-top:4px;font-size:11.5px;color:#adadb8;}
+  .cc-tvs-chart{padding:10px 14px 6px;}
+  .cc-tvs-chart em{display:block;font-style:normal;font-size:11px;color:#adadb8;margin-bottom:4px;}
+  .cc-tvs-chart svg{display:block;width:100%;height:150px;}
+  .cc-tvs-grid line{stroke:#3a3a3d;stroke-dasharray:3 3;stroke-width:1;}
+  .cc-tvs-grid text,.cc-tvs-ax text{fill:#7a7a85;font-size:10px;font-family:inherit;}
+  .cc-tvs-area{fill:rgba(145,71,255,.28);}
+  .cc-tvs-line{fill:none;stroke:#bf94ff;stroke-width:2;vector-effect:non-scaling-stroke;}
+  .cc-tvs-f{display:flex;justify-content:flex-end;padding:10px 14px 14px;}
+  .cc-tvs-ok{border:none;border-radius:6px;background:#9147ff;color:#fff;font:inherit;font-weight:800;
+    font-size:13px;padding:9px 22px;cursor:pointer;}
+  .cc-tvs-ok:hover{background:#a970ff;}
+  #screen-career-hub .tv-sum{background:#0e0e10;border-top:1px solid #26262c;color:#efeff1;}
+  #screen-career-hub .tv-sum .tw-h{font-size:11px;font-weight:800;letter-spacing:.06em;
+    text-transform:uppercase;color:#adadb8;padding:10px 12px 0;}
+  #screen-career-hub .tv-sum .cc-tvs-tiles{border-bottom:none;margin-top:6px;}
+  @media(max-width:640px){.cc-tvs-tiles{grid-template-columns:repeat(2,1fr);}
+    .cc-tvs-tile:nth-child(4n){border-right:1px solid #26262c;}
+    .cc-tvs-tile:nth-child(2n){border-right:none;}}
 
   #screen-career-hub .tv-last{margin-top:12px;}
   #screen-career-hub .tv-last .ch-hint{color:#adadb8;}
@@ -7612,6 +7650,11 @@ ccTvEvSub:h=>h+' оформил саб · Tier 1',
 ccTvEvDono:(h,m)=>h+' задонатил $'+m,
 ccTvEvSum:(f,s,m)=>'+'+f+' фолловеров · '+s+' сабов · $'+m,
 ccTvDonoLines:['на новую мышку','за W','ты лучший','квальни пж','с меня кофе','го дальше','респект за игру','люблю стримы'],
+// Сводка после эфира — как «Stream Summary» в дашборде Twitch (его скрин 5.09).
+ccTvSumTitle:'Итоги эфира', ccTvSumAvg:'Средний онлайн', ccTvSumPeak:'Пик зрителей',
+ccTvSumFol:'Фолловеры', ccTvSumSubs:'Сабы', ccTvSumCash:'Заработано', ccTvSumTime:'В эфире',
+ccTvSumChatters:'Писали в чат', ccTvSumChart:'Зрители по ходу вечера', ccTvSumHours:h=>h+' ч',
+ccTvSumPlace:(p,of)=>'место '+p+' из '+of,
 ccTvChatWin:['ПОБЕДА','W','вот это игра','клип в тг','гоооол','изи катка','красава'],
 ccTvChatGood:['красиво','+','чисто','достойно','сильно','вот так и надо'],
 ccTvChatBad:['F','ну бывает','что это было','ой','не повезло','го дальше','третьят опять'],
@@ -9483,6 +9526,10 @@ ccTvEvSub:h=>h+' subscribed · Tier 1',
 ccTvEvDono:(h,m)=>h+' donated $'+m,
 ccTvEvSum:(f,s,m)=>'+'+f+' followers · '+s+' subs · $'+m,
 ccTvDonoLines:['for a new mouse','for the W','you are the best','qual it pls','coffee on me','keep going','respect for the game','love the streams'],
+ccTvSumTitle:'Stream summary', ccTvSumAvg:'Average viewers', ccTvSumPeak:'Peak viewers',
+ccTvSumFol:'Follows', ccTvSumSubs:'Subs', ccTvSumCash:'Earned', ccTvSumTime:'Time streamed',
+ccTvSumChatters:'Unique chatters', ccTvSumChart:'Viewers through the evening', ccTvSumHours:h=>h+' h',
+ccTvSumPlace:(p,of)=>'placed '+p+' of '+of,
 ccTvChatWin:['VICTORY','W','what a game','clip it','LETS GOOO','ez dub','insane'],
 ccTvChatGood:['clean','+','nice','solid','strong','that is how'],
 ccTvChatBad:['F','it happens','what was that','oof','unlucky','next one','third partied again'],
@@ -86656,6 +86703,8 @@ async function careerPlayLive(){
   CC_STREAM_KIND='grind';
   if(!done) return false;
   if(CC_STREAM_CUP.grind) cr.grind=(cr.grind||0)+CC_STREAM_CUP.grind;
+  // Что стримили — заголовком в сводке эфира. См. ccTvSummary.
+  if(cr.streamLast && cr.streamLast.day===day) cr.streamLast.label=(next && (next.label||next.title))||'';
   careerSave();
   CC_STREAM_LIVE=true; CC_TV_YOU=null;
   ccTvOpen(next);
@@ -86666,8 +86715,13 @@ async function careerPlayLive(){
   try{ await careerPlay(); }
   finally{
     CC_STREAM_LIVE=false;
+    /* Итог вечера — с табло трансляции, ПЕРЕД тем как рамка снимется и
+       обнулит поле: кубок Дивизиона 1 из двух сессий пишет строку журнала не в
+       этот вечер, а по строке журнала итог и считался — сводки и доплаты за
+       эфир у такого кубка не было вовсе (проверено в его Chrome, 5.09). */
+    const board=ccTvBoard();
     ccTvClose();
-    ccStreamCupAfter(day);
+    ccStreamCupAfter(day, board);
   }
   return true;
 }
@@ -86675,10 +86729,11 @@ async function careerPlayLive(){
    это и есть тот единственный множитель, которым эфир с турнира отличается от
    эфира с ранкеда. Считается по той же доле поля (beat), по которой карьера
    уже считает форму и охват, чтобы «хорошо отыграл» везде означало одно. */
-function ccStreamCupAfter(day){
+function ccStreamCupAfter(day, board){
   const cr=CAREER && CAREER.career; if(!cr) return null;
   const rows=(cr.log||[]).filter(r=>r && r.day===day && r.of>1);
-  const row=rows[rows.length-1];
+  // Строка журнала, а без неё — табло трансляции на конец вечера (см. careerPlayLive).
+  const row=rows[rows.length-1] || (board && board.of>1 ? {place:board.place, of:board.of} : null);
   if(!row) return null;
   const beat=clamp(1-(row.place-1)/(row.of-1), 0, 1);
   const v=CC_TV_VIEW||ccStreamViewersNow();
@@ -86715,9 +86770,98 @@ function ccStreamCupAfter(day){
   careerTwTick();
   careerNews(beat>=0.75 ? 'good' : 'flat', 'ccNewsStreamCup',
              [row.place, row.of, ccNum(fol)]);
+  /* Сводка эфира — его правка 5 сентября, скрин «Stream Summary» из дашборда
+     Twitch: «в конце стрима пусть показывает, сколько заработал и сколько
+     средний онлайн». Считается здесь, где известны и итог турнира, и то, что
+     набрал чат; лежит в streamLast.sum — её же показывает вкладка стримов.
+     Средний онлайн — по замерам тиков; под перемоткой их мало, и тогда он
+     равен зрителям начала эфира. Часы — те, что пишет журнал партнёрки. */
+  const sum={avg: CC_TV_SUM && CC_TV_SUM.n ? Math.round(CC_TV_SUM.sum/CC_TV_SUM.n) : v,
+             peak: Math.max(CC_TV_PEAK||0, v), fol:fol, subs:(ev.subs||0), cash:cash,
+             hours:(last && last.a && last.a[5]) || CC_STREAM_CUP.hours,
+             chatters:(CC_TV_CHATTERS && CC_TV_CHATTERS.size) || 0,
+             place:row.place, of:row.of, label:(last && last.label) || '',
+             hist:ccTvHistPack(CC_TV_HIST||[], 60)};
+  if(last && last.day===day) last.sum=sum;
   careerSave();
   careerRenderHub('centre');
-  return {fol:fol, cash:cash};
+  ccTvSummary(sum);
+  return {fol:fol, cash:cash, sum:sum};
+}
+// Кривая зрителей — не длиннее n точек, средним по отрезкам; хранится в сейве.
+function ccTvHistPack(hist, n){
+  if(!hist.length) return [];
+  if(hist.length<=n) return hist.map(h=>({v:h.v, g:h.g}));
+  const out=[]; const step=hist.length/n;
+  for(let i=0;i<n;i++){
+    const a=Math.floor(i*step), b=Math.max(a+1, Math.floor((i+1)*step));
+    const part=hist.slice(a, b);
+    out.push({v:Math.round(part.reduce((s,h)=>s+h.v,0)/part.length), g:part[part.length-1].g});
+  }
+  return out;
+}
+// Плитки сводки — одни и те же в карточке после эфира и на вкладке стримов.
+function ccTvSumTilesHTML(s){
+  const T=L();
+  const tile=(k,v,cls)=>'<div class="cc-tvs-tile'+(cls?' '+cls:'')+'"><b>'+v+'</b><span>'+esc(k)+'</span></div>';
+  return '<div class="cc-tvs-tiles">'+
+    tile(T.ccTvSumAvg, ccNum(s.avg||0), 'main')+
+    tile(T.ccTvSumPeak, ccNum(s.peak||0))+
+    tile(T.ccTvSumFol, '+'+ccNum(s.fol||0), 'up')+
+    tile(T.ccTvSumSubs, ccNum(s.subs||0))+
+    tile(T.ccTvSumCash, ccMoney(s.cash||0), 'up')+
+    tile(T.ccTvSumTime, esc(T.ccTvSumHours(s.hours||CC_STREAM_CUP.hours)))+
+    tile(T.ccTvSumChatters, ccNum(s.chatters||0))+
+  '</div>';
+}
+/* График зрителей по ходу вечера — линия с заливкой, как в дашборде Twitch,
+   подписи по оси — номера игр. Рисуется SVG на показ, из сохранённой кривой. */
+function ccTvSumChartHTML(s){
+  const T=L(), h=(s && s.hist)||[];
+  if(h.length<2) return '';
+  const W=560, H=150, PL=34, PB=18, PT=8;
+  const max=Math.max(1, ...h.map(p=>p.v));
+  const x=i=>PL+(W-PL-6)*i/(h.length-1);
+  const y=v=>PT+(H-PT-PB)*(1-v/max);
+  const pts=h.map((p,i)=>x(i).toFixed(1)+','+y(p.v).toFixed(1));
+  const area='M'+pts[0]+' L'+pts.join(' L')+' L'+x(h.length-1).toFixed(1)+','+(H-PB)+' L'+PL+','+(H-PB)+' Z';
+  // Подписи игр — там, где номер игры меняется, но не чаще шести на ось.
+  const marks=[]; let lastG=-1;
+  h.forEach((p,i)=>{ if(p.g!==lastG && p.g>0){ marks.push({i:i, g:p.g}); lastG=p.g; } });
+  const every=Math.max(1, Math.ceil(marks.length/6));
+  const labels=marks.filter((m,k)=>k%every===0).map(m=>
+    '<text x="'+x(m.i).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle">'+esc(T.ccTvGame(m.g))+'</text>').join('');
+  const grid=[0.5,1].map(f=>'<line x1="'+PL+'" x2="'+(W-6)+'" y1="'+y(max*f).toFixed(1)+'" y2="'+y(max*f).toFixed(1)+'"/>'+
+    '<text x="'+(PL-6)+'" y="'+(y(max*f)+3).toFixed(1)+'" text-anchor="end">'+ccNum(Math.round(max*f))+'</text>').join('');
+  return '<div class="cc-tvs-chart"><em>'+esc(T.ccTvSumChart)+'</em>'+
+    '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'+
+      '<g class="cc-tvs-grid">'+grid+'</g>'+
+      '<path class="cc-tvs-area" d="'+area+'"/>'+
+      '<polyline class="cc-tvs-line" points="'+pts.join(' ')+'"/>'+
+      '<g class="cc-tvs-ax">'+labels+'</g>'+
+    '</svg></div>';
+}
+// Карточка после эфира. Своя, не ccAsk: у той один абзац и две кнопки, а здесь
+// плитки и график. Под перемоткой и в пробах без document её нет.
+function ccTvSummary(s){
+  if(typeof document==='undefined' || !document.body || !s) return;
+  if(typeof CC_FF!=='undefined' && CC_FF) return;
+  ccTvSummaryClose();
+  const T=L();
+  const box=document.createElement('div');
+  box.id='ccTvSum'; box.className='cc-tvs';
+  box.onclick=function(e){ if(e.target===box) ccTvSummaryClose(); };
+  box.innerHTML='<div class="cc-tvs-box">'+
+    '<div class="cc-tvs-h"><span class="cc-tvm-live">'+esc(T.chLiveTag)+'</span><b>'+esc(T.ccTvSumTitle)+'</b>'+
+      '<em>'+esc(s.label||'')+(s.of ? (s.label?' · ':'')+esc(T.ccTvSumPlace(s.place, s.of)) : '')+'</em></div>'+
+    ccTvSumTilesHTML(s)+ccTvSumChartHTML(s)+
+    '<div class="cc-tvs-f"><button class="cc-tvs-ok" onclick="ccTvSummaryClose()">'+esc(T.ccTellOk)+'</button></div>'+
+  '</div>';
+  document.body.appendChild(box);
+}
+function ccTvSummaryClose(){
+  const box=document.getElementById('ccTvSum');
+  if(box && box.parentNode) box.parentNode.removeChild(box);
 }
 /* ---- ОКОШЕЧКО ТРАНСЛЯЦИИ → ЭФИР ВОКРУГ ВЕЧЕРА -------------------------------
 
@@ -86746,7 +86890,10 @@ function ccStreamCupAfter(day){
    Под перемоткой тиков мало, и правит формула; вживую — чат. */
 let CC_TV_T=null, CC_TV_VIEW=0, CC_TV_PEAK=0, CC_TV_HYPE=0,
     CC_TV_BASE=0, CC_TV_SEEN=0, CC_TV_WHO=[], CC_TV_MSGS=[], CC_TV_RUN=null, CC_TV_INCUT=null,
-    CC_TV_T0=0, CC_TV_EV={fol:0, subs:0, cash:0}, CC_TV_BURST=0;
+    CC_TV_T0=0, CC_TV_EV={fol:0, subs:0, cash:0}, CC_TV_BURST=0,
+    // Для сводки после эфира: сумма/число замеров зрителей, кривая по тикам,
+    // кто писал в чат. См. ccTvSummary.
+    CC_TV_SUM={n:0, sum:0}, CC_TV_HIST=[], CC_TV_CHATTERS=new Set();
 const CC_TV_TICK=600;
 // Сколько тиков живёт одна игра, когда вечер смотрят вживую, — по этому числу
 // раскладывается бюджет событий (см. ccTvEvents).
@@ -86786,6 +86933,7 @@ function ccTvOpen(next){
   CC_TV_VIEW=CC_TV_BASE; CC_TV_PEAK=CC_TV_BASE;
   CC_TV_HYPE=0; CC_TV_SEEN=0; CC_TV_MSGS=[]; CC_TV_RUN=null; CC_TV_INCUT=null;
   CC_TV_T0=Date.now(); CC_TV_EV={fol:0, subs:0, cash:0}; CC_TV_BURST=0;
+  CC_TV_SUM={n:0, sum:0}; CC_TV_HIST=[]; CC_TV_CHATTERS=new Set();
   /* Кто сидит в чате — те же люди, что и на вкладке стримов. Пустым он быть
      не может: у совсем новой карьеры нет ни друзей, ни подписок, и тогда в
      эфире сидит она сама. */
@@ -86871,6 +87019,7 @@ function ccTvPush(m){
 function ccTvSay(bank){
   if(!bank || !bank.length || !CC_TV_WHO.length) return;
   const who=CC_TV_WHO[Math.floor(Math.random()*CC_TV_WHO.length)];
+  CC_TV_CHATTERS.add(who.who);
   ccTvPush({who:who.who, c:who.c, text:bank[Math.floor(Math.random()*bank.length)]});
 }
 // Событие канала: фолловер, саб, донат. Копится в CC_TV_EV — это и есть то, что
@@ -86956,6 +87105,11 @@ function ccTvTick(){
   const want=CC_TV_BASE*Math.max(0.4, 1+0.05*log.length+0.3*CC_TV_HYPE+seat)*(0.95+Math.random()*0.1);
   CC_TV_VIEW=Math.max(3, Math.round(CC_TV_VIEW+(want-CC_TV_VIEW)*0.5));
   CC_TV_PEAK=Math.max(CC_TV_PEAK, CC_TV_VIEW);
+  // Замер для сводки: средний онлайн и кривая. Кривая не длиннее 240 точек —
+  // при переполнении прореживается вдвое, форма вечера остаётся.
+  CC_TV_SUM.n++; CC_TV_SUM.sum+=CC_TV_VIEW;
+  CC_TV_HIST.push({v:CC_TV_VIEW, g:log.length});
+  if(CC_TV_HIST.length>240) CC_TV_HIST=CC_TV_HIST.filter((x,i)=>i%2===0);
   const games=board && board.n ? board.n : 0;
   ccTvEvents(board, games);
   const set=(id,html)=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; };
@@ -87251,6 +87405,9 @@ function careerStreamsHTML(){
         <span>${T.ccSumStreamed} <b>${ccMoney(cr.streamed||0)}</b></span>
         ${live?`<span class="tv-last">${esc(T.ccNewsStreamStats.apply(null, live.a))}</span>`:''}
       </div>
+      ${cr.streamLast && cr.streamLast.sum ? `<div class="tv-sum"><div class="tw-h">${esc(T.ccTvSumTitle)}${
+          cr.streamLast.label?' · '+esc(cr.streamLast.label):''}${cr.streamLast.day?' · '+esc(ccStamp({day:cr.streamLast.day})):''}</div>${
+          ccTvSumTilesHTML(cr.streamLast.sum)}${ccTvSumChartHTML(cr.streamLast.sum)}</div>` : ''}
       ${careerTwBarHTML()}
     </main>
     <aside class="tv-chat">

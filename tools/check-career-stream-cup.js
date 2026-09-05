@@ -144,6 +144,30 @@ const BOOT = `
     check('the page was on air while the frame stood', sawOnAir);
     check('and the page is back to its width', !document.body.classList.contains('cc-onair'));
     check('and the career is off air', CC_STREAM_LIVE === false);
+    /* ---- сводка после эфира ---------------------------------------------------
+       Его скрин 5 сентября — «Stream Summary» из дашборда Twitch: «в конце
+       стрима пусть показывает, сколько заработал и сколько средний онлайн».
+       Карточка встаёт, когда вечер закрыт, несёт плитки и закрывается; те же
+       числа лежат в streamLast.sum и показываются на вкладке стримов. */
+    const sumBox = document.getElementById('ccTvSum');
+    check('the stream summary comes up when the evening is closed', !!sumBox);
+    const tiles = sumBox ? [...sumBox.querySelectorAll('.cc-tvs-tile')].map(t => t.textContent.replace(/\\s+/g, ' ').trim()) : [];
+    out.steps.push('summary tiles: ' + tiles.join(' | '));
+    check('and it has the seven tiles', tiles.length === 7, String(tiles.length));
+    const sum = CAREER.career.streamLast && CAREER.career.streamLast.sum;
+    check('the summary is kept on the evening report', !!sum && sum.avg > 0 && sum.fol > 0, JSON.stringify(sum));
+    check('the average viewers tile shows the average', !!sum && tiles[0] && tiles[0].indexOf(ccNum(sum.avg)) === 0, tiles[0]);
+    check('and the earned tile shows the money', !!sum && tiles[4] && tiles[4].indexOf(ccMoney(sum.cash)) === 0, tiles[4]);
+    ccTvSummaryClose();
+    check('the summary closes', !document.getElementById('ccTvSum'));
+    careerTab('streams');
+    check('the streams tab keeps the summary', !!document.querySelector('#chBody .tv-sum .cc-tvs-tile'));
+    careerTab('centre');
+    // График рисуется из сохранённой кривой — проверяется на своей.
+    const chart = ccTvSumChartHTML({hist: [{v:10,g:0},{v:14,g:1},{v:30,g:1},{v:22,g:2},{v:40,g:3}]});
+    check('the viewers chart is drawn from the curve', /<svg/.test(chart) && /polyline/.test(chart) && chart.indexOf(L().ccTvGame(1)) >= 0,
+          chart.slice(0, 120));
+    check('and a curve of one point draws nothing', ccTvSumChartHTML({hist: [{v:5,g:0}]}) === '');
 
     const cr = CAREER.career;
     out.steps.push('energy ' + e0 + ' -> ' + careerEnergy() +
