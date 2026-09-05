@@ -5125,7 +5125,7 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=0a54cf8e"></script>
+<script src="zone-sim.js?v=4f5bb4e4"></script>
 <script src="zone-replay.js?v=8ad66275"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
@@ -5190,19 +5190,14 @@
         <p class="hero-sub" id="tagline" data-i18n="tagline"></p>
         <div class="hero-cta">
           <button class="hero-btn hero-btn-go" type="button" onclick="careerStart()"><span data-i18n="heroCareer"></span></button>
-          <!-- Третья дверь — карьера вдвоём, та же, что «Играть вдвоём» на
-               карточке карьеры (careerMpNew). Его слово, 30 августа: «на кнопки
-               карьеры должен быть ещё дуо мод типа мультиплеер». Видна только
-               при открытой двери (CC_MP_OPEN, см. setLang); «войти по коду»
-               остаётся на карточке — герой зовёт заводить, а не искать код. -->
-          <button class="hero-btn hero-btn-duo" id="heroDuo" type="button" hidden onclick="careerMpNew()"><span data-i18n="heroDuo"></span></button>
-          <button class="hero-btn hero-btn-alt" type="button" onclick="document.getElementById('modeYears').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})"><span data-i18n="heroDraft"></span></button>
+          <!-- Дверь «вдвоём» и строка «войти по коду» стояли здесь с 30 августа
+               и повторялись в полосе карьеры ниже. Его скрин 5 сентября: «не
+               нравится дизайн, будто одно и то же два раза». Теперь у героя две
+               двери — карьера и драфт, ровно как в заголовке; командные двери
+               (вдвоём, гонка, код) живут одним рядом в полосе карьеры. -->
+          <button class="hero-btn hero-btn-alt" type="button" onclick="document.getElementById('modeYears').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})"><span data-i18n="heroDraft"></span></button>
         </div>
-        <!-- Вторая половина дуо-двери: у кого код от напарника. Его вопрос,
-             30 августа: «а по коду как зайти, где кнопка?». Четвёртая кнопка в
-             строку не влезает — строка-ссылка под кнопками, та же модалка кода,
-             что на карточке (careerMpJoinNew). Показ — тем же флагом. -->
-        <p class="hero-code" id="heroCode" hidden><button class="hero-link" type="button" onclick="careerMpJoinNew()" data-i18n="heroCode"></button></p>
+        <!-- Строки «войти по коду» под кнопками больше нет — она в полосе карьеры. -->
       </div>
       <div class="hero-art" style="background-image:url(art/fncs-2026-major1.jpg)" role="img" aria-label="FNCS 2026 Major 1"></div>
     </section>
@@ -5243,8 +5238,10 @@
           <span class="cstrip-chip" data-i18n="cstripChipReload"></span>
           <span class="cstrip-chip" data-i18n="cstripChipLife"></span>
         </div>
+        <!-- Одиночной двери здесь больше нет: она в герое над полосой, и его
+             скрин 5 сентября («будто одно и то же два раза») был про этот
+             повтор. В полосе остались три командные двери. -->
         <div class="cstrip-cta">
-          <button class="cstrip-btn cstrip-btn-go" type="button" onclick="careerStart()" data-i18n="heroCareer"></button>
           <button class="cstrip-btn cstrip-btn-duo" id="cstripDuo" type="button" hidden onclick="careerMpNew()" data-i18n="heroDuo"></button>
           <button class="cstrip-btn cstrip-btn-duo" id="cstripRace" type="button" hidden onclick="careerRaceNew()" data-i18n="ccRaceMake"></button>
           <button class="cstrip-btn cstrip-btn-code" id="cstripCode" type="button" hidden onclick="careerMpJoinNew()" data-i18n="ccMpEnter"></button>
@@ -17252,12 +17249,9 @@ function setLang(lang, persist){
      проставляются тем же обходом, что и остальное меню. */
   (function(){ /* Ряда дверей на карточке карьеры больше нет — они переехали в
                   полосу под героем (.cstrip). Остались герой и полоса. */
-               const h=document.getElementById('heroDuo');
-               if(h) h.hidden=!CC_MP_OPEN;
-               const c=document.getElementById('heroCode');
-               if(c) c.hidden=!CC_MP_OPEN;
-               /* И три двери из полосы карьеры под героем (см. .cstrip):
-                  одиночная открыта всегда, командные — этим же флагом. */
+               /* Дверей «вдвоём» и «по коду» в герое больше нет (5 сентября,
+                  «будто одно и то же два раза») — командные двери только в
+                  полосе карьеры под героем (см. .cstrip), этим флагом. */
                ['cstripDuo','cstripRace','cstripCode'].forEach(function(id){
                  const b=document.getElementById(id);
                  if(b) b.hidden=!CC_MP_OPEN;

@@ -906,10 +906,10 @@
     for(var i=0;i<squads.length;i++){
       var s = squads[i];
       s.surged = false;
-      // Net damage as surge saw it this tick. The frame is recorded after the
+      // Damage dealt as surge saw it this tick. The frame is recorded after the
       // fights of the same tick, so the number it shows next to the surge line
       // has to be the one the line was drawn against.
-      s.surgeNet = Math.round(s.dealt - s.taken);
+      s.surgeNet = Math.round(s.dealt);
       if(!s.alive) continue;
       alive.push(s);
       players += (s.team.squad && s.team.squad.length) || 1;
@@ -931,8 +931,12 @@
     // above the threshold. It cannot take the field, and it never has nothing to
     // aim at.
     var over = players - surgeAt;
+    // Ranked by damage DEALT, which is what the game ranks by (the HUD's "above
+    // damage threshold" is a damage-dealt figure). It used to be dealt minus
+    // taken, which spared a squad that had been shot a lot without shooting
+    // back — the opposite of what surge is for.
     alive.sort(function(a, b){
-      return ((a.dealt - a.taken) - (b.dealt - b.taken)) || (a.surgeTie - b.surgeTie);
+      return (a.dealt - b.dealt) || (a.surgeTie - b.surgeTie);
     });
 
     var below = [], covered = 0;
@@ -956,7 +960,7 @@
     // first squad surge does not reach. "269 above damage threshold" on a real
     // screen is a squad's net damage minus this line. Returned for the frame.
     var edge = alive[below.length] || alive[alive.length - 1];
-    return edge ? Math.round(edge.dealt - edge.taken) : null;
+    return edge ? Math.round(edge.dealt) : null;
   }
 
   // Simulation granularity. Two seconds is fine enough that nobody teleports

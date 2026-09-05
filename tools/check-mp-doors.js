@@ -97,28 +97,23 @@ const BOOT = `
     /* Третья дверь — в герое главной (heroDuo), его слово 30 августа: «на
        кнопки карьеры должен быть ещё дуо мод». Тот же флаг, та же мерка
        видимости, та же подпись про игру вдвоём. */
-    const hero = el('heroDuo');
-    check('дверь «вдвоём» есть в герое', !!hero);
-    check('и её видимость совпадает с флагом двери', hero && shown(hero) === CC_MP_OPEN,
-          'hidden=' + (hero && hero.hidden) + ', видна=' + shown(hero) + ', открыто=' + CC_MP_OPEN);
-    check('и она подписана', hero && hero.textContent.trim() === L().heroDuo && L().heroDuo.length > 2,
-          JSON.stringify(hero && hero.textContent.trim()));
-    // «Есть код от напарника? Войти по коду» — строка под кнопками, тот же флаг.
-    const code = el('heroCode');
-    check('строка «войти по коду» есть в герое', !!code);
-    check('и её видимость совпадает с флагом двери', code && shown(code) === CC_MP_OPEN,
-          'hidden=' + (code && code.hidden) + ', видна=' + shown(code) + ', открыто=' + CC_MP_OPEN);
-    check('и она подписана', code && code.textContent.trim() === L().heroCode && L().heroCode.length > 2,
-          JSON.stringify(code && code.textContent.trim()));
+    /* 5 сентября дверей «вдвоём» и «по коду» в герое больше нет — его скрин
+       («будто одно и то же два раза»): они повторяли полосу карьеры ниже.
+       У героя две двери — карьера и драфт; командные — в полосе. */
+    check('в герое нет двери «вдвоём»', !el('heroDuo'));
+    check('и нет строки «войти по коду»', !el('heroCode'));
+    const heroBtns = [...document.querySelectorAll('.hero-cta .hero-btn')];
+    check('у героя две двери: карьера и драфт', heroBtns.length === 2, String(heroBtns.length));
+    check('первая — одиночная карьера', heroBtns[0] && heroBtns[0].textContent.trim() === L().heroCareer,
+          JSON.stringify(heroBtns[0] && heroBtns[0].textContent.trim()));
 
     /* ПОЛОСА КАРЬЕРЫ под героем — его правка 4 сентября: «не видно кнопок
        карьеры сразу… может на главном прямоугольник добавить», и следом
        «тогда можно это убрать» про ряд на карточке. Четыре двери в одной
        строке: одиночная открыта всегда, три командные — общим флагом. */
     const strip = strip0;
-    const solo = strip && strip.querySelector('.cstrip-btn-go');
-    check('в ней открыта одиночная дверь', !!solo && shown(solo) && !solo.hidden,
-          solo ? solo.textContent.trim() : 'нет кнопки');
+    // Одиночной двери в полосе больше нет (5 сентября) — она в герое над ней.
+    check('в полосе нет одиночной двери', !(strip && strip.querySelector('.cstrip-btn-go')));
     ['cstripDuo', 'cstripRace', 'cstripCode'].forEach(id => {
       const b = el(id);
       check('дверь ' + id + ' есть', !!b);
