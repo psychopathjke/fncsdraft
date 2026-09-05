@@ -41073,53 +41073,66 @@ const CONSUMABLE_POOL=[
 ].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
 const CONSUMABLE_RARITY_COLOR={gold:'var(--mythic)', grey:'var(--common)', green:'var(--uncommon)', blue:'var(--rare)', purple:'var(--epic)', legendary:'var(--legendary)'};
 
-const WEAPON_POOL=[
-  {name:'Chaos Exploder Rifle', rarity:'common', icon:'rifle'},
-  {name:'Chaos Exploder Rifle', rarity:'rare', icon:'rifle'},
-  {name:'Chaos Exploder Rifle', rarity:'legendary', icon:'rifle'},
-  {name:'Surgical Burst Rifle', rarity:'common', icon:'rifle'},
-  {name:'Surgical Burst Rifle', rarity:'uncommon', icon:'rifle'},
-  {name:'Surgical Burst Rifle', rarity:'rare', icon:'rifle'},
-  {name:'Surgical Burst Rifle', rarity:'epic', icon:'rifle'},
-  {name:'Surgical Burst Rifle', rarity:'legendary', icon:'rifle'},
-  {name:'Extending Focus Shotgun', rarity:'common', icon:'shotgun'},
-  {name:'Extending Focus Shotgun', rarity:'epic', icon:'shotgun'},
-  {name:'Extending Focus Shotgun', rarity:'legendary', icon:'shotgun'},
-  {name:'Maven Auto Shotgun', rarity:'common', icon:'shotgun'},
-  {name:'Maven Auto Shotgun', rarity:'rare', icon:'shotgun'},
-  {name:'Maven Auto Shotgun', rarity:'legendary', icon:'shotgun'},
-  {name:'Striker Pump Shotgun', rarity:'common', icon:'shotgun'},
-  {name:'Striker Pump Shotgun', rarity:'legendary', icon:'shotgun'},
-  {name:'Striker Pump Shotgun', rarity:'mythic', icon:'shotgun'},
-  {name:'Twin Mag SMG', rarity:'common', icon:'smg'},
-  {name:'Twin Mag SMG', rarity:'rare', icon:'smg'},
-  {name:'Twin Mag SMG', rarity:'legendary', icon:'smg'},
-  {name:'Rapid Fire SMG', rarity:'common', icon:'smg'},
-  {name:'Rapid Fire SMG', rarity:'uncommon', icon:'smg'},
-  {name:'Rapid Fire SMG', rarity:'rare', icon:'smg'},
-  {name:'Rapid Fire SMG', rarity:'epic', icon:'smg'},
-  {name:'Rapid Fire SMG', rarity:'legendary', icon:'smg'},
-  {name:'Rapid Fire SMG', rarity:'mythic', icon:'smg'},
-  {name:'Bank Shot Pistol', rarity:'uncommon', icon:'pistol'},
-  {name:'Bank Shot Pistol', rarity:'epic', icon:'pistol'},
-  {name:'Bank Shot Pistol', rarity:'mythic', icon:'pistol'},
-  {name:'Ranger Pistol', rarity:'common', icon:'pistol'},
-  {name:'Ranger Pistol', rarity:'rare', icon:'pistol'},
-  {name:'Ranger Pistol', rarity:'legendary', icon:'pistol'}
-].map(w=>({...w, mod:RARITY_MOD[w.rarity]}));
-// Rest of the Chapter 7 Season 3 pool, filling the rarity gaps so every weapon
-// category (rifle/shotgun/smg/pistol) still spans common→mythic.
-const WEAPON_POOL_FILLERS=[
-  {name:'Chaos Exploder Rifle', rarity:'mythic', icon:'rifle'},
-  {name:'Twin Hammer Shotguns', rarity:'uncommon', icon:'shotgun'},
-  {name:'Iron Pump Shotgun', rarity:'common', icon:'shotgun'},
-  {name:'Iron Pump Shotgun', rarity:'rare', icon:'shotgun'},
-  {name:'Iron Pump Shotgun', rarity:'legendary', icon:'shotgun'},
-  {name:'Bank Shot Pistol', rarity:'common', icon:'pistol'},
-  {name:'Bank Shot Pistol', rarity:'rare', icon:'pistol'},
-  {name:'Bank Shot Pistol', rarity:'legendary', icon:'pistol'}
-].map(w=>({...w, mod:RARITY_MOD[w.rarity]}));
-WEAPON_POOL.push(...WEAPON_POOL_FILLERS);
+// ---------- FNCS 2026 loot: Chapter 7 Season 3, Runners ----------
+// The island Major 2 was played on (18 July -- 2 August 2026). Read off the
+// season's own loot table on the Fortnite Wiki (Chapter 7: Season 3/Loot Pool)
+// with the same filter the 2025 pools use: a gun is in if it was in the pool
+// on the day -- added on or before the Grand Finals and not vaulted before the
+// season's end. That is what drops Chaos Reloader (vaulted 11 June), Flex SMG
+// and the Hunting Rifle (16 July) and the Stinger (30 July), and what keeps
+// the Bank Shot, Rapid Fire and Heavy Impact that arrived on 16 July and the
+// Spire Rifle that landed on 30 July. Twin Mag SMG, Twin Hammer and Iron Pump
+// were never in this season at all: they are Season 2 guns that had been left
+// in here from the Major 1 pool. Each gun carries the rarity ladder the wiki
+// lists for it, so the Lancehead never drops grey and the Bank Shot goes gold.
+const M2_WEAPON_NAMES=[
+  ["Chaos Exploder Rifle",'rifle','common','legendary'],
+  ["Surgical Burst Rifle",'rifle','common','legendary'],
+  ["Warforged Assault Rifle",'rifle','common','legendary'],
+  ["Spire Rifle",'rifle','common','epic'],
+  ["Extending Focus Shotgun",'shotgun','common','legendary'],
+  ["Striker Pump Shotgun",'shotgun','common','legendary'],
+  ["Maven Auto Shotgun",'shotgun','common','legendary'],
+  ["Rapid Fire SMG",'smg','uncommon','legendary'],
+  ["Ranger Pistol",'pistol','common','legendary'],
+  ["Lancehead Pistol",'pistol','rare','legendary'],
+  ["Bank Shot Pistol",'pistol','rare','mythic'],
+  ["Heavy Impact Sniper Rifle",'rifle','rare','legendary']
+];
+const RARITY_LADDER=['common','uncommon','rare','epic','legendary','mythic'];
+// Expands [name, icon, lowest, highest] rows into one entry per rarity step.
+function ladderPool(rows){
+  const out=[];
+  rows.forEach(([name,icon,lo,hi])=>{
+    const a=RARITY_LADDER.indexOf(lo), b=RARITY_LADDER.indexOf(hi);
+    for(let i=a;i<=b;i++) out.push({name, icon, rarity:RARITY_LADDER[i], mod:RARITY_MOD[RARITY_LADDER[i]]});
+  });
+  return out;
+}
+const WEAPON_POOL=ladderPool(M2_WEAPON_NAMES);
+
+// ---------- FNCS 2026 loot: Chapter 7 Season 4, Override ----------
+// The island the duo year moves to on 21 August and the one FNCS Solos run on.
+// Override shipped on 20 August 2026 and the wiki's loot table for it is still
+// a stub, so this is built from the launch coverage that agrees across outlets
+// (Beebom, The Click, Hotspawn, GamingBible): the whole Season 3 arsenal went
+// to the vault and the island reopened with the returning guns below. Left out
+// on purpose, the way every competitive sheet before it left such things out:
+// the Sprites (powers are off in Ranked), the one-per-match Midas' Masterpiece,
+// the God Mode Llama, the 1-Up Token, the Tetris Rift and the Mega Buster
+// (explosive rounds). Rarity ladders are the wiki's infobox for each gun.
+// Revisit against Epic's own sheet when the Solo FNCS rules publish one.
+const S42_WEAPON_NAMES=[
+  ["Assault Rifle",'rifle','common','legendary'],
+  ["Ranger Assault Rifle",'rifle','common','legendary'],
+  ["Pump Shotgun",'shotgun','common','legendary'],
+  ["8-Bit Shotgun",'shotgun','uncommon','legendary'],
+  ["Oni Shotgun",'shotgun','common','legendary'],
+  ["Drum Gun",'smg','uncommon','rare'],
+  ["Tactical Pistol",'pistol','common','legendary'],
+  ["Dual Pistols",'pistol','common','legendary']
+];
+const S42_WEAPON_POOL=ladderPool(S42_WEAPON_NAMES);
 
 // The loot pool the way it actually was in the year that FNCS was played.
 // Picking 2023 in the era filter should hand you Chapter 4 guns, not the guns
@@ -41277,6 +41290,34 @@ const M2_CONSUMABLE_POOL=[
   {name:"Med Kit", rarity:'green'},
   {name:"Small Shield Potion", rarity:'green'},
   {name:"Bandage", rarity:'grey'},
+  {name:"Small Fry", rarity:'grey'}
+].map(w=>({...w, icon:'heal', mod:CONSUMABLE_MOD[w.rarity]}));
+// Season 4 utility: the Season 3 heals and fish stay (they are chapter loot,
+// not season loot), the Seven Sliders went to the vault with the rest of
+// Runners, and three unvaultings came in -- Chug Splash, Bass Boost and the
+// Flare Gun -- plus the season's own Spicy Taco. Mobility this season is the
+// Overdrive Grenade; the Sonic Power Sneakers are a novelty item and stay out.
+const S42_CONSUMABLE_POOL=[
+  {name:"Chug Jug", rarity:'legendary'},
+  {name:"Midas Flopper", rarity:'legendary'},
+  {name:"Slurpfish", rarity:'purple'},
+  {name:"Harpoon Gun", rarity:'blue'},
+  {name:"Vault Key", rarity:'blue'},
+  {name:"Jellyfish", rarity:'blue'},
+  {name:"Overdrive Grenade", rarity:'blue'},
+  {name:"Chug Splash", rarity:'blue'},
+  {name:"Bass Boost", rarity:'blue'},
+  {name:"Flare Gun", rarity:'blue'},
+  {name:"Pro Fishing Rod", rarity:'blue'},
+  {name:"Shield Fish", rarity:'blue'},
+  {name:"Shield Potion", rarity:'blue'},
+  {name:"Spicy Fish", rarity:'blue'},
+  {name:"Flopper", rarity:'green'},
+  {name:"Guzzle Juice", rarity:'green'},
+  {name:"Med Kit", rarity:'green'},
+  {name:"Small Shield Potion", rarity:'green'},
+  {name:"Bandage", rarity:'grey'},
+  {name:"Spicy Taco", rarity:'grey'},
   {name:"Small Fry", rarity:'grey'}
 ].map(w=>({...w, icon:'heal', mod:CONSUMABLE_MOD[w.rarity]}));
 const ITEM_ART={
@@ -41708,16 +41749,35 @@ const EXTRA_ITEM_ART={
  "Enhanced Spire Rifle": "items/itm-enhanced-spire-rifle.webp",
  "Kor's Deadeye DMR": "items/itm-kor-s-deadeye-dmr.webp",
  "Med-Mist": "items/itm-med-mist.webp",
- "Small Fries": "items/itm-small-fries.webp"
+ "Small Fries": "items/itm-small-fries.webp",
+ // Chapter 7 Season 3 guns the Major 2 pool gained on 5 September 2026, and the
+ // Season 4 island's returning arsenal. Fetched by tools/fetch-missing-item-art.js.
+ "Warforged Assault Rifle": "items/itm-warforged-assault-rifle.webp",
+ "Lancehead Pistol": "items/itm-lancehead-pistol.webp",
+ "Heavy Impact Sniper Rifle": "items/itm-heavy-impact-sniper-rifle.webp",
+ "Flex SMG": "items/itm-flex-smg.webp",
+ "Stinger SMG": "items/itm-stinger-smg.webp",
+ "Hunting Rifle": "items/itm-hunting-rifle.webp",
+ "Assault Rifle": "items/itm-assault-rifle.webp",
+ "Pump Shotgun": "items/itm-pump-shotgun.webp",
+ "8-Bit Shotgun": "items/itm-8-bit-shotgun.webp",
+ "Drum Gun": "items/itm-drum-gun.webp",
+ "Tactical Pistol": "items/itm-tactical-pistol.webp",
+ "Dual Pistols": "items/itm-dual-pistols.webp",
+ "Minigun": "items/itm-minigun.webp",
+ "Flare Gun": "items/itm-flare-gun.webp",
+ "Spicy Taco": "items/itm-spicy-taco.webp"
 };
 
-function weaponIconHTML(o){
+function weaponIconHTML(o, set){
   const tag=src=>'<img alt="" loading="lazy" decoding="async" src="'+src+'">';
   // The 2025 sets share most of their loot with each other, so a picture missing
   // from one season's table is very often present in another's. Own set first,
-  // then the other two, then the silhouette.
-  if(CARD_MODE && T_ART[CARD_SET]){
-    for(const tbl of [T_ART[CARD_SET], T1_ART, T2_ART, T3_ART]){
+  // then the other two, then the silhouette. The set is the card deck in the
+  // draft and the island of the night in the career, which passes it in.
+  const own=set || (CARD_MODE ? CARD_SET : null);
+  if(T_ART[own]){
+    for(const tbl of [T_ART[own], T1_ART, T2_ART, T3_ART]){
       if(tbl && tbl[o.name]) return tag(tbl[o.name]);
     }
   }
@@ -41729,6 +41789,13 @@ function weaponIconHTML(o){
   if(it) return tag(it);
   const ex=EXTRA_ITEM_ART[o.name];
   if(ex) return tag(ex);
+  // A 2026 island dealing a gun that only the 2025 tables have a picture of --
+  // the Oni Shotgun and Ranger AR came back for Season 4 -- takes that picture
+  // rather than the outline. The shared names (Shield Potion, Med Kit) were
+  // already found above, so no season borrows another's art for those.
+  for(const tbl of [T1_ART, T2_ART, T3_ART]){
+    if(tbl[o.name]) return tag(tbl[o.name]);
+  }
   return WEAPON_ICON[o.icon];
 }
 
@@ -51767,7 +51834,7 @@ function ccKitPanel(lobby, frame){
      хотбаром ряд построек Q F V T — четыре ромба, как на HUD. */
   // В слоте — картинка предмета (те же арты, что в лоадауте драфта), имя во
   // всплывающей подсказке; без картинки — имя текстом.
-  const art=o=>{ let h=''; try{ h=(typeof weaponIconHTML==='function' && weaponIconHTML(o))||''; }catch(e){ h=''; }
+  const art=o=>{ let h=''; try{ h=(typeof weaponIconHTML==='function' && weaponIconHTML(o, ccLootSet()))||''; }catch(e){ h=''; }
     return h ? '<span class="zk-art">'+h+'</span>' : '<em>'+esc(o.name)+'</em>'; };
   const slots='<span class="zk-slot zk-pick" data-cap="'+esc(T.ccKitPickaxe)+'" title="'+esc(T.ccKitPickaxe)+'"><span class="zk-art zk-pickaxe"></span><u>1</u></span>'+
     [0,1,2,3,4].map(k=>{
@@ -52517,17 +52584,37 @@ function ccLateMove(id){
    каждому игроку по 2 оружия 2 хила и 1 мувмент». Мувмента отдельным слотом в
    пулах нет, он живёт среди расходников (гарпун, слайдеры, граната), поэтому
    он и берётся оттуда — по имени, а не по выдуманному полю. */
-const CC_MOVE_ITEMS=['Harpoon Gun','Seven Sliders','Overdrive Grenade','Pro Fishing Rod'];
-function ccLootPack(rng){
+const CC_MOVE_ITEMS=['Harpoon Gun','Seven Sliders','Overdrive Grenade','Pro Fishing Rod',
+                     'Skyline Deployer','Seven Power Gloves','Shockwave Grenade','Rocket Ram','Chug Splash'];
+/* Лут острова, а не один пул на все вечера. Его слово 5 сентября: «посмотри
+   меты в каждом сезоне компетив и добавь в каждом сезоне оружие, которое
+   нужно». Остров вечера даёт careerBrSet(): дуо-год — m2 (глава 7, сезон 3) и
+   с 21 августа s42 (сезон 4), трио-год — t1/t2/t3 (глава 6). У каждого свой
+   пул оружия и расходников, тот же, что раздают карты драфта. */
+const CC_LOOT_BY_SET={
+  m1:{weapons:M1_WEAPON_POOL, heals:M1_CONSUMABLE_POOL},
+  m2:{weapons:WEAPON_POOL, heals:M2_CONSUMABLE_POOL},
+  s42:{weapons:S42_WEAPON_POOL, heals:S42_CONSUMABLE_POOL},
+  t1:{weapons:T1_WEAPON_POOL, heals:T1_CONSUMABLE_POOL},
+  t2:{weapons:T2_WEAPON_POOL, heals:T2_CONSUMABLE_POOL},
+  t3:{weapons:T3_WEAPON_POOL, heals:T3_CONSUMABLE_POOL}
+};
+function ccLootSet(set){
+  let s=set;
+  if(!s){ try{ s=(CAREER && CAREER.career) ? careerBrSet() : null; }catch(e){ s=null; } }
+  return CC_LOOT_BY_SET[s] ? s : 'm2';
+}
+function ccLootPack(rng, set){
   const pick=(pool,n)=>{
     const left=pool.slice(), out=[];
     while(out.length<n && left.length)
       out.push(left.splice(Math.floor((rng?rng():Math.random())*left.length), 1)[0]);
     return out;
   };
-  const heals=M2_CONSUMABLE_POOL.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)<0);
-  const moves=M2_CONSUMABLE_POOL.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0);
-  return {weapons:pick(WEAPON_POOL, 2), heals:pick(heals, 2),
+  const pool=CC_LOOT_BY_SET[ccLootSet(set)];
+  const heals=pool.heals.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)<0);
+  const moves=pool.heals.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0);
+  return {weapons:pick(pool.weapons, 2), heals:pick(heals, 2),
           move:pick(moves.length?moves:heals, 1)[0]};
 }
 /* Пак больше не переводится в силу. Он был прибавкой (ccLootPow, той же

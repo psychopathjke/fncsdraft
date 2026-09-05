@@ -48,6 +48,22 @@ const BOOTSTRAP = `
     });
     out.modes[key] = {items: Object.keys(seen).length, withArt: have, missing: missing};
   });
+  // The career deals the island's own pool and asks for art by that island, so
+  // every set the career can land on is checked the way the career asks.
+  CARD_MODE = false;
+  Object.keys(CC_LOOT_BY_SET).forEach(function(set){
+    var pool = CC_LOOT_BY_SET[set];
+    var seen = {}, missing = [], have = 0;
+    pool.weapons.concat(pool.heals).forEach(function(o){
+      if (seen[o.name]) return;
+      seen[o.name] = 1;
+      var html = weaponIconHTML(o, set);
+      var m = /src="([^"]+)"/.exec(html || '');
+      if (m) { have++; out.files[m[1]] = (out.files[m[1]] || 0) + 1; }
+      else missing.push(o.name);
+    });
+    out.modes['career:' + set] = {items: Object.keys(seen).length, withArt: have, missing: missing};
+  });
   } catch (e) { out.error = String(e && e.stack || e); }
   document.getElementById('__probe').textContent =
     'BEGINPROBE' + encodeURIComponent(JSON.stringify(out)) + 'ENDPROBE';

@@ -27,7 +27,11 @@ const BASE_FILE = {
   "Brutus' Minigun":                    "Minigun - Weapon - Fortnite.png",
   "Enhanced Holo Twister Assault Rifle":"Holo Twister Assault Rifle - Weapon - Fortnite.png",
   "Enhanced Sentinel Pump Shotgun":     "Sentinel Pump Shotgun - Weapon - Fortnite.png",
-  "Enhanced Spire Rifle":               "Spire Rifle - Weapon - Fortnite.png"
+  "Enhanced Spire Rifle":               "Spire Rifle - Weapon - Fortnite.png",
+  // The wiki files the modular Chapter 7 rifle under its modular name, and the
+  // Chapter 7 Hunting Rifle under its high-tier variant.
+  "Warforged Assault Rifle":            "Modular Warforged Assault Rifle - Weapon - Fortnite.png",
+  "Hunting Rifle":                      "Hunting Rifle (High Tier) - Weapon - Fortnite.png"
 };
 // loot-pool name -> wiki page (null means the names agree)
 const PAGES = {
@@ -43,7 +47,24 @@ const PAGES = {
   "Kor's Deadeye DMR": null,
   "Med-Mist": null,
   // The pool writes the plural; the wiki files it in the singular.
-  "Small Fries": "Small Fry"
+  "Small Fries": "Small Fry",
+  // 5 September 2026: the Chapter 7 Season 3 pool corrected off the wiki's
+  // season table, and the Season 4 (Override) island's returning arsenal.
+  "Warforged Assault Rifle": null,
+  "Lancehead Pistol": null,
+  "Heavy Impact Sniper Rifle": null,
+  "Flex SMG": null,
+  "Stinger SMG": null,
+  "Hunting Rifle": null,
+  "Assault Rifle": null,
+  "Pump Shotgun": null,
+  "8-Bit Shotgun": null,
+  "Drum Gun": null,
+  "Tactical Pistol": null,
+  "Dual Pistols": null,
+  "Minigun": null,
+  "Flare Gun": null,
+  "Spicy Taco": null
 };
 const slug = n => 'itm-' + n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
@@ -80,6 +101,9 @@ async function grab(fileTitle, name) {
   const out = {};
   for (const name of Object.keys(PAGES)) {
     const page = PAGES[name] || name;
+    // Fetched on an earlier run: keep the file on disk, only print its entry.
+    const have = ['webp', 'png', 'jpg'].map(x => 'items/' + slug(name) + '.' + x).find(r => fs.existsSync(path.join(ROOT, r)));
+    if (have) { out[name] = have; continue; }
     if (BASE_FILE[name]) {
       const got = await grab('File:' + BASE_FILE[name], name);
       if (got) { out[name] = got; console.error(name.padEnd(38), BASE_FILE[name], '-> ' + got + '  (base weapon)'); }
