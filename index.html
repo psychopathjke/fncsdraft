@@ -5182,8 +5182,8 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=3aa9e8c6"></script>
-<script src="zone-replay.js?v=4bcc8689"></script>
+<script src="zone-sim.js?v=8fc0879f"></script>
+<script src="zone-replay.js?v=ee0f6613"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -7085,6 +7085,14 @@ ccKitSurgeOff:'сёрдж выключен', ccKitSurgeAt:(a,p)=>'сёрдж с 
 // Баннер и подпись под числом — как на HUD игры («STORM SURGE ACTIVE!» и «269 ABOVE DAMAGE THRESHOLD»).
 ccKitSurgeBanner:'СЁРДЖ АКТИВЕН!', ccKitUnderBanner:'ТЫ ПОД СЁРЖЕМ!',
 ccKitAboveCap:'над порогом урона', ccKitBelowCap:'до порога урона',
+// Рычаги игроку (5.09): стиль стройки и лечение.
+ccBuildTitle:'Третья зона — как строим', ccBuildNorm:'Как обычно', ccBuildNormNote:m=>m+' ресов за круг',
+ccBuildEco:'Экономно', ccBuildEcoNote:(m,p)=>m+' за круг — ресов хватит до конца, но без построек слабее: −'+p+' к силе',
+ccBuildHeavy:'Строить много', ccBuildHeavyNote:(m,p)=>m+' за круг — +'+p+' к силе, но без рефреша к концовке пусто',
+ccBuildSet:(w,p)=>w+': '+p+' к силе на эту игру',
+ccHealTitle:(s,h)=>'Щит '+s+' · здоровье '+h+' — лечимся?', ccHealStay:'Играть так', ccHealStayNote:'Без потерь, щит и здоровье как есть',
+ccHealGo:'Отхилиться', ccHealGoNote:(h,p)=>'щит полный, +'+h+' здоровья · пока пьёшь — минус '+p+' к силе',
+ccHealDone:(h,p)=>'Отхилились: щит 100, здоровье '+h+' · −'+p+' к силе',
 ccMatsTitle:'Ресы кончаются', ccMatsGo:'Идти за рефрешем', ccMatsStay:'Ротейтить тем, что есть',
 ccMatsGoNote:(v,f,p)=>p+'%: нашёл — +'+v+' и полные ресы, нет — минус '+f,
 ccMatsStayNote:v=>'Ничего не тратишь, но в концовке без ресов минус '+v,
@@ -8977,6 +8985,13 @@ ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: own pack', ccKitOut:'eliminated', c
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge from '+a+' players · alive '+p,
 ccKitSurgeBanner:'STORM SURGE ACTIVE!', ccKitUnderBanner:'YOU ARE UNDER SURGE!',
 ccKitAboveCap:'above damage threshold', ccKitBelowCap:'below damage threshold',
+ccBuildTitle:'Zone 3 — how do we build', ccBuildNorm:'As usual', ccBuildNormNote:m=>m+' mats a circle',
+ccBuildEco:'Save mats', ccBuildEcoNote:(m,p)=>m+' a circle — mats last to the end, but fewer builds: −'+p+' power',
+ccBuildHeavy:'Build a lot', ccBuildHeavyNote:(m,p)=>m+' a circle — +'+p+' power, but empty by the endgame without a refresh',
+ccBuildSet:(w,p)=>w+': '+p+' power for this game',
+ccHealTitle:(s,h)=>'Shield '+s+' · health '+h+' — heal up?', ccHealStay:'Play on', ccHealStayNote:'No cost, shield and health stay as they are',
+ccHealGo:'Heal up', ccHealGoNote:(h,p)=>'full shield, +'+h+' health · while you drink — minus '+p+' power',
+ccHealDone:(h,p)=>'Healed: shield 100, health '+h+' · −'+p+' power',
 ccMatsTitle:'Running out of mats', ccMatsGo:'Go for a refresh', ccMatsStay:'Rotate with what you have',
 ccMatsGoNote:(v,f,p)=>p+'%: found it — +'+v+' and full mats, did not — minus '+f,
 ccMatsStayNote:v=>'Costs nothing now, but an endgame without mats is minus '+v,
@@ -11016,6 +11031,13 @@ ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot : ton pack', ccKitOut:'éliminés', 
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge dès '+a+' joueurs · en vie '+p,
 ccKitSurgeBanner:'STORM SURGE ACTIF !', ccKitUnderBanner:'TU ES SOUS SURGE !',
 ccKitAboveCap:'au-dessus du seuil de dégâts', ccKitBelowCap:'sous le seuil de dégâts',
+ccBuildTitle:'Zone 3 — comment on build', ccBuildNorm:'Comme d\'habitude', ccBuildNormNote:m=>m+' mats par cercle',
+ccBuildEco:'Économiser', ccBuildEcoNote:(m,p)=>m+' par cercle — les mats tiennent jusqu\'au bout, mais moins de builds : −'+p+' de puissance',
+ccBuildHeavy:'Build à fond', ccBuildHeavyNote:(m,p)=>m+' par cercle — +'+p+' de puissance, mais à vide en fin de partie sans refresh',
+ccBuildSet:(w,p)=>w+' : '+p+' de puissance pour cette partie',
+ccHealTitle:(s,h)=>'Bouclier '+s+' · vie '+h+' — on se soigne ?', ccHealStay:'On continue', ccHealStayNote:'Sans coût, bouclier et vie tels quels',
+ccHealGo:'Se soigner', ccHealGoNote:(h,p)=>'bouclier plein, +'+h+' de vie · pendant que tu bois — moins '+p+' de puissance',
+ccHealDone:(h,p)=>'Soignés : bouclier 100, vie '+h+' · −'+p+' de puissance',
 ccMatsTitle:'Les mats s\'épuisent', ccMatsGo:'Aller chercher un refresh', ccMatsStay:'Tourner avec ce qu\'on a',
 ccMatsGoNote:(v,f,p)=>p+' % : trouvé — +'+v+' et mats pleins, sinon — moins '+f,
 ccMatsStayNote:v=>'Ça ne coûte rien maintenant, mais une fin de partie sans mats coûte '+v,
@@ -12915,6 +12937,13 @@ ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: il tuo pack', ccKitOut:'eliminati',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge da '+a+' giocatori \u00b7 vivi '+p,
 ccKitSurgeBanner:'STORM SURGE ATTIVO!', ccKitUnderBanner:'SEI SOTTO SURGE!',
 ccKitAboveCap:'sopra la soglia di danni', ccKitBelowCap:'sotto la soglia di danni',
+ccBuildTitle:"Zona 3 — come costruiamo", ccBuildNorm:"Come al solito", ccBuildNormNote:m=>m+" mats a cerchio",
+ccBuildEco:"Risparmiare", ccBuildEcoNote:(m,p)=>m+" a cerchio — i mats bastano fino alla fine, ma meno build: −"+p+" potenza",
+ccBuildHeavy:"Costruire tanto", ccBuildHeavyNote:(m,p)=>m+" a cerchio — +"+p+" potenza, ma a secco nel finale senza refresh",
+ccBuildSet:(w,p)=>w+": "+p+" potenza per questa partita",
+ccHealTitle:(s,h)=>"Scudo "+s+" · vita "+h+" — ci curiamo?", ccHealStay:"Si gioca così", ccHealStayNote:"Senza costi, scudo e vita come sono",
+ccHealGo:"Curarsi", ccHealGoNote:(h,p)=>"scudo pieno, +"+h+" vita · mentre bevi — meno "+p+" potenza",
+ccHealDone:(h,p)=>"Curati: scudo 100, vita "+h+" · −"+p+" potenza",
 ccMatsTitle:"I mats stanno finendo", ccMatsGo:"Andare a cercare un refresh", ccMatsStay:"Ruotare con quello che c'\u00e8",
 ccMatsGoNote:(v,f,p)=>p+'%: trovato \u2014 +'+v+' e mats pieni, no \u2014 meno '+f,
 ccMatsStayNote:v=>'Ora non costa nulla, ma un finale senza mats costa '+v,
@@ -15377,6 +15406,13 @@ ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: seu pack', ccKitOut:'eliminados', c
 ccKitSurgeOff:'surge desligado', ccKitSurgeAt:(a,p)=>'surge a partir de '+a+' jogadores · vivos '+p,
 ccKitSurgeBanner:'STORM SURGE ATIVO!', ccKitUnderBanner:'VOCÊ ESTÁ SOB SURGE!',
 ccKitAboveCap:'acima do limite de dano', ccKitBelowCap:'abaixo do limite de dano',
+ccBuildTitle:"Zona 3 — como construímos", ccBuildNorm:"Como sempre", ccBuildNormNote:m=>m+" mats por círculo",
+ccBuildEco:"Economizar", ccBuildEcoNote:(m,p)=>m+" por círculo — os mats duram até o fim, mas menos builds: −"+p+" de força",
+ccBuildHeavy:"Construir muito", ccBuildHeavyNote:(m,p)=>m+" por círculo — +"+p+" de força, mas vazio no fim sem refresh",
+ccBuildSet:(w,p)=>w+": "+p+" de força nesta partida",
+ccHealTitle:(s,h)=>"Escudo "+s+" · vida "+h+" — vamos curar?", ccHealStay:"Seguir assim", ccHealStayNote:"Sem custo, escudo e vida como estão",
+ccHealGo:"Curar", ccHealGoNote:(h,p)=>"escudo cheio, +"+h+" de vida · enquanto bebe — menos "+p+" de força",
+ccHealDone:(h,p)=>"Curados: escudo 100, vida "+h+" · −"+p+" de força",
 ccMatsTitle:"Os mats estão acabando", ccMatsGo:"Ir atrás de um refresh", ccMatsStay:"Rotacionar com o que tem",
 ccMatsGoNote:(v,f,p)=>p+'%: achou — +'+v+' e mats cheios, não — menos '+f,
 ccMatsStayNote:v=>'Agora não custa nada, mas um final sem mats custa '+v,
@@ -51541,6 +51577,8 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
   });
   // Подписи к точкам нужны показу с первого же куска, а не с конца матча.
   LAST_ZONE_ROSTER=game.roster();
+  // Свой отряд движка — лечению нужно трогать его щит и здоровье. См. ccAskHeal.
+  if(you) you._sq=(game.squads||[]).find(s=>s.team===you)||null;
   const alive=()=>!you || (game.squads.find(s=>s.team===you)||{}).alive;
   /* Порядок здесь и есть вся суть: сначала показать кусок игры, который только
      что просчитан, и лишь потом спросить. Его правка: «во время игры можно это
@@ -51644,7 +51682,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
 const CC_MATS_FULL=550, CC_MATS_ZONE=110, CC_MATS_LOW=160, CC_MATS_PEN=3;
 const CC_MATS_HG_EXTRA=90;   // высокая земля строится, и это дороже обычного круга
 function ccKitInit(teams){
-  (teams||[]).forEach(t=>{ t._mats=CC_MATS_FULL; t._loot=null; t._matsPen=false; });
+  (teams||[]).forEach(t=>{ t._mats=CC_MATS_FULL; t._loot=null; t._matsPen=false; t._buildMul=1; t._healed=0; });
   CC_KIT_ZONE=0;
 }
 /* ПАНЕЛЬ НАБОРА НА КАРТЕ — его правка 5 сентября: «я бы хотел на симуляцию
@@ -51713,8 +51751,12 @@ function ccKitPanel(lobby, frame){
      игре, двумя полосками по сто: верхняя половина очков — щит, нижняя —
      здоровье. Это раскладка ОДНОГО числа, а не второй запас: щит уходит первым,
      здоровье — за ним, и сумма всегда равна тому, что считает движок. */
-  const shield=Math.max(0, Math.min(100, Math.round((hp-50)*2)));
-  const health=Math.max(0, Math.min(100, Math.round(hp*2)));
+  /* С 5 сентября движок ведёт щит отдельно (zone-sim, CHIP_HP): его снимают
+     перестрелки и возвращает круг, а здоровье — то, что снимают шторм и сёрдж.
+     Полоски показывают ровно эти два числа. Кадр без щита (старая запись) —
+     щит полный. */
+  const shield=Math.max(0, Math.min(100, Math.round(d.sh==null ? 100 : d.sh)));
+  const health=hp;
   /* Ресы — тоже одно число модели, разложенное на дерево, кирпич и металл в
      привычной пропорции 40/35/25; сумма стопок равна числу, которое тратит и
      пополняет модель. */
@@ -51811,7 +51853,9 @@ function ccKitSplitMats(m){
 }
 // Круг прошёл — ресы потрачены. Считается всем, включая комнату.
 function ccKitSpend(teams, n){
-  (teams||[]).forEach(t=>{ t._mats=Math.max(0, (t._mats!=null?t._mats:CC_MATS_FULL)-n); });
+  // Стиль стройки своей команды (ccAskBuild): экономно — круг дешевле, много —
+  // дороже. У комнаты множителя нет, она строит как строила.
+  (teams||[]).forEach(t=>{ t._mats=Math.max(0, (t._mats!=null?t._mats:CC_MATS_FULL)-Math.round(n*(t._buildMul||1))); });
 }
 function ccMats(t){ return t && t._mats!=null ? t._mats : CC_MATS_FULL; }
 function ccMatsLow(t){ return ccMats(t)<CC_MATS_LOW; }
@@ -51835,13 +51879,89 @@ function ccMatsPenalty(teams){
   });
 }
 const CC_GAME_STOPS=[
-  {zone:3, ask:(you, ui)=>ccAskLoot(you, ui), room:ccRoomLoot},
-  {zone:5, ask:(you, ui)=>ccAskMats(you, ui), room:ccRoomMats, quiet:ccMatsQuiet},
-  {zone:7, ask:(you, ui)=>ccAskMats(you, ui), room:ccRoomMats, quiet:ccMatsQuiet},
+  // Третья зона: лут и следом — как строим (ccAskBuild).
+  {zone:3, ask:async (you, ui)=>{ await ccAskLoot(you, ui); await ccAskBuild(you, ui); }, room:ccRoomLoot},
+  // Пятая и седьмая: ресы, если кончились, и лечение, если щит снят (ccAskMid).
+  {zone:5, ask:(you, ui)=>ccAskMid(you, ui), room:ccRoomMats, quiet:ccMidQuiet},
+  {zone:7, ask:(you, ui)=>ccAskMid(you, ui), room:ccRoomMats, quiet:ccMidQuiet},
   {zone:8, ask:(you, ui)=>ccAskLate(you, ui), room:ccRoomLate}
 ];
 // Молчаливая остановка: вопрос не задаётся, когда отвечать не на что.
 function ccMatsQuiet(t){ return !ccMatsLow(t); }
+/* РЫЧАГИ ИГРОКУ — его слово 5 сентября: «хп не меняется, билды тоже не понятно
+   от чего зависит, нужно дать контроль игроку».
+
+   СТРОЙКА. Ресы уходили по 110 за круг у всех одинаково, и решать было нечего.
+   На третьей зоне, сразу за лутом, команда выбирает, как строит остаток игры:
+   экономно (круг стоит 60% — ресов хватит до конца, но без построек ты слабее,
+   −1 к силе), как обычно, или много (круг стоит 150% — +1 к силе, но к восьмой
+   зоне без рефреша останешься пустым). Первый вариант — обычный: под скипом и
+   в симуляции он и выбирается, то есть баланс не сдвинут ни на очко.
+
+   ЛЕЧЕНИЕ. Щит снимают перестрелки (zone-sim, CHIP_HP), здоровье — шторм и
+   сёрдж. На пятой и седьмой зоне, когда щит ниже CC_HEAL_AT или здоровье ниже,
+   есть выбор: играть так или отхилиться — щит полный, +CC_HEAL_HP здоровья,
+   но время на хилки стоит −CC_HEAL_POW к силе на остаток игры (пока ты пьёшь,
+   соседи двигаются). Первый вариант — играть так. */
+// CC_BUILD_STYLE, не CC_BUILD: тем именем занята метка сборки страницы.
+const CC_BUILD_STYLE={eco:{mul:0.6, pow:-1}, norm:{mul:1, pow:0}, heavy:{mul:1.5, pow:1}};
+const CC_HEAL_AT=60, CC_HEAL_HP=30, CC_HEAL_POW=1;
+function ccShieldOf(t){ return t && t._sq && t._sq.shield!=null ? t._sq.shield : 100; }
+function ccHpOf(t){ return t && t._sq && t._sq.hp!=null ? t._sq.hp : 100; }
+function ccHealNeeded(t){ return ccShieldOf(t)<CC_HEAL_AT || ccHpOf(t)<CC_HEAL_AT; }
+function ccMidQuiet(t){ return !ccMatsLow(t) && !ccHealNeeded(t); }
+// Отхилиться — что это делает с отрядом. Отдельно от вопроса, чтобы проверялось.
+function ccHealApply(you){
+  if(!you) return null;
+  const sq=you._sq;
+  if(sq){ sq.shield=100; sq.hp=Math.min(100, (sq.hp==null?100:sq.hp)+CC_HEAL_HP); }
+  ccAddGamePow(you, -CC_HEAL_POW);
+  you._healed=(you._healed||0)+1;
+  return {shield:100, hp:sq ? Math.round(sq.hp) : 100};
+}
+async function ccAskBuild(you, ui){
+  if(!you) return;
+  ccMpMark('b0'+(you.mpTag||''));
+  const pickId=(await ccMpChoose('build'+(you.mpTag||''), async function(){
+    return (await ccChoiceBox(L().ccBuildTitle, ccKitLine(you), [
+      {id:'norm',  title:L().ccBuildNorm,  note:L().ccBuildNormNote(CC_MATS_ZONE)},
+      {id:'eco',   title:L().ccBuildEco,   note:L().ccBuildEcoNote(Math.round(CC_MATS_ZONE*CC_BUILD_STYLE.eco.mul), -CC_BUILD_STYLE.eco.pow)},
+      {id:'heavy', title:L().ccBuildHeavy, note:L().ccBuildHeavyNote(Math.round(CC_MATS_ZONE*CC_BUILD_STYLE.heavy.mul), CC_BUILD_STYLE.heavy.pow)}
+    ], ui && ui.map)).id;
+  }, function(v){ return L()['ccBuild'+(v==='eco'?'Eco':v==='heavy'?'Heavy':'Norm')]; })).v;
+  ccMpMark('a3b:'+pickId);
+  const b=CC_BUILD_STYLE[pickId]||CC_BUILD_STYLE.norm;
+  you._buildMul=b.mul;
+  if(b.pow) ccAddGamePow(you, b.pow);
+  if(pickId!=='norm'){
+    const line=L().ccBuildSet(L()['ccBuild'+(pickId==='eco'?'Eco':'Heavy')], b.pow>0?'+'+b.pow:String(b.pow));
+    if(ui && ui.note) ui.note(line);
+    await ccChoiceResult(ui && ui.map, line, null);
+  }
+}
+async function ccAskHeal(you, ui){
+  if(!you || !ccHealNeeded(you)) return;
+  ccMpMark('h0'+(you.mpTag||''));
+  const sh=Math.round(ccShieldOf(you)), hp=Math.round(ccHpOf(you));
+  const pickId=(await ccMpChoose('heal'+(you.mpTag||''), async function(){
+    return (await ccChoiceBox(L().ccHealTitle(sh, hp), ccKitLine(you), [
+      {id:'stay', title:L().ccHealStay, note:L().ccHealStayNote},
+      {id:'go',   title:L().ccHealGo,   note:L().ccHealGoNote(CC_HEAL_HP, CC_HEAL_POW)}
+    ], ui && ui.map)).id;
+  }, function(v){ return v==='go' ? L().ccHealGo : L().ccHealStay; })).v;
+  ccMpMark('a5h:'+pickId);
+  if(pickId!=='go') return;
+  const r=ccHealApply(you);
+  const line=L().ccHealDone(r.hp, CC_HEAL_POW);
+  if(ui && ui.note) ui.note(line);
+  await ccChoiceResult(ui && ui.map, line, true);
+}
+// Середина игры: сначала ресы (если кончились), потом лечение (если снят щит).
+async function ccAskMid(you, ui){
+  if(!you) return;
+  if(ccMatsLow(you)) await ccAskMats(you, ui);
+  if(ccHealNeeded(you)) await ccAskHeal(you, ui);
+}
 /* Вопрос середины: идти за рефрешем или ротейтить тем, что есть.
    Те же числа, что у рефреша в меню восьмой зоны, — это тот же ход, просто
    раньше по времени: сходил — ресы полные и прибавка, не сходил — играешь как

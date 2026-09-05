@@ -240,6 +240,9 @@
         team: team,
         x: p.x, y: p.y * aspect,
         hp: 100,
+        // The shield the HUD draws: drained by contact, refilled by the circle;
+        // never part of dying. See CHIP_HP.
+        shield: 100,
         alive: true,
         skill: rotationSkill(team),
         // _seekMul — план на вечер у своей команды (careerPlanAsk): «на элимы»
@@ -373,12 +376,13 @@
   function applyHealing(squads, circle, seconds){
     for(var i=0;i<squads.length;i++){
       var s = squads[i];
-      if(!s.alive || s.hp >= 100) continue;
+      if(!s.alive || (s.hp >= 100 && s.shield >= 100)) continue;
       // Only inside the circle. Out in the storm a squad is spending everything
       // it has just to stay standing, which is what makes being late expensive.
       var hx = s.x - circle.cx, hy = s.y - circle.cy;
       if(hx*hx + hy*hy > circle.radius * circle.radius) continue;
       s.hp = Math.min(100, s.hp + HEAL_RATE * seconds);
+      s.shield = Math.min(100, (s.shield == null ? 100 : s.shield) + HEAL_RATE * seconds);
     }
   }
 
@@ -482,6 +486,14 @@
 
   // And the distance it is traded across: twice the range a kill lands in.
   var CHIP_RANGE = 4.4;
+  // What a second of contact takes off the SHIELD. Chip damage used to be
+  // bookkeeping for surge alone and the bars sat on 100 all game; his word,
+  // 5 September: "the HP does not change". A trade now drains the shield at
+  // CHIP_HP per credited point and the circle regenerates it (HEAL_RATE). The
+  // shield is a display of the fighting, not a second life: hp — what the storm,
+  // the surge and a lost duel take — is untouched, so the calibrated death rates
+  // stay exactly where they were (taking it off hp put surge at 46% of deaths).
+  var CHIP_HP = 2.0;
 
   // What finishing a squad is worth against that, per player: a full bar.
   var KILL_DAMAGE = 100;
@@ -756,6 +768,9 @@
         var hitB = CHIP_RATE * alive[cj].power * TICK_SEC;
         alive[ci].dealt += hitA; alive[cj].taken += hitA;
         alive[cj].dealt += hitB; alive[ci].taken += hitB;
+        // ...and the shield bar moves with it. See CHIP_HP.
+        alive[ci].shield = Math.max(0, alive[ci].shield - hitB * CHIP_HP);
+        alive[cj].shield = Math.max(0, alive[cj].shield - hitA * CHIP_HP);
       }
     }
 
@@ -1116,6 +1131,8 @@
           // live arrow reads as a bug rather than as a squad about to die.
           return {x: s.x, y: s.y, alive: s.alive, a: s.heading,
                   h: s.alive ? Math.max(1, Math.round(s.hp)) : 0,
+                  // The shield, for the HUD's upper bar. See CHIP_HP.
+                  sh: s.alive ? Math.round(s.shield == null ? 100 : s.shield) : 0,
                   e: s.elims, p: s.alive ? 0 : (s.place || 0),
                   // Under surge right now, and net damage (dealt minus taken):
                   // the two numbers surge itself is decided on.
@@ -1408,11 +1425,12 @@
     if(v.NOWHERE_ROOM   != null) NOWHERE_ROOM   = v.NOWHERE_ROOM;
     if(v.CHIP_RATE      != null) CHIP_RATE      = v.CHIP_RATE;
     if(v.HEAL_RATE      != null) HEAL_RATE      = v.HEAL_RATE;
+    if(v.CHIP_HP        != null) CHIP_HP        = v.CHIP_HP;
     return {READ_NOISE:READ_NOISE, CROWD_WEIGHT:CROWD_WEIGHT, CROWD_SEEK:CROWD_SEEK, ENGAGE_CHANCE:ENGAGE_CHANCE,
             ENGAGE_BIAS:ENGAGE_BIAS, CHAIN_CHANCE:CHAIN_CHANCE, EXPOSURE_FLOOR:EXPOSURE_FLOOR,
             CHAIN_MAX:CHAIN_MAX, LINGER_MAX:LINGER_MAX, SURGE_DPS:SURGE_DPS,
             ROOM:ROOM, PRESSURE_BASE:PRESSURE_BASE, PRESSURE_EXP:PRESSURE_EXP,
-            PICK_EXP:PICK_EXP, CHIP_RATE:CHIP_RATE, HEAL_RATE:HEAL_RATE,
+            PICK_EXP:PICK_EXP, CHIP_RATE:CHIP_RATE, HEAL_RATE:HEAL_RATE, CHIP_HP:CHIP_HP,
             DROP_SEC:DROP_SEC, DROP_PRESSURE:DROP_PRESSURE, STACK_MIN:STACK_MIN};
   }
 

@@ -1256,6 +1256,9 @@
         // way somewhere, unlike a kill or a place.
         h: moving ? lerp(d.h == null ? 100 : d.h, e.h == null ? 100 : e.h, k)
                   : (d.h == null ? 100 : d.h),
+        // The shield slides the same way the health does.
+        sh: moving ? lerp(d.sh == null ? 100 : d.sh, e.sh == null ? 100 : e.sh, k)
+                   : (d.sh == null ? 100 : d.sh),
         // Not interpolated. A kill is a whole number that happened at a moment,
         // and a place is a fact; sliding either one between frames would put a
         // squad on two and a half eliminations and half of eighth place.

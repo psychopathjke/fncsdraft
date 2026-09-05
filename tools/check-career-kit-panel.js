@@ -53,11 +53,14 @@ const BOOT = `
           (map.querySelector('.zk-heading')||{}).textContent);
     const q=s=>map.querySelector(s);
     check('здоровье — из кадра', q('.zk-vitals') && q('.zk-vitals').dataset.hp==='80', (q('.zk-vitals')||{}).outerHTML);
-    // 80 очков отряда — щит 60 и здоровье 100, как на HUD (верхняя половина — щит).
-    check('щит и здоровье разложены как в игре', q('.zk-vitals').dataset.shield==='60' && q('.zk-vitals').dataset.health==='100',
+    // Щит и здоровье — два числа кадра: sh снимают перестрелки, h — шторм и сёрдж.
+    ccKitPanel(lobby, {zone:1, players:100, surgeAt:0, secondsLeft:125, dots:[dot(), dot({h:80, sh:60, e:3}), dot()]});
+    check('щит и здоровье — из кадра, порознь', q('.zk-vitals').dataset.shield==='60' && q('.zk-vitals').dataset.health==='80',
           q('.zk-vitals').dataset.shield+'/'+q('.zk-vitals').dataset.health);
-    check('и оба числа написаны', [...map.querySelectorAll('.zk-row b')].map(b=>b.textContent).join('/')==='60/100',
+    check('и оба числа написаны', [...map.querySelectorAll('.zk-row b')].map(b=>b.textContent).join('/')==='60/80',
           [...map.querySelectorAll('.zk-row b')].map(b=>b.textContent).join('/'));
+    ccKitPanel(lobby, {zone:1, players:100, surgeAt:0, secondsLeft:125, dots:[dot(), dot({h:80, e:3}), dot()]});
+    check('кадр без щита — щит полный', q('.zk-vitals').dataset.shield==='100', q('.zk-vitals').dataset.shield);
     check('ресы на первой зоне — полные минус один круг', q('.zk-mats') && q('.zk-mats').dataset.total==='440', (q('.zk-mats')||{}).outerHTML);
     const stacks=[...map.querySelectorAll('.zk-mats b')].map(s=>+s.textContent);
     check('три стопки в сумме дают ресы', stacks.length===3 && stacks.reduce((a,b)=>a+b,0)===440, stacks.join('+'));
