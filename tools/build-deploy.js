@@ -79,6 +79,76 @@ const hash = crypto.createHash('sha1').update(fs.readFileSync(path.join(OUT, 'ap
 fs.writeFileSync(path.join(OUT, 'index.html'),
   html.slice(0, best.open) + '<script src="app.js?v=' + hash + '"></script>' + html.slice(best.end + 9), 'utf8');
 
+/* ---- И ТЕКСТ ПЕРВОГО ЭКРАНА — ПРЯМО В ОБОЛОЧКЕ --------------------------
+ *
+ * Разрез на оболочку и app.js вылечил половину беды: документ приезжает за
+ * 75 КБ. Вторая половина осталась и мерится пробой tools/first-paint-probe.js:
+ * пока app.js едет (1,8 МБ бротли), на странице 272 подписи из словаря и НИ
+ * ОДНОЙ с текстом. Видно арт, пустые жёлтые пилюли вместо кнопок и ни одной
+ * строки — то есть ровно то, что человек называет «сайт не загружается».
+ * Отзыв игрока 5 сентября 2026: «в последнее время не могу зайти на сайт».
+ *
+ * Здесь оболочка получает готовый текст: страница поднимается в Chrome один
+ * раз, из неё снимается, чем словарь заполнил каждый data-i18n, и это же
+ * кладётся в разметку. Дальше setLang на живом заходе перепишет всё на язык
+ * посетителя — как и раньше.
+ *
+ * Английский, потому что он и так лежит под всеми языками (см. L(): чужой
+ * словарь накладывается на en). Русский посетитель увидит английскую строку
+ * ровно до того момента, как доедет app.js, — вместо пустого места.
+ *
+ * Снимается ИЗ ЖИВОЙ СТРАНИЦЫ, а не разбором словаря: значения бывают с
+ * подстановками ({CARDS}) и пересобираются после (ccModeCountPills), и
+ * повторять эту логику здесь значило бы завести вторую правду. */
+function prefillI18n(dir) {
+  const { execFileSync } = require('child_process');
+  const CHROME = [process.env.CHROME,
+    'C:/Program Files/Google/Chrome/Application/chrome.exe',
+    'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+    (process.env.LOCALAPPDATA || '') + '/Google/Chrome/Application/chrome.exe'
+  ].find(p => p && fs.existsSync(p));
+  if (!CHROME) { console.log('Chrome не найден — текст первого экрана не вшит'); return 0; }
+  const shellPath = path.join(dir, 'index.html');
+  const shell = fs.readFileSync(shellPath, 'utf8');
+  // Копия рядом с приложением, чтобы app.js и его файлы нашлись по своим путям.
+  const probePath = path.join(dir, '__prefill.html');
+  fs.writeFileSync(probePath, shell +
+    '<pre id="__p" style="display:none"></pre><script>' +
+    'window.addEventListener("load",function(){var o={};try{' +
+    'setLang("en",false);applyStaticI18n();' +
+    'document.querySelectorAll("[data-i18n]").forEach(function(el){' +
+    'var k=el.getAttribute("data-i18n");var v=el.innerHTML;' +
+    'if(v&&v.trim()&&!(k in o)) o[k]=v;});' +
+    '}catch(e){o.__err=String(e&&e.message||e);}' +
+    'document.getElementById("__p").textContent="PB"+"EGIN"+' +
+    'encodeURIComponent(JSON.stringify(o))+"PE"+"ND";});<' + '/script>', 'utf8');
+  let dump = null;
+  try {
+    const dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandbox',
+      '--allow-file-access-from-files', '--virtual-time-budget=60000', '--dump-dom',
+      'file:///' + probePath.split(path.sep).join('/')],
+      { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+    const m = dom.match(/PBEGIN([\s\S]*?)PEND/);
+    if (m) dump = JSON.parse(decodeURIComponent(m[1]));
+  } catch (e) { console.log('снять словарь не вышло: ' + e.message); }
+  fs.rmSync(probePath, { force: true });
+  if (!dump || dump.__err) { console.log('текст первого экрана не вшит' +
+    (dump && dump.__err ? ': ' + dump.__err : '')); return 0; }
+  // Заполняются только ПУСТЫЕ элементы — те, что в разметке стоят как
+  // <span data-i18n="x"></span>. Всё, у чего содержимое своё, не трогаем.
+  let filled = 0;
+  const out = shell.replace(/<([a-zA-Z][\w-]*)([^>]*\sdata-i18n="([^"]+)"[^>]*)><\/\1>/g,
+    (all, tag, attrs, key) => {
+      const v = dump[key];
+      if (typeof v !== 'string' || !v) return all;
+      filled++;
+      return '<' + tag + attrs + '>' + v + '</' + tag + '>';
+    });
+  fs.writeFileSync(shellPath, out, 'utf8');
+  return filled;
+}
+const prefilled = prefillI18n(OUT);
+
 const count = (function walk(d) {
   return fs.readdirSync(d, { withFileTypes: true })
     .reduce((n, e) => n + (e.isDirectory() ? walk(path.join(d, e.name)) : 1), 0);
@@ -87,4 +157,5 @@ const kb = f => (fs.statSync(path.join(OUT, f)).size / 1024).toFixed(0) + ' КБ
 console.log('папка: ' + OUT);
 console.log('файлов: ' + count + ' (лимит drag&drop у Cloudflare — 1000)');
 console.log('index.html: ' + kb('index.html') + ', app.js: ' + kb('app.js') + ' (?v=' + hash + ')');
+console.log('текста первого экрана вшито: ' + prefilled + ' подписей');
 console.log('дальше: node tools/check-deploy-folder.js "' + OUT + '"');

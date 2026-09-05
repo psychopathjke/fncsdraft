@@ -109,6 +109,25 @@ if (!m) { console.error('страница из папки не поднялас�
 const out = JSON.parse(decodeURIComponent(m[1]));
 out.bad.forEach(u => fails.push('404 в браузере: ' + u));
 out.errs.forEach(e => fails.push('ошибка на странице: ' + e));
+/* ОБОЛОЧКА ЧИТАЕТСЯ БЕЗ ПРИЛОЖЕНИЯ.
+ *
+ * Пока app.js едет (1,8 МБ бротли), человек смотрит на одну оболочку, и до
+ * 5 сентября 2026 в ней не было НИ ОДНОЙ строки: весь текст подставлял
+ * словарь уже из приложения, а до его приезда стояли пустые кнопки и пустые
+ * заголовки — то есть ровно то, что игроки называют «сайт не загружается».
+ * Теперь build-deploy вшивает текст в разметку (см. prefillI18n), и сторож
+ * следит, чтобы это не отвалилось молча: подписей в оболочке сотни, пустых
+ * быть не должно. Мера — tools/first-paint-probe.js. */
+{
+  const shell = fs.readFileSync(path.join(DIR, 'index.html'), 'utf8');
+  const keys = (shell.match(/\sdata-i18n="/g) || []).length;
+  const empty = (shell.match(/<([a-zA-Z][\w-]*)([^>]*\sdata-i18n="[^"]+"[^>]*)><\/\1>/g) || []).length;
+  if (keys < 50) fails.push('подписей data-i18n в оболочке всего ' + keys + ' — разметка не та');
+  else if (empty > keys * 0.05)
+    fails.push('в оболочке пусто у ' + empty + ' подписей из ' + keys +
+               ' — текст первого экрана не вшит, страница до приезда app.js нечитаема');
+  else console.log('  текст первого экрана в оболочке: ' + (keys - empty) + ' из ' + keys + ' подписей');
+}
 if (out.maps < 5) fails.push('карт загрузилось ' + out.maps);
 if (out.zones < 10) fails.push('коробок на острове ' + out.zones);
 
