@@ -1436,6 +1436,67 @@
   .cc-choice-ico.pic .cc-spot-shot{flex:none; width:56px; aspect-ratio:1/1; border-radius:8px; border-color:var(--cc-ui-live);}
   .cc-choice-ico.pic-wide .cc-spot-shot{width:76px; aspect-ratio:4/3;}
   @media (max-width:560px){ .cc-choice-mini{display:none;} }
+
+  /* ============================================================
+     ВОПРОСЫ В СТИЛЕ ЛОББИ — его слово 6 сентября 2026: «измени дизайн под
+     стиль фортнайта и карьеры». Те же токены, что у хаба карьеры (--fn-*):
+     синий градиент лобби, голубое стекло панелей, белые заголовки узким
+     тяжёлым капсом (--font-display, как h4 плиток хаба), жёлтый ровно на
+     одном — на полосе времени и на ходе по умолчанию, при наведении белый
+     контур, как у кнопок хаба. Картинка варианта — в квадратике-слоте, том
+     же, что ячейка хотбара на карте (.zk-slot). Блок стоит после базовых
+     правил и побеждает порядком.
+     ============================================================ */
+  .cc-choice-map, .stage-card.cc-choice{
+    background:linear-gradient(160deg, rgba(29,59,140,.96) 0%, rgba(19,38,95,.98) 46%, rgba(11,22,64,.99) 100%);
+    border:1px solid var(--fn-line); border-radius:6px; color:var(--fn-ink);
+    box-shadow:inset 0 0 0 1px rgba(180,200,255,.14), 0 18px 40px rgba(4,10,30,.55);
+    overflow:hidden;}
+  /* Лучи лобби — те же косые полосы, что на сцене хаба. */
+  .cc-choice-map::before, .stage-card.cc-choice::before{content:''; position:absolute; inset:0; pointer-events:none;
+    background:repeating-linear-gradient(112deg, transparent 0 90px, rgba(150,180,255,.06) 90px 130px);}
+  .cc-choice-map>*, .stage-card.cc-choice>*{position:relative;}
+  .cc-choice-head b{font-family:var(--font-display); font-style:normal; font-weight:700;
+    font-size:17px; letter-spacing:.05em; text-transform:uppercase; color:#fff;
+    background:var(--fn-deep); padding:8px 30px 7px 14px;
+    box-shadow:inset 4px 0 0 var(--fn-yellow);
+    clip-path:polygon(0 0, 100% 0, calc(100% - 15px) 100%, 0 100%);}
+  .cc-choice-map .cc-choice-head b{margin:-12px -14px 9px;}
+  .cc-choice-head span, .cc-choice-sub>span{color:var(--fn-dim); font-size:11px;}
+  .cc-choice-row{gap:8px;}
+  .cc-choice-btn{background:var(--fn-btn); border:1px solid var(--fn-line); border-radius:4px;
+    color:var(--fn-ink); padding:9px 11px 10px; box-shadow:none;
+    transition:background .12s ease, box-shadow .12s ease, transform .12s ease;}
+  .cc-choice-btn:hover{background:rgba(180,200,255,.38); border-color:#fff;
+    box-shadow:0 0 0 1.5px #fff, 0 10px 24px rgba(4,10,30,.45); transform:translateY(-1px);}
+  .cc-choice-btn b{font-family:var(--font-display); font-style:normal; font-weight:700;
+    font-size:15.5px; letter-spacing:.04em; text-transform:uppercase; line-height:1.1; color:#fff;}
+  .cc-choice-btn:hover b{color:#fff;}
+  .cc-choice-btn em{color:var(--fn-dim); font-size:10.5px; font-weight:600;}
+  /* Ход по умолчанию — жёлтая метка снизу, как активная вкладка-пилюля хаба. */
+  .cc-choice-btn.def{box-shadow:inset 0 -3px 0 var(--fn-yellow);}
+  .cc-choice-btn.def:hover{box-shadow:inset 0 -3px 0 var(--fn-yellow), 0 0 0 1.5px #fff, 0 10px 24px rgba(4,10,30,.45);}
+  /* Картинка варианта — слот хотбара: светлый квадрат с белой рамкой. */
+  .cc-choice-ico{width:38px; height:36px; border-radius:3px; padding:3px;
+    background:rgba(190,200,220,.28); border:1.5px solid rgba(255,255,255,.35);}
+  .cc-choice-ico svg, .cc-choice-ico img{width:26px; height:26px;}
+  .cc-choice-ico.wide{width:auto; padding:3px 5px;}
+  .cc-choice-ico.wide svg{width:16px; height:16px;}
+  .cc-choice-ico.pic{width:auto; height:auto; padding:0; background:none; border:none;}
+  .cc-choice-ico.pic .cc-spot-shot{border:1.5px solid rgba(255,255,255,.5); border-radius:3px;}
+  .cc-choice-tt{gap:9px;}
+  /* Полоса времени — жёлтая, тает к голубому. */
+  .cc-choice-bar{background:rgba(255,255,255,.12); border-radius:1px; height:3px;}
+  .cc-choice-bar i{background:linear-gradient(90deg, var(--fn-yellow), #9fbcff 70%);}
+  /* Плашка исхода — то же стекло; бирюза на удаче, красный на неудаче остаются
+     цветами живого и опасного, как в хабе. */
+  .cc-choice-out{background:linear-gradient(160deg, rgba(29,59,140,.97), rgba(11,22,64,.99));
+    border:1px solid var(--fn-line); border-radius:6px;
+    box-shadow:inset 0 0 0 1px rgba(180,200,255,.14), 0 18px 40px rgba(4,10,30,.55);}
+  .cc-choice-out b{font-family:var(--font-display); font-style:normal; font-weight:700; letter-spacing:.05em; font-size:18px;}
+  .cc-choice-out.good{border-top:3px solid var(--cc-ui-live);}
+  .cc-choice-out.bad{border-top:3px solid var(--cc-ui-bad);}
+  @media (max-width:560px){ .cc-choice-btn b{font-size:14px;} .cc-choice-ico{width:32px;height:30px;} .cc-choice-ico svg,.cc-choice-ico img{width:22px;height:22px;} }
   /* Карточка этапа скруглена, а плашка идёт во всю ширину — без обрезки её
      верхние углы торчали бы из-под скругления карточки. */
   .stage-card.cc-choice{overflow:hidden;}
@@ -52361,7 +52422,7 @@ function ccChoiceBox(title, hint, options, onMap, side){
       : '';
     box.innerHTML=`<div class="cc-choice-head"><b>${esc(title)}</b>${sub}</div>`+
       `<div class="cc-choice-row">${options.map((o,i)=>
-        `<button class="cc-choice-btn${o.art?' has-art':''}${o.icon?' has-ico':''}" data-at="${i}">
+        `<button class="cc-choice-btn${o.art?' has-art':''}${o.icon?' has-ico':''}${o===dflt && options.length>1?' def':''}" data-at="${i}">
            ${o.art||''}<span class="cc-choice-tt">${o.icon?'<i class="cc-choice-ico'+(o.icoCls?' '+o.icoCls:'')+'">'+o.icon+'</i>':''}<b>${esc(o.title)}</b></span><em>${o.note||''}</em></button>`).join('')}</div>`+
       `<div class="cc-choice-bar"><i></i></div>`;
     host.appendChild(box);
