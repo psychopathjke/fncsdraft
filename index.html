@@ -1430,6 +1430,11 @@
   .cc-choice-ico.wide{width:auto; gap:2px;}
   .cc-choice-ico svg, .cc-choice-ico img{width:22px; height:22px; object-fit:contain; display:block;}
   .cc-choice-ico.wide svg{width:16px; height:16px;}
+  /* Картинка-фото в кнопке: квадратик своей точки или остров с рамкой. Без
+     подложки и отступа — кадр сам себе рамка; остров шире, 4/3. */
+  .cc-choice-ico.pic{width:auto; height:auto; padding:0; background:none; border-radius:8px; overflow:hidden;}
+  .cc-choice-ico.pic .cc-spot-shot{flex:none; width:56px; aspect-ratio:1/1; border-radius:8px; border-color:var(--cc-ui-live);}
+  .cc-choice-ico.pic-wide .cc-spot-shot{width:76px; aspect-ratio:4/3;}
   @media (max-width:560px){ .cc-choice-mini{display:none;} }
   /* Карточка этапа скруглена, а плашка идёт во всю ширину — без обрезки её
      верхние углы торчали бы из-под скругления карточки. */
@@ -52123,7 +52128,7 @@ async function ccAskMenu(you, ui){
       {id:'stay',  def:!low, icon:CC_CHOICE_ICON.stay, title:T.ccMatsStay,
        note:low ? T.ccMatsStayNote(CC_MATS_PEN) : T.ccMidStayNote},
       {id:'surge', icon:CC_CHOICE_ICON.surge, title:T.ccMidSurge, note:T.ccMidSurgeNote(CC_SURGE_FARM, CC_SURGE_FARM_POW)},
-      {id:'go',    def:low, icon:'<span class="cc-choice-ico wide">'+ccMatsIconHTML()+'</span>', title:T.ccMatsGo,
+      {id:'go',    def:low, icon:ccMatsIconHTML(), icoCls:'wide', title:T.ccMatsGo,
        note:T.ccMatsGoNote(pow, m.fail, Math.round(m.odds*100))},
       {id:'fight', icon:ccItemIconHTML(gun, CC_CHOICE_ICON.fight), title:T.ccMidFight,
        note:T.ccMidFightNote(Math.round(CC_FIGHT.win*100), CC_FIGHT.pow, die)}
@@ -52357,7 +52362,7 @@ function ccChoiceBox(title, hint, options, onMap, side){
     box.innerHTML=`<div class="cc-choice-head"><b>${esc(title)}</b>${sub}</div>`+
       `<div class="cc-choice-row">${options.map((o,i)=>
         `<button class="cc-choice-btn${o.art?' has-art':''}${o.icon?' has-ico':''}" data-at="${i}">
-           ${o.art||''}<span class="cc-choice-tt">${o.icon?'<i class="cc-choice-ico">'+o.icon+'</i>':''}<b>${esc(o.title)}</b></span><em>${o.note||''}</em></button>`).join('')}</div>`+
+           ${o.art||''}<span class="cc-choice-tt">${o.icon?'<i class="cc-choice-ico'+(o.icoCls?' '+o.icoCls:'')+'">'+o.icon+'</i>':''}<b>${esc(o.title)}</b></span><em>${o.note||''}</em></button>`).join('')}</div>`+
       `<div class="cc-choice-bar"><i></i></div>`;
     host.appendChild(box);
     // Чат эфира видит вопрос и начинает советовать. См. ccTvOnChoice.
@@ -81808,15 +81813,20 @@ async function careerLandingPick(field, you, title, kinds, o){
      Коробка называется своим МЕСТОМ в ALL_LANDING_ZONES: собственного номера
      у зоны нет (человеку показывается i+1, см. landingZoneSuffix), а сетка у
      обоих одна — тот же остров, тот же размер лобби. */
+  const pics=home ? ccDropSideHTML(home, ACTIVE_LANDING_SET) : null;
   const vote=await ccMpChoose('drop'+(o.tag||''), async function(){
     const p=await ccChoiceBox(L().ccDropTitle,
       // Чужие объявления — прямо в подсказке: решение принимается здесь.
       L().ccDropHint+(calls ? ' · '+L().ccDropCalls+' '+calls : ''),
-      [ home ? {id:'home', title:L().ccDropHome, note:L().ccDropHomeNote(aura, rivals), icon:CC_CHOICE_ICON.home}
+      /* Картинки — ВНУТРИ кнопок, его слово 6 сентября: «внутри квадратика
+         типа картинки эти». У «своей локации» — квадратик своей точки, у
+         «законтестить» — остров целиком с рамкой на ней. Маленькие, слева от
+         названия: плитки во всю ширину он снял 25 августа. */
+      [ home ? {id:'home', title:L().ccDropHome, note:L().ccDropHomeNote(aura, rivals),
+                icon:(pics ? pics.left : CC_CHOICE_ICON.home), icoCls:(pics ? 'pic' : '')}
              : {id:'quiet', title:L().ccDropQuiet, note:L().ccDropQuietNote, icon:CC_CHOICE_ICON.quiet},
-        {id:'contest', title:L().ccDropContest, note:L().ccDropContestNote, icon:CC_CHOICE_ICON.contest}], onMap,
-      // Слева своя точка, справа остров с её рамкой — его страница «картинки».
-      home ? ccDropSideHTML(home, ACTIVE_LANDING_SET) : null);
+        {id:'contest', title:L().ccDropContest, note:L().ccDropContestNote,
+         icon:(pics ? pics.right : CC_CHOICE_ICON.contest), icoCls:(pics ? 'pic pic-wide' : '')}], onMap);
     if(p.id!=='contest') return {id:p.id, at:(p.id==='home' && home) ? ALL_LANDING_ZONES.indexOf(home) : -1};
     /* Та же комната, что и на кнопке. pre посчитан выше — им и показывается
        остров, иначе «к тебе летят двое» и карта были бы двумя разными

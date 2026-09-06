@@ -67,7 +67,16 @@ const BOOT = `
     check('четыре хода: ротейт, сёрдж, ресы, файт', seen && seen.map(o=>o.id).join(',')==='stay,surge,go,fight', seen && seen.map(o=>o.id).join(','));
     check('полные ресы — сам ротейтит', seen.find(o=>o.def).id==='stay' && you._pf===90 && you._mats===550);
     check('у файта — картинка ствола из пака', /<img/.test(seen[3].icon), seen[3].icon.slice(0,60));
-    check('у ресов — три стопки', /svg/.test(seen[2].icon) && /cc-choice-ico wide/.test(seen[2].icon));
+    check('у ресов — три стопки', (seen[2].icon.match(/<svg/g)||[]).length===3 && seen[2].icoCls==='wide');
+    // Картинки высадки — внутри кнопок: квадратик точки у дома, остров у контеста.
+    skipAnimation=false;
+    const q=realBox('D', '', [{id:'home', title:'H', icon:side.left, icoCls:'pic'}, {id:'contest', title:'C', icon:side.right, icoCls:'pic pic-wide'}], host);
+    await new Promise(r=>setTimeout(r, 30));
+    const dbox=host.querySelector('.cc-choice');
+    check('дом — квадратик точки внутри кнопки', !!dbox && !!dbox.querySelector('.cc-choice-btn[data-at="0"] .cc-choice-ico.pic .cc-spot-shot-box'));
+    check('контест — остров с рамкой внутри кнопки', !!dbox && !!dbox.querySelector('.cc-choice-btn[data-at="1"] .cc-choice-ico.pic-wide .cc-spot-shot-box'));
+    dbox.querySelector('.cc-choice-btn[data-at="1"]').click(); await q;
+    skipAnimation=true;
     you=mk(100); WANT=null;
     const r0=Math.random; Math.random=()=>0.01;
     await ccAskMenu(you, null);
