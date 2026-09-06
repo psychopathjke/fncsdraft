@@ -615,6 +615,34 @@ test('the same seed produces the same result', () => {
   assert(JSON.stringify(a) === JSON.stringify(b), 'the same seed produced two different games');
 });
 
+test('a stepwise game can settle a fight the app chose: nearest and eliminate', () => {
+  // The player's mid-game "go fight" (6 September 2026) goes through the
+  // engine so the death is a real one: place, feed line, elims — as a duel.
+  const teams = fakeField(20);
+  const rng = ZoneSim.createRng(3);
+  const game = ZoneSim.simulateZoneGame(teams, {
+    rng: rng, land: LAND, aspect: ASPECT,
+    startOf: () => ({x: 20 + rng()*60, y: 20 + rng()*60}),
+    duel: makeDuel(rng), record: false, stepwise: true
+  });
+  game.playTo(2);
+  const me = game.squads.find(s => s.alive).team;
+  const foe = game.nearest(me);
+  assert(foe && foe !== me, 'nearest found nobody');
+  const foeSq = game.squads.find(s => s.team === foe), meSq = game.squads.find(s => s.team === me);
+  const elims = meSq.elims, alive = game.aliveCount();
+  assert(game.eliminate(foe, me) === true, 'eliminate refused a living squad');
+  assert(!foeSq.alive && foeSq.hp === 0 && foeSq.deathCause === me.name, 'the loser is not dead by the winner: ' + foeSq.deathCause);
+  assert(meSq.elims === elims + ((foe.squad && foe.squad.length) || 1), 'the winner did not get the elims');
+  assert(game.aliveCount() === alive - 1, 'alive count did not drop');
+  assert(game.eliminate(foe, me) === false, 'a corpse was eliminated twice');
+  assert(game.eliminate(me, me) === false, 'a squad eliminated itself');
+  assert(game.nearest(foe) === null || game.nearest(foe) !== foe, 'nearest of a corpse is itself');
+  const {order} = game.finish();
+  assert(order.indexOf(foe) > order.indexOf(me) || !meSq.alive, 'the eliminated squad placed above its killer while the killer lived');
+  assert(order.length === 20 && new Set(order).size === 20, 'placements broke after an app-side elimination');
+});
+
 test('no timeline unless it is asked for', () => {
   assert(runGame(5).timeline.length === 0, 'a timeline was recorded nobody asked for');
 });

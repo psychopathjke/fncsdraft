@@ -1411,6 +1411,26 @@
     clip-path:polygon(0 0, 100% 0, calc(100% - 15px) 100%, 0 100%);}
   .cc-choice-head span{display:block; font-size:11px; font-weight:700;
     color:var(--cc-ui-dim); line-height:1.4;}
+  /* Строка под плашкой: слева квадратик своей точки, справа остров целиком,
+     между ними подсказка. Его страница «картинки», 6 сентября. Картинки
+     маленькие нарочно — 25 августа он снял плитки во всю ширину с этих же
+     кнопок («этого не должно быть»), вопрос обязан оставаться одного размера. */
+  .cc-choice-sub{display:flex; align-items:center; gap:10px; margin-top:8px;}
+  .cc-choice-sub>span{flex:1 1 auto; min-width:0;}
+  .cc-choice-ava, .cc-choice-mini{flex:none;}
+  .cc-choice-ava .cc-spot-shot{flex:none; width:58px; aspect-ratio:1/1; border-radius:8px;
+    border-color:var(--cc-ui-live);}
+  .cc-choice-mini .cc-spot-shot{flex:none; width:110px; border-radius:6px;}
+  /* Картинка у варианта: слева от названия, в один рост с ним. */
+  .cc-choice-tt{display:flex; align-items:center; gap:8px; margin-bottom:3px;}
+  .cc-choice-tt b{margin-bottom:0;}
+  .cc-choice-ico{display:inline-flex; align-items:center; justify-content:center; flex:none;
+    width:28px; height:28px; border-radius:7px; background:rgba(255,255,255,.08);
+    padding:3px; box-sizing:border-box;}
+  .cc-choice-ico.wide{width:auto; gap:2px;}
+  .cc-choice-ico svg, .cc-choice-ico img{width:22px; height:22px; object-fit:contain; display:block;}
+  .cc-choice-ico.wide svg{width:16px; height:16px;}
+  @media (max-width:560px){ .cc-choice-mini{display:none;} }
   /* Карточка этапа скруглена, а плашка идёт во всю ширину — без обрезки её
      верхние углы торчали бы из-под скругления карточки. */
   .stage-card.cc-choice{overflow:hidden;}
@@ -5182,7 +5202,7 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=8fc0879f"></script>
+<script src="zone-sim.js?v=a68adf60"></script>
 <script src="zone-replay.js?v=ee0f6613"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
@@ -7094,6 +7114,13 @@ ccHealTitle:(s,h)=>'Щит '+s+' · здоровье '+h+' — лечимся?',
 ccHealGo:'Отхилиться', ccHealGoNote:(h,p)=>'щит полный, +'+h+' здоровья · пока пьёшь — минус '+p+' к силе',
 ccHealDone:(h,p)=>'Отхилились: щит 100, здоровье '+h+' · −'+p+' к силе',
 ccMatsTitle:'Ресы кончаются', ccMatsGo:'Идти за рефрешем', ccMatsStay:'Ротейтить тем, что есть',
+ccMidTitle:'Середина игры — что делаем', ccMidStayNote:'Ресы есть, щит цел — идём кругом, ничего не тратим', ccMidStayGot:'Ротейтим как есть',
+ccMidSurge:'Набить сёрдж', ccMidSurgeNote:(d,p)=>`+${d} к урону сёржа наверняка · −${p} к силе: стреляем по чужим постройкам, а не ротейтим`,
+ccMidSurgeGot:(d,p)=>`Набили сёрдж: +${d} урона, −${p} к силе`,
+ccMidFight:'Пойти файтиться', ccMidFightNote:(w,p,d)=>`${w}%: сосед выбит, +${p} к силе и его ресы · иначе размен: щит снят, −ресы · ${d}%: выбиты сами`,
+ccMidFightWon:(p,foe)=>`Файт взят${foe?': выбили '+foe:''} — +${p} к силе, ресы с трупа`,
+ccMidFightTraded:p=>`Разменялись: щит снят, ресы сожжены, −${p} к силе`,
+ccMidFightDied:foe=>`Файт проигран${foe?' — '+foe+' выбили нас':' — нас выбили'}`,
 ccMatsGoNote:(v,f,p)=>p+'%: нашёл — +'+v+' и полные ресы, нет — минус '+f,
 ccMatsStayNote:v=>'Ничего не тратишь, но в концовке без ресов минус '+v,
 ccMatsFound:v=>'Рефреш найден, +'+v+' к силе и полные ресы', ccMatsMissed:v=>'Не нашёл, −'+v+' к силе',
@@ -8993,6 +9020,13 @@ ccHealTitle:(s,h)=>'Shield '+s+' · health '+h+' — heal up?', ccHealStay:'Play
 ccHealGo:'Heal up', ccHealGoNote:(h,p)=>'full shield, +'+h+' health · while you drink — minus '+p+' power',
 ccHealDone:(h,p)=>'Healed: shield 100, health '+h+' · −'+p+' power',
 ccMatsTitle:'Running out of mats', ccMatsGo:'Go for a refresh', ccMatsStay:'Rotate with what you have',
+ccMidTitle:'Mid game — what do we do', ccMidStayNote:'Mats in hand, shield up — rotate with the circle, spend nothing', ccMidStayGot:'Rotating as we are',
+ccMidSurge:'Farm surge', ccMidSurgeNote:(d,p)=>`+${d} surge damage for sure · −${p} power: shooting builds instead of rotating`,
+ccMidSurgeGot:(d,p)=>`Surge farmed: +${d} damage, −${p} power`,
+ccMidFight:'Go fight', ccMidFightNote:(w,p,d)=>`${w}%: the neighbour goes down, +${p} power and their mats · else a trade: shield gone, −mats · ${d}%: we go down`,
+ccMidFightWon:(p,foe)=>`Fight won${foe?': '+foe+' eliminated':''} — +${p} power, mats off the body`,
+ccMidFightTraded:p=>`Traded: shield gone, mats burned, −${p} power`,
+ccMidFightDied:foe=>`Fight lost${foe?' — '+foe+' eliminated us':' — we were eliminated'}`,
 ccMatsGoNote:(v,f,p)=>p+'%: found it — +'+v+' and full mats, did not — minus '+f,
 ccMatsStayNote:v=>'Costs nothing now, but an endgame without mats is minus '+v,
 ccMatsFound:v=>'Refresh found, +'+v+' power and full mats', ccMatsMissed:v=>'Nothing there, −'+v+' power',
@@ -51646,6 +51680,8 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
   LAST_ZONE_ROSTER=game.roster();
   // Свой отряд движка — лечению нужно трогать его щит и здоровье. См. ccAskHeal.
   if(you) you._sq=(game.squads||[]).find(s=>s.team===you)||null;
+  // И сама игра — файту середины нужны eliminate/nearest движка. См. ccFightApply.
+  if(you) you._game=game;
   const alive=()=>!you || (game.squads.find(s=>s.team===you)||{}).alive;
   /* Порядок здесь и есть вся суть: сначала показать кусок игры, который только
      что просчитан, и лишь потом спросить. Его правка: «во время игры можно это
@@ -51949,7 +51985,9 @@ const CC_GAME_STOPS=[
   // Третья зона: лут и следом — как строим (ccAskBuild).
   {zone:3, ask:async (you, ui)=>{ await ccAskLoot(you, ui); await ccAskBuild(you, ui); }, room:ccRoomLoot},
   // Пятая и седьмая: ресы, если кончились, и лечение, если щит снят (ccAskMid).
-  {zone:5, ask:(you, ui)=>ccAskMid(you, ui), room:ccRoomMats, quiet:ccMidQuiet},
+  // Пятая: меню середины (сёрдж, ресы, файт) — всегда; седьмая — то же меню,
+  // но только когда есть о чём: ресы кончились или щит снят.
+  {zone:5, ask:(you, ui)=>ccAskMid(you, ui), room:ccRoomMats},
   {zone:7, ask:(you, ui)=>ccAskMid(you, ui), room:ccRoomMats, quiet:ccMidQuiet},
   {zone:8, ask:(you, ui)=>ccAskLate(you, ui), room:ccRoomLate}
 ];
@@ -51991,9 +52029,9 @@ async function ccAskBuild(you, ui){
   ccMpMark('b0'+(you.mpTag||''));
   const pickId=(await ccMpChoose('build'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(L().ccBuildTitle, ccKitLine(you), [
-      {id:'norm',  title:L().ccBuildNorm,  note:L().ccBuildNormNote(CC_MATS_ZONE)},
-      {id:'eco',   title:L().ccBuildEco,   note:L().ccBuildEcoNote(Math.round(CC_MATS_ZONE*CC_BUILD_STYLE.eco.mul), -CC_BUILD_STYLE.eco.pow)},
-      {id:'heavy', title:L().ccBuildHeavy, note:L().ccBuildHeavyNote(Math.round(CC_MATS_ZONE*CC_BUILD_STYLE.heavy.mul), CC_BUILD_STYLE.heavy.pow)}
+      {id:'norm',  title:L().ccBuildNorm,  note:L().ccBuildNormNote(CC_MATS_ZONE), icon:CC_CHOICE_ICON.wall2},
+      {id:'eco',   title:L().ccBuildEco,   note:L().ccBuildEcoNote(Math.round(CC_MATS_ZONE*CC_BUILD_STYLE.eco.mul), -CC_BUILD_STYLE.eco.pow), icon:CC_CHOICE_ICON.wall1},
+      {id:'heavy', title:L().ccBuildHeavy, note:L().ccBuildHeavyNote(Math.round(CC_MATS_ZONE*CC_BUILD_STYLE.heavy.mul), CC_BUILD_STYLE.heavy.pow), icon:CC_CHOICE_ICON.wall3}
     ], ui && ui.map)).id;
   }, function(v){ return L()['ccBuild'+(v==='eco'?'Eco':v==='heavy'?'Heavy':'Norm')]; })).v;
   ccMpMark('a3b:'+pickId);
@@ -52012,8 +52050,9 @@ async function ccAskHeal(you, ui){
   const sh=Math.round(ccShieldOf(you)), hp=Math.round(ccHpOf(you));
   const pickId=(await ccMpChoose('heal'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(L().ccHealTitle(sh, hp), ccKitLine(you), [
-      {id:'stay', title:L().ccHealStay, note:L().ccHealStayNote},
-      {id:'go',   title:L().ccHealGo,   note:L().ccHealGoNote(CC_HEAL_HP, CC_HEAL_POW)}
+      {id:'stay', title:L().ccHealStay, note:L().ccHealStayNote, icon:CC_CHOICE_ICON.stay},
+      {id:'go',   title:L().ccHealGo,   note:L().ccHealGoNote(CC_HEAL_HP, CC_HEAL_POW),
+       icon:ccItemIconHTML({name:'Shield Potion', icon:'shield'}, CC_CHOICE_ICON.stay)}
     ], ui && ui.map)).id;
   }, function(v){ return v==='go' ? L().ccHealGo : L().ccHealStay; })).v;
   ccMpMark('a5h:'+pickId);
@@ -52023,11 +52062,125 @@ async function ccAskHeal(you, ui){
   if(ui && ui.note) ui.note(line);
   await ccChoiceResult(ui && ui.map, line, true);
 }
-// Середина игры: сначала ресы (если кончились), потом лечение (если снят щит).
+/* СЕРЕДИНА ИГРЫ — МЕНЮ. Его страница «картинки», 6 сентября 2026: «выборы
+   сделать: набить сёрдж (картинка сёржа), набить ресы, пойти файтиться (дадут
+   ресы и сёрдж, если исход положительный, если нет — меньше сёржа и меньше
+   ресов и возможно смерть, шансы нужно распределить)».
+
+   Четыре хода на пятой и седьмой зоне:
+     ротейтить как есть — ничего не меняет (ход по умолчанию, когда ресы
+       есть: под скипом и в симуляции баланс не сдвигается ни на очко);
+     набить сёрдж — CC_SURGE_FARM урона в свой счёт сёржа (движок ранжирует
+       по чистому урону, см. zone-sim applySurge) за CC_SURGE_FARM_POW силы:
+       время на стрельбу по чужим постройкам — не время на ротейт;
+     набить ресы — тот же рефреш, что был здесь и раньше (ccAskMats): при
+       пустых ресах он и остаётся ходом по умолчанию — комната ходит так же
+       (ccRoomMats), и калибровка на этом стоит;
+     пойти файтиться — бросок: CC_FIGHT.win — соседний отряд выбит движком
+       (game.eliminate: элимы, урон, строка ленты — как у любой дуэли), плюс
+       сила и ресы с трупа; CC_FIGHT.trade — разменялись: минус сила, щит снят,
+       ресы сожжены, урон получен; остаток — ты выбит сам, тем самым соседом.
+   Смерть настоящая, через движок, а не «мало хп»: место, лента, очки вечера —
+   всё как при обычной гибели. Ожидание по силе близко к нулю
+   (0.5·4 − 0.35·3 − 0.15·6 ≈ 0), а по очкам ход отрицательный: элим стоит
+   меньше, чем потерянное место, — это риск, а не подарок. */
+const CC_SURGE_FARM=120, CC_SURGE_FARM_POW=1;
+const CC_FIGHT={win:0.50, trade:0.35, pow:4, tradePow:3, diePow:6, mats:150, tradeMats:80, dmg:180, tradeHp:30};
+const CC_CHOICE_ICON={
+  stay:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#9fb3c8" stroke-width="2"/><path d="M12 5l3 7-3 7-3-7z" fill="#e8eef6"/><path d="M12 5l3 7h-6z" fill="#00d0a8"/></svg>',
+  surge:'<svg viewBox="0 0 24 24"><path d="M12 2l11 20H1z" fill="#ffd600"/><path d="M12 2l11 20H1z" fill="none" stroke="#7a5b00" stroke-width="1.2"/><path d="M13 8l-4 7h3l-1 5 4-7h-3z" fill="#1a1400"/></svg>',
+  fight:'<svg viewBox="0 0 24 24"><path d="M4 4l12 12" stroke="#e8eef6" stroke-width="2.4" stroke-linecap="round"/><path d="M20 4L8 16" stroke="#e8eef6" stroke-width="2.4" stroke-linecap="round"/><path d="M14 18l4 2 2-4" fill="none" stroke="#ff9b9b" stroke-width="2" stroke-linecap="round"/><path d="M10 18l-4 2-2-4" fill="none" stroke="#ff9b9b" stroke-width="2" stroke-linecap="round"/></svg>',
+  home:'<svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9H3z" fill="#00d0a8"/><path d="M10 20v-6h4v6" fill="#0b2a26"/></svg>',
+  quiet:'<svg viewBox="0 0 24 24"><path d="M4 18c3-8 13-8 16 0" fill="none" stroke="#9fb3c8" stroke-width="2"/><circle cx="12" cy="8" r="3" fill="#e8eef6"/></svg>',
+  contest:'<svg viewBox="0 0 24 24"><path d="M3 4l6 2 6-2 6 2v14l-6-2-6 2-6-2z" fill="#e8eef6" stroke="#9fb3c8" stroke-width="1.2"/><circle cx="14" cy="10" r="2.6" fill="#e8283f"/></svg>',
+  wall1:'<svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="1.5" fill="#c8894a"/><path d="M4 12h16M12 6v6M8 12v6M16 12v6" stroke="#7a4a1f" stroke-width="1.2"/></svg>',
+  wall2:'<svg viewBox="0 0 24 24"><rect x="2" y="9" width="10" height="10" rx="1" fill="#c5624d"/><rect x="12" y="5" width="10" height="14" rx="1" fill="#c8894a"/><path d="M2 14h10M12 12h10M7 9v5M17 5v7" stroke="#5a2a1a" stroke-width="1.1"/></svg>',
+  wall3:'<svg viewBox="0 0 24 24"><rect x="1" y="10" width="7" height="10" fill="#c5624d"/><rect x="8.5" y="6" width="7" height="14" fill="#c8894a"/><rect x="16" y="3" width="7" height="17" fill="#b7c3d1"/><path d="M1 15h7M8.5 13h7M16 11h7" stroke="#3a2a22" stroke-width="1.1"/></svg>'
+};
+// Картинка хода «набить ресы» — три стопки, как на HUD.
+function ccMatsIconHTML(){ return CC_KIT_ICON.wood+CC_KIT_ICON.brick+CC_KIT_ICON.metal; }
+// Картинка предмета из пака, когда она есть, иначе — запасной знак.
+function ccItemIconHTML(o, fallback){
+  let h=''; try{ h=o ? (weaponIconHTML(o, ccLootSet())||'') : ''; }catch(e){ h=''; }
+  return /<img/.test(h) ? h : fallback;
+}
 async function ccAskMid(you, ui){
   if(!you) return;
-  if(ccMatsLow(you)) await ccAskMats(you, ui);
+  await ccAskMenu(you, ui);
   if(ccHealNeeded(you)) await ccAskHeal(you, ui);
+}
+async function ccAskMenu(you, ui){
+  if(!you) return;
+  ccMpMark('m0'+(you.mpTag||''));
+  const T=L();
+  const m=CC_LATE_MOVES.find(x=>x.id==='refresh');
+  const pow=ccRefreshPow(you);
+  const low=ccMatsLow(you);
+  const gun=you._loot && you._loot.weapons && you._loot.weapons[0];
+  const die=Math.round((1-CC_FIGHT.win-CC_FIGHT.trade)*100);
+  const pickId=(await ccMpChoose('mid'+(you.mpTag||''), async function(){
+    return (await ccChoiceBox(T.ccMidTitle, ccKitLine(you), [
+      {id:'stay',  def:!low, icon:CC_CHOICE_ICON.stay, title:T.ccMatsStay,
+       note:low ? T.ccMatsStayNote(CC_MATS_PEN) : T.ccMidStayNote},
+      {id:'surge', icon:CC_CHOICE_ICON.surge, title:T.ccMidSurge, note:T.ccMidSurgeNote(CC_SURGE_FARM, CC_SURGE_FARM_POW)},
+      {id:'go',    def:low, icon:'<span class="cc-choice-ico wide">'+ccMatsIconHTML()+'</span>', title:T.ccMatsGo,
+       note:T.ccMatsGoNote(pow, m.fail, Math.round(m.odds*100))},
+      {id:'fight', icon:ccItemIconHTML(gun, CC_CHOICE_ICON.fight), title:T.ccMidFight,
+       note:T.ccMidFightNote(Math.round(CC_FIGHT.win*100), CC_FIGHT.pow, die)}
+    ], ui && ui.map)).id;
+  }, function(v){ return ({stay:T.ccMatsStay, surge:T.ccMidSurge, go:T.ccMatsGo, fight:T.ccMidFight})[v]||''; })).v;
+  ccMpMark('a5:'+pickId);
+  const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
+  if(pickId==='stay'){
+    await say(low ? T.ccMatsStayGot : T.ccMidStayGot, low ? true : null);
+    return;
+  }
+  if(pickId==='surge'){
+    if(you._sq) you._sq.dealt=(you._sq.dealt||0)+CC_SURGE_FARM;
+    ccAddGamePow(you, -CC_SURGE_FARM_POW);
+    await say(T.ccMidSurgeGot(CC_SURGE_FARM, CC_SURGE_FARM_POW), true);
+    return;
+  }
+  if(pickId==='go'){
+    const won=Math.random()<m.odds;
+    ccMpMark('w5:'+(won?1:0));
+    if(won){ ccAddGamePow(you, pow); ccMatsFill(you); }
+    else ccAddGamePow(you, -m.fail);
+    await say(won ? T.ccMatsFound(pow) : T.ccMatsMissed(m.fail), won);
+    return;
+  }
+  // Файт. Один бросок — у обоих клиентов один и тот же (см. ccMpChoose).
+  const r=Math.random();
+  const game=you._game, foe=(game && game.nearest) ? game.nearest(you) : null;
+  const foeName=foe ? String(foe.name||'').replace(/<[^>]+>/g,'') : '';
+  const out=ccFightApply(you, r, foe);
+  ccMpMark('w5f:'+out);
+  if(out==='win')   await say(T.ccMidFightWon(CC_FIGHT.pow, foeName), true);
+  else if(out==='die') await say(T.ccMidFightDied(foeName), false);
+  else await say(T.ccMidFightTraded(CC_FIGHT.tradePow), false);
+}
+/* Что делает файт с отрядом — отдельно от вопроса, чтобы проверялось.
+   r — бросок [0,1); foe — команда соседа (может не быть: тогда выбить некого
+   и погибнуть не от кого — исход «разменялись»). */
+function ccFightApply(you, r, foe){
+  const sq=you._sq, game=you._game;
+  const can=!!(foe && game && game.eliminate);
+  if(r<CC_FIGHT.win){
+    if(can) game.eliminate(foe, you);
+    else if(sq) sq.dealt=(sq.dealt||0)+CC_FIGHT.dmg;
+    ccAddGamePow(you, CC_FIGHT.pow);
+    you._mats=Math.min(CC_MATS_FULL, ccMats(you)+CC_FIGHT.mats);
+    return 'win';
+  }
+  if(r<CC_FIGHT.win+CC_FIGHT.trade || !can){
+    ccAddGamePow(you, -CC_FIGHT.tradePow);
+    you._mats=Math.max(0, ccMats(you)-CC_FIGHT.tradeMats);
+    if(sq){ sq.shield=0; sq.hp=Math.max(1, (sq.hp!=null?sq.hp:100)-CC_FIGHT.tradeHp); sq.taken=(sq.taken||0)+CC_FIGHT.dmg; }
+    return 'trade';
+  }
+  ccAddGamePow(you, -CC_FIGHT.diePow);
+  game.eliminate(you, foe);
+  return 'die';
 }
 /* Вопрос середины: идти за рефрешем или ротейтить тем, что есть.
    Те же числа, что у рефреша в меню восьмой зоны, — это тот же ход, просто
@@ -52167,9 +52320,16 @@ let CC_CHOICE_WAIT=15000;
    вещи по экрану — значит заставлять переводить взгляд в момент, когда смотреть
    надо как раз на карту. Если карты нет (проба, старый вызов), панель падает
    в ленту этапов, как раньше. */
-function ccChoiceBox(title, hint, options, onMap){
+/* side — картинки заголовка, его страница «картинки» 6 сентября: «сверху
+   слева аватарка моего спота, справа типа вся карта». {left, right} — готовая
+   разметка; ставится в строку под плашкой, по бокам подсказки. Кнопке можно
+   дать icon — маленькую картинку слева от названия («додумай картинки, что
+   подойдёт под надписи»). Вариант с def:true — тот, что берётся сам под
+   скипом, в симуляции и по таймеру; без def — первый, как и раньше. */
+function ccChoiceBox(title, hint, options, onMap, side){
   return ccMpIdle(new Promise(resolve=>{
     const host=onMap || document.getElementById('majorStages');
+    const dflt=options.find(o=>o && o.def) || options[0];
     let done=false;
     const answer=o=>{ if(done) return; done=true;
       clearInterval(watch); clearTimeout(bell);
@@ -52177,21 +52337,27 @@ function ccChoiceBox(title, hint, options, onMap){
       if(box && typeof ccTvOnChosen==='function') ccTvOnChosen(o);
       if(box && box.isConnected) box.remove();
       resolve(o); };
-    const auto=()=>answer(options[0]);
+    const auto=()=>answer(dflt);
     let box=null, watch=null, bell=null;
     // Симуляция спрошена отдельно от skipAnimation: высадку спрашивают ДО
     // первого этапа, когда флаг пропуска ещё не выставлен, и без этой проверки
     // вечер, отданный симуляции, всё равно останавливался бы на первом вопросе.
     if(!host || skipAnimation || careerSimOn() || (typeof CC_FF!=='undefined' && CC_FF)){
-      resolve(options[0]); return;
+      resolve(dflt); return;
     }
     box=document.createElement('div');
     box.className=onMap ? 'cc-choice cc-choice-map' : 'stage-card cc-choice';
-    box.innerHTML=`<div class="cc-choice-head"><b>${esc(title)}</b>`+
-      (hint?`<span>${hint}</span>`:'')+`</div>`+
+    const sub=(side && (side.left||side.right)) || hint
+      ? `<div class="cc-choice-sub">`+
+        (side && side.left ? `<div class="cc-choice-ava">${side.left}</div>` : '')+
+        (hint ? `<span>${hint}</span>` : '<span></span>')+
+        (side && side.right ? `<div class="cc-choice-mini">${side.right}</div>` : '')+
+        `</div>`
+      : '';
+    box.innerHTML=`<div class="cc-choice-head"><b>${esc(title)}</b>${sub}</div>`+
       `<div class="cc-choice-row">${options.map((o,i)=>
-        `<button class="cc-choice-btn${o.art?' has-art':''}" data-at="${i}">
-           ${o.art||''}<b>${esc(o.title)}</b><em>${o.note||''}</em></button>`).join('')}</div>`+
+        `<button class="cc-choice-btn${o.art?' has-art':''}${o.icon?' has-ico':''}" data-at="${i}">
+           ${o.art||''}<span class="cc-choice-tt">${o.icon?'<i class="cc-choice-ico">'+o.icon+'</i>':''}<b>${esc(o.title)}</b></span><em>${o.note||''}</em></button>`).join('')}</div>`+
       `<div class="cc-choice-bar"><i></i></div>`;
     host.appendChild(box);
     // Чат эфира видит вопрос и начинает советовать. См. ccTvOnChoice.
@@ -52279,8 +52445,9 @@ async function ccAskLoot(you, ui){
      Спрашивают одного — того, чья это роль. См. ccMpChoose и ccMpSeedOn. */
   const pickId=(await ccMpChoose('loot'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(L().ccLootTitle, L().ccLootHint,
-      [{id:'take', title:L().ccLootTake, note:listOf(mine)+' — '+L().ccLootTakeSafe, pack:mine},
-       {id:'swap', title:L().ccLootSwap,
+      [{id:'take', title:L().ccLootTake, note:listOf(mine)+' — '+L().ccLootTakeSafe, pack:mine,
+        icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.home)},
+       {id:'swap', title:L().ccLootSwap, icon:ccItemIconHTML(other.weapons[0], CC_CHOICE_ICON.contest),
         note:listOf(other)+' — '+L().ccLootSwapRisk(CC_LOOT_POI_BONUS, CC_LOOT_POI_FAIL,
           Math.round(CC_LOOT_POI_ODDS*100)), pack:other}],
       ui && ui.map)).id;
@@ -60298,13 +60465,31 @@ function careerSpotAuraBarHTML(a){
 }
 // Остров целиком, миниатюрой: тем же кадром, что и вырезка точки, только
 // карта не приближена — видно, куда именно откроется выбор.
-function careerIslandThumbHTML(set, cls){
+function careerIslandThumbHTML(set, cls, mark){
   // Ключ хранения может быть островом ('r12'), а сетка и картинка — у круга.
   const key=careerSpotGrid(set||careerBrSet());
   const art=MAP_ART[key]||MAP_ART.m2;
+  // mark — номер коробки в сетке острова: на миниатюре ставится её рамка, так
+  // видно, где твоя точка на всём острове (заголовок вопроса о высадке).
+  const z=mark!=null ? (ZONE_SETS[key]||[])[mark] : null;
+  const box=z ? `<i class="cc-spot-shot-box" style="left:${z.x}%;top:${z.y}%;width:${z.w}%;height:${z.h}%;"></i>` : '';
   return `<div class="cc-spot-shot${cls?' '+cls:''}">
     <div class="cc-spot-shot-map" style="width:100%;aspect-ratio:${MAP_ASPECT[key]||'1100/970'};
-      background-image:url('${art}'); transform:translate(-50%, -50%);"></div></div>`;
+      background-image:url('${art}'); transform:translate(-50%, -50%);">${box}</div></div>`;
+}
+// Место живой коробки в сетке острова (ZONE_SETS): сетка вечера бывает урезана
+// под лобби, и своего номера у коробки нет — ищется по координатам.
+function ccZoneGridIndex(zone, set){
+  if(!zone) return -1;
+  const key=careerSpotGrid(set||careerBrSet());
+  return (ZONE_SETS[key]||[]).findIndex(z=>Math.abs(z.x-zone.x)<0.01 && Math.abs(z.y-zone.y)<0.01);
+}
+// Картинки заголовка вопроса о высадке: слева своя точка, справа остров с её
+// рамкой. Без дома — ничего: показывать нечего.
+function ccDropSideHTML(home, set){
+  const at=ccZoneGridIndex(home, set);
+  if(at<0) return null;
+  return {left:careerSpotShotHTML(at, set, '', 1), right:careerIslandThumbHTML(set, '', at)};
 }
 // Чего стоит лут коробки — теми же очками, что видит пикер на высадке.
 function careerSpotPointsOf(i, set){
@@ -81627,9 +81812,11 @@ async function careerLandingPick(field, you, title, kinds, o){
     const p=await ccChoiceBox(L().ccDropTitle,
       // Чужие объявления — прямо в подсказке: решение принимается здесь.
       L().ccDropHint+(calls ? ' · '+L().ccDropCalls+' '+calls : ''),
-      [ home ? {id:'home', title:L().ccDropHome, note:L().ccDropHomeNote(aura, rivals)}
-             : {id:'quiet', title:L().ccDropQuiet, note:L().ccDropQuietNote},
-        {id:'contest', title:L().ccDropContest, note:L().ccDropContestNote}], onMap);
+      [ home ? {id:'home', title:L().ccDropHome, note:L().ccDropHomeNote(aura, rivals), icon:CC_CHOICE_ICON.home}
+             : {id:'quiet', title:L().ccDropQuiet, note:L().ccDropQuietNote, icon:CC_CHOICE_ICON.quiet},
+        {id:'contest', title:L().ccDropContest, note:L().ccDropContestNote, icon:CC_CHOICE_ICON.contest}], onMap,
+      // Слева своя точка, справа остров с её рамкой — его страница «картинки».
+      home ? ccDropSideHTML(home, ACTIVE_LANDING_SET) : null);
     if(p.id!=='contest') return {id:p.id, at:(p.id==='home' && home) ? ALL_LANDING_ZONES.indexOf(home) : -1};
     /* Та же комната, что и на кнопке. pre посчитан выше — им и показывается
        остров, иначе «к тебе летят двое» и карта были бы двумя разными

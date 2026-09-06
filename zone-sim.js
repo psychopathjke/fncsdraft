@@ -1245,7 +1245,45 @@
       // Кто где стоит сейчас — по этому карьера считает, у кого высокое место
       // и кто рядом, когда спрашивает игрока на восьмой зоне.
       circle: function(){ return circle; },
-      zone: function(){ return currentZone; }
+      zone: function(){ return currentZone; },
+      // The living squad standing closest to a team — who a squad that goes
+      // looking for a fight actually runs into. Null when nobody else is left.
+      nearest: function(team){
+        var me = null, best = null, bd = Infinity;
+        for(var i=0;i<squads.length;i++) if(squads[i].team === team) me = squads[i];
+        if(!me) return null;
+        for(var j=0;j<squads.length;j++){
+          var s = squads[j];
+          if(s === me || !s.alive) continue;
+          var d = (s.x-me.x)*(s.x-me.x) + (s.y-me.y)*(s.y-me.y);
+          if(d < bd){ bd = d; best = s; }
+        }
+        return best ? best.team : null;
+      },
+      // A fight the app settles itself: the player's mid-game "go fight" choice
+      // (6 September 2026). It goes through the same bookkeeping as the engine's
+      // own duels — elims, KILL_DAMAGE on both sides, the feed line, the place —
+      // so a death chosen on a menu reads exactly like a death by contact.
+      // Returns false when the loser is already gone; a winner that is gone
+      // still gets the kill written to it, the feed names it either way.
+      eliminate: function(team, byTeam){
+        var loser = null, winner = null;
+        for(var i=0;i<squads.length;i++){
+          if(squads[i].team === team) loser = squads[i];
+          if(squads[i].team === byTeam) winner = squads[i];
+        }
+        if(!loser || !loser.alive || !winner || winner === loser) return false;
+        var loserSize = (loser.team.squad && loser.team.squad.length) || 1;
+        winner.elims += loserSize;
+        winner.dealt += KILL_DAMAGE * loserSize;
+        loser.taken += KILL_DAMAGE * loserSize;
+        loser.alive = false;
+        loser.hp = 0;
+        loser.deathCause = winner.team.name;
+        loser.busy = true;
+        onDeath(loser);
+        return true;
+      }
     };
     return finish();
 
