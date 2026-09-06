@@ -1416,6 +1416,14 @@
      маленькие нарочно — 25 августа он снял плитки во всю ширину с этих же
      кнопок («этого не должно быть»), вопрос обязан оставаться одного размера. */
   .cc-choice-sub{display:flex; align-items:center; gap:10px; margin-top:8px;}
+  /* Мнение напарника: строка под заголовком и метка на его кнопке. См. ccMateOpinion. */
+  .cc-choice-mate{padding:4px 14px 8px; font-size:12px; line-height:1.3; opacity:.9;}
+  .cc-choice-mate i{font-style:normal; font-weight:700; color:var(--cc-ui-live, #ffd600);}
+  .cc-choice-mate i::after{content:':';}
+  .cc-choice-btn.mate{position:relative;}
+  /* Метка внутри кнопки, не на её кромке: на кромке её подрезал соседний ряд (снимок 7.09). */
+  .cc-choice-btn.mate::after{content:attr(data-mate); position:absolute; top:6px; right:8px; padding:1px 7px; z-index:1;
+    border-radius:8px; font-size:10px; font-weight:700; line-height:1.4; background:var(--cc-ui-live, #ffd600); color:#111;}
   .cc-choice-sub>span{flex:1 1 auto; min-width:0;}
   .cc-choice-ava, .cc-choice-mini{flex:none;}
   .cc-choice-ava .cc-spot-shot{flex:none; width:58px; aspect-ratio:1/1; border-radius:8px;
@@ -2791,6 +2799,10 @@
     clip-path:polygon(60% 0,0 55%,45% 55%,30% 100%,100% 40%,55% 40%,70% 0);}
   .zr-kit .zk-banner{position:absolute;left:50%;top:34px;transform:translateX(-50%);
     display:flex;flex-direction:column;align-items:center;gap:3px;}
+  /* Порог сёрджа до первого тика — тихая строка там же, где встанет баннер. */
+  .zr-kit .zk-surgeat{position:absolute;left:50%;top:40px;transform:translateX(-50%);
+    font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#9fb3c8;
+    background:rgba(8,12,24,.55);padding:3px 9px;border-radius:4px;white-space:nowrap;}
   .zr-kit .zk-banner .zk-tri{width:34px;height:30px;}
   .zr-kit .zk-banner .zk-tri::after{left:13px;top:9px;width:9px;height:17px;}
   .zr-kit .zk-banner b{font-size:17px;letter-spacing:.04em;text-transform:uppercase;transform:skewX(-8deg);
@@ -4151,6 +4163,10 @@
   #screen-career-hub .ch-play.ch-live-go{background:#9147ff;color:#fff;margin-top:6px;}
   #screen-career-hub .ch-play.ch-live-go:not(:disabled):hover{background:#a970ff;color:#fff;}
   #screen-career-hub .ch-play.ch-live-go:disabled{background:rgba(255,255,255,.16);color:#8fa1cc;}
+  /* «До турнира» — рядом с «Пропустить день», синяя: движение, не игра. См. careerSkipToAsk. */
+  #screen-career-hub .ch-play.ch-skipto{background:#3b6fd6;color:#fff;margin-top:6px;margin-left:6px;}
+  #screen-career-hub .ch-play.ch-skipto:not(:disabled):hover{background:#5a8af0;color:#fff;}
+  #screen-career-hub .ch-play.ch-skipto:disabled{background:rgba(255,255,255,.16);color:#8fa1cc;}
 
   /* ---- The calendar, in the lobby's colours ---------------------------------
      A month of white squares on a white plate is a spreadsheet. The lobby is
@@ -5268,7 +5284,7 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=a68adf60"></script>
+<script src="zone-sim.js?v=8519f887"></script>
 <script src="zone-replay.js?v=ee0f6613"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
@@ -6861,6 +6877,9 @@ chPlay:'Играть',
 chSoonHint:'Мейджоры в карьере ещё не подключены — следующий этап.',
 chSkip:'Пропустить день',
 chSkipAsk:'Пропустить день? Календарь назад не отматывается.',
+chSkipTo:'До турнира', chSkipToHint:(d,n)=>'Пропустить '+n+' '+ruPlural(n,'день','дня','дней')+' до '+d+' — турниры по дороге не играются',
+chSkipToAsk:(d,n,w)=>'Пропустить '+n+' '+ruPlural(n,'день','дня','дней')+' до '+d+' ('+w+')? Турниры по дороге не сыграются, календарь назад не отматывается.',
+calSkipGo:'Пропустить до этого дня', calSkipHint:'Дни пройдут, турниры по дороге не сыграются',
 ccLadderEvent:'Игрок лестницы (сгенерирован, не участник FNCS)',
 ccCupLive:'Кубок дивизиона',
 ccCupTitle:(d,n)=>'Кубок Дивизиона '+d+' — 11 игр, '+n+' '+ccSquadWord(),
@@ -7156,8 +7175,8 @@ ccLootGot:v=>'Удачно — соседняя точка забрана, +'+v+
 ccLateTitle:'Восьмая зона — как играем конец',
 ccLateHint:'Круг встал на холм. Дальше решает высота',
 ccLateHg:'Забрать хайграунд', ccLateHgNote:v=>'50 на 50: вышло — +'+v+' и лучший шанс на победу, нет — минус '+CC_HG_FAIL+' и играешь снизу',
-ccLateThird:'Третьить размен', ccLateThirdNote:(p,f,o)=>o+' из 100: зашло — +'+p+' и лучший потолок в игре, нет — минус '+f+' и ты в размене третий лишний',
-ccLateThirdWon:v=>'Зашли третьими и собрали размен, +'+v+' к силе', ccLateThirdLost:v=>'Собрали нас, −'+v+' к силе',
+ccLateThird:'Третьить размен', ccLateThirdNote:(k,d,p)=>k+' из 100: собрали размен — сосед выбит, +'+p+' к силе и его ресы · '+d+' из 100: собрали нас · остальное — постреляли и разошлись, урон в сёрдж',
+ccLateThirdWon:(p,foe)=>'Зашли третьими'+(foe?': выбили '+foe:'')+' — +'+p+' к силе, ресы с трупа', ccLateThirdLost:foe=>'Зашли третьими и собрали нас'+(foe?' — '+foe:''), ccLateThirdNone:k=>'Постреляли в чужой размен и разошлись: +'+k+' урона в сёрдж',
 ccLateTake:'Отжать точку у слабых', ccLateTakeNote:(p,f,o)=>o+' из 100: вышло — +'+p+', нет — минус '+f,
 ccLateTakeWon:v=>'Точка отжата, +'+v+' к силе', ccLateTakeLost:v=>'Они не отдали точку, −'+v+' к силе',
 ccLateRefresh:'Найти рефреш', ccLateRefreshNote:(v,f,p)=>p+'%: нашёл — +'+v+' и полные ресы, нет — минус '+f+' и вернулся в круг последним',
@@ -7176,15 +7195,23 @@ ccBuildTitle:'Третья зона — как строим', ccBuildNorm:'Ка�
 ccBuildEco:'Экономно', ccBuildEcoNote:(m,p)=>m+' за круг — ресов хватит до конца, но без построек слабее: −'+p+' к силе',
 ccBuildHeavy:'Строить много', ccBuildHeavyNote:(m,p)=>m+' за круг — +'+p+' к силе, но без рефреша к концовке пусто',
 ccBuildSet:(w,p)=>w+': '+p+' к силе на эту игру',
+ccRotTitle:'Четвёртая зона — ротация', ccRotEarly:'Сразу', ccRotEarlyNote:(s,v)=>'Выходим, как только круг показан: так '+s+'% про, дожили '+v+'% · путь свободнее, но встречаем тех, кто тоже рано',
+ccRotWith:'Со штормом', ccRotWithNote:(s,v)=>'Выходим, когда круг пошёл: так '+s+'%, дожили '+v+'% · меньше времени на виду, по дороге уже стреляют',
+ccRotLate:'Последними', ccRotLateNote:'Пережидаем и идём, когда шторм уже в пути: на входе тише, но шторм бьёт по здоровью',
+ccRotMove:'На мувменте', ccRotMoveNote:m=>'Пережидаем и улетаем на «'+m+'»: быстрее шторма, предмет сгорает',
+ccRotSet:w=>'Ротация: '+w,
 ccHealTitle:(s,h)=>'Щит '+s+' · здоровье '+h+' — лечимся?', ccHealStay:'Играть так', ccHealStayNote:'Без потерь, щит и здоровье как есть',
 ccHealGo:'Отхилиться', ccHealGoNote:(h,p)=>'щит полный, +'+h+' здоровья · пока пьёшь — минус '+p+' к силе',
 ccHealDone:(h,p)=>'Отхилились: щит 100, здоровье '+h+' · −'+p+' к силе',
 ccMatsTitle:'Ресы кончаются', ccMatsGo:'Идти за рефрешем', ccMatsStay:'Ротейтить тем, что есть',
-ccMidTitle:'Середина игры — что делаем', ccMidStayNote:'Ресы есть, щит цел — идём кругом, ничего не тратим', ccMidStayGot:'Ротейтим как есть',
-ccMidSurge:'Набить сёрдж', ccMidSurgeNote:(d,p)=>`+${d} к урону сёржа наверняка · −${p} к силе: стреляем по чужим постройкам, а не ротейтим`,
-ccMidSurgeGot:(d,p)=>`Набили сёрдж: +${d} урона, −${p} к силе`,
-ccMidFight:'Пойти файтиться', ccMidFightNote:(w,p,d)=>`${w}%: сосед выбит, +${p} к силе и его ресы · иначе размен: щит снят, −ресы · ${d}%: выбиты сами`,
-ccMidFightWon:(p,foe)=>`Файт взят${foe?': выбили '+foe:''} — +${p} к силе, ресы с трупа`,
+ccMateLeans:t=>'я бы — «'+t+'»',
+ccMidTitle:'Середина игры — что делаем',ccMidStayNote:'Ресы есть, щит цел — идём кругом, ничего не тратим', ccMidStayGot:'Ротейтим как есть',
+ccMidSurge:'Набить сёрдж', ccMidSurgeNote:(d,t,p)=>`Тэги на ротации: +${d} урона, −${t} получим (сёрдж считает чистый) · −${p} к силе за время`,
+ccMidSurgeLine:(n,at,g)=>`сёрдж включён: ${n} живых при пороге ${at}`+(g==null ? '' : (g<0 ? ` · под сёржем, до линии ${-g}` : ` · над линией на ${g}`)),
+ccMidSurgeGot:(d,t,p)=>`Набили сёрдж: +${d} урона, −${t} получено, −${p} к силе`,
+ccMidFight:'Пойти файтиться', ccMidFightNote:(w,p,d,t,k)=>`${w}%: сосед выбит, +${p} к силе и его ресы · ${d}%: выбиты сами · ${t}%: размен, щит снят · остальное — постреляли и разошлись: +${k} урона в сёрдж, −ресы`,
+ccMidFightPoke:(k,m)=>`Постреляли и разошлись: +${k} урона в сёрдж, −${m} ресов`,
+ccMidFightWon:(p,foe,g)=>`Файт взят${foe?': выбили '+foe:''}${g?' из «'+g+'»':''} — +${p} к силе, ресы с трупа`,
 ccMidFightTraded:p=>`Разменялись: щит снят, ресы сожжены, −${p} к силе`,
 ccMidFightDied:foe=>`Файт проигран${foe?' — '+foe+' выбили нас':' — нас выбили'}`,
 ccMatsGoNote:(v,f,p)=>p+'%: нашёл — +'+v+' и полные ресы, нет — минус '+f,
@@ -8770,6 +8797,9 @@ chPlay:'Play',
 chSoonHint:'Majors are not wired into a career yet — that is the next step.',
 chSkip:'Skip the day',
 chSkipAsk:'Skip the day? The calendar does not go back.',
+chSkipTo:'To the tournament', chSkipToHint:(d,n)=>'Skip '+n+' day'+(n===1?'':'s')+' to '+d+' — tournaments on the way are not played',
+chSkipToAsk:(d,n,w)=>'Skip '+n+' day'+(n===1?'':'s')+' to '+d+' ('+w+')? Tournaments on the way will not be played, and the calendar does not go back.',
+calSkipGo:'Skip to this day', calSkipHint:'The days pass; tournaments on the way are not played',
 ccLadderEvent:'Ladder player (generated, not an FNCS competitor)',
 ccCupLive:'Division cup',
 ccCupTitle:(d,n)=>'Division '+d+' Cup — 11 games, '+n+' '+ccSquadWord(),
@@ -9065,8 +9095,9 @@ ccLootGot:v=>'It worked — next POI cleared, +'+v+' power',
 ccLateTitle:'Zone 8 — how the end is played',
 ccLateHint:'The circle sits on a hill. From here the high ground decides it',
 ccLateHg:'Take the high ground', ccLateHgNote:v=>'A coin flip: won it — +'+v+' and the best shot at the win, lost it — minus '+CC_HG_FAIL+' and you play from below',
-ccLateThird:'Third-party the fight', ccLateThirdNote:(p,f,o)=>o+' in 100: it lands — +'+p+' and the best ceiling in the game, it does not — minus '+f+' and you are the odd one out',
-ccLateThirdWon:v=>'Third in and cleaned it up, +'+v+' power', ccLateThirdLost:v=>'We got cleaned up, −'+v+' power',
+ccLateThird:'Third-party the fight', ccLateThirdNote:(k,d,p)=>k+' in 100: we clean it up — the neighbour goes down, +'+p+' power and their mats · '+d+' in 100: we get cleaned up · the rest — shots exchanged, both walk, damage into surge',
+ccLateThirdWon:(p,foe)=>'Third in'+(foe?': '+foe+' eliminated':'')+' — +'+p+' power, mats off the body', ccLateThirdLost:foe=>'Third in and cleaned up'+(foe?' by '+foe:''),
+ccLateThirdNone:k=>'Shot into the fight and walked: +'+k+' surge damage',
 ccLateTake:'Take a weaker squad spot', ccLateTakeNote:(p,f,o)=>o+' in 100: it works — +'+p+', it does not — minus '+f,
 ccLateTakeWon:v=>'Spot taken, +'+v+' power', ccLateTakeLost:v=>'They held the spot, −'+v+' power',
 ccLateRefresh:'Find a refresh', ccLateRefreshNote:(v,f,p)=>p+'%: found it — +'+v+' and full mats, did not — minus '+f+' and back into the circle last',
@@ -9082,15 +9113,23 @@ ccBuildTitle:'Zone 3 — how do we build', ccBuildNorm:'As usual', ccBuildNormNo
 ccBuildEco:'Save mats', ccBuildEcoNote:(m,p)=>m+' a circle — mats last to the end, but fewer builds: −'+p+' power',
 ccBuildHeavy:'Build a lot', ccBuildHeavyNote:(m,p)=>m+' a circle — +'+p+' power, but empty by the endgame without a refresh',
 ccBuildSet:(w,p)=>w+': '+p+' power for this game',
+ccRotTitle:'Zone 4 — the rotation', ccRotEarly:'Right away', ccRotEarlyNote:(s,v)=>'Leave as soon as the circle shows: '+s+'% of pros do, '+v+'% survive · clearer path, but you meet everyone else who left early',
+ccRotWith:'With the storm', ccRotWithNote:(s,v)=>'Leave when the circle starts moving: '+s+'% do, '+v+'% survive · less time in the open, but the road is already being shot',
+ccRotLate:'Last', ccRotLateNote:'Wait it out and go once the storm is on its way: quieter on entry, but the storm takes health',
+ccRotMove:'On the movement item', ccRotMoveNote:m=>'Wait it out and fly on the '+m+': faster than the storm, the item is spent',
+ccRotSet:w=>'Rotation: '+w,
 ccHealTitle:(s,h)=>'Shield '+s+' · health '+h+' — heal up?', ccHealStay:'Play on', ccHealStayNote:'No cost, shield and health stay as they are',
 ccHealGo:'Heal up', ccHealGoNote:(h,p)=>'full shield, +'+h+' health · while you drink — minus '+p+' power',
 ccHealDone:(h,p)=>'Healed: shield 100, health '+h+' · −'+p+' power',
 ccMatsTitle:'Running out of mats', ccMatsGo:'Go for a refresh', ccMatsStay:'Rotate with what you have',
-ccMidTitle:'Mid game — what do we do', ccMidStayNote:'Mats in hand, shield up — rotate with the circle, spend nothing', ccMidStayGot:'Rotating as we are',
-ccMidSurge:'Farm surge', ccMidSurgeNote:(d,p)=>`+${d} surge damage for sure · −${p} power: shooting builds instead of rotating`,
-ccMidSurgeGot:(d,p)=>`Surge farmed: +${d} damage, −${p} power`,
-ccMidFight:'Go fight', ccMidFightNote:(w,p,d)=>`${w}%: the neighbour goes down, +${p} power and their mats · else a trade: shield gone, −mats · ${d}%: we go down`,
-ccMidFightWon:(p,foe)=>`Fight won${foe?': '+foe+' eliminated':''} — +${p} power, mats off the body`,
+ccMateLeans:t=>"I'd go «"+t+"»",
+ccMidTitle:'Mid game — what do we do',ccMidStayNote:'Mats in hand, shield up — rotate with the circle, spend nothing', ccMidStayGot:'Rotating as we are',
+ccMidSurge:'Farm surge', ccMidSurgeNote:(d,t,p)=>`Tags on the rotate: +${d} dealt, −${t} taken (surge counts net) · −${p} power for the time`,
+ccMidSurgeLine:(n,at,g)=>`surge is on: ${n} alive, threshold ${at}`+(g==null ? '' : (g<0 ? ` · under surge, ${-g} to the line` : ` · ${g} above the line`)),
+ccMidSurgeGot:(d,t,p)=>`Surge farmed: +${d} dealt, −${t} taken, −${p} power`,
+ccMidFight:'Go fight', ccMidFightNote:(w,p,d,t,k)=>`${w}%: the neighbour goes down, +${p} power and their mats · ${d}%: we go down · ${t}%: a trade, shield gone · the rest — shots exchanged, both walk: +${k} surge damage, −mats`,
+ccMidFightPoke:(k,m)=>`Shots exchanged, both walked: +${k} surge damage, −${m} mats`,
+ccMidFightWon:(p,foe,g)=>`Fight won${foe?': '+foe+' eliminated':''}${g?' with the '+g:''} — +${p} power, mats off the body`,
 ccMidFightTraded:p=>`Traded: shield gone, mats burned, −${p} power`,
 ccMidFightDied:foe=>`Fight lost${foe?' — '+foe+' eliminated us':' — we were eliminated'}`,
 ccMatsGoNote:(v,f,p)=>p+'%: found it — +'+v+' and full mats, did not — minus '+f,
@@ -11117,8 +11156,9 @@ ccLootGot:v=>'Réussi — POI voisin nettoyé, +'+v+' de puissance',
 ccLateTitle:'Zone 8 — comment on joue la fin',
 ccLateHint:'Le cercle tombe sur une colline. La hauteur décide',
 ccLateHg:'Prendre le high ground', ccLateHgNote:v=>'Pile ou face : gagné — +'+v+' et la meilleure chance de win, perdu — moins '+CC_HG_FAIL+' et tu joues en bas',
-ccLateThird:'Third-party le combat', ccLateThirdNote:(p,f,o)=>o+' sur 100 : ça passe — +'+p+' et le meilleur plafond du jeu, sinon — moins '+f+' et tu es le troisième de trop',
-ccLateThirdWon:v=>'Entrés en troisième et tout ramassé, +'+v+' de puissance', ccLateThirdLost:v=>'On nous a ramassés, −'+v+' de puissance',
+ccLateThird:'Third-party le combat', ccLateThirdNote:(k,d,p)=>k+' sur 100 : on nettoie — le voisin tombe, +'+p+' de puissance et ses mats · '+d+' sur 100 : on se fait nettoyer · le reste — échange de tirs, chacun repart, dégâts pour le surge',
+ccMateLeans:t=>'moi, je dirais « '+t+' »',
+ccLateThirdWon:(p,foe)=>'Entrés en troisième'+(foe?' : '+foe+' éliminé':'')+' — +'+p+' de puissance, mats du corps', ccLateThirdLost:foe=>'Entrés en troisième et nettoyés'+(foe?' par '+foe:''), ccLateThirdNone:k=>'Tiré dans le combat et reparti : +'+k+' de dégâts pour le surge',
 ccLateTake:'Prendre le spot des plus faibles', ccLateTakeNote:(p,f,o)=>o+' sur 100 : ça marche — +'+p+', sinon — moins '+f,
 ccLateTakeWon:v=>'Spot pris, +'+v+' de puissance', ccLateTakeLost:v=>'Ils ont tenu le spot, −'+v+' de puissance',
 ccLateRefresh:'Chercher un refresh', ccLateRefreshNote:v=>'Sûr, mais plus petit : +'+v,
@@ -11990,6 +12030,9 @@ chPlay:'Jouer',
 chSoonHint:'Les Majors ne sont pas encore branchés sur la carrière — c’est la prochaine étape.',
 chSkip:'Passer la journée',
 chSkipAsk:'Passer la journée ? Le calendrier ne revient pas en arrière.',
+chSkipTo:'Jusqu’au tournoi', chSkipToHint:(d,n)=>'Passer '+n+' jour'+(n>1?'s':'')+' jusqu’au '+d+' — les tournois en chemin ne sont pas joués',
+chSkipToAsk:(d,n,w)=>'Passer '+n+' jour'+(n>1?'s':'')+' jusqu’au '+d+' ('+w+') ? Les tournois en chemin ne seront pas joués, le calendrier ne revient pas en arrière.',
+calSkipGo:'Passer jusqu’à ce jour', calSkipHint:'Les jours passent, les tournois en chemin ne sont pas joués',
 calGoHere:'Jouer jusqu’à ce jour',
 calFfGo:'Jouer',
 chLogTitle:'Historique',
@@ -13575,6 +13618,9 @@ chPlay:"Gioca",
 chSoonHint:"I Major non sono ancora collegati alla carriera — è il prossimo passo.",
 chSkip:"Salta il giorno",
 chSkipAsk:"Saltare il giorno? Il calendario non torna indietro.",
+chSkipTo:"Fino al torneo", chSkipToHint:(d,n)=>'Salta '+n+' giorn'+(n===1?'o':'i')+' fino al '+d+' — i tornei lungo la strada non si giocano',
+chSkipToAsk:(d,n,w)=>'Saltare '+n+' giorn'+(n===1?'o':'i')+' fino al '+d+' ('+w+')? I tornei lungo la strada non verranno giocati, il calendario non torna indietro.',
+calSkipGo:"Salta fino a questo giorno", calSkipHint:"I giorni passano, i tornei lungo la strada non si giocano",
 evEvent:"Evento",
 evEvents:"Eventi",
 evPromos:"Promozioni",
@@ -14351,9 +14397,10 @@ ccLateHint:"Il cerchio è su una collina. Da qui decide l'altura",
 ccLateHg:"Prendi l'altura",
 ccLateRefresh:"Cerca un refresh",
 ccLateThird:"Entrare terzi nello scontro",
-ccLateThirdNote:(p,f,o)=>o+" su 100: riesce — +"+p+" e il tetto più alto del gioco, no — meno "+f+" e il terzo di troppo sei tu",
-ccLateThirdWon:v=>"Entrati terzi e ripuliti tutti, +"+v+" di potenza",
-ccLateThirdLost:v=>"Hanno ripulito noi, −"+v+" di potenza",
+ccLateThirdNote:(k,d,p)=>k+" su 100: ripuliamo — il vicino cade, +"+p+" di potenza e i suoi materiali · "+d+" su 100: ripuliscono noi · il resto — scambio di colpi e via, danni per il surge",
+ccMateLeans:t=>"io direi «"+t+"»",
+ccLateThirdWon:(p,foe)=>"Entrati terzi"+(foe?": "+foe+" eliminato":"")+" — +"+p+" di potenza, materiali dal corpo", ccLateThirdNone:k=>"Sparato nello scontro altrui e via: +"+k+" danni per il surge",
+ccLateThirdLost:foe=>"Entrati terzi e ripuliti"+(foe?" da "+foe:""),
 ccLateTake:"Togliere il punto ai più deboli",
 ccLateTakeNote:(p,f,o)=>o+" su 100: funziona — +"+p+", no — meno "+f,
 ccLateTakeWon:v=>"Punto preso, +"+v+" di potenza",
@@ -16044,6 +16091,9 @@ chPlay:"Jogar",
 chSoonHint:"Os Majors ainda não estão ligados à carreira — é o próximo passo.",
 chSkip:"Pular o dia",
 chSkipAsk:"Pular o dia? O calendário não volta atrás.",
+chSkipTo:"Até o torneio", chSkipToHint:(d,n)=>'Pular '+n+' dia'+(n===1?'':'s')+' até '+d+' — os torneios no caminho não são jogados',
+chSkipToAsk:(d,n,w)=>'Pular '+n+' dia'+(n===1?'':'s')+' até '+d+' ('+w+')? Os torneios no caminho não serão jogados, o calendário não volta atrás.',
+calSkipGo:"Pular até este dia", calSkipHint:"Os dias passam, os torneios no caminho não são jogados",
 evEvent:"Evento",
 evEvents:"Eventos",
 evPromos:"Promoções",
@@ -16820,9 +16870,10 @@ ccLateHint:"O círculo está num morro. Daqui quem decide é a altura",
 ccLateHg:"Pegar a altura",
 ccLateRefresh:"Procurar um refresh",
 ccLateThird:"Entrar de terceiro na briga",
-ccLateThirdNote:(p,f,o)=>o+" em 100: dá certo — +"+p+" e o melhor teto do jogo, não — menos "+f+" e o terceiro sobrando é você",
-ccLateThirdWon:v=>"Entramos de terceiro e limpamos, +"+v+" de força",
-ccLateThirdLost:v=>"Limparam a gente, −"+v+" de força",
+ccLateThirdNote:(k,d,p)=>k+" em 100: limpamos — o vizinho cai, +"+p+" de força e os materiais dele · "+d+" em 100: limpam a gente · o resto — troca de tiros e cada um segue, dano para o surge",
+ccMateLeans:t=>"eu iria de «"+t+"»",
+ccLateThirdWon:(p,foe)=>"Entramos de terceiro"+(foe?": "+foe+" eliminado":"")+" — +"+p+" de força, materiais do corpo", ccLateThirdNone:k=>"Atiramos na briga alheia e seguimos: +"+k+" de dano para o surge",
+ccLateThirdLost:foe=>"Entramos de terceiro e limpam a gente"+(foe?" — "+foe:""),
 ccLateTake:"Tomar o ponto dos mais fracos",
 ccLateTakeNote:(p,f,o)=>o+" em 100: funciona — +"+p+", não — menos "+f,
 ccLateTakeWon:v=>"Ponto tomado, +"+v+" de força",
@@ -43493,6 +43544,9 @@ function chooseMode(size, major){
   pendingYear = YEAR_CHAINS[major] ? major : null;
   MODE_ART_NOW=modeArtFor(size, major);
   CC_DRAFT_RUN=true;   // драфт, не командный вечер — мультиплеер молчит (см. ccMpOn)
+  // Настройка комнаты прошлого карьерного вечера (единицы слабости дивизиона,
+  // принудительный профиль финала соло) в драфт не переносится.
+  if(typeof ccZoneTuneFor==='function') ccZoneTuneFor(null);
   pendingCardSet = TILE_CARD_SET[major] || 'm2';
   applyLobbyTheme(true);
   buildPreRegionChecks();
@@ -44583,7 +44637,15 @@ const LANDING_ZONE_SHARE={2:1, 3:0.68, 4:0.52};
    карты. Сколько клеток на самом деле вышло у каждого острова, держит сторож
    check-landing-solo-grid — у мелких наборов Reload потолок ниже сотни, и это
    честный предел их собственных прямоугольников, а не недосмотр. */
-const CC_SOLO_GRID=100, LANDING_ZONE_SOLO_MIN=2.5;
+/* Сто клеток на сотню игроков — это высадка без единого контеста: на s42
+   дробление доходило до ста, 97 ботов садились в 97 разных клеток, и за
+   первую зону выбывал один при реальных одиннадцати из 97 (реплей финала
+   Solo Series EU 24.01.2026). Январская серия на m2 дробилась только до 58
+   (упор в LANDING_ZONE_SOLO_MIN) — и именно её карту с красными коробками по
+   два-три ника он прислал как образец 6 сентября: «как на соло выглядела,
+   так и на solo fncs, а не 100 квадратиков». Потолок дробления — 60: m2 как
+   была, s42 — 60 коробок на сотню, сорок из них на двоих. */
+const CC_SOLO_GRID=60, LANDING_ZONE_SOLO_MIN=2.5;
 /* Набор, который уже нарисован под соло, дробить нечем и незачем.
 
    Дробление существует потому, что дуо-сетка на соло-лобби редка: тридцать
@@ -51631,7 +51693,10 @@ function applyStageBias(pointsFn){
   // signal — an open stage is a kill race and a final is played for placement,
   // and one setting cannot be both. Reading it off the scoring table here means
   // no call site has to remember to set it, exactly as with the two above.
-  if(typeof ZoneSim !== 'undefined') ZoneSim.profile(finals ? 'finals' : 'open');
+  // Карьера может назвать профиль сама (финал соло играется под очками
+  // Victory Cup, но это финал) — см. CC_ZONE_PROFILE у ccZoneTuneFor.
+  const forced = (typeof CC_ZONE_PROFILE !== 'undefined') ? CC_ZONE_PROFILE : null;
+  if(typeof ZoneSim !== 'undefined') ZoneSim.profile(forced || (finals ? 'finals' : 'open'));
 }
 // The trade, on its own. It was written out twice inside simulateGame — once
 // for the pair loop and once for the hot streak — and the zone engine needs a
@@ -51732,6 +51797,12 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
     .sort((a,b)=>String(a.mpTag||a.name)<String(b.mpTag||b.name) ? -1 : 1);
   const game=ZoneSim.simulateZoneGame(teams, {
     rng: Math.random, land: ZONE_SETS[set], aspect: aspect,
+    // Острова Reload (r1–r4) идут по своему шторму — см. RELOAD_PHASES в zone-sim,
+    // и с возрождениями до восьмого круга — см. onDeath там же.
+    phases: /^r\d$/.test(set) ? ZoneSim.RELOAD_PHASES : undefined,
+    // В соло-Reload возрождать некому — без напарника смерть окончательная
+    // (реплеи Reload Solo Victory Cup S41: 40 → 27 к восьмому кругу, а не 40).
+    respawnUntilZone: (/^r\d$/.test(set) && squadSize>1) ? CC_RELOAD_RESPAWN_ZONE : 0,
     startOf: t => { const z=t.landingZone;
       if(z) return {x: z.x + z.w/2, y: z.y + z.h/2};
       const grid=ZONE_SETS[set];
@@ -51838,8 +51909,9 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
    что есть. Чтобы игрок думал, что больше шанс даст зону пережить».
 
    Ресы — одно число, а не инвентарь: каждый круг стоит стройки
-   (CC_MATS_ZONE), рефреш пополняет, высокая земля тратит вдвое. Когда их
-   меньше CC_MATS_LOW, концовка стоит штрафа CC_MATS_PEN — строиться нечем.
+   (CC_MATS_ZONE), рефреш пополняет, высокая земля тратит вдвое. Концовка
+   стоит по остатку ступенями (CC_MATS_BANDS): полная треть — ноль, средняя
+   −1, нижняя — CC_MATS_PEN, строиться нечем.
    Штраф общий: комната живёт по тем же числам (ccRoomMats), иначе это был бы
    налог на игрока, а лестница дивизионов калибровалась на равных.
 
@@ -51848,10 +51920,41 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
    этап). Поэтому вопрос про рефреш приходит на 5-й и 7-й зоне и ТОЛЬКО когда
    ресы кончились, то есть когда ответ на что-то влияет. Полные ресы — вопроса
    нет, и это правильный молчок. */
-const CC_MATS_FULL=550, CC_MATS_ZONE=110, CC_MATS_LOW=160, CC_MATS_PEN=3;
+const CC_MATS_FULL=550, CC_MATS_ZONE=110, CC_MATS_PEN=3;
 const CC_MATS_HG_EXTRA=90;   // высокая земля строится, и это дороже обычного круга
+/* КОНЦОВКА ПО ОСТАТКУ — ступенями, а не одним порогом. Его вопрос 6 сентября:
+   «как ресурсы влияют на количество силы? чем больше, тем же лучше в реальной
+   игре». До этого было «есть/нет»: ниже CC_MATS_LOW −3, выше — ноль, и 550
+   ресов ничем не отличались от 200.
+
+   Единственный найденный замер — Tracker, финал DreamHack Solo NAE 15.10.2020,
+   постройки на старте зоны (150 = полный кап 1500) и кто дожил до следующей:
+
+     на старте зоны        зона 4 → 5    зона 6 → 7
+     ≤50 построек (≤1/3)      50%          42%
+     51–100 (1/3–2/3)         76%          72%
+     >100 (>2/3)              93%          86%
+
+   Разница между «мало» и «полно» почти двукратная, середина ближе к верху,
+   чем к низу: в логитах зона 6 даёт 1.28 между низом и серединой и 0.83 между
+   серединой и верхом. Отсюда ступени: верхняя треть — ноль, средняя −1,
+   нижняя — прежние −3 (1.28:0.83 ≈ 3:1.2). Низ оставлен на −3 нарочно: на нём
+   считано ожидание рефреша (см. CC_LATE_MOVES). Штраф по-прежнему общий —
+   комната идёт по тем же ступеням, поэтому лестница дивизионов не двигается,
+   а меняется только цена решений: экономная стройка и ранний рефреш стали
+   стоить того, чего стоят по данным. Замер 2026 года снять не удалось:
+   в JSON реплеев Tracker'а есть подборы ресов, урон и здоровье, но не остаток.
+   Проба — tools/career-mats-band-probe.js. */
+const CC_MATS_BANDS=[{from:2/3, pow:0}, {from:1/3, pow:-1}, {from:0, pow:-CC_MATS_PEN}];
+// «Мало» — нижняя ступень; на ней задаётся вопрос про рефреш и ходит комната.
+const CC_MATS_LOW=Math.round(CC_MATS_FULL/3);
+function ccMatsEndPow(t){
+  const f=ccMats(t)/CC_MATS_FULL;
+  const b=CC_MATS_BANDS.find(x=>f>=x.from)||CC_MATS_BANDS[CC_MATS_BANDS.length-1];
+  return b.pow;
+}
 function ccKitInit(teams){
-  (teams||[]).forEach(t=>{ t._mats=CC_MATS_FULL; t._loot=null; t._matsPen=false; t._buildMul=1; t._healed=0; });
+  (teams||[]).forEach(t=>{ t._mats=CC_MATS_FULL; t._loot=null; t._matsPen=false; t._buildMul=1; t._healed=0; t._rot=null; });
   CC_KIT_ZONE=0;
 }
 /* ПАНЕЛЬ НАБОРА НА КАРТЕ — его правка 5 сентября: «я бы хотел на симуляцию
@@ -51954,10 +52057,15 @@ function ccKitPanel(lobby, frame){
   const active = frame.surgeAt>0 && frame.surgeLine!=null;
   const gap = active ? (Number(d.n)||0)-frame.surgeLine : 0;
   const tri='<i class="zk-tri"></i>';
+  /* И порог заранее — его вопрос 6 сентября «а на экране у игрока есть
+     сёрдж?»: пока сёрдж никого не бьёт, но фаза его уже знает, стоит тихая
+     строка «сёрдж с 60 · в игре 76», как между зонами на турнирном HUD. */
   const surge = active
     ? '<div class="zk-banner'+(d.u?' on':'')+'">'+tri+'<b>'+esc(d.u ? T.ccKitUnderBanner : T.ccKitSurgeBanner)+'</b></div>'+
       '<div class="zk-thresh'+(d.u?' on':' ok')+'">'+tri+'<div><b>'+Math.abs(Math.round(gap))+'</b><span>'+esc(d.u ? T.ccKitBelowCap : T.ccKitAboveCap)+'</span></div></div>'
-    : '';
+    : (frame.surgeAt>0
+        ? '<div class="zk-surgeat">'+esc(T.ccKitSurgeAt(frame.surgeAt, frame.players!=null ? frame.players : ''))+'</div>'
+        : '');
   // Золотой шестиугольник у полосок — очки сессии («поинты» турнирного HUD):
   // этап плюс текущая игра, из живого счёта таблицы (CC_KIT_PTS), иначе этап.
   const level=CC_KIT_PTS!=null ? CC_KIT_PTS : Math.round(you.stagePts||0);
@@ -52039,17 +52147,22 @@ function ccKitLine(t){
                         .map(o=>o&&o.name).filter(Boolean).join(' · ') : '';
   return L().ccKitLine(mats, ccMatsLow(t) ? L().ccKitLow : '', loot);
 }
-// Штраф за пустые ресы в концовке — одинаково игроку и комнате, один раз.
+// Цена концовки по остатку ресов (CC_MATS_BANDS) — одинаково игроку и
+// комнате, один раз.
 function ccMatsPenalty(teams){
   (teams||[]).forEach(t=>{
-    if(t._matsPen || !ccMatsLow(t)) return;
+    if(t._matsPen) return;
     t._matsPen=true;
-    ccAddGamePow(t, -CC_MATS_PEN);
+    const p=ccMatsEndPow(t);
+    if(p) ccAddGamePow(t, p);
   });
 }
 const CC_GAME_STOPS=[
   // Третья зона: лут и следом — как строим (ccAskBuild).
   {zone:3, ask:async (you, ui)=>{ await ccAskLoot(you, ui); await ccAskBuild(you, ui); }, room:ccRoomLoot},
+  // Четвёртая: ротация — когда выходим к следующему кругу (ccAskRot). Комната
+  // ходит по навыку, как ходила: движок читает team._rot только у людей.
+  {zone:4, ask:(you, ui)=>ccAskRot(you, ui)},
   // Пятая и седьмая: ресы, если кончились, и лечение, если щит снят (ccAskMid).
   // Пятая: меню середины (сёрдж, ресы, файт) — всегда; седьмая — то же меню,
   // но только когда есть о чём: ресы кончились или щит снят.
@@ -52110,6 +52223,51 @@ async function ccAskBuild(you, ui){
     await ccChoiceResult(ui && ui.map, line, null);
   }
 }
+/* РОТАЦИЯ — вопрос четвёртой зоны. Его слово 6 сентября: «делай всё, что
+   считаешь максимально реалистичным». В реальном матче это самое частое
+   решение, а в симуляции круг проходил сам.
+
+   Замер (реплеи трёх игр финала Major 2 EU, 2 августа 2026, сессии 00743564,
+   24c56dba, 916190f5; момент выхода = отряд ушёл дальше 3000 юнитов от точки,
+   где встретил новый круг; «дожил» = жив на старте зоны через одну):
+     середина (зоны 3–7), 417 отрядо-зон:
+       сразу (до того, как шторм пошёл)   81%  дожили 82%
+       со штормом (пока он идёт)          12%  дожили 77%
+       позже (когда шторм уже пришёл)      3%  дожили 100% (11 случаев)
+       не вышли вовсе                      5%  дожили 0%
+     концовка (8+): сразу 63% (70 случаев), со штормом 49% (87).
+   Первая версия замера считала по ВХОДУ в круг и давала «поздним» 100% на
+   40 случаях — это смещение выжившими: кто умер по дороге, не вошёл вовсе.
+   По выходу картина честная: раннего выхода держатся четверо из пяти, и он
+   же надёжнее в концовке.
+
+   Ответ пишется в you._rot и читается движком в runPhase (zone-sim.js):
+   время выхода, скорость на мувменте. Исход — не бросок, а сама игра: шторм
+   бьёт по таблице, стычки на входе решает движок. Мувмент — из пака третьей
+   зоны, сгорает на один круг. */
+const CC_ROT_REAL={early:{share:81, surv:82}, with:{share:12, surv:77}, late:{share:3, surv:100}};
+async function ccAskRot(you, ui){
+  if(!you) return;
+  ccMpMark('ro0'+(you.mpTag||''));
+  const T=L();
+  const mv=you._loot && you._loot.move;
+  const name=id=>({early:T.ccRotEarly, with:T.ccRotWith, late:T.ccRotLate, move:T.ccRotMove})[id]||'';
+  const opts=[
+    {id:'early', def:true, icon:CC_CHOICE_ICON.run,   title:T.ccRotEarly, note:T.ccRotEarlyNote(CC_ROT_REAL.early.share, CC_ROT_REAL.early.surv)},
+    {id:'with',  icon:CC_CHOICE_ICON.storm, title:T.ccRotWith,  note:T.ccRotWithNote(CC_ROT_REAL.with.share, CC_ROT_REAL.with.surv)},
+    {id:'late',  icon:CC_CHOICE_ICON.stay,  title:T.ccRotLate,  note:T.ccRotLateNote}
+  ];
+  if(mv) opts.push({id:'move', icon:ccItemIconHTML(mv, CC_CHOICE_ICON.run), title:T.ccRotMove, note:T.ccRotMoveNote(mv.name)});
+  const pickId=(await ccMpChoose('rot'+(you.mpTag||''), async function(){
+    return (await ccChoiceBox(T.ccRotTitle, ccKitLine(you), opts, ui && ui.map)).id;
+  }, function(v){ return name(v); })).v;
+  ccMpMark('a4:'+pickId);
+  you._rot=pickId;
+  if(pickId==='move' && you._loot) you._loot.move=null;
+  const line=T.ccRotSet(name(pickId));
+  if(ui && ui.note) ui.note(line);
+  await ccChoiceResult(ui && ui.map, line, null);
+}
 async function ccAskHeal(you, ui){
   if(!you || !ccHealNeeded(you)) return;
   ccMpMark('h0'+(you.mpTag||''));
@@ -52150,12 +52308,73 @@ async function ccAskHeal(you, ui){
    всё как при обычной гибели. Ожидание по силе близко к нулю
    (0.5·4 − 0.35·3 − 0.15·6 ≈ 0), а по очкам ход отрицательный: элим стоит
    меньше, чем потерянное место, — это риск, а не подарок. */
-const CC_SURGE_FARM=120, CC_SURGE_FARM_POW=1;
-const CC_FIGHT={win:0.50, trade:0.35, pow:4, tradePow:3, diePow:6, mats:150, tradeMats:80, dmg:180, tradeHp:30};
+/* ЧИСЛА СЕРЕДИНЫ — ПО ЗАМЕРУ, а не на глаз. Его слово 6 сентября: «доделай ещё
+   с выборами, всё реалистично было, сёрдж и т.д., поищи в интернете».
+
+   Замер: три игры финала FNCS Major 2 EU, 2 августа 2026 (реплеи Tracker,
+   сессии 00743564, 24c56dba, 916190f5; JSON реплея несёт каждый урон с
+   атакующим и жертвой, нокдауны, смерти и зоны). Стычка = пара отрядов,
+   обменявшаяся ≥60 урона с паузами не больше 20 с; исход считан по каждой
+   стороне, потери — в 30 с после последнего выстрела.
+
+     середина (зоны 4–7), 406 сторон:
+       разошлись без потерь   56%   (урон по стороне ≈70)
+       размен: кто-то лёг,
+         отряд жив            15%
+       сосед выбит            14%
+       выбиты сами            15%
+     концовка (8+), 312 сторон: без потерь 30%, размен 20%, выбили 19%,
+       выбиты 31% — третьи стороны.
+
+   Отсюда файт: решающий исход (кто-то из двух выбит) — 29%, и КТО именно,
+   решает сила через ту же дуэльную формулу, что у движка (ccFightApply);
+   размен 15%; остальное — постреляли и разошлись: урон в сёрдж, ресы на
+   стройку, силы не меняет. Было 50/35/15 — файт середины был подарком.
+
+   Сёрдж: в двух играх из трёх лобби стояло ВЫШЕ порога с 4-й по 10-ю зону
+   (76 живых при пороге 60 на пятой, 58 при 40 на седьмой): 45–49 тиков по 25,
+   у 10 отрядов, от 1 до 9 тиков на отряд, 3 смерти от сёрджа. В третьей игре
+   — ни одного тика: 58 при 60 на пятой, 46 при 40 на седьмой, но линия
+   срезала отряды, отстававшие на 500+ чистого урона. Поэтому ход «набить
+   сёрдж» есть только когда сёрдж ВКЛЮЧЁН (живых больше порога, см. кадр
+   движка), а его цена — урон стычки по замеру: +80 своих, −40 полученных
+   (чистый урон, правило Epic со 2 октября 2025), −1 к силе за время. */
+const CC_SURGE_FARM=80, CC_SURGE_TAKEN=40, CC_SURGE_FARM_POW=1;
+const CC_FIGHT={decide:0.29, trade:0.15, pow:4, tradePow:3, diePow:6, mats:150, tradeMats:80, dmg:180, tradeHp:30,
+                pokeDmg:70, pokeMats:40};
+/* Шанс выбить соседа, когда стычка решается: та же дуэльная формула, что у
+   движка (resolveDuel), по силе ближнего боя обеих команд. Без соседа — монетка. */
+function ccFightWinOdds(you, foe){
+  if(!you || !foe) return 0.5;
+  const e=(typeof DUEL_POW_EXPONENT_BY_MODE!=='undefined' && DUEL_POW_EXPONENT_BY_MODE[squadSize])||5;
+  const a=Math.max(1, you._pc||you._pf||you.pow||1), b=Math.max(1, foe._pc||foe._pf||foe.pow||1);
+  const pa=Math.pow(a, e), pb=Math.pow(b, e);
+  return pa/(pa+pb);
+}
+/* Сёрдж на этой остановке — по последнему кадру движка: живых против порога
+   фазы и чистый урон отряда против линии. null, когда кадра нет. */
+function ccSurgeState(you){
+  const game=you && you._game, fr=game && game.frames ? game.frames() : null;
+  const f=fr && fr.length ? fr[fr.length-1] : null;
+  if(!f || !(f.surgeAt>0)) return null;
+  const sq=you._sq||{};
+  const net=Math.round((sq.dealt||0)-(sq.taken||0));
+  return {on:f.players>f.surgeAt, players:f.players, at:f.surgeAt,
+          gap:(f.surgeLine!=null) ? net-f.surgeLine : null, net:net};
+}
 const CC_CHOICE_ICON={
   stay:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#9fb3c8" stroke-width="2"/><path d="M12 5l3 7-3 7-3-7z" fill="#e8eef6"/><path d="M12 5l3 7h-6z" fill="#00d0a8"/></svg>',
   surge:'<svg viewBox="0 0 24 24"><path d="M12 2l11 20H1z" fill="#ffd600"/><path d="M12 2l11 20H1z" fill="none" stroke="#7a5b00" stroke-width="1.2"/><path d="M13 8l-4 7h3l-1 5 4-7h-3z" fill="#1a1400"/></svg>',
   fight:'<svg viewBox="0 0 24 24"><path d="M4 4l12 12" stroke="#e8eef6" stroke-width="2.4" stroke-linecap="round"/><path d="M20 4L8 16" stroke="#e8eef6" stroke-width="2.4" stroke-linecap="round"/><path d="M14 18l4 2 2-4" fill="none" stroke="#ff9b9b" stroke-width="2" stroke-linecap="round"/><path d="M10 18l-4 2-2-4" fill="none" stroke="#ff9b9b" stroke-width="2" stroke-linecap="round"/></svg>',
+  /* Картинки концовки — его слово 6 сентября: «добавь везде картинки в
+     симуляции, чтобы подходило в тему». Высота — башня из панелей, за зоной —
+     фиолетовое кольцо шторма с точкой снаружи, рефреш — сундук, низ — тот же
+     знак «остаёмся». Третьение и отжатие берут скрещённые стволы и флаг точки. */
+  // Ротация «сразу» — бегущая стрелка к кругу.
+  run:'<svg viewBox="0 0 24 24"><circle cx="18" cy="12" r="5" fill="none" stroke="#9fb3c8" stroke-width="1.6"/><path d="M3 12h10" stroke="#00d0a8" stroke-width="2.6" stroke-linecap="round"/><path d="M9 8l4 4-4 4" fill="none" stroke="#00d0a8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  tower:'<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="6" fill="#b7c3d1"/><rect x="6" y="9" width="12" height="6" fill="#c8894a"/><rect x="3" y="15" width="18" height="6" fill="#c5624d"/><path d="M6 15h12M9 9h6M12 3v6M12 9v6M12 15v6" stroke="#3a2a22" stroke-width="1"/><path d="M15 3l5-2v4z" fill="#ffd600"/></svg>',
+  storm:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="#b36bff" stroke-width="2.4"/><circle cx="12" cy="12" r="8" fill="#b36bff" opacity=".18"/><circle cx="20" cy="6" r="2.4" fill="#e8eef6"/><path d="M20 8.5v3" stroke="#e8eef6" stroke-width="1.6"/></svg>',
+  chest:'<svg viewBox="0 0 24 24"><path d="M3 9a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v2H3z" fill="#c8894a"/><rect x="3" y="11" width="18" height="9" rx="1.5" fill="#8a5a2b"/><rect x="10" y="9" width="4" height="5" rx="1" fill="#ffd600"/><path d="M3 11h18" stroke="#3a2a22" stroke-width="1"/></svg>',
   home:'<svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9H3z" fill="#00d0a8"/><path d="M10 20v-6h4v6" fill="#0b2a26"/></svg>',
   quiet:'<svg viewBox="0 0 24 24"><path d="M4 18c3-8 13-8 16 0" fill="none" stroke="#9fb3c8" stroke-width="2"/><circle cx="12" cy="8" r="3" fill="#e8eef6"/></svg>',
   contest:'<svg viewBox="0 0 24 24"><path d="M3 4l6 2 6-2 6 2v14l-6-2-6 2-6-2z" fill="#e8eef6" stroke="#9fb3c8" stroke-width="1.2"/><circle cx="14" cy="10" r="2.6" fill="#e8283f"/></svg>',
@@ -52183,17 +52402,32 @@ async function ccAskMenu(you, ui){
   const pow=ccRefreshPow(you);
   const low=ccMatsLow(you);
   const gun=you._loot && you._loot.weapons && you._loot.weapons[0];
-  const die=Math.round((1-CC_FIGHT.win-CC_FIGHT.trade)*100);
+  // Шансы файта — по силе против ближайшего соседа, того самого, с кем он и
+  // будет (см. ccFightApply). Сосед у обоих клиентов один: движок общий.
+  const foe0=(you._game && you._game.nearest) ? you._game.nearest(you) : null;
+  const pw=ccFightWinOdds(you, foe0);
+  const winPct=Math.round(CC_FIGHT.decide*pw*100), diePct=Math.round(CC_FIGHT.decide*(1-pw)*100);
+  const tradePct=Math.round(CC_FIGHT.trade*100);
+  // Сёрдж предлагается, только когда он включён — по замеру (см. CC_SURGE_FARM).
+  const sg=ccSurgeState(you);
+  const surgeOpt=(sg && sg.on) ? [{id:'surge', icon:CC_CHOICE_ICON.surge, title:T.ccMidSurge,
+       note:T.ccMidSurgeNote(CC_SURGE_FARM, CC_SURGE_TAKEN, CC_SURGE_FARM_POW)+' · '+T.ccMidSurgeLine(sg.players, sg.at, sg.gap)}] : [];
+  /* Ход по умолчанию — ПЕРВЫМ. Торопящийся (скип) отвечает ходом по
+     умолчанию, досматривающий в проверках — первой кнопкой (check-mp-death:
+     «c0.click()»), и пока «за ресами» при пустых ресах стояло третьей
+     кнопкой, эти двое расходились на пятой зоне и получали разные таблицы.
+     Поэтому при пустых ресах «за ресами» идёт первым, при полных — «остаёмся». */
+  const optStay={id:'stay',  def:!low, icon:CC_CHOICE_ICON.stay, title:T.ccMatsStay,
+       note:ccMatsEndPow(you) ? T.ccMatsStayNote(-ccMatsEndPow(you)) : T.ccMidStayNote};
+  const optGo={id:'go',    def:low, icon:ccMatsIconHTML(), icoCls:'wide', title:T.ccMatsGo,
+       note:T.ccMatsGoNote(pow, m.fail, Math.round(m.odds*100))};
+  // Сосед — по имени: шансы считаны именно против него, и игрок должен видеть, с кем.
+  const optFight={id:'fight', icon:ccItemIconHTML(gun, CC_CHOICE_ICON.fight),
+       title:T.ccMidFight+(foe0 && foe0.name ? ' · '+String(foe0.name).replace(/<[^>]+>/g,'') : ''),
+       note:T.ccMidFightNote(winPct, CC_FIGHT.pow, diePct, tradePct, CC_FIGHT.pokeDmg)};
+  const opts=low ? [optGo, optStay, ...surgeOpt, optFight] : [optStay, ...surgeOpt, optGo, optFight];
   const pickId=(await ccMpChoose('mid'+(you.mpTag||''), async function(){
-    return (await ccChoiceBox(T.ccMidTitle, ccKitLine(you), [
-      {id:'stay',  def:!low, icon:CC_CHOICE_ICON.stay, title:T.ccMatsStay,
-       note:low ? T.ccMatsStayNote(CC_MATS_PEN) : T.ccMidStayNote},
-      {id:'surge', icon:CC_CHOICE_ICON.surge, title:T.ccMidSurge, note:T.ccMidSurgeNote(CC_SURGE_FARM, CC_SURGE_FARM_POW)},
-      {id:'go',    def:low, icon:ccMatsIconHTML(), icoCls:'wide', title:T.ccMatsGo,
-       note:T.ccMatsGoNote(pow, m.fail, Math.round(m.odds*100))},
-      {id:'fight', icon:ccItemIconHTML(gun, CC_CHOICE_ICON.fight), title:T.ccMidFight,
-       note:T.ccMidFightNote(Math.round(CC_FIGHT.win*100), CC_FIGHT.pow, die)}
-    ], ui && ui.map)).id;
+    return (await ccChoiceBox(T.ccMidTitle, ccKitLine(you), opts, ui && ui.map)).id;
   }, function(v){ return ({stay:T.ccMatsStay, surge:T.ccMidSurge, go:T.ccMatsGo, fight:T.ccMidFight})[v]||''; })).v;
   ccMpMark('a5:'+pickId);
   const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
@@ -52202,9 +52436,9 @@ async function ccAskMenu(you, ui){
     return;
   }
   if(pickId==='surge'){
-    if(you._sq) you._sq.dealt=(you._sq.dealt||0)+CC_SURGE_FARM;
+    if(you._sq){ you._sq.dealt=(you._sq.dealt||0)+CC_SURGE_FARM; you._sq.taken=(you._sq.taken||0)+CC_SURGE_TAKEN; }
     ccAddGamePow(you, -CC_SURGE_FARM_POW);
-    await say(T.ccMidSurgeGot(CC_SURGE_FARM, CC_SURGE_FARM_POW), true);
+    await say(T.ccMidSurgeGot(CC_SURGE_FARM, CC_SURGE_TAKEN, CC_SURGE_FARM_POW), true);
     return;
   }
   if(pickId==='go'){
@@ -52221,8 +52455,9 @@ async function ccAskMenu(you, ui){
   const foeName=foe ? String(foe.name||'').replace(/<[^>]+>/g,'') : '';
   const out=ccFightApply(you, r, foe);
   ccMpMark('w5f:'+out);
-  if(out==='win')   await say(T.ccMidFightWon(CC_FIGHT.pow, foeName), true);
+  if(out==='win')   await say(T.ccMidFightWon(CC_FIGHT.pow, foeName, gun && gun.name), true);
   else if(out==='die') await say(T.ccMidFightDied(foeName), false);
+  else if(out==='poke') await say(T.ccMidFightPoke(CC_FIGHT.pokeDmg, CC_FIGHT.pokeMats), null);
   else await say(T.ccMidFightTraded(CC_FIGHT.tradePow), false);
 }
 /* Что делает файт с отрядом — отдельно от вопроса, чтобы проверялось.
@@ -52231,22 +52466,32 @@ async function ccAskMenu(you, ui){
 function ccFightApply(you, r, foe){
   const sq=you._sq, game=you._game;
   const can=!!(foe && game && game.eliminate);
-  if(r<CC_FIGHT.win){
+  // Решающая доля стычек — CC_FIGHT.decide; внутри неё победителя называет сила.
+  const p=ccFightWinOdds(you, foe);
+  const winTo=CC_FIGHT.decide*p, dieTo=CC_FIGHT.decide;
+  if(r<winTo){
     if(can) game.eliminate(foe, you);
     else if(sq) sq.dealt=(sq.dealt||0)+CC_FIGHT.dmg;
     ccAddGamePow(you, CC_FIGHT.pow);
     you._mats=Math.min(CC_MATS_FULL, ccMats(you)+CC_FIGHT.mats);
     return 'win';
   }
-  if(r<CC_FIGHT.win+CC_FIGHT.trade || !can){
+  if(r<dieTo && can){
+    ccAddGamePow(you, -CC_FIGHT.diePow);
+    game.eliminate(you, foe);
+    return 'die';
+  }
+  if(r<dieTo+CC_FIGHT.trade || (r<dieTo && !can)){
     ccAddGamePow(you, -CC_FIGHT.tradePow);
     you._mats=Math.max(0, ccMats(you)-CC_FIGHT.tradeMats);
     if(sq){ sq.shield=0; sq.hp=Math.max(1, (sq.hp!=null?sq.hp:100)-CC_FIGHT.tradeHp); sq.taken=(sq.taken||0)+CC_FIGHT.dmg; }
     return 'trade';
   }
-  ccAddGamePow(you, -CC_FIGHT.diePow);
-  game.eliminate(you, foe);
-  return 'die';
+  // Постреляли и разошлись — самый частый исход по замеру (56%): урон в
+  // сёрдж, ресы на стройку, сила на месте.
+  if(sq){ sq.dealt=(sq.dealt||0)+CC_FIGHT.pokeDmg; sq.taken=(sq.taken||0)+Math.round(CC_FIGHT.pokeDmg/2); }
+  you._mats=Math.max(0, ccMats(you)-CC_FIGHT.pokeMats);
+  return 'poke';
 }
 /* Вопрос середины: идти за рефрешем или ротейтить тем, что есть.
    Те же числа, что у рефреша в меню восьмой зоны, — это тот же ход, просто
@@ -52260,7 +52505,7 @@ async function ccAskMats(you, ui){
   const pickId=(await ccMpChoose('mats'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(L().ccMatsTitle, ccKitLine(you), [
       {id:'go',   title:L().ccMatsGo,   note:L().ccMatsGoNote(pow, m.fail, Math.round(m.odds*100))},
-      {id:'stay', title:L().ccMatsStay, note:L().ccMatsStayNote(CC_MATS_PEN)}
+      {id:'stay', title:L().ccMatsStay, note:L().ccMatsStayNote(-ccMatsEndPow(you))}
     ], ui && ui.map)).id;
   }, function(v){ return v==='go' ? L().ccMatsGo : L().ccMatsStay; })).v;
   ccMpMark('a5:'+pickId);
@@ -52347,7 +52592,9 @@ function ccRoomLate(field, you){
      поймал «лут получили только 8 из 19». Корзина теперь одна, все ходы с
      прибавкой, и доля ходящих поднята так, чтобы комната ходила не реже
      прежнего. Что это не подарок и не налог — меряет career-choice-balance-probe. */
-  const risky=CC_LATE_MOVES.filter(m=>m.pow>0).slice().sort((a,b)=>a.pow-b.pow);
+  // Ходы через движок (третья сторона) комната не ходит: её стычки движок
+  // и так считает сам, а второй раз давать ей элимы броском — подарок.
+  const risky=CC_LATE_MOVES.filter(m=>m.pow>0 && !m.real).slice().sort((a,b)=>a.pow-b.pow);
   const calm=[];
   field.forEach(t=>{
     if(you && (t===you || t.isMate)) return;
@@ -52392,10 +52639,36 @@ let CC_CHOICE_WAIT=15000;
    дать icon — маленькую картинку слева от названия («додумай картинки, что
    подойдёт под надписи»). Вариант с def:true — тот, что берётся сам под
    скипом, в симуляции и по таймеру; без def — первый, как и раньше. */
+/* Мнение напарника перед выбором — из списка идей 6 сентября («мнение
+   напарника»). В настоящем дуо решение середины игры не принимают молча:
+   напарник в войсе говорит, куда он хочет. Здесь это одна строка под
+   заголовком и метка на кнопке, за которую он. Бот-напарник осторожен: чаще
+   за ход по умолчанию (он же самый безопасный), но с силой растёт смелость —
+   карточка 90+ каждый второй раз тянет в другую сторону. Живой напарник
+   (мультиплеер) говорит сам — строки нет; в соло говорить некому.
+   Это мнение, не подсказка: на исход выбора оно не влияет и в симуляции не
+   считается вовсе (панель там не строится). */
+function ccMateOpinion(options, dflt){
+  if(!options || options.length<2) return null;
+  if(typeof careerSquadSize!=='function' || careerSquadSize()<2) return null;
+  if(typeof ccMpOn==='function' && ccMpOn()) return null;
+  const mates=(typeof careerMates==='function') ? careerMates().filter(Boolean) : [];
+  const m=mates[0];
+  if(!m || !m.handle) return null;
+  const bold=(Number(m.ovr)||0)>=90 ? 0.5 : 0.3;
+  let pick=dflt;
+  if(Math.random()<bold){ const alt=options.filter(o=>o && o!==dflt); pick=alt[Math.floor(Math.random()*alt.length)]||dflt; }
+  const say=L().ccMateLeans;
+  return {name:m.handle, pick, text: typeof say==='function' ? say(String(pick.title||'').replace(/<[^>]+>/g,'')) : ''};
+}
 function ccChoiceBox(title, hint, options, onMap, side){
+  /* Порядок кнопок — тот, что передали: сторожа кликают по data-at и ждут
+     именно его. Правило «ход по умолчанию — первым» живёт там, где список
+     собирают (см. ccAskMenu), а не здесь. */
   return ccMpIdle(new Promise(resolve=>{
     const host=onMap || document.getElementById('majorStages');
     const dflt=options.find(o=>o && o.def) || options[0];
+    const mate=ccMateOpinion(options, dflt);
     let done=false;
     const answer=o=>{ if(done) return; done=true;
       clearInterval(watch); clearTimeout(bell);
@@ -52420,9 +52693,10 @@ function ccChoiceBox(title, hint, options, onMap, side){
         (side && side.right ? `<div class="cc-choice-mini">${side.right}</div>` : '')+
         `</div>`
       : '';
-    box.innerHTML=`<div class="cc-choice-head"><b>${esc(title)}</b>${sub}</div>`+
+    const mateLine=mate ? `<div class="cc-choice-mate"><i>${esc(mate.name)}</i> ${esc(mate.text)}</div>` : '';
+    box.innerHTML=`<div class="cc-choice-head"><b>${esc(title)}</b>${sub}${mateLine}</div>`+
       `<div class="cc-choice-row">${options.map((o,i)=>
-        `<button class="cc-choice-btn${o.art?' has-art':''}${o.icon?' has-ico':''}${o===dflt && options.length>1?' def':''}" data-at="${i}">
+        `<button class="cc-choice-btn${o.art?' has-art':''}${o.icon?' has-ico':''}${o===dflt && options.length>1?' def':''}${mate && o===mate.pick?' mate':''}" data-at="${i}"${mate && o===mate.pick ? ' data-mate="'+esc(mate.name)+'"' : ''}>
            ${o.art||''}<span class="cc-choice-tt">${o.icon?'<i class="cc-choice-ico'+(o.icoCls?' '+o.icoCls:'')+'">'+o.icon+'</i>':''}<b>${esc(o.title)}</b></span><em>${o.note||''}</em></button>`).join('')}</div>`+
       `<div class="cc-choice-bar"><i></i></div>`;
     host.appendChild(box);
@@ -52553,11 +52827,27 @@ async function ccAskLate(you, ui){
     // Подсказкой идёт не общая фраза, а что у тебя есть: ресы и лут. Ради
     // этого вопрос и задан — см. ccKitLine.
     return (await ccChoiceBox(L().ccLateTitle, ccKitLine(you),
-      CC_LATE_MOVES.map(m=>({id:m.id, title:nameOf(m.id), note:ccLateNote(m, powOf(m))})),
+      CC_LATE_MOVES.map(m=>({id:m.id, title:nameOf(m.id), note:ccLateNote(m, powOf(m)),
+        // Картинка хода — по id, см. CC_LATE_ICON; у рефреша сундук, у низа «остаёмся».
+        icon:CC_CHOICE_ICON[CC_LATE_ICON[m.id]]||CC_CHOICE_ICON.stay})),
       ui && ui.map)).id;
   }, function(v){ return nameOf(v); })).v;
   ccMpMark('a8:'+pickId);
   const move=ccLateMove(pickId);
+  // Третья сторона — стычка через движок, один бросок на обоих клиентах.
+  if(move.real){
+    const r=Math.random();
+    const game=you._game, foe=(game && game.nearest) ? game.nearest(you) : null;
+    const foeName=foe ? String(foe.name||'').replace(/<[^>]+>/g,'') : '';
+    const out=ccThirdApply(you, r, foe);
+    ccMpMark('w8t:'+out);
+    const line=out==='win' ? L().ccLateThirdWon(CC_THIRD.pow, foeName)
+             : out==='die' ? L().ccLateThirdLost(foeName)
+             : L().ccLateThirdNone(CC_THIRD.dmg);
+    if(ui && ui.note) ui.note(line);
+    await ccChoiceResult(ui && ui.map, line, out==='win' ? true : out==='die' ? false : null);
+    return;
+  }
   const gain=powOf(move);
   const won=Math.random()<move.odds;
   if(won){ ccAddGamePow(you, gain); if(move.mats) ccMatsFill(you); }
@@ -52605,6 +52895,10 @@ function simulateGameOnMap(teams, lobbyOpts){
   const result = ZoneSim.simulateZoneGame(teams, {
     rng: Math.random,
     land: ZONE_SETS[set],
+    phases: /^r\d$/.test(set) ? ZoneSim.RELOAD_PHASES : undefined,
+    // В соло-Reload возрождать некому — без напарника смерть окончательная
+    // (реплеи Reload Solo Victory Cup S41: 40 → 27 к восьмому кругу, а не 40).
+    respawnUntilZone: (/^r\d$/.test(set) && squadSize>1) ? CC_RELOAD_RESPAWN_ZONE : 0,
     aspect: aspect,
     startOf: t => {
       const z = t.landingZone;
@@ -52777,12 +53071,46 @@ const CC_HG_FAIL=10;
      хайграунд    50%     10    10         0        10                                    */
 const CC_EDGE_ODDS=0.55, CC_EDGE_POW=8, CC_EDGE_FAIL=8;
 const CC_REFRESH_ODDS=0.75, CC_REFRESH_FAIL=3;
+/* ТРЕТЬЯ СТОРОНА — снова в меню, но уже ПО ЗАМЕРУ, и через движок. Его слово
+   6 сентября: «делай дальше». Ход стоял здесь до 1 сентября как +16/−8 на
+   35% — числа с потолка, и его сняли. Теперь это не бросок силы, а реальная
+   стычка: сосед выбит движком (элим, ресы с трупа) или выбиты мы.
+
+   Замер (три реплея финала Major 2 EU, 2 августа 2026): третья сторона =
+   отряд, впервые ударивший одну из двух дерущихся команд через 3 с после
+   начала их стычки и до её конца плюс 15 с; исход — за 30 с после его первого
+   выстрела. Концовка (зоны 8+), 156 стычек и 108 заходов третьими (69%):
+   33% кончаются чужим килом, 17% — собственной смертью третьего, 3% —
+   потерей игрока, 47% — постреляли и разошлись. Середина (96 заходов): 32%
+   кил, 2% смерть, 63% разошлись — там третьих ловят редко. */
+const CC_THIRD={kill:0.33, die:0.17, pow:6, dmg:70};
 const CC_LATE_MOVES=[
   {id:'hg',      pow:CC_HG_POW,      odds:CC_HG_ODDS,       fail:CC_HG_FAIL},
   {id:'edge',    pow:CC_EDGE_POW,    odds:CC_EDGE_ODDS,     fail:CC_EDGE_FAIL},
+  // real: решается движком (ccThirdApply), не броском силы; комната его не ходит.
+  {id:'third',   pow:CC_THIRD.pow,   odds:CC_THIRD.kill,    fail:0, real:true},
   {id:'refresh', pow:CC_REFRESH_POW, odds:CC_REFRESH_ODDS,  fail:CC_REFRESH_FAIL, mats:true},
   {id:'lg',      pow:0,              odds:1,                fail:0}
 ];
+/* Что делает третья сторона с отрядом — отдельно от вопроса, чтобы
+   проверялось. r — бросок [0,1); foe — ближайший сосед (его стычку и третьим).
+   Без соседа выбить некого и погибнуть не от кого — «постреляли». */
+function ccThirdApply(you, r, foe){
+  const sq=you._sq, game=you._game;
+  const can=!!(foe && game && game.eliminate);
+  if(r<CC_THIRD.kill && can){
+    game.eliminate(foe, you);
+    ccAddGamePow(you, CC_THIRD.pow);
+    you._mats=Math.min(CC_MATS_FULL, ccMats(you)+CC_FIGHT.mats);
+    return 'win';
+  }
+  if(r<CC_THIRD.kill+CC_THIRD.die && can){
+    game.eliminate(you, foe);
+    return 'die';
+  }
+  if(sq){ sq.dealt=(sq.dealt||0)+CC_THIRD.dmg; sq.taken=(sq.taken||0)+Math.round(CC_THIRD.dmg/2); }
+  return 'none';
+}
 // Ход с монеткой — тот, у которого есть чем платить за провал. Так и панель, и
 // строка исхода, и комната узнают новый ход, не перечисляя его по имени.
 function ccLateRisky(m){ return !!(m && m.fail>0 && m.odds<1); }
@@ -52790,6 +53118,8 @@ function ccLateRisky(m){ return !!(m && m.fail>0 && m.odds<1); }
 // строкой здесь, а не поиском 'hg' по файлу.
 const CC_LATE_NAME={hg:'ccLateHg', third:'ccLateThird', take:'ccLateTake',
                     edge:'ccLateEdge', refresh:'ccLateRefresh', lg:'ccLateLg'};
+// Картинка каждого хода концовки — ключ в CC_CHOICE_ICON.
+const CC_LATE_ICON={hg:'tower', third:'fight', take:'contest', edge:'storm', refresh:'chest', lg:'stay'};
 const CC_LATE_NOTE={hg:'ccLateHgNote', third:'ccLateThirdNote', take:'ccLateTakeNote',
                     edge:'ccLateEdgeNote', refresh:'ccLateRefreshNote', lg:'ccLateLgNote'};
 const CC_LATE_WON ={hg:'ccLateHgWon', third:'ccLateThirdWon', take:'ccLateTakeWon',
@@ -52802,6 +53132,8 @@ const CC_LATE_LOST={hg:'ccLateHgLost', third:'ccLateThirdLost', take:'ccLateTake
 function ccLateNote(m, pow){
   const n=L()[CC_LATE_NOTE[m.id]];
   if(typeof n!=='function') return n;
+  // Третья сторона: подпись — три исхода по замеру, а не «шанс / прибавка / штраф».
+  if(m.real) return n(Math.round(CC_THIRD.kill*100), Math.round(CC_THIRD.die*100), CC_THIRD.pow);
   const p=pow!=null ? pow : m.pow;
   return ccLateRisky(m) ? n(p, m.fail, Math.round(m.odds*100)) : n(p);
 }
@@ -56544,7 +56876,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='1fafc95f';
+const CC_BUILD='7fced01a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59661,7 +59993,9 @@ function careerCentreHTML(card, a){
           : next.type==='gc'     ? (careerGclcOn(careerToday()) ? L().ccGcLocked : L().ccRcLocked)
           : next.type==='solo'   ? ccSoloWhyLocked()
           : next.type==='proam'  ? ccProAmWhyLocked()
-                                 : L().chSoonHint)}">${L().chSkip}</button>`;
+                                 : L().chSoonHint)}">${L().chSkip}</button>`+
+        // И сразу до турнира, одной кнопкой — см. careerSkipToBtnHTML.
+        careerSkipToBtnHTML();
   const mate = careerPartnerCard();
   const evalRow = cr.division===1
     ? `<div class="ch-row"><em>${L().chPerfEval}</em><b>$400</b></div>`
@@ -60604,7 +60938,8 @@ function careerSpotSets(){
      «чтоб можно было выбрать метку на карте в соло и дуо карьере». Личное
      хранение при этом ни при чём: в одиночной карьере личное и командное — это
      один человек, а вот ТУРНИР другой, и точка на нём своя. */
-  out.push({key:'solo', grid:careerBrSet(), label:L().ccSpotSoloTab});
+  // Остров — ближайшего соло-вечера, а не сезона: см. careerSoloSet.
+  out.push({key:'solo', grid:careerSoloSet(), label:L().ccSpotSoloTab});
   return out;
 }
 function careerSpotStore(key){
@@ -62260,6 +62595,28 @@ function careerBrSet(){
   CC_TRIO_ISLANDS.forEach(r=>{ if(day>=r.from) set=r.set; });
   return set;
 }
+/* ОСТРОВ СОЛО-ВЕЧЕРА — не сезонный. Репорт игрока 6 сентября: «If it's a trio
+   season you can't mark a solo drop because it shows Chapter 6 map but solos
+   take place on chapter 7 map». Так и было: карта под соло-метку (careerSpotSets,
+   ключ 'solo') рисовалась сеткой careerBrSet(), то есть в трио-год — островом
+   шестой главы (t1/t2/t3), а FNCS Solos раннер сажает на s42solo, свою сотню
+   клеток седьмой главы (runCareerSoloSeries), и в любой год. Метка ставилась
+   на одном острове, вечер игрался на другом.
+
+   Остров берётся от БЛИЖАЙШЕГО соло-вечера: FNCS Solos (ev.spec) — s42,
+   январская Solo Series — сезонный, как играет раннер. Один ответ на вкладку
+   метки, карточку вечера (careerNightSet) и дом в раздаче (ccSoloHomeZone). */
+function careerSoloSet(){
+  const days=(typeof careerYearDays==='function') ? careerYearDays() : null;
+  if(days && typeof careerSoloSeriesOn==='function'){
+    const today=careerToday();
+    const ahead=[...days.keys()].filter(d=>d>=today && (days.get(d)||[]).some(e=>e.kind==='solo')).sort();
+    const ev=ahead.length ? careerSoloSeriesOn(ahead[0]) : null;
+    // Остров седьмой главы, дроблёный под соло, — не сотня клеток (6.09, его скрин).
+    if(ev && ev.spec && ZONE_SETS.s42) return 's42';
+  }
+  return careerBrSet();
+}
 /* ===== Своя точка на карте, и аура, которая на ней растёт ===================
 
    Его спека, страница Notion «new mechanics», 23 августа: «в начале сезона
@@ -63752,6 +64109,9 @@ function careerCalendarHTML(){
       ${ccMpOn() && ccMpFfPending() && ccMpFfPending().mine && ccMpFfPending().until===CH_FF_ASK
         ? `<span class="ch-hint" style="margin:0;">${L().ccMpFfWait(ccDayLabel(CH_FF_ASK))}</span>`
         : `<button class="ch-sign" onclick="careerFfToDay(\'${CH_FF_ASK}\')">${ccMpOn() ? L().ccMpFfYes : L().calFfGo}</button>`}
+      ${/* Тот же день, но без турниров по дороге — пропуск, не перемотка.
+           См. careerSkipTo; в команде день двигает сервер. */
+        ccMpOn() ? '' : `<button class="ch-sign cal-skip" onclick="careerSkipTo(\'${CH_FF_ASK}\')" title="${esc(L().calSkipHint)}">${L().calSkipGo}</button>`}
       <button class="cc-back" onclick="careerFfCancel()">${L().ccDecline}</button>
     </div>` : '')+
     // The same fast-forward the main screen offers, on the screen where a
@@ -75560,6 +75920,8 @@ function careerDayPanelHTML(locked){
       (!spent && !closed
               ? '<div class="cc-day-hint">'+L().ccDayMust+'</div>'
               : '<button class="ch-play" onclick="careerNextDay()">'+L().ccDayDone+(typeof ccMpNextTag==='function' ? ccMpNextTag() : '')+'</button>')+
+      // И «до турнира» — в любой день, решённый или нет: см. careerSkipToBtnHTML.
+      (typeof careerSkipToBtnHTML==='function' ? careerSkipToBtnHTML() : '')+
       /* Упавший день говорит, что именно сломалось.
 
          Отчёт игрока 1 сентября 2026: «everything froze when I pressed the
@@ -77836,6 +78198,11 @@ function careerNightSet(next){
     const ev=careerVictoryOn(day);
     if(ev && /Reload/.test(ev.id)) return 'r4';
   }
+  // FNCS Solos — остров седьмой главы (s42), и в трио-год тоже. См. careerSoloSet.
+  if(next && next.type==='solo'){
+    const ev=careerSoloSeriesOn(day);
+    if(ev && ev.spec && ZONE_SETS.s42) return 's42';
+  }
   return careerBrSet();
 }
 /* Вечер, который играется ОДНИМ игроком: Solo Series и соло-Victory Cup.
@@ -78321,7 +78688,12 @@ function careerNoMate(kind){
   return careerNeedsMate(kind) && (careerMatesShort()>0 || careerMatesOver()>0);
 }
 // Asked of a kind rather than of careerNext, because careerNext asks this back.
-function careerCanPlayKind(kind){
+function careerCanPlayKind(kind){ return careerCanPlayKindOn(careerToday(), kind); }
+/* Тот же вопрос про ДРУГОЙ день — кнопке «пропустить до турнира» надо знать,
+   какой из будущих вечеров игрок сможет открыть (careerSkipTarget). Ответ по
+   сегодняшнему состоянию: пропуск ничего не играет, значит по дороге ничего
+   и не изменится. */
+function careerCanPlayKindOn(day, kind){
   if(CC_PLAYABLE.indexOf(kind)<0) return false;
   /* Без связи с лобби командный вечер не начинается — и кнопка это знает.
      Иначе нажатие уходило бы в ccMpGate и висело там молча: вечер ждёт
@@ -78333,11 +78705,11 @@ function careerCanPlayKind(kind){
   if(ccMpRolesWhy()) return false;
   if(ccMpModeWhy()) return false;
   if(careerNoMate(kind)) return false;
-  if(kind==='reload') return careerReloadCan(careerReloadOn(careerToday()));
-  if(kind==='final')  return careerWeeklyFinalOn(careerToday());
-  if(kind==='major')  return careerMajorCan(careerMajorOn(careerToday()));
-  if(kind==='summit') return careerSummitCan(careerSummitOn(careerToday()));
-  if(kind==='globals')return careerGlobalsCan(careerGlobalsOn(careerToday()));
+  if(kind==='reload') return careerReloadCan(careerReloadOn(day));
+  if(kind==='final')  return careerWeeklyFinalOn(day);
+  if(kind==='major')  return careerMajorCan(careerMajorOn(day));
+  if(kind==='summit') return careerSummitCan(careerSummitOn(day));
+  if(kind==='globals')return careerGlobalsCan(careerGlobalsOn(day));
   // Epic's own page: "You must be Duos Division 1 to participate in this event."
   // Which includes everybody who has just come up out of Division 2 — clearing
   // that cut is how you become Division 1, and the promotion lands the same
@@ -78345,10 +78717,10 @@ function careerCanPlayKind(kind){
   // the runner already refused them, but this said yes to a Division 4 player,
   // so anything that asked the question directly got the wrong answer.
   if(kind==='eval')   return CAREER.career.division===1;
-  if(kind==='gc')     return careerGclcOn(careerToday())
-                               ? careerGclcCan(careerGclcOn(careerToday()))
-                               : careerRcCan(careerRcOn(careerToday()));
-  if(kind==='solo')   return careerSoloSeriesCan(careerSoloSeriesOn(careerToday()));
+  if(kind==='gc')     return careerGclcOn(day)
+                               ? careerGclcCan(careerGclcOn(day))
+                               : careerRcCan(careerRcOn(day));
+  if(kind==='solo')   return careerSoloSeriesCan(careerSoloSeriesOn(day));
   if(kind==='proam')  return careerProAmCan();
   return true;
 }
@@ -78429,9 +78801,111 @@ function careerSpotEnsure(next){
   if(!careerSpotRoom(key)) return false;
   return careerSpotSet(0, key==='solo' ? 'solo' : set);
 }
+/* КАК ДЕРЁТСЯ КОМНАТА ЭТОГО ДИВИЗИОНА — по восьми реплеям на дивизион
+   (FNCS Divisional Cup S41 EU, tools/real-division-curves.json), отрядов на
+   старте зон 2/3/5/7 из 50: D1 41 39 37 30, D2 38 33 27 23, D3 35 32 26 21,
+   D4 35 31 24 20, D5 39 35 29 25. Сила комнаты этого не объясняет (D2 по
+   силе почти D1), поэтому движку передаются единицы слабости прямо по
+   дивизиону: первое число поднимает уловимость в ранних зонах, второе —
+   контест высадки (см. LOBBY_WEAK_UNITS / DROP_WEAK_UNITS в zone-sim.js).
+   Подобрано пробой tools/career-alive-curve-probe.js (DIV=n, 100 игр):
+     D2 (1.5, 4):  41 37 33 30 26 24 22 18 16 13 8
+     D3 (2, 5):    41 37 33 29 24 22 20 17 15 13 8
+     D4 (2, 5):    42 37 33 29 25 23 22 17 14 12 8
+   Пятый — комната пассивная: рано теряет как второй, а концовка у неё как у
+   первого (24 отряда на восьмой); единицы ему меньше, и концовка всё равно
+   выходит злее реплея на 3–5 отрядов — предел этой модели. */
+const CC_DIV_WEAK={1:[0,0], 2:[1.5,4], 3:[2,5], 4:[2,5], 5:[1.5,2.5]};
+/* Не дивизионные вечера — тоже по своим реплеям (tools/real-stage-curves.json,
+   Tracker EU, снято 6–7 сентября 2026, по десятку реплеев на кап; числа —
+   отрядов (в соло — игроков из ста) на старте зон 1…11).
+
+   ПРОФИЛЬ ДВИЖКА. applyStageBias ставил профиль по таблице очков: finals
+   только при pointsForPlace, иначе open. В карьере pointsForPlace — лишь
+   дивизионный кап и первый раунд Perf Eval; финал Мейджора, хиты, LCQ, финал
+   недели, Globals, Summit, Reload, соло — все шли под «open», хотя движок
+   под finals подгонялся именно по их реплеям. Под open те же комнаты режутся
+   в концовке (Reload-дуо: 12 отрядов на десятом круге при реальных 17; финал
+   соло: разрыв 6 игроков против 2). Поэтому профиль на вечер называет
+   карьера (CC_ZONE_PROFILE), а applyStageBias читает его первым. Открытые
+   лобби (Плей-Ин, дуо Victory Cup, квал соло) под open тоже хуже — движок
+   там мягок в начале и зол в конце (Плей-Ин: 43 39 38 36 33 29 24 20 18 14 8
+   при реальных 47 38 35 32 29 27 25 22 20 16 10), а finals с единицами
+   слабости ложится ближе (42 37 35 33 31 28 25 20 17 14 8). Open остаётся
+   у Solo Victory Cup — там он единственный попадает в раннюю кривую.
+
+   ЕДИНИЦЫ (уловимость ранних зон, контест высадки) и ПРОФИЛЬ по вечерам:
+     cup           CC_DIV_WEAK[дивизион], finals (10 реплеев на дивизион);
+     eval          [1, 2], finals — первый раунд, 10 реплеев: 47 40 36 33 29
+                   28 24 20 17 14 10; движок 43 38 35 33 31 28 25 21 18 14 8;
+     solo квал     [0.5, 5], finals — 10 реплеев: 88 76 72 68 66 61 54 44 36
+                   27 17; движок 90 80 76 73 65 57 50 41 35 21 12 (разрыв 3.4);
+     solo хиты/финал [0, 0], finals — хиты (10) 93 85 83 80 76 68 60 49 40 27
+                   14, финал (11) 93 86 83 81 77 67 55 46 37 27 15; движок
+                   96 92 90 87 79 68 57 45 37 22 12 (разрыв 2.2);
+     victory соло  [0.7, 3.5], open — 11 реплеев обоих раундов: 86 69 60 54 49
+                   44 39 32 26 19 11; движок 88 74 59 51 43 39 36 32 29 19 10;
+     victory дуо и Плей-Ин  [1, 3], finals — дуо VC (10) 47 38 35 32 31 30 28
+                   25 21 16 11, Плей-Ин (10) 47 38 35 32 29 27 25 22 20 16 10;
+                   движок на открытом поле 42 37 35 33 31 28 25 20 17 14 8;
+     victory Reload соло — без возрождений (см. respawnUntilZone), [0, 0],
+                   finals; реплей (10, из 40): 40 40 38 37 36 35 32 27 22 19 14;
+     major хиты/LCQ/финал, final, gc, summit, globals, reload — [0, 0],
+                   finals: хиты (11) 47 45 43 42 40 37 31 25 20 15 9, финал
+                   Мейджора (4+3) 49 44 42 42 40 38 31 24 21 15 9, открытый
+                   LCQ (5) 49 43 41 39 37 34 29 25 21 17 11 — движок D1
+                   45 41 41 40 39 35 30 23 20 15 8; Reload — своя проба.
+   Соло-лобби нельзя оставлять «по силе карточек»: team.pow одиночки в среднем
+   69 при эталоне 86 у дуо, запасная формула давала 1.7 единицы и вырезала
+   финал соло к третьей зоне (62 живых при реальных 88). Не измерено и потому
+   на запасной формуле (null, профиль по таблице очков): Про-Ам, Reload дуо
+   Victory Cup, ранкед-капы. */
+const CC_ZONE_D1=[0,0], CC_ZONE_OPEN_DUO=[1,3], CC_ZONE_OPEN_SOLO=[0.7,3.5], CC_ZONE_SOLO_QUAL=[0.5,5], CC_ZONE_EVAL=[1,2];
+// Принудительный профиль движка на вечер; applyStageBias читает его перед
+// таблицей очков. null — как решит таблица.
+let CC_ZONE_PROFILE=null;
+/* Что ставить движку на этот вечер: {units:[уловимость, контест]|null,
+   profile:'finals'|'open'|null}. next.stage / next.mode / next.reload —
+   подсказки проб; в игре стадия читается из календаря дня. */
+function ccZoneTuneSpec(next){
+  const none={units:null, profile:null};
+  if(!next) return none;
+  const cr=CAREER && CAREER.career, t=next.type;
+  if(t==='cup')  return {units:(cr && CC_DIV_WEAK[cr.division]) || null, profile:'finals'};
+  if(t==='eval') return {units:CC_ZONE_EVAL, profile:'finals'};
+  if(t==='solo'){
+    const so=(typeof careerSoloSeriesOn==='function') ? careerSoloSeriesOn(next.day) : null;
+    const stage=next.stage || (so && so.stage);
+    // Открытая стадия соло: квал январской серии, у FNCS Solos — по spec.open.
+    const open = so && so.series==='solos' ? !!(so.spec && so.spec.open) : stage==='qual';
+    return open ? {units:CC_ZONE_SOLO_QUAL, profile:'finals'} : {units:CC_ZONE_D1, profile:'finals'};
+  }
+  if(t==='victory'){
+    const ev=(typeof careerVictoryOn==='function') ? careerVictoryOn(next.day) : null;
+    const reload=!!next.reload || /Reload/.test(String((ev && ev.id)||''));
+    const solo=next.mode==='solo' || !!(ev && ev.mode==='solo');
+    if(reload) return solo ? {units:CC_ZONE_D1, profile:'finals'} : none;
+    return solo ? {units:CC_ZONE_OPEN_SOLO, profile:'open'} : {units:CC_ZONE_OPEN_DUO, profile:'finals'};
+  }
+  if(t==='major'){
+    const mj=(typeof careerMajorOn==='function') ? careerMajorOn(next.day) : null;
+    const stage=next.stage || (mj && mj.stage);
+    return stage==='playin' ? {units:CC_ZONE_OPEN_DUO, profile:'finals'} : {units:CC_ZONE_D1, profile:'finals'};
+  }
+  if(t==='final' || t==='gc' || t==='summit' || t==='globals' || t==='reload') return {units:CC_ZONE_D1, profile:'finals'};
+  return none;
+}
+function ccZoneWeakFor(next){ return ccZoneTuneSpec(next).units; }
+function ccZoneTuneFor(next){
+  if(typeof ZoneSim==='undefined' || !ZoneSim.tune) return;
+  const spec=ccZoneTuneSpec(next), w=spec.units;
+  ZoneSim.tune(w ? {LOBBY_WEAK_UNITS:w[0], DROP_WEAK_UNITS:w[1]} : {LOBBY_WEAK_UNITS:null, DROP_WEAK_UNITS:null});
+  CC_ZONE_PROFILE=spec.profile;
+}
 function careerPlayRun(next){
   if(!next) return;
   CC_DRAFT_RUN=false;   // карьерный вечер — не драфт (см. ccMpOn)
+  ccZoneTuneFor(next);  // комната этого дивизиона дерётся по своим реплеям
   // Этапы вечера нумеруются с нуля у каждого раннера — жетон высадки
   // (CC_DROP_STAGE) считается от дня и номера этапа, а не от жизни вкладки.
   if(typeof CC_DROP_STAGE_N!=='undefined') CC_DROP_STAGE_N=0;
@@ -78500,6 +78974,70 @@ function careerSkipWeek(){
    stops on the first day of it, waiting for somebody who is not there. */
 function careerSkipAsk(){
   ccAsk(L().chSkipAsk, ()=>careerSkipWeek());
+}
+/* ПРОПУСТИТЬ ДО ТУРНИРА — одной кнопкой. Игрок, 6 сентября: «Добавь пожалуйста
+   возможность скипнуть дни без просмотра капов одной кнопкой, а то очень лень
+   ждать 102 дня».
+
+   Кнопок движения было две, и обе не про это: «Пропустить день» шагает на
+   сутки и каждый раз спрашивает, а «Сыграть за меня · неделю / месяц» и день
+   на календаре ИГРАЮТ турниры по дороге — это перемотка, а не пропуск. Игроку,
+   которому играть нечего (нет трио, закрытые этапы, пустые недели), оставалось
+   жать «день» по два клика на сутки.
+
+   Цель — ближайший день с вечером, который этот игрок сможет открыть
+   (careerCanPlayKindOn по сегодняшнему состоянию; пропуск ничего не играет,
+   так что по дороге оно и не меняется). Если такого нет — последний день года,
+   церемония. Дни проходят как при «Пропустить день», только разом: один
+   careerAdvanceTo на всю дистанцию — зарплаты, мир, письма и энергия
+   считаются там по числу ночей, турниры по пути не играются и в журнал не
+   пишутся. В команде день двигает сервер — кнопка гаснет с причиной. */
+function careerSkipTarget(){
+  const days=careerEvents();
+  const today=careerToday();
+  const list=[...days.keys()].filter(d=>d>today).sort();
+  for(const d of list){
+    if(d>=CC_YEAR_TO) break;
+    if((days.get(d)||[]).some(e=>careerCanPlayKindOn(d, e.kind))) return {day:d, ev:(days.get(d)||[]).find(e=>careerCanPlayKindOn(d, e.kind))};
+  }
+  return {day:CC_YEAR_TO, ev:null};
+}
+/* Сама кнопка — одна на оба места: под закрытым вечером (рядом с «Пропустить
+   день») и в панели дня (рядом со «Следующий день» или подсказкой «выбери, на
+   что уходит день»: пропуск — это и есть ответ «ни на что, до турнира»). */
+function careerSkipToBtnHTML(){
+  const cr=CAREER && CAREER.career;
+  if(!cr || cr.seasonOver) return '';
+  if(ccMpOn())
+    return '<button class="ch-play ch-skipto" disabled title="'+esc(L().ccMpNoFf)+'"><i>&#9197;</i> '+L().chSkipTo+'</button>';
+  const t=careerSkipTarget(), n=ccFfDays(t.day);
+  if(!(n>0)) return '';
+  return '<button class="ch-play ch-skipto" onclick="careerSkipToAsk()" title="'+
+    esc(L().chSkipToHint(ccDayLabel(t.day), n))+'"><i>&#9197;</i> '+L().chSkipTo+'</button>';
+}
+function careerSkipToAsk(){
+  if(ccMpOn()){ ccTell(L().ccMpNoFf); return; }
+  const cr=CAREER && CAREER.career;
+  if(!cr || cr.seasonOver) return;
+  const t=careerSkipTarget();
+  const n=ccFfDays(t.day);
+  if(!(n>0)) return;
+  const what=t.ev ? t.ev.label : L().ccGalaDay;
+  ccAsk(L().chSkipToAsk(ccDayLabel(t.day), n, what), ()=>careerSkipTo(t.day));
+}
+function careerSkipTo(iso){
+  if(ccMpOn() || !iso) return;
+  const was=careerToday();
+  if(!(iso>was)) return;
+  try{
+    careerAdvanceTo(iso);
+    CC_DAY_ERR=null;
+  }catch(e){
+    CC_DAY_ERR={day:was, text:String((e && e.message) || e)};
+    console.error('careerSkipTo сломался на '+was+':', e);
+  }
+  CH_FF_ASK=null;
+  careerRenderHub('centre');
 }
 
 /* A season boundary is a birthday, and for Division 1 it is also a reckoning.
@@ -80605,6 +81143,9 @@ function careerLadderEntrants(){
    The heats and the final were already right, because their whole field is
    twenty and the lobby could not be bigger than the room. */
 const CC_RELOAD_PLAYERS=40;
+/* До какого круга в Reload возрождаются (движок: onDeath, respawnUntilZone). По
+   реплеям первые выбывшие — к восьмому кругу, заметные потери с девятого. */
+const CC_RELOAD_RESPAWN_ZONE=9;
 function ccReloadLobby(teamSize){
   return Math.max(1, Math.round(CC_RELOAD_PLAYERS/(teamSize||2)));
 }
@@ -81669,7 +82210,8 @@ async function runCareerReloadChampionship(){
 function ccSoloHomeZone(you){
   if(!you || !you.isYou) return null;                  // чужой дом нам не известен — придёт с голосом
   const s=careerSpotOn('solo');
-  return s ? careerSpotZoneOf(s, careerBrSet()) : null;
+  // Сетка соло-метки — по её ключу (careerSpotGrid → careerSoloSet), не сезонная.
+  return s ? careerSpotZoneOf(s, 'solo') : null;
 }
 /* at — место в ALL_LANDING_ZONES, то есть в ДРОБЛЁНОЙ соло-сетке (58 коробок
    на 36 крупных). Запись дома живёт в индексах крупной сетки (careerSpotGrid),
@@ -81693,7 +82235,7 @@ function ccSoloHomeZoneOf(t){
   if(!t) return null;
   if(t.isYou) return ccSoloHomeZone(t);
   if(t.isMate && typeof MP!=='undefined' && MP.peer && MP.peer.soloHome)
-    return careerSpotZoneOf(MP.peer.soloHome, careerBrSet());
+    return careerSpotZoneOf(MP.peer.soloHome, 'solo');
   return null;
 }
 async function careerLandingPick(field, you, title, kinds, o){
@@ -85331,11 +85873,14 @@ async function runCareerSoloSeries(){
   CARD_MODE=true;
   squadSize=1;
   drafted=[me];
-  /* Соло-ФНКС садится на свою сетку: тот же остров, но сто клеток вместо
-     тридцати четырёх — по одной на игрока лобби. Его карта с квадратиками,
-     1 сентября. Остальные вечера (январская серия и всё прочее) остаются на
-     обычной сетке сезона. */
-  useLandingSet(ev.spec ? 's42solo' : careerBrSet());
+  /* Соло-ФНКС — на острове седьмой главы (s42), дроблёном под соло той же
+     сеткой, что и январская серия: коробки точек с никами, красные — где
+     сели по нескольку. Его слово 6 сентября со скрином карты Solo Series:
+     «как на соло выглядела, также и на solo fncs нужно сделать, а не 100
+     квадратиков». Сотня клеток s42solo (1 сентября) больше не садится.
+     Остров именно s42, а не careerBrSet(): в трио-год сезонный — шестая
+     глава, а FNCS Solos играются на седьмой (репорт того же дня). */
+  useLandingSet(ev.spec ? 's42' : careerBrSet());
   /* Дом на этом вечере — соло-метка, а не сезонный дуо-дом. Его правка,
      3 сентября: «в соло ещё метки, не для соло, а для других режимов».
      Указатель держится весь вечер и гасится вместе с остальным состоянием

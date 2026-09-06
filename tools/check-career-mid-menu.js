@@ -62,12 +62,23 @@ const BOOT = `
     const mk=(mats)=>({isYou:true, name:'ME', pow:90, _pf:90, _pc:90, _mats:mats,
                        _loot:{weapons:[{name:'Striker Pump Shotgun', rarity:'rare'}], heals:[], move:null},
                        _sq:{hp:100, shield:100, dealt:0, taken:0, alive:true}});
+    /* Сёрдж в меню — только когда он включён (по замеру трёх игр финала, см.
+       CC_SURGE_FARM). Кадр движка подменяется: живых больше порога — ход есть,
+       меньше — хода нет. */
+    const surgeGame=(players, at, line)=>({frames:()=>[{zone:5, players, surgeAt:at, surgeLine:line}], nearest:()=>null});
     let you=mk(550); WANT=null;
     await ccAskMenu(you, null);
-    check('четыре хода: ротейт, сёрдж, ресы, файт', seen && seen.map(o=>o.id).join(',')==='stay,surge,go,fight', seen && seen.map(o=>o.id).join(','));
+    check('без кадра сёрджа — три хода: ротейт, ресы, файт', seen && seen.map(o=>o.id).join(',')==='stay,go,fight', seen && seen.map(o=>o.id).join(','));
+    you=mk(550); you._game=surgeGame(58, 60, null); WANT=null;
+    await ccAskMenu(you, null);
+    check('лобби ниже порога — сёрджа в меню нет', seen.map(o=>o.id).indexOf('surge')<0, seen.map(o=>o.id).join(','));
+    you=mk(550); you._game=surgeGame(76, 60, 30); WANT=null;
+    await ccAskMenu(you, null);
+    check('лобби выше порога — четыре хода: ротейт, сёрдж, ресы, файт', seen.map(o=>o.id).join(',')==='stay,surge,go,fight', seen.map(o=>o.id).join(','));
+    check('сёрдж называет живых, порог и линию', /76/.test(seen[1].note) && /60/.test(seen[1].note) && /30/.test(seen[1].note), seen[1].note);
     check('полные ресы — сам ротейтит', seen.find(o=>o.def).id==='stay' && you._pf===90 && you._mats===550);
-    check('у файта — картинка ствола из пака', /<img/.test(seen[3].icon), seen[3].icon.slice(0,60));
-    check('у ресов — три стопки', (seen[2].icon.match(/<svg/g)||[]).length===3 && seen[2].icoCls==='wide');
+    check('у файта — картинка ствола из пака', /<img/.test(seen.find(o=>o.id==='fight').icon), seen.find(o=>o.id==='fight').icon.slice(0,60));
+    check('у ресов — три стопки', (seen.find(o=>o.id==='go').icon.match(/<svg/g)||[]).length===3 && seen.find(o=>o.id==='go').icoCls==='wide');
     // Картинки высадки — внутри кнопок: квадратик точки у дома, остров у контеста.
     skipAnimation=false;
     const q=realBox('D', '', [{id:'home', title:'H', icon:side.left, icoCls:'pic'}, {id:'contest', title:'C', icon:side.right, icoCls:'pic pic-wide'}], host);
@@ -83,26 +94,32 @@ const BOOT = `
     check('пустые ресы — сам идёт за рефрешем, как комната', seen.find(o=>o.def).id==='go' && you._mats===CC_MATS_FULL, you._mats+'/'+you._pf);
     Math.random=r0;
     // ---- сёрдж ----------------------------------------------------------------
-    you=mk(550); WANT='surge';
+    you=mk(550); you._game=surgeGame(76, 60, 30); WANT='surge';
     await ccAskMenu(you, null);
-    check('сёрдж: плюс урон, минус сила', you._sq.dealt===CC_SURGE_FARM && you._pf===90-CC_SURGE_FARM_POW, you._sq.dealt+'/'+you._pf);
-    // ---- файт: три исхода через подменённый движок ------------------------------
-    const foe={name:'FOE', squad:[{},{}]};
+    check('сёрдж: плюс свой урон, плюс полученный, минус сила', you._sq.dealt===CC_SURGE_FARM && you._sq.taken===CC_SURGE_TAKEN && you._pf===90-CC_SURGE_FARM_POW, you._sq.dealt+'/'+you._sq.taken+'/'+you._pf);
+    // ---- файт: четыре исхода через подменённый движок ---------------------------
+    // Сосед равной силы: решающие 29% делятся пополам (ccFightWinOdds).
+    const foe={name:'FOE', squad:[{},{}], _pc:90};
     const log=[];
     const game={nearest:()=>foe, eliminate:(t,by)=>{ log.push((t.name)+'<'+(by.name)); return true; }};
+    check('равные силы — победа и смерть поровну', Math.abs(ccFightWinOdds(mk(300), foe)-0.5)<0.001);
+    check('сильнее сосед — выбить его труднее', ccFightWinOdds(mk(300), {_pc:100})<0.4 && ccFightWinOdds(mk(300), {_pc:80})>0.6);
     you=mk(300); you._game=game;
     let r=ccFightApply(you, 0.10, foe);
     check('победа: сосед выбит движком, +сила, +ресы', r==='win' && log.join()==='FOE<ME' && you._pf===90+CC_FIGHT.pow && you._mats===300+CC_FIGHT.mats, r+' '+log.join()+' '+you._pf+' '+you._mats);
     you=mk(300); you._game=game; log.length=0;
-    r=ccFightApply(you, 0.60, foe);
-    check('размен: щит снят, ресы сожжены, −сила, никто не выбит', r==='trade' && you._sq.shield===0 && you._sq.hp===100-CC_FIGHT.tradeHp && you._mats===300-CC_FIGHT.tradeMats && you._pf===90-CC_FIGHT.tradePow && log.length===0, r+' '+JSON.stringify(you._sq)+' '+you._mats);
-    you=mk(300); you._game=game; log.length=0;
-    r=ccFightApply(you, 0.95, foe);
+    r=ccFightApply(you, 0.20, foe);
     check('проигрыш: выбиты сами, соседом', r==='die' && log.join()==='ME<FOE' && you._pf===90-CC_FIGHT.diePow, r+' '+log.join());
     you=mk(300); you._game=game; log.length=0;
-    r=ccFightApply(you, 0.95, null);
+    r=ccFightApply(you, 0.35, foe);
+    check('размен: щит снят, ресы сожжены, −сила, никто не выбит', r==='trade' && you._sq.shield===0 && you._sq.hp===100-CC_FIGHT.tradeHp && you._mats===300-CC_FIGHT.tradeMats && you._pf===90-CC_FIGHT.tradePow && log.length===0, r+' '+JSON.stringify(you._sq)+' '+you._mats);
+    you=mk(300); you._game=game; log.length=0;
+    r=ccFightApply(you, 0.60, foe);
+    check('разошлись: урон в сёрдж, ресы на стройку, сила на месте, никто не выбит', r==='poke' && you._sq.dealt===CC_FIGHT.pokeDmg && you._mats===300-CC_FIGHT.pokeMats && you._pf===90 && you._sq.shield===100 && log.length===0, r+' '+JSON.stringify(you._sq)+' '+you._mats);
+    you=mk(300); you._game=game; log.length=0;
+    r=ccFightApply(you, 0.20, null);
     check('без соседа смерти нет — размен', r==='trade' && log.length===0, r);
-    check('шансы сложены в единицу с запасом на смерть', CC_FIGHT.win+CC_FIGHT.trade<1 && CC_FIGHT.win+CC_FIGHT.trade>0.7);
+    check('решающая доля стычек — как по реплеям, меньше трети; с разменом меньше единицы', CC_FIGHT.decide>0.2 && CC_FIGHT.decide<0.34 && CC_FIGHT.decide+CC_FIGHT.trade<1);
     // через меню целиком: бросок один
     you=mk(300); you._game=game; log.length=0; WANT='fight'; Math.random=()=>0.05;
     await ccAskMenu(you, null);
@@ -115,7 +132,8 @@ const BOOT = `
     check('седьмая молчит при полном наборе', z7 && z7.quiet && z7.quiet(mk(550)) && !z7.quiet(mk(100)));
     // ---- словарь ---------------------------------------------------------------
     ['ru','en'].forEach(l=>{ LANG=l; CC_L_CACHE={}; const D=L();
-      check(l+': строки меню', typeof D.ccMidTitle==='string' && D.ccMidSurgeNote(120,1).length>5 && D.ccMidFightNote(50,4,15).length>5 &&
+      check(l+': строки меню', typeof D.ccMidTitle==='string' && D.ccMidSurgeNote(80,40,1).length>5 && D.ccMidFightNote(14,4,15,15,70).length>5 &&
+            D.ccMidSurgeLine(76,60,-30).length>3 && D.ccMidSurgeLine(76,60,null).length>3 && D.ccMidFightPoke(70,40).length>3 &&
             D.ccMidFightWon(4,'x').length>3 && D.ccMidFightDied('x').length>3 && D.ccMidFightTraded(3).length>3); });
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='BEGIN'+encodeURIComponent(JSON.stringify(out))+'END';

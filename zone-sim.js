@@ -115,8 +115,43 @@
     return {x:fallbackX, y:fallbackY};
   }
 
+  /* ШТОРМ RELOAD — свой. Двенадцать реплеев Reload Elite Series 4 EU (финал
+     и первый хит, Tracker, 6 сентября 2026): 12 кругов, карта 102 700 на
+     112 564 игровых единиц (БР — 234 000), сетка островов r1–r4 в приложении
+     занимает 57 единиц мира по ширине — 1 800 игровых на единицу мира. Радиусы
+     — куда сжимается круг фазы (NextRadius), ожидание и сжатие — из
+     StartShrinkTime/FinishShrinkTime (совпали во всех двенадцати играх до
+     секунды):
+       круг      1     2     3     4     5     6     7     8     9    10    11
+       радиус  60000 42500 32000 26500 20000 10000 5000  2500  1650  1090  1080
+       ждать    120    90    95    90    50    50    50    35    20     0     0
+       сжатие    90    90    95    90    70    66    63    60    60    55    50
+     Сёрдж не бил ни разу (0 тиков по 25 в 12 играх, 40 игроков) — порогов
+     нет. Урон шторма по кругу — таблица БР, реплей его не пишет. Живых
+     отрядов на старте кругов (среднее 12 игр, из 20–21): 20.8 20.0 19.9 19.9
+     19.8 19.7 19.3 18.8 18.3 16.8 14.1 10.8 — Reload-финал почти не теряет
+     никого до девятого круга и решается в трёх последних. */
+  var RELOAD_UNIT = 1800;
+  var RELOAD_PHASES = [
+    {zone:1,  waitSec:120, shrinkSec:90, dps:1,  radius:60000/RELOAD_UNIT, surgeAt:Infinity},
+    {zone:2,  waitSec:90,  shrinkSec:90, dps:1,  radius:42500/RELOAD_UNIT, surgeAt:Infinity},
+    {zone:3,  waitSec:95,  shrinkSec:95, dps:2,  radius:32000/RELOAD_UNIT, surgeAt:Infinity},
+    {zone:4,  waitSec:90,  shrinkSec:90, dps:5,  radius:26500/RELOAD_UNIT, surgeAt:Infinity},
+    {zone:5,  waitSec:50,  shrinkSec:70, dps:8,  radius:20000/RELOAD_UNIT, surgeAt:Infinity},
+    {zone:6,  waitSec:50,  shrinkSec:66, dps:10, radius:10000/RELOAD_UNIT, surgeAt:Infinity},
+    {zone:7,  waitSec:50,  shrinkSec:63, dps:10, radius:5000/RELOAD_UNIT,  surgeAt:Infinity},
+    {zone:8,  waitSec:35,  shrinkSec:60, dps:10, radius:2500/RELOAD_UNIT,  surgeAt:Infinity},
+    {zone:9,  waitSec:20,  shrinkSec:60, dps:10, radius:1650/RELOAD_UNIT,  surgeAt:Infinity},
+    {zone:10, waitSec:0,   shrinkSec:55, dps:10, radius:1090/RELOAD_UNIT,  surgeAt:Infinity},
+    {zone:11, waitSec:0,   shrinkSec:50, dps:10, radius:1080/RELOAD_UNIT,  surgeAt:Infinity}
+  ];
+
   function generateZonePlan(opts){
     var rng = opts.rng, land = opts.land, aspect = opts.aspect;
+    // Своя таблица шторма (Reload) — иначе БР. Дрейф центра у Reload не
+    // измерен — рисуется где угодно внутри разницы радиусов, как у БР в 2–4.
+    var phases = opts.phases || PHASES;
+    var drift = opts.phases ? [] : DRIFT;
 
     // Zone 0 is the whole island: the centre of the bounding box of the land,
     // with a radius that reaches its corners.
@@ -131,15 +166,15 @@
     var radius = Math.hypot(maxX - minX, maxY - minY) / 2;
 
     var plan = [];
-    for(var i=0;i<PHASES.length;i++){
-      var ph = PHASES[i];
+    for(var i=0;i<phases.length;i++){
+      var ph = phases[i];
       // The first circle is placed on the island rather than drifted onto it —
       // there is no previous circle to drift from, and the three logged ones
       // landed 14, 10 and 8 world units off the centre of the island, which is
       // the room inside the island's own radius. Zones 2 to 4 drift anywhere
       // inside the gap between the radii. From zone 5 the distance is the
       // measured one and only the bearing is drawn.
-      var scheduled = DRIFT[i];
+      var scheduled = drift[i];
       var budget = i === 0 ? Math.max(0, radius - ph.radius)
                  : (scheduled == null ? Math.max(0, radius - ph.radius) : scheduled);
       var next = sampleLand(rng, land, aspect, cx, cy, budget, scheduled != null);
@@ -346,7 +381,8 @@
       var dx = tx - s.x, dy = ty - s.y;
       var d = Math.hypot(dx, dy);
       if(d < 1e-9) continue;
-      var step = Math.min(d, maxStep);
+      // На предмете мувмента круг проходится быстрее — см. speedMul в runPhase.
+      var step = Math.min(d, maxStep * (s.speedMul || 1));
       s.x += dx / d * step;
       s.y += dy / d * step;
     }
@@ -494,6 +530,93 @@
   // the surge and a lost duel take — is untouched, so the calibrated death rates
   // stay exactly where they were (taking it off hp put surge at 46% of deaths).
   var CHIP_HP = 2.0;
+  // Сколько соседей за тик обмениваются уроном с одним отрядом. См. resolveContacts.
+  var CHIP_MAX = 2;
+  /* Пол под множителем размера лобби для стычек: соло не половина дуо.
+     Замер (tools/career-solo-alive-probe.js, 100 игр, против реплея финала
+     Solo Series EU 24.01.2026): живых на старте 5/6/7-й зоны — реплей
+     80/72/56, движок при поле 0.5: 88/77/66, при 0.75: 85/73/61, при 1: 83/69/58.
+     Дуо и крупнее пол не трогает (их множитель ≥ 1), дуо-кривая и тесты
+     движка стоят на месте. */
+  var SIZE_SCALE_MIN = 1;
+  /* Контестная высадка в соло — РЕЖЕ, чем у дуо. Множитель только для пары
+     одиночек на высадке; дуо и крупнее — как были (DROP_PRESSURE подогнан по
+     ним). Подогнан вместе с сеткой (CC_SOLO_GRID=60 в index.html, сорок
+     коробок из шестидесяти на двоих) по реплею финала Solo Series EU
+     24.01.2026, живых на старте зон 2/4/7 из 100 — реплей 88/87/56:
+       множитель 3  →  64/62/46   (первая зона выкашивала треть)
+       множитель 1  →  79/76/52
+       множитель 0.5 → 86/82/55
+       множитель 0.3 → 91/87/56  <- здесь, средний разрыв 3.5 игрока
+     Одиночка на общей крыше чаще уходит, чем дерётся до конца: некому
+     добить и некому поднять. Концовка соло (зоны 9–11) у движка на 5–9
+     игроков беднее реплея — отдельный вопрос, не тронут. */
+  var SOLO_DROP_MUL = 0.3;
+  /* К чему опускается множитель размера соло в забитом круге, долей от
+     сырого 0.5. Подогнан по концовке реплея финала Solo Series EU
+     (tools/career-solo-alive-probe.js, живых на старте зон 9/10/11 —
+     реплей 36/26/14):
+       1    → 33/18/9    (к 0.5)
+       0.7  → 34/19/10
+       0.5  → 35/20/11
+       0.3  → 37/22/12   <- здесь, средний разрыв по зонам 2.2 игрока
+     Дуо и крупнее не касается: у них сырой множитель ≥ 1 и смесь стоит на
+     единице. */
+  var SOLO_LATE_SCALE = 0.3;
+  /* СЛАБОЕ ЛОББИ ДЕРЁТСЯ РАНЬШЕ. Реплеи дивизионных капов S41 EU (Tracker,
+     по одной игре на дивизион, 6 сентября 2026), отрядов на старте зон
+     1/2/3/5/7 из 50:
+       дивизион 1   45 39 39 37 32
+       дивизион 2   49 45 38 33 27
+       дивизион 3   48 42 38 34 29
+       дивизион 4   49 36 32 27 24
+       дивизион 5   48 38 35 28 18
+     Ранг навыка внутри лобби решает, КОГО ловят, но не то, СКОЛЬКО дерутся:
+     движок давал всем комнатам одну кривую (43 42 41 38 33). В пятом
+     дивизионе за первую зону выбывают десять отрядов при шести в первом.
+     Пол уловимости (exposure) поднимается от средней силы карточек лобби
+     (team.pow, шкала приложения: комната D1 ≈ 86, D2 85, D3 79, D4 71,
+     D5 64) на LOBBY_WEAK_K за каждые десять очков ниже эталона; при силе
+     эталона и выше — как было. Поле zone-sim-test (pow 82…102, среднее 92)
+     не задето. Множитель на шанс стычки пробовался первым (0.3 и 0.6) и
+     кривую не двигал — раннюю кривую держит уловимость, не частота. */
+  /* K подогнан по пятому дивизиону (tools/career-alive-curve-probe.js,
+     DIV=5, 100 игр), отрядов на старте зон 2/3/5/7:
+       реплей D5     38 35 28 18
+       K 0.3         42 41 37 30   (надбавка не чувствуется)
+       K 0.6         42 38 31 25
+       K 0.7         42 38 29 24   <- здесь; с DROP_WEAK_K 0.4: 40 36 28 23
+     Четвёртый дивизион при K 0.7 и DROP_WEAK_K 0.4: 40 37 33 27 против
+     реплея 36 32 27 24; третий: 42 42 38 31 против 42 38 34 29; второй —
+     как первый (сила 85 против 86), реплей D2 чуть злее (45 38 33 27).
+     Реплеи — по одной игре на дивизион, шум велик; направление верное,
+     точная подгонка требует по десятку игр на дивизион. */
+  var LOBBY_REF_POW = 86;
+  var LOBBY_WEAK_K = 0.7;
+  /* Высадка у слабых: на дропе уловимость выключена по построению, и
+     надбавка выше первой зоны не касается, а реплеи теряют там больше всех
+     (D4 13, D5 10 отрядов против 6 у D1). Множитель на бросок контеста за
+     каждые десять очков силы ниже эталона. */
+  var DROP_WEAK_K = 0.4;
+  /* ЕДИНИЦЫ СЛАБОСТИ — ЗАДАЮТСЯ СНАРУЖИ, когда лобби известно лучше, чем по
+     силе карточек. Восемь реплеев на дивизион (tools/real-division-curves.json)
+     показали, что сила комнаты раннюю кривую не объясняет: второй дивизион
+     по силе почти первый (85 против 86), а за первую зону теряет 10 отрядов
+     против 7, третий и четвёртый — 11, пятый — 8; средние отрядов на старте
+     зон 2/3/5/7: D1 41 39 37 30, D2 38 33 27 23, D3 35 32 26 21, D4 35 31 24
+     20, D5 39 35 29 25. Поэтому карьера передаёт единицы по дивизиону
+     (CC_DIV_WEAK в index.html через tune), а формула по силе остаётся
+     запасной для лобби без дивизиона. null — считать по силе. */
+  var LOBBY_WEAK_UNITS = null;
+  var DROP_WEAK_UNITS = null;
+  function weakUnits(){ return LOBBY_WEAK_UNITS != null ? LOBBY_WEAK_UNITS : Math.max(0, (LOBBY_REF_POW - lobbyMeanPow) / 10); }
+  function dropWeakUnits(){ return DROP_WEAK_UNITS != null ? DROP_WEAK_UNITS : weakUnits(); }
+  // До какой зоны действует надбавка слабости (в первой — полная, дальше линейно к нулю).
+  var LOBBY_WEAK_ZONES = 5;
+  var lobbyMeanPow = LOBBY_REF_POW;   // ставится в simulateZoneGame на старте игры
+  // Текущий круг для exposure — ставится runPhase; вне игры (unit-тесты) первая зона.
+  var lobbyZone = 1;
+  function currentZoneRef(){ return lobbyZone; }
 
   // What finishing a squad is worth against that, per player: a full bar.
   var KILL_DAMAGE = 100;
@@ -519,6 +642,18 @@
   // fight wins every tournament.
   var EXPOSURE_FLOOR = 0.18;
   var ENGAGE_BIAS = 8.5;
+  /* Размах ранга навыка внутри лобби для уловимости — см. relSkill в
+     simulateZoneGame. Подогнан по кривой выживания карьерной комнаты D1
+     против трёх реплеев финала (tools/career-alive-curve-probe.js, 150 игр):
+
+       размах     средний разрыв, отрядов   поле zone-sim-test, пунктов
+       по навыку          5.0                        4.7
+       0.65               2.6                        4.7
+       0.8                0.8                        6.2   <- здесь
+     При 0.8 седьмая зона сходится в ноль (29.9 против 29.9), концовка в
+     пределах отряда; поле теста уходит на полтора пункта, при допуске
+     двенадцать. */
+  var RANK_SPREAD = 0.8;
 
   // How hard a squad weighs the matchup before starting something. Zero would
   // be the old behaviour, taking any fight going; the higher it is, the more a
@@ -560,7 +695,21 @@
   var NOWHERE_ROOM = 0.15;
 
   function exposure(squad){
-    return EXPOSURE_FLOOR + (1 - EXPOSURE_FLOOR) * (1 - squad.skill);
+    // Ранг навыка внутри лобби (relSkill, см. simulateZoneGame); сам навык —
+    // только там, где отряды собраны без игры (unit-тесты resolveContacts).
+    var sk = squad.relSkill != null ? squad.relSkill : squad.skill;
+    /* Слабое лобби уловимее целиком: пол поднимается от средней силы лобби
+       (LOBBY_WEAK_K, см. там). Шанс стычки (ENGAGE_CHANCE, множитель на
+       бросок) кривую ранних зон не двигал — её держит именно уловимость. */
+    /* Надбавка — ранним зонам: реплеи слабых дивизионов теряют отряды на
+       высадке и в первых кругах (D5: 48 → 35 к третьей зоне при 45 → 39 у
+       D1), а концовка у всех дивизионов одна (18…32 на седьмой). Постоянная
+       надбавка (K 0.15…0.25) ранние зоны не трогала, зато выкашивала
+       концовку (D5 на девятой 5…11 при реальных 15). Поэтому она полная в
+       первой зоне и линейно уходит в ноль к LOBBY_WEAK_ZONES. */
+    var earlyMix = Math.max(0, 1 - (currentZoneRef() - 1) / LOBBY_WEAK_ZONES);
+    var floor = Math.min(0.9, EXPOSURE_FLOOR + earlyMix * LOBBY_WEAK_K * weakUnits());
+    return floor + (1 - floor) * (1 - sk);
   }
 
   // Being hard to catch is bought with ground, and in the endgame there is none
@@ -718,8 +867,27 @@
     // same ratio the other way round. Duos are multiplied by one and do not
     // move at all, which is the point: the curve underneath them is pinned to
     // real telemetry.
-    var sizeScale = alive.length ? equivalent / alive.length : 1;
+    /* Соло — не половина дуо. Формула выше даёт соло 0.5 (сто одиночек — это
+       пятьдесят «дуо-эквивалентов»), и в соло-финале движок терял с первой по
+       четвёртую зону четверых при реальных тринадцати (реплей финала Solo
+       Series EU, 24 января 2026, 97 игроков: 96 → 85 → 85 → 84 на старте
+       зон; tools/career-solo-alive-probe.js). SIZE_SCALE_MIN — пол под этим
+       множителем; дуо и крупнее он не трогает (у них множитель ≥ 1). */
     var press = dropping ? DROP_PRESSURE : pressure(room);
+    /* Множитель размера — по тесноте круга. В свободном круге стычку решает
+       число отрядов, и соло не должно быть половиной дуо (SIZE_SCALE_MIN=1);
+       в забитом — число пар, а их у тридцати одиночек вчетверо больше, чем у
+       пятнадцати дуо, и при единице соло-концовка резала в полтора раза
+       быстрее реплея (зоны 9–11: 31→16→9 при реальных 36→26→14). Поэтому
+       при давлении PRESSURE_MAX множитель опускается к сырому
+       equivalent/alive (0.5 у соло), а между ними — линейно по давлению.
+       Дуо и крупнее: сырой множитель ≥ 1, и смесь единицы с ним не меньше
+       единицы — их кривая не двигается. */
+    var rawScale = alive.length ? equivalent / alive.length : 1;
+    var floorScale = Math.max(SIZE_SCALE_MIN, rawScale);
+    var crowdMix = dropping ? 0 : Math.max(0, Math.min(1, (press - 1) / Math.max(PRESSURE_MAX - 1, 1e-6)));
+    var lateScale = rawScale < 1 ? rawScale * SOLO_LATE_SCALE : floorScale;
+    var sizeScale = floorScale + (lateScale - floorScale) * crowdMix;
 
     // Shuffle so the pairing does not always favour whoever is earlier in the
     // array — with a fixed order the same squad would be first to every fight
@@ -760,10 +928,20 @@
     // Which is what falls out here: each side deals in proportion to how good
     // it is, so a contact between two squads nets the difference between them
     // and nets nothing between equals.
+    /* Обмен уроном — не со всеми, кто в радиусе, а с CHIP_MAX ближайшими
+       контактами за тик: стрелять в двадцать соседей разом нельзя. Без
+       потолка в соло-финале, где сотня стоит в одном круге, чистый урон
+       уходил в тысячи («6660 над порогом урона» на его скрине 6 сентября)
+       при реальном максимуме около 800 и медиане 100 на седьмой зоне. */
+    var chipN = new Array(alive.length);
+    for(var cn=0; cn<alive.length; cn++) chipN[cn] = 0;
     for(var ci=0; ci<alive.length; ci++){
       for(var cj=ci+1; cj<alive.length; cj++){
+        if(chipN[ci] >= CHIP_MAX) break;
+        if(chipN[cj] >= CHIP_MAX) continue;
         var cdx = alive[ci].x - alive[cj].x, cdy = alive[ci].y - alive[cj].y;
         if(cdx*cdx + cdy*cdy > CHIP_RANGE * CHIP_RANGE) continue;
+        chipN[ci]++; chipN[cj]++;
         var hitA = CHIP_RATE * alive[ci].power * TICK_SEC;
         var hitB = CHIP_RATE * alive[cj].power * TICK_SEC;
         alive[ci].dealt += hitA; alive[cj].taken += hitA;
@@ -843,7 +1021,12 @@
         var eO = pair > 0 ? Math.pow(2 * o.power / pair, PICK_EXP) : 1;
         var pS = s.seek * Math.pow(caught(o, room), ENGAGE_BIAS) * eS;
         var pO = o.seek * Math.pow(caught(s, room), ENGAGE_BIAS) * eO;
-        if(!stacked && rng() >= ENGAGE_CHANCE * press * sizeScale * (pS + pO)) continue;
+        // Пара одиночек на высадке — см. SOLO_DROP_MUL.
+        var dropMul = (dropping && (!s.team.squad || s.team.squad.length === 1) &&
+                       (!o.team.squad || o.team.squad.length === 1)) ? SOLO_DROP_MUL : 1;
+        // Слабое лобби и на высадке решает контест чаще — см. DROP_WEAK_K.
+        if(dropping) dropMul *= 1 + DROP_WEAK_K * dropWeakUnits();
+        if(!stacked && rng() >= ENGAGE_CHANCE * press * sizeScale * dropMul * (pS + pO)) continue;
 
         // The caller is told whether this fight is happening off the drop.
         // Nothing in here changes on the answer — the engine settles no fight
@@ -997,6 +1180,12 @@
   // so a good squad leaves almost at once and a poor one leaves with the storm
   // already on top of it.
   var LINGER_MAX = 0.3;
+  // Во сколько раз быстрее идёт круг на предмете мувмента (шоквейв, краш-пад,
+  // слайдеры). ДОГАДКА, не замер: реплей не пишет, чем ехали. Больше единицы
+  // ровно настолько, чтобы поздний выход на предмете не стоил здоровья.
+  var MOVE_ITEM_SPEED = 1.8;
+  // Доля пути шторма, после которой выходит «поздний» отряд. См. runPhase.
+  var LATE_SHRINK = 0.15;
 
   // Squads that have not reached their departure time yet stay where they are.
   // Implemented by parking the target on the spot rather than by a flag, so
@@ -1012,9 +1201,67 @@
 
   function simulateZoneGame(teams, opts){
     var rng = opts.rng, aspect = opts.aspect, duel = opts.duel, record = !!opts.record;
-    var plan = generateZonePlan({rng: rng, land: opts.land, aspect: aspect});
+    var plan = generateZonePlan({rng: rng, land: opts.land, aspect: aspect, phases: opts.phases});
     var squads = createSquads(teams, {aspect: aspect, startOf: opts.startOf});
     for(var st=0; st<squads.length; st++) squads[st].surgeTie = rng();
+    // Средняя сила лобби по карточкам — для LOBBY_WEAK_K, см. resolveContacts.
+    (function(){
+      var sum = 0, n = 0;
+      for(var i=0; i<teams.length; i++){ var pw = Number(teams[i].pow); if(isFinite(pw) && pw > 0){ sum += pw; n++; } }
+      lobbyMeanPow = n ? sum / n : LOBBY_REF_POW;
+    })();
+    /* УЛОВИМОСТЬ — ОТНОСИТЕЛЬНО ЛОББИ, а не по абсолютному навыку. 6 сентября
+       2026, по кривой выживания карьерной комнаты против трёх реплеев финала
+       Major 2 EU (tools/career-alive-curve-probe.js; реплеи —
+       tools/real-matches.json, те же игры):
+
+         отрядов на старте зоны   5     6     7     8     9    10    11
+         реплеи                  37.6  34.6  29.9  23.5  18.5  14.1   9.1
+         комната D1, по навыку   41.4  41.3  41.2  35.9  30.7  16.1   8.4
+
+       В комнате первого дивизиона все отряды сильные, exposure у всех у
+       самого пола — и с третьей по седьмую зону не умирал никто, 41 отряд
+       стоял ровно, а концовка вырезала по пятнадцать за круг. Давление круга
+       (PRESSURE_BASE 0.15…0.6) кривую не двигало вовсе, тяга к людям и шанс
+       стычки — почти; двигал только пол уловимости, но пол 0.5 ломал
+       смешанный мир zone-sim-test (16 пунктов против 4.8). Реальный финал —
+       тоже лобби из одних сильных, и в нём умирают по три отряда за зону:
+       кого ловят, решает не абсолютный навык, а место среди тех, кто в этом
+       же лобби. Поэтому exposure читает ранг навыка внутри игры (0 у худшего
+       ротатора лобби, 1 у лучшего), а не сам навык. В смешанном поле теста
+       ранг и навык почти совпадают, и его кривая не сдвигается; в элитной
+       комнате ранг раскрывает разницу, которую навык прятал. Время выхода
+       (leaveAt) и чтение карты по-прежнему от абсолютного навыка.
+
+       Голый ранг (0…1) бил слишком сильно: смешанное поле теста уходило на
+       11.8 пункта от реплеев (было 4.8), комната D1 теряла на семь отрядов
+       больше реплеев к седьмой зоне. Ранг растягивается на RANK_SPREAD вокруг
+       среднего навыка лобби — ровно тот размах (0.3…0.95), какой абсолютный
+       навык имел в поле теста, где кривая и была подогнана; там ранг с таким
+       размахом воспроизводит навык почти точно, а в элитной комнате
+       раскрывает её изнутри. */
+    (function(){
+      var byv = squads.slice().sort(function(a, b){ return a.skill - b.skill; });
+      var n = byv.length, mean = 0;
+      for(var m=0; m<n; m++) mean += byv[m].skill;
+      mean = n ? mean / n : 0.5;
+      /* Центр сдвигается так, чтобы весь размах помещался в 0…1: у комнаты
+         первого дивизиона средний навык около 0.9, и без сдвига половина
+         лобби упиралась в единицу — в ту же плоскую середину (41 отряд до
+         седьмой зоны при 30 в реплеях). Смысл тот же, что у ранга: лучший
+         ротатор лобби у пола, худший — на RANK_SPREAD ниже, кто бы ни сидел
+         в комнате. */
+      mean = Math.min(mean, 1 - RANK_SPREAD / 2);
+      mean = Math.max(mean, RANK_SPREAD / 2);
+      for(var i=0; i<n; i++){
+        // Равные навыки делят ранг поровну: без этого порядок массива решал бы, кто уловимее.
+        var j = i; while(j+1 < n && byv[j+1].skill === byv[i].skill) j++;
+        var r = n > 1 ? ((i + j) / 2) / (n - 1) : 0.5;
+        var sk = Math.max(0, Math.min(1, mean + (r - 0.5) * RANK_SPREAD));
+        for(var k=i; k<=j; k++) byv[k].relSkill = sk;
+        i = j;
+      }
+    })();
 
     var eliminationOrder = [];   // first out, first in
     var pendingEvents = [];
@@ -1033,6 +1280,21 @@
     var inDrop = false;
 
     function onDeath(sq){
+      /* RELOAD: ВОЗРОЖДЕНИЕ. В Reload убитый возвращается в бой, пока
+         возрождения включены, и отряд не выбывает; выбывать начинают, когда
+         они гаснут. Двенадцать реплеев Reload Elite Series 4 EU: 20 отрядов,
+         живых на старте кругов 20.8 20.0 19.9 19.9 19.8 19.7 19.3 18.8 18.3
+         16.8 14.1 10.8 — первые выбывшие только к восьмому кругу. Без этого
+         движок на своём же шторме Reload терял по отряду с первого круга и
+         приходил к одиннадцатому с девятью. Элим убийце уже засчитан (он
+         считается до этого вызова) — как и в игре, где кил есть, а команда
+         жива. Смерть в ленту не пишется: строки «выбит» для того, кто вернулся,
+         быть не должно. */
+      if(opts.respawnUntilZone && currentZone < opts.respawnUntilZone){
+        sq.alive = true; sq.hp = 100; sq.shield = 100; sq.deathCause = null; sq.busy = true;
+        sq.respawns = (sq.respawns || 0) + 1;
+        return;
+      }
       sq.zoneReached = currentZone;
       if(inDrop) sq.droppedOut = true;
       eliminationOrder.push(sq);
@@ -1149,6 +1411,7 @@
     // which is what makes leaving late expensive rather than merely untidy.
     function runPhase(from, to, phase){
       currentZone = phase.zone;
+      lobbyZone = phase.zone;
       currentSurgeAt = phase.surgeAt;
       var total = phase.waitSec + phase.shrinkSec;
       for(var i=0;i<squads.length;i++) if(squads[i].alive){
@@ -1161,6 +1424,34 @@
         // die. A poor squad now sits on its ground, farms, takes one more fight,
         // and leaves with the storm already moving.
         s0.leaveAt = LINGER_MAX * total * (1 - s0.skill) * (0.5 + rng());
+        /* Стиль ротации своей команды — ответ игрока на четвёртой зоне
+           (ccAskRot в index.html, поле team._rot). Бота это не касается: у
+           него время выхода — от навыка, как и было.
+             early — выходим, как только круг показан (так уходят 81% отрядов
+                     финала Major 2 EU по реплеям);
+             with  — выходим, когда круг пошёл: приезжаем вместе со штормом;
+             late  — пережидаем, идём, когда шторм уже прошёл LATE_SHRINK пути:
+                     здоровье платит по таблице шторма, зато на входе тише;
+             move  — то же, что late, но на предмете мувмента: в этот круг
+                     скорость выше (MOVE_ITEM_SPEED), предмет сгорает, и
+                     дальше команда ходит как early.
+           Поздний выход — на LATE_SHRINK пути шторма, не дальше. Проба
+           (tools/career-rot-probe.js) на 0.35 давала 16% доживших до седьмой
+           зоны против 60% у раннего — шторм догонял на открытом. В реплеях
+           поздние выходят редко (3%), но доживают: они уходят, когда до
+           круга близко. 0.15 — то, при чём поздний выход остаётся риском,
+           а не самоубийством; это настройка движка, не замер. */
+        var rot = s0.team && s0.team._rot;
+        s0.speedMul = 1;
+        if(rot === 'early') s0.leaveAt = 0;
+        else if(rot === 'with') s0.leaveAt = phase.waitSec;
+        else if(rot === 'late') s0.leaveAt = phase.waitSec + phase.shrinkSec * LATE_SHRINK;
+        else if(rot === 'move'){
+          s0.leaveAt = phase.waitSec + phase.shrinkSec * LATE_SHRINK;
+          s0.speedMul = MOVE_ITEM_SPEED;
+          s0.moveUsedZone = phase.zone;   // для проверок: на каком круге предмет сгорел
+          s0.team._rot = 'early';
+        }
         // Nobody rotates out of their drop. The first circle is not even drawn
         // yet for most of this, and holdLate already knows how to keep a squad
         // on its ground — so the drop is expressed as "everyone is late for the
@@ -1450,6 +1741,18 @@
     if(v.CHAIN_CHANCE   != null) CHAIN_CHANCE   = v.CHAIN_CHANCE;
     if(v.CHAIN_MAX      != null) CHAIN_MAX      = v.CHAIN_MAX;
     if(v.EXPOSURE_FLOOR != null) EXPOSURE_FLOOR = v.EXPOSURE_FLOOR;
+    if(v.RANK_SPREAD    != null) RANK_SPREAD    = v.RANK_SPREAD;
+    if(v.CHIP_MAX       != null) CHIP_MAX       = v.CHIP_MAX;
+    if(v.SIZE_SCALE_MIN != null) SIZE_SCALE_MIN = v.SIZE_SCALE_MIN;
+    if(v.SOLO_DROP_MUL  != null) SOLO_DROP_MUL  = v.SOLO_DROP_MUL;
+    if(v.SOLO_LATE_SCALE!= null) SOLO_LATE_SCALE= v.SOLO_LATE_SCALE;
+    if(v.LOBBY_WEAK_K   != null) LOBBY_WEAK_K   = v.LOBBY_WEAK_K;
+    if(v.LOBBY_REF_POW  != null) LOBBY_REF_POW  = v.LOBBY_REF_POW;
+    if(v.LOBBY_WEAK_ZONES!= null) LOBBY_WEAK_ZONES= v.LOBBY_WEAK_ZONES;
+    if(v.DROP_WEAK_K    != null) DROP_WEAK_K    = v.DROP_WEAK_K;
+    // Единицы слабости можно и снять (null): 'LOBBY_WEAK_UNITS' in v — значит трогаем.
+    if('LOBBY_WEAK_UNITS' in v) LOBBY_WEAK_UNITS = v.LOBBY_WEAK_UNITS;
+    if('DROP_WEAK_UNITS' in v)  DROP_WEAK_UNITS  = v.DROP_WEAK_UNITS;
     if(v.LINGER_MAX     != null) LINGER_MAX     = v.LINGER_MAX;
     if(v.SURGE_DPS      != null) SURGE_DPS      = v.SURGE_DPS;
     if(v.ROOM           != null) ROOM           = v.ROOM;
@@ -1482,6 +1785,7 @@
     applySurge: applySurge,
     createRng: createRng,
     PHASES: PHASES,
+    RELOAD_PHASES: RELOAD_PHASES,
     DRIFT: DRIFT,
     generateZonePlan: generateZonePlan,
     SPEED: SPEED,

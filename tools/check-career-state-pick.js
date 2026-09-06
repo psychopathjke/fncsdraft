@@ -55,9 +55,9 @@ const BOOT = `
       // One flag for the country, not fifty for the states: the shapes are
       // zones you click for their milliseconds, and each carries its number.
       check('the states share the flag of the United States',
-            svg.indexOf('flagcdn.com/w320/us.png') >= 0);
+            svg.indexOf('flags/w320/us.png') >= 0);
       check('and no state flies one of its own',
-            svg.indexOf('flagcdn.com/w320/us-') < 0);
+            svg.indexOf('flags/w320/us-') < 0);
       check('with its own number on it', svg.indexOf('data-code="us-ca"') >= 0);
 
       // ---- a career made on a state --------------------------------------
@@ -85,7 +85,7 @@ const BOOT = `
       out.notes.nat = {nat: card.nat, flag: flagImg(card.nat, 15)};
       check('a state-born card carries a nationality', !!card.nat, String(card.nat));
       check('and it is the American flag',
-            (flagImg(card.nat, 15) || '').indexOf('flagcdn.com/w40/us.png') >= 0,
+            (flagImg(card.nat, 15) || '').indexOf('flags/w40/us.png') >= 0,
             flagImg(card.nat, 15));
     } catch (e) { out.err = String(e && e.stack || e); }
     document.getElementById('__out').textContent =

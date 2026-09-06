@@ -85,6 +85,37 @@ const BOOT = `
       fail('a solo evening is still blocked with the solo spot placed');
     out.steps.push('no solo spot, no solo evening — and placing one opens it');
 
+    // ---- остров соло-метки — тот, где играют FNCS Solos, и в трио-год ------
+    // Репорт 6 сентября: «trio season … shows Chapter 6 map but solos take
+    // place on chapter 7 map». Метка и вечер должны сидеть на одном острове.
+    start();
+    CAREER.career.size = 3;
+    if(careerBrSet() === 's42solo' || careerBrSet() === 's42')
+      fail('a trio year is not on a trio island: ' + careerBrSet());
+    if(careerSpotGrid('solo') !== 's42')
+      fail('trio year: the solo spot is drawn on ' + careerSpotGrid('solo') + ', the solos are played on s42');
+    if(careerNightSet(soloNext) !== 's42')
+      fail('trio year: the solo evening card shows ' + careerNightSet(soloNext));
+    if(careerNightSet(cupNext) === 's42' && careerBrSet() !== 's42')
+      fail('trio year: the cup evening went to the solo island');
+    // Метка, поставленная на этой сетке, читается на ней же — той клеткой.
+    careerSpotSet(7, 'solo');
+    useLandingSet('s42');
+    const z = ccSoloHomeZone({isYou:true});
+    if(!z || careerSpotIndexOf(z, 's42') !== 7)
+      fail('trio year: the solo spot on cell 7 reads back as ' + (z ? careerSpotIndexOf(z, 's42') : 'nothing'));
+    out.steps.push('trio year: solo spot, solo evening and solo home all sit on s42, the chapter 7 island');
+    // Январская Solo Series — на сезонном острове, как играет раннер.
+    const janDay = [...careerYearDays().keys()].sort().find(d => {
+      const ev = careerSoloSeriesOn(d); return ev && !ev.spec; });
+    if(janDay){
+      CAREER.career.size = 2;
+      CAREER.career.day = janDay;
+      if(careerSpotGrid('solo') !== careerBrSet())
+        fail('January solo series: the spot is drawn on ' + careerSpotGrid('solo') + ', the evening plays on ' + careerBrSet());
+      out.steps.push('January solo series: the solo spot stays on the season island ' + careerBrSet());
+    }
+
     // ---- то же самое в командной карьере ----------------------------------
     start();
     CAREER.career.mp = {code:'TEST01', role:'host'};

@@ -121,16 +121,27 @@ const BOOT = `
       fail('рефреш при пустых ресах не дороже, чем при полных');
     if(ccMatsLow(full) || !ccMatsLow(empty)) fail('порог «мало ресов» не работает');
     if(!(CC_MATS_PEN>0)) fail('концовка без ресов ничего не стоит');
+    /* Ступени по замеру Tracker (см. CC_MATS_BANDS): полная треть — ноль,
+       средняя дешевле нижней, нижняя — CC_MATS_PEN; «мало» и есть нижняя. */
+    const mid={_mats:Math.round(CC_MATS_FULL/2)};
+    if(ccMatsEndPow(full)!==0) fail('полные ресы стоят силы: '+ccMatsEndPow(full));
+    if(!(ccMatsEndPow(mid)<0 && ccMatsEndPow(mid)>-CC_MATS_PEN))
+      fail('средняя ступень не между нулём и −'+CC_MATS_PEN+': '+ccMatsEndPow(mid));
+    if(ccMatsEndPow(empty)!==-CC_MATS_PEN) fail('пустые ресы стоят не −'+CC_MATS_PEN+': '+ccMatsEndPow(empty));
+    if(ccMatsEndPow({_mats:CC_MATS_LOW})!==-CC_MATS_PEN || ccMatsEndPow({_mats:CC_MATS_LOW-1})!==-CC_MATS_PEN)
+      fail('«мало» и нижняя ступень разошлись');
     // Круги действительно тратят ресы, и штраф садится один раз.
     const t={_mats:CC_MATS_FULL, pow:100, _pf:100, _pc:100};
     ccKitSpend([t], CC_MATS_ZONE*4);
     if(!(ccMats(t)<CC_MATS_FULL)) fail('круги не тратят ресы');
-    const powWas=t._pf;
+    const powWas=t._pf, due=-ccMatsEndPow(t);
+    if(!(due>0)) fail('после четырёх кругов без рефреша концовка ничего не стоит');
     ccMatsPenalty([t]); ccMatsPenalty([t]);
     if(!(t._pf<powWas)) fail('штраф за пустые ресы не применился');
-    if(Math.abs((powWas-t._pf)-CC_MATS_PEN)>0.01) fail('штраф применился дважды');
-    out.steps.push('ресы: круг −'+CC_MATS_ZONE+', порог '+CC_MATS_LOW+', концовка без ресов −'+CC_MATS_PEN+
-                   ', рефреш '+ccRefreshPow(empty)+' на пустых против '+ccRefreshPow(full)+' на полных');
+    if(Math.abs((powWas-t._pf)-due)>0.01) fail('штраф применился дважды');
+    out.steps.push('ресы: круг −'+CC_MATS_ZONE+', ступени '+CC_MATS_BANDS.map(b=>
+      Math.round(b.from*CC_MATS_FULL)+'+ → '+b.pow).join(', ')+
+      ', рефреш '+ccRefreshPow(empty)+' на пустых против '+ccRefreshPow(full)+' на полных');
 
     // ---- хайграунд действительно монетка ------------------------------------
     let won=0;

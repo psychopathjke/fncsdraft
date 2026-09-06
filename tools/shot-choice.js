@@ -24,7 +24,7 @@ const CHROME = [
 if (!CHROME) throw new Error('Chrome not found');
 
 const WANT = process.argv.slice(2).length ? process.argv.slice(2)
-                                          : ['drop', 'loot', 'late', 'out'];
+                                          : ['drop', 'loot', 'rot', 'late', 'out'];
 
 const BOOT = (what) => `
 <!-- Поверх приложения, а не под ним: careerEntry рисует хаб во весь экран, и
@@ -50,6 +50,8 @@ const BOOT = (what) => `
     skipAnimation=false;
     if(typeof CC_FF!=='undefined') CC_FF=false;
     CC_CHOICE_WAIT=1e9;                 // панель должна дождаться снимка
+    // Бот-напарник со своим мнением под заголовком (ccMateOpinion) — как в дуо-вечере.
+    careerMates=()=>[{handle:'Setty', ovr:88}]; careerSquadSize=()=>2; ccMpOn=()=>false;
 
     // Остров под панелью — тот же, на котором играется вечер.
     const host=document.getElementById('__shot');
@@ -74,13 +76,21 @@ const BOOT = (what) => `
          {id:'swap', title:L().ccLootSwap, note:listOf(other)+' — '+
             L().ccLootSwapRisk(CC_LOOT_POI_BONUS, CC_LOOT_POI_FAIL,
               Math.round(CC_LOOT_POI_ODDS*100))}], map);
+    } else if(WHAT==='rot'){
+      // Ротация четвёртой зоны — те же строки и картинки, что у ccAskRot, плюс мувмент из пака.
+      const mv={name:'Shockwave Grenade', rarity:'epic'};
+      ccChoiceBox(L().ccRotTitle, L().ccKitLine(400, '', 'Striker Pump Shotgun'), [
+        {id:'early', def:true, icon:CC_CHOICE_ICON.run, title:L().ccRotEarly, note:L().ccRotEarlyNote(CC_ROT_REAL.early.share, CC_ROT_REAL.early.surv)},
+        {id:'with', icon:CC_CHOICE_ICON.storm, title:L().ccRotWith, note:L().ccRotWithNote(CC_ROT_REAL.with.share, CC_ROT_REAL.with.surv)},
+        {id:'late', icon:CC_CHOICE_ICON.stay, title:L().ccRotLate, note:L().ccRotLateNote},
+        {id:'move', icon:ccItemIconHTML(mv, CC_CHOICE_ICON.run), title:L().ccRotMove, note:L().ccRotMoveNote(mv.name)}], map);
     } else if(WHAT==='late'){
       // Меню берётся ОТТУДА ЖЕ, откуда его берёт сама игра (CC_LATE_MOVES). Пока
       // тут стоял свой список из трёх ходов, снимок показывал три даже после
       // того, как в игре их стало пять, — то есть врал ровно про то, ради чего
       // его и делают.
       ccChoiceBox(L().ccLateTitle, L().ccLateHint,
-        CC_LATE_MOVES.map(m=>({id:m.id, title:L()[CC_LATE_NAME[m.id]], note:ccLateNote(m)})), map);
+        CC_LATE_MOVES.map(m=>({id:m.id, title:L()[CC_LATE_NAME[m.id]], note:ccLateNote(m), icon:CC_CHOICE_ICON[CC_LATE_ICON[m.id]]||CC_CHOICE_ICON.stay})), map);
     } else {
       /* Плашка исхода гасит себя двумя setTimeout на 1.5 и 1.9 сек, а
          виртуальное время headless'а проматывает их до первого кадра — снимок
