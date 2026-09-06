@@ -35,12 +35,13 @@
  * в собранной папке — хеш app.js и настоящие адреса. Файл в репозитории
  * специально нерабочий как воркер — его никто и не регистрирует с file://.
  */
-const V = "2fadb7a4";
-const CORE = ["./","./zone-sim.js?v=6846baa2","./zone-replay.js?v=bd107a55","./mp.js?v=66d45795","./app.js?v=2fadb7a4","./fonts/oswald-cyrillic-ext.woff2","./fonts/oswald-cyrillic.woff2","./fonts/oswald-latin-ext.woff2","./fonts/oswald-latin.woff2"];
+const V = "df91794d";
+const CORE = ["./","./zone-sim.js?v=6846baa2","./zone-replay.js?v=bd107a55","./mp.js?v=66d45795","./app.js?v=df91794d","./fonts/oswald-cyrillic-ext.woff2","./fonts/oswald-cyrillic.woff2","./fonts/oswald-latin-ext.woff2","./fonts/oswald-latin.woff2"];
 
 const DOC = 'fncsdraft-doc-' + V;      // оболочка: одна на сборку
 const APP = 'fncsdraft-app-' + V;      // скрипты с ?v=: одни на сборку
 const MEDIA = 'fncsdraft-media';       // арт, фото, гербы, шрифты: общий кэш
+const DOC_WAIT = 6000;                 // сколько ждать сеть за документом, когда копия уже есть
 
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
@@ -81,17 +82,26 @@ self.addEventListener('fetch', event => {
 
   if (isDoc(req)) {
     event.respondWith((async () => {
-      try {
+      const cached = async () => (await caches.match(req)) || (await caches.match('./'));
+      // Сеть у этих провайдеров не отказывает, а ВИСИТ: пакеты пропадают, и
+      // fetch не отвергается ни через секунду, ни через минуту. «Сеть не
+      // ответила» здесь значит и это: если оболочка уже лежит в кэше, ждём
+      // сеть DOC_WAIT миллисекунд и дальше показываем то, что есть. Свежую
+      // оболочку сеть при этом всё равно докачает и положит на место — её
+      // увидит следующий заход. Без копии в кэше ждём сеть сколько угодно:
+      // показать нечего.
+      const net = (async () => {
         const res = await fetch(req);
         // Кладём копию только удачного ответа: 404 или страница-заглушка
         // провайдера не должны стать тем, что мы покажем в следующий раз.
         if (res && res.ok) (await caches.open(DOC)).put(req, res.clone());
         return res;
-      } catch (e) {
-        const hit = await caches.match(req) || await caches.match('./');
-        if (hit) return hit;
-        throw e;
-      }
+      })();
+      const hit = await cached();
+      if (!hit) return net.catch(async e => { const h = await cached(); if (h) return h; throw e; });
+      const late = new Promise(r => setTimeout(() => r(null), DOC_WAIT));
+      const first = await Promise.race([net.catch(() => null), late]);
+      return first || hit;
     })());
     return;
   }
