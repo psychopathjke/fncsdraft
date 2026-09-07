@@ -81,6 +81,13 @@ const BOOT = `
     }
     let sameClass=0; for(let i=0;i<300;i++){ const p=ccChestPack(Math.random, ccLootSet(), CC_CHESTS_POI); if(p.weapons.length===2 && p.weapons[0].icon===p.weapons[1].icon) sameClass++; }
     if(sameClass>30) fail('two weapons of one class in '+sameClass+' of 300 packs');
+    // ---- пара «автомат + дробовик», когда оба выпали -------------------------------
+    const pair=ccPackFrom([{name:'S',icon:'smg',rarity:'legendary'},{name:'P',icon:'pistol',rarity:'epic'},{name:'R',icon:'rifle',rarity:'uncommon'},{name:'G',icon:'shotgun',rarity:'rare'}], []);
+    if(pair.weapons.map(w=>w.icon).sort().join('+')!=='rifle+shotgun') fail('pack is not rifle+shotgun when both dropped: '+pair.weapons.map(w=>w.name).join(','));
+    if(pair.weapons[0].name!=='G') fail('the better gun of the pair is not first: '+pair.weapons.map(w=>w.name).join(','));
+    const noShot=ccPackFrom([{name:'S',icon:'smg',rarity:'legendary'},{name:'R',icon:'rifle',rarity:'uncommon'},{name:'P',icon:'pistol',rarity:'epic'}], []);
+    if(noShot.weapons.map(w=>w.name).join(',')!=='S,R') fail('without a shotgun the rifle plus the best other class was expected, got '+noShot.weapons.map(w=>w.name).join(','));
+    out.steps.push('pack pairs the rifle with the shotgun when both dropped, else the best of another class');
     const plain=ccPackFrom([{name:'A',icon:'rifle',rarity:'uncommon'},{name:'B',icon:'shotgun',rarity:'uncommon'}], [{name:'Minis',rarity:'uncommon'},{name:'Medkit',rarity:'uncommon'},{name:CC_MOVE_ITEMS[0],rarity:'rare'}]);
     if(ccPackPow(plain)!==0) fail('a plain full pack is not worth 0: '+ccPackPow(plain));
     if(ccPackPow({weapons:[],heals:[],move:null})!==-5) fail('an empty pack is not -5');

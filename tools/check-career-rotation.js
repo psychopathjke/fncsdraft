@@ -71,6 +71,15 @@ const BOOT = `
     if(you._rot!=='late') fail('late did not take');
     ccChoiceBox=realBox;
     out.steps.push('the answer lands in _rot; the movement item is offered only when held and burns on use');
+    // ---- цена круга по выходу (CC_ROT_MATS): множитель на один круг ---------------------
+    you._buildMul=1; you._rotMul=CC_ROT_MATS.late; you._mats=1000;
+    ccKitSpend([you], CC_MATS_ZONE);
+    if(you._mats!==1000-Math.round(CC_MATS_ZONE*CC_ROT_MATS.late)) fail('late rotation did not cost '+CC_ROT_MATS.late+'x: '+you._mats);
+    if(you._rotMul!=null) fail('rotation multiplier survived the circle');
+    ccKitSpend([you], CC_MATS_ZONE);
+    if(you._mats!==1000-Math.round(CC_MATS_ZONE*CC_ROT_MATS.late)-CC_MATS_ZONE) fail('the circle after is not plain: '+you._mats);
+    if(ccRotMats('move', {_buildMul:1})!==Math.round(CC_MATS_ZONE*CC_ROT_MATS.move)) fail('ccRotMats move');
+    out.steps.push('the way out prices one circle: late '+CC_ROT_MATS.late+'x, move '+CC_ROT_MATS.move+'x, then plain again');
 
     // ---- движок: время выхода по стилю ---------------------------------------
     const set=ZONE_SETS[ACTIVE_LANDING_SET]?ACTIVE_LANDING_SET:'m2';
