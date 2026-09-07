@@ -450,6 +450,11 @@ test('the same squads packed tighter produce more fights', () => {
     ' in a radius-35 one — density is not driving fights');
 });
 
+// Surge lands in 25-damage ticks every 5 seconds with probability SURGE_DUTY
+// (calibrated against the replays). The tests hand in an rng that always
+// returns 0, so every tick lands and the arithmetic is fixed: 10 seconds under
+// the line is two ticks, 50 health.
+const ALWAYS=() => 0;
 function surgeField(n, dealtFn){
   const squads = ZoneSim.createSquads(fakeField(n), {aspect: ASPECT, startOf: START});
   squads.forEach((s, i) => { s.dealt = dealtFn(i); });
@@ -458,7 +463,7 @@ function surgeField(n, dealtFn){
 
 test('no surge while the lobby is under the threshold', () => {
   const squads = surgeField(10, i => i);           // 10 duos = 20 players
-  ZoneSim.applySurge(squads, 26, 10, () => {});
+  ZoneSim.applySurge(squads, 26, 10, () => {}, ALWAYS);
   squads.forEach(s => assert(s.hp === 100, 'surge fired under the threshold'));
 });
 
@@ -468,7 +473,7 @@ test('surge takes the excess over the threshold, from the squads that have done 
   // be "everybody under the lobby average", which had nothing to aim at in a
   // lobby where nobody had killed anybody yet and so took the whole field.
   const squads = surgeField(20, i => (i < 10 ? 0 : 1000));
-  ZoneSim.applySurge(squads, 26, 10, () => {});
+  ZoneSim.applySurge(squads, 26, 10, () => {}, ALWAYS);
   const hurt = squads.filter(s => s.hp < 100);
   assert(hurt.length === 7, 'surge hit ' + hurt.length + ' squads, expected the seven it is over by');
   hurt.forEach(s => assert(s.dealt === 0, 'surge hit a squad that had been doing damage'));
@@ -476,22 +481,22 @@ test('surge takes the excess over the threshold, from the squads that have done 
 
 test('surge has something to aim at even when nobody has done anything', () => {
   const squads = surgeField(20, () => 0);
-  ZoneSim.applySurge(squads, 26, 10, () => {});
+  ZoneSim.applySurge(squads, 26, 10, () => {}, ALWAYS);
   const hurt = squads.filter(s => s.hp < 100);
   assert(hurt.length === 7, 'a lobby tied on zero had ' + hurt.length + ' squads surged, expected 7');
 });
 
 test('surge counts players, not squads', () => {
   const squads = surgeField(14, () => 0);          // 14 duos = 28 players, over 26
-  ZoneSim.applySurge(squads, 26, 10, () => {});
+  ZoneSim.applySurge(squads, 26, 10, () => {}, ALWAYS);
   assert(squads[0].hp < 100, 'surge should have fired at 28 players against a 26 threshold');
 });
 
 test('surge can kill, and reports itself as the cause', () => {
   const squads = surgeField(20, i => (i < 10 ? 0 : 10));
   let deaths = 0;
-  for(let i=0;i<10;i++) ZoneSim.applySurge(squads, 26, 10, () => deaths++);
-  assert(squads[0].alive === false, 'a squad survived 200 surge damage');
+  for(let i=0;i<10;i++) ZoneSim.applySurge(squads, 26, 10, () => deaths++, ALWAYS);
+  assert(squads[0].alive === false, 'a squad survived 500 surge damage');
   assert(squads[0].deathCause === 'surge', 'deathCause was ' + squads[0].deathCause);
   assert(deaths > 0, 'onDeath never fired');
 });
@@ -499,7 +504,7 @@ test('surge can kill, and reports itself as the cause', () => {
 test('dead squads are not counted or damaged', () => {
   const squads = surgeField(20, () => 0);
   squads.forEach((s, i) => { if(i >= 6) s.alive = false; });   // 6 duos = 12 players
-  ZoneSim.applySurge(squads, 26, 10, () => {});
+  ZoneSim.applySurge(squads, 26, 10, () => {}, ALWAYS);
   squads.forEach(s => assert(s.hp === 100, 'surge fired on a lobby of 12'));
 });
 

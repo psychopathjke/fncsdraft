@@ -292,6 +292,12 @@
         elims: 0,
         dealt: 0,
         taken: 0,
+        // Health surge has taken off this squad over the game. Not read by the
+        // engine; the surge-damage probe (career-surge-dmg-probe) sums it and
+        // holds it against the 25-damage ticks counted in the real replays.
+        surgeTaken: 0,
+        // Seconds under the line since the last 5-second surge tick.
+        surgeAcc: 0,
         // Under surge damage on the current tick. Read by the replay frame so
         // the kit panel on the map can say so; the engine itself never reads it.
         surged: false,
@@ -1108,14 +1114,24 @@
     }
   }
 
-  // Storm Surge damage. Lower than the storm's, because surge is not meant to
-  // kill on its own — it is meant to make sitting still cost something, so a
-  // squad that has done nothing has to come out and find a fight it will
-  // probably lose. Without it, hiding is a strategy the simulation rewards and
-  // the real game does not.
-  var SURGE_DPS = 1;
+  // Storm Surge damage, in the game's own ticks: 25 health every 5 seconds to
+  // a squad below the damage line, health only (the storm's scale, so 100 hp
+  // is one life). But not every tick lands. The replays count the 25-damage
+  // ticks with no attacker (tools/real-stage-curves.json, third field): a
+  // Major 2 heat averages 45 a game, a lobby-wide 6 squad-lives — while a
+  // squad simply left under the line for the whole of zone 5 would take 30 on
+  // its own. Real squads answer the warning: they tag, the line moves, and the
+  // damage lands on the few who did not. The engine has no such reaction, so
+  // the reaction is the duty cycle: a tick lands with probability SURGE_DUTY.
+  // Continuous 1 hp/s, the old model, put 40 squad-lives of surge into a heat
+  // (career-surge-dmg-probe): six times the replays, hidden by in-circle
+  // healing. SURGE_DUTY is calibrated against the tick counts by that probe.
+  // 0.03: Major 2 heats 6.3 squad-lives of surge a game in the replays against
+  // 6.3 in the engine at this value (8.4 at 0.04, 17 at 0.08); the final 5.3
+  // against 6.5. Surge deaths come out at a few in a hundred games.
+  var SURGE_HIT = 25, SURGE_TICK = 5, SURGE_DUTY = 0.03;
 
-  function applySurge(squads, surgeAt, seconds, onDeath){
+  function applySurge(squads, surgeAt, seconds, onDeath, rng){
     if(!isFinite(surgeAt)) return;
     var alive = [];
     var players = 0;
@@ -1166,7 +1182,14 @@
     for(var k=0;k<below.length;k++){
       var t = below[k];
       t.surged = true;
-      t.hp -= SURGE_DPS * seconds;
+      t.surgeAcc += seconds;
+      while(t.surgeAcc >= SURGE_TICK){
+        t.surgeAcc -= SURGE_TICK;
+        if((rng ? rng() : Math.random()) < SURGE_DUTY){
+          t.hp -= SURGE_HIT;
+          t.surgeTaken += SURGE_HIT;
+        }
+      }
       if(t.hp <= 0){
         t.hp = 0;
         t.alive = false;
@@ -1485,7 +1508,7 @@
         stepMovement(squads, TICK_SEC, from);
         applyHealing(squads, from, TICK_SEC);
         applyStorm(squads, from, phase.dps, TICK_SEC, onDeath);
-        currentSurgeLine = applySurge(squads, phase.surgeAt, TICK_SEC, onDeath);
+        currentSurgeLine = applySurge(squads, phase.surgeAt, TICK_SEC, onDeath, rng);
         resolveContacts(squads, from, rng, duel, onDeath, inDrop);
         frame(from, to, phase.waitSec - t + phase.shrinkSec);
         if(aliveCount() <= 1) return;
@@ -1502,7 +1525,7 @@
         stepMovement(squads, TICK_SEC, cur);
         applyHealing(squads, cur, TICK_SEC);
         applyStorm(squads, cur, phase.dps, TICK_SEC, onDeath);
-        currentSurgeLine = applySurge(squads, phase.surgeAt, TICK_SEC, onDeath);
+        currentSurgeLine = applySurge(squads, phase.surgeAt, TICK_SEC, onDeath, rng);
         resolveContacts(squads, cur, rng, duel, onDeath);
         frame(cur, to, phase.shrinkSec - t);
         if(aliveCount() <= 1) return;
@@ -1773,7 +1796,9 @@
     if('LOBBY_WEAK_UNITS' in v) LOBBY_WEAK_UNITS = v.LOBBY_WEAK_UNITS;
     if('DROP_WEAK_UNITS' in v)  DROP_WEAK_UNITS  = v.DROP_WEAK_UNITS;
     if(v.LINGER_MAX     != null) LINGER_MAX     = v.LINGER_MAX;
-    if(v.SURGE_DPS      != null) SURGE_DPS      = v.SURGE_DPS;
+    if(v.SURGE_DUTY     != null) SURGE_DUTY     = v.SURGE_DUTY;
+    if(v.SURGE_HIT      != null) SURGE_HIT      = v.SURGE_HIT;
+    if(v.SURGE_TICK     != null) SURGE_TICK     = v.SURGE_TICK;
     if(v.ROOM           != null) ROOM           = v.ROOM;
     if(v.PRESSURE_BASE  != null) PRESSURE_BASE  = v.PRESSURE_BASE;
     if(v.PRESSURE_EXP   != null) PRESSURE_EXP   = v.PRESSURE_EXP;
@@ -1788,7 +1813,7 @@
     if(v.CHIP_HP        != null) CHIP_HP        = v.CHIP_HP;
     return {READ_NOISE:READ_NOISE, CROWD_WEIGHT:CROWD_WEIGHT, CROWD_SEEK:CROWD_SEEK, ENGAGE_CHANCE:ENGAGE_CHANCE,
             ENGAGE_BIAS:ENGAGE_BIAS, CHAIN_CHANCE:CHAIN_CHANCE, EXPOSURE_FLOOR:EXPOSURE_FLOOR,
-            CHAIN_MAX:CHAIN_MAX, LINGER_MAX:LINGER_MAX, SURGE_DPS:SURGE_DPS,
+            CHAIN_MAX:CHAIN_MAX, LINGER_MAX:LINGER_MAX, SURGE_DUTY:SURGE_DUTY, SURGE_HIT:SURGE_HIT, SURGE_TICK:SURGE_TICK,
             ROOM:ROOM, PRESSURE_BASE:PRESSURE_BASE, PRESSURE_EXP:PRESSURE_EXP,
             PICK_EXP:PICK_EXP, CHIP_RATE:CHIP_RATE, HEAL_RATE:HEAL_RATE, CHIP_HP:CHIP_HP,
             DROP_SEC:DROP_SEC, DROP_PRESSURE:DROP_PRESSURE, STACK_MIN:STACK_MIN};
@@ -1800,7 +1825,7 @@
     profile: profile,
     tune: tune,
     simulateZoneGame: simulateZoneGame,
-    SURGE_DPS: SURGE_DPS,
+    SURGE_HIT: SURGE_HIT, SURGE_TICK: SURGE_TICK, SURGE_DUTY: SURGE_DUTY,
     applySurge: applySurge,
     createRng: createRng,
     PHASES: PHASES,
