@@ -1006,7 +1006,7 @@ ccBuildTitle:'Третья зона — как строим', ccBuildNorm:'Ка�
 ccLootUpgraded:n=>'с трупа взяли '+n,
 ccDeathTitle:z=>'Вылет — зона '+z, ccDeathStorm:'Сгорели в шторме', ccDeathSurge:'Сёрдж добил',
 ccDeathBy:(w,g,r)=>'Выбил '+w+(g?' из «'+g+'»':'')+(r?', '+r:''), ccDeathRange:{close:'вплотную', near:'с соседней постройки', far:'издалека'},
-ccDeathStats:(p,n,e)=>'Место '+p+' · чистый урон '+n+' · элимов '+e,
+ccDeathStats:(p,s,e)=>'Место '+p+' · '+s+' · элимов '+e, ccDeathSurgeAbove:g=>'сёрдж +'+g+' над порогом', ccDeathSurgeBelow:g=>'сёрдж −'+g+' до порога', ccDeathSurgeOff:'сёрдж не включён',
 ccBuildEco:'Экономно', ccBuildEcoNote:(m,p)=>m+' за круг — ресов хватит до конца, но без построек слабее: −'+p+' к силе',
 ccBuildHeavy:'Строить много', ccBuildHeavyNote:(m,p)=>m+' за круг — +'+p+' к силе, но без рефреша к концовке пусто',
 ccBuildSet:(w,p)=>w+': '+p+' к силе на эту игру',
@@ -2941,7 +2941,7 @@ ccBuildTitle:'Zone 3 — how do we build', ccBuildNorm:'As usual', ccBuildNormNo
 ccLootUpgraded:n=>'picked up their '+n,
 ccDeathTitle:z=>'Eliminated — zone '+z, ccDeathStorm:'The storm took us', ccDeathSurge:'Surge finished us',
 ccDeathBy:(w,g,r)=>'Killed by '+w+(g?' with the '+g:'')+(r?', '+r:''), ccDeathRange:{close:'point blank', near:'from the next build', far:'from range'},
-ccDeathStats:(p,n,e)=>'Place '+p+' · net damage '+n+' · elims '+e,
+ccDeathStats:(p,s,e)=>'Place '+p+' · '+s+' · elims '+e, ccDeathSurgeAbove:g=>'surge +'+g+' above threshold', ccDeathSurgeBelow:g=>'surge −'+g+' to threshold', ccDeathSurgeOff:'surge off',
 ccBuildEco:'Save mats', ccBuildEcoNote:(m,p)=>m+' a circle — mats last to the end, but fewer builds: −'+p+' power',
 ccBuildHeavy:'Build a lot', ccBuildHeavyNote:(m,p)=>m+' a circle — +'+p+' power, but empty by the endgame without a refresh',
 ccBuildSet:(w,p)=>w+': '+p+' power for this game',
@@ -5010,7 +5010,7 @@ ccLateMid:'Jouer le mid ground', ccLateMidNote:(v,f,p)=>p+' % : le milieu tenu �
 ccLootUpgraded:n=>'récupéré leur '+n,
 ccDeathTitle:z=>'Éliminés — zone '+z, ccDeathStorm:'La tempête nous a eus', ccDeathSurge:'Le surge nous a achevés',
 ccDeathBy:(w,g,r)=>'Tués par '+w+(g?' au '+g:'')+(r?', '+r:''), ccDeathRange:{close:'à bout portant', near:'depuis le build voisin', far:'de loin'},
-ccDeathStats:(p,n,e)=>'Place '+p+' · dégâts nets '+n+' · élims '+e,
+ccDeathStats:(p,s,e)=>'Place '+p+' · '+s+' · élims '+e, ccDeathSurgeAbove:g=>'surge +'+g+' au-dessus du seuil', ccDeathSurgeBelow:g=>'surge −'+g+' sous le seuil', ccDeathSurgeOff:'surge inactif',
 ccLateEdge:'Jouer hors zone',ccLateEdgeNote:(v,f,p)=>p+' % : tu prends ceux qui rentrent — +'+v+', raté — la tempête prend '+f,
 ccLateEdgeWon:v=>'Hors zone, ça a marché — +'+v+' de puissance', ccLateEdgeLost:v=>'La tempête t\'a eu, −'+v+' de puissance',
 ccLateRefreshWon:v=>'Refresh trouvé, +'+v+' de puissance et mats pleins', ccLateRefreshLost:v=>'Pas de refresh, rentré en dernier : −'+v+' de puissance',
@@ -6930,7 +6930,7 @@ ccLateMid:"Giocare mid ground", ccLateMidNote:(v,f,p)=>p+"%: tenuto il centro �
 ccLootUpgraded:n=>"preso il loro "+n,
 ccDeathTitle:z=>"Eliminati — zona "+z, ccDeathStorm:"La tempesta ci ha preso", ccDeathSurge:"Il surge ci ha finito",
 ccDeathBy:(w,g,r)=>"Eliminati da "+w+(g?" con "+g:"")+(r?", "+r:""), ccDeathRange:{close:"a distanza zero", near:"dalla build accanto", far:"da lontano"},
-ccDeathStats:(p,n,e)=>"Posto "+p+" · danno netto "+n+" · elim "+e,
+ccDeathStats:(p,s,e)=>"Posto "+p+" · "+s+" · elim "+e, ccDeathSurgeAbove:g=>"surge +"+g+" sopra la soglia", ccDeathSurgeBelow:g=>"surge −"+g+" alla soglia", ccDeathSurgeOff:"surge non attivo",
 ccLateEdge:"Giocare fuori zona",ccLateEdgeNote:(v,f,p)=>p+'%: prendi chi entra \u2014 +'+v+', mancato \u2014 la tempesta prende '+f,
 ccLateEdgeWon:v=>'Fuori zona ha funzionato \u2014 +'+v+' di forza', ccLateEdgeLost:v=>'La tempesta ti ha preso, \u2212'+v+' di forza',
 ccLateRefreshWon:v=>'Refresh trovato, +'+v+' di forza e mats pieni', ccLateRefreshLost:v=>'Niente refresh, rientrato per ultimo: \u2212'+v+' di forza',
@@ -9420,7 +9420,7 @@ ccLateMid:"Jogar mid ground", ccLateMidNote:(v,f,p)=>p+"%: segurou o meio — +"
 ccLootUpgraded:n=>"pegamos o "+n+" deles",
 ccDeathTitle:z=>"Eliminados — zona "+z, ccDeathStorm:"A tempestade nos pegou", ccDeathSurge:"O surge nos terminou",
 ccDeathBy:(w,g,r)=>"Eliminados por "+w+(g?" com "+g:"")+(r?", "+r:""), ccDeathRange:{close:"à queima-roupa", near:"da build ao lado", far:"de longe"},
-ccDeathStats:(p,n,e)=>"Lugar "+p+" · dano líquido "+n+" · elims "+e,
+ccDeathStats:(p,s,e)=>"Lugar "+p+" · "+s+" · elims "+e, ccDeathSurgeAbove:g=>"surge +"+g+" acima do limite", ccDeathSurgeBelow:g=>"surge −"+g+" até o limite", ccDeathSurgeOff:"surge desligado",
 ccLateEdge:"Jogar fora da zona",ccLateEdgeNote:(v,f,p)=>p+'%: pega quem entra — +'+v+', errou — a tempestade leva '+f,
 ccLateEdgeWon:v=>'Fora da zona funcionou — +'+v+' de força', ccLateEdgeLost:v=>'A tempestade te pegou, −'+v+' de força',
 ccLateRefreshWon:v=>'Refresh achado, +'+v+' de força e mats cheios', ccLateRefreshLost:v=>'Sem refresh, voltou por último: −'+v+' de força',
@@ -46811,8 +46811,32 @@ function ccDeathInfo(you, game){
     range = d<=CC_DEATH_NEAR ? 'close' : d<=CC_DEATH_MID ? 'near' : 'far';
   }
   const gun=killer && killer.team._loot && killer.team._loot.weapons && killer.team._loot.weapons[0];
+  const net=Math.round((sq.dealt||0)-(sq.taken||0));
   return {zone:sq.zoneReached||0, cause:cause||'', who:killer ? String(killer.team.name||'').replace(/<[^>]+>/g,'').trim() : '',
-          gun:gun ? gun.name : '', range, place:sq.place||0, net:Math.round((sq.dealt||0)-(sq.taken||0)), elims:sq.elims||0};
+          gun:gun ? gun.name : '', range, place:sq.place||0, net:net, elims:sq.elims||0,
+          surge:ccSurgeGapAt(game && game.frames ? game.frames() : null, net)};
+}
+/* Число сёрджа, как его пишет HUD («149 ABOVE DAMAGE THRESHOLD»): чистый урон
+   отряда минус линия отсечки последнего кадра. Пока сёрдж никого не бьёт, но
+   живых больше порога следующего круга — линия предварительная, тем же
+   правилом, что у панели набора (k-й снизу по чистому урону). null — сёрджа
+   нет. Его слово 7.09: «пиши количество сюрджа, а не урона за игру» — урон за
+   игру у нас выше реального (≈2300 против 1400–2000 в реплеях), а число над
+   линией откалибровано по ним (career-surge-you-probe). */
+function ccSurgeGapAt(frames, net){
+  const f=frames && frames.length ? frames[frames.length-1] : null;
+  if(!f) return null;
+  if(f.surgeAt>0 && f.surgeLine!=null) return Math.round(net-f.surgeLine);
+  const reload=/^r[0-9]$/.test(String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : ''));
+  const nextPh=(!reload && typeof ZoneSim!=='undefined' && ZoneSim.PHASES) ? ZoneSim.PHASES[f.zone] : null;
+  const nextAt=nextPh && isFinite(nextPh.surgeAt) ? nextPh.surgeAt : 0;
+  if(!(f.zone>=2 && nextAt>0 && f.players>nextAt)) return null;
+  const alive=(f.dots||[]).filter(x=>x && x.alive);
+  if(!alive.length) return null;
+  const per=Math.max(1, f.players/alive.length);
+  const nets=alive.map(x=>Number(x.n)||0).sort((a,b)=>a-b);
+  const k=Math.min(nets.length-1, Math.ceil((f.players-nextAt)/per));
+  return Math.round(net-nets[k]);
 }
 function ccDeathCard(map, info){
   return new Promise(resolve=>{
@@ -46823,7 +46847,8 @@ function ccDeathCard(map, info){
       : T.ccDeathBy(info.who, info.gun, info.range ? T.ccDeathRange[info.range] : '');
     const tag=document.createElement('div');
     tag.className='cc-choice-out bad cc-death';
-    tag.innerHTML='<b>'+esc(T.ccDeathTitle(info.zone))+'</b><span>'+esc(how)+'</span><em>'+esc(T.ccDeathStats(info.place, info.net, info.elims))+'</em>';
+    const sg = info.surge==null ? T.ccDeathSurgeOff : info.surge<0 ? T.ccDeathSurgeBelow(ccNum(-info.surge)) : T.ccDeathSurgeAbove(ccNum(info.surge));
+    tag.innerHTML='<b>'+esc(T.ccDeathTitle(info.zone))+'</b><span>'+esc(how)+'</span><em>'+esc(T.ccDeathStats(info.place, sg, info.elims))+'</em>';
     map.appendChild(tag);
     setTimeout(()=>{ tag.classList.add('out'); }, CC_DEATH_MS-400);
     setTimeout(()=>{ tag.remove(); resolve(); }, CC_DEATH_MS);
@@ -51178,7 +51203,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b04d55b0';
+const CC_BUILD='5b97c6ac';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
