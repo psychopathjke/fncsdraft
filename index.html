@@ -728,6 +728,10 @@
   .cc-chests-btn{display:inline-block;margin-top:8px;padding:5px 10px;font:inherit;font-size:11px;font-weight:700;letter-spacing:.04em;
     text-transform:uppercase;color:var(--ink);background:rgba(255,216,74,.12);border:1px solid rgba(255,216,74,.55);border-radius:6px;cursor:pointer;}
   body.cc-chests-on .cc-chests-btn{background:rgba(255,216,74,.32);}
+  /* Кнопка лежит НА карте, в правом верхнем углу: под картой её прятала плавающая
+     полоса «выбрать за меня» (его «не показывается», 7.09). */
+  .map-frame .cc-chests-btn{position:absolute;top:6px;right:6px;z-index:60;margin:0;background:rgba(10,14,30,.85);}
+  body.cc-chests-on .map-frame .cc-chests-btn{background:rgba(255,216,74,.9);color:#111;}
   .land-zone-label{font-size:8px;font-weight:700;color:#fff;background:rgba(0,0,0,.62);
     flex:0 0 auto;margin-top:auto;
     padding:1px 4px;border-radius:2px;line-height:1.3;margin:2px;max-width:calc(100% - 4px);
@@ -5959,8 +5963,8 @@
           <div id="landingMapWrap" class="map-frame" style="position:relative;width:100%;aspect-ratio:1100/970;border-radius:8px;background:#000;border:1px solid var(--line);overflow:hidden;">
             <img src="art/map-m2.jpg" alt="Island map" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
             <div id="landingMarkersLayer" style="position:absolute;inset:0;"></div>
+            <button type="button" class="cc-chests-btn" onclick="ccChestsToggle()"></button>
           </div>
-          <button type="button" class="cc-chests-btn" onclick="ccChestsToggle()"></button>
           <div id="landingChosen" style="font-size:12px;color:var(--ink-dim);margin-top:8px;"></div>
         </div>
 
@@ -44938,6 +44942,20 @@ function ccChestBadgeHTML(z){
   if(!ccSiteReal(z)) return '';
   return '<div class="land-zone-chests" title="'+ccSiteSrc()+'">'+L().landingChestsN(z.chests)+'</div>';
 }
+// Сколько сундуков в i-й коробке сетки key — по ZONE_STATS, без useLandingSet (карта
+// своих меток рисует ZONE_SETS напрямую, у тех прямоугольников поля chests нет).
+function ccZoneChestsOf(key, i){
+  const s=(typeof ZONE_STATS!=='undefined' && ZONE_STATS[key] && ZONE_STATS[key][i]) || null;
+  if(!s) return null;
+  if(s.chests!=null) return s.chests;
+  if(CC_CHESTS_SRC[key]==='Kinch' && s.loot!=null) return s.loot;
+  return null;
+}
+function ccChestBadgeHTMLAt(key, i){
+  const n=ccZoneChestsOf(key, i);
+  if(n==null) return '';
+  return '<div class="land-zone-chests" title="'+(CC_CHESTS_SRC[key]||'')+'">'+L().landingChestsN(n)+'</div>';
+}
 function ccChestBadge(plot, z){
   if(!ccSiteReal(z)) return;
   const b=document.createElement('div');
@@ -48717,8 +48735,8 @@ async function pickInitialZone(you, bots, title, seat, room){
         <div class="map-frame" style="position:relative;width:100%;aspect-ratio:${MAP_ASPECT[ACTIVE_LANDING_SET]||'1100/970'};border-radius:8px;background:#000;border:1px solid var(--line);overflow:hidden;margin-top:10px;">
           <img id="gameLandingMapImg" alt="Island map" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
           <div id="gameLandingLayer" style="position:absolute;inset:0;"></div>
+          ${ccChestToggleHTML()}
         </div>
-        ${ccChestToggleHTML()}
         <div id="gameLandingInfo" style="margin-top:10px;min-height:20px;font-size:13px;"></div>
         <button id="gameLandingConfirm" class="go-btn" style="display:none;margin-top:8px;max-width:280px;" disabled>${L().landingConfirmBtn}</button>
       </div>
@@ -61734,19 +61752,20 @@ function careerSpotTileHTML(){
         mine?'border-color:var(--accent);box-shadow:inset 0 0 0 1px rgba(0,0,0,.55),0 0 0 2px rgba(0,208,168,.35);'
             :'border-color:rgba(10,10,10,.75);background:transparent;'}"><div
       class="land-zone-label"${mine?' style="color:var(--accent);font-weight:900;"':''}>${
-      mine ? L().ccSpotTag(list[at].aura||0) : (i+1)}</div>${ccChestBadgeHTML(z)}</div>`;
+      mine ? L().ccSpotTag(list[at].aura||0) : (i+1)}</div>${ccChestBadgeHTMLAt(gridKey, i)}</div>`;
   }).join('');
   // Открытая карта называет себя: сюда попадают кликом по прямоугольнику, и
   // без подписи не видно, чей это остров.
   const mapName=(careerSpotSets().find(t=>t.key===set)||{}).label||'';
   return `<div class="ch-tile">${head}
     <div class="cc-spot-open-head"><b>${mapName}</b>
-      <span>${L().ccSpotHint}</span> ${ccChestToggleHTML()}</div>
+      <span>${L().ccSpotHint}</span></div>
     <div class="map-frame" style="position:relative;width:100%;aspect-ratio:${asp};border-radius:8px;
          background:#000;border:1px solid var(--line);overflow:hidden;margin-top:8px;">
       <img src="${art}" alt="" decoding="async"
            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
       <div style="position:absolute;inset:0;">${boxes}</div>
+      ${ccChestToggleHTML()}
     </div>
     ${peekHTML}
     <button class="ch-decline" onclick="careerSpotToggle()">${L().ccSpotBack}</button></div>`;

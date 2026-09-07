@@ -172,6 +172,15 @@ const BOOT = `
       const host=document.createElement('div'); ccChestBadge(host, rich);
       if(!host.querySelector('.land-zone-chests')) fail('ccChestBadge did not append a badge');
       if(ccChestToggleHTML().indexOf('cc-chests-btn')<0) fail('no chest toggle button');
+      // Карта своих меток рисует ZONE_SETS напрямую — бирка идёт по ключу сетки и индексу.
+      for(const key of ['s42','s42solo','m2','t1']){
+        const idx=ZONE_STATS[key].findIndex(s=>(s.chests!=null?s.chests:s.loot)>0);
+        if(ccChestBadgeHTMLAt(key, idx).indexOf('land-zone-chests')<0) fail(key+': no badge by grid key for box '+idx);
+      }
+      const wasOpen=CC_SPOT_OPEN; CC_SPOT_OPEN=true;
+      const spotTile=careerSpotTileHTML(); CC_SPOT_OPEN=wasOpen;
+      if(spotTile.indexOf('cc-chests-btn')<0) fail('the open career spot map has no chest button');
+      if(spotTile.indexOf('land-zone-chests')<0) fail('the open career spot map carries no chest badges');
       const wasOn=CC_CHESTS_ON; ccChestsToggle();
       if(document.body.classList.contains('cc-chests-on')!==!wasOn) fail('the chest toggle did not flip the body class');
       ccChestsToggle();
