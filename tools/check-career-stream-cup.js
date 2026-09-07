@@ -269,6 +269,26 @@ const BOOT = `
     check('and the tally line counts them', evTxt === L().ccTvEvSum(CC_TV_EV.fol, CC_TV_EV.subs, Math.round(CC_TV_EV.cash)), evTxt);
     check('the chat keeps moving: newest lines are kept, oldest dropped', CC_TV_MSGS.length <= 40 && CC_TV_MSGS.length >= 20, String(CC_TV_MSGS.length));
     check('the frame shows followed channels', document.querySelectorAll('#ccTvFrame .cc-tv-srow').length >= 1);
+    /* Под плеером — строка канала как на twitch.tv (его референс 7 сентября):
+       онлайн тот же, что в правой колонке, аптайм ч:мм:сс, кнопки Follow /
+       Gift a Sub / Subscribe; в чате — топ донатеров после доната и значки у
+       ников; слева — «зрители также смотрят». */
+    const under = document.getElementById('ccTvUnder');
+    check('the channel row sits under the player', !!under && under.querySelectorAll('.cc-tv-btn').length === 3);
+    check('its viewer count matches the column', !!under && under.querySelector('#ccTvV2').textContent === document.getElementById('ccTvV').textContent);
+    const up2 = under ? (under.querySelector('#ccTvUp2') || {}).textContent : 'no row';
+    check('its uptime reads h:mm:ss', /^[0-9]+:[0-9][0-9]:[0-9][0-9]$/.test(String(up2 || '')), JSON.stringify(up2));
+    check('subs today is on the header', /[0-9]/.test((document.getElementById('ccTvSubs')||{}).textContent || ''));
+    const topBefore = Object.values(CC_TV_TOP).reduce((a, b) => a + b, 0);
+    ccTvEvent('dono', 50); ccTvTick();
+    const lead = document.getElementById('ccTvLead');
+    const topAfter = Object.values(CC_TV_TOP).reduce((a, b) => a + b, 0);
+    // Тик после доната сам может добросить событий, поэтому «не меньше», а не «ровно».
+    // [$] вместо \\$: внутри шаблонной строки BOOT обратная косая съедается.
+    check('a donation lands on the leaderboard', !!lead && topAfter >= topBefore + 50 && lead.querySelectorAll('span').length >= 1 && /[$][0-9]+/.test(lead.textContent), lead && lead.textContent);
+    check('some chatters wear badges', document.querySelectorAll('#ccTvFrame .cc-tv-bdg').length >= 1 || CC_TV_WHO.some(w => w.b));
+    check('the sidebar has "viewers also watch"', !!document.querySelector('#ccTvFrame .cc-tv-side-h2'));
+    check('the message box is there for looks', !!document.querySelector('#ccTvFrame .cc-tv-say'));
     /* Кто в чате — его правка 5 сентября: «в основном рандомные ники, без
        циферок, маленькими буквами; про и креаторы могут иногда». Считается
        по списку людей эфира: не меньше двух третей — выдуманные строчные
@@ -316,7 +336,10 @@ const BOOT = `
 
   } catch(e){ if(!out.fail) out.fail = String(e && e.stack || e); }
   out.errs = window.__errs;
-  document.getElementById('__out').textContent = 'BEGIN' + encodeURIComponent(JSON.stringify(out)) + 'END';
+  // Маркер разрезан: иначе исходник этого скрипта в дампе DOM сам подходит под регэксп
+  // маркера, и пустой <pre> читается как «вывод» — так и было 7 сентября. По той же
+  // причине слово-маркер нельзя писать в комментариях внутри BOOT целиком.
+  document.getElementById('__out').textContent = 'BEG'+'IN' + encodeURIComponent(JSON.stringify(out)) + 'E'+'ND';
 })();
 <\/script>`;
 

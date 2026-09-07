@@ -82,7 +82,16 @@ const BOOT = `
     ccKitPanel(lobby, {zone:3, players:84, surgeAt:90, surgeLine:null, dots:[dot(), dot({h:64}), dot()]});
     out.notes.push('z3: '+txt());
     check('ресы на зоне остановки — как в модели', q('.zk-mats').dataset.total==='220', q('.zk-mats').dataset.total);
-    check('сёрдж ещё не бьёт — ни баннера, ни числа', !map.querySelector('.zk-banner') && !map.querySelector('.zk-thresh'));
+    /* Сёрдж ещё не бьёт, но живых 84 при пороге следующего круга 74 — как в игре
+       (его скрин финала D1, 7.09: «STORM SURGE WARNING! DAMAGE ENEMIES TO AVOID
+       ELIMINATION!» и «149 ABOVE» при 46 живых): предупреждение и число против
+       будущей линии. Красного баннера «активен» при этом нет. */
+    check('до включения — предупреждение, не «активен»', !!q('.zk-banner.warn') && q('.zk-banner b').textContent===T.ccKitSurgeWarn &&
+          q('.zk-banner .zk-sub').textContent===T.ccKitSurgeWarnSub && !map.querySelector('.zk-banner.on'), txt());
+    check('и число против будущей линии', !!q('.zk-thresh') && /^[0-9][0-9,]*$/.test(q('.zk-thresh b').textContent), (q('.zk-thresh')||{}).textContent);
+    // Живых меньше порога следующего круга — тихая строка порога, без баннера.
+    ccKitPanel(lobby, {zone:3, players:70, surgeAt:90, surgeLine:null, dots:[dot(), dot({h:64}), dot()]});
+    check('живых меньше порога — ни баннера, ни числа', !map.querySelector('.zk-banner') && !map.querySelector('.zk-thresh') && !!q('.zk-surgeat'), txt());
 
     // ---- сёрдж включился, ты над порогом: баннер и «269 над порогом урона» ----
     ccKitPanel(lobby, {zone:4, players:80, surgeAt:74, surgeLine:-30, dots:[dot(), dot({h:64, n:239}), dot()]});

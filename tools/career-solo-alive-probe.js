@@ -61,7 +61,9 @@ const BOOT = `
     const sum=new Array(12).fill(0), med=new Array(12).fill(0), mx=new Array(12).fill(0); let n=0;
     for(let g=0; g<GAMES_N; g++){
       const you=careerTeam([me], true); you.isYou=true; you.name='you';
-      const bots=careerSoloField(CAREER.career, [me], 100, OPEN);
+      // Финал — сильнейшая сотня (stage 'final'); квал/Victory Cup — открытое поле.
+      // FIELD=weak — старое поле финала: случайная сотня из снимка дивизиона (для сравнения).
+      const bots=careerSoloField(CAREER.career, [me], 100, OPEN, OPEN ? (STAGE||'qual') : (${JSON.stringify(process.env.FIELD||'')}==='weak' ? '' : 'final'));
       const field=[you, ...bots.slice(0, 99)];
       if(g===0){ const pw=field.map(t=>Number(t.pow)||0); out.meanPow=+(pw.reduce((a,b)=>a+b,0)/pw.length).toFixed(1); out.minPow=Math.min(...pw); out.maxPow=Math.max(...pw); }
       buildBotLandingAssignment(field.filter(t=>!t.isYou));
