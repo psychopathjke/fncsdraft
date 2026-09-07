@@ -46856,13 +46856,17 @@ function ccDeathCard(map, info){
    ничего не играет). Точка своя — сундуки открываются молча и пак готов;
    на точке чужие — первый сундук у каждого, и вопрос: файтить или уйти.
 
-   Шансы редкости из сундука — по датамайну таблиц сундуков BR (mein-mmo.de,
-   «Here are the loot chances from treasure chests»): по всем классам вместе
-   uncommon около половины, rare чуть больше четверти, epic и legendary —
-   единицы процентов, common — остаток. Числа приближённые, сумма 1.
+   Шансы редкости из сундука. Правило нынешних глав (вики Fortnite, статья
+   Chest): обычный сундук даёт ствол от Uncommon до Legendary, Common из
+   сундука не падает — поэтому common здесь ноль. Пропорции остальных —
+   форма датамайна сундуков (mein-mmo.de, «Here are the loot chances from
+   treasure chests»; Hypex по Ch2S5: каждая легендарка меньше процента),
+   пересчитанная без common: uncommon больше половины, rare под треть, epic и
+   legendary — единицы процентов. Точной таблицы Ch7 Epic не публикует;
+   сумма 1.
    Сундуков на точке для дуо — 8, уходя на соседнюю — 4: порядок величины
    реального POI, не замер. Класс ствола — поле icon пула (rifle/shotgun/…). */
-const CC_CHEST_RARITY={common:0.12, uncommon:0.50, rare:0.27, epic:0.08, legendary:0.03};
+const CC_CHEST_RARITY={common:0, uncommon:0.57, rare:0.31, epic:0.09, legendary:0.03};
 const CC_CHESTS_POI=8, CC_CHESTS_LEAVE=4, CC_CHEST_CONSUMABLE=0.6;
 // Преимущество первого сундука в стычке на высадке — его числа «+1 +3 +7», в
 // процентных пунктах к шансу (CC_SITE_EDGE_PP за очко).
@@ -51143,7 +51147,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='59bb08ae';
+const CC_BUILD='b516c376';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
