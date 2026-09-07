@@ -315,11 +315,8 @@ var MP={
         /* Дивизион и сид команды — вместе с приветствием: по ним лобби решает,
            пускать ли вошедшего (см. lobby.join). Сид говорит «это моя команда»,
            дивизион — «мы одного уровня». */
-        /* И ГОНКА ЛИ ЭТО. Лобби гонки — другой породы: людей в нём больше
-           двух и дивизионы не сверяются (см. lobby.join). Первый вошедший
-           метит комнату, остальные просто попадают в уже помеченную. */
         sock.send(JSON.stringify({t:'hello', build:CC_BUILD, card:MP.card(),
-                                  div:MP.div(), seed:MP.seed(), race:MP.race()}));
+                                  div:MP.div(), seed:MP.seed()}));
         // Вернулся — догнал по номерам, ничего не переспрашивая.
         if(SEEN) sock.send(JSON.stringify({t:'since', n:SEEN}));
         res();
@@ -412,22 +409,11 @@ var MP={
      напарнику раньше, чем сервер объявит старт. */
   sendCard:function(){ MP.send({t:'card', card:MP.card()}); },
   // Чем карьера представляется лобби на входе. Пусто — значит нечем сверять.
-  /* Гонка ли это. По этому полю лобби решает, сколько людей пускать и сверять
-     ли дивизион, — см. lobby.join и ccRaceOn. */
-  race:function(){
-    return (typeof ccRaceOn==='function') ? !!ccRaceOn() : false;
-  },
-  /* В ГОНКЕ дивизион и сид НЕ ЕДУТ. Так это и было задумано с самого начала
-     (комментарий в careerRaceEnter), но отправлял их всё равно этот файл — он
-     про гонку ничего не знал, и лобби отбивало вход «reason:div» ровно там,
-     где гонка и должна сходиться: первый дивизион против пятого. */
   div:function(){
-    if(MP.race()) return null;
     var cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career)||null;
     return (cr && cr.division) || null;
   },
   seed:function(){
-    if(MP.race()) return null;
     var cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career)||null;
     return (cr && cr.seed) || null;
   },

@@ -53,9 +53,6 @@ heroDuo:'Вдвоём',
 navCareer:'Карьера', navDraft:'Драфт', navHistory:'История',
 ccActGrpTrain:'Тренировки', ccActGrpTeam:'Команда', ccActGrpLife:'Стрим и отдых',
 heroCode:'Есть код от напарника? Войти по коду',
-cstripSub:'Один игрок, один сезон, настоящий календарь. Тренируйся днём, играй вечерами, поднимайся из пятого дивизиона в первый.',
-cstripChipDivs:'Дивизионы 5 → 1', cstripChipMajors:'Мейджоры и ЛАНы',
-cstripChipReload:'Круг Reload', cstripChipLife:'Клуб, деньги, форма',
 heroDraft:'К драфту',
 supportBtn:'Поддержать',
 dataCreditText:'Флаги, составы и данные игроков — с', dataCreditAnd:'и',
@@ -291,7 +288,6 @@ regionUnk:'Регион не подтверждён', allRegions:'Все рег�
 pickBtn:'Задрафтить', placeholderNotPublished:'место не опубликовано', qualifierTag:'квалифайер',
 ccRaritycommon:'обычный', ccRarityuncommon:'необычный', ccRarityrare:'редкий',
 ccRarityepic:'эпический', ccRaritylegendary:'легендарный', ccRaritymythic:'мифический',
-ccRarityexotic:'экзотический',
 emptySlot:'пусто', squadCompleted:'Состав укомплектован. Жми "Выйти на турнир".',
 yourTeamPrefix:'Твой состав: ', ccSynergyDuo:v=>' — постоянное дуо (+'+v+')', synergyPartner:v=>' — реальные тиммейты (+'+v+')', synergyNation:' — общее гражданство: ', synergyLanguage:' — общий язык, без барьера: ', synergyBonusVictory:'Взяли Victory Royale — мгновенный проход',
 gameWord:'Игра', totalWord:'Итого', victoryRoyaleWord:'Victory Royale', place2plus:'место из ', teamsWord:' команд', feedElim:n=>'выбил(а) '+n, feedDied:n=>'погиб(ла) от '+n, feedNone:'без стычек',
@@ -443,7 +439,6 @@ chWkCup:'Кубок', chWkReload:'Reload', chDayFree:'Свободный ден�
 ccDayTag:'ДЕНЬ', ccDayMust:'Выбери, на что уходит день', ccDayDone:'Следующий день',
 ccDayBroke:d=>'День '+d+' не прошагался — вот что сломалось',
 ccHubBroke:'Экран карьеры не нарисовался — вот что сломалось', ccHubBackCentre:'Назад на центр',
-ccHubCopy:'Скопировать ошибку', ccHubCopied:'Скопировано — пришли это мне',
 ccDayOver:v=>'День уже потрачен: '+v+'. Энергия останется до завтра — жми «Следующий день»',
 ccDayOverAny:'День уже потрачен. Энергия останется до завтра — жми «Следующий день»',
 ccRestFull:'энергия и так полная',
@@ -489,43 +484,6 @@ ccNextGames:'Формат', ccNextGamesUnit:'игр', ccNextField:'Команд'
 ccNextCut:'Проходят', ccNextTop:n=>'топ-'+n, ccNextPays:'Платит за 1-е',
 ccNextNoPay:'без призовых', ccNextLocked:'Сегодня не твой турнир — день свободен',
 ccBioMajor:n=>n+'× победитель Мейджора', ccBioCups:n=>n+'× победитель кубка',
-ccWhoFa:'F/A', ccWhoLft:'LFT', ccCardPr:'Power Ranking', ccCardSeason:'за сезон', ccCardYear:'за год',
-ccBioPrRank:n=>'#'+n+' по PR', ccBioEvents:n=>n+' турниров',
-ccPostLfdWant:(h,d,pr)=>'LFD. Дивизион '+d+' и выше, PR от '+pr+'. Пишите',
-ccAdWant:(role,d,pr)=>'ищет '+role+' · див '+d+'+ · PR от '+pr,
-ccAdNoFit:pr=>'нужен PR от '+pr,
-ccPostDropCall:(h,z)=>'сегодня сажусь: '+ccZoneName(z)+' 📍', ccDropCalls:'объявили точку:',
-ccPostOrgWin:(o,who,ev)=>'ЧЕМПИОНЫ. '+who+' берут '+ev+' 🏆',
-ccNewsHub:'Новости',
-ccPostDmBtn:'Написать в ЛС', ccPostVouchBtn:'Воуч',
-ccPostVouchWhat:'Публично поручиться: сцена читает это как твою рекомендацию, и человек ответит теплее',
-ccPostVouched:'Ты поручился', ccPostVouch:h=>'@'+h+' — топ. дайте человеку шанс 🙏',
-ccRev:'V', ccRegl:'gl', ccRehbd:'hbd goat 🐐', ccRew:'W', ccReclap:'🙌',
-ccReDone:t=>'Ты ответил: '+t,
-ccPostThanks:ev=>'спасибо за турнир — '+ev+'. и напарникам, весь ивент 🙏',
-ccPostOneOff:ev=>'одного места не хватило. '+ev+'. я в порядке (нет)',
-// Квал из хитов — свой пост и посты прошедших ботов, с точкой высадки на
-// финал («qual grands, land X» — так пишут после хитов). w: grands | finals.
-ccPostQualGrands:(z,w)=>(w==='finals'?'КВАЛ В ФИНАЛ 🏆':'КВАЛ НА ГРАНДЫ 🏆')+(z?' · сажусь '+ccZoneName(z):''),
-ccPostBotQualGrands:(h,z,w)=>(w==='finals'?'квал финал 🙏':'квал грандс 🙏')+(z?' · лендю '+ccZoneName(z):''),
-ccReplyBtn:'Ответить', ccReplyPh:'Ответить…', ccReplySend:'Отправить',
-ccShotVr:'Victory Royale', ccShotTop5:'Топ-5', ccShotTop10:'Топ-10',
-ccRepostBtn:'Репост', ccRepostDone:'Репостнул', ccQuoteBtn:'Цитата',
-ccQuoting:'Цитируешь пост', ccQuoteDrop:'Отменить', ccQuotePh:'Скажи что-нибудь к этому…',
-ccFeedAll:'Всё', ccFeedSubs:'Подписки', ccFeedSubsEmpty:'Ты пока ни на кого не подписан',
-ccNoteReply:n=>'Тебе ответили: '+n,
-ccNewsAnnounce:(ev,d)=>'а вот и ещё :) '+ev+'. '+d+'. подробности скоро',
-ccPostHype:h=>'ооооо это база', ccPostDates:h=>'только не в те же даты, умоляю 🙏',
-ccPostBye:o=>'спасибо @'+o+' за эти годы. дальше сам, без клуба',
-ccCustomsHost:'Кастомки', ccAskBtn:'Попроситься', ccAskDone:'Попросился',
-ccPostCustomsOpen:(pr,w)=>'набираю про-лобби: $'+w+' за победу, пускаю от '+pr+' PR. пишите',
-ccPostAskYes:()=>'позвали в лобби 🙏', ccPostAskNo:()=>'в лобби не взяли. ну ладно',
-ccPostTriedBest:()=>'сделали что могли. не хватило. gg :/',
-ccNotesTab:'Уведомления', ccNotesEmpty:'Пока тихо',
-ccNoteLike:n=>'Твой пост лайкнули: '+n, ccNoteFollow:h=>'@'+h+' подписался на тебя',
-ccFollowBack:'Подписаться в ответ', ccFollowBtn:'Подписаться', ccFollowingBtn:'Вы подписаны',
-ccNewsCatall:'Всё', ccNewsCatscene:'Сцена', ccNewsCatmoves:'Трансферы', ccNewsCatyou:'Ты',
-ccNewsOpen:'Открыть в соцсети',
 ccBioRc:n=>n+'× чемпион Reload Championship (EWC)', ccBioSummit:n=>n+'× победитель Саммита',
 ccBioGlobals:n=>n+'-е на Глобалс',
 ccAgentEnd:'Разорвать',
@@ -637,8 +595,7 @@ ccYearNames:{
   FNCSSolos_Heats:'FNCS Solos · хиты',
   FNCSSolos_LCQRound1:'FNCS Solos · последний шанс, раунд 1',
   FNCSSolos_LCQFinal:'FNCS Solos · последний шанс, финал',
-  FNCSSolos_Final:'FNCS Solos · финал',
-  ProAm_Dallas:'Pro-Am · Даллас'
+  FNCSSolos_Final:'FNCS Solos · финал'
 },
 chWkMajor:'Мейджор',
 chWkGC:'ГЧ',
@@ -679,9 +636,6 @@ chPlay:'Играть',
 chSoonHint:'Мейджоры в карьере ещё не подключены — следующий этап.',
 chSkip:'Пропустить день',
 chSkipAsk:'Пропустить день? Календарь назад не отматывается.',
-chSkipTo:'До турнира', chSkipToHint:(d,n)=>'Пропустить '+n+' '+ruPlural(n,'день','дня','дней')+' до '+d+' — турниры по дороге не играются',
-chSkipToAsk:(d,n,w)=>'Пропустить '+n+' '+ruPlural(n,'день','дня','дней')+' до '+d+' ('+w+')? Турниры по дороге не сыграются, календарь назад не отматывается.',
-calSkipGo:'Пропустить до этого дня', calSkipHint:'Дни пройдут, турниры по дороге не сыграются',
 ccLadderEvent:'Игрок лестницы (сгенерирован, не участник FNCS)',
 ccCupLive:'Кубок дивизиона',
 ccCupTitle:(d,n)=>'Кубок Дивизиона '+d+' — 11 игр, '+n+' '+ccSquadWord(),
@@ -794,9 +748,6 @@ ccDayEvscrimup:'Зовут на скримы', ccDayEvscrimupSub:'Дуо пос�
 ccDayEvscrimupYes:'Пойти', ccDayEvscrimupNo:'Отказаться',
 ccDayEvscrimupTake:()=>'Отскримил вечер с составом посильнее',
 ccDayEvscrimupPass:()=>'Отказался от скримов',
-ccDayEvcustom:'Кастомка · $100 за победу', ccDayEvcustomSub:'Организатор зовёт в про-лобби: пять игр, сотня за каждую победу. Пускают по PR — тебя позвали',
-ccDayEvcustomYes:'Играть', ccDayEvcustomNo:'Пропустить',
-ccDayEvcustomTake:(w,c)=>'Кастомка: побед '+w+' из 5 — $'+c, ccDayEvcustomPass:()=>'Не пошёл на кастомку',
 ccDayEvshow:'Шоуматч', ccDayEvshowSub:'Организатор зовёт на выставочный матч за гонорар',
 ccDayEvshowYes:'Сыграть', ccDayEvshowNo:'Пропустить',
 ccDayEvshowTake:()=>'Сыграл шоуматч', ccDayEvshowPass:()=>'Отказался от шоуматча',
@@ -968,13 +919,6 @@ ccDropContest:'Законтестить', ccDropContestNote:'Откроем ос
 ccDropMap:'Выбрать на карте', ccDropMapNote:'Открыть остров и поставить метку руками',
 ccLootTitle:'Середина игры — что подобрал',
 ccLootHint:'Вторая зона закрылась. Точка обыскана: два ствола, две хилки и мувмент. Напарник разбирает свою половину сам',
-ccSiteOwnTitle:'Точка своя — открываем сундуки', ccSiteOwnHint:n=>n+' сундуков: два ствола разных классов, две хилки, мувмент — что выпало, то и берём',
-ccSiteTake:'Забрать и идти', ccSitePackPow:v=>v>0 ? '+'+v+' к силе за редкость' : v<0 ? v+' к силе: пустые слоты' : 'сила без прибавки',
-ccSiteTitle:n=>'На точке чужие: '+n, ccSiteHint:(a,b)=>'Твой первый сундук: '+a+' · у них: '+b,
-ccSiteLeave:'Уйти на соседнюю точку', ccSiteLeaveNote:(n,m)=>'Без стычки: '+n+' сундука вместо '+m+' — лут беднее, сила ниже',
-ccSiteFight:'Файтить за точку', ccSiteFightNote:(p,n,a,b)=>p+'%: точка наша — все '+n+' сундуков и элим · иначе вылет на высадке'+((a||b)?' · первый сундук: +'+a+' против +'+b:''),
-ccSiteOwn:(n,l)=>'Точка свободна: '+n+' сундуков — '+l, ccSiteWon:(w,n)=>'Точка наша: '+w+' выбиты, '+n+' сундуков',
-ccSiteLost:w=>'Проиграли стычку на высадке: '+w, ccSiteLeft:(n,l)=>'Ушли на соседнюю: '+n+' сундука — '+l,
 ccLootTake:'Забрать своё', ccLootSwap:'Пробежать соседнюю точку',
 ccLootTakeSafe:'без прибавки, зато без риска',
 ccLootSwapRisk:(b,f,p)=>p+' на '+(100-p)+': успел — +'+b+', нет — лишний урон, −'+f,
@@ -984,58 +928,11 @@ ccLootGot:v=>'Удачно — соседняя точка забрана, +'+v+
 ccLateTitle:'Восьмая зона — как играем конец',
 ccLateHint:'Круг встал на холм. Дальше решает высота',
 ccLateHg:'Забрать хайграунд', ccLateHgNote:v=>'50 на 50: вышло — +'+v+' и лучший шанс на победу, нет — минус '+CC_HG_FAIL+' и играешь снизу',
-ccLateThird:'Третьить размен', ccLateThirdNote:(k,d,p)=>k+' из 100: собрали размен — сосед выбит, +'+p+' к силе и его ресы · '+d+' из 100: собрали нас · остальное — постреляли и разошлись, урон в сёрдж',
-ccLateThirdWon:(p,foe)=>'Зашли третьими'+(foe?': выбили '+foe:'')+' — +'+p+' к силе, ресы с трупа', ccLateThirdLost:foe=>'Зашли третьими и собрали нас'+(foe?' — '+foe:''), ccLateThirdNone:k=>'Постреляли в чужой размен и разошлись: +'+k+' урона в сёрдж',
+ccLateThird:'Третьить размен', ccLateThirdNote:(p,f,o)=>o+' из 100: зашло — +'+p+' и лучший потолок в игре, нет — минус '+f+' и ты в размене третий лишний',
+ccLateThirdWon:v=>'Зашли третьими и собрали размен, +'+v+' к силе', ccLateThirdLost:v=>'Собрали нас, −'+v+' к силе',
 ccLateTake:'Отжать точку у слабых', ccLateTakeNote:(p,f,o)=>o+' из 100: вышло — +'+p+', нет — минус '+f,
 ccLateTakeWon:v=>'Точка отжата, +'+v+' к силе', ccLateTakeLost:v=>'Они не отдали точку, −'+v+' к силе',
-ccLateRefresh:'Найти рефреш', ccLateRefreshNote:(v,f,p)=>p+'%: нашёл — +'+v+' и полные ресы, нет — минус '+f+' и вернулся в круг последним',
-ccLateMid:'Играть мид граунд', ccLateMidNote:(v,f,p)=>p+'%: удержали середину — +'+v+', сбили — минус '+f+' и вниз',
-ccLateEdge:'Играть за зоной',ccLateEdgeNote:(v,f,p)=>p+'%: ловишь заходящих — +'+v+', не поймал — шторм съел '+f,
-ccLateEdgeWon:v=>'За зоной сработало — +'+v+' к силе', ccLateEdgeLost:v=>'Шторм добрал, −'+v+' к силе',
-ccLateRefreshWon:v=>'Рефреш найден, +'+v+' к силе и полные ресы', ccLateRefreshLost:v=>'Рефреша нет, вернулся последним: −'+v+' к силе',
-ccKitLine:(m,low,loot)=>'Ресы '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'мало',
-// Панель набора на карте — его правка 5.09: «добавить на симуляцию ресурсы, лут и сёрдж».
-ccKitMats:m=>'Ресы '+m, ccKitLootNone:'лут: свой пак', ccKitOut:'выбыли', ccKitPickaxe:'Кирка',
-ccKitSurgeOff:'сёрдж выключен', ccKitSurgeAt:(a,p)=>'сёрдж с '+a+' игроков · в игре '+p,
-// Баннер и подпись под числом — как на HUD игры («STORM SURGE ACTIVE!» и «269 ABOVE DAMAGE THRESHOLD»).
-ccKitSurgeBanner:'СЁРДЖ АКТИВЕН!', ccKitUnderBanner:'ТЫ ПОД СЁРЖЕМ!',
-ccKitSurgeWarn:'ПРЕДУПРЕЖДЕНИЕ О СЁРДЖЕ!', ccKitSurgeWarnSub:'НАНОСИ УРОН ВРАГАМ, ЧТОБЫ НЕ ВЫЛЕТЕТЬ!',
-ccKitAboveCap:'над порогом урона', ccKitBelowCap:'до порога урона',
-// Рычаги игроку (5.09): стиль стройки и лечение.
-ccBuildTitle:'Третья зона — как строим', ccBuildNorm:'Как обычно', ccBuildNormNote:m=>m+' ресов за круг',
-ccLootUpgraded:n=>'с трупа взяли '+n,
-ccDeathTitle:z=>'Вылет — зона '+z, ccDeathStorm:'Сгорели в шторме', ccDeathSurge:'Сёрдж добил',
-ccDeathBy:(w,g,r)=>'Выбил '+w+(g?' из «'+g+'»':'')+(r?', '+r:''), ccDeathRange:{close:'вплотную', near:'с соседней постройки', far:'издалека'},
-ccDeathStats:(p,s,e)=>'Место '+p+' · '+s+' · элимов '+e, ccDeathSurgeAbove:g=>'сёрдж +'+g+' над порогом', ccDeathSurgeBelow:g=>'сёрдж −'+g+' до порога', ccDeathSurgeOff:'сёрдж не включён',
-ccBuildEco:'Экономно', ccBuildEcoNote:(m,p)=>m+' за круг — ресов хватит до конца, но без построек слабее: −'+p+' к силе',
-ccBuildHeavy:'Строить много', ccBuildHeavyNote:(m,p)=>m+' за круг — +'+p+' к силе, но без рефреша к концовке пусто',
-ccBuildSet:(w,p)=>w+': '+p+' к силе на эту игру',
-ccRotTitle:'Четвёртая зона — ротация', ccRotEarly:'Сразу', ccRotEarlyNote:(s,v)=>'Выходим, как только круг показан: так '+s+'% про, дожили '+v+'% · путь свободнее, но встречаем тех, кто тоже рано',
-ccRotWith:'Со штормом', ccRotWithNote:(s,v)=>'Выходим, когда круг пошёл: так '+s+'%, дожили '+v+'% · меньше времени на виду, по дороге уже стреляют',
-ccRotLate:'Последними', ccRotLateNote:'Пережидаем и идём, когда шторм уже в пути: на входе тише, но шторм бьёт по здоровью',
-ccRotMats:m=>'ресы за круг '+m, ccRotMove:'На мувменте', ccRotMoveNote:m=>'Пережидаем и улетаем на «'+m+'»: быстрее шторма, предмет сгорает',
-ccRotSet:w=>'Ротация: '+w,
-ccHealTitle:(s,h)=>'Щит '+s+' · здоровье '+h+' — лечимся?', ccHealStay:'Играть так', ccHealStayNote:'Без потерь, щит и здоровье как есть',
-ccHealGo:'Отхилиться', ccHealGoNote:(h,p)=>'щит полный, +'+h+' здоровья · пока пьёшь — минус '+p+' к силе',
-ccHealDone:(h,p)=>'Отхилились: щит 100, здоровье '+h+' · −'+p+' к силе',
-ccFarmTitle:'Третья зона — как фармим ресы', ccFarmFull:'Нафармить до фула', ccFarmFullNote:n=>'До '+n+' (500 · 3) — стройки хватит на всю игру, сёрдж не набит',
-ccFarmSurge:'Набить сёрдж, ресов меньше', ccFarmSurgeNote:(m,d,p)=>'Ресы '+m+' (400 · 3), +'+d+' урона в сёрдж, −'+p+' к силе за время на теги',
-ccFarmFullGot:n=>'Нафармили до фула — '+n+' ресов', ccFarmSurgeGot:(m,d)=>'Набили сёрдж: +'+d+' урона, ресов '+m,
-ccMatsTitle:'Ресы кончаются', ccMatsGo:'Идти за рефрешем', ccMatsStay:'Ротейтить тем, что есть',
-ccMateLeans:t=>'я бы — «'+t+'»',
-ccMidTitle:'Середина игры — что делаем',ccMidStayNote:'Ресы есть, щит цел — идём кругом, ничего не тратим', ccMidStayGot:'Ротейтим как есть',
-ccMidSurge:'Набить сёрдж', ccMidSurgeNote:(d,t,p)=>`Тэги на ротации: +${d} урона, −${t} получим (сёрдж считает чистый) · −${p} к силе за время`,
-ccMidSurgeLine:(n,at,g)=>`сёрдж включён: ${n} живых при пороге ${at}`+(g==null ? '' : (g<0 ? ` · под сёржем, до линии ${-g}` : ` · над линией на ${g}`)),
-ccMidSurgeGot:(d,t,p)=>`Набили сёрдж: +${d} урона, −${t} получено, −${p} к силе`,
-ccMidFight:'Пойти файтиться', ccMidFightNote:(w,p,d,t,k)=>`${w}%: сосед выбит, +${p} к силе и его ресы · ${d}%: выбиты сами · ${t}%: размен, щит снят · остальное — постреляли и разошлись: +${k} урона в сёрдж, −ресы`,
-ccMidFightPoke:(k,m)=>`Постреляли и разошлись: +${k} урона в сёрдж, −${m} ресов`,
-ccMidFightWon:(p,foe,g)=>`Файт взят${foe?': выбили '+foe:''}${g?' из «'+g+'»':''} — +${p} к силе, ресы с трупа`,
-ccMidFightTraded:p=>`Разменялись: щит снят, ресы сожжены, −${p} к силе`,
-ccMidFightDied:foe=>`Файт проигран${foe?' — '+foe+' выбили нас':' — нас выбили'}`,
-ccMatsGoNote:(v,f,p)=>p+'%: нашёл — +'+v+' и полные ресы, нет — минус '+f,
-ccMatsStayNote:v=>'Ничего не тратишь, но в концовке без ресов минус '+v,
-ccMatsFound:v=>'Рефреш найден, +'+v+' к силе и полные ресы', ccMatsMissed:v=>'Не нашёл, −'+v+' к силе',
-ccMatsStayGot:'Играем тем, что есть',
+ccLateRefresh:'Найти рефреш', ccLateRefreshNote:v=>'Наверняка, но меньше: +'+v,
 ccLateLg:'Играть снизу', ccLateLgNote:'Без прибавки — зато без риска',
 ccLateHgWon:v=>'Удачно — хайграунд взят, +'+v+' к силе', ccLateHgLost:v=>'Не вышло — сбили с высоты, −'+v+' к силе',
 ccLateRefreshGot:v=>'Рефреш найден, +'+v+' к силе', ccLateLgGot:'Играем снизу — без прибавки',
@@ -1380,7 +1277,7 @@ xNoPosts:'Ты ещё ничего не публиковал',
 ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:'';
   if(p===1) return ['TOP 1 🏆'+a, 'W 🏆'+a, 'забрали 🐐'+a][(v||0)%3];
   if(p<=3)  return [''+ccTop(p)+' 💪'+a, ''+ccTop(p)+a+' 🔥', ''+ccTop(p)+', чуть-чуть'+a][(v||0)%3];
-  return [''+ccTop(p)+' — дивизион '+d+a, ''+ccTop(p)+' за неделю'+a+'. дальше выше', ''+ccTop(p)+a+'. работаем'][(v||0)%3];},
+  return ''+ccTop(p)+' — дивизион '+d+a;},
 ccPostBdayEpic:(h,a)=>'С днём рождения, @'+h+'! Сегодня '+a+'. Хорошего сезона 🎂',
 ccBornHint:'Дата рождения — по желанию. Укажи, и в этот день тебя поздравят. Число сверху — сколько тебе на день старта сезона; день рождения ты встретишь уже в нём.',
 ccNewsCongrats:(n,ev)=>'Поздравляем '+n+' с победой — '+ev+'! 🏆',
@@ -1484,23 +1381,6 @@ ccNewsAwardYou:m=>'Игрок месяца ('+m+') 🏅',
 ccNewsAwardSeason:(n,s)=>'Игрок сезона '+s+' — '+n,
 ccNewsAwardSeasonYou:s=>'Игрок сезона '+s+' 🏆',
 ccAwards:'Награды', ccAwardMonth:'Игрок месяца', ccAwardSeason:'Игрок сезона',
-ccGotyTitle:'Игрок года', ccGotyLine:(p,e)=>p+' очков рейтинга за '+e+' вечеров',
-ccGotyHow:'Считается по очкам PR за весь год — как их считает сама сцена',
-// Церемония закрытия — отдельный последний день года. См. ccGalaDraw.
-ccGalaDay:'Церемония', ccGalaDaySub:'Закрытие сезона',
-ccGalaWatch:'Смотреть церемонию', ccGalaAgain:'Церемония',
-ccGalaTitle:s=>'Церемония закрытия · сезон '+s,
-ccGalaOpenLine:(d,n)=>'Дивизион '+d+' · вечеров за год: '+n,
-ccGalaOpenHint:'Год закончился. Ниже — что от него осталось.',
-ccGalaYearH:'Твой год',
-ccGalaEvents:'вечеров', ccGalaWins:'побед', ccGalaElims:'убийств',
-ccGalaPrize:'призовых', ccGalaPr:'очков PR', ccGalaBest:'лучшее место',
-ccGalaOvr:'рейтинг', ccGalaOvrUp:n=>(n>0?'+':'')+n+' за год',
-ccGalaRunsH:'Вечера года', ccGalaRunsNone:'Больших вечеров в этом году не было',
-ccGalaAwardsH:'Награды года', ccGalaAwardsNone:'Наград в этом году нет',
-ccGalaMonthWon:m=>'Игрок месяца — '+m,
-ccGalaGotyYou:'Игрок года — это ты 🏆',
-ccGalaNext:'Дальше', ccGalaBack:'Назад', ccGalaSkip:'Закрыть',
 ccSlots:'Карьеры', ccSlotsTitle:'Карьеры', ccSlotsSub:'Выбери, в какую вернуться, или заведи новую',
 ccSlotEmpty:'Пусто', ccSlotStart:'Начать', ccSlotOpen:'Продолжить', ccSlotDelete:'Удалить',
 ccSlotsNew:'Новая карьера', ccSlotsFree:n=>n===1?'свободен один слот':'свободно слотов: '+n,
@@ -1547,28 +1427,6 @@ ccCoBad:['не расстраивайся','лобби было злое','от�
 ccCoPro:['у тебя талант','следил за тобой сегодня','пиши если будешь искать дуо','из тебя выйдет толк','сильно играешь'],
 ccCoProt:['у тебя талант','следил за тобой сегодня','пиши если будешь искать трио','из тебя выйдет толк','сильно играешь'],
 ccCoMore:n=>'ещё '+n,
-ccCoLfd:['V','кто-нибудь заберите его','с ним я бы играл','V 🐐','быстро разберут','сильный, пишите ему'],
-ccCoBday:['hbd 🐐','с др! 🎂','с днём рождения, легенда','hbd','с др, хорошего сезона','🎂🎂'],
-ccCoHype:['ЛЕТСГОУ','наконец-то','даты?','ооо','сервера чинить будете?','опять в те же дни 😭','формат скажите'],
-ccCoDuo:['страшная пара','ну всё, лобби, держитесь','W','сильно','удачи вам 🤝','это топ-1'],
-ccCoSign:['заслужил','W подписание','добро пожаловать','поздравляю 🎉','давно пора','сильный ход'],
-ccCoLeft:['удачи дальше','спасибо за всё','жаль','следующий клуб будет лучше','🙏','ждём новостей'],
-ccCoTable:['гонка близко','кто сверху, тот и был сверху','ещё много недель','топ-3 не двигается','ставлю на первых','всё решится в конце'],
-ccCoStream:['ссылку','иду','W стрим','включаю','смотрю','разбор будет?'],
-ccCoDrop:['мы туда же 😭','не занимай','контест будет','удачи на споте','смело','там уже трое'],
-ccCoCust:['можно к вам','PR не хватает 😭','пишу','го','а вдвоём можно?','отбор жёсткий'],
-ccCoBye:['легенда','спасибо за годы','🫡','грустно','уважение','ГОАТ'],
-ccCoBan:['ужас','не верится','так и знал','жаль','позор','всё на видео'],
-ccCoMateUp:['🐐','горжусь','мой IGL 🐐','ещё раз на следующей','вместе до конца','лучший 🔥'],
-ccCoMateDown:['вернёмся','моя вина тоже','разберём и дальше','в следующий раз','держись','не сдаёмся'],
-ccCoOrg:['наш парень 💙','W','гордимся 👏','так и надо','ещё не всё','💙💙'],
-ccCoTy:['спасибо ❤️','🙏','ty','спасибо всем','❤️','люблю вас'],
-ccCoHate:['ez лобби','вынесли тебя','пронесло','это не ты играл','ну повезло','дальше слив'],
-ccCoHateBad:['слился','washed','опять','кому ты нужен','снимайте его','L'],
-ccCoTroll:['я говорил','до вторника','адрес знаешь','опять ты','видимся в лобби','как всегда'],
-ccCoProWin:['W','gg','заслужил 🐐','чисто','ez lobby 😭','сильно','монстр'],
-ccCoProBad:['не повезло, брат','следующий','бывает','вернёшься','держись','все сливают'],
-ccCoProLfd:['V','V 🐐','берите, не пожалеете','V, играл с ним','сильный'],
 ccFfGo:'Продолжить',
 ccFfDone:d=>'Перемотано '+ruDays(d),
 ccFfPlayed:n=>'Сыграно турниров: '+n,
@@ -1724,152 +1582,6 @@ ccCelebPassSub:d=>'Токен в Дивизион '+d+' у тебя',
 chLogTitle:'История',
 chLogEmpty:'Сыгранных турниров пока нет.',
 chTabLog:'Профиль', chTabHist:'История',
-chTabStats:'Статистика', chTabStreams:'Стримы',
-ccStreamGoLive:'Выйти в эфир', ccStreamLiveNow:'Сейчас в эфире', ccStreamLast:'Прошлый эфир',
-ccStreamViewers:'Зрителей обычно', ccStreamDayGone:'День уже занят — эфир завтра',
-ccStreamCost:e=>e+' энергии',
-ccStreamCupTitle:'Стримить турнир', ccStreamCupGo:'Играть в эфире',
-ccStreamCupHint:(e,p)=>e+' энергии · играешь слабее: −'+p+' к силе команды',
-ccTvNoEvent:'Сегодня турнира нет — стримить нечего',
-ccTvMpNo:'В командной карьере эфир с турнира недоступен',
-ccTvWait:'В эфире — ждём первую игру',
-ccTvGame:n=>'Игра '+n, ccTvGameOf:(n,of)=>'Игра '+n+'/'+of, ccTvLast:p=>'последняя #'+p,
-// Виктории — счётчиком «W×2», как на самой трансляции: числу не нужен падеж.
-ccTvWins:w=>'W×'+w, ccTvCut:(c,of)=>'проходит топ-'+c+' из '+of,
-ccTvPts:p=>p+' очков', ccTvKills:k=>k+' килов',
-ccTvPeak:n=>'пик '+n, ccTvPow:p=>'−'+p+' к силе', ccTvFold:'Свернуть',
-// Причина, а не цена: «20 энергии» под выключенной кнопкой читалось как
-// стоимость, и кнопка казалась сломанной (его «в трио не работает кнопка»).
-ccStreamNeed:(need,have)=>'не хватает энергии: '+have+' из '+need,
-// События эфира — то, что Twitch показывает в чате между сообщениями.
-ccTvEvFollow:h=>h+' подписался на канал',
-ccTvEvSub:h=>h+' оформил саб · Tier 1',
-ccTvEvDono:(h,m)=>h+' задонатил $'+m,
-ccTvEvSum:(f,s,m)=>'+'+f+' фолловеров · '+s+' сабов · $'+m,
-ccTvDonoLines:['на новую мышку','за W','ты лучший','квальни пж','с меня кофе','го дальше','респект за игру','люблю стримы'],
-// Сводка после эфира — как «Stream Summary» в дашборде Twitch (его скрин 5.09).
-ccTvSumTitle:'Итоги эфира', ccTvSumAvg:'Средний онлайн', ccTvSumPeak:'Пик зрителей',
-ccTvSumFol:'Фолловеры', ccTvSumSubs:'Сабы', ccTvSumCash:'Заработано', ccTvSumTime:'В эфире',
-ccTvSumChatters:'Писали в чат', ccTvSumChart:'Зрители по ходу вечера', ccTvSumHours:h=>h+' ч',
-ccTvSumPlace:(p,of)=>'место '+p+' из '+of,
-ccTvChatWin:['ПОБЕДА','W','вот это игра','клип в тг','гоооол','изи катка','красава','WWWWWWW','GOAT','ГОУТ','КЛИП','ИЗИИИИ','ПОГ','W W W W W','лучший в мире','ааааааа','это чемпион'],
-// Чат отвечает на игру — его правка 5.09 «чат реалистичней сделать: когда
-// выбор, то в чате что-то подобное, и после победы www или goat».
-ccTvChatChoice:['быстрее решай','не тупи','го контест','дом бери','рефреш пж','ХАЙГРАУНД','это пикай','слушай чат','я бы контестил','не рискуй','давай давай','время идёт'],
-ccTvChatPicked:['ок ок','траст','ну посмотрим','W колл','нооооо','ладно','верим','рискованно','вот это я понимаю'],
-ccTvChatCallGood:['W КОЛЛ','я же говорил','чат гений','имба решение','красава','вот так и надо','гений'],
-ccTvChatCallBad:['говорил же','F','ну зачем','надо было слушать чат','не повезло','ауч','ну блин'],
-ccTvChatGood:['красиво','+','чисто','достойно','сильно','вот так и надо'],
-ccTvChatBad:['F','ну бывает','что это было','ой','не повезло','го дальше','третьят опять'],
-ccNewsStreamCup:(p,of,f)=>'Отстримил турнир: '+p+' из '+of+' · +'+f+' фолловеров твича',
-ccStream_grind:'Ранкед', ccStream_grindNote:'обычный вечер, растёт аудитория',
-ccStream_chat:'Общение', ccStream_chatNote:'платят лучше, растёшь медленнее',
-ccStream_colab:'Коллаб', ccStream_colabNote:'вдвоём — придут его зрители',
-ccStream_long:'Марафон', ccStream_longNote:'вдвое дольше и вдвое больше, плюс перегруз',
-ccStreamCatFn:'Fortnite', ccStreamCatChat:'Общение', ccStreamCatRanked:'Ранкед', ccStreamCatCreative:'Творческий',
-ccStreamFollowed:'Отслеживаемые каналы', ccStreamMore:'Показать ещё', ccStreamOffline:'Не в сети',
-ccStreamChat:'Чат трансляции', ccStreamSay:'Отправить сообщение', ccStreamLang:'Русский',
-ccTvFollow:'Отслеживать', ccTvSubsToday:n=>'Сабов сегодня: '+n, ccTvTopDonors:'Топ донатеров', ccStreamAlsoWatch:'Зрители также смотрят',
-ccStreamBits:'Bits', ccStreamGift:'Подарить саб', ccStreamSub:'Подписаться',
-ccStreamTitleLive:'FNCS. Идём в финал недели', ccStreamTitleOff:'Канал не в эфире — время выйти',
-ccStreamSubsToday:n=>'Подписок сегодня: '+n, ccStreamUptime:'В эфире',
-ccStreamPinned:h=>'Закреплено '+h, ccStreamPinText:'Ник в игре — в описании канала',
-ccTwPartner:'Партнёр Twitch', ccTwAffiliate:'КОМПАНЬОН',
-ccTwToAff:'Путь к компаньону', ccTwToPart:'Путь к партнёрке',
-ccTwGoalFol:'Фолловеры', ccTwGoalDays:'Дней с эфиром',
-ccTwGoalHours:'Часов эфира', ccTwGoalAvg:'Средний онлайн',
-ccNewsTwAffiliate:()=>'Twitch дал компаньона. Теперь тут можно зарабатывать.',
-ccNewsTwPartner:()=>'Партнёрка. Галочка на канале.',
-ccStreamChatLines:['погнали','+','го зону','лучший дроп','w','изи','ня','опять третьят','ставь метку','кто это','пусть падают','го рефреш','респект','имба','ну и ну','лови хайграунд','вниз не иди','го квал','сколько очков','ты в топ 50'],
-ccNewsStreamColab:(h,f,g)=>'Стримили вдвоём с @'+h+' — '+f+' на Twitch. Пришло '+g+' зрителей',
-ccNewsResultWf:(p,t,pts)=>'Кубок Див 1: '+ccTop(p)+' из '+t+', '+pts+' очков — проход в финал недели',
-ccNewsResultWeekWf:(p,t,pts,g)=>'Кубок Див 1, итог недели: '+ccTop(p)+' из '+t+', '+pts+' очков за '+g+' игр — проход в финал недели',
-ccLanQual:c=>'квал на ЛАН · '+c,
-ccNewsSceneDuo:(a,b)=>'Новый состав: играю с '+b,
-modeCareerRaceDesc:'Наперегонки: каждый играет свою карьеру, лобби показывает, кто впереди.',
-ccRaceMake:'Завести гонку', ccRaceEnter:'Войти в гонку по коду',
-ccRaceTitle:'Гонка карьер', ccRaceAlone:'Соперник ещё не подключился — дай ему код',
-ccRaceWait:'День закрывается вдвоём — ждём, пока соперник доиграет свой',
-ccRaceAloneGo:'Идти дальше одному',
-ccRaceAhead:'Ты впереди', ccRaceBehind:h=>'Впереди '+h, ccRaceLeave:'Выйти из гонки',
-ccProAmCash:m=>'Забрали '+m, ccProAmNoCash:'Без денег',
-ccNewsProAmCash:(p,m)=>'Pro-Am: '+ccTop(p)+', заработано $'+m,
-ccNewsProAmOut:(p,t)=>'Pro-Am: '+ccTop(p)+' из '+t+', без денег',
-ccProAmNeedReach:n=>'На Pro-Am зовут по известности — нужно '+n+' подписчиков',
-ccProAmPlayed:'Pro-Am в этом сезоне уже сыгран',
-ccProAmTurnedDown:'Ты отказался от приглашения — позовут в следующем сезоне',
-ccProAmUnanswered:'Приглашение лежит в личных сообщениях — ответь на него',
-dmProAmInvite:(ev,d)=>'Привет! Мы принимаем '+ev+' '+d+'. Формат — Reload дуо, двадцать пар: профи и контент-мейкер. Зовём тебя. Поедешь?',
-dmProAmYes:'Поеду. Спасибо, что позвали',
-dmProAmNo:'В этот раз без меня',
-dmProAmNoOk:'Понял, жаль. Позовём в следующем году',
-dmProAmPick:'Отлично! Осталось выбрать, с кем сядешь. Вот кто из мейкеров подтвердил приезд:',
-dmProAmMateOk:n=>'Записал: ты играешь с '+n+'. Увидимся на площадке',
-dmProAmGo:'Поеду', dmProAmSkip:'Не в этот раз',
-dmProAmChoose:'Кого берёшь в пару',
-dmProAmWith:n=>'Ты едешь с '+n,
-dmProAmDone:'Приглашение отклонено',
-ccNewsProAmReach:(h,f,g)=>'Играл в паре с @'+h+' — '+f+' на Twitch. Пришло '+g+' новых подписчиков',
-ccProAmMateLine:(h,f)=>'Напарник: '+h+' · '+f+' на Twitch',
-ccNewsSceneRise:(h,d)=>'@'+h+' прибавил '+d+' к рейтингу за сезон — растёт быстрее всех на сцене',
-ccNewsSceneFall:(h,d)=>'@'+h+' просел на '+d+' за сезон — форма ушла',
-ccShotCut:(n,p)=>'проход: топ-'+n+' — '+p+' очк.',
-ccNoteRepost:n=>'Твой пост репостнули: '+n,
-ccNoteLikeBy:(h,n)=>'@'+h+(n>0?' и ещё '+n:'')+' лайкнули твой пост',
-ccNoteRepostBy:(h,n)=>'@'+h+(n>0?' и ещё '+n:'')+' репостнули твой пост',
-ccNoteReplyBy:(h,n)=>'@'+h+(n>0?' и ещё '+n:'')+' ответили на твой пост',
-dmMateFoot:'Ваш чат: можно просто поговорить',
-dmMateBtnnight:'Разобрать вечер', dmMateWhatnight:'Обсудить последний турнир',
-dmMateBtnspot:'Про точку', dmMateWhatspot:'Поговорить о высадке',
-dmMateBtnrole:'Про роли', dmMateWhatrole:'Кто что делает в игре',
-dmMateBtnlife:'Просто так', dmMateWhatlife:'Поговорить ни о чём — тоже держит настрой',
-dmMeTalknight:(p,t)=>'Разберём вчерашнее? '+ccTop(p)+' из '+t,
-dmMateTalknight:(p,t)=>'Да, посмотрел реплеи. Зона в середине наша была, дальше сами отдали. Исправим',
-dmMeTalkspot:(i,a)=>'Что думаешь про нашу точку? Коробка '+i+', аура '+a,
-dmMateTalkspot:(i,a)=>'Мне нравится. Лут стабильный, соседей отвадили — сидим там',
-dmMeTalkrole:(m,y)=>'По ролям: ты '+m+', я '+y+'. Норм?',
-dmMateTalkrole:(m,y)=>'Норм. Ты зовёшь ротации, я беру первый контакт. Так и играем',
-dmMeTalklife:'Как сам?',
-dmMateTalklife:'Нормально. Спал мало, но настрой есть. Погнали вечером',
-ccStTitle:'Статистика', ccStEmpty:'Сыграй первый турнир — здесь появятся числа', ccStEvents:'Турниров', ccStGames:'Матчей',
-ccStWins:'Побед', ccStElims:'Элиминаций', ccStPerGame:'за матч', ccStAvg:'Среднее место', ccStPodiums:'Подиумов', ccStTop10:'Топ-10',
-ccStPromos:'Квалификаций', ccStPrize:'Призовых', ccStWages:'Зарплат', ccStSide:'Подработок и кастомок', ccStBestNight:'Лучший вечер',
-ccStBestElims:'Больше всего элимов', ccStByKind:'По турнирам', ccStBySeason:'По сезонам', ccStSeason:'Сезон', ccStBest:'Лучшее',
-ccStPartners:'С кем играл', ccStSpots:'Домашние точки', ccStSpotBox:'коробка', ccStAura:'аура', ccStCurve:'Рейтинг по турнирам', ccStSolo:'Соло',
-ccHallTitle:'Зал славы', ccHallRich:'Больше всех заработал', ccHallEarlyD1:'Раньше всех в Дивизионе 1', ccHallMostWins:'Больше всех побед',
-ccHallBestMajor:'Лучший финал Мейджора', ccHallSeasons:'сезонов', ccHallPeak:'пик',
-ccActtrMeta:'Разбор меты', ccNewsMetaNew:v=>'Новый сезон '+v+': остров и пул другие. Три дня разбора меты снимают штраф к форме',
-ccNewsSchoolBack:'Онлайн-школа не оплачена — обратно в обычную',
-ccPostLanArrive:v=>'Прилетели в '+v+'. Завтра играем',
-ccNewsOrgBonus:(o,m)=>o+' выплачивает бонус за финал Мейджора: '+m, ccNewsOrgGone:(o,m)=>o+' закрывает состав по Fortnite. На прощание — '+m,
-ccPostLft:'Ищу клуб. Открыт к предложениям (LFT)', ccOrgBonusRow:'Бонус за финал Мейджора',
-ccDayEvmateSpot:'Напарник хочет другую точку', ccDayEvmateSpotSub:'Ему надоело падать в твой дом — просит переехать',
-ccDayEvmateSpotOmove:'Переехать', ccDayEvmateSpotOkeep:'Дом остаётся', ccDayEvmateSpotOtrial:'Неделя пробы',
-ccDayEvmateSpotRmove:'Переехали: старая аура сгорела, напарник доволен', ccDayEvmateSpotRkeep:'Дом остаётся. Напарник недоволен',
-ccDayEvmateSpotRtrial:'Договорились попробовать неделю: посидели над картой вместе',
-ccDayEvorgLate:'Клуб задержал зарплату', ccDayEvorgLateSub:'Платёж не пришёл вовремя. Что делаешь?',
-ccDayEvorgLateOwait:'Подождать', ccDayEvorgLateOpublic:'Написать в X', ccDayEvorgLateOleave:'Уйти',
-ccDayEvorgLateRwait:'Подождал молча. В клубе это запомнили', ccDayEvorgLateRpublic:'Написал в X про задержку: охват вырос, репутация просела',
-ccDayEvorgLateRleave:'Ушёл из клуба из-за задержки зарплаты',
-ccDayEvleak:'Слив в ленте', ccDayEvleakSub:'Инсайдер пишет, что ты договариваешься с другим клубом',
-ccDayEvleakOdeny:'Опровергнуть', ccDayEvleakOconfirm:'Подтвердить', ccDayEvleakOsilent:'Промолчать',
-ccDayEvleakRdeny:'Опроверг слив', ccDayEvleakRconfirm:'Подтвердил переговоры. Лента гудит, клуб недоволен', ccDayEvleakRsilent:'Промолчал — слив затих сам',
-ccDayEvhouse:'Контент-хаус на неделю', ccDayEvhouseSub:'Зовут пожить неделю в доме с блогерами: охват, но не тренировки',
-ccDayEvhouseOgo:'Поехать', ccDayEvhouseOno:'Отказаться',
-ccDayEvhouseRgo:'Неделя в контент-хаусе: подписчики выросли, форма просела', ccDayEvhouseRno:'Отказался от контент-хауса',
-ccDayEvcoachFree:'Тренер предлагает бесплатную неделю', ccDayEvcoachFreeSub:'Бывший про хочет разобрать твои реплеи бесплатно',
-ccDayEvcoachFreeOtake:'Взять', ccDayEvcoachFreeOpass:'Пропустить',
-ccDayEvcoachFreeRtake:'Неделя с тренером: подтянул самое слабое', ccDayEvcoachFreeRpass:'Пропустил тренера',
-ccDayEvtilt:'Напарник на тильте', ccDayEvtiltSub:'После вчерашнего провала напарник ищет виноватого',
-ccDayEvtiltOblame:'Виноват он', ccDayEvtiltOown:'Виноват я', ccDayEvtiltOtalk:'Поговорить',
-ccDayEvtiltRblame:'Свалил на напарника: тебе легче, ему нет', ccDayEvtiltRown:'Взял вину на себя. Напарник это оценил', ccDayEvtiltRtalk:'Разобрали вечер вдвоём',
-ccDayEvschool:'Школа', ccDayEvschoolSub:'Тебе шестнадцать. Школа съедает часть дня — как дальше?',
-ccDayEvschoolOquit:'Бросить', ccDayEvschoolOonline:'Онлайн-школа', ccDayEvschoolOstay:'Доучиться',
-ccDayEvschoolRquit:'Бросил школу ради игры. Весь день твой', ccDayEvschoolRonline:'Перешёл на онлайн-школу: 150$ в месяц, полдня свободно',
-ccDayEvschoolRstay:'Доучиваешься. До восемнадцати часть дня уходит на школу',
-ccDayEvorgQuit:'Клуб уходит из Fortnite', ccDayEvorgQuitSub:'Клуб закрывает состав. Контракт кончается сегодня',
-ccDayEvorgQuitOfa:'Объявить поиск', ccDayEvorgQuitOquiet:'Уйти тихо',
-ccDayEvorgQuitRfa:'Клуб закрыл состав. Объявил, что ищу новый', ccDayEvorgQuitRquiet:'Клуб закрыл состав. Ушёл тихо',
 chCupWeek:d=>'Кубок Див '+d,
 chEvCup:'Кубок Дивизиона {N}',
 chEvCupSub:'Одно окно, 11 игр. Финала нет, призовых нет — только токен наверх.',
@@ -1885,17 +1597,13 @@ ccSlab:'Создай игрока',
 ccTabRookie:'Новичок',
 ccTabCard:'Готовая карточка',
 ccPhotoHint:'Нажми, чтобы<br>загрузить фото',
-ccNick:'Никнейм', ccSex:'Пол', ccSexM:'Мужской', ccSexF:'Женский', ccSpTitle:'Очки прокачки', ccSpHow:'Дают за результаты: титул +3, подиум +2, топ-25% лобби +1', ccSpLeft:'Осталось:', ccSpCreateHint:'Раздаются один раз, здесь: +0.5 к стату за очко', ccNewsSp:(g,t)=>'Очки прокачки: +'+g+' (всего '+t+')', ccJobTitle:'Подработка', ccJobH:'ч', ccJobPerH:'/час', ccNewsJob:(h,p)=>'Смена '+h+' ч — $'+p, ccPowerNote:'Отключили свет — вечер пропал', ccSickNote:d=>'Болеешь до '+d+' — сил меньше обычного', ccNewsSick:d=>'Слёг с простудой — до '+d, ccCheatRow:'Прицел сам наводится. Никто не узнает', ccCheatDl:'Скачать', ccCheat1:'Это читы.', ccCheat1Sub:'Ты правда собираешься это поставить?', ccCheatYes:'Да, качаю', ccCheatNo:'Нет', ccCheat2:'Epic банит за это навсегда.', ccCheat2Sub:'Аккаунт, скины, карьера — всё сгорит.', ccCheatR3:'Каждый килл пишется в реплей.', ccCheatR3Sub:'Повторы пересматривают тысячи глаз — аим, который сам доводится, видно с первой секунды.', ccCheatR4:'Спонсоры уходят в день бана.', ccCheatR4Sub:'Контракт, зарплата, баннеры — никто не платит читеру.', ccCheatR5:'Об этом узнают все.', ccCheatR5Sub:'Напарник, клуб, вся лента — для них ты навсегда останешься читером.', ccCheatStill:'Всё равно', ccCheatBack:'Одуматься', ccAskYes:'Да', ccAskNo:'Отмена', ccCheat3:'Последний шанс.', ccCheat3Sub:'Держи $100 — просто закрой это окно.', ccCheatTake:'Взять $100', ccNewsCheatPaid:'Не стал качать читы. +$100 за здравый смысл', ccNewsBanned:'АККАУНТ ЗАБАНЕН: читы. Карьера завершена', ccNewsBdayGift:g=>'Подарки на день рождения: +$'+g, ccPostBdayPro:(w,n)=>'с днём рождения, @'+n+'! 🎉', ccPostBanSad1:(w,n)=>'не ожидал такого от @'+n+'. Разочарован', ccPostBanSad2:(w,n)=>'грустно. @'+n+', мы же играли вместе…', ccPostBanSad3:(w,n)=>'@'+n+' с читами. До сих пор не верится', ccNewsStreamStats:(v,p,f,d,t,h)=>'Стрим ('+(h||2)+' ч): зрители в среднем '+v+', пик '+p+' · +'+f+' фолловеров твича (всего '+t+') · заработано $'+d, ccNewsStreamBanner:(b,c)=>'Менеджер повесил баннер '+b+' на эфир: +$'+c, ccFriends:'Друзья', ccFriendsNone:'Пока никого — кинь запрос из поиска дуо', ccFriendsNonet:'Пока никого — кинь запрос из поиска трио', ccFriendAdd:'В друзья', ccFriendIs:'Друг', ccNewsFriendYes:h=>'@'+h+' принял запрос в друзья', ccNewsFriendNo:h=>'@'+h+' не ответил на запрос в друзья', ccNews1v1:(h,a,b)=>(a>b?'Победа':'Поражение')+' в 1v1 с @'+h+': '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' и '+b+' расходятся после серии провалов', ccPostDuoSplitBy:(a,b,t)=>'я больше не в дуо с @'+b+'. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'мы с @'+b+' ищем трио. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'я больше не в трио с @'+b+'. '+t+' 🙏', ccCoSad:['не расходитесь 😭','вы же лучшие','грустно это читать','F','конец эпохи','ну нет…'],
+ccNick:'Никнейм', ccSex:'Пол', ccSexM:'Мужской', ccSexF:'Женский', ccSpTitle:'Очки прокачки', ccSpHow:'Дают за результаты: титул +3, подиум +2, топ-25% лобби +1', ccSpLeft:'Осталось:', ccSpCreateHint:'Раздаются один раз, здесь: +0.5 к стату за очко', ccNewsSp:(g,t)=>'Очки прокачки: +'+g+' (всего '+t+')', ccJobTitle:'Подработка', ccJobH:'ч', ccJobPerH:'/час', ccNewsJob:(h,p)=>'Смена '+h+' ч — $'+p, ccPowerNote:'Отключили свет — вечер пропал', ccSickNote:d=>'Болеешь до '+d+' — сил меньше обычного', ccNewsSick:d=>'Слёг с простудой — до '+d, ccCheatRow:'Прицел сам наводится. Никто не узнает', ccCheatDl:'Скачать', ccCheat1:'Это читы.', ccCheat1Sub:'Ты правда собираешься это поставить?', ccCheatYes:'Да, качаю', ccCheatNo:'Нет', ccCheat2:'Epic банит за это навсегда.', ccCheat2Sub:'Аккаунт, скины, карьера — всё сгорит.', ccCheatR3:'Каждый килл пишется в реплей.', ccCheatR3Sub:'Повторы пересматривают тысячи глаз — аим, который сам доводится, видно с первой секунды.', ccCheatR4:'Спонсоры уходят в день бана.', ccCheatR4Sub:'Контракт, зарплата, баннеры — никто не платит читеру.', ccCheatR5:'Об этом узнают все.', ccCheatR5Sub:'Напарник, клуб, вся лента — для них ты навсегда останешься читером.', ccCheatStill:'Всё равно', ccCheatBack:'Одуматься', ccAskYes:'Да', ccAskNo:'Отмена', ccCheat3:'Последний шанс.', ccCheat3Sub:'Держи $100 — просто закрой это окно.', ccCheatTake:'Взять $100', ccNewsCheatPaid:'Не стал качать читы. +$100 за здравый смысл', ccNewsBanned:'АККАУНТ ЗАБАНЕН: читы. Карьера завершена', ccNewsBdayGift:g=>'Подарки на день рождения: +$'+g, ccPostBdayPro:(w,n)=>'с днём рождения, @'+n+'! 🎉', ccPostBanSad1:(w,n)=>'не ожидал такого от @'+n+'. Разочарован', ccPostBanSad2:(w,n)=>'грустно. @'+n+', мы же играли вместе…', ccPostBanSad3:(w,n)=>'@'+n+' с читами. До сих пор не верится', ccNewsStreamStats:(v,p,f,d,t)=>'Стрим (2 ч): зрители в среднем '+v+', пик '+p+' · +'+f+' фолловеров твича (всего '+t+') · заработано $'+d, ccNewsStreamBanner:(b,c)=>'Менеджер повесил баннер '+b+' на эфир: +$'+c, ccFriends:'Друзья', ccFriendsNone:'Пока никого — кинь запрос из поиска дуо', ccFriendsNonet:'Пока никого — кинь запрос из поиска трио', ccFriendAdd:'В друзья', ccFriendIs:'Друг', ccNewsFriendYes:h=>'@'+h+' принял запрос в друзья', ccNewsFriendNo:h=>'@'+h+' не ответил на запрос в друзья', ccNews1v1:(h,a,b)=>(a>b?'Победа':'Поражение')+' в 1v1 с @'+h+': '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' и '+b+' расходятся после серии провалов', ccPostDuoSplitBy:(a,b,t)=>'я больше не в дуо с @'+b+'. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'мы с @'+b+' ищем трио. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'я больше не в трио с @'+b+'. '+t+' 🙏', ccCoSad:['не расходитесь 😭','вы же лучшие','грустно это читать','F','конец эпохи','ну нет…'],
 ccAge:'Возраст',
 ccPingTitle:'ПИНГ (мс)',
 ccPingServer:city=>'до сервера '+city,
 ccPingNote:'Пинг указан от ближайшего к серверу города-миллионника страны — лучшее, что из неё выжимается. По Европе числа замеренные, по остальным регионам посчитаны по той же кривой. Это справка о том, откуда ты играешь: на силу игрока страна не влияет.',
 ccSearchCountry:'Поиск страны',
 ccSearchCard:'Поиск игрока',
-ccTabCreator:'Контент-мейкер', ccSearchCreator:'Поиск мейкера',
-ccPickCreator:'Выбери мейкера', ccRoRegion:'Регион',
-ccCreatorFollowers:n=>n+' на твиче', ccCreatorNoTw:'Канал не подтверждён',
-ccCreatorEvent:'Контент-мейкер',
 ccPickCountry:'Выбери страну',
 ccRoCountry:'Страна',
 ccRoPing:'Пинг',
@@ -2041,9 +1749,6 @@ heroDuo:'Play as a duo',
 navCareer:'Career', navDraft:'Draft', navHistory:'History',
 ccActGrpTrain:'Training', ccActGrpTeam:'Team', ccActGrpLife:'Stream and rest',
 heroCode:'Got a code from your partner? Join by code',
-cstripSub:'One player, one season, the real calendar. Train by day, play the nights, climb from Division 5 to Division 1.',
-cstripChipDivs:'Divisions 5 → 1', cstripChipMajors:'Majors and LANs',
-cstripChipReload:'The Reload circuit', cstripChipLife:'Clubs, money, form',
 heroDraft:'Go to draft',
 supportBtn:'Support',
 dataCreditText:'Flags, squads and player data sourced from', dataCreditAnd:'and',
@@ -2276,7 +1981,6 @@ regionUnk:'Region unconfirmed', allRegions:'All regions',
 pickBtn:'Draft', placeholderNotPublished:'placement not published', qualifierTag:'qualifier',
 ccRaritycommon:'common', ccRarityuncommon:'uncommon', ccRarityrare:'rare',
 ccRarityepic:'epic', ccRaritylegendary:'legendary', ccRaritymythic:'mythic',
-ccRarityexotic:'exotic',
 emptySlot:'empty', squadCompleted:'Squad complete. Hit "Enter tournament".',
 yourTeamPrefix:'Your squad: ', ccSynergyDuo:v=>' — a standing duo (+'+v+')', synergyPartner:v=>' — real teammates (+'+v+')', synergyNation:' — shared nationality: ', synergyLanguage:' — no language barrier, both speak: ', synergyBonusVictory:'Got a Victory Royale — instant advance',
 gameWord:'Game', totalWord:'Total', victoryRoyaleWord:'Victory Royale', place2plus:'place of ', teamsWord:' teams', feedElim:n=>'eliminated '+n, feedDied:n=>'died to '+n, feedNone:'no fights',
@@ -2382,7 +2086,6 @@ chWkCup:'Cup', chWkReload:'Reload', chDayFree:'Free day',
 ccDayTag:'DAY', ccDayMust:'Choose what the day goes on', ccDayDone:'Next day',
 ccDayBroke:d=>'The day '+d+' did not move — here is what broke',
 ccHubBroke:'The career screen did not draw — here is what broke', ccHubBackCentre:'Back to the centre',
-ccHubCopy:'Copy the error', ccHubCopied:'Copied — send it over',
 ccDayOver:v=>'The day is already spent: '+v+'. The energy keeps until tomorrow — press Next day',
 ccDayOverAny:'The day is already spent. The energy keeps until tomorrow — press Next day',
 ccRestFull:'energy is already full',
@@ -2428,41 +2131,6 @@ ccNextGames:'Format', ccNextGamesUnit:'games', ccNextField:'Teams',
 ccNextCut:'Through', ccNextTop:n=>'top '+n, ccNextPays:'Pays for 1st',
 ccNextNoPay:'no prize money', ccNextLocked:'Not your tournament today — the day is free',
 ccBioMajor:n=>n+'x MAJOR WINNER', ccBioCups:n=>n+'x cup winner',
-ccWhoFa:'F/A', ccWhoLft:'LFT', ccCardPr:'Power Ranking', ccCardSeason:'this season', ccCardYear:'this year',
-ccBioPrRank:n=>'#'+n+' on PR', ccBioEvents:n=>n+' events',
-ccPostLfdWant:(h,d,pr)=>'LFD. Div '+d+' and up, min '+pr+' PR. DMs open',
-ccAdWant:(role,d,pr)=>'wants '+role+' · div '+d+'+ · min '+pr+' PR',
-ccAdNoFit:pr=>'needs '+pr+' PR',
-ccPostDropCall:(h,z)=>'dropping '+ccZoneName(z)+' tonight 📍', ccDropCalls:'called their drop:',
-ccPostOrgWin:(o,who,ev)=>'CHAMPIONS. '+who+' take '+ev+' 🏆',
-ccNewsHub:'News',
-ccPostDmBtn:'Send a DM', ccPostVouchBtn:'Vouch',
-ccPostVouchWhat:'Vouch for them publicly: the scene reads it as your recommendation, and they answer warmer',
-ccPostVouched:'You vouched', ccPostVouch:h=>'@'+h+' is the real deal. Give the man a shot 🙏',
-ccRev:'V', ccRegl:'gl', ccRehbd:'hbd goat 🐐', ccRew:'W', ccReclap:'🙌',
-ccReDone:t=>'You replied: '+t,
-ccPostThanks:ev=>'thanks for the event — '+ev+'. and my teammates throughout it 🙏',
-ccPostOneOff:ev=>'one spot off. '+ev+'. im fine (im not)',
-ccPostQualGrands:(z,w)=>(w==='finals'?'QUALIFIED TO FINALS 🏆':'QUALIFIED TO GRANDS 🏆')+(z?' · landing '+ccZoneName(z):''),
-ccPostBotQualGrands:(h,z,w)=>(w==='finals'?'qual finals 🙏':'qual grands 🙏')+(z?' land '+ccZoneName(z):''),
-ccReplyBtn:'Reply', ccReplyPh:'Reply…', ccReplySend:'Send',
-ccShotVr:'Victory Royales', ccShotTop5:'Top 5s', ccShotTop10:'Top 10s',
-ccRepostBtn:'Repost', ccRepostDone:'Reposted', ccQuoteBtn:'Quote',
-ccQuoting:'Quoting a post', ccQuoteDrop:'Cancel', ccQuotePh:'Say something to this…',
-ccFeedAll:'All', ccFeedSubs:'Following', ccFeedSubsEmpty:'You follow nobody yet',
-ccNoteReply:n=>n+' replies to your post',
-ccNewsAnnounce:(ev,d)=>'wait but there is more :) '+ev+'. '+d+'. details soon',
-ccPostHype:h=>'ooooo this is huge', ccPostDates:h=>'please not those exact dates 🙏',
-ccPostBye:o=>'thank you @'+o+' for these years. on my own from here',
-ccCustomsHost:'Customs', ccAskBtn:'Ask for an invite', ccAskDone:'Asked',
-ccPostCustomsOpen:(pr,w)=>'pro lobby tonight: $'+w+' per win, '+pr+' PR and up. dm me',
-ccPostAskYes:()=>'got the invite 🙏', ccPostAskNo:()=>'no invite this time. all good',
-ccPostTriedBest:()=>'tried our best. wasn’t enough. gg :/',
-ccNotesTab:'Notifications', ccNotesEmpty:'Quiet for now',
-ccNoteLike:n=>'Your post got '+n+' likes', ccNoteFollow:h=>'@'+h+' followed you',
-ccFollowBack:'Follow back', ccFollowBtn:'Follow', ccFollowingBtn:'Following',
-ccNewsCatall:'All', ccNewsCatscene:'Scene', ccNewsCatmoves:'Transfers', ccNewsCatyou:'You',
-ccNewsOpen:'Open in socials',
 ccBioRc:n=>n+'x RELOAD CHAMPIONSHIP (EWC) WINNER', ccBioSummit:n=>n+'x SUMMIT WINNER',
 ccBioGlobals:n=>n+(n%10===1&&n%100!==11?'st':n%10===2&&n%100!==12?'nd':n%10===3&&n%100!==13?'rd':'th')+' at Globals',
 ccAgentEnd:'End it',
@@ -2574,8 +2242,7 @@ ccYearNames:{
   FNCSSolos_Heats:'FNCS Solos · Heats',
   FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, Round 1',
   FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, Final',
-  FNCSSolos_Final:'FNCS Solos · Finals',
-  ProAm_Dallas:'Pro-Am · Dallas'
+  FNCSSolos_Final:'FNCS Solos · Finals'
 },
 chWkMajor:'Major',
 chWkGC:'GC',
@@ -2616,9 +2283,6 @@ chPlay:'Play',
 chSoonHint:'Majors are not wired into a career yet — that is the next step.',
 chSkip:'Skip the day',
 chSkipAsk:'Skip the day? The calendar does not go back.',
-chSkipTo:'To the tournament', chSkipToHint:(d,n)=>'Skip '+n+' day'+(n===1?'':'s')+' to '+d+' — tournaments on the way are not played',
-chSkipToAsk:(d,n,w)=>'Skip '+n+' day'+(n===1?'':'s')+' to '+d+' ('+w+')? Tournaments on the way will not be played, and the calendar does not go back.',
-calSkipGo:'Skip to this day', calSkipHint:'The days pass; tournaments on the way are not played',
 ccLadderEvent:'Ladder player (generated, not an FNCS competitor)',
 ccCupLive:'Division cup',
 ccCupTitle:(d,n)=>'Division '+d+' Cup — 11 games, '+n+' '+ccSquadWord(),
@@ -2731,9 +2395,6 @@ ccDayEvscrimup:'Invited to scrim', ccDayEvscrimupSub:'A stronger duo is a player
 ccDayEvscrimupYes:'Go', ccDayEvscrimupNo:'Pass',
 ccDayEvscrimupTake:()=>'Scrimmed the evening with a stronger squad',
 ccDayEvscrimupPass:()=>'Turned the scrims down',
-ccDayEvcustom:'Customs · $100 per win', ccDayEvcustomSub:'An organiser opens a pro lobby: five games, a hundred for every win. Entry is by PR — you are in',
-ccDayEvcustomYes:'Play it', ccDayEvcustomNo:'Skip',
-ccDayEvcustomTake:(w,c)=>'Customs: '+w+' wins out of 5 — $'+c, ccDayEvcustomPass:()=>'Skipped the customs',
 ccDayEvshow:'Showmatch', ccDayEvshowSub:'An organiser wants you on an exhibition, for a fee',
 ccDayEvshowYes:'Play it', ccDayEvshowNo:'Skip it',
 ccDayEvshowTake:()=>'Played a showmatch', ccDayEvshowPass:()=>'Skipped the showmatch',
@@ -2905,13 +2566,6 @@ ccDropContest:'Contest', ccDropContestNote:'Opens the whole island: see who sits
 ccDropMap:'Pick on the map', ccDropMapNote:'Open the island and place the marker yourself',
 ccLootTitle:'Mid game — what you picked up',
 ccLootHint:'The second circle has closed. The spot is looted: two guns, two heals and a mobility item. Your partner sorts their own half out',
-ccSiteOwnTitle:'Our spot — opening the chests', ccSiteOwnHint:n=>n+' chests: two guns of different classes, two heals, a movement item — what drops is what we carry',
-ccSiteTake:'Grab it and go', ccSitePackPow:v=>v>0 ? '+'+v+' power for the rarity' : v<0 ? v+' power: empty slots' : 'no power bonus',
-ccSiteTitle:n=>'Someone landed with us: '+n, ccSiteHint:(a,b)=>'Your first chest: '+a+' · theirs: '+b,
-ccSiteLeave:'Leave for the next POI', ccSiteLeaveNote:(n,m)=>'No fight: '+n+' chests instead of '+m+' — poorer loot, less power',
-ccSiteFight:'Fight for the spot', ccSiteFightNote:(p,n,a,b)=>p+'%: the spot is ours — all '+n+' chests and the elim · otherwise we die off spawn'+((a||b)?' · first chest: +'+a+' vs +'+b:''),
-ccSiteOwn:(n,l)=>'Spot is free: '+n+' chests — '+l, ccSiteWon:(w,n)=>'Spot is ours: '+w+' eliminated, '+n+' chests',
-ccSiteLost:w=>'Lost the landing fight to '+w, ccSiteLeft:(n,l)=>'Moved to the next POI: '+n+' chests — '+l,
 ccLootTake:'Take your own', ccLootSwap:'Run the next POI',
 ccLootTakeSafe:'no bonus, and no risk',
 ccLootSwapRisk:(b,f,p)=>p+'/'+(100-p)+': made it — +'+b+', did not — extra damage, −'+f,
@@ -2921,56 +2575,11 @@ ccLootGot:v=>'It worked — next POI cleared, +'+v+' power',
 ccLateTitle:'Zone 8 — how the end is played',
 ccLateHint:'The circle sits on a hill. From here the high ground decides it',
 ccLateHg:'Take the high ground', ccLateHgNote:v=>'A coin flip: won it — +'+v+' and the best shot at the win, lost it — minus '+CC_HG_FAIL+' and you play from below',
-ccLateThird:'Third-party the fight', ccLateThirdNote:(k,d,p)=>k+' in 100: we clean it up — the neighbour goes down, +'+p+' power and their mats · '+d+' in 100: we get cleaned up · the rest — shots exchanged, both walk, damage into surge',
-ccLateThirdWon:(p,foe)=>'Third in'+(foe?': '+foe+' eliminated':'')+' — +'+p+' power, mats off the body', ccLateThirdLost:foe=>'Third in and cleaned up'+(foe?' by '+foe:''),
-ccLateThirdNone:k=>'Shot into the fight and walked: +'+k+' surge damage',
+ccLateThird:'Third-party the fight', ccLateThirdNote:(p,f,o)=>o+' in 100: it lands — +'+p+' and the best ceiling in the game, it does not — minus '+f+' and you are the odd one out',
+ccLateThirdWon:v=>'Third in and cleaned it up, +'+v+' power', ccLateThirdLost:v=>'We got cleaned up, −'+v+' power',
 ccLateTake:'Take a weaker squad spot', ccLateTakeNote:(p,f,o)=>o+' in 100: it works — +'+p+', it does not — minus '+f,
 ccLateTakeWon:v=>'Spot taken, +'+v+' power', ccLateTakeLost:v=>'They held the spot, −'+v+' power',
-ccLateRefresh:'Find a refresh', ccLateRefreshNote:(v,f,p)=>p+'%: found it — +'+v+' and full mats, did not — minus '+f+' and back into the circle last',
-ccLateMid:'Play mid ground', ccLateMidNote:(v,f,p)=>p+'%: held the middle — +'+v+', knocked down — minus '+f+' and you play from below',
-ccLateEdge:'Play outside the zone',ccLateEdgeNote:(v,f,p)=>p+'%: catch them coming in — +'+v+', missed — the storm takes '+f,
-ccLateEdgeWon:v=>'Outside the zone worked — +'+v+' power', ccLateEdgeLost:v=>'The storm got you, −'+v+' power',
-ccLateRefreshWon:v=>'Refresh found, +'+v+' power and full mats', ccLateRefreshLost:v=>'No refresh, back in last: −'+v+' power',
-ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'low',
-ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: own pack', ccKitOut:'eliminated', ccKitPickaxe:'Pickaxe',
-ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge from '+a+' players · alive '+p,
-ccKitSurgeBanner:'STORM SURGE ACTIVE!', ccKitUnderBanner:'YOU ARE UNDER SURGE!',
-ccKitSurgeWarn:'STORM SURGE WARNING!', ccKitSurgeWarnSub:'DAMAGE ENEMIES TO AVOID ELIMINATION!',
-ccKitAboveCap:'above damage threshold', ccKitBelowCap:'below damage threshold',
-ccBuildTitle:'Zone 3 — how do we build', ccBuildNorm:'As usual', ccBuildNormNote:m=>m+' mats a circle',
-ccLootUpgraded:n=>'picked up their '+n,
-ccDeathTitle:z=>'Eliminated — zone '+z, ccDeathStorm:'The storm took us', ccDeathSurge:'Surge finished us',
-ccDeathBy:(w,g,r)=>'Killed by '+w+(g?' with the '+g:'')+(r?', '+r:''), ccDeathRange:{close:'point blank', near:'from the next build', far:'from range'},
-ccDeathStats:(p,s,e)=>'Place '+p+' · '+s+' · elims '+e, ccDeathSurgeAbove:g=>'surge +'+g+' above threshold', ccDeathSurgeBelow:g=>'surge −'+g+' to threshold', ccDeathSurgeOff:'surge off',
-ccBuildEco:'Save mats', ccBuildEcoNote:(m,p)=>m+' a circle — mats last to the end, but fewer builds: −'+p+' power',
-ccBuildHeavy:'Build a lot', ccBuildHeavyNote:(m,p)=>m+' a circle — +'+p+' power, but empty by the endgame without a refresh',
-ccBuildSet:(w,p)=>w+': '+p+' power for this game',
-ccRotTitle:'Zone 4 — the rotation', ccRotEarly:'Right away', ccRotEarlyNote:(s,v)=>'Leave as soon as the circle shows: '+s+'% of pros do, '+v+'% survive · clearer path, but you meet everyone else who left early',
-ccRotWith:'With the storm', ccRotWithNote:(s,v)=>'Leave when the circle starts moving: '+s+'% do, '+v+'% survive · less time in the open, but the road is already being shot',
-ccRotLate:'Last', ccRotLateNote:'Wait it out and go once the storm is on its way: quieter on entry, but the storm takes health',
-ccRotMats:m=>'mats this circle '+m, ccRotMove:'On the movement item', ccRotMoveNote:m=>'Wait it out and fly on the '+m+': faster than the storm, the item is spent',
-ccRotSet:w=>'Rotation: '+w,
-ccHealTitle:(s,h)=>'Shield '+s+' · health '+h+' — heal up?', ccHealStay:'Play on', ccHealStayNote:'No cost, shield and health stay as they are',
-ccHealGo:'Heal up', ccHealGoNote:(h,p)=>'full shield, +'+h+' health · while you drink — minus '+p+' power',
-ccHealDone:(h,p)=>'Healed: shield 100, health '+h+' · −'+p+' power',
-ccFarmTitle:'Zone 3 — how do we farm', ccFarmFull:'Farm to full', ccFarmFullNote:n=>'Up to '+n+' (500 · 3) — builds for the whole game, no surge farmed',
-ccFarmSurge:'Farm surge, fewer mats', ccFarmSurgeNote:(m,d,p)=>'Mats '+m+' (400 · 3), +'+d+' surge damage, −'+p+' power for the time spent tagging',
-ccFarmFullGot:n=>'Farmed to full — '+n+' mats', ccFarmSurgeGot:(m,d)=>'Surge farmed: +'+d+' damage, mats '+m,
-ccMatsTitle:'Running out of mats', ccMatsGo:'Go for a refresh', ccMatsStay:'Rotate with what you have',
-ccMateLeans:t=>"I'd go «"+t+"»",
-ccMidTitle:'Mid game — what do we do',ccMidStayNote:'Mats in hand, shield up — rotate with the circle, spend nothing', ccMidStayGot:'Rotating as we are',
-ccMidSurge:'Farm surge', ccMidSurgeNote:(d,t,p)=>`Tags on the rotate: +${d} dealt, −${t} taken (surge counts net) · −${p} power for the time`,
-ccMidSurgeLine:(n,at,g)=>`surge is on: ${n} alive, threshold ${at}`+(g==null ? '' : (g<0 ? ` · under surge, ${-g} to the line` : ` · ${g} above the line`)),
-ccMidSurgeGot:(d,t,p)=>`Surge farmed: +${d} dealt, −${t} taken, −${p} power`,
-ccMidFight:'Go fight', ccMidFightNote:(w,p,d,t,k)=>`${w}%: the neighbour goes down, +${p} power and their mats · ${d}%: we go down · ${t}%: a trade, shield gone · the rest — shots exchanged, both walk: +${k} surge damage, −mats`,
-ccMidFightPoke:(k,m)=>`Shots exchanged, both walked: +${k} surge damage, −${m} mats`,
-ccMidFightWon:(p,foe,g)=>`Fight won${foe?': '+foe+' eliminated':''}${g?' with the '+g:''} — +${p} power, mats off the body`,
-ccMidFightTraded:p=>`Traded: shield gone, mats burned, −${p} power`,
-ccMidFightDied:foe=>`Fight lost${foe?' — '+foe+' eliminated us':' — we were eliminated'}`,
-ccMatsGoNote:(v,f,p)=>p+'%: found it — +'+v+' and full mats, did not — minus '+f,
-ccMatsStayNote:v=>'Costs nothing now, but an endgame without mats is minus '+v,
-ccMatsFound:v=>'Refresh found, +'+v+' power and full mats', ccMatsMissed:v=>'Nothing there, −'+v+' power',
-ccMatsStayGot:'Playing with what we have',
+ccLateRefresh:'Find a refresh', ccLateRefreshNote:v=>'Certain, but smaller: +'+v,
 ccLateLg:'Play low', ccLateLgNote:'No bonus — and no risk',
 ccLateHgWon:v=>'It worked — high ground taken, +'+v+' power', ccLateHgLost:v=>'No luck — run off the high ground, −'+v+' power',
 ccLateRefreshGot:v=>'Refresh found, +'+v+' power', ccLateLgGot:'Playing low — no bonus',
@@ -3316,7 +2925,7 @@ xNoPosts:'You have not posted anything yet',
 ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:'';
   if(p===1) return ['TOP 1 🏆'+a, 'W 🏆'+a, 'another one 🐐'+a][(v||0)%3];
   if(p<=3)  return [''+ccTop(p)+' 💪'+a, ''+ccTop(p)+a+' 🔥', ''+ccTop(p)+', so close'+a][(v||0)%3];
-  return [''+ccTop(p)+' — Division '+d+a, ''+ccTop(p)+' this week'+a+'. higher next', ''+ccTop(p)+a+'. we keep going'][(v||0)%3];},
+  return ''+ccTop(p)+' — Division '+d+a;},
 ccPostBdayEpic:(h,a)=>'Happy birthday @'+h+' — '+a+' today. Have a good season 🎂',
 ccBornHint:'Date of birth — optional. Fill it in and the scene wishes you a happy birthday on the day. The number above is your age on the day the season starts; the birthday itself falls inside it.',
 ccNewsCongrats:(n,ev)=>'Congratulations to '+n+' on the win — '+ev+'! 🏆',
@@ -3420,22 +3029,6 @@ ccNewsAwardYou:m=>'Player of the Month ('+m+') 🏅',
 ccNewsAwardSeason:(n,s)=>'Player of Season '+s+' — '+n,
 ccNewsAwardSeasonYou:s=>'Player of Season '+s+' 🏆',
 ccAwards:'Awards', ccAwardMonth:'Player of the Month', ccAwardSeason:'Player of the Season',
-ccGotyTitle:'Player of the Year', ccGotyLine:(p,e)=>p+' rating points over '+e+' nights',
-ccGotyHow:'Counted on PR points across the whole year — the way the scene counts them',
-ccGalaDay:'Ceremony', ccGalaDaySub:'Season close',
-ccGalaWatch:'Watch the ceremony', ccGalaAgain:'Ceremony',
-ccGalaTitle:s=>'Closing ceremony · season '+s,
-ccGalaOpenLine:(d,n)=>'Division '+d+' · nights this year: '+n,
-ccGalaOpenHint:'The year is done. Below is what it left behind.',
-ccGalaYearH:'Your year',
-ccGalaEvents:'nights', ccGalaWins:'wins', ccGalaElims:'elims',
-ccGalaPrize:'prize money', ccGalaPr:'PR points', ccGalaBest:'best finish',
-ccGalaOvr:'rating', ccGalaOvrUp:n=>(n>0?'+':'')+n+' this year',
-ccGalaRunsH:'Nights of the year', ccGalaRunsNone:'No big nights this year',
-ccGalaAwardsH:'Awards of the year', ccGalaAwardsNone:'No awards this year',
-ccGalaMonthWon:m=>'Player of the Month — '+m,
-ccGalaGotyYou:'Player of the Year — that is you 🏆',
-ccGalaNext:'Next', ccGalaBack:'Back', ccGalaSkip:'Close',
 ccSlots:'Careers', ccSlotsTitle:'Careers', ccSlotsSub:'Pick the one to go back to, or start a new one',
 ccSlotEmpty:'Empty', ccSlotStart:'Start', ccSlotOpen:'Continue', ccSlotDelete:'Delete',
 ccSlotsNew:'New career', ccSlotsFree:n=>n===1?'one slot free':n+' slots free',
@@ -3482,28 +3075,6 @@ ccCoBad:['unlucky','that lobby was rough','rest and go again','still early','bee
 ccCoPro:['you have talent','watched you today','message me if you need a duo','you will go far','you play well'],
 ccCoProt:['you have talent','watched you today','message me if you need a trio','you will go far','you play well'],
 ccCoMore:n=>n+' more',
-ccCoLfd:['V','somebody pick him up','would play with him','V 🐐','won’t be free for long','strong, dm him'],
-ccCoBday:['hbd 🐐','happy birthday! 🎂','hbd legend','hbd','hbd, big season ahead','🎂🎂'],
-ccCoHype:['LETS GO','finally','dates?','omggggg','fix the servers first','not those days again 😭','format?'],
-ccCoDuo:['scary pair','lobby is cooked','W','strong','good luck 🤝','that’s a top 1'],
-ccCoSign:['deserved','W signing','welcome','congrats 🎉','about time','big move'],
-ccCoLeft:['good luck next','thanks for everything','sad','next org will be better','🙏','waiting for news'],
-ccCoTable:['tight race','same names on top','long way to go','top 3 not moving','my money is on first','decided in the last week'],
-ccCoStream:['link?','omw','W stream','tuning in','watching','vod review?'],
-ccCoDrop:['we drop there too 😭','don’t take it','contested','gl on the spot','brave','three teams already'],
-ccCoCust:['can i join','PR too low 😭','dming','lets go','pairs too?','strict cut'],
-ccCoBye:['legend','thanks for the years','🫡','sad one','respect','GOAT'],
-ccCoBan:['terrible','can’t believe it','knew it','sad','embarrassing','it’s all on video'],
-ccCoMateUp:['🐐','proud','my IGL 🐐','again next week','till the end','best 🔥'],
-ccCoMateDown:['we go again','my bad too','review and move on','next time','stay up','not done'],
-ccCoOrg:['our guy 💙','W','proud 👏','that’s how','not finished','💙💙'],
-ccCoTy:['thank you ❤️','🙏','ty','thanks all','❤️','love you all'],
-ccCoHate:['ez lobby','carried','got lucky','wasn’t even you','lucky','next one is an L'],
-ccCoHateBad:['washed','fell off','again','drop him','who is this','L'],
-ccCoTroll:['told you','see you tuesday','you know the address','you again','see you in lobby','as always'],
-ccCoProWin:['W','gg','deserved 🐐','clean','ez lobby 😭','strong','monster'],
-ccCoProBad:['unlucky bro','next one','happens','you’ll be back','stay up','everyone drops one'],
-ccCoProLfd:['V','V 🐐','take him, no regrets','V, played with him','strong'],
 ccFfGo:'Continue',
 ccFfDone:d=>d+' days skipped',
 ccFfPlayed:n=>'Tournaments played: '+n,
@@ -3657,145 +3228,6 @@ ccCelebPassSub:d=>'The Division '+d+' token is yours',
 chLogTitle:'History',
 chLogEmpty:'No tournaments played yet.',
 chTabLog:'Profile', chTabHist:'History',
-chTabStats:'Stats', chTabStreams:'Streams',
-ccStreamGoLive:'Go live', ccStreamLiveNow:'Live now', ccStreamLast:'Last stream',
-ccStreamViewers:'Usual viewers', ccStreamDayGone:'The day is spent — stream tomorrow',
-ccStreamCost:e=>e+' energy',
-ccStreamCupTitle:'Stream the tournament', ccStreamCupGo:'Play live',
-ccStreamCupHint:(e,p)=>e+' energy · you play weaker: −'+p+' team power',
-ccTvNoEvent:'Nothing on today — no tournament to stream',
-ccTvMpNo:'Streaming a tournament is off in a team career',
-ccTvWait:'Live — waiting for the first game',
-ccTvGame:n=>'Game '+n, ccTvGameOf:(n,of)=>'Game '+n+'/'+of, ccTvLast:p=>'last #'+p,
-ccTvWins:w=>'W×'+w, ccTvCut:(c,of)=>'top '+c+' of '+of+' go through',
-ccTvPts:p=>p+' pts', ccTvKills:k=>k+' elims',
-ccTvPeak:n=>'peak '+n, ccTvPow:p=>'−'+p+' power', ccTvFold:'Collapse',
-ccStreamNeed:(need,have)=>'not enough energy: '+have+' of '+need,
-ccTvEvFollow:h=>h+' just followed',
-ccTvEvSub:h=>h+' subscribed · Tier 1',
-ccTvEvDono:(h,m)=>h+' donated $'+m,
-ccTvEvSum:(f,s,m)=>'+'+f+' followers · '+s+' subs · $'+m,
-ccTvDonoLines:['for a new mouse','for the W','you are the best','qual it pls','coffee on me','keep going','respect for the game','love the streams'],
-ccTvSumTitle:'Stream summary', ccTvSumAvg:'Average viewers', ccTvSumPeak:'Peak viewers',
-ccTvSumFol:'Follows', ccTvSumSubs:'Subs', ccTvSumCash:'Earned', ccTvSumTime:'Time streamed',
-ccTvSumChatters:'Unique chatters', ccTvSumChart:'Viewers through the evening', ccTvSumHours:h=>h+' h',
-ccTvSumPlace:(p,of)=>'placed '+p+' of '+of,
-ccTvChatWin:['VICTORY','W','what a game','clip it','LETS GOOO','ez dub','insane','WWWWWWW','GOAT','GOATED','CLIP IT','EZZZZZ','POG','W W W W W','best in the world','aaaaaaa','that is a champion'],
-ccTvChatChoice:['decide faster','dont overthink','contest it','take home','refresh pls','HIGH GROUND','pick this','listen to chat','i would contest','dont risk it','go go go','clock is ticking'],
-ccTvChatPicked:['ok ok','trust','we will see','W call','nooooo','fine','we believe','risky','now that is a play'],
-ccTvChatCallGood:['W CALL','told you','chat is a genius','insane call','well played','that is how','genius'],
-ccTvChatCallBad:['told you','F','why though','should have listened to chat','unlucky','ouch','oh no'],
-ccTvChatGood:['clean','+','nice','solid','strong','that is how'],
-ccTvChatBad:['F','it happens','what was that','oof','unlucky','next one','third partied again'],
-ccNewsStreamCup:(p,of,f)=>'Streamed the tournament: '+p+' of '+of+' · +'+f+' twitch followers',
-ccStream_grind:'Ranked', ccStream_grindNote:'an ordinary night, the audience grows',
-ccStream_chat:'Just chatting', ccStream_chatNote:'pays better, grows slower',
-ccStream_colab:'Collab', ccStream_colabNote:'together — their viewers come over',
-ccStream_long:'Marathon', ccStream_longNote:'twice as long and twice as much, plus burnout',
-ccStreamCatFn:'Fortnite', ccStreamCatChat:'Just Chatting', ccStreamCatRanked:'Ranked', ccStreamCatCreative:'Creative',
-ccStreamFollowed:'Followed channels', ccStreamMore:'Show more', ccStreamOffline:'Offline',
-ccStreamChat:'Stream chat', ccStreamSay:'Send a message', ccStreamLang:'English',
-ccTvFollow:'Follow', ccTvSubsToday:n=>'Subs today: '+n, ccTvTopDonors:'Top donors', ccStreamAlsoWatch:'Viewers also watch',
-ccStreamBits:'Bits', ccStreamGift:'Gift a sub', ccStreamSub:'Subscribe',
-ccStreamTitleLive:'FNCS. Pushing for the Weekly Final', ccStreamTitleOff:'Channel offline — time to go live',
-ccStreamSubsToday:n=>'Subs today: '+n, ccStreamUptime:'Live',
-ccStreamPinned:h=>'Pinned by '+h, ccStreamPinText:'In-game name is in the panels',
-ccTwPartner:'Twitch Partner', ccTwAffiliate:'AFFILIATE',
-ccTwToAff:'Path to affiliate', ccTwToPart:'Path to partner',
-ccTwGoalFol:'Followers', ccTwGoalDays:'Days streamed',
-ccTwGoalHours:'Hours streamed', ccTwGoalAvg:'Average viewers',
-ccNewsTwAffiliate:()=>'Twitch made me an affiliate. The channel earns now.',
-ccNewsTwPartner:()=>'Partner. The tick is on the channel.',
-ccStreamChatLines:['lets go','+','take the zone','best drop','w','ez','no way','third partied again','call the drop','who is that','let them land','go refresh','respect','insane','oh my','take high ground','do not go low','qual it','how many points','you are top 50'],
-ccNewsStreamColab:(h,f,g)=>'Streamed with @'+h+' — '+f+' on Twitch. '+g+' viewers came over',
-ccNewsResultWf:(p,t,pts)=>'Div 1 Cup: '+ccTop(p)+' of '+t+', '+pts+' points — through to the Weekly Final',
-ccNewsResultWeekWf:(p,t,pts,g)=>'Div 1 Cup, week total: '+ccTop(p)+' of '+t+', '+pts+' points from '+g+' games — through to the Weekly Final',
-ccLanQual:c=>'LAN qualified · '+c,
-ccNewsSceneDuo:(a,b)=>'New duo: playing with '+b,
-modeCareerRaceDesc:'A race: each of you plays your own career, the lobby shows who is ahead.',
-ccRaceMake:'Start a race', ccRaceEnter:'Join a race by code',
-ccRaceTitle:'Career race', ccRaceAlone:'Nobody has joined yet — give them the code',
-ccRaceWait:'The day closes together — waiting for your rival to finish theirs',
-ccRaceAloneGo:'Go on without them',
-ccRaceAhead:'You are ahead', ccRaceBehind:h=>h+' is ahead', ccRaceLeave:'Leave the race',
-ccProAmCash:m=>'Took home '+m, ccProAmNoCash:'No money',
-ccNewsProAmCash:(p,m)=>'Pro-Am: '+ccTop(p)+', $'+m+' earned',
-ccNewsProAmOut:(p,t)=>'Pro-Am: '+ccTop(p)+' of '+t+', no money',
-ccProAmNeedReach:n=>'The Pro-Am invites by fame — '+n+' followers needed',
-ccProAmPlayed:'The Pro-Am is already played this season',
-ccProAmTurnedDown:'You turned the invite down — they will ask again next season',
-ccProAmUnanswered:'The invite is sitting in your messages — answer it',
-dmProAmInvite:(ev,d)=>'Hi! We are hosting '+ev+' on '+d+'. Reload duos, twenty pairs: a pro and a creator. We want you there. Coming?',
-dmProAmYes:'I am in. Thanks for the invite',
-dmProAmNo:'Not this time',
-dmProAmNoOk:'Understood, shame. We will ask again next year',
-dmProAmPick:'Great! One thing left — who you sit with. These creators have confirmed:',
-dmProAmMateOk:n=>'Noted: you play with '+n+'. See you at the venue',
-dmProAmGo:'I am in', dmProAmSkip:'Not this time',
-dmProAmChoose:'Who do you take',
-dmProAmWith:n=>'You are going with '+n,
-dmProAmDone:'Invite declined',
-ccNewsProAmReach:(h,f,g)=>'Played alongside @'+h+' — '+f+' on Twitch. '+g+' new followers came over',
-ccProAmMateLine:(h,f)=>'Partner: '+h+' · '+f+' on Twitch',
-ccNewsSceneRise:(h,d)=>'@'+h+' is up '+d+' rating this season — the fastest riser on the scene',
-ccNewsSceneFall:(h,d)=>'@'+h+' is down '+d+' this season — the form is gone',
-ccShotCut:(n,p)=>'to qualify: top '+n+' — '+p+' pts',
-ccNoteRepost:n=>n+' reposts of your post',
-ccNoteLikeBy:(h,n)=>'@'+h+(n>0?' and '+n+' others':'')+' liked your post',
-ccNoteRepostBy:(h,n)=>'@'+h+(n>0?' and '+n+' others':'')+' reposted your post',
-ccNoteReplyBy:(h,n)=>'@'+h+(n>0?' and '+n+' others':'')+' replied to your post',
-dmMateFoot:'Your chat: you can just talk',
-dmMateBtnnight:'Talk the night through', dmMateWhatnight:'Go over the last tournament',
-dmMateBtnspot:'About the drop', dmMateWhatspot:'Talk about where you land',
-dmMateBtnrole:'About roles', dmMateWhatrole:'Who does what in the game',
-dmMateBtnlife:'Just talk', dmMateWhatlife:'Talking about nothing keeps the mood up too',
-dmMeTalknight:(p,t)=>'Shall we go over last night? '+ccTop(p)+' of '+t,
-dmMateTalknight:(p,t)=>'Yeah, watched the replays. Mid zones were ours, we gave them away after. We fix it',
-dmMeTalkspot:(i,a)=>'What do you think of our spot? Box '+i+', aura '+a,
-dmMateTalkspot:(i,a)=>'I like it. Loot is steady, we scared the neighbours off — we stay',
-dmMeTalkrole:(m,y)=>'On roles: you are '+m+', I am '+y+'. Good?',
-dmMateTalkrole:(m,y)=>'Good. You call the rotations, I take first contact. That is how we play',
-dmMeTalklife:'How are you doing?',
-dmMateTalklife:'Fine. Slept badly, but the mood is there. Let us go tonight',
-ccStTitle:'Stats', ccStEmpty:'Play a first tournament and the numbers appear here', ccStEvents:'Tournaments', ccStGames:'Matches',
-ccStWins:'Wins', ccStElims:'Eliminations', ccStPerGame:'per match', ccStAvg:'Average place', ccStPodiums:'Podiums', ccStTop10:'Top 10s',
-ccStPromos:'Qualifications', ccStPrize:'Prize money', ccStWages:'Wages', ccStSide:'Side jobs and customs', ccStBestNight:'Best night',
-ccStBestElims:'Most eliminations', ccStByKind:'By tournament', ccStBySeason:'By season', ccStSeason:'Season', ccStBest:'Best',
-ccStPartners:'Played with', ccStSpots:'Home spots', ccStSpotBox:'box', ccStAura:'aura', ccStCurve:'Rating by tournament', ccStSolo:'Solo',
-ccHallTitle:'Hall of fame', ccHallRich:'Highest earner', ccHallEarlyD1:'Earliest into Division 1', ccHallMostWins:'Most wins',
-ccHallBestMajor:'Best Major final', ccHallSeasons:'seasons', ccHallPeak:'peak',
-ccActtrMeta:'Meta review', ccNewsMetaNew:v=>'New season '+v+': new island, new pool. Three days of meta review lift the form penalty',
-ccNewsSchoolBack:'Online school unpaid: back to the regular one',
-ccPostLanArrive:v=>'Landed in '+v+'. We play tomorrow',
-ccNewsOrgBonus:(o,m)=>o+' pays the Major final bonus: '+m, ccNewsOrgGone:(o,m)=>o+' is closing its Fortnite roster. Severance: '+m,
-ccPostLft:'Looking for a club. Open to offers (LFT)', ccOrgBonusRow:'Major final bonus',
-ccDayEvmateSpot:'Your partner wants another drop', ccDayEvmateSpotSub:'They are tired of landing at your home and ask to move',
-ccDayEvmateSpotOmove:'Move', ccDayEvmateSpotOkeep:'Home stays', ccDayEvmateSpotOtrial:'One-week trial',
-ccDayEvmateSpotRmove:'Moved: the old aura is gone, the partner is happy', ccDayEvmateSpotRkeep:'Home stays. The partner is not happy',
-ccDayEvmateSpotRtrial:'Agreed on a one-week trial: sat over the map together',
-ccDayEvorgLate:'The club is late with wages', ccDayEvorgLateSub:'The payment did not arrive on time. What do you do?',
-ccDayEvorgLateOwait:'Wait', ccDayEvorgLateOpublic:'Post on X', ccDayEvorgLateOleave:'Leave',
-ccDayEvorgLateRwait:'Waited quietly. The club noticed', ccDayEvorgLateRpublic:'Posted on X about the delay: reach up, reputation down',
-ccDayEvorgLateRleave:'Left the club over the late wages',
-ccDayEvleak:'A leak in the feed', ccDayEvleakSub:'An insider writes that you are talking to another club',
-ccDayEvleakOdeny:'Deny', ccDayEvleakOconfirm:'Confirm', ccDayEvleakOsilent:'Stay silent',
-ccDayEvleakRdeny:'Denied the leak', ccDayEvleakRconfirm:'Confirmed the talks. The feed is buzzing, the club is not happy', ccDayEvleakRsilent:'Stayed silent and the leak died down',
-ccDayEvhouse:'A content house for a week', ccDayEvhouseSub:'A week in a house with creators: reach, but no training',
-ccDayEvhouseOgo:'Go', ccDayEvhouseOno:'Decline',
-ccDayEvhouseRgo:'A week in the content house: followers up, form down', ccDayEvhouseRno:'Declined the content house',
-ccDayEvcoachFree:'A coach offers a free week', ccDayEvcoachFreeSub:'A former pro wants to review your replays for free',
-ccDayEvcoachFreeOtake:'Take it', ccDayEvcoachFreeOpass:'Skip it',
-ccDayEvcoachFreeRtake:'A week with the coach: the weakest stat is up', ccDayEvcoachFreeRpass:'Skipped the coach',
-ccDayEvtilt:'Your partner is tilted', ccDayEvtiltSub:'After last night the partner is looking for somebody to blame',
-ccDayEvtiltOblame:'Their fault', ccDayEvtiltOown:'My fault', ccDayEvtiltOtalk:'Talk it out',
-ccDayEvtiltRblame:'Blamed the partner: easier for you, not for them', ccDayEvtiltRown:'Took the blame. The partner appreciated it', ccDayEvtiltRtalk:'Went through the night together',
-ccDayEvschool:'School', ccDayEvschoolSub:'You are sixteen. School takes part of every day. What next?',
-ccDayEvschoolOquit:'Drop out', ccDayEvschoolOonline:'Online school', ccDayEvschoolOstay:'Finish it',
-ccDayEvschoolRquit:'Dropped out of school for the game. The whole day is yours', ccDayEvschoolRonline:'Switched to online school: $150 a month, half the day free',
-ccDayEvschoolRstay:'Finishing school. Until eighteen part of the day goes to it',
-ccDayEvorgQuit:'The club is leaving Fortnite', ccDayEvorgQuitSub:'The club is closing its roster. The contract ends today',
-ccDayEvorgQuitOfa:'Announce the search', ccDayEvorgQuitOquiet:'Leave quietly',
-ccDayEvorgQuitRfa:'The club closed the roster. Announced that I am looking', ccDayEvorgQuitRquiet:'The club closed the roster. Left quietly',
 chCupWeek:d=>'Div '+d+' Cup',
 chEvCup:'Division {N} Cup',
 chEvCupSub:'One window, 11 games. No final, no prize money — just a token upward.',
@@ -3811,17 +3243,13 @@ ccSlab:'Create your player',
 ccTabRookie:'Rookie',
 ccTabCard:'Existing card',
 ccPhotoHint:'Click to<br>upload a photo',
-ccNick:'Nickname', ccSex:'Gender', ccSexM:'Male', ccSexF:'Female', ccSpTitle:'Skill points', ccSpHow:'Earned by results: title +3, podium +2, top 25% of the lobby +1', ccSpLeft:'Left:', ccSpCreateHint:'Handed out once, here: +0.5 to a stat per point', ccNewsSp:(g,t)=>'Skill points: +'+g+' ('+t+' banked)', ccJobTitle:'Part-time job', ccJobH:'h', ccJobPerH:'/hr', ccNewsJob:(h,p)=>'Worked a '+h+'h shift — $'+p, ccPowerNote:'Power cut — the evening is gone', ccSickNote:d=>'Sick until '+d+' — less energy than usual', ccNewsSick:d=>'Came down with a cold — until '+d, ccCheatRow:'The crosshair aims itself. Nobody will know', ccCheatDl:'Download', ccCheat1:'These are cheats.', ccCheat1Sub:'You are really about to install this?', ccCheatYes:'Yes, downloading', ccCheatNo:'No', ccCheat2:'Epic bans this forever.', ccCheat2Sub:'The account, the skins, the career — all of it burns.', ccCheatR3:'Every kill goes into a replay.', ccCheatR3Sub:'Thousands of eyes rewatch them — an aim that snaps on its own shows from the first second.', ccCheatR4:'Sponsors leave the day of the ban.', ccCheatR4Sub:'The contract, the wage, the banners — nobody pays a cheater.', ccCheatR5:'Everybody finds out.', ccCheatR5Sub:'Your duo, the club, the whole feed — to them you stay a cheater forever.', ccCheatStill:'Still yes', ccCheatBack:'Think again', ccAskYes:'Yes', ccAskNo:'Cancel', ccCheat3:'Last chance.', ccCheat3Sub:'Here is $100 — just close this window.', ccCheatTake:'Take the $100', ccNewsCheatPaid:'Did not download the cheats. +$100 for common sense', ccNewsBanned:'ACCOUNT BANNED: cheats. Career over', ccNewsBdayGift:g=>'Birthday gifts: +$'+g, ccPostBdayPro:(w,n)=>'happy birthday, @'+n+'! 🎉', ccPostBanSad1:(w,n)=>'did not expect that from @'+n+'. Disappointed', ccPostBanSad2:(w,n)=>'this one hurts. We played together, @'+n+'…', ccPostBanSad3:(w,n)=>'@'+n+' cheating. Still hard to believe', ccNewsStreamStats:(v,p,f,d,t,h)=>'Stream ('+(h||2)+'h): '+v+' avg viewers, '+p+' peak · +'+f+' Twitch followers ('+t+' total) · $'+d+' earned', ccNewsStreamBanner:(b,c)=>'The manager hung a '+b+' banner on the stream: +$'+c, ccFriends:'Friends', ccFriendsNone:'Nobody yet — send a request from the duo search', ccFriendsNonet:'Nobody yet — send a request from the trio search', ccFriendAdd:'Add friend', ccFriendIs:'Friend', ccNewsFriendYes:h=>'@'+h+' accepted the friend request', ccNewsFriendNo:h=>'@'+h+' left the friend request unanswered', ccNews1v1:(h,a,b)=>(a>b?'Won':'Lost')+' a 1v1 against @'+h+': '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' and '+b+' split after a run of bad nights', ccPostDuoSplitBy:(a,b,t)=>'not duo with @'+b+' anymore. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'me and @'+b+' looking for a trio. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'not trio with @'+b+' anymore. '+t+' 🙏', ccCoSad:['don’t split 😭','you two were the best','sad to read this','F','end of an era','no way…'],
+ccNick:'Nickname', ccSex:'Gender', ccSexM:'Male', ccSexF:'Female', ccSpTitle:'Skill points', ccSpHow:'Earned by results: title +3, podium +2, top 25% of the lobby +1', ccSpLeft:'Left:', ccSpCreateHint:'Handed out once, here: +0.5 to a stat per point', ccNewsSp:(g,t)=>'Skill points: +'+g+' ('+t+' banked)', ccJobTitle:'Part-time job', ccJobH:'h', ccJobPerH:'/hr', ccNewsJob:(h,p)=>'Worked a '+h+'h shift — $'+p, ccPowerNote:'Power cut — the evening is gone', ccSickNote:d=>'Sick until '+d+' — less energy than usual', ccNewsSick:d=>'Came down with a cold — until '+d, ccCheatRow:'The crosshair aims itself. Nobody will know', ccCheatDl:'Download', ccCheat1:'These are cheats.', ccCheat1Sub:'You are really about to install this?', ccCheatYes:'Yes, downloading', ccCheatNo:'No', ccCheat2:'Epic bans this forever.', ccCheat2Sub:'The account, the skins, the career — all of it burns.', ccCheatR3:'Every kill goes into a replay.', ccCheatR3Sub:'Thousands of eyes rewatch them — an aim that snaps on its own shows from the first second.', ccCheatR4:'Sponsors leave the day of the ban.', ccCheatR4Sub:'The contract, the wage, the banners — nobody pays a cheater.', ccCheatR5:'Everybody finds out.', ccCheatR5Sub:'Your duo, the club, the whole feed — to them you stay a cheater forever.', ccCheatStill:'Still yes', ccCheatBack:'Think again', ccAskYes:'Yes', ccAskNo:'Cancel', ccCheat3:'Last chance.', ccCheat3Sub:'Here is $100 — just close this window.', ccCheatTake:'Take the $100', ccNewsCheatPaid:'Did not download the cheats. +$100 for common sense', ccNewsBanned:'ACCOUNT BANNED: cheats. Career over', ccNewsBdayGift:g=>'Birthday gifts: +$'+g, ccPostBdayPro:(w,n)=>'happy birthday, @'+n+'! 🎉', ccPostBanSad1:(w,n)=>'did not expect that from @'+n+'. Disappointed', ccPostBanSad2:(w,n)=>'this one hurts. We played together, @'+n+'…', ccPostBanSad3:(w,n)=>'@'+n+' cheating. Still hard to believe', ccNewsStreamStats:(v,p,f,d,t)=>'Stream (2h): '+v+' avg viewers, '+p+' peak · +'+f+' Twitch followers ('+t+' total) · $'+d+' earned', ccNewsStreamBanner:(b,c)=>'The manager hung a '+b+' banner on the stream: +$'+c, ccFriends:'Friends', ccFriendsNone:'Nobody yet — send a request from the duo search', ccFriendsNonet:'Nobody yet — send a request from the trio search', ccFriendAdd:'Add friend', ccFriendIs:'Friend', ccNewsFriendYes:h=>'@'+h+' accepted the friend request', ccNewsFriendNo:h=>'@'+h+' left the friend request unanswered', ccNews1v1:(h,a,b)=>(a>b?'Won':'Lost')+' a 1v1 against @'+h+': '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' and '+b+' split after a run of bad nights', ccPostDuoSplitBy:(a,b,t)=>'not duo with @'+b+' anymore. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'me and @'+b+' looking for a trio. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'not trio with @'+b+' anymore. '+t+' 🙏', ccCoSad:['don’t split 😭','you two were the best','sad to read this','F','end of an era','no way…'],
 ccAge:'Age',
 ccPingTitle:'PING (ms)',
 ccPingServer:city=>'to the '+city+' server',
 ccPingNote:'Ping is from the country&rsquo;s nearest city of a million to the server — the best it has to offer. Europe&rsquo;s numbers are measured; the other regions are the same curve applied to their own server. It says where you play from; the country does not move your strength.',
 ccSearchCountry:'Search country',
 ccSearchCard:'Search player',
-ccTabCreator:'Content creator', ccSearchCreator:'Search creator',
-ccPickCreator:'Pick a creator', ccRoRegion:'Region',
-ccCreatorFollowers:n=>n+' on Twitch', ccCreatorNoTw:'Channel not confirmed',
-ccCreatorEvent:'Content creator',
 ccPickCountry:'Pick a country',
 ccRoCountry:'Country',
 ccRoPing:'Ping',
@@ -4545,10 +3973,6 @@ ccPartnerFound:'Partenaire trouvé',
 ccCelebPass:'QUALIFIÉ',
 ccSearchCountry:'Chercher un pays',
 ccSearchCard:'Chercher un joueur',
-ccTabCreator:'Créateur', ccSearchCreator:'Chercher un créateur',
-ccPickCreator:'Choisis un créateur', ccRoRegion:'Région',
-ccCreatorFollowers:n=>n+' sur Twitch', ccCreatorNoTw:'Chaîne non confirmée',
-ccCreatorEvent:'Créateur de contenu',
 ccPickCountry:'Choisis un pays',
 ccRoCountry:'Pays',
 ccRoPing:'Ping',
@@ -4666,28 +4090,6 @@ ccCoBad:['pas de chance','ce lobby était dur','repose-toi et reviens','c’est 
 ccCoPro:['tu as du talent','je t’ai regardé aujourd’hui','écris-moi si tu cherches un duo','tu iras loin','tu joues bien'],
 ccCoProt:['tu as du talent','je t’ai regardé aujourd’hui','écris-moi si tu cherches un trio','tu iras loin','tu joues bien'],
 ccCoMore:n=>n+' de plus',
-ccCoLfd:['V','quelqu’un le prend','je jouerais avec lui','V 🐐','il sera pas libre longtemps','fort, écrivez-lui'],
-ccCoBday:['hbd 🐐','joyeux anniversaire ! 🎂','hbd la légende','hbd','hbd, grosse saison','🎂🎂'],
-ccCoHype:['LETS GO','enfin','les dates ?','omggggg','réparez les serveurs d’abord','pas ces jours-là 😭','le format ?'],
-ccCoDuo:['paire effrayante','le lobby est cuit','W','fort','bonne chance 🤝','c’est un top 1'],
-ccCoSign:['mérité','W signature','bienvenue','félicitations 🎉','il était temps','gros move'],
-ccCoLeft:['bonne chance pour la suite','merci pour tout','triste','le prochain club sera mieux','🙏','on attend des nouvelles'],
-ccCoTable:['course serrée','les mêmes noms en haut','encore long','le top 3 ne bouge pas','je mise sur le premier','ça se décide la dernière semaine'],
-ccCoStream:['le lien ?','j’arrive','W stream','je me connecte','je regarde','analyse des vods ?'],
-ccCoDrop:['on drop là aussi 😭','le prends pas','contesté','gl sur le spot','courageux','déjà trois équipes'],
-ccCoCust:['je peux venir ?','pas assez de PR 😭','je t’écris','lets go','en paire aussi ?','le cut est dur'],
-ccCoBye:['légende','merci pour ces années','🫡','triste','respect','GOAT'],
-ccCoBan:['terrible','j’y crois pas','je le savais','triste','la honte','tout est en vidéo'],
-ccCoMateUp:['🐐','fier','mon IGL 🐐','on remet ça la semaine pro','jusqu’au bout','le meilleur 🔥'],
-ccCoMateDown:['on y retourne','ma faute aussi','on analyse et on avance','la prochaine','tiens bon','pas fini'],
-ccCoOrg:['notre joueur 💙','W','fiers 👏','c’est comme ça','pas fini','💙💙'],
-ccCoTy:['merci ❤️','🙏','ty','merci à tous','❤️','je vous aime'],
-ccCoHate:['lobby ez','porté','chanceux','c’était même pas toi','de la chance','le prochain est un L'],
-ccCoHateBad:['fini','il a chuté','encore','virez-le','c’est qui','L'],
-ccCoTroll:['je te l’avais dit','à mardi','tu connais l’adresse','encore toi','on se voit en lobby','comme toujours'],
-ccCoProWin:['W','gg','mérité 🐐','propre','lobby ez 😭','fort','monstre'],
-ccCoProBad:['pas de chance frère','le prochain','ça arrive','tu reviendras','tiens bon','tout le monde en rate un'],
-ccCoProLfd:['V','V 🐐','prenez-le, sans regret','V, j’ai joué avec lui','fort'],
 ccFfGo:'Continuer',
 ccFfDone:d=>d+' jours passés',
 ccFfPlayed:n=>'Tournois joués : '+n,
@@ -4806,7 +4208,7 @@ ccShotCap:d=>'Coupe de Division '+d,
 ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:'';
   if(p===1) return ['TOP 1 🏆'+a, 'W 🏆'+a, 'encore une 🐐'+a][(v||0)%3];
   if(p<=3)  return [''+ccTop(p)+' 💪'+a, ''+ccTop(p)+a+' 🔥', ''+ccTop(p)+', tellement près'+a][(v||0)%3];
-  return [''+ccTop(p)+' — Division '+d+a, ''+ccTop(p)+' cette semaine'+a+'. plus haut la prochaine', ''+ccTop(p)+a+'. on continue'][(v||0)%3];},
+  return ''+ccTop(p)+' — Division '+d+a;},
 ccSynergyDuo:v=>' — un duo établi (+'+v+')',
 ccEvalR1Title:n=>'Évaluation, Manche 1 — '+n+' '+ccSquadWord()+', 8 parties',
 ccEvalR2Title:n=>'Évaluation, Manche 2 — '+n+' '+ccSquadWord()+', 4 parties, seules les victoires paient',
@@ -4825,42 +4227,6 @@ ccAgentFrom:v=>'Les managers écrivent à partir de la note '+v,
 ccNextTop:n=>'top '+n,
 ccBioMajor:n=>n+'x VAINQUEUR DE MAJOR', ccBioRc:n=>n+'x VAINQUEUR DU RELOAD CHAMPIONSHIP (EWC)', ccBioSummit:n=>n+'x VAINQUEUR DU SUMMIT',
 ccBioCups:n=>n+'x vainqueur de coupe',
-ccWhoFa:'F/A', ccWhoLft:'LFT', ccCardPr:'Power Ranking', ccCardSeason:'cette saison', ccCardYear:'cette année',
-ccBioPrRank:n=>'#'+n+' au PR', ccBioEvents:n=>n+' tournois',
-ccSlotsNew:'Nouvelle carrière', ccSlotsFree:n=>n===1?'un emplacement libre':n+' emplacements libres',
-ccPostLfdWant:(h,d,pr)=>'LFD. Division '+d+' et plus, PR mini '+pr+'. MP ouverts',
-ccAdWant:(role,d,pr)=>'cherche '+role+' · div '+d+'+ · PR mini '+pr,
-ccAdNoFit:pr=>'il faut '+pr+' de PR',
-ccPostDropCall:(h,z)=>'je drop '+ccZoneName(z)+' ce soir 📍', ccDropCalls:'ont annoncé leur drop :',
-ccPostOrgWin:(o,who,ev)=>'CHAMPIONS. '+who+' remportent '+ev+' 🏆',
-ccNewsHub:'Actus',
-ccPostDmBtn:'Écrire en MP', ccPostVouchBtn:'Recommander',
-ccPostVouchWhat:'Le recommander publiquement : la scène le lit comme ta recommandation, et il répondra plus chaleureusement',
-ccPostVouched:'Tu l’as recommandé', ccPostVouch:h=>'@'+h+' assure. Laissez-lui sa chance 🙏',
-ccRev:'V', ccRegl:'gl', ccRehbd:'hbd goat 🐐', ccRew:'W', ccReclap:'🙌',
-ccReDone:t=>'Tu as répondu : '+t,
-ccPostThanks:ev=>'merci pour le tournoi — '+ev+'. et à mes coéquipiers 🙏',
-ccPostOneOff:ev=>'à une place près. '+ev+'. ça va (non)',
-ccPostQualGrands:(z,w)=>(w==='finals'?'QUALIFIÉ EN FINALE 🏆':'QUALIFIÉ POUR LES GRANDS 🏆')+(z?' · je drop '+ccZoneName(z):''),
-ccPostBotQualGrands:(h,z,w)=>(w==='finals'?'qual finale 🙏':'qual grands 🙏')+(z?' land '+ccZoneName(z):''),
-ccReplyBtn:'Répondre', ccReplyPh:'Répondre…', ccReplySend:'Envoyer',
-ccShotVr:'Victory Royales', ccShotTop5:'Top 5', ccShotTop10:'Top 10',
-ccRepostBtn:'Repost', ccRepostDone:'Reposté', ccQuoteBtn:'Citer',
-ccQuoting:'Tu cites un post', ccQuoteDrop:'Annuler', ccQuotePh:'Dis quelque chose là-dessus…',
-ccFeedAll:'Tout', ccFeedSubs:'Abonnements', ccFeedSubsEmpty:'Tu ne suis encore personne',
-ccNoteReply:n=>n+' réponses à ton post',
-ccNewsAnnounce:(ev,d)=>'et ce n’est pas tout :) '+ev+'. '+d+'. détails bientôt',
-ccPostHype:h=>'ooooh c’est énorme', ccPostDates:h=>'pas à ces dates-là, pitié 🙏',
-ccPostBye:o=>'merci @'+o+' pour ces années. je continue seul',
-ccCustomsHost:'Customs', ccAskBtn:'Demander une invite', ccAskDone:'Demandé',
-ccPostCustomsOpen:(pr,w)=>'lobby pro ce soir : '+w+' $ par win, à partir de '+pr+' PR. MP',
-ccPostAskYes:()=>'invité 🙏', ccPostAskNo:()=>'pas d’invite cette fois. tant pis',
-ccPostTriedBest:()=>'on a tout donné. pas assez. gg :/',
-ccNotesTab:'Notifications', ccNotesEmpty:'Calme pour l’instant',
-ccNoteLike:n=>'Ton post a reçu '+n+' likes', ccNoteFollow:h=>'@'+h+' t’a suivi',
-ccFollowBack:'Suivre en retour', ccFollowBtn:'Suivre', ccFollowingBtn:'Abonné',
-ccNewsCatall:'Tout', ccNewsCatscene:'Scène', ccNewsCatmoves:'Transferts', ccNewsCatyou:'Toi',
-ccNewsOpen:'Ouvrir dans les réseaux',
 ccBioGlobals:n=>(n===1?'1er':n+'e')+' aux Globals',
 ccAgentOn:n=>'Manager : '+n,
 ccSmmBio:n=>'réseaux par '+n,
@@ -4894,7 +4260,7 @@ ccVicFail:n=>'Hors du top '+n+' — la Manche 2 sans toi',
 ccVicCash:(w,c)=>w+(w===1?' victoire':' victoires')+' — '+c,
 ccNewsVicCash:(w,c)=>'Victory Cup : '+w+(w===1?' victoire':' victoires')+', '+c+' gagnés',
 ccNewsVicOut:(p,of)=>'Victory Cup : '+ccTop(p)+' sur '+of+', pas de Manche 2',
-ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens coupe 1',ReloadEliteSeries1PlayIn:'Reload · play-in coupe 1',ReloadEliteSeries1Heats:'Reload · heats coupe 1',ReloadEliteSeries1Final:'Reload · finale coupe 1',ReloadEliteSeries2Opens:'Reload · opens coupe 2',ReloadEliteSeries2PlayIn:'Reload · play-in coupe 2',ReloadEliteSeries2Heats:'Reload · heats coupe 2',ReloadEliteSeries2Final:'Reload · finale coupe 2',ReloadEliteSeries3Opens:'Reload · opens coupe 3',ReloadEliteSeries3PlayIn:'Reload · play-in coupe 3',ReloadEliteSeries3Heats:'Reload · heats coupe 3',ReloadEliteSeries3Final:'Reload · finale coupe 3',ReloadEliteSeries4Opens:'Reload · opens coupe 4',ReloadEliteSeries4PlayIn:'Reload · play-in coupe 4',ReloadEliteSeries4Heats:'Reload · heats coupe 4',ReloadEliteSeries4Final:'Reload · finale coupe 4',Major1_PlayIn:'Major 1 · Play-In',Major1_Heats:'Major 1 · Heats',Major1_LCQ:'Major 1 · Last Chance',Major1_Final:'Major 1 · Finale',Summit_Upper:'Summit · Upper Bracket',Summit_Lower:'Summit · Lower Bracket',Summit_Final:'Summit · Grandes Finales',Major2_PlayIn:'Major 2 · Play-In',Major2_Heats:'Major 2 · Heats',Major2_LCQ:'Major 2 · Last Chance',Major2_Final:'Major 2 · Finale',GlobalChampionshipLastChance:'Global Championship · Last Chance',ReloadChampionshipParis:'Reload Championship · {CITY}',GlobalChampionship:'Global Championship · {CITY}',SoloSeries_Qualifier:'Solo Series · qualifications',SoloSeries_Heats:'Solo Series · heats',SoloSeries_Final:'Solo Series · finale',FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2',FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3',FNCSSolos_FastTrack:'FNCS Solos · Fast Track',FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2',FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3',FNCSSolos_Heats:'FNCS Solos · heats',FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1',FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale',FNCSSolos_Final:'FNCS Solos · finale',ProAm_Dallas:'Pro-Am · Dallas'},
+ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens coupe 1',ReloadEliteSeries1PlayIn:'Reload · play-in coupe 1',ReloadEliteSeries1Heats:'Reload · heats coupe 1',ReloadEliteSeries1Final:'Reload · finale coupe 1',ReloadEliteSeries2Opens:'Reload · opens coupe 2',ReloadEliteSeries2PlayIn:'Reload · play-in coupe 2',ReloadEliteSeries2Heats:'Reload · heats coupe 2',ReloadEliteSeries2Final:'Reload · finale coupe 2',ReloadEliteSeries3Opens:'Reload · opens coupe 3',ReloadEliteSeries3PlayIn:'Reload · play-in coupe 3',ReloadEliteSeries3Heats:'Reload · heats coupe 3',ReloadEliteSeries3Final:'Reload · finale coupe 3',ReloadEliteSeries4Opens:'Reload · opens coupe 4',ReloadEliteSeries4PlayIn:'Reload · play-in coupe 4',ReloadEliteSeries4Heats:'Reload · heats coupe 4',ReloadEliteSeries4Final:'Reload · finale coupe 4',Major1_PlayIn:'Major 1 · Play-In',Major1_Heats:'Major 1 · Heats',Major1_LCQ:'Major 1 · Last Chance',Major1_Final:'Major 1 · Finale',Summit_Upper:'Summit · Upper Bracket',Summit_Lower:'Summit · Lower Bracket',Summit_Final:'Summit · Grandes Finales',Major2_PlayIn:'Major 2 · Play-In',Major2_Heats:'Major 2 · Heats',Major2_LCQ:'Major 2 · Last Chance',Major2_Final:'Major 2 · Finale',GlobalChampionshipLastChance:'Global Championship · Last Chance',ReloadChampionshipParis:'Reload Championship · {CITY}',GlobalChampionship:'Global Championship · {CITY}',SoloSeries_Qualifier:'Solo Series · qualifications',SoloSeries_Heats:'Solo Series · heats',SoloSeries_Final:'Solo Series · finale',FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2',FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3',FNCSSolos_FastTrack:'FNCS Solos · Fast Track',FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2',FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3',FNCSSolos_Heats:'FNCS Solos · heats',FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1',FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale',FNCSSolos_Final:'FNCS Solos · finale'},
 ccDuoWith:n=>'duo avec '+n,
 ccDuoFound:n=>n+(n===1?' joueur':' joueurs'),
 ccCupTitle:(d,n)=>'Coupe Division '+d+' — 11 parties, '+n+' '+ccSquadWord(),
@@ -4983,13 +4349,6 @@ ccDropContest:'Contester', ccDropContestNote:'Ouvre toute l’île : tu vois qui
 ccDropMap:'Choisir sur la carte', ccDropMapNote:'Ouvrir l’île et poser la marque à la main',
 ccLootTitle:'Milieu de partie — ce que tu as ramassé',
 ccLootHint:'La deuxième zone est fermée. Le spot est fouillé : deux armes, deux soins et un objet de mobilité. Ton coéquipier gère sa moitié',
-ccSiteOwnTitle:'Notre spot — on ouvre les coffres', ccSiteOwnHint:n=>n+' coffres : deux armes de classes différentes, deux soins, un objet de mobilité — ce qui tombe, on le garde',
-ccSiteTake:'On prend et on y va', ccSitePackPow:v=>v>0 ? '+'+v+' power pour la rareté' : v<0 ? v+' power : slots vides' : 'pas de bonus de power',
-ccSiteTitle:n=>'Quelqu’un atterrit avec nous : '+n, ccSiteHint:(a,b)=>'Ton premier coffre : '+a+' · le leur : '+b,
-ccSiteLeave:'Partir vers le POI voisin', ccSiteLeaveNote:(n,m)=>'Sans combat : '+n+' coffres au lieu de '+m+' — loot plus pauvre, moins de power',
-ccSiteFight:'Se battre pour le spot', ccSiteFightNote:(p,n,a,b)=>p+' % : le spot est à nous — les '+n+' coffres et l’élim · sinon on meurt au spawn'+((a||b)?' · premier coffre : +'+a+' contre +'+b:''),
-ccSiteOwn:(n,l)=>'Spot libre : '+n+' coffres — '+l, ccSiteWon:(w,n)=>'Le spot est à nous : '+w+' éliminés, '+n+' coffres',
-ccSiteLost:w=>'Combat d’atterrissage perdu contre '+w, ccSiteLeft:(n,l)=>'Partis au POI voisin : '+n+' coffres — '+l,
 ccLootTake:'Prendre le tien', ccLootSwap:'Aller fouiller le POI voisin',
 ccLootTakeSafe:'aucun bonus, aucun risque',
 ccLootSwapRisk:(b,f,p)=>p+'/'+(100-p)+' : réussi — +'+b+', raté — dégâts en plus, −'+f,
@@ -4999,42 +4358,11 @@ ccLootGot:v=>'Réussi — POI voisin nettoyé, +'+v+' de puissance',
 ccLateTitle:'Zone 8 — comment on joue la fin',
 ccLateHint:'Le cercle tombe sur une colline. La hauteur décide',
 ccLateHg:'Prendre le high ground', ccLateHgNote:v=>'Pile ou face : gagné — +'+v+' et la meilleure chance de win, perdu — moins '+CC_HG_FAIL+' et tu joues en bas',
-ccLateThird:'Third-party le combat', ccLateThirdNote:(k,d,p)=>k+' sur 100 : on nettoie — le voisin tombe, +'+p+' de puissance et ses mats · '+d+' sur 100 : on se fait nettoyer · le reste — échange de tirs, chacun repart, dégâts pour le surge',
-ccMateLeans:t=>'moi, je dirais « '+t+' »',
-ccLateThirdWon:(p,foe)=>'Entrés en troisième'+(foe?' : '+foe+' éliminé':'')+' — +'+p+' de puissance, mats du corps', ccLateThirdLost:foe=>'Entrés en troisième et nettoyés'+(foe?' par '+foe:''), ccLateThirdNone:k=>'Tiré dans le combat et reparti : +'+k+' de dégâts pour le surge',
+ccLateThird:'Third-party le combat', ccLateThirdNote:(p,f,o)=>o+' sur 100 : ça passe — +'+p+' et le meilleur plafond du jeu, sinon — moins '+f+' et tu es le troisième de trop',
+ccLateThirdWon:v=>'Entrés en troisième et tout ramassé, +'+v+' de puissance', ccLateThirdLost:v=>'On nous a ramassés, −'+v+' de puissance',
 ccLateTake:'Prendre le spot des plus faibles', ccLateTakeNote:(p,f,o)=>o+' sur 100 : ça marche — +'+p+', sinon — moins '+f,
 ccLateTakeWon:v=>'Spot pris, +'+v+' de puissance', ccLateTakeLost:v=>'Ils ont tenu le spot, −'+v+' de puissance',
 ccLateRefresh:'Chercher un refresh', ccLateRefreshNote:v=>'Sûr, mais plus petit : +'+v,
-ccLateRefreshNote:(v,f,p)=>p+' % : trouvé — +'+v+' et mats pleins, sinon — moins '+f+' et tu rentres dans le cercle en dernier',
-ccLateMid:'Jouer le mid ground', ccLateMidNote:(v,f,p)=>p+' % : le milieu tenu — +'+v+', descendu — moins '+f+' et tu joues en bas',
-ccLootUpgraded:n=>'récupéré leur '+n,
-ccDeathTitle:z=>'Éliminés — zone '+z, ccDeathStorm:'La tempête nous a eus', ccDeathSurge:'Le surge nous a achevés',
-ccDeathBy:(w,g,r)=>'Tués par '+w+(g?' au '+g:'')+(r?', '+r:''), ccDeathRange:{close:'à bout portant', near:'depuis le build voisin', far:'de loin'},
-ccDeathStats:(p,s,e)=>'Place '+p+' · '+s+' · élims '+e, ccDeathSurgeAbove:g=>'surge +'+g+' au-dessus du seuil', ccDeathSurgeBelow:g=>'surge −'+g+' sous le seuil', ccDeathSurgeOff:'surge inactif',
-ccLateEdge:'Jouer hors zone',ccLateEdgeNote:(v,f,p)=>p+' % : tu prends ceux qui rentrent — +'+v+', raté — la tempête prend '+f,
-ccLateEdgeWon:v=>'Hors zone, ça a marché — +'+v+' de puissance', ccLateEdgeLost:v=>'La tempête t\'a eu, −'+v+' de puissance',
-ccLateRefreshWon:v=>'Refresh trouvé, +'+v+' de puissance et mats pleins', ccLateRefreshLost:v=>'Pas de refresh, rentré en dernier : −'+v+' de puissance',
-ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'peu',
-ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot : ton pack', ccKitOut:'éliminés', ccKitPickaxe:'Pioche',
-ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge dès '+a+' joueurs · en vie '+p,
-ccKitSurgeBanner:'STORM SURGE ACTIF !', ccKitUnderBanner:'TU ES SOUS SURGE !',
-ccKitSurgeWarn:'ALERTE STORM SURGE !', ccKitSurgeWarnSub:'INFLIGE DES DÉGÂTS POUR ÉVITER L’ÉLIMINATION !',
-ccKitAboveCap:'au-dessus du seuil de dégâts', ccKitBelowCap:'sous le seuil de dégâts',
-ccBuildTitle:'Zone 3 — comment on build', ccBuildNorm:'Comme d\'habitude', ccBuildNormNote:m=>m+' mats par cercle',
-ccBuildEco:'Économiser', ccBuildEcoNote:(m,p)=>m+' par cercle — les mats tiennent jusqu\'au bout, mais moins de builds : −'+p+' de puissance',
-ccBuildHeavy:'Build à fond', ccBuildHeavyNote:(m,p)=>m+' par cercle — +'+p+' de puissance, mais à vide en fin de partie sans refresh',
-ccBuildSet:(w,p)=>w+' : '+p+' de puissance pour cette partie',
-ccHealTitle:(s,h)=>'Bouclier '+s+' · vie '+h+' — on se soigne ?', ccHealStay:'On continue', ccHealStayNote:'Sans coût, bouclier et vie tels quels',
-ccHealGo:'Se soigner', ccHealGoNote:(h,p)=>'bouclier plein, +'+h+' de vie · pendant que tu bois — moins '+p+' de puissance',
-ccHealDone:(h,p)=>'Soignés : bouclier 100, vie '+h+' · −'+p+' de puissance',
-ccFarmTitle:'Zone 3 — comment on farme', ccFarmFull:'Farmer jusqu’au full', ccFarmFullNote:n=>'Jusqu’à '+n+' (500 · 3) — des builds pour toute la partie, pas de surge',
-ccFarmSurge:'Farmer du surge, moins de mats', ccFarmSurgeNote:(m,d,p)=>'Mats '+m+' (400 · 3), +'+d+' de dégâts surge, −'+p+' power pour le temps passé à tagger',
-ccFarmFullGot:n=>'Farmé au full — '+n+' mats', ccFarmSurgeGot:(m,d)=>'Surge farmé : +'+d+' de dégâts, mats '+m,
-ccMatsTitle:'Les mats s\'épuisent', ccMatsGo:'Aller chercher un refresh', ccMatsStay:'Tourner avec ce qu\'on a',
-ccMatsGoNote:(v,f,p)=>p+' % : trouvé — +'+v+' et mats pleins, sinon — moins '+f,
-ccMatsStayNote:v=>'Ça ne coûte rien maintenant, mais une fin de partie sans mats coûte '+v,
-ccMatsFound:v=>'Refresh trouvé, +'+v+' de puissance et mats pleins', ccMatsMissed:v=>'Rien trouvé, −'+v+' de puissance',
-ccMatsStayGot:'On joue avec ce qu\'on a',
 ccLateLg:'Jouer en bas', ccLateLgNote:'Aucun bonus — aucun risque',
 ccLateHgWon:v=>'Réussi — high ground pris, +'+v+' de puissance', ccLateHgLost:v=>'Raté — chassé de la hauteur, −'+v+' de puissance',
 ccLateRefreshGot:v=>'Refresh trouvé, +'+v+' de puissance', ccLateLgGot:'On joue en bas — aucun bonus',
@@ -5217,11 +4545,6 @@ ccDayEvscrimup:'Invité en scrim',
 ccDayEvscrimupSub:'Un duo plus fort est en manque d’un joueur ce soir', ccDayEvscrimupSubt:'Un trio plus fort est en manque d’un joueur ce soir',
 ccDayEvscrimupYes:'Y aller',
 ccDayEvscrimupNo:'Laisser tomber',
-ccDayEvcustom:'Customs · 100 $ par win',
-ccDayEvcustomSub:'Un organisateur ouvre un lobby pro : cinq parties, cent dollars par victoire. L’entrée se fait au PR — tu es pris',
-ccDayEvcustomYes:'Jouer', ccDayEvcustomNo:'Passer',
-ccDayEvcustomTake:(w,c)=>'Customs : '+w+' victoires sur 5 — '+c+' $',
-ccDayEvcustomPass:()=>'Customs zappés',
 ccDayEvshow:'Showmatch',
 ccDayEvshowSub:'Un organisateur te veut en exhibition, contre cachet',
 ccDayEvshowYes:'Jouer',
@@ -5308,7 +4631,6 @@ ccRarityrare:'rare',
 ccRarityepic:'épique',
 ccRaritylegendary:'légendaire',
 ccRaritymythic:'mythique',
-ccRarityexotic:'exotique',
 ccRoAge:'Âge',
 ccAgeTooYoung:'On ne peut pas jouer la FNCS avant {N} ans — c’est la limite d’âge de Fortnite. Pas de carrière ici.',
 ccAgeTooOld:'Au-delà de {N} ans, ce n’est plus une carrière. Mets {N} ans ou moins.',
@@ -5882,9 +5204,6 @@ chPlay:'Jouer',
 chSoonHint:'Les Majors ne sont pas encore branchés sur la carrière — c’est la prochaine étape.',
 chSkip:'Passer la journée',
 chSkipAsk:'Passer la journée ? Le calendrier ne revient pas en arrière.',
-chSkipTo:'Jusqu’au tournoi', chSkipToHint:(d,n)=>'Passer '+n+' jour'+(n>1?'s':'')+' jusqu’au '+d+' — les tournois en chemin ne sont pas joués',
-chSkipToAsk:(d,n,w)=>'Passer '+n+' jour'+(n>1?'s':'')+' jusqu’au '+d+' ('+w+') ? Les tournois en chemin ne seront pas joués, le calendrier ne revient pas en arrière.',
-calSkipGo:'Passer jusqu’à ce jour', calSkipHint:'Les jours passent, les tournois en chemin ne sont pas joués',
 calGoHere:'Jouer jusqu’à ce jour',
 calFfGo:'Jouer',
 chLogTitle:'Historique',
@@ -6054,7 +5373,7 @@ ccSlab:'Crée ton joueur',
 ccTabRookie:'Débutant',
 ccTabCard:'Carte existante',
 ccPhotoHint:'Clique pour<br>ajouter une photo',
-ccNick:'Pseudo', ccSex:'Genre', ccSexM:'Homme', ccSexF:'Femme', ccSpTitle:'Points de progression', ccSpHow:'Gagnés par les résultats : titre +3, podium +2, top 25 % du lobby +1', ccSpLeft:'Restant :', ccSpCreateHint:'Distribués une seule fois, ici : +0.5 par point', ccNewsSp:(g,t)=>'Points de progression : +'+g+' ('+t+' en réserve)', ccJobTitle:'Petit boulot', ccJobH:'h', ccJobPerH:'/h', ccNewsJob:(h,p)=>'Un service de '+h+' h — '+p+' $', ccPowerNote:'Coupure de courant — la soirée est perdue', ccSickNote:d=>'Malade jusqu’au '+d+' — moins d’énergie', ccNewsSick:d=>'Un rhume — jusqu’au '+d, ccCheatRow:'Le viseur vise tout seul. Personne ne saura', ccCheatDl:'Télécharger', ccCheat1:'Ce sont des cheats.', ccCheat1Sub:'Tu vas vraiment installer ça ?', ccCheatYes:'Oui, je télécharge', ccCheatNo:'Non', ccCheat2:'Epic bannit ça à vie.', ccCheat2Sub:'Le compte, les skins, la carrière — tout brûle.', ccCheatR3:'Chaque kill part dans un replay.', ccCheatR3Sub:'Des milliers d’yeux les revoient — une visée qui s’accroche toute seule se voit dès la première seconde.', ccCheatR4:'Les sponsors partent le jour du ban.', ccCheatR4Sub:'Le contrat, le salaire, les bannières — personne ne paie un cheateur.', ccCheatR5:'Tout le monde le saura.', ccCheatR5Sub:'Ton duo, le club, tout le fil — pour eux tu resteras un cheateur à vie.', ccCheatStill:'Quand même', ccCheatBack:'Se raviser', ccAskYes:'Oui', ccAskNo:'Annuler', ccCheat3:'Dernière chance.', ccCheat3Sub:'Voilà 100 $ — ferme juste cette fenêtre.', ccCheatTake:'Prendre les 100 $', ccNewsCheatPaid:'N’a pas téléchargé les cheats. +100 $ de bon sens', ccNewsBanned:'COMPTE BANNI : cheats. Carrière terminée', ccNewsBdayGift:g=>'Cadeaux d’anniversaire : +'+g+' $', ccPostBdayPro:(w,n)=>'joyeux anniversaire, @'+n+' ! 🎉', ccPostBanSad1:(w,n)=>'je ne m’attendais pas à ça de @'+n+'. Déçu', ccPostBanSad2:(w,n)=>'ça fait mal. On a joué ensemble, @'+n+'…', ccPostBanSad3:(w,n)=>'@'+n+' qui triche. Encore dur à croire', ccNewsStreamStats:(v,p,f,d,t,h)=>'Stream ('+(h||2)+' h) : '+v+' viewers en moyenne, pic '+p+' · +'+f+' followers Twitch ('+t+' au total) · '+d+' $ gagnés', ccNewsStreamBanner:(b,c)=>'Le manager a mis une bannière '+b+' sur le stream : +'+c+' $', ccFriends:'Amis', ccFriendsNone:'Personne pour l’instant — envoie une demande depuis la recherche de duo', ccFriendsNonet:'Personne pour l’instant — envoie une demande depuis la recherche de trio', ccFriendAdd:'Ajouter', ccFriendIs:'Ami', ccNewsFriendYes:h=>'@'+h+' a accepté la demande d’ami', ccNewsFriendNo:h=>'@'+h+' n’a pas répondu à la demande', ccNews1v1:(h,a,b)=>(a>b?'Victoire':'Défaite')+' en 1v1 contre @'+h+' : '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' et '+b+' se séparent après une série de soirées ratées', ccPostDuoSplitBy:(a,b,t)=>'je ne suis plus en duo avec @'+b+'. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'@'+b+' et moi cherchons un trio. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'je ne suis plus en trio avec @'+b+'. '+t+' 🙏', ccCoSad:['ne vous séparez pas 😭','vous étiez les meilleurs','triste à lire','F','fin d’une époque','non…'],
+ccNick:'Pseudo', ccSex:'Genre', ccSexM:'Homme', ccSexF:'Femme', ccSpTitle:'Points de progression', ccSpHow:'Gagnés par les résultats : titre +3, podium +2, top 25 % du lobby +1', ccSpLeft:'Restant :', ccSpCreateHint:'Distribués une seule fois, ici : +0.5 par point', ccNewsSp:(g,t)=>'Points de progression : +'+g+' ('+t+' en réserve)', ccJobTitle:'Petit boulot', ccJobH:'h', ccJobPerH:'/h', ccNewsJob:(h,p)=>'Un service de '+h+' h — '+p+' $', ccPowerNote:'Coupure de courant — la soirée est perdue', ccSickNote:d=>'Malade jusqu’au '+d+' — moins d’énergie', ccNewsSick:d=>'Un rhume — jusqu’au '+d, ccCheatRow:'Le viseur vise tout seul. Personne ne saura', ccCheatDl:'Télécharger', ccCheat1:'Ce sont des cheats.', ccCheat1Sub:'Tu vas vraiment installer ça ?', ccCheatYes:'Oui, je télécharge', ccCheatNo:'Non', ccCheat2:'Epic bannit ça à vie.', ccCheat2Sub:'Le compte, les skins, la carrière — tout brûle.', ccCheatR3:'Chaque kill part dans un replay.', ccCheatR3Sub:'Des milliers d’yeux les revoient — une visée qui s’accroche toute seule se voit dès la première seconde.', ccCheatR4:'Les sponsors partent le jour du ban.', ccCheatR4Sub:'Le contrat, le salaire, les bannières — personne ne paie un cheateur.', ccCheatR5:'Tout le monde le saura.', ccCheatR5Sub:'Ton duo, le club, tout le fil — pour eux tu resteras un cheateur à vie.', ccCheatStill:'Quand même', ccCheatBack:'Se raviser', ccAskYes:'Oui', ccAskNo:'Annuler', ccCheat3:'Dernière chance.', ccCheat3Sub:'Voilà 100 $ — ferme juste cette fenêtre.', ccCheatTake:'Prendre les 100 $', ccNewsCheatPaid:'N’a pas téléchargé les cheats. +100 $ de bon sens', ccNewsBanned:'COMPTE BANNI : cheats. Carrière terminée', ccNewsBdayGift:g=>'Cadeaux d’anniversaire : +'+g+' $', ccPostBdayPro:(w,n)=>'joyeux anniversaire, @'+n+' ! 🎉', ccPostBanSad1:(w,n)=>'je ne m’attendais pas à ça de @'+n+'. Déçu', ccPostBanSad2:(w,n)=>'ça fait mal. On a joué ensemble, @'+n+'…', ccPostBanSad3:(w,n)=>'@'+n+' qui triche. Encore dur à croire', ccNewsStreamStats:(v,p,f,d,t)=>'Stream (2 h) : '+v+' viewers en moyenne, pic '+p+' · +'+f+' followers Twitch ('+t+' au total) · '+d+' $ gagnés', ccNewsStreamBanner:(b,c)=>'Le manager a mis une bannière '+b+' sur le stream : +'+c+' $', ccFriends:'Amis', ccFriendsNone:'Personne pour l’instant — envoie une demande depuis la recherche de duo', ccFriendsNonet:'Personne pour l’instant — envoie une demande depuis la recherche de trio', ccFriendAdd:'Ajouter', ccFriendIs:'Ami', ccNewsFriendYes:h=>'@'+h+' a accepté la demande d’ami', ccNewsFriendNo:h=>'@'+h+' n’a pas répondu à la demande', ccNews1v1:(h,a,b)=>(a>b?'Victoire':'Défaite')+' en 1v1 contre @'+h+' : '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' et '+b+' se séparent après une série de soirées ratées', ccPostDuoSplitBy:(a,b,t)=>'je ne suis plus en duo avec @'+b+'. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'@'+b+' et moi cherchons un trio. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'je ne suis plus en trio avec @'+b+'. '+t+' 🙏', ccCoSad:['ne vous séparez pas 😭','vous étiez les meilleurs','triste à lire','F','fin d’une époque','non…'],
 ccAge:'Âge',
 ccRole:'Rôle', ccMateKick:'Retirer de l’équipe', ccMateKickAsk:n=>'Retirer '+n+' de l’équipe ? La place gagnée ensemble est perdue.', ccRoleSwapTo:r=>'Passer '+r, ccRoleLockedTwo:'L’équipe a déjà un IGL, et elle ne peut pas en avoir deux.', ccRoleLockedNone:'Tu es le seul IGL de l’équipe, et une équipe sans IGL ne joue pas.',
 ccDivision:'Division',
@@ -6073,116 +5392,6 @@ chTabSocial:'Social',
 chTabTable:'Classement',
 chTabShop:'Boutique',
 chTabLog:'Profil', chTabHist:'Historique',
-chTabStats:'Stats', chTabStreams:'Streams',
-ccStreamGoLive:'Passer en direct', ccStreamLiveNow:'En direct', ccStreamLast:'Dernier live',
-ccStreamViewers:'Spectateurs habituels', ccStreamDayGone:'La journée est prise — live demain',
-ccStreamCost:e=>e+" d'énergie", ccStreamNeed:(need,have)=>"pas assez d'énergie : "+have+' sur '+need,
-ccStream_grind:'Ranked', ccStream_grindNote:"une soirée normale, l'audience grandit",
-ccStream_chat:'Discussion', ccStream_chatNote:'paie mieux, grandit moins vite',
-ccStream_colab:'Collab', ccStream_colabNote:'à deux — ses spectateurs viennent',
-ccStream_long:'Marathon', ccStream_longNote:'deux fois plus long et deux fois plus, plus la fatigue',
-ccStreamCatFn:'Fortnite', ccStreamCatChat:'Discussion', ccStreamCatRanked:'Ranked', ccStreamCatCreative:'Créatif',
-ccStreamFollowed:'Chaînes suivies', ccStreamMore:'Voir plus', ccStreamOffline:'Hors ligne',
-ccStreamChat:'Chat du live', ccStreamSay:'Envoyer un message', ccStreamLang:'Français',
-ccTvFollow:'Suivre', ccTvSubsToday:n=>'Abos du jour : '+n, ccTvTopDonors:'Top donateurs', ccStreamAlsoWatch:'Les viewers regardent aussi',
-ccStreamBits:'Bits', ccStreamGift:'Offrir un sub', ccStreamSub:"S'abonner",
-ccStreamTitleLive:'FNCS. On vise la finale hebdo', ccStreamTitleOff:'Chaîne hors ligne — il est temps',
-ccStreamSubsToday:n=>'Subs du jour : '+n, ccStreamUptime:'En direct',
-ccStreamPinned:h=>'Épinglé par '+h, ccStreamPinText:'Le pseudo en jeu est dans les panneaux',
-ccTwPartner:'Partenaire Twitch', ccTwAffiliate:'AFFILIÉ',
-ccTwToAff:'Vers affilié', ccTwToPart:'Vers partenaire',
-ccTwGoalFol:'Followers', ccTwGoalDays:'Jours de stream',
-ccTwGoalHours:'Heures de stream', ccTwGoalAvg:'Spectateurs moyens',
-ccNewsTwAffiliate:()=>'Twitch m\'a passé affilié. La chaîne rapporte enfin.',
-ccNewsTwPartner:()=>'Partenaire. La chaîne a sa coche.',
-ccStreamChatLines:['on y va','+','prends la zone','meilleur drop','w','ez','sérieux','third party encore','appelle le drop','c est qui','laisse-les poser','va au refresh','respect','énorme','oh la la','prends le haut','descends pas','qualifie-toi','combien de points','tu es top 50'],
-ccNewsStreamColab:(h,f,g)=>'Stream à deux avec @'+h+' — '+f+' sur Twitch. '+g+' spectateurs arrivés',
-ccNewsResultWf:(p,t,pts)=>'Coupe Div 1 : '+ccTop(p)+' sur '+t+', '+pts+' points — qualifié pour la Finale hebdo',
-ccNewsResultWeekWf:(p,t,pts,g)=>'Coupe Div 1, total de la semaine : '+ccTop(p)+' sur '+t+', '+pts+' points en '+g+' parties — qualifié pour la Finale hebdo',
-ccLanQual:c=>'qualifié LAN · '+c,
-ccNewsSceneDuo:(a,b)=>'Nouveau duo : je joue avec '+b,
-modeCareerRaceDesc:'Une course : chacun joue sa propre carrière, le lobby montre qui est devant.',
-ccRaceMake:'Créer une course', ccRaceEnter:'Rejoindre une course par code',
-ccRaceTitle:'Course de carrières', ccRaceAlone:'Personne n’a encore rejoint — donne-lui le code',
-ccRaceAhead:'Tu es devant', ccRaceBehind:h=>h+' est devant', ccRaceLeave:'Quitter la course',
-ccProAmCash:m=>'Empoché '+m, ccProAmNoCash:'Sans gains',
-ccNewsProAmCash:(p,m)=>'Pro-Am : '+ccTop(p)+', $'+m+' gagnés',
-ccNewsProAmOut:(p,t)=>'Pro-Am : '+ccTop(p)+' sur '+t+', sans gains',
-ccProAmNeedReach:n=>'Le Pro-Am invite selon la notoriété — il faut '+n+' abonnés',
-ccProAmPlayed:'Le Pro-Am est déjà joué cette saison',
-ccProAmTurnedDown:'Tu as refusé l’invitation — on te rappellera la saison prochaine',
-ccProAmUnanswered:'L’invitation attend dans tes messages — réponds-y',
-dmProAmInvite:(ev,d)=>'Salut ! On organise '+ev+' le '+d+'. Reload en duo, vingt paires : un pro et un créateur. On te veut là-bas. Tu viens ?',
-dmProAmYes:'Je viens. Merci pour l’invitation',
-dmProAmNo:'Pas cette fois',
-dmProAmNoOk:'Compris, dommage. On te rappellera l’an prochain',
-dmProAmPick:'Parfait ! Reste à choisir avec qui tu joues. Ces créateurs ont confirmé :',
-dmProAmMateOk:n=>'Noté : tu joues avec '+n+'. À bientôt sur place',
-dmProAmGo:'Je viens', dmProAmSkip:'Pas cette fois',
-dmProAmChoose:'Tu prends qui',
-dmProAmWith:n=>'Tu y vas avec '+n,
-dmProAmDone:'Invitation refusée',
-ccNewsProAmReach:(h,f,g)=>'Joué avec @'+h+' — '+f+' sur Twitch. '+g+' nouveaux abonnés',
-ccProAmMateLine:(h,f)=>'Coéquipier : '+h+' · '+f+' sur Twitch',
-ccNewsSceneRise:(h,d)=>'@'+h+' a pris '+d+' de note cette saison — la plus forte progression de la scène',
-ccNewsSceneFall:(h,d)=>'@'+h+' a perdu '+d+' cette saison — la forme est partie',
-ccShotCut:(n,p)=>'pour se qualifier : top '+n+' — '+p+' pts',
-ccNoteRepost:n=>n+' reposts de ton post',
-ccNoteLikeBy:(h,n)=>'@'+h+(n>0?' et '+n+' autres':'')+' ont aimé ton post',
-ccNoteRepostBy:(h,n)=>'@'+h+(n>0?' et '+n+' autres':'')+' ont reposté ton post',
-ccNoteReplyBy:(h,n)=>'@'+h+(n>0?' et '+n+' autres':'')+' ont répondu à ton post',
-dmMateFoot:'Votre chat : vous pouvez juste parler',
-dmMateBtnnight:'Débriefer la soirée', dmMateWhatnight:'Revenir sur le dernier tournoi',
-dmMateBtnspot:'Le spot', dmMateWhatspot:'Parler de votre point de largage',
-dmMateBtnrole:'Les rôles', dmMateWhatrole:'Qui fait quoi en partie',
-dmMateBtnlife:'Discuter', dmMateWhatlife:'Parler de rien entretient aussi le moral',
-dmMeTalknight:(p,t)=>'On débriefe hier ? '+ccTop(p)+' sur '+t,
-dmMateTalknight:(p,t)=>'Ouais, j’ai revu les replays. Les zones du milieu étaient à nous, on a lâché après. On corrige',
-dmMeTalkspot:(i,a)=>'Tu penses quoi de notre spot ? Zone '+i+', aura '+a,
-dmMateTalkspot:(i,a)=>'J’aime bien. Le loot est stable, les voisins ont lâché — on reste',
-dmMeTalkrole:(m,y)=>'Les rôles : toi '+m+', moi '+y+'. Ça va ?',
-dmMateTalkrole:(m,y)=>'Ça va. Tu appelles les rotations, je prends le premier contact. On joue comme ça',
-dmMeTalklife:'Ça va toi ?',
-dmMateTalklife:'Ça va. Mal dormi, mais le moral est là. On y va ce soir',
-ccStTitle:'Statistiques', ccStEmpty:'Joue un premier tournoi et les chiffres apparaîtront ici', ccStEvents:'Tournois', ccStGames:'Parties',
-ccStWins:'Victoires', ccStElims:'Éliminations', ccStPerGame:'par partie', ccStAvg:'Place moyenne', ccStPodiums:'Podiums', ccStTop10:'Top 10',
-ccStPromos:'Qualifications', ccStPrize:'Gains', ccStWages:'Salaires', ccStSide:'Petits boulots et customs', ccStBestNight:'Meilleure soirée',
-ccStBestElims:'Record d\'éliminations', ccStByKind:'Par tournoi', ccStBySeason:'Par saison', ccStSeason:'Saison', ccStBest:'Meilleur',
-ccStPartners:'Coéquipiers', ccStSpots:'Points d\'attache', ccStSpotBox:'zone', ccStAura:'aura', ccStCurve:'Note par tournoi', ccStSolo:'Solo',
-ccHallTitle:'Panthéon', ccHallRich:'Plus gros gains', ccHallEarlyD1:'Premier en Division 1', ccHallMostWins:'Plus de victoires',
-ccHallBestMajor:'Meilleure finale de Major', ccHallSeasons:'saisons', ccHallPeak:'pic',
-ccActtrMeta:'Étude de la méta', ccNewsMetaNew:v=>'Nouvelle saison '+v+' : nouvelle île, nouveau pool. Trois jours d\'étude de la méta lèvent le malus de forme',
-ccNewsSchoolBack:'École en ligne impayée : retour à l\'école normale',
-ccPostLanArrive:v=>'Arrivés à '+v+'. On joue demain',
-ccNewsOrgBonus:(o,m)=>o+' verse la prime de finale de Major : '+m, ccNewsOrgGone:(o,m)=>o+' ferme son roster Fortnite. Indemnité : '+m,
-ccPostLft:'Je cherche un club. Ouvert aux offres (LFT)', ccOrgBonusRow:'Prime de finale de Major',
-ccDayEvmateSpot:'Ton coéquipier veut un autre drop', ccDayEvmateSpotSub:'Il en a assez d\'atterrir chez toi et demande à déménager',
-ccDayEvmateSpotOmove:'Déménager', ccDayEvmateSpotOkeep:'On reste', ccDayEvmateSpotOtrial:'Une semaine d\'essai',
-ccDayEvmateSpotRmove:'Déménagé : l\'ancienne aura est perdue, le coéquipier est content', ccDayEvmateSpotRkeep:'On reste. Le coéquipier n\'est pas content',
-ccDayEvmateSpotRtrial:'Une semaine d\'essai : on a étudié la carte ensemble',
-ccDayEvorgLate:'Le club paie en retard', ccDayEvorgLateSub:'Le salaire n\'est pas arrivé à temps. Que fais-tu ?',
-ccDayEvorgLateOwait:'Attendre', ccDayEvorgLateOpublic:'Poster sur X', ccDayEvorgLateOleave:'Partir',
-ccDayEvorgLateRwait:'Attendu sans un mot. Le club s\'en souviendra', ccDayEvorgLateRpublic:'Posté sur X à propos du retard : portée en hausse, réputation en baisse',
-ccDayEvorgLateRleave:'Quitté le club à cause du salaire en retard',
-ccDayEvleak:'Une fuite dans le fil', ccDayEvleakSub:'Un insider écrit que tu négocies avec un autre club',
-ccDayEvleakOdeny:'Démentir', ccDayEvleakOconfirm:'Confirmer', ccDayEvleakOsilent:'Se taire',
-ccDayEvleakRdeny:'Fuite démentie', ccDayEvleakRconfirm:'Négociations confirmées. Le fil s\'emballe, le club n\'apprécie pas', ccDayEvleakRsilent:'Silence, et la fuite s\'est éteinte seule',
-ccDayEvhouse:'Une content house pour une semaine', ccDayEvhouseSub:'Une semaine dans une maison de créateurs : de la portée, pas d\'entraînement',
-ccDayEvhouseOgo:'Y aller', ccDayEvhouseOno:'Refuser',
-ccDayEvhouseRgo:'Une semaine en content house : abonnés en hausse, forme en baisse', ccDayEvhouseRno:'Content house refusée',
-ccDayEvcoachFree:'Un coach offre une semaine gratuite', ccDayEvcoachFreeSub:'Un ancien pro veut analyser tes replays gratuitement',
-ccDayEvcoachFreeOtake:'Accepter', ccDayEvcoachFreeOpass:'Passer',
-ccDayEvcoachFreeRtake:'Une semaine avec le coach : le point faible progresse', ccDayEvcoachFreeRpass:'Coach ignoré',
-ccDayEvtilt:'Ton coéquipier est tilté', ccDayEvtiltSub:'Après la soirée d\'hier, le coéquipier cherche un coupable',
-ccDayEvtiltOblame:'C\'est lui', ccDayEvtiltOown:'C\'est moi', ccDayEvtiltOtalk:'En parler',
-ccDayEvtiltRblame:'La faute au coéquipier : plus facile pour toi, pas pour lui', ccDayEvtiltRown:'Faute assumée. Le coéquipier l\'a apprécié', ccDayEvtiltRtalk:'Soirée débriefée à deux',
-ccDayEvschool:'L\'école', ccDayEvschoolSub:'Tu as seize ans. L\'école prend une partie de chaque journée. Et maintenant ?',
-ccDayEvschoolOquit:'Arrêter', ccDayEvschoolOonline:'École en ligne', ccDayEvschoolOstay:'Finir',
-ccDayEvschoolRquit:'École abandonnée pour le jeu. La journée est à toi', ccDayEvschoolRonline:'Passé à l\'école en ligne : 150 $ par mois, la moitié de la journée libre',
-ccDayEvschoolRstay:'Tu finis l\'école. Jusqu\'à dix-huit ans, une partie de la journée y passe',
-ccDayEvorgQuit:'Le club quitte Fortnite', ccDayEvorgQuitSub:'Le club ferme son roster. Le contrat se termine aujourd\'hui',
-ccDayEvorgQuitOfa:'Annoncer la recherche', ccDayEvorgQuitOquiet:'Partir discrètement',
-ccDayEvorgQuitRfa:'Le club a fermé le roster. Annoncé que je cherche', ccDayEvorgQuitRquiet:'Le club a fermé le roster. Parti discrètement',
 ccSlots:'Carrières',
 chEnd:'Terminer la carrière',
 ccSlotsTitle:'Carrières',
@@ -6405,117 +5614,6 @@ chTabSocial:"Social",
 chTabTable:"Classifica",
 chTabShop:"Negozio",
 chTabHist:"Storico",
-chTabStats:"Statistiche",
-chTabStreams:"Stream",
-ccStreamGoLive:"Andare in diretta", ccStreamLiveNow:"In diretta ora", ccStreamLast:"Ultima diretta",
-ccStreamViewers:"Spettatori di solito", ccStreamDayGone:"La giornata è presa — diretta domani",
-ccStreamCost:e=>e+' di energia', ccStreamNeed:(need,have)=>'energia insufficiente: '+have+' su '+need,
-ccStream_grind:"Ranked", ccStream_grindNote:"una serata normale, il pubblico cresce",
-ccStream_chat:"Chiacchiere", ccStream_chatNote:"paga meglio, cresce più lentamente",
-ccStream_colab:"Collab", ccStream_colabNote:"in due — arrivano i suoi spettatori",
-ccStream_long:"Maratona", ccStream_longNote:"il doppio più lunga e il doppio di tutto, più stanchezza",
-ccStreamCatFn:"Fortnite", ccStreamCatChat:"Chiacchiere", ccStreamCatRanked:"Ranked", ccStreamCatCreative:"Creativa",
-ccStreamFollowed:"Canali seguiti", ccStreamMore:"Mostra altro", ccStreamOffline:"Offline",
-ccStreamChat:"Chat della diretta", ccStreamSay:"Invia un messaggio", ccStreamLang:"Italiano",
-ccTvFollow:"Segui", ccTvSubsToday:n=>"Abbonati oggi: "+n, ccTvTopDonors:"Top donatori", ccStreamAlsoWatch:"Gli spettatori guardano anche",
-ccStreamBits:"Bits", ccStreamGift:"Regala un sub", ccStreamSub:"Abbonati",
-ccStreamTitleLive:"FNCS. Puntiamo alla finale settimanale", ccStreamTitleOff:"Canale offline — è ora di andare live",
-ccStreamSubsToday:n=>"Sub di oggi: "+n, ccStreamUptime:"In diretta",
-ccStreamPinned:h=>"Fissato da "+h, ccStreamPinText:"Il nome in gioco è nei pannelli",
-ccTwPartner:"Partner Twitch", ccTwAffiliate:"AFFILIATO",
-ccTwToAff:"Verso affiliato", ccTwToPart:"Verso partner",
-ccTwGoalFol:"Follower", ccTwGoalDays:"Giorni in diretta",
-ccTwGoalHours:"Ore in diretta", ccTwGoalAvg:"Spettatori medi",
-ccNewsTwAffiliate:()=>"Twitch mi ha fatto affiliato. Ora il canale rende.",
-ccNewsTwPartner:()=>"Partner. La spunta è sul canale.",
-ccStreamChatLines:["andiamo","+","prendi la zona","miglior drop","w","ez","ma dai","third party di nuovo","chiama il drop","chi e quello","falli atterrare","vai di refresh","rispetto","assurdo","oh no","prendi l alto","non andare sotto","qualificati","quanti punti","sei top 50"],
-ccNewsStreamColab:(h,f,g)=>'Diretta in due con @'+h+' — '+f+' su Twitch. '+g+' spettatori arrivati',
-ccNewsResultWf:(p,t,pts)=>"Coppa Div 1: "+ccTop(p)+" su "+t+", "+pts+" punti — alla finale settimanale",
-ccNewsResultWeekWf:(p,t,pts,g)=>"Coppa Div 1, totale settimana: "+ccTop(p)+" su "+t+", "+pts+" punti in "+g+" partite — alla finale settimanale",
-ccLanQual:c=>"qualificato LAN · "+c,
-ccNewsSceneDuo:(a,b)=>"Nuovo duo: gioco con "+b,
-modeCareerRaceDesc:"Una corsa: ognuno gioca la sua carriera, la lobby mostra chi è avanti.",
-ccRaceMake:"Creare una corsa", ccRaceEnter:"Entrare in una corsa con il codice",
-ccRaceTitle:"Corsa di carriere", ccRaceAlone:"Nessuno è ancora entrato — dagli il codice",
-ccRaceAhead:"Sei avanti", ccRaceBehind:h=>h+" è avanti", ccRaceLeave:"Uscire dalla corsa",
-ccProAmCash:m=>"Incassati "+m, ccProAmNoCash:"Senza premi",
-ccNewsProAmCash:(p,m)=>"Pro-Am: "+ccTop(p)+", $"+m+" guadagnati",
-ccNewsProAmOut:(p,t)=>"Pro-Am: "+ccTop(p)+" su "+t+", senza premi",
-ccProAmNeedReach:n=>"Al Pro-Am si entra per notorietà — servono "+n+" follower",
-ccProAmPlayed:"Il Pro-Am di questa stagione è già giocato",
-ccProAmTurnedDown:"Hai rifiutato l'invito — ti chiameranno la prossima stagione",
-ccProAmUnanswered:"L'invito è nei messaggi — rispondi",
-dmProAmInvite:(ev,d)=>"Ciao! Ospitiamo "+ev+" il "+d+". Reload in duo, venti coppie: un pro e un creator. Ti vogliamo lì. Vieni?",
-dmProAmYes:"Ci sono. Grazie dell'invito",
-dmProAmNo:"Questa volta no",
-dmProAmNoOk:"Capito, peccato. Ti richiamiamo l'anno prossimo",
-dmProAmPick:"Ottimo! Resta da scegliere con chi giochi. Questi creator hanno confermato:",
-dmProAmMateOk:n=>"Segnato: giochi con "+n+". Ci vediamo al palazzetto",
-dmProAmGo:"Ci sono", dmProAmSkip:"Questa volta no",
-dmProAmChoose:"Chi ti porti",
-dmProAmWith:n=>"Vai con "+n,
-dmProAmDone:"Invito rifiutato",
-ccNewsProAmReach:(h,f,g)=>"Giocato con @"+h+" — "+f+" su Twitch. "+g+" nuovi follower",
-ccProAmMateLine:(h,f)=>"Compagno: "+h+" · "+f+" su Twitch",
-ccNewsSceneRise:(h,d)=>"@"+h+" ha guadagnato "+d+" di rating in stagione — la crescita più rapida della scena",
-ccNewsSceneFall:(h,d)=>"@"+h+" ha perso "+d+" in stagione — la forma è andata",
-ccShotCut:(n,p)=>"per qualificarsi: top "+n+" — "+p+" pt",
-ccNoteRepost:n=>n+" repost del tuo post",
-ccNoteLikeBy:(h,n)=>"@"+h+(n>0?" e altri "+n:"")+" hanno messo like al tuo post",
-ccNoteRepostBy:(h,n)=>"@"+h+(n>0?" e altri "+n:"")+" hanno repostato il tuo post",
-ccNoteReplyBy:(h,n)=>"@"+h+(n>0?" e altri "+n:"")+" hanno risposto al tuo post",
-dmMateFoot:"La vostra chat: potete anche solo parlare",
-dmMateBtnnight:"Rivedere la serata", dmMateWhatnight:"Parlare dell'ultimo torneo",
-dmMateBtnspot:"Lo spot", dmMateWhatspot:"Parlare di dove atterrate",
-dmMateBtnrole:"I ruoli", dmMateWhatrole:"Chi fa cosa in partita",
-dmMateBtnlife:"Due chiacchiere", dmMateWhatlife:"Anche parlare del più e del meno tiene su il morale",
-dmMeTalknight:(p,t)=>"Rivediamo ieri? "+ccTop(p)+" su "+t,
-dmMateTalknight:(p,t)=>"Sì, ho visto i replay. Le zone centrali erano nostre, poi le abbiamo mollate. Si aggiusta",
-dmMeTalkspot:(i,a)=>"Che ne pensi del nostro spot? Zona "+i+", aura "+a,
-dmMateTalkspot:(i,a)=>"Mi piace. Il loot è stabile, i vicini si sono tolti — restiamo lì",
-dmMeTalkrole:(m,y)=>"Sui ruoli: tu "+m+", io "+y+". Va bene?",
-dmMateTalkrole:(m,y)=>"Va bene. Tu chiami le rotazioni, io prendo il primo contatto. Giochiamo così",
-dmMeTalklife:"Come va?",
-dmMateTalklife:"Bene. Ho dormito poco, ma il morale c'è. Andiamo stasera",
-ccStTitle:"Statistiche", ccStEmpty:"Gioca il primo torneo e qui compariranno i numeri", ccStEvents:"Tornei", ccStGames:"Partite",
-ccStWins:"Vittorie", ccStElims:"Eliminazioni", ccStPerGame:"a partita", ccStAvg:"Piazzamento medio", ccStPodiums:"Podi", ccStTop10:"Top 10",
-ccStPromos:"Qualificazioni", ccStPrize:"Montepremi", ccStWages:"Stipendi", ccStSide:"Lavoretti e custom", ccStBestNight:"Serata migliore",
-ccStBestElims:"Record di eliminazioni", ccStByKind:"Per torneo", ccStBySeason:"Per stagione", ccStSeason:"Stagione", ccStBest:"Migliore",
-ccStPartners:"Compagni", ccStSpots:"Punti di casa", ccStSpotBox:"zona", ccStAura:"aura", ccStCurve:"Rating per torneo", ccStSolo:"Solo",
-ccHallTitle:"Hall of fame", ccHallRich:"Guadagni più alti", ccHallEarlyD1:"Primo in Divisione 1", ccHallMostWins:"Più vittorie",
-ccHallBestMajor:"Miglior finale di Major", ccHallSeasons:"stagioni", ccHallPeak:"picco",
-ccActtrMeta:"Studio del meta", ccNewsMetaNew:v=>"Nuova stagione "+v+": isola e pool nuovi. Tre giorni di studio del meta tolgono la penalità di forma",
-ccNewsSchoolBack:"Scuola online non pagata: si torna a quella normale",
-ccPostLanArrive:v=>"Arrivati a "+v+". Domani si gioca",
-ccNewsOrgBonus:(o,m)=>o+" paga il bonus per la finale del Major: "+m, ccNewsOrgGone:(o,m)=>o+" chiude il roster Fortnite. Buonuscita: "+m,
-ccPostLft:"Cerco un club. Aperto alle offerte (LFT)", ccOrgBonusRow:"Bonus finale Major",
-ccDayEvmateSpot:"Il compagno vuole un altro drop", ccDayEvmateSpotSub:"È stanco di atterrare a casa tua e chiede di spostarsi",
-ccDayEvmateSpotOmove:"Spostarsi", ccDayEvmateSpotOkeep:"Casa resta", ccDayEvmateSpotOtrial:"Una settimana di prova",
-ccDayEvmateSpotRmove:"Spostati: la vecchia aura è persa, il compagno è contento", ccDayEvmateSpotRkeep:"Casa resta. Il compagno non è contento",
-ccDayEvmateSpotRtrial:"Una settimana di prova: abbiamo studiato la mappa insieme",
-ccDayEvorgLate:"Il club paga in ritardo", ccDayEvorgLateSub:"Lo stipendio non è arrivato in tempo. Che fai?",
-ccDayEvorgLateOwait:"Aspettare", ccDayEvorgLateOpublic:"Postare su X", ccDayEvorgLateOleave:"Andarsene",
-ccDayEvorgLateRwait:"Aspettato in silenzio. Il club se lo ricorderà", ccDayEvorgLateRpublic:"Postato su X sul ritardo: portata su, reputazione giù",
-ccDayEvorgLateRleave:"Lasciato il club per lo stipendio in ritardo",
-ccDayEvleak:"Una fuga nel feed", ccDayEvleakSub:"Un insider scrive che stai trattando con un altro club",
-ccDayEvleakOdeny:"Smentire", ccDayEvleakOconfirm:"Confermare", ccDayEvleakOsilent:"Tacere",
-ccDayEvleakRdeny:"Fuga smentita", ccDayEvleakRconfirm:"Trattative confermate. Il feed ribolle, il club non gradisce", ccDayEvleakRsilent:"Silenzio, e la fuga si è spenta da sola",
-ccDayEvhouse:"Una content house per una settimana", ccDayEvhouseSub:"Una settimana in una casa di creator: portata, ma niente allenamento",
-ccDayEvhouseOgo:"Andare", ccDayEvhouseOno:"Rifiutare",
-ccDayEvhouseRgo:"Una settimana in content house: follower su, forma giù", ccDayEvhouseRno:"Content house rifiutata",
-ccDayEvcoachFree:"Un coach offre una settimana gratis", ccDayEvcoachFreeSub:"Un ex pro vuole analizzare i tuoi replay gratis",
-ccDayEvcoachFreeOtake:"Accettare", ccDayEvcoachFreeOpass:"Saltare",
-ccDayEvcoachFreeRtake:"Una settimana col coach: il punto debole è salito", ccDayEvcoachFreeRpass:"Coach saltato",
-ccDayEvtilt:"Il compagno è in tilt", ccDayEvtiltSub:"Dopo la serata di ieri il compagno cerca un colpevole",
-ccDayEvtiltOblame:"Colpa sua", ccDayEvtiltOown:"Colpa mia", ccDayEvtiltOtalk:"Parlarne",
-ccDayEvtiltRblame:"Colpa data al compagno: più facile per te, non per lui", ccDayEvtiltRown:"Colpa presa su di te. Il compagno lo ha apprezzato", ccDayEvtiltRtalk:"Serata analizzata in due",
-ccDayEvschool:"Scuola", ccDayEvschoolSub:"Hai sedici anni. La scuola prende parte di ogni giornata. E adesso?",
-ccDayEvschoolOquit:"Lasciarla", ccDayEvschoolOonline:"Scuola online", ccDayEvschoolOstay:"Finirla",
-ccDayEvschoolRquit:"Scuola lasciata per il gioco. La giornata è tua", ccDayEvschoolRonline:"Passato alla scuola online: 150 $ al mese, mezza giornata libera",
-ccDayEvschoolRstay:"Finisci la scuola. Fino ai diciotto una parte della giornata va lì",
-ccDayEvorgQuit:"Il club lascia Fortnite", ccDayEvorgQuitSub:"Il club chiude il roster. Il contratto finisce oggi",
-ccDayEvorgQuitOfa:"Annunciare la ricerca", ccDayEvorgQuitOquiet:"Andarsene in silenzio",
-ccDayEvorgQuitRfa:"Il club ha chiuso il roster. Annunciato che cerco", ccDayEvorgQuitRquiet:"Il club ha chiuso il roster. Andato via in silenzio",
 ccSlots:"Carriere",
 chEnd:"Chiudi la carriera",
 ccSlotsTitle:"Carriere",
@@ -6700,42 +5798,6 @@ ccAgentFrom:v=>'I manager scrivono dalla valutazione '+v,
 ccNextTop:n=>'primi '+n,
 ccBioMajor:n=>n+'x VINCITORE DI MAJOR', ccBioRc:n=>n+'x VINCITORE DEL RELOAD CHAMPIONSHIP (EWC)', ccBioSummit:n=>n+'x VINCITORE DEL SUMMIT',
 ccBioCups:n=>n+'x vincitore di coppa',
-ccWhoFa:'F/A', ccWhoLft:'LFT', ccCardPr:'Power Ranking', ccCardSeason:'in stagione', ccCardYear:"nell'anno",
-ccBioPrRank:n=>'#'+n+' nel PR', ccBioEvents:n=>n+' tornei',
-ccSlotsNew:'Nuova carriera', ccSlotsFree:n=>n===1?'uno slot libero':n+' slot liberi',
-ccPostLfdWant:(h,d,pr)=>'LFD. Divisione '+d+' o superiore, PR minimo '+pr+'. DM aperti',
-ccAdWant:(role,d,pr)=>'cerca '+role+' · div '+d+'+ · PR minimo '+pr,
-ccAdNoFit:pr=>'servono '+pr+' di PR',
-ccPostDropCall:(h,z)=>'stasera atterro su '+ccZoneName(z)+' 📍', ccDropCalls:'hanno annunciato il drop:',
-ccPostOrgWin:(o,who,ev)=>'CAMPIONI. '+who+' vincono '+ev+' 🏆',
-ccNewsHub:"Notizie",
-ccPostDmBtn:"Scrivi in DM", ccPostVouchBtn:"Garantisci",
-ccPostVouchWhat:"Garantisci per lui in pubblico: la scena lo legge come una tua raccomandazione, e lui risponderà meglio",
-ccPostVouched:"Hai garantito", ccPostVouch:h=>'@'+h+' è forte. Dategli una chance 🙏',
-ccRev:"V", ccRegl:"gl", ccRehbd:"hbd goat 🐐", ccRew:"W", ccReclap:"🙌",
-ccReDone:t=>'Hai risposto: '+t,
-ccPostThanks:ev=>'grazie per il torneo — '+ev+'. e ai miei compagni 🙏',
-ccPostOneOff:ev=>'un posto sotto. '+ev+'. tutto bene (no)',
-ccPostQualGrands:(z,w)=>(w==='finals'?'QUALIFICATO ALLA FINALE 🏆':'QUALIFICATO AI GRANDS 🏆')+(z?' · atterro su '+ccZoneName(z):''),
-ccPostBotQualGrands:(h,z,w)=>(w==='finals'?'qual finale 🙏':'qual grands 🙏')+(z?' land '+ccZoneName(z):''),
-ccReplyBtn:"Rispondi", ccReplyPh:"Rispondi…", ccReplySend:"Invia",
-ccShotVr:"Victory Royale", ccShotTop5:"Top 5", ccShotTop10:"Top 10",
-ccRepostBtn:"Repost", ccRepostDone:"Repostato", ccQuoteBtn:"Cita",
-ccQuoting:"Stai citando un post", ccQuoteDrop:"Annulla", ccQuotePh:"Di' qualcosa su questo…",
-ccFeedAll:"Tutto", ccFeedSubs:"Seguiti", ccFeedSubsEmpty:"Non segui ancora nessuno",
-ccNoteReply:n=>n+' risposte al tuo post',
-ccNewsAnnounce:(ev,d)=>'e non è finita :) '+ev+'. '+d+'. dettagli presto',
-ccPostHype:h=>'ooooh è enorme', ccPostDates:h=>'ma non in quelle date, vi prego 🙏',
-ccPostBye:o=>'grazie @'+o+' per questi anni. da qui vado da solo',
-ccCustomsHost:"Customs", ccAskBtn:"Chiedi un invito", ccAskDone:"Chiesto",
-ccPostCustomsOpen:(pr,w)=>'lobby pro stasera: '+w+' $ a vittoria, da '+pr+' PR. scrivetemi',
-ccPostAskYes:()=>'mi hanno invitato 🙏', ccPostAskNo:()=>'niente invito stavolta. va bene',
-ccPostTriedBest:()=>'abbiamo dato tutto. non è bastato. gg :/',
-ccNotesTab:"Notifiche", ccNotesEmpty:"Per ora è tutto tranquillo",
-ccNoteLike:n=>'Il tuo post ha preso '+n+' like', ccNoteFollow:h=>'@'+h+' ha iniziato a seguirti',
-ccFollowBack:"Segui anche tu", ccFollowBtn:"Segui", ccFollowingBtn:"Segui già",
-ccNewsCatall:"Tutto", ccNewsCatscene:"Scena", ccNewsCatmoves:"Trasferimenti", ccNewsCatyou:"Tu",
-ccNewsOpen:"Apri nei social",
 ccBioGlobals:n=>n+'\u00b0 ai Globals',
 ccPitchGap:g=>g>0 ? g+' sopra di te' : 'alla tua portata',
 dmPitchTalked:c=>'Ho parlato con '+c+'.',
@@ -6925,36 +5987,7 @@ ccLootSwapRisk:(b,f,p)=>p+'/'+(100-p)+': riuscito — +'+b+', fallito — danni 
 ccLootHurt:v=>'POI non ripulito — danni extra, −'+v+' di potenza',
 ccLootGot:v=>'Ha funzionato — POI successivo ripulito, +'+v+' di potenza',
 ccLateHgNote:v=>'Testa o croce: vinto — +'+v+' e la miglior chance di vittoria, perso — meno '+CC_HG_FAIL+' e giochi da sotto',
-ccLateRefreshNote:(v,f,p)=>p+'%: trovato \u2014 +'+v+' e mats pieni, no \u2014 meno '+f+' e rientri nel cerchio per ultimo',
-ccLateMid:"Giocare mid ground", ccLateMidNote:(v,f,p)=>p+"%: tenuto il centro — +"+v+", buttati giù — meno "+f+" e giochi da sotto",
-ccLootUpgraded:n=>"preso il loro "+n,
-ccDeathTitle:z=>"Eliminati — zona "+z, ccDeathStorm:"La tempesta ci ha preso", ccDeathSurge:"Il surge ci ha finito",
-ccDeathBy:(w,g,r)=>"Eliminati da "+w+(g?" con "+g:"")+(r?", "+r:""), ccDeathRange:{close:"a distanza zero", near:"dalla build accanto", far:"da lontano"},
-ccDeathStats:(p,s,e)=>"Posto "+p+" · "+s+" · elim "+e, ccDeathSurgeAbove:g=>"surge +"+g+" sopra la soglia", ccDeathSurgeBelow:g=>"surge −"+g+" alla soglia", ccDeathSurgeOff:"surge non attivo",
-ccLateEdge:"Giocare fuori zona",ccLateEdgeNote:(v,f,p)=>p+'%: prendi chi entra \u2014 +'+v+', mancato \u2014 la tempesta prende '+f,
-ccLateEdgeWon:v=>'Fuori zona ha funzionato \u2014 +'+v+' di forza', ccLateEdgeLost:v=>'La tempesta ti ha preso, \u2212'+v+' di forza',
-ccLateRefreshWon:v=>'Refresh trovato, +'+v+' di forza e mats pieni', ccLateRefreshLost:v=>'Niente refresh, rientrato per ultimo: \u2212'+v+' di forza',
-ccKitLine:(m,low,loot)=>'Mats '+m+(low?' \u00b7 '+low:'')+(loot?' \u00b7 '+loot:''), ccKitLow:"pochi",
-ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: il tuo pack', ccKitOut:'eliminati', ccKitPickaxe:'Piccone',
-ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge da '+a+' giocatori \u00b7 vivi '+p,
-ccKitSurgeBanner:'STORM SURGE ATTIVO!', ccKitUnderBanner:'SEI SOTTO SURGE!',
-ccKitSurgeWarn:'AVVISO STORM SURGE!', ccKitSurgeWarnSub:'INFLIGGI DANNI PER EVITARE L’ELIMINAZIONE!',
-ccKitAboveCap:'sopra la soglia di danni', ccKitBelowCap:'sotto la soglia di danni',
-ccBuildTitle:"Zona 3 — come costruiamo", ccBuildNorm:"Come al solito", ccBuildNormNote:m=>m+" mats a cerchio",
-ccBuildEco:"Risparmiare", ccBuildEcoNote:(m,p)=>m+" a cerchio — i mats bastano fino alla fine, ma meno build: −"+p+" potenza",
-ccBuildHeavy:"Costruire tanto", ccBuildHeavyNote:(m,p)=>m+" a cerchio — +"+p+" potenza, ma a secco nel finale senza refresh",
-ccBuildSet:(w,p)=>w+": "+p+" potenza per questa partita",
-ccHealTitle:(s,h)=>"Scudo "+s+" · vita "+h+" — ci curiamo?", ccHealStay:"Si gioca così", ccHealStayNote:"Senza costi, scudo e vita come sono",
-ccHealGo:"Curarsi", ccHealGoNote:(h,p)=>"scudo pieno, +"+h+" vita · mentre bevi — meno "+p+" potenza",
-ccHealDone:(h,p)=>"Curati: scudo 100, vita "+h+" · −"+p+" potenza",
-ccFarmTitle:"Zona 3 — come farmiamo", ccFarmFull:"Farmare fino al full", ccFarmFullNote:n=>"Fino a "+n+" (500 · 3) — build per tutta la partita, niente surge",
-ccFarmSurge:"Farmare surge, meno mats", ccFarmSurgeNote:(m,d,p)=>"Mats "+m+" (400 · 3), +"+d+" danni surge, −"+p+" power per il tempo dei tag",
-ccFarmFullGot:n=>"Farmato al full — "+n+" mats", ccFarmSurgeGot:(m,d)=>"Surge farmato: +"+d+" danni, mats "+m,
-ccMatsTitle:"I mats stanno finendo", ccMatsGo:"Andare a cercare un refresh", ccMatsStay:"Ruotare con quello che c'\u00e8",
-ccMatsGoNote:(v,f,p)=>p+'%: trovato \u2014 +'+v+' e mats pieni, no \u2014 meno '+f,
-ccMatsStayNote:v=>'Ora non costa nulla, ma un finale senza mats costa '+v,
-ccMatsFound:v=>'Refresh trovato, +'+v+' di forza e mats pieni', ccMatsMissed:v=>'Niente, \u2212'+v+' di forza',
-ccMatsStayGot:"Giochiamo con quello che c'\u00e8",
+ccLateRefreshNote:v=>'Sicuro, ma pi\u00f9 piccolo: +'+v,
 ccLateHgWon:v=>'Ha funzionato — altura presa, +'+v+' di potenza',
 ccLateHgLost:v=>'Niente da fare — cacciato dall\u2019altura, −'+v+' di potenza',
 ccLateRefreshGot:v=>'Refresh trovato, +'+v+' di potenza',
@@ -7091,7 +6124,7 @@ ccPostWins:(n,m)=>n+(n===1?' vittoria':' vittorie')+' stasera \ud83d\udd25'+(m?'
 ccPostOrg:club=>'un\u2019altra serata per @'+club+' \ud83d\udc99',
 ccPostStreamD1:()=>'rivediamo la serata in diretta \ud83d\udd34',
 ccShotCap:d=>'Coppa Divisione '+d,
-ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:''; if(p===1) return ['TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6'+a, 'un\u2019altra \ud83d\udc10'+a][(v||0)%3]; if(p<=3) return [''+ccTop(p)+' \ud83d\udcaa'+a, ''+ccTop(p)+a+' \ud83d\udd25', ''+ccTop(p)+', per un soffio'+a][(v||0)%3]; return [''+ccTop(p)+' — Divisione '+d+a, ''+ccTop(p)+' questa settimana'+a+'. più in alto la prossima', ''+ccTop(p)+a+'. si continua'][(v||0)%3];},
+ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:''; if(p===1) return ['TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6'+a, 'un\u2019altra \ud83d\udc10'+a][(v||0)%3]; if(p<=3) return [''+ccTop(p)+' \ud83d\udcaa'+a, ''+ccTop(p)+a+' \ud83d\udd25', ''+ccTop(p)+', per un soffio'+a][(v||0)%3]; return ''+ccTop(p)+' — Divisione '+d+a;},
 ccPostBdayEpic:(h,a)=>'Buon compleanno @'+h+' — '+a+' anni oggi. Buona stagione \ud83c\udf82',
 ccNewsCongrats:(n,ev)=>'Complimenti a '+n+' per la vittoria — '+ev+'! \ud83c\udfc6',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:''; return ['ABBIAMO VINTO \ud83c\udfc6 '+ev+a, ev+'. TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6 '+ev+a, ev+' \u00e8 nostro'+a][(v||0)%4];},
@@ -7314,7 +6347,7 @@ ccPostBdayPro:(w,n)=>'buon compleanno, @'+n+'! \ud83c\udf89',
 ccPostBanSad1:(w,n)=>'non me lo aspettavo da @'+n+'. Deluso',
 ccPostBanSad2:(w,n)=>'questa fa male. Abbiamo giocato insieme, @'+n+'…',
 ccPostBanSad3:(w,n)=>'@'+n+' con i cheat. Ancora non ci credo',
-ccNewsStreamStats:(v,p,f,d,t,h)=>'Stream ('+(h||2)+' h): '+v+' spettatori medi, picco '+p+' · +'+f+' follower Twitch ('+t+' in totale) · $'+d+' guadagnati',
+ccNewsStreamStats:(v,p,f,d,t)=>'Stream (2 h): '+v+' spettatori medi, picco '+p+' · +'+f+' follower Twitch ('+t+' in totale) · $'+d+' guadagnati',
 ccNewsStreamBanner:(b,c)=>'Il manager ha messo un banner '+b+' sullo stream: +$'+c,
 ccNewsFriendYes:h=>'@'+h+' ha accettato la richiesta di amicizia',
 ccNewsFriendNo:h=>'@'+h+' non ha risposto alla richiesta di amicizia',
@@ -7326,7 +6359,7 @@ ccPingServer:city=>'verso il server di '+city,
 ccCity:{Dus:'Düsseldorf', Ant:'Anversa', Lyo:'Lione', Cph:'Copenaghen', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Parigi', Ryd:'Riyadh', Nyc:'New York', Tok:'Tokyo', Bel:'Belgrado', Kat:'Katowice', Sto:'Stoccolma', Mad:'Madrid', Ams:'Amsterdam', Sao:'San Paolo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Città del Messico', Dub:'Dubai', Ist:'Istanbul', Mil:'Milano', Lon:'Londra', Sin:'Singapore'},
 ccCityIn:{Dus:'Düsseldorf', Ant:'Anversa', Lyo:'Lione', Cph:'Copenaghen', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Parigi', Ryd:'Riyadh', Nyc:'New York', Tok:'Tokyo', Bel:'Belgrado', Kat:'Katowice', Sto:'Stoccolma', Mad:'Madrid', Ams:'Amsterdam', Sao:'San Paolo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Città del Messico', Dub:'Dubai', Ist:'Istanbul', Mil:'Milano', Lon:'Londra', Sin:'Singapore'},
 ccYearSub:{cup:'Una finestra, 11 partite', final:'Finale settimanale, solo Divisione 1', eval:'Due round in una sera, solo Divisione 1', major:'Play-In, Heat, LAN', gc:'La fine dell\u2019anno', reload:'Un circuito a s\u00e9, non FNCS', summit:'Tre giorni di LAN, dal Major 1', victory:'Due round, $100 per ogni vittoria nel secondo'},
-ccYearNames:{ReloadEliteSeries1Opens:'Reload · open coppa 1', ReloadEliteSeries1PlayIn:'Reload · play-in coppa 1', ReloadEliteSeries1Heats:'Reload · heat coppa 1', ReloadEliteSeries1Final:'Reload · finale coppa 1', ReloadEliteSeries2Opens:'Reload · open coppa 2', ReloadEliteSeries2PlayIn:'Reload · play-in coppa 2', ReloadEliteSeries2Heats:'Reload · heat coppa 2', ReloadEliteSeries2Final:'Reload · finale coppa 2', ReloadEliteSeries3Opens:'Reload · open coppa 3', ReloadEliteSeries3PlayIn:'Reload · play-in coppa 3', ReloadEliteSeries3Heats:'Reload · heat coppa 3', ReloadEliteSeries3Final:'Reload · finale coppa 3', ReloadEliteSeries4Opens:'Reload · open coppa 4', ReloadEliteSeries4PlayIn:'Reload · play-in coppa 4', ReloadEliteSeries4Heats:'Reload · heat coppa 4', ReloadEliteSeries4Final:'Reload · finale coppa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heat', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Finale', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Gran Finali', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heat', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Finale', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · qualificazioni', SoloSeries_Heats:'Solo Series · heat', SoloSeries_Final:'Solo Series · finali', FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heat', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale', FNCSSolos_Final:'FNCS Solos · finali', ProAm_Dallas:'Pro-Am · Dallas'},
+ccYearNames:{ReloadEliteSeries1Opens:'Reload · open coppa 1', ReloadEliteSeries1PlayIn:'Reload · play-in coppa 1', ReloadEliteSeries1Heats:'Reload · heat coppa 1', ReloadEliteSeries1Final:'Reload · finale coppa 1', ReloadEliteSeries2Opens:'Reload · open coppa 2', ReloadEliteSeries2PlayIn:'Reload · play-in coppa 2', ReloadEliteSeries2Heats:'Reload · heat coppa 2', ReloadEliteSeries2Final:'Reload · finale coppa 2', ReloadEliteSeries3Opens:'Reload · open coppa 3', ReloadEliteSeries3PlayIn:'Reload · play-in coppa 3', ReloadEliteSeries3Heats:'Reload · heat coppa 3', ReloadEliteSeries3Final:'Reload · finale coppa 3', ReloadEliteSeries4Opens:'Reload · open coppa 4', ReloadEliteSeries4PlayIn:'Reload · play-in coppa 4', ReloadEliteSeries4Heats:'Reload · heat coppa 4', ReloadEliteSeries4Final:'Reload · finale coppa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heat', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Finale', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Gran Finali', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heat', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Finale', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · qualificazioni', SoloSeries_Heats:'Solo Series · heat', SoloSeries_Final:'Solo Series · finali', FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heat', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale', FNCSSolos_Final:'FNCS Solos · finali'},
 modeFncs2026Title:"FNCS 2026",
 majorPick1:"Major 1",
 majorPick2:"Major 2",
@@ -7481,9 +6514,6 @@ chPlay:"Gioca",
 chSoonHint:"I Major non sono ancora collegati alla carriera — è il prossimo passo.",
 chSkip:"Salta il giorno",
 chSkipAsk:"Saltare il giorno? Il calendario non torna indietro.",
-chSkipTo:"Fino al torneo", chSkipToHint:(d,n)=>'Salta '+n+' giorn'+(n===1?'o':'i')+' fino al '+d+' — i tornei lungo la strada non si giocano',
-chSkipToAsk:(d,n,w)=>'Saltare '+n+' giorn'+(n===1?'o':'i')+' fino al '+d+' ('+w+')? I tornei lungo la strada non verranno giocati, il calendario non torna indietro.',
-calSkipGo:"Salta fino a questo giorno", calSkipHint:"I giorni passano, i tornei lungo la strada non si giocano",
 evEvent:"Evento",
 evEvents:"Eventi",
 evPromos:"Promozioni",
@@ -7568,7 +6598,6 @@ ccRarityrare:"rara",
 ccRarityepic:"epica",
 ccRaritylegendary:"leggendaria",
 ccRaritymythic:"mitica",
-ccRarityexotic:"esotica",
 ccRoAge:"Età",
 ccAgeTooYoung:"Sotto i {N} anni non si può competere in FNCS — è il limite di Fortnite. Da qui nessuna carriera.",
 ccAgeTooOld:"Dopo i {N} questa smette di essere una carriera. Metti {N} anni o meno.",
@@ -8113,11 +7142,6 @@ ccDayEvscrimupSub:"A un duo più forte manca un giocatore stasera",
 ccDayEvscrimupSubt:"A un trio più forte manca un giocatore stasera",
 ccDayEvscrimupYes:"Vai",
 ccDayEvscrimupNo:"Lascia perdere",
-ccDayEvcustom:"Customs · 100 $ a vittoria",
-ccDayEvcustomSub:"Un organizzatore apre un lobby pro: cinque partite, cento dollari per ogni vittoria. Si entra per PR — tu ci sei",
-ccDayEvcustomYes:"Giocala", ccDayEvcustomNo:"Salta",
-ccDayEvcustomTake:(w,c)=>'Customs: '+w+' vittorie su 5 — '+c+' $',
-ccDayEvcustomPass:()=>'Customs saltati',
 ccDayEvshow:"Showmatch",
 ccDayEvshowSub:"Un organizzatore ti vuole in esibizione, a pagamento",
 ccDayEvshowYes:"Giocala",
@@ -8251,13 +7275,6 @@ ccDropMap:"Scegli sulla mappa",
 ccDropMapNote:"Apri l'isola e metti tu il segnalino",
 ccLootTitle:"Metà partita — cosa hai raccolto",
 ccLootHint:"Il secondo cerchio si è chiuso. Il punto è lootato: due armi, due cure e un oggetto di mobilità. Il compagno si arrangia con la sua metà",
-ccSiteOwnTitle:"Spot nostro — apriamo i forzieri", ccSiteOwnHint:n=>n+" forzieri: due armi di classi diverse, due cure, un oggetto di movimento — quel che esce, quello portiamo",
-ccSiteTake:"Prendi e vai", ccSitePackPow:v=>v>0 ? "+"+v+" power per la rarità" : v<0 ? v+" power: slot vuoti" : "nessun bonus di power",
-ccSiteTitle:n=>"Qualcuno atterra con noi: "+n, ccSiteHint:(a,b)=>"Il tuo primo forziere: "+a+" · il loro: "+b,
-ccSiteLeave:"Andare al POI vicino", ccSiteLeaveNote:(n,m)=>"Senza scontro: "+n+" forzieri invece di "+m+" — loot più povero, meno power",
-ccSiteFight:"Combattere per lo spot", ccSiteFightNote:(p,n,a,b)=>p+"%: lo spot è nostro — tutti i "+n+" forzieri e l'elim · altrimenti moriamo allo spawn"+((a||b)?" · primo forziere: +"+a+" contro +"+b:""),
-ccSiteOwn:(n,l)=>"Spot libero: "+n+" forzieri — "+l, ccSiteWon:(w,n)=>"Lo spot è nostro: "+w+" eliminati, "+n+" forzieri",
-ccSiteLost:w=>"Scontro all'atterraggio perso contro "+w, ccSiteLeft:(n,l)=>"Spostati al POI vicino: "+n+" forzieri — "+l,
 ccLootTake:"Tieni il tuo",
 ccLootSwap:"Fai il POI successivo",
 ccLootTakeSafe:"nessun bonus, e nessun rischio",
@@ -8267,10 +7284,9 @@ ccLateHint:"Il cerchio è su una collina. Da qui decide l'altura",
 ccLateHg:"Prendi l'altura",
 ccLateRefresh:"Cerca un refresh",
 ccLateThird:"Entrare terzi nello scontro",
-ccLateThirdNote:(k,d,p)=>k+" su 100: ripuliamo — il vicino cade, +"+p+" di potenza e i suoi materiali · "+d+" su 100: ripuliscono noi · il resto — scambio di colpi e via, danni per il surge",
-ccMateLeans:t=>"io direi «"+t+"»",
-ccLateThirdWon:(p,foe)=>"Entrati terzi"+(foe?": "+foe+" eliminato":"")+" — +"+p+" di potenza, materiali dal corpo", ccLateThirdNone:k=>"Sparato nello scontro altrui e via: +"+k+" danni per il surge",
-ccLateThirdLost:foe=>"Entrati terzi e ripuliti"+(foe?" da "+foe:""),
+ccLateThirdNote:(p,f,o)=>o+" su 100: riesce — +"+p+" e il tetto più alto del gioco, no — meno "+f+" e il terzo di troppo sei tu",
+ccLateThirdWon:v=>"Entrati terzi e ripuliti tutti, +"+v+" di potenza",
+ccLateThirdLost:v=>"Hanno ripulito noi, −"+v+" di potenza",
 ccLateTake:"Togliere il punto ai più deboli",
 ccLateTakeNote:(p,f,o)=>o+" su 100: funziona — +"+p+", no — meno "+f,
 ccLateTakeWon:v=>"Punto preso, +"+v+" di potenza",
@@ -8596,28 +7612,6 @@ ccCoNews:['W','pulito','complimenti','continua','grande','👀','meritato'],
 ccCoBad:['sfortuna','quella lobby era dura','riposa e riprova','è ancora presto','è andata peggio'],
 ccCoPro:['hai talento','ti ho visto oggi','scrivimi se ti serve un duo','andrai lontano','giochi bene'],
 ccCoProt:['hai talento','ti ho visto oggi','scrivimi se ti serve un trio','andrai lontano','giochi bene'],
-ccCoLfd:['V','qualcuno lo prenda','ci giocherei','V 🐐','non resta libero a lungo','forte, scrivetegli'],
-ccCoBday:['hbd 🐐','buon compleanno! 🎂','hbd leggenda','hbd','hbd, grande stagione','🎂🎂'],
-ccCoHype:['LETS GO','finalmente','le date?','omggggg','prima sistemate i server','non quei giorni 😭','il formato?'],
-ccCoDuo:['coppia paurosa','lobby finita','W','forte','in bocca al lupo 🤝','è un top 1'],
-ccCoSign:['meritato','W firma','benvenuto','complimenti 🎉','era ora','grande mossa'],
-ccCoLeft:['buona fortuna','grazie di tutto','triste','il prossimo club sarà meglio','🙏','aspettiamo notizie'],
-ccCoTable:['corsa serrata','gli stessi nomi in cima','manca tanto','la top 3 non si muove','punto sul primo','si decide all’ultima settimana'],
-ccCoStream:['link?','arrivo','W stream','mi collego','guardo','analisi delle vod?'],
-ccCoDrop:['droppiamo lì anche noi 😭','non prenderlo','contestato','gl sullo spot','coraggioso','già tre squadre'],
-ccCoCust:['posso venire?','PR troppo basso 😭','ti scrivo','lets go','anche in coppia?','taglio duro'],
-ccCoBye:['leggenda','grazie per gli anni','🫡','triste','rispetto','GOAT'],
-ccCoBan:['terribile','non ci credo','lo sapevo','triste','vergogna','è tutto in video'],
-ccCoMateUp:['🐐','orgoglioso','il mio IGL 🐐','di nuovo la prossima','fino alla fine','il migliore 🔥'],
-ccCoMateDown:['ci riproviamo','colpa anche mia','analizziamo e avanti','la prossima','tieni duro','non è finita'],
-ccCoOrg:['il nostro ragazzo 💙','W','orgogliosi 👏','così si fa','non è finita','💙💙'],
-ccCoTy:['grazie ❤️','🙏','ty','grazie a tutti','❤️','vi voglio bene'],
-ccCoHate:['lobby ez','trasportato','fortunato','non eri nemmeno tu','fortuna','la prossima è una L'],
-ccCoHateBad:['finito','è calato','di nuovo','toglietelo','chi è','L'],
-ccCoTroll:['te l’avevo detto','a martedì','sai l’indirizzo','ancora tu','ci vediamo in lobby','come sempre'],
-ccCoProWin:['W','gg','meritato 🐐','pulito','lobby ez 😭','forte','mostro'],
-ccCoProBad:['sfortuna fratello','la prossima','capita','tornerai','tieni duro','tutti ne sbagliano una'],
-ccCoProLfd:['V','V 🐐','prendetelo, senza rimpianti','V, ci ho giocato','forte'],
 ccFfGo:"Continua",
 ccErrTitle:"Qualcosa si è rotto",
 ccErrCopy:"Copia",
@@ -8714,10 +7708,6 @@ ccFriendIs:"Amico",
 ccCoSad:['non lasciatevi 😭','eravate i migliori','triste da leggere','F',"fine di un'era",'ma no…'],
 ccSearchCountry:"Cerca un paese",
 ccSearchCard:"Cerca un giocatore",
-ccTabCreator:"Creator", ccSearchCreator:"Cerca un creator",
-ccPickCreator:"Scegli un creator", ccRoRegion:"Regione",
-ccCreatorFollowers:n=>n+" su Twitch", ccCreatorNoTw:"Canale non confermato",
-ccCreatorEvent:"Creator di contenuti",
 ccPickCountry:"Scegli un paese",
 ccRoCountry:"Paese",
 ccRoPing:"Ping",
@@ -8895,117 +7885,6 @@ chTabSocial:"Social",
 chTabTable:"Tabela",
 chTabShop:"Loja",
 chTabHist:"Histórico",
-chTabStats:"Estatísticas",
-chTabStreams:"Streams",
-ccStreamGoLive:"Entrar ao vivo", ccStreamLiveNow:"Ao vivo agora", ccStreamLast:"Última live",
-ccStreamViewers:"Espectadores de sempre", ccStreamDayGone:"O dia acabou — live amanhã",
-ccStreamCost:e=>e+' de energia', ccStreamNeed:(need,have)=>'energia insuficiente: '+have+' de '+need,
-ccStream_grind:"Ranked", ccStream_grindNote:"uma noite normal, o público cresce",
-ccStream_chat:"Bate-papo", ccStream_chatNote:"paga melhor, cresce mais devagar",
-ccStream_colab:"Collab", ccStream_colabNote:"a dois — os espectadores dele vêm junto",
-ccStream_long:"Maratona", ccStream_longNote:"o dobro do tempo e o dobro de tudo, mais desgaste",
-ccStreamCatFn:"Fortnite", ccStreamCatChat:"Bate-papo", ccStreamCatRanked:"Ranked", ccStreamCatCreative:"Criativo",
-ccStreamFollowed:"Canais seguidos", ccStreamMore:"Mostrar mais", ccStreamOffline:"Offline",
-ccStreamChat:"Chat da live", ccStreamSay:"Enviar uma mensagem", ccStreamLang:"Português",
-ccTvFollow:"Seguir", ccTvSubsToday:n=>"Subs hoje: "+n, ccTvTopDonors:"Top doadores", ccStreamAlsoWatch:"Espectadores também assistem",
-ccStreamBits:"Bits", ccStreamGift:"Presentear sub", ccStreamSub:"Inscrever-se",
-ccStreamTitleLive:"FNCS. Buscando a final semanal", ccStreamTitleOff:"Canal offline — hora de entrar ao vivo",
-ccStreamSubsToday:n=>"Subs de hoje: "+n, ccStreamUptime:"Ao vivo",
-ccStreamPinned:h=>"Fixado por "+h, ccStreamPinText:"O nome no jogo está nos painéis",
-ccTwPartner:"Parceiro Twitch", ccTwAffiliate:"AFILIADO",
-ccTwToAff:"Caminho até afiliado", ccTwToPart:"Caminho até parceiro",
-ccTwGoalFol:"Seguidores", ccTwGoalDays:"Dias com live",
-ccTwGoalHours:"Horas de live", ccTwGoalAvg:"Média de espectadores",
-ccNewsTwAffiliate:()=>"A Twitch me deu afiliado. Agora o canal rende.",
-ccNewsTwPartner:()=>"Parceiro. O canal ganhou o selo.",
-ccStreamChatLines:["bora","+","pega a zona","melhor drop","w","ez","nao acredito","third party de novo","chama o drop","quem e esse","deixa pousar","vai de refresh","respeito","absurdo","eita","pega o alto","nao desce","classifica","quantos pontos","voce e top 50"],
-ccNewsStreamColab:(h,f,g)=>'Live a dois com @'+h+' — '+f+' na Twitch. '+g+' espectadores vieram',
-ccNewsResultWf:(p,t,pts)=>"Copa Div 1: "+ccTop(p)+" de "+t+", "+pts+" pontos — passou para a final semanal",
-ccNewsResultWeekWf:(p,t,pts,g)=>"Copa Div 1, total da semana: "+ccTop(p)+" de "+t+", "+pts+" pontos em "+g+" partidas — passou para a final semanal",
-ccLanQual:c=>"vaga na LAN · "+c,
-ccNewsSceneDuo:(a,b)=>"Nova dupla: jogando com "+b,
-modeCareerRaceDesc:"Uma corrida: cada um joga a sua carreira, o lobby mostra quem está na frente.",
-ccRaceMake:"Criar uma corrida", ccRaceEnter:"Entrar numa corrida por código",
-ccRaceTitle:"Corrida de carreiras", ccRaceAlone:"Ninguém entrou ainda — passe o código",
-ccRaceAhead:"Você está na frente", ccRaceBehind:h=>h+" está na frente", ccRaceLeave:"Sair da corrida",
-ccProAmCash:m=>"Levamos "+m, ccProAmNoCash:"Sem prêmio",
-ccNewsProAmCash:(p,m)=>"Pro-Am: "+ccTop(p)+", $"+m+" ganhos",
-ccNewsProAmOut:(p,t)=>"Pro-Am: "+ccTop(p)+" de "+t+", sem prêmio",
-ccProAmNeedReach:n=>"O Pro-Am convida por fama — precisa de "+n+" seguidores",
-ccProAmPlayed:"O Pro-Am desta temporada já foi jogado",
-ccProAmTurnedDown:"Você recusou o convite — vão chamar na próxima temporada",
-ccProAmUnanswered:"O convite está nas mensagens — responda",
-dmProAmInvite:(ev,d)=>"Oi! Vamos sediar o "+ev+" em "+d+". Reload em dupla, vinte duplas: um pro e um criador. Queremos você lá. Vem?",
-dmProAmYes:"Tô dentro. Obrigado pelo convite",
-dmProAmNo:"Dessa vez não",
-dmProAmNoOk:"Entendi, pena. Chamamos no ano que vem",
-dmProAmPick:"Ótimo! Falta escolher com quem você joga. Estes criadores confirmaram:",
-dmProAmMateOk:n=>"Anotado: você joga com "+n+". Vejo você lá",
-dmProAmGo:"Tô dentro", dmProAmSkip:"Dessa vez não",
-dmProAmChoose:"Quem você leva",
-dmProAmWith:n=>"Você vai com "+n,
-dmProAmDone:"Convite recusado",
-ccNewsProAmReach:(h,f,g)=>"Joguei com @"+h+" — "+f+" na Twitch. "+g+" novos seguidores",
-ccProAmMateLine:(h,f)=>"Parceiro: "+h+" · "+f+" na Twitch",
-ccNewsSceneRise:(h,d)=>"@"+h+" subiu "+d+" de rating na temporada — a maior alta da cena",
-ccNewsSceneFall:(h,d)=>"@"+h+" caiu "+d+" na temporada — a forma foi embora",
-ccShotCut:(n,p)=>"para classificar: top "+n+" — "+p+" pts",
-ccNoteRepost:n=>n+" reposts do seu post",
-ccNoteLikeBy:(h,n)=>"@"+h+(n>0?" e mais "+n:"")+" curtiram seu post",
-ccNoteRepostBy:(h,n)=>"@"+h+(n>0?" e mais "+n:"")+" repostaram seu post",
-ccNoteReplyBy:(h,n)=>"@"+h+(n>0?" e mais "+n:"")+" responderam seu post",
-dmMateFoot:"O chat de vocês: dá para só conversar",
-dmMateBtnnight:"Revisar a noite", dmMateWhatnight:"Falar do último torneio",
-dmMateBtnspot:"Sobre o ponto", dmMateWhatspot:"Falar de onde vocês caem",
-dmMateBtnrole:"Sobre funções", dmMateWhatrole:"Quem faz o quê na partida",
-dmMateBtnlife:"Só conversar", dmMateWhatlife:"Conversar sobre nada também segura o ânimo",
-dmMeTalknight:(p,t)=>"Vamos revisar ontem? "+ccTop(p)+" de "+t,
-dmMateTalknight:(p,t)=>"Vi os replays. As zonas do meio eram nossas, depois entregamos. A gente arruma",
-dmMeTalkspot:(i,a)=>"O que acha do nosso ponto? Área "+i+", aura "+a,
-dmMateTalkspot:(i,a)=>"Gosto. O loot é estável, os vizinhos saíram — ficamos lá",
-dmMeTalkrole:(m,y)=>"Sobre funções: você "+m+", eu "+y+". Beleza?",
-dmMateTalkrole:(m,y)=>"Beleza. Você chama as rotações, eu pego o primeiro contato. É assim que jogamos",
-dmMeTalklife:"E aí, como você está?",
-dmMateTalklife:"De boa. Dormi pouco, mas o ânimo está aí. Bora hoje à noite",
-ccStTitle:"Estatísticas", ccStEmpty:"Jogue o primeiro torneio e os números aparecem aqui", ccStEvents:"Torneios", ccStGames:"Partidas",
-ccStWins:"Vitórias", ccStElims:"Eliminações", ccStPerGame:"por partida", ccStAvg:"Colocação média", ccStPodiums:"Pódios", ccStTop10:"Top 10",
-ccStPromos:"Classificações", ccStPrize:"Premiação", ccStWages:"Salários", ccStSide:"Bicos e customs", ccStBestNight:"Melhor noite",
-ccStBestElims:"Recorde de eliminações", ccStByKind:"Por torneio", ccStBySeason:"Por temporada", ccStSeason:"Temporada", ccStBest:"Melhor",
-ccStPartners:"Parceiros", ccStSpots:"Pontos de casa", ccStSpotBox:"área", ccStAura:"aura", ccStCurve:"Rating por torneio", ccStSolo:"Solo",
-ccHallTitle:"Hall da fama", ccHallRich:"Maior ganho", ccHallEarlyD1:"Primeiro na Divisão 1", ccHallMostWins:"Mais vitórias",
-ccHallBestMajor:"Melhor final de Major", ccHallSeasons:"temporadas", ccHallPeak:"pico",
-ccActtrMeta:"Estudo do meta", ccNewsMetaNew:v=>"Nova temporada "+v+": ilha e pool novos. Três dias de estudo do meta tiram a penalidade de forma",
-ccNewsSchoolBack:"Escola online não paga: de volta à escola normal",
-ccPostLanArrive:v=>"Chegamos em "+v+". Amanhã jogamos",
-ccNewsOrgBonus:(o,m)=>o+" paga o bônus da final do Major: "+m, ccNewsOrgGone:(o,m)=>o+" fecha o elenco de Fortnite. Rescisão: "+m,
-ccPostLft:"Procuro um clube. Aberto a propostas (LFT)", ccOrgBonusRow:"Bônus da final do Major",
-ccDayEvmateSpot:"O parceiro quer outro drop", ccDayEvmateSpotSub:"Ele cansou de cair na sua casa e pede para mudar",
-ccDayEvmateSpotOmove:"Mudar", ccDayEvmateSpotOkeep:"A casa fica", ccDayEvmateSpotOtrial:"Uma semana de teste",
-ccDayEvmateSpotRmove:"Mudamos: a aura antiga se foi, o parceiro está contente", ccDayEvmateSpotRkeep:"A casa fica. O parceiro não gostou",
-ccDayEvmateSpotRtrial:"Uma semana de teste: estudamos o mapa juntos",
-ccDayEvorgLate:"O clube atrasou o salário", ccDayEvorgLateSub:"O pagamento não chegou no prazo. O que você faz?",
-ccDayEvorgLateOwait:"Esperar", ccDayEvorgLateOpublic:"Postar no X", ccDayEvorgLateOleave:"Sair",
-ccDayEvorgLateRwait:"Esperou em silêncio. O clube vai lembrar", ccDayEvorgLateRpublic:"Postou no X sobre o atraso: alcance sobe, reputação cai",
-ccDayEvorgLateRleave:"Saiu do clube por causa do salário atrasado",
-ccDayEvleak:"Um vazamento no feed", ccDayEvleakSub:"Um insider escreve que você está negociando com outro clube",
-ccDayEvleakOdeny:"Negar", ccDayEvleakOconfirm:"Confirmar", ccDayEvleakOsilent:"Ficar quieto",
-ccDayEvleakRdeny:"Vazamento negado", ccDayEvleakRconfirm:"Negociações confirmadas. O feed ferve, o clube não gostou", ccDayEvleakRsilent:"Silêncio, e o vazamento morreu sozinho",
-ccDayEvhouse:"Uma content house por uma semana", ccDayEvhouseSub:"Uma semana numa casa de criadores: alcance, mas sem treino",
-ccDayEvhouseOgo:"Ir", ccDayEvhouseOno:"Recusar",
-ccDayEvhouseRgo:"Uma semana na content house: seguidores sobem, forma cai", ccDayEvhouseRno:"Content house recusada",
-ccDayEvcoachFree:"Um coach oferece uma semana grátis", ccDayEvcoachFreeSub:"Um ex-pro quer analisar seus replays de graça",
-ccDayEvcoachFreeOtake:"Aceitar", ccDayEvcoachFreeOpass:"Pular",
-ccDayEvcoachFreeRtake:"Uma semana com o coach: o ponto fraco subiu", ccDayEvcoachFreeRpass:"Coach dispensado",
-ccDayEvtilt:"O parceiro está tiltado", ccDayEvtiltSub:"Depois da noite de ontem o parceiro procura um culpado",
-ccDayEvtiltOblame:"Culpa dele", ccDayEvtiltOown:"Culpa minha", ccDayEvtiltOtalk:"Conversar",
-ccDayEvtiltRblame:"Culpa jogada no parceiro: mais fácil para você, não para ele", ccDayEvtiltRown:"Assumiu a culpa. O parceiro valorizou", ccDayEvtiltRtalk:"Noite analisada a dois",
-ccDayEvschool:"Escola", ccDayEvschoolSub:"Você tem dezesseis anos. A escola toma parte de cada dia. E agora?",
-ccDayEvschoolOquit:"Largar", ccDayEvschoolOonline:"Escola online", ccDayEvschoolOstay:"Terminar",
-ccDayEvschoolRquit:"Largou a escola pelo jogo. O dia é todo seu", ccDayEvschoolRonline:"Mudou para a escola online: US$ 150 por mês, meio dia livre",
-ccDayEvschoolRstay:"Vai terminar a escola. Até os dezoito, parte do dia vai para ela",
-ccDayEvorgQuit:"O clube está saindo do Fortnite", ccDayEvorgQuitSub:"O clube fecha o elenco. O contrato termina hoje",
-ccDayEvorgQuitOfa:"Anunciar a busca", ccDayEvorgQuitOquiet:"Sair em silêncio",
-ccDayEvorgQuitRfa:"O clube fechou o elenco. Anunciei que estou procurando", ccDayEvorgQuitRquiet:"O clube fechou o elenco. Saí em silêncio",
 ccSlots:"Carreiras",
 chEnd:"Encerrar carreira",
 ccSlotsTitle:"Carreiras",
@@ -9190,42 +8069,6 @@ ccAgentFrom:v=>'Empres\u00e1rios escrevem a partir do rating '+v,
 ccNextTop:n=>'top '+n,
 ccBioMajor:n=>n+'x CAMPE\u00c3O DE MAJOR', ccBioRc:n=>n+'x CAMPE\u00c3O DO RELOAD CHAMPIONSHIP (EWC)', ccBioSummit:n=>n+'x CAMPE\u00c3O DO SUMMIT',
 ccBioCups:n=>n+'x campe\u00e3o de copa',
-ccWhoFa:'F/A', ccWhoLft:'LFT', ccCardPr:'Power Ranking', ccCardSeason:'na temporada', ccCardYear:'no ano',
-ccBioPrRank:n=>'#'+n+' no PR', ccBioEvents:n=>n+' torneios',
-ccSlotsNew:'Nova carreira', ccSlotsFree:n=>n===1?'um espaço livre':n+' espaços livres',
-ccPostLfdWant:(h,d,pr)=>'LFD. Divisão '+d+' ou acima, PR mínimo '+pr+'. DMs abertas',
-ccAdWant:(role,d,pr)=>'procura '+role+' · div '+d+'+ · PR mínimo '+pr,
-ccAdNoFit:pr=>'precisa de '+pr+' de PR',
-ccPostDropCall:(h,z)=>'hoje eu caio em '+ccZoneName(z)+' 📍', ccDropCalls:'anunciaram o drop:',
-ccPostOrgWin:(o,who,ev)=>'CAMPEÕES. '+who+' vencem '+ev+' 🏆',
-ccNewsHub:"Notícias",
-ccPostDmBtn:"Mandar DM", ccPostVouchBtn:"Indicar",
-ccPostVouchWhat:"Indicar publicamente: a cena lê como recomendação sua, e ele responde melhor",
-ccPostVouched:"Você indicou", ccPostVouch:h=>'@'+h+' é bom demais. Dá uma chance pra ele 🙏',
-ccRev:"V", ccRegl:"gl", ccRehbd:"hbd goat 🐐", ccRew:"W", ccReclap:"🙌",
-ccReDone:t=>'Você respondeu: '+t,
-ccPostThanks:ev=>'obrigado pelo torneio — '+ev+'. e aos meus parceiros 🙏',
-ccPostOneOff:ev=>'faltou uma posição. '+ev+'. tô bem (não)',
-ccPostQualGrands:(z,w)=>(w==='finals'?'CLASSIFICADO PRA FINAL 🏆':'CLASSIFICADO PROS GRANDS 🏆')+(z?' · caio em '+ccZoneName(z):''),
-ccPostBotQualGrands:(h,z,w)=>(w==='finals'?'qual final 🙏':'qual grands 🙏')+(z?' land '+ccZoneName(z):''),
-ccReplyBtn:"Responder", ccReplyPh:"Responder…", ccReplySend:"Enviar",
-ccShotVr:"Victory Royales", ccShotTop5:"Top 5", ccShotTop10:"Top 10",
-ccRepostBtn:"Repost", ccRepostDone:"Repostado", ccQuoteBtn:"Citar",
-ccQuoting:"Você está citando um post", ccQuoteDrop:"Cancelar", ccQuotePh:"Diga algo sobre isso…",
-ccFeedAll:"Tudo", ccFeedSubs:"Seguindo", ccFeedSubsEmpty:"Você ainda não segue ninguém",
-ccNoteReply:n=>n+' respostas ao seu post',
-ccNewsAnnounce:(ev,d)=>'e tem mais :) '+ev+'. '+d+'. detalhes em breve',
-ccPostHype:h=>'ooooo isso é gigante', ccPostDates:h=>'só não nessas datas, por favor 🙏',
-ccPostBye:o=>'obrigado @'+o+' por esses anos. daqui sigo sozinho',
-ccCustomsHost:"Customs", ccAskBtn:"Pedir convite", ccAskDone:"Pedido",
-ccPostCustomsOpen:(pr,w)=>'lobby pro hoje: $'+w+' por win, a partir de '+pr+' PR. me chama',
-ccPostAskYes:()=>'me chamaram 🙏', ccPostAskNo:()=>'sem convite dessa vez. tudo certo',
-ccPostTriedBest:()=>'demos o nosso melhor. não deu. gg :/',
-ccNotesTab:"Notificações", ccNotesEmpty:"Tudo quieto por enquanto",
-ccNoteLike:n=>'Seu post levou '+n+' curtidas', ccNoteFollow:h=>'@'+h+' seguiu você',
-ccFollowBack:"Seguir de volta", ccFollowBtn:"Seguir", ccFollowingBtn:"Seguindo",
-ccNewsCatall:"Tudo", ccNewsCatscene:"Cena", ccNewsCatmoves:"Transferências", ccNewsCatyou:"Você",
-ccNewsOpen:"Abrir nas redes",
 ccBioGlobals:n=>n+'\u00ba no Globals',
 ccPitchGap:g=>g>0 ? g+' acima de voc\u00ea' : 'ao seu alcance',
 dmPitchTalked:c=>'J\u00e1 conversei com '+c+'.',
@@ -9415,36 +8258,7 @@ ccLootSwapRisk:(b,f,p)=>p+'/'+(100-p)+': deu certo — +'+b+', n\u00e3o deu — 
 ccLootHurt:v=>'N\u00e3o limpou o POI — dano extra, −'+v+' de poder',
 ccLootGot:v=>'Deu certo — pr\u00f3ximo POI limpo, +'+v+' de poder',
 ccLateHgNote:v=>'Cara ou coroa: ganhou — +'+v+' e a melhor chance de vit\u00f3ria, perdeu — menos '+CC_HG_FAIL+' e voc\u00ea joga por baixo',
-ccLateRefreshNote:(v,f,p)=>p+'%: achou — +'+v+' e mats cheios, não — menos '+f+' e você volta ao círculo por último',
-ccLateMid:"Jogar mid ground", ccLateMidNote:(v,f,p)=>p+"%: segurou o meio — +"+v+", derrubado — menos "+f+" e joga de baixo",
-ccLootUpgraded:n=>"pegamos o "+n+" deles",
-ccDeathTitle:z=>"Eliminados — zona "+z, ccDeathStorm:"A tempestade nos pegou", ccDeathSurge:"O surge nos terminou",
-ccDeathBy:(w,g,r)=>"Eliminados por "+w+(g?" com "+g:"")+(r?", "+r:""), ccDeathRange:{close:"à queima-roupa", near:"da build ao lado", far:"de longe"},
-ccDeathStats:(p,s,e)=>"Lugar "+p+" · "+s+" · elims "+e, ccDeathSurgeAbove:g=>"surge +"+g+" acima do limite", ccDeathSurgeBelow:g=>"surge −"+g+" até o limite", ccDeathSurgeOff:"surge desligado",
-ccLateEdge:"Jogar fora da zona",ccLateEdgeNote:(v,f,p)=>p+'%: pega quem entra — +'+v+', errou — a tempestade leva '+f,
-ccLateEdgeWon:v=>'Fora da zona funcionou — +'+v+' de força', ccLateEdgeLost:v=>'A tempestade te pegou, −'+v+' de força',
-ccLateRefreshWon:v=>'Refresh achado, +'+v+' de força e mats cheios', ccLateRefreshLost:v=>'Sem refresh, voltou por último: −'+v+' de força',
-ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:"pouco",
-ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: seu pack', ccKitOut:'eliminados', ccKitPickaxe:'Picareta',
-ccKitSurgeOff:'surge desligado', ccKitSurgeAt:(a,p)=>'surge a partir de '+a+' jogadores · vivos '+p,
-ccKitSurgeBanner:'STORM SURGE ATIVO!', ccKitUnderBanner:'VOCÊ ESTÁ SOB SURGE!',
-ccKitSurgeWarn:'AVISO DE STORM SURGE!', ccKitSurgeWarnSub:'CAUSE DANO AOS INIMIGOS PARA NÃO SER ELIMINADO!',
-ccKitAboveCap:'acima do limite de dano', ccKitBelowCap:'abaixo do limite de dano',
-ccBuildTitle:"Zona 3 — como construímos", ccBuildNorm:"Como sempre", ccBuildNormNote:m=>m+" mats por círculo",
-ccBuildEco:"Economizar", ccBuildEcoNote:(m,p)=>m+" por círculo — os mats duram até o fim, mas menos builds: −"+p+" de força",
-ccBuildHeavy:"Construir muito", ccBuildHeavyNote:(m,p)=>m+" por círculo — +"+p+" de força, mas vazio no fim sem refresh",
-ccBuildSet:(w,p)=>w+": "+p+" de força nesta partida",
-ccHealTitle:(s,h)=>"Escudo "+s+" · vida "+h+" — vamos curar?", ccHealStay:"Seguir assim", ccHealStayNote:"Sem custo, escudo e vida como estão",
-ccHealGo:"Curar", ccHealGoNote:(h,p)=>"escudo cheio, +"+h+" de vida · enquanto bebe — menos "+p+" de força",
-ccHealDone:(h,p)=>"Curados: escudo 100, vida "+h+" · −"+p+" de força",
-ccFarmTitle:"Zona 3 — como farmamos", ccFarmFull:"Farmar até o full", ccFarmFullNote:n=>"Até "+n+" (500 · 3) — builds para o jogo todo, sem surge",
-ccFarmSurge:"Farmar surge, menos mats", ccFarmSurgeNote:(m,d,p)=>"Mats "+m+" (400 · 3), +"+d+" de dano de surge, −"+p+" power pelo tempo de tag",
-ccFarmFullGot:n=>"Farmamos até o full — "+n+" mats", ccFarmSurgeGot:(m,d)=>"Surge farmado: +"+d+" de dano, mats "+m,
-ccMatsTitle:"Os mats estão acabando", ccMatsGo:"Ir atrás de um refresh", ccMatsStay:"Rotacionar com o que tem",
-ccMatsGoNote:(v,f,p)=>p+'%: achou — +'+v+' e mats cheios, não — menos '+f,
-ccMatsStayNote:v=>'Agora não custa nada, mas um final sem mats custa '+v,
-ccMatsFound:v=>'Refresh achado, +'+v+' de força e mats cheios', ccMatsMissed:v=>'Nada lá, −'+v+' de força',
-ccMatsStayGot:"Jogamos com o que temos",
+ccLateRefreshNote:v=>'Certo, mas menor: +'+v,
 ccLateHgWon:v=>'Deu certo — altura tomada, +'+v+' de poder',
 ccLateHgLost:v=>'Sem sorte — expulso da altura, −'+v+' de poder',
 ccLateRefreshGot:v=>'Refresh encontrado, +'+v+' de poder',
@@ -9581,7 +8395,7 @@ ccPostWins:(n,m)=>n+(n===1?' vit\u00f3ria':' vit\u00f3rias')+' hoje \ud83d\udd25
 ccPostOrg:club=>'mais uma noite pela @'+club+' \ud83d\udc99',
 ccPostStreamD1:()=>'revendo a noite na live \ud83d\udd34',
 ccShotCap:d=>'Copa da Divis\u00e3o '+d,
-ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:''; if(p===1) return ['TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6'+a, 'mais uma \ud83d\udc10'+a][(v||0)%3]; if(p<=3) return [''+ccTop(p)+' \ud83d\udcaa'+a, ''+ccTop(p)+a+' \ud83d\udd25', ''+ccTop(p)+', por pouco'+a][(v||0)%3]; return [''+ccTop(p)+' — Divis\u00e3o '+d+a, ''+ccTop(p)+' essa semana'+a+'. mais alto na pr\u00f3xima', ''+ccTop(p)+a+'. seguimos'][(v||0)%3];},
+ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:''; if(p===1) return ['TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6'+a, 'mais uma \ud83d\udc10'+a][(v||0)%3]; if(p<=3) return [''+ccTop(p)+' \ud83d\udcaa'+a, ''+ccTop(p)+a+' \ud83d\udd25', ''+ccTop(p)+', por pouco'+a][(v||0)%3]; return ''+ccTop(p)+' — Divis\u00e3o '+d+a;},
 ccPostBdayEpic:(h,a)=>'Feliz anivers\u00e1rio @'+h+' — '+a+' hoje. Boa temporada \ud83c\udf82',
 ccNewsCongrats:(n,ev)=>'Parab\u00e9ns a '+n+' pela vit\u00f3ria — '+ev+'! \ud83c\udfc6',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:''; return ['GANHAMOS \ud83c\udfc6 '+ev+a, ev+'. TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6 '+ev+a, ev+' \u00e9 nosso'+a][(v||0)%4];},
@@ -9804,7 +8618,7 @@ ccPostBdayPro:(w,n)=>'feliz anivers\u00e1rio, @'+n+'! \ud83c\udf89',
 ccPostBanSad1:(w,n)=>'n\u00e3o esperava isso de @'+n+'. Decepcionado',
 ccPostBanSad2:(w,n)=>'essa d\u00f3i. A gente jogou junto, @'+n+'…',
 ccPostBanSad3:(w,n)=>'@'+n+' com cheat. Ainda difícil de acreditar',
-ccNewsStreamStats:(v,p,f,d,t,h)=>'Stream ('+(h||2)+' h): '+v+' espectadores em m\u00e9dia, pico '+p+' · +'+f+' seguidores na Twitch ('+t+' no total) · $'+d+' ganhos',
+ccNewsStreamStats:(v,p,f,d,t)=>'Stream (2 h): '+v+' espectadores em m\u00e9dia, pico '+p+' · +'+f+' seguidores na Twitch ('+t+' no total) · $'+d+' ganhos',
 ccNewsStreamBanner:(b,c)=>'O empres\u00e1rio colocou um banner da '+b+' na live: +$'+c,
 ccNewsFriendYes:h=>'@'+h+' aceitou o pedido de amizade',
 ccNewsFriendNo:h=>'@'+h+' n\u00e3o respondeu o pedido de amizade',
@@ -9816,7 +8630,7 @@ ccPingServer:city=>'at\u00e9 o servidor de '+city,
 ccCity:{Dus:'Düsseldorf', Ant:'Antuérpia', Lyo:'Lyon', Cph:'Copenhague', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riade', Nyc:'Nova York', Tok:'Tóquio', Bel:'Belgrado', Kat:'Katowice', Sto:'Estocolmo', Mad:'Madri', Ams:'Amsterdã', Sao:'São Paulo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Cidade do México', Dub:'Dubai', Ist:'Istambul', Mil:'Milão', Lon:'Londres', Sin:'Singapura'},
 ccCityIn:{Dus:'Düsseldorf', Ant:'Antuérpia', Lyo:'Lyon', Cph:'Copenhague', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riade', Nyc:'Nova York', Tok:'Tóquio', Bel:'Belgrado', Kat:'Katowice', Sto:'Estocolmo', Mad:'Madri', Ams:'Amsterdã', Sao:'São Paulo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Cidade do México', Dub:'Dubai', Ist:'Istambul', Mil:'Milão', Lon:'Londres', Sin:'Singapura'},
 ccYearSub:{cup:'Uma janela, 11 partidas', final:'Final semanal, s\u00f3 Divis\u00e3o 1', eval:'Duas rodadas numa noite, s\u00f3 Divis\u00e3o 1', major:'Play-In, Heats, LAN', gc:'O fim do ano', reload:'Circuito pr\u00f3prio, n\u00e3o \u00e9 FNCS', summit:'Tr\u00eas dias de LAN, vindos do Major 1', victory:'Duas rodadas, $100 por cada vit\u00f3ria na segunda'},
-ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens copa 1', ReloadEliteSeries1PlayIn:'Reload · play-in copa 1', ReloadEliteSeries1Heats:'Reload · heats copa 1', ReloadEliteSeries1Final:'Reload · final copa 1', ReloadEliteSeries2Opens:'Reload · opens copa 2', ReloadEliteSeries2PlayIn:'Reload · play-in copa 2', ReloadEliteSeries2Heats:'Reload · heats copa 2', ReloadEliteSeries2Final:'Reload · final copa 2', ReloadEliteSeries3Opens:'Reload · opens copa 3', ReloadEliteSeries3PlayIn:'Reload · play-in copa 3', ReloadEliteSeries3Heats:'Reload · heats copa 3', ReloadEliteSeries3Final:'Reload · final copa 3', ReloadEliteSeries4Opens:'Reload · opens copa 4', ReloadEliteSeries4PlayIn:'Reload · play-in copa 4', ReloadEliteSeries4Heats:'Reload · heats copa 4', ReloadEliteSeries4Final:'Reload · final copa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heats', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Final', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Grandes Finais', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heats', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Final', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · classificat\u00f3rias', SoloSeries_Heats:'Solo Series · heats', SoloSeries_Final:'Solo Series · finais', FNCSSolos_Q1Round2:'FNCS Solos · classif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · classif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · classif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · classif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heats', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, final', FNCSSolos_Final:'FNCS Solos · finais', ProAm_Dallas:'Pro-Am · Dallas'},
+ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens copa 1', ReloadEliteSeries1PlayIn:'Reload · play-in copa 1', ReloadEliteSeries1Heats:'Reload · heats copa 1', ReloadEliteSeries1Final:'Reload · final copa 1', ReloadEliteSeries2Opens:'Reload · opens copa 2', ReloadEliteSeries2PlayIn:'Reload · play-in copa 2', ReloadEliteSeries2Heats:'Reload · heats copa 2', ReloadEliteSeries2Final:'Reload · final copa 2', ReloadEliteSeries3Opens:'Reload · opens copa 3', ReloadEliteSeries3PlayIn:'Reload · play-in copa 3', ReloadEliteSeries3Heats:'Reload · heats copa 3', ReloadEliteSeries3Final:'Reload · final copa 3', ReloadEliteSeries4Opens:'Reload · opens copa 4', ReloadEliteSeries4PlayIn:'Reload · play-in copa 4', ReloadEliteSeries4Heats:'Reload · heats copa 4', ReloadEliteSeries4Final:'Reload · final copa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heats', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Final', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Grandes Finais', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heats', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Final', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · classificat\u00f3rias', SoloSeries_Heats:'Solo Series · heats', SoloSeries_Final:'Solo Series · finais', FNCSSolos_Q1Round2:'FNCS Solos · classif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · classif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · classif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · classif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heats', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, final', FNCSSolos_Final:'FNCS Solos · finais'},
 modeFncs2026Title:"FNCS 2026",
 majorPick1:"Major 1",
 majorPick2:"Major 2",
@@ -9971,9 +8785,6 @@ chPlay:"Jogar",
 chSoonHint:"Os Majors ainda não estão ligados à carreira — é o próximo passo.",
 chSkip:"Pular o dia",
 chSkipAsk:"Pular o dia? O calendário não volta atrás.",
-chSkipTo:"Até o torneio", chSkipToHint:(d,n)=>'Pular '+n+' dia'+(n===1?'':'s')+' até '+d+' — os torneios no caminho não são jogados',
-chSkipToAsk:(d,n,w)=>'Pular '+n+' dia'+(n===1?'':'s')+' até '+d+' ('+w+')? Os torneios no caminho não serão jogados, o calendário não volta atrás.',
-calSkipGo:"Pular até este dia", calSkipHint:"Os dias passam, os torneios no caminho não são jogados",
 evEvent:"Evento",
 evEvents:"Eventos",
 evPromos:"Promoções",
@@ -10058,7 +8869,6 @@ ccRarityrare:"rara",
 ccRarityepic:"épica",
 ccRaritylegendary:"lendária",
 ccRaritymythic:"mítica",
-ccRarityexotic:"exótica",
 ccRoAge:"Idade",
 ccAgeTooYoung:"Abaixo de {N} anos não dá para competir na FNCS — é o limite da própria Fortnite. Daqui não sai carreira.",
 ccAgeTooOld:"Depois dos {N} isso deixa de ser carreira. Coloque {N} anos ou menos.",
@@ -10603,11 +9413,6 @@ ccDayEvscrimupSub:"Uma dupla mais forte está com um jogador a menos hoje",
 ccDayEvscrimupSubt:"Um trio mais forte está com um jogador a menos hoje",
 ccDayEvscrimupYes:"Ir",
 ccDayEvscrimupNo:"Deixar pra lá",
-ccDayEvcustom:"Customs · $100 por win",
-ccDayEvcustomSub:"Um organizador abre um lobby pro: cinco partidas, cem dólares por vitória. A entrada é por PR — você entrou",
-ccDayEvcustomYes:"Jogar", ccDayEvcustomNo:"Passar",
-ccDayEvcustomTake:(w,c)=>'Customs: '+w+' vitórias de 5 — $'+c,
-ccDayEvcustomPass:()=>'Passou dos customs',
 ccDayEvshow:"Showmatch",
 ccDayEvshowSub:"Um organizador quer você numa exibição, com cachê",
 ccDayEvshowYes:"Jogar",
@@ -10741,13 +9546,6 @@ ccDropMap:"Escolher no mapa",
 ccDropMapNote:"Abra a ilha e coloque o marcador você mesmo",
 ccLootTitle:"Meio de jogo — o que você pegou",
 ccLootHint:"O segundo círculo fechou. O ponto está lootado: duas armas, duas curas e um item de mobilidade. Seu parceiro resolve a metade dele",
-ccSiteOwnTitle:"Spot nosso — abrindo os baús", ccSiteOwnHint:n=>n+" baús: duas armas de classes diferentes, duas curas, um item de mobilidade — o que cair, a gente leva",
-ccSiteTake:"Pegar e ir", ccSitePackPow:v=>v>0 ? "+"+v+" power pela raridade" : v<0 ? v+" power: slots vazios" : "sem bônus de power",
-ccSiteTitle:n=>"Alguém pousou com a gente: "+n, ccSiteHint:(a,b)=>"Seu primeiro baú: "+a+" · o deles: "+b,
-ccSiteLeave:"Ir para o POI vizinho", ccSiteLeaveNote:(n,m)=>"Sem briga: "+n+" baús em vez de "+m+" — loot mais pobre, menos power",
-ccSiteFight:"Brigar pelo spot", ccSiteFightNote:(p,n,a,b)=>p+"%: o spot é nosso — todos os "+n+" baús e o elim · senão morremos no pouso"+((a||b)?" · primeiro baú: +"+a+" contra +"+b:""),
-ccSiteOwn:(n,l)=>"Spot livre: "+n+" baús — "+l, ccSiteWon:(w,n)=>"O spot é nosso: "+w+" eliminados, "+n+" baús",
-ccSiteLost:w=>"Perdemos a briga de pouso para "+w, ccSiteLeft:(n,l)=>"Fomos ao POI vizinho: "+n+" baús — "+l,
 ccLootTake:"Ficar com o seu",
 ccLootSwap:"Rodar o próximo POI",
 ccLootTakeSafe:"sem bônus, e sem risco",
@@ -10757,10 +9555,9 @@ ccLateHint:"O círculo está num morro. Daqui quem decide é a altura",
 ccLateHg:"Pegar a altura",
 ccLateRefresh:"Procurar um refresh",
 ccLateThird:"Entrar de terceiro na briga",
-ccLateThirdNote:(k,d,p)=>k+" em 100: limpamos — o vizinho cai, +"+p+" de força e os materiais dele · "+d+" em 100: limpam a gente · o resto — troca de tiros e cada um segue, dano para o surge",
-ccMateLeans:t=>"eu iria de «"+t+"»",
-ccLateThirdWon:(p,foe)=>"Entramos de terceiro"+(foe?": "+foe+" eliminado":"")+" — +"+p+" de força, materiais do corpo", ccLateThirdNone:k=>"Atiramos na briga alheia e seguimos: +"+k+" de dano para o surge",
-ccLateThirdLost:foe=>"Entramos de terceiro e limpam a gente"+(foe?" — "+foe:""),
+ccLateThirdNote:(p,f,o)=>o+" em 100: dá certo — +"+p+" e o melhor teto do jogo, não — menos "+f+" e o terceiro sobrando é você",
+ccLateThirdWon:v=>"Entramos de terceiro e limpamos, +"+v+" de força",
+ccLateThirdLost:v=>"Limparam a gente, −"+v+" de força",
 ccLateTake:"Tomar o ponto dos mais fracos",
 ccLateTakeNote:(p,f,o)=>o+" em 100: funciona — +"+p+", não — menos "+f,
 ccLateTakeWon:v=>"Ponto tomado, +"+v+" de força",
@@ -11086,28 +9883,6 @@ ccCoNews:['W','limpo','parabéns','segue','grande','👀','merecido'],
 ccCoBad:['azar','aquele lobby foi pesado','descansa e volta','ainda é cedo','já foi pior'],
 ccCoPro:['você tem talento','te vi hoje','me chama se precisar de dupla','você vai longe','você joga bem'],
 ccCoProt:['você tem talento','te vi hoje','me chama se precisar de trio','você vai longe','você joga bem'],
-ccCoLfd:['V','alguém pega ele','jogaria com ele','V 🐐','não fica livre por muito tempo','forte, chamem ele'],
-ccCoBday:['hbd 🐐','feliz aniversário! 🎂','hbd lenda','hbd','hbd, grande temporada','🎂🎂'],
-ccCoHype:['LETS GO','finalmente','datas?','omggggg','arruma os servidores primeiro','esses dias de novo não 😭','formato?'],
-ccCoDuo:['par assustador','lobby acabou','W','forte','boa sorte 🤝','isso é top 1'],
-ccCoSign:['merecido','W contratação','bem-vindo','parabéns 🎉','já era hora','grande jogada'],
-ccCoLeft:['boa sorte na próxima','obrigado por tudo','triste','a próxima org vai ser melhor','🙏','esperando novidades'],
-ccCoTable:['corrida apertada','os mesmos nomes no topo','ainda falta muito','top 3 não se mexe','aposto no primeiro','decide na última semana'],
-ccCoStream:['link?','chegando','W stream','entrando','assistindo','análise de vod?'],
-ccCoDrop:['a gente dropa lá também 😭','não pega','contestado','gl no spot','corajoso','já tem três times'],
-ccCoCust:['posso entrar?','PR baixo demais 😭','chamando','vamos','em dupla também?','corte pesado'],
-ccCoBye:['lenda','obrigado pelos anos','🫡','triste','respeito','GOAT'],
-ccCoBan:['terrível','não acredito','sabia','triste','vergonha','está tudo em vídeo'],
-ccCoMateUp:['🐐','orgulhoso','meu IGL 🐐','de novo semana que vem','até o fim','o melhor 🔥'],
-ccCoMateDown:['vamos de novo','culpa minha também','revisar e seguir','na próxima','firme','não acabou'],
-ccCoOrg:['nosso cara 💙','W','orgulho 👏','é assim','não acabou','💙💙'],
-ccCoTy:['obrigado ❤️','🙏','ty','valeu a todos','❤️','amo vocês'],
-ccCoHate:['lobby ez','carregado','deu sorte','nem foi você','sorte','a próxima é L'],
-ccCoHateBad:['acabou','caiu','de novo','tira ele','quem é esse','L'],
-ccCoTroll:['eu avisei','até terça','sabe o endereço','você de novo','te vejo no lobby','como sempre'],
-ccCoProWin:['W','gg','merecido 🐐','limpo','lobby ez 😭','forte','monstro'],
-ccCoProBad:['azar irmão','a próxima','acontece','você volta','firme','todo mundo perde uma'],
-ccCoProLfd:['V','V 🐐','peguem ele, sem arrependimento','V, joguei com ele','forte'],
 ccFfGo:"Continuar",
 ccErrTitle:"Alguma coisa quebrou",
 ccErrCopy:"Copiar",
@@ -11204,10 +9979,6 @@ ccFriendIs:"Amigo",
 ccCoSad:['não se separem 😭','vocês eram os melhores','triste de ler','F','fim de uma era','não acredito…'],
 ccSearchCountry:"Buscar país",
 ccSearchCard:"Buscar jogador",
-ccTabCreator:"Criador", ccSearchCreator:"Buscar criador",
-ccPickCreator:"Escolha um criador", ccRoRegion:"Região",
-ccCreatorFollowers:n=>n+" na Twitch", ccCreatorNoTw:"Canal não confirmado",
-ccCreatorEvent:"Criador de conteúdo",
 ccPickCountry:"Escolha um país",
 ccRoCountry:"País",
 ccRoPing:"Ping",
@@ -11378,15 +10149,13 @@ function setLang(lang, persist){
      есть куда подключаться (CC_MP_OPEN). Стоит здесь, потому что setLang
      зовётся на загрузке и проходит по всем data-i18n: подписи кнопок
      проставляются тем же обходом, что и остальное меню. */
-  (function(){ /* Ряда дверей на карточке карьеры больше нет — они переехали в
-                  полосу под героем (.cstrip). Остались герой и полоса. */
-               /* Дверей «вдвоём» и «по коду» в герое больше нет (5 сентября,
-                  «будто одно и то же два раза») — командные двери только в
-                  полосе карьеры под героем (см. .cstrip), этим флагом. */
-               ['cstripDuo','cstripRace','cstripCode'].forEach(function(id){
-                 const b=document.getElementById(id);
-                 if(b) b.hidden=!CC_MP_OPEN;
-               }); })();
+  (function(){ const r=document.getElementById('modeMpRow');
+               if(r) r.hidden=!CC_MP_OPEN;
+               // Та же дверь в герое (heroDuo) — открывается тем же флагом.
+               const h=document.getElementById('heroDuo');
+               if(h) h.hidden=!CC_MP_OPEN;
+               const c=document.getElementById('heroCode');
+               if(c) c.hidden=!CC_MP_OPEN; })();
   if(persist!==false){ try{ localStorage.setItem(LS_LANG, lang); }catch(e){} }
   // Keep the declared language honest, otherwise search engines and screen
   // readers go on trusting whatever <html lang> said at load.
@@ -11430,9 +10199,7 @@ const REGIONS=[
   {code:'EU',nameEn:'Europe',nameRu:'Европа'},{code:'NAC',nameEn:'NA Central',nameRu:'NA Central'},{code:'NAW',nameEn:'NA West',nameRu:'NA West'},
   {code:'BR',nameEn:'Brazil',nameRu:'Бразилия'},{code:'ASIA',nameEn:'Asia',nameRu:'Азия'},{code:'ME',nameEn:'Middle East',nameRu:'Ближний Восток'},{code:'OCE',nameEn:'Oceania',nameRu:'Океания'},
 ];
-const RARITY_COLOR={common:'var(--common)',uncommon:'var(--uncommon)',rare:'var(--rare)',epic:'var(--epic)',legendary:'var(--legendary)',mythic:'var(--mythic)',
-                    // Контент-мейкер Про-Ама — см. --exotic и shownRarity.
-                    exotic:'var(--exotic)'};
+const RARITY_COLOR={common:'var(--common)',uncommon:'var(--uncommon)',rare:'var(--rare)',epic:'var(--epic)',legendary:'var(--legendary)',mythic:'var(--mythic)'};
 const FLAG={
   'Австрия':'\u{1F1E6}\u{1F1F9}','Россия':'\u{1F1F7}\u{1F1FA}','США':'\u{1F1FA}\u{1F1F8}',
   'Дания':'\u{1F1E9}\u{1F1F0}','Канада':'\u{1F1E8}\u{1F1E6}','Великобритания':'\u{1F1EC}\u{1F1E7}',
@@ -11496,11 +10263,6 @@ function ratingForRank(rank, percentile, event){
 // strong the card is in play, it just no longer decides its colour.
 function shownRarity(p){
   if(!p) return 'common';
-  /* Контент-мейкер Про-Ама носит СВОЮ редкость — Exotic, цветом самой игры
-     (#70C7F8, см. --exotic). Его правка 4 сентября: в этой комнате креатор не
-     про и не ладдер, и рейтинг у него один на всех (67), так что обычная
-     лестница по числу сказала бы про всех одно и то же слово. */
-  if(p.creator) return 'exotic';
   // Colour follows the number actually printed on the card. For everyone in the
   // roster that is just their rating; for a career player it also carries what
   // country and age are worth, so a 92 reads legendary rather than sitting in
@@ -18362,20 +17124,9 @@ const m1GfBase     = r => 96 - ((r-1)/Math.max(_M1G.length-1,1))*26;
    другое — одна и та же ПАРА в двух регионах круга (двум тёзкам сесть вместе
    почти невозможно), это tools/check-card-pairs.js; список одиночных ников —
    tools/check-card-dupes.js. */
-/* Reet и Cooper — только Америка Центральная (4 сентября, его игрок: «и cooper
-   с reet есть и на NAC и на NAW»). Пара стояла в r3 NAC с 86/90 и в r4 NAW с
-   76/76 (tools/check-card-pairs.js). НАК — их сцена во всех остальных наборах
-   файла: оба лежат в NAC-таблицах 2025 (t1-t3), в обоих Мейджорах 2026 и в
-   четырёх кубках Reload из пяти; NAW у них ровно один кубок. Снят он, а не
-   таблицы: строка в ледже Tracker остаётся, карточки в NAW больше нет. */
-const CARD_WRONG_REGION={
-  r2: {NAW: ['bluisha cuthbert', 'Exist']},
-  r3: {EU: ['Curve', 'Veno'], ME: ['Zenox', 'RinzY'], NAC: ['Xpon', 'Doxey']},
-  r4: {NAW: ['Reet', 'Cooper'], NAC: ['VicterV', 'Khanada']},
-  m1: {EU: ['Moneymaker', 'Fnajen'], NAC: ['f4 tibstach.', 'Jasper']},
-  m2: {ME: ['Howly', '1Lusha']},
-  t3: {NAC: ['fazer', 'FUT phzin 伊万尔', 'K1nG']}
-};
+const CARD_WRONG_REGION={ r3: {EU: ['Curve', 'Veno']},
+                          m1: {EU: ['Moneymaker', 'Fnajen']},
+                          m2: {ME: ['Howly', '1Lusha']} };
 /* Своя нормализация, а не _gcNorm: тот объявлен через const на двадцать тысяч
    строк ниже, а карточки строятся ЗДЕСЬ, при загрузке файла — обращение к нему
    отсюда падает в мёртвую зону. Правило то же: буквы и цифры, остальное прочь. */
@@ -18738,8 +17489,6 @@ const n1GfBase     = r => 96 - ((r-1)/Math.max(_N1G.length-1,1))*26;
 (function buildMajor1NAC(){
   const known=new Set();
   const add=(entry, ev, date, base, key)=>{
-    // Пара, которую здесь не считают: см. CARD_WRONG_REGION.
-    if(cardNotHere('m1', 'NAC', entry.duo)) return;
     CARD_DUOS_M1.push({handles:entry.duo.slice()});
     entry.duo.forEach(nm=>{
       if(known.has(nm)) return;
@@ -23120,8 +21869,6 @@ function buildCardSetRegion(cfg){
   const stageDate=T_STAGE_DATE[cfg.set];
   const stageEvent=st=>T_EVENT_NAME[cfg.set]+' — '+T1_STAGE_NAME[st]+' ('+T1_REGION_NAME[cfg.region]+')';
   const add=(entry, st)=>{
-    // Пара, которую здесь не считают: см. CARD_WRONG_REGION.
-    if(cardNotHere(cfg.set, cfg.region, entry.duo)) return;
     trios.push({handles:entry.duo.slice()});
     entry.duo.forEach(nm=>{
       if(known.has(nm)) return;
@@ -35027,22 +33774,6 @@ function computeSynergy(squad){
   });
   const natGroups={};
   squad.forEach(p=>{ if(p.nat){ (natGroups[p.nat]=natGroups[p.nat]||[]).push(p.handle); } });
-  /* ОДИН ФЛАГ — ОДИН БОНУС, сколько бы человек его ни носило.
-     Его правка 4 сентября: «мб рейтинг не менять, а синергию» — в ответ на
-     отзыв игрока «на ланах все топ места у американцев, а Европы нету».
-
-     Замер (tools/lan-trio-syn-probe.js, зал Саммита в трио-год): у НАК синергия
-     8.6, из неё за флаг и язык 3.3; у Европы 6.8 и 1.5. В дуо-год те же числа
-     — 1.1 против 1.0, то есть ровные. Разница вся в том, что бонус за
-     национальность считался ЗА КАЖДОГО лишнего человека: трое американцев
-     получали 2×2=4, а европейская тройка (немец, испанец, поляк) — ноль или
-     единицу за язык. Сцена НА одной страны, сцена ЕС из двадцати, поэтому
-     трио-год удваивал американское преимущество на ровном месте: в мировом
-     ЛАНе НАК везла 102.5 силы против 96.6 и брала 136 титулов из 200.
-
-     Теперь это свойство СОСТАВА, а не каждой пары внутри него: команда либо
-     говорит на одном языке, либо нет. Дуо этим не задеты вовсе (у них и было
-     по одному бонусу), у троек и четвёрок множитель уходит. */
   Object.keys(natGroups).forEach(nat=>{
     const members=natGroups[nat];
     if(members.length>=2){
@@ -35060,7 +33791,6 @@ function computeSynergy(squad){
   // already counted above as real teammates or the same nationality.
   const langGroups={};
   squad.forEach(p=>{ const c=languageClusterOf(p.nat); if(c){ (langGroups[c]=langGroups[c]||[]).push(p); } });
-  // И язык — тоже раз на состав, по той же причине, что и флаг выше.
   Object.keys(langGroups).forEach(cluster=>{
     const members=langGroups[cluster];
     let paidLang=false;
@@ -35071,7 +33801,7 @@ function computeSynergy(squad){
         const key = a.handle<b2.handle ? a.handle+'|'+b2.handle : b2.handle+'|'+a.handle;
         if(seenPairs.has(key)) continue; // already real teammates — don't double up
         seenPairs.add(key);
-        if(paidLang) continue;          // общий язык у состава один
+        if(paidLang) continue;
         paidLang=true;
         bonus+=SYN_LANGUAGE;
         details.push(a.handle+' + '+b2.handle+L().synergyLanguage+languageClusterName(cluster)+' (+'+SYN_LANGUAGE+')');
@@ -35097,8 +33827,6 @@ const WEAPON_ICON={
   fish:"<svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"currentColor\" style=\"display:inline-block;vertical-align:-0.15em;\"><path d=\"M3 12c3-5 9-6 13-3l4-3-1 5 2 2-4 1c-4 3-11 2-14-2z\"/><circle cx=\"14\" cy=\"10\" r=\"1.2\" fill=\"#0b1520\"/></svg>",
   drink:"<svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"currentColor\" style=\"display:inline-block;vertical-align:-0.15em;\"><path d=\"M6 4h12l-1 4H7z\"/><path d=\"M7 9h10l-1.5 11h-7z\"/></svg>"
 };
-// Снайперки в силуэте рисуются винтовкой: класс sniper нужен таблице сундуков, своей картинки у него нет.
-WEAPON_ICON.sniper=WEAPON_ICON.rifle;
 const CONSUMABLE_MOD={grey:1, green:2, blue:3, purple:4, legendary:5, gold:6};
 const CONSUMABLE_POOL=[
   {name:'Green Bandage Kit', rarity:'green', icon:'heal'},
@@ -35113,66 +33841,53 @@ const CONSUMABLE_POOL=[
 ].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
 const CONSUMABLE_RARITY_COLOR={gold:'var(--mythic)', grey:'var(--common)', green:'var(--uncommon)', blue:'var(--rare)', purple:'var(--epic)', legendary:'var(--legendary)'};
 
-// ---------- FNCS 2026 loot: Chapter 7 Season 3, Runners ----------
-// The island Major 2 was played on (18 July -- 2 August 2026). Read off the
-// season's own loot table on the Fortnite Wiki (Chapter 7: Season 3/Loot Pool)
-// with the same filter the 2025 pools use: a gun is in if it was in the pool
-// on the day -- added on or before the Grand Finals and not vaulted before the
-// season's end. That is what drops Chaos Reloader (vaulted 11 June), Flex SMG
-// and the Hunting Rifle (16 July) and the Stinger (30 July), and what keeps
-// the Bank Shot, Rapid Fire and Heavy Impact that arrived on 16 July and the
-// Spire Rifle that landed on 30 July. Twin Mag SMG, Twin Hammer and Iron Pump
-// were never in this season at all: they are Season 2 guns that had been left
-// in here from the Major 1 pool. Each gun carries the rarity ladder the wiki
-// lists for it, so the Lancehead never drops grey and the Bank Shot goes gold.
-const M2_WEAPON_NAMES=[
-  ["Chaos Exploder Rifle",'rifle','common','legendary'],
-  ["Surgical Burst Rifle",'rifle','common','legendary'],
-  ["Warforged Assault Rifle",'rifle','common','legendary'],
-  ["Spire Rifle",'rifle','common','epic'],
-  ["Extending Focus Shotgun",'shotgun','common','legendary'],
-  ["Striker Pump Shotgun",'shotgun','common','legendary'],
-  ["Maven Auto Shotgun",'shotgun','common','legendary'],
-  ["Rapid Fire SMG",'smg','uncommon','legendary'],
-  ["Ranger Pistol",'pistol','common','legendary'],
-  ["Lancehead Pistol",'pistol','rare','legendary'],
-  ["Bank Shot Pistol",'pistol','rare','mythic'],
-  ["Heavy Impact Sniper Rifle",'sniper','rare','legendary']
-];
-const RARITY_LADDER=['common','uncommon','rare','epic','legendary','mythic'];
-// Expands [name, icon, lowest, highest] rows into one entry per rarity step.
-function ladderPool(rows){
-  const out=[];
-  rows.forEach(([name,icon,lo,hi])=>{
-    const a=RARITY_LADDER.indexOf(lo), b=RARITY_LADDER.indexOf(hi);
-    for(let i=a;i<=b;i++) out.push({name, icon, rarity:RARITY_LADDER[i], mod:RARITY_MOD[RARITY_LADDER[i]]});
-  });
-  return out;
-}
-const WEAPON_POOL=ladderPool(M2_WEAPON_NAMES);
-
-// ---------- FNCS 2026 loot: Chapter 7 Season 4, Override ----------
-// The island the duo year moves to on 21 August and the one FNCS Solos run on.
-// Override shipped on 20 August 2026 and the wiki's loot table for it is still
-// a stub, so this is built from the launch coverage that agrees across outlets
-// (Beebom, The Click, Hotspawn, GamingBible): the whole Season 3 arsenal went
-// to the vault and the island reopened with the returning guns below. Left out
-// on purpose, the way every competitive sheet before it left such things out:
-// the Sprites (powers are off in Ranked), the one-per-match Midas' Masterpiece,
-// the God Mode Llama, the 1-Up Token, the Tetris Rift and the Mega Buster
-// (explosive rounds). Rarity ladders are the wiki's infobox for each gun.
-// Revisit against Epic's own sheet when the Solo FNCS rules publish one.
-const S42_WEAPON_NAMES=[
-  ["Assault Rifle",'rifle','common','legendary'],
-  ["Ranger Assault Rifle",'rifle','common','legendary'],
-  ["Pump Shotgun",'shotgun','common','legendary'],
-  ["8-Bit Shotgun",'shotgun','uncommon','legendary'],
-  ["Oni Shotgun",'shotgun','common','legendary'],
-  ["Drum Gun",'smg','uncommon','rare'],
-  ["Tactical Pistol",'pistol','common','legendary'],
-  ["Dual Pistols",'pistol','common','legendary']
-];
-const S42_WEAPON_POOL=ladderPool(S42_WEAPON_NAMES);
+const WEAPON_POOL=[
+  {name:'Chaos Exploder Rifle', rarity:'common', icon:'rifle'},
+  {name:'Chaos Exploder Rifle', rarity:'rare', icon:'rifle'},
+  {name:'Chaos Exploder Rifle', rarity:'legendary', icon:'rifle'},
+  {name:'Surgical Burst Rifle', rarity:'common', icon:'rifle'},
+  {name:'Surgical Burst Rifle', rarity:'uncommon', icon:'rifle'},
+  {name:'Surgical Burst Rifle', rarity:'rare', icon:'rifle'},
+  {name:'Surgical Burst Rifle', rarity:'epic', icon:'rifle'},
+  {name:'Surgical Burst Rifle', rarity:'legendary', icon:'rifle'},
+  {name:'Extending Focus Shotgun', rarity:'common', icon:'shotgun'},
+  {name:'Extending Focus Shotgun', rarity:'epic', icon:'shotgun'},
+  {name:'Extending Focus Shotgun', rarity:'legendary', icon:'shotgun'},
+  {name:'Maven Auto Shotgun', rarity:'common', icon:'shotgun'},
+  {name:'Maven Auto Shotgun', rarity:'rare', icon:'shotgun'},
+  {name:'Maven Auto Shotgun', rarity:'legendary', icon:'shotgun'},
+  {name:'Striker Pump Shotgun', rarity:'common', icon:'shotgun'},
+  {name:'Striker Pump Shotgun', rarity:'legendary', icon:'shotgun'},
+  {name:'Striker Pump Shotgun', rarity:'mythic', icon:'shotgun'},
+  {name:'Twin Mag SMG', rarity:'common', icon:'smg'},
+  {name:'Twin Mag SMG', rarity:'rare', icon:'smg'},
+  {name:'Twin Mag SMG', rarity:'legendary', icon:'smg'},
+  {name:'Rapid Fire SMG', rarity:'common', icon:'smg'},
+  {name:'Rapid Fire SMG', rarity:'uncommon', icon:'smg'},
+  {name:'Rapid Fire SMG', rarity:'rare', icon:'smg'},
+  {name:'Rapid Fire SMG', rarity:'epic', icon:'smg'},
+  {name:'Rapid Fire SMG', rarity:'legendary', icon:'smg'},
+  {name:'Rapid Fire SMG', rarity:'mythic', icon:'smg'},
+  {name:'Bank Shot Pistol', rarity:'uncommon', icon:'pistol'},
+  {name:'Bank Shot Pistol', rarity:'epic', icon:'pistol'},
+  {name:'Bank Shot Pistol', rarity:'mythic', icon:'pistol'},
+  {name:'Ranger Pistol', rarity:'common', icon:'pistol'},
+  {name:'Ranger Pistol', rarity:'rare', icon:'pistol'},
+  {name:'Ranger Pistol', rarity:'legendary', icon:'pistol'}
+].map(w=>({...w, mod:RARITY_MOD[w.rarity]}));
+// Rest of the Chapter 7 Season 3 pool, filling the rarity gaps so every weapon
+// category (rifle/shotgun/smg/pistol) still spans common→mythic.
+const WEAPON_POOL_FILLERS=[
+  {name:'Chaos Exploder Rifle', rarity:'mythic', icon:'rifle'},
+  {name:'Twin Hammer Shotguns', rarity:'uncommon', icon:'shotgun'},
+  {name:'Iron Pump Shotgun', rarity:'common', icon:'shotgun'},
+  {name:'Iron Pump Shotgun', rarity:'rare', icon:'shotgun'},
+  {name:'Iron Pump Shotgun', rarity:'legendary', icon:'shotgun'},
+  {name:'Bank Shot Pistol', rarity:'common', icon:'pistol'},
+  {name:'Bank Shot Pistol', rarity:'rare', icon:'pistol'},
+  {name:'Bank Shot Pistol', rarity:'legendary', icon:'pistol'}
+].map(w=>({...w, mod:RARITY_MOD[w.rarity]}));
+WEAPON_POOL.push(...WEAPON_POOL_FILLERS);
 
 // The loot pool the way it actually was in the year that FNCS was played.
 // Picking 2023 in the era filter should hand you Chapter 4 guns, not the guns
@@ -35332,34 +34047,6 @@ const M2_CONSUMABLE_POOL=[
   {name:"Bandage", rarity:'grey'},
   {name:"Small Fry", rarity:'grey'}
 ].map(w=>({...w, icon:'heal', mod:CONSUMABLE_MOD[w.rarity]}));
-// Season 4 utility: the Season 3 heals and fish stay (they are chapter loot,
-// not season loot), the Seven Sliders went to the vault with the rest of
-// Runners, and three unvaultings came in -- Chug Splash, Bass Boost and the
-// Flare Gun -- plus the season's own Spicy Taco. Mobility this season is the
-// Overdrive Grenade; the Sonic Power Sneakers are a novelty item and stay out.
-const S42_CONSUMABLE_POOL=[
-  {name:"Chug Jug", rarity:'legendary'},
-  {name:"Midas Flopper", rarity:'legendary'},
-  {name:"Slurpfish", rarity:'purple'},
-  {name:"Harpoon Gun", rarity:'blue'},
-  {name:"Vault Key", rarity:'blue'},
-  {name:"Jellyfish", rarity:'blue'},
-  {name:"Overdrive Grenade", rarity:'blue'},
-  {name:"Chug Splash", rarity:'blue'},
-  {name:"Bass Boost", rarity:'blue'},
-  {name:"Flare Gun", rarity:'blue'},
-  {name:"Pro Fishing Rod", rarity:'blue'},
-  {name:"Shield Fish", rarity:'blue'},
-  {name:"Shield Potion", rarity:'blue'},
-  {name:"Spicy Fish", rarity:'blue'},
-  {name:"Flopper", rarity:'green'},
-  {name:"Guzzle Juice", rarity:'green'},
-  {name:"Med Kit", rarity:'green'},
-  {name:"Small Shield Potion", rarity:'green'},
-  {name:"Bandage", rarity:'grey'},
-  {name:"Spicy Taco", rarity:'grey'},
-  {name:"Small Fry", rarity:'grey'}
-].map(w=>({...w, icon:'heal', mod:CONSUMABLE_MOD[w.rarity]}));
 const ITEM_ART={
   "Bandage":"items/item-bandage.png",
   "Chug Jug":"items/item-chug-jug.png",
@@ -35387,24 +34074,21 @@ const ITEM_ART={
 // Major 1 loot, straight off the published pool sheet. The weapons there are
 // shown on a rainbow tile because each one drops in every rarity, so each is
 // expanded into the full common->mythic ladder rather than a handful of tiers.
-// [name, class] — class is what the chest table (CC_CHEST_CLASS) and the
-// "two guns of different classes" pack rule read. It used to be 'rifle' for
-// every gun here, so on the 2026 island a pack could hold two shotguns.
 const M1_WEAPON_NAMES=[
-  ["Combat Assault Rifle",'rifle'],
-  ["Nemesis AR",'rifle'],
-  ["Chaos Reloader Shotgun",'shotgun'],
-  ["Iron Pump Shotgun",'shotgun'],
-  ["Twin Hammer Shotguns",'shotgun'],
-  ["Thunder Burst SMG",'smg'],
-  ["Twin Mag SMG",'smg'],
-  ["Pistol",'pistol'],
-  ["Vector 7 DMR",'sniper']
+  "Combat Assault Rifle",
+  "Nemesis AR",
+  "Chaos Reloader Shotgun",
+  "Iron Pump Shotgun",
+  "Twin Hammer Shotguns",
+  "Thunder Burst SMG",
+  "Twin Mag SMG",
+  "Pistol",
+  "Vector 7 DMR"
 ];
 const M1_WEAPON_POOL=[];
-M1_WEAPON_NAMES.forEach(([name, icon])=>{
+M1_WEAPON_NAMES.forEach(name=>{
   ['common','uncommon','rare','epic','legendary','mythic'].forEach(rarity=>{
-    M1_WEAPON_POOL.push({name, rarity, icon, mod:RARITY_MOD[rarity]});
+    M1_WEAPON_POOL.push({name, rarity, icon:'rifle', mod:RARITY_MOD[rarity]});
   });
 });
 // ---------- FNCS 2025 loot: Chapter 6 Season 1, Demon Hunters ----------
@@ -35792,35 +34476,16 @@ const EXTRA_ITEM_ART={
  "Enhanced Spire Rifle": "items/itm-enhanced-spire-rifle.webp",
  "Kor's Deadeye DMR": "items/itm-kor-s-deadeye-dmr.webp",
  "Med-Mist": "items/itm-med-mist.webp",
- "Small Fries": "items/itm-small-fries.webp",
- // Chapter 7 Season 3 guns the Major 2 pool gained on 5 September 2026, and the
- // Season 4 island's returning arsenal. Fetched by tools/fetch-missing-item-art.js.
- "Warforged Assault Rifle": "items/itm-warforged-assault-rifle.webp",
- "Lancehead Pistol": "items/itm-lancehead-pistol.webp",
- "Heavy Impact Sniper Rifle": "items/itm-heavy-impact-sniper-rifle.webp",
- "Flex SMG": "items/itm-flex-smg.webp",
- "Stinger SMG": "items/itm-stinger-smg.webp",
- "Hunting Rifle": "items/itm-hunting-rifle.webp",
- "Assault Rifle": "items/itm-assault-rifle.webp",
- "Pump Shotgun": "items/itm-pump-shotgun.webp",
- "8-Bit Shotgun": "items/itm-8-bit-shotgun.webp",
- "Drum Gun": "items/itm-drum-gun.webp",
- "Tactical Pistol": "items/itm-tactical-pistol.webp",
- "Dual Pistols": "items/itm-dual-pistols.webp",
- "Minigun": "items/itm-minigun.webp",
- "Flare Gun": "items/itm-flare-gun.webp",
- "Spicy Taco": "items/itm-spicy-taco.webp"
+ "Small Fries": "items/itm-small-fries.webp"
 };
 
-function weaponIconHTML(o, set){
+function weaponIconHTML(o){
   const tag=src=>'<img alt="" loading="lazy" decoding="async" src="'+src+'">';
   // The 2025 sets share most of their loot with each other, so a picture missing
   // from one season's table is very often present in another's. Own set first,
-  // then the other two, then the silhouette. The set is the card deck in the
-  // draft and the island of the night in the career, which passes it in.
-  const own=set || (CARD_MODE ? CARD_SET : null);
-  if(T_ART[own]){
-    for(const tbl of [T_ART[own], T1_ART, T2_ART, T3_ART]){
+  // then the other two, then the silhouette.
+  if(CARD_MODE && T_ART[CARD_SET]){
+    for(const tbl of [T_ART[CARD_SET], T1_ART, T2_ART, T3_ART]){
       if(tbl && tbl[o.name]) return tag(tbl[o.name]);
     }
   }
@@ -35832,13 +34497,6 @@ function weaponIconHTML(o, set){
   if(it) return tag(it);
   const ex=EXTRA_ITEM_ART[o.name];
   if(ex) return tag(ex);
-  // A 2026 island dealing a gun that only the 2025 tables have a picture of --
-  // the Oni Shotgun and Ranger AR came back for Season 4 -- takes that picture
-  // rather than the outline. The shared names (Shield Potion, Med Kit) were
-  // already found above, so no season borrows another's art for those.
-  for(const tbl of [T1_ART, T2_ART, T3_ART]){
-    if(tbl[o.name]) return tag(tbl[o.name]);
-  }
   return WEAPON_ICON[o.icon];
 }
 
@@ -36695,12 +35353,7 @@ const CARD_SKIN={
   rare:     {bg:'linear-gradient(155deg,#31b6ff 0%,#0f74dd 48%,#063a80 100%)', glow:'#00a3ff', tag:'RARE'},
   epic:     {bg:'linear-gradient(155deg,#c64cff 0%,#8e2bd6 48%,#4a0e85 100%)', glow:'#c64cff', tag:'EPIC'},
   legendary:{bg:'linear-gradient(155deg,#ffa53d 0%,#e56a00 48%,#7f3600 100%)', glow:'#ff8c1a', tag:'LEGENDARY'},
-  mythic:   {bg:'linear-gradient(155deg,#ffe14d 0%,#e0a500 48%,#7a5a00 100%)', glow:'#ffd200', tag:'MYTHIC'},
-  /* Exotic — редкость контент-мейкера (см. shownRarity). Её тут не было, и
-     карточка креатора рисовалась серой: CARD_SKIN[rarity] не находил ключа и
-     падал на common. Его отчёт 4 сентября — «у карточки цвет не exotic».
-     Цвет — тот же #70C7F8 из --exotic, снятый с фортнайтовской вики. */
-  exotic:   {bg:'linear-gradient(155deg,#cdefff 0%,#70c7f8 48%,#186a9e 100%)', glow:'#70c7f8', tag:'EXOTIC'}
+  mythic:   {bg:'linear-gradient(155deg,#ffe14d 0%,#e0a500 48%,#7a5a00 100%)', glow:'#ffd200', tag:'MYTHIC'}
 };
 
 // Real photos, keyed by handle, for players where we actually have the rights
@@ -37015,29 +35668,9 @@ function clubLogoFile(org){
   const slug=String(org).replace(/[^A-Za-z0-9.\-]+/g,'_').replace(/^_+|_+$/g,'');
   return slug ? slug+'.png' : null;
 }
-/* ЕСТЬ ЛИ ТАКОЙ ФАЙЛ ВООБЩЕ.
- *
- * Имя файла строится из названия клуба, поэтому его можно построить для
- * любого — в том числе для тех двухсот тридцати двух, чьего герба у нас нет.
- * Карточка ставила <img> всё равно и полагалась на onerror: картинка тихо
- * исчезала, а запрос уходил и возвращался 404. Столько же раз, сколько такая
- * карточка нарисована.
- *
- * Замер по Observatory зоны 5 сентября 2026: 19,18 тысячи ответов 4xx с
- * origin за сутки при 5% попаданий в кэш. Проба tools/check-missing-files.js
- * называет виновника: гербов на ростере 299, файлов в logos/ — 83.
- *
- * Список CAREER_CRESTS — это и есть содержимое папки (его генерирует
- * tools/career-org-check.js). Карьера сверялась с ним всегда, драфт — нет.
- * Через try, потому что объявлен он ниже по файлу: до его строки обращение к
- * const бросает, и тогда честнее вести себя как раньше. */
-function ccHasCrest(f){
-  if(!f) return false;
-  try{ return CAREER_CRESTS.has(f); }catch(e){ return true; }
-}
 function clubLogoHTML(org, wide){
   const f=org && clubLogoFile(org);
-  if(!ccHasCrest(f)) return '';
+  if(!f) return '';
   const h=wide?12:10;
   // Crests come in wildly different proportions — some are square, some are wide
   // banners. Height alone would let a banner run three times the width of a
@@ -37052,7 +35685,7 @@ function clubLogoHTML(org, wide){
 // keeps a fixed height, so cards without a crest still line up with the rest.
 function clubCrestHTML(org, wide){
   const f=org && clubLogoFile(org);
-  if(!ccHasCrest(f)) return '';
+  if(!f) return '';
   const solid=(typeof ccCrestSolid==='function') && ccCrestSolid(f);
   return `<img class="${solid?'crest-tile':''}" src="${LOGO_DIR}${f}" alt="" onerror="this.remove()"
     style="max-height:${wide?30:24}px;max-width:${wide?50:42}px;object-fit:contain;
@@ -37436,9 +36069,6 @@ function chooseMode(size, major){
   pendingYear = YEAR_CHAINS[major] ? major : null;
   MODE_ART_NOW=modeArtFor(size, major);
   CC_DRAFT_RUN=true;   // драфт, не командный вечер — мультиплеер молчит (см. ccMpOn)
-  // Настройка комнаты прошлого карьерного вечера (единицы слабости дивизиона,
-  // принудительный профиль финала соло) в драфт не переносится.
-  if(typeof ccZoneTuneFor==='function') ccZoneTuneFor(null);
   pendingCardSet = TILE_CARD_SET[major] || 'm2';
   applyLobbyTheme(true);
   buildPreRegionChecks();
@@ -38529,15 +37159,7 @@ const LANDING_ZONE_SHARE={2:1, 3:0.68, 4:0.52};
    карты. Сколько клеток на самом деле вышло у каждого острова, держит сторож
    check-landing-solo-grid — у мелких наборов Reload потолок ниже сотни, и это
    честный предел их собственных прямоугольников, а не недосмотр. */
-/* Сто клеток на сотню игроков — это высадка без единого контеста: на s42
-   дробление доходило до ста, 97 ботов садились в 97 разных клеток, и за
-   первую зону выбывал один при реальных одиннадцати из 97 (реплей финала
-   Solo Series EU 24.01.2026). Январская серия на m2 дробилась только до 58
-   (упор в LANDING_ZONE_SOLO_MIN) — и именно её карту с красными коробками по
-   два-три ника он прислал как образец 6 сентября: «как на соло выглядела,
-   так и на solo fncs, а не 100 квадратиков». Потолок дробления — 60: m2 как
-   была, s42 — 60 коробок на сотню, сорок из них на двоих. */
-const CC_SOLO_GRID=60, LANDING_ZONE_SOLO_MIN=2.5;
+const CC_SOLO_GRID=100, LANDING_ZONE_SOLO_MIN=2.5;
 /* Набор, который уже нарисован под соло, дробить нечем и незачем.
 
    Дробление существует потому, что дуо-сетка на соло-лобби редка: тридцать
@@ -40212,12 +38834,6 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   // заново и не пронумеровал, вставало в очередь по вчерашним местам — см.
   // stampQualSeats.
   teams.forEach((t,i)=>{ t[ptsKey]=0; t[elimsKey]=0; t[logKey]=[]; t.gotVR=false; t.wins=0; t.qualByWin=false; t.qualSeat=0; t._uid=i; t.landingWins=0; t.landingLosses=0; t.multiKillLandingWins=0; t.landingContests=0; });
-  /* Вечер в эфир: окошко трансляции читает этап отсюда — поле, ключ очков,
-     сколько игр и где отсечка. Один вход на все раннеры, потому что живой этап
-     у всех один и тот же. См. ccTvTick. */
-  if(typeof CC_STREAM_LIVE!=='undefined' && CC_STREAM_LIVE)
-    CC_TV_RUN={teams:teams, pts:ptsKey, n:numGames, cut:opts.cutAt||0,
-               name:opts.stageName||''};
   /* carry — points the field walks in with, by team name. Division 1's Tuesday
      is the second session of one tournament, and the standings a player reads
      during it have to be the tournament's: with Monday left out, the table said
@@ -40583,14 +39199,6 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       next.set(t._uid, {pts: pointsFn(d.p || alive) + ccKillPts(elims, killMult), elims});
     });
     liveScore=next;
-    /* HUD набора на карте — после того как посчитан живой счёт: золотой
-       шестиугольник у полосок показывает очки сессии (этап плюс текущая игра),
-       как «поинты» на турнирном HUD. См. ccKitPanel. */
-    try{
-      const meT=lobby.find(t=>t && t.isYou);
-      CC_KIT_PTS=meT ? Math.round(livePts(meT)) : null;
-      ccKitPanel(lobby, frame);
-    }catch(e){}
 
     // Numbers first: writing text into rows that are already on screen moves
     // nothing, so a kill can show the instant it lands.
@@ -42496,7 +41104,7 @@ async function pickInitialZone(you, bots, title, seat, room){
   // Свои точки — только у карьеры: в драфте их негде было бы поставить. Их
   // три, и на карте видно каждую со своей аурой.
   const mine=(typeof CAREER_RUN!=='undefined' && CAREER_RUN)
-    ? new Map(careerSpotZones(ccNightSpot(ACTIVE_LANDING_SET)).map(x=>[x.zone, x.slot])) : null;
+    ? new Map(careerSpotZones(ACTIVE_LANDING_SET).map(x=>[x.zone, x.slot])) : null;
 
   const zoneEls=ALL_LANDING_ZONES.map(z=>{
     const all=zoneGroups.get(z);
@@ -42699,10 +41307,10 @@ async function showRegularLandingPicker(){
    у обоих: метка даёт ауру, аура даёт силу, сила решает вечер. */
 function ccLandingSpot(zone){
   if(typeof CAREER_RUN==='undefined' || !CAREER_RUN || !zone) return false;
-  if(careerSpotOn(ccNightSpot(ACTIVE_LANDING_SET)) || !careerSpotRoom(ccNightSpot(ACTIVE_LANDING_SET))) return false;
-  const at=careerSpotIndexOf(zone, ccNightSpot(ACTIVE_LANDING_SET));
+  if(careerSpotOn(ACTIVE_LANDING_SET) || !careerSpotRoom(ACTIVE_LANDING_SET)) return false;
+  const at=careerSpotIndexOf(zone, ACTIVE_LANDING_SET);
   if(at<0) return false;
-  return careerSpotSet(at, ccNightSpot(ACTIVE_LANDING_SET));
+  return careerSpotSet(at, ACTIVE_LANDING_SET);
 }
 function ccLandingNormalize(finalTeams, you){
   const seenHandles=new Set(you.squad.map(p=>p.handle));
@@ -45585,10 +44193,7 @@ function applyStageBias(pointsFn){
   // signal — an open stage is a kill race and a final is played for placement,
   // and one setting cannot be both. Reading it off the scoring table here means
   // no call site has to remember to set it, exactly as with the two above.
-  // Карьера может назвать профиль сама (финал соло играется под очками
-  // Victory Cup, но это финал) — см. CC_ZONE_PROFILE у ccZoneTuneFor.
-  const forced = (typeof CC_ZONE_PROFILE !== 'undefined') ? CC_ZONE_PROFILE : null;
-  if(typeof ZoneSim !== 'undefined') ZoneSim.profile(forced || (finals ? 'finals' : 'open'));
+  if(typeof ZoneSim !== 'undefined') ZoneSim.profile(finals ? 'finals' : 'open');
 }
 // The trade, on its own. It was written out twice inside simulateGame — once
 // for the pair loop and once for the hot streak — and the zone engine needs a
@@ -45689,12 +44294,6 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
     .sort((a,b)=>String(a.mpTag||a.name)<String(b.mpTag||b.name) ? -1 : 1);
   const game=ZoneSim.simulateZoneGame(teams, {
     rng: Math.random, land: ZONE_SETS[set], aspect: aspect,
-    // Острова Reload (r1–r4) идут по своему шторму — см. RELOAD_PHASES в zone-sim,
-    // и с возрождениями до восьмого круга — см. onDeath там же.
-    phases: /^r\d$/.test(set) ? ZoneSim.RELOAD_PHASES : undefined,
-    // В соло-Reload возрождать некому — без напарника смерть окончательная
-    // (реплеи Reload Solo Victory Cup S41: 40 → 27 к восьмому кругу, а не 40).
-    respawnUntilZone: (/^r\d$/.test(set) && squadSize>1) ? CC_RELOAD_RESPAWN_ZONE : 0,
     startOf: t => { const z=t.landingZone;
       if(z) return {x: z.x + z.w/2, y: z.y + z.h/2};
       const grid=ZONE_SETS[set];
@@ -45707,10 +44306,6 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
   });
   // Подписи к точкам нужны показу с первого же куска, а не с конца матча.
   LAST_ZONE_ROSTER=game.roster();
-  // Свой отряд движка — лечению нужно трогать его щит и здоровье. См. ccAskHeal.
-  if(you) you._sq=(game.squads||[]).find(s=>s.team===you)||null;
-  // И сама игра — файту середины нужны eliminate/nearest движка. См. ccFightApply.
-  if(you) you._game=game;
   const alive=()=>!you || (game.squads.find(s=>s.team===you)||{}).alive;
   /* Порядок здесь и есть вся суть: сначала показать кусок игры, который только
      что просчитан, и лишь потом спросить. Его правка: «во время игры можно это
@@ -45727,17 +44322,9 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
      высоту наравне с остальными пятьюдесятью. Ничего нового считать не надо, и
      баланс остаётся тем же, что был измерен. */
   const sim=careerSimOn();
-  let dead=false, deathShown=false;
-  ccKitInit(teams);
-  let zoneWas=0;
+  let dead=false;
   for(const stop of CC_GAME_STOPS){
     game.playTo(stop.zone);
-    // Круги, прошедшие с прошлой остановки, стоят стройки — всем одинаково.
-    ccKitSpend(teams, CC_MATS_ZONE*Math.max(1, stop.zone-zoneWas));
-    zoneWas=stop.zone;
-    CC_KIT_ZONE=zoneWas;   // панель на карте досчитывает ресы по зоне кадра, см. ccKitPanel
-    // Концовка без ресов стоит силы, и комнате тоже. См. CC_MATS_PEN.
-    if(stop.zone>=8) ccMatsPenalty(teams);
     ccMpMark('p'+stop.zone, teams);
     if(ui && ui.show && !dead) dead=await ui.show(game.frames());
     ccMpMark('s'+stop.zone, teams);
@@ -45767,22 +44354,15 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
        по-прежнему решает, рисовать ли дальше кадры. */
     if(!sim && game.aliveCount()>1){
       for(const h of humans){
-        // Молчаливая остановка: вопрос не задаётся, когда отвечать не на что
-        // (полные ресы). Условие считается из общего состояния команды,
-        // поэтому у обоих клиентов вопрос либо есть, либо нет — вместе.
-        if(stop.quiet && stop.quiet(h)) continue;
         if((game.squads.find(s=>s.team===h)||{}).alive) await stop.ask(h, ui);
       }
     }
     ccMpMark('q'+stop.zone, teams);
-    // Повтор смерти — один раз, когда свой отряд выбыл (см. ccDeathCard).
-    if(you && ui && !sim && !deathShown && !alive()){ deathShown=true; await ccDeathCard(ui.map, ccDeathInfo(you, game)); }
   }
   const res=game.finish();
   ccMpMark('fin', teams);
   // И остаток матча — тем же куском, если игрок ещё смотрит.
   if(ui && ui.show && !dead) await ui.show(res.timeline);
-  if(you && ui && !sim && !deathShown && !alive()){ deathShown=true; await ccDeathCard(ui.map, ccDeathInfo(you, game)); }
   LAST_ZONE_TIMELINE=res.timeline;
   LAST_ZONE_ROSTER=res.roster;
   RECORD_NEXT_ZONE_GAME=false;
@@ -45796,808 +44376,10 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
 }
 /* Где игра останавливается и о чём спрашивает — его расписание: лут после
    второй зоны, высокая земля на восьмой. */
-/* РЕСЫ И ЛУТ — то, чем игрок решает, стоит ли рисковать.
-
-   Его правка 3 сентября: «прикольно во время игры показывать, сколько ресов и
-   какой лут у тебя, чтобы ты понимал, стоит ли рисковать сейчас или нет. И
-   после каждой зоны можно рискнуть пойти рефреш найти или нет и играть тем,
-   что есть. Чтобы игрок думал, что больше шанс даст зону пережить».
-
-   Ресы — одно число, а не инвентарь: каждый круг стоит стройки
-   (CC_MATS_ZONE), рефреш пополняет, высокая земля тратит вдвое. Концовка
-   стоит по остатку ступенями (CC_MATS_BANDS): полная треть — ноль, средняя
-   −1, нижняя — CC_MATS_PEN, строиться нечем.
-   Штраф общий: комната живёт по тем же числам (ccRoomMats), иначе это был бы
-   налог на игрока, а лестница дивизионов калибровалась на равных.
-
-   Спрашивать после КАЖДОГО круга нельзя — это восемь вопросов на игру и
-   девяносто на вечер (тот же счёт, по которому метка высадки осталась одна на
-   этап). Поэтому вопрос про рефреш приходит на 5-й и 7-й зоне и ТОЛЬКО когда
-   ресы кончились, то есть когда ответ на что-то влияет. Полные ресы — вопроса
-   нет, и это правильный молчок. */
-/* ШКАЛА ИГРЫ — его слово 7 сентября: «чем больше ресов, тем больше силы, но
-   лимиты 500 500 500». Ресы считаются в единицах игры: полный запас 1500 (три
-   стопки по 500, CC_MATS_CAP_EACH), круг стоит 300 (та же пятая часть, что
-   были 110 из 550), высокая земля — ещё 250. Начало игры — не полный запас:
-   на точке собирается CC_MATS_START, а до фула фармят после лута (ccAskFarm на
-   третьей зоне — его пункт 3 со страницы «simulation»: «нафармить до фула /
-   набить сёрдж и добыть меньше, типа 400 400 400 / зафайтить ближайшее дуо»). */
-const CC_MATS_FULL=1500, CC_MATS_ZONE=300, CC_MATS_PEN=3;
-const CC_MATS_CAP_EACH=500, CC_MATS_START=600, CC_MATS_SURGE_FARM=1200;
-const CC_MATS_HG_EXTRA=250;  // высокая земля строится, и это дороже обычного круга
-/* КОНЦОВКА ПО ОСТАТКУ — ступенями, а не одним порогом. Его вопрос 6 сентября:
-   «как ресурсы влияют на количество силы? чем больше, тем же лучше в реальной
-   игре». До этого было «есть/нет»: ниже CC_MATS_LOW −3, выше — ноль, и 550
-   ресов ничем не отличались от 200.
-
-   Единственный найденный замер — Tracker, финал DreamHack Solo NAE 15.10.2020,
-   постройки на старте зоны (150 = полный кап 1500) и кто дожил до следующей:
-
-     на старте зоны        зона 4 → 5    зона 6 → 7
-     ≤50 построек (≤1/3)      50%          42%
-     51–100 (1/3–2/3)         76%          72%
-     >100 (>2/3)              93%          86%
-
-   Разница между «мало» и «полно» почти двукратная, середина ближе к верху,
-   чем к низу: в логитах зона 6 даёт 1.28 между низом и серединой и 0.83 между
-   серединой и верхом. Отсюда ступени: верхняя треть — ноль, средняя −1,
-   нижняя — прежние −3 (1.28:0.83 ≈ 3:1.2). Низ оставлен на −3 нарочно: на нём
-   считано ожидание рефреша (см. CC_LATE_MOVES). Штраф по-прежнему общий —
-   комната идёт по тем же ступеням, поэтому лестница дивизионов не двигается,
-   а меняется только цена решений: экономная стройка и ранний рефреш стали
-   стоить того, чего стоят по данным. Замер 2026 года снять не удалось:
-   в JSON реплеев Tracker'а есть подборы ресов, урон и здоровье, но не остаток.
-   Проба — tools/career-mats-band-probe.js. */
-/* Верхняя ступень — его правка 7 сентября «чем больше ресов, тем больше силы»:
-   полный запас (от 90% капа) даёт +1 в концовке. Это решение, не замер: в
-   таблице Tracker верхняя треть одна, и внутри неё разницы не видно. */
-// Нижняя ступень — ровно «мало» (ccMatsLow: меньше трети): на шкале 1500 треть
-// делится без остатка, и порог сдвинут на волосок, чтобы 500 осталось внизу.
-const CC_MATS_BANDS=[{from:0.9, pow:1}, {from:2/3, pow:0}, {from:1/3+1e-6, pow:-1}, {from:0, pow:-CC_MATS_PEN}];
-// «Мало» — нижняя ступень; на ней задаётся вопрос про рефреш и ходит комната.
-const CC_MATS_LOW=Math.round(CC_MATS_FULL/3);
-function ccMatsEndPow(t){
-  const f=ccMats(t)/CC_MATS_FULL;
-  const b=CC_MATS_BANDS.find(x=>f>=x.from)||CC_MATS_BANDS[CC_MATS_BANDS.length-1];
-  return b.pow;
-}
-function ccKitInit(teams){
-  // Игра начинается не с полным запасом — с тем, что собрано на точке (CC_MATS_START); до фула фармят на третьей зоне.
-  (teams||[]).forEach(t=>{ t._mats=CC_MATS_START; t._loot=null; t._matsPen=false; t._buildMul=1; t._healed=0; t._rot=null; t._rotMul=null; });
-  CC_KIT_ZONE=0;
-}
-/* ПАНЕЛЬ НАБОРА НА КАРТЕ — его правка 5 сентября: «я бы хотел на симуляцию
-   добавить ресурсы, лут, который есть, и сёрдж».
-
-   Всё это уже считалось, но игрок видел ресы и лут только в подсказке к
-   вопросу, а сёрдж — никогда. Теперь под шапкой карты стоит строка: здоровье
-   отряда (из кадра), ресы, лут после третьей зоны и сёрдж — порог этой фазы в
-   игроках, сколько в живых, и красным «под сёржем», когда движок бьёт именно
-   тебя (флаг u в точке кадра, см. zone-sim applySurge).
-
-   Ресы модель тратит кусками на остановках (ccKitSpend перед показом), а
-   круги идут один за другим — поэтому на кадре они досчитываются по зоне:
-   к тому, что осталось после остановки, прибавляется по кругу за каждую ещё
-   не показанную зону. CC_KIT_ZONE — зона последней остановки. */
-let CC_KIT_ZONE=0;
-// Очки сессии своей команды на текущем кадре — пишет onZoneFrame из живого счёта.
-let CC_KIT_PTS=null;
-// Редкость предмета — к ключу цвета: пулы пишут её и словом Epic'а, и цветом.
-function ccRarityKey(r){
-  const s=String(r||'').toLowerCase();
-  return ({purple:'epic', blue:'rare', green:'uncommon', grey:'common', gray:'common',
-           orange:'legendary', gold:'mythic'})[s] || s.replace(/[^a-z]/g,'');
-}
-// Кирка на HUD — картинка, а не силуэт: The Axe of Champions 2.0 (его модель из Notion, 7.09).
-const CC_PICKAXE_ART='items/item-axe-of-champions.png';
-// Иконки ресов — как в игре: брёвна, кирпичи, слиток.
-const CC_KIT_ICON={
-  wood:'<svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="6" rx="3" fill="#c8894a"/><rect x="2" y="13" width="20" height="6" rx="3" fill="#a86a33"/><circle cx="5" cy="8" r="2" fill="#e9b77d"/><circle cx="19" cy="16" r="2" fill="#e9b77d"/></svg>',
-  brick:'<svg viewBox="0 0 24 24"><rect x="2" y="4" width="9" height="5" fill="#c5624d"/><rect x="13" y="4" width="9" height="5" fill="#c5624d"/><rect x="2" y="10" width="20" height="5" fill="#b3523e"/><rect x="2" y="16" width="9" height="5" fill="#c5624d"/><rect x="13" y="16" width="9" height="5" fill="#c5624d"/></svg>',
-  metal:'<svg viewBox="0 0 24 24"><path d="M4 8h16l2 8H2z" fill="#b7c3d1"/><path d="M4 8h16l-1-3H5z" fill="#e2e9f1"/><path d="M2 16h20v3H2z" fill="#8a97a8"/></svg>'
-};
-function ccKitPanel(lobby, frame){
-  const map=CC_RUN_MAP;
-  if(!map || !map.isConnected || !frame) return;
-  const i=(lobby||[]).findIndex(t=>t && t.isYou);
-  if(i<0) return;
-  const you=lobby[i], d=(frame.dots||[])[i];
-  if(!you || !d) return;
-  let box=map.querySelector('.zr-kit');
-  if(!box){
-    box=document.createElement('div'); box.className='zr-kit'; map.appendChild(box);
-    // Килфид живёт в том же углу — поднимаем его над полосками.
-    const feed=map.querySelector('.zr-feed'); if(feed) feed.style.bottom='78px';
-    // Счётчики шапки справа гасим: их место занимает столбик в раскладке игры.
-    const head=map.querySelector('.zr-head'); if(head) head.classList.add('zr-head-quiet');
-    // Вид игры у самого проигрывателя: нейм-плейты без чёрной коробки, килфид
-    // строками, а не пилюлями. См. ZoneReplay.setPlain.
-    if(typeof ZoneReplay!=='undefined' && ZoneReplay.setPlain) ZoneReplay.setPlain(true);
-    if(feed) feed.classList.add('zr-feed-plain');
-  }
-  const T=L();
-  if(!d.alive){ box.innerHTML='<div class="zk-dead"><b>'+esc(T.ccKitOut)+'</b></div>'; return; }
-  /* Пока на карте стоит вопрос, ресы — ровно те, по которым он задан (модель
-     уже списала круги до остановки), иначе подсказка говорит «ресы 0», а
-     строка внизу — 110, и это читается как две правды. */
-  const asking=!!map.querySelector('.cc-choice-map');
-  const mats=asking ? ccMats(you)
-    : Math.max(0, ccMats(you)+CC_MATS_ZONE*Math.max(0, CC_KIT_ZONE-(frame.zone||0)));
-  const low=mats<CC_MATS_LOW;
-  const hp=Math.max(0, Math.min(100, d.h||0));
-  /* ПО РЕФЕРЕНСУ — его скрин HUD Fortnite (5.09) и слово «можешь как на референсе
-     сделать». Слева щит и здоровье полосками с числами, в центре плашка сёржа с
-     молнией, справа ресы тремя стопками и хотбар с пятью слотами.
-
-     Сто очков отряда в движке — это здоровье одного игрока со щитом (см.
-     zone-sim: «the squad's 100 points stand for one»). На экране они лежат как в
-     игре, двумя полосками по сто: верхняя половина очков — щит, нижняя —
-     здоровье. Это раскладка ОДНОГО числа, а не второй запас: щит уходит первым,
-     здоровье — за ним, и сумма всегда равна тому, что считает движок. */
-  /* С 5 сентября движок ведёт щит отдельно (zone-sim, CHIP_HP): его снимают
-     перестрелки и возвращает круг, а здоровье — то, что снимают шторм и сёрдж.
-     Полоски показывают ровно эти два числа. Кадр без щита (старая запись) —
-     щит полный. */
-  const shield=Math.max(0, Math.min(100, Math.round(d.sh==null ? 100 : d.sh)));
-  const health=hp;
-  /* Ресы — тоже одно число модели, разложенное на дерево, кирпич и металл в
-     привычной пропорции 40/35/25; сумма стопок равна числу, которое тратит и
-     пополняет модель. */
-  const st=ccKitSplitMats(mats);
-  const pack=you._loot ? [...(you._loot.weapons||[]), ...(you._loot.heals||[]), you._loot.move].filter(Boolean) : [];
-  /* Хотбар как в игре: первый слот — кирка, дальше пять предметов, номер слота
-     под ячейкой; слот носит цвет редкости предмета, пустой — пунктиром. Над
-     хотбаром ряд построек Q F V T — четыре ромба, как на HUD. */
-  // В слоте — картинка предмета (те же арты, что в лоадауте драфта), имя во
-  // всплывающей подсказке; без картинки — имя текстом.
-  const art=o=>{ let h=''; try{ h=(typeof weaponIconHTML==='function' && weaponIconHTML(o, ccLootSet()))||''; }catch(e){ h=''; }
-    return h ? '<span class="zk-art">'+h+'</span>' : '<em>'+esc(o.name)+'</em>'; };
-  /* Кирка — The Axe of Champions 2.0, награда чемпиона FNCS (его картинка в Notion,
-     7 сентября: «модельку кирки»). Редкость rare — слот синий, как в игре;
-     файл items/item-axe-of-champions.png вырезан со скрина, фон в прозрачность. */
-  const slots='<span class="zk-slot zk-pick r-rare" data-cap="'+esc(T.ccKitPickaxe)+'" title="'+esc(T.ccKitPickaxe)+' · The Axe of Champions 2.0"><span class="zk-art zk-pickaxe"><img alt="" src="'+CC_PICKAXE_ART+'" onerror="this.remove()"></span><u>1</u></span>'+
-    [0,1,2,3,4].map(k=>{
-      const o=pack[k];
-      const r=o && o.rarity ? ' r-'+ccRarityKey(o.rarity) : '';
-      return '<span class="zk-slot'+(o?r:' empty')+'"'+(o?' title="'+esc(o.name)+'"':'')+'>'+(o?art(o):'')+'<u>'+(k+2)+'</u></span>';
-    }).join('');
-  const builds='<div class="zk-builds">'+['Q','F','V','T'].map(k=>'<span><i></i><u>'+k+'</u></span>').join('')+'</div>';
-  /* Сёрдж — как на HUD самой игры (его скрин 5.09): баннер «STORM SURGE
-     ACTIVE!» с треугольником-молнией сверху по центру и справа крупное число
-     «N ABOVE DAMAGE THRESHOLD» — на сколько урона ты над линией отсечки (n точки
-     минус surgeLine кадра). Под сёржем баннер и число краснеют, подпись — «до
-     порога». Пока сёрдж никого не бьёт, на экране НИЧЕГО — так и в игре (его
-     скрин высадки, 5.09: ни порога, ни предупреждения). */
-  const active = frame.surgeAt>0 && frame.surgeLine!=null;
-  /* ПРЕДУПРЕЖДЕНИЕ — как в игре (его скрины 7 сентября с финала дивизиона 1:
-     «STORM SURGE WARNING! DAMAGE ENEMIES TO AVOID ELIMINATION!» при 46 живых
-     и «149 ABOVE DAMAGE THRESHOLD» рядом). Сёрдж ещё никого не бьёт, но живых
-     больше порога СЛЕДУЮЩЕГО круга — значит, с новым кругом он включится, и
-     игра уже показывает, где ты относительно будущей линии. Линия считается
-     тем же правилом, что в движке (applySurge): отсечь столько нижних по
-     чистому урону, на сколько живых больше порога. Reload сёрджа не знает. */
-  const reload=/^r\d$/.test(String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : ''));
-  const nextPh=(!active && !reload && typeof ZoneSim!=='undefined' && ZoneSim.PHASES) ? ZoneSim.PHASES[frame.zone] : null;
-  const nextAt=nextPh && isFinite(nextPh.surgeAt) ? nextPh.surgeAt : 0;
-  // На первом круге предупреждения нет — его скрин высадки 5.09: ни порога, ни баннера.
-  const warn=!active && frame.zone>=2 && nextAt>0 && frame.players!=null && frame.players>nextAt;
-  let line=active ? frame.surgeLine : null;
-  if(warn){
-    const alive=(frame.dots||[]).filter(x=>x && x.alive);
-    const per=alive.length ? Math.max(1, frame.players/alive.length) : 1;
-    const nets=alive.map(x=>Number(x.n)||0).sort((a,b)=>a-b);
-    const k=Math.min(nets.length-1, Math.ceil((frame.players-nextAt)/per));
-    line=nets.length ? nets[k] : null;
-  }
-  const gap=(line!=null) ? (Number(d.n)||0)-line : 0;
-  const below=active ? !!d.u : (line!=null && gap<0);
-  const tri='<i class="zk-tri"></i>';
-  /* И порог заранее — его вопрос 6 сентября «а на экране у игрока есть
-     сёрдж?»: пока сёрдж никого не бьёт, но фаза его уже знает, стоит тихая
-     строка «сёрдж с 60 · в игре 76», как между зонами на турнирном HUD. */
-  const thresh=(line!=null)
-    ? '<div class="zk-thresh'+(below?' on':' ok')+'">'+tri+'<div><b>'+ccNum(Math.abs(Math.round(gap)))+'</b><span>'+esc(below ? T.ccKitBelowCap : T.ccKitAboveCap)+'</span></div></div>'
-    : '';
-  const surge = active
-    ? '<div class="zk-banner'+(d.u?' on':'')+'">'+tri+'<b>'+esc(d.u ? T.ccKitUnderBanner : T.ccKitSurgeBanner)+'</b></div>'+thresh
-    : warn
-      ? '<div class="zk-banner warn">'+tri+'<b>'+esc(T.ccKitSurgeWarn)+'</b><i class="zk-sub">'+esc(T.ccKitSurgeWarnSub)+'</i></div>'+thresh
-      : (frame.surgeAt>0
-          ? '<div class="zk-surgeat">'+esc(T.ccKitSurgeAt(frame.surgeAt, frame.players!=null ? frame.players : ''))+'</div>'
-          : '');
-  // Золотой шестиугольник у полосок — очки сессии («поинты» турнирного HUD):
-  // этап плюс текущая игра, из живого счёта таблицы (CC_KIT_PTS), иначе этап.
-  const level=CC_KIT_PTS!=null ? CC_KIT_PTS : Math.round(you.stagePts||0);
-  /* Верхний правый столбик игры: элиминации, живые игроки, время фазы. Своя
-     шапка проигрывателя («ЗОНА N · время» слева) остаётся, её правые счётчики
-     гаснут (.zr-head-quiet). Напарники — строкой над полосками, как в игре
-     нейм-плейт тиммейта с полосой здоровья; здоровье у отряда одно на всех. */
-  const sec=Math.max(0, frame.secondsLeft||0);
-  const clock=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');
-  const meKey=(typeof hKey==='function' && CAREER && CAREER.player) ? hKey(careerCard()||CAREER.player.nick) : '';
-  const mates=(you.squad||[]).map(c=>c && c.handle).filter(h=>h && (!meKey || hKey(h)!==meKey)).slice(0, 2);
-  const mateRows=mates.map(h=>'<div class="zk-mate"><b>'+esc(h)+'</b><i><span style="width:'+hp+'%"></span></i></div>').join('');
-  /* Компас сверху по центру, как в игре: курс отряда в градусах (0 — север) и
-     стороны света вокруг. Курс — из направления стрелки на кадре (d.a, градусы
-     математические, 0 — восток). */
-  const headDeg=((90-(Number(d.a)||0))%360+360)%360;
-  const compass=(()=>{
-    const W=300, span=120;  // видимый сектор ±60°
-    const px=deg=>W/2+((((deg-headDeg)+540)%360)-180)*(W/span);
-    const cards=[[0,'N'],[45,'NE'],[90,'E'],[135,'SE'],[180,'S'],[225,'SW'],[270,'W'],[315,'NW']];
-    let h='';
-    for(let g=0; g<360; g+=15){
-      const x=px(g); if(x<-10||x>W+10) continue;
-      const card=cards.find(c=>c[0]===g);
-      if(card) h+='<span class="card" style="left:'+x.toFixed(1)+'px">'+card[1]+'</span>';
-      else if(g%30===0) h+='<span style="left:'+x.toFixed(1)+'px">'+g+'</span>';
-      else h+='<i class="zk-tick" style="left:'+x.toFixed(1)+'px"></i>';
-    }
-    return '<div class="zk-compass">'+h+'<b class="zk-heading">'+Math.round(headDeg)+'</b></div>';
-  })();
-  box.innerHTML=
-    compass+
-    '<div class="zk-top">'+
-      '<div class="zk-top-row"><b>'+(d.e||0)+'</b><i class="zk-ico-skull"></i></div>'+
-      '<div class="zk-top-row"><b>'+(frame.players!=null?frame.players:frame.alive||0)+'</b><i class="zk-ico-man"></i></div>'+
-      '<div class="zk-top-row"><b>'+clock+'</b><i class="zk-ico-clock"></i></div>'+
-    '</div>'+
-    '<div class="zk-vitals" data-hp="'+hp+'" data-shield="'+shield+'" data-health="'+health+'">'+
-      mateRows+
-      '<div class="zk-bars">'+
-        '<div class="zk-row"><i class="zk-ico zk-ico-shield"></i><div class="zk-bar zk-shield"><i style="width:'+shield+'%"></i></div><b>'+shield+'</b></div>'+
-        '<div class="zk-row"><i class="zk-ico zk-ico-plus">+</i><div class="zk-bar zk-health"><i style="width:'+health+'%"></i></div><b>'+health+'</b></div>'+
-      '</div>'+
-      '<span class="zk-pts">'+level+'</span>'+
-    '</div>'+
-    surge+
-    '<div class="zk-right">'+
-      '<div class="zk-mats'+(low?' low':'')+'" data-total="'+mats+'" title="'+esc(T.ccKitMats(mats))+(low?' · '+esc(T.ccKitLow):'')+'">'+
-        '<span class="m-wood">'+CC_KIT_ICON.wood+'<b>'+st[0]+'</b></span>'+
-        '<span class="m-brick">'+CC_KIT_ICON.brick+'<b>'+st[1]+'</b></span>'+
-        '<span class="m-metal">'+CC_KIT_ICON.metal+'<b>'+st[2]+'</b></span>'+
-      '</div>'+
-      builds+
-      '<div class="zk-hotbar"'+(pack.length?'':' title="'+esc(T.ccKitLootNone)+'"')+'>'+slots+'</div>'+
-    '</div>';
-}
-// Одно число ресов — тремя стопками, как на HUD: 40% дерево, 35% кирпич, остаток металл.
-// Три стопки на HUD — дерево, кирпич, металл, каждая не выше капа игры (500):
-// излишек одной стопки перетекает в следующую.
-function ccKitSplitMats(m){
-  const t=Math.max(0, Math.round(m||0)), cap=CC_MATS_CAP_EACH;
-  let w=Math.round(t*0.4), b=Math.round(t*0.35), mt=Math.max(0, t-w-b);
-  if(w>cap){ b+=w-cap; w=cap; }
-  if(b>cap){ mt+=b-cap; b=cap; }
-  if(mt>cap){ mt=cap; }
-  return [w, b, mt];
-}
-// Круг прошёл — ресы потрачены. Считается всем, включая комнату.
-function ccKitSpend(teams, n){
-  // Стиль стройки своей команды (ccAskBuild): экономно — круг дешевле, много —
-  // дороже. У комнаты множителя нет, она строит как строила.
-  // Множитель ротации (ccAskRot, CC_ROT_MATS) — на один круг, потом сгорает.
-  (teams||[]).forEach(t=>{ t._mats=Math.max(0, (t._mats!=null?t._mats:CC_MATS_FULL)-Math.round(n*(t._buildMul||1)*(t._rotMul||1))); t._rotMul=null; });
-}
-function ccMats(t){ return t && t._mats!=null ? t._mats : CC_MATS_FULL; }
-function ccMatsLow(t){ return ccMats(t)<CC_MATS_LOW; }
-function ccMatsFill(t){ if(t) t._mats=CC_MATS_FULL; }
-/* Строка «что у меня есть» — её игрок и читает, решая. Ресы числом, лут —
-   тем самым паком, который он взял на третьей зоне (ccAskLoot кладёт его в
-   t._loot), иначе там просто «подобранное». */
-function ccKitLine(t){
-  if(!t) return '';
-  const mats=ccMats(t);
-  const loot=t._loot ? [...(t._loot.weapons||[]), ...(t._loot.heals||[])].slice(0,3)
-                        .map(o=>o&&o.name).filter(Boolean).join(' · ') : '';
-  return L().ccKitLine(mats, ccMatsLow(t) ? L().ccKitLow : '', loot);
-}
-// Цена концовки по остатку ресов (CC_MATS_BANDS) — одинаково игроку и
-// комнате, один раз.
-function ccMatsPenalty(teams){
-  (teams||[]).forEach(t=>{
-    if(t._matsPen) return;
-    t._matsPen=true;
-    const p=ccMatsEndPow(t);
-    if(p) ccAddGamePow(t, p);
-  });
-}
 const CC_GAME_STOPS=[
-  // Первая: точка — сундуки, а на занятой точке стычка или уход (ccAskSite).
-  {zone:1, ask:(you, ui)=>ccAskSite(you, ui), room:ccRoomSite},
-  // Третья зона: лут и как фармим ресы (ccAskFarm — стиль стройки внутри него).
-  {zone:3, ask:async (you, ui)=>{ await ccAskLoot(you, ui); await ccAskFarm(you, ui); },
-   room:(field, you)=>{ ccRoomLoot(field, you); ccRoomFarm(field, you); }},
-  // Четвёртая: ротация — когда выходим к следующему кругу (ccAskRot). Комната
-  // ходит по навыку, как ходила: движок читает team._rot только у людей.
-  {zone:4, ask:(you, ui)=>ccAskRot(you, ui)},
-  // Пятая и седьмая: ресы, если кончились, и лечение, если щит снят (ccAskMid).
-  // Пятая: меню середины (сёрдж, ресы, файт) — всегда; седьмая — то же меню,
-  // но только когда есть о чём: ресы кончились или щит снят.
-  {zone:5, ask:(you, ui)=>ccAskMid(you, ui), room:ccRoomMats},
-  {zone:7, ask:(you, ui)=>ccAskMid(you, ui), room:ccRoomMats, quiet:ccMidQuiet},
+  {zone:3, ask:(you, ui)=>ccAskLoot(you, ui), room:ccRoomLoot},
   {zone:8, ask:(you, ui)=>ccAskLate(you, ui), room:ccRoomLate}
 ];
-// Молчаливая остановка: вопрос не задаётся, когда отвечать не на что.
-function ccMatsQuiet(t){ return !ccMatsLow(t); }
-/* РЫЧАГИ ИГРОКУ — его слово 5 сентября: «хп не меняется, билды тоже не понятно
-   от чего зависит, нужно дать контроль игроку».
-
-   СТРОЙКА. Ресы уходили по 110 за круг у всех одинаково, и решать было нечего.
-   На третьей зоне, сразу за лутом, команда выбирает, как строит остаток игры:
-   экономно (круг стоит 60% — ресов хватит до конца, но без построек ты слабее,
-   −1 к силе), как обычно, или много (круг стоит 150% — +1 к силе, но к восьмой
-   зоне без рефреша останешься пустым). Первый вариант — обычный: под скипом и
-   в симуляции он и выбирается, то есть баланс не сдвинут ни на очко.
-
-   ЛЕЧЕНИЕ. Щит снимают перестрелки (zone-sim, CHIP_HP), здоровье — шторм и
-   сёрдж. На пятой и седьмой зоне, когда щит ниже CC_HEAL_AT или здоровье ниже,
-   есть выбор: играть так или отхилиться — щит полный, +CC_HEAL_HP здоровья,
-   но время на хилки стоит −CC_HEAL_POW к силе на остаток игры (пока ты пьёшь,
-   соседи двигаются). Первый вариант — играть так. */
-// CC_BUILD_STYLE, не CC_BUILD: тем именем занята метка сборки страницы.
-const CC_BUILD_STYLE={eco:{mul:0.6, pow:-1}, norm:{mul:1, pow:0}, heavy:{mul:1.5, pow:1}};
-const CC_HEAL_AT=60, CC_HEAL_HP=30, CC_HEAL_POW=1;
-function ccShieldOf(t){ return t && t._sq && t._sq.shield!=null ? t._sq.shield : 100; }
-function ccHpOf(t){ return t && t._sq && t._sq.hp!=null ? t._sq.hp : 100; }
-function ccHealNeeded(t){ return ccShieldOf(t)<CC_HEAL_AT || ccHpOf(t)<CC_HEAL_AT; }
-function ccMidQuiet(t){ return !ccMatsLow(t) && !ccHealNeeded(t); }
-// Отхилиться — что это делает с отрядом. Отдельно от вопроса, чтобы проверялось.
-function ccHealApply(you){
-  if(!you) return null;
-  const sq=you._sq;
-  if(sq){ sq.shield=100; sq.hp=Math.min(100, (sq.hp==null?100:sq.hp)+CC_HEAL_HP); }
-  ccAddGamePow(you, -CC_HEAL_POW);
-  you._healed=(you._healed||0)+1;
-  return {shield:100, hp:sq ? Math.round(sq.hp) : 100};
-}
-async function ccAskBuild(you, ui){
-  if(!you) return;
-  ccMpMark('b0'+(you.mpTag||''));
-  const pickId=(await ccMpChoose('build'+(you.mpTag||''), async function(){
-    return (await ccChoiceBox(L().ccBuildTitle, ccKitLine(you), [
-      {id:'norm',  title:L().ccBuildNorm,  note:L().ccBuildNormNote(CC_MATS_ZONE), icon:CC_CHOICE_ICON.wall2},
-      {id:'eco',   title:L().ccBuildEco,   note:L().ccBuildEcoNote(Math.round(CC_MATS_ZONE*CC_BUILD_STYLE.eco.mul), -CC_BUILD_STYLE.eco.pow), icon:CC_CHOICE_ICON.wall1},
-      {id:'heavy', title:L().ccBuildHeavy, note:L().ccBuildHeavyNote(Math.round(CC_MATS_ZONE*CC_BUILD_STYLE.heavy.mul), CC_BUILD_STYLE.heavy.pow), icon:CC_CHOICE_ICON.wall3}
-    ], ui && ui.map)).id;
-  }, function(v){ return L()['ccBuild'+(v==='eco'?'Eco':v==='heavy'?'Heavy':'Norm')]; })).v;
-  ccMpMark('a3b:'+pickId);
-  const b=CC_BUILD_STYLE[pickId]||CC_BUILD_STYLE.norm;
-  you._buildMul=b.mul;
-  if(b.pow) ccAddGamePow(you, b.pow);
-  if(pickId!=='norm'){
-    const line=L().ccBuildSet(L()['ccBuild'+(pickId==='eco'?'Eco':'Heavy')], b.pow>0?'+'+b.pow:String(b.pow));
-    if(ui && ui.note) ui.note(line);
-    await ccChoiceResult(ui && ui.map, line, null);
-  }
-}
-/* РОТАЦИЯ — вопрос четвёртой зоны. Его слово 6 сентября: «делай всё, что
-   считаешь максимально реалистичным». В реальном матче это самое частое
-   решение, а в симуляции круг проходил сам.
-
-   Замер (реплеи трёх игр финала Major 2 EU, 2 августа 2026, сессии 00743564,
-   24c56dba, 916190f5; момент выхода = отряд ушёл дальше 3000 юнитов от точки,
-   где встретил новый круг; «дожил» = жив на старте зоны через одну):
-     середина (зоны 3–7), 417 отрядо-зон:
-       сразу (до того, как шторм пошёл)   81%  дожили 82%
-       со штормом (пока он идёт)          12%  дожили 77%
-       позже (когда шторм уже пришёл)      3%  дожили 100% (11 случаев)
-       не вышли вовсе                      5%  дожили 0%
-     концовка (8+): сразу 63% (70 случаев), со штормом 49% (87).
-   Первая версия замера считала по ВХОДУ в круг и давала «поздним» 100% на
-   40 случаях — это смещение выжившими: кто умер по дороге, не вошёл вовсе.
-   По выходу картина честная: раннего выхода держатся четверо из пяти, и он
-   же надёжнее в концовке.
-
-   Ответ пишется в you._rot и читается движком в runPhase (zone-sim.js):
-   время выхода, скорость на мувменте. Исход — не бросок, а сама игра: шторм
-   бьёт по таблице, стычки на входе решает движок. Мувмент — из пака третьей
-   зоны, сгорает на один круг. */
-const CC_ROT_REAL={early:{share:81, surv:82}, with:{share:12, surv:77}, late:{share:3, surv:100}};
-/* Цена ротации в ресах — его пункт 4 со страницы «simulation» (7.09): «вариация
-   как заротейтится игроку, сколько ресов там потратит». Множитель к стройке за
-   круг после четвёртой зоны (CC_MATS_ZONE): сразу — как обычно; со штормом —
-   больше, идёшь под огнём и строишься на ходу; последними — больше всех,
-   туннель через тех, кто уже сел; на мувменте — почти ничего, перелёт.
-   Это решение, не замер: в JSON реплеев Tracker'а есть подборы ресов, но не
-   траты (см. память). Один круг, множитель сгорает в ccKitSpend. */
-const CC_ROT_MATS={early:1, with:1.4, late:1.8, move:0.4};
-// Ресы за круг при таком выходе — с учётом стиля стройки (ccAskFarm/ccAskBuild).
-function ccRotMats(id, t){ return Math.round(CC_MATS_ZONE*(CC_ROT_MATS[id]||1)*((t && t._buildMul)||1)); }
-async function ccAskRot(you, ui){
-  if(!you) return;
-  ccMpMark('ro0'+(you.mpTag||''));
-  const T=L();
-  const mv=you._loot && you._loot.move;
-  const name=id=>({early:T.ccRotEarly, with:T.ccRotWith, late:T.ccRotLate, move:T.ccRotMove})[id]||'';
-  const opts=[
-    {id:'early', def:true, icon:CC_CHOICE_ICON.run,   title:T.ccRotEarly, note:T.ccRotEarlyNote(CC_ROT_REAL.early.share, CC_ROT_REAL.early.surv)+' · '+T.ccRotMats(ccRotMats('early', you))},
-    {id:'with',  icon:CC_CHOICE_ICON.storm, title:T.ccRotWith,  note:T.ccRotWithNote(CC_ROT_REAL.with.share, CC_ROT_REAL.with.surv)+' · '+T.ccRotMats(ccRotMats('with', you))},
-    {id:'late',  icon:CC_CHOICE_ICON.stay,  title:T.ccRotLate,  note:T.ccRotLateNote+' · '+T.ccRotMats(ccRotMats('late', you))}
-  ];
-  if(mv) opts.push({id:'move', icon:ccItemIconHTML(mv, CC_CHOICE_ICON.run), title:T.ccRotMove, note:T.ccRotMoveNote(mv.name)+' · '+T.ccRotMats(ccRotMats('move', you))});
-  const pickId=(await ccMpChoose('rot'+(you.mpTag||''), async function(){
-    return (await ccChoiceBox(T.ccRotTitle, ccKitLine(you), opts, ui && ui.map)).id;
-  }, function(v){ return name(v); })).v;
-  ccMpMark('a4:'+pickId);
-  you._rot=pickId;
-  you._rotMul=CC_ROT_MATS[pickId]||1;
-  if(pickId==='move' && you._loot) you._loot.move=null;
-  const line=T.ccRotSet(name(pickId));
-  if(ui && ui.note) ui.note(line);
-  await ccChoiceResult(ui && ui.map, line, null);
-}
-async function ccAskHeal(you, ui){
-  if(!you || !ccHealNeeded(you)) return;
-  ccMpMark('h0'+(you.mpTag||''));
-  const sh=Math.round(ccShieldOf(you)), hp=Math.round(ccHpOf(you));
-  const pickId=(await ccMpChoose('heal'+(you.mpTag||''), async function(){
-    return (await ccChoiceBox(L().ccHealTitle(sh, hp), ccKitLine(you), [
-      {id:'stay', title:L().ccHealStay, note:L().ccHealStayNote, icon:CC_CHOICE_ICON.stay},
-      {id:'go',   title:L().ccHealGo,   note:L().ccHealGoNote(CC_HEAL_HP, CC_HEAL_POW),
-       icon:ccItemIconHTML({name:'Shield Potion', icon:'shield'}, CC_CHOICE_ICON.stay)}
-    ], ui && ui.map)).id;
-  }, function(v){ return v==='go' ? L().ccHealGo : L().ccHealStay; })).v;
-  ccMpMark('a5h:'+pickId);
-  if(pickId!=='go') return;
-  const r=ccHealApply(you);
-  const line=L().ccHealDone(r.hp, CC_HEAL_POW);
-  if(ui && ui.note) ui.note(line);
-  await ccChoiceResult(ui && ui.map, line, true);
-}
-/* СЕРЕДИНА ИГРЫ — МЕНЮ. Его страница «картинки», 6 сентября 2026: «выборы
-   сделать: набить сёрдж (картинка сёржа), набить ресы, пойти файтиться (дадут
-   ресы и сёрдж, если исход положительный, если нет — меньше сёржа и меньше
-   ресов и возможно смерть, шансы нужно распределить)».
-
-   Четыре хода на пятой и седьмой зоне:
-     ротейтить как есть — ничего не меняет (ход по умолчанию, когда ресы
-       есть: под скипом и в симуляции баланс не сдвигается ни на очко);
-     набить сёрдж — CC_SURGE_FARM урона в свой счёт сёржа (движок ранжирует
-       по чистому урону, см. zone-sim applySurge) за CC_SURGE_FARM_POW силы:
-       время на стрельбу по чужим постройкам — не время на ротейт;
-     набить ресы — тот же рефреш, что был здесь и раньше (ccAskMats): при
-       пустых ресах он и остаётся ходом по умолчанию — комната ходит так же
-       (ccRoomMats), и калибровка на этом стоит;
-     пойти файтиться — бросок: CC_FIGHT.win — соседний отряд выбит движком
-       (game.eliminate: элимы, урон, строка ленты — как у любой дуэли), плюс
-       сила и ресы с трупа; CC_FIGHT.trade — разменялись: минус сила, щит снят,
-       ресы сожжены, урон получен; остаток — ты выбит сам, тем самым соседом.
-   Смерть настоящая, через движок, а не «мало хп»: место, лента, очки вечера —
-   всё как при обычной гибели. Ожидание по силе близко к нулю
-   (0.5·4 − 0.35·3 − 0.15·6 ≈ 0), а по очкам ход отрицательный: элим стоит
-   меньше, чем потерянное место, — это риск, а не подарок. */
-/* ЧИСЛА СЕРЕДИНЫ — ПО ЗАМЕРУ, а не на глаз. Его слово 6 сентября: «доделай ещё
-   с выборами, всё реалистично было, сёрдж и т.д., поищи в интернете».
-
-   Замер: три игры финала FNCS Major 2 EU, 2 августа 2026 (реплеи Tracker,
-   сессии 00743564, 24c56dba, 916190f5; JSON реплея несёт каждый урон с
-   атакующим и жертвой, нокдауны, смерти и зоны). Стычка = пара отрядов,
-   обменявшаяся ≥60 урона с паузами не больше 20 с; исход считан по каждой
-   стороне, потери — в 30 с после последнего выстрела.
-
-     середина (зоны 4–7), 406 сторон:
-       разошлись без потерь   56%   (урон по стороне ≈70)
-       размен: кто-то лёг,
-         отряд жив            15%
-       сосед выбит            14%
-       выбиты сами            15%
-     концовка (8+), 312 сторон: без потерь 30%, размен 20%, выбили 19%,
-       выбиты 31% — третьи стороны.
-
-   Отсюда файт: решающий исход (кто-то из двух выбит) — 29%, и КТО именно,
-   решает сила через ту же дуэльную формулу, что у движка (ccFightApply);
-   размен 15%; остальное — постреляли и разошлись: урон в сёрдж, ресы на
-   стройку, силы не меняет. Было 50/35/15 — файт середины был подарком.
-
-   Сёрдж: в двух играх из трёх лобби стояло ВЫШЕ порога с 4-й по 10-ю зону
-   (76 живых при пороге 60 на пятой, 58 при 40 на седьмой): 45–49 тиков по 25,
-   у 10 отрядов, от 1 до 9 тиков на отряд, 3 смерти от сёрджа. В третьей игре
-   — ни одного тика: 58 при 60 на пятой, 46 при 40 на седьмой, но линия
-   срезала отряды, отстававшие на 500+ чистого урона. Поэтому ход «набить
-   сёрдж» есть только когда сёрдж ВКЛЮЧЁН (живых больше порога, см. кадр
-   движка), а его цена — урон стычки по замеру: +80 своих, −40 полученных
-   (чистый урон, правило Epic со 2 октября 2025), −1 к силе за время. */
-const CC_SURGE_FARM=80, CC_SURGE_TAKEN=40, CC_SURGE_FARM_POW=1;
-// Ресы файта — на шкале игры (1500): снять с трупа 400, размен стоит 220, перестрелка 110.
-const CC_FIGHT={decide:0.29, trade:0.15, pow:4, tradePow:3, diePow:6, mats:400, tradeMats:220, dmg:180, tradeHp:30,
-                pokeDmg:70, pokeMats:110};
-/* Шанс выбить соседа, когда стычка решается: та же дуэльная формула, что у
-   движка (resolveDuel), по силе ближнего боя обеих команд. Без соседа — монетка. */
-function ccFightWinOdds(you, foe){
-  if(!you || !foe) return 0.5;
-  const e=(typeof DUEL_POW_EXPONENT_BY_MODE!=='undefined' && DUEL_POW_EXPONENT_BY_MODE[squadSize])||5;
-  const a=Math.max(1, you._pc||you._pf||you.pow||1), b=Math.max(1, foe._pc||foe._pf||foe.pow||1);
-  const pa=Math.pow(a, e), pb=Math.pow(b, e);
-  return pa/(pa+pb);
-}
-/* Сёрдж на этой остановке — по последнему кадру движка: живых против порога
-   фазы и чистый урон отряда против линии. null, когда кадра нет. */
-function ccSurgeState(you){
-  const game=you && you._game, fr=game && game.frames ? game.frames() : null;
-  const f=fr && fr.length ? fr[fr.length-1] : null;
-  if(!f || !(f.surgeAt>0)) return null;
-  const sq=you._sq||{};
-  const net=Math.round((sq.dealt||0)-(sq.taken||0));
-  return {on:f.players>f.surgeAt, players:f.players, at:f.surgeAt,
-          gap:(f.surgeLine!=null) ? net-f.surgeLine : null, net:net};
-}
-const CC_CHOICE_ICON={
-  stay:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#9fb3c8" stroke-width="2"/><path d="M12 5l3 7-3 7-3-7z" fill="#e8eef6"/><path d="M12 5l3 7h-6z" fill="#00d0a8"/></svg>',
-  surge:'<svg viewBox="0 0 24 24"><path d="M12 2l11 20H1z" fill="#ffd600"/><path d="M12 2l11 20H1z" fill="none" stroke="#7a5b00" stroke-width="1.2"/><path d="M13 8l-4 7h3l-1 5 4-7h-3z" fill="#1a1400"/></svg>',
-  fight:'<svg viewBox="0 0 24 24"><path d="M4 4l12 12" stroke="#e8eef6" stroke-width="2.4" stroke-linecap="round"/><path d="M20 4L8 16" stroke="#e8eef6" stroke-width="2.4" stroke-linecap="round"/><path d="M14 18l4 2 2-4" fill="none" stroke="#ff9b9b" stroke-width="2" stroke-linecap="round"/><path d="M10 18l-4 2-2-4" fill="none" stroke="#ff9b9b" stroke-width="2" stroke-linecap="round"/></svg>',
-  /* Картинки концовки — его слово 6 сентября: «добавь везде картинки в
-     симуляции, чтобы подходило в тему». Высота — башня из панелей, за зоной —
-     фиолетовое кольцо шторма с точкой снаружи, рефреш — сундук, низ — тот же
-     знак «остаёмся». Третьение и отжатие берут скрещённые стволы и флаг точки. */
-  // Мид граунд — лестница из панелей на половину высоты башни.
-  stairs:'<svg viewBox="0 0 24 24"><rect x="3" y="15" width="6" height="6" fill="#b7c3d1"/><rect x="9" y="11" width="6" height="10" fill="#b7c3d1"/><rect x="15" y="7" width="6" height="14" fill="#9fb3c8"/><path d="M3 15h6v-4h6V7h6" fill="none" stroke="#e8eef6" stroke-width="1.4"/></svg>',
-  // Ротация «сразу» — бегущая стрелка к кругу.
-  run:'<svg viewBox="0 0 24 24"><circle cx="18" cy="12" r="5" fill="none" stroke="#9fb3c8" stroke-width="1.6"/><path d="M3 12h10" stroke="#00d0a8" stroke-width="2.6" stroke-linecap="round"/><path d="M9 8l4 4-4 4" fill="none" stroke="#00d0a8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  tower:'<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="6" fill="#b7c3d1"/><rect x="6" y="9" width="12" height="6" fill="#c8894a"/><rect x="3" y="15" width="18" height="6" fill="#c5624d"/><path d="M6 15h12M9 9h6M12 3v6M12 9v6M12 15v6" stroke="#3a2a22" stroke-width="1"/><path d="M15 3l5-2v4z" fill="#ffd600"/></svg>',
-  storm:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="#b36bff" stroke-width="2.4"/><circle cx="12" cy="12" r="8" fill="#b36bff" opacity=".18"/><circle cx="20" cy="6" r="2.4" fill="#e8eef6"/><path d="M20 8.5v3" stroke="#e8eef6" stroke-width="1.6"/></svg>',
-  chest:'<svg viewBox="0 0 24 24"><path d="M3 9a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v2H3z" fill="#c8894a"/><rect x="3" y="11" width="18" height="9" rx="1.5" fill="#8a5a2b"/><rect x="10" y="9" width="4" height="5" rx="1" fill="#ffd600"/><path d="M3 11h18" stroke="#3a2a22" stroke-width="1"/></svg>',
-  home:'<svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9H3z" fill="#00d0a8"/><path d="M10 20v-6h4v6" fill="#0b2a26"/></svg>',
-  quiet:'<svg viewBox="0 0 24 24"><path d="M4 18c3-8 13-8 16 0" fill="none" stroke="#9fb3c8" stroke-width="2"/><circle cx="12" cy="8" r="3" fill="#e8eef6"/></svg>',
-  contest:'<svg viewBox="0 0 24 24"><path d="M3 4l6 2 6-2 6 2v14l-6-2-6 2-6-2z" fill="#e8eef6" stroke="#9fb3c8" stroke-width="1.2"/><circle cx="14" cy="10" r="2.6" fill="#e8283f"/></svg>',
-  wall1:'<svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="1.5" fill="#c8894a"/><path d="M4 12h16M12 6v6M8 12v6M16 12v6" stroke="#7a4a1f" stroke-width="1.2"/></svg>',
-  wall2:'<svg viewBox="0 0 24 24"><rect x="2" y="9" width="10" height="10" rx="1" fill="#c5624d"/><rect x="12" y="5" width="10" height="14" rx="1" fill="#c8894a"/><path d="M2 14h10M12 12h10M7 9v5M17 5v7" stroke="#5a2a1a" stroke-width="1.1"/></svg>',
-  wall3:'<svg viewBox="0 0 24 24"><rect x="1" y="10" width="7" height="10" fill="#c5624d"/><rect x="8.5" y="6" width="7" height="14" fill="#c8894a"/><rect x="16" y="3" width="7" height="17" fill="#b7c3d1"/><path d="M1 15h7M8.5 13h7M16 11h7" stroke="#3a2a22" stroke-width="1.1"/></svg>'
-};
-// Картинка хода «набить ресы» — три стопки, как на HUD.
-function ccMatsIconHTML(){ return CC_KIT_ICON.wood+CC_KIT_ICON.brick+CC_KIT_ICON.metal; }
-// Картинка предмета из пака, когда она есть, иначе — запасной знак.
-function ccItemIconHTML(o, fallback){
-  let h=''; try{ h=o ? (weaponIconHTML(o, ccLootSet())||'') : ''; }catch(e){ h=''; }
-  return /<img/.test(h) ? h : fallback;
-}
-async function ccAskMid(you, ui){
-  if(!you) return;
-  await ccAskMenu(you, ui);
-  if(ccHealNeeded(you)) await ccAskHeal(you, ui);
-}
-/* ФАРМ ПОСЛЕ ЛУТА — его пункт 3 со страницы «simulation» (7 сентября): «после
-   поиска начального лута нужно добывать ресы: 1) нафармить до фула, 2) набить
-   сёрдж и добыть меньше ресов, типа 400 400 400 — время тратится на теги,
-   3) зафайтить ближайшее дуо — риск, но с них ресы, лут и сёрдж».
-   Третья зона, после лута и стройки. До фула — ход по умолчанию: под скипом и
-   в симуляции запас полный, как было до этой правки, и баланс не сдвинут.
-   Сёрдж — те же числа, что у хода середины (CC_SURGE_FARM), ресы 1200 = 400·3.
-   Файт — тот же ccFightApply, что на пятой зоне. */
-async function ccAskFarm(you, ui){
-  if(!you) return;
-  ccMpMark('f0'+(you.mpTag||''));
-  const T=L();
-  const gun=you._loot && you._loot.weapons && you._loot.weapons[0];
-  const foe0=(you._game && you._game.nearest) ? you._game.nearest(you) : null;
-  const pw=ccFightWinOdds(you, foe0);
-  const winPct=Math.round(CC_FIGHT.decide*pw*100), diePct=Math.round(CC_FIGHT.decide*(1-pw)*100);
-  const tradePct=Math.round(CC_FIGHT.trade*100);
-  /* Стиль стройки (ccAskBuild, 5.09) живёт в этом же меню, а не отдельным
-     вопросом: «до фула» — как обычно, «до фула · экономно», «до фула · много».
-     На третьей зоне было три вопроса подряд — лут, стройка, фарм; стало два. */
-  const eco=CC_BUILD_STYLE.eco, heavy=CC_BUILD_STYLE.heavy;
-  const opts=[
-    {id:'full',  def:true, icon:ccMatsIconHTML(), icoCls:'wide', title:T.ccFarmFull, note:T.ccFarmFullNote(CC_MATS_FULL)},
-    {id:'eco',   icon:CC_CHOICE_ICON.wall1, title:T.ccFarmFull+' · '+T.ccBuildEco,   note:T.ccBuildEcoNote(Math.round(CC_MATS_ZONE*eco.mul), -eco.pow)},
-    {id:'heavy', icon:CC_CHOICE_ICON.wall3, title:T.ccFarmFull+' · '+T.ccBuildHeavy, note:T.ccBuildHeavyNote(Math.round(CC_MATS_ZONE*heavy.mul), heavy.pow)},
-    {id:'surge', icon:CC_CHOICE_ICON.surge, title:T.ccFarmSurge, note:T.ccFarmSurgeNote(CC_MATS_SURGE_FARM, CC_SURGE_FARM, CC_SURGE_FARM_POW)},
-    {id:'fight', icon:ccItemIconHTML(gun, CC_CHOICE_ICON.fight),
-     title:T.ccMidFight+(foe0 && foe0.name ? ' · '+String(foe0.name).replace(/<[^>]+>/g,'') : ''),
-     note:T.ccMidFightNote(winPct, CC_FIGHT.pow, diePct, tradePct, CC_FIGHT.pokeDmg)}
-  ];
-  const pickId=(await ccMpChoose('farm'+(you.mpTag||''), async function(){
-    return (await ccChoiceBox(T.ccFarmTitle, ccKitLine(you), opts, ui && ui.map)).id;
-  }, function(v){ return ({full:T.ccFarmFull, eco:T.ccFarmFull+' · '+T.ccBuildEco, heavy:T.ccFarmFull+' · '+T.ccBuildHeavy, surge:T.ccFarmSurge, fight:T.ccMidFight})[v]||''; })).v;
-  ccMpMark('a3f:'+pickId);
-  const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
-  if(pickId==='eco' || pickId==='heavy'){
-    const b=CC_BUILD_STYLE[pickId];
-    you._buildMul=b.mul; if(b.pow) ccAddGamePow(you, b.pow);
-    ccMatsFill(you);
-    await say(T.ccFarmFullGot(CC_MATS_FULL)+' · '+T.ccBuildSet(T[pickId==='eco'?'ccBuildEco':'ccBuildHeavy'], b.pow>0?'+'+b.pow:String(b.pow)), null);
-    return;
-  }
-  if(pickId==='surge'){
-    you._mats=Math.max(ccMats(you), CC_MATS_SURGE_FARM);
-    if(you._sq){ you._sq.dealt=(you._sq.dealt||0)+CC_SURGE_FARM; you._sq.taken=(you._sq.taken||0)+CC_SURGE_TAKEN; }
-    ccAddGamePow(you, -CC_SURGE_FARM_POW);
-    await say(T.ccFarmSurgeGot(CC_MATS_SURGE_FARM, CC_SURGE_FARM), true);
-    return;
-  }
-  if(pickId==='fight'){
-    // Файт — с тем запасом, что нафармили бы за то же время: до фула не дотянули.
-    you._mats=Math.max(ccMats(you), CC_MATS_SURGE_FARM);
-    const r=Math.random();
-    const game=you._game, foe=(game && game.nearest) ? game.nearest(you) : null;
-    const foeName=foe ? String(foe.name||'').replace(/<[^>]+>/g,'') : '';
-    const out=ccFightApply(you, r, foe);
-    ccMpMark('w3f:'+out);
-    if(out==='win')   await say(T.ccMidFightWon(CC_FIGHT.pow, foeName, gun && gun.name)+(you._lootUp ? ' · '+T.ccLootUpgraded(you._lootUp.name) : ''), true);
-    else if(out==='die') await say(T.ccMidFightDied(foeName), false);
-    else if(out==='poke') await say(T.ccMidFightPoke(CC_FIGHT.pokeDmg, CC_FIGHT.pokeMats), null);
-    else await say(T.ccMidFightTraded(CC_FIGHT.tradePow), false);
-    return;
-  }
-  ccMatsFill(you);
-  await say(T.ccFarmFullGot(CC_MATS_FULL), null);
-}
-// Комната фармит тем же выбором: большинство до фула, агрессивная треть — сёрдж и 1200.
-function ccRoomFarm(field, you){
-  (field||[]).forEach(t=>{
-    if(you && (t===you || t.isMate)) return;
-    if(Math.random()<0.3){
-      t._mats=Math.max(ccMats(t), CC_MATS_SURGE_FARM);
-      ccAddGamePow(t, -CC_SURGE_FARM_POW);
-    } else ccMatsFill(t);
-  });
-}
-async function ccAskMenu(you, ui){
-  if(!you) return;
-  ccMpMark('m0'+(you.mpTag||''));
-  const T=L();
-  const m=CC_LATE_MOVES.find(x=>x.id==='refresh');
-  const pow=ccRefreshPow(you);
-  const low=ccMatsLow(you);
-  const gun=you._loot && you._loot.weapons && you._loot.weapons[0];
-  // Шансы файта — по силе против ближайшего соседа, того самого, с кем он и
-  // будет (см. ccFightApply). Сосед у обоих клиентов один: движок общий.
-  const foe0=(you._game && you._game.nearest) ? you._game.nearest(you) : null;
-  const pw=ccFightWinOdds(you, foe0);
-  const winPct=Math.round(CC_FIGHT.decide*pw*100), diePct=Math.round(CC_FIGHT.decide*(1-pw)*100);
-  const tradePct=Math.round(CC_FIGHT.trade*100);
-  // Сёрдж предлагается, только когда он включён — по замеру (см. CC_SURGE_FARM).
-  const sg=ccSurgeState(you);
-  const surgeOpt=(sg && sg.on) ? [{id:'surge', icon:CC_CHOICE_ICON.surge, title:T.ccMidSurge,
-       note:T.ccMidSurgeNote(CC_SURGE_FARM, CC_SURGE_TAKEN, CC_SURGE_FARM_POW)+' · '+T.ccMidSurgeLine(sg.players, sg.at, sg.gap)}] : [];
-  /* Ход по умолчанию — ПЕРВЫМ. Торопящийся (скип) отвечает ходом по
-     умолчанию, досматривающий в проверках — первой кнопкой (check-mp-death:
-     «c0.click()»), и пока «за ресами» при пустых ресах стояло третьей
-     кнопкой, эти двое расходились на пятой зоне и получали разные таблицы.
-     Поэтому при пустых ресах «за ресами» идёт первым, при полных — «остаёмся». */
-  const endPow=ccMatsEndPow(you);
-  const optStay={id:'stay',  def:!low, icon:CC_CHOICE_ICON.stay, title:T.ccMatsStay,
-       note:endPow<0 ? T.ccMatsStayNote(-endPow) : T.ccMidStayNote};
-  const optGo={id:'go',    def:low, icon:ccMatsIconHTML(), icoCls:'wide', title:T.ccMatsGo,
-       note:T.ccMatsGoNote(pow, m.fail, Math.round(m.odds*100))};
-  // Сосед — по имени: шансы считаны именно против него, и игрок должен видеть, с кем.
-  const optFight={id:'fight', icon:ccItemIconHTML(gun, CC_CHOICE_ICON.fight),
-       title:T.ccMidFight+(foe0 && foe0.name ? ' · '+String(foe0.name).replace(/<[^>]+>/g,'') : ''),
-       note:T.ccMidFightNote(winPct, CC_FIGHT.pow, diePct, tradePct, CC_FIGHT.pokeDmg)};
-  const opts=low ? [optGo, optStay, ...surgeOpt, optFight] : [optStay, ...surgeOpt, optGo, optFight];
-  const pickId=(await ccMpChoose('mid'+(you.mpTag||''), async function(){
-    return (await ccChoiceBox(T.ccMidTitle, ccKitLine(you), opts, ui && ui.map)).id;
-  }, function(v){ return ({stay:T.ccMatsStay, surge:T.ccMidSurge, go:T.ccMatsGo, fight:T.ccMidFight})[v]||''; })).v;
-  ccMpMark('a5:'+pickId);
-  const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
-  if(pickId==='stay'){
-    await say(low ? T.ccMatsStayGot : T.ccMidStayGot, low ? true : null);
-    return;
-  }
-  if(pickId==='surge'){
-    if(you._sq){ you._sq.dealt=(you._sq.dealt||0)+CC_SURGE_FARM; you._sq.taken=(you._sq.taken||0)+CC_SURGE_TAKEN; }
-    ccAddGamePow(you, -CC_SURGE_FARM_POW);
-    await say(T.ccMidSurgeGot(CC_SURGE_FARM, CC_SURGE_TAKEN, CC_SURGE_FARM_POW), true);
-    return;
-  }
-  if(pickId==='go'){
-    const won=Math.random()<m.odds;
-    ccMpMark('w5:'+(won?1:0));
-    if(won){ ccAddGamePow(you, pow); ccMatsFill(you); }
-    else ccAddGamePow(you, -m.fail);
-    await say(won ? T.ccMatsFound(pow) : T.ccMatsMissed(m.fail), won);
-    return;
-  }
-  // Файт. Один бросок — у обоих клиентов один и тот же (см. ccMpChoose).
-  const r=Math.random();
-  const game=you._game, foe=(game && game.nearest) ? game.nearest(you) : null;
-  const foeName=foe ? String(foe.name||'').replace(/<[^>]+>/g,'') : '';
-  const out=ccFightApply(you, r, foe);
-  ccMpMark('w5f:'+out);
-  if(out==='win')   await say(T.ccMidFightWon(CC_FIGHT.pow, foeName, gun && gun.name)+(you._lootUp ? ' · '+T.ccLootUpgraded(you._lootUp.name) : ''), true);
-  else if(out==='die') await say(T.ccMidFightDied(foeName), false);
-  else if(out==='poke') await say(T.ccMidFightPoke(CC_FIGHT.pokeDmg, CC_FIGHT.pokeMats), null);
-  else await say(T.ccMidFightTraded(CC_FIGHT.tradePow), false);
-}
-/* Лут с трупа: лучший ствол соперника того же класса встаёт на место худшего
-   своего, если он выше по редкости. Возвращает взятый предмет или null. Пак
-   соперника есть у всех — комната открывает сундуки на точке (ccRoomSite). */
-function ccLootUpgrade(you, foe){
-  const mine=you && you._loot, theirs=foe && foe._loot;
-  if(!mine || !theirs || !theirs.weapons || !theirs.weapons.length) return null;
-  const mod=o=>o ? (RARITY_MOD[o.rarity]||0) : -1;
-  let best=null, at=-1;
-  theirs.weapons.forEach(w=>{
-    if(!w) return;
-    // Своё место — тот же класс; если такого класса у нас нет — самый слабый слот.
-    let i=(mine.weapons||[]).findIndex(o=>o && o.icon===w.icon);
-    if(i<0){ i=(mine.weapons||[]).length<2 ? (mine.weapons||[]).length : (mod(mine.weapons[0])<=mod(mine.weapons[1]) ? 0 : 1); }
-    const cur=(mine.weapons||[])[i];
-    if(mod(w)>mod(cur) && (!best || mod(w)>mod(best))){ best=w; at=i; }
-  });
-  if(!best) return null;
-  mine.weapons=(mine.weapons||[]).slice(); mine.weapons[at]=best;
-  return best;
-}
-/* Что делает файт с отрядом — отдельно от вопроса, чтобы проверялось.
-   r — бросок [0,1); foe — команда соседа (может не быть: тогда выбить некого
-   и погибнуть не от кого — исход «разменялись»). */
-function ccFightApply(you, r, foe){
-  const sq=you._sq, game=you._game;
-  const can=!!(foe && game && game.eliminate);
-  // Решающая доля стычек — CC_FIGHT.decide; внутри неё победителя называет сила.
-  const p=ccFightWinOdds(you, foe);
-  const winTo=CC_FIGHT.decide*p, dieTo=CC_FIGHT.decide;
-  if(r<winTo){
-    if(can) game.eliminate(foe, you);
-    else if(sq) sq.dealt=(sq.dealt||0)+CC_FIGHT.dmg;
-    ccAddGamePow(you, CC_FIGHT.pow);
-    you._mats=Math.min(CC_MATS_FULL, ccMats(you)+CC_FIGHT.mats);
-    // Его пункт 3 («simulation», 7.09): с трупа — и лучший лут, если у соперника он был.
-    you._lootUp=ccLootUpgrade(you, foe);
-    return 'win';
-  }
-  if(r<dieTo && can){
-    ccAddGamePow(you, -CC_FIGHT.diePow);
-    game.eliminate(you, foe);
-    return 'die';
-  }
-  if(r<dieTo+CC_FIGHT.trade || (r<dieTo && !can)){
-    ccAddGamePow(you, -CC_FIGHT.tradePow);
-    you._mats=Math.max(0, ccMats(you)-CC_FIGHT.tradeMats);
-    if(sq){ sq.shield=0; sq.hp=Math.max(1, (sq.hp!=null?sq.hp:100)-CC_FIGHT.tradeHp); sq.taken=(sq.taken||0)+CC_FIGHT.dmg; }
-    return 'trade';
-  }
-  // Постреляли и разошлись — самый частый исход по замеру (56%): урон в
-  // сёрдж, ресы на стройку, сила на месте.
-  if(sq){ sq.dealt=(sq.dealt||0)+CC_FIGHT.pokeDmg; sq.taken=(sq.taken||0)+Math.round(CC_FIGHT.pokeDmg/2); }
-  you._mats=Math.max(0, ccMats(you)-CC_FIGHT.pokeMats);
-  return 'poke';
-}
-/* Вопрос середины: идти за рефрешем или ротейтить тем, что есть.
-   Те же числа, что у рефреша в меню восьмой зоны, — это тот же ход, просто
-   раньше по времени: сходил — ресы полные и прибавка, не сходил — играешь как
-   есть и рискуешь штрафом концовки. */
-async function ccAskMats(you, ui){
-  if(!you) return;
-  ccMpMark('m0'+(you.mpTag||''));
-  const m=CC_LATE_MOVES.find(x=>x.id==='refresh');
-  const pow=ccRefreshPow(you);
-  const pickId=(await ccMpChoose('mats'+(you.mpTag||''), async function(){
-    return (await ccChoiceBox(L().ccMatsTitle, ccKitLine(you), [
-      {id:'go',   title:L().ccMatsGo,   note:L().ccMatsGoNote(pow, m.fail, Math.round(m.odds*100))},
-      {id:'stay', title:L().ccMatsStay, note:ccMatsEndPow(you)<0 ? L().ccMatsStayNote(-ccMatsEndPow(you)) : L().ccMidStayNote}
-    ], ui && ui.map)).id;
-  }, function(v){ return v==='go' ? L().ccMatsGo : L().ccMatsStay; })).v;
-  ccMpMark('a5:'+pickId);
-  if(pickId!=='go'){
-    if(ui && ui.note) ui.note(L().ccMatsStayGot);
-    await ccChoiceResult(ui && ui.map, L().ccMatsStayGot, true);
-    return;
-  }
-  const won=Math.random()<m.odds;
-  ccMpMark('w5:'+(won?1:0));
-  if(won){ ccAddGamePow(you, pow); ccMatsFill(you); }
-  else ccAddGamePow(you, -m.fail);
-  const line=won ? L().ccMatsFound(pow) : L().ccMatsMissed(m.fail);
-  if(ui && ui.note) ui.note(line);
-  await ccChoiceResult(ui && ui.map, line, won);
-}
-// Комната ходит тем же ходом: с пустыми ресами большинство идёт за рефрешем.
-function ccRoomMats(field, you){
-  const m=CC_LATE_MOVES.find(x=>x.id==='refresh');
-  (field||[]).forEach(t=>{
-    if(you && (t===you || t.isMate)) return;
-    if(!ccMatsLow(t) || Math.random()>=0.7) return;
-    if(Math.random()<m.odds){ ccAddGamePow(t, ccRefreshPow(t)); ccMatsFill(t); }
-    else ccAddGamePow(t, -m.fail);
-  });
-}
-/* Сколько даёт рефреш ИМЕННО СЕЙЧАС. Полные ресы — идти незачем, половина;
-   пустые — полная прибавка. Это и есть ответ на «чем он отличается от лг». */
-function ccRefreshPow(t){
-  return ccMatsLow(t) ? CC_REFRESH_POW : Math.round(CC_REFRESH_POW/2);
-}
 /* И то же самое делает комната.
 
    Замер (tools/career-choice-balance-probe.js, 500 игр): если лут и высокую
@@ -46647,28 +44429,17 @@ function ccRoomLate(field, you){
   // Ходы с монеткой, разложенные по потолку: бросок ниже читает индекс как
   // «насколько высоко метит». В самом CC_LATE_MOVES порядок другой — там он
   // про то, как ходы стоят на панели у игрока, и совпадать эти два не обязаны.
-  /* ПРАВКА 4 СЕНТЯБРЯ. Корзин было две: «с монеткой» (одна высокая земля) и
-     «спокойные» (рефреш, верные +3). Рефреш стал риском — и вторая корзина
-     опустела, а с ней пропала половина ходов комнаты: сторож choice-stacking
-     поймал «лут получили только 8 из 19». Корзина теперь одна, все ходы с
-     прибавкой, и доля ходящих поднята так, чтобы комната ходила не реже
-     прежнего. Что это не подарок и не налог — меряет career-choice-balance-probe. */
-  // Ходы через движок (третья сторона) комната не ходит: её стычки движок
-  // и так считает сам, а второй раз давать ей элимы броском — подарок.
-  const risky=CC_LATE_MOVES.filter(m=>m.pow>0 && !m.real).slice().sort((a,b)=>a.pow-b.pow);
-  const calm=[];
+  const risky=CC_LATE_MOVES.filter(ccLateRisky).slice().sort((a,b)=>a.pow-b.pow);
+  const calm=CC_LATE_MOVES.filter(m=>!ccLateRisky(m) && m.pow>0);
   field.forEach(t=>{
     if(you && (t===you || t.isMate)) return;
-    if(Math.random() < clamp(0.62+edgeOf(t)*4, 0.35, 0.9)){
+    if(Math.random() < clamp(0.35+edgeOf(t)*4, 0.1, 0.75)){
       // В размен. Кто именно из рискованных — тем же броском: чем выше сила
       // над лобби, тем дальше по списку, то есть тем больше потолок.
       const at=Math.min(risky.length-1,
         Math.floor(Math.random()*risky.length*clamp(0.5+edgeOf(t)*3, 0.2, 1.4)));
       const m=risky[Math.max(0, at)];
-      const won=Math.random()<m.odds;
-      // Рефреш у комнаты считается по её же ресам: полные — половина прибавки.
-      ccAddGamePow(t, won ? (m.mats ? ccRefreshPow(t) : m.pow) : -m.fail);
-      if(won && m.mats) ccMatsFill(t);
+      ccAddGamePow(t, Math.random()<m.odds ? m.pow : -m.fail);
     } else if(calm.length && Math.random()<0.55){
       ccAddGamePow(t, calm[0].pow);
     }
@@ -46694,75 +44465,31 @@ let CC_CHOICE_WAIT=15000;
    вещи по экрану — значит заставлять переводить взгляд в момент, когда смотреть
    надо как раз на карту. Если карты нет (проба, старый вызов), панель падает
    в ленту этапов, как раньше. */
-/* side — картинки заголовка, его страница «картинки» 6 сентября: «сверху
-   слева аватарка моего спота, справа типа вся карта». {left, right} — готовая
-   разметка; ставится в строку под плашкой, по бокам подсказки. Кнопке можно
-   дать icon — маленькую картинку слева от названия («додумай картинки, что
-   подойдёт под надписи»). Вариант с def:true — тот, что берётся сам под
-   скипом, в симуляции и по таймеру; без def — первый, как и раньше. */
-/* Мнение напарника перед выбором — из списка идей 6 сентября («мнение
-   напарника»). В настоящем дуо решение середины игры не принимают молча:
-   напарник в войсе говорит, куда он хочет. Здесь это одна строка под
-   заголовком и метка на кнопке, за которую он. Бот-напарник осторожен: чаще
-   за ход по умолчанию (он же самый безопасный), но с силой растёт смелость —
-   карточка 90+ каждый второй раз тянет в другую сторону. Живой напарник
-   (мультиплеер) говорит сам — строки нет; в соло говорить некому.
-   Это мнение, не подсказка: на исход выбора оно не влияет и в симуляции не
-   считается вовсе (панель там не строится). */
-function ccMateOpinion(options, dflt){
-  if(!options || options.length<2) return null;
-  if(typeof careerSquadSize!=='function' || careerSquadSize()<2) return null;
-  if(typeof ccMpOn==='function' && ccMpOn()) return null;
-  const mates=(typeof careerMates==='function') ? careerMates().filter(Boolean) : [];
-  const m=mates[0];
-  if(!m || !m.handle) return null;
-  const bold=(Number(m.ovr)||0)>=90 ? 0.5 : 0.3;
-  let pick=dflt;
-  if(Math.random()<bold){ const alt=options.filter(o=>o && o!==dflt); pick=alt[Math.floor(Math.random()*alt.length)]||dflt; }
-  const say=L().ccMateLeans;
-  return {name:m.handle, pick, text: typeof say==='function' ? say(String(pick.title||'').replace(/<[^>]+>/g,'')) : ''};
-}
-function ccChoiceBox(title, hint, options, onMap, side){
-  /* Порядок кнопок — тот, что передали: сторожа кликают по data-at и ждут
-     именно его. Правило «ход по умолчанию — первым» живёт там, где список
-     собирают (см. ccAskMenu), а не здесь. */
+function ccChoiceBox(title, hint, options, onMap){
   return ccMpIdle(new Promise(resolve=>{
     const host=onMap || document.getElementById('majorStages');
-    const dflt=options.find(o=>o && o.def) || options[0];
-    const mate=ccMateOpinion(options, dflt);
     let done=false;
     const answer=o=>{ if(done) return; done=true;
       clearInterval(watch); clearTimeout(bell);
-      // Чат эфира видел вопрос — видит и ответ. Только там, где вопрос стоял.
-      if(box && typeof ccTvOnChosen==='function') ccTvOnChosen(o);
       if(box && box.isConnected) box.remove();
       resolve(o); };
-    const auto=()=>answer(dflt);
+    const auto=()=>answer(options[0]);
     let box=null, watch=null, bell=null;
     // Симуляция спрошена отдельно от skipAnimation: высадку спрашивают ДО
     // первого этапа, когда флаг пропуска ещё не выставлен, и без этой проверки
     // вечер, отданный симуляции, всё равно останавливался бы на первом вопросе.
     if(!host || skipAnimation || careerSimOn() || (typeof CC_FF!=='undefined' && CC_FF)){
-      resolve(dflt); return;
+      resolve(options[0]); return;
     }
     box=document.createElement('div');
     box.className=onMap ? 'cc-choice cc-choice-map' : 'stage-card cc-choice';
-    const sub=(side && (side.left||side.right)) || hint
-      ? `<div class="cc-choice-sub">`+
-        (side && side.left ? `<div class="cc-choice-ava">${side.left}</div>` : '')+
-        (hint ? `<span>${hint}</span>` : '<span></span>')+
-        (side && side.right ? `<div class="cc-choice-mini">${side.right}</div>` : '')+
-        `</div>`
-      : '';
-    const mateLine=mate ? `<div class="cc-choice-mate"><i>${esc(mate.name)}</i> ${esc(mate.text)}</div>` : '';
-    box.innerHTML=`<div class="cc-choice-head"><b>${esc(title)}</b>${sub}${mateLine}</div>`+
+    box.innerHTML=`<div class="cc-choice-head"><b>${esc(title)}</b>`+
+      (hint?`<span>${hint}</span>`:'')+`</div>`+
       `<div class="cc-choice-row">${options.map((o,i)=>
-        `<button class="cc-choice-btn${o.art?' has-art':''}${o.icon?' has-ico':''}${o===dflt && options.length>1?' def':''}${mate && o===mate.pick?' mate':''}" data-at="${i}"${mate && o===mate.pick ? ' data-mate="'+esc(mate.name)+'"' : ''}>
-           ${o.art||''}<span class="cc-choice-tt">${o.icon?'<i class="cc-choice-ico'+(o.icoCls?' '+o.icoCls:'')+'">'+o.icon+'</i>':''}<b>${esc(o.title)}</b></span><em>${o.note||''}</em></button>`).join('')}</div>`+
+        `<button class="cc-choice-btn${o.art?' has-art':''}" data-at="${i}">
+           ${o.art||''}<b>${esc(o.title)}</b><em>${o.note||''}</em></button>`).join('')}</div>`+
       `<div class="cc-choice-bar"><i></i></div>`;
     host.appendChild(box);
-    // Чат эфира видит вопрос и начинает советовать. См. ccTvOnChoice.
-    if(typeof ccTvOnChoice==='function') ccTvOnChoice(options);
     if(!onMap) box.scrollIntoView({block:'center',
       behavior:(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
         ? 'auto' : 'smooth'});
@@ -46797,73 +44524,8 @@ function ccChoiceResult(map, text, ok){
     tag.className='cc-choice-out'+(ok===false?' bad':(ok?' good':''));
     tag.innerHTML=`<b>${esc(text)}</b>`;
     map.appendChild(tag);
-    // И чат эфира знает, чем кончилось. См. ccTvOnResult.
-    if(typeof ccTvOnResult==='function') ccTvOnResult(ok);
     setTimeout(()=>{ tag.classList.add('out'); }, 1500);
     setTimeout(()=>{ tag.remove(); resolve(); }, 1900);
-  });
-}
-/* ПОВТОР СМЕРТИ — из его списка идей 6 сентября: после вылета показать, кто и
-   чем выбил, откуда и на чём стояли. Движок знает причину (deathCause — шторм,
-   сёрдж или имя команды), зону, место, чистый урон и где стояли оба отряда;
-   ствол убийцы — из его пака (сундуки на точке есть у всех, ccRoomSite).
-   Дистанция — словами по шкале движка: вплотную (до CONTACT_RANGE 2.2), с
-   соседней постройки (до CHIP_RANGE 4.4), издалека. Карточка стоит на карте
-   три секунды и под скипом/симуляцией/перемоткой не показывается. */
-const CC_DEATH_NEAR=2.2, CC_DEATH_MID=4.4, CC_DEATH_MS=3200;
-function ccDeathInfo(you, game){
-  const sq=you && you._sq;
-  if(!sq || sq.alive) return null;
-  const cause=sq.deathCause;
-  const killer=(cause && cause!=='storm' && cause!=='surge' && game && game.squads)
-    ? game.squads.find(s=>s.team && s.team.name===cause) : null;
-  let range=null;
-  if(killer){
-    const d=Math.hypot((killer.x||0)-(sq.x||0), (killer.y||0)-(sq.y||0));
-    range = d<=CC_DEATH_NEAR ? 'close' : d<=CC_DEATH_MID ? 'near' : 'far';
-  }
-  const gun=killer && killer.team._loot && killer.team._loot.weapons && killer.team._loot.weapons[0];
-  const net=Math.round((sq.dealt||0)-(sq.taken||0));
-  return {zone:sq.zoneReached||0, cause:cause||'', who:killer ? String(killer.team.name||'').replace(/<[^>]+>/g,'').trim() : '',
-          gun:gun ? gun.name : '', range, place:sq.place||0, net:net, elims:sq.elims||0,
-          surge:ccSurgeGapAt(game && game.frames ? game.frames() : null, net)};
-}
-/* Число сёрджа, как его пишет HUD («149 ABOVE DAMAGE THRESHOLD»): чистый урон
-   отряда минус линия отсечки последнего кадра. Пока сёрдж никого не бьёт, но
-   живых больше порога следующего круга — линия предварительная, тем же
-   правилом, что у панели набора (k-й снизу по чистому урону). null — сёрджа
-   нет. Его слово 7.09: «пиши количество сюрджа, а не урона за игру» — урон за
-   игру у нас выше реального (≈2300 против 1400–2000 в реплеях), а число над
-   линией откалибровано по ним (career-surge-you-probe). */
-function ccSurgeGapAt(frames, net){
-  const f=frames && frames.length ? frames[frames.length-1] : null;
-  if(!f) return null;
-  if(f.surgeAt>0 && f.surgeLine!=null) return Math.round(net-f.surgeLine);
-  const reload=/^r[0-9]$/.test(String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : ''));
-  const nextPh=(!reload && typeof ZoneSim!=='undefined' && ZoneSim.PHASES) ? ZoneSim.PHASES[f.zone] : null;
-  const nextAt=nextPh && isFinite(nextPh.surgeAt) ? nextPh.surgeAt : 0;
-  if(!(f.zone>=2 && nextAt>0 && f.players>nextAt)) return null;
-  const alive=(f.dots||[]).filter(x=>x && x.alive);
-  if(!alive.length) return null;
-  const per=Math.max(1, f.players/alive.length);
-  const nets=alive.map(x=>Number(x.n)||0).sort((a,b)=>a-b);
-  const k=Math.min(nets.length-1, Math.ceil((f.players-nextAt)/per));
-  return Math.round(net-nets[k]);
-}
-function ccDeathCard(map, info){
-  return new Promise(resolve=>{
-    if(!map || !info || skipAnimation || careerSimOn() ||
-       (typeof CC_FF!=='undefined' && CC_FF)){ resolve(); return; }
-    const T=L();
-    const how = info.cause==='storm' ? T.ccDeathStorm : info.cause==='surge' ? T.ccDeathSurge
-      : T.ccDeathBy(info.who, info.gun, info.range ? T.ccDeathRange[info.range] : '');
-    const tag=document.createElement('div');
-    tag.className='cc-choice-out bad cc-death';
-    const sg = info.surge==null ? T.ccDeathSurgeOff : info.surge<0 ? T.ccDeathSurgeBelow(ccNum(-info.surge)) : T.ccDeathSurgeAbove(ccNum(info.surge));
-    tag.innerHTML='<b>'+esc(T.ccDeathTitle(info.zone))+'</b><span>'+esc(how)+'</span><em>'+esc(T.ccDeathStats(info.place, sg, info.elims))+'</em>';
-    map.appendChild(tag);
-    setTimeout(()=>{ tag.classList.add('out'); }, CC_DEATH_MS-400);
-    setTimeout(()=>{ tag.remove(); resolve(); }, CC_DEATH_MS);
   });
 }
 /* Лут середины игры. Пак — два ствола, две хилки и мувмент; тиммейт разбирает
@@ -46886,227 +44548,11 @@ function ccDeathCard(map, info){
    Ожидание пробежки при этих числах: 0.4·4 − 0.6·2 = +0.4 — чуть выше нуля и
    заметно ниже потолка. Та же форма, что у хайграунда: выше потолок, ниже
    ожидание, названная цена за провал. */
-/* ДЕЙСТВИЯ НА ТОЧКЕ — его страница Notion «simulation», 7 сентября 2026:
-   «если никого нет, открывают сундуки и игроку дают лут, который рандомно
-   выпадает с шансом, который есть у Фортнайта; если кто-то конится — каждый
-   открывает по сундуку, игроку показывают лут и дают выбор файтиться: шансы,
-   если хороший лут, больше (+1 +3 +7), чем больше повера — тем больше шансов;
-   если выйти с локации — лутает меньше сундуков и меньше повер; должны быть два
-   оружия (автомат, дробовик), хил, хил, мувмент, нельзя пять дробовиков».
-
-   Первая остановка игры — до того, как кто-то сдвинулся с места (playTo(1)
-   ничего не играет). Точка своя — сундуки открываются молча и пак готов;
-   на точке чужие — первый сундук у каждого, и вопрос: файтить или уйти.
-
-   Шансы редкости из сундука. Правило нынешних глав (вики Fortnite, статья
-   Chest): обычный сундук даёт ствол от Uncommon до Legendary, Common из
-   сундука не падает — поэтому common здесь ноль. Пропорции остальных —
-   форма датамайна сундуков (mein-mmo.de, «Here are the loot chances from
-   treasure chests»; Hypex по Ch2S5: каждая легендарка меньше процента),
-   пересчитанная без common: uncommon больше половины, rare под треть, epic и
-   legendary — единицы процентов. Точной таблицы Ch7 Epic не публикует;
-   сумма 1.
-   Сундуков на точке для дуо — 8, уходя на соседнюю — 4: порядок величины
-   реального POI, не замер. Класс ствола — поле icon пула (rifle/shotgun/…). */
-const CC_CHEST_RARITY={common:0, uncommon:0.57, rare:0.31, epic:0.09, legendary:0.03};
-const CC_CHESTS_POI=8, CC_CHESTS_LEAVE=4, CC_CHEST_CONSUMABLE=0.6;
-/* Класс ствола из сундука — таблица Hypex по Chapter 2 Season 5 (Sportskeeda,
-   «data miner reveals how chest loot pool works»): AR 43 %, дробовик 22 %,
-   ПП 14 %, пистолет 11 %, снайперка 10 %. Единственная опубликованная таблица
-   классов; для Ch7 Epic её не даёт. Классов, которых в пуле сезона нет,
-   в броске не бывает — веса перенормируются на те, что есть. Раньше класс
-   выпадал равновероятно по списку имён пула: пистолетов было 25 %, снайперка
-   шла винтовкой. */
-const CC_CHEST_CLASS={rifle:0.43, shotgun:0.22, smg:0.14, pistol:0.11, sniper:0.10};
-// Что из пула расходников не хилка и не мувмент — ключи, удочки, сигналка, золотая
-// рыба. В слот хилки из сундука не идёт (его слово 7.09: «epic карт не надо»).
-const CC_CHEST_NOT_HEAL=['Epic Vault Keycard','Vault Key','Fishing Rod','Flare Gun','Bass Boost','Mythic Goldfish'];
-const ccIsHealItem=x=>x && CC_MOVE_ITEMS.indexOf(x.name)<0 && CC_CHEST_NOT_HEAL.indexOf(x.name)<0;
-function ccChestClass(rng, weapons){
-  const have={}; weapons.forEach(w=>{ have[w.icon]=1; });
-  const keys=Object.keys(CC_CHEST_CLASS).filter(k=>have[k]);
-  if(!keys.length) return null;
-  const tot=keys.reduce((a,k)=>a+CC_CHEST_CLASS[k], 0);
-  let r=rng()*tot;
-  for(const k of keys){ r-=CC_CHEST_CLASS[k]; if(r<0) return k; }
-  return keys[keys.length-1];
-}
-// Преимущество первого сундука в стычке на высадке — его числа «+1 +3 +7», в
-// процентных пунктах к шансу (CC_SITE_EDGE_PP за очко).
-const CC_LOOT_EDGE={common:0, uncommon:1, rare:3, epic:7, legendary:7, mythic:7};
-const CC_SITE_EDGE_PP=0.02;
-function ccChestRarity(rng){
-  const r=rng(); let acc=0;
-  for(const k of RARITY_LADDER){ acc+=CC_CHEST_RARITY[k]||0; if(r<acc) return k; }
-  return 'uncommon';
-}
-// Один сундук: сначала класс (CC_CHEST_CLASS), потом редкость (CC_CHEST_RARITY);
-// ствол этого класса этой редкости, если такой редкости у класса нет — ближайшая
-// ниже, если класс пуст совсем — любой ствол пула. С шансом CC_CHEST_CONSUMABLE —
-// расходник.
-function ccChestRoll(rng, set){
-  const pool=CC_LOOT_BY_SET[ccLootSet(set)];
-  const cls=ccChestClass(rng, pool.weapons);
-  const inCls=cls ? pool.weapons.filter(w=>w.icon===cls) : pool.weapons;
-  const rar=ccChestRarity(rng);
-  let cands=inCls.filter(w=>w.rarity===rar);
-  for(let i=RARITY_LADDER.indexOf(rar)-1; !cands.length && i>=0; i--) cands=inCls.filter(w=>w.rarity===RARITY_LADDER[i]);
-  if(!cands.length) cands=inCls.length ? inCls : pool.weapons;
-  const weapon=cands[Math.floor(rng()*cands.length)];
-  const hs=pool.heals.filter(x=>ccIsHealItem(x) || CC_MOVE_ITEMS.indexOf(x.name)>=0);
-  const cons = rng()<CC_CHEST_CONSUMABLE ? hs[Math.floor(rng()*hs.length)] : null;
-  return {weapon, cons};
-}
-// Пак по правилу «два ствола разных классов, две хилки, мувмент» — из того, что выпало.
-function ccPackFrom(weapons, cons){
-  const mod=o=>o ? (RARITY_MOD[o.rarity]||0) : -1;
-  const byMod=(a,b)=>mod(b)-mod(a);
-  const ws=weapons.slice().sort(byMod);
-  /* Его слово: «должны быть 2 оружия автомат дробовик». Пара — лучшая винтовка и
-     лучший дробовик из выпавшего; нет одного из них — лучший ствол другого класса
-     (ПП, пистолет, снайперка); класс один на всех рулонах — второй лучший, что есть. */
-  const best=cls=>ws.find(w=>w.icon===cls)||null;
-  let first=best('rifle'), second=best('shotgun');
-  if(!first || !second){
-    first=first||second||ws[0]||null;
-    second=(first && ws.find(w=>w!==first && w.icon!==first.icon)) || (first && ws.find(w=>w!==first)) || null;
-  }
-  if(first && second && mod(second)>mod(first)){ const t=first; first=second; second=t; }
-  const moves=cons.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0).sort(byMod);
-  const heals=cons.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)<0).sort(byMod);
-  return {weapons:[first, second].filter(Boolean), heals:heals.slice(0,2), move:moves[0]||null};
-}
-function ccChestPack(rng, set, n){
-  const rolls=[]; for(let i=0;i<n;i++) rolls.push(ccChestRoll(rng, set));
-  const p=ccPackFrom(rolls.map(r=>r.weapon), rolls.map(r=>r.cons).filter(Boolean));
-  p.chests=n; p.first=rolls[0];
-  return p;
-}
-/* Что пак стоит в силе: редкость двух стволов над uncommon (rare +1, epic +2,
-   legendary +3 за ствол), пустой слот ствола −2, хилки −1 за каждую недостающую,
-   без мувмента −1. Комната получает то же самое (ccRoomSite), так что это не
-   подарок игроку, а разброс лута на всех. */
-function ccPackPow(p){
-  if(!p) return 0;
-  const ws=p.weapons||[], hs=p.heals||[];
-  let v=0;
-  for(let i=0;i<2;i++){ const o=ws[i]; v += o ? Math.max(0, (RARITY_MOD[o.rarity]||2)-2) : -2; }
-  v -= Math.max(0, 2-hs.length);
-  if(!p.move) v -= 1;
-  return Math.max(-5, Math.min(6, v));
-}
-const ccRarityWord=r=>{ const k=ccRarityKey(r); return k ? k.charAt(0).toUpperCase()+k.slice(1) : ''; };
-function ccItemLabel(o){ return o ? o.name+' ('+ccRarityWord(o.rarity)+')' : '—'; }
-function ccPackLine(p){
-  const name=o=>o ? o.name : '—';
-  return [...(p.weapons||[]), ...(p.heals||[]), p.move].map(name).join(' · ');
-}
-// Шанс стычки на высадке: сила как у высадочной дуэли (LANDING_POW_EXPONENT,
-// потолок LANDING_ODDS_CAP), плюс разница первых сундуков в процентных пунктах.
-function ccSiteOdds(you, foe, eMine, eFoe){
-  const a=Math.max(1, you._pc||you._pf||you.pow||1), b=Math.max(1, foe._pc||foe._pf||foe.pow||1);
-  const wa=Math.pow(a, LANDING_POW_EXPONENT), wb=Math.pow(b, LANDING_POW_EXPONENT);
-  const base=clamp(wa/(wa+wb), 1-LANDING_ODDS_CAP, LANDING_ODDS_CAP);
-  return clamp(base+((eMine||0)-(eFoe||0))*CC_SITE_EDGE_PP, 0.2, 0.8);
-}
-/* Куда уходят, не приняв стычку: самая свободная коробка, из равных — ближняя.
-   В комнате на пятьдесят отрядов и двадцать коробок пустых почти не бывает, и
-   «соседняя точка» — это та, где сидят меньше всех; там стычка тоже возможна,
-   но уже руками движка. */
-function ccFreeBoxNear(game, you){
-  const busy=new Map();
-  (game && game.squads ? game.squads : []).forEach(s=>{ if(s.alive && s.team!==you && s.team.landingZone) busy.set(s.team.landingZone, (busy.get(s.team.landingZone)||0)+1); });
-  const z0=you.landingZone; if(!z0) return null;
-  let best=null, bn=Infinity, bd=Infinity;
-  ALL_LANDING_ZONES.forEach(z=>{
-    if(z===z0) return;
-    const n=busy.get(z)||0;
-    const dx=(z.x+z.w/2)-(z0.x+z0.w/2), dy=(z.y+z.h/2)-(z0.y+z0.h/2), d=dx*dx+dy*dy;
-    if(n<bn || (n===bn && d<bd)){ bn=n; bd=d; best=z; }
-  });
-  return best;
-}
-async function ccAskSite(you, ui){
-  if(!you) return;
-  const game=you._game, sq=you._sq;
-  if(!game || !game.squads) return;
-  const zone=you.landingZone;
-  const rivals=zone ? game.squads.filter(s=>s.alive && s.team!==you && !s.team.isMate && s.team.landingZone===zone).map(s=>s.team) : [];
-  const set=ccLootSet();
-  const T=L();
-  ccMpMark('st0'+(you.mpTag||''));
-  const mine=ccChestPack(Math.random, set, CC_CHESTS_POI);
-  const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
-  if(!rivals.length){
-    /* Своя точка без чужих — сундуки открываются НА ЭКРАНЕ, а не строкой на две
-       секунды: его слово 7 сентября «нет симуляции на локации, о которой я
-       писал». Панель одна кнопка — что выпало из восьми сундуков, какой пак
-       собран и сколько он стоит; под скипом и в симуляции берётся сама. */
-    you._loot=mine; const pv=ccPackPow(mine); ccAddGamePow(you, pv);
-    const labels=[...(mine.weapons||[]), ...(mine.heals||[]), mine.move].filter(Boolean).map(ccItemLabel).join(' · ');
-    await ccMpChoose('own'+(you.mpTag||''), async function(){
-      return (await ccChoiceBox(T.ccSiteOwnTitle, T.ccSiteOwnHint(CC_CHESTS_POI), [
-        {id:'take', def:true, icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.chest), title:T.ccSiteTake,
-         note:labels+' — '+T.ccSitePackPow(pv)}
-      ], ui && ui.map)).id;
-    }, function(){ return T.ccSiteTake; });
-    ccMpMark('st1');
-    await say(T.ccSiteOwn(CC_CHESTS_POI, ccPackLine(mine)), null);
-    return;
-  }
-  // Стычка — с сильнейшими из тех, кто сел на ту же коробку; остальные остаются движку.
-  const foe=rivals.slice().sort((a,b)=>(b._pc||b.pow||0)-(a._pc||a.pow||0))[0];
-  const theirs=ccChestRoll(Math.random, set);
-  const eMine=CC_LOOT_EDGE[ccRarityKey(mine.first.weapon.rarity)]||0, eFoe=CC_LOOT_EDGE[ccRarityKey(theirs.weapon.rarity)]||0;
-  const p=ccSiteOdds(you, foe, eMine, eFoe);
-  const bare=t=>String(t.name||'').replace(/<[^>]+>/g,'').trim();
-  const names=rivals.map(bare).join(' · ');
-  const pickId=(await ccMpChoose('site'+(you.mpTag||''), async function(){
-    return (await ccChoiceBox(T.ccSiteTitle(names), T.ccSiteHint(ccItemLabel(mine.first.weapon), ccItemLabel(theirs.weapon)), [
-      {id:'leave', def:true, icon:CC_CHOICE_ICON.run, title:T.ccSiteLeave, note:T.ccSiteLeaveNote(CC_CHESTS_LEAVE, CC_CHESTS_POI)},
-      {id:'fight', icon:ccItemIconHTML(mine.first.weapon, CC_CHOICE_ICON.fight), title:T.ccSiteFight,
-       note:T.ccSiteFightNote(Math.round(p*100), CC_CHESTS_POI, eMine, eFoe)}
-    ], ui && ui.map)).id;
-  }, function(v){ return v==='fight' ? T.ccSiteFight : T.ccSiteLeave; })).v;
-  ccMpMark('a1:'+pickId);
-  if(pickId==='fight'){
-    const won=Math.random()<p;
-    ccMpMark('w1:'+(won?1:0));
-    // Смерть на высадке — как её считает движок (droppedOut → стычки, аура).
-    const fs=game.squads.find(s=>s.team===foe);
-    if(won){
-      if(fs) fs.droppedOut=true;
-      game.eliminate(foe, you);
-      you._loot=mine; ccAddGamePow(you, ccPackPow(mine));
-      await say(T.ccSiteWon(bare(foe), CC_CHESTS_POI), true);
-    } else {
-      if(sq) sq.droppedOut=true;
-      game.eliminate(you, foe);
-      await say(T.ccSiteLost(bare(foe)), false);
-    }
-    return;
-  }
-  const free=ccFreeBoxNear(game, you);
-  if(free){ you.landingZone=free; if(sq){ sq.x=free.x+free.w/2; sq.y=free.y+free.h/2; } }
-  const small=ccChestPack(Math.random, set, CC_CHESTS_LEAVE);
-  you._loot=small; ccAddGamePow(you, ccPackPow(small));
-  await say(T.ccSiteLeft(CC_CHESTS_LEAVE, ccPackLine(small)), null);
-}
-// Комната открывает свои сундуки тем же правилом; под симуляцией (you=null) — и игрок.
-function ccRoomSite(field, you){
-  const set=ccLootSet();
-  field.forEach(t=>{
-    if(you && (t===you || t.isMate)) return;
-    const p=ccChestPack(Math.random, set, CC_CHESTS_POI);
-    t._loot=p; ccAddGamePow(t, ccPackPow(p));
-  });
-}
 const CC_LOOT_POI_ODDS=0.4, CC_LOOT_POI_BONUS=4, CC_LOOT_POI_FAIL=2;
 async function ccAskLoot(you, ui){
   if(!you) return;
   ccMpMark('l0'+(you.mpTag||''));
-  // Свой пак — тот, что собран из сундуков на точке (ccAskSite); соседний — чужой.
-  const mine=you._loot||ccLootPack(), other=ccLootPack();
+  const mine=ccLootPack(), other=ccLootPack();
   ccMpMark('l1');
   const name=o=>o ? esc(o.name) : '—';
   const listOf=p=>[...p.weapons, ...p.heals, p.move].map(name).join(' · ');
@@ -47125,9 +44571,8 @@ async function ccAskLoot(you, ui){
      Спрашивают одного — того, чья это роль. См. ccMpChoose и ccMpSeedOn. */
   const pickId=(await ccMpChoose('loot'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(L().ccLootTitle, L().ccLootHint,
-      [{id:'take', title:L().ccLootTake, note:listOf(mine)+' — '+L().ccLootTakeSafe, pack:mine,
-        icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.home)},
-       {id:'swap', title:L().ccLootSwap, icon:ccItemIconHTML(other.weapons[0], CC_CHOICE_ICON.contest),
+      [{id:'take', title:L().ccLootTake, note:listOf(mine)+' — '+L().ccLootTakeSafe, pack:mine},
+       {id:'swap', title:L().ccLootSwap,
         note:listOf(other)+' — '+L().ccLootSwapRisk(CC_LOOT_POI_BONUS, CC_LOOT_POI_FAIL,
           Math.round(CC_LOOT_POI_ODDS*100)), pack:other}],
       ui && ui.map)).id;
@@ -47135,8 +44580,6 @@ async function ccAskLoot(you, ui){
   ccMpMark('a3:'+pickId);
   // Остался на своей — ничего не выиграл и ничего не потерял. Сказать об этом
   // всё равно надо: молчащая панель читается как «выбор не засчитался».
-  // Что подобрал — то и показывается потом в строке «что у меня есть».
-  you._loot = pickId==='swap' ? other : mine;
   if(pickId!=='swap'){
     if(ui && ui.note) ui.note(L().ccLootKept);
     await ccChoiceResult(ui && ui.map, L().ccLootKept, null);
@@ -47161,47 +44604,24 @@ async function ccAskLate(you, ui){
      CC_LATE_MOVES плюс словарные, вместо правки в четырёх местах, где раньше
      стояло 'hg'. */
   const nameOf=id=>L()[CC_LATE_NAME[id]];
-  // Ход, у которого цена зависит от ресов, называет её по СЕГОДНЯШНИМ ресам.
-  const powOf=m=>m.mats ? ccRefreshPow(you) : m.pow;
   const pickId=(await ccMpChoose('late'+(you.mpTag||''), async function(){
-    // Подсказкой идёт не общая фраза, а что у тебя есть: ресы и лут. Ради
-    // этого вопрос и задан — см. ccKitLine.
-    return (await ccChoiceBox(L().ccLateTitle, ccKitLine(you),
-      CC_LATE_MOVES.map(m=>({id:m.id, title:nameOf(m.id), note:ccLateNote(m, powOf(m)),
-        // Картинка хода — по id, см. CC_LATE_ICON; у рефреша сундук, у низа «остаёмся».
-        icon:CC_CHOICE_ICON[CC_LATE_ICON[m.id]]||CC_CHOICE_ICON.stay})),
+    return (await ccChoiceBox(L().ccLateTitle, L().ccLateHint,
+      CC_LATE_MOVES.map(m=>({id:m.id, title:nameOf(m.id), note:ccLateNote(m)})),
       ui && ui.map)).id;
   }, function(v){ return nameOf(v); })).v;
   ccMpMark('a8:'+pickId);
   const move=ccLateMove(pickId);
-  // Третья сторона — стычка через движок, один бросок на обоих клиентах.
-  if(move.real){
-    const r=Math.random();
-    const game=you._game, foe=(game && game.nearest) ? game.nearest(you) : null;
-    const foeName=foe ? String(foe.name||'').replace(/<[^>]+>/g,'') : '';
-    const out=ccThirdApply(you, r, foe);
-    ccMpMark('w8t:'+out);
-    const line=out==='win' ? L().ccLateThirdWon(CC_THIRD.pow, foeName)
-             : out==='die' ? L().ccLateThirdLost(foeName)
-             : L().ccLateThirdNone(CC_THIRD.dmg);
-    if(ui && ui.note) ui.note(line);
-    await ccChoiceResult(ui && ui.map, line, out==='win' ? true : out==='die' ? false : null);
-    return;
-  }
-  const gain=powOf(move);
   const won=Math.random()<move.odds;
-  if(won){ ccAddGamePow(you, gain); if(move.mats) ccMatsFill(you); }
+  if(won) ccAddGamePow(you, move.pow);
   else if(move.fail) ccAddGamePow(you, -move.fail);
-  // Высокая земля строится, и это дороже обычного круга.
-  if(move.id==='hg') ccKitSpend([you], CC_MATS_HG_EXTRA);
   ccMpMark('w8:'+(won?1:0));
   /* Что сказать про исход. У ходов с монеткой (высота, третьение, отжатие)
      бывает «не вышло»; рефреш и низ всегда выходят как обещали, но назвать
      прибавку всё равно надо — иначе панель молчит, и это читается как «выбор
      не засчитался». */
   const line = ccLateRisky(move)
-    ? (won ? L()[CC_LATE_WON[move.id]](gain) : L()[CC_LATE_LOST[move.id]](move.fail))
-    : (gain ? L().ccLateRefreshGot(gain) : L().ccLateLgGot);
+    ? (won ? L()[CC_LATE_WON[move.id]](move.pow) : L()[CC_LATE_LOST[move.id]](move.fail))
+    : (move.pow ? L().ccLateRefreshGot(move.pow) : L().ccLateLgGot);
   if(ui && ui.note) ui.note(line);
   await ccChoiceResult(ui && ui.map, line, ccLateRisky(move) ? won : true);
 }
@@ -47235,10 +44655,6 @@ function simulateGameOnMap(teams, lobbyOpts){
   const result = ZoneSim.simulateZoneGame(teams, {
     rng: Math.random,
     land: ZONE_SETS[set],
-    phases: /^r\d$/.test(set) ? ZoneSim.RELOAD_PHASES : undefined,
-    // В соло-Reload возрождать некому — без напарника смерть окончательная
-    // (реплеи Reload Solo Victory Cup S41: 40 → 27 к восьмому кругу, а не 40).
-    respawnUntilZone: (/^r\d$/.test(set) && squadSize>1) ? CC_RELOAD_RESPAWN_ZONE : 0,
     aspect: aspect,
     startOf: t => {
       const z = t.landingZone;
@@ -47319,9 +44735,7 @@ const CC_HG_ODDS=0.5;              // «50 на 50» — его слово
    покупает только потолок, и платит за него ровно столько же. Рядом стоит
    рефреш с гарантированными +3, и теперь между ходами не «чуть лучше — чуть
    хуже», а «надёжно плюс три» против «орёл или решка на десять». */
-// Рефреш с 3 сентября — риск на пять, а не верные три: ожидание то же (+3),
-// см. таблицу у CC_LATE_MOVES. При полных ресах прибавка половинная.
-const CC_HG_POW=10, CC_REFRESH_POW=5;
+const CC_HG_POW=10, CC_REFRESH_POW=3;
 /* Проигранный размен стоит денег — его правка: «может, если хг не берёшь, то
    отнимает силу, чтоб игрок понимал риск». До этого хайграунд был лотереей без
    расплаты: половину раз плюс, половину — ровно ничего.
@@ -47384,105 +44798,29 @@ const CC_HG_FAIL=10;
    Комната играет тем же меню (ccRoomLate) — правило из замера
    career-choice-balance-probe: подарок только игроку ломает лестницу
    дивизионов, откалиброванную на том, как играют обе стороны. */
-/* ПРАВКА 3 СЕНТЯБРЯ, по жалобе его игроков: «не ясно, чем отличается найти
-   рефреш или играть лг, потому что если нажимать найти рефреш он всегда
-   найдётся». И правда: рефреш стоял 100% на +3 при нуле у лоуграунда, то есть
-   бесплатно бил соседа по обоим числам — выбора между ними не было вовсе.
-
-   Теперь рефреш это РИСК И СОСТОЯНИЕ, а не кнопка «дай силу»:
-   — он может не выйти (75%), и провал стоит −3: ушёл за коробками и вернулся
-     в круг позже всех;
-   — сколько он даёт, зависит от РЕСОВ. Полные ресы — идти незачем, прибавка
-     половинная; ресы кончились — прибавка полная, а ОТКАЗ идти стоит штрафа
-     на концовку (CC_MATS_PEN), потому что строиться в последних кругах нечем.
-   Ожидание при пустых ресах то же, что было у верного рефреша: 0.75·5−0.25·3
-   = +3, — то есть восьмая зона стоит ровно столько же, сколько стоила, и все
-   калиброванные числа вокруг остаются на месте.
-
-   И новый ход из его же списка: ИГРАТЬ ЗА ЗОНОЙ (edge). Держишься снаружи,
-   ловишь чужие размены на входе, платишь уроном шторма: 55% +8 / 45% −8,
-   ожидание ноль — та же форма, что у высокой земли, но потолок ниже, а шанс
-   выше. Ни один ход по-прежнему не бьёт другой по обоим числам:
-
-     ход           шанс     +     −    ожидание   потолок
-     низ            —       0     0        0         0
-     рефреш       75%      5*    3      +3 / +0*      5*      * при полных ресах вдвое меньше
-     за зоной     55%      8     8         0         8
-     хайграунд    50%     10    10         0        10                                    */
-const CC_EDGE_ODDS=0.55, CC_EDGE_POW=8, CC_EDGE_FAIL=8;
-/* МИД ГРАУНД — его страница «simulation» 7 сентября: «в какой позиции играть:
-   хг, мид граунд, лоу граунд — чем выше, тем сложнее, но больше повер».
-   Середина лестницы между высотой и низом: 65% на +6, провал −4, ожидание
-   +2.5, потолок 6 — ниже высоты по потолку, выше по шансу, и не бьёт рефреш
-   при пустых ресах (+3). Числа подобраны под лестницу, не замер. */
-const CC_MID_ODDS=0.65, CC_MID_POW=6, CC_MID_FAIL=4;
-const CC_REFRESH_ODDS=0.75, CC_REFRESH_FAIL=3;
-/* ТРЕТЬЯ СТОРОНА — снова в меню, но уже ПО ЗАМЕРУ, и через движок. Его слово
-   6 сентября: «делай дальше». Ход стоял здесь до 1 сентября как +16/−8 на
-   35% — числа с потолка, и его сняли. Теперь это не бросок силы, а реальная
-   стычка: сосед выбит движком (элим, ресы с трупа) или выбиты мы.
-
-   Замер (три реплея финала Major 2 EU, 2 августа 2026): третья сторона =
-   отряд, впервые ударивший одну из двух дерущихся команд через 3 с после
-   начала их стычки и до её конца плюс 15 с; исход — за 30 с после его первого
-   выстрела. Концовка (зоны 8+), 156 стычек и 108 заходов третьими (69%):
-   33% кончаются чужим килом, 17% — собственной смертью третьего, 3% —
-   потерей игрока, 47% — постреляли и разошлись. Середина (96 заходов): 32%
-   кил, 2% смерть, 63% разошлись — там третьих ловят редко. */
-const CC_THIRD={kill:0.33, die:0.17, pow:6, dmg:70};
 const CC_LATE_MOVES=[
-  {id:'hg',      pow:CC_HG_POW,      odds:CC_HG_ODDS,       fail:CC_HG_FAIL},
-  {id:'mid',     pow:CC_MID_POW,     odds:CC_MID_ODDS,      fail:CC_MID_FAIL},
-  {id:'edge',    pow:CC_EDGE_POW,    odds:CC_EDGE_ODDS,     fail:CC_EDGE_FAIL},
-  // real: решается движком (ccThirdApply), не броском силы; комната его не ходит.
-  {id:'third',   pow:CC_THIRD.pow,   odds:CC_THIRD.kill,    fail:0, real:true},
-  {id:'refresh', pow:CC_REFRESH_POW, odds:CC_REFRESH_ODDS,  fail:CC_REFRESH_FAIL, mats:true},
-  {id:'lg',      pow:0,              odds:1,                fail:0}
+  {id:'hg',      pow:CC_HG_POW,      odds:CC_HG_ODDS,    fail:CC_HG_FAIL},
+  {id:'refresh', pow:CC_REFRESH_POW, odds:1,             fail:0},
+  {id:'lg',      pow:0,              odds:1,             fail:0}
 ];
-/* Что делает третья сторона с отрядом — отдельно от вопроса, чтобы
-   проверялось. r — бросок [0,1); foe — ближайший сосед (его стычку и третьим).
-   Без соседа выбить некого и погибнуть не от кого — «постреляли». */
-function ccThirdApply(you, r, foe){
-  const sq=you._sq, game=you._game;
-  const can=!!(foe && game && game.eliminate);
-  if(r<CC_THIRD.kill && can){
-    game.eliminate(foe, you);
-    ccAddGamePow(you, CC_THIRD.pow);
-    you._mats=Math.min(CC_MATS_FULL, ccMats(you)+CC_FIGHT.mats);
-    return 'win';
-  }
-  if(r<CC_THIRD.kill+CC_THIRD.die && can){
-    game.eliminate(you, foe);
-    return 'die';
-  }
-  if(sq){ sq.dealt=(sq.dealt||0)+CC_THIRD.dmg; sq.taken=(sq.taken||0)+Math.round(CC_THIRD.dmg/2); }
-  return 'none';
-}
 // Ход с монеткой — тот, у которого есть чем платить за провал. Так и панель, и
 // строка исхода, и комната узнают новый ход, не перечисляя его по имени.
 function ccLateRisky(m){ return !!(m && m.fail>0 && m.odds<1); }
 // Имена словарных строк каждого хода — по id, чтобы новый ход добавлялся
 // строкой здесь, а не поиском 'hg' по файлу.
-const CC_LATE_NAME={hg:'ccLateHg', mid:'ccLateMid', third:'ccLateThird', take:'ccLateTake',
-                    edge:'ccLateEdge', refresh:'ccLateRefresh', lg:'ccLateLg'};
-// Картинка каждого хода концовки — ключ в CC_CHOICE_ICON.
-const CC_LATE_ICON={hg:'tower', mid:'stairs', third:'fight', take:'contest', edge:'storm', refresh:'chest', lg:'stay'};
-const CC_LATE_NOTE={hg:'ccLateHgNote', mid:'ccLateMidNote', third:'ccLateThirdNote', take:'ccLateTakeNote',
-                    edge:'ccLateEdgeNote', refresh:'ccLateRefreshNote', lg:'ccLateLgNote'};
-const CC_LATE_WON ={hg:'ccLateHgWon', third:'ccLateThirdWon', take:'ccLateTakeWon',
-                    edge:'ccLateEdgeWon', refresh:'ccLateRefreshWon'};
-const CC_LATE_LOST={hg:'ccLateHgLost', third:'ccLateThirdLost', take:'ccLateTakeLost',
-                    edge:'ccLateEdgeLost', refresh:'ccLateRefreshLost'};
+const CC_LATE_NAME={hg:'ccLateHg', third:'ccLateThird', take:'ccLateTake',
+                    refresh:'ccLateRefresh', lg:'ccLateLg'};
+const CC_LATE_NOTE={hg:'ccLateHgNote', third:'ccLateThirdNote', take:'ccLateTakeNote',
+                    refresh:'ccLateRefreshNote', lg:'ccLateLgNote'};
+const CC_LATE_WON ={hg:'ccLateHgWon', third:'ccLateThirdWon', take:'ccLateTakeWon'};
+const CC_LATE_LOST={hg:'ccLateHgLost', third:'ccLateThirdLost', take:'ccLateTakeLost'};
 /* Подпись под ходом. Строка у «низа» — просто строка (прибавки нет и называть
    нечего), у остальных функция; у ходов с монеткой ей нужны все три числа,
    чтобы игрок читал цену риска, а не только награду. */
-function ccLateNote(m, pow){
+function ccLateNote(m){
   const n=L()[CC_LATE_NOTE[m.id]];
   if(typeof n!=='function') return n;
-  // Третья сторона: подпись — три исхода по замеру, а не «шанс / прибавка / штраф».
-  if(m.real) return n(Math.round(CC_THIRD.kill*100), Math.round(CC_THIRD.die*100), CC_THIRD.pow);
-  const p=pow!=null ? pow : m.pow;
-  return ccLateRisky(m) ? n(p, m.fail, Math.round(m.odds*100)) : n(p);
+  return ccLateRisky(m) ? n(m.pow, m.fail, Math.round(m.odds*100)) : n(m.pow);
 }
 /* Незнакомый ход — это чужой сейв: 'third' и 'take' лежат в журналах карьер,
    которые играли до 1 сентября. Такой ход читается как «низ» — ход без
@@ -47496,37 +44834,17 @@ function ccLateMove(id){
    каждому игроку по 2 оружия 2 хила и 1 мувмент». Мувмента отдельным слотом в
    пулах нет, он живёт среди расходников (гарпун, слайдеры, граната), поэтому
    он и берётся оттуда — по имени, а не по выдуманному полю. */
-const CC_MOVE_ITEMS=['Harpoon Gun','Seven Sliders','Overdrive Grenade','Pro Fishing Rod',
-                     'Skyline Deployer','Seven Power Gloves','Shockwave Grenade','Rocket Ram','Chug Splash'];
-/* Лут острова, а не один пул на все вечера. Его слово 5 сентября: «посмотри
-   меты в каждом сезоне компетив и добавь в каждом сезоне оружие, которое
-   нужно». Остров вечера даёт careerBrSet(): дуо-год — m2 (глава 7, сезон 3) и
-   с 21 августа s42 (сезон 4), трио-год — t1/t2/t3 (глава 6). У каждого свой
-   пул оружия и расходников, тот же, что раздают карты драфта. */
-const CC_LOOT_BY_SET={
-  m1:{weapons:M1_WEAPON_POOL, heals:M1_CONSUMABLE_POOL},
-  m2:{weapons:WEAPON_POOL, heals:M2_CONSUMABLE_POOL},
-  s42:{weapons:S42_WEAPON_POOL, heals:S42_CONSUMABLE_POOL},
-  t1:{weapons:T1_WEAPON_POOL, heals:T1_CONSUMABLE_POOL},
-  t2:{weapons:T2_WEAPON_POOL, heals:T2_CONSUMABLE_POOL},
-  t3:{weapons:T3_WEAPON_POOL, heals:T3_CONSUMABLE_POOL}
-};
-function ccLootSet(set){
-  let s=set;
-  if(!s){ try{ s=(CAREER && CAREER.career) ? careerBrSet() : null; }catch(e){ s=null; } }
-  return CC_LOOT_BY_SET[s] ? s : 'm2';
-}
-function ccLootPack(rng, set){
+const CC_MOVE_ITEMS=['Harpoon Gun','Seven Sliders','Overdrive Grenade','Pro Fishing Rod'];
+function ccLootPack(rng){
   const pick=(pool,n)=>{
     const left=pool.slice(), out=[];
     while(out.length<n && left.length)
       out.push(left.splice(Math.floor((rng?rng():Math.random())*left.length), 1)[0]);
     return out;
   };
-  const pool=CC_LOOT_BY_SET[ccLootSet(set)];
-  const heals=pool.heals.filter(ccIsHealItem);
-  const moves=pool.heals.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0);
-  return {weapons:pick(pool.weapons, 2), heals:pick(heals, 2),
+  const heals=M2_CONSUMABLE_POOL.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)<0);
+  const moves=M2_CONSUMABLE_POOL.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0);
+  return {weapons:pick(WEAPON_POOL, 2), heals:pick(heals, 2),
           move:pick(moves.length?moves:heals, 1)[0]};
 }
 /* Пак больше не переводится в силу. Он был прибавкой (ccLootPow, той же
@@ -48906,8 +46224,7 @@ async function shareResultImage(){
     ctx.fillText(pl.handle.toUpperCase(), panelX+24, ry+22);
     ctx.font='700 14px '+fam; ctx.fillStyle=MUTED;
     ctx.fillText((pl.nat?natDisplay(pl.nat):'—')+'  ·  '+pl.rating, panelX+24, ry+42);
-    // exotic — креатор Про-Ама, тот же #70C7F8, что на карточке и в --exotic.
-    const rColor={common:'#9aa0a6',uncommon:'#3aa76a',rare:'#2b8fd0',epic:'#8b4ecc',legendary:'#d9a520',mythic:'#d9a520',exotic:'#70c7f8'}[shownRarity(pl)]||'#9aa0a6';
+    const rColor={common:'#9aa0a6',uncommon:'#3aa76a',rare:'#2b8fd0',epic:'#8b4ecc',legendary:'#d9a520',mythic:'#d9a520'}[shownRarity(pl)]||'#9aa0a6';
     ctx.fillStyle=rColor; ctx.fillRect(panelX+panelW-38, ry+8, 14, 14);
   });
   y+=squadH;
@@ -50234,13 +47551,9 @@ function ccSetMode(m){
   ccRenderRegions();
   document.getElementById('ccTabRookie').classList.toggle('on', m==='rookie');
   document.getElementById('ccTabCard').classList.toggle('on', m==='card');
-  const tc=document.getElementById('ccTabCreator');
-  if(tc) tc.classList.toggle('on', m==='creator');
-  CC.creator=null;
   const s=document.getElementById('ccSearch');
   s.value='';
-  s.placeholder = m==='rookie' ? L().ccSearchCountry
-                : m==='creator' ? L().ccSearchCreator : L().ccSearchCard;
+  s.placeholder = m==='rookie' ? L().ccSearchCountry : L().ccSearchCard;
   if(m==='rookie'){
     document.getElementById('ccNick').value='';
     document.getElementById('ccAge').value='16';
@@ -50250,9 +47563,7 @@ function ccSetMode(m){
   // A taken card is somebody: you play as them and you do not rename them. The
   // age is theirs only where the roster knows it - ccPickCard decides that, so
   // switching mode leaves the box open until a card is actually chosen.
-  // Именем креатора зовут его самого — как и взятую карточку, его не
-  // переименовывают.
-  document.getElementById('ccNick').disabled = m==='card' || m==='creator';
+  document.getElementById('ccNick').disabled = m==='card';
   document.getElementById('ccAge').disabled = false;
   ccRenderPhoto();
   ccRenderChips();
@@ -50349,7 +47660,7 @@ function ccRenderRegions(){
     const ready=ccRegionReady(r);
     return `<button class="cc-chip${CC.region===r?' on':''}${ready?'':' soon'}" `+
       `${ready?'':'disabled title="'+esc(L().ccRegionSoon)+'"'} `+
-      `onclick="ccPickRegion(\'${r}\')">${regionName(r)}</button>`;
+      `onclick="ccPickRegion('${r}')">${regionName(r)}</button>`;
   }).join('');
 }
 function ccPickRegion(r){
@@ -50379,7 +47690,7 @@ function ccRenderChips(){
   document.getElementById('ccRoleChips').innerHTML=['roleIGL','roleFRG'].map(k=>{
     const on=(lockRole||CC.role)===k;
     return `<button class="cc-chip${on?' on':''}" ${card?'disabled':''} `+
-      `onclick="ccPickRole(\'${k}\')">${L()[k]}</button>`;
+      `onclick="ccPickRole('${k}')">${L()[k]}</button>`;
   }).join('');
   document.getElementById('ccDivChips').innerHTML=[1,2,3,4,5].map(d=>{
     const on=CC.div===d;
@@ -50392,54 +47703,14 @@ function ccRenderChips(){
   if(dchips) dchips.innerHTML=CC_DIFFS.map(d=>{
     const on=(CC.diff||'easy')===d.id;
     return `<button class="cc-chip${on?' on':''}" `+
-      `onclick="ccPickDiff(\'${d.id}\')">${L()['ccDiff'+d.id.charAt(0).toUpperCase()+d.id.slice(1)]}`+
+      `onclick="ccPickDiff('${d.id}')">${L()['ccDiff'+d.id.charAt(0).toUpperCase()+d.id.slice(1)]}`+
       `<small>${L().ccDiffSpeed(d.age.toFixed(2))}</small></button>`;
   }).join('');
 }
 
-/* В каком регионе играет креатор. Пул сгруппирован по сценам, и это ЕДИНСТВЕННОЕ,
-   что про его регион известно наверняка. СНГ отдельным регионом в Фортнайте не
-   существует — эти люди играют в европейском, поэтому CIS сводится к EU. */
-function ccCreatorRegion(name){
-  const k=hKey(name);
-  for(const reg of CC_PROAM_REGION_ORDER){
-    if((CC_PROAM_CREATORS_BY_REGION[reg]||[]).some(n=>hKey(n)===k))
-      return reg==='CIS' ? 'EU' : reg;
-  }
-  return 'EU';
-}
-function ccPickCreator(name){
-  if(ccProAmCreators().indexOf(name)<0) return;
-  CC.creator=name; CC.card=null;
-  // Регион — тот, в котором этот человек и правда играет; чипы остаются живыми,
-  // это подсказка, а не замок (так же ведёт себя дивизион у взятой карточки).
-  CC.region=ccCreatorRegion(name);
-  CC.photo=null;
-  document.getElementById('ccNick').value=name;
-  CC.div=ccDivisionFor(CC_PROAM_CREATOR_OVR);
-  ccRenderRegions();
-  ccRenderChips();
-  ccRenderList();
-  ccSync();
-}
-// Карточка креатора для превью и для старта: рейтинг один на всех, редкость
-// своя (см. shownRarity), аудитория настоящая.
-function ccCreatorCard(name){
-  const f=ccProAmFollowers(name), tw=ccProAmTwitch(name);
-  return {handle:name, nick:name, nat:null, region:ccCreatorRegion(name), org:null,
-          tier:'ladder', event:L().ccCreatorEvent, placement:null,
-          rating:CC_PROAM_CREATOR_OVR, _targetOvr:CC_PROAM_CREATOR_OVR,
-          _attrs:ccRookieAttrs(CC_PROAM_CREATOR_OVR, CC.role||'roleIGL'),
-          // Лицо — с его канала: карьера за живого стримера играется его
-          // портретом, а не инициалами. См. CC_PROAM_AVA.
-          _photo:ccProAmAvatar(name),
-          creator:true, tw:tw?tw[0]:null, followers:f};
-}
 function ccRenderCard(){
   const box=document.getElementById('ccCardBox'); if(!box) return;
-  let card = CC.mode==='card' ? CC.card
-           : CC.mode==='creator' ? (CC.creator ? ccCreatorCard(CC.creator) : null)
-           : (CC.country ? ccMakePlayer() : null);
+  let card = CC.mode==='card' ? CC.card : (CC.country ? ccMakePlayer() : null);
   if(CC.mode==='card' && card){
     // A taken card previews as the person it is. The ping is shown because the
     // career really will play on that connection, but it is worth nothing here
@@ -50473,30 +47744,6 @@ function ccRenderList(){
   // Очки прокачки — только построенному, и раздаются только здесь.
   const spf=document.getElementById('ccSpField');
   if(spf){ spf.style.display = CC.mode==='rookie' ? '' : 'none'; ccSpaRender(); }
-  /* Контент-мейкеры — тот же список карточек, только собранный из живых людей
-     с Twitch, а не из ростера сцены. Рейтинг у всех один (CC_PROAM_CREATOR_OVR),
-     потому что играют они примерно одинаково; отличает их аудитория, поэтому
-     под ником стоит она, а не клуб. */
-  if(CC.mode==='creator'){
-    grid.style.display='none'; cards.style.display='';
-    const all=ccProAmCreators().filter(n=>!q || n.toLowerCase().includes(q));
-    cards.innerHTML = all.length ? all.map(n=>{
-      const f=ccProAmFollowers(n), reg=ccCreatorRegion(n);
-      const on = CC.creator===n ? ' on' : '';
-      // Лицо канала — там же, где у карточек ростера портрет. См. CC_PROAM_AVA.
-      const ava=ccProAmAvatar(n);
-      return `<button class="cc-card cc-card-cre${on}" onclick="ccPickCreator('${n.replace(/'/g,"\\'")}')">
-        ${ava ? `<img class="cc-card-ph" src="${ava}" alt="" loading="lazy" onerror="this.remove()">`
-              : `<span class="cc-card-ph"></span>`}
-        <span class="cc-card-in">
-          <span class="cc-card-n">${esc(n)}</span>
-          <span class="cc-card-o">${f ? L().ccCreatorFollowers(ccNum(f)) : L().ccCreatorNoTw}</span>
-          <span class="cc-card-mate">${esc(regionName(reg))}</span>
-        </span>
-        <span class="cc-card-r">${CC_PROAM_CREATOR_OVR}</span></button>`;
-    }).join('') : `<div class="cc-note">${L().ccNoCards}</div>`;
-    return;
-  }
   if(CC.mode==='rookie'){
     cards.style.display='none'; grid.style.display='';
     const reg=CC.region||'EU';
@@ -50757,11 +48004,7 @@ function ccSync(){
     /* A locked box needs a reason and an open one on a real card needs one more:
        the player is about to choose a fact about somebody who exists, and should
        know that is what they are doing. */
-    /* У креатора возраст тоже не выдуман: дат рождения у стримеров мод не
-       держит, поэтому здесь та же строка, что у карточки без известной даты —
-       «решаешь ты». */
     const note = bad ? bad
-      : CC.mode==='creator' ? (CC.creator ? L().ccAgeUnknown : '')
       : CC.mode!=='card' || !CC.card ? ''
       : ccBornOf(CC.card.handle) ? L().ccAgeKnown
       : L().ccAgeUnknown;
@@ -50776,28 +48019,15 @@ function ccSync(){
      и на экране стояло «null ms», а в сейве пустое поле. Всплыло, когда
      список выбора перестал прятать неевропейцев. */
   const ping=CC.country?ccPingOf(CC.country, CC.region):null;
-  const ok = CC.mode==='creator'
-    ? (!!CC.creator && age>=CC_AGE_MIN && age<=CC_AGE_MAX)
-    : (nick.length>=2 && age>=CC_AGE_MIN && age<=CC_AGE_MAX && CC.country
-       && (CC.mode==='rookie' || CC.card));
+  const ok = nick.length>=2 && age>=CC_AGE_MIN && age<=CC_AGE_MAX && CC.country
+    && (CC.mode==='rookie' || CC.card);
   document.getElementById('ccStart').disabled=!ok;
   const out=document.getElementById('ccReadout');
   ccRenderCard();
-  /* Креатору страну не выбирают: он существует, страна у него своя, а прибавки
-     за пинг у него нет — та же логика, что у взятой карточки. Строка под
-     карточкой говорит про его аудиторию, потому что это и есть его отличие. */
-  if(CC.mode==='creator'){
-    const f=CC.creator ? ccProAmFollowers(CC.creator) : 0;
-    out.innerHTML = CC.creator
-      ? `<span><em>${L().ccRoRegion||''}</em>${esc(regionName(CC.region||'EU'))}</span>`+
-        `<span><em>${L().xFollowers}</em>${f?ccNum(f):'—'}</span>`
-      : `<span>${L().ccPickCreator}</span>`;
-    return;
-  }
   if(!CC.country){ out.innerHTML=`<span>${L().ccPickCountry}</span>`; return; }
   // What the two are worth, said before the career starts — and they are worth
   // nothing to a taken card, so the readout promises nothing there either.
-  const built=CC.mode==='rookie';
+  const built=CC.mode!=='card';
   const pingEdge=built?ccPingEdge(ping):0, ageEdge=built?ccAgeEdge(age):0;
   const plus=v=>(v>0?'+':'')+(Math.round(v*10)/10);
   out.innerHTML =
@@ -50867,41 +48097,23 @@ function ccDivisionFor(ovr){
 function ccStart(){
   // A taken card keeps its name whatever the field holds.
   const nick=CC.mode==='card' && CC.card ? CC.card.handle
-           : CC.mode==='creator' && CC.creator ? CC.creator
            : (document.getElementById('ccNick').value||'').trim();
-  /* КАРЬЕРА ЗА КОНТЕНТ-МЕЙКЕРА (его правка 4 сентября).
-
-     Это не третий вид новичка, а третий вид ЛИЧНОСТИ: человек существует, его
-     не переименовывают и ему не дарят статы — рейтинг у всех креаторов один и
-     тот же (CC_PROAM_CREATOR_OVR), как и в Про-Аме. Прибавок за страну и
-     возраст нет по той же причине, что и у взятой карточки.
-
-     Аудитория переезжает НАСТОЯЩАЯ: подписчики Twitch — это снятое с самого
-     Twitch число, а известность в сцене считается той же долей, которой мод уже
-     меряет чужую аудиторию на коллабе (CC_PROAM_REACH_SHARE). Отсюда и выходит
-     честная расстановка: у крупнейших каналов старт вдвое выше дивизиона 1,
-     у маленьких — почти с нуля, и до приглашения на Про-Ам им ещё расти. */
-  const creator = CC.mode==='creator' && CC.creator ? CC.creator : null;
   const age=parseInt(document.getElementById('ccAge').value,10);
   const ping=ccPingOf(CC.country, CC.region);
   const card=CC.card;
-  let ovr = card ? attrsFor(card).ovr : creator ? CC_PROAM_CREATOR_OVR : ccBand(CC.div, CC.region);
+  let ovr = card ? attrsFor(card).ovr : ccBand(CC.div, CC.region);
   const role = card ? attrsFor(card).roleKey : CC.role;
   const attrs = card ? null : ccRookieAttrs(ovr, role);
   /* Розданные на этом экране очки ложатся в статы прямо сейчас — один раз и
      навсегда, той же ценой, что стоила трата в карьере: +0.5 за очко. Та же
      ccSpaApply, что красила превью, — сейв не может разойтись с экраном. */
-  // Очки прокачки — только построенному: настоящему человеку статы не дарят.
-  if(!card && !creator) ovr=ccSpaApply(attrs);
+  if(!card) ovr=ccSpaApply(attrs);
   const save={
     v:1,
     player:{
       nick, age, source:CC.mode,
       // Пол: выбор построенного, факт взятого. См. ccSexPick.
-      sex: (card || creator) ? 'm' : (CC.sex||'m'),
-      // Флаг личности: по нему карточка красится в Exotic (см. shownRarity) и
-      // по нему же видно, что это карьера за живого стримера.
-      creator: !!creator,
+      sex: card ? 'm' : (CC.sex||'m'),
       // Stored as zero for a taken card, so the save says the same thing the
       // screen did. careerCard decides this again on every read, off source
       // and handle, so an old save cannot keep an edge this rule withdrew.
@@ -50916,10 +48128,10 @@ function ccStart(){
          отвечать: см. careerBirthdays и ccPlayerAge. Пусто у всех, кто его не
          вводил, и у каждого старого сейва, и это ничего не меняет. */
       born: CC.born || null,
-      closeRangeEdge: (card || creator) ? 0 : ccPingEdge(ping),
+      closeRangeEdge: card ? 0 : ccPingEdge(ping),
       // The region the career competes in. A rookie's is always Europe - the
       // country map is - and a taken card's is whichever one it was taken from.
-      region: CC.region||'EU', ovr, role, attrs, ageEdge: (card || creator) ? 0 : ccAgeEdge(age),
+      region: CC.region||'EU', ovr, role, attrs, ageEdge: card ? 0 : ccAgeEdge(age),
       // Where this career is from, which is what rent is measured against. A
       // career that starts in NA Central is not renting NA Central. See ccRentNow.
       homeRegion: CC.region||'EU',
@@ -50933,10 +48145,7 @@ function ccStart(){
     career:{season:1, size:2, diff:(CC.diff||'easy'), day:careerStartDay(), division: CC.div,
             // A career that starts in Division 1 starts known: that room is
             // 300 people the scene watches, and nobody is in it unread.
-            reach: creator ? Math.round((ccProAmFollowers(creator)||0)*CC_PROAM_REACH_SHARE)
-                  : CC.div===1 ? CC_REACH_D1 : 0,
-            // Подписчики Twitch у креатора — настоящие, снятые с самого Twitch.
-            twitch: creator ? (ccProAmFollowers(creator)||0) : 0,
+            reach: CC.div===1 ? CC_REACH_D1 : 0,
             // Очки прокачки в карьере не живут: они розданы на экране
             // создания и уже лежат в статах. Его правка, 23 августа.
             earnings:0, wages:0, tokens:[], log:[],
@@ -50997,10 +48206,7 @@ function ccStart(){
      скажет плитка. */
   if(CC_MP_NEW){
     const want=CC_MP_NEW; CC_MP_NEW=null;
-    // Гонка карьер — своя дверь: каждый играет СВОЮ карьеру, лобби только
-    // сравнивает. См. careerRaceCreate / careerRaceJoin.
-    if(want.race) (want.role==='b') ? careerRaceJoin(want.code) : careerRaceCreate();
-    else if(want.role==='b') careerMpJoin(want.code);
+    if(want.role==='b') careerMpJoin(want.code);
     else careerMpCreate();
   }
 }
@@ -51223,7 +48429,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='2573e8b2';
+const CC_BUILD='d3ac24f8';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -51696,16 +48902,7 @@ function ccMpId(){
   return v;
 }
 function ccMpBoot(){
-  if(typeof MP==='undefined') return Promise.resolve();
-  /* Гонка карьер поднимается тем же входом, но своим состоянием: она живёт в
-     cr.race и ни одного командного пути не включает. См. ccRaceOn. */
-  if(ccRaceOn()){
-    careerRaceWire();
-    return MP.connect(CAREER.career.race.code, ccMpId())
-      .then(function(){ careerRaceSend(); })
-      .catch(function(){});
-  }
-  if(!ccMpOn()) return Promise.resolve();
+  if(!ccMpOn() || typeof MP==='undefined') return Promise.resolve();
   // До подключения, а не после: первое же чужое решение должно застать
   // обработчик на месте.
   ccMpThirdWire();
@@ -52134,7 +49331,7 @@ function ccMpRedraw(){
    экран не готов: тот же запрет, что и на самой кнопке старта. */
 /* Намерение завести команду — от нажатия в меню до конца создания карьеры.
 
-   Двери стоят в полосе карьеры на главной (.cstrip), а карьеру всё равно надо
+   Двери стоят на карточке карьеры (mode-mp), а карьеру всё равно надо сначала
    построить: командное состояние живёт в ней же (CAREER.career.mp). Значит
    между нажатием и лобби есть целый экран, и намерение обязано его пережить —
    иначе игрок доходит до конца и не понимает, что создал.
@@ -52180,245 +49377,6 @@ function careerMpJoinNew(){
     CC_MP_NEW={role:'b', code:code};
     ccMpStartNew();
   });
-}
-
-/* ===== ГОНКА КАРЬЕР — вдвоём, но каждый своей ================================
-
-   Его правка 3 сентября 2026: «можно сделать онлайн режим не в одной команде,
-   а разными. И соревноваться, кто лучше карьеру сыграет».
-
-   Это НЕ командная карьера и намеренно устроено иначе. У командной цена —
-   локстеп: оба браузера считают один вечер, ждут друг друга на гейте, сверяют
-   каждый бросок; из-за этого её и нельзя было сделать «каждый сам».
-
-   Гонка не считает ничего общего. Каждый играет свою карьеру, свой календарь,
-   свои вечера — а лобби возит между ними ОДНУ маленькую сводку: где ты в
-   сезоне, в каком дивизионе, какой рейтинг, сколько заработал, где стоишь в
-   PR. Никаких барьеров, никаких общих бросков, разойтись нечему.
-
-   Живёт в `cr.race`, а не в `cr.mp`, и это главное решение: всё командное
-   висит на ccMpTeam() → cr.mp.code, поэтому в гонке ни один локстепный путь
-   не включается сам собой. Проверяет это сторож check-career-race. */
-function ccRaceOn(){
-  return !!(CAREER && CAREER.career && CAREER.career.race && CAREER.career.race.code);
-}
-function ccRaceLive(){
-  return ccRaceOn() && typeof MP!=='undefined' && MP.state==='live';
-}
-let CC_RACE_PEERS={};      // id → сводка соперника, приходит по act('race')
-let CC_RACE_WIRED=false;
-/* ОДИН КАЛЕНДАРЬ НА ДВОИХ — его решение 4 сентября: «надо одновременно, как
-   в дуо карьере».
-
-   Гонка по-прежнему не считает ничего общего: вечера, лобби и броски у каждого
-   свои. Общим становится только ЧАСЫ — день закрывается, когда его закрыли
-   оба. Механика та же, что у командной карьеры (ccMpNextSaw): нажал
-   «следующий день» — это голос, шагают оба от второго голоса.
-
-   Три правила, без которых это стало бы клеткой:
-     — ОТСТАЮЩИЙ ИДЁТ СВОБОДНО. Ждёт тот, кто впереди или вровень; тот, у кого
-       день раньше, догоняет без единого ожидания. Иначе двое, вошедшие в гонку
-       в разные дни, встали бы намертво друг напротив друга.
-     — СОПЕРНИК ОТВАЛИЛСЯ — ЖДАТЬ НЕКОГО. Держит только живая связь
-       (ccRaceLive) и только пока соперник вообще прислал о себе сводку.
-     — И ЕСТЬ ДВЕРЬ НАРУЖУ: «идти дальше одному» снимает ожидание на этот день
-       (ccRaceGoAlone). Человек ушёл спать — карьера не должна стоять до утра.
-
-   Перемотка через гейт не идёт (CC_FF): она сама шагает днями, и держать её
-   на каждом дне значило бы не пускать вовсе. Кто перемотал — тот и ждёт, пока
-   второй догонит; догоняет он свободно, по первому правилу. */
-let CC_RACE_NEXT={day:null, who:{}};   // день → кто уже закрыл (id)
-let CC_RACE_STEP=false;          // пропуск на один шаг: голоса сошлись
-let CC_RACE_ALONE=null;          // день, на котором игрок решил идти без соперника
-function ccRacePeers(){
-  return Object.keys(CC_RACE_PEERS).map(k=>CC_RACE_PEERS[k]).filter(Boolean);
-}
-function ccRaceHold(iso){
-  if(CC_RACE_STEP || !ccRaceLive()) return false;
-  if(typeof CC_FF!=='undefined' && CC_FF) return false;      // перемотка идёт своим ходом
-  if(CC_RACE_ALONE===careerToday()) return false;            // сегодня решили без него
-  if(iso!==ccAddDays(careerToday(), 1)) return false;        // не однодневный шаг
-  const peers=ccRacePeers();
-  if(!peers.length) return false;                            // о соперниках ничего не знаем
-  return peers.some(p=>p && p.day && p.day<=careerToday());   // кто-то ещё не дошёл
-}
-/* Голоса считаются ПОИМЁННО, а не «мой и его»: в гонке людей может быть
-   больше двух (см. CC_RACE_MAX и lobby.join), и день закрывается, когда его
-   закрыли все, кто в лобби. */
-function ccRaceOf(){ return 1+ccRacePeers().length; }
-function ccRaceVotes(){
-  return CC_RACE_NEXT.day===careerToday() ? Object.keys(CC_RACE_NEXT.who).length : 0;
-}
-function ccRaceIVoted(){
-  return CC_RACE_NEXT.day===careerToday() && !!CC_RACE_NEXT.who[ccMpId()];
-}
-function ccRaceVote(){
-  if(typeof MP==='undefined' || !MP.act) return;
-  if(ccRaceIVoted()) return;                                          // уже голосовал
-  try{ MP.act('nextday', {by:ccMpId(), day:careerToday()}); }catch(e){}
-  /* Свой голос считаем СРАЗУ, не дожидаясь эха от сервера: в командной
-     карьере на эхо можно положиться (там весь вечер на нём и стоит), а гонке
-     хватает того, что решение уже принято здесь. Эхо, если придёт, поставит
-     ту же отметку второй раз — это ничего не меняет. */
-  ccRaceNextSaw({by:ccMpId(), day:careerToday()});
-}
-function ccRaceNextSaw(p){
-  if(!p || !p.day || p.day!==careerToday()) return;
-  if(CC_RACE_NEXT.day!==p.day) CC_RACE_NEXT={day:p.day, who:{}};
-  CC_RACE_NEXT.who[p.by||'peer']=1;
-  if(ccRaceVotes()>=ccRaceOf()){
-    CC_RACE_NEXT={day:null, who:{}};
-    CC_RACE_STEP=true;
-    try{ careerAdvanceTo(ccAddDays(careerToday(), 1)); }
-    finally{ CC_RACE_STEP=false; }
-  }
-  if(typeof careerRenderHub==='function' && document.getElementById('chBody'))
-    careerRenderHub('centre');
-}
-// Ждём ли мы сейчас остальных — этим держится подпись на кнопке и плитка.
-function ccRaceWaiting(){
-  return ccRaceLive() && ccRaceIVoted() && ccRaceVotes()<ccRaceOf();
-}
-function ccRaceGoAlone(){
-  CC_RACE_ALONE=careerToday();
-  CC_RACE_NEXT={day:null, who:{}};
-  careerAdvanceTo(ccAddDays(careerToday(), 1));
-  if(typeof careerRenderHub==='function') careerRenderHub('centre');
-}
-// Сводка карьеры одной строкой — ровно то, чем меряются.
-function careerRaceCard(){
-  const cr=CAREER && CAREER.career, pl=CAREER && CAREER.player;
-  if(!cr || !pl) return null;
-  const pr=(function(){ try{ const rows=careerPrRows(); const me=rows.findIndex(r=>r.you);
-    return me<0 ? null : {rank:me+1, pr:rows[me].pr}; }catch(e){ return null; } })();
-  const log=(cr.log||[]).filter(r=>r.place);
-  const best=log.length ? Math.min.apply(null, log.map(r=>r.place)) : null;
-  return {nick:pl.nick||'', ovr:pl.ovrExact!=null?Math.round(pl.ovrExact):pl.ovr,
-          div:cr.division, season:cr.season||1, day:cr.day,
-          money:cr.earnings||0, wins:log.reduce((a,r)=>a+(r.wins||0),0),
-          events:log.length, best:best, titles:(cr.ewc||[]).length,
-          pr:pr?pr.pr:0, prRank:pr?pr.rank:0, org:(CAREER.org&&CAREER.org.name)||null};
-}
-function careerRaceSend(){
-  if(!ccRaceLive() || typeof MP==='undefined' || !MP.act) return false;
-  const card=careerRaceCard();
-  if(!card) return false;
-  try{ MP.act('race', card); }catch(e){ return false; }
-  return true;
-}
-function careerRaceWire(){
-  if(CC_RACE_WIRED || typeof MP==='undefined' || !MP.on) return;
-  CC_RACE_WIRED=true;
-  /* Ушедший из гонки не должен держать общий день: пока его сводка лежит в
-     таблице, ccRaceOf считает его живым и календарь ждёт голоса, которого не
-     будет. Сервер говорит об уходе (bye/part с полем by) — по нему и убираем.
-     Дверь «идти дальше одному» остаётся на случай, когда человек не ушёл, а
-     просто закрыл вкладку. */
-  MP.on('bye', function(m){
-    if(!m || !m.by || !ccRaceOn()) return;
-    if(CC_RACE_PEERS[m.by]){
-      delete CC_RACE_PEERS[m.by];
-      if(CC_RACE_NEXT.who) delete CC_RACE_NEXT.who[m.by];
-      if(typeof careerRenderHub==='function' && document.getElementById('chBody'))
-        careerRenderHub('centre');
-    }
-  });
-  MP.on('act', function(m){
-    if(!m || !m.payload) return;
-    /* Голос за следующий день — тот же act, что и в командной карьере, только
-       считает его гонка своим счётчиком. См. ccRaceNextSaw. */
-    if(m.kind==='nextday'){ if(ccRaceOn()) ccRaceNextSaw(m.payload); return; }
-    if(m.kind!=='race') return;
-    if(m.by && m.by===ccMpId()) return;              // своё эхо не считаем
-    CC_RACE_PEERS[m.by||'peer']=m.payload;
-    if(typeof careerRenderHub==='function' && document.getElementById('chBody'))
-      careerRenderHub(CH_TAB);
-  });
-}
-/* Кто впереди. Порядок такой же, каким карьеру читают глазами: дивизион
-   (первый выше пятого), потом PR — публичное число этой сцены, — потом
-   деньги. Ничьей не бывает: последним ключом стоит рейтинг. */
-function careerRaceScore(c){
-  if(!c) return -1e9;
-  return (6-(c.div||5))*1e9 + (c.pr||0)*1e3 + Math.min(1e3-1, (c.money||0)/1000) + (c.ovr||0)/1000;
-}
-function careerRaceRows(){
-  const mine=careerRaceCard();
-  const rows=[];
-  if(mine) rows.push(Object.assign({you:true}, mine));
-  Object.keys(CC_RACE_PEERS).forEach(k=>rows.push(Object.assign({you:false}, CC_RACE_PEERS[k])));
-  rows.sort((a,b)=>careerRaceScore(b)-careerRaceScore(a));
-  return rows;
-}
-function careerRaceEnter(race){
-  if(!CAREER || !CAREER.career) return Promise.resolve(false);
-  const was=CAREER.career.race;
-  CAREER.career.race=race;
-  careerRaceWire();
-  /* Дивизион и сид команды НЕ отправляются: лобби пускает по ним только в
-     командную карьеру (см. lobby.join), а в гонке двое обязаны сойтись хоть
-     из первого дивизиона, хоть из пятого — в этом её смысл. */
-  return MP.connect(race.code, ccMpId()).then(function(){
-    careerSave();
-    careerRaceSend();
-    ccMpRedraw();
-    return true;
-  }).catch(function(){
-    if(was===undefined) delete CAREER.career.race; else CAREER.career.race=was;
-    if(was===undefined && typeof MP!=='undefined' && MP.drop) MP.drop();
-    careerSave();
-    ccMpRedraw();
-    return false;
-  });
-}
-function careerRaceCreate(){ return careerRaceEnter({code:ccMpCode(), role:'a', since:careerToday()}); }
-function careerRaceJoin(code){
-  return careerRaceEnter({code:String(code).toUpperCase(), role:'b', since:careerToday()});
-}
-function careerRaceNew(){
-  if(!CC_MP_OPEN) return;
-  CC_MP_NEW={role:'a', race:true};
-  ccMpStartNew();
-}
-function careerRaceJoinNew(){
-  if(!CC_MP_OPEN) return;
-  ccCodeOpen(function(code){
-    CC_MP_NEW={role:'b', code:code, race:true};
-    ccMpStartNew();
-  });
-}
-function careerRaceLeave(){
-  if(!CAREER || !CAREER.career) return;
-  delete CAREER.career.race;
-  CC_RACE_PEERS={};
-  if(typeof MP!=='undefined' && MP.drop) MP.drop();
-  careerSave();
-  ccMpRedraw();
-}
-// Плитка гонки на центре хаба: таблица, кто впереди, и код для второго.
-function careerRaceTileHTML(){
-  if(!ccRaceOn()) return '';
-  const rows=careerRaceRows();
-  const code=CAREER.career.race.code;
-  const alone=rows.length<2;
-  const line=r=>`<div class="ch-row cc-race-row${r.you?' me':''}">
-      <em>${esc(r.nick||'')}${r.org?' · '+esc(r.org):''}</em>
-      <b>${L().ccDivision} ${r.div} · ${L().ccRoOvr} ${r.ovr} · ${ccMoney(r.money||0)}${
-        r.pr?' · PR '+ccNum(r.pr):''}</b></div>`;
-  return `<div class="ch-tile cc-race">
-    <h4>${L().ccRaceTitle}</h4>
-    <div class="ch-row"><em>${L().ccMpCode}</em><b>${esc(code)}</b></div>
-    <div class="ch-row"><em>${L().ccMpLink}</em><b class="${ccRaceLive()?'ch-goal-met':''}">${
-      ccRaceLive() ? L().ccMpLive : L().ccMpLost}</b></div>
-    ${rows.map(line).join('')}
-    ${alone ? `<div class="ch-empty">${L().ccRaceAlone}</div>`
-            : `<div class="ch-hint">${esc(rows[0].you ? L().ccRaceAhead : L().ccRaceBehind(rows[0].nick||''))}</div>`}
-    ${/* День общий: пока соперник не закрыл свой, календарь стоит. И дверь
-          наружу, если он ушёл спать. См. ccRaceHold. */''}
-    ${ccRaceWaiting() ? `<div class="ch-hint cc-race-wait">${esc(L().ccRaceWait)}</div>
-      <button class="ch-sign" onclick="ccRaceGoAlone()">${esc(L().ccRaceAloneGo)}</button>` : ''}
-    <button class="ch-decline" onclick="careerRaceLeave()">${L().ccRaceLeave}</button>
-  </div>`;
 }
 let CC_CODE_GO=null;
 function ccCodeOpen(go){
@@ -53534,8 +50492,6 @@ function careerCard(raw){
            // once stamped, a rookie's six numbers stopped following the rating
            // until the next cup rebuilt them.
            _attrs:pl.attrs ? {...pl.attrs, _floored:false} : null,
-           // Карьера за контент-мейкера носит его редкость — см. shownRarity.
-           creator:!!pl.creator,
            _photo:pl.photo||null };
   } else if(pl.photo){ base._photo=pl.photo; }
   // A career rating moves with results, so the card is lifted to whatever the
@@ -53778,9 +50734,6 @@ function careerRenderSlots(){
       (L().ccSlotsFree ? L().ccSlotsFree(free) : free+'/'+CC_SLOTS)+'</em></span>'+
     '<span class="cc-car-free">+</span></button>');
   grid.innerHTML=cells.join('');
-  // Зал славы под сеткой: все карьеры на одном экране. См. careerHallHTML.
-  const hall=document.getElementById('ccHall');
-  if(hall) hall.innerHTML=careerHallHTML();
 }
 /* Дверь с главного экрана: сперва выбор, потом карьера.
 
@@ -53877,40 +50830,7 @@ function ccHubScroll(){
           p:((b&&b.parentElement)?b.parentElement.scrollTop:0)};
 }
 // Последняя упавшая отрисовка хаба — текст ошибки, как у дня (CC_DAY_ERR).
-let CC_HUB_ERR=null, CC_HUB_ERR_FULL=null;
-/* Ошибку нужно уметь ПРИСЛАТЬ, а не только увидеть.
- *
- * Плашка ниже показывает игроку, что именно сломалось, но чинить по скриншоту
- * телефона нечего: там видна одна строка сообщения без стека и без метки
- * сборки. Кнопка кладёт в буфер всё сразу — сборку, вкладку и стек, — и это
- * ровно тот текст, которого не хватает, чтобы найти упавшую плитку.
- *
- * Два пути нарочно: navigator.clipboard живёт только на https и требует
- * разрешения, а у него игроки сидят и с превью-адресов, и с телефона. Если
- * первый не сработал, старое поле с execCommand работает везде. */
-function ccHubErrCopy(btn){
-  const text=CC_HUB_ERR_FULL||CC_HUB_ERR||'';
-  const done=()=>{ try{ if(btn) btn.textContent=L().ccHubCopied; }catch(e){} };
-  try{
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(done, ()=>ccHubErrCopyOld(text, done));
-      return;
-    }
-  }catch(e){}
-  ccHubErrCopyOld(text, done);
-}
-function ccHubErrCopyOld(text, done){
-  try{
-    const ta=document.createElement('textarea');
-    ta.value=text;
-    ta.style.position='fixed'; ta.style.top='-1000px'; ta.style.opacity='0';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    ta.remove();
-    done();
-  }catch(e){ console.error('скопировать ошибку не вышло:', e); }
-}
+let CC_HUB_ERR=null;
 function careerRenderHub(tab){
   const next=tab||CH_TAB;
   const same=(CH_DREW===next);
@@ -53936,22 +50856,13 @@ function careerRenderHub(tab){
     CC_HUB_ERR=null;
   }catch(e){
     CC_HUB_ERR=String((e && e.message) || e);
-    // Полный текст — для кнопки «скопировать»: сборка, вкладка и стек. Именно
-    // его не хватало, чтобы найти упавшую плитку по отзыву игрока.
-    CC_HUB_ERR_FULL='FNCS Draft '+(typeof CC_BUILD!=='undefined' ? CC_BUILD : '?')+
-      ' · '+(tab||CH_TAB)+'\n'+String((e && e.stack) || e);
     console.error('careerRenderHub сломался на вкладке '+(tab||CH_TAB)+':', e);
     try{
       const b=document.getElementById('chBody');
       if(b) b.innerHTML='<div class="cc-ffo-err"><b>'+esc(L().ccHubBroke)+'</b>'+
-        '<span>'+esc(CC_HUB_ERR)+'</span>'+
-        '<span class="cc-ffo-build">'+
-        esc('FNCS Draft '+(typeof CC_BUILD!=='undefined' ? CC_BUILD : '?')+' · '+(tab||CH_TAB))+
-        '</span></div>'+
+        '<span>'+esc(CC_HUB_ERR)+'</span></div>'+
         '<button class="ch-play" onclick="careerRenderHub(\'centre\')">'+
-        esc(L().ccHubBackCentre)+'</button>'+
-        '<button class="cc-back cc-err-copy" onclick="ccHubErrCopy(this)">'+
-        esc(L().ccHubCopy)+'</button>';
+        esc(L().ccHubBackCentre)+'</button>';
     }catch(e2){ console.error('и плашку показать не вышло:', e2); }
   }
   CH_DREW=CH_TAB;
@@ -54079,8 +50990,6 @@ function careerRenderHubBody(tab){
   // 'hist' — История: сезоны и лента карьеры.
   if(CH_TAB==='log'){ body.innerHTML=careerProfileHTML(); return; }
   if(CH_TAB==='hist'){ body.innerHTML=careerHistoryHTML(); return; }
-  if(CH_TAB==='stats'){ body.innerHTML=careerStatsHTML(); return; }
-  if(CH_TAB==='streams'){ body.innerHTML=careerStreamsHTML(); return; }
   // Two standings on one tab: the division's season table, which only Division 1
   // has, and the money, which everybody is in.
   if(CH_TAB==='table'){
@@ -54288,14 +51197,8 @@ function careerCentreHTML(card, a){
   const retireBtn = (cr.seasonOver && careerMayRetire())
     ? `<button class="ch-play ch-retire" onclick="careerRetire(false)"
          title="${esc(L().ccRetireHint(careerRetireAge()))}">${L().ccRetire}</button>` : '';
-  /* Церемония закрытия — кнопкой, а не сама собой (см. ccGalaOpen о том,
-     почему). Стоит ПОСЛЕ «Нового сезона» в разметке намеренно: половина
-     проверок жмёт первую .ch-play на экране, и вставать перед ней значило бы
-     менять им дорогу. */
-  const galaBtn = cr.seasonOver
-    ? `<button class="ch-play ch-gala" onclick="ccGalaOpen()">${L().ccGalaWatch}</button>` : '';
   const btn = cr.seasonOver
-    ? `<button class="ch-play" onclick="careerNewSeason()" title="${esc(L().ccSeasonOverSub)}">${L().ccNewSeason}</button>`+galaBtn+retireBtn
+    ? `<button class="ch-play" onclick="careerNewSeason()" title="${esc(L().ccSeasonOverSub)}">${L().ccNewSeason}</button>`+retireBtn
     /* Командный вечер, который нельзя начать, НЕ предлагает пропустить день.
 
        Его отчёт, 28 августа: «только смотреть нажимаю, опять скипается
@@ -54318,18 +51221,8 @@ function careerCentreHTML(card, a){
          (ccMpBlockWhy()
            ? `<div class="ch-hint" style="margin:6px 0 0;color:#ff9b9b;">${
                 esc(ccMpBlockWhy())}</div>` : '')
-    /* Тот же вечер, но в эфир — вторая кнопка рядом с «Играть», и только в
-       день турнира. Гаснет со своей причиной: командная карьера, закрытый
-       день, нет энергии. См. careerPlayLive. */
     : playable
-      ? `<button class="ch-play" onclick="careerPlay()">${L().chPlay}${ccMpReadyTag()}</button>`+
-        (onToday && !ccMpOn() ? (()=>{ const why=ccStreamCupWhy();
-           return `<button class="ch-play ch-live-go"${why?' disabled':''} onclick="careerPlayLive()"
-             title="${esc(why||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}">${
-             L().ccStreamCupGo}</button>`+
-             /* Цена эфира — строкой под кнопкой, а не только во всплывающей
-                подсказке: его слово 5 сентября «и это должно быть написано». */
-             `<div class="ch-hint ch-live-hint">${esc(why||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}</div>`; })() : '')
+      ? `<button class="ch-play" onclick="careerPlay()">${L().chPlay}${ccMpReadyTag()}</button>`
       : `<button class="ch-play" onclick="careerSkipAsk()" title="${esc(
             careerNoMate(next.type) ? (careerMatesOver()>0 ? L().ccMateOver : L().ccNoMateN(careerMatesShort()))
           : next.type==='reload' ? L().ccRelLocked
@@ -54339,10 +51232,7 @@ function careerCentreHTML(card, a){
           : next.type==='globals'? L().ccGlobLocked(ccLanCity('globals'))
           : next.type==='gc'     ? (careerGclcOn(careerToday()) ? L().ccGcLocked : L().ccRcLocked)
           : next.type==='solo'   ? ccSoloWhyLocked()
-          : next.type==='proam'  ? ccProAmWhyLocked()
-                                 : L().chSoonHint)}">${L().chSkip}</button>`+
-        // И сразу до турнира, одной кнопкой — см. careerSkipToBtnHTML.
-        careerSkipToBtnHTML();
+                                 : L().chSoonHint)}">${L().chSkip}</button>`;
   const mate = careerPartnerCard();
   const evalRow = cr.division===1
     ? `<div class="ch-row"><em>${L().chPerfEval}</em><b>$400</b></div>`
@@ -54371,7 +51261,6 @@ function careerCentreHTML(card, a){
       <!-- Top left, his placement: the whole inbox as a row of glyphs with what
            is waiting on each. See careerNoteBarHTML. -->
       ${careerMpTileHTML()}
-      ${careerRaceTileHTML()}
       ${careerNoteBarHTML()}
       ${cr.seasonOver ? '' : careerInterviewHTML()}
       ${/* Командный вечер, заблокированный СВОЕЙ причиной, остаётся карточкой
@@ -54408,7 +51297,6 @@ function careerCentreHTML(card, a){
           : next.type==='globals'? L().ccGlobLocked(ccLanCity('globals'))
           : next.type==='gc'     ? (careerGclcOn(careerToday()) ? L().ccGcLocked : L().ccRcLocked)
           : next.type==='solo'   ? ccSoloWhyLocked()
-          : next.type==='proam'  ? ccProAmWhyLocked()
                                  : L().chSoonHint})
         : `<div class="ch-art" style="background-image:url(${art});">
           <div class="ch-livebar">
@@ -54432,13 +51320,6 @@ function careerCentreHTML(card, a){
                  августа: «во втором сезоне… ещё див капы в дуо». Счёт команд
                  уже пересчитывался через ccTeams, а слово рядом — нет. -->
             <div class="ch-mode"><span>${careerNightSolo(next) ? L().ccSpotSoloTab : ccSquadWordCap()} · ${L().ccDivision} ${cr.division}</span></div>
-            <!-- Про-Ам играется НЕ с напарником, а с контент-мейкером, и это
-                 надо знать до нажатия: с кем сидишь и сколько его смотрят.
-                 См. ccProAmMate и CC_PROAM_TWITCH. -->
-            ${next.type==='proam' && typeof ccProAmMate==='function' ? (()=>{
-                const c=ccProAmMate();
-                return `<div class="ch-mode ch-mode-proam"><span>${
-                  esc(L().ccProAmMateLine(c.handle, ccNum(c.followers||0)))}</span></div>`; })() : ''}
             <!-- Куда уже квалифицировались. Строка появляется, только когда
                  место действительно держится, — см. careerQualHTML. -->
             ${careerQualHTML()}
@@ -54453,7 +51334,7 @@ function careerCentreHTML(card, a){
       <!-- At the boundary the shop is shut and the year is the thing worth
            reading: where this career finished at its Grand Finals and its LANs.
            His report, 20 August. See careerSeasonBoardHTML. -->
-      ${cr.seasonOver ? careerSeasonAwardHTML()+careerSeasonBoardHTML() : careerShopPeekHTML()}
+      ${cr.seasonOver ? careerSeasonBoardHTML() : careerShopPeekHTML()}
     </div>
     <div class="ch-col">
       <!-- The ladder tile stood here and is gone, his call, 18 August: division,
@@ -54473,7 +51354,10 @@ function careerCentreHTML(card, a){
       <!-- The profile leads the centre and the tournament card sits with the
            career, his call, 18 August: the two swapped places. -->
       ${careerProfileTileHTML()}
-      ${careerNewsHubHTML()}
+      <div class="ch-tile ch-newsbar">
+        <h4>${L().ccNews}</h4>
+        <div class="ch-newsgrid">${careerNewsHTML(12)}</div>
+      </div>
     </div>
   </div>`;
 }
@@ -54552,7 +51436,7 @@ function ccCoachPickOpen(){
         <span>${L().ccShopTrain} +${Math.round(c.train*100)}%${
           c.chem?' · '+L().ccCoachChem(c.chem):''} · ${L().ccShopMonth}</span></div>
       ${on ? `<span class="cc-owned">${L().ccShopUntil(ccDayLabel(CAREER.coach.until))}</span>`
-           : `<button class="ch-sign"${can?'':' disabled'} onclick="ccCoachPickTake(\'${c.id}\')">${
+           : `<button class="ch-sign"${can?'':' disabled'} onclick="ccCoachPickTake('${c.id}')">${
                paid ? L().ccOrgPays(esc(CAREER.org.name)) : ccMoney(c.cost)}</button>`}
     </div>`;
   }).join('');
@@ -54644,7 +51528,7 @@ function careerMktTileHTML(){
     ${offer ? `<div class="ch-offer">
         <div class="ch-offer-terms"><span>${ccMoney(offer.pay)}${L().ccPerStream}</span>
           <span>${ccBrandLogo(offer.id)}${L()['ccSponsor'+offer.id]}</span></div>
-        <button class="ch-sign" onclick="careerSignSponsor(\'${offer.id}\')">${L().ccSign}</button>
+        <button class="ch-sign" onclick="careerSignSponsor('${offer.id}')">${L().ccSign}</button>
       </div>`
       : on && next ? `<div class="ch-hint" style="margin:6px 0 0;">${
           L().ccSponsorNext(ccFollowers(next.need), ccBrandLogo(next.id, 13)+L()['ccSponsor'+next.id])}</div>` : ''}
@@ -54667,7 +51551,7 @@ function careerSponsorTileHTML(){
     ${offer ? `<div class="ch-offer">
         <div class="ch-offer-terms"><span>${ccMoney(offer.pay)}${L().ccPerStream}</span>
           <span>${ccBrandLogo(offer.id)}${L()['ccSponsor'+offer.id]}</span></div>
-        <button class="ch-sign" onclick="careerSignSponsor(\'${offer.id}\')">${L().ccSign}</button>
+        <button class="ch-sign" onclick="careerSignSponsor('${offer.id}')">${L().ccSign}</button>
       </div>`
       : next ? `<div class="ch-hint" style="margin:6px 0 0;">${L().ccSponsorNext(ccFollowers(next.need), L()['ccSponsor'+next.id])}</div>` : ''}
   </div>`;
@@ -54932,7 +51816,7 @@ function careerMeHTML(){
              которых очки успели скопиться, — потратил и её больше нет. -->
         <em>${L().ccSpTitle}: <b>${CAREER.career.sp}</b></em>
         <div class="ch-sp-btns">${ATTR_KEYS.map(k=>
-          `<button onclick="careerSpSpend(\'${k}\')" title="+0.5">+ ${
+          `<button onclick="careerSpSpend('${k}')" title="+0.5">+ ${
             L()['attr'+k.charAt(0).toUpperCase()+k.slice(1)]}</button>`).join('')}</div>
       </div>` : ''}
       ${roleNow ? `<div class="ch-row"><em>${L().ccRole}</em><b>${L()[roleNow]||''}</b></div>
@@ -55212,31 +52096,13 @@ function careerSpotAuraBarHTML(a){
 }
 // Остров целиком, миниатюрой: тем же кадром, что и вырезка точки, только
 // карта не приближена — видно, куда именно откроется выбор.
-function careerIslandThumbHTML(set, cls, mark){
+function careerIslandThumbHTML(set, cls){
   // Ключ хранения может быть островом ('r12'), а сетка и картинка — у круга.
   const key=careerSpotGrid(set||careerBrSet());
   const art=MAP_ART[key]||MAP_ART.m2;
-  // mark — номер коробки в сетке острова: на миниатюре ставится её рамка, так
-  // видно, где твоя точка на всём острове (заголовок вопроса о высадке).
-  const z=mark!=null ? (ZONE_SETS[key]||[])[mark] : null;
-  const box=z ? `<i class="cc-spot-shot-box" style="left:${z.x}%;top:${z.y}%;width:${z.w}%;height:${z.h}%;"></i>` : '';
   return `<div class="cc-spot-shot${cls?' '+cls:''}">
     <div class="cc-spot-shot-map" style="width:100%;aspect-ratio:${MAP_ASPECT[key]||'1100/970'};
-      background-image:url('${art}'); transform:translate(-50%, -50%);">${box}</div></div>`;
-}
-// Место живой коробки в сетке острова (ZONE_SETS): сетка вечера бывает урезана
-// под лобби, и своего номера у коробки нет — ищется по координатам.
-function ccZoneGridIndex(zone, set){
-  if(!zone) return -1;
-  const key=careerSpotGrid(set||careerBrSet());
-  return (ZONE_SETS[key]||[]).findIndex(z=>Math.abs(z.x-zone.x)<0.01 && Math.abs(z.y-zone.y)<0.01);
-}
-// Картинки заголовка вопроса о высадке: слева своя точка, справа остров с её
-// рамкой. Без дома — ничего: показывать нечего.
-function ccDropSideHTML(home, set){
-  const at=ccZoneGridIndex(home, set);
-  if(at<0) return null;
-  return {left:careerSpotShotHTML(at, set, '', 1), right:careerIslandThumbHTML(set, '', at)};
+      background-image:url('${art}'); transform:translate(-50%, -50%);"></div></div>`;
 }
 // Чего стоит лут коробки — теми же очками, что видит пикер на высадке.
 function careerSpotPointsOf(i, set){
@@ -55285,8 +52151,7 @@ function careerSpotSets(){
      «чтоб можно было выбрать метку на карте в соло и дуо карьере». Личное
      хранение при этом ни при чём: в одиночной карьере личное и командное — это
      один человек, а вот ТУРНИР другой, и точка на нём своя. */
-  // Остров — ближайшего соло-вечера, а не сезона: см. careerSoloSet.
-  out.push({key:'solo', grid:careerSoloSet(), label:L().ccSpotSoloTab});
+  out.push({key:'solo', grid:careerBrSet(), label:L().ccSpotSoloTab});
   return out;
 }
 function careerSpotStore(key){
@@ -55354,11 +52219,11 @@ function careerSpotTileHTML(){
       const sp=careerSpotList(t.key)[0];
       if(!sp)
         return `<div class="cc-spot-card cc-spot-card-empty"
-          onclick="careerSpotOpenFor(\'${t.key}\')" title="${esc(L().ccSpotPickHere)}">
+          onclick="careerSpotOpenFor('${t.key}')" title="${esc(L().ccSpotPickHere)}">
           <b class="cc-spot-card-map">${t.label}</b>
           <span>+</span><em>${L().ccSpotSlotFree}</em></div>`;
       const a=sp.aura||0;
-      return `<div class="cc-spot-card" onclick="careerSpotOpenFor(\'${t.key}\')"
+      return `<div class="cc-spot-card" onclick="careerSpotOpenFor('${t.key}')"
         title="${esc(L().ccSpotChange)}">
         <b class="cc-spot-card-map">${t.label}</b>
         ${careerSpotShotHTML(sp.i, t.key)}
@@ -55573,7 +52438,6 @@ function careerOrgTileHTML(){
       <h4>${L().ccOrg}</h4>
       <div class="ch-orghead">${careerCrestImg(org.name,30)}<b>${esc(org.name)}</b></div>
       <div class="ch-row"><em>${L().ccWage}</em><b>${ccMoney(org.salary)}${L().ccPerSeason}</b></div>
-      <div class="ch-row"><em>${L().ccOrgBonusRow}</em><b>${ccMoney(careerOrgBonus(org))}</b></div>
       <div class="ch-row"><em>${L().ccRoster}</em><b>${org.academy?L().ccAcademy:L().ccMainRoster}</b></div>
       <div class="ch-row"><em>${L().ccOrgCutRow}</em><b>${
         careerOrgCut() ? Math.round(careerOrgCut()*100)+'%' : '—'}</b></div>
@@ -55607,7 +52471,6 @@ function careerOrgTileHTML(){
       ${offers.map((o,i)=>`<div class="ch-offer">
         <div class="ch-orghead">${careerCrestImg(o.name,26)}<b>${esc(o.name)}</b></div>
         <div class="ch-offer-terms"><span>${ccMoney(o.salary)}${L().ccPerSeason}</span>
-          <span>${L().ccOrgBonusRow}: ${ccMoney(careerOrgBonusFor(o.salary))}</span>
           ${o.perk ? `<span class="ch-perk">${L()['ccPerk'+o.perk]}</span>` : ''}
           <span>${careerOrgGoalText(o.goal)}</span></div>
         <button class="ch-sign" onclick="careerSign(${i})">${L().ccSign}</button>
@@ -55901,9 +52764,6 @@ const CC_DAY_ACTS=[
   {id:'trClu', energy:30, gain:{clu:ccStep('clu')}},
   {id:'trExp', energy:22, gain:{exp:ccStep('exp')}},
   {id:'trEnd', energy:26, gain:{end:ccStep('end')}},
-  // Разбор меты нового сезона: показывается три недели после смены сезона,
-  // три дня — и форма, вместо штрафа за незнание острова. См. ccMetaOpen.
-  {id:'trMeta', energy:24, gain:{}, meta:true},
   /* Scrims, back where they were.
 
      They were a day in the store — thirty-eight energy, a quarter step into four
@@ -56000,131 +52860,8 @@ const CC_DAY_EVENTS=[
   // what they think of you, which is what reach is.
   {id:'promo',   take:{energy:30, cash:250, reach:1}, pass:{reach:-1}},
   // The line goes down. There is no good answer, only which loss.
-  {id:'offline', take:{energy:0, restore:20}, pass:{energy:30, form:-0.5}},
-  /* Кастомка организатора — с порогом по PR.
-
-     Это самая обычная вещь на сцене и её у нас не было. Живой пример,
-     2 сентября 2026: «$100 PER WIN SOLO VICTORY CUP — 1 Pro Lobby + 1 Lobby
-     for Top 2.5k PR 2026, среда 19:00 CEST, регистрация в дискорде», и
-     @ScrollSZN отвечает «ty for invite». То есть турнир вне календаря Epic, в
-     который пускают по числу, которое игрок и так себе набивает.
-
-     Здесь так же: приглашают, только если PR дорос (CC_CUSTOM_PR), платят за
-     победы в играх, и это не квалификация никуда — деньги и вечер. Выплата
-     считается в ccCustomPlay, потому что она зависит от того, как сыграл, а
-     не от того, что согласился. */
-  /* Форма — в таблице, деньги — в самом вечере: за кастомками ходят не за
-     сотней, а за лобби, где все играют всерьёз. Тот же смысл, что у скримов,
-     только с призом за победу. */
-  {id:'custom',  take:{energy:30, form:0.4}, pass:{energy:0}},
-  /* События-развилки, 3 сентября 2026 — его пункт 2 из разбора «чего не
-     хватает». У каждого два-три ответа (opts) вместо «да/нет», условие when,
-     и след в репутации, форме, настрое или охвате. Все с живой сцены:
-     напарник хочет другую точку, клуб задержал зарплату, слив в ленте,
-     контент-хаус на неделю, тренер-волонтёр, вчерашний провал. Школа и
-     уход клуба приходят не жребием, а по делу — см. careerForcedEvent. */
-  {id:'mateSpot', when:()=>!!careerMateRec() && !!careerSpotOn(), opts:[
-    {id:'move',  eff:{spotClear:true, morale:6}},
-    {id:'keep',  eff:{morale:-5}},
-    {id:'trial', eff:{energy:20, morale:2, form:0.2}}]},
-  {id:'orgLate', when:()=>!!CAREER.org, opts:[
-    {id:'wait',   eff:{rep:1}},
-    {id:'public', eff:{reach:2, rep:-2}},
-    {id:'leave',  eff:{orgLeave:true, reach:1}}]},
-  {id:'leak', when:()=>!!CAREER.org, opts:[
-    {id:'deny',    eff:{reach:1}},
-    {id:'confirm', eff:{reach:3, rep:-2}},
-    {id:'silent',  eff:{}}]},
-  {id:'house', when:()=>careerReach()>=20000, opts:[
-    {id:'go', eff:{energy:40, reach:4, form:-0.3}},
-    {id:'no', eff:{}}]},
-  {id:'coachFree', when:()=>!ccCoach(), opts:[
-    {id:'take', eff:{energy:30, form:0.3, stat:0.5}},
-    {id:'pass', eff:{}}]},
-  {id:'tilt', when:()=>!!careerMateRec() && ccBadNightYesterday(), opts:[
-    {id:'blame', eff:{rep:-3, morale:-6, form:0.2}},
-    {id:'own',   eff:{rep:1, morale:4}},
-    {id:'talk',  eff:{energy:20, morale:7}}]},
-  {id:'school', forced:true, opts:[
-    {id:'quit',   eff:{school:'out', reach:1}},
-    {id:'online', eff:{school:'online'}},
-    {id:'stay',   eff:{school:'in'}}]},
-  {id:'orgQuit', forced:true, opts:[
-    {id:'fa',    eff:{orgGone:true, lft:true}},
-    {id:'quiet', eff:{orgGone:true}}]}
+  {id:'offline', take:{energy:0, restore:20}, pass:{energy:30, form:-0.5}}
 ];
-/* Порог приглашения. У них он «топ-2500 PR сезона», у нас — число той же
-   шкалы: столько за год набирает игрок, который регулярно доходит до финалов
-   недели, но ещё не живёт в Дивизионе 1. Ниже — на кастомки не зовут. */
-const CC_CUSTOM_PR=12000;
-const CC_CUSTOM_GAMES=5;
-const CC_CUSTOM_PER_WIN=100;
-function ccCustomPr(){
-  const pl=CAREER && CAREER.player;
-  const pr=pl ? ccPrCardOf(pl.handle||pl.nick) : null;
-  return pr ? pr.pr : 0;
-}
-function ccCustomInvited(){
-  // Позвали по числу — или позвали лично, потому что попросился. См. careerCustomAsk.
-  return ccCustomPr()>=CC_CUSTOM_PR ||
-         (CAREER.career.customInvite && CAREER.career.customInvite>=careerToday());
-}
-/* Почти дотянул: с шестидесяти процентов порога уже можно попроситься.
-
-   Так это и делают: под постом организатора пишут «Yo would love an invite
-   boss» (@MrSavage, 28 августа), и иногда зовут. Его пункт 6, 3 сентября. */
-function ccCustomNear(){
-  const pr=ccCustomPr();
-  return pr>=CC_CUSTOM_PR*0.6 && pr<CC_CUSTOM_PR;
-}
-function careerCustomAsk(id){
-  const cr=CAREER.career;
-  const n=(cr.news||[]).find(x=>x.id===id);
-  if(!n || n.asked) return;
-  n.asked=1;
-  const rnd=careerRng(ccHashStr('ask|'+(cr.season||1)+'|'+careerToday()));
-  const yes=rnd()<0.5;
-  if(yes){
-    // Приглашение действует до завтрашнего дня: вечер играется, пока оно живо.
-    cr.customInvite=ccAddDays(careerToday(), 1);
-    careerNews('good', 'ccPostAskYes', []);
-  } else careerNews('flat', 'ccPostAskNo', []);
-  careerSave();
-  careerRenderHub('social');
-}
-/* Пост организатора: набор в кастомку. Приходит раз в неделю тем, кто рядом с
-   порогом, — тем, кому есть смысл проситься. */
-function careerCustomsPostTick(){
-  const cr=CAREER.career;
-  if(!ccCustomNear()) return;
-  const key='cu|'+(cr.season||1)+'|'+careerWeek();
-  cr.told=cr.told||{};
-  if(cr.told[key]) return;
-  cr.told[key]=1;
-  careerNews('flat', 'ccPostCustomsOpen', [ccNum(CC_CUSTOM_PR), CC_CUSTOM_PER_WIN],
-             {by:{name:L().ccCustomsHost, handle:'poyocustoms', verified:true}});
-}
-/* Вечер кастомки. Лобби про, пять игр, сто долларов за победу.
-
-   Считается посеянным броском, как 1v1: это не турнир карьеры — журнал,
-   квалификации и PR он не трогает, — а вечер за деньги, и живая симуляция
-   ради него не поднимается. Сила игрока против лобби, где все примерно
-   уровня Дивизиона 1. */
-function ccCustomPlay(){
-  const cr=CAREER.career, pl=CAREER.player;
-  const rnd=careerRng(ccHashStr('custom|'+(cr.season||1)+'|'+careerToday()));
-  const mine=pl.ovrExact!=null?pl.ovrExact:pl.ovr;
-  /* Победа в лобби из полусотни — редкость даже у сильного, но не небылица:
-     у топа выходит одна-две из пяти, у того, кого позвали впритык, — одна на
-     вечер-другой. Шанс идёт от разницы с уровнем Дивизиона 1. */
-  const p=clamp(0.05+(mine-ccBand(1))*0.012, 0.02, 0.45);
-  let wins=0;
-  for(let g=0; g<CC_CUSTOM_GAMES; g++) if(rnd()<p) wins++;
-  const cash=wins*CC_CUSTOM_PER_WIN;
-  if(cash){ cr.balance=(cr.balance||0)+cash; cr.side=(cr.side||0)+cash; }
-  careerReachAdd(wins ? 2 : 1);
-  return {wins:wins, cash:cash};
-}
 /* Бросок дня. Один на день, кидается когда день впервые спросили, и сразу
    в сейв: перезагрузка страницы читает уже брошенное, а не кидает заново —
    релоадом лучший день не выторговать. Прошлые дни никто не спрашивает
@@ -56138,11 +52875,7 @@ function ccDayRoll(iso){
       woe: Math.random()<CC_MISFORTUNE_CHANCE
              ? (Math.random()<0.7 ? 'power' : 'sick') : null,
       ev:  Math.random()<CC_DAY_EVENT_CHANCE
-             // Жребий — среди того, что сегодня возможно: развилка с условием
-             // (when) не занимает место в броске, пока условия нет, иначе
-             // доля дней с событием проседала бы вдвое. Принудительные не в жребии.
-             ? (function(){ const pool=CC_DAY_EVENTS.filter(e=>!e.forced && (typeof e.when!=='function' || e.when()));
-                            return pool.length ? pool[Math.floor(Math.random()*pool.length)].id : null; })() : null};
+             ? CC_DAY_EVENTS[Math.floor(Math.random()*CC_DAY_EVENTS.length)].id : null};
     careerSave();
   }
   return cr.luck;
@@ -56152,52 +52885,21 @@ function ccDayEventOn(iso){
   if(!cr) return null;
   if((careerYearDays().get(iso)||[]).length) return null;
   if((cr.did||{})[iso]) return null;
-  // Школа и уход клуба приходят по делу, раньше жребия. См. careerForcedEvent.
-  const forced=careerForcedEvent(iso);
-  if(forced) return forced;
   const luck=ccDayRoll(iso);
   const ev=luck && luck.ev && CC_DAY_EVENTS.find(e=>e.id===luck.ev);
   if(!ev) return null;
-  if(typeof ev.when==='function' && !ev.when()) return null;
   // A stand-in offer needs somebody to stand in beside, and a sponsor cannot
   // ask for a video when there is no sponsor.
   if(ev.id==='scrimup' && !careerMateRec()) return null;
   if(ev.id==='promo' && !ccSponsor()) return null;
-  // На кастомку зовут по числу, а не по знакомству: не дорос PR — приглашения
-  // нет вовсе, и день проходит как обычный. См. CC_CUSTOM_PR.
-  if(ev.id==='custom' && !ccCustomInvited()) return null;
   return ev;
 }
 function careerDayEvent(id, take){
   const ev=CC_DAY_EVENTS.find(e=>e.id===id); if(!ev) return false;
   if(careerDayDone()) return false;
-  // Развилка: take — это id ответа; у старых событий — да/нет.
-  let eff, optId=null;
-  if(ev.opts){
-    const o=ev.opts.find(x=>x.id===take) || ev.opts[0];
-    eff=o.eff||{}; optId=o.id;
-  } else eff=take ? ev.take : ev.pass;
+  const eff=take ? ev.take : ev.pass;
   const cr=CAREER.career;
   if((eff.energy||0)>careerEnergy()) return false;
-  if(eff.rep) careerRepAdd(eff.rep);
-  if(eff.spotClear) careerSpotClear();
-  if(eff.stat) careerStatBump(ccWeakestAttr(), eff.stat);
-  if(eff.school) cr.school=eff.school;
-  if(eff.orgLeave && CAREER.org){
-    const org=CAREER.org;
-    careerNews('flat', 'ccNewsLeftOrg', [org.name], {by:ccOrgBy(org.name)});
-    careerNews('flat', 'ccPostBye', [ccHandle(org.name)]);
-    CAREER.org=null;
-  }
-  if(eff.orgGone && CAREER.org){
-    // Клуб закрывает состав: месяц зарплаты на прощание, и ты свободен.
-    const org=CAREER.org, sev=org.salary||0;
-    if(sev){ cr.balance=(cr.balance||0)+sev; cr.wages=(cr.wages||0)+sev; }
-    careerNews('bad', 'ccNewsOrgGone', [org.name, ccMoney(sev)], {by:ccOrgBy(org.name)});
-    careerNews('flat', 'ccPostBye', [ccHandle(org.name)]);
-    CAREER.org=null; CAREER.offers=null; cr.orgQuit=null;
-  }
-  if(eff.lft){ careerNews('flat', 'ccPostLft', []); careerReachAdd(2*CC_REACH_DIV(cr.division)); }
   if(eff.energy) careerSpend(eff.energy);
   if(eff.restore) careerRestore(eff.restore);
   if(eff.form) cr.form=clamp((cr.form||0)+eff.form, -CC_FORM_MAX, CC_FORM_MAX);
@@ -56208,17 +52910,7 @@ function careerDayEvent(id, take){
     pr.patience=clamp((pr.patience||0)+eff.morale, 0, 100); });
   cr.did=cr.did||{};
   cr.did[careerToday()]=(cr.did[careerToday()]||[]).concat('ev:'+id);
-  /* У кастомки выплата не в таблице событий, а в самом вечере: сыграл — и
-     столько, сколько выиграл. Отказ пишется общей строкой, как у всех. */
-  if(id==='custom' && take){
-    const r=ccCustomPlay();
-    careerNews(r.wins?'good':'flat', 'ccDayEvcustomTake', [r.wins, ccNum(r.cash)]);
-    careerSave();
-    careerRenderHub('centre');
-    return true;
-  }
-  if(optId!=null) careerNews(eff.rep<0 || eff.form<0 || eff.orgGone ? 'flat' : 'good', 'ccDayEv'+id+'R'+optId, []);
-  else careerNews(take?'good':'flat', 'ccDayEv'+id+(take?'Take':'Pass'), []);
+  careerNews(take?'good':'flat', 'ccDayEv'+id+(take?'Take':'Pass'), []);
   careerSave();
   careerRenderHub('centre');
   return true;
@@ -56263,7 +52955,7 @@ function careerEnergyMax(){
      режет запас на треть, пока не пройдёт. */
   let cap=CC_ENERGY_DAY+extra;
   const age=(typeof ccPlayerAge==='function') ? ccPlayerAge() : 19;
-  cap-=ccSchoolCap(age);   // школа: минус десять, онлайн пять, бросил — ноль
+  if(age>=13 && age<=18) cap-=10;
   const cr=CAREER && CAREER.career;
   if(cr && cr.sickUntil && careerToday()<cr.sickUntil) cap=Math.round(cap*2/3);
   return Math.max(30, cap);
@@ -56340,20 +53032,12 @@ function careerDoAct(id){
   // The store is what says how much of a day there is, and the three things
   // that take all of it say when there is none left. See careerDayClosed.
   if(careerDayClosed()) return null;
-  /* Цена вечера — у ВИДА эфира, а не у кнопки дня. Виды стоят по-разному
-     (марафон 55, эфир с турнира 20), и раньше careerDoAct брал плоские
-     тридцать, а разницу доплачивал вызывающий. Пока виды были только дороже,
-     это работало; турнирный эфир дешевле — и порог «хватит ли энергии» стоял
-     на тридцати, то есть с двадцатью пятью кнопка молча ничего не делала.
-     Считает цену тот, кто её списывает. См. CC_STREAM_KINDS. */
-  const cost = (act.id==='stream' && typeof ccStreamKind==='function')
-    ? (ccStreamKind(CC_STREAM_KIND).energy || act.energy) : act.energy;
-  if(careerEnergy()<cost) return null;
+  if(careerEnergy()<act.energy) return null;
   // A rest on a full store restores nothing and takes the whole day with it.
   // The button already says so; this is the same rule where the day is spent,
   // so no other caller can hand a player an evening for nothing.
   if(act.rest && careerEnergy()>=careerEnergyMax()) return null;
-  careerSpend(cost);
+  careerSpend(act.energy);
   if(act.rest) careerRestore(act.rest);
   // The same taper the cup's own growth uses. Without it training ran at full
   // speed right up to the ceiling and every career hit its own in the first
@@ -56429,28 +53113,12 @@ function careerDoAct(id){
   // by more people than in Division 5, which is what a division is from outside.
   // A stream that nobody is told about is not a stream. The day both grows the
   // audience and posts, which is the only reason the growth is visible at all.
-  // Разбор меты: день в новом сезоне, который снимает штраф. См. careerMetaDay.
-  if(act.meta) careerMetaDay();
   if(act.reach){
     // A night on stream, priced per rung. See CC_STREAM_REACH.
-    /* Вид эфира. Кнопка дня — это 'grind' с множителями в единицу, поэтому
-       день, нажатый как раньше, и считается как раньше; остальные виды
-       приходят из вкладки стримов (careerStreamGo). Коллаб добавляет часть
-       аудитории напарника — та же арифметика, что у Про-Ама. */
-    const sk = act.id==='stream' ? ccStreamKind(CC_STREAM_KIND) : {reach:1, cash:1, subs:1};
     const per = act.id==='stream'
       ? CC_STREAM_REACH(cr.division) * (1 + ccGearReach())
       : CC_REACH_DIV(cr.division);
-    careerReachAdd(act.reach*per*(sk.reach||1));
-    if(sk.mate){
-      const cm=ccStreamMate();
-      const from=(cm && typeof ccProAmReachFrom==='function') ? ccProAmReachFrom(cm.name) : 0;
-      if(from){
-        careerReachAdd(from, true);
-        careerNews('good', 'ccNewsStreamColab',
-                   [ccHandle(cm.name), ccNum((cm.tw && cm.tw[1])||0), ccNum(from)]);
-      }
-    }
+    careerReachAdd(act.reach*per);
     /* And a stream pays, which is the other half of what an audience is for.
 
        Followers already priced a sponsor and a club offer, so the number was
@@ -56465,8 +53133,7 @@ function careerDoAct(id){
        Division 4 where the ladder pays nothing at all. Read off the audience
        standing before the stream, so the first payday is not the same day the
        first follower arrives. */
-    // Деньги эфира — с множителем вида: общение платит лучше, марафон длиннее.
-    const own=Math.round(careerReach()/CC_STREAM_PER*(sk.cash||1));
+    const own=Math.round(careerReach()/CC_STREAM_PER);
     // And the brand's slot, on the nights there is a stream to put it in.
     const sp=ccSponsor();
     const ad=sp ? sp.pay : 0;
@@ -56487,9 +53154,9 @@ function careerDoAct(id){
     const rndS=careerRng(ccHashStr('stream|'+(cr.season||1)+'|'+careerToday()));
     const viewers=Math.max(3, Math.round(tw*0.06 + careerReach()*0.008));
     const peak=Math.round(viewers*(1.6+rndS()*0.9));
-    const newTw=Math.max(1, Math.round(viewers*0.18*(0.7+rndS()*0.6)*(sk.subs||1)));
+    const newTw=Math.max(1, Math.round(viewers*0.18*(0.7+rndS()*0.6)));
     cr.twitch=tw+newTw;
-    const dono=Math.round(viewers*0.04*(sk.cash||1));
+    const dono=Math.round(viewers*0.04);
     let banner=0, brand=null;
     if(!sp && CAREER.agent){
       brand=CC_STREAM_BRANDS[Math.floor(rndS()*CC_STREAM_BRANDS.length)];
@@ -56505,20 +53172,8 @@ function careerDoAct(id){
        «Отстримил вечер. $71» подряд) — снял и денежные твиты: ccNewsStreamAd/
        Banner/Paid больше не постятся, ключи живы ради старых сейвов. Деньги
        на балансе, отчёт вечера — строкой в панели дня, теперь с заработком. */
-    // Шестым — длина эфира: до партнёрки часы считались, а отчёт всё равно
-    // писал «2 ч» текстом. Старые сейвы шестого не имеют, у них и остаётся 2.
-    /* m — тот же заработок вечера числом. Строка a[3] уже отформатирована, а
-       эфиру с турнира её потом досчитывать (ccStreamCupAfter): разбирать число
-       обратно из «1 200» нельзя, поэтому оно едет рядом. */
-    cr.streamLast={day:careerToday(), m:dono+banner+(paid>0?paid:0),
-                   a:[viewers, peak, newTw,
-                   ccNum(dono+banner+(paid>0?paid:0)), ccNum(cr.twitch), sk.hours||4]};
-    /* Журнал эфиров за месяц — на нём стоит партнёрская программа (ccTwStatus):
-       Twitch считает разные дни, часы и средний онлайн за последние 30 дней,
-       поэтому вечер должен оставить после себя день, длину и зрителей. */
-    cr.streamLog=(cr.streamLog||[]).concat([{d:careerToday(), v:viewers, h:sk.hours||4}]);
-    ccStreamLogTrim(cr);
-    careerTwTick();
+    cr.streamLast={day:careerToday(), a:[viewers, peak, newTw,
+                   ccNum(dono+banner+(paid>0?paid:0)), ccNum(cr.twitch)]};
   }
   /* The week that does not let go.
 
@@ -56603,7 +53258,7 @@ function careerDoAct(id){
   careerSave();
   return {id, moved, energy:careerEnergy(), scrim:scrim};
 }
-const CC_PLAYABLE=['cup','victory','eval','reload','final','major','gc','summit','globals','solo','proam'];
+const CC_PLAYABLE=['cup','victory','eval','reload','final','major','gc','summit','globals','solo'];
 // The Major's Play-In and Heats belong to Division 1, but its Last Chance is
 // open to all five divisions in Epic's own words, so 'major' cannot be listed
 // here wholesale — careerMajorCan decides it stage by stage, and careerEvents
@@ -56704,16 +53359,6 @@ function careerAdvanceTo(iso){
     if(!CC_MP_DAY_DUE) return;
     CC_MP_DAY_DUE=false;
   }
-  /* А в ГОНКЕ день общий, но карьеры разные: шаг здесь превращается в голос,
-     и шагают оба, когда день закрыли оба. Отстающий проходит насквозь — см.
-     ccRaceHold. Стоит после командного гейта: одно и то же место, где день
-     перестаёт быть личным делом. */
-  if(typeof ccRaceHold==='function' && ccRaceHold(iso)){
-    ccRaceVote();
-    if(typeof careerRenderHub==='function' && document.getElementById('chBody'))
-      careerRenderHub('centre');
-    return;
-  }
   CC_MP_HOLD=true;
   try{ careerAdvanceBody(iso); }
   finally{ CC_MP_HOLD=false; }
@@ -56733,9 +53378,6 @@ function careerAdvanceBody(iso){
   // And the person paid to post, posts — on the days nothing was won too.
   if(nights) ccSmmWork(nights);
   const paid=careerPayWages(cr.day, to);
-  // Бонус клуба за финал Мейджора и плата за онлайн-школу — тем же днём.
-  careerOrgBonusTick();
-  careerSchoolFee(careerWagePaydays().filter(d=>d>cr.day && d<=to).length);
   // The rest of the scene keeps playing while the player's own week passes.
   careerWorldTurns(cr.day, to);
   // And has birthdays while it does.
@@ -56744,20 +53386,6 @@ function careerAdvanceBody(iso){
   // and an offer nobody signed runs out. The people you wrote to answer on the
   // same clock.
   careerOrgDays(cr.day, to);
-  // И то, что пришло в уведомления: лайки на своих постах и новые подписчики.
-  // См. careerNotesTick — ничего нового не считается, всё из охвата и постов.
-  careerNotesTick();
-  // Анонс ближайшего крупного вечера и реакция на него — см. careerAnnounceTick.
-  careerAnnounceTick();
-  careerCustomsPostTick();
-  careerAdPostTick();
-  // Трансферный рынок сцены и месячный «кто выстрелил». См. careerSceneMovesTick.
-  careerSceneMovesTick();
-  careerSceneRiseTick();
-  // Гонка карьер: сводка уезжает сопернику каждый прожитый день.
-  if(typeof careerRaceSend==='function') careerRaceSend();
-  // Приглашение на Про-Ам — за две недели до даты. См. careerProAmInviteTick.
-  careerProAmInviteTick();
   careerDmDays(cr.day, to);
   // And the seat, if it is empty, hears from somebody who is free.
   careerSeatDms(cr.day, to);
@@ -56942,28 +53570,6 @@ function careerBrSet(){
   CC_TRIO_ISLANDS.forEach(r=>{ if(day>=r.from) set=r.set; });
   return set;
 }
-/* ОСТРОВ СОЛО-ВЕЧЕРА — не сезонный. Репорт игрока 6 сентября: «If it's a trio
-   season you can't mark a solo drop because it shows Chapter 6 map but solos
-   take place on chapter 7 map». Так и было: карта под соло-метку (careerSpotSets,
-   ключ 'solo') рисовалась сеткой careerBrSet(), то есть в трио-год — островом
-   шестой главы (t1/t2/t3), а FNCS Solos раннер сажает на s42solo, свою сотню
-   клеток седьмой главы (runCareerSoloSeries), и в любой год. Метка ставилась
-   на одном острове, вечер игрался на другом.
-
-   Остров берётся от БЛИЖАЙШЕГО соло-вечера: FNCS Solos (ev.spec) — s42,
-   январская Solo Series — сезонный, как играет раннер. Один ответ на вкладку
-   метки, карточку вечера (careerNightSet) и дом в раздаче (ccSoloHomeZone). */
-function careerSoloSet(){
-  const days=(typeof careerYearDays==='function') ? careerYearDays() : null;
-  if(days && typeof careerSoloSeriesOn==='function'){
-    const today=careerToday();
-    const ahead=[...days.keys()].filter(d=>d>=today && (days.get(d)||[]).some(e=>e.kind==='solo')).sort();
-    const ev=ahead.length ? careerSoloSeriesOn(ahead[0]) : null;
-    // Остров седьмой главы, дроблёный под соло, — не сотня клеток (6.09, его скрин).
-    if(ev && ev.spec && ZONE_SETS.s42) return 's42';
-  }
-  return careerBrSet();
-}
 /* ===== Своя точка на карте, и аура, которая на ней растёт ===================
 
    Его спека, страница Notion «new mechanics», 23 августа: «в начале сезона
@@ -57132,10 +53738,7 @@ function careerSpotOn(set){ return careerSpotList(set)[0] || null; }
    зовут плитка и старые вызовы). Точка вернее индекса: у каждого круга Релоада
    своя сетка на общем острове, и один индекс значит там разные места. */
 function careerSpotZoneOf(slot, set){
-  /* Сетка — по КЛЮЧУ ХРАНЕНИЯ, а не по имени острова: у соло свой склад
-     (cr.soloSpots), а геометрия у него сезонного острова, и ZONE_SETS['solo']
-     не существует. careerSpotGrid переводит ключ в остров — см. careerSpotSets. */
-  const grid=ZONE_SETS[careerSpotGrid(set||ACTIVE_LANDING_SET)]||ZONE_SETS[set||ACTIVE_LANDING_SET]||[];
+  const grid=ZONE_SETS[set||ACTIVE_LANDING_SET]||[];
   const obj = (slot && typeof slot==='object') ? slot : null;
   let cx = obj && obj.cx, cy = obj && obj.cy;
   const home = grid[obj ? obj.i : slot];
@@ -57143,47 +53746,14 @@ function careerSpotZoneOf(slot, set){
     if(!home) return null;
     cx=home.x+home.w/2; cy=home.y+home.h/2;
   }
-  const hit=ALL_LANDING_ZONES.find(z=>cx>=z.x && cx<=z.x+z.w && cy>=z.y && cy<=z.y+z.h)
-      || (home ? ALL_LANDING_ZONES.find(z=>Math.abs(z.x-home.x)<0.01 && Math.abs(z.y-home.y)<0.01) : null);
-  if(hit) return hit;
-  /* Коробки — это POI, а не плитка: между ними есть зазоры, и у одного острова
-     сетки бывают разные (соло-FNCS играет ту же s42 на сто клеток вместо
-     тридцати). Точка, выбранная на одной сетке, на другой попадает в дырку —
-     и дом пропадал совсем. Берём ближайшую коробку, если она рядом: это то же
-     место острова, просто нарезанное иначе. Далеко — значит другой остров, и
-     дома здесь честно нет. */
-  let best=null, bestD=CC_SPOT_NEAR*CC_SPOT_NEAR;
-  ALL_LANDING_ZONES.forEach(z=>{
-    const dx=(z.x+z.w/2)-cx, dy=(z.y+z.h/2)-cy, d=dx*dx+dy*dy;
-    if(d<bestD){ bestD=d; best=z; }
-  });
-  return best;
+  return ALL_LANDING_ZONES.find(z=>cx>=z.x && cx<=z.x+z.w && cy>=z.y && cy<=z.y+z.h)
+      || (home ? ALL_LANDING_ZONES.find(z=>Math.abs(z.x-home.x)<0.01 && Math.abs(z.y-home.y)<0.01) : null)
+      || null;
 }
-// Насколько близко «рядом» — в процентах карты. Половина типичной коробки:
-// дальше начинается уже соседний POI, а не другая нарезка того же места.
-const CC_SPOT_NEAR=6;
 function careerSpotZone(set){
   const s=careerSpotOn(set);
   return s ? careerSpotZoneOf(s, set) : null;
 }
-/* ЧЕЙ ДОМ ЧИТАЕТ ЭТОТ ВЕЧЕР.
-
-   Его правка 3 сентября 2026: «в соло ещё метки, не для соло, а для других
-   режимов». Метка соло хранится отдельно (cr.soloSpots, ключ 'solo') — плитка
-   в хабе и карточка вечера это знали (careerNightSpotKey), а сам вечер нет:
-   пикер, страх комнаты, начисление ауры и «сел — значит дом» спрашивали
-   ACTIVE_LANDING_SET, то есть сезонный дуо-остров. В соло-вечере на карте
-   горела чужая метка, аура капала не туда, а выбранная в соло точка не
-   показывалась вовсе.
-
-   Один указатель на весь вечер: раннер соло поднимает его перед посадкой и
-   гасит после. Всё остальное спрашивает ccNightSpot(ACTIVE_LANDING_SET). */
-let CC_SPOT_NIGHT=null;
-function ccNightSpot(set){
-  return CC_SPOT_NIGHT || careerSpotKey(set||ACTIVE_LANDING_SET);
-}
-function ccNightSpotOn(key){ CC_SPOT_NIGHT=key||null; }
-function ccNightSpotOff(){ CC_SPOT_NIGHT=null; }
 // Все свои зоны острова разом: их подсвечивает пикер и их боятся боты.
 function careerSpotZones(set){
   const key=set||ACTIVE_LANDING_SET;
@@ -57443,7 +54013,7 @@ function careerBeefNight(list){
   const you=list.find(t=>t.isYou);
   if(!you || !you.landingZone) return;
   // Только дома: биф — это ссора ЗА ЛОКАЦИЮ, а не за случайную коробку.
-  const home=careerSpotZones(ccNightSpot(ACTIVE_LANDING_SET)).some(x=>x.zone===you.landingZone);
+  const home=careerSpotZones(ACTIVE_LANDING_SET).some(x=>x.zone===you.landingZone);
   if(!home) return;
   const seen=new Set();
   const meet=(team, won)=>{
@@ -57538,7 +54108,7 @@ function careerSpotFearOn(you){
      кто ты теперь (careerRenown — гранд-финал и слот на LAN). Оба слагаемых
      живут на одной шкале и вместе упираются в тот же потолок. */
   const renown=careerRenown();
-  const mine=careerSpotZones(ccNightSpot(ACTIVE_LANDING_SET));
+  const mine=careerSpotZones(ACTIVE_LANDING_SET);
   const zones=mine
     .map(x=>({zone:x.zone, fear:Math.min(CC_SPOT_AURA_MAX, (x.slot.aura||0)+renown)}))
     .filter(x=>x.fear>0);
@@ -57572,7 +54142,7 @@ function careerSpotFearOn(you){
 
      Сама тяга не ослаблена: пришёл — значит пришёл за тобой, страх её не
      перебивает. Ослаблена только неизбежность. */
-  const homes=careerSpotZones(ccNightSpot(ACTIVE_LANDING_SET));
+  const homes=careerSpotZones(ACTIVE_LANDING_SET);
   CC_BEEF_ZONES = homes.length
     ? new Set([homes[Math.floor(Math.random()*homes.length)].zone]) : null;
   const hot=careerBeefHot();
@@ -57629,11 +54199,7 @@ const CAREER_EV_ART={
   victory: 'art/mode-duo.jpg',
   // The Solo Series is an open solo circuit, not FNCS — same call as the
   // Victory Cup, and the same crop until a solo one exists in the folder.
-  solo: 'art/mode-duo.jpg',
-  /* Церемония закрытия носит герб сезона — тот же ключевой арт, что стоит на
-     полосе карьеры на главной и в шапке хаба. Год кончается тем же знаком,
-     под которым он шёл. См. careerEvents и ccGalaDraw. */
-  gala: 'art/fncs-2026.jpg'
+  solo: 'art/mode-duo.jpg'
 };
 /* Обложка по САМОМУ СОБЫТИЮ, а не по его виду, — там где вид врёт.
 
@@ -57652,10 +54218,7 @@ const CAREER_EV_ART_ID={
   FNCSSolos_FastTrack:'art/fncs-solo.jpg', FNCSSolos_Q2Round2:'art/fncs-solo.jpg',
   FNCSSolos_Q2Round3:'art/fncs-solo.jpg', FNCSSolos_Heats:'art/fncs-solo.jpg',
   FNCSSolos_LCQRound1:'art/fncs-solo.jpg', FNCSSolos_LCQFinal:'art/fncs-solo.jpg',
-  FNCSSolos_Final:'art/fncs-solo.jpg',
-  // Pro-Am играется на острове Reload — арт берём Reload'а, своего у нас нет.
-  ProAm_Dallas:'art/mode-ewc.jpg',
-  proam:'art/mode-ewc.jpg'
+  FNCSSolos_Final:'art/fncs-solo.jpg'
 };
 // Обложка события: сперва по id, потом по виду. Одна дверь для календаря и карточки.
 function ccEventArt(ev){
@@ -57808,26 +54371,7 @@ const CAREER_YEAR=[
   ['2026-10-17','2026-10-18','FNCSSolos_Heats','solo'],
   ['2026-10-19','2026-10-19','FNCSSolos_LCQRound1','solo'],
   ['2026-10-20','2026-10-20','FNCSSolos_LCQFinal','solo'],
-  ['2026-10-26','2026-10-27','FNCSSolos_Final','solo'],
-  /* PRO-AM — его просьба «про-ам в июне надо сделать», 3 сентября 2026.
-     ИЮНЯ У НЕГО НЕТ: в июне 2026 стоят только Reload Elite Series Q4 (финал
-     28 июня) и Performance Evaluation. Настоящий Про-Ам 2026 — это Pro-Am
-     Creator Series, и первая остановка 12 июля, Даллас (Comets LANding,
-     UT Dallas), Epic Games вместе с Dignitas; вторая 6 сентября, Сан-Паулу,
-     с Team Liquid. Взята первая: у второй Epic ещё не назвал ни призовых, ни
-     очков.
-     Что известно точно (Liquipedia, страница события; числа сверены обратным
-     счётом по опубликованной таблице — Clix & Lacy 438, VicterV & Crackly 424,
-     Veno & StableRonaldo 397, Cooper & Zemie 374, и порядок совпадает):
-     RELOAD ДУО, ДВАДЦАТЬ КОМАНД В ОДНОМ ЛОББИ, СЕМЬ ИГР. Очки за место
-     60/50/45/40/35/30/27/24/21/18/15/12/9/6/3, дальше ноль; за элиминацию 3.
-     Призовой фонд $50 000 закрывается в ноль: $38 100 по таблице мест плюс
-     бонусы за каждую из семи игр ($1000 за победу, $500 за второе, $200 за
-     третье) = $11 900.
-     Поле — двадцать про плюс двадцать креаторов, по приглашению; дороги через
-     квалификацию Epic не публикует вовсе. Значит и у нас её нет: зовут по
-     известности, см. careerProAmCan — это НАША мерка, не Epic'ова. */
-  ['2026-07-12','2026-07-12','ProAm_Dallas','proam']
+  ['2026-10-26','2026-10-27','FNCSSolos_Final','solo']
 ];
 /* ---- The other year: FNCS 2025, in trios ------------------------------------
 
@@ -58391,17 +54935,6 @@ function careerEvents(){
                          art: ccLanKindOf(e.id, e.kind) ? null : (CAREER_EV_ART[e.kind]||null)});
     });
   });
-  /* ПОСЛЕДНИЙ ДЕНЬ ГОДА — ЦЕРЕМОНИЯ. Его правка 4 сентября: «церемонию сделать
-     отдельный последний день, и там что-то показывают игроку за весь сезон».
-
-     Это строка календаря, а не турнир: вида 'gala' нет в CC_PLAYABLE, поэтому
-     careerCanPlayKind отвечает на него «нет», а в CC_KIND_RANK его нет — значит
-     в день, где стоит настоящий турнир, он никогда не перебьёт его. Стоит он
-     ровно на CC_YEAR_TO, то есть на том дне, на котором карьера и замирает
-     (см. careerAdvanceBody: всё, что дальше, сажается на эту дату). */
-  if(!out.has(CC_YEAR_TO)) out.set(CC_YEAR_TO, []);
-  out.get(CC_YEAR_TO).push({kind:'gala', label:L().ccGalaDay, id:'SeasonGala',
-                            lan:null, art:CAREER_EV_ART.gala});
   return out;
 }
 
@@ -58455,10 +54988,7 @@ function careerCalendarHTML(){
       <span>${L().calFfAsk(ccDayLabel(CH_FF_ASK), ccFfDays(CH_FF_ASK), ccFfEvents(CH_FF_ASK))}</span>
       ${ccMpOn() && ccMpFfPending() && ccMpFfPending().mine && ccMpFfPending().until===CH_FF_ASK
         ? `<span class="ch-hint" style="margin:0;">${L().ccMpFfWait(ccDayLabel(CH_FF_ASK))}</span>`
-        : `<button class="ch-sign" onclick="careerFfToDay(\'${CH_FF_ASK}\')">${ccMpOn() ? L().ccMpFfYes : L().calFfGo}</button>`}
-      ${/* Тот же день, но без турниров по дороге — пропуск, не перемотка.
-           См. careerSkipTo; в команде день двигает сервер. */
-        ccMpOn() ? '' : `<button class="ch-sign cal-skip" onclick="careerSkipTo(\'${CH_FF_ASK}\')" title="${esc(L().calSkipHint)}">${L().calSkipGo}</button>`}
+        : `<button class="ch-sign" onclick="careerFfToDay('${CH_FF_ASK}')">${ccMpOn() ? L().ccMpFfYes : L().calFfGo}</button>`}
       <button class="cc-back" onclick="careerFfCancel()">${L().ccDecline}</button>
     </div>` : '')+
     // The same fast-forward the main screen offers, on the screen where a
@@ -58501,7 +55031,7 @@ function careerCalendarHTML(){
         `${ahead?' cal-go':''}${k===CH_FF_ASK?' cal-picked':''}${
           list.some(ccQualOn)?' cal-qual':''}"`+
         `${art?` style="background-image:url(${art});"`:(lanFlag?` style="${lanFlag}"`:'')}`+
-        `${ahead?` onclick="careerFfAsk(\'${k}\')" title="${esc(L().calGoHere)}"`:''}>`+
+        `${ahead?` onclick="careerFfAsk('${k}')" title="${esc(L().calGoHere)}"`:''}>`+
         `<span class="cal-n">${d}</span>`+
         list.map(x=>`<span class="cal-ev cal-${x.kind}">${x.label}</span>`).join('')+
         `</div>`;
@@ -58885,8 +55415,7 @@ function ccLadderSeason(cr, open, need){
       const o = open ? ccOpenFillOvr(rnd)
               : cr.division===1 ? ccD1FillOvr(rnd)
                                 : ccBand(cr.division)+careerGauss(rnd)*CC_BAND_SD;
-      // Дивизионы 2–5 — строчными без цифр (см. careerLadderPlayer, plain).
-      const c=careerLadderPlayer(rnd, o, seen, null, null, null, !open && (cr.division||1)>=2);
+      const c=careerLadderPlayer(rnd, o, seen);
       if(!c) break;
       out.push(c);
     }
@@ -58900,25 +55429,14 @@ function ccLadderSeason(cr, open, need){
     const t=pool[i]; pool[i]=pool[j]; pool[j]=t; }
   return pool;
 }
-/* plain — ник строчными и без цифр. Его правка 5 сентября: «пусть с 5 дива по 2
-   будут никнеймы без цифр и маленькими буквами». Так выглядят ники в нижних
-   дивизионах и у зрителей; заглавная и «Nekо47» остаются за опенами. Чтобы
-   625 сочетаний двух слогов не кончались на большой комнате, у plain-ника
-   иногда три слога. */
-function careerLadderPlayer(rnd, ovr, taken, natHint, roleWant, topOvr, plain){
+function careerLadderPlayer(rnd, ovr, taken, natHint, roleWant, topOvr){
   let h='';
   const real=ccRealNames();
   for(let guard=0; guard<40; guard++){
     const a=CC_LAD_A[Math.floor(rnd()*CC_LAD_A.length)];
     const b=CC_LAD_B[Math.floor(rnd()*CC_LAD_B.length)];
-    if(plain){
-      h=a+b;
-      if(rnd()<0.35) h+=CC_LAD_B[Math.floor(rnd()*CC_LAD_B.length)];
-      h=h.toLowerCase();
-    } else {
-      h=a.charAt(0).toUpperCase()+a.slice(1)+b;
-      if(rnd()<0.45) h+=String(10+Math.floor(rnd()*89));
-    }
+    h=a.charAt(0).toUpperCase()+a.slice(1)+b;
+    if(rnd()<0.45) h+=String(10+Math.floor(rnd()*89));
     const low=h.toLowerCase();
     if(!taken.has(low) && !real.has(low) && !real.has(hKey({handle:h}))) break;
   }
@@ -59981,42 +56499,13 @@ function careerPools(){
      с кем-то в новую пару значило бы отменить трансфер на том же кадре. Кто
      где — написано в памяти троек: значения cr.trios это и есть третьи. */
   const inTrio=new Set(Object.values((CAREER && CAREER.career && CAREER.career.trios) || {}));
-  /* РАЗОШЛИСЬ — ЗНАЧИТ, КАКОЕ-ТО ВРЕМЯ СТОЯТ ВРОЗЬ.
-
-     Пересборка ниже работала в тот же тик, что и развод: половинки уходили в
-     freed и тут же сходились обратно, чаще всего друг с другом — они же ближе
-     всего по рейтингу. Со стороны это выглядело так, будто разводов нет вовсе:
-     пост «я больше не в дуо с @x» в ленте есть, а свободного агента в мире не
-     существует ни одного дня, и звать некого.
-
-     Поэтому свежий развод держит человека на рынке две недели: он стоит в
-     players свободным агентом (вечера и третьи кресла берут его оттуда, как
-     брали), носит статус F/A и держит открытой анкету. Через две недели он
-     возвращается в общую пересборку — там же, где сходятся все остальные, и
-     сойтись может хоть с бывшим: воссоединения тоже бывают. */
-  const CC_FA_DAYS=14;
-  const today=careerToday();
   const freed=[];
   const duosLive=duos.filter(function(d){
     const k=d.cards.map(c=>hKey(c)).sort().join('+');
-    const split=splitBook[k];
-    const broken=!!split || ccDuoBroken(d);
-    if(broken) d.cards.forEach(c=>{
-      if(!c || inTrio.has(hKey(c))) return;
-      if(split && ccDaysBetween(split, today)<CC_FA_DAYS) return;   // ещё на рынке
-      freed.push(c);
-    });
+    const broken=!!splitBook[k] || ccDuoBroken(d);
+    if(broken) d.cards.forEach(c=>{ if(c && !inTrio.has(hKey(c))) freed.push(c); });
     return !broken;
   });
-  /* В ТРИО-ГОД брошенный ищет третье кресло, а не новую пару.
-
-     Правка 4 сентября. Рынок трио (careerTrioRaids) разбирает треть пар, чтобы
-     их людьми закрыть третьи кресла, — а через две недели ccRemadeDuos сводил
-     этих же людей обратно в дуо, и комната опять оставалась без свободных:
-     замер показал «vic0 & t3eny» и «Shxrk & SwizzY» — пары, собранные из
-     брошенных, — с третьим на 16 и 10 ниже себя. В год, который играется
-     втроём, пар и не должно становиться больше: их должно становиться меньше
-     ровно на треть. Пересборка возвращается в дуо-год. */
   if(careerSquadSize()!==3) ccRemadeDuos(freed).forEach(d=>duosLive.push(d));
   duosLive.forEach(d=>{ if(d && d.cards) d.cards=d.cards.map(liftOne); });
   /* И все остальные имена ростера — свободными агентами.
@@ -60446,12 +56935,6 @@ function careerCupField(cr, mine, size, salt, open, sharp){
 
      His pick, 19 August, of the two ways to do it. */
   const per=careerSquadSize();
-  /* Рынок трио открывается до того, как собрана первая комната года: пары,
-     распавшиеся на нём, не должны стоять в ней ядрами. Раз за сезон, метка на
-     самой карьере — см. ccTrioMarket. */
-  /* Живой карьере, а не копии, которую комната собрала для себя: раннеры и
-     пробы зовут careerCupField с Object.assign({}, cr, {...}), и разводы,
-     записанные в копию, не увидит ни careerPools, ни следующая комната. */
   if(per>2 && typeof ccTrioMarket==='function') ccTrioMarket(null);
   /* Where the third comes from.
 
@@ -60711,8 +57194,7 @@ function careerCupField(cr, mine, size, salt, open, sharp){
     // a flag the people beside it play with.
     // Третий к реальной паре может встать выше общего потолка. См. ccTrioGenTop.
     return careerLadderPlayer(prnd, nearOvr!=null ? nearOvr : o, taken, ccCoreNat(core, prnd),
-                              null, nearOvr!=null ? ccTrioGenTop(nearOvr) : null,
-                              !open && (cr.division||1)>=2);
+                              null, nearOvr!=null ? ccTrioGenTop(nearOvr) : null);
   };
   cores.forEach(d=>{
     if(teams.length>=need) return;
@@ -60796,7 +57278,7 @@ function careerCupField(cr, mine, size, salt, open, sharp){
     const o = open ? ccOpenFillOvr(rnd)
             : cr.division===1 ? ccD1FillOvr(rnd)
                               : ccBand(cr.division)+careerGauss(rnd)*CC_BAND_SD;
-    players.push(careerLadderPlayer(rnd, o, taken, null, null, null, !open && (cr.division||1)>=2));
+    players.push(careerLadderPlayer(rnd, o, taken));
   }
   // Teams are rating-matched, the way real pairs are: sort, then take
   // neighbours — two of them in a duo season and three in a trio one. These are
@@ -61578,26 +58060,11 @@ function careerGrowField(field, you){
          развод при этом честный и остаётся — молчит только лента, потому
          что шесть одинаковых строк подряд читаются как сбой, а не как
          шесть новостей. */
-      /* Обе половинки становятся свободными агентами С АНКЕТОЙ: кого ищут и с
-         каким PR. В трио-сезоне пара не распадается, и объявление ей ни к
-         чему — там уже написан свой пост «ищем трио». См. ccAdMake. */
-      if(!trioLF) sq.forEach(c=>ccAdMake(c));
       if(told<CC_SPLIT_POSTS_DAY){
         told++;
         careerNews('flat', trioLF ? 'ccPostTrioLF' : 'ccPostDuoSplitBy',
                    [ccHandle(sq[0].handle), ccHandle(sq[1].handle),
                     trioLF ? 'LFT' : 'LFD']);
-        /* И сразу — само объявление, с карточкой под ним: так это и выглядит
-           в жизни, где к «lfd» приложен скрин своего PR-профиля. Пишет его
-           первый из двоих; второй ищет молча, иначе один развод даёт четыре
-           поста подряд — та же причина, по которой стоит CC_SPLIT_POSTS_DAY. */
-        /* Анкета — не тем же вечером. Его скрин 3 сентября: «not duo with @…
-           anymore. LFD» и сразу под ним «LFD. Div 1 and up… DMs open» от того
-           же человека — два почти одинаковых поста. Теперь развод объявляется
-           сегодня, а анкета с карточкой выходит через два дня, если человек
-           всё ещё свободен. См. careerAdPostTick. */
-        const ad=!trioLF && ccAdOf(sq[0].handle);
-        if(ad) ad.post=1;
       }
     }
   });
@@ -61859,7 +58326,7 @@ function careerBurnout(){
 function careerForm(){
   // Confidence holds the floor and never the ceiling. See the cars in CC_SHOP.
   const conf=(CAREER.gear && CAREER.gear.conf) || 0;
-  return clamp((CAREER.career.form||0)-careerBurnout()-ccMetaPen(),
+  return clamp((CAREER.career.form||0)-careerBurnout(),
                Math.min(0, -CC_FORM_MAX+conf), CC_FORM_MAX);
 }
 function careerFormAdd(place, of){
@@ -61981,13 +58448,8 @@ function careerYouTeam(cards){
     ? MP.teamOf(cards[0], cards[1]) : cards;
   const t=careerTeam(ordered, true);
   /* В команде форма — ОБЩАЯ, среднее из двух. См. ccTeamFormPow. */
-  /* И эфир, если вечер идёт в эфир: −CC_STREAM_POW к силе своей команды.
-     Это цена, которой платят за стрим с турнира — см. CC_STREAM_CUP. В
-     командной карьере всегда ноль: эфира там нет, и сила у двоих сходится. */
-  const basePow=t.pow, formPow=ccTeamFormPow(), chemPow=careerChem(), livePow=ccStreamPow();
-  t.pow=Math.round(basePow+formPow+chemPow+livePow);
-  // Окошко трансляции читает свою команду отсюда — один вход на все раннеры.
-  CC_TV_YOU=t;
+  const basePow=t.pow, formPow=ccTeamFormPow(), chemPow=careerChem();
+  t.pow=Math.round(basePow+formPow+chemPow);
   /* Слагаемые — в сверку игры (payload yp): его скрины 30 августа —
      «diff 1 of 170: #1 flickzy+malibuca:106 vs :107» — сила своей команды
      разошлась на единицу, а из чего она сложилась, не видно никому. */
@@ -62069,8 +58531,8 @@ function careerGrowEvent(place, total, you, field){
      сидел. Ауру делает не результат турнира, а то, удержал ли ты место: счёт
      стычек за этап против счёта поражений. См. careerSpotNight. */
   if(you.landingZone){
-    const at=careerSpotZones(ccNightSpot(ACTIVE_LANDING_SET)).findIndex(x=>x.zone===you.landingZone);
-    if(at>=0) careerSpotNight(you.landingWins||0, you.landingLosses||0, ccNightSpot(ACTIVE_LANDING_SET), at,
+    const at=careerSpotZones(ACTIVE_LANDING_SET).findIndex(x=>x.zone===you.landingZone);
+    if(at>=0) careerSpotNight(you.landingWins||0, you.landingLosses||0, ACTIVE_LANDING_SET, at,
                               !!you._beefMet);
   }
   /* Очки прокачки за вечера больше не капают — его правка, 23 августа:
@@ -63052,8 +59514,7 @@ function careerSign(i){
   if(!offer) return;
   CAREER.org={name:offer.name, tier:offer.tier, salary:offer.salary,
               goal:offer.goal, cut:offer.cut!=null?offer.cut:careerOrgCutFor(offer.tier),
-              since:CAREER.career.season, paid:0, perk:offer.perk||null,
-              bonus:careerOrgBonusFor(offer.salary)};
+              since:CAREER.career.season, paid:0, perk:offer.perk||null};
   CAREER.offers=null;
   const withMates=careerOrgSignMates(offer);
   if(withMates) careerNews('good', 'ccNewsSignedDuo', [offer.name, withMates], {by:ccOrgBy(offer.name)});
@@ -63276,9 +59737,7 @@ const CC_SHOP_ORDER=[
   // Marketing
   'PyraxMGMT','Goalkikermng','KaizenMNG','murlotron',
   // Coaches
-  // Thomas5x — игрок с титулом Globals, но коуч без описанной специализации:
-  // после генералистов с результатами, перед специалистами. Его ссылка 3.09.
-  'RazZzero0oFN','SvenSE_','Coach_F0x','tallami1','diaspaulin_','Thomas5x_','stormyrite',
+  'RazZzero0oFN','SvenSE_','Coach_F0x','tallami1','diaspaulin_','stormyrite',
   'BoopNL_','At0m_GG','kha0rz','xpl0t','Gripeyy','ValentaynL','EgeXJerG',
   'Rabidfn','CoachEsteh','ZykomaTV','spidryx','PeanutBrainTS'
 ];
@@ -63392,7 +59851,7 @@ function ccMktPickOpen(){
         <i>@${esc(m.at)}${m.x ? ' · '+ccFollowers(m.x) : ''}</i>
         <span>${L().ccMktRate} +${Math.round((t.rate-1)*100)}% · ${L().ccShopMonth}</span></div>
       ${mine ? `<span class="cc-owned">${L().ccAgentYours}</span>`
-             : `<button class="ch-sign"${can?'':' disabled'} onclick="careerHireMkt(\'${m.id}\')">$${
+             : `<button class="ch-sign"${can?'':' disabled'} onclick="careerHireMkt('${m.id}')">$${
                  ccNum(t.cost)}</button>`}
     </div>`;
   }).join('');
@@ -64112,9 +60571,6 @@ function ccMonthName(key){ return L().calMonths[Number(String(key).slice(5,7))-1
    ccPressWorthy already holds the rule the user set: the scene's account
    covers Division 1, and below it the same news is the player's own post. */
 const CC_AWARD_MIN=2;
-// Сколько человек стоит в церемонии игрока года. Пять — как в футбольной
-// пятёрке номинантов: победитель и те, кто был рядом. См. careerAwardSeason.
-const CC_AWARD_TOP=5;
 function careerAwardBoard(fromDay, toDay){
   const t=careerPrTally();
   const out=[];
@@ -64168,16 +60624,8 @@ function careerAwardSeason(){
   if(!board.length) return null;
   const win=board[0];
   aw.won=aw.won||[];
-  /* И ПЯТЁРКА НОМИНАНТОВ рядом с победителем — идея его игрока 4 сентября:
-     «чтоб в конце главы выбирали лучшего игрока за год, типо как в футболе
-     золотой мяч». Игрок года в моде был и раньше, но приходил одной строкой в
-     ленту; у «золотого мяча» же главное — церемония: список тех, кто на него
-     претендовал, и кто из них взял. Пятёрка пишется в саму награду, чтобы
-     таблица не пересчитывалась потом по изменившемуся ростеру. */
   aw.won.push({kind:'season', key:String(cr.season), season:cr.season,
-               name:win.name, you:!!win.you,
-               top:board.slice(0, CC_AWARD_TOP).map(r=>({n:r.name, p:Math.round(r.pts),
-                                                         e:r.events, you:!!r.you}))});
+               name:win.name, you:!!win.you});
   if(win.you){
     careerReachAdd(CC_REACH_DIV(cr.division)*20);
     careerNews('good', 'ccNewsAwardSeasonYou', [cr.season]);
@@ -64249,10 +60697,6 @@ function careerOrgSeasonEnd(){
   const org=CAREER.org; if(!org) return;
   if(!careerOrgGoalMet()){
     careerNews('bad', 'ccNewsReleased', [org.name], {by:ccOrgBy(org.name)});
-    /* И слово самого игрока: у настоящих расставание с клубом это ДВА поста —
-       объявление клуба и длинное «спасибо за эти годы» от человека (Sylkaos и
-       HavoK by Vitality, 30 августа). Раньше клуб говорил, а игрок молчал. */
-    careerNews('flat', 'ccPostBye', [ccHandle(org.name)]);
     CAREER.org=null;
     return;
   }
@@ -64266,7 +60710,6 @@ function careerOrgSeasonEnd(){
   };
   const leave=function(){
     careerNews('flat', 'ccNewsLeftOrg', [org.name], {by:ccOrgBy(org.name)});
-    careerNews('flat', 'ccPostBye', [ccHandle(org.name)]);
     CAREER.org=null;
     // Ушёл искать лучше — значит клубы снова смотрят. См. careerOrgOffers.
     CAREER.scoutOff=false;
@@ -64405,20 +60848,7 @@ function careerApplyMorale(place, total, passed){
    something that actually happened in the run — the placement, who won the cup,
    what the rating did, what the partner thinks — rather than from a bank of
    flavour text, so the feed can never say something the standings do not. */
-/* Сколько записей лента вообще помнит.
-
-   Было сорок, и этого не хватало: его слово 2 сентября — «будто не все посты в
-   твитере». Так и есть, только теряются они не при показе, а при записи —
-   careerNews режет хвост, и сорок первая запись выталкивает первую навсегда.
-   Один турнирный вечер пишет пять-семь строк (результат, поздравление сцены,
-   пост клуба, объявленные точки высадки), то есть сорок — это неделя. Лента
-   карьеры, в которой не видно прошлого месяца, перестаёт быть историей.
-
-   Сто двадцать — примерно сезон плотной игры, и в сейве это десятки килобайт:
-   запись это ключ, пара аргументов и дата, а не текст. Чтобы длинная лента не
-   стоила отрисовки, посты за экраном пропускаются (content-visibility у
-   .x-post ниже). */
-const CAREER_NEWS_KEEP=120;
+const CAREER_NEWS_KEEP=40;
 
 /* A saved line is a key and its numbers, never a sentence.
 
@@ -64431,13 +60861,6 @@ const CAREER_NEWS_KEEP=120;
    Storing {k:'ccNewsRating', a:[56,57]} instead means the sentence is built at
    the moment it is drawn, in the language that is on then. The numbers are the
    part worth keeping; the words were never the save's to own. */
-/* Имя зоны для строк ленты. Номер превращается в «зона 9» / «zone 9» на
-   показе, то есть в языке, который стоит СЕЙЧАС. Старые сейвы хранят уже
-   собранное имя строкой — оно проходит насквозь: переводить его нечем, но и
-   ломать пост из-за этого незачем. См. ccPostDropCall. */
-function ccZoneName(z){
-  return (typeof z==='number' && isFinite(z)) ? L().landingZoneSuffix(z) : String(z==null?'':z);
-}
 function ccText(e){
   if(e && e.k){
     const line=L()[e.k];
@@ -64513,17 +60936,6 @@ function careerNews(kind, key, args, opt){
   cr.news.unshift({season:cr.season, day, kind, k:key, a:args||[], f:cr.reach||0,
                    dv:cr.division, id:'n'+(cr.newsN=(cr.newsN||0)+1),
                    by:(opt&&opt.by)||undefined, tbl,
-                   // Объявленная точка: номер клетки и остров, на котором она.
-                   zone:(opt&&opt.zone!=null)?opt.zone:undefined,
-                   set:(opt&&opt.set)||undefined,
-                   // Арт события под постом и цитируемая запись — см. ccArtHTML
-                   // и ccQuoteHTML.
-                   art:(opt&&opt.art)||undefined,
-                   q:(opt&&opt.q)||undefined,
-                   // Ник, чья карточка (био + PR) висит под постом. Хранится
-                   // ник, а не сама карточка: числа считаются на показ, и
-                   // вчерашняя копия соврала бы. См. ccCardShotHTML.
-                   card:(opt&&opt.card)||undefined,
                    // Ник, с которым идёт ссора: по нему пост знает, что под ним
                    // стоят две кнопки, и кому адресован ответ. См. careerBeefAnswer.
                    beef:(opt&&opt.beef)||undefined,
@@ -64582,21 +60994,6 @@ const CC_POST_BY={
   ccPostBdayPro:'arg0', ccNewsBdayGift:'you',
   ccPostBanSad1:'arg0', ccPostBanSad2:'arg0', ccPostBanSad3:'arg0',
   ccPostDuoSplitBy:'arg0', ccPostDuoSplitByt:'arg0', ccPostTrioLF:'arg0',
-  // Анкету свободного агента пишет он сам — как и всё остальное про себя.
-  // Точку высадки объявляет тоже он.
-  ccPostLfdWant:'arg0', ccPostDropCall:'arg0',
-  // Квал из хитов: свой — свой, прошедший бот — от своего имени (первый аргумент).
-  ccPostQualGrands:'you', ccPostBotQualGrands:'arg0',
-  // Кастомка — свой вечер и своя строка о нём. Пост про титул подписывает
-  // клуб: он назван первым аргументом, и его берёт CC_ORG_POST_ARG, но автор
-  // должен быть решён и здесь — иначе ключ считается забытым (check-career-feed).
-  // Клуб приезжает автором записи (opt.by), а 'press' — страховка на случай,
-  // когда клуба в пуле уже нет: тогда титул объявляет лента сцены.
-  // Воуч — твоя рекомендация и твоя строка.
-  // Благодарность за турнир — своя строка после ЛАНа.
-  ccDayEvcustomTake:'you', ccPostOrgWin:'press', ccPostVouch:'you', ccPostThanks:'you', ccPostOneOff:'you', ccPostTriedBest:'you',
-  ccPostBye:'you', ccPostAskYes:'you', ccPostAskNo:'you',
-  ccNewsAnnounce:'press', ccPostHype:'arg0', ccPostDates:'arg0', ccPostCustomsOpen:'press',
   ccNewsLeftOrg:'press',
   ccNewsSigned:'press', ccNewsReleased:'press', ccNewsExtended:'press',
   /* Парный контракт заведён 25 августа, когда клубы уже постили сами, поэтому
@@ -64702,28 +61099,6 @@ const CC_POST_BY={
   ccNewsRivalWon:'you', ccNewsRivalLost:'you',
   // A scrim score and a bootcamp are the player's own week, not the scene's.
   ccNewsCampReady:'you',
-  // 3 сентября: поездка на ЛАН, нервы, мета, школа, бонус и уход клуба,
-  // развилки дня — свои строки о своём дне, клубные — с by клуба.
-  ccPostLanArrive:'you', ccNewsMetaNew:'press', ccNewsResultWf:'you', ccNewsResultWeekWf:'you',
-  // Трансфер объявляет сам человек (by приходит с постом), рост и спад — пресса.
-  ccNewsSceneDuo:'by', ccNewsSceneRise:'press', ccNewsSceneFall:'press',
-  ccNewsProAmCash:'you', ccNewsProAmOut:'you', ccNewsProAmReach:'you',
-  // Коллаб-стрим — свой вечер, свой пост. См. careerStreamGo.
-  ccNewsStreamColab:'you',
-  // И эфир с турнира — тоже свой. Денег в строке нет намеренно: его правка 23
-  // августа сняла из ленты денежные твиты эфира, отчёт вечера с заработком
-  // живёт в панели дня. См. ccStreamCupAfter.
-  ccNewsStreamCup:'you',
-  ccNewsTwAffiliate:'you', ccNewsTwPartner:'you',
-  ccNewsSchoolBack:'you', ccNewsOrgBonus:'by', ccNewsOrgGone:'by', ccPostLft:'you',
-  ccDayEvmateSpotRmove:'you', ccDayEvmateSpotRkeep:'you', ccDayEvmateSpotRtrial:'you',
-  ccDayEvorgLateRwait:'you', ccDayEvorgLateRpublic:'you', ccDayEvorgLateRleave:'you',
-  ccDayEvleakRdeny:'you', ccDayEvleakRconfirm:'you', ccDayEvleakRsilent:'you',
-  ccDayEvhouseRgo:'you', ccDayEvhouseRno:'you',
-  ccDayEvcoachFreeRtake:'you', ccDayEvcoachFreeRpass:'you',
-  ccDayEvtiltRblame:'you', ccDayEvtiltRown:'you', ccDayEvtiltRtalk:'you',
-  ccDayEvschoolRquit:'you', ccDayEvschoolRonline:'you', ccDayEvschoolRstay:'you',
-  ccDayEvorgQuitRfa:'you', ccDayEvorgQuitRquiet:'you',
   // Answering a hater is the player's own decision and their own post.
   // The partner's mood stays with the press account, even though it is about
   // them. Every line in this feed is written as a report — "Rimo is unhappy with
@@ -64748,13 +61123,7 @@ function ccPressWorthy(e){
   // is given somewhere to write a date of birth down. See careerBirthdays.
   if(e.k==='ccPostBday' || e.k==='ccPostBdayEpic') return true;
   if(e.k==='ccNewsPromoted') return !!(e.a && e.a[0]===1);
-  /* Дивизион у записи, а если его нет — у карьеры. КАРЬЕРЫ МОЖЕТ НЕ БЫТЬ:
-     его скрин 3 сентября, красная плашка «Cannot read properties of null
-     (reading 'career')» — лента дорисовывается после выхода из карьеры, а
-     разбор автора поста лезет сюда. Тогда запись читается как не-первый
-     дивизион: её напишет игрок, а не пресса, и это безопасный ответ. */
-  const cr=CAREER && CAREER.career;
-  return (e.dv!=null ? e.dv : (cr ? cr.division : 5))===1;
+  return (e.dv!=null ? e.dv : CAREER.career.division)===1;
 }
 // The scene's own account — the name the real one goes by, which is what the
 // user asked for: @FNCompetitive is who posts FNCS results.
@@ -64927,7 +61296,7 @@ function ccSmmPickOpen(){
           m.org ? ' · '+esc(m.org) : ''}</i>
         <span>${L().ccSmmGain} +${Math.round(t.boost*100)}% · ${L().ccShopMonth}</span></div>
       ${on ? `<span class="cc-owned">${L().ccShopUntil(ccDayLabel(CAREER.smm.until))}</span>`
-           : `<button class="ch-sign"${can?'':' disabled'} onclick="careerHireSmm(\'${m.id}\')">${ccNum(t.cost)}</button>`}
+           : `<button class="ch-sign"${can?'':' disabled'} onclick="careerHireSmm('${m.id}')">${ccNum(t.cost)}</button>`}
     </div>`;
   }).join('');
   document.getElementById('smmPickBody').innerHTML=
@@ -65000,10 +61369,7 @@ function careerReachAdd(n, raw){
    which is the shape the user asked for and the shape the payouts already
    had. */
 const CC_REACH_EVENT={cup:1, final:2.5, victory:0.5, eval:0.5, reload:1.5,
-                      major:5, gc:6, rc:8, summit:9, globals:14,
-                      // Про-Ам — показательный вечер: смотрят его много, но
-                      // главное там не место, а с кем ты сидишь (см. ccProAmReachFrom).
-                      proam:4};
+                      major:5, gc:6, rc:8, summit:9, globals:14};
 function careerReachResult(place, of, div, kind){
   if(!(of>1)) return 0;
   const beat=clamp(1-(place-1)/(of-1), 0, 1);
@@ -65122,16 +61488,7 @@ function ccPostStats(e, who){
   const jit = 0.82 + (ccHashStr((e.k||'')+'|'+(e.day||'')+'|'+((e.a||[]).join(',')))%37)/100;
   const views = Math.round(f*(0.35+1.15*w)*jit);
   const likes = Math.round(views*0.022);
-  /* Ответов — одна двадцатая от лайков, репостов — одна двенадцатая.
-
-     Стояло 16% и 12%: у Малибуки под победой выходило две тысячи ответов на
-     двенадцать тысяч лайков, у аккаунта сцены семьсот под «happy birthday».
-     На живом X (сентябрь 2026, @MalibucaFN, @FNCompetitive, посты LFD) на
-     десять тысяч лайков приходится сто-триста ответов, под LFD в двести лайков
-     — десять-двадцать. Пост, который собрал хоть немного лайков, получает
-     хотя бы один ответ: иначе у молодой карьеры под постом пусто. */
-  const replies = likes>=3 ? Math.max(1, Math.round(likes*0.05)) : 0;
-  return {views, likes, reposts:Math.round(likes*0.08), replies};
+  return {views, likes, reposts:Math.round(likes*0.12), replies:Math.round(likes*0.16)};
 }
 /* Клуб как автор поста.
 
@@ -65177,9 +61534,7 @@ function ccPostOrgName(v){
 const CC_ORG_POST_ARG={
   ccNewsSigned:0, ccNewsSignedDuo:0, ccNewsSignedAcademy:0,
   ccNewsReleased:0, ccNewsExtended:0, ccNewsPromotedRoster:0, ccNewsRaise:0,
-  ccNewsLeft:1,
-  // Победу своего человека клуб празднует сам — см. careerD1Posts.
-  ccPostOrgWin:0
+  ccNewsLeft:1
 };
 function ccPostAuthor(e){
   if(e.by) return {name:e.by.name, handle:e.by.handle||ccHandle(e.by.name),
@@ -65283,634 +61638,18 @@ function ccAvatar(a){
 // them — the point of posting a table is being in it.
 function ccShotHTML(tbl){
   if(!tbl || !tbl.rows || !tbl.rows.length) return '';
-  /* Старые записи в сейве несут только место, имя и очки — у них колонок
-     меньше, и таблица просто рисуется без них. */
-  const wide=tbl.rows.some(r=>r.m!=null);
-  /* Строка как в таблице игры: флаги перед ником (по картам состава), очки
-     сразу за ником, потом матчи, победы, элимы. Своя строка — жёлтой рамкой и
-     ещё раз внизу (pin), как в кадре из твита Th0masHD, 3 сентября. */
-  const flags=r=>(r.f||[]).map(n=>flagImg(n, 12)).join('');
-  const line=(r, extra)=>{
-    const cls=(r.p===1?' win':'')+(tbl.me && hKey(r.n)===hKey(tbl.me) ? ' me' : '')+(extra||'');
-    return `<div class="x-shot-r${cls}"><i>#${r.p}</i><b>${flags(r)}${esc(r.n)}</b>`+
-      (wide ? `<u>${r.m!=null?r.m:''}</u><u>${r.w!=null?r.w:''}</u><u>${r.e!=null?r.e:''}</u>` : '')+
-      `<em>${r.s}</em></div>`;
-  };
-  const rows=tbl.rows.map(r=>line(r, '')).join('')+
-    (tbl.pin ? line(tbl.pin, ' pin') : '');
-  /* Сводка справа — та же, что на странице Tracker: большое число очков и под
-     ним шесть строк. Есть она только тогда, когда есть журнал игр. */
-  const s=tbl.sum;
-  const side=s ? `<div class="x-shot-side">
-      <div class="x-shot-pts"><b>${ccNum(tbl.pts||0)}</b><span>${L().ptsHeader}</span></div>
-      <div class="x-shot-sum">
-        <span>${L().ccShotVr}<b>${s.vr}</b></span>
-        <span>${L().ccShotTop5}<b>${s.t5}</b></span>
-        <span>${L().ccShotTop10}<b>${s.t10}</b></span>
-        <span>${L().killsHeader}<b>${s.e}</b></span>
-        <span>${L().avgElimsWord}<b>${s.ae}</b></span>
-        <span>${L().avgPlaceWord}<b>${s.ap}</b></span>
-      </div></div>` : '';
+  const rows=tbl.rows.map(r=>{
+    const cls=(r.p===1?' win':'')+(tbl.me && hKey(r.n)===hKey(tbl.me) ? ' me' : '');
+    return `<div class="x-shot-r${cls}"><i>#${r.p}</i><b>${esc(r.n)}</b><em>${r.s}</em></div>`;
+  }).join('');
   // A screenshot of a Major carries the Major's name, not a division caption.
-  /* Широкая сетка колонок включается по КОЛОНКАМ, а не по сводке: у поста без
-     журнала игр сводки нет, а матчи, победы и киллы есть — и заголовок тогда
-     ехал по узкой сетке, обрезая «MATCHES» до «MATC…». */
-  return `<div class="x-shot x-shot-g${wide?' x-shot-wide':''}${s?' x-shot-sum-on':''}">
-    <div class="x-shot-h"><span>${esc(tbl.cap||L().ccShotCap(tbl.div))}${
-      tbl.mode?' · '+esc(tbl.mode):''}</span><span>${
-      tbl.cut && tbl.cutPts!=null ? esc(L().ccShotCut(tbl.cut, ccNum(tbl.cutPts))) : L().ccShotPts}</span></div>
-    <div class="x-shot-body">
-      <div class="x-shot-rows">
-        ${wide ? `<div class="x-shot-r x-shot-head"><i>#</i><b>${L().ccTableTeam}</b>
-          <u>${L().matchesWord}</u><u>${L().winsWord}</u><u>${L().killsHeader}</u>
-          <em>${L().ptsHeader}</em></div>` : ''}
-        ${rows}
-      </div>
-      ${side}
-    </div>
-  </div>`;
-}
-/* ---- Кто это: статус, био и PR-карточка -----------------------------------
-
-   Смотрел живую ленту про-сцены 2 сентября 2026 (@ScrollSZN, лента LFD/LFT,
-   доска LFP у Tracker) — там три вещи, которых у нас не было.
-
-   СТАТУС ЖИВЁТ В НИКЕ. Не в посте, который через час уехал вниз, а на самом
-   человеке: «F/A Zhelix 🇫🇷 (lfd div 1)». Свободный агент носит своё «ищу» на
-   себе всё время, пока ищет.
-
-   ПОД ОБЪЯВЛЕНИЕМ ЛЕЖИТ ДОКАЗАТЕЛЬСТВО. К «lfd div3 n1 igl min 1k3pr» всегда
-   приложен скрин PR-карточки Tracker — очки, место в регионе, за сезон, за год
-   и кривая — или скрин таблицы вечера.
-
-   БИО — ЭТО КАРТОЧКА КАРЬЕРЫ: «17 🇩🇰 | Fortnite for @AGGlobalEsports |
-   2x FNCS WINNER | 350k$+». Она меняется по ходу карьеры, и по ней читают, кто
-   вырос, а кто нет.
-
-   Всё это собирается ИЗ СЕЙВА, ничего нового не выдумывается: книга разводов
-   (CAREER.splits, CAREER.lft), ростер сезона, титулы сцены (CAREER.titles,
-   их пишет careerD1Posts) и PR-строка (careerPrTally). */
-function ccWhoCard(handle){
-  if(!handle) return null;
-  const k=hKey(handle);
-  const pl=CAREER && CAREER.player;
-  if(pl && pl.handle && hKey(pl.handle)===k) return null;   // свой — не из ростера
-  return ccSceneRoster(ccCareerRegion()).find(x=>hKey(x)===k) ||
-         PLAYERS.find(x=>hKey(x)===k) || null;
-}
-// Когда человек остался один: последняя запись о его разводе. Ключ книги —
-// «а+б» из ccSeatKey, поэтому ищется вхождение половинки.
-function ccWhoAloneSince(handle, memo){
-  const k=hKey(handle);
-  let last=null;
-  Object.keys(memo||{}).forEach(function(key){
-    if(key.split('+').indexOf(k)<0) return;
-    if(!last || memo[key]>last) last=memo[key];
-  });
-  return last;
-}
-/* С кем человек играет СЕГОДНЯ.
-
-   Не ccRealMateOf: тот читает ростер Epic, то есть пару, с которой человек
-   начал год, и про разводы не знает вовсе — по нему свободных агентов в мире
-   не бывает. Настоящий ответ у careerPools: там пары уже пересобраны, половинки
-   распавшихся стоят врозь, а трансферы сведены заново. */
-function ccPairMateOf(handle){
-  const k=hKey(handle);
-  let duos=[];
-  try{ duos=(careerPools()||{}).duos||[]; }catch(e){ return null; }
-  for(let i=0;i<duos.length;i++){
-    const cs=duos[i].cards||[];
-    if(!cs.some(c=>hKey(c)===k)) continue;
-    return cs.find(c=>hKey(c)!==k) || null;
-  }
-  return null;
-}
-/* Статус человека на сегодня. Свободен — только если он И правда один: пара
-   могла собраться обратно, и тогда старая запись о разводе ничего не значит. */
-function ccWhoStatus(handle){
-  const card=ccWhoCard(handle);
-  if(!card) return null;
-  if(ccPairMateOf(handle)) return card.org ? {kind:'org', text:card.org} : null;
-  const trio=careerSquadSize()===3;
-  const since=ccWhoAloneSince(handle, trio ? CAREER.lft : CAREER.splits);
-  if(since) return {kind:trio?'lft':'fa', text:trio ? L().ccWhoLft : L().ccWhoFa};
-  return card.org ? {kind:'org', text:card.org} : null;
-}
-function ccWhoChipHTML(handle){
-  const st=ccWhoStatus(handle);
-  if(!st) return '';
-  return `<i class="x-who x-who-${st.kind}">${esc(st.text)}</i>`;
-}
-// PR-строка человека лежит под его ником — тем же, каким она пишется в
-// careerPrAdd, поэтому сравнение по hKey, а не по строке.
-function ccPrRowOf(handle){
-  const rows=careerPrTally().rows||{}, k=hKey(handle);
-  const name=Object.keys(rows).find(n=>hKey(n)===k);
-  return name ? rows[name] : null;
-}
-/* Карточка Power Ranking — то же, что показывает Tracker: сколько всего,
-   какое место, сколько набрано за этот сезон и за последний год, и кривая. */
-function ccPrCardOf(handle){
-  const row=ccPrRowOf(handle);
-  if(!row || !(row.v||[]).length) return null;
-  const now=ccAbsDay(CAREER.career.season, careerToday());
-  const seasonFrom=Math.max(0, (CAREER.career.season-1)*365);
-  const sum=(from)=>(row.v||[]).reduce((s,e)=>s+(e[1]>=from ? e[0] : 0), 0);
-  const rows=careerPrRows(), k=hKey(handle);
-  let rank=null;
-  for(let i=0;i<rows.length;i++) if(hKey(rows[i].name)===k){ rank=i+1; break; }
-  // Кривая — накопленный PR по месяцам года, как на их графике. Точек всегда
-  // хотя бы две: у карьеры, которой месяц от роду, окно короче месяца, и
-  // одной точкой кривая не рисуется вовсе — а пустое место под числом
-  // читается как «данных нет», хотя они есть.
-  const step=30, pts=[];
-  for(let d=Math.max(0, now-365); d<=now; d+=step)
-    pts.push((row.v||[]).reduce((s,e)=>s+(e[1]<=d ? e[0]*ccPrDecay(Math.max(0, d-e[1])) : 0), 0));
-  if(pts.length<2) pts.unshift(0);
-  return {pr:careerPrOf(row), rank:rank, events:row.n||0,
-          season:Math.round(sum(seasonFrom)), year:Math.round(sum(Math.max(0, now-365))), pts:pts};
-}
-// Кривая под числом — та же, что у рейтинга в истории, только своими точками.
-function ccSparkSVG(pts){
-  if(!pts || pts.length<2) return '';
-  const w=100, h=26, pad=2;
-  const lo=Math.min(...pts), hi=Math.max(...pts);
-  // Ровная линия рисуется ПОСЕРЕДИНЕ, а не по нижнему краю: у карьеры, где
-  // все точки равны, кривая ложилась на дно и читалась как «ноль», хотя это
-  // «не менялось».
-  const flat=hi===lo, span=Math.max(1, hi-lo);
-  const xy=pts.map((v,i)=>[(i/(pts.length-1))*w,
-                           flat ? h/2 : h-pad-((v-lo)/span)*(h-pad*2)]);
-  const line=xy.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
-  return `<svg class="x-spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
-    <polygon points="0,${h} ${line} ${w},${h}" fill="rgba(126,240,221,.14)"/>
-    <polyline points="${line}" fill="none" stroke="#7ef0dd" stroke-width="1.4"
-      vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>`;
-}
-/* Био человека СЦЕНЫ. Своё уже есть — careerBioHTML собирает его из журнала
-   по образцу настоящих профилей, и второй копии тут не будет: свой человек
-   уходит туда же.
-
-   Про чужого известно ровно то, что видит сцена: возраст, флаг, клуб, кубки,
-   которые он взял на глазах у карьеры (их считает CAREER.titles), место в PR и
-   сколько турниров он сыграл. Ключи те же, что у своего био, — «×3 победитель
-   кубка» читается одинаково, о ком бы ни шла речь. */
-function ccBioLine(handle){
-  const pl=CAREER.player;
-  if(pl && pl.handle && hKey(pl.handle)===hKey(handle)) return careerBioHTML();
-  const card=ccWhoCard(handle);
-  const bits=[];
-  const age=ccAgeNow(handle);
-  if(age) bits.push(String(age));
-  if(card && card.nat) bits.push(esc(natDisplay(card.nat)||card.nat));
-  if(card && card.org) bits.push(L().ccBioPro+' '+esc(card.org));
-  const titles=(CAREER.titles||{})[hKey(handle)]||0;
-  if(titles) bits.push(L().ccBioCups(titles));
-  const pr=ccPrCardOf(handle);
-  if(pr && pr.rank) bits.push(L().ccBioPrRank(pr.rank));
-  if(pr && pr.events) bits.push(L().ccBioEvents(pr.events));
-  return bits.filter(Boolean).join(' · ');
-}
-// Кубок, взятый на глазах у карьеры, остаётся в био победителя. Пишет
-// careerD1Posts — он и так знает, кто выиграл неделю наверху.
-function ccTitleAdd(handle){
-  if(!handle) return;
-  const t=CAREER.titles=CAREER.titles||{}, k=hKey(handle);
-  t[k]=(t[k]||0)+1;
-}
-/* Приложение к посту: био строкой и PR-карточка под ним. Это ровно тот скрин,
-   который настоящие прикладывают к объявлению, только собранный из сейва. */
-function ccCardShotHTML(handle){
-  if(!handle) return '';
-  const bio=ccBioLine(handle), pr=ccPrCardOf(handle);
-  if(!bio && !pr) return '';
-  /* Числа PR — ПОЛНОСТЬЮ, а не «3K»: у Tracker на карточке стоит 10 257, и
-     разница между 1 954 и 2 946 — это и есть то, ради чего её показывают.
-     Сжатие остаётся там, где числа большие и точность не нужна: фолловеры,
-     просмотры, лайки. */
-  const nums=pr ? `<div class="x-card-num"><b>${ccNum(pr.pr)}</b>
-      <span>${L().ccCardPr}${pr.rank?' · '+L().ccBioPrRank(pr.rank):''}</span></div>
-    <div class="x-card-cols"><span><i>${ccNum(pr.season)}</i>${L().ccCardSeason}</span>
-      <span><i>${ccNum(pr.year)}</i>${L().ccCardYear}</span></div>
-    ${ccSparkSVG(pr.pts)}` : '';
-  return `<div class="x-card"><div class="x-card-bio">${esc(handle)}${bio?' — '+bio:''}</div>${nums}</div>`;
-}
-/* ---- Кто куда садится, вслух ----------------------------------------------
-
-   Перед крупным вечером про постят свою точку: «Solo FNCS 🔥» и карта со
-   стрелками (@ScrollSZN, 2 сентября 2026). Смысл не в картинке — в том, что
-   намерение объявлено ЗАРАНЕЕ, и соседи решают, лететь туда или нет.
-
-   Здесь то же самое и из тех же чисел: комната уже распределена (pre в
-   careerLandingPick считается ДО твоего выбора), поэтому объявление ничего не
-   выдумывает и ни одного лишнего броска не делает — оно просто говорит вслух
-   то, что уже решено. Два имени, не больше: это подсказка к своему решению, а
-   не сводка. Пишется один раз за этап — на первой игре.
-
-   Возвращает строку для подсказки в окне выбора; посты кладёт сам. */
-function ccDropCalls(pre, you, stage){
-  if(!pre || !pre.forEach) return '';
-  const bare=t=>String((t&&t.name)||'').replace(/<[^>]*>/g,'');
-  const out=[];
-  pre.forEach(function(list, zone){
-    (list||[]).forEach(function(t){
-      if(!t || t===you || t.isYou || t.isMate) return;
-      const at=ALL_LANDING_ZONES.indexOf(zone);
-      if(at<0) return;
-      out.push({t:t, at:at, pow:Number(t.pow)||0,
-                h:((t.squad||[])[0]||{}).handle || bare(t)});
-    });
-  });
-  if(!out.length) return '';
-  // Громко говорят сильные: две верхние команды комнаты.
-  out.sort((a,b)=>b.pow-a.pow);
-  const said=out.slice(0, 2);
-  const first=!((you.stageLog||[]).length);
-  said.forEach(function(c){
-    /* К объявлению приложена КАРТА с обведённой точкой — так это и выглядит у
-       настоящих: «north side in solos» у @RitualFPS, 2 сентября, и картинка
-       острова с закрашенной областью. Хранится номер зоны и остров, а не
-       картинка: рисуется она на показ, как и всё остальное. */
-    /* Уезжает НОМЕР зоны, а не готовое «зона 9»: имя строится на показе, в
-       том языке, который стоит сейчас. Со строкой пост оставался русским в
-       английской ленте — это же правило записано у ccText: «числа — то, что
-       стоит хранить, слова никогда не были собственностью сейва». */
-    if(first && c.h) careerNews('flat', 'ccPostDropCall',
-                                [ccHandle(c.h), c.at+1],
-                                {day:careerToday(), zone:c.at, set:ACTIVE_LANDING_SET});
-  });
-  return said.map(c=>'@'+ccHandle(c.h)+' → '+L().landingZoneSuffix(c.at+1)).join(' · ');
-}
-/* «qual grands, land X» — посты после хитов.
-
-   Его слово, 5 сентября: «во время хитов в сошиал ещё можно писать qual grands
-   land туда, где метка стоит у игрока… также и боты, которые квальнулись,
-   могут писать». Так это и выглядит у настоящих после хитов: «QUALIFIED TO
-   GRANDS» и следом точка, куда сядут в финале.
-
-   Точка — та, где команда САДИЛАСЬ в последней игре хитов (landingZone): у
-   игрока это его метка, у бота — его место в комнате. Как и у объявления
-   точки (ccDropCalls), уезжает НОМЕР зоны и остров, имя строится на показе.
-   Пишут не все прошедшие, а трое сильнейших: лента после хитов — это несколько
-   громких постов, а не сорок пять одинаковых. `what` — grands у Мейджора,
-   finals у соло-серии: словарь ставит нужное слово сам. */
-function ccGrandsCalls(what, you, through, passers){
-  const zoneNo=t=>{
-    const at=ALL_LANDING_ZONES.indexOf(t && t.landingZone);
-    return at>=0 ? at+1 : null;
-  };
-  const opt=z=>z ? {zone:z-1, set:ACTIVE_LANDING_SET} : {};
-  if(through){ const z=zoneNo(you); careerNews('good', 'ccPostQualGrands', [z, what], opt(z)); }
-  const bots=(passers||[]).filter(t=>t && t!==you && !t.isYou && !t.isMate)
-    .sort((a,b)=>(Number(b.pow)||0)-(Number(a.pow)||0)).slice(0, 3);
-  bots.forEach(t=>{
-    const h=((t.squad||[])[0]||{}).handle;
-    if(!h) return;
-    const z=zoneNo(t);
-    careerNews('flat', 'ccPostBotQualGrands', [ccHandle(h), z, what], opt(z));
-  });
-  return bots.length+(through?1:0);
-}
-/* Картинка под постом — арт события.
-
-   Титул уходил в ленту таблицей, а у настоящих это фотография со сцены и
-   подпись в два слова («BIG and thomas», @MalibucaFN, 20 тысяч лайков). Своих
-   фотографий с ЛАНов у нас нет и взяться им неоткуда, зато есть арты событий —
-   те же, что носят клетки недели и новостной хаб. Ставится только туда, где
-   повод громкий: титул, чемпионство, ЛАН. */
-function ccArtHTML(n){
-  if(!n || !n.art) return '';
-  const src=CAREER_EV_ART[n.art] || CAREER_EV_ART.cup;
-  return src ? `<div class="x-art" style="background-image:url(${src})"></div>` : '';
-}
-/* Цитата — пост внутри поста.
-
-   Половина настоящей ленты устроена так: анонс Epic и под ним реплика игрока,
-   чужой результат и «W» сверху. У нас счётчик репостов стоял, а самого
-   действия не было, и лента читалась как стопка монологов. Хранится ссылка на
-   запись (её id), а не копия текста: цитируемый пост живёт своей жизнью и
-   переводится вместе со всей лентой. */
-function ccQuoteHTML(n){
-  if(!n || !n.q) return '';
-  const src=(CAREER.career.news||[]).find(x=>x.id===n.q);
-  if(!src) return '';
-  const who=ccPostAuthor(src);
-  return `<div class="x-quote">
-    <div class="x-quote-h">${ccAvatar(who)}<b>${esc(who.name)}</b>
-      <span>@${esc(who.handle)}</span><span class="x-dot">·</span><span>${ccStamp(src)}</span></div>
-    <p>${ccMentions(ccText(src))}</p>
-    ${ccShotHTML(src.tbl)}${ccArtHTML(src)}</div>`;
-}
-/* Карта с обведённой точкой — картинка под объявлением высадки.
-
-   Снято с настоящего поста (@RitualFPS, 2 сентября: «north side in solos» и
-   остров с закрашенной областью). Рисуется из того же, из чего рисуется пикер:
-   клетки — проценты этой самой картинки, поэтому рамка ложится точно.
-
-   Набор клеток берётся из записи, а не из текущего острова: вечер давно
-   кончился, ACTIVE_LANDING_SET уехал на другой Мейджор, а пост в ленте
-   остался — и показывать он должен ту карту, о которой говорил. */
-/* Объявленная точка высадки — ВЫРЕЗКОЙ вокруг коробки, а не целым островом.
-
-   Его правка 3 сентября 2026 со ссылкой на пост @MalibucaFN («карта слишком
-   большая, вот пример поста»): у настоящих под таким постом кадр 627×570
-   вокруг своей точки — видно название POI, рельеф и жёлтую рамку, а не весь
-   остров, на котором коробку не разглядеть. У нас карта шла фоном во всю
-   ширину поста с отношением 16/9, то есть занимала полэкрана и показывала
-   в основном воду.
-
-   Арифметика та же, что у careerSpotShotHTML (плитка дома): слой — вся карта,
-   растянутая в zoom раз, внутри него координаты ZONE_SETS, и translate
-   подводит центр коробки к центру кадра. Отличий два: набор берётся тот, что
-   записан в посте (без careerSpotGrid — индекс коробки принадлежит именно
-   ему), и заполнение мягче, чтобы вокруг точки осталась узнаваемая местность. */
-const CC_DROP_SHOT_RATIO=11/10, CC_DROP_SHOT_FILL=58;
-function ccDropMapHTML(n){
-  if(!n || n.zone==null) return '';
-  const set=(n.set && ZONE_SETS[n.set]) ? n.set : ACTIVE_LANDING_SET;
-  const z=(ZONE_SETS[set]||[])[n.zone];
-  const art=MAP_ART[set];
-  if(!z || !art) return '';
-  const asp=MAP_ASPECT[set]||'1100/970';
-  const ar=String(asp).split('/');
-  const hOverW=(Number(ar[1])||970)/(Number(ar[0])||1100);
-  const byW=CC_DROP_SHOT_FILL/Math.max(z.w, 3);
-  const byH=CC_DROP_SHOT_FILL/(Math.max(z.h, 3)*hOverW*CC_DROP_SHOT_RATIO);
-  const zoom=Math.max(1.2, Math.min(9, Math.min(byW, byH)));
-  // Кадр прижимается к краю острова, а не выезжает за него: у береговых точек
-  // иначе в угол заезжает пустота. См. ту же правку в careerSpotShotHTML.
-  const halfW=Math.min(50, 50/zoom);
-  const halfH=Math.min(50, 50/(zoom*hOverW*CC_DROP_SHOT_RATIO));
-  const cx=clamp(z.x+z.w/2, halfW, 100-halfW);
-  const cy=clamp(z.y+z.h/2, halfH, 100-halfH);
-  return `<div class="x-map x-map-shot">
-    <div class="x-map-in" style="width:${(zoom*100).toFixed(0)}%;aspect-ratio:${asp};
-      background-image:url('${art}');
-      transform:translate(${(-cx).toFixed(2)}%, ${(-cy).toFixed(2)}%);">
-      <i style="left:${z.x}%;top:${z.y}%;width:${z.w}%;height:${z.h}%"></i>
-    </div></div>`;
-}
-/* Скрин таблицы к посту о вечере.
-
-   Так это и выглядит у настоящих: подпись в две строки, а под ней картинка со
-   стандингами, где своя строка подсвечена (@ScrollSZN, 31 августа 2026:
-   «Reality's Reign In Finals» и таблица под ней). Кубок дивизиона и вечер
-   Дивизиона 1 так и постили, остальные девять вечеров — нет, и Мейджор с ЛАНом
-   уходили в ленту голой строчкой. Собирается в одном месте, потому что правило
-   одно: пятёрка сверху и своя строка под ней, если она ниже. */
-/* Скрин стандингов — тот самый, который постят.
-
-   Его правка, 3 сентября: «а такие же таблицы можешь сделать, как игроки
-   постят». У них это скриншот таблицы Tracker, и в нём всегда одно и то же:
-   слева места с очками, матчами, победами и киллами, справа — большое число
-   очков и сводка (виктори, топ-5, топ-10, всего киллов, средние киллы и место),
-   внизу полоска кнопок. Смотрел живьём у @MalibucaFN, @darmfn, @RitualFPS,
-   @Tjino9 — layout один в один у всех, потому что это одна и та же страница.
-
-   Всё это у вечера уже посчитано: журнал игр (stageLog) есть у каждой команды,
-   очки, победы и киллы тоже. Сводка считается по журналу того, чья строка
-   подсвечена, — то есть автора поста. */
-function ccStageShot(ranked, you, div, cap, cut){
-  if(!ranked || !ranked.length || !you) return undefined;
-  const bare=t=>String((t&&t.name)||'').replace(/<[^>]*>/g,'');
-  // Флаги — по картам состава, а не по строке: рисуются при показе (flagImg).
-  const nats=t=>((t&&t.squad)||[]).map(p=>p&&p.nat).filter(Boolean);
-  const row=(t,i)=>({p:i+1, n:bare(t), s:Math.round(t.stagePts||0),
-                     m:(t.stageLog||[]).length, w:t.wins||0, e:Math.round(t.stageElims||0), f:nats(t)});
-  const place=ranked.indexOf(you)+1;
-  /* Как в таблице самой игры — его твит 3 сентября (Th0masHD на #33, в
-     кадре #29–#36, своя строка ещё раз приколота внизу, справа «Points to
-     qualify Top 50: 371 pts»). Окно вокруг своей строки, в восьмёрке —
-     просто верх; своя строка всегда повторена внизу (pin). */
-  const from=place<=8 ? 0 : Math.max(0, place-5);
-  const rows=ranked.slice(from, from+8).map((t,i)=>row(t, from+i));
-  const pin=place>0 ? row(you, place-1) : null;
-  const cutPts=(cut && ranked[cut-1]) ? Math.round(ranked[cut-1].stagePts||0) : undefined;
-  const log=(you.stageLog||[]);
-  const sum=log.length ? {
-    vr:log.filter(g=>g.place===1).length,
-    t5:log.filter(g=>g.place<=5).length,
-    t10:log.filter(g=>g.place<=10).length,
-    e:Math.round(log.reduce((s,g)=>s+(g.elims||0),0)),
-    ae:Math.round(log.reduce((s,g)=>s+(g.elims||0),0)/log.length*10)/10,
-    ap:Math.round(log.reduce((s,g)=>s+(g.place||0),0)/log.length*10)/10
-  } : null;
-  return {div:div||CAREER.career.division, cap:cap||undefined, rows:rows, me:bare(you),
-          pts:Math.round(you.stagePts||0), sum:sum, pin:pin||undefined,
-          cut:cut||undefined, cutPts:cutPts, of:ranked.length,
-          // «Дуо» или «Трио» — тем же словом, каким режим называет их везде.
-          mode:careerSquadSize()===3 ? L().modeTrioTitle : L().modeDuoTitle};
+  return `<div class="x-shot"><div class="x-shot-h"><span>${esc(tbl.cap||L().ccShotCap(tbl.div))}</span>
+    <span>${L().ccShotPts}</span></div>${rows}</div>`;
 }
 function careerNewsHTML(limit){
   const news=(CAREER.career.news||[]);
   if(!news.length) return `<div class="ch-empty">${L().ccNewsEmpty}</div>`;
   return news.slice(0, limit||6).map(ccPostHTML).join('');
-}
-/* ---- Лента: всё или только подписки ---------------------------------------
-
-   Подписка обязана что-то менять, иначе кнопка «подписаться» — украшение.
-   «Подписки» показывают тех, на кого подписан игрок, и его самого: своя строка
-   в своей же ленте стоит везде, где такая вкладка есть. */
-let CH_FEED='all', CH_WHO=null;
-function careerFeedMode(m){ CH_FEED=m; careerRenderHub('social'); }
-function careerFeedHTML(){
-  const news=(CAREER.career.news||[]);
-  const list=CH_FEED==='subs'
-    ? news.filter(n=>{ const w=ccPostAuthor(n); return w.you || ccFollowing(w.handle); })
-    : news;
-  if(!list.length) return `<div class="ch-empty">${
-    CH_FEED==='subs' ? L().ccFeedSubsEmpty : L().ccNewsEmpty}</div>`;
-  return list.slice(0, CAREER_NEWS_KEEP).map(ccPostHTML).join('');
-}
-/* ---- Чужой профиль --------------------------------------------------------
-
-   По нику можно нажать — и это главный способ ходить по X. Всё, что нужно, уже
-   считается: био (ccBioLine), карточка PR, статус F/A и посты этого человека в
-   ленте. Здесь они просто собраны на один экран, плюс три действия: подписаться,
-   написать и поручиться. */
-function careerWho(h){ CH_WHO=String(h||''); CH_SOCIAL='who'; careerRenderHub('social'); }
-function careerWhoHTML(h){
-  if(!h) return `<div class="ch-tile"><div class="ch-empty">${L().ccNewsEmpty}</div></div>`;
-  const card=ccWhoCard(h), esh=esc(h).replace(/'/g,"\\'");
-  const who={name:h, handle:ccHandle(h), card:card, logo:null};
-  const posts=(CAREER.career.news||[]).filter(n=>hKey(ccPostAuthor(n).handle)===hKey(ccHandle(h)));
-  const ad=(typeof ccAdOf==='function') ? ccAdOf(h) : null;
-  return `<div class="ch-tile x-profile">
-    <div class="x-profile-head">
-      ${ccAvatar(who)}
-      <div><b>${esc(h)}</b>${ccWhoChipHTML(h)}<span>@${esc(ccHandle(h))}</span>
-        <span class="x-bio">${ccBioLine(h)}</span></div>
-    </div>
-    <div class="x-acts2">
-      ${ccFollowing(h)
-        ? `<button class="x-act" onclick="careerUnfollow(\'${esh}\')">${L().ccFollowingBtn}</button>`
-        : `<button class="x-act" onclick="careerFollow(\'${esh}\')">${L().ccFollowBtn}</button>`}
-      <button class="x-act" onclick="careerPostDm(\'${esh}\')">${L().ccPostDmBtn}</button>
-      ${ad ? (ccVouched(h)
-        ? `<span class="x-act-done">${L().ccPostVouched}</span>`
-        : `<button class="x-act" onclick="careerVouch(\'${esh}\')">${L().ccPostVouchBtn}</button>`) : ''}
-    </div>
-    ${ccCardShotHTML(h)}
-    <div class="x-timeline">${posts.length
-      ? posts.slice(0, 20).map(ccPostHTML).join('')
-      : `<div class="ch-empty">${L().xNoPosts}</div>`}</div>
-  </div>`;
-}
-
-/* ---- НОВОСТНОЙ ХАБ НА ЦЕНТРЕ ----------------------------------------------
-
-   Его правка, 2 сентября: «хочу типо такой новостной хаб на главном меню, чтоб
-   новости там были и картинки фортнайт» — со скриншотом новостей FIFA: слева
-   список заголовков с датами, справа большая картинка и сама новость.
-
-   Здесь стояла лента: двенадцать постов подряд, каждый со своей аватаркой и
-   счётчиками. Для соцсети это правильная форма — там их и читают, — а на
-   центре она давала колонку одинаковых строк, в которой не видно, что вообще
-   произошло за неделю.
-
-   Теперь центр держит ОДНУ новость крупно и список остальных рядом. Ничего не
-   пишется заново: заголовок — тот же текст поста, картинка — арт события по
-   виду турнира (тот же CAREER_EV_ART, что и на клетках недели) или фотография
-   человека, о котором речь. Полная лента с лайками и ответами осталась в
-   соцсети, и кнопка ведёт туда. */
-let CH_NEWS_CAT='all', CH_NEWS_PICK=null;
-/* Три полки, как четыре вкладки у них: что сделал ты, что делает сцена и кто
-   куда перешёл. Полка выводится из ключа записи — своего поля у неё нет и не
-   нужно: ключ всегда знал, о чём строка. */
-const CC_NEWS_MOVE=/^(ccPostDuoSplitBy|ccPostTrioLF|ccPostLfdWant|ccNewsSigned|ccNewsSignedDuo|ccNewsSignedAcademy|ccNewsReleased|ccNewsLeft|ccNewsLeftOrg|ccNewsExtended|ccNewsPromotedRoster|ccNewsDuoAnnounce|ccNewsDuoSplit|ccNewsDuoWorldSplit|ccNewsPartnerNew|ccNewsPartnerLeft|ccNewsMateLeftFor|ccNewsLfd)/;
-function ccNewsCat(n){
-  if(ccPostAuthor(n).you) return 'you';
-  return CC_NEWS_MOVE.test(String(n.k||'')) ? 'moves' : 'scene';
-}
-/* Картинка новости. Сначала — арт турнира, о котором она: ключи вечеров
-   называют свой вид сами. Потом — лицо человека, если новость про человека.
-   Ничего не нашлось — карточка идёт без картинки, а не с заглушкой. */
-const CC_NEWS_KIND=[[/^ccNewsMaj/, 'major'], [/^ccNewsRel|^ccNewsRc/, 'reload'],
-  [/^ccNewsSolo/, 'solo'], [/^ccNewsGlob|^ccNewsGc/, 'gc'], [/^ccNewsSum/, 'summit'],
-  [/^ccNewsVic/, 'victory'], [/^ccNewsEval/, 'eval'], [/^ccNewsWf|^ccNewsResultWeek/, 'final'],
-  [/^ccNewsResult|^ccPostWon|^ccPostPodium|^ccNewsCongrats|^ccPostOrgWin|^ccNewsWinner|^ccNewsD1Table/, 'cup']];
-function ccNewsArtOf(n){
-  const k=String(n.k||'');
-  for(let i=0;i<CC_NEWS_KIND.length;i++)
-    if(CC_NEWS_KIND[i][0].test(k)){
-      const art=CAREER_EV_ART[CC_NEWS_KIND[i][1]] || CAREER_EV_ART.cup;
-      if(art) return {src:art, kind:'art'};
-    }
-  const who=ccPostAuthor(n);
-  // Герб лежит в своей папке, лицо — в своей: те же две двери, что у ccAvatar.
-  if(who.logo) return {src:LOGO_DIR+who.logo, kind:'crest'};
-  if(who.card){ const u=photoURL(who.card); if(u) return {src:u, kind:'face'}; }
-  if(who.you){ const u=photoURL(careerCard()); if(u) return {src:u, kind:'face'}; }
-  /* Картинка есть ВСЕГДА — его слово: «чтоб новости там были и картинки
-     фортнайт». Новость без арта на этом экране выглядит как пустая карточка,
-     поэтому последним рубежом стоит афиша сезона. */
-  return {src:CAREER_EV_ART.cup, kind:'art'};
-}
-function careerNewsCat(c){ CH_NEWS_CAT=c; CH_NEWS_PICK=null; careerRenderHub('centre'); }
-/* Выбранная руками новость останавливает карусель: игрок читает то, что открыл,
-   и карточка не должна уезжать у него из-под глаз. */
-function careerNewsPick(id){ CH_NEWS_PICK=id; careerNewsShow(id); }
-/* ---- Карусель новостей ----------------------------------------------------
-
-   Его правка, 2 сентября, со скриншотом точек под панелью FIFA: «хочу чтоб тут
-   менялись картинки раз в какое-то время как на референсе». Каждые шесть секунд
-   карточка показывает следующую новость, снизу — точки, по ним можно кликнуть.
-
-   Перерисовывается ТОЛЬКО карточка, а не весь центр: центр — это неделя,
-   календарь, панель дня и магазин, и гонять их каждые шесть секунд значит
-   отдать батарею телефона за смену картинки.
-
-   Уважение к prefers-reduced-motion здесь особое: смена новости — это не
-   анимация, а содержимое, и её мы не отключаем (иначе игрок с включённым
-   reduced-motion не увидит фичу вовсе). Отключается плавность: при reduced
-   карточка меняется мгновенно, без затухания. */
-const CC_NEWS_ROT_MS=6000;
-let CC_NEWS_ROT=null, CC_NEWS_IDS=[], CC_NEWS_AT=0;
-function ccNewsLeadOf(id){
-  const all=(CAREER.career.news||[]);
-  return all.find(n=>n.id===id) || null;
-}
-function careerNewsShow(id){
-  const box=document.getElementById('nhLead');
-  const n=ccNewsLeadOf(id);
-  if(!box || !n) return;
-  box.innerHTML=ccNewsLeadHTML(n);
-  box.classList.remove('nh-in');
-  // Пересборка стиля, чтобы затухание проигралось заново.
-  void box.offsetWidth;
-  box.classList.add('nh-in');
-  const list=document.querySelectorAll('#screen-career-hub .nh-row');
-  list.forEach(el=>el.classList.toggle('on', el.dataset.id===id));
-  document.querySelectorAll('#screen-career-hub .nh-dot')
-    .forEach(el=>el.classList.toggle('on', el.dataset.id===id));
-  CC_NEWS_AT=Math.max(0, CC_NEWS_IDS.indexOf(id));
-}
-function careerNewsRotStop(){
-  if(CC_NEWS_ROT){ clearInterval(CC_NEWS_ROT); CC_NEWS_ROT=null; }
-}
-function careerNewsRotStart(ids){
-  careerNewsRotStop();
-  CC_NEWS_IDS=ids||[];
-  if(CH_NEWS_PICK || CC_NEWS_IDS.length<2) return;
-  CC_NEWS_ROT=setInterval(function(){
-    // Экран сменился — таймер снимает себя сам, без подписки на переходы.
-    if(!document.getElementById('nhLead')){ careerNewsRotStop(); return; }
-    if(CH_NEWS_PICK){ careerNewsRotStop(); return; }
-    CC_NEWS_AT=(CC_NEWS_AT+1)%CC_NEWS_IDS.length;
-    careerNewsShow(CC_NEWS_IDS[CC_NEWS_AT]);
-  }, CC_NEWS_ROT_MS);
-}
-function careerNewsHubHTML(){
-  const all=(CAREER.career.news||[]);
-  const list=(CH_NEWS_CAT==='all' ? all : all.filter(n=>ccNewsCat(n)===CH_NEWS_CAT)).slice(0, 14);
-  const cats=['all','scene','moves','you'];
-  const tabs=cats.map(c=>`<button class="nh-tab${CH_NEWS_CAT===c?' on':''}"
-      onclick="careerNewsCat(\'${c}\')">${L()['ccNewsCat'+c]}</button>`).join('');
-  if(!list.length)
-    return `<div class="ch-tile ch-newsbar"><h4>${L().ccNewsHub}</h4>
-      <div class="nh-tabs">${tabs}</div>
-      <div class="ch-empty">${L().ccNewsEmpty}</div></div>`;
-  const lead=list.find(n=>n.id===CH_NEWS_PICK) || list[0];
-  const rows=list.map(n=>{
-    const w=ccPostAuthor(n);
-    return `<button class="nh-row${n===lead?' on':''}" data-id="${esc(n.id||'')}"
-        onclick="careerNewsPick('${n.id||''}')">
-      <em>${ccStamp(n)}</em><b>${esc(ccText(n))}</b>
-      <span>${esc(w.name)}</span></button>`;
-  }).join('');
-  /* Точки — как под панелью новостей у них: сколько новостей в карусели и на
-     какой она сейчас. Первые шесть, дальше карусель не ходит: это витрина
-     свежего, а весь список и так стоит слева. */
-  const ids=list.slice(0, 6).map(n=>n.id).filter(Boolean);
-  const dots=ids.map(id=>`<button class="nh-dot${id===lead.id?' on':''}" data-id="${esc(id)}"
-      onclick="careerNewsPick(\'${id}\')" aria-label="${esc(L().ccNewsHub)}"></button>`).join('');
-  // Карусель заводится после того, как разметка попала в документ.
-  setTimeout(function(){ careerNewsRotStart(ids); }, 0);
-  return `<div class="ch-tile ch-newsbar">
-    <h4>${L().ccNewsHub}</h4>
-    <div class="nh-tabs">${tabs}</div>
-    <div class="nh-wrap">
-      <div class="nh-list">${rows}</div>
-      <div class="nh-side">
-        <article class="nh-lead nh-in" id="nhLead">${ccNewsLeadHTML(lead)}</article>
-        ${ids.length>1 ? `<div class="nh-dots">${dots}</div>` : ''}
-      </div>
-    </div>
-  </div>`;
-}
-// Одна новость крупно. Вынесено отдельно, потому что карусель меняет только её.
-function ccNewsLeadHTML(lead){
-  const art=ccNewsArtOf(lead), who=ccPostAuthor(lead);
-  return `${art ? `<div class="nh-art nh-art-${art.kind}" style="background-image:url(${art.src})"></div>` : ''}
-    <div class="nh-lead-in">
-      <em class="nh-kicker">${L()['ccNewsCat'+ccNewsCat(lead)]} · ${ccStamp(lead)}</em>
-      <h5>${ccMentions(ccText(lead))}</h5>
-      <div class="nh-by">${ccAvatar(who)}<span><b>${esc(who.name)}</b>@${esc(who.handle)}</span></div>
-      ${ccShotHTML(lead.tbl)}
-      ${ccCardShotHTML(lead.card)}
-      <button class="cc-back nh-open" onclick="careerOpenFeed()">${L().ccNewsOpen}</button>
-    </div>`;
 }
 // One post. The feed and the profile draw the same thing, so a like put on a
 // post in one place is the same like in the other.
@@ -65947,532 +61686,66 @@ function ccMentions(t){
    ладдер, — они и есть зрители. И сверху, если вечер того стоил, настоящий
    человек из сцены, которого записал ccProNod. */
 const CC_CO_MAX=5;
-/* Настроение поста — по ключу, и только потом по месту.
-
-   Раньше банк выбирался по первым двум аргументам как по «место из скольких»,
-   а у половины ключей там лежит не это: у ccPostPlaced вторым идёт дивизион,
-   у ccNewsWfCash — деньги. Отсюда выгрузка ленты 3 сентября: «deserved» и
-   «congrats» под «Evaluation: Round 2 without a win», «good run» под 33-м
-   местом финала недели (33 из $400 — это 92% «побитых»). Ключ говорит, о чём
-   пост, и решает первым; место читается только там, где оно правда место. */
-const CC_CO_BY_KIND=[
-  [/^ccPostDuoSplitBy|^ccPostTrioLF|^ccNewsDuoWorldSplit|^ccNewsDuoSplit|^ccNewsMateLeftFor|^ccNewsPartnerLeft|^ccPostMateLeft|^ccNewsDuoOutgrown/, 'Sad'],
-  [/^ccPostLfdWant|^ccNewsLfd/, 'Lfd'],
-  [/Bday/, 'Bday'],
-  [/^ccNewsAnnounce|^ccPostHype|^ccPostDates/, 'Hype'],
-  [/^ccNewsDuoAnnounce|^ccNewsDuoAgain|^ccNewsSquadNew|^ccNewsPartnerNew/, 'Duo'],
-  [/^ccNewsSigned|^ccNewsExtended|^ccNewsPromotedRoster|^ccNewsRaise/, 'Sign'],
-  [/^ccNewsReleased|^ccNewsLeft|^ccPostBye/, 'Left'],
-  [/^ccNewsD1Table/, 'Table'],
-  [/^ccNewsStream|^ccPostStreamD1/, 'Stream'],
-  [/^ccPostDropCall/, 'Drop'],
-  [/^ccPostQualGrands|^ccPostBotQualGrands/, 'Pod'],
-  [/^ccPostCustomsOpen/, 'Cust'],
-  [/^ccNewsRetired/, 'Bye'],
-  [/^ccNewsBanned|^ccPostBanSad/, 'Ban'],
-  [/^ccNewsCongrats|^ccPostOrgWin|^ccNewsWinner|^ccPostWon|^ccNewsGlobChamp|^ccNewsRcChamp|^ccNewsAward|^ccNewsPromoted$/, 'Win'],
-  [/^ccPostPodium|Through$|^ccNewsWfIn|^ccNewsGcIn|^ccPostWins|^ccNewsEvalCash|^ccNewsVicCash/, 'Pod'],
-  [/Out$|NoWin$|NoCash$|^ccPostClose|^ccPostOneOff|^ccPostTriedBest|^ccNewsRcDrop|^ccNewsRelegated|^ccNewsMpSplit|^ccNewsRentGone/, 'Bad']
-];
-function ccCoMood(n){
-  const k=String((n&&n.k)||'');
-  for(let i=0;i<CC_CO_BY_KIND.length;i++) if(CC_CO_BY_KIND[i][0].test(k)) return CC_CO_BY_KIND[i][1];
-  const a=(n&&n.a)||[];
-  const p=+a[0];
-  // Место — там, где строка про место: своё место в комнате, финал недели,
-  // призовые за этап. Где размер комнаты не записан, он берётся за пятьдесят —
-  // это финал недели и любой финал круга.
-  if(/^ccPostPlaced|^ccNewsResult|^ccNewsWfCash|Cash$/.test(k) && p>0){
-    const of=(/^ccNewsResult/.test(k) && +a[1]>1) ? +a[1] : 50;
-    const beat=1-(p-1)/Math.max(1, of-1);
-    return p===1 ? 'Win' : (p<=3 || beat>=0.9) ? 'Pod' : beat<=0.3 ? 'Bad' : 'Mid';
-  }
-  if(!k) return 'News';                         // своя строка словами
-  return n.kind==='bad' ? 'Bad' : n.kind==='good' ? 'News' : 'Mid';
-}
-/* Главный свой пост вечера.
-
-   Вечер пишет четыре-пять строк подряд — место в комнате, проход в финал,
-   призовые, рейтинг, — и напарник с кивнувшим профи стояли под каждой: в
-   выгрузке 3 сентября vic0 четыре раза за вечер хвалил один и тот же кап.
-   Настоящие пишут под одним постом — под тем, где скрин. Якорь — самый свежий
-   свой пост о результате того же дня; под остальными строками вечера люди
-   сцены появляются редко. Поста может не быть в ленте вовсе (проверки рисуют
-   запись отдельно) — тогда якорь он сам. */
-const CC_CO_RESULT=/^ccPostPlaced|^ccPostWon|^ccPostPodium|^ccNewsResult|^ccNewsWfIn|^ccNewsWfCash|Cash$|Out$|NoWin$|NoCash$|Through$|^ccNewsPromoted$|^ccNewsRelSeat|^ccNewsGcIn|^ccNewsGcSeat|^ccNewsCup/;
-function ccCoAnchor(n){
-  const list=(CAREER && CAREER.career && CAREER.career.news)||[];
-  const top=list.find(x=>x && x.day===n.day && !x.by && CC_CO_RESULT.test(String(x.k||'')) &&
-                          (CC_POST_BY[x.k]||'you')==='you');
-  return !top || top.id===n.id;
-}
-/* Кто пишет под постом.
-
-   Выгрузка ленты 3 сентября (tools/career-feed-dump-probe.js, два месяца в
-   Д1): под каждым своим постом два-пять выдуманных ников из одного банка, под
-   постами сцены — тишина, у Малибуки под победой две тысячи ответов и ни
-   одного видно. На живом X под победой профи первым стоит его напарник
-   («🐐»), потом клуб с галочкой, потом другие про из той же комнаты («W»,
-   «deserved»), и только потом зрители; под LFD настоящие пишут «V»; под
-   поздравлением сцены сам именинник отвечает «ty ❤️»; под плохим вечером
-   кто-нибудь обязательно пишет «washed».
-
-   Теперь так и собирается. Настоящие люди берутся из того, что уже записано:
-   свой напарник (careerPartnerCard), свой клуб (CAREER.org), друзья и
-   подписки, живая ссора (careerBeefHot); у человека сцены — его пара
-   (ccPairMateOf), его клуб (ccWhoCard), те, кто стоит в таблице под постом,
-   и те, кого пост упоминает. Ничего не хранится: тот же хэш — тот же разговор,
-   как и было. Под постом сцены автор иногда отвечает одному из написавших —
-   ветка ступенькой ниже. Под своим постом за игрока никто не отвечает: его
-   слово 2 сентября, «зачем под свой твит чет писать». */
 function ccPostComments(n, who, st){
-  /* Свои реплики под чужим постом: короткая кнопочная и всё, что написано
-     словами (n.res). Обе видны всегда — они написаны игроком. См. careerReply. */
-  const meAt=esc(ccHandle((CAREER.player||{}).nick||''));
-  const mine=((n && n.re)
-      ? '<div class="x-co-r x-co-mine"><b>@'+meAt+'</b><span>'+esc(L()['ccRe'+n.re]||'')+'</span></div>'
-      : '')+
-    (((n&&n.res)||[]).map(r=>'<div class="x-co-r x-co-mine"><b>@'+meAt+'</b>'+
-      '<span>'+esc(r.t||'')+'</span></div>').join(''));
-  const onlyMine=()=>mine ? '<div class="x-co">'+mine+'</div>' : '';
-  if(!n || !who) return onlyMine();
+  /* Под чужим постом лента молчит — кроме расставания. Его пункт, 23 августа:
+     «ответы, чтоб совпадали, чтоб люди грустили или просили не расходиться».
+     Пост «я больше не в дуо» получает комменты, и они из грустного банка. */
+  const sadKind = !!(n && n.k==='ccPostDuoSplitBy');
+  if(!n || !who || (!who.you && !sadKind)) return '';
   const replies=(st && st.replies)||0;
-  if(replies<1) return onlyMine();
+  if(replies<1) return '';
   const cr=(CAREER&&CAREER.career)||{};
   const seed=ccHashStr('co|'+(n.id||'')+'|'+(n.k||'')+'|'+(n.day||''));
   const rnd=careerRng(seed);
-  const mood=ccCoMood(n);
-  // Банк по сезону: в трио про дуо писать нечего — см. ccSquadKey.
-  const bankOf=name=>{ const b=L()[ccSquadKey(name)]||L()[name]; return (Array.isArray(b)&&b.length) ? b : null; };
-  const fanBank=bankOf('ccCo'+mood)||L().ccCoNews;
-  const good=(mood==='Win'||mood==='Pod'||mood==='Duo'||mood==='Sign');
-  const proBank=good ? bankOf('ccCoProWin') : mood==='Bad' ? bankOf('ccCoProBad')
-              : mood==='Lfd' ? bankOf('ccCoProLfd') : fanBank;
-  // «🐐» от напарника под сорок третьим местом — нет; под серединой он пишет
-  // то же, что под плохим вечером: «вернёмся», «в следующий раз».
-  const mateBank=bankOf(mood==='Duo' ? 'ccCoDuo' : (mood==='Bad'||mood==='Mid') ? 'ccCoMateDown' : 'ccCoMateUp');
-  // Напарник пишет под вечером, а не под анонсом Epic или скрином таблицы.
-  const resulty=good || mood==='Bad' || mood==='Mid' || mood==='News';
-  const rows=[], seenH=new Set(), seenT=new Set();
-  const authorK=hKey(who.handle||who.name||'');
-  const myK=hKey(ccHandle((CAREER.player||{}).nick||''));
-  if(authorK) seenH.add(authorK);
-  if(myK) seenH.add(myK);
-  // Одна и та же строка под одним постом два раза — это уже не два человека.
-  const pick=bank=>{
-    if(!bank||!bank.length) return null;
-    for(let g=0; g<8; g++){ const c=bank[Math.floor(rnd()*bank.length)]; if(!seenT.has(c)){ seenT.add(c); return c; } }
-    return null;
-  };
-  const add=(h, bank, opt)=>{
-    const k=hKey(h);
-    if(!h||!k||seenH.has(k)||rows.length>=CC_CO_MAX+1) return false;
-    const t=pick(bank);
-    if(t==null) return false;
-    seenH.add(k);
-    rows.push(Object.assign({h:String(h), t:t}, opt||{}));
-    return true;
-  };
-  const ovrOf=c=>c ? ((c._ovr!=null?c._ovr:(attrsFor(c)||{}).ovr)||0) : 0;
-  let roster=[];
-  try{ roster=careerRosterNowEU()||[]; }catch(e){ roster=[]; }
-  const realOf=h=>{ const k=hKey(h); return k ? (roster.find(c=>hKey(c)===k)||null) : null; };
-  // Кто был в той же комнате — по таблице под постом; кого пост упоминает —
-  // по тексту. И те и другие — настоящие имена, иначе они не считаются.
-  const room=[];
-  ((n.tbl&&n.tbl.rows)||[]).forEach(r=>String(r.n||'').split(/\s*[+&]\s*/).forEach(x=>{
-    const c=realOf(x.trim()); if(c && hKey(c)!==authorK) room.push(c.handle); }));
-  const mentioned=[];
-  try{
-    String(ccText(n)||'').replace(/@([A-Za-z0-9_]+)/g, (m,h)=>{ const c=realOf(h); if(c && hKey(c)!==authorK) mentioned.push(c.handle); return m; });
-  }catch(e){}
-  const sad=(mood==='Sad'), hush=(mood==='Ban');
-  let hater=false;
-  if(who.you){
-    const anchor=ccCoAnchor(n);
-    // Кивок профи — первым, и только под главным постом того самого дня.
-    if(anchor && cr.nod && cr.nod.day===n.day && cr.nod.who) add(cr.nod.who, bankOf('ccCoPro')||L().ccCoPro, {pro:true});
-    // Напарник — почти всегда под главным постом вечера, редко под остальными.
-    let mate=null; try{ mate=careerPartnerCard(); }catch(e){}
-    const mateP=(anchor && resulty) ? (good?0.85:mood==='Bad'?0.6:0.35) : 0.15;
-    if(mate && mate.handle && !sad && !hush && rnd()<mateP) add(mate.handle, mateBank, {pro:true});
-    // Клуб — под тем, чем можно хвастаться, и только под главным.
-    const org=CAREER.org;
-    if(anchor && org && org.name && good && rnd()<0.5) add(ccOrgAt(org.name)||ccHandle(org.name), bankOf('ccCoOrg'), {pro:true, org:true});
-    // Друзья и те, на кого подписан, — настоящие имена сцены.
-    const near=[].concat(cr.friends||[], cr.follows||[]).filter(h=>realOf(h));
-    if(near.length && rnd()<(anchor?0.5:0.2)) add(near[Math.floor(rnd()*near.length)], proBank, {pro:true});
-    // Живая ссора: соперник приходит и под хороший вечер, и под плохой.
-    let hot=[]; try{ hot=careerBeefHot(); }catch(e){}
-    if(hot.length && hot[0].h && rnd()<(anchor?0.6:0.2)) add(hot[0].h, bankOf('ccCoTroll'), {pro:true});
-    // Хейтер — тем чаще, чем хуже вечер и чем громче карьера.
-    const hateP=hush ? 0 : mood==='Bad' ? 0.5 : mood==='Mid' ? 0.25 : good ? 0.12 : 0.08;
-    hater=rnd()<hateP*Math.min(1, 0.4+(careerReach()||0)/20000);
-  } else if(!who.verified){
-    // Человек сцены: его пара, его клуб, кто был в комнате, кого он упомянул.
-    let mate=null; try{ mate=ccPairMateOf(who.handle); }catch(e){}
-    if(mate && mate.handle && resulty && rnd()<(good?0.6:0.3)) add(mate.handle, mateBank, {pro:true});
-    let card=null; try{ card=ccWhoCard(who.handle); }catch(e){}
-    if(card && card.org && good && rnd()<0.4) add(ccOrgAt(card.org)||ccHandle(card.org), bankOf('ccCoOrg'), {pro:true, org:true});
-    /* Кого пост упоминает: бывшая половина под разводом говорит «спасибо за
-       всё», новая — под анонсом пары — «🐐», остальные — как сцена. Кто
-       упомянут и промолчал, в общий пул не попадает: под «playing with
-       @maloyache» сам maloyache писал «ez lobby». */
-    mentioned.forEach(h=>{
-      // Под постом о вечере отмеченный — это напарник по этому вечеру, даже
-      // если пул пар знает его за другим: «top 2 @swizzy» отвечает swizzy как
-      // половина, а не как посторонний про.
-      if(rnd()<0.5) add(h, sad ? bankOf('ccCoLeft') : (mood==='Duo'||resulty) ? mateBank : proBank, {pro:true});
-      else seenH.add(hKey(h));
-    });
-    const mine=who.ovr||ovrOf(card)||80;
-    const pros=room.length ? room : roster.filter(c=>Math.abs(ovrOf(c)-mine)<=8).map(c=>c.handle);
-    const nPro=1+Math.floor(rnd()*2);
-    for(let i=0; i<nPro && pros.length; i++) add(pros[Math.floor(rnd()*pros.length)], proBank, {pro:true});
-  } else {
-    // Пресса или клуб: отвечают те, о ком пост, и верх сцены.
-    // Тот, о ком пост, либо благодарит, либо молчит — «monster» под
-    // поздравлением с собственной победой он не пишет.
-    mentioned.forEach(h=>{ if(rnd()<0.6) add(h, bankOf('ccCoTy'), {pro:true}); else seenH.add(hKey(h)); });
-    const top=roster.slice().sort((a,b)=>ovrOf(b)-ovrOf(a)).slice(0, 60);
-    const nPro=(mood==='Table'||mood==='Hype') ? 1 : 1+Math.floor(rnd()*2);
-    for(let i=0; i<nPro && top.length; i++) add(top[Math.floor(rnd()*top.length)].handle, proBank, {pro:true});
+  // Насколько вечер удался — по первому аргументу поста, если он про место.
+  const a=n.a||[];
+  const place=+a[0], of=+a[1];
+  /* Пост без места — не про вечер, и «нормально отыграл» под ним — бред.
+     Его скрин, 23 августа: под «Контракт со спонсором: Провайдер, $771»
+     стояло пять реакций на сыгранный кап. Всё, что не результат (контракты,
+     переезды, др, свои строки), получает нейтральный банк поздравлений. */
+  const isRes=(place>0 && of>1);
+  const beat=isRes ? 1-(place-1)/(of-1) : 0.5;
+  const bank = sadKind ? L().ccCoSad
+             : !isRes ? L().ccCoNews
+             : beat>=0.95 ? L().ccCoWin : beat>=0.8 ? L().ccCoPod
+             : beat<=0.25 ? L().ccCoBad : L().ccCoMid;
+  const rows=[];
+  // Кивок профи — первым, и только под постом того самого дня.
+  if(cr.nod && cr.nod.day===n.day && cr.nod.who){
+    // Банк по сезону: в трио про дуо писать нечего — его скрин, 24 августа
+    // («опять в трио про дуо пишут»: под постом стояло «пиши если будешь
+    // искать дуо»). См. ccSquadKey — ключ с t на конце.
+    const proBank=L()[ccSquadKey('ccCoPro')]||L().ccCoPro;
+    const line=proBank[Math.floor(rnd()*proBank.length)];
+    rows.push({h:cr.nod.who, t:line, pro:true});
   }
-  // Зрители — сколько под постом принято показывать, минус те, кто уже сказал.
   const want=Math.min(CC_CO_MAX, Math.max(1, Math.min(replies, 2+Math.floor(rnd()*4))));
-  const fanHandle=()=>{
+  const seen=new Set(rows.map(r=>r.h.toLowerCase()));
+  let guard=0;
+  while(rows.length<want && guard++<40){
     // Тем же составителем, что и ладдер: зритель под постом и выдуманный из
     // лобби — одна и та же сцена, и ники у них должны быть одной породы.
     const a=CC_LAD_A[Math.floor(rnd()*CC_LAD_A.length)];
     const b=CC_LAD_B[Math.floor(rnd()*CC_LAD_B.length)];
     let h=a.charAt(0).toUpperCase()+a.slice(1)+b;
-    const r=rnd();
-    if(r<0.35) h+=String(10+Math.floor(rnd()*89));
-    else if(r<0.55) h+=['fn','_fn','ttv','yt','_'][Math.floor(rnd()*5)];
-    return h;
-  };
-  let guard=0;
-  while(rows.length<want && guard++<40) add(fanHandle(), fanBank, {});
-  if(hater) add(fanHandle(), bankOf((mood==='Bad'||mood==='Mid') ? 'ccCoHateBad' : 'ccCoHate'), {hate:true});
-  /* Автор отвечает одному из написавших — только человек сцены, и не в
-     каждом посте: под своим за игрока не пишет никто, аккаунт сцены и клуб
-     в комментариях не сидят. */
-  if(!who.you && !who.verified && who.handle && rows.length && !hush && rnd()<0.4){
-    const at=rows.findIndex(r=>r.pro && !r.org);
-    const i=at>=0 ? at : Math.floor(rnd()*rows.length);
-    const t=pick(bankOf('ccCoTy'));
-    if(t!=null) rows.splice(i+1, 0, {h:who.handle, t:t, pro:true, sub:true});
+    if(rnd()<0.45) h+=String(10+Math.floor(rnd()*89));
+    const k=String(h||'').toLowerCase();
+    if(!k || seen.has(k)) continue;
+    seen.add(k);
+    rows.push({h:h, t:bank[Math.floor(rnd()*bank.length)], pro:false});
   }
-  if(!rows.length) return onlyMine();
+  if(!rows.length) return '';
   const left=Math.max(0, replies-rows.length);
   return '<div class="x-co">'+rows.map(r=>
-      '<div class="x-co-r'+(r.pro?' pro':'')+(r.org?' org':'')+(r.hate?' hate':'')+(r.sub?' sub':'')+'">'+
-        '<b>@'+esc(ccHandle(r.h))+(r.org?'<i class="x-tick">✓</i>':'')+'</b><span>'+esc(r.t)+'</span></div>').join('')+
-    mine+
+      '<div class="x-co-r'+(r.pro?' pro':'')+'">'+
+        '<b>@'+esc(ccHandle(r.h))+'</b><span>'+esc(r.t)+'</span></div>').join('')+
     (left?'<div class="x-co-more">'+esc(L().ccCoMore(ccFollowers(left)))+'</div>':'')+
   '</div>';
 }
 /* Две кнопки под чужим постом — единственное место в ленте, где игрок отвечает
    не лайком. Стоят только под постом ссоры и только пока на него не ответили:
    отвеченный биф — это уже история, и предлагать выбрать заново нечего. */
-/* ---- ПОДПИСКИ, УВЕДОМЛЕНИЯ И ЧТО МОЖНО СДЕЛАТЬ ПОД ПОСТОМ -----------------
-
-   Его правка, 2 сентября: «уведомления добавил, чтоб видел скок лайков ему
-   ставят или если игрок подписался на него ты можешь в ответ подписаться…
-   подписки зависят от самого игрока он сам жмёт… если лфд или лфт человек, на
-   твите будет кнопка написать в лс… или воуч написать, что игроку нужно дать
-   шанс… чтоб в сошиал у игрока был выбор разный в комментариях».
-
-   Пять вещей, и все — про одно: лента до сих пор была только для чтения. Здесь
-   она становится местом, где можно ответить.
-
-   Ничего не выдумывается заново: лайки берутся из ccPostStats (те же числа, что
-   и под постом), подписчики — из охвата, который и есть аудитория карьеры, а
-   личка и поиск дуо уже умеют всё, к чему ведут кнопки. */
-function ccFollows(){ const cr=CAREER.career; return (cr.follows=cr.follows||[]); }
-function ccFollowing(h){ return ccFollows().some(x=>hKey(x)===hKey(h)); }
-function careerFollow(h){
-  if(!h || ccFollowing(h)) return;
-  ccFollows().push(String(h));
-  careerSave(); careerRenderHub('social');
-}
-function careerUnfollow(h){
-  const f=ccFollows(), at=f.findIndex(x=>hKey(x)===hKey(h));
-  if(at<0) return;
-  f.splice(at,1);
-  careerSave(); careerRenderHub('social');
-}
-/* Уведомления. Хранятся как события, а не как готовые строки: текст собирается
-   на показ, поэтому смена языка переписывает и их. Больше CC_NOTES_KEEP не
-   копится — это лента уведомлений, а не журнал. */
-const CC_NOTES_KEEP=40;
-// Каждая тысяча охвата — это новый человек, который на тебя подписался.
-const CC_NOTE_REACH_STEP=1000;
-function careerNotes(){ const cr=CAREER.career; return (cr.notes=cr.notes||[]); }
-function careerNoteAdd(kind, who, extra){
-  const cr=CAREER.career, list=careerNotes();
-  list.unshift(Object.assign({id:'t'+(cr.noteN=(cr.noteN||0)+1), kind:kind,
-                              who:who||'', day:careerToday()}, extra||{}));
-  if(list.length>CC_NOTES_KEEP) list.length=CC_NOTES_KEEP;
-}
-function careerNotesNew(){
-  const seen=CAREER.career.noteSeen||0;
-  return careerNotes().filter(t=>Number(String(t.id).slice(1))>seen).length;
-}
-/* Имя нарочно НЕ careerNotesSeen: так уже называется отметка ленты
-   прочитанной (cr.newsSeen), и вторая функция с тем же именем молча
-   переопределила бы первую — счётчик уведомлений тогда не гаснет вовсе.
-   Поймано сторожем: «seen=undefined». */
-function careerNoteMarkSeen(){
-  const list=careerNotes();
-  if(list.length) CAREER.career.noteSeen=Number(String(list[0].id).slice(1));
-}
-/* День приносит уведомления. Два повода, оба — из уже посчитанного:
-
-   ЛАЙКИ. Свежий свой пост собирает их по ccPostStats — те же числа, что стоят
-   под ним в ленте. Уведомление приходит один раз на пост, иначе один вечер
-   писал бы их каждый день.
-
-   ПОДПИСЧИКИ. Охват вырос через тысячу — значит на тебя подписался кто-то из
-   сцены. Кто именно — берётся из комнаты, а не выдумывается, и на него можно
-   подписаться в ответ. */
-/* ---- Анонсы Epic и что сцена о них думает ---------------------------------
-
-   У настоящих это самые громкие посты года: «wait but there's more :) FNCS
-   SOLO. RELOAD. NOVEMBER. Details soon.» — 514 тысяч просмотров, и следом
-   сотни ответов от игроков: «omggggg», «Plz dont be in the 4-9th november plz».
-
-   У нас пресс-аккаунт писал только результаты. Теперь он объявляет и то, что
-   будет: за две недели до крупного вечера — анонс с артом события, а двое из
-   комнаты отвечают на него цитатой. Календарь мод знает наперёд, поэтому
-   ничего не выдумывается: берётся ближайшее событие и его же арт. */
-const CC_ANNOUNCE_DAYS=14;
-function careerAnnounceTick(){
-  const cr=CAREER.career, days=careerYearDays();
-  const at=ccAddDays(careerToday(), CC_ANNOUNCE_DAYS);
-  /* Только по-настоящему крупное и НЕ ЧАЩЕ РАЗА В МЕСЯЦ.
-
-     Первая версия звала анонсом каждый вечер Мейджора и каждую сессию Reload —
-     сорок анонсов за год, то есть один в девять дней. Epic объявляет пять-шесть
-     раз в год, и именно поэтому такой пост читается как событие. Ключ — месяц,
-     а не дата: так один анонс закрывает всю серию. */
-  const on=(days.get(at)||[]).filter(e=>e && (e.kind==='major'||e.kind==='gc'));
-  if(!on.length) return;
-  const ev=on[0], key='an|'+at.slice(0,7);
-  cr.told=cr.told||{};
-  if(cr.told[key]) return;
-  cr.told[key]=1;
-  careerNews('good', 'ccNewsAnnounce', [ev.label||'', ccDayLabel(at)],
-             {art:(ev.kind==='gc'?'gc':ev.kind)});
-  // И реакция сцены — цитатой, как это и выглядит в ленте.
-  const top=(cr.news||[])[0];
-  const pool=(typeof careerDmPool==='function') ? careerDmPool() : [];
-  const say=pool.slice(0, 2);
-  say.forEach(function(w, i){
-    if(!w || !w.handle || !top) return;
-    careerNews('flat', i===0 ? 'ccPostHype' : 'ccPostDates', [ccHandle(w.handle)],
-               {q:top.id});
-  });
-}
-function careerNotesTick(){
-  /* Карьеры может не быть вовсе: его скрин 3 сентября — красная плашка
-     «Cannot read properties of null (reading 'career')» ровно на этой строке.
-     Тик зовётся из careerAdvanceBody и из ленты, а обе дороги можно застать
-     после выхода из карьеры (careerWipe оставляет CAREER=null, а перерисовка
-     ещё идёт). Молчим — уведомлять некого. */
-  const cr=CAREER && CAREER.career;
-  if(!cr) return;
-  (cr.news||[]).slice(0, 6).forEach(function(n){
-    if(!n || !n.id || n.liked===undefined && false) return;
-    if(n.noted) return;
-    const who=ccPostAuthor(n);
-    if(!who.you) return;
-    const st=ccPostStats(n, who);
-    if(!(st.likes>0)) return;
-    n.noted=1;
-    // Кто лайкнул — настоящий человек из комнаты, как в уведомлениях X
-    // («ASP wheat and 11 others liked your post»). См. ccNoteWho.
-    careerNoteAdd('like', ccNoteWho(n, 'l'), {post:n.id, n:st.likes});
-    if(st.reposts>0) careerNoteAdd('repost', ccNoteWho(n, 'r'), {post:n.id, n:st.reposts});
-  });
-  /* И ответы под своими постами — их видно по счётчику, который лента и так
-     рисует. Одно уведомление на пост, как и у лайков. */
-  (cr.news||[]).slice(0, 6).forEach(function(n){
-    if(!n || !n.id || n.notedRe) return;
-    const who=ccPostAuthor(n);
-    if(!who.you) return;
-    const st=ccPostStats(n, who);
-    if(!(st.replies>0)) return;
-    n.notedRe=1;
-    careerNoteAdd('reply', ccNoteWho(n, 'c'), {post:n.id, n:st.replies});
-  });
-  const step=Math.floor(careerReach()/CC_NOTE_REACH_STEP);
-  const was=cr.noteReach||0;
-  if(step>was){
-    cr.noteReach=step;
-    const pool=(typeof careerDmPool==='function') ? careerDmPool() : [];
-    const pick=pool.filter(w=>w && w.handle && !ccFollowing(w.handle))
-                   .sort((a,b)=>(b.ovr||0)-(a.ovr||0))[Math.min(2, Math.max(0, step%3))];
-    if(pick) careerNoteAdd('follow', pick.handle, {});
-  }
-}
-/* Что можно сделать прямо под постом.
-
-   Свободному агенту — написать в личку и поручиться за него; своему посту —
-   ответить тем, кто под ним написал. Обе кнопки ведут туда, где действие
-   по-настоящему живёт: первая открывает диалог, вторая пишет твою строку. */
-function careerPostDm(h){
-  CH_SOCIAL='dms';
-  careerDmWrite(h);
-}
-/* Воуч — публичное «дайте ему шанс». Стоит он не денег, а имени: сцена читает
-   это как твою рекомендацию, и тот, за кого поручились, отвечает теплее (та же
-   прибавка, что и у дружбы, — см. CAREER.dmBoost в careerFriendAsk). */
-function careerVouch(h){
-  const cr=CAREER.career;
-  cr.vouch=cr.vouch||{};
-  const k=hKey(h);
-  if(cr.vouch[k]) return;
-  cr.vouch[k]=careerToday();
-  careerNews('good', 'ccPostVouch', [ccHandle(h)]);
-  careerReachAdd(1);
-  careerSave();
-  careerRenderHub('social');
-}
-function ccVouched(h){ return !!((CAREER.career.vouch||{})[hKey(h)]); }
-/* ОТВЕТ ПОД ЧУЖИМ ПОСТОМ — и только под чужим.
-
-   Сначала здесь стоял выбор под СВОИМ постом: поблагодарить, пошутить,
-   промолчать. Его слово, 2 сентября: «чет нпс реплаю, за что благодарить и
-   зачем под свой твит чет писать» — и он прав. Пошёл смотреть, как отвечают
-   настоящие (@ScrollSZN, вкладка Replies, 2 сентября):
-
-     «Lfd need a fragger who can listen and wants to grind 24/7» → «V»
-     «wow I'm 21» → «Hbd goat»
-     «you have to hit the sonic thing again» → «I did»
-     «Keep sleeping on ME and us.» → «🙌🙌»
-
-   То есть: под ЧУЖИМИ постами, одним-двумя словами, и «V» — это именно воуч,
-   написанный одной буквой. Отсюда и правило: ответы предлагаются там, где на
-   них есть повод, и они короткие. Ответ записывается в сам пост и появляется
-   последней строкой в его комментариях — как и будет выглядеть в ленте. */
-const CC_RE_BY_KIND=[
-  // Ищет напарника — ему поручаются буквой «V» или желают удачи.
-  [/^ccPostLfdWant|^ccPostTrioLF|^ccPostDuoSplitBy|^ccNewsLfd/, ['v','gl']],
-  // День рождения — «hbd goat», как под настоящим.
-  [/^ccPostBday|^ccNewsBday/, ['hbd']],
-  // Взятый титул — «W» и аплодисменты.
-  [/^ccNewsCongrats|^ccPostOrgWin|^ccNewsWinner|^ccPostWon|^ccPostPodium/, ['w','clap']]
-];
-function ccReplyOpts(n){
-  const k=String((n&&n.k)||'');
-  for(let i=0;i<CC_RE_BY_KIND.length;i++)
-    if(CC_RE_BY_KIND[i][0].test(k)) return CC_RE_BY_KIND[i][1];
-  return null;
-}
-function careerReply(id, re){
-  const n=(CAREER.career.news||[]).find(x=>x.id===id);
-  if(!n || n.re) return;
-  const opts=ccReplyOpts(n);
-  if(!opts || opts.indexOf(re)<0) return;
-  n.re=re;
-  /* «V» — это и есть воуч: та же запись и та же прибавка, только сказанная так,
-     как её говорят на самом деле. Остальные ответы стоят строчку внимания и
-     ничего больше: сцена их читает, но карьеру они не двигают. */
-  if(re==='v'){
-    const who=ccPostAuthor(n);
-    if(who && who.handle) careerVouch(who.handle);
-    return;                                   // careerVouch сам сохранит и перерисует
-  }
-  careerReachAdd(1);
-  careerSave();
-  careerRenderHub('social');
-}
-/* ---- Репост, цитата и свой ответ словами ----------------------------------
-
-   Три действия, которых в ленте не было, а в настоящей они и есть лента.
-
-   РЕПОСТ — своя запись без текста, которая показывает чужую. ЦИТАТА — она же,
-   но со своей строкой сверху: так отвечают на анонсы («omggggg» под «FNCS SOLO.
-   RELOAD. NOVEMBER»). ОТВЕТ — обычный комментарий под чужим постом, сколько
-   угодно раз и любыми словами, а не пятью заготовками.
-
-   Цитата пишется через тот же композер, что и свой пост: нажатие запоминает,
-   что цитируется, и следующая отправленная строка уезжает с ссылкой. */
-let CC_QUOTE=null;
-function careerRepost(id){
-  const src=(CAREER.career.news||[]).find(x=>x.id===id);
-  if(!src || src.reposted) return;
-  src.reposted=1;
-  careerNews('flat', null, null, {q:id});
-  careerReachAdd(1);
-  careerSave();
-  careerRenderHub('social');
-}
-function careerQuote(id){
-  CC_QUOTE=id;
-  CH_SOCIAL='feed';
-  careerRenderHub('social');
-  const box=document.getElementById('ccPostBox');
-  if(box) box.focus();
-}
-function careerQuoteCancel(){ CC_QUOTE=null; careerRenderHub('social'); }
-/* Ответ словами. Живёт в самой записи списком, потому что это ответы на неё;
-   пятнадцать штук под одним постом — уже разговор, дальше не копится. */
-const CC_REPLY_MAX=15;
-function careerReplyWrite(id){
-  const box=document.getElementById('ccReplyBox'+id);
-  if(!box) return;
-  const text=String(box.value||'').replace(/\s+/g,' ').trim().slice(0, CC_POST_MAX);
-  if(!text) return;
-  const n=(CAREER.career.news||[]).find(x=>x.id===id);
-  if(!n) return;
-  n.res=(n.res||[]).concat([{t:text, day:careerToday()}]);
-  if(n.res.length>CC_REPLY_MAX) n.res.length=CC_REPLY_MAX;
-  careerSave();
-  careerRenderHub('social');
-}
-let CC_REPLY_OPEN=null;
-function careerReplyOpen(id){ CC_REPLY_OPEN=(CC_REPLY_OPEN===id?null:id); careerRenderHub('social'); }
-function ccPostActsHTML(n, who, st){
-  if(who.you){
-    // Под своим постом отвечать некому, но свои ответы под ним видны.
-    return '';
-  }
-  const bits=[];
-  const id=esc(n.id||'');
-  bits.push(`<button class="x-act" onclick="careerReplyOpen(\'${id}\')">${L().ccReplyBtn}</button>`);
-  bits.push(n.reposted
-    ? `<span class="x-act-done">${L().ccRepostDone}</span>`
-    : `<button class="x-act" onclick="careerRepost(\'${id}\')">${L().ccRepostBtn}</button>`);
-  bits.push(`<button class="x-act" onclick="careerQuote(\'${id}\')">${L().ccQuoteBtn}</button>`);
-  // Под постом набора в кастомку — «попроситься», пока не попросился.
-  if(n.k==='ccPostCustomsOpen') bits.push(n.asked
-    ? `<span class="x-act-done">${L().ccAskDone}</span>`
-    : `<button class="x-act" onclick="careerCustomAsk(\'${id}\')">${L().ccAskBtn}</button>`);
-  /* Свободный агент — тот, у кого открыта анкета: ему и пишут. Кнопка стоит
-     под его же объявлением, где решение и принимается. */
-  if(who.handle && typeof ccAdOf==='function' && ccAdOf(who.handle))
-    bits.push(`<button class="x-act" onclick="careerPostDm('${
-      esc(who.handle).replace(/'/g,"\\'")}')">${L().ccPostDmBtn}</button>`);
-  // И короткий ответ, если под этим постом есть что сказать. См. careerReply.
-  const opts=ccReplyOpts(n);
-  if(opts){
-    if(n.re) bits.push(`<span class="x-act-done">${L().ccReDone(L()['ccRe'+n.re])}</span>`);
-    else opts.forEach(a=>bits.push(`<button class="x-act x-act-re" onclick="careerReply('${
-      esc(n.id||'')}','${a}')"${a==='v'?` title="${esc(L().ccPostVouchWhat)}"`:''}>${
-      L()['ccRe'+a]}</button>`));
-  }
-  // Поле ответа открывается по кнопке и стоит прямо под ней.
-  const box=(CC_REPLY_OPEN===n.id)
-    ? `<div class="x-replybox">
-        <textarea id="ccReplyBox${esc(n.id||'')}" rows="2" maxlength="${CC_POST_MAX}"
-          placeholder="${esc(L().ccReplyPh)}"></textarea>
-        <button class="ch-sign" onclick="careerReplyWrite('${esc(n.id||'')}')">${L().ccReplySend}</button>
-      </div>`
-    : '';
-  return bits.length ? `<div class="x-acts2">${bits.join('')}</div>`+box : box;
-}
 function ccBeefActsHTML(n){
   if(!n || !n.beef) return '';
   if(n.beefDone) return `<div class="x-beef-done">${
@@ -66490,21 +61763,10 @@ function ccPostHTML(n){
   return `<article class="x-post x-post-${n.kind}">`+
       `${ccAvatar(who)}`+
       `<div class="x-post-in">`+
-        // По нику можно нажать и попасть в его профиль — так ходят по X.
-        `<header>${who.you
-          ? `<b>${esc(who.name)}</b>`
-          : `<b class="x-who-link" onclick="careerWho('${esc(who.name).replace(/'/g,"\\'")}')">${
-              esc(who.name)}</b>`}${who.verified?'<i class="x-tick">✓</i>':''}`+
-        // Статус — на самом человеке, как в настоящей ленте: «F/A», «LFT» или
-        // клуб. См. ccWhoStatus.
-        `${who.you?'':ccWhoChipHTML(who.handle)}`+
+        `<header><b>${esc(who.name)}</b>${who.verified?'<i class="x-tick">✓</i>':''}`+
         `<span>@${esc(who.handle)}</span><span class="x-dot">·</span><span>${stamp}</span></header>`+
         `<p>${ccMentions(ccText(n))}</p>`+
         ccShotHTML(n.tbl)+
-        ccDropMapHTML(n)+
-        ccArtHTML(n)+
-        ccQuoteHTML(n)+
-        ccCardShotHTML(n.card)+
         `<div class="x-acts"><span>${CC_X_REPLY}<b>${ccFollowers(st.replies)}</b></span>`+
         `<span>${CC_X_REPOST}<b>${ccFollowers(st.reposts)}</b></span>`+
         `<button class="x-like${n.liked?' on':''}" onclick="careerPostLike('${n.id||''}')"`+
@@ -66512,7 +61774,6 @@ function ccPostHTML(n){
         `${CC_X_LIKE}<b>${ccFollowers(st.likes+(n.liked?1:0))}</b></button>`+
         `<span>${CC_X_VIEWS}<b>${ccFollowers(st.views)}</b></span></div>`+
         ccBeefActsHTML(n)+
-        ccPostActsHTML(n, who, st)+
         ccPostComments(n, who, st)+
       `</div></article>`;
 }
@@ -66540,9 +61801,7 @@ function careerPostWrite(){
   const text=String(box.value||'').replace(/\s+/g,' ').trim().slice(0, CC_POST_MAX);
   if(!text) return;
   box.value='';
-  // Если строка пишется как цитата — к ней едет ссылка на цитируемый пост.
-  careerNews('flat', null, null, {text:text, q:CC_QUOTE||undefined});
-  CC_QUOTE=null;
+  careerNews('flat', null, null, {text:text});
   careerSave();
   careerRenderHub(CH_TAB);
 }
@@ -66576,10 +61835,7 @@ function careerPostLike(id){
    notification about themselves is how a notification stops meaning anything. */
 function ccNewsNum(id){ const n=Number(String(id||'').slice(1)); return n>0?n:0; }
 function careerNewsNew(){
-  // Та же дорога, что у ccPressWorthy: без карьеры непрочитанного нет.
-  const cr=CAREER && CAREER.career;
-  if(!cr) return [];
-  const seen=cr.newsSeen||0;
+  const cr=CAREER.career, seen=cr.newsSeen||0;
   return (cr.news||[]).filter(e=>ccNewsNum(e.id)>seen && !ccPostAuthor(e).you);
 }
 function careerNotesN(){ return careerDmUnread()+careerNewsNew().length; }
@@ -66648,7 +61904,7 @@ function careerNotesHTML(){
   // else posted.
   picked.slice(0, CC_NOTES_ROWS-1).forEach(t=>{
     const last=t.msgs[t.msgs.length-1];
-    rows.push(`<button class="cc-note cc-note-dm cc-note-${kindKey(t)}" onclick="careerOpenNote(\'${t.id}\')">
+    rows.push(`<button class="cc-note cc-note-dm cc-note-${kindKey(t)}" onclick="careerOpenNote('${t.id}')">
       <i>${kindOf(t)}</i><b>${esc(ccDmName(t.who))}</b>
       <span>${esc(last?ccText(last):'')}</span></button>`);
   });
@@ -66690,7 +61946,7 @@ function careerNoteBarHTML(){
   const n={clubs:0, duos:0, fans:0, haters:0};
   dms.forEach(t=>{ n[pile(t)]++; });
   const posts=careerNewsNew().length;
-  const btn=k=>`<button class="cc-nb cc-nb-${k}${n[k]?' on':''}" onclick="careerOpenPile(\'${k}\')"
+  const btn=k=>`<button class="cc-nb cc-nb-${k}${n[k]?' on':''}" onclick="careerOpenPile('${k}')"
       title="${esc(L()['dmSec'+k])}" aria-label="${esc(L()['dmSec'+k])}">
       ${CC_NOTE_ICONS[k]}${n[k]?`<i>${n[k]>99?'99+':n[k]}</i>`:''}</button>`;
   return `<div class="cc-notebar">
@@ -67001,7 +62257,7 @@ function ccDmLadderPool(rnd, mine){
   const offs=over ? CC_DM_LADDER_UNDER : CC_DM_LADDER_OFF;
   const out=offs.slice(0, CAREER_DM_POOL).map(off=>{
     const ovr=clamp(Math.round(band+off+(rnd()*2-1)), 35, ceil);
-    const card=careerLadderPlayer(rnd, ovr, taken, null, ccSquadRoleWanted(), null, div>=2);
+    const card=careerLadderPlayer(rnd, ovr, taken, null, ccSquadRoleWanted());
     return {handle:card.handle, ovr, nat:card.nat, role:attrsFor(card).roleKey,
             roster:false, card, club:null, pay:0};
   });
@@ -67333,8 +62589,7 @@ function careerFanDm(place, of, passed){
   const chance=clamp(careerReach()/40000, 0, 0.85)*(good ? 1 : 0.34);
   if(rnd()>=chance) return null;
   const taken=new Set(careerDms().map(t=>hKey(t.who.handle)));
-  // Фан — зритель, а зрители пишут строчными без цифр (то же правило, что в чате).
-  const c=careerLadderPlayer(rnd, 40+Math.floor(rnd()*40), taken, null, null, null, true);
+  const c=careerLadderPlayer(rnd, 40+Math.floor(rnd()*40), taken);
   const who={handle:c.handle, ovr:null, nat:c.nat, role:null, roster:false, fan:true};
   const t=careerDmThread(who);
   const sub=ccFanSubject(who.handle, place, of, beat, passed);
@@ -69244,7 +64499,7 @@ function careerSocialHTML(){
     // inside it — they are siblings under a wrapper, and the cross stops the
     // click before it reaches the row underneath.
     return `<div class="dm-line">
-      <button class="dm-item${t===open?' on':''}${t.unread?' new':''}" onclick="careerDmOpen(\'${t.id}\')">
+      <button class="dm-item${t===open?' on':''}${t.unread?' new':''}" onclick="careerDmOpen('${t.id}')">
       ${avatar(t.who,34)}
       <span class="dm-item-in">
         <b>${esc(ccDmName(t.who))}${(t.who.agent||t.who.viaAgent)?`<em class="dm-tag-agent">${L().ccAgentTag}</em>`
@@ -69291,7 +64546,7 @@ function careerSocialHTML(){
     [['all', threads]].concat(CC_DM_KINDS.map(k=>[k, groups[k]]))
       .filter(([k, list])=>k==='all' || list.length || CC_DM_ALWAYS[k])
       .map(([k, list])=>`<button class="dm-tab${(CH_DMKIND||'all')===k?' on':''}"
-        onclick="careerDmKind(\'${k}\')">${k==='all' ? L().dmSecall : L()['dmSec'+k]}
+        onclick="careerDmKind('${k}')">${k==='all' ? L().dmSecall : L()['dmSec'+k]}
         <em>${list.length}</em>${list.some(t=>t.unread)?'<i></i>':''}</button>`).join('')+
     `</div>`;
 
@@ -69309,7 +64564,7 @@ function careerSocialHTML(){
              ccDuoFormLabel(open.who.handle),
              open.who.club ? esc(open.who.club) : '',
              ccPayLabel(open.who.pay)].filter(Boolean).join(' · ')}</span></div>
-      <button class="ch-decline dm-head-block" onclick="careerDmBlock(\'${open.id}\')"
+      <button class="ch-decline dm-head-block" onclick="careerDmBlock('${open.id}')"
         title="${esc(L().dmBlockWhat)}">${L().dmBlock}</button>
     </div>
     <div class="dm-msgs">${open.msgs.map(m=>
@@ -69324,7 +64579,6 @@ function careerSocialHTML(){
           <span class="dm-offer-club">${clubLogoHTML(open.offer.name || (open.who && open.who.org) || '', true)}${
             esc(open.offer.name || (open.who && open.who.org) || '')}</span>
           <span>${ccMoney(open.offer.salary)}${L().ccPerSeason}</span>
-          <span>${L().ccOrgBonusRow}: ${ccMoney(careerOrgBonusFor(open.offer.salary))}</span>
           <span>${open.offer.academy?L().ccAcademy:L().ccMainRoster}</span>
           ${open.offer.duo ? `<span class="ch-perk">${careerSquadSize()===3?L().ccOfferDuoT:L().ccOfferDuo}</span>` : ''}
           ${open.offer.perk ? `<span class="ch-perk">${L()['ccPerk'+open.offer.perk]}</span>` : ''}
@@ -69335,36 +64589,26 @@ function careerSocialHTML(){
           : (open.asks||0)>=CC_ASK_MAX
           ? `<div class="dm-asked">${L().ccAskedAlready}</div>`
           : `<div class="dm-ask">
-              <button class="cc-back" onclick="careerAskMore(\'${open.id}\')"
+              <button class="cc-back" onclick="careerAskMore('${open.id}')"
                 title="${esc(L().ccAskOdds(careerAskOdds(open.offer, open.asks||0)))}">${L().ccAskMore}</button>
-              ${open.offer.perk ? '' : `<button class="cc-back" onclick="careerAskPerk(\'${open.id}\')"
+              ${open.offer.perk ? '' : `<button class="cc-back" onclick="careerAskPerk('${open.id}')"
                 title="${esc(L().ccAskOdds(careerAskOdds(open.offer, open.asks||0)))}">${L().ccAskPerk}</button>`}
             </div>`}
-        <button class="ch-sign" onclick="careerSignFromDm(\'${open.id}\')">${L().ccSign}</button>
+        <button class="ch-sign" onclick="careerSignFromDm('${open.id}')">${L().ccSign}</button>
       </div>`
       : open.who.hater ? `<div class="dm-foot dm-foot-hate">
           <span>${open.answered ? L().dmAnswered : L().dmHateFoot}</span>
           <div class="dm-ask">
-            ${open.answered ? '' : `<button class="cc-back" onclick="careerHaterReply(\'${open.id}\')"
+            ${open.answered ? '' : `<button class="cc-back" onclick="careerHaterReply('${open.id}')"
               title="${esc(L().dmClapbackWhat)}">${L().dmClapbackBtn}</button>`}
           </div>
         </div>`
       : open.who.fan ? `<div class="dm-foot dm-foot-hate">
           <span>${open.thanked ? L().dmThanked : open.q ? L().dmFanFootQ : L().dmFanFoot}</span>
-          ${open.thanked ? '' : `<button class="cc-back" onclick="careerFanThank(\'${open.id}\')"
+          ${open.thanked ? '' : `<button class="cc-back" onclick="careerFanThank('${open.id}')"
             title="${esc(open.q ? L().dmAnswerWhat : L().dmThanksWhat)}">${
             open.q ? L().dmAnswerBtn : L().dmThanksBtn}</button>`}
         </div>`
-      /* Разговор с напарником: четыре темы, каждая из чего-то записанного.
-         Его просьба, 3 сентября. Настрой двигает careerTalkMove, дня не
-         тратит — см. careerMateTalk. */
-      : (careerPartnerCard() && hKey(open.who.handle)===hKey(careerPartnerCard().handle))
-        ? `<div class="dm-foot dm-foot-mate">
-            <span>${esc(L().dmMateFoot)}</span>
-            <div class="dm-ask">${careerMateTopics().map(k=>
-              `<button class="cc-back" onclick="careerMateTalk(\'${k}\')"
-                 title="${esc(L()['dmMateWhat'+k])}">${esc(L()['dmMateBtn'+k])}</button>`).join('')}</div>
-          </div>`
       /* Действия менеджера — только в диалоге ТОГО менеджера, который на тебя
          работает. Раньше здесь стояло просто «есть менеджер?», и чужое письмо
          показывало терминал твоего: его проценты, его «попросить найти клуб» и
@@ -69386,19 +64630,19 @@ function careerSocialHTML(){
                 ? `<div class="dm-asked">${esc(careerPitchClub()||'')} — ${L().ccPitchOn(ccDayLabel(CAREER.pitch.until))}</div>`
                 : (careerPitchClubs().length
                     ? `<button class="cc-back dm-pitch-open" title="${esc(L().ccPitchWhat)}"
-                        onclick="ccClubPickOpen(\'${open.id}\')">${L().ccPitchBtn}</button>`
+                        onclick="ccClubPickOpen('${open.id}')">${L().ccPitchBtn}</button>`
                     : '')}
-              <button class="ch-decline" onclick="careerEndAgentFromDm(\'${open.id}\')">${L().ccAgentEnd}</button>
+              <button class="ch-decline" onclick="careerEndAgentFromDm('${open.id}')">${L().ccAgentEnd}</button>
             </div>`
           : `<div class="dm-foot dm-offer">
               <div class="dm-offer-terms"><span>${esc(L().ccAgentTerms(
                 Math.round(ccAgentTermsOf(open.who).cut*100), ccAgentTermsOf(open.who).reach))}</span></div>
-              <button class="ch-sign" onclick="careerSignAgentFromDm(\'${open.id}\')">${L().ccAgentSign}</button>
+              <button class="ch-sign" onclick="careerSignAgentFromDm('${open.id}')">${L().ccAgentSign}</button>
             </div>`)
       : open.sponsor ? `<div class="dm-foot dm-offer">
           <div class="dm-offer-terms"><span>${ccMoney(open.sponsor.pay)}${L().ccPerStream}</span>
             <span>${L().ccSponsorSlot}</span></div>
-          <button class="ch-sign" onclick="careerSignSponsorFromDm(\'${open.id}\')">${L().ccSign}</button>
+          <button class="ch-sign" onclick="careerSignSponsorFromDm('${open.id}')">${L().ccSign}</button>
         </div>`
       : open.state==='leaving' ? (()=>{
           // The seat used to empty between one cup and the next. This is the
@@ -69422,9 +64666,7 @@ function careerSocialHTML(){
          organisation, so a club whose offer expired fell through into the duo
          conversation, and the last line of it offers to ask them to be your
          partner. A club is not a duo and never was. */
-      /* Кроме ветки Про-Ама: её пишет клуб-хозяин площадки, но на столе у него
-         не контракт, а приглашение — свои кнопки ниже. */
-      : (open.who.org || open.who.brand) && !open.proam
+      : (open.who.org || open.who.brand)
         ? `<div class="dm-foot dm-foot-done">${L().dmOfferGone}</div>`
       : open.state==='declined' ? (()=>{
           // A no is a starting position, and what is left to say is on the
@@ -69437,26 +64679,6 @@ function careerSocialHTML(){
               onclick="careerDmArgue('${open.id}','${a}')"
               title="${esc(L()['dmArg'+a+'What'])}">${L()['dmArg'+a+'Btn']}</button>`).join('')}</div>
           </div>`; })()
-      : open.proam
-        /* Ветка Про-Ама живёт по своим кнопкам: сначала «поеду / не в этот
-           раз», потом выбор напарника из тех, кто едет. Его правка 4 сентября.
-           Список закрывается, как только человек выбран, — менять уже нельзя,
-           это ответ организатору, а не настройка. */
-        ? (()=>{ const inv=careerProAmInv();
-            if(!inv || inv.state==='no') return `<div class="dm-foot dm-foot-done">${L().dmProAmDone}</div>`;
-            if(inv.state==='sent') return `<div class="dm-foot"><div class="dm-ask">
-              <button class="ch-sign" onclick="careerProAmYes('${open.id}')">${L().dmProAmGo}</button>
-              <button class="cc-back" onclick="careerProAmNo('${open.id}')">${L().dmProAmSkip}</button>
-            </div></div>`;
-            if(inv.mate) return `<div class="dm-foot dm-foot-done">${
-              esc(L().dmProAmWith(inv.mate))}</div>`;
-            return `<div class="dm-foot">
-              <div class="dm-asked">${L().dmProAmChoose}</div>
-              <div class="dm-ask dm-ask-wide">${careerProAmPickList().map(n=>{
-                const f=ccProAmFollowers(n);
-                return `<button class="cc-back" onclick="careerProAmPick('${open.id}','${esc(n)}')">
-                  ${esc(n)}${f?`<i>${ccNum(f)}</i>`:''}</button>`; }).join('')}</div>
-            </div>`; })()
       : open.msgs.some(m=>m.from==='them') &&
         (open.state==='offer' || careerDmWouldAccept(open.who))
         ? (()=>{ const held=careerPartnerCard() ? careerSlotHeld() : null;
@@ -69472,14 +64694,14 @@ function careerSocialHTML(){
             if(open.roleFix) return `<div class="dm-foot">
               <div class="dm-asked">${L().dmRoleNeed(L()[open.roleFix]||'')}</div>
               <div class="dm-ask">
-                <button class="cc-back" onclick="careerDmRoleTheirs(\'${open.id}\')">${
+                <button class="cc-back" onclick="careerDmRoleTheirs('${open.id}')">${
                   L().dmRoleAskHim}</button>
-                <button class="cc-back" onclick="careerDmRoleMine(\'${open.id}\')">${
+                <button class="cc-back" onclick="careerDmRoleMine('${open.id}')">${
                   L().dmRoleTakeIt(L()[open.roleFix]||'')}</button>
               </div></div>`;
             return `<div class="dm-foot">${held ? `<div class="dm-asked">${
               L().ccSlotLoseHint(careerPartnerCard().handle, held.what)}</div>` : ''}
-              <button class="ch-sign" onclick="careerDmAcceptAsk(\'${open.id}\')">${ccSay('dmTakeIt')}</button></div>`; })()
+              <button class="ch-sign" onclick="careerDmAcceptAsk('${open.id}')">${ccSay('dmTakeIt')}</button></div>`; })()
         : `<div class="dm-foot"><button class="ch-sign" onclick="careerDmWrite('${esc(open.who.handle)}')">${ccSay('dmAskBtn')}</button></div>`}`
     : `<div class="ch-empty">${L().dmPickThread}</div>`;
 
@@ -69570,32 +64792,17 @@ function careerSocialHTML(){
   const me=CAREER.player;
   const meHandle=ccHandle(me.nick);
   const rail=(id, label, icon, dot)=>
-    `<button class="x-nav${view===id?' on':''}" onclick="careerSocialTab(\'${id}\')">`+
+    `<button class="x-nav${view===id?' on':''}" onclick="careerSocialTab('${id}')">`+
     `${icon}<span>${label}</span>${dot?'<i></i>':''}</button>`;
 
   // Who is worth writing to, in the shape X puts beside a feed. The list is the
   // one the inbox already draws from, so nobody appears here that you could not
   // actually message.
-  /* Подписка — решение игрока, а не режима: его правка, 2 сентября («подписки
-     зависят от самого игрока, он сам жмёт»). Кнопка здесь и есть это решение;
-     написать человеку можно из его же поста и из поиска дуо. */
-  const suggest=pool.slice(0,4).map(w=>{
-    const h=esc(w.handle).replace(/'/g,"\\'");
-    return `<div class="x-sug">${avatar(w,32)}
+  const suggest=pool.slice(0,4).map(w=>
+    `<div class="x-sug">${avatar(w,32)}
       <span class="x-sug-in"><b>${esc(w.handle)}</b><span>${L()[w.role]||''} · ${w.ovr}</span></span>
-      ${ccFollowing(w.handle)
-        ? `<button class="x-follow on" onclick="careerUnfollow(\'${h}\')">${L().ccFollowingBtn}</button>`
-        : `<button class="x-follow" onclick="careerFollow(\'${h}\')">${L().ccFollowBtn}</button>`}
-    </div>`;}).join('');
-  /* Уведомления — третий экран рельса. Лайки на своих постах и те, кто
-     подписался: и то и другое приходит само, и на второе можно ответить
-     подпиской. См. careerNotesTick. */
-  const notes=careerNotes();
-  // Как в X: кто и сколько ещё, дата, кусок самого поста и его картинка.
-  // См. careerNoteRowHTML (его скрин уведомлений X, 3 сентября).
-  const notesHTML=`<div class="ch-tile x-notes"><h4>${L().ccNotesTab}</h4>${
-    notes.length ? notes.map(careerNoteRowHTML).join('')
-                 : `<div class="ch-empty">${L().ccNotesEmpty}</div>`}</div>`;
+      <button class="x-follow" onclick="careerDmWrite('${esc(w.handle)}')">${ccSay('dmAskBtn')}</button>
+    </div>`).join('');
 
   // A profile is an account, not a stat sheet: who you are, how many people read
   // you, and everything you have posted. The counts sit under the name the way
@@ -69617,15 +64824,9 @@ function careerSocialHTML(){
     </div>
     <div class="x-counts">
       <span><b>${ccFollowers(careerReach())}</b>${L().xFollowers}</span>
-      <!-- Подписки — это те, на кого ты подписался сам. Здесь стояло число
-           диалогов: пока подписок в моде не было, счётчик набивали перепиской.
-           Его правка, 3 сентября: «когда фоловишься, не прибавляется к фоловкам
-           человек». Теперь считает ровно тех, кого добавил кнопкой. -->
-      <span><b>${ccFollows().length}</b>${L().xFollowing}</span>
+      <span><b>${threads.length}</b>${L().xFollowing}</span>
       <span><b>${mine.length}</b>${L().xPosts}</span>
       <span><b>${ccMoney(CAREER.career.earnings||0)}</b>${L().chEarnings}</span>
-      ${ccRelMySeats(CAREER.career).length
-        ? `<span class="x-lanq"><b>✓</b>${esc(L().ccLanQual(ccLanCity('rc', CAREER.career.season)))}</span>` : ''}
     </div>
     <div class="x-timeline">${mine.length
       ? mine.map(n=>ccPostHTML(n)).join('')
@@ -69657,13 +64858,10 @@ function careerSocialHTML(){
      их считает ccPostStats по охвату, и охват от строки не растёт: аудиторию
      приносят результаты, а не то, что о них написали. */
   const own=`<div class="ch-tile x-compose x-compose-own">
-    ${CC_QUOTE ? `<div class="x-quoting">${L().ccQuoting}
-        <button class="x-act" onclick="careerQuoteCancel()">${L().ccQuoteDrop}</button></div>` : ''}
     <div class="x-compose-in">${meAv('')}
       <textarea class="x-compose-box" id="ccPostBox" rows="2" maxlength="${CC_POST_MAX}"
-        placeholder="${esc(CC_QUOTE ? L().ccQuotePh : L().ccPostWhat)}" oninput="ccPostLeft()"></textarea>
+        placeholder="${esc(L().ccPostWhat)}" oninput="ccPostLeft()"></textarea>
     </div>
-    ${CC_QUOTE ? ccQuoteHTML({q:CC_QUOTE}) : ''}
     <div class="x-compose-foot">
       <span class="x-compose-left" id="ccPostLeft">${CC_POST_MAX}</span>
       <button class="ch-sign" onclick="careerPostWrite()">${L().ccPostBtn}</button>
@@ -69673,7 +64871,6 @@ function careerSocialHTML(){
   return `<div class="x-wrap">
     <nav class="x-rail">
       ${rail('feed', L().ccFeedTab, CC_X_HOME)}
-      ${rail('notes', L().ccNotesTab, CC_X_LIKE, careerNotesNew()>0)}
       ${rail('dms', L().dmTabTitle, CC_X_CHAT, unread)}
       ${rail('me', L().xProfile, CC_X_USER)}
       <div class="x-me">
@@ -69683,21 +64880,8 @@ function careerSocialHTML(){
     </nav>
     <main class="x-main">
       ${view==='dms' ? inbox
-        : view==='notes' ? notesHTML
         : view==='me' ? profile
-        : view==='who' ? careerWhoHTML(CH_WHO)
-        /* У ленты есть шапка — как «Home» над таймлайном у X, и в ней же
-           переключатель «всё / подписки»: подписка должна что-то менять, иначе
-           кнопка ничего не значит. Его пункт 2, 3 сентября. */
-        : own+lfdBox+`<div class="ch-tile ch-feedfull">
-            <h4>${L().ccFeedTab}</h4>
-            <div class="nh-tabs">
-              <button class="nh-tab${CH_FEED==='all'?' on':''}" onclick="careerFeedMode(\'all\')">${
-                L().ccFeedAll}</button>
-              <button class="nh-tab${CH_FEED==='subs'?' on':''}" onclick="careerFeedMode(\'subs\')">${
-                L().ccFeedSubs}</button>
-            </div>
-            ${careerFeedHTML()}</div>`}
+        : own+lfdBox+`<div class="ch-tile ch-feedfull">${careerNewsHTML(CAREER_NEWS_KEEP)}</div>`}
     </main>
     <aside class="x-side">
       ${careerTrophiesHTML()}
@@ -69764,12 +64948,7 @@ function careerFriend1v1(handle){
   careerRenderHub('social');
 }
 let CH_SOCIAL=null, CH_DMKIND=null;
-function careerSocialTab(t){
-  CH_SOCIAL=t;
-  // Открытые уведомления считаются прочитанными — как и лента.
-  if(t==='notes'){ careerNoteMarkSeen(); careerSave(); }
-  careerRenderHub('social');
-}
+function careerSocialTab(t){ CH_SOCIAL=t; careerRenderHub('social'); }
 /* Which inbox is open. Opening one does not open a thread in it: the list is
    what was asked for, and picking off it is the next decision. The thread on
    screen stays if it belongs to the pile, so switching to CLUBS while reading a
@@ -69888,45 +65067,6 @@ function ccDuoFindKey(e){ if(e.key==='Escape') ccDuoFindClose(); }
 function ccDuoFindQ(v){ CC_DUO_Q=String(v||''); ccDuoFindRender(true); }
 // Read the seat before closing, because closing is what clears it.
 function ccDuoFindWrite(handle){ const seat=CC_DUO_SEAT; ccDuoFindClose(); careerDmWrite(handle, seat); }
-/* ---- Объявление свободного агента ------------------------------------------
-
-   В настоящей ленте «ищу дуо» — это анкета с требованиями, а не крик в пустоту.
-   Снято с живых постов 2 сентября 2026: «Lfd div3 n1 igl min 1k3pr with recent
-   perf, only speak english or french», «lfd eval cup (maybe) as fragg can
-   lead». То есть: роль, дивизион, минимальный PR — и по этим условиям человека
-   либо зовут, либо нет.
-
-   Здесь то же самое. Объявление рождается в день развода (careerSceneTurn),
-   живёт, пока человек один, и видно в двух местах: постом в ленте с карточкой
-   под ним и строкой в поиске дуо, где кнопка «написать» гаснет, если игрок не
-   проходит по PR. Требования — не из воздуха: роль просится противоположная
-   своей, дивизион свой, порог PR — две трети собственного. */
-const CC_AD_PR_SHARE=0.66;
-function ccAdMake(card){
-  if(!card || !card.handle) return null;
-  const ads=CAREER.ads=CAREER.ads||{}, k=hKey(card.handle);
-  const mine=ccPrCardOf(card.handle);
-  const role=attrsFor(card).roleKey;
-  const ad={day:careerToday(), div:CAREER.career.division, handle:card.handle,
-            // Ищут того, кем сам не являешься: фраггер ищет игрока, игрок — фраггера.
-            want: role==='roleFRG' ? 'roleIGL' : 'roleFRG',
-            pr: mine ? Math.round(mine.pr*CC_AD_PR_SHARE) : 0};
-  ads[k]=ad;
-  return ad;
-}
-// Объявление считается открытым, пока человек один: собрал пару — снимается.
-// Кто с кем сегодня, знает careerPools — см. ccPairMateOf.
-function ccAdOf(handle){
-  const ad=(CAREER.ads||{})[hKey(handle)];
-  if(!ad) return null;
-  return ccPairMateOf(handle) ? null : ad;
-}
-// Проходит ли игрок по объявлению. PR своей строки — тот же, что видит доска.
-function ccAdFits(ad){
-  if(!ad || !ad.pr) return true;
-  const mine=CAREER.player && ccPrCardOf(CAREER.player.handle);
-  return (mine ? mine.pr : 0) >= ad.pr;
-}
 function ccDuoFindRender(keepFocus){
   const q=CC_DUO_Q.trim().toLowerCase();
   const all=careerDuoSearchPool();
@@ -69934,27 +65074,17 @@ function ccDuoFindRender(keepFocus){
   const rows=list.map(w=>{
     const said=careerDmFind(w.handle);
     const wrote=!!(said && said.msgs && said.msgs.some(m=>m.from==='you'));
-    /* С кем он играет СЕГОДНЯ, а не с кем начал год: список стоял на
-       ccSceneMateOf, то есть на ростере Epic, и человек, развёдшийся неделю
-       назад, всё ещё читался занятым — писать ему было незачем. См.
-       ccPairMateOf. */
-    const mate=ccPairMateOf(w.handle);
+    // The scene's answer, so a row never reads "duo with you" said about you.
+    const mate=ccSceneMateOf(w.card||{handle:w.handle});
     const under=[L()[w.role]||'', mate ? ccSay("ccDuoWith", esc(mate.handle||"")) : ccSay("ccDuoFree"),
                  w.club ? esc(w.club) : ''].filter(Boolean).join(' · ');
-    /* Объявление человека — второй строкой, его же словами: кого ищет и с
-       каким PR. Не проходишь — кнопка гаснет и говорит почему; это ответ,
-       который в жизни дают до разговора, а не после. */
-    const ad=mate ? null : ccAdOf(w.handle);
-    const fits=!ad || ccAdFits(ad);
     return `<div class="cc-buy">
       ${(function(){ const u=w.card ? photoURL(w.card) : null;
           return u ? `<img class="cc-buy-img cc-buy-face" src="${u}" alt="" loading="lazy" onerror="this.remove()">`
                    : `<span class="cc-buy-img cc-buy-face cc-buy-mono">${esc(String(w.handle||'?').slice(0,2).toUpperCase())}</span>`;
         })()}
-      <div class="cc-buy-in"><b>${esc(w.handle)} <i>${w.ovr}</i></b><i>${under}</i>${
-        ad ? `<i class="cc-buy-ad${fits?'':' no'}">${esc(L().ccAdWant(L()[ad.want]||'', ad.div, ad.pr))}</i>` : ''}</div>
+      <div class="cc-buy-in"><b>${esc(w.handle)} <i>${w.ovr}</i></b><i>${under}</i></div>
       ${wrote ? `<span class="cc-owned">${L().ccDuoYouWrote}</span>`
-              : !fits ? `<span class="cc-owned cc-ad-no">${L().ccAdNoFit(ad.pr)}</span>`
               : `<button class="ch-sign" onclick="ccDuoFindWrite('${esc(w.handle).replace(/'/g,"\\'")}')">${L().ccDuoWrite}</button>`}
       ${(CAREER.career.friends||[]).indexOf(w.handle)>=0
         ? `<span class="cc-owned">${L().ccFriendIs}</span>`
@@ -69976,15 +65106,6 @@ function ccDuoFindRender(keepFocus){
 }
 function careerFindDuo(){
   CH_SOCIAL='dms';
-  careerTab('social');
-}
-/* «Открыть соцсети» под новостью ведёт в ЛЕНТУ. Его отчёт, 3 сентября: «когда
-   жму open socials на dms меня возвращает, а не feed» — экран открывался там,
-   где его оставили в прошлый раз, или на личке, если там непрочитанное
-   (см. careerSocialHTML). Кнопка стоит под новостью, значит хотят читать
-   ленту, а не почту. */
-function careerOpenFeed(){
-  CH_SOCIAL='feed';
   careerTab('social');
 }
 
@@ -70118,16 +65239,11 @@ function careerDayPanelHTML(locked){
       '<b>'+esc(L()['ccDayEv'+dayEv.id])+'</b>'+
       // Скрим-приглашение говорит про состав того сезона, в котором зовут.
       '<span>'+esc(L()[ccSquadKey('ccDayEv'+dayEv.id+'Sub')])+'</span>'+
-      '<div class="cc-day-ev-btns'+(dayEv.opts ? ' cc-day-ev-opts' : '')+'">'+
-      (dayEv.opts
-        // Развилка: кнопка на каждый ответ, первая — главная.
-        ? dayEv.opts.map(function(o, i){
-            return '<button class="'+(i===0?'ch-sign':'ch-decline')+'" onclick="careerDayEvent(\''+
-              dayEv.id+'\',\''+o.id+'\')">'+esc(L()['ccDayEv'+dayEv.id+'O'+o.id]||o.id)+'</button>'; }).join('')
-        : '<button class="ch-sign" onclick="careerDayEvent(\''+dayEv.id+'\',true)">'+
+      '<div class="cc-day-ev-btns">'+
+        '<button class="ch-sign" onclick="careerDayEvent(\''+dayEv.id+'\',true)">'+
           L()['ccDayEv'+dayEv.id+'Yes']+'</button>'+
         '<button class="ch-decline" onclick="careerDayEvent(\''+dayEv.id+'\',false)">'+
-          L()['ccDayEv'+dayEv.id+'No']+'</button>')+
+          L()['ccDayEv'+dayEv.id+'No']+'</button>'+
       '</div></div>' : '';
   /* What a session is worth today, on the button.
 
@@ -70140,7 +65256,7 @@ function careerDayPanelHTML(locked){
   const dayMult = careerDayGear()*clamp((careerTrainCap()-nowOvr)/CAREER_TAPER, 0, 1);
   const dayCoach = ccCoach();
   const six = CAREER.player.attrs || ccOwnAttrs();
-  const rows=CC_DAY_ACTS.filter(function(a){ return !a.meta || ccMetaOpen(); }).map(function(a){
+  const rows=CC_DAY_ACTS.map(function(a){
     const keys=Object.keys(a.gain||{});
     // A ninety-nine cannot be trained: the day would be spent on a number that
     // cannot move, so the button says so rather than taking the energy.
@@ -70267,8 +65383,6 @@ function careerDayPanelHTML(locked){
       (!spent && !closed
               ? '<div class="cc-day-hint">'+L().ccDayMust+'</div>'
               : '<button class="ch-play" onclick="careerNextDay()">'+L().ccDayDone+(typeof ccMpNextTag==='function' ? ccMpNextTag() : '')+'</button>')+
-      // И «до турнира» — в любой день, решённый или нет: см. careerSkipToBtnHTML.
-      (typeof careerSkipToBtnHTML==='function' ? careerSkipToBtnHTML() : '')+
       /* Упавший день говорит, что именно сломалось.
 
          Отчёт игрока 1 сентября 2026: «everything froze when I pressed the
@@ -70364,26 +65478,8 @@ function careerCongrats(ranked, you, label){
   }
   const tags=handles.filter(Boolean).map(h=>'@'+ccHandle(h)).join(' ');
   const rows=ranked.slice(0,5).map((t,i)=>({p:i+1, n:bare(t), s:t.stagePts}));
-  /* Взятый титул остаётся в био победителя — тем же способом, каким своё био
-     считает выигранные кубки по журналу. Без этого сцена растёт только в
-     числах, а читается она именно по строке под ником. См. ccBioLine. */
-  handles.filter(Boolean).forEach(ccTitleAdd);
   careerNews('good', 'ccNewsCongrats', [tags || bare(w), label],
-             {tbl:{div:1, cap:label, rows, me:bare(w)}, art:'final'});
-  /* И КЛУБ ГОВОРИТ СВОИМ ГОЛОСОМ.
-
-     У аккаунта организации в жизни своя лента: «THE WORLD CHAMPIONS. We came.
-     We conquered.» — @AGGlobalEsports, 23 августа 2026, поверх победы своего
-     же игрока. У нас клуб до сих пор молчал: он подписывал, отпускал и платил,
-     а праздновал за него аккаунт сцены. Теперь вечер своего человека клуб
-     отмечает сам — одним постом на вечер, не по посту на каждого. */
-  const orgs=[];
-  handles.filter(Boolean).forEach(function(h){
-    const c=ccWhoCard(h);
-    if(c && c.org && orgs.indexOf(c.org)<0) orgs.push(c.org);
-  });
-  if(orgs.length) careerNews('good', 'ccPostOrgWin', [orgs[0], tags || bare(w), label],
-                             {by:ccOrgBy(orgs[0]), art:'final'});
+             {tbl:{div:1, cap:label, rows, me:bare(w)}});
   /* And the player posts it themselves.
 
      His words, 17 August: post the table when the player wins something. The
@@ -70451,21 +65547,8 @@ function careerCupPosts(ranked, div, v){
 
    Two a week, rotated on the date, so the same three faces are not saying the
    same thing every Sunday. */
-/* Люди сцены постят вечер ТАК ЖЕ, как игрок: со скрином таблицы.
-
-   Его правка, 3 сентября: «фоток таблиц ещё нет в ленте у игроков, как у них
-   можно, у нас же такой же дизайн». И правда: свои результаты уходили в ленту
-   с картинкой стандингов, а точно такие же посты людей сцены — голым текстом.
-   У настоящих наоборот: скрин таблицы под своим результатом это и есть пост
-   (@MalibucaFN, @Th0masHD, @darmfn — у всех одинаково).
-
-   Таблица собирается тем же ccStageShot, только своей строкой отмечен автор
-   поста, а не игрок. */
-function careerD1Extras(ranked, iso, label){
+function careerD1Extras(ranked, iso){
   const bare=t=>String(t.name||'').replace(/<[^>]*>/g,'');
-  // Отсечка финала недели — те же пятьдесят, что и в самом вечере (CC_WF_SEATS).
-  const shotOf=t=>ccStageShot(ranked, t, 1, label,
-    (typeof careerCupCut==='function') ? careerCupCut(1) : undefined);
   const cardOf=t=>(t._cards||t.squad||[])[0]||null;
   const mateOf=t=>{ const m=(t._cards||t.squad||[])[1]; return m?ccHandle(m.handle):null; };
   const by=t=>{ const c=cardOf(t); return c
@@ -70475,18 +65558,18 @@ function careerD1Extras(ranked, iso, label){
 
   const out=[];
   // Fourth: the place nobody posts a screenshot of.
-  if(ranked[3]) out.push(['flat','ccPostClose',[4, mateOf(ranked[3])], {by:by(ranked[3]), tbl:shotOf(ranked[3])}]);
+  if(ranked[3]) out.push(['flat','ccPostClose',[4, mateOf(ranked[3])], {by:by(ranked[3])}]);
   // Most Victory Royales of the night, which is its own thing to be proud of and
   // is not the same team as the winner more often than not.
   const most=ranked.slice(0,20).reduce((b,t)=>(t.wins||0)>(b&&b.wins||0)?t:b, null);
-  if(most && most.wins>0) out.push(['good','ccPostWins',[most.wins, mateOf(most)], {by:by(most), tbl:shotOf(most)}]);
+  if(most && most.wins>0) out.push(['good','ccPostWins',[most.wins, mateOf(most)], {by:by(most)}]);
   // A club whose duo went deep. The org is on the card, so this names a real one.
   const withOrg=ranked.slice(0,10).map(cardOf).find(c=>c&&c.org);
   if(withOrg) out.push(['good','ccPostOrg',[ccHandle(withOrg.org)],
     {by:{name:withOrg.handle, ovr:withOrg._ovr,
          card:withOrg.region?{handle:withOrg.handle, region:withOrg.region}:null}}]);
   // And somebody going back over it on stream.
-  if(ranked[1]) out.push(['flat','ccPostStreamD1',[], {by:by(ranked[1]), tbl:shotOf(ranked[1])}]);
+  if(ranked[1]) out.push(['flat','ccPostStreamD1',[], {by:by(ranked[1])}]);
 
   if(!out.length) return [];
   // Rotated on the week number rather than a hash of the date: a hash only has
@@ -70529,11 +65612,7 @@ function careerD1Posts(iso){
   CC_POST_DAY=iso;
   try{
     // Written before the placements so the placements land above them.
-    /* Подпись под таблицами этих постов — та же, что у поздравления строкой
-       ниже. Здесь стояло `label`, которой в этой функции нет: переменная жила в
-       другой (careerCongrats), и вечер Дивизиона 1 падал с «label is not
-       defined» каждое воскресенье. Поймал полный прогон. */
-    careerD1Extras(ranked, iso, L().calWeeklyFinal).forEach(e=>careerNews(e[0], e[1], e[2], e[3]));
+    careerD1Extras(ranked, iso).forEach(e=>careerNews(e[0], e[1], e[2], e[3]));
     careerCupPosts(ranked, 1, careerWeekIndex(iso));
     careerCongrats(ranked, null, L().calWeeklyFinal);
     careerD1TablePost();
@@ -70755,10 +65834,6 @@ function ccMpFfOfferHTML(){
   return '';
 }
 function ccMpNextTag(){
-  // В гонке та же подпись: день закрывается вдвоём, значит и счёт голосов
-  // на кнопке тот же. См. ccRaceHold.
-  if(typeof ccRaceLive==='function' && ccRaceLive() && !ccMpOn())
-    return ' '+ccRaceVotes()+'/'+ccRaceOf();
   if(!ccMpOn() || typeof MP==='undefined') return '';
   const v=(CC_MP_NEXT.day===careerToday()) ? ((CC_MP_NEXT.mine?1:0)+(CC_MP_NEXT.theirs?1:0)) : 0;
   return ' '+v+'/'+CC_MP_HUMANS;
@@ -70957,13 +66032,6 @@ const CC_COACHES=[
   // pairs he works with — so he sits with the heads rather than the specialists.
   {id:'dias',   name:'Coach Dias', at:'diaspaulin_',  reg:'BR',    cost:3000, train:0.30, keys:ATTR_KEYS.slice(), photo:'diaspaulin_.jpg'},
   {id:'rabid',  name:'Rabid',      at:'Rabidfn',      reg:'NA',    cost:3000, train:0.30, keys:ATTR_KEYS.slice(), photo:'Rabidfn.jpg'},
-  /* Его ссылка, 3 сентября: x.com/Thomas5x_. Сама страница X снаружи не
-     читается; что о нём известно из поисковой выдачи по профилю — канадец,
-     19 лет, «1x Globals champion», «pro coaching in bio». Игрок-коуч без
-     строки о том, что именно он учит, — значит, всё шесть, как у остальных
-     генералистов, и без химии: пар, с которыми он работает, нигде не названо.
-     Регион по стране — NA. Аватарка снята с X (unavatar) 3 сентября. */
-  {id:'thomas5x',name:'Thomas5x',  at:'Thomas5x_',    reg:'NA',    cost:3000, train:0.30, keys:ATTR_KEYS.slice(), photo:'Thomas5x_.jpg'},
   /* The specialists, and every one of them costs the same.
 
      His call, 18 August. Which means the rate has to be the same too: at one
@@ -71604,7 +66672,7 @@ function careerMoveGoHTML(){
       rent?ccMoney(rent)+L().ccPerMonth:L().ccMoveHome}</b></div>
     <div class="ch-hint">${L().ccMoveRegionHint}</div>
     <button class="ch-sign"${can?'':' disabled'}
-      onclick="careerMoveAsk(\'${r}\')">${L().ccMoveGo(regionName(r))}</button>
+      onclick="careerMoveAsk('${r}')">${L().ccMoveGo(regionName(r))}</button>
   </div>`;
 }
 /* Clicking a country repaints two things and rebuilds nothing.
@@ -71867,7 +66935,7 @@ function careerFlatHTML(){
         <span>${L().ccFlatNoRent}${it.cap?' · '+L().ccShopCap+' +'+it.cap:''}</span></div>
       ${own ? `<span class="cc-owned">${L().ccFlatYours}</span>`
        : under ? `<span class="cc-owned">${L().ccShopOwnedBetter}</span>`
-       : `<button class="ch-sign"${can?'':' disabled'} onclick="careerFlatBuy(\'${it.id}\')">$${
+       : `<button class="ch-sign"${can?'':' disabled'} onclick="careerFlatBuy('${it.id}')">$${
            ccNum(price)}</button>`}
     </div>`;
   }).join('');
@@ -71973,7 +67041,7 @@ function careerRegionRowsHTML(){
     const can=!on && (!rent || (cr.balance||0)>=rent);
     const shown=r===CH_MOVE_REG;
     return `<button class="cc-move-reg${on?' on':''}${shown?' shown':''}"${can?'':' disabled'}
-      onclick="careerMoveShowRegion(\'${r}\')">
+      onclick="careerMoveShowRegion('${r}')">
       <b>${esc(regionName(r))}</b>
       <span>${rent ? ccMoney(rent)+L().ccPerMonth : L().ccMoveHome}</span>
       ${on ? `<i>${L().ccMoveAlready}</i>` : ''}</button>`;
@@ -72033,7 +67101,7 @@ function careerMovePanelHTML(){
                  onclick="careerMoveRegion('${reg}','${c}',true)">${
                  L().ccMoveWithMate(mates.length, ccNum(cost+forThem))}</button>`+
                  `<div class="ch-hint">${L().ccMoveWithMateHint(ccNum(forThem))}</div>`; })()
-           : `<button class="ch-sign"${can?'':' disabled'} onclick="careerMoveTo(\'${c}\')">${
+           : `<button class="ch-sign"${can?'':' disabled'} onclick="careerMoveTo('${c}')">${
                home ? L().ccMoveGoHome : L().ccMoveDo(ccNum(cost))}</button>`}
     ${!on && !can ? `<div class="ch-hint">${L().ccMoveNoCash}</div>` : ''}
   </div>`;
@@ -72130,8 +67198,8 @@ function careerCheatHTML(){
                    step===1?L().ccCheatNo:L().ccCheatBack);
       }
       return `<div class="cc-cheat-ask"><b>${esc(L().ccCheat3)}</b><span>${esc(L().ccCheat3Sub)}</span>
-          <div><button class="ch-sign" onclick="careerCheatStep(\'paid\')">${esc(L().ccCheatTake)}</button>
-          <button class="ch-decline" onclick="careerCheatStep(\'ban\')">${esc(L().ccCheatDl)}</button></div>
+          <div><button class="ch-sign" onclick="careerCheatStep('paid')">${esc(L().ccCheatTake)}</button>
+          <button class="ch-decline" onclick="careerCheatStep('ban')">${esc(L().ccCheatDl)}</button></div>
         </div>`;
     })()}
   </div>`;
@@ -72544,11 +67612,6 @@ function careerNightSet(next){
   if(next && next.type==='victory' && ZONE_SETS.r4){
     const ev=careerVictoryOn(day);
     if(ev && /Reload/.test(ev.id)) return 'r4';
-  }
-  // FNCS Solos — остров седьмой главы (s42), и в трио-год тоже. См. careerSoloSet.
-  if(next && next.type==='solo'){
-    const ev=careerSoloSeriesOn(day);
-    if(ev && ev.spec && ZONE_SETS.s42) return 's42';
   }
   return careerBrSet();
 }
@@ -73035,12 +68098,7 @@ function careerNoMate(kind){
   return careerNeedsMate(kind) && (careerMatesShort()>0 || careerMatesOver()>0);
 }
 // Asked of a kind rather than of careerNext, because careerNext asks this back.
-function careerCanPlayKind(kind){ return careerCanPlayKindOn(careerToday(), kind); }
-/* Тот же вопрос про ДРУГОЙ день — кнопке «пропустить до турнира» надо знать,
-   какой из будущих вечеров игрок сможет открыть (careerSkipTarget). Ответ по
-   сегодняшнему состоянию: пропуск ничего не играет, значит по дороге ничего
-   и не изменится. */
-function careerCanPlayKindOn(day, kind){
+function careerCanPlayKind(kind){
   if(CC_PLAYABLE.indexOf(kind)<0) return false;
   /* Без связи с лобби командный вечер не начинается — и кнопка это знает.
      Иначе нажатие уходило бы в ccMpGate и висело там молча: вечер ждёт
@@ -73052,11 +68110,11 @@ function careerCanPlayKindOn(day, kind){
   if(ccMpRolesWhy()) return false;
   if(ccMpModeWhy()) return false;
   if(careerNoMate(kind)) return false;
-  if(kind==='reload') return careerReloadCan(careerReloadOn(day));
-  if(kind==='final')  return careerWeeklyFinalOn(day);
-  if(kind==='major')  return careerMajorCan(careerMajorOn(day));
-  if(kind==='summit') return careerSummitCan(careerSummitOn(day));
-  if(kind==='globals')return careerGlobalsCan(careerGlobalsOn(day));
+  if(kind==='reload') return careerReloadCan(careerReloadOn(careerToday()));
+  if(kind==='final')  return careerWeeklyFinalOn(careerToday());
+  if(kind==='major')  return careerMajorCan(careerMajorOn(careerToday()));
+  if(kind==='summit') return careerSummitCan(careerSummitOn(careerToday()));
+  if(kind==='globals')return careerGlobalsCan(careerGlobalsOn(careerToday()));
   // Epic's own page: "You must be Duos Division 1 to participate in this event."
   // Which includes everybody who has just come up out of Division 2 — clearing
   // that cut is how you become Division 1, and the promotion lands the same
@@ -73064,11 +68122,10 @@ function careerCanPlayKindOn(day, kind){
   // the runner already refused them, but this said yes to a Division 4 player,
   // so anything that asked the question directly got the wrong answer.
   if(kind==='eval')   return CAREER.career.division===1;
-  if(kind==='gc')     return careerGclcOn(day)
-                               ? careerGclcCan(careerGclcOn(day))
-                               : careerRcCan(careerRcOn(day));
-  if(kind==='solo')   return careerSoloSeriesCan(careerSoloSeriesOn(day));
-  if(kind==='proam')  return careerProAmCan();
+  if(kind==='gc')     return careerGclcOn(careerToday())
+                               ? careerGclcCan(careerGclcOn(careerToday()))
+                               : careerRcCan(careerRcOn(careerToday()));
+  if(kind==='solo')   return careerSoloSeriesCan(careerSoloSeriesOn(careerToday()));
   return true;
 }
 function careerCanPlay(next){ return !!next && careerCanPlayKind(next.type); }
@@ -73148,115 +68205,9 @@ function careerSpotEnsure(next){
   if(!careerSpotRoom(key)) return false;
   return careerSpotSet(0, key==='solo' ? 'solo' : set);
 }
-/* КАК ДЕРЁТСЯ КОМНАТА ЭТОГО ДИВИЗИОНА — по восьми реплеям на дивизион
-   (FNCS Divisional Cup S41 EU, tools/real-division-curves.json), отрядов на
-   старте зон 2/3/5/7 из 50: D1 41 39 37 30, D2 38 33 27 23, D3 35 32 26 21,
-   D4 35 31 24 20, D5 39 35 29 25. Сила комнаты этого не объясняет (D2 по
-   силе почти D1), поэтому движку передаются единицы слабости прямо по
-   дивизиону: первое число поднимает уловимость в ранних зонах, второе —
-   контест высадки (см. LOBBY_WEAK_UNITS / DROP_WEAK_UNITS в zone-sim.js).
-   Подобрано пробой tools/career-alive-curve-probe.js (DIV=n, 100 игр):
-     D2 (1.5, 4):  41 37 33 30 26 24 22 18 16 13 8
-     D3 (2, 5):    41 37 33 29 24 22 20 17 15 13 8
-     D4 (2, 5):    42 37 33 29 25 23 22 17 14 12 8
-   Пятый — комната пассивная: рано теряет как второй, а концовка у неё как у
-   первого (24 отряда на восьмой); единицы ему меньше, и концовка всё равно
-   выходит злее реплея на 3–5 отрядов — предел этой модели. */
-const CC_DIV_WEAK={1:[0,0], 2:[1.5,4], 3:[2,5], 4:[2,5], 5:[1.5,2.5]};
-/* Не дивизионные вечера — тоже по своим реплеям (tools/real-stage-curves.json,
-   Tracker EU, снято 6–7 сентября 2026, по десятку реплеев на кап; числа —
-   отрядов (в соло — игроков из ста) на старте зон 1…11).
-
-   ПРОФИЛЬ ДВИЖКА. applyStageBias ставил профиль по таблице очков: finals
-   только при pointsForPlace, иначе open. В карьере pointsForPlace — лишь
-   дивизионный кап и первый раунд Perf Eval; финал Мейджора, хиты, LCQ, финал
-   недели, Globals, Summit, Reload, соло — все шли под «open», хотя движок
-   под finals подгонялся именно по их реплеям. Под open те же комнаты режутся
-   в концовке (Reload-дуо: 12 отрядов на десятом круге при реальных 17; финал
-   соло: разрыв 6 игроков против 2). Поэтому профиль на вечер называет
-   карьера (CC_ZONE_PROFILE), а applyStageBias читает его первым. Открытые
-   лобби (Плей-Ин, дуо Victory Cup, квал соло) под open тоже хуже — движок
-   там мягок в начале и зол в конце (Плей-Ин: 43 39 38 36 33 29 24 20 18 14 8
-   при реальных 47 38 35 32 29 27 25 22 20 16 10), а finals с единицами
-   слабости ложится ближе (42 37 35 33 31 28 25 20 17 14 8). Open остаётся
-   у Solo Victory Cup — там он единственный попадает в раннюю кривую.
-
-   ЕДИНИЦЫ (уловимость ранних зон, контест высадки) и ПРОФИЛЬ по вечерам:
-     cup           CC_DIV_WEAK[дивизион], finals (10 реплеев на дивизион);
-     eval          [1, 2], finals — первый раунд, 10 реплеев: 47 40 36 33 29
-                   28 24 20 17 14 10; движок 43 38 35 33 31 28 25 21 18 14 8;
-     solo квал     [0.5, 5], finals — 10 реплеев: 88 76 72 68 66 61 54 44 36
-                   27 17; движок 90 80 76 73 65 57 50 41 35 21 12 (разрыв 3.4);
-     solo хиты/финал [0, 0], finals — хиты (10) 93 85 83 80 76 68 60 49 40 27
-                   14, финал (11) 93 86 83 81 77 67 55 46 37 27 15; движок
-                   96 92 90 87 79 68 57 45 37 22 12 (разрыв 2.2);
-     victory соло  [0.7, 3.5], open — 11 реплеев обоих раундов: 86 69 60 54 49
-                   44 39 32 26 19 11; движок 88 74 59 51 43 39 36 32 29 19 10;
-     victory дуо и Плей-Ин  [1, 3], finals — дуо VC (10) 47 38 35 32 31 30 28
-                   25 21 16 11, Плей-Ин (10) 47 38 35 32 29 27 25 22 20 16 10;
-                   движок на открытом поле 42 37 35 33 31 28 25 20 17 14 8;
-     victory Reload соло — без возрождений (см. respawnUntilZone), [0, 0],
-                   finals; реплей (10, из 40): 40 40 38 37 36 35 32 27 22 19 14;
-     major хиты/LCQ/финал, final, gc, summit, globals, reload — [0, 0],
-                   finals: хиты (11) 47 45 43 42 40 37 31 25 20 15 9, финал
-                   Мейджора (4+3) 49 44 42 42 40 38 31 24 21 15 9, открытый
-                   LCQ (5) 49 43 41 39 37 34 29 25 21 17 11 — движок D1
-                   45 41 41 40 39 35 30 23 20 15 8; Reload — своя проба.
-   Соло-лобби нельзя оставлять «по силе карточек»: team.pow одиночки в среднем
-   69 при эталоне 86 у дуо, запасная формула давала 1.7 единицы и вырезала
-   финал соло к третьей зоне (62 живых при реальных 88). Не измерено и потому
-   на запасной формуле (null, профиль по таблице очков): Про-Ам, Reload дуо
-   Victory Cup, ранкед-капы. */
-/* 7.09: поле финала соло — сильнейшая сотня (careerSoloField, stage), SIZE_SCALE_MIN
-   0.7 и CHIP_SOLO_MUL в движке; квал перебран под это: [0.8, 6] — движок 92 82 77
-   72 64 56 50 43 36 21 12 при реплее 88 76 72 68 66 61 54 44 36 27 17 (разрыв
-   3.6); Solo VC при [0.7, 3.5] — 90 79 66 57 49 44 40 35 31 20 11 (разрыв 3.1). */
-const CC_ZONE_D1=[0,0], CC_ZONE_OPEN_DUO=[1,3], CC_ZONE_OPEN_SOLO=[0.7,3.5], CC_ZONE_SOLO_QUAL=[0.8,6], CC_ZONE_EVAL=[1,2];
-// Принудительный профиль движка на вечер; applyStageBias читает его перед
-// таблицей очков. null — как решит таблица.
-let CC_ZONE_PROFILE=null;
-/* Что ставить движку на этот вечер: {units:[уловимость, контест]|null,
-   profile:'finals'|'open'|null}. next.stage / next.mode / next.reload —
-   подсказки проб; в игре стадия читается из календаря дня. */
-function ccZoneTuneSpec(next){
-  const none={units:null, profile:null};
-  if(!next) return none;
-  const cr=CAREER && CAREER.career, t=next.type;
-  if(t==='cup')  return {units:(cr && CC_DIV_WEAK[cr.division]) || null, profile:'finals'};
-  if(t==='eval') return {units:CC_ZONE_EVAL, profile:'finals'};
-  if(t==='solo'){
-    const so=(typeof careerSoloSeriesOn==='function') ? careerSoloSeriesOn(next.day) : null;
-    const stage=next.stage || (so && so.stage);
-    // Открытая стадия соло: квал январской серии, у FNCS Solos — по spec.open.
-    const open = so && so.series==='solos' ? !!(so.spec && so.spec.open) : stage==='qual';
-    return open ? {units:CC_ZONE_SOLO_QUAL, profile:'finals'} : {units:CC_ZONE_D1, profile:'finals'};
-  }
-  if(t==='victory'){
-    const ev=(typeof careerVictoryOn==='function') ? careerVictoryOn(next.day) : null;
-    const reload=!!next.reload || /Reload/.test(String((ev && ev.id)||''));
-    const solo=next.mode==='solo' || !!(ev && ev.mode==='solo');
-    if(reload) return solo ? {units:CC_ZONE_D1, profile:'finals'} : none;
-    return solo ? {units:CC_ZONE_OPEN_SOLO, profile:'open'} : {units:CC_ZONE_OPEN_DUO, profile:'finals'};
-  }
-  if(t==='major'){
-    const mj=(typeof careerMajorOn==='function') ? careerMajorOn(next.day) : null;
-    const stage=next.stage || (mj && mj.stage);
-    return stage==='playin' ? {units:CC_ZONE_OPEN_DUO, profile:'finals'} : {units:CC_ZONE_D1, profile:'finals'};
-  }
-  if(t==='final' || t==='gc' || t==='summit' || t==='globals' || t==='reload') return {units:CC_ZONE_D1, profile:'finals'};
-  return none;
-}
-function ccZoneWeakFor(next){ return ccZoneTuneSpec(next).units; }
-function ccZoneTuneFor(next){
-  if(typeof ZoneSim==='undefined' || !ZoneSim.tune) return;
-  const spec=ccZoneTuneSpec(next), w=spec.units;
-  ZoneSim.tune(w ? {LOBBY_WEAK_UNITS:w[0], DROP_WEAK_UNITS:w[1]} : {LOBBY_WEAK_UNITS:null, DROP_WEAK_UNITS:null});
-  CC_ZONE_PROFILE=spec.profile;
-}
 function careerPlayRun(next){
   if(!next) return;
   CC_DRAFT_RUN=false;   // карьерный вечер — не драфт (см. ccMpOn)
-  ccZoneTuneFor(next);  // комната этого дивизиона дерётся по своим реплеям
   // Этапы вечера нумеруются с нуля у каждого раннера — жетон высадки
   // (CC_DROP_STAGE) считается от дня и номера этапа, а не от жизни вкладки.
   if(typeof CC_DROP_STAGE_N!=='undefined') CC_DROP_STAGE_N=0;
@@ -73280,7 +68231,6 @@ function careerPlayRun(next){
   if(next.type==='gc')      return careerGclcOn(careerToday())
                                      ? runCareerGclc() : runCareerReloadChampionship();
   if(next.type==='solo')    return runCareerSoloSeries();
-  if(next.type==='proam')   return runCareerProAm();
 }
 
 // Weeks the career cannot play yet still have to pass, or a season stops dead at
@@ -73325,70 +68275,6 @@ function careerSkipWeek(){
    stops on the first day of it, waiting for somebody who is not there. */
 function careerSkipAsk(){
   ccAsk(L().chSkipAsk, ()=>careerSkipWeek());
-}
-/* ПРОПУСТИТЬ ДО ТУРНИРА — одной кнопкой. Игрок, 6 сентября: «Добавь пожалуйста
-   возможность скипнуть дни без просмотра капов одной кнопкой, а то очень лень
-   ждать 102 дня».
-
-   Кнопок движения было две, и обе не про это: «Пропустить день» шагает на
-   сутки и каждый раз спрашивает, а «Сыграть за меня · неделю / месяц» и день
-   на календаре ИГРАЮТ турниры по дороге — это перемотка, а не пропуск. Игроку,
-   которому играть нечего (нет трио, закрытые этапы, пустые недели), оставалось
-   жать «день» по два клика на сутки.
-
-   Цель — ближайший день с вечером, который этот игрок сможет открыть
-   (careerCanPlayKindOn по сегодняшнему состоянию; пропуск ничего не играет,
-   так что по дороге оно и не меняется). Если такого нет — последний день года,
-   церемония. Дни проходят как при «Пропустить день», только разом: один
-   careerAdvanceTo на всю дистанцию — зарплаты, мир, письма и энергия
-   считаются там по числу ночей, турниры по пути не играются и в журнал не
-   пишутся. В команде день двигает сервер — кнопка гаснет с причиной. */
-function careerSkipTarget(){
-  const days=careerEvents();
-  const today=careerToday();
-  const list=[...days.keys()].filter(d=>d>today).sort();
-  for(const d of list){
-    if(d>=CC_YEAR_TO) break;
-    if((days.get(d)||[]).some(e=>careerCanPlayKindOn(d, e.kind))) return {day:d, ev:(days.get(d)||[]).find(e=>careerCanPlayKindOn(d, e.kind))};
-  }
-  return {day:CC_YEAR_TO, ev:null};
-}
-/* Сама кнопка — одна на оба места: под закрытым вечером (рядом с «Пропустить
-   день») и в панели дня (рядом со «Следующий день» или подсказкой «выбери, на
-   что уходит день»: пропуск — это и есть ответ «ни на что, до турнира»). */
-function careerSkipToBtnHTML(){
-  const cr=CAREER && CAREER.career;
-  if(!cr || cr.seasonOver) return '';
-  if(ccMpOn())
-    return '<button class="ch-play ch-skipto" disabled title="'+esc(L().ccMpNoFf)+'"><i>&#9197;</i> '+L().chSkipTo+'</button>';
-  const t=careerSkipTarget(), n=ccFfDays(t.day);
-  if(!(n>0)) return '';
-  return '<button class="ch-play ch-skipto" onclick="careerSkipToAsk()" title="'+
-    esc(L().chSkipToHint(ccDayLabel(t.day), n))+'"><i>&#9197;</i> '+L().chSkipTo+'</button>';
-}
-function careerSkipToAsk(){
-  if(ccMpOn()){ ccTell(L().ccMpNoFf); return; }
-  const cr=CAREER && CAREER.career;
-  if(!cr || cr.seasonOver) return;
-  const t=careerSkipTarget();
-  const n=ccFfDays(t.day);
-  if(!(n>0)) return;
-  const what=t.ev ? t.ev.label : L().ccGalaDay;
-  ccAsk(L().chSkipToAsk(ccDayLabel(t.day), n, what), ()=>careerSkipTo(t.day));
-}
-function careerSkipTo(iso){
-  if(ccMpOn() || !iso) return;
-  const was=careerToday();
-  if(!(iso>was)) return;
-  try{
-    careerAdvanceTo(iso);
-    CC_DAY_ERR=null;
-  }catch(e){
-    CC_DAY_ERR={day:was, text:String((e && e.message) || e)};
-    console.error('careerSkipTo сломался на '+was+':', e);
-  }
-  CH_FF_ASK=null;
-  careerRenderHub('centre');
 }
 
 /* A season boundary is a birthday, and for Division 1 it is also a reckoning.
@@ -73482,44 +68368,6 @@ function ccDuoBroken(d, cr){
    и собирается заново (ccRemadeDuos), а не исчезает из сцены.
 
    Бросок посолен сезоном и сидом мира: перезагрузка не пересоберёт год. */
-/* ПЕРЕСБОРКА ГОДА, а не четыре трансфера — правка 4 сентября.
-
-   Отзыв его игрока в тот день: «опять как-то странно триосы распределяются,
-   нету никакой логики… и рейтинг не близкий», и следом — «на ланах все топ
-   места у американцев, а Европы нету».
-
-   Замер сказал, что это одно и то же (tools/trio-region-probe.js, мировой ЛАН
-   трио-года): у европейской команды пара 91 и третий 83.9 — разрыв −7, у
-   американской пара 91.4 и третий 90.8 — разрыв −0.5, и сила состава 94.8
-   против 98. Ни рейтинги, ни синергия тут ни при чём: синергия по регионам
-   ровная (6.0 против 6.1, tools/career-lan-syn-probe.js), а рейтинги сняты с
-   настоящих результатов. Дело в РЕЗЕРВЕ. У НАК на 335 карточек 32 штуки 90+,
-   у Европы на 902 карточки — 22, и все европейские сильные стоят в записанных
-   парах: свободного 90+ в Европе нет ВООБЩЕ, лучший свободный 87. Тройка
-   собирается как «записанная пара + свободный» — вот европейская и получает
-   третьего на семь ниже, а американская почти ровного.
-
-   А в жизни трио-год так и не собирается: когда сезон играется втроём, сцена
-   ПЕРЕСОБИРАЕТСЯ. Дуо-снимок держит 150 пар, а трио-комнате нужно 112 команд —
-   треть пар обязана распасться, и их люди и есть третьи. Раньше распадались
-   ровно восемь верхних пар с монеткой (CC_RAID_TOP/CC_RAID_CHANCE), то есть
-   около четырёх, и остальные 108 команд добирали третьего из хвоста очереди —
-   тех, кому ядра не досталось, то есть заведомо слабых.
-
-   Теперь это каскад и он идёт по КАЖДОМУ региону сверху вниз:
-     — пара смотрит на рынок своего региона; если сильнейший свободный внутри
-       полосы (CC_TRIO_BAND), она берёт его и рынок на этого человека беднеет;
-     — если рынок не закрывает — зовёт из пары НИЖЕ ближайшего к своей средней
-       (ближайшего, а не сильнейшего: 96/96 не должна забирать 96 у 88-й пары);
-     — брошенный выходит на рынок и становится третьим для следующей пары.
-   Каскад сам себя останавливает: как только рынок наполнился брошенными,
-   звать больше некого. Предохранитель — CC_RAID_SHARE, дальше трети пар
-   регион не разбирают.
-
-   Его три ограничения на месте: это по-прежнему стык года (см. ccTrioMarket —
-   раз в сезон), по-прежнему трансфер, а не кража (пара пишется в книгу
-   разводов, брошенный уходит на рынок и собирается заново в ccRemadeDuos), и
-   по-прежнему никто не зовёт чужого, пока рынок закрывает нужду. */
 const CC_RAID_TOP=8, CC_RAID_CHANCE=0.5;   // старые пороги, оставлены для сейвов
 /* Полоса РЫНКА уже полосы подбора. CC_TRIO_BAND=6 — это «третий не выглядит
    чужим в этой команде», и для комнаты дивизиона этого хватает. Но пара, у
@@ -73700,8 +68548,8 @@ function careerNewSeason(){
   // derived — see careerSquadSize.
   cr.size = (cr.season % 2) ? 2 : 3;
   sizes[cr.season]=cr.size;
-  /* И рынок трио — после того, как размер года известен: пересобирается сцена
-     только в трио-год. См. careerTrioRaids и ccTrioMarket. */
+  /* И трансферы верхних пар — после того, как размер года известен: зовут
+     третьего только в трио-год. См. careerTrioRaids. */
   ccTrioMarket(cr, true);
   /* And a year's tournaments belong to that year.
 
@@ -73967,7 +68815,6 @@ function careerSeasonTurn(season){
   const cr=CAREER.career;
   if(cr.seasonTurn===season.id) return null;
   cr.seasonTurn=season.id;
-  careerMetaStart(season.id);   // новый остров и пул: три дня разбора меты
   const mate=careerPartnerCard();
   const verdict=careerDuoHolds();
   let out={season:season.id, split:false, from:mate?mate.handle:null};
@@ -74209,172 +69056,6 @@ function careerRunLabel(row){
    It sits where the shop tile sits during the year, because the shop is shut at
    the boundary and this is the one screen a player looks at before pressing on
    to the next season. */
-/* ЦЕРЕМОНИЯ ИГРОКА ГОДА — плитка на экране конца сезона.
-
-   Идея его игрока 4 сентября: «чтоб в конце главы выбирали лучшего игрока за
-   год, типо как в футболе золотой мяч». Награда в моде была (careerAwardSeason,
-   считается по очкам PR за год), но жила одной строкой в ленте и счётчиком в
-   трофеях — то есть церемонии не было вовсе.
-
-   Здесь она и есть: победитель крупно, под ним четверо, кто был рядом, с
-   очками года и числом сыгранных вечеров. Своя строка подсвечена — ради неё
-   всё и читают. Пятёрка берётся из самой награды; у наград, записанных до
-   этой правки, её нет — тогда таблица считается заново по тому же году. */
-function careerSeasonAwardHTML(){
-  const cr=CAREER.career;
-  const aw=(careerAwards().won||[]).filter(a=>a.kind==='season' && a.season===cr.season)[0];
-  if(!aw) return '';
-  let top=aw.top;
-  if(!top || !top.length){
-    const from=Math.max(0, (cr.season||1)-1)*365;
-    top=careerAwardBoard(from, from+365).slice(0, CC_AWARD_TOP)
-        .map(r=>({n:r.name, p:Math.round(r.pts), e:r.events, you:!!r.you}));
-  }
-  if(!top.length) return '';
-  const win=top[0];
-  const rest=top.slice(1).map((r,i)=>`<div class="ch-row cc-goty-row${r.you?' me':''}">
-      <em><i>${i+2}</i>${esc(r.n)}</em><b>${ccNum(r.p)}</b></div>`).join('');
-  return `<div class="ch-tile cc-goty">
-    <h4>${L().ccGotyTitle}</h4>
-    <div class="cc-goty-win${win.you?' me':''}">
-      <span class="cc-goty-ball" aria-hidden="true">🏆</span>
-      <div><b>${esc(win.n)}</b>
-        <em>${esc(L().ccGotyLine(ccNum(win.p), win.e))}</em></div>
-    </div>
-    ${rest}
-    <div class="ch-hint">${L().ccGotyHow}</div>
-  </div>`;
-}
-
-/* ЦЕРЕМОНИЯ ЗАКРЫТИЯ СЕЗОНА — отдельный последний день года.
-
-   Его правка 4 сентября, следом за «золотым мячом»: «может церемонию игрока
-   какую-то сделать — отдельный последний день, и там что-то показывают игроку
-   за весь сезон». Плитка игрока года отвечала только на «кто взял»; год
-   целиком нигде не показывался — он лежал разобранным по вкладкам.
-
-   Календарь получил этот день строкой (см. careerEvents, вид 'gala'), а сам
-   вечер — четыре экрана подряд: год открывается, потом твои числа, потом
-   вечера и награды, и последним — игрок года, как на всякой церемонии.
-
-   ОТКРЫВАЕТСЯ ТОЛЬКО ПО КНОПКЕ и намеренно. Само оно не всплывает: любое
-   окно, которое встаёт без спроса, вешает headless-проверки насмерть — этим
-   уже кончились и confirm(), и окно про метку (см. careerSpotGate). Кнопка
-   стоит на карточке конца сезона рядом с «Новым сезоном», а не вместо неё,
-   поэтому старый путь «нажал .ch-play — поехал дальше» не тронут. */
-const CC_GALA_SLIDES=4;
-let CC_GALA_STEP=0;
-// Год, собранный из того, что карьера УЖЕ записала: журнал, доска PR и список
-// наград. Церемония ничего не считает от себя — она читает.
-function ccGalaYear(){
-  const cr=CAREER.career, s=cr.season;
-  const log=(cr.log||[]).filter(r=>r.season===s);
-  const placed=log.filter(r=>r.place);
-  const best=placed.length ? placed.reduce((a,b)=>(b.place<a.place ? b : a)) : null;
-  const from=Math.max(0, (s||1)-1)*365;
-  const me=careerAwardBoard(from, from+365).filter(r=>r.you)[0];
-  const card=careerCard(), a=card ? attrsFor(card) : null;
-  const ovr = a ? Math.round(a.ovr + (card._pingEdge||0) + (card._ageEdge||0))
-                : CAREER.player.ovr;
-  return {
-    season:s, div:cr.division,
-    events:log.length,
-    wins:log.reduce((n,r)=>n+(r.wins||0), 0),
-    elims:log.reduce((n,r)=>n+(r.elims||0), 0),
-    prize:log.reduce((n,r)=>n+(r.prize||0), 0),
-    pr: me ? Math.round(me.pts) : 0,
-    best: best,
-    ovr: ovr,
-    // Рейтинг на первом вечере года — от него и считается рост. Вечеров не
-    // было — роста тоже нет, а не «вырос на весь рейтинг».
-    grew: placed.length ? Math.round(ovr - (placed[0].ovr||ovr)) : 0,
-    runs: careerBigRuns(s),
-    months: (careerAwards().won||[]).filter(x=>x.kind==='month' && x.season===s && x.you),
-    goty: (careerAwards().won||[]).filter(x=>x.kind==='season' && x.season===s)[0] || null
-  };
-}
-function ccGalaNum(v, label){
-  return `<div class="cc-gala-num"><b>${v}</b><em>${label}</em></div>`;
-}
-function ccGalaSlide(i, y){
-  if(i===0) return `<div class="cc-gala-open">
-      <div class="cc-gala-big">${esc(String(y.season))}</div>
-      <div class="cc-gala-line">${esc(L().ccGalaOpenLine(y.div, y.events))}</div>
-      <div class="cc-gala-hint">${esc(L().ccGalaOpenHint)}</div>
-    </div>`;
-  if(i===1) return `<h4>${L().ccGalaYearH}</h4>
-    <div class="cc-gala-nums">
-      ${ccGalaNum(ccNum(y.events), L().ccGalaEvents)}
-      ${ccGalaNum(ccNum(y.wins), L().ccGalaWins)}
-      ${ccGalaNum(ccNum(y.elims), L().ccGalaElims)}
-      ${ccGalaNum(ccMoney(y.prize), L().ccGalaPrize)}
-      ${ccGalaNum(ccNum(y.pr), L().ccGalaPr)}
-      ${ccGalaNum(y.best ? '#'+y.best.place : '—', L().ccGalaBest)}
-    </div>
-    <div class="cc-gala-row"><em>${L().ccGalaOvr}</em><b>${y.ovr} <i>${
-      esc(L().ccGalaOvrUp(y.grew))}</i></b></div>`;
-  if(i===2) return `<h4>${L().ccGalaRunsH}</h4>
-    ${y.runs.length ? y.runs.map(r=>`<div class="cc-gala-row"><em>${esc(careerRunLabel(r))}</em><b>${
-        L().ccBoardPlace(r.place, r.of)}${r.prize ? ' · '+ccMoney(r.prize) : ''}</b></div>`).join('')
-      : `<div class="cc-gala-hint">${L().ccGalaRunsNone}</div>`}
-    <h4 class="cc-gala-h2">${L().ccGalaAwardsH}</h4>
-    ${(y.months.length || (y.goty && y.goty.you))
-      ? (y.goty && y.goty.you ? `<div class="cc-gala-row me"><em>${
-            esc(L().ccGalaGotyYou)}</em><b>🏆</b></div>` : '')+
-        y.months.map(m=>`<div class="cc-gala-row"><em>${
-            esc(L().ccGalaMonthWon(ccMonthName(m.key)))}</em><b>🏅</b></div>`).join('')
-      : `<div class="cc-gala-hint">${L().ccGalaAwardsNone}</div>`}`;
-  // Последним — игрок года: ровно та же плитка, что стоит на экране конца
-  // сезона, чтобы церемония и хаб не разошлись в числах.
-  return careerSeasonAwardHTML() ||
-    `<div class="cc-gala-hint">${L().ccGalaAwardsNone}</div>`;
-}
-function ccGalaDraw(){
-  const el=document.getElementById('ccGalaModal');
-  if(!el) return;
-  const y=ccGalaYear(), i=CC_GALA_STEP, last=i>=CC_GALA_SLIDES-1;
-  let dots='';
-  for(let k=0;k<CC_GALA_SLIDES;k++) dots+=`<i class="${k===i?'on':''}"></i>`;
-  el.innerHTML=`<div class="cc-gala" role="dialog" aria-modal="true">
-    <div class="cc-gala-body">
-      <div class="cc-gala-head">
-        <div><div class="cc-gala-tag">${L().ccGalaDaySub}</div>
-          <h3>${esc(L().ccGalaTitle(y.season))}</h3></div>
-      </div>
-      <div class="cc-gala-slide">${ccGalaSlide(i, y)}</div>
-      <div class="cc-gala-dots">${dots}</div>
-      <div class="cc-gala-cta">
-        ${i>0 ? `<button class="cstrip-btn cstrip-btn-code" onclick="ccGalaGo(-1)">${L().ccGalaBack}</button>` : ''}
-        ${last ? `<button class="cstrip-btn cstrip-btn-go" onclick="ccGalaFinish()">${L().ccNewSeason}</button>`
-               : `<button class="cstrip-btn cstrip-btn-go" onclick="ccGalaGo(1)">${L().ccGalaNext}</button>`}
-        <button class="cstrip-btn cstrip-btn-code" onclick="ccGalaClose()">${L().ccGalaSkip}</button>
-      </div>
-    </div>
-    <div class="cc-gala-art" style="background-image:url(${CAREER_EV_ART.gala})"></div>
-  </div>`;
-}
-function ccGalaOpen(){
-  if(!CAREER || !CAREER.career) return;
-  CC_GALA_STEP=0;
-  let el=document.getElementById('ccGalaModal');
-  if(!el){
-    el=document.createElement('div');
-    el.id='ccGalaModal';
-    el.className='cc-gala-wrap';
-    document.body.appendChild(el);
-  }
-  ccGalaDraw();
-}
-function ccGalaGo(n){
-  CC_GALA_STEP=Math.max(0, Math.min(CC_GALA_SLIDES-1, CC_GALA_STEP+n));
-  ccGalaDraw();
-}
-function ccGalaClose(){
-  const el=document.getElementById('ccGalaModal');
-  if(el) el.remove();
-}
-// Церемония кончается тем же, чем кончался экран конца сезона: новым годом.
-function ccGalaFinish(){ ccGalaClose(); careerNewSeason(); }
 function careerSeasonBoardHTML(){
   const cr=CAREER.career;
   const rows=careerBigRuns(cr.season);
@@ -75248,7 +69929,7 @@ function careerMoneyHTML(){
   const scope=CH_MONEY==='year' ? 'year' : CH_MONEY==='all' ? 'all' : 'season';
   const rows=careerMoneyRows(scope), k=careerMoneyKeys();
   const usd=n=>ccMoney(n||0);
-  const tab=(id,label)=>`<button class="cm-tab${scope===id?" on":""}" onclick="careerMoneyTab(\'${id}\')">${label}</button>`;
+  const tab=(id,label)=>`<button class="cm-tab${scope===id?" on":""}" onclick="careerMoneyTab('${id}')">${label}</button>`;
   const head=`<div class="cm-head">${tab("season", L().ccMoneySeason(k.fsName))}${tab("year", L().ccMoneyYear(CAREER.career.season))}${tab("all", L().ccMoneyAll)}</div>`;
   if(!rows.length)
     return `<div class="ch-tile"><h4>${L().ccMoneyTitle}</h4>${head}<div class="ch-empty">${L().ccMoneyEmpty}</div></div>`;
@@ -75494,9 +70175,6 @@ function careerLadderEntrants(){
    The heats and the final were already right, because their whole field is
    twenty and the lobby could not be bigger than the room. */
 const CC_RELOAD_PLAYERS=40;
-/* До какого круга в Reload возрождаются (движок: onDeath, respawnUntilZone). По
-   реплеям первые выбывшие — к восьмому кругу, заметные потери с девятого. */
-const CC_RELOAD_RESPAWN_ZONE=9;
 function ccReloadLobby(teamSize){
   return Math.max(1, Math.round(CC_RELOAD_PLAYERS/(teamSize||2)));
 }
@@ -75959,37 +70637,21 @@ function careerVictoryOn(iso){ return CC_VICTORY.find(v=>v.day===iso) || null; }
 // open — the same flag careerCupField takes, and it means the same thing here:
 // the room is the region rather than the rung the player stands on, so the
 // whole roster is in it and the ladder behind them comes from every band.
-/* stage — стадия соло-серии ('qual' | 'heats' | 'final' | стадии FNCS Solos).
-   Финал и хиты — не случайная сотня из снимка дивизиона, а СИЛЬНЕЙШИЕ: в
-   финале сидят сто лучших из тысяч, в хитах — те, кто прошёл квал. Со
-   случайной сотней медиана рейтинга поля была 67 при карточке игрока 92, и
-   игрок каждую игру шёл первым по урону в лобби (проба
-   tools/career-surge-you-probe.js, 7 сентября 2026: на седьмой зоне свой
-   чистый урон 569 при медиане комнаты 138; в реплеях финала Solo Series
-   победители идут на 200–470, а p90 поля — 350–450). Финал — top-need по
-   рейтингу; хиты и LCQ — из удвоенного верха, перетасованного. */
-function careerSoloField(cr, mine, size, open, stage){
+function careerSoloField(cr, mine, size, open){
   const rnd=careerRng(careerSeed(cr,'solo'));
   const band=ccBand(cr.division);
   const taken=new Set((mine||[]).map(hKey));
   const need=(size||CAREER_CUP_FIELD)-1;
   const players=[];
-  const st=String(stage||'');
-  const tight = !open && /final|heats|lcq/.test(st) ? (/final/.test(st) ? 1 : 2) : 0;
   // The same pool the duo events seat, read as people. Division 1 and the open
   // events get the snapshot; below Division 1 this yields nothing.
-  let real=careerRealPlayers(taken, rnd, open ? 'all' : cr.division);
-  if(tight){
-    const ovrOf=x=>(x._ovr!=null ? x._ovr : (attrsFor(x)||{}).ovr)||0;
-    real=real.slice().sort((a,b)=>ovrOf(b)-ovrOf(a)).slice(0, need*tight);
-    if(tight>1){ for(let i=real.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); const t=real[i]; real[i]=real[j]; real[j]=t; } }
-  }
-  real.slice(0, need).forEach(x=>{ taken.add(hKey(x)); players.push(x); });
+  careerRealPlayers(taken, rnd, open ? 'all' : cr.division).slice(0, need)
+    .forEach(x=>{ taken.add(hKey(x)); players.push(x); });
   while(players.length<need){
     const o = open ? ccOpenFillOvr(rnd)
             : cr.division===1 ? ccD1FillOvr(rnd)
                               : ccBand(cr.division)+careerGauss(rnd)*CC_BAND_SD;
-    players.push(careerLadderPlayer(rnd, o, taken, null, null, null, !open && (cr.division||1)>=2));
+    players.push(careerLadderPlayer(rnd, o, taken));
   }
   return players.map(x=>{ const t=careerTeam([x]); t.name=teamLabel([x]); return t; });
 }
@@ -76346,7 +71008,6 @@ async function runCareerReloadChampionship(){
   const st = ev.stage==='group' ? RCG : ev.stage==='survival' ? RCS : RCF;
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('rc', ev.id||ev.label||'');
-  careerLanArrive('rc', ev);
   /* The squad this season is played in, not a duo.
 
      Every one of these nine runners took the player and one partner and set
@@ -76528,7 +71189,7 @@ async function runCareerReloadChampionship(){
     cr.rc={got:ev.stage, ticket: through || !!(cr.rc && cr.rc.ticket), dropped:dropped,
            seats:seats};
     careerNews(through?'good':'flat', through?'ccNewsRcThrough':dropped?'ccNewsRcDrop':'ccNewsRcOut',
-               [ev.label, place], {tbl:ccStageShot(ranked, you, 1, ev.label)});
+               [ev.label, place]);
   }
 
   const places=(you.stageLog||[]).map(g=>g.place);
@@ -76577,8 +71238,7 @@ async function runCareerReloadChampionship(){
 function ccSoloHomeZone(you){
   if(!you || !you.isYou) return null;                  // чужой дом нам не известен — придёт с голосом
   const s=careerSpotOn('solo');
-  // Сетка соло-метки — по её ключу (careerSpotGrid → careerSoloSet), не сезонная.
-  return s ? careerSpotZoneOf(s, 'solo') : null;
+  return s ? careerSpotZoneOf(s, careerBrSet()) : null;
 }
 /* at — место в ALL_LANDING_ZONES, то есть в ДРОБЛЁНОЙ соло-сетке (58 коробок
    на 36 крупных). Запись дома живёт в индексах крупной сетки (careerSpotGrid),
@@ -76602,7 +71262,7 @@ function ccSoloHomeZoneOf(t){
   if(!t) return null;
   if(t.isYou) return ccSoloHomeZone(t);
   if(t.isMate && typeof MP!=='undefined' && MP.peer && MP.peer.soloHome)
-    return careerSpotZoneOf(MP.peer.soloHome, 'solo');
+    return careerSpotZoneOf(MP.peer.soloHome, careerBrSet());
   return null;
 }
 async function careerLandingPick(field, you, title, kinds, o){
@@ -76620,7 +71280,7 @@ async function careerLandingPick(field, you, title, kinds, o){
   // Свою точку перемотка тоже уважает: метка стоит весь год, и вечер, который
   // никто не смотрит, играется с той же карты, что и вечер, который смотрят.
   if(CC_FF){
-    const mine=careerSpotZone(ccNightSpot(ACTIVE_LANDING_SET));
+    const mine=careerSpotZone(ACTIVE_LANDING_SET);
     careerSpotFearOn(you);
     const groups=buildBotLandingAssignment(field.filter(t=>t!==you)).zoneGroups;
     careerSpotFearOff();
@@ -76699,8 +71359,8 @@ async function careerLandingPick(field, you, title, kinds, o){
      («законтестить») и дальше предлагается как «своя». Напарнику свой дом
      не виден — его голос «домой» несёт номер коробки (at). */
   const solo=!!(you && you.mpTag);
-  const spot=solo ? null : careerSpotOn(ccNightSpot(ACTIVE_LANDING_SET));
-  const home=solo ? ccSoloHomeZone(you) : careerSpotZone(ccNightSpot(ACTIVE_LANDING_SET));
+  const spot=solo ? null : careerSpotOn(ACTIVE_LANDING_SET);
+  const home=solo ? ccSoloHomeZone(you) : careerSpotZone(ACTIVE_LANDING_SET);
   const aura=solo ? 0 : careerSpotAura(ACTIVE_LANDING_SET);
   /* Кто летит к тебе — ДО того, как выбирать.
 
@@ -76755,9 +71415,6 @@ async function careerLandingPick(field, you, title, kinds, o){
   // (плей-ин) разошёлся между «dv» и «drop» без чужих обращений — теперь
   // видно, на каком именно шаге.
   ccMpMark('pre'+(o.pre ? '!' : ''));
-  // Кто уже объявил свою точку — та же комната, тот же расклад, без лишних
-  // бросков. См. ccDropCalls.
-  const calls=ccDropCalls(pre, you, title);
   const rivals=home ? (pre.get(home)||[]).length : 0;
   /* Где стоит вопрос — на карте, если карта уже идёт.
 
@@ -76783,20 +71440,11 @@ async function careerLandingPick(field, you, title, kinds, o){
      Коробка называется своим МЕСТОМ в ALL_LANDING_ZONES: собственного номера
      у зоны нет (человеку показывается i+1, см. landingZoneSuffix), а сетка у
      обоих одна — тот же остров, тот же размер лобби. */
-  const pics=home ? ccDropSideHTML(home, ACTIVE_LANDING_SET) : null;
   const vote=await ccMpChoose('drop'+(o.tag||''), async function(){
-    const p=await ccChoiceBox(L().ccDropTitle,
-      // Чужие объявления — прямо в подсказке: решение принимается здесь.
-      L().ccDropHint+(calls ? ' · '+L().ccDropCalls+' '+calls : ''),
-      /* Картинки — ВНУТРИ кнопок, его слово 6 сентября: «внутри квадратика
-         типа картинки эти». У «своей локации» — квадратик своей точки, у
-         «законтестить» — остров целиком с рамкой на ней. Маленькие, слева от
-         названия: плитки во всю ширину он снял 25 августа. */
-      [ home ? {id:'home', title:L().ccDropHome, note:L().ccDropHomeNote(aura, rivals),
-                icon:(pics ? pics.left : CC_CHOICE_ICON.home), icoCls:(pics ? 'pic' : '')}
-             : {id:'quiet', title:L().ccDropQuiet, note:L().ccDropQuietNote, icon:CC_CHOICE_ICON.quiet},
-        {id:'contest', title:L().ccDropContest, note:L().ccDropContestNote,
-         icon:(pics ? pics.right : CC_CHOICE_ICON.contest), icoCls:(pics ? 'pic pic-wide' : '')}], onMap);
+    const p=await ccChoiceBox(L().ccDropTitle, L().ccDropHint,
+      [ home ? {id:'home', title:L().ccDropHome, note:L().ccDropHomeNote(aura, rivals)}
+             : {id:'quiet', title:L().ccDropQuiet, note:L().ccDropQuietNote},
+        {id:'contest', title:L().ccDropContest, note:L().ccDropContestNote}], onMap);
     if(p.id!=='contest') return {id:p.id, at:(p.id==='home' && home) ? ALL_LANDING_ZONES.indexOf(home) : -1};
     /* Та же комната, что и на кнопке. pre посчитан выше — им и показывается
        остров, иначе «к тебе летят двое» и карта были бы двумя разными
@@ -77146,8 +71794,6 @@ function ccLanTeam(duo, region, fallbackOvr, seated){
      region answers for them. */
   const per=careerSquadSize();
   if(per>cards.length){
-    // Тот же рынок, что у кубков: ЛАН может оказаться первой трио-комнатой
-    // года. См. ccTrioMarket.
     if(typeof ccTrioMarket==='function') ccTrioMarket(null);
     const room=seated || new Set(cards.map(c=>_gcNorm(c.handle)));
     const reg=region || (cards[0] && cards[0].region) || 'EU';
@@ -77173,12 +71819,6 @@ function ccLanTeam(duo, region, fallbackOvr, seated){
      а их лучшие дуо остаются в верхушке списка победителей. Остальные регионы
      и так везут 70-87 силы и титулов не берут — их не трогаем. */
   const lanHome=region || (cards[0] && cards[0].region) || 'EU';
-  /* И поправка считается НА КАРТОЧКУ, а не на команду: перекос в −1.5 меряли
-     на дуо, а нормализация рейтинга внутри региона едет с каждым человеком —
-     в тройке таких карточек три, и перекос растёт вместе с составом. Отсюда
-     множитель per/2: у дуо всё как было, у трио −2.25. Замер того же дня
-     (tools/trio-region-probe.js, зал Глобалов в трио-год): титулы 87/113 в
-     пользу НАК до этой строки. */
   t.pow += (CC_LAN_REGION_EDGE[lanHome]||0)*(per/2);
   return t;
 }
@@ -77656,7 +72296,6 @@ async function runCareerSummit(){
   const st=ccScaleStage(CC_SUMMIT_STAGE[ev.stage]);
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('summit', ev.id||ev.label||'');
-  careerLanArrive('summit', ev);
   /* The squad this season is played in, not a duo.
 
      Every one of these nine runners took the player and one partner and set
@@ -77745,12 +72384,7 @@ async function runCareerSummit(){
       ccPayIn(mine); }
     careerReachAdd(careerReachResult(place, field.length, 1, 'summit'));
     careerNews(cash?'good':'flat', cash?'ccNewsSumCash':'ccNewsSumNoCash',
-               cash?[place, ccNum(cash)]:[place, field.length],
-               {tbl:ccStageShot(ranked, you, 1, ev.label)});
-    /* И благодарность за турнир — обычный пост после ЛАНа: «thanks @redbull…
-       for the event and my teammates throughout the tournament» (@MariusCOW,
-       15 августа). Пишется только после ЛАНов, их в году три-четыре. */
-    careerNews('flat', 'ccPostThanks', [ev.label]);
+               cash?[place, ccNum(cash)]:[place, field.length]);
     careerCongrats(ranked, you, L().ccCongratsSummit(ccLanCityIn('summit')));
     cr.summit={got:'final', ticket:false, through:false};
   } else {
@@ -78088,7 +72722,6 @@ async function runCareerGlobals(){
   const seat=ccGlobalsSeat();
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('globals', ev.id||ev.label||'');
-  careerLanArrive('globals', ev);
   /* The squad this season is played in, not a duo.
 
      Every one of these nine runners took the player and one partner and set
@@ -78161,9 +72794,7 @@ async function runCareerGlobals(){
   careerReachAdd(careerReachResult(place, field.length, 1, 'globals'));
   if(place===1) careerNews('good', 'ccNewsGlobChamp', []);
   careerNews(cash?'good':'flat', cash?'ccNewsGlobCash':'ccNewsGlobNoCash',
-             cash?[place, ccNum(cash)]:[place, field.length],
-             {tbl:ccStageShot(ranked, you, 1, ev.label)});
-  careerNews('flat', 'ccPostThanks', [ev.label]);
+             cash?[place, ccNum(cash)]:[place, field.length]);
   careerCongrats(ranked, you, L().ccCongratsGlobals(ccLanCityIn('globals')));
   cr.globals={place:place, of:field.length, via:seat?seat.via:null, cash:cash};
 
@@ -78531,12 +73162,7 @@ async function runCareerMajor(){
     }
     careerReachAdd(careerReachResult(place, field.length, 1, 'major'));
     careerNews(cash?'good':'flat', cash?'ccNewsMajCash':'ccNewsMajNoCash',
-               cash?[ev.n, place, ccNum(cash)]:[ev.n, place, field.length],
-               {tbl:ccStageShot(ranked, you, 1, stageLabel)});
-    /* И короткая строка о том, как это было, когда финал не удался. Так и
-       пишут: «tried our best / wasn't enough / gg :/» (@MrSavage, 2 августа,
-       8,5 тысячи лайков). Ниже середины поля — значит вечер не получился. */
-    if(place>field.length/2) careerNews('bad', 'ccPostTriedBest', []);
+               cash?[ev.n, place, ccNum(cash)]:[ev.n, place, field.length]);
     careerCongrats(ranked, you, L().ccCongratsMajor(ev.n));
     cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
   } else {
@@ -78630,17 +73256,7 @@ async function runCareerMajor(){
               ticket: won && (ev.stage==='heats' || ev.stage==='lcq')
                       ? true : !!(prev && prev.ticket)};
     careerNews(won?'good':'flat', won?'ccNewsMajThrough':'ccNewsMajOut',
-               [ev.label, place, field.length],
-               {tbl:ccStageShot(ranked, you, 1, stageLabel)});
-    // «qual grands, land X» — свой пост и посты прошедших из комнаты. См. ccGrandsCalls.
-    if(ev.stage==='heats') ccGrandsCalls('grands', you, won, [...heatQualifiers(field, st.cut, winIsATicket())]);
-    /* «Одного места не хватило» — отдельная строка, и говорит её сам игрок.
-
-       Снято с живой ленты (@MrSavage, 31 августа: «i was one spot off globals
-       im depressed»): промах на одно место — это не то же самое, что не пройти,
-       и в жизни про него пишут отдельно. Числа для этого у вечера уже есть:
-       место и отсечка. */
-    if(!won && st.cut && place===st.cut+1) careerNews('bad', 'ccPostOneOff', [ev.label]);
+               [ev.label, place, field.length]);
   }
 
   const places=(you.stageLog||[]).map(g=>g.place);
@@ -78806,8 +73422,7 @@ async function runCareerWeeklyFinal(){
   careerMoneyAdd(ranked, wfPrize);
   careerReachAdd(careerReachResult(place, field.length, 1, 'final'));
   careerNews(cash?'good':'flat', cash?'ccNewsWfCash':'ccNewsWfNoCash',
-             cash?[place, ccNum(cash)]:[place, field.length],
-             {tbl:ccStageShot(ranked, you, 1, L().calWeeklyFinal)});
+             cash?[place, ccNum(cash)]:[place, field.length]);
   careerCongrats(ranked, you, L().calWeeklyFinal);
   careerD1TablePost();
   // The seat is spent whether or not it went well.
@@ -79062,8 +73677,7 @@ async function runCareerReload(){
     const mine=ccShareOf(cash, you);
     ccPayIn(mine);
     // In the feed as well, the way every other paying night is.
-    careerNews('good', 'ccNewsRelCash', [ev.label, showPlace, ccNum(mine)],
-               {tbl:ccStageShot(ranked, you, CAREER.career.division, ev.label, st.cut)});
+    careerNews('good', 'ccNewsRelCash', [ev.label, showPlace, ccNum(mine)]);
   }
   let seat=false, seatText=null;
   if(through){
@@ -79693,499 +74307,6 @@ function careerSoloSeriesCanFor(ev, s){
   return false;
 }
 
-/* ---- PRO-AM CREATOR SERIES, Даллас 12 июля 2026 ----------------------------
-
-   Его просьба, 3 сентября: «про-ам в июне надо сделать». Про-Ама в июне нет —
-   первая остановка серии 12 июля (см. запись в CAREER_YEAR), и играется она.
-
-   Числа Epic'овы, всё остальное названо своим именем:
-   — семь игр, двадцать дуо в одном лобби, Reload;
-   — очки CC_PROAM_PLACE и три за элиминацию;
-   — призовые CC_PROAM_PRIZE плюс бонус за каждую игру (CC_PROAM_GAME);
-   — напарник — КРЕАТОР, а не про: имена настоящие, из опубликованного состава
-     Далласа. Рейтинг креатора наш: 55-65, то есть заметно слабее любого про в
-     этой комнате. Это наша мерка, у Epic таких чисел нет.
-   — приглашают по известности (careerProAmCan), потому что дороги через
-     квалификацию Epic не публикует вовсе. Тоже наша мерка. */
-const CC_PROAM_GAMES=7, CC_PROAM_TEAMS=20, CC_PROAM_KILL=3;
-const CC_PROAM_PLACE=[60,50,45,40,35,30,27,24,21,18,15,12,9,6,3];
-const CC_PROAM_PRIZE=[10000,7000,4500,3000,2200,1800,1400,1200,1000,900,
-                      900,800,700,600,500,450,400,350,200,200];
-const CC_PROAM_GAME=[1000,500,200];
-// Кого зовут: сцена смотрит на охват, а не на дивизион — это шоу.
-const CC_PROAM_REACH=25000;
-/* Креаторы Далласа — опубликованный состав, все двадцать. Их ровно столько,
-   сколько пар в лобби: **половина игроков турнира — контент-мейкеры**, его
-   слово 4 сентября со ссылкой на страницу события. Поэтому и у соперников в
-   паре стоит креатор, а не второй про (см. ccProAmField). */
-const CC_PROAM_CREATORS_NAC=['StableRonaldo','Faxuty','Lacy','Jynxzi','Rawdogmoon','Zemie',
-  'Ash Alk','Braeden','Hamyp','Typical Gamer','Sommerset','Fraanticc','Arky','Crackly',
-  'a2guapo','Yugi','Yusef','mooda','primatepaige','ilyynina'];
-/* Бразилия — состав Сан-Паулу (6 сентября, Team Liquid), тоже опубликованный
-   целиком. Числа того турнира Epic ещё не назвал, а имена назвал. */
-const CC_PROAM_CREATORS_BR=['Flakes Power','Robleis','Patriota','Babi','Carrera','Daryki',
-  'Dengoso','FRTTT','Isafaracco','Kamikaze','Letiltz','OLui','Mantovani','miw','Nanoide',
-  'ThiagoIUTU','Vascurado','zEkO','Derponce','Melany'];
-/* ЕВРОПА. Своей остановки Про-Ама у Европы нет — Epic объявил только Даллас и
-   Сан-Паулу, — поэтому европейское поле СОБРАНО, а не скопировано. Собрано из
-   настоящих полей, а не из головы:
-   — FNCS Pro-Am 2025 (сторона креаторов): Ali-A, Reddysh, Jacob4TV;
-   — Twitch Rivals Creator Series: EMEA Kick-off — единственное большое
-     европейское поле креаторов Fortnite, что вообще существует: TheGrefg,
-     Ibai, IlloJuan, knekro, Vicens, ZormanWorld, Carola, Jolavanille, Setty,
-     Ewron, Kubx, Zrool, Piz, Dhalucard, ShivFPS, Tubbo;
-   — категория Content Creators Liquipedia, живые и европейские: Mawkzy,
-     Stizo, ZetFar, Amar.
-   Ушедших со сцены (Liquipedia status=Retired: Rubius, POW3R, Gotaga,
-   Kinstaar, LOLiTO, Trymacs, HandOfBlood, Vikkstar123, Nikof, elokratz) не
-   зову — турнир играется сегодня. И тем более никого из умерших. */
-/* CoachBoop — его правка 4 сентября, поимённо. Он не из полей выше, и это
-   правильно: в описании канала «Ex-Analyst for the FNCS Broadcast. Coach who
-   watches all of the top level Fortnite in Europe» — то есть человек сцены,
-   который её комментирует и тренирует, с 252 тысячами фолловеров. Ровно тот
-   вид гостя, ради которого Про-Ам и существует. AussieAntics, второй из его
-   списка, в моде уже стоял — он в океанийской корзине ниже.
-
-   Setty отсюда УБРАН — его слово 4 сентября: «Setty тоже это про игрок». Он
-   пришёл из поля Twitch Rivals, но играет он как ПРО (он и в ростере сцены
-   стоит — Japko & panzer & Setty), а сторона креаторов в Про-Аме — это
-   вторая половина пары, не про. */
-const CC_PROAM_CREATORS_EU=['Ali-A','Reddysh','Jacob4TV','TheGrefg','Ibai','IlloJuan',
-  'knekro','Vicens','ZormanWorld','Carola','Jolavanille','Ewron','Kubx','Zrool',
-  'Piz','Dhalucard','ShivFPS','Tubbo','Mawkzy','CoachBoop'];
-/* СНГ. Отдельного региона у Epic нет — русскоязычные играют EU (172 россиянина
-   в европейском ростере), — но креаторы у сцены свои, и его правка 4 сентября
-   просит их отдельно: «и ещё СНГ». Поэтому это не регион карьеры, а корзина
-   имён в общем пуле, и стоит она сразу за европейской.
-
-   Имена — его же ссылки (twitch.tv/mirwana, twitch.tv/at0m), написание сверено
-   с самим Twitch: каналы отвечают displayName MIRWANA и At0m. Плюс Evelone с
-   Liquipedia: в статусе у него Retired, но это про ИГРОКА, а ремесло у него
-   стриминг, и в Про-Ам зовут именно за это.
-
-   Kiryache32 и Siberiajkee отсюда УБРАНЫ — его слово 4 сентября. Их привела
-   Liquipedia, а не он; список СНГ — его список, и это единственный источник,
-   который тут решает.
-
-   Опубликованного поля креаторов из СНГ у Epic нет вовсе — в категории
-   Content Creators на Liquipedia пятьдесят две страницы и НИ ОДНОЙ из СНГ,
-   то есть это пробел самого источника, а не поиска. Ближайшее настоящее
-   событие того же вида — «Битва блогеров» (11 августа 2019, ₽300 тыс., пары
-   «стример + про»): WayCats, Kek the King, Morphia, Типси, Форит. Их здесь
-   нет намеренно: 2019 год, и никакой источник не говорит, снимают ли они
-   Fortnite сегодня. Появится подтверждение — строка добавляется сюда. */
-const CC_PROAM_CREATORS_CIS=['MIRWANA','At0m','Evelone'];
-/* Азия, Океания и Ближний Восток — одной корзиной: у каждого из трёх регионов
-   креаторов на полкоманды, а вместе выходит настоящая часть мира. Все имена с
-   Liquipedia, из категории Content Creators, и у всех в статусе Active:
-   — Япония: Neckokun, Hamuppi, Nephrite, Shinck;
-   — Океания: AussieAntics, Chanzes, LazarBeam, Loserfruit, Overstrand, Winter,
-     Worthy (ушедшие — Muselk, McCreamy, Jacque — не зову);
-   — Ближний Восток: Boter, IMonkey D, Rudex, все трое из Саудовской Аравии.
-   Турции здесь нет: единственный кандидат (Rohat) по инфобоксу немец, то есть
-   он европеец, а не ближневосточный креатор. */
-const CC_PROAM_CREATORS_ASIA=['Neckokun','Hamuppi','Nephrite','Shinck',
-  'AussieAntics','Chanzes','LazarBeam','Loserfruit','Overstrand','Winter','Worthy',
-  'Boter','IMonkey D','Rudex'];
-const CC_PROAM_CREATORS_BY_REGION={EU:CC_PROAM_CREATORS_EU, NAC:CC_PROAM_CREATORS_NAC,
-  NAW:CC_PROAM_CREATORS_NAC, BR:CC_PROAM_CREATORS_BR, CIS:CC_PROAM_CREATORS_CIS,
-  ASIA:CC_PROAM_CREATORS_ASIA, OCE:CC_PROAM_CREATORS_ASIA, ME:CC_PROAM_CREATORS_ASIA};
-/* Кого зовут в Про-Ам — СО ВСЕХ РЕГИОНОВ, его правка 4 сентября: «я бы со всех
-   регионов добавил и ещё СНГ». Так это и устроено у Epic: Про-Ам не турнир
-   региона, а показательный вечер, и в Даллас летели не только американцы.
-
-   Пул общий, но свои впереди: сначала креаторы региона карьеры — их зовут в
-   первую очередь и они узнаваемы, — потом весь остальной мир в порядке
-   регионов. Двадцать команд разбирают начало списка, поэтому «свои впереди»
-   значит, что европейская карьера играет с европейцами и добирает мир, а не
-   наоборот. Повторов нет: имя встречается в пуле один раз. */
-const CC_PROAM_REGION_ORDER=['EU','CIS','NAC','BR','ASIA'];
-function ccProAmCreators(){
-  const r=(typeof ccCareerRegion==='function') ? ccCareerRegion() : 'EU';
-  const mine=CC_PROAM_CREATORS_BY_REGION[r] || [];
-  const out=[], seen=new Set();
-  const add=list=>(list||[]).forEach(n=>{ const k=hKey(n); if(k && !seen.has(k)){ seen.add(k); out.push(n); } });
-  add(mine);
-  CC_PROAM_REGION_ORDER.forEach(reg=>add(CC_PROAM_CREATORS_BY_REGION[reg]));
-  return out;
-}
-// Старое имя оставлено: на него смотрят сторожа и старые сейвы.
-const CC_PROAM_CREATORS=CC_PROAM_CREATORS_NAC;
-/* Рейтинг контент-мейкера — 67, его число (4 сентября). Epic рейтингов не
-   публикует, так что это назначенная величина, а не измеренная: креатор играет
-   заметно ниже про, но не как случайный человек с улицы. Одна на всех, без
-   разброса — так его и просили. */
-/* ТВИЧ КРЕАТОРОВ — ник и число фолловеров, снятые с самого Twitch.
-   Его правка 4 сентября: «у других тоже твич, EU и Америку добавь, сколько
-   фолловеров и т.д.». Числа — ответ публичного GraphQL Twitch на запрос
-   user(login){displayName followers{totalCount}}, снятый 4 сентября 2026;
-   пересняить можно тем же способом.
-
-   ЧЕГО ЗДЕСЬ НЕТ И ПОЧЕМУ. Логин угадывается по имени, и у коротких имён
-   угадывание попадает в чужой канал: 'daryki' с двумя фолловерами — это не
-   бразильский Daryki, а тёзка. Сначала таких отсеивал порог в пять тысяч
-   фолловеров, но 4 сентября его заменило прямое опознание: канал ищется
-   поиском Twitch и сверяется по описанию, языку и последнему эфиру. Опознанный
-   человек стоит в таблице с любым числом (у Mantovani 1822, и это правда он —
-   у него в описании код творца «mantovani»), а порог остался только там, где
-   опознать нечем.
-
-   БЕЗ ТВИЧА ОСТАЛИСЬ СЕМЕРО, и у каждого своя причина:
-     Mawkzy   — 'mawkzy_' с 702 тысячами это французский про по Rocket League,
-                тёзка; фортнайтовского канала не нашлось;
-     Hamyp    — ближайший 'hamy' стримит VALORANT, это не он;
-     Kamikaze — ближайший 'kamikatze' немецкий, не бразилец;
-     miw      — 'miwTL' играет в VALORANT за Team Liquid BR, доказать что это
-                тот же человек нечем;
-     Daryki, ThiagoIUTU, IMonkey D — каналы настоящие, но мёртвые: последние
-                эфиры 2020, 2020 и 2024 год. Живая витрина «кто сейчас в эфире»
-                не должна выводить в эфир того, кто не включался годами. */
-const CC_PROAM_TWITCH={
-  'Ali-A':['alia',291509], 'Reddysh':['reddysh',117551], 'Jacob4TV':['jacob4tv',541777],
-  'TheGrefg':['thegrefg',12292135], 'Ibai':['ibai',20328384], 'IlloJuan':['illojuan',4651204],
-  'knekro':['knekro',1292810], 'Vicens':['vicens',1984327], 'ZormanWorld':['zormanworld',631962],
-  'Carola':['carola',1876129], 'Jolavanille':['jolavanille',808728], 'Kubx':['kubx',440558],
-  'Zrool':['zrool',118874], 'Dhalucard':['dhalucard',573971], 'ShivFPS':['shivfps',1447970],
-  'Tubbo':['tubbo',5238869], 'StableRonaldo':['stableronaldo',5248654], 'Faxuty':['faxuty',668155],
-  'Lacy':['lacy',3388699], 'Jynxzi':['jynxzi',11251813], 'Rawdogmoon':['rawdogmoon',198440],
-  'Zemie':['zemie',1230330], 'Ash Alk':['ashalk',171764], 'Braeden':['braeden',488266],
-  'Typical Gamer':['typicalgamer',1126245], 'Sommerset':['sommerset',1968758], 'Fraanticc':['fraanticc',236880],
-  'Arky':['arky',568617], 'Crackly':['crackly',82729], 'a2guapo':['a2guapo',264918],
-  'Yugi':['yugi',453515], 'Yusef':['yusef',5467], 'mooda':['mooda',791619],
-  'primatepaige':['primatepaige',113995], 'ilyynina':['ilyynina',30092], 'Flakes Power':['flakespower',72507],
-  'Robleis':['robleis',5932515], 'Patriota':['patriota',1125171], 'Babi':['babi',1379011],
-  'Dengoso':['dengoso',81009], 'FRTTT':['frttt',721823], 'Isafaracco':['isafaracco',26275],
-  'Letiltz':['letiltz',67461], 'OLui':['olui',165695], 'Nanoide':['nanoide',80627],
-  'Vascurado':['vascurado',75389], 'zEkO':['zeko',1160158], 'Derponce':['derponce',17651],
-  'MIRWANA':['mirwana',330906], 'At0m':['at0m',107047],
-  // СНГ. Evelone живёт на evelone192, а не на evelone: короткий канал — чужой,
-  // с семью сотнями подписчиков. Тот же капкан, что с Daryki.
-  // Снято 4 сентября 2026 тем же запросом, что и остальные.
-  'CoachBoop':['coachboop',252203],
-  'Evelone':['evelone192',2532787],
-  // Азия, Океания, Ближний Восток. У японцев и саудовцев каналов на Twitch с
-  // подтверждаемым размером не нашлось — они стоят в поле без числа.
-  'Neckokun':['neckokun',22477], 'AussieAntics':['aussieantics',1642115],
-  'Chanzes':['chanzes',638265], 'LazarBeam':['lazarbeam',405357],
-  'Loserfruit':['loserfruit',3045429], 'Overstrand':['overstrand',117593],
-  'Rudex':['rudex',155382],
-  /* Добор 4 сентября, его «найди сам твичи». Угадывание логина по имени
-     исчерпало себя (голое имя почти всегда занято сквоттером с нулём), поэтому
-     каналы искались ПОИСКОМ Twitch — searchFor(userQuery, target:{index:CHANNEL}),
-     тот же публичный GraphQL, — а найденное сверялось по описанию канала,
-     языку и последнему эфиру: у Setty в описании FNCS, у Piz итальянский и
-     «mi chiamo Riccardo», у Melany португальский, у Winter и Worthy орг PWR,
-     у Nephrite и Shinck японский с фортнайтом в тексте. Числа снимались тем же
-     днём. */
-  'Ewron':['ewroon',1102932], 'Piz':['pizfn',832871],
-  'Carrera':['carreraaa',4962088], 'Melany':['melanylolee',55765],
-  'Mantovani':['mantovani',1822],
-  'Winter':['winter1k',36826], 'Worthy':['worthyy',196739], 'Boter':['not_boter',95220],
-  'Nephrite':['nephrite_2',14332], 'Shinck':['shincky',5615], 'Hamuppi':['dfm_hamuppi',4310]
-};
-function ccProAmTwitch(name){ return CC_PROAM_TWITCH[name] || null; }
-function ccProAmFollowers(name){ const t=ccProAmTwitch(name); return t ? t[1] : 0; }
-/* АВАТАРКИ КРЕАТОРОВ — его правка 4 сентября: «аватарки контент креаторов».
-   До неё креатор был инициалами в кружке: на витрине каналов, на карточке
-   карьеры за него и в лобби Про-Ама. Между тем у каждого из них аватарка
-   есть, и она публичная — тот же GraphQL Twitch, которым сняты ники и
-   фолловеры, отдаёт её полем profileImageURL.
-
-   Картинки лежат файлами в photos/creators/ (150×150, как их отдаёт Twitch), а
-   не ссылками на CDN: страница не должна зависеть от того, жив ли чужой
-   домен, и уж точно не должна ходить на Twitch с каждого открытия вкладки.
-   Пересобрать — `node tools/fetch-creator-avatars.js`, он же и печатает эту
-   таблицу.
-
-   Скрипт не берёт дефолтную картинку Twitch (user-default-pictures): у канала
-   без аватарки её нет вовсе, и качать заглушку значит выдать пустоту за
-   портрет. Кто без Twitch или без картинки — рисуется инициалами, как раньше. */
-const CC_PROAM_AVA_DIR='photos/creators/';
-const CC_PROAM_AVA={
-  'Ali-A':'alia.png', 'Reddysh':'reddysh.jpeg', 'Jacob4TV':'jacob4tv.png',
-  'TheGrefg':'thegrefg.png', 'Ibai':'ibai.png', 'IlloJuan':'illojuan.png',
-  'knekro':'knekro.jpeg', 'Vicens':'vicens.png', 'ZormanWorld':'zormanworld.png',
-  'Carola':'carola.png', 'Jolavanille':'jolavanille.png', 'Kubx':'kubx.png',
-  'Zrool':'zrool.png', 'Dhalucard':'dhalucard.png', 'ShivFPS':'shivfps.png',
-  'Tubbo':'tubbo.png', 'StableRonaldo':'stableronaldo.png', 'Faxuty':'faxuty.png',
-  'Lacy':'lacy.png', 'Jynxzi':'jynxzi.png', 'Rawdogmoon':'rawdogmoon.png',
-  'Zemie':'zemie.png', 'Ash Alk':'ashalk.png', 'Braeden':'braeden.png',
-  'Typical Gamer':'typicalgamer.png', 'Sommerset':'sommerset.png', 'Fraanticc':'fraanticc.png',
-  'Arky':'arky.png', 'Crackly':'crackly.png', 'a2guapo':'a2guapo.png',
-  'Yugi':'yugi.png', 'Yusef':'yusef.png', 'mooda':'mooda.png',
-  'primatepaige':'primatepaige.png', 'ilyynina':'ilyynina.png', 'Flakes Power':'flakespower.png',
-  'Robleis':'robleis.png', 'Patriota':'patriota.png', 'Babi':'babi.png',
-  'Dengoso':'dengoso.png', 'FRTTT':'frttt.png', 'Isafaracco':'isafaracco.png',
-  'Letiltz':'letiltz.png', 'OLui':'olui.png', 'Nanoide':'nanoide.png',
-  'Vascurado':'vascurado.png', 'zEkO':'zeko.png', 'Derponce':'derponce.png',
-  'MIRWANA':'mirwana.png', 'At0m':'at0m.png', 'CoachBoop':'coachboop.png',
-  'Evelone':'evelone192.png', 'Neckokun':'neckokun.png',
-  'AussieAntics':'aussieantics.png', 'Chanzes':'chanzes.png', 'LazarBeam':'lazarbeam.png',
-  'Loserfruit':'loserfruit.png', 'Overstrand':'overstrand.png', 'Rudex':'rudex.png',
-  'Ewron':'ewroon.png', 'Piz':'pizfn.png',
-  'Carrera':'carreraaa.png', 'Melany':'melanylolee.png', 'Mantovani':'mantovani.png',
-  'Winter':'winter1k.png', 'Worthy':'worthyy.png', 'Boter':'not_boter.png',
-  'Nephrite':'nephrite_2.png', 'Shinck':'shincky.png', 'Hamuppi':'dfm_hamuppi.png'
-};
-function ccProAmAvatar(name){
-  const f=CC_PROAM_AVA[name];
-  return f ? CC_PROAM_AVA_DIR+f : null;
-}
-/* Сколько подписчиков приносит вечер рядом с ним. Аудитория креатора — не
-   твоя, но часть её тебя видит: одна тысячная, и не больше потолка, чтобы
-   вечер с Jynxzi не перекрыл год работы (для сравнения: победа на Глобалах
-   даёт около 22 тысяч, см. careerReachResult). */
-const CC_PROAM_REACH_SHARE=0.001, CC_PROAM_REACH_CAP=8000;
-function ccProAmReachFrom(name){
-  return Math.min(CC_PROAM_REACH_CAP, Math.round(ccProAmFollowers(name)*CC_PROAM_REACH_SHARE));
-}
-const CC_PROAM_CREATOR_OVR=67;
-const CC_PROAM_CREATOR_LO=CC_PROAM_CREATOR_OVR, CC_PROAM_CREATOR_HI=CC_PROAM_CREATOR_OVR;
-function ccProAmCreatorCard(name){
-  const ovr=CC_PROAM_CREATOR_OVR;
-  const tw=ccProAmTwitch(name);
-  return {handle:name, nick:name, nat:null, region:ccCareerRegion(), tier:'ladder',
-          rating:ovr, _ovr:ovr, _targetOvr:ovr, org:null, creator:true,
-          // Лицо — с его же канала (см. CC_PROAM_AVA): в лобби Про-Ама половина
-          // строк это креаторы, и без портретов комната читалась инициалами.
-          _photo:ccProAmAvatar(name),
-          // Твич человека и его аудитория — то, чем креатор в этой комнате и
-          // отличается от про: рейтингом он ниже, а смотрят его больше.
-          tw:tw?tw[0]:null, followers:tw?tw[1]:0};
-}
-/* Поле турнира: девятнадцать пар «про + креатор».
-   Про берутся из настоящего ростера сцены, как в любом вечере; креаторы — из
-   списка выше, каждый один раз. Свой креатор (ccProAmMate) из списка изымается,
-   чтобы один человек не сидел в двух парах. */
-function ccProAmField(cr, mine, mineCreator){
-  const rnd=careerRng(ccHashStr('proamfield|'+ccCareerSeed()+'|'+(cr.season||1)));
-  const taken=new Set(mine.map(hKey));
-  /* Про берутся С ВЕРХА сцены, а не случайной явкой: на Про-Ам зовут громкие
-     имена (у Epic в Далласе Clix, Bugha, Peterbot, Ritual), и это одно из
-     немногих мест, где «двадцать лучших» — не догадка, а описание турнира. */
-  const pros=careerRealPlayers(taken, rnd, cr.division===1 ? 1 : 'all')
-    .filter(p=>p && !taken.has(hKey(p)))
-    .sort((a,b)=>ccCardOvr(b)-ccCardOvr(a));
-  const left=ccProAmCreators().filter(n=>hKey(n)!==hKey(mineCreator&&mineCreator.handle));
-  const teams=[];
-  for(let i=0; i<CC_PROAM_TEAMS-1; i++){
-    const pro=pros[i];
-    const creator=left[i % left.length];
-    if(!pro || !creator) break;
-    taken.add(hKey(pro));
-    const squad=[pro, ccProAmCreatorCard(creator, rnd)];
-    const t=careerTeam(squad, false, true);
-    t.name=teamLabel(squad);
-    teams.push(t);
-  }
-  return teams;
-}
-function proAmPoints(place){ return CC_PROAM_PLACE[place-1] || 0; }
-function careerProAmOn(iso){
-  const list=careerYearDays().get(iso||careerToday())||[];
-  return list.find(e=>e.kind==='proam') || null;
-}
-/* ---- ПРИГЛАШЕНИЕ НА ПРО-АМ --------------------------------------------------
-
-   Его правка 4 сентября: «если игрока пригласят, ему отправят в личные
-   сообщения, хочет ли он принять участие, и потом, если соглашается, может
-   себе выбрать контент-мейкера».
-
-   Так это и устроено в жизни: отбора на Про-Ам нет, есть приглашение — зовут
-   Epic и клуб-хозяин площадки (в Далласе Dignitas), критериев никто не
-   публикует. Поэтому известность открывает не сам турнир, а ПИСЬМО: за две
-   недели до даты приходит ветка в инбоксе, и дальше это разговор — согласиться
-   или отказаться, а согласившись, выбрать себе пару из тех, кто едет.
-
-   Отказ — тоже ответ и держится до конца сезона: в следующем году позовут
-   снова. */
-const CC_PROAM_INVITE_DAYS=14;   // за сколько дней пишут
-const CC_PROAM_PICK=6;           // сколько креаторов предлагают на выбор
-function careerProAmInv(){
-  const cr=CAREER && CAREER.career; if(!cr) return null;
-  const inv=cr.proamInv;
-  return (inv && inv.season===cr.season) ? inv : null;
-}
-// Ближайший Про-Ам сезона, если он ещё впереди.
-function careerProAmNextDay(){
-  let day=careerToday();
-  for(let i=0;i<=CC_PROAM_INVITE_DAYS;i++){
-    if(careerProAmOn(day)) return day;
-    day=ccAddDays(day, 1);
-  }
-  return null;
-}
-function careerProAmInviteTick(){
-  const cr=CAREER && CAREER.career; if(!cr) return null;
-  if(careerProAmInv()) return null;                    // уже писали в этом сезоне
-  if((cr.proam||{})[cr.season]) return null;           // и уже съездил
-  if(careerReach()<CC_PROAM_REACH) return null;        // зовут по известности
-  const day=careerProAmNextDay(); if(!day) return null;
-  const ev=careerProAmOn(day);
-  cr.proamInv={season:cr.season, state:'sent', mate:null, day:day};
-  const who={handle:CC_PROAM_HOST, org:true, proam:true};
-  const t=careerDmFind(CC_PROAM_HOST) || careerDmThread(who);
-  t.proam=true; t.who=who;
-  careerDmPush(t, 'them', 'dmProAmInvite', [L()[ev.label]||ev.label, ccDayLabel(day)]);
-  return t;
-}
-const CC_PROAM_HOST='Dignitas';
-// Кого предлагают в пару: свой регион первым, шестеро, и набор не меняется от
-// перерисовки — приглашение одно, а не новый список на каждый заход.
-function careerProAmPickList(){
-  const cr=CAREER.career;
-  const rnd=careerRng(ccHashStr('proampick|'+ccCareerSeed()+'|'+(cr.season||1)));
-  const list=ccProAmCreators().slice(0, 30);
-  for(let i=list.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); const t=list[i]; list[i]=list[j]; list[j]=t; }
-  /* Жребий СНАЧАЛА, сортировка потом. Если сортировать весь список и брать
-     шесть верхних, жребий пропадает: каждый сезон предлагали бы одну и ту же
-     шестёрку самых крупных каналов мира. Едут разные — а показываем их по
-     аудитории, потому что по ней и выбирают. */
-  const six=list.slice(0, CC_PROAM_PICK);
-  six.sort((a,b)=>ccProAmFollowers(b)-ccProAmFollowers(a));
-  return six;
-}
-function careerProAmYes(id){
-  const inv=careerProAmInv(); if(!inv || inv.state!=='sent') return false;
-  inv.state='yes';
-  const t=careerDms().find(x=>x.id===id); if(t){
-    careerDmPush(t, 'me', 'dmProAmYes', []);
-    careerDmPush(t, 'them', 'dmProAmPick', []);
-  }
-  careerSave(); careerRenderHub('social'); return true;
-}
-function careerProAmNo(id){
-  const inv=careerProAmInv(); if(!inv || inv.state!=='sent') return false;
-  inv.state='no';
-  const t=careerDms().find(x=>x.id===id); if(t){
-    careerDmPush(t, 'me', 'dmProAmNo', []);
-    careerDmPush(t, 'them', 'dmProAmNoOk', []);
-  }
-  careerSave(); careerRenderHub('social'); return true;
-}
-function careerProAmPick(id, name){
-  const inv=careerProAmInv(); if(!inv || inv.state!=='yes') return false;
-  if(careerProAmPickList().indexOf(name)<0) return false;
-  inv.mate=name;
-  const t=careerDms().find(x=>x.id===id);
-  if(t) careerDmPush(t, 'them', 'dmProAmMateOk', [name]);
-  careerSave(); careerRenderHub('social'); return true;
-}
-function careerProAmCan(){
-  const ev=careerProAmOn(careerToday());
-  if(!ev) return false;
-  const cr=CAREER.career;
-  if((cr.proam||{})[cr.season]) return false;          // раз в год
-  const inv=careerProAmInv();
-  // Поехать можно только по приглашению, которое принял: известность приводит
-  // письмо, а не автобус до Далласа.
-  return !!inv && inv.state==='yes';
-}
-function ccProAmWhyLocked(){
-  const inv=careerProAmInv();
-  if(inv && inv.state==='no') return L().ccProAmTurnedDown;
-  if(inv && inv.state==='sent') return L().ccProAmUnanswered;
-  return careerReach()>=CC_PROAM_REACH ? L().ccProAmPlayed
-                                       : L().ccProAmNeedReach(ccNum(CC_PROAM_REACH));
-}
-/* Креатор в пару: имя настоящее, сила наша. Выбранный игроком стоит впереди
-   броска — бросок остался для тех, кто согласился и не выбрал никого. */
-function ccProAmMate(){
-  const cr=CAREER.career;
-  const inv=careerProAmInv();
-  if(inv && inv.mate) return ccProAmCreatorCard(inv.mate);
-  const rnd=careerRng(ccHashStr('proam|'+ccCareerSeed()+'|'+(cr.season||1)));
-  const list=ccProAmCreators();
-  const name=list[Math.floor(rnd()*list.length)];
-  return ccProAmCreatorCard(name, rnd);
-}
-async function runCareerProAm(){
-  const cr=CAREER.career;
-  const ev=careerProAmOn(careerToday());
-  if(!ev || !careerProAmCan()) return;
-  const me=careerCard(); if(!me) return;
-  const mate=ccProAmMate();
-  const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
-  const prevSet=ACTIVE_LANDING_SET;
-  CARD_MODE=true; squadSize=2; drafted=[me, mate];
-  // Reload — значит остров Reload, как у всего круга Reload в этом моде.
-  useLandingSet(ZONE_SETS.r4 ? 'r4' : careerBrSet());
-  skipAnimation=false; CC_SKIP_RUN=false;
-  resetRunRecord();
-  document.getElementById('majorStages').innerHTML='';
-  const rsPrev=document.getElementById('runSummary'); if(rsPrev) rsPrev.innerHTML='';
-  document.getElementById('lobbyTitle').textContent='';
-  document.getElementById('lobbyBody').innerHTML='';
-  clearEventPanel();
-  document.getElementById('finalBanner').style.display='none';
-  clearLandingResultsMap();
-  CAREER_RUN=true;
-  show('screen-results');
-  ensureSkipButton();
-  // Поездка на ЛАН: перелёт и пост из города, как у Саммита и Парижа.
-  careerLanArrive('proam', ev);
-  const you=careerYouTeam(drafted);
-  you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
-  /* Девятнадцать соперников — тоже «про + креатор»: половина игроков турнира
-     контент-мейкеры, это его формат. Если ростер вдруг не дал столько имён,
-     добираем обычным полем, чтобы лобби не оказалось пустым. */
-  let rivals=ccProAmField(cr, drafted, mate);
-  if(rivals.length<CC_PROAM_TEAMS-1)
-    rivals=rivals.concat(careerCupField(cr, drafted, CC_PROAM_TEAMS-rivals.length));
-  const field=[you, ...rivals.slice(0, CC_PROAM_TEAMS-1)];
-  const zones=null;
-  await simulateGamesLive(field, CC_PROAM_GAMES, proAmPoints, CC_PROAM_KILL, 'stage', 0, null, zones,
-    {lobbySize:CC_PROAM_TEAMS, stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
-     dropEachGame:(g,room)=>careerLandingPick(room||field, you, ev.label, ['proam'])});
-  const ranked=careerRankField(field);
-  const place=ranked.indexOf(you)+1;
-  /* Деньги двумя частями, обе Epic'овы: таблица мест и бонус за КАЖДУЮ игру.
-     Бонус считается по журналу игр, а не по итогу вечера — в этом и смысл
-     турнира, где платят за каждую победу. */
-  const table=CC_PROAM_PRIZE[place-1] || 0;
-  const perGame=(you.stageLog||[]).reduce((s,g)=>s+(CC_PROAM_GAME[(g.place||99)-1]||0), 0);
-  const cash=table+perGame;
-  careerMoneyAdd(ranked, (p)=>CC_PROAM_PRIZE[p-1] || 0);
-  const shell=createStageCardShell(ev.label);
-  await revealStageLog(you, shell, true);
-  finalizeStageCard(shell, place, field.length, you.stagePts, cash>0, false,
-    cash ? L().ccProAmCash(ccMoney(ccShareOf(cash, you))) : L().ccProAmNoCash);
-  await revealStandings(shell, ranked, you, 0, null, null, null, null, true);
-  removeSkipButton();
-  careerPrAdd(ranked, {div:cr.division, kind:'proam'});
-  if(cash){
-    const mine=ccShareOf(cash, you);
-    ccPayIn(mine);
-    careerNews('good', 'ccNewsProAmCash', [place, ccNum(mine)],
-               {tbl:ccStageShot(ranked, you, cr.division, ev.label)});
-  } else careerNews('flat', 'ccNewsProAmOut', [place, field.length]);
-  careerReachAdd(careerReachResult(place, field.length, cr.division, 'proam'));
-  /* И аудитория напарника: вечер шёл на его канале тоже. Считается от его
-     настоящих фолловеров (ccProAmReachFrom), поэтому Jynxzi и Crackly — это
-     два разных вечера, хотя турнир один. */
-  const fromMate=ccProAmReachFrom(mate.handle);
-  if(fromMate){
-    careerReachAdd(fromMate, true);
-    careerNews('good', 'ccNewsProAmReach',
-               [ccHandle(mate.handle), ccNum(mate.followers||0), ccNum(fromMate)]);
-  }
-  cr.proam=cr.proam||{}; cr.proam[cr.season]=careerToday();
-  const places=(you.stageLog||[]).map(g=>g.place);
-  cr.log=cr.log||[];
-  careerGrowEvent(place, field.length, you, field);
-  cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:place,
-               of:field.length, pts:you.stagePts, passed:false, ovr:CAREER.player.ovr,
-               games:CC_PROAM_GAMES, wins:you.wins||0, elims:you.stageElims||0,
-               avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
-               mate: mate.handle, prize:ccShareOf(cash, you), kind:'proam'});
-  await ccMpClose(ranked);
-  careerAdvanceTo(ccAddDays(careerToday(), 1));
-  careerSave();
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet); CC_KILL_CAP=0;
-  careerRenderHub('centre');
-  careerTwoRoundResultCard({title:ev.label, place:place, through:cash>0,
-    wins:you.wins||0, cash:cash, cut:0});
-}
 async function runCareerSoloSeries(){
   const cr=CAREER.career;
   const ev=careerSoloSeriesOn(careerToday());
@@ -80240,20 +74361,11 @@ async function runCareerSoloSeries(){
   CARD_MODE=true;
   squadSize=1;
   drafted=[me];
-  /* Соло-ФНКС — на острове седьмой главы (s42), дроблёном под соло той же
-     сеткой, что и январская серия: коробки точек с никами, красные — где
-     сели по нескольку. Его слово 6 сентября со скрином карты Solo Series:
-     «как на соло выглядела, также и на solo fncs нужно сделать, а не 100
-     квадратиков». Сотня клеток s42solo (1 сентября) больше не садится.
-     Остров именно s42, а не careerBrSet(): в трио-год сезонный — шестая
-     глава, а FNCS Solos играются на седьмой (репорт того же дня). */
-  useLandingSet(ev.spec ? 's42' : careerBrSet());
-  /* Дом на этом вечере — соло-метка, а не сезонный дуо-дом. Его правка,
-     3 сентября: «в соло ещё метки, не для соло, а для других режимов».
-     Указатель держится весь вечер и гасится вместе с остальным состоянием
-     прогона; сетка у соло своя (сто клеток), метка ставится по координатам,
-     поэтому выбранная в хабе точка попадает в свою клетку. См. ccNightSpot. */
-  ccNightSpotOn('solo');
+  /* Соло-ФНКС садится на свою сетку: тот же остров, но сто клеток вместо
+     тридцати четырёх — по одной на игрока лобби. Его карта с квадратиками,
+     1 сентября. Остальные вечера (январская серия и всё прочее) остаются на
+     обычной сетке сезона. */
+  useLandingSet(ev.spec ? 's42solo' : careerBrSet());
 
   skipAnimation=false; CC_SKIP_RUN=false;
   resetRunRecord();
@@ -80311,7 +74423,7 @@ async function runCareerSoloSeries(){
      #278 scroll:96 vs sky:96». Сторож — live-two с CC_NICK_A=Sky CC_NICK_B=Scroll. */
   const field=[...humans, ...(peerBot ? [peerBot] : []),
                ...careerSoloField(lobbyCr, mate ? [me, pc] : peerBot ? [me, peerCard] : drafted,
-                                  size-(humans.length-1)-(peerBot ? 1 : 0), open, ev.stage)];
+                                  size-(humans.length-1)-(peerBot ? 1 : 0), open)];
 
   const kindsForDrop=['solo'];
   const zones=null;
@@ -80354,8 +74466,7 @@ async function runCareerSoloSeries(){
     if(cash){ const mine=ccShareOf(cash, you); ccPayIn(mine); }
     careerReachAdd(careerReachResult(place, field.length, 1, 'solo'));
     careerNews(cash?'good':'flat', cash?'ccNewsSoloCash':'ccNewsSoloOut',
-               cash?[place, ccNum(cash)]:[ev.label, place, field.length],
-               {tbl:ccStageShot(ranked, you, CAREER.career.division, ev.label, cut)});
+               cash?[place, ccNum(cash)]:[ev.label, place, field.length]);
     ccSoloStateSet(ev, me, {got:'final', pass:'final', seat:null});
     if(mate) ccSoloStateSet(ev, pc, {got:'final', pass:'final', seat:null});
   } else {
@@ -80375,8 +74486,6 @@ async function runCareerSoloSeries(){
     const moved=spec ? !!seatOf(you) : through;
     careerNews(moved?'good':'flat', moved?'ccNewsSoloThrough':'ccNewsSoloOut',
                [ev.label, place, field.length]);
-    // Хиты соло — те же «квальнулся, сажусь туда-то», только в финал. См. ccGrandsCalls.
-    if(ev.stage==='heats' && !spec) ccGrandsCalls('finals', you, moved, field.filter(passOf));
   }
   finalizeStageCard(shell, place, field.length, you.stagePts,
     ccStagePassed(through, {cut:cut}, place, prizeFn),
@@ -80423,7 +74532,7 @@ async function runCareerSoloSeries(){
     careerSave();
   }
 
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet); CC_KILL_CAP=0; ccNightSpotOff();
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet); CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerTwoRoundResultCard({title:ev.label, place:place, through:through||cash>0,
     wins:you.wins||0, cash:cash, cut:cut});
@@ -80651,27 +74760,20 @@ async function runCareerCup(){
   // The picture everybody posts: the standings, with the poster in them. Five
   // rows and then your own if it fell below them.
   const bare=t=>String(t.name||'').replace(/<[^>]*>/g,'');
-  // Окно вокруг того, кто постит, флаги, отсечка — как у всех остальных
-  // вечеров (ccStageShot); раньше здесь была своя пятёрка без матчей и элимов.
-  const shotOf=(t, cap)=>ccStageShot(ranked, t, from, cap||undefined, cut);
+  const shotRows=ranked.slice(0,5).map((t,i)=>({p:i+1, n:bare(t), s:t.stagePts}));
+  if(place>5) shotRows.push({p:place, n:bare(you), s:you.stagePts});
 
   const winner=ranked[0];
   // Say which it is. In Division 1 a played Monday rides into Tuesday's table,
   // so the number is the week's and the line says so with the games behind it;
   // everywhere else — and on a Tuesday whose Monday was never played — it is
   // one evening, and the plain line is the true one.
-  /* Проход в финал недели — в той же строке, что и итог, а не вторым постом.
-     Его скрин 3 сентября: «Div 1 Cup, week total: top 5 of 170…» и сразу под
-     ним «Top 5 on the week — through to the Weekly Final» от того же
-     человека тем же вечером — два почти одинаковых поста. */
-  const wfIn=passed && from===1;
   const feed=[carry
-    ? [passed?'good':'flat', wfIn ? 'ccNewsResultWeekWf' : 'ccNewsResultWeek',
-       wfIn ? [place, field.length, you.stagePts, CAREER_CUP_GAMES*2]
-            : [place, field.length, from, you.stagePts, CAREER_CUP_GAMES*2]]
-    : [passed?'good':'flat', wfIn ? 'ccNewsResultWf' : 'ccNewsResult',
-       wfIn ? [place, field.length, you.stagePts] : [place, field.length, from, you.stagePts]]];
+    ? [passed?'good':'flat', 'ccNewsResultWeek',
+       [place, field.length, from, you.stagePts, CAREER_CUP_GAMES*2]]
+    : [passed?'good':'flat', 'ccNewsResult', [place, field.length, from, you.stagePts]]];
   if(passed && from>1) feed.push(['good', 'ccNewsPromoted', [from-1]]);
+  else if(passed) feed.push(['good', 'ccNewsWfIn', [place]]);
   if(Math.round(growth.after)!==Math.round(growth.before))
     feed.push([growth.delta>0?'good':'bad', 'ccNewsRating', [Math.round(growth.before), Math.round(growth.after)]]);
   // The winner posts it themselves — when the winner is somebody. A press line
@@ -80688,12 +74790,12 @@ async function runCareerCup(){
       {by:{name: wc ? wc.handle : ccOneOf(bare(winner)),
            ovr: wc ? (wc._ovr!=null?wc._ovr:(attrsFor(wc)||{}).ovr) : null,
            card: wc ? {handle:wc.handle, region:wc.region||'EU'} : null},
-       tbl:shotOf(winner)}]);
+       tbl:{div:from, rows:shotRows, me:bare(winner)}}]);
   }
   // And so does the player, which is what puts something on their own profile.
   feed.push([place<=ccTeams(CAREER_CUP_CUT)?'good':'flat', 'ccPostPlaced',
     [place, from, mate?ccHandle(mate.handle):null, careerWeek()+1],
-    {tbl:shotOf(you)}]);
+    {tbl:{div:from, rows:shotRows, me:bare(you)}}]);
   // The other half of the duo posts the same night — their account, your tag,
   // the same screenshot. Every week, not only the good ones: your partner
   // posting the result is what a duo's timeline looks like, and below
@@ -80704,7 +74806,7 @@ async function runCareerCup(){
   if(mateBy)
     feed.push([passed?'good':'flat', 'ccPostPlaced',
       [place, from, ccHandle(CAREER.player.nick), careerWeek()+2],
-      {by:mateBy, tbl:shotOf(you)}]);
+      {by:mateBy, tbl:{div:from, rows:shotRows, me:bare(you)}}]);
   if(morale){
     // The partner speaks for themselves, first person from their own account —
     // the press reporting a Division 4 duo's mood was the feed at its least
@@ -80723,7 +74825,7 @@ async function runCareerCup(){
                               : (winner.cards||winner.squad||[]).map(c=>c&&c.handle))
       .filter(Boolean).map(h=>'@'+ccHandle(h)).join(' ');
     feed.push(['good', 'ccNewsCongrats', [wtags||bare(winner), L().ccCongratsCup],
-      {tbl:shotOf(winner, L().ccCongratsCup)}]);
+      {tbl:{div:1, cap:L().ccCongratsCup, rows:shotRows, me:bare(winner)}}]);
   }
   // The top of the scale, not a ceiling drawn for this career: the only thing
   // left to say near 99 is that there is nowhere above it.
@@ -81925,7 +76027,7 @@ function ccArcArt(key){
 function ccArcRow(sn, key, label, valueHTML, you){
   const open=CH_ARC_OPEN===key;
   const art=ccArcArt(key);
-  return `<div class="ch-row arc-row${open?' arc-on':''}" onclick="careerArcOpen(\'${key}\')">
+  return `<div class="ch-row arc-row${open?' arc-on':''}" onclick="careerArcOpen('${key}')">
       <em>${art?`<img class="arc-logo" src="${art}" alt="" loading="lazy" onerror="this.remove()">`:''}${esc(label)}</em>
       <b class="${you?'ch-goal-met':''}">${valueHTML}<i class="arc-caret">${open?'▾':'▸'}</i></b>
     </div>`+(open ? careerArcTableHTML(sn, key) : '');
@@ -81974,7 +76076,7 @@ function careerArchiveHTML(){
   const chipsS=doneSeasons.map(n=>`<button class="cc-back${n===sn?' cc-on':''}"
     onclick="careerArcPick(${n})">${esc(L().ccMoneySeason(n))}</button>`).join('');
   const chipsR=REGIONS.map(r=>`<button class="cc-back${r.code===reg?' cc-on':''}"
-    onclick="careerArcReg(\'${r.code}\')">${esc(regionName(r.code))}</button>`).join('');
+    onclick="careerArcReg('${r.code}')">${esc(regionName(r.code))}</button>`).join('');
   const rowsR=a.regional.map(ev=>{const w=ev.perReg[reg];
     if(partial && !ccArcDoneBy('Major'+ev.n+'_Final')) return ccArcSoonRow(ev.label, 'm|'+ev.n+'|'+reg);
     return ccArcRow(sn, 'm|'+ev.n+'|'+reg, ev.label,
@@ -82093,7 +76195,7 @@ function careerProfileHTML(){
         <thead><tr>
           <th style="cursor:pointer;" onclick="careerLogSort(null)">${L().evEvent}${CH_LOG_SORT?'':' ▾'}</th><th class="ev-num">${L().rankHeader}</th>
           <th class="ev-num">${L().ptsHeader}</th><th class="ev-num">${L().evPr}</th>
-          <th class="ev-num" style="cursor:pointer;" onclick="careerLogSort(\'prize\')">${L().prizeHeader}${CH_LOG_SORT==='prize'?' ▾':''}</th>
+          <th class="ev-num" style="cursor:pointer;" onclick="careerLogSort('prize')">${L().prizeHeader}${CH_LOG_SORT==='prize'?' ▾':''}</th>
           <th>${L().ccResPartner}</th><th class="ev-num">${L().matchesWord}</th>
           <th class="ev-num">${L().winsWord}</th><th class="ev-num">${L().killsHeader}</th>
           <th class="ev-num">${L().evAvg}</th><th class="ev-num">${L().ccRoOvr}</th>
@@ -82131,1568 +76233,5 @@ function careerRatingCurve(log){
     </svg>
     <span class="ev-chart-hi">${hi}</span><span class="ev-chart-lo">${lo}</span>
   </div>`;
-}
-
-/* =====================================================================
-   3 сентября 2026 — девять пунктов из разбора «чего не хватает карьере».
-   Его выбор: 2 (события-развилки), 3 (статистика), 4 (зал славы по слотам),
-   5 (контракт с бонусом и уход клуба), 8 (ЛАН как поездка), 9 (план на игру),
-   11 (план недели), 12 (мета сезона), 13 (школа как выбор).
-   Всё, что трогает силу игры (8, 9), меняет только РАЗБРОС своей команды и
-   ни разу не среднее — см. tools/career-spread-probe.js.
-   ===================================================================== */
-
-/* ---- 9. План на вечер и нервы первого ЛАНа — ЗАМЕРЕНЫ И НЕ ВЫПУЩЕНЫ ----
-
-   Идея была: выбор перед вечером («на место» / «на элимы») и нервы первого
-   ЛАНа, которые меняют РАЗБРОС своей команды, но не среднее. Два рычага
-   пробовали, оба по tools/career-spread-probe.js, 600 игр на режим, комната
-   Дивизиона 1 на 50:
-
-   1. Ширина броска формы (gameForm) у своей команды. От ×0.3 до ×2.0 — ни
-      место, ни победы, ни провалы не сдвинулись: дуэли по _pc решают в
-      комнате меньше, чем ротации и давление зоны. Невидимый выбор.
-
-   2. Агрессия (zone-sim: seek × _seekMul — хук в движке оставлен для проб).
-      Очки вечера = место + элимы×4 (кап 10):
-        рейтинг 86: ×0.5 25.2 · ×0.7 26.7 · ×1 24.8 · ×1.4 23.2 · ×2 19.7
-        рейтинг 78: ×0.5 18.2 · ×0.7 18.0 · ×1 17.5 · ×1.4 15.7 · ×2 14.5
-      σ очков при этом не растёт (27.6 → 26.6 при ×2). То есть агрессия —
-      не разброс, а штраф: «на элимы» стоило бы 7–10% очков, а «на место»
-      либо ничего не меняет, либо подарок в пределах шума.
-
-   Выбор, у которого один ответ хуже другого по среднему, — не выбор, а
-   ловушка; подарок игроку ломает лестницу дивизионов. Поэтому ни плана, ни
-   нервов в игре нет. ЛАН остаётся поездкой: перелёт и пост из города.
-   Не возвращать без нового рычага и нового замера. */
-
-/* ---- 8. ЛАН как поездка ----
-
-   Перелёт стоит энергии (день дороги), приезд — свой пост из города. Раз за
-   ЛАН в сезоне. */
-const CC_LAN_TRAVEL=25;
-function careerLanArrive(kind, ev){
-  const cr=CAREER && CAREER.career; if(!cr) return false;
-  cr.lan=cr.lan||{};
-  const key=kind+'|'+cr.season;
-  if(cr.lan[key]) return false;
-  cr.lan[key]=careerToday();
-  const city=ccLanCity(kind, cr.season);
-  careerSpend(CC_LAN_TRAVEL);
-  careerNews('good', 'ccPostLanArrive', [city]);
-  careerSave();
-  return true;
-}
-
-/* ---- Уведомления как в X ----
-
-   Его скрин ленты уведомлений X (3 сентября): «ASP wheat and 11 others liked
-   your post», под именем — кусок самого поста, справа его картинка. У нас
-   стояло «Твой пост лайкнули: 549» без единого лица. Кто именно — берётся из
-   уже записанного, как и комментарии (ccPostComments): напарник, клуб,
-   друзья, подписки, люди из таблицы под постом. Никого не выдумываем. */
-function ccNoteWho(n, salt){
-  const pool=[];
-  const add=h=>{ if(h && !pool.some(x=>hKey(x)===hKey(h))) pool.push(String(h)); };
-  const mate=careerPartnerCard();
-  if(mate) add(mate.handle);
-  if(CAREER.org) add(CAREER.org.name);
-  (CAREER.career.friends||[]).forEach(add);
-  (ccFollows()||[]).forEach(add);
-  ((n && n.tbl && n.tbl.rows)||[]).forEach(r=>String(r.n||'')
-    .split(/\s*[+&]\s*/).forEach(x=>add(x.trim())));
-  const me=CAREER.player && (CAREER.player.handle||CAREER.player.nick);
-  const list=pool.filter(h=>!me || hKey(h)!==hKey(me));
-  if(!list.length) return '';
-  const rnd=careerRng(ccHashStr((salt||'')+'|'+((n&&n.id)||'')+'|'+((n&&n.day)||'')));
-  return list[Math.floor(rnd()*list.length)];
-}
-function careerNoteRowHTML(t){
-  const h=esc(t.who||'').replace(/'/g,"\\'");
-  const who=t.who ? ccHandle(t.who) : '';
-  const rest=Math.max(0, (t.n||0)-1);
-  const head = t.kind==='follow' ? L().ccNoteFollow(who)
-     : !who ? (t.kind==='like' ? L().ccNoteLike(ccFollowers(t.n||0))
-             : t.kind==='repost' ? L().ccNoteRepost(ccFollowers(t.n||0))
-             : L().ccNoteReply(ccFollowers(t.n||0)))
-     : (t.kind==='like'   ? L().ccNoteLikeBy(who, ccFollowers(rest))
-      : t.kind==='repost' ? L().ccNoteRepostBy(who, ccFollowers(rest))
-      :                     L().ccNoteReplyBy(who, ccFollowers(rest)));
-  // Сам пост под строкой — как в X, куском текста и его же картинкой.
-  const post=t.post ? (CAREER.career.news||[]).find(n=>n.id===t.post) : null;
-  const card=ccWhoCard(t.who||'');
-  const av=t.who ? ccAvatar({name:t.who, handle:who, card:card}) : '';
-  const art=post && post.art ? (CAREER_EV_ART[post.art]||'') : '';
-  const glyph=t.kind==='like' ? CC_X_LIKE : t.kind==='repost' ? CC_X_REPOST
-            : t.kind==='reply' ? CC_X_REPLY : CC_X_USER;
-  return `<div class="x-note x-note-${t.kind}">
-    <span class="x-note-g">${glyph}</span>
-    <span class="x-note-av">${av}</span>
-    <div class="x-note-in">
-      <b>${esc(head)}</b>
-      ${post ? `<span class="x-note-post">${esc(ccText(post))}</span>` : ''}
-    </div>
-    ${art ? `<span class="x-note-art" style="background-image:url(${art})"></span>` : ''}
-    <em>${ccStamp(t)}</em>
-    ${t.kind==='follow' ? (ccFollowing(t.who)
-        ? `<span class="x-act-done">${L().ccFollowingBtn}</span>`
-        : `<button class="x-act" onclick="careerFollow(\'${h}\')">${L().ccFollowBack}</button>`) : ''}
-  </div>`;
-}
-
-/* ---- Разговор с напарником ----
-
-   Его просьба, 3 сентября: «можно еще отдельную переписку с тимейтом сделать и
-   какое-то общение там». Ветка напарника в инбоксе была и раньше — но только
-   как канал, по которому он сам пишет после вечера (careerMateDm). Ответить
-   было нечем.
-
-   Здесь ветка есть всегда, пока сидит напарник, и в ней четыре темы, каждая
-   из чего-то уже записанного: разбор вчерашнего вечера (журнал), точка
-   высадки (careerSpots), кто на кого играет (роли), и просто поговорить.
-   Настрой двигается тем же careerTalkMove, что и день «поговорить», и по тем
-   же правилам не становится краном: повторный разговор в CC_TALK_GAP дешевле.
-   Энергию НЕ тратит — это переписка, а не занятие; день не закрывается. */
-const CC_MATE_TOPICS=['night','spot','role','life'];
-function careerMateThread(){
-  const mate=careerPartnerCard();
-  if(!mate || !mate.handle) return null;
-  const t=careerDmFind(mate.handle);
-  if(t) return t;
-  const a=attrsFor(mate)||{};
-  return careerDmThread({handle:mate.handle, ovr:(mate._ovr!=null?mate._ovr:a.ovr),
-    nat:mate.nat, role:a.roleKey, roster:mate.tier!=='ladder',
-    cardRegion:mate.region, club:mate.org||null, pay:ccPlayerPay(mate), mate:true});
-}
-// О чём можно поговорить сегодня: тема отпадает, когда говорить не о чем.
-function careerMateTopics(){
-  const mate=careerPartnerCard(); if(!mate) return [];
-  const cr=CAREER.career;
-  const last=(cr.log||[]).slice(-1)[0];
-  return CC_MATE_TOPICS.filter(k=>{
-    if(k==='night') return !!last;
-    if(k==='spot')  return !!careerSpotOn();
-    return true;
-  });
-}
-function careerMateTalk(kind){
-  const mate=careerPartnerCard(); if(!mate) return false;
-  const rec=careerMateRec(); if(!rec) return false;
-  const cr=CAREER.career, t=careerMateThread(); if(!t) return false;
-  const last=(cr.log||[]).slice(-1)[0];
-  const args={
-    night: last ? [last.place, last.of] : [0, 0],
-    spot:  [careerSpotOn() ? (careerSpotOn().i+1) : 0, careerSpotOn() ? (careerSpotOn().aura||0) : 0],
-    role:  [L()[(attrsFor(mate)||{}).roleKey]||'', L()[(CAREER.player.attrs&&CAREER.player.role)||CAREER.player.role]||''],
-    life:  []
-  }[kind]||[];
-  careerDmPush(t, 'you', 'dmMeTalk'+kind, args);
-  careerDmPush(t, 'them', 'dmMateTalk'+kind, args);
-  /* Настрой — тем же правилом, что и день «поговорить»: разговор подряд
-     стоит вдвое и вчетверо меньше. Разница в том, что этот не берёт день. */
-  const by=careerTalkMove(rec, careerToday());
-  if(by){
-    careerMateRecords().forEach(pr=>{ pr.patience=clamp((pr.patience||0)+by, 0, 100); });
-    rec.talked=careerToday();
-  }
-  t.unread=false;
-  careerSave();
-  careerRenderHub('social');
-  return true;
-}
-function careerMateOpen(){
-  const t=careerMateThread(); if(!t) return;
-  CH_SOCIAL='dms';
-  careerDmOpen(t.id);
-}
-
-/* ===== СТРИМЫ — вкладка и сами эфиры ========================================
-
-   Его правка 4 сентября: «может добавить твич, вкладку streams, используй
-   дизайн твича и подумай, как это реализовать в карьере, как стримы будут
-   проходить».
-
-   ЧТО БЫЛО. Стрим существовал одной кнопкой в дне: тридцать энергии, немного
-   охвата, немного денег. Считалось честно (зрители от аудитории, донаты от
-   зрителей, спонсор и баннер), но выбора не было никакого — жать её или не
-   жать.
-
-   ЧТО СТАЛО. Эфир остался тем же расчётом, но у него появился ВИД, и виды
-   торгуют разным. Числа привязаны к тому же дню, чтобы ничего не сломать:
-   «ранкед» — это ровно вчерашняя кнопка, множители 1.0, остальные три
-   расходятся от неё в разные стороны.
-
-     вид         энергия  охват  деньги  подписчики  чем платишь
-     ранкед        30      1.0    1.0      1.0       ничем, это база
-     общение       30      0.6    1.6      0.8       растёшь медленнее
-     коллаб        40      1.0    1.0      1.0       + аудитория креатора
-     марафон       55      1.8    1.8      1.8       день и перегруз
-
-   Коллаб — та же арифметика, что у Про-Ама (ccProAmReachFrom): часть чужой
-   аудитории приходит посмотреть на тебя. Поэтому креаторы, добавленные для
-   Про-Ама, работают и в обычные дни — с ними можно стримить весь год, а не
-   один вечер в июле.
-
-   Марафон стоит перегруза (cr.grind), и это не штраф ради штрафа: сцена
-   выгорает именно так, а карьера уже умеет это считать. */
-/* hours — сколько часов идёт эфир. Нужно партнёрской программе, которая
-   считает наработанные часы за месяц; марафон в своём же тексте обещает
-   «вдвое дольше», отсюда восемь против четырёх. */
-const CC_STREAM_KINDS=[
-  {id:'grind', energy:30, reach:1,   cash:1,   subs:1,   grind:0, hours:4},
-  {id:'chat',  energy:30, reach:0.6, cash:1.6, subs:0.8, grind:0, hours:4},
-  {id:'colab', energy:40, reach:1,   cash:1,   subs:1,   grind:0, mate:true, hours:4},
-  {id:'long',  energy:55, reach:1.8, cash:1.8, subs:1.8, grind:2, hours:8}
-];
-/* ПЯТЫЙ ВИД: ЭФИР С ТУРНИРА. Его правка 4 сентября: «сделай возможность
-   стримить капы, там в окошечке будет симуляция турнира, но и последствия
-   должны быть — меньше power будто».
-
-   Это не вид дня, а вид ВЕЧЕРА: вместо «сесть постримить» игрок включает эфир
-   и идёт играть свой турнир. Поэтому кнопки на плеере у него нет — она стоит
-   там, где начинается вечер (панель дня, рядом с «Играть»), а сама симуляция
-   идёт как обычно, только поверх неё висит окошко трансляции: зрители, чат,
-   счёт по играм. См. careerPlayLive и ccTv*.
-
-   ЧЕМ ПЛАТИШЬ — силой. Стрим забирает внимание: своя команда в этот вечер
-   слабее на CC_STREAM_POW, и это ровно та же валюта, в которой считаются
-   форма (±3), перегруз (−2) и химия дуо (+5). Десять — больше формы и химии
-   вместе: его слово 5 сентября «−10 будто», см. CC_STREAM_POW. Вечер в эфире —
-   размен места на аудиторию, и он должен быть виден в таблице.
-
-   Дешевле по энергии, чем обычный эфир (20 против 30): играть ты собирался и
-   так, эфир здесь — включённая камера, а не отдельный вечер. Зато перегруз
-   выше: одиннадцать игр под зрителями — это марафон, а не спокойный ранкед.
-   Охват ниже базового (0.7): турнирный вечер и без того платит охватом за
-   место, платить второй раз — это платить дважды за одно. Подписчиков и
-   донатов больше (1.3 / 1.1): турнир смотрят охотнее, чем ранкед, а после
-   вечера сверху идёт бонус за результат — см. ccStreamCupAfter. */
-const CC_STREAM_CUP={id:'cup', energy:20, reach:0.7, cash:1.1, subs:1.3, grind:1, hours:4};
-function ccStreamKind(id){
-  if(id===CC_STREAM_CUP.id) return CC_STREAM_CUP;
-  return CC_STREAM_KINDS.find(k=>k.id===id) || CC_STREAM_KINDS[0];
-}
-// Вид сегодняшнего эфира читает сам расчёт в careerDoAct — см. act.reach.
-let CC_STREAM_KIND='grind';
-/* С кем сегодня можно стримить вдвоём. Берётся из того же пула креаторов, что
-   и Про-Ам, и меняется каждый день: сегодня свободен один, завтра другой —
-   так это и работает, коллаб назначают, а не выбирают из всех сразу. */
-function ccStreamMate(){
-  const cr=CAREER && CAREER.career; if(!cr) return null;
-  const list=(typeof ccProAmCreators==='function') ? ccProAmCreators() : [];
-  if(!list.length) return null;
-  const rnd=careerRng(ccHashStr('colab|'+(cr.season||1)+'|'+careerToday()));
-  const name=list[Math.floor(rnd()*list.length)];
-  return {name:name, tw:(typeof ccProAmTwitch==='function' ? ccProAmTwitch(name) : null)};
-}
-function careerStreamGo(id){
-  const k=ccStreamKind(id);
-  if(careerDayClosed()) return false;
-  if(careerEnergy()<k.energy) return false;
-  CC_STREAM_KIND=k.id;
-  const done=careerDoAct('stream');
-  CC_STREAM_KIND='grind';
-  if(!done) return false;
-  // Энергию вида списал сам careerDoAct — доплачивать больше нечего.
-  if(k.grind) CAREER.career.grind=(CAREER.career.grind||0)+k.grind;
-  careerSave();
-  careerRenderHub('streams');
-  return true;
-}
-/* ---- ЭФИР С ТУРНИРА ---------------------------------------------------------
-
-   Вечер, который идёт в эфир. Кнопка стоит там же, где «Играть», турнир идёт
-   как всегда, а сверху висит окошко трансляции — зрители, чат, счёт по играм.
-
-   Три вещи, которые здесь решаются, и почему так:
-
-   1. ЭФИР СЧИТАЕТСЯ ДО ТУРНИРА. После вечера день уже завтрашний
-      (careerAdvanceTo в конце каждого раннера), а эфир был сегодня: посчитай
-      его после — и подписки, часы и журнал партнёрки лягут на чужой день.
-      Поэтому careerDoAct('stream') вызывается на старте, а результат вечера
-      доплачивается отдельно (ccStreamCupAfter).
-
-   2. МЕТКА СПРАШИВАЕТСЯ ПЕРВОЙ. careerSpotGate уводит на карту и возвращает
-      false — если бы эфир уже был оплачен, игрок остался бы с потраченным
-      вечером и без турнира.
-
-   3. В КОМАНДНОЙ КАРЬЕРЕ ЭФИРА НЕТ. Сила своей команды у двоих обязана
-      сойтись до единицы (см. CC_MP_YOU_PARTS): один в эфире, второй нет — и
-      это разные вечера с первой игры. Кнопка там гаснет и говорит почему.
-
-   ЦЕНА — ДЕСЯТЬ. Стояло два («заметно и не смертельно»); его слово 5 сентября:
-   «мне кажется больше силы должно уменьшаться, −10 будто, и это должно быть
-   написано». Десять — это больше всей формы (±3) и химии (+5) вместе: эфир с
-   турнира — осознанный размен места на аудиторию, а не бесплатная камера.
-   Число живёт здесь одно, все подписи (кнопка, рамка, хаб) читают его. */
-const CC_STREAM_POW=10;
-let CC_STREAM_LIVE=false;
-// Своя команда сегодняшнего вечера — её читает окошко трансляции. Пишется в
-// careerYouTeam, то есть одинаково для всех девяти раннеров.
-let CC_TV_YOU=null;
-function ccStreamPow(){ return CC_STREAM_LIVE ? -CC_STREAM_POW : 0; }
-// Почему нельзя — строкой, её же показывает кнопка. null значит «можно».
-function ccStreamCupWhy(){
-  const T=L();
-  if(!CAREER || !CAREER.career) return T.ccTvNoEvent;
-  if(ccMpOn()) return T.ccTvMpNo;
-  const next=careerNext();
-  if(!next || next.day!==careerToday() || !careerCanPlay(next) || CAREER.career.seasonOver)
-    return T.ccTvNoEvent;
-  if(careerDayClosed()) return T.ccStreamDayGone;
-  /* Причина, а не цена. Его скрин 5 сентября («в трио не работает кнопка»):
-     под выключенной кнопкой стояло «20 energy» — та же строка, что и цена на
-     включённой, — и кнопка читалась сломанной. Ей не хватало энергии. */
-  if(careerEnergy()<CC_STREAM_CUP.energy) return T.ccStreamNeed(CC_STREAM_CUP.energy, careerEnergy());
-  return null;
-}
-function ccStreamCupCan(){ return !ccStreamCupWhy(); }
-async function careerPlayLive(){
-  if(CC_STREAM_LIVE || ccStreamCupWhy()) return false;
-  const cr=CAREER.career, next=careerNext(), day=careerToday();
-  if(!careerSpotGate(next)) return false;
-  CC_STREAM_KIND=CC_STREAM_CUP.id;
-  const done=careerDoAct('stream');
-  CC_STREAM_KIND='grind';
-  if(!done) return false;
-  if(CC_STREAM_CUP.grind) cr.grind=(cr.grind||0)+CC_STREAM_CUP.grind;
-  // Что стримили — заголовком в сводке эфира. См. ccTvSummary.
-  if(cr.streamLast && cr.streamLast.day===day) cr.streamLast.label=(next && (next.label||next.title))||'';
-  careerSave();
-  CC_STREAM_LIVE=true; CC_TV_YOU=null;
-  ccTvOpen(next);
-  /* Вечер может и не доиграться — игрок ушёл с раннера, вкладка сменилась
-     (RUN_ABANDONED). Эфир к этому моменту уже оплачен и посчитан, поэтому
-     снимаем рамку и досчитываем результат в finally: если турнир не оставил
-     строки в журнале, ccStreamCupAfter просто ничего не найдёт. */
-  try{ await careerPlay(); }
-  finally{
-    CC_STREAM_LIVE=false;
-    /* Итог вечера — с табло трансляции, ПЕРЕД тем как рамка снимется и
-       обнулит поле: кубок Дивизиона 1 из двух сессий пишет строку журнала не в
-       этот вечер, а по строке журнала итог и считался — сводки и доплаты за
-       эфир у такого кубка не было вовсе (проверено в его Chrome, 5.09). */
-    const board=ccTvBoard();
-    ccTvClose();
-    ccStreamCupAfter(day, board);
-  }
-  return true;
-}
-/* Что вечер добавил к эфиру. Турнир смотрят ради результата: место в лобби —
-   это и есть тот единственный множитель, которым эфир с турнира отличается от
-   эфира с ранкеда. Считается по той же доле поля (beat), по которой карьера
-   уже считает форму и охват, чтобы «хорошо отыграл» везде означало одно. */
-function ccStreamCupAfter(day, board){
-  const cr=CAREER && CAREER.career; if(!cr) return null;
-  const rows=(cr.log||[]).filter(r=>r && r.day===day && r.of>1);
-  // Строка журнала, а без неё — табло трансляции на конец вечера (см. careerPlayLive).
-  const row=rows[rows.length-1] || (board && board.of>1 ? {place:board.place, of:board.of} : null);
-  if(!row) return null;
-  const beat=clamp(1-(row.place-1)/(row.of-1), 0, 1);
-  const v=CC_TV_VIEW||ccStreamViewersNow();
-  /* Что показано — то и получено. Вживую события чата (фолловеры, сабы,
-     донаты — CC_TV_EV) идут из того же бюджета, что и эта формула, и итог
-     берёт большее из двух: под перемоткой тиков мало и правит формула, а на
-     вечере, просмотренном целиком, зритель не увидит в чате больше, чем ему
-     потом начислят. */
-  const ev=(typeof CC_TV_EV==='object' && CC_TV_EV) || {fol:0, cash:0};
-  const fol=Math.max(1, Math.round(v*0.25*beat), ev.fol||0);
-  const cash=Math.max(Math.round(v*0.06*beat), Math.round(ev.cash||0));
-  cr.twitch=(cr.twitch||0)+fol;
-  if(cash){
-    cr.balance=(cr.balance||0)+cash;
-    cr.streamed=(cr.streamed||0)+cash;
-  }
-  /* Отчёт вечера в панели дня считается ДО турнира — досчитываем его здесь,
-     иначе панель показывает подписки без тех, кто пришёл на результат, и
-     заработок без того, что принёс сам результат. Деньги берутся из сырого
-     числа (streamLast.m), а не разбираются обратно из строки. */
-  const last=cr.streamLast;
-  if(last && last.day===day && last.a){
-    last.a[2]=(Number(last.a[2])||0)+fol;
-    last.a[4]=ccNum(cr.twitch);
-    if(cash && last.m!=null){ last.m=(last.m||0)+cash; last.a[3]=ccNum(last.m); }
-  }
-  /* Средний онлайн за 30 дней — на нём стоит партнёрка (ccTwMonth). Турнирный
-     вечер смотрят больше обычного, и журнал обязан помнить пиковое число этого
-     вечера, а не то, что было до первой игры. */
-  const log=cr.streamLog||[];
-  for(let i=log.length-1;i>=0;i--){
-    if(log[i] && log[i].d===day){ log[i].v=Math.max(log[i].v||0, v); break; }
-  }
-  careerTwTick();
-  careerNews(beat>=0.75 ? 'good' : 'flat', 'ccNewsStreamCup',
-             [row.place, row.of, ccNum(fol)]);
-  /* Сводка эфира — его правка 5 сентября, скрин «Stream Summary» из дашборда
-     Twitch: «в конце стрима пусть показывает, сколько заработал и сколько
-     средний онлайн». Считается здесь, где известны и итог турнира, и то, что
-     набрал чат; лежит в streamLast.sum — её же показывает вкладка стримов.
-     Средний онлайн — по замерам тиков; под перемоткой их мало, и тогда он
-     равен зрителям начала эфира. Часы — те, что пишет журнал партнёрки. */
-  const sum={avg: CC_TV_SUM && CC_TV_SUM.n ? Math.round(CC_TV_SUM.sum/CC_TV_SUM.n) : v,
-             peak: Math.max(CC_TV_PEAK||0, v), fol:fol, subs:(ev.subs||0), cash:cash,
-             hours:(last && last.a && last.a[5]) || CC_STREAM_CUP.hours,
-             chatters:(CC_TV_CHATTERS && CC_TV_CHATTERS.size) || 0,
-             place:row.place, of:row.of, label:(last && last.label) || '',
-             hist:ccTvHistPack(CC_TV_HIST||[], 60)};
-  if(last && last.day===day) last.sum=sum;
-  careerSave();
-  careerRenderHub('centre');
-  ccTvSummary(sum);
-  return {fol:fol, cash:cash, sum:sum};
-}
-// Кривая зрителей — не длиннее n точек, средним по отрезкам; хранится в сейве.
-function ccTvHistPack(hist, n){
-  if(!hist.length) return [];
-  if(hist.length<=n) return hist.map(h=>({v:h.v, g:h.g}));
-  const out=[]; const step=hist.length/n;
-  for(let i=0;i<n;i++){
-    const a=Math.floor(i*step), b=Math.max(a+1, Math.floor((i+1)*step));
-    const part=hist.slice(a, b);
-    out.push({v:Math.round(part.reduce((s,h)=>s+h.v,0)/part.length), g:part[part.length-1].g});
-  }
-  return out;
-}
-// Плитки сводки — одни и те же в карточке после эфира и на вкладке стримов.
-function ccTvSumTilesHTML(s){
-  const T=L();
-  const tile=(k,v,cls)=>'<div class="cc-tvs-tile'+(cls?' '+cls:'')+'"><b>'+v+'</b><span>'+esc(k)+'</span></div>';
-  return '<div class="cc-tvs-tiles">'+
-    tile(T.ccTvSumAvg, ccNum(s.avg||0), 'main')+
-    tile(T.ccTvSumPeak, ccNum(s.peak||0))+
-    tile(T.ccTvSumFol, '+'+ccNum(s.fol||0), 'up')+
-    tile(T.ccTvSumSubs, ccNum(s.subs||0))+
-    tile(T.ccTvSumCash, ccMoney(s.cash||0), 'up')+
-    tile(T.ccTvSumTime, esc(T.ccTvSumHours(s.hours||CC_STREAM_CUP.hours)))+
-    tile(T.ccTvSumChatters, ccNum(s.chatters||0))+
-  '</div>';
-}
-/* График зрителей по ходу вечера — линия с заливкой, как в дашборде Twitch,
-   подписи по оси — номера игр. Рисуется SVG на показ, из сохранённой кривой. */
-function ccTvSumChartHTML(s){
-  const T=L(), h=(s && s.hist)||[];
-  if(h.length<2) return '';
-  const W=560, H=150, PL=34, PB=18, PT=8;
-  const max=Math.max(1, ...h.map(p=>p.v));
-  const x=i=>PL+(W-PL-6)*i/(h.length-1);
-  const y=v=>PT+(H-PT-PB)*(1-v/max);
-  const pts=h.map((p,i)=>x(i).toFixed(1)+','+y(p.v).toFixed(1));
-  const area='M'+pts[0]+' L'+pts.join(' L')+' L'+x(h.length-1).toFixed(1)+','+(H-PB)+' L'+PL+','+(H-PB)+' Z';
-  // Подписи игр — там, где номер игры меняется, но не чаще шести на ось.
-  const marks=[]; let lastG=-1;
-  h.forEach((p,i)=>{ if(p.g!==lastG && p.g>0){ marks.push({i:i, g:p.g}); lastG=p.g; } });
-  const every=Math.max(1, Math.ceil(marks.length/6));
-  const labels=marks.filter((m,k)=>k%every===0).map(m=>
-    '<text x="'+x(m.i).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle">'+esc(T.ccTvGame(m.g))+'</text>').join('');
-  const grid=[0.5,1].map(f=>'<line x1="'+PL+'" x2="'+(W-6)+'" y1="'+y(max*f).toFixed(1)+'" y2="'+y(max*f).toFixed(1)+'"/>'+
-    '<text x="'+(PL-6)+'" y="'+(y(max*f)+3).toFixed(1)+'" text-anchor="end">'+ccNum(Math.round(max*f))+'</text>').join('');
-  return '<div class="cc-tvs-chart"><em>'+esc(T.ccTvSumChart)+'</em>'+
-    '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'+
-      '<g class="cc-tvs-grid">'+grid+'</g>'+
-      '<path class="cc-tvs-area" d="'+area+'"/>'+
-      '<polyline class="cc-tvs-line" points="'+pts.join(' ')+'"/>'+
-      '<g class="cc-tvs-ax">'+labels+'</g>'+
-    '</svg></div>';
-}
-// Карточка после эфира. Своя, не ccAsk: у той один абзац и две кнопки, а здесь
-// плитки и график. Под перемоткой и в пробах без document её нет.
-function ccTvSummary(s){
-  if(typeof document==='undefined' || !document.body || !s) return;
-  if(typeof CC_FF!=='undefined' && CC_FF) return;
-  ccTvSummaryClose();
-  const T=L();
-  const box=document.createElement('div');
-  box.id='ccTvSum'; box.className='cc-tvs';
-  box.onclick=function(e){ if(e.target===box) ccTvSummaryClose(); };
-  box.innerHTML='<div class="cc-tvs-box">'+
-    '<div class="cc-tvs-h"><span class="cc-tvm-live">'+esc(T.chLiveTag)+'</span><b>'+esc(T.ccTvSumTitle)+'</b>'+
-      '<em>'+esc(s.label||'')+(s.of ? (s.label?' · ':'')+esc(T.ccTvSumPlace(s.place, s.of)) : '')+'</em></div>'+
-    ccTvSumTilesHTML(s)+ccTvSumChartHTML(s)+
-    '<div class="cc-tvs-f"><button class="cc-tvs-ok" onclick="ccTvSummaryClose()">'+esc(T.ccTellOk)+'</button></div>'+
-  '</div>';
-  document.body.appendChild(box);
-}
-function ccTvSummaryClose(){
-  const box=document.getElementById('ccTvSum');
-  if(box && box.parentNode) box.parentNode.removeChild(box);
-}
-/* ---- ОКОШЕЧКО ТРАНСЛЯЦИИ → ЭФИР ВОКРУГ ВЕЧЕРА -------------------------------
-
-   Четвёртого сентября это было окошко в углу: LIVE, зрители, «игра 6/11»,
-   табло и семь строк чата поверх вечера. Его правка 5 сентября (скрин вкладки
-   стримов с плеером): «может в этом окошке быть симуляция во время лайва… во
-   время лайва чат двигается и тд, фоловки, сабки, платные донаты».
-
-   То есть эфир — не окошко поверх вечера, а ВЕЧЕР ВНУТРИ ЭФИРА. Так устроен
-   twitch.tv/<канал>: в плеере идёт игра, слева отслеживаемые каналы, справа
-   чат. Сделано рамкой: турнир идёт там же, где шёл (экран прогона, со всеми
-   его кнопками и вопросами), а по бокам встают две колонки Twitch — слева
-   канал и отслеживаемые, справа LIVE, зрители, время в эфире, ход вечера,
-   табло и живой чат. Экран прогона отодвигается полями (body.cc-onair), ничего
-   не переносится и не масштабируется — модалки и пикер как были.
-
-   Рамка ничего своего не считает: игра читается через CC_TV_YOU (пишет
-   careerYouTeam) и CC_TV_RUN (пишет simulateGamesLive) раз в 0.6 с.
-
-   ЧАТ ДВИГАЕТСЯ: строки приходят каждые полсекунды-секунду и уезжают вверх, а
-   между ними события канала — «подписался», «оформил саб · Tier 1», «задонатил
-   $5». Их частота — из тех же чисел, которыми вечер платит (ccStreamCupAfter):
-   бюджет фолловеров v·0.25·beat и денег v·0.06·beat раскладывается на ожидаемое
-   число тиков вечера, плюс всплеск после победы в игре. Что показано — то и
-   получено: итог вечера берёт большее из формулы и того, что прошло в чате.
-   Под перемоткой тиков мало, и правит формула; вживую — чат. */
-let CC_TV_TOP={};   // донатеры эфира: ник → долларов за вечер (сабы и донаты), см. ccTvLeadHTML
-let CC_TV_T=null, CC_TV_VIEW=0, CC_TV_PEAK=0, CC_TV_HYPE=0,
-    CC_TV_BASE=0, CC_TV_SEEN=0, CC_TV_WHO=[], CC_TV_MSGS=[], CC_TV_RUN=null, CC_TV_INCUT=null,
-    CC_TV_T0=0, CC_TV_EV={fol:0, subs:0, cash:0}, CC_TV_BURST=0,
-    // Для сводки после эфира: сумма/число замеров зрителей, кривая по тикам,
-    // кто писал в чат. См. ccTvSummary.
-    CC_TV_SUM={n:0, sum:0}, CC_TV_HIST=[], CC_TV_CHATTERS=new Set();
-const CC_TV_TICK=600;
-// Сколько тиков живёт одна игра, когда вечер смотрят вживую, — по этому числу
-// раскладывается бюджет событий (см. ccTvEvents).
-const CC_TV_TICKS_PER_GAME=45;
-// Доля стримера с саба Tier 1 и чеки донатов — как на Twitch.
-const CC_TV_SUB_USD=2.5;
-const CC_TV_DONO=[2,3,5,5,5,10,10,20,50];
-/* Таблица вечера глазами трансляции: где ты стоишь прямо сейчас, кто наверху и
-   докуда идёт отсечка. Считается ОДНИМ проходом по полю, без сортировки: поле
-   бывает и в шесть тысяч строк, а окно перерисовывается два раза в секунду. */
-function ccTvBoard(){
-  const run=CC_TV_RUN, you=CC_TV_YOU;
-  if(!run || !run.teams || !you) return null;
-  const key=run.pts, mine=you[key]||0;
-  let above=0;
-  const top=[];
-  for(let i=0;i<run.teams.length;i++){
-    const t=run.teams[i], p=t[key]||0;
-    if(t!==you && (p>mine || (p===mine && (t.wins||0)>(you.wins||0)))) above++;
-    // Тройка лидеров — вставкой в трёхэлементный список, а не сортировкой поля.
-    if(top.length<3 || p>top[top.length-1].p){
-      const row={name:t.name||'', p:p, you:t===you};
-      let at=top.findIndex(r=>p>r.p);
-      if(at<0) at=top.length;
-      top.splice(at, 0, row);
-      if(top.length>3) top.pop();
-    }
-  }
-  return {place:above+1, of:run.teams.length, top:top,
-          cut:run.cut||0, pts:mine, n:run.n||0};
-}
-function ccTvOpen(next){
-  ccTvClose();
-  if(typeof document==='undefined' || !document.body) return;
-  const T=L(), me=(CAREER && CAREER.player)||{};
-  CC_TV_BASE=Math.max(3, ccStreamViewersNow());
-  CC_TV_VIEW=CC_TV_BASE; CC_TV_PEAK=CC_TV_BASE;
-  CC_TV_HYPE=0; CC_TV_SEEN=0; CC_TV_MSGS=[]; CC_TV_RUN=null; CC_TV_INCUT=null;
-  CC_TV_T0=Date.now(); CC_TV_EV={fol:0, subs:0, cash:0}; CC_TV_BURST=0;
-  CC_TV_SUM={n:0, sum:0}; CC_TV_HIST=[]; CC_TV_CHATTERS=new Set();
-  // Команда вечера придёт из careerYouTeam, когда вечер начнётся. Прошлая —
-  // с её одиннадцатью играми — иначе прочитывалась первым же тиком как
-  // «только что сыгранное», и чат открывался чужими реакциями.
-  CC_TV_YOU=null;
-  /* Кто сидит в чате — те же люди, что и на вкладке стримов. Пустым он быть
-     не может: у совсем новой карьеры нет ни друзей, ни подписок, и тогда в
-     эфире сидит она сама. */
-  CC_TV_WHO=careerStreamChat(30);
-  if(!CC_TV_WHO.length){
-    const nick=me.nick||'viewer';
-    CC_TV_WHO=[{who:ccHandle(nick), c:ccChatColor(nick)}];
-  }
-  const label=(next && (next.label||next.title))||T.ccStreamCupTitle;
-  const av=(url, name)=>'<span class="cc-tv-av">'+
-    (url ? '<img src="'+esc(url)+'" alt="" onerror="this.remove()">'
-         : esc(String(name||'?').slice(0,2).toUpperCase()))+'</span>';
-  let mine=null;
-  try{ mine=photoURL(me.photo ? {_photo:me.photo} : careerCard()); }catch(e){ mine=null; }
-  /* Значки у ников — как на Twitch: у части чата фиолетовый саб, у единиц
-     зелёный мод и розовый VIP. Раздаются один раз на эфир, чтобы один и тот же
-     человек весь вечер ходил с одним значком. */
-  CC_TV_WHO.forEach(w=>{ const r=Math.random(); w.b = r<0.04 ? 'mod' : r<0.09 ? 'vip' : r<0.35 ? 'sub' : ''; });
-  CC_TV_TOP={};
-  /* Слева — как в сайдбаре Twitch (его референс 7 сентября): отслеживаемые
-     каналы с онлайном (шесть в эфире, трое не в сети) и ниже «зрители также
-     смотрят» — ещё трое в эфире. */
-  let side=[];
-  try{ side=careerLiveNow(12); }catch(e){ side=[]; }
-  const srow=(s, live)=>'<div class="cc-tv-srow">'+
-      av(s.card ? photoURL(s.card) : (s.ava||null), s.name)+
-      '<div class="cc-tv-sin"><b>'+esc(s.name)+'</b><em>'+esc(T[s.cat]||'')+'</em></div>'+
-      (live ? '<span class="cc-tv-vv"><i></i>'+ccNum(s.v)+'</span>'
-            : '<span class="cc-tv-off">'+esc(T.ccStreamOffline)+'</span>')+
-    '</div>';
-  const rows=side.slice(0, 9).map((s,i)=>srow(s, i<6)).join('');
-  const also=side.slice(9, 12).map(s=>srow(s, true)).join('');
-  const box=document.createElement('div');
-  box.id='ccTvFrame'; box.className='cc-tv';
-  box.innerHTML=
-    '<aside class="cc-tv-left">'+
-      '<div class="cc-tv-chan">'+av(mine, me.nick)+
-        '<i class="cc-tv-livetag">'+esc(T.chLiveTag)+'</i>'+
-        '<div class="cc-tv-chan-in"><b>'+esc(me.nick||'')+'</b><em>'+esc(label)+'</em>'+
-          '<span>'+esc(T.ccStreamCatFn)+'</span></div></div>'+
-      '<div class="cc-tv-side-h">'+esc(T.ccStreamFollowed)+'</div>'+rows+
-      (also ? '<div class="cc-tv-side-h cc-tv-side-h2">'+esc(T.ccStreamAlsoWatch)+'</div>'+also : '')+
-    '</aside>'+
-    /* Под плеером — строка канала, как под видео на Twitch: аватар с LIVE,
-       ник, название эфира, категория и язык, кнопки Follow / Gift a Sub /
-       Subscribe и справа онлайн с аптаймом. Это то место, куда на Twitch
-       смотрят за онлайном; в правой колонке он дублируется мелко. */
-    '<div class="cc-tv-under" id="ccTvUnder">'+
-      '<div class="cc-tv-under-ch">'+av(mine, me.nick)+'<i class="cc-tv-livetag">'+esc(T.chLiveTag)+'</i></div>'+
-      '<div class="cc-tv-under-in"><b>'+esc(me.nick||'')+'</b><em>'+esc(label)+'</em>'+
-        '<span><u>'+esc(T.ccStreamCatFn)+'</u><u>'+esc(T.ccStreamLang)+'</u></span></div>'+
-      '<div class="cc-tv-under-btns">'+
-        '<button type="button" class="cc-tv-btn cc-tv-btn-fol">♥ '+esc(T.ccTvFollow)+'</button>'+
-        '<button type="button" class="cc-tv-btn">'+esc(T.ccStreamGift)+'</button>'+
-        '<button type="button" class="cc-tv-btn cc-tv-btn-sub">★ '+esc(T.ccStreamSub)+'</button>'+
-      '</div>'+
-      '<div class="cc-tv-under-st"><span class="cc-tv-uv"><i></i><b id="ccTvV2">'+ccNum(CC_TV_VIEW)+'</b></span>'+
-        '<span class="cc-tv-uup" id="ccTvUp2">0:00:00</span></div>'+
-    '</div>'+
-    '<aside class="cc-tv-right">'+
-      '<div class="cc-tvm-h"><span class="cc-tvm-live">'+esc(T.chLiveTag)+'</span>'+
-        '<span class="cc-tvm-v"><i></i><b id="ccTvV">'+ccNum(CC_TV_VIEW)+'</b></span>'+
-        '<span class="cc-tv-up" id="ccTvUp">0:00</span>'+
-        '<span class="cc-tv-subs" id="ccTvSubs">'+esc(T.ccTvSubsToday(0))+'</span>'+
-        '<button class="cc-tvm-x" id="ccTvFold" onclick="ccTvFold()" aria-label="'+
-          esc(T.ccTvFold)+'" title="'+esc(T.ccTvFold)+'">–</button></div>'+
-      '<div class="cc-tvm-b">'+
-        '<div class="cc-tvm-title">'+esc(label)+'</div>'+
-        '<div class="cc-tvm-bar"><i id="ccTvBar"></i></div>'+
-        '<div class="cc-tvm-run" id="ccTvRun">'+esc(T.ccTvWait)+'</div>'+
-        '<div class="cc-tvm-pips" id="ccTvPips"></div>'+
-        '<div class="cc-tvm-board" id="ccTvBoard"></div>'+
-        '<div class="cc-tv-ev" id="ccTvEv">'+esc(T.ccTvEvSum(0, 0, 0))+'</div>'+
-      '</div>'+
-      '<div class="cc-tv-chat-h">'+esc(T.ccStreamChat)+'</div>'+
-      // Топ донатеров эфира — строка под шапкой чата, как таблица лидеров на Twitch.
-      '<div class="cc-tv-lead" id="ccTvLead"></div>'+
-      '<div class="cc-tvm-chat" id="ccTvChat"></div>'+
-      // Поле ввода — как у зрителя; стример в него не пишет, оно тут ради вида.
-      '<div class="cc-tv-say"><span>'+esc(T.ccStreamSay)+'</span><i>☺</i></div>'+
-      '<div class="cc-tvm-f"><span id="ccTvPeak"></span><span id="ccTvPow">'+
-        esc(T.ccTvPow(CC_STREAM_POW))+'</span></div>'+
-    '</aside>';
-  document.body.appendChild(box);
-  document.body.classList.add('cc-onair');
-  // Чат не начинается с пустоты: люди уже сидят в эфире, когда он включается.
-  ccTvSay(T.ccStreamChatLines); ccTvSay(T.ccStreamChatLines); ccTvSay(T.ccStreamChatLines);
-  ccTvTick();
-  CC_TV_T=setInterval(ccTvTick, CC_TV_TICK);
-}
-// Свернуть — колонки уходят, остаётся плашка LIVE со зрителями в углу; вечер
-// расправляется на всю ширину. Ещё раз — вернуть.
-function ccTvFold(){
-  const box=document.getElementById('ccTvFrame'); if(!box) return;
-  const fold=box.classList.toggle('fold');
-  document.body.classList.toggle('cc-onair-fold', fold);
-  const b=document.getElementById('ccTvFold');
-  if(b) b.textContent=fold ? '+' : '–';
-}
-function ccTvClose(){
-  CC_TV_RUN=null;
-  if(CC_TV_T){ clearInterval(CC_TV_T); CC_TV_T=null; }
-  const box=document.getElementById('ccTvFrame');
-  if(box && box.parentNode) box.parentNode.removeChild(box);
-  if(typeof document!=='undefined' && document.body){
-    document.body.classList.remove('cc-onair'); document.body.classList.remove('cc-onair-fold');
-  }
-}
-function ccTvPush(m){
-  CC_TV_MSGS.push(m);
-  if(CC_TV_MSGS.length>40) CC_TV_MSGS.shift();
-}
-// Строка в чат: кто (из тех же людей, что и на вкладке стримов) и что.
-function ccTvSay(bank){
-  if(!bank || !bank.length || !CC_TV_WHO.length) return;
-  const who=CC_TV_WHO[Math.floor(Math.random()*CC_TV_WHO.length)];
-  CC_TV_CHATTERS.add(who.who);
-  ccTvPush({who:who.who, c:who.c, b:who.b, text:bank[Math.floor(Math.random()*bank.length)]});
-}
-// Строка своим текстом — от случайного человека в чате.
-function ccTvSayText(text){
-  if(!text || !CC_TV_WHO.length) return;
-  const who=CC_TV_WHO[Math.floor(Math.random()*CC_TV_WHO.length)];
-  CC_TV_CHATTERS.add(who.who);
-  ccTvPush({who:who.who, c:who.c, b:who.b, text:String(text)});
-}
-// Таблица донатеров эфира: кто сколько занёс (сабы по CC_TV_SUB_USD и донаты), тройка сверху.
-function ccTvLeadHTML(){
-  const rows=Object.entries(CC_TV_TOP||{}).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  if(!rows.length) return '';
-  return '<b>'+esc(L().ccTvTopDonors)+'</b>'+rows.map(([who,m],i)=>
-    '<span><i>'+(i+1)+'</i>'+esc(String(who).slice(0, 10))+'<em>$'+Math.round(m)+'</em></span>').join('');
-}
-// Аптайм как на Twitch — часы:минуты:секунды.
-function ccTvUptime(sec){
-  const h=Math.floor(sec/3600), m=Math.floor(sec%3600/60), s=sec%60;
-  return h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-}
-/* ЧАТ СМОТРИТ ИГРУ — его правка 5 сентября: «чат реалистичней сделать: когда
-   выбор, то в чате что-то подобное, и после победы www или goat».
-
-   Вопрос по ходу матча (ccChoiceBox) чат видит и начинает советовать: часть
-   строк — названия самих вариантов, выкрикнутые как в чате («ХАЙГРАУНД»,
-   «Рефреш!!!»), часть — общее «не тупи», «слушай чат». На выбор отвечает
-   («траст», «нооооо»), на исход — «W КОЛЛ» или «говорил же». Всё через
-   ccTvSay/ccTvSayText, то есть теми же людьми и в тот же чат; вне эфира и без
-   рамки молчит. Названия вариантов приходят уже на языке экрана. */
-function ccTvLive(){ return CC_STREAM_LIVE && !!document.getElementById('ccTvFrame'); }
-function ccTvShout(t){
-  const s=String(t||'').trim(); if(!s) return '';
-  const r=Math.random();
-  return r<0.35 ? s.toUpperCase() : r<0.6 ? s+'!!!' : r<0.8 ? s+' '+s : s.toLowerCase();
-}
-function ccTvOnChoice(options){
-  if(!ccTvLive()) return;
-  const T=L();
-  const titles=(options||[]).map(o=>o && o.title).filter(Boolean);
-  const n=3+Math.floor(Math.random()*3);
-  for(let i=0;i<n;i++){
-    if(titles.length && Math.random()<0.6) ccTvSayText(ccTvShout(titles[Math.floor(Math.random()*titles.length)]));
-    else ccTvSay(T.ccTvChatChoice);
-  }
-}
-function ccTvOnChosen(o){
-  if(!ccTvLive()) return;
-  const T=L();
-  ccTvSay(T.ccTvChatPicked);
-  if(o && o.title && Math.random()<0.5) ccTvSayText(ccTvShout(o.title));
-  if(Math.random()<0.5) ccTvSay(T.ccTvChatPicked);
-}
-function ccTvOnResult(ok){
-  if(!ccTvLive()) return;
-  const T=L();
-  const bank=ok===false ? T.ccTvChatCallBad : ok ? T.ccTvChatCallGood : null;
-  if(!bank) return;
-  ccTvSay(bank); ccTvSay(bank);
-  if(ok) CC_TV_HYPE+=0.2;
-}
-// Событие канала: фолловер, саб, донат. Копится в CC_TV_EV — это и есть то, что
-// вечер потом зачтёт (см. ccStreamCupAfter).
-function ccTvEvent(kind, amt, say){
-  const T=L();
-  if(!CC_TV_WHO.length) return;
-  const who=CC_TV_WHO[Math.floor(Math.random()*CC_TV_WHO.length)];
-  if(kind==='fol'){
-    CC_TV_EV.fol++;
-    if(say!==false) ccTvPush({ev:'fol', text:T.ccTvEvFollow(who.who)});
-  } else if(kind==='sub'){
-    CC_TV_EV.subs++; CC_TV_EV.cash+=CC_TV_SUB_USD;
-    CC_TV_TOP[who.who]=(CC_TV_TOP[who.who]||0)+CC_TV_SUB_USD;
-    ccTvPush({ev:'sub', text:T.ccTvEvSub(who.who)});
-  } else {
-    const m=amt||CC_TV_DONO[Math.floor(Math.random()*CC_TV_DONO.length)];
-    CC_TV_EV.cash+=m;
-    CC_TV_TOP[who.who]=(CC_TV_TOP[who.who]||0)+m;
-    const lines=T.ccTvDonoLines||[];
-    ccTvPush({ev:'dono', text:T.ccTvEvDono(who.who, m),
-              note: lines.length ? lines[Math.floor(Math.random()*lines.length)] : ''});
-  }
-}
-/* Сколько событий на тик. Бюджет вечера — те же числа, что в ccStreamCupAfter
-   (фолловеры v·0.25·beat, деньги v·0.06·beat), делённые на ожидаемое число
-   тиков; хайп после хороших игр ускоряет, всплеск после победы (CC_TV_BURST)
-   даёт несколько фолловеров подряд — так это и выглядит на настоящем эфире.
-   Деньги пополам: сабы по 2.5 и донаты со средним чеком около двенадцати. */
-function ccTvEvents(board, games){
-  const v=CC_TV_VIEW;
-  let beat=0.5;
-  if(board && board.of>1) beat=1-(board.place-1)/(board.of-1);
-  const ticks=Math.max(60, (games||11)*CC_TV_TICKS_PER_GAME);
-  const folBudget=v*0.25*beat, cashBudget=v*0.06*beat;
-  let pFol=folBudget/ticks*(1+0.5*CC_TV_HYPE)+(CC_TV_BURST>0 ? 0.5 : 0);
-  /* Фолловеры считаются все, а строкой в чат идёт не каждый: у канала на
-     десять тысяч зрителей их по пять на тик, и чат состоял бы из одного
-     «подписался». Одна строка на тик, и не на каждый — как у настоящего
-     чата, где оповещения тонут в сообщениях. */
-  let nFol=0;
-  while(pFol>0){ if(Math.random()<Math.min(1, pFol)) nFol++; pFol-=1; }
-  if(nFol){ CC_TV_EV.fol+=nFol-1; ccTvEvent('fol', null, Math.random()<0.4); }
-  const pSub=(cashBudget*0.5/CC_TV_SUB_USD)/ticks*(1+0.5*CC_TV_HYPE);
-  if(Math.random()<pSub) ccTvEvent('sub');
-  const pDono=(cashBudget*0.5/12)/ticks*(1+CC_TV_HYPE);
-  if(Math.random()<pDono) ccTvEvent('dono');
-  CC_TV_BURST=Math.max(0, CC_TV_BURST-1);
-}
-function ccTvTick(){
-  const box=document.getElementById('ccTvFrame'); if(!box) return;
-  const T=L(), you=CC_TV_YOU;
-  const log=(you && you.stageLog) || [];
-  // Новая игра в логе — это то, что зрители только что посмотрели.
-  while(CC_TV_SEEN<log.length){
-    const g=log[CC_TV_SEEN++]||{};
-    const p=g.place||0;
-    if(p===1){
-      CC_TV_HYPE+=1.2; CC_TV_BURST=4;
-      // Победа — это спам: полдюжины строк подряд, и среди них обязательно «W».
-      for(let k=0;k<6;k++) ccTvSay(T.ccTvChatWin);
-      ccTvSayText('W'.repeat(3+Math.floor(Math.random()*6)));
-      ccTvSayText(Math.random()<0.5 ? 'GOAT' : 'W W W W W');
-      if(Math.random()<0.6) ccTvEvent('dono');
-    }
-    else if(p && p<=5){ CC_TV_HYPE+=0.45; ccTvSay(T.ccTvChatGood); }
-    else if(p && p>=25){ CC_TV_HYPE=Math.max(0, CC_TV_HYPE-0.25); ccTvSay(T.ccTvChatBad); }
-    else ccTvSay(T.ccStreamChatLines);
-  }
-  if(Math.random()<0.55) ccTvSay(T.ccStreamChatLines);
-  const board=ccTvBoard();
-  // Черта отсечки — событие эфира: чат замечает, когда ты в неё входишь и
-  // когда из неё вываливаешься, а не только конец игры.
-  if(board && board.cut){
-    const now=board.place<=board.cut;
-    if(CC_TV_INCUT!==null && now!==CC_TV_INCUT) ccTvSay(now ? T.ccTvChatGood : T.ccTvChatBad);
-    CC_TV_INCUT=now;
-  }
-  /* Зрители: вечер сам по себе набирает, хорошая игра набирает быстрее, а
-     место в таблице держит их у экрана. Турнир смотрят из-за таблицы — если
-     ты в отсечке, эфир растёт, если вывалился, зрители расходятся. */
-  let seat=0;
-  if(board && board.of>1){
-    const beat=1-(board.place-1)/(board.of-1);
-    seat=(beat-0.5)*1.2;
-    if(board.cut) seat+=(board.place<=board.cut ? 0.35 : -0.2);
-  }
-  const want=CC_TV_BASE*Math.max(0.4, 1+0.05*log.length+0.3*CC_TV_HYPE+seat)*(0.95+Math.random()*0.1);
-  CC_TV_VIEW=Math.max(3, Math.round(CC_TV_VIEW+(want-CC_TV_VIEW)*0.5));
-  CC_TV_PEAK=Math.max(CC_TV_PEAK, CC_TV_VIEW);
-  // Замер для сводки: средний онлайн и кривая. Кривая не длиннее 240 точек —
-  // при переполнении прореживается вдвое, форма вечера остаётся.
-  CC_TV_SUM.n++; CC_TV_SUM.sum+=CC_TV_VIEW;
-  CC_TV_HIST.push({v:CC_TV_VIEW, g:log.length});
-  if(CC_TV_HIST.length>240) CC_TV_HIST=CC_TV_HIST.filter((x,i)=>i%2===0);
-  const games=board && board.n ? board.n : 0;
-  ccTvEvents(board, games);
-  const set=(id,html)=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; };
-  set('ccTvV', ccNum(CC_TV_VIEW)); set('ccTvV2', ccNum(CC_TV_VIEW));
-  const sec=Math.max(0, Math.floor((Date.now()-CC_TV_T0)/1000));
-  set('ccTvUp', Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'));
-  set('ccTvUp2', ccTvUptime(sec));
-  set('ccTvSubs', esc(T.ccTvSubsToday(CC_TV_EV.subs)));
-  set('ccTvLead', ccTvLeadHTML());
-  const lastG=log.length ? log[log.length-1] : null;
-  const bar=document.getElementById('ccTvBar');
-  if(bar) bar.style.width=(games ? Math.min(100, Math.round(log.length/games*100)) : 0)+'%';
-  set('ccTvRun', !log.length ? esc(T.ccTvWait)
-    : '<b>'+esc(games ? T.ccTvGameOf(log.length, games) : T.ccTvGame(log.length))+'</b>'+
-      (lastG && lastG.place ? '<span>'+esc(T.ccTvLast(lastG.place))+'</span>' : '')+
-      '<span>'+esc(T.ccTvPts(you.stagePts||0))+'</span>'+
-      '<span>'+esc(T.ccTvKills(you.stageElims||0))+'</span>'+
-      ((you.wins||0) ? '<span class="cc-tvm-w">'+esc(T.ccTvWins(you.wins))+'</span>' : ''));
-  /* Вечер целиком одной строкой — по квадратику на игру, цветом за место:
-     виктория золотая, топ-5 зелёный, топ-15 синий, остальное тусклое. Это то,
-     что на трансляции показывают между играми, и то, чего нет ни в таблице,
-     ни в счётчике: как шёл ВЕЧЕР, а не чем он кончается. */
-  const pips=document.getElementById('ccTvPips');
-  if(pips){
-    const cls=p=>p===1?'w':p<=5?'a':p<=15?'b':'c';
-    pips.innerHTML=log.map(g=>'<i class="'+cls(g.place||99)+'" title="#'+(g.place||'?')+'"></i>').join('')+
-      (games>log.length ? Array(games-log.length).fill('<i class="n"></i>').join('') : '');
-  }
-  /* Табло: тройка лидеров и своя строка — то, что показывает любая
-     трансляция. Своя строка стоит всегда, даже если ты не в тройке: смотрят
-     ради неё. Отсечка красит её — в квоте или мимо. */
-  if(board){
-    const inCut=board.cut ? board.place<=board.cut : null;
-    // Имя команды в поле несёт разметку (флаги картинками) — табло берёт текст.
-    const bare=s=>String(s||'').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim();
-    const rowHTML=(n, name, pts, me)=>
-      '<div class="cc-tvm-row'+(me?' me':'')+'"><i>'+n+'</i><b>'+esc(bare(name).slice(0, 22))+
-      '</b><em>'+ccNum(pts)+'</em></div>';
-    set('ccTvBoard',
-      board.top.map((r,i)=>rowHTML(i+1, r.name, r.p, r.you)).join('')+
-      (board.top.some(r=>r.you) ? ''
-        : rowHTML(board.place, you.name||'', board.pts, true))+
-      (board.cut ? '<div class="cc-tvm-cut'+(inCut?' in':' out')+'">'+
-         esc(T.ccTvCut(board.cut, board.of))+'</div>' : ''));
-  }
-  set('ccTvEv', esc(T.ccTvEvSum(CC_TV_EV.fol, CC_TV_EV.subs, Math.round(CC_TV_EV.cash))));
-  set('ccTvChat', CC_TV_MSGS.map(m=> m.ev
-    ? '<div class="cc-tvm-msg cc-tv-ev-'+m.ev+'">'+esc(m.text)+(m.note ? '<span>'+esc(m.note)+'</span>' : '')+'</div>'
-    : '<div class="cc-tvm-msg">'+(m.b ? '<i class="cc-tv-bdg '+m.b+'"></i>' : '')+
-      '<b style="color:'+esc(m.c)+'">'+esc(m.who)+'</b>: '+esc(m.text)+'</div>').join(''));
-  set('ccTvPeak', esc(T.ccTvPeak(ccNum(CC_TV_PEAK))));
-  const chat=document.getElementById('ccTvChat');
-  if(chat) chat.scrollTop=chat.scrollHeight;
-}
-/* ---- Кто в эфире прямо сейчас -----------------------------------------------
-
-   Витрина Twitch — это не список, а комната: живые каналы с числом зрителей и
-   категорией. Здесь она собрана из того, что в моде уже есть: люди сцены
-   (у них портреты и настоящие ники) и креаторы (у них настоящие аудитории с
-   Twitch). Кто именно в эфире — бросок, посеянный ДНЁМ: за день витрина не
-   меняется от перерисовки, а завтра она другая. */
-const CC_STREAM_CATS=['ccStreamCatFn','ccStreamCatChat','ccStreamCatRanked','ccStreamCatCreative'];
-function careerLiveNow(n){
-  const cr=CAREER && CAREER.career; if(!cr) return [];
-  const rnd=careerRng(ccHashStr('live|'+(cr.season||1)+'|'+careerToday()));
-  const out=[];
-  /* Зрителей — доля базы, и доля МАЛЕНЬКАЯ. Живой Twitch: у канала с двадцатью
-     миллионами подписчиков обычный вечер это десятки тысяч смотрящих, а не
-     сотни. Четыре десятых процента с разбросом дают как раз этот порядок. */
-  const cre=(typeof ccProAmCreators==='function') ? ccProAmCreators() : [];
-  const creRows=[];
-  cre.forEach(name=>{
-    const f=(typeof ccProAmFollowers==='function') ? ccProAmFollowers(name) : 0;
-    if(!f) return;
-    if(rnd()>0.55) return;                       // не все в эфире каждый день
-    creRows.push({name:name, f:f, creator:true, ava:ccProAmAvatar(name),
-              v:Math.max(20, Math.round(f*0.004*(0.5+rnd()))),
-              cat:CC_STREAM_CATS[Math.floor(rnd()*CC_STREAM_CATS.length)]});
-  });
-  // И сцена: те же карточки, что играют вечерами, с их портретами.
-  const proRows=[];
-  let roster=[];
-  try{ roster=careerRosterNowEU().slice(0, 60); }catch(e){ roster=[]; }
-  roster.forEach(p=>{
-    if(rnd()>0.25) return;
-    const ovr=(p._ovr!=null?p._ovr:(attrsFor(p)||{}).ovr)||70;
-    proRows.push({name:p.handle, card:p, f:0,
-              v:Math.max(8, Math.round((ovr-60)*40*(0.4+rnd()))),
-              cat:CC_STREAM_CATS[Math.floor(rnd()*CC_STREAM_CATS.length)]});
-  });
-  /* Витрина — ПОПОЛАМ. Если просто отсортировать по зрителям, сцену не видно
-     вовсе: у любого креатора аудитория на два порядка больше, чем у про.
-     А смысл экрана в том, чтобы игрок видел и тех и других: креаторы — с кем
-     можно стримить, про — с кем он завтра играет. */
-  creRows.sort((a,b)=>b.v-a.v);
-  proRows.sort((a,b)=>b.v-a.v);
-  const half=Math.ceil((n||12)/2);
-  out.push(...creRows.slice(0, half), ...proRows.slice(0, (n||12)-half));
-  return out.slice(0, n||12);
-}
-function ccStreamViewersNow(){
-  const cr=CAREER && CAREER.career; if(!cr) return 0;
-  return Math.max(3, Math.round((cr.twitch||0)*0.06 + careerReach()*0.008));
-}
-/* ---- Партнёрская программа --------------------------------------------------
-
-   Его правка 4 сентября: «галочку (партнерскую программу) нужно же получить,
-   от какого-то онлайна». До неё фиолетовая галочка стояла у всех с первого дня
-   карьеры, то есть не значила ничего.
-
-   Пороги НЕ выдуманы, это опубликованные требования Twitch за последние
-   30 дней. Компаньона Twitch УПРОСТИЛ в июне 2026 (блог «Monetization for
-   All», 13 мая 2026: было 8 часов, 7 дней, 50 фолловеров — стало 4 часа,
-   4 разных дня, 25 фолловеров при тех же 3 в среднем онлайн). Карьера идёт в
-   2026-м, поэтому берём действующие:
-     компаньон — 25 фолловеров, 4 часа эфира, 4 разных дня, средний онлайн 3;
-     партнёр   — 25 часов, 12 разных дней, средний онлайн 75.
-   У партнёра в справке Twitch формулировка про два месяца («12 эфиров, по 6 в
-   месяц, со стабильными +75»), но достижение «Путь к партнёрству» в дашборде
-   считает окно в 30 дней — берём его, потому что месяц карьеры и есть это
-   окно. Галочка — только партнёрская: у компаньонов её на Twitch нет. */
-const CC_TW_WINDOW=30;
-const CC_TW_AFF ={fol:25, days:4,  hours:4,  avg:3};
-const CC_TW_PART={days:12, hours:25, avg:75};
-function ccStreamLogTrim(cr){
-  const log=cr.streamLog||[];
-  const from=ccAddDays(cr.day||careerToday(), -CC_TW_WINDOW);
-  cr.streamLog=log.filter(r=>r && r.d && r.d>from);
-  return cr.streamLog;
-}
-// Что накоплено за окно: разных дней, часов и средний онлайн по эфирам.
-function ccTwMonth(){
-  const cr=CAREER && CAREER.career; if(!cr) return {days:0, hours:0, avg:0, mins:0};
-  const from=ccAddDays(careerToday(), -CC_TW_WINDOW);
-  const rows=(cr.streamLog||[]).filter(r=>r && r.d && r.d>from);
-  const days={}; let hours=0, sum=0;
-  rows.forEach(r=>{ days[r.d]=1; hours+=(r.h||4); sum+=(r.v||0); });
-  return {days:Object.keys(days).length, hours:hours, mins:Math.round(hours*60),
-          avg:rows.length ? Math.round(sum/rows.length) : 0, n:rows.length};
-}
-// none → aff → part. Получив, уже не теряешь: у Twitch статус тоже не снимают
-// за спокойный месяц.
-function ccTwStatus(){
-  const cr=CAREER && CAREER.career; if(!cr) return 'none';
-  return cr.twTier || 'none';
-}
-function ccTwEarned(){
-  return ccTwGoals('part').every(g=>g.a>=g.b) ? 'part'
-       : ccTwGoals('aff').every(g=>g.a>=g.b) ? 'aff' : 'none';
-}
-/* Цели ступени — та же таблица, по которой рисуются полоски и считается
-   выдача статуса. Одна на всех, чтобы полоска не могла показывать одно, а
-   программа считать другое. */
-function ccTwGoals(tier){
-  const T=L(), m=ccTwMonth(), cr=(CAREER && CAREER.career)||{};
-  if(tier==='part') return [
-    {k:T.ccTwGoalDays,  a:m.days,               b:CC_TW_PART.days},
-    {k:T.ccTwGoalHours, a:Math.round(m.hours),  b:CC_TW_PART.hours},
-    {k:T.ccTwGoalAvg,   a:m.avg,                b:CC_TW_PART.avg}];
-  return [
-    {k:T.ccTwGoalFol,   a:cr.twitch||0,         b:CC_TW_AFF.fol},
-    {k:T.ccTwGoalDays,  a:m.days,               b:CC_TW_AFF.days},
-    {k:T.ccTwGoalHours, a:Math.round(m.hours),  b:CC_TW_AFF.hours},
-    {k:T.ccTwGoalAvg,   a:m.avg,                b:CC_TW_AFF.avg}];
-}
-const CC_TW_RANK={none:0, aff:1, part:2};
-function careerTwTick(){
-  const cr=CAREER && CAREER.career; if(!cr) return null;
-  const got=ccTwEarned(), had=cr.twTier||'none';
-  if(CC_TW_RANK[got]<=CC_TW_RANK[had]) return null;
-  cr.twTier=got;
-  careerNews(got==='part'?'big':'good',
-             got==='part'?'ccNewsTwPartner':'ccNewsTwAffiliate', []);
-  return got;
-}
-/* Полоска под стримом — его правка 4 сентября: «пусть полоска будет под
-   стримом, сколько там нужно фоловеров и онлайн для компаньенки и сколько до
-   партнерки». Это дашбордный «Путь к компаньону»: на каждое требование своя
-   шкала с числами, выполненное отмечено галкой. Достигнув компаньона, панель
-   сама переключается на партнёрку; у партнёра её нет — идти больше некуда. */
-function careerTwBarHTML(){
-  const T=L(), tier=ccTwStatus(); if(tier==='part') return '';
-  const next=tier==='aff' ? 'part' : 'aff';
-  const rows=ccTwGoals(next).map(g=>{
-    const done=g.a>=g.b, pc=Math.min(100, Math.round(g.a/g.b*100));
-    return `<div class="tw-goal${done?' on':''}">
-      <span class="tw-k">${esc(g.k)}</span>
-      <span class="tw-bar"><i style="width:${pc}%"></i></span>
-      <span class="tw-n">${done?'✓ ':''}${ccNum(g.a)}<em>/${ccNum(g.b)}</em></span>
-    </div>`;
-  }).join('');
-  return `<div class="tv-path">
-    <div class="tw-h">${esc(next==='part'?T.ccTwToPart:T.ccTwToAff)}</div>
-    ${rows}</div>`;
-}
-function careerStreamsHTML(){
-  const cr=CAREER.career, T=L();
-  const me=CAREER.player;
-  const live=(cr.streamLast && cr.streamLast.day===careerToday()) ? cr.streamLast : null;
-  const av=(url, name, ring)=>`<span class="tv-av${ring?' on':''}">${
-    url ? `<img src="${url}" alt="" loading="lazy" onerror="this.remove()">`
-        : esc(String(name||'?').slice(0,2).toUpperCase())}</span>`;
-  const mine=photoURL(me.photo ? {_photo:me.photo} : careerCard());
-  const mate=ccStreamMate();
-  const closed=careerDayClosed();
-  // Кнопка вида: сколько стоит и что даёт — числами, а не словами.
-  const btn=k=>{
-    const can=!closed && careerEnergy()>=k.energy;
-    const extra=(k.mate && mate) ? ' · @'+esc(ccHandle(mate.name)) : '';
-    // Выключенная кнопка называет причину, а не повторяет цену. См. ccStreamCupWhy.
-    const why=can ? null : (closed ? T.ccStreamDayGone : T.ccStreamNeed(k.energy, careerEnergy()));
-    return `<button class="tv-go${can?'':' off'}" ${can?'':'disabled'}
-      onclick="careerStreamGo('${k.id}')">
-      <b>${esc(T['ccStream_'+k.id])}${extra}</b>
-      <em>${esc(why || T.ccStreamCost(k.energy))} · ${esc(T['ccStream_'+k.id+'Note'])}</em></button>`;
-  };
-  /* Пятая кнопка — турнирный вечер, и стоит она только в тот день, когда есть
-     что стримить: в остальные дни стримить турнир нечего, и пустая кнопка с
-     «сегодня нет турнира» была бы шумом на плеере. См. careerPlayLive. */
-  const evNext=careerNext();
-  const evToday=!ccMpOn() && !cr.seasonOver && evNext &&
-                evNext.day===careerToday() && careerCanPlay(evNext);
-  const cupWhy=evToday ? ccStreamCupWhy() : null;
-  const cupBtn=evToday ? `<button class="tv-go tv-go-cup${cupWhy?' off':''}"${cupWhy?' disabled':''}
-      onclick="careerPlayLive()">
-      <b>${esc(T.ccStreamCupTitle)} · ${esc(evNext.label||evNext.title||'')}</b>
-      <em>${esc(cupWhy || T.ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}</em></button>` : '';
-  /* СТРАНИЦА КАНАЛА, а не витрина. Его скрин из Notion, 4 сентября — это
-     twitch.tv/<канал> во время эфира, и оттуда взято ровно то, что делает
-     страницу собой:
-       слева  — «Отслеживаемые каналы»: аватар, ник, категория, красная точка с
-                числом зрителей или «Не в сети», ниже «Показать ещё»;
-       центр  — плеер во всю ширину, поверх него HUD (зрители, подписки за
-                сегодня, время в эфире), под ним строка канала: аватар с
-                плашкой LIVE, ник с галочкой, заголовок эфира, категория и
-                язык, справа кнопки — сердце, колокол, Bits, Gift a Sub и
-                фиолетовая «Подписаться»;
-       справа — «Чат трансляции»: закреплённое сообщение, строки со временем и
-                цветными никами, поле «Отправить сообщение» внизу.
-     Кнопки видов эфира стоят на самом плеере, когда ты не в эфире: это и есть
-     «включить трансляцию», а не отдельная панель сбоку. */
-  const viewers=live ? (live.a && live.a[0]) || ccStreamViewersNow() : ccStreamViewersNow();
-  const subsToday=live ? (live.a && live.a[2]) || 0 : 0;
-  const tier=ccTwStatus();
-  const side=careerLiveNow(10);
-  const offline=side.slice(6, 9);   // трое «не в сети» — как на его скрине
-  const sideRow=(s, off)=>`
-    <div class="tv-srow">
-      ${av(s.card ? photoURL(s.card) : (s.ava||null), s.name, !off)}
-      <div class="tv-sin"><b>${esc(s.name)}</b><em>${esc(T[s.cat])}</em></div>
-      ${off ? `<span class="tv-off">${T.ccStreamOffline}</span>`
-            : `<span class="tv-vv"><i></i>${ccNum(s.v)}</span>`}
-    </div>`;
-  const chat=careerStreamChat(live ? 14 : 8).map(m=>`
-    <div class="tv-msg"><i>${esc(m.at)}</i><b style="color:${m.c}">${esc(m.who)}</b>: <span>${esc(m.text)}</span></div>`).join('');
-  const art=(typeof CAREER_EV_ART!=='undefined' && CAREER_EV_ART.cup) || '';
-  return `<div class="tv-wrap">
-    <aside class="tv-side">
-      <div class="tv-side-h">${T.ccStreamFollowed}</div>
-      ${side.slice(0,6).map(s=>sideRow(s, false)).join('')}
-      ${offline.map(s=>sideRow(s, true)).join('')}
-      <div class="tv-more">${T.ccStreamMore}</div>
-    </aside>
-    <main class="tv-main">
-      <div class="tv-player" style="${art?`background-image:url(${art})`:''}">
-        <div class="tv-hud">
-          <span class="tv-hud-v"><i></i>${ccNum(viewers)}</span>
-          ${subsToday?`<span class="tv-hud-s">${esc(T.ccStreamSubsToday(ccNum(subsToday)))}</span>`:''}
-          ${live?`<span class="tv-hud-t">${esc(T.ccStreamUptime)}</span>`:''}
-        </div>
-        ${live ? '' : `<div class="tv-go-wrap">
-          <div class="tv-go-h">${T.ccStreamGoLive}</div>
-          ${closed ? `<div class="tv-go-off">${T.ccStreamDayGone}</div>`
-                   : `<div class="tv-go-row">${cupBtn}${CC_STREAM_KINDS.map(btn).join('')}</div>`}
-        </div>`}
-      </div>
-      <div class="tv-chanrow">
-        <span class="tv-chan-av">${av(mine, me.nick, false)}
-          ${live?`<i class="tv-live">${T.chLiveTag}</i>`:''}</span>
-        <div class="tv-chan-in">
-          <b>${esc(me.nick||'')}${tier==='part'?`<i class="tv-tick" title="${esc(T.ccTwPartner)}">✓</i>`:''}${
-            tier==='aff'?`<i class="tv-aff">${esc(T.ccTwAffiliate)}</i>`:''}</b>
-          <div class="tv-title">${esc(live ? T.ccStreamTitleLive : T.ccStreamTitleOff)}</div>
-          <div class="tv-cat"><span class="tv-cat-l">${T.ccStreamCatFn}</span>
-            <span class="tv-lang">${esc(T.ccStreamLang)}</span></div>
-        </div>
-        <div class="tv-acts">
-          <span class="tv-heart">♥</span><span class="tv-bell">🔔</span>
-          <span class="tv-bits">${T.ccStreamBits}</span>
-          <span class="tv-gift">${T.ccStreamGift}</span>
-          <span class="tv-sub">${T.ccStreamSub}</span>
-        </div>
-      </div>
-      <div class="tv-stats">
-        <span>${T.xFollowers} <b>${ccNum(cr.twitch||0)}</b></span>
-        <span>${T.ccStreamViewers} <b>${ccNum(ccStreamViewersNow())}</b></span>
-        <span>${T.ccSumStreamed} <b>${ccMoney(cr.streamed||0)}</b></span>
-        ${live?`<span class="tv-last">${esc(T.ccNewsStreamStats.apply(null, live.a))}</span>`:''}
-      </div>
-      ${cr.streamLast && cr.streamLast.sum ? `<div class="tv-sum"><div class="tw-h">${esc(T.ccTvSumTitle)}${
-          cr.streamLast.label?' · '+esc(cr.streamLast.label):''}${cr.streamLast.day?' · '+esc(ccStamp({day:cr.streamLast.day})):''}</div>${
-          ccTvSumTilesHTML(cr.streamLast.sum)}${ccTvSumChartHTML(cr.streamLast.sum)}</div>` : ''}
-      ${careerTwBarHTML()}
-    </main>
-    <aside class="tv-chat">
-      <div class="tv-chat-h">${T.ccStreamChat}</div>
-      <div class="tv-pin"><i>${esc(T.ccStreamPinned(me.nick||''))}</i>
-        <b>${esc(T.ccStreamPinText)}</b></div>
-      <div class="tv-msgs">${chat}</div>
-      <div class="tv-say">${T.ccStreamSay}</div>
-    </aside>
-  </div>`;
-}
-/* Чат эфира. Люди в нём настоящие — те же, кого мод уже знает: напарник, клуб,
-   друзья, подписки, соперники из комнаты и креаторы; строки короткие, как в
-   чате, и посеяны днём, чтобы при перерисовке чат не прыгал. Цвет ника — из
-   ника же, как это делает сам Twitch. */
-function careerStreamChat(n){
-  const cr=CAREER && CAREER.career; if(!cr) return [];
-  const rnd=careerRng(ccHashStr('chat|'+(cr.season||1)+'|'+careerToday()));
-  const who=[];
-  const add=h=>{ if(h && !who.some(x=>hKey(x)===hKey(h))) who.push(String(h)); };
-  const mate=careerPartnerCard(); if(mate) add(mate.handle);
-  (cr.friends||[]).forEach(add);
-  (ccFollows()||[]).forEach(add);
-  careerLiveNow(8).forEach(s=>add(s.name));
-  try{ careerRosterNowEU().slice(0, 40).forEach(p=>{ if(rnd()<0.3) add(p.handle); }); }catch(e){}
-  /* КТО ПИШЕТ — В ОСНОВНОМ НИКТО. Его правка 5 сентября: «фоловятся и в чат
-     пишут не про-игроки и контент-мейкеры, могут иногда, но в основном
-     рандомные ники, и сделай ники без циферок маленькими буквами». Так и на
-     настоящем Twitch: чат — это зрители, а не сцена. Люди сцены остаются в
-     списке, но один на семерых; остальные — выдуманные ники, посеянные днём,
-     как и всё в этом чате. */
-  const CC_CHAT_REAL=0.15;
-  const fake=[]; const seen=new Set(who.map(hKey));
-  for(let i=0;i<40 && fake.length<32;i++){
-    const h=ccChatNick(rnd);
-    if(!seen.has(h)){ seen.add(h); fake.push(h); }
-  }
-  if(!who.length && !fake.length) return [];
-  const bank=L().ccStreamChatLines||[];
-  const hhmm=i=>{
-    const m=(3*60+11+i)%1440;                     // «03:11», как на его скрине
-    return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
-  };
-  const out=[];
-  for(let i=0;i<(n||10);i++){
-    const real=who.length && (!fake.length || rnd()<CC_CHAT_REAL);
-    const h=real ? who[Math.floor(rnd()*who.length)] : fake[Math.floor(rnd()*fake.length)];
-    const t=bank.length ? bank[Math.floor(rnd()*bank.length)] : '';
-    out.push({who:real ? ccHandle(h) : h, text:t, at:hhmm(i), c:ccChatColor(h)});
-  }
-  return out;
-}
-/* Выдуманный ник зрителя: строчные латинские буквы, без цифр — его слово.
-   Собирается из трёх корзин (приставка, корень, хвост), как ники и собирают:
-   «sleepyfox», «notkev», «mrnoodlettv». Бросок — снаружи, чтобы список дня
-   был одним и тем же при перерисовке. */
-const CC_NICK_A=['sleepy','tiny','big','dark','cold','lucky','shy','loud','mr','not','just','the','lil',
-  'old','soft','wild','dry','pale','lazy','mad','sir','fake','real','sad','okay','late','only','no',
-  'cozy','ghost','grim','kinda','ex','pro','ur','my','og','low','high','sus'];
-const CC_NICK_B=['fox','kev','moon','ash','pepper','noodle','bean','cat','wolf','pixel','storm','maple',
-  'taco','rice','frog','pine','cloud','neon','sock','wren','otter','mint','crow','dust','lime','fern',
-  'vex','zed','rune','koi','max','leo','nova','ivy','milo','bear','duck','pie','jam','yoshi','remy',
-  'kai','luna','pug','toast','waffle','mango','kiwi','ziggy','bones'];
-const CC_NICK_C=['','','','','','','tv','yt','ttv','lol','pls','gg','x','z','er','y','ie','o','s'];
-function ccChatNick(rnd){
-  const r=rnd||Math.random;
-  const pick=a=>a[Math.floor(r()*a.length)];
-  const shape=r();
-  const nick = shape<0.55 ? pick(CC_NICK_A)+pick(CC_NICK_B)+pick(CC_NICK_C)
-             : shape<0.8  ? pick(CC_NICK_B)+pick(CC_NICK_C)
-             : pick(CC_NICK_B)+pick(CC_NICK_B);
-  return nick.toLowerCase().replace(/[^a-z]/g,'');
-}
-// Цвет ника в чате — из самого ника, как у Twitch: один и тот же человек
-// всегда одного цвета.
-const CC_CHAT_COLORS=['#ff7f50','#1e90ff','#00ff7f','#ff69b4','#daa520','#9acd32',
-                      '#00ced1','#ff4500','#8a2be2','#5f9ea0'];
-function ccChatColor(h){
-  return CC_CHAT_COLORS[ccHashStr(String(h||'')) % CC_CHAT_COLORS.length];
-}
-
-/* ---- ТРАНСФЕРЫ СЦЕНЫ: кто с кем собрался и кто выстрелил ----
-
-   Его правка 3 сентября: «чтобы выходили новости о том, что дуо или трио
-   сплитаются и игроки другие тоже меняли команды, а не играли одни и те же
-   дуо/трио, что играли и в жизни. Это фишка фифы очень крутая — наблюдать,
-   как другие команды изменяются и кто может выстрелить, а кто угаснуть».
-
-   Половина этого в моде уже жила, просто молчала. Пары РЕАЛЬНО распадаются
-   (ccDuoBroken), свободные две недели стоят на рынке (CC_FA_DAYS) и сходятся
-   заново (ccRemadeDuos) — но лента объявляла только разводы и только два
-   новых дуо на стыке года. То есть рынок был, а новостей о нём не было.
-
-   Здесь лента догоняет мир. Каждый день сверяется, кто с кем стоит В ПАРЕ
-   СЕЙЧАС (ccPairMateOf по careerPools), со снимком прошлой сверки; новые пары
-   объявляются как трансфер, не больше CC_MOVE_POSTS_DAY в день. Ничего не
-   выдумывается: пары приходят из той же пересборки, которая сажает лобби.
-
-   И вторая половина, та самая «кто выстрелил, а кто угас»: раз в месяц
-   пресса называет самого выросшего и самого просевшего за сезон. Рост сцены
-   уже считается (CAREER.dev, careerDevOf) — его просто никто не показывал. */
-const CC_MOVE_POSTS_DAY=2, CC_RISE_MIN=3;
-function ccPairKeyNow(){
-  const out={};
-  let duos=[];
-  try{ duos=(careerPools()||{}).duos||[]; }catch(e){ return out; }
-  duos.forEach(d=>{
-    const cs=(d.cards||[]).filter(Boolean);
-    if(cs.length<2) return;
-    const ks=cs.map(c=>hKey(c)).sort();
-    ks.forEach((k,i)=>{ out[k]=ks.filter((_,j)=>j!==i).join('+'); });
-  });
-  return out;
-}
-function careerSceneMovesTick(){
-  const cr=CAREER && CAREER.career; if(!cr) return 0;
-  const now=ccPairKeyNow();
-  const was=cr.pairs || null;
-  cr.pairs=now;
-  if(!was) return 0;                     // первая сверка: снимок без новостей
-  const mine=hKey(CAREER.player && (CAREER.player.handle||CAREER.player.nick));
-  const said=new Set(), rows=[];
-  Object.keys(now).forEach(k=>{
-    if(k===mine || now[k]===was[k]) return;      // пара та же — не новость
-    if(!now[k]) return;                          // распад объявляет свой пост
-    const pair=[k].concat(now[k].split('+')).sort().join('+');
-    if(said.has(pair)) return;
-    said.add(pair);
-    if(pair.split('+').some(h=>h===mine)) return;  // свою пару объявляешь сам
-    rows.push(pair.split('+'));
-  });
-  let n=0;
-  rows.slice(0, CC_MOVE_POSTS_DAY).forEach(ks=>{
-    const card=ccWhoCard(ks[0]);
-    careerNews('flat', 'ccNewsSceneDuo',
-               [ccHandle(ks[0]), ks.slice(1).map(h=>'@'+ccHandle(h)).join(L().ccListAnd)],
-               {by:card ? {name:ks[0], ovr:card._ovr!=null?card._ovr:(attrsFor(card)||{}).ovr,
-                           card:card.region?{handle:card.handle, region:card.region}:null}
-                        : undefined});
-    n++;
-  });
-  return n;
-}
-/* Раз в месяц — кто вырос и кто просел. Числа из книги роста сцены, а не из
-   воздуха: careerDevOf это то, на сколько человек уже сдвинулся за карьеру. */
-function careerSceneRiseTick(){
-  const cr=CAREER && CAREER.career; if(!cr) return false;
-  const key='rise|'+ccMonthKey(careerToday());
-  cr.told=cr.told||{};
-  if(cr.told[key]) return false;
-  const book=(CAREER && CAREER.dev) || null;
-  if(!book) return false;
-  const rows=Object.keys(book).map(k=>({k:k, d:book[k]})).filter(r=>Math.abs(r.d)>=CC_RISE_MIN);
-  if(!rows.length) return false;
-  cr.told[key]=1;
-  rows.sort((a,b)=>b.d-a.d);
-  const up=rows[0], down=rows[rows.length-1];
-  const nameOf=k=>{ const c=ccWhoCard(k); return ccHandle((c && c.handle) || k); };
-  if(up && up.d>=CC_RISE_MIN) careerNews('good', 'ccNewsSceneRise', [nameOf(up.k), Math.round(up.d)]);
-  if(down && down.d<=-CC_RISE_MIN) careerNews('bad', 'ccNewsSceneFall', [nameOf(down.k), Math.round(-down.d)]);
-  return true;
-}
-
-/* ---- Анкета свободного агента — через два дня после развода ----
-
-   Развод и анкета одним вечером читались как два одинаковых поста (его скрин
-   3 сентября). Теперь ccAdMake помечает анкету (ad.post) в день развода, а
-   пост с карточкой выходит, когда прошло два дня и человек всё ещё свободен.
-   Не больше двух анкет в день, чтобы лента не стала доской объявлений. */
-const CC_AD_POST_DELAY=2, CC_AD_POSTS_DAY=2;
-function careerAdPostTick(){
-  const ads=CAREER && CAREER.ads; if(!ads) return 0;
-  const today=careerToday();
-  let n=0;
-  Object.keys(ads).forEach(k=>{
-    const ad=ads[k];
-    if(!ad || !ad.post || ad.posted || n>=CC_AD_POSTS_DAY) return;
-    if(ccDaysBetween(ad.day, today)<CC_AD_POST_DELAY) return;
-    ad.posted=1;
-    const h=ad.handle || k;
-    if(!ccAdOf(h)) return;   // уже нашёл пару — анкета не нужна
-    careerNews('flat', 'ccPostLfdWant', [ccHandle(h), ad.div, ad.pr], {card:ccHandle(h)});
-    n++;
-  });
-  return n;
-}
-
-/* ---- 12. Мета сезона ----
-
-   Смена сезона Fortnite меняет остров и пул. Три дня разбора новой меты —
-   каждый плюс к форме; кто не разобрал, первые две недели сезона играет со
-   штрафом к форме, который тает с каждым разобранным днём. */
-const CC_META_DAYS=3, CC_META_WINDOW=14, CC_META_OPEN=21, CC_META_PEN=0.3, CC_META_FORM=0.15;
-function ccMeta(){ const cr=CAREER && CAREER.career; return (cr && cr.meta) || null; }
-function ccMetaOpen(){
-  const m=ccMeta(); if(!m || !m.from) return false;
-  return m.days<CC_META_DAYS && ccDaysBetween(m.from, careerToday())<CC_META_OPEN;
-}
-function ccMetaPen(){
-  const m=ccMeta(); if(!m || !m.from || m.days>=CC_META_DAYS) return 0;
-  if(ccDaysBetween(m.from, careerToday())>=CC_META_WINDOW) return 0;
-  return Math.round(CC_META_PEN*(CC_META_DAYS-m.days)/CC_META_DAYS*100)/100;
-}
-function careerMetaStart(id){
-  const cr=CAREER && CAREER.career; if(!cr) return;
-  if(cr.meta && cr.meta.id===id) return;
-  cr.meta={id:id, days:0, from:careerToday()};
-  careerNews('flat', 'ccNewsMetaNew', [id]);
-}
-function careerMetaDay(){
-  const m=ccMeta(); if(!m) return;
-  m.days=(m.days||0)+1;
-  const cr=CAREER.career;
-  cr.form=clamp((cr.form||0)+CC_META_FORM, -CC_FORM_MAX, CC_FORM_MAX);
-}
-
-/* ---- 13. Школа как выбор ----
-
-   Школьник живёт после уроков (минус десять к запасу дня, см. careerEnergyMax).
-   В шестнадцать-семнадцать раз за карьеру спрашивают: бросить, перейти на
-   онлайн (минус пять и сто пятьдесят в месяц) или доучиться. В восемнадцать
-   всё кончается само. */
-const CC_SCHOOL_ONLINE=150;
-function ccSchoolCap(age){
-  if(!(age>=13 && age<=18)) return 0;
-  const cr=CAREER && CAREER.career, s=cr && cr.school;
-  return s==='out' ? 0 : s==='online' ? 5 : 10;
-}
-function careerSchoolFee(months){
-  const cr=CAREER && CAREER.career; if(!cr || !months) return 0;
-  const age=ccPlayerAge();
-  if(cr.school!=='online' || !(age>=13 && age<=18)) return 0;
-  const fee=CC_SCHOOL_ONLINE*months;
-  if((cr.balance||0)<fee){ cr.school='in'; careerNews('flat', 'ccNewsSchoolBack', []); return 0; }
-  cr.balance=(cr.balance||0)-fee;
-  return fee;
-}
-
-/* ---- 5. Контракт с зубами: бонус за Мейджор и клуб, уходящий из Fortnite ----
-
-   Бонус — половина месячной зарплаты, не меньше ста, за каждый финал Мейджора
-   в сезоне; платится в день, когда строка появляется в журнале. Уход клуба —
-   раз за сезон с шансом CC_ORG_QUIT_ODDS, день назначается заранее и лежит в
-   сейве, чтобы перезагрузка ничего не переигрывала. */
-const CC_ORG_QUIT_ODDS=0.08;
-function careerOrgBonusFor(salary){ return Math.max(100, Math.round((salary||0)*0.5/50)*50); }
-function careerOrgBonus(org){
-  if(!org) return 0;
-  return org.bonus!=null ? org.bonus : careerOrgBonusFor(org.salary);
-}
-function careerOrgBonusTick(){
-  const org=CAREER && CAREER.org, cr=CAREER && CAREER.career;
-  if(!org || !cr) return 0;
-  const bonus=careerOrgBonus(org); if(!bonus) return 0;
-  let paid=0;
-  (cr.log||[]).forEach(r=>{
-    if(r.kind!=='major' || r.stage!=='final' || r.season!==cr.season || r.bonusPaid) return;
-    r.bonusPaid=1; paid+=bonus;
-  });
-  if(paid){
-    cr.balance=(cr.balance||0)+paid;
-    cr.wages=(cr.wages||0)+paid;
-    org.paid=(org.paid||0)+paid;
-    careerNews('good', 'ccNewsOrgBonus', [org.name, ccMoney(paid)], {by:ccOrgBy(org.name)});
-  }
-  return paid;
-}
-function careerOrgQuitDue(iso){
-  const cr=CAREER && CAREER.career, org=CAREER && CAREER.org;
-  if(!cr || !org) return false;
-  cr.told=cr.told||{};
-  const key='oq|'+cr.season+'|'+org.name;
-  if(!cr.told[key]){
-    cr.told[key]=1;
-    const rnd=careerRng(ccHashStr(key+'|'+(CAREER.player.nick||'')));
-    cr.orgQuit = rnd()<CC_ORG_QUIT_ODDS
-      ? {org:org.name, day:ccAddDays(iso, 20+Math.floor(rnd()*200))} : null;
-  }
-  const q=cr.orgQuit;
-  return !!(q && q.org===org.name && iso>=q.day && iso<=CC_YEAR_TO);
-}
-
-/* ---- 2. События-развилки: принудительные дни ----
-
-   Обычные события дня кидаются броском (ccDayRoll). Два приходят по делу, а не
-   по жребию: школа — раз, в шестнадцать; уход клуба — в назначенный день. */
-function careerForcedEvent(iso){
-  const cr=CAREER && CAREER.career; if(!cr) return null;
-  if((careerYearDays().get(iso)||[]).length) return null;
-  if((cr.did||{})[iso]) return null;
-  const age=ccPlayerAge();
-  if(!cr.school && age>=16 && age<=17) return CC_DAY_EVENTS.find(e=>e.id==='school') || null;
-  if(careerOrgQuitDue(iso)) return CC_DAY_EVENTS.find(e=>e.id==='orgQuit') || null;
-  return null;
-}
-// Самый слабый из шести — то, что тренер-волонтёр берётся подтянуть.
-function ccWeakestAttr(){
-  const six=(CAREER.player.attrs) || ccOwnAttrs();
-  return ATTR_KEYS.slice().sort((a,b)=>(six[a]||50)-(six[b]||50))[0];
-}
-function careerStatBump(k, by){
-  const pl=CAREER.player;
-  if(!pl.attrs) pl.attrs=ccOwnAttrs();
-  pl.attrs[k]=clamp((pl.attrs[k]||50)+by, 35, 99);
-  const raw=ATTR_KEYS.reduce((sum,x)=>sum+(pl.attrs[x]||50)*ATTR_W[x],0);
-  const now=pl.ovrExact!=null?pl.ovrExact:pl.ovr;
-  pl.ovrExact=clamp(Math.max(now, Math.min(raw, careerTrainCap())), 40, 99);
-  pl.ovr=Math.round(pl.ovrExact);
-  pl.attrs.ovr=Math.round(raw);
-}
-// Вчерашний вечер был провальным: место в нижней половине, и это вчера.
-function ccBadNightYesterday(){
-  const cr=CAREER.career, row=(cr.log||[]).slice(-1)[0];
-  if(!row || !row.of) return false;
-  if(ccDaysBetween(row.day, careerToday())!==1) return false;
-  return row.place>row.of/2;
-}
-
-/* ---- 11. План недели — был и снят тем же днём.
-
-   Плитка с сессией на все свободные дни и кнопкой «до турнира» стояла на
-   центре пару часов; его слово 3 сентября: «week plan не нравится, верни как
-   было». Перемотка снова тренирует «лучшее за энергию» (careerFfSpendDay). */
-
-/* ---- 3. Вкладка «Статистика» ----
-
-   Всё считается из журнала, ничего не хранится отдельно: журнал и есть
-   статистика, вкладка — только её чтение. */
-function ccStKindName(kind){
-  const w=ccFfKindWord(kind);
-  if(w) return w;
-  const K={rc:L().ccSumParis, gclc:L().ccSumGclc, summit:L().ccSumSummit, globals:L().ccSumGlobals,
-           solo:L().ccStSolo, solos:L().ccStSolo, gc:L().chWkGC};
-  return K[kind] || kind || L().chWkCup;
-}
-function careerStatsHTML(){
-  const cr=CAREER.career, T=L();
-  const log=(cr.log||[]).filter(r=>r.place);
-  const tile=(h, body)=>`<div class="ch-tile"><h4>${h}</h4>${body}</div>`;
-  const row=(k,v)=>`<div class="ch-row"><em>${k}</em><b>${v}</b></div>`;
-  if(!log.length) return `<div class="ch-grid" style="grid-template-columns:1fr;">${
-    tile(T.ccStTitle, `<div class="ch-empty">${T.ccStEmpty}</div>`)}</div>`;
-  const sum=(rows,k)=>rows.reduce((s,e)=>s+(e[k]||0),0);
-  const avgOf=rows=>{ const w=rows.filter(e=>e.avg!=null);
-    return w.length ? (w.reduce((s,e)=>s+e.avg,0)/w.length).toFixed(1) : '—'; };
-  const bestOf=rows=>rows.length ? Math.min.apply(null, rows.map(e=>e.place)) : null;
-  const games=sum(log,'games'), wins=sum(log,'wins'), elims=sum(log,'elims');
-  const podiums=log.filter(e=>e.place<=3).length, top10=log.filter(e=>e.place<=10).length;
-  const bestNight=log.reduce((b,e)=>(e.wins||0)>(b?(b.wins||0):0)?e:b, null);
-  const bestElims=log.reduce((b,e)=>(e.elims||0)>(b?(b.elims||0):0)?e:b, null);
-  const totals=tile(T.ccStTitle,
-    row(T.ccStEvents, log.length)+row(T.ccStGames, games)+
-    row(T.ccStWins, wins+(games ? ' · '+(wins/games*100).toFixed(1)+'%' : ''))+
-    row(T.ccStElims, elims+(games ? ' · '+(elims/games).toFixed(2)+' '+T.ccStPerGame : ''))+
-    row(T.ccStAvg, avgOf(log))+row(T.ccStPodiums, podiums)+row(T.ccStTop10, top10)+
-    row(T.ccStPromos, log.filter(e=>e.passed).length)+
-    row(T.ccStPrize, ccMoney(cr.earnings||0))+row(T.ccStWages, ccMoney(cr.wages||0))+
-    row(T.ccStSide, ccMoney(cr.side||0))+
-    (bestNight ? row(T.ccStBestNight, bestNight.wins+' VR · '+ccLogName(bestNight)) : '')+
-    (bestElims ? row(T.ccStBestElims, bestElims.elims+' · '+ccLogName(bestElims)) : ''));
-  const group=(keyOf)=>{ const m=new Map(); log.forEach(e=>{ const k=keyOf(e);
-    if(!m.has(k)) m.set(k,[]); m.get(k).push(e); }); return m; };
-  const table=(head, m, name)=>tile(head, `<div class="ev-wrap"><table class="ev-table cc-st-table">
-    <thead><tr><th></th><th>${T.ccStEvents}</th><th>${T.ccStBest}</th><th>VR</th><th>${T.ccStAvg}</th><th>$</th></tr></thead><tbody>${
-    [...m.entries()].map(([k,rows])=>`<tr><td class="ev-name"><b>${name(k,rows)}</b></td>
-      <td class="ev-num">${rows.length}</td><td class="ev-num">#${bestOf(rows)}</td>
-      <td class="ev-num">${sum(rows,'wins')}</td><td class="ev-num">${avgOf(rows)}</td>
-      <td class="ev-num ev-cash">${sum(rows,'prize') ? ccMoney(sum(rows,'prize')) : '—'}</td></tr>`).join('')
-    }</tbody></table></div>`);
-  const byKind=table(T.ccStByKind, group(e=>e.kind||'cup'), k=>esc(ccStKindName(k)));
-  const bySeason=table(T.ccStBySeason, group(e=>e.season||1),
-    (k,rows)=>T.ccStSeason+' '+k+' · '+T.ccRoOvr+' '+Math.round(rows.reduce((m,e)=>Math.max(m,e.ovr||0),0)));
-  const mates=group(e=>e.mate||'');
-  mates.delete('');
-  const byMate=mates.size ? table(T.ccStPartners, mates, k=>esc(k)) : '';
-  const spots=(()=>{
-    const store=careerSpots(); const lines=[];
-    Object.keys(store||{}).forEach(key=>{
-      const v=Array.isArray(store[key]) ? store[key] : (store[key] ? [store[key]] : []);
-      v.forEach(s=>{ if(s && s.i!=null) lines.push(row(esc(key)+' · '+T.ccStSpotBox+' '+(s.i+1),
-        T.ccStAura+' '+(s.aura||0)+' · '+T.ccStWins+' '+(s.won||0))); });
-    });
-    return lines.length ? tile(T.ccStSpots, lines.join('')) : '';
-  })();
-  const curve=careerRatingCurve(log.slice().reverse());
-  const rating=curve ? tile(T.ccStCurve, curve) : '';
-  return `<div class="ch-grid ch-standings">${totals}${rating}${byKind}${bySeason}${byMate}${spots}</div>`;
-}
-
-/* ---- 4. Зал славы по слотам ----
-
-   Шесть карьер на одном экране: кто чего добился и четыре рекорда между
-   ними. Читается прямо из сейвов, ничего не грузя. */
-function careerHallRows(){
-  const rows=[];
-  for(let n=1; n<=CC_SLOTS; n++){
-    const s=ccSlotRead(n), c=ccSlotCard(n);
-    if(!s || !c || !s.career) continue;
-    const log=(s.career.log||[]).filter(r=>r.place);
-    const majors=log.filter(r=>r.kind==='major' && r.stage==='final');
-    const d1=log.filter(r=>r.div===1).sort((a,b)=>(a.season-b.season)||(a.day<b.day?-1:a.day>b.day?1:0))[0];
-    rows.push({n:n, card:c, nick:s.player.nick||'', seasons:s.career.season||1,
-      peak:Math.round(log.reduce((m,r)=>Math.max(m,r.ovr||0), s.player.ovr||0)),
-      topDiv:log.reduce((m,r)=>Math.min(m,r.div||5), s.career.division||5),
-      wins:log.reduce((a,r)=>a+(r.wins||0),0), events:log.length,
-      earnings:s.career.earnings||0,
-      d1:d1 ? {season:d1.season, day:d1.day} : null,
-      major:majors.length ? Math.min.apply(null, majors.map(r=>r.place)) : null,
-      retired:!!s.retired});
-  }
-  return rows;
-}
-function careerHallHTML(){
-  const T=L(), rows=careerHallRows();
-  if(rows.length<1) return '';
-  const top=(val, better)=>rows.filter(r=>val(r)!=null).sort((a,b)=>better(val(a), val(b)))[0] || null;
-  const rich=top(r=>r.earnings||null, (a,b)=>b-a);
-  const early=top(r=>r.d1 ? r.d1.season*10000+ccDaysBetween(CC_YEAR_FROM, r.d1.day) : null, (a,b)=>a-b);
-  const most=top(r=>r.wins||null, (a,b)=>b-a);
-  const major=top(r=>r.major, (a,b)=>a-b);
-  const rec=(label, r, v)=>r ? `<div class="ch-row"><em>${label}</em><b>${esc(r.nick)} · ${v}</b></div>` : '';
-  const records=rec(T.ccHallRich, rich, rich ? ccMoney(rich.earnings) : '')+
-    rec(T.ccHallEarlyD1, early, early ? T.ccSlotSeason+' '+early.d1.season+' · '+ccDayLabel(early.d1.day) : '')+
-    rec(T.ccHallMostWins, most, most ? most.wins+' VR' : '')+
-    rec(T.ccHallBestMajor, major, major ? '#'+major.major : '');
-  const list=rows.map(r=>`<div class="ch-row cc-hall-row"><em>${esc(r.nick)}${r.retired ? ' · '+T.ccSlotRetired : ''}</em>
-    <b>${T.ccHallSeasons} ${r.seasons} · ${T.ccHallPeak} ${r.peak} · ${T.ccDivision} ${r.topDiv} · ${r.wins} VR · ${ccMoney(r.earnings)}</b></div>`).join('');
-  return `<div class="ch-tile cc-hall"><h4>${T.ccHallTitle}</h4>${
-    records ? `<div class="cc-hall-rec">${records}</div>` : ''}${list}</div>`;
 }
 
