@@ -57,6 +57,18 @@ const BOOT = `
       if(Math.abs(got-want)>0.03) fail('rarity '+k+': '+got.toFixed(3)+' vs table '+want);
     });
     out.steps.push('chest rarity over '+N+' rolls: '+Object.keys(cnt).map(k=>k+' '+(cnt[k]/N*100).toFixed(1)+'%').join(', '));
+    // ---- класс ствола из сундука (таблица классов, перенормированная на пул) ------
+    for(const set of ['m2','m1']){
+      const have={}; CC_LOOT_BY_SET[set].weapons.forEach(w=>{ have[w.icon]=1; });
+      const keys=Object.keys(CC_CHEST_CLASS).filter(k=>have[k]);
+      const tot=keys.reduce((a,k)=>a+CC_CHEST_CLASS[k],0);
+      const cc={}; for(let i=0;i<N;i++){ const r=ccChestRoll(Math.random, set); cc[r.weapon.icon]=(cc[r.weapon.icon]||0)+1; }
+      keys.forEach(k=>{ const got=(cc[k]||0)/N, want=CC_CHEST_CLASS[k]/tot; if(Math.abs(got-want)>0.03) fail(set+' class '+k+': '+got.toFixed(3)+' vs '+want.toFixed(3)); });
+      Object.keys(cc).forEach(k=>{ if(!CC_CHEST_CLASS[k]) fail(set+': chest gave a gun of unknown class '+k); });
+      let same=0; for(let i=0;i<300;i++){ const p=ccChestPack(Math.random, set, CC_CHESTS_POI); if(p.weapons.length===2 && p.weapons[0].icon===p.weapons[1].icon) same++; }
+      if(same>30) fail(set+': two weapons of one class in '+same+' of 300 packs');
+      out.steps.push(set+' chest class over '+N+' rolls: '+keys.map(k=>k+' '+((cc[k]||0)/N*100).toFixed(1)+'%').join(', ')+'; one-class packs '+same+'/300');
+    }
 
     // ---- пак из сундуков -------------------------------------------------------
     for(let i=0;i<200;i++){
@@ -64,6 +76,7 @@ const BOOT = `
       if(p.weapons.length>2 || p.heals.length>2) fail('pack overflows: '+JSON.stringify(p));
       if(p.move && CC_MOVE_ITEMS.indexOf(p.move.name)<0) fail('move slot holds a heal: '+p.move.name);
       if(p.heals.some(h=>CC_MOVE_ITEMS.indexOf(h.name)>=0)) fail('heal slot holds a movement item');
+      if(p.heals.some(h=>CC_CHEST_NOT_HEAL.indexOf(h.name)>=0)) fail('heal slot holds a key or a rod: '+p.heals.map(h=>h.name).join(', '));
       const v=ccPackPow(p); if(v<-5 || v>6) fail('pack power out of range: '+v);
     }
     let sameClass=0; for(let i=0;i<300;i++){ const p=ccChestPack(Math.random, ccLootSet(), CC_CHESTS_POI); if(p.weapons.length===2 && p.weapons[0].icon===p.weapons[1].icon) sameClass++; }
