@@ -720,6 +720,14 @@
   .land-zone.later{border-style:dashed;}
   .land-zone.later .zone-name{opacity:.5;background:rgba(0,0,0,.25);}
   .land-zone.chosen{box-shadow:0 0 16px 4px rgba(0,176,144,.85), inset 0 0 0 1px rgba(0,0,0,.5) !important;transform:scale(1.015);}
+  /* Сундуки в коробке (7.09, «на карте писать количество сундуков… кнопка показать
+     сундуки»): бирка в левом верхнем углу коробки, спрятана, пока не нажата кнопка. */
+  .land-zone-chests{display:none;position:absolute;top:2px;left:2px;font-size:8px;font-weight:800;color:#ffd84a;
+    background:rgba(0,0,0,.7);padding:1px 4px;border-radius:2px;line-height:1.3;white-space:nowrap;pointer-events:none;z-index:2;}
+  body.cc-chests-on .land-zone-chests{display:block;}
+  .cc-chests-btn{display:inline-block;margin-top:8px;padding:5px 10px;font:inherit;font-size:11px;font-weight:700;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--ink);background:rgba(255,216,74,.12);border:1px solid rgba(255,216,74,.55);border-radius:6px;cursor:pointer;}
+  body.cc-chests-on .cc-chests-btn{background:rgba(255,216,74,.32);}
   .land-zone-label{font-size:8px;font-weight:700;color:#fff;background:rgba(0,0,0,.62);
     flex:0 0 auto;margin-top:auto;
     padding:1px 4px;border-radius:2px;line-height:1.3;margin:2px;max-width:calc(100% - 4px);
@@ -5952,6 +5960,7 @@
             <img src="art/map-m2.jpg" alt="Island map" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
             <div id="landingMarkersLayer" style="position:absolute;inset:0;"></div>
           </div>
+          <button type="button" class="cc-chests-btn" onclick="ccChestsToggle()"></button>
           <div id="landingChosen" style="font-size:12px;color:var(--ink-dim);margin-top:8px;"></div>
         </div>
 
@@ -6434,7 +6443,7 @@ teamPickNone:'В этом наборе нет ни одной настоящей
 teamPickNoMatch:'По этому нику команд не нашлось.',
 teamPickBtn:'Взять',
 weaponPackTitle:'Оружейный пак', weaponPackDesc:'Выбери оружие — влияет на силу состава.', lootPoolNote:n=>'Лут-пул сезона: '+n, healPackTitle:'Пак хила', healPackDesc:'Выбери расходник — тоже влияет на силу состава.', weaponLabel:'Оружие', loadoutLabel:'Экипировка:', totalPowerLabel:'Итоговая сила:',
-landingTitle:'Выбери точку высадки', landingHint:'Кликни по любой зоне на карте — свободные дают очки, занятые дают риск и бонус за победу в стычке', landingChosenText:n=>'Точка высадки №'+n+' выбрана', landingTaken:'занято', landingZoneSuffix:n=>'зона '+n, landingPoints:n=>'+'+ruPts(n), landingChosenPoints:(n,p)=>'Точка высадки №'+n+' выбрана — +'+ruPts(p), landingResultsTitle:'Куда упали составы', landingChosenContested:(n,p)=>'Точка высадки №'+n+' выбрана — там уже отряд! +'+ruPts(p)+', но риск стычки', landingFightWon:'⚔ выиграл стычку при высадке', landingFightLost:'💀 проиграл стычку при высадке', landingShared:'🤝 делили зону, всё обошлось', landingRiskTag:n=>n>=2?ruTeams(n)+' здесь — высокий риск':'занято — риск стычки', landingConfirmBtn:'Подтвердить высадку', landingAutoBtn:'Выбрать за меня', gameLandingTitle:(g,n)=>'Высадка — игра '+g+' из '+n, landingPickSeat:(n,total)=>'Ты выбираешь '+n+'-'+(ccPlayerFem()?'й':'м')+' из '+total+' — раньше '+(ccPlayerFem()?'квалифицировалась':'квалифицировался')+', раньше ставишь метку.', landingPickPrompt:'Кликни по зоне, чтобы посмотреть, кто там, потом подтверди высадку', landingFreePreview:p=>'Свободная зона — +'+ruPts(p)+', без риска', landingLaterNote:n=>'Сюда метят '+ruTeams(n)+' из хвоста очереди — они садятся после тебя и, если займёшь, выберут другое', landingOccupiedPreview:n=>n>=2?'Внимание: там уже '+ruTeams(n)+' — придётся победить всех':'Там уже отряд — будет стычка при высадке', scqTitle:'Second Chance Qualifier — последний шанс на LAN',
+landingTitle:'Выбери точку высадки', landingChestsShow:'Показать сундуки', landingChestsHide:'Скрыть сундуки', landingChestsN:n=>n+' сунд.', landingHint:'Кликни по любой зоне на карте — свободные дают очки, занятые дают риск и бонус за победу в стычке', landingChosenText:n=>'Точка высадки №'+n+' выбрана', landingTaken:'занято', landingZoneSuffix:n=>'зона '+n, landingPoints:n=>'+'+ruPts(n), landingChosenPoints:(n,p)=>'Точка высадки №'+n+' выбрана — +'+ruPts(p), landingResultsTitle:'Куда упали составы', landingChosenContested:(n,p)=>'Точка высадки №'+n+' выбрана — там уже отряд! +'+ruPts(p)+', но риск стычки', landingFightWon:'⚔ выиграл стычку при высадке', landingFightLost:'💀 проиграл стычку при высадке', landingShared:'🤝 делили зону, всё обошлось', landingRiskTag:n=>n>=2?ruTeams(n)+' здесь — высокий риск':'занято — риск стычки', landingConfirmBtn:'Подтвердить высадку', landingAutoBtn:'Выбрать за меня', gameLandingTitle:(g,n)=>'Высадка — игра '+g+' из '+n, landingPickSeat:(n,total)=>'Ты выбираешь '+n+'-'+(ccPlayerFem()?'й':'м')+' из '+total+' — раньше '+(ccPlayerFem()?'квалифицировалась':'квалифицировался')+', раньше ставишь метку.', landingPickPrompt:'Кликни по зоне, чтобы посмотреть, кто там, потом подтверди высадку', landingFreePreview:p=>'Свободная зона — +'+ruPts(p)+', без риска', landingLaterNote:n=>'Сюда метят '+ruTeams(n)+' из хвоста очереди — они садятся после тебя и, если займёшь, выберут другое', landingOccupiedPreview:n=>n>=2?'Внимание: там уже '+ruTeams(n)+' — придётся победить всех':'Там уже отряд — будет стычка при высадке', scqTitle:'Second Chance Qualifier — последний шанс на LAN',
 scqIntro:(reg,rank,slots)=>'В гранд-финале '+reg+' ты занял '+ccTop(rank)+', а на Summit едут топ-'+slots+'. Остаётся отборочный: он открыт всем из Division 1, кто не прошёл напрямую.',
 scqStageTitle:s=>'Second Chance Qualifier — Финал ('+s+' игр)',
 scqPass:(rank,slots)=>ccTopC(rank)+' при '+ruSlotsIn(slots)+' — ты на LAN. Стартуешь с нижней сетки в субботу.',
@@ -8419,7 +8428,7 @@ teamPickNone:'This set has no real team of the right size for this mode.',
 teamPickNoMatch:'No team matches that handle.',
 teamPickBtn:'Take',
 weaponPackTitle:'Weapon pack', weaponPackDesc:'Pick a weapon — affects squad power.', lootPoolNote:n=>'Season loot pool: '+n, healPackTitle:'Heal pack', healPackDesc:'Pick a consumable — also affects squad power.', weaponLabel:'Weapon', loadoutLabel:'Loadout:', totalPowerLabel:'Total power:',
-landingTitle:'Choose your landing spot', landingHint:'Click any zone on the map — free ones give points, occupied ones carry risk plus a bonus if you win the scrap', landingChosenText:n=>'Landing spot #'+n+' selected', landingTaken:'taken', landingZoneSuffix:n=>'zone '+n, landingPoints:n=>'+'+n+' pts', landingChosenPoints:(n,p)=>'Landing spot #'+n+' selected — +'+p+' pts', landingResultsTitle:'Where the squads dropped', landingChosenContested:(n,p)=>'Landing spot #'+n+' selected — a squad is already there! +'+p+' pts, but risk of a fight', landingFightWon:'⚔ won a landing fight', landingFightLost:'💀 lost a landing fight', landingShared:'🤝 shared the zone, no clash', landingRiskTag:n=>n>=2?'2 squads here — high risk':'occupied — risk of a fight', landingConfirmBtn:'Confirm landing', landingAutoBtn:'Pick for me', gameLandingTitle:(g,n)=>'Landing — game '+g+' of '+n, landingPickSeat:(n,total)=>'You pick '+n+(n%10===1&&n%100!==11?'st':n%10===2&&n%100!==12?'nd':n%10===3&&n%100!==13?'rd':'th')+' of '+total+' — qualify earlier, choose earlier.', landingPickPrompt:'Click a zone to see who is there, then confirm your landing', landingFreePreview:p=>'Free zone — +'+p+' pts, no risk', landingLaterNote:n=>n+' squad'+(n===1?'':'s')+' from behind you in the queue are aiming here — they land after you and will pick elsewhere if you take it', landingOccupiedPreview:n=>n>=2?'Careful: '+n+' squads already there — you would need to beat both':'A squad is already there — expect a fight on landing', scqTitle:'Second Chance Qualifier — last route to the LAN',
+landingTitle:'Choose your landing spot', landingChestsShow:'Show chests', landingChestsHide:'Hide chests', landingChestsN:n=>n+' chests', landingHint:'Click any zone on the map — free ones give points, occupied ones carry risk plus a bonus if you win the scrap', landingChosenText:n=>'Landing spot #'+n+' selected', landingTaken:'taken', landingZoneSuffix:n=>'zone '+n, landingPoints:n=>'+'+n+' pts', landingChosenPoints:(n,p)=>'Landing spot #'+n+' selected — +'+p+' pts', landingResultsTitle:'Where the squads dropped', landingChosenContested:(n,p)=>'Landing spot #'+n+' selected — a squad is already there! +'+p+' pts, but risk of a fight', landingFightWon:'⚔ won a landing fight', landingFightLost:'💀 lost a landing fight', landingShared:'🤝 shared the zone, no clash', landingRiskTag:n=>n>=2?'2 squads here — high risk':'occupied — risk of a fight', landingConfirmBtn:'Confirm landing', landingAutoBtn:'Pick for me', gameLandingTitle:(g,n)=>'Landing — game '+g+' of '+n, landingPickSeat:(n,total)=>'You pick '+n+(n%10===1&&n%100!==11?'st':n%10===2&&n%100!==12?'nd':n%10===3&&n%100!==13?'rd':'th')+' of '+total+' — qualify earlier, choose earlier.', landingPickPrompt:'Click a zone to see who is there, then confirm your landing', landingFreePreview:p=>'Free zone — +'+p+' pts, no risk', landingLaterNote:n=>n+' squad'+(n===1?'':'s')+' from behind you in the queue are aiming here — they land after you and will pick elsewhere if you take it', landingOccupiedPreview:n=>n>=2?'Careful: '+n+' squads already there — you would need to beat both':'A squad is already there — expect a fight on landing', scqTitle:'Second Chance Qualifier — last route to the LAN',
 scqIntro:(reg,rank,slots)=>'You finished '+ccTop(rank)+' in the '+reg+' Grand Finals and only the top '+slots+' fly out. The qualifier is still open — every Division 1 duo that missed the direct route is in it.',
 scqStageTitle:s=>'Second Chance Qualifier — Finals ('+s+' games)',
 scqPass:(rank,slots)=>ccTopC(rank)+' with '+slots+' slots — you are on the LAN, entering at the Lower Bracket on Saturday.',
@@ -12005,7 +12014,7 @@ lcqTopLabel:cut=>'Top '+cut+' — Manche 1 franchie',
 lcqRound1FailedNote:cut=>'Top '+cut+' manqué en Manche 1',
 simGamesProgress:(n,t)=>t ? 'Parties en cours — '+n+' sur '+t : 'Parties en cours…',
 chMatchOf:n=>'Partie 1 sur '+n,
-landingHint:'Clique sur une zone de la carte — les libres donnent des points, les occupées portent un risque et un bonus si tu gagnes le combat',
+landingChestsShow:'Afficher les coffres', landingChestsHide:'Masquer les coffres', landingChestsN:n=>n+' coffres', landingHint:'Clique sur une zone de la carte — les libres donnent des points, les occupées portent un risque et un bonus si tu gagnes le combat',
 landingTaken:'prise',
 landingFightWon:'⚔ combat d’atterrissage gagné',
 landingFightLost:'💀 combat d’atterrissage perdu',
@@ -14125,7 +14134,7 @@ teamPickNone:"Questo set non ha squadre reali della dimensione giusta per questa
 teamPickNoMatch:"Nessuna squadra con quel nickname.",
 teamPickBtn:"Prendi",
 weaponLabel:"Arma",
-landingHint:"Clicca una zona sulla mappa — quelle libere danno punti, quelle occupate portano rischio più un bonus se vinci lo scontro",
+landingChestsShow:"Mostra i forzieri", landingChestsHide:"Nascondi i forzieri", landingChestsN:n=>n+" forzieri", landingHint:"Clicca una zona sulla mappa — quelle libere danno punti, quelle occupate portano rischio più un bonus se vinci lo scontro",
 landingTaken:"occupata",
 landingFightWon:"⚔ scontro all'atterraggio vinto",
 landingFightLost:"💀 scontro all'atterraggio perso",
@@ -16615,7 +16624,7 @@ teamPickNone:"Este conjunto não tem time real do tamanho certo para este modo."
 teamPickNoMatch:"Nenhum time com esse apelido.",
 teamPickBtn:"Pegar",
 weaponLabel:"Arma",
-landingHint:"Clique em qualquer zona do mapa — as livres dão pontos, as ocupadas trazem risco mais um bônus se você vencer a briga",
+landingChestsShow:"Mostrar baús", landingChestsHide:"Ocultar baús", landingChestsN:n=>n+" baús", landingHint:"Clique em qualquer zona do mapa — as livres dão pontos, as ocupadas trazem risco mais um bônus se você vencer a briga",
 landingTaken:"ocupada",
 landingFightWon:"⚔ briga de pouso vencida",
 landingFightLost:"💀 briga de pouso perdida",
@@ -44918,6 +44927,37 @@ function fillZoneNames(plot, teams, zone){
   }
 }
 
+/* «ПОКАЗАТЬ СУНДУКИ» НА КАРТЕ (его слово 7.09: «может на карте писать количество
+   сундуков, типо когда выбираешь метку там будет еще кнопка (показать сундуки)»).
+   Каждая коробка на любой карте высадки несёт бирку с числом сундуков (поле chests,
+   см. CC_CHESTS_SRC — fortnite.gg / вики / Kinch); бирки спрятаны, кнопка под картой
+   включает их классом cc-chests-on на body, состояние помнится в localStorage. */
+let CC_CHESTS_ON=false;
+try{ CC_CHESTS_ON=localStorage.getItem('fncsdraft_chests')==='1'; }catch(e){}
+function ccChestBadgeHTML(z){
+  if(!ccSiteReal(z)) return '';
+  return '<div class="land-zone-chests" title="'+ccSiteSrc()+'">'+L().landingChestsN(z.chests)+'</div>';
+}
+function ccChestBadge(plot, z){
+  if(!ccSiteReal(z)) return;
+  const b=document.createElement('div');
+  b.className='land-zone-chests'; b.title=ccSiteSrc();
+  b.textContent=L().landingChestsN(z.chests);
+  plot.appendChild(b);
+}
+function ccChestsApply(){
+  document.body.classList.toggle('cc-chests-on', CC_CHESTS_ON);
+  document.querySelectorAll('.cc-chests-btn').forEach(b=>{ b.textContent=CC_CHESTS_ON ? L().landingChestsHide : L().landingChestsShow; });
+}
+function ccChestsToggle(){
+  CC_CHESTS_ON=!CC_CHESTS_ON;
+  try{ localStorage.setItem('fncsdraft_chests', CC_CHESTS_ON ? '1' : '0'); }catch(e){}
+  ccChestsApply();
+}
+function ccChestToggleHTML(){
+  return '<button type="button" class="cc-chests-btn" onclick="ccChestsToggle()">'+(CC_CHESTS_ON ? L().landingChestsHide : L().landingChestsShow)+'</button>';
+}
+
 function zoneRatingColors(points){
   if(points>=8) return {border:'#3ddc4a', bg:'rgba(61,220,74,.16)'};
   if(points>=6) return {border:'#e8d84a', bg:'rgba(232,216,74,.16)'};
@@ -44957,6 +44997,7 @@ function showLandingPicker(){
     label.className='land-zone-label';
     label.textContent=isTaken ? L().landingTaken.toUpperCase()+' · '+L().landingPoints(z.points) : L().landingPoints(z.points);
     el.appendChild(label);
+    ccChestBadge(el, z);
     el.onclick=()=>{
       layer.querySelectorAll('.land-zone').forEach(x=>x.classList.remove('chosen'));
       el.classList.add('chosen');
@@ -44972,6 +45013,7 @@ function showLandingPicker(){
   });
 
   document.getElementById('landingChosen').textContent=L().landingHint;
+  ccChestsApply();
 }
 
 function rerollAll(){
@@ -48676,6 +48718,7 @@ async function pickInitialZone(you, bots, title, seat, room){
           <img id="gameLandingMapImg" alt="Island map" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
           <div id="gameLandingLayer" style="position:absolute;inset:0;"></div>
         </div>
+        ${ccChestToggleHTML()}
         <div id="gameLandingInfo" style="margin-top:10px;min-height:20px;font-size:13px;"></div>
         <button id="gameLandingConfirm" class="go-btn" style="display:none;margin-top:8px;max-width:280px;" disabled>${L().landingConfirmBtn}</button>
       </div>
@@ -48772,9 +48815,11 @@ async function pickInitialZone(you, bots, title, seat, room){
       tag.textContent=L().ccSpotTag(slot.aura||0);
       plot.appendChild(tag);
     }
+    ccChestBadge(plot, z);
     layer.appendChild(plot);
     return plot;
   });
+  ccChestsApply();
 
   /* Полоса внизу — и на ней выход для того, кто не хочет выбирать. Ставится
      здесь, а не сразу после отрисовки карточки: кнопке «за меня» нужны уже
@@ -61689,14 +61734,14 @@ function careerSpotTileHTML(){
         mine?'border-color:var(--accent);box-shadow:inset 0 0 0 1px rgba(0,0,0,.55),0 0 0 2px rgba(0,208,168,.35);'
             :'border-color:rgba(10,10,10,.75);background:transparent;'}"><div
       class="land-zone-label"${mine?' style="color:var(--accent);font-weight:900;"':''}>${
-      mine ? L().ccSpotTag(list[at].aura||0) : (i+1)}</div></div>`;
+      mine ? L().ccSpotTag(list[at].aura||0) : (i+1)}</div>${ccChestBadgeHTML(z)}</div>`;
   }).join('');
   // Открытая карта называет себя: сюда попадают кликом по прямоугольнику, и
   // без подписи не видно, чей это остров.
   const mapName=(careerSpotSets().find(t=>t.key===set)||{}).label||'';
   return `<div class="ch-tile">${head}
     <div class="cc-spot-open-head"><b>${mapName}</b>
-      <span>${L().ccSpotHint}</span></div>
+      <span>${L().ccSpotHint}</span> ${ccChestToggleHTML()}</div>
     <div class="map-frame" style="position:relative;width:100%;aspect-ratio:${asp};border-radius:8px;
          background:#000;border:1px solid var(--line);overflow:hidden;margin-top:8px;">
       <img src="${art}" alt="" decoding="async"

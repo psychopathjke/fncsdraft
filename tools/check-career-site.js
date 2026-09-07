@@ -165,6 +165,19 @@ const BOOT = `
         if(ccSiteOpen(0)!==1) fail(key+': an empty box should still open one (floor loot), got '+ccSiteOpen(0));
         out.steps.push(key+': counted chests per box '+Math.min(...zs.map(z=>z.chests))+'..'+maxBox+', a duo opens at most '+ccSiteOpen(maxBox));
       }
+      // «Показать сундуки»: бирка на коробке, кнопка и строки в пяти языках.
+      useLandingSet('s42');
+      const rich=ALL_LANDING_ZONES.slice().sort((a,b)=>b.chests-a.chests)[0];
+      if(ccChestBadgeHTML(rich).indexOf('land-zone-chests')<0 || ccChestBadgeHTML(rich).indexOf(String(rich.chests))<0) fail('no chest badge for a counted box: '+ccChestBadgeHTML(rich));
+      const host=document.createElement('div'); ccChestBadge(host, rich);
+      if(!host.querySelector('.land-zone-chests')) fail('ccChestBadge did not append a badge');
+      if(ccChestToggleHTML().indexOf('cc-chests-btn')<0) fail('no chest toggle button');
+      const wasOn=CC_CHESTS_ON; ccChestsToggle();
+      if(document.body.classList.contains('cc-chests-on')!==!wasOn) fail('the chest toggle did not flip the body class');
+      ccChestsToggle();
+      for(const lang of ['ru','en','fr','it','pt']){ const prev=LANG; LANG=lang; const T=L(); LANG=prev;
+        if(!T.landingChestsShow || !T.landingChestsHide || typeof T.landingChestsN!=='function') fail(lang+': chest map strings missing'); }
+      out.steps.push('the map can show chests: a badge per counted box, a toggle button, strings in five languages');
       useLandingSet(prevSet);
     }
 
