@@ -83,7 +83,10 @@ const BOOT = (what) => `
       const nPoi=ccSiteChests(box), nOpen=ccSiteOpen(nPoi);
       const mine=ccChestPack(Math.random, ccLootSet(), nOpen); const pv=ccPackPow(mine);
       const labels=[...mine.weapons, ...mine.heals, mine.move].filter(Boolean).map(ccItemLabel).join(' · ');
+      const nFast=Math.max(1, Math.round(nOpen*CC_SITE_FAST_SHARE)), nFull=Math.min(Math.round(nPoi), nOpen*CC_SITE_FULL_MUL);
       ccChoiceBox(L().ccSiteOwnTitle, (ccSiteReal(box) ? L().ccSiteAt(nPoi, nOpen, ccSiteSrc())+' · ' : '')+L().ccSiteOwnHint(nOpen), [
+        {id:'fast', icon:CC_CHOICE_ICON.run, title:L().ccSiteFast, note:L().ccSiteFastNote(nFast, CC_MATS_ZONE)},
+        {id:'full', icon:CC_CHOICE_ICON.chest, title:L().ccSiteFull, note:L().ccSiteFullNote(nFull, nPoi, CC_MATS_ZONE)},
         {id:'take', def:true, icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.chest), title:L().ccSiteTake, note:labels+' — '+L().ccSitePackPow(pv)}], map);
     } else if(WHAT==='site'){
       // Чужие на точке: первый сундук свой и их, «уйти» или «файтить» — как в ccAskSite.

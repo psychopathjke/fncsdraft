@@ -37,6 +37,10 @@ const BOOT = `
 <script>
 (async function(){
   const out = {steps: [], errs: null, fail: null};
+  // Шаги сбрасываются в документ по мере прохождения: зависшее ожидание оставляет
+  // хотя бы список пройденного, а не «проба не дала вывода».
+  const flush = () => { document.getElementById('__out').textContent = 'BEG'+'IN' + encodeURIComponent(JSON.stringify(Object.assign({}, out, {errs: window.__errs, partial: true}))) + 'E'+'ND'; };
+  out.steps.push = function(s){ Array.prototype.push.call(this, s); flush(); return this.length; };
   const fail = m => { out.fail = m; throw new Error(m); };
   try{
     localStorage.setItem('fncsdraft_career', JSON.stringify({
@@ -132,16 +136,36 @@ const BOOT = `
     await ccAskSite(g.you, null);
     // Своя точка — панель с ОДНОЙ кнопкой: сундуки открываются на экране (его слово
     // 7.09 «нет симуляции на локации»); под скипом и в симуляции берётся сама.
-    if(!seen || seen.length!==1 || seen[0].id!=='take' || !seen[0].def) fail('a free spot did not show the chest panel: '+(seen&&seen.map(o=>o.id).join(',')));
+    // Три хода (его «добавил 1 выбор, почему-то», 7.09): быстро / забрать (по умолчанию) / обшарить всё,
+    // последний — только если на точке есть что обшаривать сверх обычной доли.
+    const ownIds=seen ? seen.map(o=>o.id).join(',') : '';
+    const wantFull=Math.min(Math.round(ccSiteChests(free)), ccSiteOpen(ccSiteChests(free))*CC_SITE_FULL_MUL)>ccSiteOpen(ccSiteChests(free));
+    if(!seen || ownIds!==(wantFull ? 'fast,take,full' : 'fast,take')) fail('a free spot did not show the three moves: '+ownIds);
+    if(!seen.find(o=>o.id==='take').def) fail('"grab it and go" is not the default');
     // [(] вместо \\( — внутри шаблонной строки BOOT обратная косая съедается и регэксп ломает весь скрипт.
-    if(!/[(]/.test(seen[0].note)) fail('the chest panel does not list the loot with rarities: '+seen[0].note);
+    if(!/[(]/.test(seen.find(o=>o.id==='take').note)) fail('the chest panel does not list the loot with rarities: '+seen.find(o=>o.id==='take').note);
     // Сундуков на точке — сколько стоит в коробке (ccSiteChests), открываем ccSiteOpen из них.
     const wantOwn=ccSiteOpen(ccSiteChests(free));
     if(!g.you._loot || g.you._loot.chests!==wantOwn) fail('own spot: loot is '+JSON.stringify(g.you._loot)+', box wants '+wantOwn);
     if(g.you._pf-pf0!==ccPackPow(g.you._loot)) fail('own spot: power did not move by the pack value');
     if(seenHint==null) fail('the chest panel came without a hint');
     if(ccSiteReal(free) && seenHint.indexOf(String(ccSiteChests(free)))<0) fail('the hint does not name the real chest count '+ccSiteChests(free)+': '+seenHint);
-    out.steps.push('own spot: one-button chest panel, '+ccSiteChests(free)+' chests in the box ('+(ccSiteReal(free)?'counted':'by loot '+free.loot)+'), opened '+wantOwn+', pack '+ccPackLine(g.you._loot)+' worth '+ccPackPow(g.you._loot));
+    out.steps.push('own spot: three moves ('+ownIds+'), '+ccSiteChests(free)+' chests in the box ('+(ccSiteReal(free)?'counted':'by loot '+free.loot)+'), "grab" opens '+wantOwn+', pack '+ccPackLine(g.you._loot)+' worth '+ccPackPow(g.you._loot));
+    // «Схватить и ехать»: треть сундуков, +CC_MATS_ZONE ресов; «обшарить всё»: до двух долей, −CC_MATS_ZONE.
+    const ownAs=async (want)=>{ const gg=mk(); gg.teams.slice(1).forEach(t=>{ if(t.landingZone===free) t.landingZone=other; });
+      gg.you.landingZone=free; gg.you._sq.x=free.x+free.w/2; gg.you._sq.y=free.y+free.h/2; gg.you._mats=CC_MATS_START;
+      seen=null; WANT=want; await ccAskSite(gg.you, null); WANT=null; return gg.you; };
+    const fastYou=await ownAs('fast');
+    const nFast=Math.max(1, Math.round(wantOwn*CC_SITE_FAST_SHARE));
+    if(!fastYou._loot || fastYou._loot.chests!==nFast) fail('"grab the first": opened '+(fastYou._loot&&fastYou._loot.chests)+' chests, wanted '+nFast);
+    if(fastYou._mats!==Math.min(CC_MATS_FULL, CC_MATS_START+CC_MATS_ZONE)) fail('"grab the first" did not add a circle of mats: '+fastYou._mats);
+    if(wantFull){
+      const fullYou=await ownAs('full');
+      const nFull=Math.min(Math.round(ccSiteChests(free)), wantOwn*CC_SITE_FULL_MUL);
+      if(!fullYou._loot || fullYou._loot.chests!==nFull) fail('"loot everything": opened '+(fullYou._loot&&fullYou._loot.chests)+' chests, wanted '+nFull);
+      if(fullYou._mats!==Math.max(0, CC_MATS_START-CC_MATS_ZONE)) fail('"loot everything" did not cost a circle of mats: '+fullYou._mats);
+      out.steps.push('own spot moves: fast '+nFast+' chests +'+CC_MATS_ZONE+' mats · grab '+wantOwn+' · everything '+nFull+' chests −'+CC_MATS_ZONE+' mats');
+    } else out.steps.push('own spot moves: fast '+nFast+' chests +'+CC_MATS_ZONE+' mats · grab '+wantOwn+' (nothing more to loot here)');
     // Плавность: сундуков по коробкам острова больше двух разных значений, богатая коробка ≥ бедной.
     const perBox=ALL_LANDING_ZONES.map(z=>ccSiteChests(z));
     const distinct=[...new Set(perBox)];
@@ -257,5 +281,6 @@ const out = JSON.parse(decodeURIComponent(m[1]));
 out.steps.forEach(s => console.log('  ' + s));
 if ((out.errs||[]).length) console.error('page errors: ' + out.errs.join(' | '));
 if (out.fail) { console.error('FAILED: ' + out.fail); process.exit(1); }
+if (out.partial) { console.error('the probe hung after the last step above (an await never resolved)'); process.exit(1); }
 if ((out.errs||[]).length) process.exit(1);
 console.log('the landing site opens its chests, a shared box asks fight or leave, and the endgame has a mid ground');

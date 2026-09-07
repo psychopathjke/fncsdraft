@@ -7182,7 +7182,7 @@ ccDropMap:'Выбрать на карте', ccDropMapNote:'Открыть ост
 ccLootTitle:'Середина игры — что подобрал',
 ccLootHint:'Вторая зона закрылась. Точка обыскана: два ствола, две хилки и мувмент. Напарник разбирает свою половину сам',
 ccSiteAt:(t,o,s)=>'На точке '+t+' сундуков (счёт '+s+'), до первой зоны открываем '+o, ccSiteOwnTitle:'Точка своя — открываем сундуки', ccSiteOwnHint:n=>n+' сундуков: два ствола разных классов, две хилки, мувмент — что выпало, то и берём',
-ccSiteTake:'Забрать и идти', ccSitePackPow:v=>v>0 ? '+'+v+' к силе за редкость' : v<0 ? v+' к силе: пустые слоты' : 'сила без прибавки',
+ccSiteFast:'Схватить и ехать', ccSiteFastNote:(n,m)=>'Только '+n+' сундуков, зато фармим по дороге: +'+m+' ресов', ccSiteFull:'Обшарить всё', ccSiteFullNote:(n,t,m)=>n+' из '+t+' сундуков — лучше лут, но без фарма: −'+m+' ресов', ccSiteTake:'Забрать и идти', ccSitePackPow:v=>v>0 ? '+'+v+' к силе за редкость' : v<0 ? v+' к силе: пустые слоты' : 'сила без прибавки',
 ccSiteTitle:n=>'На точке чужие: '+n, ccSiteHint:(a,b)=>'Твой первый сундук: '+a+' · у них: '+b,
 ccSiteLeave:'Уйти на соседнюю точку', ccSiteLeaveNote:(n,m)=>'Без стычки: '+n+' сундука вместо '+m+' — лут беднее, сила ниже',
 ccSiteFight:'Файтить за точку', ccSiteFightNote:(p,n,a,b)=>p+'%: точка наша — все '+n+' сундуков и элим · иначе вылет на высадке'+((a||b)?' · первый сундук: +'+a+' против +'+b:''),
@@ -9119,7 +9119,7 @@ ccDropMap:'Pick on the map', ccDropMapNote:'Open the island and place the marker
 ccLootTitle:'Mid game — what you picked up',
 ccLootHint:'The second circle has closed. The spot is looted: two guns, two heals and a mobility item. Your partner sorts their own half out',
 ccSiteAt:(t,o,s)=>t+' chests at the spot ('+s+' count), we open '+o+' before the first zone', ccSiteOwnTitle:'Our spot — opening the chests', ccSiteOwnHint:n=>n+' chests: two guns of different classes, two heals, a movement item — what drops is what we carry',
-ccSiteTake:'Grab it and go', ccSitePackPow:v=>v>0 ? '+'+v+' power for the rarity' : v<0 ? v+' power: empty slots' : 'no power bonus',
+ccSiteFast:'Grab the first and drive', ccSiteFastNote:(n,m)=>'Only '+n+' chests, but we farm on the way: +'+m+' mats', ccSiteFull:'Loot everything', ccSiteFullNote:(n,t,m)=>n+' of '+t+' chests — better loot, no time to farm: −'+m+' mats', ccSiteTake:'Grab it and go', ccSitePackPow:v=>v>0 ? '+'+v+' power for the rarity' : v<0 ? v+' power: empty slots' : 'no power bonus',
 ccSiteTitle:n=>'Someone landed with us: '+n, ccSiteHint:(a,b)=>'Your first chest: '+a+' · theirs: '+b,
 ccSiteLeave:'Leave for the next POI', ccSiteLeaveNote:(n,m)=>'No fight: '+n+' chests instead of '+m+' — poorer loot, less power',
 ccSiteFight:'Fight for the spot', ccSiteFightNote:(p,n,a,b)=>p+'%: the spot is ours — all '+n+' chests and the elim · otherwise we die off spawn'+((a||b)?' · first chest: +'+a+' vs +'+b:''),
@@ -11197,7 +11197,7 @@ ccDropMap:'Choisir sur la carte', ccDropMapNote:'Ouvrir l’île et poser la mar
 ccLootTitle:'Milieu de partie — ce que tu as ramassé',
 ccLootHint:'La deuxième zone est fermée. Le spot est fouillé : deux armes, deux soins et un objet de mobilité. Ton coéquipier gère sa moitié',
 ccSiteAt:(t,o,s)=>t+' coffres sur le spot (compte '+s+'), on en ouvre '+o+' avant la première zone', ccSiteOwnTitle:'Notre spot — on ouvre les coffres', ccSiteOwnHint:n=>n+' coffres : deux armes de classes différentes, deux soins, un objet de mobilité — ce qui tombe, on le garde',
-ccSiteTake:'On prend et on y va', ccSitePackPow:v=>v>0 ? '+'+v+' power pour la rareté' : v<0 ? v+' power : slots vides' : 'pas de bonus de power',
+ccSiteFast:'On prend le premier et on roule', ccSiteFastNote:(n,m)=>'Seulement '+n+' coffres, mais on farme en route : +'+m+' mats', ccSiteFull:'Tout fouiller', ccSiteFullNote:(n,t,m)=>n+' coffres sur '+t+' — meilleur loot, pas le temps de farmer : −'+m+' mats', ccSiteTake:'On prend et on y va', ccSitePackPow:v=>v>0 ? '+'+v+' power pour la rareté' : v<0 ? v+' power : slots vides' : 'pas de bonus de power',
 ccSiteTitle:n=>'Quelqu’un atterrit avec nous : '+n, ccSiteHint:(a,b)=>'Ton premier coffre : '+a+' · le leur : '+b,
 ccSiteLeave:'Partir vers le POI voisin', ccSiteLeaveNote:(n,m)=>'Sans combat : '+n+' coffres au lieu de '+m+' — loot plus pauvre, moins de power',
 ccSiteFight:'Se battre pour le spot', ccSiteFightNote:(p,n,a,b)=>p+' % : le spot est à nous — les '+n+' coffres et l’élim · sinon on meurt au spawn'+((a||b)?' · premier coffre : +'+a+' contre +'+b:''),
@@ -14465,7 +14465,7 @@ ccDropMapNote:"Apri l'isola e metti tu il segnalino",
 ccLootTitle:"Metà partita — cosa hai raccolto",
 ccLootHint:"Il secondo cerchio si è chiuso. Il punto è lootato: due armi, due cure e un oggetto di mobilità. Il compagno si arrangia con la sua metà",
 ccSiteAt:(t,o,s)=>t+" forzieri sullo spot (conteggio "+s+"), ne apriamo "+o+" prima della prima zona", ccSiteOwnTitle:"Spot nostro — apriamo i forzieri", ccSiteOwnHint:n=>n+" forzieri: due armi di classi diverse, due cure, un oggetto di movimento — quel che esce, quello portiamo",
-ccSiteTake:"Prendi e vai", ccSitePackPow:v=>v>0 ? "+"+v+" power per la rarità" : v<0 ? v+" power: slot vuoti" : "nessun bonus di power",
+ccSiteFast:"Prendi il primo e vai", ccSiteFastNote:(n,m)=>"Solo "+n+" forzieri, ma farmiamo per strada: +"+m+" mats", ccSiteFull:"Svuotare tutto", ccSiteFullNote:(n,t,m)=>n+" forzieri su "+t+" — loot migliore, niente tempo per farmare: −"+m+" mats", ccSiteTake:"Prendi e vai", ccSitePackPow:v=>v>0 ? "+"+v+" power per la rarità" : v<0 ? v+" power: slot vuoti" : "nessun bonus di power",
 ccSiteTitle:n=>"Qualcuno atterra con noi: "+n, ccSiteHint:(a,b)=>"Il tuo primo forziere: "+a+" · il loro: "+b,
 ccSiteLeave:"Andare al POI vicino", ccSiteLeaveNote:(n,m)=>"Senza scontro: "+n+" forzieri invece di "+m+" — loot più povero, meno power",
 ccSiteFight:"Combattere per lo spot", ccSiteFightNote:(p,n,a,b)=>p+"%: lo spot è nostro — tutti i "+n+" forzieri e l'elim · altrimenti moriamo allo spawn"+((a||b)?" · primo forziere: +"+a+" contro +"+b:""),
@@ -16955,7 +16955,7 @@ ccDropMapNote:"Abra a ilha e coloque o marcador você mesmo",
 ccLootTitle:"Meio de jogo — o que você pegou",
 ccLootHint:"O segundo círculo fechou. O ponto está lootado: duas armas, duas curas e um item de mobilidade. Seu parceiro resolve a metade dele",
 ccSiteAt:(t,o,s)=>t+" baús no spot (contagem "+s+"), abrimos "+o+" antes da primeira zona", ccSiteOwnTitle:"Spot nosso — abrindo os baús", ccSiteOwnHint:n=>n+" baús: duas armas de classes diferentes, duas curas, um item de mobilidade — o que cair, a gente leva",
-ccSiteTake:"Pegar e ir", ccSitePackPow:v=>v>0 ? "+"+v+" power pela raridade" : v<0 ? v+" power: slots vazios" : "sem bônus de power",
+ccSiteFast:"Pegar o primeiro e ir", ccSiteFastNote:(n,m)=>"Só "+n+" baús, mas farmamos no caminho: +"+m+" mats", ccSiteFull:"Vasculhar tudo", ccSiteFullNote:(n,t,m)=>n+" de "+t+" baús — loot melhor, sem tempo para farmar: −"+m+" mats", ccSiteTake:"Pegar e ir", ccSitePackPow:v=>v>0 ? "+"+v+" power pela raridade" : v<0 ? v+" power: slots vazios" : "sem bônus de power",
 ccSiteTitle:n=>"Alguém pousou com a gente: "+n, ccSiteHint:(a,b)=>"Seu primeiro baú: "+a+" · o deles: "+b,
 ccSiteLeave:"Ir para o POI vizinho", ccSiteLeaveNote:(n,m)=>"Sem briga: "+n+" baús em vez de "+m+" — loot mais pobre, menos power",
 ccSiteFight:"Brigar pelo spot", ccSiteFightNote:(p,n,a,b)=>p+"%: o spot é nosso — todos os "+n+" baús e o elim · senão morremos no pouso"+((a||b)?" · primeiro baú: +"+a+" contra +"+b:""),
@@ -53293,12 +53293,26 @@ function ccPackFrom(weapons, cons){
   if(heals.length<2) healsAll.forEach(x=>{ if(heals.length<2 && heals.indexOf(x)<0) heals.push(x); });
   return {weapons:[first, second].filter(Boolean), heals, move:moves[0]||null};
 }
-function ccChestPack(rng, set, n){
-  const rolls=[]; for(let i=0;i<n;i++) rolls.push(ccChestRoll(rng, set));
+function ccPackFromRolls(rolls){
   const p=ccPackFrom(rolls.map(r=>r.weapon), rolls.map(r=>r.cons).filter(Boolean));
-  p.chests=n; p.first=rolls[0];
+  p.chests=rolls.length; p.first=rolls[0]; p.rolls=rolls;
   return p;
 }
+function ccChestPack(rng, set, n){
+  const rolls=[]; for(let i=0;i<n;i++) rolls.push(ccChestRoll(rng, set));
+  return ccPackFromRolls(rolls);
+}
+/* СВОЯ ТОЧКА — ТРИ ХОДА (его скрин 7.09 «добавил 1 выбор, почему-то»: на свободной
+   точке стояла одна кнопка). Время на точке — это время, которого потом нет на фарм:
+     «схватить и ехать» — треть обычной доли сундуков (CC_SITE_FAST_SHARE от ccSiteOpen),
+       зато по дороге фармим — +CC_MATS_ZONE ресов (один круг стройки);
+     «забрать и идти» — как было, ccSiteOpen сундуков, ресы как есть;
+     «обшарить всё» — до CC_SITE_FULL_MUL × ccSiteOpen, но не больше, чем стоит на точке,
+       и без фарма: −CC_MATS_ZONE ресов. Показывается, только если на точке есть что
+       обшаривать сверх обычной доли.
+   Пак «схватить» — первые сундуки того же броска, «обшарить» — те же плюс новые:
+   ходы вложены, лучший пак не может оказаться у быстрого. Доли — решение, не замер. */
+const CC_SITE_FAST_SHARE=1/3, CC_SITE_FULL_MUL=2;
 /* Что пак стоит в силе: редкость двух стволов над uncommon (rare +1, epic +2,
    legendary +3 за ствол), пустой слот ствола −2, хилки −1 за каждую недостающую,
    без мувмента −1. Комната получает то же самое (ccRoomSite), так что это не
@@ -53366,16 +53380,33 @@ async function ccAskSite(you, ui){
        секунды: его слово 7 сентября «нет симуляции на локации, о которой я
        писал». Панель одна кнопка — что выпало из восьми сундуков, какой пак
        собран и сколько он стоит; под скипом и в симуляции берётся сама. */
-    you._loot=mine; const pv=ccPackPow(mine); ccAddGamePow(you, pv);
+    /* Три хода (см. CC_SITE_FAST_SHARE): быстро — часть того же броска, всё — тот же
+       бросок плюс новые сундуки; пак «забрать и идти» показан целиком, остальные
+       два — числом сундуков и ценой в ресах. Под скипом и в симуляции — «забрать». */
+    const nFast=Math.max(1, Math.round(nOpen*CC_SITE_FAST_SHARE));
+    const nFull=Math.min(Math.round(nPoi), nOpen*CC_SITE_FULL_MUL);
+    const extra=[]; for(let i=nOpen;i<nFull;i++) extra.push(ccChestRoll(Math.random, set));
+    const packs={fast:ccPackFromRolls(mine.rolls.slice(0, nFast)), take:mine,
+                 full:nFull>nOpen ? ccPackFromRolls(mine.rolls.concat(extra)) : mine};
+    const pv=ccPackPow(mine);
     const labels=[...(mine.weapons||[]), ...(mine.heals||[]), mine.move].filter(Boolean).map(ccItemLabel).join(' · ');
-    await ccMpChoose('own'+(you.mpTag||''), async function(){
-      return (await ccChoiceBox(T.ccSiteOwnTitle, at+T.ccSiteOwnHint(nOpen), [
-        {id:'take', def:true, icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.chest), title:T.ccSiteTake,
-         note:labels+' — '+T.ccSitePackPow(pv)}
-      ], ui && ui.map)).id;
-    }, function(){ return T.ccSiteTake; });
-    ccMpMark('st1');
-    await say(T.ccSiteOwn(nOpen, ccPackLine(mine)), null);
+    const opts=[
+      {id:'fast', icon:CC_CHOICE_ICON.run, title:T.ccSiteFast, note:T.ccSiteFastNote(nFast, CC_MATS_ZONE)},
+      {id:'take', def:true, icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.chest), title:T.ccSiteTake,
+       note:labels+' — '+T.ccSitePackPow(pv)}
+    ];
+    if(nFull>nOpen) opts.push({id:'full', icon:CC_CHOICE_ICON.chest, title:T.ccSiteFull, note:T.ccSiteFullNote(nFull, nPoi, CC_MATS_ZONE)});
+    const titleOf=v=>v==='fast' ? T.ccSiteFast : v==='full' ? T.ccSiteFull : T.ccSiteTake;
+    const pick=(await ccMpChoose('own'+(you.mpTag||''), async function(){
+      return (await ccChoiceBox(T.ccSiteOwnTitle, at+T.ccSiteOwnHint(nOpen), opts, ui && ui.map)).id;
+    }, titleOf)).v;
+    const id=packs[pick] && opts.some(o=>o.id===pick) ? pick : 'take';
+    const p=packs[id];
+    you._loot=p; ccAddGamePow(you, ccPackPow(p));
+    if(id==='fast') you._mats=Math.min(CC_MATS_FULL, ccMats(you)+CC_MATS_ZONE);
+    if(id==='full') you._mats=Math.max(0, ccMats(you)-CC_MATS_ZONE);
+    ccMpMark('st1:'+id);
+    await say(T.ccSiteOwn(p.chests, ccPackLine(p)), null);
     return;
   }
   // Стычка — с сильнейшими из тех, кто сел на ту же коробку; остальные остаются движку.
