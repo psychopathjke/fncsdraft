@@ -1001,6 +1001,10 @@ ccKitSurgeWarn:'ПРЕДУПРЕЖДЕНИЕ О СЁРДЖЕ!', ccKitSurgeWarnSu
 ccKitAboveCap:'над порогом урона', ccKitBelowCap:'до порога урона',
 // Рычаги игроку (5.09): стиль стройки и лечение.
 ccBuildTitle:'Третья зона — как строим', ccBuildNorm:'Как обычно', ccBuildNormNote:m=>m+' ресов за круг',
+ccLootUpgraded:n=>'с трупа взяли '+n,
+ccDeathTitle:z=>'Вылет — зона '+z, ccDeathStorm:'Сгорели в шторме', ccDeathSurge:'Сёрдж добил',
+ccDeathBy:(w,g,r)=>'Выбил '+w+(g?' из «'+g+'»':'')+(r?', '+r:''), ccDeathRange:{close:'вплотную', near:'с соседней постройки', far:'издалека'},
+ccDeathStats:(p,n,e)=>'Место '+p+' · чистый урон '+n+' · элимов '+e,
 ccBuildEco:'Экономно', ccBuildEcoNote:(m,p)=>m+' за круг — ресов хватит до конца, но без построек слабее: −'+p+' к силе',
 ccBuildHeavy:'Строить много', ccBuildHeavyNote:(m,p)=>m+' за круг — +'+p+' к силе, но без рефреша к концовке пусто',
 ccBuildSet:(w,p)=>w+': '+p+' к силе на эту игру',
@@ -2930,6 +2934,10 @@ ccKitSurgeBanner:'STORM SURGE ACTIVE!', ccKitUnderBanner:'YOU ARE UNDER SURGE!',
 ccKitSurgeWarn:'STORM SURGE WARNING!', ccKitSurgeWarnSub:'DAMAGE ENEMIES TO AVOID ELIMINATION!',
 ccKitAboveCap:'above damage threshold', ccKitBelowCap:'below damage threshold',
 ccBuildTitle:'Zone 3 — how do we build', ccBuildNorm:'As usual', ccBuildNormNote:m=>m+' mats a circle',
+ccLootUpgraded:n=>'picked up their '+n,
+ccDeathTitle:z=>'Eliminated — zone '+z, ccDeathStorm:'The storm took us', ccDeathSurge:'Surge finished us',
+ccDeathBy:(w,g,r)=>'Killed by '+w+(g?' with the '+g:'')+(r?', '+r:''), ccDeathRange:{close:'point blank', near:'from the next build', far:'from range'},
+ccDeathStats:(p,n,e)=>'Place '+p+' · net damage '+n+' · elims '+e,
 ccBuildEco:'Save mats', ccBuildEcoNote:(m,p)=>m+' a circle — mats last to the end, but fewer builds: −'+p+' power',
 ccBuildHeavy:'Build a lot', ccBuildHeavyNote:(m,p)=>m+' a circle — +'+p+' power, but empty by the endgame without a refresh',
 ccBuildSet:(w,p)=>w+': '+p+' power for this game',
@@ -4993,6 +5001,10 @@ ccLateTakeWon:v=>'Spot pris, +'+v+' de puissance', ccLateTakeLost:v=>'Ils ont te
 ccLateRefresh:'Chercher un refresh', ccLateRefreshNote:v=>'Sûr, mais plus petit : +'+v,
 ccLateRefreshNote:(v,f,p)=>p+' % : trouvé — +'+v+' et mats pleins, sinon — moins '+f+' et tu rentres dans le cercle en dernier',
 ccLateMid:'Jouer le mid ground', ccLateMidNote:(v,f,p)=>p+' % : le milieu tenu — +'+v+', descendu — moins '+f+' et tu joues en bas',
+ccLootUpgraded:n=>'récupéré leur '+n,
+ccDeathTitle:z=>'Éliminés — zone '+z, ccDeathStorm:'La tempête nous a eus', ccDeathSurge:'Le surge nous a achevés',
+ccDeathBy:(w,g,r)=>'Tués par '+w+(g?' au '+g:'')+(r?', '+r:''), ccDeathRange:{close:'à bout portant', near:'depuis le build voisin', far:'de loin'},
+ccDeathStats:(p,n,e)=>'Place '+p+' · dégâts nets '+n+' · élims '+e,
 ccLateEdge:'Jouer hors zone',ccLateEdgeNote:(v,f,p)=>p+' % : tu prends ceux qui rentrent — +'+v+', raté — la tempête prend '+f,
 ccLateEdgeWon:v=>'Hors zone, ça a marché — +'+v+' de puissance', ccLateEdgeLost:v=>'La tempête t\'a eu, −'+v+' de puissance',
 ccLateRefreshWon:v=>'Refresh trouvé, +'+v+' de puissance et mats pleins', ccLateRefreshLost:v=>'Pas de refresh, rentré en dernier : −'+v+' de puissance',
@@ -6909,6 +6921,10 @@ ccLootGot:v=>'Ha funzionato — POI successivo ripulito, +'+v+' di potenza',
 ccLateHgNote:v=>'Testa o croce: vinto — +'+v+' e la miglior chance di vittoria, perso — meno '+CC_HG_FAIL+' e giochi da sotto',
 ccLateRefreshNote:(v,f,p)=>p+'%: trovato \u2014 +'+v+' e mats pieni, no \u2014 meno '+f+' e rientri nel cerchio per ultimo',
 ccLateMid:"Giocare mid ground", ccLateMidNote:(v,f,p)=>p+"%: tenuto il centro — +"+v+", buttati giù — meno "+f+" e giochi da sotto",
+ccLootUpgraded:n=>"preso il loro "+n,
+ccDeathTitle:z=>"Eliminati — zona "+z, ccDeathStorm:"La tempesta ci ha preso", ccDeathSurge:"Il surge ci ha finito",
+ccDeathBy:(w,g,r)=>"Eliminati da "+w+(g?" con "+g:"")+(r?", "+r:""), ccDeathRange:{close:"a distanza zero", near:"dalla build accanto", far:"da lontano"},
+ccDeathStats:(p,n,e)=>"Posto "+p+" · danno netto "+n+" · elim "+e,
 ccLateEdge:"Giocare fuori zona",ccLateEdgeNote:(v,f,p)=>p+'%: prendi chi entra \u2014 +'+v+', mancato \u2014 la tempesta prende '+f,
 ccLateEdgeWon:v=>'Fuori zona ha funzionato \u2014 +'+v+' di forza', ccLateEdgeLost:v=>'La tempesta ti ha preso, \u2212'+v+' di forza',
 ccLateRefreshWon:v=>'Refresh trovato, +'+v+' di forza e mats pieni', ccLateRefreshLost:v=>'Niente refresh, rientrato per ultimo: \u2212'+v+' di forza',
@@ -9393,6 +9409,10 @@ ccLootGot:v=>'Deu certo — pr\u00f3ximo POI limpo, +'+v+' de poder',
 ccLateHgNote:v=>'Cara ou coroa: ganhou — +'+v+' e a melhor chance de vit\u00f3ria, perdeu — menos '+CC_HG_FAIL+' e voc\u00ea joga por baixo',
 ccLateRefreshNote:(v,f,p)=>p+'%: achou — +'+v+' e mats cheios, não — menos '+f+' e você volta ao círculo por último',
 ccLateMid:"Jogar mid ground", ccLateMidNote:(v,f,p)=>p+"%: segurou o meio — +"+v+", derrubado — menos "+f+" e joga de baixo",
+ccLootUpgraded:n=>"pegamos o "+n+" deles",
+ccDeathTitle:z=>"Eliminados — zona "+z, ccDeathStorm:"A tempestade nos pegou", ccDeathSurge:"O surge nos terminou",
+ccDeathBy:(w,g,r)=>"Eliminados por "+w+(g?" com "+g:"")+(r?", "+r:""), ccDeathRange:{close:"à queima-roupa", near:"da build ao lado", far:"de longe"},
+ccDeathStats:(p,n,e)=>"Lugar "+p+" · dano líquido "+n+" · elims "+e,
 ccLateEdge:"Jogar fora da zona",ccLateEdgeNote:(v,f,p)=>p+'%: pega quem entra — +'+v+', errou — a tempestade leva '+f,
 ccLateEdgeWon:v=>'Fora da zona funcionou — +'+v+' de força', ccLateEdgeLost:v=>'A tempestade te pegou, −'+v+' de força',
 ccLateRefreshWon:v=>'Refresh achado, +'+v+' de força e mats cheios', ccLateRefreshLost:v=>'Sem refresh, voltou por último: −'+v+' de força',
@@ -45692,7 +45712,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
      высоту наравне с остальными пятьюдесятью. Ничего нового считать не надо, и
      баланс остаётся тем же, что был измерен. */
   const sim=careerSimOn();
-  let dead=false;
+  let dead=false, deathShown=false;
   ccKitInit(teams);
   let zoneWas=0;
   for(const stop of CC_GAME_STOPS){
@@ -45740,11 +45760,14 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
       }
     }
     ccMpMark('q'+stop.zone, teams);
+    // Повтор смерти — один раз, когда свой отряд выбыл (см. ccDeathCard).
+    if(you && ui && !sim && !deathShown && !alive()){ deathShown=true; await ccDeathCard(ui.map, ccDeathInfo(you, game)); }
   }
   const res=game.finish();
   ccMpMark('fin', teams);
   // И остаток матча — тем же куском, если игрок ещё смотрит.
   if(ui && ui.show && !dead) await ui.show(res.timeline);
+  if(you && ui && !sim && !deathShown && !alive()){ deathShown=true; await ccDeathCard(ui.map, ccDeathInfo(you, game)); }
   LAST_ZONE_TIMELINE=res.timeline;
   LAST_ZONE_ROSTER=res.roster;
   RECORD_NEXT_ZONE_GAME=false;
@@ -46061,8 +46084,8 @@ function ccMatsPenalty(teams){
 const CC_GAME_STOPS=[
   // Первая: точка — сундуки, а на занятой точке стычка или уход (ccAskSite).
   {zone:1, ask:(you, ui)=>ccAskSite(you, ui), room:ccRoomSite},
-  // Третья зона: лут, как строим (ccAskBuild) и как фармим ресы (ccAskFarm).
-  {zone:3, ask:async (you, ui)=>{ await ccAskLoot(you, ui); await ccAskBuild(you, ui); await ccAskFarm(you, ui); },
+  // Третья зона: лут и как фармим ресы (ccAskFarm — стиль стройки внутри него).
+  {zone:3, ask:async (you, ui)=>{ await ccAskLoot(you, ui); await ccAskFarm(you, ui); },
    room:(field, you)=>{ ccRoomLoot(field, you); ccRoomFarm(field, you); }},
   // Четвёртая: ротация — когда выходим к следующему кругу (ccAskRot). Комната
   // ходит по навыку, как ходила: движок читает team._rot только у людей.
@@ -46318,8 +46341,14 @@ async function ccAskFarm(you, ui){
   const pw=ccFightWinOdds(you, foe0);
   const winPct=Math.round(CC_FIGHT.decide*pw*100), diePct=Math.round(CC_FIGHT.decide*(1-pw)*100);
   const tradePct=Math.round(CC_FIGHT.trade*100);
+  /* Стиль стройки (ccAskBuild, 5.09) живёт в этом же меню, а не отдельным
+     вопросом: «до фула» — как обычно, «до фула · экономно», «до фула · много».
+     На третьей зоне было три вопроса подряд — лут, стройка, фарм; стало два. */
+  const eco=CC_BUILD_STYLE.eco, heavy=CC_BUILD_STYLE.heavy;
   const opts=[
     {id:'full',  def:true, icon:ccMatsIconHTML(), icoCls:'wide', title:T.ccFarmFull, note:T.ccFarmFullNote(CC_MATS_FULL)},
+    {id:'eco',   icon:CC_CHOICE_ICON.wall1, title:T.ccFarmFull+' · '+T.ccBuildEco,   note:T.ccBuildEcoNote(Math.round(CC_MATS_ZONE*eco.mul), -eco.pow)},
+    {id:'heavy', icon:CC_CHOICE_ICON.wall3, title:T.ccFarmFull+' · '+T.ccBuildHeavy, note:T.ccBuildHeavyNote(Math.round(CC_MATS_ZONE*heavy.mul), heavy.pow)},
     {id:'surge', icon:CC_CHOICE_ICON.surge, title:T.ccFarmSurge, note:T.ccFarmSurgeNote(CC_MATS_SURGE_FARM, CC_SURGE_FARM, CC_SURGE_FARM_POW)},
     {id:'fight', icon:ccItemIconHTML(gun, CC_CHOICE_ICON.fight),
      title:T.ccMidFight+(foe0 && foe0.name ? ' · '+String(foe0.name).replace(/<[^>]+>/g,'') : ''),
@@ -46327,9 +46356,16 @@ async function ccAskFarm(you, ui){
   ];
   const pickId=(await ccMpChoose('farm'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(T.ccFarmTitle, ccKitLine(you), opts, ui && ui.map)).id;
-  }, function(v){ return ({full:T.ccFarmFull, surge:T.ccFarmSurge, fight:T.ccMidFight})[v]||''; })).v;
+  }, function(v){ return ({full:T.ccFarmFull, eco:T.ccFarmFull+' · '+T.ccBuildEco, heavy:T.ccFarmFull+' · '+T.ccBuildHeavy, surge:T.ccFarmSurge, fight:T.ccMidFight})[v]||''; })).v;
   ccMpMark('a3f:'+pickId);
   const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
+  if(pickId==='eco' || pickId==='heavy'){
+    const b=CC_BUILD_STYLE[pickId];
+    you._buildMul=b.mul; if(b.pow) ccAddGamePow(you, b.pow);
+    ccMatsFill(you);
+    await say(T.ccFarmFullGot(CC_MATS_FULL)+' · '+T.ccBuildSet(T[pickId==='eco'?'ccBuildEco':'ccBuildHeavy'], b.pow>0?'+'+b.pow:String(b.pow)), null);
+    return;
+  }
   if(pickId==='surge'){
     you._mats=Math.max(ccMats(you), CC_MATS_SURGE_FARM);
     if(you._sq){ you._sq.dealt=(you._sq.dealt||0)+CC_SURGE_FARM; you._sq.taken=(you._sq.taken||0)+CC_SURGE_TAKEN; }
@@ -46345,7 +46381,7 @@ async function ccAskFarm(you, ui){
     const foeName=foe ? String(foe.name||'').replace(/<[^>]+>/g,'') : '';
     const out=ccFightApply(you, r, foe);
     ccMpMark('w3f:'+out);
-    if(out==='win')   await say(T.ccMidFightWon(CC_FIGHT.pow, foeName, gun && gun.name), true);
+    if(out==='win')   await say(T.ccMidFightWon(CC_FIGHT.pow, foeName, gun && gun.name)+(you._lootUp ? ' · '+T.ccLootUpgraded(you._lootUp.name) : ''), true);
     else if(out==='die') await say(T.ccMidFightDied(foeName), false);
     else if(out==='poke') await say(T.ccMidFightPoke(CC_FIGHT.pokeDmg, CC_FIGHT.pokeMats), null);
     else await say(T.ccMidFightTraded(CC_FIGHT.tradePow), false);
@@ -46426,10 +46462,30 @@ async function ccAskMenu(you, ui){
   const foeName=foe ? String(foe.name||'').replace(/<[^>]+>/g,'') : '';
   const out=ccFightApply(you, r, foe);
   ccMpMark('w5f:'+out);
-  if(out==='win')   await say(T.ccMidFightWon(CC_FIGHT.pow, foeName, gun && gun.name), true);
+  if(out==='win')   await say(T.ccMidFightWon(CC_FIGHT.pow, foeName, gun && gun.name)+(you._lootUp ? ' · '+T.ccLootUpgraded(you._lootUp.name) : ''), true);
   else if(out==='die') await say(T.ccMidFightDied(foeName), false);
   else if(out==='poke') await say(T.ccMidFightPoke(CC_FIGHT.pokeDmg, CC_FIGHT.pokeMats), null);
   else await say(T.ccMidFightTraded(CC_FIGHT.tradePow), false);
+}
+/* Лут с трупа: лучший ствол соперника того же класса встаёт на место худшего
+   своего, если он выше по редкости. Возвращает взятый предмет или null. Пак
+   соперника есть у всех — комната открывает сундуки на точке (ccRoomSite). */
+function ccLootUpgrade(you, foe){
+  const mine=you && you._loot, theirs=foe && foe._loot;
+  if(!mine || !theirs || !theirs.weapons || !theirs.weapons.length) return null;
+  const mod=o=>o ? (RARITY_MOD[o.rarity]||0) : -1;
+  let best=null, at=-1;
+  theirs.weapons.forEach(w=>{
+    if(!w) return;
+    // Своё место — тот же класс; если такого класса у нас нет — самый слабый слот.
+    let i=(mine.weapons||[]).findIndex(o=>o && o.icon===w.icon);
+    if(i<0){ i=(mine.weapons||[]).length<2 ? (mine.weapons||[]).length : (mod(mine.weapons[0])<=mod(mine.weapons[1]) ? 0 : 1); }
+    const cur=(mine.weapons||[])[i];
+    if(mod(w)>mod(cur) && (!best || mod(w)>mod(best))){ best=w; at=i; }
+  });
+  if(!best) return null;
+  mine.weapons=(mine.weapons||[]).slice(); mine.weapons[at]=best;
+  return best;
 }
 /* Что делает файт с отрядом — отдельно от вопроса, чтобы проверялось.
    r — бросок [0,1); foe — команда соседа (может не быть: тогда выбить некого
@@ -46445,6 +46501,8 @@ function ccFightApply(you, r, foe){
     else if(sq) sq.dealt=(sq.dealt||0)+CC_FIGHT.dmg;
     ccAddGamePow(you, CC_FIGHT.pow);
     you._mats=Math.min(CC_MATS_FULL, ccMats(you)+CC_FIGHT.mats);
+    // Его пункт 3 («simulation», 7.09): с трупа — и лучший лут, если у соперника он был.
+    you._lootUp=ccLootUpgrade(you, foe);
     return 'win';
   }
   if(r<dieTo && can){
@@ -46711,6 +46769,44 @@ function ccChoiceResult(map, text, ok){
     if(typeof ccTvOnResult==='function') ccTvOnResult(ok);
     setTimeout(()=>{ tag.classList.add('out'); }, 1500);
     setTimeout(()=>{ tag.remove(); resolve(); }, 1900);
+  });
+}
+/* ПОВТОР СМЕРТИ — из его списка идей 6 сентября: после вылета показать, кто и
+   чем выбил, откуда и на чём стояли. Движок знает причину (deathCause — шторм,
+   сёрдж или имя команды), зону, место, чистый урон и где стояли оба отряда;
+   ствол убийцы — из его пака (сундуки на точке есть у всех, ccRoomSite).
+   Дистанция — словами по шкале движка: вплотную (до CONTACT_RANGE 2.2), с
+   соседней постройки (до CHIP_RANGE 4.4), издалека. Карточка стоит на карте
+   три секунды и под скипом/симуляцией/перемоткой не показывается. */
+const CC_DEATH_NEAR=2.2, CC_DEATH_MID=4.4, CC_DEATH_MS=3200;
+function ccDeathInfo(you, game){
+  const sq=you && you._sq;
+  if(!sq || sq.alive) return null;
+  const cause=sq.deathCause;
+  const killer=(cause && cause!=='storm' && cause!=='surge' && game && game.squads)
+    ? game.squads.find(s=>s.team && s.team.name===cause) : null;
+  let range=null;
+  if(killer){
+    const d=Math.hypot((killer.x||0)-(sq.x||0), (killer.y||0)-(sq.y||0));
+    range = d<=CC_DEATH_NEAR ? 'close' : d<=CC_DEATH_MID ? 'near' : 'far';
+  }
+  const gun=killer && killer.team._loot && killer.team._loot.weapons && killer.team._loot.weapons[0];
+  return {zone:sq.zoneReached||0, cause:cause||'', who:killer ? String(killer.team.name||'').replace(/<[^>]+>/g,'').trim() : '',
+          gun:gun ? gun.name : '', range, place:sq.place||0, net:Math.round((sq.dealt||0)-(sq.taken||0)), elims:sq.elims||0};
+}
+function ccDeathCard(map, info){
+  return new Promise(resolve=>{
+    if(!map || !info || skipAnimation || careerSimOn() ||
+       (typeof CC_FF!=='undefined' && CC_FF)){ resolve(); return; }
+    const T=L();
+    const how = info.cause==='storm' ? T.ccDeathStorm : info.cause==='surge' ? T.ccDeathSurge
+      : T.ccDeathBy(info.who, info.gun, info.range ? T.ccDeathRange[info.range] : '');
+    const tag=document.createElement('div');
+    tag.className='cc-choice-out bad cc-death';
+    tag.innerHTML='<b>'+esc(T.ccDeathTitle(info.zone))+'</b><span>'+esc(how)+'</span><em>'+esc(T.ccDeathStats(info.place, info.net, info.elims))+'</em>';
+    map.appendChild(tag);
+    setTimeout(()=>{ tag.classList.add('out'); }, CC_DEATH_MS-400);
+    setTimeout(()=>{ tag.remove(); resolve(); }, CC_DEATH_MS);
   });
 }
 /* Лут середины игры. Пак — два ствола, две хилки и мувмент; тиммейт разбирает
@@ -51021,7 +51117,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='224c87ab';
+const CC_BUILD='145aed01';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
