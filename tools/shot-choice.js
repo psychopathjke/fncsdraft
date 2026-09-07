@@ -7,7 +7,7 @@
 // только срок ожидания (CC_CHOICE_WAIT), иначе виртуальное время headless'а
 // отвечает за игрока мгновенно.
 //
-//   node tools/shot-choice.js [drop|site|loot|rot|late|out ...]     по умолчанию все
+//   node tools/shot-choice.js [drop|chests|site|loot|rot|late|out ...]     по умолчанию все
 //
 // Кладёт shot-choice-<что>.png рядом с репозиторием.
 const fs = require('fs'), os = require('os'), path = require('path');
@@ -24,7 +24,7 @@ const CHROME = [
 if (!CHROME) throw new Error('Chrome not found');
 
 const WANT = process.argv.slice(2).length ? process.argv.slice(2)
-                                          : ['drop', 'site', 'loot', 'rot', 'late', 'out'];
+                                          : ['drop', 'chests', 'site', 'loot', 'rot', 'late', 'out'];
 
 const BOOT = (what) => `
 <!-- Поверх приложения, а не под ним: careerEntry рисует хаб во весь экран, и
@@ -76,6 +76,12 @@ const BOOT = (what) => `
          {id:'swap', title:L().ccLootSwap, note:listOf(other)+' — '+
             L().ccLootSwapRisk(CC_LOOT_POI_BONUS, CC_LOOT_POI_FAIL,
               Math.round(CC_LOOT_POI_ODDS*100))}], map);
+    } else if(WHAT==='chests'){
+      // Своя точка: сундуки открыты, пак собран — одна кнопка «забрать и идти».
+      const mine=ccChestPack(Math.random, ccLootSet(), CC_CHESTS_POI); const pv=ccPackPow(mine);
+      const labels=[...mine.weapons, ...mine.heals, mine.move].filter(Boolean).map(ccItemLabel).join(' · ');
+      ccChoiceBox(L().ccSiteOwnTitle, L().ccSiteOwnHint(CC_CHESTS_POI), [
+        {id:'take', def:true, icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.chest), title:L().ccSiteTake, note:labels+' — '+L().ccSitePackPow(pv)}], map);
     } else if(WHAT==='site'){
       // Чужие на точке: первый сундук свой и их, «уйти» или «файтить» — как в ccAskSite.
       const mine=ccChestPack(Math.random, ccLootSet(), CC_CHESTS_POI), theirs=ccChestRoll(Math.random, ccLootSet());

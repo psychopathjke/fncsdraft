@@ -102,10 +102,14 @@ const BOOT = `
     g.you.landingZone=free; g.you._sq.x=free.x+free.w/2; g.you._sq.y=free.y+free.h/2;
     seen=null; const pf0=g.you._pf;
     await ccAskSite(g.you, null);
-    if(seen) fail('a free spot asked a question');
+    // Своя точка — панель с ОДНОЙ кнопкой: сундуки открываются на экране (его слово
+    // 7.09 «нет симуляции на локации»); под скипом и в симуляции берётся сама.
+    if(!seen || seen.length!==1 || seen[0].id!=='take' || !seen[0].def) fail('a free spot did not show the chest panel: '+(seen&&seen.map(o=>o.id).join(',')));
+    // [(] вместо \\( — внутри шаблонной строки BOOT обратная косая съедается и регэксп ломает весь скрипт.
+    if(!/[(]/.test(seen[0].note)) fail('the chest panel does not list the loot with rarities: '+seen[0].note);
     if(!g.you._loot || g.you._loot.chests!==CC_CHESTS_POI) fail('own spot: loot is '+JSON.stringify(g.you._loot));
     if(g.you._pf-pf0!==ccPackPow(g.you._loot)) fail('own spot: power did not move by the pack value');
-    out.steps.push('own spot: no question, '+CC_CHESTS_POI+' chests, pack '+ccPackLine(g.you._loot)+' worth '+ccPackPow(g.you._loot));
+    out.steps.push('own spot: one-button chest panel, '+CC_CHESTS_POI+' chests, pack '+ccPackLine(g.you._loot)+' worth '+ccPackPow(g.you._loot));
 
     // Чужие на точке: садимся на коробку соседа.
     const contested=()=>{ const gg=mk(); const rival=gg.teams[1]; gg.you.landingZone=rival.landingZone;
