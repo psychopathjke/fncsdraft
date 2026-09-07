@@ -1012,6 +1012,9 @@ ccRotSet:w=>'Ротация: '+w,
 ccHealTitle:(s,h)=>'Щит '+s+' · здоровье '+h+' — лечимся?', ccHealStay:'Играть так', ccHealStayNote:'Без потерь, щит и здоровье как есть',
 ccHealGo:'Отхилиться', ccHealGoNote:(h,p)=>'щит полный, +'+h+' здоровья · пока пьёшь — минус '+p+' к силе',
 ccHealDone:(h,p)=>'Отхилились: щит 100, здоровье '+h+' · −'+p+' к силе',
+ccFarmTitle:'Третья зона — как фармим ресы', ccFarmFull:'Нафармить до фула', ccFarmFullNote:n=>'До '+n+' (500 · 3) — стройки хватит на всю игру, сёрдж не набит',
+ccFarmSurge:'Набить сёрдж, ресов меньше', ccFarmSurgeNote:(m,d,p)=>'Ресы '+m+' (400 · 3), +'+d+' урона в сёрдж, −'+p+' к силе за время на теги',
+ccFarmFullGot:n=>'Нафармили до фула — '+n+' ресов', ccFarmSurgeGot:(m,d)=>'Набили сёрдж: +'+d+' урона, ресов '+m,
 ccMatsTitle:'Ресы кончаются', ccMatsGo:'Идти за рефрешем', ccMatsStay:'Ротейтить тем, что есть',
 ccMateLeans:t=>'я бы — «'+t+'»',
 ccMidTitle:'Середина игры — что делаем',ccMidStayNote:'Ресы есть, щит цел — идём кругом, ничего не тратим', ccMidStayGot:'Ротейтим как есть',
@@ -2938,6 +2941,9 @@ ccRotSet:w=>'Rotation: '+w,
 ccHealTitle:(s,h)=>'Shield '+s+' · health '+h+' — heal up?', ccHealStay:'Play on', ccHealStayNote:'No cost, shield and health stay as they are',
 ccHealGo:'Heal up', ccHealGoNote:(h,p)=>'full shield, +'+h+' health · while you drink — minus '+p+' power',
 ccHealDone:(h,p)=>'Healed: shield 100, health '+h+' · −'+p+' power',
+ccFarmTitle:'Zone 3 — how do we farm', ccFarmFull:'Farm to full', ccFarmFullNote:n=>'Up to '+n+' (500 · 3) — builds for the whole game, no surge farmed',
+ccFarmSurge:'Farm surge, fewer mats', ccFarmSurgeNote:(m,d,p)=>'Mats '+m+' (400 · 3), +'+d+' surge damage, −'+p+' power for the time spent tagging',
+ccFarmFullGot:n=>'Farmed to full — '+n+' mats', ccFarmSurgeGot:(m,d)=>'Surge farmed: +'+d+' damage, mats '+m,
 ccMatsTitle:'Running out of mats', ccMatsGo:'Go for a refresh', ccMatsStay:'Rotate with what you have',
 ccMateLeans:t=>"I'd go «"+t+"»",
 ccMidTitle:'Mid game — what do we do',ccMidStayNote:'Mats in hand, shield up — rotate with the circle, spend nothing', ccMidStayGot:'Rotating as we are',
@@ -5003,6 +5009,9 @@ ccBuildSet:(w,p)=>w+' : '+p+' de puissance pour cette partie',
 ccHealTitle:(s,h)=>'Bouclier '+s+' · vie '+h+' — on se soigne ?', ccHealStay:'On continue', ccHealStayNote:'Sans coût, bouclier et vie tels quels',
 ccHealGo:'Se soigner', ccHealGoNote:(h,p)=>'bouclier plein, +'+h+' de vie · pendant que tu bois — moins '+p+' de puissance',
 ccHealDone:(h,p)=>'Soignés : bouclier 100, vie '+h+' · −'+p+' de puissance',
+ccFarmTitle:'Zone 3 — comment on farme', ccFarmFull:'Farmer jusqu’au full', ccFarmFullNote:n=>'Jusqu’à '+n+' (500 · 3) — des builds pour toute la partie, pas de surge',
+ccFarmSurge:'Farmer du surge, moins de mats', ccFarmSurgeNote:(m,d,p)=>'Mats '+m+' (400 · 3), +'+d+' de dégâts surge, −'+p+' power pour le temps passé à tagger',
+ccFarmFullGot:n=>'Farmé au full — '+n+' mats', ccFarmSurgeGot:(m,d)=>'Surge farmé : +'+d+' de dégâts, mats '+m,
 ccMatsTitle:'Les mats s\'épuisent', ccMatsGo:'Aller chercher un refresh', ccMatsStay:'Tourner avec ce qu\'on a',
 ccMatsGoNote:(v,f,p)=>p+' % : trouvé — +'+v+' et mats pleins, sinon — moins '+f,
 ccMatsStayNote:v=>'Ça ne coûte rien maintenant, mais une fin de partie sans mats coûte '+v,
@@ -6916,6 +6925,9 @@ ccBuildSet:(w,p)=>w+": "+p+" potenza per questa partita",
 ccHealTitle:(s,h)=>"Scudo "+s+" · vita "+h+" — ci curiamo?", ccHealStay:"Si gioca così", ccHealStayNote:"Senza costi, scudo e vita come sono",
 ccHealGo:"Curarsi", ccHealGoNote:(h,p)=>"scudo pieno, +"+h+" vita · mentre bevi — meno "+p+" potenza",
 ccHealDone:(h,p)=>"Curati: scudo 100, vita "+h+" · −"+p+" potenza",
+ccFarmTitle:"Zona 3 — come farmiamo", ccFarmFull:"Farmare fino al full", ccFarmFullNote:n=>"Fino a "+n+" (500 · 3) — build per tutta la partita, niente surge",
+ccFarmSurge:"Farmare surge, meno mats", ccFarmSurgeNote:(m,d,p)=>"Mats "+m+" (400 · 3), +"+d+" danni surge, −"+p+" power per il tempo dei tag",
+ccFarmFullGot:n=>"Farmato al full — "+n+" mats", ccFarmSurgeGot:(m,d)=>"Surge farmato: +"+d+" danni, mats "+m,
 ccMatsTitle:"I mats stanno finendo", ccMatsGo:"Andare a cercare un refresh", ccMatsStay:"Ruotare con quello che c'\u00e8",
 ccMatsGoNote:(v,f,p)=>p+'%: trovato \u2014 +'+v+' e mats pieni, no \u2014 meno '+f,
 ccMatsStayNote:v=>'Ora non costa nulla, ma un finale senza mats costa '+v,
@@ -9397,6 +9409,9 @@ ccBuildSet:(w,p)=>w+": "+p+" de força nesta partida",
 ccHealTitle:(s,h)=>"Escudo "+s+" · vida "+h+" — vamos curar?", ccHealStay:"Seguir assim", ccHealStayNote:"Sem custo, escudo e vida como estão",
 ccHealGo:"Curar", ccHealGoNote:(h,p)=>"escudo cheio, +"+h+" de vida · enquanto bebe — menos "+p+" de força",
 ccHealDone:(h,p)=>"Curados: escudo 100, vida "+h+" · −"+p+" de força",
+ccFarmTitle:"Zona 3 — como farmamos", ccFarmFull:"Farmar até o full", ccFarmFullNote:n=>"Até "+n+" (500 · 3) — builds para o jogo todo, sem surge",
+ccFarmSurge:"Farmar surge, menos mats", ccFarmSurgeNote:(m,d,p)=>"Mats "+m+" (400 · 3), +"+d+" de dano de surge, −"+p+" power pelo tempo de tag",
+ccFarmFullGot:n=>"Farmamos até o full — "+n+" mats", ccFarmSurgeGot:(m,d)=>"Surge farmado: +"+d+" de dano, mats "+m,
 ccMatsTitle:"Os mats estão acabando", ccMatsGo:"Ir atrás de um refresh", ccMatsStay:"Rotacionar com o que tem",
 ccMatsGoNote:(v,f,p)=>p+'%: achou — +'+v+' e mats cheios, não — menos '+f,
 ccMatsStayNote:v=>'Agora não custa nada, mas um final sem mats custa '+v,
@@ -45762,8 +45777,16 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
    этап). Поэтому вопрос про рефреш приходит на 5-й и 7-й зоне и ТОЛЬКО когда
    ресы кончились, то есть когда ответ на что-то влияет. Полные ресы — вопроса
    нет, и это правильный молчок. */
-const CC_MATS_FULL=550, CC_MATS_ZONE=110, CC_MATS_PEN=3;
-const CC_MATS_HG_EXTRA=90;   // высокая земля строится, и это дороже обычного круга
+/* ШКАЛА ИГРЫ — его слово 7 сентября: «чем больше ресов, тем больше силы, но
+   лимиты 500 500 500». Ресы считаются в единицах игры: полный запас 1500 (три
+   стопки по 500, CC_MATS_CAP_EACH), круг стоит 300 (та же пятая часть, что
+   были 110 из 550), высокая земля — ещё 250. Начало игры — не полный запас:
+   на точке собирается CC_MATS_START, а до фула фармят после лута (ccAskFarm на
+   третьей зоне — его пункт 3 со страницы «simulation»: «нафармить до фула /
+   набить сёрдж и добыть меньше, типа 400 400 400 / зафайтить ближайшее дуо»). */
+const CC_MATS_FULL=1500, CC_MATS_ZONE=300, CC_MATS_PEN=3;
+const CC_MATS_CAP_EACH=500, CC_MATS_START=600, CC_MATS_SURGE_FARM=1200;
+const CC_MATS_HG_EXTRA=250;  // высокая земля строится, и это дороже обычного круга
 /* КОНЦОВКА ПО ОСТАТКУ — ступенями, а не одним порогом. Его вопрос 6 сентября:
    «как ресурсы влияют на количество силы? чем больше, тем же лучше в реальной
    игре». До этого было «есть/нет»: ниже CC_MATS_LOW −3, выше — ноль, и 550
@@ -45787,7 +45810,12 @@ const CC_MATS_HG_EXTRA=90;   // высокая земля строится, и �
    стоить того, чего стоят по данным. Замер 2026 года снять не удалось:
    в JSON реплеев Tracker'а есть подборы ресов, урон и здоровье, но не остаток.
    Проба — tools/career-mats-band-probe.js. */
-const CC_MATS_BANDS=[{from:2/3, pow:0}, {from:1/3, pow:-1}, {from:0, pow:-CC_MATS_PEN}];
+/* Верхняя ступень — его правка 7 сентября «чем больше ресов, тем больше силы»:
+   полный запас (от 90% капа) даёт +1 в концовке. Это решение, не замер: в
+   таблице Tracker верхняя треть одна, и внутри неё разницы не видно. */
+// Нижняя ступень — ровно «мало» (ccMatsLow: меньше трети): на шкале 1500 треть
+// делится без остатка, и порог сдвинут на волосок, чтобы 500 осталось внизу.
+const CC_MATS_BANDS=[{from:0.9, pow:1}, {from:2/3, pow:0}, {from:1/3+1e-6, pow:-1}, {from:0, pow:-CC_MATS_PEN}];
 // «Мало» — нижняя ступень; на ней задаётся вопрос про рефреш и ходит комната.
 const CC_MATS_LOW=Math.round(CC_MATS_FULL/3);
 function ccMatsEndPow(t){
@@ -45796,7 +45824,8 @@ function ccMatsEndPow(t){
   return b.pow;
 }
 function ccKitInit(teams){
-  (teams||[]).forEach(t=>{ t._mats=CC_MATS_FULL; t._loot=null; t._matsPen=false; t._buildMul=1; t._healed=0; t._rot=null; });
+  // Игра начинается не с полным запасом — с тем, что собрано на точке (CC_MATS_START); до фула фармят на третьей зоне.
+  (teams||[]).forEach(t=>{ t._mats=CC_MATS_START; t._loot=null; t._matsPen=false; t._buildMul=1; t._healed=0; t._rot=null; });
   CC_KIT_ZONE=0;
 }
 /* ПАНЕЛЬ НАБОРА НА КАРТЕ — его правка 5 сентября: «я бы хотел на симуляцию
@@ -45990,10 +46019,15 @@ function ccKitPanel(lobby, frame){
     '</div>';
 }
 // Одно число ресов — тремя стопками, как на HUD: 40% дерево, 35% кирпич, остаток металл.
+// Три стопки на HUD — дерево, кирпич, металл, каждая не выше капа игры (500):
+// излишек одной стопки перетекает в следующую.
 function ccKitSplitMats(m){
-  const t=Math.max(0, Math.round(m||0));
-  const w=Math.round(t*0.4), b=Math.round(t*0.35);
-  return [w, b, Math.max(0, t-w-b)];
+  const t=Math.max(0, Math.round(m||0)), cap=CC_MATS_CAP_EACH;
+  let w=Math.round(t*0.4), b=Math.round(t*0.35), mt=Math.max(0, t-w-b);
+  if(w>cap){ b+=w-cap; w=cap; }
+  if(b>cap){ mt+=b-cap; b=cap; }
+  if(mt>cap){ mt=cap; }
+  return [w, b, mt];
 }
 // Круг прошёл — ресы потрачены. Считается всем, включая комнату.
 function ccKitSpend(teams, n){
@@ -46027,8 +46061,9 @@ function ccMatsPenalty(teams){
 const CC_GAME_STOPS=[
   // Первая: точка — сундуки, а на занятой точке стычка или уход (ccAskSite).
   {zone:1, ask:(you, ui)=>ccAskSite(you, ui), room:ccRoomSite},
-  // Третья зона: лут и следом — как строим (ccAskBuild).
-  {zone:3, ask:async (you, ui)=>{ await ccAskLoot(you, ui); await ccAskBuild(you, ui); }, room:ccRoomLoot},
+  // Третья зона: лут, как строим (ccAskBuild) и как фармим ресы (ccAskFarm).
+  {zone:3, ask:async (you, ui)=>{ await ccAskLoot(you, ui); await ccAskBuild(you, ui); await ccAskFarm(you, ui); },
+   room:(field, you)=>{ ccRoomLoot(field, you); ccRoomFarm(field, you); }},
   // Четвёртая: ротация — когда выходим к следующему кругу (ccAskRot). Комната
   // ходит по навыку, как ходила: движок читает team._rot только у людей.
   {zone:4, ask:(you, ui)=>ccAskRot(you, ui)},
@@ -46209,8 +46244,9 @@ async function ccAskHeal(you, ui){
    движка), а его цена — урон стычки по замеру: +80 своих, −40 полученных
    (чистый урон, правило Epic со 2 октября 2025), −1 к силе за время. */
 const CC_SURGE_FARM=80, CC_SURGE_TAKEN=40, CC_SURGE_FARM_POW=1;
-const CC_FIGHT={decide:0.29, trade:0.15, pow:4, tradePow:3, diePow:6, mats:150, tradeMats:80, dmg:180, tradeHp:30,
-                pokeDmg:70, pokeMats:40};
+// Ресы файта — на шкале игры (1500): снять с трупа 400, размен стоит 220, перестрелка 110.
+const CC_FIGHT={decide:0.29, trade:0.15, pow:4, tradePow:3, diePow:6, mats:400, tradeMats:220, dmg:180, tradeHp:30,
+                pokeDmg:70, pokeMats:110};
 /* Шанс выбить соседа, когда стычка решается: та же дуэльная формула, что у
    движка (resolveDuel), по силе ближнего боя обеих команд. Без соседа — монетка. */
 function ccFightWinOdds(you, foe){
@@ -46265,6 +46301,69 @@ async function ccAskMid(you, ui){
   await ccAskMenu(you, ui);
   if(ccHealNeeded(you)) await ccAskHeal(you, ui);
 }
+/* ФАРМ ПОСЛЕ ЛУТА — его пункт 3 со страницы «simulation» (7 сентября): «после
+   поиска начального лута нужно добывать ресы: 1) нафармить до фула, 2) набить
+   сёрдж и добыть меньше ресов, типа 400 400 400 — время тратится на теги,
+   3) зафайтить ближайшее дуо — риск, но с них ресы, лут и сёрдж».
+   Третья зона, после лута и стройки. До фула — ход по умолчанию: под скипом и
+   в симуляции запас полный, как было до этой правки, и баланс не сдвинут.
+   Сёрдж — те же числа, что у хода середины (CC_SURGE_FARM), ресы 1200 = 400·3.
+   Файт — тот же ccFightApply, что на пятой зоне. */
+async function ccAskFarm(you, ui){
+  if(!you) return;
+  ccMpMark('f0'+(you.mpTag||''));
+  const T=L();
+  const gun=you._loot && you._loot.weapons && you._loot.weapons[0];
+  const foe0=(you._game && you._game.nearest) ? you._game.nearest(you) : null;
+  const pw=ccFightWinOdds(you, foe0);
+  const winPct=Math.round(CC_FIGHT.decide*pw*100), diePct=Math.round(CC_FIGHT.decide*(1-pw)*100);
+  const tradePct=Math.round(CC_FIGHT.trade*100);
+  const opts=[
+    {id:'full',  def:true, icon:ccMatsIconHTML(), icoCls:'wide', title:T.ccFarmFull, note:T.ccFarmFullNote(CC_MATS_FULL)},
+    {id:'surge', icon:CC_CHOICE_ICON.surge, title:T.ccFarmSurge, note:T.ccFarmSurgeNote(CC_MATS_SURGE_FARM, CC_SURGE_FARM, CC_SURGE_FARM_POW)},
+    {id:'fight', icon:ccItemIconHTML(gun, CC_CHOICE_ICON.fight),
+     title:T.ccMidFight+(foe0 && foe0.name ? ' · '+String(foe0.name).replace(/<[^>]+>/g,'') : ''),
+     note:T.ccMidFightNote(winPct, CC_FIGHT.pow, diePct, tradePct, CC_FIGHT.pokeDmg)}
+  ];
+  const pickId=(await ccMpChoose('farm'+(you.mpTag||''), async function(){
+    return (await ccChoiceBox(T.ccFarmTitle, ccKitLine(you), opts, ui && ui.map)).id;
+  }, function(v){ return ({full:T.ccFarmFull, surge:T.ccFarmSurge, fight:T.ccMidFight})[v]||''; })).v;
+  ccMpMark('a3f:'+pickId);
+  const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
+  if(pickId==='surge'){
+    you._mats=Math.max(ccMats(you), CC_MATS_SURGE_FARM);
+    if(you._sq){ you._sq.dealt=(you._sq.dealt||0)+CC_SURGE_FARM; you._sq.taken=(you._sq.taken||0)+CC_SURGE_TAKEN; }
+    ccAddGamePow(you, -CC_SURGE_FARM_POW);
+    await say(T.ccFarmSurgeGot(CC_MATS_SURGE_FARM, CC_SURGE_FARM), true);
+    return;
+  }
+  if(pickId==='fight'){
+    // Файт — с тем запасом, что нафармили бы за то же время: до фула не дотянули.
+    you._mats=Math.max(ccMats(you), CC_MATS_SURGE_FARM);
+    const r=Math.random();
+    const game=you._game, foe=(game && game.nearest) ? game.nearest(you) : null;
+    const foeName=foe ? String(foe.name||'').replace(/<[^>]+>/g,'') : '';
+    const out=ccFightApply(you, r, foe);
+    ccMpMark('w3f:'+out);
+    if(out==='win')   await say(T.ccMidFightWon(CC_FIGHT.pow, foeName, gun && gun.name), true);
+    else if(out==='die') await say(T.ccMidFightDied(foeName), false);
+    else if(out==='poke') await say(T.ccMidFightPoke(CC_FIGHT.pokeDmg, CC_FIGHT.pokeMats), null);
+    else await say(T.ccMidFightTraded(CC_FIGHT.tradePow), false);
+    return;
+  }
+  ccMatsFill(you);
+  await say(T.ccFarmFullGot(CC_MATS_FULL), null);
+}
+// Комната фармит тем же выбором: большинство до фула, агрессивная треть — сёрдж и 1200.
+function ccRoomFarm(field, you){
+  (field||[]).forEach(t=>{
+    if(you && (t===you || t.isMate)) return;
+    if(Math.random()<0.3){
+      t._mats=Math.max(ccMats(t), CC_MATS_SURGE_FARM);
+      ccAddGamePow(t, -CC_SURGE_FARM_POW);
+    } else ccMatsFill(t);
+  });
+}
 async function ccAskMenu(you, ui){
   if(!you) return;
   ccMpMark('m0'+(you.mpTag||''));
@@ -46288,8 +46387,9 @@ async function ccAskMenu(you, ui){
      «c0.click()»), и пока «за ресами» при пустых ресах стояло третьей
      кнопкой, эти двое расходились на пятой зоне и получали разные таблицы.
      Поэтому при пустых ресах «за ресами» идёт первым, при полных — «остаёмся». */
+  const endPow=ccMatsEndPow(you);
   const optStay={id:'stay',  def:!low, icon:CC_CHOICE_ICON.stay, title:T.ccMatsStay,
-       note:ccMatsEndPow(you) ? T.ccMatsStayNote(-ccMatsEndPow(you)) : T.ccMidStayNote};
+       note:endPow<0 ? T.ccMatsStayNote(-endPow) : T.ccMidStayNote};
   const optGo={id:'go',    def:low, icon:ccMatsIconHTML(), icoCls:'wide', title:T.ccMatsGo,
        note:T.ccMatsGoNote(pow, m.fail, Math.round(m.odds*100))};
   // Сосед — по имени: шансы считаны именно против него, и игрок должен видеть, с кем.
@@ -46376,7 +46476,7 @@ async function ccAskMats(you, ui){
   const pickId=(await ccMpChoose('mats'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(L().ccMatsTitle, ccKitLine(you), [
       {id:'go',   title:L().ccMatsGo,   note:L().ccMatsGoNote(pow, m.fail, Math.round(m.odds*100))},
-      {id:'stay', title:L().ccMatsStay, note:L().ccMatsStayNote(-ccMatsEndPow(you))}
+      {id:'stay', title:L().ccMatsStay, note:ccMatsEndPow(you)<0 ? L().ccMatsStayNote(-ccMatsEndPow(you)) : L().ccMidStayNote}
     ], ui && ui.map)).id;
   }, function(v){ return v==='go' ? L().ccMatsGo : L().ccMatsStay; })).v;
   ccMpMark('a5:'+pickId);
@@ -50921,7 +51021,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='95fdf35e';
+const CC_BUILD='224c87ab';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
