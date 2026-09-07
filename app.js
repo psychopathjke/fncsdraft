@@ -1013,7 +1013,7 @@ ccBuildSet:(w,p)=>w+': '+p+' к силе на эту игру',
 ccRotTitle:'Четвёртая зона — ротация', ccRotEarly:'Сразу', ccRotEarlyNote:(s,v)=>'Выходим, как только круг показан: так '+s+'% про, дожили '+v+'% · путь свободнее, но встречаем тех, кто тоже рано',
 ccRotWith:'Со штормом', ccRotWithNote:(s,v)=>'Выходим, когда круг пошёл: так '+s+'%, дожили '+v+'% · меньше времени на виду, по дороге уже стреляют',
 ccRotLate:'Последними', ccRotLateNote:'Пережидаем и идём, когда шторм уже в пути: на входе тише, но шторм бьёт по здоровью',
-ccRotMove:'На мувменте', ccRotMoveNote:m=>'Пережидаем и улетаем на «'+m+'»: быстрее шторма, предмет сгорает',
+ccRotMats:m=>'ресы за круг '+m, ccRotMove:'На мувменте', ccRotMoveNote:m=>'Пережидаем и улетаем на «'+m+'»: быстрее шторма, предмет сгорает',
 ccRotSet:w=>'Ротация: '+w,
 ccHealTitle:(s,h)=>'Щит '+s+' · здоровье '+h+' — лечимся?', ccHealStay:'Играть так', ccHealStayNote:'Без потерь, щит и здоровье как есть',
 ccHealGo:'Отхилиться', ccHealGoNote:(h,p)=>'щит полный, +'+h+' здоровья · пока пьёшь — минус '+p+' к силе',
@@ -2948,7 +2948,7 @@ ccBuildSet:(w,p)=>w+': '+p+' power for this game',
 ccRotTitle:'Zone 4 — the rotation', ccRotEarly:'Right away', ccRotEarlyNote:(s,v)=>'Leave as soon as the circle shows: '+s+'% of pros do, '+v+'% survive · clearer path, but you meet everyone else who left early',
 ccRotWith:'With the storm', ccRotWithNote:(s,v)=>'Leave when the circle starts moving: '+s+'% do, '+v+'% survive · less time in the open, but the road is already being shot',
 ccRotLate:'Last', ccRotLateNote:'Wait it out and go once the storm is on its way: quieter on entry, but the storm takes health',
-ccRotMove:'On the movement item', ccRotMoveNote:m=>'Wait it out and fly on the '+m+': faster than the storm, the item is spent',
+ccRotMats:m=>'mats this circle '+m, ccRotMove:'On the movement item', ccRotMoveNote:m=>'Wait it out and fly on the '+m+': faster than the storm, the item is spent',
 ccRotSet:w=>'Rotation: '+w,
 ccHealTitle:(s,h)=>'Shield '+s+' · health '+h+' — heal up?', ccHealStay:'Play on', ccHealStayNote:'No cost, shield and health stay as they are',
 ccHealGo:'Heal up', ccHealGoNote:(h,p)=>'full shield, +'+h+' health · while you drink — minus '+p+' power',
@@ -45863,7 +45863,7 @@ function ccMatsEndPow(t){
 }
 function ccKitInit(teams){
   // Игра начинается не с полным запасом — с тем, что собрано на точке (CC_MATS_START); до фула фармят на третьей зоне.
-  (teams||[]).forEach(t=>{ t._mats=CC_MATS_START; t._loot=null; t._matsPen=false; t._buildMul=1; t._healed=0; t._rot=null; });
+  (teams||[]).forEach(t=>{ t._mats=CC_MATS_START; t._loot=null; t._matsPen=false; t._buildMul=1; t._healed=0; t._rot=null; t._rotMul=null; });
   CC_KIT_ZONE=0;
 }
 /* ПАНЕЛЬ НАБОРА НА КАРТЕ — его правка 5 сентября: «я бы хотел на симуляцию
@@ -46076,7 +46076,8 @@ function ccKitSplitMats(m){
 function ccKitSpend(teams, n){
   // Стиль стройки своей команды (ccAskBuild): экономно — круг дешевле, много —
   // дороже. У комнаты множителя нет, она строит как строила.
-  (teams||[]).forEach(t=>{ t._mats=Math.max(0, (t._mats!=null?t._mats:CC_MATS_FULL)-Math.round(n*(t._buildMul||1))); });
+  // Множитель ротации (ccAskRot, CC_ROT_MATS) — на один круг, потом сгорает.
+  (teams||[]).forEach(t=>{ t._mats=Math.max(0, (t._mats!=null?t._mats:CC_MATS_FULL)-Math.round(n*(t._buildMul||1)*(t._rotMul||1))); t._rotMul=null; });
 }
 function ccMats(t){ return t && t._mats!=null ? t._mats : CC_MATS_FULL; }
 function ccMatsLow(t){ return ccMats(t)<CC_MATS_LOW; }
@@ -46193,6 +46194,16 @@ async function ccAskBuild(you, ui){
    бьёт по таблице, стычки на входе решает движок. Мувмент — из пака третьей
    зоны, сгорает на один круг. */
 const CC_ROT_REAL={early:{share:81, surv:82}, with:{share:12, surv:77}, late:{share:3, surv:100}};
+/* Цена ротации в ресах — его пункт 4 со страницы «simulation» (7.09): «вариация
+   как заротейтится игроку, сколько ресов там потратит». Множитель к стройке за
+   круг после четвёртой зоны (CC_MATS_ZONE): сразу — как обычно; со штормом —
+   больше, идёшь под огнём и строишься на ходу; последними — больше всех,
+   туннель через тех, кто уже сел; на мувменте — почти ничего, перелёт.
+   Это решение, не замер: в JSON реплеев Tracker'а есть подборы ресов, но не
+   траты (см. память). Один круг, множитель сгорает в ccKitSpend. */
+const CC_ROT_MATS={early:1, with:1.4, late:1.8, move:0.4};
+// Ресы за круг при таком выходе — с учётом стиля стройки (ccAskFarm/ccAskBuild).
+function ccRotMats(id, t){ return Math.round(CC_MATS_ZONE*(CC_ROT_MATS[id]||1)*((t && t._buildMul)||1)); }
 async function ccAskRot(you, ui){
   if(!you) return;
   ccMpMark('ro0'+(you.mpTag||''));
@@ -46200,16 +46211,17 @@ async function ccAskRot(you, ui){
   const mv=you._loot && you._loot.move;
   const name=id=>({early:T.ccRotEarly, with:T.ccRotWith, late:T.ccRotLate, move:T.ccRotMove})[id]||'';
   const opts=[
-    {id:'early', def:true, icon:CC_CHOICE_ICON.run,   title:T.ccRotEarly, note:T.ccRotEarlyNote(CC_ROT_REAL.early.share, CC_ROT_REAL.early.surv)},
-    {id:'with',  icon:CC_CHOICE_ICON.storm, title:T.ccRotWith,  note:T.ccRotWithNote(CC_ROT_REAL.with.share, CC_ROT_REAL.with.surv)},
-    {id:'late',  icon:CC_CHOICE_ICON.stay,  title:T.ccRotLate,  note:T.ccRotLateNote}
+    {id:'early', def:true, icon:CC_CHOICE_ICON.run,   title:T.ccRotEarly, note:T.ccRotEarlyNote(CC_ROT_REAL.early.share, CC_ROT_REAL.early.surv)+' · '+T.ccRotMats(ccRotMats('early', you))},
+    {id:'with',  icon:CC_CHOICE_ICON.storm, title:T.ccRotWith,  note:T.ccRotWithNote(CC_ROT_REAL.with.share, CC_ROT_REAL.with.surv)+' · '+T.ccRotMats(ccRotMats('with', you))},
+    {id:'late',  icon:CC_CHOICE_ICON.stay,  title:T.ccRotLate,  note:T.ccRotLateNote+' · '+T.ccRotMats(ccRotMats('late', you))}
   ];
-  if(mv) opts.push({id:'move', icon:ccItemIconHTML(mv, CC_CHOICE_ICON.run), title:T.ccRotMove, note:T.ccRotMoveNote(mv.name)});
+  if(mv) opts.push({id:'move', icon:ccItemIconHTML(mv, CC_CHOICE_ICON.run), title:T.ccRotMove, note:T.ccRotMoveNote(mv.name)+' · '+T.ccRotMats(ccRotMats('move', you))});
   const pickId=(await ccMpChoose('rot'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(T.ccRotTitle, ccKitLine(you), opts, ui && ui.map)).id;
   }, function(v){ return name(v); })).v;
   ccMpMark('a4:'+pickId);
   you._rot=pickId;
+  you._rotMul=CC_ROT_MATS[pickId]||1;
   if(pickId==='move' && you._loot) you._loot.move=null;
   const line=T.ccRotSet(name(pickId));
   if(ui && ui.note) ui.note(line);
@@ -46950,8 +46962,16 @@ function ccPackFrom(weapons, cons){
   const mod=o=>o ? (RARITY_MOD[o.rarity]||0) : -1;
   const byMod=(a,b)=>mod(b)-mod(a);
   const ws=weapons.slice().sort(byMod);
-  const first=ws[0]||null;
-  const second=(first && ws.find(w=>w.icon!==first.icon)) || ws[1] || null;
+  /* Его слово: «должны быть 2 оружия автомат дробовик». Пара — лучшая винтовка и
+     лучший дробовик из выпавшего; нет одного из них — лучший ствол другого класса
+     (ПП, пистолет, снайперка); класс один на всех рулонах — второй лучший, что есть. */
+  const best=cls=>ws.find(w=>w.icon===cls)||null;
+  let first=best('rifle'), second=best('shotgun');
+  if(!first || !second){
+    first=first||second||ws[0]||null;
+    second=(first && ws.find(w=>w!==first && w.icon!==first.icon)) || (first && ws.find(w=>w!==first)) || null;
+  }
+  if(first && second && mod(second)>mod(first)){ const t=first; first=second; second=t; }
   const moves=cons.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0).sort(byMod);
   const heals=cons.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)<0).sort(byMod);
   return {weapons:[first, second].filter(Boolean), heals:heals.slice(0,2), move:moves[0]||null};
@@ -51203,7 +51223,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5b97c6ac';
+const CC_BUILD='2573e8b2';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
