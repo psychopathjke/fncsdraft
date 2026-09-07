@@ -37,6 +37,9 @@ function createLobby(opts){
   };
   const ids=()=>Object.keys(st.cards);
   const peerOf=id=>ids().find(x=>x!==id)||null;
+  // Сколько готовых нужно для старта: команда — ровно двое; гонка — все, кто в
+  // комнате (от двух до RACE_MAX): общая комната гонки на N человек.
+  const need=()=>st.race ? Math.max(2, ids().length) : 2;
   /* Состояние несёт и ВЕЧЕР: идёт ли он (сид, номер, день) и вся его лента.
      Вкладка, перезагруженная посреди вечера, приходит с пустой памятью — по
      этому она понимает, что вечер есть, и догоняет его по своим же ответам
@@ -158,7 +161,7 @@ function createLobby(opts){
         if(again){
           st.ready[id]=day;
           const all2=ids();
-          if(all2.length===2 && all2.every(x=>st.ready[x]===day)){
+          if(all2.length>=need() && all2.every(x=>st.ready[x]===day)){
             st.ready={}; st.feed=[]; st.digests={};
             st.evening={seed:st.seed+'|'+day+'|'+(++st.n), n:st.n, day:day, readied:{}};
             all2.forEach(x=>{ st.evening.readied[x]=true; });
@@ -178,16 +181,16 @@ function createLobby(opts){
       st.kinds=st.kinds||{};
       if(kind) st.kinds[id]=kind; else delete st.kinds[id];
       const all=ids();
-      const both=all.length===2 && all.every(x=>st.ready[x]===day);
+      const both=all.length>=need() && all.every(x=>st.ready[x]===day);
       const n=all.filter(x=>st.ready[x]===day).length;
-      if(!both) return [{to:'all', msg:{t:'ready', by:id, day:day, ready:n, of:2}}];
+      if(!both) return [{to:'all', msg:{t:'ready', by:id, day:day, ready:n, of:need()}}];
       const named=all.filter(x=>st.kinds[x]);
-      if(named.length===2 && st.kinds[named[0]]!==st.kinds[named[1]]){
+      if(named.length>=2 && named.some(x=>st.kinds[x]!==st.kinds[named[0]])){
         // Разные турниры — старта нет, и готовность снимается с обоих: пусть
         // договорятся и нажмут заново одно и то же.
         const clash={}; all.forEach(x=>{ clash[x]=st.kinds[x]; });
         st.ready={}; st.kinds={};
-        return [{to:'all', msg:{t:'ready', by:id, day:day, ready:0, of:2, clash:clash}}];
+        return [{to:'all', msg:{t:'ready', by:id, day:day, ready:0, of:need(), clash:clash}}];
       }
       /* Смесь сборок: у одного вид есть, у другого нет. «Без вида — согласен
          на всё» пропускало старую вкладку в вечер с новым календарём, и пара
@@ -197,10 +200,10 @@ function createLobby(opts){
          нет: новому клиенту в clash приезжает пустой вид напарника — он
          объяснит про старую версию; старый увидит сброс готовности. Пара из
          ДВУХ вкладок без вида консистентна между собой — её не трогаем. */
-      if(named.length===1){
+      if(named.length>0 && named.length<all.length){
         const clash={}; all.forEach(x=>{ clash[x]=st.kinds[x]||''; });
         st.ready={}; st.kinds={};
-        return [{to:'all', msg:{t:'ready', by:id, day:day, ready:0, of:2, clash:clash}}];
+        return [{to:'all', msg:{t:'ready', by:id, day:day, ready:0, of:need(), clash:clash}}];
       }
       st.kinds={};
       st.ready={};
@@ -230,8 +233,9 @@ function createLobby(opts){
       if(!st.digests[id]) st.digests[id]={hash:hash, team:team, seq:++st.n};
       const all=ids();
       if(!all.every(x=>st.digests[x])) return [{to:'peer', msg:{t:'digest', by:id}}];
-      const win=st.digests[all[0]].seq<=st.digests[all[1]].seq ? all[0] : all[1];
-      const same=st.digests[all[0]].hash===st.digests[all[1]].hash;
+      // На N человек (гонка): победитель — самый ранний, «сошлось» — когда хеш у всех один.
+      const win=all.slice().sort((a,b)=>st.digests[a].seq-st.digests[b].seq)[0];
+      const same=all.every(x=>st.digests[x].hash===st.digests[all[0]].hash);
       st.team=st.digests[win].team||st.team;
       st.last={team:st.team, n:st.n};
       st.evening=null; st.feed=[]; st.digests={};

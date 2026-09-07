@@ -46463,11 +46463,11 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   // человека в одном лобби (together), иначе большое поле разведёт их по разным.
   if(typeof ccRaceLock==='function' && ccRaceLock()){
     await ccRaceFieldSync(teams);
-    const y=teams.find(t=>t.isYou), r=teams.find(t=>t.isRival);
+    const hs=teams.filter(t=>t.isYou || t.isRival);
     // Порядок — по адресу, один у обоих клиентов: склейка лобби сажает всех к первому
     // в списке, и «я первый» у каждого своё (проба check-race-live-two: комнаты расходились).
-    if(y && r && !(opts.together && opts.together.length>1))
-      opts.together=[y, r].sort((a,b)=>String(a.mpTag||'')<String(b.mpTag||'') ? -1 : 1);
+    if(hs.length>1 && !(opts.together && opts.together.length>1))
+      opts.together=hs.sort((a,b)=>String(a.mpTag||'')<String(b.mpTag||'') ? -1 : 1);
   }
   /* Жетон этапа — им и держится раздача высадки все игры подряд (ccLandingRoll).
      Свой у каждого прогона: два кубка подряд не обязаны лечь одинаково, а
@@ -58814,10 +58814,13 @@ function ccRaceMyLine(){
   const card=(typeof MP!=='undefined' && MP.card) ? MP.card() : ccRacePackCard(me);
   return {id:ccMpId(), card:ccRacePackCard(card||me), mates:mates.map(ccRacePackCard), pow:pow, squad:careerSquadSize()};
 }
-function ccRaceRival(){
-  const ps=ccRacePeers().filter(p=>p && p.card);
-  return ps.length===1 ? ps[0] : null;
+// Соперники с карточкой — все, кто прислал строку (комната на N человек); порядок по адресу.
+function ccRaceRivals(){
+  return ccRacePeers().filter(p=>p && p.card).sort((a,b)=>hKey(a.card)<hKey(b.card) ? -1 : 1);
 }
+function ccRaceRival(){ const ps=ccRaceRivals(); return ps.length ? ps[0] : null; }
+// Людей в общей комнате: я и соперники (для голосов за пропуск и подписей «n/N»).
+function ccRaceHumansN(){ return 1+ccRaceRivals().length; }
 // Ключи напарников соперника — этих ботов брать нельзя (его слово 7.09).
 function ccRaceTakenKeys(){
   const s=new Set();
@@ -58831,16 +58834,16 @@ function ccRaceApartWhy(next){
   if(!ccRaceLive()) return 'off';
   if(!next || next.type==='solo') return 'solo';
   const peers=ccRacePeers();
-  if(peers.length!==1) return peers.length ? 'many' : 'off';
-  const p=peers[0];
-  if(!p.card) return 'off';
-  if(p.div!==CAREER.career.division) return 'div';
-  if(p.day && p.day!==careerToday()) return 'day';
+  if(!peers.length) return 'off';
+  // Комната на N: у КАЖДОГО соперника должна быть строка с карточкой, тот же дивизион и день.
+  if(peers.some(p=>!p.card)) return 'off';
+  if(peers.some(p=>p.div!==CAREER.career.division)) return 'div';
+  if(peers.some(p=>p.day && p.day!==careerToday())) return 'day';
   return null;
 }
 function ccRaceShared(next){ return !ccRaceApartWhy(next); }
-function ccRaceRivalTeam(){
-  const p=ccRaceRival(); if(!p || !p.card) return null;
+function ccRaceRivalTeam(p){
+  p=p||ccRaceRival(); if(!p || !p.card) return null;
   const solo=(typeof squadSize==='number' && squadSize===1);
   const cards=solo ? [p.card] : [p.card].concat((p.mates||[]).filter(Boolean)).slice(0, careerSquadSize());
   const t=careerTeam(cards, true);
@@ -58879,16 +58882,16 @@ async function ccRaceFieldSync(teams){
   const q=++CC_RACE_FIELD_N;
   const r0=CC_MP_ROLLS||0;
   const you=teams.find(t=>t.isYou);
-  let rival=teams.find(t=>t.isRival);
-  if(!rival){
-    const p=ccRaceRival();
-    const same=(p && p.card) ? teams.find(t=>t.mpTag===':'+hKey(p.card)) : null;
-    if(same){ same.isRival=true; same.isMate=false; rival=same; }
-    else rival=ccRaceUnseeded(ccRaceRivalTeam);
-  }
-  const humans=[you, rival].filter(Boolean).sort((a,b)=>String(a.mpTag||a.name)<String(b.mpTag||b.name) ? -1 : 1);
+  // Соперники — все, кто прислал строку; уже посаженный раннером (соло-кап) — тот же объект.
+  const rivals=ccRaceRivals().map(p=>{
+    const tag=':'+hKey(p.card);
+    const same=teams.find(t=>t.mpTag===tag && !t.isYou);
+    if(same){ same.isRival=true; same.isMate=false; same.raceId=p.id||same.raceId||null; return same; }
+    return ccRaceUnseeded(()=>ccRaceRivalTeam(p));
+  }).filter(Boolean);
+  const humans=[you].concat(rivals).filter(Boolean).sort((a,b)=>String(a.mpTag||a.name)<String(b.mpTag||b.name) ? -1 : 1);
   const size=teams.length;
-  let bots=teams.filter(t=>!t.isYou && !t.isRival && !t.isMate && t!==rival).slice(0, Math.max(0, size-humans.length));
+  let bots=teams.filter(t=>!t.isYou && !t.isRival && !t.isMate && humans.indexOf(t)<0).slice(0, Math.max(0, size-humans.length));
   let hostRolls=null;
   if(ccMpRole()==='a'){
     MP.act('field', {q:q, by:ccMpId(), v:{n:size, rolls:r0, bots:bots.map(ccRacePackBot)}});
@@ -59446,18 +59449,28 @@ function ccMpSync(kind, sum, qn){
   }
   /* Он уже ответил на ЭТОТ вопрос — значит и дошёл. Ждать нечего, но его
      приход мог остаться в очереди, и сверку он несёт с собой. */
-  if(MP.peek && MP.peek(kind, qn)){
+  /* Барьер на N человек (гонка втроём и больше): ждём приход КАЖДОГО другого, по
+     одному на id. Вдвоём — как было: один чужой приход, и ответ на вопрос в очереди
+     тоже отпускает (хозяин вопроса барьер уже прошёл). Втроём этот короткий путь
+     выключен: он пускал быстрого вперёд, и третий читал его как «peer ahead». */
+  var needed=(typeof ccMpHumansN==='function' ? ccMpHumansN() : CC_MP_HUMANS)-1;
+  var seen={};
+  var noteArrival=function(a){
+    if(!a || !a.payload || !a.payload.by || seen[a.payload.by]) return false;
+    seen[a.payload.by]=true;
+    ccMpSumSeen(sum, a.payload.sum, a.payload.fl, a.payload.st, a.payload.yp);
+    return true;
+  };
+  var arrived=function(){ return Object.keys(seen).length>=needed; };
+  if(needed<=1 && MP.peek && MP.peek(kind, qn)){
     var was=MP.take && MP.take(at, qn);
-    if(was) ccMpSumSeen(sum, was.payload && was.payload.sum, was.payload && was.payload.fl, was.payload && was.payload.st, was.payload && was.payload.yp);
+    if(was) noteArrival(was);
     return Promise.resolve();
   }
-  // Его приход в очереди — сверяемся и идём; это раньше флага «досчитал»,
-  // иначе досчитавший напарник уносил с собой и сверку. См. ccMpChoose.
-  var early=MP.take && MP.take(at, qn);
-  if(early){
-    ccMpSumSeen(sum, early.payload && early.payload.sum, early.payload && early.payload.fl, early.payload && early.payload.st, early.payload && early.payload.yp);
-    return Promise.resolve();
-  }
+  // Приходы, что уже лежат в очереди — по одному от каждого; это раньше флага
+  // «досчитал», иначе досчитавший напарник уносил с собой и сверку. См. ccMpChoose.
+  for(var k=0; k<8; k++){ var early=MP.take && MP.take(at, qn); if(!early) break; noteArrival(early); if(arrived()) break; }
+  if(arrived()) return Promise.resolve();
   // И если он вообще досчитал вечер — тем более.
   if(CC_MP_PEER_DONE) return Promise.resolve();
   if(CC_MP_REPLAY) CC_MP_REPLAY=false;        // пришлось ждать напарника — догнали
@@ -59483,10 +59496,10 @@ function ccMpSync(kind, sum, qn){
       if(m.kind!==at) return;
       // Чужой вопрос — не наш барьер.
       if(m.payload.q!=null && qn!=null && m.payload.q!==qn) return;
-      // Он дошёл — и заодно сказал, что у него в таблице.
-      ccMpSumSeen(sum, m.payload.sum, m.payload.fl, m.payload.st, m.payload.yp);
-      if(MP.take) MP.take(at, qn);
-      done();
+      // Он дошёл — и заодно сказал, что у него в таблице. На N — считаем по одному от каждого.
+      noteArrival(m);
+      if(MP.take){ var x; while((x=MP.take(at, qn))) noteArrival(x); }
+      if(arrived()) done();
     });
     t=ccMpDeadline(function(){ ccMpSlowSeen(); done(); });
     // Досчитал вечер — будим ожидание немедленно.
@@ -59512,16 +59525,22 @@ function ccMpSync(kind, sum, qn){
    где чистится очередь решений. */
 let CC_MP_SKIP=null;
 function ccMpSkipReset(){ CC_MP_SKIP={asked:false, mine:false, theirs:false}; }
+// Людей в общей комнате: команда — двое, гонка — я и все соперники.
+function ccMpHumansN(){
+  return (typeof ccRaceLock==='function' && ccRaceLock()) ? ccRaceHumansN() : CC_MP_HUMANS;
+}
 function ccMpSkipN(){
   if(!CC_MP_SKIP) return 0;
-  return (CC_MP_SKIP.mine?1:0)+(CC_MP_SKIP.theirs?1:0);
+  // Чужие голоса — по одному на человека (гонка на N), не «кто-то нажал».
+  const theirs=CC_MP_SKIP.who ? Object.keys(CC_MP_SKIP.who).length : (CC_MP_SKIP.theirs?1:0);
+  return (CC_MP_SKIP.mine?1:0)+theirs;
 }
 // Подпись на кнопке. В одиночной карьере её нет вовсе — там ждать некого.
 function ccMpSkipTag(){
-  return ccMpLock() ? ' '+ccMpSkipN()+'/'+CC_MP_HUMANS : '';
+  return ccMpLock() ? ' '+ccMpSkipN()+'/'+ccMpHumansN() : '';
 }
 function ccMpSkipBoth(){
-  return !!(CC_MP_SKIP && CC_MP_SKIP.mine && CC_MP_SKIP.theirs);
+  return !!(CC_MP_SKIP && CC_MP_SKIP.mine && ccMpSkipN()>=ccMpHumansN());
 }
 function ccMpSkipDraw(){
   const b=document.getElementById('majorSkipBtn');
@@ -59564,7 +59583,7 @@ function ccMpSkipAsk(){
 function ccMpSkipSaw(who){
   if(!CC_MP_SKIP) ccMpSkipReset();
   if(who===ccMpId()) CC_MP_SKIP.mine=true;
-  else CC_MP_SKIP.theirs=true;
+  else { CC_MP_SKIP.theirs=true; CC_MP_SKIP.who=CC_MP_SKIP.who||{}; if(who) CC_MP_SKIP.who[who]=true; }
   ccMpSkipApply();
 }
 /* Спрашивают одного, второй смотрит.
@@ -83195,9 +83214,9 @@ async function careerLandingPick(field, you, title, kinds, o){
      Раннер зовёт пик для своей команды без адреса; здесь он превращается в два
      адресных пика подряд. Соперник отвечает у себя, ответ приходит по проводу. */
   if(typeof ccRaceLock==='function' && ccRaceLock() && !o.tag && you && you.mpTag){
-    const rival=(field||[]).find(t=>t.isRival && t!==you);
-    if(rival && rival.mpTag){
-      const hs=[you, rival].sort((a,b)=>String(a.mpTag)<String(b.mpTag) ? -1 : 1);
+    const rivals=(field||[]).filter(t=>t.isRival && t!==you && t.mpTag);
+    if(rivals.length){
+      const hs=[you].concat(rivals).sort((a,b)=>String(a.mpTag)<String(b.mpTag) ? -1 : 1);
       let groups=o.pre||null;
       for(const h of hs) groups=await careerLandingPick(field, h, title, kinds, {tag:h.mpTag, pre:groups});
       return groups;
@@ -85859,7 +85878,8 @@ async function runCareerVictory(){
      августа: «diff 2 of 4900: #1 sky:102 vs scroll:102» — каждый клиент ставил
      себя первым, а напарника не помечал вовсе. */
   // В общей комнате гонки второй человек — соперник, той же дорогой (свой дроп, свой адрес).
-  const pc=(solo && ccMpLock() && typeof MP!=='undefined' && MP.peer && hKey(MP.peer)!==hKey(me)) ? MP.peer : null;
+  // (Гонка соперников в соло сажает сама, из строк гонки — ccRaceFieldSync; здесь только команда.)
+  const pc=(solo && ccMpOn() && typeof MP!=='undefined' && MP.peer && hKey(MP.peer)!==hKey(me)) ? MP.peer : null;
   const soloYou=function(card, form, label){
     const t=careerTeam([card], true);
     t.pow=Math.round(t.pow+form);
