@@ -968,6 +968,11 @@ ccDropContest:'Законтестить', ccDropContestNote:'Откроем ос
 ccDropMap:'Выбрать на карте', ccDropMapNote:'Открыть остров и поставить метку руками',
 ccLootTitle:'Середина игры — что подобрал',
 ccLootHint:'Вторая зона закрылась. Точка обыскана: два ствола, две хилки и мувмент. Напарник разбирает свою половину сам',
+ccSiteTitle:n=>'На точке чужие: '+n, ccSiteHint:(a,b)=>'Твой первый сундук: '+a+' · у них: '+b,
+ccSiteLeave:'Уйти на соседнюю точку', ccSiteLeaveNote:(n,m)=>'Без стычки: '+n+' сундука вместо '+m+' — лут беднее, сила ниже',
+ccSiteFight:'Файтить за точку', ccSiteFightNote:(p,n,a,b)=>p+'%: точка наша — все '+n+' сундуков и элим · иначе вылет на высадке'+((a||b)?' · первый сундук: +'+a+' против +'+b:''),
+ccSiteOwn:(n,l)=>'Точка свободна: '+n+' сундуков — '+l, ccSiteWon:(w,n)=>'Точка наша: '+w+' выбиты, '+n+' сундуков',
+ccSiteLost:w=>'Проиграли стычку на высадке: '+w, ccSiteLeft:(n,l)=>'Ушли на соседнюю: '+n+' сундука — '+l,
 ccLootTake:'Забрать своё', ccLootSwap:'Пробежать соседнюю точку',
 ccLootTakeSafe:'без прибавки, зато без риска',
 ccLootSwapRisk:(b,f,p)=>p+' на '+(100-p)+': успел — +'+b+', нет — лишний урон, −'+f,
@@ -982,7 +987,8 @@ ccLateThirdWon:(p,foe)=>'Зашли третьими'+(foe?': выбили '+foe
 ccLateTake:'Отжать точку у слабых', ccLateTakeNote:(p,f,o)=>o+' из 100: вышло — +'+p+', нет — минус '+f,
 ccLateTakeWon:v=>'Точка отжата, +'+v+' к силе', ccLateTakeLost:v=>'Они не отдали точку, −'+v+' к силе',
 ccLateRefresh:'Найти рефреш', ccLateRefreshNote:(v,f,p)=>p+'%: нашёл — +'+v+' и полные ресы, нет — минус '+f+' и вернулся в круг последним',
-ccLateEdge:'Играть за зоной', ccLateEdgeNote:(v,f,p)=>p+'%: ловишь заходящих — +'+v+', не поймал — шторм съел '+f,
+ccLateMid:'Играть мид граунд', ccLateMidNote:(v,f,p)=>p+'%: удержали середину — +'+v+', сбили — минус '+f+' и вниз',
+ccLateEdge:'Играть за зоной',ccLateEdgeNote:(v,f,p)=>p+'%: ловишь заходящих — +'+v+', не поймал — шторм съел '+f,
 ccLateEdgeWon:v=>'За зоной сработало — +'+v+' к силе', ccLateEdgeLost:v=>'Шторм добрал, −'+v+' к силе',
 ccLateRefreshWon:v=>'Рефреш найден, +'+v+' к силе и полные ресы', ccLateRefreshLost:v=>'Рефреша нет, вернулся последним: −'+v+' к силе',
 ccKitLine:(m,low,loot)=>'Ресы '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'мало',
@@ -2890,6 +2896,11 @@ ccDropContest:'Contest', ccDropContestNote:'Opens the whole island: see who sits
 ccDropMap:'Pick on the map', ccDropMapNote:'Open the island and place the marker yourself',
 ccLootTitle:'Mid game — what you picked up',
 ccLootHint:'The second circle has closed. The spot is looted: two guns, two heals and a mobility item. Your partner sorts their own half out',
+ccSiteTitle:n=>'Someone landed with us: '+n, ccSiteHint:(a,b)=>'Your first chest: '+a+' · theirs: '+b,
+ccSiteLeave:'Leave for the next POI', ccSiteLeaveNote:(n,m)=>'No fight: '+n+' chests instead of '+m+' — poorer loot, less power',
+ccSiteFight:'Fight for the spot', ccSiteFightNote:(p,n,a,b)=>p+'%: the spot is ours — all '+n+' chests and the elim · otherwise we die off spawn'+((a||b)?' · first chest: +'+a+' vs +'+b:''),
+ccSiteOwn:(n,l)=>'Spot is free: '+n+' chests — '+l, ccSiteWon:(w,n)=>'Spot is ours: '+w+' eliminated, '+n+' chests',
+ccSiteLost:w=>'Lost the landing fight to '+w, ccSiteLeft:(n,l)=>'Moved to the next POI: '+n+' chests — '+l,
 ccLootTake:'Take your own', ccLootSwap:'Run the next POI',
 ccLootTakeSafe:'no bonus, and no risk',
 ccLootSwapRisk:(b,f,p)=>p+'/'+(100-p)+': made it — +'+b+', did not — extra damage, −'+f,
@@ -2905,7 +2916,8 @@ ccLateThirdNone:k=>'Shot into the fight and walked: +'+k+' surge damage',
 ccLateTake:'Take a weaker squad spot', ccLateTakeNote:(p,f,o)=>o+' in 100: it works — +'+p+', it does not — minus '+f,
 ccLateTakeWon:v=>'Spot taken, +'+v+' power', ccLateTakeLost:v=>'They held the spot, −'+v+' power',
 ccLateRefresh:'Find a refresh', ccLateRefreshNote:(v,f,p)=>p+'%: found it — +'+v+' and full mats, did not — minus '+f+' and back into the circle last',
-ccLateEdge:'Play outside the zone', ccLateEdgeNote:(v,f,p)=>p+'%: catch them coming in — +'+v+', missed — the storm takes '+f,
+ccLateMid:'Play mid ground', ccLateMidNote:(v,f,p)=>p+'%: held the middle — +'+v+', knocked down — minus '+f+' and you play from below',
+ccLateEdge:'Play outside the zone',ccLateEdgeNote:(v,f,p)=>p+'%: catch them coming in — +'+v+', missed — the storm takes '+f,
 ccLateEdgeWon:v=>'Outside the zone worked — +'+v+' power', ccLateEdgeLost:v=>'The storm got you, −'+v+' power',
 ccLateRefreshWon:v=>'Refresh found, +'+v+' power and full mats', ccLateRefreshLost:v=>'No refresh, back in last: −'+v+' power',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'low',
@@ -4953,6 +4965,11 @@ ccDropContest:'Contester', ccDropContestNote:'Ouvre toute l’île : tu vois qui
 ccDropMap:'Choisir sur la carte', ccDropMapNote:'Ouvrir l’île et poser la marque à la main',
 ccLootTitle:'Milieu de partie — ce que tu as ramassé',
 ccLootHint:'La deuxième zone est fermée. Le spot est fouillé : deux armes, deux soins et un objet de mobilité. Ton coéquipier gère sa moitié',
+ccSiteTitle:n=>'Quelqu’un atterrit avec nous : '+n, ccSiteHint:(a,b)=>'Ton premier coffre : '+a+' · le leur : '+b,
+ccSiteLeave:'Partir vers le POI voisin', ccSiteLeaveNote:(n,m)=>'Sans combat : '+n+' coffres au lieu de '+m+' — loot plus pauvre, moins de power',
+ccSiteFight:'Se battre pour le spot', ccSiteFightNote:(p,n,a,b)=>p+' % : le spot est à nous — les '+n+' coffres et l’élim · sinon on meurt au spawn'+((a||b)?' · premier coffre : +'+a+' contre +'+b:''),
+ccSiteOwn:(n,l)=>'Spot libre : '+n+' coffres — '+l, ccSiteWon:(w,n)=>'Le spot est à nous : '+w+' éliminés, '+n+' coffres',
+ccSiteLost:w=>'Combat d’atterrissage perdu contre '+w, ccSiteLeft:(n,l)=>'Partis au POI voisin : '+n+' coffres — '+l,
 ccLootTake:'Prendre le tien', ccLootSwap:'Aller fouiller le POI voisin',
 ccLootTakeSafe:'aucun bonus, aucun risque',
 ccLootSwapRisk:(b,f,p)=>p+'/'+(100-p)+' : réussi — +'+b+', raté — dégâts en plus, −'+f,
@@ -4969,7 +4986,8 @@ ccLateTake:'Prendre le spot des plus faibles', ccLateTakeNote:(p,f,o)=>o+' sur 1
 ccLateTakeWon:v=>'Spot pris, +'+v+' de puissance', ccLateTakeLost:v=>'Ils ont tenu le spot, −'+v+' de puissance',
 ccLateRefresh:'Chercher un refresh', ccLateRefreshNote:v=>'Sûr, mais plus petit : +'+v,
 ccLateRefreshNote:(v,f,p)=>p+' % : trouvé — +'+v+' et mats pleins, sinon — moins '+f+' et tu rentres dans le cercle en dernier',
-ccLateEdge:'Jouer hors zone', ccLateEdgeNote:(v,f,p)=>p+' % : tu prends ceux qui rentrent — +'+v+', raté — la tempête prend '+f,
+ccLateMid:'Jouer le mid ground', ccLateMidNote:(v,f,p)=>p+' % : le milieu tenu — +'+v+', descendu — moins '+f+' et tu joues en bas',
+ccLateEdge:'Jouer hors zone',ccLateEdgeNote:(v,f,p)=>p+' % : tu prends ceux qui rentrent — +'+v+', raté — la tempête prend '+f,
 ccLateEdgeWon:v=>'Hors zone, ça a marché — +'+v+' de puissance', ccLateEdgeLost:v=>'La tempête t\'a eu, −'+v+' de puissance',
 ccLateRefreshWon:v=>'Refresh trouvé, +'+v+' de puissance et mats pleins', ccLateRefreshLost:v=>'Pas de refresh, rentré en dernier : −'+v+' de puissance',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:'peu',
@@ -6881,7 +6899,8 @@ ccLootHurt:v=>'POI non ripulito — danni extra, −'+v+' di potenza',
 ccLootGot:v=>'Ha funzionato — POI successivo ripulito, +'+v+' di potenza',
 ccLateHgNote:v=>'Testa o croce: vinto — +'+v+' e la miglior chance di vittoria, perso — meno '+CC_HG_FAIL+' e giochi da sotto',
 ccLateRefreshNote:(v,f,p)=>p+'%: trovato \u2014 +'+v+' e mats pieni, no \u2014 meno '+f+' e rientri nel cerchio per ultimo',
-ccLateEdge:"Giocare fuori zona", ccLateEdgeNote:(v,f,p)=>p+'%: prendi chi entra \u2014 +'+v+', mancato \u2014 la tempesta prende '+f,
+ccLateMid:"Giocare mid ground", ccLateMidNote:(v,f,p)=>p+"%: tenuto il centro — +"+v+", buttati giù — meno "+f+" e giochi da sotto",
+ccLateEdge:"Giocare fuori zona",ccLateEdgeNote:(v,f,p)=>p+'%: prendi chi entra \u2014 +'+v+', mancato \u2014 la tempesta prende '+f,
 ccLateEdgeWon:v=>'Fuori zona ha funzionato \u2014 +'+v+' di forza', ccLateEdgeLost:v=>'La tempesta ti ha preso, \u2212'+v+' di forza',
 ccLateRefreshWon:v=>'Refresh trovato, +'+v+' di forza e mats pieni', ccLateRefreshLost:v=>'Niente refresh, rientrato per ultimo: \u2212'+v+' di forza',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' \u00b7 '+low:'')+(loot?' \u00b7 '+loot:''), ccKitLow:"pochi",
@@ -8198,6 +8217,11 @@ ccDropMap:"Scegli sulla mappa",
 ccDropMapNote:"Apri l'isola e metti tu il segnalino",
 ccLootTitle:"Metà partita — cosa hai raccolto",
 ccLootHint:"Il secondo cerchio si è chiuso. Il punto è lootato: due armi, due cure e un oggetto di mobilità. Il compagno si arrangia con la sua metà",
+ccSiteTitle:n=>"Qualcuno atterra con noi: "+n, ccSiteHint:(a,b)=>"Il tuo primo forziere: "+a+" · il loro: "+b,
+ccSiteLeave:"Andare al POI vicino", ccSiteLeaveNote:(n,m)=>"Senza scontro: "+n+" forzieri invece di "+m+" — loot più povero, meno power",
+ccSiteFight:"Combattere per lo spot", ccSiteFightNote:(p,n,a,b)=>p+"%: lo spot è nostro — tutti i "+n+" forzieri e l'elim · altrimenti moriamo allo spawn"+((a||b)?" · primo forziere: +"+a+" contro +"+b:""),
+ccSiteOwn:(n,l)=>"Spot libero: "+n+" forzieri — "+l, ccSiteWon:(w,n)=>"Lo spot è nostro: "+w+" eliminati, "+n+" forzieri",
+ccSiteLost:w=>"Scontro all'atterraggio perso contro "+w, ccSiteLeft:(n,l)=>"Spostati al POI vicino: "+n+" forzieri — "+l,
 ccLootTake:"Tieni il tuo",
 ccLootSwap:"Fai il POI successivo",
 ccLootTakeSafe:"nessun bonus, e nessun rischio",
@@ -9356,7 +9380,8 @@ ccLootHurt:v=>'N\u00e3o limpou o POI — dano extra, −'+v+' de poder',
 ccLootGot:v=>'Deu certo — pr\u00f3ximo POI limpo, +'+v+' de poder',
 ccLateHgNote:v=>'Cara ou coroa: ganhou — +'+v+' e a melhor chance de vit\u00f3ria, perdeu — menos '+CC_HG_FAIL+' e voc\u00ea joga por baixo',
 ccLateRefreshNote:(v,f,p)=>p+'%: achou — +'+v+' e mats cheios, não — menos '+f+' e você volta ao círculo por último',
-ccLateEdge:"Jogar fora da zona", ccLateEdgeNote:(v,f,p)=>p+'%: pega quem entra — +'+v+', errou — a tempestade leva '+f,
+ccLateMid:"Jogar mid ground", ccLateMidNote:(v,f,p)=>p+"%: segurou o meio — +"+v+", derrubado — menos "+f+" e joga de baixo",
+ccLateEdge:"Jogar fora da zona",ccLateEdgeNote:(v,f,p)=>p+'%: pega quem entra — +'+v+', errou — a tempestade leva '+f,
 ccLateEdgeWon:v=>'Fora da zona funcionou — +'+v+' de força', ccLateEdgeLost:v=>'A tempestade te pegou, −'+v+' de força',
 ccLateRefreshWon:v=>'Refresh achado, +'+v+' de força e mats cheios', ccLateRefreshLost:v=>'Sem refresh, voltou por último: −'+v+' de força',
 ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccKitLow:"pouco",
@@ -10673,6 +10698,11 @@ ccDropMap:"Escolher no mapa",
 ccDropMapNote:"Abra a ilha e coloque o marcador você mesmo",
 ccLootTitle:"Meio de jogo — o que você pegou",
 ccLootHint:"O segundo círculo fechou. O ponto está lootado: duas armas, duas curas e um item de mobilidade. Seu parceiro resolve a metade dele",
+ccSiteTitle:n=>"Alguém pousou com a gente: "+n, ccSiteHint:(a,b)=>"Seu primeiro baú: "+a+" · o deles: "+b,
+ccSiteLeave:"Ir para o POI vizinho", ccSiteLeaveNote:(n,m)=>"Sem briga: "+n+" baús em vez de "+m+" — loot mais pobre, menos power",
+ccSiteFight:"Brigar pelo spot", ccSiteFightNote:(p,n,a,b)=>p+"%: o spot é nosso — todos os "+n+" baús e o elim · senão morremos no pouso"+((a||b)?" · primeiro baú: +"+a+" contra +"+b:""),
+ccSiteOwn:(n,l)=>"Spot livre: "+n+" baús — "+l, ccSiteWon:(w,n)=>"O spot é nosso: "+w+" eliminados, "+n+" baús",
+ccSiteLost:w=>"Perdemos a briga de pouso para "+w, ccSiteLeft:(n,l)=>"Fomos ao POI vizinho: "+n+" baús — "+l,
 ccLootTake:"Ficar com o seu",
 ccLootSwap:"Rodar o próximo POI",
 ccLootTakeSafe:"sem bônus, e sem risco",
@@ -45995,6 +46025,8 @@ function ccMatsPenalty(teams){
   });
 }
 const CC_GAME_STOPS=[
+  // Первая: точка — сундуки, а на занятой точке стычка или уход (ccAskSite).
+  {zone:1, ask:(you, ui)=>ccAskSite(you, ui), room:ccRoomSite},
   // Третья зона: лут и следом — как строим (ccAskBuild).
   {zone:3, ask:async (you, ui)=>{ await ccAskLoot(you, ui); await ccAskBuild(you, ui); }, room:ccRoomLoot},
   // Четвёртая: ротация — когда выходим к следующему кругу (ccAskRot). Комната
@@ -46207,6 +46239,8 @@ const CC_CHOICE_ICON={
      симуляции, чтобы подходило в тему». Высота — башня из панелей, за зоной —
      фиолетовое кольцо шторма с точкой снаружи, рефреш — сундук, низ — тот же
      знак «остаёмся». Третьение и отжатие берут скрещённые стволы и флаг точки. */
+  // Мид граунд — лестница из панелей на половину высоты башни.
+  stairs:'<svg viewBox="0 0 24 24"><rect x="3" y="15" width="6" height="6" fill="#b7c3d1"/><rect x="9" y="11" width="6" height="10" fill="#b7c3d1"/><rect x="15" y="7" width="6" height="14" fill="#9fb3c8"/><path d="M3 15h6v-4h6V7h6" fill="none" stroke="#e8eef6" stroke-width="1.4"/></svg>',
   // Ротация «сразу» — бегущая стрелка к кругу.
   run:'<svg viewBox="0 0 24 24"><circle cx="18" cy="12" r="5" fill="none" stroke="#9fb3c8" stroke-width="1.6"/><path d="M3 12h10" stroke="#00d0a8" stroke-width="2.6" stroke-linecap="round"/><path d="M9 8l4 4-4 4" fill="none" stroke="#00d0a8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   tower:'<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="6" fill="#b7c3d1"/><rect x="6" y="9" width="12" height="6" fill="#c8894a"/><rect x="3" y="15" width="18" height="6" fill="#c5624d"/><path d="M6 15h12M9 9h6M12 3v6M12 9v6M12 15v6" stroke="#3a2a22" stroke-width="1"/><path d="M15 3l5-2v4z" fill="#ffd600"/></svg>',
@@ -46599,11 +46633,178 @@ function ccChoiceResult(map, text, ok){
    Ожидание пробежки при этих числах: 0.4·4 − 0.6·2 = +0.4 — чуть выше нуля и
    заметно ниже потолка. Та же форма, что у хайграунда: выше потолок, ниже
    ожидание, названная цена за провал. */
+/* ДЕЙСТВИЯ НА ТОЧКЕ — его страница Notion «simulation», 7 сентября 2026:
+   «если никого нет, открывают сундуки и игроку дают лут, который рандомно
+   выпадает с шансом, который есть у Фортнайта; если кто-то конится — каждый
+   открывает по сундуку, игроку показывают лут и дают выбор файтиться: шансы,
+   если хороший лут, больше (+1 +3 +7), чем больше повера — тем больше шансов;
+   если выйти с локации — лутает меньше сундуков и меньше повер; должны быть два
+   оружия (автомат, дробовик), хил, хил, мувмент, нельзя пять дробовиков».
+
+   Первая остановка игры — до того, как кто-то сдвинулся с места (playTo(1)
+   ничего не играет). Точка своя — сундуки открываются молча и пак готов;
+   на точке чужие — первый сундук у каждого, и вопрос: файтить или уйти.
+
+   Шансы редкости из сундука — по датамайну таблиц сундуков BR (mein-mmo.de,
+   «Here are the loot chances from treasure chests»): по всем классам вместе
+   uncommon около половины, rare чуть больше четверти, epic и legendary —
+   единицы процентов, common — остаток. Числа приближённые, сумма 1.
+   Сундуков на точке для дуо — 8, уходя на соседнюю — 4: порядок величины
+   реального POI, не замер. Класс ствола — поле icon пула (rifle/shotgun/…). */
+const CC_CHEST_RARITY={common:0.12, uncommon:0.50, rare:0.27, epic:0.08, legendary:0.03};
+const CC_CHESTS_POI=8, CC_CHESTS_LEAVE=4, CC_CHEST_CONSUMABLE=0.6;
+// Преимущество первого сундука в стычке на высадке — его числа «+1 +3 +7», в
+// процентных пунктах к шансу (CC_SITE_EDGE_PP за очко).
+const CC_LOOT_EDGE={common:0, uncommon:1, rare:3, epic:7, legendary:7, mythic:7};
+const CC_SITE_EDGE_PP=0.02;
+function ccChestRarity(rng){
+  const r=rng(); let acc=0;
+  for(const k of RARITY_LADDER){ acc+=CC_CHEST_RARITY[k]||0; if(r<acc) return k; }
+  return 'uncommon';
+}
+// Один сундук: ствол своей редкости (если такой редкости у пула нет — ближайшая
+// ниже) и, с шансом CC_CHEST_CONSUMABLE, расходник.
+function ccChestRoll(rng, set){
+  const pool=CC_LOOT_BY_SET[ccLootSet(set)];
+  const rar=ccChestRarity(rng);
+  let cands=pool.weapons.filter(w=>w.rarity===rar);
+  for(let i=RARITY_LADDER.indexOf(rar)-1; !cands.length && i>=0; i--) cands=pool.weapons.filter(w=>w.rarity===RARITY_LADDER[i]);
+  if(!cands.length) cands=pool.weapons;
+  const weapon=cands[Math.floor(rng()*cands.length)];
+  const cons = rng()<CC_CHEST_CONSUMABLE ? pool.heals[Math.floor(rng()*pool.heals.length)] : null;
+  return {weapon, cons};
+}
+// Пак по правилу «два ствола разных классов, две хилки, мувмент» — из того, что выпало.
+function ccPackFrom(weapons, cons){
+  const mod=o=>o ? (RARITY_MOD[o.rarity]||0) : -1;
+  const byMod=(a,b)=>mod(b)-mod(a);
+  const ws=weapons.slice().sort(byMod);
+  const first=ws[0]||null;
+  const second=(first && ws.find(w=>w.icon!==first.icon)) || ws[1] || null;
+  const moves=cons.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0).sort(byMod);
+  const heals=cons.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)<0).sort(byMod);
+  return {weapons:[first, second].filter(Boolean), heals:heals.slice(0,2), move:moves[0]||null};
+}
+function ccChestPack(rng, set, n){
+  const rolls=[]; for(let i=0;i<n;i++) rolls.push(ccChestRoll(rng, set));
+  const p=ccPackFrom(rolls.map(r=>r.weapon), rolls.map(r=>r.cons).filter(Boolean));
+  p.chests=n; p.first=rolls[0];
+  return p;
+}
+/* Что пак стоит в силе: редкость двух стволов над uncommon (rare +1, epic +2,
+   legendary +3 за ствол), пустой слот ствола −2, хилки −1 за каждую недостающую,
+   без мувмента −1. Комната получает то же самое (ccRoomSite), так что это не
+   подарок игроку, а разброс лута на всех. */
+function ccPackPow(p){
+  if(!p) return 0;
+  const ws=p.weapons||[], hs=p.heals||[];
+  let v=0;
+  for(let i=0;i<2;i++){ const o=ws[i]; v += o ? Math.max(0, (RARITY_MOD[o.rarity]||2)-2) : -2; }
+  v -= Math.max(0, 2-hs.length);
+  if(!p.move) v -= 1;
+  return Math.max(-5, Math.min(6, v));
+}
+const ccRarityWord=r=>{ const k=ccRarityKey(r); return k ? k.charAt(0).toUpperCase()+k.slice(1) : ''; };
+function ccItemLabel(o){ return o ? o.name+' ('+ccRarityWord(o.rarity)+')' : '—'; }
+function ccPackLine(p){
+  const name=o=>o ? o.name : '—';
+  return [...(p.weapons||[]), ...(p.heals||[]), p.move].map(name).join(' · ');
+}
+// Шанс стычки на высадке: сила как у высадочной дуэли (LANDING_POW_EXPONENT,
+// потолок LANDING_ODDS_CAP), плюс разница первых сундуков в процентных пунктах.
+function ccSiteOdds(you, foe, eMine, eFoe){
+  const a=Math.max(1, you._pc||you._pf||you.pow||1), b=Math.max(1, foe._pc||foe._pf||foe.pow||1);
+  const wa=Math.pow(a, LANDING_POW_EXPONENT), wb=Math.pow(b, LANDING_POW_EXPONENT);
+  const base=clamp(wa/(wa+wb), 1-LANDING_ODDS_CAP, LANDING_ODDS_CAP);
+  return clamp(base+((eMine||0)-(eFoe||0))*CC_SITE_EDGE_PP, 0.2, 0.8);
+}
+/* Куда уходят, не приняв стычку: самая свободная коробка, из равных — ближняя.
+   В комнате на пятьдесят отрядов и двадцать коробок пустых почти не бывает, и
+   «соседняя точка» — это та, где сидят меньше всех; там стычка тоже возможна,
+   но уже руками движка. */
+function ccFreeBoxNear(game, you){
+  const busy=new Map();
+  (game && game.squads ? game.squads : []).forEach(s=>{ if(s.alive && s.team!==you && s.team.landingZone) busy.set(s.team.landingZone, (busy.get(s.team.landingZone)||0)+1); });
+  const z0=you.landingZone; if(!z0) return null;
+  let best=null, bn=Infinity, bd=Infinity;
+  ALL_LANDING_ZONES.forEach(z=>{
+    if(z===z0) return;
+    const n=busy.get(z)||0;
+    const dx=(z.x+z.w/2)-(z0.x+z0.w/2), dy=(z.y+z.h/2)-(z0.y+z0.h/2), d=dx*dx+dy*dy;
+    if(n<bn || (n===bn && d<bd)){ bn=n; bd=d; best=z; }
+  });
+  return best;
+}
+async function ccAskSite(you, ui){
+  if(!you) return;
+  const game=you._game, sq=you._sq;
+  if(!game || !game.squads) return;
+  const zone=you.landingZone;
+  const rivals=zone ? game.squads.filter(s=>s.alive && s.team!==you && !s.team.isMate && s.team.landingZone===zone).map(s=>s.team) : [];
+  const set=ccLootSet();
+  const T=L();
+  ccMpMark('st0'+(you.mpTag||''));
+  const mine=ccChestPack(Math.random, set, CC_CHESTS_POI);
+  const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
+  if(!rivals.length){
+    you._loot=mine; ccAddGamePow(you, ccPackPow(mine));
+    ccMpMark('st1');
+    await say(T.ccSiteOwn(CC_CHESTS_POI, ccPackLine(mine)), null);
+    return;
+  }
+  // Стычка — с сильнейшими из тех, кто сел на ту же коробку; остальные остаются движку.
+  const foe=rivals.slice().sort((a,b)=>(b._pc||b.pow||0)-(a._pc||a.pow||0))[0];
+  const theirs=ccChestRoll(Math.random, set);
+  const eMine=CC_LOOT_EDGE[ccRarityKey(mine.first.weapon.rarity)]||0, eFoe=CC_LOOT_EDGE[ccRarityKey(theirs.weapon.rarity)]||0;
+  const p=ccSiteOdds(you, foe, eMine, eFoe);
+  const bare=t=>String(t.name||'').replace(/<[^>]+>/g,'').trim();
+  const names=rivals.map(bare).join(' · ');
+  const pickId=(await ccMpChoose('site'+(you.mpTag||''), async function(){
+    return (await ccChoiceBox(T.ccSiteTitle(names), T.ccSiteHint(ccItemLabel(mine.first.weapon), ccItemLabel(theirs.weapon)), [
+      {id:'leave', def:true, icon:CC_CHOICE_ICON.run, title:T.ccSiteLeave, note:T.ccSiteLeaveNote(CC_CHESTS_LEAVE, CC_CHESTS_POI)},
+      {id:'fight', icon:ccItemIconHTML(mine.first.weapon, CC_CHOICE_ICON.fight), title:T.ccSiteFight,
+       note:T.ccSiteFightNote(Math.round(p*100), CC_CHESTS_POI, eMine, eFoe)}
+    ], ui && ui.map)).id;
+  }, function(v){ return v==='fight' ? T.ccSiteFight : T.ccSiteLeave; })).v;
+  ccMpMark('a1:'+pickId);
+  if(pickId==='fight'){
+    const won=Math.random()<p;
+    ccMpMark('w1:'+(won?1:0));
+    // Смерть на высадке — как её считает движок (droppedOut → стычки, аура).
+    const fs=game.squads.find(s=>s.team===foe);
+    if(won){
+      if(fs) fs.droppedOut=true;
+      game.eliminate(foe, you);
+      you._loot=mine; ccAddGamePow(you, ccPackPow(mine));
+      await say(T.ccSiteWon(bare(foe), CC_CHESTS_POI), true);
+    } else {
+      if(sq) sq.droppedOut=true;
+      game.eliminate(you, foe);
+      await say(T.ccSiteLost(bare(foe)), false);
+    }
+    return;
+  }
+  const free=ccFreeBoxNear(game, you);
+  if(free){ you.landingZone=free; if(sq){ sq.x=free.x+free.w/2; sq.y=free.y+free.h/2; } }
+  const small=ccChestPack(Math.random, set, CC_CHESTS_LEAVE);
+  you._loot=small; ccAddGamePow(you, ccPackPow(small));
+  await say(T.ccSiteLeft(CC_CHESTS_LEAVE, ccPackLine(small)), null);
+}
+// Комната открывает свои сундуки тем же правилом; под симуляцией (you=null) — и игрок.
+function ccRoomSite(field, you){
+  const set=ccLootSet();
+  field.forEach(t=>{
+    if(you && (t===you || t.isMate)) return;
+    const p=ccChestPack(Math.random, set, CC_CHESTS_POI);
+    t._loot=p; ccAddGamePow(t, ccPackPow(p));
+  });
+}
 const CC_LOOT_POI_ODDS=0.4, CC_LOOT_POI_BONUS=4, CC_LOOT_POI_FAIL=2;
 async function ccAskLoot(you, ui){
   if(!you) return;
   ccMpMark('l0'+(you.mpTag||''));
-  const mine=ccLootPack(), other=ccLootPack();
+  // Свой пак — тот, что собран из сундуков на точке (ccAskSite); соседний — чужой.
+  const mine=you._loot||ccLootPack(), other=ccLootPack();
   ccMpMark('l1');
   const name=o=>o ? esc(o.name) : '—';
   const listOf=p=>[...p.weapons, ...p.heals, p.move].map(name).join(' · ');
@@ -46907,6 +47108,12 @@ const CC_HG_FAIL=10;
      за зоной     55%      8     8         0         8
      хайграунд    50%     10    10         0        10                                    */
 const CC_EDGE_ODDS=0.55, CC_EDGE_POW=8, CC_EDGE_FAIL=8;
+/* МИД ГРАУНД — его страница «simulation» 7 сентября: «в какой позиции играть:
+   хг, мид граунд, лоу граунд — чем выше, тем сложнее, но больше повер».
+   Середина лестницы между высотой и низом: 65% на +6, провал −4, ожидание
+   +2.5, потолок 6 — ниже высоты по потолку, выше по шансу, и не бьёт рефреш
+   при пустых ресах (+3). Числа подобраны под лестницу, не замер. */
+const CC_MID_ODDS=0.65, CC_MID_POW=6, CC_MID_FAIL=4;
 const CC_REFRESH_ODDS=0.75, CC_REFRESH_FAIL=3;
 /* ТРЕТЬЯ СТОРОНА — снова в меню, но уже ПО ЗАМЕРУ, и через движок. Его слово
    6 сентября: «делай дальше». Ход стоял здесь до 1 сентября как +16/−8 на
@@ -46923,6 +47130,7 @@ const CC_REFRESH_ODDS=0.75, CC_REFRESH_FAIL=3;
 const CC_THIRD={kill:0.33, die:0.17, pow:6, dmg:70};
 const CC_LATE_MOVES=[
   {id:'hg',      pow:CC_HG_POW,      odds:CC_HG_ODDS,       fail:CC_HG_FAIL},
+  {id:'mid',     pow:CC_MID_POW,     odds:CC_MID_ODDS,      fail:CC_MID_FAIL},
   {id:'edge',    pow:CC_EDGE_POW,    odds:CC_EDGE_ODDS,     fail:CC_EDGE_FAIL},
   // real: решается движком (ccThirdApply), не броском силы; комната его не ходит.
   {id:'third',   pow:CC_THIRD.pow,   odds:CC_THIRD.kill,    fail:0, real:true},
@@ -46953,11 +47161,11 @@ function ccThirdApply(you, r, foe){
 function ccLateRisky(m){ return !!(m && m.fail>0 && m.odds<1); }
 // Имена словарных строк каждого хода — по id, чтобы новый ход добавлялся
 // строкой здесь, а не поиском 'hg' по файлу.
-const CC_LATE_NAME={hg:'ccLateHg', third:'ccLateThird', take:'ccLateTake',
+const CC_LATE_NAME={hg:'ccLateHg', mid:'ccLateMid', third:'ccLateThird', take:'ccLateTake',
                     edge:'ccLateEdge', refresh:'ccLateRefresh', lg:'ccLateLg'};
 // Картинка каждого хода концовки — ключ в CC_CHOICE_ICON.
-const CC_LATE_ICON={hg:'tower', third:'fight', take:'contest', edge:'storm', refresh:'chest', lg:'stay'};
-const CC_LATE_NOTE={hg:'ccLateHgNote', third:'ccLateThirdNote', take:'ccLateTakeNote',
+const CC_LATE_ICON={hg:'tower', mid:'stairs', third:'fight', take:'contest', edge:'storm', refresh:'chest', lg:'stay'};
+const CC_LATE_NOTE={hg:'ccLateHgNote', mid:'ccLateMidNote', third:'ccLateThirdNote', take:'ccLateTakeNote',
                     edge:'ccLateEdgeNote', refresh:'ccLateRefreshNote', lg:'ccLateLgNote'};
 const CC_LATE_WON ={hg:'ccLateHgWon', third:'ccLateThirdWon', take:'ccLateTakeWon',
                     edge:'ccLateEdgeWon', refresh:'ccLateRefreshWon'};
@@ -50713,7 +50921,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4689ca71';
+const CC_BUILD='95fdf35e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
