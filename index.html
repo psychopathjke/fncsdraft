@@ -226,7 +226,7 @@
      в игре. Никаких анимаций: у него reduced motion, и полоса обязана
      читаться неподвижной. */
   .hero{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.95fr);
-    min-height:290px;margin:0 0 4px;overflow:hidden;isolation:isolate;
+    min-height:320px;margin:0 0 10px;overflow:hidden;isolation:isolate;
     background:linear-gradient(112deg,#06222a 0%,#0a3a3a 52%,#0d3542 100%);
     box-shadow:inset 0 0 0 1px rgba(126,240,221,.28);
     clip-path:polygon(0 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%);}
@@ -248,7 +248,16 @@
     text-shadow:0 3px 0 rgba(0,0,0,.35),0 0 24px rgba(0,0,0,.25);max-width:19ch;}
   .hero-title em{font-style:normal;color:#7ef0dd;}
   .hero-sub{margin:0;max-width:52ch;color:#c9dfe0;font-size:14px;line-height:1.55;}
-  .hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+  .hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;}
+  /* Плашки карьеры с меткой NEW — между описанием и дверями (были в полосе). */
+  .hero-chips{align-items:center;margin-top:-2px;}
+  .hero-chips .cstrip-tag{margin-right:2px;}
+  .hero-chips .cstrip-chip{border-color:rgba(126,240,221,.32);background:rgba(126,240,221,.08);color:#dff6f1;}
+  /* Строка «с другом»: три командные двери мельче главных, одной строкой. */
+  .hero-team{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;}
+  .hero-team[hidden]{display:none;}
+  .hero-team-lbl{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#9fc9c4;margin-right:2px;}
+  .hero-team .cstrip-btn{font-size:12.5px;padding:9px 14px 8px;}
   /* Кнопки — параллелограммы: сама кнопка наклонена, текст внутри выпрямлен,
      чтобы рамка второй кнопки шла по скосу, а не по прямоугольнику. */
   .hero-btn{font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:.06em;
@@ -282,27 +291,15 @@
   /* «Есть код от напарника? Войти по коду» — строка-ссылка под кнопками. */
   .hero-code{margin:-2px 0 0;font-size:13px;}
   .hero-code[hidden]{display:none;}
-  /* ---- Полоса карьеры под героем (см. .cstrip в разметке) ----------------
-     Тот же крой, что у героя: панель во всю ширину, арт справа, текст слева.
-     Ниже героя и выше годов — первое, что видно после заголовка. */
-  .cstrip{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.5fr);
-    min-height:168px;margin:10px 0 4px;overflow:hidden;isolation:isolate;
-    background:linear-gradient(112deg,#0b1a3a 0%,#123055 55%,#0e2747 100%);
-    box-shadow:inset 0 0 0 1px rgba(255,221,0,.28);}
-  .cstrip-body{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;
-    gap:8px;padding:18px 10px 18px 32px;}
-  .cstrip-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  /* ---- Метка NEW, плашки и круглые кнопки — крой, оставшийся от полосы
+     карьеры (.cstrip, 4–7 сентября). Сама полоса влилась в героя; крой
+     живёт в его плашках, строке «с другом» и в финале сезона (ccGala). */
   .cstrip-tag{font-family:var(--font-display);font-weight:700;font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;color:#0b0f12;background:#ffdd00;padding:3px 8px;border-radius:999px;}
-  .cstrip-title{margin:0;font-family:var(--font-display);font-weight:600;font-style:italic;
-    font-size:26px;letter-spacing:.02em;text-transform:uppercase;color:#fff;line-height:1;}
-  .cstrip-sub{margin:0;max-width:640px;font-size:13px;line-height:1.5;color:var(--ink-dim);}
-  /* Плашки «из чего состоит карьера» — того же кроя, что чипы на плитках. */
   .cstrip-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
   .cstrip-chip{font-size:11px;font-weight:700;letter-spacing:.04em;color:#dfe8fb;
     background:rgba(255,255,255,.08);border:1px solid rgba(140,175,255,.28);
     border-radius:999px;padding:4px 10px;white-space:nowrap;}
-  .cstrip-cta{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
   .cstrip-btn{font-family:var(--font-display);font-weight:600;font-size:14px;letter-spacing:.06em;
     text-transform:uppercase;line-height:1;padding:11px 18px 10px;cursor:pointer;border-radius:999px;
     border:1.5px solid transparent;transition:filter .15s,background .15s,color .15s;}
@@ -313,26 +310,6 @@
   .cstrip-btn-duo:hover,.cstrip-btn-duo:focus-visible{background:rgba(126,240,221,.22);color:#fff;border-color:#fff;}
   .cstrip-btn-code{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.45);color:#fff;}
   .cstrip-btn-code:hover,.cstrip-btn-code:focus-visible{background:rgba(255,255,255,.16);border-color:#fff;}
-  /* Диагональный срез слева — тот же, что у арта героя: две панели подряд
-     должны читаться как одна вещь, а не как панель и карточка. */
-  /* Кадрируется по ширине (cover): герб на этой полосе должен быть крупным,
-     а не аккуратно вписанным — contain оставлял его маленьким и с видимым швом
-     собственного фона картинки. Крылья по краям срезаются, и это правильный
-     срез: смотрят на герб. */
-  .cstrip-art{position:relative;z-index:0;min-height:168px;background-color:#14336b;
-    background-size:cover;background-position:center 45%;background-repeat:no-repeat;
-    clip-path:polygon(16% 0,100% 0,100% 100%,0 100%);}
-  /* Вуаль только у левого края — дальше карта сезона должна быть видна: она
-     здесь не фон, а то, по чему играют весь год. */
-  .cstrip-art::after{content:'';position:absolute;inset:0;
-    background:linear-gradient(90deg,rgba(11,26,58,.98) 0%,rgba(11,26,58,.35) 38%,rgba(11,26,58,0) 100%);}
-  @media(max-width:760px){
-    .cstrip{grid-template-columns:1fr;}
-    /* На телефоне арт сверху и без среза — резать нечего. */
-    .cstrip-art{order:-1;min-height:110px;clip-path:none;}
-    .cstrip-art::after{background:linear-gradient(180deg,rgba(11,26,58,0) 40%,rgba(11,26,58,.92) 100%);}
-    .cstrip-body{padding:16px 18px 20px;}
-  }
   .hero-link{background:none;border:none;padding:0;cursor:pointer;font:inherit;color:#7ef0dd;
     text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(126,240,221,.5);}
   .hero-link:hover,.hero-link:focus-visible{color:#fff;text-decoration-color:#fff;}
@@ -5409,81 +5386,40 @@
     <!-- Герой-полоса: ключевой арт сезона, одна строка капсом, описание сайта
          (бывший tagline из шапки) и две двери — жёлтая в карьеру, контурная
          к карточкам ниже. См. .hero в стилях. -->
+    <!-- Герой — одна панель вместо двух. Его слово 7 сентября: «дизайн можно
+         объединить первые два прямоугольника красиво». До этого под героем
+         лежала отдельная полоса карьеры (.cstrip, с 4 сентября): метка NEW,
+         заголовок «FNCS Career», абзац, четыре плашки и три командные двери
+         — и на первом экране стояли два одинаковых по крою прямоугольника с
+         двумя артами одного сезона. Теперь в герое: заголовок, описание,
+         метка NEW с плашками «из чего состоит карьера», две главные двери
+         (карьера и драфт) и строкой ниже — командные двери «с другом»
+         (вдвоём, гонка, по коду; ходят за флагом CC_MP_OPEN в setLang).
+         Id кнопок cstripDuo/cstripRace/cstripCode сохранены: на них смотрят
+         check-mp-doors и setLang. Арт — ключевой арт Major 1, один. -->
     <section class="hero" aria-labelledby="heroTitle">
       <div class="hero-body">
         <h1 class="hero-title" id="heroTitle" data-i18n="heroTitle"></h1>
         <p class="hero-sub" id="tagline" data-i18n="tagline"></p>
-        <div class="hero-cta">
-          <button class="hero-btn hero-btn-go" type="button" onclick="careerStart()"><span data-i18n="heroCareer"></span></button>
-          <!-- Дверь «вдвоём» и строка «войти по коду» стояли здесь с 30 августа
-               и повторялись в полосе карьеры ниже. Его скрин 5 сентября: «не
-               нравится дизайн, будто одно и то же два раза». Теперь у героя две
-               двери — карьера и драфт, ровно как в заголовке; командные двери
-               (вдвоём, гонка, код) живут одним рядом в полосе карьеры. -->
-          <button class="hero-btn hero-btn-alt" type="button" onclick="document.getElementById('modeYears').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})"><span data-i18n="heroDraft"></span></button>
-        </div>
-        <!-- Строки «войти по коду» под кнопками больше нет — она в полосе карьеры. -->
-      </div>
-      <div class="hero-art" style="background-image:url(art/fncs-2026-major1.jpg)" role="img" aria-label="FNCS 2026 Major 1"></div>
-    </section>
-    <!-- КАРЬЕРА ОТДЕЛЬНЫМ ПРЯМОУГОЛЬНИКОМ — его правка 4 сентября: «не видно
-         кнопок карьеры сразу, не бросается в глаза, мб подвинуть выше куда-то»
-         и следом «может на главном прямоугольник добавить».
-
-         Двери карьеры были разбросаны: одиночная и «вдвоём» — кнопками в
-         герое, гонка и вход по коду — в подвале карточки карьеры, ниже
-         описания, то есть за пределами первого экрана ноутбука. Здесь они все
-         четыре, в одной полосе сразу под героем: широкий прямоугольник с
-         картой сезона справа, названием слева и кнопками в строку.
-
-         Три двери из четырёх открываются флагом CC_MP_OPEN (см. setLang) —
-         тем же, что и остальные командные. Карта — арт того же сезона, что и
-         на карточке карьеры, чтобы полоса читалась как её продолжение. -->
-    <section class="cstrip" aria-labelledby="cstripTitle">
-      <div class="cstrip-body">
-        <div class="cstrip-head">
-          <!-- ЗНАКА КАРЬЕРЫ ЗДЕСЬ БОЛЬШЕ НЕТ. Он был нарисован 4 сентября по
-               его просьбе («новый логотип в карьере сделай») — щит с лестницей
-               дивизионов, — и в тот же вечер обведён красным на его скрине
-               рядом со словами «что убрать и изменить… в стиле фнкс 2026».
-               Придуманный герб спорил с настоящим: справа на этой же полосе
-               стоит хромированный знак FNCS 2026, и два герба в одной строке
-               читаются как чужие друг другу. Осталась метка NEW и заголовок. -->
+        <div class="cstrip-chips hero-chips">
           <span class="cstrip-tag" data-i18n="modeNewBadge"></span>
-          <h2 class="cstrip-title" id="cstripTitle" data-i18n="modeCareerTitle"></h2>
-        </div>
-        <p class="cstrip-sub" data-i18n="cstripSub"></p>
-        <!-- Из чего состоит карьера — четырьмя плашками, а не абзацем. Его
-             правка 4 сентября: «может ещё как-то лучше карьеру оформить».
-             Читается за секунду и говорит то, ради чего в неё идут: лестница,
-             большие турниры, круг Reload и жизнь вокруг игры. -->
-        <div class="cstrip-chips">
           <span class="cstrip-chip" data-i18n="cstripChipDivs"></span>
           <span class="cstrip-chip" data-i18n="cstripChipMajors"></span>
           <span class="cstrip-chip" data-i18n="cstripChipReload"></span>
           <span class="cstrip-chip" data-i18n="cstripChipLife"></span>
         </div>
-        <!-- Одиночной двери здесь больше нет: она в герое над полосой, и его
-             скрин 5 сентября («будто одно и то же два раза») был про этот
-             повтор. В полосе остались три командные двери. -->
-        <div class="cstrip-cta">
+        <div class="hero-cta">
+          <button class="hero-btn hero-btn-go" type="button" onclick="careerStart()"><span data-i18n="heroCareer"></span></button>
+          <button class="hero-btn hero-btn-alt" type="button" onclick="document.getElementById('modeYears').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})"><span data-i18n="heroDraft"></span></button>
+        </div>
+        <div class="hero-team" id="heroTeam" hidden>
+          <span class="hero-team-lbl" data-i18n="heroTeamLbl"></span>
           <button class="cstrip-btn cstrip-btn-duo" id="cstripDuo" type="button" hidden onclick="careerMpNew()" data-i18n="heroDuo"></button>
           <button class="cstrip-btn cstrip-btn-duo" id="cstripRace" type="button" hidden onclick="careerRaceNew()" data-i18n="ccRaceMake"></button>
           <button class="cstrip-btn cstrip-btn-code" id="cstripCode" type="button" hidden onclick="careerMpJoinNew()" data-i18n="ccMpEnter"></button>
         </div>
       </div>
-      <!-- Не карта, а ключевой арт сезона — его слово 4 сентября: «мне
-           аватарка карты не нравится». Карта острова на этом размере читалась
-           тёмным пятном с мелкими подписями.
-
-           И НЕ ЗОЛОТОЙ ГЕРБ: его скрин с двумя красными рамками (4 сентября,
-           «что убрать и изменить… в стиле фнкс 2026») обводил как раз его.
-           art/mode-all-fncs.jpg — общий знак FNCS всех лет; сезон 2026 выглядит
-           иначе, и его собственный ключевой арт лежит рядом: белый скол,
-           хромированный герб, бирюзовая сетка. Это тот же файл, который
-           карьера носит на кубковых вечерах (CAREER_EV_ART.cup), то есть
-           панель одета в то же, что и сам режим. -->
-      <div class="cstrip-art" style="background-image:url(art/fncs-2026.jpg)" role="img" aria-label="FNCS 2026"></div>
+      <div class="hero-art" style="background-image:url(art/fncs-2026-major1.jpg)" role="img" aria-label="FNCS 2026 Major 1"></div>
     </section>
     <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Его
          скрин, 30 августа (красная рамка вокруг всех рядов): «с этими
@@ -6313,7 +6249,7 @@ resetConfirmNo:'Отмена',
 tagline:'Задрафть сквад из реальных игроков FNCS и разыграй турнир. Или начни карьеру: сезон за сезоном по настоящему календарю, дивизионы, Мейджоры, Reload, ЛАНы. Один или вдвоём с другом.',
 heroTitle:'Задрафть настоящих про. <em>Разыграй сезон.</em>',
 heroCareer:'Начать карьеру',
-heroDuo:'Вдвоём',
+heroTeamLbl:'С другом:', heroDuo:'Вдвоём',
 navCareer:'Карьера', navDraft:'Драфт', navHistory:'История',
 ccActGrpTrain:'Тренировки', ccActGrpTeam:'Команда', ccActGrpLife:'Стрим и отдых',
 heroCode:'Есть код от напарника? Войти по коду',
@@ -8301,7 +8237,7 @@ major3GcSlotNote:n=>'The top '+n+' of this region fly to the Global Championship
 tagline:'Draft a squad of real FNCS players and run the tournament. Or start a career: season after season on the real calendar, divisions, Majors, Reload and LANs. Solo or with a friend.',
 heroTitle:'Draft real pros. <em>Play the season.</em>',
 heroCareer:'Start a career',
-heroDuo:'Play as a duo',
+heroTeamLbl:'With a friend:', heroDuo:'Play as a duo',
 navCareer:'Career', navDraft:'Draft', navHistory:'History',
 ccActGrpTrain:'Training', ccActGrpTeam:'Team', ccActGrpLife:'Stream and rest',
 heroCode:'Got a code from your partner? Join by code',
@@ -12176,7 +12112,7 @@ supportBtn:'Soutenir',
 tagline:'Compose une équipe de vrais joueurs FNCS et lance le tournoi. Ou commence une carrière : saison après saison sur le vrai calendrier, divisions, Majors, Reload et LAN. Seul ou avec un ami.',
 heroTitle:'Drafte de vrais pros. <em>Joue la saison.</em>',
 heroCareer:'Lancer une carrière',
-heroDuo:'Jouer à deux',
+heroTeamLbl:'Avec un ami :', cstripChipDivs:'Divisions 5 → 1', cstripChipMajors:'Majors et LAN', cstripChipReload:'Le circuit Reload', cstripChipLife:'Clubs, argent, forme', heroDuo:'Jouer à deux',
 navCareer:'Carrière', navDraft:'Draft', navHistory:'Historique',
 ccActGrpTrain:'Entraînement', ccActGrpTeam:'Équipe', ccActGrpLife:'Stream et repos',
 heroCode:'Tu as un code de ton coéquipier ? Rejoindre par code',
@@ -12527,7 +12463,7 @@ supportBtn:"Sostieni",
 tagline:"Crea una squadra di veri giocatori FNCS e gioca il torneo. Oppure inizia una carriera: stagione dopo stagione sul calendario reale, divisioni, Major, Reload e LAN. Da solo o con un amico.",
 heroTitle:"Scegli veri pro. <em>Gioca la stagione.</em>",
 heroCareer:"Inizia la carriera",
-heroDuo:"In due",
+heroTeamLbl:"Con un amico:", cstripChipDivs:"Divisioni 5 → 1", cstripChipMajors:"Major e LAN", cstripChipReload:"Il circuito Reload", cstripChipLife:"Club, soldi, forma", heroDuo:"In due",
 navCareer:"Carriera", navDraft:"Draft", navHistory:"Storico",
 ccActGrpTrain:"Allenamento", ccActGrpTeam:"Squadra", ccActGrpLife:"Stream e riposo",
 heroCode:"Hai un codice dal compagno? Entra con il codice",
@@ -15017,7 +14953,7 @@ supportBtn:"Apoiar",
 tagline:"Monte um time de jogadores reais da FNCS e rode o torneio. Ou comece uma carreira: temporada após temporada no calendário real, divisões, Majors, Reload e LANs. Sozinho ou com um amigo.",
 heroTitle:"Convoque os pros. <em>Jogue a temporada.</em>",
 heroCareer:"Começar carreira",
-heroDuo:"Em dupla",
+heroTeamLbl:"Com um amigo:", cstripChipDivs:"Divisões 5 → 1", cstripChipMajors:"Majors e LANs", cstripChipReload:"O circuito Reload", cstripChipLife:"Clubes, dinheiro, forma", heroDuo:"Em dupla",
 navCareer:"Carreira", navDraft:"Draft", navHistory:"Histórico",
 ccActGrpTrain:"Treino", ccActGrpTeam:"Time", ccActGrpLife:"Stream e descanso",
 heroCode:"Tem um código do parceiro? Entrar com código",
@@ -17647,7 +17583,7 @@ function setLang(lang, persist){
                /* Дверей «вдвоём» и «по коду» в герое больше нет (5 сентября,
                   «будто одно и то же два раза») — командные двери только в
                   полосе карьеры под героем (см. .cstrip), этим флагом. */
-               ['cstripDuo','cstripRace','cstripCode'].forEach(function(id){
+               ['heroTeam','cstripDuo','cstripRace','cstripCode'].forEach(function(id){
                  const b=document.getElementById(id);
                  if(b) b.hidden=!CC_MP_OPEN;
                }); })();
@@ -57487,7 +57423,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='2573e8b2';
+const CC_BUILD='59c28642';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого

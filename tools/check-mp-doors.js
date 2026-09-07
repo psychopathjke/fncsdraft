@@ -80,14 +80,18 @@ const BOOT = `
   try {
     localStorage.clear();
     // ---- 1. кнопки есть, видны и подписаны -------------------------------
-    const strip0 = document.querySelector('.cstrip');
+    /* 7 сентября полоса карьеры влилась в героя («объединить первые два
+       прямоугольника»): командные двери — строкой «с другом» (#heroTeam) под
+       главными дверями героя. Дальше «полоса» = эта строка. */
+    const strip0 = document.getElementById('heroTeam');
     /* Меряем ВИДИМОСТЬ, а не атрибут. hidden=true при .mode-mp{display:flex}
        не прячет ничего: браузерное [hidden]{display:none} слабее класса. Так
        27 августа 2026 кнопки уехали на прод «убранными», проверка была зелёной,
        а он написал «он есть до сих пор». Лечится правилом [hidden] в стилях,
        стережётся этой строкой. */
     const shown = e => !!(e && e.offsetParent !== null);
-    check('полоса карьеры есть на главной', !!strip0);
+    check('строка «с другом» есть в герое', !!strip0);
+    check('и она ходит за флагом вместе с кнопками', strip0 && shown(strip0) === CC_MP_OPEN);
     check('и командные двери в ней ходят за флагом',
           !!el('cstripDuo') && shown(el('cstripDuo')) === CC_MP_OPEN,
           'hidden=' + (el('cstripDuo') && el('cstripDuo').hidden) + ', видна=' +
