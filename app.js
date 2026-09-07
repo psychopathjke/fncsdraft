@@ -35097,6 +35097,8 @@ const WEAPON_ICON={
   fish:"<svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"currentColor\" style=\"display:inline-block;vertical-align:-0.15em;\"><path d=\"M3 12c3-5 9-6 13-3l4-3-1 5 2 2-4 1c-4 3-11 2-14-2z\"/><circle cx=\"14\" cy=\"10\" r=\"1.2\" fill=\"#0b1520\"/></svg>",
   drink:"<svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"currentColor\" style=\"display:inline-block;vertical-align:-0.15em;\"><path d=\"M6 4h12l-1 4H7z\"/><path d=\"M7 9h10l-1.5 11h-7z\"/></svg>"
 };
+// Снайперки в силуэте рисуются винтовкой: класс sniper нужен таблице сундуков, своей картинки у него нет.
+WEAPON_ICON.sniper=WEAPON_ICON.rifle;
 const CONSUMABLE_MOD={grey:1, green:2, blue:3, purple:4, legendary:5, gold:6};
 const CONSUMABLE_POOL=[
   {name:'Green Bandage Kit', rarity:'green', icon:'heal'},
@@ -35135,7 +35137,7 @@ const M2_WEAPON_NAMES=[
   ["Ranger Pistol",'pistol','common','legendary'],
   ["Lancehead Pistol",'pistol','rare','legendary'],
   ["Bank Shot Pistol",'pistol','rare','mythic'],
-  ["Heavy Impact Sniper Rifle",'rifle','rare','legendary']
+  ["Heavy Impact Sniper Rifle",'sniper','rare','legendary']
 ];
 const RARITY_LADDER=['common','uncommon','rare','epic','legendary','mythic'];
 // Expands [name, icon, lowest, highest] rows into one entry per rarity step.
@@ -35385,21 +35387,24 @@ const ITEM_ART={
 // Major 1 loot, straight off the published pool sheet. The weapons there are
 // shown on a rainbow tile because each one drops in every rarity, so each is
 // expanded into the full common->mythic ladder rather than a handful of tiers.
+// [name, class] — class is what the chest table (CC_CHEST_CLASS) and the
+// "two guns of different classes" pack rule read. It used to be 'rifle' for
+// every gun here, so on the 2026 island a pack could hold two shotguns.
 const M1_WEAPON_NAMES=[
-  "Combat Assault Rifle",
-  "Nemesis AR",
-  "Chaos Reloader Shotgun",
-  "Iron Pump Shotgun",
-  "Twin Hammer Shotguns",
-  "Thunder Burst SMG",
-  "Twin Mag SMG",
-  "Pistol",
-  "Vector 7 DMR"
+  ["Combat Assault Rifle",'rifle'],
+  ["Nemesis AR",'rifle'],
+  ["Chaos Reloader Shotgun",'shotgun'],
+  ["Iron Pump Shotgun",'shotgun'],
+  ["Twin Hammer Shotguns",'shotgun'],
+  ["Thunder Burst SMG",'smg'],
+  ["Twin Mag SMG",'smg'],
+  ["Pistol",'pistol'],
+  ["Vector 7 DMR",'sniper']
 ];
 const M1_WEAPON_POOL=[];
-M1_WEAPON_NAMES.forEach(name=>{
+M1_WEAPON_NAMES.forEach(([name, icon])=>{
   ['common','uncommon','rare','epic','legendary','mythic'].forEach(rarity=>{
-    M1_WEAPON_POOL.push({name, rarity, icon:'rifle', mod:RARITY_MOD[rarity]});
+    M1_WEAPON_POOL.push({name, rarity, icon, mod:RARITY_MOD[rarity]});
   });
 });
 // ---------- FNCS 2025 loot: Chapter 6 Season 1, Demon Hunters ----------
@@ -46868,6 +46873,27 @@ function ccDeathCard(map, info){
    реального POI, не замер. Класс ствола — поле icon пула (rifle/shotgun/…). */
 const CC_CHEST_RARITY={common:0, uncommon:0.57, rare:0.31, epic:0.09, legendary:0.03};
 const CC_CHESTS_POI=8, CC_CHESTS_LEAVE=4, CC_CHEST_CONSUMABLE=0.6;
+/* Класс ствола из сундука — таблица Hypex по Chapter 2 Season 5 (Sportskeeda,
+   «data miner reveals how chest loot pool works»): AR 43 %, дробовик 22 %,
+   ПП 14 %, пистолет 11 %, снайперка 10 %. Единственная опубликованная таблица
+   классов; для Ch7 Epic её не даёт. Классов, которых в пуле сезона нет,
+   в броске не бывает — веса перенормируются на те, что есть. Раньше класс
+   выпадал равновероятно по списку имён пула: пистолетов было 25 %, снайперка
+   шла винтовкой. */
+const CC_CHEST_CLASS={rifle:0.43, shotgun:0.22, smg:0.14, pistol:0.11, sniper:0.10};
+// Что из пула расходников не хилка и не мувмент — ключи, удочки, сигналка, золотая
+// рыба. В слот хилки из сундука не идёт (его слово 7.09: «epic карт не надо»).
+const CC_CHEST_NOT_HEAL=['Epic Vault Keycard','Vault Key','Fishing Rod','Flare Gun','Bass Boost','Mythic Goldfish'];
+const ccIsHealItem=x=>x && CC_MOVE_ITEMS.indexOf(x.name)<0 && CC_CHEST_NOT_HEAL.indexOf(x.name)<0;
+function ccChestClass(rng, weapons){
+  const have={}; weapons.forEach(w=>{ have[w.icon]=1; });
+  const keys=Object.keys(CC_CHEST_CLASS).filter(k=>have[k]);
+  if(!keys.length) return null;
+  const tot=keys.reduce((a,k)=>a+CC_CHEST_CLASS[k], 0);
+  let r=rng()*tot;
+  for(const k of keys){ r-=CC_CHEST_CLASS[k]; if(r<0) return k; }
+  return keys[keys.length-1];
+}
 // Преимущество первого сундука в стычке на высадке — его числа «+1 +3 +7», в
 // процентных пунктах к шансу (CC_SITE_EDGE_PP за очко).
 const CC_LOOT_EDGE={common:0, uncommon:1, rare:3, epic:7, legendary:7, mythic:7};
@@ -46877,16 +46903,21 @@ function ccChestRarity(rng){
   for(const k of RARITY_LADDER){ acc+=CC_CHEST_RARITY[k]||0; if(r<acc) return k; }
   return 'uncommon';
 }
-// Один сундук: ствол своей редкости (если такой редкости у пула нет — ближайшая
-// ниже) и, с шансом CC_CHEST_CONSUMABLE, расходник.
+// Один сундук: сначала класс (CC_CHEST_CLASS), потом редкость (CC_CHEST_RARITY);
+// ствол этого класса этой редкости, если такой редкости у класса нет — ближайшая
+// ниже, если класс пуст совсем — любой ствол пула. С шансом CC_CHEST_CONSUMABLE —
+// расходник.
 function ccChestRoll(rng, set){
   const pool=CC_LOOT_BY_SET[ccLootSet(set)];
+  const cls=ccChestClass(rng, pool.weapons);
+  const inCls=cls ? pool.weapons.filter(w=>w.icon===cls) : pool.weapons;
   const rar=ccChestRarity(rng);
-  let cands=pool.weapons.filter(w=>w.rarity===rar);
-  for(let i=RARITY_LADDER.indexOf(rar)-1; !cands.length && i>=0; i--) cands=pool.weapons.filter(w=>w.rarity===RARITY_LADDER[i]);
-  if(!cands.length) cands=pool.weapons;
+  let cands=inCls.filter(w=>w.rarity===rar);
+  for(let i=RARITY_LADDER.indexOf(rar)-1; !cands.length && i>=0; i--) cands=inCls.filter(w=>w.rarity===RARITY_LADDER[i]);
+  if(!cands.length) cands=inCls.length ? inCls : pool.weapons;
   const weapon=cands[Math.floor(rng()*cands.length)];
-  const cons = rng()<CC_CHEST_CONSUMABLE ? pool.heals[Math.floor(rng()*pool.heals.length)] : null;
+  const hs=pool.heals.filter(x=>ccIsHealItem(x) || CC_MOVE_ITEMS.indexOf(x.name)>=0);
+  const cons = rng()<CC_CHEST_CONSUMABLE ? hs[Math.floor(rng()*hs.length)] : null;
   return {weapon, cons};
 }
 // Пак по правилу «два ствола разных классов, две хилки, мувмент» — из того, что выпало.
@@ -47448,7 +47479,7 @@ function ccLootPack(rng, set){
     return out;
   };
   const pool=CC_LOOT_BY_SET[ccLootSet(set)];
-  const heals=pool.heals.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)<0);
+  const heals=pool.heals.filter(ccIsHealItem);
   const moves=pool.heals.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0);
   return {weapons:pick(pool.weapons, 2), heals:pick(heals, 2),
           move:pick(moves.length?moves:heals, 1)[0]};
@@ -51147,7 +51178,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b516c376';
+const CC_BUILD='b04d55b0';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
