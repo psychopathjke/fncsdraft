@@ -124,7 +124,11 @@ const BOOT = `
     /* Ступени по замеру Tracker (см. CC_MATS_BANDS): полная треть — ноль,
        средняя дешевле нижней, нижняя — CC_MATS_PEN; «мало» и есть нижняя. */
     const mid={_mats:Math.round(CC_MATS_FULL/2)};
-    if(ccMatsEndPow(full)!==0) fail('полные ресы стоят силы: '+ccMatsEndPow(full));
+    /* 7.09, его слово «чем больше ресов, тем больше силы, но лимиты 500 500 500»:
+       полный запас (от 90% капа) — плюс, верхняя треть ниже полного — ноль. */
+    if(!(ccMatsEndPow(full)>0)) fail('полный запас не даёт силы: '+ccMatsEndPow(full));
+    if(ccMatsEndPow({_mats:Math.round(CC_MATS_FULL*0.7)})!==0) fail('верхняя треть стоит силы: '+ccMatsEndPow({_mats:Math.round(CC_MATS_FULL*0.7)}));
+    if(CC_MATS_FULL!==3*CC_MATS_CAP_EACH) fail('полный запас — не три стопки по капу: '+CC_MATS_FULL);
     if(!(ccMatsEndPow(mid)<0 && ccMatsEndPow(mid)>-CC_MATS_PEN))
       fail('средняя ступень не между нулём и −'+CC_MATS_PEN+': '+ccMatsEndPow(mid));
     if(ccMatsEndPow(empty)!==-CC_MATS_PEN) fail('пустые ресы стоят не −'+CC_MATS_PEN+': '+ccMatsEndPow(empty));

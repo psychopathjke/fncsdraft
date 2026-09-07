@@ -61,9 +61,14 @@ const BOOT = `
           [...map.querySelectorAll('.zk-row b')].map(b=>b.textContent).join('/'));
     ccKitPanel(lobby, {zone:1, players:100, surgeAt:0, secondsLeft:125, dots:[dot(), dot({h:80, e:3}), dot()]});
     check('кадр без щита — щит полный', q('.zk-vitals').dataset.shield==='100', q('.zk-vitals').dataset.shield);
-    check('ресы на первой зоне — полные минус один круг', q('.zk-mats') && q('.zk-mats').dataset.total==='440', (q('.zk-mats')||{}).outerHTML);
+    // Ресы кадра досчитываются назад от остановки: 220 на третьей зоне плюс два круга (шкала 1500, круг CC_MATS_ZONE).
+    const z1mats=220+CC_MATS_ZONE*2;
+    check('ресы на первой зоне — остаток плюс два круга назад', q('.zk-mats') && q('.zk-mats').dataset.total===String(z1mats), (q('.zk-mats')||{}).outerHTML);
     const stacks=[...map.querySelectorAll('.zk-mats b')].map(s=>+s.textContent);
-    check('три стопки в сумме дают ресы', stacks.length===3 && stacks.reduce((a,b)=>a+b,0)===440, stacks.join('+'));
+    check('три стопки в сумме дают ресы', stacks.length===3 && stacks.reduce((a,b)=>a+b,0)===z1mats, stacks.join('+'));
+    // Кап стопки — 500: полный запас 1500 ложится ровно 500/500/500, а 1800 не рисуется выше капа.
+    check('полный запас — три стопки по капу', ccKitSplitMats(CC_MATS_FULL).join('/')==='500/500/500', ccKitSplitMats(CC_MATS_FULL).join('/'));
+    check('стопка не выше капа', Math.max(...ccKitSplitMats(1800))<=CC_MATS_CAP_EACH, ccKitSplitMats(1800).join('/'));
     check('лут до третьей зоны — пять пустых слотов', map.querySelectorAll('.zk-slot.empty').length===5 &&
           (q('.zk-hotbar').title||'')===T.ccKitLootNone, String(map.querySelectorAll('.zk-slot.empty').length));
     // Пока сёрдж никого не бьёт — на экране про него ничего, как в игре.
