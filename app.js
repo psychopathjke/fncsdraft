@@ -45873,6 +45873,8 @@ function ccRarityKey(r){
   return ({purple:'epic', blue:'rare', green:'uncommon', grey:'common', gray:'common',
            orange:'legendary', gold:'mythic'})[s] || s.replace(/[^a-z]/g,'');
 }
+// Кирка на HUD — картинка, а не силуэт: The Axe of Champions 2.0 (его модель из Notion, 7.09).
+const CC_PICKAXE_ART='items/item-axe-of-champions.png';
 // Иконки ресов — как в игре: брёвна, кирпичи, слиток.
 const CC_KIT_ICON={
   wood:'<svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="6" rx="3" fill="#c8894a"/><rect x="2" y="13" width="20" height="6" rx="3" fill="#a86a33"/><circle cx="5" cy="8" r="2" fill="#e9b77d"/><circle cx="19" cy="16" r="2" fill="#e9b77d"/></svg>',
@@ -45935,7 +45937,10 @@ function ccKitPanel(lobby, frame){
   // всплывающей подсказке; без картинки — имя текстом.
   const art=o=>{ let h=''; try{ h=(typeof weaponIconHTML==='function' && weaponIconHTML(o, ccLootSet()))||''; }catch(e){ h=''; }
     return h ? '<span class="zk-art">'+h+'</span>' : '<em>'+esc(o.name)+'</em>'; };
-  const slots='<span class="zk-slot zk-pick" data-cap="'+esc(T.ccKitPickaxe)+'" title="'+esc(T.ccKitPickaxe)+'"><span class="zk-art zk-pickaxe"></span><u>1</u></span>'+
+  /* Кирка — The Axe of Champions 2.0, награда чемпиона FNCS (его картинка в Notion,
+     7 сентября: «модельку кирки»). Редкость rare — слот синий, как в игре;
+     файл items/item-axe-of-champions.png вырезан со скрина, фон в прозрачность. */
+  const slots='<span class="zk-slot zk-pick r-rare" data-cap="'+esc(T.ccKitPickaxe)+'" title="'+esc(T.ccKitPickaxe)+' · The Axe of Champions 2.0"><span class="zk-art zk-pickaxe"><img alt="" src="'+CC_PICKAXE_ART+'" onerror="this.remove()"></span><u>1</u></span>'+
     [0,1,2,3,4].map(k=>{
       const o=pack[k];
       const r=o && o.rarity ? ' r-'+ccRarityKey(o.rarity) : '';
@@ -51117,7 +51122,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='145aed01';
+const CC_BUILD='e4696e19';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
