@@ -968,6 +968,8 @@ ccDropContest:'Законтестить', ccDropContestNote:'Откроем ос
 ccDropMap:'Выбрать на карте', ccDropMapNote:'Открыть остров и поставить метку руками',
 ccLootTitle:'Середина игры — что подобрал',
 ccLootHint:'Вторая зона закрылась. Точка обыскана: два ствола, две хилки и мувмент. Напарник разбирает свою половину сам',
+ccSiteOwnTitle:'Точка своя — открываем сундуки', ccSiteOwnHint:n=>n+' сундуков: два ствола разных классов, две хилки, мувмент — что выпало, то и берём',
+ccSiteTake:'Забрать и идти', ccSitePackPow:v=>v>0 ? '+'+v+' к силе за редкость' : v<0 ? v+' к силе: пустые слоты' : 'сила без прибавки',
 ccSiteTitle:n=>'На точке чужие: '+n, ccSiteHint:(a,b)=>'Твой первый сундук: '+a+' · у них: '+b,
 ccSiteLeave:'Уйти на соседнюю точку', ccSiteLeaveNote:(n,m)=>'Без стычки: '+n+' сундука вместо '+m+' — лут беднее, сила ниже',
 ccSiteFight:'Файтить за точку', ccSiteFightNote:(p,n,a,b)=>p+'%: точка наша — все '+n+' сундуков и элим · иначе вылет на высадке'+((a||b)?' · первый сундук: +'+a+' против +'+b:''),
@@ -2903,6 +2905,8 @@ ccDropContest:'Contest', ccDropContestNote:'Opens the whole island: see who sits
 ccDropMap:'Pick on the map', ccDropMapNote:'Open the island and place the marker yourself',
 ccLootTitle:'Mid game — what you picked up',
 ccLootHint:'The second circle has closed. The spot is looted: two guns, two heals and a mobility item. Your partner sorts their own half out',
+ccSiteOwnTitle:'Our spot — opening the chests', ccSiteOwnHint:n=>n+' chests: two guns of different classes, two heals, a movement item — what drops is what we carry',
+ccSiteTake:'Grab it and go', ccSitePackPow:v=>v>0 ? '+'+v+' power for the rarity' : v<0 ? v+' power: empty slots' : 'no power bonus',
 ccSiteTitle:n=>'Someone landed with us: '+n, ccSiteHint:(a,b)=>'Your first chest: '+a+' · theirs: '+b,
 ccSiteLeave:'Leave for the next POI', ccSiteLeaveNote:(n,m)=>'No fight: '+n+' chests instead of '+m+' — poorer loot, less power',
 ccSiteFight:'Fight for the spot', ccSiteFightNote:(p,n,a,b)=>p+'%: the spot is ours — all '+n+' chests and the elim · otherwise we die off spawn'+((a||b)?' · first chest: +'+a+' vs +'+b:''),
@@ -4979,6 +4983,8 @@ ccDropContest:'Contester', ccDropContestNote:'Ouvre toute l’île : tu vois qui
 ccDropMap:'Choisir sur la carte', ccDropMapNote:'Ouvrir l’île et poser la marque à la main',
 ccLootTitle:'Milieu de partie — ce que tu as ramassé',
 ccLootHint:'La deuxième zone est fermée. Le spot est fouillé : deux armes, deux soins et un objet de mobilité. Ton coéquipier gère sa moitié',
+ccSiteOwnTitle:'Notre spot — on ouvre les coffres', ccSiteOwnHint:n=>n+' coffres : deux armes de classes différentes, deux soins, un objet de mobilité — ce qui tombe, on le garde',
+ccSiteTake:'On prend et on y va', ccSitePackPow:v=>v>0 ? '+'+v+' power pour la rareté' : v<0 ? v+' power : slots vides' : 'pas de bonus de power',
 ccSiteTitle:n=>'Quelqu’un atterrit avec nous : '+n, ccSiteHint:(a,b)=>'Ton premier coffre : '+a+' · le leur : '+b,
 ccSiteLeave:'Partir vers le POI voisin', ccSiteLeaveNote:(n,m)=>'Sans combat : '+n+' coffres au lieu de '+m+' — loot plus pauvre, moins de power',
 ccSiteFight:'Se battre pour le spot', ccSiteFightNote:(p,n,a,b)=>p+' % : le spot est à nous — les '+n+' coffres et l’élim · sinon on meurt au spawn'+((a||b)?' · premier coffre : +'+a+' contre +'+b:''),
@@ -8245,6 +8251,8 @@ ccDropMap:"Scegli sulla mappa",
 ccDropMapNote:"Apri l'isola e metti tu il segnalino",
 ccLootTitle:"Metà partita — cosa hai raccolto",
 ccLootHint:"Il secondo cerchio si è chiuso. Il punto è lootato: due armi, due cure e un oggetto di mobilità. Il compagno si arrangia con la sua metà",
+ccSiteOwnTitle:"Spot nostro — apriamo i forzieri", ccSiteOwnHint:n=>n+" forzieri: due armi di classi diverse, due cure, un oggetto di movimento — quel che esce, quello portiamo",
+ccSiteTake:"Prendi e vai", ccSitePackPow:v=>v>0 ? "+"+v+" power per la rarità" : v<0 ? v+" power: slot vuoti" : "nessun bonus di power",
 ccSiteTitle:n=>"Qualcuno atterra con noi: "+n, ccSiteHint:(a,b)=>"Il tuo primo forziere: "+a+" · il loro: "+b,
 ccSiteLeave:"Andare al POI vicino", ccSiteLeaveNote:(n,m)=>"Senza scontro: "+n+" forzieri invece di "+m+" — loot più povero, meno power",
 ccSiteFight:"Combattere per lo spot", ccSiteFightNote:(p,n,a,b)=>p+"%: lo spot è nostro — tutti i "+n+" forzieri e l'elim · altrimenti moriamo allo spawn"+((a||b)?" · primo forziere: +"+a+" contro +"+b:""),
@@ -10733,6 +10741,8 @@ ccDropMap:"Escolher no mapa",
 ccDropMapNote:"Abra a ilha e coloque o marcador você mesmo",
 ccLootTitle:"Meio de jogo — o que você pegou",
 ccLootHint:"O segundo círculo fechou. O ponto está lootado: duas armas, duas curas e um item de mobilidade. Seu parceiro resolve a metade dele",
+ccSiteOwnTitle:"Spot nosso — abrindo os baús", ccSiteOwnHint:n=>n+" baús: duas armas de classes diferentes, duas curas, um item de mobilidade — o que cair, a gente leva",
+ccSiteTake:"Pegar e ir", ccSitePackPow:v=>v>0 ? "+"+v+" power pela raridade" : v<0 ? v+" power: slots vazios" : "sem bônus de power",
 ccSiteTitle:n=>"Alguém pousou com a gente: "+n, ccSiteHint:(a,b)=>"Seu primeiro baú: "+a+" · o deles: "+b,
 ccSiteLeave:"Ir para o POI vizinho", ccSiteLeaveNote:(n,m)=>"Sem briga: "+n+" baús em vez de "+m+" — loot mais pobre, menos power",
 ccSiteFight:"Brigar pelo spot", ccSiteFightNote:(p,n,a,b)=>p+"%: o spot é nosso — todos os "+n+" baús e o elim · senão morremos no pouso"+((a||b)?" · primeiro baú: +"+a+" contra +"+b:""),
@@ -46948,7 +46958,18 @@ async function ccAskSite(you, ui){
   const mine=ccChestPack(Math.random, set, CC_CHESTS_POI);
   const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
   if(!rivals.length){
-    you._loot=mine; ccAddGamePow(you, ccPackPow(mine));
+    /* Своя точка без чужих — сундуки открываются НА ЭКРАНЕ, а не строкой на две
+       секунды: его слово 7 сентября «нет симуляции на локации, о которой я
+       писал». Панель одна кнопка — что выпало из восьми сундуков, какой пак
+       собран и сколько он стоит; под скипом и в симуляции берётся сама. */
+    you._loot=mine; const pv=ccPackPow(mine); ccAddGamePow(you, pv);
+    const labels=[...(mine.weapons||[]), ...(mine.heals||[]), mine.move].filter(Boolean).map(ccItemLabel).join(' · ');
+    await ccMpChoose('own'+(you.mpTag||''), async function(){
+      return (await ccChoiceBox(T.ccSiteOwnTitle, T.ccSiteOwnHint(CC_CHESTS_POI), [
+        {id:'take', def:true, icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.chest), title:T.ccSiteTake,
+         note:labels+' — '+T.ccSitePackPow(pv)}
+      ], ui && ui.map)).id;
+    }, function(){ return T.ccSiteTake; });
     ccMpMark('st1');
     await say(T.ccSiteOwn(CC_CHESTS_POI, ccPackLine(mine)), null);
     return;
@@ -51122,7 +51143,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e4696e19';
+const CC_BUILD='59bb08ae';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
