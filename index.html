@@ -60036,6 +60036,7 @@ function careerEndClose(){
 function careerEndKey(e){ if(e.key==='Escape') careerEndClose(); }
 function careerEnd(){
   careerEndClose();
+  if(typeof careerNewsRotStop==='function') careerNewsRotStop();   // лента хаба не должна тикать в пустую карьеру
   ccSlotWipe(ccSlot());
   CAREER=null;
   show('screen-mode');
@@ -72154,7 +72155,12 @@ function careerNewsPick(id){ CH_NEWS_PICK=id; careerNewsShow(id); }
 const CC_NEWS_ROT_MS=6000;
 let CC_NEWS_ROT=null, CC_NEWS_IDS=[], CC_NEWS_AT=0;
 function ccNewsLeadOf(id){
-  const all=(CAREER.career.news||[]);
+  /* Карьеры может уже не быть: его скрин 7 сентября — «Cannot read properties of
+     null (reading 'career')» на этой строке. Таймер ленты (careerNewsRotStart)
+     проверял только, что элемент #nhLead на месте, а после выхода из карьеры экран
+     хаба лишь прячется, элемент остаётся — и тик шёл в CAREER=null. */
+  const cr=CAREER && CAREER.career;
+  const all=(cr && cr.news)||[];
   return all.find(n=>n.id===id) || null;
 }
 function careerNewsShow(id){
@@ -72183,6 +72189,9 @@ function careerNewsRotStart(ids){
     // Экран сменился — таймер снимает себя сам, без подписки на переходы.
     if(!document.getElementById('nhLead')){ careerNewsRotStop(); return; }
     if(CH_NEWS_PICK){ careerNewsRotStop(); return; }
+    // Карьеры нет или хаб спрятан (выход из карьеры, другая вкладка) — таймеру нечего листать.
+    const hub=document.getElementById('screen-career-hub');
+    if(!CAREER || !CAREER.career || !hub || !hub.classList.contains('active')){ careerNewsRotStop(); return; }
     CC_NEWS_AT=(CC_NEWS_AT+1)%CC_NEWS_IDS.length;
     careerNewsShow(CC_NEWS_IDS[CC_NEWS_AT]);
   }, CC_NEWS_ROT_MS);
