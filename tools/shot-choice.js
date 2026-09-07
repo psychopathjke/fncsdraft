@@ -7,7 +7,7 @@
 // только срок ожидания (CC_CHOICE_WAIT), иначе виртуальное время headless'а
 // отвечает за игрока мгновенно.
 //
-//   node tools/shot-choice.js [drop|loot|late|out ...]     по умолчанию все
+//   node tools/shot-choice.js [drop|site|loot|rot|late|out ...]     по умолчанию все
 //
 // Кладёт shot-choice-<что>.png рядом с репозиторием.
 const fs = require('fs'), os = require('os'), path = require('path');
@@ -24,7 +24,7 @@ const CHROME = [
 if (!CHROME) throw new Error('Chrome not found');
 
 const WANT = process.argv.slice(2).length ? process.argv.slice(2)
-                                          : ['drop', 'loot', 'rot', 'late', 'out'];
+                                          : ['drop', 'site', 'loot', 'rot', 'late', 'out'];
 
 const BOOT = (what) => `
 <!-- Поверх приложения, а не под ним: careerEntry рисует хаб во весь экран, и
@@ -76,6 +76,15 @@ const BOOT = (what) => `
          {id:'swap', title:L().ccLootSwap, note:listOf(other)+' — '+
             L().ccLootSwapRisk(CC_LOOT_POI_BONUS, CC_LOOT_POI_FAIL,
               Math.round(CC_LOOT_POI_ODDS*100))}], map);
+    } else if(WHAT==='site'){
+      // Чужие на точке: первый сундук свой и их, «уйти» или «файтить» — как в ccAskSite.
+      const mine=ccChestPack(Math.random, ccLootSet(), CC_CHESTS_POI), theirs=ccChestRoll(Math.random, ccLootSet());
+      const eMine=CC_LOOT_EDGE[ccRarityKey(mine.first.weapon.rarity)]||0, eFoe=CC_LOOT_EDGE[ccRarityKey(theirs.weapon.rarity)]||0;
+      const p=ccSiteOdds({_pc:96}, {_pc:88}, eMine, eFoe);
+      ccChoiceBox(L().ccSiteTitle('Malibuca & Vic0'), L().ccSiteHint(ccItemLabel(mine.first.weapon), ccItemLabel(theirs.weapon)), [
+        {id:'leave', def:true, icon:CC_CHOICE_ICON.run, title:L().ccSiteLeave, note:L().ccSiteLeaveNote(CC_CHESTS_LEAVE, CC_CHESTS_POI)},
+        {id:'fight', icon:ccItemIconHTML(mine.first.weapon, CC_CHOICE_ICON.fight), title:L().ccSiteFight,
+         note:L().ccSiteFightNote(Math.round(p*100), CC_CHESTS_POI, eMine, eFoe)}], map);
     } else if(WHAT==='rot'){
       // Ротация четвёртой зоны — те же строки и картинки, что у ccAskRot, плюс мувмент из пака.
       const mv={name:'Shockwave Grenade', rarity:'epic'};
