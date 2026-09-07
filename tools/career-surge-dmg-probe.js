@@ -31,10 +31,17 @@ Object.keys(DIVS).forEach(d => { STAGES['div' + d] = DIVS[d]; });
 if (!STAGES[STAGE]) throw new Error('нет этапа ' + STAGE + ' в real-stage-curves.json');
 const rows = STAGES[STAGE];
 const squadSize = SOLO ? 1 : 2;
-const realTicks = rows.map(r => r[2] || 0);
+// Тики есть не у каждого реплея: в дивизионных кривых у шести из десяти записей
+// дивизиона 1 третьего поля нет вовсе (снято раньше, чем тики стали считать).
+// Такие записи — не ноль, а «не измерено», и в среднее не входят; раньше
+// `r[2] || 0` считал их нулями и выдавал по D1 1.7 «жизни» вместо 4.3.
+const withTicks = rows.filter(r => r.length > 2 && r[2] != null);
+if (!withTicks.length) throw new Error('у этапа ' + STAGE + ' ни у одного реплея нет числа тиков сёрджа');
+const realTicks = withTicks.map(r => r[2]);
 const realLives = realTicks.map(t => t * 25 / (100 * squadSize));
 const mean = a => a.reduce((x, y) => x + y, 0) / Math.max(1, a.length);
 const realCurve = Array.from({length:11}, (_, z) => mean(rows.map(r => r[1][z] || 0)));
+if (withTicks.length < rows.length) console.log('тики сёрджа записаны у ' + withTicks.length + ' реплеев из ' + rows.length + ' — остальные в среднее не идут');
 
 const BOOT = `
 <pre id="__out" style="display:none"></pre>

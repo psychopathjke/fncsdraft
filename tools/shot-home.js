@@ -18,9 +18,18 @@ const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cchome-'));
 const tmp = path.join(dir, 'index.html');
 fs.writeFileSync(tmp, '<base href="file:///' + ROOT.replace(/\\/g,'/') + '/">' +
   fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8'));
+/* Chrome не даёт окну быть уже ~480 px: при --window-size=420 страница
+   раскладывается на 484 и снимок режет её справа — так «на 420 px шапка и
+   герой не влезают» (7.09) оказалось артефактом снимка, а не сайта (проба
+   getBoundingClientRect в iframe 420: за край ничего не выходит). Узкий экран
+   поэтому снимается через iframe нужной ширины в широком окне; справа от
+   кадра остаётся белая полоса, страница в кадре — настоящая узкая. */
+const NARROW = W < 500;
+const page = path.join(dir, 'wrap.html');
+if (NARROW) fs.writeFileSync(page, '<body style="margin:0;background:#fff"><iframe src="index.html" style="width:' + W + 'px;height:' + H + 'px;border:0;display:block"></iframe></body>');
 execFileSync(CHROME, ['--headless=new','--disable-gpu','--no-sandbox',
-  '--allow-file-access-from-files','--hide-scrollbars','--window-size=' + W + ',' + H,
+  '--allow-file-access-from-files','--hide-scrollbars','--window-size=' + (NARROW ? 520 : W) + ',' + H,
   '--run-all-compositor-stages-before-draw','--virtual-time-budget=15000',
-  '--screenshot=' + OUT, 'file:///' + tmp.replace(/\\/g,'/')], {stdio:'ignore'});
+  '--screenshot=' + OUT, 'file:///' + (NARROW ? page : tmp).replace(/\\/g,'/')], {stdio:'ignore'});
 fs.rmSync(dir, {recursive:true, force:true});
 console.log('wrote ' + OUT);

@@ -60,7 +60,8 @@ const BOOT = `
     // Без TUNE — единицы дивизиона ставит сама карьера, как перед настоящим капом.
     if(tune && typeof ZoneSim!=='undefined' && ZoneSim.tune) ZoneSim.tune(JSON.parse(tune));
     // STAGE=heats|final|playin|lcq|qual — стадия вечера для ccZoneWeakFor (иначе по календарю дня).
-    else if(typeof ccZoneTuneFor==='function') ccZoneTuneFor({type:${JSON.stringify(process.env.KIND||'cup')}, stage:${JSON.stringify(process.env.STAGE||'')}||undefined, day:careerToday()});
+    // ROUND=2 — второй раунд вечера (Perf Eval): единицы CC_ZONE_*_R2, как ставит ccZoneTuneRound в раннере.
+    else if(typeof ccZoneTuneFor==='function') ccZoneTuneFor({type:${JSON.stringify(process.env.KIND||'cup')}, stage:${JSON.stringify(process.env.STAGE||'')}||undefined, round:${JSON.stringify(process.env.ROUND||'')}==='2' ? 2 : undefined, day:careerToday()});
     // PROFILE=open — открытая стадия (плей-ин, LCQ), как её ставит applyStageBias.
     if(${JSON.stringify(process.env.PROFILE||'')} && ZoneSim.profile) ZoneSim.profile(${JSON.stringify(process.env.PROFILE||'')});
     const me=careerCard();

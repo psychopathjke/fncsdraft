@@ -21,8 +21,19 @@ const CHROME = [
 if (!CHROME) throw new Error('Chrome not found');
 
 // Живые игроки на старте каждой зоны, реплей 1ed7bc5b (97 игроков).
-const REAL = [96, 85, 85, 84, 78, 70, 54, 44, 35, 25, 14];
-const REAL_N = 97;
+// REAL=solo_victory_cup_r1|solo_victory_cup_r2|solo_series_qual|… — сравнить со
+// средней кривой этапа из tools/real-stage-curves.json (игроков из ста) вместо
+// одного реплея финала.
+let REAL = [96, 85, 85, 84, 78, 70, 54, 44, 35, 25, 14];
+let REAL_N = 97;
+const REAL_STAGE = process.env.REAL || '';
+if (REAL_STAGE) {
+  const STAGES = JSON.parse(fs.readFileSync(path.join(__dirname, 'real-stage-curves.json'), 'utf8'));
+  if (!STAGES[REAL_STAGE]) throw new Error('нет этапа ' + REAL_STAGE + ' в real-stage-curves.json');
+  const rows = STAGES[REAL_STAGE];
+  REAL = Array.from({length: 11}, (_, z) => rows.reduce((a, r) => a + (r[1][z] || 0), 0) / rows.length);
+  REAL_N = 100;
+}
 
 const BOOT = `
 <pre id="__out" style="display:none"></pre>
@@ -52,7 +63,9 @@ const BOOT = `
     if(PROF && ZoneSim.profile) ZoneSim.profile(PROF);
     // STAGE=qual — квал Solo Series (открытое поле, свои единицы); OPEN без STAGE — Solo Victory Cup.
     const STAGE=${JSON.stringify(process.env.STAGE||'')};
-    if(typeof ccZoneTuneFor==='function') ccZoneTuneFor(STAGE ? {type:'solo', stage:STAGE, day:careerToday()} : OPEN ? {type:'victory', mode:'solo', day:careerToday()} : {type:'solo', day:careerToday()});
+    // ROUND=2 — второй раунд Solo Victory Cup (сотня прошедших): единицы CC_ZONE_OPEN_SOLO_R2.
+    const ROUND=${JSON.stringify(process.env.ROUND||'')}==='2' ? 2 : undefined;
+    if(typeof ccZoneTuneFor==='function') ccZoneTuneFor(STAGE ? {type:'solo', stage:STAGE, day:careerToday()} : OPEN ? {type:'victory', mode:'solo', round:ROUND, day:careerToday()} : {type:'solo', day:careerToday()});
     if(!PROF && CC_ZONE_PROFILE && ZoneSim.profile) ZoneSim.profile(CC_ZONE_PROFILE);   // как сделает applyStageBias в игре
     out.profile=ZoneSim.profile ? ZoneSim.profile() : '?';
     // TUNE — после настройки карьеры, иначе ccZoneTuneFor перетирает единицы слабости.
@@ -97,7 +110,7 @@ if (!m) { console.error('проба не дала вывода'); process.exit(2
 const out = JSON.parse(decodeURIComponent(m[1]));
 if(out.errs.length) console.error(out.errs.join('\n'));
 console.log('сила лобби (team.pow): средняя ' + out.meanPow + ', от ' + out.minPow + ' до ' + out.maxPow + '; профиль движка: ' + out.profile);
-console.log('соло, зона   движок живых   реплей (из 97, к 100)   разница   чистый урон: медиана / макс   (' + out.n + ' игр' + (TUNE ? ', ' + TUNE : '') + ')');
+console.log('соло, зона   движок живых   реплей ('+(REAL_STAGE ? REAL_STAGE : 'из 97, к 100')+')   разница   чистый урон: медиана / макс   (' + out.n + ' игр' + (TUNE ? ', ' + TUNE : '') + ')');
 let s=0;
 out.curve.forEach((v, i) => { const r=REAL[i]/REAL_N*100; const d=v-r; s+=Math.abs(d);
   console.log(String(i+1).padEnd(11), String(v).padStart(12), String(r.toFixed(1)).padStart(22), String((d>0?'+':'')+d.toFixed(1)).padStart(9), ('   '+out.netMed[i]+' / '+out.netMax[i]).padStart(28)); });

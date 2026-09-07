@@ -53110,6 +53110,26 @@ function ccDeathCard(map, info){
    реального POI, не замер. Класс ствола — поле icon пула (rifle/shotgun/…). */
 const CC_CHEST_RARITY={common:0, uncommon:0.57, rare:0.31, epic:0.09, legendary:0.03};
 const CC_CHESTS_POI=8, CC_CHESTS_LEAVE=4, CC_CHEST_CONSUMABLE=0.6;
+/* Сундуков на точке — по луту КОРОБКИ, а не одной цифрой на всех (его список
+   7.09: «сундуки плавно по коробке вместо 8/4»). Лут коробки — считанные с вики
+   сундуки и ящики (ZONE_STATS.loot, build-2025-zone-loot.js); середина острова
+   (медиана коробок с лутом) = CC_CHESTS_POI, дальше пропорционально, в пределах
+   CC_CHESTS_MIN…CC_CHESTS_MAX. Пустое поле (loot 0) — минимум. Уходя на соседнюю —
+   доля её сундуков (CC_CHESTS_LEAVE_SHARE = прежние 4 из 8): часть уже открыта, пока
+   летели. Остров без счётного лута — по-старому 8/4. Пропорция и края — порядок
+   величины, как и сама восьмёрка, не замер. */
+const CC_CHESTS_MIN=2, CC_CHESTS_MAX=14, CC_CHESTS_LEAVE_SHARE=CC_CHESTS_LEAVE/CC_CHESTS_POI;
+function ccSiteChests(zone, share){
+  share = share==null ? 1 : share;
+  let n=CC_CHESTS_POI;
+  const zones=(typeof ALL_LANDING_ZONES!=='undefined') ? ALL_LANDING_ZONES : [];
+  const loots=zones.map(z=>z.loot).filter(v=>v>0).sort((a,b)=>a-b);
+  if(zone && loots.length && zone.loot!=null){
+    const med=loots[Math.floor(loots.length/2)];
+    n = zone.loot>0 ? Math.max(CC_CHESTS_MIN, Math.min(CC_CHESTS_MAX, Math.round(CC_CHESTS_POI*zone.loot/med))) : CC_CHESTS_MIN;
+  }
+  return Math.max(1, Math.round(n*share));
+}
 /* Класс ствола из сундука — таблица Hypex по Chapter 2 Season 5 (Sportskeeda,
    «data miner reveals how chest loot pool works»): AR 43 %, дробовик 22 %,
    ПП 14 %, пистолет 11 %, снайперка 10 %. Единственная опубликованная таблица
@@ -53173,8 +53193,15 @@ function ccPackFrom(weapons, cons){
   }
   if(first && second && mod(second)>mod(first)){ const t=first; first=second; second=t; }
   const moves=cons.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0).sort(byMod);
-  const heals=cons.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)<0).sort(byMod);
-  return {weapons:[first, second].filter(Boolean), heals:heals.slice(0,2), move:moves[0]||null};
+  const healsAll=cons.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)<0).sort(byMod);
+  /* Две хилки — РАЗНЫЕ: из восьми сундуков в пак попадали «Medkit · Medkit»
+     (список на 7.09). Сначала по одной каждого названия, лучшие по редкости;
+     второй экземпляр того же — только если другого названия не выпало вовсе,
+     чтобы слот не пустел и цена пака (ccPackPow) не падала из-за порядка сбора. */
+  const heals=[]; const seen={};
+  healsAll.forEach(x=>{ if(heals.length<2 && !seen[x.name]){ seen[x.name]=1; heals.push(x); } });
+  if(heals.length<2) healsAll.forEach(x=>{ if(heals.length<2 && heals.indexOf(x)<0) heals.push(x); });
+  return {weapons:[first, second].filter(Boolean), heals, move:moves[0]||null};
 }
 function ccChestPack(rng, set, n){
   const rolls=[]; for(let i=0;i<n;i++) rolls.push(ccChestRoll(rng, set));
@@ -53235,7 +53262,11 @@ async function ccAskSite(you, ui){
   const set=ccLootSet();
   const T=L();
   ccMpMark('st0'+(you.mpTag||''));
-  const mine=ccChestPack(Math.random, set, CC_CHESTS_POI);
+  // Сундуков — по луту этой коробки; уходя — доля сундуков ближней свободной (ccSiteChests).
+  const nPoi=ccSiteChests(zone);
+  const free=ccFreeBoxNear(game, you);
+  const nLeave=ccSiteChests(free, CC_CHESTS_LEAVE_SHARE);
+  const mine=ccChestPack(Math.random, set, nPoi);
   const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
   if(!rivals.length){
     /* Своя точка без чужих — сундуки открываются НА ЭКРАНЕ, а не строкой на две
@@ -53245,13 +53276,13 @@ async function ccAskSite(you, ui){
     you._loot=mine; const pv=ccPackPow(mine); ccAddGamePow(you, pv);
     const labels=[...(mine.weapons||[]), ...(mine.heals||[]), mine.move].filter(Boolean).map(ccItemLabel).join(' · ');
     await ccMpChoose('own'+(you.mpTag||''), async function(){
-      return (await ccChoiceBox(T.ccSiteOwnTitle, T.ccSiteOwnHint(CC_CHESTS_POI), [
+      return (await ccChoiceBox(T.ccSiteOwnTitle, T.ccSiteOwnHint(nPoi), [
         {id:'take', def:true, icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.chest), title:T.ccSiteTake,
          note:labels+' — '+T.ccSitePackPow(pv)}
       ], ui && ui.map)).id;
     }, function(){ return T.ccSiteTake; });
     ccMpMark('st1');
-    await say(T.ccSiteOwn(CC_CHESTS_POI, ccPackLine(mine)), null);
+    await say(T.ccSiteOwn(nPoi, ccPackLine(mine)), null);
     return;
   }
   // Стычка — с сильнейшими из тех, кто сел на ту же коробку; остальные остаются движку.
@@ -53263,9 +53294,9 @@ async function ccAskSite(you, ui){
   const names=rivals.map(bare).join(' · ');
   const pickId=(await ccMpChoose('site'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(T.ccSiteTitle(names), T.ccSiteHint(ccItemLabel(mine.first.weapon), ccItemLabel(theirs.weapon)), [
-      {id:'leave', def:true, icon:CC_CHOICE_ICON.run, title:T.ccSiteLeave, note:T.ccSiteLeaveNote(CC_CHESTS_LEAVE, CC_CHESTS_POI)},
+      {id:'leave', def:true, icon:CC_CHOICE_ICON.run, title:T.ccSiteLeave, note:T.ccSiteLeaveNote(nLeave, nPoi)},
       {id:'fight', icon:ccItemIconHTML(mine.first.weapon, CC_CHOICE_ICON.fight), title:T.ccSiteFight,
-       note:T.ccSiteFightNote(Math.round(p*100), CC_CHESTS_POI, eMine, eFoe)}
+       note:T.ccSiteFightNote(Math.round(p*100), nPoi, eMine, eFoe)}
     ], ui && ui.map)).id;
   }, function(v){ return v==='fight' ? T.ccSiteFight : T.ccSiteLeave; })).v;
   ccMpMark('a1:'+pickId);
@@ -53278,7 +53309,7 @@ async function ccAskSite(you, ui){
       if(fs) fs.droppedOut=true;
       game.eliminate(foe, you);
       you._loot=mine; ccAddGamePow(you, ccPackPow(mine));
-      await say(T.ccSiteWon(bare(foe), CC_CHESTS_POI), true);
+      await say(T.ccSiteWon(bare(foe), nPoi), true);
     } else {
       if(sq) sq.droppedOut=true;
       game.eliminate(you, foe);
@@ -53286,18 +53317,18 @@ async function ccAskSite(you, ui){
     }
     return;
   }
-  const free=ccFreeBoxNear(game, you);
   if(free){ you.landingZone=free; if(sq){ sq.x=free.x+free.w/2; sq.y=free.y+free.h/2; } }
-  const small=ccChestPack(Math.random, set, CC_CHESTS_LEAVE);
+  const small=ccChestPack(Math.random, set, nLeave);
   you._loot=small; ccAddGamePow(you, ccPackPow(small));
-  await say(T.ccSiteLeft(CC_CHESTS_LEAVE, ccPackLine(small)), null);
+  await say(T.ccSiteLeft(nLeave, ccPackLine(small)), null);
 }
 // Комната открывает свои сундуки тем же правилом; под симуляцией (you=null) — и игрок.
+// Сундуков у каждого — по луту его коробки (ccSiteChests), как у игрока.
 function ccRoomSite(field, you){
   const set=ccLootSet();
   field.forEach(t=>{
     if(you && (t===you || t.isMate)) return;
-    const p=ccChestPack(Math.random, set, CC_CHESTS_POI);
+    const p=ccChestPack(Math.random, set, ccSiteChests(t.landingZone));
     t._loot=p; ccAddGamePow(t, ccPackPow(p));
   });
 }
@@ -79390,8 +79421,9 @@ const CC_DIV_WEAK={1:[0,0], 2:[1.5,4], 3:[2,5], 4:[2,5], 5:[1.5,2.5]};
      solo хиты/финал [0, 0], finals — хиты (10) 93 85 83 80 76 68 60 49 40 27
                    14, финал (11) 93 86 83 81 77 67 55 46 37 27 15; движок
                    96 92 90 87 79 68 57 45 37 22 12 (разрыв 2.2);
-     victory соло  [0.7, 3.5], open — 11 реплеев обоих раундов: 86 69 60 54 49
-                   44 39 32 26 19 11; движок 88 74 59 51 43 39 36 32 29 19 10;
+     victory соло  open; единицы по раундам — r1 [0.85, 4], r2 [0.7, 3.5], см.
+                   CC_ZONE_OPEN_SOLO_R2 ниже (раньше одни [0.7, 3.5] по смеси 11
+                   реплеев обоих раундов: 86 69 60 54 49 44 39 32 26 19 11);
      victory дуо и Плей-Ин  [1, 3], finals — дуо VC (10) 47 38 35 32 31 30 28
                    25 21 16 11, Плей-Ин (10) 47 38 35 32 29 27 25 22 20 16 10;
                    движок на открытом поле 42 37 35 33 31 28 25 20 17 14 8;
@@ -79411,7 +79443,25 @@ const CC_DIV_WEAK={1:[0,0], 2:[1.5,4], 3:[2,5], 4:[2,5], 5:[1.5,2.5]};
    0.7 и CHIP_SOLO_MUL в движке; квал перебран под это: [0.8, 6] — движок 92 82 77
    72 64 56 50 43 36 21 12 при реплее 88 76 72 68 66 61 54 44 36 27 17 (разрыв
    3.6); Solo VC при [0.7, 3.5] — 90 79 66 57 49 44 40 35 31 20 11 (разрыв 3.1). */
-const CC_ZONE_D1=[0,0], CC_ZONE_OPEN_DUO=[1,3], CC_ZONE_OPEN_SOLO=[0.7,3.5], CC_ZONE_SOLO_QUAL=[0.8,6], CC_ZONE_EVAL=[1,2];
+const CC_ZONE_D1=[0,0], CC_ZONE_OPEN_DUO=[1,3], CC_ZONE_OPEN_SOLO=[0.85,4], CC_ZONE_SOLO_QUAL=[0.8,6], CC_ZONE_EVAL=[1,2];
+/* ВТОРОЙ РАУНД — СВОИ ЕДИНИЦЫ (7.09, «профиль движка на раунд»). Единицы ставились
+   на вечер, и второй раунд Perf Eval / Victory Cup играл с единицами первого, хотя
+   его комната — прошедшие, и реплеи у него свои. Раннеры зовут ccZoneTuneRound(…, 2)
+   перед вторым раундом; пробы: career-alive-curve-probe (REAL=perf_eval_r2 KIND=eval
+   ROUND=2), career-solo-alive-probe (OPEN=1 REAL=solo_victory_cup_r1|r2 ROUND=2).
+
+   Solo Victory Cup — реплеи r1 (5): 85 64 56 51 46 40 36 30 24 18 11, r2 (6): 88 73 64
+   58 52 48 41 34 28 20 11. Прежние [0.7, 3.5] были подобраны по смеси обоих раундов и
+   ложатся на r2 (разрыв 2.6: 92 80 67 58 50 43 40 35 32 19 11), а на r1 — 5.9. Первый
+   раунд теперь [0.85, 4]: 91 78 61 52 44 40 36 33 30 20 11, разрыв 3.6 (кандидаты
+   [1, 3.5] 4.0, [1, 4.5] 4.3; в другую сторону [0.55, 3] 7.9, [0.4, 2.5] 10.6). Проба
+   для r2 играет тем же открытым полем, а в игре r2 — сотня прошедших: допущение, что
+   единицы важнее состава (не измерено).
+
+   Perf Eval — реплеи r2 (4): 47 40 37 34 32 30 26 23 19 15 10. Единицы первого раунда
+   [1, 2] дают 43 38 35 33 31 28 25 21 18 15 8, разрыв 1.7; кандидаты [0.5, 1] — 2.0,
+   [0, 0] — 3.1. Второй раунд остаётся на единицах первого — по замеру, не по лени. */
+const CC_ZONE_EVAL_R2=CC_ZONE_EVAL, CC_ZONE_OPEN_SOLO_R2=[0.7,3.5];
 // Принудительный профиль движка на вечер; applyStageBias читает его перед
 // таблицей очков. null — как решит таблица.
 let CC_ZONE_PROFILE=null;
@@ -79423,7 +79473,9 @@ function ccZoneTuneSpec(next){
   if(!next) return none;
   const cr=CAREER && CAREER.career, t=next.type;
   if(t==='cup')  return {units:(cr && CC_DIV_WEAK[cr.division]) || null, profile:'finals'};
-  if(t==='eval') return {units:CC_ZONE_EVAL, profile:'finals'};
+  // Второй раунд — своя комната (прошедшие) и свои реплеи (perf_eval_r2); раннер
+  // зовёт ccZoneTuneFor ещё раз с round:2 перед ним (см. ccZoneTuneRound).
+  if(t==='eval') return {units:next.round===2 ? CC_ZONE_EVAL_R2 : CC_ZONE_EVAL, profile:'finals'};
   if(t==='solo'){
     const so=(typeof careerSoloSeriesOn==='function') ? careerSoloSeriesOn(next.day) : null;
     const stage=next.stage || (so && so.stage);
@@ -79436,7 +79488,10 @@ function ccZoneTuneSpec(next){
     const reload=!!next.reload || /Reload/.test(String((ev && ev.id)||''));
     const solo=next.mode==='solo' || !!(ev && ev.mode==='solo');
     if(reload) return solo ? {units:CC_ZONE_D1, profile:'finals'} : none;
-    return solo ? {units:CC_ZONE_OPEN_SOLO, profile:'open'} : {units:CC_ZONE_OPEN_DUO, profile:'finals'};
+    // Соло: второй раунд — сотня прошедших, реплеи solo_victory_cup_r2 (см. таблицу выше).
+    // Дуо второго раунда в реплеях нет — единицы первого.
+    if(solo) return {units:next.round===2 ? CC_ZONE_OPEN_SOLO_R2 : CC_ZONE_OPEN_SOLO, profile:'open'};
+    return {units:CC_ZONE_OPEN_DUO, profile:'finals'};
   }
   if(t==='major'){
     const mj=(typeof careerMajorOn==='function') ? careerMajorOn(next.day) : null;
@@ -79452,6 +79507,11 @@ function ccZoneTuneFor(next){
   const spec=ccZoneTuneSpec(next), w=spec.units;
   ZoneSim.tune(w ? {LOBBY_WEAK_UNITS:w[0], DROP_WEAK_UNITS:w[1]} : {LOBBY_WEAK_UNITS:null, DROP_WEAK_UNITS:null});
   CC_ZONE_PROFILE=spec.profile;
+}
+// Перед вторым раундом вечера: та же настройка, но с номером раунда — комната
+// прошедших дерётся по своим реплеям (CC_ZONE_EVAL_R2, CC_ZONE_OPEN_SOLO_R2).
+function ccZoneTuneRound(type, round, extra){
+  ccZoneTuneFor(Object.assign({type, round, day:careerToday()}, extra||{}));
 }
 function careerPlayRun(next){
   if(!next) return;
@@ -82291,6 +82351,7 @@ async function runCareerEval(){
   if(through){
     // Round 2 is the fifty who came through, in one lobby, and only a win scores.
     const r2=ranked1.slice(0, evalCut);
+    ccZoneTuneRound('eval', 2);   // комната прошедших — свои единицы (CC_ZONE_EVAL_R2)
     /* lobbySize — как у всех остальных вечеров. Раунд 2 был единственным
        этапом в файле, который шёл без него, то есть по другой ветке
        simulateGamesLive: комната ровно в одно лобби, так что результат тот же,
@@ -85505,6 +85566,8 @@ async function runCareerVictory(){
   let wins=0, cash=0, place2=null;
   if(through){
     const r2=ranked1.slice(0, vCut);
+    // Комната прошедших — свои единицы (соло: CC_ZONE_OPEN_SOLO_R2; дуо — как в первом).
+    ccZoneTuneRound('victory', 2, {mode:solo?'solo':undefined});
     /* Второй раунд — уже не Опен, а комната прошедших, и точка в ней
        выбирается. Первый так и остаётся раздачей: он открыт всему региону. */
     const zones2=null;

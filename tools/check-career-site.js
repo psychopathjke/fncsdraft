@@ -6,9 +6,9 @@
 //   * пак из сундуков — два ствола РАЗНЫХ классов, не больше двух хилок, мувмент
 //     отдельно; цена пака в силе в пределах [-5, 6], у полного пака без редкости — 0;
 //   * первая остановка игры стоит на первой зоне и зовёт ccAskSite;
-//   * своя точка без чужих: вопроса нет, пак из CC_CHESTS_POI сундуков, лут записан;
+//   * своя точка без чужих: вопроса нет, пак из ccSiteChests(коробка) сундуков (по луту коробки), лут записан;
 //   * чужие на точке: вопрос с двумя ходами, «уйти» — по умолчанию; уход
-//     переносит отряд на свободную коробку и даёт пак из CC_CHESTS_LEAVE сундуков;
+//     переносит отряд на свободную коробку и даёт пак из половины её сундуков (CC_CHESTS_LEAVE_SHARE);
 //   * «файтить» с подменённой монеткой: победа выбивает соперника (droppedOut),
 //     поражение выбивает нас;
 //   * шанс стычки: лучший первый сундук поднимает его, потолок 0.8;
@@ -88,6 +88,14 @@ const BOOT = `
     const noShot=ccPackFrom([{name:'S',icon:'smg',rarity:'legendary'},{name:'R',icon:'rifle',rarity:'uncommon'},{name:'P',icon:'pistol',rarity:'epic'}], []);
     if(noShot.weapons.map(w=>w.name).join(',')!=='S,R') fail('without a shotgun the rifle plus the best other class was expected, got '+noShot.weapons.map(w=>w.name).join(','));
     out.steps.push('pack pairs the rifle with the shotgun when both dropped, else the best of another class');
+    // ---- две хилки — разные (7.09: в паке было «Medkit · Medkit») -------------------
+    const twoSame=ccPackFrom([], [{name:'Med Kit',rarity:'rare'},{name:'Med Kit',rarity:'uncommon'},{name:'Shield Fish',rarity:'uncommon'}]);
+    if(twoSame.heals.map(h=>h.name).join(',')!=='Med Kit,Shield Fish') fail('two heals of one name in the pack: '+twoSame.heals.map(h=>h.name).join(','));
+    const onlyOne=ccPackFrom([], [{name:'Med Kit',rarity:'rare'},{name:'Med Kit',rarity:'uncommon'}]);
+    if(onlyOne.heals.length!==2) fail('with one heal name dropped twice the second slot went empty: '+onlyOne.heals.length);
+    let dup=0; for(let i=0;i<300;i++){ const p=ccChestPack(Math.random, ccLootSet(), CC_CHESTS_POI); if(p.heals.length===2 && p.heals[0].name===p.heals[1].name) dup++; }
+    if(dup>15) fail('two identical heals in '+dup+' of 300 packs');
+    out.steps.push('heals in the pack are two different items; identical pairs '+dup+'/300 (only when nothing else dropped)');
     const plain=ccPackFrom([{name:'A',icon:'rifle',rarity:'uncommon'},{name:'B',icon:'shotgun',rarity:'uncommon'}], [{name:'Minis',rarity:'uncommon'},{name:'Medkit',rarity:'uncommon'},{name:CC_MOVE_ITEMS[0],rarity:'rare'}]);
     if(ccPackPow(plain)!==0) fail('a plain full pack is not worth 0: '+ccPackPow(plain));
     if(ccPackPow({weapons:[],heals:[],move:null})!==-5) fail('an empty pack is not -5');
@@ -127,9 +135,18 @@ const BOOT = `
     if(!seen || seen.length!==1 || seen[0].id!=='take' || !seen[0].def) fail('a free spot did not show the chest panel: '+(seen&&seen.map(o=>o.id).join(',')));
     // [(] вместо \\( — внутри шаблонной строки BOOT обратная косая съедается и регэксп ломает весь скрипт.
     if(!/[(]/.test(seen[0].note)) fail('the chest panel does not list the loot with rarities: '+seen[0].note);
-    if(!g.you._loot || g.you._loot.chests!==CC_CHESTS_POI) fail('own spot: loot is '+JSON.stringify(g.you._loot));
+    // Сундуков — по луту коробки (ccSiteChests), не одной цифрой на всех.
+    if(!g.you._loot || g.you._loot.chests!==ccSiteChests(free)) fail('own spot: loot is '+JSON.stringify(g.you._loot)+', box wants '+ccSiteChests(free));
     if(g.you._pf-pf0!==ccPackPow(g.you._loot)) fail('own spot: power did not move by the pack value');
-    out.steps.push('own spot: one-button chest panel, '+CC_CHESTS_POI+' chests, pack '+ccPackLine(g.you._loot)+' worth '+ccPackPow(g.you._loot));
+    out.steps.push('own spot: one-button chest panel, '+ccSiteChests(free)+' chests (box loot '+free.loot+'), pack '+ccPackLine(g.you._loot)+' worth '+ccPackPow(g.you._loot));
+    // Плавность: сундуков по коробкам острова больше двух разных значений, богатая коробка ≥ бедной.
+    const perBox=ALL_LANDING_ZONES.map(z=>ccSiteChests(z));
+    const distinct=[...new Set(perBox)];
+    if(distinct.length<3) fail('chests per box are not graded by loot: '+distinct.join(','));
+    const rich=ALL_LANDING_ZONES.slice().sort((a,b)=>(b.loot||0)-(a.loot||0));
+    if(ccSiteChests(rich[0])<ccSiteChests(rich[rich.length-1])) fail('the richest box has fewer chests than the poorest');
+    if(Math.min(...perBox)<CC_CHESTS_MIN || Math.max(...perBox)>CC_CHESTS_MAX) fail('chests per box leave the '+CC_CHESTS_MIN+'..'+CC_CHESTS_MAX+' band: '+distinct.join(','));
+    out.steps.push('chests per box: '+distinct.sort((a,b)=>a-b).join('/')+' across the island, median box '+CC_CHESTS_POI);
 
     // Чужие на точке: садимся на коробку соседа.
     const contested=()=>{ const gg=mk(); const rival=gg.teams[1]; gg.you.landingZone=rival.landingZone;
@@ -139,9 +156,10 @@ const BOOT = `
     if(!seen || seen.map(o=>o.id).join(',')!=='leave,fight') fail('contested menu is '+(seen&&seen.map(o=>o.id).join(',')));
     if(!seen[0].def) fail('leaving is not the default');
     if(c.gg.you.landingZone===c.rival.landingZone) fail('leaving did not move the squad off the box');
-    if(!c.gg.you._loot || c.gg.you._loot.chests!==CC_CHESTS_LEAVE) fail('leaving: loot is '+JSON.stringify(c.gg.you._loot));
+    const leaveN=ccSiteChests(c.gg.you.landingZone, CC_CHESTS_LEAVE_SHARE);
+    if(!c.gg.you._loot || c.gg.you._loot.chests!==leaveN) fail('leaving: loot is '+JSON.stringify(c.gg.you._loot)+', the free box wants '+leaveN);
     if(!c.gg.game.squads.find(s=>s.team===c.rival).alive) fail('leaving killed the rival');
-    out.steps.push('contested, leave: menu leave,fight (leave default), moved to a free box, '+CC_CHESTS_LEAVE+' chests');
+    out.steps.push('contested, leave: menu leave,fight (leave default), moved to a free box, '+leaveN+' chests (half of that box)');
 
     // Файт — монетка подменена: сначала победа, потом поражение.
     const realRnd=Math.random;
@@ -150,7 +168,7 @@ const BOOT = `
     try{ await ccAskSite(c.gg.you, null); } finally { Math.random=realRnd; }
     const rs=c.gg.game.squads.find(s=>s.team===c.rival), ys=c.gg.game.squads.find(s=>s.team===c.gg.you);
     if(rs.alive || !rs.droppedOut || !ys.alive) fail('won fight: rival alive='+rs.alive+' droppedOut='+rs.droppedOut+' you alive='+ys.alive);
-    if(!c.gg.you._loot || c.gg.you._loot.chests!==CC_CHESTS_POI) fail('won fight: loot is '+JSON.stringify(c.gg.you._loot));
+    if(!c.gg.you._loot || c.gg.you._loot.chests!==ccSiteChests(c.rival.landingZone)) fail('won fight: loot is '+JSON.stringify(c.gg.you._loot)+', box wants '+ccSiteChests(c.rival.landingZone));
     c=contested(); WANT='fight';
     Math.random=()=>0.99;
     try{ await ccAskSite(c.gg.you, null); } finally { Math.random=realRnd; }
