@@ -120,8 +120,8 @@ const BOOT = `
       teams[0]._game=game; teams[0]._sq=game.squads.find(s=>s.team===teams[0]);
       return {teams, game, you:teams[0]};
     };
-    const realBox=ccChoiceBox; let WANT=null, seen=null;
-    ccChoiceBox=async function(title, hint, options){ seen=options; return options.find(o=>o.id===WANT) || options.find(o=>o.def) || options[0]; };
+    const realBox=ccChoiceBox; let WANT=null, seen=null, seenHint=null;
+    ccChoiceBox=async function(title, hint, options){ seen=options; seenHint=String(hint||''); return options.find(o=>o.id===WANT) || options.find(o=>o.def) || options[0]; };
     skipAnimation=false; careerSimSet(false);
     // Своя точка: коробка, с которой соседей пересадили — в комнате на 50 пустых почти не бывает.
     let g=mk();
@@ -135,18 +135,38 @@ const BOOT = `
     if(!seen || seen.length!==1 || seen[0].id!=='take' || !seen[0].def) fail('a free spot did not show the chest panel: '+(seen&&seen.map(o=>o.id).join(',')));
     // [(] вместо \\( — внутри шаблонной строки BOOT обратная косая съедается и регэксп ломает весь скрипт.
     if(!/[(]/.test(seen[0].note)) fail('the chest panel does not list the loot with rarities: '+seen[0].note);
-    // Сундуков — по луту коробки (ccSiteChests), не одной цифрой на всех.
-    if(!g.you._loot || g.you._loot.chests!==ccSiteChests(free)) fail('own spot: loot is '+JSON.stringify(g.you._loot)+', box wants '+ccSiteChests(free));
+    // Сундуков на точке — сколько стоит в коробке (ccSiteChests), открываем ccSiteOpen из них.
+    const wantOwn=ccSiteOpen(ccSiteChests(free));
+    if(!g.you._loot || g.you._loot.chests!==wantOwn) fail('own spot: loot is '+JSON.stringify(g.you._loot)+', box wants '+wantOwn);
     if(g.you._pf-pf0!==ccPackPow(g.you._loot)) fail('own spot: power did not move by the pack value');
-    out.steps.push('own spot: one-button chest panel, '+ccSiteChests(free)+' chests (box loot '+free.loot+'), pack '+ccPackLine(g.you._loot)+' worth '+ccPackPow(g.you._loot));
+    if(seenHint==null) fail('the chest panel came without a hint');
+    if(ccSiteReal(free) && seenHint.indexOf(String(ccSiteChests(free)))<0) fail('the hint does not name the real chest count '+ccSiteChests(free)+': '+seenHint);
+    out.steps.push('own spot: one-button chest panel, '+ccSiteChests(free)+' chests in the box ('+(ccSiteReal(free)?'counted':'by loot '+free.loot)+'), opened '+wantOwn+', pack '+ccPackLine(g.you._loot)+' worth '+ccPackPow(g.you._loot));
     // Плавность: сундуков по коробкам острова больше двух разных значений, богатая коробка ≥ бедной.
     const perBox=ALL_LANDING_ZONES.map(z=>ccSiteChests(z));
     const distinct=[...new Set(perBox)];
     if(distinct.length<3) fail('chests per box are not graded by loot: '+distinct.join(','));
     const rich=ALL_LANDING_ZONES.slice().sort((a,b)=>(b.loot||0)-(a.loot||0));
-    if(ccSiteChests(rich[0])<ccSiteChests(rich[rich.length-1])) fail('the richest box has fewer chests than the poorest');
-    if(Math.min(...perBox)<CC_CHESTS_MIN || Math.max(...perBox)>CC_CHESTS_MAX) fail('chests per box leave the '+CC_CHESTS_MIN+'..'+CC_CHESTS_MAX+' band: '+distinct.join(','));
-    out.steps.push('chests per box: '+distinct.sort((a,b)=>a-b).join('/')+' across the island, median box '+CC_CHESTS_POI);
+    if(!ccSiteReal(rich[0]) && ccSiteChests(rich[0])<ccSiteChests(rich[rich.length-1])) fail('the richest box has fewer chests than the poorest');
+    if(!ccSiteReal(rich[0]) && (Math.min(...perBox)<CC_CHESTS_MIN || Math.max(...perBox)>CC_CHESTS_MAX)) fail('chests per box leave the '+CC_CHESTS_MIN+'..'+CC_CHESTS_MAX+' band: '+distinct.join(','));
+    out.steps.push('chests per box on '+set+': '+distinct.sort((a,b)=>a-b).join('/')+(ccSiteReal(rich[0])?' (counted chests)':' (by loot, median box '+CC_CHESTS_POI+')'));
+    // ---- каждый остров несёт счёт сундуков (s42 — точки fortnite.gg, 2025 — вики,
+    //      m1/m2 — Kinch), коробка отдаёт его как есть; открываем не больше 12 на игрока ---
+    {
+      const prevSet=ACTIVE_LANDING_SET;
+      for(const key of ['s42','s42solo','m2','m1','t1','t2','t3']){
+        useLandingSet(key);
+        const zs=ALL_LANDING_ZONES;
+        if(!zs.length || !zs.every(ccSiteReal)) fail(key+': not every box carries a counted chest number');
+        zs.forEach(z=>{ if(ccSiteChests(z)!==z.chests) fail(key+': box says '+z.chests+' chests but ccSiteChests gives '+ccSiteChests(z)); });
+        const maxBox=Math.max(...zs.map(z=>z.chests));
+        if(maxBox<20) fail(key+': the richest box has only '+maxBox+' chests — that is not a counted island');
+        if(ccSiteOpen(maxBox)!==Math.min(maxBox, CC_CHESTS_OPEN_PER_PLAYER*squadSize)) fail(key+': ccSiteOpen('+maxBox+') = '+ccSiteOpen(maxBox));
+        if(ccSiteOpen(0)!==1) fail(key+': an empty box should still open one (floor loot), got '+ccSiteOpen(0));
+        out.steps.push(key+': counted chests per box '+Math.min(...zs.map(z=>z.chests))+'..'+maxBox+', a duo opens at most '+ccSiteOpen(maxBox));
+      }
+      useLandingSet(prevSet);
+    }
 
     // Чужие на точке: садимся на коробку соседа.
     const contested=()=>{ const gg=mk(); const rival=gg.teams[1]; gg.you.landingZone=rival.landingZone;
@@ -156,7 +176,7 @@ const BOOT = `
     if(!seen || seen.map(o=>o.id).join(',')!=='leave,fight') fail('contested menu is '+(seen&&seen.map(o=>o.id).join(',')));
     if(!seen[0].def) fail('leaving is not the default');
     if(c.gg.you.landingZone===c.rival.landingZone) fail('leaving did not move the squad off the box');
-    const leaveN=ccSiteChests(c.gg.you.landingZone, CC_CHESTS_LEAVE_SHARE);
+    const leaveN=ccSiteOpen(ccSiteChests(c.gg.you.landingZone, CC_CHESTS_LEAVE_SHARE));
     if(!c.gg.you._loot || c.gg.you._loot.chests!==leaveN) fail('leaving: loot is '+JSON.stringify(c.gg.you._loot)+', the free box wants '+leaveN);
     if(!c.gg.game.squads.find(s=>s.team===c.rival).alive) fail('leaving killed the rival');
     out.steps.push('contested, leave: menu leave,fight (leave default), moved to a free box, '+leaveN+' chests (half of that box)');
@@ -168,7 +188,7 @@ const BOOT = `
     try{ await ccAskSite(c.gg.you, null); } finally { Math.random=realRnd; }
     const rs=c.gg.game.squads.find(s=>s.team===c.rival), ys=c.gg.game.squads.find(s=>s.team===c.gg.you);
     if(rs.alive || !rs.droppedOut || !ys.alive) fail('won fight: rival alive='+rs.alive+' droppedOut='+rs.droppedOut+' you alive='+ys.alive);
-    if(!c.gg.you._loot || c.gg.you._loot.chests!==ccSiteChests(c.rival.landingZone)) fail('won fight: loot is '+JSON.stringify(c.gg.you._loot)+', box wants '+ccSiteChests(c.rival.landingZone));
+    if(!c.gg.you._loot || c.gg.you._loot.chests!==ccSiteOpen(ccSiteChests(c.rival.landingZone))) fail('won fight: loot is '+JSON.stringify(c.gg.you._loot)+', box wants '+ccSiteOpen(ccSiteChests(c.rival.landingZone)));
     c=contested(); WANT='fight';
     Math.random=()=>0.99;
     try{ await ccAskSite(c.gg.you, null); } finally { Math.random=realRnd; }

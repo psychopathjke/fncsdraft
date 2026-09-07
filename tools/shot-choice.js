@@ -78,9 +78,12 @@ const BOOT = (what) => `
               Math.round(CC_LOOT_POI_ODDS*100))}], map);
     } else if(WHAT==='chests'){
       // Своя точка: сундуки открыты, пак собран — одна кнопка «забрать и идти».
-      const mine=ccChestPack(Math.random, ccLootSet(), CC_CHESTS_POI); const pv=ccPackPow(mine);
+      // Самая богатая коробка острова — сколько в ней сундуков стоит и сколько откроем.
+      const box=ALL_LANDING_ZONES.slice().sort((a,b)=>ccSiteChests(b)-ccSiteChests(a))[0];
+      const nPoi=ccSiteChests(box), nOpen=ccSiteOpen(nPoi);
+      const mine=ccChestPack(Math.random, ccLootSet(), nOpen); const pv=ccPackPow(mine);
       const labels=[...mine.weapons, ...mine.heals, mine.move].filter(Boolean).map(ccItemLabel).join(' · ');
-      ccChoiceBox(L().ccSiteOwnTitle, L().ccSiteOwnHint(CC_CHESTS_POI), [
+      ccChoiceBox(L().ccSiteOwnTitle, (ccSiteReal(box) ? L().ccSiteAt(nPoi, nOpen, ccSiteSrc())+' · ' : '')+L().ccSiteOwnHint(nOpen), [
         {id:'take', def:true, icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.chest), title:L().ccSiteTake, note:labels+' — '+L().ccSitePackPow(pv)}], map);
     } else if(WHAT==='site'){
       // Чужие на точке: первый сундук свой и их, «уйти» или «файтить» — как в ccAskSite.

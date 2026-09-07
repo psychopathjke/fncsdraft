@@ -44,7 +44,13 @@ const SETS = {
      раскладывается отдельно: у мелкой клетки свой счёт, а не счёт большого
      соседа. */
   s42:     {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
-  s42solo: {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'}
+  s42solo: {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
+  /* Острова Мейджоров 2026 — только ради счёта СУНДУКОВ по коробкам (7.09, «сундуков
+     на локациях как в настоящем фортнайте»): r/loot у m1/m2 берутся из соревновательных
+     оценок и этим скриптом НЕ переписываются, отсюда идёт лишь строка chests. У s42
+     сундуки считаны точнее — по точкам fortnite.gg (build-fgg-chests.js). */
+  m1:      {map: 'Map:Chapter 7: Season 2 (40.00)', art: 'art/map-m1.jpg', chestsOnly: true},
+  m2:      {map: 'Map:Chapter 7: Season 3 (41.00)', art: 'art/map-m2.jpg', chestsOnly: true}
 };
 const WANT = process.argv.slice(2).filter(a => SETS[a]);
 const TARGETS = WANT.length ? WANT : Object.keys(SETS);
@@ -196,7 +202,11 @@ document.getElementById('i').onload = function(){
       if (hit < 0) { outside++; return; }
       placed++;
       stats[hit].loot += score;
-      if (score) stats[hit].pois.push(m.n + ' ' + score);
+      // Сундуки отдельно от ящиков — для строки chests в ZONE_STATS (счёт с
+      // инфобокса локации на вики; у s42 точнее — точки fortnite.gg).
+      stats[hit].chests = (stats[hit].chests || 0) + (l ? l.chests : 0);
+      stats[hit].ammo = (stats[hit].ammo || 0) + (l ? l.ammo : 0);
+      if (score) stats[hit].pois.push(m.n + ' ' + score + ' (' + (l ? l.chests : 0) + ' chests)');
     });
 
     // DUMP_POIS=<file> writes every marker at the position this tool computed for
@@ -216,6 +226,9 @@ document.getElementById('i').onload = function(){
     // `r` is what useLandingSet grades on, and it grades within the island — so
     // the raw count is the rating and no scaling is invented on top of it.
     const line = stats.map(s => '{r:' + s.loot + ',loot:' + s.loot + '}');
-    console.log('  ' + set + ':[' + line.join(',') + '],');
+    if (!SETS[set].chestsOnly) console.log('  ' + set + ':[' + line.join(',') + '],');
+    // Сундуки и ящики по коробкам отдельной строкой — её вливает в ZONE_STATS
+    // scratchpad-скрипт по индексу, r/loot не трогая.
+    console.log('  chests ' + set + ':' + JSON.stringify(stats.map(s => ({chests: s.chests || 0, ammo: s.ammo || 0}))));
   }
 })();

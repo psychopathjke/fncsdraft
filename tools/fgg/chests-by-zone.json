@@ -1,0 +1,687 @@
+{
+ "season": 42,
+ "map": "42.03",
+ "fit": {
+  "fx": {
+   "a": 0.3744358788043874,
+   "b": 7.635659860958221
+  },
+  "fy": {
+   "a": 0.4036955826396869,
+   "b": -2.119865483225489
+  }
+ },
+ "pairs": 30,
+ "worst": 1.712080053269033,
+ "sets": {
+  "s42": [
+   {
+    "chests": 62,
+    "rare": 0,
+    "ammo": 42
+   },
+   {
+    "chests": 27,
+    "rare": 0,
+    "ammo": 25
+   },
+   {
+    "chests": 44,
+    "rare": 0,
+    "ammo": 34
+   },
+   {
+    "chests": 27,
+    "rare": 0,
+    "ammo": 16
+   },
+   {
+    "chests": 117,
+    "rare": 4,
+    "ammo": 83
+   },
+   {
+    "chests": 68,
+    "rare": 0,
+    "ammo": 9
+   },
+   {
+    "chests": 65,
+    "rare": 0,
+    "ammo": 31
+   },
+   {
+    "chests": 56,
+    "rare": 1,
+    "ammo": 40
+   },
+   {
+    "chests": 52,
+    "rare": 3,
+    "ammo": 44
+   },
+   {
+    "chests": 60,
+    "rare": 0,
+    "ammo": 46
+   },
+   {
+    "chests": 93,
+    "rare": 0,
+    "ammo": 44
+   },
+   {
+    "chests": 53,
+    "rare": 0,
+    "ammo": 31
+   },
+   {
+    "chests": 43,
+    "rare": 2,
+    "ammo": 48
+   },
+   {
+    "chests": 18,
+    "rare": 2,
+    "ammo": 7
+   },
+   {
+    "chests": 34,
+    "rare": 0,
+    "ammo": 21
+   },
+   {
+    "chests": 2,
+    "rare": 0,
+    "ammo": 2
+   },
+   {
+    "chests": 5,
+    "rare": 0,
+    "ammo": 4
+   },
+   {
+    "chests": 26,
+    "rare": 0,
+    "ammo": 6
+   },
+   {
+    "chests": 8,
+    "rare": 0,
+    "ammo": 4
+   },
+   {
+    "chests": 12,
+    "rare": 0,
+    "ammo": 4
+   },
+   {
+    "chests": 0,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 1,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 11,
+    "rare": 2,
+    "ammo": 7
+   },
+   {
+    "chests": 6,
+    "rare": 0,
+    "ammo": 6
+   },
+   {
+    "chests": 15,
+    "rare": 0,
+    "ammo": 10
+   },
+   {
+    "chests": 18,
+    "rare": 0,
+    "ammo": 9
+   },
+   {
+    "chests": 11,
+    "rare": 0,
+    "ammo": 5
+   },
+   {
+    "chests": 2,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 9,
+    "rare": 0,
+    "ammo": 6
+   },
+   {
+    "chests": 12,
+    "rare": 0,
+    "ammo": 2
+   },
+   {
+    "chests": 13,
+    "rare": 0,
+    "ammo": 3
+   },
+   {
+    "chests": 4,
+    "rare": 0,
+    "ammo": 4
+   },
+   {
+    "chests": 11,
+    "rare": 0,
+    "ammo": 7
+   }
+  ],
+  "s42solo": [
+   {
+    "chests": 9,
+    "rare": 0,
+    "ammo": 7
+   },
+   {
+    "chests": 0,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 2,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 24,
+    "rare": 0,
+    "ammo": 13
+   },
+   {
+    "chests": 3,
+    "rare": 0,
+    "ammo": 2
+   },
+   {
+    "chests": 8,
+    "rare": 0,
+    "ammo": 7
+   },
+   {
+    "chests": 5,
+    "rare": 0,
+    "ammo": 1
+   },
+   {
+    "chests": 19,
+    "rare": 2,
+    "ammo": 10
+   },
+   {
+    "chests": 5,
+    "rare": 0,
+    "ammo": 1
+   },
+   {
+    "chests": 3,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 17,
+    "rare": 0,
+    "ammo": 9
+   },
+   {
+    "chests": 7,
+    "rare": 0,
+    "ammo": 2
+   },
+   {
+    "chests": 7,
+    "rare": 0,
+    "ammo": 3
+   },
+   {
+    "chests": 19,
+    "rare": 0,
+    "ammo": 15
+   },
+   {
+    "chests": 5,
+    "rare": 0,
+    "ammo": 3
+   },
+   {
+    "chests": 11,
+    "rare": 0,
+    "ammo": 6
+   },
+   {
+    "chests": 23,
+    "rare": 0,
+    "ammo": 21
+   },
+   {
+    "chests": 2,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 1,
+    "rare": 0,
+    "ammo": 1
+   },
+   {
+    "chests": 8,
+    "rare": 0,
+    "ammo": 2
+   },
+   {
+    "chests": 10,
+    "rare": 0,
+    "ammo": 3
+   },
+   {
+    "chests": 5,
+    "rare": 0,
+    "ammo": 1
+   },
+   {
+    "chests": 6,
+    "rare": 0,
+    "ammo": 3
+   },
+   {
+    "chests": 10,
+    "rare": 0,
+    "ammo": 4
+   },
+   {
+    "chests": 8,
+    "rare": 0,
+    "ammo": 5
+   },
+   {
+    "chests": 11,
+    "rare": 0,
+    "ammo": 4
+   },
+   {
+    "chests": 9,
+    "rare": 0,
+    "ammo": 8
+   },
+   {
+    "chests": 10,
+    "rare": 0,
+    "ammo": 6
+   },
+   {
+    "chests": 4,
+    "rare": 0,
+    "ammo": 1
+   },
+   {
+    "chests": 19,
+    "rare": 0,
+    "ammo": 12
+   },
+   {
+    "chests": 6,
+    "rare": 0,
+    "ammo": 3
+   },
+   {
+    "chests": 16,
+    "rare": 0,
+    "ammo": 5
+   },
+   {
+    "chests": 12,
+    "rare": 0,
+    "ammo": 7
+   },
+   {
+    "chests": 6,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 11,
+    "rare": 0,
+    "ammo": 5
+   },
+   {
+    "chests": 0,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 5,
+    "rare": 0,
+    "ammo": 4
+   },
+   {
+    "chests": 10,
+    "rare": 0,
+    "ammo": 2
+   },
+   {
+    "chests": 6,
+    "rare": 0,
+    "ammo": 4
+   },
+   {
+    "chests": 7,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 8,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 23,
+    "rare": 1,
+    "ammo": 6
+   },
+   {
+    "chests": 9,
+    "rare": 0,
+    "ammo": 3
+   },
+   {
+    "chests": 12,
+    "rare": 0,
+    "ammo": 1
+   },
+   {
+    "chests": 6,
+    "rare": 0,
+    "ammo": 4
+   },
+   {
+    "chests": 6,
+    "rare": 0,
+    "ammo": 2
+   },
+   {
+    "chests": 0,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 11,
+    "rare": 0,
+    "ammo": 4
+   },
+   {
+    "chests": 10,
+    "rare": 0,
+    "ammo": 5
+   },
+   {
+    "chests": 11,
+    "rare": 0,
+    "ammo": 9
+   },
+   {
+    "chests": 3,
+    "rare": 0,
+    "ammo": 1
+   },
+   {
+    "chests": 6,
+    "rare": 0,
+    "ammo": 1
+   },
+   {
+    "chests": 13,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 10,
+    "rare": 1,
+    "ammo": 4
+   },
+   {
+    "chests": 7,
+    "rare": 0,
+    "ammo": 3
+   },
+   {
+    "chests": 0,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 7,
+    "rare": 0,
+    "ammo": 2
+   },
+   {
+    "chests": 22,
+    "rare": 0,
+    "ammo": 17
+   },
+   {
+    "chests": 7,
+    "rare": 0,
+    "ammo": 6
+   },
+   {
+    "chests": 1,
+    "rare": 0,
+    "ammo": 1
+   },
+   {
+    "chests": 6,
+    "rare": 0,
+    "ammo": 3
+   },
+   {
+    "chests": 6,
+    "rare": 0,
+    "ammo": 4
+   },
+   {
+    "chests": 1,
+    "rare": 0,
+    "ammo": 1
+   },
+   {
+    "chests": 27,
+    "rare": 0,
+    "ammo": 23
+   },
+   {
+    "chests": 12,
+    "rare": 2,
+    "ammo": 9
+   },
+   {
+    "chests": 6,
+    "rare": 0,
+    "ammo": 5
+   },
+   {
+    "chests": 1,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 3,
+    "rare": 0,
+    "ammo": 2
+   },
+   {
+    "chests": 1,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 9,
+    "rare": 0,
+    "ammo": 2
+   },
+   {
+    "chests": 16,
+    "rare": 0,
+    "ammo": 7
+   },
+   {
+    "chests": 16,
+    "rare": 0,
+    "ammo": 13
+   },
+   {
+    "chests": 7,
+    "rare": 0,
+    "ammo": 8
+   },
+   {
+    "chests": 14,
+    "rare": 0,
+    "ammo": 5
+   },
+   {
+    "chests": 10,
+    "rare": 0,
+    "ammo": 9
+   },
+   {
+    "chests": 8,
+    "rare": 0,
+    "ammo": 4
+   },
+   {
+    "chests": 27,
+    "rare": 0,
+    "ammo": 15
+   },
+   {
+    "chests": 0,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 5,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 1,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 10,
+    "rare": 0,
+    "ammo": 7
+   },
+   {
+    "chests": 1,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 13,
+    "rare": 0,
+    "ammo": 4
+   },
+   {
+    "chests": 8,
+    "rare": 0,
+    "ammo": 7
+   },
+   {
+    "chests": 13,
+    "rare": 0,
+    "ammo": 8
+   },
+   {
+    "chests": 5,
+    "rare": 1,
+    "ammo": 4
+   },
+   {
+    "chests": 6,
+    "rare": 0,
+    "ammo": 1
+   },
+   {
+    "chests": 4,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 5,
+    "rare": 0,
+    "ammo": 6
+   },
+   {
+    "chests": 25,
+    "rare": 0,
+    "ammo": 27
+   },
+   {
+    "chests": 11,
+    "rare": 0,
+    "ammo": 7
+   },
+   {
+    "chests": 3,
+    "rare": 1,
+    "ammo": 1
+   },
+   {
+    "chests": 0,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 0,
+    "rare": 0,
+    "ammo": 1
+   },
+   {
+    "chests": 4,
+    "rare": 0,
+    "ammo": 2
+   },
+   {
+    "chests": 0,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 0,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 1,
+    "rare": 0,
+    "ammo": 2
+   },
+   {
+    "chests": 0,
+    "rare": 0,
+    "ammo": 0
+   },
+   {
+    "chests": 0,
+    "rare": 0,
+    "ammo": 0
+   }
+  ]
+ }
+}

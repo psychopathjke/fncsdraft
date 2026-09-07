@@ -7168,7 +7168,7 @@ ccDropContest:'Законтестить', ccDropContestNote:'Откроем ос
 ccDropMap:'Выбрать на карте', ccDropMapNote:'Открыть остров и поставить метку руками',
 ccLootTitle:'Середина игры — что подобрал',
 ccLootHint:'Вторая зона закрылась. Точка обыскана: два ствола, две хилки и мувмент. Напарник разбирает свою половину сам',
-ccSiteOwnTitle:'Точка своя — открываем сундуки', ccSiteOwnHint:n=>n+' сундуков: два ствола разных классов, две хилки, мувмент — что выпало, то и берём',
+ccSiteAt:(t,o,s)=>'На точке '+t+' сундуков (счёт '+s+'), до первой зоны открываем '+o, ccSiteOwnTitle:'Точка своя — открываем сундуки', ccSiteOwnHint:n=>n+' сундуков: два ствола разных классов, две хилки, мувмент — что выпало, то и берём',
 ccSiteTake:'Забрать и идти', ccSitePackPow:v=>v>0 ? '+'+v+' к силе за редкость' : v<0 ? v+' к силе: пустые слоты' : 'сила без прибавки',
 ccSiteTitle:n=>'На точке чужие: '+n, ccSiteHint:(a,b)=>'Твой первый сундук: '+a+' · у них: '+b,
 ccSiteLeave:'Уйти на соседнюю точку', ccSiteLeaveNote:(n,m)=>'Без стычки: '+n+' сундука вместо '+m+' — лут беднее, сила ниже',
@@ -9105,7 +9105,7 @@ ccDropContest:'Contest', ccDropContestNote:'Opens the whole island: see who sits
 ccDropMap:'Pick on the map', ccDropMapNote:'Open the island and place the marker yourself',
 ccLootTitle:'Mid game — what you picked up',
 ccLootHint:'The second circle has closed. The spot is looted: two guns, two heals and a mobility item. Your partner sorts their own half out',
-ccSiteOwnTitle:'Our spot — opening the chests', ccSiteOwnHint:n=>n+' chests: two guns of different classes, two heals, a movement item — what drops is what we carry',
+ccSiteAt:(t,o,s)=>t+' chests at the spot ('+s+' count), we open '+o+' before the first zone', ccSiteOwnTitle:'Our spot — opening the chests', ccSiteOwnHint:n=>n+' chests: two guns of different classes, two heals, a movement item — what drops is what we carry',
 ccSiteTake:'Grab it and go', ccSitePackPow:v=>v>0 ? '+'+v+' power for the rarity' : v<0 ? v+' power: empty slots' : 'no power bonus',
 ccSiteTitle:n=>'Someone landed with us: '+n, ccSiteHint:(a,b)=>'Your first chest: '+a+' · theirs: '+b,
 ccSiteLeave:'Leave for the next POI', ccSiteLeaveNote:(n,m)=>'No fight: '+n+' chests instead of '+m+' — poorer loot, less power',
@@ -11183,7 +11183,7 @@ ccDropContest:'Contester', ccDropContestNote:'Ouvre toute l’île : tu vois qui
 ccDropMap:'Choisir sur la carte', ccDropMapNote:'Ouvrir l’île et poser la marque à la main',
 ccLootTitle:'Milieu de partie — ce que tu as ramassé',
 ccLootHint:'La deuxième zone est fermée. Le spot est fouillé : deux armes, deux soins et un objet de mobilité. Ton coéquipier gère sa moitié',
-ccSiteOwnTitle:'Notre spot — on ouvre les coffres', ccSiteOwnHint:n=>n+' coffres : deux armes de classes différentes, deux soins, un objet de mobilité — ce qui tombe, on le garde',
+ccSiteAt:(t,o,s)=>t+' coffres sur le spot (compte '+s+'), on en ouvre '+o+' avant la première zone', ccSiteOwnTitle:'Notre spot — on ouvre les coffres', ccSiteOwnHint:n=>n+' coffres : deux armes de classes différentes, deux soins, un objet de mobilité — ce qui tombe, on le garde',
 ccSiteTake:'On prend et on y va', ccSitePackPow:v=>v>0 ? '+'+v+' power pour la rareté' : v<0 ? v+' power : slots vides' : 'pas de bonus de power',
 ccSiteTitle:n=>'Quelqu’un atterrit avec nous : '+n, ccSiteHint:(a,b)=>'Ton premier coffre : '+a+' · le leur : '+b,
 ccSiteLeave:'Partir vers le POI voisin', ccSiteLeaveNote:(n,m)=>'Sans combat : '+n+' coffres au lieu de '+m+' — loot plus pauvre, moins de power',
@@ -14451,7 +14451,7 @@ ccDropMap:"Scegli sulla mappa",
 ccDropMapNote:"Apri l'isola e metti tu il segnalino",
 ccLootTitle:"Metà partita — cosa hai raccolto",
 ccLootHint:"Il secondo cerchio si è chiuso. Il punto è lootato: due armi, due cure e un oggetto di mobilità. Il compagno si arrangia con la sua metà",
-ccSiteOwnTitle:"Spot nostro — apriamo i forzieri", ccSiteOwnHint:n=>n+" forzieri: due armi di classi diverse, due cure, un oggetto di movimento — quel che esce, quello portiamo",
+ccSiteAt:(t,o,s)=>t+" forzieri sullo spot (conteggio "+s+"), ne apriamo "+o+" prima della prima zona", ccSiteOwnTitle:"Spot nostro — apriamo i forzieri", ccSiteOwnHint:n=>n+" forzieri: due armi di classi diverse, due cure, un oggetto di movimento — quel che esce, quello portiamo",
 ccSiteTake:"Prendi e vai", ccSitePackPow:v=>v>0 ? "+"+v+" power per la rarità" : v<0 ? v+" power: slot vuoti" : "nessun bonus di power",
 ccSiteTitle:n=>"Qualcuno atterra con noi: "+n, ccSiteHint:(a,b)=>"Il tuo primo forziere: "+a+" · il loro: "+b,
 ccSiteLeave:"Andare al POI vicino", ccSiteLeaveNote:(n,m)=>"Senza scontro: "+n+" forzieri invece di "+m+" — loot più povero, meno power",
@@ -16941,7 +16941,7 @@ ccDropMap:"Escolher no mapa",
 ccDropMapNote:"Abra a ilha e coloque o marcador você mesmo",
 ccLootTitle:"Meio de jogo — o que você pegou",
 ccLootHint:"O segundo círculo fechou. O ponto está lootado: duas armas, duas curas e um item de mobilidade. Seu parceiro resolve a metade dele",
-ccSiteOwnTitle:"Spot nosso — abrindo os baús", ccSiteOwnHint:n=>n+" baús: duas armas de classes diferentes, duas curas, um item de mobilidade — o que cair, a gente leva",
+ccSiteAt:(t,o,s)=>t+" baús no spot (contagem "+s+"), abrimos "+o+" antes da primeira zona", ccSiteOwnTitle:"Spot nosso — abrindo os baús", ccSiteOwnHint:n=>n+" baús: duas armas de classes diferentes, duas curas, um item de mobilidade — o que cair, a gente leva",
 ccSiteTake:"Pegar e ir", ccSitePackPow:v=>v>0 ? "+"+v+" power pela raridade" : v<0 ? v+" power: slots vazios" : "sem bônus de power",
 ccSiteTitle:n=>"Alguém pousou com a gente: "+n, ccSiteHint:(a,b)=>"Seu primeiro baú: "+a+" · o deles: "+b,
 ccSiteLeave:"Ir para o POI vizinho", ccSiteLeaveNote:(n,m)=>"Sem briga: "+n+" baús em vez de "+m+" — loot mais pobre, menos power",
@@ -44291,7 +44291,7 @@ const ZONE_STATS={
      Флор-лут и ящики с продуктами не считаются: их заполняют не везде, и
      учитывать их значило бы ранжировать локацию по тому, насколько подробно
      её описали. Ноль у зоны — не пробел, а пустое поле между локациями. */
-  s42:[{r:100,loot:100},{r:67,loot:67},{r:65,loot:65},{r:0,loot:0},{r:130,loot:130},{r:0,loot:0},{r:0,loot:0},{r:89,loot:89},{r:0,loot:0},{r:73,loot:73},{r:83,loot:83},{r:57,loot:57},{r:62,loot:62},{r:19,loot:19},{r:0,loot:0},{r:0,loot:0},{r:12,loot:12},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:12,loot:12},{r:16,loot:16},{r:19,loot:19},{r:0,loot:0},{r:0,loot:0},{r:15,loot:15},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0}],
+  s42:[{r:100,loot:100,chests:62,rare:0,ammo:42},{r:67,loot:67,chests:27,rare:0,ammo:25},{r:65,loot:65,chests:44,rare:0,ammo:34},{r:0,loot:0,chests:27,rare:0,ammo:16},{r:130,loot:130,chests:117,rare:4,ammo:83},{r:0,loot:0,chests:68,rare:0,ammo:9},{r:0,loot:0,chests:65,rare:0,ammo:31},{r:89,loot:89,chests:56,rare:1,ammo:40},{r:0,loot:0,chests:52,rare:3,ammo:44},{r:73,loot:73,chests:60,rare:0,ammo:46},{r:83,loot:83,chests:93,rare:0,ammo:44},{r:57,loot:57,chests:53,rare:0,ammo:31},{r:62,loot:62,chests:43,rare:2,ammo:48},{r:19,loot:19,chests:18,rare:2,ammo:7},{r:0,loot:0,chests:34,rare:0,ammo:21},{r:0,loot:0,chests:2,rare:0,ammo:2},{r:12,loot:12,chests:5,rare:0,ammo:4},{r:0,loot:0,chests:26,rare:0,ammo:6},{r:0,loot:0,chests:8,rare:0,ammo:4},{r:0,loot:0,chests:12,rare:0,ammo:4},{r:0,loot:0,chests:0,rare:0,ammo:0},{r:0,loot:0,chests:1,rare:0,ammo:0},{r:0,loot:0,chests:11,rare:2,ammo:7},{r:12,loot:12,chests:6,rare:0,ammo:6},{r:16,loot:16,chests:15,rare:0,ammo:10},{r:19,loot:19,chests:18,rare:0,ammo:9},{r:0,loot:0,chests:11,rare:0,ammo:5},{r:0,loot:0,chests:2,rare:0,ammo:0},{r:15,loot:15,chests:9,rare:0,ammo:6},{r:0,loot:0,chests:12,rare:0,ammo:2},{r:0,loot:0,chests:13,rare:0,ammo:3},{r:0,loot:0,chests:4,rare:0,ammo:4},{r:0,loot:0,chests:11,rare:0,ammo:7}],
   /* Соло-сотня — тот же считанный лут, разложенный по площади.
 
      Метод «в какой клетке стоит точка локации» работает на крупной сетке и
@@ -44301,7 +44301,7 @@ const ZONE_STATS={
      локаций, — и клетка получает долю лута зоны по площади перекрытия.
      Выдуманных коэффициентов тут нет ни одного: только геометрия и те же
      счётные сундуки. Стало 65 клеток с лутом из ста вместо тринадцати. */
-  s42solo:[{r:16,loot:16},{r:8,loot:8},{r:0,loot:0},{r:12,loot:12},{r:25,loot:25},{r:14,loot:14},{r:16,loot:16},{r:8,loot:8},{r:7,loot:7},{r:4,loot:4},{r:10,loot:10},{r:2,loot:2},{r:1,loot:1},{r:3,loot:3},{r:18,loot:18},{r:0,loot:0},{r:14,loot:14},{r:0,loot:0},{r:8,loot:8},{r:4,loot:4},{r:0,loot:0},{r:15,loot:15},{r:0,loot:0},{r:5,loot:5},{r:5,loot:5},{r:3,loot:3},{r:0,loot:0},{r:3,loot:3},{r:1,loot:1},{r:10,loot:10},{r:3,loot:3},{r:4,loot:4},{r:0,loot:0},{r:0,loot:0},{r:5,loot:5},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:1,loot:1},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:29,loot:29},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:1,loot:1},{r:0,loot:0},{r:12,loot:12},{r:0,loot:0},{r:5,loot:5},{r:0,loot:0},{r:8,loot:8},{r:0,loot:0},{r:7,loot:7},{r:0,loot:0},{r:1,loot:1},{r:5,loot:5},{r:20,loot:20},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:0,loot:0},{r:3,loot:3},{r:12,loot:12},{r:16,loot:16},{r:7,loot:7},{r:9,loot:9},{r:11,loot:11},{r:10,loot:10},{r:0,loot:0},{r:17,loot:17},{r:1,loot:1},{r:0,loot:0},{r:6,loot:6},{r:9,loot:9},{r:4,loot:4},{r:3,loot:3},{r:3,loot:3},{r:4,loot:4},{r:4,loot:4},{r:4,loot:4},{r:8,loot:8},{r:7,loot:7},{r:9,loot:9},{r:8,loot:8},{r:0,loot:0},{r:2,loot:2},{r:0,loot:0},{r:6,loot:6},{r:6,loot:6},{r:5,loot:5},{r:3,loot:3},{r:2,loot:2},{r:4,loot:4}],
+  s42solo:[{r:16,loot:16,chests:9,rare:0,ammo:7},{r:8,loot:8,chests:0,rare:0,ammo:0},{r:0,loot:0,chests:2,rare:0,ammo:0},{r:12,loot:12,chests:24,rare:0,ammo:13},{r:25,loot:25,chests:3,rare:0,ammo:2},{r:14,loot:14,chests:8,rare:0,ammo:7},{r:16,loot:16,chests:5,rare:0,ammo:1},{r:8,loot:8,chests:19,rare:2,ammo:10},{r:7,loot:7,chests:5,rare:0,ammo:1},{r:4,loot:4,chests:3,rare:0,ammo:0},{r:10,loot:10,chests:17,rare:0,ammo:9},{r:2,loot:2,chests:7,rare:0,ammo:2},{r:1,loot:1,chests:7,rare:0,ammo:3},{r:3,loot:3,chests:19,rare:0,ammo:15},{r:18,loot:18,chests:5,rare:0,ammo:3},{r:0,loot:0,chests:11,rare:0,ammo:6},{r:14,loot:14,chests:23,rare:0,ammo:21},{r:0,loot:0,chests:2,rare:0,ammo:0},{r:8,loot:8,chests:1,rare:0,ammo:1},{r:4,loot:4,chests:8,rare:0,ammo:2},{r:0,loot:0,chests:10,rare:0,ammo:3},{r:15,loot:15,chests:5,rare:0,ammo:1},{r:0,loot:0,chests:6,rare:0,ammo:3},{r:5,loot:5,chests:10,rare:0,ammo:4},{r:5,loot:5,chests:8,rare:0,ammo:5},{r:3,loot:3,chests:11,rare:0,ammo:4},{r:0,loot:0,chests:9,rare:0,ammo:8},{r:3,loot:3,chests:10,rare:0,ammo:6},{r:1,loot:1,chests:4,rare:0,ammo:1},{r:10,loot:10,chests:19,rare:0,ammo:12},{r:3,loot:3,chests:6,rare:0,ammo:3},{r:4,loot:4,chests:16,rare:0,ammo:5},{r:0,loot:0,chests:12,rare:0,ammo:7},{r:0,loot:0,chests:6,rare:0,ammo:0},{r:5,loot:5,chests:11,rare:0,ammo:5},{r:0,loot:0,chests:0,rare:0,ammo:0},{r:0,loot:0,chests:5,rare:0,ammo:4},{r:0,loot:0,chests:10,rare:0,ammo:2},{r:1,loot:1,chests:6,rare:0,ammo:4},{r:0,loot:0,chests:7,rare:0,ammo:0},{r:0,loot:0,chests:8,rare:0,ammo:0},{r:0,loot:0,chests:23,rare:1,ammo:6},{r:0,loot:0,chests:9,rare:0,ammo:3},{r:0,loot:0,chests:12,rare:0,ammo:1},{r:0,loot:0,chests:6,rare:0,ammo:4},{r:29,loot:29,chests:6,rare:0,ammo:2},{r:0,loot:0,chests:0,rare:0,ammo:0},{r:0,loot:0,chests:11,rare:0,ammo:4},{r:0,loot:0,chests:10,rare:0,ammo:5},{r:0,loot:0,chests:11,rare:0,ammo:9},{r:0,loot:0,chests:3,rare:0,ammo:1},{r:1,loot:1,chests:6,rare:0,ammo:1},{r:0,loot:0,chests:13,rare:0,ammo:0},{r:12,loot:12,chests:10,rare:1,ammo:4},{r:0,loot:0,chests:7,rare:0,ammo:3},{r:5,loot:5,chests:0,rare:0,ammo:0},{r:0,loot:0,chests:7,rare:0,ammo:2},{r:8,loot:8,chests:22,rare:0,ammo:17},{r:0,loot:0,chests:7,rare:0,ammo:6},{r:7,loot:7,chests:1,rare:0,ammo:1},{r:0,loot:0,chests:6,rare:0,ammo:3},{r:1,loot:1,chests:6,rare:0,ammo:4},{r:5,loot:5,chests:1,rare:0,ammo:1},{r:20,loot:20,chests:27,rare:0,ammo:23},{r:0,loot:0,chests:12,rare:2,ammo:9},{r:0,loot:0,chests:6,rare:0,ammo:5},{r:0,loot:0,chests:1,rare:0,ammo:0},{r:0,loot:0,chests:3,rare:0,ammo:2},{r:3,loot:3,chests:1,rare:0,ammo:0},{r:12,loot:12,chests:9,rare:0,ammo:2},{r:16,loot:16,chests:16,rare:0,ammo:7},{r:7,loot:7,chests:16,rare:0,ammo:13},{r:9,loot:9,chests:7,rare:0,ammo:8},{r:11,loot:11,chests:14,rare:0,ammo:5},{r:10,loot:10,chests:10,rare:0,ammo:9},{r:0,loot:0,chests:8,rare:0,ammo:4},{r:17,loot:17,chests:27,rare:0,ammo:15},{r:1,loot:1,chests:0,rare:0,ammo:0},{r:0,loot:0,chests:5,rare:0,ammo:0},{r:6,loot:6,chests:1,rare:0,ammo:0},{r:9,loot:9,chests:10,rare:0,ammo:7},{r:4,loot:4,chests:1,rare:0,ammo:0},{r:3,loot:3,chests:13,rare:0,ammo:4},{r:3,loot:3,chests:8,rare:0,ammo:7},{r:4,loot:4,chests:13,rare:0,ammo:8},{r:4,loot:4,chests:5,rare:1,ammo:4},{r:4,loot:4,chests:6,rare:0,ammo:1},{r:8,loot:8,chests:4,rare:0,ammo:0},{r:7,loot:7,chests:5,rare:0,ammo:6},{r:9,loot:9,chests:25,rare:0,ammo:27},{r:8,loot:8,chests:11,rare:0,ammo:7},{r:0,loot:0,chests:3,rare:1,ammo:1},{r:2,loot:2,chests:0,rare:0,ammo:0},{r:0,loot:0,chests:0,rare:0,ammo:1},{r:6,loot:6,chests:4,rare:0,ammo:2},{r:6,loot:6,chests:0,rare:0,ammo:0},{r:5,loot:5,chests:0,rare:0,ammo:0},{r:3,loot:3,chests:1,rare:0,ammo:2},{r:2,loot:2,chests:0,rare:0,ammo:0},{r:4,loot:4,chests:0,rare:0,ammo:0}],
   // The three 2025 islands, rated by the loot the wiki counts inside each
   // rectangle: every named location and landmark on the patch that Major was
   // played on, placed by its real map coordinates, scored on chests plus ammo
@@ -44310,9 +44310,9 @@ const ZONE_STATS={
   // empty field is worth. There is no "teams" or "surv" here: those come from
   // competitive evals that exist for the 2026 islands and not for these, and
   // useLandingSet already defaults the contest rate to 1 rather than inventing one.
-  t1:[{r:25,loot:25},{r:99,loot:99},{r:70,loot:70},{r:15,loot:15},{r:84,loot:84},{r:77,loot:77},{r:90,loot:90},{r:40,loot:40},{r:48,loot:48},{r:20,loot:20},{r:71,loot:71},{r:34,loot:34},{r:51,loot:51},{r:60,loot:60},{r:51,loot:51},{r:122,loot:122},{r:159,loot:159},{r:71,loot:71},{r:46,loot:46},{r:0,loot:0},{r:97,loot:97},{r:42,loot:42},{r:73,loot:73},{r:92,loot:92},{r:78,loot:78},{r:77,loot:77},{r:0,loot:0}],
-  t2:[{r:25,loot:25},{r:99,loot:99},{r:19,loot:19},{r:95,loot:95},{r:84,loot:84},{r:77,loot:77},{r:90,loot:90},{r:48,loot:48},{r:15,loot:15},{r:35,loot:35},{r:71,loot:71},{r:34,loot:34},{r:73,loot:73},{r:15,loot:15},{r:39,loot:39},{r:46,loot:46},{r:121,loot:121},{r:42,loot:42},{r:133,loot:133},{r:9,loot:9},{r:97,loot:97},{r:27,loot:27},{r:70,loot:70},{r:0,loot:0},{r:15,loot:15},{r:111,loot:111},{r:78,loot:78},{r:85,loot:85},{r:0,loot:0}],
-  t3:[{r:25,loot:25},{r:0,loot:0},{r:99,loot:99},{r:0,loot:0},{r:0,loot:0},{r:90,loot:90},{r:71,loot:71},{r:20,loot:20},{r:40,loot:40},{r:71,loot:71},{r:34,loot:34},{r:73,loot:73},{r:56,loot:56},{r:42,loot:42},{r:93,loot:93},{r:72,loot:72},{r:63,loot:63},{r:90,loot:90},{r:35,loot:35},{r:70,loot:70},{r:11,loot:11},{r:97,loot:97},{r:78,loot:78},{r:38,loot:38},{r:69,loot:69}],
+  t1:[{r:25,loot:25,chests:16,ammo:9},{r:99,loot:99,chests:46,ammo:53},{r:70,loot:70,chests:33,ammo:37},{r:15,loot:15,chests:8,ammo:7},{r:84,loot:84,chests:57,ammo:27},{r:77,loot:77,chests:37,ammo:40},{r:90,loot:90,chests:43,ammo:47},{r:40,loot:40,chests:18,ammo:22},{r:48,loot:48,chests:29,ammo:19},{r:20,loot:20,chests:12,ammo:8},{r:71,loot:71,chests:39,ammo:32},{r:34,loot:34,chests:19,ammo:15},{r:51,loot:51,chests:45,ammo:6},{r:60,loot:60,chests:38,ammo:22},{r:51,loot:51,chests:33,ammo:18},{r:122,loot:122,chests:71,ammo:51},{r:159,loot:159,chests:87,ammo:72},{r:71,loot:71,chests:39,ammo:32},{r:46,loot:46,chests:22,ammo:24},{r:0,loot:0,chests:0,ammo:0},{r:97,loot:97,chests:59,ammo:38},{r:42,loot:42,chests:33,ammo:9},{r:73,loot:73,chests:44,ammo:29},{r:92,loot:92,chests:64,ammo:28},{r:78,loot:78,chests:42,ammo:36},{r:77,loot:77,chests:43,ammo:34},{r:0,loot:0,chests:0,ammo:0}],
+  t2:[{r:25,loot:25,chests:16,ammo:9},{r:99,loot:99,chests:46,ammo:53},{r:19,loot:19,chests:12,ammo:7},{r:95,loot:95,chests:44,ammo:51},{r:84,loot:84,chests:57,ammo:27},{r:77,loot:77,chests:37,ammo:40},{r:90,loot:90,chests:43,ammo:47},{r:48,loot:48,chests:29,ammo:19},{r:15,loot:15,chests:7,ammo:8},{r:35,loot:35,chests:24,ammo:11},{r:71,loot:71,chests:34,ammo:37},{r:34,loot:34,chests:19,ammo:15},{r:73,loot:73,chests:57,ammo:16},{r:15,loot:15,chests:7,ammo:8},{r:39,loot:39,chests:28,ammo:11},{r:46,loot:46,chests:26,ammo:20},{r:121,loot:121,chests:68,ammo:53},{r:42,loot:42,chests:31,ammo:11},{r:133,loot:133,chests:78,ammo:55},{r:9,loot:9,chests:7,ammo:2},{r:97,loot:97,chests:59,ammo:38},{r:27,loot:27,chests:26,ammo:1},{r:70,loot:70,chests:44,ammo:26},{r:0,loot:0,chests:0,ammo:0},{r:15,loot:15,chests:11,ammo:4},{r:111,loot:111,chests:77,ammo:34},{r:78,loot:78,chests:42,ammo:36},{r:85,loot:85,chests:51,ammo:34},{r:0,loot:0,chests:0,ammo:0}],
+  t3:[{r:25,loot:25,chests:16,ammo:9},{r:0,loot:0,chests:0,ammo:0},{r:99,loot:99,chests:46,ammo:53},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:90,loot:90,chests:43,ammo:47},{r:71,loot:71,chests:43,ammo:28},{r:20,loot:20,chests:12,ammo:8},{r:40,loot:40,chests:18,ammo:22},{r:71,loot:71,chests:34,ammo:37},{r:34,loot:34,chests:19,ammo:15},{r:73,loot:73,chests:57,ammo:16},{r:56,loot:56,chests:31,ammo:25},{r:42,loot:42,chests:31,ammo:11},{r:93,loot:93,chests:53,ammo:40},{r:72,loot:72,chests:40,ammo:32},{r:63,loot:63,chests:46,ammo:17},{r:90,loot:90,chests:55,ammo:35},{r:35,loot:35,chests:26,ammo:9},{r:70,loot:70,chests:44,ammo:26},{r:11,loot:11,chests:8,ammo:3},{r:97,loot:97,chests:73,ammo:24},{r:78,loot:78,chests:42,ammo:36},{r:38,loot:38,chests:23,ammo:15},{r:69,loot:69,chests:44,ammo:25}],
   m1:[
     {r:29,loot:68,teams:3.46,surv:51},{r:16,loot:23,teams:1.68,surv:58},{r:37,loot:53,teams:1.96,surv:57},
     {r:29,loot:33,teams:1.38,surv:58},{r:55,loot:49,teams:1.74,surv:65},{r:48,loot:28,teams:0.78,surv:60},
@@ -44789,6 +44789,8 @@ function trimLandingZonesForMode(){
 // used to read CARD_SET regardless — so picking Chapter 6 Season 3 in a normal
 // duo cup laid that island's landing grid over last season's satellite photo.
 let ACTIVE_LANDING_SET='m2';
+// Чей счёт сундуков у острова (поле chests в ZONE_STATS): подпись в подсказке точки.
+const CC_CHESTS_SRC={s42:'fortnite.gg', s42solo:'fortnite.gg', t1:'wiki', t2:'wiki', t3:'wiki', m1:'Kinch', m2:'Kinch'};
 function useLandingSet(key){
   const set = ZONE_SETS[key] ? key : 'm2';
   ACTIVE_LANDING_SET=set;
@@ -44797,6 +44799,13 @@ function useLandingSet(key){
   // The rectangle is copied through untouched; the season's real numbers ride
   // along beside it.
   ZONE_SETS[set].forEach((z,i)=>ALL_LANDING_ZONES.push({...z, ...(stats[i]||{})}));
+  /* Сундуков в коробке (chests) — откуда: s42/s42solo по точкам fortnite.gg, острова
+     2025 — со страниц локаций на вики; у m1/m2 вики покрывает 17 коробок из 36
+     (Ch7S2–S3 там описаны наполовину), зато у каждой коробки есть Kinch «loot —
+     items the spot yields», и там, где вики считала, числа сходятся (Lifty Lodge
+     60/56, Cluster Coast 27/28, Shaken Sanctuary 53/58, Calamari 55/46) — он и идёт
+     за счёт сундуков у этих двух островов. Подпись источника — CC_CHESTS_SRC. */
+  if(CC_CHESTS_SRC[set]==='Kinch') ALL_LANDING_ZONES.forEach(z=>{ if(z.chests==null && z.loot!=null) z.chests=z.loot; });
   // Zone value comes from that season's published drop-spot rating, not from
   // how big the rectangle happens to be. Ratings are graded against the rest of
   // the same island — a spot is worth what it is worth relative to its own
@@ -53119,8 +53128,26 @@ const CC_CHESTS_POI=8, CC_CHESTS_LEAVE=4, CC_CHEST_CONSUMABLE=0.6;
    летели. Остров без счётного лута — по-старому 8/4. Пропорция и края — порядок
    величины, как и сама восьмёрка, не замер. */
 const CC_CHESTS_MIN=2, CC_CHESTS_MAX=14, CC_CHESTS_LEAVE_SHARE=CC_CHESTS_LEAVE/CC_CHESTS_POI;
+/* СУНДУКОВ НА ТОЧКЕ — КАК В ИГРЕ (его слово 7.09: «сундуков на локациях, как в
+   настоящем фортнайте, как на fortnite gg»). У коробки поле chests — сколько сундуков
+   стоит в ней на самом деле: s42/s42solo считаны по точкам fortnite.gg (патч 42.03,
+   tools/build-fgg-chests.js, кадр сведён по 30 локациям с расхождением ≤1.7 %), у
+   остальных островов — с инфобоксов локаций на вики (build-2025-zone-loot.js). Такая
+   коробка отдаёт своё число как есть (Battlewoods с окрестностями — 117, пустой
+   берег — 0); коробка без счёта — по луту, как ниже. Открывает же отряд не всё:
+   CC_CHESTS_OPEN_PER_PLAYER на игрока до первой зоны (ccSiteOpen) — РЕШЕНИЕ, не замер
+   (в JSON реплеев Tracker сундуков нет); в пак идут только открытые. */
+const CC_CHESTS_OPEN_PER_PLAYER=12;
+// Чей счёт сундуков у острова — CC_CHESTS_SRC рядом с useLandingSet; подпись в подсказке точки.
+const ccSiteSrc=()=>CC_CHESTS_SRC[(typeof ACTIVE_LANDING_SET!=='undefined') ? ACTIVE_LANDING_SET : '']||'';
+const ccSiteReal=zone=>!!(zone && zone.chests!=null);
+function ccSiteOpen(n){
+  const cap=CC_CHESTS_OPEN_PER_PLAYER*Math.max(1, (typeof squadSize==='number' && squadSize) || 1);
+  return Math.max(1, Math.min(Math.round(n), cap));
+}
 function ccSiteChests(zone, share){
   share = share==null ? 1 : share;
+  if(ccSiteReal(zone)) return Math.max(0, Math.round(zone.chests*share));
   let n=CC_CHESTS_POI;
   const zones=(typeof ALL_LANDING_ZONES!=='undefined') ? ALL_LANDING_ZONES : [];
   const loots=zones.map(z=>z.loot).filter(v=>v>0).sort((a,b)=>a-b);
@@ -53262,11 +53289,14 @@ async function ccAskSite(you, ui){
   const set=ccLootSet();
   const T=L();
   ccMpMark('st0'+(you.mpTag||''));
-  // Сундуков — по луту этой коробки; уходя — доля сундуков ближней свободной (ccSiteChests).
-  const nPoi=ccSiteChests(zone);
+  // Сундуков на точке — сколько их там стоит (fortnite.gg / вики) или по луту коробки
+  // (ccSiteChests); открываем до первой зоны не всё (ccSiteOpen); уходя — доля
+  // сундуков ближней свободной коробки.
+  const nPoi=ccSiteChests(zone), nOpen=ccSiteOpen(nPoi);
   const free=ccFreeBoxNear(game, you);
-  const nLeave=ccSiteChests(free, CC_CHESTS_LEAVE_SHARE);
-  const mine=ccChestPack(Math.random, set, nPoi);
+  const nLeave=ccSiteOpen(ccSiteChests(free, CC_CHESTS_LEAVE_SHARE));
+  const at=ccSiteReal(zone) ? T.ccSiteAt(nPoi, nOpen, ccSiteSrc())+' · ' : '';
+  const mine=ccChestPack(Math.random, set, nOpen);
   const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
   if(!rivals.length){
     /* Своя точка без чужих — сундуки открываются НА ЭКРАНЕ, а не строкой на две
@@ -53276,13 +53306,13 @@ async function ccAskSite(you, ui){
     you._loot=mine; const pv=ccPackPow(mine); ccAddGamePow(you, pv);
     const labels=[...(mine.weapons||[]), ...(mine.heals||[]), mine.move].filter(Boolean).map(ccItemLabel).join(' · ');
     await ccMpChoose('own'+(you.mpTag||''), async function(){
-      return (await ccChoiceBox(T.ccSiteOwnTitle, T.ccSiteOwnHint(nPoi), [
+      return (await ccChoiceBox(T.ccSiteOwnTitle, at+T.ccSiteOwnHint(nOpen), [
         {id:'take', def:true, icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.chest), title:T.ccSiteTake,
          note:labels+' — '+T.ccSitePackPow(pv)}
       ], ui && ui.map)).id;
     }, function(){ return T.ccSiteTake; });
     ccMpMark('st1');
-    await say(T.ccSiteOwn(nPoi, ccPackLine(mine)), null);
+    await say(T.ccSiteOwn(nOpen, ccPackLine(mine)), null);
     return;
   }
   // Стычка — с сильнейшими из тех, кто сел на ту же коробку; остальные остаются движку.
@@ -53293,10 +53323,10 @@ async function ccAskSite(you, ui){
   const bare=t=>String(t.name||'').replace(/<[^>]+>/g,'').trim();
   const names=rivals.map(bare).join(' · ');
   const pickId=(await ccMpChoose('site'+(you.mpTag||''), async function(){
-    return (await ccChoiceBox(T.ccSiteTitle(names), T.ccSiteHint(ccItemLabel(mine.first.weapon), ccItemLabel(theirs.weapon)), [
-      {id:'leave', def:true, icon:CC_CHOICE_ICON.run, title:T.ccSiteLeave, note:T.ccSiteLeaveNote(nLeave, nPoi)},
+    return (await ccChoiceBox(T.ccSiteTitle(names), at+T.ccSiteHint(ccItemLabel(mine.first.weapon), ccItemLabel(theirs.weapon)), [
+      {id:'leave', def:true, icon:CC_CHOICE_ICON.run, title:T.ccSiteLeave, note:T.ccSiteLeaveNote(nLeave, nOpen)},
       {id:'fight', icon:ccItemIconHTML(mine.first.weapon, CC_CHOICE_ICON.fight), title:T.ccSiteFight,
-       note:T.ccSiteFightNote(Math.round(p*100), nPoi, eMine, eFoe)}
+       note:T.ccSiteFightNote(Math.round(p*100), nOpen, eMine, eFoe)}
     ], ui && ui.map)).id;
   }, function(v){ return v==='fight' ? T.ccSiteFight : T.ccSiteLeave; })).v;
   ccMpMark('a1:'+pickId);
@@ -53309,7 +53339,7 @@ async function ccAskSite(you, ui){
       if(fs) fs.droppedOut=true;
       game.eliminate(foe, you);
       you._loot=mine; ccAddGamePow(you, ccPackPow(mine));
-      await say(T.ccSiteWon(bare(foe), nPoi), true);
+      await say(T.ccSiteWon(bare(foe), nOpen), true);
     } else {
       if(sq) sq.droppedOut=true;
       game.eliminate(you, foe);
@@ -53323,12 +53353,13 @@ async function ccAskSite(you, ui){
   await say(T.ccSiteLeft(nLeave, ccPackLine(small)), null);
 }
 // Комната открывает свои сундуки тем же правилом; под симуляцией (you=null) — и игрок.
-// Сундуков у каждого — по луту его коробки (ccSiteChests), как у игрока.
+// Сундуков у каждого — сколько стоит в его коробке (ccSiteChests) и сколько отряд
+// успевает открыть (ccSiteOpen), как у игрока.
 function ccRoomSite(field, you){
   const set=ccLootSet();
   field.forEach(t=>{
     if(you && (t===you || t.isMate)) return;
-    const p=ccChestPack(Math.random, set, ccSiteChests(t.landingZone));
+    const p=ccChestPack(Math.random, set, ccSiteOpen(ccSiteChests(t.landingZone)));
     t._loot=p; ccAddGamePow(t, ccPackPow(p));
   });
 }
