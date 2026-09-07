@@ -991,6 +991,7 @@ ccKitMats:m=>'Ресы '+m, ccKitLootNone:'лут: свой пак', ccKitOut:'�
 ccKitSurgeOff:'сёрдж выключен', ccKitSurgeAt:(a,p)=>'сёрдж с '+a+' игроков · в игре '+p,
 // Баннер и подпись под числом — как на HUD игры («STORM SURGE ACTIVE!» и «269 ABOVE DAMAGE THRESHOLD»).
 ccKitSurgeBanner:'СЁРДЖ АКТИВЕН!', ccKitUnderBanner:'ТЫ ПОД СЁРЖЕМ!',
+ccKitSurgeWarn:'ПРЕДУПРЕЖДЕНИЕ О СЁРДЖЕ!', ccKitSurgeWarnSub:'НАНОСИ УРОН ВРАГАМ, ЧТОБЫ НЕ ВЫЛЕТЕТЬ!',
 ccKitAboveCap:'над порогом урона', ccKitBelowCap:'до порога урона',
 // Рычаги игроку (5.09): стиль стройки и лечение.
 ccBuildTitle:'Третья зона — как строим', ccBuildNorm:'Как обычно', ccBuildNormNote:m=>m+' ресов за круг',
@@ -1753,6 +1754,7 @@ ccStream_long:'Марафон', ccStream_longNote:'вдвое дольше и в
 ccStreamCatFn:'Fortnite', ccStreamCatChat:'Общение', ccStreamCatRanked:'Ранкед', ccStreamCatCreative:'Творческий',
 ccStreamFollowed:'Отслеживаемые каналы', ccStreamMore:'Показать ещё', ccStreamOffline:'Не в сети',
 ccStreamChat:'Чат трансляции', ccStreamSay:'Отправить сообщение', ccStreamLang:'Русский',
+ccTvFollow:'Отслеживать', ccTvSubsToday:n=>'Сабов сегодня: '+n, ccTvTopDonors:'Топ донатеров', ccStreamAlsoWatch:'Зрители также смотрят',
 ccStreamBits:'Bits', ccStreamGift:'Подарить саб', ccStreamSub:'Подписаться',
 ccStreamTitleLive:'FNCS. Идём в финал недели', ccStreamTitleOff:'Канал не в эфире — время выйти',
 ccStreamSubsToday:n=>'Подписок сегодня: '+n, ccStreamUptime:'В эфире',
@@ -2910,6 +2912,7 @@ ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccK
 ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: own pack', ccKitOut:'eliminated', ccKitPickaxe:'Pickaxe',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge from '+a+' players · alive '+p,
 ccKitSurgeBanner:'STORM SURGE ACTIVE!', ccKitUnderBanner:'YOU ARE UNDER SURGE!',
+ccKitSurgeWarn:'STORM SURGE WARNING!', ccKitSurgeWarnSub:'DAMAGE ENEMIES TO AVOID ELIMINATION!',
 ccKitAboveCap:'above damage threshold', ccKitBelowCap:'below damage threshold',
 ccBuildTitle:'Zone 3 — how do we build', ccBuildNorm:'As usual', ccBuildNormNote:m=>m+' mats a circle',
 ccBuildEco:'Save mats', ccBuildEcoNote:(m,p)=>m+' a circle — mats last to the end, but fewer builds: −'+p+' power',
@@ -3662,6 +3665,7 @@ ccStream_long:'Marathon', ccStream_longNote:'twice as long and twice as much, pl
 ccStreamCatFn:'Fortnite', ccStreamCatChat:'Just Chatting', ccStreamCatRanked:'Ranked', ccStreamCatCreative:'Creative',
 ccStreamFollowed:'Followed channels', ccStreamMore:'Show more', ccStreamOffline:'Offline',
 ccStreamChat:'Stream chat', ccStreamSay:'Send a message', ccStreamLang:'English',
+ccTvFollow:'Follow', ccTvSubsToday:n=>'Subs today: '+n, ccTvTopDonors:'Top donors', ccStreamAlsoWatch:'Viewers also watch',
 ccStreamBits:'Bits', ccStreamGift:'Gift a sub', ccStreamSub:'Subscribe',
 ccStreamTitleLive:'FNCS. Pushing for the Weekly Final', ccStreamTitleOff:'Channel offline — time to go live',
 ccStreamSubsToday:n=>'Subs today: '+n, ccStreamUptime:'Live',
@@ -4972,6 +4976,7 @@ ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccK
 ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot : ton pack', ccKitOut:'éliminés', ccKitPickaxe:'Pioche',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge dès '+a+' joueurs · en vie '+p,
 ccKitSurgeBanner:'STORM SURGE ACTIF !', ccKitUnderBanner:'TU ES SOUS SURGE !',
+ccKitSurgeWarn:'ALERTE STORM SURGE !', ccKitSurgeWarnSub:'INFLIGE DES DÉGÂTS POUR ÉVITER L’ÉLIMINATION !',
 ccKitAboveCap:'au-dessus du seuil de dégâts', ccKitBelowCap:'sous le seuil de dégâts',
 ccBuildTitle:'Zone 3 — comment on build', ccBuildNorm:'Comme d\'habitude', ccBuildNormNote:m=>m+' mats par cercle',
 ccBuildEco:'Économiser', ccBuildEcoNote:(m,p)=>m+' par cercle — les mats tiennent jusqu\'au bout, mais moins de builds : −'+p+' de puissance',
@@ -6034,6 +6039,7 @@ ccStream_long:'Marathon', ccStream_longNote:'deux fois plus long et deux fois pl
 ccStreamCatFn:'Fortnite', ccStreamCatChat:'Discussion', ccStreamCatRanked:'Ranked', ccStreamCatCreative:'Créatif',
 ccStreamFollowed:'Chaînes suivies', ccStreamMore:'Voir plus', ccStreamOffline:'Hors ligne',
 ccStreamChat:'Chat du live', ccStreamSay:'Envoyer un message', ccStreamLang:'Français',
+ccTvFollow:'Suivre', ccTvSubsToday:n=>'Abos du jour : '+n, ccTvTopDonors:'Top donateurs', ccStreamAlsoWatch:'Les viewers regardent aussi',
 ccStreamBits:'Bits', ccStreamGift:'Offrir un sub', ccStreamSub:"S'abonner",
 ccStreamTitleLive:'FNCS. On vise la finale hebdo', ccStreamTitleOff:'Chaîne hors ligne — il est temps',
 ccStreamSubsToday:n=>'Subs du jour : '+n, ccStreamUptime:'En direct',
@@ -6366,6 +6372,7 @@ ccStream_long:"Maratona", ccStream_longNote:"il doppio più lunga e il doppio di
 ccStreamCatFn:"Fortnite", ccStreamCatChat:"Chiacchiere", ccStreamCatRanked:"Ranked", ccStreamCatCreative:"Creativa",
 ccStreamFollowed:"Canali seguiti", ccStreamMore:"Mostra altro", ccStreamOffline:"Offline",
 ccStreamChat:"Chat della diretta", ccStreamSay:"Invia un messaggio", ccStreamLang:"Italiano",
+ccTvFollow:"Segui", ccTvSubsToday:n=>"Abbonati oggi: "+n, ccTvTopDonors:"Top donatori", ccStreamAlsoWatch:"Gli spettatori guardano anche",
 ccStreamBits:"Bits", ccStreamGift:"Regala un sub", ccStreamSub:"Abbonati",
 ccStreamTitleLive:"FNCS. Puntiamo alla finale settimanale", ccStreamTitleOff:"Canale offline — è ora di andare live",
 ccStreamSubsToday:n=>"Sub di oggi: "+n, ccStreamUptime:"In diretta",
@@ -6881,6 +6888,7 @@ ccKitLine:(m,low,loot)=>'Mats '+m+(low?' \u00b7 '+low:'')+(loot?' \u00b7 '+loot:
 ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: il tuo pack', ccKitOut:'eliminati', ccKitPickaxe:'Piccone',
 ccKitSurgeOff:'surge off', ccKitSurgeAt:(a,p)=>'surge da '+a+' giocatori \u00b7 vivi '+p,
 ccKitSurgeBanner:'STORM SURGE ATTIVO!', ccKitUnderBanner:'SEI SOTTO SURGE!',
+ccKitSurgeWarn:'AVVISO STORM SURGE!', ccKitSurgeWarnSub:'INFLIGGI DANNI PER EVITARE L’ELIMINAZIONE!',
 ccKitAboveCap:'sopra la soglia di danni', ccKitBelowCap:'sotto la soglia di danni',
 ccBuildTitle:"Zona 3 — come costruiamo", ccBuildNorm:"Come al solito", ccBuildNormNote:m=>m+" mats a cerchio",
 ccBuildEco:"Risparmiare", ccBuildEcoNote:(m,p)=>m+" a cerchio — i mats bastano fino alla fine, ma meno build: −"+p+" potenza",
@@ -8839,6 +8847,7 @@ ccStream_long:"Maratona", ccStream_longNote:"o dobro do tempo e o dobro de tudo,
 ccStreamCatFn:"Fortnite", ccStreamCatChat:"Bate-papo", ccStreamCatRanked:"Ranked", ccStreamCatCreative:"Criativo",
 ccStreamFollowed:"Canais seguidos", ccStreamMore:"Mostrar mais", ccStreamOffline:"Offline",
 ccStreamChat:"Chat da live", ccStreamSay:"Enviar uma mensagem", ccStreamLang:"Português",
+ccTvFollow:"Seguir", ccTvSubsToday:n=>"Subs hoje: "+n, ccTvTopDonors:"Top doadores", ccStreamAlsoWatch:"Espectadores também assistem",
 ccStreamBits:"Bits", ccStreamGift:"Presentear sub", ccStreamSub:"Inscrever-se",
 ccStreamTitleLive:"FNCS. Buscando a final semanal", ccStreamTitleOff:"Canal offline — hora de entrar ao vivo",
 ccStreamSubsToday:n=>"Subs de hoje: "+n, ccStreamUptime:"Ao vivo",
@@ -9354,6 +9363,7 @@ ccKitLine:(m,low,loot)=>'Mats '+m+(low?' · '+low:'')+(loot?' · '+loot:''), ccK
 ccKitMats:m=>'Mats '+m, ccKitLootNone:'loot: seu pack', ccKitOut:'eliminados', ccKitPickaxe:'Picareta',
 ccKitSurgeOff:'surge desligado', ccKitSurgeAt:(a,p)=>'surge a partir de '+a+' jogadores · vivos '+p,
 ccKitSurgeBanner:'STORM SURGE ATIVO!', ccKitUnderBanner:'VOCÊ ESTÁ SOB SURGE!',
+ccKitSurgeWarn:'AVISO DE STORM SURGE!', ccKitSurgeWarnSub:'CAUSE DANO AOS INIMIGOS PARA NÃO SER ELIMINADO!',
 ccKitAboveCap:'acima do limite de dano', ccKitBelowCap:'abaixo do limite de dano',
 ccBuildTitle:"Zona 3 — como construímos", ccBuildNorm:"Como sempre", ccBuildNormNote:m=>m+" mats por círculo",
 ccBuildEco:"Economizar", ccBuildEcoNote:(m,p)=>m+" por círculo — os mats duram até o fim, mas menos builds: −"+p+" de força",
@@ -45857,17 +45867,42 @@ function ccKitPanel(lobby, frame){
      порога». Пока сёрдж никого не бьёт, на экране НИЧЕГО — так и в игре (его
      скрин высадки, 5.09: ни порога, ни предупреждения). */
   const active = frame.surgeAt>0 && frame.surgeLine!=null;
-  const gap = active ? (Number(d.n)||0)-frame.surgeLine : 0;
+  /* ПРЕДУПРЕЖДЕНИЕ — как в игре (его скрины 7 сентября с финала дивизиона 1:
+     «STORM SURGE WARNING! DAMAGE ENEMIES TO AVOID ELIMINATION!» при 46 живых
+     и «149 ABOVE DAMAGE THRESHOLD» рядом). Сёрдж ещё никого не бьёт, но живых
+     больше порога СЛЕДУЮЩЕГО круга — значит, с новым кругом он включится, и
+     игра уже показывает, где ты относительно будущей линии. Линия считается
+     тем же правилом, что в движке (applySurge): отсечь столько нижних по
+     чистому урону, на сколько живых больше порога. Reload сёрджа не знает. */
+  const reload=/^r\d$/.test(String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : ''));
+  const nextPh=(!active && !reload && typeof ZoneSim!=='undefined' && ZoneSim.PHASES) ? ZoneSim.PHASES[frame.zone] : null;
+  const nextAt=nextPh && isFinite(nextPh.surgeAt) ? nextPh.surgeAt : 0;
+  // На первом круге предупреждения нет — его скрин высадки 5.09: ни порога, ни баннера.
+  const warn=!active && frame.zone>=2 && nextAt>0 && frame.players!=null && frame.players>nextAt;
+  let line=active ? frame.surgeLine : null;
+  if(warn){
+    const alive=(frame.dots||[]).filter(x=>x && x.alive);
+    const per=alive.length ? Math.max(1, frame.players/alive.length) : 1;
+    const nets=alive.map(x=>Number(x.n)||0).sort((a,b)=>a-b);
+    const k=Math.min(nets.length-1, Math.ceil((frame.players-nextAt)/per));
+    line=nets.length ? nets[k] : null;
+  }
+  const gap=(line!=null) ? (Number(d.n)||0)-line : 0;
+  const below=active ? !!d.u : (line!=null && gap<0);
   const tri='<i class="zk-tri"></i>';
   /* И порог заранее — его вопрос 6 сентября «а на экране у игрока есть
      сёрдж?»: пока сёрдж никого не бьёт, но фаза его уже знает, стоит тихая
      строка «сёрдж с 60 · в игре 76», как между зонами на турнирном HUD. */
+  const thresh=(line!=null)
+    ? '<div class="zk-thresh'+(below?' on':' ok')+'">'+tri+'<div><b>'+ccNum(Math.abs(Math.round(gap)))+'</b><span>'+esc(below ? T.ccKitBelowCap : T.ccKitAboveCap)+'</span></div></div>'
+    : '';
   const surge = active
-    ? '<div class="zk-banner'+(d.u?' on':'')+'">'+tri+'<b>'+esc(d.u ? T.ccKitUnderBanner : T.ccKitSurgeBanner)+'</b></div>'+
-      '<div class="zk-thresh'+(d.u?' on':' ok')+'">'+tri+'<div><b>'+Math.abs(Math.round(gap))+'</b><span>'+esc(d.u ? T.ccKitBelowCap : T.ccKitAboveCap)+'</span></div></div>'
-    : (frame.surgeAt>0
-        ? '<div class="zk-surgeat">'+esc(T.ccKitSurgeAt(frame.surgeAt, frame.players!=null ? frame.players : ''))+'</div>'
-        : '');
+    ? '<div class="zk-banner'+(d.u?' on':'')+'">'+tri+'<b>'+esc(d.u ? T.ccKitUnderBanner : T.ccKitSurgeBanner)+'</b></div>'+thresh
+    : warn
+      ? '<div class="zk-banner warn">'+tri+'<b>'+esc(T.ccKitSurgeWarn)+'</b><i class="zk-sub">'+esc(T.ccKitSurgeWarnSub)+'</i></div>'+thresh
+      : (frame.surgeAt>0
+          ? '<div class="zk-surgeat">'+esc(T.ccKitSurgeAt(frame.surgeAt, frame.players!=null ? frame.players : ''))+'</div>'
+          : '');
   // Золотой шестиугольник у полосок — очки сессии («поинты» турнирного HUD):
   // этап плюс текущая игра, из живого счёта таблицы (CC_KIT_PTS), иначе этап.
   const level=CC_KIT_PTS!=null ? CC_KIT_PTS : Math.round(you.stagePts||0);
@@ -50678,7 +50713,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='7fced01a';
+const CC_BUILD='4689ca71';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -72662,7 +72697,11 @@ const CC_DIV_WEAK={1:[0,0], 2:[1.5,4], 3:[2,5], 4:[2,5], 5:[1.5,2.5]};
    финал соло к третьей зоне (62 живых при реальных 88). Не измерено и потому
    на запасной формуле (null, профиль по таблице очков): Про-Ам, Reload дуо
    Victory Cup, ранкед-капы. */
-const CC_ZONE_D1=[0,0], CC_ZONE_OPEN_DUO=[1,3], CC_ZONE_OPEN_SOLO=[0.7,3.5], CC_ZONE_SOLO_QUAL=[0.5,5], CC_ZONE_EVAL=[1,2];
+/* 7.09: поле финала соло — сильнейшая сотня (careerSoloField, stage), SIZE_SCALE_MIN
+   0.7 и CHIP_SOLO_MUL в движке; квал перебран под это: [0.8, 6] — движок 92 82 77
+   72 64 56 50 43 36 21 12 при реплее 88 76 72 68 66 61 54 44 36 27 17 (разрыв
+   3.6); Solo VC при [0.7, 3.5] — 90 79 66 57 49 44 40 35 31 20 11 (разрыв 3.1). */
+const CC_ZONE_D1=[0,0], CC_ZONE_OPEN_DUO=[1,3], CC_ZONE_OPEN_SOLO=[0.7,3.5], CC_ZONE_SOLO_QUAL=[0.8,6], CC_ZONE_EVAL=[1,2];
 // Принудительный профиль движка на вечер; applyStageBias читает его перед
 // таблицей очков. null — как решит таблица.
 let CC_ZONE_PROFILE=null;
@@ -75410,16 +75449,32 @@ function careerVictoryOn(iso){ return CC_VICTORY.find(v=>v.day===iso) || null; }
 // open — the same flag careerCupField takes, and it means the same thing here:
 // the room is the region rather than the rung the player stands on, so the
 // whole roster is in it and the ladder behind them comes from every band.
-function careerSoloField(cr, mine, size, open){
+/* stage — стадия соло-серии ('qual' | 'heats' | 'final' | стадии FNCS Solos).
+   Финал и хиты — не случайная сотня из снимка дивизиона, а СИЛЬНЕЙШИЕ: в
+   финале сидят сто лучших из тысяч, в хитах — те, кто прошёл квал. Со
+   случайной сотней медиана рейтинга поля была 67 при карточке игрока 92, и
+   игрок каждую игру шёл первым по урону в лобби (проба
+   tools/career-surge-you-probe.js, 7 сентября 2026: на седьмой зоне свой
+   чистый урон 569 при медиане комнаты 138; в реплеях финала Solo Series
+   победители идут на 200–470, а p90 поля — 350–450). Финал — top-need по
+   рейтингу; хиты и LCQ — из удвоенного верха, перетасованного. */
+function careerSoloField(cr, mine, size, open, stage){
   const rnd=careerRng(careerSeed(cr,'solo'));
   const band=ccBand(cr.division);
   const taken=new Set((mine||[]).map(hKey));
   const need=(size||CAREER_CUP_FIELD)-1;
   const players=[];
+  const st=String(stage||'');
+  const tight = !open && /final|heats|lcq/.test(st) ? (/final/.test(st) ? 1 : 2) : 0;
   // The same pool the duo events seat, read as people. Division 1 and the open
   // events get the snapshot; below Division 1 this yields nothing.
-  careerRealPlayers(taken, rnd, open ? 'all' : cr.division).slice(0, need)
-    .forEach(x=>{ taken.add(hKey(x)); players.push(x); });
+  let real=careerRealPlayers(taken, rnd, open ? 'all' : cr.division);
+  if(tight){
+    const ovrOf=x=>(x._ovr!=null ? x._ovr : (attrsFor(x)||{}).ovr)||0;
+    real=real.slice().sort((a,b)=>ovrOf(b)-ovrOf(a)).slice(0, need*tight);
+    if(tight>1){ for(let i=real.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); const t=real[i]; real[i]=real[j]; real[j]=t; } }
+  }
+  real.slice(0, need).forEach(x=>{ taken.add(hKey(x)); players.push(x); });
   while(players.length<need){
     const o = open ? ccOpenFillOvr(rnd)
             : cr.division===1 ? ccD1FillOvr(rnd)
@@ -79746,7 +79801,7 @@ async function runCareerSoloSeries(){
      #278 scroll:96 vs sky:96». Сторож — live-two с CC_NICK_A=Sky CC_NICK_B=Scroll. */
   const field=[...humans, ...(peerBot ? [peerBot] : []),
                ...careerSoloField(lobbyCr, mate ? [me, pc] : peerBot ? [me, peerCard] : drafted,
-                                  size-(humans.length-1)-(peerBot ? 1 : 0), open)];
+                                  size-(humans.length-1)-(peerBot ? 1 : 0), open, ev.stage)];
 
   const kindsForDrop=['solo'];
   const zones=null;
@@ -82076,6 +82131,7 @@ function ccTvSummaryClose(){
    число тиков вечера, плюс всплеск после победы в игре. Что показано — то и
    получено: итог вечера берёт большее из формулы и того, что прошло в чате.
    Под перемоткой тиков мало, и правит формула; вживую — чат. */
+let CC_TV_TOP={};   // донатеры эфира: ник → долларов за вечер (сабы и донаты), см. ccTvLeadHTML
 let CC_TV_T=null, CC_TV_VIEW=0, CC_TV_PEAK=0, CC_TV_HYPE=0,
     CC_TV_BASE=0, CC_TV_SEEN=0, CC_TV_WHO=[], CC_TV_MSGS=[], CC_TV_RUN=null, CC_TV_INCUT=null,
     CC_TV_T0=0, CC_TV_EV={fol:0, subs:0, cash:0}, CC_TV_BURST=0,
@@ -82140,15 +82196,24 @@ function ccTvOpen(next){
          : esc(String(name||'?').slice(0,2).toUpperCase()))+'</span>';
   let mine=null;
   try{ mine=photoURL(me.photo ? {_photo:me.photo} : careerCard()); }catch(e){ mine=null; }
-  // Отслеживаемые — та же витрина, что на вкладке: шесть в эфире, трое не в сети.
+  /* Значки у ников — как на Twitch: у части чата фиолетовый саб, у единиц
+     зелёный мод и розовый VIP. Раздаются один раз на эфир, чтобы один и тот же
+     человек весь вечер ходил с одним значком. */
+  CC_TV_WHO.forEach(w=>{ const r=Math.random(); w.b = r<0.04 ? 'mod' : r<0.09 ? 'vip' : r<0.35 ? 'sub' : ''; });
+  CC_TV_TOP={};
+  /* Слева — как в сайдбаре Twitch (его референс 7 сентября): отслеживаемые
+     каналы с онлайном (шесть в эфире, трое не в сети) и ниже «зрители также
+     смотрят» — ещё трое в эфире. */
   let side=[];
-  try{ side=careerLiveNow(9); }catch(e){ side=[]; }
-  const rows=side.map((s,i)=>'<div class="cc-tv-srow">'+
+  try{ side=careerLiveNow(12); }catch(e){ side=[]; }
+  const srow=(s, live)=>'<div class="cc-tv-srow">'+
       av(s.card ? photoURL(s.card) : (s.ava||null), s.name)+
       '<div class="cc-tv-sin"><b>'+esc(s.name)+'</b><em>'+esc(T[s.cat]||'')+'</em></div>'+
-      (i<6 ? '<span class="cc-tv-vv"><i></i>'+ccNum(s.v)+'</span>'
-           : '<span class="cc-tv-off">'+esc(T.ccStreamOffline)+'</span>')+
-    '</div>').join('');
+      (live ? '<span class="cc-tv-vv"><i></i>'+ccNum(s.v)+'</span>'
+            : '<span class="cc-tv-off">'+esc(T.ccStreamOffline)+'</span>')+
+    '</div>';
+  const rows=side.slice(0, 9).map((s,i)=>srow(s, i<6)).join('');
+  const also=side.slice(9, 12).map(s=>srow(s, true)).join('');
   const box=document.createElement('div');
   box.id='ccTvFrame'; box.className='cc-tv';
   box.innerHTML=
@@ -82158,11 +82223,29 @@ function ccTvOpen(next){
         '<div class="cc-tv-chan-in"><b>'+esc(me.nick||'')+'</b><em>'+esc(label)+'</em>'+
           '<span>'+esc(T.ccStreamCatFn)+'</span></div></div>'+
       '<div class="cc-tv-side-h">'+esc(T.ccStreamFollowed)+'</div>'+rows+
+      (also ? '<div class="cc-tv-side-h cc-tv-side-h2">'+esc(T.ccStreamAlsoWatch)+'</div>'+also : '')+
     '</aside>'+
+    /* Под плеером — строка канала, как под видео на Twitch: аватар с LIVE,
+       ник, название эфира, категория и язык, кнопки Follow / Gift a Sub /
+       Subscribe и справа онлайн с аптаймом. Это то место, куда на Twitch
+       смотрят за онлайном; в правой колонке он дублируется мелко. */
+    '<div class="cc-tv-under" id="ccTvUnder">'+
+      '<div class="cc-tv-under-ch">'+av(mine, me.nick)+'<i class="cc-tv-livetag">'+esc(T.chLiveTag)+'</i></div>'+
+      '<div class="cc-tv-under-in"><b>'+esc(me.nick||'')+'</b><em>'+esc(label)+'</em>'+
+        '<span><u>'+esc(T.ccStreamCatFn)+'</u><u>'+esc(T.ccStreamLang)+'</u></span></div>'+
+      '<div class="cc-tv-under-btns">'+
+        '<button type="button" class="cc-tv-btn cc-tv-btn-fol">♥ '+esc(T.ccTvFollow)+'</button>'+
+        '<button type="button" class="cc-tv-btn">'+esc(T.ccStreamGift)+'</button>'+
+        '<button type="button" class="cc-tv-btn cc-tv-btn-sub">★ '+esc(T.ccStreamSub)+'</button>'+
+      '</div>'+
+      '<div class="cc-tv-under-st"><span class="cc-tv-uv"><i></i><b id="ccTvV2">'+ccNum(CC_TV_VIEW)+'</b></span>'+
+        '<span class="cc-tv-uup" id="ccTvUp2">0:00:00</span></div>'+
+    '</div>'+
     '<aside class="cc-tv-right">'+
       '<div class="cc-tvm-h"><span class="cc-tvm-live">'+esc(T.chLiveTag)+'</span>'+
         '<span class="cc-tvm-v"><i></i><b id="ccTvV">'+ccNum(CC_TV_VIEW)+'</b></span>'+
         '<span class="cc-tv-up" id="ccTvUp">0:00</span>'+
+        '<span class="cc-tv-subs" id="ccTvSubs">'+esc(T.ccTvSubsToday(0))+'</span>'+
         '<button class="cc-tvm-x" id="ccTvFold" onclick="ccTvFold()" aria-label="'+
           esc(T.ccTvFold)+'" title="'+esc(T.ccTvFold)+'">–</button></div>'+
       '<div class="cc-tvm-b">'+
@@ -82174,7 +82257,11 @@ function ccTvOpen(next){
         '<div class="cc-tv-ev" id="ccTvEv">'+esc(T.ccTvEvSum(0, 0, 0))+'</div>'+
       '</div>'+
       '<div class="cc-tv-chat-h">'+esc(T.ccStreamChat)+'</div>'+
+      // Топ донатеров эфира — строка под шапкой чата, как таблица лидеров на Twitch.
+      '<div class="cc-tv-lead" id="ccTvLead"></div>'+
       '<div class="cc-tvm-chat" id="ccTvChat"></div>'+
+      // Поле ввода — как у зрителя; стример в него не пишет, оно тут ради вида.
+      '<div class="cc-tv-say"><span>'+esc(T.ccStreamSay)+'</span><i>☺</i></div>'+
       '<div class="cc-tvm-f"><span id="ccTvPeak"></span><span id="ccTvPow">'+
         esc(T.ccTvPow(CC_STREAM_POW))+'</span></div>'+
     '</aside>';
@@ -82212,14 +82299,26 @@ function ccTvSay(bank){
   if(!bank || !bank.length || !CC_TV_WHO.length) return;
   const who=CC_TV_WHO[Math.floor(Math.random()*CC_TV_WHO.length)];
   CC_TV_CHATTERS.add(who.who);
-  ccTvPush({who:who.who, c:who.c, text:bank[Math.floor(Math.random()*bank.length)]});
+  ccTvPush({who:who.who, c:who.c, b:who.b, text:bank[Math.floor(Math.random()*bank.length)]});
 }
 // Строка своим текстом — от случайного человека в чате.
 function ccTvSayText(text){
   if(!text || !CC_TV_WHO.length) return;
   const who=CC_TV_WHO[Math.floor(Math.random()*CC_TV_WHO.length)];
   CC_TV_CHATTERS.add(who.who);
-  ccTvPush({who:who.who, c:who.c, text:String(text)});
+  ccTvPush({who:who.who, c:who.c, b:who.b, text:String(text)});
+}
+// Таблица донатеров эфира: кто сколько занёс (сабы по CC_TV_SUB_USD и донаты), тройка сверху.
+function ccTvLeadHTML(){
+  const rows=Object.entries(CC_TV_TOP||{}).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  if(!rows.length) return '';
+  return '<b>'+esc(L().ccTvTopDonors)+'</b>'+rows.map(([who,m],i)=>
+    '<span><i>'+(i+1)+'</i>'+esc(String(who).slice(0, 10))+'<em>$'+Math.round(m)+'</em></span>').join('');
+}
+// Аптайм как на Twitch — часы:минуты:секунды.
+function ccTvUptime(sec){
+  const h=Math.floor(sec/3600), m=Math.floor(sec%3600/60), s=sec%60;
+  return h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
 }
 /* ЧАТ СМОТРИТ ИГРУ — его правка 5 сентября: «чат реалистичней сделать: когда
    выбор, то в чате что-то подобное, и после победы www или goat».
@@ -82272,10 +82371,12 @@ function ccTvEvent(kind, amt, say){
     if(say!==false) ccTvPush({ev:'fol', text:T.ccTvEvFollow(who.who)});
   } else if(kind==='sub'){
     CC_TV_EV.subs++; CC_TV_EV.cash+=CC_TV_SUB_USD;
+    CC_TV_TOP[who.who]=(CC_TV_TOP[who.who]||0)+CC_TV_SUB_USD;
     ccTvPush({ev:'sub', text:T.ccTvEvSub(who.who)});
   } else {
     const m=amt||CC_TV_DONO[Math.floor(Math.random()*CC_TV_DONO.length)];
     CC_TV_EV.cash+=m;
+    CC_TV_TOP[who.who]=(CC_TV_TOP[who.who]||0)+m;
     const lines=T.ccTvDonoLines||[];
     ccTvPush({ev:'dono', text:T.ccTvEvDono(who.who, m),
               note: lines.length ? lines[Math.floor(Math.random()*lines.length)] : ''});
@@ -82355,9 +82456,12 @@ function ccTvTick(){
   const games=board && board.n ? board.n : 0;
   ccTvEvents(board, games);
   const set=(id,html)=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; };
-  set('ccTvV', ccNum(CC_TV_VIEW));
+  set('ccTvV', ccNum(CC_TV_VIEW)); set('ccTvV2', ccNum(CC_TV_VIEW));
   const sec=Math.max(0, Math.floor((Date.now()-CC_TV_T0)/1000));
   set('ccTvUp', Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'));
+  set('ccTvUp2', ccTvUptime(sec));
+  set('ccTvSubs', esc(T.ccTvSubsToday(CC_TV_EV.subs)));
+  set('ccTvLead', ccTvLeadHTML());
   const lastG=log.length ? log[log.length-1] : null;
   const bar=document.getElementById('ccTvBar');
   if(bar) bar.style.width=(games ? Math.min(100, Math.round(log.length/games*100)) : 0)+'%';
@@ -82397,7 +82501,8 @@ function ccTvTick(){
   set('ccTvEv', esc(T.ccTvEvSum(CC_TV_EV.fol, CC_TV_EV.subs, Math.round(CC_TV_EV.cash))));
   set('ccTvChat', CC_TV_MSGS.map(m=> m.ev
     ? '<div class="cc-tvm-msg cc-tv-ev-'+m.ev+'">'+esc(m.text)+(m.note ? '<span>'+esc(m.note)+'</span>' : '')+'</div>'
-    : '<div class="cc-tvm-msg"><b style="color:'+esc(m.c)+'">'+esc(m.who)+'</b>: '+esc(m.text)+'</div>').join(''));
+    : '<div class="cc-tvm-msg">'+(m.b ? '<i class="cc-tv-bdg '+m.b+'"></i>' : '')+
+      '<b style="color:'+esc(m.c)+'">'+esc(m.who)+'</b>: '+esc(m.text)+'</div>').join(''));
   set('ccTvPeak', esc(T.ccTvPeak(ccNum(CC_TV_PEAK))));
   const chat=document.getElementById('ccTvChat');
   if(chat) chat.scrollTop=chat.scrollHeight;

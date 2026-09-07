@@ -532,13 +532,27 @@
   var CHIP_HP = 2.0;
   // Сколько соседей за тик обмениваются уроном с одним отрядом. См. resolveContacts.
   var CHIP_MAX = 2;
+  /* Обмен уроном между двумя ОДИНОЧКАМИ — со своим множителем. Шкала урона
+     движка снята с дуо-финала (1.5 в секунду контакта на отряд из двух), а в
+     соло контактов на игрока столько же, и чистый урон комнаты выходил в
+     полтора раза выше реплея: на седьмой зоне медиана 138 при реальных
+     72–123 по четырём играм финала Solo Series EU (tools/career-surge-you-probe.js,
+     7 сентября 2026). На выживание не влияет: чип снимает только щит и
+     решает порядок сёрджа, а порядок от множителя не меняется. */
+  var CHIP_SOLO_MUL = 0.85;   // при 0.7 на сильном поле медиана седьмой зоны падала до 69, p90 до 255 (реплей 72–123 / 354–454)
   /* Пол под множителем размера лобби для стычек: соло не половина дуо.
      Замер (tools/career-solo-alive-probe.js, 100 игр, против реплея финала
      Solo Series EU 24.01.2026): живых на старте 5/6/7-й зоны — реплей
      80/72/56, движок при поле 0.5: 88/77/66, при 0.75: 85/73/61, при 1: 83/69/58.
      Дуо и крупнее пол не трогает (их множитель ≥ 1), дуо-кривая и тесты
      движка стоят на месте. */
-  var SIZE_SCALE_MIN = 1;
+  /* 7 сентября 2026: поле финала соло стало сильнейшей сотней (careerSoloField
+     со stage 'final'), а сильные карточки агрессивнее (seek = AIM/CLU), и при
+     поле 1 движок терял на 5–8-й зонах на 6–10 игроков больше реплея
+     (74/62/50/40 при реальных 80/72/56/45). Пол 0.7 возвращает кривую
+     (79/67/55/43, средний разрыв 2.7 игрока по career-solo-alive-probe);
+     дуо и крупнее пол не касается — их сырой множитель не меньше единицы. */
+  var SIZE_SCALE_MIN = 0.7;
   /* Контестная высадка в соло — РЕЖЕ, чем у дуо. Множитель только для пары
      одиночек на высадке; дуо и крупнее — как были (DROP_PRESSURE подогнан по
      ним). Подогнан вместе с сеткой (CC_SOLO_GRID=60 в index.html, сорок
@@ -942,8 +956,12 @@
         var cdx = alive[ci].x - alive[cj].x, cdy = alive[ci].y - alive[cj].y;
         if(cdx*cdx + cdy*cdy > CHIP_RANGE * CHIP_RANGE) continue;
         chipN[ci]++; chipN[cj]++;
-        var hitA = CHIP_RATE * alive[ci].power * TICK_SEC;
-        var hitB = CHIP_RATE * alive[cj].power * TICK_SEC;
+        // Пара одиночек — см. CHIP_SOLO_MUL.
+        var soloPair = (!alive[ci].team.squad || alive[ci].team.squad.length === 1) &&
+                       (!alive[cj].team.squad || alive[cj].team.squad.length === 1);
+        var chipMul = soloPair ? CHIP_SOLO_MUL : 1;
+        var hitA = CHIP_RATE * alive[ci].power * TICK_SEC * chipMul;
+        var hitB = CHIP_RATE * alive[cj].power * TICK_SEC * chipMul;
         alive[ci].dealt += hitA; alive[cj].taken += hitA;
         alive[cj].dealt += hitB; alive[ci].taken += hitB;
         // ...and the shield bar moves with it. See CHIP_HP.
@@ -1743,6 +1761,7 @@
     if(v.EXPOSURE_FLOOR != null) EXPOSURE_FLOOR = v.EXPOSURE_FLOOR;
     if(v.RANK_SPREAD    != null) RANK_SPREAD    = v.RANK_SPREAD;
     if(v.CHIP_MAX       != null) CHIP_MAX       = v.CHIP_MAX;
+    if(v.CHIP_SOLO_MUL  != null) CHIP_SOLO_MUL  = v.CHIP_SOLO_MUL;
     if(v.SIZE_SCALE_MIN != null) SIZE_SCALE_MIN = v.SIZE_SCALE_MIN;
     if(v.SOLO_DROP_MUL  != null) SOLO_DROP_MUL  = v.SOLO_DROP_MUL;
     if(v.SOLO_LATE_SCALE!= null) SOLO_LATE_SCALE= v.SOLO_LATE_SCALE;
