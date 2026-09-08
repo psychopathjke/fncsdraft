@@ -66,7 +66,7 @@ const BOOT = (what) => `
         [{id:'home', title:L().ccDropHome, note:L().ccDropHomeNote(aura),
           art:careerSpotShotHTML(spot.i, set, 'cc-choice-art', 16/7)},
          {id:'contest', title:L().ccDropContest, note:L().ccDropContestNote,
-          art:careerIslandThumbHTML(set, 'cc-choice-art')}], map);
+          art:careerIslandThumbHTML(set, 'cc-choice-art')}], map, null, 'drop');
     } else if(WHAT==='loot'){
       const name=o=>o?o.name:'—';
       const listOf=p=>[...p.weapons, ...p.heals, p.move].map(name).join(' · ');
@@ -75,7 +75,7 @@ const BOOT = (what) => `
         [{id:'take', title:L().ccLootTake, note:listOf(mine)+' — '+L().ccLootTakeSafe},
          {id:'swap', title:L().ccLootSwap, note:listOf(other)+' — '+
             L().ccLootSwapRisk(CC_LOOT_POI_BONUS, CC_LOOT_POI_FAIL,
-              Math.round(CC_LOOT_POI_ODDS*100))}], map);
+              Math.round(CC_LOOT_POI_ODDS*100))}], map, null, 'loot');
     } else if(WHAT==='chests'){
       // Своя точка: сундуки открыты, пак собран — одна кнопка «забрать и идти».
       // Самая богатая коробка острова — сколько в ней сундуков стоит и сколько откроем.
@@ -87,7 +87,7 @@ const BOOT = (what) => `
       ccChoiceBox(L().ccSiteOwnTitle, (ccSiteReal(box) ? L().ccSiteAt(nPoi, nOpen, ccSiteSrc())+' · ' : '')+L().ccSiteOwnHint(nOpen), [
         {id:'fast', icon:CC_CHOICE_ICON.run, title:L().ccSiteFast, note:L().ccSiteFastNote(nFast, CC_MATS_ZONE)},
         {id:'full', icon:CC_CHOICE_ICON.chest, title:L().ccSiteFull, note:L().ccSiteFullNote(nFull, nPoi, CC_MATS_ZONE)},
-        {id:'take', def:true, icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.chest), title:L().ccSiteTake, note:labels+' — '+L().ccSitePackPow(pv)}], map);
+        {id:'take', def:true, icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.chest), title:L().ccSiteTake, note:labels+' — '+L().ccSitePackPow(pv)}], map, null, 'site');
     } else if(WHAT==='site'){
       // Чужие на точке: первый сундук свой и их, «уйти» или «файтить» — как в ccAskSite.
       const mine=ccChestPack(Math.random, ccLootSet(), CC_CHESTS_POI), theirs=ccChestRoll(Math.random, ccLootSet());
@@ -96,7 +96,7 @@ const BOOT = (what) => `
       ccChoiceBox(L().ccSiteTitle('Malibuca & Vic0'), L().ccSiteHint(ccItemLabel(mine.first.weapon), ccItemLabel(theirs.weapon)), [
         {id:'leave', def:true, icon:CC_CHOICE_ICON.run, title:L().ccSiteLeave, note:L().ccSiteLeaveNote(CC_CHESTS_LEAVE, CC_CHESTS_POI)},
         {id:'fight', icon:ccItemIconHTML(mine.first.weapon, CC_CHOICE_ICON.fight), title:L().ccSiteFight,
-         note:L().ccSiteFightNote(Math.round(p*100), CC_CHESTS_POI, eMine, eFoe)}], map);
+         note:L().ccSiteFightNote(Math.round(p*100), CC_CHESTS_POI, eMine, eFoe)}], map, null, 'site');
     } else if(WHAT==='rot'){
       // Ротация четвёртой зоны — те же строки и картинки, что у ccAskRot, плюс мувмент из пака.
       const mv={name:'Shockwave Grenade', rarity:'epic'};
@@ -104,14 +104,14 @@ const BOOT = (what) => `
         {id:'early', def:true, icon:CC_CHOICE_ICON.run, title:L().ccRotEarly, note:L().ccRotEarlyNote(CC_ROT_REAL.early.share, CC_ROT_REAL.early.surv)},
         {id:'with', icon:CC_CHOICE_ICON.storm, title:L().ccRotWith, note:L().ccRotWithNote(CC_ROT_REAL.with.share, CC_ROT_REAL.with.surv)},
         {id:'late', icon:CC_CHOICE_ICON.stay, title:L().ccRotLate, note:L().ccRotLateNote},
-        {id:'move', icon:ccItemIconHTML(mv, CC_CHOICE_ICON.run), title:L().ccRotMove, note:L().ccRotMoveNote(mv.name)}], map);
+        {id:'move', icon:ccItemIconHTML(mv, CC_CHOICE_ICON.run), title:L().ccRotMove, note:L().ccRotMoveNote(mv.name)}], map, null, 'rot');
     } else if(WHAT==='late'){
       // Меню берётся ОТТУДА ЖЕ, откуда его берёт сама игра (CC_LATE_MOVES). Пока
       // тут стоял свой список из трёх ходов, снимок показывал три даже после
       // того, как в игре их стало пять, — то есть врал ровно про то, ради чего
       // его и делают.
       ccChoiceBox(L().ccLateTitle, L().ccLateHint,
-        CC_LATE_MOVES.map(m=>({id:m.id, title:L()[CC_LATE_NAME[m.id]], note:ccLateNote(m), icon:CC_CHOICE_ICON[CC_LATE_ICON[m.id]]||CC_CHOICE_ICON.stay})), map);
+        CC_LATE_MOVES.map(m=>({id:m.id, title:L()[CC_LATE_NAME[m.id]], note:ccLateNote(m), icon:CC_CHOICE_ICON[CC_LATE_ICON[m.id]]||CC_CHOICE_ICON.stay})), map, null, 'late');
     } else {
       /* Плашка исхода гасит себя двумя setTimeout на 1.5 и 1.9 сек, а
          виртуальное время headless'а проматывает их до первого кадра — снимок
