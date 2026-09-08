@@ -232,5 +232,43 @@ check('в командной карьере третьего не пускают
 const votes=R.act ? R.act('A',{kind:'nextday', payload:{by:'A', day:'2026-03-02'}}) : null;
 if(votes) check('голос за день уходит всем', votes.some(x=>x.to==='all'), JSON.stringify(votes));
 
+/* ---- КОМНАТА ВЕЧЕРА в гонке: кто ушёл дальше или закрыл день, готовности не должен ----
+   Годовая проба на шестерых 8.09: без напарника человек шагает через турнирный день,
+   а остальные ждали шестой готовности вечно. */
+let R6=createLobby({build:'aaaa1111', seed:'race-6'});
+['A','B','C','D'].forEach(id=>R6.join(id,{build:'aaaa1111', card:CARD, race:true}));
+R6.act('D','race',{by:'D', day:'2026-02-06'});                 // D уже на завтра
+let r=R6.ready('A','2026-02-05','eval');
+check('комната без ушедшего вперёд: 1 из 3', r[0].msg.t==='ready' && r[0].msg.of===3, JSON.stringify(r));
+R6.ready('B','2026-02-05','eval');
+r=R6.ready('C','2026-02-05','eval');
+check('трое готовы — старт без D', r.some(x=>x.msg.t==='start'), JSON.stringify(r));
+check('комната вечера записана', R6.state.evening && R6.state.evening.room.join()==='A,B,C', JSON.stringify(R6.state.evening));
+// Закрытие ждёт хеши только от комнаты.
+R6.digest('A','h1',{}); R6.digest('B','h1',{});
+r=R6.digest('C','h1',{});
+check('закрытие по трём хешам, без D', r.some(x=>x.msg.t==='close' && !x.msg.split), JSON.stringify(r));
+// Голос «следующий день» — тоже выход из комнаты, и старт срабатывает по нему.
+let R7=createLobby({build:'aaaa1111', seed:'race-7'});
+['A','B','C'].forEach(id=>R7.join(id,{build:'aaaa1111', card:CARD, race:true}));
+R7.ready('A','2026-02-09','cup'); R7.ready('B','2026-02-09','cup');
+r=R7.act('C','nextday',{by:'C', day:'2026-02-09'});
+check('C закрыл день голосом — вечер A и B стартует из act', r.some(x=>x.msg.t==='start'), JSON.stringify(r));
+// Кто вернулся на день готовностью — снова в комнате.
+let R8=createLobby({build:'aaaa1111', seed:'race-8'});
+['A','B'].forEach(id=>R8.join(id,{build:'aaaa1111', card:CARD, race:true}));
+R8.act('B','race',{by:'B', day:'2026-03-02'});
+r=R8.ready('A','2026-03-01','cup');
+check('вдвоём, второй ушёл вперёд — старта нет', !r.some(x=>x.msg.t==='start') && r[0].msg.of===2, JSON.stringify(r));
+R8.act('B','race',{by:'B', day:'2026-03-01'});                // вернулся (перезагрузка/догон)
+r=R8.ready('B','2026-03-01','cup');
+check('вернулся и готов — старт', r.some(x=>x.msg.t==='start'), JSON.stringify(r));
+// Команда: как было — двое, act день не трогает.
+let T3=createLobby({build:'aaaa1111', seed:'team-3'});
+T3.join('A',{build:'aaaa1111', card:CARD}); T3.join('B',{build:'aaaa1111', card:CARD});
+T3.act('B','race',{by:'B', day:'2026-03-05'});
+r=T3.ready('A','2026-03-01','cup');
+check('команда: знаменатель 2 и ждёт второго', r[0].msg.t==='ready' && r[0].msg.of===2, JSON.stringify(r));
+
 if(fails.length){ fails.forEach(f=>console.error('FAIL '+f)); process.exit(1); }
 console.log('лобби нумерует и рассылает, ничего не считая');

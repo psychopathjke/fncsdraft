@@ -34,13 +34,35 @@ function createLobby(opts){
     div:o.div||null,     // дивизион команды: с ним сверяется каждый входящий
     seen:0,              // когда лобби трогали в последний раз
     over:false,          // дуо разорвано
-    race:false           // лобби гонки: людей больше двух, дивизион не сверяется
+    race:false,          // лобби гонки: людей больше двух, дивизион не сверяется
+    days:{},             // гонка: id -> день карьеры по последней строке гонки (act 'race')
+    pass:{}              // гонка: id -> день, закрытый голосом «следующий день» (act 'nextday')
   };
   const ids=()=>Object.keys(st.cards);
   const peerOf=id=>ids().find(x=>x!==id)||null;
   // Сколько готовых нужно для старта: команда — ровно двое; гонка — все, кто в
   // комнате (от двух до RACE_MAX): общая комната гонки на N человек.
   const need=()=>st.race ? Math.max(2, ids().length) : 2;
+  /* КОМНАТА ВЕЧЕРА дня D — не все подключённые, а те, кто в этот вечер играет:
+     без тех, кто уже ушёл дальше по календарю (строка гонки с днём > D) и кто
+     закрыл D голосом «следующий день». Годовая проба на шестерых (8.09,
+     check-race-live-six): без напарника или без квалификации человек шагает
+     через турнирный день, а остальные ждали его готовности, которой не будет.
+     Командное лобби — как было: двое. */
+  const room=day=>st.race ? ids().filter(x=>!((st.days[x] && st.days[x]>day) || st.pass[x]===day)) : ids();
+  const needOf=r=>st.race ? Math.max(2, r.length) : 2;
+  // Все в комнате дня готовы (и вид вечера один) — старт. Зовётся из ready и из act:
+  // комната может сузиться, когда кто-то ушёл дальше, и тогда ждать больше некого.
+  const launch=day=>{
+    const all=room(day);
+    if(!(all.length>=needOf(all) && all.every(x=>st.ready[x]===day))) return null;
+    const named=all.filter(x=>st.kinds && st.kinds[x]);
+    if(named.length && (named.length<all.length || named.some(x=>st.kinds[x]!==st.kinds[named[0]]))) return null;
+    st.kinds={}; st.ready={}; st.feed=[]; st.digests={};
+    st.evening={seed:st.seed+'|'+day, n:++st.n, day:day, readied:{}, room:all.slice()};
+    all.forEach(x=>{ st.evening.readied[x]=true; });
+    return {to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day}};
+  };
   /* Состояние несёт и ВЕЧЕР: идёт ли он (сид, номер, день) и вся его лента.
      Вкладка, перезагруженная посреди вечера, приходит с пустой памятью — по
      этому она понимает, что вечер есть, и догоняет его по своим же ответам
@@ -168,10 +190,10 @@ function createLobby(opts){
         st.evening.readied[id]=true;
         if(again){
           st.ready[id]=day;
-          const all2=ids();
-          if(all2.length>=need() && all2.every(x=>st.ready[x]===day)){
+          const all2=room(day);
+          if(all2.length>=needOf(all2) && all2.every(x=>st.ready[x]===day)){
             st.ready={}; st.feed=[]; st.digests={};
-            st.evening={seed:st.seed+'|'+day+'|'+(++st.n), n:st.n, day:day, readied:{}};
+            st.evening={seed:st.seed+'|'+day+'|'+(++st.n), n:st.n, day:day, readied:{}, room:all2.slice()};
             all2.forEach(x=>{ st.evening.readied[x]=true; });
             return [{to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day, fresh:true}}];
           }
@@ -181,6 +203,8 @@ function createLobby(opts){
       // Готовность на ДРУГОЙ день при идущем вечере: тот вечер брошен, команда ушла дальше.
       if(st.evening && st.evening.day!==day){ st.evening=null; st.feed=[]; st.digests={}; }
       st.ready[id]=day;
+      // Готовность на день — это и «я на этом дне» (см. room).
+      if(st.race){ st.days[id]=day; if(st.pass[id]===day) delete st.pass[id]; }
       /* ВИД вечера — тоже. Его скрин 29 августа, 11 января: один нажал Solo
          Series, второй — открытый квал Reload того же дня, лобби завело вечер
          на двоих, и они считали два разных турнира с первой игры («field
@@ -188,17 +212,17 @@ function createLobby(opts){
          вида (старая сборка) считается согласным на что угодно. */
       st.kinds=st.kinds||{};
       if(kind) st.kinds[id]=kind; else delete st.kinds[id];
-      const all=ids();
-      const both=all.length>=need() && all.every(x=>st.ready[x]===day);
+      const all=room(day);
+      const both=all.length>=needOf(all) && all.every(x=>st.ready[x]===day);
       const n=all.filter(x=>st.ready[x]===day).length;
-      if(!both) return [{to:'all', msg:{t:'ready', by:id, day:day, ready:n, of:need()}}];
+      if(!both) return [{to:'all', msg:{t:'ready', by:id, day:day, ready:n, of:needOf(all)}}];
       const named=all.filter(x=>st.kinds[x]);
       if(named.length>=2 && named.some(x=>st.kinds[x]!==st.kinds[named[0]])){
         // Разные турниры — старта нет, и готовность снимается с обоих: пусть
         // договорятся и нажмут заново одно и то же.
         const clash={}; all.forEach(x=>{ clash[x]=st.kinds[x]; });
         st.ready={}; st.kinds={};
-        return [{to:'all', msg:{t:'ready', by:id, day:day, ready:0, of:need(), clash:clash}}];
+        return [{to:'all', msg:{t:'ready', by:id, day:day, ready:0, of:needOf(all), clash:clash}}];
       }
       /* Смесь сборок: у одного вид есть, у другого нет. «Без вида — согласен
          на всё» пропускало старую вкладку в вечер с новым календарём, и пара
@@ -211,12 +235,12 @@ function createLobby(opts){
       if(named.length>0 && named.length<all.length){
         const clash={}; all.forEach(x=>{ clash[x]=st.kinds[x]||''; });
         st.ready={}; st.kinds={};
-        return [{to:'all', msg:{t:'ready', by:id, day:day, ready:0, of:need(), clash:clash}}];
+        return [{to:'all', msg:{t:'ready', by:id, day:day, ready:0, of:needOf(all), clash:clash}}];
       }
       st.kinds={};
       st.ready={};
       st.feed=[]; st.digests={};
-      st.evening={seed:st.seed+'|'+day, n:++st.n, day:day, readied:{}};
+      st.evening={seed:st.seed+'|'+day, n:++st.n, day:day, readied:{}, room:all.slice()};
       all.forEach(x=>{ st.evening.readied[x]=true; });
       return [{to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day}}];
     },
@@ -230,7 +254,21 @@ function createLobby(opts){
       const e={t:'act', n:++st.n, kind:kind, payload:payload, by:id};
       st.feed.push(e);
       if(st.feed.length>FEED_MAX) st.feed.splice(0, st.feed.length-FEED_MAX);
-      return [{to:'all', msg:e}];
+      const out=[{to:'all', msg:e}];
+      /* Гонка: строка с днём и голос за день двигают комнату вечера (см. room).
+         Ушёл дальше — и те, кто уже готов на дне, которого он не играет, ждать
+         его не должны: комната сужается, старт проверяется тут же. */
+      if(st.race && payload){
+        if(kind==='race' && payload.day) st.days[id]=payload.day;
+        if(kind==='nextday' && payload.day) st.pass[id]=payload.day;
+        if(!st.evening && (kind==='race' || kind==='nextday')){
+          const pending=Object.keys(st.ready).map(x=>st.ready[x]).filter(Boolean);
+          const day=pending.length ? pending.sort()[0] : null;
+          const go=day ? launch(day) : null;
+          if(go) out.push(go);
+        }
+      }
+      return out;
     },
 
     // Догон после обрыва: всё, что случилось после названного номера.
@@ -245,7 +283,8 @@ function createLobby(opts){
        означал бы, что один из двоих доигрывает вечер, которого не было. */
     digest(id, hash, team){
       if(!st.digests[id]) st.digests[id]={hash:hash, team:team, seq:++st.n};
-      const all=ids();
+      // Закрытия ждём от комнаты вечера, а не от всех: кто в этот вечер не играл, хеша не пришлёт.
+      const all=(st.evening && st.evening.room) ? st.evening.room.filter(x=>st.cards[x]!==undefined) : ids();
       if(!all.every(x=>st.digests[x])) return [{to:'peer', msg:{t:'digest', by:id}}];
       // На N человек (гонка): победитель — самый ранний, «сошлось» — когда хеш у всех один.
       const win=all.slice().sort((a,b)=>st.digests[a].seq-st.digests[b].seq)[0];

@@ -8201,7 +8201,7 @@ ccLanQual:c=>'квал на ЛАН · '+c,
 ccNewsSceneDuo:(a,b)=>'Новый состав: играю с '+b,
 modeCareerRaceDesc:'Наперегонки: каждый играет свою карьеру, лобби показывает, кто впереди.',
 ccRaceMake:'Завести гонку', ccRaceEnter:'Войти в гонку по коду',
-ccRaceTitle:'Гонка карьер', ccRaceRoom:'Сегодня', ccRaceRoomOn:'одна комната — соперник в твоём лобби', ccRaceRoomOff:w=>'врозь'+(w?' — '+w:''), ccRaceWhyoff:'соперник не на связи', ccRaceWhymany:'в гонке больше двоих', ccRaceWhydiv:'разные дивизионы', ccRaceWhyday:'разные дни', ccRaceWhysolo:'соло-серия — личная', ccRaceWhymode:'Разные режимы в гонке — вечер не начнётся, пока все не выберут один', ccRaceBotTaken:'Этот напарник уже у соперника по гонке — одинаковых брать нельзя', ccRaceAlone:'Соперник ещё не подключился — дай ему код',
+ccRaceTitle:'Гонка карьер', ccRaceRoom:'Сегодня', ccRaceRoomOn:'одна комната — соперник в твоём лобби', ccRaceRoomOff:w=>'врозь'+(w?' — '+w:''), ccRaceWhyoff:'соперник не на связи', ccRaceWhymany:'в гонке больше двоих', ccRaceWhydiv:'разные дивизионы', ccRaceWhyday:'разные дни', ccRaceWhysolo:'соло-серия — личная', ccRaceWhyalone:'остальные уже ушли дальше по календарю — вечер свой', ccRaceWhymode:'Разные режимы в гонке — вечер не начнётся, пока все не выберут один', ccRaceBotTaken:'Этот напарник уже у соперника по гонке — одинаковых брать нельзя', ccRaceAlone:'Соперник ещё не подключился — дай ему код',
 ccRaceWait:'День закрывается вдвоём — ждём, пока соперник доиграет свой',
 ccRaceAloneGo:'Идти дальше одному',
 ccRaceAhead:'Ты впереди', ccRaceBehind:h=>'Впереди '+h, ccRaceLeave:'Выйти из гонки',
@@ -10152,7 +10152,7 @@ ccLanQual:c=>'LAN qualified · '+c,
 ccNewsSceneDuo:(a,b)=>'New duo: playing with '+b,
 modeCareerRaceDesc:'A race: each of you plays your own career, the lobby shows who is ahead.',
 ccRaceMake:'Start a race', ccRaceEnter:'Join a race by code',
-ccRaceTitle:'Career race', ccRaceRoom:'Today', ccRaceRoomOn:'one room — your rival is in your lobby', ccRaceRoomOff:w=>'apart'+(w?' — '+w:''), ccRaceWhyoff:'rival is offline', ccRaceWhymany:'more than two in the race', ccRaceWhydiv:'different divisions', ccRaceWhyday:'different days', ccRaceWhysolo:'the solo series is personal', ccRaceWhymode:'Different modes in the race — the night will not start until everyone picks one', ccRaceBotTaken:'Your race rival already has this partner — no identical bots', ccRaceAlone:'Nobody has joined yet — give them the code',
+ccRaceTitle:'Career race', ccRaceRoom:'Today', ccRaceRoomOn:'one room — your rival is in your lobby', ccRaceRoomOff:w=>'apart'+(w?' — '+w:''), ccRaceWhyoff:'rival is offline', ccRaceWhymany:'more than two in the race', ccRaceWhydiv:'different divisions', ccRaceWhyday:'different days', ccRaceWhysolo:'the solo series is personal', ccRaceWhyalone:'the others have moved on in the calendar — tonight is yours alone', ccRaceWhymode:'Different modes in the race — the night will not start until everyone picks one', ccRaceBotTaken:'Your race rival already has this partner — no identical bots', ccRaceAlone:'Nobody has joined yet — give them the code',
 ccRaceWait:'The day closes together — waiting for your rival to finish theirs',
 ccRaceAloneGo:'Go on without them',
 ccRaceAhead:'You are ahead', ccRaceBehind:h=>h+' is ahead', ccRaceLeave:'Leave the race',
@@ -12550,7 +12550,7 @@ ccLanQual:c=>'qualifié LAN · '+c,
 ccNewsSceneDuo:(a,b)=>'Nouveau duo : je joue avec '+b,
 modeCareerRaceDesc:'Une course : chacun joue sa propre carrière, le lobby montre qui est devant.',
 ccRaceMake:'Créer une course', ccRaceEnter:'Rejoindre une course par code',
-ccRaceTitle:'Course de carrières', ccRaceRoom:'Aujourd’hui', ccRaceRoomOn:'une seule salle — ton rival est dans ton lobby', ccRaceRoomOff:w=>'séparément'+(w?' — '+w:''), ccRaceWhyoff:'rival hors ligne', ccRaceWhymany:'plus de deux dans la course', ccRaceWhydiv:'divisions différentes', ccRaceWhyday:'jours différents', ccRaceWhysolo:'la série solo est personnelle', ccRaceWhymode:'Modes différents dans la course — la soirée ne commencera pas tant que tous n’en choisissent pas un', ccRaceBotTaken:'Ton rival de course a déjà ce partenaire — pas de bots identiques', ccRaceAlone:'Personne n’a encore rejoint — donne-lui le code',
+ccRaceTitle:'Course de carrières', ccRaceRoom:'Aujourd’hui', ccRaceRoomOn:'une seule salle — ton rival est dans ton lobby', ccRaceRoomOff:w=>'séparément'+(w?' — '+w:''), ccRaceWhyoff:'rival hors ligne', ccRaceWhymany:'plus de deux dans la course', ccRaceWhydiv:'divisions différentes', ccRaceWhyday:'jours différents', ccRaceWhysolo:'la série solo est personnelle', ccRaceWhyalone:'les autres ont déjà avancé dans le calendrier — la soirée est à toi seul', ccRaceWhymode:'Modes différents dans la course — la soirée ne commencera pas tant que tous n’en choisissent pas un', ccRaceBotTaken:'Ton rival de course a déjà ce partenaire — pas de bots identiques', ccRaceAlone:'Personne n’a encore rejoint — donne-lui le code',
 ccRaceAhead:'Tu es devant', ccRaceBehind:h=>h+' est devant', ccRaceLeave:'Quitter la course',
 ccProAmCash:m=>'Empoché '+m, ccProAmNoCash:'Sans gains',
 ccNewsProAmCash:(p,m)=>'Pro-Am : '+ccTop(p)+', $'+m+' gagnés',
@@ -57991,7 +57991,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='bbcdd6ae';
+const CC_BUILD='56ed4f7d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59364,8 +59364,19 @@ function ccRaceRivals(){
   return ccRacePeers().filter(p=>p && p.card).sort((a,b)=>hKey(a.card)<hKey(b.card) ? -1 : 1);
 }
 function ccRaceRival(){ const ps=ccRaceRivals(); return ps.length ? ps[0] : null; }
-// Людей в общей комнате: я и соперники (для голосов за пропуск и подписей «n/N»).
-function ccRaceHumansN(){ return 1+ccRaceRivals().length; }
+/* КОМНАТА ВЕЧЕРА — соперники, которые сегодня в ней: не ушедшие дальше по календарю
+   (их день больше нашего) и не закрывшие день голосом «следующий день». Годовая
+   проба на шестерых 8.09: без напарника (перехват после топ-3) или без квалификации
+   человек шагает через турнирный день, и его строка «на завтра» держала остальным
+   'day' минуту, а потом вечер шёл врозь; сервер (lobby.room) считает так же, и
+   старт ждёт готовности только этой комнаты. Плитка, голоса перемотки и запрет
+   на одинаковых ботов смотрят на всех (ccRaceRivals). */
+function ccRaceRoom(){
+  const today=careerToday();
+  return ccRaceRivals().filter(p=>!(p.day && p.day>today) && !(CC_RACE_NEXT.day===today && CC_RACE_NEXT.who[p.id]));
+}
+// Людей в комнате вечера: я и соперники сегодня (для голосов за пропуск и подписей «n/N»).
+function ccRaceHumansN(){ return 1+ccRaceRoom().length; }
 /* Все карточки соперников (сами и их напарники) — их нельзя выдавать ботами: в общей
    комнате гонки человек уже стоит своей командой, и второй такой же ник в лобби был бы
    двойником. Список одинаков у всех клиентов, поэтому и комната у всех одна. */
@@ -59386,12 +59397,15 @@ function ccRaceApartWhy(next){
   if(!ccRaceOn()) return 'off';
   if(!ccRaceLive()) return 'off';
   if(!next || next.type==='solo') return 'solo';
-  const peers=ccRacePeers();
-  if(!peers.length) return 'off';
-  // Комната на N: у КАЖДОГО соперника должна быть строка с карточкой, тот же дивизион и день.
-  if(peers.some(p=>!p.card)) return 'off';
+  const all=ccRacePeers();
+  if(!all.length) return 'off';
+  // Комната на N: у КАЖДОГО соперника должна быть строка с карточкой.
+  if(all.some(p=>!p.card)) return 'off';
+  // Сегодня в комнате — только не ушедшие вперёд и не закрывшие день (ccRaceRoom).
+  const peers=ccRaceRoom();
+  if(!peers.length) return 'alone';
   if(peers.some(p=>p.div!==CAREER.career.division)) return 'div';
-  if(peers.some(p=>p.day && p.day!==careerToday())) return 'day';
+  if(peers.some(p=>p.day && p.day<careerToday())) return 'day';   // отстающие догонят
   /* ОДИН РЕЖИМ НА КОМНАТУ. В «Симуляции» вопросы не задаются вовсе (см.
      playGameWithChoices), то есть у двоих разное число решений и разные дороги
      расчёта. Команда это запрещает (ccMpModeWhy), гонка — нет, и его скрины
@@ -59452,7 +59466,7 @@ async function ccRaceWaitLines(){
   if(!ev) return true;
   // Вне сеяного потока: упаковка карточек не должна тратить броски вечера.
   try{ ccRaceUnseeded(()=>careerRaceSend()); }catch(e){}
-  const fresh=()=>ccRaceRivals().every(p=>p && p.ev===ev);
+  const fresh=()=>ccRaceRoom().every(p=>p && p.ev===ev);
   const t0=Date.now();
   /* Ожидание — не расчёт: пока ждём, общий сид никому не отдаётся (ccMpIdle),
      иначе чат эфира и таймеры хаба тратили бы сеяные броски у того, кто ждёт
@@ -59461,7 +59475,7 @@ async function ccRaceWaitLines(){
     if(typeof CC_MP_HOLD!=='undefined' && CC_MP_HOLD) break;   // вечер уже расходится/остановлен
     await ccMpIdle(new Promise(r=>setTimeout(r, 100)));
   }
-  if(!fresh() && typeof CC_RACE_DBG!=='undefined') CC_RACE_DBG={stale:ccRaceRivals().filter(p=>p.ev!==ev).map(p=>(p.card||{}).handle)};
+  if(!fresh() && typeof CC_RACE_DBG!=='undefined') CC_RACE_DBG={stale:ccRaceRoom().filter(p=>p.ev!==ev).map(p=>(p.card||{}).handle)};
   return fresh();
 }
 async function ccRaceFieldSync(teams, opts){
@@ -59473,7 +59487,7 @@ async function ccRaceFieldSync(teams, opts){
      досаживает: соперник, вылетевший в первом раунде, в ней зритель, а не команда.
      Его скрины 8 сентября: у прошедшего в поле «dimcho+liveb:62», у вылетевшего —
      нет, «diff 429 of 430» на первой же игре второго раунда. */
-  const rivals=ccRaceRivals().map(p=>{
+  const rivals=ccRaceRoom().map(p=>{
     const tag=':'+hKey(p.card);
     const same=teams.find(t=>t.mpTag===tag && !t.isYou);
     if(same){ same.isRival=true; same.isMate=false; same.raceId=p.id||same.raceId||null; return same; }
@@ -63909,8 +63923,6 @@ function careerAdvanceBody(iso){
   // Трансферный рынок сцены и месячный «кто выстрелил». См. careerSceneMovesTick.
   careerSceneMovesTick();
   careerSceneRiseTick();
-  // Гонка карьер: сводка уезжает сопернику каждый прожитый день.
-  if(typeof careerRaceSend==='function') careerRaceSend();
   // Приглашение на Про-Ам — за две недели до даты. См. careerProAmInviteTick.
   careerProAmInviteTick();
   careerDmDays(cr.day, to);
@@ -63922,6 +63934,12 @@ function careerAdvanceBody(iso){
   careerAgentDm();
   if(iso>CC_YEAR_TO){ cr.seasonOver=true; cr.day=CC_YEAR_TO; }
   else cr.day=iso;
+  /* Гонка карьер: сводка уезжает соперникам каждый прожитый день — ПОСЛЕ смены
+     даты. До 8.09 вечера она уходила строкой выше, со вчерашним днём: в перемотке
+     на турнирный день все видели друг друга «на вчера» (ccRaceApartWhy='day'),
+     ждали минуту и играли каждый в своей комнате — годовая проба на шестерых
+     (check-race-live-six) показала ноль общих бросков и по минуте на вечер. */
+  if(typeof careerRaceSend==='function') careerRaceSend();
   // A month that has ended gets its award, and a year that has ended gets its
   // own. Both are judged after the clock has moved, because the month is only
   // over once the day is in the next one.
@@ -80247,6 +80265,7 @@ async function careerFastForward(days, agreed){
          пока строки соперников не скажут тот же день. */
       if(next && careerCanPlay(next) && ccRaceFfOn()){
         let rw=0;
+        careerRaceSend();   // своя строка с сегодняшним днём — до того, как ждать чужие
         while(rw++<120 && ccRaceApartWhy(next)==='day') await new Promise(r=>setTimeout(r, 500));
       }
       try{
@@ -86854,7 +86873,7 @@ async function runCareerVictory(){
      общий, как и был. */
   if(typeof ccRaceLock==='function' && ccRaceLock()){
     const top=ranked1.slice(0, vCut);
-    const rivalOut=ccRaceRivals().some(p=>!top.some(t=>t.mpTag===':'+hKey(p.card)));
+    const rivalOut=ccRaceRoom().some(p=>!top.some(t=>t.mpTag===':'+hKey(p.card)));
     if(!through || rivalOut) CC_RACE_LOCK=false;
   }
   if(through){
