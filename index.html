@@ -57884,7 +57884,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='7fd3bd3c';
+const CC_BUILD='93ecbfa0';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -90280,12 +90280,21 @@ function careerTwBarHTML(){
 /* В ПЛЕЕРЕ — ЖИВОЙ РОЛИК (его слово 8 сентября: «с рандомного видоса на ютубе»).
    Свои видеофайлы в один документ не положишь, поэтому берётся чужой ролик через
    штатный плеер YouTube — тот самый механизм, для которого встраивание и сделано.
-   Все пятеро проверены через oembed: существуют, публичные, встраиваются.
+   Оба ролика — ЕГО ССЫЛКИ (8 сентября): рекорд Peterbot'а с финала Cash Cup и десять
+   минут фрибилдов Intangible, «и вот это с 5 секунды можешь». Проверены: существуют,
+   публичные, `playableInEmbed: true`, 865 и 588 секунд.
 
-   Ролик молчит и крутится по кругу, без элементов управления; какой именно — решает
-   ДЕНЬ, так что один и тот же вечер не пересобирается от перерисовки. Домен
-   youtube-nocookie: без нужды кук у зрителя не появляется. Автор подписан в углу — это
-   его работа, а не наша.
+   НАРЕЗКА («нарежь видео короткие для стримов»). Целиком ролик не ставится: у каждого
+   размечены короткие куски по CC_TV_CUT секунд, и вечер берёт один. Режется адресом —
+   start и end, — а не файлом: ничего не скачивается и не перекладывается к нам,
+   отдаёт YouTube, счётчик просмотров идёт автору. Куски перечислены руками, чтобы
+   их можно было двигать, а у фрибилдов первый начинается с пятой секунды — как он
+   и просил. Кусок доиграл — плеер отматывает назад к его началу (ccTvClipLoop),
+   поэтому в кадре крутится именно этот отрывок, а не всё видео дальше.
+
+   Ролик молчит и без элементов управления; какой кусок — решает ДЕНЬ, так что один и
+   тот же вечер не пересобирается от перерисовки. Домен youtube-nocookie: без нужды кук
+   у зрителя не появляется. Автор подписан в углу — это его работа, а не наша.
 
    ЕСЛИ РОЛИК НЕ ИДЁТ, его не видно вовсе: рамка прозрачна, и в кадре остаётся
    нарисованный бой на билдах (.tv-fb). Это не редкость — YouTube в России режут, а
@@ -90299,30 +90308,35 @@ function careerTwBarHTML(){
 
    Отсюда и порядок: рамка висит с нулевой прозрачностью столько, сколько нужно, и
    проявляется в ту секунду, когда пошла картинка. Не пошла — никто ничего не заметил. */
+// Длина куска. Короткий отрывок, а не «включили ролик и ушли».
+const CC_TV_CUT=55;
+/* Куски: секунды НАЧАЛА каждого. Расставлены по всему ролику с ровным шагом, последний
+   заканчивается до конца видео (865 и 588 секунд) — конец там титры и прощание. */
 const CC_TV_CLIPS=[
-  {id:'aVk9D4DlT84', who:'UnitedG'},
-  {id:'x8V7Mkv6BB4', who:'UnitedG'},
-  {id:'vee3_AKUVT8', who:'Orbital Gameplay'},
-  {id:'C_fua-fj3eE', who:'Brüterbrüters bucky'},
-  {id:'Jz6myYsKMZI', who:'EnigmaFN'}
+  {id:'Ig75ACe_zzk', who:'Peterbot', len:865,
+   cuts:[45, 150, 255, 360, 465, 570, 675, 770]},
+  {id:'fqTCQIgCq34', who:'Intangible', len:588,
+   cuts:[5, 95, 185, 275, 365, 455, 520]}
 ];
+// Какой кусок идёт сегодня. Тот же день — тот же кусок.
 function ccTvClipOf(){
   const cr=CAREER && CAREER.career;
   const rnd=careerRng(ccHashStr('clip|'+((cr&&cr.day)||'')));
   const c=CC_TV_CLIPS[Math.floor(rnd()*CC_TV_CLIPS.length)];
-  // Начало не с первой секунды: у роликов там заставка, а нам нужна игра.
-  return {c:c, at:60+Math.floor(rnd()*600)};
+  const at=c.cuts[Math.floor(rnd()*c.cuts.length)];
+  return {c:c, at:at, to:Math.min(c.len, at+CC_TV_CUT)};
 }
-// Адрес встроенного плеера: молча, по кругу, без органов управления и не с заставки.
-// enablejsapi — чтобы он мог ответить, пошла ли картинка (см. ccTvClipPlaying).
+/* Адрес встроенного плеера: молча, без органов управления, ровно от start до end.
+   loop сюда не ставится — он гоняет ВСЁ видео, а нам нужен один кусок; назад его
+   отматывает ccTvClipLoop. enablejsapi — чтобы плеер вообще мог отвечать. */
 function ccTvClipSrc(p){
   /* origin — для ответов плеера; со страницы, открытой файлом, его нет (протокол file:
      даёт origin «null»), и тогда параметр не ставится вовсе. */
   const org=(typeof location!=='undefined' && /^https?:$/.test(location.protocol))
     ? '&origin='+encodeURIComponent(location.origin) : '';
   return 'https://www.youtube-nocookie.com/embed/'+encodeURIComponent(p.c.id)+
-    '?autoplay=1&mute=1&controls=0&loop=1&playlist='+encodeURIComponent(p.c.id)+
-    '&start='+p.at+'&modestbranding=1&rel=0&playsinline=1&disablekb=1&iv_load_policy=3'+
+    '?autoplay=1&mute=1&controls=0&start='+p.at+'&end='+p.to+
+    '&modestbranding=1&rel=0&playsinline=1&disablekb=1&iv_load_policy=3'+
     '&enablejsapi=1'+org;
 }
 // Рамка загрузилась — спрашиваем плеер, что с ним. Молчит — значит и показывать нечего.
@@ -90333,6 +90347,16 @@ function ccTvClipHello(el){
 // Пошла картинка. Только теперь ролик видно — до этого в кадре рисунок.
 function ccTvClipPlaying(){
   document.querySelectorAll('.tv-clip-slot').forEach(function(s){ s.dataset.on='1'; });
+}
+/* Кусок доиграл до end — отматываем к его началу. Без этого плеер просто встал бы
+   на последнем кадре, и вместо эфира в кадре висела бы картинка. */
+function ccTvClipLoop(){
+  const el=document.querySelector('.tv-clip'); if(!el) return;
+  const at=+(el.dataset.at||0);
+  const say=(func, args)=>{ try{
+    el.contentWindow.postMessage(JSON.stringify({event:'command', func:func, args:args||[]}), '*');
+  }catch(e){} };
+  say('seekTo', [at, true]); say('playVideo');
 }
 /* Слушаем ответы плеера. Чужие сообщения отсекаются по origin — его ставит браузер,
    подделать со страницы нельзя, — и из всего ответа берётся одно число состояния. */
@@ -90345,6 +90369,7 @@ function ccTvClipListen(){
     let d=null; try{ d=JSON.parse(e.data); }catch(err){ return; }
     const st=d && d.info && d.info.playerState;
     if(st===1) ccTvClipPlaying();          // 1 — «играю»
+    else if(st===0) ccTvClipLoop();        // 0 — «кусок кончился»
   });
 }
 // Вешает плеер поверх сцены. Прозрачным: увидят его, только если он заиграет.
@@ -90356,6 +90381,7 @@ function ccTvClipMount(){
   ccTvClipListen();
   const p=ccTvClipOf(), T=L();
   slot.innerHTML='<iframe class="tv-clip" src="'+esc(ccTvClipSrc(p))+'" title="'+esc(p.c.who)+'"'+
+    ' data-at="'+p.at+'" data-to="'+p.to+'"'+
     ' allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin"'+
     ' frameborder="0" onload="ccTvClipHello(this)"></iframe>'+
     '<span class="tv-clip-by">'+esc(T.ccTvClipBy(p.c.who))+'</span>';

@@ -76,28 +76,43 @@ const BOOT = `
     // Сцена лежит ПОД роликом: без ролика кадр не пустеет.
     if(!(fb.compareDocumentPosition(slot) & Node.DOCUMENT_POSITION_FOLLOWING))
       fail('место под ролик в разметке раньше сцены — сцена накроет его');
-    const src=ccTvClipSrc(ccTvClipOf());
+    const cut=ccTvClipOf(), src=ccTvClipSrc(cut);
     if(src.indexOf('https://www.youtube-nocookie.com/embed/')!==0) fail('чужой адрес ролика: '+src);
-    ['autoplay=1','mute=1','controls=0','loop=1','playlist='].forEach(q=>{
+    ['autoplay=1','mute=1','controls=0'].forEach(q=>{
       if(src.indexOf(q)<0) fail('в адресе ролика нет '+q+': '+src); });
-    if(!/[?&]start=\\d+/.test(src)) fail('ролик начинается с заставки: нет start');
-    out.steps.push('в кадре место под ролик: '+src.slice(39, 50)+', молчит, зациклен');
-    // Список роликов: одиннадцать знаков ютуба, без повторов, у каждого автор.
+    // Кусок задан адресом: от start до end. loop гонял бы всё видео — его быть не должно.
+    if(src.indexOf('&start='+cut.at)<0) fail('в адресе нет начала куска: '+src);
+    if(src.indexOf('&end='+cut.to)<0) fail('в адресе нет конца куска: '+src);
+    if(/[?&]loop=1/.test(src)) fail('в адресе loop — плеер погонит всё видео, а не кусок');
+    out.steps.push('в кадре место под ролик: кусок '+cut.at+'–'+cut.to+' с, молчит');
+    /* Нарезка: одиннадцать знаков ютуба, без повторов, у каждого автор и длина, и
+       каждый кусок целиком помещается в своё видео. */
     { const seen={};
       CC_TV_CLIPS.forEach(c=>{
         if(!/^[A-Za-z0-9_-]{11}$/.test(c.id)) fail('не похоже на ролик YouTube: '+c.id);
         if(seen[c.id]) fail('ролик в списке дважды: '+c.id);
         seen[c.id]=1;
-        if(!c.who) fail('у ролика '+c.id+' не указан автор'); });
-      if(CC_TV_CLIPS.length<3) fail('роликов в списке всего '+CC_TV_CLIPS.length); }
-    // Выбор посеян ДНЁМ: тот же вечер — тот же ролик, а за месяц берутся разные.
+        if(!c.who) fail('у ролика '+c.id+' не указан автор');
+        if(!(c.len>0)) fail('у ролика '+c.id+' не записана длина');
+        if(!c.cuts || c.cuts.length<3) fail('у ролика '+c.id+' меньше трёх кусков');
+        c.cuts.forEach(a=>{
+          if(!(a>=0)) fail('кусок с отрицательного места: '+c.id+' '+a);
+          if(a+CC_TV_CUT>c.len) fail('кусок вылезает за конец ролика: '+c.id+' '+a+'+'+CC_TV_CUT+'>'+c.len);
+        });
+        for(let i=1;i<c.cuts.length;i++)
+          if(c.cuts[i]-c.cuts[i-1]<CC_TV_CUT) fail('куски налезают друг на друга: '+c.id); });
+      if(CC_TV_CLIPS.length<2) fail('роликов в списке всего '+CC_TV_CLIPS.length);
+      out.steps.push('нарезка: '+CC_TV_CLIPS.map(c=>c.who+' '+c.cuts.length+'×'+CC_TV_CUT+' с').join(', ')); }
+    // Выбор посеян ДНЁМ: тот же вечер — тот же кусок, а за месяц берутся разные.
     { const cr=CAREER.career, day0=cr.day, pick={};
-      if(ccTvClipOf().c.id!==ccTvClipOf().c.id) fail('ролик меняется от перерисовки');
-      for(let i=0;i<30;i++){ cr.day=ccAddDays(day0, i); pick[ccTvClipOf().c.id]=1; }
+      const key=p=>p.c.id+'@'+p.at;
+      if(key(ccTvClipOf())!==key(ccTvClipOf())) fail('кусок меняется от перерисовки');
+      for(let i=0;i<30;i++){ cr.day=ccAddDays(day0, i); pick[key(ccTvClipOf())]=1; }
       cr.day=day0;
       const n=Object.keys(pick).length;
-      if(n<3) fail('за тридцать дней всего '+n+' разных роликов');
-      out.steps.push('ролик от дня: за месяц '+n+' разных из '+CC_TV_CLIPS.length); }
+      if(n<5) fail('за тридцать дней всего '+n+' разных кусков');
+      const all=CC_TV_CLIPS.reduce((s,c)=>s+c.cuts.length, 0);
+      out.steps.push('кусок от дня: за месяц '+n+' разных из '+all); }
     // Рамка вешается, но невидимо: пока плеер не сказал «играю», её не видно.
     await wait(600);
     const clip=slot.querySelector('.tv-clip');
@@ -121,6 +136,23 @@ const BOOT = `
       slot.style.transition='none';
       if(+getComputedStyle(slot).opacity!==1) fail('заигравший ролик не проявился');
       out.steps.push('плеер сказал «играю» — ролик виден, подпись автора на месте'); }
+    /* Кусок доиграл — плеер отматывает к началу куска, а не встаёт на последнем кадре
+       и не едет дальше по ролику. Настоящая рамка на время убирается: с ней говорить
+       нельзя, она чужого домена, — а подставная записывает, что ей сказали. */
+    { if(typeof ccTvClipLoop!=='function') fail('нечем отмотать кусок назад');
+      clip.remove();
+      const el=document.createElement('iframe');
+      el.className='tv-clip'; el.dataset.at='123';
+      const sent=[];
+      Object.defineProperty(el, 'contentWindow', {value:{postMessage:m=>sent.push(m)}, configurable:true});
+      document.body.appendChild(el);
+      ccTvClipLoop();
+      el.remove();
+      const j=sent.map(s=>{ try{ return JSON.parse(s); }catch(e){ return {}; } });
+      if(!j.some(x=>x.func==='seekTo' && x.args && x.args[0]===123))
+        fail('отмотка не к началу куска: '+sent.join(' '));
+      if(!j.some(x=>x.func==='playVideo')) fail('после отмотки плеер не запускается');
+      out.steps.push('кусок кончился — плеер отматывает к его началу'); }
     // Уведомления эфира: карточка над плеером, не больше двух разом.
     ccTvAlert('sub', 'Проба', 'кто-то');
     ccTvAlert('dono', 'Проба 2', 'кто-то');
