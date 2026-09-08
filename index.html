@@ -53317,6 +53317,11 @@ let CC_CHOICE_WAIT=15000;
 function ccMateOpinion(options, dflt){
   if(!options || options.length<2) return null;
   if(typeof careerSquadSize!=='function' || careerSquadSize()<2) return null;
+  /* Соло-вечер в дуо-сезоне: careerSquadSize — размер СЕЗОНА, а не этого
+     вечера. Его скрин 8 сентября (страница «socials»): Solo Series, отборы —
+     и под вопросом «vic0: I'd go …». Напарник в соло не играет, значит и
+     советовать ему нечего. Размер вечера ставит раннер в squadSize. */
+  if(typeof squadSize==='number' && squadSize<2) return null;
   if(typeof ccMpOn==='function' && ccMpOn()) return null;
   const mates=(typeof careerMates==='function') ? careerMates().filter(Boolean) : [];
   const m=mates[0];
@@ -57968,7 +57973,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='51f7ccb0';
+const CC_BUILD='c88fb448';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -58478,8 +58483,23 @@ function ccMpId(){
   if(!v){ v=Math.random().toString(36).slice(2,10); try{ localStorage.setItem(k,v); }catch(e){} }
   return v;
 }
+/* Сейв, в котором гонка и команда стоят на ОДНОМ коде, — след бага 8 сентября
+   (хозяин гонки принимал командное состояние вошедшего; см. ccApplyTeamState).
+   Его скрин: плитка «Команда» с кодом JDQBA2 и напарником Darm над плиткой
+   «Гонка» с тем же кодом. Одна комната не бывает и тем и другим: код открыл
+   гонщик — команда лишняя. Чистится при загрузке, чтобы уже испорченный сейв
+   не требовал «разорвать дуо» руками. */
+function ccMpRaceTidy(){
+  const cr=CAREER && CAREER.career;
+  if(!cr || !cr.race || !cr.race.code || !cr.mp || !cr.mp.code) return false;
+  if(String(cr.mp.code).toUpperCase()!==String(cr.race.code).toUpperCase()) return false;
+  delete cr.mp;
+  try{ careerSave(); }catch(e){}
+  return true;
+}
 function ccMpBoot(){
   if(typeof MP==='undefined') return Promise.resolve();
+  ccMpRaceTidy();
   /* Гонка карьер поднимается тем же входом, но своим состоянием: она живёт в
      cr.race и ни одного командного пути не включает. См. ccRaceOn. */
   if(ccRaceOn()){

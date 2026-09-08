@@ -147,6 +147,31 @@ const BOOT = `
     LANG = lang0;
     out.steps.push('правила Про-Ама: пять строк на пяти языках');
 
+    // 8. Совет напарника молчит в соло-вечере (его скрин 8.09: «vic0 советует, когда соло»).
+    {
+      // Сначала напарник — без него мнения нет и в дуо, и проверка ничего не значит.
+      var mateCard = ccSceneRoster(ccCareerRegion()).find(function(c){ return hKey(c) !== hKey(careerCard() || {}); });
+      if (!careerMates().filter(Boolean).length && mateCard)
+        careerMateSeat({handle: mateCard.handle, cardRegion: mateCard.region, patience: CAREER_PATIENCE_START, since: ccAddDays(careerToday(), -CC_CHEM_DAYS)});
+      var duoNow = (function(){ try{ return ccMateOpinion([{title:'a'},{title:'b'}], {title:'a'}); }catch(e){ return 'ERR '+e; } })();
+      if (!duoNow) fail('в дуо-вечере напарник не советует: ' + JSON.stringify(careerMates().map(function(m){ return m && m.handle; })));
+      var sq0 = squadSize; squadSize = 1;
+      var soloNow = (function(){ try{ return ccMateOpinion([{title:'a'},{title:'b'}], {title:'a'}); }catch(e){ return 'ERR '+e; } })();
+      squadSize = sq0;
+      out.steps.push('совет напарника: дуо ' + (duoNow ? 'есть' : 'нет (напарника нет)') + ', соло ' + (soloNow ? 'ЕСТЬ' : 'нет'));
+      if (soloNow) fail('напарник советует в соло-вечере');
+    }
+    // 9. Команда поверх гонки на одном коде вычищается при загрузке.
+    {
+      cr.race = {code: 'ABC123', role: 'a', since: careerToday()};
+      cr.mp = {code: 'abc123', role: 'b'};
+      var tidy = ccMpRaceTidy();
+      if (!tidy || cr.mp) fail('команда поверх гонки не вычищена');
+      cr.mp = {code: 'ZZZ999', role: 'a'};
+      if (ccMpRaceTidy() || !cr.mp) fail('чужая команда с другим кодом вычищена зря');
+      delete cr.mp; delete cr.race;
+      out.steps.push('команда поверх гонки: вычищена');
+    }
     // 6. Обычный эфир — десять секунд, марафон — двадцать (его слово 8.09).
     var secs = function(id){ var k = ccStreamKind(id);
       return Math.max(8, Math.round((k.hours || 4) * CC_TV_PLAIN_SECS_PER_HOUR * 1000 / CC_TV_TICK)) * CC_TV_TICK / 1000; };
