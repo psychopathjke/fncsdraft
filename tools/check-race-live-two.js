@@ -20,6 +20,9 @@ const CODE = ('T' + crypto.randomBytes(3).toString('hex').toUpperCase()).slice(0
 const SKIP_A = Number(process.env.CC_SKIP_A != null ? process.env.CC_SKIP_A : 2000);
 const SKIP_B = Number(process.env.CC_SKIP_B != null ? process.env.CC_SKIP_B : 25000);
 const BUDGET_MS = Number(process.env.CC_BUDGET || 12 * 60000);
+// CC_JOIN_TEAM=1 — B входит КОМАНДНОЙ дверью (careerMpJoin, как «войти по коду» на
+// главной) и обязан сам понять, что попал в гонку (ccMpKindCheck). Его отчёт 8.09.
+const JOIN_TEAM = process.env.CC_JOIN_TEAM === '1';
 const CONTEST = process.env.CC_CONTEST === '1';   // жать ПОСЛЕДНИЙ вариант (контест, своп лута) вместо первого
 const SOLO = process.env.CC_SOLO || '';
 const HIDE_A = Number(process.env.CC_HIDE_A || 0), HIDE_B = Number(process.env.CC_HIDE_B || 0);   // через сколько мс вкладка «уходит в фон» (0 — не уходит)
@@ -44,6 +47,8 @@ const boot = (who) => `
   const wait=ms=>new Promise(r=>setTimeout(r, ms));
   window.__f1=null; if(typeof ccMpFieldList==='function'){ const f0=ccMpFieldList; ccMpFieldList=function(teams){ if(!window.__f1) window.__f1=teams.slice(); return f0(teams); }; }
   window.__teams=0; if(typeof MP!=='undefined' && MP.say){ const s0=MP.say; MP.say=function(m){ if(m && m.t==='team') window.__teams++; return s0.apply(this, arguments); }; }
+  // Первая сверка игры — целиком: по ней видно, ЧТО разошлось (таблица, броски, поле, леджер).
+  window.__g1=null; if(typeof ccMpSync==='function'){ const y0=ccMpSync; ccMpSync=function(k,p,q){ if(k==='game' && !window.__g1) window.__g1=String(p); return y0.apply(this, arguments); }; }
   // CC_HOST=ws://127.0.0.1:8787 — гонять против локального wrangler dev, а не прода.
   if(${JSON.stringify(process.env.CC_HOST||"")}) MP.host=${JSON.stringify(process.env.CC_HOST||"")};
   // Харнесс-человек: первая зона, первый выбор, метку не ставить.
@@ -78,7 +83,8 @@ const boot = (who) => `
       out.notes.rolls=CC_MP_ROLLS; out.notes.dayAfter=CAREER.career.day; out.notes.dbg={rand:!!CC_MP_RAND, hold:CC_MP_HOLD, alone:CC_MP_ALONE, state:MP.state, teams:window.__teams||0, soloBy:CAREER.career.soloBy, peer:(MP.peer||{}).handle, settle:(typeof ccSoloTeamSettle==='function')?ccSoloTeamSettle():null, dayNow:CAREER.career.day};
       const log=(CAREER.career.log||[]); const last=log[log.length-1]||{};
       out.notes.mine={place:last.place, of:last.of, pts:last.pts, wins:last.wins, elims:last.elims};
-      document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
+      out.notes.g1=window.__g1||null;
+  document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
       return;
     }
     localStorage.setItem('fncsdraft_career', JSON.stringify({
@@ -101,8 +107,17 @@ const boot = (who) => `
       const ok0=careerMateSeat({handle:card.handle, cardRegion:card.region, patience:CAREER_PATIENCE_START, since:ccAddDays(careerToday(), -CC_CHEM_DAYS)});
       if(!ok0 || careerMates().length<careerMateSeats()) throw new Error('напарник не сел: '+JSON.stringify(careerMates().map(m=>m&&m.handle)));
       out.notes.mate=card.handle; careerSave(); }
-    const ok=await careerRaceEnter({code:${JSON.stringify(CODE)}, role:${JSON.stringify(who.role_mp)}, since:careerToday()});
+    const asTeam=${JOIN_TEAM} && ${JSON.stringify(who.role_mp)}==='b';
+    const ok=asTeam ? await careerMpJoin(${JSON.stringify(CODE)})
+                    : await careerRaceEnter({code:${JSON.stringify(CODE)}, role:${JSON.stringify(who.role_mp)}, since:careerToday()});
     out.notes.entered=ok; out.notes.link=MP.state;
+    if(asTeam){
+      // Комната гонки должна сама переключить вошедшего командной дверью.
+      for(let i=0;i<300 && !ccRaceOn();i++) await wait(100);
+      out.notes.kind=ccRaceOn() ? 'race' : (ccMpTeam() ? 'team' : 'none');
+      if(!ccRaceOn()) throw new Error('вошёл командной дверью в гонку и остался командой: mp='+JSON.stringify(CAREER.career.mp||null));
+      if(CAREER.career.mp) throw new Error('после переключения в гонку осталась запись команды');
+    }
     if(!ok){
       // Диагностика: чем именно отказал транспорт.
       let why='';
@@ -117,6 +132,11 @@ const boot = (who) => `
     for(let i=0;i<600 && !(typeof ccRaceRival==='function' && ccRaceRival());i++) await wait(100);
     if(!ccRaceRival()) throw new Error('строка гонки соперника не пришла');
     out.notes.rival=(ccRaceRival().card||{}).handle; out.notes.rivalMates=(ccRaceRival().mates||[]).map(m=>m.handle); out.notes.apart=ccRaceApartWhy(careerNext());
+    // Состояние ПЕРЕД вечером — по нему читается, кем клиент себя считает и кого видит.
+    out.notes.pre={race:ccRaceOn(), team:ccMpTeam(), on:ccMpOn(), apart:ccRaceApartWhy(careerNext()),
+      peers:Object.keys(CC_RACE_PEERS).map(k=>{ const p=CC_RACE_PEERS[k]; return k+':'+((p.card||{}).handle||'-')+'/d'+p.div+'/'+p.day+'/pow'+p.pow; }),
+      mp:CAREER.career.mp||null, seed:CAREER.career.seed, lobbySeed:CAREER.career.lobbySeed||null,
+      div:CAREER.career.division, day:CAREER.career.day, mates:careerMates().map(m=>m&&m.handle), peer:(MP.peer||{}).handle||null};
     careerRenderHub('centre');
     // Жмём «играть», пока вечер не начался (сервер ждёт двоих).
     // Возвращает 'play' (вечер начался) или 'next' (день без вечера сдвинут голосом «следующий день»).
@@ -158,7 +178,8 @@ const boot = (who) => `
       if(${process.env.CC_TABLES_DIFFER==='1'}){ for(let i=0;i<300 && CAREER.career.day===${JSON.stringify(DAY)};i++) await wait(300); }   // личный вечер: день шагает, когда отыграет и второй
       out.notes.rolls=CC_MP_ROLLS; out.notes.dayAfter=CAREER.career.day; out.notes.dbg={rand:!!CC_MP_RAND, hold:CC_MP_HOLD, alone:CC_MP_ALONE, state:MP.state, teams:window.__teams||0, soloBy:CAREER.career.soloBy, peer:(MP.peer||{}).handle, settle:(typeof ccSoloTeamSettle==='function')?ccSoloTeamSettle():null, dayNow:CAREER.career.day}; out.notes.head='перемотка до '+${JSON.stringify(FF)}+' · строк журнала '+out.notes.table.length;
       out.notes.mine=(CAREER.career.log||[]).slice(-1)[0]||{};
-      document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
+      out.notes.g1=window.__g1||null;
+  document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
       return;
     }
     const how0=await pressPlay();
@@ -233,6 +254,7 @@ const boot = (who) => `
     out.notes.mine={place:last.place, of:last.of, pts:last.pts, wins:last.wins, elims:last.elims};
   }catch(e){ out.fail=String(e && e.message || e); }
   out.errs=(window.__errs||[]).slice(0,3);
+  out.notes.g1=window.__g1||null;
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
 })();
 <` + `/script>`;
@@ -304,6 +326,8 @@ async function runOne(tag, who, port){
     console.log(n+': '+(r.fail ? 'FAIL '+r.fail : (r.notes.head||'')) + ' · строк '+((r.notes.table||[]).length)+' · хеш '+hash(r.notes.table)+
       ' · своё '+JSON.stringify(r.notes.mine)+' · броски '+r.notes.rolls+' · pow '+r.notes.youPow+' · скип '+!!r.notes.skipPressed+' · фон '+!!r.notes.hidden+' · перезагрузка '+!!r.notes.reloaded+' · own/other '+r.notes.own+'/'+r.notes.other+' · '+JSON.stringify(r.notes.engine)+' · team '+JSON.stringify(r.notes.team)+' · dbg '+JSON.stringify(r.notes.dbg)+' · f1 '+JSON.stringify(r.notes.f1));
     if(r.notes.split && r.notes.split.length) console.log('   красная строка: '+r.notes.split.join(' || '));
+    if(r.notes.pre) console.log('   перед вечером: '+JSON.stringify(r.notes.pre));
+    if(r.notes.g1) console.log('   сверка игры 1: '+r.notes.g1);
     if(r.notes.days && r.notes.days.length>1) console.log('   дни: '+r.notes.days.join(' → '));
     if(r.notes.marks) console.log('   метки: '+r.notes.marks.slice(0, r.notes.split && r.notes.split.length ? 60 : 14).join(' | '));
     if(r.fail && r.notes.trace) console.log('   след:' + String.fromCharCode(10) + '     ' + r.notes.trace.slice(-12).join(String.fromCharCode(10) + '     '));

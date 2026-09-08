@@ -45,7 +45,7 @@ function createLobby(opts){
      Вкладка, перезагруженная посреди вечера, приходит с пустой памятью — по
      этому она понимает, что вечер есть, и догоняет его по своим же ответам
      (см. ccMpResume). Кому вечер не нужен, тот ленту просто не читает. */
-  const stateMsg=id=>({t:'state', team:st.team, seed:st.seed,
+  const stateMsg=id=>({t:'state', team:st.team, seed:st.seed, race:!!st.race,
                        peer:st.cards[peerOf(id)]||null,
                        evening:st.evening||null,
                        feed:st.evening ? st.feed.slice() : [],
@@ -95,7 +95,14 @@ function createLobby(opts){
          пятым, в этом её смысл. Комната помечается гонкой первым же вошедшим
          (msg.race) и остаётся ею — командный клиент в неё не попадёт, потому
          что кода он не знает. */
-      if(msg && msg.race) st.race=true;
+      /* Породу комнаты ставит ТОЛЬКО тот, кто её открыл. Его отчёт 8 сентября:
+         «запустил race, [напарник] решил зайти по коду — и вместо гонки ко мне
+         в дуо тимейт зашёл»: единственная дверь «войти по коду» заводит вход в
+         команду, и раньше такой клиент садился в комнату гонки как есть. Теперь
+         комната говорит вошедшему, что она такое (race в state), и клиент
+         подстраивается (ccMpKindCheck); а гонщик, зашедший по коду команды, её
+         в гонку не превращает. */
+      if(msg && msg.race && !ids().length) st.race=true;
       const own=msg && msg.seed && st.seed && msg.seed===st.seed;
       if(!st.race && !own && st.div && msg && msg.div && msg.div!==st.div)
         return [{to:'self', msg:{t:'bye', reason:'div', have:st.div, got:msg.div}}];
