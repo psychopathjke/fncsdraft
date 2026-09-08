@@ -74,6 +74,33 @@ const BOOT = `
     if(last.sum.hours!==(k.hours||4)) fail('часы в сводке '+last.sum.hours+', у вида '+(k.hours||4));
     if(!(last.sum.avg>0) || !(last.sum.peak>=last.sum.avg)) fail('онлайн в сводке: '+JSON.stringify(last.sum));
     out.steps.push('сводка после эфира: онлайн '+last.sum.avg+', пик '+last.sum.peak+', +'+last.sum.fol+' фолловеров, $'+last.sum.cash+', '+last.sum.hours+' ч');
+    // События эфира: рейд, клип, про в чате, хейт-рейд (его «стримится стрим просто»).
+    if(!Array.isArray(last.sum.hap)) fail('в сводке нет списка событий');
+    { const seen={}, day0=cr.day; let empty=0;
+      // Бросок посеян ДНЁМ, поэтому разброс смотрится по разным дням, а не по повторам.
+      for(let i=0;i<60;i++){
+        cr.day=ccAddDays(day0, i);
+        const set=ccStreamHappenings({id:'grind', hours:4}, 16);
+        if(set.length>2) fail('за эфир назначено больше двух событий: '+set.length);
+        if(!set.length) empty++;
+        set.forEach(h=>{ seen[h.id]=1; if(h.at<2 || h.at>16) fail('событие вне эфира: '+JSON.stringify(h)); });
+      }
+      cr.day=day0;
+      if(Object.keys(seen).length<3) fail('за шестьдесят дней случилось меньше трёх видов событий: '+Object.keys(seen).join(','));
+      if(!empty) fail('событие есть каждый эфир — это уже не событие');
+      if(empty>45) fail('события почти не случаются: пустых эфиров '+empty+' из 60');
+      out.steps.push('события за 60 дней: виды '+Object.keys(seen).sort().join(', ')+', пустых эфиров '+empty+', не больше двух за раз');
+    }
+    // Один и тот же день даёт один и тот же набор — бросок посеян днём.
+    { const a1=JSON.stringify(ccStreamHappenings({id:'grind', hours:4}, 16));
+      const a2=JSON.stringify(ccStreamHappenings({id:'grind', hours:4}, 16));
+      if(a1!==a2) fail('события пересобираются от перерисовки: '+a1+' vs '+a2); }
+    // Строки событий есть на обоих языках.
+    ['ru','en'].forEach(l=>{ const prev=LANG; LANG=l; CC_L_CACHE={}; const T=L(); LANG=prev; CC_L_CACHE={};
+      if(typeof T.ccTvHapRaidSum!=='function' || typeof T.ccTvHapClipSum!=='function' ||
+         typeof T.ccTvHapProSum!=='function' || typeof T.ccTvHapHateSum!=='string')
+        fail(l+': нет строк событий эфира'); });
+    out.steps.push('строки событий на обоих языках');
     ccTvSummaryClose();
 
     // Под пропуском рамки нет: перемотка не должна упираться в эфир.

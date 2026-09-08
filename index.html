@@ -2785,6 +2785,11 @@
   .cc-tvs-h b{font-size:15px;font-weight:900;}
   .cc-tvs-h em{font-style:normal;color:#adadb8;margin-left:auto;font-size:12px;text-align:right;}
   .cc-tvs-tiles{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #26262c;}
+  /* Что случилось за эфир — строками под плитками (см. ccStreamHapLine). */
+  .cc-tvs-hap{padding:10px 14px;border-bottom:1px solid #26262c;display:grid;gap:5px;}
+  .cc-tvs-hap div{font-size:12.5px;color:#dedee3;padding-left:12px;position:relative;}
+  .cc-tvs-hap div::before{content:'';position:absolute;left:0;top:6px;width:5px;height:5px;
+    border-radius:50%;background:#a970ff;}
   .cc-tvs-tile{padding:12px 10px 10px;text-align:center;border-right:1px solid #26262c;
     border-bottom:1px solid #26262c;}
   .cc-tvs-tile:nth-child(4n){border-right:none;}
@@ -7964,6 +7969,14 @@ ccTvNoEvent:'Сегодня турнира нет — стримить нече�
 ccTvMpNo:'В командной карьере эфир с турнира недоступен',
 ccTvWait:'В эфире — ждём первую игру',
 ccTvHours:(h,all)=>'в эфире '+h+' ч из '+all,
+ccTvHapRaid:(w,n)=>w+' зарейдил: пришло '+n+' зрителей',
+ccTvHapRaidSum:(w,n,f)=>'Рейд от '+w+': '+n+' зрителей, +'+f+' фолловеров',
+ccTvHapClip:n=>'Клип с эфира улетел — +'+n+' фолловеров',
+ccTvHapClipSum:n=>'Клип разошёлся: +'+n+' фолловеров',
+ccTvHapPro:(w,n)=>w+' зашёл в чат и раздал '+n+' саба',
+ccTvHapProSum:(w,n)=>w+' заглянул в чат: '+n+' саба от него',
+ccTvHapHate:'Хейт-рейд — модератор чистит чат',
+ccTvHapHateSum:'Хейт-рейд: часть зрителей ушла, деньги не тронуты',
 ccTvGame:n=>'Игра '+n, ccTvGameOf:(n,of)=>'Игра '+n+'/'+of, ccTvLast:p=>'последняя #'+p,
 // Виктории — счётчиком «W×2», как на самой трансляции: числу не нужен падеж.
 ccTvWins:w=>'W×'+w, ccTvCut:(c,of)=>'проходит топ-'+c+' из '+of,
@@ -9900,6 +9913,14 @@ ccTvNoEvent:'Nothing on today — no tournament to stream',
 ccTvMpNo:'Streaming a tournament is off in a team career',
 ccTvWait:'Live — waiting for the first game',
 ccTvHours:(h,all)=>h+' h of '+all+' on air',
+ccTvHapRaid:(w,n)=>w+' raided you: '+n+' viewers came over',
+ccTvHapRaidSum:(w,n,f)=>'Raid from '+w+': '+n+' viewers, +'+f+' followers',
+ccTvHapClip:n=>'A clip from the stream took off — +'+n+' followers',
+ccTvHapClipSum:n=>'A clip took off: +'+n+' followers',
+ccTvHapPro:(w,n)=>w+' dropped into chat and gifted '+n+' subs',
+ccTvHapProSum:(w,n)=>w+' dropped into chat: '+n+' subs from them',
+ccTvHapHate:'Hate raid — the mod is clearing chat',
+ccTvHapHateSum:'Hate raid: some viewers left, the money is untouched',
 ccTvGame:n=>'Game '+n, ccTvGameOf:(n,of)=>'Game '+n+'/'+of, ccTvLast:p=>'last #'+p,
 ccTvWins:w=>'W×'+w, ccTvCut:(c,of)=>'top '+c+' of '+of+' go through',
 ccTvPts:p=>p+' pts', ccTvKills:k=>k+' elims',
@@ -57752,7 +57773,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='dbf0dd55';
+const CC_BUILD='e326c8b9';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -89212,6 +89233,28 @@ function careerStreamGo(id){
    Длина — от часов вида: CC_TV_PLAIN_PER_HOUR тиков на игровой час, то есть четыре
    часа ранкеда идут около десяти секунд, восьмичасовой марафон — вдвое дольше. */
 const CC_TV_PLAIN_PER_HOUR=4;
+/* ЧТО ПРОИСХОДИТ ЗА ЭФИР (его слово 8 сентября: «стримится стрим просто, мб чёт
+   добавить»). Сам по себе эфир — это ползущие зрители и чат, и смотреть в нём нечего.
+   Четыре вещи, которые случаются на настоящем стриме и которые видно по числам:
+
+     рейд     — другой стример уводит к тебе свой чат в конце своего эфира: зрители
+                прыгают и часть остаётся, фолловеров приходит по числу пришедших;
+     клип     — момент вечера улетел: фолловеры приходят ПОСЛЕ эфира, отдельной
+                строкой в сводке, а не во время;
+     про      — кто-то со сцены заглянул в чат: чат оживает, ему дарят сабы;
+     хейт-рейд — набежали ботом, модератор чистит: зрители на время проседают,
+                следа в деньгах не остаётся.
+
+   Всё редкое и посеяно ДНЁМ (ccHashStr('hap|день|вид')): один и тот же эфир не
+   меняется от перерисовки, а завтрашний другой. За эфир случается не больше двух
+   событий — иначе это уже не эфир, а карнавал. Числа складываются в сводку отдельными
+   строками, чтобы было видно, откуда взялась разница с обычным вечером. */
+const CC_TV_HAP={
+  raid: {odds:0.30, grab:0.35, fol:0.05},   // доля чужих зрителей, что останется, и фолловеры с них
+  clip: {odds:0.22, fol:0.6},               // фолловеров сверх дневных, долей от них
+  pro:  {odds:0.25, subs:3},
+  hate: {odds:0.15, dip:0.45}
+};
 let CC_TV_PLAIN=null;
 function ccStreamRun(k){
   if(typeof document==='undefined' || !document.body) return false;
@@ -89219,22 +89262,91 @@ function ccStreamRun(k){
   if(careerSimOn() || (typeof CC_FF!=='undefined' && CC_FF)) return false;
   const cr=CAREER && CAREER.career, last=cr && cr.streamLast;
   if(!last || last.day!==careerToday()) return false;
-  CC_TV_PLAIN={id:k.id, at:0, done:0, hours:k.hours||4,
-               ticks:Math.max(8, Math.round((k.hours||4)*CC_TV_PLAIN_PER_HOUR)),
-               want:{fol:(last.a && last.a[2])||0, cash:last.m||0}};
+  const ticks=Math.max(8, Math.round((k.hours||4)*CC_TV_PLAIN_PER_HOUR));
+  CC_TV_PLAIN={id:k.id, at:0, done:0, hours:k.hours||4, ticks:ticks,
+               want:{fol:(last.a && last.a[2])||0, cash:last.m||0},
+               hap:ccStreamHappenings(k, ticks), got:[]};
   ccTvOpen({label:L()['ccStream_'+k.id]});
   return true;
+}
+/* Что случится за этот эфир и на какой минуте. Бросок посеян днём и видом: один и тот
+   же вечер не пересобирается от перерисовки, а завтрашний другой. Не больше двух
+   событий за эфир. */
+function ccStreamHappenings(k, ticks){
+  const cr=CAREER && CAREER.career;
+  const rnd=careerRng(ccHashStr('hap|'+(cr?cr.day:'')+'|'+k.id));
+  const out=[];
+  Object.keys(CC_TV_HAP).forEach(id=>{
+    if(out.length>=2) return;
+    if(rnd()>=CC_TV_HAP[id].odds*(k.hours>=8 ? 1.4 : 1)) return;
+    out.push({id:id, at:2+Math.floor(rnd()*Math.max(1, ticks-3))});
+  });
+  return out.sort((a,b)=>a.at-b.at);
+}
+/* Само событие: кто пришёл и что это дало. Все числа считаются здесь и складываются в
+   plain.got — оттуда их берёт сводка, поэтому «откуда взялась разница» видно строкой. */
+function ccStreamHappen(h){
+  const p=CC_TV_PLAIN; if(!p) return;
+  const T=L(), c=CC_TV_HAP[h.id];
+  if(h.id==='raid'){
+    let from=null;
+    try{ from=(careerLiveNow(9)||[]).filter(s=>s && s.v>0).sort((a,b)=>b.v-a.v)[Math.floor(Math.random()*3)]; }catch(e){}
+    if(!from) return;
+    const came=Math.max(5, Math.round(from.v*c.grab*(0.5+Math.random())));
+    CC_TV_BASE=Math.round(CC_TV_BASE+came);
+    CC_TV_VIEW+=came; CC_TV_PEAK=Math.max(CC_TV_PEAK, CC_TV_VIEW);
+    const fol=Math.max(1, Math.round(came*c.fol));
+    p.got.push({id:'raid', who:from.name, n:came, fol:fol});
+    ccTvPush({ev:'fol', text:T.ccTvHapRaid(from.name, ccNum(came))});
+  } else if(h.id==='clip'){
+    const fol=Math.max(3, Math.round((p.want.fol||0)*c.fol));
+    p.got.push({id:'clip', fol:fol});
+    ccTvPush({ev:'fol', text:T.ccTvHapClip(ccNum(fol))});
+  } else if(h.id==='pro'){
+    let who=null;
+    try{ who=(careerRosterNowEU()||[])[Math.floor(Math.random()*40)]; }catch(e){}
+    const nick=(who && who.handle) || (CC_TV_WHO[0] && CC_TV_WHO[0].who) || 'pro';
+    p.got.push({id:'pro', who:nick, subs:c.subs});
+    ccTvPush({ev:'sub', text:T.ccTvHapPro(nick, c.subs)});
+    for(let i=0;i<c.subs;i++) CC_TV_EV.subs++;
+    CC_TV_HYPE+=0.5;
+  } else if(h.id==='hate'){
+    CC_TV_VIEW=Math.max(3, Math.round(CC_TV_VIEW*(1-c.dip)));
+    p.got.push({id:'hate'});
+    ccTvPush({ev:'dono', text:T.ccTvHapHate});
+  }
+}
+// Строка события для сводки: что случилось и что это дало.
+function ccStreamHapLine(g){
+  const T=L();
+  if(!g) return '';
+  if(g.id==='raid') return T.ccTvHapRaidSum(g.who, ccNum(g.n), g.fol);
+  if(g.id==='clip') return T.ccTvHapClipSum(g.fol);
+  if(g.id==='pro')  return T.ccTvHapProSum(g.who, g.subs);
+  if(g.id==='hate') return T.ccTvHapHateSum;
+  return '';
 }
 // Конец обычного эфира: рамка снимается, сводка — из чисел этого дня.
 function ccStreamRunEnd(){
   const p=CC_TV_PLAIN; CC_TV_PLAIN=null;
   const cr=CAREER && CAREER.career, last=cr && cr.streamLast;
   const avg=(CC_TV_SUM && CC_TV_SUM.n) ? Math.round(CC_TV_SUM.sum/CC_TV_SUM.n) : CC_TV_VIEW;
+  /* Что принесли события эфира — СВЕРХ дневных чисел, и начисляется это один раз,
+     здесь. Фолловеры от рейда и клипа идут в счётчик канала, сабы за про — в деньги
+     по цене саба. Без событий вечер остаётся ровно таким, каким его посчитал день. */
+  const got=(p && p.got)||[];
+  const folX=got.reduce((a,g)=>a+(g.fol||0), 0);
+  const subsX=got.reduce((a,g)=>a+(g.subs||0), 0);
+  const cashX=Math.round(subsX*CC_TV_SUB_USD);
+  if(cr && folX) cr.twitch=(cr.twitch||0)+folX;
+  if(cr && cashX){ cr.balance=(cr.balance||0)+cashX; cr.streamed=(cr.streamed||0)+cashX; }
+  if(last && last.a){ last.a[2]=(last.a[2]||0)+folX; last.m=(last.m||0)+cashX; last.a[3]=ccNum(last.m); }
   const sum={avg:avg, peak:Math.max(CC_TV_PEAK||0, avg),
-             fol:(p && p.want.fol)||0, subs:(CC_TV_EV && CC_TV_EV.subs)||0,
-             cash:(p && p.want.cash)||0, hours:(p && p.hours)||4,
+             fol:((p && p.want.fol)||0)+folX, subs:(CC_TV_EV && CC_TV_EV.subs)||0,
+             cash:((p && p.want.cash)||0)+cashX, hours:(p && p.hours)||4,
              chatters:(CC_TV_CHATTERS && CC_TV_CHATTERS.size)||0,
-             label:(p && L()['ccStream_'+p.id])||'', hist:ccTvHistPack(CC_TV_HIST||[], 60)};
+             label:(p && L()['ccStream_'+p.id])||'', hist:ccTvHistPack(CC_TV_HIST||[], 60),
+             hap:got.map(g=>ccStreamHapLine(g)).filter(Boolean)};
   if(last && last.day===careerToday()){ last.sum=sum; last.label=sum.label; }
   try{ careerSave(); }catch(e){}
   ccTvClose();
@@ -89407,7 +89519,11 @@ function ccTvSumTilesHTML(s){
     tile(T.ccTvSumCash, ccMoney(s.cash||0), 'up')+
     tile(T.ccTvSumTime, esc(T.ccTvSumHours(s.hours||CC_STREAM_CUP.hours)))+
     tile(T.ccTvSumChatters, ccNum(s.chatters||0))+
-  '</div>';
+  '</div>'+
+  /* Что случилось за эфир — строками под плитками: рейд, клип, про в чате. Без них
+     вечер и правда «просто стрим», и разница в числах ниоткуда. */
+  ((s.hap && s.hap.length)
+    ? '<div class="cc-tvs-hap">'+s.hap.map(h=>'<div>'+esc(h)+'</div>').join('')+'</div>' : '');
 }
 /* График зрителей по ходу вечера — линия с заливкой, как в дашборде Twitch,
    подписи по оси — номера игр. Рисуется SVG на показ, из сохранённой кривой. */
@@ -89614,8 +89730,11 @@ function ccTvOpen(next){
       '<div class="cc-tvm-chat" id="ccTvChat"></div>'+
       // Поле ввода — как у зрителя; стример в него не пишет, оно тут ради вида.
       '<div class="cc-tv-say"><span>'+esc(T.ccStreamSay)+'</span><i>☺</i></div>'+
+      /* «−10 к силе» — цена ЭФИРА С ТУРНИРА: играешь хуже, потому что говоришь в
+         микрофон. У эфира в свободный день турнира нет, силе неоткуда падать, и
+         строка была неправдой (его снимок 8 сентября). */
       '<div class="cc-tvm-f"><span id="ccTvPeak"></span><span id="ccTvPow">'+
-        esc(T.ccTvPow(CC_STREAM_POW))+'</span></div>'+
+        (CC_TV_PLAIN ? '' : esc(T.ccTvPow(CC_STREAM_POW)))+'</span></div>'+
     '</aside>';
   document.body.appendChild(box);
   document.body.classList.add('cc-onair');
@@ -89818,6 +89937,8 @@ function ccTvTick(){
      посчитаны (streamLast), и рамка раздаёт ровно их — долю за тик. Поэтому
      общий бюджет ccTvEvents здесь не работает. */
   if(plain){
+    // Событие эфира, если оно назначено на этот тик (см. ccStreamHappenings).
+    while(plain.hap.length && plain.hap[0].at<=plain.at) ccStreamHappen(plain.hap.shift());
     const share=Math.max(0, pp-plain.done); plain.done=pp;
     let fol=Math.round(plain.want.fol*share);
     plain.folAcc=(plain.folAcc||0)+plain.want.fol*share-fol;
