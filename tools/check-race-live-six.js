@@ -94,6 +94,10 @@ const boot = (who) => `
     out.notes.rival=ccRaceRivals().map(p=>p.card.handle).join('+'); out.notes.apart=ccRaceApartWhy(careerNext());
     careerRenderHub('centre');
     window.__acts=[]; if(typeof MP!=='undefined' && MP.on){ MP.on('act', function(m){ if(!m || m.kind==='hb') return; if(window.__acts.length>=60) window.__acts.shift(); window.__acts.push((m.by||'?').slice(-5)+':'+m.kind+(m.payload&&m.payload.q!=null?'#'+m.payload.q:'')+(m.payload&&m.payload.g!=null?' g'+m.payload.g:'')); }); }
+    out.notes.renderRolls=[]; const rh0=careerRenderHub; careerRenderHub=function(tab){ const seeded=(typeof CC_MP_RAND!=='undefined' && CC_MP_RAND); const r0=CC_MP_ROLLS; const res=rh0.apply(this, arguments); if(seeded && CC_MP_ROLLS!==r0 && out.notes.renderRolls.length<40) out.notes.renderRolls.push(CAREER.career.day+' +'+(CC_MP_ROLLS-r0)); return res; };
+    const mark=(t)=>{ if(out.notes.marks.length>=160) out.notes.marks.shift(); out.notes.marks.push(t+' d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' t'+Math.round((Date.now()-t0)/1000)); };
+    const dq0=careerDropQuick; careerDropQuick=async function(field, you, how, home, pre){ const r0=CC_MP_ROLLS; const q=await dq0.apply(this, arguments); mark('DQ '+(you.mpTag||'?')+' '+how+' home'+(home?ALL_LANDING_ZONES.indexOf(home):'-')+' ->'+ALL_LANDING_ZONES.indexOf(you.landingZone)+' pow'+you.pow+' ce'+(you.closeEdge||0)+' r'+r0+'>'+CC_MP_ROLLS); return q; };
+    const bl0=buildBotLandingAssignment; buildBotLandingAssignment=function(list, o){ const r0=CC_MP_ROLLS; const res=bl0.apply(this, arguments); mark('BOTS n'+(list||[]).length+' r'+r0+'>'+CC_MP_ROLLS); return res; };
     out.notes.fields=[]; const cf0=careerCupField; careerCupField=function(cr, mine, size, salt, open, sharp){
       const res=cf0.apply(this, arguments);
       try{ const h=x=>{ let v=0; for(const ch of String(x)){ v=(v*31+ch.charCodeAt(0))>>>0; } return v.toString(16); };
@@ -106,7 +110,7 @@ const boot = (who) => `
       return res; };
     out.notes.skipped=[]; const cp0=careerCanPlay; careerCanPlay=function(next){ const ok=cp0.apply(this, arguments); if(!ok && next && next.type && next.type!=='free' && CC_PLAYABLE.indexOf(next.type)>=0 && out.notes.skipped.length<60) out.notes.skipped.push([CAREER.career.day, next.type, 'live'+(ccMpLive()?1:0), 'link '+MP.state, 'noMate'+(careerNoMate(next.type)?1:0), 'mates'+careerMates().length, 'mode '+(ccRaceModeWhy()||'-'), 'div'+CAREER.career.division].join(' ')); return ok; };
     // Метки хода: каждый посланный акт, кроме пульса.
-    const act0=MP.act; MP.act=function(k,p){ if(k!=='hb'){ if(out.notes.marks.length>=80) out.notes.marks.shift(); out.notes.marks.push(k+(p&&p.q!=null?'#'+p.q:'')+' d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' r'+CC_MP_ROLLS+' t'+Math.round((Date.now()-t0)/1000)); } return act0.apply(MP, arguments); };
+    const act0=MP.act; MP.act=function(k,p){ if(k!=='hb'){ if(out.notes.marks.length>=160) out.notes.marks.shift(); out.notes.marks.push(k+(p&&p.q!=null?'#'+p.q:'')+' d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' r'+CC_MP_ROLLS+' t'+Math.round((Date.now()-t0)/1000)); } return act0.apply(MP, arguments); };
     const slow0=ccMpSlowSeen; ccMpSlowSeen=function(){ out.notes.marks.push('SLOW d'+CAREER.career.day.slice(5)+' r'+CC_MP_ROLLS+' t'+Math.round((Date.now()-t0)/1000)); return slow0.apply(this, arguments); };
     // Голос за перемотку до конца сезона; пойдёт, когда проголосуют все.
     careerRenderHub('calendar'); await wait(300);
@@ -203,9 +207,10 @@ async function runOne(tag, who, port){
       ' · напарники '+JSON.stringify(r.notes.mates)+' noMate '+r.notes.noMate+' · форма '+r.notes.form+' энергия '+r.notes.energy+' · '+Math.round((r.notes.secs||0)/60)+' мин · dbg '+JSON.stringify(r.notes.dbg));
     console.log('   напарник '+r.notes.mate+' · соперники '+r.notes.rival+' · врозь на старте: '+r.notes.apart);
     console.log('   вечера: '+(r.notes.nights||[]).join(' | '));
+    if(r.notes.renderRolls && r.notes.renderRolls.length) console.log('   FAIL броски в отрисовке: '+r.notes.renderRolls.join(' | '));
     (r.notes.fields||[]).forEach(f=>console.log('   поле: '+f));
     if(r.notes.skipped && r.notes.skipped.length) console.log('   не сыграно: '+[...new Set(r.notes.skipped)].join(' | '));
-    if(r.fail || (r.notes.dayAfter<FF && !r.notes.seasonOver)) console.log('   застрял: wait '+JSON.stringify(r.notes.wait)+' · игра '+r.notes.game+' · qn '+JSON.stringify(r.notes.qn)+' · эфир '+r.notes.title+' · комната '+r.notes.room+' · соперники '+JSON.stringify(r.notes.peersDays)+'\n   метки: '+(r.notes.marks||[]).slice(-40).join(' | ')+'\n   входящие: '+JSON.stringify(r.notes.queue));
+    if(r.fail || (r.notes.dayAfter<FF && !r.notes.seasonOver)) console.log('   застрял: wait '+JSON.stringify(r.notes.wait)+' · игра '+r.notes.game+' · qn '+JSON.stringify(r.notes.qn)+' · эфир '+r.notes.title+' · комната '+r.notes.room+' · соперники '+JSON.stringify(r.notes.peersDays)+'\n   метки: '+(r.notes.marks||[]).slice(-70).join(' | ')+'\n   входящие: '+JSON.stringify(r.notes.queue));
     if(r.notes.ffErr){ console.log('   FAIL перемотка встала: '+JSON.stringify(r.notes.ffErr)); bad++; }
     if(r.notes.splits && r.notes.splits.length){ console.log('   FAIL красные строки: '+r.notes.splits.join(' || ')); bad++; }
     if(r.errs && r.errs.length){ console.log('   FAIL ошибки страницы: '+r.errs.join(' | ')); bad++; }

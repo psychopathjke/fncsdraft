@@ -5526,7 +5526,7 @@
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
      файл и разойдётся с напарником. -->
-<script src="mp.js?v=02138e09"></script>
+<script src="mp.js?v=1c1a871b"></script>
 </head>
 <body>
 <div class="wrap">
@@ -48741,7 +48741,10 @@ function buildBotLandingAssignment(bots, opts){
   // Комната этапа: кто здесь уже сидел, тот садится туда же. См. ccStageSeats.
   const seats=ccStageSeats();
   order.forEach(t=>{
-    const seated=(seats && !t.isYou) ? ccSeatZone(seats.get(ccSeatMapKey(t))) : null;
+    /* Люди комнаты гонки (isRival) — как свой (isYou): их сажает голос, не место прошлого этапа.
+       Иначе у соседа моя команда садилась на «своё место», у меня — нет, и число соседей на
+       коробке расходилось на единицу (годовая проба 9.09: play-in 23.01, live1+sky:113 vs 114). */
+    const seated=(seats && !t.isYou && !t.isRival) ? ccSeatZone(seats.get(ccSeatMapKey(t))) : null;
     if(seated){
       t.landingZone=seated; t.landingResult=null; t.landingRival=null;
       t.avgRating=Math.round(t.squad.reduce((s,p)=>s+p.rating,0)/t.squad.length);
@@ -48800,7 +48803,7 @@ function buildBotLandingAssignment(bots, opts){
     applyLandingPow(t, zone.points);
     if(!zoneGroups.has(zone)) zoneGroups.set(zone,[]);
     zoneGroups.get(zone).push(t);
-    if(seats && !t.isYou) seats.set(ccSeatMapKey(t), ccSeatKeyOf(zone));
+    if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(zone));   // люди комнаты — как свой (см. выше)
   });
 
   // The old guarantee: shuffle squads off the emptiest box until two boxes are
@@ -48821,7 +48824,7 @@ function buildBotLandingAssignment(bots, opts){
       targetGroup.push(t);
       // Переезд по расчистке — тоже место в комнате, иначе следующая игра
       // вернула бы команду в коробку, которую только что освободили.
-      if(seats && !t.isYou) seats.set(ccSeatMapKey(t), ccSeatKeyOf(targetZone));
+      if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(targetZone));
     });
     zoneGroups.delete(zoneToClear);
   }
@@ -57991,7 +57994,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='fefe2e1c';
+const CC_BUILD='7202c36e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -58120,6 +58123,11 @@ let CC_RACE_LOCK=false;
    pixie+swizzy:109 vs 112» при своей 108 — строку с сидом успевал послать хаб между
    стартом и сборкой команды, с CC_TV_YOU вчерашнего вечера, и кто что застал. */
 let CC_RACE_POW_NOW=null;
+/* И край ближнего боя своей команды (closeEdge) — его читает стычка на высадке и коробке
+   (_pc, strength). У владельца он считается из игрока (closeRangeEdge), у соседей команда
+   собиралась из упакованной карточки без него — и при первой же стычке с участием этой
+   команды раздача расходилась (годовая проба 8.09: Evaluation 11.12, игра 4, −55 бросков). */
+let CC_RACE_EDGE_NOW=null;
 function ccRaceLock(){ return typeof ccRaceOn==='function' && ccRaceOn() && CC_RACE_LOCK && !CC_MP_ALONE && !CC_DRAFT_RUN; }
 function ccMpLock(){ return ccMpOn() || ccRaceLock(); }
 // Роль в лобби: командная карьера или гонка — у кого что есть.
@@ -58208,6 +58216,14 @@ function ccMpGate(kind){
    и ждать его на гейте некого. Его снимок 29 августа: один на 11 января в
    Solo Series, второй на 15 марта. */
 function ccMpGateDayWhy(){
+  /* Гонка: гейт сдаётся, только если ВСЕ из комнаты вечера стоят в хабе на другом дне —
+     комната и так без ушедших вперёд (ccRaceRoom), а пульс одного соседа ничего не значит. */
+  if(typeof ccRaceOn==='function' && ccRaceOn() && !ccMpTeam()){
+    var room=(typeof ccRaceRoom==='function') ? ccRaceRoom() : [], hbs=(typeof MP!=='undefined' && MP.peerHbs)||{};
+    if(!room.length) return null;
+    var gone=room.every(function(p){ var h=hbs[p.id]; return h && h.day && h.day!==careerToday() && h.rand===false; });
+    return gone ? L().ccMpOtherDay(ccDayLabel((hbs[room[0].id]||{}).day)) : null;
+  }
   var hb=(typeof MP!=='undefined' && MP.peerHb) || null;
   if(!hb || !hb.day || hb.day===careerToday()) return null;
   /* Напарник на другом дне, но В ВЕЧЕРЕ — он доигрывает свой (соло в одиночку,
@@ -59363,7 +59379,8 @@ function ccRaceMyLine(){
     try{ if(mates.length>=careerMateSeats()) pow=careerYouTeam([me].concat(mates)).pow; }catch(e){}
   }
   const card=(typeof MP!=='undefined' && MP.card) ? MP.card() : ccRacePackCard(me);
-  return {id:ccMpId(), card:ccRacePackCard(card||me), mates:mates.map(ccRacePackCard), pow:pow, ev:ev, squad:careerSquadSize()};
+  return {id:ccMpId(), card:ccRacePackCard(card||me), mates:mates.map(ccRacePackCard), pow:pow, ev:ev, squad:careerSquadSize(),
+          edge:(ev && CC_RACE_EDGE_NOW!=null) ? CC_RACE_EDGE_NOW : null};
 }
 // Соперники с карточкой — все, кто прислал строку (комната на N человек); порядок по адресу.
 function ccRaceRivals(){
@@ -59442,6 +59459,7 @@ function ccRaceRivalTeam(p){
   t.name=teamLabel(cards);
   if(solo) t.pow=Math.round(t.pow+(Number(p.card.formPow)||0));
   else if(p.pow!=null) t.pow=p.pow;
+  if(p.edge!=null) t.closeEdge=p.edge;   // край ближнего боя — из строки владельца (см. CC_RACE_EDGE_NOW)
   t.isRival=true; t.raceId=p.id||null; t.mpTag=':'+hKey(p.card);
   t.summitRegion=ccCareerRegion();
   return t;
@@ -59488,7 +59506,7 @@ async function ccRaceFieldSync(teams, opts){
   if(!ccRaceLock() || typeof MP==='undefined') return;
   const you=teams.find(t=>t.isYou);
   // Сила на вечер — из поля раннера; только с ней строка подписывается сидом (см. CC_RACE_POW_NOW).
-  if(you && you.pow!=null) CC_RACE_POW_NOW=you.pow;
+  if(you && you.pow!=null){ CC_RACE_POW_NOW=you.pow; CC_RACE_EDGE_NOW=(you.closeEdge||0); }
   await ccRaceWaitLines();
   /* Соперники — все, кто прислал строку; уже посаженный раннером (соло-кап) — тот же
      объект. КОМНАТА ПРОШЕДШИХ (opts.roomOnly — второй раунд Victory Cup) никого не
@@ -59773,8 +59791,19 @@ const CC_MP_HB_MS=15000, CC_MP_SYNC_MAX=15*60000;
    голос напарника… 21 с» — и так до потолка. */
 let CC_MP_LEAVE_MS=40000;
 function ccMpPeerLeft(){
-  var hb=(typeof MP!=='undefined' && MP.peerHb) || null;
-  return !!(hb && hb.rand===false && CC_MP_RAND);
+  if(!CC_MP_RAND || typeof MP==='undefined') return false;
+  /* Гонка: «вышли» — это когда НИКТО из комнаты вечера не считает. Пульс читается по
+     каждому (MP.peerHbs); один слот отдавал пульс того, кто в этот вечер не играет
+     (не прошёл play-in, шагает дальше, rand:false), и барьеры отпускались через 40 с у
+     всех играющих — годовая проба на шестерых 8.09, Reload play-in 23 января. */
+  if(typeof ccRaceOn==='function' && ccRaceOn() && !ccMpTeam()){
+    var room=(typeof ccRaceRoom==='function') ? ccRaceRoom() : [];
+    if(!room.length) return false;
+    var hbs=MP.peerHbs||{};
+    return room.every(function(p){ var h=hbs[p.id]; return h && h.rand===false; });
+  }
+  var hb=MP.peerHb || null;
+  return !!(hb && hb.rand===false);
 }
 function ccMpDeadline(fn, ms){
   var cap=ms||CC_MP_SYNC_MS, start=(new Date()).getTime();
@@ -59884,10 +59913,22 @@ function ccMpWaitReset(){ CC_MP_PEER_DONE=false; CC_MP_WAITERS.length=0; }
    этому моменту уже не спасти: пока его нет, ни приход, ни ответ не придут.
    Разбудить ждущих здесь — то же самое, что и «он досчитал»: доиграть врозь
    можно, стоять насмерть нельзя. */
+let CC_MP_LOST_T=null;
 function ccMpLinkLost(){
-  const list=CC_MP_WAITERS.slice();
-  CC_MP_WAITERS.length=0;
-  list.forEach(function(fn){ try{ fn(); }catch(e){} });
+  /* Обрыв отпускает ожидания НЕ сразу, а если связь не вернулась за CC_MP_LEAVE_MS: короткий
+     обрыв переподключается сам, и пропущенное доезжает очередью ('since'); отпустив барьер
+     сразу, клиент уходил вперёд один — и вечер расходился (комната на шестерых, 8.09). */
+  // Ожидания закрытия (onlyLost) ждут «сервера или обрыва» — их обрыв отпускает сразу, как и раньше.
+  const now=CC_MP_WAITERS.filter(function(fn){ return fn && fn.onlyLost; });
+  if(now.length){ CC_MP_WAITERS.splice(0, CC_MP_WAITERS.length, ...CC_MP_WAITERS.filter(function(fn){ return !(fn && fn.onlyLost); })); now.forEach(function(fn){ try{ fn(); }catch(e){} }); }
+  if(CC_MP_LOST_T) return;
+  CC_MP_LOST_T=setTimeout(function(){
+    CC_MP_LOST_T=null;
+    if(typeof MP!=='undefined' && MP.state==='live') return;
+    const list=CC_MP_WAITERS.slice();
+    CC_MP_WAITERS.length=0;
+    list.forEach(function(fn){ try{ fn(); }catch(e){} });
+  }, CC_MP_LEAVE_MS);
 }
 function ccMpPeerDone(){
   if(CC_MP_PEER_DONE) return;
@@ -61077,6 +61118,14 @@ function ccHubErrCopyOld(text, done){
   }catch(e){ console.error('скопировать ошибку не вышло:', e); }
 }
 function careerRenderHub(tab){
+  /* ОТРИСОВКА НЕ ТРАТИТ БРОСКИ ВЕЧЕРА. Пока идёт сеяный вечер (CC_MP_RAND), хаб всё равно
+     перерисовывают сетевые события — строка гонки соседа, 'ready', переподключение, — и
+     каждый Math.random внутри отрисовки уходил из общего генератора в СЛУЧАЙНЫЙ момент
+     расчёта, свой у каждого клиента. Годовая проба на шестерых 8.09: у одного +4 броска на
+     второй игре play-in, дальше другой набор вопросов и вечер стоит. Здесь генератор на время
+     отрисовки подменяется настоящим (ccRaceUnseeded), как у вопроса и у сборки команд. */
+  if(typeof CC_MP_RAND!=='undefined' && CC_MP_RAND && Math.random!==CC_MP_RAND && typeof ccRaceUnseeded==='function')
+    return ccRaceUnseeded(function(){ return careerRenderHub(tab); });
   const next=tab||CH_TAB;
   const same=(CH_DREW===next);
   const at=same ? ccHubScroll() : null;
@@ -64715,6 +64764,11 @@ let CC_BEEF_ZONES=null, CC_BEEF_SET=null;
    тихими выходят те игры, где бросок лёг высоко, у полной — почти все. */
 const CC_SPOT_FEAR_SWING=0;      // 0 — без броска; замер ниже, почему
 function careerSpotFearOn(you){
+  /* ОБЩАЯ КОМНАТА ГОНКИ: страха нет. Аура точек и известность читаются из СВОЕГО сейва, и у
+     шести клиентов боты обходили шесть разных домов — раздача комнаты расходилась, как только
+     у кого-то выросла аура (годовая проба 8.09: Evaluation 18.12, игра 3, у одного −76 бросков
+     на высадке и дальше другой набор вопросов). Своя точка в гонке садится голосом «домой». */
+  if(typeof ccRaceLock==='function' && ccRaceLock()){ CC_SPOT_FEAR_MAP=null; CC_SPOT_LOCK_ZONES=null; return; }
   /* Дом боятся за две вещи разом: за то, сколько ты его держал (аура), и за то,
      кто ты теперь (careerRenown — гранд-финал и слот на LAN). Оба слагаемых
      живут на одной шкале и вместе упираются в тот же потолок. */
@@ -80808,8 +80862,8 @@ function careerPlayRun(next){
     CC_RACE_LOCK=ccRaceShared(next);
     if(CC_RACE_LOCK){ try{ careerRaceSend(); if(typeof MP!=='undefined' && MP.sendCard) MP.sendCard(); }catch(e){} }
     let p=null;
-    try{ p=careerNightRun(next); }catch(e){ CC_RACE_LOCK=false; CC_RACE_POW_NOW=null; throw e; }
-    return Promise.resolve(p).finally(function(){ CC_RACE_LOCK=false; CC_RACE_POW_NOW=null; });
+    try{ p=careerNightRun(next); }catch(e){ CC_RACE_LOCK=false; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; throw e; }
+    return Promise.resolve(p).finally(function(){ CC_RACE_LOCK=false; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; });
   }
   return careerNightRun(next);
 }
@@ -83640,6 +83694,14 @@ async function runCareerEval(){
   careerPrAdd(ranked1, {div:1, kind:'eval'});
 
   let wins=0, cash=0, place2=null;
+  /* Гонка: второй раунд общий, только если ВСЯ комната прошла первый — как у Victory Cup.
+     Иначе прошедшие ждали бы на барьере игры 1 второго раунда приходов тех, у кого вечер
+     уже закончился (годовая проба 8.09: Evaluation 4.12, двое из шести прошли, 15 минут стоя). */
+  if(typeof ccRaceLock==='function' && ccRaceLock()){
+    const top=ranked1.slice(0, evalCut);
+    const rivalOut=ccRaceRoom().some(p=>!top.some(t=>t.mpTag===':'+hKey(p.card)));
+    if(!through || rivalOut) CC_RACE_LOCK=false;
+  }
   if(through){
     // Round 2 is the fifty who came through, in one lobby, and only a win scores.
     const r2=ranked1.slice(0, evalCut);
@@ -83653,6 +83715,7 @@ async function runCareerEval(){
     const zones2=null;
     await simulateGamesLive(r2, CC_EVAL_R2_GAMES, evalRound2Points, 0, 'stage', 0, null, zones2,
       {lobbySize:ccTeams(50), stageName:L().ccEvalR2Live, mapReplay:true, choices:true, stopOnYourDeath:true,
+       roomOnly:true,   // комната прошедших: вылетевших людей в неё не досаживать (ccRaceFieldSync)
        dropEachGame:(g,room)=>careerLandingPick(room||r2, you, L().ccEvalR2Live, kindsForDrop)});
     /* Тем же ключом, каким считается любой другой вечер: очки, победы, элимы.
        Здесь стояло только «очки, победы» — а раунд платит ТОЛЬКО за победы, то
@@ -84190,7 +84253,13 @@ async function careerLandingPick(field, you, title, kinds, o){
   // skipped, so the seat they earned is still worth what it was worth.
   // Свою точку перемотка тоже уважает: метка стоит весь год, и вечер, который
   // никто не смотрит, играется с той же карты, что и вечер, который смотрят.
-  if(CC_FF){
+  /* В ОБЩЕЙ КОМНАТЕ ГОНКИ короткого пути нет: он сажал КАЖДОГО человека комнаты на МОЮ
+     домашнюю точку (careerSpotZone — свой сейв), то есть у шести клиентов команды людей
+     стояли на шести разных раскладах, и вопросы про коробку («своя»/«стычка») расходились —
+     годовая проба 8.09: Evaluation 18.12, игра 3, у одного лишний own:live6 и вечер стоит.
+     Голос за высадку идёт проводом, как в живой игре; в перемотке владелец отвечает сам
+     («домой», если дом есть, иначе «тихо») — см. chooser ниже. */
+  if(CC_FF && !(typeof ccRaceLock==='function' && ccRaceLock())){
     const mine=careerSpotZone(ccNightSpot(ACTIVE_LANDING_SET));
     careerSpotFearOn(you);
     const groups=buildBotLandingAssignment(field.filter(t=>t!==you)).zoneGroups;
@@ -84307,7 +84376,8 @@ async function careerLandingPick(field, you, title, kinds, o){
          боты уже выбрали, зная, где он. */
       pre=new Map();
       const seated=[];
-      field.filter(t=>t.isYou||t.isMate)
+      // В гонке никого не досаживаем заранее: чей дом известен, у каждого клиента своё (см. careerSpotFearOn).
+      ((typeof ccRaceLock==='function' && ccRaceLock()) ? [] : field.filter(t=>t.isYou||t.isMate))
            .sort((a,b)=>String(a.mpTag||'')<String(b.mpTag||'') ? -1 : 1)
            .forEach(h=>{
              const hz=ccSoloHomeZoneOf(h); if(!hz) return;
@@ -84356,6 +84426,8 @@ async function careerLandingPick(field, you, title, kinds, o){
      обоих одна — тот же остров, тот же размер лобби. */
   const pics=home ? ccDropSideHTML(home, ACTIVE_LANDING_SET) : null;
   const vote=await ccMpChoose('drop'+(o.tag||''), async function(){
+    // Перемотка в общей комнате: ответ без окна — домой, если дом есть, иначе тихо.
+    if(CC_FF) return home ? {id:'home', at:ALL_LANDING_ZONES.indexOf(home)} : {id:'quiet', at:-1};
     const p=await ccChoiceBox(L().ccDropTitle,
       // Чужие объявления — прямо в подсказке: решение принимается здесь.
       L().ccDropHint+(calls ? ' · '+L().ccDropCalls+' '+calls : ''),
@@ -84389,7 +84461,11 @@ async function careerLandingPick(field, you, title, kinds, o){
   const said=vote.v;
   ccMpMark('dv:'+String(said.id)+(said.at!=null ? '@'+said.at : ''));
   // Свой дом в соло приезжает номером коробки — и у напарника, и у себя.
-  const homeZ=(solo && said.id==='home' && said.at>=0) ? ALL_LANDING_ZONES[said.at] : home;
+  /* Дом — ТОЛЬКО по номеру коробки из голоса, у владельца тоже: свой объект дома мог быть
+     клеткой крупной сетки, которой нет в ALL_LANDING_ZONES (indexOf → -1), и тогда владелец
+     садился домой, а соседи ставили его «тихо» — сила команды на коробку расходилась на
+     единицу (годовая проба 9.09: play-in 23.01, игра 8, live1+sky:116 vs 117). */
+  const homeZ=(solo && said.id==='home') ? (said.at>=0 ? ALL_LANDING_ZONES[said.at] : null) : home;
   if(said.id!=='contest'){
     const q=await careerDropQuick(field, you, said.id, homeZ, pre);
     ccMpMark('dq');
@@ -86057,6 +86133,12 @@ async function runCareerMajor(){
   // The Last Chance Lobby: the fifty who came through, four matches, and only a
   // win is worth anything.
   let ticket=false, lobbyPlace=null;
+  // Гонка: лобби Ласт Ченса общее, только если ВСЯ комната прошла открытый этап (как у Victory Cup и Evaluation).
+  if(ev.stage==='lcq' && typeof ccRaceLock==='function' && ccRaceLock()){
+    const top=ranked.slice(0, ccTeams(CAREER_CUP_CUT));
+    const rivalOut=ccRaceRoom().some(p=>!top.some(t=>t.mpTag===':'+hKey(p.card)));
+    if(!through || rivalOut) CC_RACE_LOCK=false;
+  }
   if(ev.stage==='lcq' && through){
     const lobby=ranked.slice(0, ccTeams(CAREER_CUP_CUT));
     ensureSkipButton();
@@ -86075,7 +86157,7 @@ async function runCareerMajor(){
     await simulateGamesLive(lobby, CC_MAJOR_LC_LOBBY_GAMES, victoryR2Points, 0,
       'stage', 0, null, lobbyZones,
       {lobbySize:ccTeams(50), stageName:L().ccMajLobby, mapReplay:true, choices:true, stopOnYourDeath:true,
-       stopOnWin:true,
+       stopOnWin:true, roomOnly:true,
        dropEachGame:(g,room)=>careerLandingPick(room||lobby, you, L().ccMajLobby, ['major'])});
     removeSkipButton();
     /* И таблица читается победами, а не очками. Победитель уходит после своей

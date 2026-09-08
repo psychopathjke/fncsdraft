@@ -28,6 +28,7 @@ var SOCK=null, CODE=null, ID=null, SEEN=0, HANDLERS={}, PEER=null;
    в том числе ещё не прочитанный приход соседа к барьеру; медленный клиент вставал насмерть
    (годовая проба на шестерых 8.09: два зависания из шести на 30–50 % первого вечера). */
 var ACTS=[], ACTS_MAX=8192, OWN=[];
+var PEER_HBS={};   // id соседа -> его последний пульс (см. say, kind 'hb')
 function findIn(list, kind, q, take){
   for(var i=0;i<list.length;i++){
     var a=list[i];
@@ -99,6 +100,7 @@ var MP={
   set peer(c){ PEER=c; },
   get code(){ return CODE; },
   get peerSeen(){ return LAST_PEER; },
+  get peerHbs(){ return PEER_HBS; },
   // Состояние связи. Пишется и снаружи — проверкам негде взять живой сокет.
   state:'off',
   /* Кто уже нажал «играть»: {day, n, of}. Ставится сообщением сервера и
@@ -214,7 +216,10 @@ var MP={
        очередь решений не попадает: он ничего не решает и вытеснял бы из неё
        настоящие ответы (ACTS_MAX). */
     if(m.by && m.by!==ID) LAST_PEER=(new Date()).getTime();
-    if(m.t==='act' && m.kind==='hb'){ if(m.by && m.by!==ID) MP.peerHb=m.payload||null; return; }
+    /* Пульс — ПО КАЖДОМУ соседу (peerHbs), не одним слотом: в комнате гонки на шестерых
+       последним мог оказаться пульс того, кто в этот вечер не играет (rand:false, день
+       впереди), и index читал его как «напарник вышел». peerHb остаётся последним — для дуо. */
+    if(m.t==='act' && m.kind==='hb'){ if(m.by && m.by!==ID){ MP.peerHb=m.payload||null; MP.peerHbs[m.by]=m.payload||null; } return; }
     /* Полное состояние команды. Применяется только если команда наша: с
        чужим дивизионом оно переписало бы карьеру вошедшего. Решает это
        index.html — здесь про дивизионы знать нечего. См. ccMpStateOk. */
