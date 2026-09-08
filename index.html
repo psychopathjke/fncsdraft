@@ -2503,11 +2503,88 @@
   #screen-career-hub .tv-vv i{width:7px;height:7px;border-radius:50%;background:#eb0400;display:block;}
   #screen-career-hub .tv-off{font-size:12px;color:#adadb8;}
   #screen-career-hub .tv-more{color:#bf94ff;font-size:12.5px;padding:8px;cursor:default;}
+  /* КАРТИНКА В ПЛЕЕРЕ — НЕ СКРИН, А ФРИБИЛД (его слово 8 сентября: «может видео с фри
+     билдом типа добавить на стрим вместо скрина»). Настоящего видео в файле нет и быть
+     не может — приложение целиком один документ, — поэтому сцена рисуется: небо, остров,
+     стена шторма справа и бесконечный бой на билдах. Стены и рампа встают по очереди,
+     потом всё сносится и строится заново; двое дерутся, изредка вспышка выстрела.
+     Только transform и opacity, чтобы браузеру было дёшево.
+
+     Движение медленное и без миганий нарочно: это содержимое плеера, а не украшение
+     страницы, но у него в Chrome всегда включено «меньше движения», и дёргаться на
+     экране ничего не должно. */
+  #screen-career-hub .tv-fb{position:absolute;inset:0;overflow:hidden;
+    background:linear-gradient(180deg,#4aa7e0 0%,#8ec9ea 46%,#cfe6f2 62%,#6f9f5a 62%,#4f7f42 100%);}
+  #screen-career-hub .tv-fb i, #screen-career-hub .tv-fb b, #screen-career-hub .tv-fb u{
+    position:absolute;display:block;}
+  /* Остров вдалеке и стена шторма справа. */
+  #screen-career-hub .tv-fb-far{left:0;right:0;bottom:38%;height:9%;
+    background:linear-gradient(180deg,rgba(60,90,60,.55),rgba(60,90,60,0));}
+  #screen-career-hub .tv-fb-storm{top:0;bottom:0;right:0;width:26%;
+    background:linear-gradient(90deg,rgba(150,90,255,0),rgba(150,90,255,.42) 60%,rgba(120,60,230,.6));
+    animation:tvStorm 9s ease-in-out infinite alternate;}
+  @keyframes tvStorm{ from{transform:translateX(6%);} to{transform:translateX(0);} }
+  /* Постройки: три стены и рампа, встают по очереди и сносятся вместе. */
+  /* Стены видны и без анимации: если она не идёт (виртуальное время в снимках,
+     выключенное движение в системе), в кадре остаётся построенная башня, а не пустое
+     поле. Анимация только строит и сносит. */
+  #screen-career-hub .tv-fb-w{bottom:38%;width:9%;height:15%;border-radius:1px;
+    box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.28);
+    animation:tvBuild 6s linear infinite;opacity:1;}
+  #screen-career-hub .tv-fb-w1{left:34%;background:#c8894a;animation-delay:0s;}
+  #screen-career-hub .tv-fb-w2{left:34%;bottom:53%;background:#c8894a;animation-delay:.3s;}
+  #screen-career-hub .tv-fb-w3{left:44%;background:#c5624d;animation-delay:.6s;}
+  #screen-career-hub .tv-fb-w4{left:44%;bottom:53%;background:#b7c3d1;animation-delay:.9s;}
+  #screen-career-hub .tv-fb-w5{left:54%;background:#c8894a;animation-delay:1.2s;}
+  @keyframes tvBuild{
+    0%{opacity:0;transform:translateY(12px) scaleY(.6);}
+    5%{opacity:1;transform:none;}
+    88%{opacity:1;transform:none;}
+    94%{opacity:0;transform:translateY(5px) scaleY(.85);}
+    100%{opacity:0;transform:translateY(12px) scaleY(.6);}
+  }
+  /* Рампа между башнями. */
+  #screen-career-hub .tv-fb-r{left:41%;bottom:38%;width:14%;height:2.5%;background:#c8894a;
+    transform-origin:left bottom;transform:rotate(-32deg);
+    animation:tvRamp 6s linear infinite;animation-delay:.8s;opacity:1;}
+  @keyframes tvRamp{
+    0%{opacity:0;} 7%{opacity:1;} 89%{opacity:1;} 95%{opacity:0;} 100%{opacity:0;}
+  }
+  /* Двое: один поднимается по рампе, второй наскакивает справа. */
+  #screen-career-hub .tv-fb-p{bottom:38%;width:2.6%;height:9%;border-radius:2px;box-shadow:0 2px 6px rgba(0,0,0,.35);}
+  #screen-career-hub .tv-fb-p1{left:37%;background:#20304a;animation:tvUp 6s ease-in-out infinite;}
+  #screen-career-hub .tv-fb-p2{left:62%;background:#3a2030;animation:tvIn 6s ease-in-out infinite;}
+  @keyframes tvUp{ 0%,10%{transform:none;} 45%{transform:translate(150%,-95%);} 78%{transform:translate(150%,-95%);} 100%{transform:none;} }
+  @keyframes tvIn{ 0%,20%{transform:none;} 55%{transform:translateX(-140%);} 80%{transform:translateX(-140%);} 100%{transform:none;} }
+  /* Вспышка выстрела — коротко и тускло, чтобы не мигало. */
+  #screen-career-hub .tv-fb-f{left:57%;bottom:44%;width:3%;height:3%;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,236,170,.85),rgba(255,200,80,0) 70%);
+    opacity:0;animation:tvFlash 6s linear infinite;animation-delay:3.2s;}
+  @keyframes tvFlash{ 0%,96%{opacity:0;} 97%{opacity:.75;} 100%{opacity:0;} }
+  /* Уведомления эфира — поверх картинки, как алерты у стримера. */
+  #screen-career-hub .tv-alert, .cc-tv .cc-tv-alert{position:absolute;right:10px;top:10px;
+    z-index:5;display:grid;gap:5px;justify-items:end;pointer-events:none;}
+  .cc-tv .cc-tv-alert{position:fixed;top:60px;right:calc(23% + 16px);}
+  .cc-tv-al{background:linear-gradient(180deg,rgba(24,10,48,.97),rgba(14,6,32,.97));
+    border:1px solid #a970ff;border-radius:7px;padding:5px 12px;text-align:center;
+    box-shadow:0 8px 22px rgba(0,0,0,.5);min-width:150px;}
+  .cc-tv-al b{display:block;font-size:12.5px;font-weight:800;color:#fff;}
+  .cc-tv-al em{display:block;font-style:normal;font-size:11px;color:#c9b8f5;margin-top:1px;}
+  .cc-tv-al.sub{border-color:#3ddc9a;} .cc-tv-al.dono{border-color:#ffd600;}
+  .cc-tv-al.raid{border-color:#ff6b3d;} .cc-tv-al.hate{border-color:#ff4d6a;}
+  .cc-tv-al{animation:tvAl 3.4s ease both;}
+  @keyframes tvAl{
+    0%{opacity:0;transform:translateY(-8px);} 8%{opacity:1;transform:none;}
+    88%{opacity:1;transform:none;} 100%{opacity:0;transform:translateY(-4px);}
+  }
   /* Плеер: кадр 16/9 с артом события и HUD поверх — зрители, подписки, время. */
   #screen-career-hub .tv-player{position:relative;aspect-ratio:16/9;background:#000 center/cover no-repeat;
     display:flex;align-items:center;justify-content:center;}
   #screen-career-hub .tv-player::after{content:'';position:absolute;inset:0;
     background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.7));}
+  /* Затемнение — ради читаемости кнопок на статичном арте. Пока идёт эфир, кнопок нет,
+     а картинка живая: гасить её нечем и незачем. */
+  #screen-career-hub .tv-player.live::after{background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.20));}
   #screen-career-hub .tv-hud{position:absolute;left:10px;top:10px;display:flex;gap:8px;z-index:2;}
   #screen-career-hub .tv-hud span{background:rgba(0,0,0,.65);border-radius:4px;padding:3px 8px;
     font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;}
@@ -7970,6 +8047,12 @@ ccTvMpNo:'В командной карьере эфир с турнира нед
 ccTvWait:'В эфире — ждём первую игру',
 ccTvHours:(h,all)=>'в эфире '+h+' ч из '+all,
 ccTvHapRaid:(w,n)=>w+' зарейдил: пришло '+n+' зрителей',
+ccTvAlFollow:'Новый фолловер', ccTvAlSub:'Новый саб',
+ccTvAlDono:(w,m)=>w+' задонатил $'+m,
+ccTvAlRaid:w=>'Рейд от '+w, ccTvAlRaidNote:n=>n+' зрителей пришло',
+ccTvAlClip:'Клип разошёлся', ccTvAlClipNote:n=>'+'+n+' фолловеров',
+ccTvAlPro:w=>w+' в чате', ccTvAlProNote:n=>'подарил '+n+' саба',
+ccTvAlHate:'Хейт-рейд', ccTvAlHateNote:'модератор чистит чат',
 ccTvHapRaidSum:(w,n,f)=>'Рейд от '+w+': '+n+' зрителей, +'+f+' фолловеров',
 ccTvHapClip:n=>'Клип с эфира улетел — +'+n+' фолловеров',
 ccTvHapClipSum:n=>'Клип разошёлся: +'+n+' фолловеров',
@@ -9914,6 +9997,12 @@ ccTvMpNo:'Streaming a tournament is off in a team career',
 ccTvWait:'Live — waiting for the first game',
 ccTvHours:(h,all)=>h+' h of '+all+' on air',
 ccTvHapRaid:(w,n)=>w+' raided you: '+n+' viewers came over',
+ccTvAlFollow:'New follower', ccTvAlSub:'New sub',
+ccTvAlDono:(w,m)=>w+' donated $'+m,
+ccTvAlRaid:w=>'Raid from '+w, ccTvAlRaidNote:n=>n+' viewers came over',
+ccTvAlClip:'A clip took off', ccTvAlClipNote:n=>'+'+n+' followers',
+ccTvAlPro:w=>w+' in chat', ccTvAlProNote:n=>'gifted '+n+' subs',
+ccTvAlHate:'Hate raid', ccTvAlHateNote:'the mod is clearing chat',
 ccTvHapRaidSum:(w,n,f)=>'Raid from '+w+': '+n+' viewers, +'+f+' followers',
 ccTvHapClip:n=>'A clip from the stream took off — +'+n+' followers',
 ccTvHapClipSum:n=>'A clip took off: +'+n+' followers',
@@ -57773,7 +57862,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e326c8b9';
+const CC_BUILD='10278827';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -89298,22 +89387,26 @@ function ccStreamHappen(h){
     const fol=Math.max(1, Math.round(came*c.fol));
     p.got.push({id:'raid', who:from.name, n:came, fol:fol});
     ccTvPush({ev:'fol', text:T.ccTvHapRaid(from.name, ccNum(came))});
+    ccTvAlert('raid', T.ccTvAlRaid(from.name), T.ccTvAlRaidNote(ccNum(came)));
   } else if(h.id==='clip'){
     const fol=Math.max(3, Math.round((p.want.fol||0)*c.fol));
     p.got.push({id:'clip', fol:fol});
     ccTvPush({ev:'fol', text:T.ccTvHapClip(ccNum(fol))});
+    ccTvAlert('fol', T.ccTvAlClip, T.ccTvAlClipNote(ccNum(fol)));
   } else if(h.id==='pro'){
     let who=null;
     try{ who=(careerRosterNowEU()||[])[Math.floor(Math.random()*40)]; }catch(e){}
     const nick=(who && who.handle) || (CC_TV_WHO[0] && CC_TV_WHO[0].who) || 'pro';
     p.got.push({id:'pro', who:nick, subs:c.subs});
     ccTvPush({ev:'sub', text:T.ccTvHapPro(nick, c.subs)});
+    ccTvAlert('sub', T.ccTvAlPro(nick), T.ccTvAlProNote(c.subs));
     for(let i=0;i<c.subs;i++) CC_TV_EV.subs++;
     CC_TV_HYPE+=0.5;
   } else if(h.id==='hate'){
     CC_TV_VIEW=Math.max(3, Math.round(CC_TV_VIEW*(1-c.dip)));
     p.got.push({id:'hate'});
     ccTvPush({ev:'dono', text:T.ccTvHapHate});
+    ccTvAlert('hate', T.ccTvAlHate, T.ccTvAlHateNote);
   }
 }
 // Строка события для сводки: что случилось и что это дало.
@@ -89840,17 +89933,21 @@ function ccTvEvent(kind, amt, say){
   if(kind==='fol'){
     CC_TV_EV.fol++;
     if(say!==false) ccTvPush({ev:'fol', text:T.ccTvEvFollow(who.who)});
+    // Алерт не на каждого: у крупного канала фолловеры идут пачками. См. CC_TV_AL_EVERY.
+    if((++CC_TV_AL_N)%CC_TV_AL_EVERY===0) ccTvAlert('fol', T.ccTvAlFollow, who.who);
   } else if(kind==='sub'){
     CC_TV_EV.subs++; CC_TV_EV.cash+=CC_TV_SUB_USD;
     CC_TV_TOP[who.who]=(CC_TV_TOP[who.who]||0)+CC_TV_SUB_USD;
     ccTvPush({ev:'sub', text:T.ccTvEvSub(who.who)});
+    ccTvAlert('sub', T.ccTvAlSub, who.who);
   } else {
     const m=amt||CC_TV_DONO[Math.floor(Math.random()*CC_TV_DONO.length)];
     CC_TV_EV.cash+=m;
     CC_TV_TOP[who.who]=(CC_TV_TOP[who.who]||0)+m;
     const lines=T.ccTvDonoLines||[];
-    ccTvPush({ev:'dono', text:T.ccTvEvDono(who.who, m),
-              note: lines.length ? lines[Math.floor(Math.random()*lines.length)] : ''});
+    const note=lines.length ? lines[Math.floor(Math.random()*lines.length)] : '';
+    ccTvPush({ev:'dono', text:T.ccTvEvDono(who.who, m), note:note});
+    ccTvAlert('dono', T.ccTvAlDono(who.who, m), note);
   }
 }
 /* Сколько событий на тик. Бюджет вечера — те же числа, что в ccStreamCupAfter
@@ -90154,6 +90251,41 @@ function careerTwBarHTML(){
     <div class="tw-h">${esc(next==='part'?T.ccTwToPart:T.ccTwToAff)}</div>
     ${rows}</div>`;
 }
+/* Что показывает плеер, пока идёт эфир: фрибилд, а не скрин (см. .tv-fb в стилях).
+   Никаких картинок и файлов — сцена собрана прямоугольниками, поэтому весит ноль и
+   работает в отрезанном app.js так же, как в целой странице. */
+function ccStreamScreenHTML(){
+  return '<div class="tv-fb" aria-hidden="true">'+
+    '<i class="tv-fb-far"></i><i class="tv-fb-storm"></i>'+
+    '<i class="tv-fb-w tv-fb-w1"></i><i class="tv-fb-w tv-fb-w2"></i>'+
+    '<i class="tv-fb-w tv-fb-w3"></i><i class="tv-fb-w tv-fb-w4"></i>'+
+    '<i class="tv-fb-w tv-fb-w5"></i><i class="tv-fb-r"></i>'+
+    '<b class="tv-fb-p tv-fb-p1"></b><b class="tv-fb-p tv-fb-p2"></b>'+
+    '<u class="tv-fb-f"></u></div>';
+}
+/* УВЕДОМЛЕНИЯ НА ЭКРАНЕ (его слово 8 сентября: «и уведомления будут приходить на
+   экране»). У стримера алерты всплывают поверх картинки — фолловер, саб, донат. Здесь
+   так же: карточка выезжает над плеером и сама уходит.
+
+   Показывается НЕ КАЖДОЕ событие: у канала на тысячу зрителей фолловеры идут пачками, и
+   алерт на каждого превратился бы в мигающую стену. Фолловеры показываются по одному на
+   CC_TV_AL_EVERY, а сабы, донаты и события эфира — всегда, их и так немного. Больше
+   CC_TV_AL_MAX карточек на экране не живёт. */
+const CC_TV_AL_EVERY=6, CC_TV_AL_MAX=2;
+let CC_TV_AL_N=0;
+function ccTvAlert(kind, title, note){
+  if(typeof document==='undefined') return;
+  const hosts=[document.getElementById('tvAlert'), document.querySelector('.cc-tv .cc-tv-alert')].filter(Boolean);
+  if(!hosts.length) return;
+  hosts.forEach(host=>{
+    while(host.children.length>=CC_TV_AL_MAX) host.removeChild(host.firstChild);
+    const el=document.createElement('div');
+    el.className='cc-tv-al '+kind;
+    el.innerHTML='<b>'+esc(title)+'</b>'+(note ? '<em>'+esc(note)+'</em>' : '');
+    host.appendChild(el);
+    setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 3400);
+  });
+}
 function careerStreamsHTML(){
   const cr=CAREER.career, T=L();
   const me=CAREER.player;
@@ -90223,7 +90355,9 @@ function careerStreamsHTML(){
       <div class="tv-more">${T.ccStreamMore}</div>
     </aside>
     <main class="tv-main">
-      <div class="tv-player" style="${art?`background-image:url(${art})`:''}">
+      <div class="tv-player${live?' live':''}" style="${live ? '' : (art?`background-image:url(${art})`:'')}">
+        ${live ? ccStreamScreenHTML() : ''}
+        <div class="tv-alert" id="tvAlert"></div>
         <div class="tv-hud">
           <span class="tv-hud-v"><i></i>${ccNum(viewers)}</span>
           ${subsToday?`<span class="tv-hud-s">${esc(T.ccStreamSubsToday(ccNum(subsToday)))}</span>`:''}

@@ -57,6 +57,26 @@ const BOOT = `
     if(run.indexOf(L().ccTvWait)>=0) fail('обычный эфир ждёт первую игру, которой не будет');
     if(document.getElementById('ccTvSum')) fail('сводка встала, не дав эфиру пройти');
     out.steps.push('эфир идёт: рамка на месте, строка «'+run.replace(/\\s+/g,' ').trim().slice(0,60)+'»');
+    // Картинка в плеере — фрибилд, а не скрин, и она видна даже без анимации.
+    const fb=document.querySelector('.tv-player.live .tv-fb');
+    if(!fb) fail('в плеере нет сцены фрибилда — остался скрин');
+    const walls=[...document.querySelectorAll('.tv-fb-w')];
+    if(walls.length<4) fail('в сцене '+walls.length+' стен');
+    const wide=walls.filter(w=>{ const r=w.getBoundingClientRect(); return r.width>4 && r.height>4; });
+    if(wide.length!==walls.length) fail('стены нулевого размера: '+(walls.length-wide.length));
+    // База — «видно»: если анимация не идёт, кадр не должен быть пустым.
+    const off=walls.filter(w=>{ const a2=w.getAnimations()[0]; if(a2) a2.cancel(); return +getComputedStyle(w).opacity===0; });
+    if(off.length) fail('без анимации сцена пустеет: невидимых стен '+off.length);
+    out.steps.push('в плеере фрибилд: '+walls.length+' построек, видны и без анимации');
+    // Уведомления эфира: карточка над плеером, не больше двух разом.
+    ccTvAlert('sub', 'Проба', 'кто-то');
+    ccTvAlert('dono', 'Проба 2', 'кто-то');
+    ccTvAlert('fol', 'Проба 3', 'кто-то');
+    const host=document.getElementById('tvAlert');
+    if(!host) fail('над плеером нет места под уведомления');
+    if(host.children.length>CC_TV_AL_MAX) fail('уведомлений на экране '+host.children.length+', потолок '+CC_TV_AL_MAX);
+    if(!host.querySelector('.cc-tv-al b')) fail('уведомление без заголовка');
+    out.steps.push('уведомления приходят на экран: на виду не больше '+CC_TV_AL_MAX);
     // Энергия списана ровно один раз — рамка не платит второй.
     const spent=energy0-careerEnergy();
     if(spent!==k.energy) fail('списано '+spent+' энергии вместо '+k.energy);
