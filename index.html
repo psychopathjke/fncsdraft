@@ -3356,6 +3356,17 @@
   .x-co-r.sub{margin-left:16px;}
   .x-co-r.sub::before{content:'↳';color:#67799f;margin-right:5px;}
   .x-co-r.hate{color:#8d95a8;}
+  /* «Ответить» у строки под своим постом и адресат в своём ответе. */
+  .x-co-re{margin-left:8px;background:none;border:0;padding:0;color:#67799f;font:inherit;font-size:11px;font-weight:700;cursor:pointer;}
+  .x-co-re:hover{color:#00ffd0;}
+  .x-co-mine span u{text-decoration:none;color:#7ef0dd;font-weight:900;}
+  .x-replybox-sub{margin-left:16px;margin-bottom:6px;}
+  /* Код региона рядом с ником автора из другого региона. */
+  .x-reg{display:inline-block;margin-left:5px;padding:0 5px;border-radius:5px;background:#1c2742;color:#8fb3ff;font-size:10px;font-weight:900;letter-spacing:.04em;vertical-align:1px;font-style:normal;}
+  /* Ряд регионов над «кого читать». */
+  .x-sug-regs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px;}
+  .x-sug-reg{background:#141c30;border:1px solid #26334f;color:#8094c4;border-radius:7px;padding:2px 7px;font:inherit;font-size:10.5px;font-weight:900;cursor:pointer;}
+  .x-sug-reg.on{background:#00ffd0;border-color:#00ffd0;color:#06110f;}
   .x-co-r.hate b{color:#6f7a93;}
   .x-co-more{font-size:11px;color:#67799f;margin-top:1px;}
   .x-acts span{display:inline-flex;align-items:center;gap:6px;}
@@ -4330,6 +4341,13 @@
      further up: there was already a rule at this specificity below that one, and
      the later one wins. */
   #screen-career-hub .ch-mode{display:block;width:100%;align-self:stretch;margin:2px 0 12px;}
+  /* Правила Про-Ама на карточке дня — см. ccProAmHowHTML. */
+  #screen-career-hub .ch-how{width:100%;margin:-4px 0 12px;font-size:12.5px;line-height:1.4;color:#cfe6e4;}
+  #screen-career-hub .ch-how summary{cursor:pointer;color:#7ef0dd;font-weight:800;list-style:none;}
+  #screen-career-hub .ch-how summary::before{content:'▸ ';}
+  #screen-career-hub .ch-how[open] summary::before{content:'▾ ';}
+  #screen-career-hub .ch-how ul{margin:6px 0 0;padding-left:18px;}
+  #screen-career-hub .ch-how li{margin:3px 0;}
   #screen-career-hub .ch-mode span{display:block;padding:11px 14px;border-radius:10px;
     font-size:13px;background:rgba(255,255,255,.16);color:#eaf1ff;
     border-radius:5px;padding:7px 12px;font-size:11px;font-weight:900;
@@ -8184,6 +8202,13 @@ dmProAmWith:n=>'Ты едешь с '+n,
 dmProAmDone:'Приглашение отклонено',
 ccNewsProAmReach:(h,f,g)=>'Играл в паре с @'+h+' — '+f+' на Twitch. Пришло '+g+' новых подписчиков',
 ccProAmMateLine:(h,f)=>'Напарник: '+h+' · '+f+' на Twitch',
+ccProAmHowTitle:'Как проходит Pro-Am',
+ccProAmHow:o=>[
+  'Шоу-турнир Epic: '+o.teams+' пар «профи + контент-мейкер», Reload, '+o.games+' игр в одном лобби.',
+  'Отбора нет — зовут по известности: от '+o.reach+' подписчиков '+o.host+' пишет в личку за '+o.days+' дней до даты. Согласился — выбираешь напарника из '+o.pick+' мейкеров.',
+  'Очки: '+o.p1+' за победу, '+o.p2+' за второе место, '+o.p3+' за третье, по '+o.kill+' за элиминацию.',
+  'Деньги: таблица от '+o.prize1+' за первое место до '+o.prizeN+' за последнее, плюс за КАЖДУЮ игру '+o.g1+' / '+o.g2+' / '+o.g3+' за топ-3.',
+  'Напарник слабее любого профи в лобби, зато его аудитория идёт к тебе: до '+o.cap+' подписчиков за вечер. Раз в сезон; результат идёт в PR.'],
 ccNewsSceneRise:(h,d)=>'@'+h+' прибавил '+d+' к рейтингу за сезон — растёт быстрее всех на сцене',
 ccNewsSceneFall:(h,d)=>'@'+h+' просел на '+d+' за сезон — форма ушла',
 ccShotCut:(n,p)=>'проход: топ-'+n+' — '+p+' очк.',
@@ -10128,6 +10153,13 @@ dmProAmWith:n=>'You are going with '+n,
 dmProAmDone:'Invite declined',
 ccNewsProAmReach:(h,f,g)=>'Played alongside @'+h+' — '+f+' on Twitch. '+g+' new followers came over',
 ccProAmMateLine:(h,f)=>'Partner: '+h+' · '+f+' on Twitch',
+ccProAmHowTitle:'How the Pro-Am works',
+ccProAmHow:o=>[
+  'Epic\'s show event: '+o.teams+' pairs of a pro and a creator, Reload, '+o.games+' games in one lobby.',
+  'No qualifier — an invite by fame: from '+o.reach+' followers, '+o.host+' DMs you '+o.days+' days before the date. Say yes and pick a partner out of '+o.pick+' creators.',
+  'Points: '+o.p1+' for a win, '+o.p2+' for second, '+o.p3+' for third, '+o.kill+' per elimination.',
+  'Money: a table from '+o.prize1+' for first down to '+o.prizeN+' for last, plus '+o.g1+' / '+o.g2+' / '+o.g3+' for a top 3 in EVERY game.',
+  'Your partner is weaker than any pro in the lobby, but their audience follows you: up to '+o.cap+' followers for the night. Once a season; the result counts for PR.'],
 ccNewsSceneRise:(h,d)=>'@'+h+' is up '+d+' rating this season — the fastest riser on the scene',
 ccNewsSceneFall:(h,d)=>'@'+h+' is down '+d+' this season — the form is gone',
 ccShotCut:(n,p)=>'to qualify: top '+n+' — '+p+' pts',
@@ -12517,6 +12549,13 @@ dmProAmWith:n=>'Tu y vas avec '+n,
 dmProAmDone:'Invitation refusée',
 ccNewsProAmReach:(h,f,g)=>'Joué avec @'+h+' — '+f+' sur Twitch. '+g+' nouveaux abonnés',
 ccProAmMateLine:(h,f)=>'Coéquipier : '+h+' · '+f+' sur Twitch',
+ccProAmHowTitle:'Comment se joue le Pro-Am',
+ccProAmHow:o=>[
+  'Le show d\'Epic : '+o.teams+' paires « pro + créateur », Reload, '+o.games+' parties dans un seul lobby.',
+  'Pas de qualification, une invitation par notoriété : dès '+o.reach+' abonnés, '+o.host+' t\'écrit en MP '+o.days+' jours avant la date. Tu acceptes, tu choisis ton coéquipier parmi '+o.pick+' créateurs.',
+  'Points : '+o.p1+' pour la victoire, '+o.p2+' pour la 2e place, '+o.p3+' pour la 3e, '+o.kill+' par élimination.',
+  'Argent : un tableau de '+o.prize1+' pour la 1re place à '+o.prizeN+' pour la dernière, plus '+o.g1+' / '+o.g2+' / '+o.g3+' pour un top 3 à CHAQUE partie.',
+  'Ton coéquipier est plus faible que n\'importe quel pro du lobby, mais son audience te suit : jusqu\'à '+o.cap+' abonnés pour la soirée. Une fois par saison ; le résultat compte pour le PR.'],
 ccNewsSceneRise:(h,d)=>'@'+h+' a pris '+d+' de note cette saison — la plus forte progression de la scène',
 ccNewsSceneFall:(h,d)=>'@'+h+' a perdu '+d+' cette saison — la forme est partie',
 ccShotCut:(n,p)=>'pour se qualifier : top '+n+' — '+p+' pts',
@@ -12850,6 +12889,13 @@ dmProAmWith:n=>"Vai con "+n,
 dmProAmDone:"Invito rifiutato",
 ccNewsProAmReach:(h,f,g)=>"Giocato con @"+h+" — "+f+" su Twitch. "+g+" nuovi follower",
 ccProAmMateLine:(h,f)=>"Compagno: "+h+" · "+f+" su Twitch",
+ccProAmHowTitle:"Come funziona il Pro-Am",
+ccProAmHow:o=>[
+  "Lo show di Epic: "+o.teams+" coppie «pro + creator», Reload, "+o.games+" partite in una sola lobby.",
+  "Niente qualificazione, un invito per fama: da "+o.reach+" follower, "+o.host+" ti scrive in DM "+o.days+" giorni prima della data. Accetti e scegli il compagno tra "+o.pick+" creator.",
+  "Punti: "+o.p1+" per la vittoria, "+o.p2+" per il secondo posto, "+o.p3+" per il terzo, "+o.kill+" per eliminazione.",
+  "Soldi: una tabella da "+o.prize1+" per il primo a "+o.prizeN+" per l'ultimo, più "+o.g1+" / "+o.g2+" / "+o.g3+" per una top 3 in OGNI partita.",
+  "Il compagno è più debole di qualsiasi pro in lobby, ma il suo pubblico ti segue: fino a "+o.cap+" follower in una serata. Una volta a stagione; il risultato conta per il PR."],
 ccNewsSceneRise:(h,d)=>"@"+h+" ha guadagnato "+d+" di rating in stagione — la crescita più rapida della scena",
 ccNewsSceneFall:(h,d)=>"@"+h+" ha perso "+d+" in stagione — la forma è andata",
 ccShotCut:(n,p)=>"per qualificarsi: top "+n+" — "+p+" pt",
@@ -15342,6 +15388,13 @@ dmProAmWith:n=>"Você vai com "+n,
 dmProAmDone:"Convite recusado",
 ccNewsProAmReach:(h,f,g)=>"Joguei com @"+h+" — "+f+" na Twitch. "+g+" novos seguidores",
 ccProAmMateLine:(h,f)=>"Parceiro: "+h+" · "+f+" na Twitch",
+ccProAmHowTitle:"Como funciona o Pro-Am",
+ccProAmHow:o=>[
+  "O show da Epic: "+o.teams+" duplas «pro + criador», Reload, "+o.games+" partidas em um só lobby.",
+  "Sem classificatória, um convite por fama: a partir de "+o.reach+" seguidores, a "+o.host+" te chama na DM "+o.days+" dias antes da data. Aceitou, escolhe o parceiro entre "+o.pick+" criadores.",
+  "Pontos: "+o.p1+" pela vitória, "+o.p2+" pelo segundo lugar, "+o.p3+" pelo terceiro, "+o.kill+" por eliminação.",
+  "Dinheiro: uma tabela de "+o.prize1+" pelo primeiro lugar até "+o.prizeN+" pelo último, mais "+o.g1+" / "+o.g2+" / "+o.g3+" por um top 3 em CADA partida.",
+  "O parceiro é mais fraco que qualquer pro do lobby, mas o público dele vem com você: até "+o.cap+" seguidores na noite. Uma vez por temporada; o resultado conta para o PR."],
 ccNewsSceneRise:(h,d)=>"@"+h+" subiu "+d+" de rating na temporada — a maior alta da cena",
 ccNewsSceneFall:(h,d)=>"@"+h+" caiu "+d+" na temporada — a forma foi embora",
 ccShotCut:(n,p)=>"para classificar: top "+n+" — "+p+" pts",
@@ -57909,7 +57962,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4079663a';
+const CC_BUILD='fe12da64';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -61301,6 +61354,9 @@ function careerCentreHTML(card, a){
                 const c=ccProAmMate();
                 return `<div class="ch-mode ch-mode-proam"><span>${
                   esc(L().ccProAmMateLine(c.handle, ccNum(c.followers||0)))}</span></div>`; })() : ''}
+            <!-- И как он проходит — его слово 8 сентября: «pro am ещё распиши
+                 как работает». Все числа читаются из констант турнира. -->
+            ${next.type==='proam' && typeof ccProAmHowHTML==='function' ? ccProAmHowHTML() : ''}
             <!-- Куда уже квалифицировались. Строка появляется, только когда
                  место действительно держится, — см. careerQualHTML. -->
             ${careerQualHTML()}
@@ -66340,6 +66396,22 @@ function ccAsWorld(fn){
   CC_WORLD=true;
   try{ return fn(); } finally { CC_WORLD=was; }
 }
+/* Тот же переключатель, но на ЧУЖОЙ регион — сыграть неделю Северной Америки,
+   оставаясь европейской карьерой.
+
+   Его слово, 8 сентября: «чтоб твитер был и других регионов… могут ли игроки
+   постить результаты своих матчей на других регионах». Всё, что для этого нужно,
+   в файле уже лежит: у каждого из семи регионов свой пул пар и свой ростер
+   (ccSceneRoster(reg), ccEuCards по ccPoolRegion) — не хватало только способа
+   на время сказать «регион — вот этот». Тот же приём, что и у ccAsWorld:
+   ставится на длину одного вызова и снимается в finally, потому что забытый
+   флаг тихо пересадил бы всю карьеру в другой регион. См. careerRegionsWeek. */
+let CC_REGION_AS=null;
+function ccAsRegion(reg, fn){
+  const was=CC_REGION_AS;
+  CC_REGION_AS=reg;
+  try{ return fn(); } finally { CC_REGION_AS=was; }
+}
 /* Рейтинг в карьере — за год, а не за лучшую ночь.
 
    Карточек у человека столько, сколько наборов он отыграл: у Sky их восемь —
@@ -66743,11 +66815,22 @@ function ccSnapshotNow(){
   return snap;
 }
 let CC_POOLS=null;
+/* Пулы чужих регионов — отдельной полкой, по коду региона. Своя полка одна и
+   вытесняется любой сменой региона; если бы неделя Северной Америки ложилась
+   на неё, следующий же вызов у себя дома пересобирал бы европейский пул, и так
+   семь раз каждое воскресенье. Чистится вместе со своей: сброс CC_POOLS=null
+   стоит в шести местах (трансфер, переезд, новый сезон), и здесь он читается
+   как «всё устарело». */
+let CC_POOLS_AWAY={};
 function careerPools(){
   const snap=ccSnapshotNow();
   // The world pool is cached under its own key beside the region's. See ccAsWorld.
   const reg=ccPoolRegion();
-  if(CC_POOLS && CC_POOLS.tag===snap.tag && CC_POOLS.reg===reg) return CC_POOLS;
+  if(!CC_POOLS) CC_POOLS_AWAY={};
+  if(CC_REGION_AS){
+    const away=CC_POOLS_AWAY[reg];
+    if(away && away.tag===snap.tag) return away;
+  } else if(CC_POOLS && CC_POOLS.tag===snap.tag && CC_POOLS.reg===reg) return CC_POOLS;
   const seated=new Set();
   const duos=ccSeat(ccDuosOf(snap.playIn, ccPeopleOf(snap.playIn)), seated);
   /* И те, кто зашёл в Мейджор с другой стороны.
@@ -66910,7 +66993,9 @@ function careerPools(){
     c._k=k;
     players.push(c);
   });
-  CC_POOLS={tag:snap.tag, reg:reg, duos:duosLive, players};
+  const built={tag:snap.tag, reg:reg, duos:duosLive, players};
+  if(CC_REGION_AS){ CC_POOLS_AWAY[reg]=built; return built; }
+  CC_POOLS=built;
   return CC_POOLS;
 }
 // The real pairs a lobby can seat — Division 1's own, or an open event's, which
@@ -72617,7 +72702,7 @@ function careerWhoHTML(h){
   return `<div class="ch-tile x-profile">
     <div class="x-profile-head">
       ${ccAvatar(who)}
-      <div><b>${esc(h)}</b>${ccWhoChipHTML(h)}<span>@${esc(ccHandle(h))}</span>
+      <div><b>${esc(h)}</b>${ccWhoChipHTML(h)}${ccRegChipHTML(card)}<span>@${esc(ccHandle(h))}</span>
         <span class="x-bio">${ccBioLine(h)}</span></div>
     </div>
     <div class="x-acts2">
@@ -72915,12 +73000,23 @@ function ccPostComments(n, who, st){
   /* Свои реплики под чужим постом: короткая кнопочная и всё, что написано
      словами (n.res). Обе видны всегда — они написаны игроком. См. careerReply. */
   const meAt=esc(ccHandle((CAREER.player||{}).nick||''));
+  /* Ответ КОНКРЕТНОМУ человеку под своим постом — его игрок из Notion, 8 сентября:
+     «we could reply to the people in our own tweet». Такой ответ несёт адресата
+     (r.to) и рисуется веткой под его строкой; ответ без адресата — как раньше,
+     внизу. Строки под своим постом не хранятся (тот же хэш — тот же разговор),
+     поэтому адресат ищется по нику среди нарисованных; если его строка не
+     собралась (сменился напарник, подписки), ответ уходит вниз с «@кому». */
+  const res=((n&&n.res)||[]);
+  const toKey=r=>r.to ? hKey(r.to) : '';
+  const mineRow=r=>'<div class="x-co-r x-co-mine'+(r.to?' sub':'')+'"><b>@'+meAt+'</b>'+
+      '<span>'+(r.to?'<u>@'+esc(ccHandle(r.to))+'</u> ':'')+esc(r.t||'')+'</span></div>';
   const mine=((n && n.re)
       ? '<div class="x-co-r x-co-mine"><b>@'+meAt+'</b><span>'+esc(L()['ccRe'+n.re]||'')+'</span></div>'
       : '')+
-    (((n&&n.res)||[]).map(r=>'<div class="x-co-r x-co-mine"><b>@'+meAt+'</b>'+
-      '<span>'+esc(r.t||'')+'</span></div>').join(''));
-  const onlyMine=()=>mine ? '<div class="x-co">'+mine+'</div>' : '';
+    res.filter(r=>!r.to).map(mineRow).join('');
+  const placed=new Set();
+  const orphans=()=>res.filter(r=>r.to && !placed.has(toKey(r))).map(mineRow).join('');
+  const onlyMine=()=>{ const s=mine+orphans(); return s ? '<div class="x-co">'+s+'</div>' : ''; };
   if(!n || !who) return onlyMine();
   const replies=(st && st.replies)||0;
   if(replies<1) return onlyMine();
@@ -72960,8 +73056,11 @@ function ccPostComments(n, who, st){
     return true;
   };
   const ovrOf=c=>c ? ((c._ovr!=null?c._ovr:(attrsFor(c)||{}).ovr)||0) : 0;
+  // Под постом из другого региона комната — того региона: европейские про под
+  // победой в Северной Америке не сидят. См. careerRegionsWeek.
+  const away=ccAwayRegionOf(who.card);
   let roster=[];
-  try{ roster=careerRosterNowEU()||[]; }catch(e){ roster=[]; }
+  try{ roster=(away ? ccSceneRoster(away) : careerRosterNowEU())||[]; }catch(e){ roster=[]; }
   const realOf=h=>{ const k=hKey(h); return k ? (roster.find(c=>hKey(c)===k)||null) : null; };
   // Кто был в той же комнате — по таблице под постом; кого пост упоминает —
   // по тексту. И те и другие — настоящие имена, иначе они не считаются.
@@ -73051,12 +73150,55 @@ function ccPostComments(n, who, st){
   }
   if(!rows.length) return onlyMine();
   const left=Math.max(0, replies-rows.length);
-  return '<div class="x-co">'+rows.map(r=>
-      '<div class="x-co-r'+(r.pro?' pro':'')+(r.org?' org':'')+(r.hate?' hate':'')+(r.sub?' sub':'')+'">'+
-        '<b>@'+esc(ccHandle(r.h))+(r.org?'<i class="x-tick">✓</i>':'')+'</b><span>'+esc(r.t)+'</span></div>').join('')+
-    mine+
+  const idAt=esc(n.id||'');
+  const rowHTML=r=>{
+    const hAt=esc(ccHandle(r.h));
+    let s='<div class="x-co-r'+(r.pro?' pro':'')+(r.org?' org':'')+(r.hate?' hate':'')+(r.sub?' sub':'')+'">'+
+        '<b>@'+hAt+(r.org?'<i class="x-tick">✓</i>':'')+'</b><span>'+esc(r.t)+'</span>'+
+        // Под своим постом у каждой строки — «Ответить»: см. careerReplyTo.
+        (who.you && !r.sub ? '<button class="x-co-re" onclick="careerReplyTo(\''+idAt+'\',\''+
+           esc(r.h).replace(/'/g,"\\'")+'\')">'+esc(L().ccReplyBtn)+'</button>' : '')+
+      '</div>';
+    if(!who.you) return s;
+    const k=hKey(r.h);
+    const thread=res.filter(x=>x.to && toKey(x)===k);
+    if(thread.length){
+      placed.add(k);
+      s+=thread.map(mineRow).join('');
+      /* И он отвечает в ответ — коротко, из того же банка благодарностей, что и
+         под прессой. Посеяно от поста и ника: перерисовка не меняет разговор.
+         Хейтер не отвечает — с ним разговора нет. */
+      if(!r.hate){
+        const back=bankOf('ccCoTy');
+        const rb=careerRng(ccHashStr('back|'+(n.id||'')+'|'+k));
+        if(back && back.length && rb()<0.6)
+          s+='<div class="x-co-r'+(r.pro?' pro':'')+' sub"><b>@'+hAt+'</b><span>'+
+             esc(back[Math.floor(rb()*back.length)])+'</span></div>';
+      }
+    }
+    if(CC_REPLY_OPEN===n.id && CC_REPLY_TO && hKey(CC_REPLY_TO)===k)
+      s+='<div class="x-replybox x-replybox-sub">'+
+         '<textarea id="ccReplyBox'+idAt+'" rows="2" maxlength="'+CC_POST_MAX+'" placeholder="'+
+           esc(L().ccReplyPh)+' @'+hAt+'"></textarea>'+
+         '<button class="ch-sign" onclick="careerReplyWrite(\''+idAt+'\')">'+esc(L().ccReplySend)+'</button></div>';
+    return s;
+  };
+  return '<div class="x-co">'+rows.map(rowHTML).join('')+
+    mine+orphans()+
     (left?'<div class="x-co-more">'+esc(L().ccCoMore(ccFollowers(left)))+'</div>':'')+
   '</div>';
+}
+/* Регион автора, если он не свой. Карточка автора несёт регион с записи
+   (by.card.region — так ищется и портрет); свой регион и всё, что не регион,
+   читается как «дома». */
+function ccAwayRegionOf(card){
+  const reg=card && card.region;
+  if(!reg || reg===ccCareerRegion() || CC_REGIONS.indexOf(reg)<0) return null;
+  return reg;
+}
+function ccRegChipHTML(card){
+  const reg=ccAwayRegionOf(card);
+  return reg ? '<i class="x-reg" title="'+esc(regionName(reg))+'">'+esc(reg)+'</i>' : '';
 }
 /* Две кнопки под чужим постом — единственное место в ленте, где игрок отвечает
    не лайком. Стоят только под постом ссоры и только пока на него не ответили:
@@ -73076,6 +73218,22 @@ function ccPostComments(n, who, st){
    и под постом), подписчики — из охвата, который и есть аудитория карьеры, а
    личка и поиск дуо уже умеют всё, к чему ведут кнопки. */
 function ccFollows(){ const cr=CAREER.career; return (cr.follows=cr.follows||[]); }
+/* Кого показать из чужого региона: четверо из сорока сильнейших его ростера,
+   без тех, на кого уже подписан, перетасованные неделей — чтобы список не стоял
+   одной и той же четвёркой весь год. Форма записи — как у инбокса (careerDmPool):
+   аватарка читает roster/cardRegion, чтобы взять портрет из папки региона. */
+let CH_SUG_REG=null;
+function careerSugRegion(r){ CH_SUG_REG=String(r||''); careerRenderHub('social'); }
+function ccAwaySuggest(reg){
+  let list=[];
+  try{ list=(ccSceneRoster(reg)||[]).slice(0, 40); }catch(e){ list=[]; }
+  list=list.filter(c=>c && c.handle && !ccFollowing(c.handle));
+  let week=1; try{ week=careerWeekIndex(careerToday()); }catch(e){}
+  const rnd=careerRng(ccHashStr('sug|'+reg+'|'+week));
+  for(let i=list.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); const t=list[i]; list[i]=list[j]; list[j]=t; }
+  return list.slice(0, 4).map(c=>({handle:c.handle, ovr:c._ovr, nat:c.nat,
+    role:(attrsFor(c)||{}).roleKey, roster:true, cardRegion:reg}));
+}
 function ccFollowing(h){ return ccFollows().some(x=>hKey(x)===hKey(h)); }
 function careerFollow(h){
   if(!h || ccFollowing(h)) return;
@@ -73313,13 +73471,30 @@ function careerReplyWrite(id){
   if(!text) return;
   const n=(CAREER.career.news||[]).find(x=>x.id===id);
   if(!n) return;
-  n.res=(n.res||[]).concat([{t:text, day:careerToday()}]);
+  // Адресат — только если поле открыто именно ему под этим постом.
+  const to=(CC_REPLY_TO && CC_REPLY_OPEN===id) ? String(CC_REPLY_TO) : null;
+  n.res=(n.res||[]).concat([to ? {t:text, day:careerToday(), to:to} : {t:text, day:careerToday()}]);
   if(n.res.length>CC_REPLY_MAX) n.res.length=CC_REPLY_MAX;
+  if(to){ CC_REPLY_OPEN=null; CC_REPLY_TO=null; }
   careerSave();
   careerRenderHub('social');
 }
-let CC_REPLY_OPEN=null;
-function careerReplyOpen(id){ CC_REPLY_OPEN=(CC_REPLY_OPEN===id?null:id); careerRenderHub('social'); }
+let CC_REPLY_OPEN=null, CC_REPLY_TO=null;
+function careerReplyOpen(id){ CC_REPLY_OPEN=(CC_REPLY_OPEN===id?null:id); CC_REPLY_TO=null; careerRenderHub('social'); }
+/* Ответить человеку под СВОИМ постом. Его игрок из Notion, 8 сентября: «I think
+   u should add more things like we could reply to the people in our own tweet».
+   Правило 2 сентября («зачем под свой твит чет писать») остаётся про пост
+   целиком — под своим постом нет общего поля; есть «Ответить» у каждой строки,
+   и это ответ человеку, а не себе. Поле встаёт под его строкой, запись уходит
+   с адресатом (см. careerReplyWrite и ветка в ccPostComments). */
+function careerReplyTo(id, h){
+  if(!id || !h) return;
+  if(CC_REPLY_OPEN===id && CC_REPLY_TO && hKey(CC_REPLY_TO)===hKey(h)){ CC_REPLY_OPEN=null; CC_REPLY_TO=null; }
+  else { CC_REPLY_OPEN=id; CC_REPLY_TO=String(h); }
+  careerRenderHub('social');
+  const box=document.getElementById('ccReplyBox'+id);
+  if(box) box.focus();
+}
 function ccPostActsHTML(n, who, st){
   if(who.you){
     // Под своим постом отвечать некому, но свои ответы под ним видны.
@@ -73384,6 +73559,8 @@ function ccPostHTML(n){
         // Статус — на самом человеке, как в настоящей ленте: «F/A», «LFT» или
         // клуб. См. ccWhoStatus.
         `${who.you?'':ccWhoChipHTML(who.handle)}`+
+        // Из другого региона — с его кодом рядом с ником. См. careerRegionsWeek.
+        `${who.you?'':ccRegChipHTML(who.card)}`+
         `<span>@${esc(who.handle)}</span><span class="x-dot">·</span><span>${stamp}</span></header>`+
         `<p>${ccMentions(ccText(n))}</p>`+
         ccShotHTML(n.tbl)+
@@ -76467,14 +76644,27 @@ function careerSocialHTML(){
   /* Подписка — решение игрока, а не режима: его правка, 2 сентября («подписки
      зависят от самого игрока, он сам жмёт»). Кнопка здесь и есть это решение;
      написать человеку можно из его же поста и из поиска дуо. */
-  const suggest=pool.slice(0,4).map(w=>{
+  /* И из других регионов. Его игрок из Notion, 8 сентября: «it would be a good
+     idea if we could follow people from nac while being EU». Ряд кодов регионов
+     над списком: свой — те же люди, что и в инбоксе; чужой — верх его ростера
+     (ccAwaySuggest). Подписка та же, профиль по нику открывается из любого
+     региона, а посты приходят по воскресеньям — см. careerRegionsWeek. */
+  const homeReg=ccCareerRegion();
+  const sugReg=(CH_SUG_REG && CH_SUG_REG!==homeReg && CC_REGIONS.indexOf(CH_SUG_REG)>=0) ? CH_SUG_REG : null;
+  const sugList=sugReg ? ccAwaySuggest(sugReg) : pool.slice(0,4);
+  const sugRows=sugList.map(w=>{
     const h=esc(w.handle).replace(/'/g,"\\'");
     return `<div class="x-sug">${avatar(w,32)}
-      <span class="x-sug-in"><b>${esc(w.handle)}</b><span>${L()[w.role]||''} · ${w.ovr}</span></span>
+      <span class="x-sug-in"><b>${esc(w.handle)}</b><span>${
+        sugReg ? esc(regionName(sugReg)) : (L()[w.role]||'')} · ${w.ovr}</span></span>
       ${ccFollowing(w.handle)
         ? `<button class="x-follow on" onclick="careerUnfollow(\'${h}\')">${L().ccFollowingBtn}</button>`
         : `<button class="x-follow" onclick="careerFollow(\'${h}\')">${L().ccFollowBtn}</button>`}
     </div>`;}).join('');
+  const sugChips=`<div class="x-sug-regs">${[homeReg].concat(CC_REGIONS.filter(r=>r!==homeReg)).map(r=>
+    `<button class="x-sug-reg${(sugReg||homeReg)===r?' on':''}" title="${esc(regionName(r))}"`+
+    ` onclick="careerSugRegion(\'${esc(r)}\')">${esc(r)}</button>`).join('')}</div>`;
+  const suggest=sugChips+(sugRows || `<div class="ch-empty">${L().dmEmpty}</div>`);
   /* Уведомления — третий экран рельса. Лайки на своих постах и те, кто
      подписался: и то и другое приходит само, и на второе можно ответить
      подпиской. См. careerNotesTick. */
@@ -76591,7 +76781,7 @@ function careerSocialHTML(){
       ${careerTrophiesHTML()}
       <div class="ch-tile">
         <h4>${ccSay('dmLooking')}</h4>
-        ${suggest || `<div class="ch-empty">${L().dmEmpty}</div>`}
+        ${suggest}
       </div>
       ${(()=>{
         /* Друзья — его пункт 10 со страницы «ы», 22 августа: «дать возможность
@@ -77427,6 +77617,71 @@ function careerD1Posts(iso){
     careerD1TablePost();
   } finally { CC_POST_DAY=null; }
 }
+/* ЛЕНТА ДРУГИХ РЕГИОНОВ.
+
+   Его слово, 8 сентября: «чтоб твитер был и других регионов… могут ли игроки
+   постить результаты своих матчей на других регионах». И его игрок из Notion
+   тем же днём: «it would be a good idea if we could follow people from nac
+   while being EU».
+
+   Каждое воскресенье шесть чужих регионов играют свой Финал недели — тем же
+   careerWorldD1, что и комната над игроком, только пул на время переключён
+   (ccAsRegion). Из каждого вечера в ленту уходит одно: победитель постит
+   «TOP 1» со скрином таблицы, как постят у нас. Плюс ВСЕ, на кого игрок
+   подписан из этого региона, постят своё место — ради этого на них и
+   подписываются. Шесть постов в неделю без подписок, больше — по подпискам;
+   не топ-3 каждого региона, потому что восемнадцать чужих таблиц за ночь
+   утопили бы свою.
+
+   В таблицу сезона, в призовые и в PR чужая неделя НЕ идёт: это столы своего
+   региона. Титул в био победителя идёт — его профиль открывается по нику из
+   любого региона (ccWhoCard читает PLAYERS целиком).
+
+   Помечено днём финала, а не флагом «сделано»: careerWorldTurns может быть
+   позван на один диапазон дважды (см. его комментарий про [откуда, куда)),
+   а лента одной ночи должна быть одна. */
+function careerRegionsWeek(iso){
+  const cr=CAREER && CAREER.career;
+  if(!cr || !iso || cr.awayWeek===iso) return;
+  cr.awayWeek=iso;
+  const home=ccCareerRegion();
+  const follows=(cr.follows||[]).map(h=>hKey(h));
+  const followed=c=>c && follows.indexOf(hKey(c))>=0;
+  const label=L().calWeeklyFinal, v=careerWeekIndex(iso);
+  const cut=(typeof careerCupCut==='function') ? careerCupCut(1) : undefined;
+  CC_POST_DAY=iso;
+  try{
+    CC_REGIONS.forEach(reg=>{
+      if(reg===home) return;
+      let ranked=null;
+      // Посев — с регионом: один и тот же день в семи комнатах не должен
+      // тасовать семь пулов одной и той же лентой чисел.
+      try{ ranked=ccAsRegion(reg, ()=>careerWorldD1(iso+'|'+reg)); }catch(e){ ranked=null; }
+      if(!ranked || ranked.length<3) return;
+      const cap=regionName(reg)+' · '+label;
+      const post=(t, i)=>{
+        const pair=(t._cards||t.squad||[]);
+        // Говорит тот, на кого подписан, — иначе его место приходило бы под
+        // ником напарника с ним самим в теге.
+        const c=pair.find(followed)||pair[0], mate=pair.find(x=>x!==c);
+        if(!c || !c.handle) return;
+        const ovr=c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr;
+        careerNews(i<3?'good':'flat', 'ccPostPlaced',
+          [i+1, 1, mate?ccHandle(mate.handle):null, v+i], {
+          by:{name:c.handle, ovr:ovr, card:{handle:c.handle, region:reg}},
+          tbl:ccStageShot(ranked, t, 1, cap, cut)
+        });
+      };
+      // Снизу вверх, чтобы победитель лёг выше остальных — careerNews кладёт наверх.
+      for(let i=ranked.length-1; i>=1; i--){
+        const pair=(ranked[i]._cards||ranked[i].squad||[]);
+        if(pair.some(followed)) post(ranked[i], i);
+      }
+      post(ranked[0], 0);
+      (ranked[0]._cards||ranked[0].squad||[]).forEach(c=>{ if(c && c.handle) ccTitleAdd(c.handle); });
+    });
+  } finally { CC_POST_DAY=null; }
+}
 
 // Only the most recent Sunday crossed is played out. A career that skips a month
 // should not spend a minute replaying every week it missed, and the feed has room
@@ -77551,6 +77806,8 @@ function careerWorldTurns(fromISO, toISO){
   // count the week twice in the season standing.
   const played=(CAREER.career.log||[]).some(r=>r.kind==='final' && r.day===lastFinal);
   if(lastFinal && !played) careerD1Posts(lastFinal);
+  // Чужие регионы играют свой финал в любом случае — свой вечер их не отменяет.
+  if(lastFinal) careerRegionsWeek(lastFinal);
   // Хиты Мейджора идут по одному в день, и те, что не твои, играет мир.
   // Ласт Ченс — там же: если игрок прошёл раньше, день у него пустой.
   for(let d=fromISO; d<toISO; d=ccAddDays(d,1)){ ccMajorWorldHeats(d); ccMajorWorldLcq(d); }
@@ -78255,6 +78512,8 @@ function careerShopPeekHTML(){
    A save with no region is Europe, which is every save that exists, so nothing
    about a career already in progress changes. */
 function ccCareerRegion(){
+  // Чужая неделя играется как чужая: см. ccAsRegion.
+  if(CC_REGION_AS) return CC_REGION_AS;
   /* While the creation screen is up it is the one asking, so the card list, the
      clubs and the pools follow the region being chosen there rather than the
      region of whatever career happens to still be in memory. Read off the screen
@@ -87038,6 +87297,23 @@ function careerProAmCan(){
   // письмо, а не автобус до Далласа.
   return !!inv && inv.state==='yes';
 }
+/* Правила Про-Ама на карточке дня — раскрывающимся блоком, чтобы карточка не
+   вырастала на пять строк у того, кто их уже знает. Его слово 8 сентября: «pro am
+   ещё распиши как работает». Ни одного числа руками: очки, деньги, порог
+   приглашения, срок письма и потолок аудитории читаются из тех же констант, по
+   которым вечер играется, — расписание не разойдётся с правилами. */
+function ccProAmHowHTML(){
+  const T=L();
+  if(typeof T.ccProAmHow!=='function') return '';
+  const lines=T.ccProAmHow({teams:CC_PROAM_TEAMS, games:CC_PROAM_GAMES, kill:CC_PROAM_KILL,
+    p1:CC_PROAM_PLACE[0], p2:CC_PROAM_PLACE[1], p3:CC_PROAM_PLACE[2],
+    prize1:ccMoney(CC_PROAM_PRIZE[0]), prizeN:ccMoney(CC_PROAM_PRIZE[CC_PROAM_PRIZE.length-1]),
+    g1:ccMoney(CC_PROAM_GAME[0]), g2:ccMoney(CC_PROAM_GAME[1]), g3:ccMoney(CC_PROAM_GAME[2]),
+    reach:ccNum(CC_PROAM_REACH), days:CC_PROAM_INVITE_DAYS, pick:CC_PROAM_PICK,
+    host:CC_PROAM_HOST, cap:ccNum(CC_PROAM_REACH_CAP)});
+  return '<details class="ch-how"><summary>'+esc(T.ccProAmHowTitle||'')+'</summary><ul>'+
+    lines.map(l=>'<li>'+esc(l)+'</li>').join('')+'</ul></details>';
+}
 function ccProAmWhyLocked(){
   const inv=careerProAmInv();
   if(inv && inv.state==='no') return L().ccProAmTurnedDown;
@@ -89353,8 +89629,10 @@ function careerStreamGo(id){
   // Энергию вида списал сам careerDoAct — доплачивать больше нечего.
   if(k.grind) CAREER.career.grind=(CAREER.career.grind||0)+k.grind;
   careerSave();
-  careerRenderHub('streams');
+  // Сначала эфир, потом вкладка: плеер вкладки читает «идёт ли эфир» (CC_TV_PLAIN),
+  // и нарисованный до запуска он остался бы выключенным на все пятнадцать секунд.
   ccStreamRun(k);
+  careerRenderHub('streams');
   return true;
 }
 /* ОБЫЧНЫЙ ЭФИР ТОЖЕ ИДЁТ НА ЭКРАНЕ (его отчёт 8 сентября 2026: «когда жмёшь стрим в
@@ -89369,9 +89647,12 @@ function careerStreamGo(id){
    занесли (streamLast). Рамка их только раздаёт по ходу эфира, чтобы человек видел,
    как они приходят, а не читал итог. Поэтому дважды ничего не начисляется.
 
-   Длина — от часов вида: CC_TV_PLAIN_PER_HOUR тиков на игровой час, то есть четыре
-   часа ранкеда идут около десяти секунд, восьмичасовой марафон — вдвое дольше. */
-const CC_TV_PLAIN_PER_HOUR=4;
+   Длина — пятнадцать секунд на любой вид. Его слово 8 сентября: «эфир пусть идёт
+   15 секунд, потом выключается видео и статистику показывает». Ролик в плеере идёт,
+   пока идёт эфир; на последнем тике ccStreamRunEnd снимает рамку (ccTvClose — вместе
+   с ней уходит и плеер) и ставит сводку (ccTvSummary). Раньше длина шла от часов
+   вида — четыре часа ранкеда за десять секунд, марафон за двадцать. */
+const CC_TV_PLAIN_SECS=15;
 /* ЧТО ПРОИСХОДИТ ЗА ЭФИР (его слово 8 сентября: «стримится стрим просто, мб чёт
    добавить»). Сам по себе эфир — это ползущие зрители и чат, и смотреть в нём нечего.
    Четыре вещи, которые случаются на настоящем стриме и которые видно по числам:
@@ -89401,7 +89682,7 @@ function ccStreamRun(k){
   if(careerSimOn() || (typeof CC_FF!=='undefined' && CC_FF)) return false;
   const cr=CAREER && CAREER.career, last=cr && cr.streamLast;
   if(!last || last.day!==careerToday()) return false;
-  const ticks=Math.max(8, Math.round((k.hours||4)*CC_TV_PLAIN_PER_HOUR));
+  const ticks=Math.max(8, Math.round(CC_TV_PLAIN_SECS*1000/CC_TV_TICK));
   CC_TV_PLAIN={id:k.id, at:0, done:0, hours:k.hours||4, ticks:ticks,
                want:{fol:(last.a && last.a[2])||0, cash:last.m||0},
                hap:ccStreamHappenings(k, ticks), got:[]};
@@ -90479,7 +90760,15 @@ function ccTvAlert(kind, title, note){
 function careerStreamsHTML(){
   const cr=CAREER.career, T=L();
   const me=CAREER.player;
-  const live=(cr.streamLast && cr.streamLast.day===careerToday()) ? cr.streamLast : null;
+  /* «В эфире» — пока эфир ИДЁТ, а не весь день после него. Его скрин из Notion,
+     8 сентября (страница «socials»): после пятнадцати секунд обычного эфира плеер
+     вкладки оставался живым — рисованная сцена билд-файта крутилась, ролик
+     перевешивался заново — потому что признак читался как «сегодня стримил».
+     Его слово тем же днём: «потом выключается видео и статистику показывает».
+     Идущий эфир — это обычный (CC_TV_PLAIN) или турнирный (рамка стоит,
+     ccTvLive); после конца плеер гаснет, сводка живёт отдельно (.tv-sum). */
+  const onAir=!!CC_TV_PLAIN || (typeof ccTvLive==='function' && ccTvLive());
+  const live=(onAir && cr.streamLast && cr.streamLast.day===careerToday()) ? cr.streamLast : null;
   const av=(url, name, ring)=>`<span class="tv-av${ring?' on':''}">${
     url ? `<img src="${url}" alt="" loading="lazy" onerror="this.remove()">`
         : esc(String(name||'?').slice(0,2).toUpperCase())}</span>`;
