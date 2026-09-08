@@ -2585,6 +2585,25 @@
   /* Затемнение — ради читаемости кнопок на статичном арте. Пока идёт эфир, кнопок нет,
      а картинка живая: гасить её нечем и незачем. */
   #screen-career-hub .tv-player.live::after{background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.20));}
+  /* Живой ролик в плеере. Кладётся на весь кадр поверх нарисованной сцены; кликов не
+     принимает — это фон эфира, а не проигрыватель, и уводить человека на YouTube по
+     случайному нажатию незачем. Порядок в разметке (сцена, потом ролик) и делает
+     подложку запасным кадром, поэтому z-index тут не нужен. */
+  /* Место под ролик. Прозрачно, пока плеер не сказал «играю»: сквозь него видно
+     нарисованную сцену, и там, где YouTube не открыть, кадр не чернеет. */
+  #screen-career-hub .tv-clip-slot{position:absolute;inset:0;pointer-events:none;
+    opacity:0;transition:opacity .45s ease;}
+  #screen-career-hub .tv-clip-slot[data-on]{opacity:1;}
+  @media (prefers-reduced-motion: reduce){
+    #screen-career-hub .tv-clip-slot{transition:none;}
+  }
+  #screen-career-hub .tv-clip{position:absolute;inset:0;width:100%;height:100%;border:0;
+    pointer-events:none;background:#000;}
+  /* Подпись автора: чья это игра. Мелкая, в углу, но читаемая. */
+  #screen-career-hub .tv-clip-by{position:absolute;right:8px;bottom:8px;z-index:2;
+    font-size:11px;color:rgba(255,255,255,.72);background:rgba(0,0,0,.5);
+    border-radius:3px;padding:2px 6px;max-width:60%;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap;}
   #screen-career-hub .tv-hud{position:absolute;left:10px;top:10px;display:flex;gap:8px;z-index:2;}
   #screen-career-hub .tv-hud span{background:rgba(0,0,0,.65);border-radius:4px;padding:3px 8px;
     font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;}
@@ -8060,6 +8079,8 @@ ccTvHapPro:(w,n)=>w+' зашёл в чат и раздал '+n+' саба',
 ccTvHapProSum:(w,n)=>w+' заглянул в чат: '+n+' саба от него',
 ccTvHapHate:'Хейт-рейд — модератор чистит чат',
 ccTvHapHateSum:'Хейт-рейд: часть зрителей ушла, деньги не тронуты',
+// Подпись под роликом в плеере: чья это игра на экране.
+ccTvClipBy:w=>'запись: '+w,
 ccTvGame:n=>'Игра '+n, ccTvGameOf:(n,of)=>'Игра '+n+'/'+of, ccTvLast:p=>'последняя #'+p,
 // Виктории — счётчиком «W×2», как на самой трансляции: числу не нужен падеж.
 ccTvWins:w=>'W×'+w, ccTvCut:(c,of)=>'проходит топ-'+c+' из '+of,
@@ -10010,6 +10031,7 @@ ccTvHapPro:(w,n)=>w+' dropped into chat and gifted '+n+' subs',
 ccTvHapProSum:(w,n)=>w+' dropped into chat: '+n+' subs from them',
 ccTvHapHate:'Hate raid — the mod is clearing chat',
 ccTvHapHateSum:'Hate raid: some viewers left, the money is untouched',
+ccTvClipBy:w=>'footage: '+w,
 ccTvGame:n=>'Game '+n, ccTvGameOf:(n,of)=>'Game '+n+'/'+of, ccTvLast:p=>'last #'+p,
 ccTvWins:w=>'W×'+w, ccTvCut:(c,of)=>'top '+c+' of '+of+' go through',
 ccTvPts:p=>p+' pts', ccTvKills:k=>k+' elims',
@@ -57862,7 +57884,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='10278827';
+const CC_BUILD='7fd3bd3c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -90251,9 +90273,100 @@ function careerTwBarHTML(){
     <div class="tw-h">${esc(next==='part'?T.ccTwToPart:T.ccTwToAff)}</div>
     ${rows}</div>`;
 }
-/* Что показывает плеер, пока идёт эфир: фрибилд, а не скрин (см. .tv-fb в стилях).
+/* ПОДЛОЖКА ПЛЕЕРА: нарисованный бой на билдах (см. .tv-fb в стилях).
    Никаких картинок и файлов — сцена собрана прямоугольниками, поэтому весит ноль и
-   работает в отрезанном app.js так же, как в целой странице. */
+   работает в отрезанном app.js так же, как в целой странице. Поверх неё встаёт живой
+   ролик, а если он не приехал — видно её. */
+/* В ПЛЕЕРЕ — ЖИВОЙ РОЛИК (его слово 8 сентября: «с рандомного видоса на ютубе»).
+   Свои видеофайлы в один документ не положишь, поэтому берётся чужой ролик через
+   штатный плеер YouTube — тот самый механизм, для которого встраивание и сделано.
+   Все пятеро проверены через oembed: существуют, публичные, встраиваются.
+
+   Ролик молчит и крутится по кругу, без элементов управления; какой именно — решает
+   ДЕНЬ, так что один и тот же вечер не пересобирается от перерисовки. Домен
+   youtube-nocookie: без нужды кук у зрителя не появляется. Автор подписан в углу — это
+   его работа, а не наша.
+
+   ЕСЛИ РОЛИК НЕ ИДЁТ, его не видно вовсе: рамка прозрачна, и в кадре остаётся
+   нарисованный бой на билдах (.tv-fb). Это не редкость — YouTube в России режут, а
+   сайт оттуда смотрят (см. зеркало).
+
+   Показывается рамка не по загрузке, а по СЛОВУ САМОГО ПЛЕЕРА «играю»: с
+   enablejsapi=1 он отвечает на postMessage состоянием, и playerState 1 — это
+   единственный признак, означающий, что в кадре правда есть картинка. Ни onload, ни
+   таймер этого не говорят: onload срабатывает и на «видео недоступно», и на страницу
+   блокировки, а таймер на тонком канале снял бы ролик, который всё-таки едет.
+
+   Отсюда и порядок: рамка висит с нулевой прозрачностью столько, сколько нужно, и
+   проявляется в ту секунду, когда пошла картинка. Не пошла — никто ничего не заметил. */
+const CC_TV_CLIPS=[
+  {id:'aVk9D4DlT84', who:'UnitedG'},
+  {id:'x8V7Mkv6BB4', who:'UnitedG'},
+  {id:'vee3_AKUVT8', who:'Orbital Gameplay'},
+  {id:'C_fua-fj3eE', who:'Brüterbrüters bucky'},
+  {id:'Jz6myYsKMZI', who:'EnigmaFN'}
+];
+function ccTvClipOf(){
+  const cr=CAREER && CAREER.career;
+  const rnd=careerRng(ccHashStr('clip|'+((cr&&cr.day)||'')));
+  const c=CC_TV_CLIPS[Math.floor(rnd()*CC_TV_CLIPS.length)];
+  // Начало не с первой секунды: у роликов там заставка, а нам нужна игра.
+  return {c:c, at:60+Math.floor(rnd()*600)};
+}
+// Адрес встроенного плеера: молча, по кругу, без органов управления и не с заставки.
+// enablejsapi — чтобы он мог ответить, пошла ли картинка (см. ccTvClipPlaying).
+function ccTvClipSrc(p){
+  /* origin — для ответов плеера; со страницы, открытой файлом, его нет (протокол file:
+     даёт origin «null»), и тогда параметр не ставится вовсе. */
+  const org=(typeof location!=='undefined' && /^https?:$/.test(location.protocol))
+    ? '&origin='+encodeURIComponent(location.origin) : '';
+  return 'https://www.youtube-nocookie.com/embed/'+encodeURIComponent(p.c.id)+
+    '?autoplay=1&mute=1&controls=0&loop=1&playlist='+encodeURIComponent(p.c.id)+
+    '&start='+p.at+'&modestbranding=1&rel=0&playsinline=1&disablekb=1&iv_load_policy=3'+
+    '&enablejsapi=1'+org;
+}
+// Рамка загрузилась — спрашиваем плеер, что с ним. Молчит — значит и показывать нечего.
+function ccTvClipHello(el){
+  try{ el.contentWindow.postMessage(JSON.stringify({event:'listening', id:1, channel:'widget'}), '*'); }
+  catch(e){}
+}
+// Пошла картинка. Только теперь ролик видно — до этого в кадре рисунок.
+function ccTvClipPlaying(){
+  document.querySelectorAll('.tv-clip-slot').forEach(function(s){ s.dataset.on='1'; });
+}
+/* Слушаем ответы плеера. Чужие сообщения отсекаются по origin — его ставит браузер,
+   подделать со страницы нельзя, — и из всего ответа берётся одно число состояния. */
+let CC_TV_CLIP_L=0;
+function ccTvClipListen(){
+  if(CC_TV_CLIP_L || typeof window==='undefined') return;
+  CC_TV_CLIP_L=1;
+  window.addEventListener('message', function(e){
+    if(String(e.origin||'').indexOf('youtube')<0) return;
+    let d=null; try{ d=JSON.parse(e.data); }catch(err){ return; }
+    const st=d && d.info && d.info.playerState;
+    if(st===1) ccTvClipPlaying();          // 1 — «играю»
+  });
+}
+// Вешает плеер поверх сцены. Прозрачным: увидят его, только если он заиграет.
+function ccTvClipMount(){
+  if(typeof document==='undefined') return;
+  const slot=document.querySelector('.tv-player.live .tv-clip-slot');
+  if(!slot || slot.dataset.done) return;
+  slot.dataset.done='1';
+  ccTvClipListen();
+  const p=ccTvClipOf(), T=L();
+  slot.innerHTML='<iframe class="tv-clip" src="'+esc(ccTvClipSrc(p))+'" title="'+esc(p.c.who)+'"'+
+    ' allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin"'+
+    ' frameborder="0" onload="ccTvClipHello(this)"></iframe>'+
+    '<span class="tv-clip-by">'+esc(T.ccTvClipBy(p.c.who))+'</span>';
+}
+/* Место под ролик — поверх сцены. Рисуется вместе с кадром, а плеер вставляется
+   следующим тиком: к этой секунде разметка уже в документе. */
+function ccStreamClipHTML(){
+  setTimeout(ccTvClipMount, 0);
+  return '<div class="tv-clip-slot"></div>';
+}
+// Сначала подложка, потом ролик: ролик кладётся сверху, и, если его нет, кадр не пуст.
 function ccStreamScreenHTML(){
   return '<div class="tv-fb" aria-hidden="true">'+
     '<i class="tv-fb-far"></i><i class="tv-fb-storm"></i>'+
@@ -90261,7 +90374,7 @@ function ccStreamScreenHTML(){
     '<i class="tv-fb-w tv-fb-w3"></i><i class="tv-fb-w tv-fb-w4"></i>'+
     '<i class="tv-fb-w tv-fb-w5"></i><i class="tv-fb-r"></i>'+
     '<b class="tv-fb-p tv-fb-p1"></b><b class="tv-fb-p tv-fb-p2"></b>'+
-    '<u class="tv-fb-f"></u></div>';
+    '<u class="tv-fb-f"></u></div>'+ccStreamClipHTML();
 }
 /* УВЕДОМЛЕНИЯ НА ЭКРАНЕ (его слово 8 сентября: «и уведомления будут приходить на
    экране»). У стримера алерты всплывают поверх картинки — фолловер, саб, донат. Здесь

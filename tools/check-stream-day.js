@@ -10,7 +10,9 @@
 //   * эфир кончается сам: рамка снимается, встаёт сводка;
 //   * числа сводки — ТЕ ЖЕ, что посчитал день (streamLast): ничего не начисляется
 //     дважды, энергия списана один раз;
-//   * под пропуском и в симуляции рамки нет вовсе.
+//   * под пропуском и в симуляции рамки нет вовсе;
+//   * в плеере идёт ролик с YouTube (его слово 8.09), молча и по кругу, а под ним
+//     лежит нарисованный бой на билдах — если ролик не доехал, кадр не пустеет.
 //
 //   node tools/check-stream-day.js
 const fs = require('fs'), os = require('os'), path = require('path');
@@ -68,6 +70,57 @@ const BOOT = `
     const off=walls.filter(w=>{ const a2=w.getAnimations()[0]; if(a2) a2.cancel(); return +getComputedStyle(w).opacity===0; });
     if(off.length) fail('без анимации сцена пустеет: невидимых стен '+off.length);
     out.steps.push('в плеере фрибилд: '+walls.length+' построек, видны и без анимации');
+    // Поверх сцены — живой ролик (его слово 8.09: «с рандомного видоса на ютубе»).
+    const slot=document.querySelector('.tv-player.live .tv-clip-slot');
+    if(!slot) fail('в кадре нет места под ролик — остался только рисунок');
+    // Сцена лежит ПОД роликом: без ролика кадр не пустеет.
+    if(!(fb.compareDocumentPosition(slot) & Node.DOCUMENT_POSITION_FOLLOWING))
+      fail('место под ролик в разметке раньше сцены — сцена накроет его');
+    const src=ccTvClipSrc(ccTvClipOf());
+    if(src.indexOf('https://www.youtube-nocookie.com/embed/')!==0) fail('чужой адрес ролика: '+src);
+    ['autoplay=1','mute=1','controls=0','loop=1','playlist='].forEach(q=>{
+      if(src.indexOf(q)<0) fail('в адресе ролика нет '+q+': '+src); });
+    if(!/[?&]start=\\d+/.test(src)) fail('ролик начинается с заставки: нет start');
+    out.steps.push('в кадре место под ролик: '+src.slice(39, 50)+', молчит, зациклен');
+    // Список роликов: одиннадцать знаков ютуба, без повторов, у каждого автор.
+    { const seen={};
+      CC_TV_CLIPS.forEach(c=>{
+        if(!/^[A-Za-z0-9_-]{11}$/.test(c.id)) fail('не похоже на ролик YouTube: '+c.id);
+        if(seen[c.id]) fail('ролик в списке дважды: '+c.id);
+        seen[c.id]=1;
+        if(!c.who) fail('у ролика '+c.id+' не указан автор'); });
+      if(CC_TV_CLIPS.length<3) fail('роликов в списке всего '+CC_TV_CLIPS.length); }
+    // Выбор посеян ДНЁМ: тот же вечер — тот же ролик, а за месяц берутся разные.
+    { const cr=CAREER.career, day0=cr.day, pick={};
+      if(ccTvClipOf().c.id!==ccTvClipOf().c.id) fail('ролик меняется от перерисовки');
+      for(let i=0;i<30;i++){ cr.day=ccAddDays(day0, i); pick[ccTvClipOf().c.id]=1; }
+      cr.day=day0;
+      const n=Object.keys(pick).length;
+      if(n<3) fail('за тридцать дней всего '+n+' разных роликов');
+      out.steps.push('ролик от дня: за месяц '+n+' разных из '+CC_TV_CLIPS.length); }
+    // Рамка вешается, но невидимо: пока плеер не сказал «играю», её не видно.
+    await wait(600);
+    const clip=slot.querySelector('.tv-clip');
+    if(!clip) fail('в кадре нет рамки ролика');
+    if(clip.tagName!=='IFRAME') fail('ролик не рамкой: '+clip.tagName);
+    if((clip.getAttribute('src')||'').indexOf('youtube-nocookie.com/embed/')<0)
+      fail('в кадре чужая рамка: '+clip.getAttribute('src'));
+    if((clip.getAttribute('src')||'').indexOf('enablejsapi=1')<0)
+      fail('плеер не сможет ответить: нет enablejsapi');
+    // Ролик — фон, а не проигрыватель: кликом на YouTube не уводит.
+    if(getComputedStyle(clip).pointerEvents!=='none') fail('ролик перехватывает клики');
+    if(!slot.querySelector('.tv-clip-by')) fail('под роликом нет подписи автора');
+    /* Сеть в пробе отрезана, значит ролик не идёт — и его не должно быть видно.
+       Проверяется именно так, а не таймером: на тонком канале ролик едет долго. */
+    if(slot.dataset.on) fail('ролик объявлен играющим при отрезанной сети');
+    if(+getComputedStyle(slot).opacity!==0) fail('неиграющий ролик закрывает кадр');
+    if(!document.querySelector('.tv-player.live .tv-fb')) fail('под роликом нет рисунка');
+    out.steps.push('ролик не идёт — рамка прозрачна, в кадре рисунок');
+    // А сказал «играю» — виден. (Само сообщение подделать нельзя: origin ставит браузер.)
+    { ccTvClipPlaying();
+      slot.style.transition='none';
+      if(+getComputedStyle(slot).opacity!==1) fail('заигравший ролик не проявился');
+      out.steps.push('плеер сказал «играю» — ролик виден, подпись автора на месте'); }
     // Уведомления эфира: карточка над плеером, не больше двух разом.
     ccTvAlert('sub', 'Проба', 'кто-то');
     ccTvAlert('dono', 'Проба 2', 'кто-то');
@@ -118,7 +171,8 @@ const BOOT = `
     // Строки событий есть на обоих языках.
     ['ru','en'].forEach(l=>{ const prev=LANG; LANG=l; CC_L_CACHE={}; const T=L(); LANG=prev; CC_L_CACHE={};
       if(typeof T.ccTvHapRaidSum!=='function' || typeof T.ccTvHapClipSum!=='function' ||
-         typeof T.ccTvHapProSum!=='function' || typeof T.ccTvHapHateSum!=='string')
+         typeof T.ccTvHapProSum!=='function' || typeof T.ccTvHapHateSum!=='string' ||
+         typeof T.ccTvClipBy!=='function')
         fail(l+': нет строк событий эфира'); });
     out.steps.push('строки событий на обоих языках');
     ccTvSummaryClose();
@@ -140,8 +194,11 @@ const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ccstr-'));
 const tmp = path.join(dir, 'index.html');
 fs.writeFileSync(tmp, '<base href="file:///' + ROOT.replace(/\\/g,'/') + '/">' +
   fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8') + BOOT);
+// Сеть отрезана: ролик в плеере не должен ни тормозить пробу, ни ходить наружу.
+// Заодно это и есть тот самый случай, ради которого под роликом лежит рисунок.
 const dom = execFileSync(CHROME, ['--headless=new','--disable-gpu','--no-sandbox',
-  '--allow-file-access-from-files','--virtual-time-budget=180000','--dump-dom',
+  '--allow-file-access-from-files','--host-resolver-rules=MAP * ~NOTFOUND',
+  '--virtual-time-budget=180000','--dump-dom',
   'file:///' + tmp.replace(/\\/g,'/')], {maxBuffer:512*1024*1024, encoding:'utf8', stdio:['ignore','pipe','ignore']});
 fs.rmSync(dir, {recursive:true, force:true});
 const m = dom.match(/BEGIN([\s\S]*?)END/);
