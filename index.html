@@ -5526,7 +5526,7 @@
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
      файл и разойдётся с напарником. -->
-<script src="mp.js?v=1a672039"></script>
+<script src="mp.js?v=02138e09"></script>
 </head>
 <body>
 <div class="wrap">
@@ -57991,7 +57991,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='56ed4f7d';
+const CC_BUILD='fefe2e1c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -58114,6 +58114,12 @@ function ccMpOn(){
    за ccMpOn/ccMpTeam. Комната — хозяина: боты хозяина (роль a) едут гостю по
    проводу (ccRaceFieldSync), команды соперников строятся из карточек гонки. */
 let CC_RACE_LOCK=false;
+/* Сила своей команды НА ЭТОТ ВЕЧЕР — та, что стоит в поле раннера (teams.isYou.pow).
+   Ставит ccRaceFieldSync перед тем, как слать строку с сидом, снимает careerPlay в конце.
+   Пока null — строка уходит без сида (не «свежая»): его скрины 8.09 «diff 1 of 430:
+   pixie+swizzy:109 vs 112» при своей 108 — строку с сидом успевал послать хаб между
+   стартом и сборкой команды, с CC_TV_YOU вчерашнего вечера, и кто что застал. */
+let CC_RACE_POW_NOW=null;
 function ccRaceLock(){ return typeof ccRaceOn==='function' && ccRaceOn() && CC_RACE_LOCK && !CC_MP_ALONE && !CC_DRAFT_RUN; }
 function ccMpLock(){ return ccMpOn() || ccRaceLock(); }
 // Роль в лобби: командная карьера или гонка — у кого что есть.
@@ -59350,9 +59356,9 @@ function ccRaceMyLine(){
      В общей комнате сила берётся из команды вечера (CC_TV_YOU, её ставит тот же
      careerYouTeam раннера) и подписывается сидом вечера: соперник ждёт именно
      такую строку, а не любую (ccRaceFieldSync). */
-  if(typeof ccRaceLock==='function' && ccRaceLock() && typeof CC_TV_YOU!=='undefined' && CC_TV_YOU && CC_TV_YOU.pow!=null &&
+  if(typeof ccRaceLock==='function' && ccRaceLock() && CC_RACE_POW_NOW!=null &&
      typeof CC_MP_SEED!=='undefined' && CC_MP_SEED){
-    pow=CC_TV_YOU.pow; ev=CC_MP_SEED;
+    pow=CC_RACE_POW_NOW; ev=CC_MP_SEED;
   } else {
     try{ if(mates.length>=careerMateSeats()) pow=careerYouTeam([me].concat(mates)).pow; }catch(e){}
   }
@@ -59480,8 +59486,10 @@ async function ccRaceWaitLines(){
 }
 async function ccRaceFieldSync(teams, opts){
   if(!ccRaceLock() || typeof MP==='undefined') return;
-  await ccRaceWaitLines();
   const you=teams.find(t=>t.isYou);
+  // Сила на вечер — из поля раннера; только с ней строка подписывается сидом (см. CC_RACE_POW_NOW).
+  if(you && you.pow!=null) CC_RACE_POW_NOW=you.pow;
+  await ccRaceWaitLines();
   /* Соперники — все, кто прислал строку; уже посаженный раннером (соло-кап) — тот же
      объект. КОМНАТА ПРОШЕДШИХ (opts.roomOnly — второй раунд Victory Cup) никого не
      досаживает: соперник, вылетевший в первом раунде, в ней зритель, а не команда.
@@ -68613,7 +68621,8 @@ function careerGrowField(field, you){
   const exp=new Map();
   byPow.forEach((t,i)=>{ exp.set(t, n>1 ? i/(n-1) : 0.5); });
   const book=CAREER.dev=CAREER.dev||{};
-  const grown=careerGrowthMax(), hard=careerDiff().age;
+  // В гонке шаг мира один на комнату (ccWorldDiff): личная сложность двигала бы общий мир по-разному.
+  const grown=careerGrowthMax(), hard=ccWorldDiff().age;
   /* Сначала комната собирается целиком, и только потом двигается.
 
      Возраст у карьеры — это движение к своему потолку: шестнадцатилетний
@@ -68675,7 +68684,7 @@ function careerGrowField(field, you){
          получали её прибавку просто за то, что год рождения не записан:
          +0.52 за год каждому, то есть тихая инфляция всей сцены. Не знаем
          возраст — не двигаем возрастом; результаты их двигают как и всех. */
-      const base=careerDevelopNow(ccAgeNow(c.handle) || CC_SCENE_AGE_REF);
+      const base=careerDevelopBase(ccAgeNow(c.handle) || CC_SCENE_AGE_REF)*ccWorldDiff().age;
       rows.push({k:k, base:base, now:now, gap:gap});
     });
   });
@@ -68958,6 +68967,8 @@ function ccDiffOf(id){ return CC_DIFFS.find(d=>d.id===id) || CC_DIFFS[0]; }
 function careerDiff(){
   return ccDiffOf(CAREER && CAREER.career && CAREER.career.diff);
 }
+// Сложность, которой растёт МИР (книга развития сцены): в гонке — одна на комнату, иначе своя.
+function ccWorldDiff(){ return (typeof ccRaceOn==='function' && ccRaceOn()) ? CC_DIFFS[0] : careerDiff(); }
 function careerGrowthMax(){ return CAREER_GROWTH_MAX; }
 // What a year of a career's life is worth to it, on the difficulty it is on.
 // The curve is the curve; this is how much of it a career is given.
@@ -69280,8 +69291,13 @@ function careerMateFactor(myOvr){
    it writes the row, gets nothing rather than a divide by zero. */
 function careerGrowEvent(place, total, you, field){
   if(!(place>0) || !(total>1) || !you) return 0;
-  // Вечер учит всю комнату, а не только того, кто её читает. См. careerGrowField.
-  if(field && field.length>1) careerGrowField(field, you);
+  /* Вечер учит всю комнату, а не только того, кто её читает. См. careerGrowField.
+     В ГОНКЕ — только общий вечер: книга развития (CAREER.dev) и разводы пар — это
+     мир, из которого потом собирается поле у всех; личный вечер (соло-серия, вечер
+     врозь) двигал бы мир у одного, и следующее общее поле расходилось бы на 892
+     команды из 900 (годовая проба на шестерых 8.09: Reload 8 января после соло 6-го). */
+  const raceApart=(typeof ccRaceOn==='function' && ccRaceOn() && !(typeof ccRaceLock==='function' && ccRaceLock()));
+  if(field && field.length>1 && !raceApart) careerGrowField(field, you);
   /* И вечер, отыгранный дома, пишется на дом — на ту из трёх точек, где ты
      сидел. Ауру делает не результат турнира, а то, удержал ли ты место: счёт
      стычек за этап против счёта поражений. См. careerSpotNight. */
@@ -80266,7 +80282,7 @@ async function careerFastForward(days, agreed){
       if(next && careerCanPlay(next) && ccRaceFfOn()){
         let rw=0;
         careerRaceSend();   // своя строка с сегодняшним днём — до того, как ждать чужие
-        while(rw++<120 && ccRaceApartWhy(next)==='day') await new Promise(r=>setTimeout(r, 500));
+        while(rw++<600 && ccRaceApartWhy(next)==='day') await new Promise(r=>setTimeout(r, 500));
       }
       try{
       if(next && careerCanPlay(next)){
@@ -80792,8 +80808,8 @@ function careerPlayRun(next){
     CC_RACE_LOCK=ccRaceShared(next);
     if(CC_RACE_LOCK){ try{ careerRaceSend(); if(typeof MP!=='undefined' && MP.sendCard) MP.sendCard(); }catch(e){} }
     let p=null;
-    try{ p=careerNightRun(next); }catch(e){ CC_RACE_LOCK=false; throw e; }
-    return Promise.resolve(p).finally(function(){ CC_RACE_LOCK=false; });
+    try{ p=careerNightRun(next); }catch(e){ CC_RACE_LOCK=false; CC_RACE_POW_NOW=null; throw e; }
+    return Promise.resolve(p).finally(function(){ CC_RACE_LOCK=false; CC_RACE_POW_NOW=null; });
   }
   return careerNightRun(next);
 }
