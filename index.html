@@ -2592,13 +2592,20 @@
   /* Место под ролик. Прозрачно, пока плеер не сказал «играю»: сквозь него видно
      нарисованную сцену, и там, где YouTube не открыть, кадр не чернеет. */
   #screen-career-hub .tv-clip-slot{position:absolute;inset:0;pointer-events:none;
-    opacity:0;transition:opacity .45s ease;}
+    overflow:hidden;opacity:0;transition:opacity .45s ease;}
   #screen-career-hub .tv-clip-slot[data-on]{opacity:1;}
   @media (prefers-reduced-motion: reduce){
     #screen-career-hub .tv-clip-slot{transition:none;}
   }
-  #screen-career-hub .tv-clip{position:absolute;inset:0;width:100%;height:100%;border:0;
-    pointer-events:none;background:#000;}
+  /* РАМКА БОЛЬШЕ КАДРА И ОБРЕЗАНА ПО КРАЯМ (его скрин 8 сентября). Плеер YouTube
+     рисует поверх видео СВОЁ: сверху шапку с каналом и названием ролика, снизу
+     «More videos» с превьюшкой, кнопку YouTube и значок ссылки. controls=0 и
+     modestbranding это не убирают — они про панель управления, а не про шапку.
+     Отсюда единственный способ: сделать рамку на CC_TV_CLIP_ZOOM больше кадра и
+     срезать края. Шапка и нижние кнопки уходят за границу, в кадре остаётся игра.
+     Соотношение то же (16/9 в 16/9), поэтому чёрных полос не появляется. */
+  #screen-career-hub .tv-clip{position:absolute;top:-16%;left:-16%;width:132%;height:132%;
+    border:0;pointer-events:none;background:#000;}
   /* Подпись автора: чья это игра. Мелкая, в углу, но читаемая. */
   #screen-career-hub .tv-clip-by{position:absolute;right:8px;bottom:8px;z-index:2;
     font-size:11px;color:rgba(255,255,255,.72);background:rgba(0,0,0,.5);
@@ -2715,6 +2722,24 @@
      снизу под плеером — строка канала (.cc-tv-under), под неё отступ. */
   body.cc-onair .wrap.wrap-wide{margin-left:236px;margin-right:316px;padding-bottom:70px;}
   body.cc-onair .skip-btn-prominent{right:334px;}
+  /* ВКЛАДКА СТРИМОВ ПОД РАМКОЙ НЕ ПОВТОРЯЕТСЯ (его скрин 8 сентября: «два чата и тд»).
+     У страницы канала и у рамки эфира одна и та же мебель — отслеживаемые каналы, чат,
+     строка канала под плеером, — и во время эфира она стояла на экране дважды: чат
+     вкладки и чат рамки рядом, две строки канала, два списка каналов. Пока идёт эфир,
+     свою мебель убирает ВКЛАДКА, а не рамка: рамка — это то, что человек включил.
+     Плеер занимает освободившуюся ширину, ради чего эфир и смотрят.
+
+     Границы те же, на которых рамка сама прячет свои колонки (см. медиазапросы ниже):
+     ниже 1100 у рамки нет левой колонки, ниже 760 — правой, и тогда мебель вкладки
+     остаётся единственной и нужна. */
+  @media(min-width:761px){
+    body.cc-onair #screen-career-hub .tv-chat,
+    body.cc-onair #screen-career-hub .tv-chanrow{display:none;}
+  }
+  @media(min-width:1101px){
+    body.cc-onair #screen-career-hub .tv-side{display:none;}
+    body.cc-onair #screen-career-hub .tv-wrap{grid-template-columns:minmax(0,1fr);}
+  }
   body.cc-onair.cc-onair-fold .wrap.wrap-wide{margin-left:0;margin-right:0;padding-bottom:0;}
   body.cc-onair.cc-onair-fold .skip-btn-prominent{right:18px;}
   /* Свёрнуто: остаётся плашка LIVE со зрителями в углу. */
@@ -57884,7 +57909,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='93ecbfa0';
+const CC_BUILD='f4bdd5c9';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -90347,16 +90372,37 @@ function ccTvClipHello(el){
 // Пошла картинка. Только теперь ролик видно — до этого в кадре рисунок.
 function ccTvClipPlaying(){
   document.querySelectorAll('.tv-clip-slot').forEach(function(s){ s.dataset.on='1'; });
+  document.querySelectorAll('.tv-clip').forEach(function(e){ e.dataset.playing='1'; e.dataset.try=0; });
 }
-/* Кусок доиграл до end — отматываем к его началу. Без этого плеер просто встал бы
-   на последнем кадре, и вместо эфира в кадре висела бы картинка. */
+/* Кусок доиграл до end (или плеер почему-то встал) — гоним его заново. Без этого в
+   кадре висит стоп-кадр, а поверх него YouTube выкладывает свою шапку и «More videos»
+   — ровно то, что он снял 8 сентября.
+
+   Сначала по-хорошему: команда плееру отмотать к началу куска и играть. Но команды
+   ходят не везде (плеер может их не принять — тогда ответа «играю» так и не будет), и
+   поэтому через CC_TV_CLIP_BACK стоит проверка: не заиграл — рамка перезагружается
+   своим же адресом, а он начинается со start. Это грубее, зато работает всегда.
+   Перезагрузок не больше CC_TV_CLIP_TRY, чтобы не молотить в пустоту. */
+const CC_TV_CLIP_BACK=1800;
+const CC_TV_CLIP_TRY=4;
 function ccTvClipLoop(){
   const el=document.querySelector('.tv-clip'); if(!el) return;
   const at=+(el.dataset.at||0);
+  el.dataset.playing='';
   const say=(func, args)=>{ try{
     el.contentWindow.postMessage(JSON.stringify({event:'command', func:func, args:args||[]}), '*');
   }catch(e){} };
   say('seekTo', [at, true]); say('playVideo');
+  if(el.dataset.wait) return;
+  el.dataset.wait='1';
+  setTimeout(function(){
+    el.dataset.wait='';
+    if(!el.isConnected || el.dataset.playing) return;   // команда сработала — всё
+    const n=+(el.dataset.try||0);
+    if(n>=CC_TV_CLIP_TRY) return;
+    el.dataset.try=n+1;
+    el.src=el.src;                                       // адрес начинается со start
+  }, CC_TV_CLIP_BACK);
 }
 /* Слушаем ответы плеера. Чужие сообщения отсекаются по origin — его ставит браузер,
    подделать со страницы нельзя, — и из всего ответа берётся одно число состояния. */
@@ -90368,8 +90414,10 @@ function ccTvClipListen(){
     if(String(e.origin||'').indexOf('youtube')<0) return;
     let d=null; try{ d=JSON.parse(e.data); }catch(err){ return; }
     const st=d && d.info && d.info.playerState;
-    if(st===1) ccTvClipPlaying();          // 1 — «играю»
-    else if(st===0) ccTvClipLoop();        // 0 — «кусок кончился»
+    /* 1 — «играю», 0 — «кусок кончился», 2 — «стою». Стоять плееру не с чего: кликов
+       он не принимает, — значит это он сам встал, и его надо гнать дальше. */
+    if(st===1) ccTvClipPlaying();
+    else if(st===0 || st===2) ccTvClipLoop();
   });
 }
 // Вешает плеер поверх сцены. Прозрачным: увидят его, только если он заиграет.

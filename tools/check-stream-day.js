@@ -59,6 +59,28 @@ const BOOT = `
     if(run.indexOf(L().ccTvWait)>=0) fail('обычный эфир ждёт первую игру, которой не будет');
     if(document.getElementById('ccTvSum')) fail('сводка встала, не дав эфиру пройти');
     out.steps.push('эфир идёт: рамка на месте, строка «'+run.replace(/\\s+/g,' ').trim().slice(0,60)+'»');
+    /* НИЧЕГО НЕ ПОКАЗАНО ДВАЖДЫ (его скрин 8.09: «два чата и тд»). У страницы канала и
+       у рамки эфира одна и та же мебель; пока идёт эфир, на экране должна быть ровно
+       одна каждая. Окно пробы шире 1100, значит рамка показывает все три колонки. */
+    { const vis=el=>{ if(!el) return false; const c=getComputedStyle(el), r=el.getBoundingClientRect();
+        return c.display!=='none' && c.visibility!=='hidden' && +c.opacity>0 && r.width>1 && r.height>1; };
+      const seen=s=>[...document.querySelectorAll(s)].filter(vis).length;
+      if(innerWidth<1101) fail('окно пробы уже 1101 — дубли на этой ширине не проверить');
+      [['чат', '#screen-career-hub .tv-chat', '.cc-tv .cc-tvm-chat'],
+       ['строка канала', '#screen-career-hub .tv-chanrow', '.cc-tv .cc-tv-under'],
+       ['список каналов', '#screen-career-hub .tv-side', '.cc-tv .cc-tv-left']].forEach(p=>{
+        const a=seen(p[1]), b=seen(p[2]);
+        if(!b) fail('в рамке эфира нет своей мебели: '+p[0]);
+        if(a) fail(p[0]+' показан дважды: и на вкладке, и в рамке');
+      });
+      // Плеер занимает освободившуюся ширину, а не жмётся в старую колонку.
+      const wrap=document.querySelector('#screen-career-hub .tv-wrap');
+      const main=document.querySelector('#screen-career-hub .tv-main');
+      if(!wrap || !main) fail('на вкладке нет плеера');
+      const ww=wrap.getBoundingClientRect().width, mw=main.getBoundingClientRect().width;
+      if(mw < ww-2) fail('плеер занимает '+Math.round(mw)+' из '+Math.round(ww)+' — колонки остались');
+      out.steps.push('на экране по одной мебели: чат, строка канала и список каналов только в рамке; плеер на всю ширину '+Math.round(mw)+' px');
+    }
     // Картинка в плеере — фрибилд, а не скрин, и она видна даже без анимации.
     const fb=document.querySelector('.tv-player.live .tv-fb');
     if(!fb) fail('в плеере нет сцены фрибилда — остался скрин');
@@ -125,6 +147,14 @@ const BOOT = `
     // Ролик — фон, а не проигрыватель: кликом на YouTube не уводит.
     if(getComputedStyle(clip).pointerEvents!=='none') fail('ролик перехватывает клики');
     if(!slot.querySelector('.tv-clip-by')) fail('под роликом нет подписи автора');
+    /* Рамка больше кадра и обрезана: иначе поверх видео видна шапка YouTube с каналом
+       и названием, а снизу «More videos» и кнопка YouTube (его скрин 8.09). */
+    { if(getComputedStyle(slot).overflow!=='hidden') fail('края ролика не срезаны');
+      const cr=clip.getBoundingClientRect(), sr=slot.getBoundingClientRect();
+      if(!(cr.width>sr.width+8)) fail('рамка не шире кадра: '+Math.round(cr.width)+' против '+Math.round(sr.width));
+      if(!(cr.top<sr.top-4)) fail('верх рамки не заходит за кадр — шапка YouTube останется видна');
+      if(!(cr.bottom>sr.bottom+4)) fail('низ рамки не заходит за кадр — «More videos» останется видно');
+      out.steps.push('края срезаны: рамка '+Math.round(cr.width)+' px в кадре '+Math.round(sr.width)+' px'); }
     /* Сеть в пробе отрезана, значит ролик не идёт — и его не должно быть видно.
        Проверяется именно так, а не таймером: на тонком канале ролик едет долго. */
     if(slot.dataset.on) fail('ролик объявлен играющим при отрезанной сети');
@@ -145,14 +175,23 @@ const BOOT = `
       el.className='tv-clip'; el.dataset.at='123';
       const sent=[];
       Object.defineProperty(el, 'contentWindow', {value:{postMessage:m=>sent.push(m)}, configurable:true});
+      el.src='https://www.youtube-nocookie.com/embed/x?start=123';
+      const was=el.src;
       document.body.appendChild(el);
       ccTvClipLoop();
-      el.remove();
       const j=sent.map(s=>{ try{ return JSON.parse(s); }catch(e){ return {}; } });
       if(!j.some(x=>x.func==='seekTo' && x.args && x.args[0]===123))
         fail('отмотка не к началу куска: '+sent.join(' '));
       if(!j.some(x=>x.func==='playVideo')) fail('после отмотки плеер не запускается');
-      out.steps.push('кусок кончился — плеер отматывает к его началу'); }
+      out.steps.push('кусок кончился — плеер отматывает к его началу');
+      /* А если команду не приняли, рамка перезагружается своим адресом: он начинается
+         со start, и кусок пойдёт заново. Без этого в кадре повис бы стоп-кадр. */
+      await wait(CC_TV_CLIP_BACK+500);
+      if(el.dataset.playing) fail('плеер объявлен играющим, хотя команду никто не принял');
+      if(+el.dataset.try!==1) fail('перезагрузок ролика '+(el.dataset.try||0)+', ждали одну');
+      if(el.src!==was) fail('перезагрузили не тем адресом: '+el.src);
+      el.remove();
+      out.steps.push('команду не приняли — рамка перезапускается сама, не больше '+CC_TV_CLIP_TRY+' раз'); }
     // Уведомления эфира: карточка над плеером, не больше двух разом.
     ccTvAlert('sub', 'Проба', 'кто-то');
     ccTvAlert('dono', 'Проба 2', 'кто-то');
@@ -228,9 +267,11 @@ fs.writeFileSync(tmp, '<base href="file:///' + ROOT.replace(/\\/g,'/') + '/">' +
   fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8') + BOOT);
 // Сеть отрезана: ролик в плеере не должен ни тормозить пробу, ни ходить наружу.
 // Заодно это и есть тот самый случай, ради которого под роликом лежит рисунок.
+// Окно шире 1100: только на такой ширине рамка эфира показывает все свои колонки,
+// а значит только там видно, повторяет ли их вкладка (его «два чата и тд»).
 const dom = execFileSync(CHROME, ['--headless=new','--disable-gpu','--no-sandbox',
   '--allow-file-access-from-files','--host-resolver-rules=MAP * ~NOTFOUND',
-  '--virtual-time-budget=180000','--dump-dom',
+  '--window-size=1680,950','--virtual-time-budget=180000','--dump-dom',
   'file:///' + tmp.replace(/\\/g,'/')], {maxBuffer:512*1024*1024, encoding:'utf8', stdio:['ignore','pipe','ignore']});
 fs.rmSync(dir, {recursive:true, force:true});
 const m = dom.match(/BEGIN([\s\S]*?)END/);
