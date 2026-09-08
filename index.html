@@ -6908,7 +6908,7 @@ ccRepostBtn:'Репост', ccRepostDone:'Репостнул', ccQuoteBtn:'Ци�
 ccQuoting:'Цитируешь пост', ccQuoteDrop:'Отменить', ccQuotePh:'Скажи что-нибудь к этому…',
 ccFeedAll:'Всё', ccFeedSubs:'Подписки', ccFeedSubsEmpty:'Ты пока ни на кого не подписан',
 ccNoteReply:n=>'Тебе ответили: '+n,
-ccNewsAnnounce:(ev,d)=>'а вот и ещё :) '+ev+'. '+d+'. подробности скоро',
+ccNewsAnnounce:(ev,d)=>'а вот и ещё :) '+ev+'. '+d+'. подробности скоро', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — расписание года 📅<br>'+lines,
 ccPostHype:h=>'ооооо это база', ccPostDates:h=>'только не в те же даты, умоляю 🙏',
 ccPostBye:o=>'спасибо @'+o+' за эти годы. дальше сам, без клуба',
 ccCustomsHost:'Кастомки', ccAskBtn:'Попроситься', ccAskDone:'Попросился',
@@ -8871,7 +8871,7 @@ ccRepostBtn:'Repost', ccRepostDone:'Reposted', ccQuoteBtn:'Quote',
 ccQuoting:'Quoting a post', ccQuoteDrop:'Cancel', ccQuotePh:'Say something to this…',
 ccFeedAll:'All', ccFeedSubs:'Following', ccFeedSubsEmpty:'You follow nobody yet',
 ccNoteReply:n=>n+' replies to your post',
-ccNewsAnnounce:(ev,d)=>'wait but there is more :) '+ev+'. '+d+'. details soon',
+ccNewsAnnounce:(ev,d)=>'wait but there is more :) '+ev+'. '+d+'. details soon', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — the year at a glance 📅<br>'+lines,
 ccPostHype:h=>'ooooo this is huge', ccPostDates:h=>'please not those exact dates 🙏',
 ccPostBye:o=>'thank you @'+o+' for these years. on my own from here',
 ccCustomsHost:'Customs', ccAskBtn:'Ask for an invite', ccAskDone:'Asked',
@@ -11294,7 +11294,7 @@ ccRepostBtn:'Repost', ccRepostDone:'Reposté', ccQuoteBtn:'Citer',
 ccQuoting:'Tu cites un post', ccQuoteDrop:'Annuler', ccQuotePh:'Dis quelque chose là-dessus…',
 ccFeedAll:'Tout', ccFeedSubs:'Abonnements', ccFeedSubsEmpty:'Tu ne suis encore personne',
 ccNoteReply:n=>n+' réponses à ton post',
-ccNewsAnnounce:(ev,d)=>'et ce n’est pas tout :) '+ev+'. '+d+'. détails bientôt',
+ccNewsAnnounce:(ev,d)=>'et ce n’est pas tout :) '+ev+'. '+d+'. détails bientôt', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — le calendrier de l’année 📅<br>'+lines,
 ccPostHype:h=>'ooooh c’est énorme', ccPostDates:h=>'pas à ces dates-là, pitié 🙏',
 ccPostBye:o=>'merci @'+o+' pour ces années. je continue seul',
 ccCustomsHost:'Customs', ccAskBtn:'Demander une invite', ccAskDone:'Demandé',
@@ -13185,7 +13185,7 @@ ccRepostBtn:"Repost", ccRepostDone:"Repostato", ccQuoteBtn:"Cita",
 ccQuoting:"Stai citando un post", ccQuoteDrop:"Annulla", ccQuotePh:"Di' qualcosa su questo…",
 ccFeedAll:"Tutto", ccFeedSubs:"Seguiti", ccFeedSubsEmpty:"Non segui ancora nessuno",
 ccNoteReply:n=>n+' risposte al tuo post',
-ccNewsAnnounce:(ev,d)=>'e non è finita :) '+ev+'. '+d+'. dettagli presto',
+ccNewsAnnounce:(ev,d)=>'e non è finita :) '+ev+'. '+d+'. dettagli presto', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — il calendario dell’anno 📅<br>'+lines,
 ccPostHype:h=>'ooooh è enorme', ccPostDates:h=>'ma non in quelle date, vi prego 🙏',
 ccPostBye:o=>'grazie @'+o+' per questi anni. da qui vado da solo',
 ccCustomsHost:"Customs", ccAskBtn:"Chiedi un invito", ccAskDone:"Chiesto",
@@ -15684,7 +15684,7 @@ ccRepostBtn:"Repost", ccRepostDone:"Repostado", ccQuoteBtn:"Citar",
 ccQuoting:"Você está citando um post", ccQuoteDrop:"Cancelar", ccQuotePh:"Diga algo sobre isso…",
 ccFeedAll:"Tudo", ccFeedSubs:"Seguindo", ccFeedSubsEmpty:"Você ainda não segue ninguém",
 ccNoteReply:n=>n+' respostas ao seu post',
-ccNewsAnnounce:(ev,d)=>'e tem mais :) '+ev+'. '+d+'. detalhes em breve',
+ccNewsAnnounce:(ev,d)=>'e tem mais :) '+ev+'. '+d+'. detalhes em breve', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — o calendário do ano 📅<br>'+lines,
 ccPostHype:h=>'ooooo isso é gigante', ccPostDates:h=>'só não nessas datas, por favor 🙏',
 ccPostBye:o=>'obrigado @'+o+' por esses anos. daqui sigo sozinho',
 ccCustomsHost:"Customs", ccAskBtn:"Pedir convite", ccAskDone:"Pedido",
@@ -46721,7 +46721,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   // Общая комната гонки: люди в поле и в одном лобби (together), иначе большое поле
   // развело бы их по разным; боты у всех уже одинаковы (общий сид, см. ccRaceFieldSync).
   if(typeof ccRaceLock==='function' && ccRaceLock()){
-    await ccRaceFieldSync(teams);
+    await ccRaceFieldSync(teams, opts);
     const hs=teams.filter(t=>t.isYou || t.isRival);
     // Порядок — по адресу, один у обоих клиентов: склейка лобби сажает всех к первому
     // в списке, и «я первый» у каждого своё (проба check-race-live-two: комнаты расходились).
@@ -57991,7 +57991,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4f874cb1';
+const CC_BUILD='6575f95c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59452,15 +59452,20 @@ async function ccRaceWaitLines(){
   if(!fresh() && typeof CC_RACE_DBG!=='undefined') CC_RACE_DBG={stale:ccRaceRivals().filter(p=>p.ev!==ev).map(p=>(p.card||{}).handle)};
   return fresh();
 }
-async function ccRaceFieldSync(teams){
+async function ccRaceFieldSync(teams, opts){
   if(!ccRaceLock() || typeof MP==='undefined') return;
   await ccRaceWaitLines();
   const you=teams.find(t=>t.isYou);
-  // Соперники — все, кто прислал строку; уже посаженный раннером (соло-кап) — тот же объект.
+  /* Соперники — все, кто прислал строку; уже посаженный раннером (соло-кап) — тот же
+     объект. КОМНАТА ПРОШЕДШИХ (opts.roomOnly — второй раунд Victory Cup) никого не
+     досаживает: соперник, вылетевший в первом раунде, в ней зритель, а не команда.
+     Его скрины 8 сентября: у прошедшего в поле «dimcho+liveb:62», у вылетевшего —
+     нет, «diff 429 of 430» на первой же игре второго раунда. */
   const rivals=ccRaceRivals().map(p=>{
     const tag=':'+hKey(p.card);
     const same=teams.find(t=>t.mpTag===tag && !t.isYou);
     if(same){ same.isRival=true; same.isMate=false; same.raceId=p.id||same.raceId||null; return same; }
+    if(opts && opts.roomOnly) return null;
     return ccRaceUnseeded(()=>ccRaceRivalTeam(p));
   }).filter(Boolean);
   const humans=[you].concat(rivals).filter(Boolean).sort((a,b)=>String(a.mpTag||a.name)<String(b.mpTag||b.name) ? -1 : 1);
@@ -71768,7 +71773,7 @@ const CC_POST_BY={
   // Благодарность за турнир — своя строка после ЛАНа.
   ccDayEvcustomTake:'you', ccPostOrgWin:'press', ccPostVouch:'you', ccPostThanks:'you', ccPostOneOff:'you', ccPostTriedBest:'you',
   ccPostBye:'you', ccPostAskYes:'you', ccPostAskNo:'you',
-  ccNewsAnnounce:'press', ccPostHype:'arg0', ccPostDates:'arg0', ccPostCustomsOpen:'press',
+  ccNewsAnnounce:'press', ccNewsRoadmap:'press', ccPostHype:'arg0', ccPostDates:'arg0', ccPostCustomsOpen:'press',
   ccNewsLeftOrg:'press',
   ccNewsSigned:'press', ccNewsReleased:'press', ccNewsExtended:'press',
   /* Парный контракт заведён 25 августа, когда клубы уже постили сами, поэтому
@@ -71914,6 +71919,8 @@ const CC_POST_BY={
    which is who actually announces those things. */
 function ccPressWorthy(e){
   if(e.k==='ccNewsCongrats') return true;
+  // Расписание года — анонс Epic для всех, в каком бы дивизионе ни читали.
+  if(e.k==='ccNewsRoadmap') return true;
   // A birthday is the scene's own account posting about the scene, whatever
   // division the career reading it happens to be standing in — and the same
   // holds for the one it sends the player, which is the whole reason a career
@@ -73139,7 +73146,7 @@ const CC_CO_BY_KIND=[
   [/^ccPostDuoSplitBy|^ccPostTrioLF|^ccNewsDuoWorldSplit|^ccNewsDuoSplit|^ccNewsMateLeftFor|^ccNewsPartnerLeft|^ccPostMateLeft|^ccNewsDuoOutgrown/, 'Sad'],
   [/^ccPostLfdWant|^ccNewsLfd/, 'Lfd'],
   [/Bday/, 'Bday'],
-  [/^ccNewsAnnounce|^ccPostHype|^ccPostDates/, 'Hype'],
+  [/^ccNewsAnnounce|^ccNewsRoadmap|^ccPostHype|^ccPostDates/, 'Hype'],
   [/^ccNewsDuoAnnounce|^ccNewsDuoAgain|^ccNewsSquadNew|^ccNewsPartnerNew/, 'Duo'],
   [/^ccNewsSigned|^ccNewsExtended|^ccNewsPromotedRoster|^ccNewsRaise/, 'Sign'],
   [/^ccNewsReleased|^ccNewsLeft|^ccPostBye/, 'Left'],
@@ -73500,8 +73507,61 @@ function careerNoteMarkSeen(){
    комнаты отвечают на него цитатой. Календарь мод знает наперёд, поэтому
    ничего не выдумывается: берётся ближайшее событие и его же арт. */
 const CC_ANNOUNCE_DAYS=14;
+/* РАСПИСАНИЕ ГОДА ОДНИМ ПОСТОМ — как у Epic. Его слово 8 сентября: «анонсы капов пусть
+   будут такие же, как у эпиков, они же там на год всё расписывают». Так и есть: у Epic
+   в начале сезона выходит дорожная карта — все Мейджоры, Reload, Соло и ЛАНы с датами
+   на весь год, а тизеры («wait but there's more :)») идут уже по ходу. Здесь то же:
+   один раз на сезон пресс-аккаунт выкладывает весь календарь (собранный из CAREER_YEAR:
+   событие — первый и последний день его блоков), а анонсы за две недели остались.
+   Событие называется именем серии без стадии: «Мейджор 1», «Reload · кап 3», «Саммит»,
+   у ЛАНов — с городом (ccYearLabel). Сцена отвечает цитатой, как под любым анонсом. */
+function ccRoadmapLines(){
+  const groups=new Map();
+  const keyOf=id=>String(id).replace(/_(PlayIn|Heats|LCQ|Final|Upper|Lower|Qualifier|Q\dRound\d|FastTrack|LCQRound\d|LCQFinal)$/,'')
+                          .replace(/(Opens|PlayIn|Heats|Final)$/,'');
+  CAREER_YEAR.forEach(row=>{
+    const from=row[0], to=row[1], id=row[2], kind=row[3];
+    const k=keyOf(id);
+    const g=groups.get(k)||{from:from, to:to, id:id, kind:kind, n:0};
+    if(from<g.from) g.from=from;
+    if(to>g.to){ g.to=to; g.id=id; }
+    g.n++;
+    groups.set(k, g);
+  });
+  const name=g=>{
+    let s=ccYearLabel(g.id, g.from, g.from);
+    if(g.n>1){
+      // Стадию с конца долой: «Reload · кап 1, финал» → «Reload · кап 1», «Мейджор 1 · финал» → «Мейджор 1».
+      if(/,\s*[^,]+$/.test(s)) s=s.replace(/,\s*[^,]+$/,'');
+      else if(/\s·\s[^·]+$/.test(s)) s=s.replace(/\s·\s[^·]+$/,'');
+    }
+    return s;
+  };
+  return [...groups.values()].sort((a,b)=>a.from<b.from?-1:1).map(g=>
+    '• '+esc(name(g))+' — '+esc(ccDayLabel(g.from))+(g.to!==g.from ? ' – '+esc(ccDayLabel(g.to)) : ''));
+}
+function careerRoadmapTick(){
+  const cr=CAREER && CAREER.career; if(!cr) return false;
+  const key='roadmap|'+(cr.season||1);
+  cr.told=cr.told||{};
+  if(cr.told[key]) return false;
+  cr.told[key]=1;
+  const year=Number(String(CC_YEAR_TO).slice(0,4))+((cr.season||1)-1);
+  careerNews('good', 'ccNewsRoadmap', [year, ccRoadmapLines().join('<br>')], {art:'major'});
+  ccAnnounceReact((cr.news||[])[0]);
+  return true;
+}
+// Двое из комнаты отвечают анонсу цитатой — так это выглядит в ленте.
+function ccAnnounceReact(top){
+  const pool=(typeof careerDmPool==='function') ? careerDmPool() : [];
+  pool.slice(0, 2).forEach(function(w, i){
+    if(!w || !w.handle || !top) return;
+    careerNews('flat', i===0 ? 'ccPostHype' : 'ccPostDates', [ccHandle(w.handle)], {q:top.id});
+  });
+}
 function careerAnnounceTick(){
   const cr=CAREER.career, days=careerYearDays();
+  careerRoadmapTick();
   const at=ccAddDays(careerToday(), CC_ANNOUNCE_DAYS);
   /* Только по-настоящему крупное и НЕ ЧАЩЕ РАЗА В МЕСЯЦ.
 
@@ -73518,14 +73578,7 @@ function careerAnnounceTick(){
   careerNews('good', 'ccNewsAnnounce', [ev.label||'', ccDayLabel(at)],
              {art:(ev.kind==='gc'?'gc':ev.kind)});
   // И реакция сцены — цитатой, как это и выглядит в ленте.
-  const top=(cr.news||[])[0];
-  const pool=(typeof careerDmPool==='function') ? careerDmPool() : [];
-  const say=pool.slice(0, 2);
-  say.forEach(function(w, i){
-    if(!w || !w.handle || !top) return;
-    careerNews('flat', i===0 ? 'ccPostHype' : 'ccPostDates', [ccHandle(w.handle)],
-               {q:top.id});
-  });
+  ccAnnounceReact((cr.news||[])[0]);
 }
 function careerNotesTick(){
   /* Карьеры может не быть вовсе: его скрин 3 сентября — красная плашка
@@ -84049,8 +84102,12 @@ async function careerLandingPick(field, you, title, kinds, o){
      адресных пика подряд. Соперник отвечает у себя, ответ приходит по проводу. */
   if(typeof ccRaceLock==='function' && ccRaceLock() && !o.tag && you && you.mpTag){
     const rivals=(field||[]).filter(t=>t.isRival && t!==you && t.mpTag);
-    if(rivals.length){
-      const hs=[you].concat(rivals).sort((a,b)=>String(a.mpTag)<String(b.mpTag) ? -1 : 1);
+    // Своей команды в комнате может не быть: второй раунд Victory Cup у вылетевшего
+    // в первом досчитывается зрителем (см. runCareerVictory). Спрашивать тогда
+    // некого, а ответы соперников всё равно надо дождаться — по адресу.
+    const inRoom=(field||[]).indexOf(you)>=0;
+    if(rivals.length || !inRoom){
+      const hs=(inRoom ? [you] : []).concat(rivals).sort((a,b)=>String(a.mpTag)<String(b.mpTag) ? -1 : 1);
       let groups=o.pre||null;
       for(const h of hs) groups=await careerLandingPick(field, h, title, kinds, {tag:h.mpTag, pre:groups});
       return groups;
@@ -86756,6 +86813,21 @@ async function runCareerVictory(){
 
   const rate=solo ? CC_VICTORY_CASH_SOLO : CC_VICTORY_CASH_DUO;
   let wins=0, cash=0, place2=null;
+  /* ВТОРОЙ РАУНД В ОБЩЕЙ КОМНАТЕ — ТОЛЬКО ЕСЛИ ПРОШЛИ ВСЕ ЛЮДИ.
+     Второй раунд идёт только у прошедшего (through). Вылетевший в первом заканчивал
+     вечер, а его соперник вставал на барьере седьмой игры и, дождавшись «peer done»,
+     доигрывал один — его скрины 8 сентября, «разошлись на игре 7 · peer ahead» и
+     «peer done · q drop», всегда на границе раундов. Проба с зрителем (вылетевший
+     досчитывает комнату прошедших) разошлась на первом же вопросе высадки: зритель и
+     игрок идут по разным веткам. Поэтому проще и честнее: кого-то из людей нет во
+     втором раунде — прошедшие доигрывают его сами, без локстепа (соперника в этой
+     комнате и так нет), а вылетевший закрывает вечер как обычно. Первый раунд у всех
+     общий, как и был. */
+  if(typeof ccRaceLock==='function' && ccRaceLock()){
+    const top=ranked1.slice(0, vCut);
+    const rivalOut=ccRaceRivals().some(p=>!top.some(t=>t.mpTag===':'+hKey(p.card)));
+    if(!through || rivalOut) CC_RACE_LOCK=false;
+  }
   if(through){
     const r2=ranked1.slice(0, vCut);
     // Комната прошедших — свои единицы (соло: CC_ZONE_OPEN_SOLO_R2; дуо — как в первом).
@@ -86768,6 +86840,7 @@ async function runCareerVictory(){
     await simulateGamesLive(r2, CC_VICTORY_R2_GAMES, victoryR2Points, 0, 'stage', 0, null, zones2,
       {lobbySize:ccVictoryLobby(ev, solo), stageName:L().ccVicR2Live,
        mapReplay:true, choices:true, stopOnYourDeath:true,
+       roomOnly:true,   // комната прошедших: вылетевших людей в неё не досаживать (ccRaceFieldSync)
        together: (soloMate && humans2.length>1) ? humans2 : null,
        dropEachGame:(g,room)=>soloMate ? ccSoloDrops(room||r2, humans2, L().ccVicR2Live, ['victory'])
                                        : careerLandingPick(room||r2, you, L().ccVicR2Live, ['victory'])});

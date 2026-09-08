@@ -188,6 +188,22 @@ const BOOT = `
       if (careerSimRowHTML().indexOf(L().ccRaceWhymode) < 0) fail('под кнопками режима нет подсказки о расхождении');
       CC_RACE_PEERS = peers0; MP.state = st0; delete cr.race; cr.sim = false;
     }
+    // 12. Расписание года одним постом прессы, раз на сезон (его слово 8.09: «как у эпиков»).
+    {
+      cr.told = {};
+      var n0 = (cr.news || []).length;
+      careerAnnounceTick();
+      var road = (cr.news || []).find(function(n){ return n.k === 'ccNewsRoadmap'; });
+      if (!road) fail('расписания года в ленте нет');
+      var who = ccPostAuthor(road);
+      if (!who.verified) fail('расписание года подписано не прессой: ' + who.name);
+      var txt = ccText(road), lines = (txt.match(/<br>/g) || []).length;
+      out.steps.push('расписание года: строк ' + lines + ', первая — ' + txt.split('<br>')[1]);
+      if (lines < 8) fail('в расписании года меньше восьми строк: ' + lines);
+      if (!/Major 1|Мейджор 1/.test(txt)) fail('в расписании нет первого Мейджора');
+      careerAnnounceTick();
+      if ((cr.news || []).filter(function(n){ return n.k === 'ccNewsRoadmap'; }).length !== 1) fail('расписание года вышло дважды');
+    }
     // 9. Команда поверх гонки на одном коде вычищается при загрузке.
     {
       cr.race = {code: 'ABC123', role: 'a', since: careerToday()};

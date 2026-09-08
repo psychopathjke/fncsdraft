@@ -264,7 +264,9 @@ const boot = (who) => `
 const ccAddDaysNode=(iso, n)=>{ const d=new Date(iso+'T00:00:00Z'); d.setUTCDate(d.getUTCDate()+n); return d.toISOString().slice(0,10); };
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 const A = {nick:process.env.CC_NICK_A||'LiveA', age:17, ageEdge:4, country:'de', close:6, ovr:90, role:'roleIGL', role_mp:'a', money:48000, reach:20000, form:3, grind:12, skipAt:SKIP_A, hideAt:HIDE_A, reloadAt:RELOAD_A, mateIdx:0};
-const B = {nick:process.env.CC_NICK_B||'LiveB', age:24, ageEdge:0, country:'br', close:1, ovr:86, role:'roleFRG', role_mp:'b', money:0,     reach:0,     form:0, grind:0,  skipAt:SKIP_B, hideAt:HIDE_B, reloadAt:RELOAD_B, mateIdx:1};
+// CC_OVR_B / CC_MATE_B — слабый B (например 60 и напарник с 400-й строки ростера), чтобы он
+// вылетел в первом раунде Victory Cup и досчитывал второй зрителем (его скрины 8.09, «игра 7»).
+const B = {nick:process.env.CC_NICK_B||'LiveB', age:24, ageEdge:0, country:'br', close:1, ovr:Number(process.env.CC_OVR_B||86), role:'roleFRG', role_mp:'b', money:0,     reach:0,     form:0, grind:0,  skipAt:SKIP_B, hideAt:HIDE_B, reloadAt:RELOAD_B, mateIdx:Number(process.env.CC_MATE_B||1)};
 
 function cdp(port){
   return new Promise((res, rej)=>{
@@ -322,7 +324,9 @@ async function runOne(tag, who, port){
   const own=r=>/Your squad|Твой состав/.test(String(r));
   const rank=r=>Number((String(r).match(/^#(\d+)/)||[])[1]||0);
   // Своя строка внизу — та, чьё место больше числа строк над ней (верх таблицы + свой хвост).
-  const rowsOf=t=>(t||[]).filter((r,i,all)=>!(i===all.length-1 && i>0 && own(r) && rank(r)>i));
+  // Своя строка внизу — приколотая копия: её место уже есть выше (или дальше числа строк).
+  const rowsOf=t=>(t||[]).filter((r,i,all)=>!(i===all.length-1 && i>0 && own(r) &&
+    (rank(r)>i || all.slice(0,i).some(x=>rank(x)===rank(r)))));
   const hash=t=>crypto.createHash('sha1').update(rowsOf(t).map(norm).join('\n')).digest('hex').slice(0,12);
   for(const [n, r] of [['A', a], ['B', b]]){
     console.log(n+': '+(r.fail ? 'FAIL '+r.fail : (r.notes.head||'')) + ' · строк '+((r.notes.table||[]).length)+' · хеш '+hash(r.notes.table)+
@@ -355,12 +359,13 @@ async function runOne(tag, who, port){
   // В перемотке «таблица» — это журнал карьеры (у каждого свой), а поле первой игры не снимается;
   // там сверяются день прибытия и броски (общая комната на каждом вечере недели).
   for(const [n, r] of [['A', a], ['B', b]]){ const t=(r.notes.table||[]).join('\n');
-    if(!FF && !/Your squad|Твой состав/.test(t)){ console.log('FAIL '+n+': в таблице нет своей строки'); bad++; }
+    if(!FF && !DIFFER && !/Your squad|Твой состав/.test(t)){ console.log('FAIL '+n+': в таблице нет своей строки'); bad++; }
     if(!FF && (!r.notes.f1 || r.notes.f1.rival<0 || r.notes.f1.you<0)){ console.log('FAIL '+n+': в поле нет обеих команд людей: '+JSON.stringify(r.notes.f1)); bad++; }
     if(FF && !(r.notes.dayAfter>=FF)){ console.log('FAIL '+n+': перемотка не доехала до '+FF+', день '+r.notes.dayAfter); bad++; }
     console.log('   '+n+': напарник '+r.notes.mate+' · соперник '+r.notes.rival+' с '+JSON.stringify(r.notes.rivalMates)+' · врозь: '+r.notes.apart+(FF ? ' · день после '+r.notes.dayAfter+' · вечеров '+((r.notes.table||[]).length) : '')); }
   if(FF && a.notes.rolls!==b.notes.rolls){ console.log('FAIL броски в перемотке разные: '+a.notes.rolls+' / '+b.notes.rolls); bad++; }
-  if(!DIFFER && !FF && !RELOAD_A && !RELOAD_B && a.notes.rolls!==b.notes.rolls){ console.log('FAIL броски разные: '+a.notes.rolls+' / '+b.notes.rolls); bad++; }
+  // CC_ROLLS_SAME=1 — таблицы личные (вылетевший досчитывает зрителем), а броски обязаны совпасть.
+  if((!DIFFER || process.env.CC_ROLLS_SAME==='1') && !FF && !RELOAD_A && !RELOAD_B && a.notes.rolls!==b.notes.rolls){ console.log('FAIL броски разные: '+a.notes.rolls+' / '+b.notes.rolls); bad++; }
   if(bad) process.exit(1);
   console.log('гонка: два живых клиента сыграли один вечер в одной комнате, друг против друга');
 })().catch(e=>{ console.error(e.message||e); process.exit(2); });
