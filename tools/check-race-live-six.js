@@ -56,6 +56,9 @@ const boot = (who) => `
     try{
       const cr=CAREER && CAREER.career; if(!cr) return;
       if(CC_FF && CC_FF.err && !out.notes.ffErr) out.notes.ffErr=CC_FF.err;
+      if(typeof CC_MP_ROLLS!=='undefined'){ if(out.notes._lr!==CC_MP_ROLLS){ out.notes._lr=CC_MP_ROLLS; out.notes._lt=Date.now(); }
+        else if(CC_MP_RAND && !out.notes.stall && Date.now()-(out.notes._lt||Date.now())>120000){
+          out.notes.stall={day:cr.day, game:CC_MP_GAME, rolls:CC_MP_ROLLS, wait:(CC_MP_WAIT||[]).map(w=>w.t), qn:JSON.stringify(CC_MP_QN), marks:(out.notes.marks||[]).slice(-90), inbox:(window.__acts||[]).slice(-40)}; } }
       out.notes.nights=out.notes.nights||[]; while(out.notes.nights.length<(cr.log||[]).length){ const r=cr.log[out.notes.nights.length]; out.notes.nights.push([r.day, r.kind||'cup', 'r'+CC_MP_ROLLS, 'lock'+(CC_RACE_LOCK?1:0), 'seed'+(CC_MP_SEED?1:0), 'alone'+(CC_MP_ALONE?1:0), 'field'+(CC_RACE_DBG?CC_RACE_DBG.n+'/'+CC_RACE_DBG.humans.length:'-'), 'link '+MP.state].join(' ')); }
       [...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent).forEach(s=>{ if(out.notes.splits.indexOf(s)<0) out.notes.splits.push(cr.day+' '+s); });
       document.getElementById('__prog').textContent=[cr.day, 'див '+cr.division, 'журнал '+(cr.log||[]).length, 'броски '+CC_MP_ROLLS,
@@ -211,6 +214,7 @@ async function runOne(tag, who, port){
     (r.notes.fields||[]).forEach(f=>console.log('   поле: '+f));
     if(r.notes.skipped && r.notes.skipped.length) console.log('   не сыграно: '+[...new Set(r.notes.skipped)].join(' | '));
     if(r.fail || (r.notes.dayAfter<FF && !r.notes.seasonOver)) console.log('   застрял: wait '+JSON.stringify(r.notes.wait)+' · игра '+r.notes.game+' · qn '+JSON.stringify(r.notes.qn)+' · эфир '+r.notes.title+' · комната '+r.notes.room+' · соперники '+JSON.stringify(r.notes.peersDays)+'\n   метки: '+(r.notes.marks||[]).slice(-70).join(' | ')+'\n   входящие: '+JSON.stringify(r.notes.queue));
+    if(r.notes.stall) console.log('   СТОП '+r.notes.stall.day+' игра '+r.notes.stall.game+' r'+r.notes.stall.rolls+' wait '+JSON.stringify(r.notes.stall.wait)+'\n   qn '+r.notes.stall.qn+'\n   метки-стоп: '+r.notes.stall.marks.join(' | ')+'\n   входящие-стоп: '+JSON.stringify(r.notes.stall.inbox));
     if(r.notes.ffErr){ console.log('   FAIL перемотка встала: '+JSON.stringify(r.notes.ffErr)); bad++; }
     if(r.notes.splits && r.notes.splits.length){ console.log('   FAIL красные строки: '+r.notes.splits.join(' || ')); bad++; }
     if(r.errs && r.errs.length){ console.log('   FAIL ошибки страницы: '+r.errs.join(' | ')); bad++; }
