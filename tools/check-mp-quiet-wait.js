@@ -71,7 +71,7 @@ const tmp = path.join(dir, 'index.html');
 fs.writeFileSync(tmp, '<base href="file:///' + ROOT.split(String.fromCharCode(92)).join('/') + '/">' +
   fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8') + BOOT);
 const dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandbox',
-  '--allow-file-access-from-files', '--virtual-time-budget=900000', '--dump-dom',
+  '--allow-file-access-from-files', '--virtual-time-budget=1500000', '--dump-dom',
   'file:///' + tmp.split(String.fromCharCode(92)).join('/')],
   { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
 fs.rmSync(dir, { recursive: true, force: true });
