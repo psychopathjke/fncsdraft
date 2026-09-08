@@ -6908,7 +6908,7 @@ ccRepostBtn:'Репост', ccRepostDone:'Репостнул', ccQuoteBtn:'Ци�
 ccQuoting:'Цитируешь пост', ccQuoteDrop:'Отменить', ccQuotePh:'Скажи что-нибудь к этому…',
 ccFeedAll:'Всё', ccFeedSubs:'Подписки', ccFeedSubsEmpty:'Ты пока ни на кого не подписан',
 ccNoteReply:n=>'Тебе ответили: '+n,
-ccNewsAnnounce:(ev,d)=>'а вот и ещё :) '+ev+'. '+d+'. подробности скоро', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — расписание года 📅<br>'+lines,
+ccNewsAnnounce:(ev,d)=>'а вот и ещё :) '+ev+'. '+d+'. подробности скоро', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — расписание года 📅<br>'+(typeof ccRoadmapLines==='function' ? ccRoadmapLines().join('<br>') : (lines||'')),
 ccPostHype:h=>'ооооо это база', ccPostDates:h=>'только не в те же даты, умоляю 🙏',
 ccPostBye:o=>'спасибо @'+o+' за эти годы. дальше сам, без клуба',
 ccCustomsHost:'Кастомки', ccAskBtn:'Попроситься', ccAskDone:'Попросился',
@@ -8201,7 +8201,7 @@ ccLanQual:c=>'квал на ЛАН · '+c,
 ccNewsSceneDuo:(a,b)=>'Новый состав: играю с '+b,
 modeCareerRaceDesc:'Наперегонки: каждый играет свою карьеру, лобби показывает, кто впереди.',
 ccRaceMake:'Завести гонку', ccRaceEnter:'Войти в гонку по коду',
-ccRaceTitle:'Гонка карьер', ccRaceRoom:'Сегодня', ccRaceRoomOn:'одна комната — соперник в твоём лобби', ccRaceRoomOff:w=>'врозь'+(w?' — '+w:''), ccRaceWhyoff:'соперник не на связи', ccRaceWhymany:'в гонке больше двоих', ccRaceWhydiv:'разные дивизионы', ccRaceWhyday:'разные дни', ccRaceWhysolo:'соло-серия — личная', ccRaceWhymode:'разные режимы — у кого-то «Симуляция», у кого-то «Играть»', ccRaceBotTaken:'Этот напарник уже у соперника по гонке — одинаковых брать нельзя', ccRaceAlone:'Соперник ещё не подключился — дай ему код',
+ccRaceTitle:'Гонка карьер', ccRaceRoom:'Сегодня', ccRaceRoomOn:'одна комната — соперник в твоём лобби', ccRaceRoomOff:w=>'врозь'+(w?' — '+w:''), ccRaceWhyoff:'соперник не на связи', ccRaceWhymany:'в гонке больше двоих', ccRaceWhydiv:'разные дивизионы', ccRaceWhyday:'разные дни', ccRaceWhysolo:'соло-серия — личная', ccRaceWhymode:'Разные режимы в гонке — вечер не начнётся, пока все не выберут один', ccRaceBotTaken:'Этот напарник уже у соперника по гонке — одинаковых брать нельзя', ccRaceAlone:'Соперник ещё не подключился — дай ему код',
 ccRaceWait:'День закрывается вдвоём — ждём, пока соперник доиграет свой',
 ccRaceAloneGo:'Идти дальше одному',
 ccRaceAhead:'Ты впереди', ccRaceBehind:h=>'Впереди '+h, ccRaceLeave:'Выйти из гонки',
@@ -8871,7 +8871,7 @@ ccRepostBtn:'Repost', ccRepostDone:'Reposted', ccQuoteBtn:'Quote',
 ccQuoting:'Quoting a post', ccQuoteDrop:'Cancel', ccQuotePh:'Say something to this…',
 ccFeedAll:'All', ccFeedSubs:'Following', ccFeedSubsEmpty:'You follow nobody yet',
 ccNoteReply:n=>n+' replies to your post',
-ccNewsAnnounce:(ev,d)=>'wait but there is more :) '+ev+'. '+d+'. details soon', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — the year at a glance 📅<br>'+lines,
+ccNewsAnnounce:(ev,d)=>'wait but there is more :) '+ev+'. '+d+'. details soon', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — the year at a glance 📅<br>'+(typeof ccRoadmapLines==='function' ? ccRoadmapLines().join('<br>') : (lines||'')),
 ccPostHype:h=>'ooooo this is huge', ccPostDates:h=>'please not those exact dates 🙏',
 ccPostBye:o=>'thank you @'+o+' for these years. on my own from here',
 ccCustomsHost:'Customs', ccAskBtn:'Ask for an invite', ccAskDone:'Asked',
@@ -10152,7 +10152,7 @@ ccLanQual:c=>'LAN qualified · '+c,
 ccNewsSceneDuo:(a,b)=>'New duo: playing with '+b,
 modeCareerRaceDesc:'A race: each of you plays your own career, the lobby shows who is ahead.',
 ccRaceMake:'Start a race', ccRaceEnter:'Join a race by code',
-ccRaceTitle:'Career race', ccRaceRoom:'Today', ccRaceRoomOn:'one room — your rival is in your lobby', ccRaceRoomOff:w=>'apart'+(w?' — '+w:''), ccRaceWhyoff:'rival is offline', ccRaceWhymany:'more than two in the race', ccRaceWhydiv:'different divisions', ccRaceWhyday:'different days', ccRaceWhysolo:'the solo series is personal', ccRaceWhymode:'different modes — one of you simulates, the other plays', ccRaceBotTaken:'Your race rival already has this partner — no identical bots', ccRaceAlone:'Nobody has joined yet — give them the code',
+ccRaceTitle:'Career race', ccRaceRoom:'Today', ccRaceRoomOn:'one room — your rival is in your lobby', ccRaceRoomOff:w=>'apart'+(w?' — '+w:''), ccRaceWhyoff:'rival is offline', ccRaceWhymany:'more than two in the race', ccRaceWhydiv:'different divisions', ccRaceWhyday:'different days', ccRaceWhysolo:'the solo series is personal', ccRaceWhymode:'Different modes in the race — the night will not start until everyone picks one', ccRaceBotTaken:'Your race rival already has this partner — no identical bots', ccRaceAlone:'Nobody has joined yet — give them the code',
 ccRaceWait:'The day closes together — waiting for your rival to finish theirs',
 ccRaceAloneGo:'Go on without them',
 ccRaceAhead:'You are ahead', ccRaceBehind:h=>h+' is ahead', ccRaceLeave:'Leave the race',
@@ -11294,7 +11294,7 @@ ccRepostBtn:'Repost', ccRepostDone:'Reposté', ccQuoteBtn:'Citer',
 ccQuoting:'Tu cites un post', ccQuoteDrop:'Annuler', ccQuotePh:'Dis quelque chose là-dessus…',
 ccFeedAll:'Tout', ccFeedSubs:'Abonnements', ccFeedSubsEmpty:'Tu ne suis encore personne',
 ccNoteReply:n=>n+' réponses à ton post',
-ccNewsAnnounce:(ev,d)=>'et ce n’est pas tout :) '+ev+'. '+d+'. détails bientôt', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — le calendrier de l’année 📅<br>'+lines,
+ccNewsAnnounce:(ev,d)=>'et ce n’est pas tout :) '+ev+'. '+d+'. détails bientôt', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — le calendrier de l’année 📅<br>'+(typeof ccRoadmapLines==='function' ? ccRoadmapLines().join('<br>') : (lines||'')),
 ccPostHype:h=>'ooooh c’est énorme', ccPostDates:h=>'pas à ces dates-là, pitié 🙏',
 ccPostBye:o=>'merci @'+o+' pour ces années. je continue seul',
 ccCustomsHost:'Customs', ccAskBtn:'Demander une invite', ccAskDone:'Demandé',
@@ -12550,7 +12550,7 @@ ccLanQual:c=>'qualifié LAN · '+c,
 ccNewsSceneDuo:(a,b)=>'Nouveau duo : je joue avec '+b,
 modeCareerRaceDesc:'Une course : chacun joue sa propre carrière, le lobby montre qui est devant.',
 ccRaceMake:'Créer une course', ccRaceEnter:'Rejoindre une course par code',
-ccRaceTitle:'Course de carrières', ccRaceRoom:'Aujourd’hui', ccRaceRoomOn:'une seule salle — ton rival est dans ton lobby', ccRaceRoomOff:w=>'séparément'+(w?' — '+w:''), ccRaceWhyoff:'rival hors ligne', ccRaceWhymany:'plus de deux dans la course', ccRaceWhydiv:'divisions différentes', ccRaceWhyday:'jours différents', ccRaceWhysolo:'la série solo est personnelle', ccRaceWhymode:'modes différents — l’un simule, l’autre joue', ccRaceBotTaken:'Ton rival de course a déjà ce partenaire — pas de bots identiques', ccRaceAlone:'Personne n’a encore rejoint — donne-lui le code',
+ccRaceTitle:'Course de carrières', ccRaceRoom:'Aujourd’hui', ccRaceRoomOn:'une seule salle — ton rival est dans ton lobby', ccRaceRoomOff:w=>'séparément'+(w?' — '+w:''), ccRaceWhyoff:'rival hors ligne', ccRaceWhymany:'plus de deux dans la course', ccRaceWhydiv:'divisions différentes', ccRaceWhyday:'jours différents', ccRaceWhysolo:'la série solo est personnelle', ccRaceWhymode:'Modes différents dans la course — la soirée ne commencera pas tant que tous n’en choisissent pas un', ccRaceBotTaken:'Ton rival de course a déjà ce partenaire — pas de bots identiques', ccRaceAlone:'Personne n’a encore rejoint — donne-lui le code',
 ccRaceAhead:'Tu es devant', ccRaceBehind:h=>h+' est devant', ccRaceLeave:'Quitter la course',
 ccProAmCash:m=>'Empoché '+m, ccProAmNoCash:'Sans gains',
 ccNewsProAmCash:(p,m)=>'Pro-Am : '+ccTop(p)+', $'+m+' gagnés',
@@ -13185,7 +13185,7 @@ ccRepostBtn:"Repost", ccRepostDone:"Repostato", ccQuoteBtn:"Cita",
 ccQuoting:"Stai citando un post", ccQuoteDrop:"Annulla", ccQuotePh:"Di' qualcosa su questo…",
 ccFeedAll:"Tutto", ccFeedSubs:"Seguiti", ccFeedSubsEmpty:"Non segui ancora nessuno",
 ccNoteReply:n=>n+' risposte al tuo post',
-ccNewsAnnounce:(ev,d)=>'e non è finita :) '+ev+'. '+d+'. dettagli presto', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — il calendario dell’anno 📅<br>'+lines,
+ccNewsAnnounce:(ev,d)=>'e non è finita :) '+ev+'. '+d+'. dettagli presto', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — il calendario dell’anno 📅<br>'+(typeof ccRoadmapLines==='function' ? ccRoadmapLines().join('<br>') : (lines||'')),
 ccPostHype:h=>'ooooh è enorme', ccPostDates:h=>'ma non in quelle date, vi prego 🙏',
 ccPostBye:o=>'grazie @'+o+' per questi anni. da qui vado da solo',
 ccCustomsHost:"Customs", ccAskBtn:"Chiedi un invito", ccAskDone:"Chiesto",
@@ -15684,7 +15684,7 @@ ccRepostBtn:"Repost", ccRepostDone:"Repostado", ccQuoteBtn:"Citar",
 ccQuoting:"Você está citando um post", ccQuoteDrop:"Cancelar", ccQuotePh:"Diga algo sobre isso…",
 ccFeedAll:"Tudo", ccFeedSubs:"Seguindo", ccFeedSubsEmpty:"Você ainda não segue ninguém",
 ccNoteReply:n=>n+' respostas ao seu post',
-ccNewsAnnounce:(ev,d)=>'e tem mais :) '+ev+'. '+d+'. detalhes em breve', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — o calendário do ano 📅<br>'+lines,
+ccNewsAnnounce:(ev,d)=>'e tem mais :) '+ev+'. '+d+'. detalhes em breve', ccNewsRoadmap:(y,lines)=>'FNCS '+y+' — o calendário do ano 📅<br>'+(typeof ccRoadmapLines==='function' ? ccRoadmapLines().join('<br>') : (lines||'')),
 ccPostHype:h=>'ooooo isso é gigante', ccPostDates:h=>'só não nessas datas, por favor 🙏',
 ccPostBye:o=>'obrigado @'+o+' por esses anos. daqui sigo sozinho',
 ccCustomsHost:"Customs", ccAskBtn:"Pedir convite", ccAskDone:"Pedido",
@@ -57991,7 +57991,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6575f95c';
+const CC_BUILD='bbcdd6ae';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59397,11 +59397,23 @@ function ccRaceApartWhy(next){
      расчёта. Команда это запрещает (ccMpModeWhy), гонка — нет, и его скрины
      8 сентября «с телефоном расходятся игры» — ровно это: на телефоне удобнее
      «Симуляция», за компьютером «Играть». Режим едет в карточке (sim); разошлись
-     — вечер врозь, каждый в своей комнате, а плитка говорит почему. */
+     — вечер НЕ начинается ни у кого (ccRaceModeWhy гасит «Играть»), как в дуо.
+     Врозь он шёл до 8.09 вечера — его скрин: у одного вечер убежал сам. */
   if(peers.some(p=>p.card && p.card.sim!=null && !!p.card.sim!==careerSimOn())) return 'mode';
   return null;
 }
 function ccRaceShared(next){ return !ccRaceApartWhy(next); }
+/* Разные режимы в гонке — это НЕ «врозь», а «вечер не начнётся», как в дуо. Его отчёт
+   8 сентября со скрином: у двоих «Играть», у одного «Симуляция» — и у одного вечер
+   просто пошёл сам по себе. Врозь читалось как поломка. Теперь кнопка «Играть» гаснет
+   у всех с этой причиной, пока режимы не сойдутся (careerCanPlayKindOn). */
+function ccRaceModeWhy(){
+  if(ccMpOn() || typeof ccRaceOn!=='function' || !ccRaceOn()) return null;
+  if(typeof ccRaceLive!=='function' || !ccRaceLive()) return null;
+  if(typeof ccRaceRivals!=='function' || !ccRaceRivals().length) return null;
+  const next=(typeof careerNext==='function') ? careerNext() : null;
+  return ccRaceApartWhy(next)==='mode' ? L().ccRaceWhymode : null;
+}
 function ccRaceRivalTeam(p){
   p=p||ccRaceRival(); if(!p || !p.card) return null;
   const solo=(typeof squadSize==='number' && squadSize===1);
@@ -59492,7 +59504,10 @@ function careerRaceTileHTML(){
     return `<div class="cc-race-row${r.you?' me':''}${i===0&&rows.length>1?' lead':''}">
       ${ccAvatar({name:r.nick||'?', card:card, you:!!r.you})}
       <span class="cc-race-in"><b>${esc(r.nick||'')}${r.org?`<i>${esc(r.org)}</i>`:''}</b>
-        <em>${L().ccDivision} ${r.div} · ${ccMoney(r.money||0)}${r.pr?' · PR '+ccNum(r.pr):''}</em></span>
+        <em>${L().ccDivision} ${r.div} · ${ccMoney(r.money||0)}${r.pr?' · PR '+ccNum(r.pr):''}${
+          // Режим участника — глаз (симуляция) или геймпад (играет): разные режимы держат вечер.
+          (r.you ? (careerSimOn() ? ' · &#128065;' : ' · &#127918;')
+                 : (r.card && r.card.sim!=null ? (r.card.sim ? ' · &#128065;' : ' · &#127918;') : ''))}</em></span>
       <span class="cc-race-ovr" title="${esc(L().ccRoOvr)}">${r.ovr}</span>
     </div>`; };
   return `<div class="ch-tile cc-race">
@@ -61440,6 +61455,11 @@ function careerCentreHTML(card, a){
 
        Поэтому в команде кнопка глохнет и называет причину. Чинится она там же,
        где и сломалось: кнопками режима, плиткой команды, разрывом дуо. */
+    /* И в гонке: разные режимы — «Играть» гаснет с причиной, а не превращается в
+       «Пропустить». Его скрин 8.09: у одного вечер убежал сам. См. ccRaceModeWhy. */
+    : (!playable && ccRaceModeWhy())
+      ? `<button class="ch-play" disabled title="${esc(ccRaceModeWhy())}">${L().chPlay}${ccMpReadyTag()}</button>`+
+        `<div class="ch-hint" style="margin:6px 0 0;color:#ff9b9b;">${esc(ccRaceModeWhy())}</div>`
     : (ccMpOn() && !playable)
       ? `<button class="ch-play" disabled title="${esc(ccMpBlockWhy()||L().chSoonHint)}">${
             L().chPlay}${ccMpReadyTag()}</button>`+
@@ -61459,7 +61479,8 @@ function careerCentreHTML(card, a){
                 подсказке: его слово 5 сентября «и это должно быть написано». */
              `<div class="ch-hint ch-live-hint">${esc(why||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}</div>`; })() : '')
       : `<button class="ch-play" onclick="careerSkipAsk()" title="${esc(
-            careerNoMate(next.type) ? (careerMatesOver()>0 ? L().ccMateOver : L().ccNoMateN(careerMatesShort()))
+            ccRaceModeWhy() ? ccRaceModeWhy()
+          : careerNoMate(next.type) ? (careerMatesOver()>0 ? L().ccMateOver : L().ccNoMateN(careerMatesShort()))
           : next.type==='reload' ? L().ccRelLocked
           : next.type==='final'  ? L().ccWfLocked
           : next.type==='major'  ? ccMajWhyLocked()
@@ -61523,7 +61544,8 @@ function careerCentreHTML(card, a){
            как было. */
         (!cr.seasonOver && (next.type==='free' || (!playable && !ccMpBlockWhy())))
         ? careerDayPanelHTML(next.type==='free' ? null : {label:next.label||next.title, why:
-            careerNoMate(next.type) ? (careerMatesOver()>0 ? L().ccMateOver : L().ccNoMateN(careerMatesShort()))
+            ccRaceModeWhy() ? ccRaceModeWhy()
+          : careerNoMate(next.type) ? (careerMatesOver()>0 ? L().ccMateOver : L().ccNoMateN(careerMatesShort()))
           : next.type==='reload' ? L().ccRelLocked
           : next.type==='final'  ? L().ccWfLocked
           : next.type==='major'  ? ccMajWhyLocked()
@@ -73547,7 +73569,8 @@ function careerRoadmapTick(){
   if(cr.told[key]) return false;
   cr.told[key]=1;
   const year=Number(String(CC_YEAR_TO).slice(0,4))+((cr.season||1)-1);
-  careerNews('good', 'ccNewsRoadmap', [year, ccRoadmapLines().join('<br>')], {art:'major'});
+  // Только год: строки расписания словарь строит при показе, на текущем языке.
+  careerNews('good', 'ccNewsRoadmap', [year], {art:'major'});
   ccAnnounceReact((cr.news||[])[0]);
   return true;
 }
@@ -80066,11 +80089,15 @@ function careerSimRowHTML(){
     : '';
   // В гонке расхождение режимов не запирает вечер, а разводит комнаты — и об этом
   // сказано здесь же, под кнопками, которыми это чинят.
-  const raceWhy=(!ccMpOn() && typeof ccRaceOn==='function' && ccRaceOn() &&
-                 ccRaceApartWhy(typeof careerNext==='function' ? careerNext() : null)==='mode')
-    ? L().ccRaceWhymode : null;
+  const raceWhy=ccRaceModeWhy();
+  // В гонке — режим каждого соперника строкой, чтобы было видно, кто выбрал не то.
+  const raceMates=(!ccMpOn() && typeof ccRaceOn==='function' && ccRaceOn() && typeof ccRaceRivals==='function')
+    ? ccRaceRivals().filter(p=>p.card && p.card.sim!=null).map(p=>
+        '<div class="ch-hint" style="margin:0;">'+esc(String(p.nick||p.card.handle||'')+': '+
+          (p.card.sim ? L().ccSimAuto : L().ccSimSelf))+'</div>').join('')
+    : '';
   const why=ccMpModeWhy() || raceWhy;
-  const bad=why ? '<div class="ch-hint" style="margin:0;color:#ff9b9b;">'+why+'</div>' : '';
+  const bad=(why ? '<div class="ch-hint" style="margin:0;color:#ff9b9b;">'+why+'</div>' : '')+raceMates;
   return '<div class="ch-simwrap"><span class="ch-ffcap">'+L().ccSimCap+'</span>'+
     '<div class="ch-sim">'+
       b(false, '&#127918;', L().ccSimSelf, L().ccSimSelfHint)+
@@ -80493,6 +80520,8 @@ function careerCanPlayKindOn(day, kind){
   if(ccMpSameWhy()) return false;
   if(ccMpRolesWhy()) return false;
   if(ccMpModeWhy()) return false;
+  // И в гонке режим один на комнату. См. ccRaceModeWhy.
+  if(typeof ccRaceModeWhy==='function' && ccRaceModeWhy()) return false;
   if(careerNoMate(kind)) return false;
   if(kind==='reload') return careerReloadCan(careerReloadOn(day));
   if(kind==='final')  return careerWeeklyFinalOn(day);

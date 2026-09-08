@@ -170,7 +170,8 @@ const BOOT = `
       delete cr.race;
       out.steps.push('гонка: эфир с турнира выключен, обычные эфиры на месте');
     }
-    // 11. Разные режимы (симуляция/играть) в гонке = врозь (его скрины 8.09 «с телефоном расходятся игры»).
+    // 11. Разные режимы (симуляция/играть) в гонке: вечер не начинается ни у кого — «Играть» гаснет
+    //     с причиной (его скрин 8.09 вечера: «у одного просто симуляция запустилась»).
     {
       cr.race = {code: 'ABC123', role: 'a', since: careerToday()};
       var st0 = MP.state; MP.state = 'live';
@@ -181,11 +182,21 @@ const BOOT = `
       cr.sim = true;
       var apart2 = ccRaceApartWhy(careerNext());
       out.steps.push('гонка, режимы: разные → ' + apart1 + ', одинаковые → ' + apart2);
-      if (apart1 !== 'mode') fail('разные режимы в гонке не разводят комнаты: ' + apart1);
+      if (apart1 !== 'mode') fail('разные режимы в гонке не замечены: ' + apart1);
       if (apart2 === 'mode') fail('одинаковые режимы читаются как разные');
+      if (ccRaceModeWhy()) fail('одинаковые режимы, а ccRaceModeWhy держит вечер: ' + ccRaceModeWhy());
       if (careerSimRowHTML().indexOf(L().ccRaceWhymode) >= 0) fail('подсказка о режимах стоит при одинаковых режимах');
+      var kinds = CC_PLAYABLE.filter(function(k){ return k !== 'solo'; });
+      var okSame = kinds.some(function(k){ return careerCanPlayKindOn(careerToday(), k); });
       cr.sim = false;
       if (careerSimRowHTML().indexOf(L().ccRaceWhymode) < 0) fail('под кнопками режима нет подсказки о расхождении');
+      if (careerSimRowHTML().indexOf('Zed: ') < 0) fail('под кнопками режима не видно режим соперника');
+      if (ccRaceModeWhy() !== L().ccRaceWhymode) fail('разные режимы, а ccRaceModeWhy молчит');
+      var okMixed = kinds.some(function(k){ return careerCanPlayKindOn(careerToday(), k); });
+      out.steps.push('гонка, кнопка «Играть»: одинаковые режимы → ' + okSame + ', разные → ' + okMixed);
+      if (okMixed) fail('при разных режимах «Играть» в гонке всё ещё доступна');
+      var tile = careerRaceTileHTML();
+      if (tile.indexOf('&#128065;') < 0 || tile.indexOf('&#127918;') < 0) fail('на плитке гонки нет значков режима (глаз/геймпад)');
       CC_RACE_PEERS = peers0; MP.state = st0; delete cr.race; cr.sim = false;
     }
     // 12. Расписание года одним постом прессы, раз на сезон (его слово 8.09: «как у эпиков»).
