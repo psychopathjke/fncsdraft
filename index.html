@@ -57991,7 +57991,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='64cdd723';
+const CC_BUILD='4f874cb1';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -58212,7 +58212,7 @@ function ccMpGateDayWhy(){
   return L().ccMpOtherDay(ccDayLabel(hb.day));
 }
 function ccMpFfErrSaw(p){
-  if(!p || !ccMpOn()) return;
+  if(!p || !(ccMpOn() || (typeof ccRaceOn==='function' && ccRaceOn()))) return;
   var text=L().ccMpFfPeerBroke(String(p.text||'—'));
   try{ ccMpTell(text); }catch(e){}
   if(typeof CC_FF!=='undefined' && CC_FF){
@@ -59171,6 +59171,10 @@ function careerRaceWire(){
        ccMpOn), то есть в гонке голоса уходили в пустоту, и кнопка ждала вечно.
        Его слово 8 сентября: «скип не работает». */
     if(m.kind==='skip'){ if(ccRaceOn() && !ccMpOn() && m.payload.by) ccMpSkipSaw(m.payload.by); return; }
+    // Перемотка по голосам — те же три сообщения, что у команды. См. ccRaceFfOn.
+    if(m.kind==='ff'){ if(ccRaceOn() && !ccMpOn()) ccMpFfSaw(m.payload); return; }
+    if(m.kind==='ffno'){ if(ccRaceOn() && !ccMpOn()) ccMpFfNoSaw(m.payload); return; }
+    if(m.kind==='fferr'){ if(ccRaceOn() && !ccMpOn()) ccMpFfErrSaw(m.payload); return; }
     if(m.kind!=='race') return;
     if(m.by && m.by===ccMpId()) return;              // своё эхо не считаем
     /* НОВОМУ В КОМНАТЕ ОТВЕЧАЕМ СВОЕЙ СТРОКОЙ, один раз на человека. Строка гонки
@@ -78044,29 +78048,41 @@ let CC_MP_NEXT={day:null, mine:false, theirs:false};
    первый вариант, как в одиночной перемотке), а пустые дни оба шагают сами
    по одному и тому же календарю — окно CC_MP_DAY_DUE открывается на каждый
    такой шаг. Предложение живёт один день: голос за вчерашнюю дату глух. */
-let CC_MP_FF={day:null, until:null, mine:false, theirs:false};
+let CC_MP_FF={day:null, until:null, mine:false, theirs:false, who:{}};
+/* И В ГОНКЕ ТОЖЕ — по голосам всех в комнате. Его отчёт 8 сентября: «нажал календарь
+   промотать карьеру, у одного только матается и нет подтверждения 0/3». Дверь
+   перемотки в гонке была одиночной: день в гонке общий (ccRaceHold), а перемотка
+   уходила одна, и комната разъезжалась по дням. Теперь голос за дату — тот же, что
+   у команды, только считает по одному на человека (who), как пропуск. */
+function ccRaceFfOn(){
+  return !ccMpOn() && typeof ccRaceLive==='function' && ccRaceLive() &&
+         typeof ccRaceRivals==='function' && ccRaceRivals().length>0;
+}
+function ccMpFfHumans(){ return ccMpOn() ? CC_MP_HUMANS : (1+ccRaceRivals().length); }
+function ccMpFfVotes(){ return (CC_MP_FF.mine?1:0)+Object.keys(CC_MP_FF.who||{}).length; }
 function ccMpFfPending(){
   return (CC_MP_FF.day===careerToday() && CC_MP_FF.until) ? CC_MP_FF : null;
 }
 function ccMpFfPropose(until){
-  if(!ccMpOn() || typeof MP==='undefined' || !MP.act || !until) return false;
+  if(!(ccMpOn() || ccRaceFfOn()) || typeof MP==='undefined' || !MP.act || !until) return false;
   const p=ccMpFfPending();
   if(p && p.mine && p.until===until) return true;      // уже голосовал
   MP.act('ff', {by:ccMpId(), day:careerToday(), until:until});
   return true;
 }
 function ccMpFfDecline(){
-  if(!ccMpOn() || typeof MP==='undefined' || !MP.act) return;
+  if(!(ccMpOn() || ccRaceFfOn()) || typeof MP==='undefined' || !MP.act) return;
   MP.act('ffno', {by:ccMpId(), day:careerToday()});
 }
 function ccMpFfSaw(p){
   if(!p || !p.day || p.day!==careerToday() || !p.until) return;
   if(CC_MP_FF.day!==p.day || CC_MP_FF.until!==p.until)
-    CC_MP_FF={day:p.day, until:p.until, mine:false, theirs:false};
-  if(p.by===ccMpId()) CC_MP_FF.mine=true; else CC_MP_FF.theirs=true;
-  if(CC_MP_FF.mine && CC_MP_FF.theirs){
+    CC_MP_FF={day:p.day, until:p.until, mine:false, theirs:false, who:{}};
+  if(p.by===ccMpId()) CC_MP_FF.mine=true;
+  else { CC_MP_FF.theirs=true; CC_MP_FF.who=CC_MP_FF.who||{}; if(p.by) CC_MP_FF.who[p.by]=true; }
+  if(CC_MP_FF.mine && ccMpFfVotes()>=ccMpFfHumans()){
     const until=CC_MP_FF.until;
-    CC_MP_FF={day:null, until:null, mine:false, theirs:false};
+    CC_MP_FF={day:null, until:null, mine:false, theirs:false, who:{}};
     CH_FF_ASK=null;
     careerFastForward(ccFfDays(until), until);
     return;
@@ -78075,7 +78091,7 @@ function ccMpFfSaw(p){
 }
 function ccMpFfNoSaw(p){
   if(!p || p.day!==careerToday()) return;
-  CC_MP_FF={day:null, until:null, mine:false, theirs:false};
+  CC_MP_FF={day:null, until:null, mine:false, theirs:false, who:{}};
   CH_FF_ASK=null;
   careerRenderHub();
 }
@@ -78099,9 +78115,12 @@ function ccMpFfOfferHTML(){
     return '<div class="cal-ask cc-mp-ff"><span>'+esc(L().ccMpFfOffer(ccDayLabel(p.until)))+'</span>'+
            '<button class="ch-sign" onclick="careerFfToDay(\''+p.until+'\')">'+esc(L().ccMpFfYes)+'</button>'+
            '<button class="cc-back" onclick="ccMpFfDecline()">'+esc(L().ccMpFfNo)+'</button></div>';
-  if(p.mine && !p.theirs)
-    return '<div class="cal-ask cc-mp-ff"><span>'+esc(L().ccMpFfWait(ccDayLabel(p.until)))+'</span>'+
+  if(p.mine && ccMpFfVotes()<ccMpFfHumans()){
+    // «1/2» в строке — счёт голосов; на N человек он свой (гонка втроём: 1/3, 2/3).
+    const txt=String(L().ccMpFfWait(ccDayLabel(p.until))).replace('1/2', ccMpFfVotes()+'/'+ccMpFfHumans());
+    return '<div class="cal-ask cc-mp-ff"><span>'+esc(txt)+'</span>'+
            '<button class="cc-back" onclick="ccMpFfDecline()">'+esc(L().ccDecline)+'</button></div>';
+  }
   return '';
 }
 function ccMpNextTag(){
@@ -79878,7 +79897,7 @@ function ccAskGo(yes){
 }
 function careerFfConfirm(days){
   if(!(days>0)) return;
-  if(ccMpOn()){ ccAsk(L().ccFfConfirm(days), ()=>careerFfToDay(ccAddDays(careerToday(), days))); return; }
+  if(ccMpOn() || ccRaceFfOn()){ ccAsk(L().ccFfConfirm(days), ()=>careerFfToDay(ccAddDays(careerToday(), days))); return; }
   ccAsk(L().ccFfConfirm(days), ()=>careerFastForward(days));
 }
 /* На каком острове играется этот вечер.
@@ -80010,12 +80029,13 @@ function careerSimRowHTML(){
 function careerFfButtonsHTML(){
   if(CAREER.career.seasonOver) return '';
   // В команде день идёт вдвоём — перематывать его в одиночку нечем.
+  const shared=ccMpOn() || ccRaceFfOn();
   const btn=(days, label)=>'<button class="ch-ffbtn" onclick="careerFfConfirm('+days+')" title="'+
-    esc(ccMpOn() ? L().ccMpFfHint : L().ccFfHint)+'"><i>&#9193;</i>'+label+'</button>';
+    esc(shared ? L().ccMpFfHint : L().ccFfHint)+'"><i>&#9193;</i>'+label+'</button>';
   return '<div class="ch-ffwrap"><span class="ch-ffcap">'+L().ccFfCap+'</span>'+
-    (ccMpOn() ? ccMpFfOfferHTML() : '')+
+    (shared ? ccMpFfOfferHTML() : '')+
     '<div class="ch-ff">'+btn('CC_FF_WEEK', L().ccFfWeek)+btn('CC_FF_MONTH', L().ccFfMonth)+
-    '</div>'+(ccMpOn() ? '<div class="ch-ffnote"><i>&#128101;</i><span>'+esc(L().ccMpFfHint)+'</span></div>' : '')+'</div>';
+    '</div>'+(shared ? '<div class="ch-ffnote"><i>&#128101;</i><span>'+esc(L().ccMpFfHint)+'</span></div>' : '')+'</div>';
 }
 // The best rating a day's energy can buy, by the same weighting the card is
 // built from. One thing a day, deliberately: a player may now spend the whole
@@ -80074,8 +80094,8 @@ function careerFfToDay(iso){
   if(CC_FF || !iso) return;
   const from=careerToday();
   if(!(iso>from) || CAREER.career.seasonOver) return;
-  // В команде — голос за дату; перемотка пойдёт, когда подтвердят оба (ccMpFfSaw).
-  if(ccMpOn()){ ccMpFfPropose(iso); careerRenderHub(); return; }
+  // В команде и в гонке — голос за дату; перемотка пойдёт, когда подтвердят все (ccMpFfSaw).
+  if(ccMpOn() || ccRaceFfOn()){ ccMpFfPropose(iso); careerRenderHub(); return; }
   CH_FF_ASK=null;
   const days=ccFfDays(iso);
   if(days>0) careerFastForward(days);
@@ -80093,7 +80113,7 @@ async function careerFastForward(days, agreed){
 
      Кнопки при этом не прячутся, а называют причину: пропавшая кнопка
      читается как поломка. См. careerFfButtonsHTML. */
-  if(ccMpOn() && !agreed) return;
+  if((ccMpOn() || ccRaceFfOn()) && !agreed) return;
   const cr=CAREER.career, pl=CAREER.player;
   if(cr.seasonOver) return;
   const until=ccAddDays(careerToday(), days);
@@ -80141,6 +80161,14 @@ async function careerFastForward(days, agreed){
 
          Поэтому день ловится здесь, запоминается в CC_FF.err вместе со своей
          датой и уходит в дайджест; в консоль он тоже попадает целиком. */
+      /* Гонка: на турнирный день комната ждёт остальных. Пустые дни каждый шагает
+         сам, и к вечеру один приходит раньше другого; без этой паузы ccRaceApartWhy
+         читал бы «другой день» и разводил комнаты внутри перемотки. Ждём до минуты,
+         пока строки соперников не скажут тот же день. */
+      if(next && careerCanPlay(next) && ccRaceFfOn()){
+        let rw=0;
+        while(rw++<120 && ccRaceApartWhy(next)==='day') await new Promise(r=>setTimeout(r, 500));
+      }
       try{
       if(next && careerCanPlay(next)){
         const had=(cr.log||[]).length;
@@ -80160,7 +80188,7 @@ async function careerFastForward(days, agreed){
         CC_FF.err={day:day, kind:(next && next.type)||'',
                    text:String((e && (e.message||e))||'')};
         // В команде о встававшей перемотке узнаёт и напарник — иначе он ждёт нас вечно.
-        if(!CC_FF.stop && ccMpOn() && typeof MP!=='undefined' && MP.act)
+        if(!CC_FF.stop && (ccMpOn() || ccRaceFfOn()) && typeof MP!=='undefined' && MP.act)
           try{ MP.act('fferr', {by:ccMpId(), day:day, text:CC_FF.err.text}); }catch(e2){}
         if(typeof console!=='undefined' && console.error)
           console.error('перемотка встала на', day, (next&&next.type)||'', e);
@@ -80776,6 +80804,8 @@ function careerSkipToAsk(){
   const t=careerSkipTarget();
   const n=ccFfDays(t.day);
   if(!(n>0)) return;
+  // В гонке «до турнира» — тот же голос за дату, что и у календаря.
+  if(ccRaceFfOn()){ careerFfToDay(t.day); return; }
   const what=t.ev ? t.ev.label : L().ccGalaDay;
   ccAsk(L().chSkipToAsk(ccDayLabel(t.day), n, what), ()=>careerSkipTo(t.day));
 }

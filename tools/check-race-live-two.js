@@ -352,9 +352,14 @@ async function runOne(tag, who, port){
   // ГОНКА: в обеих таблицах должны стоять обе команды людей
   // Таблица показывает верхние строки и свою — соперник ниже среза в ней не обязан быть;
   // обязан быть в поле (f1: you и rival) и в общей сверке хешей.
-  for(const [n, r] of [['A', a], ['B', b]]){ const t=(r.notes.table||[]).join('\n'); if(!/Your squad|Твой состав/.test(t)){ console.log('FAIL '+n+': в таблице нет своей строки'); bad++; }
-    if(!r.notes.f1 || r.notes.f1.rival<0 || r.notes.f1.you<0){ console.log('FAIL '+n+': в поле нет обеих команд людей: '+JSON.stringify(r.notes.f1)); bad++; }
-    console.log('   '+n+': напарник '+r.notes.mate+' · соперник '+r.notes.rival+' с '+JSON.stringify(r.notes.rivalMates)+' · врозь: '+r.notes.apart); }
+  // В перемотке «таблица» — это журнал карьеры (у каждого свой), а поле первой игры не снимается;
+  // там сверяются день прибытия и броски (общая комната на каждом вечере недели).
+  for(const [n, r] of [['A', a], ['B', b]]){ const t=(r.notes.table||[]).join('\n');
+    if(!FF && !/Your squad|Твой состав/.test(t)){ console.log('FAIL '+n+': в таблице нет своей строки'); bad++; }
+    if(!FF && (!r.notes.f1 || r.notes.f1.rival<0 || r.notes.f1.you<0)){ console.log('FAIL '+n+': в поле нет обеих команд людей: '+JSON.stringify(r.notes.f1)); bad++; }
+    if(FF && !(r.notes.dayAfter>=FF)){ console.log('FAIL '+n+': перемотка не доехала до '+FF+', день '+r.notes.dayAfter); bad++; }
+    console.log('   '+n+': напарник '+r.notes.mate+' · соперник '+r.notes.rival+' с '+JSON.stringify(r.notes.rivalMates)+' · врозь: '+r.notes.apart+(FF ? ' · день после '+r.notes.dayAfter+' · вечеров '+((r.notes.table||[]).length) : '')); }
+  if(FF && a.notes.rolls!==b.notes.rolls){ console.log('FAIL броски в перемотке разные: '+a.notes.rolls+' / '+b.notes.rolls); bad++; }
   if(!DIFFER && !FF && !RELOAD_A && !RELOAD_B && a.notes.rolls!==b.notes.rolls){ console.log('FAIL броски разные: '+a.notes.rolls+' / '+b.notes.rolls); bad++; }
   if(bad) process.exit(1);
   console.log('гонка: два живых клиента сыграли один вечер в одной комнате, друг против друга');
