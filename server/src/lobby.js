@@ -16,6 +16,7 @@
    читаться с одного взгляда, а лобби начинает возить шесть сводок на каждый
    прожитый день. См. join и CC_RACE_MAX на клиенте. */
 const RACE_MAX=6;
+const FEED_MAX=1500;   // потолок ленты вечера, см. act()
 
 function createLobby(opts){
   const o=opts||{};
@@ -213,9 +214,15 @@ function createLobby(opts){
       return [{to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day}}];
     },
 
+    /* Лента вечера ограничена сверху. Она нужна догоняющему после обрыва, и до гонки
+       её потолок задавал сам вечер: двое, один ответ на вопрос. В комнате на шестерых
+       ответов вшестеро больше, а лента едет и в хранилище Durable Object, где на одно
+       значение 128 КиБ. Отставший на полторы тысячи ответов не догоняет уже ничем,
+       поэтому хвост режется, а не копится. */
     act(id, kind, payload){
       const e={t:'act', n:++st.n, kind:kind, payload:payload, by:id};
       st.feed.push(e);
+      if(st.feed.length>FEED_MAX) st.feed.splice(0, st.feed.length-FEED_MAX);
       return [{to:'all', msg:e}];
     },
 

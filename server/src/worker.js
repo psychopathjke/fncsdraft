@@ -34,8 +34,16 @@ export class Lobby {
   }
   async keep(){
     // Лобби переживает выгрузку DO: состояние команды нельзя терять.
-    await this.state.storage.put('lobby', {build:this.lobby.state.build,
-      seed:this.lobby.state.seed, team:this.lobby.state.team, st:this.lobby.state});
+    const st=this.lobby.state;
+    let rec={build:st.build, seed:st.seed, team:st.team, st:st};
+    /* На значение хранилища 128 КиБ, и лента вечера в комнате на шестерых способна
+       к нему подойти (см. FEED_MAX в lobby.js). Не влезло — сохраняем без ленты:
+       команда, сид и вечер важнее догона, а без записи не пережил бы никто. */
+    try{
+      if(JSON.stringify(rec).length > 100*1024)
+        rec={build:st.build, seed:st.seed, team:st.team, st:Object.assign({}, st, {feed:[]})};
+    }catch(e){}
+    await this.state.storage.put('lobby', rec);
   }
   /* Брошенное лобби убирается само.
 

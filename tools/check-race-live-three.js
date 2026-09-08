@@ -317,6 +317,10 @@ async function runOne(tag, who, port){
   const DIFFER=process.env.CC_TABLES_DIFFER==='1';
   if(!DIFFER && hash(a.notes.table)!==hash(c.notes.table)){ console.log('FAIL таблица C отличается от A'); bad++; }
   if(!DIFFER && hash(a.notes.table)!==hash(b.notes.table)){ const at=rowsOf(a.notes.table).findIndex((r,i)=>norm(r)!==norm(rowsOf(b.notes.table)[i])); console.log('FAIL таблицы разные, строка '+(at+1)+'\n  A: '+(a.notes.table||[])[at]+'\n  B: '+(b.notes.table||[])[at]); bad++; }
+  // ПР сцены считается у каждого своим движком по одной и той же комнате — значит совпадает.
+  { const rows=[['A', a], ['B', b], ['C', c]].map(([n,r])=>[n, (r.notes.pr||[]).map(x=>String(x).replace(/^[*]/,' ')).join(' | ')]);
+    const bad0=rows.filter(([n,v])=>v!==rows[0][1]);
+    if(rows[0][1] && bad0.length){ console.log('FAIL ПР разошёлся: '+bad0.map(x=>x[0]).join(',')); bad++; } }
   if((a.notes.split||[]).length || (b.notes.split||[]).length || (c.notes.split||[]).length){ console.log('FAIL есть красная строка'); bad++; }
   const want=FF || ccAddDaysNode(DAY, NIGHTS);
   // ГОНКА: в обеих таблицах должны стоять обе команды людей

@@ -46459,10 +46459,10 @@ function ccKillPts(elims, mult){
 let CC_RUN_MAP=null;
 async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefix, maxGap, squadKillDampen, zoneGroups, opts){
   opts=opts||{};
-  // Общая комната гонки: соперник в поле, боты — хозяина (меняет teams на месте), и оба
-  // человека в одном лобби (together), иначе большое поле разведёт их по разным.
+  // Общая комната гонки: люди в поле и в одном лобби (together), иначе большое поле
+  // развело бы их по разным; боты у всех уже одинаковы (общий сид, см. ccRaceFieldSync).
   if(typeof ccRaceLock==='function' && ccRaceLock()){
-    await ccRaceFieldSync(teams);
+    ccRaceFieldSync(teams);
     const hs=teams.filter(t=>t.isYou || t.isRival);
     // Порядок — по адресу, один у обоих клиентов: склейка лобби сажает всех к первому
     // в списке, и «я первый» у каждого своё (проба check-race-live-two: комнаты расходились).
@@ -57841,13 +57841,27 @@ function ccMpFfErrSaw(p){
    3. Вкладка ждала close и пропустила его — закрытие берётся из состояния. */
 let CC_MP_REPLAY=false;
 function ccMpResume(ev, mine, theirs){
-  if(!ccMpOn() || typeof MP==='undefined' || !ev || ev.day!==careerToday()) return;
+  /* Гонка догоняется так же, но сперва нужна КОМНАТА: после перезагрузки список
+     соперников пуст, а без него careerPlayRun решит, что сегодня врозь, и вкладка
+     доиграет вечер сама по себе, пока остальные стоят на барьере. Своя строка уходит
+     сразу, соперники отвечают своими (см. careerRaceWire), и вечер стартует, когда
+     они приехали — или через CC_RACE_RESUME_WAIT, если никто не ответил. */
+  const race=!ccMpOn() && typeof ccRaceOn==='function' && ccRaceOn();
+  if((!ccMpOn() && !race) || typeof MP==='undefined' || !ev || ev.day!==careerToday()) return;
   if(MP.preload) MP.preload(mine, theirs);
   if(MP.gate){ MP.say({t:'start', seed:ev.seed, n:ev.n, day:ev.day, resume:true}); return; }
   if(CC_MP_RAND) return;           // вечер здесь и так идёт: обрыв был коротким, ответы доехали очередью
   CC_MP_REPLAY=true;
   try{ ccMpTell(L().ccMpResume); }catch(e){}
-  setTimeout(function(){ try{ careerPlay(); }catch(e){ CC_MP_REPLAY=false; } }, 0);
+  if(!race){ setTimeout(function(){ try{ careerPlay(); }catch(e){ CC_MP_REPLAY=false; } }, 0); return; }
+  try{ careerRaceSend(); }catch(e){}
+  const t0=Date.now();
+  (function wait(){
+    if(CC_MP_RAND) return;                       // вечер успел начаться сам
+    const got=(typeof ccRaceRivals==='function') && ccRaceRivals().length>0;
+    if(!got && Date.now()-t0<CC_RACE_RESUME_WAIT) return void setTimeout(wait, 200);
+    try{ careerPlay(); }catch(e){ CC_MP_REPLAY=false; }
+  })();
 }
 function ccMpClosedLate(closed){
   if(!ccMpOn() || typeof MP==='undefined' || !MP.closing || !closed) return;
@@ -57877,6 +57891,7 @@ function ccMpClosedLate(closed){
    Одиночная карьера этого не видит вовсе: без лобби подмены нет.
    Сторож — tools/check-mp-seed.js. */
 let CC_MP_RAND=null;
+let CC_MP_SEED=null;   // строка сида вечера от сервера; в гонке она же сеет комнату
 /* Книга бросков одной игры — по фазам.
 
    Его снимок 28 августа (Reload, хиты, игра 4): таблицы у двоих одинаковые,
@@ -57970,6 +57985,10 @@ function ccMpSeedOn(seed){
      обоих. */
   if(typeof ccWorldReset==='function') ccWorldReset();
   ccMpHeartbeat(true);
+  /* Сид вечера — он же СИД КОМНАТЫ в гонке (см. careerSeed): у каждого своя
+     карьера и свой cr.seed, а комната должна быть одна. Сервер выдаёт одну
+     строку всем, и по ней все строят один и тот же набор ботов. */
+  CC_MP_SEED=String(seed||'')||null;
   const g=careerRng(ccHashStr(String(seed)));
   CC_MP_IDLE=0; CC_MP_FOREIGN=0; CC_MP_FOREIGN_AT='';
   const native=CC_MP_RAND;
@@ -57984,6 +58003,7 @@ function ccMpSeedOn(seed){
 }
 function ccMpSeedOff(){
   ccMpHeartbeat(false);
+  CC_MP_SEED=null;
   if(!CC_MP_RAND) return;
   Math.random=CC_MP_RAND;
   CC_MP_RAND=null;
@@ -58594,6 +58614,7 @@ function ccRaceLive(){
   return ccRaceOn() && typeof MP!=='undefined' && MP.state==='live';
 }
 let CC_RACE_PEERS={};      // id → сводка соперника, приходит по act('race')
+const CC_RACE_RESUME_WAIT=6000;   // сколько ждать строки соперников после перезагрузки (ccMpResume)
 let CC_RACE_WIRED=false;
 /* ОДИН КАЛЕНДАРЬ НА ДВОИХ — его решение 4 сентября: «надо одновременно, как
    в дуо карьере».
@@ -58720,7 +58741,14 @@ function careerRaceWire(){
     if(m.kind==='nextday'){ if(ccRaceOn()) ccRaceNextSaw(m.payload); return; }
     if(m.kind!=='race') return;
     if(m.by && m.by===ccMpId()) return;              // своё эхо не считаем
+    /* НОВОМУ В КОМНАТЕ ОТВЕЧАЕМ СВОЕЙ СТРОКОЙ, один раз на человека. Строка гонки
+       уходит по событиям своей карьеры (вход, смена дня, перед вечером), поэтому
+       пришедший третьим — и вкладка после перезагрузки — не увидели бы уже сидящих
+       и сочли бы, что играют одни. Ответ бывает только на первую его строку, так
+       что двое не гоняют её по кругу. */
+    const fresh=!CC_RACE_PEERS[m.by||'peer'];
     CC_RACE_PEERS[m.by||'peer']=m.payload;
+    if(fresh) setTimeout(function(){ try{ careerRaceSend(); }catch(e){} }, 0);
     if(typeof careerRenderHub==='function' && document.getElementById('chBody'))
       careerRenderHub(CH_TAB);
   });
@@ -58786,14 +58814,11 @@ function careerRaceLeave(){
   ccMpRedraw();
 }
 /* ---- ОБЩАЯ КОМНАТА ГОНКИ (см. CC_RACE_LOCK у ccMpOn) ------------------------
-   Что едет по проводу: в сводке гонки (act 'race') — своя карточка, карточки
-   напарников-ботов и сила своей команды на вечер (ccRaceMyLine); в вечере — боты
-   хозяина (act 'field', ccRaceFieldSync), сжатые до того, что читает движок
-   (ccRacePackCard: ник, страна, рейтинг, потолок, атрибуты, роль, край пинга/возраста).
-   Хозяин — роль a; гость ждёт его комнату до CC_RACE_FIELD_WAIT мс, дальше считает
-   свою и метит расхождение. Гость без своего мира не остаётся: его боты нужны только
-   для порядка, PR им пишется по нику. */
-const CC_RACE_FIELD_WAIT=90000;
+   По проводу едет ОДНА строка на человека — сводка гонки (act 'race', ccRaceMyLine):
+   своя карточка, карточки напарников и сила команды на вечер, всё сжатое до того, что
+   читает движок (ccRacePackCard: ник, страна, рейтинг, потолок, атрибуты, роль, края
+   пинга и возраста). Комната ботов не пересылается вовсе: её строит каждый сам из
+   общего сида вечера, вычитая всех людей (см. ccRaceFieldSync и careerSeed). */
 function ccRacePackCard(c){
   if(!c) return null;
   try{ if(typeof attrsFor==='function') attrsFor(c); }catch(e){}
@@ -58821,6 +58846,14 @@ function ccRaceRivals(){
 function ccRaceRival(){ const ps=ccRaceRivals(); return ps.length ? ps[0] : null; }
 // Людей в общей комнате: я и соперники (для голосов за пропуск и подписей «n/N»).
 function ccRaceHumansN(){ return 1+ccRaceRivals().length; }
+/* Все карточки соперников (сами и их напарники) — их нельзя выдавать ботами: в общей
+   комнате гонки человек уже стоит своей командой, и второй такой же ник в лобби был бы
+   двойником. Список одинаков у всех клиентов, поэтому и комната у всех одна. */
+function ccRaceAllCards(){
+  const out=[];
+  ccRaceRivals().forEach(p=>{ out.push(p.card); (p.mates||[]).forEach(m=>{ if(m) out.push(m); }); });
+  return out;
+}
 // Ключи напарников соперника — этих ботов брать нельзя (его слово 7.09).
 function ccRaceTakenKeys(){
   const s=new Set();
@@ -58854,20 +58887,7 @@ function ccRaceRivalTeam(p){
   t.summitRegion=ccCareerRegion();
   return t;
 }
-function ccRacePackBot(t){ return {cards:(t.squad||[]).map(ccRacePackCard), name:t.name, pow:t.pow}; }
-function ccRaceTakeField(q){
-  return new Promise(function(res){
-    const t0=Date.now();
-    (function poll(){
-      const m=MP.take ? MP.take('field', q) : null;
-      if(m && m.payload && m.payload.v) return res(m.payload.v);
-      if(Date.now()-t0>CC_RACE_FIELD_WAIT) return res(null);
-      setTimeout(poll, 100);
-    })();
-  });
-}
-let CC_RACE_FIELD_N=0;
-// Комната вечера — хозяина. Меняет массив teams НА МЕСТЕ: раннер держит ту же ссылку.
+// Люди в комнату садятся на месте: раннер держит ту же ссылку на массив teams.
 // Сборка команд из карточек — ВНЕ сеяного потока: у хозяина этих сборок нет, и
 // каждый бросок Math.random в них уводил бы гостя от хозяина (та же обёртка, что
 // у вопроса в ccMpChoose).
@@ -58876,11 +58896,15 @@ function ccRaceUnseeded(fn){
   const seeded=Math.random; Math.random=CC_MP_RAND;
   try{ return fn(); } finally{ Math.random=seeded; }
 }
-let CC_RACE_DBG=null;   // для проб: броски до/после сборки комнаты у себя и у хозяина
-async function ccRaceFieldSync(teams){
+let CC_RACE_DBG=null;   // для проб: сколько людей и ботов вышло в комнате
+/* КОМНАТА НЕ ПЕРЕСЫЛАЕТСЯ, А СОВПАДАЕТ. Первая версия возила ботов хозяина по проводу;
+   замер (tools/race-field-size-probe.js) показал 162 КиБ на кубке Д1 при лимите Durable
+   Object в 128 КиБ на значение — лента вечера просто не сохранилась бы. Теперь бот-поле
+   у всех строится одинаково само: сид комнаты общий (CC_MP_SEED в careerSeed), а
+   соперники со своими напарниками вычитаются из пула у каждого (ccRaceAllCards). Здесь
+   остаётся только посадить людей в один порядок и подрезать поле под размер лобби. */
+function ccRaceFieldSync(teams){
   if(!ccRaceLock() || typeof MP==='undefined') return;
-  const q=++CC_RACE_FIELD_N;
-  const r0=CC_MP_ROLLS||0;
   const you=teams.find(t=>t.isYou);
   // Соперники — все, кто прислал строку; уже посаженный раннером (соло-кап) — тот же объект.
   const rivals=ccRaceRivals().map(p=>{
@@ -58891,27 +58915,10 @@ async function ccRaceFieldSync(teams){
   }).filter(Boolean);
   const humans=[you].concat(rivals).filter(Boolean).sort((a,b)=>String(a.mpTag||a.name)<String(b.mpTag||b.name) ? -1 : 1);
   const size=teams.length;
-  let bots=teams.filter(t=>!t.isYou && !t.isRival && !t.isMate && humans.indexOf(t)<0).slice(0, Math.max(0, size-humans.length));
-  let hostRolls=null;
-  if(ccMpRole()==='a'){
-    MP.act('field', {q:q, by:ccMpId(), v:{n:size, rolls:r0, bots:bots.map(ccRacePackBot)}});
-  } else {
-    const got=await ccRaceTakeField(q);
-    if(got && got.bots){
-      hostRolls=got.rolls;
-      const byKey=new Map(bots.map(b=>[(b.squad||[]).map(hKey).join('+'), b]));
-      bots=ccRaceUnseeded(()=>got.bots.map(b=>{
-        const k=(b.cards||[]).map(hKey).join('+');
-        const old=byKey.get(k);
-        if(old){ old.pow=b.pow; old.name=b.name; return old; }
-        const t=careerTeam(b.cards||[], true); t.name=b.name; t.pow=b.pow; return t;
-      }));
-    } else {
-      try{ ccMpSplitSeen(CC_MP_GAME||0, 'race field '+q+' did not arrive'); }catch(e){}
-    }
-  }
+  const bots=teams.filter(t=>!t.isYou && !t.isRival && !t.isMate && humans.indexOf(t)<0)
+                  .slice(0, Math.max(0, size-humans.length));
   teams.length=0; humans.forEach(h=>teams.push(h)); bots.forEach(b=>teams.push(b));
-  CC_RACE_DBG={q:q, n:teams.length, rollsBefore:r0, rollsAfter:CC_MP_ROLLS||0, hostRolls:hostRolls, humans:humans.map(h=>h.mpTag), bots:bots.length};
+  CC_RACE_DBG={n:teams.length, humans:humans.map(h=>h.mpTag), bots:bots.length};
 }
 // Плитка гонки на центре хаба: таблица, кто впереди, и код для второго.
 function careerRaceTileHTML(){
@@ -65271,7 +65278,13 @@ function careerRng(seed){
    она та же неделя. Старый сейв соли не имеет: ему достаётся ник, и его мир
    остаётся его собственным. */
 function careerSeed(cr, salt){
-  const own=(cr && cr.seed) || ccCareerSeed();
+  /* В общей комнате гонки сид берётся от ЛОББИ, а не от карьеры: у каждого гонщика
+     свой cr.seed, и на нём каждый собирал бы свой набор ботов. Сид вечера сервер
+     выдаёт всем один (CC_MP_SEED), сезон, неделя и дивизион в гонке тоже совпадают
+     (ccRaceShared), поэтому комната у всех выходит одна — и её не нужно пересылать:
+     замер race-field-size-probe показал 162 КиБ на кубке Д1 при лимите DO в 128. */
+  const own=(typeof ccRaceLock==='function' && ccRaceLock() && CC_MP_SEED)
+    || (cr && cr.seed) || ccCareerSeed();
   return hashStr('c'+cr.season+'w'+careerWeek()+'d'+cr.division+(salt||'')+'|'+own);
 }
 
@@ -66967,6 +66980,8 @@ function ccOpenFillOvr(rnd){
    просто лежит и никем не читается; строки ccRival* в словарях остались
    мёртвыми, чтобы не трогать три локали ради удаления. */
 function careerCupField(cr, mine, size, salt, open, sharp){
+  // Гонка: из ботов вычитаются и соперники со своими напарниками — они в комнате людьми.
+  if(typeof ccRaceLock==='function' && ccRaceLock()) mine=(mine||[]).concat(ccRaceAllCards());
   const rnd=careerRng(careerSeed(cr, salt));
   const band=ccBand(cr.division);
   const taken=new Set(mine.map(hKey));
@@ -82570,6 +82585,8 @@ function careerVictoryOn(iso){ return CC_VICTORY.find(v=>v.day===iso) || null; }
    победители идут на 200–470, а p90 поля — 350–450). Финал — top-need по
    рейтингу; хиты и LCQ — из удвоенного верха, перетасованного. */
 function careerSoloField(cr, mine, size, open, stage){
+  // Гонка: соперники и их напарники не попадают в сотню ботами (см. careerCupField).
+  if(typeof ccRaceLock==='function' && ccRaceLock()) mine=(mine||[]).concat(ccRaceAllCards());
   const rnd=careerRng(careerSeed(cr,'solo'));
   const band=ccBand(cr.division);
   const taken=new Set((mine||[]).map(hKey));
