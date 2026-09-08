@@ -57962,7 +57962,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='fe12da64';
+const CC_BUILD='c0c0bf60';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -89647,12 +89647,12 @@ function careerStreamGo(id){
    занесли (streamLast). Рамка их только раздаёт по ходу эфира, чтобы человек видел,
    как они приходят, а не читал итог. Поэтому дважды ничего не начисляется.
 
-   Длина — пятнадцать секунд на любой вид. Его слово 8 сентября: «эфир пусть идёт
-   15 секунд, потом выключается видео и статистику показывает». Ролик в плеере идёт,
-   пока идёт эфир; на последнем тике ccStreamRunEnd снимает рамку (ccTvClose — вместе
-   с ней уходит и плеер) и ставит сводку (ccTvSummary). Раньше длина шла от часов
-   вида — четыре часа ранкеда за десять секунд, марафон за двадцать. */
-const CC_TV_PLAIN_SECS=15;
+   Длина — от часов вида, CC_TV_PLAIN_SECS_PER_HOUR секунд на игровой час. Его слово
+   8 сентября (второе, после «15 секунд»): «обычный 10 секунд эфир, марафон 20» — то
+   есть четырёхчасовые виды идут десять секунд, восьмичасовой марафон — двадцать.
+   Ролик в плеере идёт, пока идёт эфир; на последнем тике ccStreamRunEnd снимает рамку
+   (ccTvClose — вместе с ней уходит и плеер) и ставит сводку (ccTvSummary). */
+const CC_TV_PLAIN_SECS_PER_HOUR=2.5;
 /* ЧТО ПРОИСХОДИТ ЗА ЭФИР (его слово 8 сентября: «стримится стрим просто, мб чёт
    добавить»). Сам по себе эфир — это ползущие зрители и чат, и смотреть в нём нечего.
    Четыре вещи, которые случаются на настоящем стриме и которые видно по числам:
@@ -89682,7 +89682,7 @@ function ccStreamRun(k){
   if(careerSimOn() || (typeof CC_FF!=='undefined' && CC_FF)) return false;
   const cr=CAREER && CAREER.career, last=cr && cr.streamLast;
   if(!last || last.day!==careerToday()) return false;
-  const ticks=Math.max(8, Math.round(CC_TV_PLAIN_SECS*1000/CC_TV_TICK));
+  const ticks=Math.max(8, Math.round((k.hours||4)*CC_TV_PLAIN_SECS_PER_HOUR*1000/CC_TV_TICK));
   CC_TV_PLAIN={id:k.id, at:0, done:0, hours:k.hours||4, ticks:ticks,
                want:{fol:(last.a && last.a[2])||0, cash:last.m||0},
                hap:ccStreamHappenings(k, ticks), got:[]};

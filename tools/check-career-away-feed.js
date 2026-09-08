@@ -147,10 +147,12 @@ const BOOT = `
     LANG = lang0;
     out.steps.push('правила Про-Ама: пять строк на пяти языках');
 
-    // 6. Обычный эфир — пятнадцать секунд.
-    var ticks = Math.round(CC_TV_PLAIN_SECS * 1000 / CC_TV_TICK);
-    out.steps.push('эфир: ' + CC_TV_PLAIN_SECS + ' с = ' + ticks + ' тиков по ' + CC_TV_TICK + ' мс');
-    if (CC_TV_PLAIN_SECS !== 15) fail('эфир не пятнадцать секунд');
+    // 6. Обычный эфир — десять секунд, марафон — двадцать (его слово 8.09).
+    var secs = function(id){ var k = ccStreamKind(id);
+      return Math.max(8, Math.round((k.hours || 4) * CC_TV_PLAIN_SECS_PER_HOUR * 1000 / CC_TV_TICK)) * CC_TV_TICK / 1000; };
+    out.steps.push('эфир: обычный ' + secs('grind') + ' с, марафон ' + secs('long') + ' с');
+    if (Math.abs(secs('grind') - 10) > 0.6) fail('обычный эфир не десять секунд: ' + secs('grind'));
+    if (Math.abs(secs('long') - 20) > 0.6) fail('марафон не двадцать секунд: ' + secs('long'));
   }catch(e){ if(!out.fail) out.fail = String(e && e.message || e) + ' ' + String(e && e.stack || '').split('\\n')[1]; }
   out.errs = window.__errs;
   document.getElementById('__out').textContent = 'BEGIN' + encodeURIComponent(JSON.stringify(out)) + 'END';
