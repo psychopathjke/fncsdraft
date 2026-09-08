@@ -7963,6 +7963,7 @@ ccStreamCupHint:(e,p)=>e+' энергии · играешь слабее: −'+p
 ccTvNoEvent:'Сегодня турнира нет — стримить нечего',
 ccTvMpNo:'В командной карьере эфир с турнира недоступен',
 ccTvWait:'В эфире — ждём первую игру',
+ccTvHours:(h,all)=>'в эфире '+h+' ч из '+all,
 ccTvGame:n=>'Игра '+n, ccTvGameOf:(n,of)=>'Игра '+n+'/'+of, ccTvLast:p=>'последняя #'+p,
 // Виктории — счётчиком «W×2», как на самой трансляции: числу не нужен падеж.
 ccTvWins:w=>'W×'+w, ccTvCut:(c,of)=>'проходит топ-'+c+' из '+of,
@@ -9898,6 +9899,7 @@ ccStreamCupHint:(e,p)=>e+' energy · you play weaker: −'+p+' team power',
 ccTvNoEvent:'Nothing on today — no tournament to stream',
 ccTvMpNo:'Streaming a tournament is off in a team career',
 ccTvWait:'Live — waiting for the first game',
+ccTvHours:(h,all)=>h+' h of '+all+' on air',
 ccTvGame:n=>'Game '+n, ccTvGameOf:(n,of)=>'Game '+n+'/'+of, ccTvLast:p=>'last #'+p,
 ccTvWins:w=>'W×'+w, ccTvCut:(c,of)=>'top '+c+' of '+of+' go through',
 ccTvPts:p=>p+' pts', ccTvKills:k=>k+' elims',
@@ -57750,7 +57752,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='c84818ca';
+const CC_BUILD='dbf0dd55';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -89192,7 +89194,52 @@ function careerStreamGo(id){
   if(k.grind) CAREER.career.grind=(CAREER.career.grind||0)+k.grind;
   careerSave();
   careerRenderHub('streams');
+  ccStreamRun(k);
   return true;
+}
+/* ОБЫЧНЫЙ ЭФИР ТОЖЕ ИДЁТ НА ЭКРАНЕ (его отчёт 8 сентября 2026: «когда жмёшь стрим в
+   свободный день, не турнир, после нажатия показывается статистика»).
+
+   Так и было: день молча списывался, вкладка перерисовывалась — и человек оставался
+   смотреть на список каналов и числа. Эфир с турнира при этом идёт рамкой: зрители,
+   чат, события. Разницы между ними по смыслу нет — стрим есть стрим, просто в свободный
+   день на экране не турнир, а сам канал.
+
+   Числа НЕ ПЕРЕСЧИТЫВАЮТСЯ: день уже посчитал, сколько пришло фолловеров и сколько
+   занесли (streamLast). Рамка их только раздаёт по ходу эфира, чтобы человек видел,
+   как они приходят, а не читал итог. Поэтому дважды ничего не начисляется.
+
+   Длина — от часов вида: CC_TV_PLAIN_PER_HOUR тиков на игровой час, то есть четыре
+   часа ранкеда идут около десяти секунд, восьмичасовой марафон — вдвое дольше. */
+const CC_TV_PLAIN_PER_HOUR=4;
+let CC_TV_PLAIN=null;
+function ccStreamRun(k){
+  if(typeof document==='undefined' || !document.body) return false;
+  if(typeof skipAnimation!=='undefined' && skipAnimation) return false;
+  if(careerSimOn() || (typeof CC_FF!=='undefined' && CC_FF)) return false;
+  const cr=CAREER && CAREER.career, last=cr && cr.streamLast;
+  if(!last || last.day!==careerToday()) return false;
+  CC_TV_PLAIN={id:k.id, at:0, done:0, hours:k.hours||4,
+               ticks:Math.max(8, Math.round((k.hours||4)*CC_TV_PLAIN_PER_HOUR)),
+               want:{fol:(last.a && last.a[2])||0, cash:last.m||0}};
+  ccTvOpen({label:L()['ccStream_'+k.id]});
+  return true;
+}
+// Конец обычного эфира: рамка снимается, сводка — из чисел этого дня.
+function ccStreamRunEnd(){
+  const p=CC_TV_PLAIN; CC_TV_PLAIN=null;
+  const cr=CAREER && CAREER.career, last=cr && cr.streamLast;
+  const avg=(CC_TV_SUM && CC_TV_SUM.n) ? Math.round(CC_TV_SUM.sum/CC_TV_SUM.n) : CC_TV_VIEW;
+  const sum={avg:avg, peak:Math.max(CC_TV_PEAK||0, avg),
+             fol:(p && p.want.fol)||0, subs:(CC_TV_EV && CC_TV_EV.subs)||0,
+             cash:(p && p.want.cash)||0, hours:(p && p.hours)||4,
+             chatters:(CC_TV_CHATTERS && CC_TV_CHATTERS.size)||0,
+             label:(p && L()['ccStream_'+p.id])||'', hist:ccTvHistPack(CC_TV_HIST||[], 60)};
+  if(last && last.day===careerToday()){ last.sum=sum; last.label=sum.label; }
+  try{ careerSave(); }catch(e){}
+  ccTvClose();
+  try{ careerRenderHub('streams'); }catch(e){}
+  ccTvSummary(sum);
 }
 /* ---- ЭФИР С ТУРНИРА ---------------------------------------------------------
 
@@ -89716,6 +89763,12 @@ function ccTvTick(){
   const box=document.getElementById('ccTvFrame'); if(!box) return;
   const T=L(), you=CC_TV_YOU;
   const log=(you && you.stageLog) || [];
+  /* Обычный эфир: игр нет, таблицы нет — вечер меряется временем (см. ccStreamRun).
+     Доля прошедшего эфира правит и зрителями (они набегают и расходятся к концу), и
+     тем, как раздаются фолловеры с деньгами этого дня. */
+  const plain=CC_TV_PLAIN;
+  if(plain) plain.at++;
+  const pp=plain ? Math.min(1, plain.at/plain.ticks) : 0;
   // Новая игра в логе — это то, что зрители только что посмотрели.
   while(CC_TV_SEEN<log.length){
     const g=log[CC_TV_SEEN++]||{};
@@ -89750,6 +89803,8 @@ function ccTvTick(){
     seat=(beat-0.5)*1.2;
     if(board.cut) seat+=(board.place<=board.cut ? 0.35 : -0.2);
   }
+  // Обычный эфир набирает к середине и расходится к концу — горб вместо места в таблице.
+  if(plain) seat=0.5*Math.sin(Math.PI*pp);
   const want=CC_TV_BASE*Math.max(0.4, 1+0.05*log.length+0.3*CC_TV_HYPE+seat)*(0.95+Math.random()*0.1);
   CC_TV_VIEW=Math.max(3, Math.round(CC_TV_VIEW+(want-CC_TV_VIEW)*0.5));
   CC_TV_PEAK=Math.max(CC_TV_PEAK, CC_TV_VIEW);
@@ -89759,7 +89814,21 @@ function ccTvTick(){
   CC_TV_HIST.push({v:CC_TV_VIEW, g:log.length});
   if(CC_TV_HIST.length>240) CC_TV_HIST=CC_TV_HIST.filter((x,i)=>i%2===0);
   const games=board && board.n ? board.n : 0;
-  ccTvEvents(board, games);
+  /* У обычного эфира события НЕ выдумываются: фолловеры и деньги этого дня уже
+     посчитаны (streamLast), и рамка раздаёт ровно их — долю за тик. Поэтому
+     общий бюджет ccTvEvents здесь не работает. */
+  if(plain){
+    const share=Math.max(0, pp-plain.done); plain.done=pp;
+    let fol=Math.round(plain.want.fol*share);
+    plain.folAcc=(plain.folAcc||0)+plain.want.fol*share-fol;
+    if(plain.folAcc>=1){ fol++; plain.folAcc--; }
+    for(let i=0;i<fol;i++) ccTvEvent('fol', null, i===0 && Math.random()<0.6);
+    plain.cashAcc=(plain.cashAcc||0)+plain.want.cash*share;
+    while(plain.cashAcc>=CC_TV_SUB_USD){
+      if(Math.random()<0.5){ ccTvEvent('sub'); plain.cashAcc-=CC_TV_SUB_USD; }
+      else { const m=Math.min(Math.round(plain.cashAcc), 25); if(m<1) break; ccTvEvent('dono', m); plain.cashAcc-=m; }
+    }
+  } else ccTvEvents(board, games);
   const set=(id,html)=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; };
   set('ccTvV', ccNum(CC_TV_VIEW)); set('ccTvV2', ccNum(CC_TV_VIEW));
   const sec=Math.max(0, Math.floor((Date.now()-CC_TV_T0)/1000));
@@ -89811,6 +89880,17 @@ function ccTvTick(){
   set('ccTvPeak', esc(T.ccTvPeak(ccNum(CC_TV_PEAK))));
   const chat=document.getElementById('ccTvChat');
   if(chat) chat.scrollTop=chat.scrollHeight;
+  /* И то, чем обычный эфир отличается от турнирного: вместо счёта по играм —
+     часы, вместо табло — ничего. Ставится последним, поверх «ждём вечера». */
+  if(plain){
+    const h=Math.min(plain.hours, Math.round(plain.hours*pp*10)/10);
+    if(bar) bar.style.width=Math.round(pp*100)+'%';
+    set('ccTvRun', '<b>'+esc(L()['ccStream_'+plain.id]||'')+'</b>'+
+                   '<span>'+esc(T.ccTvHours(h, plain.hours))+'</span>'+
+                   '<span>'+esc(T.ccTvPeak(ccNum(CC_TV_PEAK)))+'</span>');
+    set('ccTvBoard', ''); set('ccTvPips', '');
+    if(pp>=1) ccStreamRunEnd();
+  }
 }
 /* ---- Кто в эфире прямо сейчас -----------------------------------------------
 
