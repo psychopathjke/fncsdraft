@@ -93,13 +93,19 @@ const BOOT = `
     if(noShot.weapons.map(w=>w.name).join(',')!=='S,R') fail('without a shotgun the rifle plus the best other class was expected, got '+noShot.weapons.map(w=>w.name).join(','));
     out.steps.push('pack pairs the rifle with the shotgun when both dropped, else the best of another class');
     // ---- две хилки — разные (7.09: в паке было «Medkit · Medkit») -------------------
+    // Два слота хилок — РАЗНЫЕ названия, и каждое стаком (8.09: «3 биги, 6 миников»).
     const twoSame=ccPackFrom([], [{name:'Med Kit',rarity:'rare'},{name:'Med Kit',rarity:'uncommon'},{name:'Shield Fish',rarity:'uncommon'}]);
     if(twoSame.heals.map(h=>h.name).join(',')!=='Med Kit,Shield Fish') fail('two heals of one name in the pack: '+twoSame.heals.map(h=>h.name).join(','));
+    if(twoSame.heals[0].n!==2) fail('two of a kind did not stack: '+JSON.stringify(twoSame.heals));
     const onlyOne=ccPackFrom([], [{name:'Med Kit',rarity:'rare'},{name:'Med Kit',rarity:'uncommon'}]);
-    if(onlyOne.heals.length!==2) fail('with one heal name dropped twice the second slot went empty: '+onlyOne.heals.length);
+    if(onlyOne.heals.length!==1 || onlyOne.heals[0].n!==2) fail('one name twice should be one slot of two: '+JSON.stringify(onlyOne.heals));
     let dup=0; for(let i=0;i<300;i++){ const p=ccChestPack(Math.random, ccLootSet(), CC_CHESTS_POI); if(p.heals.length===2 && p.heals[0].name===p.heals[1].name) dup++; }
-    if(dup>15) fail('two identical heals in '+dup+' of 300 packs');
-    out.steps.push('heals in the pack are two different items; identical pairs '+dup+'/300 (only when nothing else dropped)');
+    if(dup>0) fail('two slots of the same heal in '+dup+' of 300 packs');
+    // Из двадцати четырёх сундуков хилки должны копиться стаком, а не лежать по одной.
+    let stacked=0; for(let i=0;i<200;i++){ const p=ccChestPack(Math.random, ccLootSet(), 24); if((p.heals||[]).some(h=>h.n>1)) stacked++; }
+    if(stacked<100) fail('heals almost never stack: '+stacked+'/200 packs of 24 chests');
+    if(!/×/.test(ccPackLine(ccPackFrom([], [{name:'Med Kit'},{name:'Med Kit'}])))) fail('the stack count is not shown in the pack line');
+    out.steps.push('two heal slots, different names, stacked ('+stacked+'/200 packs of 24 chests carry a stack)');
     const plain=ccPackFrom([{name:'A',icon:'rifle',rarity:'uncommon'},{name:'B',icon:'shotgun',rarity:'uncommon'}], [{name:'Minis',rarity:'uncommon'},{name:'Medkit',rarity:'uncommon'},{name:CC_MOVE_ITEMS[0],rarity:'rare'}]);
     if(ccPackPow(plain)!==0) fail('a plain full pack is not worth 0: '+ccPackPow(plain));
     if(ccPackPow({weapons:[],heals:[],move:null})!==-5) fail('an empty pack is not -5');

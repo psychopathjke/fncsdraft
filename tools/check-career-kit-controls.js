@@ -49,25 +49,56 @@ const BOOT = `
     check('целый отряд лечить не надо', !ccHealNeeded(you));
     check('и середина молчит', ccMidQuiet(you));
     you._sq.shield=20;
-    check('снятый щит — лечение нужно', ccHealNeeded(you) && !ccMidQuiet(you));
+    check('снятый щит — лечение нужно', ccHealNeeded(you));
+    check('но меню середины ради него не встаёт: пьётся молча', ccMidQuiet(you));
     you._sq.shield=100; you._sq.hp=40;
     check('битое здоровье — тоже', ccHealNeeded(you));
-    // ---- лечение: что делает -----------------------------------------------
+    // ---- лечение: пьётся само, из стака, и тратит предметы --------------------
+    // Его слово 8.09: «пусть сам юзается, если нужно… и тратят хилл». Вопроса больше нет.
     you=mk(); you._sq.shield=10; you._sq.hp=50;
-    const r=ccHealApply(you);
-    out.notes.push('heal → '+JSON.stringify(r)+' pf '+you._pf);
-    check('щит полный', you._sq.shield===100);
-    check('здоровье плюс, не выше сотни', you._sq.hp===Math.min(100, 50+CC_HEAL_HP), String(you._sq.hp));
-    check('время на хилки стоит силы', you._pf===90-CC_HEAL_POW, String(you._pf));
-    check('и это записано', you._healed===1);
-    // ---- под скипом лечение не выбирается само (первый вариант — играть так) --
-    you=mk(); you._sq.shield=10;
-    await ccAskHeal(you, null);
-    check('под скипом отряд не лечится сам', you._sq.shield===10 && you._pf===90, you._sq.shield+'/'+you._pf);
+    you._loot={weapons:[], heals:[{name:'Shield Potion', rarity:'blue', n:3}, {name:'Med Kit', rarity:'green', n:2}], move:null};
+    const before=ccHealLeft(you);
+    const r=ccHealAuto(you);
+    out.notes.push('heal → '+JSON.stringify(r)+' pf '+you._pf+' left '+ccHealLeft(you));
+    check('отряд вылечился сам', !!r && !ccHealNeeded(you), JSON.stringify(r));
+    check('щит долит до сотни', you._sq.shield===100, String(you._sq.shield));
+    check('хилки потрачены', ccHealLeft(you)<before, before+' → '+ccHealLeft(you));
+    check('и записано, сколько выпито', you._healed===r.used && r.used>0, String(you._healed));
+    check('время стоит силы', you._pf===90-r.pow && r.pow>=0, you._pf+' / '+r.pow);
+    check('в строке названы предметы', /Shield Potion|Med Kit/.test(r.what), r.what);
+    // Что во что льётся: зелье — только щит, аптечка — только здоровье.
+    you=mk(); you._sq.shield=0; you._sq.hp=100;
+    you._loot={weapons:[], heals:[{name:'Med Kit', n:3}], move:null};
+    check('аптечка щит не поднимает', ccHealAuto(you)===null && you._sq.shield===0, String(you._sq.shield));
+    you=mk(); you._sq.shield=100; you._sq.hp=30;
+    you._loot={weapons:[], heals:[{name:'Shield Potion', n:3}], move:null};
+    check('зелье здоровье не чинит', ccHealAuto(you)===null && you._sq.hp===30, String(you._sq.hp));
+    you=mk(); you._sq.shield=20; you._sq.hp=20;
+    you._loot={weapons:[], heals:[{name:'Slurpfish', n:3}], move:null};
+    const both=ccHealAuto(you);
+    check('слёрп-рыба льётся и в щит, и в здоровье', !!both && you._sq.shield>20 && you._sq.hp>=20, JSON.stringify(both));
+    // Целому отряду пить незачем, и пустой пак не лечит.
+    you=mk(); you._loot={weapons:[], heals:[{name:'Shield Potion', n:3}], move:null};
+    check('целый отряд не пьёт', ccHealAuto(you)===null);
+    you=mk(); you._sq.shield=5; you._loot={weapons:[], heals:[], move:null};
+    check('без хилок не лечится', ccHealAuto(you)===null && you._sq.shield===5);
+    // Стак: числа из листа вики, а не с потолка.
+    check('три больших зелья и шесть маленьких', CC_HEAL_KIT['Shield Potion'].stack===3 &&
+          CC_HEAL_KIT['Small Shield Potion'].stack===6, JSON.stringify(CC_HEAL_KIT['Shield Potion']));
+    check('большое зелье — полсотни щита', CC_HEAL_KIT['Shield Potion'].heal===50);
+    check('аптечка — сотня здоровья за десять секунд', CC_HEAL_KIT['Med Kit'].heal===100 && CC_HEAL_KIT['Med Kit'].secs===10);
+    // Пак кладёт хилки стаком, а не по одной.
+    const packed=ccPackFrom([], [{name:'Small Shield Potion', rarity:'green'}, {name:'Small Shield Potion', rarity:'green'},
+                                 {name:'Small Shield Potion', rarity:'green'}, {name:'Med Kit', rarity:'green'}]);
+    check('одинаковые хилки — один слот со счётом', packed.heals.length===2 &&
+          packed.heals[0].n===3 && packed.heals[1].n===1, JSON.stringify(packed.heals.map(h=>h.name+'×'+h.n)));
+    check('стак не больше, чем влезает', ccPackFrom([], new Array(9).fill(0).map(()=>({name:'Shield Potion', rarity:'blue'})))
+          .heals[0].n===CC_HEAL_KIT['Shield Potion'].stack);
+    check('счёт виден в строке пака', /×3/.test(ccPackLine(packed)), ccPackLine(packed));
     // ---- словарь: все строки на обоих языках ------------------------------
     ['ru','en'].forEach(l=>{ LANG=l; CC_L_CACHE={}; const T=L();
-      check(l+': строки стройки и лечения', typeof T.ccBuildTitle==='string' && typeof T.ccHealGoNote==='function' &&
-            T.ccBuildEcoNote(66,1).length>5 && T.ccHealTitle(20,50).length>5 && T.ccHealDone(80,1).length>5); });
+      check(l+': строки стройки и лечения', typeof T.ccBuildTitle==='string' && typeof T.ccHealAuto==='function' &&
+            T.ccBuildEcoNote(66,1).length>5 && T.ccHealAuto('Shield Potion ×2', 100, 80, 1, 3).length>10); });
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='BEGIN'+encodeURIComponent(JSON.stringify(out))+'END';
 })();

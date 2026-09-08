@@ -7246,6 +7246,8 @@ ccRotSet:w=>'Ротация: '+w,
 ccHealTitle:(s,h)=>'Щит '+s+' · здоровье '+h+' — лечимся?', ccHealStay:'Играть так', ccHealStayNote:'Без потерь, щит и здоровье как есть',
 ccHealGo:'Отхилиться', ccHealGoNote:(h,p)=>'щит полный, +'+h+' здоровья · пока пьёшь — минус '+p+' к силе',
 ccHealDone:(h,p)=>'Отхилились: щит 100, здоровье '+h+' · −'+p+' к силе',
+ccHealAuto:(w,s2,h,p,l)=>'Выпили: '+w+' — щит '+s2+', здоровье '+h+(p?' · −'+p+' к силе за время':'')+' · осталось хилок: '+l,
+ccHealNone:'Хилки кончились — играем как есть',
 ccFarmTitle:'Третья зона — как фармим ресы', ccFarmFull:'Нафармить до фула', ccFarmFullNote:n=>'До '+n+' (500 · 3) — стройки хватит на всю игру, сёрдж не набит',
 ccFarmSurge:'Набить сёрдж, ресов меньше', ccFarmSurgeNote:(m,d,p)=>'Ресы '+m+' (400 · 3), +'+d+' урона в сёрдж, −'+p+' к силе за время на теги',
 ccFarmFullGot:n=>'Нафармили до фула — '+n+' ресов', ccFarmSurgeGot:(m,d)=>'Набили сёрдж: +'+d+' урона, ресов '+m,
@@ -9181,6 +9183,8 @@ ccRotSet:w=>'Rotation: '+w,
 ccHealTitle:(s,h)=>'Shield '+s+' · health '+h+' — heal up?', ccHealStay:'Play on', ccHealStayNote:'No cost, shield and health stay as they are',
 ccHealGo:'Heal up', ccHealGoNote:(h,p)=>'full shield, +'+h+' health · while you drink — minus '+p+' power',
 ccHealDone:(h,p)=>'Healed: shield 100, health '+h+' · −'+p+' power',
+ccHealAuto:(w,s2,h,p,l)=>'Drank: '+w+' — shield '+s2+', health '+h+(p?' · −'+p+' power for the time':'')+' · heals left: '+l,
+ccHealNone:'Out of heals — we play as we are',
 ccFarmTitle:'Zone 3 — how do we farm', ccFarmFull:'Farm to full', ccFarmFullNote:n=>'Up to '+n+' (500 · 3) — builds for the whole game, no surge farmed',
 ccFarmSurge:'Farm surge, fewer mats', ccFarmSurgeNote:(m,d,p)=>'Mats '+m+' (400 · 3), +'+d+' surge damage, −'+p+' power for the time spent tagging',
 ccFarmFullGot:n=>'Farmed to full — '+n+' mats', ccFarmSurgeGot:(m,d)=>'Surge farmed: +'+d+' damage, mats '+m,
@@ -11255,6 +11259,8 @@ ccBuildSet:(w,p)=>w+' : '+p+' de puissance pour cette partie',
 ccHealTitle:(s,h)=>'Bouclier '+s+' · vie '+h+' — on se soigne ?', ccHealStay:'On continue', ccHealStayNote:'Sans coût, bouclier et vie tels quels',
 ccHealGo:'Se soigner', ccHealGoNote:(h,p)=>'bouclier plein, +'+h+' de vie · pendant que tu bois — moins '+p+' de puissance',
 ccHealDone:(h,p)=>'Soignés : bouclier 100, vie '+h+' · −'+p+' de puissance',
+ccHealAuto:(w,s2,h,p,l)=>'Bu : '+w+' — bouclier '+s2+', vie '+h+(p?' · −'+p+' de puissance pour le temps':'')+' · soins restants : '+l,
+ccHealNone:'Plus de soins — on joue comme ça',
 ccFarmTitle:'Zone 3 — comment on farme', ccFarmFull:'Farmer jusqu’au full', ccFarmFullNote:n=>'Jusqu’à '+n+' (500 · 3) — des builds pour toute la partie, pas de surge',
 ccFarmSurge:'Farmer du surge, moins de mats', ccFarmSurgeNote:(m,d,p)=>'Mats '+m+' (400 · 3), +'+d+' de dégâts surge, −'+p+' power pour le temps passé à tagger',
 ccFarmFullGot:n=>'Farmé au full — '+n+' mats', ccFarmSurgeGot:(m,d)=>'Surge farmé : +'+d+' de dégâts, mats '+m,
@@ -13175,6 +13181,8 @@ ccBuildSet:(w,p)=>w+": "+p+" potenza per questa partita",
 ccHealTitle:(s,h)=>"Scudo "+s+" · vita "+h+" — ci curiamo?", ccHealStay:"Si gioca così", ccHealStayNote:"Senza costi, scudo e vita come sono",
 ccHealGo:"Curarsi", ccHealGoNote:(h,p)=>"scudo pieno, +"+h+" vita · mentre bevi — meno "+p+" potenza",
 ccHealDone:(h,p)=>"Curati: scudo 100, vita "+h+" · −"+p+" potenza",
+ccHealAuto:(w,s2,h,p,l)=>"Bevuto: "+w+" — scudo "+s2+", vita "+h+(p?" · −"+p+" potenza per il tempo":"")+" · cure rimaste: "+l,
+ccHealNone:"Cure finite — si gioca così",
 ccFarmTitle:"Zona 3 — come farmiamo", ccFarmFull:"Farmare fino al full", ccFarmFullNote:n=>"Fino a "+n+" (500 · 3) — build per tutta la partita, niente surge",
 ccFarmSurge:"Farmare surge, meno mats", ccFarmSurgeNote:(m,d,p)=>"Mats "+m+" (400 · 3), +"+d+" danni surge, −"+p+" power per il tempo dei tag",
 ccFarmFullGot:n=>"Farmato al full — "+n+" mats", ccFarmSurgeGot:(m,d)=>"Surge farmato: +"+d+" danni, mats "+m,
@@ -15665,6 +15673,8 @@ ccBuildSet:(w,p)=>w+": "+p+" de força nesta partida",
 ccHealTitle:(s,h)=>"Escudo "+s+" · vida "+h+" — vamos curar?", ccHealStay:"Seguir assim", ccHealStayNote:"Sem custo, escudo e vida como estão",
 ccHealGo:"Curar", ccHealGoNote:(h,p)=>"escudo cheio, +"+h+" de vida · enquanto bebe — menos "+p+" de força",
 ccHealDone:(h,p)=>"Curados: escudo 100, vida "+h+" · −"+p+" de força",
+ccHealAuto:(w,s2,h,p,l)=>"Bebemos: "+w+" — escudo "+s2+", vida "+h+(p?" · −"+p+" de força pelo tempo":"")+" · curas restantes: "+l,
+ccHealNone:"Acabaram as curas — jogamos assim",
 ccFarmTitle:"Zona 3 — como farmamos", ccFarmFull:"Farmar até o full", ccFarmFullNote:n=>"Até "+n+" (500 · 3) — builds para o jogo todo, sem surge",
 ccFarmSurge:"Farmar surge, menos mats", ccFarmSurgeNote:(m,d,p)=>"Mats "+m+" (400 · 3), +"+d+" de dano de surge, −"+p+" power pelo tempo de tag",
 ccFarmFullGot:n=>"Farmamos até o full — "+n+" mats", ccFarmSurgeGot:(m,d)=>"Surge farmado: +"+d+" de dano, mats "+m,
@@ -52415,8 +52425,8 @@ const CC_GAME_STOPS=[
   // Пятая и седьмая: ресы, если кончились, и лечение, если щит снят (ccAskMid).
   // Пятая: меню середины (сёрдж, ресы, файт) — всегда; седьмая — то же меню,
   // но только когда есть о чём: ресы кончились или щит снят.
-  {zone:5, ask:(you, ui)=>ccAskMid(you, ui), room:ccRoomMats},
-  {zone:7, ask:(you, ui)=>ccAskMid(you, ui), room:ccRoomMats, quiet:ccMidQuiet},
+  {zone:5, ask:(you, ui)=>ccAskMid(you, ui), room:(field, you)=>{ ccRoomMats(field, you); ccRoomHeal(field, you); }},
+  {zone:7, ask:(you, ui)=>ccAskMid(you, ui), room:(field, you)=>{ ccRoomMats(field, you); ccRoomHeal(field, you); }, quiet:ccMidQuiet},
   {zone:8, ask:(you, ui)=>ccAskLate(you, ui), room:ccRoomLate}
 ];
 // Молчаливая остановка: вопрос не задаётся, когда отвечать не на что.
@@ -52431,26 +52441,109 @@ function ccMatsQuiet(t){ return !ccMatsLow(t); }
    зоне без рефреша останешься пустым). Первый вариант — обычный: под скипом и
    в симуляции он и выбирается, то есть баланс не сдвинут ни на очко.
 
-   ЛЕЧЕНИЕ. Щит снимают перестрелки (zone-sim, CHIP_HP), здоровье — шторм и
-   сёрдж. На пятой и седьмой зоне, когда щит ниже CC_HEAL_AT или здоровье ниже,
-   есть выбор: играть так или отхилиться — щит полный, +CC_HEAL_HP здоровья,
-   но время на хилки стоит −CC_HEAL_POW к силе на остаток игры (пока ты пьёшь,
-   соседи двигаются). Первый вариант — играть так. */
+   ЛЕЧЕНИЕ. Щит снимают перестрелки (zone-sim, CHIP_HP), здоровье — шторм и сёрдж.
+   Вопроса «пить или нет» здесь больше нет — отряд пьёт сам из своего пака, как только
+   щит или здоровье просели ниже CC_HEAL_AT, и тратит на это предметы и время
+   (ccHealAuto, числа из CC_HEAL_KIT по вики). Комната пьёт по тому же правилу. */
 // CC_BUILD_STYLE, не CC_BUILD: тем именем занята метка сборки страницы.
 const CC_BUILD_STYLE={eco:{mul:0.6, pow:-1}, norm:{mul:1, pow:0}, heavy:{mul:1.5, pow:1}};
-const CC_HEAL_AT=60, CC_HEAL_HP=30, CC_HEAL_POW=1;
+/* ХИЛКИ — СТАКАМИ, И ПЬЮТСЯ САМИ (его слово 8 сентября 2026: «с хилом надо решить,
+   пусть сам юзается, если нужно, обычно так делают игроки и тратят хилл, ещё можно
+   стакать хилы 3 биги 6 миников и т.д.»).
+
+   До этого хилка была одна штука в слоте, а лечение — вопросом «пить или нет» с
+   выдуманными +30 к здоровью. Ни то, ни другое не похоже на игру: в Fortnite носят
+   стак (три больших зелья, шесть маленьких), и никто не раздумывает — упал щит,
+   встал за стену и выпил, потратив предмет и время.
+
+   Числа сняты со страниц предметов вики (tools/build-heal-stacks.js): сколько влезает
+   в стак (max_stack), сколько возвращает (heals) и сколько занимает (time_of_use).
+   Ничего не округлено и не подогнано. Время — единственная цена: пока ты пьёшь, соседи
+   двигаются, поэтому CC_HEAL_SECS_POW секунд стоят единицы силы (пять секунд большого
+   зелья = единица, как стоил прежний вопрос).
+
+   ВО ЧТО льётся — тоже с вики, и это не мелочь: большое зелье не чинит здоровье, а
+   аптечка не даёт щита. Три вида: 'shield' (зелья и щитовая рыба), 'hp' (аптечка,
+   бинты, флоппер) и 'both' — «эффективное здоровье» вики, то есть сплэши и слёрп-рыба,
+   которые льются и туда, и туда. */
+const CC_HEAL_KIT={
+  "Bandage":{stack:15, heal:15, kind:'hp', secs:3.5},
+  "Chug Jug":{stack:1, heal:100, kind:'hp', secs:15},
+  "Flopper":{stack:4, heal:40, kind:'hp', secs:1},
+  "Gold Splash":{stack:6, heal:20, kind:'both', secs:1},
+  "Guzzle Juice":{stack:2, heal:100, kind:'hp', secs:2},
+  "Jellyfish":{stack:3, heal:20, kind:'both', secs:1},
+  "Med Kit":{stack:3, heal:100, kind:'hp', secs:10},
+  "Midas Flopper":{stack:2, heal:40, kind:'hp', secs:1},
+  "Shield Fish":{stack:3, heal:40, kind:'shield', secs:1},
+  "Shield Potion":{stack:3, heal:50, kind:'shield', secs:5},
+  "Slapperoni Pizza":{stack:3, heal:70, kind:'hp', secs:1},
+  "Slurpfish":{stack:3, heal:40, kind:'both', secs:1},
+  "Small Fry":{stack:6, heal:25, kind:'hp', secs:1},
+  "Small Shield Potion":{stack:6, heal:25, kind:'shield', secs:2},
+  "Spicy Fish":{stack:1, heal:15, kind:'hp', secs:1},
+  "Spicy Taco":{stack:1, heal:10, kind:'hp', secs:1}
+};
+// Хилка, которой нет в листе вики, ведёт себя как маленькое зелье — по одной в слоте.
+const CC_HEAL_ANY={stack:1, heal:25, kind:'both', secs:2};
+const ccHealOf=o=>(o && CC_HEAL_KIT[o.name]) || CC_HEAL_ANY;
+const CC_HEAL_AT=60, CC_HEAL_SECS_POW=5;
 function ccShieldOf(t){ return t && t._sq && t._sq.shield!=null ? t._sq.shield : 100; }
 function ccHpOf(t){ return t && t._sq && t._sq.hp!=null ? t._sq.hp : 100; }
 function ccHealNeeded(t){ return ccShieldOf(t)<CC_HEAL_AT || ccHpOf(t)<CC_HEAL_AT; }
-function ccMidQuiet(t){ return !ccMatsLow(t) && !ccHealNeeded(t); }
-// Отхилиться — что это делает с отрядом. Отдельно от вопроса, чтобы проверялось.
-function ccHealApply(you){
-  if(!you) return null;
-  const sq=you._sq;
-  if(sq){ sq.shield=100; sq.hp=Math.min(100, (sq.hp==null?100:sq.hp)+CC_HEAL_HP); }
-  ccAddGamePow(you, -CC_HEAL_POW);
-  you._healed=(you._healed||0)+1;
-  return {shield:100, hp:sq ? Math.round(sq.hp) : 100};
+function ccMidQuiet(t){ return !ccMatsLow(t); }
+// Сколько хилок осталось в паке — сумма стаков.
+function ccHealLeft(t){
+  return ((t && t._loot && t._loot.heals)||[]).reduce((a,h)=>a+(h && h.n!=null ? h.n : (h?1:0)), 0);
+}
+/* Отряд пьёт сам, пока не долечится или пока хилки не кончатся.
+
+   Порядок как у людей: сперва то, что закрывает нехватку целиком и за меньшее время
+   (щит — зельями, здоровье — аптечкой), мелочь идёт следом. Каждая выпитая штука
+   уходит из стака, а время складывается и превращается в цену силы. Никаких «+30 из
+   воздуха»: сколько предмет даёт по вики, столько и вернулось. */
+function ccHealAuto(t){
+  if(!t || !ccHealNeeded(t)) return null;
+  const sq=t._sq, pack=t._loot;
+  if(!sq || !pack || !pack.heals || !pack.heals.length) return null;
+  const drunk={}; let secs=0, used=0;
+  for(let guard=0; guard<40 && ccHealNeeded(t); guard++){
+    const shNeed=100-(sq.shield==null?100:sq.shield), hpNeed=100-(sq.hp==null?100:sq.hp);
+    // Берётся то, что лечит НУЖНОЕ: зелье не чинит здоровье, аптечка не даёт щита.
+    // Внутри годного — самое крупное, что не переливается зря, иначе самое быстрое.
+    const have=pack.heals.filter(h=>{
+      if(!h || (h.n!=null && h.n<=0)) return false;
+      const k=ccHealOf(h);
+      return (k.kind==='shield' && shNeed>0) || (k.kind==='hp' && hpNeed>0) || (k.kind==='both' && (shNeed>0||hpNeed>0));
+    });
+    if(!have.length) break;
+    const room=h=>{ const k=ccHealOf(h); return k.kind==='hp' ? hpNeed : k.kind==='shield' ? shNeed : Math.max(shNeed, hpNeed); };
+    const fit=have.filter(h=>ccHealOf(h).heal<=room(h)+10);
+    const pick=(fit.length ? fit : have).sort((a,b)=>{
+      const A=ccHealOf(a), B=ccHealOf(b);
+      return (B.heal-A.heal) || (A.secs-B.secs);
+    })[0];
+    const k=ccHealOf(pick);
+    let left=k.heal;
+    // Щит наливается первым у всего, что умеет и то, и другое: под огнём он важнее.
+    if(k.kind!=='hp' && sq.shield!=null && sq.shield<100){ const add=Math.min(left, 100-sq.shield); sq.shield+=add; left-=add; }
+    if(left>0 && k.kind!=='shield' && sq.hp!=null && sq.hp<100){ sq.hp=Math.min(100, sq.hp+left); }
+    if(pick.n!=null) pick.n--; else pick.n=0;
+    drunk[pick.name]=(drunk[pick.name]||0)+1;
+    secs+=k.secs; used++;
+    if(pick.n<=0) pack.heals=pack.heals.filter(h=>h!==pick);
+  }
+  if(!used) return null;
+  const pow=Math.round(secs/CC_HEAL_SECS_POW);
+  if(pow) ccAddGamePow(t, -pow);
+  t._healed=(t._healed||0)+used;
+  return {shield:Math.round(sq.shield==null?100:sq.shield), hp:Math.round(sq.hp==null?100:sq.hp),
+          used:used, secs:secs, pow:pow, left:ccHealLeft(t),
+          what:Object.keys(drunk).map(n=>n+(drunk[n]>1?' ×'+drunk[n]:'')).join(' · ')};
+}
+// Комната пьёт по тому же правилу и из своих паков — иначе лечился бы только игрок.
+function ccRoomHeal(field, you){
+  (field||[]).forEach(t=>{ if(!you || (t!==you && !t.isMate && !t.isRival)) ccHealAuto(t); });
 }
 async function ccAskBuild(you, ui){
   if(!you) return;
@@ -52528,21 +52621,15 @@ async function ccAskRot(you, ui){
   if(ui && ui.note) ui.note(line);
   await ccChoiceResult(ui && ui.map, line, null);
 }
-async function ccAskHeal(you, ui){
-  if(!you || !ccHealNeeded(you)) return;
-  ccMpMark('h0'+(you.mpTag||''));
-  const sh=Math.round(ccShieldOf(you)), hp=Math.round(ccHpOf(you));
-  const pickId=(await ccMpChoose('heal'+(you.mpTag||''), async function(){
-    return (await ccChoiceBox(L().ccHealTitle(sh, hp), ccKitLine(you), [
-      {id:'stay', title:L().ccHealStay, note:L().ccHealStayNote, icon:CC_CHOICE_ICON.stay},
-      {id:'go',   title:L().ccHealGo,   note:L().ccHealGoNote(CC_HEAL_HP, CC_HEAL_POW),
-       icon:ccItemIconHTML({name:'Shield Potion', icon:'shield'}, CC_CHOICE_ICON.stay)}
-    ], ui && ui.map, null, 'heal')).id;
-  }, function(v){ return v==='go' ? L().ccHealGo : L().ccHealStay; })).v;
-  ccMpMark('a5h:'+pickId);
-  if(pickId!=='go') return;
-  const r=ccHealApply(you);
-  const line=L().ccHealDone(r.hp, CC_HEAL_POW);
+/* Лечение больше не спрашивают — его показывают. Вопроса «пить или нет» не бывает
+   и в жизни: щит просел, встал за стену, выпил. Строка говорит, что именно ушло из
+   пака, что стало со щитом и здоровьем и во сколько силы обошлось время. Бросков тут
+   нет вовсе, поэтому в командном вечере это не вопрос и синхронизировать нечего. */
+async function ccShowHeal(you, ui){
+  if(!you) return;
+  const r=ccHealAuto(you);
+  if(!r) return;
+  const line=L().ccHealAuto(r.what, r.shield, r.hp, r.pow, r.left);
   if(ui && ui.note) ui.note(line);
   await ccChoiceResult(ui && ui.map, line, true);
 }
@@ -52655,7 +52742,8 @@ function ccItemIconHTML(o, fallback){
 async function ccAskMid(you, ui){
   if(!you) return;
   await ccAskMenu(you, ui);
-  if(ccHealNeeded(you)) await ccAskHeal(you, ui);
+  // Хилки пьются сами, до меню середины: щит важнее любого следующего хода.
+  await ccShowHeal(you, ui);
 }
 /* ФАРМ ПОСЛЕ ЛУТА — его пункт 3 со страницы «simulation» (7 сентября): «после
    поиска начального лута нужно добывать ресы: 1) нафармить до фула, 2) набить
@@ -53365,13 +53453,13 @@ function ccPackFrom(weapons, cons){
   if(first && second && mod(second)>mod(first)){ const t=first; first=second; second=t; }
   const moves=cons.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0).sort(byMod);
   const healsAll=cons.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)<0).sort(byMod);
-  /* Две хилки — РАЗНЫЕ: из восьми сундуков в пак попадали «Medkit · Medkit»
-     (список на 7.09). Сначала по одной каждого названия, лучшие по редкости;
-     второй экземпляр того же — только если другого названия не выпало вовсе,
-     чтобы слот не пустел и цена пака (ccPackPow) не падала из-за порядка сбора. */
-  const heals=[]; const seen={};
-  healsAll.forEach(x=>{ if(heals.length<2 && !seen[x.name]){ seen[x.name]=1; heals.push(x); } });
-  if(heals.length<2) healsAll.forEach(x=>{ if(heals.length<2 && heals.indexOf(x)<0) heals.push(x); });
+  /* Две хилки — РАЗНЫЕ, и каждая СТАКОМ (его слово 8.09: «можно стакать хилы, 3 биги
+     6 миников»). Сколько нашли, столько и лежит, но не больше стака этой хилки по вики
+     (CC_HEAL_KIT): шесть маленьких зелий, три больших, три аптечки. Слотов по-прежнему
+     два — это два места в инвентаре, а не два предмета. */
+  const cnt={}; const order=[];
+  healsAll.forEach(x=>{ if(!cnt[x.name]){ cnt[x.name]={item:x, n:0}; order.push(x.name); } cnt[x.name].n++; });
+  const heals=order.slice(0, 2).map(n=>Object.assign({}, cnt[n].item, {n:Math.min(cnt[n].n, ccHealOf(cnt[n].item).stack)}));
   return {weapons:[first, second].filter(Boolean), heals, move:moves[0]||null};
 }
 function ccPackFromRolls(rolls){
@@ -53408,9 +53496,11 @@ function ccPackPow(p){
   return Math.max(-5, Math.min(6, v));
 }
 const ccRarityWord=r=>{ const k=ccRarityKey(r); return k ? k.charAt(0).toUpperCase()+k.slice(1) : ''; };
-function ccItemLabel(o){ return o ? o.name+' ('+ccRarityWord(o.rarity)+')' : '—'; }
+// Стак пишется числом рядом с названием, как в инвентаре: «Small Shield Potion ×6».
+const ccStackTag=o=>(o && o.n>1) ? ' ×'+o.n : '';
+function ccItemLabel(o){ return o ? o.name+ccStackTag(o)+' ('+ccRarityWord(o.rarity)+')' : '—'; }
 function ccPackLine(p){
-  const name=o=>o ? o.name : '—';
+  const name=o=>o ? o.name+ccStackTag(o) : '—';
   return [...(p.weapons||[]), ...(p.heals||[]), p.move].map(name).join(' · ');
 }
 // Шанс стычки на высадке: сила как у высадочной дуэли (LANDING_POW_EXPONENT,
@@ -57660,7 +57750,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='853c9872';
+const CC_BUILD='c84818ca';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
