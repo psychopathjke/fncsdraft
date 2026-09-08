@@ -47,6 +47,8 @@ const boot = (who) => `
   const wait=ms=>new Promise(r=>setTimeout(r, ms));
   window.__f1=null; if(typeof ccMpFieldList==='function'){ const f0=ccMpFieldList; ccMpFieldList=function(teams){ if(!window.__f1) window.__f1=teams.slice(); return f0(teams); }; }
   window.__teams=0; if(typeof MP!=='undefined' && MP.say){ const s0=MP.say; MP.say=function(m){ if(m && m.t==='team') window.__teams++; return s0.apply(this, arguments); }; }
+  // Пропуск включился у ОБОИХ от голосов (его слово 8.09: «скип не работает» в гонке).
+  window.__skipBoth=0; if(typeof ccMpSkipApply==='function'){ const k0=ccMpSkipApply; ccMpSkipApply=function(){ const r=k0.apply(this, arguments); if(typeof ccMpSkipBoth==='function' && ccMpSkipBoth()) window.__skipBoth=1; return r; }; }
   // Первая сверка игры — целиком: по ней видно, ЧТО разошлось (таблица, броски, поле, леджер).
   window.__g1=null; if(typeof ccMpSync==='function'){ const y0=ccMpSync; ccMpSync=function(k,p,q){ if(k==='game' && !window.__g1) window.__g1=String(p); return y0.apply(this, arguments); }; }
   // CC_HOST=ws://127.0.0.1:8787 — гонять против локального wrangler dev, а не прода.
@@ -83,7 +85,7 @@ const boot = (who) => `
       out.notes.rolls=CC_MP_ROLLS; out.notes.dayAfter=CAREER.career.day; out.notes.dbg={rand:!!CC_MP_RAND, hold:CC_MP_HOLD, alone:CC_MP_ALONE, state:MP.state, teams:window.__teams||0, soloBy:CAREER.career.soloBy, peer:(MP.peer||{}).handle, settle:(typeof ccSoloTeamSettle==='function')?ccSoloTeamSettle():null, dayNow:CAREER.career.day};
       const log=(CAREER.career.log||[]); const last=log[log.length-1]||{};
       out.notes.mine={place:last.place, of:last.of, pts:last.pts, wins:last.wins, elims:last.elims};
-      out.notes.g1=window.__g1||null;
+      out.notes.g1=window.__g1||null; out.notes.skipBoth=window.__skipBoth||0;
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
       return;
     }
@@ -178,7 +180,7 @@ const boot = (who) => `
       if(${process.env.CC_TABLES_DIFFER==='1'}){ for(let i=0;i<300 && CAREER.career.day===${JSON.stringify(DAY)};i++) await wait(300); }   // личный вечер: день шагает, когда отыграет и второй
       out.notes.rolls=CC_MP_ROLLS; out.notes.dayAfter=CAREER.career.day; out.notes.dbg={rand:!!CC_MP_RAND, hold:CC_MP_HOLD, alone:CC_MP_ALONE, state:MP.state, teams:window.__teams||0, soloBy:CAREER.career.soloBy, peer:(MP.peer||{}).handle, settle:(typeof ccSoloTeamSettle==='function')?ccSoloTeamSettle():null, dayNow:CAREER.career.day}; out.notes.head='перемотка до '+${JSON.stringify(FF)}+' · строк журнала '+out.notes.table.length;
       out.notes.mine=(CAREER.career.log||[]).slice(-1)[0]||{};
-      out.notes.g1=window.__g1||null;
+      out.notes.g1=window.__g1||null; out.notes.skipBoth=window.__skipBoth||0;
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
       return;
     }
@@ -254,7 +256,7 @@ const boot = (who) => `
     out.notes.mine={place:last.place, of:last.of, pts:last.pts, wins:last.wins, elims:last.elims};
   }catch(e){ out.fail=String(e && e.message || e); }
   out.errs=(window.__errs||[]).slice(0,3);
-  out.notes.g1=window.__g1||null;
+  out.notes.g1=window.__g1||null; out.notes.skipBoth=window.__skipBoth||0;
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
 })();
 <` + `/script>`;
@@ -327,6 +329,7 @@ async function runOne(tag, who, port){
       ' · своё '+JSON.stringify(r.notes.mine)+' · броски '+r.notes.rolls+' · pow '+r.notes.youPow+' · скип '+!!r.notes.skipPressed+' · фон '+!!r.notes.hidden+' · перезагрузка '+!!r.notes.reloaded+' · own/other '+r.notes.own+'/'+r.notes.other+' · '+JSON.stringify(r.notes.engine)+' · team '+JSON.stringify(r.notes.team)+' · dbg '+JSON.stringify(r.notes.dbg)+' · f1 '+JSON.stringify(r.notes.f1));
     if(r.notes.split && r.notes.split.length) console.log('   красная строка: '+r.notes.split.join(' || '));
     if(r.notes.pre) console.log('   перед вечером: '+JSON.stringify(r.notes.pre));
+    if(r.notes.skipPressed && !r.notes.skipBoth) console.log('   ПРОПУСК: нажат, но голоса не сошлись — скип так и не включился');
     if(r.notes.g1) console.log('   сверка игры 1: '+r.notes.g1);
     if(r.notes.days && r.notes.days.length>1) console.log('   дни: '+r.notes.days.join(' → '));
     if(r.notes.marks) console.log('   метки: '+r.notes.marks.slice(0, r.notes.split && r.notes.split.length ? 60 : 14).join(' | '));

@@ -2884,15 +2884,20 @@
   .cc-tv-ev-dono span{display:block;color:#adadb8;font-weight:400;}
   .cc-tvm-f{flex:none;display:flex;justify-content:space-between;gap:8px;padding:6px 8px;
     border-top:1px solid #26262c;font-size:11px;color:#adadb8;}
+  /* УЗКИЕ ЭКРАНЫ. Селекторы — `.cc-tv aside.cc-tv-left`, а не `.cc-tv-left`:
+     базовое правило `.cc-tv aside{display:flex;top:0;bottom:0}` сильнее одного
+     класса, и эти строки молча проигрывали ему. Его скрин с телефона 8 сентября
+     (страница «moblie», «сделать для телефонов live, чтобы было играбельное»):
+     список каналов лежал поверх вопроса вечера, чат стоял сверху во всю ширину.
+     Снято в Playwright при 390 px: left display:flex, right y:0. */
   @media(max-width:1100px){
-    .cc-tv-left{display:none;}
+    .cc-tv aside.cc-tv-left{display:none;}
     .cc-tv-under{left:0;}
     body.cc-onair .wrap.wrap-wide{margin-left:0;}}
   @media(max-width:760px){
-    .cc-tv-right{top:auto;left:0;width:auto;height:230px;border-left:none;border-top:1px solid #26262c;}
+    .cc-tv aside.cc-tv-right{top:auto;bottom:0;left:0;right:0;width:auto;height:200px;border-left:none;border-top:1px solid #26262c;}
     .cc-tv-right .cc-tvm-b,.cc-tv-under,.cc-tv-say,.cc-tv-lead{display:none;}
-    body.cc-onair .wrap.wrap-wide{padding-bottom:240px;}
-    body.cc-onair .wrap.wrap-wide{margin-right:0;padding-bottom:240px;}
+    body.cc-onair .wrap.wrap-wide{margin-left:0;margin-right:0;padding-bottom:210px;}
     body.cc-onair .skip-btn-prominent{right:10px;}}
   /* СВОДКА ПОСЛЕ ЭФИРА — «Stream Summary» из дашборда Twitch (его скрин 5.09):
      ряд плиток число-подпись, под ним график зрителей. Та же разметка живёт
@@ -46703,7 +46708,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
   // Общая комната гонки: люди в поле и в одном лобби (together), иначе большое поле
   // развело бы их по разным; боты у всех уже одинаковы (общий сид, см. ccRaceFieldSync).
   if(typeof ccRaceLock==='function' && ccRaceLock()){
-    ccRaceFieldSync(teams);
+    await ccRaceFieldSync(teams);
     const hs=teams.filter(t=>t.isYou || t.isRival);
     // Порядок — по адресу, один у обоих клиентов: склейка лобби сажает всех к первому
     // в списке, и «я первый» у каждого своё (проба check-race-live-two: комнаты расходились).
@@ -57973,7 +57978,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='c88fb448';
+const CC_BUILD='72df22d8';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -58802,11 +58807,21 @@ function ccSoloWaitingPeer(){
   return !!(peer && careerSoloSeriesCanFor(ev, ccSoloStateOf(ev, peer)));
 }
 
+/* «n/N» на кнопке «Играть» — и в гонке тоже. Его слово 8 сентября: «не пишет в
+   race ещё сколько игроков готово, там 1/3, 0/3 как в дуо, чтоб запустить лобби
+   со всеми». Тег стоял только под командой (ccMpOn), а гонка в общей комнате
+   ждёт тех же «готов» через тот же гейт (ccMpLock). Знаменатель — сколько людей
+   в комнате: от сервера (of = все в комнате), до первого ответа — сам и
+   соперники. Врозь (ccRaceApartWhy) гейта нет, значит и тега нет. */
 function ccMpReadyTag(){
-  if(!ccMpOn() || typeof MP==='undefined') return '';
+  if(typeof MP==='undefined') return '';
+  const race=!ccMpOn() && ccRaceOn() && typeof ccRaceShared==='function' &&
+             ccRaceShared(typeof careerNext==='function' ? careerNext() : null);
+  if(!ccMpOn() && !race) return '';
   const w=MP.waiting;
   const n=(w && w.day===careerToday()) ? (w.n||0) : 0;
-  return ' '+n+'/'+((w && w.of) || CC_MP_HUMANS);
+  const of=(w && w.day===careerToday() && w.of) || (race ? ccRaceHumansN() : CC_MP_HUMANS);
+  return ' '+n+'/'+of;
 }
 /* «Ждём напарника…» — окно на время, пока не приехал второй голос.
 
@@ -59138,6 +59153,11 @@ function careerRaceWire(){
     /* Голос за следующий день — тот же act, что и в командной карьере, только
        считает его гонка своим счётчиком. См. ccRaceNextSaw. */
     if(m.kind==='nextday'){ if(ccRaceOn()) ccRaceNextSaw(m.payload); return; }
+    /* «Пропустить» в общей комнате — голос, как в команде (ccMpSkipAsk шлёт его
+       под ccMpLock). Считал его только командный обработчик (ccMpThirdWire, под
+       ccMpOn), то есть в гонке голоса уходили в пустоту, и кнопка ждала вечно.
+       Его слово 8 сентября: «скип не работает». */
+    if(m.kind==='skip'){ if(ccRaceOn() && !ccMpOn() && m.payload.by) ccMpSkipSaw(m.payload.by); return; }
     if(m.kind!=='race') return;
     if(m.by && m.by===ccMpId()) return;              // своё эхо не считаем
     /* НОВОМУ В КОМНАТЕ ОТВЕЧАЕМ СВОЕЙ СТРОКОЙ, один раз на человека. Строка гонки
@@ -59304,10 +59324,23 @@ function ccRacePackCard(c){
 function ccRaceMyLine(){
   const me=careerCard(); if(!me) return {};
   const mates=(typeof careerMates==='function' ? careerMates() : []).filter(Boolean);
-  let pow=null;
-  try{ if(mates.length>=careerMateSeats()) pow=careerYouTeam([me].concat(mates)).pow; }catch(e){}
+  let pow=null, ev=null;
+  /* СИЛА — ТА ЖЕ, ЧТО В ВЕЧЕРЕ. Его скрин 8 сентября (страница «socials»): «Вечера
+     разошлись на игре 1 … #1 focus+th0mashd:107 vs focus+th0mashd:103» — у себя
+     команда 107, у соперника та же команда 103, и у соперника наоборот. Строка
+     считала силу ОТДЕЛЬНЫМ вызовом careerYouTeam до гейта, а вечер — своим, уже
+     внутри раннера (форма, лагерь, эфир, всё, что раннер успевает тронуть).
+     В общей комнате сила берётся из команды вечера (CC_TV_YOU, её ставит тот же
+     careerYouTeam раннера) и подписывается сидом вечера: соперник ждёт именно
+     такую строку, а не любую (ccRaceFieldSync). */
+  if(typeof ccRaceLock==='function' && ccRaceLock() && typeof CC_TV_YOU!=='undefined' && CC_TV_YOU && CC_TV_YOU.pow!=null &&
+     typeof CC_MP_SEED!=='undefined' && CC_MP_SEED){
+    pow=CC_TV_YOU.pow; ev=CC_MP_SEED;
+  } else {
+    try{ if(mates.length>=careerMateSeats()) pow=careerYouTeam([me].concat(mates)).pow; }catch(e){}
+  }
   const card=(typeof MP!=='undefined' && MP.card) ? MP.card() : ccRacePackCard(me);
-  return {id:ccMpId(), card:ccRacePackCard(card||me), mates:mates.map(ccRacePackCard), pow:pow, squad:careerSquadSize()};
+  return {id:ccMpId(), card:ccRacePackCard(card||me), mates:mates.map(ccRacePackCard), pow:pow, ev:ev, squad:careerSquadSize()};
 }
 // Соперники с карточкой — все, кто прислал строку (комната на N человек); порядок по адресу.
 function ccRaceRivals(){
@@ -59373,8 +59406,28 @@ let CC_RACE_DBG=null;   // для проб: сколько людей и бот�
    у всех строится одинаково само: сид комнаты общий (CC_MP_SEED в careerSeed), а
    соперники со своими напарниками вычитаются из пула у каждого (ccRaceAllCards). Здесь
    остаётся только посадить людей в один порядок и подрезать поле под размер лобби. */
-function ccRaceFieldSync(teams){
+/* Свежие строки соперников — с силой ЭТОГО вечера (ev = сид вечера). Своя уходит
+   здесь же, когда команда вечера уже посчитана раннером; чужие ждутся до
+   CC_RACE_LINE_WAIT, потом комната строится с тем, что есть (сверка игры это
+   поймает и скажет, где разошлось). */
+const CC_RACE_LINE_WAIT=90000;
+async function ccRaceWaitLines(){
+  const ev=(typeof CC_MP_SEED!=='undefined') ? CC_MP_SEED : null;
+  if(!ev) return true;
+  // Вне сеяного потока: упаковка карточек не должна тратить броски вечера.
+  try{ ccRaceUnseeded(()=>careerRaceSend()); }catch(e){}
+  const fresh=()=>ccRaceRivals().every(p=>p && p.ev===ev);
+  const t0=Date.now();
+  while(!fresh() && Date.now()-t0<CC_RACE_LINE_WAIT){
+    if(typeof CC_MP_HOLD!=='undefined' && CC_MP_HOLD) break;   // вечер уже расходится/остановлен
+    await new Promise(r=>setTimeout(r, 100));
+  }
+  if(!fresh() && typeof CC_RACE_DBG!=='undefined') CC_RACE_DBG={stale:ccRaceRivals().filter(p=>p.ev!==ev).map(p=>(p.card||{}).handle)};
+  return fresh();
+}
+async function ccRaceFieldSync(teams){
   if(!ccRaceLock() || typeof MP==='undefined') return;
+  await ccRaceWaitLines();
   const you=teams.find(t=>t.isYou);
   // Соперники — все, кто прислал строку; уже посаженный раннером (соло-кап) — тот же объект.
   const rivals=ccRaceRivals().map(p=>{
