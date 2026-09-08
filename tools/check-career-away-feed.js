@@ -170,6 +170,24 @@ const BOOT = `
       delete cr.race;
       out.steps.push('гонка: эфир с турнира выключен, обычные эфиры на месте');
     }
+    // 11. Разные режимы (симуляция/играть) в гонке = врозь (его скрины 8.09 «с телефоном расходятся игры»).
+    {
+      cr.race = {code: 'ABC123', role: 'a', since: careerToday()};
+      var st0 = MP.state; MP.state = 'live';
+      var peers0 = CC_RACE_PEERS;
+      CC_RACE_PEERS = {zz: {id: 'zz', card: {handle: 'Zed', region: 'EU', sim: true}, div: cr.division, day: careerToday(), pow: 100}};
+      cr.sim = false;
+      var apart1 = ccRaceApartWhy(careerNext());
+      cr.sim = true;
+      var apart2 = ccRaceApartWhy(careerNext());
+      out.steps.push('гонка, режимы: разные → ' + apart1 + ', одинаковые → ' + apart2);
+      if (apart1 !== 'mode') fail('разные режимы в гонке не разводят комнаты: ' + apart1);
+      if (apart2 === 'mode') fail('одинаковые режимы читаются как разные');
+      if (careerSimRowHTML().indexOf(L().ccRaceWhymode) >= 0) fail('подсказка о режимах стоит при одинаковых режимах');
+      cr.sim = false;
+      if (careerSimRowHTML().indexOf(L().ccRaceWhymode) < 0) fail('под кнопками режима нет подсказки о расхождении');
+      CC_RACE_PEERS = peers0; MP.state = st0; delete cr.race; cr.sim = false;
+    }
     // 9. Команда поверх гонки на одном коде вычищается при загрузке.
     {
       cr.race = {code: 'ABC123', role: 'a', since: careerToday()};

@@ -8201,7 +8201,7 @@ ccLanQual:c=>'квал на ЛАН · '+c,
 ccNewsSceneDuo:(a,b)=>'Новый состав: играю с '+b,
 modeCareerRaceDesc:'Наперегонки: каждый играет свою карьеру, лобби показывает, кто впереди.',
 ccRaceMake:'Завести гонку', ccRaceEnter:'Войти в гонку по коду',
-ccRaceTitle:'Гонка карьер', ccRaceRoom:'Сегодня', ccRaceRoomOn:'одна комната — соперник в твоём лобби', ccRaceRoomOff:w=>'врозь'+(w?' — '+w:''), ccRaceWhyoff:'соперник не на связи', ccRaceWhymany:'в гонке больше двоих', ccRaceWhydiv:'разные дивизионы', ccRaceWhyday:'разные дни', ccRaceWhysolo:'соло-серия — личная', ccRaceBotTaken:'Этот напарник уже у соперника по гонке — одинаковых брать нельзя', ccRaceAlone:'Соперник ещё не подключился — дай ему код',
+ccRaceTitle:'Гонка карьер', ccRaceRoom:'Сегодня', ccRaceRoomOn:'одна комната — соперник в твоём лобби', ccRaceRoomOff:w=>'врозь'+(w?' — '+w:''), ccRaceWhyoff:'соперник не на связи', ccRaceWhymany:'в гонке больше двоих', ccRaceWhydiv:'разные дивизионы', ccRaceWhyday:'разные дни', ccRaceWhysolo:'соло-серия — личная', ccRaceWhymode:'разные режимы — у кого-то «Симуляция», у кого-то «Играть»', ccRaceBotTaken:'Этот напарник уже у соперника по гонке — одинаковых брать нельзя', ccRaceAlone:'Соперник ещё не подключился — дай ему код',
 ccRaceWait:'День закрывается вдвоём — ждём, пока соперник доиграет свой',
 ccRaceAloneGo:'Идти дальше одному',
 ccRaceAhead:'Ты впереди', ccRaceBehind:h=>'Впереди '+h, ccRaceLeave:'Выйти из гонки',
@@ -10152,7 +10152,7 @@ ccLanQual:c=>'LAN qualified · '+c,
 ccNewsSceneDuo:(a,b)=>'New duo: playing with '+b,
 modeCareerRaceDesc:'A race: each of you plays your own career, the lobby shows who is ahead.',
 ccRaceMake:'Start a race', ccRaceEnter:'Join a race by code',
-ccRaceTitle:'Career race', ccRaceRoom:'Today', ccRaceRoomOn:'one room — your rival is in your lobby', ccRaceRoomOff:w=>'apart'+(w?' — '+w:''), ccRaceWhyoff:'rival is offline', ccRaceWhymany:'more than two in the race', ccRaceWhydiv:'different divisions', ccRaceWhyday:'different days', ccRaceWhysolo:'the solo series is personal', ccRaceBotTaken:'Your race rival already has this partner — no identical bots', ccRaceAlone:'Nobody has joined yet — give them the code',
+ccRaceTitle:'Career race', ccRaceRoom:'Today', ccRaceRoomOn:'one room — your rival is in your lobby', ccRaceRoomOff:w=>'apart'+(w?' — '+w:''), ccRaceWhyoff:'rival is offline', ccRaceWhymany:'more than two in the race', ccRaceWhydiv:'different divisions', ccRaceWhyday:'different days', ccRaceWhysolo:'the solo series is personal', ccRaceWhymode:'different modes — one of you simulates, the other plays', ccRaceBotTaken:'Your race rival already has this partner — no identical bots', ccRaceAlone:'Nobody has joined yet — give them the code',
 ccRaceWait:'The day closes together — waiting for your rival to finish theirs',
 ccRaceAloneGo:'Go on without them',
 ccRaceAhead:'You are ahead', ccRaceBehind:h=>h+' is ahead', ccRaceLeave:'Leave the race',
@@ -12550,7 +12550,7 @@ ccLanQual:c=>'qualifié LAN · '+c,
 ccNewsSceneDuo:(a,b)=>'Nouveau duo : je joue avec '+b,
 modeCareerRaceDesc:'Une course : chacun joue sa propre carrière, le lobby montre qui est devant.',
 ccRaceMake:'Créer une course', ccRaceEnter:'Rejoindre une course par code',
-ccRaceTitle:'Course de carrières', ccRaceRoom:'Aujourd’hui', ccRaceRoomOn:'une seule salle — ton rival est dans ton lobby', ccRaceRoomOff:w=>'séparément'+(w?' — '+w:''), ccRaceWhyoff:'rival hors ligne', ccRaceWhymany:'plus de deux dans la course', ccRaceWhydiv:'divisions différentes', ccRaceWhyday:'jours différents', ccRaceWhysolo:'la série solo est personnelle', ccRaceBotTaken:'Ton rival de course a déjà ce partenaire — pas de bots identiques', ccRaceAlone:'Personne n’a encore rejoint — donne-lui le code',
+ccRaceTitle:'Course de carrières', ccRaceRoom:'Aujourd’hui', ccRaceRoomOn:'une seule salle — ton rival est dans ton lobby', ccRaceRoomOff:w=>'séparément'+(w?' — '+w:''), ccRaceWhyoff:'rival hors ligne', ccRaceWhymany:'plus de deux dans la course', ccRaceWhydiv:'divisions différentes', ccRaceWhyday:'jours différents', ccRaceWhysolo:'la série solo est personnelle', ccRaceWhymode:'modes différents — l’un simule, l’autre joue', ccRaceBotTaken:'Ton rival de course a déjà ce partenaire — pas de bots identiques', ccRaceAlone:'Personne n’a encore rejoint — donne-lui le code',
 ccRaceAhead:'Tu es devant', ccRaceBehind:h=>h+' est devant', ccRaceLeave:'Quitter la course',
 ccProAmCash:m=>'Empoché '+m, ccProAmNoCash:'Sans gains',
 ccNewsProAmCash:(p,m)=>'Pro-Am : '+ccTop(p)+', $'+m+' gagnés',
@@ -57991,7 +57991,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='703955b5';
+const CC_BUILD='64cdd723';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59388,6 +59388,13 @@ function ccRaceApartWhy(next){
   if(peers.some(p=>!p.card)) return 'off';
   if(peers.some(p=>p.div!==CAREER.career.division)) return 'div';
   if(peers.some(p=>p.day && p.day!==careerToday())) return 'day';
+  /* ОДИН РЕЖИМ НА КОМНАТУ. В «Симуляции» вопросы не задаются вовсе (см.
+     playGameWithChoices), то есть у двоих разное число решений и разные дороги
+     расчёта. Команда это запрещает (ccMpModeWhy), гонка — нет, и его скрины
+     8 сентября «с телефоном расходятся игры» — ровно это: на телефоне удобнее
+     «Симуляция», за компьютером «Играть». Режим едет в карточке (sim); разошлись
+     — вечер врозь, каждый в своей комнате, а плитка говорит почему. */
+  if(peers.some(p=>p.card && p.card.sim!=null && !!p.card.sim!==careerSimOn())) return 'mode';
   return null;
 }
 function ccRaceShared(next){ return !ccRaceApartWhy(next); }
@@ -79967,7 +79974,9 @@ function careerSimSet(on){
   careerSave();
   // Режим командный по последствиям, хоть и личный по хранению: напарник
   // должен увидеть его сразу, а не перед вечером. См. ccMpModeWhy.
-  if(ccMpOn() && typeof MP!=='undefined' && MP.sendCard) MP.sendCard();
+  if((ccMpOn() || (typeof ccRaceLive==='function' && ccRaceLive())) && typeof MP!=='undefined' && MP.sendCard) MP.sendCard();
+  // И соперникам по гонке — своей строкой: по ней комната решает «вместе или врозь».
+  if(typeof ccRaceLive==='function' && ccRaceLive()){ try{ careerRaceSend(); }catch(e){} }
   careerRenderHub('centre');
 }
 function careerSimRowHTML(){
@@ -79983,7 +79992,12 @@ function careerSimRowHTML(){
     ? '<div class="ch-hint" style="margin:0;">'+
         L().ccMpModeMate(peer.sim ? L().ccSimAuto : L().ccSimSelf)+'</div>'
     : '';
-  const why=ccMpModeWhy();
+  // В гонке расхождение режимов не запирает вечер, а разводит комнаты — и об этом
+  // сказано здесь же, под кнопками, которыми это чинят.
+  const raceWhy=(!ccMpOn() && typeof ccRaceOn==='function' && ccRaceOn() &&
+                 ccRaceApartWhy(typeof careerNext==='function' ? careerNext() : null)==='mode')
+    ? L().ccRaceWhymode : null;
+  const why=ccMpModeWhy() || raceWhy;
   const bad=why ? '<div class="ch-hint" style="margin:0;color:#ff9b9b;">'+why+'</div>' : '';
   return '<div class="ch-simwrap"><span class="ch-ffcap">'+L().ccSimCap+'</span>'+
     '<div class="ch-sim">'+
