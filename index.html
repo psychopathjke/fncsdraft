@@ -8127,7 +8127,7 @@ ccStreamCost:e=>e+' энергии',
 ccStreamCupTitle:'Стримить турнир', ccStreamCupGo:'Играть в эфире',
 ccStreamCupHint:(e,p)=>e+' энергии · играешь слабее: −'+p+' к силе команды',
 ccTvNoEvent:'Сегодня турнира нет — стримить нечего',
-ccTvMpNo:'В командной карьере эфир с турнира недоступен',
+ccTvMpNo:'В командной карьере эфир с турнира недоступен', ccTvRaceNo:'В гонке эфир с турнира выключен — стримить можно ранкед, общение и марафон',
 ccTvWait:'В эфире — ждём первую игру',
 ccTvHours:(h,all)=>'в эфире '+h+' ч из '+all,
 ccTvHapRaid:(w,n)=>w+' зарейдил: пришло '+n+' зрителей',
@@ -10086,7 +10086,7 @@ ccStreamCost:e=>e+' energy',
 ccStreamCupTitle:'Stream the tournament', ccStreamCupGo:'Play live',
 ccStreamCupHint:(e,p)=>e+' energy · you play weaker: −'+p+' team power',
 ccTvNoEvent:'Nothing on today — no tournament to stream',
-ccTvMpNo:'Streaming a tournament is off in a team career',
+ccTvMpNo:'Streaming a tournament is off in a team career', ccTvRaceNo:'Streaming a tournament is off in a race — ranked, chatting and marathons still go live',
 ccTvWait:'Live — waiting for the first game',
 ccTvHours:(h,all)=>h+' h of '+all+' on air',
 ccTvHapRaid:(w,n)=>w+' raided you: '+n+' viewers came over',
@@ -57991,7 +57991,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='2f2dcb12';
+const CC_BUILD='5ceda95b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59431,9 +59431,12 @@ async function ccRaceWaitLines(){
   try{ ccRaceUnseeded(()=>careerRaceSend()); }catch(e){}
   const fresh=()=>ccRaceRivals().every(p=>p && p.ev===ev);
   const t0=Date.now();
+  /* Ожидание — не расчёт: пока ждём, общий сид никому не отдаётся (ccMpIdle),
+     иначе чат эфира и таймеры хаба тратили бы сеяные броски у того, кто ждёт
+     дольше. Его скрины 8 сентября (2f2dcb12): «table,rolls @ #7», «peer ahead». */
   while(!fresh() && Date.now()-t0<CC_RACE_LINE_WAIT){
     if(typeof CC_MP_HOLD!=='undefined' && CC_MP_HOLD) break;   // вечер уже расходится/остановлен
-    await new Promise(r=>setTimeout(r, 100));
+    await ccMpIdle(new Promise(r=>setTimeout(r, 100)));
   }
   if(!fresh() && typeof CC_RACE_DBG!=='undefined') CC_RACE_DBG={stale:ccRaceRivals().filter(p=>p.ev!==ev).map(p=>(p.card||{}).handle)};
   return fresh();
@@ -90002,6 +90005,12 @@ function ccStreamCupWhy(){
   const T=L();
   if(!CAREER || !CAREER.career) return T.ccTvNoEvent;
   if(ccMpOn()) return T.ccTvMpNo;
+  /* И в гонке тоже — его слово 8 сентября: «race выключи функцию играть в
+     live, только стримить общение, ранкед и т. д.». Причина та же, что у
+     команды: вечер в общей комнате считают все браузеры, а рамка эфира тикает
+     своим таймером и тратит броски только у того, кто стримит. Обычные эфиры
+     (ранкед, общение, марафон, коллаб) идут в свободный день и вечера не трогают. */
+  if(typeof ccRaceOn==='function' && ccRaceOn()) return T.ccTvRaceNo;
   const next=careerNext();
   if(!next || next.day!==careerToday() || !careerCanPlay(next) || CAREER.career.seasonOver)
     return T.ccTvNoEvent;

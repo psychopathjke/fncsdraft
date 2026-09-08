@@ -161,6 +161,15 @@ const BOOT = `
       out.steps.push('совет напарника: дуо ' + (duoNow ? 'есть' : 'нет (напарника нет)') + ', соло ' + (soloNow ? 'ЕСТЬ' : 'нет'));
       if (soloNow) fail('напарник советует в соло-вечере');
     }
+    // 10. В гонке эфир с турнира выключен, обычные эфиры остаются (его слово 8.09).
+    {
+      cr.race = {code: 'ABC123', role: 'a', since: careerToday()};
+      var why = ccStreamCupWhy();
+      if (why !== L().ccTvRaceNo) fail('в гонке эфир с турнира не выключен: ' + why);
+      if (!CC_STREAM_KINDS.length || careerDayClosed()) fail('обычных эфиров нет');
+      delete cr.race;
+      out.steps.push('гонка: эфир с турнира выключен, обычные эфиры на месте');
+    }
     // 9. Команда поверх гонки на одном коде вычищается при загрузке.
     {
       cr.race = {code: 'ABC123', role: 'a', since: careerToday()};
