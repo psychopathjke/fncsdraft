@@ -3376,6 +3376,19 @@
   .cc-mp-invite{display:flex;gap:6px;align-items:center;margin:4px 0 8px;}
   .cc-mp-url{flex:1 1 auto;min-width:0;font:inherit;font-size:11px;padding:6px 8px;border-radius:8px;border:1px solid #26334f;background:#0f1628;color:#b9c6e4;}
   #screen-career-hub .cc-mp-invite .ch-sign{width:auto;flex:0 0 auto;padding:7px 12px;font-size:12px;white-space:nowrap;}
+  /* Участники гонки: аватарка, ник и клуб, дивизион/деньги/PR, рейтинг плашкой. */
+  #screen-career-hub .cc-race-row{display:flex;align-items:center;gap:10px;padding:7px 8px;margin:4px 0;
+    border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);}
+  #screen-career-hub .cc-race-row.me{border-color:rgba(126,240,221,.55);background:rgba(126,240,221,.07);}
+  #screen-career-hub .cc-race-row .x-av{width:30px;height:30px;font-size:11px;}
+  #screen-career-hub .cc-race-in{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;line-height:1.2;}
+  #screen-career-hub .cc-race-in b{font-family:var(--font-display);font-weight:600;font-size:14px;letter-spacing:.03em;
+    color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #screen-career-hub .cc-race-in b i{font-style:normal;color:#7fa3a5;font-size:11px;margin-left:6px;letter-spacing:0;}
+  #screen-career-hub .cc-race-in em{font-style:normal;color:#9fb8ba;font-size:11px;font-weight:700;}
+  #screen-career-hub .cc-race-ovr{flex:0 0 auto;min-width:34px;text-align:center;padding:4px 7px;border-radius:8px;
+    background:#ffdd00;color:#0b1220;font-family:var(--font-display);font-weight:700;font-size:15px;}
+  #screen-career-hub .cc-race-row.lead .cc-race-in b::before{content:'👑';font-size:11px;margin-right:5px;}
   .x-co-r.hate b{color:#6f7a93;}
   .x-co-more{font-size:11px;color:#67799f;margin-top:1px;}
   .x-acts span{display:inline-flex;align-items:center;gap:6px;}
@@ -57978,7 +57991,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='72df22d8';
+const CC_BUILD='2f2dcb12';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59449,10 +59462,20 @@ function careerRaceTileHTML(){
   const rows=careerRaceRows();
   const code=CAREER.career.race.code;
   const alone=rows.length<2;
-  const line=r=>`<div class="ch-row cc-race-row${r.you?' me':''}">
-      <em>${esc(r.nick||'')}${r.org?' · '+esc(r.org):''}</em>
-      <b>${L().ccDivision} ${r.div} · ${L().ccRoOvr} ${r.ovr} · ${ccMoney(r.money||0)}${
-        r.pr?' · PR '+ccNum(r.pr):''}</b></div>`;
+  /* Строка участника — как карточка человека, а не строка таблицы: маленькая
+     аватарка, ник и клуб, под ними дивизион, деньги и PR, справа рейтинг
+     плашкой. Его слово 8 сентября: «красиво оформить, когда заходят, чтоб иконку
+     аватарки маленькую показывало и рейтинг». Портрет — по нику и региону
+     карточки из сводки (photoURL), у кого портрета нет — инициалы. Первый в
+     таблице отмечен короной. */
+  const line=(r,i)=>{
+    const card=r.card ? {handle:r.card.handle, region:r.card.region} : null;
+    return `<div class="cc-race-row${r.you?' me':''}${i===0&&rows.length>1?' lead':''}">
+      ${ccAvatar({name:r.nick||'?', card:card, you:!!r.you})}
+      <span class="cc-race-in"><b>${esc(r.nick||'')}${r.org?`<i>${esc(r.org)}</i>`:''}</b>
+        <em>${L().ccDivision} ${r.div} · ${ccMoney(r.money||0)}${r.pr?' · PR '+ccNum(r.pr):''}</em></span>
+      <span class="cc-race-ovr" title="${esc(L().ccRoOvr)}">${r.ovr}</span>
+    </div>`; };
   return `<div class="ch-tile cc-race">
     <h4>${L().ccRaceTitle}</h4>
     <div class="ch-row"><em>${L().ccMpCode}</em><b>${esc(code)}</b></div>
