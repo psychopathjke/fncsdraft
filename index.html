@@ -5526,7 +5526,7 @@
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
      файл и разойдётся с напарником. -->
-<script src="mp.js?v=11afadef"></script>
+<script src="mp.js?v=6f0176f5"></script>
 </head>
 <body>
 <div class="wrap">
@@ -57999,7 +57999,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='de4166a4';
+const CC_BUILD='4b6c1d39';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59463,8 +59463,12 @@ function ccRaceModeWhy(){
   if(ccMpOn() || typeof ccRaceOn!=='function' || !ccRaceOn()) return null;
   if(typeof ccRaceLive!=='function' || !ccRaceLive()) return null;
   if(typeof ccRaceRivals!=='function' || !ccRaceRivals().length) return null;
-  const next=(typeof careerNext==='function') ? careerNext() : null;
-  return ccRaceApartWhy(next)==='mode' ? L().ccRaceWhymode : null;
+  /* БЕЗ careerNext: его зовёт careerCanPlayKindOn, а careerNext в день с двумя турнирами сам
+     спрашивает careerCanPlayKind — взаимная рекурсия до «Maximum call stack size exceeded»
+     (годовая проба 9.09, 22.02: хит Reload + второй турнир, у двух клиентов). Режим сверяется
+     напрямую по строкам комнаты — то же условие, что ветка 'mode' в ccRaceApartWhy. */
+  const room=(typeof ccRaceRoom==='function') ? ccRaceRoom() : ccRaceRivals();
+  return room.some(p=>p.card && p.card.sim!=null && !!p.card.sim!==careerSimOn()) ? L().ccRaceWhymode : null;
 }
 function ccRaceRivalTeam(p){
   p=p||ccRaceRival(); if(!p || !p.card) return null;

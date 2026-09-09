@@ -339,7 +339,11 @@ var MP={
         if(WATCH) clearInterval(WATCH);
         WATCH=setInterval(function(){
           if(SOCK!==sock){ clearInterval(WATCH); WATCH=null; return; }
+          /* Только посреди сеяного вечера: пульс соседей идёт лишь там (ccMpHeartbeat), а в хабе
+             тишина от сервера — норма, и сторож рвал бы живой сокет каждые 45 с (год 9.09 03:48:
+             шестеро в хабе на 22.02, связь lost/wait по кругу). */
           if(MP.state!=='live' || !Object.keys(PEER_HBS).length) return;
+          if(typeof CC_MP_RAND==='undefined' || !CC_MP_RAND) return;
           if((new Date()).getTime()-LAST_MSG>45000){ try{ sock.close(); }catch(e){} }
         }, 5000);
         /* Дивизион и сид команды — вместе с приветствием: по ним лобби решает,
