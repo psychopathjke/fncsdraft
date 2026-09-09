@@ -58057,7 +58057,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b456314a';
+const CC_BUILD='16425aae';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -75225,6 +75225,9 @@ function careerDmPush(t, from, key, args){
    or a better duo would look. The message arrives from the person themselves,
    because that is who would tell you. */
 const CC_POACH_SAFE=70;      // patience at or above this and they stay
+// Шанс перехвата за удачный вечер. Было 0.35; его слово 9 сентября: «10 % шанс» — годовая проба
+// теряла напарника у пятерых из шести, и это читалось как правило, а не как событие.
+const CC_POACH_ODDS=0.10;
 /* A slot belongs to the pair that won it.
 
    His rule, 17 August: if the two of you qualified for a LAN or for a Major's
@@ -75361,7 +75364,7 @@ function careerMatePoach(place, of, passed){
   const beat=1-(place-1)/(of-1);
   if(!(place<=3 || (passed && beat>=0.8))) return null;
   const rnd=careerRng(ccHashStr('poach|'+cr.season+'|'+careerToday()+'|'+place));
-  if(rnd()>=0.35) return null;
+  if(rnd()>=CC_POACH_ODDS) return null;
   const t=careerDmFind(mate.handle) || careerDmThread({
     handle:mate.handle, ovr:(mate._ovr!=null?mate._ovr:(attrsFor(mate)||{}).ovr),
     nat:mate.nat, role:attrsFor(mate).roleKey, roster:true, cardRegion:mate.region,
