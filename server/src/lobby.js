@@ -36,7 +36,8 @@ function createLobby(opts){
     over:false,          // дуо разорвано
     race:false,          // лобби гонки: людей больше двух, дивизион не сверяется
     days:{},             // гонка: id -> день карьеры по последней строке гонки (act 'race')
-    pass:{}              // гонка: id -> день, закрытый голосом «следующий день» (act 'nextday')
+    pass:{},             // гонка: id -> день, закрытый голосом «следующий день» (act 'nextday')
+    krs:{}               // гонка: id -> {day, kr} ранг турнира на день по строке гонки (см. room)
   };
   const ids=()=>Object.keys(st.cards);
   const peerOf=id=>ids().find(x=>x!==id)||null;
@@ -49,7 +50,14 @@ function createLobby(opts){
      check-race-live-six): без напарника или без квалификации человек шагает
      через турнирный день, а остальные ждали его готовности, которой не будет.
      Командное лобби — как было: двое. */
-  const room=day=>st.race ? ids().filter(x=>!((st.days[x] && st.days[x]>day) || st.pass[x]===day)) : ids();
+  /* И ПО ВИДУ ТУРНИРА: в день с двумя турнирами комната — большинство рангов (при равенстве —
+     старший, то есть меньший ранг), кто в меньшинстве — играет своё без сервера. Тот же счёт,
+     что у клиента (ccRaceKrMajor). Проба 9.09 15:19: финал недели у одного, Victory Cup у пяти. */
+  const krMajor=day=>{ const cnt={}; ids().forEach(x=>{ const k=st.krs[x]; if(k && k.day===day && k.kr!=null && k.kr<99) cnt[k.kr]=(cnt[k.kr]||0)+1; });
+    let best=null; Object.keys(cnt).map(Number).forEach(k=>{ if(best===null || cnt[k]>cnt[best] || (cnt[k]===cnt[best] && k<best)) best=k; }); return best; };
+  const room=day=>{ if(!st.race) return ids(); const major=krMajor(day);
+    return ids().filter(x=>!((st.days[x] && st.days[x]>day) || st.pass[x]===day) &&
+      !(major!==null && st.krs[x] && st.krs[x].day===day && st.krs[x].kr!=null && st.krs[x].kr<99 && st.krs[x].kr!==major)); };
   /* Комната из ОДНОГО (остальные не квалифицировались и ушли дальше по календарю) — вечер
      стартует для него одного: раньше max(2, …) ждал второго, которого не будет, а клиент стоял
      на гейте до потолка (годовая проба 9.09: финал недели 21.02 у одного из шести). */
@@ -262,7 +270,7 @@ function createLobby(opts){
          Ушёл дальше — и те, кто уже готов на дне, которого он не играет, ждать
          его не должны: комната сужается, старт проверяется тут же. */
       if(st.race && payload){
-        if(kind==='race' && payload.day) st.days[id]=payload.day;
+        if(kind==='race' && payload.day){ st.days[id]=payload.day; st.krs[id]={day:payload.day, kr:(payload.kr!=null ? payload.kr : 99)}; }
         if(kind==='nextday' && payload.day) st.pass[id]=payload.day;
         if(!st.evening && (kind==='race' || kind==='nextday')){
           const pending=Object.keys(st.ready).map(x=>st.ready[x]).filter(Boolean);

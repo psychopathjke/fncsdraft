@@ -101,6 +101,7 @@ const boot = (who) => `
     const mark=(t)=>{ if(out.notes.marks.length>=160) out.notes.marks.shift(); out.notes.marks.push(t+' d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' t'+Math.round((Date.now()-t0)/1000)); };
     const dq0=careerDropQuick; careerDropQuick=async function(field, you, how, home, pre){ const r0=CC_MP_ROLLS; const q=await dq0.apply(this, arguments); mark('DQ '+(you.mpTag||'?')+' '+how+' home'+(home?ALL_LANDING_ZONES.indexOf(home):'-')+' ->'+ALL_LANDING_ZONES.indexOf(you.landingZone)+' pow'+you.pow+' ce'+(you.closeEdge||0)+' r'+r0+'>'+CC_MP_ROLLS); return q; };
     const bl0=buildBotLandingAssignment; buildBotLandingAssignment=function(list, o){ const r0=CC_MP_ROLLS; const res=bl0.apply(this, arguments); mark('BOTS n'+(list||[]).length+' r'+r0+'>'+CC_MP_ROLLS); return res; };
+    const ce0=console.error; console.error=function(){ try{ const parts=[...arguments].map(x=>(x && x.stack) ? String(x.stack).slice(0,600) : String(x)); out.notes.lastErr=parts.join(' ').slice(0,900); out.notes.cerr=(out.notes.cerr||[]).slice(-5).concat([out.notes.lastErr]); }catch(e){} return ce0.apply(console, arguments); };
     out.notes.fields=[]; const cf0=careerCupField; careerCupField=function(cr, mine, size, salt, open, sharp){
       const res=cf0.apply(this, arguments);
       try{ const h=x=>{ let v=0; for(const ch of String(x)){ v=(v*31+ch.charCodeAt(0))>>>0; } return v.toString(16); };
@@ -113,7 +114,7 @@ const boot = (who) => `
       return res; };
     out.notes.skipped=[]; const cp0=careerCanPlay; careerCanPlay=function(next){ const ok=cp0.apply(this, arguments); if(!ok && next && next.type && next.type!=='free' && CC_PLAYABLE.indexOf(next.type)>=0 && out.notes.skipped.length<60) out.notes.skipped.push([CAREER.career.day, next.type, 'live'+(ccMpLive()?1:0), 'link '+MP.state, 'noMate'+(careerNoMate(next.type)?1:0), 'mates'+careerMates().length, 'mode '+(ccRaceModeWhy()||'-'), 'div'+CAREER.career.division].join(' ')); return ok; };
     // Метки хода: каждый посланный акт, кроме пульса.
-    const act0=MP.act; MP.act=function(k,p){ if(k!=='hb'){ if(out.notes.marks.length>=160) out.notes.marks.shift(); out.notes.marks.push(k+(p&&p.q!=null?'#'+p.q:'')+' d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' r'+CC_MP_ROLLS+' t'+Math.round((Date.now()-t0)/1000)); } return act0.apply(MP, arguments); };
+    const act0=MP.act; MP.act=function(k,p){ if(k==='fferr' && p && !out.notes.ffErr) out.notes.ffErr={day:p.day, kind:'', text:String(p.text||''), stack:out.notes.lastErr||null}; if(k!=='hb'){ if(out.notes.marks.length>=160) out.notes.marks.shift(); out.notes.marks.push(k+(p&&p.q!=null?'#'+p.q:'')+' d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' r'+CC_MP_ROLLS+' t'+Math.round((Date.now()-t0)/1000)); } return act0.apply(MP, arguments); };
     const slow0=ccMpSlowSeen; ccMpSlowSeen=function(){ out.notes.marks.push('SLOW d'+CAREER.career.day.slice(5)+' r'+CC_MP_ROLLS+' t'+Math.round((Date.now()-t0)/1000)); return slow0.apply(this, arguments); };
     // Голос за перемотку до конца сезона; пойдёт, когда проголосуют все.
     careerRenderHub('calendar'); await wait(300);
@@ -217,6 +218,7 @@ async function runOne(tag, who, port){
     if(r.notes.skipped && r.notes.skipped.length) console.log('   не сыграно: '+[...new Set(r.notes.skipped)].join(' | '));
     if(r.fail || (r.notes.dayAfter<FF && !r.notes.seasonOver)) console.log('   застрял: wait '+JSON.stringify(r.notes.wait)+' · игра '+r.notes.game+' · qn '+JSON.stringify(r.notes.qn)+' · эфир '+r.notes.title+' · комната '+r.notes.room+' · соперники '+JSON.stringify(r.notes.peersDays)+'\n   метки: '+(r.notes.marks||[]).slice(-70).join(' | ')+'\n   входящие: '+JSON.stringify(r.notes.queue));
     if(r.notes.stall) console.log('   СТОП '+r.notes.stall.day+' игра '+r.notes.stall.game+' r'+r.notes.stall.rolls+' wait '+JSON.stringify(r.notes.stall.wait)+'\n   qn '+r.notes.stall.qn+'\n   метки-стоп: '+r.notes.stall.marks.join(' | ')+'\n   входящие-стоп: '+JSON.stringify(r.notes.stall.inbox));
+    if(r.notes.cerr && r.notes.cerr.length) console.log('   console.error: '+r.notes.cerr.join(' || '));
     if(r.notes.ffErr){ console.log('   FAIL перемотка встала: '+JSON.stringify(r.notes.ffErr)); bad++; }
     if(r.notes.splits && r.notes.splits.length){ console.log('   FAIL красные строки: '+r.notes.splits.join(' || ')); bad++; }
     if(r.errs && r.errs.length){ console.log('   FAIL ошибки страницы: '+r.errs.join(' | ')); bad++; }

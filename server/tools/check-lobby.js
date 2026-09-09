@@ -279,5 +279,17 @@ R9.act('B','race',{by:'B', day:'2026-02-22'});
 r=R9.act('C','race',{by:'C', day:'2026-02-22'});
 check('оба ушли дальше — старт для одного', r.some(x=>x.msg.t==='start'), JSON.stringify(r));
 
+// День с двумя турнирами: комната — большинство по рангу, меньшинство не считается.
+let R10=createLobby({build:'aaaa1111', seed:'race-10'});
+['A','B','C'].forEach(id=>R10.join(id,{build:'aaaa1111', card:CARD, race:true}));
+R10.act('A','race',{by:'A', day:'2026-06-13', kr:5});   // финал недели
+R10.act('B','race',{by:'B', day:'2026-06-13', kr:7});   // Victory Cup
+R10.act('C','race',{by:'C', day:'2026-06-13', kr:7});
+r=R10.ready('B','2026-06-13','victory');
+check('комната по большинству: 1 из 2', r[0].msg.t==='ready' && r[0].msg.of===2, JSON.stringify(r));
+r=R10.ready('C','2026-06-13','victory');
+check('двое Victory Cup стартуют без финалиста', r.some(x=>x.msg.t==='start'), JSON.stringify(r));
+check('комната вечера — B и C', R10.state.evening && R10.state.evening.room.join()==='B,C', JSON.stringify(R10.state.evening));
+
 if(fails.length){ fails.forEach(f=>console.error('FAIL '+f)); process.exit(1); }
 console.log('лобби нумерует и рассылает, ничего не считая');
