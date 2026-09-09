@@ -57999,7 +57999,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='fd0189a2';
+const CC_BUILD='7ef522bc';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59857,8 +59857,16 @@ function ccMpPeerLeft(){
 }
 function ccMpDeadline(fn, ms){
   var cap=ms||CC_MP_SYNC_MS, start=(new Date()).getTime();
+  /* Потолок считается от ПОСЛЕДНЕГО ДВИЖЕНИЯ соседей, а не от начала ожидания: пульс несёт игру
+     и номера вопросов (g, q), и пока они меняются, сосед считает, а не стоит. Шесть Chrome на одной
+     машине отстают друг от друга на игру, и 4-минутный потолок гонки срезал живое ожидание
+     (проба 9.09 15:28: Reload 12.06, «timeout · q own:live3#7», сосед был на игру позади). */
+  var sig=null;
+  var progress=function(){ try{ var hbs=(typeof MP!=='undefined' && MP.peerHbs)||{}; var s2=Object.keys(hbs).sort().map(function(k){ var h=hbs[k]||{}; return k+':'+(h.g||0)+'/'+(h.q||''); }).join('|'); if(s2!==sig){ sig=s2; return true; } }catch(e){} return false; };
+  progress();
   var id=setInterval(function(){
     var now=(new Date()).getTime();
+    if(progress()) start=now;
     var seen=(typeof MP!=='undefined' && MP.peerSeen) ? MP.peerSeen : 0;
     var quiet=now-Math.max(start, seen);
     var left=!fn.onlyLost && now-start>=CC_MP_LEAVE_MS && ccMpPeerLeft();
