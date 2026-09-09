@@ -102,14 +102,20 @@ const BOOT = `
       out.steps.push('subscribed to ' + cre.name + ' for $' + CC_TW_SUB_PRICE);
     } else out.steps.push('no creator live today — subscribe not exercised');
     // Таблица финала доигрывается до конца эфира.
-    let maxN = 0, sawBoard = false;
+    let maxN = 0, sawBoard = false; const ats = new Set(); let clipOk = true, clipSrc = '';
     const end0 = ccStreamRunEnd; ccStreamRunEnd = function(){ if (CC_TV_PLAIN && CC_TV_PLAIN.watch) maxN = Math.max(maxN, CC_TV_PLAIN.watch.n); return end0.apply(this, arguments); };
-    for (let i = 0; i < 400 && CC_TV_PLAIN; i++) {
+    for (let i = 0; i < 1500 && CC_TV_PLAIN; i++) {
       await wait(100);
       if (CC_TV_PLAIN && CC_TV_PLAIN.watch) maxN = Math.max(maxN, CC_TV_PLAIN.watch.n);
       if (document.querySelector('#ccTvBoard .cc-tvm-row')) sawBoard = true;
+      const clip = document.querySelector('#chBody .tv-clip');
+      if (clip) { ats.add(clip.dataset.at); clipSrc = clip.getAttribute('src') || ''; const at = +clip.dataset.at, to = +clip.dataset.to;
+        if (!/xGTo4-XSFkw/.test(clipSrc) || at < CC_TV_WATCH_CLIP.from || to > CC_TV_WATCH_CLIP.to || to - at > CC_TV_CUT) clipOk = false; }
     }
     check('the stream ended on its own', !CC_TV_PLAIN);
+    out.steps.push('clip moments: ' + [...ats].join(',') + ' · ' + clipSrc.slice(0, 90));
+    check('the player shows his grand-final video between 1:00 and 26:20', clipOk && ats.size > 0, clipSrc);
+    check('and moves through its moments', ats.size >= 3, [...ats].join(','));
     check('the final played all its games on the board', maxN === CC_WATCH_GAMES && sawBoard, 'games ' + maxN + ' board ' + sawBoard);
     const sum = CAREER.career.streamLast && CAREER.career.streamLast.sum;
     check('the summary names the final', !!sum && /:/.test(CAREER.career.streamLast.label || ''), JSON.stringify(sum && sum.label));
