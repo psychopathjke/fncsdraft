@@ -23,6 +23,7 @@ const DAY = process.env.CC_DAY || '2025-12-01';
 const FF = process.env.CC_FF || '2026-10-27';
 const CODE = ('Y' + crypto.randomBytes(3).toString('hex').toUpperCase()).slice(0, 6);
 const BUDGET_MS = Number(process.env.CC_BUDGET || 6 * 3600000);
+const SEASONS = Number(process.env.CC_SEASONS || 1);   // 2 — после дуо-года закрыть сезон и сыграть трио-год тем же составом комнаты
 const SLASH = String.fromCharCode(92);
 
 const BASE = '<base href="file:///' + ROOT.split(SLASH).join('/') + '/">';
@@ -122,16 +123,39 @@ const boot = (who) => `
     careerRenderHub('calendar'); await wait(300);
     careerFfToDay(${JSON.stringify(FF)});
     out.notes.ffVoted=true;
-    const tf=Date.now();
-    while(Date.now()-tf<${BUDGET_MS} && (CAREER.career.day<${JSON.stringify(FF)} || CC_FF) && !CAREER.career.seasonOver){
+    const runFf=async function(){
+    while(Date.now()-t0<${BUDGET_MS} && (CAREER.career.day<${JSON.stringify(FF)} || CC_FF) && !CAREER.career.seasonOver){
       await wait(1000);
       if(out.notes.ffErr) { await wait(3000); break; }
       // Перемотка остановилась, вечера нет, цель не достигнута — ждать нечего (год 9.09: 5 часов стоя на 13.06).
       if(!CC_FF && !(typeof CAREER_RUN!=='undefined' && CAREER_RUN) && CAREER.career.day<${JSON.stringify(FF)}){ out.notes.ffIdle=(out.notes.ffIdle||0)+1; if(out.notes.ffIdle>90){ out.notes.ffErr=out.notes.ffErr||{day:CAREER.career.day, kind:'', text:'перемотка остановилась без ошибки'}; break; } } else out.notes.ffIdle=0;
     }
+    };
+    await runFf();
+    if(${SEASONS}>=2 && !out.notes.ffErr && CAREER.career.day>=${JSON.stringify(FF)}){
+      const cr1=CAREER.career;
+      // Конец сезона: голос за следующий день у всех — день за CC_YEAR_TO закрывает год.
+      for(let i=0;i<2400 && !cr1.seasonOver;i++){ if(i%20===0){ try{ careerNextDay(); }catch(e){} } await wait(250); }
+      out.notes.s1={day:cr1.day, over:!!cr1.seasonOver, log:(cr1.log||[]).length, div:cr1.division, money:cr1.earnings, ovr:CAREER.player.ovr, mates:careerMates().map(m=>m&&m.handle)};
+      if(!cr1.seasonOver) throw new Error('сезон 1 не закрылся: день '+cr1.day+' · голосов '+ccRaceVotes()+'/'+ccRaceOf());
+      careerNewSeason();
+      const cr2=CAREER.career;
+      out.notes.s2start={season:cr2.season, day:cr2.day, size:careerSquadSize(), mates:careerMates().map(m=>m&&m.handle)};
+      // Трио: досадить напарников до полного состава — индексы свои у каждого клиента (mateIdx+6k), чтобы боты не совпали.
+      { const pool=ccSceneRoster(ccCareerRegion()).filter(c=>hKey(c)!==hKey(careerCard())); let k=1, guard=0;
+        while(careerMates().length<careerMateSeats() && guard++<12){ const card=pool[${who.mateIdx}+6*k]; k++; if(!card) break;
+          if(careerMates().some(m=>m&&hKey(m)===hKey(card))) continue;
+          careerMateSeat({handle:card.handle, cardRegion:card.region, patience:CAREER_PATIENCE_START, since:ccAddDays(careerToday(), -CC_CHEM_DAYS)}); } }
+      out.notes.s2mates=careerMates().map(m=>m&&m.handle);
+      careerSave(); careerRaceSend(); careerRenderHub('calendar'); await wait(2000);
+      out.notes.ffIdle=0; careerFfToDay(${JSON.stringify(FF)}); out.notes.ffVoted2=true;
+      await runFf();
+    }
     const cr=CAREER.career;
     out.notes.table=(cr.log||[]).map(r=>[r.day, r.kind||'cup', r.stage||'', 'div'+r.div, '#'+r.place+'/'+r.of, r.pts+'pts', (r.wins||0)+'w', (r.elims||0)+'e'].join(' '));
     out.notes.kinds=(cr.log||[]).reduce((a,r)=>{ const k=r.kind||'cup'; a[k]=(a[k]||0)+1; return a; }, {});
+    out.notes.bySeason=(cr.log||[]).reduce((a,r)=>{ const s=r.season||1; a[s]=(a[s]||0)+1; return a; }, {});
+    out.notes.season=cr.season; out.notes.size=careerSquadSize();
     out.notes.rolls=CC_MP_ROLLS; out.notes.dayAfter=cr.day; out.notes.div=cr.division; out.notes.seasonOver=!!cr.seasonOver;
     out.notes.money=cr.earnings; out.notes.ovr=CAREER.player.ovr; out.notes.titles=(cr.ewc||[]).length;
     out.notes.mates=careerMates().map(m=>m&&m.handle); out.notes.noMate=(typeof careerNoMate==='function')?careerNoMate('eval'):null; out.notes.form=cr.form; out.notes.energy=cr.energy;
@@ -214,6 +238,7 @@ async function runOne(tag, who, port){
       ' · журнал '+((r.notes.table||[]).length)+' '+JSON.stringify(r.notes.kinds||{})+' · броски '+r.notes.rolls+' · $'+r.notes.money+' · ovr '+r.notes.ovr+' · титулов '+r.notes.titles+
       ' · напарники '+JSON.stringify(r.notes.mates)+' noMate '+r.notes.noMate+' · форма '+r.notes.form+' энергия '+r.notes.energy+' · '+Math.round((r.notes.secs||0)/60)+' мин · dbg '+JSON.stringify(r.notes.dbg));
     console.log('   напарник '+r.notes.mate+' · соперники '+r.notes.rival+' · врозь на старте: '+r.notes.apart);
+    if(r.notes.s1) console.log('   сезон 1: '+JSON.stringify(r.notes.s1)+' → сезон '+r.notes.season+' (состав '+r.notes.size+'): старт '+JSON.stringify(r.notes.s2start)+' · напарники '+JSON.stringify(r.notes.s2mates)+' · вечеров по сезонам '+JSON.stringify(r.notes.bySeason));
     console.log('   вечера: '+(r.notes.nights||[]).join(' | '));
     if(r.notes.renderRolls && r.notes.renderRolls.length) console.log('   FAIL броски в отрисовке: '+r.notes.renderRolls.join(' | '));
     (r.notes.fields||[]).forEach(f=>console.log('   поле: '+f));
