@@ -141,6 +141,16 @@ const BOOT = `
     check('отстающий идёт свободно', ccRaceHold(ccAddDays(behind, 1)) === false);
     careerAdvanceTo(ccAddDays(behind, 1));
     check('и его день шагает', careerToday() === ccAddDays(behind, 1));
+    // Голос за день, до которого я ещё не дошёл, ждёт меня там (проба 9.09: год не закрывался).
+    const ahead = ccAddDays(behind, 2);
+    ccRaceNextSaw({by:'rival', day:ahead});
+    check('голос вперёд не считается сегодня', ccRaceVotes() === 0, String(ccRaceVotes()));
+    CC_RACE_PEERS = {rival:{nick:'Rival', div:1, ovr:95, day:ahead}};
+    careerAdvanceTo(ahead);
+    check('пришёл на тот день — голос уже в счёте', careerToday() === ahead && ccRaceVotes() === 1,
+          careerToday() + ' / ' + ccRaceVotes());
+    careerAdvanceTo(ccAddDays(ahead, 1));
+    check('и мой голос закрывает день сразу', careerToday() === ccAddDays(ahead, 1), careerToday());
 
     // Соперник пропал — ждать некого.
     fresh();

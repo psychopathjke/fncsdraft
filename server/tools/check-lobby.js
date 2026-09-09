@@ -291,5 +291,17 @@ r=R10.ready('C','2026-06-13','victory');
 check('двое Victory Cup стартуют без финалиста', r.some(x=>x.msg.t==='start'), JSON.stringify(r));
 check('комната вечера — B и C', R10.state.evening && R10.state.evening.room.join()==='B,C', JSON.stringify(R10.state.evening));
 
+// Повтор акта после переподключения не копится: тот же id, вид и номер вопроса.
+let R11=createLobby({build:'aaaa1111', seed:'race-11'});
+['A','B'].forEach(id=>R11.join(id,{build:'aaaa1111', card:CARD, race:true}));
+r=R11.act('A','drop:a@',{by:'A', q:3, g:2});
+check('первый приход уходит всем', r.some(x=>x.msg.t==='act'), JSON.stringify(r));
+r=R11.act('A','drop:a@',{by:'A', q:3, g:2});
+check('точный повтор выброшен', r.length===0, JSON.stringify(r));
+r=R11.act('A','drop:a@',{by:'A', q:4, g:2});
+check('следующий номер — новый акт', r.some(x=>x.msg.t==='act'), JSON.stringify(r));
+r=R11.act('A','race',{by:'A', day:'2026-03-01'}); r=R11.act('A','race',{by:'A', day:'2026-03-01'});
+check('строка без номера повторяется как была', r.some(x=>x.msg.t==='act'), JSON.stringify(r));
+
 if(fails.length){ fails.forEach(f=>console.error('FAIL '+f)); process.exit(1); }
 console.log('лобби нумерует и рассылает, ничего не считая');

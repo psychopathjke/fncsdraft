@@ -118,17 +118,17 @@ const BOOT = `
     check('and now you can go', careerProAmCan() === true);
     const picks = careerProAmPickList();
     out.notes.picks = picks;
-    check('there are creators to choose from', picks.length === CC_PROAM_PICK,
+    check('every creator is on offer', picks.length === ccProAmCreators().length && picks.length > 20,
           JSON.stringify(picks));
     check('each of them is a real creator',
           picks.every(n => ccProAmCreators().indexOf(n) >= 0));
     check('the list does not change on a redraw',
           careerProAmPickList().join() === picks.join());
-    // Но в другом сезоне едут другие: иначе шестёрка была бы одна на карьеру.
-    check('another season offers other names', (function(){
-      const was = CAREER.career.season; CAREER.career.season = 4;
-      const other = careerProAmPickList(); CAREER.career.season = was;
-      return other.join() !== picks.join(); })(), JSON.stringify(picks));
+    // Свой регион первым, внутри региона — по аудитории.
+    check('own region comes first', (function(){
+      const mine = CC_PROAM_CREATORS_BY_REGION[ccCareerRegion()] || [];
+      return mine.length === 0 || mine.some(n => hKey(n) === hKey(picks[0])); })(), picks[0]);
+    check('the letter comes from Fortnite itself', CC_PROAM_HOST === 'Fortnite' && t2.who.epic === true);
     check('a name off the list is refused', careerProAmPick(t2.id, 'Nobody') === false);
     check('and one on it is taken', careerProAmPick(t2.id, picks[2]) === true);
     check('the chosen creator is who you play with',

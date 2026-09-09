@@ -118,6 +118,11 @@ const boot = (who) => `
     out.notes.skipped=[]; const cp0=careerCanPlay; careerCanPlay=function(next){ const ok=cp0.apply(this, arguments); if(!ok && next && next.type && next.type!=='free' && CC_PLAYABLE.indexOf(next.type)>=0 && out.notes.skipped.length<60) out.notes.skipped.push([CAREER.career.day, next.type, 'live'+(ccMpLive()?1:0), 'link '+MP.state, 'noMate'+(careerNoMate(next.type)?1:0), 'mates'+careerMates().length, 'mode '+(ccRaceModeWhy()||'-'), 'div'+CAREER.career.division].join(' ')); return ok; };
     // Метки хода: каждый посланный акт, кроме пульса.
     const act0=MP.act; MP.act=function(k,p){ if(k==='fferr' && p && !out.notes.ffErr) out.notes.ffErr={day:p.day, kind:'', text:String(p.text||''), stack:out.notes.lastErr||null}; if(k!=='hb'){ if(out.notes.marks.length>=160) out.notes.marks.shift(); out.notes.marks.push(k+(p&&p.q!=null?'#'+p.q:'')+' d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' r'+CC_MP_ROLLS+' t'+Math.round((Date.now()-t0)/1000)); } return act0.apply(MP, arguments); };
+    // След барьера и все служебные сообщения сервера (start/close/card/ready/state) — в метки; строка гонки посреди вечера — с откуда.
+    window.CC_MP_TRACE=function(t){ mark('TR '+t); };
+    window.__link=MP.state; setInterval(function(){ try{ if(MP.state!==window.__link){ mark('LINK '+window.__link+'>'+MP.state+' pend'+(MP.pending?MP.pending():'-')); window.__link=MP.state; } }catch(e){} }, 200);
+    const say0=MP.say; MP.say=function(m){ try{ if(m && m.t!=='act') mark('MSG '+m.t+(m.resume?' resume':'')+(m.fresh?' fresh':'')+(m.by?' by'+String(m.by).slice(-5):'')+(m.day?' '+m.day.slice(5):'')+(m.split?' split':'')); }catch(e){} return say0.apply(this, arguments); };
+    const rs0=careerRaceSend; careerRaceSend=function(){ if(typeof CC_MP_RAND!=='undefined' && CC_MP_RAND){ try{ const st=String(new Error().stack||'').split('\\n').slice(2,6).map(l=>l.trim().replace(/^at /,'').replace(/ \\(.*$/,'').replace(/^async /,'')).join('<'); mark('RS '+st); }catch(e){} } return rs0.apply(this, arguments); };
     const slow0=ccMpSlowSeen; ccMpSlowSeen=function(){ out.notes.marks.push('SLOW d'+CAREER.career.day.slice(5)+' r'+CC_MP_ROLLS+' t'+Math.round((Date.now()-t0)/1000)); return slow0.apply(this, arguments); };
     // Голос за перемотку до конца сезона; пойдёт, когда проголосуют все.
     careerRenderHub('calendar'); await wait(300);

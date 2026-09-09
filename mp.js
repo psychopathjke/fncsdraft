@@ -41,6 +41,18 @@ function findIn(list, kind, q, take){
 }
 // Когда напарник последний раз подавал голос — любым сообщением. См. MP.peerSeen.
 var LAST_PEER=0;
+/* НЕПОДТВЕРЖДЁННЫЕ АКТЫ. Сервер раздаёт каждый акт всем, включая отправителя, — то есть своё
+   эхо и есть подтверждение, что акт дошёл. Годовая проба на шестерых 9.09 (21.05, игра 11):
+   у одного клиента сокет умер в момент отправки прихода к барьеру (own:live4@#11), после
+   переподключения он догнал чужое по номерам — а СВОЙ приход так и остался неотправленным, и
+   трое соседей ждали его до потолка. То же случится с ответом на вопрос. Поэтому каждый акт
+   (кроме пульса) лежит здесь, пока не вернётся эхом, а после переподключения всё, что не
+   вернулось, уходит заново — сервер (lobby.act) выбрасывает точный повтор по (id, вид, номер
+   вопроса), а у соседей приход по одному на id (ccMpSync) и ответ берётся один (take). */
+var PENDING=[];
+function pendKey(kind, p){ return String(kind)+'#'+(p && p.q!=null ? p.q : '')+'#'+(p && p.g!=null ? p.g : ''); }
+function pendDrop(kind, p){ var k=pendKey(kind, p); for(var i=PENDING.length-1;i>=0;i--) if(PENDING[i].key===k) PENDING.splice(i,1); }
+function pendFlush(sock){ if(!PENDING.length) return; PENDING.forEach(function(x){ try{ sock.send(JSON.stringify({t:'act', kind:x.kind, payload:x.payload})); }catch(e){} }); }
 var LAST_MSG=0, WATCH=null;   // когда сервер последний раз что-то прислал; сторож тишины (см. connect)
 /* Состояние связи — четыре слова, и все четыре видны игроку.
 
@@ -279,16 +291,19 @@ var MP={
        нет, а после обрыва не знает и своей. */
     if(m.t==='ready'){ MP.waiting={day:m.day, n:m.ready||0, of:m.of||2, clash:m.clash||null}; redraw(); }
     // Вечер начался — ждать больше нечего.
-    if(m.t==='start'){ MP.waiting=null; if(!m.resume){ ACTS.length=0; OWN.length=0; } redraw(); }
+    if(m.t==='start'){ MP.waiting=null; if(!m.resume){ ACTS.length=0; OWN.length=0; PENDING.length=0; } redraw(); }
     // Состояние, которое напарник изменил прямо сейчас: метка на карте, взятый
     // третий, что угодно командное. Применяется и показывается сразу — см.
     // ccMpApplyRemote, там же глушится отправка обратно.
     if(m.t==='team')  ccMpApplyRemote(m.team);
+    // Своё эхо — подтверждение доставки (см. PENDING); чужой повтор того же вопроса не копится.
+    if(m.t==='act' && m.by===ID) pendDrop(m.kind, m.payload);
     if(m.t==='act' && m.by && m.by!==ID){
-      ACTS.push(m);
-      if(ACTS.length>ACTS_MAX) ACTS.shift();
+      var pq=(m.payload && m.payload.q);
+      var dup=pq!=null && ACTS.some(function(a){ return a.by===m.by && a.kind===m.kind && a.payload && a.payload.q===pq; });
+      if(!dup){ ACTS.push(m); if(ACTS.length>ACTS_MAX) ACTS.shift(); }
     }
-    if(m.t==='close'){ MP.waiting=null; ACTS.length=0; OWN.length=0; ccApplyTeamState(m.team); }
+    if(m.t==='close'){ MP.waiting=null; ACTS.length=0; OWN.length=0; PENDING.length=0; ccApplyTeamState(m.team); }
     /* «До свидания» по версии — единственный отказ, из которого не
        переподключаются: пока страница не обновлена, код у нас всё тот же, и
        лобби скажет то же самое. Разрыв дуо ('part') связь не ломает: его
@@ -356,6 +371,8 @@ var MP={
                                   div:MP.div(), seed:MP.seed(), race:MP.race()}));
         // Вернулся — догнал по номерам, ничего не переспрашивая.
         if(SEEN) sock.send(JSON.stringify({t:'since', n:SEEN}));
+        // И всё своё, что сервер не подтвердил эхом, — заново (повтор он выбросит сам).
+        pendFlush(sock);
         res();
       };
       sock.onerror=function(e){ if(MP.state!=='old') setState('lost'); rej(e); };
@@ -381,7 +398,7 @@ var MP={
   },
   // Уйти из лобби совсем — связь больше не нужна и переподключаться незачем.
   drop:function(){
-    CODE=null; clearTimeout(TIMER); TRY=0; MP.waiting=null; ACTS.length=0;
+    CODE=null; clearTimeout(TIMER); TRY=0; MP.waiting=null; ACTS.length=0; PENDING.length=0;
     try{ if(SOCK) SOCK.close(); }catch(e){}
     SOCK=null; setState('off');
   },
@@ -424,6 +441,8 @@ var MP={
   },
   // Забрать чужое решение этого вопроса, если оно уже приехало.
   take:function(kind, q){ return MP.find(kind, q, true); },
+  // Очередь одной строкой — для проб (след барьера в ccMpSync).
+  dump:function(){ return ACTS.map(function(a){ var p=a.payload||{}; return String(a.by||'').slice(-5)+':'+a.kind+'#'+p.q+' g'+p.g; }); },
   /* Напарник уже стоит на барьере, которого мы ещё не прошли: в очереди лежит
      его приход ('kind@'), не забранный нашим ccMpSync. Значит, всё, что мы
      сейчас показываем, держит его. См. ccMpHurry. */
@@ -467,7 +486,11 @@ var MP={
   },
   // Вид вечера едет вместе с днём: двое обязаны нажать ОДИН турнир. См. ccMpGate.
   ready:function(day, kind){ MP.send({t:'ready', day:day, kind:kind||null}); },
-  act:function(kind, payload){ MP.send({t:'act', kind:kind, payload:payload}); },
+  act:function(kind, payload){
+    if(kind!=='hb'){ pendDrop(kind, payload); PENDING.push({key:pendKey(kind, payload), kind:kind, payload:payload}); if(PENDING.length>64) PENDING.shift(); }
+    MP.send({t:'act', kind:kind, payload:payload});
+  },
+  pending:function(){ return PENDING.length; },
   digest:function(hash, team){ MP.send({t:'digest', hash:hash, team:team}); },
   part:function(){ MP.send({t:'part'}); }
 };

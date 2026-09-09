@@ -262,6 +262,9 @@ function createLobby(opts){
        значение 128 КиБ. Отставший на полторы тысячи ответов не догоняет уже ничем,
        поэтому хвост режется, а не копится. */
     act(id, kind, payload){
+      /* Повтор после переподключения (mp.js PENDING): тот же id, вид и номер вопроса уже в ленте —
+         это тот самый акт, дошедший до обрыва; второй раз он никому не нужен. */
+      if(payload && payload.q!=null && st.feed.some(e=>e.by===id && e.kind===kind && e.payload && e.payload.q===payload.q)) return [];
       const e={t:'act', n:++st.n, kind:kind, payload:payload, by:id};
       st.feed.push(e);
       if(st.feed.length>FEED_MAX) st.feed.splice(0, st.feed.length-FEED_MAX);
