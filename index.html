@@ -57999,7 +57999,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5e529bd7';
+const CC_BUILD='de4166a4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59985,6 +59985,10 @@ function ccMpSplitSeen(n, detail){
   if(CC_MP_SPLIT_AT!=null) return;      // первое расхождение и есть нужное
   CC_MP_SPLIT_AT=n||0;
   try{ careerNews('bad', 'ccNewsMpSplit', [String(n||'?')]); }catch(e){}
+  /* В ГОНКЕ разошедшиеся столы уже не сойдутся: комната распадается на группы с разными
+     наборами вопросов, и барьеры ждут приходов, которых не будет (год 9.09: кубок 9.02, две
+     группы, 15 минут стоя). Дальше вечер идёт врозь — как после «напарник не дошёл». */
+  if(typeof ccRaceOn==='function' && ccRaceOn() && !(typeof ccMpTeam==='function' && ccMpTeam())){ try{ ccMpPeerDone(); }catch(e){} }
   try{
     var d=document.createElement('div');
     d.className='cc-mp-split';
@@ -69369,7 +69373,12 @@ function careerGrowEvent(place, total, you, field){
      мир, из которого потом собирается поле у всех; личный вечер (соло-серия, вечер
      врозь) двигал бы мир у одного, и следующее общее поле расходилось бы на 892
      команды из 900 (годовая проба на шестерых 8.09: Reload 8 января после соло 6-го). */
-  const raceApart=(typeof ccRaceOn==='function' && ccRaceOn() && !(typeof ccRaceLock==='function' && ccRaceLock()));
+  /* И общий вечер НЕ ВСЕЙ комнаты (финал недели у двоих из шести, кому хватило квала) мир тоже
+     не двигает: книга росла бы у двоих и стояла у четверых, и следующий общий кубок расходился
+     бы на первой игре (год 9.09: финал 7.02 у Live1+Live6 → кубок 9.02, две группы таблиц). */
+  const raceApart=(typeof ccRaceOn==='function' && ccRaceOn() &&
+    (!(typeof ccRaceLock==='function' && ccRaceLock()) ||
+     (typeof ccRaceRoom==='function' && typeof ccRaceRivals==='function' && ccRaceRoom().length<ccRaceRivals().length)));
   if(field && field.length>1 && !raceApart) careerGrowField(field, you);
   /* И вечер, отыгранный дома, пишется на дом — на ту из трёх точек, где ты
      сидел. Ауру делает не результат турнира, а то, удержал ли ты место: счёт
