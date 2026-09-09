@@ -140,7 +140,8 @@ const boot = (who) => `
     if(${SEASONS}>=2 && !out.notes.ffErr && CAREER.career.day>=${JSON.stringify(FF)}){
       const cr1=CAREER.career;
       // Конец сезона: голос за следующий день у всех — день за CC_YEAR_TO закрывает год.
-      for(let i=0;i<2400 && !cr1.seasonOver;i++){ if(i%20===0){ try{ careerNextDay(); }catch(e){} } await wait(250); }
+      // Голос за последний день — пока сезон не закрылся или не кончился бюджет: отстающие догоняют долго (у кого нет напарника, тот проходит год за час, у кого есть — за полтора).
+      for(let i=0;Date.now()-t0<${BUDGET_MS} && !cr1.seasonOver;i++){ if(i%20===0){ try{ careerNextDay(); }catch(e){} } await wait(250); }
       out.notes.s1={day:cr1.day, over:!!cr1.seasonOver, log:(cr1.log||[]).length, div:cr1.division, money:cr1.earnings, ovr:CAREER.player.ovr, mates:careerMates().map(m=>m&&m.handle)};
       if(!cr1.seasonOver) throw new Error('сезон 1 не закрылся: день '+cr1.day+' · голосов '+ccRaceVotes()+'/'+ccRaceOf());
       careerNewSeason();

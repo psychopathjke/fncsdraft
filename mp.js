@@ -29,6 +29,7 @@ var SOCK=null, CODE=null, ID=null, SEEN=0, HANDLERS={}, PEER=null;
    (годовая проба на шестерых 8.09: два зависания из шести на 30–50 % первого вечера). */
 var ACTS=[], ACTS_MAX=8192, OWN=[];
 var PEER_HBS={};   // id соседа -> его последний пульс (см. say, kind 'hb')
+var PEER_AT={};    // id соседа -> когда от него что-то приходило (живость, см. ccRacePeerAlive)
 function findIn(list, kind, q, take){
   for(var i=0;i<list.length;i++){
     var a=list[i];
@@ -114,6 +115,7 @@ var MP={
   get code(){ return CODE; },
   get peerSeen(){ return LAST_PEER; },
   get peerHbs(){ return PEER_HBS; },
+  get peerAt(){ return PEER_AT; },
   // Состояние связи. Пишется и снаружи — проверкам негде взять живой сокет.
   state:'off',
   /* Кто уже нажал «играть»: {day, n, of}. Ставится сообщением сервера и
@@ -229,7 +231,7 @@ var MP={
        состояние, пульс — говорит «я здесь и считаю». Пульс (kind 'hb') в
        очередь решений не попадает: он ничего не решает и вытеснял бы из неё
        настоящие ответы (ACTS_MAX). */
-    if(m.by && m.by!==ID) LAST_PEER=(new Date()).getTime();
+    if(m.by && m.by!==ID){ LAST_PEER=(new Date()).getTime(); MP.peerAt[m.by]=LAST_PEER; }
     /* Пульс — ПО КАЖДОМУ соседу (peerHbs), не одним слотом: в комнате гонки на шестерых
        последним мог оказаться пульс того, кто в этот вечер не играет (rand:false, день
        впереди), и index читал его как «напарник вышел». peerHb остаётся последним — для дуо. */

@@ -266,6 +266,8 @@ function createLobby(opts){
          это тот самый акт, дошедший до обрыва; второй раз он никому не нужен. */
       if(payload && payload.q!=null && st.feed.some(e=>e.by===id && e.kind===kind && e.payload && e.payload.q===payload.q)) return [];
       const e={t:'act', n:++st.n, kind:kind, payload:payload, by:id};
+      // Пульс — не событие вечера: в хабе он идёт всегда (живость соседа), в ленту не кладётся.
+      if(kind==='hb') return [{to:'all', msg:e}];
       st.feed.push(e);
       if(st.feed.length>FEED_MAX) st.feed.splice(0, st.feed.length-FEED_MAX);
       const out=[{to:'all', msg:e}];

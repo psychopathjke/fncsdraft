@@ -5542,7 +5542,7 @@
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
      файл и разойдётся с напарником. -->
-<script src="mp.js?v=bbe4d95e"></script>
+<script src="mp.js?v=2591bda6"></script>
 </head>
 <body>
 <div class="wrap">
@@ -58057,7 +58057,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='98fd23ae';
+const CC_BUILD='9947a20b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -58486,7 +58486,7 @@ function ccMpSeedOn(seed){
   };
 }
 function ccMpSeedOff(){
-  ccMpHeartbeat(false);
+  ccMpHeartbeat(typeof ccRaceOn==='function' && ccRaceOn());   // в гонке пульс не гаснет: по нему живость соседа (ccRacePeerAlive)
   CC_MP_SEED=null;
   if(!CC_MP_RAND) return;
   Math.random=CC_MP_RAND;
@@ -58609,7 +58609,7 @@ function ccMpBoot(){
   if(ccRaceOn()){
     careerRaceWire();
     return MP.connect(CAREER.career.race.code, ccMpId())
-      .then(function(){ careerRaceSend(); })
+      .then(function(){ careerRaceSend(); ccMpHeartbeat(true); })
       .catch(function(){});
   }
   if(!ccMpOn()) return Promise.resolve();
@@ -59207,7 +59207,19 @@ function ccRaceHold(iso){
 /* Голоса считаются ПОИМЁННО, а не «мой и его»: в гонке людей может быть
    больше двух (см. CC_RACE_MAX и lobby.join), и день закрывается, когда его
    закрыли все, кто в лобби. */
-function ccRaceOf(){ return 1+ccRacePeers().length; }
+/* СОСЕД ЖИВ, если от него что-то приходило за CC_RACE_GONE_MS. Пульс в гонке идёт и в хабе
+   (ccMpSeedOff его не гасит), так что закрывшаяся вкладка выпадает из счёта за полторы минуты —
+   а без этого её строка держала знаменатель голосов (день, перемотка, конец года) навсегда:
+   двухсезонная проба 9.09 — двое вышли на 27.10, четверо во втором сезоне ждали 6/6. Посреди
+   сеяного вечера правило не действует (там свои потолки, ccMpDeadline): барьер не должен
+   проходить без того, кто на минуту потерял сеть. */
+const CC_RACE_GONE_MS=90000;
+function ccRacePeerAlive(p){
+  if(!p || typeof MP==='undefined' || !MP.peerAt) return true;
+  if(typeof CC_MP_RAND!=='undefined' && CC_MP_RAND) return true;
+  const at=MP.peerAt[p.id]; return !at || (Date.now()-at)<CC_RACE_GONE_MS;
+}
+function ccRaceOf(){ return 1+ccRacePeers().filter(ccRacePeerAlive).length; }
 function ccRaceVotes(){
   return CC_RACE_NEXT.day===careerToday() ? Object.keys(CC_RACE_NEXT.who).length : 0;
 }
@@ -59356,6 +59368,7 @@ function careerRaceEnter(race){
   return MP.connect(race.code, ccMpId()).then(function(){
     careerSave();
     careerRaceSend();
+    ccMpHeartbeat(true);
     ccMpRedraw();
     return true;
   }).catch(function(){
@@ -59504,7 +59517,7 @@ function ccRaceMyLine(){
 }
 // Соперники с карточкой — все, кто прислал строку (комната на N человек); порядок по адресу.
 function ccRaceRivals(){
-  return ccRacePeers().filter(p=>p && p.card).sort((a,b)=>hKey(a.card)<hKey(b.card) ? -1 : 1);
+  return ccRacePeers().filter(p=>p && p.card && ccRacePeerAlive(p)).sort((a,b)=>hKey(a.card)<hKey(b.card) ? -1 : 1);
 }
 function ccRaceRival(){ const ps=ccRaceRivals(); return ps.length ? ps[0] : null; }
 /* КОМНАТА ВЕЧЕРА — соперники, которые сегодня в ней: не ушедшие дальше по календарю
@@ -59543,6 +59556,12 @@ function ccRaceSplitLobbies(){ return CC_RACE_SPLIT && typeof ccRaceLock==='func
    (дуо→трио, 22.02): Live1 ждал ответов четырёх соперников до потолка каждую игру и
    откололся на весь год. Снимок берётся в careerPlay вместе с CC_RACE_LOCK. */
 let CC_RACE_ROOM0=null;
+/* Вечер разошёлся по дороге: граница раундов (Victory Cup / Evaluation R2, LCQ) отпустила
+   локстеп — кто-то из комнаты дальше не прошёл. Мир (CAREER.dev) тогда не растёт НИ У КОГО:
+   прошедшие росли бы от второго раунда, вылетевшие нет, и следующее общее поле расходилось
+   бы на силе бота (двухсезонная проба 9.09: соло Victory Cup 22.03, «t3eny:95 vs t3eny:96,
+   state dev»). Ставится в трёх границах раундов, читается в careerGrowEvent. */
+let CC_RACE_NIGHT_APART=false;
 function ccRaceNightRoom(){
   if(!CC_RACE_ROOM0) return ccRaceRoom();
   return ccRaceRivals().filter(p=>CC_RACE_ROOM0[p.id]);
@@ -59582,6 +59601,10 @@ function ccRaceApartWhy(next){
      сетки шли врозь, финал — общей комнатой из четырёх разных полей, «diff 23 of 50» с первой игры.
      Глобалы и Париж общие: их поле сервер выравнивает закрытием вечера (ccMpClose). */
   if(next.type==='summit') return 'lan';
+  // И Глобалы: пятнадцать мест — из СВОЕГО финала Саммита (summitSeed.gc), свой регион — из
+  // СВОЕГО Мейджора 2 (gcSeed); у четверых четыре поля (двухсезонная проба 9.09, 26.09: барьеры
+  // ждали приходов к вопросам, которых у соседей не было). Отбор (gclc) общий — он из пула.
+  if(next.type==='globals') return 'lan';
   if(next.type==='major' && typeof careerMajorOn==='function'){
     const ev=careerMajorOn(careerToday()); if(ev && (ev.stage==='heats' || ev.stage==='final')) return 'heat';
   }
@@ -69569,9 +69592,13 @@ function careerGrowEvent(place, total, you, field){
   /* И общий вечер НЕ ВСЕЙ комнаты (финал недели у двоих из шести, кому хватило квала) мир тоже
      не двигает: книга росла бы у двоих и стояла у четверых, и следующий общий кубок расходился
      бы на первой игре (год 9.09: финал 7.02 у Live1+Live6 → кубок 9.02, две группы таблиц). */
+  /* Решает СНИМОК комнаты на старте (CC_RACE_ROOM0), а не живая комната: живая у первого
+     доигравшего ещё полная, у последнего уже без ушедших вперёд — рост был делом скорости.
+     И вечер, разошедшийся на границе раундов (CC_RACE_NIGHT_APART), мир не двигает ни у кого. */
   const raceApart=(typeof ccRaceOn==='function' && ccRaceOn() &&
-    (!(typeof ccRaceLock==='function' && ccRaceLock()) ||
-     (typeof ccRaceRoom==='function' && typeof ccRaceRivals==='function' && ccRaceRoom().length<ccRaceRivals().length)));
+    ((typeof CC_RACE_NIGHT_APART!=='undefined' && CC_RACE_NIGHT_APART) ||
+     !(typeof CC_RACE_ROOM0!=='undefined' && CC_RACE_ROOM0) ||
+     (typeof ccRaceRivals==='function' && Object.keys(CC_RACE_ROOM0).length<ccRaceRivals().length)));
   if(field && field.length>1 && !raceApart) careerGrowField(field, you);
   /* И вечер, отыгранный дома, пишется на дом — на ту из трёх точек, где ты
      сидел. Ауру делает не результат турнира, а то, удержал ли ты место: счёт
@@ -81103,7 +81130,7 @@ function careerPlayRun(next){
      строка соперника и карточка уходят ДО гейта, чтобы его 'start' застал их. */
   if(typeof ccRaceOn==='function' && ccRaceOn()){
     CC_RACE_LOCK=ccRaceShared(next);
-    CC_RACE_ROOM0=null;
+    CC_RACE_ROOM0=null; CC_RACE_NIGHT_APART=false;
     if(CC_RACE_LOCK){ try{ CC_RACE_ROOM0={}; ccRaceRoom().forEach(p=>{ CC_RACE_ROOM0[p.id]=true; }); careerRaceSend(); if(typeof MP!=='undefined' && MP.sendCard) MP.sendCard(); }catch(e){} }
     let p=null;
     try{ p=careerNightRun(next); }catch(e){ CC_RACE_LOCK=false; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; throw e; }
@@ -83947,7 +83974,7 @@ async function runCareerEval(){
   if(typeof ccRaceLock==='function' && ccRaceLock()){
     const top=ranked1.slice(0, evalCut);
     const rivalOut=ccRaceNightRoom().some(p=>!top.some(t=>t.mpTag===':'+hKey(p.card)));
-    if(!through || rivalOut) CC_RACE_LOCK=false;
+    if(!through || rivalOut){ CC_RACE_LOCK=false; CC_RACE_NIGHT_APART=true; }
   }
   if(through){
     // Round 2 is the fifty who came through, in one lobby, and only a win scores.
@@ -86384,7 +86411,7 @@ async function runCareerMajor(){
   if(ev.stage==='lcq' && typeof ccRaceLock==='function' && ccRaceLock()){
     const top=ranked.slice(0, ccTeams(CAREER_CUP_CUT));
     const rivalOut=ccRaceNightRoom().some(p=>!top.some(t=>t.mpTag===':'+hKey(p.card)));
-    if(!through || rivalOut) CC_RACE_LOCK=false;
+    if(!through || rivalOut){ CC_RACE_LOCK=false; CC_RACE_NIGHT_APART=true; }
   }
   if(ev.stage==='lcq' && through){
     const lobby=ranked.slice(0, ccTeams(CAREER_CUP_CUT));
@@ -87219,7 +87246,7 @@ async function runCareerVictory(){
   if(typeof ccRaceLock==='function' && ccRaceLock()){
     const top=ranked1.slice(0, vCut);
     const rivalOut=ccRaceNightRoom().some(p=>!top.some(t=>t.mpTag===':'+hKey(p.card)));
-    if(!through || rivalOut) CC_RACE_LOCK=false;
+    if(!through || rivalOut){ CC_RACE_LOCK=false; CC_RACE_NIGHT_APART=true; }
   }
   if(through){
     const r2=ranked1.slice(0, vCut);
