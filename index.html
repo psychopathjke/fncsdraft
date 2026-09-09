@@ -3026,6 +3026,7 @@
   .zr-kit .zk-right{position:absolute;right:12px;bottom:10px;display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
   /* Ресы как в игре: иконка материала, число под ней, три столбика в ряд. */
   .zr-kit .zk-mats{display:flex;gap:14px;margin-right:2px;}
+  .zr-kit .zk-zb b{font-size:11px;letter-spacing:.06em;opacity:.8;}
   .zr-kit .zk-mats span{display:flex;flex-direction:column;align-items:center;gap:1px;}
   .zr-kit .zk-mats svg{width:22px;height:22px;display:block;filter:drop-shadow(0 1px 1px rgba(0,0,0,.8));}
   .zr-kit .zk-mats b{font-size:13px;transform:skewX(-8deg);font-variant-numeric:tabular-nums;}
@@ -6861,13 +6862,13 @@ ccChem:'Сыгранность',
 ccCity:{Dus:'Дюссельдорф', Ant:'Антверпен', Lyo:'Лион', Cph:'Копенгаген',
         Ftw:'Форт-Уэрт', Rdu:'Роли', Par:'Париж', Ryd:'Эр-Рияд', Nyc:'Нью-Йорк',
         Tok:'Токио', Bel:'Белград', Kat:'Катовице', Sto:'Стокгольм', Mad:'Мадрид',
-        Ams:'Амстердам', Sao:'Сан-Паулу', Seo:'Сеул', Tor:'Торонто', Syd:'Сидней',
+        Ams:'Амстердам', Dal:'Даллас', Sao:'Сан-Паулу', Seo:'Сеул', Tor:'Торонто', Syd:'Сидней',
         Mex:'Мехико', Dub:'Дубай', Ist:'Стамбул', Mil:'Милан', Lon:'Лондон',
         Sin:'Сингапур'},
 ccCityIn:{Dus:'Дюссельдорфе', Ant:'Антверпене', Lyo:'Лионе', Cph:'Копенгагене',
           Ftw:'Форт-Уэрте', Rdu:'Роли', Par:'Париже', Ryd:'Эр-Рияде', Nyc:'Нью-Йорке',
           Tok:'Токио', Bel:'Белграде', Kat:'Катовице', Sto:'Стокгольме', Mad:'Мадриде',
-          Ams:'Амстердаме', Sao:'Сан-Паулу', Seo:'Сеуле', Tor:'Торонто', Syd:'Сиднее',
+          Ams:'Амстердаме', Dal:'Далласе', Sao:'Сан-Паулу', Seo:'Сеуле', Tor:'Торонто', Syd:'Сиднее',
           Mex:'Мехико', Dub:'Дубае', Ist:'Стамбуле', Mil:'Милане', Lon:'Лондоне',
           Sin:'Сингапуре'},
 dmAgent:(cut,r)=>'Занимаюсь игроками. Беру '+cut+'% с призовых и зарплаты, взамен тебя смотрят клубы на '+r+' выше и платят больше. Работаем?',
@@ -7037,7 +7038,8 @@ ccYearNames:{
   FNCSSolos_LCQRound1:'FNCS Solos · последний шанс, раунд 1',
   FNCSSolos_LCQFinal:'FNCS Solos · последний шанс, финал',
   FNCSSolos_Final:'FNCS Solos · финал',
-  ProAm_Dallas:'Pro-Am · Даллас'
+  ProAm_Dallas:'Pro-Am · Даллас',
+  ProAm_SaoPaulo:'Pro-Am · Сан-Паулу'
 },
 chWkMajor:'Мейджор',
 chWkGC:'ГЧ',
@@ -8231,7 +8233,7 @@ ccNewsProAmReach:(h,f,g)=>'Играл в паре с @'+h+' — '+f+' на Twitc
 ccProAmMateLine:(h,f)=>'Напарник: '+h+' · '+f+' на Twitch',
 ccProAmHowTitle:'Как проходит Pro-Am',
 ccProAmHow:o=>[
-  'Шоу-турнир Epic: '+o.teams+' пар «профи + контент-мейкер», Reload, '+o.games+' игр в одном лобби.',
+  'Шоу-турнир Epic: '+o.teams+' пар «профи + контент-мейкер», Reload'+(o.zb?' · Zero Build (без строек: ресов, рефреша и высокой земли нет)':'')+', '+o.games+' игр в одном лобби.',
   'Отбора нет — зовут по известности: от '+o.reach+' подписчиков '+o.host+' пишет в личку за '+o.days+' дней до даты. Согласился — выбираешь любого из '+o.pick+' контент-мейкеров.',
   'Очки: '+o.p1+' за победу, '+o.p2+' за второе место, '+o.p3+' за третье, по '+o.kill+' за элиминацию.',
   'Деньги: таблица от '+o.prize1+' за первое место до '+o.prizeN+' за последнее, плюс за КАЖДУЮ игру '+o.g1+' / '+o.g2+' / '+o.g3+' за топ-3.',
@@ -8826,13 +8828,13 @@ ccChem:'Chemistry',
 ccCity:{Dus:'Düsseldorf', Ant:'Antwerp', Lyo:'Lyon', Cph:'Copenhagen',
         Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riyadh', Nyc:'New York',
         Tok:'Tokyo', Bel:'Belgrade', Kat:'Katowice', Sto:'Stockholm', Mad:'Madrid',
-        Ams:'Amsterdam', Sao:'São Paulo', Seo:'Seoul', Tor:'Toronto', Syd:'Sydney',
+        Ams:'Amsterdam', Dal:'Dallas', Sao:'São Paulo', Seo:'Seoul', Tor:'Toronto', Syd:'Sydney',
         Mex:'Mexico City', Dub:'Dubai', Ist:'Istanbul', Mil:'Milan', Lon:'London',
         Sin:'Singapore'},
 ccCityIn:{Dus:'Düsseldorf', Ant:'Antwerp', Lyo:'Lyon', Cph:'Copenhagen',
           Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riyadh', Nyc:'New York',
           Tok:'Tokyo', Bel:'Belgrade', Kat:'Katowice', Sto:'Stockholm', Mad:'Madrid',
-          Ams:'Amsterdam', Sao:'São Paulo', Seo:'Seoul', Tor:'Toronto', Syd:'Sydney',
+          Ams:'Amsterdam', Dal:'Dallas', Sao:'São Paulo', Seo:'Seoul', Tor:'Toronto', Syd:'Sydney',
           Mex:'Mexico City', Dub:'Dubai', Ist:'Istanbul', Mil:'Milan', Lon:'London',
           Sin:'Singapore'},
 dmAgent:(cut,r)=>'I represent players. I take '+cut+'% of prize money and wages, and clubs '+r+' above you start looking, and paying more. Shall we work?',
@@ -9000,7 +9002,8 @@ ccYearNames:{
   FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, Round 1',
   FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, Final',
   FNCSSolos_Final:'FNCS Solos · Finals',
-  ProAm_Dallas:'Pro-Am · Dallas'
+  ProAm_Dallas:'Pro-Am · Dallas',
+  ProAm_SaoPaulo:'Pro-Am · São Paulo'
 },
 chWkMajor:'Major',
 chWkGC:'GC',
@@ -10182,7 +10185,7 @@ ccNewsProAmReach:(h,f,g)=>'Played alongside @'+h+' — '+f+' on Twitch. '+g+' ne
 ccProAmMateLine:(h,f)=>'Partner: '+h+' · '+f+' on Twitch',
 ccProAmHowTitle:'How the Pro-Am works',
 ccProAmHow:o=>[
-  'Epic\'s show event: '+o.teams+' pairs of a pro and a creator, Reload, '+o.games+' games in one lobby.',
+  'Epic\'s show event: '+o.teams+' pairs of a pro and a creator, Reload'+(o.zb?' · Zero Build (no mats, refresh or high ground)':'')+', '+o.games+' games in one lobby.',
   'No qualifier — an invite by fame: from '+o.reach+' followers, '+o.host+' DMs you '+o.days+' days before the date. Say yes and pick any of the '+o.pick+' creators.',
   'Points: '+o.p1+' for a win, '+o.p2+' for second, '+o.p3+' for third, '+o.kill+' per elimination.',
   'Money: a table from '+o.prize1+' for first down to '+o.prizeN+' for last, plus '+o.g1+' / '+o.g2+' / '+o.g3+' for a top 3 in EVERY game.',
@@ -11269,8 +11272,8 @@ ccDayOver:v=>'La journée est déjà passée : '+v+'. L’énergie reste jusqu�
 ccNeedEnergy:n=>'il manque '+n+'⚡', ccNeedCash:v=>'Pas assez d’argent : il faut '+v+' $ sur le compte',
 ccSaveFail:v=>'Cette carrière n’est pas sauvegardée ('+v+'). Le navigateur n’a plus de place — '+
   'vide les données du site ou supprime un emplacement de carrière inutilisé, sinon tout ce qui a été joué disparaîtra au rechargement',
-ccCity:{Dus:'Düsseldorf',Ant:'Anvers',Lyo:'Lyon',Cph:'Copenhague',Ftw:'Fort Worth',Rdu:'Raleigh',Par:'Paris',Ryd:'Riyad',Nyc:'New York',Tok:'Tokyo',Bel:'Belgrade',Kat:'Katowice',Sto:'Stockholm',Mad:'Madrid',Ams:'Amsterdam',Sao:'São Paulo',Seo:'Séoul',Tor:'Toronto',Syd:'Sydney',Mex:'Mexico',Dub:'Dubaï',Ist:'Istanbul',Mil:'Milan',Lon:'Londres',Sin:'Singapour'},
-ccCityIn:{Dus:'Düsseldorf',Ant:'Anvers',Lyo:'Lyon',Cph:'Copenhague',Ftw:'Fort Worth',Rdu:'Raleigh',Par:'Paris',Ryd:'Riyad',Nyc:'New York',Tok:'Tokyo',Bel:'Belgrade',Kat:'Katowice',Sto:'Stockholm',Mad:'Madrid',Ams:'Amsterdam',Sao:'São Paulo',Seo:'Séoul',Tor:'Toronto',Syd:'Sydney',Mex:'Mexico',Dub:'Dubaï',Ist:'Istanbul',Mil:'Milan',Lon:'Londres',Sin:'Singapour'},
+ccCity:{Dus:'Düsseldorf',Ant:'Anvers',Lyo:'Lyon',Cph:'Copenhague',Ftw:'Fort Worth',Rdu:'Raleigh',Par:'Paris',Ryd:'Riyad',Nyc:'New York',Tok:'Tokyo',Bel:'Belgrade',Kat:'Katowice',Sto:'Stockholm',Mad:'Madrid',Ams:'Amsterdam',Dal:'Dallas', Sao:'São Paulo',Seo:'Séoul',Tor:'Toronto',Syd:'Sydney',Mex:'Mexico',Dub:'Dubaï',Ist:'Istanbul',Mil:'Milan',Lon:'Londres',Sin:'Singapour'},
+ccCityIn:{Dus:'Düsseldorf',Ant:'Anvers',Lyo:'Lyon',Cph:'Copenhague',Ftw:'Fort Worth',Rdu:'Raleigh',Par:'Paris',Ryd:'Riyad',Nyc:'New York',Tok:'Tokyo',Bel:'Belgrade',Kat:'Katowice',Sto:'Stockholm',Mad:'Madrid',Ams:'Amsterdam',Dal:'Dallas', Sao:'São Paulo',Seo:'Séoul',Tor:'Toronto',Syd:'Sydney',Mex:'Mexico',Dub:'Dubaï',Ist:'Istanbul',Mil:'Milan',Lon:'Londres',Sin:'Singapour'},
 ccAgentFrom:v=>'Les managers écrivent à partir de la note '+v,
 ccNextTop:n=>'top '+n,
 ccBioMajor:n=>n+'x VAINQUEUR DE MAJOR', ccBioRc:n=>n+'x VAINQUEUR DU RELOAD CHAMPIONSHIP (EWC)', ccBioSummit:n=>n+'x VAINQUEUR DU SUMMIT',
@@ -11344,7 +11347,7 @@ ccVicFail:n=>'Hors du top '+n+' — la Manche 2 sans toi',
 ccVicCash:(w,c)=>w+(w===1?' victoire':' victoires')+' — '+c,
 ccNewsVicCash:(w,c)=>'Victory Cup : '+w+(w===1?' victoire':' victoires')+', '+c+' gagnés',
 ccNewsVicOut:(p,of)=>'Victory Cup : '+ccTop(p)+' sur '+of+', pas de Manche 2',
-ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens coupe 1',ReloadEliteSeries1PlayIn:'Reload · play-in coupe 1',ReloadEliteSeries1Heats:'Reload · heats coupe 1',ReloadEliteSeries1Final:'Reload · finale coupe 1',ReloadEliteSeries2Opens:'Reload · opens coupe 2',ReloadEliteSeries2PlayIn:'Reload · play-in coupe 2',ReloadEliteSeries2Heats:'Reload · heats coupe 2',ReloadEliteSeries2Final:'Reload · finale coupe 2',ReloadEliteSeries3Opens:'Reload · opens coupe 3',ReloadEliteSeries3PlayIn:'Reload · play-in coupe 3',ReloadEliteSeries3Heats:'Reload · heats coupe 3',ReloadEliteSeries3Final:'Reload · finale coupe 3',ReloadEliteSeries4Opens:'Reload · opens coupe 4',ReloadEliteSeries4PlayIn:'Reload · play-in coupe 4',ReloadEliteSeries4Heats:'Reload · heats coupe 4',ReloadEliteSeries4Final:'Reload · finale coupe 4',Major1_PlayIn:'Major 1 · Play-In',Major1_Heats:'Major 1 · Heats',Major1_LCQ:'Major 1 · Last Chance',Major1_Final:'Major 1 · Finale',Summit_Upper:'Summit · Upper Bracket',Summit_Lower:'Summit · Lower Bracket',Summit_Final:'Summit · Grandes Finales',Major2_PlayIn:'Major 2 · Play-In',Major2_Heats:'Major 2 · Heats',Major2_LCQ:'Major 2 · Last Chance',Major2_Final:'Major 2 · Finale',GlobalChampionshipLastChance:'Global Championship · Last Chance',ReloadChampionshipParis:'Reload Championship · {CITY}',GlobalChampionship:'Global Championship · {CITY}',SoloSeries_Qualifier:'Solo Series · qualifications',SoloSeries_Heats:'Solo Series · heats',SoloSeries_Final:'Solo Series · finale',FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2',FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3',FNCSSolos_FastTrack:'FNCS Solos · Fast Track',FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2',FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3',FNCSSolos_Heats:'FNCS Solos · heats',FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1',FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale',FNCSSolos_Final:'FNCS Solos · finale',ProAm_Dallas:'Pro-Am · Dallas'},
+ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens coupe 1',ReloadEliteSeries1PlayIn:'Reload · play-in coupe 1',ReloadEliteSeries1Heats:'Reload · heats coupe 1',ReloadEliteSeries1Final:'Reload · finale coupe 1',ReloadEliteSeries2Opens:'Reload · opens coupe 2',ReloadEliteSeries2PlayIn:'Reload · play-in coupe 2',ReloadEliteSeries2Heats:'Reload · heats coupe 2',ReloadEliteSeries2Final:'Reload · finale coupe 2',ReloadEliteSeries3Opens:'Reload · opens coupe 3',ReloadEliteSeries3PlayIn:'Reload · play-in coupe 3',ReloadEliteSeries3Heats:'Reload · heats coupe 3',ReloadEliteSeries3Final:'Reload · finale coupe 3',ReloadEliteSeries4Opens:'Reload · opens coupe 4',ReloadEliteSeries4PlayIn:'Reload · play-in coupe 4',ReloadEliteSeries4Heats:'Reload · heats coupe 4',ReloadEliteSeries4Final:'Reload · finale coupe 4',Major1_PlayIn:'Major 1 · Play-In',Major1_Heats:'Major 1 · Heats',Major1_LCQ:'Major 1 · Last Chance',Major1_Final:'Major 1 · Finale',Summit_Upper:'Summit · Upper Bracket',Summit_Lower:'Summit · Lower Bracket',Summit_Final:'Summit · Grandes Finales',Major2_PlayIn:'Major 2 · Play-In',Major2_Heats:'Major 2 · Heats',Major2_LCQ:'Major 2 · Last Chance',Major2_Final:'Major 2 · Finale',GlobalChampionshipLastChance:'Global Championship · Last Chance',ReloadChampionshipParis:'Reload Championship · {CITY}',GlobalChampionship:'Global Championship · {CITY}',SoloSeries_Qualifier:'Solo Series · qualifications',SoloSeries_Heats:'Solo Series · heats',SoloSeries_Final:'Solo Series · finale',FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2',FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3',FNCSSolos_FastTrack:'FNCS Solos · Fast Track',FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2',FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3',FNCSSolos_Heats:'FNCS Solos · heats',FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1',FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale',FNCSSolos_Final:'FNCS Solos · finale',ProAm_Dallas:'Pro-Am · Dallas',ProAm_SaoPaulo:'Pro-Am · São Paulo'},
 ccDuoWith:n=>'duo avec '+n,
 ccDuoFound:n=>n+(n===1?' joueur':' joueurs'),
 ccCupTitle:(d,n)=>'Coupe Division '+d+' — 11 parties, '+n+' '+ccSquadWord(),
@@ -12578,7 +12581,7 @@ ccNewsProAmReach:(h,f,g)=>'Joué avec @'+h+' — '+f+' sur Twitch. '+g+' nouveau
 ccProAmMateLine:(h,f)=>'Coéquipier : '+h+' · '+f+' sur Twitch',
 ccProAmHowTitle:'Comment se joue le Pro-Am',
 ccProAmHow:o=>[
-  'Le show d\'Epic : '+o.teams+' paires « pro + créateur », Reload, '+o.games+' parties dans un seul lobby.',
+  'Le show d\'Epic : '+o.teams+' paires « pro + créateur », Reload'+(o.zb?' · Zero Build (sans constructions : ni matériaux, ni refresh, ni hauteur)':'')+', '+o.games+' parties dans un seul lobby.',
   'Pas de qualification, une invitation par notoriété : dès '+o.reach+' abonnés, '+o.host+' t\'écrit en MP '+o.days+' jours avant la date. Tu acceptes, tu choisis qui tu veux parmi les '+o.pick+' créateurs.',
   'Points : '+o.p1+' pour la victoire, '+o.p2+' pour la 2e place, '+o.p3+' pour la 3e, '+o.kill+' par élimination.',
   'Argent : un tableau de '+o.prize1+' pour la 1re place à '+o.prizeN+' pour la dernière, plus '+o.g1+' / '+o.g2+' / '+o.g3+' pour un top 3 à CHAQUE partie.',
@@ -12918,7 +12921,7 @@ ccNewsProAmReach:(h,f,g)=>"Giocato con @"+h+" — "+f+" su Twitch. "+g+" nuovi f
 ccProAmMateLine:(h,f)=>"Compagno: "+h+" · "+f+" su Twitch",
 ccProAmHowTitle:"Come funziona il Pro-Am",
 ccProAmHow:o=>[
-  "Lo show di Epic: "+o.teams+" coppie «pro + creator», Reload, "+o.games+" partite in una sola lobby.",
+  "Lo show di Epic: "+o.teams+" coppie «pro + creator», Reload"+(o.zb?" · Zero Build (senza costruzioni: niente materiali, refresh o high ground)":"")+", "+o.games+" partite in una sola lobby.",
   "Niente qualificazione, un invito per fama: da "+o.reach+" follower, "+o.host+" ti scrive in DM "+o.days+" giorni prima della data. Accetti e scegli chi vuoi tra "+o.pick+" creator.",
   "Punti: "+o.p1+" per la vittoria, "+o.p2+" per il secondo posto, "+o.p3+" per il terzo, "+o.kill+" per eliminazione.",
   "Soldi: una tabella da "+o.prize1+" per il primo a "+o.prizeN+" per l'ultimo, più "+o.g1+" / "+o.g2+" / "+o.g3+" per una top 3 in OGNI partita.",
@@ -13791,10 +13794,10 @@ ccNewsDuoWorldSplit:(a,b)=>a+' e '+b+' si separano dopo una serie di serate stor
 ccPostDuoSplitBy:(a,b,t)=>'non sono pi\u00f9 in duo con @'+b+'. '+t+' \ud83d\ude4f',
 ccPostTrioLF:(a,b,t)=>'io e @'+b+' cerchiamo un trio. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'non sono pi\u00f9 in trio con @'+b+'. '+t+' \ud83d\ude4f',
 ccPingServer:city=>'verso il server di '+city,
-ccCity:{Dus:'Düsseldorf', Ant:'Anversa', Lyo:'Lione', Cph:'Copenaghen', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Parigi', Ryd:'Riyadh', Nyc:'New York', Tok:'Tokyo', Bel:'Belgrado', Kat:'Katowice', Sto:'Stoccolma', Mad:'Madrid', Ams:'Amsterdam', Sao:'San Paolo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Città del Messico', Dub:'Dubai', Ist:'Istanbul', Mil:'Milano', Lon:'Londra', Sin:'Singapore'},
-ccCityIn:{Dus:'Düsseldorf', Ant:'Anversa', Lyo:'Lione', Cph:'Copenaghen', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Parigi', Ryd:'Riyadh', Nyc:'New York', Tok:'Tokyo', Bel:'Belgrado', Kat:'Katowice', Sto:'Stoccolma', Mad:'Madrid', Ams:'Amsterdam', Sao:'San Paolo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Città del Messico', Dub:'Dubai', Ist:'Istanbul', Mil:'Milano', Lon:'Londra', Sin:'Singapore'},
+ccCity:{Dus:'Düsseldorf', Ant:'Anversa', Lyo:'Lione', Cph:'Copenaghen', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Parigi', Ryd:'Riyadh', Nyc:'New York', Tok:'Tokyo', Bel:'Belgrado', Kat:'Katowice', Sto:'Stoccolma', Mad:'Madrid', Ams:'Amsterdam', Dal:'Dallas', Sao:'San Paolo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Città del Messico', Dub:'Dubai', Ist:'Istanbul', Mil:'Milano', Lon:'Londra', Sin:'Singapore'},
+ccCityIn:{Dus:'Düsseldorf', Ant:'Anversa', Lyo:'Lione', Cph:'Copenaghen', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Parigi', Ryd:'Riyadh', Nyc:'New York', Tok:'Tokyo', Bel:'Belgrado', Kat:'Katowice', Sto:'Stoccolma', Mad:'Madrid', Ams:'Amsterdam', Dal:'Dallas', Sao:'San Paolo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Città del Messico', Dub:'Dubai', Ist:'Istanbul', Mil:'Milano', Lon:'Londra', Sin:'Singapore'},
 ccYearSub:{cup:'Una finestra, 11 partite', final:'Finale settimanale, solo Divisione 1', eval:'Due round in una sera, solo Divisione 1', major:'Play-In, Heat, LAN', gc:'La fine dell\u2019anno', reload:'Un circuito a s\u00e9, non FNCS', summit:'Tre giorni di LAN, dal Major 1', victory:'Due round, $100 per ogni vittoria nel secondo'},
-ccYearNames:{ReloadEliteSeries1Opens:'Reload · open coppa 1', ReloadEliteSeries1PlayIn:'Reload · play-in coppa 1', ReloadEliteSeries1Heats:'Reload · heat coppa 1', ReloadEliteSeries1Final:'Reload · finale coppa 1', ReloadEliteSeries2Opens:'Reload · open coppa 2', ReloadEliteSeries2PlayIn:'Reload · play-in coppa 2', ReloadEliteSeries2Heats:'Reload · heat coppa 2', ReloadEliteSeries2Final:'Reload · finale coppa 2', ReloadEliteSeries3Opens:'Reload · open coppa 3', ReloadEliteSeries3PlayIn:'Reload · play-in coppa 3', ReloadEliteSeries3Heats:'Reload · heat coppa 3', ReloadEliteSeries3Final:'Reload · finale coppa 3', ReloadEliteSeries4Opens:'Reload · open coppa 4', ReloadEliteSeries4PlayIn:'Reload · play-in coppa 4', ReloadEliteSeries4Heats:'Reload · heat coppa 4', ReloadEliteSeries4Final:'Reload · finale coppa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heat', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Finale', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Gran Finali', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heat', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Finale', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · qualificazioni', SoloSeries_Heats:'Solo Series · heat', SoloSeries_Final:'Solo Series · finali', FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heat', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale', FNCSSolos_Final:'FNCS Solos · finali', ProAm_Dallas:'Pro-Am · Dallas'},
+ccYearNames:{ReloadEliteSeries1Opens:'Reload · open coppa 1', ReloadEliteSeries1PlayIn:'Reload · play-in coppa 1', ReloadEliteSeries1Heats:'Reload · heat coppa 1', ReloadEliteSeries1Final:'Reload · finale coppa 1', ReloadEliteSeries2Opens:'Reload · open coppa 2', ReloadEliteSeries2PlayIn:'Reload · play-in coppa 2', ReloadEliteSeries2Heats:'Reload · heat coppa 2', ReloadEliteSeries2Final:'Reload · finale coppa 2', ReloadEliteSeries3Opens:'Reload · open coppa 3', ReloadEliteSeries3PlayIn:'Reload · play-in coppa 3', ReloadEliteSeries3Heats:'Reload · heat coppa 3', ReloadEliteSeries3Final:'Reload · finale coppa 3', ReloadEliteSeries4Opens:'Reload · open coppa 4', ReloadEliteSeries4PlayIn:'Reload · play-in coppa 4', ReloadEliteSeries4Heats:'Reload · heat coppa 4', ReloadEliteSeries4Final:'Reload · finale coppa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heat', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Finale', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Gran Finali', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heat', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Finale', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · qualificazioni', SoloSeries_Heats:'Solo Series · heat', SoloSeries_Final:'Solo Series · finali', FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heat', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale', FNCSSolos_Final:'FNCS Solos · finali', ProAm_Dallas:'Pro-Am · Dallas', ProAm_SaoPaulo:'Pro-Am · San Paolo'},
 modeFncs2026Title:"FNCS 2026",
 majorPick1:"Major 1",
 majorPick2:"Major 2",
@@ -15417,7 +15420,7 @@ ccNewsProAmReach:(h,f,g)=>"Joguei com @"+h+" — "+f+" na Twitch. "+g+" novos se
 ccProAmMateLine:(h,f)=>"Parceiro: "+h+" · "+f+" na Twitch",
 ccProAmHowTitle:"Como funciona o Pro-Am",
 ccProAmHow:o=>[
-  "O show da Epic: "+o.teams+" duplas «pro + criador», Reload, "+o.games+" partidas em um só lobby.",
+  "O show da Epic: "+o.teams+" duplas «pro + criador», Reload"+(o.zb?" · Zero Build (sem construção: sem materiais, refresh ou high ground)":"")+", "+o.games+" partidas em um só lobby.",
   "Sem classificatória, um convite por fama: a partir de "+o.reach+" seguidores, a "+o.host+" te chama na DM "+o.days+" dias antes da data. Aceitou, escolhe qualquer um dos "+o.pick+" criadores.",
   "Pontos: "+o.p1+" pela vitória, "+o.p2+" pelo segundo lugar, "+o.p3+" pelo terceiro, "+o.kill+" por eliminação.",
   "Dinheiro: uma tabela de "+o.prize1+" pelo primeiro lugar até "+o.prizeN+" pelo último, mais "+o.g1+" / "+o.g2+" / "+o.g3+" por um top 3 em CADA partida.",
@@ -16290,10 +16293,10 @@ ccNewsDuoWorldSplit:(a,b)=>a+' e '+b+' se separam depois de uma sequ\u00eancia d
 ccPostDuoSplitBy:(a,b,t)=>'n\u00e3o estou mais em dupla com @'+b+'. '+t+' \ud83d\ude4f',
 ccPostTrioLF:(a,b,t)=>'eu e @'+b+' procurando trio. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'n\u00e3o estou mais em trio com @'+b+'. '+t+' \ud83d\ude4f',
 ccPingServer:city=>'at\u00e9 o servidor de '+city,
-ccCity:{Dus:'Düsseldorf', Ant:'Antuérpia', Lyo:'Lyon', Cph:'Copenhague', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riade', Nyc:'Nova York', Tok:'Tóquio', Bel:'Belgrado', Kat:'Katowice', Sto:'Estocolmo', Mad:'Madri', Ams:'Amsterdã', Sao:'São Paulo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Cidade do México', Dub:'Dubai', Ist:'Istambul', Mil:'Milão', Lon:'Londres', Sin:'Singapura'},
-ccCityIn:{Dus:'Düsseldorf', Ant:'Antuérpia', Lyo:'Lyon', Cph:'Copenhague', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riade', Nyc:'Nova York', Tok:'Tóquio', Bel:'Belgrado', Kat:'Katowice', Sto:'Estocolmo', Mad:'Madri', Ams:'Amsterdã', Sao:'São Paulo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Cidade do México', Dub:'Dubai', Ist:'Istambul', Mil:'Milão', Lon:'Londres', Sin:'Singapura'},
+ccCity:{Dus:'Düsseldorf', Ant:'Antuérpia', Lyo:'Lyon', Cph:'Copenhague', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riade', Nyc:'Nova York', Tok:'Tóquio', Bel:'Belgrado', Kat:'Katowice', Sto:'Estocolmo', Mad:'Madri', Ams:'Amsterdã', Dal:'Dallas', Sao:'São Paulo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Cidade do México', Dub:'Dubai', Ist:'Istambul', Mil:'Milão', Lon:'Londres', Sin:'Singapura'},
+ccCityIn:{Dus:'Düsseldorf', Ant:'Antuérpia', Lyo:'Lyon', Cph:'Copenhague', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riade', Nyc:'Nova York', Tok:'Tóquio', Bel:'Belgrado', Kat:'Katowice', Sto:'Estocolmo', Mad:'Madri', Ams:'Amsterdã', Dal:'Dallas', Sao:'São Paulo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Cidade do México', Dub:'Dubai', Ist:'Istambul', Mil:'Milão', Lon:'Londres', Sin:'Singapura'},
 ccYearSub:{cup:'Uma janela, 11 partidas', final:'Final semanal, s\u00f3 Divis\u00e3o 1', eval:'Duas rodadas numa noite, s\u00f3 Divis\u00e3o 1', major:'Play-In, Heats, LAN', gc:'O fim do ano', reload:'Circuito pr\u00f3prio, n\u00e3o \u00e9 FNCS', summit:'Tr\u00eas dias de LAN, vindos do Major 1', victory:'Duas rodadas, $100 por cada vit\u00f3ria na segunda'},
-ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens copa 1', ReloadEliteSeries1PlayIn:'Reload · play-in copa 1', ReloadEliteSeries1Heats:'Reload · heats copa 1', ReloadEliteSeries1Final:'Reload · final copa 1', ReloadEliteSeries2Opens:'Reload · opens copa 2', ReloadEliteSeries2PlayIn:'Reload · play-in copa 2', ReloadEliteSeries2Heats:'Reload · heats copa 2', ReloadEliteSeries2Final:'Reload · final copa 2', ReloadEliteSeries3Opens:'Reload · opens copa 3', ReloadEliteSeries3PlayIn:'Reload · play-in copa 3', ReloadEliteSeries3Heats:'Reload · heats copa 3', ReloadEliteSeries3Final:'Reload · final copa 3', ReloadEliteSeries4Opens:'Reload · opens copa 4', ReloadEliteSeries4PlayIn:'Reload · play-in copa 4', ReloadEliteSeries4Heats:'Reload · heats copa 4', ReloadEliteSeries4Final:'Reload · final copa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heats', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Final', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Grandes Finais', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heats', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Final', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · classificat\u00f3rias', SoloSeries_Heats:'Solo Series · heats', SoloSeries_Final:'Solo Series · finais', FNCSSolos_Q1Round2:'FNCS Solos · classif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · classif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · classif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · classif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heats', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, final', FNCSSolos_Final:'FNCS Solos · finais', ProAm_Dallas:'Pro-Am · Dallas'},
+ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens copa 1', ReloadEliteSeries1PlayIn:'Reload · play-in copa 1', ReloadEliteSeries1Heats:'Reload · heats copa 1', ReloadEliteSeries1Final:'Reload · final copa 1', ReloadEliteSeries2Opens:'Reload · opens copa 2', ReloadEliteSeries2PlayIn:'Reload · play-in copa 2', ReloadEliteSeries2Heats:'Reload · heats copa 2', ReloadEliteSeries2Final:'Reload · final copa 2', ReloadEliteSeries3Opens:'Reload · opens copa 3', ReloadEliteSeries3PlayIn:'Reload · play-in copa 3', ReloadEliteSeries3Heats:'Reload · heats copa 3', ReloadEliteSeries3Final:'Reload · final copa 3', ReloadEliteSeries4Opens:'Reload · opens copa 4', ReloadEliteSeries4PlayIn:'Reload · play-in copa 4', ReloadEliteSeries4Heats:'Reload · heats copa 4', ReloadEliteSeries4Final:'Reload · final copa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heats', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Final', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Grandes Finais', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heats', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Final', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · classificat\u00f3rias', SoloSeries_Heats:'Solo Series · heats', SoloSeries_Final:'Solo Series · finais', FNCSSolos_Q1Round2:'FNCS Solos · classif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · classif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · classif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · classif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heats', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, final', FNCSSolos_Final:'FNCS Solos · finais', ProAm_Dallas:'Pro-Am · Dallas', ProAm_SaoPaulo:'Pro-Am · San Paolo'},
 modeFncs2026Title:"FNCS 2026",
 majorPick1:"Major 1",
 majorPick2:"Major 2",
@@ -52263,7 +52266,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
        плюс то, что к ней добавили ЛУТ и ВЫСОКАЯ ЗЕМЛЯ, — ровно то, на что
        игрок влияет. См. livePow. */
     t._pfBase=t._pf;
-    t._pc=Math.max(1, t._pf+(t.closeEdge||0));
+    t._pc=Math.max(1, t._pf+(CC_ZB ? 0 : (t.closeEdge||0)));   // Zero Build: край построек не считается
   });
   const you=teams.find(t=>t.isYou);
   ccMpMark('pf', teams);
@@ -52321,11 +52324,11 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
   for(const stop of CC_GAME_STOPS){
     game.playTo(stop.zone);
     // Круги, прошедшие с прошлой остановки, стоят стройки — всем одинаково.
-    ccKitSpend(teams, CC_MATS_ZONE*Math.max(1, stop.zone-zoneWas));
+    if(!CC_ZB) ccKitSpend(teams, CC_MATS_ZONE*Math.max(1, stop.zone-zoneWas));   // Zero Build — стройки нет
     zoneWas=stop.zone;
     CC_KIT_ZONE=zoneWas;   // панель на карте досчитывает ресы по зоне кадра, см. ccKitPanel
     // Концовка без ресов стоит силы, и комнате тоже. См. CC_MATS_PEN.
-    if(stop.zone>=8) ccMatsPenalty(teams);
+    if(stop.zone>=8 && !CC_ZB) ccMatsPenalty(teams);
     ccMpMark('p'+stop.zone, teams);
     if(ui && ui.show && !dead) dead=await ui.show(game.frames());
     ccMpMark('s'+stop.zone, teams);
@@ -52641,11 +52644,12 @@ function ccKitPanel(lobby, frame){
     '</div>'+
     surge+
     '<div class="zk-right">'+
+      (CC_ZB ? '<div class="zk-mats zk-zb" title="Zero Build"><b>Zero Build</b></div>' :
       '<div class="zk-mats'+(low?' low':'')+'" data-total="'+mats+'" title="'+esc(T.ccKitMats(mats))+(low?' · '+esc(T.ccKitLow):'')+'">'+
         '<span class="m-wood">'+CC_KIT_ICON.wood+'<b>'+st[0]+'</b></span>'+
         '<span class="m-brick">'+CC_KIT_ICON.brick+'<b>'+st[1]+'</b></span>'+
         '<span class="m-metal">'+CC_KIT_ICON.metal+'<b>'+st[2]+'</b></span>'+
-      '</div>'+
+      '</div>')+
       builds+
       '<div class="zk-hotbar"'+(pack.length?'':' title="'+esc(T.ccKitLootNone)+'"')+'>'+slots+'</div>'+
     '</div>';
@@ -52679,6 +52683,7 @@ function ccKitLine(t){
   const mats=ccMats(t);
   const loot=t._loot ? [...(t._loot.weapons||[]), ...(t._loot.heals||[])].slice(0,3)
                         .map(o=>o&&o.name).filter(Boolean).join(' · ') : '';
+  if(CC_ZB) return 'Zero Build'+(loot ? ' · '+loot : '');   // ресов нет — только лут
   return L().ccKitLine(mats, ccMatsLow(t) ? L().ccKitLow : '', loot);
 }
 // Цена концовки по остатку ресов (CC_MATS_BANDS) — одинаково игроку и
@@ -52695,16 +52700,16 @@ const CC_GAME_STOPS=[
   // Первая: точка — сундуки, а на занятой точке стычка или уход (ccAskSite).
   {zone:1, ask:(you, ui)=>ccAskSite(you, ui), room:ccRoomSite},
   // Третья зона: лут и как фармим ресы (ccAskFarm — стиль стройки внутри него).
-  {zone:3, ask:async (you, ui)=>{ await ccAskLoot(you, ui); await ccAskFarm(you, ui); },
-   room:(field, you)=>{ ccRoomLoot(field, you); ccRoomFarm(field, you); }},
+  {zone:3, ask:async (you, ui)=>{ await ccAskLoot(you, ui); if(!CC_ZB) await ccAskFarm(you, ui); },
+   room:(field, you)=>{ ccRoomLoot(field, you); if(!CC_ZB) ccRoomFarm(field, you); }},
   // Четвёртая: ротация — когда выходим к следующему кругу (ccAskRot). Комната
   // ходит по навыку, как ходила: движок читает team._rot только у людей.
   {zone:4, ask:(you, ui)=>ccAskRot(you, ui)},
   // Пятая и седьмая: ресы, если кончились, и лечение, если щит снят (ccAskMid).
   // Пятая: меню середины (сёрдж, ресы, файт) — всегда; седьмая — то же меню,
   // но только когда есть о чём: ресы кончились или щит снят.
-  {zone:5, ask:(you, ui)=>ccAskMid(you, ui), room:(field, you)=>{ ccRoomMats(field, you); ccRoomHeal(field, you); }},
-  {zone:7, ask:(you, ui)=>ccAskMid(you, ui), room:(field, you)=>{ ccRoomMats(field, you); ccRoomHeal(field, you); }, quiet:ccMidQuiet},
+  {zone:5, ask:(you, ui)=>ccAskMid(you, ui), room:(field, you)=>{ if(!CC_ZB) ccRoomMats(field, you); ccRoomHeal(field, you); }},
+  {zone:7, ask:(you, ui)=>ccAskMid(you, ui), room:(field, you)=>{ if(!CC_ZB) ccRoomMats(field, you); ccRoomHeal(field, you); }, quiet:ccMidQuiet},
   {zone:8, ask:(you, ui)=>ccAskLate(you, ui), room:ccRoomLate}
 ];
 // Молчаливая остановка: вопрос не задаётся, когда отвечать не на что.
@@ -53131,7 +53136,8 @@ async function ccAskMenu(you, ui){
   const optFight={id:'fight', icon:ccItemIconHTML(gun, CC_CHOICE_ICON.fight),
        title:T.ccMidFight+(foe0 && foe0.name ? ' · '+String(foe0.name).replace(/<[^>]+>/g,'') : ''),
        note:T.ccMidFightNote(winPct, CC_FIGHT.pow, diePct, tradePct, CC_FIGHT.pokeDmg)};
-  const opts=low ? [optGo, optStay, ...surgeOpt, optFight] : [optStay, ...surgeOpt, optGo, optFight];
+  // Zero Build: за ресами идти некуда — остаёмся, сёрдж, файт.
+  const opts=CC_ZB ? [optStay, ...surgeOpt, optFight] : (low ? [optGo, optStay, ...surgeOpt, optFight] : [optStay, ...surgeOpt, optGo, optFight]);
   const pickId=(await ccMpChoose('mid'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(T.ccMidTitle, ccKitLine(you), opts, ui && ui.map, null, 'mid')).id;
   }, function(v){ return ({stay:T.ccMatsStay, surge:T.ccMidSurge, go:T.ccMatsGo, fight:T.ccMidFight})[v]||''; })).v;
@@ -53322,7 +53328,7 @@ function ccRoomLate(field, you){
      прежнего. Что это не подарок и не налог — меряет career-choice-balance-probe. */
   // Ходы через движок (третья сторона) комната не ходит: её стычки движок
   // и так считает сам, а второй раз давать ей элимы броском — подарок.
-  const risky=CC_LATE_MOVES.filter(m=>m.pow>0 && !m.real).slice().sort((a,b)=>a.pow-b.pow);
+  const risky=ccLateMovesNow().filter(m=>m.pow>0 && !m.real).slice().sort((a,b)=>a.pow-b.pow);
   const calm=[];
   field.forEach(t=>{
     if(you && (t===you || t.isMate || t.isRival)) return;   // людям (и сопернику по гонке) — вопрос, не бросок
@@ -53978,7 +53984,7 @@ async function ccAskLate(you, ui){
     // Подсказкой идёт не общая фраза, а что у тебя есть: ресы и лут. Ради
     // этого вопрос и задан — см. ccKitLine.
     return (await ccChoiceBox(L().ccLateTitle, ccKitLine(you),
-      CC_LATE_MOVES.map(m=>({id:m.id, title:nameOf(m.id), note:ccLateNote(m, powOf(m)),
+      ccLateMovesNow().map(m=>({id:m.id, title:nameOf(m.id), note:ccLateNote(m, powOf(m)),
         // Картинка хода — по id, см. CC_LATE_ICON; у рефреша сундук, у низа «остаёмся».
         icon:CC_CHOICE_ICON[CC_LATE_ICON[m.id]]||CC_CHOICE_ICON.stay})),
       ui && ui.map, null, 'late')).id;
@@ -54038,7 +54044,7 @@ function simulateGameOnMap(teams, lobbyOpts){
        плюс то, что к ней добавили ЛУТ и ВЫСОКАЯ ЗЕМЛЯ, — ровно то, на что
        игрок влияет. См. livePow. */
     t._pfBase=t._pf;
-    t._pc=Math.max(1, t._pf+(t.closeEdge||0));
+    t._pc=Math.max(1, t._pf+(CC_ZB ? 0 : (t.closeEdge||0)));   // Zero Build: край построек не считается
   });
 
   // The island this game is played on — the one the landing picker put
@@ -54390,7 +54396,7 @@ function simulateGame(teams, lobbyOpts){
        плюс то, что к ней добавили ЛУТ и ВЫСОКАЯ ЗЕМЛЯ, — ровно то, на что
        игрок влияет. См. livePow. */
     t._pfBase=t._pf;
-    t._pc=Math.max(1, t._pf+(t.closeEdge||0));
+    t._pc=Math.max(1, t._pf+(CC_ZB ? 0 : (t.closeEdge||0)));   // Zero Build: край построек не считается
   });
   const lobbySquadSize=(teams[0].squad && teams[0].squad.length) || 2;
   const DUEL_POW_EXPONENT=DUEL_POW_EXPONENT_BY_MODE[lobbySquadSize]||5;
@@ -58041,7 +58047,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='68c543b5';
+const CC_BUILD='a6dcaa6c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -60765,7 +60771,11 @@ function careerSchedule(){
 //
 // A Victory Cup outranks a Reload day but not the ladder: the ladder is what the
 // career is for, and a day holding both is a ladder day.
-const CC_KIND_RANK=['globals','gc','summit','major','cup','final','eval','victory','reload'];
+/* Про-Ам — выше кубков: 12.07 и 6.09 — воскресенья, и в тот же день стоит Victory Cup; без ранга
+   Про-Ам шёл последним, careerNext брал Victory Cup, и принятое приглашение было не сыграть
+   (сторож check-career-proam-zb 9.09: «Duos Victory Cup» вместо Сан-Паулу). Играется он только по
+   принятому письму (careerProAmCan), иначе день остаётся за Victory Cup. */
+const CC_KIND_RANK=['globals','gc','summit','major','proam','cup','final','eval','victory','reload'];
 /* What the tile on the hub is actually looking at.
 
    His question, 17 August: why does it say 11 games when it plays 12. Because it
@@ -65076,6 +65086,7 @@ const CAREER_EV_ART_ID={
   FNCSSolos_Final:'art/fncs-solo.jpg',
   // Pro-Am играется на острове Reload — арт берём Reload'а, своего у нас нет.
   ProAm_Dallas:'art/mode-ewc.jpg',
+  ProAm_SaoPaulo:'art/mode-ewc.jpg',
   proam:'art/mode-ewc.jpg'
 };
 // Обложка события: сперва по id, потом по виду. Одна дверь для календаря и карточки.
@@ -65248,7 +65259,9 @@ const CAREER_YEAR=[
      Поле — двадцать про плюс двадцать креаторов, по приглашению; дороги через
      квалификацию Epic не публикует вовсе. Значит и у нас её нет: зовут по
      известности, см. careerProAmCan — это НАША мерка, не Epic'ова. */
-  ['2026-07-12','2026-07-12','ProAm_Dallas','proam']
+  ['2026-07-12','2026-07-12','ProAm_Dallas','proam'],
+  // Вторая остановка серии — Сан-Паулу, Zero Build. См. CC_PROAM_EVENTS.
+  ['2026-09-06','2026-09-06','ProAm_SaoPaulo','proam']
 ];
 /* ---- The other year: FNCS 2025, in trios ------------------------------------
 
@@ -77074,7 +77087,7 @@ function careerSocialHTML(){
            раз», потом выбор напарника из тех, кто едет. Его правка 4 сентября.
            Список закрывается, как только человек выбран, — менять уже нельзя,
            это ответ организатору, а не настройка. */
-        ? (()=>{ const inv=careerProAmInv();
+        ? (()=>{ const inv=careerProAmInv(ccProAmThreadLabel(open));
             if(!inv || inv.state==='no') return `<div class="dm-foot dm-foot-done">${L().dmProAmDone}</div>`;
             if(inv.state==='sent') return `<div class="dm-foot"><div class="dm-ask">
               <button class="ch-sign" onclick="careerProAmYes('${open.id}')">${L().dmProAmGo}</button>
@@ -87588,6 +87601,35 @@ const CC_PROAM_PLACE=[60,50,45,40,35,30,27,24,21,18,15,12,9,6,3];
 const CC_PROAM_PRIZE=[10000,7000,4500,3000,2200,1800,1400,1200,1000,900,
                       900,800,700,600,500,450,400,350,200,200];
 const CC_PROAM_GAME=[1000,500,200];
+/* ВТОРАЯ ОСТАНОВКА — САН-ПАУЛУ, 6 сентября 2026 (Pro-Am Creator Series, Team Liquid, Alienware
+   Training Facility). Его слово 9 сентября: «добавляй, ток в ЗБ» — играется в Zero Build (CC_ZB).
+   Что опубликовано (Liquipedia): 20 пар, $50 000, шесть игр — в жизни 1–3 Zero Build и 4–6 Build,
+   здесь все шесть без строек, его решение; призовые только за 1–5: 12 000 / 8 000 / 5 800 /
+   4 500 / 3 500. Таблица очков НЕ опубликована — взята далласская; места 6–20 не опубликованы —
+   остаток $16 200 разложен по убыванию; бонусов за игру нет (фонд закрывается таблицей).
+   Обе остановки — по одному приглашению каждая (careerProAmInv по ярлыку). */
+const CC_PROAM_EVENTS={
+  ProAm_Dallas:  {day:'2026-07-12', city:'Dal', games:CC_PROAM_GAMES, place:CC_PROAM_PLACE, prize:CC_PROAM_PRIZE, game:CC_PROAM_GAME, zb:false},
+  ProAm_SaoPaulo:{day:'2026-09-06', city:'Sao', games:6, place:CC_PROAM_PLACE,
+                  prize:[12000,8000,5800,4500,3500,2700,2000,1700,1500,1300,1100,1000,900,800,700,600,550,500,450,400],
+                  game:[0,0,0], zb:true}
+};
+function ccProAmEvent(label){ return CC_PROAM_EVENTS[label] || CC_PROAM_EVENTS.ProAm_Dallas; }
+function ccProAmKey(ev){ return (ev && (ev.id||ev.label)) || 'ProAm_Dallas'; }   // id — ярлык CAREER_YEAR, label — имя на языке
+// Ярлык события у ветки инбокса: старые сейвы держат proam:true — это Даллас.
+function ccProAmThreadLabel(t){ return !t || !t.proam ? null : (t.proam===true ? 'ProAm_Dallas' : String(t.proam)); }
+// Съездил ли уже на ЭТОТ Про-Ам в этом сезоне (старый ключ cr.proam[season] — Даллас).
+function ccProAmDone(label){
+  const cr=CAREER && CAREER.career; if(!cr) return false;
+  const p=cr.proam||{};
+  return !!(p[cr.season+'|'+label] || (label==='ProAm_Dallas' && p[cr.season]));
+}
+/* ZERO BUILD — ночь без строек: ресы не тратятся и не спрашиваются (фарм, рефреш, стиль стройки,
+   штраф концовки), высокой земли и рефреша нет в ходах конца, комната ими не ходит, край ближнего
+   боя (closeEdge — постройки) не считается. Сила карточек остаётся как есть: отдельного рейтинга
+   под ZB у Epic нет, это допущение. Ставит runCareerProAm по CC_PROAM_EVENTS.zb. */
+let CC_ZB=false;
+function ccLateMovesNow(){ return CC_ZB ? CC_LATE_MOVES.filter(m=>m.id!=='hg' && !m.mats) : CC_LATE_MOVES; }
 // Кого зовут: сцена смотрит на охват, а не на дивизион — это шоу.
 const CC_PROAM_REACH=25000;
 /* Креаторы Далласа — опубликованный состав, все двадцать. Их ровно столько,
@@ -87877,9 +87919,13 @@ function careerProAmOn(iso){
    снова. */
 const CC_PROAM_INVITE_DAYS=14;   // за сколько дней пишут
 const CC_PROAM_PICK=6;           // сколько креаторов предлагают на выбор
-function careerProAmInv(){
+function careerProAmInv(label){
   const cr=CAREER && CAREER.career; if(!cr) return null;
-  const inv=cr.proamInv;
+  // Без ярлыка — сегодняшний Про-Ам, иначе ближайший впереди.
+  if(!label){ const ev=careerProAmOn(careerToday()) || (function(){ const d=careerProAmNextDay(); return d ? careerProAmOn(d) : null; })(); label=ccProAmKey(ev); }
+  const invs=cr.proamInvs||{};
+  let inv=invs[label];
+  if(!inv && label==='ProAm_Dallas' && cr.proamInv) inv=cr.proamInv;   // старый сейв: одно приглашение на сезон
   return (inv && inv.season===cr.season) ? inv : null;
 }
 // Ближайший Про-Ам сезона, если он ещё впереди.
@@ -87893,15 +87939,17 @@ function careerProAmNextDay(){
 }
 function careerProAmInviteTick(){
   const cr=CAREER && CAREER.career; if(!cr) return null;
-  if(careerProAmInv()) return null;                    // уже писали в этом сезоне
-  if((cr.proam||{})[cr.season]) return null;           // и уже съездил
   if(careerReach()<CC_PROAM_REACH) return null;        // зовут по известности
   const day=careerProAmNextDay(); if(!day) return null;
-  const ev=careerProAmOn(day);
-  cr.proamInv={season:cr.season, state:'sent', mate:null, day:day};
-  const who={handle:CC_PROAM_HOST, org:true, proam:true, epic:true};
-  const t=careerDmFind(CC_PROAM_HOST) || careerDmThread(who);
-  t.proam=true; t.who=who;
+  const ev=careerProAmOn(day), label=ccProAmKey(ev);
+  if(careerProAmInv(label)) return null;               // на этот Про-Ам уже писали
+  if(ccProAmDone(label)) return null;                  // и уже съездил
+  cr.proamInvs=cr.proamInvs||{};
+  cr.proamInvs[label]={season:cr.season, state:'sent', mate:null, day:day, label:label};
+  const who={handle:CC_PROAM_HOST, org:true, proam:label, epic:true};
+  // Своя ветка на каждую остановку: два письма в одной ветке путали бы кнопки.
+  const t=careerDms().find(x=>ccProAmThreadLabel(x)===label) || careerDmThread(who);
+  t.proam=label; t.who=who;
   careerDmPush(t, 'them', 'dmProAmInvite', [L()[ev.label]||ev.label, ccDayLabel(day)]);
   return t;
 }
@@ -87935,7 +87983,7 @@ function careerProAmPickListOld(){
   return six;
 }
 function careerProAmYes(id){
-  const inv=careerProAmInv(); if(!inv || inv.state!=='sent') return false;
+  const inv=careerProAmInv(ccProAmThreadLabel(careerDms().find(x=>x.id===id))); if(!inv || inv.state!=='sent') return false;
   inv.state='yes';
   const t=careerDms().find(x=>x.id===id); if(t){
     careerDmPush(t, 'me', 'dmProAmYes', []);
@@ -87944,7 +87992,7 @@ function careerProAmYes(id){
   careerSave(); careerRenderHub('social'); return true;
 }
 function careerProAmNo(id){
-  const inv=careerProAmInv(); if(!inv || inv.state!=='sent') return false;
+  const inv=careerProAmInv(ccProAmThreadLabel(careerDms().find(x=>x.id===id))); if(!inv || inv.state!=='sent') return false;
   inv.state='no';
   const t=careerDms().find(x=>x.id===id); if(t){
     careerDmPush(t, 'me', 'dmProAmNo', []);
@@ -87953,7 +88001,7 @@ function careerProAmNo(id){
   careerSave(); careerRenderHub('social'); return true;
 }
 function careerProAmPick(id, name){
-  const inv=careerProAmInv(); if(!inv || inv.state!=='yes') return false;
+  const inv=careerProAmInv(ccProAmThreadLabel(careerDms().find(x=>x.id===id))); if(!inv || inv.state!=='yes') return false;
   if(careerProAmPickList().indexOf(name)<0) return false;
   inv.mate=name;
   const t=careerDms().find(x=>x.id===id);
@@ -87963,9 +88011,8 @@ function careerProAmPick(id, name){
 function careerProAmCan(){
   const ev=careerProAmOn(careerToday());
   if(!ev) return false;
-  const cr=CAREER.career;
-  if((cr.proam||{})[cr.season]) return false;          // раз в год
-  const inv=careerProAmInv();
+  if(ccProAmDone(ccProAmKey(ev))) return false;        // на каждую остановку — один раз
+  const inv=careerProAmInv(ccProAmKey(ev));
   // Поехать можно только по приглашению, которое принял: известность приводит
   // письмо, а не автобус до Далласа.
   return !!inv && inv.state==='yes';
@@ -87975,13 +88022,14 @@ function careerProAmCan(){
    ещё распиши как работает». Ни одного числа руками: очки, деньги, порог
    приглашения, срок письма и потолок аудитории читаются из тех же констант, по
    которым вечер играется, — расписание не разойдётся с правилами. */
-function ccProAmHowHTML(){
+function ccProAmHowHTML(label){
   const T=L();
   if(typeof T.ccProAmHow!=='function') return '';
-  const lines=T.ccProAmHow({teams:CC_PROAM_TEAMS, games:CC_PROAM_GAMES, kill:CC_PROAM_KILL,
-    p1:CC_PROAM_PLACE[0], p2:CC_PROAM_PLACE[1], p3:CC_PROAM_PLACE[2],
-    prize1:ccMoney(CC_PROAM_PRIZE[0]), prizeN:ccMoney(CC_PROAM_PRIZE[CC_PROAM_PRIZE.length-1]),
-    g1:ccMoney(CC_PROAM_GAME[0]), g2:ccMoney(CC_PROAM_GAME[1]), g3:ccMoney(CC_PROAM_GAME[2]),
+  const P=ccProAmEvent(label || ccProAmKey(careerProAmOn(careerToday()) || (function(){ const d=careerProAmNextDay(); return d ? careerProAmOn(d) : null; })()));
+  const lines=T.ccProAmHow({teams:CC_PROAM_TEAMS, games:P.games, kill:CC_PROAM_KILL, zb:!!P.zb,
+    p1:P.place[0], p2:P.place[1], p3:P.place[2],
+    prize1:ccMoney(P.prize[0]), prizeN:ccMoney(P.prize[P.prize.length-1]),
+    g1:ccMoney(P.game[0]), g2:ccMoney(P.game[1]), g3:ccMoney(P.game[2]),
     reach:ccNum(CC_PROAM_REACH), days:CC_PROAM_INVITE_DAYS, pick:careerProAmPickList().length,
     host:CC_PROAM_HOST, cap:ccNum(CC_PROAM_REACH_CAP)});
   return '<details class="ch-how"><summary>'+esc(T.ccProAmHowTitle||'')+'</summary><ul>'+
@@ -87989,6 +88037,8 @@ function ccProAmHowHTML(){
 }
 function ccProAmWhyLocked(){
   const inv=careerProAmInv();
+  const today=careerProAmOn(careerToday());
+  if(today && ccProAmDone(ccProAmKey(today))) return L().ccProAmPlayed;
   if(inv && inv.state==='no') return L().ccProAmTurnedDown;
   if(inv && inv.state==='sent') return L().ccProAmUnanswered;
   return careerReach()>=CC_PROAM_REACH ? L().ccProAmPlayed
@@ -88000,7 +88050,8 @@ function ccProAmMate(){
   const cr=CAREER.career;
   const inv=careerProAmInv();
   if(inv && inv.mate) return ccProAmCreatorCard(inv.mate);
-  const rnd=careerRng(ccHashStr('proam|'+ccCareerSeed()+'|'+(cr.season||1)));
+  const label=ccProAmKey(careerProAmOn(careerToday()));
+  const rnd=careerRng(ccHashStr('proam|'+ccCareerSeed()+'|'+(cr.season||1)+(label==='ProAm_Dallas' ? '' : '|'+label)));
   const list=ccProAmCreators();
   const name=list[Math.floor(rnd()*list.length)];
   return ccProAmCreatorCard(name, rnd);
@@ -88011,6 +88062,8 @@ async function runCareerProAm(){
   if(!ev || !careerProAmCan()) return;
   const me=careerCard(); if(!me) return;
   const mate=ccProAmMate();
+  const P=ccProAmEvent(ccProAmKey(ev));
+  CC_ZB=!!P.zb;   // Сан-Паулу — без строек, см. CC_ZB
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
   const prevSet=ACTIVE_LANDING_SET;
   CARD_MODE=true; squadSize=2; drafted=[me, mate];
@@ -88040,18 +88093,21 @@ async function runCareerProAm(){
     rivals=rivals.concat(careerCupField(cr, drafted, CC_PROAM_TEAMS-rivals.length));
   const field=[you, ...rivals.slice(0, CC_PROAM_TEAMS-1)];
   const zones=null;
-  await simulateGamesLive(field, CC_PROAM_GAMES, proAmPoints, CC_PROAM_KILL, 'stage', 0, null, zones,
+  let ranked;
+  try{
+  await simulateGamesLive(field, P.games, place=>P.place[place-1]||0, CC_PROAM_KILL, 'stage', 0, null, zones,
     {lobbySize:CC_PROAM_TEAMS, stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
      dropEachGame:(g,room)=>careerLandingPick(room||field, you, ev.label, ['proam'])});
-  const ranked=careerRankField(field);
+  } finally{ CC_ZB=false; }
+  ranked=careerRankField(field);
   const place=ranked.indexOf(you)+1;
   /* Деньги двумя частями, обе Epic'овы: таблица мест и бонус за КАЖДУЮ игру.
      Бонус считается по журналу игр, а не по итогу вечера — в этом и смысл
-     турнира, где платят за каждую победу. */
-  const table=CC_PROAM_PRIZE[place-1] || 0;
-  const perGame=(you.stageLog||[]).reduce((s,g)=>s+(CC_PROAM_GAME[(g.place||99)-1]||0), 0);
+     турнира, где платят за каждую победу (в Сан-Паулу бонуса нет). */
+  const table=P.prize[place-1] || 0;
+  const perGame=(you.stageLog||[]).reduce((s,g)=>s+(P.game[(g.place||99)-1]||0), 0);
   const cash=table+perGame;
-  careerMoneyAdd(ranked, (p)=>CC_PROAM_PRIZE[p-1] || 0);
+  careerMoneyAdd(ranked, (p)=>P.prize[p-1] || 0);
   const shell=createStageCardShell(ev.label);
   await revealStageLog(you, shell, true);
   finalizeStageCard(shell, place, field.length, you.stagePts, cash>0, false,
@@ -88075,13 +88131,14 @@ async function runCareerProAm(){
     careerNews('good', 'ccNewsProAmReach',
                [ccHandle(mate.handle), ccNum(mate.followers||0), ccNum(fromMate)]);
   }
-  cr.proam=cr.proam||{}; cr.proam[cr.season]=careerToday();
+  cr.proam=cr.proam||{}; cr.proam[cr.season+'|'+ccProAmKey(ev)]=careerToday();
+  if(ccProAmKey(ev)==='ProAm_Dallas') cr.proam[cr.season]=careerToday();   // старый ключ — для старых сторожей и сейвов
   const places=(you.stageLog||[]).map(g=>g.place);
   cr.log=cr.log||[];
   careerGrowEvent(place, field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:place,
                of:field.length, pts:you.stagePts, passed:false, ovr:CAREER.player.ovr,
-               games:CC_PROAM_GAMES, wins:you.wins||0, elims:you.stageElims||0,
+               games:P.games, wins:you.wins||0, elims:you.stageElims||0,
                avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
                mate: mate.handle, prize:ccShareOf(cash, you), kind:'proam'});
   await ccMpClose(ranked);
@@ -90083,10 +90140,12 @@ const CC_LAN_TRAVEL=25;
 function careerLanArrive(kind, ev){
   const cr=CAREER && CAREER.career; if(!cr) return false;
   cr.lan=cr.lan||{};
-  const key=kind+'|'+cr.season;
+  // Про-Ам: своя остановка — свой город и свой прилёт (Даллас в июле, Сан-Паулу в сентябре).
+  const pa=(kind==='proam') ? ccProAmEvent(ccProAmKey(ev)) : null;
+  const key=kind+'|'+cr.season+(pa ? '|'+ccProAmKey(ev) : '');
   if(cr.lan[key]) return false;
   cr.lan[key]=careerToday();
-  const city=ccLanCity(kind, cr.season);
+  const city=pa ? (((L().ccCity||{})[pa.city])||pa.city) : ccLanCity(kind, cr.season);
   careerSpend(CC_LAN_TRAVEL);
   careerNews('good', 'ccPostLanArrive', [city]);
   careerSave();

@@ -44,11 +44,23 @@ const BOOT = `
       for (let d = '2026-06-01'; d <= '2026-06-30'; d = ccAddDays(d, 1))
         if ((careerYearDays().get(d) || []).some(e => e.kind === 'proam')) return false;
       return true; })());
-    check('exactly one Pro-Am in the year', (function(){
+    check('two Pro-Ams in the year: Dallas and São Paulo', (function(){
       let n = 0;
       for (let d = CC_YEAR_FROM; d <= CC_YEAR_TO; d = ccAddDays(d, 1))
         n += (careerYearDays().get(d) || []).filter(e => e.kind === 'proam').length;
-      out.notes.proamDays = n; return n === 1; })(), String(out.notes.proamDays));
+      out.notes.proamDays = n; return n === 2; })(), String(out.notes.proamDays));
+    const sp = careerProAmOn('2026-09-06');
+    check('São Paulo is on 6 September', !!sp && sp.id === 'ProAm_SaoPaulo', JSON.stringify(sp));
+    check('and it is played in Zero Build, six games, no per-game bonus', (function(){
+      const P = ccProAmEvent('ProAm_SaoPaulo'); return P.zb === true && P.games === 6 && P.game.every(v => v === 0); })());
+    check('its pot is $50,000 with Epic\\'s top five', (function(){
+      const P = ccProAmEvent('ProAm_SaoPaulo');
+      return P.prize.slice(0, 5).join() === '12000,8000,5800,4500,3500' && P.prize.reduce((a, b) => a + b, 0) === 50000 &&
+             P.prize.every((v, i) => i === 0 || v <= P.prize[i - 1]); })());
+    check('Zero Build drops the build moves', (function(){
+      CC_ZB = true; const ids = ccLateMovesNow().map(m => m.id); CC_ZB = false;
+      return ids.indexOf('hg') < 0 && ids.indexOf('refresh') < 0 && ids.indexOf('lg') >= 0; })());
+    check('and the day names it', !!(L().ccYearNames && L().ccYearNames.ProAm_SaoPaulo));
     check('it is a playable kind', CC_PLAYABLE.indexOf('proam') >= 0);
     check('and the day names it', !!(L().ccYearNames && L().ccYearNames.ProAm_Dallas));
 
@@ -94,7 +106,7 @@ const BOOT = `
     CAREER.career.day = ccAddDays('2026-07-12', -CC_PROAM_INVITE_DAYS);
     const inviteT = careerProAmInviteTick();
     out.notes.invite = inviteT && {who: inviteT.who.handle, msgs: inviteT.msgs.map(m => m.k)};
-    check('fame brings a letter', !!inviteT && inviteT.proam === true,
+    check('fame brings a letter', !!inviteT && !!inviteT.proam,
           JSON.stringify(out.notes.invite));
     check('from the club hosting it', !!inviteT && inviteT.who.handle === CC_PROAM_HOST);
     check('and it is unread', !!inviteT && inviteT.unread === true);
@@ -149,6 +161,18 @@ const BOOT = `
     check('and that reason is named too', ccProAmWhyLocked() === L().ccProAmPlayed);
     CAREER.career.day = '2026-07-13'; CAREER.career.proam = {};
     check('and only on its own day', careerProAmCan() === false);
+    // Вторая остановка — своё письмо и своя поездка, даже после Далласа.
+    fresh(); CAREER.dms = [];
+    CAREER.career.reach = CC_PROAM_REACH; CAREER.career.proam = {1: '2026-07-12'};
+    CAREER.career.day = ccAddDays('2026-09-06', -CC_PROAM_INVITE_DAYS);
+    const tsp = careerProAmInviteTick();
+    check('São Paulo writes after Dallas was played', !!tsp && tsp.proam === 'ProAm_SaoPaulo', JSON.stringify(tsp && tsp.proam));
+    check('one letter per stop', careerProAmInviteTick() === null);
+    check('saying yes to São Paulo', careerProAmYes(tsp.id) === true);
+    CAREER.career.day = '2026-09-06';
+    check('and going there', careerProAmCan() === true);
+    check('the rules of the day say Zero Build', /Zero Build/.test(ccProAmHowHTML()));
+    check('Dallas stays played', ccProAmDone('ProAm_Dallas') === true && ccProAmDone('ProAm_SaoPaulo') === false);
 
     // ---- напарник-креатор ---------------------------------------------------
     fresh();
