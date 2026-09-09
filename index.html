@@ -58057,7 +58057,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='fc74d311';
+const CC_BUILD='c2950c2e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -78716,7 +78716,8 @@ const CC_COACHES=[
      строки о том, что именно он учит, — значит, всё шесть, как у остальных
      генералистов, и без химии: пар, с которыми он работает, нигде не названо.
      Регион по стране — NA. Аватарка снята с X (unavatar) 3 сентября. */
-  {id:'thomas5x',name:'Thomas5x',  at:'Thomas5x_',    reg:'NA',    cost:3000, train:0.30, keys:ATTR_KEYS.slice(), photo:'Thomas5x_.jpg'},
+  // Его слово 9 сентября («добавляй у всех»): стоит на плитке в любой карьере — pin, см. ccCoachShortlist.
+  {id:'thomas5x',name:'Thomas5x',  at:'Thomas5x_',    reg:'NA',    cost:3000, train:0.30, keys:ATTR_KEYS.slice(), photo:'Thomas5x_.jpg', pin:true},
   /* The specialists, and every one of them costs the same.
 
      His call, 18 August. Which means the rate has to be the same too: at one
@@ -78815,6 +78816,8 @@ function ccCoachShortlist(){
   // The one already hired always stays on the tile, or paying him again would
   // mean hunting for him.
   if(on){ pick.push(on); seen.add(on.id); }
+  // Закреплённые (pin) — на плитке у всех, в любом регионе; остальные два места — по жребию.
+  CC_COACHES.filter(c=>c.pin && !seen.has(c.id)).forEach(c=>{ if(pick.length<3){ pick.push(c); seen.add(c.id); } });
   if(reg) take(CC_COACHES.filter(c=>c.reg===reg));
   take(CC_COACHES);
   return pick.slice(0,3);

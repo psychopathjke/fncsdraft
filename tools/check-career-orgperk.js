@@ -119,6 +119,13 @@ const BOOT = `
     CH_DM = careerDmFind('FOKUS').id;
     const social = careerSocialHTML();
     check('and the DM offer shows it too', social.indexOf(L().ccPerkcoach) >= 0);
+    // Thomas5x — на плитке у всех (его слово 9 сентября: «добавляй у всех»), в любом регионе.
+    ['EU','BR','NAC','ASIA'].forEach(r => {
+      const was = CAREER.player.region; CAREER.player.region = r;
+      const ids = ccCoachShortlist().map(x => x.id);
+      check('Thomas5x is on the tile for ' + r, ids.indexOf('thomas5x') >= 0 && ids.length === 3, ids.join());
+      CAREER.player.region = was;
+    });
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =
     'PB' + 'EGIN' + encodeURIComponent(JSON.stringify(out)) + 'PE' + 'ND';
