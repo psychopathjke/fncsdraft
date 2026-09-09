@@ -259,7 +259,7 @@ let R8=createLobby({build:'aaaa1111', seed:'race-8'});
 ['A','B'].forEach(id=>R8.join(id,{build:'aaaa1111', card:CARD, race:true}));
 R8.act('B','race',{by:'B', day:'2026-03-02'});
 r=R8.ready('A','2026-03-01','cup');
-check('вдвоём, второй ушёл вперёд — старта нет', !r.some(x=>x.msg.t==='start') && r[0].msg.of===2, JSON.stringify(r));
+check('вдвоём, второй ушёл вперёд — вечер одного стартует', r.some(x=>x.msg.t==='start'), JSON.stringify(r));
 R8.act('B','race',{by:'B', day:'2026-03-01'});                // вернулся (перезагрузка/догон)
 r=R8.ready('B','2026-03-01','cup');
 check('вернулся и готов — старт', r.some(x=>x.msg.t==='start'), JSON.stringify(r));
@@ -269,6 +269,15 @@ T3.join('A',{build:'aaaa1111', card:CARD}); T3.join('B',{build:'aaaa1111', card:
 T3.act('B','race',{by:'B', day:'2026-03-05'});
 r=T3.ready('A','2026-03-01','cup');
 check('команда: знаменатель 2 и ждёт второго', r[0].msg.t==='ready' && r[0].msg.of===2, JSON.stringify(r));
+
+// Комната из одного: остальные ушли дальше — вечер стартует для одного.
+let R9=createLobby({build:'aaaa1111', seed:'race-9'});
+['A','B','C'].forEach(id=>R9.join(id,{build:'aaaa1111', card:CARD, race:true}));
+r=R9.ready('A','2026-02-21','final');
+check('один готов, двое на том же дне — ждём', !r.some(x=>x.msg.t==='start') && r[0].msg.of===3, JSON.stringify(r));
+R9.act('B','race',{by:'B', day:'2026-02-22'});
+r=R9.act('C','race',{by:'C', day:'2026-02-22'});
+check('оба ушли дальше — старт для одного', r.some(x=>x.msg.t==='start'), JSON.stringify(r));
 
 if(fails.length){ fails.forEach(f=>console.error('FAIL '+f)); process.exit(1); }
 console.log('лобби нумерует и рассылает, ничего не считая');

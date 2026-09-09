@@ -57999,7 +57999,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4b6c1d39';
+const CC_BUILD='fd0189a2';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -58225,7 +58225,8 @@ function ccMpGateDayWhy(){
      комната и так без ушедших вперёд (ccRaceRoom), а пульс одного соседа ничего не значит. */
   if(typeof ccRaceOn==='function' && ccRaceOn() && !ccMpTeam()){
     var room=(typeof ccRaceRoom==='function') ? ccRaceRoom() : [], hbs=(typeof MP!=='undefined' && MP.peerHbs)||{};
-    if(!room.length) return null;
+    // Комната пуста (все ушли дальше) — старта от сервера старой версии не будет, гейт сдаётся: вечер свой.
+    if(!room.length) return (typeof ccRaceRivals==='function' && ccRaceRivals().length) ? L().ccRaceWhyalone : null;
     var gone=room.every(function(p){ var h=hbs[p.id]; return h && h.day && h.day!==careerToday() && h.rand===false; });
     return gone ? L().ccMpOtherDay(ccDayLabel((hbs[room[0].id]||{}).day)) : null;
   }
@@ -59803,6 +59804,11 @@ const CC_MP_SYNC_MS=480000;
    абсолютный предел CC_MP_SYNC_MAX — на случай, если жив только пульс.
    Событийные выходы (он досчитал, связь упала) — как были. */
 const CC_MP_HB_MS=15000, CC_MP_SYNC_MAX=15*60000;
+/* Потолок ожидания в ГОНКЕ короче: комната на шестерых расходится чаще, чем пара, и каждое
+   застревание стоило четверть часа (его вопрос 9.09: «почему такие долгие прогоны»). Пульсы
+   соседей сбрасывают тишину, так что до потолка доходит любое настоящее расхождение. */
+const CC_MP_SYNC_MAX_RACE=4*60000;
+function ccMpSyncMax(){ return (typeof ccRaceOn==='function' && ccRaceOn() && !(typeof ccMpTeam==='function' && ccMpTeam())) ? CC_MP_SYNC_MAX_RACE : CC_MP_SYNC_MAX; }
 /* Напарник ВЫШЕЛ из вечера — пульс живой, но говорит «вечера нет» (rand:false):
    его перемотка встала, он в хабе, а мы ждём его на барьере. Ждать нечего —
    отпускаем через CC_MP_LEAVE_MS, как обрыв. Закрытие (onlyLost) не трогаем:
@@ -59836,7 +59842,7 @@ function ccMpDeadline(fn, ms){
     var quiet=now-Math.max(start, seen);
     var left=!fn.onlyLost && now-start>=CC_MP_LEAVE_MS && ccMpPeerLeft();
     if(left){ try{ ccMpTell(L().ccMpLeft); }catch(e){} }
-    if(left || quiet>=cap || now-start>=CC_MP_SYNC_MAX){ clearInterval(id); try{ fn(); }catch(e){} }
+    if(left || quiet>=cap || now-start>=ccMpSyncMax()){ clearInterval(id); try{ fn(); }catch(e){} }
   }, 1000);
   return id;
 }
