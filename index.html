@@ -5526,7 +5526,7 @@
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
      файл и разойдётся с напарником. -->
-<script src="mp.js?v=1c1a871b"></script>
+<script src="mp.js?v=11afadef"></script>
 </head>
 <body>
 <div class="wrap">
@@ -7433,7 +7433,7 @@ ccMatsStayNote:v=>'Ничего не тратишь, но в концовке б
 ccMatsFound:v=>'Рефреш найден, +'+v+' к силе и полные ресы', ccMatsMissed:v=>'Не нашёл, −'+v+' к силе',
 ccMatsStayGot:'Играем тем, что есть',
 ccLateLg:'Играть снизу', ccLateLgNote:'Без прибавки — зато без риска',
-ccLateHgWon:v=>'Удачно — хайграунд взят, +'+v+' к силе', ccLateHgLost:v=>'Не вышло — сбили с высоты, −'+v+' к силе',
+ccLateMidWon:v=>'Удержали середину — +'+v+' к силе', ccLateMidLost:v=>'Сбили — играем снизу, −'+v+' к силе', ccLateHgWon:v=>'Удачно — хайграунд взят, +'+v+' к силе', ccLateHgLost:v=>'Не вышло — сбили с высоты, −'+v+' к силе',
 ccLateRefreshGot:v=>'Рефреш найден, +'+v+' к силе', ccLateLgGot:'Играем снизу — без прибавки',
 ccSpotTitle:'Своя точка',
 ccSpotWhere:'Падаешь на', ccSpotAuraRow:'Аура точки',
@@ -9394,7 +9394,7 @@ ccMatsStayNote:v=>'Costs nothing now, but an endgame without mats is minus '+v,
 ccMatsFound:v=>'Refresh found, +'+v+' power and full mats', ccMatsMissed:v=>'Nothing there, −'+v+' power',
 ccMatsStayGot:'Playing with what we have',
 ccLateLg:'Play low', ccLateLgNote:'No bonus — and no risk',
-ccLateHgWon:v=>'It worked — high ground taken, +'+v+' power', ccLateHgLost:v=>'No luck — run off the high ground, −'+v+' power',
+ccLateMidWon:v=>'Held the middle — +'+v+' power', ccLateMidLost:v=>'Knocked down — playing from below, −'+v+' power', ccLateHgWon:v=>'It worked — high ground taken, +'+v+' power', ccLateHgLost:v=>'No luck — run off the high ground, −'+v+' power',
 ccLateRefreshGot:v=>'Refresh found, +'+v+' power', ccLateLgGot:'Playing low — no bonus',
 ccSpotTitle:'Your spot',
 ccSpotWhere:'You drop at', ccSpotAuraRow:'Spot aura',
@@ -11483,7 +11483,7 @@ ccMatsStayNote:v=>'Ça ne coûte rien maintenant, mais une fin de partie sans ma
 ccMatsFound:v=>'Refresh trouvé, +'+v+' de puissance et mats pleins', ccMatsMissed:v=>'Rien trouvé, −'+v+' de puissance',
 ccMatsStayGot:'On joue avec ce qu\'on a',
 ccLateLg:'Jouer en bas', ccLateLgNote:'Aucun bonus — aucun risque',
-ccLateHgWon:v=>'Réussi — high ground pris, +'+v+' de puissance', ccLateHgLost:v=>'Raté — chassé de la hauteur, −'+v+' de puissance',
+ccLateMidWon:v=>'Le milieu tenu — +'+v+' de puissance', ccLateMidLost:v=>'Descendu — on joue d’en bas, −'+v+' de puissance', ccLateHgWon:v=>'Réussi — high ground pris, +'+v+' de puissance', ccLateHgLost:v=>'Raté — chassé de la hauteur, −'+v+' de puissance',
 ccLateRefreshGot:v=>'Refresh trouvé, +'+v+' de puissance', ccLateLgGot:'On joue en bas — aucun bonus',
 ccSpotTitle:'Ton spot',
 ccSpotWhere:'Tu atterris à', ccSpotAuraRow:'Aura du spot',
@@ -13418,7 +13418,7 @@ ccMatsGoNote:(v,f,p)=>p+'%: trovato \u2014 +'+v+' e mats pieni, no \u2014 meno '
 ccMatsStayNote:v=>'Ora non costa nulla, ma un finale senza mats costa '+v,
 ccMatsFound:v=>'Refresh trovato, +'+v+' di forza e mats pieni', ccMatsMissed:v=>'Niente, \u2212'+v+' di forza',
 ccMatsStayGot:"Giochiamo con quello che c'\u00e8",
-ccLateHgWon:v=>'Ha funzionato — altura presa, +'+v+' di potenza',
+ccLateMidWon:v=>'Centro tenuto — +'+v+' di potenza', ccLateMidLost:v=>'Buttati giù — si gioca dal basso, −'+v+' di potenza', ccLateHgWon:v=>'Ha funzionato — altura presa, +'+v+' di potenza',
 ccLateHgLost:v=>'Niente da fare — cacciato dall\u2019altura, −'+v+' di potenza',
 ccLateRefreshGot:v=>'Refresh trovato, +'+v+' di potenza',
 ccSpotAuraOn:a=>a>=CC_SPOT_AURA_MAX?'Il posto è chiuso: con l’aura piena non ci atterra più nessuno':'Adesso il posto è tuo — meno squadre ci provano',
@@ -15917,7 +15917,7 @@ ccMatsGoNote:(v,f,p)=>p+'%: achou — +'+v+' e mats cheios, não — menos '+f,
 ccMatsStayNote:v=>'Agora não custa nada, mas um final sem mats custa '+v,
 ccMatsFound:v=>'Refresh achado, +'+v+' de força e mats cheios', ccMatsMissed:v=>'Nada lá, −'+v+' de força',
 ccMatsStayGot:"Jogamos com o que temos",
-ccLateHgWon:v=>'Deu certo — altura tomada, +'+v+' de poder',
+ccLateMidWon:v=>'Meio segurado — +'+v+' de poder', ccLateMidLost:v=>'Derrubados — jogando de baixo, −'+v+' de poder', ccLateHgWon:v=>'Deu certo — altura tomada, +'+v+' de poder',
 ccLateHgLost:v=>'Sem sorte — expulso da altura, −'+v+' de poder',
 ccLateRefreshGot:v=>'Refresh encontrado, +'+v+' de poder',
 ccSpotAuraOn:a=>a>=CC_SPOT_AURA_MAX?'O ponto está fechado: com a aura cheia ninguém mais pousa aqui':'Agora o lugar é seu — menos equipes tentam',
@@ -53968,8 +53968,13 @@ async function ccAskLate(you, ui){
      бывает «не вышло»; рефреш и низ всегда выходят как обещали, но назвать
      прибавку всё равно надо — иначе панель молчит, и это читается как «выбор
      не засчитался». */
+  /* Строка исхода — по таблице, а если ключа в ней нет, общая: отчёт игрока 9.09 («i clicked
+     play mid ground and this crashed like the map wouldnt move») — у мид граунда не было
+     ccLateMidWon/Lost, L()[undefined](gain) бросал TypeError, и реплей вставал. */
+  const fnWon=L()[CC_LATE_WON[move.id]], fnLost=L()[CC_LATE_LOST[move.id]];
   const line = ccLateRisky(move)
-    ? (won ? L()[CC_LATE_WON[move.id]](gain) : L()[CC_LATE_LOST[move.id]](move.fail))
+    ? (won ? (typeof fnWon==='function' ? fnWon(gain) : L().ccLateRefreshGot(gain))
+           : (typeof fnLost==='function' ? fnLost(move.fail) : L().ccLateLgGot))
     : (gain ? L().ccLateRefreshGot(gain) : L().ccLateLgGot);
   if(ui && ui.note) ui.note(line);
   await ccChoiceResult(ui && ui.map, line, ccLateRisky(move) ? won : true);
@@ -54238,9 +54243,9 @@ const CC_LATE_NAME={hg:'ccLateHg', mid:'ccLateMid', third:'ccLateThird', take:'c
 const CC_LATE_ICON={hg:'tower', mid:'stairs', third:'fight', take:'contest', edge:'storm', refresh:'chest', lg:'stay'};
 const CC_LATE_NOTE={hg:'ccLateHgNote', mid:'ccLateMidNote', third:'ccLateThirdNote', take:'ccLateTakeNote',
                     edge:'ccLateEdgeNote', refresh:'ccLateRefreshNote', lg:'ccLateLgNote'};
-const CC_LATE_WON ={hg:'ccLateHgWon', third:'ccLateThirdWon', take:'ccLateTakeWon',
+const CC_LATE_WON ={hg:'ccLateHgWon', mid:'ccLateMidWon', third:'ccLateThirdWon', take:'ccLateTakeWon',
                     edge:'ccLateEdgeWon', refresh:'ccLateRefreshWon'};
-const CC_LATE_LOST={hg:'ccLateHgLost', third:'ccLateThirdLost', take:'ccLateTakeLost',
+const CC_LATE_LOST={hg:'ccLateHgLost', mid:'ccLateMidLost', third:'ccLateThirdLost', take:'ccLateTakeLost',
                     edge:'ccLateEdgeLost', refresh:'ccLateRefreshLost'};
 /* Подпись под ходом. Строка у «низа» — просто строка (прибавки нет и называть
    нечего), у остальных функция; у ходов с монеткой ей нужны все три числа,
@@ -57994,7 +57999,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='3c688f7e';
+const CC_BUILD='5e529bd7';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59808,7 +59813,11 @@ function ccMpPeerLeft(){
      всех играющих — годовая проба на шестерых 8.09, Reload play-in 23 января. */
   if(typeof ccRaceOn==='function' && ccRaceOn() && !ccMpTeam()){
     var room=(typeof ccRaceRoom==='function') ? ccRaceRoom() : [];
-    if(!room.length) return false;
+    /* Комната пуста — все соперники уже ушли дальше по календарю (или закрыли день):
+       ждать приходов некого. Годовая проба 9.09: клиент с полуоткрытым сокетом застрял на
+       седьмой игре, остальные доиграли и ушли на неделю вперёд — а он стоял до потолка,
+       потому что пустая комната читалась как «никто не вышел». */
+    if(!room.length) return (typeof ccRaceRivals==='function') && ccRaceRivals().length>0;
     var hbs=MP.peerHbs||{};
     return room.every(function(p){ var h=hbs[p.id]; return h && h.rand===false; });
   }
