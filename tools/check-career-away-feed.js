@@ -199,21 +199,18 @@ const BOOT = `
       if (tile.indexOf('&#128065;') < 0 || tile.indexOf('&#127918;') < 0) fail('на плитке гонки нет значков режима (глаз/геймпад)');
       CC_RACE_PEERS = peers0; MP.state = st0; delete cr.race; cr.sim = false;
     }
-    // 12. Расписание года одним постом прессы, раз на сезон (его слово 8.09: «как у эпиков»).
+    // 12. Расписания года в ленте НЕТ (его слово 9.09 отменяет 8.09).
     {
       cr.told = {};
       var n0 = (cr.news || []).length;
       careerAnnounceTick();
-      var road = (cr.news || []).find(function(n){ return n.k === 'ccNewsRoadmap'; });
-      if (!road) fail('расписания года в ленте нет');
-      var who = ccPostAuthor(road);
-      if (!who.verified) fail('расписание года подписано не прессой: ' + who.name);
-      var txt = ccText(road), lines = (txt.match(/<br>/g) || []).length;
-      out.steps.push('расписание года: строк ' + lines + ', первая — ' + txt.split('<br>')[1]);
-      if (lines < 8) fail('в расписании года меньше восьми строк: ' + lines);
-      if (!/Major 1|Мейджор 1/.test(txt)) fail('в расписании нет первого Мейджора');
+      // 9.09: его слово «не надо подобные посты про даты» — расписания в ленте нет, старое вычищается.
+      if ((cr.news || []).some(function(n){ return n.k === 'ccNewsRoadmap'; })) fail('расписание года всё ещё постится');
+      cr.news.unshift({id: 'old-road', k: 'ccNewsRoadmap', a: [2026], day: cr.day});
+      cr.news.unshift({id: 'old-road-reply', k: 'ccPostDates', a: ['x'], q: 'old-road', day: cr.day});
       careerAnnounceTick();
-      if ((cr.news || []).filter(function(n){ return n.k === 'ccNewsRoadmap'; }).length !== 1) fail('расписание года вышло дважды');
+      if ((cr.news || []).some(function(n){ return n.k === 'ccNewsRoadmap' || n.q === 'old-road'; })) fail('старое расписание и ответы на него не вычищены');
+      out.steps.push('расписания года в ленте нет, старое вычищено');
     }
     // 9. Команда поверх гонки на одном коде вычищается при загрузке.
     {

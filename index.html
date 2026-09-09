@@ -58057,7 +58057,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='16425aae';
+const CC_BUILD='98fd23ae';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -73871,7 +73871,19 @@ function ccRoadmapLines(){
   return [...groups.values()].sort((a,b)=>a.from<b.from?-1:1).map(g=>
     '• '+esc(name(g))+' — '+esc(ccDayLabel(g.from))+(g.to!==g.from ? ' – '+esc(ccDayLabel(g.to)) : ''));
 }
+/* РАСПИСАНИЯ ГОДА В ЛЕНТЕ БОЛЬШЕ НЕТ. Его слово 9 сентября со скрином «FNCS 2026 — the year at a
+   glance» и репостом «please not those exact dates»: «не надо подобные посты про даты». Пост
+   не выходит, а тот, что уже лежит в старом сейве, вычищается вместе с ответами на него.
+   Календарь года у игрока остаётся на вкладке календаря; анонс ближайшего Мейджора за две
+   недели (careerAnnounceTick) остаётся — это одно событие, а не список дат. */
 function careerRoadmapTick(){
+  const cr=CAREER && CAREER.career; if(!cr) return false;
+  const news=cr.news||[];
+  const gone=new Set(news.filter(n=>n && n.k==='ccNewsRoadmap').map(n=>n.id));
+  if(gone.size) cr.news=news.filter(n=>!(n && (gone.has(n.id) || (n.q && gone.has(n.q)))));
+  return false;
+}
+function careerRoadmapTickOld(){
   const cr=CAREER && CAREER.career; if(!cr) return false;
   const key='roadmap|'+(cr.season||1);
   cr.told=cr.told||{};
