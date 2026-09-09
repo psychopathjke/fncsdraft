@@ -56,6 +56,8 @@ const boot = (who) => `
     try{
       const cr=CAREER && CAREER.career; if(!cr) return;
       if(CC_FF && CC_FF.err && !out.notes.ffErr) out.notes.ffErr=CC_FF.err;
+      // Приглашение на Про-Ам принимается само (в живой игре — кнопкой в ЛС): иначе 12.07 в пробе не играется.
+      try{ const inv=(typeof careerProAmInv==='function') ? careerProAmInv() : null; if(inv && inv.state==='sent'){ const t=careerDms().find(x=>x.proam); if(t){ careerProAmYes(t.id); out.notes.proamYes=cr.day; } } }catch(e){}
       if(typeof CC_MP_ROLLS!=='undefined'){ if(out.notes._lr!==CC_MP_ROLLS){ out.notes._lr=CC_MP_ROLLS; out.notes._lt=Date.now(); }
         else if(CC_MP_RAND && !out.notes.stall && Date.now()-(out.notes._lt||Date.now())>120000){
           out.notes.stall={day:cr.day, game:CC_MP_GAME, rolls:CC_MP_ROLLS, wait:(CC_MP_WAIT||[]).map(w=>w.t), qn:JSON.stringify(CC_MP_QN), marks:(out.notes.marks||[]).slice(-90), inbox:(window.__acts||[]).slice(-40)}; } }
@@ -144,11 +146,11 @@ const boot = (who) => `
 
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 const WHO = [
-  {nick:'Live1', age:17, ageEdge:4, country:'de', close:6, ovr:90, role:'roleIGL', role_mp:'a', money:48000, reach:20000, form:3, grind:12, mateIdx:0},
+  {nick:'Live1', age:17, ageEdge:4, country:'de', close:6, ovr:90, role:'roleIGL', role_mp:'a', money:48000, reach:30000, form:3, grind:12, mateIdx:0},
   {nick:'Live2', age:24, ageEdge:0, country:'br', close:1, ovr:86, role:'roleFRG', role_mp:'b', money:0,     reach:0,     form:0, grind:0,  mateIdx:1},
   {nick:'Live3', age:20, ageEdge:2, country:'fr', close:3, ovr:88, role:'roleFRG', role_mp:'b', money:5000,  reach:100,   form:1, grind:3,  mateIdx:2},
   {nick:'Live4', age:18, ageEdge:3, country:'gb', close:5, ovr:84, role:'roleIGL', role_mp:'b', money:1000,  reach:800,   form:2, grind:6,  mateIdx:3},
-  {nick:'Live5', age:22, ageEdge:1, country:'it', close:2, ovr:92, role:'roleFRG', role_mp:'b', money:12000, reach:3000,  form:4, grind:9,  mateIdx:4},
+  {nick:'Live5', age:22, ageEdge:1, country:'it', close:2, ovr:92, role:'roleFRG', role_mp:'b', money:12000, reach:30000,  form:4, grind:9,  mateIdx:4},
   {nick:'Live6', age:19, ageEdge:3, country:'pl', close:4, ovr:82, role:'roleIGL', role_mp:'b', money:300,   reach:50,    form:1, grind:1,  mateIdx:5},
 ].slice(0, N);
 
