@@ -123,6 +123,8 @@ const boot = (who) => `
     while(Date.now()-tf<${BUDGET_MS} && (CAREER.career.day<${JSON.stringify(FF)} || CC_FF) && !CAREER.career.seasonOver){
       await wait(1000);
       if(out.notes.ffErr) { await wait(3000); break; }
+      // Перемотка остановилась, вечера нет, цель не достигнута — ждать нечего (год 9.09: 5 часов стоя на 13.06).
+      if(!CC_FF && !(typeof CAREER_RUN!=='undefined' && CAREER_RUN) && CAREER.career.day<${JSON.stringify(FF)}){ out.notes.ffIdle=(out.notes.ffIdle||0)+1; if(out.notes.ffIdle>90){ out.notes.ffErr=out.notes.ffErr||{day:CAREER.career.day, kind:'', text:'перемотка остановилась без ошибки'}; break; } } else out.notes.ffIdle=0;
     }
     const cr=CAREER.career;
     out.notes.table=(cr.log||[]).map(r=>[r.day, r.kind||'cup', r.stage||'', 'div'+r.div, '#'+r.place+'/'+r.of, r.pts+'pts', (r.wins||0)+'w', (r.elims||0)+'e'].join(' '));

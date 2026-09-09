@@ -59477,8 +59477,10 @@ function ccRaceRivalTeam(p){
   const cards=solo ? [p.card] : [p.card].concat((p.mates||[]).filter(Boolean)).slice(0, careerSquadSize());
   const t=careerTeam(cards, true);
   t.name=teamLabel(cards);
-  if(solo) t.pow=Math.round(t.pow+(Number(p.card.formPow)||0));
-  else if(p.pow!=null) t.pow=p.pow;
+  /* Сила — из строки владельца и в соло тоже: соло-ветка считала её из карточки (база + formPow)
+     и теряла химию/форму вечера (год 9.09: соло Victory Cup 13.06, live3:97 vs 102 = 95+2.5+5). */
+  if(p.pow!=null) t.pow=p.pow;
+  else if(solo) t.pow=Math.round(t.pow+(Number(p.card.formPow)||0));
   if(p.edge!=null) t.closeEdge=p.edge;   // край ближнего боя — из строки владельца (см. CC_RACE_EDGE_NOW)
   t.isRival=true; t.raceId=p.id||null; t.mpTag=':'+hKey(p.card);
   t.summitRegion=ccCareerRegion();
