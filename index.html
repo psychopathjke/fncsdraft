@@ -58419,7 +58419,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='2375d8ee';
+const CC_BUILD='c6a10aa0';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59932,12 +59932,12 @@ function ccRaceWorldSync(n){
   const keys=[hKey(me)].concat(room.map(p=>hKey(p.card))).sort();
   if(keys[0]===hKey(me)){
     try{ MP.act('world', {by:ccMpId(), n:n, w:ccRaceWorldPack()}); }catch(e){}
-    ccMpMark('world:lead');
+    ccMpMark('world');   // метка одна у ведущего и ведомых: разная надпись читалась как место расхождения
     return Promise.resolve(true);
   }
   return ccMpIdle(new Promise(function(res){
     let done=false, off=null, t=null;
-    const finish=function(w){ if(done) return; done=true; if(off) off(); if(t) clearTimeout(t); if(w) ccRaceWorldApply(w); ccMpMark(w ? 'world:got' : 'world:none'); res(!!w); };
+    const finish=function(w){ if(done) return; done=true; if(off) off(); if(t) clearTimeout(t); if(w) ccRaceWorldApply(w); ccMpMark(w ? 'world' : 'world:none'); res(!!w); };
     const fit=function(a){ return a && a.payload && a.payload.n===n && a.payload.w; };
     // Уже в очереди: старший мог разослать раньше, чем мы дошли.
     let x; while((x=MP.take('world'))){ if(fit(x)){ finish(x.payload.w); return; } }
@@ -60256,7 +60256,7 @@ function ccFieldSig(teams){
   // Люди отдельно: «n·h102+98» — сколько команд и какая сила у своих; расхождение читается без хеша.
   // В гонке «свои» — обе команды людей, и порядок у каждого свой (моя первая), поэтому силы сортируются.
   var hum=(teams||[]).filter(function(t){ return t.isYou||t.isMate||t.isRival; }).map(function(t){ return Math.round(t.pow||0); }).sort(function(a,b){ return a-b; }).join('+');
-  return (CC_MP_NIGHT ? CC_MP_NIGHT+'.' : '')+String(ccHashStr(s))+'.'+String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : '')+'.'+
+  return (CC_MP_NIGHT ? CC_MP_NIGHT+'.' : '')+(CC_MP_FIELD_FP ? CC_MP_FIELD_FP+'.' : '')+String(ccHashStr(s))+'.'+String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : '')+'.'+
          String(typeof ALL_LANDING_ZONES!=='undefined' ? ALL_LANDING_ZONES.length : 0)+'.n'+(teams||[]).length+'h'+hum;
 }
 /* Верх таблицы словами: восемь лучших строк «очки.победы.килы» — когда хеши
@@ -60637,6 +60637,9 @@ function ccMpSplitSeen(n, detail){
 let CC_MP_FIELD_LIST=null;
 // Какой вечер считается (вид:id) — в подписи поля, чтобы «разошлись» называло турнир, а не хеш. Ставит careerPlay.
 let CC_MP_NIGHT='';
+// Отпечаток последней сборки поля: сид · занятые · пул (состав и силы) · регион. Ставит careerCupField, читает ccFieldSig —
+// чтобы «разошлись на игре 1» называло, ЧТО разошлось (его скрин 10.09: Reload 2 opens, «diff 2097 of 2100» при равных бросках).
+let CC_MP_FIELD_FP='';
 // Из чего сложилась сила своей команды в этот вечер (careerYouTeam) — едет с каждой сверкой.
 let CC_MP_YOU_PARTS='';
 /* Отпечаток командного состояния по ключам — едет с каждой сверкой игры.
@@ -68403,6 +68406,10 @@ function careerCupField(cr, mine, size, salt, open, sharp){
      three hundred. What the back of the queue cannot cover falls to the ladder,
      the way the rest of the field always has. */
   const allDuos=careerRealDuos(taken, rnd, open ? 'all' : cr.division, need, sharp);
+  try{ const pl=(open || cr.division===1) ? careerPools() : null; const dl=(pl && pl.duos)||[];
+    CC_MP_FIELD_FP='s'+String(careerSeed(cr, salt)).slice(0,6)+'.t'+String(ccHashStr([...taken].sort().join('|'))).slice(0,6)+
+      '.p'+dl.length+':'+String(ccHashStr(dl.map(d=>(d.cards||[]).map(c=>c&&(c._k||hKey(c))).join('+')).join('|'))).slice(0,6)+':'+String(ccHashStr(dl.map(d=>Math.round(ccDuoOvr(d)*10)).join(','))).slice(0,6)+
+      '.'+String(ccPoolRegion())+'.sh'+String(sharp||0)+'.o'+(open?1:0); }catch(e){ CC_MP_FIELD_FP='fp-err'; }
   const cores=(per>2) ? allDuos.slice(0, need) : allDuos;
   const extras=[];
   /* А ХВОСТ ОЧЕРЕДИ БОЛЬШЕ НЕ РАЗБИРАЮТ.
