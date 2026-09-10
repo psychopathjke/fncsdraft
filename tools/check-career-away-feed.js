@@ -195,6 +195,17 @@ const BOOT = `
       var okMixed = kinds.some(function(k){ return careerCanPlayKindOn(careerToday(), k); });
       out.steps.push('гонка, кнопка «Играть»: одинаковые режимы → ' + okSame + ', разные → ' + okMixed);
       if (okMixed) fail('при разных режимах «Играть» в гонке всё ещё доступна');
+      // Его скрин 10.09: «нажал just watching — перебросило на некст скрин». При разных режимах
+      // карточка матча остаётся, кнопки режима под рукой, панель дня не подменяет вечер.
+      var day0 = cr.day;
+      var cupDay = [].concat.apply([], [...careerEvents().entries()].map(function(e){ return e[1].some(function(x){ return x.kind === 'cup'; }) ? [e[0]] : []; })).filter(function(d){ return d > day0; }).sort()[0];
+      cr.day = cupDay; CC_RACE_PEERS.zz.day = cupDay;
+      careerRenderHub('centre');
+      var hubMixed = document.getElementById('screen-career-hub').innerHTML;
+      if (document.querySelectorAll('#screen-career-hub .ch-simbtn').length !== 2) fail('при разных режимах в гонке кнопки режима пропали с экрана: next=' + (careerNext()||{}).type + ' day=' + careerToday() + ' play=' + !!document.querySelector('#screen-career-hub .ch-play') + ' grp=' + !!document.querySelector('#screen-career-hub .cc-act-grp') + ' locked=' + ((document.querySelector('#screen-career-hub .cc-day-locked')||{}).textContent||'') + ' why=' + ccRaceModeWhy() + ' mp=' + ccMpOn());
+      if (document.querySelector('#screen-career-hub .cc-act-grp, #screen-career-hub .cc-day-locked')) fail('при разных режимах в гонке карточку матча подменила панель дня');
+      if (!document.querySelector('#screen-career-hub .ch-play[disabled]')) fail('при разных режимах «Играть» не погашена на карточке матча');
+      cr.day = day0; CC_RACE_PEERS.zz.day = day0; careerRenderHub('centre');
       var tile = careerRaceTileHTML();
       if (tile.indexOf('&#128065;') < 0 || tile.indexOf('&#127918;') < 0) fail('на плитке гонки нет значков режима (глаз/геймпад)');
       CC_RACE_PEERS = peers0; MP.state = st0; delete cr.race; cr.sim = false;

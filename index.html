@@ -58419,7 +58419,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='dbb39351';
+const CC_BUILD='14a77575';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -62256,7 +62256,9 @@ function careerCentreHTML(card, a){
            говорит причину, а кнопки режима остаются под рукой. Всё остальное —
            свободный день, незаквалившийся релоад, невыстроенный мейджор —
            как было. */
-        (!cr.seasonOver && (next.type==='free' || (!playable && !ccMpBlockWhy())))
+        /* И в гонке то же самое: «Нажал just watching и меня просто перебросило на некст скрин»
+           (его скрин 10.09) — разные режимы в комнате гонки держат карточку матча, а не день. */
+        (!cr.seasonOver && (next.type==='free' || (!playable && !ccMpBlockWhy() && !ccRaceModeWhy())))
         ? careerDayPanelHTML(next.type==='free' ? null : {label:next.label||next.title, why:
             ccRaceModeWhy() ? ccRaceModeWhy()
           : careerNoMate(next.type) ? (careerMatesOver()>0 ? L().ccMateOver : L().ccNoMateN(careerMatesShort()))
@@ -62313,7 +62315,7 @@ function careerCentreHTML(card, a){
             ${/* В команде строка режима нужна ИМЕННО когда играть нельзя:
                  расхождение режимов чинится ею же. Спрятать её вместе с
                  кнопкой значило бы запереть игрока без выхода. */
-              (playable || ccMpOn()) ? careerSimRowHTML() : ''}
+              (playable || ccMpOn() || ccRaceModeWhy()) ? careerSimRowHTML() : ''}
             ${btn}${careerFfButtonsHTML()}
           </div>
         </div>`}
