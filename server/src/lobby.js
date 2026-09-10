@@ -192,6 +192,15 @@ function createLobby(opts){
          посреди вечера. Старт тот же, с тем же сидом, и только ему:
          напарник его уже получил и считает. */
       if(st.evening && st.evening.day===day){
+        /* ДРУГОЙ ТУРНИР ПОВЕРХ ИДУЩЕГО ВЕЧЕРА — не догон. Его скрин 10.09 (8 января): один
+           считает Solo Series, второй — открытый отбор Reload, и вечер «разошёлся на игре 1»:
+           сверка видов стояла только на свежем старте, а догон отдавал старый сид любому,
+           кто готов на тот же день. Вечер остаётся тому, кто его играет; нажавшему не то
+           уезжает clash — клиент назовёт оба турнира (ccMpKindClash) и вернёт в хаб. */
+        if(kind && st.evening.kind && kind!==st.evening.kind){
+          const clash={}; room(day).forEach(x=>{ clash[x]=(x===id) ? kind : st.evening.kind; });
+          return [{to:'self', msg:{t:'ready', by:id, day:day, ready:0, of:needOf(room(day)), clash:clash}}];
+        }
         /* Кто уже заявлял готовность в ЭТОТ вечер и заявляет снова — жмёт
            «играть» заново (вечер завис, оба вернулись). Первому — догон, а
            когда заново готовы оба — вечер заводится с чистого листа: старая
@@ -204,7 +213,7 @@ function createLobby(opts){
           const all2=room(day);
           if(all2.length>=needOf(all2) && all2.every(x=>st.ready[x]===day)){
             st.ready={}; st.feed=[]; st.digests={};
-            st.evening={seed:st.seed+'|'+day+'|'+(++st.n), n:st.n, day:day, readied:{}, room:all2.slice()};
+            st.evening={seed:st.seed+'|'+day+'|'+(++st.n), n:st.n, day:day, kind:kind||null, readied:{}, room:all2.slice()};
             all2.forEach(x=>{ st.evening.readied[x]=true; });
             return [{to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day, fresh:true}}];
           }
@@ -248,10 +257,11 @@ function createLobby(opts){
         st.ready={}; st.kinds={};
         return [{to:'all', msg:{t:'ready', by:id, day:day, ready:0, of:needOf(all), clash:clash}}];
       }
+      const evKind=named.length ? st.kinds[named[0]] : null;   // вид вечера — для сверки на догоне
       st.kinds={};
       st.ready={};
       st.feed=[]; st.digests={};
-      st.evening={seed:st.seed+'|'+day, n:++st.n, day:day, readied:{}, room:all.slice()};
+      st.evening={seed:st.seed+'|'+day, n:++st.n, day:day, kind:evKind, readied:{}, room:all.slice()};
       all.forEach(x=>{ st.evening.readied[x]=true; });
       return [{to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day}}];
     },

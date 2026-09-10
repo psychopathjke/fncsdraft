@@ -58419,7 +58419,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='14a77575';
+const CC_BUILD='1bc711c5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -60249,7 +60249,7 @@ function ccFieldSig(teams){
   // Люди отдельно: «n·h102+98» — сколько команд и какая сила у своих; расхождение читается без хеша.
   // В гонке «свои» — обе команды людей, и порядок у каждого свой (моя первая), поэтому силы сортируются.
   var hum=(teams||[]).filter(function(t){ return t.isYou||t.isMate||t.isRival; }).map(function(t){ return Math.round(t.pow||0); }).sort(function(a,b){ return a-b; }).join('+');
-  return String(ccHashStr(s))+'.'+String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : '')+'.'+
+  return (CC_MP_NIGHT ? CC_MP_NIGHT+'.' : '')+String(ccHashStr(s))+'.'+String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : '')+'.'+
          String(typeof ALL_LANDING_ZONES!=='undefined' ? ALL_LANDING_ZONES.length : 0)+'.n'+(teams||[]).length+'h'+hum;
 }
 /* Верх таблицы словами: восемь лучших строк «очки.победы.килы» — когда хеши
@@ -60628,6 +60628,8 @@ function ccMpSplitSeen(n, detail){
    напарнику; при расхождении красная строка называет первую строку, где
    разошлись, и сколько их всего. */
 let CC_MP_FIELD_LIST=null;
+// Какой вечер считается (вид:id) — в подписи поля, чтобы «разошлись» называло турнир, а не хеш. Ставит careerPlay.
+let CC_MP_NIGHT='';
 // Из чего сложилась сила своей команды в этот вечер (careerYouTeam) — едет с каждой сверкой.
 let CC_MP_YOU_PARTS='';
 /* Отпечаток командного состояния по ключам — едет с каждой сверкой игры.
@@ -81341,6 +81343,7 @@ async function careerPlay(){
      And which Battle Royale island it is depends on the year: a trio season is
      played on the islands the trio year was played on. See careerBrSet. */
   useLandingSet(careerBrSet());
+  CC_MP_NIGHT=String(next.type||'')+(next.id ? ':'+String(next.id) : '');   // подпись поля называет вечер (ccFieldSig)
   // Метка на карте сегодняшнего вечера — спрашивается ДО раннера, потому что
   // после его старта поставить её уже негде. См. careerSpotGate.
   if(!careerSpotGate(next)) return;

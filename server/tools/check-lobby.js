@@ -185,6 +185,15 @@ const x1=X.ready('A','2026-01-11','solo');
 check('после сброса первый снова один', x1[0].msg.t==='ready' && x1[0].msg.ready===1);
 const x2=X.ready('B','2026-01-11','solo');
 check('один и тот же вид — старт', x2.some(x=>x.msg.t==='start'), JSON.stringify(x2));
+/* Вечер идёт — и один нажимает ДРУГОЙ турнир того же дня (его скрин 10.09, 8 января: Solo
+   Series против открытого отбора Reload, «разошлись на игре 1»). Догона со старым сидом нет:
+   нажавшему — clash с обоими видами, вечер напарника остаётся, правильный вид догоняет. */
+const x3=X.ready('B','2026-01-11','reload');
+check('другой вид поверх идущего вечера — старта нет', !x3.some(x=>x.msg.t==='start'), JSON.stringify(x3));
+check('и нажавшему сказано, кто что играет', x3.length===1 && x3[0].to==='self' && x3[0].msg.clash && x3[0].msg.clash.A==='solo' && x3[0].msg.clash.B==='reload', JSON.stringify(x3));
+check('вечер напарника не снят', !!X.state.evening && X.state.evening.kind==='solo', JSON.stringify(X.state.evening));
+const x4=X.ready('B','2026-01-11','solo');
+check('тот же вид — догон со старым сидом', x4.some(x=>x.msg.t==='start' && x.msg.resume && x.to==='self'), JSON.stringify(x4));
 /* Смесь сборок больше НЕ стартует: «без вида — согласен на всё» пропускало
    старую вкладку в вечер с новым календарём (скрины 8-9 страницы «баги»,
    31 августа: соло-квал n4900 против дуо Victory Cup n2450 в один день).
