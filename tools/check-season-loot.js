@@ -72,6 +72,32 @@ const BOOT = `
     CAREER.career.day='2026-07-15';
     check('трио в июле — t3', ccLootSet()==='t3' && only(ccLootPack(rng), T3_WEAPON_POOL.concat(T3_CONSUMABLE_POOL)));
     check('явный набор сильнее даты', only(ccLootPack(rng, 'm1'), M1_WEAPON_POOL.concat(M1_CONSUMABLE_POOL)));
+    // ---- Reload: свой пул у каждого круга, по дню карьеры, пока на столе остров Reload ------
+    CAREER.career.size=2;
+    const relAt=(day, set)=>{ CAREER.career.day=day; useLandingSet(set); const s=ccLootSet(); useLandingSet('m2'); return s; };
+    check('Reload 24 января — круг 1', relAt('2026-01-24','r1')==='r1');
+    check('Reload 27 февраля на острове r1 — круг 2', relAt('2026-02-27','r1')==='r2');
+    check('Reload 16 мая на острове r4 — круг 3', relAt('2026-05-16','r4')==='r3');
+    check('Reload 27 июня — круг 4', relAt('2026-06-27','r4')==='r4');
+    check('Reload-вечер Victory Cup в июле на r4 — круг 4', relAt('2026-07-20','r4')==='r4');
+    check('обычный вечер 27 февраля — не Reload', relAt('2026-02-27','m2')==='m2');
+    const rn=k=>names(CC_LOOT_BY_SET[k].weapons);
+    check('круг 1: Striker Burst и Sentinel Pump, без Havoc', rn('r1').indexOf('Striker Burst Rifle')>=0 && rn('r1').indexOf('Sentinel Pump Shotgun')>=0 && rn('r1').indexOf('Havoc Pump Shotgun')<0);
+    check('круг 2: Havoc и Heavy Sniper пришли, Striker Burst ушёл', rn('r2').indexOf('Havoc Pump Shotgun')>=0 && rn('r2').indexOf('Heavy Sniper Rifle')>=0 && rn('r2').indexOf('Striker Burst Rifle')<0);
+    check('круг 3: Red-Eye и Cube Rifle, без Morphite AR', rn('r3').indexOf('Red-Eye Assault Rifle')>=0 && rn('r3').indexOf('Cube Rifle')>=0 && rn('r3').indexOf('Morphite Assault Rifle')<0);
+    check('круг 4: Collateral Damage и Wrecker Revolver', rn('r4').indexOf('Collateral Damage Assault Rifle')>=0 && rn('r4').indexOf('Wrecker Revolver')>=0);
+    ['r1','r2','r3','r4'].forEach(k=>{ const p=CC_LOOT_BY_SET[k]; check(k+': стволы с mod и в лесенке', p.weapons.every(o=>typeof o.mod==='number' && RARITY_LADDER.indexOf(o.rarity)>=0));
+      check(k+': есть хилки и передвижение', p.heals.some(ccIsHealItem) && p.heals.some(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0)); });
+    check('Chug Splash — хилка, не мувмент', CC_MOVE_ITEMS.indexOf('Chug Splash')<0 && !!CC_HEAL_KIT['Chug Splash']);
+    // ---- пять слотов — пять предметов, пол не даёт силы -----------------------------------
+    CAREER.career.day='2026-10-05';
+    const five=p=>(p.weapons||[]).length+(p.heals||[]).length+(p.move?1:0);
+    for(let i=0;i<30;i++){ const p=ccLootPack(rng); if(five(p)!==5){ check('пак третьей зоны — пять предметов', false, ccPackLine(p)); break; } }
+    for(let n=1;n<=4;n++){ const p=ccChestPack(rng, null, n); if(five(p)!==5){ check('пак с '+n+' сундуков — пять предметов', false, ccPackLine(p)); } }
+    { const p=ccChestPack(rng, null, 1); const bare={weapons:(p.weapons||[]).filter(o=>!o.floor), heals:(p.heals||[]).filter(o=>!o.floor), move:(p.move && !p.move.floor) ? p.move : null};
+      check('пол не меняет силу пака', ccPackPow(p)===ccPackPow(bare), ccPackPow(p)+' vs '+ccPackPow(bare)); }
+    { const p=ccLootPack(rng); p.move=null; ccPackFloor(p, null, rng); check('пад улетел — слот добрался полом', five(p)===5 && !!p.move && p.move.floor===true); }
+    CAREER.career.size=2;
     // ---- картинки: каждый предмет каждого пула, когда спрашивают островом -------
     CARD_MODE=false;
     Object.keys(CC_LOOT_BY_SET).forEach(set=>{

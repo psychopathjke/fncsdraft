@@ -31,7 +31,17 @@ const BASE_FILE = {
   // The wiki files the modular Chapter 7 rifle under its modular name, and the
   // Chapter 7 Hunting Rifle under its high-tier variant.
   "Warforged Assault Rifle":            "Modular Warforged Assault Rifle - Weapon - Fortnite.png",
-  "Hunting Rifle":                      "Hunting Rifle (High Tier) - Weapon - Fortnite.png"
+  "Hunting Rifle":                      "Hunting Rifle (High Tier) - Weapon - Fortnite.png",
+  // Reload, 10 September 2026: the wiki has no picture of its own for these yet.
+  // The spicy slice is the plain slice, the item Launch Pad shares the trap's art,
+  // the Pizza Party page leads with the emote, and the Siphon pair is the Hammer
+  // pair's silhouette. The Red-Eye SMG has nothing at all and takes its family's
+  // rifle — the tint is right, the shape is not; swap it when the wiki gets one.
+  "Spicy Slapperoni Slice":             "Slapperoni Slice - Item - Fortnite.png",
+  "Launch Pad":                         "Launch Pad - Trap - Fortnite.png",
+  "Pizza Party":                        "Pizza Party - Item - Fortnite.png",
+  "Twin Siphon Shotguns":               "Twin Hammer Shotguns - Weapon - Fortnite.png",
+  "Red-Eye Submachine Gun":             "Red-Eye Assault Rifle - Weapon - Fortnite.png"
 };
 // loot-pool name -> wiki page (null means the names agree)
 const PAGES = {
@@ -64,7 +74,50 @@ const PAGES = {
   "Dual Pistols": null,
   "Minigun": null,
   "Flare Gun": null,
-  "Spicy Taco": null
+  "Spicy Taco": null,
+  // 10 September 2026: the Reload Elite Series pools (r1-r4), read off the wiki's Reload loot history.
+  "Morphite Assault Rifle": null,
+  "Morphite Heavy Assault Rifle": null,
+  "Morphite Hammer Assault Rifle": null,
+  "Hammer Assault Rifle": null,
+  "Morphite Pump Shotgun": null,
+  "Morphite Tactical Shotgun": null,
+  "Morphite Sentinel Pump Shotgun": null,
+  "Morphite Submachine Gun": null,
+  "Morphite Mammoth Pistol": null,
+  "Ranger Shotgun": null,
+  "Heavy Shotgun": null,
+  "Havoc Pump Shotgun": null,
+  "Frenzy Auto Shotgun": null,
+  "Charge Shotgun": null,
+  "Tactical Shotgun": null,
+  "Gatekeeper Shotgun": null,
+  "Twin Siphon Shotguns": null,
+  "Light Machine Gun": null,
+  "Heavy Sniper Rifle": null,
+  "Reaper Sniper Rifle": null,
+  "Red-Eye Assault Rifle": null,
+  "Red-Eye Submachine Gun": null,
+  "Tactical Assault Rifle": null,
+  "Cube Rifle": null,
+  "Cube Splitter SMG": null,
+  "Wrecker Revolver": null,
+  "Combat Pistol": null,
+  "Grappler": null,
+  "Launch Pad": null,
+  "Crash Pad Jr.": null,
+  "Rift-To-Go": null,
+  "Jetpack": null,
+  "FlowBerry Fizz": null,
+  "Slap Splash": null,
+  "Slap Juice": null,
+  "Slap Berry": null,
+  "Chug Cannon": null,
+  "Bandage Bazooka": null,
+  "Slapperoni Slice": null,
+  "Spicy Slapperoni Slice": null,
+  "Pizza Party": null,
+  "Pizza Slice": null
 };
 const slug = n => 'itm-' + n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 

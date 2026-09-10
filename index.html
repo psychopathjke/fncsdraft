@@ -41880,6 +41880,177 @@ const ITEM_ART={
 // [name, class] — class is what the chest table (CC_CHEST_CLASS) and the
 // "two guns of different classes" pack rule read. It used to be 'rifle' for
 // every gun here, so on the 2026 island a pack could hold two shotguns.
+/* ---------- РЕЛОАД: СВОЙ ЛУТ У КАЖДОГО КРУГА ----------
+   Его слово 10 сентября: «у Reload ещё другая мета, другие оружия, хилы и т. д., посмотри как в
+   реальном сезоне и в каждом сезоне». Reload живёт своим лутом — в основном стволы, которых в
+   Battle Royale нет (Morphite, Sentinel, Havoc, Red-Eye), — и он меняется апдейтами.
+   Источник — история лут-пула Reload на вики (шаблон Template:Reload Loot Pool, разобран по
+   апдейтам скриптом, 10.09.2026). Правило то же, что у сезонов: ствол в пуле круга, если он
+   лежал на острове к финалу круга и не был завалчен до его конца. Берутся стволы «всех островов»
+   с лесенкой редкости из той же истории; мифики, «Enhanced»/«Eradicator»/именные и
+   предметы одного острова (Oasis, Slurp Rush, Surf City, Venture) — нет. Круги: 1 — 8.01–7.02,
+   2 — 13.02–1.03, 3 — 1.05–17.05, 4 — 12.06–28.06 (даты CAREER_YEAR). Расходники — хилки и
+   передвижение из тех же дат. Какой пул берёт пак, решает круг по дню карьеры (ccRelLootSeries),
+   а не остров игры — острова чередуются игра через игру (ccRelIsland). */
+const R1_WEAPON_NAMES=[
+  ["Morphite Assault Rifle","rifle","uncommon","legendary"],
+  ["Morphite Heavy Assault Rifle","rifle","uncommon","legendary"],
+  ["Striker Burst Rifle","rifle","common","legendary"],
+  ["Hammer Assault Rifle","rifle","common","common"],
+  ["Morphite Pump Shotgun","shotgun","uncommon","legendary"],
+  ["Morphite Tactical Shotgun","shotgun","uncommon","legendary"],
+  ["Sentinel Pump Shotgun","shotgun","uncommon","legendary"],
+  ["Twinfire Auto Shotgun","shotgun","uncommon","legendary"],
+  ["Ranger Shotgun","shotgun","uncommon","legendary"],
+  ["Heavy Shotgun","shotgun","uncommon","legendary"],
+  ["Morphite Submachine Gun","smg","uncommon","legendary"],
+  ["Drum Gun","smg","rare","legendary"],
+  ["Suppressed Pistol","pistol","common","legendary"],
+  ["Hyperburst Pistol","pistol","uncommon","legendary"],
+  ["Hunting Rifle","sniper","epic","legendary"],
+  ["Deadeye DMR","sniper","uncommon","legendary"]
+];
+const R2_WEAPON_NAMES=[
+  ["Morphite Assault Rifle","rifle","uncommon","legendary"],
+  ["Morphite Heavy Assault Rifle","rifle","uncommon","legendary"],
+  ["Hammer Assault Rifle","rifle","common","common"],
+  ["Explosive Repeater Rifle","rifle","uncommon","legendary"],
+  ["Morphite Pump Shotgun","shotgun","uncommon","legendary"],
+  ["Morphite Tactical Shotgun","shotgun","uncommon","legendary"],
+  ["Havoc Pump Shotgun","shotgun","uncommon","legendary"],
+  ["Frenzy Auto Shotgun","shotgun","uncommon","legendary"],
+  ["Heavy Shotgun","shotgun","uncommon","legendary"],
+  ["Charge Shotgun","shotgun","uncommon","legendary"],
+  ["Morphite Submachine Gun","smg","uncommon","legendary"],
+  ["Drum Gun","smg","rare","legendary"],
+  ["Light Machine Gun","smg","uncommon","legendary"],
+  ["Suppressed Pistol","pistol","common","legendary"],
+  ["Hyperburst Pistol","pistol","uncommon","legendary"],
+  ["Hunting Rifle","sniper","epic","legendary"],
+  ["Deadeye DMR","sniper","uncommon","legendary"],
+  ["Heavy Sniper Rifle","sniper","rare","legendary"]
+];
+const R3_WEAPON_NAMES=[
+  ["Red-Eye Assault Rifle","rifle","uncommon","legendary"],
+  ["Holo Twister Assault Rifle","rifle","uncommon","legendary"],
+  ["Tactical Assault Rifle","rifle","uncommon","legendary"],
+  ["Cube Rifle","rifle","epic","legendary"],
+  ["Morphite Heavy Assault Rifle","rifle","uncommon","legendary"],
+  ["Hammer Assault Rifle","rifle","common","common"],
+  ["Explosive Repeater Rifle","rifle","uncommon","legendary"],
+  ["Havoc Pump Shotgun","shotgun","uncommon","legendary"],
+  ["Iron Pump Shotgun","shotgun","uncommon","legendary"],
+  ["Infiltrator Pump Shotgun","shotgun","uncommon","legendary"],
+  ["Frenzy Auto Shotgun","shotgun","uncommon","legendary"],
+  ["Twin Siphon Shotguns","shotgun","uncommon","legendary"],
+  ["Morphite Pump Shotgun","shotgun","uncommon","legendary"],
+  ["Morphite Tactical Shotgun","shotgun","uncommon","legendary"],
+  ["Cube Splitter SMG","smg","uncommon","legendary"],
+  ["Morphite Submachine Gun","smg","uncommon","legendary"],
+  ["Ranger Pistol","pistol","uncommon","legendary"],
+  ["Hyperburst Pistol","pistol","common","common"],
+  ["Heavy Sniper Rifle","sniper","rare","legendary"],
+  ["Reaper Sniper Rifle","sniper","epic","epic"],
+  ["Hunting Rifle","sniper","epic","legendary"]
+];
+const R4_WEAPON_NAMES=[
+  ["Morphite Assault Rifle","rifle","rare","legendary"],
+  ["Morphite Hammer Assault Rifle","rifle","uncommon","legendary"],
+  ["Morphite Heavy Assault Rifle","rifle","uncommon","legendary"],
+  ["Collateral Damage Assault Rifle","rifle","uncommon","legendary"],
+  ["Red-Eye Assault Rifle","rifle","uncommon","legendary"],
+  ["Tactical Assault Rifle","rifle","uncommon","legendary"],
+  ["Explosive Repeater Rifle","rifle","uncommon","legendary"],
+  ["Morphite Sentinel Pump Shotgun","shotgun","uncommon","legendary"],
+  ["Gatekeeper Shotgun","shotgun","uncommon","legendary"],
+  ["Havoc Pump Shotgun","shotgun","uncommon","legendary"],
+  ["Morphite Tactical Shotgun","shotgun","uncommon","legendary"],
+  ["Tactical Shotgun","shotgun","rare","rare"],
+  ["Frenzy Auto Shotgun","shotgun","uncommon","legendary"],
+  ["Twin Hammer Shotguns","shotgun","epic","epic"],
+  ["Rapid Fire SMG","smg","common","legendary"],
+  ["Red-Eye Submachine Gun","smg","uncommon","legendary"],
+  ["Morphite Submachine Gun","smg","uncommon","legendary"],
+  ["Light Machine Gun","smg","uncommon","legendary"],
+  ["Wrecker Revolver","pistol","uncommon","legendary"],
+  ["Combat Pistol","pistol","uncommon","legendary"],
+  ["Morphite Mammoth Pistol","pistol","uncommon","legendary"],
+  ["Heavy Sniper Rifle","sniper","rare","legendary"],
+  ["Heavy Impact Sniper Rifle","sniper","epic","legendary"],
+  ["Hunting Rifle","sniper","epic","legendary"]
+];
+const R1_WEAPON_POOL=ladderPool(R1_WEAPON_NAMES), R2_WEAPON_POOL=ladderPool(R2_WEAPON_NAMES);
+const R3_WEAPON_POOL=ladderPool(R3_WEAPON_NAMES), R4_WEAPON_POOL=ladderPool(R4_WEAPON_NAMES);
+const R1_CONSUMABLE_POOL=[
+  {name:"Grappler", rarity:"purple"},
+  {name:"Shockwave Grenade", rarity:"purple"},
+  {name:"Launch Pad", rarity:"purple"},
+  {name:"Crash Pad Jr.", rarity:"blue"},
+  {name:"FlowBerry Fizz", rarity:"purple"},
+  {name:"Slap Splash", rarity:"blue"},
+  {name:"Med-Mist Smoke Grenade", rarity:"blue"},
+  {name:"Shield Potion", rarity:"blue"},
+  {name:"Slap Juice", rarity:"green"},
+  {name:"Slap Berry", rarity:"green"},
+  {name:"Med Kit", rarity:"green"},
+  {name:"Small Shield Potion", rarity:"green"},
+  {name:"Bandage", rarity:"grey"}
+].map(w=>({...w, icon:'heal', mod:CONSUMABLE_MOD[w.rarity]}));
+const R2_CONSUMABLE_POOL=[
+  {name:"Shield Keg", rarity:"legendary"},
+  {name:"Chug Cannon", rarity:"legendary"},
+  {name:"Grappler", rarity:"purple"},
+  {name:"Shockwave Grenade", rarity:"purple"},
+  {name:"Launch Pad", rarity:"purple"},
+  {name:"Rift-To-Go", rarity:"purple"},
+  {name:"Bandage Bazooka", rarity:"purple"},
+  {name:"FlowBerry Fizz", rarity:"purple"},
+  {name:"Crash Pad Jr.", rarity:"blue"},
+  {name:"Chug Splash", rarity:"blue"},
+  {name:"Slap Splash", rarity:"blue"},
+  {name:"Med-Mist Smoke Grenade", rarity:"blue"},
+  {name:"Shield Potion", rarity:"blue"},
+  {name:"Slap Juice", rarity:"green"},
+  {name:"Slap Berry", rarity:"green"},
+  {name:"Med Kit", rarity:"green"},
+  {name:"Small Shield Potion", rarity:"green"},
+  {name:"Bandage", rarity:"grey"}
+].map(w=>({...w, icon:'heal', mod:CONSUMABLE_MOD[w.rarity]}));
+const R3_CONSUMABLE_POOL=[
+  {name:"Chug Jug", rarity:"legendary"},
+  {name:"Shield Keg", rarity:"legendary"},
+  {name:"Chug Cannon", rarity:"legendary"},
+  {name:"Slapperoni Pizza", rarity:"legendary"},
+  {name:"Grappler", rarity:"purple"},
+  {name:"Launch Pad", rarity:"purple"},
+  {name:"Rift-To-Go", rarity:"purple"},
+  {name:"Jetpack", rarity:"purple"},
+  {name:"Bandage Bazooka", rarity:"purple"},
+  {name:"FlowBerry Fizz", rarity:"purple"},
+  {name:"Crash Pad Jr.", rarity:"blue"},
+  {name:"Chug Splash", rarity:"blue"},
+  {name:"Slap Splash", rarity:"blue"},
+  {name:"Slapperoni Slice", rarity:"blue"},
+  {name:"Shield Potion", rarity:"blue"},
+  {name:"Small Shield Potion", rarity:"green"},
+  {name:"Bandage", rarity:"grey"}
+].map(w=>({...w, icon:'heal', mod:CONSUMABLE_MOD[w.rarity]}));
+const R4_CONSUMABLE_POOL=[
+  {name:"Shield Keg", rarity:"legendary"},
+  {name:"Pizza Party", rarity:"legendary"},
+  {name:"Grappler", rarity:"purple"},
+  {name:"Launch Pad", rarity:"purple"},
+  {name:"Rift-To-Go", rarity:"purple"},
+  {name:"Bandage Bazooka", rarity:"purple"},
+  {name:"FlowBerry Fizz", rarity:"purple"},
+  {name:"Crash Pad Jr.", rarity:"blue"},
+  {name:"Chug Splash", rarity:"blue"},
+  {name:"Spicy Slapperoni Slice", rarity:"blue"},
+  {name:"Pizza Slice", rarity:"blue"},
+  {name:"Shield Potion", rarity:"blue"},
+  {name:"Small Shield Potion", rarity:"green"},
+  {name:"Bandage", rarity:"grey"}
+].map(w=>({...w, icon:'heal', mod:CONSUMABLE_MOD[w.rarity]}));
 const M1_WEAPON_NAMES=[
   ["Combat Assault Rifle",'rifle'],
   ["Nemesis AR",'rifle'],
@@ -42283,8 +42454,6 @@ const EXTRA_ITEM_ART={
  "Kor's Deadeye DMR": "items/itm-kor-s-deadeye-dmr.webp",
  "Med-Mist": "items/itm-med-mist.webp",
  "Small Fries": "items/itm-small-fries.webp",
- // Chapter 7 Season 3 guns the Major 2 pool gained on 5 September 2026, and the
- // Season 4 island's returning arsenal. Fetched by tools/fetch-missing-item-art.js.
  "Warforged Assault Rifle": "items/itm-warforged-assault-rifle.webp",
  "Lancehead Pistol": "items/itm-lancehead-pistol.webp",
  "Heavy Impact Sniper Rifle": "items/itm-heavy-impact-sniper-rifle.webp",
@@ -42299,7 +42468,49 @@ const EXTRA_ITEM_ART={
  "Dual Pistols": "items/itm-dual-pistols.webp",
  "Minigun": "items/itm-minigun.webp",
  "Flare Gun": "items/itm-flare-gun.webp",
- "Spicy Taco": "items/itm-spicy-taco.webp"
+ "Spicy Taco": "items/itm-spicy-taco.webp",
+ "Morphite Assault Rifle": "items/itm-morphite-assault-rifle.webp",
+ "Morphite Heavy Assault Rifle": "items/itm-morphite-heavy-assault-rifle.webp",
+ "Morphite Hammer Assault Rifle": "items/itm-morphite-hammer-assault-rifle.webp",
+ "Hammer Assault Rifle": "items/itm-hammer-assault-rifle.webp",
+ "Morphite Pump Shotgun": "items/itm-morphite-pump-shotgun.webp",
+ "Morphite Tactical Shotgun": "items/itm-morphite-tactical-shotgun.webp",
+ "Morphite Sentinel Pump Shotgun": "items/itm-morphite-sentinel-pump-shotgun.webp",
+ "Morphite Submachine Gun": "items/itm-morphite-submachine-gun.webp",
+ "Morphite Mammoth Pistol": "items/itm-morphite-mammoth-pistol.webp",
+ "Ranger Shotgun": "items/itm-ranger-shotgun.webp",
+ "Heavy Shotgun": "items/itm-heavy-shotgun.webp",
+ "Havoc Pump Shotgun": "items/itm-havoc-pump-shotgun.webp",
+ "Frenzy Auto Shotgun": "items/itm-frenzy-auto-shotgun.webp",
+ "Charge Shotgun": "items/itm-charge-shotgun.webp",
+ "Tactical Shotgun": "items/itm-tactical-shotgun.webp",
+ "Gatekeeper Shotgun": "items/itm-gatekeeper-shotgun.webp",
+ "Twin Siphon Shotguns": "items/itm-twin-siphon-shotguns.webp",
+ "Light Machine Gun": "items/itm-light-machine-gun.webp",
+ "Heavy Sniper Rifle": "items/itm-heavy-sniper-rifle.webp",
+ "Reaper Sniper Rifle": "items/itm-reaper-sniper-rifle.webp",
+ "Red-Eye Assault Rifle": "items/itm-red-eye-assault-rifle.webp",
+ "Red-Eye Submachine Gun": "items/itm-red-eye-submachine-gun.webp",
+ "Tactical Assault Rifle": "items/itm-tactical-assault-rifle.webp",
+ "Cube Rifle": "items/itm-cube-rifle.webp",
+ "Cube Splitter SMG": "items/itm-cube-splitter-smg.webp",
+ "Wrecker Revolver": "items/itm-wrecker-revolver.webp",
+ "Combat Pistol": "items/itm-combat-pistol.webp",
+ "Grappler": "items/itm-grappler.webp",
+ "Launch Pad": "items/itm-launch-pad.webp",
+ "Crash Pad Jr.": "items/itm-crash-pad-jr.webp",
+ "Rift-To-Go": "items/itm-rift-to-go.webp",
+ "Jetpack": "items/itm-jetpack.webp",
+ "FlowBerry Fizz": "items/itm-flowberry-fizz.webp",
+ "Slap Splash": "items/itm-slap-splash.webp",
+ "Slap Juice": "items/itm-slap-juice.webp",
+ "Slap Berry": "items/itm-slap-berry.webp",
+ "Chug Cannon": "items/itm-chug-cannon.webp",
+ "Bandage Bazooka": "items/itm-bandage-bazooka.webp",
+ "Slapperoni Slice": "items/itm-slapperoni-slice.webp",
+ "Spicy Slapperoni Slice": "items/itm-spicy-slapperoni-slice.webp",
+ "Pizza Party": "items/itm-pizza-party.webp",
+ "Pizza Slice": "items/itm-pizza-slice.webp"
 };
 
 function weaponIconHTML(o, set){
@@ -52761,6 +52972,19 @@ const CC_BUILD_STYLE={eco:{mul:0.6, pow:-1}, norm:{mul:1, pow:0}, heavy:{mul:1.5
    которые льются и туда, и туда. */
 const CC_HEAL_KIT={
   "Bandage":{stack:15, heal:15, kind:'hp', secs:3.5},
+  "Chug Splash":{stack:6, heal:20, kind:'both', secs:1},
+  "Slap Juice":{stack:3, heal:75, kind:'hp', secs:15},
+  "Slap Berry":{stack:6, heal:20, kind:'hp', secs:2},
+  "Slap Splash":{stack:4, heal:20, kind:'both', secs:1},
+  "FlowBerry Fizz":{stack:3, heal:100, kind:'shield', secs:30},
+  "Med-Mist Smoke Grenade":{stack:2, heal:100, kind:'hp', secs:12},
+  "Shield Keg":{stack:1, heal:100, kind:'shield', secs:8},
+  "Chug Cannon":{stack:1, heal:20, kind:'both', secs:1},
+  "Bandage Bazooka":{stack:1, heal:15, kind:'hp', secs:2},
+  "Slapperoni Slice":{stack:4, heal:20, kind:'hp', secs:1},
+  "Spicy Slapperoni Slice":{stack:4, heal:20, kind:'hp', secs:1},
+  "Pizza Party":{stack:1, heal:70, kind:'hp', secs:1},
+  "Pizza Slice":{stack:4, heal:20, kind:'hp', secs:1},
   "Chug Jug":{stack:1, heal:100, kind:'hp', secs:15},
   "Flopper":{stack:4, heal:40, kind:'hp', secs:1},
   "Gold Splash":{stack:6, heal:20, kind:'both', secs:1},
@@ -52909,7 +53133,7 @@ async function ccAskRot(you, ui){
   ccMpMark('a4:'+pickId);
   you._rot=pickId;
   you._rotMul=CC_ROT_MATS[pickId]||1;
-  if(pickId==='move' && you._loot) you._loot.move=null;
+  if(pickId==='move' && you._loot){ you._loot.move=null; ccPackFloor(you._loot, null, null); }   // улетел — слот занимает пол
   const line=T.ccRotSet(name(pickId));
   if(ui && ui.note) ui.note(line);
   await ccChoiceResult(ui && ui.map, line, null);
@@ -53769,7 +53993,36 @@ function ccPackFromRolls(rolls){
 }
 function ccChestPack(rng, set, n){
   const rolls=[]; for(let i=0;i<n;i++) rolls.push(ccChestRoll(rng, set));
-  return ccPackFromRolls(rolls);
+  return ccPackFloor(ccPackFromRolls(rolls), set, rng);
+}
+/* ПЯТЬ СЛОТОВ — ПЯТЬ ПРЕДМЕТОВ. Его слово 10 сентября: «иногда пустой слот есть — будто всегда
+   что-то можно положить в инвентарь». Слот пустел, когда сундуков было мало («схватить и ехать»,
+   тесная точка), когда в пуле не было передвижения или когда пад улетел в ротации. В игре так не
+   бывает: к третьей зоне пять слотов заняты хоть чем-то с пола. Поэтому недостающее добирается
+   ПОЛОМ острова — тем же предметом пула, но в его низшей редкости, хилка одной штукой, — и
+   помечается floor. Сила пака (ccPackPow) пол не считает: цена быстрого лута и пустого слота
+   остаётся той, что решена (−2 за ствол, −1 за хилку, −1 без мувмента), меняется только то, что
+   лежит в руках. Порядок добора: передвижение, вторая хилка, третий ствол другого класса, хилка. */
+function ccPackFloor(pack, set, rng){
+  if(!pack) return pack;
+  const r=rng||Math.random, pool=CC_LOOT_BY_SET[ccLootSet(set)];
+  if(!pool) return pack;
+  pack.weapons=pack.weapons||[]; pack.heals=pack.heals||[];
+  const lowest=list=>{ const by={}; list.forEach(o=>{ const k=o.name; if(!by[k] || RARITY_LADDER.indexOf(o.rarity)<RARITY_LADDER.indexOf(by[k].rarity)) by[k]=o; }); return Object.keys(by).map(k=>by[k]); };
+  const guns=lowest(pool.weapons), heals=lowest(pool.heals.filter(ccIsHealItem)), moves=pool.heals.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0);
+  const one=list=>list[Math.floor(r()*list.length)];
+  const count=()=>pack.weapons.length+pack.heals.length+(pack.move?1:0);
+  for(let guard=0; count()<5 && guard<8; guard++){
+    const held=pack.weapons.map(w=>w.icon), hn=pack.heals.map(h=>h.name);
+    const g=guns.filter(w=>held.indexOf(w.icon)<0), h=heals.filter(x=>hn.indexOf(x.name)<0);
+    if(!pack.move && moves.length) pack.move=Object.assign({}, one(moves), {floor:true});
+    else if(pack.heals.length<2 && h.length) pack.heals.push(Object.assign({}, one(h), {n:1, floor:true}));
+    else if(pack.weapons.length<3 && g.length) pack.weapons.push(Object.assign({}, one(g), {floor:true}));
+    else if(h.length) pack.heals.push(Object.assign({}, one(h), {n:1, floor:true}));
+    else if(pack.weapons.length<5 && guns.length) pack.weapons.push(Object.assign({}, one(guns), {floor:true}));
+    else break;
+  }
+  return pack;
 }
 /* СВОЯ ТОЧКА — ТРИ ХОДА (его скрин 7.09 «добавил 1 выбор, почему-то»: на свободной
    точке стояла одна кнопка). Время на точке — это время, которого потом нет на фарм:
@@ -53788,11 +54041,12 @@ const CC_SITE_FAST_SHARE=1/3, CC_SITE_FULL_MUL=2;
    подарок игроку, а разброс лута на всех. */
 function ccPackPow(p){
   if(!p) return 0;
-  const ws=p.weapons||[], hs=p.heals||[];
+  // Пол острова (ccPackFloor, floor) в силу не идёт: слот занят, цена лута прежняя.
+  const ws=(p.weapons||[]).filter(o=>o && !o.floor), hs=(p.heals||[]).filter(o=>o && !o.floor);
   let v=0;
   for(let i=0;i<2;i++){ const o=ws[i]; v += o ? Math.max(0, (RARITY_MOD[o.rarity]||2)-2) : -2; }
   v -= Math.max(0, 2-hs.length);
-  if(!p.move) v -= 1;
+  if(!p.move || p.move.floor) v -= 1;
   return Math.max(-5, Math.min(6, v));
 }
 const ccRarityWord=r=>{ const k=ccRarityKey(r); return k ? k.charAt(0).toUpperCase()+k.slice(1) : ''; };
@@ -54329,7 +54583,9 @@ function ccLateMove(id){
    пулах нет, он живёт среди расходников (гарпун, слайдеры, граната), поэтому
    он и берётся оттуда — по имени, а не по выдуманному полю. */
 const CC_MOVE_ITEMS=['Harpoon Gun','Seven Sliders','Overdrive Grenade','Pro Fishing Rod',
-                     'Skyline Deployer','Seven Power Gloves','Shockwave Grenade','Rocket Ram','Chug Splash'];
+                     'Skyline Deployer','Seven Power Gloves','Shockwave Grenade','Rocket Ram',   // Chug Splash отсюда убран 10.09: это хилка (CC_HEAL_KIT)
+                     // Reload: крюк, пады, рифт и джетпак — передвижение, не хилка.
+                     'Grappler','Crash Pad Jr.','Launch Pad','Super Launch Pad','Rift-To-Go','Jetpack'];
 /* Лут острова, а не один пул на все вечера. Его слово 5 сентября: «посмотри
    меты в каждом сезоне компетив и добавь в каждом сезоне оружие, которое
    нужно». Остров вечера даёт careerBrSet(): дуо-год — m2 (глава 7, сезон 3) и
@@ -54341,10 +54597,24 @@ const CC_LOOT_BY_SET={
   s42:{weapons:S42_WEAPON_POOL, heals:S42_CONSUMABLE_POOL},
   t1:{weapons:T1_WEAPON_POOL, heals:T1_CONSUMABLE_POOL},
   t2:{weapons:T2_WEAPON_POOL, heals:T2_CONSUMABLE_POOL},
-  t3:{weapons:T3_WEAPON_POOL, heals:T3_CONSUMABLE_POOL}
+  t3:{weapons:T3_WEAPON_POOL, heals:T3_CONSUMABLE_POOL},
+  r1:{weapons:R1_WEAPON_POOL, heals:R1_CONSUMABLE_POOL},
+  r2:{weapons:R2_WEAPON_POOL, heals:R2_CONSUMABLE_POOL},
+  r3:{weapons:R3_WEAPON_POOL, heals:R3_CONSUMABLE_POOL},
+  r4:{weapons:R4_WEAPON_POOL, heals:R4_CONSUMABLE_POOL}
 };
+/* Какой круг Reload идёт сейчас — по дню карьеры (окна кругов из CAREER_YEAR): пул лута берётся
+   у круга, а не у острова — острова чередуются игра через игру (ccRelIsland), а Reload-вечера
+   Victory Cup и Чемпионат круга тоже играют на острове r4 в свой день. */
+function ccRelLootSeries(){
+  let d=null; try{ d=(CAREER && CAREER.career) ? String(careerToday()).slice(5) : null; }catch(e){ d=null; }
+  if(!d) return 'r4';
+  return d<'02-13' ? 'r1' : d<'05-01' ? 'r2' : d<'06-12' ? 'r3' : 'r4';
+}
 function ccLootSet(set){
   let s=set;
+  // Остров Reload на столе (r1–r4) — вечер Reload: лут его круга по дню, не острова.
+  if(!s && /^r[1-4]$/.test(ACTIVE_LANDING_SET||'')) return ccRelLootSeries();
   if(!s){ try{ s=(CAREER && CAREER.career) ? careerBrSet() : null; }catch(e){ s=null; } }
   return CC_LOOT_BY_SET[s] ? s : 'm2';
 }
@@ -54358,8 +54628,8 @@ function ccLootPack(rng, set){
   const pool=CC_LOOT_BY_SET[ccLootSet(set)];
   const heals=pool.heals.filter(ccIsHealItem);
   const moves=pool.heals.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0);
-  return {weapons:pick(pool.weapons, 2), heals:pick(heals, 2),
-          move:pick(moves.length?moves:heals, 1)[0]};
+  const pack={weapons:pick(pool.weapons, 2), heals:pick(heals, 2), move:moves.length ? pick(moves, 1)[0] : null};
+  return ccPackFloor(pack, set, rng);   // пять слотов — пять предметов, см. ccPackFloor
 }
 /* Пак больше не переводится в силу. Он был прибавкой (ccLootPow, той же
    монетой, что лоадаут в драфте), пока «забрать своё» стоило четыре; с его
@@ -58057,7 +58327,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='c2056018';
+const CC_BUILD='59642426';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
