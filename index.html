@@ -52692,6 +52692,13 @@ function ccKitInit(teams){
   // Игра начинается не с полным запасом — с тем, что собрано на точке (CC_MATS_START); до фула фармят на третьей зоне.
   (teams||[]).forEach(t=>{ t._mats=CC_MATS_START; t._loot=null; t._matsPen=false; t._buildMul=1; t._healed=0; t._rot=null; t._rotMul=null; });
   CC_KIT_ZONE=0;
+  /* Хотбар на карте — от прошлой игры, пока не пришёл первый кадр новой: его скрин 10.09 —
+     на вопросе «своя точка» полные слоты золотом, а кнопки предлагают синее, «должен улучшать
+     лут, а не менять». Лут игры начинается с нуля (t._loot=null выше) — и слоты гаснут тут же. */
+  try{
+    const box=(typeof CC_RUN_MAP!=='undefined' && CC_RUN_MAP) ? CC_RUN_MAP.querySelector('.zr-kit') : null;
+    if(box) box.querySelectorAll('.zk-slot:not(.zk-pick)').forEach(sl=>{ sl.className='zk-slot empty'; sl.removeAttribute('title'); const a=sl.querySelector('.zk-art'); if(a) a.remove(); const e=sl.querySelector('em'); if(e) e.remove(); });
+  }catch(e){}
 }
 /* ПАНЕЛЬ НАБОРА НА КАРТЕ — его правка 5 сентября: «я бы хотел на симуляцию
    добавить ресурсы, лут, который есть, и сёрдж».
@@ -53065,6 +53072,7 @@ function ccHealAuto(t){
     if(pick.n<=0) pack.heals=pack.heals.filter(h=>h!==pick);
   }
   if(!used) return null;
+  if(pack.heals.length<2) ccPackFloor(pack, null, null);   // допитое место — полом, слот не пустует
   const pow=Math.round(secs/CC_HEAL_SECS_POW);
   if(pow) ccAddGamePow(t, -pow);
   t._healed=(t._healed||0)+used;
@@ -54031,6 +54039,33 @@ function ccChestPack(rng, set, n){
    помечается floor. Сила пака (ccPackPow) пол не считает: цена быстрого лута и пустого слота
    остаётся той, что решена (−2 за ствол, −1 за хилку, −1 без мувмента), меняется только то, что
    лежит в руках. Порядок добора: передвижение, вторая хилка, третий ствол другого класса, хилка. */
+/* ЛУТ ТОЛЬКО УЛУЧШАЕТСЯ. Его слово 10.09: «должен улучшать лут, а не менять». Новый пак (соседняя
+   точка на третьей зоне, коробка после ухода с точки) не подменяет руки, а вливается в них:
+   ствол того же класса встаёт только если он редже; класса не было — добавляется; хилка того же
+   имени — стак растёт до потолка вики, иная — занимает свободное место или место слабейшей, если
+   она редже; передвижение — если своего нет или новое редже. Сверх пяти — ccPackFloor режет
+   (пол первым). Возвращает НОВЫЙ пак, руки не трогает. */
+function ccPackMerge(cur, add, set, rng){
+  const mod=o=>o ? (RARITY_MOD[o.rarity]||0) : -1;
+  const out={weapons:((cur&&cur.weapons)||[]).slice(), heals:((cur&&cur.heals)||[]).map(h=>Object.assign({}, h)), move:(cur&&cur.move)||null};
+  if(!add) return out;
+  (add.weapons||[]).forEach(w=>{
+    if(!w) return;
+    const i=out.weapons.findIndex(o=>o && o.icon===w.icon);
+    if(i<0) out.weapons.push(w);
+    else if(mod(w)>mod(out.weapons[i])) out.weapons[i]=w;
+  });
+  (add.heals||[]).forEach(h=>{
+    if(!h) return;
+    const same=out.heals.find(o=>o.name===h.name);
+    if(same){ same.n=Math.min(ccHealOf(same).stack, (same.n||1)+(h.n||1)); same.floor=same.floor && h.floor; return; }
+    if(out.heals.length<2){ out.heals.push(Object.assign({}, h)); return; }
+    const weak=out.heals.reduce((a,b)=>(a.floor && !b.floor) ? a : (b.floor && !a.floor) ? b : (mod(a)<=mod(b) ? a : b));
+    if(weak.floor || mod(h)>mod(weak)) out.heals[out.heals.indexOf(weak)]=Object.assign({}, h);
+  });
+  if(add.move && (!out.move || out.move.floor || mod(add.move)>mod(out.move))) out.move=add.move;
+  return ccPackFloor(out, set, rng);
+}
 function ccPackFloor(pack, set, rng){
   if(!pack) return pack;
   const r=rng||Math.random, pool=CC_LOOT_BY_SET[ccLootSet(set)];
@@ -54055,7 +54090,10 @@ function ccPackFloor(pack, set, rng){
   for(let guard=0; count()>5 && guard<8; guard++){
     const fh=pack.heals.findIndex(h=>h.floor);
     if(fh>=0){ pack.heals.splice(fh, 1); continue; }
-    if(pack.weapons.length>2){ const w=pack.weapons.pop(); if(!w.floor) pack.dropped.push(w); continue; }
+    if(pack.weapons.length>2){
+      let k=-1; for(let i=pack.weapons.length-1;i>=2;i--){ if(pack.weapons[i].floor){ k=i; break; } }
+      const w=k>=0 ? pack.weapons.splice(k, 1)[0] : pack.weapons.pop();
+      if(!w.floor) pack.dropped.push(w); continue; }
     if(pack.heals.length>1){ pack.heals.pop(); continue; }
     break;
   }
@@ -54160,8 +54198,8 @@ async function ccAskSite(you, ui){
     const nFast=Math.max(1, Math.round(nOpen*CC_SITE_FAST_SHARE));
     const nFull=Math.min(Math.round(nPoi), nOpen*CC_SITE_FULL_MUL);
     const extra=[]; for(let i=nOpen;i<nFull;i++) extra.push(ccChestRoll(Math.random, set));
-    const packs={fast:ccPackFromRolls(mine.rolls.slice(0, nFast)), take:mine,
-                 full:nFull>nOpen ? ccPackFromRolls(mine.rolls.concat(extra)) : mine};
+    const packs={fast:ccPackFloor(ccPackFromRolls(mine.rolls.slice(0, nFast)), set, Math.random), take:mine,
+                 full:nFull>nOpen ? ccPackFloor(ccPackFromRolls(mine.rolls.concat(extra)), set, Math.random) : mine};
     const pv=ccPackPow(mine);
     const labels=[...(mine.weapons||[]), ...(mine.heals||[]), mine.move].filter(Boolean).map(ccItemLabel).join(' · ');
     const opts=[
@@ -54217,7 +54255,7 @@ async function ccAskSite(you, ui){
   }
   if(free){ you.landingZone=free; if(sq){ sq.x=free.x+free.w/2; sq.y=free.y+free.h/2; } }
   const small=ccChestPack(Math.random, set, nLeave);
-  you._loot=small; ccAddGamePow(you, ccPackPow(small));
+  you._loot=ccPackMerge(you._loot, small, set, Math.random); ccAddGamePow(you, ccPackPow(small));
   await say(T.ccSiteLeft(nLeave, ccPackLine(small)), null);
 }
 // Комната открывает свои сундуки тем же правилом; под симуляцией (you=null) — и игрок.
@@ -54237,6 +54275,8 @@ async function ccAskLoot(you, ui){
   ccMpMark('l0'+(you.mpTag||''));
   // Свой пак — тот, что собран из сундуков на точке (ccAskSite); соседний — чужой.
   const mine=you._loot||ccLootPack(), other=ccLootPack();
+  // С чем уйдёшь с соседней точки: своё плюс её лучшее (ccPackMerge), а не её пак вместо своего.
+  const merged=ccPackMerge(mine, other, null, Math.random);
   ccMpMark('l1');
   const name=o=>o ? esc(o.name) : '—';
   const listOf=p=>[...p.weapons, ...p.heals, p.move].map(name).join(' · ');
@@ -54258,15 +54298,15 @@ async function ccAskLoot(you, ui){
       [{id:'take', title:L().ccLootTake, note:listOf(mine)+' — '+L().ccLootTakeSafe, pack:mine,
         icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.home)},
        {id:'swap', title:L().ccLootSwap, icon:ccItemIconHTML(other.weapons[0], CC_CHOICE_ICON.contest),
-        note:listOf(other)+' — '+L().ccLootSwapRisk(CC_LOOT_POI_BONUS, CC_LOOT_POI_FAIL,
-          Math.round(CC_LOOT_POI_ODDS*100)), pack:other}],
+        note:listOf(merged)+' — '+L().ccLootSwapRisk(CC_LOOT_POI_BONUS, CC_LOOT_POI_FAIL,
+          Math.round(CC_LOOT_POI_ODDS*100)), pack:merged}],
       ui && ui.map, null, 'loot')).id;
   }, function(v){ return v==='swap' ? L().ccLootSwap : L().ccLootTake; })).v;
   ccMpMark('a3:'+pickId);
   // Остался на своей — ничего не выиграл и ничего не потерял. Сказать об этом
   // всё равно надо: молчащая панель читается как «выбор не засчитался».
   // Что подобрал — то и показывается потом в строке «что у меня есть».
-  you._loot = pickId==='swap' ? other : mine;
+  you._loot = pickId==='swap' ? merged : mine;   // улучшает, не меняет
   if(pickId!=='swap'){
     if(ui && ui.note) ui.note(L().ccLootKept);
     await ccChoiceResult(ui && ui.map, L().ccLootKept, null);
@@ -58379,7 +58419,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a0e4f58d';
+const CC_BUILD='dbb39351';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого

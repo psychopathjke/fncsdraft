@@ -110,6 +110,16 @@ const BOOT = `
       }
       check('пак с сундуков — автомат первым, дробовик вторым, пять предметов', !bad, bad);
       check('пара с пола не меняет силу пака', !powBad, powBad); }
+    // ---- лут только улучшается (его слово 10.09: «должен улучшать лут, а не менять») ---------
+    { const mod=o=>RARITY_MOD[o.rarity]||0;
+      const cur={weapons:[{name:'A',icon:'rifle',rarity:'legendary'},{name:'B',icon:'shotgun',rarity:'common'}], heals:[{name:'Shield Potion',rarity:'blue',n:1},{name:'Med Kit',rarity:'green',n:1}], move:{name:'Launch Pad',rarity:'purple'}};
+      const add={weapons:[{name:'C',icon:'rifle',rarity:'rare'},{name:'D',icon:'shotgun',rarity:'epic'}], heals:[{name:'Shield Potion',rarity:'blue',n:2},{name:'Bandage',rarity:'grey',n:5}], move:{name:'Grappler',rarity:'purple'}};
+      const m=ccPackMerge(cur, add, null, rng);
+      check('слияние: золотой автомат остаётся, серый дробовик уступает фиолетовому', m.weapons[0].name==='A' && m.weapons[1].name==='D', ccPackLine(m));
+      check('слияние: зелья стакаются до потолка, серый бинт не выбивает аптечку', m.heals.some(h=>h.name==='Shield Potion' && h.n===3) && m.heals.some(h=>h.name==='Med Kit'), ccPackLine(m));
+      check('слияние: свой мувмент той же редкости остаётся', m.move.name==='Launch Pad');
+      check('слияние: пять предметов', five(m)===5 && cur.weapons[1].name==='B', ccPackLine(m));
+      const m2=ccPackMerge(null, add, null, rng); check('слияние с пустых рук — сам пак', m2.weapons[0].name==='C' && m2.weapons[1].name==='D' && five(m2)===5); }
     // ---- пак картинками в кнопке выбора (ccPackSlotsHTML) ---------------------------------
     { const p=ccLootPack(rng); const h=ccPackSlotsHTML(p);
       check('пак в кнопке — пять ячеек с картинками', (h.match(/<i class="r-/g)||[]).length===5 && (h.match(/<img/g)||[]).length===5, h.slice(0,200));
