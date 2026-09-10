@@ -268,6 +268,8 @@ function createLobby(opts){
       const e={t:'act', n:++st.n, kind:kind, payload:payload, by:id};
       // Пульс — не событие вечера: в хабе он идёт всегда (живость соседа), в ленту не кладётся.
       if(kind==='hb') return [{to:'all', msg:e}];
+      // Книга мира (ccRaceWorldSync) — большая и только на старт вечера: раздаётся, в ленту не кладётся.
+      if(kind==='world') return [{to:'all', msg:e}];
       st.feed.push(e);
       if(st.feed.length>FEED_MAX) st.feed.splice(0, st.feed.length-FEED_MAX);
       const out=[{to:'all', msg:e}];
