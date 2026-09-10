@@ -58500,7 +58500,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e1005ec8';
+const CC_BUILD='ff7a6134';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -60329,7 +60329,27 @@ async function ccRaceFieldSync(teams, opts){
     const tag=':'+hKey(p.card);
     const same=teams.find(t=>t.mpTag===tag && !t.isYou) || teams.find(t=>!t.isYou && !t.isMate && !t.isRival && hasCard(t, p.card));
     if(same){ same.isRival=true; same.isMate=false; same.raceId=p.id||same.raceId||null; same.mpTag=tag;
-              if(p.pow!=null) same.pow=p.pow; if(p.edge!=null) same.closeEdge=p.edge; return same; }
+              if(p.pow!=null) same.pow=p.pow; if(p.edge!=null) same.closeEdge=p.edge;
+              /* И ШЕСТЬ ЧИСЕЛ — ИЗ СТРОКИ, А НЕ ИЗ СВОЕЙ СЦЕНЫ.
+
+                 Готовая команда поля — это карточки МОЕЙ сцены: сосед собран из пула, из
+                 записи прошлой стадии, из ростера. Сила и край у неё отсюда переписывались
+                 строкой владельца, а attrs — нет, и движок получал у одной и той же команды
+                 разные числа: skill и seek считаются из attrs (createSquads в zone-sim), а
+                 навык двигает время выхода из круга НЕ ТРАТЯ бросков. Отсюда вечера, которые
+                 расходились при равном поле, равной силе и равном числе бросков.
+
+                 Годовая проба на двоих, 10.09, отметка drop:
+                   #1 live1+sky:112:97.99.93.94:300  vs  live1+sky:112:85.87.93.93:300
+                 слева команда у себя, справа — она же, поднятая соперником из своего поля.
+
+                 Владелец — единственный, кто знает свои числа: он их и присылает
+                 (ccRacePackCard везёт _attrs каждой карточки). Собираем команду из строки
+                 тем же ccRaceRivalTeam и берём у неё вход движка; всё остальное у найденной
+                 команды остаётся своим — она может нести очки прошлой стадии. */
+              const rt=ccRaceUnseeded(()=>ccRaceRivalTeam(p));
+              if(rt && rt.attrs) same.attrs=rt.attrs;
+              return same; }
     if(opts && opts.roomOnly) return null;
     return ccRaceUnseeded(()=>ccRaceRivalTeam(p));
   }).filter(Boolean);

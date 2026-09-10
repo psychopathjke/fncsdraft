@@ -117,11 +117,16 @@ const BOOT = `
        получает: число вопросов разное, номера разъезжаются, вечера чужие. Его
        слова: «это ломается, после того как оффспавн убивают». */
     const stopsAt=src.indexOf('for(const stop of CC_GAME_STOPS)');
-    const stopsBody=stopsAt<0 ? '' : src.slice(stopsAt, stopsAt+4000);
+    // Окно шире прежних 4000: в цикле остановок с тех пор прибавилось комментариев,
+    // и хвост с проверкой живости из него выпадал.
+    const stopsBody=stopsAt<0 ? '' : src.slice(stopsAt, stopsAt+8000);
     check('вопрос не зависит от того, что успели показать',
           stopsBody.indexOf('!dead && alive()')<0, 'условие вопроса смотрит на показ');
     check('и по-прежнему не спрашивает выбывшего',
-          (stopsBody.indexOf('alive() && game.aliveCount()>1')>=0 || stopsBody.indexOf('.alive) await stop.ask(h, ui)')>=0), 'нет проверки живости');
+          (stopsBody.indexOf('alive() && game.aliveCount()>1')>=0 || stopsBody.indexOf('.alive) await stop.ask(h, ui)')>=0
+           // Живость своего отряда читается у ИГРЫ, по каждому человеку лобби:
+           // if((game.squads.find(s=>s.team===h)||{}).alive){ ... await stop.ask(h, ui) }
+           || stopsBody.indexOf('game.squads.find(s=>s.team===h)||{}).alive')>=0), 'нет проверки живости');
 
     /* ---- украшения не тратят общий поток ---------------------------------
        Конфетти сыплет по семь бросков на бумажку и до ста шестидесяти штук за
