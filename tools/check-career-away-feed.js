@@ -278,6 +278,23 @@ const BOOT = `
         ccRaceWorldApply({dev:{}, seeds:{majorSeed:{n:2, season:1, size:2, rows:[]}}});
         if (!cr.majorSeed || cr.majorSeed.n !== 2) fail('запись посева от старшего не легла');
         delete cr.majorSeed; }
+      // ДОСКИ ОДНИ НА ГОНКУ: вечер, сыгранный без меня, приезжает актом 'res' и ложится один раз.
+      { var money0 = JSON.parse(JSON.stringify(careerMoney().rows));
+        var res = {key:'2026-03-01|cup', by:'zz', day:'2026-03-01', yr:'1', fs:'1:S40',
+                   money:{'Ghosty':10000}, pr:{'Ghosty':[500]}};
+        var first = ccEvResApply(res);
+        var again = ccEvResApply(res);
+        var row = careerMoney().rows['Ghosty'];
+        out.steps.push('чужой вечер в доски: ' + (row ? row.usd + '$/' + row.events : 'нет') + ', повтор ' + again);
+        if (!first || again) fail('чужой вечер лёг дважды или не лёг: ' + first + '/' + again);
+        if (!row || row.usd !== 10000 || row.events !== 1) fail('деньги чужого вечера не легли: ' + JSON.stringify(row));
+        var pr = careerPrTally().rows['Ghosty'];
+        if (!pr || !pr.v.length) fail('рейтинг чужого вечера не лёг');
+        delete careerMoney().rows['Ghosty']; delete careerPrTally().rows['Ghosty']; }
+      // Свой вечер помечен тем же ключом — присланный дубль не считается.
+      { ccEvDeltaStart('2026-03-02|cup'); ccEvDeltaSend();
+        if (ccEvResApply({key:'2026-03-02|cup', by:'zz', money:{'Ghosty2':5000}, pr:{}})) fail('свой вечер посчитан второй раз');
+        if (careerMoney().rows['Ghosty2']) fail('дубль своего вечера всё же лёг'); }
       var tile = careerRaceTileHTML();
       if (tile.indexOf('&#128065;') < 0 || tile.indexOf('&#127918;') < 0) fail('на плитке гонки нет значков режима (глаз/геймпад)');
       CC_RACE_PEERS = peers0; MP.state = st0; delete cr.race; cr.sim = false;

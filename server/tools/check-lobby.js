@@ -313,4 +313,11 @@ r=R11.act('A','race',{by:'A', day:'2026-03-01'}); r=R11.act('A','race',{by:'A', 
 check('строка без номера повторяется как была', r.some(x=>x.msg.t==='act'), JSON.stringify(r));
 
 if(fails.length){ fails.forEach(f=>console.error('FAIL '+f)); process.exit(1); }
+// Итог вечера (res) — раздаётся всем и в ленту не кладётся: он про чужие доски, не про вечер.
+let RS=createLobby({build:'aaaa1111', seed:'race-res'});
+['A','B'].forEach(id=>RS.join(id,{build:'aaaa1111', card:CARD, race:true}));
+const rs=RS.act('A','res',{by:'A', key:'2026-03-01|cup', money:{x:100}});
+check('итог вечера раздан всем', rs.length===1 && rs[0].to==='all' && rs[0].msg.kind==='res', JSON.stringify(rs));
+check('итог вечера не в ленте', (RS.state.feed||[]).every(e=>e.kind!=='res'), String((RS.state.feed||[]).length));
+
 console.log('лобби нумерует и рассылает, ничего не считая');

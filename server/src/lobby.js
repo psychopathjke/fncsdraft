@@ -280,6 +280,8 @@ function createLobby(opts){
       if(kind==='hb') return [{to:'all', msg:e}];
       // Книга мира (ccRaceWorldSync) — большая и только на старт вечера: раздаётся, в ленту не кладётся.
       if(kind==='world') return [{to:'all', msg:e}];
+      // Итог вечера для чужих досок (ccEvDeltaSend): раздаётся, в ленту вечера не кладётся.
+      if(kind==='res') return [{to:'all', msg:e}];
       st.feed.push(e);
       if(st.feed.length>FEED_MAX) st.feed.splice(0, st.feed.length-FEED_MAX);
       const out=[{to:'all', msg:e}];

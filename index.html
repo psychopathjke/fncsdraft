@@ -58483,7 +58483,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='dd25ea8e';
+const CC_BUILD='5aacf17b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59747,6 +59747,14 @@ function careerRaceWire(){
     /* Голос за следующий день — тот же act, что и в командной карьере, только
        считает его гонка своим счётчиком. См. ccRaceNextSaw. */
     if(m.kind==='nextday'){ if(ccRaceOn()) ccRaceNextSaw(m.payload); return; }
+    /* Вечер, который сыграли без меня (не прошёл, некому играть): его призовые и рейтинг —
+       в мои доски, один раз по ключу дня и вида. См. ccEvResApply. */
+    if(m.kind==='res'){
+      if(ccRaceOn() && m.payload.by!==ccMpId() && ccEvResApply(m.payload)){
+        try{ if(typeof careerRenderHub==='function' && document.getElementById('chBody')) careerRenderHub('centre'); }catch(e){}
+      }
+      return;
+    }
     /* «Пропустить» в общей комнате — голос, как в команде (ccMpSkipAsk шлёт его
        под ccMpLock). Считал его только командный обработчик (ccMpThirdWire, под
        ccMpOn), то есть в гонке голоса уходили в пустоту, и кнопка ждала вечно.
@@ -59989,6 +59997,7 @@ const CC_RACE_WORLD_MS=20000;
    берут как есть, сид на время замка подменяет свой в ccDuoBroken (CC_RACE_WORLD_SEED). */
 // Записи посева, которые в гонке общие (см. ccSeedRow): поля хитов и финалов строятся из них.
 const CC_RACE_SEED_KEYS=['majorSeed','summitSeed','gcSeed','relSeed','d1','wf'];
+// cr.evSeen (какие вечера уже в досках) — личный ключ: он про мои доски, не про мир.
 let CC_RACE_WORLD_SEED=null;
 /* СИД МИРА. Всё, что сеет сцену от сида карьеры — лестничные имена сезона (ladderSeason), пересборка
    пар (transfer), жизнь пары (duoLife), орги по годам (orgYear), места на ЛАН (seat), перенос троек
@@ -81600,6 +81609,7 @@ async function careerPlay(){
      played on the islands the trio year was played on. See careerBrSet. */
   useLandingSet(careerBrSet());
   CC_MP_NIGHT=String(next.type||'')+(next.id ? ':'+String(next.id) : '');   // подпись поля называет вечер (ccFieldSig)
+  ccEvDeltaStart(ccEvKey(next, careerToday()));   // что этот вечер запишет в доски — соседям (ccEvDeltaSend)
   // Метка на карте сегодняшнего вечера — спрашивается ДО раннера, потому что
   // после его старта поставить её уже негде. См. careerSpotGate.
   if(!careerSpotGate(next)) return;
@@ -81809,10 +81819,10 @@ function careerPlayRun(next){
     CC_RACE_ROOM0=null; CC_RACE_NIGHT_APART=false;
     if(CC_RACE_LOCK){ try{ CC_RACE_ROOM0={}; ccRaceRoom().forEach(p=>{ CC_RACE_ROOM0[p.id]=true; }); careerRaceSend(); if(typeof MP!=='undefined' && MP.sendCard) MP.sendCard(); }catch(e){} }
     let p=null;
-    try{ p=careerNightRun(next); }catch(e){ CC_RACE_LOCK=false; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; throw e; }
-    return Promise.resolve(p).finally(function(){ CC_RACE_LOCK=false; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; });
+    try{ p=careerNightRun(next); }catch(e){ CC_RACE_LOCK=false; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; ccEvDeltaSend(); throw e; }
+    return Promise.resolve(p).finally(function(){ CC_RACE_LOCK=false; CC_RACE_ROOM0=null; CC_RACE_POW_NOW=null; CC_RACE_EDGE_NOW=null; ccEvDeltaSend(); });
   }
-  return careerNightRun(next);
+  return Promise.resolve(careerNightRun(next)).finally(function(){ ccEvDeltaSend(); });
 }
 // Раннер вечера по виду — общий для одиночной карьеры, команды и гонки.
 function careerNightRun(next){
@@ -83773,6 +83783,62 @@ function ccShareOf(cash, team){
   const n=(team && team.squad && team.squad.length) || 2;
   return Math.round((cash||0)/Math.max(1, n));
 }
+/* ДОСКИ ОДНИ НА ГОНКУ. Призовые и Power Ranking копятся из вечеров, которые карьера ВИДЕЛА:
+   не прошёл в финал Мейджора — денег того финала в твоей доске нет вовсе, и у соседа по гонке
+   доска другая (его скрин 10.09: у одного Sky 63 вечера и $642k, у другого тот же Sky — 60 и
+   $349k). Вечера теперь общие, но сыграть их могут не все: у кого-то нет напарника, кто-то не
+   квалифицировался. Поэтому каждый вечер складывается в копилку (CC_EV_DELTA) и уезжает в
+   комнату актом 'res'; кто этот вечер не играл, добавляет его к себе один раз — по ключу дня и
+   вида (cr.evSeen). Свои вечера помечаются тем же ключом, так что дважды не считается. */
+let CC_EV_DELTA=null;
+function ccEvKey(next, day){
+  const t=next && (next.id || next.type) || '?';
+  return String(day||careerToday())+'|'+String(t);
+}
+function ccEvSeen(){ const cr=CAREER && CAREER.career; if(!cr) return {}; if(!cr.evSeen) cr.evSeen={}; return cr.evSeen; }
+function ccEvSeenMark(key){
+  const seen=ccEvSeen(); if(!key || seen[key]) return false;
+  seen[key]=1;
+  const ks=Object.keys(seen);
+  if(ks.length>400) ks.slice(0, ks.length-400).forEach(k=>{ delete seen[k]; });
+  return true;
+}
+function ccEvDeltaStart(key){ CC_EV_DELTA=key ? {key:key, money:{}, pr:{}, yr:null, fs:null, day:careerToday()} : null; }
+function ccEvDeltaSend(){
+  const d=CC_EV_DELTA; CC_EV_DELTA=null;
+  if(!d || !d.key) return;
+  ccEvSeenMark(d.key);
+  if(typeof ccRaceOn!=='function' || !ccRaceOn() || typeof ccRaceLive!=='function' || !ccRaceLive()) return;
+  if(!Object.keys(d.money).length && !Object.keys(d.pr).length) return;
+  try{ d.by=ccMpId(); MP.act('res', d); }catch(e){}
+}
+/* Чужой вечер в свои доски: те же строки, что записал бы свой (careerMoneyAdd/careerPrAdd),
+   только числа приехали готовыми. Свою строку в них не трогаем — она своя по определению. */
+function ccEvResApply(d){
+  if(!d || !d.key || !CAREER || !CAREER.career) return false;
+  if(!ccEvSeenMark(d.key)) return false;
+  const m=careerMoney(), k={yr:d.yr||careerMoneyKeys().yr, fs:d.fs||careerMoneyKeys().fs};
+  Object.keys(d.money||{}).forEach(function(h){
+    const each=Math.round(d.money[h]||0); if(!each) return;
+    const row=m.rows[h] || (m.rows[h]={usd:0, events:0, yr:{}, fs:{}});
+    row.usd+=each; row.events++;
+    row.yr[k.yr]=(row.yr[k.yr]||0)+each;
+    row.fs[k.fs]=(row.fs[k.fs]||0)+each;
+  });
+  const t=careerPrTally(), day=ccAbsDay(CAREER.career.season, d.day||careerToday());
+  Object.keys(d.pr||{}).forEach(function(name){
+    (d.pr[name]||[]).forEach(function(rating){
+      if(!(rating>0)) return;
+      const row=t.rows[name] || (t.rows[name]={v:[], n:0});
+      row.v.push([rating, day]);
+      row.v.sort((a,b)=>b[0]-a[0]);
+      if(row.v.length>CC_PR_KEEP) row.v.length=CC_PR_KEEP;
+      row.n++;
+    });
+  });
+  careerSave();
+  return true;
+}
 function careerMoneyAdd(ranked, prize){
   if(!ranked || !ranked.length) return;
   const m=careerMoney(), k=careerMoneyKeys();
@@ -83791,6 +83857,8 @@ function careerMoneyAdd(ranked, prize){
       row.yr[k.yr]=(row.yr[k.yr]||0)+each;
       row.fs[k.fs]=(row.fs[k.fs]||0)+each;
       if(t.isYou) row.you=true;
+      // Копилка вечера — для тех, кто его не играет (см. ccEvDeltaSend).
+      if(CC_EV_DELTA && !t.isYou){ CC_EV_DELTA.money[h]=(CC_EV_DELTA.money[h]||0)+each; CC_EV_DELTA.yr=k.yr; CC_EV_DELTA.fs=k.fs; }
     });
   });
 }
@@ -89736,6 +89804,7 @@ function careerPrAdd(ranked, meta){
       if(row.v.length>CC_PR_KEEP) row.v.length=CC_PR_KEEP;
       row.n++;
       if(idx===yourIdx) row.you=true;
+      if(CC_EV_DELTA && idx!==yourIdx){ (CC_EV_DELTA.pr[name]=CC_EV_DELTA.pr[name]||[]).push(Math.round(rating)); }
       /* И журнал вечеров игрока — для листа статистики (careerPlayerStatsHTML). Его игрок,
          10.09: «Add players stats». Компактно: [день, вид[:этап], место, из, VR, килы, очки, див];
          последние CC_PLOG_KEEP вечеров на человека, имён не больше CC_PLOG_NAMES (лишние —
