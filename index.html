@@ -1554,7 +1554,7 @@
   .cc-ps-grid div{display:flex; justify-content:space-between; gap:8px; font-size:11px; border-bottom:1px dashed rgba(255,255,255,.14); padding:2px 0;}
   .cc-ps-grid span{opacity:.75;} .cc-ps-grid b{font-weight:800; white-space:nowrap;}
   .cc-ps-list div{font-size:10.5px; line-height:1.5;} .cc-ps-list i{font-style:normal; opacity:.55; margin-right:5px;} .cc-ps-list b{font-weight:800;}
-  u.cc-peek{cursor:zoom-in; text-decoration:none; border-bottom:1px dotted rgba(255,255,255,.45);} u.cc-peek:hover{border-bottom-style:solid;}
+  .cc-peek{cursor:zoom-in; text-decoration:none; border-bottom:1px dotted rgba(255,255,255,.45);} .cc-peek:hover{border-bottom-style:solid;}
   .cc-pack{display:flex; gap:4px; margin:4px 0 6px;}
   .cc-pack i{position:relative; flex:0 0 38px; width:38px; height:34px; border-radius:4px; border:1.5px solid #d8dde6;
     background:linear-gradient(180deg,#8f97a3,#4d545e); display:flex; align-items:center; justify-content:center; overflow:hidden; font-style:normal;}
@@ -58473,7 +58473,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='39662559';
+const CC_BUILD='874ee231';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -60074,7 +60074,15 @@ function ccRaceTakenKeys(){
 function ccRaceApartWhy(next){
   if(!ccRaceOn()) return 'off';
   if(!ccRaceLive()) return 'off';
-  if(!next || next.type==='solo') return 'solo';
+  if(!next) return 'solo';
+  /* Соло: квал и хиты — своё (сессии и лобби по двадцать), а ФИНАЛ на сто — одно лобби на всех,
+     как хиты и финалы дуо. Его скрин 10.09: два разных финала FNCS Solos на двух вкладках и
+     «не было написано 1/2» — гонка разводила всё соло без разбора. Поле финала — лучшие сто пула
+     (careerSoloField, tight) минус люди комнаты, соперники досаживаются ccRaceFieldSync. */
+  if(next.type==='solo'){
+    const ev=(typeof careerSoloSeriesOn==='function') ? careerSoloSeriesOn(careerToday()) : null;
+    if(!(ev && ev.stage==='final')) return 'solo';
+  }
   /* Про-Ам — личное приглашение: напарник у каждого свой креатор (ccProAmMate), а строка гонки
      несёт обычных напарников — общей комнате взяться негде. Его вопрос 9.09: «pro am ещё же был». */
   if(next.type==='proam') return 'proam';
@@ -66034,7 +66042,7 @@ let CC_YEAR_DAYS=null;
    Найдено при измерении локстепа, до единой строки мультиплеера.
    Сторож — tools/check-mp-world-reset.js. */
 function ccWorldReset(){
-  CC_POOLS=null;
+  CC_POOLS=null; CC_REC_MATES=null;
   CC_NOW_CARDS={}; CC_NOW_TAG=null; CC_ARC_PAIRS={};
   CC_EU_ALL={};
   CC_NAT_POOL={};
@@ -68130,6 +68138,27 @@ function careerPools(){
    Чтобы рынок не был совсем механическим, соседей берут не строго по порядку, а
    из ближайшей тройки — тогда у одного и того же человека в разные годы разные
    партнёры, а уровень пары остаётся своим. */
+/* С КЕМ ЧЕЛОВЕК ИГРАЛ НА САМОМ ДЕЛЕ — по записям года (rosterEntriesOf: дуо каждого турнира).
+   Его слово 10.09: «Malibuca Scroll в дуо не играли» — рынок сводил освободившихся по рейтингу,
+   и два топа из разных пар оказывались дуо, которого не было. Теперь освободившийся сходится
+   только с тем, с кем у него есть записанная пара; нет такого свободного — остаётся свободным
+   агентом (players), как и было с теми, кому не нашлось пары. Правило 17 августа буквально:
+   «Recorded pairs, not made-up ones». */
+let CC_REC_MATES=null;
+function ccRecordedMates(){
+  if(CC_REC_MATES) return CC_REC_MATES;
+  const m=new Map();
+  try{
+    ccEuCards().forEach(c=>{ rosterEntriesOf(c).forEach(({entry})=>{
+      if(!entry || !Array.isArray(entry.duo) || entry.duo.length!==2) return;
+      const a=hKey(entry.duo[0]), b=hKey(entry.duo[1]); if(!a || !b || a===b) return;
+      if(!m.has(a)) m.set(a, new Set()); if(!m.has(b)) m.set(b, new Set());
+      m.get(a).add(b); m.get(b).add(a);
+    }); });
+  }catch(e){}
+  CC_REC_MATES=m; return m;
+}
+function ccRecordedTogether(a, b){ const m=ccRecordedMates(); const s=m.get(hKey(a)); return !!(s && s.has(hKey(b))); }
 function ccRemadeDuos(freed){
   const out=[];
   if(!freed || freed.length<2) return out;
@@ -68152,15 +68181,12 @@ function ccRemadeDuos(freed){
   const wasTogether=(a,b)=>!!book[[hKey(a), hKey(b)].sort().join('+')];
   while(pool.length>=2){
     const a=pool.shift();
-    // Партнёр — из ближайшей тройки по силе, а не строго следующий, и не тот,
-    // с кем только что разошлись.
-    const near=Math.min(3, pool.length);
-    let at=Math.min(pool.length-1, Math.floor(rnd()*near));
-    if(wasTogether(a, pool[at])){
-      const alt=pool.findIndex(c=>!wasTogether(a, c));
-      if(alt<0) continue;                    // не с кем — остаётся свободным
-      at=alt;
-    }
+    // Партнёр — только из тех, с кем есть ЗАПИСАННАЯ пара (ccRecordedTogether), не тот, с кем
+    // только что разошлись; из ближайшей тройки таких по силе. Нет никого — остаётся свободным.
+    const cands=pool.map((c,i)=>i).filter(i=>ccRecordedTogether(a, pool[i]) && !wasTogether(a, pool[i]));
+    if(!cands.length) continue;
+    const near=Math.min(3, cands.length);
+    const at=cands[Math.floor(rnd()*near)];
     const b=pool.splice(at, 1)[0];
     if(!b) break;
     out.push({cards:[a, b], avg:(ccCardOvr(a)+ccCardOvr(b))/2, _remade:true});
@@ -89601,7 +89627,8 @@ function ccNamesPeekHTML(t){
   if(!t) return '';
   const on=(typeof CAREER_RUN!=='undefined' && CAREER_RUN) && CAREER && CAREER.career && Array.isArray(t.squad) && t.squad.length && t.squad.every(c=>c && c.handle);
   if(!on) return String(t.name||'');
-  const links=t.squad.map(c=>'<u class="cc-peek" title="'+esc(L().cardPeekHint)+'" onclick="event.stopPropagation();ccPeekByHandle(\''+esc(String(c.handle)).replace(/'/g,"\\'")+'\')">'+esc(String(c.handle))+'</u>').join(' &amp; ');
+  // С флагом, как teamLabel, и span, а не <u>: у <u> в таблице своя рамка (его скрин 10.09: «ники вот так выглядят», флагов нет).
+  const links=t.squad.map(c=>flagFor(c)+'<span class="cc-peek" title="'+esc(L().cardPeekHint)+'" onclick="event.stopPropagation();ccPeekByHandle(\''+esc(String(c.handle)).replace(/'/g,"\\'")+'\')">'+esc(String(c.handle))+'</span>').join(' &amp; ');
   // Свой состав подписан («Твой состав: …») — подпись остаётся, имена — ссылками.
   const m=String(t.name||'').match(/^([^:<]{1,40}:)\s*/);
   return (m ? esc(m[1])+' ' : '')+links;

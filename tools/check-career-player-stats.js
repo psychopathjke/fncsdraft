@@ -90,7 +90,7 @@ const BOOT = `
     // ---- имена в таблице вечера --------------------------------------------------
     CAREER_RUN=true;
     const cellOn=ccNamesPeekHTML(ranked[0]);
-    check('в таблице вечера имена — ссылками на лист', /u class="cc-peek"/.test(cellOn) && cellOn.indexOf('ccPeekByHandle(')>=0 && cellOn.indexOf(firstH)>=0, cellOn.slice(0,160));
+    check('в таблице вечера имена — ссылками на лист', /class="cc-peek"/.test(cellOn) && /flag|<img/.test(cellOn) && cellOn.indexOf('ccPeekByHandle(')>=0 && cellOn.indexOf(firstH)>=0, cellOn.slice(0,160));
     CAREER_RUN=false;
     check('вне вечера — просто имя', ccNamesPeekHTML(ranked[0])===String(ranked[0].name||''));
     // ---- хвост режется ------------------------------------------------------------

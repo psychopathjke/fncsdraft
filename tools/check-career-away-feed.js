@@ -228,6 +228,19 @@ const BOOT = `
         if (ccWorldSeed() !== 'zz-seed') fail('сид мира в гонке не старшего: ' + ccWorldSeed());
         delete cr.race.wseed; if (ccWorldSeed() !== ccCareerSeed()) fail('без сида старшего мир не свой');
         cr.duoSplits = ds0; cr.trios = tr0; CAREER.splits = sp0; CC_RACE_WORLD_SEED = null; ccWorldReset(); }
+      // Соло: квал врозь, финал на сто — общий (его скрин 10.09: два разных финала FNCS Solos).
+      { var dS = day0; cr.day = '2026-01-06'; CC_RACE_PEERS.zz.day = cr.day; cr.sim = false; CC_RACE_PEERS.zz.card.sim = false;
+        var wq = ccRaceApartWhy(careerNext());
+        cr.day = '2026-01-25'; CC_RACE_PEERS.zz.day = cr.day;
+        var wf = ccRaceApartWhy(careerNext());
+        out.steps.push('соло в гонке: квал → ' + wq + ', финал → ' + wf);
+        if (wq !== 'solo') fail('соло-квал в гонке не разведён: ' + wq);
+        if (wf === 'solo') fail('финал соло на сто всё ещё врозь: ' + wf);
+        cr.day = dS; CC_RACE_PEERS.zz.day = dS; CC_RACE_PEERS.zz.card.sim = true; }
+      // Рынок пар — только записанные (его слово 10.09: «Malibuca Scroll в дуо не играли»).
+      { var pd = careerPools().duos || []; var madeUp = pd.filter(function(d){ return d._remade && !ccRecordedTogether(d.cards[0], d.cards[1]); });
+        if (madeUp.length) fail('в пуле выдуманные пары: ' + madeUp.slice(0,3).map(function(d){ return d.cards.map(function(c){ return c.handle; }).join('&'); }).join(', '));
+        out.steps.push('рынок пар: пересобранных ' + pd.filter(function(d){ return d._remade; }).length + ', выдуманных 0'); }
       var tile = careerRaceTileHTML();
       if (tile.indexOf('&#128065;') < 0 || tile.indexOf('&#127918;') < 0) fail('на плитке гонки нет значков режима (глаз/геймпад)');
       CC_RACE_PEERS = peers0; MP.state = st0; delete cr.race; cr.sim = false;
