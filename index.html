@@ -58473,7 +58473,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='874ee231';
+const CC_BUILD='722a936d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59977,6 +59977,8 @@ const CC_RACE_WORLD_MS=20000;
    сборки): сид, занятые и регион равны, а пул 160 против 161 дуо; на открытых полях это
    «diff 31 of 150», «diff 76 of 2100». Старший шлёт всё четыре и свой сид карьеры; ведомые
    берут как есть, сид на время замка подменяет свой в ccDuoBroken (CC_RACE_WORLD_SEED). */
+// Записи посева, которые в гонке общие (см. ccSeedRow): поля хитов и финалов строятся из них.
+const CC_RACE_SEED_KEYS=['majorSeed','summitSeed','gcSeed','relSeed','d1','wf'];
 let CC_RACE_WORLD_SEED=null;
 /* СИД МИРА. Всё, что сеет сцену от сида карьеры — лестничные имена сезона (ladderSeason), пересборка
    пар (transfer), жизнь пары (duoLife), орги по годам (orgYear), места на ЛАН (seat), перенос троек
@@ -59990,7 +59992,9 @@ function ccWorldSeed(){
 }
 function ccRaceWorldPack(){
   const cr=(CAREER && CAREER.career)||{};
-  return {dev:(CAREER && CAREER.dev)||{}, splits:(CAREER && CAREER.splits)||{}, duoSplits:cr.duoSplits||{}, trios:cr.trios||{}, cseed:ccCareerSeed()};
+  const seeds={};
+  CC_RACE_SEED_KEYS.forEach(k=>{ if(cr[k]!==undefined) seeds[k]=cr[k]; });
+  return {dev:(CAREER && CAREER.dev)||{}, splits:(CAREER && CAREER.splits)||{}, duoSplits:cr.duoSplits||{}, trios:cr.trios||{}, cseed:ccCareerSeed(), seeds:seeds};
 }
 function ccRaceWorldApply(w){
   if(!w || !CAREER) return false;
@@ -60000,6 +60004,11 @@ function ccRaceWorldApply(w){
     if(w.duoSplits && typeof w.duoSplits==='object') CAREER.career.duoSplits=w.duoSplits;
     if(w.trios && typeof w.trios==='object') CAREER.career.trios=w.trios;
   }
+  /* Записи посева — от старшего: из них собираются поля хитов, финалов, сеток Саммита, Глобалов и
+     воскресенья Дивизиона 1. Своё участие они не решают (оно в cr.major/cr.summit/cr.reload и
+     остаётся личным) — только КОГО ещё сажать. */
+  if(w.seeds && typeof w.seeds==='object' && CAREER.career)
+    CC_RACE_SEED_KEYS.forEach(k=>{ if(w.seeds[k]!==undefined) CAREER.career[k]=w.seeds[k]; });
   CC_RACE_WORLD_SEED=w.cseed ? String(w.cseed) : null;
   if(CAREER.career && CAREER.career.race && w.cseed) CAREER.career.race.wseed=String(w.cseed);
   try{ ccWorldReset(); }catch(e){}
@@ -60090,21 +60099,21 @@ function ccRaceApartWhy(next){
      места в отборе, финал — из СВОИХ хитов: у шести гонщиков шесть разных лобби, и общей
      комнате тут взяться негде (годовая проба 9.09: Reload 1.02, поле n20 «diff 14 of 20»,
      у каждого свои боты). Открытый отбор и play-in — одно большое поле, они общие. */
-  if(next.type==='reload' && typeof careerReloadOn==='function'){
-    const ev=careerReloadOn(careerToday()); if(ev && (ev.stage==='heat' || ev.stage==='final')) return 'heat';
-  }
+  /* 10 сентября это правило снято: записи посева теперь общие (книга мира несёт CC_RACE_SEED_KEYS,
+     своя строка пишется настоящей — см. ccSeedRow), а хит выбирается один на комнату
+     (ccRaceHeatTogether). Значит поле у всех одно и вечер играется вместе — его слово 10.09.
+     Строки ниже оставлены пустыми нарочно: если общий мир где-то поедет, вернуть врозь — это
+     вернуть сюда 'heat' / 'lan' / 'table'. */
   /* САММИТ — ВРОЗЬ ЦЕЛИКОМ. Верхняя и нижняя сетки сеются от СВОЕГО места в Мейджоре, а гранд-финал
      собирается из СВОИХ записей сеток (cr.summitSeed). Годовая проба 9.09 (четверо в Дюссельдорфе):
      сетки шли врозь, финал — общей комнатой из четырёх разных полей, «diff 23 of 50» с первой игры.
      Глобалы и Париж общие: их поле сервер выравнивает закрытием вечера (ccMpClose). */
-  if(next.type==='summit') return 'lan';
+  // Саммит: сетки и гранд-финал собираются из общей записи (cr.summitSeed) — вечер общий.
   // И Глобалы: пятнадцать мест — из СВОЕГО финала Саммита (summitSeed.gc), свой регион — из
   // СВОЕГО Мейджора 2 (gcSeed); у четверых четыре поля (двухсезонная проба 9.09, 26.09: барьеры
   // ждали приходов к вопросам, которых у соседей не было). Отбор (gclc) общий — он из пула.
-  if(next.type==='globals') return 'lan';
-  if(next.type==='major' && typeof careerMajorOn==='function'){
-    const ev=careerMajorOn(careerToday()); if(ev && (ev.stage==='heats' || ev.stage==='final')) return 'heat';
-  }
+  // Глобалы: пятнадцать мест из общего summitSeed.gc, свой регион — из общего gcSeed.
+  // Мейджор: хиты и финал — из общей записи cr.majorSeed, хит один на комнату.
   const all=ccRacePeers();
   if(!all.length) return 'off';
   // Комната на N: у КАЖДОГО соперника должна быть строка с карточкой.
@@ -60120,12 +60129,12 @@ function ccRaceApartWhy(next){
      врозь (у кого-то не было напарника), даёт другой вторник: его скрин 10.09 — «diff 167 of 170 ·
      state d1». Отпечаток понедельника едет в строке (d1h); не сошёлся — вторник свой. */
   { const cr=CAREER.career; const mine=(cr.d1 && cr.d1.monday===careerMonday(careerToday())) ? String(ccHashStr(JSON.stringify(cr.d1))) : null;
-    if(next.type==='cup' && mine && peers.some(p=>p.d1h && p.d1h!==mine)) return 'table';
+    if(false && next.type==='cup' && mine && peers.some(p=>p.d1h && p.d1h!==mine)) return 'table';   // таблица понедельника общая (CC_RACE_SEED_KEYS)
     /* И финал недели: его поле — список тех, кто прошёл черту во вторник (cr.wf.cut, см.
        careerWeeklyFinalField). Вторник, сыгранный врозь, даёт разные списки — и общее воскресенье
        расходится на первой игре (годовая проба 10.09: 8.02 «diff 42 of 50 · state wf» у всех шести). */
     const wfMine=(cr.wf && cr.wf.monday===careerMonday(careerToday())) ? String(ccHashStr(String(cr.wf.cut||''))) : null;
-    if(next.type==='final' && wfMine && peers.some(p=>p.wfh && p.wfh!==wfMine)) return 'table'; }
+    if(false && next.type==='final' && wfMine && peers.some(p=>p.wfh && p.wfh!==wfMine)) return 'table'; }   // список вторника общий
   /* ОДИН РЕЖИМ НА КОМНАТУ. В «Симуляции» вопросы не задаются вовсе (см.
      playGameWithChoices), то есть у двоих разное число решений и разные дороги
      расчёта. Команда это запрещает (ccMpModeWhy), гонка — нет, и его скрины
@@ -60151,6 +60160,37 @@ function ccRaceModeWhy(){
      напрямую по строкам комнаты — то же условие, что ветка 'mode' в ccRaceApartWhy. */
   const room=(typeof ccRaceRoom==='function') ? ccRaceRoom() : ccRaceRivals();
   return room.some(p=>p.card && p.card.sim!=null && !!p.card.sim!==careerSimOn()) ? L().ccRaceWhymode : null;
+}
+/* ХИТ ОДИН НА КОМНАТУ. Змейка (seedHeats) кладёт каждого туда, куда положил его финиш, — у двух
+   гонщиков это разные хиты, а значит разные поля и разные лобби. Хит вечера выбирается по
+   старшему в комнате (наименьший hKey, как у книги мира), остальные люди меняются местами с его
+   соседями по хиту. Так у всех одно поле, а сетка хитов остаётся честной змейкой. */
+function ccRaceHeatTogether(heats, you){
+  if(typeof ccRaceLock!=='function' || !ccRaceLock() || !Array.isArray(heats) || !heats.length) return -1;
+  const room=(typeof ccRaceNightRoom==='function') ? ccRaceNightRoom() : [];
+  const me=careerCard(); if(!room.length || !me) return -1;
+  const keys=[hKey(me)].concat(room.map(p=>hKey(p.card))).sort();
+  const anchor=keys[0];
+  const has=(t,k)=>t===you ? hKey(me)===k : (t && (t.squad||t.cards||[])).some(c=>c && hKey(c)===k);
+  let at=heats.findIndex(h=>h.some(t=>has(t, anchor)));
+  if(at<0) at=heats.findIndex(h=>h.indexOf(you)>=0);
+  if(at<0) at=0;
+  const mine=heats[at];
+  const wanted=keys.filter(k=>k!==anchor);
+  wanted.forEach(k=>{
+    if(mine.some(t=>has(t, k))) return;
+    for(let i=0;i<heats.length;i++){
+      if(i===at) continue;
+      const j=heats[i].findIndex(t=>has(t, k));
+      if(j<0) continue;
+      // Меняется местами с тем, кто в этом хите не человек комнаты.
+      const sw=mine.findIndex(t=>!keys.some(k2=>has(t, k2)));
+      if(sw>=0){ const tmp=mine[sw]; mine[sw]=heats[i][j]; heats[i][j]=tmp; }
+      else mine.push(heats[i].splice(j, 1)[0]);
+      break;
+    }
+  });
+  return at;
 }
 function ccRaceRivalTeam(p){
   p=p||ccRaceRival(); if(!p || !p.card) return null;
@@ -86017,6 +86057,17 @@ function careerSummitField(stage, you, drafted){
    Отдельно от ccMajorSeatRow: там комната одного региона, и карточка ищется в
    своей сцене. Здесь зал из семи, поэтому регион пишется в строку — иначе
    океанийская пара воскресала бы европейской. */
+/* ОДИН МИР НА ВСЮ ГОНКУ (его слово 10.09: «делай»). Записи посева — кто прошёл Плей-Ин, кто вышел
+   из хитов, кто сидит в сетках Саммита, кто взял места на Глобалы — карьера пишет своей строкой
+   'you': к среде состав может смениться, а место в таблице нет. Но такую запись нельзя отдать
+   соседу по гонке: у него 'you' — это ОН, и запись читается как чужая. Пока записи были личными,
+   у каждого гонщика были свои финалы Мейджоров, свой Саммит и свои победители — отсюда его скрин
+   10.09, где у двух вкладок разные чемпионы, разный ПР и разные награды.
+   В гонке своя строка пишется НАСТОЯЩЕЙ (ник, регион, рейтинг), запись целиком уезжает соседям
+   книгой мира (ccRaceWorldPack.seeds), и поле следующего этапа у всех одно. Себя в этом поле
+   каждый находит по карточке — тем же hasCard, которым ccRaceFieldSync сажает соперников. */
+function ccRaceSeeds(){ return typeof ccRaceOn==='function' && ccRaceOn() && typeof ccRaceLive==='function' && ccRaceLive(); }
+function ccSeedRow(t, you, rowFn){ return (t===you && !ccRaceSeeds()) ? 'you' : rowFn(t); }
 function ccStageSeatRow(t){
   return (t.squad||[]).map(function(c){
     const a=attrsFor(c)||{};
@@ -86154,7 +86205,8 @@ function ccRelRoom(you, drafted, lobbyCr, ev, st, open, sharp){
   if(ev.stage==='heat' && s.through.length>st.field){
     const seeded=s.through.map(r=>r==='you' ? you : ccStageTeamFrom(r));
     const heats=seedHeats(seeded, Math.max(2, Math.round(seeded.length/st.field)));
-    const at=heats.findIndex(h=>h.indexOf(you)>=0);
+    const rAt=ccRaceHeatTogether(heats, you);   // гонка: один хит на комнату
+    const at=rAt>=0 ? rAt : heats.findIndex(h=>h.indexOf(you)>=0);
     const mine=(heats[at<0 ? 0 : at]||[]).slice(0, st.field);
     if(mine.indexOf(you)<0) mine[mine.length-1]=you;
     // Змейка делит нацело редко — недобор закрывается лестницей, как везде.
@@ -86333,7 +86385,7 @@ async function runCareerSummit(){
                cr.summitSeed.size===careerSquadSize())
         ? cr.summitSeed
         : (cr.summitSeed={season:cr.season, size:careerSquadSize()});
-      const row=t=>t===you ? 'you' : ccStageSeatRow(t);
+      const row=t=>ccSeedRow(t, you, ccStageSeatRow);
       /* В нижней сетке победа в игре — билет, ровно как у Хитов Мейджора: так
          написан сам формат («a Victory Royale advances instantly and the top 19
          on points fill the rest»), и так уже считается проход САМОГО игрока
@@ -86959,7 +87011,8 @@ async function runCareerMajor(){
           : [you, ...careerCupField(lobbyCr, drafted, st.field*ccMajorHeats(), null, false, sharp)]
               .sort((a,b)=>(b.pow||0)-(a.pow||0));
         const heats=seedHeats(seeded, ccMajorHeats());
-        const at=heats.findIndex(h=>h.indexOf(you)>=0);
+        const rAt=ccRaceHeatTogether(heats, you);   // гонка: один хит на комнату
+        const at=rAt>=0 ? rAt : heats.findIndex(h=>h.indexOf(you)>=0);
         heatNo=(at<0 ? 0 : at)+1;
         const mine=heats[at<0 ? 0 : at];
         otherHeats=heats.filter(h=>h!==mine);
@@ -87132,7 +87185,7 @@ async function runCareerMajor(){
        может быть уже другим, а место в таблице от этого не меняется. */
     if(ev.stage==='playin' && through)
       cr.majorSeed={n:ev.n, season:cr.season, size:careerSquadSize(),
-                    rows:ranked.slice(0, st.cut).map(t=>t===you ? 'you' : ccMajorSeatRow(t))};
+                    rows:ranked.slice(0, st.cut).map(t=>ccSeedRow(t, you, ccMajorSeatRow))};
     /* А Хиты оставляют после себя тех, кто из комнаты игрока прошёл.
 
        Их места в финале не обсуждаются: игрок видел, как они их выиграли, и
@@ -87143,7 +87196,7 @@ async function runCareerMajor(){
        cr.majorSeed.season===cr.season){
       const q=heatQualifiers(field, st.cut, winIsATicket());
       const rows=ranked.filter(t=>q.has(t))
-                       .map(t=>t===you ? 'you' : ccMajorSeatRow(t));
+                       .map(t=>ccSeedRow(t, you, ccMajorSeatRow));
       /* Свой хит записан. Соседние играются в СВОИ дни — см. ccMajorWorldHeats.
 
          Его вопрос, 27 августа: «а могут всегда из симуляции собирать», и его
@@ -87176,7 +87229,7 @@ async function runCareerMajor(){
        cr.majorSeed.season===cr.season && !cr.majorSeed.lcq){
       const fin=ccScaleStage(CC_MAJOR_STAGE.final);
       const need=Math.max(0, fin.field-((cr.majorSeed.through||[]).length));
-      const add=ranked.slice(0, need).map(t=>t===you ? 'you' : ccMajorSeatRow(t));
+      const add=ranked.slice(0, need).map(t=>ccSeedRow(t, you, ccMajorSeatRow));
       cr.majorSeed.through=(cr.majorSeed.through||[]).concat(add);
       cr.majorSeed.lcq=add;
     }
@@ -87195,7 +87248,7 @@ async function runCareerMajor(){
       if(slots) cr.gcSeed={season:cr.season, size:careerSquadSize(),
                            reg:ccCareerRegion(),
                            m2:ranked.slice(0, slots)
-                                    .map(t=>t===you ? 'you' : ccMajorSeatRow(t))};
+                                    .map(t=>ccSeedRow(t, you, ccMajorSeatRow))};
     }
     const prev=(cr.major && cr.major.n===ev.n) ? cr.major : null;
     cr.major={n:ev.n, got:ev.stage,
@@ -87703,7 +87756,8 @@ async function runCareerReload(){
           if(prevRows && prevRows.length>st.field){
             const seeded=prevRows.map(r=>r==='you' ? you : ccStageTeamFrom(r));
             const hs=seedHeats(seeded, Math.max(2, Math.round(seeded.length/st.field)));
-            const at=hs.findIndex(h=>h.indexOf(you)>=0);
+            const rAt=ccRaceHeatTogether(hs, you);   // гонка: один хит на комнату
+            const at=rAt>=0 ? rAt : hs.findIndex(h=>h.indexOf(you)>=0);
             pending=hs.filter((h,i)=>i!==(at<0 ? 0 : at))
                       .map(h=>h.filter(t=>t!==you).slice(0, st.field)
                                .map(ccStageSeatRow))
@@ -87713,7 +87767,7 @@ async function runCareerReload(){
         cr.relSeed={season:cr.season, size:careerSquadSize(), set:ev.set,
                     next:NEXT[ev.stage],
                     through:ranked.filter(t=>q.has(t))
-                                  .map(t=>t===you ? 'you' : ccStageSeatRow(t)),
+                                  .map(t=>ccSeedRow(t, you, ccStageSeatRow)),
                     out:out, pending:pending};
       }
     }

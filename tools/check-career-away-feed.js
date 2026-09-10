@@ -217,8 +217,9 @@ const BOOT = `
         CC_RACE_PEERS.zz.wfh = lineF.wfh; var whySame = ccRaceApartWhy(careerNext());
         CC_RACE_PEERS.zz.wfh = 'other'; var whyDiff = ccRaceApartWhy(careerNext());
         out.steps.push('финал недели: одинаковый вторник → ' + whySame + ', разный → ' + whyDiff);
-        if (whyDiff !== 'table') fail('финал недели от разных вторников не разведён: ' + whyDiff);
-        if (whySame === 'table') fail('одинаковый вторник читается как разный');
+        // 10.09 вечером: список вторника теперь ОБЩИЙ (книга мира), поэтому воскресенье не разводится.
+        if (whyDiff === 'table' || whySame === 'table') fail('финал недели всё ещё разводится по вторнику: ' + whyDiff + '/' + whySame);
+        if (CC_RACE_SEED_KEYS.indexOf('wf') < 0) fail('список вторника не едет в книге мира');
         delete cr.wf; delete CC_RACE_PEERS.zz.wfh; cr.day = dayF; CC_RACE_PEERS.zz.day = dayF; CC_RACE_PEERS.zz.card.sim = true; }
       // Книга мира несёт и рынок пар, и сид жизни пар (его скрин 10.09: пул 160 против 161).
       { var wp = ccRaceWorldPack(); if (!wp.dev || !wp.duoSplits || !wp.trios || !wp.splits || !wp.cseed) fail('книга мира без рынка пар или сида: ' + Object.keys(wp).join(','));
@@ -241,6 +242,42 @@ const BOOT = `
       { var pd = careerPools().duos || []; var madeUp = pd.filter(function(d){ return d._remade && !ccRecordedTogether(d.cards[0], d.cards[1]); });
         if (madeUp.length) fail('в пуле выдуманные пары: ' + madeUp.slice(0,3).map(function(d){ return d.cards.map(function(c){ return c.handle; }).join('&'); }).join(', '));
         out.steps.push('рынок пар: пересобранных ' + pd.filter(function(d){ return d._remade; }).length + ', выдуманных 0'); }
+      // ОДИН МИР НА ГОНКУ (его слово 10.09 «делай»): хиты, финалы навылет и ЛАНы — общие вечера.
+      { var dW = cr.day;
+        var kinds = [['2026-02-13', 'reload'], ['2026-03-14', 'major heats'], ['2026-05-30', 'summit']];
+        kinds.forEach(function(pair){ cr.day = pair[0]; CC_RACE_PEERS.zz.day = pair[0];
+          var nx = careerNext(); if (!nx) return;
+          var w = ccRaceApartWhy(nx);
+          if (w === 'heat' || w === 'lan' || w === 'table') fail(pair[1] + ' всё ещё врозь: ' + w); });
+        cr.day = dW; CC_RACE_PEERS.zz.day = dW; }
+      // Своя строка записи в гонке — настоящая (иначе запись нельзя отдать соседу).
+      { var youT = {squad:[careerCard()]};
+        if (ccSeedRow(youT, youT, ccStageSeatRow) === 'you') fail('в гонке своя строка записи всё ещё you');
+        var race0 = cr.race; delete cr.race;
+        if (ccSeedRow(youT, youT, ccStageSeatRow) !== 'you') fail('без гонки своя строка перестала быть you');
+        cr.race = race0; }
+      // Хит — один на комнату: люди меняются местами с соседями старшего.
+      { var mk = function(h){ return {squad:[{handle:h, region:'EU'}], name:h}; };
+        var heats = [[mk('a1'), mk('a2'), {squad:[careerCard()], isYou:true}],
+                     [mk('b1'), mk(CC_RACE_PEERS.zz.card.handle), mk('b3')]];
+        var youTeam = heats[0][2];
+        var lock0 = CC_RACE_LOCK, room0 = CC_RACE_ROOM0;
+        CC_RACE_LOCK = true; CC_RACE_ROOM0 = null;
+        var at = ccRaceHeatTogether(heats, youTeam);
+        CC_RACE_LOCK = lock0; CC_RACE_ROOM0 = room0;
+        var hasMe = at >= 0 && heats[at].some(function(t){ return t === youTeam; });
+        var hasRiv = at >= 0 && heats[at].some(function(t){ return (t.squad||[]).some(function(c){ return hKey(c) === hKey(CC_RACE_PEERS.zz.card); }); });
+        out.steps.push('хит комнаты: индекс ' + at + ', я ' + hasMe + ', соперник ' + hasRiv);
+        if (at < 0 || !hasMe || !hasRiv) fail('хит не свёл комнату: at=' + at + ' me=' + hasMe + ' riv=' + hasRiv);
+        if (heats[0].length !== 3 || heats[1].length !== 3) fail('размер хитов поехал: ' + heats.map(function(h){ return h.length; }).join('/')); }
+      // Книга мира несёт записи посева.
+      { cr.majorSeed = {n:1, season:1, size:2, rows:[['x']]};
+        var wp = ccRaceWorldPack();
+        if (!wp.seeds || !wp.seeds.majorSeed) fail('книга мира без записей посева');
+        delete cr.majorSeed;
+        ccRaceWorldApply({dev:{}, seeds:{majorSeed:{n:2, season:1, size:2, rows:[]}}});
+        if (!cr.majorSeed || cr.majorSeed.n !== 2) fail('запись посева от старшего не легла');
+        delete cr.majorSeed; }
       var tile = careerRaceTileHTML();
       if (tile.indexOf('&#128065;') < 0 || tile.indexOf('&#127918;') < 0) fail('на плитке гонки нет значков режима (глаз/геймпад)');
       CC_RACE_PEERS = peers0; MP.state = st0; delete cr.race; cr.sim = false;
