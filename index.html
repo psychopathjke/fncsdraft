@@ -58500,7 +58500,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ff7a6134';
+const CC_BUILD='981abfbb';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -83832,9 +83832,30 @@ function majorPrize(place){
    season inside it, keyed together so a second career year replaying S40 does
    not add to the first one's. Nothing counts a wage — this is prize money, the
    same number cr.earnings holds for the player. */
+/* Имя человека в доске — БЕЗ подписи состава. Своя команда зовётся «Твой состав: Malibuca &
+   vic0», и доска призовых резала это на людей как есть: у себя строка звалась «Твой состав:
+   Malibuca», у соседа по гонке тот же человек — «Malibuca». Две разные строки об одном, и
+   доски у двоих не сходились никогда. Доска рейтинга подпись снимала (careerPrAdd), доска
+   денег — нет. Его скрин 11.09: слева «Твой состав: Malibuca» 58 вечеров $553k, справа
+   «Malibuca» 50 вечеров $324k. */
+const ccBoardName=n=>String(n||'').replace(/<[^>]*>/g, '').replace(/^[^:&+]{1,40}:s*/, '').trim();
 function careerMoney(){
   const cr=CAREER.career;
   if(!cr.money) cr.money={rows:{}};
+  /* Старые сейвы: строки с подписью сливаются в строку человека — один раз, при первом
+     чтении. Без этого в доске стояли бы обе. */
+  if(!cr.money.named){
+    cr.money.named=1;
+    Object.keys(cr.money.rows).forEach(function(k){
+      const to=ccBoardName(k); if(!to || to===k) return;
+      const a=cr.money.rows[k], b=cr.money.rows[to];
+      delete cr.money.rows[k];
+      if(!b){ cr.money.rows[to]=a; return; }
+      b.usd=(b.usd||0)+(a.usd||0); b.events=(b.events||0)+(a.events||0); b.you=b.you||a.you;
+      ['yr','fs'].forEach(function(w){ a[w]=a[w]||{}; b[w]=b[w]||{};
+        Object.keys(a[w]).forEach(function(x){ b[w][x]=(b[w][x]||0)+a[w][x]; }); });
+    });
+  }
   return cr.money;
 }
 function careerMoneyKeys(){
@@ -83894,12 +83915,23 @@ function ccEvDeltaSend(){
 }
 /* Чужой вечер в свои доски: те же строки, что записал бы свой (careerMoneyAdd/careerPrAdd),
    только числа приехали готовыми. Свою строку в них не трогаем — она своя по определению. */
+/* СВОИ СТРОКИ — только из своих вечеров. Чужая копилка везёт всё поле, включая того, кто её
+   прислал; моя собственная строка в ней стоять не может (я этот вечер не играл — иначе ключ
+   уже помечен), но подстраховка дешевле разбирательства: строка, помеченная как своя, и мой
+   собственный ник чужими числами не трогаются. */
+function ccEvMine(){
+  const s={};
+  try{ const me=careerCard(); if(me && me.handle) s[hKey(me)]=1; }catch(e){}
+  return s;
+}
 function ccEvResApply(d){
   if(!d || !d.key || !CAREER || !CAREER.career) return false;
   if(!ccEvSeenMark(d.key)) return false;
+  const mine=ccEvMine();
   const m=careerMoney(), k={yr:d.yr||careerMoneyKeys().yr, fs:d.fs||careerMoneyKeys().fs};
   Object.keys(d.money||{}).forEach(function(h){
     const each=Math.round(d.money[h]||0); if(!each) return;
+    if(mine[hKey(h)] || (m.rows[h] && m.rows[h].you)) return;
     const row=m.rows[h] || (m.rows[h]={usd:0, events:0, yr:{}, fs:{}});
     row.usd+=each; row.events++;
     row.yr[k.yr]=(row.yr[k.yr]||0)+each;
@@ -83907,6 +83939,7 @@ function ccEvResApply(d){
   });
   const t=careerPrTally(), day=ccAbsDay(CAREER.career.season, d.day||careerToday());
   Object.keys(d.pr||{}).forEach(function(name){
+    if(mine[hKey(name)] || (t.rows[name] && t.rows[name].you)) return;
     (d.pr[name]||[]).forEach(function(rating){
       if(!(rating>0)) return;
       const row=t.rows[name] || (t.rows[name]={v:[], n:0});
@@ -83925,7 +83958,7 @@ function careerMoneyAdd(ranked, prize){
   ranked.forEach(function(t, i){
     const usd=prize(i+1, t)||0;
     if(!usd) return;
-    const name=String(t.name||'').replace(/<[^>]*>/g,'');
+    const name=ccBoardName(t.name);
     if(!name) return;
     // The board is a board of people, so a duo's prize lands on two rows.
     const who=name.split(/\s*[+&]\s*/).map(x=>x.trim()).filter(Boolean);
@@ -83937,8 +83970,12 @@ function careerMoneyAdd(ranked, prize){
       row.yr[k.yr]=(row.yr[k.yr]||0)+each;
       row.fs[k.fs]=(row.fs[k.fs]||0)+each;
       if(t.isYou) row.you=true;
-      // Копилка вечера — для тех, кто его не играет (см. ccEvDeltaSend).
-      if(CC_EV_DELTA && !t.isYou){ CC_EV_DELTA.money[h]=(CC_EV_DELTA.money[h]||0)+each; CC_EV_DELTA.yr=k.yr; CC_EV_DELTA.fs=k.fs; }
+      /* Копилка вечера — для тех, кто его не играет (см. ccEvDeltaSend). СВОЯ СТРОКА ТОЖЕ:
+         своя она только у меня, а у соседа по гонке я — обычный человек сцены, и мои
+         призовые за вечер, который он не играл, не попадали к нему ВООБЩЕ. Отсюда его скрин
+         11.09: у себя 58 вечеров и $553k, у соседа тот же человек — 50 и $324k. Свою строку
+         от чужой копилки бережёт приёмник (ccEvResApply). */
+      if(CC_EV_DELTA){ CC_EV_DELTA.money[h]=(CC_EV_DELTA.money[h]||0)+each; CC_EV_DELTA.yr=k.yr; CC_EV_DELTA.fs=k.fs; }
     });
   });
 }
@@ -89894,7 +89931,8 @@ function careerPrAdd(ranked, meta){
       if(row.v.length>CC_PR_KEEP) row.v.length=CC_PR_KEEP;
       row.n++;
       if(idx===yourIdx) row.you=true;
-      if(CC_EV_DELTA && idx!==yourIdx){ (CC_EV_DELTA.pr[name]=CC_EV_DELTA.pr[name]||[]).push(Math.round(rating)); }
+      // И своя строка — тоже (см. careerMoneyAdd): у соседа по гонке она не своя.
+      if(CC_EV_DELTA){ (CC_EV_DELTA.pr[name]=CC_EV_DELTA.pr[name]||[]).push(Math.round(rating)); }
       /* И журнал вечеров игрока — для листа статистики (careerPlayerStatsHTML). Его игрок,
          10.09: «Add players stats». Компактно: [день, вид[:этап], место, из, VR, килы, очки, див];
          последние CC_PLOG_KEEP вечеров на человека, имён не больше CC_PLOG_NAMES (лишние —

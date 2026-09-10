@@ -291,6 +291,30 @@ const BOOT = `
         var pr = careerPrTally().rows['Ghosty'];
         if (!pr || !pr.v.length) fail('рейтинг чужого вечера не лёг');
         delete careerMoney().rows['Ghosty']; delete careerPrTally().rows['Ghosty']; }
+      /* СВОЯ СТРОКА ВЕЧЕРА — ТОЖЕ В КОПИЛКУ. У соседа по гонке я обычный человек сцены, и мои
+         призовые за вечер, который он не играл, должны доехать до его доски. Его скрин 11.09:
+         у себя «Твой состав: Malibuca» 58 вечеров $553k, у соседа «Malibuca» 50 и $324k. */
+      { var meCard = careerCard();
+        var mineTeam = {name: L().yourTeamPrefix + meCard.handle + ' & Ghosty3', isYou:true};
+        var otherTeam = {name: 'Ghosty4 & Ghosty5'};
+        ccEvDeltaStart('2026-03-05|cup');
+        careerMoneyAdd([mineTeam, otherTeam], function(place){ return place === 1 ? 20000 : 4000; });
+        var pack = CC_EV_DELTA;
+        out.steps.push('копилка вечера: ' + Object.keys(pack.money).join(','));
+        if (!pack.money[meCard.handle]) fail('своя строка не поехала соседу: ' + JSON.stringify(pack.money));
+        if (!pack.money['Ghosty4']) fail('чужая строка не поехала: ' + JSON.stringify(pack.money));
+        // И в доске она зовётся ником, без подписи состава.
+        if (careerMoney().rows[L().yourTeamPrefix + meCard.handle]) fail('в доске денег строка с подписью состава');
+        var own = careerMoney().rows[meCard.handle];
+        if (!own || !own.you) fail('своя строка доски не найдена по нику: ' + JSON.stringify(Object.keys(careerMoney().rows).slice(0, 8)));
+        ccEvDeltaSend();
+        // Чужая копилка со МНОЙ внутри мою строку не трогает.
+        var was = careerMoney().rows[meCard.handle].usd;
+        var mineRes = {}; mineRes[meCard.handle] = 99999; mineRes['Ghosty6'] = 7000;
+        ccEvResApply({key:'2026-03-06|cup', by:'zz', day:'2026-03-06', money:mineRes, pr:{}});
+        if (careerMoney().rows[meCard.handle].usd !== was) fail('чужая копилка переписала мою строку');
+        if (!careerMoney().rows['Ghosty6']) fail('чужая строка из той же копилки не легла');
+        ['Ghosty3','Ghosty4','Ghosty5','Ghosty6'].forEach(function(n){ delete careerMoney().rows[n]; }); }
       // Свой вечер помечен тем же ключом — присланный дубль не считается.
       { ccEvDeltaStart('2026-03-02|cup'); ccEvDeltaSend();
         if (ccEvResApply({key:'2026-03-02|cup', by:'zz', money:{'Ghosty2':5000}, pr:{}})) fail('свой вечер посчитан второй раз');
