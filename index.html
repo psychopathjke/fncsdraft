@@ -1547,6 +1547,7 @@
   /* Пак в кнопке выбора — пять ячеек с картинками предметов, цвет ячейки — редкость
      (те же цвета, что у хотбара .zk-slot). Его слово 10.09: «добавь фотографии лут-пулу». */
   /* Лист статистики игрока сцены (careerPlayerStatsHTML) — в профиле, под лупой, из таблицы. */
+  .cc-aw-cat{margin-top:10px;} .cc-aw-cat h5{margin:0 0 4px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; opacity:.7;}
   .cc-ps{margin-top:10px;}
   .cc-ps-head{font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; opacity:.65; margin:8px 0 5px;}
   .cc-ps-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:2px 14px;}
@@ -7916,7 +7917,7 @@ dmOrgWithdraw:n=>n+': тогда, наверное, ищем другого. У�
 ccNewsOfferGone:n=>'Предложение от '+n+' снято',
 ccNewsAward:(n,m)=>'Игрок месяца ('+m+') — '+n,
 ccNewsAwardYou:m=>'Игрок месяца ('+m+') 🏅',
-ccNewsAwardSeason:(n,s)=>'Игрок сезона '+s+' — '+n,
+ccNewsAwardCat:(c,n,s)=>c+' сезона '+s+' — '+n, ccNewsAwardCatYou:(c,s)=>'Ты — '+c.toLowerCase()+' сезона '+s+'. Сцена проголосовала', ccAwCatsH:'Награды сезона', ccAwIgl:'Игл года', ccAwFrag:'Фраггер года', ccAwRookie:'Новичок года', ccAwDuo:'Дуо года', ccAwVote:p=>p+'% голосов сцены', ccAwHow:'Голосует сцена: игл и новичок — по рейтингу сезона, фраггер — по килам за вечера, дуо — пара с наибольшей суммой рейтинга. Проценты — доли тройки номинантов', ccNewsAwardSeason:(n,s)=>'Игрок сезона '+s+' — '+n,
 ccNewsAwardSeasonYou:s=>'Игрок сезона '+s+' 🏆',
 ccAwards:'Награды', ccAwardMonth:'Игрок месяца', ccAwardSeason:'Игрок сезона',
 ccGotyTitle:'Игрок года', ccGotyLine:(p,e)=>p+' очков рейтинга за '+e+' вечеров',
@@ -9879,7 +9880,7 @@ dmOrgWithdraw:n=>n+': we will look elsewhere then. Good luck',
 ccNewsOfferGone:n=>'The offer from '+n+' is off the table',
 ccNewsAward:(n,m)=>'Player of the Month ('+m+') — '+n,
 ccNewsAwardYou:m=>'Player of the Month ('+m+') 🏅',
-ccNewsAwardSeason:(n,s)=>'Player of Season '+s+' — '+n,
+ccNewsAwardCat:(c,n,s)=>c+' of Season '+s+' — '+n, ccNewsAwardCatYou:(c,s)=>'You are the '+c+' of Season '+s+'. The scene has voted', ccAwCatsH:'Season awards', ccAwIgl:'IGL of the Year', ccAwFrag:'Fragger of the Year', ccAwRookie:'Rookie of the Year', ccAwDuo:'Duo of the Year', ccAwVote:p=>p+'% of the scene\'s votes', ccAwHow:'The scene votes: IGL and rookie by season rating, fragger by elims over the nights, duo by the highest combined rating. Percentages are the shares among the three nominees', ccNewsAwardSeason:(n,s)=>'Player of Season '+s+' — '+n,
 ccNewsAwardSeasonYou:s=>'Player of Season '+s+' 🏆',
 ccAwards:'Awards', ccAwardMonth:'Player of the Month', ccAwardSeason:'Player of the Season',
 ccGotyTitle:'Player of the Year', ccGotyLine:(p,e)=>p+' rating points over '+e+' nights',
@@ -11137,7 +11138,7 @@ ccAskOdds:p=>'Chances qu’ils disent oui : '+p+' %',
 ccNewsOfferGone:n=>'L’offre de '+n+' n’est plus sur la table',
 ccNewsAward:(n,m)=>'Joueur du mois ('+m+') — '+n,
 ccNewsAwardYou:m=>'Joueur du mois ('+m+') 🏅',
-ccNewsAwardSeason:(n,s)=>'Joueur de la saison '+s+' — '+n,
+ccNewsAwardCat:(c,n,s)=>c+' de la saison '+s+' — '+n, ccNewsAwardCatYou:(c,s)=>'Tu es '+c+' de la saison '+s+'. La scène a voté', ccAwCatsH:'Récompenses de la saison', ccAwIgl:'IGL de l\'année', ccAwFrag:'Fragger de l\'année', ccAwRookie:'Rookie de l\'année', ccAwDuo:'Duo de l\'année', ccAwVote:p=>p+'% des votes de la scène', ccNewsAwardSeason:(n,s)=>'Joueur de la saison '+s+' — '+n,
 ccNewsAwardSeasonYou:s=>'Joueur de la saison '+s+' 🏆',
 ccResBest:(p,n)=>'meilleur '+ccTop(p)+' · '+n+' tournoi'+(n===1?'':'s'),
 ccResPlayed:n=>n+' tournoi'+(n===1?'':'s'),
@@ -13679,7 +13680,7 @@ dmOrgWithdraw:n=>n+': allora guardiamo altrove. Buona fortuna',
 ccNewsOfferGone:n=>'L\u2019offerta di '+n+' non c\u2019\u00e8 pi\u00f9',
 ccNewsAward:(n,m)=>'Giocatore del mese ('+m+') — '+n,
 ccNewsAwardYou:m=>'Giocatore del mese ('+m+') \ud83c\udfc5',
-ccNewsAwardSeason:(n,s)=>'Giocatore della stagione '+s+' — '+n,
+ccNewsAwardCat:(c,n,s)=>c+' della stagione '+s+' — '+n, ccNewsAwardCatYou:(c,s)=>'Sei '+c+' della stagione '+s+'. La scena ha votato', ccAwCatsH:'Premi della stagione', ccAwIgl:'IGL dell\'anno', ccAwFrag:'Fragger dell\'anno', ccAwRookie:'Esordiente dell\'anno', ccAwDuo:'Duo dell\'anno', ccAwVote:p=>p+'% dei voti della scena', ccNewsAwardSeason:(n,s)=>'Giocatore della stagione '+s+' — '+n,
 ccNewsAwardSeasonYou:s=>'Giocatore della stagione '+s+' \ud83c\udfc6',
 tlUp:d=>'Divisione '+d+'. Promosso',
 tlDown:d=>'Retrocesso in Divisione '+d,
@@ -16178,7 +16179,7 @@ dmOrgWithdraw:n=>n+': ent\u00e3o vamos procurar em outro lugar. Boa sorte',
 ccNewsOfferGone:n=>'A proposta do '+n+' saiu da mesa',
 ccNewsAward:(n,m)=>'Jogador do m\u00eas ('+m+') — '+n,
 ccNewsAwardYou:m=>'Jogador do m\u00eas ('+m+') \ud83c\udfc5',
-ccNewsAwardSeason:(n,s)=>'Jogador da temporada '+s+' — '+n,
+ccNewsAwardCat:(c,n,s)=>c+' da temporada '+s+' — '+n, ccNewsAwardCatYou:(c,s)=>'Você é '+c+' da temporada '+s+'. A cena votou', ccAwCatsH:'Prêmios da temporada', ccAwIgl:'IGL do ano', ccAwFrag:'Fragger do ano', ccAwRookie:'Novato do ano', ccAwDuo:'Duo do ano', ccAwVote:p=>p+'% dos votos da cena', ccNewsAwardSeason:(n,s)=>'Jogador da temporada '+s+' — '+n,
 ccNewsAwardSeasonYou:s=>'Jogador da temporada '+s+' \ud83c\udfc6',
 tlUp:d=>'Divis\u00e3o '+d+'. Promovido',
 tlDown:d=>'Rebaixado para a Divis\u00e3o '+d,
@@ -62352,7 +62353,7 @@ function careerCentreHTML(card, a){
       <!-- At the boundary the shop is shut and the year is the thing worth
            reading: where this career finished at its Grand Finals and its LANs.
            His report, 20 August. See careerSeasonBoardHTML. -->
-      ${cr.seasonOver ? careerSeasonAwardHTML()+careerSeasonBoardHTML() : careerShopPeekHTML()}
+      ${cr.seasonOver ? careerSeasonAwardHTML()+careerSeasonCatsHTML()+careerSeasonBoardHTML() : careerShopPeekHTML()}
     </div>
     <div class="ch-col">
       <!-- The ladder tile stood here and is gone, his call, 18 August: division,
@@ -72145,6 +72146,44 @@ function careerAwardCheck(){
   careerSave();
   return win;
 }
+/* НАГРАДЫ СЕЗОНА — четыре номинации рядом с игроком года. Его слово 10.09 («8 делай»: «награды
+   года: голосование сцены после Глобалов — лучший игл, фраггер, новичок, дуо»). Всё читается из
+   того, что карьера уже пишет: игл и новичок — по ПР сезона среди карточек с ролью игла / не
+   старше CC_AW_ROOKIE_AGE; фраггер — по килам в журнале вечеров (cr.plog); дуо — пара сцены с
+   наибольшей суммой ПР (плюс твоя пара). «Голоса сцены» — доли метрики среди тройки номинантов:
+   не выдумка, а та же таблица в процентах. Тройки пишутся в саму награду (aw.won, kind 'cat'),
+   чтобы церемония не пересчитывалась по изменившемуся ростеру. */
+const CC_AW_ROOKIE_AGE=17, CC_AW_TOP=3;
+const CC_AW_CATS=['igl','frag','rookie','duo'];
+function ccAwCatLabel(cat){ const T=L(); return {igl:T.ccAwIgl, frag:T.ccAwFrag, rookie:T.ccAwRookie, duo:T.ccAwDuo}[cat]||cat; }
+function careerAwardCats(){
+  const cr=CAREER.career, s=cr.season;
+  const from=Math.max(0, (s||1)-1)*365;
+  const board=careerAwardBoard(from, from+365);
+  const me=careerCard(), meKey=me ? hKey(me) : '';
+  const cardOf=n=>(meKey && hKey(n)===meKey) ? me : ccWhoCard(n);
+  // Роль карточки сцены — из опубликованного списка ролей (realRoleKey: I/F), у своей — из карьеры.
+  const roleOf=c=>{ if(!c) return null; if(c===me) return (CAREER.player && CAREER.player.role)||c._roleKey||null; let r=null; try{ r=realRoleKey(c); }catch(e){} return r||c._roleKey||c.role||null; };
+  const ageOf=c=>!c ? 99 : (c===me ? ccPlayerAge() : (c.age||99));
+  const share=rows=>{ const top=rows.slice(0, CC_AW_TOP); const sum=top.reduce((a,r)=>a+r.v, 0)||1;
+    return top.map(r=>({n:r.name, p:Math.round(r.v), pct:Math.round(r.v/sum*100), you:!!r.you})); };
+  const byPr=f=>board.filter(r=>f(cardOf(r.name))).map(r=>({name:r.name, v:r.pts, you:r.you}));
+  const igl=byPr(c=>roleOf(c)==='roleIGL');
+  const rookie=byPr(c=>ageOf(c)<=CC_AW_ROOKIE_AGE);
+  const frag=Object.keys(cr.plog||{}).map(n=>{ const rows=cr.plog[n]||[];
+      return {name:n, v:rows.reduce((a,e)=>a+(e[5]||0), 0), n:rows.length, you:n===cr.plogYou}; })
+    .filter(x=>x.n>=CC_AWARD_MIN && x.v>0).sort((a,b)=>b.v-a.v || b.n-a.n);
+  const pts={}; board.forEach(r=>{ pts[hKey(r.name)]=r; });
+  const pair=(a,b)=>{ const ra=a && pts[hKey(a)], rb=b && pts[hKey(b)]; if(!ra || !rb) return null;
+    return {name:String(a.handle||a)+' & '+String(b.handle||b), v:ra.pts+rb.pts, you:!!(ra.you||rb.you)}; };
+  let duos=[]; try{ duos=(careerPools().duos||[]).map(d=>pair(d.cards[0], d.cards[1])).filter(Boolean); }catch(e){ duos=[]; }
+  try{ const mate=(careerMates()||[])[0]; const mine=me && mate ? pair(me, mate) : null; if(mine && !duos.some(d=>d.you)) duos.push(mine); }catch(e){}
+  duos.sort((a,b)=>b.v-a.v);
+  return {igl:share(igl), frag:share(frag), rookie:share(rookie), duo:share(duos)};
+}
+function careerAwardCatsWon(season){
+  return (careerAwards().won||[]).filter(a=>a.kind==='cat' && a.season===season);
+}
 // And the year, at the boundary the season ends on.
 function careerAwardSeason(){
   const cr=CAREER.career, aw=careerAwards();
@@ -72170,6 +72209,14 @@ function careerAwardSeason(){
   } else {
     careerNews('flat', 'ccNewsAwardSeason', [win.name, cr.season]);
   }
+  // И четыре номинации — той же церемонией (careerAwardCats).
+  try{ const cats=careerAwardCats();
+    CC_AW_CATS.forEach(cat=>{ const top=cats[cat]||[]; if(!top.length) return;
+      const w=top[0];
+      aw.won.push({kind:'cat', cat:cat, key:String(cr.season)+':'+cat, season:cr.season, name:w.n, you:!!w.you, top:top});
+      if(w.you){ careerReachAdd(CC_REACH_DIV(cr.division)*8); careerNews('good', 'ccNewsAwardCatYou', [ccAwCatLabel(cat), cr.season]); }
+      else careerNews('flat', 'ccNewsAwardCat', [ccAwCatLabel(cat), w.n, cr.season]);
+    }); }catch(e){}
   careerSave();
   return win;
 }
@@ -72675,7 +72722,7 @@ const CC_POST_BY={
   ccIvSaidduot1:'you', ccIvSaidduot2:'you', ccIvSaidduot3:'you', ccIvSaidduot4:'you',
   ccIvSaidblamet1:'you', ccIvSaidblamet2:'you', ccIvSaidblamet3:'you', ccIvSaidblamet4:'you',
   ccNewsAward:'press', ccNewsAwardYou:'press',
-  ccNewsAwardSeason:'press', ccNewsAwardSeasonYou:'press',
+  ccNewsAwardSeason:'press', ccNewsAwardSeasonYou:'press', ccNewsAwardCat:'press', ccNewsAwardCatYou:'press',
   ccNewsPartnerNew:'you', ccNewsSquadNew:'you', ccNewsDropped:'you', ccNewsRoleMoved:'you', ccNewsRoleYes:'you', ccNewsRoleNo:'you', ccNewsTalkFix:'you', ccNewsTalkKeep:'you', ccNewsTalkFine:'you', ccNewsTalkAgain:'you',
   // Переезд вдвоём — это твой пост: платил за него ты. Автора ему не завели,
   // когда добавляли саму кнопку; check-career-feed поймал.
@@ -81982,6 +82029,7 @@ function careerNewSeason(){
   // A second career year is the same measured year again: only 2026 was
   // measured, and a 2027 does not exist to copy.
   cr.season++; cr.day=careerStartDay(); cr.seasonOver=false;
+  cr.plog={}; delete cr.plogYou;   // журнал вечеров игроков — по сезону (careerPlayerStatsHTML, фраггер года)
   /* Тройки переживают межсезонье — но не все.
 
      Было: память третьих чистилась начисто, и каждый новый сезон комната
@@ -82430,6 +82478,7 @@ function careerRetiredHTML(){
     ${row(L().xFollowers, ccFollowers(sm.reach))}
     ${careerAwardsWon('month') ? row(L().ccAwardMonth, careerAwardsWon('month')) : ''}
     ${careerAwardsWon('season') ? row(L().ccAwardSeason, careerAwardsWon('season')) : ''}
+    ${careerAwardsWon('cat') ? row(L().ccAwCatsH, careerAwardsWon('cat')) : ''}
     ${r.forced ? `<div class="cc-over-why">${r.why==='ban'
       ? esc(L().ccNewsBanned)
       : L().ccRetiredForcedWhy(careerRetireFloor())}</div>` : ''}
@@ -82548,6 +82597,17 @@ function careerRunLabel(row){
    очками года и числом сыгранных вечеров. Своя строка подсвечена — ради неё
    всё и читают. Пятёрка берётся из самой награды; у наград, записанных до
    этой правки, её нет — тогда таблица считается заново по тому же году. */
+function careerSeasonCatsHTML(){
+  const cr=CAREER.career, T=L();
+  const won=careerAwardCatsWon(cr.season);
+  if(!won.length) return '';
+  const block=a=>{ const top=a.top||[]; if(!top.length) return ''; const w=top[0];
+    const rest=top.slice(1).map((r,i)=>`<div class="ch-row cc-goty-row${r.you?' me':''}"><em><i>${i+2}</i>${esc(r.n)}</em><b>${r.pct}%</b></div>`).join('');
+    return `<div class="cc-aw-cat"><h5>${esc(ccAwCatLabel(a.cat))}</h5>
+      <div class="cc-goty-win${w.you?' me':''}"><span class="cc-goty-ball" aria-hidden="true">${a.cat==='duo'?'🤝':a.cat==='rookie'?'🌱':a.cat==='frag'?'🎯':'🧠'}</span>
+        <div><b>${esc(w.n)}</b><em>${esc(T.ccAwVote(w.pct))}</em></div></div>${rest}</div>`; };
+  return `<div class="ch-tile cc-goty cc-aw"><h4>${T.ccAwCatsH}</h4>${won.map(block).join('')}<div class="ch-hint">${T.ccAwHow}</div></div>`;
+}
 function careerSeasonAwardHTML(){
   const cr=CAREER.career;
   const aw=(careerAwards().won||[]).filter(a=>a.kind==='season' && a.season===cr.season)[0];
@@ -82590,7 +82650,7 @@ function careerSeasonAwardHTML(){
    уже кончились и confirm(), и окно про метку (см. careerSpotGate). Кнопка
    стоит на карточке конца сезона рядом с «Новым сезоном», а не вместо неё,
    поэтому старый путь «нажал .ch-play — поехал дальше» не тронут. */
-const CC_GALA_SLIDES=4;
+const CC_GALA_SLIDES=5;   // 10.09: слайд номинаций перед игроком года
 let CC_GALA_STEP=0;
 // Год, собранный из того, что карьера УЖЕ записала: журнал, доска PR и список
 // наград. Церемония ничего не считает от себя — она читает.
@@ -82652,6 +82712,8 @@ function ccGalaSlide(i, y){
         y.months.map(m=>`<div class="cc-gala-row"><em>${
             esc(L().ccGalaMonthWon(ccMonthName(m.key)))}</em><b>🏅</b></div>`).join('')
       : `<div class="cc-gala-hint">${L().ccGalaAwardsNone}</div>`}`;
+  // Номинации сезона — перед игроком года (careerSeasonCatsHTML).
+  if(i===3) return careerSeasonCatsHTML() || `<div class="cc-gala-hint">${L().ccGalaAwardsNone}</div>`;
   // Последним — игрок года: ровно та же плитка, что стоит на экране конца
   // сезона, чтобы церемония и хаб не разошлись в числах.
   return careerSeasonAwardHTML() ||
