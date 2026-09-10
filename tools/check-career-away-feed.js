@@ -225,6 +225,8 @@ const BOOT = `
         var ds0 = cr.duoSplits, tr0 = cr.trios, sp0 = CAREER.splits;
         ccRaceWorldApply({dev:{}, duoSplits:{'aa+bb':'2026-01-01'}, trios:{'cc+dd':'ee'}, splits:{}, cseed:'zz-seed'});
         if (!(cr.duoSplits && cr.duoSplits['aa+bb']) || !(cr.trios && cr.trios['cc+dd']) || CC_RACE_WORLD_SEED !== 'zz-seed') fail('книга мира не легла: ' + JSON.stringify([cr.duoSplits, cr.trios, CC_RACE_WORLD_SEED]));
+        if (ccWorldSeed() !== 'zz-seed') fail('сид мира в гонке не старшего: ' + ccWorldSeed());
+        delete cr.race.wseed; if (ccWorldSeed() !== ccCareerSeed()) fail('без сида старшего мир не свой');
         cr.duoSplits = ds0; cr.trios = tr0; CAREER.splits = sp0; CC_RACE_WORLD_SEED = null; ccWorldReset(); }
       var tile = careerRaceTileHTML();
       if (tile.indexOf('&#128065;') < 0 || tile.indexOf('&#127918;') < 0) fail('на плитке гонки нет значков режима (глаз/геймпад)');

@@ -4559,7 +4559,20 @@
     padding:9px 12px;margin:4px auto 12px;max-width:1040px;
     border:1px solid rgba(140,175,255,.14);}
   #screen-career-hub .cal-bar h4{color:#fff;}
-  #screen-career-hub .cal-nav{background:rgba(255,255,255,.08);border-color:rgba(150,185,255,.3);
+  /* Кнопки полосы календаря — скошенные чипы Fortnite: жёлтые стрелки месяца, лаймовое «сегодня»,
+     тёмные «неделя/месяц» с векторной перемоткой (его слово 10.09). */
+  #screen-career-hub .cal-nav,#screen-career-hub .cal-today,#screen-career-hub .ch-ffbtn,#screen-career-hub .ch-skipto{
+    transform:skewX(-9deg);border:none;border-radius:3px;font-style:italic;}
+  #screen-career-hub .cal-nav svg,#screen-career-hub .ch-ffbtn i svg,#screen-career-hub .ch-skipto i svg{width:13px;height:13px;fill:currentColor;display:block;}
+  #screen-career-hub .ch-ffbtn i,#screen-career-hub .ch-skipto i{display:inline-flex;opacity:1;}
+  #screen-career-hub .cal-nav{background:#ffdd00;color:#0b0f12;width:36px;height:30px;display:inline-flex;align-items:center;justify-content:center;padding:0;}
+  #screen-career-hub .cal-nav:hover{background:#fff;color:#0b0f12;}
+  #screen-career-hub .cal-nav:disabled{background:rgba(255,255,255,.12);color:#6d7fae;}
+  #screen-career-hub .cal-today{background:#c6ff00;color:#0b0f12;}
+  #screen-career-hub .cal-today:hover{background:#fff;color:#0b0f12;}
+  #screen-career-hub .ch-ffbtn{background:rgba(255,255,255,.12);color:#eef4f8;}
+  #screen-career-hub .ch-ffbtn:hover{background:#ffdd00;color:#0b0f12;}
+  #screen-career-hub .cal-nav.cc-old{background:rgba(255,255,255,.08);border-color:rgba(150,185,255,.3);
     color:#fff;}
   #screen-career-hub .cal-nav:hover{border-color:#35e0ff;color:#35e0ff;}
   #screen-career-hub .cal-nav:disabled{color:#6d7fae;border-color:rgba(150,185,255,.16);}
@@ -58453,7 +58466,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='3351254c';
+const CC_BUILD='cab3a85e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59958,6 +59971,16 @@ const CC_RACE_WORLD_MS=20000;
    «diff 31 of 150», «diff 76 of 2100». Старший шлёт всё четыре и свой сид карьеры; ведомые
    берут как есть, сид на время замка подменяет свой в ccDuoBroken (CC_RACE_WORLD_SEED). */
 let CC_RACE_WORLD_SEED=null;
+/* СИД МИРА. Всё, что сеет сцену от сида карьеры — лестничные имена сезона (ladderSeason), пересборка
+   пар (transfer), жизнь пары (duoLife), орги по годам (orgYear), места на ЛАН (seat), перенос троек
+   (carry), — в гонке считается от сида старшего (cr.race.wseed приходит с книгой мира и живёт с
+   гонкой), иначе у каждого гонщика свой мир: его скрин 10.09, DreamCup — пул 172 против 169 пар при
+   равных сиде, занятых и регионе. Без гонки — свой сид, как было. */
+function ccWorldSeed(){
+  const cr=CAREER && CAREER.career;
+  if(cr && cr.race && cr.race.code && cr.race.wseed) return String(cr.race.wseed);
+  return ccCareerSeed();
+}
 function ccRaceWorldPack(){
   const cr=(CAREER && CAREER.career)||{};
   return {dev:(CAREER && CAREER.dev)||{}, splits:(CAREER && CAREER.splits)||{}, duoSplits:cr.duoSplits||{}, trios:cr.trios||{}, cseed:ccCareerSeed()};
@@ -59971,6 +59994,7 @@ function ccRaceWorldApply(w){
     if(w.trios && typeof w.trios==='object') CAREER.career.trios=w.trios;
   }
   CC_RACE_WORLD_SEED=w.cseed ? String(w.cseed) : null;
+  if(CAREER.career && CAREER.career.race && w.cseed) CAREER.career.race.wseed=String(w.cseed);
   try{ ccWorldReset(); }catch(e){}
   return true;
 }
@@ -59982,7 +60006,7 @@ function ccRaceWorldSync(n){
   const keys=[hKey(me)].concat(room.map(p=>hKey(p.card))).sort();
   if(keys[0]===hKey(me)){
     try{ MP.act('world', {by:ccMpId(), n:n, w:ccRaceWorldPack()}); }catch(e){}
-    CC_RACE_WORLD_SEED=ccCareerSeed(); try{ ccWorldReset(); }catch(e){}   // и у старшего пул собирается заново — одинаково с ведомыми
+    CC_RACE_WORLD_SEED=ccCareerSeed(); if(CAREER.career.race) CAREER.career.race.wseed=ccCareerSeed(); try{ ccWorldReset(); }catch(e){}   // и у старшего пул собирается заново — одинаково с ведомыми
     ccMpMark('world');   // метка одна у ведущего и ведомых: разная надпись читалась как место расхождения
     return Promise.resolve(true);
   }
@@ -66405,6 +66429,15 @@ function ccKindIconSVG(kind){
   const p=CC_KIND_ICON[k] || CC_KIND_ICON.cup;
   return '<svg viewBox="0 0 16 16" aria-hidden="true">'+p+'</svg>';
 }
+/* КНОПКИ КАЛЕНДАРЯ — как кнопки Fortnite: скошенные чипы, стрелки месяца и перемотки векторные, а не
+   символы шрифта (его скрин 10.09: «значки не нравятся возле месяца и недели, мб дизайн изменить
+   кнопочки» — это ‹ › у месяца и ⏩ у «неделя/месяц»). */
+const CC_BTN_ICON={
+  prev:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 2.5L5 8l5.5 5.5 1.5-1.5-4-4 4-4z"/></svg>',
+  next:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 2.5L11 8l-5.5 5.5L4 12l4-4-4-4z"/></svg>',
+  ff:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 3l6 5-6 5zM8.5 3l6 5-6 5z"/></svg>',
+  skip:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3l7 5-7 5zM11 3h3v10h-3z"/></svg>'
+};
 function careerCalendarHTML(){
   const ev=careerEvents();
   const cr=CAREER.career;
@@ -66422,9 +66455,9 @@ function careerCalendarHTML(){
   // Everything the tab shows lives inside one dark panel, so the month is a
   // screen rather than a dark rectangle dropped on a white page.
   let html=`<div class="cal-stage"><div class="cal-bar">`+
-    `<button class="cal-nav" ${atStart?'disabled':''} onclick="careerMonthShift(-1)">&lsaquo;</button>`+
+    `<button class="cal-nav" ${atStart?'disabled':''} onclick="careerMonthShift(-1)" aria-label="prev">${CC_BTN_ICON.prev}</button>`+
     `<h4>${L().calMonths[CH_MONTH.m]} ${ccShowYear(CH_MONTH.y)}</h4>`+
-    `<button class="cal-nav" ${atEnd?'disabled':''} onclick="careerMonthShift(1)">&rsaquo;</button>`+
+    `<button class="cal-nav" ${atEnd?'disabled':''} onclick="careerMonthShift(1)" aria-label="next">${CC_BTN_ICON.next}</button>`+
     `<button class="cal-today" onclick="CH_MONTH=null; careerRenderHub('calendar');">${L().calNow}</button>`+
     // The day that was picked, and the press that actually runs it. A month of
     // a career is too much to hand to one click on a screen people scroll.
@@ -66862,7 +66895,7 @@ function ccLadderSeason(cr, open, need){
   const key='s'+(cr.season||1)+'|'+div;
   if(!CC_LADDER_POOL[key]){
     const size=Math.ceil((need||0)*CC_LADDER_SPARE)+8;
-    const rnd=careerRng(ccHashStr('ladderSeason|'+ccCareerSeed()+'|'+key));
+    const rnd=careerRng(ccHashStr('ladderSeason|'+ccWorldSeed()+'|'+key));
     const seen=new Set(), out=[];
     while(out.length<size){
       const o = open ? ccOpenFillOvr(rnd)
@@ -68097,7 +68130,7 @@ function ccRemadeDuos(freed){
   const seen=new Set(), pool=[];
   freed.forEach(c=>{ const k=hKey(c); if(!k || seen.has(k)) return; seen.add(k); pool.push(c); });
   pool.sort((a,b)=>ccCardOvr(b)-ccCardOvr(a));
-  const rnd=careerRng(ccHashStr('transfer|'+ccCareerSeed()+'|'+(cr.season||1)));
+  const rnd=careerRng(ccHashStr('transfer|'+ccWorldSeed()+'|'+(cr.season||1)));
   /* Обратно к тому же человеку рынок не сводит.
 
      Ловушка, пойманная проверкой 28 августа: пара распадается — обе половинки
@@ -70576,7 +70609,7 @@ function ccSeasonOrg(card, reg){
   if(list.length<2) return null;
   let org=card.org;
   for(let y=2; y<=s; y++){
-    const r=careerRng(ccHashStr('orgYear|'+ccCareerSeed()+'|'+y+'|'+hKey(card)));
+    const r=careerRng(ccHashStr('orgYear|'+ccWorldSeed()+'|'+y+'|'+hKey(card)));
     if(r()>=CC_ORG_MOVE) continue;             // контракт продлён
     const pick=list[Math.floor(r()*list.length)];
     if(pick) org=pick;
@@ -76367,7 +76400,7 @@ function careerSeatDm(tag){
      must never do now that an empty seat cannot enter a tournament. */
   // And the post moves that line by one reach while it stands.
   const line=lfd ? -CC_LFD_REACH : 0;
-  const rnd=careerRng(ccHashStr('seat|'+ccCareerSeed()+'|'+CAREER.career.season+'|'+tag));
+  const rnd=careerRng(ccHashStr('seat|'+ccWorldSeed()+'|'+CAREER.career.season+'|'+tag));
   /* Somebody the rung does not hold, reading a post.
 
      Below Division 1 the week's list is generated and capped at the band of the
@@ -81028,7 +81061,7 @@ function careerFfButtonsHTML(){
   // В команде день идёт вдвоём — перематывать его в одиночку нечем.
   const shared=ccMpOn() || ccRaceFfOn();
   const btn=(days, label)=>'<button class="ch-ffbtn" onclick="careerFfConfirm('+days+')" title="'+
-    esc(shared ? L().ccMpFfHint : L().ccFfHint)+'"><i>&#9193;</i>'+label+'</button>';
+    esc(shared ? L().ccMpFfHint : L().ccFfHint)+'"><i>'+CC_BTN_ICON.ff+'</i>'+label+'</button>';
   return '<div class="ch-ffwrap"><span class="ch-ffcap">'+L().ccFfCap+'</span>'+
     (shared ? ccMpFfOfferHTML() : '')+
     '<div class="ch-ff">'+btn('CC_FF_WEEK', L().ccFfWeek)+btn('CC_FF_MONTH', L().ccFfMonth)+
@@ -81793,11 +81826,11 @@ function careerSkipToBtnHTML(){
   const cr=CAREER && CAREER.career;
   if(!cr || cr.seasonOver) return '';
   if(ccMpOn())
-    return '<button class="ch-play ch-skipto" disabled title="'+esc(L().ccMpNoFf)+'"><i>&#9197;</i> '+L().chSkipTo+'</button>';
+    return '<button class="ch-play ch-skipto" disabled title="'+esc(L().ccMpNoFf)+'"><i>'+CC_BTN_ICON.skip+'</i> '+L().chSkipTo+'</button>';
   const t=careerSkipTarget(), n=ccFfDays(t.day);
   if(!(n>0)) return '';
   return '<button class="ch-play ch-skipto" onclick="careerSkipToAsk()" title="'+
-    esc(L().chSkipToHint(ccDayLabel(t.day), n))+'"><i>&#9197;</i> '+L().chSkipTo+'</button>';
+    esc(L().chSkipToHint(ccDayLabel(t.day), n))+'"><i>'+CC_BTN_ICON.skip+'</i> '+L().chSkipTo+'</button>';
 }
 function careerSkipToAsk(){
   if(ccMpOn()){ ccTell(L().ccMpNoFf); return; }
@@ -81896,7 +81929,7 @@ function ccDuoBroken(d, cr){
   if(s<=1) return false;
   const churn=(typeof d==='string') ? CC_DUO_CHURN : ccDuoChurnOf(d);
   // В замке гонки — сид книги мира (старшего), иначе пары «жили» бы у каждого по-своему.
-  const seedOf=(typeof ccRaceLock==='function' && ccRaceLock() && typeof CC_RACE_WORLD_SEED!=='undefined' && CC_RACE_WORLD_SEED) ? CC_RACE_WORLD_SEED : ccCareerSeed();
+  const seedOf=ccWorldSeed();
   return careerRng(ccHashStr('duoLife|'+seedOf+'|'+key))()
          > Math.pow(1-churn, s-1);
 }
@@ -82051,7 +82084,7 @@ function careerTriosCarry(memo, splits, cr){
   const broke=new Set();
   Object.keys(splits||{}).forEach(k=>String(k).split('+').forEach(h=>broke.add(h)));
   // Бросок один на межсезонье и посеян сезоном: перезагрузка не пересоберёт.
-  const rnd=careerRng(ccHashStr('carry|'+ccCareerSeed()+'|'+((cr&&cr.season)||1)));
+  const rnd=careerRng(ccHashStr('carry|'+ccWorldSeed()+'|'+((cr&&cr.season)||1)));
   Object.keys(memo).forEach(key=>{
     if(String(key).split('+').some(h=>broke.has(h))) return;
     if(rnd()<CC_TRIO_CHURN) return;
