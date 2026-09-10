@@ -59,6 +59,10 @@ const start=o.find(x=>x.msg.t==='start');
 check('оба готовы — старт есть', !!start);
 check('и у старта есть сид', start && typeof start.msg.seed==='string' && start.msg.seed.length>0);
 check('старт ушёл обоим', start && start.to==='all');
+/* И СПИСОК ВЕЧЕРА. По нему клиент выбирает старшего для книги мира: своя таблица соседей у
+   каждого наполняется не одновременно, и старший выходил разный (Глобалы 01.10 в годовой
+   пробе — поля на 25 строк из 50). Список знает только сервер. */
+check('старт называет, кто в вечере', start && Array.isArray(start.msg.who) && start.msg.who.slice().sort().join(',')==='A,B', JSON.stringify(start && start.msg.who));
 
 // ---- решения нумеруются и рассылаются в одном порядке ---------------------
 const n1=L.act('A','drop',{zone:7})[0].msg.n;

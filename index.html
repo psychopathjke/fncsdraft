@@ -58500,7 +58500,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='981abfbb';
+const CC_BUILD='5e71e85a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -58691,7 +58691,7 @@ function ccMpGate(kind){
       // Сид сервера — под него и считается вечер. См. ccMpSeedOn.
       ccMpSeedOn(m.seed);
       // Гонка: книга мира — от старшего по адресу, до сборки поля (ccRaceWorldSync).
-      Promise.resolve(typeof ccRaceWorldSync==='function' ? ccRaceWorldSync(m.n) : null)
+      Promise.resolve(typeof ccRaceWorldSync==='function' ? ccRaceWorldSync(m.n, m.who) : null)
         .then(function(){ res({seed:m.seed, n:m.n}); }, function(){ res({seed:m.seed, n:m.n}); });
     });
     // Хвост прошлого вечера, если тот оборвался посреди раннера.
@@ -60077,13 +60077,29 @@ function ccRaceWorldApply(w){
   try{ ccWorldReset(); }catch(e){}
   return true;
 }
-function ccRaceWorldSync(n){
+/* СТАРШЕГО НАЗЫВАЕТ СЕРВЕР. Он выбирался по СВОЕЙ таблице соседей (ccRaceNightRoom), а она у
+   каждого своя и наполняется не одновременно: строка соседа могла ещё не доехать. Тогда один
+   считал старшим себя, второй ждал книгу от третьего, а кто-то с пустой комнатой уходил вовсе
+   без книги и БЕЗ ОТМЕТКИ — книга бросков сдвигалась на строку, и поле собиралось из своих
+   записей посева. Годовая проба на шестерых, Глобалы 01.10: поля разошлись на 25 строк из 50
+   при одинаковом пуле, а в книге на этом месте стояло 'world' против 'lob~'.
+   Список вечера знает сервер (st.evening.room) и присылает его со стартом (who). Старший —
+   наименьший адрес в нём, одинаково у всех. Старого воркера (who нет) держим прежним путём. */
+function ccRaceWorldSync(n, who){
   if(typeof ccRaceLock!=='function' || !ccRaceLock() || typeof MP==='undefined' || !MP.act) return Promise.resolve(false);
   const me=careerCard(); if(!me) return Promise.resolve(false);
-  const room=(typeof ccRaceNightRoom==='function') ? ccRaceNightRoom() : ccRaceRoom();
-  if(!room.length) return Promise.resolve(false);
-  const keys=[hKey(me)].concat(room.map(p=>hKey(p.card))).sort();
-  if(keys[0]===hKey(me)){
+  let lead;
+  if(Array.isArray(who) && who.length){
+    const ids=who.slice().filter(Boolean).sort();
+    if(ids.indexOf(ccMpId())<0) return Promise.resolve(false);   // меня в этом вечере нет
+    lead=(ids[0]===ccMpId());
+  } else {
+    const room=(typeof ccRaceNightRoom==='function') ? ccRaceNightRoom() : ccRaceRoom();
+    if(!room.length) return Promise.resolve(false);
+    const keys=[hKey(me)].concat(room.map(p=>hKey(p.card))).sort();
+    lead=(keys[0]===hKey(me));
+  }
+  if(lead){
     try{ MP.act('world', {by:ccMpId(), n:n, w:ccRaceWorldPack()}); }catch(e){}
     CC_RACE_WORLD_SEED=ccCareerSeed(); if(CAREER.career.race) CAREER.career.race.wseed=ccCareerSeed(); try{ ccWorldReset(); }catch(e){}   // и у старшего пул собирается заново — одинаково с ведомыми
     ccMpMark('world');   // метка одна у ведущего и ведомых: разная надпись читалась как место расхождения

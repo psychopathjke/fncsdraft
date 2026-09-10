@@ -319,6 +319,24 @@ const BOOT = `
       { ccEvDeltaStart('2026-03-02|cup'); ccEvDeltaSend();
         if (ccEvResApply({key:'2026-03-02|cup', by:'zz', money:{'Ghosty2':5000}, pr:{}})) fail('свой вечер посчитан второй раз');
         if (careerMoney().rows['Ghosty2']) fail('дубль своего вечера всё же лёг'); }
+      /* СТАРШЕГО ДЛЯ КНИГИ МИРА НАЗЫВАЕТ СЕРВЕР. Список вечера приезжает со стартом (who);
+         своя таблица соседей наполняется не одновременно, и старший выходил разный. */
+      { var acts = [], act0 = MP.act, lock1 = CC_RACE_LOCK;
+        CC_RACE_LOCK = true;
+        MP.act = function(kind, payload){ acts.push(kind); };
+        ccRaceWorldSync(41, [ccMpId(), 'zzzzzzzz']);
+        var led = acts.indexOf('world') >= 0;
+        acts = [];
+        ccRaceWorldSync(42, ['00000000', ccMpId()]);
+        var followed = acts.indexOf('world') < 0;
+        acts = [];
+        ccRaceWorldSync(43, ['00000000', 'zzzzzzzz']);
+        var away = acts.indexOf('world') < 0;
+        MP.act = act0; CC_RACE_LOCK = lock1;
+        out.steps.push('книга мира: старший ' + led + ', ведомый ждёт ' + followed + ', чужой вечер ' + away);
+        if (!led) fail('наименьший адрес в списке вечера не разослал книгу мира');
+        if (!followed) fail('не старший всё равно разослал книгу мира');
+        if (!away) fail('вечер без меня всё равно разослал книгу мира'); }
       var tile = careerRaceTileHTML();
       if (tile.indexOf('&#128065;') < 0 || tile.indexOf('&#127918;') < 0) fail('на плитке гонки нет значков режима (глаз/геймпад)');
       CC_RACE_PEERS = peers0; MP.state = st0; delete cr.race; cr.sim = false;

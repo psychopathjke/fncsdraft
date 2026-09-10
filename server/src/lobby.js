@@ -72,7 +72,7 @@ function createLobby(opts){
     st.kinds={}; st.ready={}; st.feed=[]; st.digests={};
     st.evening={seed:st.seed+'|'+day, n:++st.n, day:day, readied:{}, room:all.slice()};
     all.forEach(x=>{ st.evening.readied[x]=true; });
-    return {to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day}};
+    return {to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day, who:(st.evening.room||[]).slice()}};
   };
   /* Состояние несёт и ВЕЧЕР: идёт ли он (сид, номер, день) и вся его лента.
      Вкладка, перезагруженная посреди вечера, приходит с пустой памятью — по
@@ -215,10 +215,10 @@ function createLobby(opts){
             st.ready={}; st.feed=[]; st.digests={};
             st.evening={seed:st.seed+'|'+day+'|'+(++st.n), n:st.n, day:day, kind:kind||null, readied:{}, room:all2.slice()};
             all2.forEach(x=>{ st.evening.readied[x]=true; });
-            return [{to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day, fresh:true}}];
+            return [{to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day, fresh:true, who:(st.evening.room||[]).slice()}}];
           }
         }
-        return [{to:'self', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day, resume:true}}];
+        return [{to:'self', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day, resume:true, who:(st.evening.room||[]).slice()}}];
       }
       // Готовность на ДРУГОЙ день при идущем вечере: тот вечер брошен, команда ушла дальше.
       if(st.evening && st.evening.day!==day){ st.evening=null; st.feed=[]; st.digests={}; }
@@ -263,7 +263,11 @@ function createLobby(opts){
       st.feed=[]; st.digests={};
       st.evening={seed:st.seed+'|'+day, n:++st.n, day:day, kind:evKind, readied:{}, room:all.slice()};
       all.forEach(x=>{ st.evening.readied[x]=true; });
-      return [{to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day}}];
+      /* КТО В ЭТОМ ВЕЧЕРЕ — списком. Клиент выбирал старшего для книги мира по СВОЕЙ
+         таблице соседей, а она у каждого своя и наполняется не одновременно: на Глобалах
+         11.09 один считал старшим себя, другой ждал книгу — и поля разъехались на 25 строк
+         из 50. Список вечера знает только сервер, он его и говорит. */
+      return [{to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day, who:(st.evening.room||[]).slice()}}];
     },
 
     /* Лента вечера ограничена сверху. Она нужна догоняющему после обрыва, и до гонки
