@@ -206,6 +206,20 @@ const BOOT = `
       if (document.querySelector('#screen-career-hub .cc-act-grp, #screen-career-hub .cc-day-locked')) fail('при разных режимах в гонке карточку матча подменила панель дня');
       if (!document.querySelector('#screen-career-hub .ch-play[disabled]')) fail('при разных режимах «Играть» не погашена на карточке матча');
       cr.day = day0; CC_RACE_PEERS.zz.day = day0; careerRenderHub('centre');
+      // Комната открытого этапа в гонке — малая у всех, не от устройства (его скрин 10.09: n2100 vs n900).
+      if (ccOpenRoom() !== Math.min(CC_OPEN_ROOM_SMALL, careerLadderEntrants())) fail('в гонке комната зависит от устройства: ' + ccOpenRoom());
+      // Финал недели от разных вторников — врозь (годовая проба 10.09, 8.02 «state wf»).
+      { var dayF = day0; var finDay = [].concat.apply([], [...careerEvents().entries()].map(function(e){ return e[1].some(function(x){ return x.kind === 'final'; }) ? [e[0]] : []; })).filter(function(d){ return d > day0; }).sort()[0];
+        cr.day = finDay; CC_RACE_PEERS.zz.day = finDay; cr.sim = false; CC_RACE_PEERS.zz.card.sim = false;
+        cr.wf = {monday: careerMonday(finDay), cut: 'a;b;c'};
+        var lineF = ccRaceMyLine();
+        if (!lineF.wfh) fail('в строке гонки нет отпечатка недели (wfh)');
+        CC_RACE_PEERS.zz.wfh = lineF.wfh; var whySame = ccRaceApartWhy(careerNext());
+        CC_RACE_PEERS.zz.wfh = 'other'; var whyDiff = ccRaceApartWhy(careerNext());
+        out.steps.push('финал недели: одинаковый вторник → ' + whySame + ', разный → ' + whyDiff);
+        if (whyDiff !== 'table') fail('финал недели от разных вторников не разведён: ' + whyDiff);
+        if (whySame === 'table') fail('одинаковый вторник читается как разный');
+        delete cr.wf; delete CC_RACE_PEERS.zz.wfh; cr.day = dayF; CC_RACE_PEERS.zz.day = dayF; CC_RACE_PEERS.zz.card.sim = true; }
       var tile = careerRaceTileHTML();
       if (tile.indexOf('&#128065;') < 0 || tile.indexOf('&#127918;') < 0) fail('на плитке гонки нет значков режима (глаз/геймпад)');
       CC_RACE_PEERS = peers0; MP.state = st0; delete cr.race; cr.sim = false;

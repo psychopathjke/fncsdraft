@@ -58419,7 +58419,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='1bc711c5';
+const CC_BUILD='2375d8ee';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59879,7 +59879,9 @@ function ccRaceMyLine(){
   return {id:ccMpId(), card:ccRacePackCard(card||me), mates:mates.map(ccRacePackCard), pow:pow, ev:ev, squad:careerSquadSize(),
           edge:(ev && CC_RACE_EDGE_NOW!=null) ? CC_RACE_EDGE_NOW : null, kr:CC_RACE_MY_KR,
           // Понедельник Дивизиона 1 (cr.d1) — отпечатком: вторник от разных понедельников врозь (ccRaceApartWhy 'table').
-          d1h:(CAREER.career.d1 && CAREER.career.d1.monday===careerMonday(careerToday())) ? String(ccHashStr(JSON.stringify(CAREER.career.d1))) : null};
+          d1h:(CAREER.career.d1 && CAREER.career.d1.monday===careerMonday(careerToday())) ? String(ccHashStr(JSON.stringify(CAREER.career.d1))) : null,
+          // И список вторника (cr.wf.cut) — финал недели от разных вторников врозь (та же причина 'table').
+          wfh:(CAREER.career.wf && CAREER.career.wf.monday===careerMonday(careerToday())) ? String(ccHashStr(String(CAREER.career.wf.cut||''))) : null};
 }
 // Соперники с карточкой — все, кто прислал строку (комната на N человек); порядок по адресу.
 function ccRaceRivals(){
@@ -60028,7 +60030,12 @@ function ccRaceApartWhy(next){
      врозь (у кого-то не было напарника), даёт другой вторник: его скрин 10.09 — «diff 167 of 170 ·
      state d1». Отпечаток понедельника едет в строке (d1h); не сошёлся — вторник свой. */
   { const cr=CAREER.career; const mine=(cr.d1 && cr.d1.monday===careerMonday(careerToday())) ? String(ccHashStr(JSON.stringify(cr.d1))) : null;
-    if(next.type==='cup' && mine && peers.some(p=>p.d1h && p.d1h!==mine)) return 'table'; }
+    if(next.type==='cup' && mine && peers.some(p=>p.d1h && p.d1h!==mine)) return 'table';
+    /* И финал недели: его поле — список тех, кто прошёл черту во вторник (cr.wf.cut, см.
+       careerWeeklyFinalField). Вторник, сыгранный врозь, даёт разные списки — и общее воскресенье
+       расходится на первой игре (годовая проба 10.09: 8.02 «diff 42 of 50 · state wf» у всех шести). */
+    const wfMine=(cr.wf && cr.wf.monday===careerMonday(careerToday())) ? String(ccHashStr(String(cr.wf.cut||''))) : null;
+    if(next.type==='final' && wfMine && peers.some(p=>p.wfh && p.wfh!==wfMine)) return 'table'; }
   /* ОДИН РЕЖИМ НА КОМНАТУ. В «Симуляции» вопросы не задаются вовсе (см.
      playGameWithChoices), то есть у двоих разное число решений и разные дороги
      расчёта. Команда это запрещает (ccMpModeWhy), гонка — нет, и его скрины
@@ -83902,7 +83909,10 @@ function ccSmallDevice(){
    турнир при тех же шансах (см. выше), только считается быстрее.
    Одиночная карьера как выбирала по устройству, так и выбирает. */
 function ccOpenRoom(){
-  const small = ccSmallDevice() || (typeof ccMpTeam==='function' && ccMpTeam());
+  /* И в ГОНКЕ то же: его скрин 10.09 (две вкладки, три гонщика) — «field …r1.15.n2100h106+106+114 vs
+     …n900h106+106+114», одно окно узкое (max-width 820) — и у него комната 900 против 2100 у соседа.
+     Годовая проба этого не ловила: шесть вкладок одной машины считают комнату одинаково. */
+  const small = ccSmallDevice() || (typeof ccMpTeam==='function' && ccMpTeam()) || (typeof ccRaceOn==='function' && ccRaceOn());
   return Math.min(small ? CC_OPEN_ROOM_SMALL : CC_OPEN_ROOM, careerLadderEntrants());
 }
 function ccReloadOpenCut(){
