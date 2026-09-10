@@ -2206,35 +2206,42 @@
   /* The season, a square a week. Squares rather than a segmented bar because a
      week is a countable thing and these are meant to be counted — a player
      should be able to see "four weeks to the Major" without reading a label. */
-  .ch-season{display:flex;flex-wrap:wrap;gap:4px;padding:0 12px 9px;}
-  .ch-season .ch-sq{width:16px;height:16px;border-radius:4px;background:#00b090;
-    flex:0 0 auto;color:#08111f;padding:2px;box-sizing:border-box;display:inline-flex;}
-  .ch-season .ch-sq.ch-sq-empty{background:rgba(255,255,255,.16);}
-  .ch-season .ch-sq.ch-pip-final{background:#ffd400;}
-  .ch-season .ch-sq.ch-pip-eval{background:#7aa2ff;}
-  .ch-season .ch-sq.ch-pip-major{background:#b07dff;}
-  .ch-season .ch-sq.ch-pip-gc{background:#ff5a5a;}
-  .ch-season .ch-sq.ch-pip-reload{background:#ff8a3d;}
+  /* НЕДЕЛИ — КНОПКАМИ, как плитки Fortnite: скошенный чип с номером недели, цвет вида турнира —
+     полоской сверху (его слово 10.09: «значки не нравятся, мб дизайн изменить кнопочки»). */
+  .ch-season{display:flex;flex-wrap:wrap;gap:3px;padding:0 12px 9px;align-items:center;}
+  .ch-season .ch-sq{width:27px;height:21px;border-radius:3px;background:rgba(255,255,255,.09);
+    flex:0 0 auto;color:#e8f0ff;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;
+    font-size:10px;font-weight:900;font-style:italic;letter-spacing:.02em;line-height:1;
+    border-top:3px solid #00b090;transform:skewX(-9deg);}
+  .ch-season .ch-sq.ch-sq-empty{border-top-color:rgba(255,255,255,.22);color:#8fa5c8;background:rgba(255,255,255,.05);}
+  .ch-season .ch-sq.ch-pip-final{border-top-color:#ffd400;}
+  .ch-season .ch-sq.ch-pip-eval{border-top-color:#7aa2ff;}
+  .ch-season .ch-sq.ch-pip-major{border-top-color:#b07dff;}
+  .ch-season .ch-sq.ch-pip-gc{border-top-color:#ff5a5a;}
+  .ch-season .ch-sq.ch-pip-reload{border-top-color:#ff8a3d;}
+  .ch-season .ch-sq.ch-pip-victory{border-top-color:#ffd166;}
+  .ch-season .ch-sq.ch-pip-solo{border-top-color:#8be9fd;}
+  .ch-season .ch-sq.ch-pip-summit,.ch-season .ch-sq.ch-pip-globals{border-top-color:#ff5a5a;}
   /* Behind you, and where you are. A played week keeps its colour at a quarter
      strength so the run of them still reads as a season rather than a gap, and
      the current one is ringed instead of recoloured — its colour is what it
      holds, which does not change by being today. */
-  .ch-season .ch-sq.done{opacity:.28;}
-  .ch-season .ch-sq.now{box-shadow:0 0 0 2px #0b0f12, 0 0 0 4px #fff;}
+  .ch-season .ch-sq.done{opacity:.38;}
+  .ch-season .ch-sq.now{background:#c6ff00;color:#08111f;border-top-color:#c6ff00;box-shadow:0 0 0 2px #0b0f12, 0 0 0 3px #c6ff00;}
   /* Квадратик недели — кнопка: обводка под курсором, превью по клику.
      Его доводка пункта 2, 22 августа: «наводился — видел обводку, может
      нажать и посмотреть превью». Обводка тем же бирюзовым, каким календарь
      подсвечивает день, в который можно пойти. */
   .ch-season .ch-sq{cursor:pointer;transition:box-shadow .12s;}
-  .ch-season .ch-sq:hover,.ch-season .ch-sq.peeked{box-shadow:0 0 0 2px #00ffd0;}
+  .ch-season .ch-sq:hover,.ch-season .ch-sq.peeked{box-shadow:0 0 0 2px #00ffd0;background:rgba(0,255,208,.16);}
   /* Три фортнайтовских сезона года читаются прямо на полосе — его просьба,
      22 августа: «чтоб игроки понимали, когда новый; их всего 3 в этом году».
      Подпись встаёт перед первым квадратиком своего сезона, с чертой-границей;
      у самой первой черты нет — до неё ничего не было. */
-  .ch-season .ch-ssn{flex:0 0 auto;align-self:center;font-size:9px;font-weight:900;
-    letter-spacing:.05em;color:#9fb3d8;padding:0 3px 0 6px;margin-left:3px;
-    border-left:2px solid rgba(255,255,255,.28);line-height:1;}
-  .ch-season .ch-ssn:first-child{border-left:none;margin-left:0;padding-left:0;}
+  .ch-season .ch-ssn{flex:0 0 auto;align-self:center;font-size:9.5px;font-weight:900;font-style:italic;
+    letter-spacing:.06em;color:#08111f;background:#ffdd00;padding:4px 7px;margin:0 4px 0 6px;border-radius:3px;
+    line-height:1;transform:skewX(-9deg);}
+  .ch-season .ch-ssn:first-child{margin-left:0;}
   .ch-week-peek{margin:0 12px 10px;background:rgba(255,255,255,.06);
     border:1px solid rgba(0,255,208,.35);border-radius:10px;padding:10px 12px;}
   .ch-week-peek h5{margin:0 0 6px;font-size:12px;letter-spacing:.04em;
@@ -58446,7 +58453,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='9804a9d4';
+const CC_BUILD='3351254c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -62170,7 +62177,7 @@ function careerCentreHTML(card, a){
     seasonBar.push(`<i class="ch-sq${top?' ch-pip-'+top:' ch-sq-empty'}${state}`+
                    `${w===CH_WEEK_PEEK?' peeked':''}"`+
                    ` onclick="careerWeekPeek(${w})"`+
-                   ` title="${esc(L().chWeek+' '+w+'\n'+tip)}">${top ? ccKindIconSVG(top) : ''}</i>`);
+                   ` title="${esc(L().chWeek+' '+w+'\n'+tip)}">${w}</i>`);   // кнопка недели: номер, цвет вида — полоской сверху
   }
   const weekPeek = (CH_WEEK_PEEK && peekRuns) ? `<div class="ch-week-peek">
     <h5>${esc(L().chWeek)} ${CH_WEEK_PEEK}<button onclick="careerWeekPeek(null)" aria-label="close">&times;</button></h5>
