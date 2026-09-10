@@ -2207,8 +2207,8 @@
      week is a countable thing and these are meant to be counted — a player
      should be able to see "four weeks to the Major" without reading a label. */
   .ch-season{display:flex;flex-wrap:wrap;gap:4px;padding:0 12px 9px;}
-  .ch-season .ch-sq{width:15px;height:15px;border-radius:4px;background:#00b090;
-    flex:0 0 auto;}
+  .ch-season .ch-sq{width:16px;height:16px;border-radius:4px;background:#00b090;
+    flex:0 0 auto;color:#08111f;padding:2px;box-sizing:border-box;display:inline-flex;}
   .ch-season .ch-sq.ch-sq-empty{background:rgba(255,255,255,.16);}
   .ch-season .ch-sq.ch-pip-final{background:#ffd400;}
   .ch-season .ch-sq.ch-pip-eval{background:#7aa2ff;}
@@ -2244,12 +2244,14 @@
   .ch-week-peek .wp-row{display:flex;gap:8px;align-items:center;font-size:12px;
     padding:3px 0;color:#cfe0f5;}
   .ch-week-peek .wp-days{color:#8fa5c8;min-width:64px;flex:0 0 auto;}
-  .ch-week-peek .wp-pip{width:9px;height:9px;border-radius:3px;flex:0 0 auto;background:#00b090;}
-  .ch-week-peek .wp-pip.ch-pip-final{background:#ffd400;}
-  .ch-week-peek .wp-pip.ch-pip-eval{background:#7aa2ff;}
-  .ch-week-peek .wp-pip.ch-pip-major{background:#b07dff;}
-  .ch-week-peek .wp-pip.ch-pip-gc{background:#ff5a5a;}
-  .ch-week-peek .wp-pip.ch-pip-reload{background:#ff8a3d;}
+  .ch-week-peek .wp-pip{width:12px;height:12px;border-radius:0;flex:0 0 auto;background:none;color:#00b090;display:inline-flex;}
+  .ch-week-peek .wp-pip.ch-pip-final{color:#ffd400;}
+  .ch-week-peek .wp-pip.ch-pip-eval{color:#7aa2ff;}
+  .ch-week-peek .wp-pip.ch-pip-major{color:#b07dff;}
+  .ch-week-peek .wp-pip.ch-pip-gc{color:#ff5a5a;}
+  .ch-week-peek .wp-pip.ch-pip-reload{color:#ff8a3d;}
+  .ch-week-peek .wp-pip.ch-pip-victory{color:#ffd166;} .ch-week-peek .wp-pip.ch-pip-solo{color:#8be9fd;} .ch-week-peek .wp-pip.ch-pip-proam{color:#ff7ab6;}
+  .ch-week-peek .wp-pip.ch-pip-summit,.ch-week-peek .wp-pip.ch-pip-globals{color:#ff5a5a;}
   /* Очки прокачки под своей карточкой — пункт 3 страницы «ы». */
   /* Раздача стартовых очков на экране создания. */
   .cc-spa-note{font-size:11px;color:#8fa3c8;margin:6px 0 2px;}
@@ -2316,20 +2318,26 @@
      an inline <i> that cannot take a width. */
   .ch-day .ch-day-what{display:flex;align-items:center;gap:5px;font-size:10px;
     font-weight:900;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .ch-day .ch-day-what i{flex:0 0 auto;width:6px;height:6px;border-radius:50%;
-    background:#00b090;}
+  .ch-day .ch-day-what i{flex:0 0 auto;width:12px;height:12px;border-radius:0;
+    background:none;color:#00b090;display:inline-flex;}
+  .ch-day .ch-day-what i svg,.ch-season .ch-sq svg,.ch-week-peek .wp-pip svg{width:100%;height:100%;display:block;fill:currentColor;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.55));}
   /* Qualified down to the element, like the rule above it. A bare .ch-pip-x is
      one class where that rule is a class and an element, so the fallback colour
      beat every real one and every pip came out teal. */
-  .ch-day .ch-day-what i.ch-pip-final{background:#ffd400;}
-  .ch-day .ch-day-what i.ch-pip-eval{background:#7aa2ff;}
-  .ch-day .ch-day-what i.ch-pip-major{background:#b07dff;}
-  .ch-day .ch-day-what i.ch-pip-gc{background:#ff5a5a;}
-  .ch-day .ch-day-what i.ch-pip-reload{background:#ff8a3d;}
+  .ch-day .ch-day-what i.ch-pip-final{color:#ffd400;}
+  .ch-day .ch-day-what i.ch-pip-eval{color:#7aa2ff;}
+  .ch-day .ch-day-what i.ch-pip-major{color:#b07dff;}
+  .ch-day .ch-day-what i.ch-pip-gc{color:#ff5a5a;}
+  .ch-day .ch-day-what i.ch-pip-reload{color:#ff8a3d;}
+  .ch-day .ch-day-what i.ch-pip-victory{color:#ffd166;}
+  .ch-day .ch-day-what i.ch-pip-summit,.ch-day .ch-day-what i.ch-pip-globals{color:#ff5a5a;}
+  .ch-day .ch-day-what i.ch-pip-solo{color:#8be9fd;}
+  .ch-day .ch-day-what i.ch-pip-proam{color:#ff7ab6;}
   /* The highlighted cell is the accent already, so the pip stops being a colour
      and becomes the one thing that reads on it. */
   .ch-day.now .ch-day-what i,
-  .ch-day.now .ch-day-what i[class]{background:#fff;}
+  .ch-day.now .ch-day-what i[class]{background:none;color:#fff;}
   .ch-day .ch-day-sub{display:block;font-size:9px;font-weight:700;opacity:.62;
     margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   /* Most of a week is nothing, and a week that shows it is telling the truth.
@@ -47454,7 +47462,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
          Сотня на 4900 едет один раз, как ехала. */
       CC_MP_FIELD_LIST=((g===0 || teams.length<=600) && typeof ccMpFieldList==='function') ? ccMpFieldList(teams) : null;
       CC_MP_STATE_KEYS=ccMpStateKeys();
-      await ccMpSync('game', (g+1)+'|'+ccTableHash(teams)+'|'+CC_MP_ROLLS+'|'+ccFieldSig(teams)+'|'+CC_MP_LEDGER.join(',')+'|'+ccTableTop(teams), ccMpQn('game'));
+      await ccMpSync('game', (g+1)+'|'+ccTableHash(teams)+'|'+CC_MP_ROLLS+'|'+ccFieldSig(teams)+'|'+CC_MP_LEDGER.join(',')+'|'+ccTableTop(teams)+'|'+(CC_MP_FIELD_FP||''), ccMpQn('game'));   // 7-е поле — отпечаток сборки, только для показа
       CC_MP_FIELD_LIST=null;
       ccMpLedgerReset();
     }
@@ -58438,7 +58446,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='2001db6c';
+const CC_BUILD='9804a9d4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59936,10 +59944,26 @@ function ccRaceHumansN(){ return 1+ccRaceRoom().length; }
    Сервер в ленту книгу не кладёт (lobby.act): она бывает большой, а догоняющему после обрыва
    вечер пересобирать всё равно поздно. */
 const CC_RACE_WORLD_MS=20000;
-function ccRaceWorldPack(){ return {dev:(CAREER && CAREER.dev)||{}}; }
+/* КНИГА МИРА — это не только рост (dev). Пул пар (careerPools) читает ещё разводы (CAREER.splits,
+   cr.duoSplits), тройки (cr.trios) и, с второго сезона, «жизнь пары» по сиду КАРЬЕРЫ
+   (ccDuoBroken). Всё это у каждого гонщика своё — и его скрин 10.09 (Victory Cup, отпечаток
+   сборки): сид, занятые и регион равны, а пул 160 против 161 дуо; на открытых полях это
+   «diff 31 of 150», «diff 76 of 2100». Старший шлёт всё четыре и свой сид карьеры; ведомые
+   берут как есть, сид на время замка подменяет свой в ccDuoBroken (CC_RACE_WORLD_SEED). */
+let CC_RACE_WORLD_SEED=null;
+function ccRaceWorldPack(){
+  const cr=(CAREER && CAREER.career)||{};
+  return {dev:(CAREER && CAREER.dev)||{}, splits:(CAREER && CAREER.splits)||{}, duoSplits:cr.duoSplits||{}, trios:cr.trios||{}, cseed:ccCareerSeed()};
+}
 function ccRaceWorldApply(w){
   if(!w || !CAREER) return false;
   CAREER.dev=(w.dev && typeof w.dev==='object') ? w.dev : {};
+  if(w.splits && typeof w.splits==='object') CAREER.splits=w.splits;
+  if(CAREER.career){
+    if(w.duoSplits && typeof w.duoSplits==='object') CAREER.career.duoSplits=w.duoSplits;
+    if(w.trios && typeof w.trios==='object') CAREER.career.trios=w.trios;
+  }
+  CC_RACE_WORLD_SEED=w.cseed ? String(w.cseed) : null;
   try{ ccWorldReset(); }catch(e){}
   return true;
 }
@@ -59951,6 +59975,7 @@ function ccRaceWorldSync(n){
   const keys=[hKey(me)].concat(room.map(p=>hKey(p.card))).sort();
   if(keys[0]===hKey(me)){
     try{ MP.act('world', {by:ccMpId(), n:n, w:ccRaceWorldPack()}); }catch(e){}
+    CC_RACE_WORLD_SEED=ccCareerSeed(); try{ ccWorldReset(); }catch(e){}   // и у старшего пул собирается заново — одинаково с ведомыми
     ccMpMark('world');   // метка одна у ведущего и ведомых: разная надпись читалась как место расхождения
     return Promise.resolve(true);
   }
@@ -60275,7 +60300,7 @@ function ccFieldSig(teams){
   // Люди отдельно: «n·h102+98» — сколько команд и какая сила у своих; расхождение читается без хеша.
   // В гонке «свои» — обе команды людей, и порядок у каждого свой (моя первая), поэтому силы сортируются.
   var hum=(teams||[]).filter(function(t){ return t.isYou||t.isMate||t.isRival; }).map(function(t){ return Math.round(t.pow||0); }).sort(function(a,b){ return a-b; }).join('+');
-  return (CC_MP_NIGHT ? CC_MP_NIGHT+'.' : '')+(CC_MP_FIELD_FP ? CC_MP_FIELD_FP+'.' : '')+String(ccHashStr(s))+'.'+String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : '')+'.'+
+  return (CC_MP_NIGHT ? CC_MP_NIGHT+'.' : '')+String(ccHashStr(s))+'.'+String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : '')+'.'+
          String(typeof ALL_LANDING_ZONES!=='undefined' ? ALL_LANDING_ZONES.length : 0)+'.n'+(teams||[]).length+'h'+hum;
 }
 /* Верх таблицы словами: восемь лучших строк «очки.победы.килы» — когда хеши
@@ -60710,7 +60735,9 @@ function ccMpSumSeen(mine, theirs, theirsList, theirsSt, theirsYp){
   // game|hash|rolls|field — короткий хеш и броски с обеих сторон, и ЧТО именно разошлось.
   var short=function(p){ return String(p[1]||'').slice(0,6)+'/'+String(p[2]||'?'); };
   var what=[];
-  if(a[3]!==b[3]) what.push('field '+String(a[3]||'?')+' vs '+String(b[3]||'?')+ccMpFieldDiff(CC_MP_FIELD_LIST, theirsList));
+  /* Отпечаток сборки (сид·занятые·пул·регион) — ПОКАЗЫВАЕТСЯ при расхождении поля, но не сравнивается: его скрин 10.09,
+     Victory Cup — пул 160 против 161 дуо при одинаковом поле (хеш совпал) читался как «таблицы разные». */
+  if(a[3]!==b[3]) what.push('field '+String(a[3]||'?')+' vs '+String(b[3]||'?')+ccMpFieldDiff(CC_MP_FIELD_LIST, theirsList)+(a[6]||b[6] ? ' · fp '+String(a[6]||'?')+' vs '+String(b[6]||'?') : ''));
   if(a[1]!==b[1]) what.push('table');
   // Книга прошлой игры: первая строка, где разошлись броски ИЛИ отпечаток состояния, — это место.
   var la=String(a[4]||'').split(',').filter(Boolean), lb=String(b[4]||'').split(',').filter(Boolean);
@@ -62065,7 +62092,7 @@ function careerCentreHTML(card, a){
     const artAttr=dayArt ? ` style="--day-art:url(${dayArt})"` : '';
     const nextAttr=d===firstBusy ? ` data-next="${esc(L().chNext)}"` : '';
     return `<div class="ch-week ch-day${dayArt?' ch-day-art':''}${d===firstBusy?' now':''}${cls}"${artAttr}${nextAttr}>${head}`+
-           `<span class="ch-day-what"><i class="ch-pip-${on[0].kind||'cup'}"></i>`+
+           `<span class="ch-day-what"><i class="ch-pip ch-pip-${on[0].kind||'cup'}">${ccKindIconSVG(on[0].kind)}</i>`+
            `${word}</span>`+
            `<span class="ch-day-sub">${sub}${more}</span></div>`;
   }).join('');
@@ -62143,12 +62170,12 @@ function careerCentreHTML(card, a){
     seasonBar.push(`<i class="ch-sq${top?' ch-pip-'+top:' ch-sq-empty'}${state}`+
                    `${w===CH_WEEK_PEEK?' peeked':''}"`+
                    ` onclick="careerWeekPeek(${w})"`+
-                   ` title="${esc(L().chWeek+' '+w+'\n'+tip)}"></i>`);
+                   ` title="${esc(L().chWeek+' '+w+'\n'+tip)}">${top ? ccKindIconSVG(top) : ''}</i>`);
   }
   const weekPeek = (CH_WEEK_PEEK && peekRuns) ? `<div class="ch-week-peek">
     <h5>${esc(L().chWeek)} ${CH_WEEK_PEEK}<button onclick="careerWeekPeek(null)" aria-label="close">&times;</button></h5>
     ${peekRuns.length ? peekRuns.map(r=>`<div class="wp-row">`+
-        `<i class="wp-pip${r.kind?' ch-pip-'+r.kind:''}"></i>`+
+        `<i class="wp-pip${r.kind?' ch-pip-'+r.kind:''}">${ccKindIconSVG(r.kind||'cup')}</i>`+
         `<span class="wp-days">${r.from===r.to ? dows[r.from] : dows[r.from]+'–'+dows[r.to]}</span>`+
         `<span>${esc(r.label)}</span></div>`).join('')
       : `<div class="wp-row">${esc(L().chDayFree)}</div>`}
@@ -66344,6 +66371,32 @@ function careerMonthShift(n){
   if(idx<lo || idx>hi) return;
   CH_MONTH={y:Math.floor(idx/12), m:idx%12};
   careerRenderHub('calendar');
+}
+/* ЗНАЧКИ ВИДОВ ТУРНИРА в календаре — его слово 10.09: «измени иконки под стиль фортнайта в
+   календаре, где месяц и недели». Вместо цветных точек и квадратов — глифы, как на плитках
+   Compete: кубок FNCS, звезда финала, диаграмма Перфоманса, корона Мейджора, глобус, стрелки
+   Reload, медаль Victory Cup, силуэт соло, микрофон Про-Ама, вершины Саммита, билет Ласт Ченса.
+   Цвет остаётся тот же, что был у точки (ch-pip-*), — по нему неделю читают с расстояния. */
+const CC_KIND_ICON={
+  cup:'<path d="M4 2h8v2h2v3a3 3 0 0 1-3 3h-.3A3 3 0 0 1 9 11.6V13h2v1.5H5V13h2v-1.4A3 3 0 0 1 5.3 10H5a3 3 0 0 1-3-3V4h2V2zm0 3.5H3.5V7a1.5 1.5 0 0 0 1.5 1.5V5.5zm8 0V8.5A1.5 1.5 0 0 0 13.5 7V5.5H12z"/>',
+  final:'<path d="M8 1.5l2 4.2 4.6.6-3.4 3.2.9 4.6L8 11.8l-4.1 2.3.9-4.6L1.4 6.3 6 5.7z"/>',
+  eval:'<path d="M2 9h3v5H2zM6.5 5h3v9h-3zM11 2h3v12h-3z"/>',
+  major:'<path d="M2 5l3.2 2.6L8 3l2.8 4.6L14 5l-1.3 7H3.3zM3.3 13h9.4v1.5H3.3z"/>',
+  summit:'<path d="M1.5 13.5L6 5l2.4 4.2L10 6.5l4.5 7z"/>',
+  globals:'<path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zm-1 1.7c-.9 1-1.6 2.3-1.9 3.8H3.3a5 5 0 0 1 3.7-3.8zM3.3 9h1.8c.3 1.5 1 2.8 1.9 3.8A5 5 0 0 1 3.3 9zM8 13.1C7 12 6.5 10.6 6.4 9h3.2C9.5 10.6 9 12 8 13.1zM6.4 7C6.5 5.4 7 4 8 2.9 9 4 9.5 5.4 9.6 7zm4.7 2h1.6a5 5 0 0 1-3.5 3.8c.9-1 1.6-2.3 1.9-3.8zm0-2c-.3-1.5-1-2.8-1.9-3.8A5 5 0 0 1 12.7 7z"/>',
+  gc:'<path d="M1.5 4h13v3a1.5 1.5 0 0 0 0 3v3h-13V10a1.5 1.5 0 0 0 0-3zm3.5 1.5v6h1.2v-6zm2.5 0v6h1.2v-6z"/>',
+  gclc:'<path d="M1.5 4h13v3a1.5 1.5 0 0 0 0 3v3h-13V10a1.5 1.5 0 0 0 0-3zm3.5 1.5v6h1.2v-6zm2.5 0v6h1.2v-6z"/>',
+  reload:'<path d="M8 2.5a5.5 5.5 0 0 1 4.9 3H15l-2.6 3.3L9.8 5.5h1.5A3.8 3.8 0 0 0 4.2 8H2.5A5.5 5.5 0 0 1 8 2.5zm-4.9 8H1l2.6-3.3 2.6 3.3H4.7A3.8 3.8 0 0 0 11.8 8h1.7a5.5 5.5 0 0 1-10.4 2.5z"/>',
+  rc:'<path d="M8 2.5a5.5 5.5 0 0 1 4.9 3H15l-2.6 3.3L9.8 5.5h1.5A3.8 3.8 0 0 0 4.2 8H2.5A5.5 5.5 0 0 1 8 2.5zm-4.9 8H1l2.6-3.3 2.6 3.3H4.7A3.8 3.8 0 0 0 11.8 8h1.7a5.5 5.5 0 0 1-10.4 2.5z"/>',
+  victory:'<path d="M5 1.5h6l-1.2 4.2h-3.6zM8 6.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 1.6l-.8 1.7-1.8.2 1.3 1.3-.3 1.8L8 12.2l1.6.9-.3-1.8 1.3-1.3-1.8-.2z"/>',
+  solo:'<path d="M8 1.5a3.2 3.2 0 1 1 0 6.4 3.2 3.2 0 0 1 0-6.4zM2.5 14.5c0-3.2 2.5-5.3 5.5-5.3s5.5 2.1 5.5 5.3z"/>',
+  proam:'<path d="M8 1.5a2.5 2.5 0 0 1 2.5 2.5v4a2.5 2.5 0 0 1-5 0V4A2.5 2.5 0 0 1 8 1.5zM3.5 8h1.5a3 3 0 0 0 6 0h1.5a4.5 4.5 0 0 1-3.75 4.4V13.5h2.25V15h-6v-1.5h2.25v-1.1A4.5 4.5 0 0 1 3.5 8z"/>',
+  free:'<circle cx="8" cy="8" r="3"/>'
+};
+function ccKindIconSVG(kind){
+  const k=String(kind||'cup');
+  const p=CC_KIND_ICON[k] || CC_KIND_ICON.cup;
+  return '<svg viewBox="0 0 16 16" aria-hidden="true">'+p+'</svg>';
 }
 function careerCalendarHTML(){
   const ev=careerEvents();
@@ -81835,7 +81888,9 @@ function ccDuoBroken(d, cr){
   const s=Math.max(1, c.season||1);
   if(s<=1) return false;
   const churn=(typeof d==='string') ? CC_DUO_CHURN : ccDuoChurnOf(d);
-  return careerRng(ccHashStr('duoLife|'+ccCareerSeed()+'|'+key))()
+  // В замке гонки — сид книги мира (старшего), иначе пары «жили» бы у каждого по-своему.
+  const seedOf=(typeof ccRaceLock==='function' && ccRaceLock() && typeof CC_RACE_WORLD_SEED!=='undefined' && CC_RACE_WORLD_SEED) ? CC_RACE_WORLD_SEED : ccCareerSeed();
+  return careerRng(ccHashStr('duoLife|'+seedOf+'|'+key))()
          > Math.pow(1-churn, s-1);
 }
 /* Верхняя пара может ЗАБРАТЬ человека из другой пары — и та распадается.

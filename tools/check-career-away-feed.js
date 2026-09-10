@@ -220,6 +220,12 @@ const BOOT = `
         if (whyDiff !== 'table') fail('финал недели от разных вторников не разведён: ' + whyDiff);
         if (whySame === 'table') fail('одинаковый вторник читается как разный');
         delete cr.wf; delete CC_RACE_PEERS.zz.wfh; cr.day = dayF; CC_RACE_PEERS.zz.day = dayF; CC_RACE_PEERS.zz.card.sim = true; }
+      // Книга мира несёт и рынок пар, и сид жизни пар (его скрин 10.09: пул 160 против 161).
+      { var wp = ccRaceWorldPack(); if (!wp.dev || !wp.duoSplits || !wp.trios || !wp.splits || !wp.cseed) fail('книга мира без рынка пар или сида: ' + Object.keys(wp).join(','));
+        var ds0 = cr.duoSplits, tr0 = cr.trios, sp0 = CAREER.splits;
+        ccRaceWorldApply({dev:{}, duoSplits:{'aa+bb':'2026-01-01'}, trios:{'cc+dd':'ee'}, splits:{}, cseed:'zz-seed'});
+        if (!(cr.duoSplits && cr.duoSplits['aa+bb']) || !(cr.trios && cr.trios['cc+dd']) || CC_RACE_WORLD_SEED !== 'zz-seed') fail('книга мира не легла: ' + JSON.stringify([cr.duoSplits, cr.trios, CC_RACE_WORLD_SEED]));
+        cr.duoSplits = ds0; cr.trios = tr0; CAREER.splits = sp0; CC_RACE_WORLD_SEED = null; ccWorldReset(); }
       var tile = careerRaceTileHTML();
       if (tile.indexOf('&#128065;') < 0 || tile.indexOf('&#127918;') < 0) fail('на плитке гонки нет значков режима (глаз/геймпад)');
       CC_RACE_PEERS = peers0; MP.state = st0; delete cr.race; cr.sim = false;
