@@ -5595,7 +5595,7 @@
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
 <script src="zone-sim.js?v=e0eba4ea"></script>
-<script src="zone-replay.js?v=ee0f6613"></script>
+<script src="zone-replay.js?v=43ca4733"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -58483,7 +58483,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='dc06cc0d';
+const CC_BUILD='1283cabc';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -62775,7 +62775,7 @@ function careerLeaveOrg(){
    himself, written by the clubs and players on their own profiles. Deriving the
    rest from the club's name would be inventing a real organisation's handle. */
 const CC_ORG_AT={'Gentle Mates':'GentleMates', 'Geekay Esports':'geekay_esports',
-                 'BIG':'BIGCLANgg', 'BIG Clan':'BIGCLANgg'};
+                 'BIG':'BIGCLANgg', 'BIG Clan':'BIGCLANgg', 'Loyalty Gamer':'TeamLG__'};
 function ccOrgAt(name){ return CC_ORG_AT[String(name||'')] || null; }
 /* The one line a career leads with, for the strip under the name.
 
@@ -70580,7 +70580,12 @@ const CC_ORG_NEW=[
   {name:'TSM',            tier:92, n:0, newcomer:true},
   {name:'Gambit Esports', tier:90, n:0, newcomer:true},
   {name:'Eleven Gaming',  tier:88, n:0, newcomer:true},  // $642k  → 88.5
-  {name:'COOLER Esport',  tier:94, n:0, newcomer:true}   // $3.33M → 94.2
+  {name:'COOLER Esport',  tier:94, n:0, newcomer:true},  // $3.33M → 94.2
+  /* Его ссылка 10 сентября: x.com/TeamLG__ — Loyalty Gamer, французский клуб (Fortnite, Rocket
+     League, Brawl Stars), 133 подписчика, состава по Fortnite в снимке сцены нет. Уровень 78 —
+     пол списка призовых (CC_ORG_EARN_FLOOR): в топ-100 команд по Fortnite клуб не входит, а
+     ростером его оценить не по кому. Герб — с его же аватарки в X, logos/Loyalty_Gamer.png. */
+  {name:'Loyalty Gamer',  tier:78, n:0, newcomer:true}
 ];
 /* Призовые команд по Fortnite — esportsearnings.com/games/534-fortnite/top-teams,
    снято 30 августа 2026, топ-100 целиком (список кончается на $31k).

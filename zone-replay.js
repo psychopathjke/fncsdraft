@@ -533,6 +533,19 @@
                     '<circle cx="8.6" cy="3.9" r="1.6" fill="#7de3a8" opacity=".75"/>' +
                     '<path d="M0.4 10.6c0-2.3 1.5-3.7 3.3-3.7s3.3 1.4 3.3 3.7z" fill="#7de3a8"/>' +
                     '<path d="M7.2 10.6c0-1.9 1-3 2.3-3s2.1 1.1 2.1 3z" fill="#7de3a8" opacity=".75"/>';
+  /* КИЛЛЫ В ЭТОЙ ИГРЕ — его игрок, 10 сентября: «It would be cool if it showed you the kills
+     you get in that game». Место и живых шапка показывала, а свои элиминации — нет: они лежали
+     в d.e у своей точки и были видны только в панели набора. Череп рядом с местом, без /итого:
+     это счёт ЭТОЙ игры, не этапа. */
+  var ICON_SKULL = '<path d="M6 .9C3.3.9 1.3 2.8 1.3 5.4c0 1.5.7 2.5 1.5 3.1v1.4c0 .7.5 1.2 1.2 1.2h4c.7 0 1.2-.5 1.2-1.2V8.5c.8-.6 1.5-1.6 1.5-3.1C10.7 2.8 8.7.9 6 .9z" fill="#ffd166"/>'
+                 + '<circle cx="4.2" cy="5.4" r="1.15" fill="#101a2e"/><circle cx="7.8" cy="5.4" r="1.15" fill="#101a2e"/>'
+                 + '<path d="M5.2 8.2h1.6v2.4H5.2z" fill="#101a2e" opacity=".55"/>';
+  function killChip(n){
+    return '<span data-kills="' + n + '" style="display:inline-flex;align-items:center;gap:3px;' +
+      'background:rgba(8,12,24,.62);border-radius:5px;padding:1px 6px 1px 4px;">' +
+      '<svg viewBox="0 0 12 12" width="9" height="9" style="flex:none;">' + ICON_SKULL + '</svg>' +
+      '<b style="font-size:11px;">' + n + '</b></span>';
+  }
   // A wreath, for the one counter that is about your squad and not the lobby.
   var ICON_PLACE  = '<path d="M6 1.4 7.1 4h2.6L7.6 5.7l.8 2.6L6 6.8 3.6 8.3l.8-2.6L2.3 4h2.6z" ' +
                     'fill="#ffd479"/>';
@@ -564,6 +577,13 @@
   // The place to print, or null when there is nothing to print: a replay
   // watched rather than played has no squad of yours in it, and a counter about
   // your squad has no business on somebody else's game.
+  // Сколько выбил СВОЙ отряд в этой игре (d.e у своей точки); нет своей точки — null.
+  function killsOf(frame, roster){
+    var me = yourSquad(roster);
+    if(me < 0 || !frame.dots[me]) return null;
+    var e = frame.dots[me].e;
+    return (e == null) ? null : e;
+  }
   function placeOf(frame, roster){
     var me = yourSquad(roster);
     if(me < 0 || !frame.dots[me]) return null;
@@ -1206,6 +1226,7 @@
     var totS = roster.totalSquads || frame.dots.length;
     var totP = roster.totalPlayers || totS;
     var mine = placeOf(frame, roster);
+    var myKills = killsOf(frame, roster);
     handle.head.innerHTML =
       '<span style="display:flex;align-items:center;gap:7px;">' +
         '<span>' + esc(labels.zone) + ' ' + frame.zone + '</span>' +
@@ -1213,6 +1234,7 @@
           Math.floor(secs/60) + ':' + pad2(secs % 60) + '</span></span>' +
       '<span style="display:flex;align-items:center;gap:5px;">' +
         (mine ? placeChip(mine.place, mine.settled, totS) : '') +
+        (myKills != null ? killChip(myKills) : '') +
         counter(ICON_PLAYER, (frame.players != null ? frame.players : frame.alive), totP) +
         counter(ICON_SQUAD, frame.alive, totS) + '</span>';
 
