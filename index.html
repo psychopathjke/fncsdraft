@@ -1544,6 +1544,20 @@
      тогда выше картинки, и сверху остаётся пустая полоса. */
   .cc-choice-btn .cc-spot-shot.cc-choice-art{width:100%; aspect-ratio:16/7;
     border:none; border-radius:0; border-bottom:1px solid var(--cc-ui-line);}
+  /* Пак в кнопке выбора — пять ячеек с картинками предметов, цвет ячейки — редкость
+     (те же цвета, что у хотбара .zk-slot). Его слово 10.09: «добавь фотографии лут-пулу». */
+  .cc-pack{display:flex; gap:4px; margin:4px 0 6px;}
+  .cc-pack i{position:relative; flex:0 0 38px; width:38px; height:34px; border-radius:4px; border:1.5px solid #d8dde6;
+    background:linear-gradient(180deg,#8f97a3,#4d545e); display:flex; align-items:center; justify-content:center; overflow:hidden; font-style:normal;}
+  .cc-pack i img{max-width:92%; max-height:92%; object-fit:contain; display:block; filter:drop-shadow(0 1px 2px rgba(0,0,0,.8));}
+  .cc-pack i.r-uncommon{border-color:#b9f58f; background:linear-gradient(180deg,#5bd41f,#237a12);}
+  .cc-pack i.r-rare{border-color:#9fd8ff; background:linear-gradient(180deg,#12a7ff,#0b4f9c);}
+  .cc-pack i.r-epic{border-color:#dcb3ff; background:linear-gradient(180deg,#b14bf4,#5a1f8f);}
+  .cc-pack i.r-legendary{border-color:#ffd39a; background:linear-gradient(180deg,#ff8c1a,#9a4a05);}
+  .cc-pack i.r-mythic{border-color:#fff0a0; background:linear-gradient(180deg,#ffd200,#a67f00);}
+  .cc-pack i.empty{border-style:dashed; background:rgba(190,200,220,.18);}
+  .cc-pack i u{position:absolute; right:2px; bottom:1px; font-size:9px; font-weight:900; text-decoration:none; color:#fff; text-shadow:0 1px 2px #000;}
+  .cc-pack i span{font-size:8px; line-height:1; text-align:center; color:#fff; text-shadow:0 1px 2px #000; padding:0 2px;}
   .cc-choice-btn b{display:block; font-size:15px; font-weight:900; font-style:italic;
     line-height:1.15; letter-spacing:.01em; margin-bottom:3px; color:#fff;}
   .cc-choice-btn:hover b{color:var(--cc-ui-live-soft);}
@@ -53683,6 +53697,20 @@ function ccChoiceOdds(note){
   if(!v || v>100) return '';
   return '<i class="cc-odds" style="--v:'+v+'%"></i>';
 }
+/* Пак картинками — пять ячеек, как хотбар: стволы, хилки, передвижение; ячейка носит цвет
+   редкости, стак — числом в углу, без картинки — имя мелко. Его слово 10.09: «добавь фотографии
+   лут-пулу, если нет» — до этого пак в вопросе высадки и лута шёл строкой имён. */
+function ccPackSlotsHTML(p){
+  if(!p) return '';
+  const items=[...(p.weapons||[]), ...(p.heals||[]), p.move].filter(Boolean).slice(0, 5);
+  while(items.length<5) items.push(null);
+  return '<span class="cc-pack">'+items.map(o=>{
+    if(!o) return '<i class="empty"></i>';
+    let h=''; try{ h=(typeof weaponIconHTML==='function' && weaponIconHTML(o, ccLootSet()))||''; }catch(e){ h=''; }
+    const art=/<img/.test(h) ? h : '<span>'+esc(o.name)+'</span>';
+    return '<i class="r-'+ccRarityKey(o.rarity)+'" title="'+esc(ccItemLabel(o))+'">'+art+(o.n>1 ? '<u>'+o.n+'</u>' : '')+'</i>';
+  }).join('')+'</span>';
+}
 function ccChoiceBox(title, hint, options, onMap, side, kind){
   /* Порядок кнопок — тот, что передали: сторожа кликают по data-at и ждут
      именно его. Правило «ход по умолчанию — первым» живёт там, где список
@@ -53722,7 +53750,7 @@ function ccChoiceBox(title, hint, options, onMap, side, kind){
     box.innerHTML=`<div class="cc-choice-head"><b>${ccChoiceDial(th)}<span class="cc-choice-t">${esc(title)}</span></b>${sub}${mateLine}</div>`+
       `<div class="cc-choice-row">${options.map((o,i)=>
         `<button class="cc-choice-btn${o.art?' has-art':''}${o.icon?' has-ico':''}${o===dflt && options.length>1?' def':''}${mate && o===mate.pick?' mate':''}" data-at="${i}"${mate && o===mate.pick ? ' data-mate="'+esc(mate.name)+'"' : ''}>
-           ${o.art||''}<span class="cc-choice-tt">${o.icon?'<i class="cc-choice-ico'+(o.icoCls?' '+o.icoCls:'')+'">'+o.icon+'</i>':''}<b>${esc(o.title)}</b></span>${ccChoiceOdds(o.note)}<em>${o.note||''}</em></button>`).join('')}</div>`+
+           ${o.art||''}<span class="cc-choice-tt">${o.icon?'<i class="cc-choice-ico'+(o.icoCls?' '+o.icoCls:'')+'">'+o.icon+'</i>':''}<b>${esc(o.title)}</b></span>${o.pack ? ccPackSlotsHTML(o.pack) : ''}${ccChoiceOdds(o.note)}<em>${o.note||''}</em></button>`).join('')}</div>`+
       `<div class="cc-choice-bar"><i></i></div>`;
     host.appendChild(box);
     // Чат эфира видит вопрос и начинает советовать. См. ccTvOnChoice.
@@ -54116,11 +54144,11 @@ async function ccAskSite(you, ui){
     const pv=ccPackPow(mine);
     const labels=[...(mine.weapons||[]), ...(mine.heals||[]), mine.move].filter(Boolean).map(ccItemLabel).join(' · ');
     const opts=[
-      {id:'fast', icon:CC_CHOICE_ICON.run, title:T.ccSiteFast, note:T.ccSiteFastNote(nFast, CC_MATS_ZONE)},
+      {id:'fast', icon:CC_CHOICE_ICON.run, title:T.ccSiteFast, note:T.ccSiteFastNote(nFast, CC_MATS_ZONE), pack:packs.fast},
       {id:'take', def:true, icon:ccItemIconHTML(mine.weapons[0], CC_CHOICE_ICON.chest), title:T.ccSiteTake,
-       note:labels+' — '+T.ccSitePackPow(pv)}
+       note:labels+' — '+T.ccSitePackPow(pv), pack:mine}
     ];
-    if(nFull>nOpen) opts.push({id:'full', icon:CC_CHOICE_ICON.chest, title:T.ccSiteFull, note:T.ccSiteFullNote(nFull, nPoi, CC_MATS_ZONE)});
+    if(nFull>nOpen) opts.push({id:'full', icon:CC_CHOICE_ICON.chest, title:T.ccSiteFull, note:T.ccSiteFullNote(nFull, nPoi, CC_MATS_ZONE), pack:packs.full});
     const titleOf=v=>v==='fast' ? T.ccSiteFast : v==='full' ? T.ccSiteFull : T.ccSiteTake;
     const pick=(await ccMpChoose('own'+(you.mpTag||''), async function(){
       return (await ccChoiceBox(T.ccSiteOwnTitle, at+T.ccSiteOwnHint(nOpen), opts, ui && ui.map, null, 'site')).id;
@@ -58327,7 +58355,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='59642426';
+const CC_BUILD='2f762410';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого

@@ -97,6 +97,11 @@ const BOOT = `
     { const p=ccChestPack(rng, null, 1); const bare={weapons:(p.weapons||[]).filter(o=>!o.floor), heals:(p.heals||[]).filter(o=>!o.floor), move:(p.move && !p.move.floor) ? p.move : null};
       check('пол не меняет силу пака', ccPackPow(p)===ccPackPow(bare), ccPackPow(p)+' vs '+ccPackPow(bare)); }
     { const p=ccLootPack(rng); p.move=null; ccPackFloor(p, null, rng); check('пад улетел — слот добрался полом', five(p)===5 && !!p.move && p.move.floor===true); }
+    // ---- пак картинками в кнопке выбора (ccPackSlotsHTML) ---------------------------------
+    { const p=ccLootPack(rng); const h=ccPackSlotsHTML(p);
+      check('пак в кнопке — пять ячеек с картинками', (h.match(/<i class="r-/g)||[]).length===5 && (h.match(/<img/g)||[]).length===5, h.slice(0,200));
+      check('ячейки носят редкость', /r-(common|uncommon|rare|epic|legendary|mythic)"/.test(h)); }
+    { const h=ccPackSlotsHTML({weapons:[], heals:[], move:null}); check('пустой пак — пять пунктирных ячеек', (h.match(/class="empty"/g)||[]).length===5); }
     CAREER.career.size=2;
     // ---- картинки: каждый предмет каждого пула, когда спрашивают островом -------
     CARD_MODE=false;
