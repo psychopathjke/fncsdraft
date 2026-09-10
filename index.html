@@ -58846,8 +58846,16 @@ function ccMpMark(name, teams){
     var acc='';
     for(var i=0;i<teams.length;i++){
       var t=teams[i];
+      /* И ВХОД ДВИЖКА: он читает у команды attrs (skill/seek/power в createSquads),
+         край ближнего боя и размер отряда. Сверка поля равняет только ники и силу, а
+         сила округлена — две сцены, разошедшиеся на доли очка, дают одинаковый ник:сила
+         и разные числа движку. Зеркальная проба (race-you-mirror-probe) показала, что при
+         равных командах игра у двоих одинакова, значит разойтись может только вход. */
+      const ta=t.attrs||null;
       acc+=(t._pf!=null ? Math.round(t._pf*100) : '-')+':'+(t._pc!=null ? Math.round(t._pc*100) : '-')+':'+
-           (t.landingZone && typeof ALL_LANDING_ZONES!=='undefined' ? ALL_LANDING_ZONES.indexOf(t.landingZone) : '-')+'|';
+           (t.landingZone && typeof ALL_LANDING_ZONES!=='undefined' ? ALL_LANDING_ZONES.indexOf(t.landingZone) : '-')+':'+
+           (ta ? ta.END+'.'+ta.SUR+'.'+ta.AIM+'.'+ta.CLU : '-')+':'+Math.round((t.closeEdge||0)*100)+':'+
+           (((t.squad||[]).length)||1)+'|';
     }
     /* И СОСТОЯНИЕ ДВИЖКА — жив, где стоит, сколько хп и щита, сколько выбил.
        Без него расхождение ВНУТРИ игры (кто-то умер на круг раньше) видно
@@ -58858,8 +58866,9 @@ function ccMpMark(name, teams){
     if(CC_MP_SIM && CC_MP_SIM.teams===teams && CC_MP_SIM.game && CC_MP_SIM.game.squads){
       var sq=CC_MP_SIM.game.squads;
       for(var j=0;j<sq.length;j++){ var q=sq[j];
-        acc+=(q.alive?1:0)+':'+Math.round((q.x||0)*10)+':'+Math.round((q.y||0)*10)+':'+
-             Math.round(q.hp||0)+':'+Math.round(q.shield||0)+':'+(q.elims||0)+':'+(q.droppedOut?1:0)+'|';
+        acc+=(q.alive?1:0)+':'+Math.round((q.x||0)*100)+':'+Math.round((q.y||0)*100)+':'+
+             Math.round((q.hp||0)*100)+':'+Math.round((q.shield||0)*100)+':'+(q.elims||0)+':'+(q.droppedOut?1:0)+':'+
+             Math.round((q.dealt||0)*100)+':'+Math.round((q.taken||0)*100)+'|';
       }
     }
     sig='/'+String(ccHashStr(acc)).slice(0,6);
@@ -60854,10 +60863,16 @@ function ccMpStateDiff(mine, theirs){
   var out=Object.keys(keys).filter(function(k){ return mine[k]!==theirs[k]; });
   return out.length ? ' · state '+out.join('/') : '';
 }
+/* Список поля — с ЧИСЛАМИ ДВИЖКА, а не только с ником и силой. Движок читает у команды
+   attrs (skill/seek/power в createSquads) и край ближнего боя; сила при этом округлена, так что
+   две сцены, разошедшиеся на доли очка, дают одинаковую строку 'ник:сила' и разный ход игры.
+   Навык, например, двигает время выхода из круга (leaveAt) НЕ ТРАТЯ бросков — ровно то, что
+   видно в красной строке 10.09: броски равны, состояние разное. */
 function ccMpFieldList(teams){
   return (teams||[]).map(function(t){
-    var sq=(t.squad||[]).map(hKey).sort().join('+');
-    return (sq||String(t.name||''))+':'+Math.round(t.pow||0);
+    var sq=(t.squad||[]).map(hKey).sort().join('+'), a=t.attrs||null;
+    return (sq||String(t.name||''))+':'+Math.round(t.pow||0)+':'+
+           (a ? a.END+'.'+a.SUR+'.'+a.AIM+'.'+a.CLU : '-')+':'+Math.round((t.closeEdge||0)*100);
   }).join('|');
 }
 function ccMpFieldDiff(mine, theirs){
@@ -60896,6 +60911,10 @@ function ccMpSumSeen(mine, theirs, theirsList, theirsSt, theirsYp){
   var youDiff=(CC_MP_YOU_PARTS && theirsYp && CC_MP_YOU_PARTS!==theirsYp) ? ' · you me '+CC_MP_YOU_PARTS+' | mate '+theirsYp : '';
   if(a[2]!==b[2]) what.push('rolls'+(where ? ' @ '+where : ''));
   else if(where) what.push('state @ '+where);
+  /* Книга разошлась, а хеш поля сошёлся — значит разъехалось то, чего в хеше нет:
+     числа движка у какой-то команды. Список поля их несёт, и первая несовпавшая
+     строка называет команду. */
+  if(where && a[3]===b[3]) what.push('lines'+ccMpFieldDiff(CC_MP_FIELD_LIST, theirsList));
   if(a[1]!==b[1] && (a[5]||b[5])) what.push('top me '+String(a[5]||'-')+' | mate '+String(b[5]||'-'));
   var stDiff=ccMpStateDiff(CC_MP_STATE_KEYS, theirsSt);
   // Расхождение — это таблица, броски или поле. Всё остальное в сумме (книга, верх таблицы) — только пояснение.
