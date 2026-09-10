@@ -52579,6 +52579,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
     lobbySquads: lobbyOpts && lobbyOpts.lobbySquads,
     lobbyPlayers: lobbyOpts && lobbyOpts.lobbyPlayers
   });
+  ccMpSimOn(game, teams);   // книга бросков теперь метит и состояние отрядов (ccMpMark)
   // Подписи к точкам нужны показу с первого же куска, а не с конца матча.
   LAST_ZONE_ROSTER=game.roster();
   // Свой отряд движка — лечению нужно трогать его щит и здоровье. См. ccAskHeal.
@@ -52609,7 +52610,11 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
   ccKitInit(teams);
   let zoneWas=0;
   for(const stop of CC_GAME_STOPS){
-    game.playTo(stop.zone);
+    /* По одному кругу за раз — и отметка на каждый. Движок от этого не меняется
+       (playPhases докручивает до названного круга и помнит, где стоял), а книга
+       начинает называть КРУГ, на котором вечера разъехались, а не «где-то между
+       остановками». */
+    for(let z=zoneWas+1; z<=stop.zone; z++){ game.playTo(z); if(z<stop.zone) ccMpMark('z'+z, teams); }
     // Круги, прошедшие с прошлой остановки, стоят стройки — всем одинаково.
     if(!CC_ZB) ccKitSpend(teams, CC_MATS_ZONE*Math.max(1, stop.zone-zoneWas));   // Zero Build — стройки нет
     zoneWas=stop.zone;
@@ -52659,6 +52664,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
   }
   const res=game.finish();
   ccMpMark('fin', teams);
+  ccMpSimOn(null, null);
   // И остаток матча — тем же куском, если игрок ещё смотрит.
   if(ui && ui.show && !dead) await ui.show(res.timeline);
   if(you && ui && !sim && !deathShown && !alive()){ deathShown=true; await ccDeathCard(ui.map, ccDeathInfo(you, game)); }
@@ -54100,6 +54106,12 @@ function ccChestPack(rng, set, n){
 function ccPackMerge(cur, add, set, rng){   // rng больше не берётся: пол и выбор — своим броском (ccPackRng)
   const mod=o=>o ? (RARITY_MOD[o.rarity]||0) : -1;
   const out={weapons:((cur&&cur.weapons)||[]).slice(), heals:((cur&&cur.heals)||[]).map(h=>Object.assign({}, h)), move:(cur&&cur.move)||null};
+  /* Пак помнит, из скольких сундуков он собран, и что из него выпало сверх пяти слотов:
+     строка на карте считает сундуки (ccSiteOwn), а сила пака — выброшенное (ccPackPow).
+     Слияние их складывает, иначе уход с точки обнулял и то и другое. */
+  out.chests=(((cur&&cur.chests)||0)+((add&&add.chests)||0))||undefined;
+  out.dropped=((cur&&cur.dropped)||[]).concat((add&&add.dropped)||[]);
+  out.first=(cur&&cur.first)||(add&&add.first)||undefined;
   if(!add) return out;
   (add.weapons||[]).forEach(w=>{
     if(!w) return;
@@ -54236,7 +54248,12 @@ async function ccAskSite(you, ui){
   const game=you._game, sq=you._sq;
   if(!game || !game.squads) return;
   const zone=you.landingZone;
-  const rivals=zone ? game.squads.filter(s=>s.alive && s.team!==you && !s.team.isMate && s.team.landingZone===zone).map(s=>s.team) : [];
+  /* Соперники на точке — все, кроме своего напарника. Условие симметричное:
+     'isMate' есть только у ЧУЖОЙ вкладки моего напарника, поэтому у одного
+     клиента напарник из списка выпадал, а у второго — нет, и на общей точке
+     один считал стычку, а другой сундуки. В гонке (isRival) всё как было. */
+  const rivals=zone ? game.squads.filter(s=>s.alive && s.team!==you && !s.team.isMate &&
+      !(s.team.isYou && you.isMate) && s.team.landingZone===zone).map(s=>s.team) : [];
   const set=ccLootSet();
   const T=L();
   ccMpMark('st0'+(you.mpTag||''));
@@ -58483,7 +58500,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='1283cabc';
+const CC_BUILD='e1005ec8';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -58813,6 +58830,11 @@ let CC_MP_SEED=null;   // строка сида вечера от сервера
    книга едет с барьером следующей игры: первая строка, где числа разошлись,
    и есть место. Вне командного вечера книга пуста и ничего не стоит. */
 let CC_MP_LEDGER=[];
+/* Игра, которая идёт прямо сейчас, и чьи это команды: отпечаток в книге берёт из неё
+   состояние ОТРЯДОВ. Пара (игра, команды) — чтобы отпечаток никогда не считался по
+   чужому лобби, если игра оборвалась исключением. */
+let CC_MP_SIM=null;
+function ccMpSimOn(game, teams){ CC_MP_SIM=(game && teams) ? {game:game, teams:teams} : null; }
 function ccMpLedgerReset(){ CC_MP_LEDGER=[]; }
 /* Отметка: фаза=броски[/отпечаток состояния]. Отпечаток — сила в игре
    (_pf/_pc) и коробка каждой команды: равные броски при разном отпечатке
@@ -58826,6 +58848,19 @@ function ccMpMark(name, teams){
       var t=teams[i];
       acc+=(t._pf!=null ? Math.round(t._pf*100) : '-')+':'+(t._pc!=null ? Math.round(t._pc*100) : '-')+':'+
            (t.landingZone && typeof ALL_LANDING_ZONES!=='undefined' ? ALL_LANDING_ZONES.indexOf(t.landingZone) : '-')+'|';
+    }
+    /* И СОСТОЯНИЕ ДВИЖКА — жив, где стоит, сколько хп и щита, сколько выбил.
+       Без него расхождение ВНУТРИ игры (кто-то умер на круг раньше) видно
+       только по числу бросков на следующей отметке, и красная строка говорит
+       'rolls @ p3', то есть 'где-то в двух кругах'. Его скрин 10.09 и обе
+       красные строки годовой пробы — ровно этот случай. С отпечатком место
+       называется той отметкой, на которой состояния впервые разошлись. */
+    if(CC_MP_SIM && CC_MP_SIM.teams===teams && CC_MP_SIM.game && CC_MP_SIM.game.squads){
+      var sq=CC_MP_SIM.game.squads;
+      for(var j=0;j<sq.length;j++){ var q=sq[j];
+        acc+=(q.alive?1:0)+':'+Math.round((q.x||0)*10)+':'+Math.round((q.y||0)*10)+':'+
+             Math.round(q.hp||0)+':'+Math.round(q.shield||0)+':'+(q.elims||0)+':'+(q.droppedOut?1:0)+'|';
+      }
     }
     sig='/'+String(ccHashStr(acc)).slice(0,6);
   }

@@ -77,7 +77,13 @@ const BOOT = `
     // ---- пак из сундуков -------------------------------------------------------
     for(let i=0;i<200;i++){
       const p=ccChestPack(Math.random, ccLootSet(), CC_CHESTS_POI);
-      if(p.weapons.length>2 || p.heals.length>2) fail('pack overflows: '+JSON.stringify(p));
+      // ПЯТЬ СЛОТОВ, И В НИХ АВТОМАТ С ДРОБОВИКОМ (его слово 10.09) — см. ccPackFloor:
+      // третий ствол в паке законен, когда мувмента нет, а хилок уже две.
+      const slots=p.weapons.length+p.heals.length+(p.move?1:0);
+      if(slots!==5) fail('pack is not five slots ('+slots+'): '+JSON.stringify(p));
+      if(p.weapons.length>3 || p.heals.length>2) fail('pack overflows: '+JSON.stringify(p));
+      if(!p.weapons.some(w=>w.icon==='rifle') || !p.weapons.some(w=>w.icon==='shotgun'))
+        fail('pack without a rifle and a shotgun: '+JSON.stringify(p.weapons));
       if(p.move && CC_MOVE_ITEMS.indexOf(p.move.name)<0) fail('move slot holds a heal: '+p.move.name);
       if(p.heals.some(h=>CC_MOVE_ITEMS.indexOf(h.name)>=0)) fail('heal slot holds a movement item');
       if(p.heals.some(h=>CC_CHEST_NOT_HEAL.indexOf(h.name)>=0)) fail('heal slot holds a key or a rod: '+p.heals.map(h=>h.name).join(', '));
