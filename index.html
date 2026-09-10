@@ -1546,6 +1546,14 @@
     border:none; border-radius:0; border-bottom:1px solid var(--cc-ui-line);}
   /* Пак в кнопке выбора — пять ячеек с картинками предметов, цвет ячейки — редкость
      (те же цвета, что у хотбара .zk-slot). Его слово 10.09: «добавь фотографии лут-пулу». */
+  /* Лист статистики игрока сцены (careerPlayerStatsHTML) — в профиле, под лупой, из таблицы. */
+  .cc-ps{margin-top:10px;}
+  .cc-ps-head{font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; opacity:.65; margin:8px 0 5px;}
+  .cc-ps-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:2px 14px;}
+  .cc-ps-grid div{display:flex; justify-content:space-between; gap:8px; font-size:11px; border-bottom:1px dashed rgba(255,255,255,.14); padding:2px 0;}
+  .cc-ps-grid span{opacity:.75;} .cc-ps-grid b{font-weight:800; white-space:nowrap;}
+  .cc-ps-list div{font-size:10.5px; line-height:1.5;} .cc-ps-list i{font-style:normal; opacity:.55; margin-right:5px;} .cc-ps-list b{font-weight:800;}
+  u.cc-peek{cursor:zoom-in; text-decoration:none; border-bottom:1px dotted rgba(255,255,255,.45);} u.cc-peek:hover{border-bottom-style:solid;}
   .cc-pack{display:flex; gap:4px; margin:4px 0 6px;}
   .cc-pack i{position:relative; flex:0 0 38px; width:38px; height:34px; border-radius:4px; border:1.5px solid #d8dde6;
     background:linear-gradient(180deg,#8f97a3,#4d545e); display:flex; align-items:center; justify-content:center; overflow:hidden; font-style:normal;}
@@ -8282,7 +8290,7 @@ dmMeTalkrole:(m,y)=>'По ролям: ты '+m+', я '+y+'. Норм?',
 dmMateTalkrole:(m,y)=>'Норм. Ты зовёшь ротации, я беру первый контакт. Так и играем',
 dmMeTalklife:'Как сам?',
 dmMateTalklife:'Нормально. Спал мало, но настрой есть. Погнали вечером',
-ccStTitle:'Статистика', ccStEmpty:'Сыграй первый турнир — здесь появятся числа', ccStEvents:'Турниров', ccStGames:'Матчей',
+ccPsTitle:'Сезон в этой карьере', ccPsPr:'Power Ranking', ccPsPrize:'Призовые за год', ccPsEvents:'Турниров', ccPsWins:'Побед (VR)', ccPsElims:'Килов', ccPsAvg:'Среднее место', ccPsBest:'Лучшее место', ccPsPodiums:'Подиумов', ccPsLast:'Последние вечера', ccStTitle:'Статистика', ccStEmpty:'Сыграй первый турнир — здесь появятся числа', ccStEvents:'Турниров', ccStGames:'Матчей',
 ccStWins:'Побед', ccStElims:'Элиминаций', ccStPerGame:'за матч', ccStAvg:'Среднее место', ccStPodiums:'Подиумов', ccStTop10:'Топ-10',
 ccStPromos:'Квалификаций', ccStPrize:'Призовых', ccStWages:'Зарплат', ccStSide:'Подработок и кастомок', ccStBestNight:'Лучший вечер',
 ccStBestElims:'Больше всего элимов', ccStByKind:'По турнирам', ccStBySeason:'По сезонам', ccStSeason:'Сезон', ccStBest:'Лучшее',
@@ -10234,7 +10242,7 @@ dmMeTalkrole:(m,y)=>'On roles: you are '+m+', I am '+y+'. Good?',
 dmMateTalkrole:(m,y)=>'Good. You call the rotations, I take first contact. That is how we play',
 dmMeTalklife:'How are you doing?',
 dmMateTalklife:'Fine. Slept badly, but the mood is there. Let us go tonight',
-ccStTitle:'Stats', ccStEmpty:'Play a first tournament and the numbers appear here', ccStEvents:'Tournaments', ccStGames:'Matches',
+ccPsTitle:'This career, this season', ccPsPr:'Power Ranking', ccPsPrize:'Prize money this year', ccPsEvents:'Events', ccPsWins:'Wins (VR)', ccPsElims:'Elims', ccPsAvg:'Average place', ccPsBest:'Best place', ccPsPodiums:'Podiums', ccPsLast:'Latest nights', ccStTitle:'Stats', ccStEmpty:'Play a first tournament and the numbers appear here', ccStEvents:'Tournaments', ccStGames:'Matches',
 ccStWins:'Wins', ccStElims:'Eliminations', ccStPerGame:'per match', ccStAvg:'Average place', ccStPodiums:'Podiums', ccStTop10:'Top 10s',
 ccStPromos:'Qualifications', ccStPrize:'Prize money', ccStWages:'Wages', ccStSide:'Side jobs and customs', ccStBestNight:'Best night',
 ccStBestElims:'Most eliminations', ccStByKind:'By tournament', ccStBySeason:'By season', ccStSeason:'Season', ccStBest:'Best',
@@ -12630,7 +12638,7 @@ dmMeTalkrole:(m,y)=>'Les rôles : toi '+m+', moi '+y+'. Ça va ?',
 dmMateTalkrole:(m,y)=>'Ça va. Tu appelles les rotations, je prends le premier contact. On joue comme ça',
 dmMeTalklife:'Ça va toi ?',
 dmMateTalklife:'Ça va. Mal dormi, mais le moral est là. On y va ce soir',
-ccStTitle:'Statistiques', ccStEmpty:'Joue un premier tournoi et les chiffres apparaîtront ici', ccStEvents:'Tournois', ccStGames:'Parties',
+ccPsTitle:'Cette carrière, cette saison', ccPsPr:'Power Ranking', ccPsPrize:'Gains de l\'année', ccPsEvents:'Tournois', ccPsWins:'Victoires (VR)', ccPsElims:'Élims', ccPsAvg:'Place moyenne', ccPsBest:'Meilleure place', ccPsPodiums:'Podiums', ccPsLast:'Dernières soirées', ccStTitle:'Statistiques', ccStEmpty:'Joue un premier tournoi et les chiffres apparaîtront ici', ccStEvents:'Tournois', ccStGames:'Parties',
 ccStWins:'Victoires', ccStElims:'Éliminations', ccStPerGame:'par partie', ccStAvg:'Place moyenne', ccStPodiums:'Podiums', ccStTop10:'Top 10',
 ccStPromos:'Qualifications', ccStPrize:'Gains', ccStWages:'Salaires', ccStSide:'Petits boulots et customs', ccStBestNight:'Meilleure soirée',
 ccStBestElims:'Record d\'éliminations', ccStByKind:'Par tournoi', ccStBySeason:'Par saison', ccStSeason:'Saison', ccStBest:'Meilleur',
@@ -12970,7 +12978,7 @@ dmMeTalkrole:(m,y)=>"Sui ruoli: tu "+m+", io "+y+". Va bene?",
 dmMateTalkrole:(m,y)=>"Va bene. Tu chiami le rotazioni, io prendo il primo contatto. Giochiamo così",
 dmMeTalklife:"Come va?",
 dmMateTalklife:"Bene. Ho dormito poco, ma il morale c'è. Andiamo stasera",
-ccStTitle:"Statistiche", ccStEmpty:"Gioca il primo torneo e qui compariranno i numeri", ccStEvents:"Tornei", ccStGames:"Partite",
+ccPsTitle:'Questa carriera, questa stagione', ccPsPr:'Power Ranking', ccPsPrize:'Montepremi dell\'anno', ccPsEvents:'Tornei', ccPsWins:'Vittorie (VR)', ccPsElims:'Elim.', ccPsAvg:'Piazzamento medio', ccPsBest:'Miglior piazzamento', ccPsPodiums:'Podi', ccPsLast:'Ultime serate', ccStTitle:"Statistiche", ccStEmpty:"Gioca il primo torneo e qui compariranno i numeri", ccStEvents:"Tornei", ccStGames:"Partite",
 ccStWins:"Vittorie", ccStElims:"Eliminazioni", ccStPerGame:"a partita", ccStAvg:"Piazzamento medio", ccStPodiums:"Podi", ccStTop10:"Top 10",
 ccStPromos:"Qualificazioni", ccStPrize:"Montepremi", ccStWages:"Stipendi", ccStSide:"Lavoretti e custom", ccStBestNight:"Serata migliore",
 ccStBestElims:"Record di eliminazioni", ccStByKind:"Per torneo", ccStBySeason:"Per stagione", ccStSeason:"Stagione", ccStBest:"Migliore",
@@ -15469,7 +15477,7 @@ dmMeTalkrole:(m,y)=>"Sobre funções: você "+m+", eu "+y+". Beleza?",
 dmMateTalkrole:(m,y)=>"Beleza. Você chama as rotações, eu pego o primeiro contato. É assim que jogamos",
 dmMeTalklife:"E aí, como você está?",
 dmMateTalklife:"De boa. Dormi pouco, mas o ânimo está aí. Bora hoje à noite",
-ccStTitle:"Estatísticas", ccStEmpty:"Jogue o primeiro torneio e os números aparecem aqui", ccStEvents:"Torneios", ccStGames:"Partidas",
+ccPsTitle:'Esta carreira, esta temporada', ccPsPr:'Power Ranking', ccPsPrize:'Prêmios do ano', ccPsEvents:'Torneios', ccPsWins:'Vitórias (VR)', ccPsElims:'Elims', ccPsAvg:'Posição média', ccPsBest:'Melhor posição', ccPsPodiums:'Pódios', ccPsLast:'Últimas noites', ccStTitle:"Estatísticas", ccStEmpty:"Jogue o primeiro torneio e os números aparecem aqui", ccStEvents:"Torneios", ccStGames:"Partidas",
 ccStWins:"Vitórias", ccStElims:"Eliminações", ccStPerGame:"por partida", ccStAvg:"Colocação média", ccStPodiums:"Pódios", ccStTop10:"Top 10",
 ccStPromos:"Classificações", ccStPrize:"Premiação", ccStWages:"Salários", ccStSide:"Bicos e customs", ccStBestNight:"Melhor noite",
 ccStBestElims:"Recorde de eliminações", ccStByKind:"Por torneio", ccStBySeason:"Por temporada", ccStSeason:"Temporada", ccStBest:"Melhor",
@@ -43971,7 +43979,15 @@ function ccPeekByHandle(h){
   const m=(careerMates()||[]).find(x=>x && hKey(x)===k);
   if(m) return openCardPeek(m);
   const r=careerRosterNowEU().find(x=>hKey(x)===k);
-  if(r) openCardPeek(r);
+  if(r) return openCardPeek(r);
+  // Чужой регион — та же лупа: таблица финала Саммита или Глобалов держит весь мир.
+  try{ for(const reg of CC_REGIONS){ const x=ccSceneRoster(reg).find(c=>hKey(c)===k); if(x) return openCardPeek(x); } }catch(e){}
+  // Лестничное имя без карточки — один лист сезона, без атрибутов.
+  const body=document.getElementById('cardPeekBody');
+  const st=(typeof careerPlayerStatsHTML==='function') ? careerPlayerStatsHTML(h) : '';
+  if(!body || !st) return;
+  body.innerHTML='<div class="fut-back" style="padding:15px 16px;"><div class="fut-name" style="font-size:15px;margin-bottom:6px;">'+esc(String(h))+'</div>'+st+'</div>';
+  document.getElementById('cardPeekModal').style.display='flex';
 }
 
 // Set while a career cup is on the results screen. Declared here rather than
@@ -50843,7 +50859,7 @@ async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, p
       ? tag(L().alreadyQualTag, '#ffd166', 'rgba(255,209,102,.45)', L().alreadyQualHint)
       : '';
     tr.innerHTML=`<td class="num" style="width:44px;">#${ccRankShow(i+1)}</td>
-      <td>${t.name}${mark}</td>
+      <td>${ccNamesPeekHTML(t)}${mark}</td>
       <td style="color:var(--ink-dimmer);font-size:11px;white-space:nowrap;">${reg?regionName(reg):''}</td>
       ${showRegion?`<td class="num" style="white-space:nowrap;">${regionResultHTML(t)}</td>`:''}
       ${showDrop?`<td class="num" style="color:var(--ink-dim);white-space:nowrap;">${landingCellHTML(t)}</td>`:''}
@@ -55400,7 +55416,9 @@ function openCardPeek(pl){
   const idx=team ? team.squad.indexOf(pl) : 0;
   const body=document.getElementById('cardPeekBody');
   if(!body) return;
-  body.innerHTML=playerStatSheetHTML(team, idx, pl);
+  // В карьере под листом карточки — её сезон в этой карьере (careerPlayerStatsHTML).
+  const inCareer=(typeof CAREER!=='undefined' && CAREER && CAREER.career) && ((typeof CAREER_RUN!=='undefined' && CAREER_RUN) || /career/.test(String(typeof SHOWN_SCREEN!=='undefined' ? SHOWN_SCREEN : '')));
+  body.innerHTML=playerStatSheetHTML(team, idx, pl)+(inCareer && typeof careerPlayerStatsHTML==='function' ? careerPlayerStatsHTML(pl.handle) : '');
   document.getElementById('cardPeekModal').style.display='flex';
 }
 function closeCardPeek(){
@@ -58419,7 +58437,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='c6a10aa0';
+const CC_BUILD='2001db6c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -73722,6 +73740,7 @@ function careerWhoHTML(h){
         : `<button class="x-act" onclick="careerVouch(\'${esh}\')">${L().ccPostVouchBtn}</button>`) : ''}
     </div>
     ${ccCardShotHTML(h)}
+    ${careerPlayerStatsHTML(h)}
     <div class="x-timeline">${posts.length
       ? posts.slice(0, 20).map(ccPostHTML).join('')
       : `<div class="ch-empty">${L().xNoPosts}</div>`}</div>
@@ -89370,6 +89389,59 @@ function ccAbsDay(season, iso){
  * Настоящий размер не выдуман здесь заново: он берётся оттуда же, откуда его
  * берёт плитка дня (ccNextShape), чтобы «сколько человек в этом турнире» был
  * один ответ на весь файл. Париж и Ласт Ченс носят у неё вид 'gc'. */
+const CC_PLOG_KEEP=24, CC_PLOG_NAMES=420;
+function careerPlogAdd(name, meta, place, of, team, you){
+  const cr=CAREER && CAREER.career; if(!cr || !name) return;
+  if(!cr.plog) cr.plog={};
+  const rows=cr.plog[name] || (cr.plog[name]=[]);
+  const kind=String(meta.kind||'cup')+(meta.stage ? ':'+String(meta.stage) : '');
+  rows.push([careerToday(), kind, place, of, team.wins||0, team.stageElims||0, Math.round(team.stagePts||0), meta.div||null]);
+  if(rows.length>CC_PLOG_KEEP) rows.splice(0, rows.length-CC_PLOG_KEEP);
+  if(you) cr.plogYou=name;
+  const names=Object.keys(cr.plog);
+  if(names.length>CC_PLOG_NAMES*1.3){
+    names.sort((a,b)=>cr.plog[a].length-cr.plog[b].length || (cr.plog[a][cr.plog[a].length-1][0]<cr.plog[b][cr.plog[b].length-1][0] ? -1 : 1));
+    names.slice(0, names.length-CC_PLOG_NAMES).forEach(n=>{ if(n!==cr.plogYou) delete cr.plog[n]; });
+  }
+}
+/* ЛИСТ СТАТИСТИКИ ИГРОКА СЦЕНЫ — как профиль на Tracker: ПР и место в нём, призовые за год,
+   турниров/побед/килов, среднее и лучшее место, подиумы и последние вечера строками.
+   Всё из cr.plog, ПР-доски и доски призовых; открывается из профиля в соцсети, из лупы на
+   карточке и из таблицы вечера (имена кликаются, ccNamesPeekHTML). Пусто — не рисуется. */
+function careerPlayerStatsHTML(h){
+  const cr=CAREER && CAREER.career; if(!cr || !h) return '';
+  const T=L(), k=hKey(h);
+  const key=Object.keys(cr.plog||{}).find(n=>hKey(n)===k);
+  const rows=(key ? (cr.plog[key]||[]) : []).slice().sort((a,b)=>a[0]<b[0] ? 1 : -1);
+  let prRank=null, pr=0;
+  try{ const prs=careerPrRows(); for(let i=0;i<prs.length;i++) if(hKey(prs[i].name)===k){ prRank=i+1; pr=prs[i].pr; break; } }catch(e){}
+  let money=null; try{ money=(careerMoneyRows('year')||[]).find(r=>hKey(r.name)===k)||null; }catch(e){}
+  if(!rows.length && !prRank && !money) return '';
+  const sum=i=>rows.reduce((a,e)=>a+(e[i]||0), 0);
+  const avg=rows.length ? (rows.reduce((a,e)=>a+e[2], 0)/rows.length).toFixed(1) : '—';
+  const best=rows.length ? Math.min.apply(null, rows.map(e=>e[2])) : null;
+  const podiums=rows.filter(e=>e[2]<=3).length;
+  const cell=(a,b)=>'<div><span>'+a+'</span><b>'+b+'</b></div>';
+  const grid=
+    (prRank ? cell(T.ccPsPr, '#'+prRank+' · '+fmtNum(Math.round(pr))) : '')+
+    (money ? cell(T.ccPsPrize, ccMoney(money.usd)) : '')+
+    (rows.length ? cell(T.ccPsEvents, rows.length)+cell(T.ccPsWins, sum(4))+cell(T.ccPsElims, sum(5))+
+                   cell(T.ccPsAvg, avg)+cell(T.ccPsBest, '#'+best)+cell(T.ccPsPodiums, podiums) : '');
+  const line=e=>{ const kind=String(e[1]).split(':')[0]; let name=''; try{ name=ccLogName({kind:kind, day:e[0], div:e[7]}); }catch(x){ name=esc(kind); }
+    return '<div><i>'+esc(ccDayLabel(e[0]))+'</i>'+name+' · <b>#'+e[2]+'</b>/'+e[3]+' · '+e[4]+' VR · '+e[5]+' E</div>'; };
+  return '<div class="cc-ps"><div class="cc-ps-head">'+esc(T.ccPsTitle)+'</div><div class="cc-ps-grid">'+grid+'</div>'+
+    (rows.length ? '<div class="cc-ps-head">'+esc(T.ccPsLast)+'</div><div class="cc-ps-list">'+rows.slice(0, 8).map(line).join('')+'</div>' : '')+'</div>';
+}
+// Имена команды в таблице вечера — ссылками на лист (только в карьере, только у кого есть карточки).
+function ccNamesPeekHTML(t){
+  if(!t) return '';
+  const on=(typeof CAREER_RUN!=='undefined' && CAREER_RUN) && CAREER && CAREER.career && Array.isArray(t.squad) && t.squad.length && t.squad.every(c=>c && c.handle);
+  if(!on) return String(t.name||'');
+  const links=t.squad.map(c=>'<u class="cc-peek" title="'+esc(L().cardPeekHint)+'" onclick="event.stopPropagation();ccPeekByHandle(\''+esc(String(c.handle)).replace(/'/g,"\\'")+'\')">'+esc(String(c.handle))+'</u>').join(' &amp; ');
+  // Свой состав подписан («Твой состав: …») — подпись остаётся, имена — ссылками.
+  const m=String(t.name||'').match(/^([^:<]{1,40}:)\s*/);
+  return (m ? esc(m[1])+' ' : '')+links;
+}
 function careerPrAdd(ranked, meta){
   if(!ranked || ranked.length<2) return;
   const t=careerPrTally(), of=ranked.length;
@@ -89409,6 +89481,11 @@ function careerPrAdd(ranked, meta){
       if(row.v.length>CC_PR_KEEP) row.v.length=CC_PR_KEEP;
       row.n++;
       if(idx===yourIdx) row.you=true;
+      /* И журнал вечеров игрока — для листа статистики (careerPlayerStatsHTML). Его игрок,
+         10.09: «Add players stats». Компактно: [день, вид[:этап], место, из, VR, килы, очки, див];
+         последние CC_PLOG_KEEP вечеров на человека, имён не больше CC_PLOG_NAMES (лишние —
+         у кого вечеров меньше — уходят, свой ник остаётся). В командный state не едет. */
+      try{ careerPlogAdd(name, meta, i+1, of, team, idx===yourIdx); }catch(e){}
     });
   });
   // Prune on the way out, so the save never holds more than the board shows.
