@@ -97,6 +97,19 @@ const BOOT = `
     { const p=ccChestPack(rng, null, 1); const bare={weapons:(p.weapons||[]).filter(o=>!o.floor), heals:(p.heals||[]).filter(o=>!o.floor), move:(p.move && !p.move.floor) ? p.move : null};
       check('пол не меняет силу пака', ccPackPow(p)===ccPackPow(bare), ccPackPow(p)+' vs '+ccPackPow(bare)); }
     { const p=ccLootPack(rng); p.move=null; ccPackFloor(p, null, rng); check('пад улетел — слот добрался полом', five(p)===5 && !!p.move && p.move.floor===true); }
+    // ---- автомат и дробовик — всегда (его слово 10.09) ---------------------------------------
+    { const has=(p,c)=>(p.weapons||[]).some(w=>w.icon===c);
+      for(let i=0;i<30;i++){ const p=ccLootPack(rng); if(!(has(p,'rifle') && has(p,'shotgun'))){ check('пак третьей зоны — автомат и дробовик', false, ccPackLine(p)); break; } }
+      let bad=null, powBad=null;
+      for(let n=1;n<=4 && !bad;n++) for(let i=0;i<25;i++){
+        const rolls=[]; for(let k=0;k<n;k++) rolls.push(ccChestRoll(rng, null));
+        const raw=ccPackFromRolls(rolls), pow0=ccPackPow(raw);
+        const p=ccPackFloor(ccPackFromRolls(rolls), null, rng);
+        if(!(has(p,'rifle') && has(p,'shotgun') && five(p)===5 && p.weapons[0].icon==='rifle' && p.weapons[1].icon==='shotgun')){ bad=n+' сундуков: '+ccPackLine(p); break; }
+        if(ccPackPow(p)!==pow0){ powBad=n+' сундуков: '+ccPackPow(p)+' vs '+pow0+' · '+ccPackLine(p); break; }
+      }
+      check('пак с сундуков — автомат первым, дробовик вторым, пять предметов', !bad, bad);
+      check('пара с пола не меняет силу пака', !powBad, powBad); }
     // ---- пак картинками в кнопке выбора (ccPackSlotsHTML) ---------------------------------
     { const p=ccLootPack(rng); const h=ccPackSlotsHTML(p);
       check('пак в кнопке — пять ячеек с картинками', (h.match(/<i class="r-/g)||[]).length===5 && (h.match(/<img/g)||[]).length===5, h.slice(0,200));

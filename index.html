@@ -54040,6 +54040,25 @@ function ccPackFloor(pack, set, rng){
   const guns=lowest(pool.weapons), heals=lowest(pool.heals.filter(ccIsHealItem)), moves=pool.heals.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0);
   const one=list=>list[Math.floor(r()*list.length)];
   const count=()=>pack.weapons.length+pack.heals.length+(pack.move?1:0);
+  /* АВТОМАТ И ДРОБОВИК — ВСЕГДА. Его слово 10.09: «дробовик+автомат должен всегда быть в
+     инвентаре». Нет класса в руках — с пола берётся его серый ствол; пара встаёт в первые два
+     слота. Что не влезло в пять (третий ствол другого класса, лишняя хилка) — выбрасывается,
+     но сила пака его помнит (dropped, см. ccPackPow): цена лута прежняя, меняются только руки. */
+  ['rifle','shotgun'].forEach(cls=>{
+    if(pack.weapons.some(w=>w && w.icon===cls)) return;
+    const g=guns.filter(w=>w.icon===cls); if(g.length) pack.weapons.push(Object.assign({}, one(g), {floor:true}));
+  });
+  // Первый автомат — слот 1, первый дробовик — слот 2, остальное (и второй автомат) — дальше.
+  const seen={}; const rank=w=>{ if((w.icon==='rifle'||w.icon==='shotgun') && !seen[w.icon]){ seen[w.icon]=1; return w.icon==='rifle' ? 0 : 1; } return 2; };
+  pack.weapons=pack.weapons.map((w,i)=>[w,i,rank(w)]).sort((a,b)=>(a[2]-b[2])||(a[1]-b[1])).map(x=>x[0]);
+  pack.dropped=pack.dropped||[];
+  for(let guard=0; count()>5 && guard<8; guard++){
+    const fh=pack.heals.findIndex(h=>h.floor);
+    if(fh>=0){ pack.heals.splice(fh, 1); continue; }
+    if(pack.weapons.length>2){ const w=pack.weapons.pop(); if(!w.floor) pack.dropped.push(w); continue; }
+    if(pack.heals.length>1){ pack.heals.pop(); continue; }
+    break;
+  }
   for(let guard=0; count()<5 && guard<8; guard++){
     const held=pack.weapons.map(w=>w.icon), hn=pack.heals.map(h=>h.name);
     const g=guns.filter(w=>held.indexOf(w.icon)<0), h=heals.filter(x=>hn.indexOf(x.name)<0);
@@ -54070,7 +54089,9 @@ const CC_SITE_FAST_SHARE=1/3, CC_SITE_FULL_MUL=2;
 function ccPackPow(p){
   if(!p) return 0;
   // Пол острова (ccPackFloor, floor) в силу не идёт: слот занят, цена лута прежняя.
-  const ws=(p.weapons||[]).filter(o=>o && !o.floor), hs=(p.heals||[]).filter(o=>o && !o.floor);
+  // Выброшенный ради пары настоящий ствол (ccPackFloor, dropped) считается, как считался бы в руках.
+  const mod=o=>RARITY_MOD[o.rarity]||2;
+  const ws=(p.weapons||[]).concat(p.dropped||[]).filter(o=>o && !o.floor).sort((a,b)=>mod(b)-mod(a)), hs=(p.heals||[]).filter(o=>o && !o.floor);
   let v=0;
   for(let i=0;i<2;i++){ const o=ws[i]; v += o ? Math.max(0, (RARITY_MOD[o.rarity]||2)-2) : -2; }
   v -= Math.max(0, 2-hs.length);
@@ -54656,7 +54677,10 @@ function ccLootPack(rng, set){
   const pool=CC_LOOT_BY_SET[ccLootSet(set)];
   const heals=pool.heals.filter(ccIsHealItem);
   const moves=pool.heals.filter(x=>CC_MOVE_ITEMS.indexOf(x.name)>=0);
-  const pack={weapons:pick(pool.weapons, 2), heals:pick(heals, 2), move:moves.length ? pick(moves, 1)[0] : null};
+  // Автомат и дробовик (его слово 10.09), не два случайных класса; нет класса в пуле — добор ниже.
+  const rifles=pool.weapons.filter(w=>w.icon==='rifle'), shotguns=pool.weapons.filter(w=>w.icon==='shotgun');
+  const pack={weapons:[rifles.length ? pick(rifles, 1)[0] : null, shotguns.length ? pick(shotguns, 1)[0] : null].filter(Boolean),
+              heals:pick(heals, 2), move:moves.length ? pick(moves, 1)[0] : null};
   return ccPackFloor(pack, set, rng);   // пять слотов — пять предметов, см. ccPackFloor
 }
 /* Пак больше не переводится в силу. Он был прибавкой (ccLootPow, той же
@@ -58355,7 +58379,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='2f762410';
+const CC_BUILD='a0e4f58d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
