@@ -58483,7 +58483,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5aacf17b';
+const CC_BUILD='dc06cc0d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -86164,11 +86164,18 @@ function ccStageCardFrom(rec){
           tier:'ladder', event:L().ccLadderEvent, date:'—', placement:null,
           rating:r, _targetOvr:r, _attrs:ccRookieAttrs(r, rec.k||'roleFRG')};
 }
+/* СБОРКА КОМАНДЫ ИЗ ЗАПИСИ — ВНЕ СЕЯНОГО ПОТОКА. Атрибуты выдуманной карточки, роли и химия
+   тратят броски, а сколько именно — зависит от того, кого запись назвала: у одного гонщика
+   строка ложится на карточку из своей сцены, у другого собирается заново. Его скрин 10.09
+   («table,rolls @ #30 p3=6477 vs 6447», поле при этом сошлось) — ровно это. Та же обёртка, что
+   у ccRaceRivalTeam. */
 function ccStageTeamFrom(row){
-  const cards=row.map(ccStageCardFrom);
-  const t=careerTeam(cards);
-  t.name=teamLabel(cards);
-  return t;
+  return ccRaceUnseeded(function(){
+    const cards=row.map(ccStageCardFrom);
+    const t=careerTeam(cards);
+    t.name=teamLabel(cards);
+    return t;
+  });
 }
 /* Верхушка сыгранного вечера — именами и числами, как её видел игрок.
 
@@ -86922,11 +86929,14 @@ function ccMajorCardFrom(rec){
           tier:'ladder', event:L().ccLadderEvent, date:'—', placement:null,
           rating:r, _targetOvr:r, _attrs:ccRookieAttrs(r, rec.k||'roleFRG')};
 }
+// Тем же правилом, что ccStageTeamFrom: сборка из записи не берёт бросков вечера.
 function ccMajorTeamFrom(row){
-  const cards=row.map(ccMajorCardFrom);
-  const t=careerTeam(cards);
-  t.name=teamLabel(cards);
-  return t;
+  return ccRaceUnseeded(function(){
+    const cards=row.map(ccMajorCardFrom);
+    const t=careerTeam(cards);
+    t.name=teamLabel(cards);
+    return t;
+  });
 }
 /* Финал Мейджора — те же люди и в тех же парах, что играли Хиты.
 
