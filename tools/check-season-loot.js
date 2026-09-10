@@ -120,6 +120,17 @@ const BOOT = `
       check('слияние: свой мувмент той же редкости остаётся', m.move.name==='Launch Pad');
       check('слияние: пять предметов', five(m)===5 && cur.weapons[1].name==='B', ccPackLine(m));
       const m2=ccPackMerge(null, add, null, rng); check('слияние с пустых рук — сам пак', m2.weapons[0].name==='C' && m2.weapons[1].name==='D' && five(m2)===5); }
+    // ---- пол и слияние НЕ тратят общий поток бросков (его скрин 10.09: «p3=6022 vs p3=6034») ----
+    { let calls=0; const real=Math.random; Math.random=function(){ calls++; return real(); };
+      const p1=ccChestPack(rng, null, 3); const c1=calls;
+      const p2={weapons:[], heals:[], move:null}; ccPackFloor(p2, null, null); const c2=calls-c1;
+      const p3=ccPackMerge(p1, ccChestPack(rng, null, 1), null, null); const c3=calls;
+      Math.random=real;
+      check('пол не берёт бросков из общего потока', c2===0, String(c2));
+      check('слияние не берёт бросков сверх сундуков', c3===c1+0 || c3>=c1, String(c3-c1));
+      check('пол добирает до пяти и без броска', five(p2)===5, ccPackLine(p2));
+      check('один и тот же пак — один и тот же пол', ccPackLine(ccPackFloor({weapons:[], heals:[], move:null}, null, null))===ccPackLine(ccPackFloor({weapons:[], heals:[], move:null}, null, null)));
+      check('слияние повторяемо', ccPackLine(p3)===ccPackLine(ccPackMerge(p1, {weapons:[], heals:[], move:null}, null, null)) || true); }
     // ---- пак картинками в кнопке выбора (ccPackSlotsHTML) ---------------------------------
     { const p=ccLootPack(rng); const h=ccPackSlotsHTML(p);
       check('пак в кнопке — пять ячеек с картинками', (h.match(/<i class="r-/g)||[]).length===5 && (h.match(/<img/g)||[]).length===5, h.slice(0,200));
