@@ -136,6 +136,35 @@ const BOOT = `
     check('без денег состав уходит весь', club.roster.length === 0, String(club.roster.length));
     check('касса не ушла в минус', club.cash >= 0, String(club.cash));
 
+    // ---- выкуп, герб и касса ------------------------------------------------
+    /* Его правила 11.09: «они разрывают контракт или мы выкупаем или предлагаем
+       свободному агенту», «пусть копит клуб потом можно вывести себе». */
+    { const all = careerClubFree('', true);
+      const carded = all.find(d => d.org);
+      out.notes.market = {всего: all.length, подКонтрактом: all.filter(d => d.org).length};
+      check('под контрактом тоже видны', !!carded, String(all.length));
+      if (carded) {
+        check('у них стоят отступные', carded.buyout === carded.salary * CC_CLUB_BUYIN,
+              String(carded.buyout));
+        careerClub().cash = 0; cr.balance = 0;
+        check('без денег на отступные сделки нет', !careerClubSign(carded.id, carded.salary));
+        careerClub().cash = carded.buyout + carded.salary;
+        const seats = careerClub().roster.length;
+        check('с деньгами — подписан', careerClubSign(carded.id, carded.salary) || careerClub().roster.length > seats);
+      }
+      // Герб клуба переезжает на его людей в сцене карьеры.
+      const who = (careerClub().roster[0] || {}).who || [];
+      check('подписанный носит герб клуба', ccClubOf(who[0]) === careerClub().name, String(who[0]));
+      const stamped = ccClubStamp([{handle: who[0]}]);
+      check('метка ложится на карточку сцены', stamped[0].org === careerClub().name, JSON.stringify(stamped[0]));
+      // Касса — в карман.
+      careerClub().cash = 7000; cr.balance = 0;
+      const got = careerClubCashOut(999999);
+      out.notes.cashOut = {got: got, cash: careerClub().cash, balance: cr.balance};
+      check('касса выведена вся', got === 7000 && careerClub().cash === 0, String(got));
+      check('деньги в кармане', cr.balance === 7000, String(cr.balance));
+      check('пустую кассу не вывести', careerClubCashOut(100) === 0); }
+
     // ---- своя фотка вместо герба --------------------------------------------
     /* Его слово 11.09: «свою фотку лого типо». Саму загрузку делает браузер
        (FileReader и декодирование), а наше правило — потолок сейва и то, что герб
