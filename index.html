@@ -3066,8 +3066,12 @@
   .zr-kit .zk-top-row{display:flex;align-items:center;gap:6px;}
   .zr-kit .zk-top-row b{font-size:15px;transform:skewX(-8deg);font-variant-numeric:tabular-nums;min-width:26px;text-align:right;}
   .zr-kit .zk-top-row i{display:block;width:14px;height:14px;flex:none;background:#e6ecf7;}
-  .zr-kit .zk-top-row.zk-team b{font-size:12px;opacity:.72;}
-  .zr-kit .zk-top-row.zk-team i{width:11px;height:11px;opacity:.72;}
+  /* Строка отряда — того же роста, что своя: на его референсе (турнирный HUD Фортнайта)
+     оба счётчика одинаковые, разные у них ЗНАЧКИ — череп у своих элиминаций, отряд у
+     командных. Его слово 11.09: «чет не так как на референсе». */
+  .zr-kit .zk-ico-squad{background:#e6ecf7;-webkit-mask-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='7.4' cy='6.6' r='3.3'/%3E%3Ccircle cx='17' cy='7.4' r='2.7'/%3E%3Cpath d='M1.2 20.5c0-3.6 2.7-5.9 6.2-5.9s6.2 2.3 6.2 5.9z'/%3E%3Cpath d='M12.6 20.5c0-3.1 2.2-5 5-5s4.9 1.9 4.9 5z' opacity='.85'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='7.4' cy='6.6' r='3.3'/%3E%3Ccircle cx='17' cy='7.4' r='2.7'/%3E%3Cpath d='M1.2 20.5c0-3.6 2.7-5.9 6.2-5.9s6.2 2.3 6.2 5.9z'/%3E%3Cpath d='M12.6 20.5c0-3.1 2.2-5 5-5s4.9 1.9 4.9 5z' opacity='.85'/%3E%3C/svg%3E");
+    -webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+    -webkit-mask-position:center;mask-position:center;}
   .zr-kit .zk-ico-skull{clip-path:polygon(20% 0,80% 0,100% 30%,100% 62%,84% 70%,84% 100%,60% 100%,60% 84%,40% 84%,40% 100%,16% 100%,16% 70%,0 62%,0 30%);}
   .zr-kit .zk-ico-man{clip-path:polygon(35% 0,65% 0,72% 28%,55% 36%,90% 55%,90% 100%,10% 100%,10% 55%,45% 36%,28% 28%);}
   .zr-kit .zk-ico-clock{border-radius:50%;background:transparent;border:2px solid #e6ecf7;width:10px;height:10px;position:relative;}
@@ -5597,7 +5601,7 @@
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
 <script src="zone-sim.js?v=e0eba4ea"></script>
-<script src="zone-replay.js?v=46af0f33"></script>
+<script src="zone-replay.js?v=41daeb38"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -52968,7 +52972,7 @@ function ccKitPanel(lobby, frame){
       (function(){
         const team=d.e||0, mineK=ccYouKills(you, team);
         return (mineK==null ? '' : '<div class="zk-top-row"><b>'+mineK+'</b><i class="zk-ico-skull"></i></div>')+
-          '<div class="zk-top-row'+(mineK==null ? '' : ' zk-team')+'"><b>'+team+'</b><i class="zk-ico-skull"></i></div>';
+          '<div class="zk-top-row'+(mineK==null ? '' : ' zk-team')+'"><b>'+team+'</b><i class="'+(mineK==null ? 'zk-ico-skull' : 'zk-ico-squad')+'"></i></div>';
       })()+
       '<div class="zk-top-row"><b>'+(frame.players!=null?frame.players:frame.alive||0)+'</b><i class="zk-ico-man"></i></div>'+
       '<div class="zk-top-row"><b>'+clock+'</b><i class="zk-ico-clock"></i></div>'+
@@ -58539,7 +58543,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='c11f1cfb';
+const CC_BUILD='5380bb33';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
