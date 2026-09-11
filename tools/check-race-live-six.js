@@ -176,6 +176,10 @@ const boot = (who) => `
     out.notes.board=(function(){ try{
       return careerMoneyRows('year').filter(r=>!r.you).map(r=>r.name+':'+r.events+':'+r.usd);
     }catch(e){ return null; } })();
+    /* Какие вечера попали в ДОСКИ этой карьеры (cr.evSeen). Расхождение досок на $100
+       при одинаковом числе вечеров означает, что где-то один и тот же вечер посчитан
+       по-разному, а не пропущен: два списка ключей отвечают, что именно из двух. */
+    out.notes.evSeen=Object.keys((cr.evSeen)||{});
     out.notes.money=cr.earnings; out.notes.ovr=CAREER.player.ovr; out.notes.titles=(cr.ewc||[]).length;
     out.notes.mates=careerMates().map(m=>m&&m.handle); out.notes.noMate=(typeof careerNoMate==='function')?careerNoMate('eval'):null; out.notes.form=cr.form; out.notes.energy=cr.energy;
     out.notes.dbg={rand:!!CC_MP_RAND, state:MP.state, split:(typeof CC_MP_SPLIT_AT!=='undefined')?CC_MP_SPLIT_AT:null, race:(typeof CC_RACE_DBG!=='undefined')?CC_RACE_DBG:null, rivals:ccRaceRivals().map(p=>p.card.handle+':'+p.div+':'+p.day), ff:!!CC_FF};
@@ -312,16 +316,27 @@ async function runOne(tag, who, port, phone){
   const boards=outs.map(r=>new Map((r.notes.board||[]).map(x=>{ const i=x.indexOf(':'); return [x.slice(0,i), x.slice(i+1)]; })));
   if(boards.length>1 && boards[0].size){
     const mine=outs.map(r=>new Set([].concat(r.notes.mates||[], (r.notes.dbg&&r.notes.dbg.rivals)||[]).filter(Boolean)));
-    let diff=[];
+    let diff=[], nDiff=0;   // строк печатаем шесть, а считаем все: счёт по длине списка трижды соврал 11.09
     boards[0].forEach((v, k)=>{
       for(let i=1;i<boards.length;i++){
         const w=boards[i].get(k);
         if(w===undefined || w===v) continue;              // нет строки — он её просто не видел
+        nDiff++;
         if(diff.length<6) diff.push(k+' '+v+' vs '+w+' (#'+(i+1)+')');
       }
     });
-    console.log('доски призовых: строк '+boards[0].size+', расходится '+diff.length+(diff.length?': '+diff.join(' | '):''));
-    if(diff.length){ console.log('   FAIL доски призовых разошлись'); bad++; }
+    console.log('доски призовых: строк '+boards[0].size+', расходится '+nDiff+(diff.length?': '+diff.join(' | ')+(nDiff>diff.length?' …':''):''));
+    if(nDiff){ console.log('   FAIL доски призовых разошлись'); bad++; }
+    // И чем отличаются САМИ вечера: ключ вида день|тип|дивизион (+своя метка, если врозь).
+    const seen=outs.map(r=>new Set(r.notes.evSeen||[]));
+    if(seen.length>1 && seen[0].size){
+      const only=(a,b)=>[...a].filter(k=>!b.has(k));
+      const l=only(seen[0], seen[1]), r=only(seen[1], seen[0]);
+      console.log('вечера в досках: '+seen.map(x=>x.size).join('/')+
+        (l.length?' · только у первого: '+l.slice(0,8).join(' | '):'')+
+        (r.length?' · только у второго: '+r.slice(0,8).join(' | '):'')+
+        (!l.length && !r.length ? ' · списки одинаковы' : ''));
+    }
   }
   if(bad){ console.log('FAIL: '+bad); process.exit(1); }
   console.log('гонка на '+N+': все дошли до '+FF+' без красных строк и без встававшей перемотки');
