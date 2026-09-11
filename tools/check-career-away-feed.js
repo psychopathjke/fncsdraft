@@ -337,6 +337,26 @@ const BOOT = `
         if (!led) fail('наименьший адрес в списке вечера не разослал книгу мира');
         if (!followed) fail('не старший всё равно разослал книгу мира');
         if (!away) fail('вечер без меня всё равно разослал книгу мира'); }
+      /* ЧЕЛОВЕК КОМНАТЫ — НЕ БОТ, И В ТОТ ВЕЧЕР, КОТОРЫЙ ИГРАЕТСЯ БЕЗ НЕГО. Иначе его пара
+         выходит в поле обычной командой сцены и зарабатывает призовые: у играющего они в
+         доске есть, а у самого человека нет и быть не может (он не играл). Его скрин 11.09. */
+      { var lock2 = CC_RACE_LOCK; CC_RACE_LOCK = false;   // сегодня вечер без соседа
+        var card0 = CC_RACE_PEERS.zz.card, mates0 = CC_RACE_PEERS.zz.mates;
+        var keys = ccRaceTakenKeys();
+        var rc = CC_RACE_PEERS.zz && CC_RACE_PEERS.zz.card;
+        out.steps.push('люди комнаты заняты: ' + keys.size + ', своя карточка соперника ' + (rc ? keys.has(hKey(rc)) : 'нет'));
+        if (rc && !keys.has(hKey(rc))) fail('карточка соперника не помечена занятой');
+        /* Соперник берётся из верха сцены: карточка, которую поле точно тянет.
+           С выдуманным ником проверка ничего не значила бы. */
+        var top = ccSceneRoster(ccCareerRegion()).filter(function(c){ return hKey(c) !== hKey(careerCard()); })[0];
+        CC_RACE_PEERS.zz.card = ccRacePackCard(top);
+        CC_RACE_PEERS.zz.mates = [];
+        keys = ccRaceTakenKeys();
+        var fld = careerCupField(cr, [careerCard()], 200, 'probe-alone', true);
+        var asBot = fld.some(function(t){ return (t.squad||[]).some(function(c){ return c && keys.has(hKey(c)); }); });
+        if (asBot) fail('человек комнаты сел ботом в вечер без него');
+        CC_RACE_PEERS.zz.card = card0; CC_RACE_PEERS.zz.mates = mates0;
+        CC_RACE_LOCK = lock2; }
       var tile = careerRaceTileHTML();
       if (tile.indexOf('&#128065;') < 0 || tile.indexOf('&#127918;') < 0) fail('на плитке гонки нет значков режима (глаз/геймпад)');
       CC_RACE_PEERS = peers0; MP.state = st0; delete cr.race; cr.sim = false;

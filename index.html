@@ -5595,7 +5595,7 @@
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
 <script src="zone-sim.js?v=e0eba4ea"></script>
-<script src="zone-replay.js?v=43ca4733"></script>
+<script src="zone-replay.js?v=c10a10f0"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -58519,7 +58519,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='17dafd24';
+const CC_BUILD='f3e466cf';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -60170,10 +60170,15 @@ function ccRaceAllCards(){
   ccRaceRivals().forEach(p=>{ out.push(p.card); (p.mates||[]).forEach(m=>{ if(m) out.push(m); }); });
   return out;
 }
-// Ключи напарников соперника — этих ботов брать нельзя (его слово 7.09).
+/* Ключи ЛЮДЕЙ комнаты — их самих и их напарников; этих ботов брать нельзя (его слово 7.09).
+   Своя карточка соперника сюда не входила, и человек комнаты мог выйти ботом в чужом поиске
+   напарника и в чужом поле. */
 function ccRaceTakenKeys(){
   const s=new Set();
-  ccRacePeers().forEach(p=>(p && p.mates||[]).forEach(m=>{ if(m && m.handle) s.add(hKey(m)); }));
+  ccRacePeers().forEach(p=>{
+    if(p && p.card && p.card.handle) s.add(hKey(p.card));
+    (p && p.mates||[]).forEach(m=>{ if(m && m.handle) s.add(hKey(m)); });
+  });
   return s;
 }
 /* Почему сегодня врозь (null — вместе): соперник не на связи, в комнате не двое,
@@ -68673,8 +68678,13 @@ function ccOpenFillOvr(rnd){
    просто лежит и никем не читается; строки ccRival* в словарях остались
    мёртвыми, чтобы не трогать три локали ради удаления. */
 function careerCupField(cr, mine, size, salt, open, sharp){
-  // Гонка: из ботов вычитаются и соперники со своими напарниками — они в комнате людьми.
-  if(typeof ccRaceLock==='function' && ccRaceLock()) mine=(mine||[]).concat(ccRaceAllCards());
+  /* Гонка: из ботов вычитаются и соперники со своими напарниками — они в комнате людьми.
+     И В ТОТ ВЕЧЕР, КОТОРЫЙ ИГРАЕТСЯ БЕЗ НИХ. Вычитание стояло под ccRaceLock, то есть только
+     в общем вечере; когда сосед сегодня не играет, его пара выходила в поле обычным ботом и
+     зарабатывала призовые — у меня в доске они есть, а у него самого их нет и быть не может
+     (он этот вечер не играл). Его скрин 11.09: Shur4 и Repairs у соседа на три вечера и
+     пятнадцать тысяч богаче, чем у себя. Человек комнаты не бот ни в каком вечере. */
+  if(typeof ccRaceOn==='function' && ccRaceOn()) mine=(mine||[]).concat(ccRaceAllCards());
   const rnd=careerRng(careerSeed(cr, salt));
   const band=ccBand(cr.division);
   const taken=new Set(mine.map(hKey));
@@ -84764,7 +84774,7 @@ function careerSoloField(cr, mine, size, open, stage){
   /* Общая комната: занятые — и СВОИ напарники тоже. В соло состав [me], а соседи вычитают моего
      напарника как «карточку соперника» — у меня он мог выйти настоящим соло-игроком, у них нет:
      соло Victory Cup 13.06, «diff 4816 of 4900» (проба 9.09 15:11). Одно множество у всех. */
-  if(typeof ccRaceLock==='function' && ccRaceLock()) mine=(mine||[]).concat(ccRaceAllCards(), (typeof careerMates==='function' ? careerMates() : []).filter(Boolean));
+  if(typeof ccRaceOn==='function' && ccRaceOn()) mine=(mine||[]).concat(ccRaceAllCards(), (typeof careerMates==='function' ? careerMates() : []).filter(Boolean));
   const rnd=careerRng(careerSeed(cr,'solo'));
   const band=ccBand(cr.division);
   const taken=new Set((mine||[]).map(hKey));
