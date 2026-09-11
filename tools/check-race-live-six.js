@@ -161,6 +161,21 @@ const boot = (who) => `
     }
     };
     await runFf();
+    /* ЖДЁМ ОСТАЛЬНЫХ ПЕРЕД СНИМКОМ.
+       Четырёхмесячный прогон 11.09: доски разошлись на 121 строке из 216, а список вечеров
+       отличался ровно одним ключом — 2026-03-31|S40_FNCSDivisionalCup|d1 был у первого и
+       ещё не был у второго. То есть мерилось не расхождение досок, а разное время снимка:
+       кто дошёл до цели раньше, тот снял доску до того, как последний вечер соседа доехал
+       дельтой (ccEvDeltaSend). Ждём, пока все встанут на целевой день, и ещё немного —
+       дельте нужен оборот. */
+    { let w=0;
+      while(w++<240){
+        const days=Object.keys(CC_RACE_PEERS).map(k=>CC_RACE_PEERS[k].day).filter(Boolean);
+        if(days.length && days.every(d=>d>=${JSON.stringify(FF)})) break;
+        await wait(500);
+      }
+      out.notes.settle={waited:w, peers:Object.keys(CC_RACE_PEERS).map(k=>CC_RACE_PEERS[k].day)};
+      await wait(6000); }
     if(${SEASONS}>=2 && !out.notes.ffErr && CAREER.career.day>=${JSON.stringify(FF)}){
       const cr1=CAREER.career;
       // Конец сезона: голос за следующий день у всех — день за CC_YEAR_TO закрывает год.
@@ -297,6 +312,7 @@ async function runOne(tag, who, port, phone){
     const n=WHO[i].nick;
     console.log(n+': '+(r.fail ? 'FAIL '+r.fail : 'дошёл до '+r.notes.dayAfter)+' · див '+r.notes.div+' · сезон закрыт '+r.notes.seasonOver+
       ' · журнал '+((r.notes.table||[]).length)+' '+JSON.stringify(r.notes.kinds||{})+' · броски '+r.notes.rolls+' · $'+r.notes.money+' · ovr '+r.notes.ovr+' · титулов '+r.notes.titles+
+      ' · ждал соседей '+JSON.stringify(r.notes.settle)+
       ' · напарники '+JSON.stringify(r.notes.mates)+' noMate '+r.notes.noMate+' · форма '+r.notes.form+' энергия '+r.notes.energy+' · '+Math.round((r.notes.secs||0)/60)+' мин · dbg '+JSON.stringify(r.notes.dbg));
     console.log('   напарник '+r.notes.mate+' · соперники '+r.notes.rival+' · врозь на старте: '+r.notes.apart+
       ((r.notes.mateTakes||[]).length ? ' · брал нового: '+r.notes.mateTakes.join(', ') : '')+
