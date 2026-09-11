@@ -424,7 +424,13 @@
       var hx = s.x - circle.cx, hy = s.y - circle.cy;
       if(hx*hx + hy*hy > circle.radius * circle.radius) continue;
       s.hp = Math.min(100, s.hp + HEAL_RATE * seconds);
-      s.shield = Math.min(100, (s.shield == null ? 100 : s.shield) + HEAL_RATE * seconds);
+      /* Щит возвращается быстрее здоровья. В игре его и правда чинят чаще: замер того же
+         матча — 134 хилки против 52 щитов на команду, но щит ставится целиком одним
+         предметом, а здоровье капает бинтами. Его слово 11.09: «по армору, чет
+         нереалистично, почему-то всегда 0 почти» — замер (career-bars-probe) показал щит на
+         нуле 69% времени и с третьего круга почти всегда. Возврат 0.8 в секунду против
+         расхода 2.0 за очко контакта не оставлял ему шанса подняться. */
+      s.shield = Math.min(100, (s.shield == null ? 100 : s.shield) + SHIELD_RATE * seconds);
     }
   }
 
@@ -536,6 +542,22 @@
   // the surge and a lost duel take — is untouched, so the calibrated death rates
   // stay exactly where they were (taking it off hp put surge at 46% of deaths).
   var CHIP_HP = 2.0;
+  /* ЧТО ДЕЛАЕТ КОНТАКТ, КОГДА ЩИТА УЖЕ НЕТ. Здоровье не трогал НИКТО, кроме шторма и сёрджа,
+     и полоска здоровья стояла на сотне 97% времени (career-bars-probe) — его слово 11.09:
+     «и 100 здоровья всегда». Теперь остаток пробивает щит и идёт в здоровье долей
+     CHIP_TO_HP, но не ниже CHIP_HP_FLOOR: контактом отряд НЕ УБИВАЮТ. Смерти остаются там,
+     где их калибровали, — дуэль, шторм, сёрдж, — а полоска наконец живёт. */
+  var CHIP_TO_HP = 0.5;
+  var CHIP_HP_FLOOR = 30;
+  // Сколько щита возвращает круг за секунду (здоровье — HEAL_RATE).
+  var SHIELD_RATE = 3.4;
+  function chipTake(s, dmg){
+    var take = dmg * CHIP_HP;
+    var sh = (s.shield == null ? 100 : s.shield);
+    var over = take - sh;
+    s.shield = Math.max(0, sh - take);
+    if(over > 0 && s.hp > CHIP_HP_FLOOR) s.hp = Math.max(CHIP_HP_FLOOR, s.hp - over * CHIP_TO_HP);
+  }
   // Сколько соседей за тик обмениваются уроном с одним отрядом. См. resolveContacts.
   var CHIP_MAX = 2;
   /* Обмен уроном между двумя ОДИНОЧКАМИ — со своим множителем. Шкала урона
@@ -970,9 +992,9 @@
         var hitB = CHIP_RATE * alive[cj].power * TICK_SEC * chipMul;
         alive[ci].dealt += hitA; alive[cj].taken += hitA;
         alive[cj].dealt += hitB; alive[ci].taken += hitB;
-        // ...and the shield bar moves with it. See CHIP_HP.
-        alive[ci].shield = Math.max(0, alive[ci].shield - hitB * CHIP_HP);
-        alive[cj].shield = Math.max(0, alive[cj].shield - hitA * CHIP_HP);
+        // ...и полоски двигаются: щит, а под ним здоровье. См. chipTake.
+        chipTake(alive[ci], hitB);
+        chipTake(alive[cj], hitA);
       }
     }
 
@@ -1811,11 +1833,15 @@
     if(v.CHIP_RATE      != null) CHIP_RATE      = v.CHIP_RATE;
     if(v.HEAL_RATE      != null) HEAL_RATE      = v.HEAL_RATE;
     if(v.CHIP_HP        != null) CHIP_HP        = v.CHIP_HP;
+    if(v.CHIP_TO_HP     != null) CHIP_TO_HP     = v.CHIP_TO_HP;
+    if(v.CHIP_HP_FLOOR  != null) CHIP_HP_FLOOR  = v.CHIP_HP_FLOOR;
+    if(v.SHIELD_RATE    != null) SHIELD_RATE    = v.SHIELD_RATE;
     return {READ_NOISE:READ_NOISE, CROWD_WEIGHT:CROWD_WEIGHT, CROWD_SEEK:CROWD_SEEK, ENGAGE_CHANCE:ENGAGE_CHANCE,
             ENGAGE_BIAS:ENGAGE_BIAS, CHAIN_CHANCE:CHAIN_CHANCE, EXPOSURE_FLOOR:EXPOSURE_FLOOR,
             CHAIN_MAX:CHAIN_MAX, LINGER_MAX:LINGER_MAX, SURGE_DUTY:SURGE_DUTY, SURGE_HIT:SURGE_HIT, SURGE_TICK:SURGE_TICK,
             ROOM:ROOM, PRESSURE_BASE:PRESSURE_BASE, PRESSURE_EXP:PRESSURE_EXP,
             PICK_EXP:PICK_EXP, CHIP_RATE:CHIP_RATE, HEAL_RATE:HEAL_RATE, CHIP_HP:CHIP_HP,
+            CHIP_TO_HP:CHIP_TO_HP, CHIP_HP_FLOOR:CHIP_HP_FLOOR, SHIELD_RATE:SHIELD_RATE,
             DROP_SEC:DROP_SEC, DROP_PRESSURE:DROP_PRESSURE, STACK_MIN:STACK_MIN};
   }
 
