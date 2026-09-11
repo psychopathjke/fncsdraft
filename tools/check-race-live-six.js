@@ -218,8 +218,16 @@ const boot = (who) => `
           const keys=[hKey(me)].concat(room.map(p=>hKey(p.card))).sort();
           const anchor=keys[0];
           const seen=(window.__heatIn||[]).some(x=>String(x).split('+').indexOf(anchor)>=0);
+          /* И сама таблица Плей-Ина: её отпечаток (он же msh в строке гонки) и место слова
+             'you' — если таблицы одинаковы, а места разные, значит один сеется таблицей,
+             а другой броском (ccMajorSeedRows вернул null). */
+          const ms=CAREER.career.majorSeed;
+          const msh=ms ? String(ccHashStr(JSON.stringify(ms))) : '—';
+          const you0=(ms && ms.rows) ? ms.rows.indexOf('you') : -1;
+          const peers=(typeof ccRaceRoom==='function' ? ccRaceRoom() : []).map(p=>String(p.msh||'—')).join(',');
           (out.notes.heats=out.notes.heats||[]).push(CAREER.career.day+' '+(CC_MP_NIGHT||'-')+
-            ' якорь '+anchor+(seen?' есть':' НЕТ')+' хит '+at+' из '+((heats||[]).length)+' · '+(window.__heatSig||'-'));
+            ' якорь '+anchor+(seen?' есть':' НЕТ')+' хит '+at+' из '+((heats||[]).length)+' · '+(window.__heatSig||'-')+
+            ' · таблица '+msh+' you@'+you0+' строк '+((ms&&ms.rows)?ms.rows.length:0)+' · у соседей '+peers);
           if(out.notes.heats.length>20) out.notes.heats.shift();
         }catch(e){}
         return at;

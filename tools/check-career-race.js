@@ -76,6 +76,24 @@ const BOOT = `
     check('a peer joins the table', rows.length === 2, JSON.stringify(out.notes.rows));
     check('and a better career stands above', rows[0].nick === 'Rival' && rows[0].you === false);
 
+    /* ---- ПУСТОЙ ДЕНЬ НЕ ЛОМАЕТ ХАБ ----------------------------------------
+       Его скрин 11 сентября: вкладка КАРЬЕРА красным, «Cannot read properties of
+       undefined (reading 'type')». Плитка гонки спрашивает причину «врозь» каждую
+       перерисовку, в том числе в день без турнира, — и вопрос обязан пережить
+       пустой вечер. Комната из одного соперника нужна, чтобы вопрос дошёл до
+       разбора вечера: без неё он отвечает 'off' первой же строкой. */
+    { const keep=CC_RACE_PEERS;
+      CC_RACE_PEERS={p1:{id:'p1', card:{handle:'Rival', region:'EU', nat:'fr'}, mates:[],
+        div:CAREER.career.division, day:careerToday(), pow:100, msh:''}};
+      out.notes.apart=[null, undefined, {}, {type:'free'}, {type:'major'}, {type:'cup'}].map(function(nx){
+        try{ return String(ccRaceApartWhy(nx))+'/'+String(ccRaceShared(nx)); }
+        catch(e){ return 'ERR '+String(e && e.message || e); }
+      });
+      check('пустой вечер не ломает вопрос про врозь',
+            out.notes.apart.every(function(x){ return x.indexOf('ERR')<0; }),
+            JSON.stringify(out.notes.apart));
+      CC_RACE_PEERS=keep; }
+
     // ---- плитка -------------------------------------------------------------
     const tile = careerRaceTileHTML();
     check('the tile shows the code', tile.indexOf('ABC123') >= 0);
