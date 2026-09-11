@@ -148,6 +148,27 @@ const BOOT = `
     // занимает свои ники, поэтому это первое, на что надо смотреть, если
     // расклад по маршрутам поехал.
     out.notes.mine = mine.map(p => p && p.handle);
+
+    /* ЗАЛ ОДИН НА КОМНАТУ ГОНКИ. В общей комнате зал не может зависеть ни от того,
+       каким маршрутом я попал (у каждого он свой), ни от того, чей состав мой:
+       годовая проба на шестерых 01.10 дала 17 строк из 50 при одинаковом пуле. */
+    { var cr = CAREER.career;
+      var race0 = CC_RACE_LOCK, peers0 = CC_RACE_PEERS, st0 = MP.state, cr0 = cr.race;
+      cr.race = {code:'ZZZZZZ', role:'a', since: careerToday()}; MP.state = 'live'; CC_RACE_LOCK = true;
+      var rivalCard = ccSceneRoster(ccCareerRegion()).filter(c => hKey(c) !== hKey(careerCard()))[9];
+      var rivalMate = ccSceneRoster(ccCareerRegion()).filter(c => hKey(c) !== hKey(careerCard()))[10];
+      CC_RACE_PEERS = {zz: {id:'zz', day: careerToday(), season: cr.season, div: cr.division,
+                           card: ccRacePackCard(rivalCard), mates: [ccRacePackCard(rivalMate)], pow: 100}};
+      var nameOf = f => f.filter(t => !t.isYou).map(t => (t.squad||[]).map(c => hKey(c)).sort().join('+')).join('|');
+      var viaSummit = careerGlobalsField(meTeam, mine, 'summit');
+      var viaM2 = careerGlobalsField(meTeam, mine, 'm2');
+      out.notes.raceHall = {n: viaSummit.length, same: nameOf(viaSummit) === nameOf(viaM2)};
+      check('в гонке зал не зависит от моего маршрута', nameOf(viaSummit) === nameOf(viaM2));
+      // И люди комнаты в зал ботами не садятся — их сажает ccRaceFieldSync.
+      var rk = [hKey(rivalCard), hKey(rivalMate)];
+      var asBot = viaSummit.some(t => !t.isYou && (t.squad||[]).some(c => rk.indexOf(hKey(c)) >= 0));
+      check('соперник по гонке не сидит в зале ботом', !asBot);
+      CC_RACE_LOCK = race0; CC_RACE_PEERS = peers0; MP.state = st0; cr.race = cr0; }
     /* Сколько пар Саммита развалил сам игрок, забрав себе одну половину.
 
        Тут стояло «ровно пятнадцать из Саммита и ровно десять из ласт ченса», и

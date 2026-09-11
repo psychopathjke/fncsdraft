@@ -58500,7 +58500,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5e71e85a';
+const CC_BUILD='f3c7fa03';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -86779,8 +86779,16 @@ function ccGcOwnSeats(n, drafted, seated, tag){
     .slice(0, n);
 }
 function careerGlobalsField(you, drafted, via){
+  /* ЗАЛ ОДИН НА КОМНАТУ ГОНКИ. Список занятых мест начинался со СВОЕГО состава: строка
+     записи, в которой стоит мой человек, у меня из зала выпадала, а у соседа — нет, и
+     Глобалы у двоих собирались разные (годовая проба на шестерых, 01.10: 17 строк из 50
+     при одинаковом пуле). В гонке занято место КАЖДОГО человека комнаты — список у всех
+     один, а сажает людей ccRaceFieldSync. careerCupField вычитает их сам (ccRaceAllCards).
+     Одиночная карьера считает как считала. */
+  const ccRace=(typeof ccRaceLock==='function' && ccRaceLock());
+  const mineAll=ccRace ? drafted.concat((typeof ccRaceAllCards==='function' ? ccRaceAllCards() : []).filter(Boolean)) : drafted;
   const seated=new Set();
-  drafted.forEach(c=>seated.add(_gcNorm(c.handle)));
+  mineAll.forEach(c=>{ if(c && c.handle) seated.add(_gcNorm(c.handle)); });
   const field=[];
   const add=(teams, route)=>teams.forEach(t=>{ t.gcRoute=route; field.push(t); });
   // The Summit's fifteen first, because the Summit happened first: a duo that
@@ -86872,7 +86880,11 @@ function careerGlobalsField(you, drafted, via){
   });
   // Your seat, taken off the route you won it on rather than added to the room.
   const route = via==='summit' ? 'summit' : via==='gclc' ? 'lcq' : 'm2';
-  const mine=field.filter(t=>t.gcRoute===route);
+  /* Место под себя выкупается у СВОЕГО маршрута — но только в одиночной карьере: маршрут у
+     каждого свой, и в общей комнате у одного выпадала бы строка Саммита, у другого строка
+     Мейджора. В гонке уходит последняя строка зала, одинаково у всех, а людей рассадит и
+     подрежет ccRaceFieldSync. */
+  const mine=ccRace ? [] : field.filter(t=>t.gcRoute===route);
   const drop=mine.length ? mine[mine.length-1] : field[field.length-1];
   if(drop) field.splice(field.indexOf(drop), 1);
   you.gcRoute=route;
