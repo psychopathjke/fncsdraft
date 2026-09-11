@@ -58608,7 +58608,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='cf59d4d6';
+const CC_BUILD='03b5775f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -60390,12 +60390,25 @@ function ccRaceHeatTogether(heats, you){
   const keys=[hKey(me)].concat(room.map(p=>hKey(p.card))).sort();
   const anchor=keys[0];
   const has=(t,k)=>t===you ? hKey(me)===k : (t && (t.squad||t.cards||[])).some(c=>c && hKey(c)===k);
-  let at=heats.findIndex(h=>h.some(t=>has(t, anchor)));
-  if(at<0) at=heats.findIndex(h=>h.indexOf(you)>=0);
-  if(at<0) at=0;
+  /* ХИТ КОМНАТЫ — ЧИСЛО, А НЕ ПОИСК.
+
+     Хит выбирался по якорю: где в посеве стоит он, там играет комната. Это работает,
+     только если якоря видно у всех, а видно его далеко не всегда — в чужом мире его
+     карточки может не быть вовсе (карьера за новичка), и посев Хитов у каждого свой:
+     таблица Плей-Ина хранит СВОЮ строку словом 'you', а когда таблицы нет, поле и вовсе
+     собирается броском и сортируется по силе — своя команда встаёт по своей силе.
+     Тогда каждый брал «свой» хит, и Мейджор расходился на два разных турнира: замер
+     11 сентября, 17 апреля — у одного хит 0, у другого 2 при одной и той же таблице;
+     красная строка 21 апреля, diff 48 of 50 при одинаковых людях в поле.
+
+     Число знают оба: ключ вечера (CC_MP_NIGHT — он и так один на комнату) и ник якоря.
+     Дальше как было: люди комнаты меняются местами с не-людьми этого хита, и своя
+     команда тоже переезжает — она теперь в списке наравне со всеми. Сетка хитов от этого
+     остаётся честной змейкой, а вечер у комнаты один. */
+  const night=String((typeof CC_MP_NIGHT!=='undefined' && CC_MP_NIGHT) || '');
+  const at=Math.abs(ccHashStr(night+'|'+anchor))%heats.length;
   const mine=heats[at];
-  const wanted=keys.filter(k=>k!==anchor);
-  wanted.forEach(k=>{
+  keys.forEach(k=>{
     if(mine.some(t=>has(t, k))) return;
     for(let i=0;i<heats.length;i++){
       if(i===at) continue;
@@ -88148,15 +88161,26 @@ async function runCareerMajor(){
            См. ccMajorSeedRows: у Epic змейку раскладывает таблица, а не
            мощность состава, и порядок в записи — это и есть та таблица. */
         const rows=ccMajorSeedRows(ev);
+        /* СВОЯ КОМАНДА В ПОСЕВ ХИТОВ НЕ ИДЁТ — В ГОНКЕ.
+
+           Когда таблицы Плей-Ина нет (её пишет только прошедший), поле сеется броском и
+           сортируется по силе. Своя команда, вставленная по своей силе, сдвигает вниз
+           всех, кто слабее, — а змейка раскладывает сдвинутых по другим хитам. Двое
+           получали почти одинаковые, но не одинаковые лобби: прогон 11 сентября,
+           17 апреля — «diff 1 of 50» после того, как номер хита уже сошёлся.
+           Пул без себя сортируется у всех одинаково, а своё место в хите — последнее,
+           тем же правилом, что в Reload (см. ccStageRoom). Соперника досадит
+           ccRaceFieldSync, как и всегда. */
+        const pool=careerCupField(lobbyCr, drafted, st.field*ccMajorHeats(), null, false, sharp);
         const seeded = rows
           ? rows.map(r=>r==='you' ? you : ccMajorTeamFrom(r))
-          : [you, ...careerCupField(lobbyCr, drafted, st.field*ccMajorHeats(), null, false, sharp)]
-              .sort((a,b)=>(b.pow||0)-(a.pow||0));
+          : (ccRaceLock() ? pool.slice() : [you, ...pool]).sort((a,b)=>(b.pow||0)-(a.pow||0));
         const heats=seedHeats(seeded, ccMajorHeats());
         const rAt=ccRaceHeatTogether(heats, you);   // гонка: один хит на комнату
         const at=rAt>=0 ? rAt : heats.findIndex(h=>h.indexOf(you)>=0);
         heatNo=(at<0 ? 0 : at)+1;
         const mine=heats[at<0 ? 0 : at];
+        if(mine.indexOf(you)<0) mine[mine.length-1]=you;
         otherHeats=heats.filter(h=>h!==mine);
         // Комната ровно того размера, каким её описывает этап: змейка делит
         // поле нацело, но своя строка уже внутри — добирать не из чего.
