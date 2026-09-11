@@ -195,6 +195,35 @@ const boot = (who) => `
         try{ const d=CC_EV_DELTA; if(d && d.key) (out.notes.sent=out.notes.sent||[]).push(d.key+' m'+Object.keys(d.money||{}).length+' p'+Object.keys(d.pr||{}).length); if(out.notes.sent && out.notes.sent.length>120) out.notes.sent.shift(); }catch(e){}
         return ds0.apply(this, arguments);
       }; }
+    /* ХИТ МЕЙДЖОРА. Красная строка 21 апреля: поля разошлись на 48 командах из 50 при
+       одинаковых людях (h104+109) — значит двое играли РАЗНЫЕ хиты одного турнира.
+       ccRaceHeatTogether выбирает хит по якорю (наименьший ник комнаты); записываем,
+       кто якорь, нашёлся ли он в моём посеве и какой хит в итоге выбран. */
+    { const sh0=seedHeats;
+      seedHeats=function(teams, n){
+        const r=sh0.apply(this, arguments);
+        try{
+          const h=x=>{ let v=0; for(const ch of String(x)){ v=(v*31+ch.charCodeAt(0))>>>0; } return v.toString(16); };
+          window.__heatIn=(teams||[]).map(t=>(t.squad||t.cards||[]).map(c=>c&&hKey(c)).join('+'));
+          window.__heatSig=h(window.__heatIn.join('|'))+' n'+window.__heatIn.length+' k'+((r||[]).length);
+        }catch(e){}
+        return r;
+      };
+      const ht0=ccRaceHeatTogether;
+      ccRaceHeatTogether=function(heats, you){
+        const at=ht0.apply(this, arguments);
+        try{
+          const me=careerCard();
+          const room=(typeof ccRaceNightRoom==='function') ? ccRaceNightRoom() : [];
+          const keys=[hKey(me)].concat(room.map(p=>hKey(p.card))).sort();
+          const anchor=keys[0];
+          const seen=(window.__heatIn||[]).some(x=>String(x).split('+').indexOf(anchor)>=0);
+          (out.notes.heats=out.notes.heats||[]).push(CAREER.career.day+' '+(CC_MP_NIGHT||'-')+
+            ' якорь '+anchor+(seen?' есть':' НЕТ')+' хит '+at+' из '+((heats||[]).length)+' · '+(window.__heatSig||'-'));
+          if(out.notes.heats.length>20) out.notes.heats.shift();
+        }catch(e){}
+        return at;
+      }; }
     // Метки хода: каждый посланный акт, кроме пульса.
     const act0=MP.act; MP.act=function(k,p){ if(k==='fferr' && p && !out.notes.ffErr) out.notes.ffErr={day:p.day, kind:'', text:String(p.text||''), stack:out.notes.lastErr||null}; if(k!=='hb'){ if(out.notes.marks.length>=160) out.notes.marks.shift(); out.notes.marks.push(k+(p&&p.q!=null?'#'+p.q:'')+' d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' r'+CC_MP_ROLLS+' t'+Math.round((Date.now()-t0)/1000)); } return act0.apply(MP, arguments); };
     // След барьера и все служебные сообщения сервера (start/close/card/ready/state) — в метки; строка гонки посреди вечера — с откуда.
@@ -424,6 +453,7 @@ async function runOne(tag, who, port, phone){
       const only=(a,b)=>[...a].filter(k=>!b.has(k));
       const l=only(seen[0], seen[1]), r=only(seen[1], seen[0]);
       console.log('свой ник в ключе вечера: '+outs.map(r=>JSON.stringify(r.notes.card)).join(' / '));
+      outs.forEach((r,i)=>(r.notes.heats||[]).forEach(x=>console.log('   хит #'+(i+1)+': '+x)));
       outs.forEach((r,i)=>{
         const sent=(r.notes.sent||[]).filter(x=>x.indexOf('|t')>=0);
         const res=(r.notes.res||[]).filter(x=>x.indexOf('|t')>=0);
