@@ -48,6 +48,23 @@ const BOOT = `
     ccKitPanel(lobby, {zone:1, players:100, surgeAt:0, secondsLeft:125, dots:[dot(), dot({h:80, e:3}), dot()]});
     const top=[...map.querySelectorAll('.zk-top-row b')].map(b=>b.textContent);
     check('справа сверху — элимы, живые и время', top.join('|')==='3|100|2:05', top.join('|'));
+    /* СВОИ КИЛЛЫ НАД ОТРЯДНЫМИ — его слово 11.09 и его референс (турнирный HUD Фортнайта:
+       столбиком, сверху свои элиминации, под ними отрядные). В соло строка одна. */
+    { const solo=[...map.querySelectorAll('.zk-top-row b')].map(b=>b.textContent);
+      check('в соло строка киллов одна', solo.length===3, solo.join('|'));
+      const duo=Object.assign({}, you, {squad:[{handle:'Caller', _attrs:ccRookieAttrs(90,'roleFRG')},
+                                               {handle:'Mate', _attrs:ccRookieAttrs(70,'roleIGL')}]});
+      const lobby2=[{name:'A'}, duo, {name:'B'}];
+      ccKitPanel(lobby2, {zone:1, players:100, surgeAt:0, secondsLeft:125, dots:[dot(), dot({h:80, e:6}), dot()]});
+      const two=[...map.querySelectorAll('.zk-top-row b')].map(b=>b.textContent);
+      out.notes.push('столбик в дуо: '+two.join('|'));
+      check('в дуо строк киллов две', two.length===4, two.join('|'));
+      const mineK=+two[0], teamK=+two[1];
+      check('своя строка стоит над отрядной и не больше её', mineK<=teamK && teamK===6, two.join('|'));
+      check('своя строка отмечена своей, отрядная — отрядной',
+            map.querySelectorAll('.zk-top-row.zk-team').length===1,
+            String(map.querySelectorAll('.zk-top-row.zk-team').length));
+      check('меткий берёт больше половины', mineK>teamK-mineK, mineK+' vs '+(teamK-mineK)); }
     // Компас сверху: курс из направления стрелки (a=0 — восток → курс 90).
     check('компас показывает курс отряда', (map.querySelector('.zk-heading')||{}).textContent==='90' && map.querySelectorAll('.zk-compass .card').length>=1,
           (map.querySelector('.zk-heading')||{}).textContent);

@@ -1904,6 +1904,8 @@
   // alone, so a caller driving its own clock can put a frame on the screen
   // without wiping the list of who has just died — which is what a caller that
   // reached for play() one frame at a time was doing to itself.
+  /* Раскладка отдаётся наружу: тот же счёт рисует и столбик худа игры (ccKitPanel в
+     index.html). Две реализации одного правила разъехались бы на первой же правке. */
   function show(handle, frame, opts){
     opts = opts || {};
     draw(handle, frame, opts.labels, opts.roster);
@@ -1951,7 +1953,7 @@
   }
 
   root.ZoneReplay = {mount:mount, play:play, unmount:unmount,
-                     between:between, show:show, clearFeed:clearFeed, note:note,
+                     between:between, show:show, killShare:killShare, clearFeed:clearFeed, note:note,
                      whole:whole,
                      directTrack:directTrack,
                      // Pure, and the one part of the naming a browser is not

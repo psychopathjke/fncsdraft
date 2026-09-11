@@ -3066,6 +3066,8 @@
   .zr-kit .zk-top-row{display:flex;align-items:center;gap:6px;}
   .zr-kit .zk-top-row b{font-size:15px;transform:skewX(-8deg);font-variant-numeric:tabular-nums;min-width:26px;text-align:right;}
   .zr-kit .zk-top-row i{display:block;width:14px;height:14px;flex:none;background:#e6ecf7;}
+  .zr-kit .zk-top-row.zk-team b{font-size:12px;opacity:.72;}
+  .zr-kit .zk-top-row.zk-team i{width:11px;height:11px;opacity:.72;}
   .zr-kit .zk-ico-skull{clip-path:polygon(20% 0,80% 0,100% 30%,100% 62%,84% 70%,84% 100%,60% 100%,60% 84%,40% 84%,40% 100%,16% 100%,16% 70%,0 62%,0 30%);}
   .zr-kit .zk-ico-man{clip-path:polygon(35% 0,65% 0,72% 28%,55% 36%,90% 55%,90% 100%,10% 100%,10% 55%,45% 36%,28% 28%);}
   .zr-kit .zk-ico-clock{border-radius:50%;background:transparent;border:2px solid #e6ecf7;width:10px;height:10px;position:relative;}
@@ -5595,7 +5597,7 @@
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
 <script src="zone-sim.js?v=e0eba4ea"></script>
-<script src="zone-replay.js?v=c10a10f0"></script>
+<script src="zone-replay.js?v=46af0f33"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -52475,17 +52477,26 @@ function applyStageBias(pointsFn){
    среднее число элимов за игру, то есть ровно то, чем один в паре отличается от другого.
    Веса едут на роастере, раскладывает их сам показ (killShare в zone-replay): он повторяем и
    не тратит ни одного броска вечера. Соло — вес один, число одно. */
-function ccRosterYouSplit(roster, you){
+function ccYouKillSplit(you){
   try{
-    if(!roster || !you) return roster;
-    const sq=(you.squad||[]).filter(Boolean);
-    if(sq.length<2) return roster;
+    const sq=(you && you.squad||[]).filter(Boolean);
+    if(sq.length<2) return null;
     const me=(typeof careerCard==='function') ? careerCard() : null;
     const key=me ? hKey(me) : null;
     let seat=key ? sq.findIndex(c=>hKey(c)===key) : -1;
     if(seat<0) seat=0;
-    roster.youKills={seat:seat, w:sq.map(c=>{ const a=(typeof attrsFor==='function') ? attrsFor(c) : null; return (a && a.aim) || 50; })};
-  }catch(e){}
+    return {seat:seat, w:sq.map(c=>{ const a=(typeof attrsFor==='function') ? attrsFor(c) : null; return (a && a.aim) || 50; })};
+  }catch(e){ return null; }
+}
+// Сколько из отрядного счёта твои (правило одно, живёт в zone-replay).
+function ccYouKills(you, total){
+  const sp=ccYouKillSplit(you);
+  if(!sp || typeof ZoneReplay==='undefined' || !ZoneReplay.killShare) return null;
+  const v=ZoneReplay.killShare(total||0, sp.w, sp.seat);
+  return (v==null) ? ((total||0)===0 ? 0 : null) : v;
+}
+function ccRosterYouSplit(roster, you){
+  try{ if(roster && you){ const sp=ccYouKillSplit(you); if(sp) roster.youKills=sp; } }catch(e){}
   return roster;
 }
 function resolveDuel(a, b, exponent){
@@ -52949,7 +52960,16 @@ function ccKitPanel(lobby, frame){
   box.innerHTML=
     compass+
     '<div class="zk-top">'+
-      '<div class="zk-top-row"><b>'+(d.e||0)+'</b><i class="zk-ico-skull"></i></div>'+
+      /* СВОИ КИЛЛЫ НАД ОТРЯДНЫМИ — его слово 11.09: «выше килы мои ниже на команду», и его же
+         референс, турнирный HUD Фортнайта: столбиком, число слева, значок справа. Столбик
+         худа игры показывал только счёт ОТРЯДА (d.e): своих элиминаций в нём не было вовсе,
+         а чип в шапке проигрывателя здесь погашен (.zr-head-quiet) — отсюда «до сих пор нет
+         в худе». Соло — строка одна, отряд это ты. */
+      (function(){
+        const team=d.e||0, mineK=ccYouKills(you, team);
+        return (mineK==null ? '' : '<div class="zk-top-row"><b>'+mineK+'</b><i class="zk-ico-skull"></i></div>')+
+          '<div class="zk-top-row'+(mineK==null ? '' : ' zk-team')+'"><b>'+team+'</b><i class="zk-ico-skull"></i></div>';
+      })()+
       '<div class="zk-top-row"><b>'+(frame.players!=null?frame.players:frame.alive||0)+'</b><i class="zk-ico-man"></i></div>'+
       '<div class="zk-top-row"><b>'+clock+'</b><i class="zk-ico-clock"></i></div>'+
     '</div>'+
@@ -58519,7 +58539,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f3e466cf';
+const CC_BUILD='c11f1cfb';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
