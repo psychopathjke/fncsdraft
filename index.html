@@ -2551,8 +2551,18 @@
      Движение медленное и без миганий нарочно: это содержимое плеера, а не украшение
      страницы, но у него в Chrome всегда включено «меньше движения», и дёргаться на
      экране ничего не должно. */
-  #screen-career-hub .tv-fb{position:absolute;inset:0;overflow:hidden;
+  /* НАРИСОВАННАЯ СЦЕНА — ТОЛЬКО КОГДА РОЛИКА НЕТ.
+     Его слово 11 сентября: «до сих пор в начале симуляции стрима нарисованная фигня».
+     Рисунок лежал под плеером и был виден всё время, пока ролик грузится, — то есть
+     первые секунды каждого эфира. Настоящий стрим в эту секунду просто чёрный, таким
+     он теперь и будет: рисунок включается, только если плеер за CC_TV_FB_MS так и не
+     заиграл (нет сети, ютуб закрыт, встраивание запрещено) — ровно то, ради чего он
+     и рисовался. */
+  #screen-career-hub .tv-fb{position:absolute;inset:0;overflow:hidden;opacity:0;
+    transition:opacity .3s ease;
     background:linear-gradient(180deg,#4aa7e0 0%,#8ec9ea 46%,#cfe6f2 62%,#6f9f5a 62%,#4f7f42 100%);}
+  #screen-career-hub .tv-fb[data-on]{opacity:1;}
+  @media (prefers-reduced-motion: reduce){ #screen-career-hub .tv-fb{transition:none;} }
   #screen-career-hub .tv-fb i, #screen-career-hub .tv-fb b, #screen-career-hub .tv-fb u{
     position:absolute;display:block;}
   /* Остров вдалеке и стена шторма справа. */
@@ -2644,11 +2654,8 @@
      Соотношение то же (16/9 в 16/9), поэтому чёрных полос не появляется. */
   #screen-career-hub .tv-clip{position:absolute;top:-16%;left:-16%;width:132%;height:132%;
     border:0;pointer-events:none;background:#000;}
-  /* Подпись автора: чья это игра. Мелкая, в углу, но читаемая. */
-  #screen-career-hub .tv-clip-by{position:absolute;right:8px;bottom:8px;z-index:2;
-    font-size:11px;color:rgba(255,255,255,.72);background:rgba(0,0,0,.5);
-    border-radius:3px;padding:2px 6px;max-width:60%;overflow:hidden;
-    text-overflow:ellipsis;white-space:nowrap;}
+  /* Подписи автора в кадре больше нет (его слово 11 сентября: «убрать footage чей»).
+     Ролики выбраны им самим, и в кадре эфира эта строка читалась как чужая метка. */
   #screen-career-hub .tv-hud{position:absolute;left:10px;top:10px;display:flex;gap:8px;z-index:2;}
   #screen-career-hub .tv-hud span{background:rgba(0,0,0,.65);border-radius:4px;padding:3px 8px;
     font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;}
@@ -58612,7 +58619,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f10072a5';
+const CC_BUILD='827d8cb5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -93615,9 +93622,12 @@ function ccTvClipHello(el){
   try{ el.contentWindow.postMessage(JSON.stringify({event:'listening', id:1, channel:'widget'}), '*'); }
   catch(e){}
 }
-// Пошла картинка. Только теперь ролик видно — до этого в кадре рисунок.
+// Сколько ждём плеер, прежде чем признать, что ролика не будет, и показать рисунок.
+const CC_TV_FB_MS=4000;
+// Пошла картинка. Только теперь ролик видно — до этого кадр чёрный.
 function ccTvClipPlaying(){
   document.querySelectorAll('.tv-clip-slot').forEach(function(s){ s.dataset.on='1'; });
+  document.querySelectorAll('.tv-fb').forEach(function(f){ f.dataset.on=''; });
   document.querySelectorAll('.tv-clip').forEach(function(e){ e.dataset.playing='1'; e.dataset.try=0; });
 }
 /* Кусок доиграл до end (или плеер почему-то встал) — гоним его заново. Без этого в
@@ -93635,6 +93645,12 @@ function ccTvClipLoop(){
   const el=document.querySelector('.tv-clip'); if(!el) return;
   const at=+(el.dataset.at||0);
   el.dataset.playing='';
+  /* И ПРЯЧЕМ КАДР НА ВРЕМЯ ПЕРЕЗАПУСКА. Его слово 11 сентября: «ютуб там иногда
+     высвечивается». Кусок доиграл — плеер выкладывает поверх стоп-кадра свою шапку,
+     а перезагрузка рамки начинается с его заставки с логотипом. Пока идёт перезапуск,
+     экран чёрный, как между сценами на настоящем стриме; вернётся он сам, как только
+     плеер снова скажет «играю». */
+  document.querySelectorAll('.tv-clip-slot').forEach(function(s){ s.dataset.on=''; });
   const say=(func, args)=>{ try{
     el.contentWindow.postMessage(JSON.stringify({event:'command', func:func, args:args||[]}), '*');
   }catch(e){} };
@@ -93677,8 +93693,14 @@ function ccTvClipMount(){
   slot.innerHTML='<iframe class="tv-clip" src="'+esc(ccTvClipSrc(p))+'" title="'+esc(p.c.who)+'"'+
     ' data-at="'+p.at+'" data-to="'+p.to+'" data-k="'+(p.k!=null ? p.k : 0)+'"'+
     ' allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin"'+
-    ' frameborder="0" onload="ccTvClipHello(this)"></iframe>'+
-    '<span class="tv-clip-by">'+esc(T.ccTvClipBy(p.c.who))+'</span>';
+    ' frameborder="0" onload="ccTvClipHello(this)"></iframe>';
+  /* Не заиграл за CC_TV_FB_MS — показываем рисунок: значит ролика не будет вовсе.
+     Заиграл — рисунок так и не появится (ccTvClipPlaying его гасит). */
+  setTimeout(function(){
+    const el=document.querySelector('.tv-clip');
+    if(!el || !el.isConnected || el.dataset.playing) return;
+    document.querySelectorAll('.tv-fb').forEach(function(f){ f.dataset.on='1'; });
+  }, CC_TV_FB_MS);
 }
 /* Место под ролик — поверх сцены. Рисуется вместе с кадром, а плеер вставляется
    следующим тиком: к этой секунде разметка уже в документе. */
