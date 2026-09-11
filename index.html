@@ -3099,6 +3099,16 @@
   .cc-club-sum{width:74px;text-align:right;background:rgba(8,12,24,.5);border:1px solid var(--lb-line);
     border-radius:8px;color:inherit;padding:4px 8px;font:inherit;font-size:12px;margin-right:8px;}
   .cc-club-say{display:block;font-style:normal;font-size:11px;opacity:.8;color:#7de3a8;}
+  /* КНОПКИ СТРОК КЛУБА — НЕ ВО ВСЮ ШИРИНУ.
+     В хабе .ch-sign по умолчанию width:100% (это верно для одиночной кнопки под плиткой
+     и неверно для кнопки в строке). На узкой колонке это было незаметно, а на широком
+     экране «Вывести в карман», «Отпустить», «В состав» и «Своя картинка» растягивались
+     через всю плитку жёлтыми лентами — снимок 11 сентября. Правило то же, что у строки
+     покупки в магазине (.cc-buy): кнопка берёт своё, имя забирает остальное. */
+  #screen-career-hub .cc-club .ch-row .ch-sign,
+  #screen-career-hub .cc-club .cc-club-row .ch-sign,
+  #screen-career-hub .cc-club .cc-club-tagrow .ch-sign{flex:0 0 auto;width:auto;min-width:92px;
+    padding:8px 14px;white-space:nowrap;margin-left:8px;}
   .cc-club-say.no{color:#ff9a8b;}
   .cc-club-say.perk{color:#9fc0ff;}
   .cc-club-perks{display:flex;gap:10px;margin-top:3px;font-style:normal;}
@@ -58619,7 +58629,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='827d8cb5';
+const CC_BUILD='b323fade';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
