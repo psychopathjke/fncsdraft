@@ -138,6 +138,23 @@ const boot = (who) => `
     const runFf=async function(){
     while(Date.now()-t0<${BUDGET_MS} && (CAREER.career.day<${JSON.stringify(FF)} || CC_FF) && !CAREER.career.seasonOver){
       await wait(1000);
+      /* НАПАРНИК УШЁЛ — БЕРЁМ НОВОГО.
+         Прогон 11.09 (компьютер и телефон): у одного напарник ушёл 19 марта, и дальше
+         карьера доиграла год одна — 59 турниров против 130 у соседа, после чего доски
+         сравнивать бессмысленно. Живой игрок садит нового руками, на перемотке этого
+         некому сделать, поэтому это делает проба. Только между вечерами: менять состав
+         посреди игры нельзя, его увидит соперник (ccRaceFieldSync).
+         Чужого напарника не берём — ccRaceTakenKeys, его правило 7.09. */
+      try{
+        if(careerMatesShort()>0 && !(typeof CAREER_RUN!=='undefined' && CAREER_RUN)){
+          const taken=(typeof ccRaceTakenKeys==='function') ? ccRaceTakenKeys() : new Set();
+          const pick=(careerDuoSearchPool(true)||[]).find(p=>p && p.handle && !taken.has(hKey(p.handle)));
+          if(pick && careerMateSeat({handle:pick.handle, cardRegion:(pick.card&&pick.card.region)||'EU',
+                                     dev:0, since:CAREER.career.day}, 0)){
+            out.notes.mateTakes=(out.notes.mateTakes||[]).concat(CAREER.career.day+' '+pick.handle);
+          }
+        }
+      }catch(e){ out.notes.mateErr=String(e && e.message || e); }
       if(out.notes.ffErr) { await wait(3000); break; }
       // Перемотка остановилась, вечера нет, цель не достигнута — ждать нечего (год 9.09: 5 часов стоя на 13.06).
       if(!CC_FF && !(typeof CAREER_RUN!=='undefined' && CAREER_RUN) && CAREER.career.day<${JSON.stringify(FF)}){ out.notes.ffIdle=(out.notes.ffIdle||0)+1; if(out.notes.ffIdle>90){ out.notes.ffErr=out.notes.ffErr||{day:CAREER.career.day, kind:'', text:'перемотка остановилась без ошибки'}; break; } } else out.notes.ffIdle=0;
@@ -281,7 +298,9 @@ async function runOne(tag, who, port, phone){
     console.log(n+': '+(r.fail ? 'FAIL '+r.fail : 'дошёл до '+r.notes.dayAfter)+' · див '+r.notes.div+' · сезон закрыт '+r.notes.seasonOver+
       ' · журнал '+((r.notes.table||[]).length)+' '+JSON.stringify(r.notes.kinds||{})+' · броски '+r.notes.rolls+' · $'+r.notes.money+' · ovr '+r.notes.ovr+' · титулов '+r.notes.titles+
       ' · напарники '+JSON.stringify(r.notes.mates)+' noMate '+r.notes.noMate+' · форма '+r.notes.form+' энергия '+r.notes.energy+' · '+Math.round((r.notes.secs||0)/60)+' мин · dbg '+JSON.stringify(r.notes.dbg));
-    console.log('   напарник '+r.notes.mate+' · соперники '+r.notes.rival+' · врозь на старте: '+r.notes.apart);
+    console.log('   напарник '+r.notes.mate+' · соперники '+r.notes.rival+' · врозь на старте: '+r.notes.apart+
+      ((r.notes.mateTakes||[]).length ? ' · брал нового: '+r.notes.mateTakes.join(', ') : '')+
+      (r.notes.mateErr ? ' · напарник не сел: '+r.notes.mateErr : ''));
     if(r.notes.s1) console.log('   сезон 1: '+JSON.stringify(r.notes.s1)+' → сезон '+r.notes.season+' (состав '+r.notes.size+'): старт '+JSON.stringify(r.notes.s2start)+' · напарники '+JSON.stringify(r.notes.s2mates)+' · вечеров по сезонам '+JSON.stringify(r.notes.bySeason));
     console.log('   вечера: '+(r.notes.nights||[]).join(' | '));
     if(r.notes.renderRolls && r.notes.renderRolls.length) console.log('   FAIL броски в отрисовке: '+r.notes.renderRolls.join(' | '));
