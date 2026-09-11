@@ -58447,6 +58447,24 @@ function ccSlotCard(n){
           org:(s.org&&s.org.name)||null, over:!!s.career.seasonOver,
           retired:!!s.career.retired};
 }
+/* ДЕНЬГИ ПО ССЫЛКЕ — ТОЛЬКО ТАМ, ГДЕ ИДЁТ ОТЛАДКА.
+   Его просьба 11 сентября: «сделай мне баланс 2 миллиона, чтоб посмотреть функционал».
+   Клуб стоит миллион, и дойти до него честной игрой — несколько сезонов, а посмотреть
+   надо сейчас. Ссылка удобнее консоли, но такая же ссылка на боевом сайте — это кнопка
+   «выдать себе денег» для кого угодно, поэтому адрес проверяется: fncsdraft.com про
+   ?cash не знает вовсе. Заработанным эти деньги не считаются — earnings не трогаем,
+   иначе они поедут в доски призовых и в рейтинг. */
+function ccDebugCash(){
+  try{
+    const host=String(location.hostname||'');
+    if(/(^|\.)fncsdraft\.com$/i.test(host)) return false;
+    const m=String(location.search||'').match(/[?&]cash=([0-9]{1,12})/);
+    if(!m || !CAREER || !CAREER.career) return false;
+    CAREER.career.balance=Number(m[1]);
+    careerSave();
+    return true;
+  }catch(e){ return false; }
+}
 function careerLoad(){
   try{ CAREER=JSON.parse(localStorage.getItem(LS_SLOT(ccSlot()))||'null'); }catch(e){ CAREER=null; }
   // Снимок роастера носит на себе то, что с ним сделала карьера, которая
@@ -58586,7 +58604,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='929daf92';
+const CC_BUILD='2d24c5f6';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -61849,7 +61867,7 @@ function careerEntry(direct){
      карьера обязана открыться и без сети. localStorage держит последнее
      известное состояние команды, а 'state' от сервера приедет и перепишет его
      через ccApplyTeamState. См. ccMpBoot. */
-  if(careerExists()){ careerLoad(); careerMigrateClock(); careerMigrateMoney(); careerMigrateOrg(); ccMpBoot(); openCareerHub(); return; }
+  if(careerExists()){ careerLoad(); careerMigrateClock(); careerMigrateMoney(); careerMigrateOrg(); ccDebugCash(); ccMpBoot(); openCareerHub(); return; }
   // The slot the tile opens is empty, but another one may not be — that is what
   // switching careers looks like from here, so ask rather than start a third.
   let any=false;
