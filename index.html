@@ -58543,7 +58543,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='0482278d';
+const CC_BUILD='a57bcf12';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -83991,9 +83991,16 @@ function ccShareOf(cash, team){
    комнату актом 'res'; кто этот вечер не играл, добавляет его к себе один раз — по ключу дня и
    вида (cr.evSeen). Свои вечера помечаются тем же ключом, так что дважды не считается. */
 let CC_EV_DELTA=null;
+/* КЛЮЧ ВЕЧЕРА — ДЕНЬ, ВИД И ДИВИЗИОН. Ключ «день|вид» сталкивал ДВА РАЗНЫХ вечера: сосед
+   играет тот же кубок в своём дивизионе, оба помечают один ключ, и каждый отказывается от
+   чужой копилки как от своей собственной. Оба вечера в мире были, а в досках у каждого
+   остался только свой. Годовая проба на двоих 11.09: 6 строк из 454 разошлись — три дуо,
+   у одного клиента на пять-шесть вечеров меньше. Вместе играют ОДИН дивизион, значит
+   ключ у них сходится по-прежнему; врозь — расходится, и копилки доезжают в обе стороны. */
 function ccEvKey(next, day){
   const t=next && (next.id || next.type) || '?';
-  return String(day||careerToday())+'|'+String(t);
+  const div=(CAREER && CAREER.career && CAREER.career.division) || 0;
+  return String(day||careerToday())+'|'+String(t)+'|d'+div;
 }
 function ccEvSeen(){ const cr=CAREER && CAREER.career; if(!cr) return {}; if(!cr.evSeen) cr.evSeen={}; return cr.evSeen; }
 function ccEvSeenMark(key){

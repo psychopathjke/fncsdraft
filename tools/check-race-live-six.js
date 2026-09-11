@@ -163,6 +163,12 @@ const boot = (who) => `
     out.notes.bySeason=(cr.log||[]).reduce((a,r)=>{ const s=r.season||1; a[s]=(a[s]||0)+1; return a; }, {});
     out.notes.season=cr.season; out.notes.size=careerSquadSize();
     out.notes.rolls=CC_MP_ROLLS; out.notes.dayAfter=cr.day; out.notes.div=cr.division; out.notes.seasonOver=!!cr.seasonOver;
+    /* ДОСКИ — СВЕРКОЙ, А НЕ ГЛАЗОМ. Его скрины 11.09: две вкладки, доска призовых
+       расходится на сотни долларов и один-два вечера. Здесь каждый клиент кладёт свою
+       доску без СВОИХ строк (они у каждого свои по определению), а Node их сравнивает. */
+    out.notes.board=(function(){ try{
+      return careerMoneyRows('year').filter(r=>!r.you).map(r=>r.name+':'+r.events+':'+r.usd);
+    }catch(e){ return null; } })();
     out.notes.money=cr.earnings; out.notes.ovr=CAREER.player.ovr; out.notes.titles=(cr.ewc||[]).length;
     out.notes.mates=careerMates().map(m=>m&&m.handle); out.notes.noMate=(typeof careerNoMate==='function')?careerNoMate('eval'):null; out.notes.form=cr.form; out.notes.energy=cr.energy;
     out.notes.dbg={rand:!!CC_MP_RAND, state:MP.state, split:(typeof CC_MP_SPLIT_AT!=='undefined')?CC_MP_SPLIT_AT:null, race:(typeof CC_RACE_DBG!=='undefined')?CC_RACE_DBG:null, rivals:ccRaceRivals().map(p=>p.card.handle+':'+p.div+':'+p.day), ff:!!CC_FF};
@@ -265,6 +271,21 @@ async function runOne(tag, who, port){
   const days=outs.map(r=>new Set((r.notes.table||[]).map(t=>t.split(' ')[0])));
   const all=[...new Set(outs.flatMap(r=>(r.notes.table||[]).map(t=>t.split(' ')[0])))].sort();
   console.log('турнирных дней у всех вместе: '+all.length+' · у каждого: '+days.map(d=>d.size).join('/'));
+  // Доски призовых: у всех одна, кроме своих строк.
+  const boards=outs.map(r=>new Map((r.notes.board||[]).map(x=>{ const i=x.indexOf(':'); return [x.slice(0,i), x.slice(i+1)]; })));
+  if(boards.length>1 && boards[0].size){
+    const mine=outs.map(r=>new Set([].concat(r.notes.mates||[], (r.notes.dbg&&r.notes.dbg.rivals)||[]).filter(Boolean)));
+    let diff=[];
+    boards[0].forEach((v, k)=>{
+      for(let i=1;i<boards.length;i++){
+        const w=boards[i].get(k);
+        if(w===undefined || w===v) continue;              // нет строки — он её просто не видел
+        if(diff.length<6) diff.push(k+' '+v+' vs '+w+' (#'+(i+1)+')');
+      }
+    });
+    console.log('доски призовых: строк '+boards[0].size+', расходится '+diff.length+(diff.length?': '+diff.join(' | '):''));
+    if(diff.length){ console.log('   FAIL доски призовых разошлись'); bad++; }
+  }
   if(bad){ console.log('FAIL: '+bad); process.exit(1); }
   console.log('гонка на '+N+': все дошли до '+FF+' без красных строк и без встававшей перемотки');
 })().catch(e=>{ console.error(e.message||e); process.exit(2); });
