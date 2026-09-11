@@ -3062,6 +3062,11 @@
   .zr-kit .zk-thresh.on .zk-tri{background:#ff4d4d;}
   /* Верхний правый столбик: элимы · живые · время, число слева от иконки. */
   .zr-head-quiet>span:last-child{visibility:hidden;}
+  .cc-club-new{display:flex;gap:8px;margin-top:8px;}
+  .cc-club-new input{flex:1;min-width:0;background:rgba(8,12,24,.5);border:1px solid var(--lb-line);
+    border-radius:8px;color:inherit;padding:6px 10px;font:inherit;}
+  .cc-club-row span{opacity:.75;font-size:12px;margin-left:auto;padding-right:10px;}
+  .cc-club-crest{vertical-align:middle;margin-right:6px;}
   .zr-kit .zk-top{position:absolute;right:12px;top:8px;display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
   .zr-kit .zk-top-row{display:flex;align-items:center;gap:6px;}
   .zr-kit .zk-top-row b{font-size:15px;transform:skewX(-8deg);font-variant-numeric:tabular-nums;min-width:26px;text-align:right;}
@@ -7563,6 +7568,7 @@ ccMoveGoHome:'Вернуться домой',
 ccMoveNoCash:'Не хватает на первый месяц',
 ccMoveEdge:v=>'+'+v+' к ближнему бою',
 ccShopHint:'Призовые тратятся на то, что делает тренировки весомее',
+ccClubTitle:'Своя организация', ccClubHint:'Основать стоит денег, содержать — тоже. Клуб живёт с призовых своего состава', ccClubFound:'Основать', ccClubNamePh:'Название клуба', ccClubCash:'Касса клуба', ccClubKeep:'Содержание', ccClubMonth:'в месяц', ccClubSeats:(n,m)=>'Состав: '+n+' из '+m, ccClubCut:n=>'клуб берёт '+n+'% призовых состава', ccClubSign:'Подписать', ccClubDrop:'Отпустить', ccClubFree:'Свободные дуо', ccClubEmpty:'Пока никого', ccClubWon:'принесли', ccClubIn:'Пришло', ccClubOut:'Ушло', ccClubNoCash:'Не хватает денег', ccNewsClubFound:n=>'Открыл свою организацию — '+n, ccNewsClubSign:(c,d)=>c+' подписывает '+d, ccNewsClubLeft:(c,d)=>d+' покидают '+c, ccNewsClubUnpaid:(c,d)=>d+' ушли из '+c+' — клубу нечем платить',
 ccShopTrain:'Прокачка за день', ccShopOwned:'куплено',
 ccShopmouse3:'Finalmouse UltralightX', ccShopkeyboard3:'Wooting 60HE v2', ccShopkeyboard4:'Custom HE Keyboard',
 ccShopheadset3:'Audeze LCD-GX', ccShopheadset4:'Audeze LCD-3',
@@ -9525,6 +9531,7 @@ ccMoveGoHome:'Go back home',
 ccMoveNoCash:'Not enough for the first month',
 ccMoveEdge:v=>'+'+v+' close range',
 ccShopHint:'Prize money buys the things that make a training day count',
+ccClubTitle:'Your own org', ccClubHint:'Founding costs money, so does keeping it. A club lives off its roster\u2019s prize money', ccClubFound:'Found it', ccClubNamePh:'Club name', ccClubCash:'Club cash', ccClubKeep:'Upkeep', ccClubMonth:'a month', ccClubSeats:(n,m)=>'Roster: '+n+' of '+m, ccClubCut:n=>'the club takes '+n+'% of its roster\u2019s prizes', ccClubSign:'Sign', ccClubDrop:'Release', ccClubFree:'Free duos', ccClubEmpty:'Nobody yet', ccClubWon:'brought in', ccClubIn:'In', ccClubOut:'Out', ccClubNoCash:'Not enough money', ccNewsClubFound:n=>'Started my own org — '+n, ccNewsClubSign:(c,d)=>c+' signs '+d, ccNewsClubLeft:(c,d)=>d+' leave '+c, ccNewsClubUnpaid:(c,d)=>d+' left '+c+' — the club could not pay',
 ccShopTrain:'Training gain', ccShopOwned:'owned',
 ccShopmouse3:'Finalmouse UltralightX', ccShopkeyboard3:'Wooting 60HE v2', ccShopkeyboard4:'Custom HE Keyboard',
 ccShopheadset3:'Audeze LCD-GX', ccShopheadset4:'Audeze LCD-3',
@@ -11611,6 +11618,7 @@ ccSpotTag:a=>a>0?'MAISON · '+a:'MAISON',
 ccMoveGoHome:'Rentrer chez toi',
 ccMoveNoCash:'Pas assez pour le premier mois',
 ccShopHint:'Les gains achètent ce qui fait qu’une journée d’entraînement compte',
+ccClubTitle:'Ton organisation', ccClubHint:'La fonder coûte, la maintenir aussi. Le club vit des gains de son effectif', ccClubFound:'Fonder', ccClubNamePh:'Nom du club', ccClubCash:'Caisse du club', ccClubKeep:'Entretien', ccClubMonth:'par mois', ccClubSeats:(n,m)=>'Effectif : '+n+' sur '+m, ccClubCut:n=>'le club prend '+n+'% des gains', ccClubSign:'Signer', ccClubDrop:'Libérer', ccClubFree:'Duos libres', ccClubEmpty:'Personne encore', ccClubWon:'ont rapporté', ccClubIn:'Entrées', ccClubOut:'Sorties', ccClubNoCash:'Pas assez d\u2019argent', ccNewsClubFound:n=>'J\u2019ai fondé mon organisation — '+n, ccNewsClubSign:(c,d)=>c+' signe '+d, ccNewsClubLeft:(c,d)=>d+' quittent '+c, ccNewsClubUnpaid:(c,d)=>d+' ont quitté '+c+' — le club ne pouvait pas payer',
 ccShopTrain:'Gain à l’entraînement',
 ccShopOwned:'possédé',
 ccShoppc:'Nouveau PC',
@@ -14867,6 +14875,7 @@ ccSpotBack:"Torna alla carriera",
 ccMoveGoHome:"Torna a casa",
 ccMoveNoCash:"Non basta per il primo mese",
 ccShopHint:"Il montepremi compra le cose che fanno rendere una giornata di allenamento",
+ccClubTitle:'La tua organizzazione', ccClubHint:'Fondarla costa, mantenerla pure. Il club vive dei premi del suo roster', ccClubFound:'Fonda', ccClubNamePh:'Nome del club', ccClubCash:'Cassa del club', ccClubKeep:'Mantenimento', ccClubMonth:'al mese', ccClubSeats:(n,m)=>'Roster: '+n+' su '+m, ccClubCut:n=>'il club prende il '+n+'% dei premi', ccClubSign:'Firma', ccClubDrop:'Libera', ccClubFree:'Duo liberi', ccClubEmpty:'Ancora nessuno', ccClubWon:'hanno portato', ccClubIn:'Entrate', ccClubOut:'Uscite', ccClubNoCash:'Soldi insufficienti', ccNewsClubFound:n=>'Ho fondato la mia organizzazione — '+n, ccNewsClubSign:(c,d)=>c+' firma '+d, ccNewsClubLeft:(c,d)=>d+' lasciano '+c, ccNewsClubUnpaid:(c,d)=>d+' hanno lasciato '+c+' — il club non poteva pagare',
 ccShopTrain:"Guadagno da allenamento",
 ccShopOwned:"posseduto",
 ccShopmouse3:"Finalmouse UltralightX",
@@ -17366,6 +17375,7 @@ ccSpotBack:"Voltar para a carreira",
 ccMoveGoHome:"Voltar para casa",
 ccMoveNoCash:"Não dá nem para o primeiro mês",
 ccShopHint:"A premiação compra as coisas que fazem um dia de treino render",
+ccClubTitle:'Sua organização', ccClubHint:'Fundar custa, manter também. O clube vive dos prêmios do seu elenco', ccClubFound:'Fundar', ccClubNamePh:'Nome do clube', ccClubCash:'Caixa do clube', ccClubKeep:'Manutenção', ccClubMonth:'por mês', ccClubSeats:(n,m)=>'Elenco: '+n+' de '+m, ccClubCut:n=>'o clube fica com '+n+'% dos prêmios', ccClubSign:'Contratar', ccClubDrop:'Liberar', ccClubFree:'Duplas livres', ccClubEmpty:'Ninguém ainda', ccClubWon:'renderam', ccClubIn:'Entrou', ccClubOut:'Saiu', ccClubNoCash:'Dinheiro insuficiente', ccNewsClubFound:n=>'Abri minha organização — '+n, ccNewsClubSign:(c,d)=>c+' contrata '+d, ccNewsClubLeft:(c,d)=>d+' saem de '+c, ccNewsClubUnpaid:(c,d)=>d+' saíram de '+c+' — o clube não pôde pagar',
 ccShopTrain:"Ganho de treino",
 ccShopOwned:"já é seu",
 ccShopmouse3:"Finalmouse UltralightX",
@@ -70988,6 +70998,178 @@ function careerOrgCutFor(tier){
 }
 // The cut the career is actually on: what was signed, and nothing for a contract
 // that predates the term.
+/* ===== СВОЯ ОРГАНИЗАЦИЯ =====================================================
+
+   Его слово 11 сентября: «вот своя организация интересно», и сразу следом —
+   «создать организацию это же тоже денег стоит», «на поддержание». Так и
+   сделано: деньги уходят трижды.
+
+     ОСНОВАТЬ      — разовые CC_CLUB_COST. Клуб, который тебя держал, ты при
+                     этом покидаешь: играть под своим флагом и получать чужую
+                     зарплату нельзя. Зато и доли с призовых у тебя больше
+                     никто не берёт — своя команда играет на себя.
+     СОДЕРЖАТЬ     — CC_CLUB_KEEP каждый месяц, просто чтобы клуб был: офис,
+                     менеджер, перелёты. Пустой клуб это чистый убыток.
+     ЗАРПЛАТЫ      — за каждое подписанное дуо, по их рейтингу.
+
+   А приходит с двух сторон: доля CC_CLUB_CUT с призовых состава (её считает
+   доска призовых, которая и так ведётся по людям) и спонсор CC_CLUB_SPONSOR за
+   каждое дуо в составе. Хорошее дуо окупает себя, слабое проедает кассу. Не
+   хватило на зарплату — состав уходит сам, и об этом пишут в ленте. */
+const CC_CLUB_COST=50000;      // основать — как хорошая машина в этом же магазине
+const CC_CLUB_KEEP=2500;       // содержание в месяц
+const CC_CLUB_SEATS=3;         // сколько дуо держит клуб
+const CC_CLUB_CUT=0.2;         // доля клуба с призовых состава
+const CC_CLUB_SPONSOR=1000;    // спонсор за дуо в месяц
+function careerClub(){ const cr=CAREER && CAREER.career; return (cr && cr.club) || null; }
+/* Плитка клуба — на вкладке магазина, там же, где тратятся деньги. Пока клуба нет:
+   строка с ценой и поле для названия. Есть: касса, состав с зарплатами и что каждое
+   дуо принесло, и список свободных пар. */
+function careerClubHTML(){
+  const cr=CAREER && CAREER.career; if(!cr) return '';
+  const T=L(), club=careerClub();
+  if(!club){
+    const can=(cr.balance||0)>=CC_CLUB_COST;
+    return '<div class="ch-tile cc-club"><h4>'+esc(T.ccClubTitle)+'</h4>'+
+      '<div class="ch-hint">'+esc(T.ccClubHint)+'</div>'+
+      '<div class="ch-row"><em>'+esc(T.ccClubKeep)+'</em><b>$'+ccNum(CC_CLUB_KEEP)+' '+esc(T.ccClubMonth)+'</b></div>'+
+      '<div class="cc-club-new">'+
+        '<input id="ccClubName" maxlength="24" placeholder="'+esc(T.ccClubNamePh)+'">'+
+        '<button class="ch-sign"'+(can?'':' disabled')+' onclick="careerClubNew()">$'+ccNum(CC_CLUB_COST)+'</button>'+
+      '</div>'+
+      (can ? '' : '<div class="ch-hint">'+esc(T.ccClubNoCash)+'</div>')+'</div>';
+  }
+  const roster=club.roster||[];
+  const rows=roster.map(r=>
+    '<div class="ch-row cc-club-row"><em>'+esc((r.who||[]).join(' & '))+'</em>'+
+      '<span>'+r.ovr+' · $'+ccNum(r.salary)+' '+esc(T.ccClubMonth)+
+        (r.won ? ' · '+esc(T.ccClubWon)+' $'+ccNum(Math.round(r.won)) : '')+'</span>'+
+      '<button class="ch-sign cc-club-drop" onclick="careerClubOut(\''+esc(r.id)+'\')">'+esc(T.ccClubDrop)+'</button></div>').join('');
+  const free=(roster.length<CC_CLUB_SEATS ? careerClubFree() : []).map(d=>
+    '<div class="ch-row cc-club-row"><em>'+esc(d.who.join(' & '))+'</em>'+
+      '<span>'+d.ovr+' · $'+ccNum(d.salary)+' '+esc(T.ccClubMonth)+'</span>'+
+      '<button class="ch-sign" onclick="careerClubIn(\''+esc(d.id)+'\')">'+esc(T.ccClubSign)+'</button></div>').join('');
+  return '<div class="ch-tile cc-club"><h4>'+careerCrestMono(club.name, 18, 'cc-club-crest')+esc(club.name)+'</h4>'+
+    '<div class="ch-hint">'+esc(T.ccClubCut(Math.round(CC_CLUB_CUT*100)))+'</div>'+
+    '<div class="ch-row"><em>'+esc(T.ccClubCash)+'</em><b class="'+((club.cash||0)<0?'':'ch-goal-met')+'">$'+ccNum(Math.round(club.cash||0))+'</b></div>'+
+    '<div class="ch-row"><em>'+esc(T.ccClubIn)+' · '+esc(T.ccClubOut)+'</em><b>$'+ccNum(Math.round(club.got||0))+' · $'+ccNum(Math.round(club.paid||0))+'</b></div>'+
+    '<div class="ch-row"><em>'+esc(T.ccClubKeep)+'</em><b>$'+ccNum(CC_CLUB_KEEP)+' '+esc(T.ccClubMonth)+'</b></div>'+
+    '<div class="ch-row"><em>'+esc(T.ccClubSeats(roster.length, CC_CLUB_SEATS))+'</em><b></b></div>'+
+    (rows || '<div class="ch-empty">'+esc(T.ccClubEmpty)+'</div>')+
+    (free ? '<div class="ch-hint">'+esc(T.ccClubFree)+'</div>'+free : '')+'</div>';
+}
+function careerClubNew(){
+  const el=document.getElementById('ccClubName');
+  if(careerClubFound(el && el.value)) careerRenderHub('shop');
+}
+function careerClubIn(id){ if(careerClubSign(id)) careerRenderHub('shop'); }
+function careerClubOut(id){ if(careerClubDrop(id)) careerRenderHub('shop'); }
+// Зарплата дуо в месяц — от их среднего рейтинга. Пара 90-х стоит как турнирный вечер.
+function careerClubSalary(avg){ return Math.max(200, Math.round(Math.max(0, avg-70)*24)*10); }
+function careerClubKey(d){ return (d.cards||[]).map(c=>hKey(c)).sort().join('+'); }
+/* Кого можно подписать: записанные пары сцены без клуба, не сильнее тебя самого —
+   чемпион мира к новичку не пойдёт, — и не свои. Шесть верхних, как в поиске напарника. */
+function careerClubFree(){
+  const club=careerClub(); if(!club) return [];
+  let duos=[]; try{ duos=(careerPools()||{}).duos||[]; }catch(e){ return []; }
+  const mine=new Set((careerMates()||[]).concat([careerCard()]).filter(Boolean).map(hKey));
+  const have=new Set((club.roster||[]).map(r=>r.id));
+  const me=(CAREER.player.ovrExact!=null?CAREER.player.ovrExact:CAREER.player.ovr)||80;
+  return duos.filter(d=>{
+      const cs=d.cards||[]; if(cs.length!==2) return false;
+      if(cs.some(c=>!c || !c.handle || mine.has(hKey(c)) || c.org)) return false;
+      if(have.has(careerClubKey(d))) return false;
+      return d.avg<=me+2;
+    })
+    .sort((a,b)=>b.avg-a.avg).slice(0, 6)
+    .map(d=>({id:careerClubKey(d), who:d.cards.map(c=>c.handle), ovr:Math.round(d.avg),
+              salary:careerClubSalary(d.avg)}));
+}
+function careerClubFound(name){
+  const cr=CAREER && CAREER.career; if(!cr || cr.club) return false;
+  const nm=String(name||'').replace(/<[^>]*>/g,'').trim().slice(0, 24);
+  if(!nm) return false;
+  if((cr.balance||0)<CC_CLUB_COST) return false;
+  cr.balance-=CC_CLUB_COST;
+  cr.club={name:nm, since:careerToday(), cash:0, roster:[], paid:0, got:0};
+  /* Свой клуб — это и есть твой клуб: CAREER.org читают герб, таблицы и лента,
+     поэтому он ставится туда же, только без зарплаты и без доли. */
+  CAREER.org={name:nm, salary:0, cut:0, tier:70, own:true, since:cr.season, paid:0};
+  cr.orgs=cr.orgs||[]; if(cr.orgs.indexOf(nm)<0) cr.orgs.push(nm);
+  CAREER.offers=[];
+  careerNews('good', 'ccNewsClubFound', [nm], {by:ccOrgBy(nm)});
+  careerSave();
+  return true;
+}
+function careerClubSign(id){
+  const club=careerClub(); if(!club) return false;
+  if((club.roster||[]).length>=CC_CLUB_SEATS) return false;
+  const free=careerClubFree().find(d=>d.id===id); if(!free) return false;
+  // Подпись стоит месяца зарплаты вперёд — из кассы клуба, а не из своего кармана.
+  club.roster.push({id:free.id, who:free.who, ovr:free.ovr, salary:free.salary,
+                    since:careerToday(), won:0, seen:{}});
+  club.cash=(club.cash||0)-free.salary;
+  club.paid=(club.paid||0)+free.salary;
+  careerNews('good', 'ccNewsClubSign', [club.name, free.who.join(' & ')], {by:ccOrgBy(club.name)});
+  careerSave();
+  return true;
+}
+function careerClubDrop(id){
+  const club=careerClub(); if(!club) return false;
+  const i=(club.roster||[]).findIndex(r=>r.id===id); if(i<0) return false;
+  const r=club.roster.splice(i, 1)[0];
+  careerNews('bad', 'ccNewsClubLeft', [club.name, (r.who||[]).join(' & ')], {by:ccOrgBy(club.name)});
+  careerSave();
+  return true;
+}
+/* Доля с призовых состава. Ничего заново не считается: доска призовых ведётся по
+   людям и уже знает, сколько каждый взял за год. Клуб запоминает, сколько он
+   видел, и берёт свою долю с прибавки. Зовётся в конце каждого вечера. */
+function careerClubTake(){
+  const club=careerClub(); if(!club || !(club.roster||[]).length) return 0;
+  let got=0;
+  const rows=careerMoney().rows||{};
+  club.roster.forEach(r=>{
+    r.seen=r.seen||{};
+    (r.who||[]).forEach(h=>{
+      const now=Math.round((rows[h]||{}).usd||0);
+      const was=r.seen[h];
+      if(was==null){ r.seen[h]=now; return; }   // первый вечер после подписи — точка отсчёта
+      if(now>was){ const cut=Math.round((now-was)*CC_CLUB_CUT); got+=cut; r.won=(r.won||0)+(now-was); }
+      r.seen[h]=now;
+    });
+  });
+  if(got){ club.cash=(club.cash||0)+got; club.got=(club.got||0)+got; }
+  return got;
+}
+/* Месяц клуба: спонсор платит за состав, содержание и зарплаты уходят. Касса в
+   минусе — добираем из своего кармана; не хватило и там — уходит самое дорогое
+   дуо, и об этом пишут. */
+function careerClubMonth(months){
+  const club=careerClub(); if(!club || !(months>0)) return 0;
+  const cr=CAREER.career;
+  for(let m=0; m<months; m++){
+    const roster=club.roster||[];
+    const sponsor=CC_CLUB_SPONSOR*roster.length;
+    const wages=roster.reduce((a,r)=>a+(r.salary||0), 0);
+    club.cash=(club.cash||0)+sponsor-CC_CLUB_KEEP-wages;
+    club.paid=(club.paid||0)+CC_CLUB_KEEP+wages;
+    club.got=(club.got||0)+sponsor;
+    if(club.cash<0){
+      const need=-club.cash;
+      const have=Math.min(need, Math.max(0, cr.balance||0));
+      cr.balance=(cr.balance||0)-have; club.cash+=have;
+      if(club.cash<0 && roster.length){
+        const worst=roster.slice().sort((a,b)=>(b.salary||0)-(a.salary||0))[0];
+        careerClubDrop(worst.id);
+        careerNews('bad', 'ccNewsClubUnpaid', [club.name, (worst.who||[]).join(' & ')], {by:ccOrgBy(club.name)});
+        club.cash=0;
+      }
+    }
+  }
+  careerSave();
+  return 1;
+}
 function careerOrgCut(){
   const org=CAREER && CAREER.org;
   return (org && org.cut!=null) ? org.cut : 0;
@@ -71113,6 +71295,8 @@ function careerWindowNext(iso){
    был событием, а не нормой: в окне их два-три, и один из них парный. */
 const CC_ORG_DUO_SHARE=0.25;
 function careerOrgOffers(){
+  // Свой клуб закрывает рынок: играть под своим флагом и получать чужую зарплату нельзя.
+  if(typeof careerClub==='function' && careerClub()) return [];
   const pl=CAREER.player, cr=CAREER.career;
   // Nobody signs anybody below Division 3. The tile has said so for weeks —
   // "clubs start looking at about 65 rating, Division 3 and up" — but the code
@@ -71459,6 +71643,7 @@ function careerPayWages(fromISO, toISO){
   const pays=careerWagePaydays();
   if(!pays.length) return 0;
   const months=pays.filter(d=>d>fromISO && d<=toISO).length;
+  try{ if(typeof careerClubMonth==='function') careerClubMonth(months); }catch(e){}   // свой клуб: спонсор, содержание, зарплаты
   let paid=0;
   if(org && org.salary){
     /* A monthly wage is paid monthly.
@@ -80851,7 +81036,7 @@ function careerShopHTML(){
     rows+'</div>'+
     // The one thing on this tab that is not a thing on a desk. It sits under the
     // desk rather than in it: a rig is a purchase, a move is a decision.
-    careerFlatHTML()+careerMoveHTML()+careerCheatHTML()+'</div>';
+    careerClubHTML()+careerFlatHTML()+careerMoveHTML()+careerCheatHTML()+'</div>';
 }
 
 /* ---- Being asked about it ---------------------------------------------------
@@ -84012,6 +84197,7 @@ function ccEvSeenMark(key){
 }
 function ccEvDeltaStart(key){ CC_EV_DELTA=key ? {key:key, money:{}, pr:{}, yr:null, fs:null, day:careerToday()} : null; }
 function ccEvDeltaSend(){
+  try{ if(typeof careerClubTake==='function') careerClubTake(); }catch(e){}   // доля клуба с призовых состава
   const d=CC_EV_DELTA; CC_EV_DELTA=null;
   if(!d || !d.key) return;
   ccEvSeenMark(d.key);
