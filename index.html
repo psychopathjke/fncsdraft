@@ -58564,7 +58564,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='85cc5bba';
+const CC_BUILD='833288b5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -84298,7 +84298,15 @@ let CC_EV_DELTA=null;
 function ccEvKey(next, day){
   const t=next && (next.id || next.type) || '?';
   const div=(CAREER && CAREER.career && CAREER.career.division) || 0;
-  return String(day||careerToday())+'|'+String(t)+'|d'+div;
+  /* И ВРОЗЬ — ЭТО ДРУГОЙ ВЕЧЕР. Дивизиона мало: соло-серия у каждого своя, день и вид у неё
+     общие, и два РАЗНЫХ вечера получали один ключ — каждый отказывался от чужой копилки как
+     от своей. Вторая годовая проба на двоих 11.09: те же 6 строк из 446, три дуо. Вечер,
+     сыгранный не вместе, метится своим ником: у общего ключ по-прежнему один на всех.
+     ccRaceShared спрашивается ДО замка (CC_RACE_LOCK ставится позже), поэтому зовём её саму. */
+  let alone='';
+  try{ if(typeof ccRaceOn==='function' && ccRaceOn() && typeof ccRaceShared==='function' && !ccRaceShared(next))
+         alone='|s'+hKey(careerCard()||{handle:''}); }catch(e){}
+  return String(day||careerToday())+'|'+String(t)+'|d'+div+alone;
 }
 function ccEvSeen(){ const cr=CAREER && CAREER.career; if(!cr) return {}; if(!cr.evSeen) cr.evSeen={}; return cr.evSeen; }
 function ccEvSeenMark(key){
