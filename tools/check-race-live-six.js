@@ -122,7 +122,63 @@ const boot = (who) => `
           'out'+res.length+':'+h(res.map(t=>(t.squad||t.cards||[]).map(c=>c&&hKey(c)).join('+')).join('|')), 'lock'+(ccRaceLock()?1:0)].join(' '));
         if(out.notes.fields.length>8) out.notes.fields.shift(); }catch(e){ out.notes.fields.push('err '+e.message); }
       return res; };
-    out.notes.skipped=[]; const cp0=careerCanPlay; careerCanPlay=function(next){ const ok=cp0.apply(this, arguments); if(!ok && next && next.type && next.type!=='free' && CC_PLAYABLE.indexOf(next.type)>=0 && out.notes.skipped.length<60) out.notes.skipped.push([CAREER.career.day, next.type, 'live'+(ccMpLive()?1:0), 'link '+MP.state, 'noMate'+(careerNoMate(next.type)?1:0), 'mates'+careerMates().length, 'mode '+(ccRaceModeWhy()||'-'), 'div'+CAREER.career.division].join(' ')); return ok; };
+    out.notes.skipped=[]; const cp0=careerCanPlay; careerCanPlay=function(next){ let ok=cp0.apply(this, arguments);
+      /* НЕКЕМ ИГРАТЬ — САЖАЕМ НАПАРНИКА ЗДЕСЬ ЖЕ.
+         Живой игрок это и делает: увидел «нужен напарник» и позвал кого-то. На перемотке
+         некому, и карьера пропускает все парные вечера до конца года (прогон 11.09: 59
+         турниров против 130). Вопрос задаётся ПЕРЕД вечером, значит здесь и место: состав
+         не меняется посреди игры, и соперник видит его через ccRaceFieldSync как обычно.
+         Чужого напарника не берём — ccRaceTakenKeys, его правило 7.09. */
+      if(!ok && next && next.type && !(typeof CAREER_RUN!=='undefined' && CAREER_RUN) &&
+         CC_PLAYABLE.indexOf(next.type)>=0 && careerNoMate(next.type) && careerMatesShort()>0){
+        try{
+          const taken=(typeof ccRaceTakenKeys==='function') ? ccRaceTakenKeys() : new Set();
+          const pick=(careerDuoSearchPool(true)||[]).find(p=>p && p.handle && !taken.has(hKey(p.handle)));
+          if(pick && careerMateSeat({handle:pick.handle, cardRegion:(pick.card&&pick.card.region)||'EU',
+                                     dev:0, since:CAREER.career.day}, 0)){
+            out.notes.mateTakes=(out.notes.mateTakes||[]).concat(CAREER.career.day+' '+pick.handle);
+            ok=cp0.apply(this, arguments);
+          }
+        }catch(e){ out.notes.mateErr=String(e && e.message || e); }
+      } if(!ok && next && next.type && next.type!=='free' && CC_PLAYABLE.indexOf(next.type)>=0 && out.notes.skipped.length<60) out.notes.skipped.push([CAREER.career.day, next.type, 'live'+(ccMpLive()?1:0), 'link '+MP.state, 'noMate'+(careerNoMate(next.type)?1:0), 'mates'+careerMates().length, 'mode '+(ccRaceModeWhy()||'-'), 'div'+CAREER.career.division].join(' ')); return ok; };
+    /* СЛЕД ДОСКИ ПО ВЕЧЕРАМ. Доски расходятся при одинаковом списке вечеров, значит один и
+       тот же ключ кладёт двоим разное. Чтобы не гадать, какой именно, после каждой отметки
+       ключа снимается сумма ЧУЖИХ строк доски: свои у каждого свои по определению. Node
+       потом найдёт первый ключ, на котором две последовательности разошлись. */
+    { const sm0=ccEvSeenMark;
+      ccEvSeenMark=function(key){
+        const r=sm0.apply(this, arguments);
+        if(r) try{
+          const rows=(careerMoney()||{}).rows||{};
+          /* Людей ГОНКИ в сумму не берём: у себя гонщик стоит своей строкой (её сравнивать
+             нельзя), а у соседа — чужой. Иначе след врёт на разницу их заработков. */
+          const race=(typeof ccRaceTakenKeys==='function') ? ccRaceTakenKeys() : new Set();
+          try{ const me=careerCard(); if(me) race.add(hKey(me)); (careerMates()||[]).forEach(m=>m&&race.add(hKey(m))); }catch(e){}
+          let sum=0, n=0;
+          Object.keys(rows).forEach(h=>{ const x=rows[h]; if(x && !x.you && !race.has(hKey(h))){ sum+=Math.round(x.usd||0); n++; } });
+          (out.notes.ledger=out.notes.ledger||[]).push(key+' n'+n+' $'+sum);
+        }catch(e){}
+        return r;
+      }; }
+    /* ПОЛЕ ПОСЛЕ ПОСАДКИ СОПЕРНИКА.
+       Сырое поле (careerCupField) у двоих совпадает до хеша — это видно по строкам «поле:».
+       А доски расходятся с 9 января ровно на одно дуо (Pixovsky & SereN, $800 каждому), и
+       разница дальше стоит константой. Значит расходится то, что делает с полем гонка:
+       ccRaceFieldSync садит соперника и выкидывает бота, чтобы размер не поехал. Снимаем
+       список ПОСЛЕ неё — и сравниваем у двоих по дню. */
+    { const fs0=ccRaceFieldSync;
+      ccRaceFieldSync=async function(teams, opts){
+        const r=await fs0.apply(this, arguments);
+        try{
+          const h=x=>{ let v=0; for(const ch of String(x)){ v=(v*31+ch.charCodeAt(0))>>>0; } return v.toString(16); };
+          const list=(teams||[]).map(t=>(t.squad||t.cards||[]).map(c=>c&&hKey(c)).join('+'));
+          (out.notes.post=out.notes.post||[]).push(CAREER.career.day+' g'+CC_MP_GAME+' n'+list.length+' '+h(list.slice().sort().join('|')));
+          if(out.notes.post.length>90) out.notes.post.shift();
+          // И сам список в день, ради которого всё это: сравнить можно только именами.
+          if(CAREER.career.day===${JSON.stringify(process.env.CC_DAY_DUMP || '')}) out.notes.postList=list.slice().sort();
+        }catch(e){}
+        return r;
+      }; }
     // Метки хода: каждый посланный акт, кроме пульса.
     const act0=MP.act; MP.act=function(k,p){ if(k==='fferr' && p && !out.notes.ffErr) out.notes.ffErr={day:p.day, kind:'', text:String(p.text||''), stack:out.notes.lastErr||null}; if(k!=='hb'){ if(out.notes.marks.length>=160) out.notes.marks.shift(); out.notes.marks.push(k+(p&&p.q!=null?'#'+p.q:'')+' d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' r'+CC_MP_ROLLS+' t'+Math.round((Date.now()-t0)/1000)); } return act0.apply(MP, arguments); };
     // След барьера и все служебные сообщения сервера (start/close/card/ready/state) — в метки; строка гонки посреди вечера — с откуда.
@@ -138,23 +194,6 @@ const boot = (who) => `
     const runFf=async function(){
     while(Date.now()-t0<${BUDGET_MS} && (CAREER.career.day<${JSON.stringify(FF)} || CC_FF) && !CAREER.career.seasonOver){
       await wait(1000);
-      /* НАПАРНИК УШЁЛ — БЕРЁМ НОВОГО.
-         Прогон 11.09 (компьютер и телефон): у одного напарник ушёл 19 марта, и дальше
-         карьера доиграла год одна — 59 турниров против 130 у соседа, после чего доски
-         сравнивать бессмысленно. Живой игрок садит нового руками, на перемотке этого
-         некому сделать, поэтому это делает проба. Только между вечерами: менять состав
-         посреди игры нельзя, его увидит соперник (ccRaceFieldSync).
-         Чужого напарника не берём — ccRaceTakenKeys, его правило 7.09. */
-      try{
-        if(careerMatesShort()>0 && !(typeof CAREER_RUN!=='undefined' && CAREER_RUN)){
-          const taken=(typeof ccRaceTakenKeys==='function') ? ccRaceTakenKeys() : new Set();
-          const pick=(careerDuoSearchPool(true)||[]).find(p=>p && p.handle && !taken.has(hKey(p.handle)));
-          if(pick && careerMateSeat({handle:pick.handle, cardRegion:(pick.card&&pick.card.region)||'EU',
-                                     dev:0, since:CAREER.career.day}, 0)){
-            out.notes.mateTakes=(out.notes.mateTakes||[]).concat(CAREER.career.day+' '+pick.handle);
-          }
-        }
-      }catch(e){ out.notes.mateErr=String(e && e.message || e); }
       if(out.notes.ffErr) { await wait(3000); break; }
       // Перемотка остановилась, вечера нет, цель не достигнута — ждать нечего (год 9.09: 5 часов стоя на 13.06).
       if(!CC_FF && !(typeof CAREER_RUN!=='undefined' && CAREER_RUN) && CAREER.career.day<${JSON.stringify(FF)}){ out.notes.ffIdle=(out.notes.ffIdle||0)+1; if(out.notes.ffIdle>90){ out.notes.ffErr=out.notes.ffErr||{day:CAREER.career.day, kind:'', text:'перемотка остановилась без ошибки'}; break; } } else out.notes.ffIdle=0;
@@ -212,6 +251,7 @@ const boot = (who) => `
        при одинаковом числе вечеров означает, что где-то один и тот же вечер посчитан
        по-разному, а не пропущен: два списка ключей отвечают, что именно из двух. */
     out.notes.evSeen=Object.keys((cr.evSeen)||{});
+    out.notes.card=(typeof careerCard==='function' && careerCard()) ? hKey(careerCard()) : null;
     out.notes.money=cr.earnings; out.notes.ovr=CAREER.player.ovr; out.notes.titles=(cr.ewc||[]).length;
     out.notes.mates=careerMates().map(m=>m&&m.handle); out.notes.noMate=(typeof careerNoMate==='function')?careerNoMate('eval'):null; out.notes.form=cr.form; out.notes.energy=cr.energy;
     out.notes.dbg={rand:!!CC_MP_RAND, state:MP.state, split:(typeof CC_MP_SPLIT_AT!=='undefined')?CC_MP_SPLIT_AT:null, race:(typeof CC_RACE_DBG!=='undefined')?CC_RACE_DBG:null, rivals:ccRaceRivals().map(p=>p.card.handle+':'+p.div+':'+p.day), ff:!!CC_FF};
@@ -367,11 +407,40 @@ async function runOne(tag, who, port, phone){
     if(seen.length>1 && seen[0].size){
       const only=(a,b)=>[...a].filter(k=>!b.has(k));
       const l=only(seen[0], seen[1]), r=only(seen[1], seen[0]);
+      console.log('свой ник в ключе вечера: '+outs.map(r=>JSON.stringify(r.notes.card)).join(' / '));
+      /* Поле после посадки соперника: где оно разъехалось, там и разъехались доски. */
+      { const pm=outs.map(r=>new Map((r.notes.post||[]).map(x=>{ const i=x.indexOf(' '); return [x.slice(0,i)+x.slice(i, x.indexOf(' n')), x.slice(x.indexOf(' n')+1)]; })));
+        if(pm.length>1 && pm[0].size){
+          const bad=[];
+          pm[0].forEach((v,k)=>{ const w=pm[1].get(k); if(w!==undefined && w!==v && bad.length<8) bad.push(k+': '+v+' vs '+w); });
+          console.log('поле после посадки: снимков '+pm.map(x=>x.size).join('/')+
+            (bad.length ? ' · разошлось: '+bad.join(' | ') : ' · везде одинаково'));
+        } }
+      /* Первый ключ, на котором две доски разъехались, — это и есть вечер, который двое
+         посчитали по-разному. Сравниваем по ключу, а не по порядку: порядок у них свой. */
+      { const led=outs.map(r=>new Map((r.notes.ledger||[]).map(x=>{ const i=x.indexOf(' '); return [x.slice(0,i), x.slice(i+1)]; })));
+        if(led.length>1 && led[0].size){
+          const bad=[];
+          led[0].forEach((v,k)=>{ const w=led[1].get(k); if(w!==undefined && w!==v && bad.length<5) bad.push(k+': '+v+' vs '+w); });
+          console.log('след доски: вечеров '+led.map(x=>x.size).join('/')+
+            (bad.length ? ' · первые разошедшиеся: '+bad.join(' | ') : ' · все совпали'));
+          // Вся последовательность целиком: расхождение читается по шагу, а не по итогу.
+          if(bad.length){
+            const keys=[...new Set([...led[0].keys(), ...led[1].keys()])].sort();
+            keys.forEach(k=>console.log('   '+(led[0].get(k)===led[1].get(k)?' ':'!')+' '+k+' :: '+(led[0].get(k)||'—')+' :: '+(led[1].get(k)||'—')));
+          }
+        } }
       console.log('вечера в досках: '+seen.map(x=>x.size).join('/')+
         (l.length?' · только у первого: '+l.slice(0,8).join(' | '):'')+
         (r.length?' · только у второго: '+r.slice(0,8).join(' | '):'')+
         (!l.length && !r.length ? ' · списки одинаковы' : ''));
     }
+  }
+  if(process.env.CC_DAY_DUMP && outs.some(r=>r.notes.postList)){
+    const a=new Set(outs[0].notes.postList||[]), b=new Set(outs[1].notes.postList||[]);
+    console.log('поле '+process.env.CC_DAY_DUMP+': '+[...a].length+'/'+[...b].length+
+      ' · только у первого: '+[...a].filter(x=>!b.has(x)).join(', ')+
+      ' · только у второго: '+[...b].filter(x=>!a.has(x)).join(', '));
   }
   if(bad){ console.log('FAIL: '+bad); process.exit(1); }
   console.log('гонка на '+N+': все дошли до '+FF+' без красных строк и без встававшей перемотки');

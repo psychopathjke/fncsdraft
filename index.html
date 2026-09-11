@@ -58574,7 +58574,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b4f9afbf';
+const CC_BUILD='545b1046';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -84677,7 +84677,37 @@ function ccEvSeenMark(key){
   if(ks.length>400) ks.slice(0, ks.length-400).forEach(k=>{ delete seen[k]; });
   return true;
 }
-function ccEvDeltaStart(key){ CC_EV_DELTA=key ? {key:key, money:{}, pr:{}, yr:null, fs:null, day:careerToday()} : null; }
+/* КЛЮЧ МЕТИТСЯ НА ВХОДЕ.
+   Метка стояла в конце вечера (ccEvDeltaSend), и между началом и концом оставалось окно:
+   сосед, закончивший раньше, присылал свою копилку, а я в этот момент уже записал те же
+   деньги своим ходом, но ключ ещё не пометил — и строки ложились дважды. Вечер, который я
+   считаю сам, чужой копилки не ждёт, поэтому ключ метится там, где вечер начинается.
+   Отмена вечера ничего не ломает: ccEvDeltaSend зовётся и на ошибке, из finally. */
+function ccEvDeltaStart(key){
+  CC_EV_DELTA=key ? {key:key, money:{}, pr:{}, yr:null, fs:null, day:careerToday()} : null;
+  if(key) ccEvSeenMark(key);
+}
+/* ВЕЧЕР РАЗОШЁЛСЯ ПОСРЕДИ — ЗНАЧИТ У НЕГО ДВЕ ЧАСТИ.
+   Границы раундов (Evaluation R2, Victory Cup R2, лобби LCQ) отпускают локстеп, когда
+   прошли не все: дальше прошедший играет свою комнату, а вылетевший закрывает вечер. До
+   этой минуты вечер был общий и посчитан одинаково, после — он у каждого свой.
+   А ключ копилки один на весь вечер, и это и есть ответ на его жалобу 11 сентября про
+   разные доски: прошедший записывал призовые второго раунда себе, вылетевший помечал тот
+   же ключ пустым и потому отказывался от присланных чисел как от уже учтённых. Разница
+   в $800 на человека вставала навсегда (проба на двоих 11.09: Evaluation 9 января,
+   Pixovsky и SereN — 5 вечеров и $2100 против 4 и $1300).
+   Поэтому вечер закрывается дважды: общая часть уходит под общим ключом (у обоих она
+   одинакова, каждый свою уже посчитал), а хвост — под своим, с ником. Так его принимает
+   сосед, и оба видят один второй раунд. Ровно так же давно живут соло-серии: вечер,
+   сыгранный не вместе, метится ником (см. ccEvKey). */
+function ccRaceNightApart(){
+  CC_RACE_LOCK=false; CC_RACE_NIGHT_APART=true;
+  const d=CC_EV_DELTA; if(!d || !d.key) return;
+  const key=d.key;
+  ccEvDeltaSend();
+  let me=''; try{ me=hKey(careerCard()||{handle:''}); }catch(e){}
+  ccEvDeltaStart(key+'|t'+me);
+}
 function ccEvDeltaSend(){
   try{ if(typeof careerClubTake==='function') careerClubTake(); }catch(e){}   // доля клуба с призовых состава
   const d=CC_EV_DELTA; CC_EV_DELTA=null;
@@ -85629,7 +85659,7 @@ async function runCareerEval(){
   if(typeof ccRaceLock==='function' && ccRaceLock()){
     const top=ranked1.slice(0, evalCut);
     const rivalOut=ccRaceNightRoom().some(p=>!top.some(t=>t.mpTag===':'+hKey(p.card)));
-    if(!through || rivalOut){ CC_RACE_LOCK=false; CC_RACE_NIGHT_APART=true; }
+    if(!through || rivalOut) ccRaceNightApart();
   }
   if(through){
     // Round 2 is the fifty who came through, in one lobby, and only a win scores.
@@ -88101,7 +88131,7 @@ async function runCareerMajor(){
   if(ev.stage==='lcq' && typeof ccRaceLock==='function' && ccRaceLock()){
     const top=ranked.slice(0, ccTeams(CAREER_CUP_CUT));
     const rivalOut=ccRaceNightRoom().some(p=>!top.some(t=>t.mpTag===':'+hKey(p.card)));
-    if(!through || rivalOut){ CC_RACE_LOCK=false; CC_RACE_NIGHT_APART=true; }
+    if(!through || rivalOut) ccRaceNightApart();
   }
   if(ev.stage==='lcq' && through){
     const lobby=ranked.slice(0, ccTeams(CAREER_CUP_CUT));
@@ -88937,7 +88967,7 @@ async function runCareerVictory(){
   if(typeof ccRaceLock==='function' && ccRaceLock()){
     const top=ranked1.slice(0, vCut);
     const rivalOut=ccRaceNightRoom().some(p=>!top.some(t=>t.mpTag===':'+hKey(p.card)));
-    if(!through || rivalOut){ CC_RACE_LOCK=false; CC_RACE_NIGHT_APART=true; }
+    if(!through || rivalOut) ccRaceNightApart();
   }
   if(through){
     const r2=ranked1.slice(0, vCut);
