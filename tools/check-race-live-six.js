@@ -129,7 +129,10 @@ const boot = (who) => `
          турниров против 130). Вопрос задаётся ПЕРЕД вечером, значит здесь и место: состав
          не меняется посреди игры, и соперник видит его через ccRaceFieldSync как обычно.
          Чужого напарника не берём — ccRaceTakenKeys, его правило 7.09. */
-      if(!ok && next && next.type && !(typeof CAREER_RUN!=='undefined' && CAREER_RUN) &&
+      /* Не CAREER_RUN: на перемотке экран остаётся на результатах, и флаг висит поднятым
+         весь год — прогон 11.09 не посадил никого ни разу. Мешает посадке только идущий
+         вечер под замком, его и спрашиваем. */
+      if(!ok && next && next.type && !(typeof ccRaceLock==='function' && ccRaceLock()) &&
          CC_PLAYABLE.indexOf(next.type)>=0 && careerNoMate(next.type) && careerMatesShort()>0){
         try{
           const taken=(typeof ccRaceTakenKeys==='function') ? ccRaceTakenKeys() : new Set();
@@ -178,6 +181,19 @@ const boot = (who) => `
           if(CAREER.career.day===${JSON.stringify(process.env.CC_DAY_DUMP || '')}) out.notes.postList=list.slice().sort();
         }catch(e){}
         return r;
+      }; }
+    /* Копилки: сколько послано и сколько принято. Хвосты вечера (|t) не доезжали до
+       соседа в годовом прогоне 11.09 — надо знать, не послали или не приняли. */
+    { const ra0=ccEvResApply;
+      ccEvResApply=function(d){
+        const r=ra0.apply(this, arguments);
+        try{ (out.notes.res=out.notes.res||[]).push((r?'+':'-')+((d&&d.key)||'?')); if(out.notes.res.length>120) out.notes.res.shift(); }catch(e){}
+        return r;
+      };
+      const ds0=ccEvDeltaSend;
+      ccEvDeltaSend=function(){
+        try{ const d=CC_EV_DELTA; if(d && d.key) (out.notes.sent=out.notes.sent||[]).push(d.key+' m'+Object.keys(d.money||{}).length+' p'+Object.keys(d.pr||{}).length); if(out.notes.sent && out.notes.sent.length>120) out.notes.sent.shift(); }catch(e){}
+        return ds0.apply(this, arguments);
       }; }
     // Метки хода: каждый посланный акт, кроме пульса.
     const act0=MP.act; MP.act=function(k,p){ if(k==='fferr' && p && !out.notes.ffErr) out.notes.ffErr={day:p.day, kind:'', text:String(p.text||''), stack:out.notes.lastErr||null}; if(k!=='hb'){ if(out.notes.marks.length>=160) out.notes.marks.shift(); out.notes.marks.push(k+(p&&p.q!=null?'#'+p.q:'')+' d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' r'+CC_MP_ROLLS+' t'+Math.round((Date.now()-t0)/1000)); } return act0.apply(MP, arguments); };
@@ -408,6 +424,11 @@ async function runOne(tag, who, port, phone){
       const only=(a,b)=>[...a].filter(k=>!b.has(k));
       const l=only(seen[0], seen[1]), r=only(seen[1], seen[0]);
       console.log('свой ник в ключе вечера: '+outs.map(r=>JSON.stringify(r.notes.card)).join(' / '));
+      outs.forEach((r,i)=>{
+        const sent=(r.notes.sent||[]).filter(x=>x.indexOf('|t')>=0);
+        const res=(r.notes.res||[]).filter(x=>x.indexOf('|t')>=0);
+        console.log('   копилки #'+(i+1)+': послано хвостов '+sent.length+' ['+sent.slice(-4).join(' ; ')+'] · принято '+res.length+' ['+res.slice(-4).join(' ; ')+']');
+      });
       /* Поле после посадки соперника: где оно разъехалось, там и разъехались доски. */
       { const pm=outs.map(r=>new Map((r.notes.post||[]).map(x=>{ const i=x.indexOf(' '); return [x.slice(0,i)+x.slice(i, x.indexOf(' n')), x.slice(x.indexOf(' n')+1)]; })));
         if(pm.length>1 && pm[0].size){
