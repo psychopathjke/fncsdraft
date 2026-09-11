@@ -165,6 +165,146 @@ const BOOT = `
       check('деньги в кармане', cr.balance === 7000, String(cr.balance));
       check('пустую кассу не вывести', careerClubCashOut(100) === 0); }
 
+    // ---- условия в контракте ------------------------------------------------
+    /* Его слово 11.09: «буткемп тренера и тд можно обговаривать». Значит разговор не
+       только про сумму: за дом и тренера соглашаются на меньшие деньги, но клуб платит
+       за них каждый месяц. Проверяется и то и другое. */
+    { const cl=careerClub();
+      cl.roster.length=0; cl.talks={}; cl.cash=200000; cr.balance=200000;
+      const d=careerClubFree('', true).find(x => !x.org);
+      check('есть свободный агент для условий', !!d);
+      const plain=careerClubAsking(d.salary, {});
+      const camp=careerClubAsking(d.salary, {camp:true});
+      const both=careerClubAsking(d.salary, {camp:true, coach:true});
+      out.notes.perks={plain: plain, camp: camp, both: both};
+      check('за буткемп просят меньше', camp < plain, plain + ' -> ' + camp);
+      check('за буткемп с тренером — ещё меньше', both < camp, camp + ' -> ' + both);
+      const yes=careerClubOffer(d.id, both, {camp:true, coach:true});
+      check('цена с условиями — это цена', yes && yes.state==='yes', JSON.stringify(yes));
+      const row=cl.roster.find(r => r.id===d.id);
+      check('условия записаны в контракт', row && row.camp && row.coach, JSON.stringify(row));
+      check('и стоят своих денег', careerClubPerkCost(row)===CC_CLUB_CAMP+CC_CLUB_COACH,
+            String(careerClubPerkCost(row)));
+      const c0=cl.cash;
+      careerClubMonth(1);
+      check('месяц с условиями дороже ровно на них',
+            Math.round(c0-cl.cash)===CC_CLUB_KEEP+row.salary+CC_CLUB_CAMP+CC_CLUB_COACH-CC_CLUB_SPONSOR,
+            c0 + ' -> ' + cl.cash);
+      check('верность за условия выше', careerClubLoyal(row) > careerClubLoyal({})); }
+
+    // ---- свой напарник в своём клубе ----------------------------------------
+    /* Его слово 11.09: «мой напарник в своём». Напарник живёт в клубе отдельной строкой:
+       места в составе не занимает, зарплату получает, а разошлись — контракт кончился. */
+    { const pool=(careerPools()||{}).duos||[];
+      const who=((pool.find(d => (d.cards||[]).length===2)||{}).cards||[])[0];
+      CAREER.partners=[{handle: who && who.handle, cardRegion:'EU', dev:0, since:'2026-01-12'}];
+      const cl=careerClub(); cl.roster.length=0; cl.talks={}; cl.cash=200000; cr.balance=200000;
+      const mate=careerClubMateFree();
+      out.notes.mate=mate && {who: mate.who, ovr: mate.ovr, salary: mate.salary};
+      check('напарника можно позвать в клуб', !!mate, String(who && who.handle));
+      if(mate){
+        const seats0=careerClubSeats();
+        check('напарник подписан', careerClubSign(mate.id, mate.salary));
+        check('места наёмных он не занимает', careerClubSeats()===seats0,
+              seats0 + ' -> ' + careerClubSeats());
+        const row=cl.roster.find(r => r.id===mate.id);
+        check('строка помечена как своя', row && row.mine, JSON.stringify(row));
+        check('второй раз его не позвать', !careerClubMateFree());
+        const c0=cl.cash;
+        careerClubMonth(1);
+        check('клуб платит напарнику', Math.round(c0-cl.cash)===CC_CLUB_KEEP+row.salary,
+              c0 + ' -> ' + cl.cash);   // спонсор за своё дуо не платит
+        // Разошлись — контракт кончился сам.
+        CAREER.partners=[];
+        careerClubMonth(1);
+        check('без напарника строка ушла', !cl.roster.some(r => r.mine),
+              JSON.stringify(cl.roster.map(r => r.id))); } }
+
+    // ---- за твоими приходят -------------------------------------------------
+    /* Его правило 11.09: «отпускать за отступные если хочет игрок». Раз ты выкупаешь
+       чужих, чужие выкупают твоих: отпустил — деньги в кассе, отказал дважды — уходят
+       сами, а с буткемпом и тренером прощают. */
+    { const cl=careerClub();
+      cl.roster.length=0; cl.talks={}; cl.cash=200000; cr.balance=200000;
+      const d=careerClubFree('', true).find(x => !x.org);
+      careerClubSign(d.id, d.salary);
+      const row=cl.roster.find(r => r.id===d.id);
+      // Предложение ставим руками: бросок посеянный, месяц может и не принести.
+      row.offer={org:'Someone', sum:row.salary*CC_CLUB_BUYIN, day:careerToday()};
+      const c0=cl.cash;
+      check('отпустил — отступные в кассе', careerClubRelease(d.id));
+      out.notes.poach={cash0: c0, cash: cl.cash, sum: row.salary*CC_CLUB_BUYIN};
+      check('касса выросла ровно на отступные', Math.round(cl.cash-c0)===row.salary*CC_CLUB_BUYIN,
+            c0 + ' -> ' + cl.cash);
+      check('и его больше нет в составе', !cl.roster.some(r => r.id===d.id));
+      // Отказ, второй отказ, уход.
+      careerClubSign(d.id, d.salary);
+      const r2=cl.roster.find(r => r.id===d.id);
+      r2.offer={org:'Someone', sum:1000, day:careerToday()};
+      check('отказать можно', careerClubRefuse(d.id));
+      check('предложение снято', !r2.offer);
+      r2.offer={org:'Someone', sum:1000, day:careerToday()};
+      careerClubRefuse(d.id);
+      check('два отказа записаны', r2.sour===2, String(r2.sour));
+      cl.cash=200000;
+      careerClubMonth(1);
+      check('дважды отказали — ушли сами', !cl.roster.some(r => r.id===d.id),
+            JSON.stringify(cl.roster.map(r => r.id)));
+      // А с условиями — прощают.
+      careerClubSign(d.id, d.salary, {camp:true, coach:true});
+      const r3=cl.roster.find(r => r.id===d.id); r3.sour=2;
+      cl.cash=200000;
+      careerClubMonth(1);
+      check('с буткемпом и тренером прощают', cl.roster.some(r => r.id===d.id));
+      /* А теперь год подряд. Броски у клуба свои, посеянные: общий счётчик CC_MP_ROLLS
+         трогать нельзя — по нему сходятся вечера в гонке (ccMpMark). */
+      cl.roster.length=0; cl.talks={};
+      careerClubFree('', true).filter(x => !x.org).slice(0, 2)
+        .forEach(x => { cl.cash=500000; careerClubSign(x.id, x.salary); });
+      const rolls0=CC_MP_ROLLS; let came=0;
+      for(let i=0; i<12; i++){
+        cr.day=ccAddDays(cr.day, 30); cl.cash=500000;
+        careerClubMonth(1);
+        came+=cl.roster.filter(r => r.offer).length;
+        cl.roster.forEach(r => { delete r.offer; r.sour=0; });
+      }
+      out.notes.poachYear={приходили: came, броски: CC_MP_ROLLS-rolls0};
+      check('за год за составом приходят', came>0, String(came));
+      check('счётчик бросков гонки клуб не двигает', CC_MP_ROLLS===rolls0,
+            rolls0 + ' -> ' + CC_MP_ROLLS); }
+
+    // ---- академия -----------------------------------------------------------
+    /* Его слово 11.09: «академию тоже можно добавить». Академия стоит денег, берёт
+       заметно более слабых за долю зарплаты, мест в составе не занимает, и из неё
+       поднимают в состав. */
+    { const cl=careerClub();
+      cl.roster.length=0; cl.talks={}; cl.cash=0; cr.balance=0;
+      check('без академии молодёжи не видно', careerClubYoung('').length===0);
+      check('без денег академию не построить', !careerClubAcadBuild());
+      cl.cash=CC_CLUB_ACAD+50000;
+      check('академия построена', careerClubAcadBuild());
+      check('дважды не построить', !careerClubAcadBuild());
+      const young=careerClubYoung('');
+      out.notes.acad={сколько: young.length, первый: young[0] && (young[0].who.join('+')+' '+young[0].ovr+' $'+young[0].salary)};
+      check('молодёжь нашлась', young.length>0, String(young.length));
+      const y=young[0];
+      check('берут слабее тебя', y.ovr<=CAREER.player.ovr-CC_CLUB_ACAD_GAP, String(y.ovr));
+      check('и платят долю обычной зарплаты', y.salary<careerClubSalary(y.ovr),
+            y.salary + ' vs ' + careerClubSalary(y.ovr));
+      const seats0=careerClubSeats();
+      check('подписан в академию', careerClubSign(y.id, y.salary));
+      check('места в составе не занял', careerClubSeats()===seats0, seats0 + ' -> ' + careerClubSeats());
+      check('в академии он один', careerClubAcadSeats()===1, String(careerClubAcadSeats()));
+      const c0=cl.cash;
+      careerClubMonth(1);
+      check('академия стоит содержания', Math.round(c0-cl.cash)>=CC_CLUB_ACAD_KEEP,
+            c0 + ' -> ' + cl.cash);
+      check('поднят в состав', careerClubPromote(y.id));
+      const up=cl.roster.find(r => r.id===y.id);
+      check('и зарплата стала взрослой', up && !up.acad && up.salary===careerClubSalary(up.ovr),
+            JSON.stringify(up));
+      check('теперь он занимает место', careerClubSeats()===seats0+1); }
+
     // ---- своя фотка вместо герба --------------------------------------------
     /* Его слово 11.09: «свою фотку лого типо». Саму загрузку делает браузер
        (FileReader и декодирование), а наше правило — потолок сейва и то, что герб
