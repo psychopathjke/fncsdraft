@@ -370,6 +370,22 @@ const BOOT = `
         if (asBot) fail('человек комнаты сел ботом в вечер без него');
         CC_RACE_PEERS.zz.card = card0; CC_RACE_PEERS.zz.mates = mates0;
         CC_RACE_LOCK = lock2; }
+      /* ПЕРЕМОТКА В ГОНКЕ — ОДИН КАЛЕНДАРЬ. Ждали комнату только в свой турнирный день, а
+         пустые дни каждый шагал сам: у кого турниров меньше, тот убегал вперёд и показывал
+         сводку, пока сосед играл вечер трёхнедельной давности (его скрин 11.09). */
+      { var day0 = cr.day, peers1 = CC_RACE_PEERS, st1 = MP.state;
+        MP.state = 'live';
+        CC_RACE_PEERS = {zz: {id:'zz', card:{handle:'Zed', region:'EU'}, div: cr.division, day: ccAddDays(cr.day, -5), pow: 100}};
+        var behind = ccRaceFfBehind();
+        CC_RACE_PEERS.zz.day = cr.day;
+        var level = ccRaceFfBehind();
+        CC_RACE_PEERS.zz.day = ccAddDays(cr.day, 3);
+        var ahead = ccRaceFfBehind();
+        out.steps.push('перемотка ждёт отставших: ' + behind + ', вровень ' + level + ', впереди ' + ahead);
+        if (behind !== 1) fail('отставший сосед не держит перемотку: ' + behind);
+        if (level !== 0) fail('сосед на том же дне держит перемотку: ' + level);
+        if (ahead !== 0) fail('ушедший вперёд сосед держит перемотку: ' + ahead);
+        CC_RACE_PEERS = peers1; MP.state = st1; cr.day = day0; }
       var tile = careerRaceTileHTML();
       if (tile.indexOf('&#128065;') < 0 || tile.indexOf('&#127918;') < 0) fail('на плитке гонки нет значков режима (глаз/геймпад)');
       CC_RACE_PEERS = peers0; MP.state = st0; delete cr.race; cr.sim = false;

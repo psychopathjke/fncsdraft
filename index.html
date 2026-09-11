@@ -58543,7 +58543,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='2a7aa3df';
+const CC_BUILD='0482278d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -79329,6 +79329,17 @@ let CC_MP_FF={day:null, until:null, mine:false, theirs:false, who:{}};
    перемотки в гонке была одиночной: день в гонке общий (ccRaceHold), а перемотка
    уходила одна, и комната разъезжалась по дням. Теперь голос за дату — тот же, что
    у команды, только считает по одному на человека (who), как пропуск. */
+/* КТО ОТСТАЛ ПО КАЛЕНДАРЮ. Перемотка ждала комнату только в СВОЙ турнирный день, а пустые
+   дни каждый шагал сам. У кого турниров в эти тридцать дней меньше, тот убегал вперёд:
+   его скрин 11.09 — на телефоне сводка «30 дней пропущено» уже на экране, а на компьютере
+   в это время идёт пятая игра вечера трёхнедельной давности. Теперь календарь один: день
+   закрывается, когда комната на нём или дальше. Ушедшего насовсем ждём не дольше потолка,
+   как и на турнирном дне. */
+function ccRaceFfBehind(){
+  if(typeof ccRaceFfOn!=='function' || !ccRaceFfOn()) return 0;
+  const today=careerToday();
+  return ccRaceRivals().filter(p=>p && p.day && p.day<today && ccRacePeerAlive(p)).length;
+}
 function ccRaceFfOn(){
   return !ccMpOn() && typeof ccRaceLive==='function' && ccRaceLive() &&
          typeof ccRaceRivals==='function' && ccRaceRivals().length>0;
@@ -81447,10 +81458,18 @@ async function careerFastForward(days, agreed){
          сам, и к вечеру один приходит раньше другого; без этой паузы ccRaceApartWhy
          читал бы «другой день» и разводил комнаты внутри перемотки. Ждём до минуты,
          пока строки соперников не скажут тот же день. */
-      if(next && careerCanPlay(next) && ccRaceFfOn()){
+      if(ccRaceFfOn()){
         let rw=0;
         careerRaceSend();   // своя строка с сегодняшним днём — до того, как ждать чужие
-        while(rw++<600 && ccRaceApartWhy(next)==='day') await new Promise(r=>setTimeout(r, 500));
+        /* Свой турнирный день — как было (причина 'day' у ccRaceApartWhy). Любой другой —
+           по календарю комнаты: пока кто-то живой стоит на дне раньше моего, я не шагаю.
+           Потолок тот же, пять минут: ушедший совсем не держит перемотку вечно. */
+        const late=()=>(next && careerCanPlay(next)) ? (ccRaceApartWhy(next)==='day' || ccRaceFfBehind()>0)
+                                                     : ccRaceFfBehind()>0;
+        while(rw++<600 && late()){
+          await new Promise(r=>setTimeout(r, 500));
+          if(rw%20===0) careerRaceSend();   // и свою строку повторяем: соседу нужен мой день
+        }
       }
       try{
       if(next && careerCanPlay(next)){
