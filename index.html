@@ -58454,10 +58454,11 @@ function ccSlotCard(n){
    «выдать себе денег» для кого угодно, поэтому адрес проверяется: fncsdraft.com про
    ?cash не знает вовсе. Заработанным эти деньги не считаются — earnings не трогаем,
    иначе они поедут в доски призовых и в рейтинг. */
-function ccDebugCash(){
+function ccDebugCash(host){
   try{
-    const host=String(location.hostname||'');
-    if(/(^|\.)fncsdraft\.com$/i.test(host)) return false;
+    // Адрес можно передать: подменить location.hostname сторож не может, он только для чтения.
+    const h=String(host!=null ? host : (location.hostname||''));
+    if(/(^|\.)fncsdraft\.com$/i.test(h)) return false;
     const m=String(location.search||'').match(/[?&]cash=([0-9]{1,12})/);
     if(!m || !CAREER || !CAREER.career) return false;
     CAREER.career.balance=Number(m[1]);
@@ -58556,6 +58557,9 @@ function careerLoad(){
   // A different career is a different place to live. What the last one was
   // looking at in the flat list belongs to the last one. See CH_FLAT_PLACE.
   CH_FLAT_PLACE=null;
+  /* Деньги по ссылке ставятся ЗДЕСЬ, а не на входе в карьеру: входов несколько
+     (плитка, список слотов, ссылка лобби), и все они проходят через загрузку. */
+  try{ ccDebugCash(); }catch(e){}
   return CAREER;
 }
 // A save that cannot be written is the career quietly ceasing to exist, and this
@@ -58604,7 +58608,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='2d24c5f6';
+const CC_BUILD='12d5b527';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -60101,7 +60105,10 @@ function ccRaceMyLine(){
           // Понедельник Дивизиона 1 (cr.d1) — отпечатком: вторник от разных понедельников врозь (ccRaceApartWhy 'table').
           d1h:(CAREER.career.d1 && CAREER.career.d1.monday===careerMonday(careerToday())) ? String(ccHashStr(JSON.stringify(CAREER.career.d1))) : null,
           // И список вторника (cr.wf.cut) — финал недели от разных вторников врозь (та же причина 'table').
-          wfh:(CAREER.career.wf && CAREER.career.wf.monday===careerMonday(careerToday())) ? String(ccHashStr(String(CAREER.career.wf.cut||''))) : null};
+          wfh:(CAREER.career.wf && CAREER.career.wf.monday===careerMonday(careerToday())) ? String(ccHashStr(String(CAREER.career.wf.cut||''))) : null,
+          /* И таблица Плей-Ина (cr.majorSeed) — по ней сеются Хиты Мейджора. См. ветку 'table'
+             у ccRaceApartWhy: от разных таблиц выходят разные хиты, а это разные турниры. */
+          msh:CAREER.career.majorSeed ? String(ccHashStr(JSON.stringify(CAREER.career.majorSeed))) : ''};
 }
 // Соперники с карточкой — все, кто прислал строку (комната на N человек); порядок по адресу.
 function ccRaceRivals(){
@@ -60333,7 +60340,18 @@ function ccRaceApartWhy(next){
        careerWeeklyFinalField). Вторник, сыгранный врозь, даёт разные списки — и общее воскресенье
        расходится на первой игре (годовая проба 10.09: 8.02 «diff 42 of 50 · state wf» у всех шести). */
     const wfMine=(cr.wf && cr.wf.monday===careerMonday(careerToday())) ? String(ccHashStr(String(cr.wf.cut||''))) : null;
-    if(false && next.type==='final' && wfMine && peers.some(p=>p.wfh && p.wfh!==wfMine)) return 'table'; }   // список вторника общий
+    if(false && next.type==='final' && wfMine && peers.some(p=>p.wfh && p.wfh!==wfMine)) return 'table';   // список вторника общий
+    /* И ХИТЫ МЕЙДЖОРА. Их поле сеется таблицей Плей-Ина (cr.majorSeed, см. ccMajorSeedRows):
+       змейка раскладывает по ней полтораста составов на три хита, и играется тот, где стоит
+       комната. Таблица общая — книга мира её везёт (CC_RACE_SEED_KEYS), — но общая не всегда:
+       её пишет только прошедший Плей-Ин, и у того, кто не прошёл или пришёл в гонку позже,
+       её просто нет. Тогда поле собирается не из таблицы, а броском, и это уже другой
+       турнир: годовой прогон 11 сентября, 21 апреля — «The nights split at game 1», diff 48
+       of 50 при одинаковых людях в поле.
+       Отпечаток таблицы едет в строке (msh). Не сошёлся — вечер свой, как у соло-серии:
+       каждый играет свой хит, а доски сходятся ключом врозь (ccEvKey) и посылкой соседу. */
+    { const msMine=cr.majorSeed ? String(ccHashStr(JSON.stringify(cr.majorSeed))) : '';
+      if(next.type==='major' && peers.some(p=>String(p.msh||'')!==msMine)) return 'table'; } }
   /* ОДИН РЕЖИМ НА КОМНАТУ. В «Симуляции» вопросы не задаются вовсе (см.
      playGameWithChoices), то есть у двоих разное число решений и разные дороги
      расчёта. Команда это запрещает (ccMpModeWhy), гонка — нет, и его скрины
@@ -61867,7 +61885,7 @@ function careerEntry(direct){
      карьера обязана открыться и без сети. localStorage держит последнее
      известное состояние команды, а 'state' от сервера приедет и перепишет его
      через ccApplyTeamState. См. ccMpBoot. */
-  if(careerExists()){ careerLoad(); careerMigrateClock(); careerMigrateMoney(); careerMigrateOrg(); ccDebugCash(); ccMpBoot(); openCareerHub(); return; }
+  if(careerExists()){ careerLoad(); careerMigrateClock(); careerMigrateMoney(); careerMigrateOrg(); ccMpBoot(); openCareerHub(); return; }
   // The slot the tile opens is empty, but another one may not be — that is what
   // switching careers looks like from here, so ask rather than start a third.
   let any=false;
