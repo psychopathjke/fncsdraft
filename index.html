@@ -3131,7 +3131,7 @@
      запасным, если картинка не загрузилась (img снимает себя по onerror). */
   .zr-kit .zk-pickaxe{width:38px;height:26px;display:flex;align-items:center;justify-content:center;}
   .zr-kit .zk-pickaxe img{max-width:100%;max-height:100%;object-fit:contain;display:block;
-    transform:rotate(45deg) scale(1.45);filter:drop-shadow(0 1px 2px rgba(0,0,0,.8));}
+    transform:rotate(-25deg) scale(1.45);filter:drop-shadow(0 1px 2px rgba(0,0,0,.8));}
   .zr-kit .zk-pickaxe:empty{width:20px;height:22px;background:#dfe8ff;
     clip-path:polygon(40% 0,60% 0,60% 20%,100% 30%,100% 40%,60% 34%,60% 100%,40% 100%,40% 34%,0 40%,0 30%,40% 20%);}
   /* Ряд построек Q F V T: четыре ромба, как на HUD (стена, пол, лестница, конус). */
@@ -52858,7 +52858,9 @@ function ccRarityKey(r){
            orange:'legendary', gold:'mythic'})[s] || s.replace(/[^a-z]/g,'');
 }
 // Кирка на HUD — картинка, а не силуэт: The Axe of Champions 2.0 (его модель из Notion, 7.09).
-const CC_PICKAXE_ART='items/item-axe-of-champions.png';
+/* Имя с v2: файл пересобран (снята рамка скриншота, обрезаны поля), а адрес у картинок
+   не версионируется — под старым именем браузер отдал бы старую из кэша. */
+const CC_PICKAXE_ART='items/item-axe-of-champions-v2.png';
 // Иконки ресов — как в игре: брёвна, кирпичи, слиток.
 const CC_KIT_ICON={
   wood:'<svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="6" rx="3" fill="#c8894a"/><rect x="2" y="13" width="20" height="6" rx="3" fill="#a86a33"/><circle cx="5" cy="8" r="2" fill="#e9b77d"/><circle cx="19" cy="16" r="2" fill="#e9b77d"/></svg>',
@@ -52923,7 +52925,9 @@ function ccKitPanel(lobby, frame){
     return h ? '<span class="zk-art">'+h+'</span>' : '<em>'+esc(o.name)+'</em>'; };
   /* Кирка — The Axe of Champions 2.0, награда чемпиона FNCS (его картинка в Notion,
      7 сентября: «модельку кирки»). Редкость rare — слот синий, как в игре;
-     файл items/item-axe-of-champions.png вырезан со скрина, фон в прозрачность. */
+     файл items/item-axe-of-champions-v2.png вырезан со скрина, фон в прозрачность,
+     тёмная рамка окна с краёв стёрта заливкой, поля обрезаны (его «что за чёрная
+     чёрточка», 11 сентября: рамка, увеличенная поворотом, шла через весь слот). */
   const slots='<span class="zk-slot zk-pick r-rare" data-cap="'+esc(T.ccKitPickaxe)+'" title="'+esc(T.ccKitPickaxe)+' · The Axe of Champions 2.0"><span class="zk-art zk-pickaxe"><img alt="" src="'+CC_PICKAXE_ART+'" onerror="this.remove()"></span><u>1</u></span>'+
     [0,1,2,3,4].map(k=>{
       const o=pack[k];
@@ -58608,7 +58612,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='03b5775f';
+const CC_BUILD='f10072a5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
