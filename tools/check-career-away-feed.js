@@ -270,6 +270,19 @@ const BOOT = `
         out.steps.push('хит комнаты: индекс ' + at + ', я ' + hasMe + ', соперник ' + hasRiv);
         if (at < 0 || !hasMe || !hasRiv) fail('хит не свёл комнату: at=' + at + ' me=' + hasMe + ' riv=' + hasRiv);
         if (heats[0].length !== 3 || heats[1].length !== 3) fail('размер хитов поехал: ' + heats.map(function(h){ return h.length; }).join('/')); }
+      /* И ПУСТО — тоже ответ: у старшего записи нет, значит её нет ни у кого. Иначе сосед
+         сажает свой регион из своей записи, а старший из общего списка (Глобалы 26.09 в
+         годовой пробе: три строки из пятидесяти, сила пары 102 против 99). */
+      { cr.gcSeed = {season: cr.season, size: 2, reg: 'EU', m2: [['x']]};
+        const packEmpty = ccRaceWorldPack();
+        if (packEmpty.seeds.majorSeed !== null) fail('пустая запись не поехала как null: ' + JSON.stringify(packEmpty.seeds.majorSeed));
+        ccRaceWorldApply({dev:{}, seeds:{gcSeed:null}});
+        if (cr.gcSeed !== undefined) fail('чужое пусто не стёрло мою запись: ' + JSON.stringify(cr.gcSeed));
+        ccRaceWorldApply({dev:{}, seeds:{}});
+        cr.gcSeed = {season: cr.season, size: 2, reg: 'EU', m2: []};
+        ccRaceWorldApply({dev:{}, seeds:{}});
+        if (!cr.gcSeed) fail('старая сборка без ключа стёрла запись');
+        delete cr.gcSeed; }
       // Книга мира несёт записи посева.
       { cr.majorSeed = {n:1, season:1, size:2, rows:[['x']]};
         var wp = ccRaceWorldPack();

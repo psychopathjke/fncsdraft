@@ -5600,8 +5600,8 @@
      кэш промахивается сам. Проверку «хеш в теге совпадает с файлом» держит
      tools/check-deploy-folder.js: забыть обновить руками теперь нельзя, папка
      деплоя просто не соберётся зелёной. -->
-<script src="zone-sim.js?v=e0eba4ea"></script>
-<script src="zone-replay.js?v=41daeb38"></script>
+<script src="zone-sim.js?v=9b0b565d"></script>
+<script src="zone-replay.js?v=ddaac440"></script>
 <!-- Командная карьера: транспорт и склейка. Весь код мультиплеера живёт здесь,
      в index.html только точки врезки. ?v= — тот же кэш-предохранитель, что и
      у соседей: поменял mp.js — переставь хеш, иначе браузер возьмёт старый
@@ -58543,7 +58543,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5380bb33';
+const CC_BUILD='2a7aa3df';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -60099,7 +60099,13 @@ function ccWorldSeed(){
 function ccRaceWorldPack(){
   const cr=(CAREER && CAREER.career)||{};
   const seeds={};
-  CC_RACE_SEED_KEYS.forEach(k=>{ if(cr[k]!==undefined) seeds[k]=cr[k]; });
+  /* И ПУСТО — ТОЖЕ ОТВЕТ. Записи посева ехали только когда они есть: у старшего Мейджора 2
+     нет, у соседа есть — и сосед сажал СВОЙ регион из своей записи, а старший из общего
+     списка. Годовая проба на шестерых 11.09, Глобалы 26.09: зал разошёлся на три строки из
+     пятидесяти, у пары cringe+volko сила 102 против 99 при одинаковых шести числах — один
+     клиент собрал её одним путём, другой другим. Мир общий целиком, включая то, чего в нём
+     нет: пустая запись едет как null и стирает чужую. */
+  CC_RACE_SEED_KEYS.forEach(k=>{ seeds[k]=(cr[k]===undefined ? null : cr[k]); });
   return {dev:(CAREER && CAREER.dev)||{}, splits:(CAREER && CAREER.splits)||{}, duoSplits:cr.duoSplits||{}, trios:cr.trios||{}, cseed:ccCareerSeed(), seeds:seeds};
 }
 function ccRaceWorldApply(w){
@@ -60114,7 +60120,12 @@ function ccRaceWorldApply(w){
      воскресенья Дивизиона 1. Своё участие они не решают (оно в cr.major/cr.summit/cr.reload и
      остаётся личным) — только КОГО ещё сажать. */
   if(w.seeds && typeof w.seeds==='object' && CAREER.career)
-    CC_RACE_SEED_KEYS.forEach(k=>{ if(w.seeds[k]!==undefined) CAREER.career[k]=w.seeds[k]; });
+    CC_RACE_SEED_KEYS.forEach(k=>{
+      const v=w.seeds[k];
+      if(v===undefined) return;                       // старая сборка: про этот ключ молчит
+      if(v===null) delete CAREER.career[k];           // у старшего записи нет — нет её и у меня
+      else CAREER.career[k]=v;
+    });
   CC_RACE_WORLD_SEED=w.cseed ? String(w.cseed) : null;
   if(CAREER.career && CAREER.career.race && w.cseed) CAREER.career.race.wseed=String(w.cseed);
   try{ ccWorldReset(); }catch(e){}
