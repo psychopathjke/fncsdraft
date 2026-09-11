@@ -77,6 +77,32 @@ const BOOT = `
     check('месяц вперёд ушёл из кассы', club.cash === -first.salary, String(club.cash));
     check('дважды одного не подписать', !careerClubSign(first.id));
 
+    // ---- переговоры ---------------------------------------------------------
+    /* Его слово 11.09: «потом можно писать игрокам, кому хочешь предлагать условия».
+       Дуо держит свою цену: дал столько — идут, дал чуть меньше — торгуются, дал мало —
+       отказ, и сегодня больше не говорят. */
+    { const list = careerClubFree();
+      const d = list.find(x => !careerClub().roster.some(r => r.id === x.id));
+      check('есть с кем говорить', !!d);
+      const low = careerClubOffer(d.id, Math.round(d.salary * 0.5));
+      out.notes.talkLow = low;
+      check('мало — отказ', low && low.state === 'no', JSON.stringify(low));
+      check('после отказа сегодня не говорят',
+            (careerClubOffer(d.id, d.salary) || {}).state === 'wait');
+      careerClub().talks[d.id].day = '2000-01-01';            // назавтра разговор снова открыт
+      const mid = careerClubOffer(d.id, Math.round(d.salary * 0.85));
+      out.notes.talkMid = mid;
+      check('чуть меньше — торгуются', mid && mid.state === 'ask', JSON.stringify(mid));
+      check('названная цена не ниже настоящей', mid && mid.ask >= d.salary, JSON.stringify(mid));
+      check('и не выше прежней', mid && mid.ask <= d.salary, JSON.stringify(mid));
+      const yes = careerClubOffer(d.id, mid.ask);
+      out.notes.talkYes = yes;
+      check('дал столько — подписан', yes && yes.state === 'yes', JSON.stringify(yes));
+      const row = careerClub().roster.find(r => r.id === d.id);
+      check('в составе с той зарплатой, о которой договорились', row && row.salary === mid.ask,
+            row && String(row.salary));
+      check('поиск по нику находит', careerClubFree(d.who[0].slice(0, 3)).length > 0, d.who[0]); }
+
     // ---- доля с призовых ----------------------------------------------------
     careerClubTake();                       // точка отсчёта
     const rows = careerMoney().rows;
@@ -91,18 +117,23 @@ const BOOT = `
     // ---- месяц --------------------------------------------------------------
     club.cash = 100000;
     const before = club.cash;
+    const wages = club.roster.reduce((a, r) => a + r.salary, 0);
+    const sponsor = CC_CLUB_SPONSOR * club.roster.length;
     careerClubMonth(1);
-    const wages = first.salary, sponsor = CC_CLUB_SPONSOR * 1;
-    out.notes.month = {before: before, after: club.cash, wages: wages};
-    check('за месяц ушли содержание и зарплата, пришёл спонсор',
+    out.notes.month = {before: before, after: club.cash, wages: wages, n: club.roster.length};
+    check('за месяц ушли содержание и зарплаты, пришёл спонсор',
           club.cash === before + sponsor - CC_CLUB_KEEP - wages,
           before + ' -> ' + club.cash);
 
     // ---- нечем платить ------------------------------------------------------
     club.cash = 0; cr.balance = 0;
+    const had = club.roster.length;
     careerClubMonth(1);
-    out.notes.unpaid = {roster: club.roster.length, cash: club.cash};
-    check('состав ушёл, когда платить нечем', club.roster.length === 0, String(club.roster.length));
+    out.notes.unpaid = {had: had, roster: club.roster.length, cash: club.cash};
+    check('состав редеет, когда платить нечем', club.roster.length < had,
+          had + ' -> ' + club.roster.length);
+    for (let i = 0; i < 4 && club.roster.length; i++) careerClubMonth(1);
+    check('без денег состав уходит весь', club.roster.length === 0, String(club.roster.length));
     check('касса не ушла в минус', club.cash >= 0, String(club.cash));
 
     // ---- своя фотка вместо герба --------------------------------------------
