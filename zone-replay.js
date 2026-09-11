@@ -540,19 +540,28 @@
   var ICON_SKULL = '<path d="M6 .9C3.3.9 1.3 2.8 1.3 5.4c0 1.5.7 2.5 1.5 3.1v1.4c0 .7.5 1.2 1.2 1.2h4c.7 0 1.2-.5 1.2-1.2V8.5c.8-.6 1.5-1.6 1.5-3.1C10.7 2.8 8.7.9 6 .9z" fill="#ffd166"/>'
                  + '<circle cx="4.2" cy="5.4" r="1.15" fill="#101a2e"/><circle cx="7.8" cy="5.4" r="1.15" fill="#101a2e"/>'
                  + '<path d="M5.2 8.2h1.6v2.4H5.2z" fill="#101a2e" opacity=".55"/>';
+  // Тот же череп, но цветом отряда: вторая строка чипа — командный счёт.
+  var ICON_SKULL_TEAM = ICON_SKULL.split('#ffd166').join('#7de3a8');
   /* КИЛЛЫ ИГРОКА И КОМАНДЫ — идея его подписчика, 11 сентября: «чтоб писались киллы игрока
-     и команды, как в фортнайте». Своё число впереди, счёт отряда за косой чертой и тусклее;
-     в соло отряд это ты, и число одно. */
+     и команды, как в фортнайте», и его же референс — турнирный HUD Фортнайта, где счётчики
+     стоят СТОЛБИКОМ: сверху свои элиминации, под ними отрядные. Так и сделано: две строки в
+     одном чипе, своя жёлтым сверху, отрядная зелёным снизу. В соло отряд это ты — строка одна.
+     Его слово 11.09: «выше килы мои ниже на команду». */
   function killChip(you, team){
     var two = (you != null && team != null && team !== you);
-    var n = (you != null) ? you : team;
-    return '<span data-kills="' + (team != null ? team : n) + '"' + (you != null ? ' data-you="' + you + '"' : '') +
-      ' style="display:inline-flex;align-items:center;gap:3px;' +
-      'background:rgba(8,12,24,.62);border-radius:5px;padding:1px 6px 1px 4px;">' +
+    var row = function(icon, n, size, dim){
+      return '<span style="display:inline-flex;align-items:center;gap:3px;line-height:1;' +
+        (dim ? 'opacity:.78;' : '') + '">' +
+        '<svg viewBox="0 0 12 12" width="' + size + '" height="' + size + '" style="flex:none;">' + icon + '</svg>' +
+        '<b style="font-size:' + (size + 2) + 'px;">' + n + '</b></span>';
+    };
+    var tag = 'data-kills="' + (team != null ? team : you) + '"' + (you != null ? ' data-you="' + you + '"' : '');
+    var box = 'background:rgba(8,12,24,.62);border-radius:5px;padding:1px 6px 1px 4px;';
+    if(!two) return '<span ' + tag + ' style="display:inline-flex;align-items:center;gap:3px;' + box + '">' +
       '<svg viewBox="0 0 12 12" width="9" height="9" style="flex:none;">' + ICON_SKULL + '</svg>' +
-      '<b style="font-size:11px;">' + n +
-        (two ? '<i style="font-style:normal;font-weight:600;opacity:.6;">/' + team + '</i>' : '') +
-      '</b></span>';
+      '<b style="font-size:11px;">' + (you != null ? you : team) + '</b></span>';
+    return '<span ' + tag + ' style="display:inline-grid;justify-items:start;gap:1px;' + box + '">' +
+      row(ICON_SKULL, you, 8, false) + row(ICON_SKULL_TEAM, team, 8, true) + '</span>';
   }
   // A wreath, for the one counter that is about your squad and not the lobby.
   var ICON_PLACE  = '<path d="M6 1.4 7.1 4h2.6L7.6 5.7l.8 2.6L6 6.8 3.6 8.3l.8-2.6L2.3 4h2.6z" ' +
