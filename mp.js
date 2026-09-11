@@ -23,7 +23,13 @@ var SOCK=null, CODE=null, ID=null, SEEN=0, HANDLERS={}, PEER=null;
 /* Очередь чужих ответов и — после перезагрузки — СВОИХ (OWN): вечер догоняется
    по ним, не спрашивая заново. Лимит вырос: за длинный вечер с барьером на
    каждую игру и тремя вопросами ленты набегает больше шестидесяти четырёх. */
-var ACTS=[], ACTS_MAX=512, OWN=[];
+/* Потолок — на комнату гонки в шестером: ответы пятерых соседей на свои вопросы никто не
+   забирает, они копятся весь вечер (≈220 за кубок), и при 512 самое старое выбрасывалось —
+   в том числе ещё не прочитанный приход соседа к барьеру; медленный клиент вставал насмерть
+   (годовая проба на шестерых 8.09: два зависания из шести на 30–50 % первого вечера). */
+var ACTS=[], ACTS_MAX=8192, OWN=[];
+var PEER_HBS={};   // id соседа -> его последний пульс (см. say, kind 'hb')
+var PEER_AT={};    // id соседа -> когда от него что-то приходило (живость, см. ccRacePeerAlive)
 function findIn(list, kind, q, take){
   for(var i=0;i<list.length;i++){
     var a=list[i];
@@ -36,6 +42,19 @@ function findIn(list, kind, q, take){
 }
 // Когда напарник последний раз подавал голос — любым сообщением. См. MP.peerSeen.
 var LAST_PEER=0;
+/* НЕПОДТВЕРЖДЁННЫЕ АКТЫ. Сервер раздаёт каждый акт всем, включая отправителя, — то есть своё
+   эхо и есть подтверждение, что акт дошёл. Годовая проба на шестерых 9.09 (21.05, игра 11):
+   у одного клиента сокет умер в момент отправки прихода к барьеру (own:live4@#11), после
+   переподключения он догнал чужое по номерам — а СВОЙ приход так и остался неотправленным, и
+   трое соседей ждали его до потолка. То же случится с ответом на вопрос. Поэтому каждый акт
+   (кроме пульса) лежит здесь, пока не вернётся эхом, а после переподключения всё, что не
+   вернулось, уходит заново — сервер (lobby.act) выбрасывает точный повтор по (id, вид, номер
+   вопроса), а у соседей приход по одному на id (ccMpSync) и ответ берётся один (take). */
+var PENDING=[];
+function pendKey(kind, p){ return String(kind)+'#'+(p && p.q!=null ? p.q : '')+'#'+(p && p.g!=null ? p.g : ''); }
+function pendDrop(kind, p){ var k=pendKey(kind, p); for(var i=PENDING.length-1;i>=0;i--) if(PENDING[i].key===k) PENDING.splice(i,1); }
+function pendFlush(sock){ if(!PENDING.length) return; PENDING.forEach(function(x){ try{ sock.send(JSON.stringify({t:'act', kind:x.kind, payload:x.payload})); }catch(e){} }); }
+var LAST_MSG=0, WATCH=null;   // когда сервер последний раз что-то прислал; сторож тишины (см. connect)
 /* Состояние связи — четыре слова, и все четыре видны игроку.
 
    'off'  — карьера одиночная, лобби ни при чём;
@@ -95,6 +114,8 @@ var MP={
   set peer(c){ PEER=c; },
   get code(){ return CODE; },
   get peerSeen(){ return LAST_PEER; },
+  get peerHbs(){ return PEER_HBS; },
+  get peerAt(){ return PEER_AT; },
   // Состояние связи. Пишется и снаружи — проверкам негде взять живой сокет.
   state:'off',
   /* Кто уже нажал «играть»: {day, n, of}. Ставится сообщением сервера и
@@ -204,16 +225,27 @@ var MP={
      надо. Сокет просто зовёт это на каждое сообщение. */
   say:function(m){
     if(!m) return;
+    LAST_MSG=(new Date()).getTime();
     if(m.n) SEEN=m.n;
     /* Признак жизни напарника. Любое его сообщение — ответ, приход, карточка,
        состояние, пульс — говорит «я здесь и считаю». Пульс (kind 'hb') в
        очередь решений не попадает: он ничего не решает и вытеснял бы из неё
        настоящие ответы (ACTS_MAX). */
-    if(m.by && m.by!==ID) LAST_PEER=(new Date()).getTime();
-    if(m.t==='act' && m.kind==='hb'){ if(m.by && m.by!==ID) MP.peerHb=m.payload||null; return; }
+    if(m.by && m.by!==ID){ LAST_PEER=(new Date()).getTime(); MP.peerAt[m.by]=LAST_PEER; }
+    /* Пульс — ПО КАЖДОМУ соседу (peerHbs), не одним слотом: в комнате гонки на шестерых
+       последним мог оказаться пульс того, кто в этот вечер не играет (rand:false, день
+       впереди), и index читал его как «напарник вышел». peerHb остаётся последним — для дуо. */
+    if(m.t==='act' && m.kind==='hb'){ if(m.by && m.by!==ID){ MP.peerHb=m.payload||null; MP.peerHbs[m.by]=m.payload||null; } return; }
     /* Полное состояние команды. Применяется только если команда наша: с
        чужим дивизионом оно переписало бы карьеру вошедшего. Решает это
        index.html — здесь про дивизионы знать нечего. См. ccMpStateOk. */
+    /* КАКОЙ ПОРОДЫ КОМНАТА — говорит она сама. Вошедший по коду не знает, дуо
+       это или гонка: дверь одна. Лобби кладёт race в state (новый воркер), а
+       старый воркер этого поля не шлёт — тогда о гонке говорит первая же
+       строка гонки от соседа (act 'race'). Решает index.html (ccMpKindCheck),
+       здесь только передаётся. */
+    if(m.t==='state' && typeof ccMpKindCheck==='function' && typeof m.race==='boolean') ccMpKindCheck(m.race);
+    if(m.t==='act' && m.kind==='race' && m.by && m.by!==ID && typeof ccMpKindCheck==='function') ccMpKindCheck(true);
     if(m.t==='state'){
       PEER=m.peer||PEER;
       /* Сид команды — ОТ СЕРВЕРА, и он старше всего, что лежит в сейве.
@@ -261,16 +293,19 @@ var MP={
        нет, а после обрыва не знает и своей. */
     if(m.t==='ready'){ MP.waiting={day:m.day, n:m.ready||0, of:m.of||2, clash:m.clash||null}; redraw(); }
     // Вечер начался — ждать больше нечего.
-    if(m.t==='start'){ MP.waiting=null; if(!m.resume){ ACTS.length=0; OWN.length=0; } redraw(); }
+    if(m.t==='start'){ MP.waiting=null; if(!m.resume){ ACTS.length=0; OWN.length=0; PENDING.length=0; } redraw(); }
     // Состояние, которое напарник изменил прямо сейчас: метка на карте, взятый
     // третий, что угодно командное. Применяется и показывается сразу — см.
     // ccMpApplyRemote, там же глушится отправка обратно.
     if(m.t==='team')  ccMpApplyRemote(m.team);
+    // Своё эхо — подтверждение доставки (см. PENDING); чужой повтор того же вопроса не копится.
+    if(m.t==='act' && m.by===ID) pendDrop(m.kind, m.payload);
     if(m.t==='act' && m.by && m.by!==ID){
-      ACTS.push(m);
-      if(ACTS.length>ACTS_MAX) ACTS.shift();
+      var pq=(m.payload && m.payload.q);
+      var dup=pq!=null && ACTS.some(function(a){ return a.by===m.by && a.kind===m.kind && a.payload && a.payload.q===pq; });
+      if(!dup){ ACTS.push(m); if(ACTS.length>ACTS_MAX) ACTS.shift(); }
     }
-    if(m.t==='close'){ MP.waiting=null; ACTS.length=0; OWN.length=0; ccApplyTeamState(m.team); }
+    if(m.t==='close'){ MP.waiting=null; ACTS.length=0; OWN.length=0; PENDING.length=0; ccApplyTeamState(m.team); }
     /* «До свидания» по версии — единственный отказ, из которого не
        переподключаются: пока страница не обновлена, код у нас всё тот же, и
        лобби скажет то же самое. Разрыв дуо ('part') связь не ломает: его
@@ -312,13 +347,34 @@ var MP={
       sock.onopen=function(){
         TRY=0;
         setState('live');
+        /* ПОЛУОТКРЫТЫЙ СОКЕТ. Годовая проба на шестерых 9.09: у одного клиента сервер перестал
+           доставлять сообщения (из пяти приходов к барьеру дошёл один), а сокет закрылся сам
+           только через восемь минут — всё это время клиент ждал и считал связь живой. Соседи
+           шлют пульс каждые 15 с, значит тишина от сервера дольше 45 с при живых соседях —
+           мёртвая труба: закрываем сами, onclose переподключит и догонит по номерам. */
+        LAST_MSG=(new Date()).getTime();
+        if(WATCH) clearInterval(WATCH);
+        WATCH=setInterval(function(){
+          if(SOCK!==sock){ clearInterval(WATCH); WATCH=null; return; }
+          /* Только посреди сеяного вечера: пульс соседей идёт лишь там (ccMpHeartbeat), а в хабе
+             тишина от сервера — норма, и сторож рвал бы живой сокет каждые 45 с (год 9.09 03:48:
+             шестеро в хабе на 22.02, связь lost/wait по кругу). */
+          if(MP.state!=='live' || !Object.keys(PEER_HBS).length) return;
+          if(typeof CC_MP_RAND==='undefined' || !CC_MP_RAND) return;
+          if((new Date()).getTime()-LAST_MSG>45000){ try{ sock.close(); }catch(e){} }
+        }, 5000);
         /* Дивизион и сид команды — вместе с приветствием: по ним лобби решает,
            пускать ли вошедшего (см. lobby.join). Сид говорит «это моя команда»,
            дивизион — «мы одного уровня». */
+        /* И ГОНКА ЛИ ЭТО. Лобби гонки — другой породы: людей в нём больше
+           двух и дивизионы не сверяются (см. lobby.join). Первый вошедший
+           метит комнату, остальные просто попадают в уже помеченную. */
         sock.send(JSON.stringify({t:'hello', build:CC_BUILD, card:MP.card(),
-                                  div:MP.div(), seed:MP.seed()}));
+                                  div:MP.div(), seed:MP.seed(), race:MP.race()}));
         // Вернулся — догнал по номерам, ничего не переспрашивая.
         if(SEEN) sock.send(JSON.stringify({t:'since', n:SEEN}));
+        // И всё своё, что сервер не подтвердил эхом, — заново (повтор он выбросит сам).
+        pendFlush(sock);
         res();
       };
       sock.onerror=function(e){ if(MP.state!=='old') setState('lost'); rej(e); };
@@ -344,7 +400,7 @@ var MP={
   },
   // Уйти из лобби совсем — связь больше не нужна и переподключаться незачем.
   drop:function(){
-    CODE=null; clearTimeout(TIMER); TRY=0; MP.waiting=null; ACTS.length=0;
+    CODE=null; clearTimeout(TIMER); TRY=0; MP.waiting=null; ACTS.length=0; PENDING.length=0;
     try{ if(SOCK) SOCK.close(); }catch(e){}
     SOCK=null; setState('off');
   },
@@ -387,6 +443,8 @@ var MP={
   },
   // Забрать чужое решение этого вопроса, если оно уже приехало.
   take:function(kind, q){ return MP.find(kind, q, true); },
+  // Очередь одной строкой — для проб (след барьера в ccMpSync).
+  dump:function(){ return ACTS.map(function(a){ var p=a.payload||{}; return String(a.by||'').slice(-5)+':'+a.kind+'#'+p.q+' g'+p.g; }); },
   /* Напарник уже стоит на барьере, которого мы ещё не прошли: в очереди лежит
      его приход ('kind@'), не забранный нашим ccMpSync. Значит, всё, что мы
      сейчас показываем, держит его. См. ccMpHurry. */
@@ -409,17 +467,32 @@ var MP={
      напарнику раньше, чем сервер объявит старт. */
   sendCard:function(){ MP.send({t:'card', card:MP.card()}); },
   // Чем карьера представляется лобби на входе. Пусто — значит нечем сверять.
+  /* Гонка ли это. По этому полю лобби решает, сколько людей пускать и сверять
+     ли дивизион, — см. lobby.join и ccRaceOn. */
+  race:function(){
+    return (typeof ccRaceOn==='function') ? !!ccRaceOn() : false;
+  },
+  /* В ГОНКЕ дивизион и сид НЕ ЕДУТ. Так это и было задумано с самого начала
+     (комментарий в careerRaceEnter), но отправлял их всё равно этот файл — он
+     про гонку ничего не знал, и лобби отбивало вход «reason:div» ровно там,
+     где гонка и должна сходиться: первый дивизион против пятого. */
   div:function(){
+    if(MP.race()) return null;
     var cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career)||null;
     return (cr && cr.division) || null;
   },
   seed:function(){
+    if(MP.race()) return null;
     var cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career)||null;
     return (cr && cr.seed) || null;
   },
   // Вид вечера едет вместе с днём: двое обязаны нажать ОДИН турнир. См. ccMpGate.
   ready:function(day, kind){ MP.send({t:'ready', day:day, kind:kind||null}); },
-  act:function(kind, payload){ MP.send({t:'act', kind:kind, payload:payload}); },
+  act:function(kind, payload){
+    if(kind!=='hb'){ pendDrop(kind, payload); PENDING.push({key:pendKey(kind, payload), kind:kind, payload:payload}); if(PENDING.length>64) PENDING.shift(); }
+    MP.send({t:'act', kind:kind, payload:payload});
+  },
+  pending:function(){ return PENDING.length; },
   digest:function(hash, team){ MP.send({t:'digest', hash:hash, team:team}); },
   part:function(){ MP.send({t:'part'}); }
 };

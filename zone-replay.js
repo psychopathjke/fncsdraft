@@ -216,7 +216,9 @@
     svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
     stage.appendChild(svg);
 
-    var head = el('div', null,
+    // Named, so the app's kit HUD can quiet its right-hand counters and draw
+    // its own cluster in the game's layout.
+    var head = el('div', 'zr-head',
       'position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;' +
       'align-items:center;padding:5px 7px;font-size:11px;font-weight:800;color:#fff;' +
       'letter-spacing:.04em;background:linear-gradient(180deg,rgba(0,0,0,.72),rgba(0,0,0,0));');
@@ -232,7 +234,8 @@
       'pointer-events:none;max-width:44%;text-align:right;');
     wrap.appendChild(side);
 
-    var feed = el('div', null,
+    // Named, so the kit strip the app lays along the bottom can lift it clear.
+    var feed = el('div', 'zr-feed',
       'position:absolute;left:7px;bottom:6px;display:flex;flex-direction:column;' +
       'align-items:flex-start;gap:3px;pointer-events:none;');
     wrap.appendChild(feed);
@@ -501,6 +504,10 @@
   }
 
   function pill(name, colour, isYou){
+    // The game's feed is plain text: a coloured name, no pill behind it.
+    if(PLAIN) return '<span style="display:inline-block;color:' + (isYou ? '#ffe45c' : colour) +
+      ';font-size:11px;font-weight:800;white-space:nowrap;max-width:170px;overflow:hidden;' +
+      'text-overflow:ellipsis;text-shadow:0 1px 2px #000,0 0 2px #000;">' + esc(name) + '</span>';
     return '<span style="display:inline-block;padding:2px 7px;border-radius:4px;' +
       'background:' + colour + ';color:' + inkOn(colour) + ';font-size:10.5px;font-weight:800;' +
       'white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis;' +
@@ -526,6 +533,38 @@
                     '<circle cx="8.6" cy="3.9" r="1.6" fill="#7de3a8" opacity=".75"/>' +
                     '<path d="M0.4 10.6c0-2.3 1.5-3.7 3.3-3.7s3.3 1.4 3.3 3.7z" fill="#7de3a8"/>' +
                     '<path d="M7.2 10.6c0-1.9 1-3 2.3-3s2.1 1.1 2.1 3z" fill="#7de3a8" opacity=".75"/>';
+  /* КИЛЛЫ В ЭТОЙ ИГРЕ — его игрок, 10 сентября: «It would be cool if it showed you the kills
+     you get in that game». Место и живых шапка показывала, а свои элиминации — нет: они лежали
+     в d.e у своей точки и были видны только в панели набора. Череп рядом с местом, без /итого:
+     это счёт ЭТОЙ игры, не этапа. */
+  /* БЕЗ ГЛАЗИКОВ — его слово 11 сентября: «черепок без глазиков в игре». В самой игре значок
+     элиминаций сплошной силуэт, глазниц на нём нет; та же форма стоит и в столбике худа
+     (.zk-ico-skull в index.html), так что оба экрана показывают один значок. */
+  var SKULL_PATH = 'M2.4 0H9.6L12 3.6V7.44L10.08 8.4V12H7.2V10.08H4.8V12H1.92V8.4L0 7.44V3.6Z';
+  var ICON_SKULL = '<path d="' + SKULL_PATH + '" fill="#ffd166"/>';
+  // Тот же череп, но цветом отряда: вторая строка чипа — командный счёт.
+  var ICON_SKULL_TEAM = ICON_SKULL.split('#ffd166').join('#7de3a8');
+  /* КИЛЛЫ ИГРОКА И КОМАНДЫ — идея его подписчика, 11 сентября: «чтоб писались киллы игрока
+     и команды, как в фортнайте», и его же референс — турнирный HUD Фортнайта, где счётчики
+     стоят СТОЛБИКОМ: сверху свои элиминации, под ними отрядные. Так и сделано: две строки в
+     одном чипе, своя жёлтым сверху, отрядная зелёным снизу. В соло отряд это ты — строка одна.
+     Его слово 11.09: «выше килы мои ниже на команду». */
+  function killChip(you, team){
+    var two = (you != null && team != null && team !== you);
+    var row = function(icon, n, size, dim){
+      return '<span style="display:inline-flex;align-items:center;gap:3px;line-height:1;' +
+        (dim ? 'opacity:.78;' : '') + '">' +
+        '<svg viewBox="0 0 12 12" width="' + size + '" height="' + size + '" style="flex:none;">' + icon + '</svg>' +
+        '<b style="font-size:' + (size + 2) + 'px;">' + n + '</b></span>';
+    };
+    var tag = 'data-kills="' + (team != null ? team : you) + '"' + (you != null ? ' data-you="' + you + '"' : '');
+    var box = 'background:rgba(8,12,24,.62);border-radius:5px;padding:1px 6px 1px 4px;';
+    if(!two) return '<span ' + tag + ' style="display:inline-flex;align-items:center;gap:3px;' + box + '">' +
+      '<svg viewBox="0 0 12 12" width="9" height="9" style="flex:none;">' + ICON_SKULL + '</svg>' +
+      '<b style="font-size:11px;">' + (you != null ? you : team) + '</b></span>';
+    return '<span ' + tag + ' style="display:inline-grid;justify-items:start;gap:1px;' + box + '">' +
+      row(ICON_SKULL, you, 8, false) + row(ICON_SKULL_TEAM, team, 8, true) + '</span>';
+  }
   // A wreath, for the one counter that is about your squad and not the lobby.
   var ICON_PLACE  = '<path d="M6 1.4 7.1 4h2.6L7.6 5.7l.8 2.6L6 6.8 3.6 8.3l.8-2.6L2.3 4h2.6z" ' +
                     'fill="#ffd479"/>';
@@ -557,6 +596,36 @@
   // The place to print, or null when there is nothing to print: a replay
   // watched rather than played has no squad of yours in it, and a counter about
   // your squad has no business on somebody else's game.
+  /* Чей это элим. Движок считает их ОТРЯДОМ: людей внутри команды у него нет вовсе.
+     Поэтому счёт отряда раскладывается на своих по привычке к дракам — AIM карточки, то
+     есть среднее число элимов за игру, — и элим за элимом уходит тому, у кого больше долг
+     по доле. Раскладка повторяемая: одна и та же игра у двоих клиентов даёт одни и те же
+     числа, и ни одного броска из потока вечера она не берёт. Веса кладёт на роастер тот,
+     кто его строит (ccRosterYouSplit в index.html); нет весов — счёт один, как был. */
+  function killShare(total, w, seat){
+    if(!w || w.length < 2 || !(seat >= 0) || seat >= w.length || !(total > 0)) return null;
+    var i, j, sum = 0, got = [];
+    for(i = 0; i < w.length; i++){ sum += Math.max(0.01, w[i] || 0); got.push(0); }
+    for(i = 0; i < total; i++){
+      var best = 0, bd = -Infinity;
+      for(j = 0; j < w.length; j++){
+        var d = (Math.max(0.01, w[j] || 0) / sum) * (i + 1) - got[j];
+        if(d > bd + 1e-9){ bd = d; best = j; }
+      }
+      got[best]++;
+    }
+    return got[seat];
+  }
+  // Сколько выбил СВОЙ отряд в этой игре (d.e у своей точки) и сколько из этого ты.
+  function killsOf(frame, roster){
+    var me = yourSquad(roster);
+    if(me < 0 || !frame.dots[me]) return null;
+    var e = frame.dots[me].e;
+    if(e == null) return null;
+    var sp = roster && roster.youKills;
+    var you = sp ? killShare(e, sp.w, sp.seat) : null;
+    return {team: e, you: (you == null ? (e === 0 && sp ? 0 : null) : you)};
+  }
   function placeOf(frame, roster){
     var me = yourSquad(roster);
     if(me < 0 || !frame.dots[me]) return null;
@@ -776,6 +845,12 @@
   // frames now carry. Storm and surge are what move it, so a plate with a short
   // bar is a squad that is out of position or being pushed by surge.
   var PLATE_BG = 'rgba(9,12,20,.86)', PLATE_LINE = 'rgba(255,255,255,.18)';
+  // The game's own look, switched on by the app for the career map: nameplates
+  // without the dark box (white text with a dark stroke and the bar under it)
+  // and a kill feed of plain lines instead of pills. Off, the draft keeps the
+  // plates it always had.
+  var PLAIN = false;
+  function setPlain(v){ PLAIN = !!v; }
   var BAR_H = 0.42, BAR_GAP = 0.28, STRIPE = 0.5;   // fractions of the font size
 
   // How tall a plate of this many lines comes out. Shared with the code that
@@ -806,25 +881,27 @@
     var stripe = size.stripe, textW = size.textW, w = size.w, h = size.h;
 
     var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    var r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    r.setAttribute('x', left.toFixed(3)); r.setAttribute('y', top.toFixed(3));
-    r.setAttribute('width', w.toFixed(3)); r.setAttribute('height', h.toFixed(3));
-    r.setAttribute('rx', (fs * 0.22).toFixed(3));
-    r.setAttribute('fill', PLATE_BG);
-    r.setAttribute('stroke', isYou ? '#ffffff' : PLATE_LINE);
-    r.setAttribute('stroke-width', isYou ? 1.5 : 0.75);
-    r.setAttribute('vector-effect', 'non-scaling-stroke');
-    g.appendChild(r);
+    if(!PLAIN){
+      var r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      r.setAttribute('x', left.toFixed(3)); r.setAttribute('y', top.toFixed(3));
+      r.setAttribute('width', w.toFixed(3)); r.setAttribute('height', h.toFixed(3));
+      r.setAttribute('rx', (fs * 0.22).toFixed(3));
+      r.setAttribute('fill', PLATE_BG);
+      r.setAttribute('stroke', isYou ? '#ffffff' : PLATE_LINE);
+      r.setAttribute('stroke-width', isYou ? 1.5 : 0.75);
+      r.setAttribute('vector-effect', 'non-scaling-stroke');
+      g.appendChild(r);
 
-    // The squad's colour, as a stripe down the left edge.
-    var key = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    key.setAttribute('x', (left + fs * 0.16).toFixed(3));
-    key.setAttribute('y', (top + fs * 0.2).toFixed(3));
-    key.setAttribute('width', (stripe * 0.55).toFixed(3));
-    key.setAttribute('height', (h - fs * 0.4).toFixed(3));
-    key.setAttribute('rx', (stripe * 0.27).toFixed(3));
-    key.setAttribute('fill', colour);
-    g.appendChild(key);
+      // The squad's colour, as a stripe down the left edge.
+      var key = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      key.setAttribute('x', (left + fs * 0.16).toFixed(3));
+      key.setAttribute('y', (top + fs * 0.2).toFixed(3));
+      key.setAttribute('width', (stripe * 0.55).toFixed(3));
+      key.setAttribute('height', (h - fs * 0.4).toFixed(3));
+      key.setAttribute('rx', (stripe * 0.27).toFixed(3));
+      key.setAttribute('fill', colour);
+      g.appendChild(key);
+    }
 
     var textLeft = left + stripe + PAD_X * fs;
     var first = top + PAD_Y * fs + fs * 0.79;
@@ -846,6 +923,15 @@
       // The job it was doing is done by the plate itself: one background, one
       // border, one colour stripe down the edge and one health bar under the
       // lot. Nothing about three names inside that reads as three squads.
+      // Without the box the text carries its own edge, the way the game's
+      // nameplate does: white over a dark stroke, your own squad in colour.
+      if(PLAIN){
+        t.setAttribute('stroke', 'rgba(0,0,0,.85)');
+        t.setAttribute('stroke-width', (fs * 0.18).toFixed(3));
+        t.setAttribute('paint-order', 'stroke');
+        t.setAttribute('stroke-linejoin', 'round');
+        if(isYou) t.setAttribute('fill', '#ffe45c');
+      }
       t.textContent = lines[k];
       g.appendChild(t);
     }
@@ -1182,6 +1268,7 @@
     var totS = roster.totalSquads || frame.dots.length;
     var totP = roster.totalPlayers || totS;
     var mine = placeOf(frame, roster);
+    var myKills = killsOf(frame, roster);
     handle.head.innerHTML =
       '<span style="display:flex;align-items:center;gap:7px;">' +
         '<span>' + esc(labels.zone) + ' ' + frame.zone + '</span>' +
@@ -1189,6 +1276,7 @@
           Math.floor(secs/60) + ':' + pad2(secs % 60) + '</span></span>' +
       '<span style="display:flex;align-items:center;gap:5px;">' +
         (mine ? placeChip(mine.place, mine.settled, totS) : '') +
+        (myKills != null ? killChip(myKills.you, myKills.team) : '') +
         counter(ICON_PLAYER, (frame.players != null ? frame.players : frame.alive), totP) +
         counter(ICON_SQUAD, frame.alive, totS) + '</span>';
 
@@ -1232,15 +1320,25 @@
         // way somewhere, unlike a kill or a place.
         h: moving ? lerp(d.h == null ? 100 : d.h, e.h == null ? 100 : e.h, k)
                   : (d.h == null ? 100 : d.h),
+        // The shield slides the same way the health does.
+        sh: moving ? lerp(d.sh == null ? 100 : d.sh, e.sh == null ? 100 : e.sh, k)
+                   : (d.sh == null ? 100 : d.sh),
         // Not interpolated. A kill is a whole number that happened at a moment,
         // and a place is a fact; sliding either one between frames would put a
         // squad on two and a half eliminations and half of eighth place.
         e: d.e || 0,
-        p: d.p || 0
+        p: d.p || 0,
+        // Surge is a state, not a quantity: carried from the recorded frame as
+        // is, so the kit panel does not read "surge off" between two frames
+        // that both say otherwise.
+        u: d.u || 0,
+        n: d.n || 0
       });
     }
     return {
       zone: a.zone,
+      surgeAt: a.surgeAt || 0,
+      surgeLine: a.surgeLine == null ? null : a.surgeLine,
       // The clock only runs down inside a phase; across a phase boundary it
       // resets upward, and sliding it there would run the timer backwards.
       secondsLeft: b.secondsLeft <= a.secondsLeft
@@ -1808,6 +1906,8 @@
   // alone, so a caller driving its own clock can put a frame on the screen
   // without wiping the list of who has just died — which is what a caller that
   // reached for play() one frame at a time was doing to itself.
+  /* Раскладка отдаётся наружу: тот же счёт рисует и столбик худа игры (ccKitPanel в
+     index.html). Две реализации одного правила разъехались бы на первой же правке. */
   function show(handle, frame, opts){
     opts = opts || {};
     draw(handle, frame, opts.labels, opts.roster);
@@ -1855,11 +1955,11 @@
   }
 
   root.ZoneReplay = {mount:mount, play:play, unmount:unmount,
-                     between:between, show:show, clearFeed:clearFeed, note:note,
+                     between:between, show:show, killShare:killShare, clearFeed:clearFeed, note:note,
                      whole:whole,
                      directTrack:directTrack,
                      // Pure, and the one part of the naming a browser is not
                      // needed to check: how a squad's handles become the lines
                      // of a plate. Exported for tools/zone-sim-test.js.
-                     nameLines:nameLines};
+                     nameLines:nameLines, setPlain:setPlain};
 })(typeof globalThis !== 'undefined' ? globalThis : this);
