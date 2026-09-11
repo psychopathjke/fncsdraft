@@ -28,7 +28,7 @@ const BOOT = `
       player:{nick:'Boss', age:22, source:'rookie', country:'de', countryPing:15, closeRangeEdge:0,
               region:'EU', ovr:95, role:'roleIGL', attrs:ccRookieAttrs(95,'roleIGL'), ageEdge:0,
               photo:null, handle:null, cardRegion:null, nat:null},
-      career:{season:1, day:'2026-03-02', division:1, earnings:200000, balance:200000, reach:30000,
+      career:{season:1, day:'2026-03-02', division:1, earnings:1500000, balance:1500000, reach:30000,
               tokens:[], log:[], news:[], size:2},
       gear:{own:[], conf:0}, partners:[]
     }));
