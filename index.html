@@ -1554,7 +1554,8 @@
   .cc-ps-grid div{display:flex; justify-content:space-between; gap:8px; font-size:11px; border-bottom:1px dashed rgba(255,255,255,.14); padding:2px 0;}
   .cc-ps-grid span{opacity:.75;} .cc-ps-grid b{font-weight:800; white-space:nowrap;}
   .cc-ps-list div{font-size:10.5px; line-height:1.5;} .cc-ps-list i{font-style:normal; opacity:.55; margin-right:5px;} .cc-ps-list b{font-weight:800;}
-  .cc-peek{cursor:zoom-in; text-decoration:none; border-bottom:1px dotted rgba(255,255,255,.45);} .cc-peek:hover{border-bottom-style:solid;}
+  /* .cc-peek занят плиткой магазина (display:block;width:100%;border) — ник в таблице с тем же классом растягивался в рамку на всю ячейку, флаг и «&» уезжали на свои строки (его скрин 11.09, «bags», ЛАН-таблица трио). */
+  .cc-peek-nick{cursor:zoom-in; text-decoration:none; border-bottom:1px dotted rgba(255,255,255,.45);} .cc-peek-nick:hover{border-bottom-style:solid;}
   .cc-pack{display:flex; gap:4px; margin:4px 0 6px;}
   .cc-pack i{position:relative; flex:0 0 38px; width:38px; height:34px; border-radius:4px; border:1.5px solid #d8dde6;
     background:linear-gradient(180deg,#8f97a3,#4d545e); display:flex; align-items:center; justify-content:center; overflow:hidden; font-style:normal;}
@@ -62245,6 +62246,16 @@ function careerRenderHub(tab){
     if(at.w) window.scrollTo(0, at.w);
   }catch(e){}
 }
+/* Число с карточки — одно на все экраны. Карточка и шапка хаба печатают
+   рейтинг плюс пинг и возраст (см. shownOvr), а профиль соцсети и лист
+   «Профиль» печатали голый pl.ovr: 78 на карточке против «Rating 68» строкой
+   ниже. Игрок MarkeL, 11 сентября: «пофикси баг где якобы у тебя рейтинг на
+   10 больше, хотя это не так». Потолок тот же, что у карточки. */
+function ccMyShownOvr(){
+  const card=careerCard(), a=card ? attrsFor(card) : null;
+  return a ? Math.min(CAREER_SCALE_TOP, Math.round(a.ovr + (card._pingEdge||0) + (card._ageEdge||0)))
+           : (CAREER && CAREER.player ? CAREER.player.ovr : 0);
+}
 function careerRenderHubBody(tab){
   CH_TAB=tab||CH_TAB;
   const pl=CAREER.player, cr=CAREER.career;
@@ -62252,9 +62263,7 @@ function careerRenderHubBody(tab){
   // The same number the card prints: base plus connection plus age. The header
   // was leaving age out, so the hub said 63 while the card next to it said 67.
   // Capped at the top of the scale, the same way the card is: see shownOvr.
-  const shown=a ? Math.min(CAREER_SCALE_TOP,
-                           Math.round(a.ovr + (card._pingEdge||0) + (card._ageEdge||0)))
-                : pl.ovr;
+  const shown=ccMyShownOvr();
 
   const face=card ? (photoURL(card)||'') : '';
   document.getElementById('chWho').innerHTML=
@@ -78960,7 +78969,7 @@ function careerSocialHTML(){
     <div class="x-profile-head">
       ${meAv('x-av-big')}
       <div><b>${esc(me.nick)}</b><span>@${esc(meHandle)}</span>
-        <span class="x-bio">${CAREER.org?esc(CAREER.org.name)+' · ':''}${careerTopHonour() ? careerTopHonour()+' · ' : ''}${L().ccDivision} ${CAREER.career.division} · ${L().ccRoOvr} ${me.ovr}</span></div>
+        <span class="x-bio">${CAREER.org?esc(CAREER.org.name)+' · ':''}${careerTopHonour() ? careerTopHonour()+' · ' : ''}${L().ccDivision} ${CAREER.career.division} · ${L().ccRoOvr} ${ccMyShownOvr()}</span></div>
     </div>
     <div class="x-counts">
       <span><b>${ccFollowers(careerReach())}</b>${L().xFollowers}</span>
@@ -90869,7 +90878,7 @@ function ccNamesPeekHTML(t){
   const on=(typeof CAREER_RUN!=='undefined' && CAREER_RUN) && CAREER && CAREER.career && Array.isArray(t.squad) && t.squad.length && t.squad.every(c=>c && c.handle);
   if(!on) return String(t.name||'');
   // С флагом, как teamLabel, и span, а не <u>: у <u> в таблице своя рамка (его скрин 10.09: «ники вот так выглядят», флагов нет).
-  const links=t.squad.map(c=>flagFor(c)+'<span class="cc-peek" title="'+esc(L().cardPeekHint)+'" onclick="event.stopPropagation();ccPeekByHandle(\''+esc(String(c.handle)).replace(/'/g,"\\'")+'\')">'+esc(String(c.handle))+'</span>').join(' &amp; ');
+  const links=t.squad.map(c=>flagFor(c)+'<span class="cc-peek-nick" title="'+esc(L().cardPeekHint)+'" onclick="event.stopPropagation();ccPeekByHandle(\''+esc(String(c.handle)).replace(/'/g,"\\'")+'\')">'+esc(String(c.handle))+'</span>').join(' &amp; ');
   // Свой состав подписан («Твой состав: …») — подпись остаётся, имена — ссылками.
   const m=String(t.name||'').match(/^([^:<]{1,40}:)\s*/);
   return (m ? esc(m[1])+' ' : '')+links;
@@ -92050,7 +92059,7 @@ function careerProfileHTML(){
     <div class="ev-head">
       <div class="ev-hero">
         <em>${L().ccRoOvr}</em>
-        <b>${pl.ovr}</b>
+        <b>${ccMyShownOvr()}</b>
         ${careerRatingCurve(log)}
       </div>
       <div class="ev-totals">

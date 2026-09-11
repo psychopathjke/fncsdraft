@@ -61,6 +61,20 @@ const BOOT = `
     if(prof.indexOf('ev-table')<0) fail('в Профиле нет таблицы результатов');
     if(prof.indexOf('ev-totals')<0) fail('в Профиле нет итогов сверху');
     if(prof.indexOf('arc-row')>=0) fail('сезоны остались в Профиле');
+    // ---- одно число рейтинга на карточку, шапку, Профиль и соцсеть --------
+    // Игрок MarkeL, 11.09: карточка 78, а в профиле «Rating 68» — профиль и
+    // лист печатали голый pl.ovr без пинга и возраста. См. ccMyShownOvr.
+    const want=ccMyShownOvr();
+    if(want===CAREER.player.ovr) fail('рейтинг с карточки равен голому pl.ovr — пинг и возраст не легли: '+want);
+    const mHero=prof.match(/<em>[^<]*<\\/em>\\s*<b>(\\d+)<\\/b>/);
+    if(!mHero || +mHero[1]!==want) fail('в Профиле не число карточки: '+(mHero&&mHero[1])+' vs '+want);
+    careerRenderHubBody('centre');
+    const who=document.getElementById('chOvr').textContent;
+    if(who.indexOf(String(want))<0) fail('в шапке хаба не число карточки: '+who.slice(0,80)+' vs '+want);
+    CH_SOCIAL='me'; const soc=careerSocialHTML(); CH_SOCIAL=null;
+    const mBio=soc.match(/class="x-bio">[^<]*?(\\d+)<\\/span>/);
+    if((!mBio || +mBio[1]!==want)) fail('в профиле соцсети не число карточки: '+(mBio&&mBio[1])+' vs '+want);
+    out.steps.push('рейтинг везде один: '+want+' (pl.ovr '+CAREER.player.ovr+')');
     // ---- История: сезоны и лента, и только они ----------------------------
     const hist=careerHistoryHTML();
     if(hist.indexOf('arc-row')<0 && hist.indexOf('arcTitle')<0 && hist.indexOf('ch-tile')<0)

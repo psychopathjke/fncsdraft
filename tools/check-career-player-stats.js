@@ -90,7 +90,11 @@ const BOOT = `
     // ---- имена в таблице вечера --------------------------------------------------
     CAREER_RUN=true;
     const cellOn=ccNamesPeekHTML(ranked[0]);
-    check('в таблице вечера имена — ссылками на лист', /class="cc-peek"/.test(cellOn) && /flag|<img/.test(cellOn) && cellOn.indexOf('ccPeekByHandle(')>=0 && cellOn.indexOf(firstH)>=0, cellOn.slice(0,160));
+    check('в таблице вечера имена — ссылками на лист', /class="cc-peek-nick"/.test(cellOn) && /flag|<img/.test(cellOn) && cellOn.indexOf('ccPeekByHandle(')>=0 && cellOn.indexOf(firstH)>=0, cellOn.slice(0,160));
+    // Класс ника — не класс плитки магазина: .cc-peek там display:block;width:100%;border,
+    // и ник с ним растягивался в рамку на всю ячейку (его скрин 11.09, «bags»).
+    (function(){ const el=document.createElement('span'); el.className='cc-peek-nick'; el.textContent='x'; document.body.appendChild(el);
+      const cs=getComputedStyle(el); check('ник в строку, без плиточной рамки', cs.display==='inline' && cs.borderTopStyle==='none', cs.display+'/'+cs.borderTopStyle); el.remove(); })();
     CAREER_RUN=false;
     check('вне вечера — просто имя', ccNamesPeekHTML(ranked[0])===String(ranked[0].name||''));
     // ---- хвост режется ------------------------------------------------------------
