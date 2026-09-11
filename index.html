@@ -58564,7 +58564,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='833288b5';
+const CC_BUILD='6deb9266';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -71100,27 +71100,42 @@ function careerClubCrestSet(what, val){
 }
 /* Своя картинка: ужимается до 64 точек прямо здесь, в сейв уходит строкой.
    Не влезла в потолок — не берём вовсе, сейв важнее картинки. */
-function careerClubLogoPick(input){
-  const club=careerClub(); if(!club || !input || !input.files || !input.files[0]) return;
-  const f=input.files[0];
-  const rd=new FileReader();
-  rd.onload=function(){
-    const img=new Image();
-    img.onload=function(){
-      try{
-        const cv=document.createElement('canvas'); cv.width=cv.height=64;
-        const x=cv.getContext('2d');
-        const k=Math.min(64/img.width, 64/img.height);
-        const w=Math.round(img.width*k), h=Math.round(img.height*k);
-        x.drawImage(img, Math.round((64-w)/2), Math.round((64-h)/2), w, h);
-        const url=cv.toDataURL('image/png');
-        if(url.length>CC_CLUB_LOGO_MAX) return;
-        club.logo=url; careerSave(); careerRenderHub('shop');
-      }catch(e){}
-    };
-    img.src=String(rd.result||'');
+/* Готовая картинка — в сейв, если влезла в потолок. Отдельно от загрузки, потому что
+   загрузка это браузерная механика (FileReader и декодирование), а потолок — наше правило,
+   и проверять его надо без картинки на диске. */
+function careerClubLogoSet(url){
+  const club=careerClub();
+  if(!club || String(url||'').slice(0, 11)!=='data:image/') return false;
+  if(String(url).length>CC_CLUB_LOGO_MAX) return false;
+  club.logo=String(url); careerSave();
+  return true;
+}
+/* Картинка ужимается до 64 точек в квадрате, с полями, чтобы не тянуть пропорции.
+   Отдельной функцией — её зовёт и кнопка выбора файла, и сторож. */
+function careerClubLogoFrom(src, done){
+  const club=careerClub(); if(!club || !src){ if(done) done(false); return; }
+  const img=new Image();
+  img.onload=function(){
+    let ok=false;
+    try{
+      const cv=document.createElement('canvas'); cv.width=cv.height=64;
+      const x=cv.getContext('2d');
+      const k=Math.min(64/(img.width||1), 64/(img.height||1));
+      const w=Math.max(1, Math.round(img.width*k)), h=Math.max(1, Math.round(img.height*k));
+      x.drawImage(img, Math.round((64-w)/2), Math.round((64-h)/2), w, h);
+      ok=careerClubLogoSet(cv.toDataURL('image/png'));
+    }catch(e){}
+    if(ok && typeof careerRenderHub==='function' && document.getElementById('chBody')) careerRenderHub('shop');
+    if(done) done(ok);
   };
-  rd.readAsDataURL(f);
+  img.onerror=function(){ if(done) done(false); };
+  img.src=String(src);
+}
+function careerClubLogoPick(input){
+  if(!careerClub() || !input || !input.files || !input.files[0]) return;
+  const rd=new FileReader();
+  rd.onload=function(){ careerClubLogoFrom(String(rd.result||'')); };
+  rd.readAsDataURL(input.files[0]);
 }
 function careerClubLogoClear(){ const c=careerClub(); if(!c) return; delete c.logo; careerSave(); careerRenderHub('shop'); }
 function careerClubHTML(){

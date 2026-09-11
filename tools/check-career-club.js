@@ -92,6 +92,24 @@ const BOOT = `
     check('состав ушёл, когда платить нечем', club.roster.length === 0, String(club.roster.length));
     check('касса не ушла в минус', club.cash >= 0, String(club.cash));
 
+    // ---- своя фотка вместо герба --------------------------------------------
+    /* Его слово 11.09: «свою фотку лого типо». Саму загрузку делает браузер
+       (FileReader и декодирование), а наше правило — потолок сейва и то, что герб
+       после этого рисует картинку. Это и проверяется, без файла на диске. */
+    { const cv=document.createElement('canvas'); cv.width=64; cv.height=64;
+      const x=cv.getContext('2d'); x.fillStyle='#2ad18f'; x.fillRect(0,0,64,64);
+      const small=cv.toDataURL('image/png');
+      out.notes.logo={len: small.length, cap: CC_CLUB_LOGO_MAX};
+      check('картинка размером с герб влезает в сейв', small.length<=CC_CLUB_LOGO_MAX, String(small.length));
+      check('картинка легла', careerClubLogoSet(small));
+      check('герб рисует картинку, а не буквы', careerClubCrest(48).indexOf('<img')===0,
+            careerClubCrest(48).slice(0, 24));
+      check('не картинку не берём', !careerClubLogoSet('нет'));
+      check('слишком тяжёлую не берём', !careerClubLogoSet('data:image/png;base64,'+'A'.repeat(CC_CLUB_LOGO_MAX)));
+      check('тяжёлая не затёрла прежнюю', (careerClub().logo||'').length===small.length);
+      careerClub().logo=null;
+      check('без картинки герб снова рисуется буквами', careerClubCrest(48).indexOf('<svg')===0); }
+
     // ---- плитка -------------------------------------------------------------
     const html = careerClubHTML();
     check('плитка рисуется', html.indexOf('Boss Club') >= 0 && html.indexOf('cc-club') >= 0);
@@ -113,7 +131,7 @@ const dom = execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--no-sandb
   { maxBuffer: 512 * 1024 * 1024, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
 fs.rmSync(dir, { recursive: true, force: true });
 const m = dom.match(/PBEGIN([\s\S]*?)PEND/);
-if (!m) { console.error('проба не отработала'); process.exit(2); }
+if (!m) { const f=require('path').join(require('os').tmpdir(),'club-dom.html'); fs.writeFileSync(f, dom); console.error('проба не отработала, страница в '+f); process.exit(2); }
 const out = JSON.parse(decodeURIComponent(m[1]));
 console.log(JSON.stringify(out.notes, null, 1));
 if (out.err) { console.error('ERR: ' + out.err); process.exit(1); }
