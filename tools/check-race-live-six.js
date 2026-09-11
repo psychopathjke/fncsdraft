@@ -24,6 +24,13 @@ const FF = process.env.CC_FF || '2026-10-27';
 const CODE = ('Y' + crypto.randomBytes(3).toString('hex').toUpperCase()).slice(0, 6);
 const BUDGET_MS = Number(process.env.CC_BUDGET || 6 * 3600000);
 const SEASONS = Number(process.env.CC_SEASONS || 1);   // 2 — после дуо-года закрыть сезон и сыграть трио-год тем же составом комнаты
+/* ТЕЛЕФОН В ГОНКЕ. Его слово 11.09: «сделай прогон race 1 с компьютера другой с телефона».
+   Шесть вкладок одной машины считают устройство одинаково, поэтому годовая проба не ловила
+   разъезд по ширине окна — а его скрин 10.09 был именно про него (комната 900 против 2100).
+   CC_MOBILE перечисляет клиентов (с единицы), которые идут как телефон: узкое окно, iPhone в
+   user-agent, тач и reduced motion — у него в Chrome он всегда включён. */
+const MOBILE = new Set(String(process.env.CC_MOBILE || '').split(',').map(x => Number(String(x).trim())).filter(n => n >= 1));
+const PHONE_UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1';
 const SLASH = String.fromCharCode(92);
 
 const BASE = '<base href="file:///' + ROOT.split(SLASH).join('/') + '/">';
@@ -172,6 +179,13 @@ const boot = (who) => `
     out.notes.money=cr.earnings; out.notes.ovr=CAREER.player.ovr; out.notes.titles=(cr.ewc||[]).length;
     out.notes.mates=careerMates().map(m=>m&&m.handle); out.notes.noMate=(typeof careerNoMate==='function')?careerNoMate('eval'):null; out.notes.form=cr.form; out.notes.energy=cr.energy;
     out.notes.dbg={rand:!!CC_MP_RAND, state:MP.state, split:(typeof CC_MP_SPLIT_AT!=='undefined')?CC_MP_SPLIT_AT:null, race:(typeof CC_RACE_DBG!=='undefined')?CC_RACE_DBG:null, rivals:ccRaceRivals().map(p=>p.card.handle+':'+p.div+':'+p.day), ff:!!CC_FF};
+    /* Каждый клиент сам говорит, за какое устройство себя держит и какую комнату из этого
+       собирает: в команде и в гонке она обязана быть одна у всех (см. ccOpenRoom). */
+    out.notes.dev=(function(){ try{ return {
+      small:ccSmallDevice(), open:ccOpenRoom(), w:window.innerWidth, touch:navigator.maxTouchPoints||0,
+      rm:!!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches),
+      ua:/Mobile|iPhone|Android/i.test(navigator.userAgent||'') ? 'phone' : 'desktop'
+    }; }catch(e){ return null; } })();
     out.notes.secs=Math.round((Date.now()-t0)/1000);
     out.notes.wait=(typeof CC_MP_WAIT!=='undefined'&&CC_MP_WAIT)?CC_MP_WAIT.map(w=>w.t):null; out.notes.game=CC_MP_GAME; out.notes.qn=CC_MP_QN; out.notes.title=((document.getElementById('finalsLiveTitle')||{}).textContent||'').trim().slice(0,80); out.notes.queue=(typeof MP!=='undefined' && MP.find) ? (function(){ try{ const q=[]; for(const k of ['game@']){} return (window.__acts||[]).slice(-30); }catch(e){ return null; } })() : null; out.notes.room=(typeof ccRaceRoom==='function')?ccRaceRoom().length:null; out.notes.peersDays=Object.keys(CC_RACE_PEERS).map(k=>(CC_RACE_PEERS[k].card||{}).handle+':'+CC_RACE_PEERS[k].day);
   }catch(e){ out.fail=String(e && e.message || e); }
@@ -212,15 +226,28 @@ function client(wsUrl){
 }
 const started=Date.now();
 const stamp=()=>Math.round((Date.now()-started)/1000)+'s';
-async function runOne(tag, who, port){
+async function runOne(tag, who, port, phone){
   const dir=fs.mkdtempSync(path.join(os.tmpdir(), 'mpsix-'+tag+'-'));
   const page=path.join(dir, 'index.html');
   fs.writeFileSync(page, HEAD + src + boot(who));
-  const chrome=spawn(CHROME, ['--headless=new', '--disable-gpu', '--no-sandbox', '--allow-file-access-from-files',
-    '--remote-debugging-port='+port, '--remote-allow-origins=*', '--user-data-dir='+path.join(dir, 'profile'),
-    'about:blank'], {stdio:'ignore'});
+  const args=['--headless=new', '--disable-gpu', '--no-sandbox', '--allow-file-access-from-files',
+    '--remote-debugging-port='+port, '--remote-allow-origins=*', '--user-data-dir='+path.join(dir, 'profile')];
+  /* Окно headless по умолчанию 764 px — это уже «малое устройство» по ccSmallDevice, то есть
+     без этой строки компьютер в пробе был бы вторым телефоном и сверять было бы нечего. */
+  args.push(phone ? '--window-size=390,844' : '--window-size=1440,900');
+  if(phone) args.push('--user-agent='+PHONE_UA, '--force-prefers-reduced-motion');
+  const chrome=spawn(CHROME, args.concat(['about:blank']), {stdio:'ignore'});
   const ws=await cdp(port);
   const c=await client(ws);
+  /* Подмена ставится ДО загрузки: ccSmallDevice меряется один раз и запоминается,
+     так что узнать про телефон после старта страница уже не сможет. */
+  if(phone){
+    await c.send('Emulation.setDeviceMetricsOverride', {width:390, height:844, deviceScaleFactor:3, mobile:true});
+    await c.send('Emulation.setTouchEmulationEnabled', {enabled:true, maxTouchPoints:5});
+    await c.send('Emulation.setUserAgentOverride', {userAgent:PHONE_UA, platform:'iPhone'});
+  } else if(MOBILE.size){
+    await c.send('Emulation.setDeviceMetricsOverride', {width:1440, height:900, deviceScaleFactor:1, mobile:false});
+  }
   await c.send('Page.navigate', {url:'file:///' + page.split(SLASH).join('/')});
   const t0=Date.now(); let out=null, lastProg='', lastAt=0;
   while(Date.now()-t0 < BUDGET_MS + 120000){
@@ -240,9 +267,10 @@ async function runOne(tag, who, port){
   return out;
 }
 (async ()=>{
-  console.log('лобби '+CODE+' · игроков '+N+' · с '+DAY+' до '+FF+' · бюджет '+Math.round(BUDGET_MS/60000)+' мин');
+  console.log('лобби '+CODE+' · игроков '+N+' · с '+DAY+' до '+FF+' · бюджет '+Math.round(BUDGET_MS/60000)+' мин'+
+    (MOBILE.size ? ' · телефоны: '+[...MOBILE].join(',') : ''));
   const P0=9400+Math.floor(Math.random()*400);
-  const outs=await Promise.all(WHO.map((w,i)=>runOne(w.nick, w, P0+i)));
+  const outs=await Promise.all(WHO.map((w,i)=>runOne(w.nick, w, P0+i, MOBILE.has(i+1))));
   let bad=0;
   outs.forEach((r,i)=>{
     const n=WHO[i].nick;
@@ -271,6 +299,15 @@ async function runOne(tag, who, port){
   const days=outs.map(r=>new Set((r.notes.table||[]).map(t=>t.split(' ')[0])));
   const all=[...new Set(outs.flatMap(r=>(r.notes.table||[]).map(t=>t.split(' ')[0])))].sort();
   console.log('турнирных дней у всех вместе: '+all.length+' · у каждого: '+days.map(d=>d.size).join('/'));
+  /* УСТРОЙСТВО. Телефон и компьютер обязаны собрать ОДНУ комнату: в гонке ccOpenRoom берёт
+     малую у всех. Разъедутся — вечер у них разный с первой игры, и это красная строка. */
+  const devs=outs.map((r,i)=>({n:WHO[i].nick, d:r.notes.dev, phone:MOBILE.has(i+1)}));
+  if(devs.some(x=>x.d)){
+    console.log('устройства: '+devs.map(x=>x.n+' '+(x.phone?'телефон':'компьютер')+' ['+(x.d ? x.d.ua+' '+x.d.w+'px touch'+x.d.touch+(x.d.rm?' rm':'')+(x.d.small?' малое':' большое')+' комната '+x.d.open : '?')+']').join(' · '));
+    const rooms=[...new Set(devs.map(x=>x.d && x.d.open).filter(v=>v!=null))];
+    if(rooms.length>1){ console.log('   FAIL комнаты разные: '+rooms.join(' vs ')); bad++; }
+    if(MOBILE.size && !devs.some(x=>x.phone && x.d && x.d.ua==='phone')){ console.log('   FAIL телефон не притворился телефоном'); bad++; }
+  }
   // Доски призовых: у всех одна, кроме своих строк.
   const boards=outs.map(r=>new Map((r.notes.board||[]).map(x=>{ const i=x.indexOf(':'); return [x.slice(0,i), x.slice(i+1)]; })));
   if(boards.length>1 && boards[0].size){
