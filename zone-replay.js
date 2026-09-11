@@ -540,11 +540,19 @@
   var ICON_SKULL = '<path d="M6 .9C3.3.9 1.3 2.8 1.3 5.4c0 1.5.7 2.5 1.5 3.1v1.4c0 .7.5 1.2 1.2 1.2h4c.7 0 1.2-.5 1.2-1.2V8.5c.8-.6 1.5-1.6 1.5-3.1C10.7 2.8 8.7.9 6 .9z" fill="#ffd166"/>'
                  + '<circle cx="4.2" cy="5.4" r="1.15" fill="#101a2e"/><circle cx="7.8" cy="5.4" r="1.15" fill="#101a2e"/>'
                  + '<path d="M5.2 8.2h1.6v2.4H5.2z" fill="#101a2e" opacity=".55"/>';
-  function killChip(n){
-    return '<span data-kills="' + n + '" style="display:inline-flex;align-items:center;gap:3px;' +
+  /* КИЛЛЫ ИГРОКА И КОМАНДЫ — идея его подписчика, 11 сентября: «чтоб писались киллы игрока
+     и команды, как в фортнайте». Своё число впереди, счёт отряда за косой чертой и тусклее;
+     в соло отряд это ты, и число одно. */
+  function killChip(you, team){
+    var two = (you != null && team != null && team !== you);
+    var n = (you != null) ? you : team;
+    return '<span data-kills="' + (team != null ? team : n) + '"' + (you != null ? ' data-you="' + you + '"' : '') +
+      ' style="display:inline-flex;align-items:center;gap:3px;' +
       'background:rgba(8,12,24,.62);border-radius:5px;padding:1px 6px 1px 4px;">' +
       '<svg viewBox="0 0 12 12" width="9" height="9" style="flex:none;">' + ICON_SKULL + '</svg>' +
-      '<b style="font-size:11px;">' + n + '</b></span>';
+      '<b style="font-size:11px;">' + n +
+        (two ? '<i style="font-style:normal;font-weight:600;opacity:.6;">/' + team + '</i>' : '') +
+      '</b></span>';
   }
   // A wreath, for the one counter that is about your squad and not the lobby.
   var ICON_PLACE  = '<path d="M6 1.4 7.1 4h2.6L7.6 5.7l.8 2.6L6 6.8 3.6 8.3l.8-2.6L2.3 4h2.6z" ' +
@@ -577,12 +585,35 @@
   // The place to print, or null when there is nothing to print: a replay
   // watched rather than played has no squad of yours in it, and a counter about
   // your squad has no business on somebody else's game.
-  // Сколько выбил СВОЙ отряд в этой игре (d.e у своей точки); нет своей точки — null.
+  /* Чей это элим. Движок считает их ОТРЯДОМ: людей внутри команды у него нет вовсе.
+     Поэтому счёт отряда раскладывается на своих по привычке к дракам — AIM карточки, то
+     есть среднее число элимов за игру, — и элим за элимом уходит тому, у кого больше долг
+     по доле. Раскладка повторяемая: одна и та же игра у двоих клиентов даёт одни и те же
+     числа, и ни одного броска из потока вечера она не берёт. Веса кладёт на роастер тот,
+     кто его строит (ccRosterYouSplit в index.html); нет весов — счёт один, как был. */
+  function killShare(total, w, seat){
+    if(!w || w.length < 2 || !(seat >= 0) || seat >= w.length || !(total > 0)) return null;
+    var i, j, sum = 0, got = [];
+    for(i = 0; i < w.length; i++){ sum += Math.max(0.01, w[i] || 0); got.push(0); }
+    for(i = 0; i < total; i++){
+      var best = 0, bd = -Infinity;
+      for(j = 0; j < w.length; j++){
+        var d = (Math.max(0.01, w[j] || 0) / sum) * (i + 1) - got[j];
+        if(d > bd + 1e-9){ bd = d; best = j; }
+      }
+      got[best]++;
+    }
+    return got[seat];
+  }
+  // Сколько выбил СВОЙ отряд в этой игре (d.e у своей точки) и сколько из этого ты.
   function killsOf(frame, roster){
     var me = yourSquad(roster);
     if(me < 0 || !frame.dots[me]) return null;
     var e = frame.dots[me].e;
-    return (e == null) ? null : e;
+    if(e == null) return null;
+    var sp = roster && roster.youKills;
+    var you = sp ? killShare(e, sp.w, sp.seat) : null;
+    return {team: e, you: (you == null ? (e === 0 && sp ? 0 : null) : you)};
   }
   function placeOf(frame, roster){
     var me = yourSquad(roster);
@@ -1234,7 +1265,7 @@
           Math.floor(secs/60) + ':' + pad2(secs % 60) + '</span></span>' +
       '<span style="display:flex;align-items:center;gap:5px;">' +
         (mine ? placeChip(mine.place, mine.settled, totS) : '') +
-        (myKills != null ? killChip(myKills) : '') +
+        (myKills != null ? killChip(myKills.you, myKills.team) : '') +
         counter(ICON_PLAYER, (frame.players != null ? frame.players : frame.alive), totP) +
         counter(ICON_SQUAD, frame.alive, totS) + '</span>';
 

@@ -52469,6 +52469,25 @@ function applyStageBias(pointsFn){
 // third caller, so it lives here now and there is exactly one copy of it.
 // Reads _pc, which is power as seen from inside a fight: form applied, plus the
 // ping edge, which is the only thing ping touches.
+/* КИЛЛЫ ИГРОКА, А НЕ ТОЛЬКО ОТРЯДА — идея его подписчика, 11 сентября: «чтоб писались киллы
+   игрока и команды, как в фортнайте». Движок считает элимы отрядом, людей внутри команды у
+   него нет; разложить их можно только правилом. Правило — привычка к дракам: AIM карточки это
+   среднее число элимов за игру, то есть ровно то, чем один в паре отличается от другого.
+   Веса едут на роастере, раскладывает их сам показ (killShare в zone-replay): он повторяем и
+   не тратит ни одного броска вечера. Соло — вес один, число одно. */
+function ccRosterYouSplit(roster, you){
+  try{
+    if(!roster || !you) return roster;
+    const sq=(you.squad||[]).filter(Boolean);
+    if(sq.length<2) return roster;
+    const me=(typeof careerCard==='function') ? careerCard() : null;
+    const key=me ? hKey(me) : null;
+    let seat=key ? sq.findIndex(c=>hKey(c)===key) : -1;
+    if(seat<0) seat=0;
+    roster.youKills={seat:seat, w:sq.map(c=>{ const a=(typeof attrsFor==='function') ? attrsFor(c) : null; return (a && a.aim) || 50; })};
+  }catch(e){}
+  return roster;
+}
 function resolveDuel(a, b, exponent){
   const wa = Math.pow(Math.max(a._pc, 1), exponent);
   const wb = Math.pow(Math.max(b._pc, 1), exponent);
@@ -52581,7 +52600,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
   });
   ccMpSimOn(game, teams);   // книга бросков теперь метит и состояние отрядов (ccMpMark)
   // Подписи к точкам нужны показу с первого же куска, а не с конца матча.
-  LAST_ZONE_ROSTER=game.roster();
+  LAST_ZONE_ROSTER=ccRosterYouSplit(game.roster(), you);
   // Свой отряд движка — лечению нужно трогать его щит и здоровье. См. ccAskHeal.
   if(you) you._sq=(game.squads||[]).find(s=>s.team===you)||null;
   // И сама игра — файту середины нужны eliminate/nearest движка. См. ccFightApply.
@@ -52669,7 +52688,7 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
   if(ui && ui.show && !dead) await ui.show(res.timeline);
   if(you && ui && !sim && !deathShown && !alive()){ deathShown=true; await ccDeathCard(ui.map, ccDeathInfo(you, game)); }
   LAST_ZONE_TIMELINE=res.timeline;
-  LAST_ZONE_ROSTER=res.roster;
+  LAST_ZONE_ROSTER=ccRosterYouSplit(res.roster, you);
   RECORD_NEXT_ZONE_GAME=false;
   teams.forEach(t=>{
     const cause=t._deathCause;
@@ -58500,7 +58519,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f3c7fa03';
+const CC_BUILD='17dafd24';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
