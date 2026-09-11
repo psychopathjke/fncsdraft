@@ -37,6 +37,16 @@ const BOOT = `
     const cr = CAREER.career;
 
     // ---- основать -----------------------------------------------------------
+    /* РАСТОРЖЕНИЕ. Его правило 11.09: «если создаёшь, то должен расторгнуть с клубом
+       контракт, если есть орга». Значит: неустойка в два оклада, клуб уходит из карьеры,
+       и об этом пишут. */
+    CAREER.org={name:'Old Club', salary:5000, tier:80, cut:0.1, since:1, paid:0};
+    { const want=5000*CC_CLUB_BUYOUT;
+      check('неустойка — два оклада', careerClubBuyout()===want, String(careerClubBuyout()));
+      const keep=cr.balance; cr.balance=CC_CLUB_COST+want-1;
+      check('на клуб с неустойкой не хватает — не основать', !careerClubFound('Too Poor'));
+      cr.balance=keep; }
+    const news0=(cr.news||[]).length;
     { const keep = cr.balance; cr.balance = CC_CLUB_COST - 1;
       check('без денег клуб не основать', !careerClubFound('NoCash'));
       check('и денег не тронул', cr.balance === CC_CLUB_COST - 1);
@@ -47,7 +57,10 @@ const BOOT = `
     const club = careerClub();
     out.notes.club = club && {name: club.name, cash: club.cash};
     check('имя обрезано', club && club.name === 'Boss Club', club && club.name);
-    check('деньги списаны', cr.balance === bal0 - CC_CLUB_COST, bal0 + ' -> ' + cr.balance);
+    check('деньги списаны вместе с неустойкой', cr.balance === bal0 - CC_CLUB_COST - 5000*CC_CLUB_BUYOUT,
+          bal0 + ' -> ' + cr.balance);
+    check('старый клуб больше не мой', CAREER.org.name !== 'Old Club');
+    check('об уходе написано', (cr.news||[]).length > news0);
     check('свой клуб стал клубом карьеры', CAREER.org && CAREER.org.own && CAREER.org.name === club.name);
     check('доля клуба с себя не берётся', careerOrgCut() === 0, String(careerOrgCut()));
     check('чужие предложения больше не приходят', careerOrgOffers().length === 0);
