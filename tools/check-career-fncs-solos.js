@@ -178,7 +178,9 @@ const BOOT = `
     const seat=cr.solos.seat;
     if(seat!=='final' && seat!=='lcqf' && seat!==null && seat!==undefined)
       fail('the heat handed out an unknown seat: '+seat);
-    if(lh.place>50 && seat) fail('a heat place of '+lh.place+' still got a seat');
+    // Виктори — билет, и после него вечер для тебя кончен (stopOnWin с 13.09): такой
+    // игрок может стоять и 53-м с одним сыгранным матчем — место ему всё равно дают.
+    if(lh.place>50 && seat && !(lh.wins>0 && seat==='final')) fail('a heat place of '+lh.place+' still got a seat');
     if(seat==='lcqf' && (lh.place<36 || lh.place>50))
       fail('the LCQ Final took place '+lh.place+', Epic says 36th-50th');
     out.steps.push('heats: '+lh.place+' of 100 over 6 matches to '+(seat||'out'));

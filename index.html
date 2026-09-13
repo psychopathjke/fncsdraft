@@ -90337,6 +90337,12 @@ async function runCareerSoloSeries(){
     ev.stage==='heats' ? soloHeatsPoints : victoryR1Points, spec ? spec.kill : CC_SOLO_KILL,
     'stage', 0, null, zones,
     {lobbySize:100, stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
+     /* Виктори в хитах — билет, и вечер на нём для тебя кончается: правило Epic
+        (см. шапку раздела) и то же stopOnWin, что у хитов Мейджора. Раньше
+        победитель первой игры играл все шесть, карточка говорила «прошёл», а
+        таблица ставила его 47-м под чертой без пометки. Его игрок, 13 сентября:
+        «I should have qualified with the first game but that way I didn't». */
+     stopOnWin: spec ? !!spec.vr : ev.stage==='heats',
      together: mate ? humans : null,
      dropEachGame:(g,room)=>open ? null : ccSoloDrops(room||field, humans, ev.label, kindsForDrop)});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
@@ -90393,10 +90399,12 @@ async function runCareerSoloSeries(){
     // Хиты соло — те же «квальнулся, сажусь туда-то», только в финал. См. ccGrandsCalls.
     if(ev.stage==='heats' && !spec) ccGrandsCalls('finals', you, moved, field.filter(passOf));
   }
+  const byVR=(spec ? !!spec.vr : ev.stage==='heats') && (you.wins||0)>0;
   finalizeStageCard(shell, place, field.length, you.stagePts,
     ccStagePassed(through, {cut:cut}, place, prizeFn),
-    false, cut ? (through ? L().ccRelPass(cut) : L().ccRelFail(cut)) : '');
-  await revealStandings(shell, ranked, you, cut, null, null,
+    byVR, byVR ? L().stage2NoteByVR : cut ? (through ? L().ccRelPass(cut) : L().ccRelFail(cut)) : '');
+  // Прошедшие — по правилу этапа (виктори тоже), а не только по черте.
+  await revealStandings(shell, ranked, you, cut, null, cut ? new Set(field.filter(passOf)) : null,
     prizeFn, null, !!prizeFn);
 
   cr.log=cr.log||[];
