@@ -86,6 +86,19 @@ const BOOT = `
           Object.keys(cr.duoSplits||{}).length===before,
           before+' -> '+Object.keys(cr.duoSplits||{}).length);
 
+    /* И сцена трио-года не пересобирается 18 июля вместе со снимком второго
+       Мейджора: пары пула те же в марте и в августе. Его игрок, 13 сентября:
+       «формируются норм триосы, но через месяц опять максимально не настоящие».
+       В дуо-год снимок переключается, как и был, — это данные Epic. */
+    const pairsOn=day=>{ cr.day=day; CC_POOLS=null; CC_NOW_CARDS={};
+      return (careerPools().duos||[]).map(d=>d.cards.map(c=>hKey(c)).sort().join('+')).sort().join('|'); };
+    const trioMar=pairsOn('2026-03-02'), trioAug=pairsOn('2026-08-03');
+    check('в трио-год пары пула после 18 июля те же', trioMar===trioAug);
+    cr.size=2;
+    const duoMar=pairsOn('2026-03-02'), duoAug=pairsOn('2026-08-03');
+    check('в дуо-год снимок второго Мейджора по-прежнему включается', duoMar!==duoAug);
+    cr.size=3; cr.day='2026-03-02'; CC_POOLS=null; CC_NOW_CARDS={};
+
     // И в дуо-год он не открывается вовсе.
     cr.size=2; cr.raided=null;
     const wasSplits=Object.keys(cr.duoSplits||{}).length;

@@ -58659,7 +58659,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='98231195';
+const CC_BUILD='8d5aaec7';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -61950,7 +61950,7 @@ function careerEntry(direct){
      карьера обязана открыться и без сети. localStorage держит последнее
      известное состояние команды, а 'state' от сервера приедет и перепишет его
      через ccApplyTeamState. См. ccMpBoot. */
-  if(careerExists()){ careerLoad(); careerMigrateClock(); careerMigrateMoney(); careerMigrateOrg(); ccMpBoot(); openCareerHub(); return; }
+  if(careerExists()){ careerLoad(); careerMigrateClock(); careerMigrateMoney(); careerMigrateOrg(); careerMigrateOwnClub(); ccMpBoot(); openCareerHub(); return; }
   // The slot the tile opens is empty, but another one may not be — that is what
   // switching careers looks like from here, so ask rather than start a third.
   let any=false;
@@ -64379,11 +64379,12 @@ const CC_DAY_EVENTS=[
     {id:'move',  eff:{spotClear:true, morale:6}},
     {id:'keep',  eff:{morale:-5}},
     {id:'trial', eff:{energy:20, morale:2, form:0.2}}]},
-  {id:'orgLate', when:()=>!!CAREER.org, opts:[
+  // Только чужой клуб: свой (own) зарплату не задерживает и сливать нечего.
+  {id:'orgLate', when:()=>!!CAREER.org && !CAREER.org.own, opts:[
     {id:'wait',   eff:{rep:1}},
     {id:'public', eff:{reach:2, rep:-2}},
     {id:'leave',  eff:{orgLeave:true, reach:1}}]},
-  {id:'leak', when:()=>!!CAREER.org, opts:[
+  {id:'leak', when:()=>!!CAREER.org && !CAREER.org.own, opts:[
     {id:'deny',    eff:{reach:1}},
     {id:'confirm', eff:{reach:3, rep:-2}},
     {id:'silent',  eff:{}}]},
@@ -64535,13 +64536,13 @@ function careerDayEvent(id, take){
   if(eff.spotClear) careerSpotClear();
   if(eff.stat) careerStatBump(ccWeakestAttr(), eff.stat);
   if(eff.school) cr.school=eff.school;
-  if(eff.orgLeave && CAREER.org){
+  if(eff.orgLeave && CAREER.org && !CAREER.org.own){
     const org=CAREER.org;
     careerNews('flat', 'ccNewsLeftOrg', [org.name], {by:ccOrgBy(org.name)});
     careerNews('flat', 'ccPostBye', [ccHandle(org.name)]);
     CAREER.org=null;
   }
-  if(eff.orgGone && CAREER.org){
+  if(eff.orgGone && CAREER.org && !CAREER.org.own){
     // Клуб закрывает состав: месяц зарплаты на прощание, и ты свободен.
     const org=CAREER.org, sev=org.salary||0;
     if(sev){ cr.balance=(cr.balance||0)+sev; cr.wages=(cr.wages||0)+sev; }
@@ -65171,6 +65172,19 @@ function careerMigrateOrg(){
   if(!org || org.tier!=null) return;
   const club=careerOrgPool().find(o=>o.name===org.name);
   if(club) org.tier=club.tier;
+  careerSave();
+}
+/* Свой клуб, у которого сейв потерял CAREER.org.
+
+   До 13 сентября careerOrgSeasonEnd на стыке года «расторгал контракт» и со своим
+   клубом (цели у него нет — читалось как провал): cr.club оставался, CAREER.org
+   пропадал, плитка говорила «нет клуба», а careerOrgOffers из-за cr.club молчал.
+   Клуб — тот же, что и был; ставится обратно тем же объектом, каким его ставит
+   careerClubFound. Сторож — tools/check-career-own-club.js. */
+function careerMigrateOwnClub(){
+  const cr=CAREER && CAREER.career, club=cr && cr.club;
+  if(!club || !club.name || CAREER.org) return;
+  CAREER.org={name:club.name, salary:0, cut:0, tier:70, own:true, since:cr.season, paid:0};
   careerSave();
 }
 function careerMigrateClock(){
@@ -68294,8 +68308,22 @@ function ccSeat(duos, seated){
   return out;
 }
 function ccSnapshotNow(){
+  /* В ТРИО-ГОД СНИМОК ОДИН НА ВЕСЬ СЕЗОН.
+
+     Снимок переключается 18 июля на Плей-Ин второго Мейджора — в дуо-год это
+     правда Epic: пары к лету другие, и комната честно их показывает. В трио-год
+     пара — это ядро тройки, которую рынок (careerTrioRaids) собрал на стыке года
+     и записал в cr.trios по ключу пары. Замер (scratchpad trio-time-probe, D1,
+     сезон 2): до 6 июля из 119 пар пула на месте все 119, средний разрыв третьего
+     −0.6…−1.2; 20 июля пар на месте 25 из 119, троек первой недели в комнате 9 из
+     79, память троек растёт с 342 до 434 (все — новые составы), разрыв −2.2.
+     Его игрок, 13 сентября: «когда начинается второй сезон, формируются норм
+     триосы, но через месяц опять максимально не настоящие триосы формируются».
+     Его же правило от 28 августа: «в начале сезона изменения только, если они
+     нужны, а не каждый кап». Дуо-год не тронут. */
   const today=careerToday();
   let snap=CC_SNAPSHOTS[0];
+  if(typeof careerSquadSize==='function' && CAREER && CAREER.career && careerSquadSize()===3) return snap;
   CC_SNAPSHOTS.forEach(s=>{ if(today>=s.from) snap=s; });
   return snap;
 }
@@ -73391,7 +73419,8 @@ function careerAwardSeason(){
 }
 function careerMonthGoal(){
   const cr=CAREER.career, org=CAREER.org;
-  if(!org) return null;
+  // Свой клуб задач хозяину не ставит и премий за месяц не платит.
+  if(!org || org.own) return null;
   const key=ccMonthKey();
   if(cr.mg && cr.mg.key===key) return cr.mg;
   // Seeded on the month and the club, so it cannot be rerolled by reopening
@@ -73449,6 +73478,14 @@ function careerMonthGoalText(g){
    каким она отвечает на все остальные вопросы. */
 function careerOrgSeasonEnd(){
   const org=CAREER.org; if(!org) return;
+  /* СВОЙ КЛУБ НЕ РАСТОРГАЕТ КОНТРАКТ С ХОЗЯИНОМ. Цели у него нет (careerClubFound), и
+     careerOrgGoalMet на нём честно отвечает «нет» — а эта строка читала «нет» как
+     провал сезона: «клуб расторгает контракт: задача не выполнена», CAREER.org=null,
+     при этом cr.club оставался, и careerOrgOffers из-за него молчал весь следующий
+     год. Его игрок MarkeL, 13 сентября: «ты как бы ушёл из клуба потому что он не
+     выполнил цели, то есть твой клуб, но он есть. И после этого, когда ты пытаешься
+     найти новый клуб, тебе никто не пишет». Сейв с этой дырой чинит careerMigrateOwnClub. */
+  if(org.own) return;
   if(!careerOrgGoalMet()){
     careerNews('bad', 'ccNewsReleased', [org.name], {by:ccOrgBy(org.name)});
     /* И слово самого игрока: у настоящих расставание с клубом это ДВА поста —
@@ -76410,8 +76447,9 @@ function careerDmPool(){
   // first: no standing pair, then pairs whose season has soured, then the rest
   // — writable, but they will say who they already play with.
   // Through the scene's eyes, not the roster's: a seat held by the player's own
-  // card is a free seat. See ccSceneMateOf.
-  const seatRank=p=>{ const m=ccSceneMateOf(p);
+  // card is a free seat. See ccSceneMateOf — и по СЕГОДНЯШНИМ парам, как и ответ
+  // в личке (careerDmMateOf), иначе развёдшийся стоял бы в хвосте как занятый.
+  const seatRank=p=>{ const m=careerDmMateOf({handle:p.handle});
     return !m ? 0 : careerDuoBeatsYou({handle:p.handle}) ? 2 : 1; };
   near.sort((a,b)=>seatRank(a)-seatRank(b));
   /* Two seats held for the best people in the window, whatever their seat.
@@ -76594,9 +76632,23 @@ function ccSceneMateOf(card){
   if(pl && pl.handle && hKey(m)===hKey(pl.handle)) return null;
   return m;
 }
+/* С кем он играет СЕГОДНЯ, а не с кем начал год.
+
+   Стояло на ccSceneMateOf, то есть на ростере Epic, — а статус F/A в ленте и
+   строка «свободен» в поиске дуо читаются по careerPools (ccPairMateOf), где
+   разводы, трансферы и рынок трио уже учтены. Два ответа на один вопрос: список
+   говорил «свободен», а ответ в личке — «я играю с @x, нам и так хорошо». Его
+   игрок, 13 сентября: «игроки, которые ищут игроков, ты им пишешь, а они пишут
+   занято». Половинка, которую забрал сам игрок, тоже не пара — то кресло и
+   есть этот разговор (см. ccSceneMateOf). */
 function careerDmMateOf(who){
-  const card=careerRosterNowEU().find(p=>hKey(p)===hKey(who.handle));
-  return card ? ccSceneMateOf(card) : null;
+  let m=null;
+  try{ m=ccPairMateOf(who.handle); }catch(e){ m=null; }
+  if(!m) return null;
+  const k=hKey(m), pl=CAREER && CAREER.player;
+  if(pl && pl.handle && hKey(pl.handle)===k) return null;
+  if(careerMates().some(c=>c && hKey(c)===k)) return null;
+  return m;
 }
 /* Whether the duo somebody is already in is better than the one you are
    offering — which is the whole of the question, from their side.
@@ -94209,7 +94261,8 @@ function careerSchoolFee(months){
 const CC_ORG_QUIT_ODDS=0.08;
 function careerOrgBonusFor(salary){ return Math.max(100, Math.round((salary||0)*0.5/50)*50); }
 function careerOrgBonus(org){
-  if(!org) return 0;
+  // Свой клуб премий хозяину не платит — деньги и так его (careerClubHTML).
+  if(!org || org.own) return 0;
   return org.bonus!=null ? org.bonus : careerOrgBonusFor(org.salary);
 }
 function careerOrgBonusTick(){
@@ -94231,7 +94284,8 @@ function careerOrgBonusTick(){
 }
 function careerOrgQuitDue(iso){
   const cr=CAREER && CAREER.career, org=CAREER && CAREER.org;
-  if(!cr || !org) return false;
+  // Свой клуб состав не закрывает — см. careerOrgSeasonEnd.
+  if(!cr || !org || org.own) return false;
   cr.told=cr.told||{};
   const key='oq|'+cr.season+'|'+org.name;
   if(!cr.told[key]){

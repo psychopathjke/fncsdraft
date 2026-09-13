@@ -68,6 +68,18 @@ const BOOT = `
     var st = ccWhoStatus(who.handle);
     out.steps.push('статус: ' + (st ? st.kind + ' / ' + st.text : 'НЕТ'));
     if (!st || st.kind !== 'fa') { out.fail = 'свободный агент не помечен F/A'; throw new Error(out.fail); }
+    /* 2б. И в личке он свободен: ответ читал ростер Epic (ccRealMateOf), а статус —
+       пары сегодняшние (ccPairMateOf), и человек со значком F/A отвечал «я играю
+       с @x». Его игрок, 13 сентября: «ты им пишешь, а они пишут занято». */
+    var dmMate = careerDmMateOf({handle: who.handle});
+    out.steps.push('в личке пара: ' + (dmMate ? dmMate.handle : 'нет'));
+    if (dmMate) { out.fail = 'свободный агент в личке всё ещё «играет с» ' + dmMate.handle; throw new Error(out.fail); }
+    // А у нетронутой пары напарник в личке тот же, что и в статусе.
+    var duo2 = (careerPools().duos || []).find(d => (d.cards || []).length === 2 && d !== duo);
+    if (duo2) {
+      var m2 = careerDmMateOf({handle: duo2.cards[0].handle});
+      if (!m2 || hKey(m2) !== hKey(duo2.cards[1])) { out.fail = 'у стоящей пары личка не знает напарника'; throw new Error(out.fail); }
+    }
 
     // 3. Пост с карточкой под ним.
     careerNews('flat', 'ccPostLfdWant', [ccHandle(who.handle), ad.div, ad.pr],
