@@ -455,6 +455,7 @@ ccEnergyMark:'⚡', ccRingEnergy:'Энергия', ccRingFatigue:'Усталос
 ccActtrAim:'KovaaK\'s', ccActtrSur:'Ранкед', ccActtrCon:'Зал и режим',
 ccActtrClu:'1v1', ccActtrExp:'Разбор реплеев', ccActtrEnd:'Кастомки Noble',
 ccActscrim:'Скримы', ccActtalk:'Поговорить', ccActstream:'Стрим', ccActrest:'Отдых',
+ccActhost:'Своя кастомка', ccHostLine:(w,p)=>'$'+w+' за победу · фонд $'+p+' из своих', ccHostNeedReach:n=>'нужно '+n+' подписчиков, свой клуб или PR на кастомки', ccHostNeedCash:n=>'на фонд не хватает $'+n, ccHostReport:(w,c,who)=>'Провёл кастомку: своих побед '+w+' из 5 ('+(c?'+$'+c:'без денег')+'), победы взяли '+who, ccPostHosted:(w,who,m)=>'провёл кастомки, $'+w+' за победу. забрали: '+who+(m?'. одну я себе оставил':''),
 ccGiveReach:'+ медийка', ccGiveMood:'+ настрой напарника', ccGiveRest:'+ энергия',
 ccGiveNoImprove:'без прокачки, минус фокус',
 ccAttrMaxed:'99 — выше этой характеристики нет',
@@ -1090,7 +1091,7 @@ ccMoveGoHome:'Вернуться домой',
 ccMoveNoCash:'Не хватает на первый месяц',
 ccMoveEdge:v=>'+'+v+' к ближнему бою',
 ccShopHint:'Призовые тратятся на то, что делает тренировки весомее',
-ccClubAcad:'Академия', ccClubAcadBuild:'Построить', ccClubAcadHint:'Академия берёт дешёвых новичков: мест в составе не занимают, вырастут — поднимешь', ccClubAcadSeats:(n,m)=>'Академия: '+n+' из '+m, ccClubYoung:'академия', ccClubUp:'В состав', ccClubPoach:o=>o+' зовёт их к себе', ccClubLet:'Отпустить за', ccClubStay:'Отказать', ccNewsClubWant:(o,d)=>o+' хочет забрать '+d, ccNewsClubSold:(c,d,o)=>c+' отпускает '+d+' в '+o, ccNewsClubSour:(c,d)=>d+' ушли из '+c+' — их держали против воли', ccNewsClubAcad:c=>c+' открывает академию', ccNewsClubUp:(c,d)=>c+' поднимает '+d+' из академии', ccClubOwn:'Твоя', ccClubWhere:'Состав, академия и касса — в магазине', ccFfNoMate:'Некем играть — нужен напарник', ccClubCamp:'Буткемп', ccClubCoach:'Тренер', ccClubMine:'твой напарник', ccClubMateHint:'Напарник в клубе — на тех же условиях', ccClubBuyout:n=>'выкуп у '+n, ccClubOut2:'Вывести в карман', ccNewsClubBuy:(c,d,o)=>c+' выкупает '+d+' у '+o, ccClubTalk:'Предложить', ccClubFind:'Найти по нику', ccClubSayAsk:n=>'Просят $'+n, ccClubSayNo:'Отказ', ccClubSayWait:'Сегодня больше не говорят', ccClubQuit:n=>'Расторгнуть контракт с '+n, ccClubLogo:'Своя картинка', ccClubLogoOff:'Убрать картинку', ccClubTitle:'Своя организация', ccClubHint:'Основать стоит денег, содержать — тоже. Клуб живёт с призовых своего состава', ccClubFound:'Основать', ccClubNamePh:'Название клуба', ccClubCash:'Касса клуба', ccClubKeep:'Содержание', ccClubMonth:'в месяц', ccClubSeats:(n,m)=>'Состав: '+n+' из '+m, ccClubCut:n=>'клуб берёт '+n+'% призовых состава', ccClubSign:'Подписать', ccClubDrop:'Отпустить', ccClubFree:'Свободные дуо', ccClubEmpty:'Пока никого', ccClubWon:'принесли', ccClubIn:'Пришло', ccClubOut:'Ушло', ccClubNoCash:'Не хватает денег', ccNewsClubFound:n=>'Открыл свою организацию — '+n, ccNewsClubSign:(c,d)=>c+' подписывает '+d, ccNewsClubLeft:(c,d)=>d+' покидают '+c, ccNewsClubUnpaid:(c,d)=>d+' ушли из '+c+' — клубу нечем платить',
+ccClubClose:'Закрыть клуб', ccClubCloseHint:'Клуб закрывается насовсем: состав уходит, касса возвращается на баланс, миллион не вернуть. Дальше тебя снова смотрят чужие клубы.', ccClubCloseAsk:n=>'Закрыть «'+n+'»? Состав отпустишь, кассу заберёшь, вернуть клуб потом нельзя.', ccNewsClubClosed:(n,k)=>n+' закрывает состав. '+k+' человек снова на рынке', ccClubAcad:'Академия', ccClubAcadBuild:'Построить', ccClubAcadHint:'Академия берёт дешёвых новичков: мест в составе не занимают, вырастут — поднимешь', ccClubAcadSeats:(n,m)=>'Академия: '+n+' из '+m, ccClubYoung:'академия', ccClubUp:'В состав', ccClubPoach:o=>o+' зовёт их к себе', ccClubLet:'Отпустить за', ccClubStay:'Отказать', ccNewsClubWant:(o,d)=>o+' хочет забрать '+d, ccNewsClubSold:(c,d,o)=>c+' отпускает '+d+' в '+o, ccNewsClubSour:(c,d)=>d+' ушли из '+c+' — их держали против воли', ccNewsClubAcad:c=>c+' открывает академию', ccNewsClubUp:(c,d)=>c+' поднимает '+d+' из академии', ccClubOwn:'Твоя', ccClubWhere:'Состав, академия и касса — в магазине', ccFfNoMate:'Некем играть — нужен напарник', ccClubCamp:'Буткемп', ccClubCoach:'Тренер', ccClubMine:'твой напарник', ccClubMateHint:'Напарник в клубе — на тех же условиях', ccClubBuyout:n=>'выкуп у '+n, ccClubOut2:'Вывести в карман', ccNewsClubBuy:(c,d,o)=>c+' выкупает '+d+' у '+o, ccClubTalk:'Предложить', ccClubFind:'Найти по нику', ccClubSayAsk:n=>'Просят $'+n, ccClubSayNo:'Отказ', ccClubSayWait:'Сегодня больше не говорят', ccClubQuit:n=>'Расторгнуть контракт с '+n, ccClubLogo:'Своя картинка', ccClubLogoOff:'Убрать картинку', ccClubTitle:'Своя организация', ccClubHint:'Основать стоит денег, содержать — тоже. Клуб живёт с призовых своего состава', ccClubFound:'Основать', ccClubNamePh:'Название клуба', ccClubCash:'Касса клуба', ccClubKeep:'Содержание', ccClubMonth:'в месяц', ccClubSeats:(n,m)=>'Состав: '+n+' из '+m, ccClubCut:n=>'клуб берёт '+n+'% призовых состава', ccClubSign:'Подписать', ccClubDrop:'Отпустить', ccClubFree:'Свободные дуо', ccClubEmpty:'Пока никого', ccClubWon:'принесли', ccClubIn:'Пришло', ccClubOut:'Ушло', ccClubNoCash:'Не хватает денег', ccNewsClubFound:n=>'Открыл свою организацию — '+n, ccNewsClubSign:(c,d)=>c+' подписывает '+d, ccNewsClubLeft:(c,d)=>d+' покидают '+c, ccNewsClubUnpaid:(c,d)=>d+' ушли из '+c+' — клубу нечем платить',
 ccShopTrain:'Прокачка за день', ccShopOwned:'куплено',
 ccShopmouse3:'Finalmouse UltralightX', ccShopkeyboard3:'Wooting 60HE v2', ccShopkeyboard4:'Custom HE Keyboard',
 ccShopheadset3:'Audeze LCD-GX', ccShopheadset4:'Audeze LCD-3',
@@ -2423,6 +2424,7 @@ ccEnergyMark:'⚡', ccRingEnergy:'Energy', ccRingFatigue:'Fatigue', ccRingMood:'
 ccActtrAim:'KovaaK\'s', ccActtrSur:'Ranked', ccActtrCon:'Gym and routine',
 ccActtrClu:'1v1s', ccActtrExp:'Watch replays', ccActtrEnd:'Noble endgames',
 ccActscrim:'Scrims', ccActtalk:'Talk it over', ccActstream:'Stream', ccActrest:'Rest',
+ccActhost:'Host customs', ccHostLine:(w,p)=>'$'+w+' per win · $'+p+' pot out of your pocket', ccHostNeedReach:n=>'takes '+n+' followers, your own club or the customs PR', ccHostNeedCash:n=>'$'+n+' short of the pot', ccHostReport:(w,c,who)=>'Hosted customs: '+w+' wins of 5 yourself ('+(c?'+$'+c:'no cash')+'), wins went to '+who, ccPostHosted:(w,who,m)=>'ran customs tonight, $'+w+' a win. taken by: '+who+(m?'. kept one myself':''),
 ccGiveReach:'+ reach', ccGiveMood:'+ partner morale', ccGiveRest:'+ energy',
 ccGiveNoImprove:'no improvement, focus down',
 ccAttrMaxed:'99 — there is nothing above it',
@@ -3054,7 +3056,7 @@ ccMoveGoHome:'Go back home',
 ccMoveNoCash:'Not enough for the first month',
 ccMoveEdge:v=>'+'+v+' close range',
 ccShopHint:'Prize money buys the things that make a training day count',
-ccClubAcad:'Academy', ccClubAcadBuild:'Build it', ccClubAcadHint:'The academy takes cheap newcomers: they hold no roster seat, and you promote the ones who grow', ccClubAcadSeats:(n,m)=>'Academy: '+n+' of '+m, ccClubYoung:'academy', ccClubUp:'Promote', ccClubPoach:o=>o+' wants them', ccClubLet:'Let them go for', ccClubStay:'Turn it down', ccNewsClubWant:(o,d)=>o+' want to take '+d, ccNewsClubSold:(c,d,o)=>c+' lets '+d+' go to '+o, ccNewsClubSour:(c,d)=>d+' left '+c+' — they were held against their will', ccNewsClubAcad:c=>c+' opens an academy', ccNewsClubUp:(c,d)=>c+' promotes '+d+' from the academy', ccClubOwn:'Yours', ccClubWhere:'Roster, academy and cash live in the shop', ccFfNoMate:'Nobody to play with — you need a partner', ccClubCamp:'Bootcamp', ccClubCoach:'Coach', ccClubMine:'your partner', ccClubMateHint:'Your partner in the club, on the same terms', ccClubBuyout:n=>'buyout from '+n, ccClubOut2:'Take the cash', ccNewsClubBuy:(c,d,o)=>c+' buys '+d+' out of '+o, ccClubTalk:'Offer', ccClubFind:'Find by name', ccClubSayAsk:n=>'They want $'+n, ccClubSayNo:'Turned down', ccClubSayWait:'No more talk today', ccClubQuit:n=>'Terminate the deal with '+n, ccClubLogo:'Own picture', ccClubLogoOff:'Remove picture', ccClubTitle:'Your own org', ccClubHint:'Founding costs money, so does keeping it. A club lives off its roster\u2019s prize money', ccClubFound:'Found it', ccClubNamePh:'Club name', ccClubCash:'Club cash', ccClubKeep:'Upkeep', ccClubMonth:'a month', ccClubSeats:(n,m)=>'Roster: '+n+' of '+m, ccClubCut:n=>'the club takes '+n+'% of its roster\u2019s prizes', ccClubSign:'Sign', ccClubDrop:'Release', ccClubFree:'Free duos', ccClubEmpty:'Nobody yet', ccClubWon:'brought in', ccClubIn:'In', ccClubOut:'Out', ccClubNoCash:'Not enough money', ccNewsClubFound:n=>'Started my own org — '+n, ccNewsClubSign:(c,d)=>c+' signs '+d, ccNewsClubLeft:(c,d)=>d+' leave '+c, ccNewsClubUnpaid:(c,d)=>d+' left '+c+' — the club could not pay',
+ccClubClose:'Close the club', ccClubCloseHint:'Closing is for good: the roster walks, the cash box comes back to your balance, the million does not. Other clubs look at you again after that.', ccClubCloseAsk:n=>'Close '+n+'? The roster is released, the cash box is yours, and the club cannot be brought back.', ccNewsClubClosed:(n,k)=>n+' closes its roster. '+k+' players back on the market', ccClubAcad:'Academy', ccClubAcadBuild:'Build it', ccClubAcadHint:'The academy takes cheap newcomers: they hold no roster seat, and you promote the ones who grow', ccClubAcadSeats:(n,m)=>'Academy: '+n+' of '+m, ccClubYoung:'academy', ccClubUp:'Promote', ccClubPoach:o=>o+' wants them', ccClubLet:'Let them go for', ccClubStay:'Turn it down', ccNewsClubWant:(o,d)=>o+' want to take '+d, ccNewsClubSold:(c,d,o)=>c+' lets '+d+' go to '+o, ccNewsClubSour:(c,d)=>d+' left '+c+' — they were held against their will', ccNewsClubAcad:c=>c+' opens an academy', ccNewsClubUp:(c,d)=>c+' promotes '+d+' from the academy', ccClubOwn:'Yours', ccClubWhere:'Roster, academy and cash live in the shop', ccFfNoMate:'Nobody to play with — you need a partner', ccClubCamp:'Bootcamp', ccClubCoach:'Coach', ccClubMine:'your partner', ccClubMateHint:'Your partner in the club, on the same terms', ccClubBuyout:n=>'buyout from '+n, ccClubOut2:'Take the cash', ccNewsClubBuy:(c,d,o)=>c+' buys '+d+' out of '+o, ccClubTalk:'Offer', ccClubFind:'Find by name', ccClubSayAsk:n=>'They want $'+n, ccClubSayNo:'Turned down', ccClubSayWait:'No more talk today', ccClubQuit:n=>'Terminate the deal with '+n, ccClubLogo:'Own picture', ccClubLogoOff:'Remove picture', ccClubTitle:'Your own org', ccClubHint:'Founding costs money, so does keeping it. A club lives off its roster\u2019s prize money', ccClubFound:'Found it', ccClubNamePh:'Club name', ccClubCash:'Club cash', ccClubKeep:'Upkeep', ccClubMonth:'a month', ccClubSeats:(n,m)=>'Roster: '+n+' of '+m, ccClubCut:n=>'the club takes '+n+'% of its roster\u2019s prizes', ccClubSign:'Sign', ccClubDrop:'Release', ccClubFree:'Free duos', ccClubEmpty:'Nobody yet', ccClubWon:'brought in', ccClubIn:'In', ccClubOut:'Out', ccClubNoCash:'Not enough money', ccNewsClubFound:n=>'Started my own org — '+n, ccNewsClubSign:(c,d)=>c+' signs '+d, ccNewsClubLeft:(c,d)=>d+' leave '+c, ccNewsClubUnpaid:(c,d)=>d+' left '+c+' — the club could not pay',
 ccShopTrain:'Training gain', ccShopOwned:'owned',
 ccShopmouse3:'Finalmouse UltralightX', ccShopkeyboard3:'Wooting 60HE v2', ccShopkeyboard4:'Custom HE Keyboard',
 ccShopheadset3:'Audeze LCD-GX', ccShopheadset4:'Audeze LCD-3',
@@ -5141,7 +5143,7 @@ ccSpotTag:a=>a>0?'MAISON · '+a:'MAISON',
 ccMoveGoHome:'Rentrer chez toi',
 ccMoveNoCash:'Pas assez pour le premier mois',
 ccShopHint:'Les gains achètent ce qui fait qu’une journée d’entraînement compte',
-ccClubAcad:'Académie', ccClubAcadBuild:'Construire', ccClubAcadHint:'L’académie prend des débutants pas chers : ils ne prennent pas de place dans l’effectif', ccClubAcadSeats:(n,m)=>'Académie : '+n+' sur '+m, ccClubYoung:'académie', ccClubUp:'Monter', ccClubPoach:o=>o+' les veut', ccClubLet:'Laisser partir pour', ccClubStay:'Refuser', ccNewsClubWant:(o,d)=>o+' veut prendre '+d, ccNewsClubSold:(c,d,o)=>c+' laisse partir '+d+' à '+o, ccNewsClubSour:(c,d)=>d+' ont quitté '+c+' — on les retenait de force', ccNewsClubAcad:c=>c+' ouvre une académie', ccNewsClubUp:(c,d)=>c+' fait monter '+d+' de l’académie', ccClubOwn:'La tienne', ccClubWhere:'Effectif, académie et caisse sont dans la boutique', ccFfNoMate:'Personne avec qui jouer — il te faut un coéquipier', ccClubCamp:'Bootcamp', ccClubCoach:'Coach', ccClubMine:'ton coéquipier', ccClubMateHint:'Ton coéquipier au club, aux mêmes conditions', ccClubBuyout:n=>'indemnité à '+n, ccClubOut2:'Prendre la caisse', ccNewsClubBuy:(c,d,o)=>c+' rachète '+d+' à '+o, ccClubTalk:'Proposer', ccClubFind:'Chercher par pseudo', ccClubSayAsk:n=>'Ils demandent $'+n, ccClubSayNo:'Refus', ccClubSayWait:'Plus de discussion aujourd’hui', ccClubQuit:n=>'Rompre le contrat avec '+n, ccClubLogo:'Ton image', ccClubLogoOff:'Retirer l’image', ccClubTitle:'Ton organisation', ccClubHint:'La fonder coûte, la maintenir aussi. Le club vit des gains de son effectif', ccClubFound:'Fonder', ccClubNamePh:'Nom du club', ccClubCash:'Caisse du club', ccClubKeep:'Entretien', ccClubMonth:'par mois', ccClubSeats:(n,m)=>'Effectif : '+n+' sur '+m, ccClubCut:n=>'le club prend '+n+'% des gains', ccClubSign:'Signer', ccClubDrop:'Libérer', ccClubFree:'Duos libres', ccClubEmpty:'Personne encore', ccClubWon:'ont rapporté', ccClubIn:'Entrées', ccClubOut:'Sorties', ccClubNoCash:'Pas assez d\u2019argent', ccNewsClubFound:n=>'J\u2019ai fondé mon organisation — '+n, ccNewsClubSign:(c,d)=>c+' signe '+d, ccNewsClubLeft:(c,d)=>d+' quittent '+c, ccNewsClubUnpaid:(c,d)=>d+' ont quitté '+c+' — le club ne pouvait pas payer',
+ccClubClose:'Fermer le club', ccClubCloseHint:'C’est définitif : le roster part, la caisse revient sur ton solde, le million non. Les autres clubs te regardent à nouveau.', ccClubCloseAsk:n=>'Fermer '+n+' ? Le roster est libéré, la caisse est à toi, le club ne reviendra pas.', ccNewsClubClosed:(n,k)=>n+' ferme son roster. '+k+' joueurs de retour sur le marché', ccClubAcad:'Académie', ccClubAcadBuild:'Construire', ccClubAcadHint:'L’académie prend des débutants pas chers : ils ne prennent pas de place dans l’effectif', ccClubAcadSeats:(n,m)=>'Académie : '+n+' sur '+m, ccClubYoung:'académie', ccClubUp:'Monter', ccClubPoach:o=>o+' les veut', ccClubLet:'Laisser partir pour', ccClubStay:'Refuser', ccNewsClubWant:(o,d)=>o+' veut prendre '+d, ccNewsClubSold:(c,d,o)=>c+' laisse partir '+d+' à '+o, ccNewsClubSour:(c,d)=>d+' ont quitté '+c+' — on les retenait de force', ccNewsClubAcad:c=>c+' ouvre une académie', ccNewsClubUp:(c,d)=>c+' fait monter '+d+' de l’académie', ccClubOwn:'La tienne', ccClubWhere:'Effectif, académie et caisse sont dans la boutique', ccFfNoMate:'Personne avec qui jouer — il te faut un coéquipier', ccClubCamp:'Bootcamp', ccClubCoach:'Coach', ccClubMine:'ton coéquipier', ccClubMateHint:'Ton coéquipier au club, aux mêmes conditions', ccClubBuyout:n=>'indemnité à '+n, ccClubOut2:'Prendre la caisse', ccNewsClubBuy:(c,d,o)=>c+' rachète '+d+' à '+o, ccClubTalk:'Proposer', ccClubFind:'Chercher par pseudo', ccClubSayAsk:n=>'Ils demandent $'+n, ccClubSayNo:'Refus', ccClubSayWait:'Plus de discussion aujourd’hui', ccClubQuit:n=>'Rompre le contrat avec '+n, ccClubLogo:'Ton image', ccClubLogoOff:'Retirer l’image', ccClubTitle:'Ton organisation', ccClubHint:'La fonder coûte, la maintenir aussi. Le club vit des gains de son effectif', ccClubFound:'Fonder', ccClubNamePh:'Nom du club', ccClubCash:'Caisse du club', ccClubKeep:'Entretien', ccClubMonth:'par mois', ccClubSeats:(n,m)=>'Effectif : '+n+' sur '+m, ccClubCut:n=>'le club prend '+n+'% des gains', ccClubSign:'Signer', ccClubDrop:'Libérer', ccClubFree:'Duos libres', ccClubEmpty:'Personne encore', ccClubWon:'ont rapporté', ccClubIn:'Entrées', ccClubOut:'Sorties', ccClubNoCash:'Pas assez d\u2019argent', ccNewsClubFound:n=>'J\u2019ai fondé mon organisation — '+n, ccNewsClubSign:(c,d)=>c+' signe '+d, ccNewsClubLeft:(c,d)=>d+' quittent '+c, ccNewsClubUnpaid:(c,d)=>d+' ont quitté '+c+' — le club ne pouvait pas payer',
 ccShopTrain:'Gain à l’entraînement',
 ccShopOwned:'possédé',
 ccShoppc:'Nouveau PC',
@@ -5405,6 +5407,7 @@ ccActtrEnd:'Endgames Noble',
 ccActscrim:'Scrims',
 ccActtalk:'En parler',
 ccActstream:'Stream',
+ccActhost:'Mes customs', ccHostLine:(w,p)=>w+' $ par win · cagnotte '+p+' $ de ta poche', ccHostNeedReach:n=>'il faut '+n+' abonnés, ton propre club ou le PR des customs', ccHostNeedCash:n=>'il manque '+n+' $ pour la cagnotte', ccHostReport:(w,c,who)=>'Customs organisées : '+w+' wins sur 5 pour toi ('+(c?'+'+c+' $':'sans argent')+'), wins prises par '+who, ccPostHosted:(w,who,m)=>'customs ce soir, '+w+' $ la win. prises par : '+who+(m?'. j’en ai gardé une':''),
 ccActrest:'Repos',
 ccGiveReach:'+ audience',
 ccGiveMood:'+ moral du partenaire',
@@ -7688,6 +7691,7 @@ ccActtrEnd:"Endgame Noble",
 ccActscrim:"Scrim",
 ccActtalk:"Parlarne",
 ccActstream:"Stream",
+ccActhost:"Le mie customs", ccHostLine:(w,p)=>w+' $ a vittoria · montepremi '+p+' $ di tasca tua', ccHostNeedReach:n=>'servono '+n+' follower, un club tuo o il PR delle customs', ccHostNeedCash:n=>'mancano '+n+' $ per il montepremi', ccHostReport:(w,c,who)=>'Customs organizzate: '+w+' vittorie su 5 per te ('+(c?'+'+c+' $':'senza soldi')+'), vittorie prese da '+who, ccPostHosted:(w,who,m)=>'customs stasera, '+w+' $ a vittoria. prese da: '+who+(m?'. una me la sono tenuta':''),
 ccActrest:"Riposo",
 ccGiveReach:"+ visibilità",
 ccGiveMood:"+ morale del compagno",
@@ -8400,7 +8404,7 @@ ccSpotBack:"Torna alla carriera",
 ccMoveGoHome:"Torna a casa",
 ccMoveNoCash:"Non basta per il primo mese",
 ccShopHint:"Il montepremi compra le cose che fanno rendere una giornata di allenamento",
-ccClubAcad:'Academy', ccClubAcadBuild:'Costruisci', ccClubAcadHint:'L’academy prende esordienti a poco prezzo: non occupano posti nel roster', ccClubAcadSeats:(n,m)=>'Academy: '+n+' su '+m, ccClubYoung:'academy', ccClubUp:'In roster', ccClubPoach:o=>o+' li vuole', ccClubLet:'Lascia andare per', ccClubStay:'Rifiuta', ccNewsClubWant:(o,d)=>o+' vuole prendere '+d, ccNewsClubSold:(c,d,o)=>c+' lascia andare '+d+' a '+o, ccNewsClubSour:(c,d)=>d+' hanno lasciato '+c+' — li trattenevano controvoglia', ccNewsClubAcad:c=>c+' apre un’academy', ccNewsClubUp:(c,d)=>c+' promuove '+d+' dall’academy', ccClubOwn:'Tua', ccClubWhere:'Roster, academy e cassa stanno nel negozio', ccFfNoMate:'Non hai con chi giocare — serve un compagno', ccClubCamp:'Bootcamp', ccClubCoach:'Coach', ccClubMine:'il tuo compagno', ccClubMateHint:'Il tuo compagno nel club, alle stesse condizioni', ccClubBuyout:n=>'buyout da '+n, ccClubOut2:'Prendi la cassa', ccNewsClubBuy:(c,d,o)=>c+' acquista '+d+' da '+o, ccClubTalk:'Proponi', ccClubFind:'Cerca per nick', ccClubSayAsk:n=>'Chiedono $'+n, ccClubSayNo:'Rifiuto', ccClubSayWait:'Oggi non parlano più', ccClubQuit:n=>'Rescindere il contratto con '+n, ccClubLogo:'Immagine tua', ccClubLogoOff:'Togli immagine', ccClubTitle:'La tua organizzazione', ccClubHint:'Fondarla costa, mantenerla pure. Il club vive dei premi del suo roster', ccClubFound:'Fonda', ccClubNamePh:'Nome del club', ccClubCash:'Cassa del club', ccClubKeep:'Mantenimento', ccClubMonth:'al mese', ccClubSeats:(n,m)=>'Roster: '+n+' su '+m, ccClubCut:n=>'il club prende il '+n+'% dei premi', ccClubSign:'Firma', ccClubDrop:'Libera', ccClubFree:'Duo liberi', ccClubEmpty:'Ancora nessuno', ccClubWon:'hanno portato', ccClubIn:'Entrate', ccClubOut:'Uscite', ccClubNoCash:'Soldi insufficienti', ccNewsClubFound:n=>'Ho fondato la mia organizzazione — '+n, ccNewsClubSign:(c,d)=>c+' firma '+d, ccNewsClubLeft:(c,d)=>d+' lasciano '+c, ccNewsClubUnpaid:(c,d)=>d+' hanno lasciato '+c+' — il club non poteva pagare',
+ccClubClose:'Chiudi il club', ccClubCloseHint:'È per sempre: il roster se ne va, la cassa torna sul tuo saldo, il milione no. Gli altri club tornano a guardarti.', ccClubCloseAsk:n=>'Chiudere '+n+'? Il roster viene liberato, la cassa è tua, il club non torna.', ccNewsClubClosed:(n,k)=>n+' chiude il roster. '+k+' giocatori di nuovo sul mercato', ccClubAcad:'Academy', ccClubAcadBuild:'Costruisci', ccClubAcadHint:'L’academy prende esordienti a poco prezzo: non occupano posti nel roster', ccClubAcadSeats:(n,m)=>'Academy: '+n+' su '+m, ccClubYoung:'academy', ccClubUp:'In roster', ccClubPoach:o=>o+' li vuole', ccClubLet:'Lascia andare per', ccClubStay:'Rifiuta', ccNewsClubWant:(o,d)=>o+' vuole prendere '+d, ccNewsClubSold:(c,d,o)=>c+' lascia andare '+d+' a '+o, ccNewsClubSour:(c,d)=>d+' hanno lasciato '+c+' — li trattenevano controvoglia', ccNewsClubAcad:c=>c+' apre un’academy', ccNewsClubUp:(c,d)=>c+' promuove '+d+' dall’academy', ccClubOwn:'Tua', ccClubWhere:'Roster, academy e cassa stanno nel negozio', ccFfNoMate:'Non hai con chi giocare — serve un compagno', ccClubCamp:'Bootcamp', ccClubCoach:'Coach', ccClubMine:'il tuo compagno', ccClubMateHint:'Il tuo compagno nel club, alle stesse condizioni', ccClubBuyout:n=>'buyout da '+n, ccClubOut2:'Prendi la cassa', ccNewsClubBuy:(c,d,o)=>c+' acquista '+d+' da '+o, ccClubTalk:'Proponi', ccClubFind:'Cerca per nick', ccClubSayAsk:n=>'Chiedono $'+n, ccClubSayNo:'Rifiuto', ccClubSayWait:'Oggi non parlano più', ccClubQuit:n=>'Rescindere il contratto con '+n, ccClubLogo:'Immagine tua', ccClubLogoOff:'Togli immagine', ccClubTitle:'La tua organizzazione', ccClubHint:'Fondarla costa, mantenerla pure. Il club vive dei premi del suo roster', ccClubFound:'Fonda', ccClubNamePh:'Nome del club', ccClubCash:'Cassa del club', ccClubKeep:'Mantenimento', ccClubMonth:'al mese', ccClubSeats:(n,m)=>'Roster: '+n+' su '+m, ccClubCut:n=>'il club prende il '+n+'% dei premi', ccClubSign:'Firma', ccClubDrop:'Libera', ccClubFree:'Duo liberi', ccClubEmpty:'Ancora nessuno', ccClubWon:'hanno portato', ccClubIn:'Entrate', ccClubOut:'Uscite', ccClubNoCash:'Soldi insufficienti', ccNewsClubFound:n=>'Ho fondato la mia organizzazione — '+n, ccNewsClubSign:(c,d)=>c+' firma '+d, ccNewsClubLeft:(c,d)=>d+' lasciano '+c, ccNewsClubUnpaid:(c,d)=>d+' hanno lasciato '+c+' — il club non poteva pagare',
 ccShopTrain:"Guadagno da allenamento",
 ccShopOwned:"posseduto",
 ccShopmouse3:"Finalmouse UltralightX",
@@ -10189,6 +10193,7 @@ ccActtrEnd:"Endgames Noble",
 ccActscrim:"Scrims",
 ccActtalk:"Conversar",
 ccActstream:"Stream",
+ccActhost:"Minhas customs", ccHostLine:(w,p)=>'$'+w+' por win · pote $'+p+' do seu bolso', ccHostNeedReach:n=>'precisa de '+n+' seguidores, clube próprio ou o PR das customs', ccHostNeedCash:n=>'faltam $'+n+' para o pote', ccHostReport:(w,c,who)=>'Customs organizadas: '+w+' wins de 5 suas ('+(c?'+$'+c:'sem dinheiro')+'), wins levadas por '+who, ccPostHosted:(w,who,m)=>'customs hoje, $'+w+' por win. levaram: '+who+(m?'. uma ficou comigo':''),
 ccActrest:"Descanso",
 ccGiveReach:"+ alcance",
 ccGiveMood:"+ moral do parceiro",
@@ -10901,7 +10906,7 @@ ccSpotBack:"Voltar para a carreira",
 ccMoveGoHome:"Voltar para casa",
 ccMoveNoCash:"Não dá nem para o primeiro mês",
 ccShopHint:"A premiação compra as coisas que fazem um dia de treino render",
-ccClubAcad:'Academia', ccClubAcadBuild:'Construir', ccClubAcadHint:'A academia pega novatos baratos: não ocupam vaga no elenco', ccClubAcadSeats:(n,m)=>'Academia: '+n+' de '+m, ccClubYoung:'academia', ccClubUp:'Subir', ccClubPoach:o=>o+' quer levar', ccClubLet:'Liberar por', ccClubStay:'Recusar', ccNewsClubWant:(o,d)=>o+' quer levar '+d, ccNewsClubSold:(c,d,o)=>c+' libera '+d+' para o '+o, ccNewsClubSour:(c,d)=>d+' saíram de '+c+' — foram segurados à força', ccNewsClubAcad:c=>c+' abre uma academia', ccNewsClubUp:(c,d)=>c+' sobe '+d+' da academia', ccClubOwn:'Sua', ccClubWhere:'Elenco, academia e caixa ficam na loja', ccFfNoMate:'Sem ninguém para jogar — você precisa de um parceiro', ccClubCamp:'Bootcamp', ccClubCoach:'Treinador', ccClubMine:'seu parceiro', ccClubMateHint:'Seu parceiro no clube, nas mesmas condições', ccClubBuyout:n=>'multa para '+n, ccClubOut2:'Sacar o caixa', ccNewsClubBuy:(c,d,o)=>c+' compra '+d+' do '+o, ccClubTalk:'Propor', ccClubFind:'Buscar pelo nick', ccClubSayAsk:n=>'Pedem $'+n, ccClubSayNo:'Recusa', ccClubSayWait:'Hoje não falam mais', ccClubQuit:n=>'Rescindir o contrato com '+n, ccClubLogo:'Imagem própria', ccClubLogoOff:'Remover imagem', ccClubTitle:'Sua organização', ccClubHint:'Fundar custa, manter também. O clube vive dos prêmios do seu elenco', ccClubFound:'Fundar', ccClubNamePh:'Nome do clube', ccClubCash:'Caixa do clube', ccClubKeep:'Manutenção', ccClubMonth:'por mês', ccClubSeats:(n,m)=>'Elenco: '+n+' de '+m, ccClubCut:n=>'o clube fica com '+n+'% dos prêmios', ccClubSign:'Contratar', ccClubDrop:'Liberar', ccClubFree:'Duplas livres', ccClubEmpty:'Ninguém ainda', ccClubWon:'renderam', ccClubIn:'Entrou', ccClubOut:'Saiu', ccClubNoCash:'Dinheiro insuficiente', ccNewsClubFound:n=>'Abri minha organização — '+n, ccNewsClubSign:(c,d)=>c+' contrata '+d, ccNewsClubLeft:(c,d)=>d+' saem de '+c, ccNewsClubUnpaid:(c,d)=>d+' saíram de '+c+' — o clube não pôde pagar',
+ccClubClose:'Fechar o clube', ccClubCloseHint:'É definitivo: o elenco sai, o caixa volta para o seu saldo, o milhão não. Outros clubes voltam a olhar para você.', ccClubCloseAsk:n=>'Fechar '+n+'? O elenco é liberado, o caixa é seu, o clube não volta.', ccNewsClubClosed:(n,k)=>n+' fecha o elenco. '+k+' jogadores de volta ao mercado', ccClubAcad:'Academia', ccClubAcadBuild:'Construir', ccClubAcadHint:'A academia pega novatos baratos: não ocupam vaga no elenco', ccClubAcadSeats:(n,m)=>'Academia: '+n+' de '+m, ccClubYoung:'academia', ccClubUp:'Subir', ccClubPoach:o=>o+' quer levar', ccClubLet:'Liberar por', ccClubStay:'Recusar', ccNewsClubWant:(o,d)=>o+' quer levar '+d, ccNewsClubSold:(c,d,o)=>c+' libera '+d+' para o '+o, ccNewsClubSour:(c,d)=>d+' saíram de '+c+' — foram segurados à força', ccNewsClubAcad:c=>c+' abre uma academia', ccNewsClubUp:(c,d)=>c+' sobe '+d+' da academia', ccClubOwn:'Sua', ccClubWhere:'Elenco, academia e caixa ficam na loja', ccFfNoMate:'Sem ninguém para jogar — você precisa de um parceiro', ccClubCamp:'Bootcamp', ccClubCoach:'Treinador', ccClubMine:'seu parceiro', ccClubMateHint:'Seu parceiro no clube, nas mesmas condições', ccClubBuyout:n=>'multa para '+n, ccClubOut2:'Sacar o caixa', ccNewsClubBuy:(c,d,o)=>c+' compra '+d+' do '+o, ccClubTalk:'Propor', ccClubFind:'Buscar pelo nick', ccClubSayAsk:n=>'Pedem $'+n, ccClubSayNo:'Recusa', ccClubSayWait:'Hoje não falam mais', ccClubQuit:n=>'Rescindir o contrato com '+n, ccClubLogo:'Imagem própria', ccClubLogoOff:'Remover imagem', ccClubTitle:'Sua organização', ccClubHint:'Fundar custa, manter também. O clube vive dos prêmios do seu elenco', ccClubFound:'Fundar', ccClubNamePh:'Nome do clube', ccClubCash:'Caixa do clube', ccClubKeep:'Manutenção', ccClubMonth:'por mês', ccClubSeats:(n,m)=>'Elenco: '+n+' de '+m, ccClubCut:n=>'o clube fica com '+n+'% dos prêmios', ccClubSign:'Contratar', ccClubDrop:'Liberar', ccClubFree:'Duplas livres', ccClubEmpty:'Ninguém ainda', ccClubWon:'renderam', ccClubIn:'Entrou', ccClubOut:'Saiu', ccClubNoCash:'Dinheiro insuficiente', ccNewsClubFound:n=>'Abri minha organização — '+n, ccNewsClubSign:(c,d)=>c+' contrata '+d, ccNewsClubLeft:(c,d)=>d+' saem de '+c, ccNewsClubUnpaid:(c,d)=>d+' saíram de '+c+' — o clube não pôde pagar',
 ccShopTrain:"Ganho de treino",
 ccShopOwned:"já é seu",
 ccShopmouse3:"Finalmouse UltralightX",
@@ -52127,7 +52132,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='98231195';
+const CC_BUILD='920daff0';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -55418,7 +55423,7 @@ function careerEntry(direct){
      карьера обязана открыться и без сети. localStorage держит последнее
      известное состояние команды, а 'state' от сервера приедет и перепишет его
      через ccApplyTeamState. См. ccMpBoot. */
-  if(careerExists()){ careerLoad(); careerMigrateClock(); careerMigrateMoney(); careerMigrateOrg(); ccMpBoot(); openCareerHub(); return; }
+  if(careerExists()){ careerLoad(); careerMigrateClock(); careerMigrateMoney(); careerMigrateOrg(); careerMigrateOwnClub(); ccMpBoot(); openCareerHub(); return; }
   // The slot the tile opens is empty, but another one may not be — that is what
   // switching careers looks like from here, so ask rather than start a third.
   let any=false;
@@ -57757,6 +57762,8 @@ const CC_DAY_ACTS=[
      вчетверо. */
   {id:'talk',    energy:20, gain:{}, talk:true, morale:1},
   {id:'stream',  energy:30, gain:{}, reach:1, focus:-1},
+  // Своя кастомка — см. ccHostRun; охват и деньги считает она сама.
+  {id:'host',    energy:34, gain:{}, host:true},
   {id:'rest',    energy:0,  gain:{}, rest:CC_ENERGY_REST}
 ];
 /* Чего стоит разговор — и почему не всегда одного и того же.
@@ -57847,11 +57854,12 @@ const CC_DAY_EVENTS=[
     {id:'move',  eff:{spotClear:true, morale:6}},
     {id:'keep',  eff:{morale:-5}},
     {id:'trial', eff:{energy:20, morale:2, form:0.2}}]},
-  {id:'orgLate', when:()=>!!CAREER.org, opts:[
+  // Только чужой клуб: свой (own) зарплату не задерживает и сливать нечего.
+  {id:'orgLate', when:()=>!!CAREER.org && !CAREER.org.own, opts:[
     {id:'wait',   eff:{rep:1}},
     {id:'public', eff:{reach:2, rep:-2}},
     {id:'leave',  eff:{orgLeave:true, reach:1}}]},
-  {id:'leak', when:()=>!!CAREER.org, opts:[
+  {id:'leak', when:()=>!!CAREER.org && !CAREER.org.own, opts:[
     {id:'deny',    eff:{reach:1}},
     {id:'confirm', eff:{reach:3, rep:-2}},
     {id:'silent',  eff:{}}]},
@@ -57945,6 +57953,78 @@ function ccCustomPlay(){
   careerReachAdd(wins ? 2 : 1);
   return {wins:wins, cash:cash};
 }
+/* СВОЯ КАСТОМКА — организатор ты.
+
+   Его игрок, 13 сентября: «было бы интересно сделать организацию собственных
+   турниров/кастомок». Кастомки в этой сцене держат те, у кого есть аудитория
+   (Poyo, Rax): фонд из своего кармана, лобби из знакомых имён, вечер идёт в
+   эфир и растит канал. Так и здесь: кнопка дня рядом со стримом, фонд с
+   баланса, лобби — люди своего региона ближайшие по рейтингу, победители игр
+   получают деньги на общую доску (careerMoneyAdd), а ты — охват и пост в ленте.
+
+   Кто может: аудитория от CC_HOST_REACH, либо свой клуб, либо тот PR, с
+   которого зовут на чужие кастомки. Ставка за победу растёт с каналом, а не
+   выбирается — так вечер стоит ровно столько, сколько ты уже собрал зрителей.
+   Своя игра считается тем же броском, что и на чужой кастомке (ccCustomPlay):
+   это не турнир карьеры — журнал, квалификации и PR не трогаются. */
+const CC_HOST_REACH=3000;
+function ccHostPerWin(){
+  const r=careerReach();
+  return r>=100000 ? 500 : r>=20000 ? 250 : 100;
+}
+function ccHostPot(){ return ccHostPerWin()*CC_CUSTOM_GAMES; }
+// Почему нельзя — словом для кнопки; null — можно.
+function ccHostWhy(){
+  const cr=CAREER && CAREER.career; if(!cr) return 'reach';
+  const own=typeof careerClub==='function' && careerClub();
+  if(!(careerReach()>=CC_HOST_REACH || own || ccCustomPr()>=CC_CUSTOM_PR)) return 'reach';
+  if((cr.balance||0)<ccHostPot()) return 'cash';
+  return null;
+}
+// Лобби: 49 человек своего региона, ближайшие по рейтингу; свои люди не зовутся.
+function ccHostField(){
+  const pl=CAREER.player, mine=pl.ovrExact!=null ? pl.ovrExact : pl.ovr;
+  const taken=ccMyPeople();
+  const ovrOf=c=>(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr||0);
+  return careerRosterNowEU().filter(p=>!taken.has(hKey(p)))
+    .map(p=>({handle:p.handle, ovr:ovrOf(p)}))
+    .sort((a,b)=>Math.abs(a.ovr-mine)-Math.abs(b.ovr-mine))
+    .slice(0, 49);
+}
+function ccHostRun(){
+  const cr=CAREER.career, pl=CAREER.player;
+  if(ccHostWhy()) return null;
+  const per=ccHostPerWin(), pot=per*CC_CUSTOM_GAMES;
+  cr.balance=(cr.balance||0)-pot;
+  cr.hosted=(cr.hosted||0)+pot;
+  const rnd=careerRng(ccHashStr('host|'+(cr.season||1)+'|'+careerToday()));
+  const mine=pl.ovrExact!=null ? pl.ovrExact : pl.ovr;
+  const pMe=clamp(0.05+(mine-ccBand(1))*0.012, 0.02, 0.45);
+  const field=ccHostField();
+  const weight=c=>Math.exp((c.ovr-90)/4);
+  const total=field.reduce((s,c)=>s+weight(c), 0);
+  const wins=new Map(); let myWins=0;
+  for(let g=0; g<CC_CUSTOM_GAMES; g++){
+    if(rnd()<pMe){ myWins++; continue; }
+    let r=rnd()*total, w=field[field.length-1];
+    for(let i=0;i<field.length;i++){ r-=weight(field[i]); if(r<=0){ w=field[i]; break; } }
+    wins.set(w.handle, (wins.get(w.handle)||0)+1);
+  }
+  const cash=myWins*per;
+  if(cash){ cr.balance=(cr.balance||0)+cash; cr.side=(cr.side||0)+cash; }
+  // Победители игр — на общую доску денег, своими именами.
+  const winners=[...wins.keys()];
+  if(winners.length) careerMoneyAdd(winners.map(h=>({name:h})), (i,t)=>wins.get(t.name)*per);
+  // Организатор в эфире: вечер растит охват сильнее обычного стрима и даёт репутацию.
+  careerReachAdd(3*CC_REACH_DIV(cr.division));
+  careerRepAdd(1);
+  const who=winners.length
+    ? winners.map(h=>'@'+ccHandle(h)+(wins.get(h)>1 ? ' ×'+wins.get(h) : '')).join(', ')
+    : '—';
+  careerNews('flat', 'ccPostHosted', [per, who, myWins]);
+  cr.hostLast={day:careerToday(), a:[myWins, cash ? ccNum(cash) : 0, who]};
+  return {wins:myWins, cash:cash, pot:pot, per:per, winners:winners};
+}
 /* Бросок дня. Один на день, кидается когда день впервые спросили, и сразу
    в сейв: перезагрузка страницы читает уже брошенное, а не кидает заново —
    релоадом лучший день не выторговать. Прошлые дни никто не спрашивает
@@ -58003,13 +58083,13 @@ function careerDayEvent(id, take){
   if(eff.spotClear) careerSpotClear();
   if(eff.stat) careerStatBump(ccWeakestAttr(), eff.stat);
   if(eff.school) cr.school=eff.school;
-  if(eff.orgLeave && CAREER.org){
+  if(eff.orgLeave && CAREER.org && !CAREER.org.own){
     const org=CAREER.org;
     careerNews('flat', 'ccNewsLeftOrg', [org.name], {by:ccOrgBy(org.name)});
     careerNews('flat', 'ccPostBye', [ccHandle(org.name)]);
     CAREER.org=null;
   }
-  if(eff.orgGone && CAREER.org){
+  if(eff.orgGone && CAREER.org && !CAREER.org.own){
     // Клуб закрывает состав: месяц зарплаты на прощание, и ты свободен.
     const org=CAREER.org, sev=org.salary||0;
     if(sev){ cr.balance=(cr.balance||0)+sev; cr.wages=(cr.wages||0)+sev; }
@@ -58128,7 +58208,7 @@ function careerDayDone(){
    30 энергии тратят». День закрывают отдых и события, которые и есть весь
    вечер (чужой скрим, оффлайн); эфир — это тридцать энергии из магазина дня,
    как любое занятие. */
-const CC_DAY_WHOLE={rest:1};
+const CC_DAY_WHOLE={rest:1, host:1};
 const CC_DAY_OPEN_EV={'ev:show':1, 'ev:promo':1};
 function ccDayShuts(id){
   return CC_DAY_WHOLE[id] ||
@@ -58173,7 +58253,10 @@ function careerDoAct(id){
   // The button already says so; this is the same rule where the day is spent,
   // so no other caller can hand a player an evening for nothing.
   if(act.rest && careerEnergy()>=careerEnergyMax()) return null;
+  // Своя кастомка без аудитории или без фонда не проводится — и день не тратит.
+  if(act.host && ccHostWhy()) return null;
   careerSpend(cost);
+  if(act.host) ccHostRun();
   if(act.rest) careerRestore(act.rest);
   // The same taper the cup's own growth uses. Without it training ran at full
   // speed right up to the ceiling and every career hit its own in the first
@@ -58639,6 +58722,19 @@ function careerMigrateOrg(){
   if(!org || org.tier!=null) return;
   const club=careerOrgPool().find(o=>o.name===org.name);
   if(club) org.tier=club.tier;
+  careerSave();
+}
+/* Свой клуб, у которого сейв потерял CAREER.org.
+
+   До 13 сентября careerOrgSeasonEnd на стыке года «расторгал контракт» и со своим
+   клубом (цели у него нет — читалось как провал): cr.club оставался, CAREER.org
+   пропадал, плитка говорила «нет клуба», а careerOrgOffers из-за cr.club молчал.
+   Клуб — тот же, что и был; ставится обратно тем же объектом, каким его ставит
+   careerClubFound. Сторож — tools/check-career-own-club.js. */
+function careerMigrateOwnClub(){
+  const cr=CAREER && CAREER.career, club=cr && cr.club;
+  if(!club || !club.name || CAREER.org) return;
+  CAREER.org={name:club.name, salary:0, cut:0, tier:70, own:true, since:cr.season, paid:0};
   careerSave();
 }
 function careerMigrateClock(){
@@ -61762,8 +61858,22 @@ function ccSeat(duos, seated){
   return out;
 }
 function ccSnapshotNow(){
+  /* В ТРИО-ГОД СНИМОК ОДИН НА ВЕСЬ СЕЗОН.
+
+     Снимок переключается 18 июля на Плей-Ин второго Мейджора — в дуо-год это
+     правда Epic: пары к лету другие, и комната честно их показывает. В трио-год
+     пара — это ядро тройки, которую рынок (careerTrioRaids) собрал на стыке года
+     и записал в cr.trios по ключу пары. Замер (scratchpad trio-time-probe, D1,
+     сезон 2): до 6 июля из 119 пар пула на месте все 119, средний разрыв третьего
+     −0.6…−1.2; 20 июля пар на месте 25 из 119, троек первой недели в комнате 9 из
+     79, память троек растёт с 342 до 434 (все — новые составы), разрыв −2.2.
+     Его игрок, 13 сентября: «когда начинается второй сезон, формируются норм
+     триосы, но через месяц опять максимально не настоящие триосы формируются».
+     Его же правило от 28 августа: «в начале сезона изменения только, если они
+     нужны, а не каждый кап». Дуо-год не тронут. */
   const today=careerToday();
   let snap=CC_SNAPSHOTS[0];
+  if(typeof careerSquadSize==='function' && CAREER && CAREER.career && careerSquadSize()===3) return snap;
   CC_SNAPSHOTS.forEach(s=>{ if(today>=s.from) snap=s; });
   return snap;
 }
@@ -64865,7 +64975,30 @@ function careerClubHTML(){
       : '<div class="ch-row"><em>'+esc(T.ccClubAcad)+'</em><b>$'+ccNum(CC_CLUB_ACAD)+'</b>'+
         '<button class="ch-sign cc-club-cash" onclick="careerClubAcad()">'+esc(T.ccClubAcadBuild)+'</button></div>'+
         '<div class="ch-hint">'+esc(T.ccClubAcadHint)+'</div>')+
+    // Закрыть клуб — внизу и с объяснением: это дверь обратно к чужим предложениям.
+    '<div class="ch-hint">'+esc(T.ccClubCloseHint)+'</div>'+
+    '<button class="ch-decline" onclick="careerClubCloseAsk()">'+esc(T.ccClubClose)+'</button>'+
     '</div>';
+}
+/* ЗАКРЫТЬ СВОЙ КЛУБ. До 13 сентября дороги назад не было вовсе: основал — и чужие
+   клубы молчат навсегда (careerOrgOffers). Состав отпускается, касса возвращается,
+   миллион — нет; CAREER.org снимается, и скаутинг снова открыт. Вопрос — на клике,
+   действие — отдельно, чтобы харнессы не упирались в модалку. */
+function careerClubCloseAsk(){
+  const club=careerClub(); if(!club) return;
+  ccAsk(L().ccClubCloseAsk(club.name), careerClubClose, {yes:L().ccClubClose, no:L().ccAskNo});
+}
+function careerClubClose(){
+  const cr=CAREER && CAREER.career, club=careerClub(); if(!cr || !club) return false;
+  const people=(club.roster||[]).reduce((n,r)=>n+((r.who||[]).length||1), 0);
+  if((club.cash||0)>0){ cr.balance=(cr.balance||0)+Math.round(club.cash); }
+  careerNews('flat', 'ccNewsClubClosed', [club.name, people], {by:ccOrgBy(club.name)});
+  delete cr.club;
+  if(CAREER.org && CAREER.org.own) CAREER.org=null;
+  CAREER.offers=null; CAREER.scoutOff=false;
+  careerSave();
+  if(typeof careerRenderHub==='function') careerRenderHub('shop');
+  return true;
 }
 function careerClubNew(){
   const el=document.getElementById('ccClubName');
@@ -66859,7 +66992,8 @@ function careerAwardSeason(){
 }
 function careerMonthGoal(){
   const cr=CAREER.career, org=CAREER.org;
-  if(!org) return null;
+  // Свой клуб задач хозяину не ставит и премий за месяц не платит.
+  if(!org || org.own) return null;
   const key=ccMonthKey();
   if(cr.mg && cr.mg.key===key) return cr.mg;
   // Seeded on the month and the club, so it cannot be rerolled by reopening
@@ -66917,6 +67051,14 @@ function careerMonthGoalText(g){
    каким она отвечает на все остальные вопросы. */
 function careerOrgSeasonEnd(){
   const org=CAREER.org; if(!org) return;
+  /* СВОЙ КЛУБ НЕ РАСТОРГАЕТ КОНТРАКТ С ХОЗЯИНОМ. Цели у него нет (careerClubFound), и
+     careerOrgGoalMet на нём честно отвечает «нет» — а эта строка читала «нет» как
+     провал сезона: «клуб расторгает контракт: задача не выполнена», CAREER.org=null,
+     при этом cr.club оставался, и careerOrgOffers из-за него молчал весь следующий
+     год. Его игрок MarkeL, 13 сентября: «ты как бы ушёл из клуба потому что он не
+     выполнил цели, то есть твой клуб, но он есть. И после этого, когда ты пытаешься
+     найти новый клуб, тебе никто не пишет». Сейв с этой дырой чинит careerMigrateOwnClub. */
+  if(org.own) return;
   if(!careerOrgGoalMet()){
     careerNews('bad', 'ccNewsReleased', [org.name], {by:ccOrgBy(org.name)});
     /* И слово самого игрока: у настоящих расставание с клубом это ДВА поста —
@@ -67267,6 +67409,12 @@ const CC_POST_BY={
   ccDayEvcustomTake:'you', ccPostOrgWin:'press', ccPostVouch:'you', ccPostThanks:'you', ccPostOneOff:'you', ccPostTriedBest:'you',
   ccPostBye:'you', ccPostAskYes:'you', ccPostAskNo:'you',
   ccNewsAnnounce:'press', ccNewsRoadmap:'press', ccPostHype:'arg0', ccPostDates:'arg0', ccPostCustomsOpen:'press',
+  ccPostHosted:'you',
+  // Свой клуб говорит своим гербом (by), подписка и SAC — свои строки. Ключи с 11.09,
+  // ловил check-career-feed.
+  ccNewsClubAcad:'by', ccNewsClubBuy:'by', ccNewsClubFound:'by', ccNewsClubLeft:'by', ccNewsClubSign:'by',
+  ccNewsClubSold:'by', ccNewsClubSour:'by', ccNewsClubUnpaid:'by', ccNewsClubUp:'by', ccNewsClubWant:'by',
+  ccNewsSacPay:'you', ccNewsTwSubbed:'you', ccNewsClubClosed:'by',
   ccNewsLeftOrg:'press',
   ccNewsSigned:'press', ccNewsReleased:'press', ccNewsExtended:'press',
   /* Парный контракт заведён 25 августа, когда клубы уже постили сами, поэтому
@@ -68648,7 +68796,7 @@ const CC_CO_BY_KIND=[
   [/^ccNewsStream|^ccPostStreamD1/, 'Stream'],
   [/^ccPostDropCall/, 'Drop'],
   [/^ccPostQualGrands|^ccPostBotQualGrands/, 'Pod'],
-  [/^ccPostCustomsOpen/, 'Cust'],
+  [/^ccPostCustomsOpen|^ccPostHosted/, 'Cust'],
   [/^ccNewsRetired/, 'Bye'],
   [/^ccNewsBanned|^ccPostBanSad/, 'Ban'],
   [/^ccNewsCongrats|^ccPostOrgWin|^ccNewsWinner|^ccPostWon|^ccNewsGlobChamp|^ccNewsRcChamp|^ccNewsAward|^ccNewsPromoted$/, 'Win'],
@@ -69878,8 +70026,9 @@ function careerDmPool(){
   // first: no standing pair, then pairs whose season has soured, then the rest
   // — writable, but they will say who they already play with.
   // Through the scene's eyes, not the roster's: a seat held by the player's own
-  // card is a free seat. See ccSceneMateOf.
-  const seatRank=p=>{ const m=ccSceneMateOf(p);
+  // card is a free seat. See ccSceneMateOf — и по СЕГОДНЯШНИМ парам, как и ответ
+  // в личке (careerDmMateOf), иначе развёдшийся стоял бы в хвосте как занятый.
+  const seatRank=p=>{ const m=careerDmMateOf({handle:p.handle});
     return !m ? 0 : careerDuoBeatsYou({handle:p.handle}) ? 2 : 1; };
   near.sort((a,b)=>seatRank(a)-seatRank(b));
   /* Two seats held for the best people in the window, whatever their seat.
@@ -70062,9 +70211,23 @@ function ccSceneMateOf(card){
   if(pl && pl.handle && hKey(m)===hKey(pl.handle)) return null;
   return m;
 }
+/* С кем он играет СЕГОДНЯ, а не с кем начал год.
+
+   Стояло на ccSceneMateOf, то есть на ростере Epic, — а статус F/A в ленте и
+   строка «свободен» в поиске дуо читаются по careerPools (ccPairMateOf), где
+   разводы, трансферы и рынок трио уже учтены. Два ответа на один вопрос: список
+   говорил «свободен», а ответ в личке — «я играю с @x, нам и так хорошо». Его
+   игрок, 13 сентября: «игроки, которые ищут игроков, ты им пишешь, а они пишут
+   занято». Половинка, которую забрал сам игрок, тоже не пара — то кресло и
+   есть этот разговор (см. ccSceneMateOf). */
 function careerDmMateOf(who){
-  const card=careerRosterNowEU().find(p=>hKey(p)===hKey(who.handle));
-  return card ? ccSceneMateOf(card) : null;
+  let m=null;
+  try{ m=ccPairMateOf(who.handle); }catch(e){ m=null; }
+  if(!m) return null;
+  const k=hKey(m), pl=CAREER && CAREER.player;
+  if(pl && pl.handle && hKey(pl.handle)===k) return null;
+  if(careerMates().some(c=>c && hKey(c)===k)) return null;
+  return m;
 }
 /* Whether the duo somebody is already in is better than the one you are
    offering — which is the whole of the question, from their side.
@@ -73027,8 +73190,9 @@ function careerDayPanelHTML(locked){
     // Affordable, and the day still open. As many sessions as the store can pay
     // for — the day ends when something takes all of it, or when the player
     // says it is over.
+    const hostWhy=a.host ? ccHostWhy() : null;
     const can=!closed && left>=a.energy && !maxed && !restFull
-              && (!keys.length || gainsMove);
+              && (!keys.length || gainsMove) && !hostWhy;
     const gains=keys.map(function(k){
       const from=six[k]!=null ? six[k] : 50;
       const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1);
@@ -73065,6 +73229,12 @@ function careerDayPanelHTML(locked){
     // store is already full.
     if(a.rest && !restFull) extra.push('<i class="cc-give-rest">'+L().ccGiveRest+'</i>');
     if(a.focus)   extra.push('<i class="cc-give-cost">'+L().ccGiveNoImprove+'</i>');
+    if(a.host){
+      extra.push('<i>'+esc(L().ccHostLine(ccNum(ccHostPerWin()), ccNum(ccHostPot())))+'</i>');
+      extra.push('<i class="cc-give-reach">'+L().ccGiveReach+'</i>');
+      if(hostWhy==='reach') extra.push('<i class="cc-give-cost">'+esc(L().ccHostNeedReach(ccNum(CC_HOST_REACH)))+'</i>');
+      if(hostWhy==='cash') extra.push('<i class="cc-give-cost">'+esc(L().ccHostNeedCash(ccNum(ccHostPot()-(cr.balance||0))))+'</i>');
+    }
     /* Группы, как список квестов в лобби: заголовок перед первой строкой
        группы и цветная кромка слева по группе (g-train/g-team/g-life). */
     const grp=String(a.id).indexOf('tr')===0 ? 'train' : (a.id==='scrim'||a.id==='talk') ? 'team' : 'life';
@@ -73107,6 +73277,10 @@ function careerDayPanelHTML(locked){
       ((cr.streamLast && cr.streamLast.day===careerToday())
         ? '<div class="cc-day-locked cc-day-stream">'+
             esc(L().ccNewsStreamStats.apply(null, cr.streamLast.a))+'</div>' : '')+
+      // Отчёт своей кастомки — той же строкой, что и стрим. См. ccHostRun.
+      ((cr.hostLast && cr.hostLast.day===careerToday())
+        ? '<div class="cc-day-locked cc-day-stream">'+
+            esc(L().ccHostReport.apply(null, cr.hostLast.a))+'</div>' : '')+
       // Said where the day is chosen. It used to mean the division's own
       // ceiling; the only one left is the scale's, so it is the last thing a
       // career ever reads rather than something it meets in Division 5.
@@ -83753,6 +83927,12 @@ async function runCareerSoloSeries(){
     ev.stage==='heats' ? soloHeatsPoints : victoryR1Points, spec ? spec.kill : CC_SOLO_KILL,
     'stage', 0, null, zones,
     {lobbySize:100, stageName:ev.label, mapReplay:true, choices:true, stopOnYourDeath:true,
+     /* Виктори в хитах — билет, и вечер на нём для тебя кончается: правило Epic
+        (см. шапку раздела) и то же stopOnWin, что у хитов Мейджора. Раньше
+        победитель первой игры играл все шесть, карточка говорила «прошёл», а
+        таблица ставила его 47-м под чертой без пометки. Его игрок, 13 сентября:
+        «I should have qualified with the first game but that way I didn't». */
+     stopOnWin: spec ? !!spec.vr : ev.stage==='heats',
      together: mate ? humans : null,
      dropEachGame:(g,room)=>open ? null : ccSoloDrops(room||field, humans, ev.label, kindsForDrop)});
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
@@ -83809,10 +83989,12 @@ async function runCareerSoloSeries(){
     // Хиты соло — те же «квальнулся, сажусь туда-то», только в финал. См. ccGrandsCalls.
     if(ev.stage==='heats' && !spec) ccGrandsCalls('finals', you, moved, field.filter(passOf));
   }
+  const byVR=(spec ? !!spec.vr : ev.stage==='heats') && (you.wins||0)>0;
   finalizeStageCard(shell, place, field.length, you.stagePts,
     ccStagePassed(through, {cut:cut}, place, prizeFn),
-    false, cut ? (through ? L().ccRelPass(cut) : L().ccRelFail(cut)) : '');
-  await revealStandings(shell, ranked, you, cut, null, null,
+    byVR, byVR ? L().stage2NoteByVR : cut ? (through ? L().ccRelPass(cut) : L().ccRelFail(cut)) : '');
+  // Прошедшие — по правилу этапа (виктори тоже), а не только по черте.
+  await revealStandings(shell, ranked, you, cut, null, cut ? new Set(field.filter(passOf)) : null,
     prizeFn, null, !!prizeFn);
 
   cr.log=cr.log||[];
@@ -87677,7 +87859,8 @@ function careerSchoolFee(months){
 const CC_ORG_QUIT_ODDS=0.08;
 function careerOrgBonusFor(salary){ return Math.max(100, Math.round((salary||0)*0.5/50)*50); }
 function careerOrgBonus(org){
-  if(!org) return 0;
+  // Свой клуб премий хозяину не платит — деньги и так его (careerClubHTML).
+  if(!org || org.own) return 0;
   return org.bonus!=null ? org.bonus : careerOrgBonusFor(org.salary);
 }
 function careerOrgBonusTick(){
@@ -87699,7 +87882,8 @@ function careerOrgBonusTick(){
 }
 function careerOrgQuitDue(iso){
   const cr=CAREER && CAREER.career, org=CAREER && CAREER.org;
-  if(!cr || !org) return false;
+  // Свой клуб состав не закрывает — см. careerOrgSeasonEnd.
+  if(!cr || !org || org.own) return false;
   cr.told=cr.told||{};
   const key='oq|'+cr.season+'|'+org.name;
   if(!cr.told[key]){
