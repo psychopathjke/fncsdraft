@@ -861,7 +861,9 @@
   // that drew a third squad is a fight nobody gets out of.
   var STACK_MIN = 3;
 
-  function resolveContacts(squads, circle, rng, duel, onDeath, dropping){
+  function resolveContacts(squads, circle, rng, duel, onDeath, dropping, elimsFor){
+    // Цена смерти отряда в элимах — см. elimsFor у игры; без неё — весь отряд.
+    if(!elimsFor) elimsFor = function(l){ return (l.team.squad && l.team.squad.length) || 1; };
     var alive = [];
     for(var i=0;i<squads.length;i++) if(squads[i].alive) alive.push(squads[i]);
 
@@ -1081,7 +1083,7 @@
         var winnerTeam = duel(s.team, o.team, dropping);
         var winner = (winnerTeam === s.team) ? s : o;
         var loser  = (winner === s) ? o : s;
-        var loserSize = (loser.team.squad && loser.team.squad.length) || 1;
+        var loserSize = elimsFor(loser);
 
         winner.elims += loserSize;
         winner.dealt += KILL_DAMAGE * loserSize;
@@ -1121,7 +1123,7 @@
           var cwTeam = duel(streaker.team, victim.team, dropping);
           var cw = (cwTeam === streaker.team) ? streaker : victim;
           var cl = (cw === streaker) ? victim : streaker;
-          var clSize = (cl.team.squad && cl.team.squad.length) || 1;
+          var clSize = elimsFor(cl);
           cw.elims += clSize;
           cw.dealt += KILL_DAMAGE * clSize;
           cl.taken += KILL_DAMAGE * clSize;
@@ -1342,6 +1344,19 @@
     // writes a different line in the feed.
     var inDrop = false;
 
+    /* Сколько элимов стоит смерть отряда. Пока в Reload идут возрождения, отряд
+       не выбывает, и его «смерть» в движке — это один упавший, а не вайп: второй
+       жив и поднимает. Считать за неё полный размер отряда значило удваивать счёт.
+       Замерено (tools/ewc-rows.generated.js, Reload Elite Series 1–4 EU, финалы
+       и хиты, 20 дуо × 8 игр): 51–68 элимов на лобби за игру, лучший отряд
+       в среднем 3.6–5.3 за игру; движок давал 100 на лобби и до 36 у одного
+       отряда — отсюда «198 kills in reload finals and didn't place in top 10
+       once» (страница «bags 13.09»). После — 55–60 на лобби, как в реплеях.
+       Когда возрождения гаснут, смерть снова стоит весь отряд — как в игре. */
+    function elimsFor(loser){
+      if(opts.respawnUntilZone && currentZone < opts.respawnUntilZone) return 1;
+      return (loser.team.squad && loser.team.squad.length) || 1;
+    }
     function onDeath(sq){
       /* RELOAD: ВОЗРОЖДЕНИЕ. В Reload убитый возвращается в бой, пока
          возрождения включены, и отряд не выбывает; выбывать начинают, когда
@@ -1531,7 +1546,7 @@
         applyHealing(squads, from, TICK_SEC);
         applyStorm(squads, from, phase.dps, TICK_SEC, onDeath);
         currentSurgeLine = applySurge(squads, phase.surgeAt, TICK_SEC, onDeath, rng);
-        resolveContacts(squads, from, rng, duel, onDeath, inDrop);
+        resolveContacts(squads, from, rng, duel, onDeath, inDrop, elimsFor);
         frame(from, to, phase.waitSec - t + phase.shrinkSec);
         if(aliveCount() <= 1) return;
       }
@@ -1548,7 +1563,7 @@
         applyHealing(squads, cur, TICK_SEC);
         applyStorm(squads, cur, phase.dps, TICK_SEC, onDeath);
         currentSurgeLine = applySurge(squads, phase.surgeAt, TICK_SEC, onDeath, rng);
-        resolveContacts(squads, cur, rng, duel, onDeath);
+        resolveContacts(squads, cur, rng, duel, onDeath, false, elimsFor);
         frame(cur, to, phase.shrinkSec - t);
         if(aliveCount() <= 1) return;
       }
@@ -1627,7 +1642,7 @@
           if(squads[i].team === byTeam) winner = squads[i];
         }
         if(!loser || !loser.alive || !winner || winner === loser) return false;
-        var loserSize = (loser.team.squad && loser.team.squad.length) || 1;
+        var loserSize = elimsFor(loser);
         winner.elims += loserSize;
         winner.dealt += KILL_DAMAGE * loserSize;
         loser.taken += KILL_DAMAGE * loserSize;
@@ -1666,7 +1681,7 @@
       stepMovement(squads, TICK_SEC, shrinking);
       applyHealing(squads, shrinking, TICK_SEC);
       applyStorm(squads, shrinking, last.dps, TICK_SEC, onDeath);
-      resolveContacts(squads, shrinking, rng, duel, onDeath);
+      resolveContacts(squads, shrinking, rng, duel, onDeath, false, elimsFor);
       frame(shrinking, null, COLLAPSE_SEC - c);
     }
 

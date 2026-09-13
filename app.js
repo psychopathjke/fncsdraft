@@ -646,6 +646,7 @@ chWkGC:'ГЧ',
 chSquad:'Дуо', ccDuoFindTitle:'Кому написать',
 ccDuoFindHint:'Любому игроку своего региона можно написать первым. Ответит он сам — и не всякий согласится.',
 ccDuoSearchPh:'Поиск по нику',
+ccDuoSortBy:'Сортировать', ccDuoSortOvr:'рейтинг', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
 ccDuoWrite:'Написать',
 ccDuoFree:'без дуо',
 ccDuoWith:n=>'дуо с '+n,
@@ -2611,6 +2612,7 @@ chWkGC:'GC',
 chSquad:'Duo', ccDuoFindTitle:'Who to write to',
 ccDuoFindHint:'You can write first to anybody in your region. They answer for themselves, and not everybody says yes.',
 ccDuoSearchPh:'Search by name',
+ccDuoSortBy:'Sort by', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
 ccDuoWrite:'Write',
 ccDuoFree:'no duo',
 ccDuoWith:n=>'duo with '+n,
@@ -5476,6 +5478,7 @@ ccNewsVicNoWin:'Victory Cup : Manche 2 sans victoire',
 ccDuoFindTitle:'À qui écrire',
 ccDuoFindHint:'Tu peux écrire en premier à n’importe qui de ta région. Chacun répond pour soi, et tout le monde ne dit pas oui.',
 ccDuoSearchPh:'Chercher par nom',
+ccDuoSortBy:'Trier par', ccDuoSortOvr:'note', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
 ccDuoWrite:'Écrire',
 ccDuoFree:'sans duo',
 ccDuoNobody:'Personne trouvé',
@@ -7753,6 +7756,7 @@ ccVicNoWin:"Nessuna vittoria al Round 2 — niente soldi",
 ccNewsVicNoWin:"Victory Cup: Round 2 senza vittorie",
 ccDuoFindTitle:"A chi scrivere",
 ccDuoSearchPh:"Cerca per nome",
+ccDuoSortBy:'Ordina per', ccDuoSortOvr:'valutazione', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
 ccDuoWrite:"Scrivi",
 ccDuoFree:"senza duo",
 ccDuoNobody:"Nessun risultato",
@@ -10253,6 +10257,7 @@ ccVicNoWin:"Sem vitórias na Rodada 2 — sem dinheiro",
 ccNewsVicNoWin:"Victory Cup: Rodada 2 sem vitória",
 ccDuoFindTitle:"Para quem escrever",
 ccDuoSearchPh:"Buscar por nome",
+ccDuoSortBy:'Ordenar por', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
 ccDuoWrite:"Escrever",
 ccDuoFree:"sem dupla",
 ccDuoNobody:"Ninguém encontrado",
@@ -35402,11 +35407,10 @@ const M2_CONSUMABLE_POOL=[
   {name:"Midas Flopper", rarity:'legendary'},
   {name:"Slurpfish", rarity:'purple'},
   {name:"Seven Sliders", rarity:'purple'},
-  {name:"Harpoon Gun", rarity:'blue'},
+  // Гарпуна и удочки в пулах нет с 13.09 — «немного странно выглядит» (игрок, страница «bags 13.09»).
   {name:"Vault Key", rarity:'blue'},
   {name:"Jellyfish", rarity:'blue'},
   {name:"Overdrive Grenade", rarity:'blue'},
-  {name:"Pro Fishing Rod", rarity:'blue'},
   {name:"Shield Fish", rarity:'blue'},
   {name:"Shield Potion", rarity:'blue'},
   {name:"Spicy Fish", rarity:'blue'},
@@ -35426,14 +35430,13 @@ const S42_CONSUMABLE_POOL=[
   {name:"Chug Jug", rarity:'legendary'},
   {name:"Midas Flopper", rarity:'legendary'},
   {name:"Slurpfish", rarity:'purple'},
-  {name:"Harpoon Gun", rarity:'blue'},
+  // Без гарпуна и удочки — см. M2_CONSUMABLE_POOL (13.09).
   {name:"Vault Key", rarity:'blue'},
   {name:"Jellyfish", rarity:'blue'},
   {name:"Overdrive Grenade", rarity:'blue'},
   {name:"Chug Splash", rarity:'blue'},
   {name:"Bass Boost", rarity:'blue'},
   {name:"Flare Gun", rarity:'blue'},
-  {name:"Pro Fishing Rod", rarity:'blue'},
   {name:"Shield Fish", rarity:'blue'},
   {name:"Shield Potion", rarity:'blue'},
   {name:"Spicy Fish", rarity:'blue'},
@@ -35834,12 +35837,11 @@ const M1_CONSUMABLE_POOL=[
   {name:"Seven Power Gloves", rarity:"purple"},
   {name:"FlowBerry Mist Grenade", rarity:"purple"},
   {name:"Slurpfish", rarity:"purple"},
-  {name:"Harpoon Gun", rarity:"blue"},
+  // Без гарпуна и удочек — см. M2_CONSUMABLE_POOL (13.09).
   {name:"Skyline Deployer", rarity:"blue"},
   {name:"Chug Splash", rarity:"blue"},
   {name:"Jellyfish", rarity:"blue"},
   {name:"Overdrive Grenade", rarity:"blue"},
-  {name:"Pro Fishing Rod", rarity:"blue"},
   {name:"Shield Fish", rarity:"blue"},
   {name:"Shield Potion", rarity:"blue"},
   {name:"Spicy Fish", rarity:"blue"},
@@ -35847,7 +35849,6 @@ const M1_CONSUMABLE_POOL=[
   {name:"Med Kit", rarity:"green"},
   {name:"Small Shield Potion", rarity:"green"},
   {name:"Bandage", rarity:"grey"},
-  {name:"Fishing Rod", rarity:"grey"},
   {name:"Small Fry", rarity:"grey"}
 ].map(w=>({...w, icon:'heal', mod:CONSUMABLE_MOD[w.rarity]}));
 // Chapter 6 Season 1 item art, pulled from the Fortnite Wiki by
@@ -41109,6 +41110,27 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       const pool=teams.filter(t=>!(opts.stopOnWin && t.gotVR));
       const shuffled=pool.slice();
       for(let i=shuffled.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]; }
+      /* ЛОББИ ПО ОЧКАМ, как в турнирах Фортнайта. Первая игра — жребий, дальше
+         Epic сажает вместе тех, у кого похожий счёт: лидеры играют друг с
+         другом, а тот, кого три игры подряд убивали на высадке, попадает в
+         лобби таких же — и там своя игра на двадцать килов. Его переписка с
+         игроком (страница «bags 13.09»): «by the 3rd or 4th game I was supposed
+         to get a win with 10 or 20 kills to get back on track» — «there's no
+         variation in points like in Fortnite; I'll think about this mechanic».
+         Раньше лобби каждой игры были чистым жребием, и восьмидесятка, слившая
+         три игры, четвёртую играла в той же комнате с лидерами.
+
+         Сортировка по очкам с размытием на CC_LOBBY_MIX от разброса счёта:
+         очередь Epic не режет строго по таблице, соседние лобби смешиваются.
+         Одно лобби на всё поле (дивизионный кубок, финалы) — ничего не меняет:
+         разбивать нечего. */
+      if(g>0 && shuffled.length>opts.lobbySize){
+        let lo=Infinity, hi=-Infinity;
+        shuffled.forEach(t=>{ const p=t[ptsKey]||0; if(p<lo) lo=p; if(p>hi) hi=p; });
+        const mix=(hi-lo)*CC_LOBBY_MIX;
+        const key=new Map(shuffled.map(t=>[t, (t[ptsKey]||0)+(Math.random()-0.5)*mix]));
+        shuffled.sort((a,b)=>key.get(b)-key.get(a));
+      }
       gameLobbies=[...splitIntoLobbies(shuffled, opts.lobbySize)];
       /* Двое в одной сотне (Solo Series в команде): кого разбросало по другим
          лобби, меняется местами с последним ботом из лобби первого. Один и тот
@@ -41900,6 +41922,9 @@ function finalizeStageCard(shell, rank, total, points, passed, vr, note){
 // five-team lobby somebody collects a Victory Royale and the whole top-5 sweep
 // for free. Keep the same number of lobbies the cap implies, but size them as
 // evenly as they go — 105 → 35/35/35, 103 → 34/34/35.
+// Размытие лобби по очкам: доля разброса счёта, в пределах которой соседние
+// лобби перемешиваются (см. жеребьёвку в simulateGamesLive, 13.09).
+const CC_LOBBY_MIX=0.15;
 function splitIntoLobbies(teams, maxSize){
   const n=teams.length;
   if(n<2) return [];
@@ -51986,6 +52011,8 @@ function careerLoad(){
   if(CAREER){ careerNotesMigrate(); careerMigrateSize(); careerMigratePartners();
               careerMigrateHome(); careerMigrateDiff(); careerMigrateSpotIslands();
               careerMigrateBeefsOff();
+              // Сейв, раздутый линейной формулой твича, — под потолок. См. CC_TW_CEIL.
+              careerMigrateTwitch();
               // A save from before the desk touched the card owns the devices
               // and not the skill they now carry. Recounted, not migrated: the
               // same recount every purchase runs. See careerGearSkill.
@@ -52100,7 +52127,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b323fade';
+const CC_BUILD='98231195';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -55716,6 +55743,16 @@ function careerRenderHub(tab){
     if(at.w) window.scrollTo(0, at.w);
   }catch(e){}
 }
+/* Число с карточки — одно на все экраны. Карточка и шапка хаба печатают
+   рейтинг плюс пинг и возраст (см. shownOvr), а профиль соцсети и лист
+   «Профиль» печатали голый pl.ovr: 78 на карточке против «Rating 68» строкой
+   ниже. Игрок MarkeL, 11 сентября: «пофикси баг где якобы у тебя рейтинг на
+   10 больше, хотя это не так». Потолок тот же, что у карточки. */
+function ccMyShownOvr(){
+  const card=careerCard(), a=card ? attrsFor(card) : null;
+  return a ? Math.min(CAREER_SCALE_TOP, Math.round(a.ovr + (card._pingEdge||0) + (card._ageEdge||0)))
+           : (CAREER && CAREER.player ? CAREER.player.ovr : 0);
+}
 function careerRenderHubBody(tab){
   CH_TAB=tab||CH_TAB;
   const pl=CAREER.player, cr=CAREER.career;
@@ -55723,9 +55760,7 @@ function careerRenderHubBody(tab){
   // The same number the card prints: base plus connection plus age. The header
   // was leaving age out, so the hub said 63 while the card next to it said 67.
   // Capped at the top of the scale, the same way the card is: see shownOvr.
-  const shown=a ? Math.min(CAREER_SCALE_TOP,
-                           Math.round(a.ovr + (card._pingEdge||0) + (card._ageEdge||0)))
-                : pl.ovr;
+  const shown=ccMyShownOvr();
 
   const face=card ? (photoURL(card)||'') : '';
   document.getElementById('chWho').innerHTML=
@@ -58270,9 +58305,10 @@ function careerDoAct(id){
        рекламный баннер — бренд из своего списка, деньги сразу на баланс. */
     const tw=cr.twitch||0;
     const rndS=careerRng(ccHashStr('stream|'+(cr.season||1)+'|'+careerToday()));
-    const viewers=Math.max(3, Math.round(tw*0.06 + careerReach()*0.008));
+    // Доли с насыщением по размеру канала — см. CC_TW_SAT (его «слишком много стримы онлайн», 13.09).
+    const viewers=ccTwViewersOf(tw, careerReach());
     const peak=Math.round(viewers*(1.6+rndS()*0.9));
-    const newTw=Math.max(1, Math.round(viewers*0.18*(0.7+rndS()*0.6)*(sk.subs||1)));
+    const newTw=Math.max(1, Math.round(viewers*0.18*ccTwFolRate(tw)*(0.7+rndS()*0.6)*(sk.subs||1)));
     cr.twitch=tw+newTw;
     const dono=Math.round(viewers*0.04*(sk.cash||1));
     let banner=0, brand=null;
@@ -72431,7 +72467,7 @@ function careerSocialHTML(){
     <div class="x-profile-head">
       ${meAv('x-av-big')}
       <div><b>${esc(me.nick)}</b><span>@${esc(meHandle)}</span>
-        <span class="x-bio">${CAREER.org?esc(CAREER.org.name)+' · ':''}${careerTopHonour() ? careerTopHonour()+' · ' : ''}${L().ccDivision} ${CAREER.career.division} · ${L().ccRoOvr} ${me.ovr}</span></div>
+        <span class="x-bio">${CAREER.org?esc(CAREER.org.name)+' · ':''}${careerTopHonour() ? careerTopHonour()+' · ' : ''}${L().ccDivision} ${CAREER.career.division} · ${L().ccRoOvr} ${ccMyShownOvr()}</span></div>
     </div>
     <div class="x-counts">
       <span><b>${ccFollowers(careerReach())}</b>${L().xFollowers}</span>
@@ -72675,6 +72711,11 @@ function careerDuoSearchPool(any){
 }
 // The search list, filtered by whatever is typed into it.
 let CC_DUO_Q='';
+/* Порядок списка: по рейтингу (как было) или по PR — «поиск тиммейта по ярну/пр/плейсам»
+   (игрок, страница «bags 13.09»). PR — единственное из трёх, что карьера ведёт по
+   каждому человеку (careerPrRows); призовые и места ботов она не пишет. */
+let CC_DUO_SORT='ovr';
+function ccDuoFindSort(v){ CC_DUO_SORT=(v==='pr' ? 'pr' : 'ovr'); ccDuoFindRender(); }
 /* The chair the search was opened from, if it was opened from one. Null is "any
    chair", which is what the day panel means when it says the squad is a player
    short — there, the player has not picked anybody to lose. */
@@ -72748,6 +72789,10 @@ function ccAdFits(ad){
 function ccDuoFindRender(keepFocus){
   const q=CC_DUO_Q.trim().toLowerCase();
   const all=careerDuoSearchPool();
+  // Доска PR читается один раз на список, а не по карточке на строку (ccPrCardOf сортирует доску заново).
+  const prMap=new Map(careerPrRows().map((r,i)=>[hKey(r.name), {pr:r.pr, rank:i+1}]));
+  const prOf=new Map(all.map(w=>[w, prMap.get(hKey(w.handle))||null]));
+  if(CC_DUO_SORT==='pr') all.sort((a,b)=>((prOf.get(b)||{}).pr||0)-((prOf.get(a)||{}).pr||0) || b.ovr-a.ovr);
   const list=(q ? all.filter(w=>String(w.handle).toLowerCase().indexOf(q)>=0) : all).slice(0, 120);
   const rows=list.map(w=>{
     const said=careerDmFind(w.handle);
@@ -72757,8 +72802,10 @@ function ccDuoFindRender(keepFocus){
        назад, всё ещё читался занятым — писать ему было незачем. См.
        ccPairMateOf. */
     const mate=ccPairMateOf(w.handle);
+    const prc=prOf.get(w);
     const under=[L()[w.role]||'', mate ? ccSay("ccDuoWith", esc(mate.handle||"")) : ccSay("ccDuoFree"),
-                 w.club ? esc(w.club) : ''].filter(Boolean).join(' · ');
+                 w.club ? esc(w.club) : '',
+                 prc && prc.pr ? esc(L().ccDuoPrOf(ccNum(Math.round(prc.pr)), prc.rank||'–')) : ''].filter(Boolean).join(' · ');
     /* Объявление человека — второй строкой, его же словами: кого ищет и с
        каким PR. Не проходишь — кнопка гаснет и говорит почему; это ответ,
        который в жизни дают до разговора, а не после. */
@@ -72785,7 +72832,8 @@ function ccDuoFindRender(keepFocus){
      <input id="duoFindQ" class="cc-duo-q" type="text" autocomplete="off"
             placeholder="${esc(L().ccDuoSearchPh)}" value="${esc(CC_DUO_Q)}"
             oninput="ccDuoFindQ(this.value)">
-     <div class="ch-hint cc-duo-n">${list.length ? L().ccDuoFound(list.length) : L().ccDuoNobody}</div>
+     <div class="ch-hint cc-duo-n">${list.length ? L().ccDuoFound(list.length) : L().ccDuoNobody}
+       <span class="cc-duo-sort">${esc(L().ccDuoSortBy)}: <button class="cc-job-h${CC_DUO_SORT==='ovr'?' on':''}" onclick="ccDuoFindSort('ovr')">${esc(L().ccDuoSortOvr)}</button> <button class="cc-job-h${CC_DUO_SORT==='pr'?' on':''}" onclick="ccDuoFindSort('pr')">${esc(L().ccDuoSortPr)}</button></span></div>
      <div class="cc-buys">${rows}</div>`;
   if(keepFocus){
     const f=document.getElementById('duoFindQ');
@@ -84340,7 +84388,7 @@ function ccNamesPeekHTML(t){
   const on=(typeof CAREER_RUN!=='undefined' && CAREER_RUN) && CAREER && CAREER.career && Array.isArray(t.squad) && t.squad.length && t.squad.every(c=>c && c.handle);
   if(!on) return String(t.name||'');
   // С флагом, как teamLabel, и span, а не <u>: у <u> в таблице своя рамка (его скрин 10.09: «ники вот так выглядят», флагов нет).
-  const links=t.squad.map(c=>flagFor(c)+'<span class="cc-peek" title="'+esc(L().cardPeekHint)+'" onclick="event.stopPropagation();ccPeekByHandle(\''+esc(String(c.handle)).replace(/'/g,"\\'")+'\')">'+esc(String(c.handle))+'</span>').join(' &amp; ');
+  const links=t.squad.map(c=>flagFor(c)+'<span class="cc-peek-nick" title="'+esc(L().cardPeekHint)+'" onclick="event.stopPropagation();ccPeekByHandle(\''+esc(String(c.handle)).replace(/'/g,"\\'")+'\')">'+esc(String(c.handle))+'</span>').join(' &amp; ');
   // Свой состав подписан («Твой состав: …») — подпись остаётся, имена — ссылками.
   const m=String(t.name||'').match(/^([^:<]{1,40}:)\s*/);
   return (m ? esc(m[1])+' ' : '')+links;
@@ -85521,7 +85569,7 @@ function careerProfileHTML(){
     <div class="ev-head">
       <div class="ev-hero">
         <em>${L().ccRoOvr}</em>
-        <b>${pl.ovr}</b>
+        <b>${ccMyShownOvr()}</b>
         ${careerRatingCurve(log)}
       </div>
       <div class="ev-totals">
@@ -86261,7 +86309,8 @@ function ccStreamCupAfter(day, board, cupx){
   const sacX=ccSacStream(avg0, (cr.streamLast && cr.streamLast.day===day && cr.streamLast.a && cr.streamLast.a[5]) || CC_STREAM_CUP.hours);
   if(sacX){ got.push({id:'sac', cash:sacX}); cr.sac=(cr.sac||0)+sacX; }
   const folX=got.reduce((a,g)=>a+(g.fol||0), 0), subsX=got.reduce((a,g)=>a+(g.subs||0), 0);
-  const fol=Math.max(1, Math.round(v*0.25*beat), ev.fol||0)+folX;
+  // Доля фолловеров с насыщением по размеру канала (CC_TW_SAT) — та же, что в чате эфира.
+  const fol=Math.max(1, Math.round(v*0.25*beat*ccTwFolRate(cr.twitch)), ev.fol||0)+folX;
   const cash=Math.max(Math.round(v*0.06*beat), Math.round(ev.cash||0))+Math.round(subsX*CC_TV_SUB_USD)+sacX;
   cr.twitch=(cr.twitch||0)+fol;
   if(cash){
@@ -86702,7 +86751,7 @@ function ccTvEvents(board, games){
   let beat=0.5;
   if(board && board.of>1) beat=1-(board.place-1)/(board.of-1);
   const ticks=Math.max(60, (games||11)*CC_TV_TICKS_PER_GAME);
-  const folBudget=v*0.25*beat, cashBudget=v*0.06*beat;
+  const folBudget=v*0.25*beat*ccTwFolRate(CAREER && CAREER.career ? CAREER.career.twitch : 0), cashBudget=v*0.06*beat;
   let pFol=folBudget/ticks*(1+0.5*CC_TV_HYPE)+(CC_TV_BURST>0 ? 0.5 : 0);
   /* Фолловеры считаются все, а строкой в чат идёт не каждый: у канала на
      десять тысяч зрителей их по пять на тик, и чат состоял бы из одного
@@ -86910,9 +86959,39 @@ function careerLiveNow(n){
   out.push(...creRows.slice(0, half), ...proRows.slice(0, (n||12)-half));
   return out.slice(0, n||12);
 }
+/* Насыщение канала. Обе формулы — «зрители от фолловеров» (6 %) и «фолловеры от
+   зрителей» (18 % за эфир, 25 %·место за турнирный) — были линейными, и вместе
+   давали сложный процент: 2–4 % в день эфира, ×50 000 за год. К полутора годам
+   карьеры сводка показывала 12 миллионов среднего онлайна и +14 миллионов
+   фолловеров за вечер — его «слишком много стримы онлайн, такого не может быть»
+   (страница «bags 13.09», Мейджор 1 · финал · место 4 из 50).
+
+   У настоящего Twitch обе доли падают с ростом канала: у канала на тысячу
+   фолловеров онлайн 3–6 % от них, у Clix (≈3 млн) — меньше процента; и новых
+   фолловеров за день у него доли процента, а не проценты. Корень квадратный от
+   размера: онлайн 6 % → 3.5 % при 100k → 0.8 % при 3 млн; фолловеры за эфир —
+   18 % зрителей у маленького канала, 3 % у канала размером с Clix. Прирост в
+   день эфира: 1 % на тысяче, 0.4 % на ста тысячах, 0.03 % на трёх миллионах —
+   канал растёт, но не взрывается. Проба: tools/career-twitch-probe.js. */
+const CC_TW_SAT={view:50000, fol:100000};
+function ccTwSat(tw, k){ return 1/Math.sqrt(1+Math.max(0, tw||0)/k); }
+function ccTwViewersOf(tw, reach){
+  return Math.max(3, Math.round((tw||0)*0.06*ccTwSat(tw, CC_TW_SAT.view) + (reach||0)*0.008));
+}
+function ccTwFolRate(tw){ return ccTwSat(tw, CC_TW_SAT.fol); }
+/* Сейв, выросший на старой формуле, несёт сотни миллионов фолловеров; насыщение
+   его не лечит — оно только останавливает рост. Потолок один раз при загрузке:
+   6 млн — столько у самого крупного канала сцены (Bugha 5.4 млн, Clix ≈3 млн). */
+const CC_TW_CEIL=6000000;
+function careerMigrateTwitch(){
+  const cr=CAREER && CAREER.career; if(!cr) return false;
+  if(!((cr.twitch||0)>CC_TW_CEIL)) return false;
+  cr.twitch=CC_TW_CEIL;
+  return true;
+}
 function ccStreamViewersNow(){
   const cr=CAREER && CAREER.career; if(!cr) return 0;
-  return Math.max(3, Math.round((cr.twitch||0)*0.06 + careerReach()*0.008));
+  return ccTwViewersOf(cr.twitch||0, careerReach());
 }
 /* ---- Партнёрская программа --------------------------------------------------
 
