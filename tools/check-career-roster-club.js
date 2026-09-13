@@ -116,9 +116,13 @@ const BOOT = `
     // Out-rate somebody and the duo they are in stops being the argument: you
     // are the better player and that is the offer. This used to refuse anybody
     // with a standing partner however far above them you were.
-    const paired = roster.find(p => ccRealMateOf(p));
+    // «В паре» — по сегодняшним парам пула (careerDmMateOf → ccPairMateOf), а не по
+    // ростеру Epic: с 13 сентября личка отвечает тем же, что показывают статус F/A
+    // и строка «свободен» в поиске дуо.
+    const mateOf = p => careerDmMateOf({handle: p.handle});
+    const paired = roster.find(p => mateOf(p));
     out.notes.paired = paired && {handle: paired.handle, ovr: paired._ovr,
-                                  mate: (ccRealMateOf(paired)||{}).handle};
+                                  mate: (mateOf(paired)||{}).handle};
     if (paired) {
       const target = {handle: paired.handle, ovr: paired._ovr, roster: true};
       seed(Math.round(paired._ovr) + 6, 1);
@@ -132,7 +136,9 @@ const BOOT = `
       check('the roster has a standing duo to test against', false);
     }
     // And a free agent still takes the call on the old reach rule.
-    const solo = roster.find(p => !ccRealMateOf(p));
+    // Свободный — по голому пулу (ccPairMateOf), а не через careerDmMateOf: тот считает
+    // свободной и половинку СВОЕГО напарника, а напарник у каждого seed свой.
+    const solo = roster.find(p => !ccPairMateOf(p.handle));
     if (solo) {
       seed(Math.round(solo._ovr) - 2, 1);
       check('a free agent within reach still says yes',
