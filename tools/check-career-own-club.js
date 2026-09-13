@@ -84,6 +84,19 @@ const BOOT = `
     CAREER.org = null;
     careerMigrateOwnClub();
     check('без клуба org не выдумывается', CAREER.org === null);
+
+    // ---- закрыть клуб: дорога обратно к чужим предложениям ----------------------
+    cr.club = {name: 'Boss Club', since: careerToday(), cash: 1500, roster: [{id: 'x', who: ['A', 'B'], salary: 100}], paid: 0, got: 0};
+    careerMigrateOwnClub();
+    check('плитка клуба зовёт закрыть', careerClubHTML().indexOf('careerClubCloseAsk') >= 0);
+    check('при своём клубе чужие предложения молчат', careerOrgOffers().length === 0);
+    const bal = cr.balance;
+    check('клуб закрыт', careerClubClose());
+    check('касса вернулась на баланс', cr.balance === bal + 1500, bal + ' -> ' + cr.balance);
+    check('клуба больше нет', !careerClub() && CAREER.org === null);
+    check('о закрытии написано клубом', (cr.news || []).some(n => n.k === 'ccNewsClubClosed'));
+    check('скаутинг снова открыт', !CAREER.scoutOff);
+    check('второй раз закрывать нечего', !careerClubClose());
     out.notes.ok = true;
   } catch(e) { out.err = String(e && e.stack || e); }
   document.getElementById('__out').textContent =
