@@ -595,6 +595,7 @@ ccNewsLfd:(d,o)=>'Ищу дуо. Дивизион '+d+', '+o+' овера — п
 ccNewsRelThrough:(what,p)=>what+': '+ccTop(p)+', проход дальше',
 ccNewsRelOut:(what,p,of)=>what+': '+ccTop(p)+' из '+of+', круг закончен',
 ccNewsRelSeat:(cup,p)=>'Финал Reload '+cup+': '+ccTop(p)+' — место на Esports World Cup',
+ccNewsWorldWon:(what,who)=>what+' без меня: выиграли '+who,
 ccNewsRelSeatPass:(cup,p,t)=>'Финал Reload '+cup+': '+ccTop(p)+', но место у меня уже есть — путёвка ушла '+(t?t:'ниже по таблице'),
 ccNewsRelCash:(ev,p,m)=>ev+': '+ccTop(p)+', заработано $'+m,
 chWkVictory:'Виктори Кап',
@@ -2570,6 +2571,7 @@ ccNewsLfd:(d,o)=>'LFD. Division '+d+', '+o+' OVR — my DMs are open 🤝',
 ccNewsRelThrough:(what,p)=>what+': '+ccTop(p)+', through',
 ccNewsRelOut:(what,p,of)=>what+': '+ccTop(p)+' of '+of+', the run ends',
 ccNewsRelSeat:(cup,p)=>'Reload '+cup+' final: '+ccTop(p)+' — a seat at the Esports World Cup',
+ccNewsWorldWon:(what,who)=>what+' without me: won by '+who,
 ccNewsRelSeatPass:(cup,p,t)=>'Reload '+cup+' final: '+ccTop(p)+', but I already hold a seat — it passed '+(t?'to '+t:'down the table'),
 ccNewsRelCash:(ev,p,m)=>ev+': '+ccTop(p)+', $'+m+' earned',
 chWkVictory:'Victory Cup',
@@ -47763,7 +47765,10 @@ function ccSiteChests(zone, share){
 const CC_CHEST_CLASS={rifle:0.43, shotgun:0.22, smg:0.14, pistol:0.11, sniper:0.10};
 // Что из пула расходников не хилка и не мувмент — ключи, удочки, сигналка, золотая
 // рыба. В слот хилки из сундука не идёт (его слово 7.09: «epic карт не надо»).
-const CC_CHEST_NOT_HEAL=['Epic Vault Keycard','Vault Key','Fishing Rod','Pro Fishing Rod','Harpoon Gun','Flare Gun','Bass Boost','Mythic Goldfish'];
+// И рыба: она ловится удочкой, а не лежит в сундуках (тестер, 16.09: «в инвентаре постоянно
+// рыба, хотелось бы, чтобы хил настоящий был»). Хилки из сундука — зелья, аптечки, бинты, чаги.
+const CC_CHEST_NOT_HEAL=['Epic Vault Keycard','Vault Key','Fishing Rod','Pro Fishing Rod','Harpoon Gun','Flare Gun','Bass Boost','Mythic Goldfish',
+                         'Flopper','Spicy Fish','Slurpfish','Shield Fish','Jellyfish','Midas Flopper','Small Fry','Small Fries','Hop Flopper','Thermal Fish','Zero Point Fish','Vendetta Flopper','Stink Flopper','Cuddle Fish'];
 const ccIsHealItem=x=>x && CC_MOVE_ITEMS.indexOf(x.name)<0 && CC_CHEST_NOT_HEAL.indexOf(x.name)<0;
 function ccChestClass(rng, weapons){
   const have={}; weapons.forEach(w=>{ have[w.icon]=1; });
@@ -52278,7 +52283,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='9a448ac0';
+const CC_BUILD='ff09d5b3';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -59003,9 +59008,14 @@ function careerMigrateSize(){
 const CC_TRIO_ISLANDS=[{from:'2026-05-01', set:'t2'}, {from:'2026-07-01', set:'t3'}];
 function careerBrSet(){
   if(careerSquadSize()!==3){
-    // Сорок второй сезон — новый остров: его карта, 23 августа. До 21 августа
-    // дуо-год жил на m2, дальше живёт на s42.
-    return careerToday()>='2026-08-21' ? 's42' : 'm2';
+    /* Остров дуо-года — по сезону Fortnite, как у трио-года. Тестер, 16.09:
+       «начинается сезон S40, и карта меняется только в соло, а в дуо меняется
+       только в сезоне S42». Так и было: до 21 августа дуо-год весь жил на m2.
+       Теперь S39–S40 (до 5 июня) — m1, остров Chapter 7 Season 2 (Major 1),
+       S41 — m2 (Major 2), с 21 августа — s42. Границы — CC_SEASONS. */
+    const d=careerToday();
+    if(d>='2026-08-21') return 's42';
+    return d>=CC_SEASONS[2].from ? 'm2' : 'm1';
   }
   const day=careerToday();
   let set='t1';
@@ -67727,7 +67737,8 @@ const CC_POST_BY={
   // to the partner needs the copy rewritten in the first person first, and that
   // is a change to the words rather than to who says them.
   ccNewsPartnerHappy:'press', ccNewsPartnerCross:'press', ccNewsPartnerLeft:'press',
-  ccNewsCongrats:'press', ccNewsD1Table:'press'
+  ccNewsCongrats:'press', ccNewsD1Table:'press',
+  ccNewsWorldWon:'press'   // финал без игрока — пишет пресса, как таблицу Д1 (16.09)
 };
 /* What the scene's account covers: Division 1, the Majors, the Reload circuit
    — the rooms with real names in them — and congratulating whoever won. Real
@@ -73952,6 +73963,101 @@ function careerWorldTurns(fromISO, toISO){
   for(let d=fromISO; d<toISO; d=ccAddDays(d,1)){ ccMajorWorldHeats(d); ccMajorWorldLcq(d); }
   // Соседние хиты круга Reload — в любой из дней до финала, но не в твой вечер.
   ccRelWorldHeats();
+  // И финалы, в которых игрока нет, — играются и платят. См. careerWorldFinals.
+  careerWorldFinals(fromISO, toISO);
+}
+/* МИР ИГРАЕТ И ТЕ ФИНАЛЫ, В КОТОРЫХ ИГРОКА НЕТ, — И ПЛАТИТ.
+
+   Тестер, 16 сентября: «чтобы даже за турниры, в которые не играл игрок, тоже
+   суммировались призовые в таблицу». Доска призовых знала только вечера,
+   которые карьера видела: финал недели Д1 мир играл всегда, хиты и Ласт Ченс
+   мейджора — тоже, а финал мейджора, финалы Reload, Саммит, Париж, Ласт Ченс
+   Глобалов и сами Глобалы без игрока не игрались вовсе — их денег в доске не
+   было, и первый номер Европы мог не заработать за год ничего.
+
+   Теперь пройденный день с таким вечером, в котором нет своей записи в
+   журнале, играется комнатой: те же сборщики поля, что у раннеров, с
+   заглушкой на месте игрока (как у ccMajorWorldHeats), те же очки и та же
+   таблица выплат, ПР-доска и строка в ленте о победителе. Один раз на день и
+   вид: cr.worldPaid[день|вид]. Комната не показывается и не пишет журнал
+   игрока — это мир, а не его вечер. */
+function careerWorldFinals(fromISO, toISO){
+  const cr=CAREER && CAREER.career; if(!cr) return 0;
+  const me=(typeof careerCard==='function') ? careerCard() : null; if(!me) return 0;
+  const log=cr.log||[];
+  const paid=cr.worldPaid=cr.worldPaid||{};
+  const drafted=[me].concat(careerMates().filter(Boolean));
+  const stubOf=()=>({name:'—', pow:0, squad:[], _stub:true, isYou:true, stagePts:0});
+  const rank=f=>f.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0));
+  let played=0;
+  /* Ключ — турнир, а не день: финал мейджора и Глобалы идут два дня, платят раз.
+     «Свой» вечер — запись того же вида и того же сезона в трёх днях от этого. */
+  const play=(day, id, kind, label, build, games, pts, kill, prize, meta)=>{
+    const key=cr.season+'|'+id;
+    if(paid[key]) return;
+    if(log.some(r=>r.kind===kind && r.season===cr.season && (r.stage==null || r.stage==='final') &&
+                   Math.abs(ccDaysBetween(r.day, day))<=3)){ paid[key]=1; return; }
+    let room=null;
+    try{ room=(build()||[]).filter(t=>t && !t._stub); }catch(e){ room=null; }
+    if(!room || room.length<2) return;
+    paid[key]=1;
+    room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
+    simulateGames(room, games, pts, kill);
+    const ranked=rank(room);
+    careerMoneyAdd(ranked, prize);
+    careerPrAdd(ranked, meta);
+    const w=ranked[0];
+    CC_POST_DAY=day;   // лента датируется днём вечера, а не днём, с которого ушёл игрок
+    try{
+      if(w && typeof L().ccNewsWorldWon==='function')
+        careerNews('flat', 'ccNewsWorldWon', [label, ccBoardName(w.name)], {tbl:(typeof ccStageShot==='function') ? ccStageShot(ranked, w, 1, label, 0) : undefined});
+    } finally { CC_POST_DAY=null; }
+    played++;
+  };
+  const lobbyCr=Object.assign({}, cr, {division:1});
+  for(let d=fromISO; d<toISO; d=ccAddDays(d,1)){
+    // Финал мейджора — из тех, кто прошёл хиты и Ласт Ченс (мир их уже сыграл).
+    const mj=careerMajorOn(d);
+    if(mj && mj.stage==='final'){
+      const st=ccScaleStage(CC_MAJOR_STAGE.final);
+      play(d, 'major'+mj.n, 'major', mj.label||'Major', ()=>ccMajorFinalRoom(stubOf(), lobbyCr, drafted, mj, st, CC_FIELD_SHARP.final),
+           st.games, st.pts||majorPoints, st.kill, majorPrize, {div:1, kind:'major', stage:'final'});
+    }
+    // Финал круга Reload — из тех, кто вышел из хитов (ccRelWorldHeats).
+    const rl=careerReloadOn(d);
+    if(rl && rl.stage==='final'){
+      const st=ccScaleStage(CC_RELOAD_STAGE.final);
+      play(d, 'reload'+rl.series, 'reload', rl.label||'Reload', ()=>ccRelRoom(stubOf(), drafted, lobbyCr, rl, st, false, CC_FIELD_SHARP.heats),
+           st.games, reloadCareerPoints(rl.set), st.kill, p=>relStagePrize('final', p), {div:1, kind:'reload', stage:'final'});
+    }
+    // Саммит — финал, зал по своим досок регионов.
+    const sm=careerSummitOn(d);
+    if(sm && sm.stage==='final'){
+      const st=ccScaleStage(CC_SUMMIT_STAGE.final);
+      play(d, 'summit', 'summit', sm.label||'Summit', ()=>careerSummitField('final', stubOf(), drafted),
+           st.games, st.pts||majorPoints, st.kill, summitPrize, {div:1, kind:'summit', stage:'final'});
+    }
+    // Глобалы — один зал на весь мир.
+    const gl=careerGlobalsOn(d);
+    if(gl){
+      play(d, 'globals', 'globals', gl.label||'Global Championship', ()=>careerGlobalsField(stubOf(), drafted, null),
+           CC_GLOB_GAMES, majorPoints, CC_GLOB_KILL, gcPrize, {div:1, kind:'globals', stage:'final'});
+    }
+    // Ласт Ченс Глобалов — финал.
+    const lc=careerGclcOn(d);
+    if(lc && lc.final){
+      const st=ccScaleStage(CC_GCLC_FINAL);
+      play(d, 'gclc', 'gclc', lc.label||'Last Chance', ()=>careerCupField(lobbyCr, drafted, ccTeams(CC_GCLC_FINAL.teams), null, false, CC_FIELD_SHARP.globals),
+           st.games, majorPoints, st.kill, gclcPrize, {div:1, kind:'gclc', stage:'final'});
+    }
+    // Париж — финал Reload Championship.
+    const rc=careerRcOn(d);
+    if(rc && rc.stage==='final'){
+      play(d, 'rc', 'rc', rc.label||'Reload Championship', ()=>ccRcField(cr, lobbyCr, drafted, 'final', ccTeams(CC_RC_FINAL.teams)),
+           CC_RC_FINAL.games, rcPoints, CC_RC_KILL, rcPrize, {div:1, kind:'rc', stage:'final'});
+    }
+  }
+  return played;
 }
 /* «Следующий день» в команде — голос, как «играть» и «пропустить».
 
