@@ -36857,10 +36857,20 @@ function attrsFor(p){
   // рейтинг, возвращается на две строки ниже, и выбранная роль не доживала
   // до строки в конце функции.
   if(p._roleKey) a.roleKey=p._roleKey;
+  /* Роль по профилю — с СЫРОГО профиля, до подтяжки к рейтингу. Его вопрос
+     16.09: «почему тип из игла у меня в команде становится фраггером со
+     временем?». Подтяжка ниже прибавляет всем статам одно число и режет на 99:
+     у растущего напарника сильная половина упирается в потолок, слабая
+     догоняет — и roleFromProfile переворачивалась. Роль человека от того, что
+     он вырос, не меняется. */
+  const rawRole=roleFromProfile(a);
   const floor=p._targetOvr
     || RATING_FLOOR[(p.handle||'').toLowerCase()]
     || (p.liquiName && RATING_FLOOR[p.liquiName.toLowerCase()]);
-  if(!floor || a.ovr===floor) return a;
+  /* Настоящая роль (Liquipedia) — и на карточке без подтяжки: раньше её ставила
+     только подтяжка, и семь карточек (Sky, Trooly, Nebs…) меняли роль ровно в
+     момент, когда напарник подрастал. */
+  if(!floor || a.ovr===floor){ a.roleKey=p._roleKey || realRoleKey(p) || rawRole; return a; }
   let gap=floor-a.ovr, guard=0;
   while(gap!==0 && guard++<40){
     ATTR_KEYS.forEach(k=>{ a[k]=Math.round(clamp(a[k]+gap, 35, 99)); });
@@ -36871,7 +36881,7 @@ function attrsFor(p){
   /* Выбранная роль бьёт настоящую: карьера, которая пересела, играет ту
      половину, на которую пересела, — и за настоящего игрока тоже, где до
      21 августа роль приходила из Liquipedia и не менялась ничем. */
-  a.roleKey=p._roleKey || realRoleKey(p) || roleFromProfile(a);
+  a.roleKey=p._roleKey || realRoleKey(p) || rawRole;
   return a;
 }
 
@@ -52283,7 +52293,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='32472f6a';
+const CC_BUILD='742d90a1';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
