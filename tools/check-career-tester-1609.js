@@ -151,6 +151,27 @@ const BOOT = `
     if(q.length<3 || new Set(q).size!==q.length) fail('the home queue is short or repeats: '+q.length);
     if(ccBotHome(strong[0])!==q[0]) fail('ccBotHome is not the head of the queue');
     out.steps.push('the strongest ten home on rich boxes (mean chest rank '+Math.round(avgR*10)/10+' of '+ALL_LANDING_ZONES.length+')');
+
+    // ---- скрин 16.09 (чат): остров дуо-года по сезону, рыба не из сундука, мир платит финалы ----
+    const dayWas=cr.day; cr.size=2;
+    cr.day='2026-04-10'; if(careerBrSet()!=='m1') fail('duo year in April is on '+careerBrSet()+', not m1');
+    cr.day='2026-06-06'; if(careerBrSet()!=='m2') fail('duo year on 6 June is on '+careerBrSet()+', not m2');
+    cr.day='2026-08-21'; if(careerBrSet()!=='s42') fail('duo year on 21 August is on '+careerBrSet()+', not s42');
+    cr.day=dayWas;
+    const FISH=['Flopper','Spicy Fish','Slurpfish','Shield Fish','Jellyfish','Midas Flopper','Small Fry','Small Fries'];
+    ['m1','m2','s42','t2'].forEach(setK=>{ for(let i=0;i<120;i++){ const pk=ccChestPack(Math.random, setK, 12);
+      const bad=(pk.heals||[]).find(h=>FISH.indexOf(h.name)>=0); if(bad) fail('a chest pack on '+setK+' carries fish: '+bad.name); } });
+    out.steps.push('the duo year changes island with the Fortnite season; chests hold no fish');
+    // Мир платит финал, в котором игрока нет: карьера пятого дивизиона проходит финал Reload 1.
+    cr.division=5; cr.day='2026-02-06'; cr.log=[]; delete cr.worldPaid; CC_POOLS=null;
+    const rowsBefore=Object.keys(careerMoney().rows||{}).length;
+    const n=careerWorldFinals('2026-02-06', '2026-02-09');
+    if(!(n>=1)) fail('the world did not play the Reload 1 final without the player: '+n);
+    if(!(cr.worldPaid||{})['1|reload1']) fail('worldPaid lacks the Reload 1 key: '+JSON.stringify(cr.worldPaid));
+    if(!(Object.keys(careerMoney().rows||{}).length>rowsBefore)) fail('the money board did not grow after a world final');
+    if(careerWorldFinals('2026-02-06', '2026-02-09')!==0) fail('the same final was paid twice');
+    if(!(cr.news||[]).some(x=>x.k==='ccNewsWorldWon' && x.day==='2026-02-07')) fail('no feed line dated by the night for the world final');
+    out.steps.push('finals without the player are played by the world, paid once, and dated by the night');
   } catch(e){ if(!out.fail) out.fail=String(e && e.stack || e); }
   out.errs=window.__errs;
   document.getElementById('__out').textContent='BEGIN'+encodeURIComponent(JSON.stringify(out))+'END';

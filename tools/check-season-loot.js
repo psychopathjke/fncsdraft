@@ -58,6 +58,12 @@ const BOOT = `
     check('без карьеры пак — m2, как раньше', ccLootSet()==='m2' && only(ccLootPack(rng), WEAPON_POOL.concat(M2_CONSUMABLE_POOL)));
     CAREER={player:{nick:'Loot', ovr:80}, career:{day:'2026-08-20', size:2}};
     check('дуо 20 августа — ещё m2', ccLootSet()==='m2');
+    // Остров дуо-года идёт за сезоном Fortnite (16.09): до 6 июня — m1, дальше m2, с 21 августа — s42.
+    CAREER.career.day='2026-04-10';
+    check('дуо в апреле (S40) — m1', ccLootSet()==='m1' && only(ccLootPack(rng), M1_WEAPON_POOL.concat(M1_CONSUMABLE_POOL)));
+    CAREER.career.day='2026-06-06';
+    check('дуо 6 июня (S41) — m2', ccLootSet()==='m2');
+    CAREER.career.day='2026-08-20';
     CAREER.career.day='2026-08-21';
     check('дуо 21 августа — s42', ccLootSet()==='s42');
     for(let i=0;i<40;i++){ const p=ccLootPack(rng); if(!only(p, S42_WEAPON_POOL.concat(S42_CONSUMABLE_POOL))){ check('пак s42 — только лут сезона 4', false, JSON.stringify(p)); break; } }
@@ -80,7 +86,7 @@ const BOOT = `
     check('Reload 16 мая на острове r4 — круг 3', relAt('2026-05-16','r4')==='r3');
     check('Reload 27 июня — круг 4', relAt('2026-06-27','r4')==='r4');
     check('Reload-вечер Victory Cup в июле на r4 — круг 4', relAt('2026-07-20','r4')==='r4');
-    check('обычный вечер 27 февраля — не Reload', relAt('2026-02-27','m2')==='m2');
+    check('обычный вечер 27 февраля — не Reload', relAt('2026-02-27','m2')==='m1');   // февраль — S39/S40, остров m1
     const rn=k=>names(CC_LOOT_BY_SET[k].weapons);
     check('круг 1: Striker Burst и Sentinel Pump, без Havoc', rn('r1').indexOf('Striker Burst Rifle')>=0 && rn('r1').indexOf('Sentinel Pump Shotgun')>=0 && rn('r1').indexOf('Havoc Pump Shotgun')<0);
     check('круг 2: Havoc и Heavy Sniper пришли, Striker Burst ушёл', rn('r2').indexOf('Havoc Pump Shotgun')>=0 && rn('r2').indexOf('Heavy Sniper Rifle')>=0 && rn('r2').indexOf('Striker Burst Rifle')<0);
