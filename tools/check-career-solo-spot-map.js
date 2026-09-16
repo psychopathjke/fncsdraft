@@ -116,6 +116,44 @@ const BOOT = `
       out.steps.push('January solo series: the solo spot stays on the season island ' + careerBrSet());
     }
 
+    // ---- дуо-год: соло-карта — сезонная, метка своя на каждом острове -------
+    // Тестер 16.09 (скрин чата, 18:00): «теперь в дуо поменялась карта, но она
+    // отличается от карты, которая в соло». В дуо-году все соло-вечера — Solo
+    // Series в январе, соло-Victory Cup весной и летом, FNCS Solos на s42 после
+    // 21 августа — идут на острове сезона, и вкладка соло-метки должна показывать
+    // его же, а не остров FNCS Solos за полгода вперёд.
+    start();
+    CAREER.career.size = 2;
+    [['2026-04-05','m1'], ['2026-06-13','m2'], ['2026-10-04','s42']].forEach(([d, isl]) => {
+      CAREER.career.day = d;
+      if(careerBrSet() !== isl) fail(d + ': the season island is ' + careerBrSet() + ', expected ' + isl);
+      if(careerSpotGrid('solo') !== careerBrSet())
+        fail('duo year ' + d + ': the solo tab is drawn on ' + careerSpotGrid('solo') + ', the season plays ' + careerBrSet());
+      const nxt = {type: careerVictoryOn(d) ? 'victory' : 'solo', day: d};
+      if(!careerNightSolo(nxt)) fail(d + ' is not a solo night any more');
+      if(careerNightSet(nxt) !== careerSpotGrid('solo'))
+        fail('duo year ' + d + ': the solo night plays ' + careerNightSet(nxt) + ', the tab shows ' + careerSpotGrid('solo'));
+    });
+    // Метка держится на своём острове: поставленная на m1 не всплывает на m2,
+    // а по возвращении на m1 читается той же клеткой.
+    CAREER.career.day = '2026-04-05';
+    careerSpotSet(3, 'solo');
+    CAREER.career.day = '2026-06-13';
+    if(careerSpotList('solo').length) fail('the m1 solo spot showed up on m2');
+    careerSpotSet(5, 'solo');
+    CAREER.career.day = '2026-04-05';
+    const back = careerSpotOn('solo');
+    if(!back || back.i !== 3) fail('back on m1 the solo spot is ' + JSON.stringify(back) + ', expected cell 3');
+    out.steps.push('duo year: the solo tab follows the season island, and each island keeps its own solo spot');
+    // Трио-год весной: ближайший соло-вечер — соло-Victory Cup на острове сезона,
+    // и вкладка показывает его, а не s42 октябрьских FNCS Solos.
+    CAREER.career.size = 3;
+    CAREER.career.day = '2026-04-05';
+    const vcSet = careerNightSet({type:'victory', day:'2026-04-05'});
+    if(careerSpotGrid('solo') !== vcSet)
+      fail('trio year, April: the solo tab shows ' + careerSpotGrid('solo') + ', the solo Victory Cup plays ' + vcSet);
+    out.steps.push('trio year, April: the solo tab shows the island of the nearest solo night, ' + vcSet);
+
     // ---- то же самое в командной карьере ----------------------------------
     start();
     CAREER.career.mp = {code:'TEST01', role:'host'};

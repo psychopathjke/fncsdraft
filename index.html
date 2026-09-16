@@ -58832,7 +58832,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='742d90a1';
+const CC_BUILD='eabf9ab4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -63791,14 +63791,29 @@ function careerSpotSets(){
      «чтоб можно было выбрать метку на карте в соло и дуо карьере». Личное
      хранение при этом ни при чём: в одиночной карьере личное и командное — это
      один человек, а вот ТУРНИР другой, и точка на нём своя. */
-  // Остров — ближайшего соло-вечера, а не сезона: см. careerSoloSet.
+  // Остров — сезонный в дуо-год, ближайшего соло-вечера в трио-год: см. careerSoloSet.
   out.push({key:'solo', grid:careerSoloSet(), label:L().ccSpotSoloTab});
   return out;
 }
 function careerSpotStore(key){
   const cr=CAREER && CAREER.career;
   if(!cr) return {};
-  if(key==='solo'){ if(!cr.soloSpots) cr.soloSpots={}; return cr.soloSpots; }
+  if(key==='solo'){
+    /* Соло-метка — на каждом острове своя, как командные (cr.spots по набору):
+       остров под соло-вкладкой меняется вместе с сезоном (m1 → m2 → s42, см.
+       careerSoloSet), а одна запись на все острова читалась бы по координатам
+       на чужой сетке — не той коробкой или никакой. Склад: cr.soloSpots[остров]
+       = {solo:[…]}. Старый формат cr.soloSpots.solo (до 16.09) переезжает на
+       текущий остров — на каком его ставили, сейв не помнит. */
+    if(!cr.soloSpots) cr.soloSpots={};
+    const isl=careerSoloSet();
+    if(cr.soloSpots.solo){
+      if(!cr.soloSpots[isl]) cr.soloSpots[isl]={solo:cr.soloSpots.solo};
+      delete cr.soloSpots.solo;
+    }
+    if(!cr.soloSpots[isl]) cr.soloSpots[isl]={};
+    return cr.soloSpots[isl];
+  }
   return careerSpots();
 }
 // Сетка, по которой рисуется остров под этим ключом хранения.
@@ -65579,17 +65594,33 @@ function careerBrSet(){
    клеток седьмой главы (runCareerSoloSeries), и в любой год. Метка ставилась
    на одном острове, вечер игрался на другом.
 
-   Остров берётся от БЛИЖАЙШЕГО соло-вечера: FNCS Solos (ev.spec) — s42,
-   январская Solo Series — сезонный, как играет раннер. Один ответ на вкладку
-   метки, карточку вечера (careerNightSet) и дом в раздаче (ccSoloHomeZone). */
+   ДУО-ГОД — ОСТРОВ СЕЗОНА. Тестер, 16.09 (скрин чата, 18:00): «теперь в дуо
+   поменялась карта, но она отличается от карты, которая в соло». Так и было:
+   вкладка брала остров ближайшего соло-вечера с видом 'solo', а после
+   январской серии это FNCS Solos в октябре — s42, — и всю весну и лето соло-
+   карта показывала октябрьский остров при сезонных m1/m2. Хуже того, соло-
+   Victory Cup весной и летом (careerNightSolo) играется на острове сезона и
+   читает ту же соло-метку — поставленную на s42, то есть мимо. В дуо-году
+   ВСЕ соло-вечера идут на острове сезона: Solo Series в январе (m1), соло-
+   Victory Cup (m1/m2), FNCS Solos в октябре — s42, и сезон с 21 августа s42.
+   Поэтому дуо-год отвечает сезоном, а метка хранится на каждом острове своя
+   (careerSpotStore).
+
+   ТРИО-ГОД — остров БЛИЖАЙШЕГО соло-вечера, потому что там сезон живёт на
+   шестой главе, а FNCS Solos — на седьмой: соло-Victory Cup и январская
+   серия — сезонный (t1/t2/t3), FNCS Solos (ev.spec) — s42, ровно как их
+   сыграет careerNightSet. Один ответ на вкладку метки, карточку вечера и дом
+   в раздаче (ccSoloHomeZone). */
 function careerSoloSet(){
+  if(careerSquadSize()!==3) return careerBrSet();
   const days=(typeof careerYearDays==='function') ? careerYearDays() : null;
-  if(days && typeof careerSoloSeriesOn==='function'){
+  if(days && typeof careerNightSet==='function' && typeof careerNightSolo==='function'){
     const today=careerToday();
-    const ahead=[...days.keys()].filter(d=>d>=today && (days.get(d)||[]).some(e=>e.kind==='solo')).sort();
-    const ev=ahead.length ? careerSoloSeriesOn(ahead[0]) : null;
-    // Остров седьмой главы, дроблёный под соло, — не сотня клеток (6.09, его скрин).
-    if(ev && ev.spec && ZONE_SETS.s42) return 's42';
+    const ahead=[...days.keys()].filter(d=>d>=today).sort();
+    for(const d of ahead){
+      const e=(days.get(d)||[]).find(x=>careerNightSolo({type:x.kind, day:d}));
+      if(e) return careerNightSet({type:e.kind, day:d});
+    }
   }
   return careerBrSet();
 }
