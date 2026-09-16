@@ -4487,6 +4487,12 @@
   #screen-career-hub .ch-how summary::before{content:'▸ ';}
   #screen-career-hub .ch-how[open] summary::before{content:'▾ ';}
   #screen-career-hub .ch-how ul{margin:6px 0 0;padding-left:18px;}
+  /* Та же раскрывашка под вопросом в игре: «как это считается» (тестер, 16.09). */
+  .cc-choice .cc-how{margin:4px 0 0;font-size:11.5px;line-height:1.35;color:#cfe6e4;text-align:left;}
+  .cc-choice .cc-how summary{cursor:pointer;color:#7ef0dd;font-weight:700;list-style:none;display:inline-block;}
+  .cc-choice .cc-how summary::before{content:'? ';}
+  .cc-choice .cc-how ul{margin:4px 0 0;padding-left:16px;max-height:40vh;overflow:auto;}
+  .cc-choice .cc-how li{margin:2px 0;}
   #screen-career-hub .ch-how li{margin:3px 0;}
   #screen-career-hub .ch-mode span{display:block;padding:11px 14px;border-radius:10px;
     font-size:13px;background:rgba(255,255,255,.16);color:#eaf1ff;
@@ -7548,16 +7554,24 @@ ccBuildSet:(w,p)=>w+': '+p+' к силе на эту игру',
 ccRotTitle:'Четвёртая зона — ротация', ccRotEarly:'Сразу', ccRotEarlyNote:(s,v)=>'Выходим, как только круг показан: так '+s+'% про, дожили '+v+'% · путь свободнее, но встречаем тех, кто тоже рано',
 ccRotWith:'Со штормом', ccRotWithNote:(s,v)=>'Выходим, когда круг пошёл: так '+s+'%, дожили '+v+'% · меньше времени на виду, по дороге уже стреляют',
 ccRotLate:'Последними', ccRotLateNote:'Пережидаем и идём, когда шторм уже в пути: на входе тише, но шторм бьёт по здоровью',
-ccRotMats:m=>'ресы за круг '+m, ccRotMove:'На мувменте', ccRotMoveNote:m=>'Пережидаем и улетаем на «'+m+'»: быстрее шторма, предмет сгорает',
+ccRotMats:m=>'ресы за круг '+m, ccRotMove:'На мувменте', ccRotMoveNote:(m,p)=>'Пережидаем и улетаем на «'+m+'»: быстрее шторма, предмет сгорает — концовка без мувмента, −'+p+' к силе',
+ccRotCost:(m,f)=>'ресы за круг −'+m+(f ? ' · пока ждём, нафармим +'+f : ''),
+ccGameHowTitle:'Как это считается',
+ccGameHow:o=>['Сила — одно число за игру: с него считаются стычки и место. Лут, ресы, здоровье и ходы прибавляют или снимают её.',
+  'Лут: два лучших ствола — rare +1, epic +2, legendary +3 каждый; пустой слот ствола −2, каждой недостающей хилки −1, без мувмента −1. Пак от −5 до +6.',
+  'Ресы: потолок '+o.full+' (500 на стопку). Круг стоит '+o.early+' до третьей зоны и '+o.zone+' дальше; фарм на третьей зоне даёт +'+o.farm+' (сёрдж или файт — +'+o.short+'). В концовке остаток решает: от 90 % потолка +1, выше двух третей 0, выше трети −1, ниже трети −'+o.pen+'.',
+  'Сёрдж: когда живых больше порога круга, шторм бьёт отряды с самым низким чистым уроном (нанесённый − полученный). «Набить сёрдж» даёт +'+o.surge+' урона в этот счёт за −'+o.surgePow+' к силе.',
+  'Файт: решается в '+o.decide+' % стычек — победа +'+o.fightPow+' и ресы с трупа, поражение — смерть; размен в '+o.trade+' % — −'+o.tradePow+', щит снят; остальное — постреляли и разошлись.',
+  'Ротация: цифры выживаемости — из реплеев финала Major 2 EU; ресы за круг умножаются на стиль выхода, ожидание даёт нафармить.'],
 ccRotSet:w=>'Ротация: '+w,
 ccHealTitle:(s,h)=>'Щит '+s+' · здоровье '+h+' — лечимся?', ccHealStay:'Играть так', ccHealStayNote:'Без потерь, щит и здоровье как есть',
 ccHealGo:'Отхилиться', ccHealGoNote:(h,p)=>'щит полный, +'+h+' здоровья · пока пьёшь — минус '+p+' к силе',
 ccHealDone:(h,p)=>'Отхилились: щит 100, здоровье '+h+' · −'+p+' к силе',
 ccHealAuto:(w,s2,h,p,l)=>'Выпили: '+w+' — щит '+s2+', здоровье '+h+(p?' · −'+p+' к силе за время':'')+' · осталось хилок: '+l,
 ccHealNone:'Хилки кончились — играем как есть',
-ccFarmTitle:'Третья зона — как фармим ресы', ccFarmFull:'Нафармить до фула', ccFarmFullNote:n=>'До '+n+' (500 · 3) — стройки хватит на всю игру, сёрдж не набит',
-ccFarmSurge:'Набить сёрдж, ресов меньше', ccFarmSurgeNote:(m,d,p)=>'Ресы '+m+' (400 · 3), +'+d+' урона в сёрдж, −'+p+' к силе за время на теги',
-ccFarmFullGot:n=>'Нафармили до фула — '+n+' ресов', ccFarmSurgeGot:(m,d)=>'Набили сёрдж: +'+d+' урона, ресов '+m,
+ccFarmTitle:'Третья зона — как фармим ресы', ccFarmFull:'Фармить ресы', ccFarmFullNote:(n,g)=>'+'+g+' — станет '+n+' (потолок 1500), сёрдж не набит',
+ccFarmSurge:'Набить сёрдж, ресов меньше', ccFarmSurgeNote:(m,d,p)=>'Ресов станет '+m+' (время ушло на теги), +'+d+' урона в сёрдж, −'+p+' к силе',
+ccFarmFullGot:n=>'Нафармили — '+n+' ресов', ccFarmSurgeGot:(m,d)=>'Набили сёрдж: +'+d+' урона, ресов '+m,
 ccMatsTitle:'Ресы кончаются', ccMatsGo:'Идти за рефрешем', ccMatsStay:'Ротейтить тем, что есть',
 ccMateLeans:t=>'я бы — «'+t+'»',
 ccMidTitle:'Середина игры — что делаем',ccMidStayNote:'Ресы есть, щит цел — идём кругом, ничего не тратим', ccMidStayGot:'Ротейтим как есть',
@@ -9513,16 +9527,24 @@ ccBuildSet:(w,p)=>w+': '+p+' power for this game',
 ccRotTitle:'Zone 4 — the rotation', ccRotEarly:'Right away', ccRotEarlyNote:(s,v)=>'Leave as soon as the circle shows: '+s+'% of pros do, '+v+'% survive · clearer path, but you meet everyone else who left early',
 ccRotWith:'With the storm', ccRotWithNote:(s,v)=>'Leave when the circle starts moving: '+s+'% do, '+v+'% survive · less time in the open, but the road is already being shot',
 ccRotLate:'Last', ccRotLateNote:'Wait it out and go once the storm is on its way: quieter on entry, but the storm takes health',
-ccRotMats:m=>'mats this circle '+m, ccRotMove:'On the movement item', ccRotMoveNote:m=>'Wait it out and fly on the '+m+': faster than the storm, the item is spent',
+ccRotMats:m=>'mats this circle '+m, ccRotMove:'On the movement item', ccRotMoveNote:(m,p)=>'Wait it out and fly on the '+m+': faster than the storm, the item is spent — endgame without movement, −'+p+' power',
+ccRotCost:(m,f)=>'mats this circle −'+m+(f ? ' · farm +'+f+' while waiting' : ''),
+ccGameHowTitle:'How this is scored',
+ccGameHow:o=>['Power is one number for the game: fights and placement are rolled off it. Loot, mats, health and your calls add to it or take from it.',
+  'Loot: the two best guns — rare +1, epic +2, legendary +3 each; an empty gun slot −2, each missing heal −1, no movement −1. A pack is worth −5 to +6.',
+  'Mats: cap '+o.full+' (500 a stack). A circle costs '+o.early+' before zone 3 and '+o.zone+' after; farming at zone 3 adds +'+o.farm+' (surge or a fight: +'+o.short+'). What is left decides the endgame: from 90 % of the cap +1, above two thirds 0, above a third −1, below a third −'+o.pen+'.',
+  'Surge: once more players are alive than the circle allows, the storm hits the squads with the lowest net damage (dealt − taken). "Farm surge" adds +'+o.surge+' to that count for −'+o.surgePow+' power.',
+  'Fights: decided in '+o.decide+' % of scraps — a win is +'+o.fightPow+' and the mats off the body, a loss is death; a trade in '+o.trade+' % — −'+o.tradePow+', shield gone; the rest is shots exchanged and nothing changed.',
+  'Rotation: the survival figures come from the Major 2 EU Finals replays; mats per circle are multiplied by how you leave, waiting lets you farm.'],
 ccRotSet:w=>'Rotation: '+w,
 ccHealTitle:(s,h)=>'Shield '+s+' · health '+h+' — heal up?', ccHealStay:'Play on', ccHealStayNote:'No cost, shield and health stay as they are',
 ccHealGo:'Heal up', ccHealGoNote:(h,p)=>'full shield, +'+h+' health · while you drink — minus '+p+' power',
 ccHealDone:(h,p)=>'Healed: shield 100, health '+h+' · −'+p+' power',
 ccHealAuto:(w,s2,h,p,l)=>'Drank: '+w+' — shield '+s2+', health '+h+(p?' · −'+p+' power for the time':'')+' · heals left: '+l,
 ccHealNone:'Out of heals — we play as we are',
-ccFarmTitle:'Zone 3 — how do we farm', ccFarmFull:'Farm to full', ccFarmFullNote:n=>'Up to '+n+' (500 · 3) — builds for the whole game, no surge farmed',
-ccFarmSurge:'Farm surge, fewer mats', ccFarmSurgeNote:(m,d,p)=>'Mats '+m+' (400 · 3), +'+d+' surge damage, −'+p+' power for the time spent tagging',
-ccFarmFullGot:n=>'Farmed to full — '+n+' mats', ccFarmSurgeGot:(m,d)=>'Surge farmed: +'+d+' damage, mats '+m,
+ccFarmTitle:'Zone 3 — how do we farm', ccFarmFull:'Farm mats', ccFarmFullNote:(n,g)=>'+'+g+' — up to '+n+' (cap 1500), no surge farmed',
+ccFarmSurge:'Farm surge, fewer mats', ccFarmSurgeNote:(m,d,p)=>'Mats up to '+m+' (time went on tagging), +'+d+' surge damage, −'+p+' power',
+ccFarmFullGot:n=>'Farmed — '+n+' mats', ccFarmSurgeGot:(m,d)=>'Surge farmed: +'+d+' damage, mats '+m,
 ccMatsTitle:'Running out of mats', ccMatsGo:'Go for a refresh', ccMatsStay:'Rotate with what you have',
 ccMateLeans:t=>"I'd go «"+t+"»",
 ccMidTitle:'Mid game — what do we do',ccMidStayNote:'Mats in hand, shield up — rotate with the circle, spend nothing', ccMidStayGot:'Rotating as we are',
@@ -11620,9 +11642,9 @@ ccHealGo:'Se soigner', ccHealGoNote:(h,p)=>'bouclier plein, +'+h+' de vie · pen
 ccHealDone:(h,p)=>'Soignés : bouclier 100, vie '+h+' · −'+p+' de puissance',
 ccHealAuto:(w,s2,h,p,l)=>'Bu : '+w+' — bouclier '+s2+', vie '+h+(p?' · −'+p+' de puissance pour le temps':'')+' · soins restants : '+l,
 ccHealNone:'Plus de soins — on joue comme ça',
-ccFarmTitle:'Zone 3 — comment on farme', ccFarmFull:'Farmer jusqu’au full', ccFarmFullNote:n=>'Jusqu’à '+n+' (500 · 3) — des builds pour toute la partie, pas de surge',
-ccFarmSurge:'Farmer du surge, moins de mats', ccFarmSurgeNote:(m,d,p)=>'Mats '+m+' (400 · 3), +'+d+' de dégâts surge, −'+p+' power pour le temps passé à tagger',
-ccFarmFullGot:n=>'Farmé au full — '+n+' mats', ccFarmSurgeGot:(m,d)=>'Surge farmé : +'+d+' de dégâts, mats '+m,
+ccFarmTitle:'Zone 3 — comment on farme', ccFarmFull:'Farmer des mats', ccFarmFullNote:(n,g)=>'+'+g+' — jusqu’à '+n+' (plafond 1500), pas de surge',
+ccFarmSurge:'Farmer du surge, moins de mats', ccFarmSurgeNote:(m,d,p)=>'Mats jusqu’à '+m+' (le temps est parti à tagger), +'+d+' de dégâts surge, −'+p+' power',
+ccFarmFullGot:n=>'Farmé — '+n+' mats', ccFarmSurgeGot:(m,d)=>'Surge farmé : +'+d+' de dégâts, mats '+m,
 ccMatsTitle:'Les mats s\'épuisent', ccMatsGo:'Aller chercher un refresh', ccMatsStay:'Tourner avec ce qu\'on a',
 ccMatsGoNote:(v,f,p)=>p+' % : trouvé — +'+v+' et mats pleins, sinon — moins '+f,
 ccMatsStayNote:v=>'Ça ne coûte rien maintenant, mais une fin de partie sans mats coûte '+v,
@@ -13559,9 +13581,9 @@ ccHealGo:"Curarsi", ccHealGoNote:(h,p)=>"scudo pieno, +"+h+" vita · mentre bevi
 ccHealDone:(h,p)=>"Curati: scudo 100, vita "+h+" · −"+p+" potenza",
 ccHealAuto:(w,s2,h,p,l)=>"Bevuto: "+w+" — scudo "+s2+", vita "+h+(p?" · −"+p+" potenza per il tempo":"")+" · cure rimaste: "+l,
 ccHealNone:"Cure finite — si gioca così",
-ccFarmTitle:"Zona 3 — come farmiamo", ccFarmFull:"Farmare fino al full", ccFarmFullNote:n=>"Fino a "+n+" (500 · 3) — build per tutta la partita, niente surge",
-ccFarmSurge:"Farmare surge, meno mats", ccFarmSurgeNote:(m,d,p)=>"Mats "+m+" (400 · 3), +"+d+" danni surge, −"+p+" power per il tempo dei tag",
-ccFarmFullGot:n=>"Farmato al full — "+n+" mats", ccFarmSurgeGot:(m,d)=>"Surge farmato: +"+d+" danni, mats "+m,
+ccFarmTitle:"Zona 3 — come farmiamo", ccFarmFull:"Farmare mats", ccFarmFullNote:(n,g)=>"+"+g+" — fino a "+n+" (tetto 1500), niente surge",
+ccFarmSurge:"Farmare surge, meno mats", ccFarmSurgeNote:(m,d,p)=>"Mats fino a "+m+" (il tempo è andato nei tag), +"+d+" danni surge, −"+p+" power",
+ccFarmFullGot:n=>"Farmato — "+n+" mats", ccFarmSurgeGot:(m,d)=>"Surge farmato: +"+d+" danni, mats "+m,
 ccMatsTitle:"I mats stanno finendo", ccMatsGo:"Andare a cercare un refresh", ccMatsStay:"Ruotare con quello che c'\u00e8",
 ccMatsGoNote:(v,f,p)=>p+'%: trovato \u2014 +'+v+' e mats pieni, no \u2014 meno '+f,
 ccMatsStayNote:v=>'Ora non costa nulla, ma un finale senza mats costa '+v,
@@ -16061,9 +16083,9 @@ ccHealGo:"Curar", ccHealGoNote:(h,p)=>"escudo cheio, +"+h+" de vida · enquanto 
 ccHealDone:(h,p)=>"Curados: escudo 100, vida "+h+" · −"+p+" de força",
 ccHealAuto:(w,s2,h,p,l)=>"Bebemos: "+w+" — escudo "+s2+", vida "+h+(p?" · −"+p+" de força pelo tempo":"")+" · curas restantes: "+l,
 ccHealNone:"Acabaram as curas — jogamos assim",
-ccFarmTitle:"Zona 3 — como farmamos", ccFarmFull:"Farmar até o full", ccFarmFullNote:n=>"Até "+n+" (500 · 3) — builds para o jogo todo, sem surge",
-ccFarmSurge:"Farmar surge, menos mats", ccFarmSurgeNote:(m,d,p)=>"Mats "+m+" (400 · 3), +"+d+" de dano de surge, −"+p+" power pelo tempo de tag",
-ccFarmFullGot:n=>"Farmamos até o full — "+n+" mats", ccFarmSurgeGot:(m,d)=>"Surge farmado: +"+d+" de dano, mats "+m,
+ccFarmTitle:"Zona 3 — como farmamos", ccFarmFull:"Farmar mats", ccFarmFullNote:(n,g)=>"+"+g+" — até "+n+" (teto 1500), sem surge",
+ccFarmSurge:"Farmar surge, menos mats", ccFarmSurgeNote:(m,d,p)=>"Mats até "+m+" (o tempo foi nos tags), +"+d+" de dano de surge, −"+p+" power",
+ccFarmFullGot:n=>"Farmamos — "+n+" mats", ccFarmSurgeGot:(m,d)=>"Surge farmado: +"+d+" de dano, mats "+m,
 ccMatsTitle:"Os mats estão acabando", ccMatsGo:"Ir atrás de um refresh", ccMatsStay:"Rotacionar com o que tem",
 ccMatsGoNote:(v,f,p)=>p+'%: achou — +'+v+' e mats cheios, não — menos '+f,
 ccMatsStayNote:v=>'Agora não custa nada, mas um final sem mats custa '+v,
@@ -48891,7 +48913,25 @@ function landingScore(team, zone, occupants){
   if(CC_BEEF_SET && CC_BEEF_ZONES && CC_BEEF_ZONES.has(zone) &&
      (team.squad||[]).some(p=>CC_BEEF_SET.has(hKey(p))))
     cost -= CC_BEEF_PULL;
-  return zone.points - cost + ccLandingRoll(team, zone)*LANDING_NOISE;
+  /* И сундуки коробки — поверх очков: очки идут ступенями 1–4, и семь коробок m2
+     стоят по четыре, а сундуков в них от 45 до 76 (тестер, 16.09: «сильные
+     падают на лучшие локации»). Вес маленький — половина очка за двойную
+     середину острова, — чтобы раскладка контестов (треть поля, см. выше) не
+     поехала; проверено check-career-landing / check-drop-sticky. */
+  return zone.points + ccLandingChestEdge(zone) - cost + ccLandingRoll(team, zone)*LANDING_NOISE;
+}
+const CC_LAND_CHEST_W=1;
+let CC_LAND_CHEST_CACHE=null;
+function ccLandingChestEdge(zone){
+  if(typeof ccSiteChests!=='function' || !ALL_LANDING_ZONES || !ALL_LANDING_ZONES.length) return 0;
+  const set=(typeof ACTIVE_LANDING_SET!=='undefined') ? ACTIVE_LANDING_SET : '';
+  if(!CC_LAND_CHEST_CACHE || CC_LAND_CHEST_CACHE.set!==set || CC_LAND_CHEST_CACHE.zones!==ALL_LANDING_ZONES){
+    const m=new Map(); const all=ALL_LANDING_ZONES.map(z=>{ const c=ccSiteChests(z); m.set(z, c); return c; }).sort((a,b)=>a-b);
+    CC_LAND_CHEST_CACHE={set, zones:ALL_LANDING_ZONES, m, med:all[Math.floor(all.length/2)]||1};
+  }
+  const c=CC_LAND_CHEST_CACHE.m.get(zone);
+  if(c==null) return 0;
+  return Math.max(-CC_LAND_CHEST_W, Math.min(CC_LAND_CHEST_W, CC_LAND_CHEST_W*(c/CC_LAND_CHEST_CACHE.med-1)));
 }
 /* Разброс, чтобы два лобби не раскладывались одинаково.
 
@@ -49117,22 +49157,45 @@ function byQualOrder(a, b){
    Слабым остаётся вся карта: вес коробки — её очки в степени, растущей с силой
    команды, так что топ-дуо почти всегда садится в тройку лучших POI, а
    середняк расходится по острову. */
-function ccBotHome(t){
+function ccBotHome(t){ const h=ccBotHomes(t); return h.length ? h[0] : null; }
+const CC_BOT_HOMES_N=5;   // сколько коробок в очереди домов у бота
+let CC_HOME_CHEST_POW=1;   // сундуки коробки в весе дома: 1 — линейно, 0.5 — корнем (проба career-bot-homes-probe)
+/* Дома команды — очередь из CC_BOT_HOMES_N коробок одним броском без возврата: если первый
+   занят сильнейшим, команда идёт во второй, а не куда попало (16.09). */
+function ccBotHomes(t){
   const zones=ALL_LANDING_ZONES;
-  if(!zones || !zones.length || !t) return null;
+  if(!zones || !zones.length || !t) return [];
   const key=(t.squad||[]).map(p=>p && p.handle).filter(Boolean).sort().join('+')
           || String(t.name||'');
-  if(!key) return null;
+  if(!key) return [];
   const set=ACTIVE_LANDING_SET||'m2';
   const rnd=careerRng(ccHashStr('home|'+set+'|'+key));
-  // Сила решает не адрес, а привередливость: 90 и выше выбирают из жирного.
+  /* Сила решает не адрес, а привередливость: 90 и выше выбирают из жирного.
+
+     Тестер, 16.09: «сильные команды падают на самые лучшие локации, а у меня
+     в карьерах всегда на рандомные сплиты». Проба career-bot-homes-probe: на
+     m2 семь коробок из 19 стоят по 4 очка — «жирное» было семикратной ничьей,
+     и дома десятки сильнейших ложились на них поровну, не глядя на сундуки
+     (средний ранг по сундукам 12.6 из 19 — как у случайной). Теперь вес
+     коробки — очки × сундуки относительно середины острова (тот же счёт, что
+     открывает точка, ccSiteChests), а привередливость растёт круче: 100 силы —
+     степень 2.5, а не 1.7. */
   const pow=t.pow||90;
-  const k=clamp((pow-80)/12, 0.6, 3.2);
-  let total=0;
-  const w=zones.map(z=>{ const v=Math.pow(Math.max(0.2, z.points||0.2), k); total+=v; return v; });
-  let r=rnd()*total;
-  for(let i=0;i<zones.length;i++){ r-=w[i]; if(r<=0) return zones[i]; }
-  return zones[zones.length-1];
+  const k=clamp((pow-80)/8, 0.6, 3.2);
+  const chestsOf=(typeof ccSiteChests==='function') ? zones.map(z=>ccSiteChests(z)) : zones.map(()=>1);
+  const med=chestsOf.slice().sort((a,b)=>a-b)[Math.floor(chestsOf.length/2)]||1;
+  const left=zones.map((z,i)=>Math.pow(Math.max(0.2, z.points||0.2)*Math.pow(Math.max(0.25, chestsOf[i]/med), CC_HOME_CHEST_POW), k));
+  const out=[];
+  for(let n=0; n<CC_BOT_HOMES_N; n++){
+    let total=0; left.forEach(v=>{ total+=v; });
+    if(!(total>0)) break;
+    let r=rnd()*total, at=-1;
+    for(let i=0;i<zones.length;i++){ if(left[i]<=0) continue; r-=left[i]; if(r<=0){ at=i; break; } }
+    if(at<0) for(let i=zones.length-1;i>=0;i--){ if(left[i]>0){ at=i; break; } }
+    if(at<0) break;
+    out.push(zones[at]); left[at]=0;
+  }
+  return out;
 }
 function buildBotLandingAssignment(bots, opts){
   // Strongest first, and each squad takes the best spot still worth taking.
@@ -49196,13 +49259,20 @@ function buildBotLandingAssignment(bots, opts){
        садится первым. Занятый дом не берётся силой — команда идёт выбирать по
        общему правилу, тем же landingScore, что и раньше. Так у точки появляются
        постоянные хозяева, а у игрока — постоянные соседи. */
-    const home=ccBotHome(t);
+    const homes=ccBotHomes(t);
+    const mine=(t.pow||0)+(t.closeEdge||0);
     /* «Пока сильнее не выбьет» — его слово, и оно про обе стороны: свой дом
        не бросают из-за того, что там кто-то стоит. Пустой берётся всегда;
        занятый — если сидящие слабее, и тогда это стычка на своей точке, а не
-       бегство с неё. Сильнее хозяина — уходит выбирать по общему правилу. */
+       бегство с неё. Сильнее хозяина — уходит выбирать по общему правилу.
+       Домов теперь очередь (ccBotHomes, 16.09): первый занят сильнейшим —
+       пробуем следующий, и только когда заняты все — общее правило. */
+    const home=homes.find(h=>{
+      const at=zoneGroups.get(h)||[];
+      const feared=CC_SPOT_FEAR_MAP && (CC_SPOT_FEAR_MAP.get(h)||0)>0;
+      return !feared && (!at.length || at.every(o=>((o.pow||0)+(o.closeEdge||0)) < mine));
+    }) || homes[0] || null;
     const at=home ? (zoneGroups.get(home)||[]) : [];
-    const mine=(t.pow||0)+(t.closeEdge||0);
     /* Но не поверх чужой репутации. Дом бота нет-нет да и совпадёт с домом
        игрока — коробок тридцать шесть, команд полсотни, — и эта ветка брала
        его молча, не глядя ни на какую ауру. Отсюда его вопрос 25 августа:
@@ -52743,7 +52813,10 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
        остановками». */
     for(let z=zoneWas+1; z<=stop.zone; z++){ game.playTo(z); if(z<stop.zone) ccMpMark('z'+z, teams); }
     // Круги, прошедшие с прошлой остановки, стоят стройки — всем одинаково.
-    if(!CC_ZB) ccKitSpend(teams, CC_MATS_ZONE*Math.max(1, stop.zone-zoneWas));   // Zero Build — стройки нет
+    if(!CC_ZB){   // Zero Build — стройки нет; до третьей зоны круг дешевле (ccMatsZoneCost)
+      let cost=0; for(let z=zoneWas+1; z<=Math.max(zoneWas+1, stop.zone); z++) cost+=ccMatsZoneCost(z);
+      ccKitSpend(teams, cost);
+    }
     zoneWas=stop.zone;
     CC_KIT_ZONE=zoneWas;   // панель на карте досчитывает ресы по зоне кадра, см. ccKitPanel
     // Концовка без ресов стоит силы, и комнате тоже. См. CC_MATS_PEN.
@@ -52836,6 +52909,22 @@ async function playGameWithChoices(teams, lobbyOpts, ui){
    набить сёрдж и добыть меньше, типа 400 400 400 / зафайтить ближайшее дуо»). */
 const CC_MATS_FULL=1500, CC_MATS_ZONE=300, CC_MATS_PEN=3;
 const CC_MATS_CAP_EACH=500, CC_MATS_START=600, CC_MATS_SURGE_FARM=1200;
+/* РАННИЕ РЕСЫ ДОЛЖНЫ ДОЖИВАТЬ ДО СЕРЕДИНЫ. Тестер, 16 сентября: «не понятно,
+   зачем выбирать что-то кроме лучшего лута, ведь потом ресы всё равно надо
+   фармить» и «ресы всегда можно набить до фула». Так и было, по двум причинам:
+   до третьей зоны круг стоил те же 300, что и в концовке (600 на старте −
+   900 за три круга = ноль у всех), а фарм на третьей зоне ставил ровно
+   1500 — любые ±300 с точки стирались дважды. Теперь круги до третьей зоны
+   стоят CC_MATS_EARLY_ZONE (лут, а не стройка), а фарм ПРИБАВЛЯЕТ
+   CC_MATS_FARM до потолка: «схватить и ехать» приходит к третьей зоне с
+   600 и фармится в 1500, «забрать» — 1200, «обшарить всё» — 900, а уход с
+   занятой точки без файта — 1200 и беднее луто́м. Сёрдж и файт на третьей —
+   CC_MATS_FARM_SHORT (время ушло на теги). Комната фармит тем же правилом
+   (ccRoomFarm), так что лестница дивизионов не двигается — меняется только
+   цена решений. Числа — решение, не замер (в JSON реплеев трат нет). */
+const CC_MATS_EARLY_ZONE=100, CC_MATS_FARM=900, CC_MATS_FARM_SHORT=600;
+function ccMatsZoneCost(zone){ return zone<=3 ? CC_MATS_EARLY_ZONE : CC_MATS_ZONE; }
+function ccMatsAdd(t, n){ if(t) t._mats=Math.min(CC_MATS_FULL, Math.max(0, ccMats(t))+n); }
 const CC_MATS_HG_EXTRA=250;  // высокая земля строится, и это дороже обычного круга
 /* КОНЦОВКА ПО ОСТАТКУ — ступенями, а не одним порогом. Его вопрос 6 сентября:
    «как ресурсы влияют на количество силы? чем больше, тем же лучше в реальной
@@ -52943,7 +53032,7 @@ function ccKitPanel(lobby, frame){
      строка внизу — 110, и это читается как две правды. */
   const asking=!!map.querySelector('.cc-choice-map');
   const mats=asking ? ccMats(you)
-    : Math.max(0, ccMats(you)+CC_MATS_ZONE*Math.max(0, CC_KIT_ZONE-(frame.zone||0)));
+    : Math.max(0, ccMats(you)+(function(){ let s=0; for(let z=(frame.zone||0)+1; z<=CC_KIT_ZONE; z++) s+=ccMatsZoneCost(z); return s; })());
   const low=mats<CC_MATS_LOW;
   const hp=Math.max(0, Math.min(100, d.h||0));
   /* ПО РЕФЕРЕНСУ — его скрин HUD Fortnite (5.09) и слово «можешь как на референсе
@@ -53025,7 +53114,9 @@ function ccKitPanel(lobby, frame){
     ? '<div class="zk-banner'+(d.u?' on':'')+'">'+tri+'<b>'+esc(d.u ? T.ccKitUnderBanner : T.ccKitSurgeBanner)+'</b></div>'+thresh
     : warn
       ? '<div class="zk-banner warn">'+tri+'<b>'+esc(T.ccKitSurgeWarn)+'</b><i class="zk-sub">'+esc(T.ccKitSurgeWarnSub)+'</i></div>'+thresh
-      : (frame.surgeAt>0
+      /* isFinite: у Reload порог фазы — Infinity (сёрджа нет), а строка
+         писала «сёрдж с Infinity» весь вечер (тестер, 16.09). */
+      : (frame.surgeAt>0 && isFinite(frame.surgeAt)
           ? '<div class="zk-surgeat">'+esc(T.ccKitSurgeAt(frame.surgeAt, frame.players!=null ? frame.players : ''))+'</div>'
           : '');
   // Золотой шестиугольник у полосок — очки сессии («поинты» турнирного HUD):
@@ -53333,27 +53424,45 @@ const CC_ROT_REAL={early:{share:81, surv:82}, with:{share:12, surv:77}, late:{sh
    Это решение, не замер: в JSON реплеев Tracker'а есть подборы ресов, но не
    траты (см. память). Один круг, множитель сгорает в ccKitSpend. */
 const CC_ROT_MATS={early:1, with:1.4, late:1.8, move:0.4};
+/* Что ждущий успевает нафармить, пока круг идёт: со штормом — полкруга, последними —
+   круг; сразу и на мувменте — ничего. Тестер, 16.09: «не понятно, почему нужно
+   выбирать что-то кроме мувмента, ведь он меньше всего ресов тратит, а бонусов
+   другие не дают». Теперь у каждого выхода своя цена: сразу — дороже всех по
+   ресам, зато выживаемость по реплеям выше; со штормом и последними — ресов в
+   итоге меньше уходит, но дожить труднее; мувмент — почти без ресов, но предмет
+   сгорает, и концовка без мувмента стоит CC_ROT_MOVE_POW силы (та же цена, что у
+   пака без мувмента в ccPackPow). Решение, не замер. */
+const CC_ROT_FARM={early:0, with:Math.round(CC_MATS_ZONE/2), late:CC_MATS_ZONE, move:0};
+const CC_ROT_MOVE_POW=1;
 // Ресы за круг при таком выходе — с учётом стиля стройки (ccAskFarm/ccAskBuild).
 function ccRotMats(id, t){ return Math.round(CC_MATS_ZONE*(CC_ROT_MATS[id]||1)*((t && t._buildMul)||1)); }
 async function ccAskRot(you, ui){
   if(!you) return;
   ccMpMark('ro0'+(you.mpTag||''));
   const T=L();
-  const mv=you._loot && you._loot.move;
+  // Мувмент — только настоящий предмет из сундука, не пол пака (floor): удочка
+  // и гарпун ротацией не считаются (тестер, 16.09), и их в CC_MOVE_ITEMS больше нет.
+  const mv=you._loot && you._loot.move && !you._loot.move.floor ? you._loot.move : null;
   const name=id=>({early:T.ccRotEarly, with:T.ccRotWith, late:T.ccRotLate, move:T.ccRotMove})[id]||'';
+  // Цена выхода одной строкой: ресы за круг, что нафармим пока ждём, чем рискуем.
+  const cost=id=>T.ccRotCost(ccRotMats(id, you), CC_ROT_FARM[id]||0);
   const opts=[
-    {id:'early', def:true, icon:CC_CHOICE_ICON.run,   title:T.ccRotEarly, note:T.ccRotEarlyNote(CC_ROT_REAL.early.share, CC_ROT_REAL.early.surv)+' · '+T.ccRotMats(ccRotMats('early', you))},
-    {id:'with',  icon:CC_CHOICE_ICON.storm, title:T.ccRotWith,  note:T.ccRotWithNote(CC_ROT_REAL.with.share, CC_ROT_REAL.with.surv)+' · '+T.ccRotMats(ccRotMats('with', you))},
-    {id:'late',  icon:CC_CHOICE_ICON.stay,  title:T.ccRotLate,  note:T.ccRotLateNote+' · '+T.ccRotMats(ccRotMats('late', you))}
+    {id:'early', def:true, icon:CC_CHOICE_ICON.run,   title:T.ccRotEarly, note:T.ccRotEarlyNote(CC_ROT_REAL.early.share, CC_ROT_REAL.early.surv)+' · '+cost('early')},
+    {id:'with',  icon:CC_CHOICE_ICON.storm, title:T.ccRotWith,  note:T.ccRotWithNote(CC_ROT_REAL.with.share, CC_ROT_REAL.with.surv)+' · '+cost('with')},
+    {id:'late',  icon:CC_CHOICE_ICON.stay,  title:T.ccRotLate,  note:T.ccRotLateNote+' · '+cost('late')}
   ];
-  if(mv) opts.push({id:'move', icon:ccItemIconHTML(mv, CC_CHOICE_ICON.run), title:T.ccRotMove, note:T.ccRotMoveNote(mv.name)+' · '+T.ccRotMats(ccRotMats('move', you))});
+  if(mv) opts.push({id:'move', icon:ccItemIconHTML(mv, CC_CHOICE_ICON.run), title:T.ccRotMove, note:T.ccRotMoveNote(mv.name, CC_ROT_MOVE_POW)+' · '+cost('move')});
   const pickId=(await ccMpChoose('rot'+(you.mpTag||''), async function(){
     return (await ccChoiceBox(T.ccRotTitle, ccKitLine(you), opts, ui && ui.map, null, 'rot')).id;
   }, function(v){ return name(v); })).v;
   ccMpMark('a4:'+pickId);
   you._rot=pickId;
   you._rotMul=CC_ROT_MATS[pickId]||1;
-  if(pickId==='move' && you._loot){ you._loot.move=null; ccPackFloor(you._loot, null, null); }   // улетел — слот занимает пол
+  if(CC_ROT_FARM[pickId]) ccMatsAdd(you, CC_ROT_FARM[pickId]);   // пока ждали круг — фармили
+  if(pickId==='move' && you._loot){   // улетел — слот занимает пол, концовка без мувмента стоит силы
+    you._loot.move=null; ccPackFloor(you._loot, null, null);
+    ccAddGamePow(you, -CC_ROT_MOVE_POW);
+  }
   const line=T.ccRotSet(name(pickId));
   if(ui && ui.note) ui.note(line);
   await ccChoiceResult(ui && ui.map, line, null);
@@ -53424,6 +53533,11 @@ async function ccShowHeal(you, ui){
    движка), а его цена — урон стычки по замеру: +80 своих, −40 полученных
    (чистый урон, правило Epic со 2 октября 2025), −1 к силе за время. */
 const CC_SURGE_FARM=80, CC_SURGE_TAKEN=40, CC_SURGE_FARM_POW=1;
+const CC_SURGE_SAFE=150;   // запас над линией, с которого ход «набить сёрдж» не предлагается (см. ccAskMenu)
+/* Reload сёрджа не знает (движок: RELOAD_PHASES с surgeAt Infinity) — а третья
+   зона предлагала «набить сёрдж» и в Reload (тестер, 16.09: «в релоаде сюрджа
+   нет»). Один ответ на всех: карта Reload = r1…r4. */
+function ccNoSurge(){ return /^r\d$/.test(String(typeof ACTIVE_LANDING_SET!=='undefined' ? ACTIVE_LANDING_SET : '')); }
 // Ресы файта — на шкале игры (1500): снять с трупа 400, размен стоит 220, перестрелка 110.
 const CC_FIGHT={decide:0.29, trade:0.15, pow:4, tradePow:3, diePow:6, mats:400, tradeMats:220, dmg:180, tradeHp:30,
                 pokeDmg:70, pokeMats:110};
@@ -53441,7 +53555,7 @@ function ccFightWinOdds(you, foe){
 function ccSurgeState(you){
   const game=you && you._game, fr=game && game.frames ? game.frames() : null;
   const f=fr && fr.length ? fr[fr.length-1] : null;
-  if(!f || !(f.surgeAt>0)) return null;
+  if(!f || !(f.surgeAt>0) || !isFinite(f.surgeAt)) return null;   // Reload: порог Infinity = сёрджа нет
   const sq=you._sq||{};
   const net=Math.round((sq.dealt||0)-(sq.taken||0));
   return {on:f.players>f.surgeAt, players:f.players, at:f.surgeAt,
@@ -53504,10 +53618,11 @@ async function ccAskFarm(you, ui){
      На третьей зоне было три вопроса подряд — лут, стройка, фарм; стало два. */
   const eco=CC_BUILD_STYLE.eco, heavy=CC_BUILD_STYLE.heavy;
   const opts=[
-    {id:'full',  def:true, icon:ccMatsIconHTML(), icoCls:'wide', title:T.ccFarmFull, note:T.ccFarmFullNote(CC_MATS_FULL)},
+    // Фарм — прибавка до потолка (CC_MATS_FARM), подпись называет, сколько станет.
+    {id:'full',  def:true, icon:ccMatsIconHTML(), icoCls:'wide', title:T.ccFarmFull, note:T.ccFarmFullNote(Math.min(CC_MATS_FULL, ccMats(you)+CC_MATS_FARM), CC_MATS_FARM)},
     {id:'eco',   icon:CC_CHOICE_ICON.wall1, title:T.ccFarmFull+' · '+T.ccBuildEco,   note:T.ccBuildEcoNote(Math.round(CC_MATS_ZONE*eco.mul), -eco.pow)},
     {id:'heavy', icon:CC_CHOICE_ICON.wall3, title:T.ccFarmFull+' · '+T.ccBuildHeavy, note:T.ccBuildHeavyNote(Math.round(CC_MATS_ZONE*heavy.mul), heavy.pow)},
-    {id:'surge', icon:CC_CHOICE_ICON.surge, title:T.ccFarmSurge, note:T.ccFarmSurgeNote(CC_MATS_SURGE_FARM, CC_SURGE_FARM, CC_SURGE_FARM_POW)},
+    ...(ccNoSurge() ? [] : [{id:'surge', icon:CC_CHOICE_ICON.surge, title:T.ccFarmSurge, note:T.ccFarmSurgeNote(Math.min(CC_MATS_FULL, ccMats(you)+CC_MATS_FARM_SHORT), CC_SURGE_FARM, CC_SURGE_FARM_POW)}]),
     {id:'fight', icon:ccItemIconHTML(gun, CC_CHOICE_ICON.fight),
      title:T.ccMidFight+(foe0 && foe0.name ? ' · '+String(foe0.name).replace(/<[^>]+>/g,'') : ''),
      note:T.ccMidFightNote(winPct, CC_FIGHT.pow, diePct, tradePct, CC_FIGHT.pokeDmg)}
@@ -53520,20 +53635,20 @@ async function ccAskFarm(you, ui){
   if(pickId==='eco' || pickId==='heavy'){
     const b=CC_BUILD_STYLE[pickId];
     you._buildMul=b.mul; if(b.pow) ccAddGamePow(you, b.pow);
-    ccMatsFill(you);
-    await say(T.ccFarmFullGot(CC_MATS_FULL)+' · '+T.ccBuildSet(T[pickId==='eco'?'ccBuildEco':'ccBuildHeavy'], b.pow>0?'+'+b.pow:String(b.pow)), null);
+    ccMatsAdd(you, CC_MATS_FARM);
+    await say(T.ccFarmFullGot(ccMats(you))+' · '+T.ccBuildSet(T[pickId==='eco'?'ccBuildEco':'ccBuildHeavy'], b.pow>0?'+'+b.pow:String(b.pow)), null);
     return;
   }
   if(pickId==='surge'){
-    you._mats=Math.max(ccMats(you), CC_MATS_SURGE_FARM);
+    ccMatsAdd(you, CC_MATS_FARM_SHORT);
     if(you._sq){ you._sq.dealt=(you._sq.dealt||0)+CC_SURGE_FARM; you._sq.taken=(you._sq.taken||0)+CC_SURGE_TAKEN; }
     ccAddGamePow(you, -CC_SURGE_FARM_POW);
-    await say(T.ccFarmSurgeGot(CC_MATS_SURGE_FARM, CC_SURGE_FARM), true);
+    await say(T.ccFarmSurgeGot(ccMats(you), CC_SURGE_FARM), true);
     return;
   }
   if(pickId==='fight'){
     // Файт — с тем запасом, что нафармили бы за то же время: до фула не дотянули.
-    you._mats=Math.max(ccMats(you), CC_MATS_SURGE_FARM);
+    ccMatsAdd(you, CC_MATS_FARM_SHORT);
     const r=Math.random();
     const game=you._game, foe=(game && game.nearest) ? game.nearest(you) : null;
     const foeName=foe ? String(foe.name||'').replace(/<[^>]+>/g,'') : '';
@@ -53545,17 +53660,17 @@ async function ccAskFarm(you, ui){
     else await say(T.ccMidFightTraded(CC_FIGHT.tradePow), false);
     return;
   }
-  ccMatsFill(you);
-  await say(T.ccFarmFullGot(CC_MATS_FULL), null);
+  ccMatsAdd(you, CC_MATS_FARM);
+  await say(T.ccFarmFullGot(ccMats(you)), null);
 }
-// Комната фармит тем же выбором: большинство до фула, агрессивная треть — сёрдж и 1200.
+// Комната фармит тем же выбором: большинство фармит (+CC_MATS_FARM), агрессивная треть — сёрдж и меньше ресов.
 function ccRoomFarm(field, you){
   (field||[]).forEach(t=>{
     if(you && (t===you || t.isMate || t.isRival)) return;   // людям (и сопернику по гонке) — вопрос, не бросок
-    if(Math.random()<0.3){
-      t._mats=Math.max(ccMats(t), CC_MATS_SURGE_FARM);
+    if(!ccNoSurge() && Math.random()<0.3){
+      ccMatsAdd(t, CC_MATS_FARM_SHORT);
       ccAddGamePow(t, -CC_SURGE_FARM_POW);
-    } else ccMatsFill(t);
+    } else ccMatsAdd(t, CC_MATS_FARM);
   });
 }
 async function ccAskMenu(you, ui){
@@ -53574,7 +53689,14 @@ async function ccAskMenu(you, ui){
   const tradePct=Math.round(CC_FIGHT.trade*100);
   // Сёрдж предлагается, только когда он включён — по замеру (см. CC_SURGE_FARM).
   const sg=ccSurgeState(you);
-  const surgeOpt=(sg && sg.on) ? [{id:'surge', icon:CC_CHOICE_ICON.surge, title:T.ccMidSurge,
+  /* И только когда он может задеть: запас над линией меньше CC_SURGE_SAFE. Тестер,
+     16.09: «не понятно, зачем набивать сёрдж — ни разу не страдал, он всегда в
+     плюсе». Замер career-surge-you-probe (40 игр, кубок Д1): линия сёрджа стоит
+     на −40…−70 чистого урона, своя команда идёт с медианой 100–160 — запас
+     около 200; сёрдж режет тех, кто получил больше, чем нанёс. Так и в реплеях
+     (правило Epic: чистый урон). Сильной команде ход нужен редко, и тогда, когда
+     он нужен, подпись называет запас. */
+  const surgeOpt=(sg && sg.on && (sg.gap==null || sg.gap<CC_SURGE_SAFE)) ? [{id:'surge', icon:CC_CHOICE_ICON.surge, title:T.ccMidSurge,
        note:T.ccMidSurgeNote(CC_SURGE_FARM, CC_SURGE_TAKEN, CC_SURGE_FARM_POW)+' · '+T.ccMidSurgeLine(sg.players, sg.at, sg.gap)}] : [];
   /* Ход по умолчанию — ПЕРВЫМ. Торопящийся (скип) отвечает ходом по
      умолчанию, досматривающий в проверках — первой кнопкой (check-mp-death:
@@ -53917,6 +54039,21 @@ function ccPackSlotsHTML(p){
     return '<i class="r-'+ccRarityKey(o.rarity)+'" title="'+esc(ccItemLabel(o))+'">'+art+(o.n>1 ? '<u>'+o.n+'</u>' : '')+'</i>';
   }).join('')+'</span>';
 }
+/* «Как это считается» под каждым вопросом — тестер, 16.09: «не ясно, как именно
+   влияет лут, очки силы, ресы на результат матча, если б это было где-то
+   прописано». Строки из словаря, числа — из тех же констант, что считают. */
+function ccGameHowHTML(){
+  const T=L();
+  if(typeof T.ccGameHow!=='function') return '';
+  let lines=[];
+  try{
+    lines=T.ccGameHow({full:CC_MATS_FULL, early:CC_MATS_EARLY_ZONE, zone:CC_MATS_ZONE, farm:CC_MATS_FARM, short:CC_MATS_FARM_SHORT,
+      pen:CC_MATS_PEN, surge:CC_SURGE_FARM, surgePow:CC_SURGE_FARM_POW, decide:Math.round(CC_FIGHT.decide*100),
+      trade:Math.round(CC_FIGHT.trade*100), fightPow:CC_FIGHT.pow, tradePow:CC_FIGHT.tradePow});
+  }catch(e){ return ''; }
+  return '<details class="cc-how"><summary>'+esc(T.ccGameHowTitle||'')+'</summary><ul>'+
+    lines.map(l=>'<li>'+esc(l)+'</li>').join('')+'</ul></details>';
+}
 function ccChoiceBox(title, hint, options, onMap, side, kind){
   /* Порядок кнопок — тот, что передали: сторожа кликают по data-at и ждут
      именно его. Правило «ход по умолчанию — первым» живёт там, где список
@@ -53953,7 +54090,7 @@ function ccChoiceBox(title, hint, options, onMap, side, kind){
         `</div>`
       : '';
     const mateLine=mate ? `<div class="cc-choice-mate"><i>${esc(mate.name)}</i> ${esc(mate.text)}</div>` : '';
-    box.innerHTML=`<div class="cc-choice-head"><b>${ccChoiceDial(th)}<span class="cc-choice-t">${esc(title)}</span></b>${sub}${mateLine}</div>`+
+    box.innerHTML=`<div class="cc-choice-head"><b>${ccChoiceDial(th)}<span class="cc-choice-t">${esc(title)}</span></b>${sub}${mateLine}${ccGameHowHTML()}</div>`+
       `<div class="cc-choice-row">${options.map((o,i)=>
         `<button class="cc-choice-btn${o.art?' has-art':''}${o.icon?' has-ico':''}${o===dflt && options.length>1?' def':''}${mate && o===mate.pick?' mate':''}" data-at="${i}"${mate && o===mate.pick ? ' data-mate="'+esc(mate.name)+'"' : ''}>
            ${o.art||''}<span class="cc-choice-tt">${o.icon?'<i class="cc-choice-ico'+(o.icoCls?' '+o.icoCls:'')+'">'+o.icon+'</i>':''}<b>${esc(o.title)}</b></span>${o.pack ? ccPackSlotsHTML(o.pack) : ''}${ccChoiceOdds(o.note)}<em>${o.note||''}</em></button>`).join('')}</div>`+
@@ -53971,6 +54108,13 @@ function ccChoiceBox(title, hint, options, onMap, side, kind){
              requestAnimationFrame(()=>{ bar.style.transform='scaleX(0)'; }); }
     box.querySelectorAll('.cc-choice-btn').forEach(b=>{
       b.onclick=()=>answer(options[+b.dataset.at]);
+    });
+    // Читает «как это считается» — вопрос ждёт: полоска встаёт, звонок снимается.
+    const how=box.querySelector('.cc-how');
+    if(how) how.addEventListener('toggle', ()=>{
+      if(!how.open) return;
+      clearTimeout(bell); bell=null;
+      if(bar){ bar.style.transition='none'; bar.style.transform='scaleX(1)'; }
     });
     // Скип, нажатый посреди вопроса, тоже отвечает — иначе кнопка «пропустить»
     // переставала пропускать ровно там, где это нужнее всего.
@@ -54157,7 +54301,7 @@ function ccSiteChests(zone, share){
 const CC_CHEST_CLASS={rifle:0.43, shotgun:0.22, smg:0.14, pistol:0.11, sniper:0.10};
 // Что из пула расходников не хилка и не мувмент — ключи, удочки, сигналка, золотая
 // рыба. В слот хилки из сундука не идёт (его слово 7.09: «epic карт не надо»).
-const CC_CHEST_NOT_HEAL=['Epic Vault Keycard','Vault Key','Fishing Rod','Flare Gun','Bass Boost','Mythic Goldfish'];
+const CC_CHEST_NOT_HEAL=['Epic Vault Keycard','Vault Key','Fishing Rod','Pro Fishing Rod','Harpoon Gun','Flare Gun','Bass Boost','Mythic Goldfish'];
 const ccIsHealItem=x=>x && CC_MOVE_ITEMS.indexOf(x.name)<0 && CC_CHEST_NOT_HEAL.indexOf(x.name)<0;
 function ccChestClass(rng, weapons){
   const have={}; weapons.forEach(w=>{ have[w.icon]=1; });
@@ -54402,7 +54546,13 @@ async function ccAskSite(you, ui){
   // сундуков ближней свободной коробки.
   const nPoi=ccSiteChests(zone), nOpen=ccSiteOpen(nPoi);
   const free=ccFreeBoxNear(game, you);
-  const nLeave=ccSiteOpen(ccSiteChests(free, CC_CHESTS_LEAVE_SHARE));
+  /* Доля соседней коробки — ПОСЛЕ потолка открытия, а не до. Тестер, 16.09:
+     «сплитнуть без файта — лут примерно такой же, как анкон». Так и было: у
+     настоящего счёта сундуков (fortnite.gg, 50–100 на коробку) половина всё
+     равно упиралась в потолок ccSiteOpen, и уход давал те же 24 сундука, что
+     своя точка. Замер career-pack-chests-probe: 24 сундука — сила пака 3.4,
+     12 — 2.4; теперь уход стоит этот балл. */
+  const nLeave=Math.max(1, Math.round(ccSiteOpen(ccSiteChests(free))*CC_CHESTS_LEAVE_SHARE));
   const at=ccSiteReal(zone) ? T.ccSiteAt(nPoi, nOpen, ccSiteSrc())+' · ' : '';
   const mine=ccChestPack(Math.random, set, nOpen);
   const say=async (line, ok)=>{ if(ui && ui.note) ui.note(line); await ccChoiceResult(ui && ui.map, line, ok); };
@@ -54890,7 +55040,9 @@ function ccLateMove(id){
    каждому игроку по 2 оружия 2 хила и 1 мувмент». Мувмента отдельным слотом в
    пулах нет, он живёт среди расходников (гарпун, слайдеры, граната), поэтому
    он и берётся оттуда — по имени, а не по выдуманному полю. */
-const CC_MOVE_ITEMS=['Harpoon Gun','Seven Sliders','Overdrive Grenade','Pro Fishing Rod',
+// Гарпун и удочка отсюда убраны 16.09 (тестер: «мувмент доступен, даже когда есть только
+// удочка или гарпун») — это снасти, не ротация; в слот хилки они тоже не идут (CC_CHEST_NOT_HEAL).
+const CC_MOVE_ITEMS=['Seven Sliders','Overdrive Grenade',
                      'Skyline Deployer','Seven Power Gloves','Shockwave Grenade','Rocket Ram',   // Chug Splash отсюда убран 10.09: это хилка (CC_HEAL_KIT)
                      // Reload: крюк, пады, рифт и джетпак — передвижение, не хилка.
                      'Grappler','Crash Pad Jr.','Launch Pad','Super Launch Pad','Rift-To-Go','Jetpack'];
@@ -58664,7 +58816,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='920daff0';
+const CC_BUILD='9a448ac0';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -58718,7 +58870,7 @@ const CC_BUILD='920daff0';
    это оно: биф рождается в стычке дома (careerBeefNight). */
 const CC_TEAM_KEYS=['seed','day','season','division','diff','tokens','seasonOver','chemSince','beefs',
                     'sizes','trios','log','mp','region','mates','spots','seasonTurn',
-                    'majorSeed','summitSeed','relSeed','gcSeed','duoSplits','table',
+                    'majorSeed','summitSeed','relSeed','gcSeed','duoSplits','exMates','table',
                     'events','d1','major','summit','globals','reload','rel','wf','rc',
                     'gclc','solo','soloBy','solos','solosBy','gifts','ewc'];
 /* Командное, которое лежит не в career, а прямо в CAREER.
@@ -68738,17 +68890,23 @@ function ccOrphanPairs(pool, taken, rnd, spare, seats){
     pool.duos.forEach(d=>d.cards.forEach(c=>pairedNow.add(c._k||hKey(c))));
     const freeOnes=(pool.players||[]).filter(c=>{
       const k=c._k||hKey(c);
-      return k && k!==oddKey && !pairedNow.has(k) && !taken.has(k);
+      // Только что брошенный игроком — ещё на рынке (ccMateParted, 16.09).
+      return k && k!==oddKey && !pairedNow.has(k) && !taken.has(k) && !ccMateJustParted(k);
     });
     let take=null;
     const want=memo ? memo[oddKey] : null;
     if(want) take=freeOnes.find(c=>(c._k||hKey(c))===want) || null;
     if(!take){
-      let best=Infinity;
-      freeOnes.forEach(c=>{
-        const gap=Math.abs(ccCardOvr(c)-ccCardOvr(odd));
-        if(gap<best){ best=gap; take=c; }
-      });
+      /* Один из трёх ближайших по силе, а не строго ближайший: при двух-трёх
+         сильных свободных на весь пул «ближайший» — это всегда один и тот же
+         человек (проба 16.09: семь сирот подряд получили pixx). Бросок — по
+         ключу сироты, чтобы у обоих клиентов комнаты вышел один и тот же. */
+      const near=freeOnes.map(c=>({c, gap:Math.abs(ccCardOvr(c)-ccCardOvr(odd))}))
+        .sort((a,b)=>a.gap-b.gap).slice(0, 3);
+      if(near.length){
+        const pick=careerRng(ccHashStr('orphan|'+ccWorldSeed()+'|'+oddKey))();
+        take=near[Math.floor(pick*near.length)].c;
+      }
       if(take && memo) memo[oddKey]=take._k||hKey(take);
     }
     if(!take) break;
@@ -69753,7 +69911,7 @@ function careerMateSeat(rec, seat){
      points at a card: he looked at both and decided, and taking the other one
      because it happens to be rated lower is the mode overruling him. */
   if(typeof seat==='number' && seat>=0 && seat<careerMateSeats()){
-    if(seat<CAREER.partners.length){ CAREER.partners[seat]=rec; return true; }
+    if(seat<CAREER.partners.length){ ccMateParted(CAREER.partners[seat]); CAREER.partners[seat]=rec; return true; }
     CAREER.partners.push(rec); return true;
   }
   if(CAREER.partners.length<careerMateSeats()){ CAREER.partners.push(rec); return true; }
@@ -69762,8 +69920,33 @@ function careerMateSeat(rec, seat){
                   return isFinite(o) ? o : -Infinity; };
   let worst=0;
   CAREER.partners.forEach((p,i)=>{ if(rate(p)<rate(CAREER.partners[worst])) worst=i; });
+  ccMateParted(CAREER.partners[worst]);
   CAREER.partners[worst]=rec;
   return true;
+}
+/* Брошенный напарник — какое-то время без пары.
+
+   Тестер, 16 сентября: «если взять новое дуо, твой бывший тимейт обязательно
+   уйдёт к бывшему тимейту твоего нового дуо». Проба career-orphan-mate-probe:
+   так и было, и не случайно. Половинка взятой пары остаётся одна, и
+   ccOrphanPairs сажает к ней БЛИЖАЙШЕГО ПО СИЛЕ свободного — а сильных
+   свободных в пуле почти нет (565 свободных, из них 85+ — двое, 80–85 —
+   двенадцать). Только что брошенный напарник — как раз сильный и как раз
+   свободный: он и есть ближайший, всегда.
+
+   Поэтому брошенный стоит на рынке те же две недели, что и половинка
+   распавшейся пары (CC_FA_DAYS в careerPools): в эти дни его к сироте не
+   сажают. Книга — cr.exMates {ключ: день}. */
+function ccMateParted(rec){
+  const cr=CAREER && CAREER.career; if(!cr || !rec) return;
+  const k=ccMateKeyOf(rec); if(!k) return;
+  cr.exMates=cr.exMates||{};
+  cr.exMates[k]=careerToday();
+}
+function ccMateJustParted(key){
+  const cr=CAREER && CAREER.career;
+  const d=cr && cr.exMates && cr.exMates[key];
+  return !!d && ccDaysBetween(d, careerToday())<14;
 }
 /* Nobody in the squad is still asking to play with you.
 
@@ -88717,9 +88900,11 @@ async function runCareerMajor(){
   careerReloadResultCard({label:ev.label, place:lobbyPlace||place, of:field.length,
     through: ev.stage==='lcq' ? ticket : (ev.stage==='final' ? cash>0 : through),
     cut:st.cut||CAREER_CUP_CUT,
-    seat:(ev.stage==='final'
-            ? !!lanSeat
-            : ((ev.stage==='lcq' ? ticket : through) && ev.stage!=='playin')),
+    /* 16.09, тестер: «после квала на какой-то турнир всегда пишет "место на
+       Esports World Cup"». Хиты и LCQ ставили seat без текста, а запасной текст
+       карточки — про Reload. Билет в следующую стадию карточка и так называет
+       строкой «Топ-N — проход дальше»; строка места — только когда место есть. */
+    seat: !!lanSeat,
     seatText: lanSeat,
     money: ev.stage==='final' ? cash : null});
 }

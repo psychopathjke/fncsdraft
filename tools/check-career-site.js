@@ -234,7 +234,8 @@ const BOOT = `
     if(!seen || seen.map(o=>o.id).join(',')!=='leave,fight') fail('contested menu is '+(seen&&seen.map(o=>o.id).join(',')));
     if(!seen[0].def) fail('leaving is not the default');
     if(c.gg.you.landingZone===c.rival.landingZone) fail('leaving did not move the squad off the box');
-    const leaveN=ccSiteOpen(ccSiteChests(c.gg.you.landingZone, CC_CHESTS_LEAVE_SHARE));
+    // Доля соседней коробки — после потолка открытия (16.09): уход и правда беднее.
+    const leaveN=Math.max(1, Math.round(ccSiteOpen(ccSiteChests(c.gg.you.landingZone))*CC_CHESTS_LEAVE_SHARE));
     if(!c.gg.you._loot || c.gg.you._loot.chests!==leaveN) fail('leaving: loot is '+JSON.stringify(c.gg.you._loot)+', the free box wants '+leaveN);
     if(!c.gg.game.squads.find(s=>s.team===c.rival).alive) fail('leaving killed the rival');
     out.steps.push('contested, leave: menu leave,fight (leave default), moved to a free box, '+leaveN+' chests (half of that box)');

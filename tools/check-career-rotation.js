@@ -66,7 +66,12 @@ const BOOT = `
     you=mk({name:'Shockwave Grenade', rarity:'epic'}); WANT='move';
     await ccAskRot(you, null);
     if(seen.map(o=>o.id).join(',')!=='early,with,late,move') fail('with a movement item the menu is '+seen.map(o=>o.id).join(','));
-    if(you._rot!=='move' || you._loot.move!==null) fail('«on the movement item» did not take: '+you._rot+' / '+JSON.stringify(you._loot.move));
+    // Сгорел: слот пуст или занят полом (ccPackFloor) — пол ротацией не считается (16.09).
+    if(you._rot!=='move' || (you._loot.move && !you._loot.move.floor)) fail('«on the movement item» did not take: '+you._rot+' / '+JSON.stringify(you._loot.move));
+    // Удочка/пол в слоте мувмента — хода «на мувменте» нет (тестер, 16.09).
+    you=mk({name:'Pro Fishing Rod', rarity:'rare', floor:true}); WANT='move';
+    await ccAskRot(you, null);
+    if(seen.some(o=>o.id==='move')) fail('a floor item in the movement slot still offers the movement rotate');
     you=mk(null); WANT='late'; await ccAskRot(you, null);
     if(you._rot!=='late') fail('late did not take');
     ccChoiceBox=realBox;

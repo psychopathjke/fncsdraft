@@ -100,11 +100,12 @@ const BOOT = (what) => `
     } else if(WHAT==='rot'){
       // Ротация четвёртой зоны — те же строки и картинки, что у ccAskRot, плюс мувмент из пака.
       const mv={name:'Shockwave Grenade', rarity:'epic'};
+      const cost=id=>L().ccRotCost(ccRotMats(id, {_buildMul:1}), CC_ROT_FARM[id]||0);   // цена выхода, как в ccAskRot (16.09)
       ccChoiceBox(L().ccRotTitle, L().ccKitLine(400, '', 'Striker Pump Shotgun'), [
-        {id:'early', def:true, icon:CC_CHOICE_ICON.run, title:L().ccRotEarly, note:L().ccRotEarlyNote(CC_ROT_REAL.early.share, CC_ROT_REAL.early.surv)},
-        {id:'with', icon:CC_CHOICE_ICON.storm, title:L().ccRotWith, note:L().ccRotWithNote(CC_ROT_REAL.with.share, CC_ROT_REAL.with.surv)},
-        {id:'late', icon:CC_CHOICE_ICON.stay, title:L().ccRotLate, note:L().ccRotLateNote},
-        {id:'move', icon:ccItemIconHTML(mv, CC_CHOICE_ICON.run), title:L().ccRotMove, note:L().ccRotMoveNote(mv.name)}], map, null, 'rot');
+        {id:'early', def:true, icon:CC_CHOICE_ICON.run, title:L().ccRotEarly, note:L().ccRotEarlyNote(CC_ROT_REAL.early.share, CC_ROT_REAL.early.surv)+' · '+cost('early')},
+        {id:'with', icon:CC_CHOICE_ICON.storm, title:L().ccRotWith, note:L().ccRotWithNote(CC_ROT_REAL.with.share, CC_ROT_REAL.with.surv)+' · '+cost('with')},
+        {id:'late', icon:CC_CHOICE_ICON.stay, title:L().ccRotLate, note:L().ccRotLateNote+' · '+cost('late')},
+        {id:'move', icon:ccItemIconHTML(mv, CC_CHOICE_ICON.run), title:L().ccRotMove, note:L().ccRotMoveNote(mv.name, CC_ROT_MOVE_POW)+' · '+cost('move')}], map, null, 'rot');
     } else if(WHAT==='late'){
       // Меню берётся ОТТУДА ЖЕ, откуда его берёт сама игра (CC_LATE_MOVES). Пока
       // тут стоял свой список из трёх ходов, снимок показывал три даже после

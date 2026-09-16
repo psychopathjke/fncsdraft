@@ -59,9 +59,10 @@ const BOOT = `
     check('и он вообще есть у каждой команды', first.every(i=>i>=0));
 
     // ---- 2. сильные держат его чаще слабых -------------------------------
-    const orig=ccBotHome;
+    // Раздача читает очередь домов (ccBotHomes, 16.09) — контроль гасит её.
+    const orig=ccBotHomes;
     const runRoom=(useHomes)=>{
-      ccBotHome = useHomes ? orig : function(){ return null; };
+      ccBotHomes = useHomes ? orig : function(){ return []; };
       const spots=new Map(), pw=new Map();
       let shared=0, total=0, cPts=0, cN=0;
       for(let ev=0; ev<6; ev++){
@@ -92,7 +93,7 @@ const BOOT = `
               cPts:Math.round(cPts/Math.max(1,cN)*100)/100};
     };
     const after=runRoom(true), before=runRoom(false);
-    ccBotHome=orig;
+    ccBotHomes=orig;
     out.notes.before=before; out.notes.after=after;
     check('с домами команды держат свою коробку', after.stable>0,
           after.stable+' из '+after.seen);
