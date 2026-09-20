@@ -1780,6 +1780,9 @@
 
   /* Entry tabs: build a rookie, or take a card that already exists. */
   .cc-tabs{position:relative;z-index:2;display:flex;gap:2px;margin-bottom:14px;}
+  /* Год — первой панелью над вкладками; чипы года в одну строку на всю ширину. */
+  .cc-year-panel{margin-bottom:14px;}
+  .cc-year-panel .cc-chips{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-width:420px;}
   .cc-tab{border:none;cursor:pointer;font-weight:900;font-style:italic;font-size:12px;
     letter-spacing:.05em;text-transform:uppercase;padding:10px 18px;
     background:#0b0f12;color:#fff;opacity:.42;transition:opacity .12s;}
@@ -5951,6 +5954,16 @@
         <div class="cc-slab" data-i18n="ccSlab"></div>
       </div>
 
+      <!-- Год — первым: от него зависят и карточки, и рейтинги ниже (его слово 21.09:
+           «сначала выбираешь год карьеры, потом игроков»). -->
+      <div class="cc-panel cc-year-panel">
+        <div class="cc-field" id="ccYearField" style="margin-top:0;">
+          <label data-i18n="ccYear"></label>
+          <div class="cc-chips" id="ccYearChips"></div>
+          <div class="cc-note" id="ccYearNote"></div>
+        </div>
+      </div>
+
       <div class="cc-tabs">
         <button class="cc-tab on" id="ccTabRookie" onclick="ccSetMode('rookie')" data-i18n="ccTabRookie"></button>
         <button class="cc-tab" id="ccTabCard" onclick="ccSetMode('card')" data-i18n="ccTabCard"></button>
@@ -6016,11 +6029,6 @@
             <label data-i18n="ccDivision"></label>
             <div class="cc-chips cc-chips-5" id="ccDivChips"></div>
             <div class="cc-note" data-i18n="ccDivNote"></div>
-          </div>
-          <div class="cc-field" id="ccYearField">
-            <label data-i18n="ccYear"></label>
-            <div class="cc-chips" id="ccYearChips"></div>
-            <div class="cc-note" id="ccYearNote"></div>
           </div>
           <div class="cc-field" id="ccDiffField">
             <label data-i18n="ccDiff"></label>
@@ -7185,7 +7193,8 @@ ccYearNames:{
   FNCSSolos_LCQFinal:'FNCS Solos · последний шанс, финал',
   FNCSSolos_Final:'FNCS Solos · финал',
   ProAm_Dallas:'Pro-Am · Даллас',
-  ProAm_SaoPaulo:'Pro-Am · Сан-Паулу'
+  ProAm_SaoPaulo:'Pro-Am · Сан-Паулу',
+  ProAm_Paris:'Pro-Am · Париж', ProAm_Seoul:'Pro-Am · Сеул'
 },
 chWkMajor:'Мейджор',
 chWkGC:'ГЧ',
@@ -9164,7 +9173,8 @@ ccYearNames:{
   FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, Final',
   FNCSSolos_Final:'FNCS Solos · Finals',
   ProAm_Dallas:'Pro-Am · Dallas',
-  ProAm_SaoPaulo:'Pro-Am · São Paulo'
+  ProAm_SaoPaulo:'Pro-Am · São Paulo',
+  ProAm_Paris:'Pro-Am · Paris', ProAm_Seoul:'Pro-Am · Seoul'
 },
 chWkMajor:'Major',
 chWkGC:'GC',
@@ -11521,7 +11531,7 @@ ccVicFail:n=>'Hors du top '+n+' — la Manche 2 sans toi',
 ccVicCash:(w,c)=>w+(w===1?' victoire':' victoires')+' — '+c,
 ccNewsVicCash:(w,c)=>'Victory Cup : '+w+(w===1?' victoire':' victoires')+', '+c+' gagnés',
 ccNewsVicOut:(p,of)=>'Victory Cup : '+ccTop(p)+' sur '+of+', pas de Manche 2',
-ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens coupe 1',ReloadEliteSeries1PlayIn:'Reload · play-in coupe 1',ReloadEliteSeries1Heats:'Reload · heats coupe 1',ReloadEliteSeries1Final:'Reload · finale coupe 1',ReloadEliteSeries2Opens:'Reload · opens coupe 2',ReloadEliteSeries2PlayIn:'Reload · play-in coupe 2',ReloadEliteSeries2Heats:'Reload · heats coupe 2',ReloadEliteSeries2Final:'Reload · finale coupe 2',ReloadEliteSeries3Opens:'Reload · opens coupe 3',ReloadEliteSeries3PlayIn:'Reload · play-in coupe 3',ReloadEliteSeries3Heats:'Reload · heats coupe 3',ReloadEliteSeries3Final:'Reload · finale coupe 3',ReloadEliteSeries4Opens:'Reload · opens coupe 4',ReloadEliteSeries4PlayIn:'Reload · play-in coupe 4',ReloadEliteSeries4Heats:'Reload · heats coupe 4',ReloadEliteSeries4Final:'Reload · finale coupe 4',Major1_PlayIn:'Major 1 · Play-In',Major1_Heats:'Major 1 · Heats',Major1_LCQ:'Major 1 · Last Chance',Major1_Final:'Major 1 · Finale',Summit_Upper:'Summit · Upper Bracket',Summit_Lower:'Summit · Lower Bracket',Summit_Final:'Summit · Grandes Finales',Major2_PlayIn:'Major 2 · Play-In',Major2_Heats:'Major 2 · Heats',Major2_LCQ:'Major 2 · Last Chance',Major2_Final:'Major 2 · Finale',GlobalChampionshipLastChance:'Global Championship · Last Chance',ReloadChampionshipParis:'Reload Championship · {CITY}',GlobalChampionship:'Global Championship · {CITY}',SoloSeries_Qualifier:'Solo Series · qualifications',SoloSeries_Heats:'Solo Series · heats',SoloSeries_Final:'Solo Series · finale',FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2',FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3',FNCSSolos_FastTrack:'FNCS Solos · Fast Track',FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2',FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3',FNCSSolos_Heats:'FNCS Solos · heats',FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1',FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale',FNCSSolos_Final:'FNCS Solos · finale',ProAm_Dallas:'Pro-Am · Dallas',ProAm_SaoPaulo:'Pro-Am · São Paulo'},
+ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens coupe 1',ReloadEliteSeries1PlayIn:'Reload · play-in coupe 1',ReloadEliteSeries1Heats:'Reload · heats coupe 1',ReloadEliteSeries1Final:'Reload · finale coupe 1',ReloadEliteSeries2Opens:'Reload · opens coupe 2',ReloadEliteSeries2PlayIn:'Reload · play-in coupe 2',ReloadEliteSeries2Heats:'Reload · heats coupe 2',ReloadEliteSeries2Final:'Reload · finale coupe 2',ReloadEliteSeries3Opens:'Reload · opens coupe 3',ReloadEliteSeries3PlayIn:'Reload · play-in coupe 3',ReloadEliteSeries3Heats:'Reload · heats coupe 3',ReloadEliteSeries3Final:'Reload · finale coupe 3',ReloadEliteSeries4Opens:'Reload · opens coupe 4',ReloadEliteSeries4PlayIn:'Reload · play-in coupe 4',ReloadEliteSeries4Heats:'Reload · heats coupe 4',ReloadEliteSeries4Final:'Reload · finale coupe 4',Major1_PlayIn:'Major 1 · Play-In',Major1_Heats:'Major 1 · Heats',Major1_LCQ:'Major 1 · Last Chance',Major1_Final:'Major 1 · Finale',Summit_Upper:'Summit · Upper Bracket',Summit_Lower:'Summit · Lower Bracket',Summit_Final:'Summit · Grandes Finales',Major2_PlayIn:'Major 2 · Play-In',Major2_Heats:'Major 2 · Heats',Major2_LCQ:'Major 2 · Last Chance',Major2_Final:'Major 2 · Finale',GlobalChampionshipLastChance:'Global Championship · Last Chance',ReloadChampionshipParis:'Reload Championship · {CITY}',GlobalChampionship:'Global Championship · {CITY}',SoloSeries_Qualifier:'Solo Series · qualifications',SoloSeries_Heats:'Solo Series · heats',SoloSeries_Final:'Solo Series · finale',FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2',FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3',FNCSSolos_FastTrack:'FNCS Solos · Fast Track',FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2',FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3',FNCSSolos_Heats:'FNCS Solos · heats',FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1',FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale',FNCSSolos_Final:'FNCS Solos · finale',ProAm_Dallas:'Pro-Am · Dallas',ProAm_SaoPaulo:'Pro-Am · São Paulo', ProAm_Paris:'Pro-Am · Paris', ProAm_Seoul:'Pro-Am · Seoul'},
 ccDuoWith:n=>'duo avec '+n,
 ccDuoFound:n=>n+(n===1?' joueur':' joueurs'),
 ccCupTitle:(d,n)=>'Coupe Division '+d+' — 11 parties, '+n+' '+ccSquadWord(),
@@ -13980,7 +13990,7 @@ ccPingServer:city=>'verso il server di '+city,
 ccCity:{Dus:'Düsseldorf', Ant:'Anversa', Lyo:'Lione', Cph:'Copenaghen', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Parigi', Ryd:'Riyadh', Nyc:'New York', Tok:'Tokyo', Bel:'Belgrado', Kat:'Katowice', Sto:'Stoccolma', Mad:'Madrid', Ams:'Amsterdam', Dal:'Dallas', Sao:'San Paolo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Città del Messico', Dub:'Dubai', Ist:'Istanbul', Mil:'Milano', Lon:'Londra', Sin:'Singapore'},
 ccCityIn:{Dus:'Düsseldorf', Ant:'Anversa', Lyo:'Lione', Cph:'Copenaghen', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Parigi', Ryd:'Riyadh', Nyc:'New York', Tok:'Tokyo', Bel:'Belgrado', Kat:'Katowice', Sto:'Stoccolma', Mad:'Madrid', Ams:'Amsterdam', Dal:'Dallas', Sao:'San Paolo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Città del Messico', Dub:'Dubai', Ist:'Istanbul', Mil:'Milano', Lon:'Londra', Sin:'Singapore'},
 ccYearSub:{cup:'Una finestra, 11 partite', final:'Finale settimanale, solo Divisione 1', eval:'Due round in una sera, solo Divisione 1', major:'Play-In, Heat, LAN', gc:'La fine dell\u2019anno', reload:'Un circuito a s\u00e9, non FNCS', summit:'Tre giorni di LAN, dal Major 1', victory:'Due round, $100 per ogni vittoria nel secondo'},
-ccYearNames:{ReloadEliteSeries1Opens:'Reload · open coppa 1', ReloadEliteSeries1PlayIn:'Reload · play-in coppa 1', ReloadEliteSeries1Heats:'Reload · heat coppa 1', ReloadEliteSeries1Final:'Reload · finale coppa 1', ReloadEliteSeries2Opens:'Reload · open coppa 2', ReloadEliteSeries2PlayIn:'Reload · play-in coppa 2', ReloadEliteSeries2Heats:'Reload · heat coppa 2', ReloadEliteSeries2Final:'Reload · finale coppa 2', ReloadEliteSeries3Opens:'Reload · open coppa 3', ReloadEliteSeries3PlayIn:'Reload · play-in coppa 3', ReloadEliteSeries3Heats:'Reload · heat coppa 3', ReloadEliteSeries3Final:'Reload · finale coppa 3', ReloadEliteSeries4Opens:'Reload · open coppa 4', ReloadEliteSeries4PlayIn:'Reload · play-in coppa 4', ReloadEliteSeries4Heats:'Reload · heat coppa 4', ReloadEliteSeries4Final:'Reload · finale coppa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heat', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Finale', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Gran Finali', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heat', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Finale', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · qualificazioni', SoloSeries_Heats:'Solo Series · heat', SoloSeries_Final:'Solo Series · finali', FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heat', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale', FNCSSolos_Final:'FNCS Solos · finali', ProAm_Dallas:'Pro-Am · Dallas', ProAm_SaoPaulo:'Pro-Am · San Paolo'},
+ccYearNames:{ReloadEliteSeries1Opens:'Reload · open coppa 1', ReloadEliteSeries1PlayIn:'Reload · play-in coppa 1', ReloadEliteSeries1Heats:'Reload · heat coppa 1', ReloadEliteSeries1Final:'Reload · finale coppa 1', ReloadEliteSeries2Opens:'Reload · open coppa 2', ReloadEliteSeries2PlayIn:'Reload · play-in coppa 2', ReloadEliteSeries2Heats:'Reload · heat coppa 2', ReloadEliteSeries2Final:'Reload · finale coppa 2', ReloadEliteSeries3Opens:'Reload · open coppa 3', ReloadEliteSeries3PlayIn:'Reload · play-in coppa 3', ReloadEliteSeries3Heats:'Reload · heat coppa 3', ReloadEliteSeries3Final:'Reload · finale coppa 3', ReloadEliteSeries4Opens:'Reload · open coppa 4', ReloadEliteSeries4PlayIn:'Reload · play-in coppa 4', ReloadEliteSeries4Heats:'Reload · heat coppa 4', ReloadEliteSeries4Final:'Reload · finale coppa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heat', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Finale', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Gran Finali', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heat', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Finale', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · qualificazioni', SoloSeries_Heats:'Solo Series · heat', SoloSeries_Final:'Solo Series · finali', FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heat', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale', FNCSSolos_Final:'FNCS Solos · finali', ProAm_Dallas:'Pro-Am · Dallas', ProAm_SaoPaulo:'Pro-Am · San Paolo', ProAm_Paris:'Pro-Am · Paris', ProAm_Seoul:'Pro-Am · Seoul'},
 modeFncs2026Title:"FNCS 2026",
 majorPick1:"Major 1",
 majorPick2:"Major 2",
@@ -16485,7 +16495,7 @@ ccPingServer:city=>'at\u00e9 o servidor de '+city,
 ccCity:{Dus:'Düsseldorf', Ant:'Antuérpia', Lyo:'Lyon', Cph:'Copenhague', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riade', Nyc:'Nova York', Tok:'Tóquio', Bel:'Belgrado', Kat:'Katowice', Sto:'Estocolmo', Mad:'Madri', Ams:'Amsterdã', Dal:'Dallas', Sao:'São Paulo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Cidade do México', Dub:'Dubai', Ist:'Istambul', Mil:'Milão', Lon:'Londres', Sin:'Singapura'},
 ccCityIn:{Dus:'Düsseldorf', Ant:'Antuérpia', Lyo:'Lyon', Cph:'Copenhague', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riade', Nyc:'Nova York', Tok:'Tóquio', Bel:'Belgrado', Kat:'Katowice', Sto:'Estocolmo', Mad:'Madri', Ams:'Amsterdã', Dal:'Dallas', Sao:'São Paulo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Cidade do México', Dub:'Dubai', Ist:'Istambul', Mil:'Milão', Lon:'Londres', Sin:'Singapura'},
 ccYearSub:{cup:'Uma janela, 11 partidas', final:'Final semanal, s\u00f3 Divis\u00e3o 1', eval:'Duas rodadas numa noite, s\u00f3 Divis\u00e3o 1', major:'Play-In, Heats, LAN', gc:'O fim do ano', reload:'Circuito pr\u00f3prio, n\u00e3o \u00e9 FNCS', summit:'Tr\u00eas dias de LAN, vindos do Major 1', victory:'Duas rodadas, $100 por cada vit\u00f3ria na segunda'},
-ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens copa 1', ReloadEliteSeries1PlayIn:'Reload · play-in copa 1', ReloadEliteSeries1Heats:'Reload · heats copa 1', ReloadEliteSeries1Final:'Reload · final copa 1', ReloadEliteSeries2Opens:'Reload · opens copa 2', ReloadEliteSeries2PlayIn:'Reload · play-in copa 2', ReloadEliteSeries2Heats:'Reload · heats copa 2', ReloadEliteSeries2Final:'Reload · final copa 2', ReloadEliteSeries3Opens:'Reload · opens copa 3', ReloadEliteSeries3PlayIn:'Reload · play-in copa 3', ReloadEliteSeries3Heats:'Reload · heats copa 3', ReloadEliteSeries3Final:'Reload · final copa 3', ReloadEliteSeries4Opens:'Reload · opens copa 4', ReloadEliteSeries4PlayIn:'Reload · play-in copa 4', ReloadEliteSeries4Heats:'Reload · heats copa 4', ReloadEliteSeries4Final:'Reload · final copa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heats', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Final', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Grandes Finais', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heats', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Final', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · classificat\u00f3rias', SoloSeries_Heats:'Solo Series · heats', SoloSeries_Final:'Solo Series · finais', FNCSSolos_Q1Round2:'FNCS Solos · classif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · classif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · classif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · classif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heats', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, final', FNCSSolos_Final:'FNCS Solos · finais', ProAm_Dallas:'Pro-Am · Dallas', ProAm_SaoPaulo:'Pro-Am · San Paolo'},
+ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens copa 1', ReloadEliteSeries1PlayIn:'Reload · play-in copa 1', ReloadEliteSeries1Heats:'Reload · heats copa 1', ReloadEliteSeries1Final:'Reload · final copa 1', ReloadEliteSeries2Opens:'Reload · opens copa 2', ReloadEliteSeries2PlayIn:'Reload · play-in copa 2', ReloadEliteSeries2Heats:'Reload · heats copa 2', ReloadEliteSeries2Final:'Reload · final copa 2', ReloadEliteSeries3Opens:'Reload · opens copa 3', ReloadEliteSeries3PlayIn:'Reload · play-in copa 3', ReloadEliteSeries3Heats:'Reload · heats copa 3', ReloadEliteSeries3Final:'Reload · final copa 3', ReloadEliteSeries4Opens:'Reload · opens copa 4', ReloadEliteSeries4PlayIn:'Reload · play-in copa 4', ReloadEliteSeries4Heats:'Reload · heats copa 4', ReloadEliteSeries4Final:'Reload · final copa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heats', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Final', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Grandes Finais', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heats', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Final', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · classificat\u00f3rias', SoloSeries_Heats:'Solo Series · heats', SoloSeries_Final:'Solo Series · finais', FNCSSolos_Q1Round2:'FNCS Solos · classif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · classif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · classif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · classif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heats', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, final', FNCSSolos_Final:'FNCS Solos · finais', ProAm_Dallas:'Pro-Am · Dallas', ProAm_SaoPaulo:'Pro-Am · San Paolo', ProAm_Paris:'Pro-Am · Paris', ProAm_Seoul:'Pro-Am · Seoul'},
 modeFncs2026Title:"FNCS 2026",
 majorPick1:"Major 1",
 majorPick2:"Major 2",
@@ -57974,7 +57984,12 @@ function ccPickRole(k){ CC.role=k; ccRenderChips(); ccSync(); }
 function ccPickDiv(d){ CC.div=d; ccRenderChips(); ccSync(); }
 function ccPickDiff(id){ CC.diff=id; ccRenderChips(); ccSync(); }
 // Год карьеры: 2026 (дуо, потом трио) или 2025 (трио, три Мейджора, Лион). См. ccCalYear.
-function ccPickYear(y){ CC.year=y===2025 ? 2025 : 2026; ccRenderChips(); ccSync(); }
+function ccPickYear(y){
+  CC.year=y===2025 ? 2025 : 2026;
+  // Карточка, взятая в другом году, — уже не та карточка: список и превью собираются заново.
+  if(CC.mode==='card'){ CC.card=null; if(typeof ccRenderList==='function') ccRenderList(); }
+  ccRenderChips(); ccRenderCard(); ccSync();
+}
 
 // Role belongs to the card — it is read off the attributes and cannot be argued
 // with. Division is a choice either way. A taken card starts wherever you put it,
@@ -62026,7 +62041,7 @@ function careerCard(raw){
     // find returned whichever the file listed first, so a career played as Sky
     // was reading a card from another season.
     const now=careerRosterNowEU().find(x=>hKey(x)===hKey(pl.handle));
-    const found=now || PLAYERS.find(x=>x.handle===pl.handle && x.region===(pl.cardRegion||x.region));
+    const found=now || PLAYERS.find(x=>x.handle===pl.handle && x.region===(pl.cardRegion||x.region) && (ccNowYear()>=2026 || ccCardYear(x)<=ccNowYear()));
     base = found ? {...found} : null;
     // The attributes are recomputed for this copy rather than inherited: the
     // roster object caches its own, already floored to the roster's rating, and
@@ -66368,6 +66383,8 @@ const CAREER_EV_ART_ID={
   // Pro-Am играется на острове Reload — арт берём Reload'а, своего у нас нет.
   ProAm_Dallas:'art/mode-ewc.jpg',
   ProAm_SaoPaulo:'art/mode-ewc.jpg',
+  ProAm_Paris:'art/mode-ewc.jpg',
+  ProAm_Seoul:'art/mode-ewc.jpg',
   proam:'art/mode-ewc.jpg'
 };
 // Обложка события: сперва по id, потом по виду. Одна дверь для календаря и карточки.
@@ -66542,7 +66559,17 @@ const CAREER_YEAR=[
      известности, см. careerProAmCan — это НАША мерка, не Epic'ова. */
   ['2026-07-12','2026-07-12','ProAm_Dallas','proam'],
   // Вторая остановка серии — Сан-Паулу, Zero Build. См. CC_PROAM_EVENTS.
-  ['2026-09-06','2026-09-06','ProAm_SaoPaulo','proam']
+  ['2026-09-06','2026-09-06','ProAm_SaoPaulo','proam'],
+  /* Третья и четвёртая остановки — его слово 21 сентября: «добавь 2 pro am ещё».
+     Epic на этот день объявил только Даллас и Сан-Паулу («multiple events are
+     planned throughout the year, each hosted by different organizations» —
+     Liquipedia, next= пусто). Города и хозяева — НАШИ, по образцу серии (клуб
+     принимает у себя): Париж, Team Vitality, воскресенье 20 сентября — свободный
+     день за неделю до Антверпена; Сеул, Gen.G, воскресенье 25 октября — перед
+     финалом FNCS Solos. Числа — Сан-Паулу (20 пар, 6 игр, $50 000), стройки как
+     в Далласе. Объявит Epic другое — заменить даты и города здесь и в CC_PROAM_EVENTS. */
+  ['2026-09-20','2026-09-20','ProAm_Paris','proam'],
+  ['2026-10-25','2026-10-25','ProAm_Seoul','proam']
 ];
 /* ---- The other year: FNCS 2025, in trios ------------------------------------
 
@@ -66741,6 +66768,11 @@ const CC_YEAR_2025_FROM='2024-12-11', CC_YEAR_2025_TO='2025-09-07';
    чётность дуо/трио). Всё, что раньше читало константы 2026 года, читает эти
    функции; сами константы остались как есть. */
 function ccCalYear(){
+  /* На экране создания год — это чип (его слово 21 сентября: «сначала выбираешь
+     год карьеры, потом игроков»): карточки и рейтинги в выборе идут за ним,
+     а не за карьерой, которая могла остаться в памяти от другого слота. */
+  if(typeof SHOWN_SCREEN!=='undefined' && SHOWN_SCREEN==='screen-career-create' && typeof CC!=='undefined' && CC)
+    return CC.year===2025 ? 2025 : 2026;
   const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
   return cr && cr.year===2025 ? 2025 : 2026;
 }
@@ -67897,8 +67929,9 @@ let CC_NOW_CARDS={}, CC_NOW_TAG=null, CC_ARC_PAIRS={};
    другой слот — старые числа надо забыть. Внутри одной карьеры кэш живёт
    дальше, а сбрасывает его тот, кто сдвиги меняет, — careerGrowField. */
 function ccSceneTag(){
-  if(!CAREER) return 'none';
-  return ccSlot()+'|'+((CAREER.player&&CAREER.player.nick)||'')+'|'+((CAREER.career&&CAREER.career.season)||0);
+  const y='|y'+ccCalYear();
+  if(!CAREER) return 'none'+y;
+  return ccSlot()+'|'+((CAREER.player&&CAREER.player.nick)||'')+'|'+((CAREER.career&&CAREER.career.season)||0)+y;
 }
 function ccSceneCheck(){
   const tag=ccSceneTag();
@@ -68505,8 +68538,12 @@ var CC_LEDGER_2026;
  * событий вместо четырёх, тройка лучших выбиралась из чужих вечеров. Тот же
  * недосмотр, что был в двух источниках национальности; см. ccNatRegions. */
 function ccSeasonKey(c){ return (c && c.region || '')+'|'+hKey(c); }
+let CC_SEASON_OVR_YEAR=null;
 function ccSeasonOvr(){
-  if(CC_SEASON_OVR) return CC_SEASON_OVR;
+  if(CC_SEASON_OVR && CC_SEASON_OVR_YEAR===ccNowYear()) return CC_SEASON_OVR;
+  CC_SEASON_OVR_YEAR=ccNowYear();
+  // 2025-й: книга 2026-го не читается — рейтинг года складывается из карточек 2025-го (t1–t3).
+  const LEDGER=ccIs2025() ? null : CC_LEDGER_2026;
   /* Один вечер — одна строка.
 
      Финалист Мейджора лежит в файле дважды: отдельной карточкой гранд-финала и
@@ -68551,14 +68588,14 @@ function ccSeasonOvr(){
    * настоящих европейцев: Scroll читался 91 вместо 96.
    *
    * Кто где играет, известно из самих наборов: карточка знает свой регион. */
-  if(CC_LEDGER_2026){
+  if(LEDGER){
     const here=new Set();
     PLAYERS_BASE.forEach(c=>{
       if(c.tier!=='cardmode') return;
       here.add((c.region||'')+'|'+String(c.handle||'').toLowerCase());
     });
-    Object.keys(CC_LEDGER_2026).forEach(reg=>{
-      CC_LEDGER_2026[reg].forEach(src=>{
+    Object.keys(LEDGER).forEach(reg=>{
+      LEDGER[reg].forEach(src=>{
         const ev=src.set+'|'+src.label+(src.nth!=null ? '|'+src.nth : '');
         Object.keys(src.map).forEach(h=>{
           const rank=src.map[h];
@@ -68575,7 +68612,7 @@ function ccSeasonOvr(){
      чего-то стоить обязан. Читается с карточек, весами из CC_STAGE_WEIGHT. */
   PLAYERS_BASE.forEach(c=>{
     if(ccCardYear(c)!==ccNowYear()) return;
-    if(CC_LEDGER_2026 && !/^r[1-4]$/.test(String(c.cardSet||''))) return;
+    if(LEDGER && !/^r[1-4]$/.test(String(c.cardSet||''))) return;
     /* Число этого вечера, а не карточки: attrsFor читает q.rating, а в него
        подмешаны три лучшие карточки человека за все годы. Его правка,
        21 августа: «не надо прошлые карточки притягивать к рейтингу, только
@@ -70326,7 +70363,7 @@ function ccMateCardOf(pr){
   // roster for a legacy save whose partner has no card this year.
   const now=careerRosterNowEU().find(x=>x.handle===pr.handle);
   if(now) return cast(ccMateLift({...now}, dev));
-  const found=PLAYERS.find(x=>x.handle===pr.handle && x.region===(pr.cardRegion||'EU'));
+  const found=PLAYERS.find(x=>x.handle===pr.handle && x.region===(pr.cardRegion||'EU') && (ccNowYear()>=2026 || ccCardYear(x)<=ccNowYear()));
   return found ? cast(ccMateLift({...found}, dev)) : null;
 }
 /* ---- Сцена растёт от своих результатов -------------------------------------
@@ -90457,7 +90494,14 @@ const CC_PROAM_EVENTS={
   ProAm_Dallas:  {day:'2026-07-12', city:'Dal', games:CC_PROAM_GAMES, place:CC_PROAM_PLACE, prize:CC_PROAM_PRIZE, game:CC_PROAM_GAME, zb:false},
   ProAm_SaoPaulo:{day:'2026-09-06', city:'Sao', games:6, place:CC_PROAM_PLACE,
                   prize:[12000,8000,5800,4500,3500,2700,2000,1700,1500,1300,1100,1000,900,800,700,600,550,500,450,400],
-                  game:[0,0,0], zb:true}
+                  game:[0,0,0], zb:true},
+  // Третья и четвёртая остановки — наши (см. CAREER_YEAR): формат и кошелёк Сан-Паулу, стройки Далласа.
+  ProAm_Paris:   {day:'2026-09-20', city:'Par', games:6, place:CC_PROAM_PLACE,
+                  prize:[12000,8000,5800,4500,3500,2700,2000,1700,1500,1300,1100,1000,900,800,700,600,550,500,450,400],
+                  game:[0,0,0], zb:false},
+  ProAm_Seoul:   {day:'2026-10-25', city:'Seo', games:6, place:CC_PROAM_PLACE,
+                  prize:[12000,8000,5800,4500,3500,2700,2000,1700,1500,1300,1100,1000,900,800,700,600,550,500,450,400],
+                  game:[0,0,0], zb:false}
 };
 function ccProAmEvent(label){ return CC_PROAM_EVENTS[label] || CC_PROAM_EVENTS.ProAm_Dallas; }
 function ccProAmKey(ev){ return (ev && (ev.id||ev.label)) || 'ProAm_Dallas'; }   // id — ярлык CAREER_YEAR, label — имя на языке

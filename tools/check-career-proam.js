@@ -44,11 +44,15 @@ const BOOT = `
       for (let d = '2026-06-01'; d <= '2026-06-30'; d = ccAddDays(d, 1))
         if ((careerYearDays().get(d) || []).some(e => e.kind === 'proam')) return false;
       return true; })());
-    check('two Pro-Ams in the year: Dallas and São Paulo', (function(){
+    check('four Pro-Ams in the year: Dallas, São Paulo, Paris, Seoul (his ask, 21 Sep)', (function(){
       let n = 0;
       for (let d = CC_YEAR_FROM; d <= CC_YEAR_TO; d = ccAddDays(d, 1))
         n += (careerYearDays().get(d) || []).filter(e => e.kind === 'proam').length;
-      out.notes.proamDays = n; return n === 2; })(), String(out.notes.proamDays));
+      out.notes.proamDays = n; return n === 4; })(), String(out.notes.proamDays));
+    check('Paris on 20 September and Seoul on 25 October, Build, six games, São Paulo purse', (function(){
+      const pa = careerProAmOn('2026-09-20'), se = careerProAmOn('2026-10-25');
+      const P = ccProAmEvent('ProAm_Paris'), Q = ccProAmEvent('ProAm_Seoul');
+      return !!pa && pa.id === 'ProAm_Paris' && !!se && se.id === 'ProAm_Seoul' && P.zb === false && Q.zb === false && P.games === 6 && Q.games === 6 && P.prize[0] === 12000 && Q.prize.reduce((a, b) => a + b, 0) === 50000; })());
     const sp = careerProAmOn('2026-09-06');
     check('São Paulo is on 6 September', !!sp && sp.id === 'ProAm_SaoPaulo', JSON.stringify(sp));
     check('and it is played in Zero Build, six games, no per-game bonus', (function(){
