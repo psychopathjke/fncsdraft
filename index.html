@@ -6017,6 +6017,11 @@
             <div class="cc-chips cc-chips-5" id="ccDivChips"></div>
             <div class="cc-note" data-i18n="ccDivNote"></div>
           </div>
+          <div class="cc-field" id="ccYearField">
+            <label data-i18n="ccYear"></label>
+            <div class="cc-chips" id="ccYearChips"></div>
+            <div class="cc-note" id="ccYearNote"></div>
+          </div>
           <div class="cc-field" id="ccDiffField">
             <label data-i18n="ccDiff"></label>
             <div class="cc-chips" id="ccDiffChips"></div>
@@ -7497,6 +7502,9 @@ ccMovePickHint:'Выбери страну на карте — цифра на н
 ccMoveGain:'Рейтинг за пинг',
 ccMoveAlready:'Ты уже здесь', ccMoveGo:r=>'Переехать в '+r,
 ccOrgCutRow:'Клуб с призовых', ccOrgCutPaid:'Отдано клубу',
+ccYear:'Год', ccYear2026:'дуо → трио', ccYear2025:'трио', ccYr25Group:n=>'группа '+n, ccYr25Lobby:'лобби последнего шанса',
+ccYearNote2026:'Сезон FNCS 2026: дивизионные кубки, два Мейджора, Reload, Глобалы в Антверпене. Второй год — трио.',
+ccYearNote2025:'Сезон FNCS 2025: трио весь год, три Мейджора с групповым этапом, Глобалы в Лионе. Соперники — карточки 2025-го. После Лиона карьера идёт в 2026-й.',
 ccDiff:'Сложность', ccDiffRow:'Сложность',
 ccDiffNote:'Меняет только одно — как быстро растёт рейтинг. Соперники, призовые и цены везде одинаковые: сложнее не значит сильнее лобби, значит дольше путь',
 ccDiffEasy:'Лёгкая', ccDiffPro:'Про', ccDiffElite:'Элита', ccDiffLegend:'Легенда',
@@ -8135,7 +8143,7 @@ ccNewsGlobCash:(p,v)=>'Мировой чемпионат: '+ccTop(p)+' — $'+v,
 ccNewsGlobNoCash:(p,of)=>'Мировой чемпионат: '+ccTop(p)+' из '+of,
 ccNewsGlobChamp:'ЧЕМПИОН МИРА 🌍🏆',
 ccGlobLocked:c=>'В '+c+' едут топ-15 Саммита, топ-9 финала Мажора 2 и топ-3 последнего шанса',
-ccGlobSeatSummit:'место с Саммита', ccGlobSeatMajor:'место с финала Мажора 2',
+ccGlobSeatSummit:'место с Саммита', ccGlobSeatMajor:'место с финала Мажора 2', ccGlobSeatMajor25:'место с финала Мейджора',
 ccGlobSeatGclc:'место с последнего шанса',
 ccPostMateHappy:me=>'Хорошая неделя с @'+me+' 🔥',
 ccPostMateCross:()=>'Так играть нельзя. Разбираем повторы и заново',
@@ -9473,6 +9481,9 @@ ccMovePickHint:'Pick a country on the map — the number on it is the ping',
 ccMoveGain:'Rating from ping',
 ccMoveAlready:'You already live here', ccMoveGo:r=>'Move to '+r,
 ccOrgCutRow:'Club takes of winnings', ccOrgCutPaid:'Paid to the club',
+ccYear:'Year', ccYear2026:'duos → trios', ccYear2025:'trios', ccYr25Group:n=>'group '+n, ccYr25Lobby:'last chance lobby',
+ccYearNote2026:'FNCS 2026: divisional cups, two Majors, Reload, the Global Championship in Antwerp. Year two is trios.',
+ccYearNote2025:'FNCS 2025: trios all year, three Majors with a Group Stage, the Global Championship in Lyon. The field is the 2025 cards. After Lyon the career moves into 2026.',
 ccDiff:'Difficulty', ccDiffRow:'Difficulty',
 ccDiffNote:'Changes one thing only — how fast the rating climbs. The field, the prize money and the prices are the same on all of them: harder is not a stronger room, it is a longer road',
 ccDiffEasy:'Easy', ccDiffPro:'Pro', ccDiffElite:'Elite', ccDiffLegend:'Legend',
@@ -10109,7 +10120,7 @@ ccNewsGlobCash:(p,v)=>'Global Championship: '+ccTop(p)+' — $'+v,
 ccNewsGlobNoCash:(p,of)=>'Global Championship: '+ccTop(p)+' of '+of,
 ccNewsGlobChamp:'WORLD CHAMPION 🌍🏆',
 ccGlobLocked:c=>c+' is the Summit top 15, the Major 2 Final top 9 and the Last Chance top 3',
-ccGlobSeatSummit:'a seat from the Summit', ccGlobSeatMajor:'a seat from the Major 2 Final',
+ccGlobSeatSummit:'a seat from the Summit', ccGlobSeatMajor:'a seat from the Major 2 Final', ccGlobSeatMajor25:'a seat from a Major Final',
 ccGlobSeatGclc:'a seat from the Last Chance',
 ccPostMateHappy:me=>'Good week with @'+me+' 🔥',
 ccPostMateCross:()=>'We cannot keep playing like this. Back to the VODs',
@@ -11139,7 +11150,7 @@ ccFfBroke:d=>'L’avance rapide s’est arrêtée le '+d+' — cette soirée n�
 ccFfTrained:'Jours d’entraînement',
 ccNewsGlobChamp:'CHAMPION DU MONDE 🌍🏆',
 ccGlobSeatSummit:'une place venue du Summit',
-ccGlobSeatMajor:'une place venue de la Finale du Major 2',
+ccGlobSeatMajor:'une place venue de la Finale du Major 2', ccGlobSeatMajor25:'une place venue d’une Finale de Major',
 ccGlobSeatGclc:'une place venue du Last Chance',
 ccAcademy:'Académie',
 ccOfferDuo:'ton coéquipier aussi', ccOfferDuoT:'toute l’équipe',
@@ -12680,6 +12691,9 @@ ccAge:'Âge',
 ccRole:'Rôle', ccMateKick:'Retirer de l’équipe', ccMateKickAsk:n=>'Retirer '+n+' de l’équipe ? La place gagnée ensemble est perdue.', ccRoleSwapTo:r=>'Passer '+r, ccRoleLockedTwo:'L’équipe a déjà un IGL, et elle ne peut pas en avoir deux.', ccRoleLockedNone:'Tu es le seul IGL de l’équipe, et une équipe sans IGL ne joue pas.',
 ccDivision:'Division',
 ccDivNote:'La division fixe ta note de départ. Cinq, c’est toute la montée depuis rien ; un, c’est que tu es déjà dans le top 50 de ta région.',
+ccYear:'Année', ccYear2026:'duos → trios', ccYear2025:'trios', ccYr25Group:n=>'groupe '+n, ccYr25Lobby:'lobby de la dernière chance',
+ccYearNote2026:'FNCS 2026 : coupes divisionnaires, deux Majors, Reload, le Global Championship à Anvers. Deuxième année en trios.',
+ccYearNote2025:'FNCS 2025 : trios toute l’année, trois Majors avec phase de groupes, le Global Championship à Lyon. Les adversaires sont les cartes 2025. Après Lyon, la carrière passe en 2026.',
 ccDiff:'Difficulté',
 ccDiffNote:'Ne change qu’une chose — la vitesse à laquelle la note monte. Le niveau des adversaires, les gains et les prix sont les mêmes partout : plus dur ne veut pas dire lobby plus fort, mais route plus longue',
 ccRegion:'Région',
@@ -13020,6 +13034,9 @@ ccRole:"Ruolo",
 ccSpTitle:"Punti abilità",
 ccSpCreateHint:"Assegnati una volta sola, qui: +0.5 a una statistica per punto",
 ccDivision:"Divisione",
+ccYear:"Anno", ccYear2026:"duo → trio", ccYear2025:"trio", ccYr25Group:n=>'girone '+n, ccYr25Lobby:'lobby dell\'ultima chance',
+ccYearNote2026:"FNCS 2026: coppe divisionali, due Major, Reload, Global Championship ad Anversa. Il secondo anno è in trio.",
+ccYearNote2025:"FNCS 2025: trio tutto l'anno, tre Major con fase a gironi, Global Championship a Lione. Gli avversari sono le carte 2025. Dopo Lione la carriera passa al 2026.",
 ccDiff:"Difficoltà",
 ccRegion:"Regione",
 ccRegionNote:"La regione è il server su cui giochi e la scala che scali. Ognuna ha la sua mappa qui sotto.",
@@ -15267,7 +15284,7 @@ ccFfNothing:"Nessun torneo in quei giorni",
 ccFfTrained:"Giorni di allenamento",
 ccNewsGlobChamp:"CAMPIONE DEL MONDO 🌍🏆",
 ccGlobSeatSummit:"un posto dal Summit",
-ccGlobSeatMajor:"un posto dalla Finale del Major 2",
+ccGlobSeatMajor:"un posto dalla Finale del Major 2", ccGlobSeatMajor25:"un posto da una Finale di Major",
 ccGlobSeatGclc:"un posto dalla Last Chance",
 ccAcademy:"Academy",
 ccMainRoster:"Prima squadra",
@@ -15522,6 +15539,9 @@ ccRole:"Função",
 ccSpTitle:"Pontos de habilidade",
 ccSpCreateHint:"Distribuídos uma única vez, aqui: +0,5 em um atributo por ponto",
 ccDivision:"Divisão",
+ccYear:"Ano", ccYear2026:"duplas → trios", ccYear2025:"trios", ccYr25Group:n=>'grupo '+n, ccYr25Lobby:'lobby da última chance',
+ccYearNote2026:"FNCS 2026: copas divisionais, dois Majors, Reload, Global Championship em Antuérpia. O segundo ano é em trios.",
+ccYearNote2025:"FNCS 2025: trios o ano todo, três Majors com fase de grupos, Global Championship em Lyon. Os adversários são as cartas de 2025. Depois de Lyon a carreira segue para 2026.",
 ccDiff:"Dificuldade",
 ccRegion:"Região",
 ccRegionNote:"A região é o servidor em que você joga e a escada que você sobe. Cada uma tem seu mapa abaixo.",
@@ -17769,7 +17789,7 @@ ccFfNothing:"Nenhum torneio nesses dias",
 ccFfTrained:"Dias treinados",
 ccNewsGlobChamp:"CAMPEÃO MUNDIAL 🌍🏆",
 ccGlobSeatSummit:"uma vaga vinda do Summit",
-ccGlobSeatMajor:"uma vaga vinda da Final do Major 2",
+ccGlobSeatMajor:"uma vaga vinda da Final do Major 2", ccGlobSeatMajor25:"uma vaga vinda de uma Final de Major",
 ccGlobSeatGclc:"uma vaga vinda da Last Chance",
 ccAcademy:"Academy",
 ccMainRoster:"Time principal",
@@ -57775,7 +57795,7 @@ function ccMakePlayer(){
   };
 }
 
-const CC={mode:'rookie', country:null, photo:null, card:null, role:'roleFRG', div:5, region:'EU', born:null, sex:'m'};
+const CC={mode:'rookie', country:null, photo:null, card:null, role:'roleFRG', div:5, region:'EU', born:null, sex:'m', year:2026};
 /* Пол — его пункт 1 со страницы «ы», 22 августа. Выбор есть у построенного
    игрока; у взятой карточки это факт о человеке, как возраст, и кнопки
    закрыты (ростер FNCS — мужчины, вопрос не встаёт). Хранится 'm'|'f' на
@@ -57953,6 +57973,8 @@ function ccPickRegion(r){
 function ccPickRole(k){ CC.role=k; ccRenderChips(); ccSync(); }
 function ccPickDiv(d){ CC.div=d; ccRenderChips(); ccSync(); }
 function ccPickDiff(id){ CC.diff=id; ccRenderChips(); ccSync(); }
+// Год карьеры: 2026 (дуо, потом трио) или 2025 (трио, три Мейджора, Лион). См. ccCalYear.
+function ccPickYear(y){ CC.year=y===2025 ? 2025 : 2026; ccRenderChips(); ccSync(); }
 
 // Role belongs to the card — it is read off the attributes and cannot be argued
 // with. Division is a choice either way. A taken card starts wherever you put it,
@@ -57973,6 +57995,15 @@ function ccRenderChips(){
   }).join('');
   // The chip says what it does: a number under a name, the way the divisions
   // carry their band. Easy is the mode as it has always played.
+  const ychips=document.getElementById('ccYearChips');
+  if(ychips){
+    ychips.innerHTML=[2026, 2025].map(y=>{
+      const on=(CC.year||2026)===y;
+      return `<button class="cc-chip${on?' on':''}" onclick="ccPickYear(${y})">${y}<small>${L()['ccYear'+y]}</small></button>`;
+    }).join('');
+    const yn=document.getElementById('ccYearNote');
+    if(yn) yn.textContent=L()['ccYearNote'+(CC.year||2026)];
+  }
   const dchips=document.getElementById('ccDiffChips');
   if(dchips) dchips.innerHTML=CC_DIFFS.map(d=>{
     const on=(CC.diff||'easy')===d.id;
@@ -58515,7 +58546,8 @@ function ccStart(){
     },
     // A career starts in the duo year; the trio one is season two. See
     // careerSquadSize for why the shape is written down rather than derived.
-    career:{season:1, size:2, diff:(CC.diff||'easy'), day:careerStartDay(), division: CC.div,
+    career:{season:1, size:(CC.year===2025 ? 3 : 2), year:(CC.year===2025 ? 2025 : 2026), year0:(CC.year===2025 ? 2025 : 2026),
+            diff:(CC.diff||'easy'), day:null, division: CC.div,
             // A career that starts in Division 1 starts known: that room is
             // 300 people the scene watches, and nobody is in it unread.
             reach: creator ? Math.round((ccProAmFollowers(creator)||0)*CC_PROAM_REACH_SHARE)
@@ -58573,6 +58605,11 @@ function ccStart(){
      was already recorded correctly and this ignored it: starting a career in
      slot two saved it over slot one and left slot two empty. Two careers were
      never possible, and the first was destroyed by trying. */
+  /* Первый день — по календарю ВЫБРАННОГО года: careerStartDay читает год с
+     живой карьеры, поэтому сейв на миг становится ею. */
+  { const was=CAREER; CAREER=save; save.career.day=careerStartDay();
+    if(save.partner) save.partner.since=ccAddDays(save.career.day, -CC_CHEM_DAYS);
+    CAREER=was; }
   try{ localStorage.setItem(LS_SLOT(ccSlot()), JSON.stringify(save)); }catch(e){}
   openCareerHub();
   /* И если карьеру заводили ради команды — сразу в лобби. Намерение ставит
@@ -62209,7 +62246,7 @@ function careerRenderSlots(){
   /* Где в сезоне карьера остановилась — долей года, а не датой. Год у карьеры
      один и тот же (CC_YEAR_FROM…CC_YEAR_TO), поэтому позиция настоящая. */
   const railOf=(day)=>{
-    const a=new Date(CC_YEAR_FROM+'T00:00:00Z'), b=new Date(CC_YEAR_TO+'T00:00:00Z');
+    const a=new Date(ccYearFrom()+'T00:00:00Z'), b=new Date(ccYearTo()+'T00:00:00Z');
     const d=new Date((day||CC_YEAR_FROM)+'T00:00:00Z');
     return Math.max(2, Math.min(100, Math.round((d-a)/(b-a)*100)));
   };
@@ -62537,7 +62574,7 @@ function careerRenderHubBody(tab){
         L().ccBurnoutDays(cr.grind||0)} · -${b}</b></div>`; })();
   document.getElementById('chPurse').innerHTML=
     `<div><em>${L().chSeason}</em><b>${cr.season}</b></div>`+
-    `<div><em>${L().chWeek}</em><b>${careerWeek()}/${CAREER_WEEKS}</b></div>`+
+    `<div><em>${L().chWeek}</em><b>${careerWeek()}/${ccYearWeeks()}</b></div>`+
     `<div><em>${L().xFollowers}</em><b>${ccFollowers(careerReach())}</b></div>`+
     // Твич — своя аудитория, врозь с твиттером. Пункт 8 страницы «ы».
     `<div><em>Twitch</em><b>${ccFollowers(CAREER.career.twitch||0)}</b></div>`;
@@ -62708,7 +62745,7 @@ function careerCentreHTML(card, a){
   const dows=L().calDows;
   let peekRuns=null;
   let barSsn=null;
-  for(let w=1; w<=CAREER_WEEKS; w++){
+  for(let w=1; w<=ccYearWeeks(); w++){
     // Смена фортнайтовского сезона — подпись перед квадратиком его первой
     // недели. См. CSS у .ch-ssn.
     const ssn=careerFncsSeason(careerWeekStart(w));
@@ -64241,9 +64278,11 @@ const CAREER_CUT={1:'—', 2:'top 50', 3:'top 100', 4:'top 200', 5:'top 400'};
 // 48, не 47: последний вечер года — финал FNCS Solos 27 октября (правила Epic
 // от 1 сентября 2026), и неделя у него своя. См. CC_YEAR_TO.
 const CAREER_WEEKS=48;
+// Недель в ГОДЕ карьеры: 2026-й — все 48, 2025-й короче (11 декабря — 7 сентября).
+function ccYearWeeks(){ return ccIs2025() ? careerWeekIndex(ccYearTo()) : CAREER_WEEKS; }
 
 function careerToday(){
-  return (CAREER && CAREER.career && CAREER.career.day) || CC_YEAR_FROM;
+  return (CAREER && CAREER.career && CAREER.career.day) || ccYearFrom();
 }
 function careerMonday(iso){
   const t=new Date(iso+'T00:00:00Z');
@@ -64252,13 +64291,13 @@ function careerMonday(iso){
   return dateKey(t);
 }
 function careerWeekIndex(iso){
-  const from=new Date(careerMonday(CC_YEAR_FROM)+'T00:00:00Z');
+  const from=new Date(careerMonday(ccYearFrom())+'T00:00:00Z');
   const here=new Date(careerMonday(iso)+'T00:00:00Z');
   return Math.floor((here-from)/(7*86400000))+1;
 }
 // The date a career week starts on, for the screens that still think in weeks.
 function careerWeekStart(week){
-  return ccAddDays(careerMonday(CC_YEAR_FROM), (week-1)*7);
+  return ccAddDays(careerMonday(ccYearFrom()), (week-1)*7);
 }
 // What the screens mean when they say "the week": where the clock is standing.
 function careerWeek(){ return careerWeekIndex(careerToday()); }
@@ -65239,7 +65278,7 @@ const CC_D1_ONLY=['final','eval'];
 // follows from it.
 function careerStartDay(){
   const days=careerYearDays();
-  for(let w=1; w<=CAREER_WEEKS; w++){
+  for(let w=1; w<=ccYearWeeks(); w++){
     const from=careerWeekStart(w);
     for(let d=0; d<7; d++)
       // A Reload day counts only when it is the Opens: everything after them
@@ -65249,7 +65288,7 @@ function careerStartDay(){
            (e.kind!=='reload' || /Opens$/.test(String(e.id||'')))))
         return from;
   }
-  return CC_YEAR_FROM;
+  return ccYearFrom();
 }
 // Moving the clock. Past the last day of the measured year the career year is
 // over — there is no thirty-ninth week to walk into.
@@ -65291,7 +65330,7 @@ function careerStartDay(){
    session three of a tournament that has two. */
 function careerCupSession(){
   const today=careerToday();
-  const w=CC_CUP_WEEKS.find(r=>r[1]===today || r[2]===today);
+  const w=ccCupWeeks().find(r=>r[1]===today || r[2]===today);
   // Неделя из одной сессии (Division 1 Practice, S42): этот вечер и решает —
   // банковать нечего, второго не приедет.
   if(w && !w[2]) return 2;
@@ -65344,7 +65383,7 @@ function careerAdvanceBody(iso){
   // have met it: every runner writes its history row and then moves the day,
   // so one hook here covers the cup, the final, the Major and the rest.
   careerMonthGoalCheck();
-  const to=iso>CC_YEAR_TO ? CC_YEAR_TO : iso;
+  const to=iso>ccYearTo() ? ccYearTo() : iso;
   // A night takes some of the week off by itself, so a career that simply
   // stops for a few days comes back fresh without spending them on rest.
   const nights=Math.max(0, Math.round((new Date(to+'T00:00:00Z')-new Date(cr.day+'T00:00:00Z'))/86400000));
@@ -65382,7 +65421,7 @@ function careerAdvanceBody(iso){
   careerSponsorDm();
   // And somebody who would like to do the talking with the clubs.
   careerAgentDm();
-  if(iso>CC_YEAR_TO){ cr.seasonOver=true; cr.day=CC_YEAR_TO; }
+  if(iso>ccYearTo()){ cr.seasonOver=true; cr.day=ccYearTo(); }
   else cr.day=iso;
   /* Гонка карьер: сводка уезжает соперникам каждый прожитый день — ПОСЛЕ смены
      даты. До 8.09 вечера она уходила строкой выше, со вчерашним днём: в перемотке
@@ -65457,7 +65496,7 @@ function careerMigrateClock(){
   if(!cr || cr.day) return;
   const wasIn=Math.max(1, Math.min(CAREER_WEEKS, cr.week||1))-1;
   cr.day=ccAddDays(careerStartDay(), wasIn*7);
-  if(cr.day>CC_YEAR_TO) cr.day=CC_YEAR_TO;
+  if(cr.day>ccYearTo()) cr.day=ccYearTo();
   // The old field goes with it. Left in place it is a second clock that never
   // ticks, and the first thing to read it believes the career never moved.
   delete cr.week;
@@ -65570,6 +65609,8 @@ function careerMigrateSize(){
    Reload is not in this. It has its own islands in every year, and the three
    runners that play it name them a line after the default. */
 const CC_TRIO_ISLANDS=[{from:'2026-05-01', set:'t2'}, {from:'2026-07-01', set:'t3'}];
+// 2025-й: остров меняется с Плей-Ином следующего Мейджора (даты — CAREER_YEAR_2025).
+const CC_TRIO_ISLANDS_2025=[{from:'2025-04-09', set:'t2'}, {from:'2025-07-16', set:'t3'}];
 function careerBrSet(){
   if(careerSquadSize()!==3){
     /* Остров дуо-года — по сезону Fortnite, как у трио-года. Тестер, 16.09:
@@ -65583,7 +65624,7 @@ function careerBrSet(){
   }
   const day=careerToday();
   let set='t1';
-  CC_TRIO_ISLANDS.forEach(r=>{ if(day>=r.from) set=r.set; });
+  (ccIs2025() ? CC_TRIO_ISLANDS_2025 : CC_TRIO_ISLANDS).forEach(r=>{ if(day>=r.from) set=r.set; });
   return set;
 }
 /* ОСТРОВ СОЛО-ВЕЧЕРА — не сезонный. Репорт игрока 6 сентября: «If it's a trio
@@ -66313,6 +66354,11 @@ const CAREER_EV_ART={
    Reload Solo — герб сверху, мелкое FORTNITE, крупное FNCS SOLO, полоска в цветах
    события из imp_event.Colors. */
 const CAREER_EV_ART_ID={
+  // Мейджоры 2025-го — со своими постерами Epic (те же, что на плитках драфта); Лион — Major 3's.
+  Major1_2025_PlayIn:'art/mode-major1-2025.jpg', Major1_2025_Group1:'art/mode-major1-2025.jpg', Major1_2025_Group2:'art/mode-major1-2025.jpg', Major1_2025_Group3:'art/mode-major1-2025.jpg', Major1_2025_LCQ:'art/mode-major1-2025.jpg', Major1_2025_LCLobby:'art/mode-major1-2025.jpg', Major1_2025_Final:'art/mode-major1-2025.jpg',
+  Major2_2025_PlayIn:'art/mode-major2-2025.jpg', Major2_2025_Group1:'art/mode-major2-2025.jpg', Major2_2025_Group2:'art/mode-major2-2025.jpg', Major2_2025_Group3:'art/mode-major2-2025.jpg', Major2_2025_LCQ:'art/mode-major2-2025.jpg', Major2_2025_LCLobby:'art/mode-major2-2025.jpg', Major2_2025_Final:'art/mode-major2-2025.jpg',
+  Major3_2025_PlayIn:'art/mode-major3-2025.jpg', Major3_2025_Group1:'art/mode-major3-2025.jpg', Major3_2025_Group2:'art/mode-major3-2025.jpg', Major3_2025_Group3:'art/mode-major3-2025.jpg', Major3_2025_LCQ:'art/mode-major3-2025.jpg', Major3_2025_LCLobby:'art/mode-major3-2025.jpg', Major3_2025_Final:'art/mode-major3-2025.jpg',
+  GlobalChampionship2025:'art/mode-major3-2025.jpg',
   FNCSSolos_Q1Round2:'art/fncs-solo.jpg', FNCSSolos_Q1Round3:'art/fncs-solo.jpg',
   FNCSSolos_FastTrack:'art/fncs-solo.jpg', FNCSSolos_Q2Round2:'art/fncs-solo.jpg',
   FNCSSolos_Q2Round3:'art/fncs-solo.jpg', FNCSSolos_Heats:'art/fncs-solo.jpg',
@@ -66631,6 +66677,37 @@ const CC_CUP_2025={games:10, finalGames:6, finalGamesS36:7};
      trio year has fewer days on it and the calendar strip has to say so rather
      than leaving four months looking broken. */
 const CC_YEAR_2025_FROM='2024-12-11', CC_YEAR_2025_TO='2025-09-07';
+/* Какой календарный год играет ТЕКУЩИЙ сезон карьеры.
+
+   Его слово, 20 сентября: «сделай карьеру как для выбора с расписанием 2025
+   года полностью и игроки тоже из того года». Год живёт на карьере (cr.year),
+   как и размер состава: сейв без поля — 2026, каким он и был. Год 2025
+   играется один раз, трио, и на стыке переходит в 2026 (cr.year0 помнит,
+   с какого года карьера началась — от этого зависит сдвиг номеров сезонов и
+   чётность дуо/трио). Всё, что раньше читало константы 2026 года, читает эти
+   функции; сами константы остались как есть. */
+function ccCalYear(){
+  const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
+  return cr && cr.year===2025 ? 2025 : 2026;
+}
+function ccIs2025(){ return ccCalYear()===2025; }
+function ccYearFrom(){ return ccIs2025() ? CC_YEAR_2025_FROM : CC_YEAR_FROM; }
+function ccYearTo(){ return ccIs2025() ? CC_YEAR_2025_TO : CC_YEAR_TO; }
+function ccYearRows(){ return ccIs2025() ? CAREER_YEAR_2025 : CAREER_YEAR; }
+function ccCupWeeks(){ return ccIs2025() ? CC_CUP_WEEKS_2025 : CC_CUP_WEEKS; }
+// Performance Evaluation в 2025 не ставится: страниц за тот год на Tracker нет.
+function ccEvalNights(){ return ccIs2025() ? [] : CC_EVAL_NIGHTS; }
+// Год «текущих» карточек: в 2025-м сцена — это карты 2025-го.
+function ccNowYear(){ return ccCalYear(); }
+// Сколько 2026-х годов карьера уже прожила до текущего сезона (для номеров сезонов и года на экране).
+function ccYearShift(){
+  const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
+  if(!cr) return 0;
+  const past=(cr.season||1)-1 - (cr.year0===2025 ? 1 : 0);
+  return Math.max(0, past);
+}
+// Год, который стоит писать на экране за этот сезон.
+function ccSeasonYear(){ return ccIs2025() ? 2025 : 2026+ccYearShift(); }
 // The Performance Evaluation, night by night rather than as a span: it is the
 // one event that runs every week of the year, and a career calendar has to put
 // it on the right evening. Division 1 only — its own page says so.
@@ -66728,11 +66805,13 @@ function ccWorldReset(){
   CC_YEAR_DAYS=null;
   CH_ARC_TBL={};
 }
+let CC_YEAR_DAYS_OF=null;
 function careerYearDays(){
-  if(CC_YEAR_DAYS) return CC_YEAR_DAYS;
+  if(CC_YEAR_DAYS && CC_YEAR_DAYS_OF===ccCalYear()) return CC_YEAR_DAYS;
+  CC_YEAR_DAYS_OF=ccCalYear();
   const out=new Map();
   const add=(iso, kind, label, id, only)=>{
-    if(iso<CC_YEAR_FROM || iso>CC_YEAR_TO) return;
+    if(iso<ccYearFrom() || iso>ccYearTo()) return;
     if(!out.has(iso)) out.set(iso, []);
     out.get(iso).push({kind, label, id, only:only||null});
   };
@@ -66740,7 +66819,7 @@ function careerYearDays(){
   // below Division 1 these are two separate goes at the same cut rather than two
   // rounds of one tournament, and a label that says round tells the player the
   // first one carries into the second. It does not.
-  CC_CUP_WEEKS.forEach(function(w){
+  ccCupWeeks().forEach(function(w){
     const id=w[0], final=w[3], only=w[4]||null;
     add(w[1], 'cup', L().calSession.replace('{N}', '1'), id, only);
     // Неделя из одной сессии (Division 1 Practice, S42) второго вечера не имеет.
@@ -66749,7 +66828,7 @@ function careerYearDays(){
     if(final) add(final, 'final', L().calWeeklyFinal, id);
   });
   const sessions={};
-  CAREER_YEAR.forEach(function(row){
+  ccYearRows().forEach(function(row){
     const from=row[0], to=row[1], id=row[2], kind=row[3], shape=row[4];
     // A session is one of several goes at the same cut, numbered in order.
     if(shape==='session'){
@@ -66767,7 +66846,7 @@ function careerYearDays(){
     // Everything else is the days it actually ran, end to end.
     for(let d=from; d<=to; d=ccAddDays(d,1)) add(d, kind, ccYearLabel(id, d, from), id);
   });
-  CC_EVAL_NIGHTS.forEach(d=>add(d, 'eval', L().calPerfEval, 'PerformanceEvaluation'));
+  ccEvalNights().forEach(d=>add(d, 'eval', L().calPerfEval, 'PerformanceEvaluation'));
   CC_GCLC.forEach(v=>add(v.day, 'gc',
     v.q===0 ? L().ccGcFinal : L().ccGcRound(v.q, v.round), 'GlobalChampionshipLastChance'));
   CC_VICTORY.forEach(v=>add(v.day, 'victory',
@@ -66868,7 +66947,15 @@ function ccLanFixed(season){
   return out;
 }
 function ccLanHostKey(kind, season){
-  const s=season || ((CAREER && CAREER.career && CAREER.career.season) || 1);
+  const cr=(CAREER && CAREER.career) || null;
+  let s=season || ((cr && cr.season) || 1);
+  /* Карьера, начатая в 2025-м: первый год — Лион (это факт, а не жребий),
+     второй — 2026-й, то есть первый измеренный год со своими залами; жребий
+     дальше идёт с той же точки, что у карьеры 2026-го. */
+  if(cr && cr.year0===2025){
+    if(s<=1) return kind==='globals' ? 'Lyo' : (CC_LAN_FIRST[kind] || CC_LAN_FIRST.summit);
+    s=s-1;
+  }
   return ccLanFixed(s)[kind] || CC_LAN_FIRST[kind] || CC_LAN_FIRST.summit;
 }
 /* Цвета флага страны, где стоит ЛАН.
@@ -67005,6 +67092,18 @@ function ccLanCityIn(kind, season){
 // What a day of a multi-day block is called. A three-day Heats block wants
 // "Heats 2" rather than three identical rows.
 function ccYearLabel(id, day, from){
+  /* Строки 2025-го носят имена 2026-го: Major1_2025_PlayIn — это тот же
+     «Мейджор 1 · плей-ин». Группы и лобби последнего шанса — своё, у 2026-го
+     их в календаре нет (там хиты и лобби в день LCQ). */
+  const m25=/^Major(\d)_2025_(PlayIn|Group([123])|LCQ|LCLobby|Final)$/.exec(id);
+  if(m25){
+    const names=L().ccYearNames||{};
+    const majName=(names['Major'+m25[1]+'_PlayIn']||('Major '+m25[1]+' · Play-In')).split(' · ')[0];
+    if(m25[3]) return majName+' · '+L().ccYr25Group(+m25[3]);
+    if(m25[2]==='LCLobby') return majName+' · '+L().ccYr25Lobby;
+    id='Major'+m25[1]+'_'+m25[2];
+  }
+  if(id==='GlobalChampionship2025') id='GlobalChampionship';
   let base=(L().ccYearNames && L().ccYearNames[id]) || id;
   // The two rows that name a city name whichever city it is this year.
   const hasCity=base.indexOf('{CITY}')>=0;
@@ -67067,8 +67166,8 @@ function careerEvents(){
      в день, где стоит настоящий турнир, он никогда не перебьёт его. Стоит он
      ровно на CC_YEAR_TO, то есть на том дне, на котором карьера и замирает
      (см. careerAdvanceBody: всё, что дальше, сажается на эту дату). */
-  if(!out.has(CC_YEAR_TO)) out.set(CC_YEAR_TO, []);
-  out.get(CC_YEAR_TO).push({kind:'gala', label:L().ccGalaDay, id:'SeasonGala',
+  if(!out.has(ccYearTo())) out.set(ccYearTo(), []);
+  out.get(ccYearTo()).push({kind:'gala', label:L().ccGalaDay, id:'SeasonGala',
                             lan:null, art:CAREER_EV_ART.gala});
   return out;
 }
@@ -67084,7 +67183,7 @@ function ccLanKindOf(id, kind){
 // stop at the two ends of it — there is nothing to page to outside the season.
 let CH_MONTH=null;
 function careerMonthBounds(){
-  const a=new Date(CC_YEAR_FROM+'T00:00:00Z'), b=new Date(CC_YEAR_TO+'T00:00:00Z');
+  const a=new Date(ccYearFrom()+'T00:00:00Z'), b=new Date(ccYearTo()+'T00:00:00Z');
   return {from:{y:a.getUTCFullYear(), m:a.getUTCMonth()},
           to:  {y:b.getUTCFullYear(), m:b.getUTCMonth()}};
 }
@@ -67652,11 +67751,14 @@ function careerLadderPlayer(rnd, ovr, taken, natHint, roleWant, topOvr, plain){
 // on hKey the way the drafting code already does.
 let CC_EU_CARDS={};
 function careerRosterEU(){
-  const reg=ccCareerRegion();
+  const reg=ccCareerRegion()+(ccIs2025() ? '|2025' : '');
   if(CC_EU_CARDS[reg]) return CC_EU_CARDS[reg];
   const best=new Map();
+  // В 2025-м году сцена — это люди 2025-го: карты позже того года не существуют.
+  const yearCap=ccNowYear();
   PLAYERS.forEach(p=>{
-    if((p.region||'')!==reg) return;
+    if((p.region||'')!==ccCareerRegion()) return;
+    if(yearCap<2026 && ccCardYear(p)>yearCap) return;
     const k=hKey(p), o=attrsFor(p).ovr;
     const cur=best.get(k);
     if(!cur || o>cur._ovr){ const c={...p}; c._ovr=o; best.set(k, c); }
@@ -67699,7 +67801,7 @@ function ccCardYear(card){
   const ev=String((card && card.event)||'');
   const m=/(20\d\d)/.exec(ev);
   if(m) return +m[1];
-  return /Reload Elite Series/.test(ev) ? CC_NOW_YEAR : 0;
+  return /Reload Elite Series/.test(ev) ? CC_NOW_YEAR : 0;   // серия 2026-го: константа, не год карьеры
 }
 
 /* The roster as it stands now: the newest card each player has from the year
@@ -67754,8 +67856,8 @@ function ccSceneRoster(reg){
   const season=ccSeasonOvr();
   const now=new Map();
   PLAYERS.forEach(p=>{
-    if((p.region||'')!==reg || ccCardYear(p)!==CC_NOW_YEAR) return;
-    const k=hKey(p), day=ccCardDay(p) || CC_NOW_YEAR*10000;
+    if((p.region||'')!==reg || ccCardYear(p)!==ccNowYear()) return;
+    const k=hKey(p), day=ccCardDay(p) || ccNowYear()*10000;
     const cur=now.get(k);
     if(!cur || day>cur._day){
       const c={...p}, a=attrsFor(p);
@@ -68146,6 +68248,12 @@ function careerTeam(cards, keepRoles, strangers){
    The snapshot turns over with the Major, and the turnover is the roster's, not
    a generator's: 139 of Major 1's 300 are not in Major 2's, and the 161 who
    stayed gained 1.4 of overall. */
+// Снимки 2025-го — по Плей-Инам трёх Мейджоров (даты — CAREER_YEAR_2025).
+const CC_SNAPSHOTS_2025=[
+  {tag:'t1', from:CC_YEAR_2025_FROM, playIn:/2025 Major 1 . Play-In/, lcq:/2025 Major 1 . Last Chance Qualifier/},
+  {tag:'t2', from:'2025-04-09',      playIn:/2025 Major 2 . Play-In/, lcq:/2025 Major 2 . Last Chance Qualifier/},
+  {tag:'t3', from:'2025-07-16',      playIn:/2025 Major 3 . Play-In/, lcq:/2025 Major 3 . Last Chance Qualifier/}
+];
 const CC_SNAPSHOTS=[
   {tag:'m1', from:CC_YEAR_FROM, playIn:/2026 Major 1 . Play-In/,
    lcq:/2026 Major 1 . Last Chance Qualifier/},
@@ -68390,7 +68498,7 @@ function ccSeasonOvr(){
      Он там заглушён намеренно (CAREER_MUTE), но в карьере играется, значит
      чего-то стоить обязан. Читается с карточек, весами из CC_STAGE_WEIGHT. */
   PLAYERS_BASE.forEach(c=>{
-    if(ccCardYear(c)!==CC_NOW_YEAR) return;
+    if(ccCardYear(c)!==ccNowYear()) return;
     if(CC_LEDGER_2026 && !/^r[1-4]$/.test(String(c.cardSet||''))) return;
     /* Число этого вечера, а не карточки: attrsFor читает q.rating, а в него
        подмешаны три лучшие карточки человека за все годы. Его правка,
@@ -68489,10 +68597,13 @@ function ccSeasonOvr(){
 }
 let CC_EU_ALL={};
 function ccEuCards(){
-  const reg=ccPoolRegion();
+  const reg=ccPoolRegion()+(ccIs2025() ? '|2025' : '');
   if(CC_EU_ALL[reg]) return CC_EU_ALL[reg];
   const season=ccSeasonOvr();
-  CC_EU_ALL[reg]=(reg==='ALL' ? PLAYERS.slice() : PLAYERS.filter(p=>(p.region||'')===reg))
+  const reg0=ccPoolRegion(), yearCap=ccNowYear();
+  // 2025-й год: сцена — люди 2025-го, карт позже того года не существует.
+  CC_EU_ALL[reg]=(reg0==='ALL' ? PLAYERS.slice() : PLAYERS.filter(p=>(p.region||'')===reg0))
+                   .filter(p=>yearCap>=2026 || ccCardYear(p)<=yearCap)
                    .map(p=>{
                      const c={...p};
                      const a=attrsFor(p);
@@ -68501,7 +68612,7 @@ function ccEuCards(){
                      // _k опознаёт человека внутри уже отфильтрованного по
                      // региону пула, и менять его значило бы трогать всё, что
                      // на нём стоит. Разные вопросы — разные ключи.
-                     const yr=ccCardYear(p)===CC_NOW_YEAR ? season.get(ccSeasonKey(p)) : null;
+                     const yr=ccCardYear(p)===ccNowYear() ? season.get(ccSeasonKey(p)) : null;
                      if(yr!=null && yr!==c._ovr){
                        /* Свой набор шести чисел, а не общий с настоящей
                           карточкой: attrsFor сдвигает их к _targetOvr прямо в
@@ -68571,12 +68682,17 @@ function ccDuosOf(re, people){
     if(!re.test(String(c.event||''))) return;
     rosterEntriesOf(c).forEach(({entry})=>{
       // The 2025 sets hold trios in the same shape; a Division cup plays duos.
-      if(entry.duo.length!==2) return;
-      const keys=entry.duo.map(h=>hKey(h)).sort(), id=keys.join('|');
+      /* В 2025-м году трио — это настоящий состав: первые двое — ядро пары,
+         третий запоминается и пишется в cr.trios (careerPools), а не
+         разыгрывается рынком. */
+      const trio=ccIs2025() && entry.duo.length===3;
+      if(entry.duo.length!==2 && !trio) return;
+      const keys=entry.duo.slice(0,2).map(h=>hKey(h)).sort(), id=keys.join('|');
       if(seen.has(id)) return;
       const a=people.get(keys[0]), b=people.get(keys[1]);
       if(!a || !b) return;
-      seen.set(id, {cards:[a, b], avg:(a._ovr+b._ovr)/2});
+      const third=trio ? people.get(hKey(entry.duo[2])) : null;
+      seen.set(id, {cards:[a, b], avg:(a._ovr+b._ovr)/2, third:third ? (third._k||hKey(third)) : null});
     });
   });
   return [...seen.values()];
@@ -68608,6 +68724,8 @@ function ccSnapshotNow(){
      Его же правило от 28 августа: «в начале сезона изменения только, если они
      нужны, а не каждый кап». Дуо-год не тронут. */
   const today=careerToday();
+  // 2025: снимок идёт за Мейджором — составы того года измерены по каждому.
+  if(ccIs2025()){ let s25=CC_SNAPSHOTS_2025[0]; CC_SNAPSHOTS_2025.forEach(s=>{ if(today>=s.from) s25=s; }); return s25; }
   let snap=CC_SNAPSHOTS[0];
   if(typeof careerSquadSize==='function' && CAREER && CAREER.career && careerSquadSize()===3) return snap;
   CC_SNAPSHOTS.forEach(s=>{ if(today>=s.from) snap=s; });
@@ -68632,6 +68750,14 @@ function careerPools(){
   } else if(CC_POOLS && CC_POOLS.tag===snap.tag && CC_POOLS.reg===reg) return CC_POOLS;
   const seated=new Set();
   const duos=ccSeat(ccDuosOf(snap.playIn, ccPeopleOf(snap.playIn)), seated);
+  /* 2025: третьи — с карточек, один раз на снимок. Записываются в ЖИВУЮ
+     карьеру, потому что читает их комната оттуда (careerCupField). */
+  if(ccIs2025() && CAREER && CAREER.career && !CC_REGION_AS && CAREER.career.triosSeeded!==snap.tag){
+    const cr=CAREER.career; cr.trios=cr.trios||{};
+    duos.forEach(d=>{ if(d.third && !seated.has(d.third)){ cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')]=d.third; seated.add(d.third); } });
+    cr.triosSeeded=snap.tag;
+    if(typeof careerSave==='function') careerSave();
+  }
   /* И те, кто зашёл в Мейджор с другой стороны.
 
      Его правило, 21 августа: в дивизионе 1 те команды, которые были в Плей-Ине
@@ -69113,10 +69239,10 @@ function careerRealPlayers(taken, rnd, scope){
    and this touches one week of the year rather than all seventeen. */
 function ccCupWeekSalt(){
   const today=careerToday();
-  const idx=CC_CUP_WEEKS.findIndex(r=>r[1]===today || r[2]===today);
+  const idx=ccCupWeeks().findIndex(r=>r[1]===today || r[2]===today);
   if(idx<0) return '';
-  const first=CC_CUP_WEEKS.findIndex(r=>careerMonday(r[1])===careerMonday(today));
-  return idx===first ? '' : 'cw'+CC_CUP_WEEKS[idx][1];
+  const first=ccCupWeeks().findIndex(r=>careerMonday(r[1])===careerMonday(today));
+  return idx===first ? '' : 'cw'+ccCupWeeks()[idx][1];
 }
 /* open — this event is open to every division rather than played inside one.
 
@@ -72639,7 +72765,7 @@ function ccOffersOpen(place, of){
    cr.earnings is what events paid, cr.wages is what clubs did. */
 function careerWagePaydays(){
   const out=[];
-  for(let d=ccAddDays(careerStartDay(),1); d<=CC_YEAR_TO; d=ccAddDays(d,1))
+  for(let d=ccAddDays(careerStartDay(),1); d<=ccYearTo(); d=ccAddDays(d,1))
     if(d.slice(8)==='01') out.push(d);
   return out;
 }
@@ -75929,7 +76055,7 @@ function ccRoadmapLines(){
   const groups=new Map();
   const keyOf=id=>String(id).replace(/_(PlayIn|Heats|LCQ|Final|Upper|Lower|Qualifier|Q\dRound\d|FastTrack|LCQRound\d|LCQFinal)$/,'')
                           .replace(/(Opens|PlayIn|Heats|Final)$/,'');
-  CAREER_YEAR.forEach(row=>{
+  ccYearRows().forEach(row=>{
     const from=row[0], to=row[1], id=row[2], kind=row[3];
     const k=keyOf(id);
     const g=groups.get(k)||{from:from, to:to, id:id, kind:kind, n:0};
@@ -75968,7 +76094,7 @@ function careerRoadmapTickOld(){
   cr.told=cr.told||{};
   if(cr.told[key]) return false;
   cr.told[key]=1;
-  const year=Number(String(CC_YEAR_TO).slice(0,4))+((cr.season||1)-1);
+  const year=ccSeasonYear();
   // Только год: строки расписания словарь строит при показе, на текущем языке.
   careerNews('good', 'ccNewsRoadmap', [year], {art:'major'});
   ccAnnounceReact((cr.news||[])[0]);
@@ -80599,7 +80725,7 @@ function careerWorldFinals(fromISO, toISO){
     // Финал мейджора — из тех, кто прошёл хиты и Ласт Ченс (мир их уже сыграл).
     const mj=careerMajorOn(d);
     if(mj && mj.stage==='final'){
-      const st=ccScaleStage(CC_MAJOR_STAGE.final);
+      const st=ccScaleStage(ccMajorStageSpec('final'));
       play(d, 'major'+mj.n, 'major', mj.label||'Major', ()=>ccMajorFinalRoom(stubOf(), lobbyCr, drafted, mj, st, CC_FIELD_SHARP.final),
            st.games, st.pts||majorPoints, st.kill, majorPrize, {div:1, kind:'major', stage:'final'});
     }
@@ -81107,8 +81233,8 @@ function careerOwns(id){ return !!(CAREER.gear && CAREER.gear.own && CAREER.gear
    So the label counts seasons: season 1 is 2026, season 2 is 2027. The dates
    underneath never move, and nothing reads this back. */
 function ccShowYear(y){
-  const s=(CAREER && CAREER.career && CAREER.career.season) || 1;
-  return Number(y)+Math.max(0, s-1);
+  // Сдвиг — по прожитым 2026-м годам: карьера, начатая в 2025-м, во второй сезон пишет 2026, а не 2027.
+  return Number(y)+ccYearShift();
 }
 /* The day, said the way a person says it: "пятница, 5 сентября". The mode is
    played on a calendar whose whole shape is weekdays — the cups are Monday and
@@ -83456,10 +83582,10 @@ function careerSkipTarget(){
   const today=careerToday();
   const list=[...days.keys()].filter(d=>d>today).sort();
   for(const d of list){
-    if(d>=CC_YEAR_TO) break;
+    if(d>=ccYearTo()) break;
     if((days.get(d)||[]).some(e=>careerCanPlayKindOn(d, e.kind))) return {day:d, ev:(days.get(d)||[]).find(e=>careerCanPlayKindOn(d, e.kind))};
   }
-  return {day:CC_YEAR_TO, ev:null};
+  return {day:ccYearTo(), ev:null};
 }
 /* Сама кнопка — одна на оба места: под закрытым вечером (рядом с «Пропустить
    день») и в панели дня (рядом со «Следующий день» или подсказкой «выбери, на
@@ -83713,6 +83839,7 @@ function careerTrioRaids(cr){
 function ccTrioMarket(cr, force){
   const c=cr || (CAREER && CAREER.career);
   if(!c || careerSquadSize()!==3) return 0;
+  if(ccIs2025()) return 0;   // трио 2025-го настоящие, с карточек — рынку тут нечего делать
   // На стыке года рынок открывается ВСЕГДА (force): метка там ещё от прошлого
   // сезона, а сезон уже новый.
   if(!force && c.raided===c.season) return 0;
@@ -83765,6 +83892,9 @@ function careerNewSeason(){
   sizes[cr.season]=careerSquadSize();
   // A second career year is the same measured year again: only 2026 was
   // measured, and a 2027 does not exist to copy.
+  /* Год 2025 играется один раз: со стыка карьера идёт в 2026-й (дуо, как
+     было в жизни), и первый день нового сезона — уже по календарю 2026-го. */
+  if(cr.year===2025) cr.year=2026;
   cr.season++; cr.day=careerStartDay(); cr.seasonOver=false;
   cr.plog={}; delete cr.plogYou;   // журнал вечеров игроков — по сезону (careerPlayerStatsHTML, фраггер года)
   /* Тройки переживают межсезонье — но не все.
@@ -83811,7 +83941,10 @@ function careerNewSeason(){
   CC_POOLS=null; CC_NOW_CARDS={};
   // Odd years are duos and even years are trios. Written down rather than
   // derived — see careerSquadSize.
-  cr.size = (cr.season % 2) ? 2 : 3;
+  /* Год 2025 играется один раз: со стыка карьера идёт в 2026-й (дуо, как
+     было в жизни). Дальше чередование по чётности — с поправкой на то, что
+     первый год был трио: у карьеры, начатой в 2025-м, сезон 2 — дуо, 3 — трио. */
+  cr.size = ((cr.season + (cr.year0===2025 ? 1 : 0)) % 2) ? 2 : 3;
   sizes[cr.season]=cr.size;
   /* И рынок трио — после того, как размер года известен: пересобирается сцена
      только в трио-год. См. careerTrioRaids и ccTrioMarket. */
@@ -83921,6 +84054,15 @@ function careerNewSeason(){
    and this reads the same line. A partner who has outgrown the player by more
    than CAREER_DM_REACH leaves too, for the same reason nobody that far above
    would have said yes in the first place. */
+/* Сезоны 2025-го — Chapter 6: коды Epic скачут (S35 — «Galactic Battle» без
+   дивизионных кубков, S37 — Chapter 6 Season 4 до самого S39). Даты — патчи. */
+const CC_SEASONS_2025=[
+  {id:'S33', from:'2024-12-01', to:'2025-02-20'},
+  {id:'S34', from:'2025-02-21', to:'2025-05-01'},
+  {id:'S35', from:'2025-05-02', to:'2025-06-06'},
+  {id:'S36', from:'2025-06-07', to:'2025-08-06'},
+  {id:'S37', from:'2025-08-07', to:'2025-11-28'}
+];
 const CC_SEASONS=[
   {id:'S39', from:'2025-11-29', to:'2026-03-18'},
   {id:'S40', from:'2026-03-19', to:'2026-06-05'},
@@ -83947,6 +84089,7 @@ function ccSeasonAfter(d){
 }
 function careerFncsSeason(iso){
   const d=iso||careerToday();
+  if(ccIs2025()) return CC_SEASONS_2025.find(x=>d>=x.from && d<=x.to) || null;
   const base=CC_SEASONS.find(x=>d>=x.from && d<=x.to) || ccSeasonAfter(d);
   if(!base) return null;
   /* Второй год карьеры ходит по тем же датам, но сезоны не начинаются заново
@@ -83954,8 +84097,7 @@ function careerFncsSeason(iso){
      43 44 и тд». Один календарный год держит четыре сезона (S39–S41 измерены,
      S42 достроен и подтверждён его же Tracker-сейвами), и каждый следующий
      год карьеры двигает номер на четыре. */
-  const yr=(typeof CAREER!=='undefined' && CAREER && CAREER.career && CAREER.career.season
-            ? CAREER.career.season : 1)-1;
+  const yr=ccYearShift();
   if(yr<=0) return base;
   return {id:'S'+(Number(String(base.id).slice(1))+yr*4), from:base.from, to:base.to};
 }
@@ -84792,7 +84934,7 @@ function careerRcOn(iso){
   const e=(careerYearDays().get(iso)||[]).find(x=>x.kind==='gc' &&
         String(x.id||'')==='ReloadChampionshipParis');
   if(!e) return null;
-  const row=CAREER_YEAR.find(r=>r[2]==='ReloadChampionshipParis');
+  const row=ccYearRows().find(r=>r[2]==='ReloadChampionshipParis');
   if(!row) return null;
   let i=0;
   for(let d=row[0]; d<iso; d=ccAddDays(d,1)) i++;
@@ -84889,7 +85031,7 @@ const CC_MAJOR_HEAT_VR=944;
    Карьера играет один хит из своих — свой, — но собирает поле на все, иначе
    весь верх региона садится в ту единственную комнату, которую показывают
    (жалоба его игрока, 24 августа). */
-function ccMajorHeats(){ return DEEP_MAJOR_REGIONS.has(ccCareerRegion()) ? 3 : 2; }
+function ccMajorHeats(){ if(ccIs2025()) return 3; return DEEP_MAJOR_REGIONS.has(ccCareerRegion()) ? 3 : 2; }
 /* Один хит: сколько в нём игр и сколько из него проходит.
 
    Глубокий регион — пять игр, топ-15 (его игрок, 26 августа: «in duos its top
@@ -84904,6 +85046,8 @@ function ccMajorHeats(){ return DEEP_MAJOR_REGIONS.has(ccCareerRegion()) ? 3 : 2
    первый; свой номер раннер подставляет сам. См. runCareerMajor. */
 function ccMajorHeat(n, heatNo){
   const reg=ccCareerRegion();
+  // 2025: групповой этап — пять игр, топ-5 группы плюс каждая победа; счёт уже в трио (raw).
+  if(ccIs2025()) return {games:CC_MAJOR_STAGE_2025.group.games, cut:CC_MAJOR_STAGE_2025.group.cut, raw:true};
   if(DEEP_MAJOR_REGIONS.has(reg)) return {games:5, cut:15};
   const six = (n===1 && heatNo===2 &&
                (reg==='OCE' || reg==='ASIA' || reg==='ME'));
@@ -85049,12 +85193,40 @@ const CC_MAJOR_STAGE={
           get field(){ return careerLadderEntrants(); }},
   final :{games:12, kill:4, field:50,               cut:0,              pts:majorPoints}
 };
-const CC_MAJOR_DAY={PlayIn:'playin', Heats:'heats', LCQ:'lcq', Final:'final'};
-const CC_MAJOR_ORDER=['playin','heats','lcq','final'];
+const CC_MAJOR_DAY={PlayIn:'playin', Heats:'heats', LCQ:'lcq', LCLobby:'lclobby', Final:'final'};
+// Лобби последнего шанса — своя стадия только в 2025-м; в 2026-м оно идёт в день LCQ.
+const CC_MAJOR_ORDER=['playin','heats','lcq','lclobby','final'];
+/* Числа стадии — по году. 2025-й: плей-ин двадцать игр (два дня по десять,
+   одной сессией — упрощение), отсечка 99 трио как есть; LCQ десять игр и 33
+   трио; лобби три игры, победа — билет; финал двенадцать игр. Отсечки 2025-го
+   уже в трио, поэтому cutScaled — чтобы ccScaleStage их не резал ещё раз. */
+function ccMajorStageSpec(stage){
+  const base=CC_MAJOR_STAGE[stage] || (stage==='lclobby' ? CC_MAJOR_STAGE.lcq : null);
+  if(!ccIs2025()) return base;
+  const y=CC_MAJOR_STAGE_2025;
+  if(stage==='playin') return Object.assign({}, base, {games:y.playin.games*y.playin.days, cut:y.playin.cut, cutScaled:true});
+  if(stage==='lcq')    return Object.assign({}, base, {games:y.lcq.games, cut:y.lcq.cut, cutScaled:true});
+  if(stage==='lclobby')return {games:y.lclobby.games, kill:0, pts:victoryR2Points, cut:0, field:y.lcq.cut, cutScaled:true};
+  if(stage==='final')  return Object.assign({}, base, {games:y.final.games*y.final.days});
+  return base;
+}
+// Комната лобби последнего шанса 2025-го — те, кто прошёл вчерашний LCQ.
+function ccMajorLcRoom(you, ev){
+  const cr=CAREER.career, lc=cr.majorLc;
+  if(!lc || lc.n!==ev.n || lc.season!==cr.season) return [you];
+  return lc.rows.map(r=>r==='you' ? you : ccMajorTeamFrom(r));
+}
 function careerMajorOn(iso){
   const e=(careerYearDays().get(iso)||[]).find(x=>x.kind==='major');
   if(!e) return null;
-  const m=String(e.id||'').match(/^Major(\d)_(PlayIn|Heats|LCQ|Final)$/);
+  let m=String(e.id||'').match(/^Major(\d)_(PlayIn|Heats|LCQ|Final)$/);
+  /* 2025-й: Major1_2025_Group2 — это хиты, и номер группы — это nth: свой
+     день у каждой группы, как у Epic, а не блок подряд. */
+  const m25=String(e.id||'').match(/^Major(\d)_2025_(PlayIn|Group([123])|LCQ|LCLobby|Final)$/);
+  if(!m && m25){
+    if(m25[3]) return {n:+m25[1], stage:'heats', id:e.id, label:e.label, nth:+m25[3], group:true};
+    m=[m25[0], m25[1], m25[2]];
+  }
   if(!m) return null;
   /* Какой это по счёту день блока — то есть КАКОЙ ХИТ идёт сегодня.
 
@@ -85067,7 +85239,7 @@ function careerMajorOn(iso){
      соседние — миром. Тогда и вечер не дорожает: за день считается один хит,
      а не все сразу. */
   let nth=0;
-  const row=CAREER_YEAR.find(r=>r[2]===e.id);
+  const row=ccYearRows().find(r=>r[2]===e.id);
   if(row) for(let d=row[0], i=1; d<=row[1]; d=ccAddDays(d,1), i++)
     if(d===iso){ nth=i; break; }
   return {n:+m[1], stage:CC_MAJOR_DAY[m[2]], id:e.id, label:e.label, nth:nth};
@@ -85103,7 +85275,7 @@ function ccMajorWorldHeats(iso){
   if(!rows) return 0;
   const h=ccMajorHeat(ev.n, ev.nth);
   const st=Object.assign({}, ccScaleStage(CC_MAJOR_STAGE.heats),
-                         {games:h.games, cut:ccTeams(h.cut)});
+                         {games:h.games, cut:h.raw ? h.cut : ccTeams(h.cut)});
   /* Место игрока в змейке занимает заглушка: сама раскладка обязана совпасть с
      той, по которой он вышел в свой день, иначе соседний хит соберётся из
      других людей. В комнату заглушка не идёт. */
@@ -85145,11 +85317,11 @@ function ccMajorWorldLcq(iso){
   const me=careerCard(), mates=careerMates();
   if(!me) return 0;
   const drafted=[me].concat(mates.filter(Boolean));
-  const fin=ccScaleStage(CC_MAJOR_STAGE.final);
+  const fin=ccScaleStage(ccMajorStageSpec('final'));
   const seatsTaken=(s.through||[]).length;
   const need=Math.max(0, fin.field-seatsTaken);
   if(!need) { s.lcq=[]; return 0; }
-  const st=ccScaleStage(CC_MAJOR_STAGE.lcq);
+  const st=ccScaleStage(ccMajorStageSpec('lcq'));
   // И у мира то же правило: держащий место в финале Ласт Ченс не играет.
   const room=ccAsWorld(()=>careerCupField(Object.assign({}, cr, {division:1}),
                                           drafted.concat(ccMajorSeatedHandles(ev)),
@@ -85241,13 +85413,20 @@ function careerMajorCan(ev){
   const ticket = !gaveUp && !!(m && m.n===ev.n && m.ticket);
   if(done && CC_MAJOR_ORDER.indexOf(done)>=CC_MAJOR_ORDER.indexOf(ev.stage)) return false;
   if(ev.stage==='playin') return cr.division===1;
-  if(ev.stage==='lcq')    return !ticket;
+  if(ev.stage==='lcq')    return !ticket && !(ccIs2025() && m && m.n===ev.n && m.pass==='lcq');
+  // 2025: лобби — на следующий день после LCQ, для тех, кто прошёл его отсечку.
+  if(ev.stage==='lclobby') return ccIs2025() && !ticket && !!(m && m.n===ev.n && m.pass==='lcq');
   // Cleared, not merely played: finishing 140th in a Play-In is not a place in
   // the Heats. See the note where cr.major is written.
   /* День блока игрока НЕ ограничивает: у Epic твой хит в свой день, но хаб
      об этом пока не говорит ни слова, и запрет читался бы как «кнопка пропала».
      Днями расписан только МИР — см. ccMajorWorldHeats. */
-  if(ev.stage==='heats')  return !gaveUp && !!(m && m.n===ev.n && m.pass==='playin');
+  if(ev.stage==='heats'){
+    if(!(!gaveUp && !!(m && m.n===ev.n && m.pass==='playin'))) return false;
+    // 2025: группа играется в СВОЙ день. Своя группа — по той же змейке посева.
+    if(ev.group){ const mine=ccMajorMyHeat(ev); if(mine && mine!==ev.nth) return false; }
+    return true;
+  }
   if(ev.stage==='final')  return ticket;
   return false;
 }
@@ -85277,7 +85456,8 @@ function ccRegionTable(tables){
 // Epic's payout for a Major Final, read straight rather than through
 // prizeTableFor, which branches on CARD_SET — a global the career does not set.
 function majorPrize(place){
-  const t=(typeof PRIZE_TABLES!=='undefined' && ccRegionTable(PRIZE_TABLES)) || null;
+  // 2025-й платит своей таблицей (Attachment C 2025, одна на все три Мейджора).
+  const t=ccRegionTable(ccIs2025() ? P2025_PRIZES : PRIZE_TABLES) || null;
   return t ? (t[String(place)]||0) : 0;
 }
 
@@ -85689,7 +85869,7 @@ const CC_WF_PAY={1:10000, 2:5000, 3:3000, 4:2000, 5:1500, 6:1000, 7:1000,
 const CC_WF_PAY_S42={1:2500, 2:1250, 3:625, 4:500, 5:375, 6:250, 7:250,
                      8:200, 9:200, 10:200};
 function ccWfIsPractice(){
-  const w=CC_CUP_WEEKS.find(r=>r[3]===careerToday());
+  const w=ccCupWeeks().find(r=>r[3]===careerToday());
   return !!(w && /^S42_/.test(w[0]));
 }
 function wfPrize(place){
@@ -86015,7 +86195,7 @@ function careerReloadOn(iso){
    at the end of it is the tournament's. A player who only turns up for one
    evening is scored on that evening, which is also true of the real thing. */
 function careerReloadSession(ev){
-  const row=CAREER_YEAR.find(r=>r[2]===ev.id);
+  const row=ccYearRows().find(r=>r[2]===ev.id);
   if(!row || row[0]===row[1]) return 1;
   return careerToday()===row[1] ? 2 : 1;
 }
@@ -87370,7 +87550,7 @@ function ccLanThird(reg, seated, ovr){
      десятой, — но правило дешёвое, а ловушка настоящая. Ник без карточки в
      перебор по силе не входит; за него отвечает выдуманный третий ниже, у
      которого рейтинг назван честно. */
-  const idx=gcCardIndex(CC_NOW_YEAR);
+  const idx=gcCardIndex(ccNowYear());
   const known=h=>{
     const k=_gcNorm(h);
     return !!(idx[k] || idx[_gcNorm(GC_HANDLE_ALIAS[k]||'')]);
@@ -87379,7 +87559,7 @@ function ccLanThird(reg, seated, ovr){
   for(let i=0;i<pool.length;i++){
     const h=pool[i];
     if(seated.has(_gcNorm(h)) || paired.has(_gcNorm(h)) || !known(h)) continue;
-    const c=gcFindCard(h, reg, want, CC_NOW_YEAR);
+    const c=gcFindCard(h, reg, want, ccNowYear());
     if(!c || seated.has(_gcNorm(c.handle)) || paired.has(_gcNorm(c.handle))) continue;
     const gap=Math.abs(ccCardOvr(c)-want);
     if(gap<bestGap){ bestGap=gap; best={h:h, c:c}; if(gap===0) break; }
@@ -87430,7 +87610,7 @@ function ccLanTrioThird(cards, reg, room, avg){
     if(want && !room.has(_gcNorm(want))){
       // Тройка ездит вместе: если её третьего нет на доске этого региона,
       // карточку ему всё равно найдут — он приехал с ними.
-      const c=gcFindCard(want, reg, avg, CC_NOW_YEAR);
+      const c=gcFindCard(want, reg, avg, ccNowYear());
       if(c && !room.has(_gcNorm(c.handle))){
         room.add(_gcNorm(want)); room.add(_gcNorm(c.handle));
         return c;
@@ -87450,7 +87630,7 @@ function ccLanTrioThird(cards, reg, room, avg){
 }
 function ccLanTeam(duo, region, fallbackOvr, seated){
   // Карьера играет свой год — и на ЛАНе тоже. См. gcCardIndex.
-  const cards=duo.map(h=>gcFindCard(h, region, fallbackOvr, CC_NOW_YEAR));
+  const cards=duo.map(h=>gcFindCard(h, region, fallbackOvr, ccNowYear()));
   if(seated){
     const keys=duo.map(_gcNorm).concat(cards.map(c=>_gcNorm(c.handle)));
     if(keys.some(k=>seated.has(k))) return null;
@@ -88216,6 +88396,19 @@ function ccGcSlots(table){
   return ccTeams(table[r]!=null ? table[r] : (table.EU||0));
 }
 function ccGlobalsSeat(){
+  /* 2025: в Лион везут финалы трёх Мейджоров, по квоте региона на каждый
+     (GC2025_M1/M2/M3_SEATS — Epic'овы), и никакого последнего шанса. */
+  if(ccIs2025()){
+    const cr=CAREER.career;
+    const log=(cr.log||[]).filter(r=>r.season===cr.season).reverse();
+    const tables={1:GC2025_M1_SEATS, 2:GC2025_M2_SEATS, 3:GC2025_M3_SEATS};
+    const hit=log.find(r=>{
+      if(r.kind!=='major' || r.stage!=='final' || !r.place) return false;
+      const ev=careerMajorOn(r.day);
+      return !!ev && r.place<=ccGcSlots(tables[ev.n]||GC2025_M3_SEATS);
+    });
+    return hit ? {via:'major2', place:hit.place, note:L().ccGlobSeatMajor25} : null;
+  }
   // Этого года — см. ccSummitSeat.
   const cr=CAREER.career;
   const log=(cr.log||[]).filter(r=>r.season===cr.season).reverse();
@@ -88278,6 +88471,10 @@ function ccGcOwnSeats(n, drafted, seated, tag){
     .slice(0, n);
 }
 function careerGlobalsField(you, drafted, via){
+  /* 2025: Лион — 33 трио, поле уже собрано режимом драфта из настоящих
+     составов Лиона (buildGlobalChampionship2025Field): места Мейджоров 1 и 2 —
+     реальные трио, Мейджора 3 — по регионам; твоё место вытесняет одно. */
+  if(ccIs2025()) return buildGlobalChampionship2025Field(you, ccCareerRegion(), null);
   /* ЗАЛ ОДИН НА КОМНАТУ ГОНКИ. Список занятых мест начинался со СВОЕГО состава: строка
      записи, в которой стоит мой человек, у меня из зала выпадала, а у соседа — нет, и
      Глобалы у двоих собирались разные (годовая проба на шестерых, 01.10: 17 строк из 50
@@ -88424,7 +88621,7 @@ function careerGlobalsField(you, drafted, via){
 // Antwerp's purse. GC2026_PRIZES rather than prizeTableFor('GC2026'), which
 // branches on CARD_SET — a global the career does not set.
 function gcPrize(place){
-  const t=(typeof GC2026_PRIZES!=='undefined' && GC2026_PRIZES) || null;
+  const t=ccIs2025() ? GC2025_PRIZES : ((typeof GC2026_PRIZES!=='undefined' && GC2026_PRIZES) || null);
   return t ? (t[String(place)]||0) : 0;
 }
 async function runCareerGlobals(){
@@ -88644,7 +88841,7 @@ async function runCareerMajor(){
   // duos, and a trio Major seats the same players in a third fewer teams.
   // let, а не const: свой номер хита известен только после посева, а он в
   // одном регионе меняет и число игр, и отсечку. См. ccMajorHeat ниже.
-  let st=ccScaleStage(CC_MAJOR_STAGE[ev.stage]);
+  let st=ccScaleStage(ccMajorStageSpec(ev.stage));
   // A month at the facility that covers this day is worth arriving ready.
   careerCampBonus('major', ev.id||ev.label||'');
   /* The squad this season is played in, not a duo.
@@ -88693,7 +88890,7 @@ async function runCareerMajor(){
   // From the Heats on it is the top of Europe in the room whatever division the
   // player came from — the Last Chance is exactly the door that lets somebody
   // from Division 4 walk into it.
-  const deep = ev.stage!=='playin' && ev.stage!=='lcq';
+  const deep = ev.stage!=='playin' && ev.stage!=='lcq' && ev.stage!=='lclobby';
   const lobbyCr = deep ? Object.assign({}, cr, {division:1}) : cr;
   // And the Last Chance draws its field the way an open does: every rung of the
   // ladder weighted by how big that room really is, rather than the division the
@@ -88767,6 +88964,8 @@ async function runCareerMajor(){
       // Финал садится из таблицы Плей-Ина, а не из свежего броска. См.
       // ccMajorFinalRoom — пары внутри турнира не пересобираются.
       ? ccMajorFinalRoom(you, lobbyCr, drafted, ev, st, sharp)
+      : ev.stage==='lclobby'
+      ? ccMajorLcRoom(you, ev)
       // В Ласт Ченсе поле строится без тех, у кого место в финале уже есть.
       // См. ccMajorSeatedHandles.
       : [you, ...careerCupField(lobbyCr,
@@ -88783,7 +88982,7 @@ async function runCareerMajor(){
      это делает ccScaleStage. */
   if(heatsRoom && heatNo){
     const h=ccMajorHeat(ev.n, heatNo);
-    st=Object.assign({}, st, {games:h.games, cut:ccTeams(h.cut)});
+    st=Object.assign({}, st, {games:h.games, cut:h.raw ? h.cut : ccTeams(h.cut)});
   }
 
   /* Дроп выбирается в финале и в хитах — его слова, 22 августа: «пусть не
@@ -88814,7 +89013,7 @@ async function runCareerMajor(){
   const stageLabel = heatNo ? ev.label+' · '+L().ccHeatOf(heatNo, ccMajorHeats()) : ev.label;
   await simulateGamesLive(field, st.games, st.pts, st.kill, 'stage', 0, null, zones,
     {lobbySize:ccTeams(50), stageName:stageLabel, mapReplay:true, choices:true, stopOnYourDeath:true,
-     stopOnWin: ev.stage==='heats',
+     stopOnWin: ev.stage==='heats' || ev.stage==='lclobby', roomOnly: ev.stage==='lclobby',
      // Каждую игру, а не раз за этап — его правка 24 августа. LCQ идёт одним
      // общим полем и точку не выбирает вовсе, поэтому и вопроса там нет.
      dropEachGame:(g,room)=>ev.stage==='lcq' ? null : careerLandingPick(room||field, you, stageLabel, ['major'])});
@@ -88824,7 +89023,7 @@ async function runCareerMajor(){
   // A Victory Royale in the Heats is a ticket on its own — that is what the 944
   // is for, and a team that won a game is already above the cut anyway. Said out
   // loud so the rule does not depend on the arithmetic.
-  if(ev.stage==='heats' && (you.wins||0)>0) through=true;
+  if((ev.stage==='heats' || ev.stage==='lclobby') && (you.wins||0)>0) through=true;
   removeSkipButton();
 
   const shell=createStageCardShell(stageLabel+' — '+field.length);
@@ -88855,7 +89054,12 @@ async function runCareerMajor(){
     const rivalOut=ccRaceNightRoom().some(p=>!top.some(t=>t.mpTag===':'+hKey(p.card)));
     if(!through || rivalOut) ccRaceNightApart();
   }
-  if(ev.stage==='lcq' && through){
+  /* 2025: прошедшие LCQ записываются, лобби — завтра, своим днём (careerMajorOn:
+     Major<n>_2025_LCLobby). Комната лобби — ровно те, кто прошёл. */
+  if(ev.stage==='lcq' && through && ccIs2025()){
+    cr.majorLc={n:ev.n, season:cr.season, rows:ranked.slice(0, st.cut).map(t=>ccSeedRow(t, you, ccMajorSeatRow))};
+  }
+  if(ev.stage==='lcq' && through && !ccIs2025()){
     const lobby=ranked.slice(0, ccTeams(CAREER_CUP_CUT));
     ensureSkipButton();
     // Лобби Ласт Ченса — одна комната из пятидесяти, и точка в ней выбирается,
@@ -88909,7 +89113,7 @@ async function runCareerMajor(){
     careerCongrats(ranked, you, L().ccCongratsMajor(ev.n));
     cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
   } else {
-    const won = ev.stage==='lcq' ? ticket : through;
+    const won = (ev.stage==='lcq' && !ccIs2025()) ? ticket : through;
     /* Two different facts, and they were one field.
 
        His screenshot, 17 August: a Division 4 career told it was holding a slot
@@ -88968,9 +89172,9 @@ async function runCareerMajor(){
        этой ветки его результат пропадал бы, а последние места финала опять
        добирались посевом. Берётся столько же, сколько взял бы мир: сколько
        зала осталось незанятым после хитов. */
-    if(ev.stage==='lcq' && cr.majorSeed && cr.majorSeed.n===ev.n &&
+    if(((ev.stage==='lcq' && !ccIs2025()) || ev.stage==='lclobby') && cr.majorSeed && cr.majorSeed.n===ev.n &&
        cr.majorSeed.season===cr.season && !cr.majorSeed.lcq){
-      const fin=ccScaleStage(CC_MAJOR_STAGE.final);
+      const fin=ccScaleStage(ccMajorStageSpec('final'));
       const need=Math.max(0, fin.field-((cr.majorSeed.through||[]).length));
       const add=ranked.slice(0, need).map(t=>ccSeedRow(t, you, ccMajorSeatRow));
       cr.majorSeed.through=(cr.majorSeed.through||[]).concat(add);
@@ -88996,7 +89200,7 @@ async function runCareerMajor(){
     const prev=(cr.major && cr.major.n===ev.n) ? cr.major : null;
     cr.major={n:ev.n, got:ev.stage,
               pass: won ? ev.stage : (prev ? prev.pass||null : null),
-              ticket: won && (ev.stage==='heats' || ev.stage==='lcq')
+              ticket: won && (ev.stage==='heats' || ev.stage==='lclobby' || (ev.stage==='lcq' && !ccIs2025()))
                       ? true : !!(prev && prev.ticket)};
     careerNews(won?'good':'flat', won?'ccNewsMajThrough':'ccNewsMajOut',
                [ev.label, place, field.length],
@@ -91369,7 +91573,7 @@ function careerPrTally(){
 // Days since the career began, counting a career year as 365 so that year two's
 // February is a year after year one's.
 function ccAbsDay(season, iso){
-  const d=(new Date((iso||CC_YEAR_FROM)+'T00:00:00Z')-new Date(CC_YEAR_FROM+'T00:00:00Z'))/86400000;
+  const d=(new Date((iso||ccYearFrom())+'T00:00:00Z')-new Date(ccYearFrom()+'T00:00:00Z'))/86400000;
   return Math.max(0, (season||1)-1)*365+Math.max(0, d);
 }
 /* Насколько велик этот турнир на самом деле.
@@ -94758,7 +94962,7 @@ function careerOrgQuitDue(iso){
       ? {org:org.name, day:ccAddDays(iso, 20+Math.floor(rnd()*200))} : null;
   }
   const q=cr.orgQuit;
-  return !!(q && q.org===org.name && iso>=q.day && iso<=CC_YEAR_TO);
+  return !!(q && q.org===org.name && iso>=q.day && iso<=ccYearTo());
 }
 
 /* ---- 2. События-развилки: принудительные дни ----
@@ -94896,7 +95100,7 @@ function careerHallHTML(){
   if(rows.length<1) return '';
   const top=(val, better)=>rows.filter(r=>val(r)!=null).sort((a,b)=>better(val(a), val(b)))[0] || null;
   const rich=top(r=>r.earnings||null, (a,b)=>b-a);
-  const early=top(r=>r.d1 ? r.d1.season*10000+ccDaysBetween(CC_YEAR_FROM, r.d1.day) : null, (a,b)=>a-b);
+  const early=top(r=>r.d1 ? r.d1.season*10000+ccDaysBetween(ccYearFrom(), r.d1.day) : null, (a,b)=>a-b);
   const most=top(r=>r.wins||null, (a,b)=>b-a);
   const major=top(r=>r.major, (a,b)=>a-b);
   const rec=(label, r, v)=>r ? `<div class="ch-row"><em>${label}</em><b>${esc(r.nick)} · ${v}</b></div>` : '';
