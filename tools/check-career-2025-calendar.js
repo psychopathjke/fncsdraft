@@ -45,8 +45,9 @@ const BOOT = `
     check('дни года в границах 2025', keys[0]>=CC_YEAR_2025_FROM && keys[keys.length-1]<=CC_YEAR_2025_TO, keys[0]+'…'+keys[keys.length-1]);
     const kinds={}; days.forEach(list=>list.forEach(e=>{ kinds[e.kind]=(kinds[e.kind]||0)+1; }));
     out.notes.kinds=kinds;
-    check('нет Reload / оценки / Summit / Про-Ама / LCQ Глобалов', !kinds.reload && !kinds.eval && !kinds.summit && !kinds.proam && !kinds.gclc, JSON.stringify(kinds));
-    check('три Мейджора × (плей-ин 2 + группы 3 + LCQ + лобби + финал 2) = 27 дней', kinds.major===27, String(kinds.major));
+    check('нет Reload-серии / Summit / Про-Ама / LCQ Глобалов', !kinds.reload && !kinds.summit && !kinds.proam && !kinds.gclc, JSON.stringify(kinds));
+    check('оценка есть: 31 вечер + 6 Reload', kinds.eval===37, String(kinds.eval));
+    check('три Мейджора × 9 дней + Showdown 6 = 33', kinds.major===33, String(kinds.major));
     check('Лион — 6–7 сентября', (days.get('2025-09-06')||[]).some(e=>e.kind==='globals') && (days.get('2025-09-07')||[]).some(e=>e.kind==='globals'));
     check('двенадцать кубковых недель', ccCupWeeks().length===12);
     const cupDays=keys.filter(k=>(days.get(k)||[]).some(e=>e.kind==='cup'));
