@@ -88260,7 +88260,46 @@ function careerWorldD1(iso){
   for(let i=pool.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); const t=pool[i]; pool[i]=pool[j]; pool[j]=t; }
   const duos=pool.slice(0, CAREER_CUP_CUT);
   if(duos.length<8) return null;
+  /* ТРИО-ГОД — ТРОЙКИ И В ЛЕНТЕ. Комната выше игрока и комнаты чужих регионов собирались из пар
+     и в трио-год: третьих здесь никто не сажал, и таблица «финала недели» стояла на двоих. Третий —
+     тот же, что весь сезон (память cr.trios по ключу пары); нет записи — ближайший по силе из
+     свободных пула (у кого своей пары нет), и запись делается один раз, как в careerCupField. */
+  const thirdOf=(function(){
+    if(careerSquadSize()!==3) return null;
+    const all=careerPools();
+    const cr=CAREER && CAREER.career; const memo=(cr && (cr.trios=cr.trios||{}))||{};
+    const pairedK=new Set(); (all.duos||[]).forEach(p=>(p.cards||[]).forEach(c=>pairedK.add(c._k||hKey(c))));
+    const free=(all.players||[]).filter(c=>!pairedK.has(c._k||hKey(c))).slice().sort((a,b)=>ccCardOvr(b)-ccCardOvr(a));
+    const used=new Set();
+    // Чужой запомненный третий свободным не считается: иначе две пары делили бы одного человека,
+    // и на ЛАНе (где память рассаживается первой) одна из них ехала бы с новым.
+    const taken=new Set(Object.keys(memo).map(k=>memo[k]));
+    return function(cards){
+      const key=cards.map(c=>hKey(c)).sort().join('+');
+      const want=memo[key];
+      let c=want ? free.find(x=>(x._k||hKey(x))===want && !used.has(x._k||hKey(x))) : null;
+      if(!c){
+        const avg=(ccCardOvr(cards[0])+ccCardOvr(cards[1]))/2;
+        let best=null, gap=Infinity;
+        free.forEach(x=>{ const k=x._k||hKey(x); if(used.has(k) || pairedK.has(k) || taken.has(k)) return; const g=Math.abs(ccCardOvr(x)-avg); if(g<gap){ gap=g; best=x; } });
+        c=best;
+        if(c && !memo[key] && !ccRaceOn()) memo[key]=c._k||hKey(c);
+      }
+      if(c) used.add(c._k||hKey(c));
+      return c;
+    };
+  })();
+  // Память первой, свежие выборы потом — как в careerCupField: иначе ранняя пара уводила бы
+  // запомненного третьего поздней.
+  const thirds=new Map();
+  if(thirdOf){
+    const cr0=CAREER && CAREER.career, memo0=(cr0 && cr0.trios)||{};
+    const keyOf=d=>d.cards.map(c=>hKey(c)).sort().join('+');
+    duos.filter(d=>memo0[keyOf(d)]).forEach(d=>{ const x=thirdOf(d.cards); if(x) thirds.set(d, x); });
+    duos.filter(d=>!thirds.has(d)).forEach(d=>{ const x=thirdOf(d.cards); if(x) thirds.set(d, x); });
+  }
   const teams=duos.map(d=>{
+    if(thirds.has(d)) d={cards:d.cards.concat([thirds.get(d)]), avg:d.avg};
     const t=careerTeam(d.cards);
     t.name=teamLabel(d.cards);
     t._cards=d.cards;
@@ -97305,6 +97344,14 @@ async function runCareerMajor2024(){
                top: fin ? ccStageTop(ranked, you) : undefined});
   await ccMpClose(ranked);
   careerAdvanceTo(ccAddDays(careerToday(), 1));
+  /* В 2024-м дивизионных кубков нет, а окно предложений клубов открывается только после кубка
+     (runCareerCup) — то есть клубы писали бы раз в год, на стыке сезона. Здесь окно открывает
+     вечер Мейджора: клуб смотрит на результат, как смотрел бы на кубок. */
+  if(ccOffersOpen(place, field.length)){
+    CAREER.offers=careerOrgOffers();
+    careerOrgOffersToDms();
+    if(CAREER.offers && CAREER.offers.length) CAREER.offersDeclined=null;
+  }
   careerSave();
   CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
   careerRenderHub('centre');
