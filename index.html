@@ -43846,7 +43846,678 @@ const PLAYER_PHOTO={
   "Randu@BR": "randu.jpg",
   "Vazen@OCE": "vazen.jpg",
   "Velofps@EU": "velofps.jpg",
-  "Visxals@NAC": "visxals.jpg"
+  "Visxals@NAC": "visxals.jpg",
+  /* Пополнение 21 сентября 2026 — портреты людей 2025-го (наборы t1–t3), его слово
+     «добавь в 25 году аватарки людям, у которых их нет». Liquipedia (инфобокс игрока,
+     tools/fetch-player-photos-v2.js, CC-BY-SA 3.0) и Twitch (аватар канала под тем же ником,
+     tools/fetch-twitch-portraits.js — берётся только с приметой Fortnite). Ключ — с регионом. */
+  "Mongraal@EU": "Mongraal.jpg",   // Liquipedia
+  "Andilex@EU": "Andilex.jpg",   // Liquipedia
+  "Refsgaard@EU": "Refsgaard.jpg",   // Liquipedia
+  "Hen@EU": "Hen.jpg",   // Liquipedia
+  "Nakoo@EU": "Nakoo.jpg",   // Liquipedia
+  "Dela@EU": "Dela.jpg",   // Liquipedia
+  "Xsweeze@EU": "Xsweeze.jpg",   // Liquipedia
+  "Voxe@EU": "Voxe.jpg",   // Liquipedia
+  "Merijn@EU": "Merijn.jpg",   // Liquipedia
+  "zAndy@EU": "zAndy.jpg",   // Liquipedia
+  "Anas@EU": "Anas.jpg",   // Liquipedia
+  "Ceice@NAC": "Ceice.jpg",   // Liquipedia
+  "Edgey@NAC": "Edgey.jpg",   // Liquipedia
+  "Blake@NAC": "Blake.jpg",   // Liquipedia
+  "Avivv@NAC": "Avivv.jpg",   // Liquipedia
+  "Kwanti@NAC": "Kwanti.jpg",   // Liquipedia
+  "Threats@NAC": "Threats.jpg",   // Liquipedia
+  "npen@NAC": "npen.jpg",   // Liquipedia
+  "NoahWPlays@NAC": "NoahWPlays.jpg",   // Liquipedia
+  "oSydd@NAC": "oSydd.jpg",   // Liquipedia
+  "Jargue@NAC": "Jargue.jpg",   // Liquipedia
+  "verT@NAC": "verT.jpg",   // Liquipedia
+  "Doxey@NAC": "Doxey.jpg",   // Liquipedia
+  "Mackwood@NAC": "Mackwood.png",   // Liquipedia
+  "Cam@NAC": "Cam.jpg",   // Liquipedia
+  "Trashy@NAC": "Trashy.jpg",   // Liquipedia
+  "Parz@NAW": "Parz.jpg",   // Liquipedia
+  "Quinn@NAW": "Quinn.jpg",   // Liquipedia
+  "Bacca@NAW": "Bacca.jpg",   // Liquipedia
+  "Sxhool@NAW": "Sxhool.jpg",   // Liquipedia
+  "Salko@NAW": "Salko.jpg",   // Liquipedia
+  "Ark@NAW": "Ark.jpg",   // Liquipedia
+  "minit@NAW": "minit.jpg",   // Liquipedia
+  "Xpon@NAW": "Xpon.jpg",   // Liquipedia
+  "Scarpa@BR": "Scarpa.jpg",   // Liquipedia
+  "Faxuty@NAW": "Faxuty.jpg",   // Liquipedia
+  "Pulga@BR": "Pulga.png",   // Liquipedia
+  "blackoutz@BR": "blackoutz.jpg",   // Liquipedia
+  "Grx@BR": "Grx.jpg",   // Liquipedia
+  "Frosty@BR": "Frosty.jpg",   // Liquipedia
+  "Buyuriru@ASIA": "Buyuriru.jpg",   // Liquipedia
+  "Taiya@ASIA": "Taiya.jpg",   // Liquipedia
+  "TEITEI@ASIA": "TEITEI.jpg",   // Liquipedia
+  "Raito@ASIA": "Raito.jpg",   // Liquipedia
+  "Razl@ASIA": "Razl.jpg",   // Liquipedia
+  "Zagou@ASIA": "Zagou.jpg",   // Liquipedia
+  "bykn@ASIA": "bykn.jpg",   // Liquipedia
+  "merem@ASIA": "merem.jpg",   // Liquipedia
+  "wickesy@ASIA": "wickesy.jpg",   // Liquipedia
+  "Mansour@ME": "Mansour.jpg",   // Liquipedia
+  "Kalgamer@ME": "Kalgamer.jpg",   // Liquipedia
+  "Adapter@ME": "Adapter.jpg",   // Liquipedia
+  "Escdark@ME": "Escdark.jpg",   // Liquipedia
+  "Rew@ME": "Rew.jpg",   // Liquipedia
+  "Rxtr@ME": "Rxtr.jpg",   // Liquipedia
+  "Balor@ME": "Balor.jpg",   // Liquipedia
+  "7man@ME": "7man.jpg",   // Liquipedia
+  "Yo7med@ME": "Yo7med.jpg",   // Liquipedia
+  "Snowy@ME": "Snowy.jpg",   // Liquipedia
+  "Lord@ME": "Lord.png",   // Liquipedia
+  "Aspect@OCE": "Aspect.png",   // Liquipedia
+  "volx@OCE": "volx.jpg",   // Liquipedia
+  "M0untain@OCE": "M0untain.jpg",   // Liquipedia
+  "xavier@OCE": "xavier.jpg",   // Liquipedia
+  "Sazers@OCE": "Sazers.jpg",   // Liquipedia
+  "Looter@OCE": "Looter.jpg",   // Liquipedia
+  "worthy@OCE": "worthy.jpg",   // Liquipedia
+  "Kylie@EU": "Kylie.jpg",   // Liquipedia
+  "k0tyarich@EU": "k0tyarich.jpg",   // Liquipedia
+  "DeRoller@NAC": "DeRoller.jpg",   // Liquipedia
+  "Jerald@OCE": "Jerald.jpg",   // Liquipedia
+  "pxmp@OCE": "PXMP.jpg",   // Liquipedia
+  "Dukez@NAC": "Dukez.png",   // Liquipedia
+  "Mero@NAW": "Mero.png",   // Liquipedia
+  "Paper@NAW": "Paper.jpg",   // Liquipedia
+  "Controller@ME": "Controller.jpg",   // Liquipedia
+  "dandepuzo@EU": "dandepuzo.png",   // Twitch
+  "Pixovsky@EU": "Pixovsky.png",   // Twitch
+  "Rezoy@EU": "Rezoy.png",   // Twitch
+  "Gripey@EU": "Gripey.png",   // Twitch
+  "Shaykoz@EU": "Shaykoz.png",   // Twitch
+  "Liwshe@EU": "Liwshe.png",   // Twitch
+  "SloxZay@EU": "SloxZay.png",   // Twitch
+  "Marco@EU": "Marco.png",   // Twitch
+  "Th3ioF@EU": "Th3ioF.png",   // Twitch
+  "Hyper@EU": "Hyper.png",   // Twitch
+  "Artskill@EU": "Artskill.png",   // Twitch
+  "Fnajen@EU": "Fnajen.png",   // Twitch
+  "Shamokiy@EU": "Shamokiy.png",   // Twitch
+  "Snayzy@EU": "Snayzy.png",   // Twitch
+  "Jakebuca@EU": "Jakebuca.png",   // Twitch
+  "Sami@EU": "Sami.png",   // Twitch
+  "Abdelfnr@EU": "Abdelfnr.png",   // Twitch
+  "GudnBre@EU": "GudnBre.png",   // Twitch
+  "Skyz@EU": "Skyz.png",   // Twitch
+  "F1shyX@EU": "F1shyX.png",   // Twitch
+  "neofinny@EU": "neofinny.png",   // Twitch
+  "Schmalibuca@EU": "Schmalibuca.png",   // Twitch
+  "Mald1s@EU": "Mald1s.png",   // Twitch
+  "AlbaXna@EU": "AlbaXna.png",   // Twitch
+  "Polo@EU": "Polo.png",   // Twitch
+  "Praidyy@EU": "Praidyy.png",   // Twitch
+  "Ricky@EU": "Ricky.png",   // Twitch
+  "trippernn@EU": "trippernn.png",   // Twitch
+  "Maloyache@EU": "Maloyache.png",   // Twitch
+  "Zayni@EU": "Zayni.png",   // Twitch
+  "97default@EU": "97default.png",   // Twitch
+  "Autm0@EU": "Autm0.png",   // Twitch
+  "Jqst1ce@EU": "Jqst1ce.png",   // Twitch
+  "Waiz@EU": "Waiz.png",   // Twitch
+  "Stormyrite@EU": "Stormyrite.png",   // Twitch
+  "Ve1ryy@EU": "Ve1ryy.png",   // Twitch
+  "xzeevit@EU": "xzeevit.png",   // Twitch
+  "vouyyy@EU": "vouyyy.png",   // Twitch
+  "palochka@EU": "palochka.png",   // Twitch
+  "zVortex000@EU": "zVortex000.png",   // Twitch
+  "G13ras@EU": "G13ras.png",   // Twitch
+  "Kyto@EU": "Kyto.png",   // Twitch
+  "Gold@EU": "Gold.png",   // Twitch
+  "karad1m@EU": "karad1m.png",   // Twitch
+  "KovaaksXD@EU": "KovaaksXD.png",   // Twitch
+  "Casperinovic@EU": "Casperinovic.png",   // Twitch
+  "Yanni@EU": "Yanni.png",   // Twitch
+  "thrtysevnn@EU": "thrtysevnn.png",   // Twitch
+  "skqttles@NAC": "skqttles.png",   // Twitch
+  "Chimp@NAC": "Chimp.png",   // Twitch
+  "Doniee@NAC": "Doniee.png",   // Twitch
+  "Salt@NAC": "Salt.png",   // Twitch
+  "OliverOG@NAC": "OliverOG.png",   // Twitch
+  "Bylah@NAC": "Bylah.png",   // Twitch
+  "Liam@NAC": "Liam.png",   // Twitch
+  "FredbotFN@NAC": "FredbotFN.png",   // Twitch
+  "Krreon@NAC": "Krreon.png",   // Twitch
+  "Sparebow@NAC": "Sparebow.png",   // Twitch
+  "Moxy3k@NAC": "Moxy3k.png",   // Twitch
+  "cverce@NAC": "cverce.png",   // Twitch
+  "Kickz@NAC": "Kickz.png",   // Twitch
+  "bologn4@NAC": "bologn4.png",   // Twitch
+  "Drecept@NAC": "Drecept.png",   // Twitch
+  "cauzerz@NAC": "cauzerz.png",   // Twitch
+  "Aaron@NAC": "Aaron.png",   // Twitch
+  "Joji@NAC": "Joji.png",   // Twitch
+  "AsianJeff@NAC": "AsianJeff.png",   // Twitch
+  "Aloe@NAC": "Aloe.png",   // Twitch
+  "tuhronto@NAC": "tuhronto.png",   // Twitch
+  "ayokod@NAC": "ayokod.png",   // Twitch
+  "Sommerset@NAC": "Sommerset.png",   // Twitch
+  "Drew@NAC": "Drew.png",   // Twitch
+  "Zaris@NAC": "Zaris.png",   // Twitch
+  "Hakkioo@NAC": "Hakkioo.png",   // Twitch
+  "Bobby@NAC": "Bobby.png",   // Twitch
+  "REGULARBRD@NAC": "REGULARBRD.png",   // Twitch
+  "teramcrazy@NAC": "teramcrazy.png",   // Twitch
+  "HydraSZN@NAC": "HydraSZN.png",   // Twitch
+  "2xBrando@NAC": "2xBrando.png",   // Twitch
+  "Co1azo@NAC": "Co1azo.png",   // Twitch
+  "Twunti@NAC": "Twunti.png",   // Twitch
+  "Larson@NAC": "Larson.png",   // Twitch
+  "Natmozs@NAC": "Natmozs.png",   // Twitch
+  "Khetzui@NAC": "Khetzui.png",   // Twitch
+  "Electrofv@NAC": "Electrofv.png",   // Twitch
+  "lopiezz@NAC": "lopiezz.png",   // Twitch
+  "Anshubuca@NAC": "Anshubuca.png",   // Twitch
+  "cresy4k@NAC": "cresy4k.png",   // Twitch
+  "anoniana@NAC": "anoniana.png",   // Twitch
+  "Vibefiez@NAC": "Vibefiez.png",   // Twitch
+  "Saucyrn@NAC": "Saucyrn.png",   // Twitch
+  "Stomfishy@NAC": "Stomfishy.png",   // Twitch
+  "snazfv@NAC": "snazfv.png",   // Twitch
+  "Razz@NAC": "Razz.png",   // Twitch
+  "agileszn@NAC": "agileszn.png",   // Twitch
+  "Crackly@NAC": "Crackly.png",   // Twitch
+  "CloverFnx@NAC": "CloverFnx.png",   // Twitch
+  "Rogue@NAC": "Rogue.png",   // Twitch
+  "ImploderOfErasSC@NAC": "ImploderOfErasSC.png",   // Twitch
+  "Giganticboogy@NAC": "Giganticboogy.png",   // Twitch
+  "littlelango83@NAC": "littlelango83.png",   // Twitch
+  "Figics@NAC": "Figics.png",   // Twitch
+  "Yumi@NAW": "Yumi.png",   // Twitch
+  "BludGansta47@NAW": "BludGansta47.png",   // Twitch
+  "beasty@NAW": "beasty.png",   // Twitch
+  "Zyro@NAW": "Zyro.png",   // Twitch
+  "Yasir@NAW": "Yasir.png",   // Twitch
+  "larccoz@NAW": "larccoz.png",   // Twitch
+  "ZLinkRain@NAW": "ZLinkRain.png",   // Twitch
+  "Blizy@NAW": "Blizy.png",   // Twitch
+  "Jeulzz@NAW": "Jeulzz.png",   // Twitch
+  "Qasruh@NAW": "Qasruh.png",   // Twitch
+  "ChickenItza@NAW": "ChickenItza.png",   // Twitch
+  "Leonyfishy@NAW": "Leonyfishy.png",   // Twitch
+  "YooSaltyy@NAW": "YooSaltyy.png",   // Twitch
+  "AliTHY@NAW": "AliTHY.png",   // Twitch
+  "refinefnx@NAW": "refinefnx.png",   // Twitch
+  "Resypical@NAW": "Resypical.png",   // Twitch
+  "Slick@NAW": "Slick.png",   // Twitch
+  "KomanderK@NAW": "KomanderK.png",   // Twitch
+  "Saltloverr@NAW": "Saltloverr.png",   // Twitch
+  "bluzro@NAW": "bluzro.png",   // Twitch
+  "GuyAiden@NAW": "GuyAiden.png",   // Twitch
+  "bullyslayrr@NAW": "bullyslayrr.png",   // Twitch
+  "Crank@NAW": "Crank.png",   // Twitch
+  "tinytawn@NAW": "tinytawn.png",   // Twitch
+  "susscript@NAW": "susscript.png",   // Twitch
+  "Flixxset@NAW": "Flixxset.png",   // Twitch
+  "Rehx@NAW": "Rehx.png",   // Twitch
+  "Delux@NAW": "Delux.png",   // Twitch
+  "THORIK@NAW": "THORIK.png",   // Twitch
+  "Torvenn@NAW": "Torvenn.png",   // Twitch
+  "Jelty@NAW": "Jelty.png",   // Twitch
+  "eryxton7@NAW": "eryxton7.png",   // Twitch
+  "benfv7@NAW": "benfv7.png",   // Twitch
+  "Trey509@NAW": "Trey509.png",   // Twitch
+  "Oceanx1x@NAW": "Oceanx1x.png",   // Twitch
+  "Gosu@NAW": "Gosu.png",   // Twitch
+  "ArceSD@NAW": "ArceSD.png",   // Twitch
+  "quaxzywtf@NAW": "quaxzywtf.png",   // Twitch
+  "Sywizen@NAW": "Sywizen.png",   // Twitch
+  "Kerzuh@NAW": "Kerzuh.png",   // Twitch
+  "Virus@NAW": "Virus.png",   // Twitch
+  "elirayyy@NAW": "elirayyy.png",   // Twitch
+  "kennesiss@NAW": "kennesiss.png",   // Twitch
+  "Myst@BR": "Myst.png",   // Twitch
+  "axadasz@BR": "axadasz.png",   // Twitch
+  "N3Wghoost@BR": "N3Wghoost.png",   // Twitch
+  "keicox@BR": "keicox.png",   // Twitch
+  "Fuzettin@BR": "Fuzettin.png",   // Twitch
+  "EdRoadToGlory@BR": "EdRoadToGlory.png",   // Twitch
+  "Tecne@BR": "Tecne.png",   // Twitch
+  "Diguera@BR": "Diguera.png",   // Twitch
+  "Paulinyache32@BR": "Paulinyache32.png",   // Twitch
+  "N6hue@BR": "N6hue.png",   // Twitch
+  "Nahuxwq@BR": "Nahuxwq.png",   // Twitch
+  "Strendd@BR": "Strendd.png",   // Twitch
+  "jonyleex@BR": "jonyleex.png",   // Twitch
+  "Chizi@BR": "Chizi.png",   // Twitch
+  "Tatinocho@BR": "Tatinocho.png",   // Twitch
+  "Marsfps1@BR": "Marsfps1.png",   // Twitch
+  "Azgiu@BR": "Azgiu.png",   // Twitch
+  "readysz@BR": "readysz.png",   // Twitch
+  "killerkjj@BR": "killerkjj.png",   // Twitch
+  "Nicksreyn@BR": "Nicksreyn.png",   // Twitch
+  "Dediez@BR": "Dediez.png",   // Twitch
+  "Luizinzxbr@BR": "Luizinzxbr.png",   // Twitch
+  "Covrezinn@BR": "Covrezinn.png",   // Twitch
+  "Canvinis@BR": "Canvinis.png",   // Twitch
+  "Velxcista@BR": "Velxcista.png",   // Twitch
+  "blummss@BR": "blummss.png",   // Twitch
+  "d1egobtw67@BR": "d1egobtw67.png",   // Twitch
+  "pietrofn6@BR": "pietrofn6.png",   // Twitch
+  "langonifv@BR": "langonifv.png",   // Twitch
+  "loffsz@BR": "loffsz.png",   // Twitch
+  "JPFK1NG@BR": "JPFK1NG.png",   // Twitch
+  "VxttorFN@BR": "VxttorFN.png",   // Twitch
+  "Dutraftn@BR": "Dutraftn.png",   // Twitch
+  "Txtuba@BR": "Txtuba.png",   // Twitch
+  "nitrzrr@BR": "nitrzrr.png",   // Twitch
+  "xMipoli@ASIA": "xMipoli.png",   // Twitch
+  "Yucky@ASIA": "Yucky.png",   // Twitch
+  "bell@ASIA": "bell.png",   // Twitch
+  "Allen@ASIA": "Allen.png",   // Twitch
+  "4DRStork@ASIA": "4DRStork.png",   // Twitch
+  "Lily@ASIA": "Lily.png",   // Twitch
+  "R1ze@ASIA": "R1ze.png",   // Twitch
+  "rara@ASIA": "rara.png",   // Twitch
+  "steamywiny@ASIA": "steamywiny.png",   // Twitch
+  "Silent@ASIA": "Silent.png",   // Twitch
+  "fuwa@ASIA": "fuwa.png",   // Twitch
+  "Taxruxx@ASIA": "Taxruxx.png",   // Twitch
+  "Skydeun@ME": "Skydeun.png",   // Twitch
+  "Sultan@ME": "Sultan.png",   // Twitch
+  "Fahad@ME": "Fahad.png",   // Twitch
+  "Nachiiri@ME": "Nachiiri.png",   // Twitch
+  "Devy9x@ME": "Devy9x.png",   // Twitch
+  "erinozy@ME": "erinozy.png",   // Twitch
+  "Slay@ME": "Slay.png",   // Twitch
+  "Hza3fv@ME": "Hza3fv.png",   // Twitch
+  "ba7rb@ME": "ba7rb.png",   // Twitch
+  "chepast1k@ME": "chepast1k.png",   // Twitch
+  "i5adx@ME": "i5adx.png",   // Twitch
+  "Alifnbr1@ME": "Alifnbr1.png",   // Twitch
+  "Abodeet@ME": "Abodeet.png",   // Twitch
+  "C10yyy@ME": "C10yyy.png",   // Twitch
+  "Javix@ME": "Javix.png",   // Twitch
+  "Cubix@ME": "Cubix.png",   // Twitch
+  "iTzM7mdFN@ME": "iTzM7mdFN.png",   // Twitch
+  "Vayro@ME": "Vayro.png",   // Twitch
+  "Voetx@ME": "Voetx.png",   // Twitch
+  "BQuuu@ME": "BQuuu.png",   // Twitch
+  "rushfnz@ME": "rushfnz.png",   // Twitch
+  "1Momed@ME": "1Momed.png",   // Twitch
+  "Santaiwnl@ME": "Santaiwnl.png",   // Twitch
+  "speedy@ME": "speedy.png",   // Twitch
+  "ZDog@OCE": "ZDog.png",   // Twitch
+  "Mace@OCE": "Mace.png",   // Twitch
+  "Jxsn@OCE": "Jxsn.png",   // Twitch
+  "Phazma@OCE": "Phazma.png",   // Twitch
+  "Merc@OCE": "Merc.png",   // Twitch
+  "Hezzaar@OCE": "Hezzaar.png",   // Twitch
+  "wpuc@OCE": "wpuc.png",   // Twitch
+  "Pudnara@OCE": "Pudnara.png",   // Twitch
+  "Inxnct@OCE": "Inxnct.png",   // Twitch
+  "Sorif@OCE": "Sorif.png",   // Twitch
+  "Pumpkin@OCE": "Pumpkin.png",   // Twitch
+  "Jakeocuh@OCE": "Jakeocuh.png",   // Twitch
+  "VortexM@OCE": "VortexM.png",   // Twitch
+  "vaxsr@OCE": "vaxsr.png",   // Twitch
+  "SematicFN@OCE": "SematicFN.png",   // Twitch
+  "Beat@OCE": "Beat.png",   // Twitch
+  "jayd7z@OCE": "jayd7z.png",   // Twitch
+  "Newbatoon@OCE": "Newbatoon.png",   // Twitch
+  "trixxcuz@OCE": "trixxcuz.png",   // Twitch
+  "zycra@OCE": "zycra.png",   // Twitch
+  "Wharfers@OCE": "Wharfers.png",   // Twitch
+  "Ceaqul@OCE": "Ceaqul.png",   // Twitch
+  "naicosfv@OCE": "naicosfv.png",   // Twitch
+  "STRE4MLESS@OCE": "STRE4MLESS.png",   // Twitch
+  "MooMooOnMilk@OCE": "MooMooOnMilk.png",   // Twitch
+  "harrycuh@OCE": "harrycuh.png",   // Twitch
+  "John@OCE": "John.png",   // Twitch
+  "Ranveerzr4x@OCE": "Ranveerzr4x.png",   // Twitch
+  "Brock@OCE": "Brock.png",   // Twitch
+  "ItsSambo3@OCE": "ItsSambo3.png",   // Twitch
+  "Comawtf@OCE": "Comawtf.png",   // Twitch
+  "Nerdzfv@OCE": "Nerdzfv.png",   // Twitch
+  "Slaya@OCE": "Slaya.png",   // Twitch
+  "Sync@OCE": "Sync.png",   // Twitch
+  "zavfn@OCE": "zavfn.png",   // Twitch
+  "clusvfv@OCE": "clusvfv.png",   // Twitch
+  "Lofeo@OCE": "Lofeo.png",   // Twitch
+  "BrunoFernandes1x@OCE": "BrunoFernandes1x.png",   // Twitch
+  "Vynxyfishy@OCE": "Vynxyfishy.png",   // Twitch
+  "Skyking1x@OCE": "Skyking1x.png",   // Twitch
+  "KPLAGOD@OCE": "KPLAGOD.png",   // Twitch
+  "Burga@OCE": "Burga.png",   // Twitch
+  "Lynx1zr@EU": "Lynx1zr.png",   // Twitch
+  "bevvys@EU": "bevvys.png",   // Twitch
+  "Deckzee@EU": "Deckzee.png",   // Twitch
+  "Dylangodoy9@EU": "Dylangodoy9.png",   // Twitch
+  "Rela1zz@EU": "Rela1zz.png",   // Twitch
+  "louiemontblanc@EU": "louiemontblanc.png",   // Twitch
+  "Ricyszn@EU": "Ricyszn.png",   // Twitch
+  "kescary@EU": "kescary.png",   // Twitch
+  "Lu984@EU": "Lu984.png",   // Twitch
+  "Bloodx@EU": "Bloodx.png",   // Twitch
+  "NixGOTY@EU": "NixGOTY.png",   // Twitch
+  "AyarBaffo@EU": "AyarBaffo.png",   // Twitch
+  "Czesiack@EU": "Czesiack.png",   // Twitch
+  "fert1cks@EU": "fert1cks.png",   // Twitch
+  "LATTYMONEK@EU": "LATTYMONEK.png",   // Twitch
+  "Lixium@EU": "Lixium.png",   // Twitch
+  "Letflo@EU": "Letflo.png",   // Twitch
+  "veteranopia@EU": "veteranopia.png",   // Twitch
+  "ivifom@EU": "ivifom.png",   // Twitch
+  "Avenger@NAC": "Avenger.png",   // Twitch
+  "kashfv@NAC": "kashfv.png",   // Twitch
+  "NoisyMilitaryMan@NAC": "NoisyMilitaryMan.png",   // Twitch
+  "zenn@NAC": "zenn.png",   // Twitch
+  "Glace@NAC": "Glace.png",   // Twitch
+  "Aerctix@NAC": "Aerctix.png",   // Twitch
+  "heavenfv7@NAC": "heavenfv7.png",   // Twitch
+  "KYNSOUL@NAC": "KYNSOUL.png",   // Twitch
+  "m3trol@NAC": "m3trol.png",   // Twitch
+  "SplatNxte@NAC": "SplatNxte.png",   // Twitch
+  "lmlwo@NAC": "lmlwo.png",   // Twitch
+  "1ukeM@NAC": "1ukeM.png",   // Twitch
+  "Slxy1k@NAC": "Slxy1k.png",   // Twitch
+  "Skykame7@NAC": "Skykame7.png",   // Twitch
+  "CyaThya@NAC": "CyaThya.png",   // Twitch
+  "ryaic@NAW": "ryaic.png",   // Twitch
+  "CONANIZED@NAW": "CONANIZED.png",   // Twitch
+  "1xSwag@NAW": "1xSwag.png",   // Twitch
+  "Bean@NAW": "Bean.png",   // Twitch
+  "Vorzul@NAW": "Vorzul.png",   // Twitch
+  "Kenzo@NAW": "Kenzo.png",   // Twitch
+  "ItsFlashyJunior@NAW": "ItsFlashyJunior.png",   // Twitch
+  "Henphix@NAW": "Henphix.png",   // Twitch
+  "mxttfv_@NAW": "mxttfv_.png",   // Twitch
+  "zCxrita@NAW": "zCxrita.png",   // Twitch
+  "Luckfn31@NAW": "Luckfn31.png",   // Twitch
+  "SudoFTW@NAW": "SudoFTW.png",   // Twitch
+  "Flakes@BR": "Flakes.png",   // Twitch
+  "oBartx@BR": "oBartx.png",   // Twitch
+  "leleo@BR": "leleo.png",   // Twitch
+  "StevinFN@BR": "StevinFN.png",   // Twitch
+  "Kp7Blood@BR": "Kp7Blood.png",   // Twitch
+  "toemfn6@BR": "toemfn6.png",   // Twitch
+  "Kenyto@BR": "Kenyto.png",   // Twitch
+  "Luchovp@BR": "Luchovp.png",   // Twitch
+  "Palermo@BR": "Palermo.png",   // Twitch
+  "Detpullzzz@BR": "Detpullzzz.png",   // Twitch
+  "Nana@ASIA": "Nana.png",   // Twitch
+  "Roy@ASIA": "Roy.png",   // Twitch
+  "Maufnbr@ASIA": "Maufnbr.png",   // Twitch
+  "Saud@ME": "Saud.png",   // Twitch
+  "F1lckyy@ME": "F1lckyy.png",   // Twitch
+  "sdahmedfv@ME": "sdahmedfv.png",   // Twitch
+  "Aienreyli@ME": "Aienreyli.png",   // Twitch
+  "Aggroxyz@ME": "Aggroxyz.png",   // Twitch
+  "8atel_@ME": "8atel_.png",   // Twitch
+  "xha3o0@ME": "xha3o0.png",   // Twitch
+  "Rain@OCE": "Rain.png",   // Twitch
+  "Carter@OCE": "Carter.png",   // Twitch
+  "Nyxlr@OCE": "Nyxlr.png",   // Twitch
+  "Wavy@OCE": "Wavy.png",   // Twitch
+  "Bliss@OCE": "Bliss.png",   // Twitch
+  "timelqss@OCE": "timelqss.png",   // Twitch
+  "arxidz@OCE": "arxidz.png",   // Twitch
+  "beadyink@OCE": "beadyink.png",   // Twitch
+  "Lynnxfnt@OCE": "Lynnxfnt.png",   // Twitch
+  "Insight@OCE": "Insight.png",   // Twitch
+  "lachsaim@OCE": "lachsaim.png",   // Twitch
+  "Vampi@EU": "Vampi.png",   // Twitch
+  "Sonnif@EU": "Sonnif.png",   // Twitch
+  "glubfnbr@EU": "glubfnbr.png",   // Twitch
+  "AceFrac@EU": "AceFrac.png",   // Twitch
+  "g0dag@EU": "g0dag.png",   // Twitch
+  "jus1x3@EU": "jus1x3.png",   // Twitch
+  "LuckyTeed@NAC": "LuckyTeed.png",   // Twitch
+  "Voidiana@NAC": "Voidiana.png",   // Twitch
+  "Sigma@NAC": "Sigma.png",   // Twitch
+  "Willrz@NAC": "Willrz.png",   // Twitch
+  "icyfai@NAC": "icyfai.png",   // Twitch
+  "makofvv@NAC": "makofvv.png",   // Twitch
+  "Aye2Fly@NAC": "Aye2Fly.png",   // Twitch
+  "Nekyzs@NAC": "Nekyzs.png",   // Twitch
+  "Jakozy@NAC": "Jakozy.png",   // Twitch
+  "Ultra@NAC": "Ultra.png",   // Twitch
+  "meifv@NAC": "meifv.png",   // Twitch
+  "uhMattex@NAC": "uhMattex.png",   // Twitch
+  "Boliyin_@NAW": "Boliyin_.png",   // Twitch
+  "BbossFN@NAW": "BbossFN.png",   // Twitch
+  "ModernZay@NAW": "ModernZay.png",   // Twitch
+  "Survibear@NAW": "Survibear.png",   // Twitch
+  "iZoxy7@NAW": "iZoxy7.png",   // Twitch
+  "AcoroZr1@NAW": "AcoroZr1.png",   // Twitch
+  "crystal5x@NAW": "crystal5x.png",   // Twitch
+  "Scuffcat@NAW": "Scuffcat.png",   // Twitch
+  "villak3k@BR": "villak3k.png",   // Twitch
+  "Davidominee@BR": "Davidominee.png",   // Twitch
+  "Jerok3k@BR": "Jerok3k.png",   // Twitch
+  "imccaii@BR": "imccaii.png",   // Twitch
+  "uAniqui@BR": "uAniqui.png",   // Twitch
+  "Jaime_profis@BR": "Jaime_profis.png",   // Twitch
+  "swailai@ASIA": "swailai.png",   // Twitch
+  "IxSaww@ME": "IxSaww.png",   // Twitch
+  "alooshfv@ME": "alooshfv.png",   // Twitch
+  "Clapsy@ME": "Clapsy.png",   // Twitch
+  "Rayz@ME": "Rayz.png",   // Twitch
+  "i3zfv7@ME": "i3zfv7.png",   // Twitch
+  "Rakanhimself@ME": "Rakanhimself.png",   // Twitch
+  "Falconfv@ME": "Falconfv.png",   // Twitch
+  "Chaozfv@ME": "Chaozfv.png",   // Twitch
+  "Elaptt@OCE": "Elaptt.png",   // Twitch
+  "Caleb@OCE": "Caleb.png",   // Twitch
+  "KingShanie@OCE": "KingShanie.png",   // Twitch
+  "Trotfv@OCE": "Trotfv.png",   // Twitch
+  "Jazzsku@OCE": "Jazzsku.png",   // Twitch
+  "alyhes@OCE": "alyhes.png",   // Twitch
+  "Sh1vyfn@OCE": "Sh1vyfn.png",   // Twitch
+  "Rz Frxzify@EU": "RzFrxzify.png",   // Twitch
+  "GLORE Splasheax@EU": "GLORESplasheax.png",   // Twitch
+  "GWT RIZQUEZ@EU": "GWTRIZQUEZ.png",   // Twitch
+  "Twitch noahjr10@EU": "Twitchnoahjr10.png",   // Twitch
+  "Szumich.@EU": "Szumich..png",   // Twitch
+  "HvN Kupcio71@EU": "HvNKupcio71.png",   // Twitch
+  "7 Emppu@EU": "7Emppu.png",   // Twitch
+  "Mask Fridge@EU": "MaskFridge.png",   // Twitch
+  "Prooffer.@EU": "Prooffer..png",   // Twitch
+  "twitch yoshxde@NAC": "twitchyoshxde.png",   // Twitch
+  "twitter ralfn_@NAC": "twitterralfn_.png",   // Twitch
+  "jezejearimǃ@NAC": "jezejearim.png",   // Twitch
+  "twitch cirzl@NAC": "twitchcirzl.png",   // Twitch
+  "Ferticeǃ@NAC": "Fertice.png",   // Twitch
+  "twitch kirafv@NAC": "twitchkirafv.png",   // Twitch
+  "Sxkezǃ@NAC": "Sxkez.png",   // Twitch
+  "Twitch wileyggs@NAC": "Twitchwileyggs.png",   // Twitch
+  "twitter cyrizfn@NAC": "twittercyrizfn.png",   // Twitch
+  "Twitch Strikes1x@NAC": "TwitchStrikes1x.png",   // Twitch
+  "x6 vqoux@NAC": "x6vqoux.png",   // Twitch
+  "tiktok sovzy4x@NAC": "tiktoksovzy4x.png",   // Twitch
+  "twitch 1xtofuu@NAC": "twitch1xtofuu.png",   // Twitch
+  "twitch passionfn@NAC": "twitchpassionfn.png",   // Twitch
+  "zelofvǃ@NAC": "zelofv.png",   // Twitch
+  "C9 Doongoos@NAC": "C9Doongoos.png",   // Twitch
+  "TP hqmkame@NAC": "TPhqmkame.png",   // Twitch
+  "twitch zulpixfnx@NAC": "twitchzulpixfnx.png",   // Twitch
+  "twtr spexzfn4@NAC": "twtrspexzfn4.png",   // Twitch
+  "yоutube kingswpr@NAC": "yutubekingswpr.png",   // Twitch
+  "Twitch kubi4x@NAC": "Twitchkubi4x.png",   // Twitch
+  "Twitch WydSycho@NAC": "TwitchWydSycho.png",   // Twitch
+  "twitch koazqy@NAC": "twitchkoazqy.png",   // Twitch
+  "asl wave@NAC": "aslwave.png",   // Twitch
+  "ttv 12lwis@NAC": "ttv12lwis.png",   // Twitch
+  "i play faded@NAW": "iplayfaded.png",   // Twitch
+  "Papi Blast@NAW": "PapiBlast.png",   // Twitch
+  "kilo luh@NAW": "kiloluh.png",   // Twitch
+  "denying.@NAW": "denying..png",   // Twitch
+  "Mystry Spritewth@NAW": "MystrySpritewth.png",   // Twitch
+  "Twitch Icyybtw@NAW": "TwitchIcyybtw.png",   // Twitch
+  "TT Aarushftw@NAW": "TTAarushftw.png",   // Twitch
+  "TWITCH ORCFN@NAW": "TWITCHORCFN.png",   // Twitch
+  "Twitch paizawyd@NAW": "Twitchpaizawyd.png",   // Twitch
+  "twitch spultyy_@NAW": "twitchspultyy_.png",   // Twitch
+  "Hyper On Combat@NAW": "HyperOnCombat.png",   // Twitch
+  "Piggy is bad@NAW": "Piggyisbad.png",   // Twitch
+  "twitch bruinsfv@NAW": "twitchbruinsfv.png",   // Twitch
+  "psr Tightfv@NAW": "psrTightfv.png",   // Twitch
+  "El Made@NAW": "ElMade.png",   // Twitch
+  "YouTube a11ract@NAW": "YouTubea11ract.png",   // Twitch
+  "YouTube 1bwfn@NAW": "YouTube1bwfn.png",   // Twitch
+  "z lynxfv@NAW": "zlynxfv.png",   // Twitch
+  "TikTok WPS_FaTaL@NAW": "TikTokWPS_FaTaL.png",   // Twitch
+  "twitter eranitfn@NAW": "twittereranitfn.png",   // Twitch
+  "Twitch Jaxi74@NAW": "TwitchJaxi74.png",   // Twitch
+  "Gu1 Prime@BR": "Gu1Prime.png",   // Twitch
+  "5kz Dankame44@BR": "5kzDankame44.png",   // Twitch
+  "Zett1nǃ@BR": "Zett1n.png",   // Twitch
+  "v.takaa@BR": "v.takaa.png",   // Twitch
+  "AG1RRE.@BR": "AG1RRE..png",   // Twitch
+  "alands3ǃ@BR": "alands3.png",   // Twitch
+  "Twitch Benjitix@BR": "TwitchBenjitix.png",   // Twitch
+  "Diveca 23@BR": "Diveca23.png",   // Twitch
+  "EGO pr0mpt@BR": "EGOpr0mpt.png",   // Twitch
+  "Nicandro Reis1x@BR": "NicandroReis1x.png",   // Twitch
+  "twitch bgftn@BR": "twitchbgftn.png",   // Twitch
+  "avix 1@BR": "avix1.png",   // Twitch
+  "House Happinyfv1@BR": "HouseHappinyfv1.png",   // Twitch
+  "205 Marxv@BR": "205Marxv.png",   // Twitch
+  "TTV avxjoao@BR": "TTVavxjoao.png",   // Twitch
+  "vt malado@BR": "vtmalado.png",   // Twitch
+  "ricardinfvǃ@BR": "ricardinfv.png",   // Twitch
+  "Pretaxz.@BR": "Pretaxz..png",   // Twitch
+  "SebaGoury.@BR": "SebaGoury..png",   // Twitch
+  "lets get greedy@ASIA": "letsgetgreedy.png",   // Twitch
+  "foolish cynsrr@ASIA": "foolishcynsrr.png",   // Twitch
+  "generic peterbot@ASIA": "genericpeterbot.png",   // Twitch
+  "Аfrican peterbot@ASIA": "fricanpeterbot.png",   // Twitch
+  "skull nosh@ASIA": "skullnosh.png",   // Twitch
+  "zeta yumafv@ASIA": "zetayumafv.png",   // Twitch
+  "Jokuneyyǃ@ME": "Jokuneyy.png",   // Twitch
+  "Twitch 7qme@ME": "Twitch7qme.png",   // Twitch
+  "1х PsFN@ME": "1PsFN.png",   // Twitch
+  "A7 melam3d@ME": "A7melam3d.png",   // Twitch
+  "grizzy fv@ME": "grizzyfv.png",   // Twitch
+  "CS TryHard@ME": "CSTryHard.png",   // Twitch
+  "22 Batmanqueasy@ME": "22Batmanqueasy.png",   // Twitch
+  "TW byarnau99FN@ME": "TWbyarnau99FN.png",   // Twitch
+  "SSF SPEEDY@ME": "SSFSPEEDY.png",   // Twitch
+  "23 Sceptic@ME": "23Sceptic.png",   // Twitch
+  "779 Joseph@ME": "779Joseph.png",   // Twitch
+  "Tslar 305@ME": "Tslar305.png",   // Twitch
+  "Twitch DeaJayy@OCE": "TwitchDeaJayy.png",   // Twitch
+  "fl tofpita@OCE": "fltofpita.png",   // Twitch
+  "twitch kaiuuuu_@OCE": "twitchkaiuuuu_.png",   // Twitch
+  "flіxbuca@OCE": "flxbuca.png",   // Twitch
+  "Twitch FadezzAU@OCE": "TwitchFadezzAU.png",   // Twitch
+  "fusion kun@OCE": "fusionkun.png",   // Twitch
+  "Twitch adsfishy@OCE": "Twitchadsfishy.png",   // Twitch
+  "chewy ebok@OCE": "chewyebok.png",   // Twitch
+  "joshjerssǃ@OCE": "joshjerss.png",   // Twitch
+  "Ch6 S1 1tsMango@OCE": "Ch6S11tsMango.png",   // Twitch
+  "fv saint@OCE": "fvsaint.png",   // Twitch
+  "twitch flavuhfnt@OCE": "twitchflavuhfnt.png",   // Twitch
+  "TTV IMFULLMONTY@OCE": "TTVIMFULLMONTY.png",   // Twitch
+  "Twitch Faint7x@OCE": "TwitchFaint7x.png",   // Twitch
+  "become peterbot@OCE": "becomepeterbot.png",   // Twitch
+  "madz1nnǃ@EU": "madz1nn.png",   // Twitch
+  "bexs1306ǃ@EU": "bexs1306.png",   // Twitch
+  "CrxckEu-_-@EU": "CrxckEu-_-.png",   // Twitch
+  "Twitch s2pcolin@EU": "Twitchs2pcolin.png",   // Twitch
+  "rxnnysznǃ@EU": "rxnnyszn.png",   // Twitch
+  "Dictator Vaiiint@EU": "DictatorVaiiint.png",   // Twitch
+  "1sha.@EU": "1sha..png",   // Twitch
+  "tiktok hazardsfv@NAC": "tiktokhazardsfv.png",   // Twitch
+  "AVTR ExhaleKAR@NAC": "AVTRExhaleKAR.png",   // Twitch
+  "Twitch Dommfn_@NAC": "TwitchDommfn_.png",   // Twitch
+  "twitch itsatheir@NAC": "twitchitsatheir.png",   // Twitch
+  "bowlcut tyler@NAC": "bowlcuttyler.png",   // Twitch
+  "gloomfv.@NAC": "gloomfv..png",   // Twitch
+  "Twitch Mussfv@NAC": "TwitchMussfv.png",   // Twitch
+  "pluzzyfvǃ@NAC": "pluzzyfv.png",   // Twitch
+  "twitch 1xcomett@NAC": "twitch1xcomett.png",   // Twitch
+  "twitter jacevvz@NAC": "twitterjacevvz.png",   // Twitch
+  "twitch ajcheez@NAC": "twitchajcheez.png",   // Twitch
+  "tiktok carbotfv1@NAC": "tiktokcarbotfv1.png",   // Twitch
+  "Temppǃ@NAC": "Tempp.png",   // Twitch
+  "Twitch RealJxe@NAC": "TwitchRealJxe.png",   // Twitch
+  "Kju 7@NAC": "Kju7.png",   // Twitch
+  "Twitch Dimzyfv@NAC": "TwitchDimzyfv.png",   // Twitch
+  "omarsit0o.@NAW": "omarsit0o..png",   // Twitch
+  "Typical Gamer@NAW": "TypicalGamer.png",   // Twitch
+  "twitch agentkpvi@NAW": "twitchagentkpvi.png",   // Twitch
+  "TWITCH FXSION1X@NAW": "TWITCHFXSION1X.png",   // Twitch
+  "twitch uxsif@NAW": "twitchuxsif.png",   // Twitch
+  "RS chucky@NAW": "RSchucky.png",   // Twitch
+  "ftc slidcr@NAW": "ftcslidcr.png",   // Twitch
+  "TT Zaybecrazyy@NAW": "TTZaybecrazyy.png",   // Twitch
+  "WavyBeCrazy.@NAW": "WavyBeCrazy..png",   // Twitch
+  "yukofvǃ@NAW": "yukofv.png",   // Twitch
+  "Ohh Hope@NAW": "OhhHope.png",   // Twitch
+  "kinxg1x-@BR": "kinxg1x-.png",   // Twitch
+  "poperulin jakzy@BR": "poperulinjakzy.png",   // Twitch
+  "punkstar cryzz@BR": "punkstarcryzz.png",   // Twitch
+  "izecvǃ@BR": "izecv.png",   // Twitch
+  "diegafaǃ@BR": "diegafa.png",   // Twitch
+  "code batman9br@BR": "codebatman9br.png",   // Twitch
+  "Fnajenǃ@ASIA": "Fnajen.png",   // Twitch
+  "BoF MariusCOW@ASIA": "BoFMariusCOW.png",   // Twitch
+  "KERNEL MentoS1K7@ASIA": "KERNELMentoS1K7.png",   // Twitch
+  "44 PsFN@ME": "44PsFN.png",   // Twitch
+  "twitch snezzyfn_@ME": "twitchsnezzyfn_.png",   // Twitch
+  "TX SINA@ME": "TXSINA.png",   // Twitch
+  "Blz sephrfv@ME": "Blzsephrfv.png",   // Twitch
+  "hxnt7rǃ@ME": "hxnt7r.png",   // Twitch
+  "Dirxネ@ME": "Dirx.png",   // Twitch
+  "Twitch 666k2b@ME": "Twitch666k2b.png",   // Twitch
+  "24 Rko@ME": "24Rko.png",   // Twitch
+  "33 NUV3SIT4@ME": "33NUV3SIT4.png",   // Twitch
+  "eggman 5678@OCE": "eggman5678.png",   // Twitch
+  "ZO xbxstr@OCE": "ZOxbxstr.png",   // Twitch
+  "kade nzr@OCE": "kadenzr.png",   // Twitch
+  "Twitch Jovifv@OCE": "TwitchJovifv.png",   // Twitch
+  "oce t3eny@OCE": "ocet3eny.png",   // Twitch
+  "ThorLoverTylerǃ@OCE": "ThorLoverTyler.png",   // Twitch
+  "Twitch rmxnau@OCE": "Twitchrmxnau.png",   // Twitch
+  "Twitch XerbiuZ@OCE": "TwitchXerbiuZ.png",   // Twitch
+  "Boardzz1x-@OCE": "Boardzz1x-.png",   // Twitch
+  "TTV TwerkyClerk@OCE": "TTVTwerkyClerk.png",   // Twitch
+  "twitch plumpfnt@OCE": "twitchplumpfnt.png",   // Twitch
+  "Ryflexz.@OCE": "Ryflexz..png",   // Twitch
+  "keanugheeǃ@OCE": "keanughee.png",   // Twitch
+  "tiktok crypxnz@OCE": "tiktokcrypxnz.png",   // Twitch
+  "twitch odilonfn@EU": "twitchodilonfn.png",   // Twitch
+  "twitch ratasfn@EU": "twitchratasfn.png",   // Twitch
+  "Twitch Gaadav@EU": "TwitchGaadav.png",   // Twitch
+  "Poyo Speedsaw@EU": "PoyoSpeedsaw.png",   // Twitch
+  "f3kserǃ@EU": "f3kser.png",   // Twitch
+  "ttv hyperzz@NAC": "ttvhyperzz.png",   // Twitch
+  "Nerve Focake@NAC": "NerveFocake.png",   // Twitch
+  "iwnlǃ@NAC": "iwnl.png",   // Twitch
+  "Exot1c 7@NAC": "Exot1c7.png",   // Twitch
+  "twitch regretsfn@NAC": "twitchregretsfn.png",   // Twitch
+  "yt cinimodfn@NAC": "ytcinimodfn.png",   // Twitch
+  "twitch sebifn6@NAC": "twitchsebifn6.png",   // Twitch
+  "youtube owen1x_@NAC": "youtubeowen1x_.png",   // Twitch
+  "twtr funguswyd_@NAC": "twtrfunguswyd_.png",   // Twitch
+  "ttv cyclonefnx@NAC": "ttvcyclonefnx.png",   // Twitch
+  "Sebinsqui.@NAC": "Sebinsqui..png",   // Twitch
+  "twitch fnbluish@NAC": "twitchfnbluish.png",   // Twitch
+  "twtr hpzxtv@NAC": "twtrhpzxtv.png",   // Twitch
+  "Twitch UKOiQ@NAC": "TwitchUKOiQ.png",   // Twitch
+  "Jixcs.@NAC": "Jixcs..png",   // Twitch
+  "BIG MF ISO@NAC": "BIGMFISO.png",   // Twitch
+  "TTV ZA1Nxr@NAC": "TTVZA1Nxr.png",   // Twitch
+  "tiktok verrnexx@NAW": "tiktokverrnexx.png",   // Twitch
+  "Twitch Ex0tic1x@NAW": "TwitchEx0tic1x.png",   // Twitch
+  "Twitch bash350_@NAW": "Twitchbash350_.png",   // Twitch
+  "TIKTOK VEXSEIXY@NAW": "TIKTOKVEXSEIXY.png",   // Twitch
+  "Twitch Rochanzin@BR": "TwitchRochanzin.png",   // Twitch
+  "k2g chronicbtw1@BR": "k2gchronicbtw1.png",   // Twitch
+  "greed stellsn@BR": "greedstellsn.png",   // Twitch
+  "richkid usd@BR": "richkidusd.png",   // Twitch
+  "vaz mcc 33@BR": "vazmcc33.png",   // Twitch
+  "CH.yama 姫 IGNITE@ASIA": "CH.yamaIGNITE.png",   // Twitch
+  "viei.@ME": "viei..png",   // Twitch
+  "talos Haplatypus@ME": "talosHaplatypus.png",   // Twitch
+  "aresgz iwnl@OCE": "aresgziwnl.png",   // Twitch
 };
 
 // Strip a leading team tag ("S8UL KAAN BABA" -> "KAAN BABA") so the monogram
@@ -58472,6 +59143,32 @@ function ccSync(){
 // own roster entries — the newest 2026 card, so the pairing is this season's —
 // resolved to that partner's own newest card. Null when the card records no
 // whole duo, and the auto-assignment then does what it always did.
+/* Все, с кем карточка записана в составе — до seats человек. Дуо-запись даёт
+   одного, трио-запись (наборы 2025-го) — двоих: его слово 21 сентября, «когда в
+   2025 выбираешь игрока, он без триоса сразу, не как в дуо». */
+function ccRealMatesOf(card, seats){
+  if(!card) return [];
+  const me=hKey(card), out=[], seen=new Set([me]);
+  const want=Math.max(1, seats||1);
+  /* Записи состава лежат на карточках стадий (плей-ин, LCQ, финал — _t1/_m1…), а самая
+     свежая карточка года может быть без них (Лион 2025 — отдельная карта). Поэтому
+     смотрим все карточки этого человека за тот же год, от новейшего набора к старому. */
+  const order=c=>({t3:3, t2:2, t1:1, m2:2, m1:1}[String(c.cardSet||'')] || 0);
+  const mine=PLAYERS.filter(p=>hKey(p)===me && (p.region||'')===(card.region||'') && ccCardYear(p)===ccCardYear(card))
+    .sort((a,b)=>order(b)-order(a));
+  const entries=[]; [card].concat(mine).forEach(c=>rosterEntriesOf(c).forEach(e=>entries.push(e)));
+  for(const {stage, entry} of entries){
+    if(stage==='DivFinal') continue;
+    if(entry.duo.length!==want+1) continue;
+    entry.duo.map(h=>hKey(h)).forEach(k=>{
+      if(seen.has(k) || out.length>=want) return;
+      const mate=careerRosterNowEU().find(p=>hKey(p)===k);
+      if(mate){ seen.add(k); out.push(mate); }
+    });
+    if(out.length>=want) break;
+  }
+  return out;
+}
 function ccRealMateOf(card){
   if(!card) return null;
   const me=hKey(card);
@@ -58587,6 +59284,14 @@ function ccStart(){
     // really play with, off the card's own roster entries. A rookie, or a card
     // whose pairing the roster does not hold whole, starts alone and gets the
     // usual assignment at the first cup.
+    // Состав приходит целиком: в трио-год (2025) — двое настоящих напарников по записи трио.
+    partners:(()=>{
+      if(!card) return [];
+      const seats=(CC.year===2025 ? 3 : 2)-1;
+      const mates=ccRealMatesOf(card, seats);
+      return mates.map(m=>({handle:m.handle, cardRegion:m.region, patience:CAREER_PATIENCE_START,
+                            since:ccAddDays(careerStartDay(), -CC_CHEM_DAYS)}));
+    })(),
     partner:(()=>{
       const mate=card ? ccRealMateOf(card) : null;
       // A taken card arrives with the duo it really plays in, and that duo has
@@ -58631,6 +59336,9 @@ function ccStart(){
      живой карьеры, поэтому сейв на миг становится ею. */
   { const was=CAREER; CAREER=save; save.career.day=careerStartDay();
     if(save.partner) save.partner.since=ccAddDays(save.career.day, -CC_CHEM_DAYS);
+    (save.partners||[]).forEach(p=>{ p.since=ccAddDays(save.career.day, -CC_CHEM_DAYS); });
+    // Пустой список — как его отсутствие: careerMigratePartners тогда возьмёт partner.
+    if(!save.partners.length) delete save.partners;
     CAREER=was; }
   try{ localStorage.setItem(LS_SLOT(ccSlot()), JSON.stringify(save)); }catch(e){}
   openCareerHub();
