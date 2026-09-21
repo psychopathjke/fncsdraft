@@ -73,7 +73,7 @@ const BOOT = `
     check('квоты — 25 мест', Object.values(CC_NATIONS_SLOTS).reduce((a,b)=>a+b,0)===25);
     const days=['2026-10-31','2026-11-07','2026-11-14'].map(d=>(careerEvents().get(d)||[]).find(e=>e.kind==='nations'));
     check('три дня Кубка наций в календаре 2026-го', days.every(Boolean), JSON.stringify(days.map(e=>e&&e.id)));
-    check('и названы словарём', days[2] && days[2].label===L().ccYearNames.NationsFinal, days[2]&&days[2].label);
+    check('и названы словарём, финал — с городом', days[2] && days[2].label===L().ccYearNames.NationsFinal.replace('{CITY}', ccLanCity('nations',1)), days[2]&&days[2].label);
     // ---- 96 из Дании: в четвёрке, отбор не нужен -----------------------------
     const mine=ccNationsMine();
     check('датчанин 96 — в четвёрке страны', mine && mine.seat==='auto' && mine.inSquad && mine.squad.length===4, JSON.stringify(mine && {seat:mine.seat, n:mine.squad.length}));
@@ -91,6 +91,7 @@ const BOOT = `
     // Финал: если Дания прошла — играем; нет — мир играет сам, но остальные зоны всё равно сыграны.
     careerAdvanceTo('2026-11-14');
     const through=(N.qualified.EU||[]).indexOf('Дания')>=0;
+    out.notes.dbg2=(function(){ try{ const ev=careerNationsOn(careerToday()); const m=ccNationsMine(); return {ev, can:careerNationsCan(ev), inSquad:m&&m.inSquad, zone:m&&m.zone, q:N.qualified[m&&m.zone], fd:N.finalDone, today:careerToday(), playable:CC_PLAYABLE.indexOf('nations'), live:ccMpLive(), nomate:careerNoMate('nations')}; }catch(e){ return String(e.stack||e); } })();
     check('финал открыт ровно тогда, когда Дания прошла', careerCanPlayKind('nations')===through, String(through)+' vs '+careerCanPlayKind('nations'));
     if(through){
       const h2=await playThrough('final');
@@ -98,6 +99,14 @@ const BOOT = `
       const lf=(CAREER.career.log||[]).find(r=>r.kind==='nations' && r.stage==='final');
       check('финал — 25 сборных', lf && lf.of===25, JSON.stringify(lf && {of:lf.of, place:lf.place}));
       check('в финале записаны все качественные из шести зон', Object.keys(N.qualified).length===6, JSON.stringify(Object.keys(N.qualified)));
+      // Его фонд: $3 000 000 на 25 мест, тебе четверть командного; финал — ЛАН в Европе.
+      check('фонд финала — $3 000 000 на 25 мест', Object.values(CC_NATIONS_PRIZES).reduce((x,y)=>x+y,0)===3000000 && Object.keys(CC_NATIONS_PRIZES).length===25);
+      check('за место в финале заплатили четверть командного', lf && lf.prize===Math.round(nationsPrize(lf.place)/4) && CAREER.career.earnings>0, JSON.stringify({prize:lf&&lf.prize, place:lf&&lf.place, earn:CAREER.career.earnings}));
+      const host=ccLanHostKey('nations', 1), hn=ccLanNat('nations', 1);
+      out.notes.host=host+'/'+hn;
+      check('хозяин финала — европейский зал, не там, где Саммит и Глобалы', CC_NAT_EU_HOSTS.indexOf(host)>=0 && hn!==ccLanNat('summit',1) && hn!==ccLanNat('globals',1), out.notes.host);
+      check('день финала носит город', days[2] && days[2].label.indexOf(ccLanCity('nations',1))>0 && !!days[2].lan, JSON.stringify(days[2]));
+      check('перелёт записан', !!(CAREER.career.lan && CAREER.career.lan['nations|1']), JSON.stringify(CAREER.career.lan));
     } else {
       careerSkipWeek();
       check('мир сыграл финал сам', N.finalDone===true && Object.keys(N.qualified).length===6, JSON.stringify(N));
