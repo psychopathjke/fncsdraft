@@ -64,7 +64,7 @@ const BOOT = `
     check('оценка есть: 29 вечеров (Европа)', kinds.eval===29, String(kinds.eval));
     check('три Мейджора × (6 квал + 3 полуфинала + 2 финала) = 33', kinds.major===33, String(kinds.major));
     check('Форт-Уэрт — 7–8 сентября', (days.get('2024-09-07')||[]).some(e=>e.kind==='globals') && (days.get('2024-09-08')||[]).some(e=>e.kind==='globals'));
-    check('капы с деньгами: Duos Cash Cup 18 + Solo Victory Cup 28 + Reload Duos Cash Cup 1 = 47', kinds.victory===47, String(kinds.victory));
+    check('капы с деньгами: Duos Cash Cup 18 + Solo Victory Cup 28 = 46 (Reload снят 21.09)', kinds.victory===46, String(kinds.victory));
     check('кубковых недель нет', ccCupWeeks().length===0);
     check('гала стоит на последнем дне года', (careerEvents().get(CC_YEAR_2024_TO)||[]).some(e=>e.kind==='gala'));
     // Подписи: квалификатор, полуфинал, финал.

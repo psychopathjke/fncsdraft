@@ -70948,8 +70948,9 @@ function careerSpotPointsOf(i, set){
    у круга своя опубликованная дроп-карта, и показывать надо какую-то одну. */
 function careerSpotSets(){
   const out=[{key:careerBrSet(), grid:careerBrSet(), label:L().ccSpotSeasonTab}];
-  if(ZONE_SETS.r1) out.push({key:'r12', grid:'r1', label:L().ccSpotReloadA});
-  if(ZONE_SETS.r3) out.push({key:'r34', grid:'r3', label:L().ccSpotReloadB});
+  // Карты Reload под метку — только в 2026-м: в 2024/2025 Reload-вечеров в карьере нет (его слово 21 сентября).
+  if(ZONE_SETS.r1 && ccCalYear()>=2026) out.push({key:'r12', grid:'r1', label:L().ccSpotReloadA});
+  if(ZONE_SETS.r3 && ccCalYear()>=2026) out.push({key:'r34', grid:'r3', label:L().ccSpotReloadB});
   /* Четвёртая карта — СОЛО. Его слово, 29 августа: «карты почему-то 3, до сих
      пор нет 4 для соло». Solo Series не командный турнир: точка на нём у
      каждого своя, хранится лично (cr.soloSpots, не ключ команды) и в три
@@ -73988,7 +73989,7 @@ const CC_VICTORY_2024=[
   {day:'2024-08-05', id:'S30_SoloVictoryCup', mode:'solo', n:8, name:'Solo Victory Cup', cash:100},
   {day:'2024-08-12', id:'S30_SoloVictoryCup', mode:'solo', n:9, name:'Solo Victory Cup', cash:100},
   {day:'2024-09-02', id:'S31_SoloVictoryCup', mode:'solo', n:1, name:'Solo Victory Cup', cash:100},
-  {day:'2024-08-30', id:'S31_ReloadDuosCashCup', mode:'duo', n:1, name:'Reload Duos Cash Cup', pay:'RDCC'}
+  // Reload Duos Cash Cup 30.08 снят: Reload — только в 2026-м (его слово 21 сентября).
 ];
 // Таблицы выплат 2024-го — на игрока, [место-порог, $]; NA West читает NA Central.
 const CC_MAJOR_PAY_2024={
@@ -74087,7 +74088,8 @@ const CC_EVAL_NIGHTS_2024=['2023-12-05','2023-12-12','2024-01-10','2024-01-16','
   '2024-03-12','2024-03-19','2024-03-26','2024-04-02','2024-04-09','2024-04-16','2024-04-23','2024-04-30','2024-05-07','2024-05-14',
   '2024-05-28','2024-05-31','2024-06-04','2024-06-25','2024-07-23','2024-07-30','2024-08-06','2024-08-17','2024-08-27','2024-09-04'];
 function ccEvalNights(){ return ccIs2024() ? (ccCareerRegion()==='EU' ? CC_EVAL_NIGHTS_2024 : []) : ccIs2025() ? CC_EVAL_NIGHTS_2025 : CC_EVAL_NIGHTS; }
-function ccEvalReloadNights(){ return ccIs2025() ? CC_EVAL_RELOAD_2025 : []; }
+// Reload-оценка 2025-го снята с календаря: Reload — только в 2026-м (его слово 21 сентября). Список оставлен как замер.
+function ccEvalReloadNights(){ return []; }
 function ccEvalIsReload(iso){ return ccEvalReloadNights().indexOf(iso||careerToday())>=0; }
 // Победа в оценке: 2026-й — $800 на дуо; 2025-й — $400 на игрока, то есть на состав.
 /* 2024-й — три эпохи по таблицам окон Tracker: до 2 апреля раунд 2 платил топ-5 по $200
@@ -94075,8 +94077,8 @@ const CC_VICTORY=[
 const CC_VICTORY_2025=[
   {day:'2025-07-18', id:'S36_SquidGroundsCashCup', mode:'duo', n:1, name:'Squid Grounds Cash Cup', cash:100},
   {day:'2025-07-25', id:'S36_SquidGroundsCashCup', mode:'duo', n:2, name:'Squid Grounds Cash Cup', cash:100},
-  {day:'2025-08-01', id:'S36_SquidGroundsCashCup', mode:'duo', n:3, name:'Squid Grounds Cash Cup', cash:100},
-  {day:'2025-09-05', id:'S37_ReloadQuickCup',      mode:'duo', n:1, name:'Reload Quick Cup', cash:200}
+  {day:'2025-08-01', id:'S36_SquidGroundsCashCup', mode:'duo', n:3, name:'Squid Grounds Cash Cup', cash:100}
+  // Reload Quick Cup 5.09 снят: Reload — только в 2026-м (его слово 21 сентября).
 ];
 function ccVictoryList(){ return ccIs2024() ? CC_VICTORY_2024 : ccIs2025() ? CC_VICTORY_2025 : CC_VICTORY; }
 // Остров Reload по году: 2026-й — четвёртый круг серии, 2025-й — первый (другого измеренного нет).

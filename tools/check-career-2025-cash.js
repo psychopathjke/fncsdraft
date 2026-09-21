@@ -69,11 +69,11 @@ const BOOT = `
     const days=careerYearDays(); const kinds={};
     days.forEach(list=>list.forEach(e=>{ kinds[e.kind]=(kinds[e.kind]||0)+1; }));
     out.notes.kinds=kinds;
-    check('оценка: 31 вечер + 6 Reload', kinds.eval===37, String(kinds.eval));
+    check('оценка: 31 вечер, без Reload', kinds.eval===31, String(kinds.eval));
     check('Solo Cash Cup: 16 × 2 раунда', kinds.solo===32, String(kinds.solo));
-    check('дуо-капы с деньгами: 3 Squid + 1 Reload Quick', kinds.victory===4, String(kinds.victory));
+    check('дуо-капы с деньгами: 3 Squid (Reload Quick Cup снят 21.09)', kinds.victory===3, String(kinds.victory));
     check('Мейджоры 27 дней + Showdown 6', kinds.major===33, String(kinds.major));
-    check('Reload-оценка 17 марта на острове Reload', careerNightSet({type:'eval', day:'2025-03-17'})==='r1', careerNightSet({type:'eval', day:'2025-03-17'}));
+    check('17 марта в 2025-м Reload-оценки нет', !(days.get('2025-03-17')||[]).some(e=>/Reload/.test(e.label)));
     check('обычная оценка — на острове сезона', careerNightSet({type:'eval', day:'2025-03-18'})==='t1', careerNightSet({type:'eval', day:'2025-03-18'}));
     check('оценка: 7 игр, $1 200 за победу на трио', ccEvalR1Games()===7 && ccEvalWinCash()===1200, ccEvalR1Games()+'/'+ccEvalWinCash());
     check('финал недели 2025: $22 500 трио за первое, $450 за 25-е', wfPrize(1)===22500 && wfPrize(25)===450 && wfPrize(26)===0, wfPrize(1)+'/'+wfPrize(25));
@@ -81,7 +81,7 @@ const BOOT = `
     check('ярлык Solo Cash Cup', /Solo Cash Cup 3/.test(lbl('SoloCash3_R1')), lbl('SoloCash3_R1'));
     check('ярлык Showdown', /Showdown 1/.test(lbl('Showdown4_2025_LCQ')), lbl('Showdown4_2025_LCQ'));
     check('Squid Grounds в календаре по имени', /Squid Grounds Cash Cup 2/.test((days.get('2025-07-25')||[]).map(e=>e.label).join(' ')), (days.get('2025-07-25')||[]).map(e=>e.label).join(' '));
-    check('Reload Quick Cup 5 сентября', /Reload Quick Cup/.test((days.get('2025-09-05')||[]).map(e=>e.label).join(' ')));
+    check('Reload Quick Cup 5 сентября снят', !/Reload Quick Cup/.test((days.get('2025-09-05')||[]).map(e=>e.label).join(' ')));
     // Solo Cash Cup 3: раунд 1 (10 января) → раунд 2 (12 января).
     seed(1, '2025-01-10');
     const ev1=careerSoloSeriesOn('2025-01-10');
