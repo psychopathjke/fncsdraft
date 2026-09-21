@@ -43,7 +43,7 @@ const BOOT = `
       v:1, player:{nick:'Natman', age:20, source:'rookie', country:country, countryPing:15, closeRangeEdge:6,
         region:'EU', ovr:ovr, role:'roleIGL', attrs:null, ageEdge:4, photo:null, handle:null, cardRegion:null, nat:null},
       career:Object.assign({season:1, size:2, day:day, division:1, earnings:0, balance:0, reach:0, tokens:[], log:[], news:[], seed:'nat'+ovr}, extra||{}),
-      partners:[{card:card('M1',88), patience:60, since:'2025-11-01', dev:0}]}));
+      partners:[{card:card('M1',88), patience:60, since:'2026-01-01', dev:0}]}));
     const s=JSON.parse(localStorage.getItem('fncsdraft_career')); s.player.attrs=ccRookieAttrs(ovr, 'roleIGL'); localStorage.setItem('fncsdraft_career', JSON.stringify(s));
     careerEntry();
   };
@@ -64,22 +64,22 @@ const BOOT = `
   };
   try{
     // ---- книга сборных ------------------------------------------------------
-    seed(96, 'dk', '2025-12-05');
+    seed(96, 'dk', '2026-10-28');
     const book=ccNationsBook();
     out.notes.countries=book.list.length;
     check('стран с четвёркой не меньше 50', book.list.length>=50, String(book.list.length));
     check('у каждой сборной четыре карточки по убыванию силы', book.list.every(r=>r.top.length===4 && ccCardOvr(r.top[0])>=ccCardOvr(r.top[3])));
     check('США — зона Северной Америки, Дания — Европа', book.byNat['США'] && book.byNat['США'].zone==='NA' && book.byNat['Дания'] && book.byNat['Дания'].zone==='EU', JSON.stringify([book.byNat['США']&&book.byNat['США'].zone, book.byNat['Дания']&&book.byNat['Дания'].zone]));
     check('квоты — 25 мест', Object.values(CC_NATIONS_SLOTS).reduce((a,b)=>a+b,0)===25);
-    const days=['2025-12-06','2025-12-13','2025-12-20'].map(d=>(careerEvents().get(d)||[]).find(e=>e.kind==='nations'));
+    const days=['2026-10-31','2026-11-07','2026-11-14'].map(d=>(careerEvents().get(d)||[]).find(e=>e.kind==='nations'));
     check('три дня Кубка наций в календаре 2026-го', days.every(Boolean), JSON.stringify(days.map(e=>e&&e.id)));
     check('и названы словарём', days[2] && days[2].label===L().ccYearNames.NationsFinal, days[2]&&days[2].label);
     // ---- 96 из Дании: в четвёрке, отбор не нужен -----------------------------
     const mine=ccNationsMine();
     check('датчанин 96 — в четвёрке страны', mine && mine.seat==='auto' && mine.inSquad && mine.squad.length===4, JSON.stringify(mine && {seat:mine.seat, n:mine.squad.length}));
-    careerAdvanceTo('2025-12-06');
+    careerAdvanceTo('2026-10-31');
     check('в день отбора играть нечего — ты уже в составе', careerCanPlayKind('nations')===false && ccNatWhyLocked()===L().ccNatLockedIn, ccNatWhyLocked());
-    careerAdvanceTo('2025-12-13');
+    careerAdvanceTo('2026-11-07');
     check('квалификация открыта', careerCanPlayKind('nations')===true); out.notes.dbg={can:careerCanPlayKind('nations'), next:careerNext(), canNext:careerCanPlay(careerNext()), ev:careerNationsOn(careerToday()), mine:(function(){ const m=ccNationsMine(); return m && {seat:m.seat, inSquad:m.inSquad, zone:m.zone}; })(), N:CAREER.career.nations};
     const h1=await playThrough('qual');
     out.notes.qual=h1;
@@ -89,7 +89,7 @@ const BOOT = `
     check('в журнале — квалификация сборной Дании', lq && lq.nat==='Дания' && lq.of>=12, JSON.stringify(lq));
     out.notes.qualPlace=lq && lq.place;
     // Финал: если Дания прошла — играем; нет — мир играет сам, но остальные зоны всё равно сыграны.
-    careerAdvanceTo('2025-12-20');
+    careerAdvanceTo('2026-11-14');
     const through=(N.qualified.EU||[]).indexOf('Дания')>=0;
     check('финал открыт ровно тогда, когда Дания прошла', careerCanPlayKind('nations')===through, String(through)+' vs '+careerCanPlayKind('nations'));
     if(through){
@@ -104,10 +104,10 @@ const BOOT = `
     }
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
     // ---- 70 из Германии: отбор, проигрыш, мир без него ----------------------
-    seed(70, 'de', '2025-12-05');
+    seed(70, 'de', '2026-10-28');
     const m2=ccNationsMine();
     check('немец 70 — не в четвёрке, нужен отбор', m2 && m2.seat==='trial' && !m2.inSquad, JSON.stringify(m2 && {seat:m2.seat}));
-    careerAdvanceTo('2025-12-06');
+    careerAdvanceTo('2026-10-31');
     check('отбор открыт', careerCanPlayKind('nations')===true);
     const h3=await playThrough('trial');
     out.notes.trial=h3;
@@ -116,9 +116,9 @@ const BOOT = `
     check('отбор записан соло среди людей страны', lt && lt.of>=20 && (lt.mates||[]).length===0, JSON.stringify(lt && {of:lt.of, place:lt.place}));
     check('исход отбора записан', N2.trial==='won' || N2.trial==='lost', String(N2.trial));
     if(N2.trial==='lost'){
-      careerAdvanceTo('2025-12-13');
+      careerAdvanceTo('2026-11-07');
       check('без места в составе квалификация закрыта', careerCanPlayKind('nations')===false && ccNatWhyLocked()===L().ccNatTrialLost, ccNatWhyLocked());
-      let g=0; while(CAREER.career.day<'2025-12-21' && g++<30) careerSkipWeek();
+      let g=0; while(CAREER.career.day<'2026-11-15' && g++<30) careerSkipWeek();
       check('мир сыграл квалификации и финал без него', N2.finalDone===true && Object.keys(N2.qualified).length===6, JSON.stringify({done:N2.finalDone, q:Object.keys(N2.qualified)}));
       check('и написал в ленту про сборную', (CAREER.career.news||[]).some(n=>/Германи/.test(String(n.text||n.t||JSON.stringify(n)))), '');
     }

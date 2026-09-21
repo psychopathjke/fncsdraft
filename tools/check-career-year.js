@@ -147,7 +147,8 @@ const BOOT = `
            careerWeekIndex(CC_YEAR_TO) + ')');
     // 48 с хвостом до финала FNCS Solos 27 октября (правила Epic, 1 сентября
     // 2026). Было 47, когда год кончался Перфомансом 9 — 22 октября.
-    if (CAREER_WEEKS !== 48) fail('the measured year is 48 weeks, CAREER_WEEKS says ' + CAREER_WEEKS);
+    // 50 с 21.09: за финалом Solos — три субботы Кубка наций и церемония 15 ноября.
+    if (CAREER_WEEKS !== 50) fail('the year is 50 weeks, CAREER_WEEKS says ' + CAREER_WEEKS);
     if (careerMonday('2026-01-23') !== '2026-01-19')
       fail('Monday of the week holding 23 Jan should be 19 Jan, got ' + careerMonday('2026-01-23'));
     out.steps.push('the year is ' + CAREER_WEEKS + ' weeks and every day knows which one it is in');
