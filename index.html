@@ -58110,7 +58110,14 @@ function ccRenderList(){
      под ником стоит она, а не клуб. */
   if(CC.mode==='creator'){
     grid.style.display='none'; cards.style.display='';
-    const all=ccProAmCreators().filter(n=>!q || n.toLowerCase().includes(q));
+    /* Его правка 21 сентября: «регионы не работают у контент-креаторов — жму, и там всех
+       показывает; пусть от большего к меньшему по фолловерам». Список — только корзина
+       выбранного региона (чип, а не регион старой карьеры), по фолловерам вниз. */
+    // СНГ играет в Европе (ccCreatorRegion сводит CIS к EU) — европейский чип показывает и их.
+    const all=(CC_PROAM_CREATORS_BY_REGION[CC.region||'EU']||[]).concat((CC.region||'EU')==='EU' ? (CC_PROAM_CREATORS_BY_REGION.CIS||[]) : [])
+      .filter((n,i,arr)=>arr.findIndex(x=>hKey(x)===hKey(n))===i)
+      .sort((a,b)=>ccProAmFollowers(b)-ccProAmFollowers(a))
+      .filter(n=>!q || n.toLowerCase().includes(q));
     cards.innerHTML = all.length ? all.map(n=>{
       const f=ccProAmFollowers(n), reg=ccCreatorRegion(n);
       const on = CC.creator===n ? ' on' : '';
