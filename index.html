@@ -5858,6 +5858,33 @@
       </div>
     </div>
 
+    <div class="year-row">
+      <div class="year-label">2024</div>
+      <div class="mode-grid mode-grid-3">
+      <div class="mode-card mode-card-span">
+        <!-- 2024: своих постеров у Мейджоров нет — острова пятой главы, как в карьере. -->
+        <div class="ec-art" style="background-image:url(art/map-f1.jpg)">
+          <i class="ec-slice" style="background-image:url(art/map-f2.jpg)"></i>
+          <i class="ec-slice ec-slice-3" style="background-image:url(art/map-f3.jpg)"></i>
+          <span class="ec-pill ec-pill-l" data-i18n="ecScope6"></span>
+          <div class="ec-foot">
+            <div class="ec-when" data-i18n="ecDate2024"></div>
+            <h3 class="ec-title" data-i18n="modeFncs2024Title"></h3>
+            <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos"></span></div>
+          </div>
+        </div>
+        <div class="ec-cups">
+          <button class="ec-cup ec-cup-arted" style="--cup-art:url(art/map-f1.jpg)" onclick="event.stopPropagation();chooseMode(2,'cards2024')"><span data-i18n="majorPick1"></span><small data-i18n="ecDateF1"></small></button>
+          <button class="ec-cup ec-cup-arted" style="--cup-art:url(art/map-f2.jpg)" onclick="event.stopPropagation();chooseMode(2,'cards2024major2')"><span data-i18n="majorPick2"></span><small data-i18n="ecDateF2"></small></button>
+          <button class="ec-cup ec-cup-arted" style="--cup-art:url(art/map-f3.jpg)" onclick="event.stopPropagation();chooseMode(2,'cards2024major3')"><span data-i18n="majorPick3"></span><small data-i18n="ecDateF3"></small></button>
+          <button class="ec-cup ec-cup-year" onclick="event.stopPropagation();chooseMode(2,'year2024')"><span data-i18n="yearCupBtn"></span><small data-i18n="yearPick2024When"></small></button>
+        </div>
+        <p data-i18n="modeFncs2024Desc"></p>
+        <span class="mode-count" data-i18n="modeFncs2024Count"></span>
+      </div>
+      </div>
+    </div>
+
     <div class="mode-grid mode-grid-4" style="margin-top:16px;">
       <div class="mode-card" onclick="chooseMode(2, true)">
         <div class="ec-art" id="allFncsArt" data-art="art/mode-all-fncs.jpg"><span class="ec-pill ec-pill-l" data-i18n="ecScopeAll"></span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateAll"></div><h3 class="ec-title" data-i18n="modeMajorTitle"></h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos"></span></div></div></div>
@@ -6624,6 +6651,7 @@ ecDateAll:'2021 - 2026', ecDateM1:'мар - май 2026', ecDateM2:'18 июл - 
 ecDateT1:'янв - фев 2025',
 ecDateT2:'апр 2025',
 ecDateT3:'июл - авг 2025',
+ecDate2024:'сезон 2024 · шесть регионов', modeFncs2024Title:'FNCS 2024', modeFncs2024Desc:'Сезон 2024 в дуо: три Мейджора с открытыми квалификаторами, очками серии и полуфиналом в две сетки, шесть регионов (NA West тогда не было), у каждого Мейджора свой остров пятой главы и свой лут. Сезон заканчивается Global Championship в Форт-Уэрте <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> - 50 дуо, 12 игр за два дня, $2 000 000.', modeFncs2024Count:'2 игрока · квалификатор, серия, полуфинал, финал', ecDateF1:'янв - фев 2024', ecDateF2:'апр - май 2024', ecDateF3:'июн - июл 2024', yearPick2024When:'три мейджора и Форт-Уэрт', gc2024QualifiedTitle:'🌍 Ты прошёл на LAN — FNCS 2024 Global Championship, Форт-Уэрт <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gc2024QualifiedNote:(reg,rank,slots)=>'Регион '+reg+' даёт '+ruSlots(slots)+' на Global Championship с этого Мейджора. Твоё место в гранд-финале — '+ccTop(rank)+'. Летишь в Техас.', gc2024FieldTitle:'Кто приехал в Форт-Уэрт <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gc2024FieldNote:'50 дуо со всего мира, 7–8 сентября 2024, Dickies Arena. Призовой фонд — $2 000 000.', gc2024StageTitle:n=>'Global Championship — гранд-финал ('+n+' игр за два дня, 50 дуо)', gc2024Champion:'🏆 Чемпион мира — FNCS 2024 Global Championship', gc2024PlaceNote:rank=>ccTopC(rank)+' на чемпионате мира в Форт-Уэрте', gc2024ResultTitle:n=>'Global Championship, Форт-Уэрт <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> — '+n+' дуо', liveWorlds2024:'Global Championship · Форт-Уэрт <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', celFtwTitle:'ЕДЕШЬ В ФОРТ-УЭРТ', celFtwSub:'FNCS 2024 Global Championship · Форт-Уэрт <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> · 7–8 сентября', celWorldChamp2024Sub:'FNCS 2024 Global Championship · Форт-Уэрт <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', prizeGc2024:rank=>'Global Championship, Форт-Уэрт · '+ccTop(rank), lanFortWorth:'Global Championship, Форт-Уэрт', ecScope6:'6 регионов',
 /* Играть самому или смотреть — вопрос последним на экране перед стартом. */
 playModeTitle:'Как играем',
 playModeNote:'Отличие ровно одно — спрашивают тебя посреди матча или нет. Метку высадки ставишь и там и там',
@@ -8658,6 +8686,7 @@ ecDateAll:'2021 - 2026', ecDateM1:'Mar - May 2026', ecDateM2:'18 Jul - 2 Aug 202
 ecDateT1:'Jan - Feb 2025',
 ecDateT2:'Apr 2025',
 ecDateT3:'Jul - Aug 2025',
+ecDate2024:'2024 season · six regions', modeFncs2024Title:'FNCS 2024', modeFncs2024Desc:'The 2024 season in duos: three Majors with open qualifiers, series points and a two-bracket Semi-Final, six regions (no NA West yet), each Major on its own Chapter 5 island with its own loot. The season ends at the Global Championship in Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> - 50 duos, 12 games over two days, $2,000,000.', modeFncs2024Count:'2 players · qualifier, series, semi-finals, final', ecDateF1:'Jan - Feb 2024', ecDateF2:'Apr - May 2024', ecDateF3:'Jun - Jul 2024', yearPick2024When:'three Majors and Fort Worth', gc2024QualifiedTitle:'🌍 You made the LAN — FNCS 2024 Global Championship, Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gc2024QualifiedNote:(reg,rank,slots)=>reg+' carries '+slots+' Global Championship seats out of this Major. You finished '+ccTop(rank)+' in the Grand Finals. You are flying to Texas.', gc2024FieldTitle:'Who made it to Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gc2024FieldNote:'50 duos from around the world, 7–8 September 2024, Dickies Arena. The prize pool is $2,000,000.', gc2024StageTitle:n=>'Global Championship — Grand Finals ('+n+' games across two days, 50 duos)', gc2024Champion:'🏆 World Champion — FNCS 2024 Global Championship', gc2024PlaceNote:rank=>ccTopC(rank)+' at the World Championship in Fort Worth', gc2024ResultTitle:n=>'Global Championship, Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> — '+n+' duos', liveWorlds2024:'Global Championship · Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', celFtwTitle:'YOU ARE GOING TO FORT WORTH', celFtwSub:'FNCS 2024 Global Championship · Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> · 7–8 September', celWorldChamp2024Sub:'FNCS 2024 Global Championship · Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', prizeGc2024:rank=>'Global Championship, Fort Worth · '+ccTop(rank), lanFortWorth:'Global Championship, Fort Worth', ecScope6:'6 regions',
 playModeTitle:'How you play it',
 playModeNote:'One difference only — whether it asks you mid-match. You place the landing marker either way',
 playSelfTitle:'Play it',
@@ -12613,6 +12642,7 @@ ecDateT1:'janv. - févr. 2025',
 ecDateT2:'avr. 2025',
 majorPick3:'Major 3',
 ecDateT3:'juil. - août 2025',
+ecDate2024:'saison 2024 · six régions', modeFncs2024Title:'FNCS 2024', modeFncs2024Desc:'La saison 2024 en duos : trois Majors avec qualifiers ouverts, points de série et demi-finales en deux brackets, six régions (pas encore de NA West), chaque Major sur sa propre île du Chapitre 5 avec son propre loot. La saison se termine au Global Championship à Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> - 50 duos, 12 parties sur deux jours, 2 000 000 $.', modeFncs2024Count:'2 joueurs · qualifier, série, demi-finales, finale', ecDateF1:'janv. - févr. 2024', ecDateF2:'avr. - mai 2024', ecDateF3:'juin - juil. 2024', yearPick2024When:'trois Majors et Fort Worth', gc2024QualifiedTitle:'🌍 Tu vas au LAN — FNCS 2024 Global Championship, Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gc2024QualifiedNote:(reg,rank,slots)=>reg+' emporte '+slots+' places pour le Global Championship depuis ce Major. Tu as fini '+ccTop(rank)+' des Grandes Finales. Tu pars au Texas.', gc2024FieldTitle:'Qui est allé à Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gc2024FieldNote:'50 duos du monde entier, 7–8 septembre 2024, Dickies Arena. Cagnotte : 2 000 000 $.', gc2024StageTitle:n=>'Global Championship — Grandes Finales ('+n+' parties sur deux jours, 50 duos)', gc2024Champion:'🏆 Champion du monde — Global Championship FNCS 2024', gc2024PlaceNote:rank=>ccTopC(rank)+' au Championnat du monde à Fort Worth', gc2024ResultTitle:n=>'Global Championship, Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> — '+n+' duos', liveWorlds2024:'Global Championship · Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', celFtwTitle:'TU PARS À FORT WORTH', celFtwSub:'Global Championship FNCS 2024 · Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> · 7–8 septembre', celWorldChamp2024Sub:'Global Championship FNCS 2024 · Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', prizeGc2024:rank=>'Global Championship, Fort Worth · '+ccTop(rank), lanFortWorth:'Global Championship, Fort Worth', ecScope6:'6 régions',
 playModeTitle:'Comment tu joues',
 playModeNote:'Une seule différence — être interrogé en plein match ou non. Le marqueur d’atterrissage reste à toi',
 playSelfTitle:'Jouer',
@@ -12967,6 +12997,7 @@ ecSubTrios:"Trio",
 ecDateT1:"gen - feb 2025",
 ecDateT2:"apr 2025",
 ecDateT3:"lug - ago 2025",
+ecDate2024:'stagione 2024 · sei regioni', modeFncs2024Title:'FNCS 2024', modeFncs2024Desc:'La stagione 2024 in duo: tre Major con qualificazioni aperte, punti serie e semifinali in due bracket, sei regioni (NA West ancora non c\'era), ogni Major sulla propria isola del Capitolo 5 con il proprio loot. La stagione finisce al Global Championship di Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> - 50 duo, 12 partite in due giorni, 2.000.000 $.', modeFncs2024Count:'2 giocatori · qualificazione, serie, semifinali, finale', ecDateF1:'gen - feb 2024', ecDateF2:'apr - mag 2024', ecDateF3:'giu - lug 2024', yearPick2024When:'tre Major e Fort Worth', gc2024QualifiedTitle:'🌍 Sei al LAN — FNCS 2024 Global Championship, Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gc2024QualifiedNote:(reg,rank,slots)=>reg+' porta '+slots+' posti per il Global Championship da questo Major. Hai chiuso '+ccTop(rank)+' nelle Gran Finali. Voli in Texas.', gc2024FieldTitle:'Chi è arrivato a Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gc2024FieldNote:'50 duo da tutto il mondo, 7–8 settembre 2024, Dickies Arena. Montepremi: 2.000.000 $.', gc2024StageTitle:n=>'Global Championship — Gran Finali ('+n+' partite in due giorni, 50 duo)', gc2024Champion:'🏆 Campione del mondo — FNCS 2024 Global Championship', gc2024PlaceNote:rank=>ccTopC(rank)+' al Campionato del Mondo di Fort Worth', gc2024ResultTitle:n=>'Global Championship, Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> — '+n+' duo', liveWorlds2024:'Global Championship · Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', celFtwTitle:'VAI A FORT WORTH', celFtwSub:'FNCS 2024 Global Championship · Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> · 7–8 settembre', celWorldChamp2024Sub:'FNCS 2024 Global Championship · Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', prizeGc2024:rank=>'Global Championship, Fort Worth · '+ccTop(rank), lanFortWorth:'Global Championship, Fort Worth', ecScope6:"6 regioni",
 playModeTitle:"Come si gioca",
 playModeNote:"Una sola differenza — se ti chiede qualcosa a metà partita o no. Il segnalino lo metti comunque tu",
 playSelfTitle:"Giocare",
@@ -15475,6 +15506,7 @@ ecSubTrios:"Trios",
 ecDateT1:"jan - fev 2025",
 ecDateT2:"abr 2025",
 ecDateT3:"jul - ago 2025",
+ecDate2024:'temporada 2024 · seis regiões', modeFncs2024Title:'FNCS 2024', modeFncs2024Desc:'A temporada 2024 em duplas: três Majors com classificatórias abertas, pontos de série e semifinais em dois brackets, seis regiões (ainda sem NA West), cada Major na sua ilha do Capítulo 5 com o seu loot. A temporada termina no Global Championship em Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> - 50 duplas, 12 partidas em dois dias, US$ 2.000.000.', modeFncs2024Count:'2 jogadores · classificatória, série, semifinais, final', ecDateF1:'jan - fev 2024', ecDateF2:'abr - mai 2024', ecDateF3:'jun - jul 2024', yearPick2024When:'três Majors e Fort Worth', gc2024QualifiedTitle:'🌍 Você chegou ao LAN — FNCS 2024 Global Championship, Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gc2024QualifiedNote:(reg,rank,slots)=>reg+' leva '+slots+' vagas do Global Championship por este Major. Você terminou '+ccTop(rank)+' nas Grandes Finais. Você vai para o Texas.', gc2024FieldTitle:'Quem chegou a Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', gc2024FieldNote:'50 duplas do mundo inteiro, 7–8 de setembro de 2024, Dickies Arena. Premiação: US$ 2.000.000.', gc2024StageTitle:n=>'Global Championship — Grandes Finais ('+n+' partidas em dois dias, 50 duplas)', gc2024Champion:'🏆 Campeão mundial — FNCS 2024 Global Championship', gc2024PlaceNote:rank=>ccTopC(rank)+' no Campeonato Mundial em Fort Worth', gc2024ResultTitle:n=>'Global Championship, Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> — '+n+' duplas', liveWorlds2024:'Global Championship · Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', celFtwTitle:'VOCÊ VAI PARA FORT WORTH', celFtwSub:'FNCS 2024 Global Championship · Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> · 7–8 de setembro', celWorldChamp2024Sub:'FNCS 2024 Global Championship · Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">', prizeGc2024:rank=>'Global Championship, Fort Worth · '+ccTop(rank), lanFortWorth:'Global Championship, Fort Worth', ecScope6:"6 regiões",
 playModeTitle:"Como você joga",
 playModeNote:"Só uma diferença — se ela te pergunta no meio da partida ou não. A marca de pouso é sua nos dois",
 playSelfTitle:"Jogar",
@@ -51175,6 +51207,7 @@ function playSelfOn(){
 // YEAR_CHAINS, а не эта таблица.
 const TILE_CARD_SET={cards:'m2', cards1:'m1',
                      cards2025:'t1', cards2025major2:'t2', cards2025major3:'t3',
+                     cards2024:'f1', cards2024major2:'f2', cards2024major3:'f3', year2024:'f1',
                      // One card, four cups: the tile hands the chosen one straight through.
                      ewc1:'r1', ewc2:'r2', ewc3:'r3', ewc4:'r4',
                      year:'m1', year2025:'t1', yearReload:'r1'};
@@ -51189,12 +51222,14 @@ const TILE_CARD_SET={cards:'m2', cards1:'m1',
    Reload — четыре капа подряд, LAN у него свой и внутри капа. */
 const YEAR_CHAINS={year:['m1','m2'],
                    year2025:['t1','t2','t3'],
+                   year2024:['f1','f2','f3'],
                    yearReload:['r1','r2','r3','r4']};
 /* Ключевой арт плитки — подложкой страницы на экранах режима (см. --mode-art
    у body). Ключ — то, с чем плитка зовёт chooseMode; без ключа — по размеру. */
 const MODE_ART={cards1:'art/mode-major1.jpg', cards:'art/fncs-2026.jpg',
                 cards2025:'art/mode-major1-2025.jpg', cards2025major2:'art/mode-major2-2025.jpg',
                 cards2025major3:'art/mode-major3-2025.jpg',
+                cards2024:'art/map-f1.jpg', cards2024major2:'art/map-f2.jpg', cards2024major3:'art/map-f3.jpg', year2024:'art/map-f1.jpg',
                 ewc1:'art/mode-ewc.jpg', ewc2:'art/mode-ewc.jpg', ewc3:'art/mode-ewc.jpg', ewc4:'art/mode-ewc.jpg',
                 year:'art/mode-major1.jpg', year2025:'art/mode-major1-2025.jpg', yearReload:'art/mode-ewc.jpg',
                 allfncs:'art/mode-all-fncs.jpg', duo:'art/mode-duo.jpg', trio:'art/mode-trio.jpg', squad:'art/mode-squad.jpg'};
@@ -53206,7 +53241,10 @@ function fieldTarget(){ return CARD_MODE ? CARD_FIELD : PLAYIN_TARGET; }
 function lockedTeamsForSet(){
   return CARD_SET==='m2' ? GC_SUMMIT_DUOS
        : CARD_SET==='t2' ? GC2025_M1_TRIOS
-       : CARD_SET==='t3' ? GC2025_M1_TRIOS.concat(GC2025_M2_TRIOS) : [];
+       : CARD_SET==='t3' ? GC2025_M1_TRIOS.concat(GC2025_M2_TRIOS)
+       // 2024: места в Форт-Уэрт давали все три Мейджора — к третьему заняты дуо первых двух.
+       : CARD_SET==='f2' ? GC2024_M1_DUOS
+       : CARD_SET==='f3' ? GC2024_M1_DUOS.concat(GC2024_M2_DUOS) : [];
 }
 // Every trio that really played this Major, deduplicated -- a team that reached
 // the Grand Final is recorded at both stages it played.
@@ -53906,6 +53944,8 @@ async function runYearTournament(){
        обязано считаться так же, как чужое. Чужие остаются настоящими: круг
        Мейджора 2 сажает в Антверпен тех, кто сел туда на самом деле. */
     if(set==='m1' && lastSummit && lastSummit.rank && lastSummit.rank<=SUMMIT_GC_SLOTS) YEAR_SEAT=true;
+    // 2024: место в Форт-Уэрт, взятое на первом или втором Мейджоре, действует до конца года.
+    if((set==='f1' || set==='f2') && LAST_GC24_SEAT) YEAR_SEAT=true;
   }
   renderYearCard();
 }
@@ -55355,6 +55395,9 @@ function prizeTableFor(table){
   if(table==='GCLC') return GCLC_PRIZES_BY_REGION[myPrizeRegion()] || GCLC_PRIZES_BY_REGION.EU;
   if(table==='SCQ')  return SCQ_PRIZES_BY_REGION[myPrizeRegion()] || SCQ_PRIZES_BY_REGION.EU;
   if(table==='GC2025') return GC2025_PRIZES;
+  if(table==='GC2024') return GC2024_PRIZES;
+  // 2024-й в драфте: окно финала своего региона (Tracker, на игрока — на дуо вдвое). См. DRAFT_M24.
+  if(/^f\d$/.test(String(CARD_SET||'')) && CC_MAJOR_PAY_2024[table==='NAW' ? 'NAC' : table]) return pay24DraftTable(table);
   // Antwerp, on the 2024 split — see GC2026_PRIZES. Still guarded on the table
   // being non-empty, so emptying it goes back to paying nothing rather than
   // paying zeroes.
@@ -57239,6 +57282,8 @@ async function computeQuietLCQWinners(field, lclGames){
 }
 
 async function runMajorTournament(){
+  // 2024-й играется своим кругом: квалификатор → серия → две сетки → финал. См. runMajor2024Tournament.
+  if(/^f\d$/.test(String(CARD_SET||''))) return runMajor2024Tournament();
   // A new event is watched again: the skip a player pressed last night was for
   // last night. CC_SKIP_RUN is what makes one press cover a whole tournament.
   skipAnimation=false; CC_SKIP_RUN=false;
@@ -57629,6 +57674,292 @@ async function runMajorTournament(){
   renderStats();
   finalizeRunStats(squadSize, true, youFinalRank, finalTeams.length, youFinalRank===1, cameFromLcq, true, you, finalTeams);
   showShareButton(you, youFinalRank, finalTeams.length, true, finalTeams);
+}
+
+
+// ---------- FNCS 2024 в режиме драфта: свой круг, не машина хитов ----------
+/* Мейджор 2024-го игрался иначе, чем 2025/2026 (Play-In → хиты → LCQ → финал): открытый
+   квалификатор раундами → очки серии → полуфинал в две сетки → финал на пятьдесят дуо.
+   Карьера играет его своей машиной по дням (runCareerMajor2024, CC_M24); драфт играет весь
+   Мейджор за один присест, поэтому круг свой, но той же формы. Поле драфта — сто пятьдесят
+   дуо своего региона (CARD_FIELD), и отсечки МАСШТАБИРОВАНЫ под него, как playInSeats
+   масштабирует хиты 2026-го под ту же комнату:
+
+     раунд 1 (открытый)   150 → 100     10 игр в перетасованных лобби по 50, элим ×2
+     раунд 2 (серия)      100           10 игр, очки серии → верхняя 40 / нижняя 60
+     верхняя сетка        40 → 28       5 игр (VR — билет, до 4), 5 игр (VR, до 4), 3 игры → топ до 28
+     нижняя сетка         60 → 22       10 игр → 40, 6 игр → 30, 3 игры → 22
+     финал                50            12 игр, элим ×4
+
+   Настоящие числа — в CC_M24 (тысяча → 250 → серия; верхняя 50 → 35, нижняя 200 → 15,
+   финал 50): их отношение к полю в 250 полуфиналистов здесь сохранить нельзя, потому что
+   финал драфта всегда на пятьдесят команд из ста пятидесяти. Доля верхней сетки в финале
+   та же (70 %); нижняя даёт остальное. Это модель под комнату драфта, а не замер.
+   Деньги — таблица окна финала своего региона (CC_MAJOR_PAY_2024, на игрока, на дуо вдвое),
+   места в Форт-Уэрт — GC2024_M{1,2,3}_SEATS, как в карьере. */
+const DRAFT_M24={
+  r1:{games:10, kill:2, cut:100},
+  r2:{games:10, kill:2},
+  upperSize:40, upperSeats:28, vrPerDay:4,
+  upper:[{games:5, kill:4, vr:true}, {games:5, kill:4, vr:true}, {games:3, kill:4}],
+  lower:[{games:10, kill:2, cut:40}, {games:6, kill:3, cut:30}, {games:3, kill:4, cut:22}],
+  final:{games:12, kill:4, field:50}
+};
+// Функцией, не таблицей: GC2024_M*_SEATS объявлены ниже по файлу (const — мёртвая зона при загрузке).
+function gc2024SeatsOf(set){ return ({f1:GC2024_M1_SEATS, f2:GC2024_M2_SEATS, f3:GC2024_M3_SEATS})[set]||{}; }
+let LAST_GC24_SEAT=false;   // своё место в Форт-Уэрт, взятое на этом круге (режим «весь год»)
+function major24Num(){ return +String(CARD_SET||'').replace(/\D/g, '')||1; }
+// Таблица выплат 2024-го — на дуо, местами 1..50, из строк «место ≤ N → на игрока».
+function pay24DraftTable(region){
+  let r=region; if(r==='NAW') r='NAC';
+  const rows=CC_MAJOR_PAY_2024[r]||CC_MAJOR_PAY_2024.EU; const out={};
+  for(let p=1;p<=50;p++){ const row=rows.find(x=>p<=x[0]); out[String(p)]=row ? row[1]*2 : 0; }
+  return out;
+}
+function rank24(teams){ return teams.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims); }
+function reset24(teams){ teams.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; t.stageLog=[]; t.gotVR=false; }); }
+// Регион пары по её карточкам 2024-го — для списков Форт-Уэрта (семь регионов вперемешку).
+function gc2024RegionOf(duo){
+  const cnt={};
+  (duo||[]).forEach(h=>{ const c=gcFindCard(h, null, 0, 2024); const r=c && c.region; if(r) cnt[r]=(cnt[r]||0)+1; });
+  return Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0]||'EU';
+}
+function gc2024BuildTeam(duo, route, rating){
+  const reg=gc2024RegionOf(duo);
+  const squad=duo.map(h=>gcFindCard(h, reg, rating, 2024));
+  const t=buildTeam(squad);
+  t.loadout=randomLoadoutBonus(squad.length); t.pow+=t.loadout;
+  t.name=teamLabel(squad);
+  t.gcRoute=route; t.summitRegion=reg;
+  return t;
+}
+/* Форт-Уэрт в драфте: настоящие дуо по дорогам (Liquipedia), твоё место вытесняет одно из
+   них, дуо с твоим человеком не летит; недобор — верх твоего регионального финала. */
+function buildGc2024DraftField(you, regionalFinal){
+  const field=[], seated=new Set();
+  (you.squad||[]).forEach(p=>seated.add(_gcNorm(p.handle)));
+  const want=DRAFT_M24.final.field-1;
+  const seat=(duos, route, rating)=>duos.forEach(d=>{
+    if(field.length>=want) return;
+    if(d.some(h=>seated.has(_gcNorm(h)))) return;
+    const t=gc2024BuildTeam(d, route, rating);
+    const keys=(t.squad||[]).map(c=>_gcNorm(c.handle));
+    if(keys.some(k=>seated.has(k))) return;
+    d.forEach(h=>seated.add(_gcNorm(h))); keys.forEach(k=>seated.add(k));
+    field.push(t);
+  });
+  seat(GC2024_M1_DUOS, 'm1', 90);
+  seat(GC2024_M2_DUOS, 'm2', 88);
+  seat(GC2024_M3_DUOS, 'm3', 86);
+  (regionalFinal||[]).forEach(t=>{
+    if(field.length>=want || t===you) return;
+    const keys=(t.squad||[]).map(c=>_gcNorm(c.handle));
+    if(keys.some(k=>seated.has(k))) return;
+    keys.forEach(k=>seated.add(k));
+    t.gcRoute='m3'; field.push(t);
+  });
+  you.gcRoute='m'+major24Num();
+  field.push(you);
+  return field;
+}
+async function runGlobalChampionship2024(you, regionRank, region, regionalFinal){
+  const container=document.getElementById('majorStages');
+  const intro=document.createElement('div');
+  intro.className='stage-card';
+  intro.innerHTML='<h4>'+L().gc2024QualifiedTitle+'</h4><div class="stage-detail">'+
+    L().gc2024QualifiedNote(regionName(region), regionRank, gc2024SeatsOf(CARD_SET)[region]||0)+'</div>';
+  container.appendChild(intro);
+  intro.scrollIntoView({block:'center', behavior:'smooth'});
+  await celebrate(L().celKicker, L().celFtwTitle, L().celFtwSub, 'gold', 70, 'us');
+  ensureSkipButton();
+  // Остров Форт-Уэрта — сезон 4 главы 5; после ЛАНа круг возвращает свой.
+  const wasSet=CARD_SET;
+  useLandingSet('f4');
+  const field=buildGc2024DraftField(you, regionalFinal);
+  reset24(field);
+  renderGc2025FieldCard(field, L().gc2024FieldTitle, L().gc2024FieldNote);
+  if(!skipAnimation) await sleep(900);
+  const zones=await showFinalsLandingPicker(field, you);
+  const shell=createStageCardShell(L().gc2024StageTitle(DRAFT_M24.final.games));
+  await simulateGamesLive(field, DRAFT_M24.final.games, pointsForPlace, DRAFT_M24.final.kill, 'stage', 0, null, zones,
+    {mapReplay:true, choices:true, stageName:L().liveWorlds2024});
+  useLandingSet(wasSet);
+  const ranked=rank24(field);
+  const rank=ranked.indexOf(you)+1;
+  await revealStageLog(you, shell, true);
+  finalizeStageCard(shell, rank, field.length, you.stagePts, rank===1 ? true : null, you.gotVR,
+    rank===1 ? L().gc2024Champion : L().gc2024PlaceNote(rank));
+  await revealStandings(shell, ranked, you, 0, null, null, 'GC2024');
+  removeSkipButton();
+  if(rank===1) await celebrate(L().celKicker, L().celWorldChampTitle, L().celWorldChamp2024Sub, 'gold', 160);
+  return {ranked, rank, total:field.length, champion:rank===1};
+}
+async function runMajor2024Tournament(){
+  skipAnimation=false; CC_SKIP_RUN=false;
+  resetRunRecord();
+  LAST_GC24_SEAT=false;
+  document.getElementById('majorStages').innerHTML='';
+  const rsPrev=document.getElementById('runSummary'); if(rsPrev) rsPrev.innerHTML='';
+  document.getElementById('lobbyTitle').textContent='';
+  document.getElementById('lobbyBody').innerHTML='';
+  clearEventPanel();
+  document.getElementById('finalBanner').style.display='none';
+  clearLandingResultsMap();
+  show('screen-results');
+  ensureSkipButton();
+  const n=major24Num(), S=DRAFT_M24;
+  const teams=buildFullLobby();
+  const you=teams.find(t=>t.isYou);
+  const lobby=TEAM_TARGET[squadSize]||50;
+  const out=async note=>{ document.getElementById('finalSub').textContent=note; finishMajorEliminatedAnim(you); };
+  const card=async(title, ranked, cut, passed, note, qualifiedSet)=>{
+    const shell=createStageCardShell(title);
+    await revealStageLog(you, shell, true);
+    finalizeStageCard(shell, ranked.indexOf(you)+1, ranked.length, you.stagePts, passed, you.gotVR && !!qualifiedSet, note);
+    await revealStandings(shell, ranked, you, qualifiedSet ? 0 : cut, null, qualifiedSet||null);
+  };
+
+  // ---- раунд 1: открытый квалификатор ---------------------------------------
+  await simulateGamesRandomLobbies(teams, S.r1.games, lobby, pointsForPlace, S.r1.kill);
+  let ranked=rank24(teams);
+  const cut1=Math.min(S.r1.cut, ranked.length);
+  const in1=ranked.indexOf(you)<cut1;
+  await card(L().ccYr24Qual(n, 1, 1), ranked, cut1, in1, in1 ? L().ccRelPass(cut1) : L().ccRelFail(cut1));
+  if(!in1){ await out(L().ccRelFail(cut1)); return; }
+
+  // ---- раунд 2: очки серии → сетки ------------------------------------------
+  const series=ranked.slice(0, cut1); reset24(series);
+  await simulateGamesRandomLobbies(series, S.r2.games, lobby, pointsForPlace, S.r2.kill);
+  ranked=rank24(series);
+  const sRank=ranked.indexOf(you)+1;
+  const upper=ranked.slice(0, S.upperSize), lower=ranked.slice(S.upperSize);
+  const inUpper=sRank<=S.upperSize;
+  await card(L().ccYr24Qual(n, 1, 2), ranked, S.upperSize, true,
+    L().ccYr24Series(you.stagePts, sRank)+' · '+(inUpper ? L().ccYr24ToUpper : L().ccYr24ToLower));
+
+  // ---- полуфинал: две сетки, своя — вживую, чужая — тихо ---------------------
+  const finalTeams=[];
+  const tickets=[];
+  const vrOf=(room, cap)=>rank24(room).filter(t=>t.gotVR && !tickets.includes(t)).slice(0, cap);
+  const upperTitle=r=>L().ccYr24Semi(n, r)+' · '+L().ccYr24Upper;
+  const lowerTitle=r=>L().ccYr24Semi(n, r)+' · '+L().ccYr24Lower;
+  let alive=true, youTicket=false;
+  // верхняя
+  {
+    let room=upper.slice();
+    for(let d=0; d<S.upper.length; d++){
+      const sp=S.upper[d]; reset24(room);
+      if(inUpper && alive && !youTicket){
+        const zones=await stageLandingPicker(room, you, upperTitle(d+1));
+        await simulateGamesLive(room, sp.games, pointsForPlace, sp.kill, 'stage', 0, null, zones,
+          {stopOnWin:!!sp.vr, mapReplay:true, choices:true, stageName:upperTitle(d+1)});
+      } else if(sp.vr) simulateGamesStopOnWin(room, sp.games, pointsForPlace, sp.kill);
+      else simulateGames(room, sp.games, pointsForPlace, sp.kill);
+      const r=rank24(room);
+      if(sp.vr){
+        const won=vrOf(room, S.vrPerDay); won.forEach(t=>tickets.push(t));
+        if(inUpper && alive && !youTicket){
+          youTicket=won.includes(you);
+          await card(upperTitle(d+1), r, 0, youTicket ? true : null, youTicket ? L().ccYr24VrTicket : L().ccMajNoTicket, new Set(won));
+          if(youTicket) await celebrate(L().celKicker, L().celFinalsTitle, L().celFinalsSub, 'green', 40);
+        }
+        room=room.filter(t=>!won.includes(t));
+      } else {
+        const seats=Math.max(0, S.upperSeats-tickets.length);
+        const pass=r.slice(0, seats);
+        if(inUpper && alive && !youTicket){
+          const ok=pass.includes(you);
+          await card(upperTitle(d+1), r, seats, ok, ok ? L().ccRelPass(seats) : L().ccRelFail(seats));
+          if(ok) await celebrate(L().celKicker, L().celFinalsTitle, L().celFinalsSub, 'green', 40);
+          else alive=false;
+        }
+        tickets.forEach(t=>finalTeams.push(t)); pass.forEach(t=>finalTeams.push(t));
+      }
+    }
+  }
+  // нижняя
+  {
+    let room=lower.slice();
+    for(let d=0; d<S.lower.length; d++){
+      const sp=S.lower[d]; reset24(room);
+      const cut=(d===S.lower.length-1) ? Math.max(sp.cut, S.final.field-finalTeams.length) : sp.cut;
+      if(!inUpper && alive){
+        const zones=await stageLandingPicker(room, you, lowerTitle(d+1));
+        await simulateGamesLive(room, sp.games, pointsForPlace, sp.kill, 'stage', 0, null, zones,
+          {mapReplay:true, choices:true, stageName:lowerTitle(d+1)});
+      } else simulateGames(room, sp.games, pointsForPlace, sp.kill);
+      const r=rank24(room);
+      const pass=r.slice(0, Math.min(cut, r.length));
+      if(!inUpper && alive){
+        const ok=pass.includes(you);
+        await card(lowerTitle(d+1), r, pass.length, ok, ok ? L().ccRelPass(pass.length) : L().ccRelFail(pass.length));
+        if(!ok) alive=false;
+        else if(d===S.lower.length-1) await celebrate(L().celKicker, L().celFinalsTitle, L().celFinalsSub, 'green', 40);
+      }
+      room=pass;
+      if(d===S.lower.length-1) pass.forEach(t=>finalTeams.push(t));
+    }
+  }
+  if(!alive){ await out(L().ccYr24NoSemi); return; }
+  const fin=finalTeams.filter((t,i,a)=>a.indexOf(t)===i).slice(0, S.final.field);
+  if(fin.indexOf(you)<0) fin[fin.length-1]=you;
+
+  // ---- финал ------------------------------------------------------------------
+  reset24(fin);
+  const zoneGroups=await stageLandingPicker(fin, you, L().finalsLandingTitle);
+  await simulateGamesLive(fin, S.final.games, pointsForPlace, S.final.kill, 'stage', 0, null, zoneGroups,
+    {mapReplay:true, choices:true, stageName:L().liveRegionalFinals});
+  const finalRanked=rank24(fin);
+  const youFinalRank=finalRanked.indexOf(you)+1;
+  const myReg=ccHomeRegion();
+  const gfSlots=gc2024SeatsOf(CARD_SET)[myReg]||0;
+  const gfSeats=gfSlots ? awardSeats(finalRanked, gfSlots, holdsLanSeat) : [];
+  const gfSeatSet=new Set(gfSeats);
+  const gfSeatCut=gfSeats.length ? finalRanked.indexOf(gfSeats[gfSeats.length-1])+1 : gfSlots;
+  const youHoldSeat=holdsLanSeat(you);
+  const youQualified=youHoldSeat || gfSeatSet.has(you);
+  if(gfSlots) recordLanSeat(L().lanFortWorth, youQualified,
+    youHoldSeat ? L().lanSeatHeld(youFinalRank) : L().lanSeatDetail(youFinalRank, gfSlots, regionName(myReg)));
+  LAST_GC24_SEAT=!!youQualified;
+  const gfShell=createStageCardShell(L().majorFinalsStageTitle(fin.length));
+  await revealStageLog(you, gfShell, true);
+  finalizeStageCard(gfShell, youFinalRank, fin.length, you.stagePts, gfSlots ? youQualified : (youFinalRank===1), you.gotVR,
+    gfSlots ? L().ccMajSeatGc24(gfSlots) : '');
+  await revealStandings(gfShell, finalRanked, you, gfSlots ? gfSeatCut : 0, null, gfSlots ? gfSeatSet : null, myReg,
+    (gfSlots && gfSeatCut>gfSlots) ? L().gcSeatCutRolled(gfSlots, gfSeatCut) : null);
+  lobbyPrizeTable=myReg;
+  removeSkipButton();
+  const lines=[];
+  const regional=prizeFor(myReg, youFinalRank);
+  if(regional) lines.push({label:L().prizeRegional(regionName(myReg), youFinalRank), amount:regional});
+  lines.forEach(l=>recordEarning(l.label, l.amount));
+  if(lines.length){ renderPrizeCard(lines, lines.reduce((s,l)=>s+l.amount, 0)); if(!skipAnimation) await sleep(900); }
+
+  // ---- Форт-Уэрт: третий Мейджор закрывает сезон -----------------------------
+  let worlds=null;
+  if(CARD_SET==='f3' && youQualified) worlds=await runGlobalChampionship2024(you, youFinalRank, myReg, finalRanked);
+  let shown=finalRanked, shownRank=youFinalRank;
+  if(worlds){
+    const p=prizeFor('GC2024', worlds.rank);
+    if(p>0){ recordEarning(L().prizeGc2024(worlds.rank), p); renderPrizeCard([{label:L().prizeGc2024(worlds.rank), amount:p}], p); if(!skipAnimation) await sleep(900); }
+    lobbyPrizeTable='GC2024';
+    shown=worlds.ranked; shownRank=worlds.rank;
+  }
+  renderRunSummaryCard();
+  shown.forEach(t=>{ t.totalPts=t.stagePts; t.totalElims=t.stageElims; });
+  you.gameLog=you.stageLog;
+  document.getElementById('finalBanner').style.display='block';
+  document.getElementById('finalPlace').textContent='#'+shownRank;
+  document.getElementById('finalSub').textContent = worlds
+    ? (worlds.champion ? L().gc2024Champion : L().gc2024PlaceNote(worlds.rank))
+    : (youFinalRank===1 ? L().championMajor : L().placeInFinals(youFinalRank, fin.length));
+  document.getElementById('lobbyTitle').innerHTML = worlds ? L().gc2024ResultTitle(worlds.total) : L().majorFinalsResultTitle(fin.length);
+  document.getElementById('lobbyTitle').scrollIntoView({block:'start', behavior:'smooth'});
+  renderLobby(shown, you);
+  renderGameHistory(you);
+  renderStats();
+  finalizeRunStats(squadSize, true, shownRank, shown.length, shownRank===1, false, true, you, shown);
+  showShareButton(you, shownRank, shown.length, true, shown);
 }
 
 
@@ -58941,7 +59272,10 @@ async function computeQuietGclcQualifier(region, excludeHandles){
 function lanSeatHoldersForSet(){
   return CARD_SET==='m2' ? GC_SUMMIT_DUOS
        : CARD_SET==='t2' ? GC2025_M1_TRIOS
-       : CARD_SET==='t3' ? GC2025_M1_TRIOS.concat(GC2025_M2_TRIOS) : [];
+       : CARD_SET==='t3' ? GC2025_M1_TRIOS.concat(GC2025_M2_TRIOS)
+       // 2024: места в Форт-Уэрт давали все три Мейджора — к третьему заняты дуо первых двух.
+       : CARD_SET==='f2' ? GC2024_M1_DUOS
+       : CARD_SET==='f3' ? GC2024_M1_DUOS.concat(GC2024_M2_DUOS) : [];
 }
 let _LAN_SEAT_HANDLES=null, _LAN_SEAT_SET_FOR=null;
 function lanSeatHandles(){
@@ -58983,7 +59317,7 @@ function holdsLanSeat(t){
      драфт его гасит сам (см. startDraft), карьера — нет, она мимо. CARD_SET —
      потому что место действует в Антверпене, а не на круге, где его выиграли.
      CAREER_RUN — потому что у карьеры своё место на LAN и свой учёт. */
-  if(t.isYou && YEAR_SEAT && YEAR_KEY && CARD_SET==='m2'
+  if(t.isYou && YEAR_SEAT && YEAR_KEY && (CARD_SET==='m2' || CARD_SET==='f2' || CARD_SET==='f3')
      && !(typeof CAREER_RUN!=='undefined' && CAREER_RUN)) return true;
   const held=lanSeatHandles();
   if(!held.size) return false;
@@ -59353,7 +59687,7 @@ function buildGlobalChampionship2025Field(you, region, regionalFinal){
   return capped;
 }
 
-function renderGc2025FieldCard(field){
+function renderGc2025FieldCard(field, title, note){
   const container=document.getElementById('majorStages');
   const card=document.createElement('div');
   card.className='stage-card';
@@ -59366,8 +59700,8 @@ function renderGc2025FieldCard(field){
         ${title} <span style="color:var(--ink-dimmer);font-weight:600;">(${teams.length})</span></div>
       <div class="lobby-wrap"><table class="lobby-table"><tbody>
         ${teams.map(t=>rowFor(t,label)).join('')}</tbody></table></div></div>` : '';
-  card.innerHTML=`<h4>${L().gc2025FieldTitle}</h4>
-    <div class="stage-detail">${L().gc2025FieldNote}</div>
+  card.innerHTML=`<h4>${title||L().gc2025FieldTitle}</h4>
+    <div class="stage-detail">${note||L().gc2025FieldNote}</div>
     ${section(L().gc2025RouteM1, group('m1'), L().gc2025RouteM1Short)}
     ${section(L().gc2025RouteM2, group('m2'), L().gc2025RouteM2Short)}
     ${section(L().gc2025RouteM3, group('m3'), L().gc2025RouteM3Short)}`;
