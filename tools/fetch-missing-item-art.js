@@ -10,6 +10,9 @@
 // the name the loot pool uses, the page is named here — that part cannot be
 // derived, and guessing it downloads the wrong gun.
 const fs = require('fs'), path = require('path');
+const { execFileSync } = require('child_process');
+// static.wikia.nocookie.net стоит за Cloudflare: fetch из node получает челлендж, curl с браузерным UA — файл.
+function curlBuf(url){ return execFileSync('curl', ['-s', '-L', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36', '-e', 'https://fortnite.fandom.com/', url], {maxBuffer: 1<<26}); }
 
 const ROOT = path.resolve(__dirname, '..');
 const OUT = path.join(ROOT, 'items');
@@ -41,7 +44,28 @@ const BASE_FILE = {
   "Launch Pad":                         "Launch Pad - Trap - Fortnite.png",
   "Pizza Party":                        "Pizza Party - Item - Fortnite.png",
   "Twin Siphon Shotguns":               "Twin Hammer Shotguns - Weapon - Fortnite.png",
-  "Red-Eye Submachine Gun":             "Red-Eye Assault Rifle - Weapon - Fortnite.png"
+  "Red-Eye Submachine Gun":             "Red-Eye Assault Rifle - Weapon - Fortnite.png",
+  // 21 September 2026: Chapter 5 (2024) pools f1–f4 — file names read off the season loot-pool pages.
+  "Striker AR": "Striker AR - Weapon - Fortnite.png",
+  "Enforcer AR": "Enforcer AR - Weapon - Fortnite.png",
+  "Hammer Pump Shotgun": "Modular Hammer Pump Shotgun - Weapon - Fortnite.png",
+  "Hyper SMG": "Hyper SMG (v28.01.01) - Weapon - Fortnite.png",
+  "Grapple Blade": "Grapple Blade - Item - Fortnite.png",
+  "Harbinger SMG": "Modular Harbinger SMG - Weapon - Fortnite.png",
+  "Hand Cannon": "Modular Hand Cannon - Weapon - Fortnite.png",
+  "Huntress DMR": "Modular Huntress DMR - Weapon - Fortnite.png",
+  "Wings of Icarus": "Wings of Icarus - Item - Fortnite.png",
+  "Combat Shotgun": "Modular Combat Shotgun - Weapon - Fortnite.png",
+  "Boom Bolt": "Modular Boom Bolt - Weapon - Fortnite.png",
+  "Nitro Fists": "Nitro Fists - Item - Fortnite.png",
+  "Nitro Splash": "Nitro Splash - Item - Fortnite.png",
+  "Stark Industries Energy Rifle": "Stark Industries Energy Rifle - Weapon - Fortnite.png",
+  "Sovereign Shotgun": "Modular Sovereign Shotgun - Weapon - Fortnite.png",
+  "Wood Stake Shotgun": "Wood Stake Shotgun - Weapon - Fortnite.png",
+  "Dual Micro SMGs": "Dual Micro SMGs - Weapon - Fortnite.png",
+  "Monarch Pistol": "Modular Monarch Pistol - Weapon - Fortnite.png",
+  "War Machine's Hover Jets": "War Machine's Hover Jets - Item - Fortnite.png",
+  "Captain America's Shield": "Captain America's Shield (v31.10) - Item - Fortnite.png"
 };
 // loot-pool name -> wiki page (null means the names agree)
 const PAGES = {
@@ -117,7 +141,27 @@ const PAGES = {
   "Slapperoni Slice": null,
   "Spicy Slapperoni Slice": null,
   "Pizza Party": null,
-  "Pizza Slice": null
+  "Pizza Slice": null,
+  "Striker AR": null,
+  "Enforcer AR": null,
+  "Hammer Pump Shotgun": null,
+  "Hyper SMG": null,
+  "Grapple Blade": null,
+  "Harbinger SMG": null,
+  "Hand Cannon": null,
+  "Huntress DMR": null,
+  "Wings of Icarus": null,
+  "Combat Shotgun": null,
+  "Boom Bolt": null,
+  "Nitro Fists": null,
+  "Nitro Splash": null,
+  "Stark Industries Energy Rifle": null,
+  "Sovereign Shotgun": null,
+  "Wood Stake Shotgun": null,
+  "Dual Micro SMGs": null,
+  "Monarch Pistol": null,
+  "War Machine's Hover Jets": null,
+  "Captain America's Shield": null
 };
 const slug = n => 'itm-' + n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
@@ -141,7 +185,7 @@ async function grab(fileTitle, name) {
   const first = ip[Object.keys(ip)[0]];
   if (!first || !first.imageinfo) return null;
   const ii = first.imageinfo[0];
-  const buf = Buffer.from(await (await fetch(ii.thumburl || ii.url, {headers: {'User-Agent': UA}})).arrayBuffer());
+  const buf = curlBuf(ii.thumburl || ii.url);
   const ext = sniff(buf);
   if (!ext) return null;
   const rel = 'items/' + slug(name) + '.' + ext;
@@ -189,7 +233,7 @@ async function grab(fileTitle, name) {
     const ip = info.query.pages;
     const ii = ip[Object.keys(ip)[0]].imageinfo[0];
     const url = ii.thumburl || ii.url;
-    const buf = Buffer.from(await (await fetch(url, {headers: {'User-Agent': UA}})).arrayBuffer());
+    const buf = curlBuf(url);
     const ext = sniff(buf);
     if (!ext) { console.error(name.padEnd(38), 'not an image: ' + url); continue; }
     const rel = 'items/' + slug(name) + '.' + ext;

@@ -26,7 +26,7 @@ const BOOT = `
     // 1. Экран создания: чип года есть, 2025 выбирается, сейв выходит с годом.
     openCareerCreate();
     const chips=document.getElementById('ccYearChips');
-    check('на экране создания есть чипы года', chips && chips.querySelectorAll('button').length===2);
+    check('на экране создания есть чипы года', chips && chips.querySelectorAll('button').length===3);
     ccPickYear(2025);
     check('чип 2025 включён', chips.querySelector('button.on') && /2025/.test(chips.querySelector('button.on').textContent));
     check('подпись года меняется', /2025|Lyon|Лион/.test(document.getElementById('ccYearNote').textContent));

@@ -43,6 +43,12 @@ const SETS = {
      s42solo — та же карта, но своя сетка на сотню клеток, поэтому лут по ней
      раскладывается отдельно: у мелкой клетки свой счёт, а не счёт большого
      соседа. */
+  /* Острова 2024-го — патч на выходные финала: Мейджор 1 (24–25 февраля) — 28.30, Мейджор 2
+     (18–19 мая) — 29.40, Мейджор 3 (27–28 июля) — 30.30, Форт-Уэрт (7–8 сентября) — 31.00. */
+  f1: {map: 'Map:Chapter 5: Season 1 (28.30)', art: 'art/map-f1.jpg'},
+  f2: {map: 'Map:Chapter 5: Season 2 (29.40)', art: 'art/map-f2.jpg'},
+  f3: {map: 'Map:Chapter 5: Season 3 (30.30)', art: 'art/map-f3.jpg'},
+  f4: {map: 'Map:Chapter 5: Season 4 (31.00)', art: 'art/map-f4.jpg'},
   s42:     {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
   s42solo: {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
   /* Острова Мейджоров 2026 — только ради счёта СУНДУКОВ по коробкам (7.09, «сундуков
@@ -167,8 +173,11 @@ document.getElementById('i').onload = function(){
         encodeURIComponent('File:' + j.mapImage));
       const pages = info.query.pages;
       const url = pages[Object.keys(pages)[0]].imageinfo[0].url;
-      const buf = Buffer.from(await (await fetch(url, {headers: {'User-Agent': UA}})).arrayBuffer());
-      fs.writeFileSync(imgFile, buf);
+      // Картинки static.wikia.nocookie.net стоят за Cloudflare: fetch из node получает челлендж,
+      // curl с браузерным UA и Referer — файл (обычно webp под именем png; Chrome его читает).
+      execFileSync('curl', ['-s', '-L', '-A', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36', '-e', 'https://fortnite.fandom.com/', '-o', imgFile, url]);
+      if (!fs.existsSync(imgFile) || fs.statSync(imgFile).size < 20000) throw new Error('wiki image blocked: ' + url);
+      
     }
     const wikiBox = islandBox(imgFile);
     const artBox = islandBox(path.join(ROOT, cfg.art));

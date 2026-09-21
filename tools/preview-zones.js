@@ -31,7 +31,8 @@ function carve(name, from) {
   return JSON.parse(html.slice(i, end).replace(/([a-z]+):/g, '"$1":').replace(/,\s*]/g, ']'));
 }
 
-const zones = carve('\n  ' + SET + ':[');
+// С ZONE_SETS, а не с первого попавшегося: ZONE_STATS стоит в файле раньше и держит те же ключи.
+const zones = carve('\n  ' + SET + ':[', html.indexOf('const ZONE_SETS='));
 const artMatch = html.match(new RegExp(SET + ':"(art/[^"]+)"'));
 if (!artMatch) throw new Error('no MAP_ART entry for ' + SET);
 const art = artMatch[1];

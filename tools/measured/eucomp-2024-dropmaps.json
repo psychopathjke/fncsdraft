@@ -1,0 +1,1839 @@
+{
+ "source": "eucompetitive.com/tournamentmaps (api/load.php), frame 800x800 over 1600x1600 map",
+ "maps": {
+  "f1": "ch5s1-fncs-finals",
+  "f2": "ch5s2-fncs-finals",
+  "f3": "ch5s3-fncs-finals",
+  "f4": "ch5s4-fncs-finals"
+ },
+ "shapes": {
+  "f1": [
+   {
+    "id": 44,
+    "type": "rectangle",
+    "x": 185.30999755859375,
+    "y": 121.32687377929688,
+    "width": 77.70588235294117,
+    "height": 82.8235294117647,
+    "teams": [
+     "DECKZEE ECLIPSE"
+    ]
+   },
+   {
+    "id": 45,
+    "type": "rectangle",
+    "x": 337.713134765625,
+    "y": 185.79750061035156,
+    "width": 42,
+    "height": 61,
+    "teams": [
+     "QUEASY TH0MASHD",
+     "CRINGE NOMZZ"
+    ]
+   },
+   {
+    "id": 46,
+    "type": "rectangle",
+    "x": 472.1918640136719,
+    "y": 97.02687072753906,
+    "width": 69,
+    "height": 73,
+    "teams": [
+     "VEXI PURCHAWA"
+    ]
+   },
+   {
+    "id": 47,
+    "type": "rectangle",
+    "x": 659.1287231445312,
+    "y": 129.27438354492188,
+    "width": 85,
+    "height": 142,
+    "teams": [
+     "TJINO CHAPIX"
+    ]
+   },
+   {
+    "id": 48,
+    "type": "rectangle",
+    "x": 285.1443786621094,
+    "y": 255.14874267578125,
+    "width": 87,
+    "height": 103,
+    "teams": [
+     "ARC RICBOR",
+     "P1NGFNZ MIKSON"
+    ]
+   },
+   {
+    "id": 49,
+    "type": "rectangle",
+    "x": 550.187255859375,
+    "y": 244.3920135498047,
+    "width": 92,
+    "height": 67,
+    "teams": [
+     "CZB NXTHAN"
+    ]
+   },
+   {
+    "id": 50,
+    "type": "rectangle",
+    "x": 570.275634765625,
+    "y": 526.4381256103516,
+    "width": 119,
+    "height": 67,
+    "teams": [
+     "IDROP NEBS"
+    ]
+   },
+   {
+    "id": 51,
+    "type": "rectangle",
+    "x": 470.48260498046875,
+    "y": 530.3505859375,
+    "width": 82,
+    "height": 56,
+    "teams": [
+     "T3ENY MISHA",
+     "PABLOWINGU BEVVYS"
+    ]
+   },
+   {
+    "id": 52,
+    "type": "rectangle",
+    "x": 595.3343505859375,
+    "y": 608.9693603515625,
+    "width": 82,
+    "height": 97,
+    "teams": [
+     "SLOXZAY SAPHIR"
+    ]
+   },
+   {
+    "id": 53,
+    "type": "rectangle",
+    "x": 71.35499572753906,
+    "y": 373.234375,
+    "width": 91,
+    "height": 71,
+    "teams": [
+     "ROBBAN AXEFORCE"
+    ]
+   },
+   {
+    "id": 54,
+    "type": "rectangle",
+    "x": 157.2793731689453,
+    "y": 597.4824829101562,
+    "width": 42,
+    "height": 57,
+    "teams": [
+     "PIXIE WOX"
+    ]
+   },
+   {
+    "id": 55,
+    "type": "rectangle",
+    "x": 161.56609344482422,
+    "y": 453.2493896484375,
+    "width": 69.51923076923077,
+    "height": 52,
+    "teams": [
+     "VOLKO VORTEXERS",
+     "SKY SCROLL"
+    ]
+   },
+   {
+    "id": 56,
+    "type": "rectangle",
+    "x": 394.87689208984375,
+    "y": 446.35626220703125,
+    "width": 59,
+    "height": 76,
+    "teams": [
+     "VANYAK3K S1NED"
+    ]
+   },
+   {
+    "id": 57,
+    "type": "rectangle",
+    "x": 270.8956298828125,
+    "y": 586.7625122070312,
+    "width": 64,
+    "height": 101,
+    "teams": [
+     "ANDILEX SEYYTO",
+     "AQUA NOAHREYLI"
+    ]
+   },
+   {
+    "id": 58,
+    "type": "rectangle",
+    "x": 348.18939208984375,
+    "y": 579.5756225585938,
+    "width": 63,
+    "height": 90,
+    "teams": [
+     "KAMI SETTY"
+    ]
+   },
+   {
+    "id": 59,
+    "type": "rectangle",
+    "x": 388.8531188964844,
+    "y": 243.3543701171875,
+    "width": 61,
+    "height": 89,
+    "teams": [
+     "MARIUSCOW SANGILD"
+    ]
+   },
+   {
+    "id": 60,
+    "type": "rectangle",
+    "x": 458.791259765625,
+    "y": 207.93374633789062,
+    "width": 70,
+    "height": 87,
+    "teams": [
+     "SKYDEUN SHAYKOZ"
+    ]
+   },
+   {
+    "id": 61,
+    "type": "rectangle",
+    "x": 477.6935615539551,
+    "y": 332.8277282714844,
+    "width": 102,
+    "height": 67,
+    "teams": [
+     "JANNISZ FLICKZY"
+    ]
+   },
+   {
+    "id": 62,
+    "type": "rectangle",
+    "x": 575.853759765625,
+    "y": 118.54187774658203,
+    "width": 70,
+    "height": 109,
+    "teams": [
+     "K1NG FAZER",
+     "LUNEX M0NE"
+    ]
+   },
+   {
+    "id": 63,
+    "type": "rectangle",
+    "x": 337.448486328125,
+    "y": 372.56475830078125,
+    "width": 108,
+    "height": 63,
+    "teams": [
+     "PREDAGE AYARBAFFO"
+    ]
+   },
+   {
+    "id": 64,
+    "type": "rectangle",
+    "x": 508.416259765625,
+    "y": 174.73500061035156,
+    "width": 60,
+    "height": 23,
+    "teams": [
+     "GROLZZ KLOWN"
+    ]
+   },
+   {
+    "id": 65,
+    "type": "rectangle",
+    "x": 189.431884765625,
+    "y": 363.64125061035156,
+    "width": 111,
+    "height": 64,
+    "teams": [
+     "G13RAS CHARYY",
+     "ROBIN MEDAX"
+    ]
+   },
+   {
+    "id": 66,
+    "type": "rectangle",
+    "x": 617.9006271362305,
+    "y": 322.20375061035156,
+    "width": 111,
+    "height": 79,
+    "teams": [
+     "TAYSON VENO"
+    ]
+   },
+   {
+    "id": 68,
+    "type": "rectangle",
+    "x": 257.571834564209,
+    "y": 435.03204345703125,
+    "width": 67,
+    "height": 80,
+    "teams": [
+     "MRSAVAGE MONGRAAL",
+     "LAYN NAYTE"
+    ]
+   },
+   {
+    "id": 69,
+    "type": "rectangle",
+    "x": 103.244384765625,
+    "y": 299.17250061035156,
+    "width": 79,
+    "height": 51,
+    "teams": [
+     "SWIZZY PUTRICK"
+    ]
+   },
+   {
+    "id": 70,
+    "type": "rectangle",
+    "x": 201.400634765625,
+    "y": 520.0475006103516,
+    "width": 94,
+    "height": 55,
+    "teams": [
+     "HRIS SKVII",
+     "PRISM CASPERINOVIC"
+    ]
+   },
+   {
+    "id": 71,
+    "type": "rectangle",
+    "x": 432.64654541015625,
+    "y": 597.760498046875,
+    "width": 65,
+    "height": 59,
+    "teams": [
+     "WHEAT SHAMOKIY"
+    ]
+   },
+   {
+    "id": 72,
+    "type": "rectangle",
+    "x": 342.33812713623047,
+    "y": 86.51625061035156,
+    "width": 94,
+    "height": 79,
+    "teams": [
+     "GABIX BELUSI"
+    ]
+   },
+   {
+    "id": 73,
+    "type": "rectangle",
+    "x": 334.083740234375,
+    "y": 466.29376220703125,
+    "width": 51,
+    "height": 58,
+    "teams": [
+     "DYOX KAYD"
+    ]
+   },
+   {
+    "id": 74,
+    "type": "rectangle",
+    "x": 270.603759765625,
+    "y": 105.73500061035156,
+    "width": 60,
+    "height": 115,
+    "teams": [
+     "L0WK3Y ARYAN"
+    ]
+   },
+   {
+    "id": 75,
+    "type": "rectangle",
+    "x": 78.5518798828125,
+    "y": 535.3375244140625,
+    "width": 108,
+    "height": 56,
+    "teams": [
+     "HEN VASKE"
+    ]
+   },
+   {
+    "id": 76,
+    "type": "rectangle",
+    "x": 553.9679107666016,
+    "y": 411.3392791748047,
+    "width": 163,
+    "height": 105,
+    "teams": [
+     "VICO PINQ",
+     "KIRO KIDUOO"
+    ]
+   },
+   {
+    "id": 77,
+    "type": "rectangle",
+    "x": 513.3537521362305,
+    "y": 599.5162506103516,
+    "width": 73,
+    "height": 107,
+    "teams": [
+     "CHEQZIE MIKL"
+    ]
+   },
+   {
+    "id": 79,
+    "type": "rectangle",
+    "x": 137.67291259765625,
+    "y": 231.51968383789062,
+    "width": 87,
+    "height": 60,
+    "teams": [
+     "ARTSKILL ASTRAL"
+    ]
+   },
+   {
+    "id": 80,
+    "type": "rectangle",
+    "x": 73.760009765625,
+    "y": 452.06312561035156,
+    "width": 80,
+    "height": 72,
+    "teams": [
+     "DABUEL PIXEL"
+    ]
+   },
+   {
+    "id": 81,
+    "type": "rectangle",
+    "x": 461.947509765625,
+    "y": 444.67250061035156,
+    "width": 82,
+    "height": 77,
+    "teams": [
+     "DARKY DARKIIZZ",
+     "DANDIR SNOZQ"
+    ]
+   },
+   {
+    "id": 82,
+    "type": "rectangle",
+    "x": 301.677490234375,
+    "y": 529.2050170898438,
+    "width": 47,
+    "height": 38,
+    "teams": [
+     "LAIZEN LOXXX"
+    ]
+   },
+   {
+    "id": 83,
+    "type": "rectangle",
+    "x": 355.463134765625,
+    "y": 530.5318756103516,
+    "width": 56,
+    "height": 40,
+    "teams": [
+     "MALIBUCA MERSTACH"
+    ]
+   },
+   {
+    "id": 84,
+    "type": "rectangle",
+    "x": 203.66625213623047,
+    "y": 582.3443756103516,
+    "width": 53,
+    "height": 77,
+    "teams": [
+     "REZON VADEAL"
+    ]
+   }
+  ],
+  "f2": [
+   {
+    "id": 5,
+    "type": "rectangle",
+    "x": 196.625,
+    "y": 124.34812927246094,
+    "width": 55,
+    "height": 102,
+    "teams": [
+     "DECKZEE ECLIPSE"
+    ]
+   },
+   {
+    "id": 6,
+    "type": "rectangle",
+    "x": 674.079345703125,
+    "y": 128.61624145507812,
+    "width": 68,
+    "height": 138,
+    "teams": [
+     "PANZER ELTENSY"
+    ]
+   },
+   {
+    "id": 7,
+    "type": "rectangle",
+    "x": 643.447509765625,
+    "y": 330.81312561035156,
+    "width": 92,
+    "height": 70,
+    "teams": [
+     "NXTHAN CZB",
+     "SRAPT SKRILL"
+    ]
+   },
+   {
+    "id": 8,
+    "type": "rectangle",
+    "x": 497.0431213378906,
+    "y": 157.80374145507812,
+    "width": 72,
+    "height": 44,
+    "teams": [
+     "KIRO MAPPI"
+    ]
+   },
+   {
+    "id": 9,
+    "type": "rectangle",
+    "x": 332.55242919921875,
+    "y": 189.57135009765625,
+    "width": 52,
+    "height": 63,
+    "teams": [
+     "CR1NGE JAKEBUCA",
+     "CRINGE NOMZZ"
+    ]
+   },
+   {
+    "id": 10,
+    "type": "rectangle",
+    "x": 294.921875,
+    "y": 261.1912536621094,
+    "width": 82,
+    "height": 108,
+    "teams": [
+     "DABUEL RELLVIS"
+    ]
+   },
+   {
+    "id": 11,
+    "type": "rectangle",
+    "x": 479.1727294921875,
+    "y": 209.14727783203125,
+    "width": 77,
+    "height": 99,
+    "teams": [
+     "PURCHAWA VEXI"
+    ]
+   },
+   {
+    "id": 12,
+    "type": "rectangle",
+    "x": 322.69750213623047,
+    "y": 389.92250061035156,
+    "width": 62.91788247915423,
+    "height": 58,
+    "teams": [
+     "UPL HLECHIS"
+    ]
+   },
+   {
+    "id": 13,
+    "type": "rectangle",
+    "x": 626.3019371032715,
+    "y": 531.9071350097656,
+    "width": 84,
+    "height": 70,
+    "teams": [
+     "AXEFORCE KLOWN",
+     "GLUBSCHI TREXER"
+    ]
+   },
+   {
+    "id": 14,
+    "type": "rectangle",
+    "x": 476.3374938964844,
+    "y": 336.43939208984375,
+    "width": 88,
+    "height": 57,
+    "teams": [
+     "JANNISZ FLICKZY"
+    ]
+   },
+   {
+    "id": 15,
+    "type": "rectangle",
+    "x": 638.24560546875,
+    "y": 414.3424987792969,
+    "width": 105,
+    "height": 109,
+    "teams": [
+     "BLACHA KOMBEK"
+    ]
+   },
+   {
+    "id": 16,
+    "type": "rectangle",
+    "x": 602.834228515625,
+    "y": 626.890869140625,
+    "width": 66,
+    "height": 76,
+    "teams": [
+     "COOLKID VOLTIAX"
+    ]
+   },
+   {
+    "id": 17,
+    "type": "rectangle",
+    "x": 344.0760040283203,
+    "y": 598.2860107421875,
+    "width": 58,
+    "height": 88,
+    "teams": [
+     "KAMI SETTY"
+    ]
+   },
+   {
+    "id": 18,
+    "type": "rectangle",
+    "x": 515.9546966552734,
+    "y": 635.8013000488281,
+    "width": 77,
+    "height": 80,
+    "teams": [
+     "VANYAK3K SWIZZY"
+    ]
+   },
+   {
+    "id": 19,
+    "type": "rectangle",
+    "x": 521.9894409179688,
+    "y": 531.6546630859375,
+    "width": 83,
+    "height": 87,
+    "teams": [
+     "DOOM ICE",
+     "QUEASY TH0MASHD",
+     "DESTRU PIROZZ"
+    ]
+   },
+   {
+    "id": 20,
+    "type": "rectangle",
+    "x": 211.85812377929688,
+    "y": 580.7374877929688,
+    "width": 60,
+    "height": 80,
+    "teams": [
+     "KIRWA HEDRA",
+     "SKY SCROLL"
+    ]
+   },
+   {
+    "id": 21,
+    "type": "rectangle",
+    "x": 206.29830932617188,
+    "y": 328.48077392578125,
+    "width": 77,
+    "height": 63,
+    "teams": [
+     "MALIBUCA MERSTACH",
+     "FINN AUVAHALO"
+    ]
+   },
+   {
+    "id": 22,
+    "type": "rectangle",
+    "x": 429.81561279296875,
+    "y": 601.4293823242188,
+    "width": 73,
+    "height": 71,
+    "teams": [
+     "DANDEPUZO HIZIXX"
+    ]
+   },
+   {
+    "id": 23,
+    "type": "rectangle",
+    "x": 280.400634765625,
+    "y": 590.6568756103516,
+    "width": 56,
+    "height": 98,
+    "teams": [
+     "ANDILEX SEYYTO"
+    ]
+   },
+   {
+    "id": 24,
+    "type": "rectangle",
+    "x": 148.0875015258789,
+    "y": 604.59814453125,
+    "width": 58,
+    "height": 57,
+    "teams": [
+     "TOOSE KARMY"
+    ]
+   },
+   {
+    "id": 25,
+    "type": "rectangle",
+    "x": 107.38426971435547,
+    "y": 332.20387268066406,
+    "width": 89,
+    "height": 62,
+    "teams": [
+     "HRIS SKVII"
+    ]
+   },
+   {
+    "id": 26,
+    "type": "rectangle",
+    "x": 138.77188110351562,
+    "y": 235.95687866210938,
+    "width": 61,
+    "height": 80,
+    "teams": [
+     "MARIUSCOW SANGILD",
+     "TURTLE CHEAPZ"
+    ]
+   },
+   {
+    "id": 27,
+    "type": "rectangle",
+    "x": 168.306884765625,
+    "y": 453.65687561035156,
+    "width": 64,
+    "height": 59,
+    "teams": [
+     "VOLKO VORTEXERS",
+     "ASA MARCO"
+    ]
+   },
+   {
+    "id": 28,
+    "type": "rectangle",
+    "x": 242.97652435302734,
+    "y": 457.0014953613281,
+    "width": 66,
+    "height": 88,
+    "teams": [
+     "CHAP T3ENY"
+    ]
+   },
+   {
+    "id": 29,
+    "type": "rectangle",
+    "x": 321.5527801513672,
+    "y": 487.14014434814453,
+    "width": 61,
+    "height": 48,
+    "teams": [
+     "TAYSON VENO"
+    ]
+   },
+   {
+    "id": 30,
+    "type": "rectangle",
+    "x": 463.72711181640625,
+    "y": 490.68072509765625,
+    "width": 53,
+    "height": 92,
+    "teams": [
+     "REZON VADEAL"
+    ]
+   },
+   {
+    "id": 31,
+    "type": "rectangle",
+    "x": 564.6818771362305,
+    "y": 262.79750061035156,
+    "width": 84,
+    "height": 60,
+    "teams": [
+     "HOWLY NEFRIZI"
+    ]
+   },
+   {
+    "id": 32,
+    "type": "rectangle",
+    "x": 393.494384765625,
+    "y": 388.98500061035156,
+    "width": 61,
+    "height": 127,
+    "teams": [
+     "G13RAS CHARYY"
+    ]
+   },
+   {
+    "id": 33,
+    "type": "rectangle",
+    "x": 585.3225021362305,
+    "y": 121.46937561035156,
+    "width": 71,
+    "height": 103,
+    "teams": [
+     "PIXIE WOX"
+    ]
+   },
+   {
+    "id": 34,
+    "type": "rectangle",
+    "x": 61.197509765625,
+    "y": 224.18812561035156,
+    "width": 71,
+    "height": 101,
+    "teams": [
+     "ZOHAN 2TRASH"
+    ]
+   },
+   {
+    "id": 35,
+    "type": "rectangle",
+    "x": 540.119384765625,
+    "y": 398.93812561035156,
+    "width": 92,
+    "height": 103,
+    "teams": [
+     "VICO PINQ"
+    ]
+   },
+   {
+    "id": 36,
+    "type": "rectangle",
+    "x": 62.21312713623047,
+    "y": 473.37562561035156,
+    "width": 96,
+    "height": 123,
+    "teams": [
+     "GACUS CZESIACK",
+     "ROBBAN FASTROKI"
+    ]
+   },
+   {
+    "id": 37,
+    "type": "rectangle",
+    "x": 339.2799987792969,
+    "y": 78.11500549316406,
+    "width": 168,
+    "height": 72,
+    "teams": [
+     "TWI JAKEI"
+    ]
+   },
+   {
+    "id": 38,
+    "type": "rectangle",
+    "x": 257.6866455078125,
+    "y": 119.88615417480469,
+    "width": 66,
+    "height": 92,
+    "teams": [
+     "SP1AASH FANT"
+    ]
+   },
+   {
+    "id": 39,
+    "type": "rectangle",
+    "x": 400.0625,
+    "y": 213.08499145507812,
+    "width": 71,
+    "height": 58,
+    "teams": [
+     "GUDN FORZEN"
+    ]
+   },
+   {
+    "id": 40,
+    "type": "rectangle",
+    "x": 210.5968780517578,
+    "y": 400.0425109863281,
+    "width": 84,
+    "height": 48,
+    "teams": [
+     "FREDOXIE TRIPPERNN"
+    ]
+   },
+   {
+    "id": 41,
+    "type": "rectangle",
+    "x": 321.791259765625,
+    "y": 541.3756256103516,
+    "width": 63,
+    "height": 39,
+    "teams": [
+     "SNAYZY PODASAI"
+    ]
+   },
+   {
+    "id": 42,
+    "type": "rectangle",
+    "x": 126.17289733886719,
+    "y": 401.37905502319336,
+    "width": 78,
+    "height": 46,
+    "teams": [
+     "KIEŁBA GOBAW"
+    ]
+   },
+   {
+    "id": 43,
+    "type": "rectangle",
+    "x": 207.88500213623047,
+    "y": 258.96937561035156,
+    "width": 77,
+    "height": 59,
+    "teams": [
+     "FIR3HUNTER VE1RYY"
+    ]
+   },
+   {
+    "id": 44,
+    "type": "rectangle",
+    "x": 387.52247619628906,
+    "y": 279.63206481933594,
+    "width": 69,
+    "height": 94,
+    "teams": [
+     "TRULEX CHICO"
+    ]
+   }
+  ],
+  "f3": [
+   {
+    "id": 5,
+    "type": "rectangle",
+    "x": 196.625,
+    "y": 124.34812927246094,
+    "width": 55,
+    "height": 102,
+    "teams": [
+     "DECKZEE ECLIPSE"
+    ]
+   },
+   {
+    "id": 7,
+    "type": "rectangle",
+    "x": 654.447509765625,
+    "y": 330.81312561035156,
+    "width": 81,
+    "height": 70,
+    "teams": [
+     "NXTHAN CZB"
+    ]
+   },
+   {
+    "id": 8,
+    "type": "rectangle",
+    "x": 497.0431213378906,
+    "y": 157.80374145507812,
+    "width": 72,
+    "height": 44,
+    "teams": [
+     "QUEASY TH0MASHD"
+    ]
+   },
+   {
+    "id": 9,
+    "type": "rectangle",
+    "x": 332.55242919921875,
+    "y": 189.57135009765625,
+    "width": 52,
+    "height": 63,
+    "teams": [
+     "TURTLE CHEAPZ"
+    ]
+   },
+   {
+    "id": 10,
+    "type": "rectangle",
+    "x": 289.921875,
+    "y": 261.1912536621094,
+    "width": 81,
+    "height": 108,
+    "teams": [
+     "FIR3HUNTER ART1ST",
+     "MACIAK CXSHY"
+    ]
+   },
+   {
+    "id": 11,
+    "type": "rectangle",
+    "x": 479.1727294921875,
+    "y": 209.14727783203125,
+    "width": 77,
+    "height": 99,
+    "teams": [
+     "KOMBEK PURCHAWA",
+     "FOCUS BELUSI"
+    ]
+   },
+   {
+    "id": 12,
+    "type": "rectangle",
+    "x": 325.1084289550781,
+    "y": 377.3018798828125,
+    "width": 67.91788247915423,
+    "height": 61,
+    "teams": [
+     "FNAJEN DELA"
+    ]
+   },
+   {
+    "id": 13,
+    "type": "rectangle",
+    "x": 618.3019371032715,
+    "y": 531.9071350097656,
+    "width": 78,
+    "height": 82,
+    "teams": [
+     "FIREN FILIPMONK"
+    ]
+   },
+   {
+    "id": 14,
+    "type": "rectangle",
+    "x": 476.3374938964844,
+    "y": 336.43939208984375,
+    "width": 88,
+    "height": 57,
+    "teams": [
+     "VICO FLICKZY"
+    ]
+   },
+   {
+    "id": 15,
+    "type": "rectangle",
+    "x": 638.24560546875,
+    "y": 414.3424987792969,
+    "width": 105,
+    "height": 109,
+    "teams": [
+     "2TRASH SPLASH",
+     "ARTSKILL SHAYKOZ"
+    ]
+   },
+   {
+    "id": 16,
+    "type": "rectangle",
+    "x": 602.834228515625,
+    "y": 626.890869140625,
+    "width": 66,
+    "height": 76,
+    "teams": [
+     "COOLKID VOLTIAX"
+    ]
+   },
+   {
+    "id": 17,
+    "type": "rectangle",
+    "x": 326.4425048828125,
+    "y": 685.3612670898438,
+    "width": 58,
+    "height": 76,
+    "teams": [
+     "POLISH WOJTUŚ"
+    ]
+   },
+   {
+    "id": 18,
+    "type": "rectangle",
+    "x": 527.9546966552734,
+    "y": 644.8013000488281,
+    "width": 58,
+    "height": 57,
+    "teams": [
+     "JANNISZ PIXIE"
+    ]
+   },
+   {
+    "id": 19,
+    "type": "rectangle",
+    "x": 536.1943969726562,
+    "y": 519.7006225585938,
+    "width": 75,
+    "height": 90,
+    "teams": [
+     "SNAYZY PODASAI",
+     "DESTRU PIROZZ"
+    ]
+   },
+   {
+    "id": 20,
+    "type": "rectangle",
+    "x": 175.22650146484375,
+    "y": 583.1490173339844,
+    "width": 56,
+    "height": 65,
+    "teams": [
+     "VADEAL REZON",
+     "GUIIK STORMY"
+    ]
+   },
+   {
+    "id": 21,
+    "type": "rectangle",
+    "x": 206.29830932617188,
+    "y": 328.48077392578125,
+    "width": 77,
+    "height": 53,
+    "teams": [
+     "NEBS KIDUOO"
+    ]
+   },
+   {
+    "id": 22,
+    "type": "rectangle",
+    "x": 422.0425109863281,
+    "y": 661.671875,
+    "width": 57,
+    "height": 43,
+    "teams": [
+     "MALIBUCA MERSTACH"
+    ]
+   },
+   {
+    "id": 23,
+    "type": "rectangle",
+    "x": 236.9875030517578,
+    "y": 673.89501953125,
+    "width": 66,
+    "height": 69,
+    "teams": [
+     "VANYAK3K SWIZZY"
+    ]
+   },
+   {
+    "id": 24,
+    "type": "rectangle",
+    "x": 79.806884765625,
+    "y": 467.56312561035156,
+    "width": 81,
+    "height": 130,
+    "teams": [
+     "PABLOWINGU BEVVYS"
+    ]
+   },
+   {
+    "id": 25,
+    "type": "rectangle",
+    "x": 100.38426971435547,
+    "y": 337.20387268066406,
+    "width": 98,
+    "height": 108,
+    "teams": [
+     "PANZER ELTENSY"
+    ]
+   },
+   {
+    "id": 26,
+    "type": "rectangle",
+    "x": 57.430450439453125,
+    "y": 196.80583953857422,
+    "width": 132,
+    "height": 132,
+    "teams": [
+     "P1NGFNZ WOX"
+    ]
+   },
+   {
+    "id": 27,
+    "type": "rectangle",
+    "x": 168.306884765625,
+    "y": 453.65687561035156,
+    "width": 64,
+    "height": 54,
+    "teams": [
+     "HIZIXX DANDEPUZO",
+     "KLOWN AXEFORCE"
+    ]
+   },
+   {
+    "id": 28,
+    "type": "rectangle",
+    "x": 244.2687530517578,
+    "y": 435.04998779296875,
+    "width": 66,
+    "height": 89,
+    "teams": [
+     "KANTRI KRYFALSE",
+     "TJINO SKVII"
+    ]
+   },
+   {
+    "id": 29,
+    "type": "rectangle",
+    "x": 324.5527801513672,
+    "y": 521.1401443481445,
+    "width": 60,
+    "height": 44,
+    "teams": [
+     "CHAP T3ENY"
+    ]
+   },
+   {
+    "id": 30,
+    "type": "rectangle",
+    "x": 472.72711181640625,
+    "y": 504.68072509765625,
+    "width": 56,
+    "height": 67,
+    "teams": [
+     "HUTY KOVAAKSXD"
+    ]
+   },
+   {
+    "id": 31,
+    "type": "rectangle",
+    "x": 564.6818771362305,
+    "y": 262.79750061035156,
+    "width": 84,
+    "height": 60,
+    "teams": [
+     "TCHYPSS DECYPTOS"
+    ]
+   },
+   {
+    "id": 32,
+    "type": "rectangle",
+    "x": 401.494384765625,
+    "y": 517.9850006103516,
+    "width": 62,
+    "height": 54,
+    "teams": [
+     "ASA JUU"
+    ]
+   },
+   {
+    "id": 33,
+    "type": "rectangle",
+    "x": 577.3225021362305,
+    "y": 121.46937561035156,
+    "width": 88,
+    "height": 92,
+    "teams": [
+     "LUNEX M0NE",
+     "KAYD MERIJN"
+    ]
+   },
+   {
+    "id": 35,
+    "type": "rectangle",
+    "x": 540.119384765625,
+    "y": 398.93812561035156,
+    "width": 92,
+    "height": 103,
+    "teams": [
+     "GUDN FORZEN"
+    ]
+   },
+   {
+    "id": 36,
+    "type": "rectangle",
+    "x": 341.0093994140625,
+    "y": 78.87582397460938,
+    "width": 168,
+    "height": 72,
+    "teams": [
+     "SKY SCROLL"
+    ]
+   },
+   {
+    "id": 37,
+    "type": "rectangle",
+    "x": 257.6866455078125,
+    "y": 119.88615417480469,
+    "width": 66,
+    "height": 92,
+    "teams": [
+     "MAXIKING MYSTIC"
+    ]
+   },
+   {
+    "id": 38,
+    "type": "rectangle",
+    "x": 391.822509765625,
+    "y": 241.1256103515625,
+    "width": 71,
+    "height": 100,
+    "teams": [
+     "TRULEX CHICO"
+    ]
+   },
+   {
+    "id": 39,
+    "type": "rectangle",
+    "x": 445.025634765625,
+    "y": 710.9225006103516,
+    "width": 98,
+    "height": 56,
+    "teams": [
+     "HIJOE KYTO",
+     "QNDX PHANTOM"
+    ]
+   },
+   {
+    "id": 40,
+    "type": "rectangle",
+    "x": 335.58812713623047,
+    "y": 575.3131256103516,
+    "width": 60,
+    "height": 101,
+    "teams": [
+     "KAMI SETTY",
+     "AKIIRA YZY"
+    ]
+   },
+   {
+    "id": 41,
+    "type": "rectangle",
+    "x": 405.463134765625,
+    "y": 366.06312561035156,
+    "width": 62,
+    "height": 58,
+    "teams": [
+     "PREDAGE RAD3ON"
+    ]
+   },
+   {
+    "id": 42,
+    "type": "rectangle",
+    "x": 423.810546875,
+    "y": 584.6134071350098,
+    "width": 88,
+    "height": 66,
+    "teams": [
+     "PRISM CASPERINOVIC"
+    ]
+   },
+   {
+    "id": 43,
+    "type": "rectangle",
+    "x": 251.59193420410156,
+    "y": 562.3478546142578,
+    "width": 63,
+    "height": 91,
+    "teams": [
+     "G13RAS CHARYY"
+    ]
+   },
+   {
+    "id": 44,
+    "type": "rectangle",
+    "x": 422.3275146484375,
+    "y": 435.2037353515625,
+    "width": 57,
+    "height": 60,
+    "teams": [
+     "KIRO MAPPI"
+    ]
+   },
+   {
+    "id": 45,
+    "type": "rectangle",
+    "x": 321.3419723510742,
+    "y": 448.4884948730469,
+    "width": 92,
+    "height": 60,
+    "teams": [
+     "NEU LOLO"
+    ]
+   },
+   {
+    "id": 46,
+    "type": "rectangle",
+    "x": 205.51000213623047,
+    "y": 387.68812561035156,
+    "width": 102,
+    "height": 41,
+    "teams": [
+     "KROMATIK LOXXX"
+    ]
+   }
+  ],
+  "f4": [
+   {
+    "id": 5,
+    "type": "rectangle",
+    "x": 201.625,
+    "y": 115.34812927246094,
+    "width": 110,
+    "height": 124,
+    "teams": [
+     "SKY SCROLL",
+     "HUTY KOVAAKSXD"
+    ]
+   },
+   {
+    "id": 6,
+    "type": "rectangle",
+    "x": 647.447509765625,
+    "y": 330.81312561035156,
+    "width": 88,
+    "height": 70,
+    "teams": [
+     "NXTHAN CZB",
+     "7MAN KALGAMER"
+    ]
+   },
+   {
+    "id": 7,
+    "type": "rectangle",
+    "x": 473.0431213378906,
+    "y": 162.80374145507812,
+    "width": 90,
+    "height": 70,
+    "teams": [
+     "BUGHA AVIVV"
+    ]
+   },
+   {
+    "id": 8,
+    "type": "rectangle",
+    "x": 319.55242919921875,
+    "y": 189.57135009765625,
+    "width": 64,
+    "height": 33,
+    "teams": [
+     "RITUAL REET"
+    ]
+   },
+   {
+    "id": 9,
+    "type": "rectangle",
+    "x": 289.921875,
+    "y": 316.1912536621094,
+    "width": 81,
+    "height": 64,
+    "teams": [
+     "BRAYDZ VISXALS"
+    ]
+   },
+   {
+    "id": 11,
+    "type": "rectangle",
+    "x": 335.3984375,
+    "y": 388.3018798828125,
+    "width": 113.91788247915423,
+    "height": 61,
+    "teams": [
+     "MALIBUCA MERSTACH",
+     "ALEX WORTHY"
+    ]
+   },
+   {
+    "id": 12,
+    "type": "rectangle",
+    "x": 618.3019371032715,
+    "y": 531.9071350097656,
+    "width": 78,
+    "height": 82,
+    "teams": [
+     "KRAMSU CLONE"
+    ]
+   },
+   {
+    "id": 13,
+    "type": "rectangle",
+    "x": 476.3374938964844,
+    "y": 336.43939208984375,
+    "width": 88,
+    "height": 57,
+    "teams": [
+     "VICO FLICKZY"
+    ]
+   },
+   {
+    "id": 14,
+    "type": "rectangle",
+    "x": 638.24560546875,
+    "y": 414.3424987792969,
+    "width": 105,
+    "height": 109,
+    "teams": [
+     "ADAPTER FKS",
+     "TINKA DANATH"
+    ]
+   },
+   {
+    "id": 15,
+    "type": "rectangle",
+    "x": 602.834228515625,
+    "y": 626.890869140625,
+    "width": 66,
+    "height": 76,
+    "teams": [
+     "QUEASY TH0MASHD"
+    ]
+   },
+   {
+    "id": 17,
+    "type": "rectangle",
+    "x": 521.9546966552734,
+    "y": 644.8013000488281,
+    "width": 66,
+    "height": 57,
+    "teams": [
+     "DUKEZ SPHINX"
+    ]
+   },
+   {
+    "id": 18,
+    "type": "rectangle",
+    "x": 540.9894409179688,
+    "y": 538.6546630859375,
+    "width": 64,
+    "height": 37,
+    "teams": [
+     "ED PERSA"
+    ]
+   },
+   {
+    "id": 19,
+    "type": "rectangle",
+    "x": 201.22650146484375,
+    "y": 584.1490173339844,
+    "width": 59,
+    "height": 68,
+    "teams": [
+     "RESIGNZ DEYMO"
+    ]
+   },
+   {
+    "id": 20,
+    "type": "rectangle",
+    "x": 206.29830932617188,
+    "y": 328.48077392578125,
+    "width": 77,
+    "height": 60,
+    "teams": [
+     "HIGGS RAPID"
+    ]
+   },
+   {
+    "id": 21,
+    "type": "rectangle",
+    "x": 404.0425109863281,
+    "y": 658.671875,
+    "width": 83,
+    "height": 46,
+    "teams": [
+     "JANNISZ PIXIE",
+     "CAZI ASPECT"
+    ]
+   },
+   {
+    "id": 22,
+    "type": "rectangle",
+    "x": 236.9875030517578,
+    "y": 673.89501953125,
+    "width": 84,
+    "height": 69,
+    "teams": [
+     "ACORN COLD",
+     "ANDILEX SEYYTO"
+    ]
+   },
+   {
+    "id": 23,
+    "type": "rectangle",
+    "x": 79.806884765625,
+    "y": 504.56312561035156,
+    "width": 103,
+    "height": 93,
+    "teams": [
+     "CHEAPZ KRISP"
+    ]
+   },
+   {
+    "id": 24,
+    "type": "rectangle",
+    "x": 111.38426971435547,
+    "y": 331.20387268066406,
+    "width": 87,
+    "height": 68,
+    "teams": [
+     "YUMA RISE"
+    ]
+   },
+   {
+    "id": 25,
+    "type": "rectangle",
+    "x": 138.43045043945312,
+    "y": 263.8058395385742,
+    "width": 56,
+    "height": 53,
+    "teams": [
+     "P1NGFNZ WOX"
+    ]
+   },
+   {
+    "id": 26,
+    "type": "rectangle",
+    "x": 258.2687530517578,
+    "y": 412.04998779296875,
+    "width": 54,
+    "height": 111,
+    "teams": [
+     "BACCA PARZ"
+    ]
+   },
+   {
+    "id": 27,
+    "type": "rectangle",
+    "x": 321.5527801513672,
+    "y": 485.14014434814453,
+    "width": 63,
+    "height": 52,
+    "teams": [
+     "KHANADA COOPER"
+    ]
+   },
+   {
+    "id": 28,
+    "type": "rectangle",
+    "x": 463.72711181640625,
+    "y": 490.68072509765625,
+    "width": 65,
+    "height": 81,
+    "teams": [
+     "PAPER VICTERV"
+    ]
+   },
+   {
+    "id": 29,
+    "type": "rectangle",
+    "x": 484.68187713623047,
+    "y": 250.79750061035156,
+    "width": 114,
+    "height": 71,
+    "teams": [
+     "SHADOW VERGO"
+    ]
+   },
+   {
+    "id": 30,
+    "type": "rectangle",
+    "x": 393.494384765625,
+    "y": 459.98500061035156,
+    "width": 61,
+    "height": 97,
+    "teams": [
+     "AJERSS RISE"
+    ]
+   },
+   {
+    "id": 31,
+    "type": "rectangle",
+    "x": 604.5625,
+    "y": 208.85874938964844,
+    "width": 71,
+    "height": 55,
+    "teams": [
+     "ZAGOU SHELOM"
+    ]
+   },
+   {
+    "id": 32,
+    "type": "rectangle",
+    "x": 61.197509765625,
+    "y": 206.18812561035156,
+    "width": 71,
+    "height": 119,
+    "teams": [
+     "MICHAEL JOB"
+    ]
+   },
+   {
+    "id": 33,
+    "type": "rectangle",
+    "x": 556.119384765625,
+    "y": 398.93812561035156,
+    "width": 76,
+    "height": 103,
+    "teams": [
+     "BRYCX BOLTZ"
+    ]
+   },
+   {
+    "id": 34,
+    "type": "rectangle",
+    "x": 341.0093994140625,
+    "y": 78.87582397460938,
+    "width": 98,
+    "height": 104,
+    "teams": [
+     "KOYOTA XMIPOLI"
+    ]
+   },
+   {
+    "id": 36,
+    "type": "rectangle",
+    "x": 391.822509765625,
+    "y": 241.1256103515625,
+    "width": 71,
+    "height": 100,
+    "teams": [
+     "TRULEX CHICO"
+    ]
+   },
+   {
+    "id": 37,
+    "type": "rectangle",
+    "x": 445.025634765625,
+    "y": 710.9225006103516,
+    "width": 98,
+    "height": 56,
+    "teams": [
+     "CADU SEEYUN"
+    ]
+   },
+   {
+    "id": 38,
+    "type": "rectangle",
+    "x": 335.58812713623047,
+    "y": 601.3131256103516,
+    "width": 60,
+    "height": 75,
+    "teams": [
+     "KAMI SETTY"
+    ]
+   },
+   {
+    "id": 40,
+    "type": "rectangle",
+    "x": 423.810546875,
+    "y": 584.6134071350098,
+    "width": 88,
+    "height": 66,
+    "teams": [
+     "PRISM CASPERINOVIC"
+    ]
+   },
+   {
+    "id": 41,
+    "type": "rectangle",
+    "x": 265.59193420410156,
+    "y": 592.3478546142578,
+    "width": 63,
+    "height": 61,
+    "teams": [
+     "G13RAS CHARYY"
+    ]
+   },
+   {
+    "id": 42,
+    "type": "rectangle",
+    "x": 604.900634765625,
+    "y": 162.03187561035156,
+    "width": 72,
+    "height": 41,
+    "teams": [
+     "REZON VADEAL"
+    ]
+   },
+   {
+    "id": 43,
+    "type": "rectangle",
+    "x": 493.11937713623047,
+    "y": 94.59437561035156,
+    "width": 216,
+    "height": 60,
+    "teams": [
+     "BOBY LARKPEX"
+    ]
+   },
+   {
+    "id": 44,
+    "type": "rectangle",
+    "x": 191.71902465820312,
+    "y": 424.2589416503906,
+    "width": 60,
+    "height": 64,
+    "teams": [
+     "PETERBOT POLLO"
+    ]
+   },
+   {
+    "id": 45,
+    "type": "rectangle",
+    "x": 205.51000213623047,
+    "y": 249.96937561035156,
+    "width": 106,
+    "height": 60,
+    "teams": [
+     "K1NG FAZER"
+    ]
+   },
+   {
+    "id": 46,
+    "type": "rectangle",
+    "x": 198.88500213623047,
+    "y": 528.9225006103516,
+    "width": 104,
+    "height": 45,
+    "teams": [
+     "KAYKY KCHORRO"
+    ]
+   },
+   {
+    "id": 47,
+    "type": "rectangle",
+    "x": 133.33999633789062,
+    "y": 604.3131103515625,
+    "width": 62,
+    "height": 47,
+    "teams": [
+     "CLIX VENO"
+    ]
+   },
+   {
+    "id": 48,
+    "type": "rectangle",
+    "x": 321.853759765625,
+    "y": 542.2662506103516,
+    "width": 63,
+    "height": 41,
+    "teams": [
+     "CHAP T3ENY"
+    ]
+   },
+   {
+    "id": 49,
+    "type": "rectangle",
+    "x": 319.51000213623047,
+    "y": 228.62562561035156,
+    "width": 66,
+    "height": 38,
+    "teams": [
+     "MUZ EPIKWHALE"
+    ]
+   },
+   {
+    "id": 50,
+    "type": "rectangle",
+    "x": 541.3537521362305,
+    "y": 580.7506256103516,
+    "width": 64,
+    "height": 38,
+    "teams": [
+     "916GON KWANTI"
+    ]
+   },
+   {
+    "id": 51,
+    "type": "rectangle",
+    "x": 123.49437713623047,
+    "y": 408.82875061035156,
+    "width": 63,
+    "height": 88,
+    "teams": [
+     "SWIZZY JAPKO",
+     "TRASHY THREATS"
+    ]
+   }
+  ]
+ }
+}

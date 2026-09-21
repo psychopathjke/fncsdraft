@@ -1782,7 +1782,7 @@
   .cc-tabs{position:relative;z-index:2;display:flex;gap:2px;margin-bottom:14px;}
   /* Год — первой панелью над вкладками; чипы года в одну строку на всю ширину. */
   .cc-year-panel{margin-bottom:14px;}
-  .cc-year-panel .cc-chips{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-width:420px;}
+  .cc-year-panel .cc-chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;max-width:620px;}   /* три года в ряд: 2026 / 2025 / 2024 */
   .cc-tab{border:none;cursor:pointer;font-weight:900;font-style:italic;font-size:12px;
     letter-spacing:.05em;text-transform:uppercase;padding:10px 18px;
     background:#0b0f12;color:#fff;opacity:.42;transition:opacity .12s;}
@@ -6973,6 +6973,7 @@ ccEvalR2Title:n=>'Перфоманс, раунд 2 — '+n+' '+ccSquadWord()+', 
 ccEvalPass:n=>'Топ-'+n+' — во второй раунд',
 ccEvalFail:n=>'Мимо топ-'+n+' — вечер закончен',
 ccEvalCash:(w,c)=>w+(w===1?' победа':' победы')+' — $'+c,
+ccEvalTop5Cash:c=>'Топ-5 — $'+c, ccVicPlaceCash:(p,c)=>'Место '+p+' — $'+c,
 ccEvalNoWin:'Ни одной победы — денег нет',
 ccNewsEvalCash:(w,c)=>'Перфоманс: '+w+(w===1?' победа':' победы')+', $'+c,
 ccNewsEvalNoWin:'Перфоманс: второй раунд без побед',
@@ -7136,6 +7137,7 @@ ccNewsWfNoCash:(p,of)=>'Финал недели: '+ccTop(p)+' из '+of+', бе�
 ccRelPass:n=>'Топ-'+n+' — проход дальше',
 ccMajSeatSummit:(n,m)=>'Топ-'+n+' едут на Саммит в Дюссельдорф, топ-'+m+' — во Второй шанс',
 ccMajSeatGc:n=>'Топ-'+n+' едут на Global Championship в Антверпен',
+ccMajSeatGc24:n=>'Топ-'+n+' едут на Global Championship в Форт-Уэрт',
 ccMajSeatNone:'Мест на ЛАН этот финал не даёт — только призовые и рейтинг',
 ccRelFail:n=>'Мимо топ-'+n+' — круг закончен',
 ccRelSeat:'Место на Esports World Cup',
@@ -7517,8 +7519,9 @@ ccMovePickHint:'Выбери страну на карте — цифра на н
 ccMoveGain:'Рейтинг за пинг',
 ccMoveAlready:'Ты уже здесь', ccMoveGo:r=>'Переехать в '+r,
 ccOrgCutRow:'Клуб с призовых', ccOrgCutPaid:'Отдано клубу',
-ccYear:'Год', ccYear2026:'дуо → трио', ccYear2025:'трио', ccYr25Group:n=>'группа '+n, ccYr25Lobby:'лобби последнего шанса', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · раунд '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · раунд '+r,
+ccYear:'Год', ccYear2026:'дуо → трио', ccYear2025:'трио', ccYear2024:'дуо', ccYr24Qual:(n,q,r)=>'Мейджор '+n+' · квалификатор '+q+' · раунд '+r, ccYr24Semi:(n,r)=>'Мейджор '+n+' · полуфинал · день '+r, ccYr24Upper:'верхняя сетка', ccYr24Lower:'нижняя сетка', ccYr24Series:(p,k)=>'Очки серии: '+p+' · место '+k, ccYr24ToUpper:'Верхняя сетка полуфинала — по очкам серии', ccYr24ToLower:'Нижняя сетка полуфинала — по очкам серии', ccYr24NoSemi:'Мест в полуфинале нет — очков серии не хватило', ccYr24VrTicket:'Победа в матче — билет в финал Мейджора', ccYr24World:'Другая сетка играет в тот же вечер', ccYr25Group:n=>'группа '+n, ccYr25Lobby:'лобби последнего шанса', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · раунд '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · раунд '+r,
 ccYearNote2026:'Сезон FNCS 2026: дивизионные кубки, два Мейджора, Reload, Глобалы в Антверпене. Второй год — трио.',
+ccYearNote2024:'Сезон FNCS 2024: дуо весь год, три Мейджора с открытыми квалификаторами, серией и полуфиналами в две сетки, Глобалы в Форт-Уэрте. Дивизионных кубков ещё нет — деньги в Duos Cash Cup, Solo Victory Cup и оценке. Соперники — карточки 2024-го. После Форт-Уэрта карьера идёт в 2025-й (трио) теми же людьми.',
 ccYearNote2025:'Сезон FNCS 2025: трио весь год, три Мейджора с групповым этапом, Глобалы в Лионе. Соперники — карточки 2025-го. После Лиона карьера идёт в 2026-й.',
 ccDiff:'Сложность', ccDiffRow:'Сложность',
 ccDiffNote:'Меняет только одно — как быстро растёт рейтинг. Соперники, призовые и цены везде одинаковые: сложнее не значит сильнее лобби, значит дольше путь',
@@ -8955,6 +8958,7 @@ ccEvalR2Title:n=>'Evaluation, Round 2 — '+n+' '+ccSquadWord()+', 4 games, only
 ccEvalPass:n=>'Top '+n+' — through to Round 2',
 ccEvalFail:n=>'Missed the top '+n+' — the night is over',
 ccEvalCash:(w,c)=>w+(w===1?' win':' wins')+' — $'+c,
+ccEvalTop5Cash:c=>'Top 5 — $'+c, ccVicPlaceCash:(p,c)=>'Place '+p+' — $'+c,
 ccEvalNoWin:'No wins, no money',
 ccNewsEvalCash:(w,c)=>'Evaluation: '+w+(w===1?' win':' wins')+', $'+c,
 ccNewsEvalNoWin:'Evaluation: Round 2 without a win',
@@ -9116,6 +9120,7 @@ ccNewsWfNoCash:(p,of)=>'Weekly Final: '+ccTop(p)+' of '+of+', no money',
 ccRelPass:n=>'Top '+n+' — through to the next stage',
 ccMajSeatSummit:(n,m)=>'Top '+n+' go to the Summit in Düsseldorf, top '+m+' to the Second Chance',
 ccMajSeatGc:n=>'Top '+n+' go to the Global Championship in Antwerp',
+ccMajSeatGc24:n=>'Top '+n+' go to the Global Championship in Fort Worth',
 ccMajSeatNone:'No LAN seats from this final — prize money and rating only',
 ccRelFail:n=>'Outside the top '+n+' — the run ends here',
 ccRelSeat:'A seat at the Esports World Cup',
@@ -9497,8 +9502,9 @@ ccMovePickHint:'Pick a country on the map — the number on it is the ping',
 ccMoveGain:'Rating from ping',
 ccMoveAlready:'You already live here', ccMoveGo:r=>'Move to '+r,
 ccOrgCutRow:'Club takes of winnings', ccOrgCutPaid:'Paid to the club',
-ccYear:'Year', ccYear2026:'duos → trios', ccYear2025:'trios', ccYr25Group:n=>'group '+n, ccYr25Lobby:'last chance lobby', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
+ccYear:'Year', ccYear2026:'duos → trios', ccYear2025:'trios', ccYear2024:'duos', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · Semi-Finals · day '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Series points: '+p+' · rank '+k, ccYr24ToUpper:'Upper bracket of the Semi-Finals — on series points', ccYr24ToLower:'Lower bracket of the Semi-Finals — on series points', ccYr24NoSemi:'No Semi-Finals seat — not enough series points', ccYr24VrTicket:'A Victory Royale — a ticket to the Major Finals', ccYr24World:'The other bracket plays the same evening', ccYr25Group:n=>'group '+n, ccYr25Lobby:'last chance lobby', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
 ccYearNote2026:'FNCS 2026: divisional cups, two Majors, Reload, the Global Championship in Antwerp. Year two is trios.',
+ccYearNote2024:'FNCS 2024: duos all year, three Majors with Open Qualifiers, a series leaderboard and two-bracket Semi-Finals, the Global Championship in Fort Worth. No divisional cups yet — the money is in the Duos Cash Cup, the Solo Victory Cup and the Performance Evaluation. The field is the 2024 cards. After Fort Worth the career moves into 2025 (trios) with the same people.',
 ccYearNote2025:'FNCS 2025: trios all year, three Majors with a Group Stage, the Global Championship in Lyon. The field is the 2025 cards. After Lyon the career moves into 2026.',
 ccDiff:'Difficulty', ccDiffRow:'Difficulty',
 ccDiffNote:'Changes one thing only — how fast the rating climbs. The field, the prize money and the prices are the same on all of them: harder is not a stronger room, it is a longer road',
@@ -11456,6 +11462,7 @@ ccEvalR2Title:n=>'Évaluation, Manche 2 — '+n+' '+ccSquadWord()+', 4 parties, 
 ccEvalPass:n=>'Top '+n+' — qualifié pour la Manche 2',
 ccEvalFail:n=>'Top '+n+' manqué — la soirée est finie',
 ccEvalCash:(w,c)=>w+(w===1?' victoire':' victoires')+' — '+c,
+ccEvalTop5Cash:c=>'Top 5 — $'+c, ccVicPlaceCash:(p,c)=>'Place '+p+' — $'+c,
 ccNewsEvalCash:(w,c)=>'Évaluation : '+w+(w===1?' victoire':' victoires')+', '+c,
 ccNewsEvalOut:p=>'Évaluation : '+ccTop(p)+' en Manche 1, pas plus loin',
 ccDayOver:v=>'La journée est déjà passée : '+v+'. L’énergie reste jusqu’à demain — appuie sur Jour suivant',
@@ -11520,6 +11527,7 @@ ccNewsWfNoCash:(p,of)=>'Finale hebdo : '+ccTop(p)+' sur '+of+', pas de gains',
 ccRelPass:n=>'Top '+n+' — qualifié pour l’étape suivante',
 ccMajSeatSummit:(n,m)=>'Le top '+n+' part au Summit de Düsseldorf, le top '+m+' au Second Chance',
 ccMajSeatGc:n=>'Le top '+n+' part au Global Championship d’Anvers',
+ccMajSeatGc24:n=>'Le top '+n+' part au Global Championship de Fort Worth',
 ccMajSeatNone:'Ce final ne donne pas de place au LAN — seulement les gains et le classement',
 ccRelFail:n=>'Hors du top '+n+' — le parcours s’arrête ici',
 ccNoMateN:n=>'Il manque '+(n>1?'deux joueurs':'un joueur')+' — une place vide ne peut pas s’inscrire. Il y a des gens libres dans les messages',
@@ -12707,8 +12715,9 @@ ccAge:'Âge',
 ccRole:'Rôle', ccMateKick:'Retirer de l’équipe', ccMateKickAsk:n=>'Retirer '+n+' de l’équipe ? La place gagnée ensemble est perdue.', ccRoleSwapTo:r=>'Passer '+r, ccRoleLockedTwo:'L’équipe a déjà un IGL, et elle ne peut pas en avoir deux.', ccRoleLockedNone:'Tu es le seul IGL de l’équipe, et une équipe sans IGL ne joue pas.',
 ccDivision:'Division',
 ccDivNote:'La division fixe ta note de départ. Cinq, c’est toute la montée depuis rien ; un, c’est que tu es déjà dans le top 50 de ta région.',
-ccYear:'Année', ccYear2026:'duos → trios', ccYear2025:'trios', ccYr25Group:n=>'groupe '+n, ccYr25Lobby:'lobby de la dernière chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · manche '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · manche '+r,
+ccYear:'Année', ccYear2026:'duos → trios', ccYear2025:'trios', ccYear2024:'duos', ccYr24Qual:(n,q,r)=>'Major '+n+' · qualifier ouvert '+q+' · manche '+r, ccYr24Semi:(n,r)=>'Major '+n+' · demi-finales · jour '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Points de série : '+p+' · rang '+k, ccYr24ToUpper:'Upper bracket des demi-finales — aux points de série', ccYr24ToLower:'Lower bracket des demi-finales — aux points de série', ccYr24NoSemi:'Pas de place en demi-finales — pas assez de points de série', ccYr24VrTicket:'Une Victoire royale — un billet pour la finale du Major', ccYr24World:'L’autre bracket joue le même soir', ccYr25Group:n=>'groupe '+n, ccYr25Lobby:'lobby de la dernière chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · manche '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · manche '+r,
 ccYearNote2026:'FNCS 2026 : coupes divisionnaires, deux Majors, Reload, le Global Championship à Anvers. Deuxième année en trios.',
+ccYearNote2024:'FNCS 2024 : duos toute l’année, trois Majors avec qualifiers ouverts, classement de série et demi-finales à deux brackets, le Global Championship à Fort Worth. Pas encore de coupes divisionnaires : l’argent est dans la Duos Cash Cup, la Solo Victory Cup et l’évaluation. Les adversaires sont les cartes 2024. Après Fort Worth, la carrière passe en 2025 (trios) avec les mêmes joueurs.',
 ccYearNote2025:'FNCS 2025 : trios toute l’année, trois Majors avec phase de groupes, le Global Championship à Lyon. Les adversaires sont les cartes 2025. Après Lyon, la carrière passe en 2026.',
 ccDiff:'Difficulté',
 ccDiffNote:'Ne change qu’une chose — la vitesse à laquelle la note monte. Le niveau des adversaires, les gains et les prix sont les mêmes partout : plus dur ne veut pas dire lobby plus fort, mais route plus longue',
@@ -13050,8 +13059,9 @@ ccRole:"Ruolo",
 ccSpTitle:"Punti abilità",
 ccSpCreateHint:"Assegnati una volta sola, qui: +0.5 a una statistica per punto",
 ccDivision:"Divisione",
-ccYear:"Anno", ccYear2026:"duo → trio", ccYear2025:"trio", ccYr25Group:n=>'girone '+n, ccYr25Lobby:'lobby dell\'ultima chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
+ccYear:"Anno", ccYear2026:"duo → trio", ccYear2025:"trio", ccYear2024:'duo', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinali · giorno '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Punti serie: '+p+' · posto '+k, ccYr24ToUpper:'Upper bracket delle semifinali — sui punti serie', ccYr24ToLower:'Lower bracket delle semifinali — sui punti serie', ccYr24NoSemi:'Nessun posto in semifinale — punti serie insufficienti', ccYr24VrTicket:'Una Vittoria reale — un biglietto per la finale del Major', ccYr24World:'L’altro bracket gioca la stessa sera', ccYr25Group:n=>'girone '+n, ccYr25Lobby:'lobby dell\'ultima chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
 ccYearNote2026:"FNCS 2026: coppe divisionali, due Major, Reload, Global Championship ad Anversa. Il secondo anno è in trio.",
+ccYearNote2024:"FNCS 2024: duo tutto l'anno, tre Major con Open Qualifier, classifica di serie e semifinali a due bracket, Global Championship a Fort Worth. Niente coppe divisionali ancora: i soldi sono nella Duos Cash Cup, nella Solo Victory Cup e nella valutazione. Gli avversari sono le carte 2024. Dopo Fort Worth la carriera passa al 2025 (trio) con le stesse persone.",
 ccYearNote2025:"FNCS 2025: trio tutto l'anno, tre Major con fase a gironi, Global Championship a Lione. Gli avversari sono le carte 2025. Dopo Lione la carriera passa al 2026.",
 ccDiff:"Difficoltà",
 ccRegion:"Regione",
@@ -13355,6 +13365,7 @@ ccEvalR2Title:n=>'Evaluation, Round 2 — '+n+' '+ccSquadWord()+', 4 partite, pa
 ccEvalPass:n=>'Primi '+n+' — al Round 2',
 ccEvalFail:n=>'Fuori dai primi '+n+' — la serata finisce qui',
 ccEvalCash:(w,c)=>w+(w===1?' vittoria':' vittorie')+' — $'+c,
+ccEvalTop5Cash:c=>'Top 5 — $'+c, ccVicPlaceCash:(p,c)=>'Posto '+p+' — $'+c,
 ccNewsEvalCash:(w,c)=>'Evaluation: '+w+(w===1?' vittoria':' vittorie')+', $'+c,
 ccNewsEvalOut:p=>'Evaluation: '+ccTop(p)+' nel Round 1, niente di pi\u00f9',
 ccDayOver:v=>'La giornata \u00e8 gi\u00e0 spesa: '+v+'. L\u2019energia resta per domani — premi Giorno successivo',
@@ -13428,6 +13439,7 @@ ccNewsWfNoCash:(p,of)=>'Finale settimanale: '+ccTop(p)+' su '+of+', niente soldi
 ccRelPass:n=>'Primi '+n+' — alla fase successiva',
 ccMajSeatSummit:(n,m)=>'I primi '+n+' vanno al Summit di D\u00fcsseldorf, i primi '+m+' alla Second Chance',
 ccMajSeatGc:n=>'I primi '+n+' vanno al Global Championship di Anversa',
+ccMajSeatGc24:n=>'I primi '+n+' vanno al Global Championship di Fort Worth',
 ccRelFail:n=>'Fuori dai primi '+n+' — il percorso finisce qui',
 ccNoMateN:n=>'Ti manca'+(n>1?'no due giocatori':' un giocatore')+' — un posto vuoto non entra. Nella posta c\u2019\u00e8 gente libera',
 ccLfdOnUntil:d=>'Il post resta fino al '+d,
@@ -15555,8 +15567,9 @@ ccRole:"Função",
 ccSpTitle:"Pontos de habilidade",
 ccSpCreateHint:"Distribuídos uma única vez, aqui: +0,5 em um atributo por ponto",
 ccDivision:"Divisão",
-ccYear:"Ano", ccYear2026:"duplas → trios", ccYear2025:"trios", ccYr25Group:n=>'grupo '+n, ccYr25Lobby:'lobby da última chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · rodada '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · rodada '+r,
+ccYear:"Ano", ccYear2026:"duplas → trios", ccYear2025:"trios", ccYear2024:'duplas', ccYr24Qual:(n,q,r)=>'Major '+n+' · classificatória aberta '+q+' · rodada '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinais · dia '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Pontos de série: '+p+' · posição '+k, ccYr24ToUpper:'Upper bracket das semifinais — pelos pontos de série', ccYr24ToLower:'Lower bracket das semifinais — pelos pontos de série', ccYr24NoSemi:'Sem vaga nas semifinais — faltaram pontos de série', ccYr24VrTicket:'Uma Vitória Royale — um bilhete para a final do Major', ccYr24World:'O outro bracket joga na mesma noite', ccYr25Group:n=>'grupo '+n, ccYr25Lobby:'lobby da última chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · rodada '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · rodada '+r,
 ccYearNote2026:"FNCS 2026: copas divisionais, dois Majors, Reload, Global Championship em Antuérpia. O segundo ano é em trios.",
+ccYearNote2024:"FNCS 2024: duplas o ano todo, três Majors com classificatórias abertas, tabela de série e semifinais em dois brackets, Global Championship em Fort Worth. Ainda sem copas divisionais: o dinheiro está na Duos Cash Cup, na Solo Victory Cup e na avaliação. Os adversários são as cartas de 2024. Depois de Fort Worth a carreira segue para 2025 (trios) com as mesmas pessoas.",
 ccYearNote2025:"FNCS 2025: trios o ano todo, três Majors com fase de grupos, Global Championship em Lyon. Os adversários são as cartas de 2025. Depois de Lyon a carreira segue para 2026.",
 ccDiff:"Dificuldade",
 ccRegion:"Região",
@@ -15860,6 +15873,7 @@ ccEvalR2Title:n=>'Evaluation, Rodada 2 — '+n+' '+ccSquadWord()+', 4 partidas, 
 ccEvalPass:n=>'Top '+n+' — passou para a Rodada 2',
 ccEvalFail:n=>'Fora do top '+n+' — a noite acabou',
 ccEvalCash:(w,c)=>w+(w===1?' vit\u00f3ria':' vit\u00f3rias')+' — $'+c,
+ccEvalTop5Cash:c=>'Top 5 — $'+c, ccVicPlaceCash:(p,c)=>'Lugar '+p+' — $'+c,
 ccNewsEvalCash:(w,c)=>'Evaluation: '+w+(w===1?' vit\u00f3ria':' vit\u00f3rias')+', $'+c,
 ccNewsEvalOut:p=>'Evaluation: '+ccTop(p)+' na Rodada 1, e parou por a\u00ed',
 ccDayOver:v=>'O dia j\u00e1 foi gasto: '+v+'. A energia fica para amanh\u00e3 — aperte Pr\u00f3ximo dia',
@@ -15933,6 +15947,7 @@ ccNewsWfNoCash:(p,of)=>'Final semanal: '+ccTop(p)+' de '+of+', sem dinheiro',
 ccRelPass:n=>'Top '+n+' — passou para a pr\u00f3xima fase',
 ccMajSeatSummit:(n,m)=>'O top '+n+' vai para o Summit em D\u00fcsseldorf, o top '+m+' para a Second Chance',
 ccMajSeatGc:n=>'O top '+n+' vai para o Global Championship em Antu\u00e9rpia',
+ccMajSeatGc24:n=>'O top '+n+' vai para o Global Championship em Fort Worth',
 ccRelFail:n=>'Fora do top '+n+' — a caminhada acaba aqui',
 ccNoMateN:n=>'Falta'+(n>1?'m dois jogadores':' um jogador')+' — uma vaga vazia n\u00e3o entra. Tem gente livre na caixa de entrada',
 ccLfdOnUntil:d=>'O post fica at\u00e9 '+d,
@@ -48420,9 +48435,133 @@ const T3_CONSUMABLE_POOL=[
 // are read: these are values, not hoisted functions, so putting the table before
 // the pools it indexes throws on load and takes every declaration after it down
 // with it.
-const T_WEAPON_POOLS={t1:T1_WEAPON_POOL, t2:T2_WEAPON_POOL, t3:T3_WEAPON_POOL};
-const T_CONSUMABLE_POOLS={t1:T1_CONSUMABLE_POOL, t2:T2_CONSUMABLE_POOL, t3:T3_CONSUMABLE_POOL};
-const T_SEASON_NAME={t1:['Глава 6, сезон 1','Chapter 6, Season 1'],
+
+// ---------- FNCS 2024 loot: Chapter 5 (Underground / Myths & Mortals / Wrecked / Absolute Doom) ----------
+/* Его слово 21 сентября 2026: «карту, оружие и т.д. ещё нужно добавить, всё как 25 и 26».
+   Пулы — со страниц вики «Chapter 5: Season 1..4/Loot Pool» (Standard Loot: оружие «found anywhere
+   on the Island»), по острову финала: f1 — сезон 1 (Мейджор 1), f2 — сезон 2, f3 — сезон 3,
+   f4 — сезон 4 (Форт-Уэрт). Дат добавления/волта на этих страницах нет — взято состояние
+   сезона целиком; мифики боссов, Медальоны, ключи, Star Wars и «Uncategorized» — не лут точки. */
+const F1_WEAPON_NAMES=[
+  ["Nemesis AR",'rifle','common','legendary'],
+  ["Striker AR",'rifle','common','legendary'],
+  ["Enforcer AR",'rifle','common','legendary'],
+  ["Frenzy Auto Shotgun",'shotgun','common','legendary'],
+  ["Hammer Pump Shotgun",'shotgun','common','legendary'],
+  ["Hyper SMG",'smg','common','legendary'],
+  ["Thunder Burst SMG",'smg','common','legendary'],
+  ["Ranger Pistol",'pistol','common','legendary'],
+  ["Lock On Pistol",'pistol','rare','rare'],
+  ["Reaper Sniper Rifle",'rifle','common','legendary']
+];
+const F1_WEAPON_POOL=ladderPool(F1_WEAPON_NAMES);
+const F1_CONSUMABLE_POOL=[
+  {name:"Port-A-Bunker", rarity:"green", icon:'shield'},
+  {name:"Shockwave Grenade", rarity:"purple", icon:'shield'},
+  {name:"Crash Pad Jr.", rarity:"green", icon:'shield'},
+  {name:"Grapple Blade", rarity:"purple", icon:'shield'},
+  {name:"FlowBerry Fizz", rarity:"blue", icon:'shield'},
+  {name:"Shield Potion", rarity:"blue", icon:'shield'},
+  {name:"Med Kit", rarity:"green", icon:'heal'},
+  {name:"Small Shield Potion", rarity:"green", icon:'shield'},
+  {name:"Bandage", rarity:"grey", icon:'heal'}
+].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
+const F2_WEAPON_NAMES=[
+  ["Nemesis AR",'rifle','common','legendary'],
+  ["Warforged Assault Rifle",'rifle','common','legendary'],
+  ["Tactical Assault Rifle",'rifle','common','legendary'],
+  ["Hammer Pump Shotgun",'shotgun','common','legendary'],
+  ["Gatekeeper Shotgun",'shotgun','common','legendary'],
+  ["Frenzy Auto Shotgun",'shotgun','common','legendary'],
+  ["Harbinger SMG",'smg','common','legendary'],
+  ["Thunder Burst SMG",'smg','common','legendary'],
+  ["Drum Gun",'smg','common','legendary'],
+  ["Ranger Pistol",'pistol','common','legendary'],
+  ["Hand Cannon",'pistol','common','legendary'],
+  ["Reaper Sniper Rifle",'rifle','epic','legendary'],
+  ["Huntress DMR",'rifle','uncommon','legendary']
+];
+const F2_WEAPON_POOL=ladderPool(F2_WEAPON_NAMES);
+const F2_CONSUMABLE_POOL=[
+  {name:"Wings of Icarus", rarity:"purple", icon:'shield'},
+  {name:"Shockwave Grenade", rarity:"purple", icon:'shield'},
+  {name:"Port-A-Bunker", rarity:"green", icon:'shield'},
+  {name:"Shield Bubble Jr.", rarity:"green", icon:'shield'},
+  {name:"Big Bush Bomb", rarity:"blue", icon:'shield'},
+  {name:"Chug Splash", rarity:"blue", icon:'drink'},
+  {name:"FlowBerry Fizz", rarity:"blue", icon:'shield'},
+  {name:"Shield Potion", rarity:"blue", icon:'shield'},
+  {name:"Med Kit", rarity:"green", icon:'heal'},
+  {name:"Small Shield Potion", rarity:"green", icon:'shield'},
+  {name:"Bandage", rarity:"grey", icon:'heal'}
+].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
+const F3_WEAPON_NAMES=[
+  ["Combat Assault Rifle",'rifle','common','legendary'],
+  ["Tactical Assault Rifle",'rifle','common','legendary'],
+  ["Enforcer AR",'rifle','common','legendary'],
+  ["Warforged Assault Rifle",'rifle','common','legendary'],
+  ["Hammer Pump Shotgun",'shotgun','common','legendary'],
+  ["Combat Shotgun",'shotgun','common','legendary'],
+  ["Gatekeeper Shotgun",'shotgun','common','legendary'],
+  ["Harbinger SMG",'smg','common','legendary'],
+  ["Thunder Burst SMG",'smg','common','legendary'],
+  ["Ranger Pistol",'pistol','common','legendary'],
+  ["Hand Cannon",'pistol','common','legendary'],
+  ["Heavy Impact Sniper Rifle",'rifle','rare','legendary'],
+  ["Huntress DMR",'rifle','uncommon','legendary'],
+  ["Boom Bolt",'rifle','common','legendary']
+];
+const F3_WEAPON_POOL=ladderPool(F3_WEAPON_NAMES);
+const F3_CONSUMABLE_POOL=[
+  {name:"Nitro Fists", rarity:"purple", icon:'shield'},
+  {name:"Shockwave Grenade", rarity:"purple", icon:'shield'},
+  {name:"Crash Pad Jr.", rarity:"green", icon:'shield'},
+  {name:"Port-A-Bunker", rarity:"green", icon:'shield'},
+  {name:"Shield Bubble Jr.", rarity:"green", icon:'shield'},
+  {name:"Nitro Splash", rarity:"blue", icon:'drink'},
+  {name:"Med-Mist Smoke Grenade", rarity:"green", icon:'heal'},
+  {name:"FlowBerry Fizz", rarity:"blue", icon:'shield'},
+  {name:"Shield Potion", rarity:"blue", icon:'shield'},
+  {name:"Med Kit", rarity:"green", icon:'heal'},
+  {name:"Small Shield Potion", rarity:"green", icon:'shield'},
+  {name:"Bandage", rarity:"grey", icon:'heal'}
+].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
+const F4_WEAPON_NAMES=[
+  ["Striker AR",'rifle','common','legendary'],
+  ["Striker Burst Rifle",'rifle','common','legendary'],
+  ["Stark Industries Energy Rifle",'rifle','common','legendary'],
+  ["Combat Assault Rifle",'rifle','common','legendary'],
+  ["Hammer Pump Shotgun",'shotgun','common','legendary'],
+  ["Gatekeeper Shotgun",'shotgun','common','legendary'],
+  ["Sovereign Shotgun",'shotgun','common','legendary'],
+  ["Wood Stake Shotgun",'shotgun','rare','legendary'],
+  ["Hyper SMG",'smg','common','legendary'],
+  ["Dual Micro SMGs",'smg','common','legendary'],
+  ["Thunder Burst SMG",'smg','rare','rare'],
+  ["Ranger Pistol",'pistol','common','legendary'],
+  ["Monarch Pistol",'pistol','common','legendary']
+];
+const F4_WEAPON_POOL=ladderPool(F4_WEAPON_NAMES);
+const F4_CONSUMABLE_POOL=[
+  {name:"War Machine's Hover Jets", rarity:"purple", icon:'shield'},
+  {name:"Captain America's Shield", rarity:"purple", icon:'shield'},
+  {name:"Shockwave Grenade", rarity:"purple", icon:'shield'},
+  {name:"Port-A-Bunker", rarity:"green", icon:'shield'},
+  {name:"Shield Bubble Jr.", rarity:"green", icon:'shield'},
+  {name:"Chug Splash", rarity:"blue", icon:'drink'},
+  {name:"FlowBerry Fizz", rarity:"blue", icon:'shield'},
+  {name:"Shield Potion", rarity:"blue", icon:'shield'},
+  {name:"Med Kit", rarity:"green", icon:'heal'},
+  {name:"Small Shield Potion", rarity:"green", icon:'shield'},
+  {name:"Bandage", rarity:"grey", icon:'heal'}
+].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
+const T_WEAPON_POOLS={t1:T1_WEAPON_POOL, t2:T2_WEAPON_POOL, t3:T3_WEAPON_POOL, f1:F1_WEAPON_POOL, f2:F2_WEAPON_POOL, f3:F3_WEAPON_POOL, f4:F4_WEAPON_POOL};
+const T_CONSUMABLE_POOLS={t1:T1_CONSUMABLE_POOL, t2:T2_CONSUMABLE_POOL, t3:T3_CONSUMABLE_POOL, f1:F1_CONSUMABLE_POOL, f2:F2_CONSUMABLE_POOL, f3:F3_CONSUMABLE_POOL, f4:F4_CONSUMABLE_POOL};
+const T_SEASON_NAME={f1:['Глава 5, сезон 1','Chapter 5, Season 1'],
+                     f2:['Глава 5, сезон 2','Chapter 5, Season 2'],
+                     f3:['Глава 5, сезон 3','Chapter 5, Season 3'],
+                     f4:['Глава 5, сезон 4','Chapter 5, Season 4'],
+                     t1:['Глава 6, сезон 1','Chapter 6, Season 1'],
                      t2:['Глава 6, сезон 2','Chapter 6, Season 2'],
                      t3:['Глава 6, сезон 3','Chapter 6, Season 3']};
 
@@ -48635,6 +48774,27 @@ const WEAPON_ART_BY_NAME={
 // pistol points at the Mammoth Pistol. Those carry the base weapon picture, and
 // the substitution is written down in the fetcher rather than hidden here.
 const EXTRA_ITEM_ART={
+ // Chapter 5 (2024), пулы f1–f4 — 21 сентября 2026.
+ "Striker AR": "items/itm-striker-ar.webp",
+ "Enforcer AR": "items/itm-enforcer-ar.webp",
+ "Hammer Pump Shotgun": "items/itm-hammer-pump-shotgun.webp",
+ "Hyper SMG": "items/itm-hyper-smg.webp",
+ "Grapple Blade": "items/itm-grapple-blade.webp",
+ "Harbinger SMG": "items/itm-harbinger-smg.webp",
+ "Hand Cannon": "items/itm-hand-cannon.webp",
+ "Huntress DMR": "items/itm-huntress-dmr.webp",
+ "Wings of Icarus": "items/itm-wings-of-icarus.webp",
+ "Combat Shotgun": "items/itm-combat-shotgun.webp",
+ "Boom Bolt": "items/itm-boom-bolt.webp",
+ "Nitro Fists": "items/itm-nitro-fists.webp",
+ "Nitro Splash": "items/itm-nitro-splash.webp",
+ "Stark Industries Energy Rifle": "items/itm-stark-industries-energy-rifle.webp",
+ "Sovereign Shotgun": "items/itm-sovereign-shotgun.webp",
+ "Wood Stake Shotgun": "items/itm-wood-stake-shotgun.webp",
+ "Dual Micro SMGs": "items/itm-dual-micro-smgs.webp",
+ "Monarch Pistol": "items/itm-monarch-pistol.webp",
+ "War Machine's Hover Jets": "items/itm-war-machine-s-hover-jets.webp",
+ "Captain America's Shield": "items/itm-captain-america-s-shield.webp",
  "Twin Mag Assault Rifle": "items/itm-twin-mag-assault-rifle.webp",
  "Collateral Damage Assault Rifle": "items/itm-collateral-damage-assault-rifle.webp",
  "Baron's Double Down Pistol": "items/itm-baron-s-double-down-pistol.webp",
@@ -51079,7 +51239,10 @@ let pendingMapSet='m2';
 // backdrop.
 const MAP_CHOICES=[{key:'m1', label:'Chapter 7 Season 2'}, {key:'m2', label:'Chapter 7 Season 3'},
                    {key:'t1', label:'Chapter 6 Season 1'}, {key:'t2', label:'Chapter 6 Season 2'},
-                   {key:'t3', label:'Chapter 6 Season 3'}];
+                   {key:'t3', label:'Chapter 6 Season 3'},
+                   // Chapter 5 (2024): острова финалов трёх Мейджоров и Форт-Уэрта, со своим лутом.
+                   {key:'f1', label:'Chapter 5 Season 1'}, {key:'f2', label:'Chapter 5 Season 2'},
+                   {key:'f3', label:'Chapter 5 Season 3'}, {key:'f4', label:'Chapter 5 Season 4'}];
 
 function buildMapChecks(){
   const block=document.getElementById('mapBlock');
@@ -51627,6 +51790,11 @@ const MAP_ART={
   s42:"art/map-s42.jpg",
   // Тот же остров, но сеткой на сотню — под соло, см. ZONE_SETS.s42solo.
   s42solo:"art/map-s42.jpg",
+  // Chapter 5, 2024: карты eucompetitive.com (ch5s1map … ch5s4map), сжаты в JPEG.
+  f1:"art/map-f1.jpg",
+  f2:"art/map-f2.jpg",
+  f3:"art/map-f3.jpg",
+  f4:"art/map-f4.jpg",
   t1:"art/map-t1.jpg",
   // The islands Majors 2 and 3 were actually played on. Map and grid come from
   // the same place -- eucompetitive.com's own drop map for that Major -- so the
@@ -51644,6 +51812,7 @@ const MAP_ART={
   r4:"art/map-reload-b.jpg"
 };
 const MAP_ASPECT={m1:'1100/1142', m2:'1100/970', s42:'921/843', s42solo:'921/843', t1:'1701/1714',
+                  f1:'1600/1600', f2:'1600/1600', f3:'1600/1600', f4:'1600/1600',
                   t2:'1600/1600', t3:'1600/1600',
                   r1:'1062/776', r2:'1062/776', r3:'1034/770', r4:'1034/770'};
 // ---------- Real drop-spot data (Kinch Premium competitive evals) ----------
@@ -51693,6 +51862,13 @@ const ZONE_STATS={
   // empty field is worth. There is no "teams" or "surv" here: those come from
   // competitive evals that exist for the 2026 islands and not for these, and
   // useLandingSet already defaults the contest rate to 1 rather than inventing one.
+  /* Острова 2024-го (Chapter 5) — лут вики по коробкам дроп-карт: карты патчей 28.30 / 29.40 /
+     30.30 / 31.00 (выходные финалов и Форт-Уэрта), сундуки и ящики с инфобоксов локаций.
+     Написано tools/build-2025-zone-loot.js f1 f2 f3 f4 (21 сентября 2026). */
+  f1:[{r:37,loot:37,chests:18,ammo:19},{r:4,loot:4,chests:2,ammo:2},{r:0,loot:0,chests:0,ammo:0},{r:48,loot:48,chests:18,ammo:30},{r:34,loot:34,chests:10,ammo:24},{r:35,loot:35,chests:20,ammo:15},{r:45,loot:45,chests:30,ammo:15},{r:117,loot:117,chests:28,ammo:89},{r:34,loot:34,chests:21,ammo:13},{r:10,loot:10,chests:6,ammo:4},{r:31,loot:31,chests:15,ammo:16},{r:29,loot:29,chests:13,ammo:16},{r:18,loot:18,chests:10,ammo:8},{r:94,loot:94,chests:38,ammo:56},{r:97,loot:97,chests:32,ammo:65},{r:222,loot:222,chests:52,ammo:170},{r:27,loot:27,chests:13,ammo:14},{r:58,loot:58,chests:25,ammo:33},{r:44,loot:44,chests:25,ammo:19},{r:31,loot:31,chests:18,ammo:13},{r:29,loot:29,chests:16,ammo:13},{r:22,loot:22,chests:10,ammo:12},{r:26,loot:26,chests:11,ammo:15},{r:7,loot:7,chests:4,ammo:3},{r:55,loot:55,chests:30,ammo:25},{r:0,loot:0,chests:0,ammo:0},{r:34,loot:34,chests:13,ammo:21},{r:38,loot:38,chests:14,ammo:24},{r:0,loot:0,chests:0,ammo:0},{r:84,loot:84,chests:26,ammo:58},{r:157,loot:157,chests:81,ammo:76},{r:111,loot:111,chests:46,ammo:65},{r:39,loot:39,chests:18,ammo:21},{r:151,loot:151,chests:69,ammo:82},{r:50,loot:50,chests:22,ammo:28},{r:0,loot:0,chests:0,ammo:0},{r:50,loot:50,chests:16,ammo:34},{r:15,loot:15,chests:8,ammo:7},{r:44,loot:44,chests:22,ammo:22}],
+  f2:[{r:18,loot:18,chests:12,ammo:6},{r:0,loot:0,chests:0,ammo:0},{r:48,loot:48,chests:18,ammo:30},{r:34,loot:34,chests:10,ammo:24},{r:35,loot:35,chests:20,ammo:15},{r:45,loot:45,chests:30,ammo:15},{r:117,loot:117,chests:28,ammo:89},{r:34,loot:34,chests:21,ammo:13},{r:16,loot:16,chests:8,ammo:8},{r:0,loot:0,chests:0,ammo:0},{r:72,loot:72,chests:45,ammo:27},{r:3,loot:3,chests:2,ammo:1},{r:18,loot:18,chests:10,ammo:8},{r:29,loot:29,chests:13,ammo:16},{r:15,loot:15,chests:7,ammo:8},{r:65,loot:65,chests:36,ammo:29},{r:97,loot:97,chests:32,ammo:65},{r:7,loot:7,chests:6,ammo:1},{r:222,loot:222,chests:52,ammo:170},{r:31,loot:31,chests:13,ammo:18},{r:52,loot:52,chests:24,ammo:28},{r:24,loot:24,chests:14,ammo:10},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:18,loot:18,chests:11,ammo:7},{r:55,loot:55,chests:30,ammo:25},{r:29,loot:29,chests:16,ammo:13},{r:118,loot:118,chests:50,ammo:68},{r:0,loot:0,chests:0,ammo:0},{r:31,loot:31,chests:14,ammo:17},{r:95,loot:95,chests:44,ammo:51},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:6,loot:6,chests:2,ammo:4},{r:50,loot:50,chests:22,ammo:28},{r:39,loot:39,chests:18,ammo:21},{r:50,loot:50,chests:16,ammo:34},{r:0,loot:0,chests:0,ammo:0},{r:44,loot:44,chests:22,ammo:22},{r:64,loot:64,chests:31,ammo:33}],
+  f3:[{r:18,loot:18,chests:12,ammo:6},{r:0,loot:0,chests:0,ammo:0},{r:48,loot:48,chests:18,ammo:30},{r:34,loot:34,chests:10,ammo:24},{r:45,loot:45,chests:30,ammo:15},{r:117,loot:117,chests:28,ammo:89},{r:72,loot:72,chests:45,ammo:27},{r:34,loot:34,chests:21,ammo:13},{r:31,loot:31,chests:15,ammo:16},{r:18,loot:18,chests:10,ammo:8},{r:29,loot:29,chests:13,ammo:16},{r:65,loot:65,chests:36,ammo:29},{r:97,loot:97,chests:32,ammo:65},{r:222,loot:222,chests:52,ammo:170},{r:7,loot:7,chests:6,ammo:1},{r:5,loot:5,chests:2,ammo:3},{r:52,loot:52,chests:24,ammo:28},{r:0,loot:0,chests:0,ammo:0},{r:24,loot:24,chests:14,ammo:10},{r:24,loot:24,chests:14,ammo:10},{r:29,loot:29,chests:16,ammo:13},{r:49,loot:49,chests:31,ammo:18},{r:0,loot:0,chests:0,ammo:0},{r:55,loot:55,chests:30,ammo:25},{r:118,loot:118,chests:50,ammo:68},{r:31,loot:31,chests:14,ammo:17},{r:0,loot:0,chests:0,ammo:0},{r:95,loot:95,chests:44,ammo:51},{r:46,loot:46,chests:25,ammo:21},{r:0,loot:0,chests:0,ammo:0},{r:40,loot:40,chests:16,ammo:24},{r:36,loot:36,chests:15,ammo:21},{r:78,loot:78,chests:36,ammo:42},{r:7,loot:7,chests:4,ammo:3},{r:44,loot:44,chests:22,ammo:22},{r:49,loot:49,chests:23,ammo:26},{r:104,loot:104,chests:25,ammo:79},{r:67,loot:67,chests:37,ammo:30},{r:29,loot:29,chests:11,ammo:18},{r:39,loot:39,chests:20,ammo:19}],
+  f4:[{r:37,loot:37,chests:18,ammo:19},{r:36,loot:36,chests:15,ammo:21},{r:34,loot:34,chests:10,ammo:24},{r:0,loot:0,chests:0,ammo:0},{r:61,loot:61,chests:37,ammo:24},{r:96,loot:96,chests:51,ammo:45},{r:0,loot:0,chests:0,ammo:0},{r:187,loot:187,chests:81,ammo:106},{r:0,loot:0,chests:0,ammo:0},{r:31,loot:31,chests:15,ammo:16},{r:7,loot:7,chests:5,ammo:2},{r:45,loot:45,chests:25,ammo:20},{r:72,loot:72,chests:45,ammo:27},{r:14,loot:14,chests:7,ammo:7},{r:65,loot:65,chests:36,ammo:29},{r:97,loot:97,chests:32,ammo:65},{r:7,loot:7,chests:6,ammo:1},{r:222,loot:222,chests:52,ammo:170},{r:57,loot:57,chests:26,ammo:31},{r:24,loot:24,chests:14,ammo:10},{r:0,loot:0,chests:0,ammo:0},{r:29,loot:29,chests:16,ammo:13},{r:24,loot:24,chests:14,ammo:10},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:31,loot:31,chests:14,ammo:17},{r:111,loot:111,chests:46,ammo:65},{r:4,loot:4,chests:3,ammo:1},{r:0,loot:0,chests:0,ammo:0},{r:95,loot:95,chests:44,ammo:51},{r:46,loot:46,chests:25,ammo:21},{r:0,loot:0,chests:0,ammo:0},{r:78,loot:78,chests:36,ammo:42},{r:7,loot:7,chests:4,ammo:3},{r:9,loot:9,chests:7,ammo:2},{r:36,loot:36,chests:15,ammo:21},{r:0,loot:0,chests:0,ammo:0},{r:44,loot:44,chests:22,ammo:22},{r:49,loot:49,chests:23,ammo:26},{r:104,loot:104,chests:25,ammo:79},{r:67,loot:67,chests:37,ammo:30},{r:39,loot:39,chests:20,ammo:19}],
   t1:[{r:25,loot:25,chests:16,ammo:9},{r:99,loot:99,chests:46,ammo:53},{r:70,loot:70,chests:33,ammo:37},{r:15,loot:15,chests:8,ammo:7},{r:84,loot:84,chests:57,ammo:27},{r:77,loot:77,chests:37,ammo:40},{r:90,loot:90,chests:43,ammo:47},{r:40,loot:40,chests:18,ammo:22},{r:48,loot:48,chests:29,ammo:19},{r:20,loot:20,chests:12,ammo:8},{r:71,loot:71,chests:39,ammo:32},{r:34,loot:34,chests:19,ammo:15},{r:51,loot:51,chests:45,ammo:6},{r:60,loot:60,chests:38,ammo:22},{r:51,loot:51,chests:33,ammo:18},{r:122,loot:122,chests:71,ammo:51},{r:159,loot:159,chests:87,ammo:72},{r:71,loot:71,chests:39,ammo:32},{r:46,loot:46,chests:22,ammo:24},{r:0,loot:0,chests:0,ammo:0},{r:97,loot:97,chests:59,ammo:38},{r:42,loot:42,chests:33,ammo:9},{r:73,loot:73,chests:44,ammo:29},{r:92,loot:92,chests:64,ammo:28},{r:78,loot:78,chests:42,ammo:36},{r:77,loot:77,chests:43,ammo:34},{r:0,loot:0,chests:0,ammo:0}],
   t2:[{r:25,loot:25,chests:16,ammo:9},{r:99,loot:99,chests:46,ammo:53},{r:19,loot:19,chests:12,ammo:7},{r:95,loot:95,chests:44,ammo:51},{r:84,loot:84,chests:57,ammo:27},{r:77,loot:77,chests:37,ammo:40},{r:90,loot:90,chests:43,ammo:47},{r:48,loot:48,chests:29,ammo:19},{r:15,loot:15,chests:7,ammo:8},{r:35,loot:35,chests:24,ammo:11},{r:71,loot:71,chests:34,ammo:37},{r:34,loot:34,chests:19,ammo:15},{r:73,loot:73,chests:57,ammo:16},{r:15,loot:15,chests:7,ammo:8},{r:39,loot:39,chests:28,ammo:11},{r:46,loot:46,chests:26,ammo:20},{r:121,loot:121,chests:68,ammo:53},{r:42,loot:42,chests:31,ammo:11},{r:133,loot:133,chests:78,ammo:55},{r:9,loot:9,chests:7,ammo:2},{r:97,loot:97,chests:59,ammo:38},{r:27,loot:27,chests:26,ammo:1},{r:70,loot:70,chests:44,ammo:26},{r:0,loot:0,chests:0,ammo:0},{r:15,loot:15,chests:11,ammo:4},{r:111,loot:111,chests:77,ammo:34},{r:78,loot:78,chests:42,ammo:36},{r:85,loot:85,chests:51,ammo:34},{r:0,loot:0,chests:0,ammo:0}],
   t3:[{r:25,loot:25,chests:16,ammo:9},{r:0,loot:0,chests:0,ammo:0},{r:99,loot:99,chests:46,ammo:53},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:90,loot:90,chests:43,ammo:47},{r:71,loot:71,chests:43,ammo:28},{r:20,loot:20,chests:12,ammo:8},{r:40,loot:40,chests:18,ammo:22},{r:71,loot:71,chests:34,ammo:37},{r:34,loot:34,chests:19,ammo:15},{r:73,loot:73,chests:57,ammo:16},{r:56,loot:56,chests:31,ammo:25},{r:42,loot:42,chests:31,ammo:11},{r:93,loot:93,chests:53,ammo:40},{r:72,loot:72,chests:40,ammo:32},{r:63,loot:63,chests:46,ammo:17},{r:90,loot:90,chests:55,ammo:35},{r:35,loot:35,chests:26,ammo:9},{r:70,loot:70,chests:44,ammo:26},{r:11,loot:11,chests:8,ammo:3},{r:97,loot:97,chests:73,ammo:24},{r:78,loot:78,chests:42,ammo:36},{r:38,loot:38,chests:23,ammo:15},{r:69,loot:69,chests:44,ammo:25}],
@@ -51816,6 +51992,182 @@ const ZONE_SETS={
   // black ones at Tayson and Liwshe. Every one of those shares an edge with a
   // neighbour, which is exactly what connected components and segment pairing
   // both get wrong.
+  /* Острова 2024-го (Chapter 5): клетки — дроп-карты eucompetitive.com финалов трёх
+     Мейджоров (ch5s1/s2/s3-fncs-finals) и Форт-Уэрта (ch5s4-fncs-finals), снятые 21 сентября
+     2026 (tools/measured/eucomp-2024-dropmaps.json): координаты редактора в кадре 800×800
+     поверх той же картинки 1600×1600, в проценты — делением на восемь. Каждый прямоугольник —
+     место, где садилось настоящее дуо того финала (39–43 коробки на 50 дуо). Рейтинг — лут с
+     вики (ZONE_STATS), см. tools/build-2025-zone-loot.js. */
+  f1:[
+    {x:42.79,y:10.81,w:11.75,h:9.88},
+    {x:59.02,y:12.13,w:8.63,h:9.13},
+    {x:33.83,y:13.22,w:7.5,h:14.38},
+    {x:71.98,y:14.82,w:8.75,h:13.63},
+    {x:23.16,y:15.17,w:9.71,h:10.35},
+    {x:82.39,y:16.16,w:10.63,h:17.75},
+    {x:63.55,y:21.84,w:7.5,h:2.88},
+    {x:42.21,y:23.22,w:5.25,h:7.63},
+    {x:57.35,y:25.99,w:8.75,h:10.88},
+    {x:17.21,y:28.94,w:10.88,h:7.5},
+    {x:48.61,y:30.42,w:7.63,h:11.13},
+    {x:68.77,y:30.55,w:11.5,h:8.38},
+    {x:35.64,y:31.89,w:10.88,h:12.88},
+    {x:12.91,y:37.4,w:9.88,h:6.38},
+    {x:77.24,y:40.28,w:13.88,h:9.88},
+    {x:59.71,y:41.6,w:12.75,h:8.38},
+    {x:23.68,y:45.46,w:13.88,h:8},
+    {x:42.18,y:46.57,w:13.5,h:7.88},
+    {x:8.92,y:46.65,w:11.38,h:8.88},
+    {x:69.25,y:51.42,w:20.38,h:13.13},
+    {x:32.2,y:54.38,w:8.38,h:10},
+    {x:57.74,y:55.58,w:10.25,h:9.63},
+    {x:49.36,y:55.79,w:7.38,h:9.5},
+    {x:9.22,y:56.51,w:10,h:9},
+    {x:20.2,y:56.66,w:8.69,h:6.5},
+    {x:41.76,y:58.29,w:6.38,h:7.25},
+    {x:25.18,y:65.01,w:11.75,h:6.88},
+    {x:71.28,y:65.8,w:14.88,h:8.38},
+    {x:37.71,y:66.15,w:5.88,h:4.75},
+    {x:58.81,y:66.29,w:10.25,h:7},
+    {x:44.43,y:66.32,w:7,h:5},
+    {x:9.82,y:66.92,w:13.5,h:7},
+    {x:43.52,y:72.45,w:7.88,h:11.25},
+    {x:25.46,y:72.79,w:6.63,h:9.63},
+    {x:33.86,y:73.35,w:8,h:12.63},
+    {x:19.66,y:74.69,w:5.25,h:7.13},
+    {x:54.08,y:74.72,w:8.13,h:7.38},
+    {x:64.17,y:74.94,w:9.13,h:13.38},
+    {x:74.42,y:76.12,w:10.25,h:12.13}
+  ],
+  f2:[
+    {x:42.41,y:9.76,w:21,h:9},
+    {x:32.21,y:14.99,w:8.25,h:11.5},
+    {x:73.17,y:15.18,w:8.88,h:12.88},
+    {x:24.58,y:15.54,w:6.88,h:12.75},
+    {x:84.26,y:16.08,w:8.5,h:17.25},
+    {x:62.13,y:19.73,w:9,h:5.5},
+    {x:41.57,y:23.7,w:6.5,h:7.88},
+    {x:59.9,y:26.14,w:9.63,h:12.38},
+    {x:50.01,y:26.64,w:8.88,h:7.25},
+    {x:7.65,y:28.02,w:8.88,h:12.63},
+    {x:17.35,y:29.49,w:7.63,h:10},
+    {x:25.99,y:32.37,w:9.63,h:7.38},
+    {x:36.87,y:32.65,w:10.25,h:13.5},
+    {x:70.59,y:32.85,w:10.5,h:7.5},
+    {x:48.44,y:34.95,w:8.63,h:11.75},
+    {x:25.79,y:41.06,w:9.63,h:7.88},
+    {x:80.43,y:41.35,w:11.5,h:8.75},
+    {x:13.42,y:41.53,w:11.13,h:7.75},
+    {x:59.54,y:42.05,w:11,h:7.13},
+    {x:49.19,y:48.62,w:7.63,h:15.88},
+    {x:40.34,y:48.74,w:7.86,h:7.25},
+    {x:67.51,y:49.87,w:11.5,h:12.88},
+    {x:26.32,y:50.01,w:10.5,h:6},
+    {x:15.77,y:50.17,w:9.75,h:5.75},
+    {x:79.78,y:51.79,w:13.13,h:13.63},
+    {x:21.04,y:56.71,w:8,h:7.38},
+    {x:30.37,y:57.13,w:8.25,h:11},
+    {x:7.78,y:59.17,w:12,h:15.38},
+    {x:40.19,y:60.89,w:7.63,h:6},
+    {x:57.97,y:61.34,w:6.63,h:11.5},
+    {x:65.25,y:66.46,w:10.38,h:10.88},
+    {x:78.29,y:66.49,w:10.5,h:8.75},
+    {x:40.22,y:67.67,w:7.88,h:4.88},
+    {x:26.48,y:72.59,w:7.5,h:10},
+    {x:35.05,y:73.83,w:7,h:12.25},
+    {x:43.01,y:74.79,w:7.25,h:11},
+    {x:53.73,y:75.18,w:9.13,h:8.88},
+    {x:18.51,y:75.57,w:7.25,h:7.13},
+    {x:75.35,y:78.36,w:8.25,h:9.5},
+    {x:64.49,y:79.48,w:9.63,h:10}
+  ],
+  f3:[
+    {x:42.63,y:9.86,w:21,h:9},
+    {x:32.21,y:14.99,w:8.25,h:11.5},
+    {x:72.17,y:15.18,w:11,h:11.5},
+    {x:24.58,y:15.54,w:6.88,h:12.75},
+    {x:62.13,y:19.73,w:9,h:5.5},
+    {x:41.57,y:23.7,w:6.5,h:7.88},
+    {x:7.18,y:24.6,w:16.5,h:16.5},
+    {x:59.9,y:26.14,w:9.63,h:12.38},
+    {x:48.98,y:30.14,w:8.88,h:12.5},
+    {x:36.24,y:32.65,w:10.13,h:13.5},
+    {x:70.59,y:32.85,w:10.5,h:7.5},
+    {x:25.79,y:41.06,w:9.63,h:6.63},
+    {x:81.81,y:41.35,w:10.13,h:8.75},
+    {x:59.54,y:42.05,w:11,h:7.13},
+    {x:12.55,y:42.15,w:12.25,h:13.5},
+    {x:50.68,y:45.76,w:7.75,h:7.25},
+    {x:40.64,y:47.16,w:8.49,h:7.63},
+    {x:25.69,y:48.46,w:12.75,h:5.13},
+    {x:67.51,y:49.87,w:11.5,h:12.88},
+    {x:79.78,y:51.79,w:13.13,h:13.63},
+    {x:30.53,y:54.38,w:8.25,h:11.13},
+    {x:52.79,y:54.4,w:7.13,h:7.5},
+    {x:40.17,y:56.06,w:11.5,h:7.5},
+    {x:21.04,y:56.71,w:8,h:6.75},
+    {x:9.98,y:58.45,w:10.13,h:16.25},
+    {x:59.09,y:63.09,w:7,h:8.38},
+    {x:50.19,y:64.75,w:7.75,h:6.75},
+    {x:67.02,y:64.96,w:9.38,h:11.25},
+    {x:40.57,y:65.14,w:7.5,h:5.5},
+    {x:77.29,y:66.49,w:9.75,h:10.25},
+    {x:31.45,y:70.29,w:7.88,h:11.38},
+    {x:41.95,y:71.91,w:7.5,h:12.63},
+    {x:21.9,y:72.89,w:7,h:8.13},
+    {x:52.98,y:73.08,w:11,h:8.25},
+    {x:75.35,y:78.36,w:8.25,h:9.5},
+    {x:65.99,y:80.6,w:7.25,h:7.13},
+    {x:52.76,y:82.71,w:7.13,h:5.38},
+    {x:29.62,y:84.24,w:8.25,h:8.63},
+    {x:40.81,y:85.67,w:7.25,h:9.5},
+    {x:55.63,y:88.87,w:12.25,h:7}
+  ],
+  f4:[
+    {x:42.63,y:9.86,w:12.25,h:13},
+    {x:61.64,y:11.82,w:27,h:7.5},
+    {x:25.2,y:14.42,w:13.75,h:15.5},
+    {x:75.61,y:20.25,w:9,h:5.13},
+    {x:59.13,y:20.35,w:11.25,h:8.75},
+    {x:39.94,y:23.7,w:8,h:4.13},
+    {x:7.65,y:25.77,w:8.88,h:14.88},
+    {x:75.57,y:26.11,w:8.88,h:6.88},
+    {x:39.94,y:28.58,w:8.25,h:4.75},
+    {x:48.98,y:30.14,w:8.88,h:12.5},
+    {x:25.69,y:31.25,w:13.25,h:7.5},
+    {x:60.59,y:31.35,w:14.25,h:8.88},
+    {x:17.3,y:32.98,w:7,h:6.63},
+    {x:36.24,y:39.52,w:10.13,h:8},
+    {x:25.79,y:41.06,w:9.63,h:7.5},
+    {x:80.93,y:41.35,w:11,h:8.75},
+    {x:13.92,y:41.4,w:10.88,h:8.5},
+    {x:59.54,y:42.05,w:11,h:7.13},
+    {x:41.92,y:48.54,w:14.24,h:7.63},
+    {x:69.51,y:49.87,w:9.5,h:12.88},
+    {x:15.44,y:51.1,w:7.88,h:11},
+    {x:32.28,y:51.51,w:6.75,h:13.88},
+    {x:79.78,y:51.79,w:13.13,h:13.63},
+    {x:23.96,y:53.03,w:7.5,h:8},
+    {x:49.19,y:57.5,w:7.63,h:12.13},
+    {x:40.19,y:60.64,w:7.88,h:6.5},
+    {x:57.97,y:61.34,w:8.13,h:10.13},
+    {x:9.98,y:63.07,w:12.88,h:11.63},
+    {x:24.86,y:66.12,w:13,h:5.63},
+    {x:77.29,y:66.49,w:9.75,h:10.25},
+    {x:67.62,y:67.33,w:8,h:4.63},
+    {x:40.23,y:67.78,w:7.88,h:5.13},
+    {x:67.67,y:72.59,w:8,h:4.75},
+    {x:25.15,y:73.02,w:7.38,h:8.5},
+    {x:52.98,y:73.08,w:11,h:8.25},
+    {x:33.2,y:74.04,w:7.88,h:7.63},
+    {x:41.95,y:75.16,w:7.5,h:9.38},
+    {x:16.67,y:75.54,w:7.75,h:5.88},
+    {x:75.35,y:78.36,w:8.25,h:9.5},
+    {x:65.24,y:80.6,w:8.25,h:7.13},
+    {x:50.51,y:82.33,w:10.38,h:5.75},
+    {x:29.62,y:84.24,w:10.5,h:8.63},
+    {x:55.63,y:88.87,w:12.25,h:7}
+  ],
   t1:[
     {x:53.15,y:0,w:37.78,h:16.27},
     {x:36.02,y:1.18,w:13.76,h:18.2},
@@ -52173,7 +52525,7 @@ function trimLandingZonesForMode(){
 // duo cup laid that island's landing grid over last season's satellite photo.
 let ACTIVE_LANDING_SET='m2';
 // Чей счёт сундуков у острова (поле chests в ZONE_STATS): подпись в подсказке точки.
-const CC_CHESTS_SRC={s42:'fortnite.gg', s42solo:'fortnite.gg', t1:'wiki', t2:'wiki', t3:'wiki', m1:'Kinch', m2:'Kinch'};
+const CC_CHESTS_SRC={s42:'fortnite.gg', s42solo:'fortnite.gg', t1:'wiki', t2:'wiki', t3:'wiki', f1:'wiki', f2:'wiki', f3:'wiki', f4:'wiki', m1:'Kinch', m2:'Kinch'};
 function useLandingSet(key){
   const set = ZONE_SETS[key] ? key : 'm2';
   ACTIVE_LANDING_SET=set;
@@ -58177,6 +58529,10 @@ function gcCardIndex(year){
   PLAYERS.filter(p=>p.tier==='cardmode').forEach(p=>{
     if(year && ccCardYear(p)!==year) return;
     const k=_gcNorm(p.handle);
+    /* Ник из одних не-латинских знаков (しゅんてゃん) нормализуется в пустую строку — и такая
+       карточка ловила КАЖДЫЙ неизвестный ник через пустой alias (Форт-Уэрт 2024: восемь
+       чужих людей стали одним японцем). Пустой ключ в индекс не идёт. */
+    if(!k) return;
     if(year){
       /* За свой год берётся САМАЯ СВЕЖАЯ карточка, а не самая высокая.
 
@@ -61767,7 +62123,9 @@ function ccLateMove(id){
 const CC_MOVE_ITEMS=['Seven Sliders','Overdrive Grenade',
                      'Skyline Deployer','Seven Power Gloves','Shockwave Grenade','Rocket Ram',   // Chug Splash отсюда убран 10.09: это хилка (CC_HEAL_KIT)
                      // Reload: крюк, пады, рифт и джетпак — передвижение, не хилка.
-                     'Grappler','Crash Pad Jr.','Launch Pad','Super Launch Pad','Rift-To-Go','Jetpack'];
+                     'Grappler','Crash Pad Jr.','Launch Pad','Super Launch Pad','Rift-To-Go','Jetpack',
+                     // Chapter 5 (2024): клинок-крюк, крылья, нитро-кулаки, реактивные ботинки — передвижение.
+                     'Grapple Blade','Wings of Icarus','Nitro Fists','War Machine\'s Hover Jets'];
 /* Лут острова, а не один пул на все вечера. Его слово 5 сентября: «посмотри
    меты в каждом сезоне компетив и добавь в каждом сезоне оружие, которое
    нужно». Остров вечера даёт careerBrSet(): дуо-год — m2 (глава 7, сезон 3) и
@@ -61780,6 +62138,10 @@ const CC_LOOT_BY_SET={
   t1:{weapons:T1_WEAPON_POOL, heals:T1_CONSUMABLE_POOL},
   t2:{weapons:T2_WEAPON_POOL, heals:T2_CONSUMABLE_POOL},
   t3:{weapons:T3_WEAPON_POOL, heals:T3_CONSUMABLE_POOL},
+  f1:{weapons:F1_WEAPON_POOL, heals:F1_CONSUMABLE_POOL},
+  f2:{weapons:F2_WEAPON_POOL, heals:F2_CONSUMABLE_POOL},
+  f3:{weapons:F3_WEAPON_POOL, heals:F3_CONSUMABLE_POOL},
+  f4:{weapons:F4_WEAPON_POOL, heals:F4_CONSUMABLE_POOL},
   r1:{weapons:R1_WEAPON_POOL, heals:R1_CONSUMABLE_POOL},
   r2:{weapons:R2_WEAPON_POOL, heals:R2_CONSUMABLE_POOL},
   r3:{weapons:R3_WEAPON_POOL, heals:R3_CONSUMABLE_POOL},
@@ -64660,8 +65022,10 @@ function ccPickRole(k){ CC.role=k; ccRenderChips(); ccSync(); }
 function ccPickDiv(d){ CC.div=d; ccRenderChips(); ccSync(); }
 function ccPickDiff(id){ CC.diff=id; ccRenderChips(); ccSync(); }
 // Год карьеры: 2026 (дуо, потом трио) или 2025 (трио, три Мейджора, Лион). См. ccCalYear.
+// Год, выбранный чипом: 2024, 2025 или 2026 (сейв без чипа — 2026).
+function ccPickedYear(){ return (CC && (CC.year===2025 || CC.year===2024)) ? CC.year : 2026; }
 function ccPickYear(y){
-  CC.year=y===2025 ? 2025 : 2026;
+  CC.year=(y===2025 || y===2024) ? y : 2026;
   // Карточка, взятая в другом году, — уже не та карточка: список и превью собираются заново.
   if(CC.mode==='card'){ CC.card=null; if(typeof ccRenderList==='function') ccRenderList(); }
   ccRenderChips(); ccRenderCard(); ccSync();
@@ -64688,7 +65052,7 @@ function ccRenderChips(){
   // carry their band. Easy is the mode as it has always played.
   const ychips=document.getElementById('ccYearChips');
   if(ychips){
-    ychips.innerHTML=[2026, 2025].map(y=>{
+    ychips.innerHTML=[2026, 2025, 2024].map(y=>{
       const on=(CC.year||2026)===y;
       return `<button class="cc-chip${on?' on':''}" onclick="ccPickYear(${y})">${y}<small>${L()['ccYear'+y]}</small></button>`;
     }).join('');
@@ -64903,7 +65267,7 @@ function ccMateNow(card){
      Peterbot», а он в трио с Peterbot и Acorn). Самая новая карта года (Лион) записей
      состава не несёт — читаются карты стадий. */
   const seats=(typeof SHOWN_SCREEN!=='undefined' && SHOWN_SCREEN==='screen-career-create' && typeof CC!=='undefined' && CC)
-    ? (CC.year===2025 ? 2 : 1) : careerMateSeats();
+    ? (CC.year===2025 ? 2 : 1) : careerMateSeats();   // 2024 — дуо, как 2026
   const real=ccRealMatesOf(card, seats);
   if(real.length) return real.map(m=>m.handle).join(', ');
   let best=null, rank=-1;
@@ -65166,7 +65530,7 @@ function ccRealMatesOf(card, seats){
   /* Записи состава лежат на карточках стадий (плей-ин, LCQ, финал — _t1/_m1…), а самая
      свежая карточка года может быть без них (Лион 2025 — отдельная карта). Поэтому
      смотрим все карточки этого человека за тот же год, от новейшего набора к старому. */
-  const order=c=>({t3:3, t2:2, t1:1, m2:2, m1:1}[String(c.cardSet||'')] || 0);
+  const order=c=>({t3:3, t2:2, t1:1, m2:2, m1:1, f3:3, f2:2, f1:1}[String(c.cardSet||'')] || 0);
   const mine=PLAYERS.filter(p=>hKey(p)===me && (p.region||'')===(card.region||'') && ccCardYear(p)===ccCardYear(card))
     .sort((a,b)=>order(b)-order(a));
   const entries=[]; [card].concat(mine).forEach(c=>rosterEntriesOf(c).forEach(e=>entries.push(e)));
@@ -65278,7 +65642,7 @@ function ccStart(){
     },
     // A career starts in the duo year; the trio one is season two. See
     // careerSquadSize for why the shape is written down rather than derived.
-    career:{season:1, size:(CC.year===2025 ? 3 : 2), year:(CC.year===2025 ? 2025 : 2026), year0:(CC.year===2025 ? 2025 : 2026),
+    career:{season:1, size:(CC.year===2025 ? 3 : 2), year:ccPickedYear(), year0:ccPickedYear(),
             diff:(CC.diff||'easy'), day:null, division: CC.div,
             // A career that starts in Division 1 starts known: that room is
             // 300 people the scene watches, and nobody is in it unread.
@@ -71022,7 +71386,7 @@ const CAREER_CUT={1:'—', 2:'top 50', 3:'top 100', 4:'top 200', 5:'top 400'};
 // от 1 сентября 2026), и неделя у него своя. См. CC_YEAR_TO.
 const CAREER_WEEKS=48;
 // Недель в ГОДЕ карьеры: 2026-й — все 48, 2025-й короче (11 декабря — 7 сентября).
-function ccYearWeeks(){ return ccIs2025() ? careerWeekIndex(ccYearTo()) : CAREER_WEEKS; }
+function ccYearWeeks(){ return (ccIs2025() || ccIs2024()) ? careerWeekIndex(ccYearTo()) : CAREER_WEEKS; }
 
 function careerToday(){
   return (CAREER && CAREER.career && CAREER.career.day) || ccYearFrom();
@@ -72362,6 +72726,10 @@ function careerBrSet(){
        Теперь S39–S40 (до 5 июня) — m1, остров Chapter 7 Season 2 (Major 1),
        S41 — m2 (Major 2), с 21 августа — s42. Границы — CC_SEASONS. */
     const d=careerToday();
+    /* 2024-й — остров Chapter 5, которого у нас нет (ни карты, ни клеток, ни лута):
+       стоим на первом острове Chapter 6 (t1, декабрь 2024) — ближайшем по времени.
+       Снять Chapter 5 с fortnite.gg — отдельная работа. */
+    if(ccIs2024()){ const d0=careerToday(); return d0>='2024-08-16' ? 'f4' : d0>='2024-06-14' ? 'f3' : d0>='2024-04-12' ? 'f2' : 'f1'; }
     if(d>='2026-08-21') return 's42';
     return d>=CC_SEASONS[2].from ? 'm2' : 'm1';
   }
@@ -73102,6 +73470,9 @@ const CAREER_EV_ART_ID={
   Major2_2025_PlayIn:'art/mode-major2-2025.jpg', Major2_2025_Group1:'art/mode-major2-2025.jpg', Major2_2025_Group2:'art/mode-major2-2025.jpg', Major2_2025_Group3:'art/mode-major2-2025.jpg', Major2_2025_LCQ:'art/mode-major2-2025.jpg', Major2_2025_LCLobby:'art/mode-major2-2025.jpg', Major2_2025_Final:'art/mode-major2-2025.jpg',
   Major3_2025_PlayIn:'art/mode-major3-2025.jpg', Major3_2025_Group1:'art/mode-major3-2025.jpg', Major3_2025_Group2:'art/mode-major3-2025.jpg', Major3_2025_Group3:'art/mode-major3-2025.jpg', Major3_2025_LCQ:'art/mode-major3-2025.jpg', Major3_2025_LCLobby:'art/mode-major3-2025.jpg', Major3_2025_Final:'art/mode-major3-2025.jpg',
   GlobalChampionship2025:'art/mode-major3-2025.jpg',
+  // 2024-й — своих постеров нет; дуо-обложка драфта и она же на Форт-Уэрт.
+  GlobalChampionship2024:'art/map-f4.jpg',
+  Major1_2024_Q1R1:'art/map-f1.jpg', Major1_2024_Q1R2:'art/map-f1.jpg', Major1_2024_Q1R3:'art/map-f1.jpg', Major1_2024_Q2R1:'art/map-f1.jpg', Major1_2024_Q2R2:'art/map-f1.jpg', Major1_2024_Q2R3:'art/map-f1.jpg', Major1_2024_Semi1:'art/map-f1.jpg', Major1_2024_Semi2:'art/map-f1.jpg', Major1_2024_Semi3:'art/map-f1.jpg', Major1_2024_Final:'art/map-f1.jpg', Major2_2024_Q1R1:'art/map-f2.jpg', Major2_2024_Q1R2:'art/map-f2.jpg', Major2_2024_Q1R3:'art/map-f2.jpg', Major2_2024_Q2R1:'art/map-f2.jpg', Major2_2024_Q2R2:'art/map-f2.jpg', Major2_2024_Q2R3:'art/map-f2.jpg', Major2_2024_Semi1:'art/map-f2.jpg', Major2_2024_Semi2:'art/map-f2.jpg', Major2_2024_Semi3:'art/map-f2.jpg', Major2_2024_Final:'art/map-f2.jpg', Major3_2024_Q1R1:'art/map-f3.jpg', Major3_2024_Q1R2:'art/map-f3.jpg', Major3_2024_Q1R3:'art/map-f3.jpg', Major3_2024_Q2R1:'art/map-f3.jpg', Major3_2024_Q2R2:'art/map-f3.jpg', Major3_2024_Q2R3:'art/map-f3.jpg', Major3_2024_Semi1:'art/map-f3.jpg', Major3_2024_Semi2:'art/map-f3.jpg', Major3_2024_Semi3:'art/map-f3.jpg', Major3_2024_Final:'art/map-f3.jpg',
   Showdown4_2025_LCQ:'art/mode-trio.jpg', Showdown4_2025_Final:'art/mode-trio.jpg', Showdown5_2025_LCQ:'art/mode-trio.jpg', Showdown5_2025_Final:'art/mode-trio.jpg', Showdown6_2025_LCQ:'art/mode-trio.jpg', Showdown6_2025_Final:'art/mode-trio.jpg',
   FNCSSolos_Q1Round2:'art/fncs-solo.jpg', FNCSSolos_Q1Round3:'art/fncs-solo.jpg',
   FNCSSolos_FastTrack:'art/fncs-solo.jpg', FNCSSolos_Q2Round2:'art/fncs-solo.jpg',
@@ -73486,6 +73857,165 @@ const CC_CUP_2025={games:10, finalGames:6, finalGamesS36:7};
      trio year has fewer days on it and the calendar strip has to say so rather
      than leaving four months looking broken. */
 const CC_YEAR_2025_FROM='2024-12-11', CC_YEAR_2025_TO='2025-09-07';
+/* ---- FNCS 2024 в карьере ------------------------------------------------------
+   Его слово 21 сентября 2026: «добавь 2024 год и рейтинги карточек этого года»,
+   «и календарь все как и прошлые». Дуо весь год. Снято с архива Tracker
+   (tools/measured/tracker-2024-eu.json — окна Европы; tracker-2024-regions.json —
+   таблицы выплат шести регионов, NA West в 2024-м не было) и с Liquipedia
+   (формат полуфиналов и Форт-Уэрт). Что упрощено — сказано у каждой цифры.
+
+   Мейджор 2024-го (Epic): два открытых квалификатора (пт–вс: у Европы и NAC четыре
+   раунда, у остальных три; здесь у всех три — раунд в вечер, отсечки 1000 → 250 →
+   очки серии), таблица серии по двум квалификаторам, полуфиналы в две сетки
+   (верхняя — топ-50 серии: пт и сб по пять игр, победа в матче — билет в финал;
+   вс три игры, топ-25; нижняя — 51–250: пт десять игр, сб шесть, вс три, топ-15)
+   и финал на 50 дуо, двенадцать игр за два дня (второй день у Epic ×1.5 — здесь
+   не считается). Очки серии — линейные по месту последнего раунда (Epic'ову
+   таблицу серии архив не хранит). См. runCareerMajor2024. */
+const CC_YEAR_2024_FROM='2023-12-05', CC_YEAR_2024_TO='2024-09-08';
+const CAREER_YEAR_2024=[
+  // Major 1 (S28): квалификаторы 26–28 января и 2–4 февраля, полуфиналы 16–18 февраля, финал 24–25 февраля.
+  ['2024-01-26','2024-01-26','Major1_2024_Q1R1','major'],
+  ['2024-01-27','2024-01-27','Major1_2024_Q1R2','major'],
+  ['2024-01-28','2024-01-28','Major1_2024_Q1R3','major'],
+  ['2024-02-02','2024-02-02','Major1_2024_Q2R1','major'],
+  ['2024-02-03','2024-02-03','Major1_2024_Q2R2','major'],
+  ['2024-02-04','2024-02-04','Major1_2024_Q2R3','major'],
+  ['2024-02-16','2024-02-16','Major1_2024_Semi1','major'],
+  ['2024-02-17','2024-02-17','Major1_2024_Semi2','major'],
+  ['2024-02-18','2024-02-18','Major1_2024_Semi3','major'],
+  ['2024-02-24','2024-02-25','Major1_2024_Final','major'],
+  // Major 2 (S29): 12–14 и 19–21 апреля, полуфиналы 10–12 мая, финал 18–19 мая.
+  ['2024-04-12','2024-04-12','Major2_2024_Q1R1','major'],
+  ['2024-04-13','2024-04-13','Major2_2024_Q1R2','major'],
+  ['2024-04-14','2024-04-14','Major2_2024_Q1R3','major'],
+  ['2024-04-19','2024-04-19','Major2_2024_Q2R1','major'],
+  ['2024-04-20','2024-04-20','Major2_2024_Q2R2','major'],
+  ['2024-04-21','2024-04-21','Major2_2024_Q2R3','major'],
+  ['2024-05-10','2024-05-10','Major2_2024_Semi1','major'],
+  ['2024-05-11','2024-05-11','Major2_2024_Semi2','major'],
+  ['2024-05-12','2024-05-12','Major2_2024_Semi3','major'],
+  ['2024-05-18','2024-05-19','Major2_2024_Final','major'],
+  // Major 3 (S30): 14–16 и 21–23 июня, полуфиналы 19–21 июля, финал 27–28 июля.
+  ['2024-06-14','2024-06-14','Major3_2024_Q1R1','major'],
+  ['2024-06-15','2024-06-15','Major3_2024_Q1R2','major'],
+  ['2024-06-16','2024-06-16','Major3_2024_Q1R3','major'],
+  ['2024-06-21','2024-06-21','Major3_2024_Q2R1','major'],
+  ['2024-06-22','2024-06-22','Major3_2024_Q2R2','major'],
+  ['2024-06-23','2024-06-23','Major3_2024_Q2R3','major'],
+  ['2024-07-19','2024-07-19','Major3_2024_Semi1','major'],
+  ['2024-07-20','2024-07-20','Major3_2024_Semi2','major'],
+  ['2024-07-21','2024-07-21','Major3_2024_Semi3','major'],
+  ['2024-07-27','2024-07-28','Major3_2024_Final','major'],
+  // Форт-Уэрт, 7–8 сентября 2024: 50 дуо, двенадцать игр, $2 000 000. Последнего шанса не было.
+  ['2024-09-07','2024-09-08','GlobalChampionship2024','globals']
+];
+/* Капы с деньгами 2024-го (окна Tracker, только с выплатой): Duos Cash Cup — раунд 1
+   открытый, раунд 2 на 6 игр с таблицей мест (pay — таблица на игрока, по региону);
+   Solo Victory Cup — $100 на игрока за победу во втором раунде (три игры); Reload
+   Duos Cash Cup (PC) 30 августа. Двухдневные капы стоят днём первого раунда.
+   Zero Build, Squads Victory Cup, консольные и PlayStation Cup не взяты. */
+const CC_VICTORY_2024=[
+  {day:'2023-12-09', id:'S28_DuosCashCup', mode:'duo', n:1, name:'Duos Cash Cup', pay:'S28'},
+  {day:'2023-12-17', id:'S28_DuosCashCup', mode:'duo', n:2, name:'Duos Cash Cup', pay:'S28'},
+  {day:'2024-01-20', id:'S28_DuosCashCup', mode:'duo', n:3, name:'Duos Cash Cup', pay:'S28'},
+  {day:'2024-01-24', id:'S28_DuosCashCup', mode:'duo', n:4, name:'Duos Cash Cup', pay:'S28'},
+  {day:'2024-02-20', id:'S28_DuosCashCup', mode:'duo', n:5, name:'Duos Cash Cup', pay:'S28'},
+  {day:'2024-03-30', id:'S29_DuosCashCup', mode:'duo', n:1, name:'Duos Cash Cup', pay:'S28'},
+  {day:'2024-04-10', id:'S29_DuosCashCup', mode:'duo', n:2, name:'Duos Cash Cup', pay:'S28'},
+  {day:'2024-04-15', id:'S29_DuosCashCup', mode:'duo', n:3, name:'Duos Cash Cup', pay:'S28'},
+  {day:'2024-05-01', id:'S29_DuosCashCup', mode:'duo', n:4, name:'Duos Cash Cup', pay:'S28'},
+  {day:'2024-06-05', id:'S30_DuosCashCup', mode:'duo', n:1, name:'Duos Cash Cup', pay:'S30'},
+  {day:'2024-06-11', id:'S30_DuosCashCup', mode:'duo', n:2, name:'Duos Cash Cup', pay:'S30'},
+  {day:'2024-06-19', id:'S30_DuosCashCup', mode:'duo', n:3, name:'Duos Cash Cup', pay:'S30'},
+  {day:'2024-06-26', id:'S30_DuosCashCup', mode:'duo', n:4, name:'Duos Cash Cup', pay:'S30'},
+  {day:'2024-07-17', id:'S30_DuosCashCup', mode:'duo', n:5, name:'Duos Cash Cup', pay:'S30'},
+  {day:'2024-07-24', id:'S30_DuosCashCup', mode:'duo', n:6, name:'Duos Cash Cup', pay:'S30'},
+  {day:'2024-07-31', id:'S30_DuosCashCup', mode:'duo', n:7, name:'Duos Cash Cup', pay:'S30'},
+  {day:'2024-08-07', id:'S30_DuosCashCup', mode:'duo', n:8, name:'Duos Cash Cup', pay:'S30'},
+  {day:'2024-08-28', id:'S31_DuosCashCup', mode:'duo', n:1, name:'Duos Cash Cup', pay:'S31'},
+  {day:'2023-12-08', id:'S28_SoloVictoryCup', mode:'solo', n:1, name:'Solo Victory Cup', cash:100},
+  {day:'2023-12-10', id:'S28_SoloVictoryCup', mode:'solo', n:2, name:'Solo Victory Cup', cash:100},
+  {day:'2023-12-15', id:'S28_SoloVictoryCup', mode:'solo', n:3, name:'Solo Victory Cup', cash:100},
+  {day:'2023-12-16', id:'S28_SoloVictoryCup', mode:'solo', n:4, name:'Solo Victory Cup', cash:100},
+  {day:'2023-12-20', id:'S28_SoloVictoryCup', mode:'solo', n:5, name:'Solo Victory Cup', cash:100},
+  {day:'2023-12-21', id:'S28_SoloVictoryCup', mode:'solo', n:6, name:'Solo Victory Cup', cash:100},
+  {day:'2023-12-22', id:'S28_SoloVictoryCup', mode:'solo', n:7, name:'Solo Victory Cup', cash:100},
+  {day:'2024-01-19', id:'S28_SoloVictoryCup', mode:'solo', n:8, name:'Solo Victory Cup', cash:100},
+  {day:'2024-01-21', id:'S28_SoloVictoryCup', mode:'solo', n:9, name:'Solo Victory Cup', cash:100},
+  {day:'2024-02-09', id:'S28_SoloVictoryCup', mode:'solo', n:10, name:'Solo Victory Cup', cash:100},
+  {day:'2024-02-11', id:'S28_SoloVictoryCup', mode:'solo', n:11, name:'Solo Victory Cup', cash:100},
+  {day:'2024-03-17', id:'S29_SoloVictoryCup', mode:'solo', n:1, name:'Solo Victory Cup', cash:100},
+  {day:'2024-03-22', id:'S29_SoloVictoryCup', mode:'solo', n:2, name:'Solo Victory Cup', cash:100},
+  {day:'2024-03-29', id:'S29_SoloVictoryCup', mode:'solo', n:3, name:'Solo Victory Cup', cash:100},
+  {day:'2024-03-31', id:'S29_SoloVictoryCup', mode:'solo', n:4, name:'Solo Victory Cup', cash:100},
+  {day:'2024-04-03', id:'S29_SoloVictoryCup', mode:'solo', n:5, name:'Solo Victory Cup', cash:100},
+  {day:'2024-04-24', id:'S29_SoloVictoryCup', mode:'solo', n:6, name:'Solo Victory Cup', cash:100},
+  {day:'2024-05-05', id:'S29_SoloVictoryCup', mode:'solo', n:7, name:'Solo Victory Cup', cash:100},
+  {day:'2024-06-03', id:'S30_SoloVictoryCup', mode:'solo', n:1, name:'Solo Victory Cup', cash:100},
+  {day:'2024-06-10', id:'S30_SoloVictoryCup', mode:'solo', n:2, name:'Solo Victory Cup', cash:100},
+  {day:'2024-06-17', id:'S30_SoloVictoryCup', mode:'solo', n:3, name:'Solo Victory Cup', cash:100},
+  {day:'2024-06-24', id:'S30_SoloVictoryCup', mode:'solo', n:4, name:'Solo Victory Cup', cash:100},
+  {day:'2024-07-15', id:'S30_SoloVictoryCup', mode:'solo', n:5, name:'Solo Victory Cup', cash:100},
+  {day:'2024-07-22', id:'S30_SoloVictoryCup', mode:'solo', n:6, name:'Solo Victory Cup', cash:100},
+  {day:'2024-07-29', id:'S30_SoloVictoryCup', mode:'solo', n:7, name:'Solo Victory Cup', cash:100},
+  {day:'2024-08-05', id:'S30_SoloVictoryCup', mode:'solo', n:8, name:'Solo Victory Cup', cash:100},
+  {day:'2024-08-12', id:'S30_SoloVictoryCup', mode:'solo', n:9, name:'Solo Victory Cup', cash:100},
+  {day:'2024-09-02', id:'S31_SoloVictoryCup', mode:'solo', n:1, name:'Solo Victory Cup', cash:100},
+  {day:'2024-08-30', id:'S31_ReloadDuosCashCup', mode:'duo', n:1, name:'Reload Duos Cash Cup', pay:'RDCC'}
+];
+// Таблицы выплат 2024-го — на игрока, [место-порог, $]; NA West читает NA Central.
+const CC_MAJOR_PAY_2024={
+  EU:[[1,85000],[2,60000],[3,50000],[4,40000],[5,30000],[6,25000],[7,20000],[8,15000],[9,10000],[10,7500],[15,5000],[20,4000],[25,3000],[30,2500],[35,2000],[40,1500],[45,1000],[50,500]],
+  NAC:[[1,70000],[2,45000],[3,35000],[4,30000],[5,25000],[6,18000],[7,15000],[8,12500],[9,7000],[10,5500],[15,3750],[20,3000],[25,2250],[30,1500],[35,1000],[45,750],[50,500]],
+  BR:[[1,10000],[2,7000],[3,5500],[4,4500],[5,3250],[6,2250],[7,1500],[8,1300],[9,1200],[10,1000],[15,750],[20,500],[25,250],[50,100]],
+  ASIA:[[1,10000],[2,7000],[3,5500],[4,4500],[5,3250],[6,2250],[7,1500],[8,1300],[9,1200],[10,1000],[15,750],[20,500],[25,250],[50,100]],
+  ME:[[1,10000],[2,7000],[3,5500],[4,4500],[5,3250],[6,2250],[7,1500],[8,1300],[9,1200],[10,1000],[15,750],[20,500],[25,250],[50,100]],
+  OCE:[[1,8000],[2,5000],[3,3000],[4,2000],[5,1750],[6,1400],[7,1300],[8,1200],[9,1100],[10,1000],[15,500],[20,250],[50,100]]
+};
+const CC_DCC_PAY_2024={
+  S28:{EU:[[1,2000],[2,1750],[3,1250],[4,1000],[5,875],[6,750],[7,625],[8,500],[9,425],[10,400],[11,325],[12,300],[13,275],[14,250],[15,225],[19,175],[20,150],[35,125],[50,100]], NAC:[[1,1600],[2,1250],[3,1000],[4,875],[5,750],[6,500],[7,375],[8,350],[9,300],[10,250],[15,175],[25,125],[50,100]], BR:[[1,275],[2,250],[3,225],[4,175],[5,150],[8,125],[10,100]], ASIA:[[1,275],[2,250],[3,225],[4,175],[5,150],[8,125],[10,100]], ME:[[1,275],[2,250],[3,225],[4,175],[5,150],[8,125],[10,100]], OCE:[[1,250],[2,200],[5,180]]},
+  S30:{EU:[[1,2500],[2,1350],[3,900],[10,450],[25,300],[40,150]], NAC:[[1,2500],[2,1350],[3,900],[10,450],[25,300],[40,150]], BR:[[1,625],[2,400],[3,300],[5,200],[40,100]], ASIA:[[1,625],[2,400],[3,300],[5,200],[40,100]], ME:[[1,625],[2,400],[3,300],[5,200],[40,100]], OCE:[[1,625],[2,400],[3,300],[5,200],[40,100]]},
+  S31:{EU:[[1,5000],[2,1350],[3,900],[10,450],[25,300],[40,150]], NAC:[[1,5000],[2,1350],[3,900],[10,450],[25,225],[40,100]], BR:[[1,625],[2,400],[3,300],[5,200],[40,100]], ASIA:[[1,625],[2,400],[3,300],[5,200],[40,100]], ME:[[1,625],[2,400],[3,300],[5,200],[40,100]], OCE:[[1,625],[2,400],[3,300],[5,200],[40,100]]}
+};
+const CC_RDCC_PAY_2024={EU:[[1,2500],[2,675],[3,450],[10,225]], NAC:[[1,2500],[2,675],[3,450],[10,225]], BR:[[1,325],[2,200],[3,150],[5,100],[10,50]], ASIA:[[1,325],[2,200],[3,150],[5,100],[10,50]], ME:[[1,325],[2,200],[3,150],[5,100],[10,50]], OCE:[[1,325],[2,200],[3,150],[5,100],[10,50]]};
+
+function ccPay24Table(tables){
+  let r=careerPrizeRegion(); if(r==='NAW') r='NAC';
+  return (tables && (tables[r] || tables.EU)) || null;
+}
+function ccPay24(tables, place){
+  const t=ccPay24Table(tables); if(!t) return 0;
+  const row=t.find(x=>place<=x[0]);
+  return row ? row[1] : 0;
+}
+// Кап с таблицей мест (Duos Cash Cup / Reload Duos Cash Cup): выплата на состав.
+function ccVictoryPayOf(ev, place){
+  if(!ev || !ev.pay) return 0;
+  const t=ev.pay==='RDCC' ? CC_RDCC_PAY_2024 : CC_DCC_PAY_2024[ev.pay];
+  return ccPay24(t, place)*careerSquadSize();
+}
+/* Снимки сцены 2024-го: дивизион 1 — сотня полуфиналов ближайшего Мейджора (верхняя
+   и нижняя сетки), других дверей в 2024-м не было. Набор f2 — с первого квалификатора
+   второго Мейджора, f3 — третьего. */
+const CC_SNAPSHOTS_2024=[
+  {tag:'f1', from:CC_YEAR_2024_FROM, playIn:/2024 Major 1 . Semi-Finals/, lcq:null},
+  {tag:'f2', from:'2024-04-12',      playIn:/2024 Major 2 . Semi-Finals/, lcq:null},
+  {tag:'f3', from:'2024-06-14',      playIn:/2024 Major 3 . Semi-Finals/, lcq:null}
+];
+/* Форт-Уэрт 2024: места по Мейджорам и регионам — с участников Liquipedia
+   (Fortnite Champion Series/2024): Мейджор 1 — семь дуо, Мейджор 2 — двенадцать,
+   Мейджор 3 — тридцать одно; при уже занятом месте оно уходит следующему. */
+const GC2024_M1_SEATS={EU:2, NAC:1, BR:1, ASIA:1, ME:1, OCE:1};
+const GC2024_M2_SEATS={EU:5, NAC:3, BR:1, ASIA:1, ME:1, OCE:1};
+const GC2024_M3_SEATS={EU:10, NAC:12, BR:2, ASIA:2, ME:3, OCE:2};
+// Настоящие дуо Форт-Уэрта по дороге туда (Liquipedia, участники).
+const GC2024_M1_DUOS=[['Malibuca','Merstach'],['Queasy','Th0masHD'],['Acorn','Cold'],['Cadu','Seeyun'],['Shelom','Zagou'],['7man','Kalgamer'],['alex','worthy']];
+const GC2024_M2_DUOS=[['SwizzY','Japko'],['Chap','t3enyy'],['Kami','Setty'],['rezon ay','Vadeal'],['Andilex','Seyyto'],['Peterbot','Pollo'],['Reet','Ritual'],['Cooper','Khanada'],['EdRoadToGlory','Persa'],['Job','Michael8'],['Adapter','FKS'],['danath','Tinka']];
+const GC2024_M3_DUOS=[['Flickzy','vic0'],['Czb','Nxthan'],['P1ng','Wox'],['JannisZ','Pixie'],['Scroll','Sky'],['Cheapz','Krisp'],['Casperinovic','Prism'],['Chico','TruleX'],['charyy','G13ras'],['Huty','KovaaksXD'],['Batman Bugha','Rapid'],['Clix','Veno'],['Threats','Trashy'],['Dukez','Sphinx'],['Avivv','Bugha'],['Boltz','Brycx'],['paper','VicterV'],['EpikWhale','Muz'],['Shadow','Vergo'],['Bacca','Parz'],['Fazer','K1nG'],['916Gon','Kwanti'],['Kayky','Kchorro'],['Koyota','xMipoli'],['Rise','yuma'],['BOBY','Larkpex'],['Braydz','Visxals'],['Clone','KramSu'],['Ajerss','Rise'],['Aspect','Cazi'],['Deymo','Resignz']];
+// $2 000 000 на 50 дуо — на команду (Liquipedia).
+const GC2024_PRIZES={"1":400000,"2":300000,"3":200000,"4":160000,"5":120000,"6":90000,"7":60000,"8":50000,"9":40000,"10":30000,"11":24000,"12":24000,"13":24000,"14":24000,"15":24000,"16":20000,"17":20000,"18":20000,"19":20000,"20":20000,"21":16000,"22":16000,"23":16000,"24":16000,"25":16000,"26":14000,"27":14000,"28":14000,"29":14000,"30":14000,"31":12000,"32":12000,"33":12000,"34":12000,"35":12000,"36":10000,"37":10000,"38":10000,"39":10000,"40":10000,"41":8000,"42":8000,"43":8000,"44":8000,"45":8000,"46":6000,"47":6000,"48":6000,"49":6000,"50":6000};
+
 /* Какой календарный год играет ТЕКУЩИЙ сезон карьеры.
 
    Его слово, 20 сентября: «сделай карьеру как для выбора с расписанием 2025
@@ -73500,15 +74030,18 @@ function ccCalYear(){
      год карьеры, потом игроков»): карточки и рейтинги в выборе идут за ним,
      а не за карьерой, которая могла остаться в памяти от другого слота. */
   if(typeof SHOWN_SCREEN!=='undefined' && SHOWN_SCREEN==='screen-career-create' && typeof CC!=='undefined' && CC)
-    return CC.year===2025 ? 2025 : 2026;
+    return (CC.year===2025 || CC.year===2024) ? CC.year : 2026;
   const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
-  return cr && cr.year===2025 ? 2025 : 2026;
+  return cr && (cr.year===2025 || cr.year===2024) ? cr.year : 2026;
 }
 function ccIs2025(){ return ccCalYear()===2025; }
-function ccYearFrom(){ return ccIs2025() ? CC_YEAR_2025_FROM : CC_YEAR_FROM; }
-function ccYearTo(){ return ccIs2025() ? CC_YEAR_2025_TO : CC_YEAR_TO; }
-function ccYearRows(){ return ccIs2025() ? CAREER_YEAR_2025 : CAREER_YEAR; }
-function ccCupWeeks(){ return ccIs2025() ? CC_CUP_WEEKS_2025 : CC_CUP_WEEKS; }
+// 2024-й — его слово 21 сентября: «добавь 2024 год и рейтинги карточек этого года», «и календарь все как и прошлые».
+function ccIs2024(){ return ccCalYear()===2024; }
+function ccYearFrom(){ return ccIs2024() ? CC_YEAR_2024_FROM : ccIs2025() ? CC_YEAR_2025_FROM : CC_YEAR_FROM; }
+function ccYearTo(){ return ccIs2024() ? CC_YEAR_2024_TO : ccIs2025() ? CC_YEAR_2025_TO : CC_YEAR_TO; }
+function ccYearRows(){ return ccIs2024() ? CAREER_YEAR_2024 : ccIs2025() ? CAREER_YEAR_2025 : CAREER_YEAR; }
+// 2024-й: дивизионов ещё не было — кубковых недель нет вовсе.
+function ccCupWeeks(){ return ccIs2024() ? [] : ccIs2025() ? CC_CUP_WEEKS_2025 : CC_CUP_WEEKS; }
 /* Performance Evaluation 2025-го — с архива Tracker (21 сентября 2026): раунд 1
    семь игр, топ-33 в раунд 2 того же вечера, четыре игры, $400 на игрока за
    каждую победу. Только Дивизион 1 — как и в 2026-м. */
@@ -73521,12 +74054,24 @@ const CC_EVAL_NIGHTS_2025=[
 ];
 // И Reload Performance Evaluation (S34): те же правила, остров Reload.
 const CC_EVAL_RELOAD_2025=['2025-03-17','2025-04-09','2025-04-10','2025-04-16','2025-04-21','2025-04-28'];
-function ccEvalNights(){ return ccIs2025() ? CC_EVAL_NIGHTS_2025 : CC_EVAL_NIGHTS; }
+/* Оценка 2024-го шла только в Европе (в архиве Tracker страниц других регионов нет —
+   404 на NAC/BR/ASIA/ME/OCE; у NAC в S31 есть лишь Reload-оценка, и та после года).
+   Раунд 1 семь игр, раунд 2 четыре игры (MatchCap окон). */
+const CC_EVAL_NIGHTS_2024=['2023-12-05','2023-12-12','2024-01-10','2024-01-16','2024-01-23','2024-01-31','2024-02-13','2024-02-22','2024-02-28',
+  '2024-03-12','2024-03-19','2024-03-26','2024-04-02','2024-04-09','2024-04-16','2024-04-23','2024-04-30','2024-05-07','2024-05-14',
+  '2024-05-28','2024-05-31','2024-06-04','2024-06-25','2024-07-23','2024-07-30','2024-08-06','2024-08-17','2024-08-27','2024-09-04'];
+function ccEvalNights(){ return ccIs2024() ? (ccCareerRegion()==='EU' ? CC_EVAL_NIGHTS_2024 : []) : ccIs2025() ? CC_EVAL_NIGHTS_2025 : CC_EVAL_NIGHTS; }
 function ccEvalReloadNights(){ return ccIs2025() ? CC_EVAL_RELOAD_2025 : []; }
 function ccEvalIsReload(iso){ return ccEvalReloadNights().indexOf(iso||careerToday())>=0; }
 // Победа в оценке: 2026-й — $800 на дуо; 2025-й — $400 на игрока, то есть на состав.
-function ccEvalWinCash(){ return ccIs2025() ? 400*careerSquadSize() : CC_EVAL_WIN_CASH; }
-function ccEvalR1Games(){ return ccIs2025() ? 7 : CC_EVAL_R1_GAMES; }
+/* 2024-й — три эпохи по таблицам окон Tracker: до 2 апреля раунд 2 платил топ-5 по $200
+   на игрока (PayoutTable rank), со 2 апреля $250 за победу, с 28 мая $400 за победу. */
+function ccEvalWinCash(){
+  if(ccIs2024()){ const d=careerToday(); return (d<'2024-04-02' ? 0 : d<'2024-05-28' ? 250 : 400)*careerSquadSize(); }
+  return ccIs2025() ? 400*careerSquadSize() : CC_EVAL_WIN_CASH;
+}
+function ccEvalTop5Cash(){ return (ccIs2024() && careerToday()<'2024-04-02') ? 200*careerSquadSize() : 0; }
+function ccEvalR1Games(){ return (ccIs2025() || ccIs2024()) ? 7 : CC_EVAL_R1_GAMES; }
 /* Год КАРТОЧЕК — не то же, что год календаря.
 
    Его слово, 21 сентября: «2025 — собирается дуо-сезон сам по себе, не
@@ -73537,22 +74082,22 @@ function ccEvalR1Games(){ return ccIs2025() ? 7 : CC_EVAL_R1_GAMES; }
    остальные собираются по силе (ccContinuityDuos). */
 function ccNowYear(){
   if(typeof SHOWN_SCREEN!=='undefined' && SHOWN_SCREEN==='screen-career-create' && typeof CC!=='undefined' && CC)
-    return CC.year===2025 ? 2025 : 2026;
+    return (CC.year===2025 || CC.year===2024) ? CC.year : 2026;
   const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
-  if(cr && cr.year0===2025) return 2025;
+  if(cr && (cr.year0===2025 || cr.year0===2024)) return cr.year0;
   return ccCalYear();
 }
-// Второй и дальше год карьеры 2025-го: календарь 2026-й, люди 2025-го.
-function ccContinuity(){ return ccNowYear()===2025 && !ccIs2025(); }
+// Второй и дальше год карьеры 2025-го (или 2024-го): календарь новее, люди свои.
+function ccContinuity(){ return ccNowYear()<2026 && ccNowYear()!==ccCalYear(); }
 // Сколько 2026-х годов карьера уже прожила до текущего сезона (для номеров сезонов и года на экране).
 function ccYearShift(){
   const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
   if(!cr) return 0;
-  const past=(cr.season||1)-1 - (cr.year0===2025 ? 1 : 0);
+  const past=(cr.season||1)-1 - (cr.year0===2025 ? 1 : cr.year0===2024 ? 2 : 0);
   return Math.max(0, past);
 }
 // Год, который стоит писать на экране за этот сезон.
-function ccSeasonYear(){ return ccIs2025() ? 2025 : 2026+ccYearShift(); }
+function ccSeasonYear(){ return ccIs2024() ? 2024 : ccIs2025() ? 2025 : 2026+ccYearShift(); }
 // The Performance Evaluation, night by night rather than as a span: it is the
 // one event that runs every week of the year, and a career calendar has to put
 // it on the right evening. Division 1 only — its own page says so.
@@ -73803,6 +74348,11 @@ function ccLanHostKey(kind, season){
     if(s<=1) return kind==='globals' ? 'Lyo' : (CC_LAN_FIRST[kind] || CC_LAN_FIRST.summit);
     s=s-1;
   }
+  if(cr && cr.year0===2024){
+    if(s<=1) return kind==='globals' ? 'Ftw' : (CC_LAN_FIRST[kind] || CC_LAN_FIRST.summit);
+    if(s===2) return kind==='globals' ? 'Lyo' : (CC_LAN_FIRST[kind] || CC_LAN_FIRST.summit);
+    s=s-2;
+  }
   return ccLanFixed(s)[kind] || CC_LAN_FIRST[kind] || CC_LAN_FIRST.summit;
 }
 /* Цвета флага страны, где стоит ЛАН.
@@ -73950,12 +74500,22 @@ function ccYearLabel(id, day, from){
     if(m25[2]==='LCLobby') return majName+' · '+L().ccYr25Lobby;
     id='Major'+m25[1]+'_'+m25[2];
   }
+  /* 2024-й: квалификатор (раунд), полуфинал (день), финал — под именем финала 2026-го. */
+  const m24=/^Major(\d)_2024_(?:Q([12])R([123])|Semi([123])|Final)$/.exec(id);
+  if(m24){
+    if(m24[2]) return L().ccYr24Qual(+m24[1], +m24[2], +m24[3]);
+    if(m24[4]) return L().ccYr24Semi(+m24[1], +m24[4]);
+    id='Major'+m24[1]+'_Final';
+  }
+  if(id==='GlobalChampionship2024') id='GlobalChampionship';
   const sd=/^Showdown(\d)_2025_(LCQ|Final)$/.exec(id);
   if(sd) return L().ccYr25Showdown(+sd[1]-3, sd[2]==='LCQ' ? 1 : 2);
   const sc=/^SoloCash(\d+)_R([12])$/.exec(id);
   if(sc) return L().ccYr25SoloCash(+sc[1], +sc[2]);
   if(id==='GlobalChampionship2025') id='GlobalChampionship';
   let base=(L().ccYearNames && L().ccYearNames[id]) || id;
+  // Третьего Мейджора в подписях 2026-го нет: имя берётся у первого с заменой номера.
+  if(base===id){ const mm=/^Major(\d)_(\w+)$/.exec(id); const one=mm && L().ccYearNames && L().ccYearNames['Major1_'+mm[2]]; if(one) base=one.replace('1', mm[1]); }
   // The two rows that name a city name whichever city it is this year.
   const hasCity=base.indexOf('{CITY}')>=0;
   if(hasCity){
@@ -74006,7 +74566,8 @@ function careerEvents(){
          просто флаг сделать, как и остальным ЛАНам». */
       out.get(day).push({kind:e.kind, label:e.label, id:e.id,
                          lan: ccLanKindOf(e.id, e.kind),
-                         art: ccLanKindOf(e.id, e.kind) ? null : (CAREER_EV_ART[e.kind]||null)});
+                         // По id раньше, чем по виду: Мейджоры 2025-го — со своими постерами, 2024-го — со своим островом (ccEventArt).
+                         art: ccLanKindOf(e.id, e.kind) ? null : ((typeof ccEventArt==='function' && ccEventArt(e)) || CAREER_EV_ART[e.kind] || null)});
     });
   });
   /* ПОСЛЕДНИЙ ДЕНЬ ГОДА — ЦЕРЕМОНИЯ. Его правка 4 сентября: «церемонию сделать
@@ -74602,7 +75163,7 @@ function careerLadderPlayer(rnd, ovr, taken, natHint, roleWant, topOvr, plain){
 // on hKey the way the drafting code already does.
 let CC_EU_CARDS={};
 function careerRosterEU(){
-  const reg=ccCareerRegion()+(ccNowYear()===2025 ? '|2025' : '');
+  const reg=ccCareerRegion()+(ccNowYear()<2026 ? '|'+ccNowYear() : '');
   if(CC_EU_CARDS[reg]) return CC_EU_CARDS[reg];
   const best=new Map();
   // В 2025-м году сцена — это люди 2025-го: карты позже того года не существуют.
@@ -75286,7 +75847,7 @@ function ccSeasonOvr(){
   if(CC_SEASON_OVR && CC_SEASON_OVR_YEAR===ccNowYear()) return CC_SEASON_OVR;
   CC_SEASON_OVR_YEAR=ccNowYear();
   // 2025-й: книга 2026-го не читается — рейтинг года складывается из карточек 2025-го (t1–t3).
-  const LEDGER=ccNowYear()===2025 ? null : CC_LEDGER_2026;
+  const LEDGER=ccNowYear()<2026 ? null : CC_LEDGER_2026;
   /* Один вечер — одна строка.
 
      Финалист Мейджора лежит в файле дважды: отдельной карточкой гранд-финала и
@@ -75453,7 +76014,7 @@ function ccSeasonOvr(){
 }
 let CC_EU_ALL={};
 function ccEuCards(){
-  const reg=ccPoolRegion()+(ccNowYear()===2025 ? '|2025' : '');
+  const reg=ccPoolRegion()+(ccNowYear()<2026 ? '|'+ccNowYear() : '');
   if(CC_EU_ALL[reg]) return CC_EU_ALL[reg];
   const season=ccSeasonOvr();
   const reg0=ccPoolRegion(), yearCap=ccNowYear();
@@ -75583,6 +76144,8 @@ function ccSnapshotNow(){
   // 2025: снимок идёт за Мейджором — составы того года измерены по каждому.
   // Люди 2025-го: снимок по Мейджорам 2025-го; во втором году карьеры (календарь 2026-й) — последний, t3.
   if(ccNowYear()===2025){ let s25=CC_SNAPSHOTS_2025[0]; CC_SNAPSHOTS_2025.forEach(s=>{ if(today>=s.from) s25=s; }); return s25; }
+  // Люди 2024-го: снимок по Мейджорам 2024-го; дальше (календарь 2025/2026) — последний, f3.
+  if(ccNowYear()===2024){ let s24=CC_SNAPSHOTS_2024[0]; CC_SNAPSHOTS_2024.forEach(s=>{ if(today>=s.from) s24=s; }); return s24; }
   let snap=CC_SNAPSHOTS[0];
   if(typeof careerSquadSize==='function' && CAREER && CAREER.career && careerSquadSize()===3) return snap;
   CC_SNAPSHOTS.forEach(s=>{ if(today>=s.from) snap=s; });
@@ -87604,7 +88167,11 @@ function careerWorldFinals(fromISO, toISO){
   for(let d=fromISO; d<toISO; d=ccAddDays(d,1)){
     // Финал мейджора — из тех, кто прошёл хиты и Ласт Ченс (мир их уже сыграл).
     const mj=careerMajorOn(d);
-    if(mj && mj.stage==='final'){
+    if(mj && mj.y24 && mj.stage==='final'){
+      play(d, 'major'+mj.n, 'major', mj.label||'Major', ()=>ccM24WorldFinalRoom(ccM24Of(mj.n), drafted, lobbyCr),
+           CC_M24.final.games, majorPoints, CC_M24.final.kill, majorPrize, {div:1, kind:'major', stage:'final'});
+    }
+    else if(mj && mj.stage==='final'){
       const st=ccScaleStage(ccMajorStageSpec('final', mj.n));
       play(d, 'major'+mj.n, 'major', mj.label||'Major', ()=>ccMajorFinalRoom(stubOf(), lobbyCr, drafted, mj, st, CC_FIELD_SHARP.final),
            st.games, st.pts||majorPoints, st.kill, ccMajorIsShowdown(mj.n) ? showdownPrize : majorPrize, {div:1, kind:'major', stage:'final'});
@@ -90392,7 +90959,7 @@ function careerNightRun(next){
   if(next.type==='eval')    return runCareerEval();
   if(next.type==='reload')  return runCareerReload();
   if(next.type==='final')   return runCareerWeeklyFinal();
-  if(next.type==='major')   return runCareerMajor();
+  if(next.type==='major'){ const mj=careerMajorOn(careerToday()); return (mj && mj.y24) ? runCareerMajor2024() : runCareerMajor(); }
   if(next.type==='gc')      return careerGclcOn(careerToday())
                                      ? runCareerGclc() : runCareerReloadChampionship();
   if(next.type==='solo')    return runCareerSoloSeries();
@@ -90721,7 +91288,7 @@ function careerTrioRaids(cr){
 function ccTrioMarket(cr, force){
   const c=cr || (CAREER && CAREER.career);
   if(!c || careerSquadSize()!==3) return 0;
-  if(ccIs2025()) return 0;   // трио 2025-го настоящие, с карточек — рынку тут нечего делать
+  if(ccIs2025() && ccNowYear()===2025) return 0;   // трио 2025-го настоящие, с карточек — рынку тут нечего делать
   // На стыке года рынок открывается ВСЕГДА (force): метка там ещё от прошлого
   // сезона, а сезон уже новый.
   if(!force && c.raided===c.season) return 0;
@@ -90777,6 +91344,7 @@ function careerNewSeason(){
   /* Год 2025 играется один раз: со стыка карьера идёт в 2026-й (дуо, как
      было в жизни), и первый день нового сезона — уже по календарю 2026-го. */
   if(cr.year===2025) cr.year=2026;
+  else if(cr.year===2024) cr.year=2025;   // после Форт-Уэрта — календарь 2025-го (трио), люди 2024-го
   cr.season++; cr.day=careerStartDay(); cr.seasonOver=false;
   cr.plog={}; delete cr.plogYou;   // журнал вечеров игроков — по сезону (careerPlayerStatsHTML, фраггер года)
   /* Тройки переживают межсезонье — но не все.
@@ -90938,6 +91506,13 @@ function careerNewSeason(){
    would have said yes in the first place. */
 /* Сезоны 2025-го — Chapter 6: коды Epic скачут (S35 — «Galactic Battle» без
    дивизионных кубков, S37 — Chapter 6 Season 4 до самого S39). Даты — патчи. */
+// Сезоны 2024-го — Chapter 5 (S28–S31), границы по патчам.
+const CC_SEASONS_2024=[
+  {id:'S28', from:'2023-12-03', to:'2024-03-07'},
+  {id:'S29', from:'2024-03-08', to:'2024-05-23'},
+  {id:'S30', from:'2024-05-24', to:'2024-08-15'},
+  {id:'S31', from:'2024-08-16', to:'2024-11-01'}
+];
 const CC_SEASONS_2025=[
   {id:'S33', from:'2024-12-01', to:'2025-02-20'},
   {id:'S34', from:'2025-02-21', to:'2025-05-01'},
@@ -90972,6 +91547,7 @@ function ccSeasonAfter(d){
 function careerFncsSeason(iso){
   const d=iso||careerToday();
   if(ccIs2025()) return CC_SEASONS_2025.find(x=>d>=x.from && d<=x.to) || null;
+  if(ccIs2024()) return CC_SEASONS_2024.find(x=>d>=x.from && d<=x.to) || null;
   const base=CC_SEASONS.find(x=>d>=x.from && d<=x.to) || ccSeasonAfter(d);
   if(!base) return null;
   /* Второй год карьеры ходит по тем же датам, но сезоны не начинаются заново
@@ -92109,10 +92685,145 @@ function ccMajorLcRoom(you, ev){
   if(!lc || lc.n!==ev.n || lc.season!==cr.season) return [you];
   return lc.rows.map(r=>r==='you' ? you : ccMajorTeamFrom(r));
 }
+
+/* ---- Мейджор 2024-го: своя машина --------------------------------------------
+   Формат — см. CAREER_YEAR_2024. Состояние живёт в cr.major24 (по номеру Мейджора и
+   сезону): got — сыгранные дни; q[1|2].r1/r2 — прошедшие раунды квалификатора
+   (строки посева, 'you' — свой состав); series — очки серии по ключу состава,
+   seriesRows — как его посадить; upper/lower — сетки полуфинала (rows — комната
+   первого дня, r1/r2/r3 — прошедшие каждого дня, tickets — победители матчей
+   верхней сетки, rest — не прошедшие третьего дня); bracket — своя сетка;
+   ticket — место в финале. Своя сетка играется вживую, чужая — тем же вечером
+   молча (ccM24Settle), и то, чего игрок не доиграл, досчитывается перед финалом. */
+const CC_M24={
+  q:    {1:{games:10, kill:2, cut:1000, open:true}, 2:{games:10, kill:2, cut:250}, 3:{games:10, kill:2, cut:0}},
+  upper:{1:{games:5, kill:4, vr:true, cut:0}, 2:{games:5, kill:4, vr:true, cut:0}, 3:{games:3, kill:4, cut:25}},
+  lower:{1:{games:10, kill:2, cut:100}, 2:{games:6, kill:3, cut:50}, 3:{games:3, kill:4, cut:15}},
+  final:{games:12, kill:4, cut:0, field:50},
+  upperSize:50, lowerSize:200, vrSeats:5
+};
+function ccM24Spec(ev){
+  if(ev.stage==='q') return CC_M24.q[ev.r];
+  if(ev.stage==='semi'){ const m=ccM24Of(ev.n); return CC_M24[(m && m.bracket) || 'upper'][ev.r]; }
+  return CC_M24.final;
+}
+function ccM24Of(n){
+  const cr=CAREER && CAREER.career; if(!cr) return null;
+  const m=cr.major24;
+  return (m && m.n===n && m.season===cr.season) ? m : null;
+}
+function ccM24State(n){
+  const cr=CAREER.career;
+  let m=ccM24Of(n);
+  if(!m) m=cr.major24={n:n, season:cr.season, got:{}, q:{}, series:{}, seriesRows:{}, youKey:null,
+                       upper:null, lower:null, bracket:null, built:false, ticket:false};
+  return m;
+}
+// Первый день полуфинала этого Мейджора — до него сетки не строятся.
+function ccM24SemiDay(n){ const row=ccYearRows().find(r=>r[2]==='Major'+n+'_2024_Semi1'); return row ? row[0] : null; }
+/* Сетки — из таблицы серии: топ-50 в верхнюю, 51–250 в нижнюю. Строится раз, когда
+   полуфинал уже на календаре (careerMajorCan спрашивает про будущие дни тоже). */
+function ccM24Brackets(m){
+  if(!m || m.built) return;
+  const day=ccM24SemiDay(m.n);
+  if(!day || careerToday()<day) return;
+  const keys=Object.keys(m.series).sort((a,b)=>m.series[b]-m.series[a]);
+  const rows=keys.map(k=>m.seriesRows[k]).filter(Boolean);
+  m.upper={rows:rows.slice(0, CC_M24.upperSize), tickets:[]};
+  m.lower={rows:rows.slice(CC_M24.upperSize, CC_M24.upperSize+CC_M24.lowerSize)};
+  const at=keys.indexOf(m.youKey||'');
+  m.bracket = at<0 ? null : at<CC_M24.upperSize ? 'upper' : at<CC_M24.upperSize+CC_M24.lowerSize ? 'lower' : null;
+  m.built=true;
+}
+function ccM24SeriesRank(m, key){
+  const keys=Object.keys(m.series).sort((a,b)=>m.series[b]-m.series[a]);
+  const at=keys.indexOf(key);
+  return at<0 ? 0 : at+1;
+}
+const ccM24Rank=f=>f.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0));
+/* Записать день сетки по его таблице. Верхняя сетка, дни 1–2: победители матчей —
+   в билеты (не больше пяти, у Epic пять игр — пять билетов), остальные дальше;
+   день 3 — топ-25. Нижняя: топ-100 → топ-50 → топ-15. */
+function ccM24Write(m, bracket, r, ranked, you){
+  const br=m[bracket]; if(!br) return;
+  const row=t=>ccSeedRow(t, you, ccMajorSeatRow);
+  const sp=CC_M24[bracket][r];
+  if(sp.vr){
+    const winners=[]; const seen=new Set();
+    ranked.forEach(t=>{ if((t.wins||0)>0 && winners.length<CC_M24.vrSeats && !seen.has(t)){ seen.add(t); winners.push(t); } });
+    br.tickets=(br.tickets||[]).concat(winners.map(row));
+    br['r'+r]=ranked.filter(t=>!seen.has(t)).map(row);
+    return winners;
+  }
+  br['r'+r]=ranked.slice(0, sp.cut).map(row);
+  if(r===3) br.rest=ranked.slice(sp.cut).map(row);
+  return ranked.slice(0, sp.cut);
+}
+// Досчитать день сетки молча — чужую сетку, или свою, если игрок из неё выбыл.
+function ccM24Settle(m, bracket, r){
+  const br=m[bracket]; if(!br) return;
+  if(r>1) ccM24Settle(m, bracket, r-1);
+  if(br['r'+r]) return;
+  const prev=(r===1 ? br.rows : br['r'+(r-1)])||[];
+  // Не явившийся на свой день — выбыл: посева 'you' в молчаливой комнате нет.
+  const room=prev.filter(x=>x!=='you').map(ccMajorTeamFrom);
+  if(!room.length){ br['r'+r]=[]; if(r===3) br.rest=[]; return; }
+  const sp=CC_M24[bracket][r];
+  room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
+  simulateGames(room, sp.games, majorPoints, sp.kill);
+  ccM24Write(m, bracket, r, ccM24Rank(room), null);
+}
+/* Финал — пятьдесят: билеты верхней сетки, топ-25 её третьего дня, топ-15 нижней;
+   недобор — из оставшихся верхней, потом нижней. null — Мейджор без записи
+   (игрок в него не заходил): мир соберёт финал сам, из лестницы. */
+function ccM24GfRows(m){
+  if(!m || !m.built || !m.upper || !m.lower) return null;
+  ccM24Settle(m, 'upper', 3); ccM24Settle(m, 'lower', 3);
+  const out=[], seen=new Set();
+  const key=r=>r==='you' ? 'you' : JSON.stringify(r);
+  const add=r=>{ const k=key(r); if(seen.has(k) || out.length>=CC_M24.final.field) return; seen.add(k); out.push(r); };
+  (m.upper.tickets||[]).forEach(add);
+  (m.upper.r3||[]).forEach(add);
+  (m.lower.r3||[]).forEach(add);
+  (m.upper.rest||[]).forEach(add);
+  (m.lower.rest||[]).forEach(add);
+  return out;
+}
+// Комната финала для мира (без игрока): из записи, а без неё — верх лестницы.
+function ccM24WorldFinalRoom(m, drafted, lobbyCr){
+  const rows=ccM24GfRows(m);
+  const room=(rows && rows.length>=10) ? rows.filter(r=>r!=='you').map(ccMajorTeamFrom) : [];
+  if(room.length<CC_M24.final.field){
+    const seen=new Set(room.map(ccSeatKey));
+    careerCupField(lobbyCr, drafted, CC_M24.final.field+20, null, false, CC_FIELD_SHARP.final).forEach(t=>{
+      if(room.length>=CC_M24.final.field || seen.has(ccSeatKey(t))) return;
+      seen.add(ccSeatKey(t)); room.push(t);
+    });
+  }
+  return room.slice(0, CC_M24.final.field);
+}
+/* Место в Форт-Уэрт — квота региона на финал каждого Мейджора (GC2024_M*_SEATS),
+   NA West читает NA Central; занятые места переходят следующим — здесь это
+   просто «место не выше квоты». */
+function ccGc24Seats(n){
+  const t={1:GC2024_M1_SEATS, 2:GC2024_M2_SEATS, 3:GC2024_M3_SEATS}[n]||GC2024_M3_SEATS;
+  let r=careerPrizeRegion(); if(r==='NAW') r='NAC';
+  return t[r]!=null ? t[r] : 1;
+}
 function careerMajorOn(iso){
   const e=(careerYearDays().get(iso)||[]).find(x=>x.kind==='major');
   if(!e) return null;
   let m=String(e.id||'').match(/^Major(\d)_(PlayIn|Heats|LCQ|Final)$/);
+  /* 2024-й: квалификатор (q, раунд r), полуфинал (день r), финал — своя машина, runCareerMajor2024. */
+  const m24=String(e.id||'').match(/^Major(\d)_2024_(?:Q([12])R([123])|Semi([123])|Final)$/);
+  if(m24){
+    let nth=0;
+    const row24=ccYearRows().find(r=>r[2]===e.id);
+    if(row24) for(let d=row24[0], i=1; d<=row24[1]; d=ccAddDays(d,1), i++) if(d===iso){ nth=i; break; }
+    if(m24[2]) return {n:+m24[1], stage:'q', q:+m24[2], r:+m24[3], y24:true, id:e.id, label:e.label, nth:nth};
+    if(m24[4]) return {n:+m24[1], stage:'semi', r:+m24[4], y24:true, id:e.id, label:e.label, nth:nth};
+    return {n:+m24[1], stage:'final', y24:true, id:e.id, label:e.label, nth:nth};
+  }
   /* 2025-й: Major1_2025_Group2 — это хиты, и номер группы — это nth: свой
      день у каждой группы, как у Epic, а не блок подряд. */
   let m25=String(e.id||'').match(/^Major(\d)_2025_(PlayIn|Group([123])|LCQ|LCLobby|Final)$/);
@@ -92306,6 +93017,26 @@ function careerMajorCan(ev){
   // A seat given up to change partner is a seat somebody else is sitting in.
   const gaveUp=(cr.gaveUp||[]).indexOf('major:'+ev.n)>=0;
   const ticket = !gaveUp && !!(m && m.n===ev.n && m.ticket);
+  /* 2024-й: раунд 1 квалификатора открыт всем; дальше — тем, кто прошёл вчерашний;
+     полуфинал — своей сетке, пока жив и без билета; финал — по билету. */
+  if(ev.y24){
+    const s=ccM24Of(ev.n);
+    if(s && s.got[ev.id]) return false;
+    if(ev.stage==='q'){
+      if(ev.r===1) return true;
+      const prev=s && s.q[ev.q] && s.q[ev.q]['r'+(ev.r-1)];
+      return !!(prev && prev.indexOf('you')>=0);
+    }
+    if(ev.stage==='semi'){
+      if(!s) return false;
+      ccM24Brackets(s);
+      const br=s.bracket && s[s.bracket];
+      if(!br || s.ticket) return false;
+      const prev=ev.r===1 ? br.rows : br['r'+(ev.r-1)];
+      return !!(prev && prev.indexOf('you')>=0);
+    }
+    return !gaveUp && !!(s && s.ticket);
+  }
   if(done && CC_MAJOR_ORDER.indexOf(done)>=CC_MAJOR_ORDER.indexOf(ev.stage)) return false;
   if(ev.stage==='playin') return cr.division===1;
   if(ev.stage==='lcq'){
@@ -92359,6 +93090,8 @@ function showdownPrize(place){ const row=CC_SHOWDOWN_PAY.find(r=>place<=r[0]); r
 function majorPrize(place){
   const ev=careerMajorOn(careerToday());
   if(ev && ccMajorIsShowdown(ev.n)) return showdownPrize(place);
+  // 2024-й: таблица окна Day 2 Finals своего региона (Tracker), на игрока — на дуо вдвое.
+  if(ccIs2024()) return ccPay24(CC_MAJOR_PAY_2024, place)*careerSquadSize();
   // 2025-й платит своей таблицей (Attachment C 2025, одна на все три Мейджора).
   const t=ccRegionTable(ccIs2025() ? P2025_PRIZES : PRIZE_TABLES) || null;
   return t ? (t[String(place)]||0) : 0;
@@ -93319,9 +94052,9 @@ const CC_VICTORY_2025=[
   {day:'2025-08-01', id:'S36_SquidGroundsCashCup', mode:'duo', n:3, name:'Squid Grounds Cash Cup', cash:100},
   {day:'2025-09-05', id:'S37_ReloadQuickCup',      mode:'duo', n:1, name:'Reload Quick Cup', cash:200}
 ];
-function ccVictoryList(){ return ccIs2025() ? CC_VICTORY_2025 : CC_VICTORY; }
+function ccVictoryList(){ return ccIs2024() ? CC_VICTORY_2024 : ccIs2025() ? CC_VICTORY_2025 : CC_VICTORY; }
 // Остров Reload по году: 2026-й — четвёртый круг серии, 2025-й — первый (другого измеренного нет).
-function ccReloadSetOfYear(){ return ccIs2025() ? (ZONE_SETS.r1 ? 'r1' : careerBrSet()) : (ZONE_SETS.r4 ? 'r4' : careerBrSet()); }
+function ccReloadSetOfYear(){ return (ccIs2025() || ccIs2024()) ? (ZONE_SETS.r1 ? 'r1' : careerBrSet()) : (ZONE_SETS.r4 ? 'r4' : careerBrSet()); }
 function careerVictoryOn(iso){ return ccVictoryList().find(v=>v.day===iso) || null; }
 
 /* A lobby of one-card teams.
@@ -93499,16 +94232,19 @@ async function runCareerEval(){
     const ranked2=careerRankField(r2);
     // Вечер платит каждому, у кого есть победы, — и таблица призовых должна это
     // видеть, как видит Weekly Final. Кошелёк (ccPayIn ниже) — отдельный счёт.
-    careerMoneyAdd(ranked2, (_p,t)=>(t.wins||0)*ccEvalWinCash());
+    const top5=ccEvalTop5Cash();
+    if(top5) careerMoneyAdd(ranked2, p=>p<=5 ? top5 : 0);
+    else careerMoneyAdd(ranked2, (_p,t)=>(t.wins||0)*ccEvalWinCash());
     place2=ranked2.indexOf(you)+1;
     wins=you.wins||0;
-    cash=wins*ccEvalWinCash();
+    cash=top5 ? (place2<=5 ? top5 : 0) : wins*ccEvalWinCash();
     const shell2=createStageCardShell(L().ccEvalR2Title(r2.length));
     await revealStageLog(you, shell2, true);
     // Победа — зелёная плашка, отсутствие победы — никакой: раунд последний,
     // вылетать из него некуда. См. finalizeStageCard.
-    finalizeStageCard(shell2, place2, r2.length, you.stagePts, wins>0 ? true : null, false,
-      wins ? L().ccEvalCash(wins, ccShareOf(cash, you)) : L().ccEvalNoWin);
+    finalizeStageCard(shell2, place2, r2.length, you.stagePts, cash>0 ? true : null, false,
+      top5 ? (cash ? L().ccEvalTop5Cash(ccShareOf(cash, you)) : L().ccRelFail(5))
+           : (wins ? L().ccEvalCash(wins, ccShareOf(cash, you)) : L().ccEvalNoWin));
     await revealStandings(shell2, ranked2, you, 0, null, null, null, null, true);
   }
   removeSkipButton();
@@ -94701,6 +95437,7 @@ function careerSummitOn(iso){
    должна ехать вместе с ним. */
 function ccMajorSeatNote(ev){
   if(!ev || ev.stage!=='final') return '';
+  if(ev.y24) return L().ccMajSeatGc24(ccGc24Seats(ev.n));
   if(ev.n===1) return L().ccMajSeatSummit(ccTeams(CC_SUMMIT_EU_MAIN), ccTeams(CC_SUMMIT_EU_SCQ));
   if(ev.n===2) return L().ccMajSeatGc(ccGcSlots(MAJOR2_GC_SLOTS));
   return L().ccMajSeatNone;
@@ -95331,6 +96068,18 @@ function ccGlobalsSeat(){
     });
     return hit ? {via:'major2', place:hit.place, note:L().ccGlobSeatMajor25} : null;
   }
+  /* 2024: в Форт-Уэрт везут финалы трёх Мейджоров по квоте региона (GC2024_M*_SEATS),
+     последнего шанса не было. */
+  if(ccIs2024()){
+    const cr=CAREER.career;
+    const log=(cr.log||[]).filter(r=>r.season===cr.season).reverse();
+    const hit=log.find(r=>{
+      if(r.kind!=='major' || r.stage!=='final' || !r.place) return false;
+      const ev=careerMajorOn(r.day);
+      return !!ev && ev.y24 && r.place<=ccGc24Seats(ev.n);
+    });
+    return hit ? {via:'major2', place:hit.place, note:L().ccGlobSeatMajor25} : null;
+  }
   // Этого года — см. ccSummitSeat.
   const cr=CAREER.career;
   const log=(cr.log||[]).filter(r=>r.season===cr.season).reverse();
@@ -95392,7 +96141,41 @@ function ccGcOwnSeats(n, drafted, seated, tag){
     })
     .slice(0, n);
 }
+/* Форт-Уэрт 2024: пятьдесят дуо — настоящие, по дорогам (GC2024_M1/M2/M3_DUOS, Liquipedia),
+   карточками своего года (ccLanTeam → gcCardIndex(2024)); своё место вытесняет одно из них,
+   и если кто-то из настоящих уже сидит в твоём составе — его дуо не летит. Недобор —
+   верх своего региона (ccGcOwnSeats). */
+function buildGlobalChampionship2024Field(you, drafted){
+  const seated=new Set();
+  (you.squad||[]).forEach(p=>seated.add(_gcNorm(p.handle)));
+  const field=[];
+  const seat=(duos, route, rating)=>duos.forEach(d=>{
+    if(field.length>=CC_GLOB_FIELD-1) return;
+    const t=ccLanTeam(d, null, rating, seated);
+    if(t){ t.gcRoute=route; field.push(t); }
+  });
+  seat(GC2024_M1_DUOS, 'm1', 90);
+  seat(GC2024_M2_DUOS, 'm2', 88);
+  seat(GC2024_M3_DUOS, 'm3', 86);
+  /* Недобор (тёзки, вытесненные) — верх своего региона; просить надо с запасом: верх
+     Европы и есть эти самые люди, и из десяти предложенных девять уже сидят в зале. */
+  if(field.length<CC_GLOB_FIELD-1){
+    const lanCr=Object.assign({}, CAREER.career, {division:1});
+    careerCupField(lanCr, drafted, 80, null, false, CC_FIELD_SHARP.lan).forEach(t=>{
+      if(field.length>=CC_GLOB_FIELD-1) return;
+      const keys=(t.squad||[]).map(c=>_gcNorm(c && c.handle));
+      if(keys.some(k=>seated.has(k))) return;
+      keys.forEach(k=>seated.add(k));
+      t.gcRoute='m3'; field.push(t);
+    });
+  }
+  you.gcRoute='m3'; you.summitRegion=ccCareerRegion();
+  const capped=field.slice(0, CC_GLOB_FIELD-1);
+  capped.push(you);
+  return capped;
+}
 function careerGlobalsField(you, drafted, via){
+  if(ccIs2024()) return buildGlobalChampionship2024Field(you, drafted);
   /* 2025: Лион — 33 трио, поле уже собрано режимом драфта из настоящих
      составов Лиона (buildGlobalChampionship2025Field): места Мейджоров 1 и 2 —
      реальные трио, Мейджора 3 — по регионам; твоё место вытесняет одно. */
@@ -95543,7 +96326,7 @@ function careerGlobalsField(you, drafted, via){
 // Antwerp's purse. GC2026_PRIZES rather than prizeTableFor('GC2026'), which
 // branches on CARD_SET — a global the career does not set.
 function gcPrize(place){
-  const t=ccIs2025() ? GC2025_PRIZES : ((typeof GC2026_PRIZES!=='undefined' && GC2026_PRIZES) || null);
+  const t=ccIs2024() ? GC2024_PRIZES : ccIs2025() ? GC2025_PRIZES : ((typeof GC2026_PRIZES!=='undefined' && GC2026_PRIZES) || null);
   return t ? (t[String(place)]||0) : 0;
 }
 async function runCareerGlobals(){
@@ -95752,6 +96535,135 @@ function ccMajorSeedRows(ev){
   if(s.size!==careerSquadSize()) return null;
   if(!Array.isArray(s.rows) || s.rows.length<ccMajorHeats()) return null;
   return s.rows.indexOf('you')>=0 ? s.rows : null;
+}
+
+async function runCareerMajor2024(){
+  const cr=CAREER.career;
+  const ev=careerMajorOn(careerToday());
+  if(!ev || !ev.y24 || !careerMajorCan(ev)) return;
+  // Командный вечер ждёт напарника. См. ccMpGate.
+  const mpStart=ccMpLock() ? await ccMpGate('major') : null;
+  careerCampBonus('major', ev.id||ev.label||'');
+  const me=careerCard(), mates=careerMates();
+  if(!me || mates.length<careerMateSeats() || mates.some(function(m){ return !m; })) return;
+  const mate=mates[0]||null;
+  const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
+  CARD_MODE=true; squadSize=careerSquadSize(); drafted=[me].concat(mates);
+  skipAnimation=false; CC_SKIP_RUN=false;
+  resetRunRecord();
+  document.getElementById('majorStages').innerHTML='';
+  const rsPrev=document.getElementById('runSummary'); if(rsPrev) rsPrev.innerHTML='';
+  document.getElementById('lobbyTitle').textContent='';
+  document.getElementById('lobbyBody').innerHTML='';
+  clearEventPanel();
+  document.getElementById('finalBanner').style.display='none';
+  clearLandingResultsMap();
+  CAREER_RUN=true;
+  show('screen-results');
+  ensureSkipButton();
+
+  const you=careerYouTeam(drafted);
+  you.name=L().yourTeamPrefix+teamLabel(drafted); you.isYou=true;
+  const m=ccM24State(ev.n);
+  const rowsOf=rows=>(rows||[]).map(r=>r==='you' ? you : ccMajorTeamFrom(r));
+  const seedOf=t=>ccSeedRow(t, you, ccMajorSeatRow);
+  const spec=ccM24Spec(ev);
+  let field, stageLabel=ev.label;
+  const openRound=(ev.stage==='q' && ev.r===1);
+  if(ev.stage==='q'){
+    // Первый раунд открыт всему региону — вся лестница, как Ласт Ченс 2026-го.
+    field=openRound ? [you, ...careerCupField(cr, drafted, careerLadderEntrants(), null, true, 0)]
+                    : rowsOf(m.q[ev.q]['r'+(ev.r-1)]);
+  } else if(ev.stage==='semi'){
+    const br=m[m.bracket];
+    field=rowsOf(ev.r===1 ? br.rows : br['r'+(ev.r-1)]);
+    stageLabel=ev.label+' · '+L()[m.bracket==='upper' ? 'ccYr24Upper' : 'ccYr24Lower'];
+  } else {
+    field=rowsOf(ccM24GfRows(m));
+    if(field.indexOf(you)<0) field.unshift(you);
+    field=field.slice(0, CC_M24.final.field);
+    if(field.indexOf(you)<0) field[field.length-1]=you;
+  }
+  await simulateGamesLive(field, spec.games, majorPoints, spec.kill, 'stage', 0, null, null,
+    {lobbySize:ccTeams(50), stageName:stageLabel, mapReplay:true, choices:true, stopOnYourDeath:true,
+     stopOnWin:!!spec.vr, roomOnly:!openRound,
+     dropEachGame:(g,room)=>openRound ? null : careerLandingPick(room||field, you, stageLabel, ['major'])});
+  const ranked=ccM24Rank(field);
+  const place=ranked.indexOf(you)+1;
+  let through=false, note='';
+  m.got[ev.id]=true;
+  if(ev.stage==='q'){
+    if(ev.r<3){
+      through=place<=spec.cut;
+      m.q[ev.q]=m.q[ev.q]||{};
+      m.q[ev.q]['r'+ev.r]=ranked.slice(0, spec.cut).map(seedOf);
+      note=through ? L().ccRelPass(spec.cut) : L().ccRelFail(spec.cut);
+    } else {
+      // Очки серии: линейно по месту последнего раунда, за оба квалификатора.
+      ranked.forEach((t,i)=>{ const k=ccSeatKey(t); m.series[k]=(m.series[k]||0)+Math.max(0, ranked.length-i); m.seriesRows[k]=seedOf(t); });
+      m.youKey=ccSeatKey(you);
+      through=true;
+      note=L().ccYr24Series(m.series[m.youKey]||0, ccM24SeriesRank(m, m.youKey));
+    }
+  } else if(ev.stage==='semi'){
+    const bracket=m.bracket;
+    const passed=ccM24Write(m, bracket, ev.r, ranked, you)||[];
+    through=passed.indexOf(you)>=0;
+    if(spec.vr){ m.ticket=m.ticket||through; note=through ? L().ccYr24VrTicket : L().ccMajNoTicket; }
+    else { if(ev.r===3) m.ticket=m.ticket||through; note=through ? L().ccRelPass(spec.cut) : L().ccRelFail(spec.cut); }
+    // Чужая сетка играет тот же вечер.
+    ccM24Settle(m, bracket==='upper' ? 'lower' : 'upper', ev.r);
+  }
+  removeSkipButton();
+  const fin=ev.stage==='final';
+  const shell=createStageCardShell(stageLabel+' — '+field.length);
+  await revealStageLog(you, shell, true);
+  finalizeStageCard(shell, place, field.length, you.stagePts,
+    ccStagePassed(through, spec, place, fin ? majorPrize : null), false,
+    fin ? ccMajorSeatNote(ev) : note);
+  await revealStandings(shell, ranked, you, spec.cut||0, null, null, fin ? majorPrize : null, null, fin);
+  careerPrAdd(ranked, {div:cr.division, kind:'major', stage:ev.stage});
+  let cash=0;
+  if(fin){
+    careerMoneyAdd(ranked, majorPrize);
+    cash=majorPrize(place);
+    if(cash) ccPayIn(ccShareOf(cash, you));
+    careerReachAdd(careerReachResult(place, field.length, 1, 'major'));
+    careerNews(cash?'good':'flat', cash?'ccNewsMajCash':'ccNewsMajNoCash',
+               cash?[ev.n, place, ccNum(cash)]:[ev.n, place, field.length],
+               {tbl:ccStageShot(ranked, you, 1, stageLabel)});
+    if(place>field.length/2) careerNews('bad', 'ccPostTriedBest', []);
+    careerCongrats(ranked, you, L().ccCongratsMajor(ev.n));
+    m.gf=ranked.map(seedOf);
+    cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
+  } else {
+    careerNews(through?'good':'flat', through?'ccNewsMajThrough':'ccNewsMajOut',
+               [ev.label, place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
+    if(!through && spec.cut && place===spec.cut+1) careerNews('bad', 'ccPostOneOff', [ev.label]);
+    const prev=(cr.major && cr.major.n===ev.n) ? cr.major : null;
+    cr.major={n:ev.n, got:ev.stage, pass: through ? ev.stage : (prev ? prev.pass||null : null), ticket:!!m.ticket};
+  }
+  const places=(you.stageLog||[]).map(g=>g.place);
+  cr.log=cr.log||[];
+  careerGrowEvent(place, field.length, you, field);
+  cr.log.push({season:cr.season, day:careerToday(), div:cr.division,
+               place:place, of:field.length, pts:you.stagePts,
+               passed: fin ? cash>0 : through,
+               ovr:CAREER.player.ovr, games:spec.games, wins:you.wins||0,
+               elims:you.stageElims||0,
+               avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
+               mate: mate ? mate.handle : null, mates: ccLogMates(mates), prize:ccShareOf(cash, you), kind:'major', stage:ev.stage,
+               won: fin ? ccStageSeatRow(ranked[0]) : undefined,
+               top: fin ? ccStageTop(ranked, you) : undefined});
+  await ccMpClose(ranked);
+  careerAdvanceTo(ccAddDays(careerToday(), 1));
+  careerSave();
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
+  careerRenderHub('centre');
+  const lanSeat = fin && (ccGlobalsSeat()||{}).via==='major2' ? L().ccRelSeatGc(ccLanCity('globals')) : null;
+  careerReloadResultCard({label:stageLabel, place:place, of:field.length,
+    through: fin ? cash>0 : through, cut:spec.cut||0,
+    seat: !!lanSeat, seatText: lanSeat, money: fin ? cash : null});
 }
 async function runCareerMajor(){
   const cr=CAREER.career;
@@ -96802,7 +97714,10 @@ async function runCareerVictory(){
     through ? L().ccVicPass(vCut) : L().ccVicFail(vCut));
   await revealStandings(shell1, ranked1, you, vCut);
 
-  const rate=ev.cash ? ev.cash*careerSquadSize() : (solo ? CC_VICTORY_CASH_SOLO : CC_VICTORY_CASH_DUO);
+  // cash — на игрока: соло-кап платит одному, дуо/трио — составу.
+  const rate=ev.cash ? ev.cash*(solo ? 1 : careerSquadSize()) : (solo ? CC_VICTORY_CASH_SOLO : CC_VICTORY_CASH_DUO);
+  // Кап с таблицей мест (Duos Cash Cup 2024): шесть игр, очки как в первом раунде, деньги по месту.
+  const payCup=!!ev.pay;
   let wins=0, cash=0, place2=null;
   /* ВТОРОЙ РАУНД В ОБЩЕЙ КОМНАТЕ — ТОЛЬКО ЕСЛИ ПРОШЛИ ВСЕ ЛЮДИ.
      Второй раунд идёт только у прошедшего (through). Вылетевший в первом заканчивал
@@ -96828,7 +97743,7 @@ async function runCareerVictory(){
     const zones2=null;
     // Соло вдвоём: у каждого своя высадка, адресно (ccSoloDrops), и оба в одной комнате.
     const humans2=humans.filter(h=>r2.indexOf(h)>=0);
-    await simulateGamesLive(r2, CC_VICTORY_R2_GAMES, victoryR2Points, 0, 'stage', 0, null, zones2,
+    await simulateGamesLive(r2, payCup ? 6 : CC_VICTORY_R2_GAMES, payCup ? victoryR1Points : victoryR2Points, payCup ? CC_VICTORY_R1_KILL : 0, 'stage', 0, null, zones2,
       {lobbySize:ccVictoryLobby(ev, solo), stageName:L().ccVicR2Live,
        mapReplay:true, choices:true, stopOnYourDeath:true,
        roomOnly:true,   // комната прошедших: вылетевших людей в неё не досаживать (ccRaceFieldSync)
@@ -96845,14 +97760,15 @@ async function runCareerVictory(){
     const ranked2=careerRankField(r2);
     place2=ranked2.indexOf(you)+1;
     wins=you.wins||0;
-    cash=wins*rate;
+    cash=payCup ? ccVictoryPayOf(ev, place2) : wins*rate;
     // Not a placement table: every team in the lobby is paid for the games it
     // won, so the cheque is read off the team rather than off its row.
-    careerMoneyAdd(r2, function(_place, t){ return (t.wins||0)*rate; });
+    if(payCup) careerMoneyAdd(ranked2, function(place){ return ccVictoryPayOf(ev, place); });
+    else careerMoneyAdd(r2, function(_place, t){ return (t.wins||0)*rate; });
     const shell2=createStageCardShell(L().ccVicR2Title(r2.length));
     await revealStageLog(you, shell2, true);
-    finalizeStageCard(shell2, place2, r2.length, you.stagePts, wins>0, false,
-      wins ? L().ccVicCash(wins, cash) : L().ccVicNoWin);
+    finalizeStageCard(shell2, place2, r2.length, you.stagePts, cash>0, false,
+      payCup ? (cash ? L().ccVicPlaceCash(place2, cash) : L().ccWfNoCash) : (wins ? L().ccVicCash(wins, cash) : L().ccVicNoWin));
     await revealStandings(shell2, ranked2, you, 0, null, null, null, null, true);
   }
   removeSkipButton();
@@ -96884,7 +97800,7 @@ async function runCareerVictory(){
     cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:tPlace2||(ranked1.indexOf(t)+1),
                of:tThrough?vCut:field.length, pts:t.stagePts, passed:tThrough,
                ovr: isMe ? CAREER.player.ovr : Math.round((pc && (pc._targetOvr||pc.rating))||0),
-               games:tThrough?CC_VICTORY_R1_GAMES+CC_VICTORY_R2_GAMES:CC_VICTORY_R1_GAMES,
+               games:tThrough?CC_VICTORY_R1_GAMES+(payCup ? 6 : CC_VICTORY_R2_GAMES):CC_VICTORY_R1_GAMES,
                wins:t.wins||0, elims:t.stageElims||0,
                avg: placesT.length ? Math.round(placesT.reduce((s,v)=>s+v,0)/placesT.length*10)/10 : null,
                mate: mate ? mate.handle : null, mates: ccLogMates(mates), prize:ccShareOf(tCash, t), kind:'victory', solo:solo,
