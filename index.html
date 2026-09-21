@@ -66799,8 +66799,23 @@ function ccEvalIsReload(iso){ return ccEvalReloadNights().indexOf(iso||careerTod
 // Победа в оценке: 2026-й — $800 на дуо; 2025-й — $400 на игрока, то есть на состав.
 function ccEvalWinCash(){ return ccIs2025() ? 400*careerSquadSize() : CC_EVAL_WIN_CASH; }
 function ccEvalR1Games(){ return ccIs2025() ? 7 : CC_EVAL_R1_GAMES; }
-// Год «текущих» карточек: в 2025-м сцена — это карты 2025-го.
-function ccNowYear(){ return ccCalYear(); }
+/* Год КАРТОЧЕК — не то же, что год календаря.
+
+   Его слово, 21 сентября: «2025 — собирается дуо-сезон сам по себе, не
+   ориентируясь на рейтинги 2026 года настоящие, а на 25». Карьера, начатая в
+   2025-м, дальше живёт своим миром: в 2026-м (и дальше) сцена — те же люди
+   2025-го с тем, что они наиграли в этой карьере (CAREER.dev), а не карточки
+   2026-го. Календарь при этом 2026-й. Пары в дуо-год — ядра трио 2025-го,
+   остальные собираются по силе (ccContinuityDuos). */
+function ccNowYear(){
+  if(typeof SHOWN_SCREEN!=='undefined' && SHOWN_SCREEN==='screen-career-create' && typeof CC!=='undefined' && CC)
+    return CC.year===2025 ? 2025 : 2026;
+  const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
+  if(cr && cr.year0===2025) return 2025;
+  return ccCalYear();
+}
+// Второй и дальше год карьеры 2025-го: календарь 2026-й, люди 2025-го.
+function ccContinuity(){ return ccNowYear()===2025 && !ccIs2025(); }
 // Сколько 2026-х годов карьера уже прожила до текущего сезона (для номеров сезонов и года на экране).
 function ccYearShift(){
   const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
@@ -67859,7 +67874,7 @@ function careerLadderPlayer(rnd, ovr, taken, natHint, roleWant, topOvr, plain){
 // on hKey the way the drafting code already does.
 let CC_EU_CARDS={};
 function careerRosterEU(){
-  const reg=ccCareerRegion()+(ccIs2025() ? '|2025' : '');
+  const reg=ccCareerRegion()+(ccNowYear()===2025 ? '|2025' : '');
   if(CC_EU_CARDS[reg]) return CC_EU_CARDS[reg];
   const best=new Map();
   // В 2025-м году сцена — это люди 2025-го: карты позже того года не существуют.
@@ -68543,7 +68558,7 @@ function ccSeasonOvr(){
   if(CC_SEASON_OVR && CC_SEASON_OVR_YEAR===ccNowYear()) return CC_SEASON_OVR;
   CC_SEASON_OVR_YEAR=ccNowYear();
   // 2025-й: книга 2026-го не читается — рейтинг года складывается из карточек 2025-го (t1–t3).
-  const LEDGER=ccIs2025() ? null : CC_LEDGER_2026;
+  const LEDGER=ccNowYear()===2025 ? null : CC_LEDGER_2026;
   /* Один вечер — одна строка.
 
      Финалист Мейджора лежит в файле дважды: отдельной карточкой гранд-финала и
@@ -68710,7 +68725,7 @@ function ccSeasonOvr(){
 }
 let CC_EU_ALL={};
 function ccEuCards(){
-  const reg=ccPoolRegion()+(ccIs2025() ? '|2025' : '');
+  const reg=ccPoolRegion()+(ccNowYear()===2025 ? '|2025' : '');
   if(CC_EU_ALL[reg]) return CC_EU_ALL[reg];
   const season=ccSeasonOvr();
   const reg0=ccPoolRegion(), yearCap=ccNowYear();
@@ -68798,7 +68813,7 @@ function ccDuosOf(re, people){
       /* В 2025-м году трио — это настоящий состав: первые двое — ядро пары,
          третий запоминается и пишется в cr.trios (careerPools), а не
          разыгрывается рынком. */
-      const trio=ccIs2025() && entry.duo.length===3;
+      const trio=ccNowYear()===2025 && entry.duo.length===3;
       if(entry.duo.length!==2 && !trio) return;
       const keys=entry.duo.slice(0,2).map(h=>hKey(h)).sort(), id=keys.join('|');
       if(seen.has(id)) return;
@@ -68838,7 +68853,8 @@ function ccSnapshotNow(){
      нужны, а не каждый кап». Дуо-год не тронут. */
   const today=careerToday();
   // 2025: снимок идёт за Мейджором — составы того года измерены по каждому.
-  if(ccIs2025()){ let s25=CC_SNAPSHOTS_2025[0]; CC_SNAPSHOTS_2025.forEach(s=>{ if(today>=s.from) s25=s; }); return s25; }
+  // Люди 2025-го: снимок по Мейджорам 2025-го; во втором году карьеры (календарь 2026-й) — последний, t3.
+  if(ccNowYear()===2025){ let s25=CC_SNAPSHOTS_2025[0]; CC_SNAPSHOTS_2025.forEach(s=>{ if(today>=s.from) s25=s; }); return s25; }
   let snap=CC_SNAPSHOTS[0];
   if(typeof careerSquadSize==='function' && CAREER && CAREER.career && careerSquadSize()===3) return snap;
   CC_SNAPSHOTS.forEach(s=>{ if(today>=s.from) snap=s; });
@@ -68865,7 +68881,7 @@ function careerPools(){
   const duos=ccSeat(ccDuosOf(snap.playIn, ccPeopleOf(snap.playIn)), seated);
   /* 2025: третьи — с карточек, один раз на снимок. Записываются в ЖИВУЮ
      карьеру, потому что читает их комната оттуда (careerCupField). */
-  if(ccIs2025() && CAREER && CAREER.career && !CC_REGION_AS && CAREER.career.triosSeeded!==snap.tag){
+  if(ccNowYear()===2025 && careerSquadSize()===3 && CAREER && CAREER.career && !CC_REGION_AS && CAREER.career.triosSeeded!==snap.tag){
     const cr=CAREER.career; cr.trios=cr.trios||{};
     duos.forEach(d=>{ if(d.third && !seated.has(d.third)){ cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')]=d.third; seated.add(d.third); } });
     cr.triosSeeded=snap.tag;
@@ -69008,6 +69024,11 @@ function careerPools(){
      втроём, пар и не должно становиться больше: их должно становиться меньше
      ровно на треть. Пересборка возвращается в дуо-год. */
   if(careerSquadSize()!==3) ccRemadeDuos(freed).forEach(d=>duosLive.push(d));
+  /* Дуо-год карьеры 2025-го: сцена — люди 2025-го, настоящих пар 2026-го у неё
+     нет. Ядра трио 2025-го уже стоят парами (ccDuosOf); все свободные сцены
+     не ниже полосы Дивизиона 1 собираются в пары сами — сначала те, кто играл
+     вместе на записи (ccRemadeDuos), остальные — сосед по силе с соседом. */
+  if(careerSquadSize()!==3 && ccContinuity()) ccContinuityDuos(duosLive);
   duosLive.forEach(d=>{ if(d && d.cards) d.cards=d.cards.map(liftOne); });
   /* И все остальные имена ростера — свободными агентами.
 
@@ -69091,6 +69112,19 @@ function ccRecordedMates(){
   CC_REC_MATES=m; return m;
 }
 function ccRecordedTogether(a, b){ const m=ccRecordedMates(); const s=m.get(hKey(a)); return !!(s && s.has(hKey(b))); }
+function ccContinuityDuos(duosLive){
+  const taken=new Set(); duosLive.forEach(d=>d.cards.forEach(c=>taken.add(hKey(c))));
+  const floor=ccBand(1, ccPoolRegion()==='ALL' ? undefined : ccPoolRegion())-2;
+  const free=careerRosterNowEU().filter(p=>!taken.has(hKey(p)) && ccCardOvr(p)>=floor).map(p=>{ const c={...p}; c._k=hKey(p); return c; });
+  if(free.length<2) return;
+  const made=ccRemadeDuos(free);
+  made.forEach(d=>{ duosLive.push(d); d.cards.forEach(c=>taken.add(hKey(c))); });
+  const rest=free.filter(c=>!taken.has(hKey(c))).sort((a,b)=>ccCardOvr(b)-ccCardOvr(a));
+  for(let i=0; i+1<rest.length; i+=2){
+    const a=rest[i], b=rest[i+1];
+    duosLive.push({cards:[a, b], avg:(ccCardOvr(a)+ccCardOvr(b))/2, _remade:true});
+  }
+}
 function ccRemadeDuos(freed){
   const out=[];
   if(!freed || freed.length<2) return out;
