@@ -37332,6 +37332,7 @@ const LOGO_DIR='logos/';
 // club name, the file is called "Virtus.pro.png", the onerror handler removes
 // the image and nothing says why. Seven files, seven badges back.
 const CLUB_LOGO={
+  'Shimo Crew':'Shimo.png',   // сейв, подписавший клуб под старым именем (21.09, несколько часов на проде)
   'Virtus Pro':'Virtus.pro.png',
   'SOLARY':'Solary.png',
   'GodLike Esports':'GodLike.png',
@@ -64624,7 +64625,7 @@ const CAREER_CRESTS=new Set([
   'Lynox_Esport.png','Lyost_Esport.png','MGA_Esport.png','MOUZ.png','Matrix.png','NEXUS.png',
   'NOM_eSports.png','NTO_Corp.png','Natare_Six.png','Natus_Vincere.png',
   'Northern_Star_Gaming.png','OCE5N.png','ORA_Esport.png','PARIVISION.png','PWR.png',
-  'Poyo_Esports.png','QT_DIG.png','R8_Esports.png','ROC_Esports.png','SORIN.png','Shimo_Crew.png','ShindeN.png',
+  'Poyo_Esports.png','QT_DIG.png','R8_Esports.png','ROC_Esports.png','SORIN.png','Shimo.png','ShindeN.png',
   'Solary.png','T1.png','TRKF_E-Sport.png','TSM.png','TYT_Esports.png','Team_Falcons.png',
   'Team_HavoK.png','Team_Liquid.png','Team_STM.png','Team_Spirit.png','Team_Vitality.png',
   'Twisted_Minds.png','Virtus.pro.png','Void_Esports.png','Vulcan_Esport.png','Wave_Esports.png',
@@ -64736,11 +64737,11 @@ const CC_ORG_NEW=[
   // drops these. Left in place so the list reads as the full crossover set.
   {name:'Team Falcons',   tier:92, n:0, newcomer:true},
   {name:'Tundra Esports', tier:87, n:0, newcomer:true},
-  /* Shimo Crew — его просьба 21 сентября 2026 (Notion «bags», x.com/ShimoCrew, герб
-     logos/Shimo_Crew.png с их аватара). Призовых нет ни на esportsearnings, ни на
+  /* Shimo (до вечера 21.09 — «Shimo Crew») — его просьба 21 сентября 2026 (Notion «bags», x.com/ShimoCrew, герб
+     logos/Shimo.png с их аватара). Призовых нет ни на esportsearnings, ни на
      Liquipedia — молодой клуб; уровень 80 — чуть выше пола списка (CC_ORG_EARN_FLOOR 78),
      это оценка, а не замер. */
-  {name:'Shimo Crew',     tier:80, n:0, newcomer:true},
+  {name:'Shimo',          tier:80, n:0, newcomer:true},   // 21.09 вечер, его слово: «Shimo, просто не Crew»
   /* Его четыре, 30 августа («на рабочем столе орги, добавил новые»): гербы
      легли в logos/. Уровни — по тому же ряду призовых esportsearnings, что и
      выше: TSM (~$15M за историю) рядом с Vitality/Cloud9, Gambit (~$18M, но
