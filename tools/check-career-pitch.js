@@ -90,7 +90,7 @@ const BOOT = `
     CAREER.pitch.done=null; CAREER.career.day=ccAddDays(CAREER.pitch.since, 20); CAREER.career.orgRecent=null;
     check('через двадцать дней без окна просьба ещё в силе и клуб садится', careerPitchOn() && careerOrgOffers().some(o=>o.name===near.name), CAREER.career.day);
     // Плитка называет ближайшую сессию кубка, а не потолок просьбы (его вопрос 21.09 «почему до 6 марта»).
-    check('срок на плитке — ближайшая сессия кубка', careerPitchDue()<CAREER.pitch.until && (typeof ccCupWeeks==='function' ? ccCupWeeks() : CC_CUP_WEEKS).some(w=>w[1]===careerPitchDue() || w[2]===careerPitchDue()), careerPitchDue()+' / '+CAREER.pitch.until);
+    check('срок на плитке — назавтра после ближайшей сессии кубка', careerPitchDue()<CAREER.pitch.until && (typeof ccCupWeeks==='function' ? ccCupWeeks() : CC_CUP_WEEKS).some(w=>ccAddDays(w[1],1)===careerPitchDue() || ccAddDays(w[2],1)===careerPitchDue()), careerPitchDue()+' / '+CAREER.pitch.until);
     CAREER.career.day=CAREER.pitch.since;
     out.notes.asked=near.name+': '+hits+'/'+TRIES;
     check('названный клуб стоит в предложениях каждый раз', hits===TRIES,
