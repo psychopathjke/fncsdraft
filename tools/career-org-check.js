@@ -40,7 +40,7 @@ const BOOT = `
   // Every club on any card ever, against the ones with somebody now.
   const ever = new Set(); eu.forEach(p => { if (p.org) ever.add(p.org); });
   out.everOrgs = ever.size;
-  out.pool = careerOrgPool().map(o => ({name:o.name, tier:o.tier, n:o.n, logo:clubLogoFile(o.name)}));
+  out.pool = careerOrgPool().map(o => ({name:o.name, tier:o.tier, n:o.n, logo:clubLogoFile(o.name), newcomer:!!o.newcomer}));
   // The same club under two names would show up as two rows sharing one crest.
   const seen = {}, dupes = [];
   out.pool.forEach(o => { if (seen[o.logo]) dupes.push(seen[o.logo] + ' / ' + o.name);
@@ -88,7 +88,9 @@ console.log('');
 if (out.dupes.length) fail('one club, two rows: ' + out.dupes.join(', '));
 else console.log('  ok   no club appears twice under two spellings');
 
-const empty = out.pool.filter(o => !(o.n > 0));
+// Новички (CC_ORG_NEW) входят в сцену без состава — так и задумано (Liquid, Spirit, Shimo Crew…);
+// пустым считается клуб, выведенный из ростера, у которого никого не осталось.
+const empty = out.pool.filter(o => !(o.n > 0) && !o.newcomer);
 if (empty.length) fail('clubs with no players: ' + empty.map(o => o.name).join(', '));
 else console.log('  ok   every club in the pool fields somebody this year');
 

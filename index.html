@@ -66475,7 +66475,7 @@ function ccMpSeedOn(seed){
   CC_DROP_STAGE_N=0;
   // Красная строка прошлого вечера не должна глушить сегодняшнюю: метка
   // «первое расхождение» — на вечер, а не на вкладку.
-  CC_MP_SPLIT_AT=null; CC_MP_LEAVE=false;
+  CC_MP_SPLIT_AT=null; CC_MP_LEAVE=false; CC_MP_PASSED=null;
   try{ document.querySelectorAll('.cc-mp-split').forEach(function(e){ e.remove(); }); }catch(e){}
   /* И мир — заново, у обоих, из одного и того же командного состояния.
 
@@ -68279,7 +68279,7 @@ function ccMpDeadline(fn, ms){
     var quiet=now-Math.max(start, seen);
     var left=!fn.onlyLost && now-start>=CC_MP_LEAVE_MS && ccMpPeerLeft();
     if(left){ try{ ccMpTell(L().ccMpLeft); }catch(e){} }
-    if(left || quiet>=cap || now-start>=ccMpSyncMax()){ clearInterval(id); try{ fn(); }catch(e){} }
+    if(left || quiet>=cap || now-start>=ccMpSyncMax()){ clearInterval(id); ccMpPassed(left ? 'left' : quiet>=cap ? 'cap' : 'max'); try{ fn(); }catch(e){} }
   }, 1000);
   return id;
 }
@@ -68380,6 +68380,7 @@ function ccMpWaitReset(){ CC_MP_PEER_DONE=false; CC_MP_WAITERS.length=0; }
    Разбудить ждущих здесь — то же самое, что и «он досчитал»: доиграть врозь
    можно, стоять насмерть нельзя. */
 let CC_MP_LOST_T=null;
+const CC_MP_LOST_RELEASE_MS=150000;
 function ccMpLinkLost(){
   /* Обрыв отпускает ожидания НЕ сразу, а если связь не вернулась за CC_MP_LEAVE_MS: короткий
      обрыв переподключается сам, и пропущенное доезжает очередью ('since'); отпустив барьер
@@ -68388,17 +68389,24 @@ function ccMpLinkLost(){
   const now=CC_MP_WAITERS.filter(function(fn){ return fn && fn.onlyLost; });
   if(now.length){ CC_MP_WAITERS.splice(0, CC_MP_WAITERS.length, ...CC_MP_WAITERS.filter(function(fn){ return !(fn && fn.onlyLost); })); now.forEach(function(fn){ try{ fn(); }catch(e){} }); }
   if(CC_MP_LOST_T) return;
+  /* Окно — 150 секунд, а не 40. Отпущенный по обрыву барьер — это вечер врозь с этой игры:
+     клиент уходит вперёд один, а напарник, дождавшись его прихода из очереди, читает «peer
+     ahead». Сорок секунд обрыва — это телефон с погасшим экраном или свёрнутая вкладка, а не
+     ушедший человек; переподключение с отступом (1.5 → 30 с) в сорок секунд может и не
+     уложиться. Пока связи нет, приход напарника всё равно доедет очередью (since) — ждать
+     его дешевле, чем разъехаться. Настоящий уход по-прежнему ловит потолок ccMpDeadline. */
   CC_MP_LOST_T=setTimeout(function(){
     CC_MP_LOST_T=null;
     if(typeof MP!=='undefined' && MP.state==='live') return;
+    ccMpPassed('lost');
     const list=CC_MP_WAITERS.slice();
     CC_MP_WAITERS.length=0;
     list.forEach(function(fn){ try{ fn(); }catch(e){} });
-  }, CC_MP_LEAVE_MS);
+  }, CC_MP_LOST_RELEASE_MS);
 }
 function ccMpPeerDone(){
   if(CC_MP_PEER_DONE) return;
-  CC_MP_PEER_DONE=true;
+  CC_MP_PEER_DONE=true; ccMpPassed('done');
   /* Ожидание ЗАКРЫТИЯ вечера «он досчитал» не будит: его хеш — это как раз то,
      чего закрытие ждёт, и сервер закроет обоих, как только придёт второй.
      Живой сторож 28 августа: таблицы сошлись до байта, а на экране «напарник
@@ -68414,6 +68422,14 @@ let CC_MP_QN={};
 function ccMpQnReset(){ CC_MP_QN={}; }
 function ccMpQn(kind){ return (CC_MP_QN[kind]=(CC_MP_QN[kind]||0)+1); }
 let CC_MP_SPLIT_AT=null;
+/* ПОЧЕМУ Я ПРОШЁЛ БАРЬЕР ОДИН — едет в следующем приходе (game@ … why), и напарник читает это в
+   своей красной строке. Скрин тестера 21.09: «Вечера разошлись на игре 1 · peer ahead · game@#2
+   g2» — напарник уже во второй игре, когда этот стоит на барьере первой; значит, тот прошёл
+   барьер первой игры без чужого прихода. Дверей у барьера четыре (потолок тишины, обрыв своей
+   связи, «он досчитал», выход из вечера), и по одной строке не видно, в какую вышли. Теперь
+   видно: «peer passed: lost @g1». */
+let CC_MP_PASSED=null;
+function ccMpPassed(why){ try{ CC_MP_PASSED=String(why)+' @g'+String(CC_MP_GAME||0); }catch(e){ CC_MP_PASSED=String(why); } }
 /* Напарник не дошёл до вопроса за три минуты — сказать об этом.
 
    Барьер после этого пропускает вечер дальше, иначе он встал бы насмерть. Но
@@ -68459,7 +68475,7 @@ function ccMpSplitSeen(n, detail){
 let CC_MP_LEAVE=false;
 function ccMpSplitLeave(fromPeer){
   if(CC_MP_LEAVE) return;
-  CC_MP_LEAVE=true;
+  CC_MP_LEAVE=true; ccMpPassed('leave');
   if(!fromPeer && typeof MP!=='undefined' && MP.act) try{ MP.act('leave', {by:ccMpId()}); }catch(e){}
   try{ ccMpPeerDone(); }catch(e){}
   try{ var all=CC_MP_WAITERS.slice(); CC_MP_WAITERS.length=0; all.forEach(function(fn){ try{ fn(); }catch(e){} }); }catch(e){}
@@ -68609,12 +68625,12 @@ function ccMpSync(kind, sum, qn){
      Поэтому приход к ЛЮБОМУ барьеру более поздней игры отпускает ожидание:
      ждать уже некого, это расхождение, и оно так и называется. */
   var myG=(CC_MP_GAME||null);
-  MP.act(at, {by:me, sum:sum, q:qn, g:myG, fl:CC_MP_FIELD_LIST||undefined, st:CC_MP_STATE_KEYS||undefined, yp:CC_MP_YOU_PARTS||undefined});
+  MP.act(at, {by:me, sum:sum, q:qn, g:myG, fl:CC_MP_FIELD_LIST||undefined, st:CC_MP_STATE_KEYS||undefined, yp:CC_MP_YOU_PARTS||undefined, why:CC_MP_PASSED||undefined});
   // Его «я дальше» могло приехать РАНЬШЕ, чем мы сюда дошли, — оно в очереди.
   // На догоне после перезагрузки напарник ВПЕРЕДИ по построению — это не расхождение.
   var aheadQ=(MP.ahead && !CC_MP_REPLAY) ? MP.ahead(myG) : null;
   if(aheadQ){
-    ccMpSplitSeen(myG, 'peer ahead · '+aheadQ.kind+'#'+(aheadQ.payload||{}).q+' g'+(aheadQ.payload||{}).g+' · rolls '+CC_MP_ROLLS+' · '+CC_BUILD);
+    ccMpSplitSeen(myG, 'peer ahead · '+aheadQ.kind+'#'+(aheadQ.payload||{}).q+' g'+(aheadQ.payload||{}).g+((aheadQ.payload||{}).why ? ' · peer passed: '+(aheadQ.payload||{}).why : '')+' · rolls '+CC_MP_ROLLS+' · '+CC_BUILD);
     return Promise.resolve();
   }
   /* Он уже ответил на ЭТОТ вопрос — значит и дошёл. Ждать нечего, но его
@@ -68662,7 +68678,7 @@ function ccMpSync(kind, sum, qn){
       if(!m.payload || m.payload.by===me) return;
       // Напарник дошёл до барьера более поздней игры — нас он уже не ждёт.
       if(/@$/.test(String(m.kind||'')) && m.payload.g!=null && myG!=null && m.payload.g>myG){
-        ccMpSplitSeen(myG, 'peer ahead · '+m.kind+'#'+m.payload.q+' g'+m.payload.g+' · rolls '+CC_MP_ROLLS+' · '+CC_BUILD);
+        ccMpSplitSeen(myG, 'peer ahead · '+m.kind+'#'+m.payload.q+' g'+m.payload.g+(m.payload.why ? ' · peer passed: '+m.payload.why : '')+' · rolls '+CC_MP_ROLLS+' · '+CC_BUILD);
         done(); return;
       }
       if(m.kind!==at) return;
