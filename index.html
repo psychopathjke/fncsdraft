@@ -100138,10 +100138,16 @@ function ccArcLanRegion(rng){
 // Which major a final the log holds belongs to, read off its month: the year
 // is the same measured calendar every season, so May is always Major 1's
 // window and August Major 2's, and the trios year splits in thirds.
-function ccArcMajorOf(day, size){
+// Календарь сезона N: 2024, 2025 или 2026 (все годы после — по календарю 2026-го).
+function ccArcCalYear(sn){ const y=(typeof ccSeasonYearOf==='function') ? ccSeasonYearOf(sn) : 2026; return y>=2026 ? 2026 : y; }
+// Сколько Мейджоров в году того сезона: 2026 — два, 2025 и 2024 — три.
+function ccArcMajors(sn){ return ccArcCalYear(sn)===2026 ? [1,2] : [1,2,3]; }
+function ccArcMajorOf(day, sn){
   const m=+String(day||'').slice(5,7)||1;
-  if(size===3) return m<=4 ? 1 : m<=7 ? 2 : 3;
-  return m<=6 ? 1 : 2;
+  const y=ccArcCalYear(sn);
+  if(y===2025) return m<=2 ? 1 : m<=4 ? 2 : 3;       // финалы: февраль, апрель, август
+  if(y===2024) return m<=2 ? 1 : m<=5 ? 2 : 3;       // февраль, май, июль
+  return m<=6 ? 1 : 2;                                // май, август
 }
 function careerArchiveSeason(sn){
   const cr=CAREER.career;
@@ -100162,7 +100168,7 @@ function careerArchiveSeason(sn){
     .concat((e.mates && e.mates.length) ? e.mates : (e.mate?[e.mate]:[])).join(' & ');
   (cr.log||[]).forEach(e=>{
     if(e.season!==sn) return;
-    if(e.kind==='major' && e.stage==='final') me.majors[ccArcMajorOf(e.day, size)]=e;
+    if(e.kind==='major' && e.stage==='final') me.majors[ccArcMajorOf(e.day, sn)]=e;
     if(e.kind==='summit' && e.stage==='final') me.summit=e;
     if(e.kind==='rc' && e.stage==='final') me.paris=e;
     if(e.kind==='globals') me.gc=e;
@@ -100199,7 +100205,7 @@ function careerArchiveSeason(sn){
      The LANs are won by the teams that qualified for them: the Summit by
      some region's Major 1 champion, the Global Championship by a team that
      won its way there that same year. */
-  const majors=size===3?[1,2,3]:[1,2];
+  const majors=ccArcMajors(sn);
   const scene={};
   REGIONS.forEach(r=>{
     const rng=seed('scene|'+r.code);
@@ -100706,8 +100712,12 @@ function careerArcReg(r){ CH_ARC_R=r; CH_ARC_OPEN=null; careerRenderHub('hist');
    трио-архива), не разыгран, пока сезон не кончится. */
 function ccArcDoneBy(id){
   let day=null;
+  // Финал Мейджора в календарях 2025/2024 зовётся Major<n>_2025_Final / Major<n>_2024_Final.
+  const alt=/^Major(d)_Final$/.exec(String(id||''));
+  const ids=alt ? [id, 'Major'+alt[1]+'_2025_Final', 'Major'+alt[1]+'_2024_Final'] : [id];
+  if(id==='GlobalChampionship') ids.push('GlobalChampionship2025', 'GlobalChampionship2024');
   careerYearDays().forEach((list, iso)=>{
-    if(list.some(e=>e.id===id) && (!day || iso>day)) day=iso;
+    if(list.some(e=>ids.indexOf(e.id)>=0) && (!day || iso>day)) day=iso;
   });
   return !!day && careerToday()>day;
 }
