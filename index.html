@@ -64062,7 +64062,7 @@ function careerAgentTileHTML(){
            ходит; так же, как в самом диалоге. -->
       ${careerPitchOn()
         ? `<div class="ch-row"><em>${esc(careerPitchClub()||'')}</em><b>${
-            L().ccPitchOn(ccDayLabel(CAREER.pitch.until))}</b></div>`
+            L().ccPitchOn(ccDayLabel(careerPitchDue()))}</b></div>`
         : (careerPitchClubs().length
             ? `<button class="ch-swap" title="${esc(L().ccPitchWhat)}"
                 onclick="careerPitchAsk()">${L().ccPitchBtn}</button>`
@@ -73270,6 +73270,18 @@ function careerPitchClub(){
   return careerPitchOn() ? (CAREER.pitch.club||null) : null;
 }
 function careerPitchReach(){ return careerPitchOn() ? CC_PITCH_REACH : 0; }
+/* До какого дня «идут переговоры» на плитке: до ближайшей сессии кубка дивизиона — окно
+   предложений открывается после неё (см. runCareerCup → careerOrgOffers). Потолок просьбы
+   (pitch.until, 60 дней) показывается только там, где кубков впереди нет. */
+function careerPitchDue(){
+  const p=CAREER && CAREER.pitch; if(!p) return null;
+  const today=careerToday();
+  let due=null;
+  (typeof ccCupWeeks==='function' ? ccCupWeeks() : (typeof CC_CUP_WEEKS!=='undefined' ? CC_CUP_WEEKS : [])).forEach(w=>{
+    [w[1], w[2]].forEach(d=>{ if(d && d>=today && d<=p.until && (!due || d<due)) due=d; });
+  });
+  return due || p.until;
+}
 /* Кому написать — выбирает игрок.
 
    Его правка, 25 августа, поверх первой версии: «именно спросить, клуб который
@@ -79201,7 +79213,7 @@ function careerSocialHTML(){
                    чтоб подписали игрока». Пока просьба в работе — кнопки нет,
                    вместо неё строка о том, до какого числа он ходит. -->
               ${careerPitchOn()
-                ? `<div class="dm-asked">${esc(careerPitchClub()||'')} — ${L().ccPitchOn(ccDayLabel(CAREER.pitch.until))}</div>`
+                ? `<div class="dm-asked">${esc(careerPitchClub()||'')} — ${L().ccPitchOn(ccDayLabel(careerPitchDue()))}</div>`
                 : (careerPitchClubs().length
                     ? `<button class="cc-back dm-pitch-open" title="${esc(L().ccPitchWhat)}"
                         onclick="ccClubPickOpen(\'${open.id}\')">${L().ccPitchBtn}</button>`
