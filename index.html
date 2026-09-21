@@ -64993,12 +64993,14 @@ const CC_REGIONS=['EU','NAC','NAW','BR','ASIA','ME','OCE'];
 /* Every region can be played from now. It used to be Europe only for a built
    player, because the country picker is a map and only Europe had one; the
    other six are in CC_REGION_MAPS. */
-function ccRegionReady(r){ return !!CC_MAP_FOR.hasOwnProperty(r); }
+// Регионы года: в 2024-м NA West не было (Epic ввёл его в 2025-м) — его слово 21 сентября: «NAW убери тогда с 24 года».
+function ccYearRegions(){ return ccPickedYear()===2024 ? CC_REGIONS.filter(r=>r!=='NAW') : CC_REGIONS; }
+function ccRegionReady(r){ return !!CC_MAP_FOR.hasOwnProperty(r) && ccYearRegions().indexOf(r)>=0; }
 function ccRenderRegions(){
   const plate=document.getElementById('ccPingServer');
   if(plate) plate.textContent=L().ccPingServer(ccServerCity(CC.region));
   const box=document.getElementById('ccRegionChips'); if(!box) return;
-  box.innerHTML=CC_REGIONS.map(r=>{
+  box.innerHTML=ccYearRegions().map(r=>{
     const ready=ccRegionReady(r);
     return `<button class="cc-chip${CC.region===r?' on':''}${ready?'':' soon'}" `+
       `${ready?'':'disabled title="'+esc(L().ccRegionSoon)+'"'} `+
@@ -65026,6 +65028,9 @@ function ccPickDiff(id){ CC.diff=id; ccRenderChips(); ccSync(); }
 function ccPickedYear(){ return (CC && (CC.year===2025 || CC.year===2024)) ? CC.year : 2026; }
 function ccPickYear(y){
   CC.year=(y===2025 || y===2024) ? y : 2026;
+  // NA West в 2024-м нет: выбранный — в NA Central, тем же путём, что кнопка.
+  if(CC.region && ccYearRegions().indexOf(CC.region)<0){ ccPickRegion('NAC'); ccRenderChips(); ccRenderCard(); ccSync(); return; }
+  ccRenderRegions();
   // Карточка, взятая в другом году, — уже не та карточка: список и превью собираются заново.
   if(CC.mode==='card'){ CC.card=null; if(typeof ccRenderList==='function') ccRenderList(); }
   ccRenderChips(); ccRenderCard(); ccSync();

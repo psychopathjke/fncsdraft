@@ -26,6 +26,13 @@ const BOOT = `
     openCareerCreate();
     const chips=document.getElementById('ccYearChips');
     check('на экране создания три чипа года', chips && chips.querySelectorAll('button').length===3, chips && String(chips.querySelectorAll('button').length));
+    // NA West в 2024-м не было: чипа нет, выбранный NAW уходит в NA Central.
+    ccPickYear(2026); ccPickRegion('NAW');
+    ccPickYear(2024);
+    check('NAW при переходе на 2024 стал NAC', CC.region==='NAC', CC.region);
+    check('чипа NA West в 2024-м нет', ![...document.querySelectorAll('#ccRegionChips button')].some(b=>/NA West|NAW/i.test(b.textContent)), [...document.querySelectorAll('#ccRegionChips button')].map(b=>b.textContent).join(','));
+    ccPickRegion('NAW'); check('NAW в 2024-м не выбирается', CC.region==='NAC');
+    ccPickRegion('EU');
     ccPickYear(2024);
     check('чип 2024 включён', chips.querySelector('button.on') && /2024/.test(chips.querySelector('button.on').textContent));
     check('подпись года меняется', /2024|Fort Worth|Форт/.test(document.getElementById('ccYearNote').textContent), document.getElementById('ccYearNote').textContent);
