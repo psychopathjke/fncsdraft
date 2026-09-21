@@ -2073,7 +2073,13 @@
   #screen-career-create .cc-chip:hover{border-color:#35e0ff;}
   #screen-career-create .cc-chip.on{background:#00b090;border-color:#00b090;color:#fff;}
   #screen-career-create .cc-chip.soon:hover{border-color:rgba(140,175,255,.24);}
-  #screen-career-create .cc-note,
+  /* Подписи под полями экрана создания. Ниже по файлу есть ДРУГОЙ .cc-note — карточка
+     заметки в хабе (grid, 16px, подсветка при наведении), и он перекрывал эти: подпись
+     про регион шла крупным лавандовым текстом с ховером. Его слово 21 сентября:
+     «чет цвет или дизайн не нравится». Здесь — своя, маленькая и тихая. */
+  #screen-career-create .cc-note{display:block;grid-template-columns:none;font-size:12px;line-height:1.45;
+    font-weight:500;color:rgba(205,218,246,.66);margin-top:8px;padding:0;background:none;border:none;border-radius:0;cursor:default;width:auto;}
+  #screen-career-create .cc-note:hover{background:none;}
   #screen-career-create .cc-cardbox .cc-empty{color:#8094c4;}
   #screen-career-create .cc-c:hover{border-color:#35e0ff;}
   #screen-career-create .cc-back{color:#cfe0ff;}
@@ -58893,6 +58899,14 @@ const CC_MATE_STAGE={Gf:6, Final:6, DivFinal:5, Lcq:4,
                      Heat4:3, Heat3:3, Heat2:3, Heat1:3, Playin:2, Open:1};
 function ccMateNow(card){
   if(!card) return null;
+  /* Состав — по всем картам человека за год и в размере сезона: в 2025-м это трио
+     («не пишет в трио вот это» — его скрин 21 сентября: у Pollo стояло «Now with
+     Peterbot», а он в трио с Peterbot и Acorn). Самая новая карта года (Лион) записей
+     состава не несёт — читаются карты стадий. */
+  const seats=(typeof SHOWN_SCREEN!=='undefined' && SHOWN_SCREEN==='screen-career-create' && typeof CC!=='undefined' && CC)
+    ? (CC.year===2025 ? 2 : 1) : careerMateSeats();
+  const real=ccRealMatesOf(card, seats);
+  if(real.length) return real.map(m=>m.handle).join(', ');
   let best=null, rank=-1;
   rosterEntriesOf(card).forEach(function(e){
     const r=CC_MATE_STAGE[e.stage]!=null ? CC_MATE_STAGE[e.stage] : 0;
