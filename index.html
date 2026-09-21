@@ -74560,7 +74560,12 @@ function ccYearLabel(id, day, from){
   /* 2024-й: квалификатор (раунд), полуфинал (день), финал — под именем финала 2026-го. */
   const m24=/^Major(\d)_2024_(?:Q([12])R([123])|Semi([123])|Final)$/.exec(id);
   if(m24){
-    if(m24[2]) return L().ccYr24Qual(+m24[1], +m24[2], +m24[3]);
+    if(m24[2]){
+      // Европа и NA Central: четыре раунда — суббота «2–3», воскресенье «4». См. CC_M24.qDeep.
+      const deep=(typeof DEEP_MAJOR_REGIONS!=='undefined' && typeof ccCareerRegion==='function' && CAREER && CAREER.career && DEEP_MAJOR_REGIONS.has(ccCareerRegion()));
+      const r=+m24[3];
+      return L().ccYr24Qual(+m24[1], +m24[2], deep ? (r===2 ? '2–3' : r===3 ? '4' : '1') : r);
+    }
     if(m24[4]) return L().ccYr24Semi(+m24[1], +m24[4]);
     id='Major'+m24[1]+'_Final';
   }
@@ -92757,10 +92762,15 @@ const CC_M24={
   upper:{1:{games:5, kill:4, vr:true, cut:0}, 2:{games:5, kill:4, vr:true, cut:0}, 3:{games:3, kill:4, cut:25}},
   lower:{1:{games:10, kill:2, cut:100}, 2:{games:6, kill:3, cut:50}, 3:{games:3, kill:4, cut:15}},
   final:{games:12, kill:4, cut:0, field:50},
+  /* Европа и NA Central: четыре раунда (окна Tracker — пт, сб 14:00 и 18:00, вс): суббота
+     играется двумя раундами подряд (2 → 500, 3 → 250), воскресенье — четвёртый, очки серии.
+     Отсечки 500/250 — свои; в остальных регионах три раунда (у них и было три). */
+  qDeep:{2:{games:10, kill:2, cut:500}, 3:{games:10, kill:2, cut:250}},
   upperSize:50, lowerSize:200, vrSeats:5
 };
+function ccM24Deep(){ return DEEP_MAJOR_REGIONS.has(ccCareerRegion()); }
 function ccM24Spec(ev){
-  if(ev.stage==='q') return CC_M24.q[ev.r];
+  if(ev.stage==='q') return (ev.r===2 && ccM24Deep()) ? CC_M24.qDeep[2] : CC_M24.q[ev.r];
   if(ev.stage==='semi'){ const m=ccM24Of(ev.n); return CC_M24[(m && m.bracket) || 'upper'][ev.r]; }
   return CC_M24.final;
 }
@@ -96624,7 +96634,7 @@ async function runCareerMajor2024(){
   const m=ccM24State(ev.n);
   const rowsOf=rows=>(rows||[]).map(r=>r==='you' ? you : ccMajorTeamFrom(r));
   const seedOf=t=>ccSeedRow(t, you, ccMajorSeatRow);
-  const spec=ccM24Spec(ev);
+  let spec=ccM24Spec(ev);
   let field, stageLabel=ev.label;
   const openRound=(ev.stage==='q' && ev.r===1);
   if(ev.stage==='q'){
@@ -96645,10 +96655,31 @@ async function runCareerMajor2024(){
     {lobbySize:ccTeams(50), stageName:stageLabel, mapReplay:true, choices:true, stopOnYourDeath:true,
      stopOnWin:!!spec.vr, roomOnly:!openRound,
      dropEachGame:(g,room)=>openRound ? null : careerLandingPick(room||field, you, stageLabel, ['major'])});
-  const ranked=ccM24Rank(field);
-  const place=ranked.indexOf(you)+1;
-  let through=false, note='';
+  let ranked=ccM24Rank(field);
+  let place=ranked.indexOf(you)+1;
+  let through=false, note='', twoRounds=false;
   m.got[ev.id]=true;
+  /* Европа и NA Central, суббота: раунд 2 показан своей карточкой, прошедшие тут же играют
+     раунд 3 — и дальше вечер считается по нему (в записи q[..].r2 лежит топ-250 третьего). */
+  if(ev.stage==='q' && ev.r===2 && ccM24Deep()){
+    const pass2=place<=spec.cut;
+    const sh1=createStageCardShell(stageLabel+' — '+field.length);
+    await revealStageLog(you, sh1, true);
+    finalizeStageCard(sh1, place, field.length, you.stagePts, pass2, false, pass2 ? L().ccRelPass(spec.cut) : L().ccRelFail(spec.cut));
+    await revealStandings(sh1, ranked, you, spec.cut);
+    careerPrAdd(ranked, {div:cr.division, kind:'major', stage:'q'});
+    if(pass2){
+      const room=ranked.slice(0, spec.cut);
+      const sp3=CC_M24.qDeep[3];
+      const label3=L().ccYr24Qual(ev.n, ev.q, 3);
+      room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; t.stageLog=[]; });
+      await simulateGamesLive(room, sp3.games, majorPoints, sp3.kill, 'stage', 0, null, null,
+        {lobbySize:ccTeams(50), stageName:label3, mapReplay:true, choices:true, stopOnYourDeath:true, roomOnly:true,
+         dropEachGame:(g,rm)=>careerLandingPick(rm||room, you, label3, ['major'])});
+      field=room; spec=sp3; stageLabel=label3; twoRounds=true;
+      ranked=ccM24Rank(field); place=ranked.indexOf(you)+1;
+    }
+  }
   if(ev.stage==='q'){
     if(ev.r<3){
       through=place<=spec.cut;
@@ -96706,7 +96737,7 @@ async function runCareerMajor2024(){
   cr.log.push({season:cr.season, day:careerToday(), div:cr.division,
                place:place, of:field.length, pts:you.stagePts,
                passed: fin ? cash>0 : through,
-               ovr:CAREER.player.ovr, games:spec.games, wins:you.wins||0,
+               ovr:CAREER.player.ovr, games:spec.games*(twoRounds ? 2 : 1), wins:you.wins||0,
                elims:you.stageElims||0,
                avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
                mate: mate ? mate.handle : null, mates: ccLogMates(mates), prize:ccShareOf(cash, you), kind:'major', stage:ev.stage,

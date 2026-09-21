@@ -87,11 +87,13 @@ const BOOT = `
     check('день сдвинулся на 27 января', careerToday()==='2024-01-27', careerToday());
     check('Q1R2 открыт прошедшему', careerMajorCan(careerMajorOn('2024-01-27')));
     const q2=await playThrough('q1r2'); r=last();
-    check('Q1R2: комната 1000, 10 игр', r.of===1000 && r.games===10, r.of+'/'+r.games);
+    // Европа: суббота — раунды 2 и 3 подряд (прошёл второй — вечер записан по третьему: комната 500, 20 игр).
+    check('Q1R2 (Европа): 20 игр на 500 после прохода раунда 2, иначе 10 игр на 1000', (r.games===20 && r.of===500) || (r.games===10 && r.of===1000 && !r.passed), r.of+'/'+r.games+'/'+r.passed);
+    check('подпись субботы — раунды 2–3', /2–3/.test(ccYearLabel('Major1_2024_Q1R2', '2024-01-27', '2024-01-27')), ccYearLabel('Major1_2024_Q1R2', '2024-01-27', '2024-01-27'));
     out.steps.push('q1r2: #'+r.place+' of '+r.of);
     force(m24().q[1].r2); careerSave();
     const q3=await playThrough('q1r3'); r=last();
-    check('Q1R3: комната 250', r.of===250, String(r.of));
+    check('Q1R4 (Европа): комната 250', r.of===250, String(r.of));
     out.steps.push('q1r3: #'+r.place+' of '+r.of);
     const ser=m24().series; const nSer=Object.keys(ser).length;
     check('серия записана на 250 составов', nSer===250, String(nSer));

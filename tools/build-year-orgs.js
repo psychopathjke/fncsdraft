@@ -23,8 +23,10 @@ const GAP_MS = 31000;
 const REG = { 'Europe': 'EU', 'North America': 'NAC', 'North America Central': 'NAC', 'North America West': 'NAW',
               'Brazil': 'BR', 'Asia': 'ASIA', 'Middle East': 'ME', 'Oceania': 'OCE' };
 const PAGES = {
-  2024: { regions: ['Europe', 'North America', 'Brazil', 'Asia', 'Middle East', 'Oceania'], majors: [1, 2, 3], globals: 'Fortnite Champion Series/2024' },
-  2025: { regions: ['Europe', 'North America Central', 'North America West', 'Brazil', 'Asia', 'Middle East', 'Oceania'], majors: [1, 2, 3], globals: 'Fortnite Champion Series/2025' }
+  // extra — подстраницы Мейджора, где стоят те, кто до финала не дошёл (квалификаторы 2024,
+  // лобби последнего шанса 2025); ключ major<n>q, читается после страницы финала.
+  2024: { regions: ['Europe', 'North America', 'Brazil', 'Asia', 'Middle East', 'Oceania'], majors: [1, 2, 3], globals: 'Fortnite Champion Series/2024', extra: ['Qualifier 1', 'Qualifier 2'] },
+  2025: { regions: ['Europe', 'North America Central', 'North America West', 'Brazil', 'Asia', 'Middle East', 'Oceania'], majors: [1, 2, 3], globals: 'Fortnite Champion Series/2025', extra: ['Last Chance Lobby'] }
 };
 const want = process.argv.slice(2).map(Number).filter(y => PAGES[y]);
 const YEARS = want.length ? want : [2024, 2025];
@@ -64,6 +66,7 @@ function players(html) {
     const jobs = [];
     cfg.majors.forEach(n => cfg.regions.forEach(r => jobs.push({ key: 'major' + n, reg: REG[r], title: 'Fortnite Champion Series/' + y + '/Major ' + n + '/' + r })));
     jobs.push({ key: 'globals', reg: null, title: cfg.globals });
+    (cfg.extra || []).forEach(sub => cfg.majors.forEach(n => cfg.regions.forEach(r => jobs.push({ key: 'major' + n + 'q', reg: REG[r], title: 'Fortnite Champion Series/' + y + '/Major ' + n + '/' + r + '/' + sub }))));
     for (const job of jobs) {
       const r = fetchHtml(job.title);
       if (r.err) { console.error(y, job.key, job.reg || 'ALL', 'ERR', r.err, job.title); await sleep(GAP_MS); continue; }
