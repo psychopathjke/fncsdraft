@@ -202,8 +202,11 @@ const BOOT = `
           higher.length > 0, String(higher.length));
     // Win a lobby and see whether one of them turns up over a run of nights.
     let wrote = null;
+    // С напарником подиум приносит «props», а не приглашение (careerDmInbound, правка после
+    // этого сторожа): человек сверху пишет первым и зовёт к себе только на пустое место.
     for (let d = 1; d <= 20 && !wrote; d++) {
       seed(cupDay, 3, 70);
+      CAREER.partner = null; CAREER.partners = [];
       CAREER.career.day = ccAddDays(cupDay, d);
       careerDmInbound(1, 150, true, 3);
       const t = careerDms().find(x =>

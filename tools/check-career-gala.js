@@ -111,6 +111,10 @@ const BOOT = `
     check('и награда месяца', s3.indexOf(L().ccGalaAwardsH)>=0 &&
           s3.indexOf(L().ccGalaMonthWon(ccMonthName('2026-05')))>=0, out.notes.s3);
 
+    // 10.09: перед игроком года — слайд номинаций (CC_GALA_SLIDES=5).
+    ccGalaGo(1);
+    const s35=el().innerHTML;
+    check('четвёртый экран — номинации, ещё не последний', !/ccGalaFinish/.test(s35) && s35.indexOf('ccGalaGo(1)')>=0);
     ccGalaGo(1);
     const s4=el().innerHTML;
     check('последним — игрок года', s4.indexOf('cc-goty')>=0);
@@ -121,7 +125,7 @@ const BOOT = `
           return el().innerHTML.indexOf('cc-goty')>=0; })());
 
     // Назад — и снова числа года.
-    ccGalaGo(-1); ccGalaGo(-1);
+    ccGalaGo(-1); ccGalaGo(-1); ccGalaGo(-1);
     check('назад листается', el().textContent.indexOf(L().ccGalaYearH)>=0);
 
     ccGalaClose();

@@ -102180,8 +102180,13 @@ function ccTwFolRate(tw){ return ccTwSat(tw, CC_TW_SAT.fol); }
 const CC_TW_CEIL=6000000;
 function careerMigrateTwitch(){
   const cr=CAREER && CAREER.career; if(!cr) return false;
-  if(!((cr.twitch||0)>CC_TW_CEIL)) return false;
-  cr.twitch=CC_TW_CEIL;
+  /* Карьера за креатора приносит СВОЙ канал (Ibai — 20 млн): он настоящий, а не наигранный,
+     и потолок для него — его же число. Сторож check-career-creator краснел ровно на этом. */
+  const p=CAREER.player||{};
+  const real=(p.creator && typeof ccProAmFollowers==='function') ? (ccProAmFollowers(p.nick)||0) : 0;
+  const ceil=Math.max(CC_TW_CEIL, real);
+  if(!((cr.twitch||0)>ceil)) return false;
+  cr.twitch=ceil;
   return true;
 }
 function ccStreamViewersNow(){

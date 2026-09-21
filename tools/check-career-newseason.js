@@ -65,10 +65,19 @@ const BOOT = `
       out.notes.steps = [shot('start')];
 
       for (let i = 0; i < window.NSEASONS; i++) {
+        // Трио-год начинается с недобором: с 11.09 перемотка встаёт «не с кем играть», как и
+        // должна. Сторож добирает состав перед годом — ровно то, что сделал бы игрок.
+        for (let k = 0; k < 3 && typeof careerMatesShort === 'function' && careerMatesShort() > 0; k++) {
+          if (typeof careerSeatTopUp === 'function') careerSeatTopUp();
+          const o = careerDms().filter(t => t.state === 'offer' && t.who && !t.who.org && !t.who.fan && !t.who.hater && !t.who.agent && !t.who.brand)[0];
+          if (!o) break;
+          careerDmAccept(o.id);
+        }
         // Walk to the end of the season the way the button does.
         await careerFastForward(400);
         out.notes.steps.push(shot('season ' + CAREER.career.season + ' played'));
         if (!CAREER.career.seasonOver) {
+          out.notes.stuck = {day: careerToday(), ffErr: (typeof CC_FF!=='undefined' && CC_FF && CC_FF.err) || null, next: JSON.stringify(careerNext()), guardHint: 'careerFastForward(400) ходит не больше 400 дней за раз', ffo: (document.querySelector('.cc-ffo-err')||{}).textContent||null, mates: (typeof careerMates==='function') ? careerMates().length : null, seats: (typeof careerMateSeats==='function') ? careerMateSeats() : null, size: CAREER.career.size, short: (typeof careerMatesShort==='function') ? careerMatesShort() : null, ask: (document.getElementById('ccAskModal')||{style:{}}).style.display, askTxt: ((document.getElementById('ccAskModal')||{}).innerText||'').slice(0,120)};
           out.fails.push('season ' + CAREER.career.season + ' never ended');
           break;
         }
@@ -104,7 +113,7 @@ const tmp = path.join(dir, 'probe.html');
 fs.writeFileSync(tmp, src.replace('</body>', BOOT + '</body>'));
 const dom = execFileSync(CHROME, ['--headless=new','--disable-gpu','--no-sandbox',
   '--allow-file-access-from-files','--window-size=1440,900',
-  '--virtual-time-budget=600000','--dump-dom',
+  '--virtual-time-budget=1800000','--dump-dom',
   'file:///' + tmp.replace(/\\/g,'/')], {maxBuffer: 512*1024*1024, encoding:'utf8'});
 const m = dom.match(/PBEGIN([\s\S]*?)PEND/);
 if (!m) { console.error('probe did not run; copy at ' + tmp); process.exit(2); }
