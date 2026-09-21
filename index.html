@@ -7081,7 +7081,7 @@ dmPitchAskClub:c=>'Съезди в '+c+' — я готов подписатьс�
 dmPitchOkClub:c=>'Хорошо, поеду к ним. Отвечу, как поговорю',
 dmPitchYes:c=>c+' готовы посмотреть — жди от них предложение в этом окне',
 dmPitchNo:c=>'В '+c+' сказали, что состав укомплектован. Попробуем другой',
-ccPitchOn:d=>'переговоры идут до '+d, dmPitchAsk:'Обойди клубы, поспрашивай — я готов подписаться',
+ccPitchOn:d=>'клуб напишет '+d, dmPitchAsk:'Обойди клубы, поспрашивай — я готов подписаться',
 dmPitchOk:'Понял. Пройдусь по всем, на кого ты тянешь, и чуть выше. Дай пару недель',
 ccAgentOn:n=>'Менеджер: '+n,
 ccSmm:'СММ',
@@ -9057,7 +9057,7 @@ dmPitchAskClub:c=>'Go and talk to '+c+' — I am ready to sign',
 dmPitchOkClub:c=>'All right, I am going to see them. I will report back',
 dmPitchYes:c=>c+' are willing to look — expect their offer this window',
 dmPitchNo:c=>c+' say the roster is full. We try another one',
-ccPitchOn:d=>'talks running until '+d, dmPitchAsk:'Go round the clubs and ask — I am ready to sign',
+ccPitchOn:d=>'the club will write on '+d, dmPitchAsk:'Go round the clubs and ask — I am ready to sign',
 dmPitchOk:'Got it. I will go through everyone you can reach, and a bit above. Give me two weeks',
 ccAgentOn:n=>'Manager: '+n,
 ccSmm:'Social',
@@ -12005,7 +12005,7 @@ dmPitchAskClub:c=>'Va voir '+c+' — je suis prêt à signer',
 dmPitchOkClub:c=>'D’accord, j’y vais. Je te dis dès que j’ai parlé',
 dmPitchYes:c=>c+' veulent bien regarder — attends leur offre cette fenêtre',
 dmPitchNo:c=>c+' disent que l’effectif est complet. On en essaie un autre',
-ccPitchOn:d=>'négociations jusqu’au '+d, dmPitchAsk:'Fais le tour des clubs, demande — je suis prêt à signer',
+ccPitchOn:d=>'le club écrira le '+d, dmPitchAsk:'Fais le tour des clubs, demande — je suis prêt à signer',
 dmPitchOk:'Compris. Je passe voir tous ceux que tu peux viser, et un peu au-dessus. Deux semaines',
 ccSmm:'Réseaux',
 ccSmmGain:'Audience en hausse de',
@@ -13381,7 +13381,7 @@ dmPitchAskClub:c=>'Vai a parlare con '+c+' — sono pronto a firmare',
 dmPitchOkClub:c=>'Va bene, vado da loro. Ti faccio sapere',
 dmPitchYes:c=>c+' sono disposti a guardarti — aspettati la loro offerta in questa finestra',
 dmPitchNo:c=>c+' dicono che il roster \u00e8 pieno. Proviamo un altro',
-ccPitchOn:d=>'trattative in corso fino al '+d,
+ccPitchOn:d=>'il club scriverà il '+d,
 ccAgentOn:n=>'Manager: '+n,
 ccSmmBio:n=>'social curati da '+n,
 ccAgentTerms:(cut,r)=>cut+'% dei soldi · i club '+r+' sopra di te guardano · offerte migliori',
@@ -15883,7 +15883,7 @@ dmPitchAskClub:c=>'Vai falar com '+c+' — estou pronto para assinar',
 dmPitchOkClub:c=>'Beleza, vou at\u00e9 eles. Depois te falo',
 dmPitchYes:c=>c+' topam dar uma olhada — espere a proposta deles nesta janela',
 dmPitchNo:c=>c+' dizem que o elenco est\u00e1 cheio. A gente tenta outro',
-ccPitchOn:d=>'conversas rolando at\u00e9 '+d,
+ccPitchOn:d=>'o clube vai escrever em '+d,
 ccAgentOn:n=>'Empres\u00e1rio: '+n,
 ccSmmBio:n=>'redes por '+n,
 ccAgentTerms:(cut,r)=>cut+'% do dinheiro · clubes '+r+' acima de voc\u00ea olham · propostas melhores',
@@ -73280,7 +73280,8 @@ function careerPitchDue(){
   (typeof ccCupWeeks==='function' ? ccCupWeeks() : (typeof CC_CUP_WEEKS!=='undefined' ? CC_CUP_WEEKS : [])).forEach(w=>{
     [w[1], w[2]].forEach(d=>{ if(d && d>=today && d<=p.until && (!due || d<due)) due=d; });
   });
-  return due || p.until;
+  // Письмо приходит, когда день уже сдвинут за сессию — назавтра после неё.
+  return due ? ccAddDays(due, 1) : p.until;
 }
 /* Кому написать — выбирает игрок.
 
