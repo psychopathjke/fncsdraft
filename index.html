@@ -3506,6 +3506,8 @@
     border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);}
   #screen-career-hub .cc-race-row.me{border-color:rgba(126,240,221,.55);background:rgba(126,240,221,.07);}
   #screen-career-hub .cc-race-row .x-av{width:30px;height:30px;font-size:11px;}
+  #screen-career-hub .cc-race-row .cc-pair-btn{margin-left:6px;padding:3px 9px;font-size:11px;line-height:1.2;}
+  #screen-career-hub .cc-race-row .cc-pair-wait{margin-left:6px;font-size:11px;color:var(--ink-dimmer);}
   #screen-career-hub .cc-race-in{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;line-height:1.2;}
   #screen-career-hub .cc-race-in b{font-family:var(--font-display);font-weight:600;font-size:14px;letter-spacing:.03em;
     color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -8420,7 +8422,7 @@ ccRaceMake:'Завести гонку', ccRaceEnter:'Войти в гонку п
 ccRaceTitle:'Гонка карьер', ccRaceRoom:'Сегодня', ccRaceRoomOn:'одна комната — соперник в твоём лобби', ccRaceRoomOff:w=>'врозь'+(w?' — '+w:''), ccRaceWhyoff:'соперник не на связи', ccRaceWhymany:'в гонке больше двоих', ccRaceWhydiv:'разные дивизионы', ccRaceWhyday:'разные дни', ccRaceWhysolo:'соло-серия — личная', ccRaceWhyalone:'остальные уже ушли дальше по календарю — вечер свой', ccRaceWhyheat:'хиты и финалы навылет — у каждого своё лобби', ccRaceWhytable:'вторник от разных понедельников — таблица своя', ccRaceWhylan:'Саммит сеется из своих сеток — у каждого своя комната', ccRaceWhykind:'у остальных сегодня другой турнир — вечер свой', ccRaceWhyproam:'Про-Ам — личное приглашение, вечер свой', ccRaceWhymode:'Разные режимы в гонке — вечер не начнётся, пока все не выберут один', ccRaceBotTaken:'Этот напарник уже у соперника по гонке — одинаковых брать нельзя', ccRaceAlone:'Соперник ещё не подключился — дай ему код',
 ccRaceWait:'День закрывается вдвоём — ждём, пока соперник доиграет свой',
 ccRaceAloneGo:'Идти дальше одному',
-ccRaceAhead:'Ты впереди', ccRaceBehind:h=>'Впереди '+h, ccRaceLeave:'Выйти из гонки',
+ccRaceAhead:'Ты впереди', ccRaceBehind:h=>'Впереди '+h, ccRaceLeave:'Выйти из гонки', ccRacePairBtn:'Играть парой', ccRacePairYes:'Принять пару', ccRacePairNo:'Отказать', ccRacePairOff:'Разойтись', ccRacePairSent:'зовёшь в пару…', ccRacePairWith:'в паре с ', ccRacePairWhytrio:'пара — только в дуо-сезон', ccRacePairWhydiv:'пара — только из одного дивизиона', ccRacePairWhyseason:'пара — только в одном сезоне', ccRacePairWhyoff:'соперник не на связи', ccRacePairHint:'Пара играет одной командой: состав — вы двое, вопросы дропа решает тот, чей ник первый, деньги пополам, карьера у каждого своя',
 ccProAmCash:m=>'Забрали '+m, ccProAmNoCash:'Без денег',
 ccNewsProAmCash:(p,m)=>'Pro-Am: '+ccTop(p)+', заработано $'+m,
 ccNewsProAmOut:(p,t)=>'Pro-Am: '+ccTop(p)+' из '+t+', без денег',
@@ -10394,7 +10396,7 @@ ccRaceMake:'Start a race', ccRaceEnter:'Join a race by code',
 ccRaceTitle:'Career race', ccRaceRoom:'Today', ccRaceRoomOn:'one room — your rival is in your lobby', ccRaceRoomOff:w=>'apart'+(w?' — '+w:''), ccRaceWhyoff:'rival is offline', ccRaceWhymany:'more than two in the race', ccRaceWhydiv:'different divisions', ccRaceWhyday:'different days', ccRaceWhysolo:'the solo series is personal', ccRaceWhyalone:'the others have moved on in the calendar — tonight is yours alone', ccRaceWhyheat:'heats and knockout finals — everyone plays their own lobby', ccRaceWhytable:'a Tuesday from different Mondays — your own table', ccRaceWhylan:'the Summit is seeded from your own brackets — everyone plays their own room', ccRaceWhykind:'the others play a different event tonight — yours is alone', ccRaceWhyproam:'the Pro-Am is a personal invitation — tonight is yours alone', ccRaceWhymode:'Different modes in the race — the night will not start until everyone picks one', ccRaceBotTaken:'Your race rival already has this partner — no identical bots', ccRaceAlone:'Nobody has joined yet — give them the code',
 ccRaceWait:'The day closes together — waiting for your rival to finish theirs',
 ccRaceAloneGo:'Go on without them',
-ccRaceAhead:'You are ahead', ccRaceBehind:h=>h+' is ahead', ccRaceLeave:'Leave the race',
+ccRaceAhead:'You are ahead', ccRaceBehind:h=>h+' is ahead', ccRaceLeave:'Leave the race', ccRacePairBtn:'Play as a duo', ccRacePairYes:'Accept the duo', ccRacePairNo:'Decline', ccRacePairOff:'Split up', ccRacePairSent:'invited…', ccRacePairWith:'duo with ', ccRacePairWhytrio:'a duo only in a duos season', ccRacePairWhydiv:'a duo only from one division', ccRacePairWhyseason:'a duo only in the same season', ccRacePairWhyoff:'rival is offline', ccRacePairHint:'A duo plays as one team: the two of you, the drop is picked by whoever sorts first, money is split, each career stays its own',
 ccProAmCash:m=>'Took home '+m, ccProAmNoCash:'No money',
 ccNewsProAmCash:(p,m)=>'Pro-Am: '+ccTop(p)+', $'+m+' earned',
 ccNewsProAmOut:(p,t)=>'Pro-Am: '+ccTop(p)+' of '+t+', no money',
@@ -12801,7 +12803,7 @@ ccNewsSceneDuo:(a,b)=>'Nouveau duo : je joue avec '+b,
 modeCareerRaceDesc:'Une course : chacun joue sa propre carrière, le lobby montre qui est devant.',
 ccRaceMake:'Créer une course', ccRaceEnter:'Rejoindre une course par code',
 ccRaceTitle:'Course de carrières', ccRaceRoom:'Aujourd’hui', ccRaceRoomOn:'une seule salle — ton rival est dans ton lobby', ccRaceRoomOff:w=>'séparément'+(w?' — '+w:''), ccRaceWhyoff:'rival hors ligne', ccRaceWhymany:'plus de deux dans la course', ccRaceWhydiv:'divisions différentes', ccRaceWhyday:'jours différents', ccRaceWhysolo:'la série solo est personnelle', ccRaceWhyalone:'les autres ont déjà avancé dans le calendrier — la soirée est à toi seul', ccRaceWhyheat:'heats et finales à élimination — chacun joue son propre lobby', ccRaceWhytable:'un mardi issu de lundis différents — ta propre table', ccRaceWhylan:'le Summit est tiré de tes propres brackets — chacun joue sa propre salle', ccRaceWhykind:'les autres jouent un autre tournoi ce soir — le tien se joue seul', ccRaceWhyproam:'le Pro-Am est une invitation personnelle — la soirée est à toi seul', ccRaceWhymode:'Modes différents dans la course — la soirée ne commencera pas tant que tous n’en choisissent pas un', ccRaceBotTaken:'Ton rival de course a déjà ce partenaire — pas de bots identiques', ccRaceAlone:'Personne n’a encore rejoint — donne-lui le code',
-ccRaceAhead:'Tu es devant', ccRaceBehind:h=>h+' est devant', ccRaceLeave:'Quitter la course',
+ccRaceAhead:'Tu es devant', ccRaceBehind:h=>h+' est devant', ccRaceLeave:'Quitter la course', ccRacePairBtn:'Jouer en duo', ccRacePairYes:'Accepter le duo', ccRacePairNo:'Refuser', ccRacePairOff:'Se séparer', ccRacePairSent:'invitation envoyée…', ccRacePairWith:'en duo avec ', ccRacePairWhytrio:'duo seulement en saison de duos', ccRacePairWhydiv:'duo seulement dans la même division', ccRacePairWhyseason:'duo seulement dans la même saison', ccRacePairWhyoff:'rival hors ligne', ccRacePairHint:'Le duo joue en une seule équipe : vous deux, le drop est choisi par le premier par ordre de pseudo, l\'argent est partagé, chaque carrière reste la sienne',
 ccProAmCash:m=>'Empoché '+m, ccProAmNoCash:'Sans gains',
 ccNewsProAmCash:(p,m)=>'Pro-Am : '+ccTop(p)+', $'+m+' gagnés',
 ccNewsProAmOut:(p,t)=>'Pro-Am : '+ccTop(p)+' sur '+t+', sans gains',
@@ -13146,7 +13148,7 @@ ccNewsSceneDuo:(a,b)=>"Nuovo duo: gioco con "+b,
 modeCareerRaceDesc:"Una corsa: ognuno gioca la sua carriera, la lobby mostra chi è avanti.",
 ccRaceMake:"Creare una corsa", ccRaceEnter:"Entrare in una corsa con il codice",
 ccRaceTitle:"Corsa di carriere", ccRaceRoom:"Oggi", ccRaceRoomOn:"una stanza sola — il rivale è nella tua lobby", ccRaceRoomOff:w=>"separati"+(w?" — "+w:""), ccRaceWhyoff:"rivale offline", ccRaceWhymany:"più di due nella corsa", ccRaceWhydiv:"divisioni diverse", ccRaceWhyday:"giorni diversi", ccRaceWhysolo:"la serie solo è personale", ccRaceBotTaken:"Il tuo rivale ha già questo compagno — niente bot uguali", ccRaceAlone:"Nessuno è ancora entrato — dagli il codice",
-ccRaceAhead:"Sei avanti", ccRaceBehind:h=>h+" è avanti", ccRaceLeave:"Uscire dalla corsa",
+ccRaceAhead:"Sei avanti", ccRaceBehind:h=>h+" è avanti", ccRaceLeave:"Uscire dalla corsa", ccRacePairBtn:'Gioca in duo', ccRacePairYes:'Accetta il duo', ccRacePairNo:'Rifiuta', ccRacePairOff:'Separarsi', ccRacePairSent:'invito inviato…', ccRacePairWith:'in duo con ', ccRacePairWhytrio:'duo solo in una stagione a duo', ccRacePairWhydiv:'duo solo nella stessa divisione', ccRacePairWhyseason:'duo solo nella stessa stagione', ccRacePairWhyoff:'rivale offline', ccRacePairHint:'Il duo gioca come una squadra: voi due, il drop lo sceglie chi viene prima per nick, i soldi a metà, ogni carriera resta la propria',
 ccProAmCash:m=>"Incassati "+m, ccProAmNoCash:"Senza premi",
 ccNewsProAmCash:(p,m)=>"Pro-Am: "+ccTop(p)+", $"+m+" guadagnati",
 ccNewsProAmOut:(p,t)=>"Pro-Am: "+ccTop(p)+" su "+t+", senza premi",
@@ -15656,7 +15658,7 @@ ccNewsSceneDuo:(a,b)=>"Nova dupla: jogando com "+b,
 modeCareerRaceDesc:"Uma corrida: cada um joga a sua carreira, o lobby mostra quem está na frente.",
 ccRaceMake:"Criar uma corrida", ccRaceEnter:"Entrar numa corrida por código",
 ccRaceTitle:"Corrida de carreiras", ccRaceRoom:"Hoje", ccRaceRoomOn:"uma sala só — o rival está no seu lobby", ccRaceRoomOff:w=>"separados"+(w?" — "+w:""), ccRaceWhyoff:"rival offline", ccRaceWhymany:"mais de dois na corrida", ccRaceWhydiv:"divisões diferentes", ccRaceWhyday:"dias diferentes", ccRaceWhysolo:"a série solo é pessoal", ccRaceBotTaken:"Seu rival já tem esse parceiro — bots iguais não valem", ccRaceAlone:"Ninguém entrou ainda — passe o código",
-ccRaceAhead:"Você está na frente", ccRaceBehind:h=>h+" está na frente", ccRaceLeave:"Sair da corrida",
+ccRaceAhead:"Você está na frente", ccRaceBehind:h=>h+" está na frente", ccRaceLeave:"Sair da corrida", ccRacePairBtn:'Jogar em dupla', ccRacePairYes:'Aceitar a dupla', ccRacePairNo:'Recusar', ccRacePairOff:'Separar', ccRacePairSent:'convite enviado…', ccRacePairWith:'em dupla com ', ccRacePairWhytrio:'dupla só em temporada de duplas', ccRacePairWhydiv:'dupla só na mesma divisão', ccRacePairWhyseason:'dupla só na mesma temporada', ccRacePairWhyoff:'rival offline', ccRacePairHint:'A dupla joga como um time: vocês dois, o drop escolhe quem vem primeiro por nick, o dinheiro é dividido, cada carreira segue sendo sua',
 ccProAmCash:m=>"Levamos "+m, ccProAmNoCash:"Sem prêmio",
 ccNewsProAmCash:(p,m)=>"Pro-Am: "+ccTop(p)+", $"+m+" ganhos",
 ccNewsProAmOut:(p,t)=>"Pro-Am: "+ccTop(p)+" de "+t+", sem prêmio",
@@ -67699,6 +67701,8 @@ function careerRaceWire(){
     if(m.kind==='ffno'){ if(ccRaceOn() && !ccMpOn()) ccMpFfNoSaw(m.payload); return; }
     if(m.kind==='fferr'){ if(ccRaceOn() && !ccMpOn()) ccMpFfErrSaw(m.payload); return; }
     if(m.kind==='leave'){ if(ccRaceOn() && !ccMpOn() && m.payload && m.payload.by!==ccMpId()) ccMpSplitLeave(true); return; }
+    // Договор пары: приглашение, согласие, отказ, разрыв. См. ccRacePairSaw.
+    if(m.kind==='pair' || m.kind==='pairok' || m.kind==='pairno' || m.kind==='unpair'){ if(ccRaceOn()) ccRacePairSaw(m); return; }
     if(m.kind!=='race') return;
     if(m.by && m.by===ccMpId()) return;              // своё эхо не считаем
     /* НОВОМУ В КОМНАТЕ ОТВЕЧАЕМ СВОЕЙ СТРОКОЙ, один раз на человека. Строка гонки
@@ -67728,6 +67732,117 @@ function careerRaceRows(){
   rows.sort((a,b)=>careerRaceScore(b)-careerRaceScore(a));
   return rows;
 }
+
+/* ===== ПАРА В ГОНКЕ — два человека одной командой =========================
+
+   Письмо игрока 21 сентября (п. 1, «split in duo / дуо с другом скучно») → его слово
+   22 сентября: «делай» вариант (а): пара из двух людей одной командой в гонке против
+   ботов и других пар. Гонка уже умеет всё, что здесь нужно, — одну комнату на N людей,
+   строку соперника с карточками (ccRaceMyLine), адресные вопросы по mpTag (ccMpMine),
+   барьеры на всех людей; пара — это ДВЕ СТРОКИ ГОНКИ, СИДЯЩИЕ В ОДНОЙ КОМАНДЕ:
+
+   • У каждого своя карьера, как в гонке (журнал, деньги — своя половина, рейтинг,
+     дивизион). Общего состояния команды нет: общий у пары только состав вечера.
+   • Состав вечера = две карточки людей, порядок по hKey (у обоих один); сила — careerTeam
+     этих двух карточек без формы/химии/эфира (иначе у двоих разные числа); mpTag — по
+     первой карточке, и по нему же решает вопросы «старший» (ccMpMine: чей ник — тот и
+     отвечает), второй ждёт ответ по проводу, как ждёт ответ любого соперника.
+   • Строка гонки несёт pair (адрес напарника); соперники сажают пару ОДИН раз — по строке
+     старшего (ccRaceFieldSync), строка младшего в поле не садится, но в комнате людей он
+     есть: барьеры и голоса считают его как всех.
+   • Пара — только один дивизион и только дуо-сезон (сезон в трио — у тройки нет двух мест).
+     Распалась связь напарника — каждый играет со своим ботом, как в обычной гонке.
+   Договор: act 'pair' {by,to} — приглашение, 'pairok' — согласие, 'unpair' — разрыв.
+   Сторож — tools/check-race-pair.js (живой воркер, как check-race-live-two). */
+let CC_RACE_PAIR_ASK=null;   // {from, nick} — приглашение, на которое ещё не ответили
+function ccRacePairId(){ const cr=CAREER && CAREER.career; return (cr && cr.race && cr.race.pair && cr.race.pair.id)||null; }
+function ccRacePairPeer(){
+  const id=ccRacePairId(); if(!id) return null;
+  const p=CC_RACE_PEERS[id];
+  return (p && p.card && p.pair===ccMpId() && ccRacePeerAlive(p)) ? p : null;
+}
+function ccRacePairOn(){ return !!(ccRaceOn() && careerSquadSize()===2 && ccRacePairPeer()); }
+// Две карточки пары в одном порядке у обоих — по hKey.
+function ccRacePairCards(){
+  const me=careerCard(), p=ccRacePairPeer(); if(!me || !p) return null;
+  return hKey(me)<hKey(p.card) ? [me, p.card] : [p.card, me];
+}
+function ccRacePairWhy(p){
+  const cr=CAREER && CAREER.career; if(!cr || !p) return 'off';
+  if(careerSquadSize()!==2) return 'trio';
+  if(p.div!=null && p.div!==cr.division) return 'div';
+  if(p.season && p.season!==(cr.season||1)) return 'season';
+  return null;
+}
+function careerRacePairAsk(id){
+  const p=CC_RACE_PEERS[id]; if(!p || ccRacePairWhy(p)) return;
+  try{ MP.act('pair', {by:ccMpId(), to:id, nick:(CAREER.player.nick||'')}); }catch(e){}
+  CAREER.career.race.pairAsked={id:id, at:Date.now()};
+  careerRenderHub(CH_TAB);
+}
+function careerRacePairYes(){
+  const ask=CC_RACE_PAIR_ASK; if(!ask) return;
+  const p=CC_RACE_PEERS[ask.from]; if(!p || ccRacePairWhy(p)){ CC_RACE_PAIR_ASK=null; careerRenderHub(CH_TAB); return; }
+  CAREER.career.race.pair={id:ask.from, nick:ask.nick||(p.card&&p.card.handle)||'', since:careerToday()};
+  CC_RACE_PAIR_ASK=null;
+  try{ MP.act('pairok', {by:ccMpId(), to:ask.from, nick:(CAREER.player.nick||'')}); }catch(e){}
+  careerSave(); careerRaceSend(); careerRenderHub(CH_TAB);
+}
+function careerRacePairNo(){
+  const ask=CC_RACE_PAIR_ASK; CC_RACE_PAIR_ASK=null;
+  if(ask) try{ MP.act('pairno', {by:ccMpId(), to:ask.from}); }catch(e){}
+  careerRenderHub(CH_TAB);
+}
+function careerRaceUnpair(tell){
+  const cr=CAREER && CAREER.career; if(!cr || !cr.race) return;
+  const was=cr.race.pair; delete cr.race.pair; delete cr.race.pairAsked;
+  if(tell!==false && was) try{ MP.act('unpair', {by:ccMpId(), to:was.id}); }catch(e){}
+  careerSave(); careerRaceSend(); careerRenderHub(CH_TAB);
+}
+// Приход договора пары по проводу (зовётся из careerRaceWire).
+function ccRacePairSaw(m){
+  const me=ccMpId(); const p=m.payload||{};
+  if(!p.by || p.by===me || p.to!==me) return false;
+  if(m.kind==='pair'){ CC_RACE_PAIR_ASK={from:p.by, nick:p.nick||''}; }
+  else if(m.kind==='pairok'){
+    const asked=CAREER.career.race && CAREER.career.race.pairAsked;
+    if(asked && asked.id===p.by){ CAREER.career.race.pair={id:p.by, nick:p.nick||'', since:careerToday()}; delete CAREER.career.race.pairAsked; careerSave(); careerRaceSend(); }
+  }
+  else if(m.kind==='pairno'){ if(CAREER.career.race) delete CAREER.career.race.pairAsked; }
+  else if(m.kind==='unpair'){ if(ccRacePairId()===p.by) careerRaceUnpair(false); }
+  else return false;
+  try{ if(typeof careerRenderHub==='function' && document.getElementById('chBody')) careerRenderHub(CH_TAB); }catch(e){}
+  return true;
+}
+/* Команда пары для вечера — одна и та же у обоих: careerTeam двух карточек людей, без формы,
+   химии и эфира (они у каждой карьеры свои). Зовётся из ccRaceFieldSync, до строки с силой. */
+function ccRacePairTeamInto(you){
+  const cards=ccRacePairCards(); if(!cards || !you) return false;
+  const t=ccRaceUnseeded(()=>careerTeam(cards, true));
+  Object.keys(t).forEach(k=>{ you[k]=t[k]; });
+  you.isYou=true; you.isRival=false;
+  you.name=L().yourTeamPrefix+teamLabel(cards);
+  you.mpTag=':'+hKey(cards[0]);
+  you.summitRegion=ccCareerRegion();
+  you.pair=true;
+  return true;
+}
+// Кнопки пары в строке соперника на плитке гонки.
+function ccRacePairRowHTML(r){
+  if(!r || r.you || !r.id) return '';
+  const T=L();
+  const pid=ccRacePairId();
+  if(pid===r.id) return `<button class="ch-sign cc-pair-btn" onclick="careerRaceUnpair()">${esc(T.ccRacePairOff)}</button>`;
+  if(pid) return '';
+  if(CC_RACE_PAIR_ASK && CC_RACE_PAIR_ASK.from===r.id)
+    return `<button class="ch-sign cc-pair-btn" onclick="careerRacePairYes()">${esc(T.ccRacePairYes)}</button><button class="ch-decline cc-pair-btn" onclick="careerRacePairNo()">${esc(T.ccRacePairNo)}</button>`;
+  const asked=CAREER.career.race && CAREER.career.race.pairAsked;
+  if(asked && asked.id===r.id) return `<span class="cc-pair-wait">${esc(T.ccRacePairSent)}</span>`;
+  const why=ccRacePairWhy(CC_RACE_PEERS[r.id]);
+  if(why) return `<span class="cc-pair-wait" title="${esc(T['ccRacePairWhy'+why]||'')}">${esc(T['ccRacePairWhy'+why]||'')}</span>`;
+  return `<button class="ch-sign cc-pair-btn" onclick="careerRacePairAsk('${esc(r.id)}')">${esc(T.ccRacePairBtn)}</button>`;
+}
+
 function careerRaceEnter(race){
   if(!CAREER || !CAREER.career) return Promise.resolve(false);
   const was=CAREER.career.race;
@@ -67839,6 +67954,7 @@ function careerRaceJoinNew(){
 }
 function careerRaceLeave(){
   if(!CAREER || !CAREER.career) return;
+  if(CAREER.career.race && CAREER.career.race.pair) try{ MP.act('unpair', {by:ccMpId(), to:CAREER.career.race.pair.id}); }catch(e){}
   delete CAREER.career.race;
   CC_RACE_PEERS={};
   if(typeof MP!=='undefined' && MP.drop) MP.drop();
@@ -67865,7 +67981,9 @@ function ccRacePackCard(c){
 // Своя строка для соперника: карточка, напарники, сила команды на вечер.
 function ccRaceMyLine(){
   const me=careerCard(); if(!me) return {};
-  const mates=(typeof careerMates==='function' ? careerMates() : []).filter(Boolean);
+  // В паре напарник — человек: его карточка едет в строке вместо бота, и соперники сажают пару по ней.
+  const pairPeer=(typeof ccRacePairOn==='function' && ccRacePairOn()) ? ccRacePairPeer() : null;
+  const mates=pairPeer ? [pairPeer.card] : (typeof careerMates==='function' ? careerMates() : []).filter(Boolean);
   let pow=null, ev=null;
   /* СИЛА — ТА ЖЕ, ЧТО В ВЕЧЕРЕ. Его скрин 8 сентября (страница «socials»): «Вечера
      разошлись на игре 1 … #1 focus+th0mashd:107 vs focus+th0mashd:103» — у себя
@@ -67879,11 +67997,13 @@ function ccRaceMyLine(){
      typeof CC_MP_SEED!=='undefined' && CC_MP_SEED){
     pow=CC_RACE_POW_NOW; ev=CC_MP_SEED;
   } else {
-    try{ if(mates.length>=careerMateSeats()) pow=careerYouTeam([me].concat(mates)).pow; }catch(e){}
+    try{ if(pairPeer) pow=careerTeam(ccRacePairCards(), true).pow; else if(mates.length>=careerMateSeats()) pow=careerYouTeam([me].concat(mates)).pow; }catch(e){}
   }
   const card=(typeof MP!=='undefined' && MP.card) ? MP.card() : ccRacePackCard(me);
   try{ const nx=(typeof careerNext==='function') ? careerNext() : null; CC_RACE_MY_KR=ccKindRank(nx && nx.type); }catch(e){}
-  return {id:ccMpId(), card:ccRacePackCard(card||me), mates:mates.map(ccRacePackCard), pow:pow, ev:ev, squad:careerSquadSize(),
+  return {id:ccMpId(), card:ccRacePackCard(card||me), mates:mates.map(ccRacePackCard), pow:pow, ev:ev, squad:careerSquadSize(), pair:(typeof ccRacePairId==='function' ? ccRacePairId() : null),
+          // Свой бот-напарник, отставленный на время пары: соперники вычитают его из пула, как напарников (иначе поле разойдётся).
+          bench:pairPeer ? (typeof careerMates==='function' ? careerMates() : []).filter(Boolean).map(ccRacePackCard) : undefined,
           edge:(ev && CC_RACE_EDGE_NOW!=null) ? CC_RACE_EDGE_NOW : null, kr:CC_RACE_MY_KR,
           // Понедельник Дивизиона 1 (cr.d1) — отпечатком: вторник от разных понедельников врозь (ccRaceApartWhy 'table').
           d1h:(CAREER.career.d1 && CAREER.career.d1.monday===careerMonday(careerToday())) ? String(ccHashStr(JSON.stringify(CAREER.career.d1))) : null,
@@ -68053,7 +68173,7 @@ function ccRaceNightRoom(){
    двойником. Список одинаков у всех клиентов, поэтому и комната у всех одна. */
 function ccRaceAllCards(){
   const out=[];
-  ccRaceRivals().forEach(p=>{ out.push(p.card); (p.mates||[]).forEach(m=>{ if(m) out.push(m); }); });
+  ccRaceRivals().forEach(p=>{ out.push(p.card); (p.mates||[]).forEach(m=>{ if(m) out.push(m); }); (p.bench||[]).forEach(m=>{ if(m) out.push(m); }); });   // bench — отставленный бот пары
   return out;
 }
 /* Ключи ЛЮДЕЙ комнаты — их самих и их напарников; этих ботов брать нельзя (его слово 7.09).
@@ -68064,6 +68184,7 @@ function ccRaceTakenKeys(){
   ccRacePeers().forEach(p=>{
     if(p && p.card && p.card.handle) s.add(hKey(p.card));
     (p && p.mates||[]).forEach(m=>{ if(m && m.handle) s.add(hKey(m)); });
+    (p && p.bench||[]).forEach(m=>{ if(m && m.handle) s.add(hKey(m)); });
   });
   return s;
 }
@@ -68212,6 +68333,8 @@ function ccRaceRivalTeam(p){
   p=p||ccRaceRival(); if(!p || !p.card) return null;
   const solo=(typeof squadSize==='number' && squadSize===1);
   const cards=solo ? [p.card] : [p.card].concat((p.mates||[]).filter(Boolean)).slice(0, careerSquadSize());
+  // Пара людей — в порядке по hKey, как строит её сама пара (ccRacePairCards): адрес вопросов один у всех.
+  if(p.pair && cards.length===2) cards.sort((a,b)=>hKey(a)<hKey(b) ? -1 : 1);
   const t=careerTeam(cards, true);
   t.name=teamLabel(cards);
   /* Сила — из строки владельца и в соло тоже: соло-ветка считала её из карточки (база + formPow)
@@ -68219,7 +68342,8 @@ function ccRaceRivalTeam(p){
   if(p.pow!=null) t.pow=p.pow;
   else if(solo) t.pow=Math.round(t.pow+(Number(p.card.formPow)||0));
   if(p.edge!=null) t.closeEdge=p.edge;   // край ближнего боя — из строки владельца (см. CC_RACE_EDGE_NOW)
-  t.isRival=true; t.raceId=p.id||null; t.mpTag=':'+hKey(p.card);
+  t.isRival=true; t.raceId=p.id||null; t.mpTag=':'+hKey(cards[0]);
+  if(p.pair) t.pair=true;
   t.summitRegion=ccCareerRegion();
   return t;
 }
@@ -68265,6 +68389,8 @@ async function ccRaceFieldSync(teams, opts){
   if(!ccRaceLock() || typeof MP==='undefined') return;
   const you=teams.find(t=>t.isYou);
   // Сила на вечер — из поля раннера; только с ней строка подписывается сидом (см. CC_RACE_POW_NOW).
+  // Пара: своя команда — две карточки людей, одна и та же у обоих (см. ccRacePairTeamInto).
+  if(typeof ccRacePairOn==='function' && ccRacePairOn() && you) ccRacePairTeamInto(you);
   if(you && you.pow!=null){ CC_RACE_POW_NOW=you.pow; CC_RACE_EDGE_NOW=(you.closeEdge||0); }
   await ccRaceWaitLines();
   /* Соперники — все, кто прислал строку; уже посаженный раннером (соло-кап) — тот же
@@ -68278,8 +68404,13 @@ async function ccRaceFieldSync(teams, opts){
      клиента своё поле («diff 2 of 50: #5 pixie+swizzy vs live1+sky», годовая проба 9.09,
      финал Саммита 31.05). Такая команда и есть соперник: адрес, сила и край — из строки. */
   const hasCard=(t, card)=>{ const k=hKey(card); return (t.squad||t.cards||[]).some(c=>c && hKey(c)===k); };
+  const myPair=(typeof ccRacePairOn==='function' && ccRacePairOn()) ? ccRacePairId() : null;
   const rivals=ccRaceRoom().map(p=>{
-    const tag=':'+hKey(p.card);
+    // Мой напарник по паре — это моя команда, второй раз он не садится.
+    if(myPair && p.id===myPair) return null;
+    // Чужая пара садится по строке старшего (первого по hKey); строка младшего — не команда.
+    if(p.pair){ const q=CC_RACE_PEERS[p.pair]; if(q && q.card && q.pair===p.id && hKey(q.card)<hKey(p.card)) return null; }
+    const tag=':'+hKey((p.pair && (p.mates||[])[0] && hKey(p.mates[0])<hKey(p.card)) ? p.mates[0] : p.card);
     const same=teams.find(t=>t.mpTag===tag && !t.isYou) || teams.find(t=>!t.isYou && !t.isMate && !t.isRival && hasCard(t, p.card));
     if(same){ same.isRival=true; same.isMate=false; same.raceId=p.id||same.raceId||null; same.mpTag=tag;
               if(p.pow!=null) same.pow=p.pow; if(p.edge!=null) same.closeEdge=p.edge;
@@ -68337,7 +68468,10 @@ function careerRaceTileHTML(){
           (r.you ? (careerSimOn() ? ' · &#128065;' : ' · &#127918;')
                  : (r.card && r.card.sim!=null ? (r.card.sim ? ' · &#128065;' : ' · &#127918;') : ''))}</em></span>
       <span class="cc-race-ovr" title="${esc(L().ccRoOvr)}">${r.ovr}</span>
+      ${(typeof ccRacePairRowHTML==='function') ? ccRacePairRowHTML(r) : ''}
     </div>`; };
+  const pairLine=(function(){ if(typeof ccRacePairOn!=='function' || !ccRacePairOn()) return ''; const p=ccRacePairPeer();
+    return `<div class="ch-row"><em>${esc(L().ccRacePairWith.trim())}</em><b class="ch-goal-met">${esc((p.card&&p.card.handle)||'')}</b></div>`; })();
   return `<div class="ch-tile cc-race">
     <h4>${L().ccRaceTitle}</h4>
     <div class="ch-row"><em>${L().ccMpCode}</em><b>${esc(code)}</b></div>
@@ -68347,6 +68481,7 @@ function careerRaceTileHTML(){
     ${(function(){ const why=ccRaceApartWhy(typeof careerNext==='function' ? careerNext() : null);
        return `<div class="ch-row"><em>${L().ccRaceRoom}</em><b class="${why?'':'ch-goal-met'}">${
          why ? esc(L().ccRaceRoomOff(L()['ccRaceWhy'+why]||'')) : esc(L().ccRaceRoomOn)}</b></div>`; })()}
+    ${pairLine}
     ${rows.map(line).join('')}
     ${alone ? `<div class="ch-empty">${L().ccRaceAlone}</div>`
             : `<div class="ch-hint">${esc(rows[0].you ? L().ccRaceAhead : L().ccRaceBehind(rows[0].nick||''))}</div>`}
