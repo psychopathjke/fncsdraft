@@ -80,8 +80,16 @@ const BOOT = `
     let hits=0;
     for(let i=0;i<TRIES;i++){
       CAREER.career.orgRecent=null;
+      // Исполненная просьба закрывается (pitch.done) — на следующий бросок открываем заново.
+      if(CAREER.pitch) CAREER.pitch.done=null;
       if(careerOrgOffers().some(o=>o.name===near.name)) hits++;
     }
+    // 21.09: клуб сел в окно — просьба исполнена, и её можно повторить; а до окна она живёт
+    // дольше двух недель (между Solo Series и первым кубком дивизиона их больше).
+    check('после окна с клубом просьба закрыта', !!(CAREER.pitch && CAREER.pitch.done) && !careerPitchOn(), JSON.stringify(CAREER.pitch));
+    CAREER.pitch.done=null; CAREER.career.day=ccAddDays(CAREER.pitch.since, 20); CAREER.career.orgRecent=null;
+    check('через двадцать дней без окна просьба ещё в силе и клуб садится', careerPitchOn() && careerOrgOffers().some(o=>o.name===near.name), CAREER.career.day);
+    CAREER.career.day=CAREER.pitch.since;
     out.notes.asked=near.name+': '+hits+'/'+TRIES;
     check('названный клуб стоит в предложениях каждый раз', hits===TRIES,
           hits+' из '+TRIES);

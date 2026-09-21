@@ -80514,6 +80514,8 @@ function careerOrgOffers(){
       shuffled.push(o);
     }
   }
+  // Клуб сел в окно — просьба исполнена: менеджера можно просить о следующем.
+  if(asked && shuffled.some(o=>o.name===asked) && CAREER.pitch) CAREER.pitch.done=careerToday();
   shuffled.sort((a,b)=>b.tier-a.tier);
   cr.orgRecent={week:careerWeek(), names:shuffled.map(o=>o.name)};
   return shuffled.map(o=>{
@@ -81317,10 +81319,15 @@ function ccAgentWeight(a){
    careerOrgOffers). Не гарантия контракта: клуб всё равно решает сам, и выше
    потолка своей полосы игрок не прыгнет. Пока просьба в работе, кнопки нет —
    иначе это была бы кнопка «дай контракт», нажимаемая каждый день. */
-const CC_PITCH_DAYS=14, CC_PITCH_REACH=3;
+/* 60, не 14: просьба должна дожить до ПЕРВОГО окна предложений. Между Solo Series в январе и
+   первым дивизионным кубком (2 февраля) проходит больше двух недель, и просьба от 20 января
+   истекала за день до того, как клуб мог написать (его скрин 21.09: «expect their offer this
+   window» — и три клуба без Shimo). Просьба закрывается, когда клуб сел в окно (pitch.done),
+   а 60 дней — только потолок на случай, когда окон нет вовсе. */
+const CC_PITCH_DAYS=60, CC_PITCH_REACH=3;
 function careerPitchOn(){
   const p=CAREER && CAREER.pitch;
-  return !!(p && p.until && careerToday() <= p.until);
+  return !!(p && p.until && !p.done && careerToday() <= p.until);
 }
 function careerPitchClub(){
   return careerPitchOn() ? (CAREER.pitch.club||null) : null;
