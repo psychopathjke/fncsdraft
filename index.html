@@ -65523,6 +65523,25 @@ function ccSync(){
 /* Все, с кем карточка записана в составе — до seats человек. Дуо-запись даёт
    одного, трио-запись (наборы 2025-го) — двоих: его слово 21 сентября, «когда в
    2025 выбираешь игрока, он без триоса сразу, не как в дуо». */
+/* Карты человека по нику — индекс, а не PLAYERS.filter на каждый вызов.
+   Его слово 21 сентября: «лагает когда переключаю регионы в 2024 году». Замер: список
+   Европы 2024-го — 1063 строки, ccMateNow на каждую → 1.2 с; в 2025/2026 та же секунда.
+   Пересобирается, если ростер вырос (карты добавляются на старте страницы). */
+let CC_CARDS_BY_KEY=null, CC_CARDS_BY_KEY_N=0;
+function ccCardsByKey(){
+  if(CC_CARDS_BY_KEY && CC_CARDS_BY_KEY_N===PLAYERS.length) return CC_CARDS_BY_KEY;
+  const m=new Map();
+  PLAYERS.forEach(p=>{ const k=hKey(p); const a=m.get(k); if(a) a.push(p); else m.set(k, [p]); });
+  CC_CARDS_BY_KEY=m; CC_CARDS_BY_KEY_N=PLAYERS.length;
+  return m;
+}
+// И сцена по нику — тем же индексом, пока массив сцены тот же.
+const CC_NOW_BY_KEY=new WeakMap();
+function ccNowByKey(roster){
+  let m=CC_NOW_BY_KEY.get(roster);
+  if(!m){ m=new Map(); roster.forEach(p=>{ const k=hKey(p); if(!m.has(k)) m.set(k, p); }); CC_NOW_BY_KEY.set(roster, m); }
+  return m;
+}
 function ccRealMatesOf(card, seats){
   if(!card) return [];
   const me=hKey(card), out=[], seen=new Set([me]);
@@ -65531,15 +65550,17 @@ function ccRealMatesOf(card, seats){
      свежая карточка года может быть без них (Лион 2025 — отдельная карта). Поэтому
      смотрим все карточки этого человека за тот же год, от новейшего набора к старому. */
   const order=c=>({t3:3, t2:2, t1:1, m2:2, m1:1, f3:3, f2:2, f1:1}[String(c.cardSet||'')] || 0);
-  const mine=PLAYERS.filter(p=>hKey(p)===me && (p.region||'')===(card.region||'') && ccCardYear(p)===ccCardYear(card))
+  const yr=ccCardYear(card);
+  const mine=(ccCardsByKey().get(me)||[]).filter(p=>p!==card && (p.region||'')===(card.region||'') && ccCardYear(p)===yr)
     .sort((a,b)=>order(b)-order(a));
   const entries=[]; [card].concat(mine).forEach(c=>rosterEntriesOf(c).forEach(e=>entries.push(e)));
+  const now=ccNowByKey(careerRosterNowEU());
   for(const {stage, entry} of entries){
     if(stage==='DivFinal') continue;
     if(entry.duo.length!==want+1) continue;
     entry.duo.map(h=>hKey(h)).forEach(k=>{
       if(seen.has(k) || out.length>=want) return;
-      const mate=careerRosterNowEU().find(p=>hKey(p)===k);
+      const mate=now.get(k);
       if(mate){ seen.add(k); out.push(mate); }
     });
     if(out.length>=want) break;
