@@ -95,6 +95,32 @@ const BOOT = `
     check('а в одиночной двигает как двигало',
           CAREER.career.day === '2026-03-01', CAREER.career.day);
 
+    /* ВЫХОД ИЗ ВЕЧЕРА ОБОИМ. Его слово 21 сентября: «если ошибка, просто выйти из матча двоим».
+       Красная строка «разошлись» несёт кнопку; нажатие уходит напарнику actом 'leave', отпускает
+       барьеры (peer done), включает пропуск, а закрытие вечера не ждёт сервера — день шагает. */
+    CAREER.career.mp = {code:'ABC123', role:'a'};
+    CC_MP_SPLIT_AT=null; CC_MP_LEAVE=false; ccMpWaitReset();
+    let acts=[]; MP.act=function(k,p){ acts.push(k); }; MP.digest=function(){}; MP.on=function(){ return function(){}; };
+    ccMpSplitSeen(2, 'probe');
+    const bar=document.getElementById('ccMpSplitBar');
+    check('красная строка несёт кнопку выхода', !!(bar && bar.querySelector('button')));
+    bar.querySelector('button').click();
+    check('нажатие ушло напарнику actом leave', acts.indexOf('leave')>=0, acts.join(','));
+    check('барьеры отпущены — играем врозь', CC_MP_PEER_DONE===true);
+    check('и вечер под пропуском', CC_SKIP_RUN===true && skipAnimation===true);
+    CC_MP_DAY_DUE=false;
+    const pl=ccMpClose(t1); let leftClosed=false; pl.then(function(){ leftClosed=true; });
+    await new Promise(r => setTimeout(r, 40));
+    check('закрытие после выхода не ждёт сервера', leftClosed===true);
+    check('и день может шагнуть', CC_MP_DAY_DUE===true);
+    check('флаг выхода снят до следующего вечера', CC_MP_LEAVE===false);
+    // Приход leave от напарника делает то же самое у второго.
+    CC_MP_SPLIT_AT=null; CC_MP_LEAVE=false; ccMpWaitReset(); acts=[]; skipAnimation=false; CC_SKIP_RUN=false;
+    ccMpSplitLeave(true);
+    check('leave от напарника: барьеры отпущены, свой act не уходит', CC_MP_PEER_DONE===true && acts.indexOf('leave')<0, acts.join(','));
+    CC_MP_LEAVE=false; ccMpWaitReset(); skipAnimation=false; CC_SKIP_RUN=false;
+    try{ document.querySelectorAll('.cc-mp-split').forEach(function(e){ e.remove(); }); }catch(e){}
+
     // Врезка стоит во всех раннерах — читается по исходнику.
     const src = document.documentElement.outerHTML;
     ['runCareerCup','runCareerMajor','runCareerSummit','runCareerGlobals','runCareerGclc',
