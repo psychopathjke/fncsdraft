@@ -69211,6 +69211,42 @@ function careerNext(){
   return {type:'free', title:L().chDayFree, sub:L().chDayFreeSub, day:today};
 }
 
+/* Календарный год сезона N этой карьеры — для подписи на карточке. Карьера 2026-го:
+   2026, 2027…; 2025-го: 2025, потом 2026…; 2024-го: 2024, 2025, потом 2026… */
+function ccSeasonYearOf(s){
+  const cr=CAREER && CAREER.career; const y0=(cr && cr.year0) || 2026; s=s||1;
+  if(y0===2025) return s<=1 ? 2025 : 2026+(s-2);
+  if(y0===2024) return s<=1 ? 2024 : s===2 ? 2025 : 2026+(s-3);
+  return 2026+(s-1);
+}
+/* ЛУЧШИЙ ВЕЧЕР КАРЬЕРЫ — строкой события на карточке.
+
+   Игрок 21 сентября (Notion, пункт 3): карточка карьеры звала себя «FNCS Division 1», что бы
+   ни было сыграно — финал Мейджора, Саммит, Глобалы. У настоящей карточки строка события —
+   тот турнир, откуда её число; у карьеры это её лучший вечер: по рангу турнира (Глобалы >
+   Саммит > финал Мейджора > Париж > Ласт Ченс > финал Reload > финал недели > соло/Про-Ам/
+   Victory/оценка > кубок), внутри ранга — по месту. Возвращает {event, placement} или null,
+   когда играть было нечего. */
+const CC_CARD_EV_RANK={globals:9, summit:8, major:7, rc:6, gclc:5, reload:4, final:3, solo:3, proam:2, victory:2, eval:2, cup:1};
+function ccCareerBestRun(){
+  const cr=CAREER && CAREER.career; if(!cr) return null;
+  let best=null, bs=-1;
+  (cr.log||[]).forEach(e=>{
+    if(!e || !e.kind) return;
+    let s=(CC_CARD_EV_RANK[e.kind]||0)*10;
+    // Стадия до финала — ниже своего же финала, но выше кубка.
+    if((e.kind==='major' || e.kind==='reload' || e.kind==='summit' || e.kind==='rc' || e.kind==='gclc') && e.stage && e.stage!=='final') s-=25;
+    s+= e.place===1 ? 3 : e.place<=3 ? 2 : e.place<=10 ? 1 : 0;
+    if(s>bs){ bs=s; best=e; }
+  });
+  return best;
+}
+function ccCareerCardEvent(){
+  const best=ccCareerBestRun(); if(!best) return null;
+  const name=String((typeof ccLogName==='function' ? ccLogName(best) : '')||'').replace(/<[^>]*>/g,'').trim();
+  if(!name) return null;
+  return {event:'FNCS '+ccSeasonYearOf(best.season)+' · '+name, placement:best.place||null, big:(CC_CARD_EV_RANK[best.kind]||0)>=7 && (!best.stage || best.stage==='final')};
+}
 // The player as a card. A taken card is looked up in the roster rather than
 // copied into the save, so it always reads whatever the roster says today; the
 // connection is layered on top without touching the roster object.
@@ -69249,6 +69285,13 @@ function careerCard(raw){
            creator:!!pl.creator,
            _photo:pl.photo||null };
   } else if(pl.photo){ base._photo=pl.photo; }
+  /* Строка события — лучший вечер карьеры (см. ccCareerCardEvent): у построенного всегда,
+     у взятой настоящей карточки — только когда карьера взяла больше, чем её собственная
+     строка (финал Мейджора и выше): «Play-In 2026» на карточке, выигравшей Глобалы, — враньё. */
+  try{
+    const be=ccCareerCardEvent();
+    if(be && (!pl.handle || be.big)){ base.event=be.event; base.placement=be.placement; }
+  }catch(e){}
   // A career rating moves with results, so the card is lifted to whatever the
   // career says today rather than to whatever the roster froze. attrsFor reads
   // _targetOvr as the floor and scales the six numbers onto it; a rookie is

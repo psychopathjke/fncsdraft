@@ -147,6 +147,10 @@ const BOOT = `
     const pf=await playThrough('final'); r=last();
     out.steps.push('final: '+pf.head+' · #'+r.place+' of '+r.of+' · $'+r.prize);
     check('финал: 12 игр, 50 дуо', r.games===12 && r.of===50, r.games+'/'+r.of);
+    // Карточка карьеры зовёт себя лучшим вечером, а не «FNCS Division 1» (игрок, 21.09).
+    const cc=careerCard();
+    out.notes.cardEvent=cc && cc.event;
+    check('карточка карьеры зовёт себя финалом Мейджора', cc && /2024/.test(cc.event) && /Major|Мейджор/.test(cc.event) && cc.placement===r.place, JSON.stringify(cc && {event:cc.event, placement:cc.placement}));
     check('финал платит таблицей Европы 2024 (№1 $170 000 на дуо → $85 000 своё)', r.place!==1 || r.prize===85000, String(r.prize));
     check('деньги записаны', r.prize===0 || (save().earnings||0)>0);
     const seat=ccGlobalsSeat();
