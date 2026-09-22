@@ -37,7 +37,7 @@ const BOOT = `
     const sent=[]; MP.act=function(k,p){ sent.push({k,p}); };
     CC_RACE_PEERS['peerB']={id:'peerB', card:rivalCard, mates:[rivalMate], div:1, season:1, day:'2026-02-02', pow:100, nick:'Beta'};
     check('до договора пары нет', !ccRacePairOn());
-    check('строка соперника раскрывается по нажатию, кнопки «Объединиться» до нажатия нет', /ccRaceRowToggle\\('peerB'\\)/.test(careerRaceTileHTML()) && !/careerRacePairAsk/.test(careerRaceTileHTML()));
+    check('под строками — явная кнопка «Объединиться с Beta», строка раскрывается по нажатию', /ccRaceRowToggle\\('peerB'\\)/.test(careerRaceTileHTML()) && careerRaceTileHTML().indexOf(L().ccRacePairWithBtn('Beta'))>=0 && /cc-race-pane-all/.test(careerRaceTileHTML()));
     ccRaceRowToggle('peerB');
     check('после нажатия — «Объединиться» с подсказкой', /careerRacePairAsk\\('peerB'\\)/.test(careerRaceTileHTML()) && careerRaceTileHTML().indexOf(L().ccRacePairHint)>=0);
     const botBefore=careerMates()[0] && careerMates()[0].handle;
@@ -74,6 +74,10 @@ const BOOT = `
     ccRacePairSaw({kind:'unpair', payload:{by:'peerB', to:me}});
     check('после разрыва пары нет — и напарника тоже, ищи нового', !ccRacePairOn() && !CAREER.career.race.pair && careerMates().length===0);
     careerMateSeat({handle:pool[1].handle, cardRegion:pool[1].region, patience:60, since:'2026-01-01'});
+    // 6b. голос за перемотку считает и уснувшего соседа (пульс старше 90 с) — его отчёт 22.09.
+    MP.peerAt=MP.peerAt||{}; MP.peerAt['peerB']=Date.now()-600000;
+    check('перемотка ждёт голос уснувшей вкладки', ccMpFfHumans()>=2, String(ccMpFfHumans()));
+    delete MP.peerAt['peerB'];
     // 7. отказ по дивизиону и трио
     CC_RACE_PEERS['peerB'].div=2;
     check('другой дивизион — пары не предлагают', ccRacePairWhy(CC_RACE_PEERS['peerB'])==='div');
