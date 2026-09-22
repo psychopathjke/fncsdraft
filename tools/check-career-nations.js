@@ -71,6 +71,8 @@ const BOOT = `
     check('у каждой сборной четыре карточки по убыванию силы', book.list.every(r=>r.top.length===4 && ccCardOvr(r.top[0])>=ccCardOvr(r.top[3])));
     check('США — зона Северной Америки, Дания — Европа', book.byNat['США'] && book.byNat['США'].zone==='NA' && book.byNat['Дания'] && book.byNat['Дания'].zone==='EU', JSON.stringify([book.byNat['США']&&book.byNat['США'].zone, book.byNat['Дания']&&book.byNat['Дания'].zone]));
     // Его отчёт 22.09: «Китай играет на Америке» — зона по географии (ближайший сервер), не по ростерам.
+    // И «Испания в Мидл Исте» (его отчёт 22.09) — тот же корень: зона по ростерам, не по карте.
+    check('Испания — Европа по пингу', book.byNat['Испания'] && book.byNat['Испания'].zone==='EU', JSON.stringify(book.byNat['Испания']&&book.byNat['Испания'].zone));
     check('Китай — Азия, Казахстан — Ближний Восток, даже если их люди сидят в чужих ростерах', (!book.byNat['Китай'] || book.byNat['Китай'].zone==='ASIA') && (!book.byNat['Казахстан'] || book.byNat['Казахстан'].zone==='ME'), JSON.stringify([book.byNat['Китай']&&book.byNat['Китай'].zone, book.byNat['Казахстан']&&book.byNat['Казахстан'].zone]));
     check('квоты — 25 мест', Object.values(CC_NATIONS_SLOTS).reduce((a,b)=>a+b,0)===25);
     const days=['2026-10-31','2026-11-07','2026-11-14'].map(d=>(careerEvents().get(d)||[]).find(e=>e.kind==='nations'));
