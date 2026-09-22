@@ -99784,7 +99784,8 @@ function ccNatWhyLocked(){
 function ccNatTeam(row, squad){
   const cards=squad||row.top;
   const t=careerTeam(cards);
-  t.name=flagImg(row.nat, 14)+row.nat; t.nation=row.nat; t.zone=row.zone;
+  // Имя команды в таблице: флаг, страна и четыре ника в скобках (его слово 22.09).
+  t.name=flagImg(row.nat, 14)+row.nat+' ('+cards.map(c=>c.handle).join(', ')+')'; t.nation=row.nat; t.zone=row.zone;
   return t;
 }
 function ccNatRank(teams){ return teams.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims); }
@@ -99847,7 +99848,7 @@ async function runCareerNations(){
   // Финал — ЛАН: перелёт и пост из города, как у Саммита и Глобалов.
   if(st==='final') careerLanArrive('nations', ev);
   const you=careerYouTeam(drafted);
-  you.name=(st==='trial' ? L().yourTeamPrefix+teamLabel(drafted) : flagImg(mine.nat, 14)+mine.nat+' · '+L().yourTeamPrefix.trim()); you.isYou=true; you.nation=mine.nat;
+  you.name=(st==='trial' ? L().yourTeamPrefix+teamLabel(drafted) : L().yourTeamPrefix+flagImg(mine.nat, 14)+mine.nat+' ('+mySquad.map(c=>c.handle).join(', ')+')'); you.isYou=true; you.nation=mine.nat;
   let field, cut=0, note='';
   if(st==='trial'){
     // Все люди страны, кроме троих сильнейших (они уже в составе), соло; до ста человек.
