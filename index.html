@@ -1780,6 +1780,9 @@
 
   /* Entry tabs: build a rookie, or take a card that already exists. */
   .cc-tabs{position:relative;z-index:2;display:flex;gap:2px;margin-bottom:14px;}
+  /* Год — первой панелью над вкладками; чипы года в одну строку на всю ширину. */
+  .cc-year-panel{margin-bottom:14px;}
+  .cc-year-panel .cc-chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;max-width:620px;}   /* три года в ряд: 2026 / 2025 / 2024 */
   .cc-tab{border:none;cursor:pointer;font-weight:900;font-style:italic;font-size:12px;
     letter-spacing:.05em;text-transform:uppercase;padding:10px 18px;
     background:#0b0f12;color:#fff;opacity:.42;transition:opacity .12s;}
@@ -2070,7 +2073,13 @@
   #screen-career-create .cc-chip:hover{border-color:#35e0ff;}
   #screen-career-create .cc-chip.on{background:#00b090;border-color:#00b090;color:#fff;}
   #screen-career-create .cc-chip.soon:hover{border-color:rgba(140,175,255,.24);}
-  #screen-career-create .cc-note,
+  /* Подписи под полями экрана создания. Ниже по файлу есть ДРУГОЙ .cc-note — карточка
+     заметки в хабе (grid, 16px, подсветка при наведении), и он перекрывал эти: подпись
+     про регион шла крупным лавандовым текстом с ховером. Его слово 21 сентября:
+     «чет цвет или дизайн не нравится». Здесь — своя, маленькая и тихая. */
+  #screen-career-create .cc-note{display:block;grid-template-columns:none;font-size:12px;line-height:1.45;
+    font-weight:500;color:rgba(205,218,246,.66);margin-top:8px;padding:0;background:none;border:none;border-radius:0;cursor:default;width:auto;}
+  #screen-career-create .cc-note:hover{background:none;}
   #screen-career-create .cc-cardbox .cc-empty{color:#8094c4;}
   #screen-career-create .cc-c:hover{border-color:#35e0ff;}
   #screen-career-create .cc-back{color:#cfe0ff;}
@@ -3497,6 +3506,60 @@
     border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);}
   #screen-career-hub .cc-race-row.me{border-color:rgba(126,240,221,.55);background:rgba(126,240,221,.07);}
   #screen-career-hub .cc-race-row .x-av{width:30px;height:30px;font-size:11px;}
+  #screen-career-hub .cc-race-row .cc-pair-btn{margin-left:6px;padding:3px 9px;font-size:11px;line-height:1.2;}
+  #screen-career-hub .cc-race-row .cc-pair-wait{margin-left:6px;font-size:11px;color:var(--ink-dimmer);}
+  #screen-career-hub .cc-race-row.cc-race-tap{cursor:pointer;}
+  #screen-career-hub .cc-race-row.cc-race-tap:hover{background:rgba(255,255,255,.07);}
+  #screen-career-hub .cc-race-pane{margin:-2px 0 6px 40px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.04);font-size:12px;color:var(--ink-dimmer);display:flex;flex-direction:column;gap:6px;}
+  #screen-career-hub .cc-race-pane em{color:var(--ink-dimmer);font-style:normal;}
+  #screen-career-hub .cc-race-pane-all{margin-left:0;margin-top:6px;}
+  /* Карточка сборной — синее стекло хаба, и в окне поверх хаба та же (его скрин 22.09: белое окно,
+     кнопки браузера). Цвета заданы здесь, а не унаследованы от #screen-career-hub, чтобы окно
+     выглядело так же. */
+  .cc-nat-card{display:block;text-align:left;padding:14px 16px;margin-top:10px;border-radius:8px;
+    background:linear-gradient(180deg,rgba(36,58,140,.92),rgba(16,30,86,.96));border:1px solid rgba(180,200,255,.22);
+    color:#eaf0ff;box-shadow:0 12px 30px rgba(4,10,40,.35);}
+  .cc-nat-card>em{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#9fb0e0;font-style:normal;font-weight:800;}
+  .cc-nat-card h4{margin:4px 0 10px;font-size:20px;line-height:1.1;display:flex;align-items:center;gap:8px;color:#fff;
+    font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:.02em;background:none;padding:0;}
+  .cc-nat-card h4 img{border-radius:2px;}
+  .cc-nat-card>p{margin:0 0 10px;font-size:12.5px;line-height:1.4;color:#dbe4ff;font-weight:600;}
+  .cc-nat-card ul{list-style:none;margin:0;padding:0;display:grid;gap:5px;}
+  .cc-nat-card li{display:flex;align-items:center;gap:8px;font-size:13px;padding:7px 10px;border-radius:6px;
+    background:rgba(8,18,50,.45);border:1px solid rgba(180,200,255,.12);min-height:34px;}
+  .cc-nat-card li b{color:#fff;font-weight:800;}
+  .cc-nat-card li span{color:#ffe600;font-weight:900;font-size:12px;}
+  .cc-nat-card li em{color:#9fb0e0;font-style:normal;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;}
+  .cc-nat-card li.cc-nat-empty{border-style:dashed;border-color:rgba(255,230,0,.45);background:rgba(255,230,0,.06);}
+  .cc-nat-card li.cc-nat-empty span{color:#ffe600;text-transform:uppercase;letter-spacing:.08em;font-size:10.5px;}
+  .cc-nat-card li .cc-nat-chip-x{margin-left:auto;}
+  .cc-nat-card .cc-nat-pick{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .cc-nat-card .cc-nat-pick>span{flex-basis:100%;font-size:11px;color:#9fb0e0;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px;}
+  .cc-nat-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;cursor:pointer;font:inherit;
+    font-size:12px;font-weight:800;color:#eaf0ff;background:rgba(8,18,50,.55);border:1px solid rgba(180,200,255,.3);}
+  .cc-nat-chip b{color:#ffe600;font-weight:900;}
+  .cc-nat-card i{font-style:normal;font-size:10.5px;font-weight:900;color:#9fb0e0;letter-spacing:.04em;}
+  .cc-nat-chip i{margin-right:-2px;}
+  .cc-nat-card .cc-nat-pick>p{margin:0;font-size:12.5px;color:#dbe4ff;font-weight:600;line-height:1.4;}
+  .cc-nat-chip:hover{background:#ffe600;color:#0b0f12;border-color:#ffe600;}
+  .cc-nat-chip:hover b{color:#0b0f12;}
+  .cc-nat-chip-x{padding:4px 9px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#ffb3b3;border-color:rgba(255,120,120,.35);}
+  .cc-nat-chip-x:hover{background:#ff6b6b;border-color:#ff6b6b;color:#fff;}
+  .cc-nat-btn{border:none;cursor:pointer;background:#ffdd00;color:#0b0f12;border-radius:5px;padding:9px 14px;font:inherit;
+    font-weight:900;font-size:11px;letter-spacing:.07em;text-transform:uppercase;align-self:flex-start;}
+  .cc-nat-btn:hover{background:#ffe95c;}
+  .cc-nat-card .cc-nat-spot{margin-top:12px;display:flex;gap:10px;align-items:center;padding:8px;border-radius:6px;
+    background:rgba(8,18,50,.45);border:1px solid rgba(180,200,255,.12);}
+  .cc-nat-card .cc-nat-spot .ch-spot-shot{width:96px;flex:0 0 96px;border-radius:6px;}
+  .cc-nat-card .cc-nat-spot-in{display:flex;flex-direction:column;gap:5px;}
+  .cc-nat-card .cc-nat-spot-in em{font-size:10px;color:#9fb0e0;font-style:normal;text-transform:uppercase;letter-spacing:.1em;font-weight:800;}
+  .cc-nat-card .cc-nat-spot-in b{color:#fff;font-weight:900;}
+  .cc-nat-later{display:block;width:100%;margin-top:12px;border:1px solid rgba(140,175,255,.25);cursor:pointer;background:none;
+    color:#9fb0e0;border-radius:5px;padding:9px;font:inherit;font-weight:900;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;}
+  .cc-nat-later:hover{color:#fff;border-color:rgba(140,175,255,.5);}
+  /* Окно выбора состава: та же карточка, поверх хаба — за день до отбора и в день квалификации. */
+  #ccNatModal .cc-nat-modal-in{max-width:520px;width:100%;max-height:100%;overflow:auto;}
+  #ccNatModal .cc-nat-card{margin-top:0;box-shadow:0 24px 70px rgba(0,0,0,.6);}
   #screen-career-hub .cc-race-in{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;line-height:1.2;}
   #screen-career-hub .cc-race-in b{font-family:var(--font-display);font-weight:600;font-size:14px;letter-spacing:.03em;
     color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -5849,6 +5912,33 @@
       </div>
     </div>
 
+    <div class="year-row">
+      <div class="year-label">2024</div>
+      <div class="mode-grid mode-grid-3">
+      <div class="mode-card mode-card-span">
+        <!-- 2024: своих постеров у Мейджоров нет — острова пятой главы, как в карьере. -->
+        <div class="ec-art" style="background-image:url(art/map-f1.jpg)">
+          <i class="ec-slice" style="background-image:url(art/map-f2.jpg)"></i>
+          <i class="ec-slice ec-slice-3" style="background-image:url(art/map-f3.jpg)"></i>
+          <span class="ec-pill ec-pill-l" data-i18n="ecScope6">6 regions</span>
+          <div class="ec-foot">
+            <div class="ec-when" data-i18n="ecDate2024">2024 season · six regions</div>
+            <h3 class="ec-title" data-i18n="modeFncs2024Title">FNCS 2024</h3>
+            <div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos">Duos</span></div>
+          </div>
+        </div>
+        <div class="ec-cups">
+          <button class="ec-cup ec-cup-arted" style="--cup-art:url(art/map-f1.jpg)" onclick="event.stopPropagation();chooseMode(2,'cards2024')"><span data-i18n="majorPick1">Major 1</span><small data-i18n="ecDateF1">Jan - Feb 2024</small></button>
+          <button class="ec-cup ec-cup-arted" style="--cup-art:url(art/map-f2.jpg)" onclick="event.stopPropagation();chooseMode(2,'cards2024major2')"><span data-i18n="majorPick2">Major 2</span><small data-i18n="ecDateF2">Apr - May 2024</small></button>
+          <button class="ec-cup ec-cup-arted" style="--cup-art:url(art/map-f3.jpg)" onclick="event.stopPropagation();chooseMode(2,'cards2024major3')"><span data-i18n="majorPick3">Major 3</span><small data-i18n="ecDateF3">Jun - Jul 2024</small></button>
+          <button class="ec-cup ec-cup-year" onclick="event.stopPropagation();chooseMode(2,'year2024')"><span data-i18n="yearCupBtn">ALL YEAR</span><small data-i18n="yearPick2024When">three Majors and Fort Worth</small></button>
+        </div>
+        <p data-i18n="modeFncs2024Desc">The 2024 season in duos: three Majors with open qualifiers, series points and a two-bracket Semi-Final, six regions (no NA West yet), each Major on its own Chapter 5 island with its own loot. The season ends at the Global Championship in Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;"> - 50 duos, 12 games over two days, $2,000,000.</p>
+        <span class="mode-count" data-i18n="modeFncs2024Count"><i>2 players</i><i>qualifier, series, semi-finals, final</i></span>
+      </div>
+      </div>
+    </div>
+
     <div class="mode-grid mode-grid-4" style="margin-top:16px;">
       <div class="mode-card" onclick="chooseMode(2, true)">
         <div class="ec-art" id="allFncsArt" data-art="art/mode-all-fncs.jpg"><span class="ec-pill ec-pill-l" data-i18n="ecScopeAll">All regions</span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateAll">2021 - 2026</div><h3 class="ec-title" data-i18n="modeMajorTitle">ALL FNCS</h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos">Duos</span></div></div></div>
@@ -5938,7 +6028,7 @@
         <div class="region-note" data-i18n="synergyNote">In reality FNCS 2026 is played in duos - that is the real format. Trio and Squad are fantasy: the players are real, but you build the roster yourself. Synergy is drawn as a triangle (trio) or square (squad), and the lines light up for real teammates or compatriots.</div>
       </div>
 
-      <div class="roster-note" data-i18n="sourcesNote"><b>Card sources - which tournaments the players are actually pulled from:</b><br>258 tournaments, 22175 cards in total.<br><br>• <b>FNCS 2026 Major 2</b> - Play-In, Last Chance Qualifier and Grand Finals across all 7 regions (18 Jul - 2 Aug 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> - Group Stage, Upper Bracket and Grand Finals (Düsseldorf <img src="flags/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 May 2026)<br>• <b>FNCS 2026 Major 1</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions (Mar - May 2026)<br>• <b>FNCS 2025 Global Championship</b> - Grand Finals (Lyon <img src="flags/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 Sep 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions, trios (Jan - Aug 2025)<br>• <b>FNCS 2024 Global Championship</b> - Grand Finals (Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 Sep 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> - Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> - Grand Finals (Copenhagen <img src="flags/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 Oct 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> - Grand Finals Europe (Mar / May / Jun 2023)<br>• <b>FNCS Invitational 2022</b> - Grand Finals (Raleigh <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 Nov 2022)<br>• <b>FNCS 2021 Grand Royale</b> - Europe (21 Nov 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> - Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> - Solo Grand Finals Europe (26 Jun 2021)<br><br>Each player card shows exactly which tournament its result came from. The same real person can have multiple cards - one per tournament where a result was found.<br><br><b>Card rarity:</b><br>The colour comes from the very OVR printed on the card - what you see is what you get. The ladder is the one Fortnite uses and the colours match the game.<br>• <b style="color:var(--mythic)">95+ · Mythic (gold)</b><br>• <b style="color:var(--legendary)">90–94 · Legendary (orange)</b><br>• <b style="color:var(--epic)">80–89 · Epic (purple)</b><br>• <b style="color:var(--rare)">70–79 · Rare (blue)</b><br>• <b style="color:var(--uncommon)">60–69 · Uncommon (green)</b><br>• <b style="color:var(--common)">below 60 · Common (grey)</b><br>Mythic is for a season with no weak stage in it - the Grand Final, the heats and the cups all held at once. The same six colours tint the weapons and heals in the loot packs.</div>
+      <div class="roster-note" data-i18n="sourcesNote"><b>Card sources - which tournaments the players are actually pulled from:</b><br>304 tournaments, 29134 cards in total.<br><br>• <b>FNCS 2026 Major 2</b> - Play-In, Last Chance Qualifier and Grand Finals across all 7 regions (18 Jul - 2 Aug 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> - Group Stage, Upper Bracket and Grand Finals (Düsseldorf <img src="flags/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 May 2026)<br>• <b>FNCS 2026 Major 1</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions (Mar - May 2026)<br>• <b>FNCS 2025 Global Championship</b> - Grand Finals (Lyon <img src="flags/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 Sep 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions, trios (Jan - Aug 2025)<br>• <b>FNCS 2024 Global Championship</b> - Grand Finals (Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 Sep 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> - Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> - Grand Finals (Copenhagen <img src="flags/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 Oct 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> - Grand Finals Europe (Mar / May / Jun 2023)<br>• <b>FNCS Invitational 2022</b> - Grand Finals (Raleigh <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 Nov 2022)<br>• <b>FNCS 2021 Grand Royale</b> - Europe (21 Nov 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> - Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> - Solo Grand Finals Europe (26 Jun 2021)<br><br>Each player card shows exactly which tournament its result came from. The same real person can have multiple cards - one per tournament where a result was found.<br><br><b>Card rarity:</b><br>The colour comes from the very OVR printed on the card - what you see is what you get. The ladder is the one Fortnite uses and the colours match the game.<br>• <b style="color:var(--mythic)">95+ · Mythic (gold)</b><br>• <b style="color:var(--legendary)">90–94 · Legendary (orange)</b><br>• <b style="color:var(--epic)">80–89 · Epic (purple)</b><br>• <b style="color:var(--rare)">70–79 · Rare (blue)</b><br>• <b style="color:var(--uncommon)">60–69 · Uncommon (green)</b><br>• <b style="color:var(--common)">below 60 · Common (grey)</b><br>Mythic is for a season with no weak stage in it - the Grand Final, the heats and the cups all held at once. The same six colours tint the weapons and heals in the loot packs.</div>
       <div class="roster-note" style="margin-top:14px;" data-i18n="confirmedNote"><b>What's confirmed:</b> names and region come from official participant lists and final standings (Liquipedia, Esports Earnings, esports.gg, fortnitetracker.com, and screenshots you sent).<br><br><b>About lobby size:</b> there aren't enough real players to exactly hit the target team counts - missing AI-lobby slots (except in the Grands) are filled with clearly labeled reserve teams, shown without a flag.<br><br><b>Flags:</b> nationality isn't confirmed for everyone - where there's no source, no flag is shown.</div>
     </details>
   </div>
@@ -5951,6 +6041,16 @@
         <div class="cc-brand">Fortnite <b>Championship Series</b></div>
         <h1 class="cc-title" data-i18n="ccTitle">CAREER</h1>
         <div class="cc-slab" data-i18n="ccSlab">Create your player</div>
+      </div>
+
+      <!-- Год — первым: от него зависят и карточки, и рейтинги ниже (его слово 21.09:
+           «сначала выбираешь год карьеры, потом игроков»). -->
+      <div class="cc-panel cc-year-panel">
+        <div class="cc-field" id="ccYearField" style="margin-top:0;">
+          <label data-i18n="ccYear">Year</label>
+          <div class="cc-chips" id="ccYearChips"></div>
+          <div class="cc-note" id="ccYearNote"></div>
+        </div>
       </div>
 
       <div class="cc-tabs">
@@ -6432,6 +6532,9 @@
     </div>
   </div>
 </div>
+<div id="ccNatModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:240;align-items:center;justify-content:center;padding:16px;overflow:auto;" onclick="if(event.target===this) ccNatModalClose();">
+  <div class="cc-nat-modal-in"></div>
+</div>
 <div id="ccCodeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:240;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this) ccCodeClose();">
   <div class="cc-ask-box">
     <p id="ccCodeTitle" style="margin:0 0 6px;font-weight:800;"></p>
@@ -6539,7 +6642,7 @@
   </div>
 </div>
 
-<style>#fdBoot{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;max-width:min(92vw,560px);padding:10px 16px;border-radius:12px;background:rgba(10,14,28,.94);color:#fff;font:600 13px/1.4 system-ui,"Segoe UI",Arial,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.14);opacity:0;transition:opacity .35s,transform .35s;pointer-events:none}#fdBoot.on{opacity:1;pointer-events:auto}#fdBoot i{flex:none;width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#ffd600;animation:fdSpin .8s linear infinite}@keyframes fdSpin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#fdBoot i{animation:none}}#fdBoot.slow{border-color:#ffd600}#fdBoot.fail{border-color:#ff5c5c}#fdBoot.fail i{animation:none;border-color:#ff5c5c}#fdBoot button{flex:none;background:#ffd600;color:#111;border:0;border-radius:8px;padding:6px 12px;font:800 12px system-ui,"Segoe UI",Arial,sans-serif;cursor:pointer}#fdBoot.nudge{transform:translateX(-50%) scale(1.06)}#fdBoot.off{opacity:0;transform:translateX(-50%) translateY(12px)}</style><script>window.__fdBoot=(function(){var ru=/^ru/i.test(navigator.language||"");var T=ru?{wait:"\u0417\u0430\u0433\u0440\u0443\u0436\u0430\u0435\u043c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435\u2026",slow:"\u0421\u0435\u0442\u044c \u043c\u0435\u0434\u043b\u0435\u043d\u043d\u0430\u044f \u2014 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0435\u0449\u0451 \u0435\u0434\u0435\u0442. \u0415\u0441\u043b\u0438 \u0442\u0430\u043a \u0438 \u043d\u0435 \u043e\u0442\u043a\u0440\u043e\u0435\u0442\u0441\u044f: \u043e\u0431\u043d\u043e\u0432\u0438\u0442\u0435 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0443 (Ctrl+F5), \u0441\u043c\u0435\u043d\u0438\u0442\u0435 DNS (1.1.1.1) \u0438\u043b\u0438 \u0432\u043a\u043b\u044e\u0447\u0438\u0442\u0435 VPN.",fail:"\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u043d\u0435 \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u043b\u043e\u0441\u044c.",retry:"\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c"}:{wait:"Loading the app\u2026",slow:"Slow network \u2014 the app is still on its way. If it never opens: reload (Ctrl+F5), change DNS (1.1.1.1) or use a VPN.",fail:"The app did not load.",retry:"Reload"};var el=null,t=null,done=false;function make(){if(el)return el;el=document.createElement("div");el.id="fdBoot";el.setAttribute("role","status");el.innerHTML="<i></i><span></span>";el.lastChild.textContent=T.wait;document.body.appendChild(el);return el;}function show(){if(done)return;make();el.className="on";}show();t=setTimeout(function(){if(done)return;show();el.className="on slow";el.lastChild.textContent=T.slow;},15000);document.addEventListener("click",function(){if(done||!el)return;el.className+=" nudge";setTimeout(function(){if(el)el.className=el.className.replace(" nudge","");},500);},true);return{ok:function(){done=true;clearTimeout(t);if(el){el.className="off";setTimeout(function(){if(el&&el.parentNode)el.parentNode.removeChild(el);el=null;},400);}},fail:function(){if(done)return;clearTimeout(t);show();el.className="on fail";el.innerHTML="<i></i><span></span><button type=\"button\"></button>";el.children[1].textContent=T.fail;el.children[2].textContent=T.retry;el.children[2].onclick=function(){location.reload();};}};})();</script><script src="app.js?v=d7373bc5" onload="__fdBoot.ok()" onerror="__fdBoot.fail()"></script>
+<style>#fdBoot{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;max-width:min(92vw,560px);padding:10px 16px;border-radius:12px;background:rgba(10,14,28,.94);color:#fff;font:600 13px/1.4 system-ui,"Segoe UI",Arial,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.14);opacity:0;transition:opacity .35s,transform .35s;pointer-events:none}#fdBoot.on{opacity:1;pointer-events:auto}#fdBoot i{flex:none;width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#ffd600;animation:fdSpin .8s linear infinite}@keyframes fdSpin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#fdBoot i{animation:none}}#fdBoot.slow{border-color:#ffd600}#fdBoot.fail{border-color:#ff5c5c}#fdBoot.fail i{animation:none;border-color:#ff5c5c}#fdBoot button{flex:none;background:#ffd600;color:#111;border:0;border-radius:8px;padding:6px 12px;font:800 12px system-ui,"Segoe UI",Arial,sans-serif;cursor:pointer}#fdBoot.nudge{transform:translateX(-50%) scale(1.06)}#fdBoot.off{opacity:0;transform:translateX(-50%) translateY(12px)}</style><script>window.__fdBoot=(function(){var ru=/^ru/i.test(navigator.language||"");var T=ru?{wait:"\u0417\u0430\u0433\u0440\u0443\u0436\u0430\u0435\u043c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435\u2026",slow:"\u0421\u0435\u0442\u044c \u043c\u0435\u0434\u043b\u0435\u043d\u043d\u0430\u044f \u2014 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0435\u0449\u0451 \u0435\u0434\u0435\u0442. \u0415\u0441\u043b\u0438 \u0442\u0430\u043a \u0438 \u043d\u0435 \u043e\u0442\u043a\u0440\u043e\u0435\u0442\u0441\u044f: \u043e\u0431\u043d\u043e\u0432\u0438\u0442\u0435 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0443 (Ctrl+F5), \u0441\u043c\u0435\u043d\u0438\u0442\u0435 DNS (1.1.1.1) \u0438\u043b\u0438 \u0432\u043a\u043b\u044e\u0447\u0438\u0442\u0435 VPN.",fail:"\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u043d\u0435 \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u043b\u043e\u0441\u044c.",retry:"\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c"}:{wait:"Loading the app\u2026",slow:"Slow network \u2014 the app is still on its way. If it never opens: reload (Ctrl+F5), change DNS (1.1.1.1) or use a VPN.",fail:"The app did not load.",retry:"Reload"};var el=null,t=null,done=false;function make(){if(el)return el;el=document.createElement("div");el.id="fdBoot";el.setAttribute("role","status");el.innerHTML="<i></i><span></span>";el.lastChild.textContent=T.wait;document.body.appendChild(el);return el;}function show(){if(done)return;make();el.className="on";}show();t=setTimeout(function(){if(done)return;show();el.className="on slow";el.lastChild.textContent=T.slow;},15000);document.addEventListener("click",function(){if(done||!el)return;el.className+=" nudge";setTimeout(function(){if(el)el.className=el.className.replace(" nudge","");},500);},true);return{ok:function(){done=true;clearTimeout(t);if(el){el.className="off";setTimeout(function(){if(el&&el.parentNode)el.parentNode.removeChild(el);el=null;},400);}},fail:function(){if(done)return;clearTimeout(t);show();el.className="on fail";el.innerHTML="<i></i><span></span><button type=\"button\"></button>";el.children[1].textContent=T.fail;el.children[2].textContent=T.retry;el.children[2].onclick=function(){location.reload();};}};})();</script><script src="app.js?v=db0f8390" onload="__fdBoot.ok()" onerror="__fdBoot.fail()"></script>
 <script>
 /* Mode-tile art, fetched a screen ahead of the scroll rather than all at once.
    See the note on data-art: seven tiles were 368KB before the first screen had
