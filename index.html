@@ -66145,7 +66145,7 @@ function ccStart(){
     // Пустой список — как его отсутствие: careerMigratePartners тогда возьмёт partner.
     if(!save.partners.length) delete save.partners;
     CAREER=was; }
-  try{ localStorage.setItem(LS_SLOT(ccSlot()), JSON.stringify(save)); }catch(e){}
+  try{ localStorage.setItem(LS_SLOT(ccSlotMine()), JSON.stringify(save)); }catch(e){}
   openCareerHub();
   /* И если карьеру заводили ради команды — сразу в лобби. Намерение ставит
      кнопка на карточке карьеры (careerMpNew / careerMpJoinNew) и сбрасывает
@@ -66194,12 +66194,21 @@ let CAREER=null;
 const CC_SLOTS=6;
 const LS_SLOT=n=>n===1 ? LS_CAREER : 'fncsdraft_career_s'+n;
 const LS_ACTIVE='fncsdraft_career_active';
+/* СЛОТ ВКЛАДКИ. Указатель активного слота лежит в localStorage и общий на все вкладки, а
+   careerSave читал его в момент записи: вторая вкладка того же браузера (его случай 22.09 —
+   хозяин гонки открыл свою же ссылку приглашения и завёл карьеру в другом слоте) переставляла
+   указатель, и первая вкладка со следующим же сохранением писала свою карьеру в чужой слот —
+   у хозяина «пропадала кнопка гонки». Теперь вкладка помнит слот, из которого загрузилась, и
+   пишет только в него; указатель меняет лишь сама вкладка, выбирая слот. */
+let CC_SLOT_TAB=null;
+function ccSlotMine(){ return CC_SLOT_TAB || ccSlot(); }
 function ccSlot(){
   let n=1;
   try{ n=parseInt(localStorage.getItem(LS_ACTIVE)||'1', 10); }catch(e){}
   return (n>=1 && n<=CC_SLOTS) ? n : 1;
 }
 function ccSlotUse(n){
+  CC_SLOT_TAB=n;
   try{ localStorage.setItem(LS_ACTIVE, String(n)); }catch(e){}
 }
 function ccSlotRead(n){
@@ -66261,7 +66270,8 @@ function ccDebugCash(host){
   }catch(e){ return false; }
 }
 function careerLoad(){
-  try{ CAREER=JSON.parse(localStorage.getItem(LS_SLOT(ccSlot()))||'null'); }catch(e){ CAREER=null; }
+  CC_SLOT_TAB=ccSlotMine();   // слот этой вкладки — с первой загрузки
+  try{ CAREER=JSON.parse(localStorage.getItem(LS_SLOT(CC_SLOT_TAB))||'null'); }catch(e){ CAREER=null; }
   // Снимок роастера носит на себе то, что с ним сделала карьера, которая
   // была открыта до этой. Другая карьера — другая сцена.
   CC_NOW_CARDS={}; CC_ARC_PAIRS={};
@@ -69573,7 +69583,7 @@ function careerSave(){
      снимается на закрытии (CC_MP_RAND). */
   if(ccMpOn() && !CC_MP_ADVANCE && !CC_MP_RAND && !CC_MP_HOLD && typeof MP!=='undefined' && MP.push)
     MP.push(ccTeamState());
-  const key=LS_SLOT(ccSlot());
+  const key=LS_SLOT(ccSlotMine());   // в свой слот, а не в тот, куда указывает другая вкладка
   for(let step=0; step<=CC_SAVE_TRIM.length; step++){
     try{
       localStorage.setItem(key, JSON.stringify(CAREER));
@@ -69606,7 +69616,7 @@ function careerSaveWarn(){
   if(!old) document.body.appendChild(box);
 }
 function careerExists(){
-  try{ return !!localStorage.getItem(LS_SLOT(ccSlot())); }catch(e){ return false; }
+  try{ return !!localStorage.getItem(LS_SLOT(ccSlotMine())); }catch(e){ return false; }
 }
 
 // The season, week by week. Division 1 is the only division with a weekly
