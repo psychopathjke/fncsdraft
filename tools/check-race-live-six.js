@@ -66,14 +66,15 @@ const boot = (who) => `
   setInterval(function(){
     try{
       const cr=CAREER && CAREER.career; if(!cr) return;
-      if(CC_FF && CC_FF.err && !out.notes.ffErr) out.notes.ffErr=CC_FF.err;
+      // Своя запись (с местом в коде, CC_FF.err.at) бьёт чужую весть 'fferr' без места.
+      if(CC_FF && CC_FF.err && (!out.notes.ffErr || (CC_FF.err.at && !out.notes.ffErr.at))) out.notes.ffErr=CC_FF.err;
       // Приглашение на Про-Ам принимается само (в живой игре — кнопкой в ЛС): иначе 12.07 в пробе не играется.
       try{ const inv=(typeof careerProAmInv==='function') ? careerProAmInv() : null; if(inv && inv.state==='sent'){ const t=careerDms().find(x=>x.proam); if(t){ careerProAmYes(t.id); out.notes.proamYes=cr.day; } } }catch(e){}
       if(typeof CC_MP_ROLLS!=='undefined'){ if(out.notes._lr!==CC_MP_ROLLS){ out.notes._lr=CC_MP_ROLLS; out.notes._lt=Date.now(); }
         else if(CC_MP_RAND && !out.notes.stall && Date.now()-(out.notes._lt||Date.now())>120000){
           out.notes.stall={day:cr.day, game:CC_MP_GAME, rolls:CC_MP_ROLLS, wait:(CC_MP_WAIT||[]).map(w=>w.t), qn:JSON.stringify(CC_MP_QN), marks:(out.notes.marks||[]).slice(-90), inbox:(window.__acts||[]).slice(-40),
             // Книга бросков вечера — по ней у застрявшего и у ушедших вперёд видно ПЕРВУЮ разошедшуюся отметку (прогон 2024 22.09: 32 лишних броска у одного до первого вопроса игры 7).
-            ledger:(typeof CC_MP_LEDGER!=='undefined' ? CC_MP_LEDGER.slice(-400) : [])}; } }
+            ledger:(typeof CC_MP_LEDGER!=='undefined' ? CC_MP_LEDGER.slice(-400) : []), raw:(window.__raw||[]).slice(), seats:(window.__seats||[]).slice(), ls:(window.__ls||[]).slice()}; } }
       out.notes.nights=out.notes.nights||[]; while(out.notes.nights.length<(cr.log||[]).length){ const r=cr.log[out.notes.nights.length]; out.notes.nights.push([r.day, r.kind||'cup', 'r'+CC_MP_ROLLS, 'lock'+(CC_RACE_LOCK?1:0), 'seed'+(CC_MP_SEED?1:0), 'alone'+(CC_MP_ALONE?1:0), 'field'+(CC_RACE_DBG?CC_RACE_DBG.n+'/'+CC_RACE_DBG.humans.length:'-'), 'link '+MP.state].join(' ')); }
       [...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent).forEach(s=>{ if(out.notes.splits.indexOf(s)<0) out.notes.splits.push(cr.day+' '+s); });
       document.getElementById('__prog').textContent=[cr.day, 'див '+cr.division, 'журнал '+(cr.log||[]).length, 'броски '+CC_MP_ROLLS,
@@ -114,6 +115,45 @@ const boot = (who) => `
     window.__acts=[]; if(typeof MP!=='undefined' && MP.on){ MP.on('act', function(m){ if(!m || m.kind==='hb') return; if(window.__acts.length>=60) window.__acts.shift(); window.__acts.push((m.by||'?').slice(-5)+':'+m.kind+(m.payload&&m.payload.q!=null?'#'+m.payload.q:'')+(m.payload&&m.payload.g!=null?' g'+m.payload.g:'')); }); }
     out.notes.renderRolls=[]; const rh0=careerRenderHub; careerRenderHub=function(tab){ const seeded=(typeof CC_MP_RAND!=='undefined' && CC_MP_RAND); const r0=CC_MP_ROLLS; const res=rh0.apply(this, arguments); if(seeded && CC_MP_ROLLS!==r0 && out.notes.renderRolls.length<40) out.notes.renderRolls.push(CAREER.career.day+' +'+(CC_MP_ROLLS-r0)); return res; };
     const mark=(t)=>{ if(out.notes.marks.length>=160) out.notes.marks.shift(); out.notes.marks.push(t+' d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' t'+Math.round((Date.now()-t0)/1000)); };
+    /* СЫРОЙ ОТПЕЧАТОК КОМАНД на отметках pf/drop — прогон 2024 (22.09): 19.06 игра 7 книги расходились
+       на 'pf' при равных бросках, значит у какой-то команды другая сила или вход движка; хеш этого не
+       называет. Кольцо на 24 отметки, уходит в снимок застревания (stall.raw). */
+    const DBG=${process.env.CC_DBG==="1"};
+    if(DBG){ window.__raw=[]; { const mk0=ccMpMark; ccMpMark=function(name, teams){ try{ if(teams && teams.length && (name==='pf' || name==='drop' || name==='p1')){
+        const rows=teams.map(t=>(t.mpTag||'')+(t.isYou?'*':'')+'/'+String(t.name||'').replace(/<[^>]+>/g,'').slice(0,14)+':pow'+t.pow+':pf'+(t._pf!=null?Math.round(t._pf*100):'-')+':pc'+(t._pc!=null?Math.round(t._pc*100):'-')+':z'+(t.landingZone?ALL_LANDING_ZONES.indexOf(t.landingZone):'-')+':a'+(t.attrs?t.attrs.END+'.'+t.attrs.SUR+'.'+t.attrs.AIM+'.'+t.attrs.CLU:'-')+':ce'+Math.round((t.closeEdge||0)*100)+':n'+(((t.squad||[]).length)||1)+':lp'+(t._landingPow||0));
+        window.__raw.push(name+' r'+CC_MP_ROLLS+' d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' fs'+(typeof FORM_SPREAD!=='undefined'?FORM_SPREAD:'?')+' | '+rows.join(' '));
+        if(window.__raw.length>24) window.__raw.shift(); } }catch(e){} return mk0.apply(this, arguments); }; }
+
+    /* ПАМЯТЬ МЕСТ и очередь при каждой раздаче — прогон 2024 #3 (22.09): в лобби 1 игры 7 (19.06) у половины
+       клиентов те же боты сели в другие коробки при равных бросках; входы раздачи — память места этапа
+       (CC_DROP_SEATS), очередь (qualSeat/stagePts/pow) и дома (ccBotHomes). Кольцо на 16 раздач → stall.seats. */
+    window.__seats=[]; { const bl1=buildBotLandingAssignment; buildBotLandingAssignment=function(list, o){
+        // Большое поле метить нельзя: 2360 команд × дома = минуты на раздачу, страница встаёт (стоп прогона 22.09).
+        if((list||[]).length>60) return bl1.apply(this, arguments);
+        let before=null; try{ const sm=(typeof ccStageSeats==='function') ? ccStageSeats() : null; before=(list||[]).map(t=>{ const k=ccSeatMapKey(t); const v=sm?sm.get(k):null; return (t.mpTag||'')+String(t.name||'').replace(/<[^>]+>/g,'').slice(0,10)+':m'+(v?ALL_LANDING_ZONES.indexOf(ccSeatZone(v)):'-')+':q'+(t.qualSeat||'-')+':sp'+(t.stagePts||0)+':p'+(t.pow||0)+':gc'+(t.gcRoute||'-'); }); }catch(e){ before=['err '+e]; }
+        const res=bl1.apply(this, arguments);
+        try{ const after=(list||[]).map(t=>ALL_LANDING_ZONES.indexOf(t.landingZone)); window.__seats.push('d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' r'+CC_MP_ROLLS+' st '+CC_DROP_STAGE+' into'+(o&&o.into?1:0)+' n'+(list||[]).length+' | '+before.map((b,i)=>b+'>'+after[i]).join(' ')); if(window.__seats.length>16) window.__seats.shift(); }catch(e){}
+        return res; }; }
+
+    /* ИЗ ЧЕГО СЛОЖИЛАСЬ ОЦЕНКА КОРОБКИ. Прогон 2024 #3/#5 (22.09): в лобби игры 7 слабая половина
+       комнаты садилась по-разному при равных бросках и равной очереди — значит расходится одно из
+       слагаемых landingScore: очки коробки, сундуки, цена соседей или посоленный бросок. Ловим все
+       четыре у КАЖДОЙ команды на её выборе (лучшая зона по ходу вызова), кольцо на 60 записей. */
+    window.__ls=[]; { let cur=null;
+      const ls0=landingScore; landingScore=function(t, z, occ){ const s=ls0.apply(this, arguments);
+        try{ if(cur && cur.t===t && s>cur.best){ const roll=ccLandingRoll(t, z)*LANDING_NOISE, pts=z.points||0, ch=(typeof ccLandingChestEdge==='function')?ccLandingChestEdge(z):0;
+          cur.best=s; cur.row='z'+ALL_LANDING_ZONES.indexOf(z)+' s'+s.toFixed(3)+' pts'+pts+' ch'+ch.toFixed(2)+' cost'+(pts+ch+roll-s).toFixed(3)+' roll'+roll.toFixed(3)+' occ'+((occ||[]).length)+'['+((occ||[]).map(o=>Math.round((o.pow||0)+(o.closeEdge||0))).join(','))+']'; } }catch(e){}
+        return s; };
+      const bl2=buildBotLandingAssignment; buildBotLandingAssignment=function(list, o){
+        if((list||[]).length>60) return bl2.apply(this, arguments);   // большое поле не разбираем: дорого
+        const seen=[]; const wrap=(list||[]);
+        const res=(function(){ const push=(t)=>{ cur={t:t, best:-Infinity, row:null}; };
+          // Обёртка на forEach не годится (внутренний порядок свой) — ловим по смене команды в landingScore.
+          const ls1=landingScore; landingScore=function(t, z, occ){ if(!cur || cur.t!==t){ if(cur && cur.row) seen.push((cur.t.mpTag||'')+String(cur.t.name||'').replace(/<[^>]+>/g,'').slice(0,10)+' '+cur.row); push(t); } return ls1.apply(this, arguments); };
+          try{ return bl2.apply(this, arguments); } finally{ if(cur && cur.row) seen.push((cur.t.mpTag||'')+String(cur.t.name||'').replace(/<[^>]+>/g,'').slice(0,10)+' '+cur.row); cur=null; landingScore=ls1; } })();
+        try{ if(seen.length) window.__ls.push('d'+CAREER.career.day.slice(5)+' g'+CC_MP_GAME+' n'+wrap.length+' into'+(o&&o.into?1:0)+'\\n       '+seen.join('\\n       ')); while(window.__ls.length>4) window.__ls.shift(); }catch(e){}
+        return res; }; } }
+
     const dq0=careerDropQuick; careerDropQuick=async function(field, you, how, home, pre){ const r0=CC_MP_ROLLS; const q=await dq0.apply(this, arguments); mark('DQ '+(you.mpTag||'?')+' '+how+' home'+(home?ALL_LANDING_ZONES.indexOf(home):'-')+' ->'+ALL_LANDING_ZONES.indexOf(you.landingZone)+' pow'+you.pow+' ce'+(you.closeEdge||0)+' r'+r0+'>'+CC_MP_ROLLS); return q; };
     const bl0=buildBotLandingAssignment; buildBotLandingAssignment=function(list, o){ const r0=CC_MP_ROLLS; const res=bl0.apply(this, arguments); mark('BOTS n'+(list||[]).length+' r'+r0+'>'+CC_MP_ROLLS); return res; };
     const ce0=console.error; console.error=function(){ try{ const parts=[...arguments].map(x=>(x && x.stack) ? String(x.stack).slice(0,600) : String(x)); out.notes.lastErr=parts.join(' ').slice(0,900); out.notes.cerr=(out.notes.cerr||[]).slice(-5).concat([out.notes.lastErr]); }catch(e){} return ce0.apply(console, arguments); };
@@ -421,7 +461,7 @@ async function runOne(tag, who, port, phone){
     (r.notes.fields||[]).forEach(f=>console.log('   поле: '+f));
     if(r.notes.skipped && r.notes.skipped.length) console.log('   не сыграно: '+[...new Set(r.notes.skipped)].join(' | '));
     if(r.fail || (r.notes.dayAfter<FF && !r.notes.seasonOver)) console.log('   застрял: wait '+JSON.stringify(r.notes.wait)+' · игра '+r.notes.game+' · qn '+JSON.stringify(r.notes.qn)+' · эфир '+r.notes.title+' · комната '+r.notes.room+' · соперники '+JSON.stringify(r.notes.peersDays)+'\n   метки: '+(r.notes.marks||[]).slice(-70).join(' | ')+'\n   входящие: '+JSON.stringify(r.notes.queue));
-    if(r.notes.stall) console.log('   СТОП '+r.notes.stall.day+' игра '+r.notes.stall.game+' r'+r.notes.stall.rolls+' wait '+JSON.stringify(r.notes.stall.wait)+'\n   qn '+r.notes.stall.qn+'\n   метки-стоп: '+r.notes.stall.marks.join(' | ')+'\n   входящие-стоп: '+JSON.stringify(r.notes.stall.inbox)+'\n   книга-стоп: '+(r.notes.stall.ledger||[]).join(' '));
+    if(r.notes.stall) console.log('   СТОП '+r.notes.stall.day+' игра '+r.notes.stall.game+' r'+r.notes.stall.rolls+' wait '+JSON.stringify(r.notes.stall.wait)+'\n   qn '+r.notes.stall.qn+'\n   метки-стоп: '+r.notes.stall.marks.join(' | ')+'\n   входящие-стоп: '+JSON.stringify(r.notes.stall.inbox)+'\n   книга-стоп: '+(r.notes.stall.ledger||[]).join(' ')+'\n   сырьё-стоп:\n     '+(r.notes.stall.raw||[]).join('\n     ')+'\n   посадка-стоп:\n     '+(r.notes.stall.seats||[]).join('\n     ')+'\n   оценка-стоп:\n     '+(r.notes.stall.ls||[]).join('\n     '));
     if(r.notes.cerr && r.notes.cerr.length) console.log('   console.error: '+r.notes.cerr.join(' || '));
     if(r.notes.ffErr){ console.log('   FAIL перемотка встала: '+JSON.stringify(r.notes.ffErr)); bad++; }
     if(r.notes.splits && r.notes.splits.length){ console.log('   FAIL красные строки: '+r.notes.splits.join(' || ')); bad++; }

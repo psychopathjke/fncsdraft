@@ -18253,7 +18253,8 @@ function flagImg(nat, size){
   const code=FLAG_CODE[nat];
   if(!code) return '';
   const h=size||16, w=Math.round(h*4/3);
-  return `<img src="flags/w40/${code}.png" alt="${nat}" title="${nat}" width="${w}" height="${h}" style="vertical-align:-2px;border-radius:2px;display:inline-block;margin-right:4px;">`;
+  const nm=(typeof natDisplay==='function') ? natDisplay(nat) : nat;
+  return `<img src="flags/w40/${code}.png" alt="${nm}" title="${nm}" width="${w}" height="${h}" style="vertical-align:-2px;border-radius:2px;display:inline-block;margin-right:4px;">`;
 }
 function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
 function rarityFor(placement){
@@ -47708,7 +47709,11 @@ const NAT_EN={
 'Шотландия':'Scotland','Эстония':'Estonia','Япония':'Japan'
 };
 Object.keys(CC_RU).forEach(code=>{ if(CC_EN[code]) NAT_EN[CC_RU[code]]=CC_EN[code]; });
-function natDisplay(nat){ if(!nat) return nat; return LANG==='en' ? (NAT_EN[nat]||nat) : nat; }
+/* Страна на языке интерфейса. Хранится она по-русски (NAT_EN — единственный перевод),
+   поэтому на любом НЕ русском языке показывается английское имя: его слово 22 сентября
+   «у меня английский язык, а страны пишутся на русском». Французский, итальянский и
+   португальский идут через тот же английский фолбэк, что и недостающие строки словаря. */
+function natDisplay(nat){ if(!nat) return nat; return LANG==='ru' ? nat : (NAT_EN[nat]||nat); }
 
 // Countries that can realistically chat in one shared language even though
 // they're not the same nationality — e.g. Russian/Ukrainian/Belarusian/Baltic
@@ -89046,6 +89051,25 @@ function careerWorldTurns(fromISO, toISO){
    таблица выплат, ПР-доска и строка в ленте о победителе. Один раз на день и
    вид: cr.worldPaid[день|вид]. Комната не показывается и не пишет журнал
    игрока — это мир, а не его вечер. */
+/* ВЕЧЕР МИРА СЧИТАЕТСЯ ОДИНАКОВО У ВСЕХ.
+
+   Турниры, в которых игрока нет, мир играет сам — и играл их НЕСЕЯНЫМ броском:
+   у каждой вкладки свои победители и свои призовые. В гонке это видно прямо на
+   доске: прогон 2024 на шестерых, 22 сентября, — Chico за 22 турнира $91 475 у
+   одного и $9 475 у другого при одинаковом числе вечеров, и так 444 строки из
+   616. Его жалоба 11 сентября («доска призовых расходится») — про это же.
+
+   Финал недели Д1 рядом (careerWorldD1) уже сеется датой; здесь то же самое,
+   только соль — общий сид мира (ccWorldSeed: в гонке он от старшего комнаты) и
+   ключ турнира. Бросок остаётся тем же по распределению — меняется только его
+   источник, — зато один и тот же у всех шестерых и переживает перезагрузку.
+   Общий поток вечера (CC_MP_SEED) при этом не тратится: мир считает своим. */
+function ccWorldRun(key, fn){
+  const rnd=careerRng(ccHashStr('world|'+((typeof ccWorldSeed==='function') ? ccWorldSeed() : '')+'|'+key));
+  const was=Math.random;
+  Math.random=rnd;
+  try{ return fn(); } finally{ Math.random=was; }
+}
 function careerWorldFinals(fromISO, toISO){
   const cr=CAREER && CAREER.career; if(!cr) return 0;
   const me=(typeof careerCard==='function') ? careerCard() : null; if(!me) return 0;
@@ -89067,7 +89091,7 @@ function careerWorldFinals(fromISO, toISO){
     if(!room || room.length<2) return;
     paid[key]=1;
     room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
-    simulateGames(room, games, pts, kill);
+    ccWorldRun('fin|'+key, ()=>simulateGames(room, games, pts, kill));
     const ranked=rank(room);
     careerMoneyAdd(ranked, prize);
     careerPrAdd(ranked, meta);
@@ -91366,8 +91390,11 @@ async function careerFastForward(days, agreed){
         step(day);
       }
       }catch(e){
+        /* И СТЕК — в пробы. Без него «Cannot read properties of undefined» называет день и вид
+           вечера, но не место в коде, и ошибка ищется перебором (прогон 2024, 22 сентября). */
         CC_FF.err={day:day, kind:(next && next.type)||'',
-                   text:String((e && (e.message||e))||'')};
+                   text:String((e && (e.message||e))||''),
+                   at:String((e && e.stack) || '').split('\n').slice(1, 5).map(l=>l.trim()).join(' < ')};
         // В команде о встававшей перемотке узнаёт и напарник — иначе он ждёт нас вечно.
         if(!CC_FF.stop && (ccMpOn() || ccRaceFfOn()) && typeof MP!=='undefined' && MP.act)
           try{ MP.act('fferr', {by:ccMpId(), day:day, text:CC_FF.err.text}); }catch(e2){}
@@ -93834,7 +93861,9 @@ function ccMajorWorldHeats(iso){
   const heats=seedHeats(seeded, ccMajorHeats());
   const room=(heats[ev.nth-1]||[]).filter(t=>!t._stub).slice(0, st.field);
   if(room.length<2) return 0;
-  (winIsATicket() ? simulateGamesStopOnWin : simulateGames)(room, st.games, st.pts, st.kill);
+  // Хит без игрока — тоже мир: один бросок на всех (см. ccWorldRun).
+  ccWorldRun('mheat|'+cr.season+'|'+ev.n+'|'+ev.nth,
+             ()=>(winIsATicket() ? simulateGamesStopOnWin : simulateGames)(room, st.games, st.pts, st.kill));
   const q=heatQualifiers(room, st.cut, winIsATicket());
   s.through=(s.through||[]).concat(
     room.slice().sort(heatsRank).filter(t=>q.has(t)).map(ccMajorSeatRow));
@@ -96697,10 +96726,10 @@ function ccRelWorldHeats(){
   const st=ccScaleStage(CC_RELOAD_STAGE.heat);
   const pts=reloadCareerPoints(s.set);
   let played=0;
-  s.pending.forEach(rows=>{
+  s.pending.forEach((rows, i)=>{
     const room=(rows||[]).map(ccStageTeamFrom);
     if(room.length<2) return;
-    simulateGames(room, st.games, pts, st.kill);
+    ccWorldRun('rheat|'+cr.season+'|'+s.set+'|'+i, ()=>simulateGames(room, st.games, pts, st.kill));
     const q=heatQualifiers(room, st.cut, false);
     s.through=(s.through||[]).concat(
       room.slice().sort(heatsRank).filter(t=>q.has(t)).map(ccStageSeatRow));
@@ -99866,8 +99895,28 @@ function ccNationsMine(){
   /* Сначала отбор, потом выбор (его слово 22.09): до N.trialRank капитан никого не берёт; после —
      список стоит по местам отбора, четвёртое место у лучшего из невыбранных по отбору. */
   const trialDone=!!(N.trialRank && N.trialRank.length);
-  const ranked=trialDone ? N.trialRank.map(k=>others.find(p=>hKey(p)===k)).filter(Boolean).concat(others.filter(p=>N.trialRank.indexOf(hKey(p))<0)) : others;
-  const picks=(captain && trialDone) ? (N.picks||[]).map(k=>others.find(p=>hKey(p)===k)).filter(Boolean).slice(0, CC_NATIONS_SQUAD-2) : [];
+  /* СПИСОК СОБИРАЕТСЯ С РАСХОДОМ, А НЕ ПОИСКОМ ПО КЛЮЧУ.
+
+     Ключ ника без региона в сцене занят дважды у 137 человек, и строка отбора, в которой такой
+     ключ встретился дважды, через find() дважды возвращала ОДНУ И ТУ ЖЕ карточку: в списке и в
+     составе стоял один человек два раза, а второй пропадал совсем. Его слово 22 сентября: «и
+     опять два повторяющихся игрока». Теперь каждый ключ выдаёт карточку один раз, и кто не
+     попал в строку отбора, идёт следом — как и было задумано. */
+  const byKey=new Map();
+  others.forEach(p=>{ const k=hKey(p); if(!byKey.has(k)) byKey.set(k, []); byKey.get(k).push(p); });
+  const takeOne=k=>{ const q=byKey.get(k); return (q && q.length) ? q.shift() : null; };
+  let ranked;
+  if(trialDone){
+    const seen=new Set(), out=[];
+    N.trialRank.forEach(k=>{ const p=takeOne(k); if(p){ out.push(p); seen.add(p); } });
+    others.forEach(p=>{ if(!seen.has(p)) out.push(p); });
+    ranked=out;
+  } else ranked=others;
+  const picks=(captain && trialDone) ? (function(){
+    const used=new Set(), out=[];
+    (N.picks||[]).forEach(k=>{ const p=ranked.find(x=>hKey(x)===k && !used.has(x)); if(p){ used.add(p); out.push(p); } });
+    return out.slice(0, CC_NATIONS_SQUAD-2);
+  })() : [];
   const third=others[CC_NATIONS_SQUAD-2];
   const auto=captain || !third || myOvr>=ccCardOvr(third);
   const inSquad=auto || N.trial==='won';
@@ -99875,12 +99924,28 @@ function ccNationsMine(){
   if(captain){
     const pk=picks.map(hKey);
     const rest=ranked.filter(p=>pk.indexOf(hKey(p))<0);
-    squad=[me, picks[0]||null, picks[1]||null, trialDone ? (rest[picks.length===2 ? 0 : 2-picks.length]||null) : null];
+    /* ЧЕТВЁРТОЕ МЕСТО — ВСЕГДА ЛУЧШИЙ ИЗ НЕВЫБРАННЫХ, И ВИДНО ЭТО СРАЗУ.
+
+       Превью считало место отбора «третьим по списку, пока капитан не выбрал», а правило
+       вечера другое: место достаётся лучшему из тех, кого не взяли. Значит верхний по
+       отбору в сборной при любом раскладе — и он же стоял в списке на выбор. Его слово
+       22 сентября: «могу выбрать игрока, когда он прошёл уже квал и мне его не нужно
+       выбирать, и когда выбираю его, мне дают первого, который в списке» — ровно это:
+       место уходило на того, кто и так ехал, а четвёртым вставал следующий.
+       Теперь он сразу стоит на своём месте, а выбирать капитан может только из остальных
+       (см. пул в ccNatSquadHTML). */
+    squad=[me, picks[0]||null, picks[1]||null, trialDone ? (rest[0]||null) : null];
     full=[me].concat(picks, rest).slice(0, CC_NATIONS_SQUAD);
   } else {
     squad=inSquad ? [me].concat(others.slice(0, CC_NATIONS_SQUAD-1)) : c.top;
     full=squad;
   }
+  /* И последняя защита: в составе не бывает двух одинаковых. Если тёзка всё-таки протёк из
+     чужого списка (записи отбора, старый сейв), место освобождается — лучше пустое, чем один
+     человек дважды. */
+  { const seen=new Set();
+    squad=squad.map(p=>{ if(!p) return p; const k=hKey(p); if(seen.has(k)) return null; seen.add(k); return p; });
+    const f=new Set(); full=full.filter(p=>{ if(!p) return false; const k=hKey(p); if(f.has(k)) return false; f.add(k); return true; }); }
   return {nat:me.nat, zone:c.zone, seat:auto ? 'auto' : 'trial', captain, picks, inSquad, squad, full, others, ranked, trialDone, country:c};
 }
 /* ОКНО ВЫБОРА СОСТАВА. Карточка сборной стоит под карточкой дня, и на телефоне её не видно —
@@ -99939,6 +100004,9 @@ function ccNatPick(k){
   else {
     if(picks.length>=CC_NATIONS_SQUAD-2) return;
     if(!mine.others.some(p=>hKey(p)===k)) return;
+    // Тот, кто и так занимает место отбора, местом капитана не берётся (см. ccNationsMine).
+    { const pk=picks.slice(); const rest=mine.ranked.filter(p=>pk.indexOf(hKey(p))<0);
+      if(rest[0] && hKey(rest[0])===k) return; }
     picks.push(k);
   }
   N.picks=picks;
@@ -100009,7 +100077,15 @@ function ccNatSquadHTML(){
     pick='<div class="cc-nat-pick"><span>'+esc(T.ccNatTrialFirst)+'</span><p>'+esc(T.ccNatTrialFirstSub(days.trial ? ccDayLabel(days.trial) : ''))+'</p></div>';
   } else if(canPick && mine.picks.length<CC_NATIONS_SQUAD-2){
     const pk=mine.picks.map(hKey);
-    const pool=mine.ranked.filter(p=>pk.indexOf(hKey(p))<0).slice(0, 12);
+    /* КОГО ПРЕДЛАГАТЬ. Первый из невыбранных занимает четвёртое место сам — его в списке нет
+       (см. ccNationsMine). Остальных список резал по МЕСТАМ ОТБОРА, и сильный игрок страны,
+       провалившийся в тот вечер, за двенадцать строк не попадал вовсе: его слово 22 сентября —
+       «игроки в выбор попадают, не самых лучших предлагают». Теперь двенадцать — это двенадцать
+       сильнейших страны из свободных, а порядок остаётся по отбору (место стоит на кнопке):
+       отбор решает очередь, рейтинг решает, кого вообще показывать. */
+    const free=mine.ranked.filter(p=>pk.indexOf(hKey(p))<0).slice(1);
+    const show=new Set(free.slice().sort((a,b)=>ccCardOvr(b)-ccCardOvr(a)).slice(0, 12).map(hKey));
+    const pool=free.filter(p=>show.has(hKey(p)));
     pick='<div class="cc-nat-pick"><span>'+esc(T.ccNatPickHint)+'</span>'+
       pool.map(p=>'<button class="cc-nat-chip" onclick="ccNatPick(\''+esc(hKey(p))+'\')">'+placeOf(hKey(p))+esc(p.handle)+' <b>'+ccCardOvr(p)+'</b></button>').join('')+'</div>';
   }
@@ -100020,7 +100096,7 @@ function ccNatSquadHTML(){
     ? '<div class="cc-nat-spot">'+(careerSpotShotHTML(sp.i, 'nations', 'ch-spot-shot', 16/9)||'')+'<div class="cc-nat-spot-in"><em>'+esc(T.ccNightSpotCap)+'</em><b>'+esc(T.landingZoneSuffix(sp.i+1))+'</b><button class="cc-nat-btn" '+go+'>'+esc(T.ccSpotChange)+'</button></div></div>'
     : '<div class="cc-nat-spot"><button class="cc-nat-btn" '+go+'>'+esc(T.ccNatSpotPick)+'</button></div>';
   return '<div class="ch-tile cc-nat-card"><em>'+esc(T.ccNatSquadTitle)+'</em>'+
-    '<h4>'+flagImg(mine.nat, 16)+esc(mine.nat)+'</h4>'+
+    '<h4>'+flagImg(mine.nat, 16)+esc(natDisplay(mine.nat))+'</h4>'+
     '<ul>'+mine.squad.map(row).join('')+'</ul>'+pick+spot+'</div>';
 }
 function careerNationsOn(iso){
@@ -100042,9 +100118,9 @@ function ccNatWhyLocked(){
   if(!mine) return L().ccNatLockedNoCountry;
   const N=ccNatState(), st=ccNatStage(ev);
   if(st==='trial') return mine.captain ? L().ccNatLockedCap : (N.trial ? (N.trial==='won' ? L().ccNatTrialWon : L().ccNatTrialLost) : L().ccNatLockedIn);
-  if(!mine.inSquad) return N.trial==='lost' ? L().ccNatTrialLost : L().ccNatLockedNotIn(mine.nat, mine.country.top.map(c=>c.handle).join(', '));
+  if(!mine.inSquad) return N.trial==='lost' ? L().ccNatTrialLost : L().ccNatLockedNotIn(natDisplay(mine.nat), mine.country.top.map(c=>c.handle).join(', '));
   if(st==='qual') return L().ccNatLockedDone;
-  return (N.qualified[mine.zone]||[]).indexOf(mine.nat)>=0 ? L().ccNatLockedDone : L().ccNatLockedOut(mine.nat);
+  return (N.qualified[mine.zone]||[]).indexOf(mine.nat)>=0 ? L().ccNatLockedDone : L().ccNatLockedOut(natDisplay(mine.nat));
 }
 /* Сборной не платят за флаг и язык: состав и так одной страны. Его слово 22.09: «убери на этих
    турнирах синергию языка и страны». Снимается ровно то, что начислил computeSynergy: страна —
@@ -100073,7 +100149,7 @@ function ccNatTeam(row, squad){
   const cards=squad||row.top;
   const t=ccNatStripSyn(careerTeam(cards), cards);
   // Имя команды в таблице: флаг, страна и четыре ника в скобках (его слово 22.09).
-  t.name=flagImg(row.nat, 14)+row.nat+' ('+cards.map(c=>c.handle).join(', ')+')'; t.nation=row.nat; t.zone=row.zone;
+  t.name=flagImg(row.nat, 14)+natDisplay(row.nat)+' ('+cards.map(c=>c.handle).join(', ')+')'; t.nation=row.nat; t.zone=row.zone;
   return t;
 }
 function ccNatRank(teams){ return teams.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims); }
@@ -100101,7 +100177,9 @@ function ccNatQualQuiet(zone){
   const out=[];
   lobbies.forEach((room, i)=>{
     room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
-    simulateGames(room, CC_NATIONS.qual.games, pointsForPlace, CC_NATIONS.qual.kill);
+    // Отбор зоны, в которой игрока нет, — мир: один бросок на всех (см. ccWorldRun).
+    ccWorldRun('nat|'+((CAREER.career||{}).season||1)+'|'+zone+'|'+i,
+               ()=>simulateGames(room, CC_NATIONS.qual.games, pointsForPlace, CC_NATIONS.qual.kill));
     ccNatRank(room).slice(0, ccNatSlotsOf(zone, lobbies, i)).forEach(t=>out.push(t.nation));
   });
   N.qualified[zone]=out; N.qualDone[zone]=true;
@@ -100140,7 +100218,7 @@ async function runCareerNations(){
   // Финал — ЛАН: перелёт и пост из города, как у Саммита и Глобалов.
   if(st==='final') careerLanArrive('nations', ev);
   const you=ccNatStripSyn(careerYouTeam(drafted), drafted);
-  you.name=(st==='trial' ? L().yourTeamPrefix+teamLabel(drafted) : L().yourTeamPrefix+flagImg(mine.nat, 14)+mine.nat+' ('+mySquad.map(c=>c.handle).join(', ')+')'); you.isYou=true; you.nation=mine.nat;
+  you.name=(st==='trial' ? L().yourTeamPrefix+teamLabel(drafted) : L().yourTeamPrefix+flagImg(mine.nat, 14)+natDisplay(mine.nat)+' ('+mySquad.map(c=>c.handle).join(', ')+')'); you.isYou=true; you.nation=mine.nat;
   let field, cut=0, note='';
   if(st==='trial'){
     // Все люди страны, кроме троих сильнейших (они уже в составе), соло; до ста человек.
@@ -100173,7 +100251,7 @@ async function runCareerNations(){
     const lobbies=field._lobbies, out=[];
     lobbies.forEach((room, i)=>{ ccNatRank(room).slice(0, ccNatSlotsOf(mine.zone, lobbies, i)).forEach(t=>out.push(t.nation)); });
     N.qualified[mine.zone]=out; N.qualDone[mine.zone]=true;
-    note=through ? L().ccNatQualThrough(mine.nat) : L().ccNatQualOut(mine.nat, cut);
+    note=through ? L().ccNatQualThrough(natDisplay(mine.nat)) : L().ccNatQualOut(natDisplay(mine.nat), cut);
   } else {
     N.finalDone=true; through=place<=3;
     if(place<=3){ N.medal=place; cr.medals=cr.medals||[]; cr.medals.push({season:cr.season, nat:mine.nat, place}); }
@@ -100194,9 +100272,9 @@ async function runCareerNations(){
   careerPrAdd(ranked, {div:cr.division, kind:'nations', stage:st});
   if(st!=='trial') careerReachAdd(careerReachResult(place, field.length, 1, st==='final' ? 'globals' : 'major'));
   const shot={tbl:ccStageShot(ranked, you, 1, label)};
-  if(st==='trial') careerNews(through?'good':'flat', through?'ccNewsNatTrialWon':'ccNewsNatTrialLost', [mine.nat, place, field.length], shot);
-  else if(st==='qual') careerNews(through?'good':'bad', through?'ccNewsNatQualThrough':'ccNewsNatQualOut', [mine.nat, place, field.length], shot);
-  else careerNews(place<=3?'good':'flat', place<=3?'ccNewsNatMedal':'ccNewsNatFinal', [mine.nat, place, field.length], shot);
+  if(st==='trial') careerNews(through?'good':'flat', through?'ccNewsNatTrialWon':'ccNewsNatTrialLost', [natDisplay(mine.nat), place, field.length], shot);
+  else if(st==='qual') careerNews(through?'good':'bad', through?'ccNewsNatQualThrough':'ccNewsNatQualOut', [natDisplay(mine.nat), place, field.length], shot);
+  else careerNews(place<=3?'good':'flat', place<=3?'ccNewsNatMedal':'ccNewsNatFinal', [natDisplay(mine.nat), place, field.length], shot);
   if(st==='final') careerCongrats(ranked, you, L().ccNatCongrats);
   const places=(you.stageLog||[]).map(g=>g.place);
   cr.log=cr.log||[];
@@ -100224,7 +100302,7 @@ function ccNatWorldPlay(day, play, stubOf){
     Object.keys(CC_NATIONS_SLOTS).forEach(z=>ccNatQualQuiet(z));
     const mine=ccNationsMine();
     const q=(mine && N.qualified[mine.zone])||[];
-    if(mine && !mine.inSquad) careerNews(q.indexOf(mine.nat)>=0 ? 'flat' : 'bad', q.indexOf(mine.nat)>=0 ? 'ccNewsNatWorldQual' : 'ccNewsNatWorldOut', [mine.nat]);
+    if(mine && !mine.inSquad) careerNews(q.indexOf(mine.nat)>=0 ? 'flat' : 'bad', q.indexOf(mine.nat)>=0 ? 'ccNewsNatWorldQual' : 'ccNewsNatWorldOut', [natDisplay(mine.nat)]);
     return;
   }
   play(day, 'nations', 'nations', ev.label||'Nations Cup', ()=>[stubOf(), ...ccNatFinalField(null)],

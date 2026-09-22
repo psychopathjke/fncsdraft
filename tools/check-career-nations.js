@@ -91,7 +91,10 @@ const BOOT = `
     careerAdvanceTo('2026-11-07');
     check('квалификация открыта', careerCanPlayKind('nations')===true); out.notes.dbg={can:careerCanPlayKind('nations'), next:careerNext(), canNext:careerCanPlay(careerNext()), ev:careerNationsOn(careerToday()), mine:(function(){ const m=ccNationsMine(); return m && {seat:m.seat, inSquad:m.inSquad, zone:m.zone}; })(), N:CAREER.career.nations};
     // Датчанин 96 может оказаться капитаном — тогда без двоих вечер не начнётся (дверь ccNatPickGate).
-    if(mine.captain){ ccNatPick(hKey(mine.others[0])); ccNatPick(hKey(mine.others[1])); ccNatModalClose(); }
+    // Первый из невыбранных едет четвёртым сам — берём двоих из тех, кого выбирать и надо.
+    if(mine.captain){ const free=()=>{ const m=ccNationsMine(); const pk=m.picks.map(hKey);
+        return m.ranked.filter(p=>pk.indexOf(hKey(p))<0).slice(1).map(hKey); };
+      ccNatPick(free()[0]); ccNatPick(free()[0]); ccNatModalClose(); }
     const h1=await playThrough('qual');
     out.notes.qual=h1;
     const N=CAREER.career.nations;
@@ -157,7 +160,12 @@ const BOOT = `
     // Его слово 22.09: «пусть сначала сыграются квалы на игрока, потом выбор игроков» — до отбора
     // капитан никого не берёт, карточка говорит «сначала отбор», окна нет.
     check('карточка сборной стоит в хабе до турнира: страна и слово про отбор', hub.indexOf(L().ccNatSquadTitle)>=0 && hub.indexOf(L().ccNatTrialFirst)>=0 && !/ccNatPick\\(/.test(hub), '');
-    const k5=hKey(m3.others[5]), k7=hKey(m3.others[7]), k9=hKey(m3.others[9]);
+    /* Кого капитан МОЖЕТ взять: первый из невыбранных едет четвёртым сам (место отбора),
+       поэтому в списке выбора его нет и ccNatPick его не берёт — его слово 22.09
+       («могу выбрать игрока, когда он прошёл уже квал»). Берём троих из остальных. */
+    const freeKeys=()=>{ const m=ccNationsMine(); const pk=m.picks.map(hKey);
+      return m.ranked.filter(p=>pk.indexOf(hKey(p))<0).slice(1).map(hKey); };
+    const k5=freeKeys()[4], k7=freeKeys()[6], k9=freeKeys()[8];
     ccNatPick(k5);
     check('до отбора выбрать нельзя', ccNationsMine().picks.length===0, '');
     careerAdvanceTo('2026-10-30'); careerRenderHub('centre');
@@ -184,7 +192,12 @@ const BOOT = `
     careerPlay();
     check('«Играть» без состава не стартует, а открывает окно выбора', nm.style.display==='flex' && !CAREER_RUN && !document.getElementById('screen-results').classList.contains('active'), nm.style.display+' run='+CAREER_RUN);
     ccNatPick(k5); ccNatPick(k7); ccNatPick(k9);
-    check('окно перерисовалось с выбранными', nm.style.display==='flex' && nm.innerHTML.indexOf(m3.others[5].handle)>=0 && nm.innerHTML.indexOf(m3.others[7].handle)>=0, '');
+    const nameOf=k=>{ const c=m3.others.find(x=>hKey(x)===k); return c ? c.handle : '?'; };
+    check('окно перерисовалось с выбранными', nm.style.display==='flex' && nm.innerHTML.indexOf(nameOf(k5))>=0 && nm.innerHTML.indexOf(nameOf(k7))>=0, '');
+    // Новое правило 22.09: первый из невыбранных стоит четвёртым сам, и в списке выбора его нет.
+    { const m=ccNationsMine(), pk=m.picks.map(hKey), first=hKey(m.ranked.filter(x=>pk.indexOf(hKey(x))<0)[0]||{handle:''});
+      check('первого из невыбранных в списке выбора нет', nm.innerHTML.indexOf("ccNatPick('"+first+"')")<0, first);
+      check('и он стоит четвёртым сам', hKey(m.squad[3]||{handle:''})===first, JSON.stringify((m.squad[3]||{}).handle)); }
     const m4=ccNationsMine();
     check('взял двоих, третьего не дало', m4.picks.length===2 && m4.picks.map(hKey).join()===[k5,k7].join(), JSON.stringify(m4.picks.map(c=>c.handle)));
     const fourthK=tr.find(k=>k!==k5 && k!==k7);
