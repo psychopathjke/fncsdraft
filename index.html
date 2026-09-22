@@ -3513,6 +3513,20 @@
   #screen-career-hub .cc-race-pane{margin:-2px 0 6px 40px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.04);font-size:12px;color:var(--ink-dimmer);display:flex;flex-direction:column;gap:6px;}
   #screen-career-hub .cc-race-pane em{color:var(--ink-dimmer);font-style:normal;}
   #screen-career-hub .cc-race-pane-all{margin-left:0;margin-top:6px;}
+  #screen-career-hub .cc-nat-card{display:block;text-align:left;padding:12px 14px;margin-top:10px;}
+  #screen-career-hub .cc-nat-card>em{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dimmer);font-style:normal;}
+  #screen-career-hub .cc-nat-card h4{margin:4px 0 8px;font-size:16px;display:flex;align-items:center;gap:6px;}
+  #screen-career-hub .cc-nat-card ul{list-style:none;margin:0;padding:0;display:grid;gap:4px;}
+  #screen-career-hub .cc-nat-card li{display:flex;align-items:center;gap:8px;font-size:13px;}
+  #screen-career-hub .cc-nat-card li span{color:var(--ink-dimmer);}
+  #screen-career-hub .cc-nat-card li em{color:var(--ink-dimmer);font-style:normal;font-size:12px;}
+  #screen-career-hub .cc-nat-card li.cc-nat-empty span{opacity:.7;}
+  #screen-career-hub .cc-nat-card .cc-nat-pick{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  #screen-career-hub .cc-nat-card .cc-nat-pick>span{flex-basis:100%;font-size:12px;color:var(--ink-dimmer);}
+  #screen-career-hub .cc-nat-card .cc-nat-spot{margin-top:10px;display:flex;gap:10px;align-items:center;}
+  #screen-career-hub .cc-nat-card .cc-nat-spot .ch-spot-shot{width:96px;flex:0 0 96px;border-radius:6px;}
+  #screen-career-hub .cc-nat-card .cc-nat-spot-in{display:flex;flex-direction:column;gap:4px;}
+  #screen-career-hub .cc-nat-card .cc-nat-spot-in em{font-size:11px;color:var(--ink-dimmer);font-style:normal;}
   #screen-career-hub .cc-race-in{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;line-height:1.2;}
   #screen-career-hub .cc-race-in b{font-family:var(--font-display);font-weight:600;font-size:14px;letter-spacing:.03em;
     color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -7242,7 +7256,7 @@ ccYearNames:{
   ProAm_Paris:'Pro-Am · Париж', ProAm_Seoul:'Pro-Am · Сеул',
   NationsTrial:'Кубок наций · отбор в сборную', NationsQual:'Кубок наций · квалификация', NationsFinal:'Кубок наций · финал · {CITY}'
 },
-ccNatZoneNA:'Северная Америка', ccNatCash:v=>'Призовые: '+v+' тебе', ccNatCongrats:'Кубок наций', ccNatLockedNoCountry:'Сборной твоей страны нет: в сцене меньше четырёх её игроков', ccNatLockedIn:'Ты в четвёрке страны — отбор тебе не нужен, жди квалификацию', ccNatLockedNotIn:(nat,names)=>'Ты не в сборной '+nat+': состав — '+names, ccNatLockedDone:'Этот вечер сборная уже сыграла', ccNatLockedOut:nat=>'Сборная '+nat+' не прошла квалификацию', ccNatTrialWon:'Отбор выигран — четвёртое место в сборной твоё', ccNatTrialLost:'Отбор проигран — сборная едет без тебя', ccNatQualThrough:nat=>'Сборная '+nat+' в финале Кубка наций', ccNatQualOut:(nat,cut)=>'Сборная '+nat+' не в топ-'+cut+' — финал без неё', ccNatMedal:p=>(p===1 ? '🥇 Золото' : p===2 ? '🥈 Серебро' : '🥉 Бронза')+' Кубка наций', ccNatFinalPlace:p=>ccTopC(p)+' на Кубке наций', ccNewsNatTrialWon:(nat,p,of)=>'Отбор в сборную '+nat+' выигран: '+ccTop(p)+' из '+of+' — четвёртое место в составе', ccNewsNatTrialLost:(nat,p,of)=>'Отбор в сборную '+nat+': '+ccTop(p)+' из '+of+' — состав едет без меня', ccNewsNatQualThrough:(nat,p,of)=>'Сборная '+nat+' — '+ccTop(p)+' в квалификации, летим в финал Кубка наций', ccNewsNatQualOut:(nat,p,of)=>'Сборная '+nat+' — '+ccTop(p)+' из '+of+' в квалификации, финал Кубка наций без нас', ccNewsNatMedal:(nat,p,of)=>(p===1 ? '🥇 Сборная '+nat+' — чемпион Кубка наций' : (p===2 ? '🥈 ' : '🥉 ')+'Сборная '+nat+' — '+ccTop(p)+' на Кубке наций'), ccNewsNatFinal:(nat,p,of)=>'Сборная '+nat+' — '+ccTop(p)+' из '+of+' на Кубке наций', ccNewsNatWorldQual:nat=>'Сборная '+nat+' прошла в финал Кубка наций — без меня', ccNewsNatWorldOut:nat=>'Сборная '+nat+' не прошла квалификацию Кубка наций', ccRaceWhynations:'Кубок наций — своя сборная у каждого, вечер свой',
+ccNatZoneNA:'Северная Америка', ccNatCash:v=>'Призовые: '+v+' тебе', ccNatCongrats:'Кубок наций', ccNatLockedNoCountry:'Сборной твоей страны нет: в сцене меньше четырёх её игроков', ccNatLockedIn:'Ты в четвёрке страны — отбор тебе не нужен, жди квалификацию', ccNatLockedNotIn:(nat,names)=>'Ты не в сборной '+nat+': состав — '+names, ccNatLockedDone:'Этот вечер сборная уже сыграла', ccNatLockedOut:nat=>'Сборная '+nat+' не прошла квалификацию', ccNatTrialWon:'Отбор выигран — четвёртое место в сборной твоё', ccNatTrialLost:'Отбор проигран — сборная едет без тебя', ccNatQualThrough:nat=>'Сборная '+nat+' в финале Кубка наций', ccNatQualOut:(nat,cut)=>'Сборная '+nat+' не в топ-'+cut+' — финал без неё', ccNatMedal:p=>(p===1 ? '🥇 Золото' : p===2 ? '🥈 Серебро' : '🥉 Бронза')+' Кубка наций', ccNatFinalPlace:p=>ccTopC(p)+' на Кубке наций', ccNewsNatTrialWon:(nat,p,of)=>'Отбор в сборную '+nat+' выигран: '+ccTop(p)+' из '+of+' — четвёртое место в составе', ccNewsNatTrialLost:(nat,p,of)=>'Отбор в сборную '+nat+': '+ccTop(p)+' из '+of+' — состав едет без меня', ccNewsNatQualThrough:(nat,p,of)=>'Сборная '+nat+' — '+ccTop(p)+' в квалификации, летим в финал Кубка наций', ccNewsNatQualOut:(nat,p,of)=>'Сборная '+nat+' — '+ccTop(p)+' из '+of+' в квалификации, финал Кубка наций без нас', ccNewsNatMedal:(nat,p,of)=>(p===1 ? '🥇 Сборная '+nat+' — чемпион Кубка наций' : (p===2 ? '🥈 ' : '🥉 ')+'Сборная '+nat+' — '+ccTop(p)+' на Кубке наций'), ccNewsNatFinal:(nat,p,of)=>'Сборная '+nat+' — '+ccTop(p)+' из '+of+' на Кубке наций', ccNewsNatWorldQual:nat=>'Сборная '+nat+' прошла в финал Кубка наций — без меня', ccNewsNatWorldOut:nat=>'Сборная '+nat+' не прошла квалификацию Кубка наций', ccRaceWhynations:'Кубок наций — своя сборная у каждого, вечер свой', ccNatSquadTitle:'Сборная на Кубок наций', ccNatCaptain:'капитан', ccNatYou:'ты', ccNatPickHint:'Ты капитан: выбери двоих, четвёртое место разыграет отбор', ccNatPickSlot:'выбери игрока', ccNatTrialSlot:'место отбора', ccNatUnpickBtn:'Убрать', ccSpotNationsTab:'Кубок наций · сквад', ccNatSpotPick:'Выбрать локацию сборной', ccNatLockedCap:'Ты капитан сборной — отбор за четвёртое место играют без тебя, жди квалификацию',
 chWkMajor:'Мейджор',
 chWkGC:'ГЧ',
 chSquad:'Дуо', ccDuoFindTitle:'Кому написать',
@@ -9228,7 +9242,7 @@ ccYearNames:{
   ProAm_Paris:'Pro-Am · Paris', ProAm_Seoul:'Pro-Am · Seoul',
   NationsTrial:'Nations Cup · national trial', NationsQual:'Nations Cup · qualifier', NationsFinal:'Nations Cup · final · {CITY}'
 },
-ccNatZoneNA:'North America', ccNatCash:v=>'Prize money: '+v+' to you', ccNatCongrats:'Nations Cup', ccNatLockedNoCountry:'Your country has no squad: fewer than four of its players are in the scene', ccNatLockedIn:'You are in your country\'s top four — no trial needed, wait for the qualifier', ccNatLockedNotIn:(nat,names)=>'You are not in the '+nat+' squad: '+names, ccNatLockedDone:'The squad has already played this night', ccNatLockedOut:nat=>nat+' did not qualify', ccNatTrialWon:'Trial won — the fourth seat in the squad is yours', ccNatTrialLost:'Trial lost — the squad goes without you', ccNatQualThrough:nat=>nat+' is in the Nations Cup final', ccNatQualOut:(nat,cut)=>nat+' missed the top '+cut+' — no final', ccNatMedal:p=>(p===1 ? '🥇 Gold' : p===2 ? '🥈 Silver' : '🥉 Bronze')+' at the Nations Cup', ccNatFinalPlace:p=>ccTopC(p)+' at the Nations Cup', ccNewsNatTrialWon:(nat,p,of)=>'Won the '+nat+' trial: '+ccTop(p)+' of '+of+' — fourth seat in the squad', ccNewsNatTrialLost:(nat,p,of)=>nat+' trial: '+ccTop(p)+' of '+of+' — the squad goes without me', ccNewsNatQualThrough:(nat,p,of)=>nat+' — '+ccTop(p)+' in the qualifier, we fly to the Nations Cup final', ccNewsNatQualOut:(nat,p,of)=>nat+' — '+ccTop(p)+' of '+of+' in the qualifier, no final for us', ccNewsNatMedal:(nat,p,of)=>(p===1 ? '🥇 '+nat+' — Nations Cup champions' : (p===2 ? '🥈 ' : '🥉 ')+nat+' — '+ccTop(p)+' at the Nations Cup'), ccNewsNatFinal:(nat,p,of)=>nat+' — '+ccTop(p)+' of '+of+' at the Nations Cup', ccNewsNatWorldQual:nat=>nat+' made the Nations Cup final — without me', ccNewsNatWorldOut:nat=>nat+' did not qualify for the Nations Cup', ccRaceWhynations:'Nations Cup — everyone has their own squad, tonight is yours alone',
+ccNatZoneNA:'North America', ccNatCash:v=>'Prize money: '+v+' to you', ccNatCongrats:'Nations Cup', ccNatLockedNoCountry:'Your country has no squad: fewer than four of its players are in the scene', ccNatLockedIn:'You are in your country\'s top four — no trial needed, wait for the qualifier', ccNatLockedNotIn:(nat,names)=>'You are not in the '+nat+' squad: '+names, ccNatLockedDone:'The squad has already played this night', ccNatLockedOut:nat=>nat+' did not qualify', ccNatTrialWon:'Trial won — the fourth seat in the squad is yours', ccNatTrialLost:'Trial lost — the squad goes without you', ccNatQualThrough:nat=>nat+' is in the Nations Cup final', ccNatQualOut:(nat,cut)=>nat+' missed the top '+cut+' — no final', ccNatMedal:p=>(p===1 ? '🥇 Gold' : p===2 ? '🥈 Silver' : '🥉 Bronze')+' at the Nations Cup', ccNatFinalPlace:p=>ccTopC(p)+' at the Nations Cup', ccNewsNatTrialWon:(nat,p,of)=>'Won the '+nat+' trial: '+ccTop(p)+' of '+of+' — fourth seat in the squad', ccNewsNatTrialLost:(nat,p,of)=>nat+' trial: '+ccTop(p)+' of '+of+' — the squad goes without me', ccNewsNatQualThrough:(nat,p,of)=>nat+' — '+ccTop(p)+' in the qualifier, we fly to the Nations Cup final', ccNewsNatQualOut:(nat,p,of)=>nat+' — '+ccTop(p)+' of '+of+' in the qualifier, no final for us', ccNewsNatMedal:(nat,p,of)=>(p===1 ? '🥇 '+nat+' — Nations Cup champions' : (p===2 ? '🥈 ' : '🥉 ')+nat+' — '+ccTop(p)+' at the Nations Cup'), ccNewsNatFinal:(nat,p,of)=>nat+' — '+ccTop(p)+' of '+of+' at the Nations Cup', ccNewsNatWorldQual:nat=>nat+' made the Nations Cup final — without me', ccNewsNatWorldOut:nat=>nat+' did not qualify for the Nations Cup', ccRaceWhynations:'Nations Cup — everyone has their own squad, tonight is yours alone', ccNatSquadTitle:'Nations Cup squad', ccNatCaptain:'captain', ccNatYou:'you', ccNatPickHint:'You are the captain: pick two, the fourth seat goes to the trial', ccNatPickSlot:'pick a player', ccNatTrialSlot:'trial seat', ccNatUnpickBtn:'Drop', ccSpotNationsTab:'Nations Cup · squads', ccNatSpotPick:'Pick the squad\'s drop', ccNatLockedCap:'You captain the squad — the trial for the fourth seat is played without you, wait for the qualifier',
 chWkMajor:'Major',
 chWkGC:'GC',
 chSquad:'Duo', ccDuoFindTitle:'Who to write to',
@@ -11588,7 +11602,7 @@ ccVicCash:(w,c)=>w+(w===1?' victoire':' victoires')+' — '+c,
 ccNewsVicCash:(w,c)=>'Victory Cup : '+w+(w===1?' victoire':' victoires')+', '+c+' gagnés',
 ccNewsVicOut:(p,of)=>'Victory Cup : '+ccTop(p)+' sur '+of+', pas de Manche 2',
 ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens coupe 1',ReloadEliteSeries1PlayIn:'Reload · play-in coupe 1',ReloadEliteSeries1Heats:'Reload · heats coupe 1',ReloadEliteSeries1Final:'Reload · finale coupe 1',ReloadEliteSeries2Opens:'Reload · opens coupe 2',ReloadEliteSeries2PlayIn:'Reload · play-in coupe 2',ReloadEliteSeries2Heats:'Reload · heats coupe 2',ReloadEliteSeries2Final:'Reload · finale coupe 2',ReloadEliteSeries3Opens:'Reload · opens coupe 3',ReloadEliteSeries3PlayIn:'Reload · play-in coupe 3',ReloadEliteSeries3Heats:'Reload · heats coupe 3',ReloadEliteSeries3Final:'Reload · finale coupe 3',ReloadEliteSeries4Opens:'Reload · opens coupe 4',ReloadEliteSeries4PlayIn:'Reload · play-in coupe 4',ReloadEliteSeries4Heats:'Reload · heats coupe 4',ReloadEliteSeries4Final:'Reload · finale coupe 4',Major1_PlayIn:'Major 1 · Play-In',Major1_Heats:'Major 1 · Heats',Major1_LCQ:'Major 1 · Last Chance',Major1_Final:'Major 1 · Finale',Summit_Upper:'Summit · Upper Bracket',Summit_Lower:'Summit · Lower Bracket',Summit_Final:'Summit · Grandes Finales',Major2_PlayIn:'Major 2 · Play-In',Major2_Heats:'Major 2 · Heats',Major2_LCQ:'Major 2 · Last Chance',Major2_Final:'Major 2 · Finale',GlobalChampionshipLastChance:'Global Championship · Last Chance',ReloadChampionshipParis:'Reload Championship · {CITY}',GlobalChampionship:'Global Championship · {CITY}',SoloSeries_Qualifier:'Solo Series · qualifications',SoloSeries_Heats:'Solo Series · heats',SoloSeries_Final:'Solo Series · finale',FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2',FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3',FNCSSolos_FastTrack:'FNCS Solos · Fast Track',FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2',FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3',FNCSSolos_Heats:'FNCS Solos · heats',FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1',FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale',FNCSSolos_Final:'FNCS Solos · finale',ProAm_Dallas:'Pro-Am · Dallas',ProAm_SaoPaulo:'Pro-Am · São Paulo', ProAm_Paris:'Pro-Am · Paris', ProAm_Seoul:'Pro-Am · Seoul', NationsTrial:'Coupe des nations · sélection', NationsQual:'Coupe des nations · qualification', NationsFinal:'Coupe des nations · finale · {CITY}'},
-ccNatZoneNA:'Amérique du Nord', ccNatCash:v=>'Gains : '+v+' pour toi', ccNatCongrats:'Coupe des nations', ccNatLockedNoCountry:'Ton pays n\'a pas d\'équipe : moins de quatre de ses joueurs dans la scène', ccNatLockedIn:'Tu es dans le top 4 de ton pays — pas de sélection, attends la qualification', ccNatLockedNotIn:(nat,names)=>'Tu n\'es pas dans l\'équipe '+nat+' : '+names, ccNatLockedDone:'L\'équipe a déjà joué cette soirée', ccNatLockedOut:nat=>nat+' ne s\'est pas qualifiée', ccNatTrialWon:'Sélection gagnée — la quatrième place est à toi', ccNatTrialLost:'Sélection perdue — l\'équipe part sans toi', ccNatQualThrough:nat=>nat+' est en finale de la Coupe des nations', ccNatQualOut:(nat,cut)=>nat+' hors du top '+cut+' — pas de finale', ccNatMedal:p=>(p===1 ? '🥇 Or' : p===2 ? '🥈 Argent' : '🥉 Bronze')+' à la Coupe des nations', ccNatFinalPlace:p=>ccTopC(p)+' à la Coupe des nations', ccNewsNatTrialWon:(nat,p,of)=>'Sélection '+nat+' gagnée : '+ccTop(p)+' sur '+of+' — quatrième place dans l\'équipe', ccNewsNatTrialLost:(nat,p,of)=>'Sélection '+nat+' : '+ccTop(p)+' sur '+of+' — l\'équipe part sans moi', ccNewsNatQualThrough:(nat,p,of)=>nat+' — '+ccTop(p)+' en qualification, direction la finale de la Coupe des nations', ccNewsNatQualOut:(nat,p,of)=>nat+' — '+ccTop(p)+' sur '+of+' en qualification, pas de finale pour nous', ccNewsNatMedal:(nat,p,of)=>(p===1 ? '🥇 '+nat+' — champions de la Coupe des nations' : (p===2 ? '🥈 ' : '🥉 ')+nat+' — '+ccTop(p)+' à la Coupe des nations'), ccNewsNatFinal:(nat,p,of)=>nat+' — '+ccTop(p)+' sur '+of+' à la Coupe des nations', ccNewsNatWorldQual:nat=>nat+' est en finale de la Coupe des nations — sans moi', ccNewsNatWorldOut:nat=>nat+' ne s\'est pas qualifiée pour la Coupe des nations', ccRaceWhynations:'Coupe des nations — chacun sa sélection, la soirée est à toi seul',
+ccNatZoneNA:'Amérique du Nord', ccNatCash:v=>'Gains : '+v+' pour toi', ccNatCongrats:'Coupe des nations', ccNatLockedNoCountry:'Ton pays n\'a pas d\'équipe : moins de quatre de ses joueurs dans la scène', ccNatLockedIn:'Tu es dans le top 4 de ton pays — pas de sélection, attends la qualification', ccNatLockedNotIn:(nat,names)=>'Tu n\'es pas dans l\'équipe '+nat+' : '+names, ccNatLockedDone:'L\'équipe a déjà joué cette soirée', ccNatLockedOut:nat=>nat+' ne s\'est pas qualifiée', ccNatTrialWon:'Sélection gagnée — la quatrième place est à toi', ccNatTrialLost:'Sélection perdue — l\'équipe part sans toi', ccNatQualThrough:nat=>nat+' est en finale de la Coupe des nations', ccNatQualOut:(nat,cut)=>nat+' hors du top '+cut+' — pas de finale', ccNatMedal:p=>(p===1 ? '🥇 Or' : p===2 ? '🥈 Argent' : '🥉 Bronze')+' à la Coupe des nations', ccNatFinalPlace:p=>ccTopC(p)+' à la Coupe des nations', ccNewsNatTrialWon:(nat,p,of)=>'Sélection '+nat+' gagnée : '+ccTop(p)+' sur '+of+' — quatrième place dans l\'équipe', ccNewsNatTrialLost:(nat,p,of)=>'Sélection '+nat+' : '+ccTop(p)+' sur '+of+' — l\'équipe part sans moi', ccNewsNatQualThrough:(nat,p,of)=>nat+' — '+ccTop(p)+' en qualification, direction la finale de la Coupe des nations', ccNewsNatQualOut:(nat,p,of)=>nat+' — '+ccTop(p)+' sur '+of+' en qualification, pas de finale pour nous', ccNewsNatMedal:(nat,p,of)=>(p===1 ? '🥇 '+nat+' — champions de la Coupe des nations' : (p===2 ? '🥈 ' : '🥉 ')+nat+' — '+ccTop(p)+' à la Coupe des nations'), ccNewsNatFinal:(nat,p,of)=>nat+' — '+ccTop(p)+' sur '+of+' à la Coupe des nations', ccNewsNatWorldQual:nat=>nat+' est en finale de la Coupe des nations — sans moi', ccNewsNatWorldOut:nat=>nat+' ne s\'est pas qualifiée pour la Coupe des nations', ccRaceWhynations:'Coupe des nations — chacun sa sélection, la soirée est à toi seul', ccNatSquadTitle:'Sélection pour la Coupe des nations', ccNatCaptain:'capitaine', ccNatYou:'toi', ccNatPickHint:'Tu es capitaine : choisis deux joueurs, la quatrième place se joue en sélection', ccNatPickSlot:'choisis un joueur', ccNatTrialSlot:'place de sélection', ccNatUnpickBtn:'Retirer', ccSpotNationsTab:'Coupe des nations · squads', ccNatSpotPick:'Choisir le drop de la sélection', ccNatLockedCap:'Tu es capitaine — la sélection pour la quatrième place se joue sans toi, attends la qualification',
 ccDuoWith:n=>'duo avec '+n,
 ccDuoFound:n=>n+(n===1?' joueur':' joueurs'),
 ccCupTitle:(d,n)=>'Coupe Division '+d+' — 11 parties, '+n+' '+ccSquadWord(),
@@ -14054,7 +14068,7 @@ ccCity:{Dus:'Düsseldorf', Ant:'Anversa', Lyo:'Lione', Cph:'Copenaghen', Ftw:'Fo
 ccCityIn:{Dus:'Düsseldorf', Ant:'Anversa', Lyo:'Lione', Cph:'Copenaghen', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Parigi', Ryd:'Riyadh', Nyc:'New York', Tok:'Tokyo', Bel:'Belgrado', Kat:'Katowice', Sto:'Stoccolma', Mad:'Madrid', Ams:'Amsterdam', Dal:'Dallas', Sao:'San Paolo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Città del Messico', Dub:'Dubai', Ist:'Istanbul', Mil:'Milano', Lon:'Londra', Sin:'Singapore'},
 ccYearSub:{cup:'Una finestra, 11 partite', final:'Finale settimanale, solo Divisione 1', eval:'Due round in una sera, solo Divisione 1', major:'Play-In, Heat, LAN', gc:'La fine dell\u2019anno', reload:'Un circuito a s\u00e9, non FNCS', summit:'Tre giorni di LAN, dal Major 1', victory:'Due round, $100 per ogni vittoria nel secondo'},
 ccYearNames:{ReloadEliteSeries1Opens:'Reload · open coppa 1', ReloadEliteSeries1PlayIn:'Reload · play-in coppa 1', ReloadEliteSeries1Heats:'Reload · heat coppa 1', ReloadEliteSeries1Final:'Reload · finale coppa 1', ReloadEliteSeries2Opens:'Reload · open coppa 2', ReloadEliteSeries2PlayIn:'Reload · play-in coppa 2', ReloadEliteSeries2Heats:'Reload · heat coppa 2', ReloadEliteSeries2Final:'Reload · finale coppa 2', ReloadEliteSeries3Opens:'Reload · open coppa 3', ReloadEliteSeries3PlayIn:'Reload · play-in coppa 3', ReloadEliteSeries3Heats:'Reload · heat coppa 3', ReloadEliteSeries3Final:'Reload · finale coppa 3', ReloadEliteSeries4Opens:'Reload · open coppa 4', ReloadEliteSeries4PlayIn:'Reload · play-in coppa 4', ReloadEliteSeries4Heats:'Reload · heat coppa 4', ReloadEliteSeries4Final:'Reload · finale coppa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heat', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Finale', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Gran Finali', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heat', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Finale', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · qualificazioni', SoloSeries_Heats:'Solo Series · heat', SoloSeries_Final:'Solo Series · finali', FNCSSolos_Q1Round2:'FNCS Solos · qualif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · qualif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · qualif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · qualif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heat', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, finale', FNCSSolos_Final:'FNCS Solos · finali', ProAm_Dallas:'Pro-Am · Dallas', ProAm_SaoPaulo:'Pro-Am · San Paolo', ProAm_Paris:'Pro-Am · Paris', ProAm_Seoul:'Pro-Am · Seoul', NationsTrial:'Coppa delle nazioni · selezione', NationsQual:'Coppa delle nazioni · qualificazione', NationsFinal:'Coppa delle nazioni · finale · {CITY}'},
-ccNatZoneNA:'Nord America', ccNatCash:v=>'Montepremi: '+v+' a te', ccNatCongrats:'Coppa delle nazioni', ccNatLockedNoCountry:'Il tuo paese non ha una nazionale: meno di quattro suoi giocatori nella scena', ccNatLockedIn:'Sei nei primi quattro del tuo paese — niente selezione, aspetta la qualificazione', ccNatLockedNotIn:(nat,names)=>'Non sei nella nazionale '+nat+': '+names, ccNatLockedDone:'La nazionale ha già giocato questa serata', ccNatLockedOut:nat=>nat+' non si è qualificata', ccNatTrialWon:'Selezione vinta — il quarto posto in nazionale è tuo', ccNatTrialLost:'Selezione persa — la nazionale parte senza di te', ccNatQualThrough:nat=>nat+' è nella finale della Coppa delle nazioni', ccNatQualOut:(nat,cut)=>nat+' fuori dalla top '+cut+' — niente finale', ccNatMedal:p=>(p===1 ? '🥇 Oro' : p===2 ? '🥈 Argento' : '🥉 Bronzo')+' alla Coppa delle nazioni', ccNatFinalPlace:p=>ccTopC(p)+' alla Coppa delle nazioni', ccNewsNatTrialWon:(nat,p,of)=>'Selezione '+nat+' vinta: '+ccTop(p)+' su '+of+' — quarto posto in nazionale', ccNewsNatTrialLost:(nat,p,of)=>'Selezione '+nat+': '+ccTop(p)+' su '+of+' — la nazionale parte senza di me', ccNewsNatQualThrough:(nat,p,of)=>nat+' — '+ccTop(p)+' in qualificazione, si vola alla finale della Coppa delle nazioni', ccNewsNatQualOut:(nat,p,of)=>nat+' — '+ccTop(p)+' su '+of+' in qualificazione, niente finale per noi', ccNewsNatMedal:(nat,p,of)=>(p===1 ? '🥇 '+nat+' — campioni della Coppa delle nazioni' : (p===2 ? '🥈 ' : '🥉 ')+nat+' — '+ccTop(p)+' alla Coppa delle nazioni'), ccNewsNatFinal:(nat,p,of)=>nat+' — '+ccTop(p)+' su '+of+' alla Coppa delle nazioni', ccNewsNatWorldQual:nat=>nat+' è in finale della Coppa delle nazioni — senza di me', ccNewsNatWorldOut:nat=>nat+' non si è qualificata per la Coppa delle nazioni', ccRaceWhynations:'Coppa delle nazioni — ognuno con la sua nazionale, la serata è tua',
+ccNatZoneNA:'Nord America', ccNatCash:v=>'Montepremi: '+v+' a te', ccNatCongrats:'Coppa delle nazioni', ccNatLockedNoCountry:'Il tuo paese non ha una nazionale: meno di quattro suoi giocatori nella scena', ccNatLockedIn:'Sei nei primi quattro del tuo paese — niente selezione, aspetta la qualificazione', ccNatLockedNotIn:(nat,names)=>'Non sei nella nazionale '+nat+': '+names, ccNatLockedDone:'La nazionale ha già giocato questa serata', ccNatLockedOut:nat=>nat+' non si è qualificata', ccNatTrialWon:'Selezione vinta — il quarto posto in nazionale è tuo', ccNatTrialLost:'Selezione persa — la nazionale parte senza di te', ccNatQualThrough:nat=>nat+' è nella finale della Coppa delle nazioni', ccNatQualOut:(nat,cut)=>nat+' fuori dalla top '+cut+' — niente finale', ccNatMedal:p=>(p===1 ? '🥇 Oro' : p===2 ? '🥈 Argento' : '🥉 Bronzo')+' alla Coppa delle nazioni', ccNatFinalPlace:p=>ccTopC(p)+' alla Coppa delle nazioni', ccNewsNatTrialWon:(nat,p,of)=>'Selezione '+nat+' vinta: '+ccTop(p)+' su '+of+' — quarto posto in nazionale', ccNewsNatTrialLost:(nat,p,of)=>'Selezione '+nat+': '+ccTop(p)+' su '+of+' — la nazionale parte senza di me', ccNewsNatQualThrough:(nat,p,of)=>nat+' — '+ccTop(p)+' in qualificazione, si vola alla finale della Coppa delle nazioni', ccNewsNatQualOut:(nat,p,of)=>nat+' — '+ccTop(p)+' su '+of+' in qualificazione, niente finale per noi', ccNewsNatMedal:(nat,p,of)=>(p===1 ? '🥇 '+nat+' — campioni della Coppa delle nazioni' : (p===2 ? '🥈 ' : '🥉 ')+nat+' — '+ccTop(p)+' alla Coppa delle nazioni'), ccNewsNatFinal:(nat,p,of)=>nat+' — '+ccTop(p)+' su '+of+' alla Coppa delle nazioni', ccNewsNatWorldQual:nat=>nat+' è in finale della Coppa delle nazioni — senza di me', ccNewsNatWorldOut:nat=>nat+' non si è qualificata per la Coppa delle nazioni', ccRaceWhynations:'Coppa delle nazioni — ognuno con la sua nazionale, la serata è tua', ccNatSquadTitle:'Nazionale per la Coppa delle nazioni', ccNatCaptain:'capitano', ccNatYou:'tu', ccNatPickHint:'Sei il capitano: scegli due giocatori, il quarto posto lo assegna la selezione', ccNatPickSlot:'scegli un giocatore', ccNatTrialSlot:'posto della selezione', ccNatUnpickBtn:'Togli', ccSpotNationsTab:'Coppa delle nazioni · squadre', ccNatSpotPick:'Scegli il drop della nazionale', ccNatLockedCap:'Sei il capitano — la selezione per il quarto posto si gioca senza di te, aspetta la qualificazione',
 modeFncs2026Title:"FNCS 2026",
 majorPick1:"Major 1",
 majorPick2:"Major 2",
@@ -16564,7 +16578,7 @@ ccCity:{Dus:'Düsseldorf', Ant:'Antuérpia', Lyo:'Lyon', Cph:'Copenhague', Ftw:'
 ccCityIn:{Dus:'Düsseldorf', Ant:'Antuérpia', Lyo:'Lyon', Cph:'Copenhague', Ftw:'Fort Worth', Rdu:'Raleigh', Par:'Paris', Ryd:'Riade', Nyc:'Nova York', Tok:'Tóquio', Bel:'Belgrado', Kat:'Katowice', Sto:'Estocolmo', Mad:'Madri', Ams:'Amsterdã', Dal:'Dallas', Sao:'São Paulo', Seo:'Seul', Tor:'Toronto', Syd:'Sydney', Mex:'Cidade do México', Dub:'Dubai', Ist:'Istambul', Mil:'Milão', Lon:'Londres', Sin:'Singapura'},
 ccYearSub:{cup:'Uma janela, 11 partidas', final:'Final semanal, s\u00f3 Divis\u00e3o 1', eval:'Duas rodadas numa noite, s\u00f3 Divis\u00e3o 1', major:'Play-In, Heats, LAN', gc:'O fim do ano', reload:'Circuito pr\u00f3prio, n\u00e3o \u00e9 FNCS', summit:'Tr\u00eas dias de LAN, vindos do Major 1', victory:'Duas rodadas, $100 por cada vit\u00f3ria na segunda'},
 ccYearNames:{ReloadEliteSeries1Opens:'Reload · opens copa 1', ReloadEliteSeries1PlayIn:'Reload · play-in copa 1', ReloadEliteSeries1Heats:'Reload · heats copa 1', ReloadEliteSeries1Final:'Reload · final copa 1', ReloadEliteSeries2Opens:'Reload · opens copa 2', ReloadEliteSeries2PlayIn:'Reload · play-in copa 2', ReloadEliteSeries2Heats:'Reload · heats copa 2', ReloadEliteSeries2Final:'Reload · final copa 2', ReloadEliteSeries3Opens:'Reload · opens copa 3', ReloadEliteSeries3PlayIn:'Reload · play-in copa 3', ReloadEliteSeries3Heats:'Reload · heats copa 3', ReloadEliteSeries3Final:'Reload · final copa 3', ReloadEliteSeries4Opens:'Reload · opens copa 4', ReloadEliteSeries4PlayIn:'Reload · play-in copa 4', ReloadEliteSeries4Heats:'Reload · heats copa 4', ReloadEliteSeries4Final:'Reload · final copa 4', Major1_PlayIn:'Major 1 · Play-In', Major1_Heats:'Major 1 · Heats', Major1_LCQ:'Major 1 · Last Chance', Major1_Final:'Major 1 · Final', Summit_Upper:'Summit · Upper Bracket', Summit_Lower:'Summit · Lower Bracket', Summit_Final:'Summit · Grandes Finais', Major2_PlayIn:'Major 2 · Play-In', Major2_Heats:'Major 2 · Heats', Major2_LCQ:'Major 2 · Last Chance', Major2_Final:'Major 2 · Final', GlobalChampionshipLastChance:'Global Championship · Last Chance', ReloadChampionshipParis:'Reload Championship · {CITY}', GlobalChampionship:'Global Championship · {CITY}', SoloSeries_Qualifier:'Solo Series · classificat\u00f3rias', SoloSeries_Heats:'Solo Series · heats', SoloSeries_Final:'Solo Series · finais', FNCSSolos_Q1Round2:'FNCS Solos · classif 1, round 2', FNCSSolos_Q1Round3:'FNCS Solos · classif 1, round 3', FNCSSolos_FastTrack:'FNCS Solos · Fast Track', FNCSSolos_Q2Round2:'FNCS Solos · classif 2, round 2', FNCSSolos_Q2Round3:'FNCS Solos · classif 2, round 3', FNCSSolos_Heats:'FNCS Solos · heats', FNCSSolos_LCQRound1:'FNCS Solos · Last Chance, round 1', FNCSSolos_LCQFinal:'FNCS Solos · Last Chance, final', FNCSSolos_Final:'FNCS Solos · finais', ProAm_Dallas:'Pro-Am · Dallas', ProAm_SaoPaulo:'Pro-Am · San Paolo', ProAm_Paris:'Pro-Am · Paris', ProAm_Seoul:'Pro-Am · Seoul', NationsTrial:'Copa das Nações · seletiva', NationsQual:'Copa das Nações · classificatória', NationsFinal:'Copa das Nações · final · {CITY}'},
-ccNatZoneNA:'América do Norte', ccNatCash:v=>'Premiação: '+v+' para você', ccNatCongrats:'Copa das Nações', ccNatLockedNoCountry:'O seu país não tem seleção: menos de quatro jogadores dele na cena', ccNatLockedIn:'Você está no top 4 do seu país — sem seletiva, espere a classificatória', ccNatLockedNotIn:(nat,names)=>'Você não está na seleção '+nat+': '+names, ccNatLockedDone:'A seleção já jogou esta noite', ccNatLockedOut:nat=>nat+' não se classificou', ccNatTrialWon:'Seletiva vencida — a quarta vaga da seleção é sua', ccNatTrialLost:'Seletiva perdida — a seleção vai sem você', ccNatQualThrough:nat=>nat+' está na final da Copa das Nações', ccNatQualOut:(nat,cut)=>nat+' fora do top '+cut+' — sem final', ccNatMedal:p=>(p===1 ? '🥇 Ouro' : p===2 ? '🥈 Prata' : '🥉 Bronze')+' na Copa das Nações', ccNatFinalPlace:p=>ccTopC(p)+' na Copa das Nações', ccNewsNatTrialWon:(nat,p,of)=>'Seletiva '+nat+' vencida: '+ccTop(p)+' de '+of+' — quarta vaga na seleção', ccNewsNatTrialLost:(nat,p,of)=>'Seletiva '+nat+': '+ccTop(p)+' de '+of+' — a seleção vai sem mim', ccNewsNatQualThrough:(nat,p,of)=>nat+' — '+ccTop(p)+' na classificatória, vamos à final da Copa das Nações', ccNewsNatQualOut:(nat,p,of)=>nat+' — '+ccTop(p)+' de '+of+' na classificatória, sem final para nós', ccNewsNatMedal:(nat,p,of)=>(p===1 ? '🥇 '+nat+' — campeã da Copa das Nações' : (p===2 ? '🥈 ' : '🥉 ')+nat+' — '+ccTop(p)+' na Copa das Nações'), ccNewsNatFinal:(nat,p,of)=>nat+' — '+ccTop(p)+' de '+of+' na Copa das Nações', ccNewsNatWorldQual:nat=>nat+' chegou à final da Copa das Nações — sem mim', ccNewsNatWorldOut:nat=>nat+' não se classificou para a Copa das Nações', ccRaceWhynations:'Copa das Nações — cada um com a sua seleção, a noite é sua',
+ccNatZoneNA:'América do Norte', ccNatCash:v=>'Premiação: '+v+' para você', ccNatCongrats:'Copa das Nações', ccNatLockedNoCountry:'O seu país não tem seleção: menos de quatro jogadores dele na cena', ccNatLockedIn:'Você está no top 4 do seu país — sem seletiva, espere a classificatória', ccNatLockedNotIn:(nat,names)=>'Você não está na seleção '+nat+': '+names, ccNatLockedDone:'A seleção já jogou esta noite', ccNatLockedOut:nat=>nat+' não se classificou', ccNatTrialWon:'Seletiva vencida — a quarta vaga da seleção é sua', ccNatTrialLost:'Seletiva perdida — a seleção vai sem você', ccNatQualThrough:nat=>nat+' está na final da Copa das Nações', ccNatQualOut:(nat,cut)=>nat+' fora do top '+cut+' — sem final', ccNatMedal:p=>(p===1 ? '🥇 Ouro' : p===2 ? '🥈 Prata' : '🥉 Bronze')+' na Copa das Nações', ccNatFinalPlace:p=>ccTopC(p)+' na Copa das Nações', ccNewsNatTrialWon:(nat,p,of)=>'Seletiva '+nat+' vencida: '+ccTop(p)+' de '+of+' — quarta vaga na seleção', ccNewsNatTrialLost:(nat,p,of)=>'Seletiva '+nat+': '+ccTop(p)+' de '+of+' — a seleção vai sem mim', ccNewsNatQualThrough:(nat,p,of)=>nat+' — '+ccTop(p)+' na classificatória, vamos à final da Copa das Nações', ccNewsNatQualOut:(nat,p,of)=>nat+' — '+ccTop(p)+' de '+of+' na classificatória, sem final para nós', ccNewsNatMedal:(nat,p,of)=>(p===1 ? '🥇 '+nat+' — campeã da Copa das Nações' : (p===2 ? '🥈 ' : '🥉 ')+nat+' — '+ccTop(p)+' na Copa das Nações'), ccNewsNatFinal:(nat,p,of)=>nat+' — '+ccTop(p)+' de '+of+' na Copa das Nações', ccNewsNatWorldQual:nat=>nat+' chegou à final da Copa das Nações — sem mim', ccNewsNatWorldOut:nat=>nat+' não se classificou para a Copa das Nações', ccRaceWhynations:'Copa das Nações — cada um com a sua seleção, a noite é sua', ccNatSquadTitle:'Seleção para a Copa das Nações', ccNatCaptain:'capitão', ccNatYou:'você', ccNatPickHint:'Você é o capitão: escolha dois, a quarta vaga sai da seletiva', ccNatPickSlot:'escolha um jogador', ccNatTrialSlot:'vaga da seletiva', ccNatUnpickBtn:'Tirar', ccSpotNationsTab:'Copa das Nações · esquadrões', ccNatSpotPick:'Escolher o drop da seleção', ccNatLockedCap:'Você é o capitão — a seletiva pela quarta vaga é jogada sem você, espere a classificatória',
 modeFncs2026Title:"FNCS 2026",
 majorPick1:"Major 1",
 majorPick2:"Major 2",
@@ -52581,9 +52595,34 @@ function splitLandingZonesForSolo(){
     ALL_LANDING_ZONES.splice(at, 1, a, b);
   }
 }
+/* Какие коробки острова остаются под сквады: крупнейшие по площади, доля LANDING_ZONE_SHARE[4],
+   но не меньше CC_SQUAD_KEEP_MIN. Считается по набору, а не по ALL_LANDING_ZONES, — тем же
+   списком рисует карту метка сборной (careerSpotTileHTML), и на вечере лежат те же коробки. */
+const CC_SQUAD_KEEP_MIN=16;
+const CC_SQUAD_KEEP={};
+function ccSquadKeep(set){
+  if(CC_SQUAD_KEEP[set]) return CC_SQUAD_KEEP[set];
+  const grid=ZONE_SETS[set]||[];
+  const share=LANDING_ZONE_SHARE[4]||1;
+  const keep=Math.min(grid.length, Math.max(CC_SQUAD_KEEP_MIN, Math.round(grid.length*share)));
+  const out=grid.map((z,i)=>({i, area:z.w*z.h})).sort((a,b)=>b.area-a.area).slice(0, keep).map(x=>x.i).sort((a,b)=>a-b);
+  CC_SQUAD_KEEP[set]=out;
+  return out;
+}
 function trimLandingZonesForMode(){
   if(ZONE_SETS_SOLO_READY[ACTIVE_LANDING_SET]) return;
   if(squadSize===1) return splitLandingZonesForSolo();
+  if(squadSize===4){
+    /* Сквады прореживаются на ВСЕХ островах, а не только на «стенах» из тридцати с лишним
+       коробок: острова 2025-го (25–29 коробок) шли под сквады целиком. Его слово 22.09:
+       «прямоугольники для всех карт должны быть под сквады». */
+    const keep=ccSquadKeep(ACTIVE_LANDING_SET);
+    if(keep.length>=ALL_LANDING_ZONES.length) return;
+    const kept=keep.map(i=>ALL_LANDING_ZONES[i]).filter(Boolean);
+    ALL_LANDING_ZONES.length=0;
+    kept.forEach(z=>ALL_LANDING_ZONES.push(z));
+    return;
+  }
   const share=LANDING_ZONE_SHARE[squadSize] || 1;
   if(share>=1) return;
   // The trim exists to stop a forty-box island reading as a wall of rectangles.
@@ -66415,7 +66454,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ac608238';
+const CC_BUILD='34c30fe1';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -70836,6 +70875,7 @@ function careerCentreHTML(card, a){
             ${btn}${careerFfButtonsHTML()}
           </div>
         </div>`}
+      ${(typeof ccNatSquadHTML==='function') ? ccNatSquadHTML() : ''}
       <!-- At the boundary the shop is shut and the year is the thing worth
            reading: where this career finished at its Grand Finals and its LANs.
            His report, 20 August. See careerSeasonBoardHTML. -->
@@ -71672,6 +71712,10 @@ function careerSpotSets(){
      один человек, а вот ТУРНИР другой, и точка на нём своя. */
   // Остров — сезонный в дуо-год, ближайшего соло-вечера в трио-год: см. careerSoloSet.
   out.push({key:'solo', grid:careerSoloSet(), label:L().ccSpotSoloTab});
+  /* Метка сборной на Кубок наций — своя (cr.natSpots), на сезонном острове, в командные слоты не
+     считается; карта рисуется под сквады (ccSquadKeep). Появляется, пока висит карточка сборной.
+     Его слово 22.09: «где команда сборной, должен быть выбор локации». */
+  if(typeof ccNatCardOn==='function' && ccNatCardOn()) out.push({key:'nations', grid:careerBrSet(), squad:true, label:L().ccSpotNationsTab});
   return out;
 }
 function careerSpotStore(key){
@@ -71692,6 +71736,12 @@ function careerSpotStore(key){
     }
     if(!cr.soloSpots[isl]) cr.soloSpots[isl]={};
     return cr.soloSpots[isl];
+  }
+  if(key==='nations'){
+    if(!cr.natSpots) cr.natSpots={};
+    const isl=careerBrSet();
+    if(!cr.natSpots[isl]) cr.natSpots[isl]={};
+    return cr.natSpots[isl];
   }
   return careerSpots();
 }
@@ -71817,7 +71867,9 @@ function careerSpotTileHTML(){
           ${peekBtns}
         </div></div>`
     : `<div class="ch-hint">${L().ccSpotTap}</div>`;
+  const keepSq=(careerSpotSets().find(t=>t.key===set)||{}).squad ? new Set(ccSquadKeep(gridKey)) : null;
   const boxes=grid.map((z,i)=>{
+    if(keepSq && !keepSq.has(i)) return '';
     const at=slotOf(i);
     const mine=at>=0;
     return `<div class="land-zone${mine?' cc-spot-mine':''}${CC_SPOT_PEEK===i?' cc-spot-peeked':''}"
@@ -73648,10 +73700,10 @@ function careerSpotKey(set){
 function careerSpotUsed(){
   return careerSpotSets()
     .map(t=>careerSpotKey(t.key))
-    .filter(k=>k!=='solo' && careerSpotList(k).length).length;
+    .filter(k=>k!=='solo' && k!=='nations' && careerSpotList(k).length).length;
 }
 function careerSpotRoom(set){
-  if(careerSpotKey(set)==='solo') return true;      // личная, слоты команды не занимает
+  if(careerSpotKey(set)==='solo' || careerSpotKey(set)==='nations') return true;      // личная, слоты команды не занимает
   // На этой карте дом уже есть — менять его можно всегда, это не новый спот.
   if(careerSpotList(set).length) return true;
   return careerSpotUsed()<CC_SPOT_SLOTS;
@@ -90990,6 +91042,7 @@ function careerNightSolo(next){
    карьере тоже — см. careerSpotSets. */
 function careerNightSpotKey(next){
   const set=careerNightSet(next);
+  if(next && next.type==='nations') return 'nations';   // вечер сборной — её метка
   return careerNightSolo(next) ? 'solo' : careerSpotKey(set);
 }
 /* Куда садимся сегодня — картинкой, на карточке матча.
@@ -91633,7 +91686,7 @@ function careerSpotEnsure(next){
   const key=careerNightSpotKey(n);
   if(careerSpotList(key).length) return true;
   if(!careerSpotRoom(key)) return false;
-  return careerSpotSet(0, key==='solo' ? 'solo' : set);
+  return careerSpotSet(0, (key==='solo' || key==='nations') ? key : set);
 }
 /* КАК ДЕРЁТСЯ КОМНАТА ЭТОГО ДИВИЗИОНА — по восьми реплеям на дивизион
    (FNCS Divisional Cup S41 EU, tools/real-division-curves.json), отрядов на
@@ -99704,6 +99757,20 @@ function ccNatHostKey(season){
   return pick;
 }
 function ccNatZone(reg){ return (reg==='NAC'||reg==='NAW') ? 'NA' : reg; }
+/* Зона сборной — где страна географически: регион с наименьшим пингом до неё (таблицы пингов
+   CC_COUNTRIES/CC_REGION_PINGS). Его отчёт 22.09: «Китай играет на Америке» — китайцы сцены сидят
+   в NA-ростерах, и зона «где большинство карточек» уводила сборную не туда. Страны вне всех
+   таблиц — по большинству, как раньше. */
+function ccNatGeoZone(nat){
+  const code=(typeof FLAG_CODE!=='undefined' && FLAG_CODE[nat]) || null;
+  if(!code) return null;
+  let best=null, bestPing=Infinity;
+  ['EU','NAC','NAW','BR','ASIA','ME','OCE'].forEach(reg=>{
+    const p=ccPingOf(code, reg);
+    if(p!=null && p<bestPing){ bestPing=p; best=reg; }
+  });
+  return best ? ccNatZone(best) : null;
+}
 function ccNatZoneName(z){ return z==='NA' ? L().ccNatZoneNA : regionName(z); }
 let CC_NAT_BOOK=null;
 /* Книга сборных — раз на сезон и мир: страна → её люди по силе, зона, четвёрка. */
@@ -99728,7 +99795,7 @@ function ccNationsBook(){
     const b=by[nat];
     const cards=[...b.cards.values()].sort((x,y)=>ccCardOvr(y)-ccCardOvr(x));
     if(cards.length<CC_NATIONS_SQUAD) return;
-    const zone=Object.keys(b.zones).sort((x,y)=>b.zones[y]-b.zones[x])[0];
+    const zone=ccNatGeoZone(nat) || Object.keys(b.zones).sort((x,y)=>b.zones[y]-b.zones[x])[0];
     const top=cards.slice(0, CC_NATIONS_SQUAD);
     const row={nat, zone, cards, top, pow:Math.round(top.reduce((s,c)=>s+ccCardOvr(c),0)/top.length*10)/10};
     list.push(row); byNat[nat]=row;
@@ -99739,11 +99806,16 @@ function ccNationsBook(){
 }
 function ccNatState(){
   const cr=CAREER.career;
-  if(!cr.nations || cr.nations.season!==cr.season) cr.nations={season:cr.season, trial:null, qualified:{}, qualDone:{}, finalDone:false, medal:null};
+  if(!cr.nations || cr.nations.season!==cr.season) cr.nations={season:cr.season, trial:null, qualified:{}, qualDone:{}, finalDone:false, medal:null, picks:[]};
+  if(!cr.nations.picks) cr.nations.picks=[];
   return cr.nations;
 }
-/* Моя страна: сборная, моё место в ней (auto — в четвёрке по силе; trial — через отбор;
-   none — сборной нет). */
+/* Моя страна: сборная, моё место в ней (auto — без отбора; trial — через отбор; none — сборной
+   нет). Капитан — сильнейший игрок страны (его слово 22.09). Капитан-человек сам берёт двоих
+   (N.picks, см. ccNatPick), четвёртое место — сильнейшему из оставшихся: это место отбора.
+   Капитан-бот берёт двоих следующих по силе: попал в тройку — ты в составе без отбора, нет —
+   играешь отбор за четвёртое место. squad — как показывать (пустые места капитана — null),
+   full — как играть (пустые добиты сильнейшими из оставшихся). */
 function ccNationsMine(){
   const me=careerCard(); if(!me || !me.nat) return null;
   const c=ccNationsBook().byNat[me.nat]; if(!c) return null;
@@ -99751,12 +99823,93 @@ function ccNationsMine(){
   const others=c.cards.filter(p=>hKey(p)!==myK);
   if(others.length<CC_NATIONS_SQUAD-1) return null;
   const myOvr=ccCardOvr(me);
-  const fourth=others[CC_NATIONS_SQUAD-1];
-  const auto=!fourth || myOvr>=ccCardOvr(fourth);
   const N=ccNatState();
+  const captain=myOvr>=ccCardOvr(others[0]);
+  const picks=captain ? (N.picks||[]).map(k=>others.find(p=>hKey(p)===k)).filter(Boolean).slice(0, CC_NATIONS_SQUAD-2) : [];
+  const third=others[CC_NATIONS_SQUAD-2];
+  const auto=captain || !third || myOvr>=ccCardOvr(third);
   const inSquad=auto || N.trial==='won';
-  const squad=inSquad ? [me].concat(others.slice(0, CC_NATIONS_SQUAD-1)) : c.top;
-  return {nat:me.nat, zone:c.zone, seat:auto ? 'auto' : 'trial', inSquad, squad, others, country:c};
+  let squad, full;
+  if(captain){
+    const pk=picks.map(hKey);
+    const rest=others.filter(p=>pk.indexOf(hKey(p))<0);
+    squad=[me, picks[0]||null, picks[1]||null, rest[picks.length===2 ? 0 : 2-picks.length]||null];
+    full=[me].concat(picks, rest).slice(0, CC_NATIONS_SQUAD);
+  } else {
+    squad=inSquad ? [me].concat(others.slice(0, CC_NATIONS_SQUAD-1)) : c.top;
+    full=squad;
+  }
+  return {nat:me.nat, zone:c.zone, seat:auto ? 'auto' : 'trial', captain, picks, inSquad, squad, full, others, country:c};
+}
+/* Капитан берёт или отпускает игрока страны; двое максимум; с квалификации состав заперт. */
+function ccNatPick(k){
+  const mine=ccNationsMine(); if(!mine || !mine.captain) return;
+  const N=ccNatState();
+  if(N.qualDone[mine.zone] || N.finalDone) return;
+  const picks=(N.picks||[]).slice();
+  const i=picks.indexOf(k);
+  if(i>=0) picks.splice(i, 1);
+  else {
+    if(picks.length>=CC_NATIONS_SQUAD-2) return;
+    if(!mine.others.some(p=>hKey(p)===k)) return;
+    picks.push(k);
+  }
+  N.picks=picks;
+  careerSave();
+  careerRenderHub('centre');
+}
+function ccNatNextDay(){
+  const today=careerToday();
+  const days=[...careerYearDays().keys()].filter(d=>d>=today).sort();
+  for(const d of days){ if((careerYearDays().get(d)||[]).some(e=>e.kind==='nations')) return d; }
+  return null;
+}
+/* Карточка сборной в хабе: за три недели до отбора и до финала — страна, четверо, кто капитан,
+   у капитана-человека кнопки выбора. Его слово 22.09: «должна быть эта сборная где-то перед
+   началом турнира». */
+const CC_NAT_CARD_DAYS=21;
+function ccNatCardOn(){
+  if(!CAREER || !CAREER.career || !CAREER.career.day) return false;
+  const mine=ccNationsMine(); if(!mine) return false;
+  if(ccNatState().finalDone) return false;
+  const d=ccNatNextDay();
+  return !!(d && d<=ccAddDays(careerToday(), CC_NAT_CARD_DAYS));
+}
+function ccNatSquadHTML(){
+  const T=L();
+  if(!ccNatCardOn()) return '';
+  const mine=ccNationsMine();
+  const N=ccNatState();
+  const me=careerCard(), myK=hKey(me);
+  const locked=!!(N.qualDone[mine.zone]);
+  const capK=mine.captain ? myK : hKey(mine.others[0]);
+  const canPick=mine.captain && !locked;
+  const row=(c, i)=>{
+    if(!c) return '<li class="cc-nat-empty"><span>'+esc(T.ccNatPickSlot)+'</span></li>';
+    const k=hKey(c);
+    const tags=[];
+    if(k===capK) tags.push(T.ccNatCaptain);
+    if(k===myK) tags.push(T.ccNatYou);
+    if(i===CC_NATIONS_SQUAD-1 && (mine.captain || (!mine.inSquad && !N.trial))) tags.push(T.ccNatTrialSlot);
+    const drop=(canPick && mine.picks.some(p=>hKey(p)===k)) ? ' <button class="ch-sign" onclick="ccNatPick(\''+esc(k)+'\')">'+esc(T.ccNatUnpickBtn)+'</button>' : '';
+    return '<li><b>'+esc(c.handle)+'</b> <span>'+ccCardOvr(c)+'</span>'+(tags.length ? ' <em>'+esc(tags.join(' · '))+'</em>' : '')+drop+'</li>';
+  };
+  let pick='';
+  if(canPick && mine.picks.length<CC_NATIONS_SQUAD-2){
+    const pk=mine.picks.map(hKey);
+    const pool=mine.others.filter(p=>pk.indexOf(hKey(p))<0).slice(0, 12);
+    pick='<div class="cc-nat-pick"><span>'+esc(T.ccNatPickHint)+'</span>'+
+      pool.map(p=>'<button class="ch-sign" onclick="ccNatPick(\''+esc(hKey(p))+'\')">'+esc(p.handle)+' · '+ccCardOvr(p)+'</button>').join('')+'</div>';
+  }
+  // Метка сборной: где садимся на Кубке наций — картинка и кнопка сменить, или кнопка выбрать.
+  const sp=careerSpotList('nations')[0];
+  const go='onclick="careerTab(\'me\');careerSpotOpenFor(\'nations\')"';
+  const spot=sp
+    ? '<div class="cc-nat-spot">'+(careerSpotShotHTML(sp.i, 'nations', 'ch-spot-shot', 16/9)||'')+'<div class="cc-nat-spot-in"><em>'+esc(T.ccNightSpotCap)+'</em><b>'+esc(T.landingZoneSuffix(sp.i+1))+'</b><button class="ch-sign" '+go+'>'+esc(T.ccSpotChange)+'</button></div></div>'
+    : '<div class="cc-nat-spot"><button class="ch-sign" '+go+'>'+esc(T.ccNatSpotPick)+'</button></div>';
+  return '<div class="ch-tile cc-nat-card"><em>'+esc(T.ccNatSquadTitle)+'</em>'+
+    '<h4>'+flagImg(mine.nat, 16)+esc(mine.nat)+'</h4>'+
+    '<ul>'+mine.squad.map(row).join('')+'</ul>'+pick+spot+'</div>';
 }
 function careerNationsOn(iso){
   const list=careerYearDays().get(iso||careerToday())||[];
@@ -99776,7 +99929,7 @@ function ccNatWhyLocked(){
   const ev=careerNationsOn(careerToday()); const mine=ccNationsMine();
   if(!mine) return L().ccNatLockedNoCountry;
   const N=ccNatState(), st=ccNatStage(ev);
-  if(st==='trial') return N.trial ? (N.trial==='won' ? L().ccNatTrialWon : L().ccNatTrialLost) : L().ccNatLockedIn;
+  if(st==='trial') return mine.captain ? L().ccNatLockedCap : (N.trial ? (N.trial==='won' ? L().ccNatTrialWon : L().ccNatTrialLost) : L().ccNatLockedIn);
   if(!mine.inSquad) return N.trial==='lost' ? L().ccNatTrialLost : L().ccNatLockedNotIn(mine.nat, mine.country.top.map(c=>c.handle).join(', '));
   if(st==='qual') return L().ccNatLockedDone;
   return (N.qualified[mine.zone]||[]).indexOf(mine.nat)>=0 ? L().ccNatLockedDone : L().ccNatLockedOut(mine.nat);
@@ -99792,8 +99945,11 @@ function ccNatRank(teams){ return teams.slice().sort((a,b)=>b.stagePts-a.stagePt
 /* Лобби квалификации зоны: змейкой по силе, если сборных больше, чем влезает в одно. */
 function ccNatQualLobbies(zone, mine){
   const rows=ccNationsBook().list.filter(r=>r.zone===zone);
-  const teams=rows.map(r=>(mine && mine.nat===r.nat && mine.inSquad) ? null : ccNatTeam(r)).filter(Boolean);
-  const n=Math.max(1, Math.ceil((teams.length+(mine && mine.zone===zone && mine.inSquad ? 1 : 0))/CC_NATIONS_LOBBY));
+  const mineIn=(mine && mine.zone===zone && mine.inSquad) ? 1 : 0;
+  /* Комната одна: 25 сильнейших сборных зоны, слабейшие за бортом. Его вопрос 22.09 «почему 14
+     команд вместо 25»: в Европе 28 стран, змейка делила их на две комнаты по 14. */
+  const teams=rows.map(r=>(mine && mine.nat===r.nat && mine.inSquad) ? null : ccNatTeam(r)).filter(Boolean).sort((a,b)=>b.pow-a.pow).slice(0, CC_NATIONS_LOBBY-mineIn);
+  const n=Math.max(1, Math.ceil((teams.length+mineIn)/CC_NATIONS_LOBBY));
   const lobbies=Array.from({length:n}, ()=>[]);
   teams.sort((a,b)=>b.pow-a.pow).forEach((t,i)=>{ const lap=Math.floor(i/n), pos=i%n; lobbies[lap%2 ? n-1-pos : pos].push(t); });
   return lobbies;
@@ -99830,9 +99986,10 @@ async function runCareerNations(){
   const mine=ccNationsMine(); if(!mine) return;
   const N=ccNatState(), st=ccNatStage(ev), S=CC_NATIONS[st];
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted, prevSet=ACTIVE_LANDING_SET;
-  const mySquad=st==='trial' ? [me] : mine.squad;
+  const mySquad=st==='trial' ? [me] : mine.full;
   CARD_MODE=true; squadSize=mySquad.length; drafted=mySquad;
   useLandingSet(careerBrSet());
+  ccNightSpotOn('nations');   // дом сборной, а не дуо-дом сезона; см. careerSpotSets
   skipAnimation=false; CC_SKIP_RUN=false;
   resetRunRecord();
   document.getElementById('majorStages').innerHTML='';
@@ -99917,7 +100074,7 @@ async function runCareerNations(){
   await ccMpClose(ranked);
   careerAdvanceTo(ccAddDays(careerToday(), 1));
   careerSave();
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet); CC_KILL_CAP=0;
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet); CC_KILL_CAP=0; ccNightSpotOff();
   careerRenderHub('centre');
   careerTwoRoundResultCard({title:label, place:place, through:through, wins:you.wins||0, cash:cash, cut:cut});
 }
