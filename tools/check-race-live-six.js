@@ -8,6 +8,7 @@
 //
 //   CC_BUDGET=21600000 node tools/check-race-live-six.js      (часы — только nohup + Monitor)
 //   CC_N=4 CC_DAY=2026-02-02 CC_FF=2026-03-01 …                (короче: четверо, месяц)
+//   CC_YEAR=2024 CC_DAY=2023-12-05 CC_FF=2024-09-29 …           (год 2024: карьера того года, его слово 22.09)
 const fs = require('fs'), os = require('os'), path = require('path'), http = require('http'), crypto = require('crypto');
 const { spawn } = require('child_process');
 const ROOT = path.resolve(__dirname, '..');
@@ -24,6 +25,8 @@ const FF = process.env.CC_FF || '2026-10-27';
 const CODE = ('Y' + crypto.randomBytes(3).toString('hex').toUpperCase()).slice(0, 6);
 const BUDGET_MS = Number(process.env.CC_BUDGET || 6 * 3600000);
 const SEASONS = Number(process.env.CC_SEASONS || 1);   // 2 — после дуо-года закрыть сезон и сыграть трио-год тем же составом комнаты
+// CC_YEAR=2024 (или 2025) — карьера того года: cr.year/year0 в сейве, календарь и карточки того года; без него — 2026.
+const YEAR = [2024, 2025].indexOf(Number(process.env.CC_YEAR)) >= 0 ? Number(process.env.CC_YEAR) : 0;
 /* ТЕЛЕФОН В ГОНКЕ. Его слово 11.09: «сделай прогон race 1 с компьютера другой с телефона».
    Шесть вкладок одной машины считают устройство одинаково, поэтому годовая проба не ловила
    разъезд по ширине окна — а его скрин 10.09 был именно про него (комната 900 против 2100).
@@ -68,7 +71,9 @@ const boot = (who) => `
       try{ const inv=(typeof careerProAmInv==='function') ? careerProAmInv() : null; if(inv && inv.state==='sent'){ const t=careerDms().find(x=>x.proam); if(t){ careerProAmYes(t.id); out.notes.proamYes=cr.day; } } }catch(e){}
       if(typeof CC_MP_ROLLS!=='undefined'){ if(out.notes._lr!==CC_MP_ROLLS){ out.notes._lr=CC_MP_ROLLS; out.notes._lt=Date.now(); }
         else if(CC_MP_RAND && !out.notes.stall && Date.now()-(out.notes._lt||Date.now())>120000){
-          out.notes.stall={day:cr.day, game:CC_MP_GAME, rolls:CC_MP_ROLLS, wait:(CC_MP_WAIT||[]).map(w=>w.t), qn:JSON.stringify(CC_MP_QN), marks:(out.notes.marks||[]).slice(-90), inbox:(window.__acts||[]).slice(-40)}; } }
+          out.notes.stall={day:cr.day, game:CC_MP_GAME, rolls:CC_MP_ROLLS, wait:(CC_MP_WAIT||[]).map(w=>w.t), qn:JSON.stringify(CC_MP_QN), marks:(out.notes.marks||[]).slice(-90), inbox:(window.__acts||[]).slice(-40),
+            // Книга бросков вечера — по ней у застрявшего и у ушедших вперёд видно ПЕРВУЮ разошедшуюся отметку (прогон 2024 22.09: 32 лишних броска у одного до первого вопроса игры 7).
+            ledger:(typeof CC_MP_LEDGER!=='undefined' ? CC_MP_LEDGER.slice(-400) : [])}; } }
       out.notes.nights=out.notes.nights||[]; while(out.notes.nights.length<(cr.log||[]).length){ const r=cr.log[out.notes.nights.length]; out.notes.nights.push([r.day, r.kind||'cup', 'r'+CC_MP_ROLLS, 'lock'+(CC_RACE_LOCK?1:0), 'seed'+(CC_MP_SEED?1:0), 'alone'+(CC_MP_ALONE?1:0), 'field'+(CC_RACE_DBG?CC_RACE_DBG.n+'/'+CC_RACE_DBG.humans.length:'-'), 'link '+MP.state].join(' ')); }
       [...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent).forEach(s=>{ if(out.notes.splits.indexOf(s)<0) out.notes.splits.push(cr.day+' '+s); });
       document.getElementById('__prog').textContent=[cr.day, 'див '+cr.division, 'журнал '+(cr.log||[]).length, 'броски '+CC_MP_ROLLS,
@@ -82,7 +87,7 @@ const boot = (who) => `
         closeRangeEdge:${who.close}, region:'EU', ovr:${who.ovr}, role:${JSON.stringify(who.role)}, attrs:null, ageEdge:${who.ageEdge},
         photo:null, handle:null, cardRegion:null, nat:null},
       career:{season:1, day:${JSON.stringify(DAY)}, division:1, earnings:${who.money}, balance:${who.money}, reach:${who.reach},
-              tokens:[], log:[], news:[], form:${who.form}, grind:${who.grind}},
+              tokens:[], log:[], news:[], form:${who.form}, grind:${who.grind}${YEAR ? ', year:' + YEAR + ', year0:' + YEAR : ''}},
       partners:[]}));
     const s=JSON.parse(localStorage.getItem('fncsdraft_career'));
     s.player.attrs=ccRookieAttrs(${who.ovr}, ${JSON.stringify(who.role)});
@@ -396,7 +401,7 @@ async function runOne(tag, who, port, phone){
   return out;
 }
 (async ()=>{
-  console.log('лобби '+CODE+' · игроков '+N+' · с '+DAY+' до '+FF+' · бюджет '+Math.round(BUDGET_MS/60000)+' мин'+
+  console.log('лобби '+CODE+' · игроков '+N+(YEAR?' · год '+YEAR:'')+' · с '+DAY+' до '+FF+' · бюджет '+Math.round(BUDGET_MS/60000)+' мин'+
     (MOBILE.size ? ' · телефоны: '+[...MOBILE].join(',') : ''));
   const P0=9400+Math.floor(Math.random()*400);
   const outs=await Promise.all(WHO.map((w,i)=>runOne(w.nick, w, P0+i, MOBILE.has(i+1))));
@@ -416,7 +421,7 @@ async function runOne(tag, who, port, phone){
     (r.notes.fields||[]).forEach(f=>console.log('   поле: '+f));
     if(r.notes.skipped && r.notes.skipped.length) console.log('   не сыграно: '+[...new Set(r.notes.skipped)].join(' | '));
     if(r.fail || (r.notes.dayAfter<FF && !r.notes.seasonOver)) console.log('   застрял: wait '+JSON.stringify(r.notes.wait)+' · игра '+r.notes.game+' · qn '+JSON.stringify(r.notes.qn)+' · эфир '+r.notes.title+' · комната '+r.notes.room+' · соперники '+JSON.stringify(r.notes.peersDays)+'\n   метки: '+(r.notes.marks||[]).slice(-70).join(' | ')+'\n   входящие: '+JSON.stringify(r.notes.queue));
-    if(r.notes.stall) console.log('   СТОП '+r.notes.stall.day+' игра '+r.notes.stall.game+' r'+r.notes.stall.rolls+' wait '+JSON.stringify(r.notes.stall.wait)+'\n   qn '+r.notes.stall.qn+'\n   метки-стоп: '+r.notes.stall.marks.join(' | ')+'\n   входящие-стоп: '+JSON.stringify(r.notes.stall.inbox));
+    if(r.notes.stall) console.log('   СТОП '+r.notes.stall.day+' игра '+r.notes.stall.game+' r'+r.notes.stall.rolls+' wait '+JSON.stringify(r.notes.stall.wait)+'\n   qn '+r.notes.stall.qn+'\n   метки-стоп: '+r.notes.stall.marks.join(' | ')+'\n   входящие-стоп: '+JSON.stringify(r.notes.stall.inbox)+'\n   книга-стоп: '+(r.notes.stall.ledger||[]).join(' '));
     if(r.notes.cerr && r.notes.cerr.length) console.log('   console.error: '+r.notes.cerr.join(' || '));
     if(r.notes.ffErr){ console.log('   FAIL перемотка встала: '+JSON.stringify(r.notes.ffErr)); bad++; }
     if(r.notes.splits && r.notes.splits.length){ console.log('   FAIL красные строки: '+r.notes.splits.join(' || ')); bad++; }
@@ -501,6 +506,18 @@ async function runOne(tag, who, port, phone){
       ' · только у первого: '+[...a].filter(x=>!b.has(x)).join(', ')+
       ' · только у второго: '+[...b].filter(x=>!a.has(x)).join(', '));
   }
+  /* Книги бросков застрявших — попарно с первым: имя первой отметки, где числа разошлись,
+     и обе строки вокруг неё. Так место разъезда называется отметкой, а не «где-то до вопроса». */
+  { const st=outs.filter(r=>r.notes.stall && r.notes.stall.ledger && r.notes.stall.ledger.length);
+    if(st.length>1){
+      const base=st[0];
+      st.slice(1).forEach(r=>{
+        const a=base.notes.stall.ledger, b=r.notes.stall.ledger;
+        let i=0; while(i<a.length && i<b.length && a[i]===b[i]) i++;
+        console.log('книга '+base.notes.who+' vs '+r.notes.who+': '+(i>=a.length && i>=b.length ? 'одинаковы ('+a.length+')' :
+          'разошлись на '+i+'-й отметке из '+a.length+'/'+b.length+' · '+a.slice(Math.max(0,i-3), i+2).join(' ')+'  ⇄  '+b.slice(Math.max(0,i-3), i+2).join(' ')));
+      });
+    } }
   if(bad){ console.log('FAIL: '+bad); process.exit(1); }
   console.log('гонка на '+N+': все дошли до '+FF+' без красных строк и без встававшей перемотки');
 })().catch(e=>{ console.error(e.message||e); process.exit(2); });
