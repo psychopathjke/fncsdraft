@@ -151,36 +151,49 @@ const BOOT = `
     seed(99, 'de', '2026-10-20');
     const m3=ccNationsMine();
     check('немец 99 — капитан сборной', m3 && m3.captain===true && m3.inSquad && m3.seat==='auto', JSON.stringify(m3 && {cap:m3.captain, seat:m3.seat}));
-    check('пока никого не выбрал — в составе два пустых места', m3 && m3.picks.length===0 && m3.squad.length===4 && m3.squad.filter(Boolean).length===2, JSON.stringify(m3 && m3.squad.map(c=>c&&c.handle)));
+    check('до отбора в составе только капитан, три места пустые', m3 && m3.picks.length===0 && m3.squad.length===4 && m3.squad.filter(Boolean).length===1, JSON.stringify(m3 && m3.squad.map(c=>c&&c.handle)));
     careerRenderHub('centre');
     let hub=document.getElementById('screen-career-hub').innerHTML;
-    check('карточка сборной стоит в хабе до турнира: страна и кнопки выбора', hub.indexOf(L().ccNatSquadTitle)>=0 && /ccNatPick\\(/.test(hub) && hub.indexOf(L().ccNatPickHint)>=0, '');
-    // Его слова 22.09: «пусть окно выскакивает в день национальных квал, когда выбрать команду
-    // нужно, или за день до этого — внизу вообще не видно», «я могу нажать на играть без выбора».
+    // Его слово 22.09: «пусть сначала сыграются квалы на игрока, потом выбор игроков» — до отбора
+    // капитан никого не берёт, карточка говорит «сначала отбор», окна нет.
+    check('карточка сборной стоит в хабе до турнира: страна и слово про отбор', hub.indexOf(L().ccNatSquadTitle)>=0 && hub.indexOf(L().ccNatTrialFirst)>=0 && !/ccNatPick\\(/.test(hub), '');
+    const k5=hKey(m3.others[5]), k7=hKey(m3.others[7]), k9=hKey(m3.others[9]);
+    ccNatPick(k5);
+    check('до отбора выбрать нельзя', ccNationsMine().picks.length===0, '');
     careerAdvanceTo('2026-10-30'); careerRenderHub('centre');
     const nm=document.getElementById('ccNatModal');
-    check('за день до отбора выскакивает окно выбора состава', nm && nm.style.display==='flex' && /ccNatPick\\(/.test(nm.innerHTML), nm && nm.style.display);
-    ccNatModalClose(); careerRenderHub('centre');
-    check('закрытое окно в тот же день не возвращается', nm.style.display!=='flex');
+    check('до отбора окна нет', nm && nm.style.display!=='flex', nm && nm.style.display);
     careerAdvanceTo('2026-10-31'); careerRenderHub('centre'); ccNatModalClose();
     check('в день отбора капитан не играет — отбор за четвёртое место без него', careerCanPlayKind('nations')===false && ccNatWhyLocked()===L().ccNatLockedCap, ccNatWhyLocked());
+    careerAdvanceTo('2026-11-01'); careerRenderHub('centre');
+    const tr=CAREER.career.nations.trialRank||[];
+    check('отбор страны сыгран без капитана, итог записан', tr.length>=20 && tr.indexOf(hKey(careerCard()))<0 && tr.every(k=>m3.others.some(c=>hKey(c)===k)), String(tr.length));
+    // Его слова 22.09: «пусть окно выскакивает…, внизу вообще не видно», «я могу нажать на играть без выбора».
+    check('назавтра после отбора выскакивает окно выбора состава', nm.style.display==='flex' && /ccNatPick\\(/.test(nm.innerHTML), nm.style.display);
+    check('в окне игроки стоят по местам отбора', nm.innerHTML.indexOf('>#1<')>=0, '');
+    ccNatModalClose(); careerRenderHub('centre');
+    check('закрытое окно в тот же день не возвращается', nm.style.display!=='flex');
+    careerAdvanceTo('2026-11-03'); careerRenderHub('centre');
+    check('в будний день между отбором и квалом окна нет', nm.style.display!=='flex');
+    careerAdvanceTo('2026-11-06'); careerRenderHub('centre');
+    check('за день до квалификации окно снова', nm.style.display==='flex'); ccNatModalClose();
     careerAdvanceTo('2026-11-07'); careerRenderHub('centre');
     check('в день квалификации окно снова', nm.style.display==='flex');
     ccNatModalClose();
     check('квалификация капитану открыта', careerCanPlayKind('nations')===true);
     careerPlay();
     check('«Играть» без состава не стартует, а открывает окно выбора', nm.style.display==='flex' && !CAREER_RUN && !document.getElementById('screen-results').classList.contains('active'), nm.style.display+' run='+CAREER_RUN);
-    const k5=hKey(m3.others[5]), k7=hKey(m3.others[7]), k9=hKey(m3.others[9]);
     ccNatPick(k5); ccNatPick(k7); ccNatPick(k9);
     check('окно перерисовалось с выбранными', nm.style.display==='flex' && nm.innerHTML.indexOf(m3.others[5].handle)>=0 && nm.innerHTML.indexOf(m3.others[7].handle)>=0, '');
     const m4=ccNationsMine();
     check('взял двоих, третьего не дало', m4.picks.length===2 && m4.picks.map(hKey).join()===[k5,k7].join(), JSON.stringify(m4.picks.map(c=>c.handle)));
-    check('состав: я, двое моих, четвёртый — сильнейший из остальных (место отбора)', m4.squad.length===4 && hKey(m4.squad[0])===hKey(careerCard()) && hKey(m4.squad[1])===k5 && hKey(m4.squad[2])===k7 && hKey(m4.squad[3])===hKey(m4.others[0]), JSON.stringify(m4.squad.map(c=>c&&c.handle)));
+    const fourthK=tr.find(k=>k!==k5 && k!==k7);
+    check('состав: я, двое моих, четвёртый — победитель отбора (место отбора)', m4.squad.length===4 && hKey(m4.squad[0])===hKey(careerCard()) && hKey(m4.squad[1])===k5 && hKey(m4.squad[2])===k7 && hKey(m4.squad[3])===fourthK, JSON.stringify(m4.squad.map(c=>c&&c.handle))+' vs '+fourthK);
     ccNatPick(k5);
     check('повторное нажатие убирает из состава', ccNationsMine().picks.length===1, '');
     ccNatPick(k5);
     hub=(careerRenderHub('centre'), document.getElementById('screen-career-hub').innerHTML);
-    check('карточка сборной показывает четверых с пометкой капитана', hub.indexOf(L().ccNatCaptain)>=0 && hub.indexOf(m4.others[5].handle)>=0 && hub.indexOf(m4.others[0].handle)>=0, '');
+    check('карточка сборной показывает четверых с пометкой капитана', hub.indexOf(L().ccNatCaptain)>=0 && hub.indexOf(m4.others[5].handle)>=0 && hub.indexOf(m4.squad[3].handle)>=0, '');
     // Метка сборной: своя карта под сквады, своя кладовая, командные слоты не занимает.
     // Его слова 22.09: «прямоугольники для всех карт должны быть под сквады», «где команда
     // сборной, должен быть выбор локации».
