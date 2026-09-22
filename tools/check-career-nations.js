@@ -67,6 +67,8 @@ const BOOT = `
     seed(96, 'dk', '2026-10-28');
     const book=ccNationsBook();
     out.notes.countries=book.list.length;
+    out.notes.zones=book.list.reduce((m,r)=>{ m[r.zone]=(m[r.zone]||0)+1; return m; }, {});
+    out.notes.zoneNats=book.list.reduce((m,r)=>{ (m[r.zone]=m[r.zone]||[]).push(r.nat); return m; }, {});
     check('стран с четвёркой не меньше 50', book.list.length>=50, String(book.list.length));
     check('у каждой сборной четыре карточки по убыванию силы', book.list.every(r=>r.top.length===4 && ccCardOvr(r.top[0])>=ccCardOvr(r.top[3])));
     check('США — зона Северной Америки, Дания — Европа', book.byNat['США'] && book.byNat['США'].zone==='NA' && book.byNat['Дания'] && book.byNat['Дания'].zone==='EU', JSON.stringify([book.byNat['США']&&book.byNat['США'].zone, book.byNat['Дания']&&book.byNat['Дания'].zone]));
@@ -85,6 +87,8 @@ const BOOT = `
     check('в день отбора играть нечего — ты уже в составе (или капитан)', careerCanPlayKind('nations')===false && (ccNatWhyLocked()===L().ccNatLockedIn || ccNatWhyLocked()===L().ccNatLockedCap), ccNatWhyLocked());
     careerAdvanceTo('2026-11-07');
     check('квалификация открыта', careerCanPlayKind('nations')===true); out.notes.dbg={can:careerCanPlayKind('nations'), next:careerNext(), canNext:careerCanPlay(careerNext()), ev:careerNationsOn(careerToday()), mine:(function(){ const m=ccNationsMine(); return m && {seat:m.seat, inSquad:m.inSquad, zone:m.zone}; })(), N:CAREER.career.nations};
+    // Датчанин 96 может оказаться капитаном — тогда без двоих вечер не начнётся (дверь ccNatPickGate).
+    if(mine.captain){ ccNatPick(hKey(mine.others[0])); ccNatPick(hKey(mine.others[1])); ccNatModalClose(); }
     const h1=await playThrough('qual');
     out.notes.qual=h1;
     const N=CAREER.career.nations;
@@ -148,8 +152,24 @@ const BOOT = `
     careerRenderHub('centre');
     let hub=document.getElementById('screen-career-hub').innerHTML;
     check('карточка сборной стоит в хабе до турнира: страна и кнопки выбора', hub.indexOf(L().ccNatSquadTitle)>=0 && /ccNatPick\\(/.test(hub) && hub.indexOf(L().ccNatPickHint)>=0, '');
+    // Его слова 22.09: «пусть окно выскакивает в день национальных квал, когда выбрать команду
+    // нужно, или за день до этого — внизу вообще не видно», «я могу нажать на играть без выбора».
+    careerAdvanceTo('2026-10-30'); careerRenderHub('centre');
+    const nm=document.getElementById('ccNatModal');
+    check('за день до отбора выскакивает окно выбора состава', nm && nm.style.display==='flex' && /ccNatPick\\(/.test(nm.innerHTML), nm && nm.style.display);
+    ccNatModalClose(); careerRenderHub('centre');
+    check('закрытое окно в тот же день не возвращается', nm.style.display!=='flex');
+    careerAdvanceTo('2026-10-31'); careerRenderHub('centre'); ccNatModalClose();
+    check('в день отбора капитан не играет — отбор за четвёртое место без него', careerCanPlayKind('nations')===false && ccNatWhyLocked()===L().ccNatLockedCap, ccNatWhyLocked());
+    careerAdvanceTo('2026-11-07'); careerRenderHub('centre');
+    check('в день квалификации окно снова', nm.style.display==='flex');
+    ccNatModalClose();
+    check('квалификация капитану открыта', careerCanPlayKind('nations')===true);
+    careerPlay();
+    check('«Играть» без состава не стартует, а открывает окно выбора', nm.style.display==='flex' && !CAREER_RUN && !document.getElementById('screen-results').classList.contains('active'), nm.style.display+' run='+CAREER_RUN);
     const k5=hKey(m3.others[5]), k7=hKey(m3.others[7]), k9=hKey(m3.others[9]);
     ccNatPick(k5); ccNatPick(k7); ccNatPick(k9);
+    check('окно перерисовалось с выбранными', nm.style.display==='flex' && nm.innerHTML.indexOf(m3.others[5].handle)>=0 && nm.innerHTML.indexOf(m3.others[7].handle)>=0, '');
     const m4=ccNationsMine();
     check('взял двоих, третьего не дало', m4.picks.length===2 && m4.picks.map(hKey).join()===[k5,k7].join(), JSON.stringify(m4.picks.map(c=>c.handle)));
     check('состав: я, двое моих, четвёртый — сильнейший из остальных (место отбора)', m4.squad.length===4 && hKey(m4.squad[0])===hKey(careerCard()) && hKey(m4.squad[1])===k5 && hKey(m4.squad[2])===k7 && hKey(m4.squad[3])===hKey(m4.others[0]), JSON.stringify(m4.squad.map(c=>c&&c.handle)));
@@ -179,10 +199,7 @@ const BOOT = `
     check('вечер сборной читает её метку', careerNightSpotKey({type:'nations', day:'2026-11-07'})==='nations');
     hub=(careerRenderHub('centre'), document.getElementById('screen-career-hub').innerHTML);
     check('карточка сборной показывает выбранную локацию', hub.indexOf(L().landingZoneSuffix(sqKeep[0]+1))>=0, '');
-    careerAdvanceTo('2026-10-31');
-    check('в день отбора капитан не играет — отбор за четвёртое место без него', careerCanPlayKind('nations')===false && ccNatWhyLocked()===L().ccNatLockedCap, ccNatWhyLocked());
-    careerAdvanceTo('2026-11-07');
-    check('квалификация капитану открыта', careerCanPlayKind('nations')===true);
+    ccNatModalClose();
     const h4=await playThrough('qual-cap'); out.notes.qualCap=h4;
     const lq2=(CAREER.career.log||[]).filter(r=>r.kind==='nations' && r.stage==='qual').pop();
     check('в журнале квалификации — мои двое и четвёртый', lq2 && (lq2.mates||[]).length===3 && JSON.stringify(lq2.mates).indexOf(m4.others[5].handle)>=0 && JSON.stringify(lq2.mates).indexOf(m4.others[7].handle)>=0, JSON.stringify(lq2 && lq2.mates));
