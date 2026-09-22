@@ -40,6 +40,9 @@ const BOOT = `
     // Сама вкладка выбрала слот 2 — теперь пишет туда.
     ccSlotUse(2); careerLoad();
     check('после своего выбора слот 2', CC_SLOT_TAB===2 && CAREER.player.nick==='Guest', String(CC_SLOT_TAB)+' '+CAREER.player.nick);
+    // Адрес в лобби — свой на слот: две карьеры одного браузера не сливаются в одного человека.
+    const id2=ccMpId(); ccSlotUse(1); careerLoad(); const id1=ccMpId();
+    check('у слотов разные адреса в лобби', id1 && id2 && id1!==id2 && localStorage.getItem('fncsdraft_mp_id')===id1 && localStorage.getItem('fncsdraft_mp_id_s2')===id2, id1+' / '+id2);
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
 })();
