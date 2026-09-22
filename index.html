@@ -3513,25 +3513,50 @@
   #screen-career-hub .cc-race-pane{margin:-2px 0 6px 40px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.04);font-size:12px;color:var(--ink-dimmer);display:flex;flex-direction:column;gap:6px;}
   #screen-career-hub .cc-race-pane em{color:var(--ink-dimmer);font-style:normal;}
   #screen-career-hub .cc-race-pane-all{margin-left:0;margin-top:6px;}
-  .cc-nat-card{display:block;text-align:left;padding:12px 14px;margin-top:10px;}
-  .cc-nat-card>em{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dimmer);font-style:normal;}
-  .cc-nat-card h4{margin:4px 0 8px;font-size:16px;display:flex;align-items:center;gap:6px;}
-  .cc-nat-card ul{list-style:none;margin:0;padding:0;display:grid;gap:4px;}
-  .cc-nat-card li{display:flex;align-items:center;gap:8px;font-size:13px;}
-  .cc-nat-card li span{color:var(--ink-dimmer);}
-  .cc-nat-card li em{color:var(--ink-dimmer);font-style:normal;font-size:12px;}
-  .cc-nat-card li.cc-nat-empty span{opacity:.7;}
-  .cc-nat-card .cc-nat-pick{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
-  .cc-nat-card .cc-nat-pick>span{flex-basis:100%;font-size:12px;color:var(--ink-dimmer);}
-  .cc-nat-card .cc-nat-spot{margin-top:10px;display:flex;gap:10px;align-items:center;}
+  /* Карточка сборной — синее стекло хаба, и в окне поверх хаба та же (его скрин 22.09: белое окно,
+     кнопки браузера). Цвета заданы здесь, а не унаследованы от #screen-career-hub, чтобы окно
+     выглядело так же. */
+  .cc-nat-card{display:block;text-align:left;padding:14px 16px;margin-top:10px;border-radius:8px;
+    background:linear-gradient(180deg,rgba(36,58,140,.92),rgba(16,30,86,.96));border:1px solid rgba(180,200,255,.22);
+    color:#eaf0ff;box-shadow:0 12px 30px rgba(4,10,40,.35);}
+  .cc-nat-card>em{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#9fb0e0;font-style:normal;font-weight:800;}
+  .cc-nat-card h4{margin:4px 0 10px;font-size:20px;line-height:1.1;display:flex;align-items:center;gap:8px;color:#fff;
+    font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:.02em;background:none;padding:0;}
+  .cc-nat-card h4 img{border-radius:2px;}
+  .cc-nat-card>p{margin:0 0 10px;font-size:12.5px;line-height:1.4;color:#dbe4ff;font-weight:600;}
+  .cc-nat-card ul{list-style:none;margin:0;padding:0;display:grid;gap:5px;}
+  .cc-nat-card li{display:flex;align-items:center;gap:8px;font-size:13px;padding:7px 10px;border-radius:6px;
+    background:rgba(8,18,50,.45);border:1px solid rgba(180,200,255,.12);min-height:34px;}
+  .cc-nat-card li b{color:#fff;font-weight:800;}
+  .cc-nat-card li span{color:#ffe600;font-weight:900;font-size:12px;}
+  .cc-nat-card li em{color:#9fb0e0;font-style:normal;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;}
+  .cc-nat-card li.cc-nat-empty{border-style:dashed;border-color:rgba(255,230,0,.45);background:rgba(255,230,0,.06);}
+  .cc-nat-card li.cc-nat-empty span{color:#ffe600;text-transform:uppercase;letter-spacing:.08em;font-size:10.5px;}
+  .cc-nat-card li .cc-nat-chip-x{margin-left:auto;}
+  .cc-nat-card .cc-nat-pick{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .cc-nat-card .cc-nat-pick>span{flex-basis:100%;font-size:11px;color:#9fb0e0;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px;}
+  .cc-nat-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;cursor:pointer;font:inherit;
+    font-size:12px;font-weight:800;color:#eaf0ff;background:rgba(8,18,50,.55);border:1px solid rgba(180,200,255,.3);}
+  .cc-nat-chip b{color:#ffe600;font-weight:900;}
+  .cc-nat-chip:hover{background:#ffe600;color:#0b0f12;border-color:#ffe600;}
+  .cc-nat-chip:hover b{color:#0b0f12;}
+  .cc-nat-chip-x{padding:4px 9px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#ffb3b3;border-color:rgba(255,120,120,.35);}
+  .cc-nat-chip-x:hover{background:#ff6b6b;border-color:#ff6b6b;color:#fff;}
+  .cc-nat-btn{border:none;cursor:pointer;background:#ffdd00;color:#0b0f12;border-radius:5px;padding:9px 14px;font:inherit;
+    font-weight:900;font-size:11px;letter-spacing:.07em;text-transform:uppercase;align-self:flex-start;}
+  .cc-nat-btn:hover{background:#ffe95c;}
+  .cc-nat-card .cc-nat-spot{margin-top:12px;display:flex;gap:10px;align-items:center;padding:8px;border-radius:6px;
+    background:rgba(8,18,50,.45);border:1px solid rgba(180,200,255,.12);}
   .cc-nat-card .cc-nat-spot .ch-spot-shot{width:96px;flex:0 0 96px;border-radius:6px;}
-  .cc-nat-card .cc-nat-spot-in{display:flex;flex-direction:column;gap:4px;}
-  .cc-nat-card .cc-nat-spot-in em{font-size:11px;color:var(--ink-dimmer);font-style:normal;}
+  .cc-nat-card .cc-nat-spot-in{display:flex;flex-direction:column;gap:5px;}
+  .cc-nat-card .cc-nat-spot-in em{font-size:10px;color:#9fb0e0;font-style:normal;text-transform:uppercase;letter-spacing:.1em;font-weight:800;}
+  .cc-nat-card .cc-nat-spot-in b{color:#fff;font-weight:900;}
+  .cc-nat-later{display:block;width:100%;margin-top:12px;border:1px solid rgba(140,175,255,.25);cursor:pointer;background:none;
+    color:#9fb0e0;border-radius:5px;padding:9px;font:inherit;font-weight:900;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;}
+  .cc-nat-later:hover{color:#fff;border-color:rgba(140,175,255,.5);}
   /* Окно выбора состава: та же карточка, поверх хаба — за день до отбора и в день квалификации. */
   #ccNatModal .cc-nat-modal-in{max-width:520px;width:100%;max-height:100%;overflow:auto;}
-  #ccNatModal .cc-nat-card{margin-top:0;background:#fbfcfc;border-radius:8px;box-shadow:0 12px 30px rgba(11,15,18,.3);}
-  #ccNatModal .cc-nat-card>p{margin:0 0 8px;font-size:13px;}
-  #ccNatModal .cc-nat-modal-close{margin-top:10px;}
+  #ccNatModal .cc-nat-card{margin-top:0;box-shadow:0 24px 70px rgba(0,0,0,.6);}
   #screen-career-hub .cc-race-in{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;line-height:1.2;}
   #screen-career-hub .cc-race-in b{font-family:var(--font-display);font-weight:600;font-size:14px;letter-spacing:.03em;
     color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -66462,7 +66487,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8af8e1e0';
+const CC_BUILD='5f6d43d5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -99862,8 +99887,8 @@ function ccNatModalOpen(){
   const m=document.getElementById('ccNatModal'); if(!m) return false;
   const card=ccNatSquadHTML(); if(!card) return false;
   const T=L();
-  m.querySelector('.cc-nat-modal-in').innerHTML=card.replace('<ul>', '<p>'+esc(T.ccNatModalWhy)+'</p><ul>')+
-    '<button class="ch-decline cc-nat-modal-close" onclick="ccNatModalClose()">'+esc(T.ccNatModalLater)+'</button>';
+  m.querySelector('.cc-nat-modal-in').innerHTML=card.replace('<ul>', '<p>'+esc(T.ccNatModalWhy)+'</p><ul>')
+    .replace(/<\/div>$/, '<button class="cc-nat-later" onclick="ccNatModalClose()">'+esc(T.ccNatModalLater)+'</button></div>');
   m.style.display='flex'; CC_NAT_MODAL=true;
   return true;
 }
@@ -99946,7 +99971,7 @@ function ccNatSquadHTML(){
     if(k===capK) tags.push(T.ccNatCaptain);
     if(k===myK) tags.push(T.ccNatYou);
     if(i===CC_NATIONS_SQUAD-1 && (mine.captain || (!mine.inSquad && !N.trial))) tags.push(T.ccNatTrialSlot);
-    const drop=(canPick && mine.picks.some(p=>hKey(p)===k)) ? ' <button class="ch-sign" onclick="ccNatPick(\''+esc(k)+'\')">'+esc(T.ccNatUnpickBtn)+'</button>' : '';
+    const drop=(canPick && mine.picks.some(p=>hKey(p)===k)) ? ' <button class="cc-nat-chip cc-nat-chip-x" onclick="ccNatPick(\''+esc(k)+'\')">'+esc(T.ccNatUnpickBtn)+'</button>' : '';
     return '<li><b>'+esc(c.handle)+'</b> <span>'+ccCardOvr(c)+'</span>'+(tags.length ? ' <em>'+esc(tags.join(' · '))+'</em>' : '')+drop+'</li>';
   };
   let pick='';
@@ -99954,14 +99979,14 @@ function ccNatSquadHTML(){
     const pk=mine.picks.map(hKey);
     const pool=mine.others.filter(p=>pk.indexOf(hKey(p))<0).slice(0, 12);
     pick='<div class="cc-nat-pick"><span>'+esc(T.ccNatPickHint)+'</span>'+
-      pool.map(p=>'<button class="ch-sign" onclick="ccNatPick(\''+esc(hKey(p))+'\')">'+esc(p.handle)+' · '+ccCardOvr(p)+'</button>').join('')+'</div>';
+      pool.map(p=>'<button class="cc-nat-chip" onclick="ccNatPick(\''+esc(hKey(p))+'\')">'+esc(p.handle)+' <b>'+ccCardOvr(p)+'</b></button>').join('')+'</div>';
   }
   // Метка сборной: где садимся на Кубке наций — картинка и кнопка сменить, или кнопка выбрать.
   const sp=careerSpotList('nations')[0];
   const go='onclick="ccNatModalClose();careerTab(\'me\');careerSpotOpenFor(\'nations\')"';
   const spot=sp
-    ? '<div class="cc-nat-spot">'+(careerSpotShotHTML(sp.i, 'nations', 'ch-spot-shot', 16/9)||'')+'<div class="cc-nat-spot-in"><em>'+esc(T.ccNightSpotCap)+'</em><b>'+esc(T.landingZoneSuffix(sp.i+1))+'</b><button class="ch-sign" '+go+'>'+esc(T.ccSpotChange)+'</button></div></div>'
-    : '<div class="cc-nat-spot"><button class="ch-sign" '+go+'>'+esc(T.ccNatSpotPick)+'</button></div>';
+    ? '<div class="cc-nat-spot">'+(careerSpotShotHTML(sp.i, 'nations', 'ch-spot-shot', 16/9)||'')+'<div class="cc-nat-spot-in"><em>'+esc(T.ccNightSpotCap)+'</em><b>'+esc(T.landingZoneSuffix(sp.i+1))+'</b><button class="cc-nat-btn" '+go+'>'+esc(T.ccSpotChange)+'</button></div></div>'
+    : '<div class="cc-nat-spot"><button class="cc-nat-btn" '+go+'>'+esc(T.ccNatSpotPick)+'</button></div>';
   return '<div class="ch-tile cc-nat-card"><em>'+esc(T.ccNatSquadTitle)+'</em>'+
     '<h4>'+flagImg(mine.nat, 16)+esc(mine.nat)+'</h4>'+
     '<ul>'+mine.squad.map(row).join('')+'</ul>'+pick+spot+'</div>';
@@ -99989,9 +100014,32 @@ function ccNatWhyLocked(){
   if(st==='qual') return L().ccNatLockedDone;
   return (N.qualified[mine.zone]||[]).indexOf(mine.nat)>=0 ? L().ccNatLockedDone : L().ccNatLockedOut(mine.nat);
 }
+/* Сборной не платят за флаг и язык: состав и так одной страны. Его слово 22.09: «убери на этих
+   турнирах синергию языка и страны». Снимается ровно то, что начислил computeSynergy: страна —
+   раз на группу флага, язык — раз на кластер (одна ссылка type:'language' на кластер); сила
+   пересчитывается той же формулой, что в careerTeam. Партнёрская химия настоящих пар остаётся. */
+function ccNatStripSyn(t, cards){
+  if(!t || !t.syn) return t;
+  const links=t.syn.links||[];
+  const natLinks=links.filter(l=>l.type==='nation'), langLinks=links.filter(l=>l.type==='language');
+  if(!natLinks.length && !langLinks.length) return t;
+  const groups={}; (cards||[]).forEach(c=>{ if(c && c.nat) groups[c.nat]=(groups[c.nat]||0)+1; });
+  const natGroups=Object.keys(groups).filter(n=>groups[n]>=2).length;
+  t.syn.bonus-=natGroups*SYN_NATION + langLinks.length*SYN_LANGUAGE;
+  if(t.syn.bonus<0) t.syn.bonus=0;
+  t.syn.links=links.filter(l=>l.type!=='nation' && l.type!=='language');
+  const T=L();
+  t.syn.details=(t.syn.details||[]).filter(d=>!(T.synergyNation && String(d).indexOf(T.synergyNation)>=0) && !(T.synergyLanguage && String(d).indexOf(T.synergyLanguage)>=0));
+  const after=Math.min(t.syn.bonus, SYN_POW_CAP);
+  const ageEdge=ageEdgeOf(cards);
+  t.pow = CARD_MODE
+    ? Math.round((t.ovrAvg+after+t.roleBonus)*t.regionMult + ageEdge)
+    : Math.round((cards.reduce((s,p)=>s+p.rating,0)/cards.length+after)*t.regionMult + ageEdge);
+  return t;
+}
 function ccNatTeam(row, squad){
   const cards=squad||row.top;
-  const t=careerTeam(cards);
+  const t=ccNatStripSyn(careerTeam(cards), cards);
   // Имя команды в таблице: флаг, страна и четыре ника в скобках (его слово 22.09).
   t.name=flagImg(row.nat, 14)+row.nat+' ('+cards.map(c=>c.handle).join(', ')+')'; t.nation=row.nat; t.zone=row.zone;
   return t;
@@ -100059,7 +100107,7 @@ async function runCareerNations(){
   ensureSkipButton();
   // Финал — ЛАН: перелёт и пост из города, как у Саммита и Глобалов.
   if(st==='final') careerLanArrive('nations', ev);
-  const you=careerYouTeam(drafted);
+  const you=ccNatStripSyn(careerYouTeam(drafted), drafted);
   you.name=(st==='trial' ? L().yourTeamPrefix+teamLabel(drafted) : L().yourTeamPrefix+flagImg(mine.nat, 14)+mine.nat+' ('+mySquad.map(c=>c.handle).join(', ')+')'); you.isYou=true; you.nation=mine.nat;
   let field, cut=0, note='';
   if(st==='trial'){
