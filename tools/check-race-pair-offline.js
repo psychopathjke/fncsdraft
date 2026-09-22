@@ -37,7 +37,10 @@ const BOOT = `
     const sent=[]; MP.act=function(k,p){ sent.push({k,p}); };
     CC_RACE_PEERS['peerB']={id:'peerB', card:rivalCard, mates:[rivalMate], div:1, season:1, day:'2026-02-02', pow:100, nick:'Beta'};
     check('до договора пары нет', !ccRacePairOn());
-    check('плитка предлагает пару', /careerRacePairAsk\\('peerB'\\)/.test(careerRaceTileHTML()));
+    check('строка соперника раскрывается по нажатию, кнопки «Объединиться» до нажатия нет', /ccRaceRowToggle\\('peerB'\\)/.test(careerRaceTileHTML()) && !/careerRacePairAsk/.test(careerRaceTileHTML()));
+    ccRaceRowToggle('peerB');
+    check('после нажатия — «Объединиться» с подсказкой', /careerRacePairAsk\\('peerB'\\)/.test(careerRaceTileHTML()) && careerRaceTileHTML().indexOf(L().ccRacePairHint)>=0);
+    const botBefore=careerMates()[0] && careerMates()[0].handle;
     // 1. я зову — уходит act pair, плитка ждёт
     careerRacePairAsk('peerB');
     check('приглашение ушло', sent.some(x=>x.k==='pair' && x.p.to==='peerB'), JSON.stringify(sent));
@@ -46,10 +49,13 @@ const BOOT = `
     CC_RACE_PEERS['peerB'].pair=me;
     ccRacePairSaw({kind:'pairok', payload:{by:'peerB', to:me, nick:'Beta'}});
     check('пара стоит', ccRacePairOn() && ccRacePairId()==='peerB', JSON.stringify(CAREER.career.race.pair));
+    check('свой бот отпущен и ищет команду', careerMateRecords().length===0 && (CAREER.career.news||[]).some(n=>JSON.stringify(n).indexOf('ccNewsPairFreed')>=0 || /свободен|free agent/.test(String(n.text||''))), JSON.stringify({recs:careerMateRecords().length, bot:botBefore}));
+    check('напарник теперь — друг (careerMates)', careerMates().length===1 && hKey(careerMates()[0])===hKey(rivalCard), JSON.stringify(careerMates().map(m=>m.handle)));
+    check('кубок играть можно — напарника хватает', !careerNoMate('cup'));
     const cards=ccRacePairCards();
     check('состав пары — две карточки людей по hKey', cards && cards.length===2 && hKey(cards[0])<hKey(cards[1]), JSON.stringify((cards||[]).map(c=>c.handle)));
     const line=ccRaceMyLine();
-    check('строка гонки: напарник — человек, бот — на скамейке, адрес пары', line.mates.length===1 && hKey(line.mates[0])===hKey(rivalCard) && (line.bench||[]).length===1 && line.pair==='peerB', JSON.stringify({mates:line.mates.map(m=>m.handle), bench:(line.bench||[]).map(m=>m.handle), pair:line.pair}));
+    check('строка гонки: напарник — человек, скамейки нет, адрес пары', line.mates.length===1 && hKey(line.mates[0])===hKey(rivalCard) && !line.bench && line.pair==='peerB', JSON.stringify({mates:line.mates.map(m=>m.handle), bench:line.bench, pair:line.pair}));
     check('сила пары в строке — careerTeam двух карточек', line.pow===careerTeam(cards, true).pow, line.pow+' vs '+careerTeam(cards,true).pow);
     // 3. команда вечера — из пары, адрес по старшему
     const you=careerYouTeam([careerCard()].concat(careerMates())); you.isYou=true;
@@ -66,7 +72,8 @@ const BOOT = `
     check('чужая пара — один и тот же состав и адрес с обеих строк', tC.mpTag===tD.mpTag && tC.squad.map(hKey).join('+')===tD.squad.map(hKey).join('+'), tC.mpTag+' / '+tD.mpTag);
     // 6. разрыв
     ccRacePairSaw({kind:'unpair', payload:{by:'peerB', to:me}});
-    check('после разрыва пары нет', !ccRacePairOn() && !CAREER.career.race.pair);
+    check('после разрыва пары нет — и напарника тоже, ищи нового', !ccRacePairOn() && !CAREER.career.race.pair && careerMates().length===0);
+    careerMateSeat({handle:pool[1].handle, cardRegion:pool[1].region, patience:60, since:'2026-01-01'});
     // 7. отказ по дивизиону и трио
     CC_RACE_PEERS['peerB'].div=2;
     check('другой дивизион — пары не предлагают', ccRacePairWhy(CC_RACE_PEERS['peerB'])==='div');
