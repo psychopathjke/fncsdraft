@@ -28,6 +28,7 @@ var SOCK=null, CODE=null, ID=null, SEEN=0, HANDLERS={}, PEER=null;
    в том числе ещё не прочитанный приход соседа к барьеру; медленный клиент вставал насмерть
    (годовая проба на шестерых 8.09: два зависания из шести на 30–50 % первого вечера). */
 var ACTS=[], ACTS_MAX=8192, OWN=[];
+var CONNECT_MS=15000;   // рукопожатие сокета дольше — считаем обрывом и переподключаемся
 var PEER_HBS={};   // id соседа -> его последний пульс (см. say, kind 'hb')
 var PEER_AT={};    // id соседа -> когда от него что-то приходило (живость, см. ccRacePeerAlive)
 function findIn(list, kind, q, take){
@@ -344,7 +345,15 @@ var MP={
       try{ sock=new WebSocket(url); }
       catch(e){ setState('lost'); rej(e); return; }
       SOCK=sock;
+      /* ПОТОЛОК ПОДКЛЮЧЕНИЯ. Сокет, который ни открылся, ни упал (сеть повисла на рукопожатии,
+         его «connecting бесконечный» 22.09 при том же сбое сети, что уронил и выкат), держал
+         состояние 'wait' навсегда: onerror/onclose не приходили, повтор не начинался. Через
+         CONNECT_MS рукопожатие обрывается сами — onclose уводит в 'lost' и запускает повтор с
+         отступом, как при любом обрыве. */
+      var opened=false;
+      var hang=setTimeout(function(){ if(opened || SOCK!==sock) return; try{ sock.close(); }catch(e){} if(sock.readyState!==1 && MP.state==='wait'){ setState('lost'); } }, CONNECT_MS);
       sock.onopen=function(){
+        opened=true; clearTimeout(hang);
         TRY=0;
         setState('live');
         /* ПОЛУОТКРЫТЫЙ СОКЕТ. Годовая проба на шестерых 9.09: у одного клиента сервер перестал
