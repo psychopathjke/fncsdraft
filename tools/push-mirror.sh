@@ -23,7 +23,10 @@ export GIT_INDEX_FILE="$(pwd)/.git/index-ghpages"
 rm -f "$GIT_INDEX_FILE"
 git --work-tree="$SRC" add -A 2>/dev/null
 T=$(git write-tree)
-P=$(git rev-parse -q --verify gh-pages 2>/dev/null || true)
+# Родитель — локальная ветка, а если её нет (свежий клон: на Маке её и не было),
+# то origin/gh-pages. Без этого fallback скрипт делал коммит БЕЗ родителя, и push
+# отбивало «non-fast-forward»: 23 сентября 2026 зеркало с Мака так и не уехало.
+P=$(git rev-parse -q --verify gh-pages 2>/dev/null || git rev-parse -q --verify origin/gh-pages 2>/dev/null || true)
 C=$(git commit-tree "$T" ${P:+-p "$P"} -m "Mirror build for GitHub Pages: $(basename "$SRC") (app.js $V)")
 git branch -f gh-pages "$C"
 unset GIT_INDEX_FILE

@@ -38,7 +38,14 @@ const srv=http.createServer((req,res)=>{
 });
 srv.listen(0,'127.0.0.1',()=>{
   const url='http://127.0.0.1:'+srv.address().port+PREFIX;
-  const CHROME=['C:/Program Files/Google/Chrome/Application/chrome.exe','C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',(process.env.LOCALAPPDATA||'')+'/Google/Chrome/Application/chrome.exe'].find(p=>fs.existsSync(p));
+  // process.env.CHROME первым — как у всех остальных проб. Без него на Маке
+  // find не находил ничего, execFile получал undefined и падал с
+  // ERR_INVALID_ARG_TYPE, а вместе с ним падал и push-mirror.sh: зеркало с
+  // Мака не выкатывалось вовсе (23 сентября 2026).
+  const CHROME=[process.env.CHROME,
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    'C:/Program Files/Google/Chrome/Application/chrome.exe','C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',(process.env.LOCALAPPDATA||'')+'/Google/Chrome/Application/chrome.exe'].find(p=>p&&fs.existsSync(p));
+  if(!CHROME){ console.error('Chrome не найден: задай CHROME'); process.exit(2); }
   // execFileSync блокировал цикл событий — сервер не отвечал Chrome, и проба висла. Асинхронно:
   execFile(CHROME,["--headless=new","--disable-gpu","--no-sandbox","--virtual-time-budget=60000","--dump-dom",url],{maxBuffer:512*1024*1024,encoding:"utf8",timeout:120000},(err,dom)=>{
   if(err)console.error("chrome failed",err.message); dom=dom||"";
