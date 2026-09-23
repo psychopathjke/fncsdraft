@@ -85,13 +85,34 @@ const BOOT = `
       check('nobody moves further than the mode allows',
             keys.every(k => Math.abs(book[k]) <= 25), String(keys.length));
 
-      // Nobody invented is in the book: their names are gone tomorrow.
+      /* Nobody invented is in THIS book — they have their own now.
+
+         His word, 23 September: "чтобы рейтинг у игрока и ботов мог понижаться
+         от слишком плохих результатов, и чтобы он у ботов мог и повышаться —
+         потому что он вообще не меняется". Below Division 1 a room is a
+         thousand invented people to one real (tools/ladder-grow-diag.js), and
+         none of them moved at all.
+
+         So they move, in CAREER.devL, which is capped at CC_DEV_L_MAX and
+         trimmed before the real one when the save runs out of room. The
+         measured scene — CAREER.dev — stays exactly what it was. */
       const made = new Set();
       field.forEach(t => (t.squad||[]).forEach(c => {
         if (c && c.tier === 'ladder' && c.handle) made.add(hKey(c)); }));
       out.notes.madeInBook = keys.filter(k => made.has(k)).length;
       check('and nobody invented is in it', out.notes.madeInBook === 0,
             String(out.notes.madeInBook));
+
+      /* This room is Division 1, so it is real names and there is nothing
+         invented in it to move. The book of the invented is measured where it
+         exists — tools/check-career-ladder-growth.js, Division 4. Here only
+         the cap is worth asserting: it holds whatever the room was. */
+      const lad = (CAREER.devL) || {};
+      const ladKeys = Object.keys(lad);
+      out.notes.ladBook = ladKeys.length;
+      out.notes.ladCap = (typeof CC_DEV_L_MAX === 'number') ? CC_DEV_L_MAX : null;
+      check('the book of the invented is capped',
+            ladKeys.length <= CC_DEV_L_MAX, ladKeys.length + ' > ' + CC_DEV_L_MAX);
 
       // ---- the room does not inflate -------------------------------------
       // Expectation is read off the room itself, so the ups and the downs have

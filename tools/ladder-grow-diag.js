@@ -53,6 +53,10 @@ const BOOT = `
     CAREER.dev=CAREER.dev||{};
     const before=Object.keys(CAREER.dev).length;
     const moved=careerGrowField(field, you);
+    // Выдуманные лежат в своей книге — см. careerDevOf и CAREER.devL.
+    CAREER.devL=CAREER.devL||{};
+    out.notes.книгаВыдуманных=Object.keys(CAREER.devL).length;
+    out.notes.примерСдвигов=Object.keys(CAREER.devL).slice(0,5).map(k=>k+' '+CAREER.devL[k]);
     const after=Object.keys(CAREER.dev);
     const real=new Set(); PLAYERS.forEach(p=>{ if(p.handle) real.add(hKey(p)); });
     out.notes.careerGrowFieldВернул=moved;
