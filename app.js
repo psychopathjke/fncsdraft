@@ -59905,6 +59905,10 @@ const CC_SAVE_TRIM=[
      девятьсот чисел, самый большой кусок сейва после ленты, и терять его
      жалко: роастер вернётся к своим измеренным рейтингам. Но карьера,
      которую негде сохранить, теряется целиком. */
+  /* Сначала выдуманные: их книга ограничена (ccDevLTrim), но под квотой она
+     всё равно дешевле настоящей сцены — терять нечего, кроме пары рейтинга у
+     людей с выдуманными никами. */
+  function(){ if(!CAREER.devL) return false; delete CAREER.devL; return true; },
   function(){ if(!CAREER.dev) return false; delete CAREER.dev; return true; }
 ];
 /* Что принадлежит команде, а что человеку.
@@ -61667,11 +61671,13 @@ function ccRaceWorldPack(){
      клиент собрал её одним путём, другой другим. Мир общий целиком, включая то, чего в нём
      нет: пустая запись едет как null и стирает чужую. */
   CC_RACE_SEED_KEYS.forEach(k=>{ seeds[k]=(cr[k]===undefined ? null : cr[k]); });
-  return {dev:(CAREER && CAREER.dev)||{}, splits:(CAREER && CAREER.splits)||{}, duoSplits:cr.duoSplits||{}, trios:cr.trios||{}, cseed:ccCareerSeed(), seeds:seeds};
+  // devL — книга выдуманных; она двигает их рейтинг, значит и поле. Общая, как и dev.
+  return {dev:(CAREER && CAREER.dev)||{}, devL:(CAREER && CAREER.devL)||{}, splits:(CAREER && CAREER.splits)||{}, duoSplits:cr.duoSplits||{}, trios:cr.trios||{}, cseed:ccCareerSeed(), seeds:seeds};
 }
 function ccRaceWorldApply(w){
   if(!w || !CAREER) return false;
   CAREER.dev=(w.dev && typeof w.dev==='object') ? w.dev : {};
+  CAREER.devL=(w.devL && typeof w.devL==='object') ? w.devL : {};
   if(w.splits && typeof w.splits==='object') CAREER.splits=w.splits;
   if(CAREER.career){
     if(w.duoSplits && typeof w.duoSplits==='object') CAREER.career.duoSplits=w.duoSplits;
@@ -69470,7 +69476,16 @@ function careerLadderPlayer(rnd, ovr, taken, natHint, roleWant, topOvr, plain){
      заказали роль или нет. */
   const rolled = rnd()<0.5 ? 'roleIGL' : 'roleFRG';
   const role = roleWant || rolled;
-  const r=clamp(Math.round(ovr), 35, topOvr||ccGenTop());
+  /* И то, что этот человек наиграл в ЭТОЙ карьере, — на его рейтинг.
+
+     Без этой строки книга выдуманных (CAREER.devL) писалась бы в пустоту:
+     careerLadderPlayer собирает карточку из полосы и про книгу не знает, а
+     ccSceneLift ходит только по настоящему роастеру. Сезонный ростер низких
+     дивизионов постоянный (ccLadderSeason), поэтому ник повторяется из вечера
+     в вечер — и сдвиг на нём виден. */
+  const top=topOvr||ccGenTop();
+  const dev=careerDevOf({handle:h});
+  const r=clamp(Math.round(ovr+(dev||0)), 35, top);
   const nat=(natHint && rnd()<CC_TRIO_NAT_KEEP) ? natHint : nats[Math.floor(rnd()*nats.length)];
   return {handle:h, nat:nat, region:ccCareerRegion(), org:null,
           tier:'ladder', event:L().ccLadderEvent, date:'—', placement:null,
@@ -71173,9 +71188,25 @@ function careerCupField(cr, mine, size, salt, open, sharp){
      пара, которая на этот кубок не приехала, всё равно пара, и разбирать её на
      третьих нельзя. Раньше здесь стоял inQ по allDuos — то есть по тем, кого
      очередь довезла, — и пара, не попавшая в очередь, оказывалась свободной. */
-  const paired=new Set();
+  /* ДВА РАЗНЫХ «ЗАНЯТ», и их нельзя путать.
+
+     pairedPool — кто стоит в ЗАПИСАННОЙ паре года. Это свойство сезона: такой
+     человек не бывает третьим ни на какой неделе, и память о нём бессмысленна.
+
+     paired — то же плюс те, кого в пару собрала ЭТА неделя (ccOrphanPairs,
+     ccRemadeDuos). Это свойство вечера: сегодня его уводить третьим нельзя,
+     потому что он сегодня играет в паре, — но завтра он снова может им быть.
+
+     До этой правки был один набор на оба вопроса, и память троек (cr.trios)
+     стиралась по недельному признаку: запомненный третий, которого на этой
+     неделе пересобрали в пару, считался «занятым навсегда», запись удалялась,
+     ядро выбирало заново — и счётчик памяти оставался прежним, потому что тут
+     же писалась новая. Его слово 23 сентября: «в сезоне 2025 триосы сразу
+     меняться начинают». Замер одной карьеры на двух неделях: 490 человек из
+     997 в другом составе при полной памяти на 162 ядра. */
+  const paired=new Set(), pairedPool=new Set();
   if(per>2) ((careerPools().duos)||[]).forEach(d=>(d.cards||[]).forEach(c=>{
-    if(c) paired.add(c._k||hKey(c));
+    if(c){ paired.add(c._k||hKey(c)); pairedPool.add(c._k||hKey(c)); }
   }));
   /* И пары, которых в пуле нет, а в очереди есть: осиротевший (у кого напарника
      забрал сам игрок) собирается заново в careerRealDuos — ccOrphanPairs, — и
@@ -71190,7 +71221,27 @@ function careerCupField(cr, mine, size, salt, open, sharp){
     if(c) paired.add(c._k||hKey(c));
   }));
   if(per>2){
-    careerRealPlayers(taken, rnd, open ? 'all' : cr.division).forEach(c=>{
+    /* СВОБОДНЫХ ПЕРЕБИРАЕТ СЕЗОННЫЙ БРОСОК, А НЕ НЕДЕЛЬНЫЙ.
+
+       Его слово 23 сентября: «в сезоне 2025 триосы сразу меняться начинают».
+       Замер двух недель одного сезона: 661 человек из 997 выходит в другом
+       составе, и в выборке видно, что именно едет — «n0va: rabid+zzziekaj →
+       koji zardo+rabid». Ядро n0va+rabid стоит, меняется ТРЕТИЙ.
+
+       Всё, что для стабильности написано, на месте и работает: у ядра свой
+       генератор без недели (coreRnd — сезон, дивизион и сами эти двое), выбор
+       помнит cr.trios, пары из пула не разбирают. Ломалось звеном ниже:
+       careerRealPlayers ПЕРЕТАСОВЫВАЕТ пул переданным броском, а бросок сюда
+       приходил недельный (careerSeed ключуется календарной неделей). То есть
+       ccPickThird каждую неделю выбирал из по-разному перемешанного набора —
+       ядро то же, память та же, а третий другой.
+
+       Явка дуо остаётся недельной, как и задумано («честная случайная явка
+       недели»): меняется только порядок свободных, из которых ядро набирает
+       третьего. Сезон, мир и дивизион — и больше ничего. */
+    const freeRnd=careerRng(ccHashStr('free|'+ccWorldSeed()+'|'+(cr.season||1)+
+                                      '|'+(cr.division||1)+'|'+(open?1:0)));
+    careerRealPlayers(taken, freeRnd, open ? 'all' : cr.division).forEach(c=>{
       if(!paired.has(c._k||hKey(c))) extras.push(c);
     });
   }
@@ -71251,7 +71302,11 @@ function careerCupField(cr, mine, size, salt, open, sharp){
          каждый раз брала бы кого-то нового. Его правило, 28 августа:
          «пусть в начале сезона изменения только, если они нужны, а не каждый
          кап». Эта — нужна: она осталась от старого разбора живых пар. */
-      if(want && paired.has(want)){ delete trioMemo[key]; return; }
+      /* Забываем запись только тогда, когда её НЕЛЬЗЯ исполнить никогда:
+         человек встал в записанную пару года. «Занят на этой неделе» — не
+         повод стирать память: на следующей он снова свободен, а состав уже
+         развалился. См. pairedPool выше. */
+      if(want && pairedPool.has(want)){ delete trioMemo[key]; return; }
       if(!want) return;
       const at=extras.findIndex(c=>(c._k||hKey(c))===want);
       const c=at>=0 ? extras[at]
@@ -71281,10 +71336,12 @@ function careerCupField(cr, mine, size, salt, open, sharp){
   if(per>2){
     cores.slice()
       .filter(d=>!reserved.has(coreKey(d.cards)) &&
-                 // Память, которую нельзя прочитать (третий со своей парой),
-                 // памятью не считается — такая пара выбирает заново, по силе.
+                 /* Память, которую нельзя прочитать (третий встал в записанную
+                    пару года), памятью не считается — такая пара выбирает
+                    заново, по силе. Признак сезонный, а не недельный: см.
+                    pairedPool. */
                  !(trioMemo && trioMemo[coreKey(d.cards)] &&
-                   !paired.has(trioMemo[coreKey(d.cards)])) &&
+                   !pairedPool.has(trioMemo[coreKey(d.cards)])) &&
                  !d.cards.some(c=>taken.has(hKey(c))))
       .sort((a,b)=>ccDuoOvr(b)-ccDuoOvr(a))
       .forEach(d=>{
@@ -72058,10 +72115,48 @@ const CC_SCENE_AGE_W=0.6;
 // Возраст, на котором про перестаёт прибавлять: моложе — растут, старше — сходят.
 // Взят по кривой careerDevelopBase, где ступень 22-24 и есть плато карьеры.
 const CC_SCENE_AGE_REF=23;
+/* РЕЙТИНГ ВЫДУМАННЫХ ТОЖЕ ДВИГАЕТСЯ — но своей книгой и с потолком.
+
+   Его слово 23 сентября: «чтобы рейтинг у игрока и ботов мог понижаться от
+   слишком плохих результатов, и чтобы он у ботов мог и повышаться — потому что
+   он вообще не меняется». Диагностика (tools/ladder-grow-diag.js, дивизион 4)
+   говорит то же числом: в поле 1259 человек, из них 1258 выдуманных, книга
+   после вечера — ноль записей. Ниже Дивизиона 1 не двигался вообще никто.
+
+   Почему их не пускали, записано в careerGrowField и остаётся правдой: книга
+   росла бы на всю комнату разом, 702 КБ сейва за год. Поэтому у выдуманных
+   СВОЯ книга (CAREER.devL), и она ограничена с двух сторон: мелочь в неё не
+   пишется (меньше CC_DEV_L_MIN — такой сдвиг всё равно не виден на карточке),
+   а сверх CC_DEV_L_MAX записей остаются только самые крупные по модулю. Книга
+   настоящей сцены (CAREER.dev) не меняется ни на байт и режется отдельно.
+
+   Потолок — единственный ограничитель, и это не лень. Первый заход резал ещё и
+   мелочь («меньше половины рейтинга»), и книга опустошалась в тот же вечер, в
+   который наполнялась: за одну ночь сдвиг — десятые доли, накопиться им было
+   негде. Теперь мелочь живёт и копится, а режется только хвост по модулю, и
+   значит в книге остаются те, кого этот сезон и правда двигал. Ростер низких
+   дивизионов в сезоне постоянный (ccLadderSeason), поэтому те же ники
+   возвращаются вечер за вечером и сдвиг на них растёт. */
+const CC_DEV_L_MAX=600;
 function careerDevOf(p){
-  const book=CAREER && CAREER.dev;
-  if(!book) return 0;
-  return book[hKey(p)] || 0;
+  if(!CAREER) return 0;
+  const k=hKey(p);
+  const book=CAREER.dev;
+  if(book && book[k]) return book[k];
+  const lad=CAREER.devL;
+  return (lad && lad[k]) || 0;
+}
+/* Книга выдуманных обрезается ПОСЛЕ вечера, а не во время: за один вечер в неё
+   приходит вся комната, и решать, кто в ней останется, можно только когда все
+   сдвиги уже посчитаны. Уходит хвост по модулю — те, кого сезон двигал меньше
+   всех, и кого игрок поэтому всё равно не заметит. */
+function ccDevLTrim(){
+  const lad=CAREER && CAREER.devL;
+  if(!lad) return;
+  const keys=Object.keys(lad);
+  if(keys.length<=CC_DEV_L_MAX) return;
+  keys.sort((a,b)=>Math.abs(lad[b])-Math.abs(lad[a]))
+      .slice(CC_DEV_L_MAX).forEach(k=>{ delete lad[k]; });
 }
 // Карточка роастера, поднятая на то, что эта карьера с ней сделала.
 function ccSceneLift(c){
@@ -72158,7 +72253,9 @@ function careerGrowField(field, you){
          соперники в низких дивизионах постоянные), но рейтинг ему не пишется:
          в Дивизионе 4 комната это 1258 выдуманных на одного реального, и книга
          росла бы на всю комнату разом — 702 КБ сейва за год на первом замере. */
-      if(!c || c.tier==='ladder' || !c.handle) return;
+      // Выдуманный идёт в СВОЮ книгу (см. careerDevOf), а не мимо всего.
+      if(!c || !c.handle) return;
+      const lad=(c.tier==='ladder');
       const k=hKey(c);
       if(!k) return;
       const now=(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr);
@@ -72169,7 +72266,7 @@ function careerGrowField(field, you){
          +0.52 за год каждому, то есть тихая инфляция всей сцены. Не знаем
          возраст — не двигаем возрастом; результаты их двигают как и всех. */
       const base=careerDevelopBase(ccAgeNow(c.handle) || CC_SCENE_AGE_REF)*ccWorldDiff().age;
-      rows.push({k:k, base:base, now:now, gap:gap});
+      rows.push({k:k, base:base, now:now, gap:gap, lad:lad});
     });
   });
   if(!rows.length) return 0;
@@ -72194,9 +72291,11 @@ function careerGrowField(field, you){
      прибавку втрое (CAREER_TAPER), так что разбегания не будет. Проверяется
      годовым прогоном tools/career-year-drift-probe.js. */
   const mid=careerDevelopNow(CC_SCENE_AGE_REF);
+  const bookL=CAREER.devL=CAREER.devL||{};
   let moved=0;
   rows.forEach(r=>{
-    const was=book[r.k]||0;
+    const into=r.lad ? bookL : book;
+    const was=into[r.k]||0;
     /* Тейпер держит потолок — но он обязан быть СИММЕТРИЧНЫМ, и только на
        результатах.
 
@@ -72235,9 +72334,11 @@ function careerGrowField(field, you){
     const to=clamp(was+delta, -CC_SCENE_DEV_MAX, CC_SCENE_DEV_MAX);
     // Сотые доли рейтинга: сейв держит девятьсот человек, и полная точность
     // числа с плавающей точкой стоит в нём больше, чем значит.
-    book[r.k]=Math.round(to*100)/100;
+    into[r.k]=Math.round(to*100)/100;
     moved++;
   });
+  // Комната выдуманных — тысяча с лишним человек за вечер; книга режется сразу.
+  ccDevLTrim();
   // Снимок роастера построен на старых числах, и теперь он старый.
   // Пул — тоже: он кэшируется по календарному снимку и про книгу роста сам не
   // узнает, а показывает именно его комната дивизиона 1 и экран выбора.
