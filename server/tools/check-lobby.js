@@ -304,6 +304,38 @@ r=R10.ready('C','2026-06-13','victory');
 check('двое Victory Cup стартуют без финалиста', r.some(x=>x.msg.t==='start'), JSON.stringify(r));
 check('комната вечера — B и C', R10.state.evening && R10.state.evening.room.join()==='B,C', JSON.stringify(R10.state.evening));
 
+/* ВЕЧЕР, ЗАВЕДЁННЫЙ ГОЛОСОМ, ТОЖЕ ЗНАЕТ СВОЙ ВИД.
+
+   Старт из act (launch) записывал вечер без kind, и сверка на догоне —
+   «другой турнир поверх идущего вечера» — молчала: `st.evening.kind` пуст,
+   значит сравнивать не с чем, и опоздавшему с ДРУГИМ турниром уезжал сид
+   чужого вечера. Его скрины 22 сентября: «каждый турнир эти ошибки»,
+   «турниры играются разные — у друга соло виктори кап, а у меня дивизион». */
+let R12=createLobby({build:'aaaa1111', seed:'race-12'});
+['A','B','C'].forEach(id=>R12.join(id,{build:'aaaa1111', card:CARD, race:true}));
+R12.ready('A','2026-02-09','cup'); R12.ready('B','2026-02-09','cup');
+r=R12.act('C','nextday',{by:'C', day:'2026-02-09'});
+check('вечер стартует голосом третьего', r.some(x=>x.msg.t==='start'), JSON.stringify(r));
+check('и у него записан вид', R12.state.evening && R12.state.evening.kind==='cup', JSON.stringify(R12.state.evening));
+r=R12.ready('C','2026-02-09','victory');
+check('другой турнир поверх идущего — не старт, а clash',
+      r.length===1 && r[0].msg.t==='ready' && !!r[0].msg.clash && r[0].msg.clash.C==='victory',
+      JSON.stringify(r));
+r=R12.ready('C','2026-02-09','cup');
+check('тот же турнир — догон с тем же сидом',
+      r.some(x=>x.msg.t==='start' && x.msg.seed===R12.state.evening.seed), JSON.stringify(r));
+
+// Вечер без имени (старая сборка завела его до правки) берёт имя у первого, кто назвал.
+let R13=createLobby({build:'aaaa1111', seed:'race-13'});
+['A','B'].forEach(id=>R13.join(id,{build:'aaaa1111', card:CARD, race:true}));
+R13.ready('A','2026-02-09'); R13.ready('B','2026-02-09');
+check('безымянный вечер заведён', !!R13.state.evening && !R13.state.evening.kind, JSON.stringify(R13.state.evening));
+R13.ready('A','2026-02-09','cup');
+check('первый назвавший дал вечеру имя', R13.state.evening.kind==='cup', JSON.stringify(R13.state.evening));
+r=R13.ready('B','2026-02-09','solo');
+check('и следующий с другим турниром получает clash',
+      r.length===1 && !!r[0].msg.clash, JSON.stringify(r));
+
 // Повтор акта после переподключения не копится: тот же id, вид и номер вопроса.
 let R11=createLobby({build:'aaaa1111', seed:'race-11'});
 ['A','B'].forEach(id=>R11.join(id,{build:'aaaa1111', card:CARD, race:true}));

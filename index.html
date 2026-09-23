@@ -7044,6 +7044,9 @@ ccRegionSoon:'Доступно, если брать готовую карточ�
 ccRole:'Роль', ccMateKick:'Убрать из состава', ccMateKickAsk:n=>'Убрать '+n+' из состава? Место, которое вы выиграли вместе, при этом теряется.', ccRoleSwapTo:r=>'Стать '+r, ccRoleLockedTwo:'В команде уже есть ИГЛ — второго быть не может. Смени напарника, если хочешь играть ИГЛом.', ccRoleLockedNone:'Ты единственный ИГЛ в команде — без ИГЛа команды не бывает.',
 ccDivision:'Дивизион',
 ccDivNote:'Дивизион задаёт стартовый рейтинг. Пятый — весь путь с нуля, первый — ты уже топ-50 своего региона.',
+// Год без дивизионов зовёт те же пять полос своим именем. См. ccNoDivisions.
+ccStartOvr:'Стартовый рейтинг',
+ccStartOvrNote:'В 2024-м дивизионов не было — это просто то, с чего ты начинаешь. Пятая полоса — весь путь с нуля, первая — ты уже топ-50 своего региона.',
 ccDivEvent:'FNCS Дивизион {N}',
 ccRoRole:'Роль',
 ccRoDuo:'Дуо',
@@ -7608,7 +7611,7 @@ ccMovePickHint:'Выбери страну на карте — цифра на н
 ccMoveGain:'Рейтинг за пинг',
 ccMoveAlready:'Ты уже здесь', ccMoveGo:r=>'Переехать в '+r,
 ccOrgCutRow:'Клуб с призовых', ccOrgCutPaid:'Отдано клубу',
-ccYear:'Год', ccYear2026:'дуо → трио', ccYear2025:'трио', ccYear2024:'дуо', ccYr24Qual:(n,q,r)=>'Мейджор '+n+' · квалификатор '+q+' · раунд '+r, ccYr24Semi:(n,r)=>'Мейджор '+n+' · полуфинал · день '+r, ccYr24Upper:'верхняя сетка', ccYr24Lower:'нижняя сетка', ccYr24Series:(p,k)=>'Очки серии: '+p+' · место '+k, ccYr24ToUpper:'Верхняя сетка полуфинала — по очкам серии', ccYr24ToLower:'Нижняя сетка полуфинала — по очкам серии', ccYr24NoSemi:'Мест в полуфинале нет — очков серии не хватило', ccYr24VrTicket:'Победа в матче — билет в финал Мейджора', ccYr24World:'Другая сетка играет в тот же вечер', ccYr25Group:n=>'группа '+n, ccYr25Lobby:'лобби последнего шанса', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · раунд '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · раунд '+r,
+ccYear:'Год', ccYear2026:'дуо → трио', ccYear2025:'трио', ccYear2024:'дуо', ccYr24Qual:(n,q,r)=>'Мейджор '+n+' · квалификатор '+q+' · раунд '+r, ccYr24Semi:(n,r)=>'Мейджор '+n+' · полуфинал · день '+r, ccYr24Upper:'верхняя сетка', ccYr24Lower:'нижняя сетка', ccYr24Series:(p,k)=>'Очки серии: '+p+' · место '+k, ccYr24ToUpper:'Верхняя сетка полуфинала — по очкам серии', ccYr24ToLower:'Нижняя сетка полуфинала — по очкам серии', ccYr24NoSemi:'Мест в полуфинале нет — очков серии не хватило', ccYr24VrTicket:'Победа в матче — билет в финал Мейджора', ccYr24Down:'Билета нет — падение в нижнюю сетку', ccYr24World:'Другая сетка играет в тот же вечер', ccYr25Group:n=>'группа '+n, ccYr25Lobby:'лобби последнего шанса', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · раунд '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · раунд '+r,
 ccYearNote2026:'Сезон FNCS 2026: дивизионные кубки, два Мейджора, Reload, Глобалы в Антверпене. Второй год — трио.',
 ccYearNote2024:'Сезон FNCS 2024: дуо весь год, три Мейджора с открытыми квалификаторами, серией и полуфиналами в две сетки, Глобалы в Форт-Уэрте. Дивизионных кубков ещё нет — деньги в Duos Cash Cup, Solo Victory Cup и оценке. Соперники — карточки 2024-го. После Форт-Уэрта карьера идёт в 2025-й (трио) теми же людьми.',
 ccYearNote2025:'Сезон FNCS 2025: трио весь год, три Мейджора с групповым этапом, Глобалы в Лионе. Соперники — карточки 2025-го. После Лиона карьера идёт в 2026-й.',
@@ -9032,6 +9035,8 @@ ccRegionSoon:'Open if you take an existing card',
 ccRole:'Role', ccMateKick:'Drop from the squad', ccMateKickAsk:n=>'Drop '+n+' from the squad? Any seat the two of you won together goes with them.', ccRoleSwapTo:r=>'Switch to '+r, ccRoleLockedTwo:'The squad already has an IGL, and it cannot have two. Change partner if you want to call.', ccRoleLockedNone:'You are the only IGL in the squad, and a squad without one does not play.',
 ccDivision:'Division',
 ccDivNote:'Division sets your starting rating. Five is the whole climb from nothing; one means you are already top 50 in your region.',
+ccStartOvr:'Starting rating',
+ccStartOvrNote:'There were no divisions in 2024 — this is simply where you start. Five is the whole climb from nothing; one means you are already top 50 in your region.',
 ccDivEvent:'FNCS Division {N}',
 ccRoRole:'Role',
 ccRoDuo:'Duo',
@@ -9594,7 +9599,7 @@ ccMovePickHint:'Pick a country on the map — the number on it is the ping',
 ccMoveGain:'Rating from ping',
 ccMoveAlready:'You already live here', ccMoveGo:r=>'Move to '+r,
 ccOrgCutRow:'Club takes of winnings', ccOrgCutPaid:'Paid to the club',
-ccYear:'Year', ccYear2026:'duos → trios', ccYear2025:'trios', ccYear2024:'duos', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · Semi-Finals · day '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Series points: '+p+' · rank '+k, ccYr24ToUpper:'Upper bracket of the Semi-Finals — on series points', ccYr24ToLower:'Lower bracket of the Semi-Finals — on series points', ccYr24NoSemi:'No Semi-Finals seat — not enough series points', ccYr24VrTicket:'A Victory Royale — a ticket to the Major Finals', ccYr24World:'The other bracket plays the same evening', ccYr25Group:n=>'group '+n, ccYr25Lobby:'last chance lobby', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
+ccYear:'Year', ccYear2026:'duos → trios', ccYear2025:'trios', ccYear2024:'duos', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · Semi-Finals · day '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Series points: '+p+' · rank '+k, ccYr24ToUpper:'Upper bracket of the Semi-Finals — on series points', ccYr24ToLower:'Lower bracket of the Semi-Finals — on series points', ccYr24NoSemi:'No Semi-Finals seat — not enough series points', ccYr24VrTicket:'A Victory Royale — a ticket to the Major Finals', ccYr24Down:'No ticket — relegated to the lower bracket', ccYr24World:'The other bracket plays the same evening', ccYr25Group:n=>'group '+n, ccYr25Lobby:'last chance lobby', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
 ccYearNote2026:'FNCS 2026: divisional cups, two Majors, Reload, the Global Championship in Antwerp. Year two is trios.',
 ccYearNote2024:'FNCS 2024: duos all year, three Majors with Open Qualifiers, a series leaderboard and two-bracket Semi-Finals, the Global Championship in Fort Worth. No divisional cups yet — the money is in the Duos Cash Cup, the Solo Victory Cup and the Performance Evaluation. The field is the 2024 cards. After Fort Worth the career moves into 2025 (trios) with the same people.',
 ccYearNote2025:'FNCS 2025: trios all year, three Majors with a Group Stage, the Global Championship in Lyon. The field is the 2025 cards. After Lyon the career moves into 2026.',
@@ -12809,7 +12814,9 @@ ccAge:'Âge',
 ccRole:'Rôle', ccMateKick:'Retirer de l’équipe', ccMateKickAsk:n=>'Retirer '+n+' de l’équipe ? La place gagnée ensemble est perdue.', ccRoleSwapTo:r=>'Passer '+r, ccRoleLockedTwo:'L’équipe a déjà un IGL, et elle ne peut pas en avoir deux.', ccRoleLockedNone:'Tu es le seul IGL de l’équipe, et une équipe sans IGL ne joue pas.',
 ccDivision:'Division',
 ccDivNote:'La division fixe ta note de départ. Cinq, c’est toute la montée depuis rien ; un, c’est que tu es déjà dans le top 50 de ta région.',
-ccYear:'Année', ccYear2026:'duos → trios', ccYear2025:'trios', ccYear2024:'duos', ccYr24Qual:(n,q,r)=>'Major '+n+' · qualifier ouvert '+q+' · manche '+r, ccYr24Semi:(n,r)=>'Major '+n+' · demi-finales · jour '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Points de série : '+p+' · rang '+k, ccYr24ToUpper:'Upper bracket des demi-finales — aux points de série', ccYr24ToLower:'Lower bracket des demi-finales — aux points de série', ccYr24NoSemi:'Pas de place en demi-finales — pas assez de points de série', ccYr24VrTicket:'Une Victoire royale — un billet pour la finale du Major', ccYr24World:'L’autre bracket joue le même soir', ccYr25Group:n=>'groupe '+n, ccYr25Lobby:'lobby de la dernière chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · manche '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · manche '+r,
+ccStartOvr:'Note de départ',
+ccStartOvrNote:'Il n’y avait pas de divisions en 2024 — c’est simplement ton point de départ. Cinq, c’est toute la montée depuis rien ; un, c’est que tu es déjà dans le top 50 de ta région.',
+ccYear:'Année', ccYear2026:'duos → trios', ccYear2025:'trios', ccYear2024:'duos', ccYr24Qual:(n,q,r)=>'Major '+n+' · qualifier ouvert '+q+' · manche '+r, ccYr24Semi:(n,r)=>'Major '+n+' · demi-finales · jour '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Points de série : '+p+' · rang '+k, ccYr24ToUpper:'Upper bracket des demi-finales — aux points de série', ccYr24ToLower:'Lower bracket des demi-finales — aux points de série', ccYr24NoSemi:'Pas de place en demi-finales — pas assez de points de série', ccYr24VrTicket:'Une Victoire royale — un billet pour la finale du Major', ccYr24Down:'Pas de billet — relégation dans le lower bracket', ccYr24World:'L’autre bracket joue le même soir', ccYr25Group:n=>'groupe '+n, ccYr25Lobby:'lobby de la dernière chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · manche '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · manche '+r,
 ccYearNote2026:'FNCS 2026 : coupes divisionnaires, deux Majors, Reload, le Global Championship à Anvers. Deuxième année en trios.',
 ccYearNote2024:'FNCS 2024 : duos toute l’année, trois Majors avec qualifiers ouverts, classement de série et demi-finales à deux brackets, le Global Championship à Fort Worth. Pas encore de coupes divisionnaires : l’argent est dans la Duos Cash Cup, la Solo Victory Cup et l’évaluation. Les adversaires sont les cartes 2024. Après Fort Worth, la carrière passe en 2025 (trios) avec les mêmes joueurs.',
 ccYearNote2025:'FNCS 2025 : trios toute l’année, trois Majors avec phase de groupes, le Global Championship à Lyon. Les adversaires sont les cartes 2025. Après Lyon, la carrière passe en 2026.',
@@ -13154,7 +13161,7 @@ ccRole:"Ruolo",
 ccSpTitle:"Punti abilità",
 ccSpCreateHint:"Assegnati una volta sola, qui: +0.5 a una statistica per punto",
 ccDivision:"Divisione",
-ccYear:"Anno", ccYear2026:"duo → trio", ccYear2025:"trio", ccYear2024:'duo', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinali · giorno '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Punti serie: '+p+' · posto '+k, ccYr24ToUpper:'Upper bracket delle semifinali — sui punti serie', ccYr24ToLower:'Lower bracket delle semifinali — sui punti serie', ccYr24NoSemi:'Nessun posto in semifinale — punti serie insufficienti', ccYr24VrTicket:'Una Vittoria reale — un biglietto per la finale del Major', ccYr24World:'L’altro bracket gioca la stessa sera', ccYr25Group:n=>'girone '+n, ccYr25Lobby:'lobby dell\'ultima chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
+ccYear:"Anno", ccYear2026:"duo → trio", ccYear2025:"trio", ccYear2024:'duo', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinali · giorno '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Punti serie: '+p+' · posto '+k, ccYr24ToUpper:'Upper bracket delle semifinali — sui punti serie', ccYr24ToLower:'Lower bracket delle semifinali — sui punti serie', ccYr24NoSemi:'Nessun posto in semifinale — punti serie insufficienti', ccYr24VrTicket:'Una Vittoria reale — un biglietto per la finale del Major', ccYr24Down:'Nessun biglietto — retrocessione nel lower bracket', ccYr24World:'L’altro bracket gioca la stessa sera', ccYr25Group:n=>'girone '+n, ccYr25Lobby:'lobby dell\'ultima chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
 ccYearNote2026:"FNCS 2026: coppe divisionali, due Major, Reload, Global Championship ad Anversa. Il secondo anno è in trio.",
 ccYearNote2024:"FNCS 2024: duo tutto l'anno, tre Major con Open Qualifier, classifica di serie e semifinali a due bracket, Global Championship a Fort Worth. Niente coppe divisionali ancora: i soldi sono nella Duos Cash Cup, nella Solo Victory Cup e nella valutazione. Gli avversari sono le carte 2024. Dopo Fort Worth la carriera passa al 2025 (trio) con le stesse persone.",
 ccYearNote2025:"FNCS 2025: trio tutto l'anno, tre Major con fase a gironi, Global Championship a Lione. Gli avversari sono le carte 2025. Dopo Lione la carriera passa al 2026.",
@@ -14134,6 +14141,8 @@ synergyNote:"Nella realtà la FNCS 2026 si gioca in duo - è il formato vero. Tr
 confirmedNote:"<b>Cosa è confermato:</b> nomi e regione vengono dalle liste ufficiali dei partecipanti e dalle classifiche finali (Liquipedia, Esports Earnings, esports.gg, fortnitetracker.com e gli screenshot che hai mandato).<br><br><b>Sulla dimensione della lobby:</b> i giocatori reali non bastano a centrare esattamente il numero di squadre - i posti mancanti della lobby IA (tranne che nelle Gran Finali) sono riempiti da squadre di riserva chiaramente indicate, mostrate senza bandiera.<br><br><b>Bandiere:</b> la nazionalità non è confermata per tutti - dove non c'è una fonte, non viene mostrata alcuna bandiera.",
 ccBornHint:"Data di nascita — facoltativa. Se la compili, la scena ti fa gli auguri quel giorno. Il numero qui sopra è la tua età il giorno in cui inizia la stagione; il compleanno cade dentro di essa.",
 ccDivNote:"La divisione stabilisce la valutazione iniziale. Cinque è tutta la scalata dal nulla; uno significa che sei già tra i primi 50 della tua regione.",
+ccStartOvr:"Valutazione iniziale",
+ccStartOvrNote:"Nel 2024 non c'erano divisioni — questo è semplicemente il tuo punto di partenza. Cinque è tutta la scalata dal nulla; uno significa che sei già tra i primi 50 della tua regione.",
 ccDiffNote:"Cambia una cosa sola — quanto in fretta sale la valutazione. Il campo, i montepremi e i prezzi sono uguali per tutte: più difficile non vuol dire lobby più forte, vuol dire strada più lunga",
 ccPingNote:"Il ping è calcolato dalla città da un milione di abitanti più vicina del paese al server — il meglio che possa offrire. I numeri dell'Europa sono misurati; le altre regioni usano la stessa curva sul proprio server. Dice da dove giochi; il paese non cambia la tua forza.",
 preregionNote:"Spunta le regioni i cui giocatori ti vengono dati nei pacchetti. Quante vuoi, o tutte — non dice nulla su quale torneo giochi.",
@@ -15664,7 +15673,7 @@ ccRole:"Função",
 ccSpTitle:"Pontos de habilidade",
 ccSpCreateHint:"Distribuídos uma única vez, aqui: +0,5 em um atributo por ponto",
 ccDivision:"Divisão",
-ccYear:"Ano", ccYear2026:"duplas → trios", ccYear2025:"trios", ccYear2024:'duplas', ccYr24Qual:(n,q,r)=>'Major '+n+' · classificatória aberta '+q+' · rodada '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinais · dia '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Pontos de série: '+p+' · posição '+k, ccYr24ToUpper:'Upper bracket das semifinais — pelos pontos de série', ccYr24ToLower:'Lower bracket das semifinais — pelos pontos de série', ccYr24NoSemi:'Sem vaga nas semifinais — faltaram pontos de série', ccYr24VrTicket:'Uma Vitória Royale — um bilhete para a final do Major', ccYr24World:'O outro bracket joga na mesma noite', ccYr25Group:n=>'grupo '+n, ccYr25Lobby:'lobby da última chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · rodada '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · rodada '+r,
+ccYear:"Ano", ccYear2026:"duplas → trios", ccYear2025:"trios", ccYear2024:'duplas', ccYr24Qual:(n,q,r)=>'Major '+n+' · classificatória aberta '+q+' · rodada '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinais · dia '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Pontos de série: '+p+' · posição '+k, ccYr24ToUpper:'Upper bracket das semifinais — pelos pontos de série', ccYr24ToLower:'Lower bracket das semifinais — pelos pontos de série', ccYr24NoSemi:'Sem vaga nas semifinais — faltaram pontos de série', ccYr24VrTicket:'Uma Vitória Royale — um bilhete para a final do Major', ccYr24Down:'Sem bilhete — rebaixado para o lower bracket', ccYr24World:'O outro bracket joga na mesma noite', ccYr25Group:n=>'grupo '+n, ccYr25Lobby:'lobby da última chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · rodada '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · rodada '+r,
 ccYearNote2026:"FNCS 2026: copas divisionais, dois Majors, Reload, Global Championship em Antuérpia. O segundo ano é em trios.",
 ccYearNote2024:"FNCS 2024: duplas o ano todo, três Majors com classificatórias abertas, tabela de série e semifinais em dois brackets, Global Championship em Fort Worth. Ainda sem copas divisionais: o dinheiro está na Duos Cash Cup, na Solo Victory Cup e na avaliação. Os adversários são as cartas de 2024. Depois de Fort Worth a carreira segue para 2025 (trios) com as mesmas pessoas.",
 ccYearNote2025:"FNCS 2025: trios o ano todo, três Majors com fase de grupos, Global Championship em Lyon. Os adversários são as cartas de 2025. Depois de Lyon a carreira segue para 2026.",
@@ -16644,6 +16653,8 @@ synergyNote:"Na realidade a FNCS 2026 é jogada em duplas - esse é o formato re
 confirmedNote:"<b>O que está confirmado:</b> nomes e região vêm das listas oficiais de participantes e das classificações finais (Liquipedia, Esports Earnings, esports.gg, fortnitetracker.com e prints que você mandou).<br><br><b>Sobre o tamanho do lobby:</b> não há jogadores reais suficientes para bater exatamente o número de equipes - as vagas que faltam no lobby de IA (exceto nas Grandes Finais) são preenchidas por equipes reservas claramente identificadas, mostradas sem bandeira.<br><br><b>Bandeiras:</b> a nacionalidade não está confirmada para todos - onde não há fonte, nenhuma bandeira é mostrada.",
 ccBornHint:"Data de nascimento — opcional. Se preencher, a cena te dá parabéns no dia. O número acima é a sua idade no dia em que a temporada começa; o aniversário cai dentro dela.",
 ccDivNote:"A divisão define seu rating inicial. Cinco é a subida inteira do zero; um significa que você já está no top 50 da sua região.",
+ccStartOvr:"Rating inicial",
+ccStartOvrNote:"Não havia divisões em 2024 — isto é simplesmente por onde você começa. Cinco é a subida inteira do zero; um significa que você já está no top 50 da sua região.",
 ccDiffNote:"Muda uma coisa só — a velocidade com que o rating sobe. O campo, a premiação e os preços são os mesmos em todas: mais difícil não é um lobby mais forte, é um caminho mais longo",
 ccPingNote:"O ping é da cidade de um milhão mais próxima do país até o servidor — o melhor que ele tem a oferecer. Os números da Europa são medidos; as outras regiões usam a mesma curva no próprio servidor. Ele diz de onde você joga; o país não muda a sua força.",
 preregionNote:"Marque as regiões cujos jogadores caem nos seus pacotes. Quantas quiser, ou todas — isso não diz nada sobre qual torneio você joga.",
@@ -18224,6 +18235,13 @@ function setLang(lang, persist){
   }
   if(document.getElementById('screen-history').classList.contains('active')){
     renderHistoryScreen();
+  }
+  /* Экран создания тоже: applyStaticI18n возвращает подписи по data-i18n, а у
+     поля полос подпись зависит от ГОДА — в году без дивизионов она своя
+     (ccStartOvr, см. ccRenderChips). Без этой строки нажатие RU/EN посреди
+     создания карьеры 2024-го писало над чипами «Дивизион». */
+  if(document.getElementById('screen-career-create').classList.contains('active')){
+    if(typeof ccRenderChips==='function') ccRenderChips();
   }
 }
 
@@ -53632,8 +53650,8 @@ function heatsRank(a, b){
   return b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims;
 }
 
-// Everyone with a Victory Royale, then the best of the rest on points, up to
-// the cut. Returns a Set for the standings table to mark.
+// The top of the table up to the cut, and everyone with a Victory Royale
+// besides. Returns a Set for the standings table to mark.
 // Per-region Major format, straight out of the 2026 official rules
 // (sections 2.2.2 through 2.2.6). EU and NAC are the deep regions: 150 teams
 // out of Play-In, three heats, a narrow top-10 points cut. Everywhere else the
@@ -53759,11 +53777,23 @@ function heatQualifiers(heatTeams, cut, winAdvances){
   // and only the top five on points come out, so a win there is worth 60 points
   // and nothing else. Passed in rather than read off a global so the two
   // circuits cannot borrow each other's rule by accident.
-  const through=(winAdvances===false) ? [] : heatTeams.filter(t=>t.gotVR);
-  heatTeams.slice().sort(heatsRank).forEach(t=>{
-    if(through.length<cut && !through.includes(t)) through.push(t);
-  });
-  return new Set(through.slice(0, Math.max(cut, through.length)));
+  /* Победа проходит СВЕРХ отсечки, а не вместо неё.
+
+     Тестер, 22 сентября: «в хитах к грандам квал топ 3, а должен быть топ 10 —
+     там просто 5 виннеров каток проходят в гранды, а я с топ 8 мимо улетел».
+     Так и было: победители ложились в список первыми и съедали места отсечки —
+     пять побед в комнате оставляли на очки три места, — а карточка и таблица
+     по-прежнему рисовали линию там, где её объявил этап. То есть проход был
+     уже, чем написано, и ровно на число выигранных каток.
+
+     И это не случайность счёта: комната играется stopOnWin — выигравший
+     ВСТАЁТ и доигрывает вечер меньшим числом игр. Потому победа и есть свой,
+     отдельный билет: у Epic из группы выходят топ-N по очкам ПЛЮС каждая
+     Victory Royale, а не N всего на двоих. */
+  const ranked=heatTeams.slice().sort(heatsRank);
+  const through=ranked.slice(0, Math.max(0, cut));
+  if(winAdvances!==false) ranked.forEach(t=>{ if(t.gotVR && through.indexOf(t)<0) through.push(t); });
+  return new Set(through);
 }
 // Real LCQ Round 1 scoring, straight off Epic's ScoringRules for the
 // Last Chance Qualifier session (MatchRule "lte", so the tiers are
@@ -54341,7 +54371,12 @@ function ccKillPts(elims, mult){
   // their placement table, which only exists for a Reload card set.
   const cap = CC_KILL_CAP>0 ? CC_KILL_CAP
             : (reloadPlacementTable() ? CC_RELOAD_KILL_CAP : 0);
-  return (cap>0 ? Math.min(elims, cap) : elims)*mult;
+  /* Множитель может быть и вопросом, а не числом: второй день гранд-финала
+     2024-го платит за элим шесть вместо четырёх, и знает об этом только та
+     игра, которая идёт (см. ccM24KillGf). Все прочие вызовы передают число,
+     как передавали. */
+  const m=(typeof mult==='function') ? mult() : mult;
+  return (cap>0 ? Math.min(elims, cap) : elims)*m;
 }
 /* Карта идущего этапа — её ставит simulateGamesLive и снимает в конце.
    Нужна вопросу о высадке: он задаётся снаружи прогона (careerLandingPick),
@@ -57535,7 +57570,12 @@ async function runMajorTournament(){
   }
 
   // Major Finals field: exactly 45 heat qualifiers + 5 LCQ winners = 50 teams, no reserves.
-  let finalTeams=heatQualifiers45.slice();
+  /* Прошедших хиты может быть больше сорока пяти: победа в игре — билет сверх
+     отсечки (см. heatQualifiers), и выигравший вне топа садится рядом с ним.
+     Зал всё равно на пятьдесят, поэтому лишние снимаются с конца — они и
+     стоят последними, за прошедшими по очкам. */
+  const GF_SEATS=50;
+  let finalTeams=heatQualifiers45.slice(0, GF_SEATS-lcqSlots);
   if(cameFromLcq){
     if(!finalTeams.includes(you)) finalTeams.push(you);
     lcqOtherWinners.forEach(t=>{ if(!finalTeams.includes(t)) finalTeams.push(t); });
@@ -57543,13 +57583,13 @@ async function runMajorTournament(){
     if(stillNeeded>0){
       // Same Last Chance field, minus everyone who already holds a slot.
       const extra=await computeQuietLCQWinners(lastChanceField(lcqField, new Set(finalTeams)), lcqSlots);
-      extra.forEach(t=>{ if(finalTeams.length<50 && !finalTeams.includes(t)) finalTeams.push(t); });
+      extra.forEach(t=>{ if(finalTeams.length<GF_SEATS && !finalTeams.includes(t)) finalTeams.push(t); });
     }
   } else {
     // You went straight through the Heats, so the Last Chance still runs — just
     // off-screen — among the teams the Heats left behind.
     const lcqWinners=await computeQuietLCQWinners(lastChanceField(teams, new Set(heatQualifiers45)), lcqSlots);
-    lcqWinners.forEach(t=>{ if(!finalTeams.includes(t)) finalTeams.push(t); });
+    lcqWinners.forEach(t=>{ if(finalTeams.length<GF_SEATS && !finalTeams.includes(t)) finalTeams.push(t); });
   }
 
   // finalTeams собран в порядке квалификации — хиты, потом Ласт Ченс, — и это
@@ -57876,8 +57916,11 @@ async function runGlobalChampionship2024(you, regionRank, region, regionalFinal)
   if(!skipAnimation) await sleep(900);
   const zones=await showFinalsLandingPicker(field, you);
   const shell=createStageCardShell(L().gc2024StageTitle(DRAFT_M24.final.games));
-  await simulateGamesLive(field, DRAFT_M24.final.games, pointsForPlace, DRAFT_M24.final.kill, 'stage', 0, null, zones,
-    {mapReplay:true, choices:true, stageName:L().liveWorlds2024});
+  // Форт-Уэрт — таблица 2024-го, и второй день ×1.5, как печатал лидерборд.
+  CC_M24_GAME=0;
+  await simulateGamesLive(field, DRAFT_M24.final.games, ccM24PointsGf, ccM24KillGf, 'stage', 0, null, zones,
+    {mapReplay:true, choices:true, stageName:L().liveWorlds2024,
+     dropEachGame:(g)=>{ CC_M24_GAME=g; return null; }});
   useLandingSet(wasSet);
   const ranked=rank24(field);
   const rank=ranked.indexOf(you)+1;
@@ -57915,7 +57958,7 @@ async function runMajor2024Tournament(){
   };
 
   // ---- раунд 1: открытый квалификатор ---------------------------------------
-  await simulateGamesRandomLobbies(teams, S.r1.games, lobby, pointsForPlace, S.r1.kill);
+  await simulateGamesRandomLobbies(teams, S.r1.games, lobby, ccM24Points, CC_M24_KILL);
   let ranked=rank24(teams);
   const cut1=Math.min(S.r1.cut, ranked.length);
   const in1=ranked.indexOf(you)<cut1;
@@ -57924,7 +57967,7 @@ async function runMajor2024Tournament(){
 
   // ---- раунд 2: очки серии → сетки ------------------------------------------
   const series=ranked.slice(0, cut1); reset24(series);
-  await simulateGamesRandomLobbies(series, S.r2.games, lobby, pointsForPlace, S.r2.kill);
+  await simulateGamesRandomLobbies(series, S.r2.games, lobby, ccM24Points, CC_M24_KILL);
   ranked=rank24(series);
   const sRank=ranked.indexOf(you)+1;
   const upper=ranked.slice(0, S.upperSize), lower=ranked.slice(S.upperSize);
@@ -57946,10 +57989,10 @@ async function runMajor2024Tournament(){
       const sp=S.upper[d]; reset24(room);
       if(inUpper && alive && !youTicket){
         const zones=await stageLandingPicker(room, you, upperTitle(d+1));
-        await simulateGamesLive(room, sp.games, pointsForPlace, sp.kill, 'stage', 0, null, zones,
+        await simulateGamesLive(room, sp.games, ccM24Points, CC_M24_KILL, 'stage', 0, null, zones,
           {stopOnWin:!!sp.vr, mapReplay:true, choices:true, stageName:upperTitle(d+1)});
-      } else if(sp.vr) simulateGamesStopOnWin(room, sp.games, pointsForPlace, sp.kill);
-      else simulateGames(room, sp.games, pointsForPlace, sp.kill);
+      } else if(sp.vr) simulateGamesStopOnWin(room, sp.games, ccM24Points, CC_M24_KILL);
+      else simulateGames(room, sp.games, ccM24Points, CC_M24_KILL);
       const r=rank24(room);
       if(sp.vr){
         const won=vrOf(room, S.vrPerDay); won.forEach(t=>tickets.push(t));
@@ -57980,9 +58023,9 @@ async function runMajor2024Tournament(){
       const cut=(d===S.lower.length-1) ? Math.max(sp.cut, S.final.field-finalTeams.length) : sp.cut;
       if(!inUpper && alive){
         const zones=await stageLandingPicker(room, you, lowerTitle(d+1));
-        await simulateGamesLive(room, sp.games, pointsForPlace, sp.kill, 'stage', 0, null, zones,
+        await simulateGamesLive(room, sp.games, ccM24Points, CC_M24_KILL, 'stage', 0, null, zones,
           {mapReplay:true, choices:true, stageName:lowerTitle(d+1)});
-      } else simulateGames(room, sp.games, pointsForPlace, sp.kill);
+      } else simulateGames(room, sp.games, ccM24Points, CC_M24_KILL);
       const r=rank24(room);
       const pass=r.slice(0, Math.min(cut, r.length));
       if(!inUpper && alive){
@@ -58002,8 +58045,11 @@ async function runMajor2024Tournament(){
   // ---- финал ------------------------------------------------------------------
   reset24(fin);
   const zoneGroups=await stageLandingPicker(fin, you, L().finalsLandingTitle);
-  await simulateGamesLive(fin, S.final.games, pointsForPlace, S.final.kill, 'stage', 0, null, zoneGroups,
-    {mapReplay:true, choices:true, stageName:L().liveRegionalFinals});
+  CC_M24_GAME=0;
+  await simulateGamesLive(fin, S.final.games, ccM24PointsGf, ccM24KillGf, 'stage', 0, null, zoneGroups,
+    {mapReplay:true, choices:true, stageName:L().liveRegionalFinals,
+     // Какая игра идёт — это и есть день: с седьмой счёт ×1.5. См. ccM24Day.
+     dropEachGame:(g)=>{ CC_M24_GAME=g; return null; }});
   const finalRanked=rank24(fin);
   const youFinalRank=finalRanked.indexOf(you)+1;
   const myReg=ccHomeRegion();
@@ -65529,6 +65575,16 @@ function ccRenderChips(){
     return `<button class="cc-chip${on?' on':''}" ${card?'disabled':''} `+
       `onclick="ccPickRole(\'${k}\')">${L()[k]}</button>`;
   }).join('');
+  /* Год без дивизионов (ccNoDivisions) оставляет эти чипы на месте, но зовёт
+     их своим именем: лестницы в 2024-м нет, а вопрос «с чего ты начинаешь»
+     есть — ccDivNote и так отвечал «Дивизион задаёт стартовый рейтинг». Само
+     число в сейв не уходит: карьера такого года живёт без ступени вовсе
+     (careerNewCareer пишет division 1), и полоса остаётся только стартом. */
+  const noDiv=ccNoDivisions();
+  const divLab=document.querySelector('#ccDivField label');
+  if(divLab) divLab.textContent=noDiv ? L().ccStartOvr : L().ccDivision;
+  const divNote=document.querySelector('#ccDivField .cc-note');
+  if(divNote) divNote.textContent=noDiv ? L().ccStartOvrNote : L().ccDivNote;
   document.getElementById('ccDivChips').innerHTML=[1,2,3,4,5].map(d=>{
     const on=CC.div===d;
     return `<button class="cc-chip${on?' on':''}" `+
@@ -65991,7 +66047,8 @@ function ccSync(){
     // Taking a card takes their duo with it — said here, before the start.
     (CC.card ? (()=>{ const m=ccRealMateOf(CC.card);
       return m ? `<span><em>${L().ccRoDuo}</em>${esc(m.handle)} (${m._ovr})</span>` : ''; })() : '')+
-    `<span><em>${L().ccRoDiv}</em>${CC.div}</span>`;
+    // Год без дивизионов зовёт эту полосу стартовым рейтингом. См. ccNoDivisions.
+    `<span><em>${ccNoDivisions() ? L().ccStartOvr : L().ccRoDiv}</em>${CC.div}</span>`;
   /* Рейтинга здесь больше нет, и это его правка.
 
      Строка печатала attrsFor(card).ovr — базу, — а на лице карточки в
@@ -66107,6 +66164,11 @@ function ccStart(){
   const ping=ccPingOf(CC.country, CC.region);
   const card=CC.card;
   let ovr = card ? attrsFor(card).ovr : creator ? CC_PROAM_CREATOR_OVR : ccBand(CC.div, CC.region);
+  /* Ступень, на которой карьера СТОИТ, — не всегда та полоса, с которой она
+     начинается. Год без дивизионов (ccNoDivisions) стоит на верху лестницы,
+     которой нет: сцена целиком, настоящие имена, настоящие напарники. Полоса
+     при этом сделала своё дело строкой выше — она задала стартовый рейтинг. */
+  const startDiv = ccNoDivisions() ? 1 : CC.div;
   const role = card ? attrsFor(card).roleKey : CC.role;
   const attrs = card ? null : ccRookieAttrs(ovr, role);
   /* Розданные на этом экране очки ложатся в статы прямо сейчас — один раз и
@@ -66152,9 +66214,15 @@ function ccStart(){
     // A career starts in the duo year; the trio one is season two. See
     // careerSquadSize for why the shape is written down rather than derived.
     career:{season:1, size:(CC.year===2025 ? 3 : 2), year:ccPickedYear(), year0:ccPickedYear(),
-            diff:(CC.diff||'easy'), day:null, division: CC.div,
+            diff:(CC.diff||'easy'), day:null,
+            // Год без лестницы заводится на её верху: соперники, имена и
+            // напарники — сцена целиком, как в Дивизионе 1. См. ccNoDivisions.
+            // Чип при этом остаётся стартовым рейтингом и в ovr уже учтён.
+            division: startDiv,
             // A career that starts in Division 1 starts known: that room is
             // 300 people the scene watches, and nobody is in it unread.
+            // Известность — по выбранной полосе, а не по ступени без лестницы:
+            // новичок 2024-го начинается никем, как начинался бы в пятой.
             reach: creator ? Math.round((ccProAmFollowers(creator)||0)*CC_PROAM_REACH_SHARE)
                   : CC.div===1 ? CC_REACH_D1 : 0,
             // Подписчики Twitch у креатора — настоящие, снятые с самого Twitch.
@@ -66200,8 +66268,8 @@ function ccStart(){
   if(card && card.org){
     const tier=(careerOrgPool().find(o=>o.name===card.org)||{}).tier || Math.round(ovr);
     save.org={name:card.org, tier:tier, academy:false,
-              salary:careerOrgSalary(tier, CC.div, save.career.reach, ovr),
-              goal:careerOrgGoal(CC.div), cut:careerOrgCutFor(tier),
+              salary:careerOrgSalary(tier, startDiv, save.career.reach, ovr),
+              goal:careerOrgGoal(startDiv), cut:careerOrgCutFor(tier),
               since:1, paid:0, perk:null};
     save.career.orgs=[card.org];
   }
@@ -66378,6 +66446,7 @@ function careerLoad(){
   // at the hub with an empty seat and a person sat in it.
   if(CAREER){ careerNotesMigrate(); careerMigrateSize(); careerMigratePartners();
               careerMigrateHome(); careerMigrateDiff(); careerMigrateSpotIslands();
+              careerMigrateNoDiv();
               careerMigrateBeefsOff();
               // Сейв, раздутый линейной формулой твича, — под потолок. См. CC_TW_CEIL.
               careerMigrateTwitch();
@@ -70449,7 +70518,7 @@ function careerRenderHubBody(tab){
          esc(ccCountryOf(String(pl.country).toLowerCase()))}.png" alt="" title="${
          esc(ccCountryName(pl.country)||'')}">` : ''].filter(Boolean).join(' '),
       CAREER.org ? esc(CAREER.org.name) : '',
-      L().ccDivision+' '+cr.division,
+      ccNoDivisions() ? '' : L().ccDivision+' '+cr.division,
       L()[a?a.roleKey:pl.role]||'',
       careerTopHonour()
     ].filter(Boolean).join(' · ')}</div></div>`;
@@ -70895,7 +70964,8 @@ function careerCentreHTML(card, a){
                  карточка дня печатала DUOS над трио-лобби. Его тестер, 21
                  августа: «во втором сезоне… ещё див капы в дуо». Счёт команд
                  уже пересчитывался через ccTeams, а слово рядом — нет. -->
-            <div class="ch-mode"><span>${careerNightSolo(next) ? L().ccSpotSoloTab : ccSquadWordCap()} · ${L().ccDivision} ${cr.division}</span></div>
+            <div class="ch-mode"><span>${[careerNightSolo(next) ? L().ccSpotSoloTab : ccSquadWordCap(),
+                ccNoDivisions() ? '' : L().ccDivision+' '+cr.division].filter(Boolean).join(' · ')}</span></div>
             <!-- Про-Ам играется НЕ с напарником, а с контент-мейкером, и это
                  надо знать до нажатия: с кем сидишь и сколько его смотрят.
                  См. ccProAmMate и CC_PROAM_TWITCH. -->
@@ -73490,6 +73560,13 @@ function ccLogMates(mates){
    fly there stops paying that rent, and one that started there stops being
    evicted for a lease it never signed. The second is the bug; the first is a
    month's rent forgiven once, to a handful of saves, and worth it. */
+/* Сейв, заведённый до этой правки, стоит в том дивизионе, который выбрали на
+   экране создания, и выйти из него ему нечем. Один раз — в первый. */
+function careerMigrateNoDiv(){
+  const cr=CAREER && CAREER.career;
+  if(!cr || !ccNoDivisions()) return;
+  if((cr.division||1)!==1) cr.division=1;
+}
 function careerMigrateHome(){
   const pl=CAREER && CAREER.player;
   if(!pl || pl.homeRegion!=null) return;
@@ -74888,6 +74965,22 @@ function ccYearTo(){ return ccIs2024() ? CC_YEAR_2024_TO : ccIs2025() ? CC_YEAR_
 function ccYearRows(){ return ccIs2024() ? CAREER_YEAR_2024 : ccIs2025() ? CAREER_YEAR_2025 : CAREER_YEAR; }
 // 2024-й: дивизионов ещё не было — кубковых недель нет вовсе.
 function ccCupWeeks(){ return ccIs2024() ? [] : ccIs2025() ? CC_CUP_WEEKS_2025 : CC_CUP_WEEKS; }
+/* ГОД БЕЗ ДИВИЗИОНОВ.
+
+   Тестер, 22 сентября: «Как мне выбраться с 5 дивизиона если в 2024 не было
+   их». Выбраться было нельзя: наверх поднимает токен дивизионного кубка, а
+   кубков в 2024-м нет вовсе (ccCupWeeks пуст — их и не было, путь на Мейджор
+   шёл через открытые квалификаторы, куда пускали всех). Карьера садилась в
+   пятый и оставалась там навсегда: соперники по полосе рейтинга, напарники
+   оттуда же — «Ты сильнее всех в Дивизионе 5, выше 61 здесь никого нет», —
+   и ни одного вечера, который это меняет.
+
+   Ответ автора в той же переписке: «ой я забыл про дивы, вечером исправлю,
+   они же не всегда были…». Год без кубков играется без лестницы: сцена целиком,
+   настоящие имена, настоящие напарники — то, что в остальных годах значит
+   Дивизион 1. Признак спрашивается у КАЛЕНДАРЯ, а не у числа 2024, потому что
+   карьера 2024-го на стыке уходит в календарь 2025-го, где кубки есть. */
+function ccNoDivisions(){ return !ccCupWeeks().length; }
 /* Performance Evaluation 2025-го — с архива Tracker (21 сентября 2026): раунд 1
    семь игр, топ-33 в раунд 2 того же вечера, четыре игры, $400 на игрока за
    каждую победу. Только Дивизион 1 — как и в 2026-м. */
@@ -75807,7 +75900,22 @@ function careerSeed(cr, salt){
      замер race-field-size-probe показал 162 КиБ на кубке Д1 при лимите DO в 128. */
   const own=(typeof ccRaceLock==='function' && ccRaceLock() && CC_MP_SEED)
     || (cr && cr.seed) || ccCareerSeed();
-  return hashStr('c'+cr.season+'w'+careerWeek()+'d'+cr.division+(salt||'')+'|'+own);
+  /* НЕДЕЛЯ — ОБЫЧНО СЕГОДНЯШНЯЯ, НО НЕ ВСЕГДА ЕЁ СПРАШИВАЮТ.
+
+     Турнир, который идёт дольше недели, обязан играться одной и той же сценой
+     от первого дня до последнего. У Мейджора 2024-го два открытых
+     квалификатора — 26-28 января и 2-4 февраля, — и это две календарные
+     недели: бросок ложился по-новому, и во втором квалификаторе народ выходил
+     с ДРУГИМИ напарниками. Его слово 22 сентября: «все сильные дуо сразу друг
+     друга сплитнули», и следом «два мерстача» — потому что очки серии копятся
+     по ключу СОСТАВА (ccSeatKey), и человек с двумя напарниками держал в
+     таблице две строки, а сетки полуфинала сажали обе.
+
+     Париж такой правки не потребовал: три его этапа лежат в одной неделе, и
+     сид там совпадал сам собой (см. ccRcField). Здесь неделю называет тот,
+     кто строит комнату: `Object.assign({}, cr, {seedWeek: …})`. */
+  const wk=(cr && cr.seedWeek!=null) ? cr.seedWeek : careerWeek();
+  return hashStr('c'+cr.season+'w'+wk+'d'+cr.division+(salt||'')+'|'+own);
 }
 
 // Ladder handles. Two syllables and sometimes a number, which is what a ranked
@@ -91066,6 +91174,20 @@ function careerFfConfirm(days){
    сядут сегодня. Релоад играется на острове своего круга (careerReloadOn), его
    Чемпионат — на четвёртом, всё остальное — на сезонном. Те же три правила,
    что и у раннеров, только спрошенные заранее. */
+/* ОСТРОВ СОЛО-ФНКС — один ответ на карточку вечера, на метку и на раннер.
+
+   s42 — остров седьмой главы, и он есть только у календаря 2026-го. Тестер,
+   22 сентября: «в симуляции 5-го чаптера карта этого сезона». Так и было:
+   careerNightSet снимал s42 лишь с 2025-го, а runCareerSoloSeries вообще ни с
+   какого года — и соло-вечер 2024-го садился на остров нынешнего сезона
+   вместо f1–f4, а метка при этом ставилась на сезонном (careerSoloSet в
+   дуо-год отвечает careerBrSet). Точка на одном острове, вечер на другом.
+
+   Теперь правило одно и живёт здесь: своя глава у своего года
+   (careerBrSet), седьмая — только там, где она и есть. */
+function ccSoloFncsSet(ev){
+  return (ev && ev.spec && ZONE_SETS.s42 && !ccIs2025() && !ccIs2024()) ? 's42' : careerBrSet();
+}
 function careerNightSet(next){
   const day=next && next.day;
   if(next && next.type==='reload'){
@@ -91083,7 +91205,7 @@ function careerNightSet(next){
   // FNCS Solos — остров седьмой главы (s42), и в трио-год тоже. См. careerSoloSet.
   if(next && next.type==='solo'){
     const ev=careerSoloSeriesOn(day);
-    if(ev && ev.spec && ZONE_SETS.s42 && !ccIs2025()) return 's42';   // Solo Cash Cup 2025-го — остров своего сезона
+    if(ev) return ccSoloFncsSet(ev);
   }
   return careerBrSet();
 }
@@ -93661,19 +93783,101 @@ function ccMajorLcRoom(you, ev){
    верхней сетки, rest — не прошедшие третьего дня); bracket — своя сетка;
    ticket — место в финале. Своя сетка играется вживую, чужая — тем же вечером
    молча (ccM24Settle), и то, чего игрок не доиграл, досчитывается перед финалом. */
+/* ---- СЧЁТ 2024-го — ТАБЛИЦА EPIC ТОГО ГОДА ---------------------------------
+
+   FNCS 2024: Victory Royale 65, второе 56, третье 52, пятое 44, двадцать пятое
+   2, и четыре очка за элим. Это ровно та лестница, что лежит в PLAYIN_STEPS
+   («9 + 4×4 + 2×20 = 65»), поэтому она читается оттуда, а не переписывается
+   рядом третьей копией. До этой правки Мейджор 2024-го считался таблицей
+   2026-го (majorPoints → wfPoints) и платил за элим два на квалификаторах.
+
+   Второй день — ×1.5 на всё: VR 100, второе 84, третье 78, элим 6. Их и
+   печатал лидерборд Форт-Уэрта. Какая игра идёт, знает только сам прогон,
+   поэтому день ставит dropEachGame (он зовётся раз на игру), а читают его
+   ccM24PointsGf и ccM24KillGf. */
+const CC_M24_KILL=4, CC_M24_DAY2=1.5, CC_M24_DAY1_GAMES=6;
+let CC_M24_GAME=0;
+function ccM24Day(){ return (CC_M24_GAME>CC_M24_DAY1_GAMES) ? CC_M24_DAY2 : 1; }
+/* Таблица ДУО, а не текущего состава: 2024-й играется в дуо весь год, и
+   спрашивать про это ambient squadSize незачем — он в этот момент может быть
+   ещё сквадным (по умолчанию страницы), и тогда второе место читалось бы 42
+   вместо 56. playInPointsForPlace как раз через squadSize и ходит. */
+function ccM24Points(place){
+  const t=PLAYIN_TABLE[2];
+  return place<=t.length ? t[place-1] : 0;
+}
+function ccM24PointsGf(place){
+  const d=ccM24Day();
+  if(d===1) return ccM24Points(place);
+  /* Второй день — ×1.5 на всё: второе 56→84, третье 52→78, элим 4→6. Кроме
+     победы: 65×1.5 это 97.5, а лидерборд Форт-Уэрта печатал ровную сотню —
+     Epic округлил её вверх, и бонус за Victory Royale во второй день выходит
+     16 вместо девяти. */
+  return (place===1) ? 100 : Math.round(ccM24Points(place)*d);
+}
+function ccM24KillGf(){ return CC_M24_KILL*ccM24Day(); }
+/* Настоящее поле открытого квалификатора — та же измеренная лестница региона,
+   которой читаются опены круга Reload (CC_LADDER_TRUE, 9 766 дуо). Карьера
+   играет её ВЫБОРКОЙ (careerLadderEntrants), поэтому отсечка переводится в
+   комнату, а место читается в настоящем размере — правило и помощники те же,
+   что у опенов: ccStretchTo. */
 const CC_M24={
-  q:    {1:{games:10, kill:2, cut:1000, open:true}, 2:{games:10, kill:2, cut:250}, 3:{games:10, kill:2, cut:0}},
-  upper:{1:{games:5, kill:4, vr:true, cut:0}, 2:{games:5, kill:4, vr:true, cut:0}, 3:{games:3, kill:4, cut:25}},
-  lower:{1:{games:10, kill:2, cut:100}, 2:{games:6, kill:3, cut:50}, 3:{games:3, kill:4, cut:15}},
-  final:{games:12, kill:4, cut:0, field:50},
-  /* Европа и NA Central: четыре раунда (окна Tracker — пт, сб 14:00 и 18:00, вс): суббота
-     играется двумя раундами подряд (2 → 500, 3 → 250), воскресенье — четвёртый, очки серии.
-     Отсечки 500/250 — свои; в остальных регионах три раунда (у них и было три). */
-  qDeep:{2:{games:10, kill:2, cut:500}, 3:{games:10, kill:2, cut:250}},
+  /* ОТСЕЧКИ КВАЛИФИКАТОРА — ФОРМА EPIC, РАЗМЕР НАШЕЙ ЛЕСТНИЦЫ.
+
+     У Epic в 2024-м: десять матчей в раунде, и проходят
+       Европа и NA Central — 2000 → 1000 → 250, четвёртый раунд за очки серии;
+       Океания, Азия, Ближний Восток, Бразилия — 1000 → 250, третий за серию.
+
+     Маленькие регионы стоят ровно так — 1000 → 250. У глубоких стоит та же
+     форма, ополовиненная в первых двух шагах: 1000 → 500 → 250. Иначе нельзя,
+     и причина арифметическая: лестница карьеры — 2 360 дуо (CC_CUP_ENTRANTS,
+     ужатые ради скорости, замер «a stage over 5,000 duos measured 7.2
+     seconds»), а у Epic их около десяти тысяч. Поставить 2000 первым шагом —
+     значит выбить из 2 360 пятнадцать процентов вместо восьмидесяти, то есть
+     сделать первый раунд бесплатным. А кончаться цепочка обязана ровно на
+     250: полуфинал играется НАСТОЯЩИМ размером — 50 дуо в верхней сетке,
+     200 в нижней, — и меньшего числа ему не хватит.
+
+     Шаги между раундами при этом Epic'овы там, где это помещается: у
+     маленьких регионов ×0.25, у глубоких ×0.5 и ×0.5 против Epic'овых ×0.5 и
+     ×0.25. Последний раунд отсечки не имеет ни там, ни там — он за серию. */
+  q:    {1:{games:10, cut:1000, open:true}, 2:{games:10, cut:250}, 3:{games:10, cut:0}},
+  /* ВЕРХНЯЯ СЕТКА НЕ ВЫБИВАЕТ — ОНА РОНЯЕТ В НИЖНЮЮ.
+
+     Его слово 23 сентября: «верхняя сетка там вроде в нижнюю падают». Так и
+     есть, и это то, ради чего сетки вообще называются верхней и нижней:
+     «Duos that place 26th-50th in Upper Rounds 1 and 2 will be relegated to
+     Lower Rounds 2 and 3». У нас не падал никто — кто не взял билет, просто
+     шёл дальше по верхней, и нижняя жила отдельной жизнью.
+
+     keep — сколько остаётся наверху ПОД билетчиками; остальные падают в день
+     нижней сетки с тем же номером плюс один (первый день верхней роняет во
+     второй день нижней, второй — в третий, ровно как у Epic).
+
+     Числа подобраны так, чтобы зал финала остался на пятьдесят: до 5 билетов
+     в первый день и до 5 во второй, 35 остаются наверху после первого, 25
+     после второго, топ-25 третьего дня — в финал. Верхняя даёт 35, нижняя 15. */
+  upper:{1:{games:5, vr:true, cut:0, keep:35}, 2:{games:5, vr:true, cut:0, keep:25}, 3:{games:3, cut:25}},
+  lower:{1:{games:10, cut:100}, 2:{games:6, cut:50}, 3:{games:3, cut:15}},
+  final:{games:12, cut:0, field:50},
+  qDeep:{2:{games:10, cut:500}, 3:{games:10, cut:250}},
   upperSize:50, lowerSize:200, vrSeats:5
 };
+/* Карьера, у которой неделя стоит на первом квалификаторе ЭТОГО Мейджора.
+
+   Не сама карьера, а её копия: seedWeek читает только careerSeed, и ничего,
+   кроме броска комнаты, от неё не зависит. Нет строки в календаре (чужой
+   сейв) — возвращается карьера как есть, и вечер играется как играл. */
+function ccM24OpenCr(cr, n){
+  const row=ccYearRows().find(r=>r[2]==='Major'+n+'_2024_Q1R1');
+  if(!row) return cr;
+  return Object.assign({}, cr, {seedWeek: careerWeekIndex(row[0])});
+}
 function ccM24Deep(){ return DEEP_MAJOR_REGIONS.has(ccCareerRegion()); }
 function ccM24Spec(ev){
+  /* Третий вечер квалификатора — очки серии в любом регионе: у глубоких это
+     четвёртый раунд по счёту (суббота играется двумя подряд), у остальных
+     третий. Отсечки у него нет ни там, ни там. */
   if(ev.stage==='q') return (ev.r===2 && ccM24Deep()) ? CC_M24.qDeep[2] : CC_M24.q[ev.r];
   if(ev.stage==='semi'){ const m=ccM24Of(ev.n); return CC_M24[(m && m.bracket) || 'upper'][ev.r]; }
   return CC_M24.final;
@@ -93698,11 +93902,46 @@ function ccM24Brackets(m){
   if(!m || m.built) return;
   const day=ccM24SemiDay(m.n);
   if(!day || careerToday()<day) return;
-  const keys=Object.keys(m.series).sort((a,b)=>m.series[b]-m.series[a]);
-  const rows=keys.map(k=>m.seriesRows[k]).filter(Boolean);
+  /* В СЕТКУ САДЯТСЯ ЛЮДИ, А НЕ СТРОКИ ТАБЛИЦЫ — ЭТО ПРАВИЛО EPIC.
+
+     Внутри одного квалификатора состав заперт, но между первым и вторым его
+     можно сменить, и тогда человек стоит в таблице серии дважды: с январским
+     напарником и с февральским. Дальше регламент 2024-го говорит прямо —
+     «qualified players for FNCS Semi-Finals can duo with any other qualified
+     player (Upper with Upper, Lower with Lower)»: в полуфинал проходят ЛЮДИ,
+     и пары там собираются заново.
+
+     Здесь ровно это. Идём по таблице сверху: пара, у которой свободны оба, —
+     садится целой; у кого свободен один (второй уже сел выше по своей другой
+     строке) — половинка уходит в очередь и садится с ближайшей такой же.
+     Строка целиком больше не выбрасывается: человек, который квалифицировался,
+     своё место не теряет из-за напарника.
+
+     До этого сетка сажала обе строки подряд, и в комнате полуфинала сидело два
+     Мерстача — его слово 22 сентября. */
+  const taken=new Set(), rows=[];
+  const hOf=c=>hKey((c && c.h) || c);
+  let half=null;
+  Object.keys(m.series).sort((a,b)=>m.series[b]-m.series[a]).forEach(k=>{
+    const row=m.seriesRows[k]; if(!row) return;
+    const faces=String(k).split('+').filter(Boolean);
+    // Своя строка — свой состав, и он не пересобирается: карьера играет вдвоём.
+    if(row==='you'){
+      if(faces.some(h=>taken.has(h))) return;
+      faces.forEach(h=>taken.add(h));
+      rows.push('you');
+      return;
+    }
+    const seats=Array.isArray(row) ? row : [row];
+    const free=seats.filter(c=>!taken.has(hOf(c)));
+    if(!free.length) return;
+    free.forEach(c=>taken.add(hOf(c)));
+    if(free.length===seats.length){ rows.push(row); return; }
+    free.forEach(c=>{ if(half){ rows.push([half, c]); half=null; } else half=c; });
+  });
   m.upper={rows:rows.slice(0, CC_M24.upperSize), tickets:[]};
   m.lower={rows:rows.slice(CC_M24.upperSize, CC_M24.upperSize+CC_M24.lowerSize)};
-  const at=keys.indexOf(m.youKey||'');
+  const at=rows.indexOf('you');
   m.bracket = at<0 ? null : at<CC_M24.upperSize ? 'upper' : at<CC_M24.upperSize+CC_M24.lowerSize ? 'lower' : null;
   m.built=true;
 }
@@ -93723,25 +93962,39 @@ function ccM24Write(m, bracket, r, ranked, you){
     const winners=[]; const seen=new Set();
     ranked.forEach(t=>{ if((t.wins||0)>0 && winners.length<CC_M24.vrSeats && !seen.has(t)){ seen.add(t); winners.push(t); } });
     br.tickets=(br.tickets||[]).concat(winners.map(row));
-    br['r'+r]=ranked.filter(t=>!seen.has(t)).map(row);
+    const rest=ranked.filter(t=>!seen.has(t));
+    const keep=(sp.keep!=null) ? sp.keep : rest.length;
+    br['r'+r]=rest.slice(0, keep).map(row);
+    // А кто ниже — вниз, в нижнюю сетку, днём позже. См. ccM24LowerRoom.
+    br.down=br.down||{};
+    br.down[r+1]=rest.slice(keep).map(row);
     return winners;
   }
   br['r'+r]=ranked.slice(0, sp.cut).map(row);
   if(r===3) br.rest=ranked.slice(sp.cut).map(row);
   return ranked.slice(0, sp.cut);
 }
+/* Комната дня НИЖНЕЙ сетки: прошедшие её вчерашнего дня плюс те, кого верхняя
+   уронила этим утром (ccM24Write, br.down). Первый день нижней — только её
+   собственный посев: ронять ещё некому. */
+function ccM24LowerRoom(m, r){
+  const br=m && m.lower; if(!br) return [];
+  const prev=(r===1 ? br.rows : br['r'+(r-1)])||[];
+  const down=(m.upper && m.upper.down && m.upper.down[r])||[];
+  return prev.concat(down);
+}
 // Досчитать день сетки молча — чужую сетку, или свою, если игрок из неё выбыл.
 function ccM24Settle(m, bracket, r){
   const br=m[bracket]; if(!br) return;
   if(r>1) ccM24Settle(m, bracket, r-1);
   if(br['r'+r]) return;
-  const prev=(r===1 ? br.rows : br['r'+(r-1)])||[];
+  const prev=(bracket==='lower') ? ccM24LowerRoom(m, r) : ((r===1 ? br.rows : br['r'+(r-1)])||[]);
   // Не явившийся на свой день — выбыл: посева 'you' в молчаливой комнате нет.
   const room=prev.filter(x=>x!=='you').map(ccMajorTeamFrom);
   if(!room.length){ br['r'+r]=[]; if(r===3) br.rest=[]; return; }
   const sp=CC_M24[bracket][r];
   room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
-  simulateGames(room, sp.games, majorPoints, sp.kill);
+  simulateGames(room, sp.games, ccM24Points, CC_M24_KILL);
   ccM24Write(m, bracket, r, ccM24Rank(room), null);
 }
 /* Финал — пятьдесят: билеты верхней сетки, топ-25 её третьего дня, топ-15 нижней;
@@ -93865,9 +94118,8 @@ function ccMajorWorldHeats(iso){
   ccWorldRun('mheat|'+cr.season+'|'+ev.n+'|'+ev.nth,
              ()=>(winIsATicket() ? simulateGamesStopOnWin : simulateGames)(room, st.games, st.pts, st.kill));
   const q=heatQualifiers(room, st.cut, winIsATicket());
-  s.through=(s.through||[]).concat(
-    room.slice().sort(heatsRank).filter(t=>q.has(t)).map(ccMajorSeatRow));
-  s.played.push(ev.nth);
+  // Та же дверь, что у своего хита — см. ccMajorSeedThrough.
+  ccMajorSeedThrough(cr, room.slice().sort(heatsRank).filter(t=>q.has(t)).map(ccMajorSeatRow), ev.nth);
   return 1;
 }
 /* Последние места финала — Ласт Ченс, и его мир играет в его день.
@@ -93939,6 +94191,37 @@ function ccMajorSeatedHandles(ev){
     });
   });
   return out;
+}
+/* ПРОШЕДШИЕ ХИТ ДОПИСЫВАЮТСЯ В ЗАПИСЬ, А НЕ ЗАМЕЩАЮТ ЕЁ.
+
+   В раннере стояло `majorSeed.through=rows` — своя комната вместо всей записи.
+   А блок хитов занимает три дня, и соседние играет мир в СВОИ дни
+   (ccMajorWorldHeats, он как раз дописывает). Значит всё, что мир посчитал ДО
+   дня игрока, вечером игрока стиралось: прошедшие первой группы исчезали из
+   записи вместе со своим местом в финале.
+
+   Отсюда его скрин 22 сентября — «ласт шанс открыт для всех»: Ласт Ченс не
+   пускает тех, кто уже прошёл (ccMajorSeatedHandles читает ровно эту запись),
+   и стёртые в неё не попадали. Люди с местом в финале преспокойно играли
+   последний шанс и сидели в лобби рядом с теми, кому этот шанс и был нужен.
+   Перезапись била и по самому финалу: зал добирался посевом вместо тех, кто в
+   него отобрался.
+
+   Идемпотентно: строка, которая уже лежит, второй раз не ложится, и номер
+   хита не задваивается, — перемотка ходит по дням и день может быть пройден
+   не один раз. */
+function ccMajorSeedThrough(cr, rows, heatNo){
+  const s=cr && cr.majorSeed;
+  if(!s) return;
+  const seen=new Set();
+  s.through=(s.through||[]).concat(rows||[])
+    .filter(r=>{ const k=(r==='you') ? 'you' : JSON.stringify(r);
+                 if(seen.has(k)) return false; seen.add(k); return true; });
+  // Помечается НОМЕР ХИТА, а не день: игрок может сыграть свой хит в любой
+  // день блока, а мир не должен потом сыграть его второй раз. Номера соседних,
+  // уже сыгранных миром, остаются на месте по той же причине.
+  s.played=(s.played||[]).concat([heatNo||0])
+    .filter((v,i,a)=>a.indexOf(v)===i);
 }
 function ccMajorMyHeat(ev){
   const rows=ccMajorSeedRows(ev);
@@ -97596,11 +97879,18 @@ async function runCareerMajor2024(){
   const openRound=(ev.stage==='q' && ev.r===1);
   if(ev.stage==='q'){
     // Первый раунд открыт всему региону — вся лестница, как Ласт Ченс 2026-го.
-    field=openRound ? [you, ...careerCupField(cr, drafted, careerLadderEntrants(), null, true, 0)]
+    /* Оба квалификатора Мейджора — одна и та же сцена.
+
+       Комната открытого раунда сеется неделей ПЕРВОГО квалификатора этого
+       Мейджора, а не сегодняшней: иначе февральский квалификатор пересобирал
+       пары заново (см. careerSeed, seedWeek). */
+    field=openRound ? [you, ...careerCupField(ccM24OpenCr(cr, ev.n), drafted, careerLadderEntrants(), null, true, 0)]
                     : rowsOf(m.q[ev.q]['r'+(ev.r-1)]);
   } else if(ev.stage==='semi'){
     const br=m[m.bracket];
-    field=rowsOf(ev.r===1 ? br.rows : br['r'+(ev.r-1)]);
+    // Нижняя сетка садится своей вчерашней комнатой И теми, кого уронила верхняя.
+    field=rowsOf(m.bracket==='lower' ? ccM24LowerRoom(m, ev.r)
+                                     : (ev.r===1 ? br.rows : br['r'+(ev.r-1)]));
     stageLabel=ev.label+' · '+L()[m.bracket==='upper' ? 'ccYr24Upper' : 'ccYr24Lower'];
   } else {
     field=rowsOf(ccM24GfRows(m));
@@ -97608,10 +97898,15 @@ async function runCareerMajor2024(){
     field=field.slice(0, CC_M24.final.field);
     if(field.indexOf(you)<0) field[field.length-1]=you;
   }
-  await simulateGamesLive(field, spec.games, majorPoints, spec.kill, 'stage', 0, null, null,
+  const fin0=(ev.stage==='final');
+  CC_M24_GAME=0;
+  await simulateGamesLive(field, spec.games, fin0 ? ccM24PointsGf : ccM24Points,
+    fin0 ? ccM24KillGf : CC_M24_KILL, 'stage', 0, null, null,
     {lobbySize:ccTeams(50), stageName:stageLabel, mapReplay:true, choices:true, stopOnYourDeath:true,
      stopOnWin:!!spec.vr, roomOnly:!openRound,
-     dropEachGame:(g,room)=>openRound ? null : careerLandingPick(room||field, you, stageLabel, ['major'])});
+     // Второй день гранд-финала — ×1.5, и какая игра идёт, знает только этот вопрос.
+     dropEachGame:(g,room)=>{ CC_M24_GAME=g;
+       return openRound ? null : careerLandingPick(room||field, you, stageLabel, ['major']); }});
   let ranked=ccM24Rank(field);
   let place=ranked.indexOf(you)+1;
   let through=false, note='', twoRounds=false;
@@ -97622,7 +97917,8 @@ async function runCareerMajor2024(){
     const pass2=place<=spec.cut;
     const sh1=createStageCardShell(stageLabel+' — '+field.length);
     await revealStageLog(you, sh1, true);
-    finalizeStageCard(sh1, place, field.length, you.stagePts, pass2, false, pass2 ? L().ccRelPass(spec.cut) : L().ccRelFail(spec.cut));
+    finalizeStageCard(sh1, place, field.length, you.stagePts, pass2, false,
+                      pass2 ? L().ccRelPass(spec.cut) : L().ccRelFail(spec.cut));
     await revealStandings(sh1, ranked, you, spec.cut);
     careerPrAdd(ranked, {div:cr.division, kind:'major', stage:'q'});
     if(pass2){
@@ -97630,9 +97926,10 @@ async function runCareerMajor2024(){
       const sp3=CC_M24.qDeep[3];
       const label3=L().ccYr24Qual(ev.n, ev.q, 3);
       room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; t.stageLog=[]; });
-      await simulateGamesLive(room, sp3.games, majorPoints, sp3.kill, 'stage', 0, null, null,
+      CC_M24_GAME=0;
+      await simulateGamesLive(room, sp3.games, ccM24Points, CC_M24_KILL, 'stage', 0, null, null,
         {lobbySize:ccTeams(50), stageName:label3, mapReplay:true, choices:true, stopOnYourDeath:true, roomOnly:true,
-         dropEachGame:(g,rm)=>careerLandingPick(rm||room, you, label3, ['major'])});
+         dropEachGame:(g,rm)=>{ CC_M24_GAME=g; return careerLandingPick(rm||room, you, label3, ['major']); }});
       field=room; spec=sp3; stageLabel=label3; twoRounds=true;
       ranked=ccM24Rank(field); place=ranked.indexOf(you)+1;
     }
@@ -97654,7 +97951,17 @@ async function runCareerMajor2024(){
     const bracket=m.bracket;
     const passed=ccM24Write(m, bracket, ev.r, ranked, you)||[];
     through=passed.indexOf(you)>=0;
-    if(spec.vr){ m.ticket=m.ticket||through; note=through ? L().ccYr24VrTicket : L().ccMajNoTicket; }
+    if(spec.vr){
+      m.ticket=m.ticket||through;
+      /* Билета нет — значит одно из двух: остался наверху или упал в нижнюю.
+         Считается тем же правилом, что и запись (ccM24Write): среди тех, кто
+         не взял билет, первые keep остаются, остальные вниз. */
+      const rest=ranked.filter(t=>passed.indexOf(t)<0);
+      const keep=(spec.keep!=null) ? spec.keep : rest.length;
+      const dropped=!through && rest.indexOf(you)>=keep;
+      if(dropped) m.bracket='lower';
+      note = through ? L().ccYr24VrTicket : dropped ? L().ccYr24Down : L().ccMajNoTicket;
+    }
     else { if(ev.r===3) m.ticket=m.ticket||through; note=through ? L().ccRelPass(spec.cut) : L().ccRelFail(spec.cut); }
     // Чужая сетка играет тот же вечер.
     ccM24Settle(m, bracket==='upper' ? 'lower' : 'upper', ev.r);
@@ -97716,6 +98023,9 @@ async function runCareerMajor2024(){
   const lanSeat = fin && (ccGlobalsSeat()||{}).via==='major2' ? L().ccRelSeatGc(ccLanCity('globals')) : null;
   careerReloadResultCard({label:stageLabel, place:place, of:field.length,
     through: fin ? cash>0 : through, cut:spec.cut||0,
+    // Та же строка, что и на карточке этапа: очки серии, билет за победу в
+    // матче, отсечка — смотря чем этот вечер кончается. См. careerReloadResultCard.
+    note: fin ? null : note,
     seat: !!lanSeat, seatText: lanSeat, money: fin ? cash : null});
 }
 async function runCareerMajor(){
@@ -98047,10 +98357,26 @@ async function runCareerMajor(){
 
          По дням та же работа раскладывается на три вечера: за день считается
          один хит, и ни один из них не удлиняет твой. */
-      cr.majorSeed.through=rows;
-      // Помечается НОМЕР ХИТА, а не день: игрок может сыграть свой хит в любой
-      // день блока, а мир не должен потом сыграть его второй раз.
-      cr.majorSeed.played=[heatNo||0];
+      /* ДОПИСЫВАЕТСЯ, А НЕ ПЕРЕЗАПИСЫВАЕТ.
+
+         Здесь стояло `through=rows` — своя комната вместо всей записи. А блок
+         хитов занимает три дня, и соседние играет мир в СВОИ дни
+         (ccMajorWorldHeats, он как раз дописывает: `(s.through||[]).concat`).
+         Значит всё, что мир посчитал ДО дня игрока, вечером игрока стиралось:
+         прошедшие первой группы исчезали из записи вместе со своим местом в
+         финале.
+
+         Отсюда его скрин 22 сентября — «ласт шанс открыт для всех»: Ласт Ченс
+         не пускает тех, кто уже прошёл (ccMajorSeatedHandles читает ровно эту
+         запись), и стёртые в неё не попадали. Люди с местом в финале
+         преспокойно играли последний шанс, и он же видел их в лобби рядом с
+         теми, кому этот шанс и был нужен. Перезапись била и по самому финалу:
+         зал добирался посевом вместо тех, кто в него отобрался.
+
+         Дописывание идемпотентно — строка, которая уже лежит, второй раз не
+         ложится, — поэтому перемотка через один и тот же день ничего не
+         задваивает. */
+      ccMajorSeedThrough(cr, rows, heatNo||0);
     }
     /* Ласт Ченс, отыгранный САМИМ игроком, тоже оставляет своих прошедших.
 
@@ -98656,8 +98982,17 @@ function careerReloadResultCard(r){
   box.innerHTML='<h4>'+esc(r.label)+' <span class="stage-badge '+(r.through?'pass':'fail')+
     '">'+ccTopC(r.place)+'</span></h4>'+
     '<div class="stage-detail">'+
+      /* Строка вечера — его собственная, если она у вечера есть.
+
+         Тестер, 22 сентября (скрин, подчёркнуто красным): последний раунд
+         квалификатора 2024-го читался «Топ-0 — проход дальше». Отсечки у него
+         и правда нет — раунд играется за ОЧКИ СЕРИИ, и это же написано на
+         карточке этапа выше, — а нижняя карточка знала одну фразу на все
+         случаи и подставляла в неё ноль. Так же молчали дни верхней сетки, где
+         билет даёт победа в матче, а не место. */
       '<div>'+(r.money!=null
         ? (r.money ? L().ccWfCash(ccNum(r.money)) : L().ccWfNoCash)
+        : r.note ? esc(r.note)
         : (r.through?L().ccRelPass(r.cut):L().ccRelFail(r.cut)))+'</div>'+
       // Which seat, not just that there is one: this card was written for the
       // Reload circuit and said "a seat at the Esports World Cup" whoever asked.
@@ -100371,7 +100706,7 @@ async function runCareerSoloSeries(){
      квадратиков». Сотня клеток s42solo (1 сентября) больше не садится.
      Остров именно s42, а не careerBrSet(): в трио-год сезонный — шестая
      глава, а FNCS Solos играются на седьмой (репорт того же дня). */
-  useLandingSet(ev.spec ? 's42' : careerBrSet());
+  useLandingSet(ccSoloFncsSet(ev));
   /* Дом на этом вечере — соло-метка, а не сезонный дуо-дом. Его правка,
      3 сентября: «в соло ещё метки, не для соло, а для других режимов».
      Указатель держится весь вечер и гасится вместе с остальным состоянием
@@ -101715,7 +102050,15 @@ function careerArchiveSeason(sn){
     const free=REGIONS.map(r=>r.code).filter(r=>!majorRow(n, r).you);
     return free[0] || mine;
   };
-  {
+  /* Но только в году, где они ЕСТЬ.
+
+     Тестер, 22 сентября, скрин Сезонов из карьеры 2024-го: Summit и Reload
+     Championship стояли в списке «ещё впереди» — двумя турнирами, которых в
+     том году не было и не будет. В календарях 2024-го и 2025-го
+     (CAREER_YEAR_2024 / CAREER_YEAR_2025) из ЛАНов стоит один
+     GlobalChampionship — Форт-Уэрт и Лион. Саммит и круг Reload — календарь
+     2026-го, там они и показываются. */
+  if(ccArcCalYear(sn)===2026){
     // The Summit is Major 1's LAN, so its champion IS somebody's Major 1
     // champion — the strongest scenes more often.
     const sSeen=seenWin(me.summit);
@@ -102143,7 +102486,12 @@ function careerArcReg(r){ CH_ARC_R=r; CH_ARC_OPEN=null; careerRenderHub('hist');
 function ccArcDoneBy(id){
   let day=null;
   // Финал Мейджора в календарях 2025/2024 зовётся Major<n>_2025_Final / Major<n>_2024_Final.
-  const alt=/^Major(d)_Final$/.exec(String(id||''));
+  /* Тестер, 22 сентября: «в истории не то» — в карьере 2024-го КАЖДАЯ строка
+     Сезонов стояла «ещё впереди», даже отыгранная. Регулярка ловила букву «d»
+     вместо цифры, alt всегда был null, и id календаря 2024/2025
+     (Major1_2024_Final) не искался вовсе — а под именем 2026-го
+     (Major1_Final) в этих годах нет ни одного дня. */
+  const alt=/^Major(\d)_Final$/.exec(String(id||''));
   const ids=alt ? [id, 'Major'+alt[1]+'_2025_Final', 'Major'+alt[1]+'_2024_Final'] : [id];
   if(id==='GlobalChampionship') ids.push('GlobalChampionship2025', 'GlobalChampionship2024');
   careerYearDays().forEach((list, iso)=>{

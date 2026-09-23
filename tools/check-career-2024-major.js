@@ -58,8 +58,11 @@ const BOOT = `
     clearInterval(sk);
     if(!c){ out.notes.debug={day:careerToday(), can:careerMajorCan(careerMajorOn(careerToday())), on:JSON.stringify(careerMajorOn(careerToday())), next:JSON.stringify(careerNext()), ask:(document.getElementById('ccAskModal')||{style:{}}).style.display, stages:(document.getElementById('majorStages')||{}).innerHTML?.slice(0,300)}; throw new Error(what+': no result card came back'); }
     const head=c.querySelector('h4').textContent.replace(/\\s+/g,' ').trim();
+    // И ЧТО НА НЕЙ НАПИСАНО: нижняя карточка знала одну фразу на все случаи.
+    const det=c.querySelector('.stage-detail');
+    const note=det ? (det.innerText||det.textContent||'').replace(/\\s+/g,' ').trim() : '';
     c.querySelector('button[onclick*="careerBackToHub"]').click();
-    return {head};
+    return {head, note};
   };
   const save=()=>JSON.parse(localStorage.getItem('fncsdraft_career')).career;
   const last=()=>(save().log||[]).slice(-1)[0];
@@ -95,6 +98,34 @@ const BOOT = `
     const q3=await playThrough('q1r3'); r=last();
     check('Q1R4 (Европа): комната 250', r.of===250, String(r.of));
     out.steps.push('q1r3: #'+r.place+' of '+r.of);
+    /* Последний раунд играется за ОЧКИ СЕРИИ, и карточка «В карьеру» обязана
+       сказать именно это. Скрин тестера 22 сентября, подчёркнуто красным:
+       «Топ-0 — проход дальше» — отсечки у раунда нет (CC_M24.q[3].cut === 0),
+       а карточка подставляла ноль в фразу про проход. */
+    /* ---- СЧЁТ 2024-го — ТАБЛИЦА EPIC ТОГО ГОДА -------------------------
+       FNCS 2024: VR 65, второе 56, третье 52, пятое 44, двадцать пятое 2, за
+       элим 4. Второй день двенадцатиигрового финала — ×1.5: второе 84, третье
+       78, элим 6, победа ровно 100. До правки Мейджор считался таблицей
+       2026-го и платил за элим два на квалификаторах. */
+    out.notes.pts={p1:ccM24Points(1), p2:ccM24Points(2), p3:ccM24Points(3),
+                   p5:ccM24Points(5), p25:ccM24Points(25), p26:ccM24Points(26), kill:CC_M24_KILL};
+    check('таблица 2024: 65 / 56 / 52 / 44 / 2',
+          ccM24Points(1)===65 && ccM24Points(2)===56 && ccM24Points(3)===52 &&
+          ccM24Points(5)===44 && ccM24Points(25)===2 && ccM24Points(26)===0,
+          JSON.stringify(out.notes.pts));
+    check('за элим — четыре', CC_M24_KILL===4, String(CC_M24_KILL));
+    CC_M24_GAME=6;
+    check('шестая игра — первый день', ccM24PointsGf(1)===65 && ccM24KillGf()===4,
+          ccM24PointsGf(1)+'/'+ccM24KillGf());
+    CC_M24_GAME=7;
+    out.notes.day2={p1:ccM24PointsGf(1), p2:ccM24PointsGf(2), p3:ccM24PointsGf(3), kill:ccM24KillGf()};
+    check('седьмая — второй день: 100 / 84 / 78, элим 6',
+          ccM24PointsGf(1)===100 && ccM24PointsGf(2)===84 && ccM24PointsGf(3)===78 && ccM24KillGf()===6,
+          JSON.stringify(out.notes.day2));
+    CC_M24_GAME=0;
+    out.notes.q3note=q3.note;
+    check('карточка серии не пишет «Топ-0»', !/Топ-0|Top 0/.test(q3.note||''), q3.note);
+    check('и пишет очки серии', /серии|Series/i.test(q3.note||''), q3.note);
     const ser=m24().series; const nSer=Object.keys(ser).length;
     check('серия записана на 250 составов', nSer===250, String(nSer));
     check('свои очки серии есть', m24().youKey && ser[m24().youKey]>0, String(m24().youKey));
@@ -122,6 +153,23 @@ const BOOT = `
     if(st.bracket==='upper'){
       check('верхняя, день 1: пять игр, победа — билет', r.games===5, String(r.games));
       check('билеты верхней сетки — не больше пяти', (m24().upper.tickets||[]).length<=5, String((m24().upper.tickets||[]).length));
+      /* ---- ВЕРХНЯЯ НЕ ВЫБИВАЕТ, А РОНЯЕТ В НИЖНЮЮ ----------------------
+         Его слово 23 сентября: «верхняя сетка там вроде в нижнюю падают».
+         Регламент: «Duos that place 26th-50th in Upper Rounds 1 and 2 will be
+         relegated to Lower Rounds 2 and 3». Здесь не падал никто — кто не взял
+         билет, шёл дальше по верхней, и нижняя жила отдельно. */
+      const up=m24().upper, low=m24().lower;
+      const down=(up.down||{})[2]||[];
+      out.notes.relegate={kept:(up.r1||[]).length, down:down.length,
+                          tickets:(up.tickets||[]).length,
+                          lowerDay2:ccM24LowerRoom(m24(), 2).length,
+                          lowerR1:(low.r1||[]).length};
+      check('наверху остаётся тридцать пять', (up.r1||[]).length===35, JSON.stringify(out.notes.relegate));
+      check('остальные падают вниз',
+            down.length===50-35-((up.tickets||[]).length), JSON.stringify(out.notes.relegate));
+      check('и второй день нижней сажает их к своим',
+            ccM24LowerRoom(m24(), 2).length===(low.r1||[]).length+down.length,
+            JSON.stringify(out.notes.relegate));
     } else {
       check('нижняя, день 1: десять игр, топ-100', r.games===10 && r.of===200, r.games+'/'+r.of);
     }

@@ -86,6 +86,27 @@ const BOOT = `
     check('Форт-Уэрт — 50 дуо, 12 игр', rg && rg.of===50 && rg.games===12, String(rg && rg.of)+'/'+String(rg && rg.games));
     check('кошелёк: $400 000 за первое, $6 000 за 50-е', gcPrize(1)===400000 && gcPrize(50)===6000, gcPrize(1)+'/'+gcPrize(50));
     out.steps.push('Fort Worth: '+head+' · #'+(rg&&rg.place)+' of '+(rg&&rg.of)+' · $'+(s.earnings||0));
+    /* И ИСТОРИЯ ГОДА ЧИТАЕТСЯ.
+
+       Скрин тестера 22 сентября («2024 год … + в истории не то»): экран Сезонов
+       в карьере 2024-го стоял «ещё впереди» КАЖДОЙ строкой, включая сыгранные,
+       а в списке ЛАНов висели Summit и Reload Championship — два турнира,
+       которых в том году не было. Первое — регулярка ccArcDoneBy ловила букву
+       «d» вместо цифры и не находила id календаря 2024-го; второе — архив
+       клал слоты 2026-го в любой год. */
+    const arc=careerArchiveHTML();
+    out.notes.arc={soon:(arc.match(new RegExp(L().arcSoon,'g'))||[]).length,
+                   majors:[1,2,3].map(function(n){ return ccArcDoneBy('Major'+n+'_Final'); }),
+                   summit:/Summit/.test(arc), rc:/Reload Championship/.test(arc),
+                   gc:/Global Championship/.test(arc)};
+    check('история: три сыгранных Мейджора найдены в календаре года',
+          out.notes.arc.majors.every(Boolean), JSON.stringify(out.notes.arc));
+    // Форт-Уэрт идёт 7–8 сентября, и его второй день ещё не позади — одна строка
+    // «ещё впереди» здесь честная, остальные обязаны быть с чемпионом.
+    check('история: «ещё впереди» осталось не больше одной строки',
+          out.notes.arc.soon<=1, JSON.stringify(out.notes.arc));
+    check('история: Саммита и круга Reload в 2024-м нет', !out.notes.arc.summit && !out.notes.arc.rc, JSON.stringify(out.notes.arc));
+    check('история: Global Championship на месте', out.notes.arc.gc, JSON.stringify(out.notes.arc));
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';

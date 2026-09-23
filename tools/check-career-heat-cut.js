@@ -55,6 +55,36 @@ const BOOT = `
     check('в трио хит на тридцать три', trio.field === 33, String(trio.field));
     check('и проходят из него десять', trio.cut === 10, String(trio.cut));
 
+    /* ---- И ПОБЕДА ПРОХОДИТ СВЕРХ ОТСЕЧКИ, А НЕ ВМЕСТО НЕЁ ----------------
+
+       Его слово 22 сентября: «в хитах к грандам квал топ 3, а должен быть топ
+       10 — там просто 5 виннеров каток проходят в гранды, а я с топ 8 мимо
+       улетел». heatQualifiers клал победителей первыми и добирал очками ДО
+       отсечки — то есть пять побед в комнате оставляли на очки три места, а
+       карточка и таблица рисовали линию на десятом. Комната играется
+       stopOnWin: выигравший встаёт и доигрывает меньшим числом игр, поэтому
+       он может стоять в таблице низко и всё равно обязан пройти. */
+    {
+      const room=[];
+      for(let i=0;i<20;i++) room.push({n:'p'+i, stagePts:1000-i*10, wins:0, stageElims:0, gotVR:false});
+      // Пятеро победителей — и все в самом низу таблицы: встали после победы.
+      [15,16,17,18,19].forEach(i=>{ room[i].gotVR=true; room[i].wins=1; });
+      const q=[...heatQualifiers(room, 10, true)];
+      out.notes.vrOverCut={n:q.length, onPoints:q.filter(t=>!t.gotVR).length, winners:q.filter(t=>t.gotVR).length};
+      check('топ-10 по очкам проходит целиком', q.filter(t=>!t.gotVR).length === 10,
+            JSON.stringify(out.notes.vrOverCut));
+      check('и пятеро победителей — сверх него', q.filter(t=>t.gotVR).length === 5,
+            JSON.stringify(out.notes.vrOverCut));
+      check('восьмой по очкам проходит', q.indexOf(room[7]) >= 0, 'p7');
+      // Победитель ВНУТРИ отсечки не занимает место дважды.
+      room[0].gotVR=true; room[0].wins=1;
+      const q2=[...heatQualifiers(room, 10, true)];
+      check('победитель из топа считается один раз', q2.length === q.length, String(q2.length)+' vs '+String(q.length));
+      // Круг Reload: победа билетом не является — ровно отсечка.
+      const q3=[...heatQualifiers(room, 5, false)];
+      check('winAdvances=false — ровно отсечка', q3.length === 5, String(q3.length));
+    }
+
     // ---- регион в регион, против драфта ----------------------------------
     // majorFormat — это FNCS 2026 глазами драфта. Один турнир: сколько хитов,
     // сколько игр в каждом, сколько из каждого проходит и сколько отбирает

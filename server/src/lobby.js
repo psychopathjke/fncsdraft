@@ -69,8 +69,19 @@ function createLobby(opts){
     if(!(all.length>=needOf(all) && all.every(x=>st.ready[x]===day))) return null;
     const named=all.filter(x=>st.kinds && st.kinds[x]);
     if(named.length && (named.length<all.length || named.some(x=>st.kinds[x]!==st.kinds[named[0]]))) return null;
+    /* ВИД вечера записывается и здесь.
+
+       ready() кладёт его в st.evening.kind, а launch() — нет, и заведённый им
+       вечер выходил безымянным. Дальше это ломало сверку на догоне: ветка
+       «вечер этого дня уже идёт» пропускает чужой турнир, когда
+       st.evening.kind пуст (`kind && st.evening.kind && …`), — то есть ровно
+       тот случай, ради которого сверку и ставили. Его скрины 22 сентября:
+       «каждый турнир эти ошибки», «турниры играются разные — у друга соло
+       виктори кап, а у меня дивизион», и поля расходились с первой игры
+       (`cup:…r4.60.n4900` против `cup:…s42.33.n160`). */
+    const evKind=named.length ? st.kinds[named[0]] : null;
     st.kinds={}; st.ready={}; st.feed=[]; st.digests={};
-    st.evening={seed:st.seed+'|'+day, n:++st.n, day:day, readied:{}, room:all.slice()};
+    st.evening={seed:st.seed+'|'+day, n:++st.n, day:day, kind:evKind, readied:{}, room:all.slice()};
     all.forEach(x=>{ st.evening.readied[x]=true; });
     return {to:'all', msg:{t:'start', seed:st.evening.seed, n:st.evening.n, day:day, who:(st.evening.room||[]).slice()}};
   };
@@ -199,8 +210,17 @@ function createLobby(opts){
            уезжает clash — клиент назовёт оба турнира (ccMpKindClash) и вернёт в хаб. */
         if(kind && st.evening.kind && kind!==st.evening.kind){
           const clash={}; room(day).forEach(x=>{ clash[x]=(x===id) ? kind : st.evening.kind; });
+          /* Нажавший — всегда в clash, даже если комната дня его уже не держит
+             (в гонке он мог проголосовать «следующий день» и вернуться). Без
+             этой строки ему приезжал список, в котором его самого нет, и
+             ccMpKindClash не мог назвать то, что он нажал. */
+          clash[id]=kind;
           return [{to:'self', msg:{t:'ready', by:id, day:day, ready:0, of:needOf(room(day)), clash:clash}}];
         }
+        /* Вечер без имени — заведённый старой сборкой или launch() до правки
+           выше — берёт имя у первого, кто его назвал. Иначе он так и остаётся
+           открытым для любого турнира до самого конца дня. */
+        if(kind && !st.evening.kind) st.evening.kind=kind;
         /* Кто уже заявлял готовность в ЭТОТ вечер и заявляет снова — жмёт
            «играть» заново (вечер завис, оба вернулись). Первому — догон, а
            когда заново готовы оба — вечер заводится с чистого листа: старая

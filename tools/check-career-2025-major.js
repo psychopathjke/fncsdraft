@@ -115,6 +115,33 @@ const BOOT = `
     check('чужой день группы закрыт', [d.g1,d.g2,d.g3].filter(x=>x!==dayMine).every(x=>{ cr.day=x; return !careerMajorCan(careerMajorOn(x)); }));
     cr.day=dayMine;
     check('свой день группы открыт', careerMajorCan(careerMajorOn(dayMine)));
+    /* ---- ЗАПИСЬ ПРОШЕДШИХ КОПИТСЯ ПО ВСЕМ ТРЁМ ГРУППАМ -------------------
+
+       Блок групп — три дня: свою играет игрок, соседние мир в свои дни
+       (ccMajorWorldHeats). Раннер своей группы писал through=rows, то есть
+       ЗАМЕЩАЛ запись, и всё, что мир посчитал до дня игрока, стиралось. А
+       Ласт Ченс не пускает тех, кто уже прошёл, читая ровно эту запись — вот
+       он и открывался для всех: его скрин 22 сентября. */
+    {
+      const c2=CAREER.career;
+      c2.majorSeed={n:1, season:1, size:3, rows:['you'],
+                    through:[[{h:'World1'}],[{h:'World2'}]], played:[1]};
+      ccMajorSeedThrough(c2, [[{h:'Mine1'}], 'you'], 2);
+      const faces=()=>ccMajorSeatedHandles({n:1}).map(String);
+      out.notes.seedThrough={through:c2.majorSeed.through.length, played:c2.majorSeed.played.slice(), faces:faces()};
+      check('своя группа не стирает посчитанные миром',
+            faces().indexOf('World1')>=0 && faces().indexOf('World2')>=0,
+            JSON.stringify(out.notes.seedThrough));
+      check('и своих дописывает', faces().indexOf('Mine1')>=0, JSON.stringify(faces()));
+      check('номера сыгранных групп копятся', c2.majorSeed.played.join()==='1,2', c2.majorSeed.played.join());
+      // Перемотка через тот же день ничего не задваивает.
+      const was=c2.majorSeed.through.length;
+      ccMajorSeedThrough(c2, [[{h:'Mine1'}], 'you'], 2);
+      check('повтор дня не задваивает запись', c2.majorSeed.through.length===was,
+            was+' → '+c2.majorSeed.through.length);
+      check('и номер группы тоже', c2.majorSeed.played.join()==='1,2', c2.majorSeed.played.join());
+    }
+
     // LCQ → лобби завтра → билет.
     seed(2, d.lcq, undefined);
     check('LCQ открыт дивизиону 2', careerMajorCan(careerMajorOn(d.lcq)));
@@ -152,7 +179,17 @@ const BOOT = `
     check('финал: 33 трио', rf && rf.of===33, String(rf && rf.of));
     check('финал платит таблицей 2025-го: $180 000 за первое', majorPrize(1)===180000 && majorPrize(14)===17400, majorPrize(1)+'/'+majorPrize(14));
     out.steps.push('final: '+pf.head+' · #'+(rf&&rf.place)+' of '+(rf&&rf.of)+' · $'+(s.earnings||0));
-    check('место в Лион — из финала Мейджора (топ-2 ЕС)', (rf.place<=2)===!!ccGlobalsSeat(), 'place '+rf.place+' seat '+JSON.stringify(ccGlobalsSeat()));
+    /* Квота — та же таблица, что читает код, а не число из головы.
+
+       Здесь стояло «топ-2 ЕС»: GC2025_M1_SEATS.EU действительно 2, но это ДУО,
+       а сезон трио — ccGcSlots переводит их в ccTeams(2) = 1. Проба сходилась
+       на всех местах, кроме ровно второго, и падала в тот прогон, где симуляция
+       ставила второе: «place 2 seat null». */
+    const gcCut=ccGcSlots(GC2025_M1_SEATS);
+    out.notes.gcCut=gcCut;
+    check('место в Лион — по квоте региона с финала Мейджора 1',
+          (rf.place<=gcCut)===!!ccGlobalsSeat(),
+          'cut '+gcCut+' place '+rf.place+' seat '+JSON.stringify(ccGlobalsSeat()));
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
 })();

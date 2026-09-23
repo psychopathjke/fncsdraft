@@ -110,10 +110,15 @@ const BOOT = `
     // Оценка в июне — $400 за победу.
     seed(1, '2024-06-04');
     check('эпоха побед', ccEvalTop5Cash()===0 && ccEvalWinCash()===800);
-    // Дивизион 3 в 2024-м: оценки нет, квалификатор открыт.
+    /* Дивизионов в 2024-м нет вовсе (ccNoDivisions) — их и не было, а кубка,
+       который поднимает наверх, в календаре ни одного. Сейв, заведённый до
+       правки в третьем, при загрузке встаёт на первый (careerMigrateNoDiv), и
+       ему открыты и квалификатор, и оценка: закрывать их было нечем. Тестер,
+       22 сентября: «Как мне выбраться с 5 дивизиона если в 2024 не было их». */
     seed(3, '2024-01-26');
-    check('квалификатор открыт дивизиону 3', careerMajorCan(careerMajorOn('2024-01-26')));
-    check('оценка закрыта дивизиону 3', !careerCanPlayKind('eval'));
+    check('дивизиона нет: сейв встал на первый', CAREER.career.division===1, 'div '+CAREER.career.division);
+    check('квалификатор открыт', careerMajorCan(careerMajorOn('2024-01-26')));
+    check('оценка открыта — дивизионов в году нет', careerCanPlayKind('eval'));
     // Не-Европа: оценки в календаре нет.
     seed(1, '2024-01-26', {homeRegion:'NAC'}); CAREER.player.region='NAC'; ccWorldReset();
     const kn={}; careerYearDays().forEach(list=>list.forEach(e=>{ kn[e.kind]=(kn[e.kind]||0)+1; }));
