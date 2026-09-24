@@ -113,6 +113,15 @@ const BOOT = `
        во всех трёх календарях, а единый соло-финал — только у 2026-го, так
        что в 2024-м его строки быть не должно. */
     check('история: Кубок наций в списке', new RegExp(L().ccNatCongrats).test(arc), 'нет строки');
+    /* И у строки есть своя таблица: зал Кубка наций — двадцать пять сборных
+       по четыре, а не состав сезона. ccArcCount тут молчит нарочно, иначе
+       двадцать пять стран стали бы семнадцатью «трио». */
+    const nt=careerArchiveFinal(CAREER.career.season, 'g|nations');
+    out.notes.natTable=nt ? {rows:(nt.rows||[]).length, first:(nt.rows||[])[0]} : null;
+    check('таблица Кубка наций собирается', !!nt && (nt.rows||[]).length>=10,
+          JSON.stringify(out.notes.natTable));
+    check('и в ней двадцать пять сборных, а не состав сезона',
+          !!nt && (nt.rows||[]).length===25, String(nt && (nt.rows||[]).length));
     check('история: соло-строки в 2024-м нет — турнира не было',
           !/Solo Series/.test(arc), 'есть лишняя строка');
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
