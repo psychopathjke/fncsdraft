@@ -106,8 +106,8 @@ const BOOT = `
     // ---- what it buys ------------------------------------------------------
     // Clubs three points further up look at you, and they offer more. Measured
     // against the same career without one, on the same seed.
-    const offersAt = (withAgent) => {
-      seed(75);
+    const offersAt = (withAgent, sd) => {
+      seed(sd);
       CAREER.career.division = 2;
       CAREER.career.day = '2026-01-05';   // inside a transfer window
       if (withAgent) careerSignAgentFromDm(careerAgentDm().id);
@@ -115,8 +115,28 @@ const BOOT = `
       return {n: o.length, top: o.length ? Math.max.apply(null, o.map(x=>x.tier)) : 0,
               pay: o.length ? Math.max.apply(null, o.map(x=>x.salary)) : 0};
     };
-    const cold = offersAt(false), warm = offersAt(true);
-    out.notes.offers = {cold: cold, warm: warm};
+    /* НЕСКОЛЬКО РАСКЛАДОВ, А НЕ ОДИН.
+
+       Здесь стоял один сид, и проверка читалась как «с менеджером лучше», а
+       мерила «на сиде 75 с менеджером лучше». Это разные утверждения: какой
+       именно менеджер напишет — тоже бросок, а условия у них разные (cut от
+       12 до 18%, reach от 2 до 5). На одном раскладе можно вытянуть слабейшего
+       и увидеть минус там, где в среднем плюс.
+
+       Поймалось это 24 сентября, когда в CC_AGENTS добавился двадцать первый
+       человек: ccRankPull считает ранг ПОЗИЦИЕЙ в списке, значит длина списка
+       сдвигает k у всех разом, и единственный сид поехал. Модель при этом на
+       месте — даже последний в списке даёт reach +2 и надбавку ×1.10.
+
+       Теперь берётся пять раскладов и сравниваются суммы: свойство, а не
+       конкретный бросок. */
+    const SEEDS = [75, 76, 77, 78, 79];
+    const sum = (withAgent) => SEEDS.reduce((acc, sd) => {
+      const o = offersAt(withAgent, sd);
+      return {n: acc.n + o.n, top: acc.top + o.top, pay: acc.pay + o.pay};
+    }, {n:0, top:0, pay:0});
+    const cold = sum(false), warm = sum(true);
+    out.notes.offers = {seeds: SEEDS.length, cold: cold, warm: warm};
     check('an agent is worth reaching further or being paid more',
           warm.top > cold.top || warm.pay > cold.pay,
           JSON.stringify(cold) + ' vs ' + JSON.stringify(warm));

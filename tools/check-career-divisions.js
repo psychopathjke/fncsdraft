@@ -89,9 +89,20 @@ const BOOT = `
         check('D' + div + '/' + mode + ': the inbox is real only in Division 1',
               div === 1 ? row.poolReal === pool.length : row.poolReal === 0,
               row.poolReal + '/' + pool.length);
+        /* Потолок инбокса — ступень ИЛИ свой рейтинг, что выше.
+
+           Здесь стояла одна ступень, и правило ломалось о собственный факт:
+           игрок сам стоял в Дивизионе 5 с девяноста шестью, а звать мог только
+           шестьдесят первых. Его скрин 24 сентября — сорок восемь человек, все
+           по 61, у него 80: «как играть с сильными типами когда у тебя рейтинг
+           80, а ты можешь играть только с 61». См. ccDmLadderPool.
+
+           Выдуманного 99 в пятом дивизионе это не возвращает — ровно то и
+           проверяется: предел не выше того, чего игрок сам достиг. */
+        const rungCap = Math.max(ccDivCeil(div), Math.round(CAREER.player.ovr || 0));
         if (div > 1)
-          check('D' + div + '/' + mode + ': nobody in the inbox is over what the rung holds',
-                row.poolTop <= ccDivCeil(div), row.poolTop + ' vs ' + ccDivCeil(div));
+          check('D' + div + '/' + mode + ': nobody in the inbox is over the rung or your own rating',
+                row.poolTop <= rungCap, row.poolTop + ' vs ' + rungCap);
         // Somebody has to be able to say no, or the inbox is a vending machine.
         // Except where the career has outgrown the room, when nobody is above it.
         const refusers = pool.filter(w => !careerDmWouldAccept(w)).length;
@@ -119,8 +130,8 @@ const BOOT = `
           check('D' + div + '/' + mode + ': the assigned partner is real only in Division 1',
                 div === 1 ? autoReal : !autoReal, auto.handle + ' ' + row.autoDuo);
           if (div > 1)
-            check('D' + div + '/' + mode + ': the assigned partner fits the rung',
-                  row.autoDuo <= ccDivCeil(div), row.autoDuo + ' vs ' + ccDivCeil(div));
+            check('D' + div + '/' + mode + ': the assigned partner fits the rung or your own rating',
+                  row.autoDuo <= rungCap, row.autoDuo + ' vs ' + rungCap);
         }
 
         // ---- the club ------------------------------------------------------

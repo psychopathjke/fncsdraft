@@ -78017,9 +78017,17 @@ function careerCupField(cr, mine, size, salt, open, sharp){
     const key=coreKey(core);
     const held=reserved.get(key);
     if(held){ reserved.delete(key); return held; }
-    // Тот же фильтр и то же стирание, что в резерве: неисполнимую запись
-    // убираем один раз, чтобы ниже она записалась заново — и больше не менялась.
-    if(trioMemo && trioMemo[key] && paired.has(trioMemo[key])) delete trioMemo[key];
+    /* Тот же фильтр и то же стирание, что в резерве: неисполнимую запись
+       убираем один раз, чтобы ниже она записалась заново — и больше не менялась.
+
+       ПРИЗНАК СЕЗОННЫЙ, а не недельный. Здесь стоял paired — а в нём лежит
+       явка недели, — и запомненный третий, который сегодня сам приехал в
+       чужой паре, считался «занятым навсегда»: запись стиралась, ядро брало
+       нового. Копий этого стирания в функции две, и вчера я поправил только
+       ту, что в резервном проходе; эта — в takeExtra, то есть в том проходе,
+       который разбирает большинство ядер, — осталась недельной, и состав
+       продолжал ехать. См. pairedPool. */
+    if(trioMemo && trioMemo[key] && pairedPool.has(trioMemo[key])) delete trioMemo[key];
     const want=trioMemo ? trioMemo[key] : null;
     if(want){
       const at=extras.findIndex(c=>(c._k||hKey(c))===want);
@@ -78115,8 +78123,27 @@ function careerCupField(cr, mine, size, salt, open, sharp){
   // is invented. Taking a partner out of the pool breaks a recorded pair and the
   // other half is still somebody - without this, one generated player walked
   // into a division whose whole rule is that nobody in it is generated.
+  /* ОСТАТОК РОСТЕРА — ТОЖЕ СЕЗОННЫМ БРОСКОМ.
+
+     Вот где ехала сцена. Выше 162 записанные пары садятся ядрами со своими
+     третьими и стоят весь сезон. А ВЕСЬ ОСТАЛЬНОЙ настоящий ростер —
+     четыреста с лишним человек — собирается здесь: careerRealPlayers их
+     перетасовывает и ниже они режутся по три подряд (for i+=per). Бросок был
+     недельный, и значит каждую неделю эти четыреста с лишним человек резались
+     на тройки заново — с нуля, другими компаниями.
+
+     Замер двух недель одного сезона (2025, Европа): 421 настоящий из 928
+     меняет состав, и 403 из них сидели с настоящими же людьми. Ядра при этом
+     стабильны всегда, третьи почти все на месте — ехал ровно этот остаток.
+     Его слово 23 сентября: «в сезоне 2025 триосы сразу меняться начинают».
+
+     Сезон, мир и дивизион — тем же ключом, что и свободные агенты выше. Явка
+     недели по-прежнему решает, КТО сегодня приехал; с кем он играет — больше
+     не её дело. */
+  const restRnd=careerRng(ccHashStr('rest|'+ccWorldSeed()+'|'+(cr.season||1)+
+                                    '|'+(cr.division||1)+'|'+(open?1:0)));
   if(cr.division===1 && !open){
-    careerRealPlayers(taken, rnd, 1).forEach(p=>{
+    careerRealPlayers(taken, restRnd, 1).forEach(p=>{
       if(players.length>=short) return;
       taken.add(p._k); players.push(p);
     });
@@ -78130,7 +78157,7 @@ function careerCupField(cr, mine, size, salt, open, sharp){
      правилом, каким рассаживаются выдуманные. Замер до/после — в
      career-open-top-probe.js. */
   if(open){
-    careerRealPlayers(taken, rnd, 'all').forEach(p=>{
+    careerRealPlayers(taken, restRnd, 'all').forEach(p=>{
       if(players.length>=short) return;
       taken.add(p._k || hKey(p)); players.push(p);
     });
@@ -78174,7 +78201,22 @@ function careerCupField(cr, mine, size, salt, open, sharp){
   // neighbours — two of them in a duo season and three in a trio one. These are
   // invented people, so there is no recorded pair inside them and careerTeam is
   // told nothing: a made-up trio is three strangers and is paid as three.
-  players.sort((a,b)=>attrsFor(b).ovr-attrsFor(a).ovr);
+  /* НАСТОЯЩИЕ РЕЖУТСЯ С НАСТОЯЩИМИ.
+
+     Состав здесь — это соседи по рейтингу: список сортируется и режется по
+     три подряд. Значит тройка настоящего человека зависит от того, кто из
+     ВЫДУМАННЫХ встал рядом с ним в сортировке, — а выдуманных неделя приводит
+     разных, и рейтинг у них теперь вдобавок дрейфует (CAREER.devL). Один
+     сосед сдвинулся — и нарезка после него переписана целиком.
+
+     Настоящие идут первыми, выдуманные за ними; внутри каждой половины —
+     по-прежнему по рейтингу, то есть подбор соседа не меняется. Смешанной
+     остаётся одна тройка на стыке, а не весь хвост. */
+  players.sort((a,b)=>{
+    const la=(a && a.tier==='ladder') ? 1 : 0, lb=(b && b.tier==='ladder') ? 1 : 0;
+    if(la!==lb) return la-lb;
+    return attrsFor(b).ovr-attrsFor(a).ovr;
+  });
   for(let i=0;i+per-1<players.length;i+=per){
     const chunk=players.slice(i, i+per);
     /* And the flags inside an invented team are an invented team's flags.
@@ -81801,7 +81843,12 @@ const CC_AGENTS=[
   {name:'GLORE errie',  at:'errieMNG',      nat:'pl', photo:'errieMNG.jpg',      x:1184},
   // 21 August. Head of Fortnite for Cloud Esport, Carcassonne; Noaggs, Hazyache
   // and squadir23 are his.
-  {name:'CLD Razia',    at:'Raziaa_',       nat:'fr', photo:'Raziaa_.jpg',       x:932}
+  {name:'CLD Razia',    at:'Raziaa_',       nat:'fr', photo:'Raziaa_.jpg',       x:932},
+  /* Его ссылка и его число, 24 сентября: x.com/yaleblan, 749 фолловеров;
+     портрет — аватарка оттуда же, круглым кропом на белом (в интерфейсе она
+     всё равно режется в круг). Имя — хендл, как у Kiinywz0 выше, и по той же
+     причине: профиля с именем сюда не приезжало, а выдумывать его нельзя. */
+  {name:'yaleblan',     at:'yaleblan',      nat:null, photo:'yaleblan.jpg',      x:749}
 ];
 // The fallback, for a row added before anybody has read its account: fifteen per
 // cent, which is the middle of the real range, and one draw like everybody else.
@@ -85402,8 +85449,26 @@ function ccDivCeil(div){
   return Math.min(div>1 ? ccBand(div-1) : 99, ccGenTop());
 }
 const CC_DM_LADDER_UNDER=[0, -2, -4, -6, -9, -12];
+/* ПОТОЛОК ИДЁТ ЗА ИГРОКОМ, ЕСЛИ ИГРОК ЕГО ПЕРЕРОС.
+
+   Рассуждение выше — «кто держит такой рейтинг, тот уже не в Дивизионе 5, его
+   оттуда подняли» — ломается об один факт: сам игрок стоит в Дивизионе 5 с
+   восьмьюдесятью. Модель разрешает это ему и запрещает всем остальным, и
+   комната становится тупиком: расти можно, а звать некого.
+
+   Его скрин 24 сентября — сорок восемь человек, все по 61, у него 80: «как
+   играть с сильными типами когда у тебя рейтинг 80, а ты можешь играть только
+   с 61». Он прав: подняться он может только через кубок, а кубок играется
+   вдвоём.
+
+   Потолок теперь — ступень ИЛИ свой рейтинг, что выше. Выдуманного 99 в
+   Дивизионе 5 это не возвращает (ради чего потолок и стоял): предел — то, чего
+   ты сам достиг, и застрявший на своей ступени встречает таких же застрявших,
+   а не весь ладдер. */
 function ccDmLadderPool(rnd, mine){
-  const div=CAREER.career.division, ceil=ccDivCeil(div);
+  const div=CAREER.career.division;
+  const rung=ccDivCeil(div);
+  const ceil=Math.max(rung, Math.round(CAREER.player.ovr||0));
   const over=CAREER.player.ovr>ceil;
   const band=Math.min(CAREER.player.ovr, ceil), taken=new Set([...mine]);
   const offs=over ? CC_DM_LADDER_UNDER : CC_DM_LADDER_OFF;
@@ -87921,7 +87986,11 @@ function careerSocialHTML(){
      a 96 in Division 3 is offered 75s and down, because anybody better than
      that is not in Division 3. Which is right, and reads as broken unless it is
      said out loud. */
-  const overRung=!ccRealNamesHere() && CAREER.player.ovr>ccDivCeil(CAREER.career.division);
+  /* Подсказка про ступень держится ровно до тех пор, пока список в неё
+     упирается. Он больше не упирается — потолок идёт за игроком (см.
+     ccDmLadderPool), — и говорить «выше 61 здесь никого нет», показывая
+     восьмидесятых, значило бы врать на своём же экране. */
+  const overRung=false;
   const looking=`<div class="dm-side-h">${ccSay('dmLooking')}</div>`+
     (overRung ? `<div class="ch-hint dm-over">${
       L().dmOverRung(CAREER.career.division, ccDivCeil(CAREER.career.division))}</div>` : '')+
@@ -102027,7 +102096,7 @@ function careerArchiveSeason(sn){
      nothing else, but the table behind that line needs the player's row
      wherever it finished — so the entry itself is kept and `wins` is read back
      out of it. See careerArchiveFinal. */
-  const me={majors:{}, summit:null, paris:null, gc:null};
+  const me={majors:{}, summit:null, paris:null, gc:null, nations:null, solo:null};
   // The whole seat, where the entry recorded it; one handle is what a save
   // written before ccLogMates has, and it reads as it always did.
   const meTeam=e=>[CAREER.player.nick]
@@ -102038,6 +102107,10 @@ function careerArchiveSeason(sn){
     if(e.kind==='summit' && e.stage==='final') me.summit=e;
     if(e.kind==='rc' && e.stage==='final') me.paris=e;
     if(e.kind==='globals') me.gc=e;
+    // Кубок наций и соло — его просьба 24 сентября: «history пусть будет
+    // national cap тоже там и соло, крупные турниры крч».
+    if(e.kind==='nations' && e.stage==='final') me.nations=e;
+    if(e.kind==='solo' && e.stage==='final') me.solo=e;
   });
   const won=e=>(e && e.place===1) ? meTeam(e) : null;
   /* Что игрок ВИДЕЛ своими глазами.
@@ -102059,7 +102132,8 @@ function careerArchiveSeason(sn){
     if(!cards.length || !cards[0]) return null;
     return {name:ccArcName(cards), team:cards, reg:cards[0].region||null};
   };
-  const wins={majors:{}, summit:won(me.summit), paris:won(me.paris), gc:won(me.gc)};
+  const wins={majors:{}, summit:won(me.summit), paris:won(me.paris), gc:won(me.gc),
+              nations:won(me.nations), solo:won(me.solo)};
   Object.keys(me.majors).forEach(n=>{ const w=won(me.majors[n]); if(w) wins.majors[n]=w; });
   /* The season has a scene, and the scene persists.
 
@@ -102197,6 +102271,41 @@ function careerArchiveSeason(sn){
     win:{reg:gr,
          name:wins.gc || (gSeen && gSeen.name) || majorName(lastN, gr) || nameOf(gr, gi),
          you:!!wins.gc, team:(gSeen && gSeen.team) || teamOf(gr, gi)}});
+  /* КУБОК НАЦИЙ — ЛАН КАЖДОГО ГОДА.
+
+     Его просьба 24 сентября: «history пусть будет national cap тоже там и
+     соло, крупные турниры крч». NationsFinal стоит во всех трёх календарях
+     (2024, 2025, 2026), значит строка есть у любого сезона. Чемпион читается
+     тем же правилом, что у остальных ЛАНов: сыграл сам и выиграл — ты;
+     сыграл и видел победителя — он (ccStageSeatRow в журнале); не играл —
+     верхушка сцены своего броска. */
+  {
+    const nSeen=seenWin(me.nations);
+    const nr=wins.nations ? mine : (nSeen && nSeen.reg) ? nSeen.reg : ccArcLanRegion(seed('nations'));
+    const ni=seed('nations|i')()<0.5 ? 0 : 1;
+    global.push({slot:'nations', label:L().ccNatCongrats, mine:me.nations,
+      win:{reg:nr, name:wins.nations || (nSeen && nSeen.name) || nameOf(nr, ni),
+           you:!!wins.nations, team:(nSeen && nSeen.team) || teamOf(nr, ni)}});
+  }
+  /* СОЛО — ТОЛЬКО ТАМ, ГДЕ КРУПНЫЙ СОЛО-ТУРНИР ЕСТЬ.
+
+     Его слово: «соло самые крупные». Единый соло-финал есть у календаря
+     2026-го (SoloSeries_Final); в 2025-м из соло только шестнадцать Solo Cash
+     Cup — это кубки, а не чемпионат, — а в 2024-м нет и их. Так же, как
+     Саммит и круг Reload не показываются в годах, где их не было. */
+  if(ccArcCalYear(sn)===2026){
+    const sSeen2=seenWin(me.solo);
+    const sr2=wins.solo ? mine : (sSeen2 && sSeen2.reg) ? sSeen2.reg : ccArcLanRegion(seed('solo'));
+    const si=seed('solo|i')()<0.5 ? 0 : 1;
+    // Соло — один человек, не состав: из тройки берётся первая карточка.
+    const one=(t)=>(t && t.length) ? t.slice(0,1) : t;
+    const seenOne=sSeen2 ? one(sSeen2.team) : null;
+    global.push({slot:'solo', label:(L().ccYearNames && L().ccYearNames.SoloSeries_Final) || 'Solo Series',
+      mine:me.solo,
+      win:{reg:sr2,
+           name:wins.solo || (seenOne ? ccArcName(seenOne) : ccArcName(one(teamOf(sr2, si)))),
+           you:!!wins.solo, team:seenOne || one(teamOf(sr2, si))}});
+  }
   return {size, home:mine, regional, global, scene};
 }
 /* ===== The final behind the line =========================================
@@ -102440,6 +102549,14 @@ function careerArchiveFinal(sn, key){
     if(!ev) return null;
     kind=ev.slot; reg=ev.win.reg; champ=ev.win.team; mine=ev.mine; label=ev.label;
   }
+  /* У Кубка наций и соло таблицы в архиве нет.
+
+     Их зал — не дуо и не трио сезона: сборные по четыре и одиночки, — а
+     пересобрать прошлый сезон нечем, ccNatState держит только текущий.
+     Строка называет чемпиона, раскрытие честно отвечает «таблицы нет»
+     (см. careerArcTableHTML, arcNoTable), а не рисует выдуманный зал не того
+     размера. */
+  if(kind==='nations' || kind==='solo') return null;
   const cfg=ccArcEvent(kind);
   const n=Math.max(2, ccArcCount(size, cfg.field));
   const rng=careerRng(ccHashStr('arcT|'+(CAREER.player.nick||'')+'|'+sn+'|'+key));
@@ -102565,6 +102682,9 @@ function ccArcArt(key){
   if(k.indexOf('g|summit')===0) return 'art/fncs-2026-major1.jpg';
   if(k.indexOf('g|rc')===0)     return CAREER_EV_ART.reload;
   if(k.indexOf('g|gc')===0)     return CAREER_EV_ART.gc;
+  // Кубок наций — ЛАН, обложка та же, что у Глобалов; у соло своя.
+  if(k.indexOf('g|nations')===0) return CAREER_EV_ART.gc;
+  if(k.indexOf('g|solo')===0)    return CAREER_EV_ART.solo;
   if(k.indexOf('m|1')===0)      return 'art/fncs-2026-major1.jpg';
   if(k.charAt(0)==='m')         return CAREER_EV_ART.cup;
   return '';
@@ -102635,7 +102755,8 @@ function careerArchiveHTML(){
     if(partial && !ccArcDoneBy('Major'+ev.n+'_Final')) return ccArcSoonRow(ev.label, 'm|'+ev.n+'|'+reg);
     return ccArcRow(sn, 'm|'+ev.n+'|'+reg, ev.label,
       esc(w.name)+(w.you?' · '+L().arcYou:''), w.you);}).join('');
-  const CC_ARC_GID={summit:'Summit_Final', rc:'ReloadChampionshipParis', gc:'GlobalChampionship'};
+  const CC_ARC_GID={summit:'Summit_Final', rc:'ReloadChampionshipParis', gc:'GlobalChampionship',
+                    nations:'NationsFinal', solo:'SoloSeries_Final'};
   const rowsG=a.global.map(ev=>{
     if(partial && !ccArcDoneBy(CC_ARC_GID[ev.slot]||'')) return ccArcSoonRow(ev.label, 'g|'+ev.slot);
     return ccArcRow(sn, 'g|'+ev.slot, ev.label,

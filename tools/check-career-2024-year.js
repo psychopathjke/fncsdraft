@@ -101,12 +101,20 @@ const BOOT = `
                    gc:/Global Championship/.test(arc)};
     check('история: три сыгранных Мейджора найдены в календаре года',
           out.notes.arc.majors.every(Boolean), JSON.stringify(out.notes.arc));
-    // Форт-Уэрт идёт 7–8 сентября, и его второй день ещё не позади — одна строка
-    // «ещё впереди» здесь честная, остальные обязаны быть с чемпионом.
-    check('история: «ещё впереди» осталось не больше одной строки',
-          out.notes.arc.soon<=1, JSON.stringify(out.notes.arc));
+    /* Две строки «ещё впереди» здесь честные, остальные обязаны быть с
+       чемпионом: часы стоят на 7–8 сентября, второй день Форт-Уэрта ещё не
+       позади, а финал Кубка наций только 28-го. */
+    check('история: «ещё впереди» осталось не больше двух строк',
+          out.notes.arc.soon<=2, JSON.stringify(out.notes.arc));
     check('история: Саммита и круга Reload в 2024-м нет', !out.notes.arc.summit && !out.notes.arc.rc, JSON.stringify(out.notes.arc));
     check('история: Global Championship на месте', out.notes.arc.gc, JSON.stringify(out.notes.arc));
+    /* И крупные турниры года — его просьба 24 сентября: «history пусть будет
+       national cap тоже там и соло, крупные турниры крч». Кубок наций стоит
+       во всех трёх календарях, а единый соло-финал — только у 2026-го, так
+       что в 2024-м его строки быть не должно. */
+    check('история: Кубок наций в списке', new RegExp(L().ccNatCongrats).test(arc), 'нет строки');
+    check('история: соло-строки в 2024-м нет — турнира не было',
+          !/Solo Series/.test(arc), 'есть лишняя строка');
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
