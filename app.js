@@ -95636,12 +95636,20 @@ function careerArchiveSeason(sn){
      сыграл и видел победителя — он (ccStageSeatRow в журнале); не играл —
      верхушка сцены своего броска. */
   {
+    /* Чемпион здесь — СТРАНА, а не пара из сцены: зал Кубка наций собирается
+       из сборных по четыре (ccNationsBook), и строка обязана называть то же,
+       что назовёт её таблица. Побеждает одна из пяти сильнейших сборных —
+       бросок сезона, как у остальных ЛАНов. */
     const nSeen=seenWin(me.nations);
+    const nats=ccArcNatRows();
+    const ni=nats.length ? Math.floor(seed('nations|n')()*Math.min(5, nats.length)) : 0;
+    const row=nats[ni]||null;
     const nr=wins.nations ? mine : (nSeen && nSeen.reg) ? nSeen.reg : ccArcLanRegion(seed('nations'));
-    const ni=seed('nations|i')()<0.5 ? 0 : 1;
     global.push({slot:'nations', label:L().ccNatCongrats, mine:me.nations,
-      win:{reg:nr, name:wins.nations || (nSeen && nSeen.name) || nameOf(nr, ni),
-           you:!!wins.nations, team:(nSeen && nSeen.team) || teamOf(nr, ni)}});
+      win:{reg:nr,
+           name:wins.nations || (nSeen && nSeen.name) || (row ? natDisplay(row.nat) : '—'),
+           nat:row ? row.nat : null,
+           you:!!wins.nations, team:(nSeen && nSeen.team) || (row ? row.top : null)}});
   }
   /* СОЛО — ТОЛЬКО ТАМ, ГДЕ КРУПНЫЙ СОЛО-ТУРНИР ЕСТЬ.
 
@@ -95695,7 +95703,40 @@ function careerArchiveSeason(sn){
 // elimination is worth in it and whether that is capped. Read off the constants
 // the career's own runners read, so a change to the event changes its history
 // with it rather than leaving the archive telling the old story.
+/* Двадцать пять сильнейших сборных — тот же зал, что у настоящего финала
+   Кубка наций (CC_NATIONS_FIELD). Книга строится из сцены региона за регионом
+   и уже отбирает страны, у которых есть четверо (CC_NATIONS_SQUAD). */
+function ccArcNatRows(){
+  let book=null;
+  try{ book=ccNationsBook(); }catch(e){ book=null; }
+  const list=(book && book.list) ? book.list.slice() : [];
+  return list.sort((a,b)=>b.pow-a.pow).slice(0, CC_NATIONS_FIELD);
+}
+/* Зал соло — сотня одиночек, по силе. Берётся та же сцена, из которой архив
+   собирает всё остальное; регион по тому же весу, что у ЛАНов. */
+function ccArcSoloSeats(n, champ){
+  const out=[], seen=new Set();
+  const champKey=(champ && champ[0]) ? hKey(champ[0]) : null;
+  if(champ && champ[0]){ seen.add(champKey); out.push({cards:[champ[0]], reg:champ[0].region||'EU', champ:true}); }
+  const total=CC_ARC_LAN_W.reduce((s,w)=>s+w[1], 0);
+  CC_ARC_LAN_W.forEach(w=>{
+    const want=Math.max(1, Math.round(n*w[1]/total));
+    let ro=[]; try{ ro=ccArcRoster(w[0]); }catch(e){ ro=[]; }
+    let got=0;
+    ro.forEach(p=>{
+      if(got>=want || out.length>=n || !p) return;
+      const k=hKey(p); if(!k || seen.has(k)) return;
+      seen.add(k); out.push({cards:[p], reg:w[0], champ:false}); got++;
+    });
+  });
+  return out.slice(0, n);
+}
 function ccArcEvent(kind){
+  // Кубок наций — сборные по четыре, двенадцать игр; соло — сотня одиночек.
+  if(kind==='nations') return {field:CC_NATIONS_FIELD, games:CC_NATIONS.final.games,
+                               kill:CC_NATIONS.final.kill, pts:pointsForPlace, cap:0};
+  if(kind==='solo')    return {field:CC_SOLOS_STAGES.final.field, games:CC_SOLOS_STAGES.final.games,
+                               kill:CC_SOLOS_STAGES.final.kill, pts:pointsForPlace, cap:0};
   if(kind==='rc')     return {field:CC_RC_FINAL.teams, games:CC_RC_FINAL.games,
                               kill:CC_RC_KILL, pts:rcPoints, cap:CC_RELOAD_KILL_CAP};
   if(kind==='summit') return {field:CC_SUMMIT_STAGE.final.field, games:CC_SUMMIT_STAGE.final.games,
@@ -95905,22 +95946,33 @@ function careerArchiveFinal(sn, key){
     if(!ev) return null;
     kind=ev.slot; reg=ev.win.reg; champ=ev.win.team; mine=ev.mine; label=ev.label;
   }
-  /* У Кубка наций и соло таблицы в архиве нет.
-
-     Их зал — не дуо и не трио сезона: сборные по четыре и одиночки, — а
-     пересобрать прошлый сезон нечем, ccNatState держит только текущий.
-     Строка называет чемпиона, раскрытие честно отвечает «таблицы нет»
-     (см. careerArcTableHTML, arcNoTable), а не рисует выдуманный зал не того
-     размера. */
-  if(kind==='nations' || kind==='solo') return null;
   const cfg=ccArcEvent(kind);
-  const n=Math.max(2, ccArcCount(size, cfg.field));
+  /* РАЗМЕР СОСТАВА У ЭТИХ ДВУХ — СВОЙ, А НЕ СЕЗОНА.
+
+     Кубок наций играется сборными по четыре, соло — одиночками, и ни то ни
+     другое не переводится в дуо/трио года: ccArcCount тут промолчит, иначе
+     зал из двадцати пяти стран превратился бы в семнадцать. */
+  const seatSize = kind==='nations' ? CC_NATIONS_SQUAD : kind==='solo' ? 1 : size;
+  const n = (kind==='nations' || kind==='solo')
+    ? Math.max(2, cfg.field)
+    : Math.max(2, ccArcCount(size, cfg.field));
   const rng=careerRng(ccHashStr('arcT|'+(CAREER.player.nick||'')+'|'+sn+'|'+key));
   const skip = mine ? new Set([CAREER.player.nick].concat(
       (mine.mates && mine.mates.length) ? mine.mates : (mine.mate?[mine.mate]:[]))
       .filter(Boolean).map(h=>String(h).toLowerCase())) : null;
-  const seats = kind==='major' ? ccArcField(reg, size, n, rng, champ, skip, sn)
-                               : ccArcLanField(size, n, rng, champ, reg, skip, sn);
+  /* Зал Кубка наций — книга сборных целиком, и чемпион в ней уже стоит:
+     строка назвала страну (см. careerArchiveSeason), таблица сажает её же
+     четвёрку. Соло — сотня одиночек по силе. */
+  const seats = kind==='nations'
+      /* Регион — у самой сборной, а не у чемпиона: он тут один на всю
+         таблицу, и датская четвёрка получала флаг Океании. Берётся с её же
+         сильнейшей карточки, как берётся и всё остальное в строке. */
+      ? ccArcNatRows().map(r=>({cards:r.top,
+                                reg:(r.top[0] && r.top[0].region) || reg,
+                                champ: !!(champ && champ[0] && r.top[0] && hKey(r.top[0])===hKey(champ[0]))}))
+    : kind==='solo' ? ccArcSoloSeats(n, champ)
+    : kind==='major' ? ccArcField(reg, size, n, rng, champ, skip, sn)
+                     : ccArcLanField(size, n, rng, champ, reg, skip, sn);
   if(seats.length<2) return null;
   const bare=s=>String(s==null?'':s).replace(/<[^>]*>/g, '').trim();
   const teams=seats.map(s=>{
@@ -95928,7 +95980,7 @@ function careerArchiveFinal(sn, key){
     t.name=teamLabel(s.cards); t._reg=s.reg; t._champ=!!s.champ;
     return t;
   });
-  ccArcPlay(teams, cfg, size, rng);
+  ccArcPlay(teams, cfg, seatSize, rng);
   const ranked=teams.slice().sort((x,y)=>
     y.stagePts-x.stagePts || (y.wins||0)-(x.wins||0) || y.stageElims-x.stageElims);
   // The champion of the season and the winner of the twelve games trade rows.
