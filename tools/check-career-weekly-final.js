@@ -173,7 +173,10 @@ const BOOT = `
     // and the winner's cell is the table's own top prize.
     const tables = [...document.querySelectorAll('#majorStages .lobby-table')];
     const last = tables[tables.length - 1];
-    const tableHTML = last ? last.innerHTML : '';
+    /* Текст, а не innerHTML: fmtMoney на русской локали ставит неразрывный
+       пробел (U+00A0), а innerHTML отдаёт его как &nbsp; — и «$10 000» из
+       той же функции никогда не совпадало само с собой. */
+    const tableHTML = last ? last.textContent : '';
     if (tableHTML.indexOf(L().prizeHeader) < 0) fail('the standings drew no prize column');
     if (tableHTML.indexOf(fmtMoney(wfPrize(1))) < 0)
       fail('the winner row does not show ' + fmtMoney(wfPrize(1)));
