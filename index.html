@@ -81909,7 +81909,13 @@ const CC_AGENTS=[
      ранжирует менеджеров по месту в нём. Тег организации перед именем — как у
      GLORE errie и CLD Razia выше; FLC — бельгийский клан. Страны в профиле
      нет, поэтому nat пустой, как у yaleblan. Портрет — аватарка оттуда же. */
-  {name:'FLC Drazox',   at:'DrazoxMNG',     nat:null, photo:'DrazoxMNG.jpg',     x:681}
+  {name:'FLC Drazox',   at:'DrazoxMNG',     nat:null, photo:'DrazoxMNG.jpg',     x:681},
+  /* Его скрин профиля, 26 сентября: x.com/askebott — Vira Askey, Марокко,
+     Head of Fortnite в Vira Esport, 252 фолловера. Агент семерых, и все семеро
+     названы у него в шапке поимённо (zbidak3kk, CyranKids, Litr07, 2Kixu,
+     kylxz8, ROITFN, phrygienfnbr) — то же, чем João выше заслужил первую
+     строку: человек приезжает внутрь сцены, которую мод уже описывает. */
+  {name:'Vira Askey',   at:'askebott',      nat:'ma', photo:'askebott.jpg',      x:252}
 ];
 // The fallback, for a row added before anybody has read its account: fifteen per
 // cent, which is the middle of the real range, and one draw like everybody else.
@@ -83178,7 +83184,17 @@ const CC_SMM=[
   {id:'lair',     name:'LairFN',          at:'Lair_Fn',    photo:'Lair_Fn.jpg',    x:456},
   {id:'veltrixx', name:'Lyost zVeltrixx', at:'veltrixx10', org:'zVeltrixx',
                   photo:'veltrixx10.jpg', x:427},
-  {id:'lumos',    name:'MGA Lumos',       at:'CmLumos',    photo:'CmLumos.jpg',    x:296}
+  {id:'lumos',    name:'MGA Lumos',       at:'CmLumos',    photo:'CmLumos.jpg',    x:296},
+  /* Его скрин профиля, 26 сентября: x.com/MetiDark_ — NOW MetiDark, Франция,
+     Community Manager у Noww_eSport и REC_2027, TikTok у WyckerTv, 46
+     фолловеров. CM, а не SMM по названию, но работа та же, и список это уже
+     знает: MGA Lumos строчкой выше — тоже CM (CmLumos), как и Lyost Ugo
+     (UgoComm).
+
+     Сорок шесть — это НИЖЕ пола шкалы (CC_SMM_X_FLOOR=250), поэтому ccSmmPull
+     зажимает его тягу в ноль: самый слабый СММ из возможных. Так и должно
+     быть, и это не повод опускать пол — аккаунту четыре месяца. */
+  {id:'metidark', name:'NOW MetiDark',    at:'MetiDark_',  photo:'MetiDark_.jpg',  x:46}
 ];
 // Where an account sits between the smallest of them and the biggest, 0 to 1.
 function ccSmmPull(x){
