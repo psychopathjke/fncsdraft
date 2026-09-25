@@ -78610,6 +78610,8 @@ const CAREER_DM_REACH=3, CAREER_DM_KEEP=14;
    club signs on results and it should: clubs in this scene have signed worse
    people than this for less. */
 const CC_REP_MAX=25, CC_REP_PER_OVR=3;
+// Что стоит титул, когда ты зовёшь человека к себе. См. careerDmMargin.
+const CC_DM_CROWN_WIN=6, CC_DM_CROWN_POD=3, CC_DM_CROWN_TOP=1;
 function careerRep(){ return clamp((CAREER.career.rep||0), -CC_REP_MAX, CC_REP_MAX); }
 function careerRepAdd(n){
   const cr=CAREER.career;
@@ -80190,6 +80192,39 @@ function careerDmMargin(who){
     if(last.place<=3) pull+=3;
     else if(last.passed) pull+=2;
   }
+  /* И то, что ты уже выиграл, а не только вчерашний вечер.
+
+     Выше читается ровно ОДНА строка журнала — последняя, и только если она
+     этого сезона. Значит победа на лане стоит +3 до ближайшего вторника: сыграл
+     недельный кубок, она перестала быть последней, и её больше нет. Слова его
+     игрока 25 сентября: «won ewc and still stuck with teammates that have
+     rating 80 im rating 93» — он выиграл самое крупное, что в моде есть, и для
+     тех, кого он зовёт, ничего не изменилось. Замер тогда же, карьера 93 в
+     дивизионе 1: зовёт 96-го с запасом 0, то есть монетка — ровно как до
+     победы.
+
+     Репутация это починить не может и не должна: её собственное правило
+     (см. careerRep) говорит, что она про поведение — кого ты обвинил, чьё
+     кресло освободил, — а результаты в неё намеренно не идут.
+
+     Крупные — это CC_BIG_RUNS: финал мейджора, Саммит, Reload Championship,
+     GC Last Chance и глобалы. Недельные кубки сюда не попадают, и это главное:
+     тяга растёт от того, что сцена помнит, а не от любой удачной среды.
+
+     Держится сезон и предыдущий — осенний титул обязан что-то значить зимой, —
+     и НЕ СКЛАДЫВАЕТСЯ: берётся лучшее, а не сумма. Иначе год с тремя финалами
+     перевесил бы сам рейтинг, а звать людей должен всё-таки игрок, а не
+     витрина трофеев. */
+  let crown=0;
+  (cr.log||[]).forEach(function(r){
+    if(!r.place || !(r.season===cr.season || r.season===cr.season-1)) return;
+    if(!ccBigRunOf(r)) return;
+    const w = r.place===1 ? CC_DM_CROWN_WIN
+            : r.place<=3 ? CC_DM_CROWN_POD
+            : r.place<=10 ? CC_DM_CROWN_TOP : 0;
+    if(w>crown) crown=w;
+  });
+  pull+=crown;
   // The seat they are in, judged the way they would judge it.
   const mate=careerDmMateOf(who);
   if(mate && careerDuoBeatsYou(who)){
