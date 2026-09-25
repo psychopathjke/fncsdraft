@@ -33,7 +33,7 @@ if (fs.existsSync(OUT) && fs.readdirSync(OUT).length)
    рантайме ('photos/'+handle), выборочно класть нельзя. Чего тут нет — tools/,
    docs/, .git, README, shot-*.png, replay-preview.html: 270 харнессов и проб
    съедают лимит Cloudflare в 1000 файлов на drag&drop, а сайту не нужны. */
-const FILES = ['index.html', '404.html', 'maps.js', 'zone-sim.js', 'zone-replay.js', 'mp.js', 'sw.js',
+const FILES = ['index.html', 'about.html', '404.html', 'maps.js', 'zone-sim.js', 'zone-replay.js', 'mp.js', 'sw.js',
   'logo.png', 'og-image.png', 'robots.txt', 'sitemap.xml', '_headers',
   'favicon.ico', 'favicon-48.png', 'favicon-96.png', 'favicon-192.png'];
 // flags/ — свои копии флагов: flagcdn.com стоит за Cloudflare, а до него у
