@@ -77745,6 +77745,46 @@ function ccOpenFillOvr(rnd){
    посадка в careerCupField), выпилено целиком. cr.rival в старых сейвах
    просто лежит и никем не читается; строки ccRival* в словарях остались
    мёртвыми, чтобы не трогать три локали ради удаления. */
+/* Пара для тех, у кого она не записана, — свойство сезона, а не комнаты.
+
+   Остаток ростера режется по соседям в рейтинге, и резался он ВНУТРИ комнаты:
+   сначала отбирали, кто в неё влез, и только потом делили на пары. Значит
+   напарника человеку назначал не сцена, а размер вечера и то, кого этот вечер
+   успел впустить. Замер 25 сентября (2024, Европа, дуо, ОДИН день, одна
+   карьера): комната на 400 мест против комнаты на 800 — 272 настоящих из 798
+   выходили с другим напарником; открытая против закрытой того же размера —
+   580 из 762. Его слово: «дуосы до сих пор меняются в 2024».
+
+   Причина именно эта, а не разное население: careerRealPlayers на scope 1 и
+   scope 'all' отдаёт один и тот же пул, и расходились комнаты только тем,
+   какой его префикс отобрали.
+
+   Теперь пары считаются один раз по ВСЕМУ остатку — весь ростер минус те, у
+   кого пара записана в книге, — а комната берёт готовые пары целиком. Сколько
+   в ней мест и открытая она или нет, на состав больше не влияет.
+
+   Целиком — обязательное слово. Впусти половину пары, и нарезка ниже (она
+   режет по per подряд) сдвинется на одного, а сдвинутая нарезка переписывает
+   все пары после себя — ровно та болезнь, от которой здесь и лечимся. */
+function ccRestPairs(cr, per){
+  const pl=careerPools();
+  const inDuo=new Set();
+  ((pl && pl.duos)||[]).forEach(d=>(d.cards||[]).forEach(c=>{
+    if(c) inDuo.add(c._k || hKey(c)); }));
+  const pool=((pl && pl.players)||[]).filter(p=>!inDuo.has(p._k || hKey(p)))
+    .slice().sort((a,b)=>attrsFor(b).ovr-attrsFor(a).ovr);
+  const m=new Map();
+  for(let i=0;i+per-1<pool.length;i+=per){
+    const chunk=pool.slice(i, i+per);
+    /* Место в сезонной нарезке едет НА САМОЙ карточке: объекты пула — те же
+       объекты, что приходят в комнату. Ниже комната сортируется по нему, а не
+       по рейтингу заново: на равных оверах сортировка устойчива к порядку
+       входа, а входят они перемешанными, и пары на одинаковом рейтинге
+       переслаивались. Замер после первой половины правки: 78 из 798. */
+    chunk.forEach((p, k)=>{ p._rest=i+k; m.set(p._k || hKey(p), chunk); });
+  }
+  return m;
+}
 function careerCupField(cr, mine, size, salt, open, sharp){
   /* Гонка: из ботов вычитаются и соперники со своими напарниками — они в комнате людьми.
      И В ТОТ ВЕЧЕР, КОТОРЫЙ ИГРАЕТСЯ БЕЗ НИХ. Вычитание стояло под ccRaceLock, то есть только
@@ -78142,11 +78182,16 @@ function careerCupField(cr, mine, size, salt, open, sharp){
      не её дело. */
   const restRnd=careerRng(ccHashStr('rest|'+ccWorldSeed()+'|'+(cr.season||1)+
                                     '|'+(cr.division||1)+'|'+(open?1:0)));
+  const restPairs=ccRestPairs(cr, per);
+  const addRest=p=>{
+    if(players.length>=short) return;
+    const pair=restPairs.get(p._k || hKey(p));
+    if(!pair) return;                                   // хвост, не делящийся на пары
+    if(pair.some(q=>taken.has(q._k || hKey(q)))) return; // половина уже в комнате
+    pair.forEach(q=>{ taken.add(q._k || hKey(q)); players.push(q); });
+  };
   if(cr.division===1 && !open){
-    careerRealPlayers(taken, restRnd, 1).forEach(p=>{
-      if(players.length>=short) return;
-      taken.add(p._k); players.push(p);
-    });
+    careerRealPlayers(taken, restRnd, 1).forEach(addRest);
   }
   /* Опен — очередь всего региона, и реальные одиночки пула стоят в ней раньше
      выдуманных. Его скрин, 23 августа («опять…»): #30–36 таблицы опена были
@@ -78157,10 +78202,7 @@ function careerCupField(cr, mine, size, salt, open, sharp){
      правилом, каким рассаживаются выдуманные. Замер до/после — в
      career-open-top-probe.js. */
   if(open){
-    careerRealPlayers(taken, restRnd, 'all').forEach(p=>{
-      if(players.length>=short) return;
-      taken.add(p._k || hKey(p)); players.push(p);
-    });
+    careerRealPlayers(taken, restRnd, 'all').forEach(addRest);
   }
   // What the pool cannot fill is ladder, as it always was. The roster is not
   // raided for it any more: the snapshot is the division, and padding it with
@@ -78215,6 +78257,8 @@ function careerCupField(cr, mine, size, salt, open, sharp){
   players.sort((a,b)=>{
     const la=(a && a.tier==='ladder') ? 1 : 0, lb=(b && b.tier==='ladder') ? 1 : 0;
     if(la!==lb) return la-lb;
+    const ra=(a && a._rest!=null) ? a._rest : null, rb=(b && b._rest!=null) ? b._rest : null;
+    if(ra!=null && rb!=null) return ra-rb;
     return attrsFor(b).ovr-attrsFor(a).ovr;
   });
   for(let i=0;i+per-1<players.length;i+=per){
