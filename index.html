@@ -81892,7 +81892,13 @@ const CC_AGENTS=[
      портрет — аватарка оттуда же, круглым кропом на белом (в интерфейсе она
      всё равно режется в круг). Имя — хендл, как у Kiinywz0 выше, и по той же
      причине: профиля с именем сюда не приезжало, а выдумывать его нельзя. */
-  {name:'yaleblan',     at:'yaleblan',      nat:null, photo:'yaleblan.jpg',      x:749}
+  {name:'yaleblan',     at:'yaleblan',      nat:null, photo:'yaleblan.jpg',      x:749},
+  /* Его ссылка и его число, 25 сентября: x.com/DrazoxMNG, 681 фолловер, то
+     есть он встаёт последним — список отсортирован по ним, и ccRankPull
+     ранжирует менеджеров по месту в нём. Тег организации перед именем — как у
+     GLORE errie и CLD Razia выше; FLC — бельгийский клан. Страны в профиле
+     нет, поэтому nat пустой, как у yaleblan. Портрет — аватарка оттуда же. */
+  {name:'FLC Drazox',   at:'DrazoxMNG',     nat:null, photo:'DrazoxMNG.jpg',     x:681}
 ];
 // The fallback, for a row added before anybody has read its account: fifteen per
 // cent, which is the middle of the real range, and one draw like everybody else.
@@ -89858,7 +89864,16 @@ const CC_COACHES=[
   {id:'val',    name:'Val',        at:'ValentaynL',  reg:'EU',    cost:2500, train:0.35, keys:['con','sur'], photo:'ValentaynL.jpg'},
   {id:'egex',   name:'Egexjerg',   at:'EgeXJerG',    reg:'EU',    cost:2500, train:0.35, keys:['aim','sur'], chem:0.2, photo:'EgeXJerG.jpg'},
   {id:'khaorz', name:'kha0rz',     at:'kha0rz',      reg:'EU',    cost:2500, train:0.35, keys:['aim','clu'], photo:'kha0rz.jpg'},
-  {id:'xplot',  name:'Xplot',      at:'xpl0t',       reg:'EU',    cost:2500, train:0.35, keys:['end','exp'], photo:'xpl0t.jpg'}
+  {id:'xplot',  name:'Xplot',      at:'xpl0t',       reg:'EU',    cost:2500, train:0.35, keys:['end','exp'], photo:'xpl0t.jpg'},
+  /* Его ссылка, 25 сентября: x.com/Flaireeeee. Европа и генералист — его
+     слово. Значит цена и ставка как у Rabid и Thomas5x, и все шесть
+     характеристик: строки о том, ЧЕМУ именно он учит, сюда не приезжало, а
+     выдумывать её нельзя — то же правило, по которому её не выдумали kha0rz и
+     Xplot выше. Химии нет по нему же: пар, с которыми он работает, не названо.
+
+     Аватарка у него не своя — на ней Пеп Гвардиола. Спросил 25 сентября,
+     ответ: «ставь как есть». Лицо с иксов, как у всех на этом списке. */
+  {id:'flaire', name:'Flaire',     at:'Flaireeeee',  reg:'EU',    cost:3000, train:0.30, keys:ATTR_KEYS.slice(), photo:'Flaireeeee.jpg'}
 ];
 /* The coaches run down their list too.
 
