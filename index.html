@@ -8097,6 +8097,7 @@ ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:'';
 ccPostBdayEpic:(h,a)=>'С днём рождения, @'+h+'! Сегодня '+a+'. Хорошего сезона 🎂',
 ccBornHint:'Дата рождения — по желанию. Укажи, и в этот день тебя поздравят. Число сверху — сколько тебе на день старта сезона; день рождения ты встретишь уже в нём.',
 ccNewsCongrats:(n,ev)=>'Поздравляем '+n+' с победой — '+ev+'! 🏆',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'РАЗБОР · '+ev+': '+ccTop(p)+'. '+g+' игр, среднее место '+avg+', элимов '+el+' ('+epg+' за игру). Очки: '+plp+' за места, '+elp+' за элимы. По элимам в лобби — '+ccTop(er)+'.',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['ВЗЯЛИ 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' наш'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:'';
@@ -10085,6 +10086,7 @@ ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:'';
 ccPostBdayEpic:(h,a)=>'Happy birthday @'+h+' — '+a+' today. Have a good season 🎂',
 ccBornHint:'Date of birth — optional. Fill it in and the scene wishes you a happy birthday on the day. The number above is your age on the day the season starts; the birthday itself falls inside it.',
 ccNewsCongrats:(n,ev)=>'Congratulations to '+n+' on the win — '+ev+'! 🏆',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+ev+': '+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['WE WON IT 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' is ours'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:'';
@@ -11357,6 +11359,7 @@ ccPingServer:city=>'vers le serveur de '+city,
 ccPostBdayEpic:(h,a)=>'Joyeux anniversaire @'+h+' ! '+a+' ans aujourd’hui — bonne saison 🎂',
 ccBornHint:'Date de naissance — facultative. Renseigne-la et le jour venu, on te souhaitera ton anniversaire. Le nombre au-dessus est ton âge au premier jour de la saison ; l’anniversaire, lui, tombe pendant celle-ci.',
 ccNewsCongrats:(n,ev)=>'Félicitations à '+n+' pour la victoire — '+ev+' ! 🏆',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+ev+': '+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['ON L’A GAGNÉ 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' est à nous'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:'';
@@ -13923,6 +13926,7 @@ ccShotCap:d=>'Coppa Divisione '+d,
 ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:''; if(p===1) return ['TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6'+a, 'un\u2019altra \ud83d\udc10'+a][(v||0)%3]; if(p<=3) return [''+ccTop(p)+' \ud83d\udcaa'+a, ''+ccTop(p)+a+' \ud83d\udd25', ''+ccTop(p)+', per un soffio'+a][(v||0)%3]; return [''+ccTop(p)+' — Divisione '+d+a, ''+ccTop(p)+' questa settimana'+a+'. più in alto la prossima', ''+ccTop(p)+a+'. si continua'][(v||0)%3];},
 ccPostBdayEpic:(h,a)=>'Buon compleanno @'+h+' — '+a+' anni oggi. Buona stagione \ud83c\udf82',
 ccNewsCongrats:(n,ev)=>'Complimenti a '+n+' per la vittoria — '+ev+'! \ud83c\udfc6',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+ev+': '+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:''; return ['ABBIAMO VINTO \ud83c\udfc6 '+ev+a, ev+'. TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6 '+ev+a, ev+' \u00e8 nostro'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:''; return [''+ccTopC(p)+' — '+ev+' \ud83d\udcaa'+a, ev+': '+ccTop(p)+a+' \ud83d\udd25', ''+ccTopC(p)+' a '+ev+a][(v||0)%3];},
 ccNewsD1Table:w=>'Divisione 1 dopo la settimana '+w+' — ecco come sta la corsa della stagione',
@@ -16437,6 +16441,7 @@ ccShotCap:d=>'Copa da Divis\u00e3o '+d,
 ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:''; if(p===1) return ['TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6'+a, 'mais uma \ud83d\udc10'+a][(v||0)%3]; if(p<=3) return [''+ccTop(p)+' \ud83d\udcaa'+a, ''+ccTop(p)+a+' \ud83d\udd25', ''+ccTop(p)+', por pouco'+a][(v||0)%3]; return [''+ccTop(p)+' — Divis\u00e3o '+d+a, ''+ccTop(p)+' essa semana'+a+'. mais alto na pr\u00f3xima', ''+ccTop(p)+a+'. seguimos'][(v||0)%3];},
 ccPostBdayEpic:(h,a)=>'Feliz anivers\u00e1rio @'+h+' — '+a+' hoje. Boa temporada \ud83c\udf82',
 ccNewsCongrats:(n,ev)=>'Parab\u00e9ns a '+n+' pela vit\u00f3ria — '+ev+'! \ud83c\udfc6',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+ev+': '+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:''; return ['GANHAMOS \ud83c\udfc6 '+ev+a, ev+'. TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6 '+ev+a, ev+' \u00e9 nosso'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:''; return [''+ccTopC(p)+' — '+ev+' \ud83d\udcaa'+a, ev+': '+ccTop(p)+a+' \ud83d\udd25', ''+ccTopC(p)+' no '+ev+a][(v||0)%3];},
 ccNewsD1Table:w=>'Divis\u00e3o 1 depois da semana '+w+' — a corrida da temporada est\u00e1 assim',
@@ -85347,6 +85352,7 @@ const CC_POST_BY={
   // scene reports. The room finds out because they said so.
   // Who represents you and what they took: the player's own week again.
   ccNewsPromoted:'press', ccNewsWinner:'press',
+  ccNewsKinch:'analyst',
   // The Performance Evaluation is a Division 1 night, so the press gate let
   // these through — but what they say is where the player finished, and a
   // scene account does not post "I went out in Round 1". Same rule that moved
@@ -85549,6 +85555,9 @@ function ccPressWorthy(e){
    сидел под кружком с двумя буквами: у игрока и у напарника лица берутся с
    карточки, а у сцены карточки нет и взять было неоткуда. Файл лежит там же,
    где портреты, — это лицо в ленте, а не эмблема клуба. */
+/* Аналитик сцены: свой аккаунт, как у прессы, со своим лицом. */
+const CC_ANALYST={name:'Kinch Analytics', handle:'KinchAnalytics', verified:true,
+                  av:'KinchAnalytics.jpg'};
 const CC_PRESS={name:'Fortnite Competitive', handle:'FNCompetitive', verified:true,
                 av:'FNCompetitive.png'};
 // The action row's glyphs, drawn rather than lettered so they read at 13px and
@@ -86027,6 +86036,8 @@ function ccPostAuthor(e){
   // (её перехватил бы e.by выше), так что это страховка: пост без автора —
   // пост игрока, как и всякая неназванная строка.
   if(who==='by') who='you';
+  // Разбор пишет аналитик и только он: это его формат, не пресса и не игрок.
+  if(who==='analyst') return Object.assign({}, CC_ANALYST);
   if(who==='press' && !ccPressWorthy(e)) who='you';
   if(who==='you'){
     const pl=CAREER.player;
@@ -91478,8 +91489,29 @@ function careerWorldD1(iso){
 // circuit's finals. The winners are tagged the way a real account tags them,
 // the player's own duo included, and the post carries the standings screenshot
 // with the event's name on it.
+/* Разбор вечера цифрами. Считается по журналу игр, который уже собран
+   вечером: места, элимы и разложение очков. Лобби меряется тем же полем,
+   что стоит в таблице, поэтому «по элимам в лобби» — не оценка, а место.
+   Одна игра — не разбор: вечер, оборванный на первой, промолчит. */
+function ccKinchPost(ranked, you, label){
+  if(!you || !ranked || !ranked.length) return;
+  const log=(you.stageLog||[]).filter(g=>g && g.place!=null);
+  if(log.length<2) return;
+  const games=log.length;
+  const place=ranked.indexOf(you)+1;
+  if(place<1) return;
+  const avg=log.reduce((s,g)=>s+g.place, 0)/games;
+  const elims=log.reduce((s,g)=>s+(g.elims||0), 0);
+  const elimPts=log.reduce((s,g)=>s+(g.elimPts||0), 0);
+  const pts=(you.stagePts!=null ? you.stagePts : log.reduce((s,g)=>s+(g.pts||0), 0));
+  const placePts=Math.max(0, pts-elimPts);
+  const better=ranked.filter(t=>t!==you && (t.stageElims||0)>elims).length;
+  careerNews('flat', 'ccNewsKinch', [label, place, games, avg.toFixed(1), elims,
+             (elims/games).toFixed(1), ccNum(placePts), ccNum(elimPts), better+1]);
+}
 function careerCongrats(ranked, you, label){
   if(!ranked || !ranked.length) return;
+  ccKinchPost(ranked, you, label);
   const w=ranked[0];
   const bare=t=>String(t.name||'').replace(/<[^>]*>/g,'');
   let handles;
