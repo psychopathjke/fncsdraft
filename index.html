@@ -1801,7 +1801,9 @@
   /* Пластина сезона — та же превьюха, что на первом экране: арт года под
      затемнением, номер года узким капсом поверх, под ним формат и международка.
      Его слово: «хочу фнкс стиль типо как превьюхи». Арт приезжает переменной
-     --yr-art, цвет сезона — --yr, обе с самой кнопки. */
+     --yr-art с самой кнопки. Цвет полосы ОДИН на все годы — жёлтый primary
+     сайта, и он значит «этот выбран»: своим цветом у каждого года три
+     плитки читались как три разных состояния (его слово 27.09). */
   #screen-career-create .cc-year-panel .cc-year-tile{position:relative;display:block;text-align:left;
     padding:34px 12px 10px;border:1px solid rgba(255,255,255,.14);border-radius:0;
     background-color:#0e2f38;background-image:var(--yr-art);background-size:cover;
@@ -1815,7 +1817,7 @@
     background:linear-gradient(to top, rgba(8,44,46,.96) 42%, rgba(8,44,46,.62) 72%, rgba(8,44,46,.28));
     pointer-events:none;}
   #screen-career-create .cc-year-panel .cc-year-tile::before{content:"";position:absolute;left:0;top:0;right:0;
-    height:3px;background:var(--yr,#00b090);opacity:.75;z-index:2;}
+    height:3px;background:rgba(255,255,255,.22);z-index:2;}
   #screen-career-create .cc-year-panel .cc-year-tile b{position:relative;z-index:2;display:block;
     font-size:28px;font-weight:600;letter-spacing:.01em;text-shadow:0 2px 10px rgba(0,0,0,.5);
     transform:skewX(-7deg);transform-origin:left;}
@@ -1825,7 +1827,7 @@
     margin-top:2px;font-style:normal;font-size:9.5px;font-weight:400;letter-spacing:.12em;
     text-transform:uppercase;opacity:.6;}
   #screen-career-create .cc-year-panel .cc-year-tile:hover{border-color:rgba(255,255,255,.34);background-size:112%;}
-  #screen-career-create .cc-year-panel .cc-year-tile:hover::before{opacity:1;}
+  #screen-career-create .cc-year-panel .cc-year-tile:hover::before{background:rgba(255,255,255,.42);}
   /* Выбранный — сезон, в котором играешь: рамка его цветом, вуаль тоньше, арт ярче. */
   /* Арт выбранного приходится вернуть вручную: у соседнего правила экрана
      (#screen-career-create .cc-chip.on) фон записан СОКРАЩЁННО — background:,
@@ -1844,7 +1846,7 @@
     background-position:center 38%;background-repeat:no-repeat;}
   #screen-career-create .cc-year-panel .cc-year-tile.on::after{
     background:linear-gradient(to top, rgba(8,44,46,.88) 38%, rgba(8,44,46,.42) 72%, rgba(8,44,46,.1));}
-  #screen-career-create .cc-year-panel .cc-year-tile.on::before{opacity:1;height:4px;}
+  #screen-career-create .cc-year-panel .cc-year-tile.on::before{background:var(--primary,#ffd400);height:4px;}
   #screen-career-create .cc-year-panel .cc-year-tile:disabled{opacity:.4;cursor:not-allowed;}
   #screen-career-create .cc-year-panel .cc-year-tile:disabled:hover{border-color:rgba(255,255,255,.14);background-size:cover;}
   @media (prefers-reduced-motion:reduce){ #screen-career-create .cc-year-panel .cc-year-tile{transition:none;} }
@@ -68064,14 +68066,14 @@ function ccRenderChips(){
        одинаковы на всех языках, поэтому строкой словаря не идут. */
     /* Арт — тот же файл, которым сезон подписан на лендинге (MODE_ART):
        2026 ключевой арт года, 2025 его Мейджор 1, 2024 остров Мейджора 1. */
-    const YEAR_LOOK={2026:{c:'#00b090', lan:'Antwerp',    art:'art/fncs-2026.jpg'},
-                     2025:{c:'#b14bf4', lan:'Lyon',       art:'art/mode-major1-2025.jpg'},
-                     2024:{c:'#ffdd00', lan:'Fort Worth', art:'art/fncs-2024.jpg'}};
+    const YEAR_LOOK={2026:{lan:'Antwerp',    art:'art/fncs-2026.jpg'},
+                     2025:{lan:'Lyon',       art:'art/mode-major1-2025.jpg'},
+                     2024:{lan:'Fort Worth', art:'art/fncs-2024.jpg'}};
     ychips.innerHTML=[2026, 2025, 2024].map(y=>{
       const on=(CC.year||2026)===y;
       const off=lockY && y!==lockY;
-      const look=YEAR_LOOK[y]||{c:'#00b090', lan:''};
-      return `<button class="cc-chip cc-year-tile${on?' on':''}${off?' soon':''}" style="--yr:${look.c};--yr-art:url(${look.art})" ${off?'disabled title="'+esc(L().ccMpLockedBy)+'"':''} onclick="ccPickYear(${y})"><b>${y}</b><small>${L()['ccYear'+y]}</small><i>${look.lan}</i></button>`;
+      const look=YEAR_LOOK[y]||{lan:''};
+      return `<button class="cc-chip cc-year-tile${on?' on':''}${off?' soon':''}" style="--yr-art:url(${look.art})" ${off?'disabled title="'+esc(L().ccMpLockedBy)+'"':''} onclick="ccPickYear(${y})"><b>${y}</b><small>${L()['ccYear'+y]}</small><i>${look.lan}</i></button>`;
     }).join('');
     const yn=document.getElementById('ccYearNote');
     if(yn) yn.textContent=(lockY ? L().ccMpLockedBy+' · ' : '')+L()['ccYearNote'+(CC.year||2026)];
