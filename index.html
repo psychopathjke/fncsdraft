@@ -3668,6 +3668,8 @@
      табличными цифрами, чтобы столбец не плясал. */
   .x-lead-r{grid-template-columns:minmax(0,1fr) auto auto;}
   .x-lead-r b{font-weight:700;color:#8ea6d6;}
+  .x-lead-r .x-lead-ico{margin-right:6px;font-size:12px;line-height:1;}
+  .x-lead-r i img{margin-right:4px;}
   .x-lead-r em{color:#e8f0ff;font-weight:800;font-variant-numeric:tabular-nums;}
   .x-lead-r i{color:#6f83ab;font-style:normal;max-width:38%;overflow:hidden;
     text-overflow:ellipsis;white-space:nowrap;}
@@ -86191,11 +86193,14 @@ function ccLeadHTML(lead){
   const rows=lead.rows.map(r=>{
     const who=String(r[2]||'');
     const mine=who.toLowerCase()===String(me).toLowerCase();
-    return `<div class="x-shot-r x-lead-r${mine?' me':''}"><b>${esc(L()[r[0]]||r[0])}</b>`+
-           `<em>${esc(String(r[1]))}</em><i>@${esc(who)}</i></div>`;
+    const ico=CC_LEAD_ICO[r[0]] || '';
+    const flag=r[3] ? flagImg(r[3], 11) : '';
+    return `<div class="x-shot-r x-lead-r${mine?' me':''}">`+
+           `<b><span class="x-lead-ico">${ico}</span>${esc(L()[r[0]]||r[0])}</b>`+
+           `<em>${esc(String(r[1]))}</em><i>${flag}@${esc(who)}</i></div>`;
   }).join('');
   return `<div class="x-shot"><div class="x-shot-h"><span>${esc(lead.cap||'')}</span>`+
-         `<span>${esc(L().ccLeadCap)}</span></div>${rows}</div>`;
+         `<span><span class="x-lead-ico">🔥</span>${esc(L().ccLeadCap)}</span></div>${rows}</div>`;
 }
 function ccShotHTML(tbl){
   if(!tbl || !tbl.rows || !tbl.rows.length) return '';
@@ -91631,6 +91636,19 @@ function ccKinchPost(ranked, you, label){
    Двух строк Кинча здесь нет, и это честнее, чем подделать: ПОСТРОЕК движок не
    считает вовсе (есть только метсы), а Solo Clutch Points — метрика Epic про
    очки, набранные последним выжившим в команде, которой у нас нет. */
+/* Значки строк — те же, что в посте Кинча. Языка у них нет, поэтому они
+   живут в коде, а не в словарях. */
+const CC_LEAD_ICO={s_dmgTo:'💥', s_elims:'🎯', s_assists:'💁',
+  s_dmgRatio:'👍', s_dmgNet:'📈', s_dpm:'⏰',
+  s_matsFarmed:'⛏️', s_distance:'🏃', s_timeStorm:'🌧️'};
+/* Флаг лидера — его собственный, с карточки: доску читают по людям, а
+   человек в этой сцене узнаётся по флагу раньше, чем по нику. */
+function ccStatNat(t){
+  const sq=(t && (t.squad||t._cards||t.cards)) || [];
+  const best=sq.slice().sort((a,b)=>((b&&(b.rating||b._ovr))||0)-((a&&(a.rating||a._ovr))||0))[0];
+  if(t && t.isYou){ const c=(typeof careerCard==='function') ? careerCard() : null; return (c && c.nat) || (best && best.nat) || null; }
+  return (best && best.nat) || null;
+}
 function ccStatFace(t){
   if(t && t.isYou) return ccHandle(CAREER.player.nick);
   const sq=(t && (t.squad||t._cards||t.cards)) || [];
@@ -91660,7 +91678,7 @@ function ccStatLeaders(ranked){
     let best=null, bv=-Infinity;
     teams.forEach(t=>{ const v=val(t.mstats, t); if(v!=null && isFinite(v) && v>bv){ bv=v; best=t; } });
     if(!best || bv<=0) return;
-    rows.push([key, fmt(bv), ccStatFace(best)]);
+    rows.push([key, fmt(bv), ccStatFace(best), ccStatNat(best)||'']);
   };
   const num=v=>ccNum(Math.round(v));
   /* НА ИГРОКА, а не на команду. Доска называет одного человека, и число рядом

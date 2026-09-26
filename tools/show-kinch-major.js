@@ -73,7 +73,7 @@ const BOOT = '<pre id="__k" style="display:none"></pre>' + OPEN + `
       const who=(typeof ccPostAuthor==='function') ? ccPostAuthor(n) : null;
       out.posts.push({k:n.k, by:who?(who.name+' @'+who.handle):'—',
         text:String(L()[n.k].apply(null, n.a||[])),
-        rows:(n.lead && n.lead.rows) ? n.lead.rows.map(r=>[String(L()[r[0]]||r[0]), String(r[1]), '@'+r[2]]) : null});
+        rows:(n.lead && n.lead.rows) ? n.lead.rows.map(r=>[(CC_LEAD_ICO[r[0]]||'')+' '+String(L()[r[0]]||r[0]), String(r[1]), (r[3]?'['+r[3]+'] ':'')+'@'+r[2]]) : null});
     });
   }catch(e){ out.err=String(e && e.message || e); }
   document.getElementById('__k').textContent='KMB'+JSON.stringify(out)+'KME';
