@@ -1,0 +1,17 @@
+/* Доска лидеров как ВЛОЖЕНИЕ, а не строкой текста.
+   Его слово: «делай как у кинча реал». У Кинча это картинка-таблица: слева
+   показатель, справа число и ник. Здесь та же карточка, что уже носит таблицу
+   этапа (.x-shot), только колонки свои. Своя строка подсвечивается — как и в
+   таблице этапа: смысл доски в том, чтобы искать на ней себя. */
+function ccLeadHTML(lead){
+  if(!lead || !lead.rows || !lead.rows.length) return '';
+  const me=ccHandle((CAREER.player && CAREER.player.nick) || '');
+  const rows=lead.rows.map(r=>{
+    const who=String(r[2]||'');
+    const mine=who.toLowerCase()===String(me).toLowerCase();
+    return `<div class="x-shot-r x-lead-r${mine?' me':''}"><b>${esc(L()[r[0]]||r[0])}</b>`+
+           `<em>${esc(String(r[1]))}</em><i>@${esc(who)}</i></div>`;
+  }).join('');
+  return `<div class="x-shot"><div class="x-shot-h"><span>${esc(lead.cap||'')}</span>`+
+         `<span>${esc(L().ccLeadCap)}</span></div>${rows}</div>`;
+}

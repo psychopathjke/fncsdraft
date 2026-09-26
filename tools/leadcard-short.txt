@@ -1,0 +1,5 @@
+ccNewsStatBoard:(ev,rows)=>ev+' — лидеры вечера',
+ccNewsStatBoard:(ev,rows)=>ev+' — stats leaders',
+ccNewsStatBoard:(ev,rows)=>ev+' — meilleurs du soir',
+ccNewsStatBoard:(ev,rows)=>ev+' — migliori della serata',
+ccNewsStatBoard:(ev,rows)=>ev+' — líderes da noite',

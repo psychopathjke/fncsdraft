@@ -3664,6 +3664,14 @@
   .x-shot-r.win i{color:#ffd166;}
   .x-shot-r.win b{color:#ffd166;}
   .x-shot-r.me{background:rgba(62,233,184,.08);}
+  /* Строка доски лидеров: слева показатель, справа число и ник. Числа
+     табличными цифрами, чтобы столбец не плясал. */
+  .x-lead-r{grid-template-columns:minmax(0,1fr) auto auto;}
+  .x-lead-r b{font-weight:700;color:#8ea6d6;}
+  .x-lead-r em{color:#e8f0ff;font-weight:800;font-variant-numeric:tabular-nums;}
+  .x-lead-r i{color:#6f83ab;font-style:normal;max-width:38%;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap;}
+  .x-lead-r.me em, .x-lead-r.me i{color:#3ee9b8;}
   .x-shot-r.me b{color:#3ee9b8;}
   /* Широкий вид — тот, который постят: слева места с матчами, победами и
      киллами, справа очки и сводка. См. ccStageShot. */
@@ -8128,7 +8136,8 @@ ccPostBdayEpic:(h,a)=>'С днём рождения, @'+h+'! Сегодня '+a+
 ccBornHint:'Дата рождения — по желанию. Укажи, и в этот день тебя поздравят. Число сверху — сколько тебе на день старта сезона; день рождения ты встретишь уже в нём.',
 ccNewsCongrats:(n,ev)=>'Поздравляем '+n+' с победой — '+ev+'! 🏆',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'РАЗБОР · '+ev+': '+ccTop(p)+'. '+g+' игр, среднее место '+avg+', элимов '+el+' ('+epg+' за игру). Очки: '+plp+' за места, '+elp+' за элимы. По элимам в лобби — '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>ev+' — лидеры вечера: '+rows.map(r=>(L()[r[0]]||r[0])+' '+r[1]+' @'+r[2]).join(' · '),
+ccNewsStatBoard:(ev,rows)=>ev+' — лидеры вечера',
+ccLeadCap:'лидеры вечера',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['ВЗЯЛИ 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' наш'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:'';
@@ -10119,7 +10128,8 @@ ccPostBdayEpic:(h,a)=>'Happy birthday @'+h+' — '+a+' today. Have a good season
 ccBornHint:'Date of birth — optional. Fill it in and the scene wishes you a happy birthday on the day. The number above is your age on the day the season starts; the birthday itself falls inside it.',
 ccNewsCongrats:(n,ev)=>'Congratulations to '+n+' on the win — '+ev+'! 🏆',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+ev+': '+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>ev+' — stats leaders: '+rows.map(r=>(L()[r[0]]||r[0])+' '+r[1]+' @'+r[2]).join(' · '),
+ccNewsStatBoard:(ev,rows)=>ev+' — stats leaders',
+ccLeadCap:'stats leaders',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['WE WON IT 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' is ours'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:'';
@@ -11394,7 +11404,8 @@ ccPostBdayEpic:(h,a)=>'Joyeux anniversaire @'+h+' ! '+a+' ans aujourd’hui — 
 ccBornHint:'Date de naissance — facultative. Renseigne-la et le jour venu, on te souhaitera ton anniversaire. Le nombre au-dessus est ton âge au premier jour de la saison ; l’anniversaire, lui, tombe pendant celle-ci.',
 ccNewsCongrats:(n,ev)=>'Félicitations à '+n+' pour la victoire — '+ev+' ! 🏆',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+ev+': '+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>ev+' — stats leaders: '+rows.map(r=>(L()[r[0]]||r[0])+' '+r[1]+' @'+r[2]).join(' · '),
+ccNewsStatBoard:(ev,rows)=>ev+' — stats leaders',
+ccLeadCap:'stats leaders',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['ON L’A GAGNÉ 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' est à nous'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:'';
@@ -13962,7 +13973,8 @@ ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:''; if(p===1) return ['TOP 1 \ud83c\ud
 ccPostBdayEpic:(h,a)=>'Buon compleanno @'+h+' — '+a+' anni oggi. Buona stagione \ud83c\udf82',
 ccNewsCongrats:(n,ev)=>'Complimenti a '+n+' per la vittoria — '+ev+'! \ud83c\udfc6',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+ev+': '+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>ev+' — stats leaders: '+rows.map(r=>(L()[r[0]]||r[0])+' '+r[1]+' @'+r[2]).join(' · '),
+ccNewsStatBoard:(ev,rows)=>ev+' — stats leaders',
+ccLeadCap:'stats leaders',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:''; return ['ABBIAMO VINTO \ud83c\udfc6 '+ev+a, ev+'. TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6 '+ev+a, ev+' \u00e8 nostro'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:''; return [''+ccTopC(p)+' — '+ev+' \ud83d\udcaa'+a, ev+': '+ccTop(p)+a+' \ud83d\udd25', ''+ccTopC(p)+' a '+ev+a][(v||0)%3];},
 ccNewsD1Table:w=>'Divisione 1 dopo la settimana '+w+' — ecco come sta la corsa della stagione',
@@ -16479,7 +16491,8 @@ ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:''; if(p===1) return ['TOP 1 \ud83c\ud
 ccPostBdayEpic:(h,a)=>'Feliz anivers\u00e1rio @'+h+' — '+a+' hoje. Boa temporada \ud83c\udf82',
 ccNewsCongrats:(n,ev)=>'Parab\u00e9ns a '+n+' pela vit\u00f3ria — '+ev+'! \ud83c\udfc6',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+ev+': '+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>ev+' — stats leaders: '+rows.map(r=>(L()[r[0]]||r[0])+' '+r[1]+' @'+r[2]).join(' · '),
+ccNewsStatBoard:(ev,rows)=>ev+' — stats leaders',
+ccLeadCap:'stats leaders',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:''; return ['GANHAMOS \ud83c\udfc6 '+ev+a, ev+'. TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6 '+ev+a, ev+' \u00e9 nosso'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:''; return [''+ccTopC(p)+' — '+ev+' \ud83d\udcaa'+a, ev+': '+ccTop(p)+a+' \ud83d\udd25', ''+ccTopC(p)+' no '+ev+a][(v||0)%3];},
 ccNewsD1Table:w=>'Divis\u00e3o 1 depois da semana '+w+' — a corrida da temporada est\u00e1 assim',
@@ -85365,6 +85378,8 @@ function careerNews(kind, key, args, opt){
   cr.news.unshift({season:cr.season, day, kind, k:key, a:args||[], f:cr.reach||0,
                    dv:cr.division, id:'n'+(cr.newsN=(cr.newsN||0)+1),
                    by:(opt&&opt.by)||undefined, tbl,
+                   // Доска лидеров вечера — вложение того же рода, что и tbl.
+                   lead:(opt&&opt.lead)||undefined,
                    // Объявленная точка: номер клетки и остров, на котором она.
                    zone:(opt&&opt.zone!=null)?opt.zone:undefined,
                    set:(opt&&opt.set)||undefined,
@@ -86159,6 +86174,23 @@ function ccAvatar(a){
 // The standings as an attachment. Five rows is what fits in a screenshot before
 // anybody stops reading, and the poster's own row is pinned in if it falls below
 // them — the point of posting a table is being in it.
+/* Доска лидеров как ВЛОЖЕНИЕ, а не строкой текста.
+   Его слово: «делай как у кинча реал». У Кинча это картинка-таблица: слева
+   показатель, справа число и ник. Здесь та же карточка, что уже носит таблицу
+   этапа (.x-shot), только колонки свои. Своя строка подсвечивается — как и в
+   таблице этапа: смысл доски в том, чтобы искать на ней себя. */
+function ccLeadHTML(lead){
+  if(!lead || !lead.rows || !lead.rows.length) return '';
+  const me=ccHandle((CAREER.player && CAREER.player.nick) || '');
+  const rows=lead.rows.map(r=>{
+    const who=String(r[2]||'');
+    const mine=who.toLowerCase()===String(me).toLowerCase();
+    return `<div class="x-shot-r x-lead-r${mine?' me':''}"><b>${esc(L()[r[0]]||r[0])}</b>`+
+           `<em>${esc(String(r[1]))}</em><i>@${esc(who)}</i></div>`;
+  }).join('');
+  return `<div class="x-shot"><div class="x-shot-h"><span>${esc(lead.cap||'')}</span>`+
+         `<span>${esc(L().ccLeadCap)}</span></div>${rows}</div>`;
+}
 function ccShotHTML(tbl){
   if(!tbl || !tbl.rows || !tbl.rows.length) return '';
   /* Старые записи в сейве несут только место, имя и очки — у них колонок
@@ -86478,7 +86510,7 @@ function ccQuoteHTML(n){
     <div class="x-quote-h">${ccAvatar(who)}<b>${esc(who.name)}</b>
       <span>@${esc(who.handle)}</span><span class="x-dot">·</span><span>${ccStamp(src)}</span></div>
     <p>${ccMentions(ccText(src))}</p>
-    ${ccShotHTML(src.tbl)}${ccArtHTML(src)}</div>`;
+    ${ccShotHTML(src.tbl)+ccLeadHTML(src.lead)}${ccArtHTML(src)}</div>`;
 }
 /* Карта с обведённой точкой — картинка под объявлением высадки.
 
@@ -86794,7 +86826,7 @@ function ccNewsLeadHTML(lead){
       <em class="nh-kicker">${L()['ccNewsCat'+ccNewsCat(lead)]} · ${ccStamp(lead)}</em>
       <h5>${ccMentions(ccText(lead))}</h5>
       <div class="nh-by">${ccAvatar(who)}<span><b>${esc(who.name)}</b>@${esc(who.handle)}</span></div>
-      ${ccShotHTML(lead.tbl)}
+      ${ccShotHTML(lead.tbl)+ccLeadHTML(lead.lead)}
       ${ccCardShotHTML(lead.card)}
       <button class="cc-back nh-open" onclick="careerOpenFeed()">${L().ccNewsOpen}</button>
     </div>`;
@@ -87537,7 +87569,7 @@ function ccPostHTML(n){
         `${who.you?'':ccRegChipHTML(who.card)}`+
         `<span>@${esc(who.handle)}</span><span class="x-dot">·</span><span>${stamp}</span></header>`+
         `<p>${ccMentions(ccText(n))}</p>`+
-        ccShotHTML(n.tbl)+
+        ccShotHTML(n.tbl)+ccLeadHTML(n.lead)+
         ccDropMapHTML(n)+
         ccArtHTML(n)+
         ccQuoteHTML(n)+
@@ -91639,7 +91671,7 @@ function ccStatLeaders(ranked){
 function ccStatBoardPost(ranked, label){
   const rows=ccStatLeaders(ranked);
   if(rows.length<4) return;
-  careerNews('flat', 'ccNewsStatBoard', [label, rows]);
+  careerNews('flat', 'ccNewsStatBoard', [label, rows], {lead:{cap:label, rows:rows}});
 }
 function careerCongrats(ranked, you, label){
   if(!ranked || !ranked.length) return;
