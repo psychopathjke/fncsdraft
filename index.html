@@ -7555,6 +7555,7 @@ ccNewsRcDrop:(what,p)=>what+': '+ccTop(p)+' — в стадию выживани
 ccNewsRcOut:(what,p)=>what+': '+ccTop(p)+' — Париж закончен',
 ccNewsRcCash:(p,m)=>'Париж: '+ccTop(p)+', заработано $'+m,
 ccNewsRcChamp:m=>'ЧЕМПИОН Reload Championship — $'+m,
+ccNewsRcMvp:(n,m)=>'MVP Reload Championship — '+n+', $'+m,
 ccMajLobby:'Ласт ченс лобби',
 ccMajTicket:'Победа в матче — билет в финал мейджора',
 ccMajNoTicket:'Ни одной победы в лобби — билета нет',
@@ -9542,6 +9543,7 @@ ccNewsRcDrop:(what,p)=>what+': '+ccTop(p)+' — down to Survival',
 ccNewsRcOut:(what,p)=>what+': '+ccTop(p)+' — Paris ends here',
 ccNewsRcCash:(p,m)=>'Paris: '+ccTop(p)+', $'+m+' earned',
 ccNewsRcChamp:m=>'RELOAD CHAMPIONSHIP CHAMPION — $'+m,
+ccNewsRcMvp:(n,m)=>'RELOAD CHAMPIONSHIP MVP — '+n+', $'+m,
 ccMajLobby:'Last Chance Lobby',
 ccMajTicket:'A win in the lobby — a ticket to the Major Finals',
 ccMajNoTicket:'No win in the lobby — no ticket',
@@ -11508,6 +11510,7 @@ ccNewsRcDrop:(what,p)=>what+' : '+ccTop(p)+' — redescente en Survival',
 ccNewsRcOut:(what,p)=>what+' : '+ccTop(p)+' — Paris s’arrête ici',
 ccNewsRcCash:(p,m)=>'Paris : '+ccTop(p)+', '+m+' $ gagnés',
 ccNewsRcChamp:m=>'CHAMPION DU RELOAD CHAMPIONSHIP — '+m+' $',
+ccNewsRcMvp:(n,m)=>'MVP DU RELOAD CHAMPIONSHIP — '+n+', '+m+' $',
 ccNewsMajThrough:(what,p,of)=>what+' : '+ccTop(p)+' sur '+of+', qualifié',
 ccNewsMajOut:(what,p,of)=>what+' : '+ccTop(p)+' sur '+of+', le parcours s’arrête',
 ccNewsMajCash:(n,p,m)=>'Finale du Major '+n+' : '+ccTop(p)+', '+m+' $ gagnés',
@@ -13686,6 +13689,7 @@ ccNewsRcDrop:(what,p)=>what+': '+ccTop(p)+' — gi\u00f9 alla Survival',
 ccNewsRcOut:(what,p)=>what+': '+ccTop(p)+' — Parigi finisce qui',
 ccNewsRcCash:(p,m)=>'Parigi: '+ccTop(p)+', $'+m+' guadagnati',
 ccNewsRcChamp:m=>'CAMPIONE DEL RELOAD CHAMPIONSHIP — $'+m,
+ccNewsRcMvp:(n,m)=>'MVP DEL RELOAD CHAMPIONSHIP — '+n+', $'+m,
 ccNewsMajThrough:(what,p,of)=>what+': '+ccTop(p)+' su '+of+', passato',
 ccNewsMajOut:(what,p,of)=>what+': '+ccTop(p)+' su '+of+', il percorso finisce',
 ccNewsMajCash:(n,p,m)=>'Finali del Major '+n+': '+ccTop(p)+', $'+m+' guadagnati',
@@ -16198,6 +16202,7 @@ ccNewsRcDrop:(what,p)=>what+': '+ccTop(p)+' — desce para a Survival',
 ccNewsRcOut:(what,p)=>what+': '+ccTop(p)+' — Paris acaba aqui',
 ccNewsRcCash:(p,m)=>'Paris: '+ccTop(p)+', $'+m+' ganhos',
 ccNewsRcChamp:m=>'CAMPE\u00c3O DO RELOAD CHAMPIONSHIP — $'+m,
+ccNewsRcMvp:(n,m)=>'MVP DO RELOAD CHAMPIONSHIP — '+n+', $'+m,
 ccNewsMajThrough:(what,p,of)=>what+': '+ccTop(p)+' de '+of+', passou',
 ccNewsMajOut:(what,p,of)=>what+': '+ccTop(p)+' de '+of+', a caminhada acaba',
 ccNewsMajCash:(n,p,m)=>'Finais do Major '+n+': '+ccTop(p)+', $'+m+' ganhos',
@@ -85366,6 +85371,7 @@ const CC_POST_BY={
   ccNewsSumThrough:'you', ccNewsSumOut:'you', ccNewsSumCash:'you', ccNewsSumNoCash:'you',
   ccNewsSoloThrough:'you', ccNewsSoloOut:'you', ccNewsSoloCash:'you',
   ccNewsRcThrough:'you', ccNewsRcDrop:'you', ccNewsRcOut:'you', ccNewsRcCash:'you', ccNewsRcChamp:'you',
+  ccNewsRcMvp:'you',
   ccNewsGcThrough:'you', ccNewsGcIn:'you', ccNewsGcOut:'you', ccNewsGcCash:'you', ccNewsGcNoCash:'you',
   ccNewsGcSeat:'you',
   ccNewsGlobCash:'you', ccNewsGlobNoCash:'you', ccNewsGlobChamp:'you',
@@ -96154,6 +96160,9 @@ function ccRcStage(st){
 }
 /* The published purse, place by place. It steps: a thousand a place from
    fifteenth to twentieth, five hundred a place to thirtieth, then the tail. */
+/* Награда MVP — сверх таблицы призовых: на настоящем ЛАНе 2026 года это
+   $25 000 (Liquipedia, Reload Elite Series/2026). */
+const CC_RC_MVP=25000;
 function rcPrize(place){
   const top=[260000,150000,90000,60000,45000,35000,30000,28000,26000,24000,
              22000,20000,18000,16000,15000];
@@ -98581,6 +98590,18 @@ async function runCareerReloadChampionship(){
     careerNews(champ?'good':cash?'good':'flat',
                champ?'ccNewsRcChamp':'ccNewsRcCash',
                champ?[ccNum(cash)]:[place, ccNum(cash)]);
+    /* MVP турнира. Судить по игре некого: сим пишет киллы и очки команде, а
+       не человеку, — поэтому награду берёт сильнейший по карточке игрок
+       команды-чемпиона. Деньги личные и не делятся: ccShareOf здесь не место. */
+    const champT=ranked[0];
+    const mvpCard=((champT && (champT.squad||champT._cards||[])) || []).slice()
+      .sort((a,b)=>((b&&(b.rating||b._ovr))||0)-((a&&(a.rating||a._ovr))||0))[0];
+    if(mvpCard){
+      const mvpMine = champT===you && !!mvpCard.isYou;
+      if(mvpMine) ccPayIn(CC_RC_MVP);
+      careerNews(mvpMine?'good':'flat', 'ccNewsRcMvp',
+                 [mvpCard.handle||mvpCard.nick||'', ccNum(CC_RC_MVP)]);
+    }
     // A proper noun, the same in every language, so no string carries it.
     careerCongrats(ranked, you, 'Reload Championship');
   } else {

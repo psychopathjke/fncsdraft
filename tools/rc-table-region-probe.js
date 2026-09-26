@@ -40,6 +40,7 @@ const BOOT = `
     const row=CAREER_YEAR.find(r=>r[2]==='ReloadChampionshipParis');
     if(!row) throw new Error('Парижа нет в календаре');
     const day0=row[0];
+    const MATE={EU:'Sbari', NAW:'Khanada', OCE:'ZDog', ASIA:'Koyota'};
     for(const reg of ['NAW','EU']){
       localStorage.setItem('fncsdraft_career', JSON.stringify({v:1,
         player:{nick:'Probe', age:20, source:'rookie', country:'de', countryPing:15,
@@ -50,7 +51,7 @@ const BOOT = `
           reach:9000, tokens:[], log:[], news:[],
           ewc:[{series:4, place:2, day:'2026-07-01'}],
           rc:{got:'survival', ticket:true}},
-        partners:[{handle:'Sbari', cardRegion:reg, dev:0, since:'2026-01-12'}]}));
+        partners:[{handle:MATE[reg]||'Sbari', cardRegion:reg, dev:0, since:'2026-01-12'}]}));
       careerLoad();
       skipAnimation=true; CC_SKIP_RUN=true;
       const ev=careerRcOn(careerToday());
@@ -90,7 +91,7 @@ for (const r of o.rows) {
   const top = vals[0] || ['—', 0];
   const share = r.rows ? Math.round(top[1] / r.rows * 100) : 0;
   if (share >= 90) bad++;
-  console.log('карьера ' + r.reg.padEnd(4) + ' состав ' + r.size + '  этап ' + r.stage + '  допуск ' + r.can + (r.runErr ? '  ОШИБКА: ' + r.runErr : '') + '  строк ' + String(r.rows).padStart(3) +
+  console.log('карьера ' + r.reg.padEnd(4) + ' новостей MVP ' + r.mvp + ', про финал ' + r.champ + ' | состав ' + r.size + '  этап ' + r.stage + '  допуск ' + r.can + (r.runErr ? '  ОШИБКА: ' + r.runErr : '') + '  строк ' + String(r.rows).padStart(3) +
               '  колонка: ' + vals.map(([k, v]) => k + ' ' + v).join(', '));
 }
 console.log(bad ? '\nв колонке один регион на всю таблицу — отчёт подтверждается' :
