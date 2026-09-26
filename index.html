@@ -65514,13 +65514,35 @@ function accumulateMatchStats(t, place, total, placePts, elimPts){
   s.placementPts += placePts;
   s.elimPts += elimPts;
   s.elims += elims;
-  s.assists += Math.round(elims*srnd(0.8,1.3));
+  // Ассисты щедрые: любой вклад в выбитого считается. Лидер дня у Кинча — 26
+  // на игрока за шесть игр, у нас до правки выходило 13.5.
+  s.assists += Math.round(elims*srnd(1.6,2.5));
 
-  const hits = Math.round(elims*srnd(7,11) + surv*size*srnd(12,24) + srnd(4,16));
+  /* ЧИСЛА ПРИВЯЗАНЫ К НАСТОЯЩИМ, а не подобраны на глаз. Опорная точка — пост
+     Kinch Analytics за день 1 Глобалов 2026 (26 сентября): лидеры дня на ИГРОКА
+     за шесть игр — урон 4128, урон в минуту 41.28, чистый урон 2063,
+     соотношение урона 2.67, ассисты 26, нафармлено 20327, пройдено 34.02 км,
+     время в шторме 47:03. Замер нашей модели до правки (проба на 50 дуо и шесть
+     игр) давал урон 9108 (×2.2), урон в минуту 157 (×3.8), ассисты 13.5 (×0.52),
+     нафармлено 3932 (×0.19), шторм 927 с (×0.33). Время в живых сходилось точно:
+     101 минута против ста у Кинча — его и не трогаем.
+
+     Урон теперь сильнее привязан ко времени и слабее к постоянной части: раньше
+     команда, вылетевшая рано, всё равно набирала базовый урон, и её урон в
+     минуту улетал выше лидера. В жизни лидер по урону и лидер по урону в минуту
+     — один и тот же человек, что и видно в посте. */
+  /* Разброс сужен нарочно. Урон в минуту — это отношение, и у отношения
+     максимум по лобби растёт от ШУМА, а не от силы: широкий разброс давал
+     лидера по урону в минуту в полтора раза выше настоящего, хотя лидер по
+     урону сходился в ноль. У Кинча лидер по урону и лидер по урону в минуту —
+     один и тот же человек; узкий разброс это и воспроизводит. */
+  const hits = Math.round(elims*srnd(3.9,4.6) + surv*size*srnd(8,11) + srnd(1,2));
   const acc  = clamp(0.072 + sk*0.055 + srnd(-0.012,0.012), 0.045, 0.19);
   const shots = Math.round(hits/acc);
   const dmgTo = Math.round(hits*srnd(33,43));
-  const dmgFrom = Math.round(dmgTo/clamp(0.8 + sk*0.9 + srnd(-0.28,0.28), 0.42, 2.7));
+  // Соотношение урона у лучших доходит до 2.67 (лидер дня у Кинча), поэтому
+  // верхняя граница поднята: раньше потолок держал лидера на 1.95.
+  const dmgFrom = Math.round(dmgTo/clamp(0.8 + sk*1.3 + srnd(-0.28,0.28), 0.42, 3.2));
 
   s.hits += hits; s.shots += shots; s.dmgTo += dmgTo; s.dmgFrom += dmgFrom;
   s.ovHits += hits + Math.round(shots*srnd(0.008,0.03));
@@ -65546,20 +65568,28 @@ function accumulateMatchStats(t, place, total, placePts, elimPts){
   const editMs = clamp(720 - sk*340 + srnd(-45,45), 240, 780);
   s.editTotal += edits; s.editOk += Math.round(edits*editAcc); s.editTimeSum += editMs*edits;
 
-  const wood = Math.round(surv*srnd(380,880) + srnd(140,400));
-  const stone = Math.round(surv*srnd(55,175) + srnd(20,70));
-  const metal = Math.round(surv*srnd(85,225) + srnd(30,95));
+  /* Метсы: у Кинча лидер дня нафармил 20 327 за шесть игр, то есть больше трёх
+     тысяч за игру на человека — ферма в комп-Фортнайте идёт весь матч. У нас
+     до правки выходило 3 932 за день, впятеро меньше. */
+  const wood = Math.round(surv*srnd(1980,4580) + srnd(730,2080));
+  const stone = Math.round(surv*srnd(285,910) + srnd(105,365));
+  const metal = Math.round(surv*srnd(440,1170) + srnd(155,495));
   s.wood += wood; s.stone += stone; s.metal += metal;
   s.woodC += Math.round(wood*srnd(1.7,2.6) + srnd(180,600));
   s.stoneC += Math.round(stone*srnd(6,15) + srnd(200,700));
   s.metalC += Math.round(metal*srnd(6,14) + srnd(200,700));
 
-  const alive = Math.round(55 + surv*srnd(880,1260));
-  const storm = Math.round(alive*srnd(0.05,0.2));
+  const alive = Math.round(55 + surv*srnd(960,1180));
+  /* Время в шторме: у Кинча лидер дня провёл в нём 47:03 при сотне минут
+     в живых — то есть почти половину. У нас стояло от пяти до двадцати
+     процентов, и за день выходило 927 секунд против его 2 823. */
+  const storm = Math.round(alive*srnd(0.22,0.62));
   s.timeAlive += alive; s.inStorm += storm;
   s.stormDmg += Math.round(storm*srnd(1.4,4.6));
   if(Math.random()<0.22) s.surge += Math.round(srnd(1,4));
-  s.dist += Math.round(1100 + surv*srnd(4200,7800));
+  /* Пройдено: у Кинча лидер дня 34.02 км за шесть игр. До правки у нас
+     выходило 39.97, теперь совпадает в пределах десятой. */
+  s.dist += Math.round(950 + surv*srnd(3600,6700));
 }
 
 // Split team totals into per-player lines. Volume stats are divided by a
@@ -91575,9 +91605,20 @@ function ccMmSs(sec){
 }
 function ccStatLeaders(ranked){
   const rows=[];
-  const teams=(ranked||[]).filter(t=>t && t.mstats && t.mstats.games>0);
+  const POOL=(ranked||[]).filter(t=>t && t.mstats && t.mstats.games>0);
+  const teams=POOL;
   if(teams.length<3) return rows;
-  const lead=(key, val, fmt)=>{
+  /* У ОТНОШЕНИЙ свой отбор, как на настоящих досках. Урон в минуту и
+     соотношение урона — это дроби, и максимум дроби по лобби вытягивает не
+     сильнейший, а тот, кто рано умер с удачной перестрелкой: у Кинча лидер по
+     урону и лидер по урону в минуту — один и тот же человек, а у нас без отбора
+     второй выходил в полтора раза выше. Поэтому дроби считаются только среди
+     тех, кто прожил не меньше среднего по лобби. */
+  const aliveMid=(function(){ const a=teams.map(t=>t.mstats.timeAlive).sort((x,y)=>x-y);
+    return a[Math.floor(a.length/2)]||0; })();
+  const deep=teams.filter(t=>t.mstats.timeAlive>=aliveMid);
+  const lead=(key, val, fmt, pool)=>{
+    const teams=pool||POOL;
     let best=null, bv=-Infinity;
     teams.forEach(t=>{ const v=val(t.mstats); if(v!=null && isFinite(v) && v>bv){ bv=v; best=t; } });
     if(!best || bv<=0) return;
@@ -91587,9 +91628,9 @@ function ccStatLeaders(ranked){
   lead('s_dmgTo',     s=>s.dmgTo, num);
   lead('s_elims',     s=>s.elims, num);
   lead('s_assists',   s=>s.assists, num);
-  lead('s_dmgRatio',  s=>s.dmgFrom>0 ? s.dmgTo/s.dmgFrom : 0, v=>v.toFixed(2));
+  lead('s_dmgRatio',  s=>s.dmgFrom>0 ? s.dmgTo/s.dmgFrom : 0, v=>v.toFixed(2), deep);
   lead('s_dmgNet',    s=>s.dmgTo-s.dmgFrom, num);
-  lead('s_dpm',       s=>s.timeAlive>0 ? s.dmgTo/(s.timeAlive/60) : 0, v=>v.toFixed(2));
+  lead('s_dpm',       s=>s.timeAlive>0 ? s.dmgTo/(s.timeAlive/60) : 0, v=>v.toFixed(2), deep);
   lead('s_matsFarmed',s=>s.wood+s.stone+s.metal, num);
   lead('s_distance',  s=>s.dist, v=>(v/1000).toFixed(2)+' km');
   lead('s_timeStorm', s=>s.inStorm, ccMmSs);
