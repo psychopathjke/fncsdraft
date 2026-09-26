@@ -1,0 +1,4 @@
+     <div class="ch-hint cc-duo-nat">${esc(L().ccDuoNat)}:
+       <button class="cc-job-h${CC_DUO_NAT?'':' on'}" onclick="ccDuoFindNat('')">${esc(L().ccDuoNatAll)}</button>
+       ${natTop.map(c=>`<button class="cc-job-h cc-duo-flag${CC_DUO_NAT===c?' on':''}" onclick="ccDuoFindNat('${c}')"><img src="flags/w20/${c}.png" alt="" onerror="this.remove()">${natCount[c]||0}</button>`).join('')}
+     </div>

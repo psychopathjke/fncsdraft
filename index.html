@@ -2223,6 +2223,9 @@
   .cc-flat-where:focus{outline:2px solid var(--accent);outline-offset:1px;}
   .cc-duo-sort{float:right;display:inline-flex;gap:4px;align-items:center}
   .cc-duo-sort .cc-job-h.on{outline:1px solid var(--primary,#ffd400)}
+  .cc-duo-nat{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:4px;}
+  .cc-duo-flag{display:inline-flex;align-items:center;gap:4px;}
+  .cc-duo-flag img{height:10px;width:auto;border-radius:2px;display:block;}
   .cc-duo-q{width:100%;margin:10px 0 4px;padding:9px 12px;border-radius:9px;
     border:1px solid var(--line);background:rgba(0,0,0,.28);color:inherit;
     font:inherit;font-size:14px;}
@@ -7338,6 +7341,7 @@ chSquad:'Дуо', ccDuoFindTitle:'Кому написать',
 ccDuoFindHint:'Любому игроку своего региона можно написать первым. Ответит он сам — и не всякий согласится.',
 ccDuoSearchPh:'Поиск по нику',
 ccDuoSortBy:'Сортировать', ccDuoSortOvr:'рейтинг', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoNat:'Флаг', ccDuoNatAll:'все',
 ccDuoWrite:'Написать',
 ccDuoFree:'без дуо',
 ccDuoWith:n=>'дуо с '+n,
@@ -9326,6 +9330,7 @@ chSquad:'Duo', ccDuoFindTitle:'Who to write to',
 ccDuoFindHint:'You can write first to anybody in your region. They answer for themselves, and not everybody says yes.',
 ccDuoSearchPh:'Search by name',
 ccDuoSortBy:'Sort by', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoNat:'Flag', ccDuoNatAll:'all',
 ccDuoWrite:'Write',
 ccDuoFree:'no duo',
 ccDuoWith:n=>'duo with '+n,
@@ -12210,6 +12215,7 @@ ccDuoFindTitle:'À qui écrire',
 ccDuoFindHint:'Tu peux écrire en premier à n’importe qui de ta région. Chacun répond pour soi, et tout le monde ne dit pas oui.',
 ccDuoSearchPh:'Chercher par nom',
 ccDuoSortBy:'Trier par', ccDuoSortOvr:'note', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoNat:'Drapeau', ccDuoNatAll:'tous',
 ccDuoWrite:'Écrire',
 ccDuoFree:'sans duo',
 ccDuoNobody:'Personne trouvé',
@@ -14507,6 +14513,7 @@ ccNewsVicNoWin:"Victory Cup: Round 2 senza vittorie",
 ccDuoFindTitle:"A chi scrivere",
 ccDuoSearchPh:"Cerca per nome",
 ccDuoSortBy:'Ordina per', ccDuoSortOvr:'valutazione', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoNat:'Bandiera', ccDuoNatAll:'tutti',
 ccDuoWrite:"Scrivi",
 ccDuoFree:"senza duo",
 ccDuoNobody:"Nessun risultato",
@@ -17020,6 +17027,7 @@ ccNewsVicNoWin:"Victory Cup: Rodada 2 sem vitória",
 ccDuoFindTitle:"Para quem escrever",
 ccDuoSearchPh:"Buscar por nome",
 ccDuoSortBy:'Ordenar por', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoNat:'Bandeira', ccDuoNatAll:'todos',
 ccDuoWrite:"Escrever",
 ccDuoFree:"sem dupla",
 ccDuoNobody:"Ninguém encontrado",
@@ -90897,6 +90905,15 @@ let CC_DUO_Q='';
    каждому человеку (careerPrRows); призовые и места ботов она не пишет. */
 let CC_DUO_SORT='ovr';
 function ccDuoFindSort(v){ CC_DUO_SORT=(v==='pr' ? 'pr' : 'ovr'); ccDuoFindRender(); }
+/* Отбор по флагу. Пусто — все; иначе код страны, как его знает FLAG_CODE.
+   Живёт рядом с сортировкой и сбрасывается там же, где строка поиска. */
+let CC_DUO_NAT='';
+function ccDuoFindNat(v){ CC_DUO_NAT=(String(v||'')===CC_DUO_NAT) ? '' : String(v||''); ccDuoFindRender(); }
+// Код страны человека из списка: в карточках лежит НАЗВАНИЕ страны, не код.
+function ccDuoNatCode(w){
+  const n=(w && (w.nat || (w.card && w.card.nat))) || '';
+  return n ? String(FLAG_CODE[n] || '').toLowerCase() : '';
+}
 /* The chair the search was opened from, if it was opened from one. Null is "any
    chair", which is what the day panel means when it says the squad is a player
    short — there, the player has not picked anybody to lose. */
@@ -90909,7 +90926,7 @@ function ccDuoFindOpen(seat){
      предложить его может любой из двоих — раньше список молча не открывался
      у второго в лобби, и если роли перепутались, то и у владельца. */
   if(ccMpOn() && ccMpMateRecs().length >= ccMpBotSeats()) return;
-  CC_DUO_Q='';
+  CC_DUO_Q=''; CC_DUO_NAT='';
   CC_DUO_SEAT=(typeof seat==='number' && seat>=0 && seat<careerMateSeats()) ? seat : null;
   ccDuoFindRender();
   document.getElementById('duoFindModal').style.display='flex';
@@ -90974,7 +90991,16 @@ function ccDuoFindRender(keepFocus){
   const prMap=new Map(careerPrRows().map((r,i)=>[hKey(r.name), {pr:r.pr, rank:i+1}]));
   const prOf=new Map(all.map(w=>[w, prMap.get(hKey(w.handle))||null]));
   if(CC_DUO_SORT==='pr') all.sort((a,b)=>((prOf.get(b)||{}).pr||0)-((prOf.get(a)||{}).pr||0) || b.ovr-a.ovr);
-  const list=(q ? all.filter(w=>String(w.handle).toLowerCase().indexOf(q)>=0) : all).slice(0, 120);
+  // Сначала флаг, потом набранное имя: флаг сужает, строка ищет внутри.
+  const byNat=CC_DUO_NAT ? all.filter(w=>ccDuoNatCode(w)===CC_DUO_NAT) : all;
+  const list=(q ? byNat.filter(w=>String(w.handle).toLowerCase().indexOf(q)>=0) : byNat).slice(0, 120);
+  /* Флаги — те, что в списке есть, с числом людей у каждого. Десять самых
+     населённых: строка фильтров шире экрана телефона бесполезна, а хвост из
+     стран с одним человеком ищется строкой быстрее, чем флагом. */
+  const natCount={};
+  all.forEach(w=>{ const c=ccDuoNatCode(w); if(c) natCount[c]=(natCount[c]||0)+1; });
+  const natTop=Object.keys(natCount).sort((a,b)=>natCount[b]-natCount[a]).slice(0, 10);
+  if(CC_DUO_NAT && natTop.indexOf(CC_DUO_NAT)<0) natTop.push(CC_DUO_NAT);
   const rows=list.map(w=>{
     const said=careerDmFind(w.handle);
     const wrote=!!(said && said.msgs && said.msgs.some(m=>m.from==='you'));
@@ -91015,6 +91041,10 @@ function ccDuoFindRender(keepFocus){
             oninput="ccDuoFindQ(this.value)">
      <div class="ch-hint cc-duo-n">${list.length ? L().ccDuoFound(list.length) : L().ccDuoNobody}
        <span class="cc-duo-sort">${esc(L().ccDuoSortBy)}: <button class="cc-job-h${CC_DUO_SORT==='ovr'?' on':''}" onclick="ccDuoFindSort('ovr')">${esc(L().ccDuoSortOvr)}</button> <button class="cc-job-h${CC_DUO_SORT==='pr'?' on':''}" onclick="ccDuoFindSort('pr')">${esc(L().ccDuoSortPr)}</button></span></div>
+     <div class="ch-hint cc-duo-nat">${esc(L().ccDuoNat)}:
+       <button class="cc-job-h${CC_DUO_NAT?'':' on'}" onclick="ccDuoFindNat('')">${esc(L().ccDuoNatAll)}</button>
+       ${natTop.map(c=>`<button class="cc-job-h cc-duo-flag${CC_DUO_NAT===c?' on':''}" onclick="ccDuoFindNat('${c}')"><img src="flags/w20/${c}.png" alt="" onerror="this.remove()">${natCount[c]||0}</button>`).join('')}
+     </div>
      <div class="cc-buys">${rows}</div>`;
   if(keepFocus){
     const f=document.getElementById('duoFindQ');
@@ -92270,6 +92300,11 @@ const CC_COACH_DAYS=30;
    left null until the picture is actually in the folder — an avatar nobody has
    is not invented, it degrades to the initials the same way an agent's does. */
 const CC_COACHES=[
+  /* Первый по списку, и это не оценка на глаз: 82 100 подписчиков и ростер,
+     перечисленный в его же шапке — Kami, charyy, Rapid, Clix, Rise, Muz, Kaan,
+     Faded, Peterbot, Pollo. Условия ему, как и всем, назначит место
+     (ccCoachRankTerms); чему учит — строки нет, значит все шесть. */
+  {id:'bloodx', name:'Bloodx',     at:'BloodxEU',     reg:'EU',    cost:3500, train:0.35, keys:ATTR_KEYS.slice(), chem:0.4, photo:'BloodxEU.jpg'},
   // The top of the list: eight FNCS and two Globals, and the roster of people
   // he works with is most of Division 1.
   {id:'raz',    name:'RazZzero0o', at:'RazZzero0oFN', reg:'EU',    cost:3500, train:0.30, keys:ATTR_KEYS.slice(), chem:0.4, photo:'RazZzero0oFN.jpg'},
