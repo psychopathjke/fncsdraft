@@ -19426,6 +19426,9 @@ function tierCapForEvent(event){
 }
 
 function pushCard(card){
+  // Написание чистится ЗДЕСЬ, до ключа склейки: иначе «Japko » и «Japko» с
+  // одного турнира лягут двумя карточками. См. hKey.
+  card.handle=String(card.handle||'').trim();
   const key=card.handle+'|'+card.event+'|'+card.placement;
   if(cardKeys.has(key)) return;
   cardKeys.add(key);
@@ -52046,7 +52049,12 @@ function attrsFor(p){
 // and "shxrk", "FoCuS" and "Focus". Every check for "is this player already in
 // the lobby" goes through this, so a bot can never end up with another card of
 // someone the player has already drafted.
-function hKey(p){ return String(p && p.handle || p || '').toLowerCase(); }
+/* Пробел по краям ника — мусор выгрузки, а не имя: в таблицах 2024-2025 тот же
+   человек приезжает как «Japko », а в 2026-м как «Japko», и без trim это два
+   разных человека во всём файле сразу — в парах, в ростере, в пуле карьеры.
+   Отзыв: «только двое japko в 25 году». Замер до правки: 90 ников с пробелом
+   по краям, у 71 есть близнец без пробела. */
+function hKey(p){ return String(p && p.handle || p || '').toLowerCase().trim(); }
 
 function attrsForRaw(p){
   if(p._attrs) return p._attrs;
