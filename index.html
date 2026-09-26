@@ -67322,13 +67322,30 @@ function ccPingEdge(ms){
    оно там, где комнату меряют: в окнах check-career-field и check-career-pools.
    Число, описывающее комнату, и число, задающее лестницу, — разные числа. */
 const CC_DIV_RATING={1:82, 2:75, 3:68, 4:61, 5:54};
+/* Сколько ступеней у региона. У Epic дивизионные капы 4 и 5 идут только в
+   Европе и NA Central — в остальных пяти регионах лестница кончается третьим
+   (проверено по id событий: 177 капов в архиве Tracker, D1-D3 везде, D4-D5
+   только EU и NAC). */
+const CC_DIV_DEEP=['EU','NAC'];
+function ccDivCount(reg){
+  const r=reg || (typeof ccCareerRegion==='function' ? ccCareerRegion() : 'EU');
+  return CC_DIV_DEEP.indexOf(r)>=0 ? 5 : 3;
+}
+/* Три ступени держат ту же полосу, что и пять: верх остаётся верхом, низ —
+   входом. Отрезать 4 и 5 было нельзя: тогда третий дивизион Мидл Иста стал бы
+   на четырнадцать очков выше входа, то есть вход в карьеру там оказался бы
+   сильнее, чем в Европе. Его решение 26 сентября. */
+const CC_DIV_RATING_3={1:82, 2:68, 3:54};
 function ccDivShift(reg){
   const r=reg || (typeof ccCareerRegion==='function' ? ccCareerRegion() : 'EU');
   const top=REGION_TOP[r];
   return (top==null ? 0 : top-REGION_TOP.EU);
 }
 // Every band in the mode reads through here, so a region's ladder is its own.
-function ccBand(div, reg){ return (CC_DIV_RATING[div]||54)+ccDivShift(reg); }
+function ccBand(div, reg){
+  const tbl=ccDivCount(reg)===3 ? CC_DIV_RATING_3 : CC_DIV_RATING;
+  return (tbl[div]||54)+ccDivShift(reg);
+}
 // And the line nothing invented may cross moves with it: a generated 80 in
 // Oceania would be a name at the top of the region, which is the same thing
 // CC_GEN_TOP exists to stop in Europe.
@@ -67873,6 +67890,10 @@ function ccPickRegion(r){
   document.getElementById('ccNick').value='';
   document.getElementById('ccAge').value='16';
   ccRenderRegions();
+  /* Чипы дивизиона зависят от региона дважды: сколько их (в Океании три
+     ступени, в Европе пять) и какая полоса рейтинга под каждой. Без этой
+     строки после смены региона оставались и лишние ступени, и чужие числа. */
+  ccRenderChips();
   ccRenderPhoto();
   ccRenderList();
   ccSync();
@@ -67916,7 +67937,13 @@ function ccRenderChips(){
   if(divLab) divLab.textContent=noDiv ? L().ccStartOvr : L().ccDivision;
   const divNote=document.querySelector('#ccDivField .cc-note');
   if(divNote) divNote.textContent=noDiv ? L().ccStartOvrNote : L().ccDivNote;
-  document.getElementById('ccDivChips').innerHTML=[1,2,3,4,5].map(d=>{
+  /* Ступеней столько, сколько их в выбранном регионе: в Океании нет ни
+     четвёртого дивизиона, ни пятого. Выбор, оставшийся за краем (сменили
+     регион с Европы на Азию), съезжает на нижнюю ступень. */
+  const divN=ccDivCount(CC.region);
+  if((CC.div||1)>divN) CC.div=divN;
+  const divList=[]; for(let d=1; d<=divN; d++) divList.push(d);
+  document.getElementById('ccDivChips').innerHTML=divList.map(d=>{
     const on=CC.div===d;
     return `<button class="cc-chip${on?' on':''}" `+
       `onclick="ccPickDiv(${d})">${d}<small>${card?'':ccBand(d, CC.region)}</small></button>`;
@@ -68783,7 +68810,7 @@ function careerLoad(){
   // at the hub with an empty seat and a person sat in it.
   if(CAREER){ careerNotesMigrate(); careerMigrateSize(); careerMigratePartners();
               careerMigrateHome(); careerMigrateDiff(); careerMigrateSpotIslands();
-              careerMigrateNoDiv();
+              careerMigrateNoDiv(); careerMigrateDivDepth();
               careerMigrateBeefsOff();
               // Сейв, раздутый линейной формулой твича, — под потолок. См. CC_TW_CEIL.
               careerMigrateTwitch();
@@ -75896,6 +75923,15 @@ function ccLogMates(mates){
    month's rent forgiven once, to a handful of saves, and worth it. */
 /* Сейв, заведённый до этой правки, стоит в том дивизионе, который выбрали на
    экране создания, и выйти из него ему нечем. Один раз — в первый. */
+/* Сейв из региона, где ступеней три, мог сидеть в четвёртом или пятом:
+   до сегодняшней правки их предлагали везде. Опускаем на нижнюю ступень
+   региона — это то же место в лестнице, просто названное верно. */
+function careerMigrateDivDepth(){
+  const cr=CAREER && CAREER.career;
+  if(!cr) return;
+  const n=ccDivCount(typeof ccCareerRegion==='function' ? ccCareerRegion() : null);
+  if((cr.division||1)>n){ cr.division=n; if(typeof careerSave==='function') careerSave(); }
+}
 function careerMigrateNoDiv(){
   const cr=CAREER && CAREER.career;
   if(!cr || !ccNoDivisions()) return;
@@ -82237,7 +82273,7 @@ const CAREER_CRESTS=new Set([
   'Lynox_Esport.png','Lyost_Esport.png','MGA_Esport.png','MOUZ.png','Matrix.png','NEXUS.png',
   'NOM_eSports.png','NTO_Corp.png','Natare_Six.png','Natus_Vincere.png',
   'Northern_Star_Gaming.png','OCE5N.png','ORA_Esport.png','PARIVISION.png','PWR.png',
-  'Poyo_Esports.png','QT_DIG.png','R8_Esports.png','ROC_Esports.png','SORIN.png','Shimo.png',
+  'Drayko_Esport.png','Poyo_Esports.png','QT_DIG.png','R8_Esports.png','ROC_Esports.png','SORIN.png','Shimo.png',
   'ShindeN.png','Solary.png','T1.png','TRKF_E-Sport.png','TSM.png','TYT_Esports.png',
   'Team_Falcons.png','Team_HavoK.png','Team_Liquid.png','Team_STM.png','Team_Spirit.png',
   'Team_Vitality.png','Twisted_Minds.png','Virtus.pro.png','Void_Esports.png','Vulcan_Esport.png',
@@ -82354,6 +82390,12 @@ const CC_ORG_NEW=[
      Liquipedia — молодой клуб; уровень 80 — чуть выше пола списка (CC_ORG_EARN_FLOOR 78),
      это оценка, а не замер. */
   {name:'Shimo',          tier:80, n:0, newcomer:true},   // 21.09 вечер, отзыв: «Shimo, просто не Crew»
+  /* Drayko Esport — его просьба 26.09 (x.com/Esportdrayko). Основан в 2026-м,
+     в шапке профиля сам пишет свой счёт: «1x final div | 3x final solo | 900$».
+     Ни на esportsearnings, ни на Liquipedia его нет, состава в карточках тоже
+     нет — уровень ставится полом списка, ниже Shimo: это самый молодой клуб
+     здесь, и любая цифра выше была бы выдумкой в его пользу. */
+  {name:'Drayko Esport',  tier:78, n:0, newcomer:true},   // 26.09, герб logos/Drayko_Esport.png с аватара
   /* Его четыре, 30 августа («на рабочем столе орги, добавил новые»): гербы
      легли в logos/. Уровни — по тому же ряду призовых esportsearnings, что и
      выше: TSM (~$15M за историю) рядом с Vitality/Cloud9, Gambit (~$18M, но
