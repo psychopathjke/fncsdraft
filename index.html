@@ -91668,6 +91668,12 @@ function ccStatLeaders(ranked){
   lead('s_timeStorm', s=>s.inStorm, ccMmSs);
   return rows;
 }
+/* Один вызов на конец турнира: личный разбор и доска лидеров.
+   Зовётся из каждого раннера, чей вечер — финал. */
+function ccBoardAfter(ranked, you, label){
+  ccKinchPost(ranked, you, label);
+  ccStatBoardPost(ranked, label);
+}
 function ccStatBoardPost(ranked, label){
   const rows=ccStatLeaders(ranked);
   if(rows.length<4) return;
@@ -98468,6 +98474,8 @@ async function runCareerEval(){
     through ? L().ccEvalPass(evalCut) : L().ccEvalFail(evalCut));
   await revealStandings(shell1, ranked1, you, evalCut);
   careerPrAdd(ranked1, {div:1, kind:'eval'});
+  // Итоговая таблица вечера оценки — второй раунд, он же последний.
+  let evalFinal=ranked1;
 
   let wins=0, cash=0, place2=null;
   /* Гонка: второй раунд общий, только если ВСЯ комната прошла первый — как у Victory Cup.
@@ -98501,6 +98509,7 @@ async function runCareerEval(){
        разных вечера, и в обоих одни и те же восемь дуо на местах 43-50 подряд,
        причём команда с шестью элимами стояла ниже команды с нулём. */
     const ranked2=careerRankField(r2);
+    evalFinal=ranked2;
     // Вечер платит каждому, у кого есть победы, — и таблица призовых должна это
     // видеть, как видит Weekly Final. Кошелёк (ccPayIn ниже) — отдельный счёт.
     const top5=ccEvalTop5Cash();
@@ -98519,6 +98528,7 @@ async function runCareerEval(){
     await revealStandings(shell2, ranked2, you, 0, null, null, null, null, true);
   }
   removeSkipButton();
+  ccBoardAfter(evalFinal, you, L().calPerfEval);
 
   if(cash){
     const mine=ccShareOf(cash, you);
@@ -98679,6 +98689,7 @@ async function runCareerGclc(){
   await revealStandings(shell, ranked, you, ev.final ? seatSlots : st.cut,
     null, null, null, null, !!ev.final);
   careerPrAdd(ranked, {div:CAREER.career.division, kind:'gclc'});
+  if(ev.final) ccBoardAfter(ranked, you, ev.label);
 
   cr.gclc=cr.gclc||{};
   if(ev.final){
@@ -102117,6 +102128,9 @@ async function runCareerVictory(){
   const ranked1=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place1=ranked1.indexOf(you)+1;
   careerPrAdd(ranked1, {div:CAREER.career.division, kind:'victory'});
+  /* Итоговая таблица вечера: второй раунд, если он был. Доска лидеров идёт
+     после него, иначе она объявляла бы лидеров посреди турнира. */
+  let vicFinal=ranked1;
   const through=place1<=vCut;
 
   const shell1=createStageCardShell(L().ccVicR1Title(field.length));
@@ -102169,6 +102183,7 @@ async function runCareerVictory(){
        разных вечера, и в обоих одни и те же восемь дуо на местах 43-50 подряд,
        причём команда с шестью элимами стояла ниже команды с нулём. */
     const ranked2=careerRankField(r2);
+    vicFinal=ranked2;
     place2=ranked2.indexOf(you)+1;
     wins=you.wins||0;
     cash=payCup ? ccVictoryPayOf(ev, place2) : wins*rate;
@@ -102183,6 +102198,7 @@ async function runCareerVictory(){
     await revealStandings(shell2, ranked2, you, 0, null, null, null, null, true);
   }
   removeSkipButton();
+  ccBoardAfter(vicFinal, you, ev.label);
 
   if(cash){
     const mine=ccShareOf(cash, you);
@@ -103092,6 +103108,7 @@ async function runCareerProAm(){
   await revealStandings(shell, ranked, you, 0, null, null, null, null, true);
   removeSkipButton();
   careerPrAdd(ranked, {div:cr.division, kind:'proam'});
+  ccBoardAfter(ranked, you, ev.label);
   if(cash){
     const mine=ccShareOf(cash, you);
     ccPayIn(mine);
@@ -103813,6 +103830,8 @@ async function runCareerSoloSeries(){
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
   careerPrAdd(ranked, {div:cr.division, kind:'solo', stage:ev.stage});
+  // Соло играется в несколько вечеров: доска — только на финальном.
+  if(ev.stage==='final') ccBoardAfter(ranked, you, ev.label);
   const cut=spec ? ccSolosCut(spec)
           : ev.stage==='qual' ? soloSeriesQualCut()
           : ev.stage==='heats' ? soloSeriesHeatCut() : 0;
