@@ -84,7 +84,9 @@ const BOOT = `
       const season=ccSeasonOvr();
       const evsOf=h=>{
         const s=new Set();
-        PLAYERS_BASE.forEach(c=>{ if(String(c.handle||'')===h && String(c.cardSet||''))
+        // Только круг 2026 — тот, про который написана проверка (см. patch-fold-year.js).
+        PLAYERS_BASE.forEach(c=>{ if(String(c.handle||'')===h && /^[mt]/.test(String(c.cardSet||''))
+          && /2026/.test(String(c.event||'')+' '+String(c.date||'')))
           s.add(String(c.event||'')); });
         return [...s].sort();
       };
@@ -140,8 +142,13 @@ check(!overlap(S.K1nG, S.KING),
 // И то, с чего всё началось: дуо с одинаковыми результатами читается одинаково.
 const D = out.duo;
 check(out.vico === 0, 'написания VICO больше нет');
-check(JSON.stringify(D.vic0.evs) === JSON.stringify(D.Malibuca.evs),
-      'у vic0 и Malibuca один и тот же набор событий (' + D.vic0.evs.length + ')');
+const evSame = JSON.stringify(D.vic0.evs) === JSON.stringify(D.Malibuca.evs);
+check(evSame, 'у vic0 и Malibuca один и тот же набор событий (' + D.vic0.evs.length + ')');
+if (!evSame) {
+  const only = (a, b) => a.filter(e => b.indexOf(e) < 0);
+  only(D.vic0.evs, D.Malibuca.evs).forEach(e => console.log('       только vic0     : ' + e));
+  only(D.Malibuca.evs, D.vic0.evs).forEach(e => console.log('       только Malibuca : ' + e));
+}
 check(D.vic0.ovr === D.Malibuca.ovr,
       'и один и тот же рейтинг: ' + D.vic0.ovr + ' / ' + D.Malibuca.ovr);
 
