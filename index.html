@@ -89168,7 +89168,7 @@ function ccDmResume(who){
   }
   // 2. Настоящая карточка: опубликованные результаты.
   if(who.roster && typeof PLAYERS!=='undefined'){
-    const mine=PLAYERS.filter(p=>hKey(p)===hk && p.placement>0);
+    const mine=(ccCardsByKey().get(hk)||[]).filter(p=>p.placement>0);
     const pick=list=>list.slice().sort((a,b)=>ccDmResumeRank(a.event)-ccDmResumeRank(b.event) || a.placement-b.placement)[0];
     const fresh=mine.filter(p=>/2026/.test(String(p.event||'')+' '+String(p.date||'')));
     const b=pick(fresh.length ? fresh : mine);

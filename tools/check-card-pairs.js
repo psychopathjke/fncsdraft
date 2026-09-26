@@ -43,7 +43,9 @@ const BOOT = [
 '        (CARD_DUOS_BY_SET[set] || []).forEach(function(d){',
 '          var hs = d.handles || d;',
 '          if (!hs.map) return;',
-'          var key = hs.map(function(h){ return _gcNorm(h); }).sort().join("+");',
+'          // Ник без латиницы (японские составы) после _gcNorm пуст, и ключи',
+'          // всех таких пар совпадали. Пусто — берём сам ник.',
+'          var key = hs.map(function(h){ return _gcNorm(h) || String(h).toLowerCase(); }).sort().join("+");',
 '          // Регион пары — тот, где карточка есть у ВСЕХ её игроков.',
 '          var hit = {};',
 '          hs.forEach(function(h){ (reg[h] || []).forEach(function(r){ hit[r] = (hit[r]||0) + 1; }); });',
@@ -95,6 +97,8 @@ Object.keys(out.circuits).forEach(name => {
   rows.forEach(g => {
     console.log('  ' + g[0].key);
     g.forEach(s => console.log('      ' + s.set + ' ' + s.reg + '   ' + s.who));
+    const raw = new Set(g.map(s => s.who.replace(/ d+| ?/g, '')));
+    if (raw.size > 1) console.log('      ↑ ники совпадают только после нормализации — скорее тёзки, а не смена региона');
   });
 });
 console.log('');

@@ -13,7 +13,7 @@ A single-page card drafting game built around real FNCS results. Every card is a
 real player from a real tournament, and the number on it is derived from what
 that player actually did that season — not from anything invented.
 
-- **6 892 cards** across 62 tournaments, from Chapter 2 Season 5 through FNCS 2026 Major 2
+- **32 847 cards** — 14 097 different players across 318 tournament brackets, from Chapter 2 Season 5 through FNCS 2026 (counted by `node tools/count-probe.js`)
 - **7 regions** — Europe, NA Central, NA West, Brazil, Asia, Middle East, Oceania
 - **76 achievements**, a card collection, run history and per-run grading
 - Duo, trio and squad modes, a landing-spot picker with per-zone scoring, and a
