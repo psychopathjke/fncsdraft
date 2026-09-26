@@ -38,13 +38,14 @@ const BOOT = '<pre id="__m" style="display:none"></pre>' + OPEN +
   '  return {dmg:s.dmgTo/SIZE, dpm:(min>0? s.dmgTo/min : 0)/SIZE, net:(s.dmgTo-s.dmgFrom)/SIZE,' +
   '          ratio:(s.dmgFrom>0? s.dmgTo/s.dmgFrom : 0), ass:s.assists/SIZE,' +
   '          farm:(s.wood+s.stone+s.metal)/SIZE, dist:s.dist/1000, storm:s.inStorm, alive:min}; });' +
-  // Дроби — только среди проживших не меньше среднего, тем же отбором, каким их
+  // Дроби — и соотношение урона, и урон в минуту — только среди проживших не
+  // меньше среднего, тем же отбором, каким их
   // считает сама доска (ccStatLeaders): максимум дроби по лобби иначе вытягивает
   // не сильнейший, а рано умерший с удачной перестрелкой.
   'var aliveMid=per.map(function(p){return p.alive;}).sort(function(a,b){return a-b;})[Math.floor(per.length/2)];' +
   'var deep=per.filter(function(p){ return p.alive>=aliveMid; });' +
   'var top=function(k, pool){ var a=(pool||per); return Math.max.apply(null, a.map(function(p){ return p[k]; })); };' +
-  'o={dmg:top("dmg"), dpm:top("dpm"), net:top("net"), ratio:top("ratio", deep), ass:top("ass"),' +
+  'o={dmg:top("dmg"), dpm:top("dpm", deep), net:top("net"), ratio:top("ratio", deep), ass:top("ass"),' +
   '   farm:top("farm"), dist:top("dist"), storm:top("storm"), alive:top("alive")};' +
   '}catch(e){o={err:String(e && e.message || e)};}' +
   'document.getElementById("__m").textContent="MSB"+JSON.stringify(o)+"MSE";})();' + CLOSE;

@@ -65557,7 +65557,16 @@ function accumulateMatchStats(t, place, total, placePts, elimPts){
      лидера по урону в минуту в полтора раза выше настоящего, хотя лидер по
      урону сходился в ноль. У Кинча лидер по урону и лидер по урону в минуту —
      один и тот же человек; узкий разброс это и воспроизводит. */
-  const hits = Math.round(elims*srnd(3.9,4.6) + surv*size*srnd(8,11) + srnd(1,2));
+  const alive = Math.round(55 + surv*srnd(960,1180));
+  /* Время в шторме: у Кинча лидер дня провёл в нём 47:03 при сотне минут
+     в живых — то есть почти половину. У нас стояло от пяти до двадцати
+     процентов, и за день выходило 927 секунд против его 2 823. */
+  const storm = Math.round(alive*srnd(0.22,0.62));
+  const mins = alive/60;
+  /* Попадания идут от МИНУТ, а не от отдельного броска: файты случаются во
+     времени. Иначе урон и время — два независимых случая, и максимум их
+     отношения по лобби улетает выше настоящего лидера (см. patch-dpm.js). */
+  const hits = Math.round(elims*srnd(4.0,4.5) + mins*size*srnd(0.50,0.60) + srnd(1,2));
   const acc  = clamp(0.072 + sk*0.055 + srnd(-0.012,0.012), 0.045, 0.19);
   const shots = Math.round(hits/acc);
   const dmgTo = Math.round(hits*srnd(33,43));
@@ -65600,11 +65609,6 @@ function accumulateMatchStats(t, place, total, placePts, elimPts){
   s.stoneC += Math.round(stone*srnd(6,15) + srnd(200,700));
   s.metalC += Math.round(metal*srnd(6,14) + srnd(200,700));
 
-  const alive = Math.round(55 + surv*srnd(960,1180));
-  /* Время в шторме: у Кинча лидер дня провёл в нём 47:03 при сотне минут
-     в живых — то есть почти половину. У нас стояло от пяти до двадцати
-     процентов, и за день выходило 927 секунд против его 2 823. */
-  const storm = Math.round(alive*srnd(0.22,0.62));
   s.timeAlive += alive; s.inStorm += storm;
   s.stormDmg += Math.round(storm*srnd(1.4,4.6));
   if(Math.random()<0.22) s.surge += Math.round(srnd(1,4));
