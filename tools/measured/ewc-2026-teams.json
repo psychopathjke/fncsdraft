@@ -1,0 +1,431 @@
+{
+ "made": "2026-09-26T19:51:29.253Z",
+ "source": "liquipedia.net/fortnite/Reload_Elite_Series/2026 — Esports World Cup 2026, Paris, 19-22 авг",
+ "format": {
+  "groups": 2,
+  "teamsPerGroup": 20,
+  "groupGames": 10,
+  "directToFinal": 7,
+  "dropToSurvival": [
+   8,
+   17
+  ],
+  "survivalTeams": 20,
+  "survivalGames": 10,
+  "survivalCut": 6,
+  "finalTeams": 20,
+  "finalGames": 15,
+  "matchPoint": 350,
+  "prizePool": 1000000,
+  "mvp": 25000,
+  "maps": [
+   "Slurp Rush",
+   "Elite Stronghold"
+  ]
+ },
+ "rows": [
+  {
+   "place": "1",
+   "duo": [
+    "vic0",
+    "Malibuca"
+   ],
+   "cash": 260000,
+   "points": 1000,
+   "region": "EU"
+  },
+  {
+   "place": "2",
+   "duo": [
+    "Momsy",
+    "SkyJump"
+   ],
+   "cash": 150000,
+   "points": 750,
+   "region": "EU"
+  },
+  {
+   "place": "3",
+   "duo": [
+    "shxrk",
+    "t3eny"
+   ],
+   "cash": 90000,
+   "points": 500,
+   "region": "EU"
+  },
+  {
+   "place": "4",
+   "duo": [
+    "SwizzY",
+    "Pixie"
+   ],
+   "cash": 60000,
+   "points": 300,
+   "region": "EU"
+  },
+  {
+   "place": "5",
+   "duo": [
+    "Lewa",
+    "Romero"
+   ],
+   "cash": 45000,
+   "points": 200,
+   "region": "BR"
+  },
+  {
+   "place": "6",
+   "duo": [
+    "charyy",
+    "Kami"
+   ],
+   "cash": 35000,
+   "points": 150,
+   "region": "EU"
+  },
+  {
+   "place": "7",
+   "duo": [
+    "VicterV",
+    "Khanada"
+   ],
+   "cash": 30000,
+   "points": 100,
+   "region": "NAW"
+  },
+  {
+   "place": "8",
+   "duo": [
+    "Demus",
+    "Darm"
+   ],
+   "cash": 28000,
+   "points": 50,
+   "region": "EU"
+  },
+  {
+   "place": "9",
+   "duo": [
+    "Faded",
+    "Kaan"
+   ],
+   "cash": 26000,
+   "points": 0,
+   "region": "EU"
+  },
+  {
+   "place": "10",
+   "duo": [
+    "SaLva",
+    "Yassen"
+   ],
+   "cash": 24000,
+   "points": 0,
+   "region": "ME"
+  },
+  {
+   "place": "11",
+   "duo": [
+    "Sky",
+    "Scroll"
+   ],
+   "cash": 22000,
+   "points": 0,
+   "region": "EU"
+  },
+  {
+   "place": "12",
+   "duo": [
+    "Peterbot",
+    "Pollo"
+   ],
+   "cash": 20000,
+   "points": 0,
+   "region": "NAC"
+  },
+  {
+   "place": "13",
+   "duo": [
+    "Tjino",
+    "PabloWingu"
+   ],
+   "cash": 18000,
+   "points": 0,
+   "region": "EU"
+  },
+  {
+   "place": "14",
+   "duo": [
+    "josh",
+    "Eomzo"
+   ],
+   "cash": 16000,
+   "points": 0,
+   "region": "NAC"
+  },
+  {
+   "place": "15",
+   "duo": [
+    "Minipiyo",
+    "FuuKun"
+   ],
+   "cash": 15000,
+   "points": 0,
+   "region": "ASIA"
+  },
+  {
+   "place": "16",
+   "duo": [
+    "Nociff",
+    "Izzi"
+   ],
+   "cash": 14000,
+   "points": 0,
+   "region": "EU"
+  },
+  {
+   "place": "17",
+   "duo": [
+    "Muz",
+    "Sphinx"
+   ],
+   "cash": 13000,
+   "points": 0,
+   "region": "NAC"
+  },
+  {
+   "place": "18",
+   "duo": [
+    "Cold",
+    "Rapid"
+   ],
+   "cash": 12000,
+   "points": 0,
+   "region": "NAC"
+  },
+  {
+   "place": "19",
+   "duo": [
+    "Goofy",
+    "ZDog"
+   ],
+   "cash": 11000,
+   "points": 0,
+   "region": "OCE"
+  },
+  {
+   "place": "20",
+   "duo": [
+    "Acorn",
+    "Boltz"
+   ],
+   "cash": 10000,
+   "points": 0,
+   "region": "NAC"
+  },
+  {
+   "place": "21",
+   "duo": [
+    "Koyota",
+    "yuma"
+   ],
+   "cash": 9500,
+   "points": 0,
+   "region": "ASIA"
+  },
+  {
+   "place": "22",
+   "duo": [
+    "Bugha",
+    "Braydz"
+   ],
+   "cash": 9000,
+   "points": 0,
+   "region": "NAC"
+  },
+  {
+   "place": "23",
+   "duo": [
+    "Night",
+    "916Gon"
+   ],
+   "cash": 8500,
+   "points": 0,
+   "region": "BR"
+  },
+  {
+   "place": "24",
+   "duo": [
+    "Cringe",
+    "Volko"
+   ],
+   "cash": 8000,
+   "points": 0,
+   "region": "EU"
+  },
+  {
+   "place": "25",
+   "duo": [
+    "Oatley",
+    "Spookz"
+   ],
+   "cash": 7500,
+   "points": 0,
+   "region": "OCE"
+  },
+  {
+   "place": "26",
+   "duo": [
+    "Mofu",
+    "tomat"
+   ],
+   "cash": 7000,
+   "points": 0,
+   "region": "ASIA"
+  },
+  {
+   "place": "27",
+   "duo": [
+    "Mshary",
+    "5aald"
+   ],
+   "cash": 6500,
+   "points": 0,
+   "region": "ME"
+  },
+  {
+   "place": "28",
+   "duo": [
+    "Moda",
+    "Rew"
+   ],
+   "cash": 6000,
+   "points": 0,
+   "region": "ME"
+  },
+  {
+   "place": "29",
+   "duo": [
+    "Vazen",
+    "Anon"
+   ],
+   "cash": 5500,
+   "points": 0,
+   "region": "OCE"
+  },
+  {
+   "place": "30",
+   "duo": [
+    "panzer",
+    "Japko"
+   ],
+   "cash": 5000,
+   "points": 0,
+   "region": "EU"
+  },
+  {
+   "place": "31",
+   "duo": [
+    "Edson",
+    "Phzin"
+   ],
+   "cash": 4500,
+   "points": 0,
+   "region": "BR"
+  },
+  {
+   "place": "32",
+   "duo": [
+    "Shadow",
+    "Vergo"
+   ],
+   "cash": 4000,
+   "points": 0,
+   "region": "NAC"
+  },
+  {
+   "place": "33",
+   "duo": [
+    "Aoxy",
+    "Jojofishy"
+   ],
+   "cash": 3500,
+   "points": 0,
+   "region": "NAC"
+  },
+  {
+   "place": "34",
+   "duo": [
+    "phoenix",
+    "Retro"
+   ],
+   "cash": 3000,
+   "points": 0,
+   "region": "NAW"
+  },
+  {
+   "place": "35-36",
+   "duo": [
+    "Rainy",
+    "Nalu"
+   ],
+   "cash": 2500,
+   "points": 0,
+   "region": "ASIA"
+  },
+  {
+   "place": "37-38",
+   "duo": [
+    "EpikWhale",
+    "PXMP"
+   ],
+   "cash": 2250,
+   "points": 0,
+   "region": "NAW"
+  },
+  {
+   "place": "39-40",
+   "duo": [
+    "alex",
+    "Wreckless"
+   ],
+   "cash": 2000,
+   "points": 0,
+   "region": "OCE"
+  },
+  {
+   "place": "35-36",
+   "duo": [
+    "Inact",
+    "Salko"
+   ],
+   "cash": 2500,
+   "points": 0,
+   "region": "NAW",
+   "fromRoster": true
+  },
+  {
+   "place": "37-38",
+   "duo": [
+    "axadasz",
+    "Seven"
+   ],
+   "cash": 2250,
+   "points": 0,
+   "region": "BR",
+   "fromRoster": true
+  },
+  {
+   "place": "39-40",
+   "duo": [
+    "Henchman",
+    "Snowvaks"
+   ],
+   "cash": 2000,
+   "points": 0,
+   "region": "ME",
+   "fromRoster": true
+  }
+ ]
+}
