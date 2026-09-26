@@ -260,9 +260,17 @@
   .hero-chips .cstrip-tag{margin-right:2px;}
   .hero-chips .cstrip-chip{border-color:rgba(126,240,221,.32);background:rgba(126,240,221,.08);color:#dff6f1;}
   /* Строка «с другом»: три командные двери мельче главных, одной строкой. */
-  .hero-about{margin:10px 0 0;text-align:center}
-.hero-about a{color:var(--ink-dim,#96a3b5);font-size:13px;text-decoration:underline;text-underline-offset:3px}
-.hero-about a:hover{color:var(--ink,#e6ecf5)}
+  .hero-about{margin:10px 0 0;text-align:left}
+/* Тихая третья кнопка ряда: та же таблетка и тот же узкий капс, что у
+   «начать карьеру» и «в драфт», но без заливки и на тон темнее — она
+   объясняет, а не зовёт. Скоса здесь нет: соседние кнопки скруглены, и
+   параллелограмм рядом с ними читался бы как чужой элемент. */
+.hero-about a{display:inline-block;font-family:var(--font-display);font-weight:500;font-size:12px;
+  letter-spacing:.08em;text-transform:uppercase;line-height:1;padding:9px 18px 8px;border-radius:999px;
+  color:var(--ink-dim,#96a3b5);text-decoration:none;border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.03);transition:color .15s,border-color .15s;}
+.hero-about a:hover{color:var(--ink,#e6ecf5);border-color:rgba(255,255,255,.34);}
+.hero-about a:focus-visible{outline:2px solid var(--go,#ffdd00);outline-offset:2px;}
 .hero-team{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;}
   .hero-team[hidden]{display:none;}
   .hero-team-lbl{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#9fc9c4;margin-right:2px;}
@@ -1789,7 +1797,28 @@
   .cc-tabs{position:relative;z-index:2;display:flex;gap:2px;margin-bottom:14px;}
   /* Год — первой панелью над вкладками; чипы года в одну строку на всю ширину. */
   .cc-year-panel{margin-bottom:14px;}
-  .cc-year-panel .cc-chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;max-width:620px;}   /* три года в ряд: 2026 / 2025 / 2024 */
+  .cc-year-panel .cc-chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;max-width:620px;}
+  /* Пластина сезона: полоса своего цвета сверху, год узким капсом, под ним
+     формат и международка. Цвет приезжает переменной --yr с самой кнопки. */
+  #screen-career-create .cc-year-panel .cc-year-tile{position:relative;display:block;text-align:left;padding:12px 12px 10px;
+    border:1px solid rgba(255,255,255,.14);border-radius:0;background:rgba(255,255,255,.05);
+    color:var(--ink,#e6ecf5);clip-path:var(--cut);overflow:hidden;
+    font-family:var(--font-display);line-height:1;transition:border-color .15s,background .15s;}
+  #screen-career-create .cc-year-panel .cc-year-tile::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;
+    background:var(--yr,#00b090);opacity:.65;}
+  #screen-career-create .cc-year-panel .cc-year-tile b{display:block;font-size:28px;font-weight:600;letter-spacing:.01em;}
+  #screen-career-create .cc-year-panel .cc-year-tile small{display:block;margin-top:5px;font-size:10.5px;font-weight:500;
+    letter-spacing:.08em;text-transform:uppercase;opacity:.72;}
+  #screen-career-create .cc-year-panel .cc-year-tile i{display:block;margin-top:2px;font-style:normal;font-size:9.5px;font-weight:400;
+    letter-spacing:.12em;text-transform:uppercase;opacity:.45;}
+  #screen-career-create .cc-year-panel .cc-year-tile:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08);}
+  #screen-career-create .cc-year-panel .cc-year-tile:hover::before{opacity:1;}
+  #screen-career-create .cc-year-panel .cc-year-tile.on{background:var(--yr,#00b090);border-color:var(--yr,#00b090);color:#0b0f12;}
+  #screen-career-create .cc-year-panel .cc-year-tile.on::before{background:rgba(255,255,255,.55);opacity:1;}
+  #screen-career-create .cc-year-panel .cc-year-tile.on small{opacity:.8;}
+  #screen-career-create .cc-year-panel .cc-year-tile.on i{opacity:.6;}
+  #screen-career-create .cc-year-panel .cc-year-tile:disabled{opacity:.4;cursor:not-allowed;}
+  #screen-career-create .cc-year-panel .cc-year-tile:disabled:hover{border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.05);}   /* три года в ряд: 2026 / 2025 / 2024 */
   .cc-tab{border:none;cursor:pointer;font-weight:900;font-style:italic;font-size:12px;
     letter-spacing:.05em;text-transform:uppercase;padding:10px 18px;
     background:#0b0f12;color:#fff;opacity:.42;transition:opacity .12s;}
@@ -5822,7 +5851,7 @@
           <button class="hero-btn hero-btn-go" type="button" onclick="careerStart()"><span data-i18n="heroCareer"></span></button>
           <button class="hero-btn hero-btn-alt" type="button" onclick="document.getElementById('modeYears').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})"><span data-i18n="heroDraft"></span></button>
         </div>
-        <div class="hero-about"><a href="about.html" data-i18n="aboutLink"></a></div>
+        <div class="hero-about"><a href="about.html"><span data-i18n="aboutLink"></span></a></div>
         <div class="hero-team" id="heroTeam" hidden>
           <span class="hero-team-lbl" data-i18n="heroTeamLbl"></span>
           <button class="cstrip-btn cstrip-btn-duo" id="cstripDuo" type="button" hidden onclick="careerMpNew()" data-i18n="heroDuo"></button>
@@ -67897,10 +67926,16 @@ function ccRenderChips(){
   const ychips=document.getElementById('ccYearChips');
   if(ychips){
     const lockY=ccMpLockedYear();
+    /* Международка года — та, ради которой сезон и играется. Имена городов
+       одинаковы на всех языках, поэтому строкой словаря не идут. */
+    const YEAR_LOOK={2026:{c:'#00b090', lan:'Antwerp'},
+                     2025:{c:'#b14bf4', lan:'Lyon'},
+                     2024:{c:'#ffdd00', lan:'Fort Worth'}};
     ychips.innerHTML=[2026, 2025, 2024].map(y=>{
       const on=(CC.year||2026)===y;
       const off=lockY && y!==lockY;
-      return `<button class="cc-chip${on?' on':''}${off?' soon':''}" ${off?'disabled title="'+esc(L().ccMpLockedBy)+'"':''} onclick="ccPickYear(${y})">${y}<small>${L()['ccYear'+y]}</small></button>`;
+      const look=YEAR_LOOK[y]||{c:'#00b090', lan:''};
+      return `<button class="cc-chip cc-year-tile${on?' on':''}${off?' soon':''}" style="--yr:${look.c}" ${off?'disabled title="'+esc(L().ccMpLockedBy)+'"':''} onclick="ccPickYear(${y})"><b>${y}</b><small>${L()['ccYear'+y]}</small><i>${look.lan}</i></button>`;
     }).join('');
     const yn=document.getElementById('ccYearNote');
     if(yn) yn.textContent=(lockY ? L().ccMpLockedBy+' · ' : '')+L()['ccYearNote'+(CC.year||2026)];
