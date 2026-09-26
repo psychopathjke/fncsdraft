@@ -1,0 +1,5 @@
+ccNewsStatBoard:(ev,rows)=>ev+' — лидеры вечера: '+rows.map(r=>(L()[r[0]]||r[0])+' '+r[1]+' @'+r[2]).join(' · '),
+ccNewsStatBoard:(ev,rows)=>ev+' — stats leaders: '+rows.map(r=>(L()[r[0]]||r[0])+' '+r[1]+' @'+r[2]).join(' · '),
+ccNewsStatBoard:(ev,rows)=>ev+' — meilleurs du soir : '+rows.map(r=>(L()[r[0]]||r[0])+' '+r[1]+' @'+r[2]).join(' · '),
+ccNewsStatBoard:(ev,rows)=>ev+' — migliori della serata: '+rows.map(r=>(L()[r[0]]||r[0])+' '+r[1]+' @'+r[2]).join(' · '),
+ccNewsStatBoard:(ev,rows)=>ev+' — líderes da noite: '+rows.map(r=>(L()[r[0]]||r[0])+' '+r[1]+' @'+r[2]).join(' · '),

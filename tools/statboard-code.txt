@@ -1,0 +1,49 @@
+/* Лидеры вечера — доска в формате самого Kinch Analytics.
+   Его пост от 26 сентября (Global Champs 2026, день 1): «Damage: 4128 @Koyota0 ·
+   Elims: 16 · Assists: 26 · Damage Ratio: 2.67 · Net Damage: 2063 · Damage Per
+   Minute: 41.28 · Builds · Farmed · Distance · Storm Time». Его слово: «все
+   статистики можно добавить как-то».
+   Ничего для этого считать не пришлось: матчевая статистика в моде уже есть —
+   accumulateMatchStats ведёт по каждой команде урон нанесённый и полученный,
+   ассисты, метсы, время в живых, время в шторме и пройденное расстояние. Доска
+   просто достаёт из неё лидера по каждой строке.
+   Двух строк Кинча здесь нет, и это честнее, чем подделать: ПОСТРОЕК движок не
+   считает вовсе (есть только метсы), а Solo Clutch Points — метрика Epic про
+   очки, набранные последним выжившим в команде, которой у нас нет. */
+function ccStatFace(t){
+  if(t && t.isYou) return ccHandle(CAREER.player.nick);
+  const sq=(t && (t.squad||t._cards||t.cards)) || [];
+  const best=sq.slice().sort((a,b)=>((b&&(b.rating||b._ovr))||0)-((a&&(a.rating||a._ovr))||0))[0];
+  return ccHandle((best && best.handle) || ccOneOf(t && t.name) || '');
+}
+function ccMmSs(sec){
+  const s=Math.max(0, Math.round(sec||0));
+  return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+}
+function ccStatLeaders(ranked){
+  const rows=[];
+  const teams=(ranked||[]).filter(t=>t && t.mstats && t.mstats.games>0);
+  if(teams.length<3) return rows;
+  const lead=(key, val, fmt)=>{
+    let best=null, bv=-Infinity;
+    teams.forEach(t=>{ const v=val(t.mstats); if(v!=null && isFinite(v) && v>bv){ bv=v; best=t; } });
+    if(!best || bv<=0) return;
+    rows.push([key, fmt(bv), ccStatFace(best)]);
+  };
+  const num=v=>ccNum(Math.round(v));
+  lead('s_dmgTo',     s=>s.dmgTo, num);
+  lead('s_elims',     s=>s.elims, num);
+  lead('s_assists',   s=>s.assists, num);
+  lead('s_dmgRatio',  s=>s.dmgFrom>0 ? s.dmgTo/s.dmgFrom : 0, v=>v.toFixed(2));
+  lead('s_dmgNet',    s=>s.dmgTo-s.dmgFrom, num);
+  lead('s_dpm',       s=>s.timeAlive>0 ? s.dmgTo/(s.timeAlive/60) : 0, v=>v.toFixed(2));
+  lead('s_matsFarmed',s=>s.wood+s.stone+s.metal, num);
+  lead('s_distance',  s=>s.dist, v=>(v/1000).toFixed(2)+' km');
+  lead('s_timeStorm', s=>s.inStorm, ccMmSs);
+  return rows;
+}
+function ccStatBoardPost(ranked, label){
+  const rows=ccStatLeaders(ranked);
+  if(rows.length<4) return;
+  careerNews('flat', 'ccNewsStatBoard', [label, rows]);
+}
