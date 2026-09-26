@@ -1801,9 +1801,11 @@
   /* Пластина сезона — та же превьюха, что на первом экране: арт года под
      затемнением, номер года узким капсом поверх, под ним формат и международка.
      Его слово: «хочу фнкс стиль типо как превьюхи». Арт приезжает переменной
-     --yr-art с самой кнопки. Цвет полосы ОДИН на все годы — жёлтый primary
-     сайта, и он значит «этот выбран»: своим цветом у каждого года три
-     плитки читались как три разных состояния (его слово 27.09). */
+     --yr-art с самой кнопки. Полоса выбранного БЕЛАЯ и никакого цвета не
+     несёт: цвет сезона давал три разных состояния в ряд, жёлтый лез в арт
+     2026-го. Выбранный виден толщиной полосы и яркостью арта (его слова
+     27.09: «обводку убери», «не нравится выделение разным цветом», «желтая
+     у2026»). */
   #screen-career-create .cc-year-panel .cc-year-tile{position:relative;display:block;text-align:left;
     padding:34px 12px 10px;border:1px solid rgba(255,255,255,.14);border-radius:0;
     background-color:#0e2f38;background-image:var(--yr-art);background-size:cover;
@@ -1846,7 +1848,7 @@
     background-position:center 38%;background-repeat:no-repeat;}
   #screen-career-create .cc-year-panel .cc-year-tile.on::after{
     background:linear-gradient(to top, rgba(8,44,46,.88) 38%, rgba(8,44,46,.42) 72%, rgba(8,44,46,.1));}
-  #screen-career-create .cc-year-panel .cc-year-tile.on::before{background:var(--primary,#ffd400);height:4px;}
+  #screen-career-create .cc-year-panel .cc-year-tile.on::before{background:#fff;height:4px;}
   #screen-career-create .cc-year-panel .cc-year-tile:disabled{opacity:.4;cursor:not-allowed;}
   #screen-career-create .cc-year-panel .cc-year-tile:disabled:hover{border-color:rgba(255,255,255,.14);background-size:cover;}
   @media (prefers-reduced-motion:reduce){ #screen-career-create .cc-year-panel .cc-year-tile{transition:none;} }
