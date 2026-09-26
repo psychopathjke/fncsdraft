@@ -57460,6 +57460,9 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
           const gamePts=pointsFn(place)+ccKillPts(elims, killMult);
           t[ptsKey]+=gamePts; t[elimsKey]+=elims;
           t[logKey].push({game:g+1, place, elims, pts:gamePts, elimPts:ccKillPts(elims, killMult), label:thresholdLabel(place), feed:t._feed});
+          // Матчевая статистика вечера — здесь же: живой показ копит её наравне с
+          // быстрым счётом, иначе доска лидеров после сыгранного вечера пуста.
+          accumulateMatchStats(t, place, order.length, pointsFn(place), ccKillPts(elims, killMult));
           // Only where a win ends your stage is a win a qualification, and only
           // then does it earn the first pick next time — see byQualOrder.
           if(place===1){ t.gotVR=true; t.wins++; if(opts.stopOnWin) t.qualByWin=true; }
@@ -57781,6 +57784,9 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       const landingOutcome = (landingWins.has(t) || landingBonusElims.has(t)) ? 'won'
                            : ((dropOnMap ? t._droppedOut : eliminatedSet.has(t)) ? 'lost' : null);
       t[logKey].push({game:g+1, place, elims, pts:gamePts, elimPts:ccKillPts(elims, killMult), label:thresholdLabel(place), feed:t._feed, landingOutcome});
+      // Матчевая статистика вечера — здесь же: живой показ копит её наравне с
+      // быстрым счётом, иначе доска лидеров после сыгранного вечера пуста.
+      accumulateMatchStats(t, place, order.length, pointsFn(place), ccKillPts(elims, killMult));
       // As above: a win is a qualification only where it ends the stage.
       if(place===1){ t.gotVR=true; t.wins++; if(opts.stopOnWin) t.qualByWin=true; }
     });
@@ -91652,18 +91658,26 @@ function ccStatLeaders(ranked){
   const lead=(key, val, fmt, pool)=>{
     const teams=pool||POOL;
     let best=null, bv=-Infinity;
-    teams.forEach(t=>{ const v=val(t.mstats); if(v!=null && isFinite(v) && v>bv){ bv=v; best=t; } });
+    teams.forEach(t=>{ const v=val(t.mstats, t); if(v!=null && isFinite(v) && v>bv){ bv=v; best=t; } });
     if(!best || bv<=0) return;
     rows.push([key, fmt(bv), ccStatFace(best)]);
   };
   const num=v=>ccNum(Math.round(v));
-  lead('s_dmgTo',     s=>s.dmgTo, num);
-  lead('s_elims',     s=>s.elims, num);
-  lead('s_assists',   s=>s.assists, num);
+  /* НА ИГРОКА, а не на команду. Доска называет одного человека, и число рядом
+     с ним должно быть его: у Кинча лидер дня по урону — 4128, и это урон
+     игрока, а не пары. Объёмы делятся на размер состава, а время в живых,
+     время в шторме и расстояние — нет: их пара проживает вместе, а не
+     складывает (то же правило, что в playerShares). Урон в минуту делится
+     вместе с уроном, потому что время общее. */
+  const mates=t=>Math.max(1, ((t.squad||t._cards||t.cards)||[]).length||1);
+  const per=(f)=>(s,t)=>f(s)/mates(t);
+  lead('s_dmgTo',     per(s=>s.dmgTo), num);
+  lead('s_elims',     per(s=>s.elims), num);
+  lead('s_assists',   per(s=>s.assists), num);
   lead('s_dmgRatio',  s=>s.dmgFrom>0 ? s.dmgTo/s.dmgFrom : 0, v=>v.toFixed(2), deep);
-  lead('s_dmgNet',    s=>s.dmgTo-s.dmgFrom, num);
-  lead('s_dpm',       s=>s.timeAlive>0 ? s.dmgTo/(s.timeAlive/60) : 0, v=>v.toFixed(2), deep);
-  lead('s_matsFarmed',s=>s.wood+s.stone+s.metal, num);
+  lead('s_dmgNet',    per(s=>s.dmgTo-s.dmgFrom), num);
+  lead('s_dpm',       per(s=>s.timeAlive>0 ? s.dmgTo/(s.timeAlive/60) : 0), v=>v.toFixed(2), deep);
+  lead('s_matsFarmed',per(s=>s.wood+s.stone+s.metal), num);
   lead('s_distance',  s=>s.dist, v=>(v/1000).toFixed(2)+' km');
   lead('s_timeStorm', s=>s.inStorm, ccMmSs);
   return rows;
