@@ -69058,7 +69058,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='265727a9';
+const CC_BUILD='52024efe';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -81561,15 +81561,32 @@ function ccRealTargets(year){
   CC_REAL_TARGETS[key]=m;
   return m;
 }
+/* Годы идут цепочкой: следующий начинается с того, на чём закончился прошлый.
+   Иначе каждый новый год считался бы от рейтинга года старта, и прошлогодний
+   рост пропадал на стыке — замер S1neD: 2025-й 76 → 80, как в жизни, а в
+   декабре 2026-го снова 76. */
+function ccRealYearSpan(y){
+  return y===2024 ? [CC_YEAR_2024_FROM, CC_YEAR_2024_TO]
+       : y===2025 ? [CC_YEAR_2025_FROM, CC_YEAR_2025_TO]
+       : [CC_YEAR_FROM, CC_YEAR_TO];
+}
+function ccRealYearEndFrac(y){
+  const s=ccRealYearSpan(y), step=1+Math.floor(ccDaysBetween(s[0], s[1])/7);
+  return 1-Math.pow(0.5, (step-1)*7/CC_REAL_PULL_HALF);
+}
 function ccRealPull(c){
   if(!c || !ccRealPullStep()) return 0;
-  const f=ccRealPullFrac();
-  if(!f) return 0;
-  const t=ccRealTargets(ccCalYear()).get(c._k||hKey(c));
-  if(t==null) return 0;
   const base=(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr);
   if(!(base>0)) return 0;
-  return (t-base)*f;
+  const k=c._k||hKey(c);
+  let start=base;
+  for(let y=ccNowYear()+1; y<ccCalYear(); y++){
+    const ty=ccRealTargets(y).get(k);
+    if(ty!=null) start+=(ty-start)*ccRealYearEndFrac(y);
+  }
+  const t=ccRealTargets(ccCalYear()).get(k);
+  if(t==null) return start-base;
+  return (start-base)+(t-start)*ccRealPullFrac();
 }
 // Карточка роастера, поднятая на то, что эта карьера с ней сделала.
 function ccSceneLift(c){

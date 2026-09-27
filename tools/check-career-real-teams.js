@@ -96,6 +96,22 @@ const BOOT = `
     check('потенциал: есть люди с целью', early.n>=30, String(early.n));
     check('потенциал: к первому Мейджору — около половины', early.frac>=0.4 && early.frac<=0.65 && early.toward>=early.n*0.8, early.frac+', '+early.toward+'/'+early.n);
     check('потенциал: к концу сезона почти всё', late.frac>=0.8 && late.gapNow<=late.gapStart*0.25, late.frac+', '+early.gapNow+' → '+late.gapNow);
+    // 1в. Цепочка: 2026-й карьеры 2024-го начинается с того, чем кончился 2025-й (S1neD: 80, а не 76).
+    seed({season:3, size:2, year:2026, year0:2024, day:CC_YEAR_FROM, sizes:{1:2, 2:3}});
+    {
+      const T25=ccRealTargets(2025), P=careerPools(), fe=ccRealYearEndFrac(2025);
+      const base=new Map(); ccEuCards().forEach(c=>{ const cur=base.get(c._k); if(ccCardYear(c)===2024 && (cur==null || c._ovr>cur)) base.set(c._k, c._ovr); });
+      let n=0, ok=0; const bad=[];
+      // Только настоящие составы: у добора из ростера база — самая свежая карточка, а не сильнейшая.
+      P.duos.filter(d=>d._real).forEach(d=>d.cards.forEach(c=>{
+        const k=c._k||hKey(c), t=T25.get(k), b=base.get(k);
+        if(t==null || b==null || Math.abs(t-b)<3) return;
+        n++; const want=Math.round(b+(t-b)*fe);
+        if(Math.abs(c._ovr-want)<=1) ok++; else if(bad.length<3) bad.push(c.handle+' '+c._ovr+' ждали '+want);
+      }));
+      out.notes.chain={n, ok, bad};
+      check('цепочка: 2026-й начинается с конца 2025-го', n>=20 && ok===n, ok+'/'+n+' '+bad.join('; '));
+    }
     // 2. Карьера 2025-го во втором сезоне: календарь 2026-й, дуо.
     seed({season:2, size:2, year:2026, year0:2025, day:'2026-02-20', sizes:{1:3}});
     check('2025→2026: ccContinuity', ccContinuity()===true, String(ccNowYear())+'/'+String(ccCalYear()));
