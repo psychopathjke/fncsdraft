@@ -1,0 +1,100 @@
+{
+ "dates": {
+  "i1": {
+   "weeks": {
+    "1": [
+     "2020-03-21",
+     "2020-03-22"
+    ],
+    "2": [
+     "2020-03-28",
+     "2020-03-29"
+    ]
+   },
+   "heats": [
+    "2020-04-17",
+    "2020-04-18"
+   ],
+   "gf": [
+    "2020-04-19",
+    "2020-04-19"
+   ]
+  },
+  "i2": {
+   "weeks": {
+    "1": [
+     "2020-08-01",
+     "2020-08-01"
+    ]
+   },
+   "heats": [
+    "2020-08-14"
+   ],
+   "gf": null
+  },
+  "i3": {
+   "weeks": {},
+   "heats": [],
+   "gf": null
+  }
+ },
+ "shape": {
+  "i1": {
+   "EU": {
+    "gf": 48,
+    "heats": 4,
+    "heatTeams": 50,
+    "weeks": 2
+   },
+   "NAC": {
+    "gf": 48,
+    "heats": 4,
+    "heatTeams": 50,
+    "weeks": 2
+   },
+   "NAW": {
+    "gf": 48,
+    "heats": 4,
+    "heatTeams": 50,
+    "weeks": 2
+   },
+   "BR": {
+    "gf": 48,
+    "heats": 4,
+    "heatTeams": 50,
+    "weeks": 2
+   },
+   "ASIA": {
+    "gf": 50,
+    "heats": 2,
+    "heatTeams": 50,
+    "weeks": 3
+   },
+   "ME": {
+    "gf": 50,
+    "heats": 2,
+    "heatTeams": 50,
+    "weeks": 2
+   },
+   "OCE": {
+    "gf": 50,
+    "heats": 2,
+    "heatTeams": 50,
+    "weeks": 2
+   },
+   "size": 2
+  },
+  "i2": {
+   "EU": {
+    "gf": 0,
+    "heats": 1,
+    "heatTeams": 100,
+    "weeks": 1
+   },
+   "size": 1
+  },
+  "i3": {
+   "size": 1
+  }
+ }
+}

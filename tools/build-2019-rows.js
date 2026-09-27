@@ -56,7 +56,7 @@ const SETS = {
   h4: { size: 4, weeks: /^S11_FNCS_(Week\d|Warmup)\|/, weekWin: /Event3$/, heats: /^S11_FNCS_Finals\|/, heatWin: /Finals_Event[1-4]$/, gfWin: /Finals_Event5$/, capL: 40 }
 };
 const KILL = { Q: 2, S: 3, GF: 3 };
-const out = [], nat = {}, pay = {};
+const out = [], nat = {}, pay = {}, lqPay = {};
 for (const [set, cfg] of Object.entries(SETS)) {
   nat[set] = {};
   const wc = cfg.wc ? wcFinal(cfg.wc, cfg.size) : null;
@@ -73,6 +73,28 @@ for (const [set, cfg] of Object.entries(SETS)) {
       stages = { Q: wk.slice(0, cfg.capL), S: best(Object.keys(H).filter(k => cfg.heats.test(k) && k.split('|')[1] === src && cfg.heatWin.test(k.split('|')[2])).map(k => H[k])),
         GF: best(Object.keys(H).filter(k => cfg.heats.test(k) && k.split('|')[1] === src && cfg.gfWin.test(k.split('|')[2])).map(k => H[k])) };
     }
+    // Финалов FNCS у ASIA/ME/OCE на Tracker нет — места с Liquipedia, очки оценкой по месту.
+    if (!cfg.wc && !stages.GF.length) {
+      const LQ = { EU: 'Europe', NAC: 'North America East', NAW: 'North America West', BR: 'Brazil', ASIA: 'Asia', ME: 'Middle East', OCE: 'Oceania' }[reg];
+      const page = set === 'h3' ? 'Fortnite Champion Series__Season X__Grand Finals__' : 'Fortnite Champion Series__Chapter 2__Season 1__Grand Finals__';
+      const f = path.join(M, 'liqui-2019', page + LQ + '.txt');
+      if (fs.existsSync(f)) {
+        const t = fs.readFileSync(f, 'utf8'), rows = [];
+        const re = /\{\{prize pool slot( duos?| trios?| squads?)?\s*\|([^}]*)\}\}/g; let m;
+        while ((m = re.exec(t))) {
+          const parts = m[2].split('|').map(x => x.trim());
+          const place = +((parts.find(x => /^place=/.test(x)) || '').split('=')[1] || 0);
+          const usd = +((parts.find(x => /^usdprize=/.test(x)) || '').split('=')[1] || '0').replace(/,/g, '');
+          const names = parts.filter(x => x && !/=/.test(x)).slice(0, cfg.size);
+          if (place && names.length === cfg.size) rows.push({ place, usd, names, flags: names.map((_, i) => ((parts.find(x => x.startsWith('flag1p' + (i + 1) + '=')) || '').split('=')[1] || '') || null) });
+        }
+        rows.sort((a, b) => a.place - b.place);
+        stages.GF = rows.map(x => [x.place, Math.max(5, 300 - 9 * (x.place - 1)), 6, x.place === 1 ? 1 : 0, 12, +(4 + x.place * 0.5).toFixed(2), x.names, x.flags]);
+        const n = set === 'h3' ? 3 : 4;
+        lqPay[n] = lqPay[n] || {};
+        lqPay[n][reg] = rows.filter(x => x.usd > 0).map(x => [x.place, Math.round(x.usd / cfg.size)]);
+      }
+    }
     if (!stages.GF.length && !stages.S.length) { console.log('empty', set, reg); continue; }
     for (const st of ['Q', 'S', 'GF']) {
       const rows = stages[st];
@@ -87,6 +109,8 @@ for (const [set, cfg] of Object.entries(SETS)) {
 for (const set of Object.keys(nat)) out.push('const ' + set.toUpperCase() + '_NAT=' + JSON.stringify(nat[set]) + ';');
 out.push('// Призовые финалов World Cup в Нью-Йорке (Liquipedia, на игрока): h1 — соло, h2 — дуо.');
 out.push('const WC2019_PAY=' + JSON.stringify(pay) + ';');
+out.push('// Финалы FNCS 2019 у регионов без таблиц Tracker (Liquipedia, на игрока): 3 — Season X, 4 — C2S1.');
+out.push('const CC_MX_PAY_2019_LQ=' + JSON.stringify(lqPay) + ';');
 // Поле финалов и квоты недель: сколько финалистов регион дал за пять недель, на неделю — с округлением вверх.
 const field = {}, quota = {};
 for (const [set, cfg] of Object.entries(SETS)) {

@@ -311,6 +311,7 @@ async function ccMXRun(ev, sp){
 function ccMXPrize(y, n, place){
   const sp=ccMXSpec(y, n); if(!sp) return 0;
   const t=sp.kind==='wc' ? {EU:((typeof WC2019_PAY!=='undefined' && WC2019_PAY[sp.set])||[])}
-        : (((y===2019 ? (typeof CC_MX_PAY_2019!=='undefined' && CC_MX_PAY_2019) : (typeof CC_MX_PAY_2020!=='undefined' && CC_MX_PAY_2020))||{})[n]||{});
+        : y===2019 ? Object.assign({}, ((typeof CC_MX_PAY_2019_LQ!=='undefined' && CC_MX_PAY_2019_LQ[n])||{}), ((typeof CC_MX_PAY_2019!=='undefined' && CC_MX_PAY_2019[n])||{}))
+        : (((typeof CC_MX_PAY_2020!=='undefined' && CC_MX_PAY_2020)||{})[n]||{});
   return ccPay24(t, place)*sp.size;
 }
