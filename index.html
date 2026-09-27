@@ -69053,10 +69053,13 @@ const CARD_M1_LCQ_DATE='\u0430\u043f\u0440 2026';
 const CARD_M1_GF_EVENT='FNCS 2026 Major 1 — Grand Finals (Europe)';
 const CARD_M1_GF_DATE='\u0430\u043f\u0440 2026';
 
-// Europe and NA Central are the deep regions — a win there is worth a 96.
-// Everywhere else the field is thinner, so the whole band is compressed to top
-// out at 85 rather than clipped, which would flatten the top of the ladder.
-const REGION_TOP={EU:96, NAC:96, NAW:85, BR:85, OCE:85, ASIA:85, ME:85};
+// Потолок рейтинга региона — по тому, как его команды играют на международных ЛАНах:
+// средний процентиль места в финале (1 — первое, 0 — последнее) на World Cup 2019 (соло и дуо),
+// Invitational 2022, Глобалах в Форт-Уэрте 2024 и Лионе 2025, сжатый к 0.35 на весе 10 команд
+// (у NA West и Ближнего Востока выборки малы). EU ≈ .57 и NA Central ≈ .54 — оба 96; дальше
+// 96 − 30·(отставание от Европы): NA West .45 → 92, Бразилия .40 → 91, Азия .33 → 89,
+// Ближний Восток .30 → 88, Океания .24 → 86. Раньше у всех, кроме EU и NAC, стояло 85.
+const REGION_TOP={EU:96, NAC:96, NAW:92, BR:91, OCE:86, ASIA:89, ME:88};
 
 // Eliminations are worth 4 points each in FNCS 2026 duos — the same multiplier
 // the simulation runs on. Knowing it lets the published point total be split
@@ -108493,7 +108496,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='355b3ea1';
+const CC_BUILD='c708276b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
