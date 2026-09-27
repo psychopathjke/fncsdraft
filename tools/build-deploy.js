@@ -77,6 +77,23 @@ if (!best || best.len < 3e6) throw new Error('не нашёл приложени
 if (best.attrs) throw new Error('у блока приложения появились атрибуты: ' + best.attrs);
 
 fs.writeFileSync(path.join(OUT, 'app.js'), html.slice(best.from, best.end), 'utf8');
+/* Без комментариев и лишних пробелов. Комментарии — треть app.js (8,9 → 6,0 млн байт
+   на 27.09), браузеру они не нужны, а размер упирается в линию 9 МБ. Код не трогается:
+   terser без compress и mangle только перепечатывает его. Исходник в репо — как был. */
+{
+  const { execFileSync } = require('child_process');
+  const appPath = path.join(OUT, 'app.js'), before = fs.statSync(appPath).size;
+  const tmpOut = appPath + '.min';
+  try {
+    execFileSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['-y', 'terser@5', appPath, '--comments', 'false', '-o', tmpOut],
+      { stdio: ['ignore', 'ignore', 'inherit'], shell: process.platform === 'win32', timeout: 600000 });
+    fs.renameSync(tmpOut, appPath);
+    console.log('app.js без комментариев: ' + before + ' → ' + fs.statSync(appPath).size + ' байт');
+  } catch (e) {
+    try { fs.unlinkSync(tmpOut); } catch (_) {}
+    console.log('ВНИМАНИЕ: terser не отработал (' + String(e.message).slice(0, 120) + ') — app.js остался с комментариями, ' + before + ' байт');
+  }
+}
 const hash = crypto.createHash('sha1').update(fs.readFileSync(path.join(OUT, 'app.js'))).digest('hex').slice(0, 8);
 /* ---- ПОКА app.js ЕДЕТ — СКАЗАТЬ ОБ ЭТОМ ----------------------------------
  *

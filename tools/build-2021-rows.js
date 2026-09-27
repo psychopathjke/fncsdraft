@@ -2,10 +2,10 @@
 //
 // Per season (S15 = C2S5 … S18 = C2S8) and region — EU, NA East (-> NAC), NA West, BR, ASIA,
 // ME, OCE — three stages, as the 2022–2024 sets read them:
-//   Q  (L) — the qualifiers' last round (Round 4, 33 trios each), each trio once, at its best, top 30;
-//   S  (P) — the Semi-Final heats (and Day 2 heats in S18), each trio once, at its best, top 40;
+//   Q  (L) — the qualifiers' last round (Round 4, 33 trios each), each trio once, at its best;
+//   S  (P) — the Semi-Final heats (and Day 2 heats in S18), each trio once, at its best;
 //   GF (G) — the Finals, both rounds summed.
-// The caps keep app.js under its 9 MB line (see the 2022 builder).
+// No caps: build-deploy strips comments from app.js, which freed the room.
 // NA East / West finals have empty leaderboards on Tracker — places come from Liquipedia
 // (prize pool slots), points estimated from the place.
 // Output: tools/2021-rows.generated.js — CARD_J<n><REG>_<Q|S|GF>_RAW in the rowEntry shape
@@ -18,7 +18,7 @@ const H = JSON.parse(fs.readFileSync(path.join(__dirname, 'measured', 'tracker-2
 const SETS = { j1: 'S15', j2: 'S16', j3: 'S17', j4: 'S18' };
 const REGS = ['EU', 'NAC', 'NAW', 'BR', 'ASIA', 'ME', 'OCE'];
 const SRC = { NAC: 'NAE' };
-const CAP = { Q: 30, S: 40, GF: 40 };
+const CAP = { Q: Infinity, S: Infinity, GF: Infinity };
 const KILL = { Q: 2, S: 3, GF: 3 };
 const q = s => JSON.stringify(String(s));
 const keyOf = names => names.map(n => String(n).toLowerCase()).sort().join('|');
