@@ -22,7 +22,9 @@ const OUT = path.join(ROOT, 'photos');
 const CLIENT = 'kimne78kx3ncx6brgo4mv6wki5h1ko';
 // A line may be «handle<TAB>login» — a club prefix stripped by hand («PDR Kenty» → kenty); such a
 // guess is taken on Fortnite evidence only, never on size or a matching display name.
-const rows = fs.readFileSync(process.argv[2], 'utf8').split(/\r?\n/).map(s => s.trim()).filter(Boolean).map(l => { const t = l.split('\t'); return { h: t[0], forced: t[1] || null }; });
+// «handle<TAB>login<TAB>liqui» — the login is the one the player's own Liquipedia infobox links
+// (|twitch=), which is the proof itself: taken whenever the channel has a picture of its own.
+const rows = fs.readFileSync(process.argv[2], 'utf8').split(/\r?\n/).map(s => s.trim()).filter(Boolean).map(l => { const t = l.split('\t'); return { h: t[0], forced: t[1] || null, liqui: t[2] === 'liqui' }; });
 const list = rows.map(r => r.h);
 const loginOf = h => { const l = h.toLowerCase(); return /^[a-z0-9_]{3,25}$/.test(l) ? l : null; };
 const gql = body => new Promise((res, rej) => {
@@ -39,9 +41,9 @@ const download = (url, file) => new Promise((res, rej) => {
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const safeFile = h => h.replace(/[^A-Za-z0-9_.-]/g, '') + '.png';
 (async () => {
-  const cands = rows.map(r => ({ h: r.h, login: r.forced ? r.forced.toLowerCase() : loginOf(r.h), guess: !!r.forced })).filter(x => x.login && /^[a-z0-9_]{3,25}$/.test(x.login));
+  const cands = rows.map(r => ({ h: r.h, login: r.forced ? r.forced.toLowerCase() : loginOf(r.h), guess: !!r.forced, liqui: r.liqui })).filter(x => x.login && /^[a-z0-9_]{3,25}$/.test(x.login));
   console.log(list.length + ' handles, ' + cands.length + ' look like a twitch login');
-  const map = {}; const why = { fortnite: 0, desc: 0, big: 0 };
+  const map = {}; const why = { liqui: 0, fortnite: 0, desc: 0, big: 0 };
   let seen = 0, exists = 0;
   for (let i = 0; i < cands.length; i += 20) {
     const chunk = cands.slice(i, i + 20);
@@ -57,7 +59,8 @@ const safeFile = h => h.replace(/[^A-Za-z0-9_.-]/g, '') + '.png';
       const desc = u.description || '';
       const fol = (u.followers || {}).totalCount || 0;
       let ok = null;
-      if (/fortnite/i.test(game)) ok = 'fortnite';
+      if (p.liqui) ok = 'liqui';
+      else if (/fortnite/i.test(game)) ok = 'fortnite';
       else if (/fortnite|fncs|epic games/i.test(desc)) ok = 'desc';
       else if (!p.guess && fol >= 20000 && u.displayName === p.h) ok = 'big';
       if (!ok) continue;
