@@ -20,16 +20,19 @@ const OUT = path.join(ROOT, 'tools', 'measured', 'orgs-by-year.json');
 const CACHE = path.join(os.tmpdir(), 'liqui-orgs'); fs.mkdirSync(CACHE, { recursive: true });
 const UA = 'fncsdraft-tools/1.0 (keegorka@gmail.com)';
 const GAP_MS = 31000;
-const REG = { 'Europe': 'EU', 'North America': 'NAC', 'North America Central': 'NAC', 'North America West': 'NAW',
+const REG = { 'Europe': 'EU', 'North America': 'NAC', 'North America East': 'NAC', 'North America Central': 'NAC', 'North America West': 'NAW',
               'Brazil': 'BR', 'Asia': 'ASIA', 'Middle East': 'ME', 'Oceania': 'OCE' };
 const PAGES = {
+  // 2023: Мейджор 1 — NA East и West, со второго — NA Central; несуществующие страницы пропускаются.
+  // Недели (Week 1–3) — те, кто до финала не дошёл.
+  2023: { regions: ['Europe', 'North America East', 'North America West', 'North America Central', 'Brazil', 'Asia', 'Middle East', 'Oceania'], majors: [1, 2, 3], globals: 'Fortnite Champion Series/2023', extra: ['Week 1', 'Week 2', 'Week 3'] },
   // extra — подстраницы Мейджора, где стоят те, кто до финала не дошёл (квалификаторы 2024,
   // лобби последнего шанса 2025); ключ major<n>q, читается после страницы финала.
   2024: { regions: ['Europe', 'North America', 'Brazil', 'Asia', 'Middle East', 'Oceania'], majors: [1, 2, 3], globals: 'Fortnite Champion Series/2024', extra: ['Qualifier 1', 'Qualifier 2'] },
   2025: { regions: ['Europe', 'North America Central', 'North America West', 'Brazil', 'Asia', 'Middle East', 'Oceania'], majors: [1, 2, 3], globals: 'Fortnite Champion Series/2025', extra: ['Last Chance Lobby'] }
 };
 const want = process.argv.slice(2).map(Number).filter(y => PAGES[y]);
-const YEARS = want.length ? want : [2024, 2025];
+const YEARS = want.length ? want : [2023, 2024, 2025];
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 function fetchHtml(title) {

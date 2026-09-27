@@ -49,6 +49,12 @@ const SETS = {
   f2: {map: 'Map:Chapter 5: Season 2 (29.40)', art: 'art/map-f2.jpg'},
   f3: {map: 'Map:Chapter 5: Season 3 (30.30)', art: 'art/map-f3.jpg'},
   f4: {map: 'Map:Chapter 5: Season 4 (31.00)', art: 'art/map-f4.jpg'},
+  /* Острова 2023-го — патч на выходные финала: Мейджор 1 (4–5 марта) — 23.50, Мейджор 2
+     (13–14 мая) — 24.30, Мейджор 3 (12–13 августа) — 25.30, Копенгаген (13–15 октября) — 26.20. */
+  e1: {map: 'Map:Chapter 4: Season 1 (23.50)', art: 'art/map-e1.jpg'},
+  e2: {map: 'Map:Chapter 4: Season 2 (24.30)', art: 'art/map-e2.jpg'},
+  e3: {map: 'Map:Chapter 4: Season 3 (25.30)', art: 'art/map-e3.jpg'},
+  e4: {map: 'Map:Chapter 4: Season 4 (26.20)', art: 'art/map-e4.jpg'},
   s42:     {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
   s42solo: {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
   /* Острова Мейджоров 2026 — только ради счёта СУНДУКОВ по коробкам (7.09, «сундуков
