@@ -25,7 +25,8 @@ const BOOT = `
     // 1. Экран создания: три чипа года, 2024 выбирается, сейв выходит с годом.
     openCareerCreate();
     const chips=document.getElementById('ccYearChips');
-    check('на экране создания три чипа года', chips && chips.querySelectorAll('button').length===3, chips && String(chips.querySelectorAll('button').length));
+    // 27.09: четыре года — 2026, 2025, 2024, 2023.
+    check('на экране создания четыре чипа года', chips && chips.querySelectorAll('button').length===4, chips && String(chips.querySelectorAll('button').length));
     // NA West в 2024-м не было: чипа нет, выбранный NAW уходит в NA Central.
     ccPickYear(2026); ccPickRegion('NAW');
     ccPickYear(2024);
