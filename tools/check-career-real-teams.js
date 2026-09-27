@@ -74,6 +74,28 @@ const BOOT = `
     check('2024→2025: третьи посеяны из 2025-го', trioChecked>=20 && trioReal===trioChecked, trioReal+'/'+trioChecked);
     check('2024→2025: люди — карточки 2024-го', yr24>=real1.length*2*0.9, out.notes.y25.people2024);
     check('2024→2025: рынок трио не открывается', ccTrioMarket(cr, true)===0);
+    // 1б. Потенциал из жизни: рейтинг идёт к рейтингу года календаря, постепенно.
+    const pot=(day)=>{
+      seed({season:2, size:3, year:2025, year0:2024, day:day, sizes:{1:2}});
+      const T=ccRealTargets(2025), P=careerPools();
+      const base=new Map(); ccEuCards().forEach(c=>{ const cur=base.get(c._k); if(ccCardYear(c)===2024 && (cur==null || c._ovr>cur)) base.set(c._k, c._ovr); });
+      let n=0, toward=0, gap0=0, gap1=0, up=0, down=0; const ex=[];
+      P.duos.forEach(d=>d.cards.forEach(c=>{
+        const k=c._k||hKey(c), t=T.get(k), b=base.get(k);
+        if(t==null || b==null || Math.abs(t-b)<3) return;
+        n++; gap0+=Math.abs(t-b); gap1+=Math.abs(t-c._ovr);
+        if(Math.abs(t-c._ovr)<Math.abs(t-b)) toward++;
+        if(t>b) up++; else down++;
+        if(ex.length<4) ex.push(c.handle+' '+b+'→'+c._ovr+' (жизнь '+t+')');
+      }));
+      return {frac:+ccRealPullFrac().toFixed(2), n, toward, up, down, gapStart:+(gap0/Math.max(1,n)).toFixed(1), gapNow:+(gap1/Math.max(1,n)).toFixed(1), ex};
+    };
+    const first=pot(CC_YEAR_2025_FROM), early=pot('2025-03-15'), late=pot('2025-09-20');
+    out.notes.potential={first:{frac:first.frac, gapNow:first.gapNow}, early, late};
+    check('потенциал: в первый день сезона рейтинги свои', first.frac===0 && first.gapNow===first.gapStart, JSON.stringify(first));
+    check('потенциал: есть люди с целью', early.n>=30, String(early.n));
+    check('потенциал: к первому Мейджору — около половины', early.frac>=0.4 && early.frac<=0.65 && early.toward>=early.n*0.8, early.frac+', '+early.toward+'/'+early.n);
+    check('потенциал: к концу сезона почти всё', late.frac>=0.8 && late.gapNow<=late.gapStart*0.25, late.frac+', '+early.gapNow+' → '+late.gapNow);
     // 2. Карьера 2025-го во втором сезоне: календарь 2026-й, дуо.
     seed({season:2, size:2, year:2026, year0:2025, day:'2026-02-20', sizes:{1:3}});
     check('2025→2026: ccContinuity', ccContinuity()===true, String(ccNowYear())+'/'+String(ccCalYear()));
@@ -89,6 +111,7 @@ const BOOT = `
     const p3=careerPools();
     out.notes.y24={duos:p3.duos.length, real:p3.duos.filter(d=>d._real).length};
     check('свежий 2024-й: ccContinuity выключен', ccContinuity()===false);
+    check('свежий 2024-й: потенциала нет', ccRealPullStep()===0);
     check('свежий 2024-й: пары — свои, без _real', p3.duos.filter(d=>d._real).length===0);
     // 4. Свежий 2026-й — только замер (сколько пар даёт сцена дивизиона 1).
     seed({season:1, size:2, year:2026, year0:2026, day:'2026-02-20'});
