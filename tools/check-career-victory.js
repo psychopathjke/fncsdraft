@@ -149,12 +149,22 @@ const BOOT = `
     out.steps.push('clock moved to ' + save.career.day);
     if ((save.career.earnings||0) !== (row.prize||0))
       fail('prize money did not reach earnings');
+    /* Кнопка «Моя статистика» под итогом финала (правка тестера 27.09):
+       после каждого финала видно, как сыграл свой игрок. */
+    const my = document.querySelector("#majorStages .cc-mystats");
+    if (!my) fail("no My stats button under the evening result");
+    const myRows = [...my.querySelectorAll(".x-lead-r")].map(r => r.textContent.split(" ").filter(Boolean).join(" ").trim());
+    if (myRows.length < 4) fail("My stats card has " + myRows.length + " rows");
+    if (!myRows.every(t => /#[0-9]+ [/] [0-9]+$/.test(t))) fail("My stats rows carry no lobby rank: " + myRows[0]);
+    out.steps.push("my stats: " + myRows.slice(0,3).join(" | "));
     /* Лента живёт в соцсети: центр с 2 сентября — новостной хаб. */
     CH_SOCIAL = 'feed';
     careerTab('social');
     const feed = [...document.querySelectorAll('#chBody .x-post-in p')].map(b=>b.textContent.trim());
     if (!feed.length) fail('the feed is empty after a Victory Cup');
     out.steps.push('feed: ' + feed.slice(0,2).join(' / '));
+    const mineCards = [...document.querySelectorAll("#chBody .x-shot")].filter(c => /#[0-9]+ [/] [0-9]+/.test(c.textContent));
+    if (!mineCards.length) fail("the breakdown post carries no My stats card");
 
     // ---- play the duos one, which does seat a partner --------------------
     seed(4, '2026-01-12', 70);
