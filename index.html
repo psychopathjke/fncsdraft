@@ -85549,10 +85549,9 @@ function ccRenderChips(){
     const YEAR_LOOK={2026:{lan:'Antwerp',    art:'art/fncs-2026.jpg'},
                      2025:{lan:'Lyon',       art:'art/mode-major1-2025.jpg'},
                      2024:{lan:'Fort Worth', art:'art/fncs-2024.jpg'},
-                     // 2023 — остров Мейджора 1 (Chapter 4 Season 1), как у 2024-го.
-                     2023:{lan:'Copenhagen', art:'art/map-e1.jpg'},
-                     // 2022 — остров первого сезона Chapter 3.
-                     2022:{lan:'Raleigh', art:'art/map-k1.jpg'}};
+                     // 2023 и 2022 — ключевые арты Epic своего года (новости fortnite.com: FNCS 2023, FNCS C3S1).
+                     2023:{lan:'Copenhagen', art:'art/fncs-2023.jpg'},
+                     2022:{lan:'Raleigh', art:'art/fncs-2022.jpg'}};
     ychips.innerHTML=[2026, 2025, 2024, 2023, 2022].map(y=>{
       const on=(CC.year||2026)===y;
       const off=lockY && y!==lockY;
@@ -86527,7 +86526,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='79047225';
+const CC_BUILD='2e8a9baf';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
