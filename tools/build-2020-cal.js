@@ -12,7 +12,8 @@ let last = '2020-01-06';
 ['i1', 'i2', 'i3'].forEach((set, idx) => {
   const n = idx + 1, d = dates[set], sh = shape[set], size = sh.size, eu = sh.EU || {};
   const lobby = size === 1 ? 100 : size === 2 ? 50 : size === 3 ? 33 : 25;
-  const weeks = Object.keys(d.weeks).map(Number).sort((a, b) => a - b);
+  // Wildcard (неделя 9) у C2S4 по датам Liquipedia в день финала — вечера наложились бы; не берём.
+  const weeks = Object.keys(d.weeks).map(Number).filter(w => !(d.gf && d.weeks[w][0] >= d.gf[0])).sort((a, b) => a - b);
   weeks.forEach(w => {
     const [a, b] = d.weeks[w];
     if (!a) return;

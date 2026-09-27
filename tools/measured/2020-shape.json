@@ -9,6 +9,14 @@
     "2": [
      "2020-03-28",
      "2020-03-29"
+    ],
+    "3": [
+     "2020-04-04",
+     "2020-04-05"
+    ],
+    "4": [
+     "2020-04-11",
+     "2020-04-12"
     ]
    },
    "heats": [
@@ -25,17 +33,55 @@
     "1": [
      "2020-08-01",
      "2020-08-01"
+    ],
+    "2": [
+     "2020-08-02",
+     "2020-08-02"
+    ],
+    "3": [
+     "2020-08-08",
+     "2020-08-08"
+    ],
+    "4": [
+     "2020-08-09",
+     "2020-08-09"
     ]
    },
    "heats": [
-    "2020-08-14"
+    "2020-08-14",
+    "2020-08-15"
    ],
-   "gf": null
+   "gf": [
+    "2020-08-16",
+    "2020-08-16"
+   ]
   },
   "i3": {
-   "weeks": {},
-   "heats": [],
-   "gf": null
+   "weeks": {
+    "1": [
+     "2020-10-09",
+     "2020-10-11"
+    ],
+    "2": [
+     "2020-10-16",
+     "2020-10-18"
+    ],
+    "3": [
+     "2020-10-23",
+     "2020-10-25"
+    ],
+    "9": [
+     "2020-10-31",
+     "2020-10-31"
+    ]
+   },
+   "heats": [
+    "2020-10-29"
+   ],
+   "gf": [
+    "2020-10-31",
+    "2020-11-01"
+   ]
   }
  },
  "shape": {
@@ -44,57 +90,135 @@
     "gf": 48,
     "heats": 4,
     "heatTeams": 50,
-    "weeks": 2
+    "weeks": 4
    },
    "NAC": {
     "gf": 48,
     "heats": 4,
     "heatTeams": 50,
-    "weeks": 2
+    "weeks": 4
    },
    "NAW": {
     "gf": 48,
     "heats": 4,
     "heatTeams": 50,
-    "weeks": 2
+    "weeks": 4
    },
    "BR": {
     "gf": 48,
     "heats": 4,
     "heatTeams": 50,
-    "weeks": 2
+    "weeks": 4
    },
    "ASIA": {
     "gf": 50,
     "heats": 2,
     "heatTeams": 50,
-    "weeks": 3
+    "weeks": 4
    },
    "ME": {
     "gf": 50,
     "heats": 2,
     "heatTeams": 50,
-    "weeks": 2
+    "weeks": 4
    },
    "OCE": {
     "gf": 50,
     "heats": 2,
     "heatTeams": 50,
-    "weeks": 2
+    "weeks": 4
    },
    "size": 2
   },
   "i2": {
    "EU": {
-    "gf": 0,
-    "heats": 1,
+    "gf": 100,
+    "heats": 4,
     "heatTeams": 100,
-    "weeks": 1
+    "weeks": 4
+   },
+   "NAC": {
+    "gf": 100,
+    "heats": 4,
+    "heatTeams": 100,
+    "weeks": 4
+   },
+   "NAW": {
+    "gf": 100,
+    "heats": 4,
+    "heatTeams": 100,
+    "weeks": 4
+   },
+   "BR": {
+    "gf": 100,
+    "heats": 4,
+    "heatTeams": 100,
+    "weeks": 4
+   },
+   "ASIA": {
+    "gf": 100,
+    "heats": 2,
+    "heatTeams": 100,
+    "weeks": 4
+   },
+   "ME": {
+    "gf": 100,
+    "heats": 2,
+    "heatTeams": 100,
+    "weeks": 4
+   },
+   "OCE": {
+    "gf": 100,
+    "heats": 2,
+    "heatTeams": 100,
+    "weeks": 4
    },
    "size": 1
   },
   "i3": {
-   "size": 1
+   "EU": {
+    "gf": 33,
+    "heats": 4,
+    "heatTeams": 33,
+    "weeks": 4
+   },
+   "NAC": {
+    "gf": 33,
+    "heats": 4,
+    "heatTeams": 33,
+    "weeks": 4
+   },
+   "NAW": {
+    "gf": 33,
+    "heats": 4,
+    "heatTeams": 33,
+    "weeks": 4
+   },
+   "BR": {
+    "gf": 33,
+    "heats": 4,
+    "heatTeams": 33,
+    "weeks": 4
+   },
+   "ASIA": {
+    "gf": 33,
+    "heats": 2,
+    "heatTeams": 33,
+    "weeks": 4
+   },
+   "ME": {
+    "gf": 33,
+    "heats": 2,
+    "heatTeams": 33,
+    "weeks": 4
+   },
+   "OCE": {
+    "gf": 33,
+    "heats": 2,
+    "heatTeams": 33,
+    "weeks": 4
+   },
+   "size": 3
   }
  }
 }

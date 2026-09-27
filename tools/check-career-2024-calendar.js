@@ -26,7 +26,7 @@ const BOOT = `
     openCareerCreate();
     const chips=document.getElementById('ccYearChips');
     // 27.09: четыре года — 2026, 2025, 2024, 2023.
-    check('на экране создания шесть чипов года', chips && chips.querySelectorAll('button').length===6, chips && String(chips.querySelectorAll('button').length));
+    check('на экране создания восемь чипов года', chips && chips.querySelectorAll('button').length===8, chips && String(chips.querySelectorAll('button').length));
     // NA West в 2024-м не было: чипа нет, выбранный NAW уходит в NA Central.
     ccPickYear(2026); ccPickRegion('NAW');
     ccPickYear(2024);
