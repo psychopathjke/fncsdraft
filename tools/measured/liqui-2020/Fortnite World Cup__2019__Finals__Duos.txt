@@ -1,0 +1,269 @@
+{{DISPLAYTITLE:Fortnite World Cup Finals - Duos}}
+{{World Cup Navbox}}
+{{Tabs static
+|name1=Solo |link1=Fortnite World Cup/2019/Finals/Solo
+|name2=Duos |link2=Fortnite World Cup/2019/Finals/Duos
+}}
+{{Infobox league
+|liquipediatier=1|highlighted=true
+|series=Fortnite World Cup
+|shortname=Fortnite World Cup Finals Duos
+|name=Fortnite World Cup Finals - Duos
+|tickername=Fortnite World Cup Finals Duos
+|image=Fortnite World Cup 2019 Finals.png
+|icon=Fortnite World Cup icon.png
+|organizer=Epic Games
+|organizer-link=
+|sponsor=
+|type=Offline
+|city=New York
+|country=United States
+|venue=Arthur Ashe Stadium
+|twitch=Fortnite
+|format=Duos
+|prizepoolusd=15,100,000
+|date=2019-07-27
+|web=https://www.epicgames.com/fortnite/competitive/en-US/events/world-cup
+|facebook=FortniteGame
+|twitter=FortniteGame
+|instagram=fortnite
+|team_number=50
+}}
+
+==About==
+===Broadcast Talent===
+{{Tabs dynamic|name1=English Broadcast|This=1|hide-showall=true}}
+{{Tabs dynamic/tab|1}}
+{{box|start|padding=1em}}
+{{broadcasterCard
+|position=Stage Host|lang=Primary
+|b1=Goldenboy |b1flag=us |b1name=Alex Mendez
+}}
+{{BroadcasterCard
+|position=Analyst & Commentator|lang=Primary
+|b1=Ballatw |b1flag=us |b1name=Arten Esa
+|b2=Zeke |b2flag=us |b2name=Zeke Mateus
+|b3=SUND0WN |b3flag=us |b3name=Cameron McGrory
+|b4=MonsterDface |b4flag=us |b4name=Javier Collazo
+|b5=CouRage |b5flag=us |b5name=Jack Dunlop
+|b6=Ninja |b6flag=us |b6name=Tyer Blevins
+|b7=DrLupo |b7flag=us |b7name=Benjamin Lupo
+}}
+{{BroadcasterCard
+|position=Reporter|lang=Primary
+|b1=pookieface_ |b1flag=us |b1name=Sarah Lynn
+|b2=Jordan Fisher |b2flag=us |b2name=Jordan Fisher |b2link=wikipedia:Jordan Fisher
+|b3=KittyPlays |b3flag=us |b3name=Kristen Michaela
+}}
+{{box|end}}
+{{Tabs dynamic/end}}
+
+===Format===
+* Team gain points in a series of six matches
+* Duo teams will be ranked on the leaderboards based on the scoring system listed below
+
+{| class="wikitable"
+|-
+! Condition !! Points
+|-
+| Victory || 10
+|-
+| 2nd to 5th || 7
+|-
+| 6th to 10th || 5
+|-
+| 11th to 15th || 3
+|-
+| Each Elimination || 1
+|}
+
+Placement points are not cumulative across the same match. Tiebreakers will be used in the following order:
+* Total Victory Royales
+* Average Eliminations in the session
+* Average Placement per match in the session
+* Coin Flip
+
+===Prize Pool===
+$15,100,000 ({{Abbr/USD}}) are spread among the teams as seen below:
+
+{{prize pool start duos|cutafter=10}}
+{{prize pool slot duos |place=1 |usdprize=3,000,000 |nyhrox |flag1p1=no |team1p1=cooler esport |aqua |flag1p2=at |team1p2=cooler esport }}
+{{prize pool slot duos |place=2 |usdprize=2,250,000 |Wolfiez |flag1p1=uk |team1p1=lazarus esports |Rojo |flag1p2=nl |team1p2=lazarus esports }}
+{{prize pool slot duos |place=3 |usdprize=1,800,000 |Ceice |flag1p1=us |team1p1=100 thieves |Elevate|link1p2=Elevate (Canadian Player) |flag1p2=ca |team1p2=100 thieves }}
+{{prize pool slot duos |place=4 |usdprize=1,500,000 |Zayt |flag1p1=ca |team1p1=nrg esports |Saf |flag1p2=us |team1p2=ghost gaming }}
+{{prize pool slot duos |place=5 |usdprize=900,000 |Arkhram |flag1p1=us |team1p1=100 thieves |Falconer |flag1p2=us |team1p2= }}
+{{prize pool slot duos |place=6 |usdprize=450,000 |Mongraal |flag1p1=uk |team1p1=faze clan |Mitr0 |flag1p2=nl |team1p2=team atlantis }}
+{{prize pool slot duos |place=7 |usdprize=375,000 |Dubs |flag1p1=us |team1p1=faze clan |Megga |flag1p2=us |team1p2=faze clan }}
+{{prize pool slot duos |place=8 |usdprize=375,000 |itemm |flag1p1=uk |team1p1=e11 |derox |flag1p2=de |team1p2=kungarna }}
+{{prize pool slot duos |place=9 |usdprize=225,000 |ZexRow |flag1p1=us |team1p1=tsm |Vinny1x |flag1p2=us |team1p2=tsm }}
+{{prize pool slot duos |place=10|usdprize=225,000 |Skite |flag1p1=fr |team1p1=lestream esport |Vato |flag1p2=ch |team1p2=lestream esport}}
+{{prize pool slot duos |place=11|usdprize=100,000 |Deadra |flag1p1=fr |team1p1=gamersorigin |M11Z |flag1p2=fr |team1p2=gamersorigin }}
+{{prize pool slot duos |place=12|usdprize=100,000 |EpikWhale |flag1p1=us |team1p1=nrg esports |4DRStorm |flag1p2=us |team1p2= }}
+{{prize pool slot duos |place=13|usdprize=100,000 |4zr |flag1p1=ch |team1p1=cooler esport |Noward |flag1p2=be |team1p2=cooler esport }}
+{{prize pool slot duos |place=14|usdprize=100,000 |MrSavage |flag1p1=no |team1p1=nrg esports |benjyfishy |flag1p2=uk |team1p2=nrg esports }}
+{{prize pool slot duos |place=15|usdprize=100,000 |Slackes |flag1p1=us |team1p1= |Keys |flag1p2=mx |team1p2= }}
+{{prize pool slot duos |place=16|usdprize=100,000 |MackWood |flag1p1=us |team1p1=col |yung calculator |flag1p2=us |team1p2= }}
+{{prize pool slot duos |place=17|usdprize=100,000 |Crimz |flag1p1=us |team1p1=lazarus esports |Spades |flag1p2=us |team1p2=team overtime }}
+{{prize pool slot duos |place=18|usdprize=100,000 |serpennt |flag1p1=au |team1p1= |Hype |flag1p2=au |team1p2=}}
+{{prize pool slot duos |place=19|usdprize=100,000 |BadSniper |flag1p1=fr |team1p1=vitality |Oslo |flag1p2=fr |team1p2=vitality }}
+{{prize pool slot duos |place=20|usdprize=100,000 |Scarlet |flag1p1=jp |team1p1=crazy raccoon |bell |flag1p2=jp |team1p2=crazy raccoon }}
+{{prize pool slot duos |place=21|usdprize=100,000 |Klusia |flag1p1=dk |team1p1=e11 |Th0masHD |flag1p2=dk |team1p2=team singularity}}
+{{prize pool slot duos |place=22|usdprize=100,000 |crue |flag1p1=se |team1p1=valhalla vikings |chapix |flag1p2=se |team1p2=valhalla vikings }}
+{{prize pool slot duos |place=23|usdprize=100,000 |Hunter |flag1p1=fr |team1p1=solary |Kinstaar |flag1p2=ch |team1p2=solary }}
+{{prize pool slot duos |place=24|usdprize=100,000 |RedRush |flag1p1=lt |team1p1=executors one |znappy |flag1p2=se |team1p2=executors one }}
+{{prize pool slot duos |place=25|usdprize=100,000 |Stompy |flag1p1=at |team1p1=e11 |Tschinken |flag1p2=at |team1p2=e11 }}
+{{prize pool slot duos |place=26|usdprize=100,000 |Vorwenn |flag1p1=es |team1p1=faze clan |Tuckz |flag1p2=uk |team1p2=team atlantis }}
+{{prize pool slot duos |place=27|usdprize=100,000 |KBB |flag1p1=cn |team1p1=Team WE |YuWang |flag1p2=cn |team1p2=Team WE }}
+{{prize pool slot duos |place=28|usdprize=100,000 |ronaldo |flag1p1=ca |team1p1=riot squad esports |XXiF |flag1p2=ca |team1p2=riot squad esports }}
+{{prize pool slot duos |place=29|usdprize=100,000 |Airwaks |flag1p1=ch |team1p1=solary |Nikof |flag1p2=fr |team1p2=solary }}
+{{prize pool slot duos |place=30|usdprize=100,000 |Lanjok |flag1p1=us |team1p1=complexity gaming |Punisher |flag1p2=fr |team1p2=complexity gaming }}
+{{prize pool slot duos |place=31|usdprize=100,000 |Nate Hill |flag1p1=us |team1p1=faze clan |Funk |flag1p2=us |team1p2=faze clan }}
+{{prize pool slot duos |place=32|usdprize=100,000 |fwexY |flag1p1=de |team1p1=gambit esports |letw1k3 |flag1p2=ru |team1p2=gambit esports }}
+{{prize pool slot duos |place=33|usdprize=100,000 |7ssk7 |flag1p1=by |team1p1=virtus.pro |Jamside |flag1p2=ru |team1p2=virtus.pro }}
+{{prize pool slot duos |place=34|usdprize=100,000 |Tetchra |flag1p1=us |team1p1=rogue |Eclipsae |flag1p2=us |team1p2=rogue }}
+{{prize pool slot duos |place=35|usdprize=100,000 |Clix |flag1p1=us |team1p1=misfits gaming |Sceptic |flag1p2=us |team1p2=misfits gaming }}
+{{prize pool slot duos |place=36|usdprize=100,000 |Brush |flag1p1=us |team1p1=tempo storm |CizLucky |flag1p2=us |team1p2=tempo storm }}
+{{prize pool slot duos |place=37|usdprize=100,000 |Sean |flag1p1=ca |team1p1=ghost gaming |Aydan |flag1p2=us|team1p2=ghost gaming }}
+{{prize pool slot duos |place=38|usdprize=100,000 |little |flag1p1=us |team1p1=kungarna |Jay |flag1p2=us |team1p2=kungarna }}
+{{prize pool slot duos |place=39|usdprize=100,000 |xOwN |flag1p1=ar |team1p1=9z team |k1nG |flag1p2=ar |team1p2=9z team }}
+{{prize pool slot duos |place=40|usdprize=100,000 |volx |flag1p1=au |team1p1= |parpy |flag1p2=nz |team1p2=chiefs esports club }}
+{{prize pool slot duos |place=41|usdprize=100,000 |Leno |flag1p1=us |team1p1= |Barl |flag1p2=ph |team1p2=kungarna }}
+{{prize pool slot duos |place=42|usdprize=100,000 |Puzz |flag1p1=kr |team1p1=op gaming |Ming |flag1p2=kr |team1p2=op gaming }}
+{{prize pool slot duos |place=43|usdprize=100,000 |LeNain |flag1p1=ca |team1p1=team envy |Tyler15 |flag1p2=us |team1p2=luminosity gaming }}
+{{prize pool slot duos |place=44|usdprize=100,000 |Lnuef |flag1p1=nl |team1p1=navi |Quinten |flag1p2=nl |team1p2=navi }}
+{{prize pool slot duos |place=45|usdprize=100,000 |Mexe |flag1p1=uk |team1p1=lootboy esports|Skram |flag1p2=dk |team1p2=lootboy esports}}
+{{prize pool slot duos |place=46|usdprize=100,000 |RoAtDW |flag1p1=us |team1p1= |BlooTea |flag1p2=us |team1p2=e11 }}
+{{prize pool slot duos |place=47|usdprize=100,000 |pfzin |flag1p1=br |team1p1=cloud9 |Nicks |flag1p2=br |team1p2=cloud9 }}
+{{prize pool slot duos |place=48|usdprize=100,000 |wisheydp |flag1p1=br |team1p1= |Gustavo |flag1p2=br |team1p2= }}
+{{prize pool slot duos |place=49|usdprize=100,000 |XXM |flag1p1=cn |team1p1=newbee |Xmende |flag1p2=cn |team1p2=newbee }}
+{{prize pool slot duos |place=50|usdprize=100,000 |CoverH |flag1p1=nz |team1p1=warriors esports |Twizz |flag1p2=nz |team1p2=warriors esports }}
+{{Prize pool end|}}
+
+==Participants==
+
+==Results==
+{{match standings team |title=Results |rounds=6 |teamshort=false |customRoundPoints=true |p_kill=1 |p1=10 |p2=7 |p3=7 |p4=7 |p5=7 |p6=5 |p7=5 |p8=5 |p9=5 |p10=5 |p11=3 |p12=3 |p13=3 |p14=3 |p15=3 |p16=0 |p17=0 |p18=0 |p19=0 |p20=0 |p21=0 |p22=0 |p23=0 |p24=0 |p25=0 |p26=0 |p27=0 |p28=0 |p29=0 |p30=0 |p31=0 |p32=0 |p33=0 |p34=0 |p35=0 |p36=0 |p37=0 |p38=0 |p39=0 |p40=0 |p41=0 |p42=0 |p43=0 |p44=0 |p45=0 |p46=0 |p47=0 |p48=0 |p49=0 |p50=0
+
+}}
+
+===Preliminary Summary===
+* '''Match 1'''
+** Victory: Saf & Zayt (15 points, 5 eliminations)
+** Most Eliminations: Scarlet & bell (14 points, 7 eliminations, 2nd)
+* '''Match 2'''
+** Victory: ZexRow & Vinny1x (17 points, 7 eliminations)
+** Most Eliminations: ZexRow & Vinny1x (17 points, 7 eliminations, 1st), Vorwenn & Tuckz (14 points, 7 eliminations, 3rd)
+* '''Match 3'''
+** Victory: MackWood & yung calculator (19 points, 9 eliminations)
+** Most Eliminations: BadSniper & Oslo (20 points, 13 eliminations, 3rd)
+* '''Match 4'''
+** Victory: aqua & Nyhrox (17 points, 7 eliminations)
+** Most Eliminations: Mitr0 & Mongraal (14 points, 11 eliminations, 14th)
+* '''Match 5'''
+** Victory: aqua & Nyhrox (17 points, 7 eliminations)
+** Most Eliminations: derox & itemm (13 points, 8 eliminations, 8th)
+* '''Match 6'''
+** Victory: 4zr & Noward (13 points, 3 eliminations)
+** Most Eliminations: Lanjok & Punisher (10 points, 7 eliminations, 14th)
+
+==Additional Data==
+====Country Representation====
+{{Country representation}}
+
+==Additional Content==
+===Streams===
+{{box|start|padding=2em}}
+{{Streams|title=Primary
+|lang1=usuk |twitch1=Fortnite |youtube1=Fortnite|mixer1=Fortnite
+}}
+{{box|end}}
+
+===Previews===
+* {{ExternalMediaLink
+|date=2019-03-25
+|link=https://www.youtube.com/watch?v=fRrONDTwsFo
+|title=Fortnite - World Cup Trailer
+|by=Epic Games
+}}
+* {{ExternalMediaLink
+|date=2019-07-23
+|link=https://www.youtube.com/watch?v=IAcuL7qSp7g
+|title=Watch the Fortnite World Cup Finals - July 26 - 28, 12:30pm ET
+|by=Epic Games
+}}
+
+===Conclusions===
+* {{ExternalMediaLink
+|date=2019-07-31
+|link=https://www.epicgames.com/fortnite/competitive/en-US/news/the-fortnite-world-cup-a-record-setting-tournament
+|title=The Fortnite World Cup | A Record-Setting Tournament
+|by=Epic Games
+}}
+
+===Player Spotlights===
+* {{TeamIcon|nrg esports}} {{ExternalMediaLink
+|date=2019-04-21
+|link=https://www.youtube.com/watch?v=SuZwTzd44ZM
+|title=Fortnite World Cup Finals - Player Profile - benjyfishy
+|by=Epic Games
+}}
+* {{TeamIcon|nrg esports}} {{ExternalMediaLink
+|date=2019-04-22
+|link=https://www.youtube.com/watch?v=6V00cilpAYs
+|title=Fortnite World Cup Finals - Player Profile - MrSavage
+|by=Epic Games
+}}
+* {{teamIcon|faze clan}} {{ExternalMediaLink
+|date=2019-04-23
+|link=https://www.youtube.com/watch?v=y73hNld1KVc
+|title=Fortnite World Cup Finals - Player Profile - Dubs
+|by=Epic Games
+}}
+* {{TeamIcon|warriors esports}} {{ExternalMediaLink
+|date=2019-07-25
+|link=https://www.youtube.com/watch?v=K3-99NJ1FjE
+|title=Fortnite World Cup Finals - Player Profile - Twizz & CoverH
+|by=Epic Games
+}}
+* {{TeamIcon|nrg esports}} {{ExternalMediaLink
+|date=2019-07-26
+|link=https://www.youtube.com/watch?v=38vbyF6owIw
+|title=Fortnite World Cup Finals - Player Profile - EpikWhale
+|by=Epic Games
+}}
+
+===Vidoes and Photos===
+====VODs====
+* {{ExternalMediaLink
+|date=2019-07-16
+|link=https://www.youtube.com/watch?v=eFYc5GdfxjA
+|title=Fortnite World Cup Finals - The Road Traveled
+|by=Epic Games
+}}
+* {{ExternalMediaLink
+|date=2019-07-16
+|link=https://www.youtube.com/watch?v=RY8TFOlIlR8
+|title=Fortnite World Cup Finals - Qualifier Moments
+|by=Epic Games
+}}
+* {{ExternalMediaLink
+|date=2019-07-17
+|link=https://www.youtube.com/watch?v=I9OMDhS0-Wg
+|title=Fortnite World Cup Finals - The Field
+|by=Epic Games
+}}
+* {{ExternalMediaLink
+|date=2019-07-27
+|link=https://www.youtube.com/watch?v=31HqRnWrg3Y
+|title=Fortnite World Cup Finals - Day 2
+|by=Epic Games
+}}
+* {{ExternalMediaLink
+|date=2019-07-31
+|link=https://www.youtube.com/watch?v=fN4Ns_lgcGI
+|title=Fortnite World Cup - Day 2 Recap
+|by=Epic Games
+}}
+
+==References==
+{{Reflist}}

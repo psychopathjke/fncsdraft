@@ -67,6 +67,13 @@ const SETS = {
   j2: {map: 'Map:Chapter 2: Season 6 (16.50)', art: 'art/map-j2.jpg'},
   j3: {map: 'Map:Chapter 2: Season 7 (17.40)', art: 'art/map-j3.jpg'},
   j4: {map: 'Map:Chapter 2: Season 8 (18.21)', art: 'art/map-j4.jpg'},
+  /* Острова 2019–2020 — картинка режима и есть карта вики (tools/build-mx-islands.js). */
+  h1: {map: 'Map:Season 9 (9.40)', art: 'art/map-h1.jpg'},
+  h3: {map: 'Map:Season X (10.40)', art: 'art/map-h3.jpg'},
+  h4: {map: 'Map:Chapter 2: Season 1 (11.11)', art: 'art/map-h4.jpg'},
+  i1: {map: 'Map:Chapter 2: Season 2 (12.20)', art: 'art/map-i1.jpg'},
+  i2: {map: 'Map:Chapter 2: Season 3 (13.30)', art: 'art/map-i2.jpg'},
+  i3: {map: 'Map:Chapter 2: Season 4 (14.30)', art: 'art/map-i3.jpg'},
   s42:     {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
   s42solo: {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
   /* Острова Мейджоров 2026 — только ради счёта СУНДУКОВ по коробкам (7.09, «сундуков
