@@ -30,8 +30,8 @@ for (const key of TARGETS) {
   const j = JSON.parse(page.parse.wikitext['*']);
   const cats = {}; (j.categories || []).forEach(c => cats[c.id] = c.name);
   const all = (j.markers || []).map(m => ({ n: (m.popup && m.popup.title) || m.title || '', x: m.position[0], y: m.position[1], c: cats[m.categoryId] || '' })).filter(m => m.n);
-  let pois = all.filter(m => /^Named Location/i.test(m.c));
-  if (pois.length < 16) pois = pois.concat(all.filter(m => /Landmark/i.test(m.c)).slice(0, 26 - pois.length));
+  const pois = all.filter(m => /^Named Location/i.test(m.c));
+  const marks = all.filter(m => /Landmark/i.test(m.c)).concat(all.filter(m => /^Unnamed Location/i.test(m.c)));
   const bounds = j.mapBounds[1][0];
   // Картинка: webp/png с вики → JPEG в art/.
   const img = path.join(cache, key + '-wiki.png');
@@ -42,12 +42,22 @@ for (const key of TARGETS) {
     if (fs.statSync(img).size < 20000) throw new Error('image blocked ' + url);
   }
   execFileSync('node', [path.join(__dirname, 'png-to-jpg.js'), img, path.join(ROOT, 'art', 'map-' + key + '.jpg'), '0.8']);
-  // Клетка — 7 % кадра вокруг локации, по возрастанию y (как у остальных островов).
-  const S = 7;
-  const rects = pois.map(m => {
+  // Клетка — 7 % кадра вокруг именованной локации, 5 % вокруг ориентира (Landmark): одни
+  // именованные дают 17–26 клеток, а на сотню соло и у остальных островов их около сорока.
+  // Ориентир, чья клетка налезает на уже взятую, пропускается; по возрастанию y.
+  const WANT = 40;
+  const box = (m, S) => {
     const X = 100 * m.x / bounds, Y = 100 * (bounds - m.y) / bounds;
     return { x: r2(Math.max(0, Math.min(100 - S, X - S / 2))), y: r2(Math.max(0, Math.min(100 - S, Y - S / 2))), w: S, h: S, n: m.n };
-  }).sort((a, b) => a.y - b.y || a.x - b.x);
+  };
+  const over = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+  const rects = pois.map(m => box(m, 7));
+  for (const m of marks) {
+    if (rects.length >= WANT) break;
+    const z = box(m, 5);
+    if (!rects.some(r => over(r, z))) rects.push(z);
+  }
+  rects.sort((a, b) => a.y - b.y || a.x - b.x);
   blocks.push({ key, rects });
   console.log(key, SETS[key], 'pois', pois.length, rects.slice(0, 4).map(z => z.n).join(', '));
 }

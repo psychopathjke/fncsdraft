@@ -92224,7 +92224,13 @@ function clubCrestHTML(org, wide){
     display:block;${solid ? '' : 'filter:drop-shadow(0 1px 2px rgba(0,0,0,.45));'}">`;
 }
 
-function photoURL(p){
+// Фото игрока, а если его нет — «Рекрут» за ником (см. ccRecruitURL). Настоящее — photoURLReal.
+function photoURL(p){ return photoURLReal(p) || ccRecruitURL(p); }
+function ccRecruitURL(p){
+  const h=String((p && p.handle)||'').trim(); if(!h) return null;
+  return 'photos/default/recruit-'+(1+(Math.abs(hashStr(h+'|recruit'))%8))+'.png';
+}
+function photoURLReal(p){
   // A career player uploads their own portrait, so it travels on the card
   // object rather than living in the photos folder.
   if(p && p._photo) return p._photo;
@@ -92238,7 +92244,10 @@ function photoURL(p){
 }
 
 function portraitHTML(p, h, skin){
-  const url=photoURL(p);
+  /* Фото нет (у игроков квалификаторов их нет нигде) — стандартный персонаж Fortnite: один из
+     восьми «Рекрутов», закреплённый за ником, чтобы у человека всегда было одно лицо. */
+  const real=photoURLReal(p);
+  const url=real || ccRecruitURL(p);
   const box=`width:${Math.round(h*0.92)}px;height:${h}px;position:relative;overflow:hidden;
     border-radius:10px;
     box-shadow:0 3px 10px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.14);`;
@@ -92260,7 +92269,7 @@ function portraitHTML(p, h, skin){
     </svg>
     <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
       <span class="fut-ovr" style="font-size:${Math.round(h*0.42)}px;color:rgba(255,255,255,.92);
-        letter-spacing:.01em;">${ini}</span>
+        letter-spacing:.01em;${real ? '' : 'opacity:0;'}">${ini}</span>
     </div>${photo}
   </div>`;
 }
@@ -93363,12 +93372,12 @@ const ZONE_STATS={
   // ==== /FNCS 2021 zone stats ====
   // ==== FNCS 2019–2020 zone stats (tools/splice-mx-zone-stats.js) ====
   // Острова 2019–2020: лут и сундуки локаций вики, по клеткам (build-2025-zone-loot.js).
-  h1:[{r:13,loot:13,chests:6,ammo:7},{r:5,loot:5,chests:5,ammo:0},{r:21,loot:21,chests:11,ammo:10},{r:15,loot:15,chests:15,ammo:0},{r:82,loot:82,chests:47,ammo:35},{r:74,loot:74,chests:57,ammo:17},{r:16,loot:16,chests:16,ammo:0},{r:58,loot:58,chests:38,ammo:20},{r:33,loot:33,chests:12,ammo:21},{r:33,loot:33,chests:11,ammo:22},{r:20,loot:20,chests:16,ammo:4},{r:37,loot:37,chests:37,ammo:0},{r:110,loot:110,chests:37,ammo:73},{r:33,loot:33,chests:14,ammo:19},{r:22,loot:22,chests:11,ammo:11},{r:28,loot:28,chests:24,ammo:4},{r:77,loot:77,chests:25,ammo:52},{r:46,loot:46,chests:25,ammo:21},{r:32,loot:32,chests:15,ammo:17},{r:70,loot:70,chests:34,ammo:36},{r:21,loot:21,chests:11,ammo:10}],
-  h3:[{r:13,loot:13,chests:6,ammo:7},{r:5,loot:5,chests:5,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:21,loot:21,chests:11,ammo:10},{r:15,loot:15,chests:15,ammo:0},{r:82,loot:82,chests:47,ammo:35},{r:74,loot:74,chests:57,ammo:17},{r:16,loot:16,chests:16,ammo:0},{r:58,loot:58,chests:38,ammo:20},{r:33,loot:33,chests:12,ammo:21},{r:33,loot:33,chests:11,ammo:22},{r:7,loot:7,chests:3,ammo:4},{r:55,loot:55,chests:40,ammo:15},{r:70,loot:70,chests:37,ammo:33},{r:33,loot:33,chests:14,ammo:19},{r:65,loot:65,chests:33,ammo:32},{r:22,loot:22,chests:11,ammo:11},{r:28,loot:28,chests:24,ammo:4},{r:25,loot:25,chests:25,ammo:0},{r:46,loot:46,chests:25,ammo:21},{r:32,loot:32,chests:15,ammo:17},{r:70,loot:70,chests:34,ammo:36},{r:21,loot:21,chests:11,ammo:10}],
-  h4:[{r:19,loot:19,chests:19,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:7,loot:7,chests:4,ammo:3},{r:21,loot:21,chests:7,ammo:14},{r:74,loot:74,chests:57,ammo:17},{r:0,loot:0,chests:0,ammo:0},{r:15,loot:15,chests:6,ammo:9},{r:0,loot:0,chests:0,ammo:0},{r:16,loot:16,chests:10,ammo:6},{r:0,loot:0,chests:0,ammo:0},{r:11,loot:11,chests:4,ammo:7},{r:0,loot:0,chests:0,ammo:0},{r:33,loot:33,chests:14,ammo:19},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:15,loot:15,chests:8,ammo:7},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:70,loot:70,chests:37,ammo:33},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:13,loot:13,chests:8,ammo:5},{r:8,loot:8,chests:3,ammo:5},{r:0,loot:0,chests:0,ammo:0}],
-  i1:[{r:11,loot:11,chests:11,ammo:0},{r:16,loot:16,chests:16,ammo:0},{r:19,loot:19,chests:19,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:74,loot:74,chests:57,ammo:17},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:33,loot:33,chests:14,ammo:19},{r:22,loot:22,chests:22,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:12,loot:12,chests:12,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:75,loot:75,chests:37,ammo:38},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:24,loot:24,chests:24,ammo:0},{r:0,loot:0,chests:0,ammo:0}],
-  i2:[{r:19,loot:19,chests:19,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:7,loot:7,chests:4,ammo:3},{r:10,loot:10,chests:7,ammo:3},{r:74,loot:74,chests:57,ammo:17},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:16,loot:16,chests:10,ammo:6},{r:0,loot:0,chests:0,ammo:0},{r:11,loot:11,chests:4,ammo:7},{r:0,loot:0,chests:0,ammo:0},{r:33,loot:33,chests:14,ammo:19},{r:22,loot:22,chests:22,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:9,loot:9,chests:4,ammo:5},{r:0,loot:0,chests:0,ammo:0},{r:75,loot:75,chests:37,ammo:38},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:20,loot:20,chests:20,ammo:0},{r:39,loot:39,chests:20,ammo:19},{r:13,loot:13,chests:8,ammo:5},{r:8,loot:8,chests:3,ammo:5},{r:0,loot:0,chests:0,ammo:0},{r:14,loot:14,chests:14,ammo:0}],
-  i3:[{r:19,loot:19,chests:19,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:29,loot:29,chests:29,ammo:0},{r:84,loot:84,chests:35,ammo:49},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:33,loot:33,chests:14,ammo:19},{r:22,loot:22,chests:22,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:73,loot:73,chests:39,ammo:34},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:39,loot:39,chests:20,ammo:19},{r:20,loot:20,chests:20,ammo:0},{r:0,loot:0,chests:0,ammo:0}],
+  h1:[{r:13,loot:13,chests:6,ammo:7},{r:5,loot:5,chests:5,ammo:0},{r:21,loot:21,chests:11,ammo:10},{r:0,loot:0,chests:0,ammo:0},{r:15,loot:15,chests:15,ammo:0},{r:82,loot:82,chests:47,ammo:35},{r:74,loot:74,chests:57,ammo:17},{r:16,loot:16,chests:16,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:58,loot:58,chests:38,ammo:20},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:33,loot:33,chests:12,ammo:21},{r:33,loot:33,chests:11,ammo:22},{r:20,loot:20,chests:16,ammo:4},{r:0,loot:0,chests:0,ammo:0},{r:37,loot:37,chests:37,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:110,loot:110,chests:37,ammo:73},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:33,loot:33,chests:14,ammo:19},{r:22,loot:22,chests:11,ammo:11},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:28,loot:28,chests:24,ammo:4},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:77,loot:77,chests:25,ammo:52},{r:46,loot:46,chests:25,ammo:21},{r:0,loot:0,chests:0,ammo:0},{r:32,loot:32,chests:15,ammo:17},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:70,loot:70,chests:34,ammo:36},{r:21,loot:21,chests:11,ammo:10}],
+  h3:[{r:13,loot:13,chests:6,ammo:7},{r:5,loot:5,chests:5,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:21,loot:21,chests:11,ammo:10},{r:0,loot:0,chests:0,ammo:0},{r:15,loot:15,chests:15,ammo:0},{r:82,loot:82,chests:47,ammo:35},{r:74,loot:74,chests:57,ammo:17},{r:16,loot:16,chests:16,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:58,loot:58,chests:38,ammo:20},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:33,loot:33,chests:12,ammo:21},{r:33,loot:33,chests:11,ammo:22},{r:7,loot:7,chests:3,ammo:4},{r:0,loot:0,chests:0,ammo:0},{r:55,loot:55,chests:40,ammo:15},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:70,loot:70,chests:37,ammo:33},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:33,loot:33,chests:14,ammo:19},{r:65,loot:65,chests:33,ammo:32},{r:22,loot:22,chests:11,ammo:11},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:28,loot:28,chests:24,ammo:4},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:25,loot:25,chests:25,ammo:0},{r:46,loot:46,chests:25,ammo:21},{r:0,loot:0,chests:0,ammo:0},{r:32,loot:32,chests:15,ammo:17},{r:0,loot:0,chests:0,ammo:0},{r:70,loot:70,chests:34,ammo:36},{r:21,loot:21,chests:11,ammo:10}],
+  h4:[{r:8,loot:8,chests:3,ammo:5},{r:19,loot:19,chests:19,ammo:0},{r:9,loot:9,chests:3,ammo:6},{r:0,loot:0,chests:0,ammo:0},{r:18,loot:18,chests:11,ammo:7},{r:7,loot:7,chests:4,ammo:3},{r:21,loot:21,chests:7,ammo:14},{r:74,loot:74,chests:57,ammo:17},{r:7,loot:7,chests:6,ammo:1},{r:0,loot:0,chests:0,ammo:0},{r:30,loot:30,chests:16,ammo:14},{r:15,loot:15,chests:6,ammo:9},{r:0,loot:0,chests:0,ammo:0},{r:2,loot:2,chests:2,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:16,loot:16,chests:10,ammo:6},{r:3,loot:3,chests:3,ammo:0},{r:11,loot:11,chests:4,ammo:7},{r:0,loot:0,chests:0,ammo:0},{r:3,loot:3,chests:2,ammo:1},{r:33,loot:33,chests:14,ammo:19},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:14,loot:14,chests:5,ammo:9},{r:0,loot:0,chests:0,ammo:0},{r:9,loot:9,chests:4,ammo:5},{r:70,loot:70,chests:37,ammo:33},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:1,loot:1,chests:1,ammo:0},{r:8,loot:8,chests:3,ammo:5},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:13,loot:13,chests:8,ammo:5},{r:6,loot:6,chests:2,ammo:4},{r:13,loot:13,chests:5,ammo:8},{r:0,loot:0,chests:0,ammo:0},{r:10,loot:10,chests:4,ammo:6},{r:18,loot:18,chests:18,ammo:0},{r:4,loot:4,chests:3,ammo:1}],
+  i1:[{r:11,loot:11,chests:11,ammo:0},{r:16,loot:16,chests:16,ammo:0},{r:8,loot:8,chests:3,ammo:5},{r:19,loot:19,chests:19,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:18,loot:18,chests:11,ammo:7},{r:7,loot:7,chests:4,ammo:3},{r:74,loot:74,chests:57,ammo:17},{r:7,loot:7,chests:6,ammo:1},{r:0,loot:0,chests:0,ammo:0},{r:30,loot:30,chests:16,ammo:14},{r:0,loot:0,chests:0,ammo:0},{r:2,loot:2,chests:2,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:16,loot:16,chests:10,ammo:6},{r:3,loot:3,chests:3,ammo:0},{r:11,loot:11,chests:4,ammo:7},{r:0,loot:0,chests:0,ammo:0},{r:3,loot:3,chests:2,ammo:1},{r:33,loot:33,chests:14,ammo:19},{r:22,loot:22,chests:22,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:12,loot:12,chests:12,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:9,loot:9,chests:4,ammo:5},{r:75,loot:75,chests:37,ammo:38},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:1,loot:1,chests:1,ammo:0},{r:8,loot:8,chests:3,ammo:5},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:13,loot:13,chests:8,ammo:5},{r:24,loot:24,chests:24,ammo:0},{r:6,loot:6,chests:2,ammo:4},{r:13,loot:13,chests:5,ammo:8},{r:0,loot:0,chests:0,ammo:0},{r:10,loot:10,chests:4,ammo:6},{r:6,loot:6,chests:2,ammo:4},{r:18,loot:18,chests:18,ammo:0}],
+  i2:[{r:19,loot:19,chests:14,ammo:5},{r:19,loot:19,chests:19,ammo:0},{r:9,loot:9,chests:3,ammo:6},{r:0,loot:0,chests:0,ammo:0},{r:18,loot:18,chests:11,ammo:7},{r:7,loot:7,chests:4,ammo:3},{r:74,loot:74,chests:57,ammo:17},{r:10,loot:10,chests:7,ammo:3},{r:0,loot:0,chests:0,ammo:0},{r:30,loot:30,chests:16,ammo:14},{r:0,loot:0,chests:0,ammo:0},{r:2,loot:2,chests:2,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:16,loot:16,chests:10,ammo:6},{r:3,loot:3,chests:3,ammo:0},{r:11,loot:11,chests:4,ammo:7},{r:3,loot:3,chests:2,ammo:1},{r:0,loot:0,chests:0,ammo:0},{r:33,loot:33,chests:14,ammo:19},{r:22,loot:22,chests:22,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:9,loot:9,chests:4,ammo:5},{r:75,loot:75,chests:37,ammo:38},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:1,loot:1,chests:1,ammo:0},{r:8,loot:8,chests:3,ammo:5},{r:0,loot:0,chests:0,ammo:0},{r:20,loot:20,chests:20,ammo:0},{r:39,loot:39,chests:20,ammo:19},{r:13,loot:13,chests:8,ammo:5},{r:13,loot:13,chests:5,ammo:8},{r:0,loot:0,chests:0,ammo:0},{r:14,loot:14,chests:14,ammo:0},{r:10,loot:10,chests:4,ammo:6},{r:6,loot:6,chests:2,ammo:4},{r:11,loot:11,chests:5,ammo:6},{r:18,loot:18,chests:18,ammo:0}],
+  i3:[{r:8,loot:8,chests:3,ammo:5},{r:16,loot:16,chests:8,ammo:8},{r:19,loot:19,chests:19,ammo:0},{r:9,loot:9,chests:3,ammo:6},{r:0,loot:0,chests:0,ammo:0},{r:29,loot:29,chests:29,ammo:0},{r:7,loot:7,chests:4,ammo:3},{r:84,loot:84,chests:35,ammo:49},{r:8,loot:8,chests:7,ammo:1},{r:30,loot:30,chests:16,ammo:14},{r:0,loot:0,chests:0,ammo:0},{r:2,loot:2,chests:2,ammo:0},{r:16,loot:16,chests:10,ammo:6},{r:0,loot:0,chests:0,ammo:0},{r:3,loot:3,chests:3,ammo:0},{r:11,loot:11,chests:4,ammo:7},{r:0,loot:0,chests:0,ammo:0},{r:3,loot:3,chests:2,ammo:1},{r:33,loot:33,chests:14,ammo:19},{r:22,loot:22,chests:22,ammo:0},{r:2,loot:2,chests:1,ammo:1},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:9,loot:9,chests:4,ammo:5},{r:73,loot:73,chests:39,ammo:34},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:1,loot:1,chests:1,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:0,loot:0,chests:0,ammo:0},{r:39,loot:39,chests:20,ammo:19},{r:13,loot:13,chests:8,ammo:5},{r:20,loot:20,chests:20,ammo:0},{r:13,loot:13,chests:5,ammo:8},{r:0,loot:0,chests:0,ammo:0},{r:10,loot:10,chests:4,ammo:6},{r:6,loot:6,chests:2,ammo:4},{r:11,loot:11,chests:5,ammo:6},{r:18,loot:18,chests:18,ammo:0}],
   // ==== /FNCS 2019–2020 zone stats ====
   t1:[{r:25,loot:25,chests:16,ammo:9},{r:99,loot:99,chests:46,ammo:53},{r:70,loot:70,chests:33,ammo:37},{r:15,loot:15,chests:8,ammo:7},{r:84,loot:84,chests:57,ammo:27},{r:77,loot:77,chests:37,ammo:40},{r:90,loot:90,chests:43,ammo:47},{r:40,loot:40,chests:18,ammo:22},{r:48,loot:48,chests:29,ammo:19},{r:20,loot:20,chests:12,ammo:8},{r:71,loot:71,chests:39,ammo:32},{r:34,loot:34,chests:19,ammo:15},{r:51,loot:51,chests:45,ammo:6},{r:60,loot:60,chests:38,ammo:22},{r:51,loot:51,chests:33,ammo:18},{r:122,loot:122,chests:71,ammo:51},{r:159,loot:159,chests:87,ammo:72},{r:71,loot:71,chests:39,ammo:32},{r:46,loot:46,chests:22,ammo:24},{r:0,loot:0,chests:0,ammo:0},{r:97,loot:97,chests:59,ammo:38},{r:42,loot:42,chests:33,ammo:9},{r:73,loot:73,chests:44,ammo:29},{r:92,loot:92,chests:64,ammo:28},{r:78,loot:78,chests:42,ammo:36},{r:77,loot:77,chests:43,ammo:34},{r:0,loot:0,chests:0,ammo:0}],
   t2:[{r:25,loot:25,chests:16,ammo:9},{r:99,loot:99,chests:46,ammo:53},{r:19,loot:19,chests:12,ammo:7},{r:95,loot:95,chests:44,ammo:51},{r:84,loot:84,chests:57,ammo:27},{r:77,loot:77,chests:37,ammo:40},{r:90,loot:90,chests:43,ammo:47},{r:48,loot:48,chests:29,ammo:19},{r:15,loot:15,chests:7,ammo:8},{r:35,loot:35,chests:24,ammo:11},{r:71,loot:71,chests:34,ammo:37},{r:34,loot:34,chests:19,ammo:15},{r:73,loot:73,chests:57,ammo:16},{r:15,loot:15,chests:7,ammo:8},{r:39,loot:39,chests:28,ammo:11},{r:46,loot:46,chests:26,ammo:20},{r:121,loot:121,chests:68,ammo:53},{r:42,loot:42,chests:31,ammo:11},{r:133,loot:133,chests:78,ammo:55},{r:9,loot:9,chests:7,ammo:2},{r:97,loot:97,chests:59,ammo:38},{r:27,loot:27,chests:26,ammo:1},{r:70,loot:70,chests:44,ammo:26},{r:0,loot:0,chests:0,ammo:0},{r:15,loot:15,chests:11,ammo:4},{r:111,loot:111,chests:77,ammo:34},{r:78,loot:78,chests:42,ammo:36},{r:85,loot:85,chests:51,ammo:34},{r:0,loot:0,chests:0,ammo:0}],
@@ -94147,12 +94156,12 @@ const ZONE_SETS={
   // ==== FNCS 2019–2020 zones (tools/build-mx-islands.js) ====
   /* Острова 2019–2020: интерактивные карты вики (картинка — сама карта режима), клетки —
      7 % кадра вокруг именованных локаций (tools/build-mx-islands.js). Рейтинг — лут вики (ZONE_STATS). */
-  h1:[{x:15.92,y:9.01,w:7,h:7},{x:34.76,y:12.32,w:7,h:7},{x:12.08,y:17.06,w:7,h:7},{x:78.24,y:20.01,w:7,h:7},{x:55.35,y:21.58,w:7,h:7},{x:24.58,y:25.9,w:7,h:7},{x:70.91,y:26.53,w:7,h:7},{x:39.96,y:33.76,w:7,h:7},{x:85.31,y:38.88,w:7,h:7},{x:5.53,y:41,w:7,h:7},{x:56.2,y:44.81,w:7,h:7},{x:33.81,y:46.07,w:7,h:7},{x:70.53,y:49.6,w:7,h:7},{x:52.52,y:57.79,w:7,h:7},{x:33.33,y:59.3,w:7,h:7},{x:21.84,y:66.54,w:7,h:7},{x:77.85,y:70.06,w:7,h:7},{x:7.97,y:70.32,w:7,h:7},{x:56.39,y:72.78,w:7,h:7},{x:29.45,y:82.19,w:7,h:7},{x:53.12,y:86.91,w:7,h:7}],
-  h3:[{x:15.92,y:9.01,w:7,h:7},{x:34.76,y:11.7,w:7,h:7},{x:22.89,y:13.25,w:7,h:7},{x:12.08,y:17.06,w:7,h:7},{x:78.24,y:20.01,w:7,h:7},{x:55.35,y:21.58,w:7,h:7},{x:24.58,y:25.9,w:7,h:7},{x:70.91,y:26.53,w:7,h:7},{x:39.96,y:33.76,w:7,h:7},{x:85.31,y:38.88,w:7,h:7},{x:5.53,y:41,w:7,h:7},{x:54.95,y:41.46,w:7,h:7},{x:33.81,y:46.07,w:7,h:7},{x:70.53,y:49.6,w:7,h:7},{x:52.52,y:57.79,w:7,h:7},{x:19.25,y:58.27,w:7,h:7},{x:33.33,y:59.3,w:7,h:7},{x:21.84,y:66.54,w:7,h:7},{x:77.85,y:70.06,w:7,h:7},{x:7.97,y:70.32,w:7,h:7},{x:56.39,y:72.78,w:7,h:7},{x:29.45,y:82.19,w:7,h:7},{x:53.12,y:86.91,w:7,h:7}],
-  h4:[{x:56.71,y:10.61,w:7,h:7},{x:82.24,y:16.71,w:7,h:7},{x:22.76,y:19.56,w:7,h:7},{x:30.79,y:19.88,w:7,h:7},{x:40.47,y:22.4,w:7,h:7},{x:65.98,y:23.6,w:7,h:7},{x:82.78,y:30.97,w:7,h:7},{x:19.6,y:33.98,w:7,h:7},{x:50.75,y:34.88,w:7,h:7},{x:62.27,y:35.37,w:7,h:7},{x:4.15,y:39.36,w:7,h:7},{x:88.83,y:40.54,w:7,h:7},{x:37.25,y:41.74,w:7,h:7},{x:48.45,y:45.04,w:7,h:7},{x:16.62,y:51.14,w:7,h:7},{x:12.34,y:57,w:7,h:7},{x:37.22,y:57.49,w:7,h:7},{x:9.05,y:60.42,w:7,h:7},{x:20.77,y:61.15,w:7,h:7},{x:82.93,y:61.64,w:7,h:7},{x:66.52,y:63.93,w:7,h:7},{x:16.32,y:68.64,w:7,h:7},{x:28.58,y:70.79,w:7,h:7},{x:42.33,y:73.43,w:7,h:7},{x:79.7,y:75.04,w:7,h:7},{x:56.66,y:79.95,w:7,h:7}],
-  i1:[{x:88.56,y:4.77,w:7,h:7},{x:14.76,y:6.27,w:7,h:7},{x:56.71,y:10.61,w:7,h:7},{x:82.24,y:16.71,w:7,h:7},{x:40.47,y:22.4,w:7,h:7},{x:19.6,y:33.98,w:7,h:7},{x:62.27,y:35.37,w:7,h:7},{x:88.83,y:40.54,w:7,h:7},{x:37.25,y:41.74,w:7,h:7},{x:48.45,y:45.04,w:7,h:7},{x:16.62,y:51.14,w:7,h:7},{x:87.42,y:53.53,w:7,h:7},{x:37.22,y:57.49,w:7,h:7},{x:82.93,y:61.64,w:7,h:7},{x:66.52,y:63.93,w:7,h:7},{x:28.58,y:70.79,w:7,h:7},{x:14.57,y:75.02,w:7,h:7},{x:56.66,y:79.95,w:7,h:7}],
-  i2:[{x:56.71,y:10.61,w:7,h:7},{x:82.24,y:16.71,w:7,h:7},{x:23.88,y:19.95,w:7,h:7},{x:52.57,y:21.68,w:7,h:7},{x:40.47,y:22.4,w:7,h:7},{x:65.98,y:23.6,w:7,h:7},{x:19.6,y:33.98,w:7,h:7},{x:50.75,y:34.88,w:7,h:7},{x:62.27,y:35.37,w:7,h:7},{x:4.15,y:39.36,w:7,h:7},{x:88.83,y:40.54,w:7,h:7},{x:37.25,y:41.74,w:7,h:7},{x:48.45,y:45.04,w:7,h:7},{x:16.62,y:51.14,w:7,h:7},{x:37.22,y:57.49,w:7,h:7},{x:9.05,y:60.42,w:7,h:7},{x:20.77,y:61.15,w:7,h:7},{x:82.93,y:61.64,w:7,h:7},{x:66.52,y:63.93,w:7,h:7},{x:16.32,y:68.64,w:7,h:7},{x:14.73,y:72.19,w:7,h:7},{x:76.33,y:72.25,w:7,h:7},{x:42.33,y:73.43,w:7,h:7},{x:79.7,y:75.04,w:7,h:7},{x:56.66,y:79.95,w:7,h:7},{x:30.61,y:80.76,w:7,h:7}],
-  i3:[{x:56.71,y:10.61,w:7,h:7},{x:82.24,y:16.71,w:7,h:7},{x:17.59,y:17.2,w:7,h:7},{x:40.47,y:22.4,w:7,h:7},{x:19.6,y:33.98,w:7,h:7},{x:62.42,y:36.49,w:7,h:7},{x:88.83,y:40.54,w:7,h:7},{x:37.25,y:41.74,w:7,h:7},{x:48.45,y:45.04,w:7,h:7},{x:16.62,y:51.14,w:7,h:7},{x:37.22,y:57.49,w:7,h:7},{x:82.93,y:61.64,w:7,h:7},{x:66.52,y:63.93,w:7,h:7},{x:28.89,y:70.54,w:7,h:7},{x:76.33,y:72.25,w:7,h:7},{x:15.7,y:77.44,w:7,h:7},{x:56.66,y:79.95,w:7,h:7}],
+  h1:[{x:15.92,y:9.01,w:7,h:7},{x:34.76,y:12.32,w:7,h:7},{x:12.08,y:17.06,w:7,h:7},{x:40.26,y:19.85,w:5,h:5},{x:78.24,y:20.01,w:7,h:7},{x:55.35,y:21.58,w:7,h:7},{x:24.58,y:25.9,w:7,h:7},{x:70.91,y:26.53,w:7,h:7},{x:63.53,y:29.15,w:5,h:5},{x:16.92,y:30.64,w:5,h:5},{x:39.96,y:33.76,w:7,h:7},{x:12.54,y:37.68,w:5,h:5},{x:22.63,y:38.32,w:5,h:5},{x:85.31,y:38.88,w:7,h:7},{x:5.53,y:41,w:7,h:7},{x:56.2,y:44.81,w:7,h:7},{x:21.38,y:45.6,w:5,h:5},{x:33.81,y:46.07,w:7,h:7},{x:48.6,y:46.23,w:5,h:5},{x:81.05,y:47.45,w:5,h:5},{x:92.18,y:47.84,w:5,h:5},{x:70.53,y:49.6,w:7,h:7},{x:11.54,y:49.97,w:5,h:5},{x:10.36,y:55.79,w:5,h:5},{x:86.64,y:56.87,w:5,h:5},{x:52.52,y:57.79,w:7,h:7},{x:33.33,y:59.3,w:7,h:7},{x:70.42,y:63.44,w:5,h:5},{x:57.78,y:66.35,w:5,h:5},{x:21.84,y:66.54,w:7,h:7},{x:39.19,y:67.06,w:5,h:5},{x:47.38,y:67.58,w:5,h:5},{x:77.85,y:70.06,w:7,h:7},{x:7.97,y:70.32,w:7,h:7},{x:33.55,y:71.26,w:5,h:5},{x:56.39,y:72.78,w:7,h:7},{x:40.57,y:78.61,w:5,h:5},{x:78.36,y:81.46,w:5,h:5},{x:29.45,y:82.19,w:7,h:7},{x:53.12,y:86.91,w:7,h:7}],
+  h3:[{x:15.92,y:9.01,w:7,h:7},{x:34.76,y:11.7,w:7,h:7},{x:22.89,y:13.25,w:7,h:7},{x:12.08,y:17.06,w:7,h:7},{x:40.26,y:19.85,w:5,h:5},{x:78.24,y:20.01,w:7,h:7},{x:55.35,y:21.58,w:7,h:7},{x:24.58,y:25.9,w:7,h:7},{x:70.91,y:26.53,w:7,h:7},{x:63.53,y:29.15,w:5,h:5},{x:16.92,y:30.64,w:5,h:5},{x:39.96,y:33.76,w:7,h:7},{x:12.55,y:37.61,w:5,h:5},{x:22.63,y:38.32,w:5,h:5},{x:85.31,y:38.88,w:7,h:7},{x:5.53,y:41,w:7,h:7},{x:54.95,y:41.46,w:7,h:7},{x:21.38,y:45.6,w:5,h:5},{x:33.81,y:46.07,w:7,h:7},{x:48.6,y:46.23,w:5,h:5},{x:81.05,y:47.45,w:5,h:5},{x:92.18,y:47.84,w:5,h:5},{x:70.53,y:49.6,w:7,h:7},{x:10.36,y:55.79,w:5,h:5},{x:86.64,y:56.87,w:5,h:5},{x:52.52,y:57.79,w:7,h:7},{x:19.25,y:58.27,w:7,h:7},{x:33.33,y:59.3,w:7,h:7},{x:70.42,y:63.44,w:5,h:5},{x:57.78,y:66.35,w:5,h:5},{x:21.84,y:66.54,w:7,h:7},{x:39.19,y:67.06,w:5,h:5},{x:47.38,y:67.58,w:5,h:5},{x:77.85,y:70.06,w:7,h:7},{x:7.97,y:70.32,w:7,h:7},{x:33.55,y:71.26,w:5,h:5},{x:56.39,y:72.78,w:7,h:7},{x:41.5,y:79.61,w:5,h:5},{x:29.45,y:82.19,w:7,h:7},{x:53.12,y:86.91,w:7,h:7}],
+  h4:[{x:48.61,y:7.93,w:5,h:5},{x:56.71,y:10.61,w:7,h:7},{x:66.74,y:12.54,w:5,h:5},{x:82.24,y:16.71,w:7,h:7},{x:12.64,y:17.62,w:5,h:5},{x:23.76,y:20.56,w:5,h:5},{x:31.79,y:20.88,w:5,h:5},{x:40.47,y:22.4,w:7,h:7},{x:53.57,y:22.68,w:5,h:5},{x:66.98,y:24.6,w:5,h:5},{x:7.71,y:28.65,w:5,h:5},{x:83.78,y:31.97,w:5,h:5},{x:19.6,y:33.98,w:7,h:7},{x:38.3,y:34.43,w:5,h:5},{x:62.27,y:35.37,w:7,h:7},{x:51.75,y:35.88,w:5,h:5},{x:79.31,y:38.13,w:5,h:5},{x:5.15,y:40.36,w:5,h:5},{x:88.83,y:40.54,w:7,h:7},{x:71.3,y:41.21,w:5,h:5},{x:37.25,y:41.74,w:7,h:7},{x:49.45,y:46.04,w:5,h:5},{x:16.62,y:51.14,w:7,h:7},{x:63.03,y:55.26,w:5,h:5},{x:37.22,y:57.49,w:7,h:7},{x:10.05,y:61.42,w:5,h:5},{x:82.93,y:61.64,w:7,h:7},{x:21.77,y:62.15,w:5,h:5},{x:66.52,y:63.93,w:7,h:7},{x:91.1,y:64.39,w:5,h:5},{x:32.44,y:65.57,w:5,h:5},{x:17.32,y:69.64,w:5,h:5},{x:28.58,y:70.79,w:7,h:7},{x:43.33,y:74.43,w:5,h:5},{x:80.7,y:76.04,w:5,h:5},{x:70.33,y:79.27,w:5,h:5},{x:56.66,y:79.95,w:7,h:7},{x:76.98,y:82.31,w:5,h:5},{x:74.58,y:91.67,w:5,h:5},{x:59.79,y:91.95,w:5,h:5}],
+  i1:[{x:88.56,y:4.77,w:7,h:7},{x:14.76,y:6.27,w:7,h:7},{x:48.61,y:7.93,w:5,h:5},{x:56.71,y:10.61,w:7,h:7},{x:82.24,y:16.71,w:7,h:7},{x:12.64,y:17.62,w:5,h:5},{x:23.76,y:20.56,w:5,h:5},{x:40.47,y:22.4,w:7,h:7},{x:53.57,y:22.68,w:5,h:5},{x:66.98,y:24.6,w:5,h:5},{x:7.71,y:28.65,w:5,h:5},{x:19.6,y:33.98,w:7,h:7},{x:38.3,y:34.43,w:5,h:5},{x:62.27,y:35.37,w:7,h:7},{x:51.75,y:35.88,w:5,h:5},{x:79.31,y:38.13,w:5,h:5},{x:5.15,y:40.36,w:5,h:5},{x:88.83,y:40.54,w:7,h:7},{x:71.3,y:41.21,w:5,h:5},{x:37.25,y:41.74,w:7,h:7},{x:48.45,y:45.04,w:7,h:7},{x:16.62,y:51.14,w:7,h:7},{x:87.42,y:53.53,w:7,h:7},{x:37.22,y:57.49,w:7,h:7},{x:10.05,y:61.42,w:5,h:5},{x:82.93,y:61.64,w:7,h:7},{x:21.77,y:62.15,w:5,h:5},{x:66.52,y:63.93,w:7,h:7},{x:91.1,y:64.39,w:5,h:5},{x:32.44,y:65.57,w:5,h:5},{x:17.32,y:69.64,w:5,h:5},{x:28.58,y:70.79,w:7,h:7},{x:43.33,y:74.43,w:5,h:5},{x:14.57,y:75.02,w:7,h:7},{x:80.7,y:76.04,w:5,h:5},{x:70.33,y:79.27,w:5,h:5},{x:56.66,y:79.95,w:7,h:7},{x:76.98,y:82.31,w:5,h:5},{x:64.54,y:87,w:5,h:5},{x:74.58,y:91.67,w:5,h:5}],
+  i2:[{x:48.61,y:7.93,w:5,h:5},{x:57.71,y:11.61,w:5,h:5},{x:66.54,y:12.83,w:5,h:5},{x:82.24,y:16.71,w:7,h:7},{x:12.64,y:17.62,w:5,h:5},{x:24.88,y:20.95,w:5,h:5},{x:40.47,y:22.4,w:7,h:7},{x:53.57,y:22.68,w:5,h:5},{x:66.98,y:24.6,w:5,h:5},{x:7.71,y:28.65,w:5,h:5},{x:19.6,y:33.98,w:7,h:7},{x:38.3,y:34.43,w:5,h:5},{x:62.27,y:35.37,w:7,h:7},{x:51.75,y:35.88,w:5,h:5},{x:79.31,y:38.13,w:5,h:5},{x:5.15,y:40.36,w:5,h:5},{x:71.3,y:41.21,w:5,h:5},{x:89.83,y:41.54,w:5,h:5},{x:37.25,y:41.74,w:7,h:7},{x:48.45,y:45.04,w:7,h:7},{x:79.3,y:50,w:5,h:5},{x:16.62,y:51.14,w:7,h:7},{x:38.22,y:58.49,w:5,h:5},{x:10.05,y:61.42,w:5,h:5},{x:82.93,y:61.64,w:7,h:7},{x:21.77,y:62.15,w:5,h:5},{x:66.52,y:63.93,w:7,h:7},{x:91.1,y:64.39,w:5,h:5},{x:32.44,y:65.57,w:5,h:5},{x:13.03,y:66.42,w:5,h:5},{x:14.73,y:72.19,w:7,h:7},{x:76.33,y:72.25,w:7,h:7},{x:43.33,y:74.43,w:5,h:5},{x:70.33,y:79.27,w:5,h:5},{x:56.66,y:79.95,w:7,h:7},{x:30.61,y:80.76,w:7,h:7},{x:76.98,y:82.31,w:5,h:5},{x:64.54,y:87,w:5,h:5},{x:49.93,y:87.34,w:5,h:5},{x:74.58,y:91.67,w:5,h:5}],
+  i3:[{x:48.61,y:7.93,w:5,h:5},{x:34.22,y:10.29,w:5,h:5},{x:56.71,y:10.61,w:7,h:7},{x:66.54,y:12.83,w:5,h:5},{x:82.24,y:16.71,w:7,h:7},{x:17.59,y:17.2,w:7,h:7},{x:24.88,y:20.95,w:5,h:5},{x:40.47,y:22.4,w:7,h:7},{x:51.26,y:22.78,w:5,h:5},{x:7.71,y:28.65,w:5,h:5},{x:19.6,y:33.98,w:7,h:7},{x:38.3,y:34.43,w:5,h:5},{x:51.75,y:35.88,w:5,h:5},{x:62.42,y:36.49,w:7,h:7},{x:79.31,y:38.13,w:5,h:5},{x:5.15,y:40.36,w:5,h:5},{x:88.83,y:40.54,w:7,h:7},{x:71.3,y:41.21,w:5,h:5},{x:37.25,y:41.74,w:7,h:7},{x:48.45,y:45.04,w:7,h:7},{x:27.26,y:48.13,w:5,h:5},{x:79.3,y:50,w:5,h:5},{x:16.62,y:51.14,w:7,h:7},{x:37.22,y:57.49,w:7,h:7},{x:10.05,y:61.42,w:5,h:5},{x:82.93,y:61.64,w:7,h:7},{x:21.77,y:62.15,w:5,h:5},{x:66.52,y:63.93,w:7,h:7},{x:91.1,y:64.39,w:5,h:5},{x:17.32,y:69.64,w:5,h:5},{x:28.89,y:70.54,w:7,h:7},{x:76.33,y:72.25,w:7,h:7},{x:43.33,y:74.43,w:5,h:5},{x:15.7,y:77.44,w:7,h:7},{x:70.33,y:79.27,w:5,h:5},{x:56.66,y:79.95,w:7,h:7},{x:76.98,y:82.31,w:5,h:5},{x:64.54,y:87,w:5,h:5},{x:49.93,y:87.34,w:5,h:5},{x:74.58,y:91.67,w:5,h:5}],
   // ==== /FNCS 2019–2020 zones ====
   t1:[
     {x:53.15,y:0,w:37.78,h:16.27},
@@ -96830,8 +96839,12 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
          Только если ТВОЁ вообще садилось. Опены дропа не спрашивают
          (dropEachGame там возвращает null), и раскладывать одни лишь чужие
          лобби значило бы: у всех коробки есть, а у тебя нет — и остров под
-         тобой пустой. */
-      if(dropped.size && gameLobbies) gameLobbies.forEach(l=>{
+         тобой пустой.
+
+         Опен без вопроса садит всех, и тебя тоже, той же раздачей: без коробок
+         движок считал сотню соло без высадки, и к первой зоне оставалось
+         тридцать с лишним живых. */
+      if(gameLobbies) gameLobbies.forEach(l=>{
         if(!dropped.has(l)) buildBotLandingAssignment(l);
       });
     }
@@ -108504,7 +108517,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='08a1a9e9';
+const CC_BUILD='ff4d98a4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -116402,10 +116415,38 @@ const CAREER_EV_ART_ID={
   proam:'art/mode-ewc.jpg',
   nations:'art/mode-squad.jpg'
 };
-// Обложка события: сперва по id, потом по виду. Одна дверь для календаря и карточки.
+/* Капы — в своих постерах из игры: вкладка «Соревнования» показывала у каждого капа постер
+   Epic (poster_front_image), архив Tracker (events/archived, EU, 2019–2026) хранит его у
+   каждого события; файлы — cdn2.unrealengine.com, в art/cups. Ключ — id события Epic;
+   Epic и сам переиспользовал постеры (у S19 Duos — трио-постер S18), это их выбор, не наш.
+   Трио-кэшкапа 2019 (S10) в архиве нет — у него герб года. */
+const CC_CUP_POSTER={
+  S10_CC_Trios:'fncs-2019',
+  S15_CashCup:'cups/c15', S15_SoloCashCup:'cups/c15', S16_CashCup:'cups/c16t', S16_SoloCashCup:'cups/c16s',
+  S17_CashCup:'cups/c17t', S17_SoloCashCup:'cups/c17s', S18_CashCup:'cups/c18t', S18_SoloCashCup:'cups/c18s',
+  S19_DuosCashCup:'cups/c18t', S19_SoloCashCup:'cups/c17s', S20_DuosCashCup:'cups/c20d', S20_SoloCashCup:'cups/c20s',
+  S21_DuosCashCup:'cups/c21d', S21_SoloCashCup:'cups/c21s', S23_SoloCashCup:'cups/c23s',
+  S24_DuosCashCup:'cups/c24d', S24_SoloVictoryCup:'cups/c23s', S25_DuosCashCup:'cups/c25d', S25_SoloVictoryCashCup:'cups/c25s',
+  S26_DuosCashCup:'cups/c25d', S26_SoloVictoryCashCup:'cups/c25s', S28_DuosCashCup:'cups/c25d', S28_SoloVictoryCup:'cups/c25s',
+  S29_DuosCashCup:'cups/c25d', S29_SoloVictoryCup:'cups/c29s', S30_DuosCashCup:'cups/c25d', S30_SoloVictoryCup:'cups/c29s',
+  S31_DuosCashCup:'cups/c25d', S31_SoloVictoryCup:'cups/c31s', S36_SquidGroundsCashCup:'cups/c36',
+  S39_DuosVictoryCup:'cups/c38d', S39_SoloVictoryCup:'cups/c38s', S40_SoloVictoryCup:'cups/c38s', S41_SoloVictoryCup:'cups/c38s',
+  S41_ReloadSoloVictoryCup:'cups/c41r',
+  S22_DivisionalCups:'cups/d22', S23_DivisionalCups:'cups/d23', S33_FNCSDivisionalCup:'cups/d33', S34_FNCSDivisionalCup:'cups/d34',
+  S36_FNCSDivisionalCup:'cups/d34', S39_FNCSDivisionalCup:'cups/d39', S40_FNCSDivisionalCup:'cups/d39', S41_FNCSDivisionalCup:'cups/d41',
+  S42_FNCSDivisionalCup_Division1:'cups/d39'
+};
+function ccCupPoster(id){
+  id=String(id||'');
+  let k=CC_CUP_POSTER[id];
+  if(!k){ const m=/^SoloCash(\d+)_/.exec(id); if(m) k=+m[1]<=8 ? 'cups/s33' : 'cups/s34'; }
+  if(!k && /^SoloSeries_/.test(id)) k='cups/ss39';
+  return k ? 'art/'+k+'.jpg' : '';
+}
+// Обложка события: сперва по id, потом постер капа, потом по виду. Одна дверь для календаря и карточки.
 function ccEventArt(ev){
   if(!ev) return '';
-  const byId=CAREER_EV_ART_ID[ev.id||ev.eid||''];
+  const byId=CAREER_EV_ART_ID[ev.id||ev.eid||''] || ccCupPoster(ev.id||ev.eid);
   if(byId) return byId;
   const k=ev.kind||ev.type||'';
   return CAREER_EV_ART[k==='cup'?'cup':k] || '';
@@ -141708,6 +141749,8 @@ async function ccMXRun(ev, sp){
   const mate=mates[0]||null;
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
   CARD_MODE=true; squadSize=sp.size; drafted=[me].concat(mates);
+  // Клетки острова под формат вечера: соло-неделя дробит остров, как любое соло-лобби.
+  const prevSet=ACTIVE_LANDING_SET; useLandingSet(ACTIVE_LANDING_SET);
   skipAnimation=false; CC_SKIP_RUN=false;
   resetRunRecord();
   document.getElementById('majorStages').innerHTML='';
@@ -141847,7 +141890,7 @@ async function ccMXRun(ev, sp){
     if(CAREER.offers && CAREER.offers.length) CAREER.offersDeclined=null;
   }
   careerSave();
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet); CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerReloadResultCard({label:stageLabel, place:place, of:field.length, through: fin ? cash>0 : through, cut:spec.cut||0,
     note: fin ? null : note, seat:false, seatText:null, money: fin ? cash : null});
