@@ -1418,6 +1418,7 @@ ccNewsCongrats:(n,ev)=>'Поздравляем '+n+' с победой — '+ev+
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'РАЗБОР · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' игр, среднее место '+avg+', элимов '+el+' ('+epg+' за игру). Очки: '+plp+' за места, '+elp+' за элимы. По элимам в лобби — '+ccTop(er)+'.',
 ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'лидеры вечера',
 ccLeadCap:'лидеры вечера',
+ccMyStatsBtn:'Моя статистика',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['ВЗЯЛИ 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' наш'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:'';
@@ -3410,6 +3411,7 @@ ccNewsCongrats:(n,ev)=>'Congratulations to '+n+' on the win — '+ev+'! 🏆',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
 ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
 ccLeadCap:'stats leaders',
+ccMyStatsBtn:'My stats',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['WE WON IT 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' is ours'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:'';
@@ -4686,6 +4688,7 @@ ccNewsCongrats:(n,ev)=>'Félicitations à '+n+' pour la victoire — '+ev+' ! �
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
 ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
 ccLeadCap:'stats leaders',
+ccMyStatsBtn:'Mes stats',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['ON L’A GAGNÉ 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' est à nous'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:'';
@@ -7255,6 +7258,7 @@ ccNewsCongrats:(n,ev)=>'Complimenti a '+n+' per la vittoria — '+ev+'! \ud83c\u
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
 ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
 ccLeadCap:'stats leaders',
+ccMyStatsBtn:'Le mie statistiche',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:''; return ['ABBIAMO VINTO \ud83c\udfc6 '+ev+a, ev+'. TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6 '+ev+a, ev+' \u00e8 nostro'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:''; return [''+ccTopC(p)+' — '+ev+' \ud83d\udcaa'+a, ev+': '+ccTop(p)+a+' \ud83d\udd25', ''+ccTopC(p)+' a '+ev+a][(v||0)%3];},
 ccNewsD1Table:w=>'Divisione 1 dopo la settimana '+w+' — ecco come sta la corsa della stagione',
@@ -9773,6 +9777,7 @@ ccNewsCongrats:(n,ev)=>'Parab\u00e9ns a '+n+' pela vit\u00f3ria — '+ev+'! \ud8
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
 ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
 ccLeadCap:'stats leaders',
+ccMyStatsBtn:'Minhas estatísticas',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:''; return ['GANHAMOS \ud83c\udfc6 '+ev+a, ev+'. TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6 '+ev+a, ev+' \u00e9 nosso'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:''; return [''+ccTopC(p)+' — '+ev+' \ud83d\udcaa'+a, ev+': '+ccTop(p)+a+' \ud83d\udd25', ''+ccTopC(p)+' no '+ev+a][(v||0)%3];},
 ccNewsD1Table:w=>'Divis\u00e3o 1 depois da semana '+w+' — a corrida da temporada est\u00e1 assim',
@@ -62319,7 +62324,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='989bff55';
+const CC_BUILD='3075ae4a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -77702,6 +77707,12 @@ const CC_AGENTS=[
   // 21 August. Head of Fortnite for Cloud Esport, Carcassonne; Noaggs, Hazyache
   // and squadir23 are his.
   {name:'CLD Razia',    at:'Raziaa_',       nat:'fr', photo:'Raziaa_.jpg',       x:932},
+  /* x.com/ArtinMNG, 836 фолловеров. Основатель Beyond Agency, в шапке его
+     игроки поимённо: Karmyzzz, 7Polish7, GlubFNBR, PligzFN, Trikshotz, Domler_fn.
+     Страны в профиле нет — флаг 🇧🇪 в шапке стоит у клуба @rec_2027, а не у
+     него, — поэтому nat пустой. Стоит над yaleblan: среди новичков вне ручного
+     порядка (CC_SHOP_ORDER) таблица идёт по фолловерам. */
+  {name:'Artin',        at:'ArtinMNG',      nat:null, photo:'ArtinMNG.jpg',      x:836},
   /* Ссылка и его число, 24 сентября: x.com/yaleblan, 749 фолловеров;
      портрет — аватарка оттуда же, круглым кропом на белом (в интерфейсе она
      всё равно режется в круг). Имя — хендл, как у Kiinywz0 выше, и по той же
@@ -79474,15 +79485,17 @@ function ccLeadHTML(lead){
   const me=ccHandle((CAREER.player && CAREER.player.nick) || '');
   const rows=lead.rows.map(r=>{
     const who=String(r[2]||'');
-    const mine=who.toLowerCase()===String(me).toLowerCase();
+    /* Своя карточка (lead.mine): справа не лидер, а место в лобби, и
+       подсвечено то, где игрок первый. */
+    const mine=lead.mine ? !!r[4] : who.toLowerCase()===String(me).toLowerCase();
     const ico=CC_LEAD_ICO[r[0]] || '';
     const flag=r[3] ? flagImg(r[3], 11) : '';
     return `<div class="x-shot-r x-lead-r${mine?' me':''}">`+
            `<b><span class="x-lead-ico">${ico}</span>${esc(L()[r[0]]||r[0])}</b>`+
-           `<em>${esc(String(r[1]))}</em><i>${flag}@${esc(who)}</i></div>`;
+           `<em>${esc(String(r[1]))}</em><i>${lead.mine ? esc(who) : flag+'@'+esc(who)}</i></div>`;
   }).join('');
   return `<div class="x-shot"><div class="x-shot-h"><span>${esc(lead.cap||'')}</span>`+
-         `<span><span class="x-lead-ico">🔥</span>${esc(L().ccLeadCap)}</span></div>${rows}</div>`;
+         `<span>${lead.mine ? '@'+esc(me) : '<span class="x-lead-ico">🔥</span>'+esc(L().ccLeadCap)}</span></div>${rows}</div>`;
 }
 function ccShotHTML(tbl){
   if(!tbl || !tbl.rows || !tbl.rows.length) return '';
@@ -84904,7 +84917,9 @@ function ccKinchPost(ranked, you, label){
   const placePts=Math.max(0, pts-elimPts);
   const better=ranked.filter(t=>t!==you && (t.stageElims||0)>elims).length;
   careerNews('flat', 'ccNewsKinch', [label, place, games, avg.toFixed(1), elims,
-             (elims/games).toFixed(1), ccNum(placePts), ccNum(elimPts), better+1]);
+             (elims/games).toFixed(1), ccNum(placePts), ccNum(elimPts), better+1],
+             (function(){ const rows=ccStatMine(ranked, you);
+               return rows.length>=4 ? {lead:{cap:label, rows:rows, mine:true}} : undefined; })());
 }
 /* Лидеры вечера — доска в формате самого Kinch Analytics.
    Его пост от 26 сентября (Global Champs 2026, день 1): «Damage: 4128 @Koyota0 ·
@@ -84941,45 +84956,66 @@ function ccMmSs(sec){
   const s=Math.max(0, Math.round(sec||0));
   return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
 }
-function ccStatLeaders(ranked){
-  const rows=[];
-  const POOL=(ranked||[]).filter(t=>t && t.mstats && t.mstats.games>0);
-  const teams=POOL;
-  if(teams.length<3) return rows;
-  /* У ОТНОШЕНИЙ свой отбор, как на настоящих досках. Урон в минуту и
-     соотношение урона — это дроби, и максимум дроби по лобби вытягивает не
-     сильнейший, а тот, кто рано умер с удачной перестрелкой: у Кинча лидер по
-     урону и лидер по урону в минуту — один и тот же человек, а у нас без отбора
-     второй выходил в полтора раза выше. Поэтому дроби считаются только среди
-     тех, кто прожил не меньше среднего по лобби. */
-  const aliveMid=(function(){ const a=teams.map(t=>t.mstats.timeAlive).sort((x,y)=>x-y);
-    return a[Math.floor(a.length/2)]||0; })();
-  const deep=teams.filter(t=>t.mstats.timeAlive>=aliveMid);
-  const lead=(key, val, fmt, pool)=>{
-    const teams=pool||POOL;
-    let best=null, bv=-Infinity;
-    teams.forEach(t=>{ const v=val(t.mstats, t); if(v!=null && isFinite(v) && v>bv){ bv=v; best=t; } });
-    if(!best || bv<=0) return;
-    rows.push([key, fmt(bv), ccStatFace(best), ccStatNat(best)||'']);
-  };
+/* Девять показателей доски — один список на две карточки: лидеров вечера и
+   свою. Отношения (урон к полученному, урон в минуту) меряются только среди
+   тех, кто прожил не меньше среднего по лобби: максимум дроби иначе вытягивает
+   не сильнейший, а тот, кто рано умер с удачной перестрелкой — у Кинча лидер по
+   урону и лидер по урону в минуту один и тот же человек.
+   НА ИГРОКА, а не на команду: объёмы делятся на размер состава, а время в
+   живых, в шторме и расстояние — нет, их пара проживает вместе (то же правило,
+   что в playerShares). Урон в минуту делится вместе с уроном. */
+function ccStatMetrics(){
   const num=v=>ccNum(Math.round(v));
-  /* НА ИГРОКА, а не на команду. Доска называет одного человека, и число рядом
-     с ним должно быть его: у Кинча лидер дня по урону — 4128, и это урон
-     игрока, а не пары. Объёмы делятся на размер состава, а время в живых,
-     время в шторме и расстояние — нет: их пара проживает вместе, а не
-     складывает (то же правило, что в playerShares). Урон в минуту делится
-     вместе с уроном, потому что время общее. */
   const mates=t=>Math.max(1, ((t.squad||t._cards||t.cards)||[]).length||1);
   const per=(f)=>(s,t)=>f(s)/mates(t);
-  lead('s_dmgTo',     per(s=>s.dmgTo), num);
-  lead('s_elims',     per(s=>s.elims), num);
-  lead('s_assists',   per(s=>s.assists), num);
-  lead('s_dmgRatio',  s=>s.dmgFrom>0 ? s.dmgTo/s.dmgFrom : 0, v=>v.toFixed(2), deep);
-  lead('s_dmgNet',    per(s=>s.dmgTo-s.dmgFrom), num);
-  lead('s_dpm',       per(s=>s.timeAlive>0 ? s.dmgTo/(s.timeAlive/60) : 0), v=>v.toFixed(2), deep);
-  lead('s_matsFarmed',per(s=>s.wood+s.stone+s.metal), num);
-  lead('s_distance',  s=>s.dist, v=>(v/1000).toFixed(2)+' km');
-  lead('s_timeStorm', s=>s.inStorm, ccMmSs);
+  return [
+    {key:'s_dmgTo',      val:per(s=>s.dmgTo), fmt:num},
+    {key:'s_elims',      val:per(s=>s.elims), fmt:num},
+    {key:'s_assists',    val:per(s=>s.assists), fmt:num},
+    {key:'s_dmgRatio',   val:s=>s.dmgFrom>0 ? s.dmgTo/s.dmgFrom : 0, fmt:v=>v.toFixed(2), deep:true},
+    {key:'s_dmgNet',     val:per(s=>s.dmgTo-s.dmgFrom), fmt:num},
+    {key:'s_dpm',        val:per(s=>s.timeAlive>0 ? s.dmgTo/(s.timeAlive/60) : 0), fmt:v=>v.toFixed(2), deep:true},
+    {key:'s_matsFarmed', val:per(s=>s.wood+s.stone+s.metal), fmt:num},
+    {key:'s_distance',   val:s=>s.dist, fmt:v=>(v/1000).toFixed(2)+' km'},
+    {key:'s_timeStorm',  val:s=>s.inStorm, fmt:ccMmSs}
+  ];
+}
+function ccStatPools(ranked){
+  const all=(ranked||[]).filter(t=>t && t.mstats && t.mstats.games>0);
+  const a=all.map(t=>t.mstats.timeAlive).sort((x,y)=>x-y);
+  const aliveMid=a[Math.floor(a.length/2)]||0;
+  return {all, deep:all.filter(t=>t.mstats.timeAlive>=aliveMid)};
+}
+function ccStatLeaders(ranked){
+  const rows=[];
+  const P=ccStatPools(ranked);
+  if(P.all.length<3) return rows;
+  ccStatMetrics().forEach(m=>{
+    let best=null, bv=-Infinity;
+    (m.deep ? P.deep : P.all).forEach(t=>{ const v=m.val(t.mstats, t); if(v!=null && isFinite(v) && v>bv){ bv=v; best=t; } });
+    if(!best || bv<=0) return;
+    rows.push([m.key, m.fmt(bv), ccStatFace(best), ccStatNat(best)||'']);
+  });
+  return rows;
+}
+/* Своя карточка. Правка тестера: «after every grands and cash cup, ewc etc
+   you should see how your player played» — после каждого финала видно, как
+   сыграл ИМЕННО твой игрок, а не только кто был лучшим в лобби. Те же девять
+   строк, что у лидеров, но число — своё, а справа вместо ника лидера — место
+   в лобби по этому показателю. Лобби для отношений то же, что у доски; если
+   игрок сам в него не попал (умер рано), место считается по всему лобби. */
+function ccStatMine(ranked, you){
+  const rows=[];
+  if(!you || !you.mstats || !(you.mstats.games>0)) return rows;
+  const P=ccStatPools(ranked);
+  if(P.all.length<3) return rows;
+  ccStatMetrics().forEach(m=>{
+    const v=m.val(you.mstats, you);
+    if(v==null || !isFinite(v)) return;
+    const pool=(m.deep && P.deep.indexOf(you)>=0) ? P.deep : P.all;
+    const rank=1+pool.filter(t=>t!==you && m.val(t.mstats, t)>v).length;
+    rows.push([m.key, m.fmt(v), '#'+rank+' / '+pool.length, null, rank===1]);
+  });
   return rows;
 }
 /* Один вызов на конец турнира: личный разбор и доска лидеров.
@@ -84987,6 +85023,22 @@ function ccStatLeaders(ranked){
 function ccBoardAfter(ranked, you, label){
   ccKinchPost(ranked, you, label);
   ccStatBoardPost(ranked, label);
+  ccMyStatsButton(ranked, you, label);
+}
+/* Кнопка под итогом вечера. Правка тестера: после каждого финала — грандов,
+   кэш-капа, EWC — видно, как сыграл твой игрок; его слово: «чтоб он нажал
+   кнопку после игры посмотреть стату». Встаёт в последнюю карточку этапа,
+   раскрывает ту же карточку, что прикреплена к разбору в ленте. */
+function ccMyStatsButton(ranked, you, label){
+  const rows=ccStatMine(ranked, you);
+  if(rows.length<4) return;
+  const cards=document.querySelectorAll('#majorStages .stage-card');
+  const card=cards[cards.length-1];
+  if(!card || card.querySelector('.cc-mystats')) return;
+  const d=document.createElement('details');
+  d.className='cc-mystats';
+  d.innerHTML=`<summary>${esc(L().ccMyStatsBtn)}</summary>`+ccLeadHTML({cap:label, rows:rows, mine:true});
+  card.appendChild(d);
 }
 function ccStatBoardPost(ranked, label){
   const rows=ccStatLeaders(ranked);
@@ -84997,6 +85049,7 @@ function careerCongrats(ranked, you, label){
   if(!ranked || !ranked.length) return;
   ccKinchPost(ranked, you, label);
   ccStatBoardPost(ranked, label);
+  ccMyStatsButton(ranked, you, label);
   const w=ranked[0];
   const bare=t=>String(t.name||'').replace(/<[^>]*>/g,'');
   let handles;
