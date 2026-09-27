@@ -1,4 +1,6364 @@
 {
+ "2021": {
+  "major1": {
+   "Hen": {
+    "club": "Guild Esports",
+    "reg": "EU"
+   },
+   "JannisZ": {
+    "club": "Wave Esports",
+    "reg": "EU"
+   },
+   "Flikk": {
+    "club": "Guild Esports",
+    "reg": "EU"
+   },
+   "Anas": {
+    "club": "Guild Esports",
+    "reg": "EU"
+   },
+   "Th0masHD": {
+    "club": "Gamma Gaming",
+    "reg": "EU"
+   },
+   "Vadeal": {
+    "club": "Wave Esports",
+    "reg": "EU"
+   },
+   "Noahreyli": {
+    "club": "Become Legends",
+    "reg": "EU"
+   },
+   "Andilex": {
+    "club": "Team MCES",
+    "reg": "EU"
+   },
+   "Snayzy": {
+    "club": "Grizi Esport",
+    "reg": "EU"
+   },
+   "xsweeze": {
+    "club": "Team MCES",
+    "reg": "EU"
+   },
+   "Umplify": {
+    "club": "TrainHard eSport",
+    "reg": "EU"
+   },
+   "Matsoe": {
+    "club": "TrainHard eSport",
+    "reg": "EU"
+   },
+   "benjyfishy": {
+    "club": "NRG",
+    "reg": "EU"
+   },
+   "Setty": {
+    "club": "Become Legends",
+    "reg": "EU"
+   },
+   "Kami": {
+    "club": "Gamma Gaming",
+    "reg": "EU"
+   },
+   "teeq": {
+    "club": "Galaxy Racer",
+    "reg": "EU"
+   },
+   "Snap": {
+    "club": "Glorious Esport",
+    "reg": "EU"
+   },
+   "Miro": {
+    "club": "Team Heretics",
+    "reg": "EU"
+   },
+   "Swag": {
+    "club": "Copenhagen Flames",
+    "reg": "EU"
+   },
+   "IDrop": {
+    "club": "Apeks",
+    "reg": "EU"
+   },
+   "TaySon": {
+    "club": "Guild Esports",
+    "reg": "EU"
+   },
+   "MrSavage": {
+    "club": "100 Thieves",
+    "reg": "EU"
+   },
+   "Mexe": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "Kikoo": {
+    "club": "Wave Esports",
+    "reg": "EU"
+   },
+   "Slender": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "MOSh": {
+    "club": "Fourteen eSports",
+    "reg": "EU"
+   },
+   "AirkNn": {
+    "club": "Team Homyno",
+    "reg": "EU"
+   },
+   "DKS": {
+    "club": "Team MCES",
+    "reg": "EU"
+   },
+   "Blacky": {
+    "club": "Team BDS",
+    "reg": "EU"
+   },
+   "Jur3ky": {
+    "club": "V4 Gaming",
+    "reg": "EU"
+   },
+   "Queasy": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "packo": {
+    "club": "Team Heretics",
+    "reg": "EU"
+   },
+   "Rakso": {
+    "club": "Centric Gaming",
+    "reg": "EU"
+   },
+   "nebs": {
+    "club": "AceOfSpades Esports",
+    "reg": "EU"
+   },
+   "M1lo": {
+    "club": "Team Serenity",
+    "reg": "EU"
+   },
+   "Ceesay": {
+    "club": "Siko Esports",
+    "reg": "EU"
+   },
+   "Pinq": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "TruleX": {
+    "club": "Glorious Esport",
+    "reg": "EU"
+   },
+   "stompy": {
+    "club": "Team Vitality",
+    "reg": "EU"
+   },
+   "Diablo": {
+    "club": "ALOFT Gaming",
+    "reg": "EU"
+   },
+   "ks1light": {
+    "club": "Aventix Esports",
+    "reg": "EU"
+   },
+   "Mawakha": {
+    "club": "Gambit Esports",
+    "reg": "EU"
+   },
+   "Malibuca": {
+    "club": "Luminox Esports",
+    "reg": "EU"
+   },
+   "shizogod": {
+    "club": "TheCartel Esports",
+    "reg": "EU"
+   },
+   "Paddy": {
+    "club": "RosCey eSports",
+    "reg": "EU"
+   },
+   "Refsgaard": {
+    "club": "Eleven Gaming",
+    "reg": "EU"
+   },
+   "Endretta": {
+    "club": "Nordavind",
+    "reg": "EU"
+   },
+   "Skram": {
+    "club": "Nordavind",
+    "reg": "EU"
+   },
+   "Fredoxie": {
+    "club": "M1337",
+    "reg": "EU"
+   },
+   "Joolex": {
+    "club": "Xypher eSports",
+    "reg": "EU"
+   },
+   "Cherentos": {
+    "club": "Xypher eSports",
+    "reg": "EU"
+   },
+   "Merstach": {
+    "club": "Luminox Esports",
+    "reg": "EU"
+   },
+   "ZQ": {
+    "club": "COOLER Esport",
+    "reg": "EU"
+   },
+   "crr": {
+    "club": "Fnatic",
+    "reg": "EU"
+   },
+   "leo the crack": {
+    "club": "RAMS",
+    "reg": "EU"
+   },
+   "advise": {
+    "club": "Wave Esports",
+    "reg": "EU"
+   },
+   "Kubx": {
+    "club": "Centric Gaming",
+    "reg": "EU"
+   },
+   "artor": {
+    "club": "Become Legends",
+    "reg": "EU"
+   },
+   "PabloWingu": {
+    "club": "Become Legends",
+    "reg": "EU"
+   },
+   "Raqz": {
+    "club": "Team Diamond",
+    "reg": "EU"
+   },
+   "Legxndz": {
+    "club": "M10 eSports",
+    "reg": "EU"
+   },
+   "karma": {
+    "club": "M10 eSports",
+    "reg": "EU"
+   },
+   "Awaer": {
+    "club": "Ovation eSports",
+    "reg": "EU"
+   },
+   "Boyer": {
+    "club": "Eleven Gaming",
+    "reg": "EU"
+   },
+   "k1nzell": {
+    "club": "Team Heretics",
+    "reg": "EU"
+   },
+   "Decyptos": {
+    "club": "GamersOrigin",
+    "reg": "EU"
+   },
+   "voxe": {
+    "club": "Team Homyno",
+    "reg": "EU"
+   },
+   "Kebo": {
+    "club": "Glorious Esport",
+    "reg": "EU"
+   },
+   "Jannes": {
+    "club": "Veor Gaming",
+    "reg": "EU"
+   },
+   "tillv1": {
+    "club": "Veor Gaming",
+    "reg": "EU"
+   },
+   "Gripey": {
+    "club": "Veor Gaming",
+    "reg": "EU"
+   },
+   "Younes": {
+    "club": "Asteria Gaming",
+    "reg": "EU"
+   },
+   "Lame": {
+    "club": "Fnatic",
+    "reg": "EU"
+   },
+   "Slackes": {
+    "club": "Luminosity Gaming",
+    "reg": "NAC"
+   },
+   "Acorn": {
+    "club": "One Percent",
+    "reg": "NAC"
+   },
+   "Jahq": {
+    "club": "G2 Esports",
+    "reg": "NAC"
+   },
+   "Cented": {
+    "club": "FaZe Clan",
+    "reg": "NAC"
+   },
+   "Edgey": {
+    "club": "NRG",
+    "reg": "NAC"
+   },
+   "Bucke": {
+    "club": "Built By Gamers",
+    "reg": "NAC"
+   },
+   "Khanada": {
+    "club": "Built By Gamers",
+    "reg": "NAC"
+   },
+   "MackWood": {
+    "club": "G2 Esports",
+    "reg": "NAC"
+   },
+   "Deyy": {
+    "club": "ENDLESS",
+    "reg": "NAC"
+   },
+   "Mero": {
+    "club": "XTRA Gaming",
+    "reg": "NAC"
+   },
+   "Reverse2k": {
+    "club": "ENDLESS",
+    "reg": "NAC"
+   },
+   "Clix": {
+    "club": "NRG",
+    "reg": "NAC"
+   },
+   "Bugha": {
+    "club": "Sentinels",
+    "reg": "NAC"
+   },
+   "Bizzle": {
+    "club": "FaZe Clan",
+    "reg": "NAC"
+   },
+   "Degen": {
+    "club": "FUSION",
+    "reg": "NAC"
+   },
+   "Ajerss": {
+    "club": "FUSION",
+    "reg": "NAC"
+   },
+   "Kreo": {
+    "club": "Built By Gamers",
+    "reg": "NAC"
+   },
+   "illest": {
+    "club": "XTRA Gaming",
+    "reg": "NAC"
+   },
+   "Avery": {
+    "club": "Cloud9",
+    "reg": "NAC"
+   },
+   "Zayt": {
+    "club": "NRG",
+    "reg": "NAC"
+   },
+   "Saf": {
+    "club": "TrainHard eSport",
+    "reg": "NAC"
+   },
+   "Stretch": {
+    "club": "Team Liquid",
+    "reg": "NAC"
+   },
+   "osp": {
+    "club": "Team Pure",
+    "reg": "NAC"
+   },
+   "Fryst": {
+    "club": "Cloud9",
+    "reg": "NAC"
+   },
+   "Gabe": {
+    "club": "ENDLESS",
+    "reg": "NAC"
+   },
+   "Jamper": {
+    "club": "Luminosity Gaming",
+    "reg": "NAC"
+   },
+   "nosh": {
+    "club": "Cloud9",
+    "reg": "NAC"
+   },
+   "Paper": {
+    "club": "Enterprise Gaming",
+    "reg": "NAC"
+   },
+   "Narwhal": {
+    "club": "Team New Age",
+    "reg": "NAC"
+   },
+   "Crunchy": {
+    "club": "Elite Esports",
+    "reg": "NAC"
+   },
+   "Zlem": {
+    "club": "Team New Age",
+    "reg": "NAC"
+   },
+   "frat": {
+    "club": "Elite Esports",
+    "reg": "NAC"
+   },
+   "Snake": {
+    "club": "Outcast Region",
+    "reg": "NAC"
+   },
+   "Dom": {
+    "club": "XPRT Esports",
+    "reg": "NAC"
+   },
+   "Dusky": {
+    "club": "Insight",
+    "reg": "NAC"
+   },
+   "Ozirvo": {
+    "club": "Team Overtime",
+    "reg": "NAC"
+   },
+   "Crumble": {
+    "club": "9LIVES",
+    "reg": "NAC"
+   },
+   "Nexy": {
+    "club": "Kungarna",
+    "reg": "NAC"
+   },
+   "Avivv": {
+    "club": "Team AKA",
+    "reg": "NAC"
+   },
+   "Zyfa": {
+    "club": "Sentinels",
+    "reg": "NAC"
+   },
+   "Tuexy": {
+    "club": "Chronic",
+    "reg": "NAC"
+   },
+   "Aspect": {
+    "club": "Paradox Gaming",
+    "reg": "OCE"
+   },
+   "Xoonies": {
+    "club": "Luminosity Gaming",
+    "reg": "NAC"
+   },
+   "Riversan": {
+    "club": "Team Liquid",
+    "reg": "NAC"
+   },
+   "Cazz": {
+    "club": "Team Vanish",
+    "reg": "NAC"
+   },
+   "LazarP": {
+    "club": "9LIVES",
+    "reg": "NAC"
+   },
+   "Ved": {
+    "club": "Team Pure",
+    "reg": "NAC"
+   },
+   "Goku": {
+    "club": "XPRT Esports",
+    "reg": "NAC"
+   },
+   "Justice": {
+    "club": "Team Sniper Gang",
+    "reg": "NAC"
+   },
+   "Knight": {
+    "club": "XSET",
+    "reg": "NAC"
+   },
+   "RogueShark": {
+    "club": "XSET",
+    "reg": "NAC"
+   },
+   "Av": {
+    "club": "XSET",
+    "reg": "NAC"
+   },
+   "voil": {
+    "club": "9LIVES",
+    "reg": "NAC"
+   },
+   "Pandush": {
+    "club": "ENDLESS",
+    "reg": "NAC"
+   },
+   "notpandda": {
+    "club": "FUSION",
+    "reg": "NAC"
+   },
+   "Squish": {
+    "club": "Xen",
+    "reg": "NAC"
+   },
+   "Animal": {
+    "club": "Sentinels",
+    "reg": "NAC"
+   },
+   "Dukez": {
+    "club": "Outcast Region",
+    "reg": "NAC"
+   },
+   "Threats": {
+    "club": "TRNL Gaming",
+    "reg": "NAC"
+   },
+   "Arkhram": {
+    "club": "100 Thieves",
+    "reg": "NAW"
+   },
+   "rehx": {
+    "club": "100 Thieves",
+    "reg": "NAW"
+   },
+   "EpikWhale": {
+    "club": "NRG",
+    "reg": "NAW"
+   },
+   "Kenshi": {
+    "club": "Team Sniper Gang",
+    "reg": "NAW"
+   },
+   "Snacky": {
+    "club": "Team Sniper Gang",
+    "reg": "NAW"
+   },
+   "Chris": {
+    "club": "Team Pure",
+    "reg": "NAW"
+   },
+   "RichHomieQuinn": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Dylannx": {
+    "club": "Team Sniper Gang",
+    "reg": "NAW"
+   },
+   "avail": {
+    "club": "Team Select",
+    "reg": "NAW"
+   },
+   "Jay": {
+    "club": "Counter Logic Gaming",
+    "reg": "NAW"
+   },
+   "spideyy": {
+    "club": "Team Pure",
+    "reg": "NAW"
+   },
+   "Blizy": {
+    "club": "NorCal Esports",
+    "reg": "NAW"
+   },
+   "Nate": {
+    "club": "5G Gaming",
+    "reg": "NAW"
+   },
+   "Trashy": {
+    "club": "TRNL Gaming",
+    "reg": "NAW"
+   },
+   "exe": {
+    "club": "TRNL Gaming",
+    "reg": "NAW"
+   },
+   "jagveer": {
+    "club": "Xen",
+    "reg": "NAW"
+   },
+   "Mojo": {
+    "club": "Xen",
+    "reg": "NAW"
+   },
+   "Solution": {
+    "club": "ZH22 Uprising",
+    "reg": "NAW"
+   },
+   "Criizux": {
+    "club": "TRNL Gaming",
+    "reg": "NAW"
+   },
+   "alithy": {
+    "club": "NorCal Esports",
+    "reg": "NAW"
+   },
+   "Frapai": {
+    "club": "NorCal Esports",
+    "reg": "NAW"
+   },
+   "Reet": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Maken": {
+    "club": "Akella Esports",
+    "reg": "NAW"
+   },
+   "symetrical": {
+    "club": "Counter Logic Gaming",
+    "reg": "NAW"
+   },
+   "Dog": {
+    "club": "Team Diverge",
+    "reg": "NAW"
+   },
+   "Zinqxz": {
+    "club": "NorCal Esports",
+    "reg": "NAW"
+   },
+   "Chase": {
+    "club": "Team Select",
+    "reg": "NAW"
+   },
+   "natee": {
+    "club": "ThePureHQ",
+    "reg": "NAW"
+   },
+   "kube": {
+    "club": "ThePureHQ",
+    "reg": "NAW"
+   },
+   "Caleb": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Tautai": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Wheels": {
+    "club": "TRNL Gaming",
+    "reg": "NAW"
+   },
+   "BeckTHD": {
+    "club": "5G Gaming",
+    "reg": "NAW"
+   },
+   "slim": {
+    "club": "5G Gaming",
+    "reg": "NAW"
+   },
+   "Trix": {
+    "club": "TRNL Gaming",
+    "reg": "NAW"
+   },
+   "Rek": {
+    "club": "5G Gaming",
+    "reg": "NAW"
+   },
+   "Dngy": {
+    "club": "WWG ESPORTS",
+    "reg": "NAW"
+   },
+   "Falconer": {
+    "club": "100 Thieves",
+    "reg": "NAW"
+   },
+   "kadenOX": {
+    "club": "5G Gaming",
+    "reg": "NAW"
+   },
+   "Nach": {
+    "club": "5G Gaming",
+    "reg": "NAW"
+   },
+   "Dexteriity": {
+    "club": "5G Gaming",
+    "reg": "NAW"
+   },
+   "FJAA": {
+    "club": "ThePureHQ",
+    "reg": "NAW"
+   },
+   "Lush": {
+    "club": "Xen",
+    "reg": "NAW"
+   },
+   "Nuqlo": {
+    "club": "TRNL Gaming",
+    "reg": "NAW"
+   },
+   "Luis": {
+    "club": "Team Atlus",
+    "reg": "NAW"
+   },
+   "Raul": {
+    "club": "5G Gaming",
+    "reg": "NAW"
+   },
+   "Robinznn": {
+    "club": "Timbers Esports",
+    "reg": "NAW"
+   },
+   "ChickenItza": {
+    "club": "Timber",
+    "reg": "NAW"
+   },
+   "Karp": {
+    "club": "Balanced Esports",
+    "reg": "NAW"
+   },
+   "Izo": {
+    "club": "ThePureHQ",
+    "reg": "NAW"
+   },
+   "yute": {
+    "club": "ThePureHQ",
+    "reg": "NAW"
+   },
+   "buzzo": {
+    "club": "Repulse Gaming",
+    "reg": "NAW"
+   },
+   "Optimal": {
+    "club": "ThePureHQ",
+    "reg": "NAW"
+   },
+   "slays": {
+    "club": "9LIVES",
+    "reg": "NAW"
+   },
+   "Mango": {
+    "club": "5G Gaming",
+    "reg": "NAW"
+   },
+   "Kaboo": {
+    "club": "5G Gaming",
+    "reg": "NAW"
+   },
+   "Pelican": {
+    "club": "ThePureHQ",
+    "reg": "NAW"
+   },
+   "Triggy": {
+    "club": "Outcast Region",
+    "reg": "NAW"
+   },
+   "Skvdoosh": {
+    "club": "Team Insight",
+    "reg": "NAW"
+   },
+   "Nutvi": {
+    "club": "SlctGG",
+    "reg": "NAW"
+   },
+   "jeffers": {
+    "club": "ZH22",
+    "reg": "NAW"
+   },
+   "dardis": {
+    "club": "MERK Esports",
+    "reg": "NAW"
+   },
+   "Cadu": {
+    "club": "eRa Eternity",
+    "reg": "BR"
+   },
+   "Seeyun": {
+    "club": "Team Vikings",
+    "reg": "BR"
+   },
+   "KING": {
+    "club": "Team Singularity",
+    "reg": "BR"
+   },
+   "Felipersa": {
+    "club": "TRNL Gaming",
+    "reg": "BR"
+   },
+   "EdRoadToGlory": {
+    "club": "TRNL Gaming",
+    "reg": "BR"
+   },
+   "histtory": {
+    "club": "FURY",
+    "reg": "BR"
+   },
+   "RustyK": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "xOwN": {
+    "club": "eRa Eternity",
+    "reg": "BR"
+   },
+   "k1nG": {
+    "club": "FaZe Clan",
+    "reg": "BR"
+   },
+   "Barella": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "Bedin": {
+    "club": "TRNL Gaming",
+    "reg": "BR"
+   },
+   "Sheco": {
+    "club": "FURY",
+    "reg": "BR"
+   },
+   "leleo": {
+    "club": "LOUD",
+    "reg": "BR"
+   },
+   "H4wwk": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "Fishy": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "Nahue": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "Twayko": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "Betto": {
+    "club": "Cynsaire",
+    "reg": "BR"
+   },
+   "Pulga": {
+    "club": "Team Liquid",
+    "reg": "BR"
+   },
+   "KaykyGames": {
+    "club": "DETONA",
+    "reg": "BR"
+   },
+   "German62hz": {
+    "club": "Aerial Unit",
+    "reg": "BR"
+   },
+   "retake": {
+    "club": "eRa Eternity",
+    "reg": "BR"
+   },
+   "BlackoutZ": {
+    "club": "Cloud9",
+    "reg": "BR"
+   },
+   "Randu": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "Collet": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Guneves": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Liimaa": {
+    "club": "Team TRIBE",
+    "reg": "BR"
+   },
+   "Pattata": {
+    "club": "Team TRIBE",
+    "reg": "BR"
+   },
+   "Talls": {
+    "club": "ENDLESS",
+    "reg": "BR"
+   },
+   "Schaba": {
+    "club": "Team TRIBE",
+    "reg": "BR"
+   },
+   "Qjac": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Naetor": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Alice": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Fram": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "pacoteen": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "L4ex": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Monster": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "RizArt": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "WildHawk": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "Rimr": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "SinOoh": {
+    "club": "T1",
+    "reg": "ASIA"
+   },
+   "Envy": {
+    "club": "T1",
+    "reg": "ASIA"
+   },
+   "Rainy": {
+    "club": "Nester",
+    "reg": "ASIA"
+   },
+   "miya": {
+    "club": "Nester",
+    "reg": "ASIA"
+   },
+   "Yusea": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "stork": {
+    "club": "Nester",
+    "reg": "ASIA"
+   },
+   "Shunsyan": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "Lettuce": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Ess": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Hamuppi": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "2SNgNl": {
+    "club": "Champion Esports",
+    "reg": "ASIA"
+   },
+   "Demon x": {
+    "club": "Team Aquiver",
+    "reg": "ASIA"
+   },
+   "Scarlet": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "XMipoli": {
+    "club": "Nester",
+    "reg": "ASIA"
+   },
+   "Rialy": {
+    "club": "SCARZ",
+    "reg": "ASIA"
+   },
+   "Ryle": {
+    "club": "FUSION",
+    "reg": "ASIA"
+   },
+   "Ruri": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Maufin": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "Bob": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "Rui": {
+    "club": "Delta Esports",
+    "reg": "ASIA"
+   },
+   "Ragis": {
+    "club": "Nester",
+    "reg": "ASIA"
+   },
+   "Rocca": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Kogane": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Nephrite": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Aim": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Toxxen": {
+    "club": "FLUID",
+    "reg": "ASIA"
+   },
+   "Standry": {
+    "club": "Hypro Gaming",
+    "reg": "ASIA"
+   },
+   "SEKO": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "Runa": {
+    "club": "ASF",
+    "reg": "ASIA"
+   },
+   "Albedo": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Buyuriru": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Tatto": {
+    "club": "Delta Esports",
+    "reg": "ASIA"
+   },
+   "KuKi": {
+    "club": "Team Eltrocity",
+    "reg": "ME"
+   },
+   "Phantom": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Nyle": {
+    "club": "Galaxy Racer",
+    "reg": "ME"
+   },
+   "Modisk": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "Souriano": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "Kai": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "snowvaks": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Nm7": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Rv": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Speedy": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "HeiF": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "7man": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "vagnaR": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "I4xPRO": {
+    "club": "The Ultimates",
+    "reg": "ME"
+   },
+   "Dexefite": {
+    "club": "The Ultimates",
+    "reg": "ME"
+   },
+   "FHD": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Yonx": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "KiritoKun": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "QnDx": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "Njby": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "iiUniit": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "Ali": {
+    "club": "Outcast Region",
+    "reg": "ME"
+   },
+   "Faris": {
+    "club": "Team Arrow",
+    "reg": "ME"
+   },
+   "Ekko": {
+    "club": "LND Esports",
+    "reg": "ME"
+   },
+   "Fahad": {
+    "club": "38 Esports",
+    "reg": "ME"
+   },
+   "Mansour": {
+    "club": "Hawk Esports",
+    "reg": "ME"
+   },
+   "SKULLY": {
+    "club": "Sudor Esports",
+    "reg": "ME"
+   },
+   "3BoooD": {
+    "club": "NMR Esports",
+    "reg": "ME"
+   },
+   "Tooke": {
+    "club": "NMR Esports",
+    "reg": "ME"
+   },
+   "Mjeed": {
+    "club": "DNA Esports",
+    "reg": "ME"
+   },
+   "Spy": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "IExon": {
+    "club": "The Ultimates",
+    "reg": "ME"
+   },
+   "Rapit": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "Naif": {
+    "club": "Sudor Esports",
+    "reg": "ME"
+   },
+   "Metab": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Balor": {
+    "club": "Sudor Esports",
+    "reg": "ME"
+   },
+   "Linx": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Deatt": {
+    "club": "Team Exploit",
+    "reg": "ME"
+   },
+   "Flamors": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "Odeh": {
+    "club": "Blood Qualifiers",
+    "reg": "ME"
+   },
+   "Naifma7": {
+    "club": "Diggers Esports",
+    "reg": "ME"
+   },
+   "Kaspr": {
+    "club": "Diggers Esports",
+    "reg": "ME"
+   },
+   "C2razy": {
+    "club": "Diggers Esports",
+    "reg": "ME"
+   },
+   "MK": {
+    "club": "500 Esports",
+    "reg": "ME"
+   },
+   "Mshary": {
+    "club": "Eagles Esports",
+    "reg": "ME"
+   },
+   "FKS": {
+    "club": "Diggers Esports",
+    "reg": "ME"
+   },
+   "Adapter": {
+    "club": "The Ultimates",
+    "reg": "ME"
+   },
+   "Aziz": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Az2m": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "LeziX": {
+    "club": "Sudor Esports",
+    "reg": "ME"
+   },
+   "Raed": {
+    "club": "Sudor Esports",
+    "reg": "ME"
+   },
+   "Linjy": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "MrDom": {
+    "club": "Team Exploit",
+    "reg": "ME"
+   },
+   "Br1ckzl": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "Saud": {
+    "club": "POWER eSports",
+    "reg": "ME"
+   },
+   "OutLaw": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "AbuFal7": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "BlazeX": {
+    "club": "Team Eltrocity",
+    "reg": "ME"
+   },
+   "3mory": {
+    "club": "Team Sonic",
+    "reg": "ME"
+   },
+   "Bleed": {
+    "club": "Legends Esports",
+    "reg": "ME"
+   },
+   "GntL": {
+    "club": "POWER eSports",
+    "reg": "ME"
+   },
+   "LIQUID": {
+    "club": "The Ultimates",
+    "reg": "ME"
+   },
+   "Fx": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "PRO": {
+    "club": "WITD eSports",
+    "reg": "ME"
+   },
+   "RsTn": {
+    "club": "Diggers Esports",
+    "reg": "ME"
+   },
+   "Escdark": {
+    "club": "Diggers Esports",
+    "reg": "ME"
+   },
+   "OMxP": {
+    "club": "Diggers Esports",
+    "reg": "ME"
+   },
+   "xJam": {
+    "club": "Team Eltrocity",
+    "reg": "ME"
+   },
+   "Hellonsteam": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "TrikShotz": {
+    "club": "Wasp Esports",
+    "reg": "ME"
+   },
+   "Meza": {
+    "club": "Team Exploit",
+    "reg": "ME"
+   },
+   "LoFi": {
+    "club": "Team Arrow",
+    "reg": "ME"
+   },
+   "Fares": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "Smsom": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "Rayy": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "P5EK": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "killerbxy": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "MESSi": {
+    "club": "Team Gemx",
+    "reg": "ME"
+   },
+   "Blind": {
+    "club": "25 Esports",
+    "reg": "ME"
+   },
+   "KaKaRoT": {
+    "club": "01 Esports",
+    "reg": "ME"
+   },
+   "Syaz": {
+    "club": "Team Arrow",
+    "reg": "ME"
+   },
+   "M2BK": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "DNA": {
+    "club": "Medal Esports",
+    "reg": "ME"
+   },
+   "Melo": {
+    "club": "Diggers Esports",
+    "reg": "ME"
+   },
+   "Cloud": {
+    "club": "38 Esports",
+    "reg": "ME"
+   },
+   "Hiiper": {
+    "club": "Team Ruls",
+    "reg": "ME"
+   },
+   "Jolo": {
+    "club": "Hawk Esports",
+    "reg": "ME"
+   },
+   "Khalood": {
+    "club": "Team Aquiver",
+    "reg": "ME"
+   },
+   "Minas": {
+    "club": "Spark E-Sports",
+    "reg": "ME"
+   },
+   "Muz": {
+    "club": "TeamPWR",
+    "reg": "OCE"
+   },
+   "looter": {
+    "club": "TeamPWR",
+    "reg": "OCE"
+   },
+   "SpeedyND": {
+    "club": "Team Process",
+    "reg": "OCE"
+   },
+   "Sorif": {
+    "club": "Agent Gaming",
+    "reg": "OCE"
+   },
+   "volx": {
+    "club": "Spray and Prey Gaming",
+    "reg": "OCE"
+   },
+   "suns": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "tuii": {
+    "club": "Team Process",
+    "reg": "OCE"
+   },
+   "Korq": {
+    "club": "Team MADE",
+    "reg": "OCE"
+   },
+   "Raptah": {
+    "club": "Agent Gaming",
+    "reg": "OCE"
+   },
+   "Prhzy": {
+    "club": "Team Atlus",
+    "reg": "OCE"
+   },
+   "Oatley": {
+    "club": "Paradox Gaming",
+    "reg": "OCE"
+   },
+   "mrfreshasian": {
+    "club": "Luminosity Gaming",
+    "reg": "OCE"
+   },
+   "rel": {
+    "club": "Agent Gaming",
+    "reg": "OCE"
+   },
+   "Newbatoon": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "worthy": {
+    "club": "TeamPWR",
+    "reg": "OCE"
+   },
+   "Remi": {
+    "club": "FURY",
+    "reg": "OCE"
+   },
+   "basil": {
+    "club": "Immersive Gaming",
+    "reg": "OCE"
+   },
+   "VortexM": {
+    "club": "Forbidden Gaming",
+    "reg": "OCE"
+   },
+   "Pumpkin": {
+    "club": "Mako ESC",
+    "reg": "OCE"
+   },
+   "Psyper": {
+    "club": "Clarity",
+    "reg": "OCE"
+   },
+   "Breso": {
+    "club": "High Value Target Esports",
+    "reg": "OCE"
+   },
+   "Kulture": {
+    "club": "High Value Target Esports",
+    "reg": "OCE"
+   },
+   "LunR": {
+    "club": "High Value Target Esports",
+    "reg": "OCE"
+   },
+   "Will": {
+    "club": "Agent Gaming",
+    "reg": "OCE"
+   },
+   "Eshz": {
+    "club": "Agent Gaming",
+    "reg": "OCE"
+   },
+   "zanz": {
+    "club": "Forbidden Gaming",
+    "reg": "OCE"
+   },
+   "oreo": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Raiku": {
+    "club": "Agent Gaming",
+    "reg": "OCE"
+   },
+   "Bathan": {
+    "club": "High Value Target Esports",
+    "reg": "OCE"
+   },
+   "Zedox": {
+    "club": "High Value Target Esports",
+    "reg": "OCE"
+   },
+   "sio": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Nio": {
+    "club": "Easy Escape",
+    "reg": "OCE"
+   },
+   "fab": {
+    "club": "High Value Target Esports",
+    "reg": "OCE"
+   },
+   "Keemo": {
+    "club": "Easy Escape",
+    "reg": "OCE"
+   },
+   "Kazuki": {
+    "club": "High Value Target Esports",
+    "reg": "OCE"
+   },
+   "PLPE DJ": {
+    "club": "Spray and Prey Gaming",
+    "reg": "OCE"
+   },
+   "Cryz": {
+    "club": "Menage",
+    "reg": "OCE"
+   },
+   "cleanupcrew": {
+    "club": "Menage",
+    "reg": "OCE"
+   },
+   "Movrickz": {
+    "club": "Paradox Gaming",
+    "reg": "OCE"
+   },
+   "2Faulty": {
+    "club": "Spray and Prey Gaming",
+    "reg": "OCE"
+   },
+   "Trixy": {
+    "club": "Spray and Prey Gaming",
+    "reg": "OCE"
+   },
+   "Venihcy": {
+    "club": "Team MADE",
+    "reg": "OCE"
+   },
+   "District": {
+    "club": "Menage",
+    "reg": "OCE"
+   },
+   "Pumaa": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Arrest": {
+    "club": "Revile Esports",
+    "reg": "OCE"
+   },
+   "Gille": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Cynical": {
+    "club": "Team MADE",
+    "reg": "OCE"
+   },
+   "danath": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Osiris": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "skits": {
+    "club": "FURY",
+    "reg": "OCE"
+   },
+   "RepulseGod": {
+    "club": "Spray and Prey Gaming",
+    "reg": "OCE"
+   },
+   "Forbes": {
+    "club": "High Value Target Esports",
+    "reg": "OCE"
+   },
+   "Tyraxe": {
+    "club": "Agent Gaming",
+    "reg": "OCE"
+   },
+   "Bluezie": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Lazy": {
+    "club": "Paradox Gaming",
+    "reg": "OCE"
+   },
+   "Wreckless": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Infusion": {
+    "club": "Menage",
+    "reg": "OCE"
+   },
+   "Rainxy": {
+    "club": "Menage",
+    "reg": "OCE"
+   },
+   "Yixsaa": {
+    "club": "Menage",
+    "reg": "OCE"
+   },
+   "Vujcich": {
+    "club": "Team Dillusion",
+    "reg": "OCE"
+   },
+   "Mania": {
+    "club": "Team MADE",
+    "reg": "OCE"
+   },
+   "Trexy": {
+    "club": "Team Dillusion",
+    "reg": "OCE"
+   },
+   "jahlyn": {
+    "club": "Legacy Esports",
+    "reg": "OCE"
+   },
+   "Squeakz": {
+    "club": "Spray and Prey Gaming",
+    "reg": "OCE"
+   },
+   "Crippa": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Rip": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "BMP": {
+    "club": "Menage",
+    "reg": "OCE"
+   },
+   "Mesportt": {
+    "club": "Team Dillusion",
+    "reg": "OCE"
+   },
+   "Ice": {
+    "club": "Easy Escape",
+    "reg": "OCE"
+   },
+   "Shocker": {
+    "club": "Team Dillusion",
+    "reg": "OCE"
+   },
+   "Midnite": {
+    "club": "Paradox Gaming",
+    "reg": "OCE"
+   },
+   "Tekmarr": {
+    "club": "VERTEX ESC",
+    "reg": "OCE"
+   },
+   "Celdom": {
+    "club": "High Value Target Esports",
+    "reg": "OCE"
+   }
+  },
+  "major2": {
+   "Queasy": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "TruleX": {
+    "club": "Glorious Esport",
+    "reg": "EU"
+   },
+   "Jur3ky": {
+    "club": "Wave Esports Academy",
+    "reg": "EU"
+   },
+   "Refsgaard": {
+    "club": "Falcons Esports",
+    "reg": "EU"
+   },
+   "Endretta": {
+    "club": "Nordavind",
+    "reg": "EU"
+   },
+   "MrSavage": {
+    "club": "100 Thieves",
+    "reg": "EU"
+   },
+   "4zr": {
+    "club": "Grizi Esport",
+    "reg": "EU"
+   },
+   "TaySon": {
+    "club": "Guild Esports",
+    "reg": "EU"
+   },
+   "Flikk": {
+    "club": "Guild Esports",
+    "reg": "EU"
+   },
+   "Anas": {
+    "club": "Guild Esports",
+    "reg": "EU"
+   },
+   "Th0masHD": {
+    "club": "Gamma Gaming",
+    "reg": "EU"
+   },
+   "Vadeal": {
+    "club": "Wave Esports",
+    "reg": "EU"
+   },
+   "Noahreyli": {
+    "club": "Become Legends",
+    "reg": "EU"
+   },
+   "Toose": {
+    "club": "Gambit Esports",
+    "reg": "EU"
+   },
+   "Andilex": {
+    "club": "Team MCES",
+    "reg": "EU"
+   },
+   "Snayzy": {
+    "club": "Grizi Esport",
+    "reg": "EU"
+   },
+   "xsweeze": {
+    "club": "Team MCES",
+    "reg": "EU"
+   },
+   "Hen": {
+    "club": "Guild Esports",
+    "reg": "EU"
+   },
+   "JannisZ": {
+    "club": "Guild Esports",
+    "reg": "EU"
+   },
+   "k1nzell": {
+    "club": "Team Heretics",
+    "reg": "EU"
+   },
+   "IDrop": {
+    "club": "Apeks",
+    "reg": "EU"
+   },
+   "Sunddely": {
+    "club": "beGenius ESC",
+    "reg": "EU"
+   },
+   "Jules": {
+    "club": "beGenius ESC",
+    "reg": "EU"
+   },
+   "nebs": {
+    "club": "AceOfSpades Esports",
+    "reg": "EU"
+   },
+   "bubak": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "WaiZ": {
+    "club": "Team Devour",
+    "reg": "EU"
+   },
+   "Floki": {
+    "club": "Solary",
+    "reg": "EU"
+   },
+   "Clement": {
+    "club": "Team Homyno",
+    "reg": "EU"
+   },
+   "Decyptos": {
+    "club": "GamersOrigin",
+    "reg": "EU"
+   },
+   "xsterioz": {
+    "club": "Team Flash7",
+    "reg": "EU"
+   },
+   "Mappi": {
+    "club": "Envice Gaming",
+    "reg": "EU"
+   },
+   "JoeFN": {
+    "club": "Wave Esports",
+    "reg": "EU"
+   },
+   "SHAD0W": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "Safik": {
+    "club": "Cyber Legacy",
+    "reg": "EU"
+   },
+   "iRezUmi": {
+    "club": "Cyber Legacy",
+    "reg": "EU"
+   },
+   "DKS": {
+    "club": "Team MCES",
+    "reg": "EU"
+   },
+   "Grayinjo": {
+    "club": "GamersOrigin",
+    "reg": "EU"
+   },
+   "trippernn": {
+    "club": "Tricked Esport",
+    "reg": "EU"
+   },
+   "Johku": {
+    "club": "Team Onyx",
+    "reg": "EU"
+   },
+   "Anddone": {
+    "club": "Monaco Esports",
+    "reg": "EU"
+   },
+   "FlowiS": {
+    "club": "Copenhagen Flames",
+    "reg": "EU"
+   },
+   "Fastroki": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "Pizza4k": {
+    "club": "Ovation eSports",
+    "reg": "EU"
+   },
+   "ardit": {
+    "club": "Ovation eSports",
+    "reg": "EU"
+   },
+   "TomzyV1": {
+    "club": "Siko Esports",
+    "reg": "EU"
+   },
+   "Lnuef": {
+    "club": "Athletix eSport",
+    "reg": "EU"
+   },
+   "SliX": {
+    "club": "Become Legends",
+    "reg": "EU"
+   },
+   "Merijn": {
+    "club": "Gamma Gaming",
+    "reg": "EU"
+   },
+   "Meta": {
+    "club": "Madness Factory",
+    "reg": "EU"
+   },
+   "skyzouw": {
+    "club": "Noetic",
+    "reg": "EU"
+   },
+   "XpeR": {
+    "club": "LOSC eSports",
+    "reg": "EU"
+   },
+   "Kikoo": {
+    "club": "Wave Esports",
+    "reg": "EU"
+   },
+   "Skram": {
+    "club": "Nordavind",
+    "reg": "EU"
+   },
+   "Putrick": {
+    "club": "Natus Vincere",
+    "reg": "EU"
+   },
+   "Kirzzii": {
+    "club": "Apeks",
+    "reg": "EU"
+   },
+   "Raifla": {
+    "club": "Become Legends",
+    "reg": "EU"
+   },
+   "Saevid": {
+    "club": "Enterprise Gaming",
+    "reg": "EU"
+   },
+   "Nexxs": {
+    "club": "AceOfSpades Esports",
+    "reg": "EU"
+   },
+   "Slender": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "Voidd": {
+    "club": "ALOFT Gaming",
+    "reg": "EU"
+   },
+   "Wolfiez": {
+    "club": "Excel Esports",
+    "reg": "EU"
+   },
+   "Fury Legendary": {
+    "club": "Cyber Legacy",
+    "reg": "EU"
+   },
+   "BlastR": {
+    "club": "Solary",
+    "reg": "EU"
+   },
+   "Nikof": {
+    "club": "Team Vitality",
+    "reg": "EU"
+   },
+   "Alpha": {
+    "club": "TrainHard eSport",
+    "reg": "EU"
+   },
+   "Marvin": {
+    "club": "Failen9",
+    "reg": "EU"
+   },
+   "PodaSai": {
+    "club": "Team MCES",
+    "reg": "EU"
+   },
+   "EMXXRR": {
+    "club": "Solary",
+    "reg": "EU"
+   },
+   "Nightsck": {
+    "club": "Ovation eSports",
+    "reg": "EU"
+   },
+   "Deyy": {
+    "club": "ENDLESS",
+    "reg": "NAC"
+   },
+   "Mero": {
+    "club": "ENDLESS",
+    "reg": "NAC"
+   },
+   "Reverse2k": {
+    "club": "ENDLESS",
+    "reg": "NAC"
+   },
+   "Commandment": {
+    "club": "TSM",
+    "reg": "NAC"
+   },
+   "Cented": {
+    "club": "FaZe Clan",
+    "reg": "NAC"
+   },
+   "Edgey": {
+    "club": "NRG",
+    "reg": "NAC"
+   },
+   "Saf": {
+    "club": "TrainHard eSport",
+    "reg": "NAC"
+   },
+   "Stretch": {
+    "club": "Team Liquid",
+    "reg": "NAC"
+   },
+   "Avery": {
+    "club": "Cloud9",
+    "reg": "NAC"
+   },
+   "Degen": {
+    "club": "FUSION",
+    "reg": "NAC"
+   },
+   "Ajerss": {
+    "club": "FUSION",
+    "reg": "NAC"
+   },
+   "Jamper": {
+    "club": "Luminosity Gaming",
+    "reg": "NAC"
+   },
+   "Megga": {
+    "club": "FaZe Clan",
+    "reg": "NAC"
+   },
+   "Rocaine": {
+    "club": "Optimal Ambition",
+    "reg": "NAC"
+   },
+   "Dubs": {
+    "club": "FaZe Clan",
+    "reg": "NAC"
+   },
+   "Bucke": {
+    "club": "Built By Gamers",
+    "reg": "NAC"
+   },
+   "Khanada": {
+    "club": "Built By Gamers",
+    "reg": "NAC"
+   },
+   "MackWood": {
+    "club": "G2 Esports",
+    "reg": "NAC"
+   },
+   "Aspect": {
+    "club": "Team Monarchy",
+    "reg": "OCE"
+   },
+   "Cazz": {
+    "club": "XPRT Esports",
+    "reg": "NAC"
+   },
+   "Whofishy": {
+    "club": "Optimal Ambition",
+    "reg": "NAC"
+   },
+   "Nosh": {
+    "club": "Cloud9",
+    "reg": "NAC"
+   },
+   "Chukky": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Nittle": {
+    "club": "Ghost Gaming",
+    "reg": "NAC"
+   },
+   "casqer": {
+    "club": "FUSION",
+    "reg": "NAC"
+   },
+   "Smqcked": {
+    "club": "G2 Esports",
+    "reg": "NAC"
+   },
+   "Furious": {
+    "club": "XTRA Gaming",
+    "reg": "NAC"
+   },
+   "blakeps": {
+    "club": "Ghost Gaming",
+    "reg": "NAC"
+   },
+   "Illest": {
+    "club": "XTRA Gaming",
+    "reg": "NAC"
+   },
+   "Slackes": {
+    "club": "Luminosity Gaming",
+    "reg": "NAC"
+   },
+   "Acorn": {
+    "club": "One Percent",
+    "reg": "NAC"
+   },
+   "Jahq": {
+    "club": "G2 Esports",
+    "reg": "NAC"
+   },
+   "Gabe": {
+    "club": "Elite Esports",
+    "reg": "NAC"
+   },
+   "Tahi": {
+    "club": "9LIVES",
+    "reg": "NAC"
+   },
+   "Ceice": {
+    "club": "XSET",
+    "reg": "NAC"
+   },
+   "Scoped": {
+    "club": "Team Liquid",
+    "reg": "NAC"
+   },
+   "Tragix": {
+    "club": "ENDLESS",
+    "reg": "NAC"
+   },
+   "Voil": {
+    "club": "9LIVES",
+    "reg": "NAC"
+   },
+   "Xccept": {
+    "club": "XPRT Esports",
+    "reg": "NAC"
+   },
+   "Dom": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Dusky": {
+    "club": "Insight",
+    "reg": "NAC"
+   },
+   "Spayde": {
+    "club": "Overtime Gaming",
+    "reg": "NAC"
+   },
+   "Goku": {
+    "club": "Team AKA",
+    "reg": "NAC"
+   },
+   "Sticks": {
+    "club": "Optimal Ambition",
+    "reg": "NAC"
+   },
+   "Jays": {
+    "club": "Chronic",
+    "reg": "NAC"
+   },
+   "Narwhal": {
+    "club": "Elite Esports",
+    "reg": "NAC"
+   },
+   "Crunchy": {
+    "club": "Elite Esports",
+    "reg": "NAC"
+   },
+   "Zlem": {
+    "club": "Elite Esports",
+    "reg": "NAC"
+   },
+   "Pozed": {
+    "club": "4LK",
+    "reg": "NAC"
+   },
+   "happed": {
+    "club": "Cosa Nostra Gaming",
+    "reg": "NAC"
+   },
+   "Staqi": {
+    "club": "Team New Age",
+    "reg": "NAC"
+   },
+   "Twix": {
+    "club": "4LK",
+    "reg": "NAC"
+   },
+   "Chubs": {
+    "club": "4LK",
+    "reg": "NAC"
+   },
+   "Atoms": {
+    "club": "XPRT Esports",
+    "reg": "NAC"
+   },
+   "Coop": {
+    "club": "G2 Esports",
+    "reg": "NAC"
+   },
+   "TabzG": {
+    "club": "9LIVES",
+    "reg": "NAC"
+   },
+   "Co1azo": {
+    "club": "TSM",
+    "reg": "NAC"
+   },
+   "Ved": {
+    "club": "Team Pure",
+    "reg": "NAC"
+   },
+   "Scylix": {
+    "club": "TMP Esports",
+    "reg": "NAC"
+   },
+   "Dolzeur": {
+    "club": "Vexo",
+    "reg": "NAC"
+   },
+   "Beef": {
+    "club": "Team Nobu",
+    "reg": "NAC"
+   },
+   "LuPieN": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Nic": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Arkhram": {
+    "club": "100 Thieves",
+    "reg": "NAW"
+   },
+   "Rehx": {
+    "club": "100 Thieves",
+    "reg": "NAW"
+   },
+   "EpikWhale": {
+    "club": "NRG",
+    "reg": "NAW"
+   },
+   "favs": {
+    "club": "Team Sniper Gang",
+    "reg": "NAW"
+   },
+   "Kenshi": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Snacky": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Caleb": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Tautai": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Wheels": {
+    "club": "TRNL Gaming",
+    "reg": "NAW"
+   },
+   "Bluzro": {
+    "club": "Celestial Esports",
+    "reg": "NAW"
+   },
+   "Nani": {
+    "club": "Balanced Esports",
+    "reg": "NAW"
+   },
+   "Cozz": {
+    "club": "Team Chronic",
+    "reg": "NAW"
+   },
+   "Falconer": {
+    "club": "100 Thieves",
+    "reg": "NAW"
+   },
+   "Reet": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Chris": {
+    "club": "Team Pure",
+    "reg": "NAW"
+   },
+   "Mony": {
+    "club": "Lowkey Esports",
+    "reg": "NAW"
+   },
+   "Bacca": {
+    "club": "Echelon Gaming",
+    "reg": "NAW"
+   },
+   "Verny": {
+    "club": "5G Gaming",
+    "reg": "NAW"
+   },
+   "Middi": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Bryan": {
+    "club": "Team Apex",
+    "reg": "NAW"
+   },
+   "Nate": {
+    "club": "5G Gaming",
+    "reg": "NAW"
+   },
+   "eclipseNA": {
+    "club": "Team Pure",
+    "reg": "NAW"
+   },
+   "Criizux": {
+    "club": "TRNL Gaming",
+    "reg": "NAW"
+   },
+   "alithy": {
+    "club": "Team NorCal",
+    "reg": "NAW"
+   },
+   "Frapai": {
+    "club": "Team Pure",
+    "reg": "NAW"
+   },
+   "Trashy": {
+    "club": "TRNL Gaming",
+    "reg": "NAW"
+   },
+   "verT": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Zinqxz": {
+    "club": "NorCal Esports",
+    "reg": "NAW"
+   },
+   "Major": {
+    "club": "5G Gaming",
+    "reg": "NAW"
+   },
+   "Nach": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Unsightly": {
+    "club": "Team Pure",
+    "reg": "NAW"
+   },
+   "Munk": {
+    "club": "Team Pure",
+    "reg": "NAW"
+   },
+   "RichHomieQuinn": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Batman Bugha": {
+    "club": "Team Pure",
+    "reg": "NAW"
+   },
+   "Walay": {
+    "club": "5G Gaming",
+    "reg": "NAW"
+   },
+   "Cesar": {
+    "club": "ZH22",
+    "reg": "NAW"
+   },
+   "Nico": {
+    "club": "Team Pulsar",
+    "reg": "NAW"
+   },
+   "Ggeez": {
+    "club": "Team BH",
+    "reg": "NAW"
+   },
+   "Venor": {
+    "club": "Team BH",
+    "reg": "NAW"
+   },
+   "avail": {
+    "club": "Outcast Region",
+    "reg": "NAW"
+   },
+   "yute": {
+    "club": "Astro E-Sports",
+    "reg": "NAW"
+   },
+   "Hyper": {
+    "club": "Team Pure",
+    "reg": "NAW"
+   },
+   "Pearl": {
+    "club": "Delirium",
+    "reg": "NAW"
+   },
+   "Keto": {
+    "club": "Team Cruelty",
+    "reg": "NAW"
+   },
+   "Skvdoosh": {
+    "club": "Team Assault",
+    "reg": "NAW"
+   },
+   "Aiden": {
+    "club": "ZH22",
+    "reg": "NAW"
+   },
+   "Cadu": {
+    "club": "eRa Eternity",
+    "reg": "BR"
+   },
+   "Seeyun": {
+    "club": "Team Vikings",
+    "reg": "BR"
+   },
+   "K1nG": {
+    "club": "FaZe Clan",
+    "reg": "BR"
+   },
+   "Frans": {
+    "club": "Team Singularity",
+    "reg": "BR"
+   },
+   "Kitoz": {
+    "club": "Team Singularity",
+    "reg": "BR"
+   },
+   "Felipersa": {
+    "club": "Abstract Team",
+    "reg": "BR"
+   },
+   "EdRoadToGlory": {
+    "club": "TRNL Gaming",
+    "reg": "BR"
+   },
+   "Nicks": {
+    "club": "Hero Base",
+    "reg": "BR"
+   },
+   "RustyK": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "Fazer": {
+    "club": "Aerial Unit",
+    "reg": "BR"
+   },
+   "Dott1": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Xeat": {
+    "club": "Team Leiser",
+    "reg": "BR"
+   },
+   "Scarpa": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Sheco": {
+    "club": "FURY",
+    "reg": "BR"
+   },
+   "Histtory": {
+    "club": "FURY",
+    "reg": "BR"
+   },
+   "Bagu": {
+    "club": "ABSTRACT",
+    "reg": "BR"
+   },
+   "OPai": {
+    "club": "Team TRIBE",
+    "reg": "BR"
+   },
+   "Phzin": {
+    "club": "Team Serenity",
+    "reg": "BR"
+   },
+   "Pulga": {
+    "club": "Team Liquid",
+    "reg": "BR"
+   },
+   "Diguera": {
+    "club": "Team Singularity",
+    "reg": "BR"
+   },
+   "KaykyGames": {
+    "club": "DETONA",
+    "reg": "BR"
+   },
+   "Collet": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "WeY": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Guneves": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "retake": {
+    "club": "ABSTRACT",
+    "reg": "BR"
+   },
+   "BlackoutZ": {
+    "club": "Cloud9",
+    "reg": "BR"
+   },
+   "Pattaty": {
+    "club": "ABSTRACT",
+    "reg": "BR"
+   },
+   "H4wwk": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "Diamond": {
+    "club": "Singularity Esports",
+    "reg": "BR"
+   },
+   "Spitflow": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Clipnode": {
+    "club": "eRa Eternity",
+    "reg": "BR"
+   },
+   "Robot": {
+    "club": "ABSTRACT",
+    "reg": "BR"
+   },
+   "Ninja": {
+    "club": "Handler Esports",
+    "reg": "BR"
+   },
+   "Thzin": {
+    "club": "Team TRIBE",
+    "reg": "BR"
+   },
+   "Randu": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "Liimaa": {
+    "club": "Team Leiser",
+    "reg": "BR"
+   },
+   "Redlee": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "KING": {
+    "club": "Singularity Esports",
+    "reg": "BR"
+   },
+   "BrYANN": {
+    "club": "Atlas Lions",
+    "reg": "BR"
+   },
+   "Soares": {
+    "club": "Team TRIBE",
+    "reg": "BR"
+   },
+   "Texz": {
+    "club": "F4TALITY",
+    "reg": "BR"
+   },
+   "2SNgNl": {
+    "club": "Champion Esports",
+    "reg": "ASIA"
+   },
+   "Ragis": {
+    "club": "Nester",
+    "reg": "ASIA"
+   },
+   "Maufin": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "Qjac": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Naetor": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Alice": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Ess": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Ruri": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "RizArt": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "WildHawk": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "Walver": {
+    "club": "Mirage Esports",
+    "reg": "ASIA"
+   },
+   "XMipoli": {
+    "club": "OWM",
+    "reg": "ASIA"
+   },
+   "Pote": {
+    "club": "OWM",
+    "reg": "ASIA"
+   },
+   "stork": {
+    "club": "OWM",
+    "reg": "ASIA"
+   },
+   "Raifer": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Rainy": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "miya": {
+    "club": "Nester",
+    "reg": "ASIA"
+   },
+   "Yusea": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Shunsyan": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "Riru": {
+    "club": "LCF",
+    "reg": "ASIA"
+   },
+   "HIRO": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Rui": {
+    "club": "Delta Esports",
+    "reg": "ASIA"
+   },
+   "Shuto": {
+    "club": "A2",
+    "reg": "ASIA"
+   },
+   "Koyota": {
+    "club": "A2",
+    "reg": "ASIA"
+   },
+   "Lettuce": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Hamuppi": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Dokn": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Rocca": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "raru": {
+    "club": "WIZARD ESPORTS",
+    "reg": "ASIA"
+   },
+   "Albedo": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Buyuriru": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "L4ex": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Kurara": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Melon": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Swillium": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Clemens": {
+    "club": "Nester",
+    "reg": "ASIA"
+   },
+   "Tzuyu": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "Ryle": {
+    "club": "FUSION",
+    "reg": "ASIA"
+   },
+   "Merem": {
+    "club": "OWM",
+    "reg": "ASIA"
+   },
+   "Kagetora": {
+    "club": "KAWAZ",
+    "reg": "ASIA"
+   },
+   "Zuko": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "KiLuA": {
+    "club": "OWM",
+    "reg": "ASIA"
+   },
+   "Fram": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "pacoteen": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "I4xPRO": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Dexefite": {
+    "club": "The Ultimates",
+    "reg": "ME"
+   },
+   "Snowvaks": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Nm7": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Rv": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Modisk": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Kai": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "AbuFal7": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Spy": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "FHD": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Yonx": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Speedy": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "HeiF": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "7man": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "KuKi": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "Phantom": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Nyle": {
+    "club": "Galaxy Racer",
+    "reg": "ME"
+   },
+   "Demon": {
+    "club": "Team Sonic",
+    "reg": "ME"
+   },
+   "Hero": {
+    "club": "Osh-Tekk Warriors",
+    "reg": "ME"
+   },
+   "Hellonsteam": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "Krool": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Njby": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "Msg": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "LoFi": {
+    "club": "Prodigy Esports",
+    "reg": "ME"
+   },
+   "SFA7": {
+    "club": "Team Arrow",
+    "reg": "ME"
+   },
+   "Khalood": {
+    "club": "Team Aquiver",
+    "reg": "ME"
+   },
+   "Ski": {
+    "club": "Legends Esports",
+    "reg": "ME"
+   },
+   "AX3": {
+    "club": "Legends Esports",
+    "reg": "ME"
+   },
+   "KaKaRoT": {
+    "club": "01 Esports",
+    "reg": "ME"
+   },
+   "QwAy": {
+    "club": "YaLLa Esports",
+    "reg": "ME"
+   },
+   "QnDx": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "Rapit": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "iiUniit": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "FKS": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Metab": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Az2m": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "hulks": {
+    "club": "Hawk Esports",
+    "reg": "ME"
+   },
+   "Minas": {
+    "club": "Astra Gaming",
+    "reg": "ME"
+   },
+   "Smsom": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "Tooke": {
+    "club": "NMR Esports",
+    "reg": "ME"
+   },
+   "Naif": {
+    "club": "Team Sonic",
+    "reg": "ME"
+   },
+   "Souriano": {
+    "club": "Team SAQR",
+    "reg": "ME"
+   },
+   "KiritoKun": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Balor": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "LeziX": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "FT": {
+    "club": "500 Esports",
+    "reg": "ME"
+   },
+   "Kinqver": {
+    "club": "NMR Esports",
+    "reg": "ME"
+   },
+   "3BoooD": {
+    "club": "NMR Esports",
+    "reg": "ME"
+   },
+   "Opezor": {
+    "club": "YaLLa Esports",
+    "reg": "ME"
+   },
+   "Rico": {
+    "club": "Team Arrow",
+    "reg": "ME"
+   },
+   "Lord": {
+    "club": "Team Arrow",
+    "reg": "ME"
+   },
+   "GntL": {
+    "club": "POWER eSports",
+    "reg": "ME"
+   },
+   "LIQUID": {
+    "club": "POWER eSports",
+    "reg": "ME"
+   },
+   "A7med27": {
+    "club": "Team Sonic",
+    "reg": "ME"
+   },
+   "Jounior": {
+    "club": "Team Arrow",
+    "reg": "ME"
+   },
+   "Stilson": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "Adapter": {
+    "club": "The Ultimates",
+    "reg": "ME"
+   },
+   "Raed": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "Rakan": {
+    "club": "Team Arrow",
+    "reg": "ME"
+   },
+   "Epik3z": {
+    "club": "20 E-Sports",
+    "reg": "ME"
+   },
+   "Flamors": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "MrDom": {
+    "club": "Team Exploit",
+    "reg": "ME"
+   },
+   "Br1ckzl": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "Nachiiri": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "Tax": {
+    "club": "Astra Gaming",
+    "reg": "ME"
+   },
+   "Mansour": {
+    "club": "Hawk Esports",
+    "reg": "ME"
+   },
+   "SKULLY": {
+    "club": "Team Sonic",
+    "reg": "ME"
+   },
+   "Linjy": {
+    "club": "Astra Gaming",
+    "reg": "ME"
+   },
+   "zxmbie": {
+    "club": "Medal Esports",
+    "reg": "ME"
+   },
+   "Star": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Murloc": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "Toggle": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "NetloV": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "Stayls": {
+    "club": "Team Clarity",
+    "reg": "ME"
+   },
+   "Rivo": {
+    "club": "Osh-Tekk Warriors",
+    "reg": "ME"
+   },
+   "unr": {
+    "club": "Team Aquiver",
+    "reg": "ME"
+   },
+   "Ruffixn": {
+    "club": "NMR Esports",
+    "reg": "ME"
+   },
+   "Muzz": {
+    "club": "cLaw Gaming",
+    "reg": "ME"
+   },
+   "Muz": {
+    "club": "Team New Age",
+    "reg": "OCE"
+   },
+   "looter": {
+    "club": "Team New Age",
+    "reg": "OCE"
+   },
+   "SpeedyND": {
+    "club": "Team New Age",
+    "reg": "OCE"
+   },
+   "Bathan": {
+    "club": "Overt",
+    "reg": "OCE"
+   },
+   "Zedox": {
+    "club": "Clarity",
+    "reg": "OCE"
+   },
+   "Sio": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Raptah": {
+    "club": "Agent Gaming",
+    "reg": "OCE"
+   },
+   "Pumpkin": {
+    "club": "Solace",
+    "reg": "OCE"
+   },
+   "Prhzy": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "sunz": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "oreo": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Chainz": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Price": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "Eshz": {
+    "club": "High Value Target Esports",
+    "reg": "OCE"
+   },
+   "Raiku": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "Jynx": {
+    "club": "TeamPWR",
+    "reg": "OCE"
+   },
+   "alecc": {
+    "club": "TeamPWR",
+    "reg": "OCE"
+   },
+   "worthy": {
+    "club": "TeamPWR",
+    "reg": "OCE"
+   },
+   "Basil": {
+    "club": "Team Monarchy",
+    "reg": "OCE"
+   },
+   "Forbes": {
+    "club": "High Value Target Esports",
+    "reg": "OCE"
+   },
+   "Oatley": {
+    "club": "Paradox Gaming",
+    "reg": "OCE"
+   },
+   "mrfreshasian": {
+    "club": "Luminosity Gaming",
+    "reg": "OCE"
+   },
+   "Rel": {
+    "club": "Agent Gaming",
+    "reg": "OCE"
+   },
+   "Bluezie": {
+    "club": "Team Monarchy",
+    "reg": "OCE"
+   },
+   "Rip": {
+    "club": "Mako ESC",
+    "reg": "OCE"
+   },
+   "Rahcks": {
+    "club": "Menage",
+    "reg": "OCE"
+   },
+   "Jake": {
+    "club": "Agent Gaming",
+    "reg": "OCE"
+   },
+   "Thrusty": {
+    "club": "Agent Gaming",
+    "reg": "OCE"
+   },
+   "Jvano": {
+    "club": "Team Monarchy",
+    "reg": "OCE"
+   },
+   "MrTassie": {
+    "club": "Team Monarchy",
+    "reg": "OCE"
+   },
+   "Gek": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Crypton": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Six": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Goeg": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "Scammed": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "Xalkerr": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "suns": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Tuii": {
+    "club": "Warriors Esports",
+    "reg": "OCE"
+   },
+   "Korq": {
+    "club": "Paradox Gaming",
+    "reg": "OCE"
+   },
+   "Rocheh": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Cryz": {
+    "club": "Menage",
+    "reg": "OCE"
+   },
+   "Marz": {
+    "club": "Outcast Region",
+    "reg": "OCE"
+   },
+   "Danath": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Osiris": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Skits": {
+    "club": "FURY",
+    "reg": "OCE"
+   },
+   "Spiker": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Slixnz": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Baily": {
+    "club": "Mako ESC",
+    "reg": "OCE"
+   },
+   "M1": {
+    "club": "Menage",
+    "reg": "OCE"
+   },
+   "Saqo": {
+    "club": "High Value Target Esports",
+    "reg": "OCE"
+   },
+   "Flews": {
+    "club": "Heaven Esports",
+    "reg": "OCE"
+   },
+   "SADLA": {
+    "club": "Heaven Esports",
+    "reg": "OCE"
+   },
+   "Tekmarr": {
+    "club": "VERTEX ESC",
+    "reg": "OCE"
+   },
+   "Baffle": {
+    "club": "Clarity",
+    "reg": "OCE"
+   },
+   "Qeaxzy": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Gazer": {
+    "club": "Violet Esports",
+    "reg": "OCE"
+   },
+   "Wreckless": {
+    "club": "Clarity ESC",
+    "reg": "OCE"
+   },
+   "Kyro": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Elusive": {
+    "club": "Twenty Four 7",
+    "reg": "OCE"
+   },
+   "Fhaqs": {
+    "club": "Twenty Four 7",
+    "reg": "OCE"
+   },
+   "Crippa": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Soaked": {
+    "club": "Violet Esports",
+    "reg": "OCE"
+   },
+   "Midnite": {
+    "club": "Paradox Gaming",
+    "reg": "OCE"
+   },
+   "Vujcich": {
+    "club": "Mako ESC",
+    "reg": "OCE"
+   },
+   "Celdom": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "Results": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Snow": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Precks": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   }
+  },
+  "major3": {
+   "stormyrite": {
+    "club": "EvozA eSport",
+    "reg": "EU"
+   },
+   "Toose": {
+    "club": "Gambit Esports",
+    "reg": "EU"
+   },
+   "Hottie": {
+    "club": "Centric Gaming",
+    "reg": "EU"
+   },
+   "stompy": {
+    "club": "mousesports",
+    "reg": "EU"
+   },
+   "Setty": {
+    "club": "Become Legends",
+    "reg": "EU"
+   },
+   "teeq": {
+    "club": "Galaxy Racer",
+    "reg": "EU"
+   },
+   "veno": {
+    "club": "Falcons Esports",
+    "reg": "EU"
+   },
+   "TaySon": {
+    "club": "Falcons Esports",
+    "reg": "EU"
+   },
+   "Floki": {
+    "club": "Solary",
+    "reg": "EU"
+   },
+   "Clement": {
+    "club": "Solary",
+    "reg": "EU"
+   },
+   "Decyptos": {
+    "club": "GamersOrigin",
+    "reg": "EU"
+   },
+   "Hen": {
+    "club": "Guild Esports",
+    "reg": "EU"
+   },
+   "JannisZ": {
+    "club": "Guild Esports",
+    "reg": "EU"
+   },
+   "Chapix": {
+    "club": "Falcons Esports",
+    "reg": "EU"
+   },
+   "Vadeal": {
+    "club": "Wave Esports",
+    "reg": "EU"
+   },
+   "Noahreyli": {
+    "club": "Become Legends",
+    "reg": "EU"
+   },
+   "Andilex": {
+    "club": "Falcons Esports",
+    "reg": "EU"
+   },
+   "4zr": {
+    "club": "Grizi Esport",
+    "reg": "EU"
+   },
+   "xsweeze": {
+    "club": "Team MCES",
+    "reg": "EU"
+   },
+   "Safik": {
+    "club": "Cyber Legacy",
+    "reg": "EU"
+   },
+   "97default": {
+    "club": "Centric Gaming",
+    "reg": "EU"
+   },
+   "Putrick": {
+    "club": "Cyber Legacy",
+    "reg": "EU"
+   },
+   "Refsgaard": {
+    "club": "Falcons Esports",
+    "reg": "EU"
+   },
+   "Endretta": {
+    "club": "Nordavind",
+    "reg": "EU"
+   },
+   "MrSavage": {
+    "club": "100 Thieves",
+    "reg": "EU"
+   },
+   "Kylie": {
+    "club": "TT9 Esports",
+    "reg": "EU"
+   },
+   "Awaer": {
+    "club": "Ovation eSports",
+    "reg": "EU"
+   },
+   "Dokko": {
+    "club": "Playwell Esports",
+    "reg": "EU"
+   },
+   "Flecken": {
+    "club": "Wave Esports",
+    "reg": "EU"
+   },
+   "xKumu": {
+    "club": "Bifrost",
+    "reg": "EU"
+   },
+   "7tor": {
+    "club": "Luminox Planet",
+    "reg": "EU"
+   },
+   "TruleX": {
+    "club": "Glorious Esport",
+    "reg": "EU"
+   },
+   "Umplify": {
+    "club": "FUSION",
+    "reg": "EU"
+   },
+   "korol1k": {
+    "club": "Sissi State Punks",
+    "reg": "EU"
+   },
+   "Sp1aash": {
+    "club": "Luminox Planet",
+    "reg": "EU"
+   },
+   "Mawakha": {
+    "club": "EvozA eSport",
+    "reg": "EU"
+   },
+   "RedRush": {
+    "club": "TheCartel Esports",
+    "reg": "EU"
+   },
+   "Xsterioz": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "Mappi": {
+    "club": "Glorious Esport",
+    "reg": "EU"
+   },
+   "Seanvp": {
+    "club": "Luminox Planet",
+    "reg": "EU"
+   },
+   "Chashy": {
+    "club": "AceOfSpades Esports",
+    "reg": "EU"
+   },
+   "jaggy": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "Trixi": {
+    "club": "Luminox Planet",
+    "reg": "EU"
+   },
+   "Raifla": {
+    "club": "Become Legends",
+    "reg": "EU"
+   },
+   "AstroSMZ": {
+    "club": "Playwell Esports",
+    "reg": "EU"
+   },
+   "egrm": {
+    "club": "Lavy Esports",
+    "reg": "EU"
+   },
+   "voxe": {
+    "club": "Team Homyno",
+    "reg": "EU"
+   },
+   "Ghosty4k": {
+    "club": "TopLevel",
+    "reg": "EU"
+   },
+   "Diablo": {
+    "club": "ALOFT Gaming",
+    "reg": "EU"
+   },
+   "Folnet": {
+    "club": "Madness Factory",
+    "reg": "EU"
+   },
+   "WingS": {
+    "club": "Team Evenezy",
+    "reg": "EU"
+   },
+   "Karmy": {
+    "club": "Sissi State Punks",
+    "reg": "EU"
+   },
+   "JoeFN": {
+    "club": "Wave Esports",
+    "reg": "EU"
+   },
+   "benjyfishy": {
+    "club": "NRG",
+    "reg": "EU"
+   },
+   "Rotory": {
+    "club": "Cyber Legacy",
+    "reg": "EU"
+   },
+   "tosialpha": {
+    "club": "VISU Gaming",
+    "reg": "EU"
+   },
+   "TChypSs": {
+    "club": "Wavy Esport",
+    "reg": "EU"
+   },
+   "Artskill": {
+    "club": "Team FNX",
+    "reg": "EU"
+   },
+   "XpeR": {
+    "club": "Team Homyno",
+    "reg": "EU"
+   },
+   "Malibuca": {
+    "club": "TT9 Esports",
+    "reg": "EU"
+   },
+   "Shizogod": {
+    "club": "Team Onyx",
+    "reg": "EU"
+   },
+   "Fastroki": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "Voidd": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "bagfiz": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "Zeston": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "Hijoe": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "Psy3e8": {
+    "club": "Claim Esports",
+    "reg": "EU"
+   },
+   "miknup": {
+    "club": "Claim Esports",
+    "reg": "EU"
+   },
+   "Zebre": {
+    "club": "NoRules Gaming",
+    "reg": "EU"
+   },
+   "Commandment": {
+    "club": "TSM",
+    "reg": "NAC"
+   },
+   "Cented": {
+    "club": "FaZe Clan",
+    "reg": "NAC"
+   },
+   "Edgey": {
+    "club": "NRG",
+    "reg": "NAC"
+   },
+   "Plege": {
+    "club": "Elite Esports",
+    "reg": "NAC"
+   },
+   "Khanada": {
+    "club": "Built By Gamers",
+    "reg": "NAC"
+   },
+   "Stretch": {
+    "club": "Team Liquid",
+    "reg": "NAC"
+   },
+   "Slackes": {
+    "club": "Luminosity Gaming",
+    "reg": "NAC"
+   },
+   "Acorn": {
+    "club": "One Percent",
+    "reg": "NAC"
+   },
+   "Jahq": {
+    "club": "G2 Esports",
+    "reg": "NAC"
+   },
+   "Aspect": {
+    "club": "Sentinels",
+    "reg": "NAC"
+   },
+   "Cazz": {
+    "club": "Moon Unit Gaming",
+    "reg": "NAC"
+   },
+   "Whofishy": {
+    "club": "Optimal Ambition",
+    "reg": "NAC"
+   },
+   "Degen": {
+    "club": "FUSION",
+    "reg": "NAC"
+   },
+   "Ajerss": {
+    "club": "FUSION",
+    "reg": "NAC"
+   },
+   "nosh": {
+    "club": "Cloud9",
+    "reg": "NAC"
+   },
+   "Bugha": {
+    "club": "Sentinels",
+    "reg": "NAC"
+   },
+   "Avery": {
+    "club": "Cloud9",
+    "reg": "NAC"
+   },
+   "Megga": {
+    "club": "FaZe Clan",
+    "reg": "NAC"
+   },
+   "Rocaine": {
+    "club": "K2G Esports",
+    "reg": "NAC"
+   },
+   "Dubs": {
+    "club": "FaZe Clan",
+    "reg": "NAC"
+   },
+   "Joji": {
+    "club": "Luminosity Gaming",
+    "reg": "NAC"
+   },
+   "Fryst": {
+    "club": "Cloud9",
+    "reg": "NAC"
+   },
+   "pgod": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "PeterBot": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Tkay": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Co1azo": {
+    "club": "TSM",
+    "reg": "NAC"
+   },
+   "Knight": {
+    "club": "XSET",
+    "reg": "NAC"
+   },
+   "RogueShark": {
+    "club": "XSET",
+    "reg": "NAC"
+   },
+   "PaMstou": {
+    "club": "Team 33",
+    "reg": "NAC"
+   },
+   "wCarey": {
+    "club": "Athletix eSport",
+    "reg": "NAC"
+   },
+   "Deyy": {
+    "club": "XTRA Gaming",
+    "reg": "NAC"
+   },
+   "gabe": {
+    "club": "Elite Esports",
+    "reg": "NAC"
+   },
+   "Okis": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Blake": {
+    "club": "Ghost Gaming",
+    "reg": "NAC"
+   },
+   "Scoped": {
+    "club": "Team Liquid",
+    "reg": "NAC"
+   },
+   "Kn1pher": {
+    "club": "K2G Esports",
+    "reg": "NAC"
+   },
+   "Bizzle": {
+    "club": "FaZe Clan",
+    "reg": "NAC"
+   },
+   "Eclipsae": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Speguu": {
+    "club": "K2G Esports",
+    "reg": "NAC"
+   },
+   "Charlie": {
+    "club": "K2G Esports",
+    "reg": "NAC"
+   },
+   "narwhal": {
+    "club": "Elite Esports",
+    "reg": "NAC"
+   },
+   "Zlem": {
+    "club": "Elite Esports",
+    "reg": "NAC"
+   },
+   "Durant": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Squish": {
+    "club": "K2G Esports",
+    "reg": "NAC"
+   },
+   "Bully": {
+    "club": "FUSION",
+    "reg": "NAC"
+   },
+   "Criizux": {
+    "club": "FUSION",
+    "reg": "NAC"
+   },
+   "BankTeller": {
+    "club": "Team Vanish",
+    "reg": "NAC"
+   },
+   "Kwah": {
+    "club": "Team Vanish",
+    "reg": "NAC"
+   },
+   "Neeqo": {
+    "club": "Elite Esports",
+    "reg": "NAC"
+   },
+   "illest": {
+    "club": "XTRA Gaming",
+    "reg": "NAC"
+   },
+   "MackWood": {
+    "club": "G2 Esports",
+    "reg": "NAC"
+   },
+   "Tragix": {
+    "club": "ENDLESS",
+    "reg": "NAC"
+   },
+   "nut": {
+    "club": "Team 33",
+    "reg": "NAC"
+   },
+   "Eomzo": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Chukky": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Glepo": {
+    "club": "Balanced Esports",
+    "reg": "NAC"
+   },
+   "Nexy": {
+    "club": "Kungarna",
+    "reg": "NAC"
+   },
+   "Larson": {
+    "club": "K2G Esports",
+    "reg": "NAC"
+   },
+   "Kburbs": {
+    "club": "FLu Esports",
+    "reg": "NAC"
+   },
+   "Dictating": {
+    "club": "eRa Eternity",
+    "reg": "NAC"
+   },
+   "Snake": {
+    "club": "K2G Esports",
+    "reg": "NAC"
+   },
+   "Slick": {
+    "club": "Team New Age",
+    "reg": "NAC"
+   },
+   "Sharkman": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Goku": {
+    "club": "TMP Esports",
+    "reg": "NAC"
+   },
+   "Moo": {
+    "club": "Above Gaming",
+    "reg": "NAC"
+   },
+   "Kwanti": {
+    "club": "FLu Esports",
+    "reg": "NAC"
+   },
+   "Bucke": {
+    "club": "NRG",
+    "reg": "NAC"
+   },
+   "Clix": {
+    "club": "NRG",
+    "reg": "NAC"
+   },
+   "Arkhram": {
+    "club": "100 Thieves",
+    "reg": "NAW"
+   },
+   "rehx": {
+    "club": "100 Thieves",
+    "reg": "NAW"
+   },
+   "EpikWhale": {
+    "club": "NRG",
+    "reg": "NAW"
+   },
+   "Falconer": {
+    "club": "100 Thieves",
+    "reg": "NAW"
+   },
+   "Reet": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Chris": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Kenshi": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Snacky": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Middi": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Kaboo": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Nico": {
+    "club": "Team Pulsar",
+    "reg": "NAW"
+   },
+   "ChickenItza": {
+    "club": "Timber",
+    "reg": "NAW"
+   },
+   "andyvencha": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Jelty": {
+    "club": "G2 Esports",
+    "reg": "NAW"
+   },
+   "RichHomieQuinn": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "WAVE": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Kewl": {
+    "club": "Team Honor",
+    "reg": "NAW"
+   },
+   "defiable": {
+    "club": "Team Honor",
+    "reg": "NAW"
+   },
+   "Mojo": {
+    "club": "7Wonders",
+    "reg": "NAW"
+   },
+   "Squishy": {
+    "club": "Team Pulsar",
+    "reg": "NAW"
+   },
+   "Fletch": {
+    "club": "Team Vanish",
+    "reg": "NAW"
+   },
+   "Symetrical": {
+    "club": "Counter Logic Gaming",
+    "reg": "NAW"
+   },
+   "Alithy": {
+    "club": "eRa Eternity",
+    "reg": "NAW"
+   },
+   "Frapai": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Jarritos": {
+    "club": "Team Zaida",
+    "reg": "NAW"
+   },
+   "Aiden": {
+    "club": "Reven Esports",
+    "reg": "NAW"
+   },
+   "Mony": {
+    "club": "Lowkey Esports",
+    "reg": "NAW"
+   },
+   "Chicken": {
+    "club": "7Wonders Esports",
+    "reg": "NAW"
+   },
+   "mechton": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Caleb": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Tautai": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Hurtyn": {
+    "club": "Balanced Esports",
+    "reg": "NAW"
+   },
+   "Parz": {
+    "club": "Team Pulsar",
+    "reg": "NAW"
+   },
+   "Beast": {
+    "club": "TRNL Gaming",
+    "reg": "NAW"
+   },
+   "mitoo": {
+    "club": "Team Assault",
+    "reg": "NAW"
+   },
+   "kadenOX": {
+    "club": "Viable",
+    "reg": "NAW"
+   },
+   "4DRStorm": {
+    "club": "Fear Nova",
+    "reg": "NAW"
+   },
+   "Izo": {
+    "club": "Xen",
+    "reg": "NAW"
+   },
+   "Reguletor": {
+    "club": "Team Pulsar",
+    "reg": "NAW"
+   },
+   "wavyjacob": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Bdawg": {
+    "club": "Team Pulsar",
+    "reg": "NAW"
+   },
+   "Trashy": {
+    "club": "Xen",
+    "reg": "NAW"
+   },
+   "Nach": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Lush": {
+    "club": "Xen",
+    "reg": "NAW"
+   },
+   "Toukii": {
+    "club": "Team Pulsar",
+    "reg": "NAW"
+   },
+   "avail": {
+    "club": "Reven Esports",
+    "reg": "NAW"
+   },
+   "Juice": {
+    "club": "Team Vanish",
+    "reg": "NAW"
+   },
+   "yute": {
+    "club": "Astro E-Sports",
+    "reg": "NAW"
+   },
+   "Tocata": {
+    "club": "Counter Logic Gaming",
+    "reg": "NAW"
+   },
+   "exe": {
+    "club": "TRNL Gaming",
+    "reg": "NAW"
+   },
+   "Opai": {
+    "club": "Team TRIBE",
+    "reg": "BR"
+   },
+   "Frosty": {
+    "club": "LOUD",
+    "reg": "BR"
+   },
+   "Redlee": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Cadu": {
+    "club": "eRa Eternity",
+    "reg": "BR"
+   },
+   "Nicks": {
+    "club": "Hero Base",
+    "reg": "BR"
+   },
+   "Seeyun": {
+    "club": "Team Vikings",
+    "reg": "BR"
+   },
+   "Ed": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "Diguera": {
+    "club": "Team Singularity",
+    "reg": "BR"
+   },
+   "Spitflow": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "KaykyGames": {
+    "club": "New Age eSports",
+    "reg": "BR"
+   },
+   "K1nG": {
+    "club": "FaZe Clan",
+    "reg": "BR"
+   },
+   "Pulga": {
+    "club": "Team Liquid",
+    "reg": "BR"
+   },
+   "Texz": {
+    "club": "F4TALITY",
+    "reg": "BR"
+   },
+   "Frans": {
+    "club": "Singularity Esports",
+    "reg": "BR"
+   },
+   "Kitoz": {
+    "club": "Singularity Esports",
+    "reg": "BR"
+   },
+   "Jpsk1ng": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "RustyK": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "Collet": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Guneves": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Dott1": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Scarpa": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Bagu": {
+    "club": "New Age eSports",
+    "reg": "BR"
+   },
+   "KING": {
+    "club": "Singularity Esports",
+    "reg": "BR"
+   },
+   "Caduzin": {
+    "club": "Team TRIBE",
+    "reg": "BR"
+   },
+   "Snohxx": {
+    "club": "FOGO",
+    "reg": "BR"
+   },
+   "BlackoutZ": {
+    "club": "Cloud9",
+    "reg": "BR"
+   },
+   "Strendd": {
+    "club": "ABSTRACT",
+    "reg": "BR"
+   },
+   "pacoteen": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "clxxer": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "takachan": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Lettuce": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Dokn": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Buyuriru": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Qjac": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Naetor": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Alice": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Jozya": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "Ruri": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Raru": {
+    "club": "WIZARD ESPORTS",
+    "reg": "ASIA"
+   },
+   "Bob": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "Ragis": {
+    "club": "Nester",
+    "reg": "ASIA"
+   },
+   "ROCCA": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Harukiyo": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "wickesy": {
+    "club": "WIZARD ESPORTS",
+    "reg": "ASIA"
+   },
+   "Seak": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "Quala": {
+    "club": "Hypro Gaming",
+    "reg": "ASIA"
+   },
+   "Fram": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "Fleder": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Raifer": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Shunsyan": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "Runa": {
+    "club": "Liberta Building",
+    "reg": "ASIA"
+   },
+   "Jaemon": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "WildHawk": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "Maufin": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "Rimr": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "overStun": {
+    "club": "Mirage Esports",
+    "reg": "ASIA"
+   },
+   "SwizzY": {
+    "club": "Mirage Esports",
+    "reg": "ASIA"
+   },
+   "Zotax": {
+    "club": "Mirage Esports",
+    "reg": "ASIA"
+   },
+   "Maesar": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Ess": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Kurara": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Albedo": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "stork": {
+    "club": "OWM",
+    "reg": "ASIA"
+   },
+   "Tzuyu": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "LODSTK": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "XMipoli": {
+    "club": "OWM",
+    "reg": "ASIA"
+   },
+   "Pote": {
+    "club": "OWM",
+    "reg": "ASIA"
+   },
+   "Merem": {
+    "club": "OWM",
+    "reg": "ASIA"
+   },
+   "Koa": {
+    "club": "A2",
+    "reg": "ASIA"
+   },
+   "Shuto": {
+    "club": "A2",
+    "reg": "ASIA"
+   },
+   "Koyota": {
+    "club": "A2",
+    "reg": "ASIA"
+   },
+   "RizArt": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Rui": {
+    "club": "Delta Esports",
+    "reg": "ASIA"
+   },
+   "Kagetora": {
+    "club": "KAWAZ",
+    "reg": "ASIA"
+   },
+   "Rainy": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "miya": {
+    "club": "Nester",
+    "reg": "ASIA"
+   },
+   "Yusea": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Quickss": {
+    "club": "T1",
+    "reg": "ASIA"
+   },
+   "Walver": {
+    "club": "Crow Esports",
+    "reg": "ASIA"
+   },
+   "FHD": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Yonx": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "NM7": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Adapter": {
+    "club": "The Ultimates",
+    "reg": "ME"
+   },
+   "Raed": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "Snowyka": {
+    "club": "Team Sonic",
+    "reg": "ME"
+   },
+   "Balor": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "Krool": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Metab": {
+    "club": "Team Sonic",
+    "reg": "ME"
+   },
+   "Snowvaks": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "AbuFal7": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "xJam": {
+    "club": "Medal Esports",
+    "reg": "ME"
+   },
+   "Murloc": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "Xx731": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "KiritoKun": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "KuKi": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "Phantom": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Nyle": {
+    "club": "Galaxy Racer",
+    "reg": "ME"
+   },
+   "Spy": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "VagnaR": {
+    "club": "ASMR eSports",
+    "reg": "ME"
+   },
+   "I4xPRO": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Dexefite": {
+    "club": "The Ultimates",
+    "reg": "ME"
+   },
+   "Speedy": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "HeiF": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "7man": {
+    "club": "Medal Esports",
+    "reg": "ME"
+   },
+   "FKS": {
+    "club": "Medal Esports",
+    "reg": "ME"
+   },
+   "3BoooD": {
+    "club": "Diggers Esports",
+    "reg": "ME"
+   },
+   "Suly": {
+    "club": "LND Esports",
+    "reg": "ME"
+   },
+   "FT": {
+    "club": "ASMR eSports",
+    "reg": "ME"
+   },
+   "NetloV": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "Tax": {
+    "club": "Astra Gaming",
+    "reg": "ME"
+   },
+   "Mansour": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "LIQUID": {
+    "club": "POWER eSports",
+    "reg": "ME"
+   },
+   "Opezor": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Rico": {
+    "club": "LND Esports",
+    "reg": "ME"
+   },
+   "Naifma7": {
+    "club": "Hawk Esports",
+    "reg": "ME"
+   },
+   "Azzx": {
+    "club": "ASMR eSports",
+    "reg": "ME"
+   },
+   "Fares": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "Originz": {
+    "club": "Vital Impact",
+    "reg": "ME"
+   },
+   "Kovolski": {
+    "club": "Team Arrow",
+    "reg": "ME"
+   },
+   "Malkawi": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "KaKaRoT": {
+    "club": "01 Esports",
+    "reg": "ME"
+   },
+   "Demon": {
+    "club": "Team Sonic",
+    "reg": "ME"
+   },
+   "Rv": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Rivo": {
+    "club": "Osh-Tekk Warriors",
+    "reg": "ME"
+   },
+   "LeziX": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "Hulks": {
+    "club": "Venomy Esports",
+    "reg": "ME"
+   },
+   "Minas": {
+    "club": "Astra Gaming",
+    "reg": "ME"
+   },
+   "Smsom": {
+    "club": "Diggers Esports",
+    "reg": "ME"
+   },
+   "DRaFTell": {
+    "club": "Medal Esports",
+    "reg": "ME"
+   },
+   "Naif": {
+    "club": "Team Sonic",
+    "reg": "ME"
+   },
+   "DNA": {
+    "club": "Spaz Esports",
+    "reg": "ME"
+   },
+   "Ski": {
+    "club": "LND Esports",
+    "reg": "ME"
+   },
+   "Star": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "FAISAL": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Wqzzi": {
+    "club": "TheSpark Esports",
+    "reg": "ME"
+   },
+   "Jynx": {
+    "club": "PWR",
+    "reg": "OCE"
+   },
+   "Alecc": {
+    "club": "PWR",
+    "reg": "OCE"
+   },
+   "Worthy": {
+    "club": "PWR",
+    "reg": "OCE"
+   },
+   "Suns": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Tuii": {
+    "club": "Warriors Esports",
+    "reg": "OCE"
+   },
+   "Scammed": {
+    "club": "Solace",
+    "reg": "OCE"
+   },
+   "Sorif": {
+    "club": "Wrath Esports",
+    "reg": "OCE"
+   },
+   "raiku": {
+    "club": "Mako ESC",
+    "reg": "OCE"
+   },
+   "Bathan": {
+    "club": "Overt",
+    "reg": "OCE"
+   },
+   "Danath": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Korq": {
+    "club": "Wrath Esports",
+    "reg": "OCE"
+   },
+   "volx": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "radius": {
+    "club": "PWR",
+    "reg": "OCE"
+   },
+   "sync": {
+    "club": "PWR",
+    "reg": "OCE"
+   },
+   "2Faulty": {
+    "club": "Repulse Gaming",
+    "reg": "OCE"
+   },
+   "Pumpkin": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "Gille": {
+    "club": "Paradox Gaming",
+    "reg": "OCE"
+   },
+   "Cynical": {
+    "club": "Paradox Gaming",
+    "reg": "OCE"
+   },
+   "Spiker": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Macheew": {
+    "club": "Clarix Esports",
+    "reg": "OCE"
+   },
+   "Trapped": {
+    "club": "Ghost Gaming",
+    "reg": "OCE"
+   },
+   "PLPE DJ": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "Cryz": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Cyrex": {
+    "club": "Paradox Gaming",
+    "reg": "OCE"
+   },
+   "Price": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "Qeaxzy": {
+    "club": "Repulse Gaming",
+    "reg": "OCE"
+   },
+   "Astoh": {
+    "club": "Clarix Esports",
+    "reg": "OCE"
+   },
+   "Asfit": {
+    "club": "Menage",
+    "reg": "OCE"
+   },
+   "Arrest": {
+    "club": "Revile Esports",
+    "reg": "OCE"
+   },
+   "Rainxy": {
+    "club": "Paradox Gaming",
+    "reg": "OCE"
+   }
+  },
+  "major4": {
+   "Setty": {
+    "club": "Become Legends",
+    "reg": "EU"
+   },
+   "Teeq": {
+    "club": "Galaxy Racer",
+    "reg": "EU"
+   },
+   "FlowiS": {
+    "club": "Copenhagen Flames",
+    "reg": "EU"
+   },
+   "Skram": {
+    "club": "00 Nation",
+    "reg": "EU"
+   },
+   "Crr": {
+    "club": "Fnatic",
+    "reg": "EU"
+   },
+   "Floki": {
+    "club": "Solary",
+    "reg": "EU"
+   },
+   "Clement": {
+    "club": "Solary",
+    "reg": "EU"
+   },
+   "Decyptos": {
+    "club": "GamersOrigin",
+    "reg": "EU"
+   },
+   "Kiryache32": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "Stormyrite": {
+    "club": "FUSION",
+    "reg": "EU"
+   },
+   "Toose": {
+    "club": "Gambit Esports",
+    "reg": "EU"
+   },
+   "AstroSMZ": {
+    "club": "Playwell Esports",
+    "reg": "EU"
+   },
+   "Verox": {
+    "club": "Excel Esports",
+    "reg": "EU"
+   },
+   "Malibuca": {
+    "club": "TT9 Esports",
+    "reg": "EU"
+   },
+   "Shizogod": {
+    "club": "Onyx Gaming",
+    "reg": "EU"
+   },
+   "Anas": {
+    "club": "Guild Esports",
+    "reg": "EU"
+   },
+   "Raifla": {
+    "club": "Become Legends",
+    "reg": "EU"
+   },
+   "K1nzell": {
+    "club": "Team Heretics",
+    "reg": "EU"
+   },
+   "Jur3ky": {
+    "club": "Bifrost",
+    "reg": "EU"
+   },
+   "Crow VII": {
+    "club": "KPI Gaming",
+    "reg": "EU"
+   },
+   "Joseeh": {
+    "club": "KPI Gaming",
+    "reg": "EU"
+   },
+   "Seanvp": {
+    "club": "Luminox Planet",
+    "reg": "EU"
+   },
+   "Xenolith": {
+    "club": "ALOFT Gaming",
+    "reg": "EU"
+   },
+   "Remix": {
+    "club": "Luminox Planet",
+    "reg": "EU"
+   },
+   "Andilex": {
+    "club": "Falcons Esports",
+    "reg": "EU"
+   },
+   "Hottie": {
+    "club": "Centric Gaming",
+    "reg": "EU"
+   },
+   "trippernn": {
+    "club": "LootBoy Esports",
+    "reg": "EU"
+   },
+   "Pinq": {
+    "club": "Rix.GG",
+    "reg": "EU"
+   },
+   "Stompy": {
+    "club": "MOUZ",
+    "reg": "EU"
+   },
+   "Voxe": {
+    "club": "Team Homyno",
+    "reg": "EU"
+   },
+   "TaySon": {
+    "club": "Falcons Esports",
+    "reg": "EU"
+   },
+   "chapix": {
+    "club": "Falcons Esports",
+    "reg": "EU"
+   },
+   "vadeal": {
+    "club": "Wave Esports",
+    "reg": "EU"
+   },
+   "JannisZ": {
+    "club": "Guild Esports",
+    "reg": "EU"
+   },
+   "Noahreyli": {
+    "club": "Become Legends",
+    "reg": "EU"
+   },
+   "Slovay": {
+    "club": "Wave Esports Academy",
+    "reg": "EU"
+   },
+   "Korol1k": {
+    "club": "VCTRY Esports",
+    "reg": "EU"
+   },
+   "Sp1aash": {
+    "club": "Bifrost",
+    "reg": "EU"
+   },
+   "Mawakha": {
+    "club": "EvozA eSport",
+    "reg": "EU"
+   },
+   "Vetle": {
+    "club": "Playwell Esports",
+    "reg": "EU"
+   },
+   "Nikof": {
+    "club": "Team Vitality",
+    "reg": "EU"
+   },
+   "Kylie": {
+    "club": "TT9 Esports",
+    "reg": "EU"
+   },
+   "Awaer": {
+    "club": "Ovation eSports",
+    "reg": "EU"
+   },
+   "Endretta": {
+    "club": "00 Nation",
+    "reg": "EU"
+   },
+   "Benjyfishy": {
+    "club": "NRG",
+    "reg": "EU"
+   },
+   "MrSavage": {
+    "club": "100 Thieves",
+    "reg": "EU"
+   },
+   "Folnet": {
+    "club": "Madness Factory",
+    "reg": "EU"
+   },
+   "WingS": {
+    "club": "Siko Esports",
+    "reg": "EU"
+   },
+   "Karmy": {
+    "club": "Sissi State Punks",
+    "reg": "EU"
+   },
+   "Milan": {
+    "club": "Bifrost",
+    "reg": "EU"
+   },
+   "Mitr0": {
+    "club": "Team Liquid",
+    "reg": "EU"
+   },
+   "Braw": {
+    "club": "Wavy Esport",
+    "reg": "EU"
+   },
+   "Didzzz": {
+    "club": "Start ! eSport",
+    "reg": "EU"
+   },
+   "Jokzz": {
+    "club": "Monaco Esports",
+    "reg": "EU"
+   },
+   "Snayzy": {
+    "club": "Team Vitality",
+    "reg": "EU"
+   },
+   "Krizzii": {
+    "club": "Apeks",
+    "reg": "EU"
+   },
+   "p1ng": {
+    "club": "InTenZive",
+    "reg": "EU"
+   },
+   "Robban": {
+    "club": "Mercury eSports",
+    "reg": "EU"
+   },
+   "Fnajen": {
+    "club": "Paradise Gaming",
+    "reg": "EU"
+   },
+   "KaanDE": {
+    "club": "V4 Gaming",
+    "reg": "EU"
+   },
+   "Klinberi": {
+    "club": "Team Evenezy",
+    "reg": "EU"
+   },
+   "Cryed": {
+    "club": "Paradise Gaming",
+    "reg": "EU"
+   },
+   "Tidi": {
+    "club": "Paradise Gaming",
+    "reg": "EU"
+   },
+   "Hynei": {
+    "club": "MTP Esport",
+    "reg": "EU"
+   },
+   "Bridou": {
+    "club": "MTP Esport",
+    "reg": "EU"
+   },
+   "Mygoute": {
+    "club": "MTP Esport",
+    "reg": "EU"
+   },
+   "Muz": {
+    "club": "Team New Age",
+    "reg": "NAC"
+   },
+   "Mero": {
+    "club": "Team New Age",
+    "reg": "NAC"
+   },
+   "Bugha": {
+    "club": "Sentinels",
+    "reg": "NAC"
+   },
+   "Jamper": {
+    "club": "Luminosity Gaming",
+    "reg": "NAC"
+   },
+   "Deyy": {
+    "club": "XTRA Gaming",
+    "reg": "NAC"
+   },
+   "Tragix": {
+    "club": "Fear Nova",
+    "reg": "NAC"
+   },
+   "Visxals": {
+    "club": "K2G Esports",
+    "reg": "NAC"
+   },
+   "Fryst": {
+    "club": "Cloud9",
+    "reg": "NAC"
+   },
+   "Commandment": {
+    "club": "TSM",
+    "reg": "NAC"
+   },
+   "Cented": {
+    "club": "FaZe Clan",
+    "reg": "NAC"
+   },
+   "Stretch": {
+    "club": "Team Liquid",
+    "reg": "NAC"
+   },
+   "Dusky": {
+    "club": "Moon Unit Gaming",
+    "reg": "NAC"
+   },
+   "Ceice": {
+    "club": "XSET",
+    "reg": "NAC"
+   },
+   "Cold": {
+    "club": "K2G Esports",
+    "reg": "NAC"
+   },
+   "Avivv": {
+    "club": "Vortex CGO",
+    "reg": "NAC"
+   },
+   "Threats": {
+    "club": "Manchester City Esports",
+    "reg": "NAC"
+   },
+   "Edgey": {
+    "club": "NRG",
+    "reg": "NAC"
+   },
+   "Degen": {
+    "club": "FUSION",
+    "reg": "NAC"
+   },
+   "Khanada": {
+    "club": "Built By Gamers",
+    "reg": "NAC"
+   },
+   "Bucke": {
+    "club": "NRG",
+    "reg": "NAC"
+   },
+   "Peterbot": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "MackWood": {
+    "club": "G2 Esports",
+    "reg": "NAC"
+   },
+   "Justice": {
+    "club": "Kungarna",
+    "reg": "NAC"
+   },
+   "nosh": {
+    "club": "Cloud9",
+    "reg": "NAC"
+   },
+   "Nut": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Plege": {
+    "club": "Elite Esports",
+    "reg": "NAC"
+   },
+   "Vilets": {
+    "club": "Team Pulsar",
+    "reg": "NAC"
+   },
+   "wCarey": {
+    "club": "Athletix eSport",
+    "reg": "NAC"
+   },
+   "Eomzo": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Clix": {
+    "club": "NRG",
+    "reg": "NAC"
+   },
+   "Tahi": {
+    "club": "Elite Esports",
+    "reg": "NAC"
+   },
+   "Aspect": {
+    "club": "Sentinels",
+    "reg": "NAC"
+   },
+   "Cazz": {
+    "club": "Moon Unit",
+    "reg": "NAC"
+   },
+   "Av": {
+    "club": "XSET",
+    "reg": "NAC"
+   },
+   "Edan": {
+    "club": "Young Clan",
+    "reg": "NAC"
+   },
+   "OliverOG": {
+    "club": "Team New Age",
+    "reg": "NAC"
+   },
+   "Okis": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "casqer": {
+    "club": "FUSION",
+    "reg": "NAC"
+   },
+   "smqcked": {
+    "club": "G2 Esports",
+    "reg": "NAC"
+   },
+   "illest": {
+    "club": "TheCartel Esports",
+    "reg": "NAC"
+   },
+   "Avery": {
+    "club": "Cloud9",
+    "reg": "NAC"
+   },
+   "Chukky": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Eclipsae": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Durant": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Pxmp": {
+    "club": "Elite Esports",
+    "reg": "NAC"
+   },
+   "Joji": {
+    "club": "FUSION",
+    "reg": "NAC"
+   },
+   "Kn1pher": {
+    "club": "K2G Esports",
+    "reg": "NAC"
+   },
+   "Smite": {
+    "club": "FLu Esports",
+    "reg": "NAC"
+   },
+   "Twix": {
+    "club": "Legion",
+    "reg": "NAC"
+   },
+   "Tetro": {
+    "club": "Moon Unit",
+    "reg": "NAC"
+   },
+   "Beef": {
+    "club": "VCGO",
+    "reg": "NAC"
+   },
+   "LuPieN": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Nic": {
+    "club": "Tru North Gaming",
+    "reg": "NAC"
+   },
+   "Dequented": {
+    "club": "FLu Esports",
+    "reg": "NAC"
+   },
+   "Zemo": {
+    "club": "Team Pulsar",
+    "reg": "NAC"
+   },
+   "Zpxy": {
+    "club": "Team BH",
+    "reg": "NAC"
+   },
+   "Brycx": {
+    "club": "FLu Esports",
+    "reg": "NAC"
+   },
+   "Cam": {
+    "club": "FLu Esports",
+    "reg": "NAC"
+   },
+   "Encrypted": {
+    "club": "FLu Esports",
+    "reg": "NAC"
+   },
+   "ISypo": {
+    "club": "FLu Esports",
+    "reg": "NAC"
+   },
+   "Dolzeur": {
+    "club": "4LK",
+    "reg": "NAC"
+   },
+   "Reet": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "favs": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Snacky": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Arkhram": {
+    "club": "100 Thieves",
+    "reg": "NAW"
+   },
+   "rehx": {
+    "club": "100 Thieves",
+    "reg": "NAW"
+   },
+   "EpikWhale": {
+    "club": "NRG",
+    "reg": "NAW"
+   },
+   "Symetrical": {
+    "club": "Counter Logic Gaming",
+    "reg": "NAW"
+   },
+   "wavyjacob": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Jagveer": {
+    "club": "Kungarna",
+    "reg": "NAW"
+   },
+   "Batman Bugha": {
+    "club": "Team Pulsar",
+    "reg": "NAW"
+   },
+   "Cyrzr": {
+    "club": "Outcast Region",
+    "reg": "NAW"
+   },
+   "Zinqxz": {
+    "club": "Team NorCal",
+    "reg": "NAW"
+   },
+   "andyvencha": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Criizux": {
+    "club": "FUSION",
+    "reg": "NAW"
+   },
+   "Jelty": {
+    "club": "G2 Esports",
+    "reg": "NAW"
+   },
+   "Middi": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Kaboo": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Nico": {
+    "club": "Team Pulsar",
+    "reg": "NAW"
+   },
+   "Squishy": {
+    "club": "Team Pulsar",
+    "reg": "NAW"
+   },
+   "Litzinio": {
+    "club": "TRNL Gaming",
+    "reg": "NAW"
+   },
+   "Reguletor": {
+    "club": "Team Pulsar",
+    "reg": "NAW"
+   },
+   "Blizy": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Nate": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Chicken": {
+    "club": "Kungarna",
+    "reg": "NAW"
+   },
+   "Mechton": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Defiable": {
+    "club": "Kungarna",
+    "reg": "NAW"
+   },
+   "Salko": {
+    "club": "Team Pulsar",
+    "reg": "NAW"
+   },
+   "Caleb": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Tautai": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "Angel": {
+    "club": "K2G Esports",
+    "reg": "NAW"
+   },
+   "Aiden": {
+    "club": "Team Pulsar",
+    "reg": "NAW"
+   },
+   "Nigel": {
+    "club": "Xen",
+    "reg": "NAW"
+   },
+   "G5RC": {
+    "club": "4LK",
+    "reg": "NAW"
+   },
+   "RichHomieQuinn": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "WAVE": {
+    "club": "Team 33",
+    "reg": "NAW"
+   },
+   "Kewl": {
+    "club": "Fear Nova",
+    "reg": "NAW"
+   },
+   "Knzo": {
+    "club": "Team Assault",
+    "reg": "NAW"
+   },
+   "Former": {
+    "club": "XTRA Gaming",
+    "reg": "NAW"
+   },
+   "4DRStorm": {
+    "club": "Fear Nova",
+    "reg": "NAW"
+   },
+   "Mony": {
+    "club": "Lowkey Esports",
+    "reg": "NAW"
+   },
+   "exe": {
+    "club": "TRNL Gaming",
+    "reg": "NAW"
+   },
+   "FJAA": {
+    "club": "K2G Esports",
+    "reg": "NAW"
+   },
+   "a1alex": {
+    "club": "Witness The Journey",
+    "reg": "NAW"
+   },
+   "Boltz": {
+    "club": "MERK Esports",
+    "reg": "NAW"
+   },
+   "Keto": {
+    "club": "Xen",
+    "reg": "NAW"
+   },
+   "Cesar": {
+    "club": "Xen",
+    "reg": "NAW"
+   },
+   "OPai": {
+    "club": "Hero Base",
+    "reg": "BR"
+   },
+   "GSX": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Pattaty": {
+    "club": "Team Abstract",
+    "reg": "BR"
+   },
+   "Kitoz": {
+    "club": "Team Singularity",
+    "reg": "BR"
+   },
+   "Cadu": {
+    "club": "eRa Eternity",
+    "reg": "BR"
+   },
+   "Seeyun": {
+    "club": "Team Vikings",
+    "reg": "BR"
+   },
+   "EdRoadToGlory": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "KBR": {
+    "club": "Team Vikings",
+    "reg": "BR"
+   },
+   "Diguera": {
+    "club": "Team Singularity",
+    "reg": "BR"
+   },
+   "RustyK": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "Frosty": {
+    "club": "LOUD",
+    "reg": "BR"
+   },
+   "Redlee": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Felipersa": {
+    "club": "Team Liquid",
+    "reg": "BR"
+   },
+   "Collet": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Nicks": {
+    "club": "Hero Base",
+    "reg": "BR"
+   },
+   "H4wwk": {
+    "club": "9z Team",
+    "reg": "BR"
+   },
+   "Frans": {
+    "club": "Team Singularity",
+    "reg": "BR"
+   },
+   "K1nG": {
+    "club": "FaZe Clan",
+    "reg": "BR"
+   },
+   "Jpsk1ng": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Guneves": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "leleo": {
+    "club": "LOUD",
+    "reg": "BR"
+   },
+   "KING": {
+    "club": "Singularity Esports",
+    "reg": "BR"
+   },
+   "BrYANN": {
+    "club": "Atlas Lions",
+    "reg": "BR"
+   },
+   "Caduzin": {
+    "club": "Team TRIBE",
+    "reg": "BR"
+   },
+   "Coca": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Spitflow": {
+    "club": "TheCartel Esports",
+    "reg": "BR"
+   },
+   "Snohxx": {
+    "club": "POZ Gaming",
+    "reg": "BR"
+   },
+   "Schaba": {
+    "club": "Team TRIBE",
+    "reg": "BR"
+   },
+   "SwizzY": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Otome": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Tzuyu": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "LODSTK": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "miya": {
+    "club": "Nester",
+    "reg": "ASIA"
+   },
+   "Fram": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "raru": {
+    "club": "WIZARD ESPORTS",
+    "reg": "ASIA"
+   },
+   "Yusea": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "WildHawk": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "Maufin": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "Rimr": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "Ruri": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Koyota": {
+    "club": "A2",
+    "reg": "ASIA"
+   },
+   "Qjac": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Naetor": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Alice": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Rialy": {
+    "club": "SCARZ",
+    "reg": "ASIA"
+   },
+   "Kogane": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Kagetora": {
+    "club": "KAWAZ",
+    "reg": "ASIA"
+   },
+   "Seak": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "fa1zzy": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Maesar": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "KUREN": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Chocoluv": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Harukiyo": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Ess": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Fire": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "RazL": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "XMipoli": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Merem": {
+    "club": "WIZARD ESPORTS",
+    "reg": "ASIA"
+   },
+   "2SNgNl": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Jozya": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "Rainy": {
+    "club": "ALBA E-sports Etajima",
+    "reg": "ASIA"
+   },
+   "Ragis": {
+    "club": "Nester",
+    "reg": "ASIA"
+   },
+   "KENTAch": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "Rui": {
+    "club": "Delta Esports",
+    "reg": "ASIA"
+   },
+   "Lettuce": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Dokn": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Buyuriru": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "wickesy": {
+    "club": "WIZARD ESPORTS",
+    "reg": "ASIA"
+   },
+   "Fleder": {
+    "club": "GameWith",
+    "reg": "ASIA"
+   },
+   "Shunsyan": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "RizArt": {
+    "club": "Crazy Raccoon",
+    "reg": "ASIA"
+   },
+   "Bob": {
+    "club": "Riddle",
+    "reg": "ASIA"
+   },
+   "ALBB": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "SEKO": {
+    "club": "Focus e-Sports",
+    "reg": "ASIA"
+   },
+   "Phantom": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Kai": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Kalgamer710": {
+    "club": "Legends Esports",
+    "reg": "ME"
+   },
+   "Murloc": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "Tacky": {
+    "club": "LND Esports",
+    "reg": "ME"
+   },
+   "Spy": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Rapit": {
+    "club": "Team Sonic",
+    "reg": "ME"
+   },
+   "Rv": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "FKS": {
+    "club": "Medal Esports",
+    "reg": "ME"
+   },
+   "Rivo": {
+    "club": "Osh-Tekk Warriors",
+    "reg": "ME"
+   },
+   "LeziX": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "Snowvaks": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Modisk": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Mansour": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Nachiiri": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "GntL": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Speedy": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "HeiF": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "7man": {
+    "club": "Medal Esports",
+    "reg": "ME"
+   },
+   "vagnaR": {
+    "club": "ASMR eSports",
+    "reg": "ME"
+   },
+   "I4xPRO": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Dexefite": {
+    "club": "The Ultimates",
+    "reg": "ME"
+   },
+   "Krool": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Metab": {
+    "club": "Team Sonic",
+    "reg": "ME"
+   },
+   "Smsom": {
+    "club": "Vital Impact",
+    "reg": "ME"
+   },
+   "NetloV": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "KiritoKun": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Hero": {
+    "club": "01 Esports",
+    "reg": "ME"
+   },
+   "Xx731": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "FHD": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Yonx": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Nm7": {
+    "club": "Falcons Esports",
+    "reg": "ME"
+   },
+   "Azzx": {
+    "club": "ASMR eSports",
+    "reg": "ME"
+   },
+   "Hulks": {
+    "club": "Venomy Esports",
+    "reg": "ME"
+   },
+   "Adapter": {
+    "club": "01 Esports",
+    "reg": "ME"
+   },
+   "Snowyka": {
+    "club": "Team Sonic",
+    "reg": "ME"
+   },
+   "Souriano": {
+    "club": "Galaxy Racer",
+    "reg": "ME"
+   },
+   "Msg": {
+    "club": "KINGS Esports",
+    "reg": "ME"
+   },
+   "Naifma7": {
+    "club": "Hawk Esports",
+    "reg": "ME"
+   },
+   "3z": {
+    "club": "ASMR eSports",
+    "reg": "ME"
+   },
+   "Poor": {
+    "club": "Team Sonic",
+    "reg": "ME"
+   },
+   "Rico": {
+    "club": "LND Esports",
+    "reg": "ME"
+   },
+   "Saud": {
+    "club": "ASMR eSports",
+    "reg": "ME"
+   },
+   "Tensa": {
+    "club": "SCYTES",
+    "reg": "ME"
+   },
+   "PEKGL": {
+    "club": "Hawks Esports",
+    "reg": "ME"
+   },
+   "Faris": {
+    "club": "Team Arrow",
+    "reg": "ME"
+   },
+   "Sweatykun": {
+    "club": "HwR Esports",
+    "reg": "ME"
+   },
+   "Spiker": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Fab": {
+    "club": "Revile Esports",
+    "reg": "OCE"
+   },
+   "Sio": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Raiku": {
+    "club": "Revile Esports",
+    "reg": "OCE"
+   },
+   "Suns": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Tuii": {
+    "club": "Warriors Esports",
+    "reg": "OCE"
+   },
+   "Alex": {
+    "club": "Overt",
+    "reg": "OCE"
+   },
+   "Radius": {
+    "club": "PWR",
+    "reg": "OCE"
+   },
+   "Oreo": {
+    "club": "Menage",
+    "reg": "OCE"
+   },
+   "Alecc": {
+    "club": "PWR",
+    "reg": "OCE"
+   },
+   "Apolox": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "Macheew": {
+    "club": "Clarix Esports",
+    "reg": "OCE"
+   },
+   "Bhraxyy": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Asfit": {
+    "club": "Menage",
+    "reg": "OCE"
+   },
+   "Jynx": {
+    "club": "PWR",
+    "reg": "OCE"
+   },
+   "Danath": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "Worthy": {
+    "club": "PWR",
+    "reg": "OCE"
+   },
+   "Cryz": {
+    "club": "6th Sense",
+    "reg": "OCE"
+   },
+   "Scammed": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "Qeaxzy": {
+    "club": "Repulse Gaming",
+    "reg": "OCE"
+   },
+   "Kwolit": {
+    "club": "Menage",
+    "reg": "OCE"
+   },
+   "Pumpkin": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "Volx": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "Sync": {
+    "club": "PWR",
+    "reg": "OCE"
+   },
+   "Skits": {
+    "club": "Wrath Esports",
+    "reg": "OCE"
+   },
+   "Astoh": {
+    "club": "Clarix Esports",
+    "reg": "OCE"
+   },
+   "Baily": {
+    "club": "Team Gallium",
+    "reg": "OCE"
+   },
+   "LunR": {
+    "club": "Loyal Esports",
+    "reg": "OCE"
+   },
+   "Mania": {
+    "club": "Loyal Esports",
+    "reg": "OCE"
+   },
+   "Blynk": {
+    "club": "Revile Esports",
+    "reg": "OCE"
+   },
+   "Sanjog": {
+    "club": "K2G Esports",
+    "reg": "OCE"
+   },
+   "Zadia": {
+    "club": "K2G Esports",
+    "reg": "OCE"
+   },
+   "Maw": {
+    "club": "JFT Esports",
+    "reg": "OCE"
+   },
+   "Darxxy": {
+    "club": "K2G Esports",
+    "reg": "OCE"
+   },
+   "Regan": {
+    "club": "K2G Esports",
+    "reg": "OCE"
+   }
+  },
+  "globals": {
+   "Hen": {
+    "club": "Guild Esports",
+    "reg": null
+   },
+   "TaySon": {
+    "club": "Falcons Esports",
+    "reg": null
+   },
+   "Chapix": {
+    "club": "Falcons Esports",
+    "reg": null
+   },
+   "Setty": {
+    "club": "Become Legends",
+    "reg": null
+   },
+   "Teeq": {
+    "club": "Galaxy Racer",
+    "reg": null
+   },
+   "Anas": {
+    "club": "Guild Esports",
+    "reg": null
+   },
+   "Th0masHD": {
+    "club": "Astralis",
+    "reg": null
+   },
+   "Vadeal": {
+    "club": "Wave Esports",
+    "reg": null
+   },
+   "JannisZ": {
+    "club": "Guild Esports",
+    "reg": null
+   },
+   "Noahreyli": {
+    "club": "Become Legends",
+    "reg": null
+   },
+   "Safik": {
+    "club": "Cyber Legacy",
+    "reg": null
+   },
+   "1lushaFN": {
+    "club": "TheCartel Esports",
+    "reg": null
+   },
+   "Putrick": {
+    "club": "Cyber Legacy",
+    "reg": null
+   },
+   "L1nk": {
+    "club": "Cyber Legacy",
+    "reg": null
+   },
+   "Fury Legendary": {
+    "club": "Cyber Legacy",
+    "reg": null
+   },
+   "97default": {
+    "club": "Centric Gaming",
+    "reg": null
+   },
+   "Joseeh": {
+    "club": "KPI Gaming",
+    "reg": null
+   },
+   "Kefyy": {
+    "club": "VCTRY Esports",
+    "reg": null
+   },
+   "pkr29": {
+    "club": "Monaco Esports",
+    "reg": null
+   },
+   "Mlody": {
+    "club": "Luminox Planet",
+    "reg": null
+   },
+   "FlowiS": {
+    "club": "Copenhagen Flames",
+    "reg": null
+   },
+   "Skram": {
+    "club": "00 Nation",
+    "reg": null
+   },
+   "Scriwy": {
+    "club": "Wave Esports",
+    "reg": null
+   },
+   "Shady": {
+    "club": "Wave Esports",
+    "reg": null
+   },
+   "Stompy": {
+    "club": "MOUZ",
+    "reg": null
+   },
+   "FORK": {
+    "club": "Lootboy Esports Academy",
+    "reg": null
+   },
+   "jimke": {
+    "club": "Lootboy Esports Academy",
+    "reg": null
+   },
+   "Bloomy": {
+    "club": "Lionscreed",
+    "reg": null
+   },
+   "Swag": {
+    "club": "Copenhagen Flames",
+    "reg": null
+   },
+   "Hottie": {
+    "club": "Centric Gaming",
+    "reg": null
+   },
+   "Rezon ay": {
+    "club": "Guild Esports",
+    "reg": null
+   },
+   "Endretta": {
+    "club": "00 Nation",
+    "reg": null
+   },
+   "Benjyfishy": {
+    "club": "NRG",
+    "reg": null
+   },
+   "MrSavage": {
+    "club": "100 Thieves",
+    "reg": null
+   },
+   "Kylie": {
+    "club": "TT9 Esports",
+    "reg": null
+   },
+   "Floki": {
+    "club": "Solary",
+    "reg": null
+   },
+   "Clement": {
+    "club": "Solary",
+    "reg": null
+   },
+   "Decyptos": {
+    "club": "GamersOrigin",
+    "reg": null
+   },
+   "Fornax": {
+    "club": "Team Atlantic",
+    "reg": null
+   },
+   "Aurero": {
+    "club": "Team Evenezy",
+    "reg": null
+   },
+   "P0ul": {
+    "club": "Reaper Crew Danmark",
+    "reg": null
+   },
+   "Andilex": {
+    "club": "Falcons Esports",
+    "reg": null
+   },
+   "DKS": {
+    "club": "Team MCES",
+    "reg": null
+   },
+   "Grayinjo": {
+    "club": "GamersOrigin",
+    "reg": null
+   },
+   "Mirza": {
+    "club": "Team MCES",
+    "reg": null
+   },
+   "Flyy": {
+    "club": "Ovation eSports",
+    "reg": null
+   },
+   "Ghosty4k": {
+    "club": "TopLevel",
+    "reg": null
+   },
+   "WaiZ": {
+    "club": "Team Devour",
+    "reg": null
+   },
+   "Umplify": {
+    "club": "FUSION",
+    "reg": null
+   },
+   "Saevid": {
+    "club": "PWR",
+    "reg": null
+   },
+   "Sneake": {
+    "club": "Vendetta Esports",
+    "reg": null
+   },
+   "Pinq": {
+    "club": "Rix.GG",
+    "reg": null
+   },
+   "Banw1se19": {
+    "club": "Invertice",
+    "reg": null
+   },
+   "ks1light": {
+    "club": "Soolit Esport",
+    "reg": null
+   },
+   "Malibuca": {
+    "club": "TT9 Esports",
+    "reg": null
+   },
+   "shizogod": {
+    "club": "Onyx Gaming",
+    "reg": null
+   },
+   "Skydeun": {
+    "club": "Lyost Esport",
+    "reg": null
+   },
+   "bitflox": {
+    "club": "Invertice",
+    "reg": null
+   },
+   "Cookie": {
+    "club": "Lootboy Esports Academy",
+    "reg": null
+   },
+   "Kiryache32": {
+    "club": "LootBoy Esports",
+    "reg": null
+   },
+   "Stormyrite": {
+    "club": "FUSION",
+    "reg": null
+   },
+   "Toose": {
+    "club": "Gambit Esports",
+    "reg": null
+   },
+   "Aury": {
+    "club": "Premium Gaming",
+    "reg": null
+   },
+   "FiR3hUNTER": {
+    "club": "TheCartel Esports",
+    "reg": null
+   },
+   "Art1st": {
+    "club": "Legion Society",
+    "reg": null
+   },
+   "Verox": {
+    "club": "Excel Esports",
+    "reg": null
+   },
+   "Voun": {
+    "club": "Destiny Esports",
+    "reg": null
+   },
+   "Laxus": {
+    "club": "Onyx Gaming",
+    "reg": null
+   },
+   "BadSniper": {
+    "club": "Team MCES",
+    "reg": null
+   }
+  }
+ },
  "2022": {
   "major1": {
    "Hen": {

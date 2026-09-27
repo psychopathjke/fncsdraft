@@ -61,6 +61,12 @@ const SETS = {
   k2: {map: 'Map:Chapter 3: Season 2 (20.40)', art: 'art/map-k2.jpg'},
   k3: {map: 'Map:Chapter 3: Season 3 (21.40)', art: 'art/map-k3.jpg'},
   k4: {map: 'Map:Chapter 3: Season 4 (22.30)', art: 'art/map-k4.jpg'},
+  /* Острова 2021-го — ближайший к финалу патч, у которого на вики есть карта: C2S5 (13–14 марта) —
+     15.30, C2S6 (29–30 мая) — 16.50, C2S7 (4–5 сентября) — 17.40, C2S8 (30–31 октября) — 18.21. */
+  j1: {map: 'Map:Chapter 2: Season 5 (15.30)', art: 'art/map-j1.jpg'},
+  j2: {map: 'Map:Chapter 2: Season 6 (16.50)', art: 'art/map-j2.jpg'},
+  j3: {map: 'Map:Chapter 2: Season 7 (17.40)', art: 'art/map-j3.jpg'},
+  j4: {map: 'Map:Chapter 2: Season 8 (18.21)', art: 'art/map-j4.jpg'},
   s42:     {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
   s42solo: {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
   /* Острова Мейджоров 2026 — только ради счёта СУНДУКОВ по коробкам (7.09, «сундуков

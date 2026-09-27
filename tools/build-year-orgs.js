@@ -23,6 +23,9 @@ const GAP_MS = 31000;
 const REG = { 'Europe': 'EU', 'North America': 'NAC', 'North America East': 'NAC', 'North America Central': 'NAC', 'North America West': 'NAW',
               'Brazil': 'BR', 'Asia': 'ASIA', 'Middle East': 'ME', 'Oceania': 'OCE' };
 const PAGES = {
+  // 2021: сезоны Chapter 2 (C2S5–C2S8) — Гранд-финалы по регионам; «globals» — Grand Royale Европы.
+  2021: { regions: ['Europe', 'North America East', 'North America West', 'Brazil', 'Asia', 'Middle East', 'Oceania'], majors: [1, 2, 3, 4], globals: 'Fortnite Champion Series/2021/Grand Royale/Europe',
+          title: (n, r) => 'Fortnite Champion Series/Chapter 2/Season ' + (n + 4) + '/Grand Finals/' + r },
   // 2022: сезоны Chapter 3 (C3S1–C3S3) — Гранд-финалы по регионам, NA East и West отдельно; Invitational в Роли.
   2022: { regions: ['Europe', 'North America East', 'North America West', 'Brazil', 'Asia', 'Middle East', 'Oceania'], majors: [1, 2, 3], globals: 'Fortnite Champion Series/2022/Invitational',
           title: (n, r) => 'Fortnite Champion Series/Chapter 3/Season ' + n + '/Grand Finals/' + r },
@@ -35,7 +38,7 @@ const PAGES = {
   2025: { regions: ['Europe', 'North America Central', 'North America West', 'Brazil', 'Asia', 'Middle East', 'Oceania'], majors: [1, 2, 3], globals: 'Fortnite Champion Series/2025', extra: ['Last Chance Lobby'] }
 };
 const want = process.argv.slice(2).map(Number).filter(y => PAGES[y]);
-const YEARS = want.length ? want : [2022, 2023, 2024, 2025];
+const YEARS = want.length ? want : [2021, 2022, 2023, 2024, 2025];
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 function fetchHtml(title) {
