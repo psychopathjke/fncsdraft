@@ -18404,6 +18404,14 @@ function flagImg(nat, size){
   const nm=(typeof natDisplay==='function') ? natDisplay(nat) : nat;
   return `<img src="flags/w40/${code}.png" alt="${nm}" title="${nm}" width="${w}" height="${h}" style="vertical-align:-2px;border-radius:2px;display:inline-block;margin-right:4px;">`;
 }
+/* Флаг карточки, а если страны нет нигде (ни у Epic, ни на Liquipedia — у трети игроков
+   квалификаторов) — значок региона того же размера, чтобы строка не зияла пустотой. */
+function cardFlag(p, size){
+  if(p && p.nat){ const f=flagImg(p.nat, size); if(f) return f; }
+  const r=p && p.region; if(!r) return '';
+  const h=size||16, w=Math.round(h*4/3);
+  return `<span class="reg-badge" title="${r}" style="display:inline-block;width:${w}px;height:${h}px;line-height:${h}px;font-size:${Math.max(7,Math.round(h*0.5))}px;font-weight:800;text-align:center;border-radius:2px;margin-right:4px;vertical-align:-2px;background:#2b3a67;color:#cfd8ff;letter-spacing:-.2px;overflow:hidden">${r==='ASIA'?'AS':r}</span>`;
+}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
 function rarityFor(placement){
   if(placement==null) return 'common';
@@ -92262,7 +92270,7 @@ function futCardHTML(p, opts){
   const a=attrsFor(p);
   const skin=CARD_SKIN[shownRarity(p)]||CARD_SKIN.common;
   const wide=!!opts.wide;
-  const flag=flagImg(p.nat, wide?18:15);
+  const flag=cardFlag(p, wide?18:15);
   // A career's own numbers are carried unrounded — a day at the aim trainer is
   // worth a third of a point and has to add up over a season — so the card
   // rounds them for the eye the way the rating already does with ovrExact.
@@ -94873,7 +94881,7 @@ function renderCandidates(list){
     const c=document.createElement('div');
     c.className='pcard'+(p.rating===101?' s1ned-special':'');
     c.style.setProperty('--r-color',RARITY_COLOR[shownRarity(p)]);
-    const flag = flagImg(p.nat, 15);
+    const flag = cardFlag(p, 15);
     const statLine = p.placement!=null
       ? `${translateEventText(p.event)}<br>${translateDate(p.date)} - <b>${ccTop(p.placement)}</b>`
       : `${translateEventText(p.event)}<br>${translateDate(p.date)} — <b>${L().placeholderNotPublished}</b>`;
@@ -95001,7 +95009,7 @@ function renderSlots(){
     if(p){
       d.className='slot filled'+(p.rating===101?' s1ned-special':'');
       d.style.setProperty('--r-color',RARITY_COLOR[shownRarity(p)]);
-      const flag = flagImg(p.nat, 14);
+      const flag = cardFlag(p, 14);
       const a=attrsFor(p);
       d.innerHTML=`<div><div class="h">${flag}${p.handle}</div><div class="r">${L()[a.roleKey]} · ${regionName(p.region)}</div></div><div class="sr">${a.ovr}</div>`;
       d.style.cursor='zoom-in';
@@ -98479,7 +98487,7 @@ function landingFieldHTML(you, bots){
     const ovr = t.pow!=null ? Math.round(t.pow)
       : (t.squad&&t.squad.length
           ? Math.round(t.squad.reduce((s,p)=>s+attrsFor(p).ovr,0)/t.squad.length) : '—');
-    const names=t.squad ? t.squad.map(p=>flagImg(p.nat,13)+p.handle).join(' & ') : t.name;
+    const names=t.squad ? t.squad.map(p=>cardFlag(p,13)+p.handle).join(' & ') : t.name;
     return `<tr${mine?' style="background:rgba(0,176,144,.10);font-weight:700;"':''}>
       <td>${names}${mine?' <span style="color:var(--accent);font-size:10px;text-transform:uppercase;"> · '+L().summitYouTag+'</span>':''}</td>
       <td class="num" style="color:var(--ink-dim);width:44px;">${ovr}</td>
@@ -100502,7 +100510,7 @@ function summitQualifiersHTML(main, scq, you){
   const order=['EU','NAC','NAW','BR','ASIA','ME','OCE'];
   const rowFor=(t, route)=>{
     const mine = t===you;
-    const names=t.squad.map(p=>flagImg(p.nat,13)+p.handle).join(' & ');
+    const names=t.squad.map(p=>cardFlag(p,13)+p.handle).join(' & ');
     const ovr=Math.round(t.squad.reduce((s,p)=>s+attrsFor(p).ovr,0)/t.squad.length);
     return `<tr${mine?' style="background:rgba(0,176,144,.09);"':''}>
       <td>${names}${mine?' <span style="color:var(--accent);font-size:10px;text-transform:uppercase;">· '+L().summitYouTag+'</span>':''}</td>
@@ -101837,7 +101845,7 @@ function buildTeam(squadArr){
           attrs:engineAttrs(squadArr), closeEdge:closeRangeEdge(squadArr)};
 }
 
-function flagFor(p){ return flagImg(p && p.nat, 15); }
+function flagFor(p){ return cardFlag(p, 15); }
 function teamLabel(squad){ return squad.map(p=>flagFor(p)+p.handle).join(' & '); }
 
 // Who the AI ends up with. This used to weight by 1 + rating/100*3, the same
@@ -105331,7 +105339,7 @@ function playerStatSheetHTML(team, idx, p){
   const aR=attrsFor(p);
   const head=`<div style="display:flex;align-items:center;gap:9px;margin-bottom:3px;">
       <div class="fut-ovr" style="font-size:26px;color:${skinR.glow};">${aR.ovr}</div>
-      <div class="fut-name" style="font-size:15px;">${flagImg(p.nat,15)}${p.handle}</div>
+      <div class="fut-name" style="font-size:15px;">${cardFlag(p,15)}${p.handle}</div>
     </div>`;
   const gfRows = p.realGf ? `
     <div class="fut-foot" style="font-size:9px;margin:10px 0 6px;color:${skinR.glow};">${L().realTitleGf}</div>
@@ -105376,7 +105384,7 @@ function renderStats(){
   if(!body) return;   // the source table was removed; the cards carry it all
   body.innerHTML='';
   drafted.forEach(p=>{
-    const flag = flagImg(p.nat, 15);
+    const flag = cardFlag(p, 15);
     const tr=document.createElement('tr');
     tr.innerHTML=`<td>${flag}${p.handle}</td><td>${regionName(p.region)}</td><td>${translateEventText(p.event)} (${translateDate(p.date)})</td><td class="num">${p.placement!=null?'#'+p.placement:'—'}</td><td class="rate">${p.rating}</td>`;
     body.appendChild(tr);
@@ -106122,7 +106130,7 @@ function renderCardCollection(){
     if(has) haveCount++;
     const card=document.createElement('div');
     card.className='achv-card '+(has?'unlocked':'locked');
-    const flag=p.nat?flagImg(p.nat,16):'';
+    const flag=cardFlag(p,16);
     card.innerHTML=`<div class="achv-icon">${has?'🃏':'🔒'}</div><div><div class="achv-title">${flag}${p.handle}</div><div class="achv-desc">${L().ratingHeader} ${p.rating} · ${p.nat?natDisplay(p.nat):'—'}</div></div>`;
     grid.appendChild(card);
   });
@@ -107709,7 +107717,7 @@ function ccRenderList(){
     return `<button class="cc-card${on}" onclick="ccPickCard('${x.p.handle.replace(/'/g,"\\'")}')">
       ${url?`<img class="cc-card-ph" src="${url}" alt="">`:`<span class="cc-card-ph"></span>`}
       <span class="cc-card-in">
-        <span class="cc-card-n">${flagImg(x.p.nat,13)}${esc(x.p.handle)}</span>
+        <span class="cc-card-n">${cardFlag(x.p,13)}${esc(x.p.handle)}</span>
         <span class="cc-card-o">${x.p.org ? esc(x.p.org) : L().ccFreeAgent}</span>
         ${x.mate ? `<span class="cc-card-mate">${L().ccMateNow(esc(x.mate))}</span>` : ''}
       </span>
@@ -108496,7 +108504,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='c708276b';
+const CC_BUILD='b9f59a08';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
