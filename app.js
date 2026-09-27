@@ -62324,7 +62324,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a885f1f3';
+const CC_BUILD='b70d3b1a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -77729,6 +77729,11 @@ const CC_AGENTS=[
      GLORE errie и CLD Razia выше; FLC — бельгийский клан. Страны в профиле
      нет, поэтому nat пустой, как у yaleblan. Портрет — аватарка оттуда же. */
   {name:'FLC Drazox',   at:'DrazoxMNG',     nat:null, photo:'DrazoxMNG.jpg',     x:681},
+  /* x.com/Apolinmng2, 601 фолловер, 27 сентября. «Management at ✧» — клуб в
+     шапке не назван, поэтому имя без тега; агент crunkezz, jayzfnn «& more».
+     Страны в профиле нет — nat пустой. Между Drazox и Vira Askey: у новичков
+     вне ручного порядка таблица идёт по фолловерам. */
+  {name:'Apolin',       at:'Apolinmng2',    nat:null, photo:'Apolinmng2.jpg',    x:601},
   /* Скриншот профиля: x.com/askebott — Vira Askey, Марокко,
      Head of Fortnite в Vira Esport, 252 фолловера. Агент семерых, и все семеро
      названы у него в шапке поимённо (zbidak3kk, CyranKids, Litr07, 2Kixu,
