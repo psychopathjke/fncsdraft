@@ -149,7 +149,7 @@ const BOOT = `
     out.steps.push('clock moved to ' + save.career.day);
     if ((save.career.earnings||0) !== (row.prize||0))
       fail('prize money did not reach earnings');
-    /* Кнопка «Моя статистика» под итогом финала (правка тестера 27.09):
+    /* Кнопка «Моя статистика» под итогом финала:
        после каждого финала видно, как сыграл свой игрок. */
     const my = document.querySelector("#majorStages .cc-mystats");
     if (!my) fail("no My stats button under the evening result");
