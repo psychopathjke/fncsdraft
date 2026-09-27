@@ -2,7 +2,7 @@
 // API держит один action=parse в 30 с, поэтому пауза 31 с между запросами.
 //   node tools/fetch-liqui-2023.js [страница ...]
 const fs = require('fs'), path = require('path'), https = require('https'), zlib = require('zlib');
-const OUT = path.join(__dirname, 'measured', 'liqui-2023');
+const OUT = path.join(__dirname, 'measured', process.env.LIQUI_DIR || 'liqui-2023');
 fs.mkdirSync(OUT, { recursive: true });
 const PAGES = process.argv.slice(2).length ? process.argv.slice(2) : [
   'Fortnite_Champion_Series/2023',
