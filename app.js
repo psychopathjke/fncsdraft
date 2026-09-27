@@ -62324,7 +62324,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b70d3b1a';
+const CC_BUILD='cc36ad0e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -77734,6 +77734,10 @@ const CC_AGENTS=[
      Страны в профиле нет — nat пустой. Между Drazox и Vira Askey: у новичков
      вне ручного порядка таблица идёт по фолловерам. */
   {name:'Apolin',       at:'Apolinmng2',    nat:null, photo:'Apolinmng2.jpg',    x:601},
+  /* x.com/Zerkomng, 461 фолловер, 27 сентября. Имя — как в профиле, «FA
+     ZERKO»; «Head of Fortnite for @?» — клуб не назван. Агент insaneebtw,
+     cuhkifn, eonshh «& more». В шапке два флага, 🇫🇷🇵🇹, — берётся первый. */
+  {name:'FA ZERKO',     at:'Zerkomng',      nat:'fr', photo:'Zerkomng.jpg',      x:461},
   /* Скриншот профиля: x.com/askebott — Vira Askey, Марокко,
      Head of Fortnite в Vira Esport, 252 фолловера. Агент семерых, и все семеро
      названы у него в шапке поимённо (zbidak3kk, CyranKids, Litr07, 2Kixu,
