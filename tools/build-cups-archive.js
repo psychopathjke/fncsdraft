@@ -6,7 +6,9 @@
 //   node tools/build-cups-archive.js
 'use strict';
 const fs = require('fs'), path = require('path');
-const src = JSON.parse(fs.readFileSync(path.join(__dirname, 'measured', 'cups-archive.json'), 'utf8'));
+// Два снимка: основной и консольно-мобильный (PlayStation Cup, Console Champions Cup, Platform Cash Cup…).
+const src = Object.assign({}, ...['cups-archive.json', 'cups-archive-console.json']
+  .map(n => path.join(__dirname, 'measured', n)).filter(p => fs.existsSync(p)).map(p => JSON.parse(fs.readFileSync(p, 'utf8'))));
 const REG = { EU: 'EU', NAE: 'NAC', NAC: 'NAC', NAW: 'NAW', BR: 'BR', OCE: 'OCE', ASIA: 'ASIA', ME: 'ME' };
 const modeOf = pl => /solo/i.test(pl) ? 'solo' : /trio/i.test(pl) ? 'trio' : /squad/i.test(pl) ? 'squad' : 'duo';
 // Имя семейства без стадии: «DreamHack Online Open Finals» → «DreamHack Online Open».
@@ -20,12 +22,11 @@ const art = {};
 const pays = [], payKey = new Map();
 const out = [];
 for (const [key, r] of Object.entries(src)) {
-  // Zero Build — другой режим (карьера играется со стройкой); Reload в 2024–2025 снят (отзыв).
-  if (/ZB|ZeroBuild|NoBuild|Reload/i.test(key + ' ' + r.name + ' ' + r.mode)) continue;
+  // Zero Build, Reload, консольные и мобильные капы и практика дивизионов S37 — берутся: вечер
+  // тот же, имя капа говорит, что это за кап; Reload играется на острове Reload.
   // Уже стоят своими вечерами: World Cup Online Open, Pro-Am и Global Championship (скрытые id
-  // Epic), Showdown, Performance Evaluation, Squid Grounds; консольные капы и практика дивизионов
-  // S37 не берутся — карьера играется с ПК, практика шла в другом формате.
-  if (/^OnlineOpen|PerformanceEval|PerfEval|SquidGround|Showdown|DivisionalCup|Console/i.test(key.split('|')[1] + ' ' + r.name) ||
+  // Epic), Showdown, Performance Evaluation, Squid Grounds.
+  if (/^OnlineOpen|PerformanceEval|PerfEval|SquidGround|Showdown/i.test(key.split('|')[1] + ' ' + r.name) ||
       /FNCS Pro-Am|Global Championship/i.test(r.name)) continue;
   const days = Object.keys(r.days || {}).filter(Boolean).sort();
   if (!days.length || !r.pay || !r.pay.EU) continue;
@@ -36,13 +37,26 @@ for (const [key, r] of Object.entries(src)) {
   const id = key.split('|')[1];
   const name = clean(r.name) || id;
   if (posters[id]) art[id] = posters[id];
-  days.forEach((d, i) => out.push({ day: d, id, mode: modeOf(r.mode), n: i + 1, name, p: payKey.get(js) }));
+  const zb = /ZB|ZeroBuild|NoBuild|Zero Build/i.test(key + ' ' + r.name + ' ' + r.mode);
+  days.forEach((d, i) => out.push({ day: d, id, mode: modeOf(r.mode), n: i + 1, name, p: payKey.get(js), zb }));
 }
+/* Офлайн-турниры (tools/measured/lans.json, страницы Liquipedia): приглашение по месту в Power
+   Ranking карьеры (invite — сколько человек там играло; где число не записано — по призовым
+   местам), таблица призов турнира на игрока, одна комната (см. runCareerVictoryNight). */
+const lanFile = path.join(__dirname, 'measured', 'lans.json');
+const lans = fs.existsSync(lanFile) ? JSON.parse(fs.readFileSync(lanFile, 'utf8')) : [];
+lans.forEach(l => {
+  const t = { EU: l.pay };
+  const js = JSON.stringify(t);
+  if (!payKey.has(js)) { payKey.set(js, pays.length); pays.push(t); }
+  const id = 'LAN_' + l.page.replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '');
+  out.push({ day: l.day, id, mode: l.format === 1 ? 'solo' : l.format === 3 ? 'trio' : 'duo', n: 1, name: l.name, p: payKey.get(js), zb: !!l.zb, lan: l.name + ' · ' + l.city, invite: l.invite });
+});
 out.sort((a, b) => a.day < b.day ? -1 : a.day > b.day ? 1 : 0);
 const body = 'const CC_CUPS_ARCH_PAY=' + JSON.stringify(pays).replace(/"(\w+)":/g, '$1:') + ';\n' +
   '// Постеры этих капов — архив Tracker (tools/fetch-archive-posters.js).\n' +
   'Object.assign(CC_CUP_POSTER, ' + JSON.stringify(art) + ');\n' +
-  'const CC_CUPS_ARCH=[\n' + out.map(v => "  {day:'" + v.day + "',id:'" + v.id + "',mode:'" + v.mode + "',n:" + v.n + ',name:' + JSON.stringify(v.name) + ',payT:CC_CUPS_ARCH_PAY[' + v.p + ']}').join(',\n') + '\n];\n';
+  'const CC_CUPS_ARCH=[\n' + out.map(v => "  {day:'" + v.day + "',id:'" + v.id + "',mode:'" + v.mode + "',n:" + v.n + ',name:' + JSON.stringify(v.name) + ',payT:CC_CUPS_ARCH_PAY[' + v.p + ']' + (v.zb ? ',zb:true' : '') + (v.lan ? ',lan:' + JSON.stringify(v.lan) + ',invite:' + v.invite : '') + '}').join(',\n') + '\n];\n';
 const file = path.join(__dirname, '..', 'index.html');
 let s = fs.readFileSync(file, 'utf8');
 const nl = s.includes('\r\n') ? '\r\n' : '\n';

@@ -7,7 +7,8 @@
 const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const { execFileSync } = require('child_process');
 const ROOT = path.resolve(__dirname, '..');
-const cups = JSON.parse(fs.readFileSync(path.join(__dirname, 'measured', 'cups-archive.json'), 'utf8'));
+const cups = Object.assign({}, ...['cups-archive.json', 'cups-archive-console.json']
+  .map(n => path.join(__dirname, 'measured', n)).filter(p => fs.existsSync(p)).map(p => JSON.parse(fs.readFileSync(p, 'utf8'))));
 const posters = JSON.parse(fs.readFileSync(path.join(__dirname, 'measured', 'archive-posters.json'), 'utf8'));
 const ids = Object.keys(posters);
 const out = {}, tmp = path.join(require('os').tmpdir(), 'arch-posters'); fs.mkdirSync(tmp, { recursive: true });
