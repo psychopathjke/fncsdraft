@@ -8137,8 +8137,8 @@ ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:'';
 ccPostBdayEpic:(h,a)=>'С днём рождения, @'+h+'! Сегодня '+a+'. Хорошего сезона 🎂',
 ccBornHint:'Дата рождения — по желанию. Укажи, и в этот день тебя поздравят. Число сверху — сколько тебе на день старта сезона; день рождения ты встретишь уже в нём.',
 ccNewsCongrats:(n,ev)=>'Поздравляем '+n+' с победой — '+ev+'! 🏆',
-ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'РАЗБОР · '+ev+': '+ccTop(p)+'. '+g+' игр, среднее место '+avg+', элимов '+el+' ('+epg+' за игру). Очки: '+plp+' за места, '+elp+' за элимы. По элимам в лобби — '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>ev+' — лидеры вечера',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'РАЗБОР · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' игр, среднее место '+avg+', элимов '+el+' ('+epg+' за игру). Очки: '+plp+' за места, '+elp+' за элимы. По элимам в лобби — '+ccTop(er)+'.',
+ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'лидеры вечера',
 ccLeadCap:'лидеры вечера',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['ВЗЯЛИ 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' наш'+a][(v||0)%4];},
@@ -10129,8 +10129,8 @@ ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:'';
 ccPostBdayEpic:(h,a)=>'Happy birthday @'+h+' — '+a+' today. Have a good season 🎂',
 ccBornHint:'Date of birth — optional. Fill it in and the scene wishes you a happy birthday on the day. The number above is your age on the day the season starts; the birthday itself falls inside it.',
 ccNewsCongrats:(n,ev)=>'Congratulations to '+n+' on the win — '+ev+'! 🏆',
-ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+ev+': '+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>ev+' — stats leaders',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
+ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
 ccLeadCap:'stats leaders',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['WE WON IT 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' is ours'+a][(v||0)%4];},
@@ -11405,8 +11405,8 @@ ccPingServer:city=>'vers le serveur de '+city,
 ccPostBdayEpic:(h,a)=>'Joyeux anniversaire @'+h+' ! '+a+' ans aujourd’hui — bonne saison 🎂',
 ccBornHint:'Date de naissance — facultative. Renseigne-la et le jour venu, on te souhaitera ton anniversaire. Le nombre au-dessus est ton âge au premier jour de la saison ; l’anniversaire, lui, tombe pendant celle-ci.',
 ccNewsCongrats:(n,ev)=>'Félicitations à '+n+' pour la victoire — '+ev+' ! 🏆',
-ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+ev+': '+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>ev+' — stats leaders',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
+ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
 ccLeadCap:'stats leaders',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['ON L’A GAGNÉ 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' est à nous'+a][(v||0)%4];},
@@ -13974,8 +13974,8 @@ ccShotCap:d=>'Coppa Divisione '+d,
 ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:''; if(p===1) return ['TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6'+a, 'un\u2019altra \ud83d\udc10'+a][(v||0)%3]; if(p<=3) return [''+ccTop(p)+' \ud83d\udcaa'+a, ''+ccTop(p)+a+' \ud83d\udd25', ''+ccTop(p)+', per un soffio'+a][(v||0)%3]; return [''+ccTop(p)+' — Divisione '+d+a, ''+ccTop(p)+' questa settimana'+a+'. più in alto la prossima', ''+ccTop(p)+a+'. si continua'][(v||0)%3];},
 ccPostBdayEpic:(h,a)=>'Buon compleanno @'+h+' — '+a+' anni oggi. Buona stagione \ud83c\udf82',
 ccNewsCongrats:(n,ev)=>'Complimenti a '+n+' per la vittoria — '+ev+'! \ud83c\udfc6',
-ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+ev+': '+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>ev+' — stats leaders',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
+ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
 ccLeadCap:'stats leaders',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:''; return ['ABBIAMO VINTO \ud83c\udfc6 '+ev+a, ev+'. TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6 '+ev+a, ev+' \u00e8 nostro'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:''; return [''+ccTopC(p)+' — '+ev+' \ud83d\udcaa'+a, ev+': '+ccTop(p)+a+' \ud83d\udd25', ''+ccTopC(p)+' a '+ev+a][(v||0)%3];},
@@ -16492,8 +16492,8 @@ ccShotCap:d=>'Copa da Divis\u00e3o '+d,
 ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:''; if(p===1) return ['TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6'+a, 'mais uma \ud83d\udc10'+a][(v||0)%3]; if(p<=3) return [''+ccTop(p)+' \ud83d\udcaa'+a, ''+ccTop(p)+a+' \ud83d\udd25', ''+ccTop(p)+', por pouco'+a][(v||0)%3]; return [''+ccTop(p)+' — Divis\u00e3o '+d+a, ''+ccTop(p)+' essa semana'+a+'. mais alto na pr\u00f3xima', ''+ccTop(p)+a+'. seguimos'][(v||0)%3];},
 ccPostBdayEpic:(h,a)=>'Feliz anivers\u00e1rio @'+h+' — '+a+' hoje. Boa temporada \ud83c\udf82',
 ccNewsCongrats:(n,ev)=>'Parab\u00e9ns a '+n+' pela vit\u00f3ria — '+ev+'! \ud83c\udfc6',
-ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+ev+': '+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
-ccNewsStatBoard:(ev,rows)=>ev+' — stats leaders',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
+ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
 ccLeadCap:'stats leaders',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:''; return ['GANHAMOS \ud83c\udfc6 '+ev+a, ev+'. TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6 '+ev+a, ev+' \u00e9 nosso'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:''; return [''+ccTopC(p)+' — '+ev+' \ud83d\udcaa'+a, ev+': '+ccTop(p)+a+' \ud83d\udd25', ''+ccTopC(p)+' no '+ev+a][(v||0)%3];},
@@ -69041,7 +69041,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='760a21fd';
+const CC_BUILD='989bff55';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -102234,7 +102234,11 @@ async function runCareerVictory(){
     await revealStandings(shell2, ranked2, you, 0, null, null, null, null, true);
   }
   removeSkipButton();
-  ccBoardAfter(vicFinal, you, ev.label);
+  /* У записи капа нет label — имя вечера живёт в календаре (DreamCup, Squid
+     Grounds, «Duos Victory Cup 2»). Без него пост аналитика выходил
+     «undefined — stats leaders». */
+  const vicName=((careerYearDays().get(ev.day)||[]).find(x=>x.kind==='victory')||{}).label || ev.lan || ev.name || 'Victory Cup';
+  ccBoardAfter(vicFinal, you, vicName);
 
   if(cash){
     const mine=ccShareOf(cash, you);
