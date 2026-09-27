@@ -1816,7 +1816,7 @@
      27.09: «обводку убери», «не нравится выделение разным цветом», «желтая
      у2026»). */
   #screen-career-create .cc-year-panel .cc-year-tile{position:relative;display:block;text-align:left;
-    padding:34px 12px 10px;border:1px solid rgba(255,255,255,.14);border-radius:0;
+    padding:34px 12px 10px;border:0;border-radius:0;
     background-color:#0e2f38;background-image:var(--yr-art);background-size:cover;
     background-position:center 38%;background-repeat:no-repeat;
     color:var(--ink,#e6ecf5);clip-path:var(--cut);overflow:hidden;
@@ -1835,7 +1835,10 @@
   #screen-career-create .cc-year-panel .cc-year-tile i{position:relative;z-index:2;display:block;
     margin-top:2px;font-style:normal;font-size:9.5px;font-weight:400;letter-spacing:.12em;
     text-transform:uppercase;opacity:.6;}
-  #screen-career-create .cc-year-panel .cc-year-tile:hover{border-color:rgba(255,255,255,.34);background-size:112%;}
+  /* Рамки у плитки нет вовсе: вуаль (::after) ложится только внутрь рамки, и
+     под пикселем рамки арт оставался голым — на светлом арте 2026 снизу это
+     читалось белой полосой (скрин в Notion, 27.09, обведено красным). */
+  #screen-career-create .cc-year-panel .cc-year-tile:hover{background-size:112%;}
   /* Выбранный — сезон, в котором играешь: рамка его цветом, вуаль тоньше, арт ярче. */
   /* Арт выбранного приходится вернуть вручную: у соседнего правила экрана
      (#screen-career-create .cc-chip.on) фон записан СОКРАЩЁННО — background:,
@@ -1849,13 +1852,13 @@
      Арт переобъявляется целиком: у соседнего правила экрана фон записан
      сокращённо (background:), а сокращённая запись стирает background-image. */
   #screen-career-create .cc-year-panel .cc-year-tile.on{
-    border-color:rgba(255,255,255,.2);
+    border:0;
     background-color:#0e2f38;background-image:var(--yr-art);background-size:cover;
     background-position:center 38%;background-repeat:no-repeat;}
   #screen-career-create .cc-year-panel .cc-year-tile.on::after{
     background:linear-gradient(to top, rgba(8,44,46,.82) 34%, rgba(8,44,46,.34) 70%, rgba(8,44,46,0));}
   #screen-career-create .cc-year-panel .cc-year-tile:disabled{opacity:.4;cursor:not-allowed;}
-  #screen-career-create .cc-year-panel .cc-year-tile:disabled:hover{border-color:rgba(255,255,255,.14);background-size:cover;}
+  #screen-career-create .cc-year-panel .cc-year-tile:disabled:hover{background-size:cover;}
   @media (prefers-reduced-motion:reduce){ #screen-career-create .cc-year-panel .cc-year-tile{transition:none;} }
   .cc-tab{border:none;cursor:pointer;font-weight:900;font-style:italic;font-size:12px;
     letter-spacing:.05em;text-transform:uppercase;padding:10px 18px;
@@ -69055,7 +69058,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='d61b7334';
+const CC_BUILD='3e215ac6';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
