@@ -42,21 +42,36 @@ for (const key of TARGETS) {
     if (fs.statSync(img).size < 20000) throw new Error('image blocked ' + url);
   }
   execFileSync('node', [path.join(__dirname, 'png-to-jpg.js'), img, path.join(ROOT, 'art', 'map-' + key + '.jpg'), '0.8']);
-  // Клетка — 7 % кадра вокруг именованной локации, 5 % вокруг ориентира (Landmark): одни
-  // именованные дают 17–26 клеток, а на сотню соло и у остальных островов их около сорока.
-  // Ориентир, чья клетка налезает на уже взятую, пропускается; по возрастанию y.
-  const WANT = 40;
-  const box = (m, S) => {
-    const X = 100 * m.x / bounds, Y = 100 * (bounds - m.y) / bounds;
-    return { x: r2(Math.max(0, Math.min(100 - S, X - S / 2))), y: r2(Math.max(0, Math.min(100 - S, Y - S / 2))), w: S, h: S, n: m.n };
-  };
-  const over = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
-  const rects = pois.map(m => box(m, 7));
+  /* Клетки — как на дроп-картах 2021–2026: прямоугольник на ВСЮ локацию, а не значок вокруг
+     маркера. Именованная локация растёт до 13 % кадра, ориентир (Landmark / Unnamed Location)
+     — до 8 %; где две клетки налезают, общая граница ставится посередине между их центрами по
+     оси, на которой они дальше друг от друга. Одни именованные дают 17–26 клеток, с
+     ориентирами — сорок, как у остальных островов. Ориентир ближе 5 % к уже взятой точке не
+     берётся. По возрастанию y. */
+  const WANT = 40, MIN = 3;
+  const pt = m => ({ X: 100 * m.x / bounds, Y: 100 * (bounds - m.y) / bounds, n: m.n });
+  const pts = pois.map(m => Object.assign(pt(m), { S: 13 }));
   for (const m of marks) {
-    if (rects.length >= WANT) break;
-    const z = box(m, 5);
-    if (!rects.some(r => over(r, z))) rects.push(z);
+    if (pts.length >= WANT) break;
+    const p = pt(m);
+    if (pts.every(q => Math.hypot(q.X - p.X, q.Y - p.Y) >= 5)) pts.push(Object.assign(p, { S: 8 }));
   }
+  const bx = pts.map(p => ({ x0: Math.max(0, p.X - p.S / 2), x1: Math.min(100, p.X + p.S / 2), y0: Math.max(0, p.Y - p.S / 2), y1: Math.min(100, p.Y + p.S / 2), X: p.X, Y: p.Y, n: p.n }));
+  for (let pass = 0; pass < 6; pass++) {
+    for (let a = 0; a < bx.length; a++) for (let b = a + 1; b < bx.length; b++) {
+      const A = bx[a], B = bx[b];
+      if (!(A.x0 < B.x1 && B.x0 < A.x1 && A.y0 < B.y1 && B.y0 < A.y1)) continue;
+      if (Math.abs(A.X - B.X) >= Math.abs(A.Y - B.Y)) {
+        const mid = (A.X + B.X) / 2;
+        if (A.X < B.X) { A.x1 = Math.min(A.x1, mid); B.x0 = Math.max(B.x0, mid); } else { B.x1 = Math.min(B.x1, mid); A.x0 = Math.max(A.x0, mid); }
+      } else {
+        const mid = (A.Y + B.Y) / 2;
+        if (A.Y < B.Y) { A.y1 = Math.min(A.y1, mid); B.y0 = Math.max(B.y0, mid); } else { B.y1 = Math.min(B.y1, mid); A.y0 = Math.max(A.y0, mid); }
+      }
+    }
+  }
+  // Небольшой зазор между соседями, чтобы рамки не слипались в одну линию.
+  const rects = bx.map(b => ({ x: r2(b.x0 + 0.3), y: r2(b.y0 + 0.3), w: r2(Math.max(MIN, b.x1 - b.x0 - 0.6)), h: r2(Math.max(MIN, b.y1 - b.y0 - 0.6)), n: b.n }));
   rects.sort((a, b) => a.y - b.y || a.x - b.x);
   blocks.push({ key, rects });
   console.log(key, SETS[key], 'pois', pois.length, rects.slice(0, 4).map(z => z.n).join(', '));
