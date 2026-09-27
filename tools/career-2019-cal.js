@@ -50,8 +50,8 @@ const CC_SEASONS_2019=[
 ];
 CAREER_YEAR_2019.forEach(r=>{
   const m=/^Major(\d)_2019_/.exec(r[2]);
-  // World Cup Solo и Duos — один остров (h1).
-  if(m && !CAREER_EV_ART_ID[r[2]]) CAREER_EV_ART_ID[r[2]]='art/map-h'+(m[1]==='2' ? 1 : m[1])+'.jpg';
+  // World Cup (Solo и Duos) — ключевой арт World Cup, как у квалов турнира; FNCS — остров сезона.
+  if(m && !CAREER_EV_ART_ID[r[2]]) CAREER_EV_ART_ID[r[2]]=(m[1]==='1' || m[1]==='2') ? 'art/fncs-2019.jpg' : 'art/map-h'+m[1]+'.jpg';
 });
 const CC_SNAPSHOTS_2019=[
   {tag:'h1', from:CC_YEAR_2019_FROM, playIn:/2019 (World Cup (Solo|Duos)|Season X|C2S1) . Grand Finals/, lcq:/2019 (World Cup (Solo|Duos)|Season X|C2S1) . (Semi-Finals|Qualifier|Online Open)/}

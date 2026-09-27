@@ -108504,7 +108504,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b9f59a08';
+const CC_BUILD='08a1a9e9';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -112358,6 +112358,8 @@ function ccHubErrCopyOld(text, done){
   }catch(e){ console.error('скопировать ошибку не вышло:', e); }
 }
 function careerRenderHub(tab){
+  // 2019–2020: состав по этапу года (старый сейв со сквадом с апреля тоже сходит на дуо).
+  try{ if(typeof ccSyncPhaseRoster==='function') ccSyncPhaseRoster(); }catch(e){}
   /* ОТРИСОВКА НЕ ТРАТИТ БРОСКИ ВЕЧЕРА. Пока идёт сеяный вечер (CC_MP_RAND), хаб всё равно
      перерисовывают сетевые события — строка гонки соседа, 'ready', переподключение, — и
      каждый Math.random внутри отрисовки уходил из общего генератора в СЛУЧАЙНЫЙ момент
@@ -115325,6 +115327,8 @@ function careerAdvanceTo(iso){
   if(typeof ccIs2023==='function' && ccIs2023()) careerMigrateNoDiv();
   // 2022-й: дивизионы только осенью — ступень по рейтингу в день Placement Cup, после — «вся сцена».
   if(typeof ccIs2022==='function' && ccIs2022()){ ccDiv22Place(); careerMigrateNoDiv(); }
+  // 2019–2020: состав по этапу года (дуо → трио → сквад). См. ccPhaseRoster.
+  if(typeof ccSyncPhaseRoster==='function') ccSyncPhaseRoster();
   careerSave();
 }
 function careerAdvanceBody(iso){
@@ -115480,7 +115484,19 @@ function careerSquadSize(){
   return n===3 ? 3 : n===4 ? 4 : 2;
 }
 // Состав года карьеры при создании: 2019 — сквад (C2S1 FNCS), трио-годы — трио, остальные — дуо.
-function ccYearRosterSize(y){ return y===2019 ? 4 : (y===2025 || y===2021 || y===2020) ? 3 : 2; }
+function ccYearRosterSize(y){ return y===2019 ? 2 : y===2020 ? 2 : (y===2025 || y===2021) ? 3 : 2; }
+/* Состав 2019-го и 2020-го идёт по этапам года, как было у игроков: 2019 — дуо на World Cup
+   (соло-недели — одному), с августа трио (FNCS Season X), с 13 октября сквад (C2S1); 2020 — дуо
+   (C2S2; C2S3 — соло одному), с 27 августа трио (C2S4). Вне этих лет — 0 (размер не трогается). */
+function ccPhaseRoster(){
+  if(typeof ccIs2019==='function' && ccIs2019()){ const d=careerToday(); return d<'2019-08-01' ? 2 : d<'2019-10-13' ? 3 : 4; }
+  if(typeof ccIs2020==='function' && ccIs2020()) return careerToday()<'2020-08-27' ? 2 : 3;
+  return 0;
+}
+function ccSyncPhaseRoster(){
+  const cr=CAREER && CAREER.career; if(!cr || CC_EVENT_SIZE) return;
+  const ps=ccPhaseRoster(); if(ps && cr.size!==ps) cr.size=ps;
+}
 /* What a season was played in, which is not what its number implies.
 
    The archive read the format off the parity of the season number — season two
@@ -116833,8 +116849,8 @@ const CC_SEASONS_2019=[
 ];
 CAREER_YEAR_2019.forEach(r=>{
   const m=/^Major(\d)_2019_/.exec(r[2]);
-  // World Cup Solo и Duos — один остров (h1).
-  if(m && !CAREER_EV_ART_ID[r[2]]) CAREER_EV_ART_ID[r[2]]='art/map-h'+(m[1]==='2' ? 1 : m[1])+'.jpg';
+  // World Cup (Solo и Duos) — ключевой арт World Cup, как у квалов турнира; FNCS — остров сезона.
+  if(m && !CAREER_EV_ART_ID[r[2]]) CAREER_EV_ART_ID[r[2]]=(m[1]==='1' || m[1]==='2') ? 'art/fncs-2019.jpg' : 'art/map-h'+m[1]+'.jpg';
 });
 const CC_SNAPSHOTS_2019=[
   {tag:'h1', from:CC_YEAR_2019_FROM, playIn:/2019 (World Cup (Solo|Duos)|Season X|C2S1) . Grand Finals/, lcq:/2019 (World Cup (Solo|Duos)|Season X|C2S1) . (Semi-Finals|Qualifier|Online Open)/}
@@ -120960,6 +120976,8 @@ function careerCupField(cr, mine, size, salt, open, sharp){
     // of them, and this holds the same rule against you and your partner.
     if(d.cards.some(c=>taken.has(hKey(c)))) return;
     d.cards.forEach(c=>taken.add(hKey(c)));
+    // Соло-вечер (World Cup Solo, C2S3): пара года садится двумя одиночками, а не командой.
+    if(per===1){ d.cards.forEach(c=>{ if(teams.length>=need) return; const t=careerTeam([c], false, open); t.name=teamLabel([c]); teams.push(t); }); return; }
     const chunk=d.cards.slice();
     while(chunk.length<per){
       // Near the pair rather than near the division, so a strong duo does not

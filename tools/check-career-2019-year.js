@@ -43,6 +43,9 @@ const BOOT = `
     s.player.attrs=ccRookieAttrs(96, 'roleIGL');
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
     careerEntry();
+    // Состав по этапу года: лишние тиммейты сверх мест этапа отпускаются (как сделал бы игрок).
+    careerRenderHub('centre');
+    if((CAREER.partners||[]).length>careerMateSeats()){ CAREER.partners=CAREER.partners.slice(0, careerMateSeats()); careerSave(); careerRenderHub('centre'); }
   };
   const playThrough=async what=>{
     const play=document.querySelector('#screen-career-hub .ch-play');
@@ -65,7 +68,10 @@ const BOOT = `
     check('карточки 2019-го есть', k.length>3000, String(k.length));
     seed(CC_YEAR_2019_FROM);
     check('год — 2019', ccCalYear()===2019 && ccIs2019(), String(ccCalYear()));
-    check('состав года — сквад', careerSquadSize()===4 && ccTeams(50)===25, String(careerSquadSize()));
+    careerRenderHub('centre');
+    check('весной состав — дуо (World Cup)', careerSquadSize()===2, String(careerSquadSize()));
+    const soloField=ccWithEventSize(1, ()=>careerCupField(CAREER.career, [careerCard()], 200, 'solo-probe', true, 0));
+    check('в соло-поле нет пар', soloField.length>50 && soloField.every(t=>(t.squad||[]).length===1), soloField.filter(t=>(t.squad||[]).length!==1).length+' of '+soloField.length);
     check('дивизионов нет', ccNoDivisions());
     const days=careerYearDays();
     const has=id=>[...days.values()].some(l=>l.some(e=>e.id===id));
@@ -81,7 +87,7 @@ const BOOT = `
     const paid=Object.keys(CAREER.career.worldPaid||{});
     out.notes.paid=paid;
     check('мир сыграл оба финала World Cup и два FNCS', ['1|major1','1|major2','1|major3','1|major4'].every(x=>paid.indexOf(x)>=0), paid.join(','));
-    check('после вечеров состав — снова сквад', careerSquadSize()===4 && CC_EVENT_SIZE===0);
+    check('в декабре состав — сквад (C2S1)', careerSquadSize()===4 && CC_EVENT_SIZE===0, String(careerSquadSize()));
     // 2. World Cup Solo, неделя 1, суббота — соло.
     seed('2019-04-13');
     const w1=await playThrough('WC Solo W1 R1');

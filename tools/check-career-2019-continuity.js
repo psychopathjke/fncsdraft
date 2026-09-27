@@ -30,7 +30,7 @@ const BOOT = `
     const s=JSON.parse(localStorage.getItem('fncsdraft_career')); s.player.attrs=ccRookieAttrs(92,'roleIGL'); localStorage.setItem('fncsdraft_career', JSON.stringify(s));
     careerLoad(); careerMigrateSize();
     const cr=CAREER.career;
-    const years=[[2020,3],[2021,3],[2022,2],[2023,2],[2024,2],[2025,3],[2026,2]];
+    const years=[[2020,2],[2021,3],[2022,2],[2023,2],[2024,2],[2025,3],[2026,2]];
     out.notes.years=[];
     for(let i=0; i<years.length; i++){
       careerNewSeason();

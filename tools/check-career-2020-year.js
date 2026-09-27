@@ -42,6 +42,9 @@ const BOOT = `
     s.player.attrs=ccRookieAttrs(96, 'roleIGL');
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
     careerEntry();
+    // Состав по этапу года: лишние тиммейты сверх мест этапа отпускаются (как сделал бы игрок).
+    careerRenderHub('centre');
+    if((CAREER.partners||[]).length>careerMateSeats()){ CAREER.partners=CAREER.partners.slice(0, careerMateSeats()); careerSave(); careerRenderHub('centre'); }
   };
   const playThrough=async what=>{
     const play=document.querySelector('#screen-career-hub .ch-play');
@@ -64,7 +67,8 @@ const BOOT = `
     check('карточки 2020-го есть', k.length>3000, String(k.length));
     seed(CC_YEAR_2020_FROM);
     check('год — 2020', ccCalYear()===2020 && ccIs2020(), String(ccCalYear()));
-    check('состав года — трио', careerSquadSize()===3);
+    careerRenderHub('centre');
+    check('весной состав — дуо (C2S2)', careerSquadSize()===2, String(careerSquadSize()));
     const days=careerYearDays();
     const has=id=>[...days.values()].some(l=>l.some(e=>e.id===id));
     check('календарь: C2S2, C2S3, C2S4', ['Major1_2020_W1R1','Major1_2020_Final','Major2_2020_W1R12','Major2_2020_Heat2','Major3_2020_W3R2','Major3_2020_Final'].every(has));
