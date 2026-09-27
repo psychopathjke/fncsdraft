@@ -23,6 +23,9 @@ const GAP_MS = 31000;
 const REG = { 'Europe': 'EU', 'North America': 'NAC', 'North America East': 'NAC', 'North America Central': 'NAC', 'North America West': 'NAW',
               'Brazil': 'BR', 'Asia': 'ASIA', 'Middle East': 'ME', 'Oceania': 'OCE' };
 const PAGES = {
+  // 2022: сезоны Chapter 3 (C3S1–C3S3) — Гранд-финалы по регионам, NA East и West отдельно; Invitational в Роли.
+  2022: { regions: ['Europe', 'North America East', 'North America West', 'Brazil', 'Asia', 'Middle East', 'Oceania'], majors: [1, 2, 3], globals: 'Fortnite Champion Series/2022/Invitational',
+          title: (n, r) => 'Fortnite Champion Series/Chapter 3/Season ' + n + '/Grand Finals/' + r },
   // 2023: Мейджор 1 — NA East и West, со второго — NA Central; несуществующие страницы пропускаются.
   // Недели (Week 1–3) — те, кто до финала не дошёл.
   2023: { regions: ['Europe', 'North America East', 'North America West', 'North America Central', 'Brazil', 'Asia', 'Middle East', 'Oceania'], majors: [1, 2, 3], globals: 'Fortnite Champion Series/2023', extra: ['Week 1', 'Week 2', 'Week 3'] },
@@ -32,7 +35,7 @@ const PAGES = {
   2025: { regions: ['Europe', 'North America Central', 'North America West', 'Brazil', 'Asia', 'Middle East', 'Oceania'], majors: [1, 2, 3], globals: 'Fortnite Champion Series/2025', extra: ['Last Chance Lobby'] }
 };
 const want = process.argv.slice(2).map(Number).filter(y => PAGES[y]);
-const YEARS = want.length ? want : [2023, 2024, 2025];
+const YEARS = want.length ? want : [2022, 2023, 2024, 2025];
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 function fetchHtml(title) {
@@ -67,7 +70,7 @@ function players(html) {
     data[y] = data[y] || {};
     const cfg = PAGES[y];
     const jobs = [];
-    cfg.majors.forEach(n => cfg.regions.forEach(r => jobs.push({ key: 'major' + n, reg: REG[r], title: 'Fortnite Champion Series/' + y + '/Major ' + n + '/' + r })));
+    cfg.majors.forEach(n => cfg.regions.forEach(r => jobs.push({ key: 'major' + n, reg: REG[r], title: cfg.title ? cfg.title(n, r) : 'Fortnite Champion Series/' + y + '/Major ' + n + '/' + r })));
     jobs.push({ key: 'globals', reg: null, title: cfg.globals });
     (cfg.extra || []).forEach(sub => cfg.majors.forEach(n => cfg.regions.forEach(r => jobs.push({ key: 'major' + n + 'q', reg: REG[r], title: 'Fortnite Champion Series/' + y + '/Major ' + n + '/' + r + '/' + sub }))));
     for (const job of jobs) {

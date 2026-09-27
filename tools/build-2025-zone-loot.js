@@ -55,6 +55,12 @@ const SETS = {
   e2: {map: 'Map:Chapter 4: Season 2 (24.30)', art: 'art/map-e2.jpg'},
   e3: {map: 'Map:Chapter 4: Season 3 (25.30)', art: 'art/map-e3.jpg'},
   e4: {map: 'Map:Chapter 4: Season 4 (26.20)', art: 'art/map-e4.jpg'},
+  /* Острова 2022-го — патч на выходные Гранд-финала: C3S1 (5–6 марта) — 19.40, C3S2 (28–29 мая) —
+     20.40, C3S3 (13–14 августа) — 21.40, Роли (12–13 ноября) — 22.30. */
+  k1: {map: 'Map:Chapter 3: Season 1 (19.40)', art: 'art/map-k1.jpg'},
+  k2: {map: 'Map:Chapter 3: Season 2 (20.40)', art: 'art/map-k2.jpg'},
+  k3: {map: 'Map:Chapter 3: Season 3 (21.40)', art: 'art/map-k3.jpg'},
+  k4: {map: 'Map:Chapter 3: Season 4 (22.30)', art: 'art/map-k4.jpg'},
   s42:     {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
   s42solo: {map: 'Map:Chapter 7: Season 4 (42.00)', art: 'art/map-s42.jpg'},
   /* Острова Мейджоров 2026 — только ради счёта СУНДУКОВ по коробкам (7.09, «сундуков
