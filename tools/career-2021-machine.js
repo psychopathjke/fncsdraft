@@ -263,7 +263,7 @@ async function runCareerMajor2021(){
           seen.add(ccSeatKey(t)); field.push(t);
         });
       }
-      stageLabel=L().ccYr24Qual(ev.n, ev.q, r);
+      stageLabel=ccYearLabel('Major'+ev.n+'_2021_Q'+ev.q+'R'+r, careerToday(), careerToday());
       ranked=await play(field, spec, stageLabel, open);
       place=ranked.indexOf(you)+1;
       if(r===R){
@@ -295,7 +295,7 @@ async function runCareerMajor2021(){
     spec={games:CC_M21.semi.games, cut:heat.cut};
     field=rowsOf(heat.rows);
     if(field.indexOf(you)<0) field.push(you);
-    stageLabel=L().ccYr21Heat(ev.n, hi+1);
+    stageLabel=L().ccYrXHeatN(ev.label, hi+1);
     ranked=await play(field, spec, stageLabel, false);
     place=ranked.indexOf(you)+1;
     m.heatRes[hi]={up:ranked.slice(0, heat.cut).map(seedOf), rest:ranked.slice(heat.cut).map(seedOf)};
@@ -337,10 +337,10 @@ async function runCareerMajor2021(){
     cash=majorPrize(place);
     if(cash) ccPayIn(ccShareOf(cash, you));
     careerReachAdd(careerReachResult(place, field.length, 1, 'major'));
-    careerNews(cash?'good':'flat', cash?'ccNewsMajCash':'ccNewsMajNoCash',
-               cash?[ev.n, place, ccNum(cash)]:[ev.n, place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
+    careerNews(cash?'good':'flat', cash?'ccNewsEvCash':'ccNewsEvNoCash',
+               cash?[ccSeasonEvName(2021, ev.n), place, ccNum(cash)]:[ccSeasonEvName(2021, ev.n), place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
     if(place>field.length/2) careerNews('bad', 'ccPostTriedBest', []);
-    careerCongrats(ranked, you, ev.n===5 ? L().ccYr21Gr : L().ccCongratsMajor(ev.n));
+    careerCongrats(ranked, you, L().ccCongratsEv(ccSeasonEvName(2021, ev.n)));
     cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
   } else {
     careerNews(through?'good':'flat', through?'ccNewsMajThrough':'ccNewsMajOut',

@@ -7651,6 +7651,7 @@ ccNewsMajThrough:(what,p,of)=>what+': '+ccTop(p)+' из '+of+', проход д�
 ccNewsMajOut:(what,p,of)=>what+': '+ccTop(p)+' из '+of+', дальше без тебя',
 ccNewsMajCash:(n,p,m)=>'Финал Мейджора '+n+': '+ccTop(p)+', заработано $'+m,
 ccNewsMajNoCash:(n,p,of)=>'Финал Мейджора '+n+': '+ccTop(p)+' из '+of,
+ccNewsEvCash:(n,p,m)=>'Финал '+n+': '+ccTop(p)+', заработано $'+m, ccNewsEvNoCash:(n,p,of)=>'Финал '+n+': '+ccTop(p)+' из '+of, ccCongratsEv:n=>'финал '+n, ccYrSemiDay:d=>'полуфинал · день '+d,
 ccMoneyTitle:'Призовые',
 ccMoneySeason:sn=>'Сезон '+sn, ccMoneyYear:y=>'Год '+y, ccMoneyAll:'За всё время',
 ccMoneyEmpty:'Пока никто ничего не выиграл',
@@ -9645,6 +9646,7 @@ ccNewsMajThrough:(what,p,of)=>what+': '+ccTop(p)+' of '+of+', through',
 ccNewsMajOut:(what,p,of)=>what+': '+ccTop(p)+' of '+of+', the run ends',
 ccNewsMajCash:(n,p,m)=>'Major '+n+' Finals: '+ccTop(p)+', $'+m+' earned',
 ccNewsMajNoCash:(n,p,of)=>'Major '+n+' Finals: '+ccTop(p)+' of '+of,
+ccNewsEvCash:(n,p,m)=>n+' Finals: '+ccTop(p)+', $'+m+' earned', ccNewsEvNoCash:(n,p,of)=>n+' Finals: '+ccTop(p)+' of '+of, ccCongratsEv:n=>n+' Finals', ccYrSemiDay:d=>'Semi-Finals · day '+d,
 ccMoneyTitle:'Prize money',
 ccMoneySeason:sn=>'Season '+sn, ccMoneyYear:y=>'Year '+y, ccMoneyAll:'All time',
 ccMoneyEmpty:'Nobody has won anything yet',
@@ -11616,6 +11618,7 @@ ccNewsMajThrough:(what,p,of)=>what+' : '+ccTop(p)+' sur '+of+', qualifié',
 ccNewsMajOut:(what,p,of)=>what+' : '+ccTop(p)+' sur '+of+', le parcours s’arrête',
 ccNewsMajCash:(n,p,m)=>'Finale du Major '+n+' : '+ccTop(p)+', '+m+' $ gagnés',
 ccNewsMajNoCash:(n,p,of)=>'Finale du Major '+n+' : '+ccTop(p)+' sur '+of,
+ccNewsEvCash:(n,p,m)=>'Finale '+n+' : '+ccTop(p)+', '+m+' $ gagnés', ccNewsEvNoCash:(n,p,of)=>'Finale '+n+' : '+ccTop(p)+' sur '+of, ccCongratsEv:n=>'finale '+n, ccYrSemiDay:d=>'demi-finales · jour '+d,
 ccMoneySeason:sn=>'Saison '+sn,
 ccMoneyYear:y=>'Année '+y,
 ccMoneyAll:'Depuis toujours',
@@ -13796,6 +13799,7 @@ ccNewsMajThrough:(what,p,of)=>what+': '+ccTop(p)+' su '+of+', passato',
 ccNewsMajOut:(what,p,of)=>what+': '+ccTop(p)+' su '+of+', il percorso finisce',
 ccNewsMajCash:(n,p,m)=>'Finali del Major '+n+': '+ccTop(p)+', $'+m+' guadagnati',
 ccNewsMajNoCash:(n,p,of)=>'Finali del Major '+n+': '+ccTop(p)+' su '+of,
+ccNewsEvCash:(n,p,m)=>'Finale '+n+': '+ccTop(p)+', $'+m+' guadagnati', ccNewsEvNoCash:(n,p,of)=>'Finale '+n+': '+ccTop(p)+' su '+of, ccCongratsEv:n=>'finale '+n, ccYrSemiDay:d=>'semifinali · giorno '+d,
 ccMoneySeason:sn=>'Stagione '+sn,
 ccMoneyYear:y=>'Anno '+y,
 ccMoneyYou:p=>'Sei '+ccTop(p)+' per montepremi. Gli stipendi qui non contano',
@@ -16315,6 +16319,7 @@ ccNewsMajThrough:(what,p,of)=>what+': '+ccTop(p)+' de '+of+', passou',
 ccNewsMajOut:(what,p,of)=>what+': '+ccTop(p)+' de '+of+', a caminhada acaba',
 ccNewsMajCash:(n,p,m)=>'Finais do Major '+n+': '+ccTop(p)+', $'+m+' ganhos',
 ccNewsMajNoCash:(n,p,of)=>'Finais do Major '+n+': '+ccTop(p)+' de '+of,
+ccNewsEvCash:(n,p,m)=>'Final '+n+': '+ccTop(p)+', $'+m+' ganhos', ccNewsEvNoCash:(n,p,of)=>'Final '+n+': '+ccTop(p)+' de '+of, ccCongratsEv:n=>'final '+n, ccYrSemiDay:d=>'semifinais · dia '+d,
 ccMoneySeason:sn=>'Temporada '+sn,
 ccMoneyYear:y=>'Ano '+y,
 ccMoneyYou:p=>'Voc\u00ea \u00e9 '+ccTop(p)+' em premia\u00e7\u00e3o. Sal\u00e1rios n\u00e3o contam aqui',
@@ -24038,6 +24043,8 @@ const H3_NAT={"Mitr0":"nl","Letw1k3":"ru","Domentos":"lv","Aqua":"at","BELAEU":"
 const H4_NAT={"Pez1x":"se","Mitr0":"nl","Saevid":"ie","lolb0om":"ie","RedRush":"se","faze_20packngts":"se","Whai.":"se","antwon 67":"us","Aqua":"at","Letw1k3":"ru","Domentos":"lv","xRobloxPro2016x":"pl","yagsou 鹰":"np","Rakso":"pl","Coffеh":"se","EliteBoxedYou-_-":"gb","steptr bro":"ru","iRezUmi":"ru","Umplify":"nl","Miro":"nl","Matsoe":"nl","Hunter":"fr","Stormyrite":"ua","Siberiajkeе":"ru","Kinstaar Aim.exe":"ch","Kyzen":"fr","castеry":"gb","M a r t o zㅤ":"nl","Klusiabtw":"dk","Endretta":"no","zodieu yt":"no","smfdb Mayhem":"ru","Azze-.奇蹟":"ua","HazzthebestMC":"gb","nebbyxy":"gb","jason7676":"de","SvendProت":"dk","aіmdancing":"dk","maestrofnbr91":"ch","krejz 999":"pl","Exilee2X":"il","Tête2Noeilfreure":"fr","trippernn":"dk","snap":"ca","perikleeeee":"rs","Gemz_":"gb","MinZho":"fi","GLORE Wraxx":"cz","Hаnckee":"dk","10k earnings.":"fi","SliX":"fi","Swag":"dk","BELAEU":"fi","я Pate1k":"no","Freemok":"ua","RιckyDιckyDoDahG":"pl","DiegoGB ツ":"es","WingS":"ua","FuryLegendary":"ru","Wulfee":"fr","ZXC KongTV":"ru","Crakyx3":"fr","m a r c o t e":"fr","xPlash.":"es","wаm":"fi","Pepe 文":"fi","DRAGONSAUSAGE":"fi","tommy.byrne":"ie","Arcоn":"no","Zіd FEHU":"it","Fray":"de","Kylix":"gb","Khuna":"gb","Gеanzha":"no","Hen":"gb","zzziekaj":"gb","wkey LYGHT":"de","Tobi マ":"fi","VHV Kris":"no","Pr0vokd .":"gb","nova 察":"hu","c43 amg driver":"cz","Dagur氷":"is","Rexoo":"gb","Imsdalo":"se","svaki999":"dk","ayuм":"pl","r8teful":"se","Professor Vos":"nl","quadrа":"se","23 cal":"gb","leonflares":"jp","oldyz .":"ru","IRAD 91":"fr","Mayzen 巳":"fr","tristan_caro12":"fr","Kiujy_Y":"es","Erouce":"se","GhostyNallanVort":"gb","YOUNESǃ":"de","swyzz a0xyl":"de","avrgbtw":"no","Vortexers":"gb","qweqew1":"pl","forcezkiy 77":"ua","rolixen":"ua","Flecken":"dk","Connie .":"dk","637Lind":"dk","h2nnytrx":"ge","KPI MаteoZ":"ad","Νxthan":"fr","Nittle":"us","Eclipsae":"us","Tristan Hipp":"us","00 Fiber":"us","graaaaazca":"us","Daxorita":"us","STO":"us","Stretch ":"us","Nut":"ru","Boomer BlooTea":"us","Himiko .":"us","Shaedess":"fi","Code Crimz":"us","life ζ":"us","Jamper":"us","Voil":"us","Ceice":"us","Riversan":"us","Cazz":"us","atleij ay лол 7":"us","Knight":"us","Hornеt":"us","shiba sho":"us","Klass":"us","Сlamps":"ca","Cilo.":"us","Osp":"us","old ahh piece":"us","Outcast Jacobaqi":"gl","Tossily":"us","enchant gage":"us","vvPunisher":"us","tendу":"us","joiroh":"us","Prallyǃ":"us","Kydra.":"us","scylix":"us","Liquid POACH":"us","zum":"ca","hоax":"ca","Twitch.Strodles":"us","Kickbаck":"us","Ajerss":"us","bunzy ち":"us","Shmеcked":"us","Pourings":"us","Prien on Twitch":"us","JunoBob":"us","Armond.":"us","jackymontana":"us","ЅYCО":"us","Fatch":"ca","NicFN":"ca","TabzG":"us","LordNM":"us","doh2c":"us","imberger":"us","Сryp":"us","VIPER CHIMPIN":"us","pgod":"pe","Rampage θ":"pe","TimburrUwU":"us","twitter troojanG":"us","iNV Blasta":"us","dankline":"us","J Ep":"us","ohsnaz":"us","Invalidǃ":"us","wild301tv":"us","Tech With JT":"us","Loadist.":"us","DIG Fifty":"us","Khuu lol":"us","Grenades":"us","Trap":"us","Сriz":"us","Pandushh":"us","Spayde":"us","PURE5T":"us","WASHED CASSIUS":"us","whos Teo":"co","JFree":"us","DonksLUL":"us","ran vulry":"us","aaaajneb":"us","TTV YorkL1VE":"us","Ess tew":"us","Jafe1x":"us","JackizGodly":"us","Nounzy":"us","MiH Sysverse 2k":"us","Нake":"us","Septimane":"us","dopi 3":"mt","Dabzi.":"ph","Powur":"us","Nitrix":"us","studiousdave":"us","Chris":"us","LühGeeked":"us","ranch1753":"us","thaitanks":"us","Sake 999":"us","tonesy":"us","pzuhs":"us","760 Kylo":"us","tоff":"us","Zoommba":"ca","Kytrex":"us","Extinct":"us","Bukakalypse .":"us","vokrat gosh":"us","RedTomato890736":"us","tommy -_-":"us","mххse":"ca","sonder x_x":"us","ᴳᴳ.ϻr.ʙʟᴀᴄқツ":"us","Kehnys":"us","iRewqq":"us","tikkles.":"us","DNWORKS.CO":"us","millianlll":"us","Cadеt":"us","Unlocalize":"mx","Sly booperr":"us","Drew":"us","awaller.":"us","johnny":"us","LeDevilz":"ca","TwitchTvTyler10":"us","Waniga":"us","briskey ツ":"us","User-a507e79236":"us","BeastBoу":"us","auhdi":"us","1400 Preme":"us","Gatekka":"us","Shadow":"us","SpinelessSchlump":"us","Pablofn.":"us","ykm 7":"us","nǃlla wafers":"us","Cuvey":"us","nötJäger":"mx","Nizma.":"us","breaduh":"ca","CrackerChan":"us","сalvin":"us","chicken satoru":"us","Mechton":"ca","21 Kai":"us","Dementiа":"mx","Zeebasow":"mx","Honey.cute1314":"mx","Chefsitо":"co","jdоt":"us","Cameras GOGI seb":"us","nayn4ySK":"us","yb wavy":"us","Deadshotfnl":"mx","marc 〆":"us","Witchazel":"us","Hayden830":"us","washed bow":"us","TTV JymbowSlice":"us","2lettaz":"us","flakers":"us","GuyAiden":"us","theftlmao":"us","Salty AYAAN":"us","ISnipe20.":"us","Walay":"us","Raпger":"ca","oаsis":"us","hannhツ":"us","roos clues":"us","Tracer":"us","User-38d75722ce":"us","nkо":"us","grovr.":"us","blakejaeger":"us","S M A L L Y":"us","Arjaydub":"us","Sliinky":"us","LEE.OH":"us","tiderese maxey":"nl","Rays":"us","Coach Chad.":"us","Flixqzy":"us","chunkymonkey543":"us","The Roaster5.0":"us","Krytmas":"ca","TT KingSauul":"us","verT":"us","nolifeispainted":"us","CurtQG":"us","fooǃ":"us","xxxxǃǃǃǃ":"br","Filipe":"br","technoviking46":"va","w estevin":"br","187 ـ رئيس الوزر":"cl","Pattaty":"br","mxchinesa":"br","Clipnode 28":"ar","dyfsssj":"ar","OPai":"br","lorax ":"br","stellar snx":"cl","Beatsburn":"cl","Eleon M249":"cl","skiper ay":"py","foronezx":"br","TCE spıtflow":"br","hMbox":"br","Prodigy 33":"br","Phzin":"br","Lasers":"br","fakkz endless":"ar","xlг8":"ar","thz1njesuS":"br","KBR":"br","sohan666.":"br","diofvǃ":"ar","CUIDADО CONMIGО":"ar","zytlee":"cl","PROP Ӝ":"br","Gabiruga JM":"br","O Reira":"br","Cadu":"br","Felipe zuus":"br","randomuserjajaja":"br","VICTOXXXXTRANHO":"br","ʟoow 亗":"br","gelado da galera":"br","t0wskyy":"pt","bezard perigo":"br","kaykywhale":"br","Kimera 777":"br","Lorde":"br","Liimaa":"se","Brabo zzZ":"br","top3 brasileirao":"br","xanboih":"cl","Pincistoss":"pe","Wey":"br","skills o GRANDE":"ru","SkeetDev999":"br","Weliaz":"br","lemu4x":"br","亗ｲのｲﾉ亗":"ar","xXLaManuelaXx":"ar","Bryan":"br","Ed.Winter":"br","cicca free paths":"ar","khysto fvǃ":"cl","t1no best player":"uy","baby turner":"uy","Leozinn BANDIDO":"br","AnyBødyKilla":"br","Tefoyo":"ar","тsk s":"ar","mystickftw.":"br","Lucоǃ":"br","ღِّ Hello kitty":"br","Bgdzin.":"br","abominavel digo":"br","vinе.":"br","ɛu Üʟtʀå":"br","nagi ヘ":"ar","fazer":"ar","xKovak":"ar","гeam":"ar","Tomi204":"ar","s6ntzrrPDF":"ar","1st O.B.":"pe","j0das":"pe","0x7577D35c6a2b28":"br","NinhoK1ng888":"br","LURKER 力":"br","ˡᵒʸᵃˡᵗʸツ":"cl","KАLIFA PLS":"cl","Luiston7":"cl","gabrielh99":"br","Uncle Turlet":"br","Exileyd":"br","ztfdw9k8u5r7z2":"br","Rinconk1ng":"de","fdccccccc":"ar","Batatinha_exe":"br","AZ Spy i9 ツ":"br","kalluto afoito":"br","vichoobtw":"cl","schwartz9x":"br","Six マ":"br","pvS 999":"cn","Fuzy AMA JESUS":"br","sweаm":"br","1bryan gallagher":"ar","TommyMDQ":"ar","Dreus2":"cl","Gary Jr7":"cl","Stalin Dápija":"ar","Salastkbronnǃ":"ar","funizera":"pl","rola sushi":"ar","JijuX noti":"ar","pibbleM.":"ar","Ｍitr0 .":"ar","Fishy":"ar","kotash77ǃ":"ar","Granjero 247":"ar","Giyu-":"br","bezeUM":"br","Jm334.exe":"ar","Müller 444":"ar","ReDeBoca32":"ar","Aguzzs1":"ar","notdariо":"ar","tropphynada":"ar","Agussed":"ar","filipe.tsx":"br","axeddy":"br","NEW bagu pagode":"br","ßry.":"pe","DelPiero20 ϟ":"pe","Jssry.":"pe","hoաl":"br","JOZZ艾":"ar","Ig Edwnnn24_":"ar","WarTroped":"br","asejerej":"ar","GGOrión":"ar","wkey Shapp":"ar","gokz AA":"ar","Faluve":"ar","User-d6fcba3dd7":"br","sntgnesy":"ar","Quickss":"kr","T1 SinOoh 666":"kr","Rialy":"jp","imwintеr":"jp","Peterpan":"kr","そふぃあだよおおおおおお":"jp","FPX_Evilmare":"tw","tototoǃ":"jp","Yusea":"jp","DRX Zest":"kr","Swillium":"jp","ALBA-A fa1zzy":"ru","J Ǿ Ƙ Ê Ȑ":"hk","Yah 冰川那边的小黄人":"cn","长这么涩我草泥了要":"cn","Fire":"jp","bloom":"kr","bykn":"jp","METALSWARF":"jp","べるしあ":"jp","overStun.":"ru","fortnite引退":"jp","なかやま0604":"jp","d.á.":"jp","urinchan1":"jp","NEXUS.33歳独身ぬっくん":"jp","ǀƖǀƖǀƖǀƖǀƖǀ":"jp","Ouch Stomatitis":"jp","Ambition":"cn","ADUO21312":"th","青い鳥愛護協会理事長らりーばーど":"jp","Flecha PRIME":"jp","Scaryㅤㅤㅤ":"ae","Souriano":"ae","AdaM 水":"my","HavoK Yoxer ム":"ae","OneShоt.":"bh","QnDx":"om","stilson 823ǃ":"lb","LeziX ":"sa","Raed less":"sa","Snowyka":"sa","RV":"sa","skrtpewpew":"sa","pewwepewpewpewwe":"sa","ICR cads":"id","CHINA NAMBA WAN了":"se","EquaTe Cryorr.":"id","ANB Tuna":"eg","P5EK 11":"kw","mellfart":"jp","JoeGoldberg1967":"ae","wasp nomfu":"my","Mevǃ":"sg","izzizolimamo둘":"bb","wisа":"sg","7Months Galassia":"ph","Moon ӝ":"sg","Spirit.qq":"sg","小鸡白":"sg","DD on Dior":"sg","liryC":"sg","SCYTES toggle.":"my","ᴱᴸʸˢˢᴬ_":"sa","MonkeyZoom444":"ae","Thunder Dazlly":"sa","shifu 34":"np","HeliumNuts":"in","yoitsmee":"in","TSK Captain":"sa","User-name 55213":"vn","klopzrr":"id","denn1sg0d":"id","aqеel":"pt","Rampage":"ae","SINLORD7":"in","виролд":"in","emotional kid":"ae","SCYTES roushdi10":"th","w6nu":"sa","ABUFAL7":"sa","AJixn":"sg","kаydenfoo":"sg","Adapter":"sa","Hero":"sa","cyx":"sg","lil Mshary":"nl","7xHamper":"in","pesal.xyz":"id","KeenH23":"id","Mаrkу ϟ":"sg","Sanctier":"sg","Кkkkkkkkkkkk":"sa","1TAP_Silence":"in","GODLIKETS":"in","1tap Blurry":"in","L . Lawliet":"in","Lyntr00":"id","spongebobbbyyy":"id","0G Cray0n":"cn","kquid og":"us","Loyal Eshz 11 真":"au","2AMa Aftersky":"us","Sync":"au","slаya":"nz","worthy":"au","Tyraxe":"au","Jace":"au","Looter":"au","cracksfn 74":"au","41crim":"au","westy.-":"nz","Angas x":"au","GEN oj":"au","koswy":"gb","kаiro":"au","nаνy":"au","cat flobber":"jp","PLPE DJ IS BAK":"au","lowurr":"au","verysorrey04 TTV":"au","Tsuǃ":"au","tekashi":"au","cаlеb.":"au","overt zanzjerss":"nz","Mogged By Blake":"au","dev0nhendryx":"au","vF m1nt":"au","qeasteRwuajaja":"cl","Mangozk":"nz","Triphey22":"au","mystаkz":"au","ORBIT Spin":"au","james burnz":"au","sofaygohater":"au","imloogi":"au","ℛマジックアイスバナナチームℛ":"jp","aw tysm":"nz","Flexah_":"nz","oceDEXX":"au","LupusMate":"au","ribzkibidi":"de","bantis free":"au","sadlа":"au","beny":"nz","turps":"nz","voake868":"au","m4shd":"nz","lecancar":"au","SodiumNB":"au","LawrenceMelvin":"au","nodu Ψ":"au","kyle 40":"au","jaxzyn1":"au"};
 // Призовые финалов World Cup в Нью-Йорке (Liquipedia, на игрока): h1 — соло, h2 — дуо.
 const WC2019_PAY={"h1":[[1,3000000],[2,1800000],[3,1200000],[4,1050000],[5,900000],[6,600000],[7,525000],[8,375000],[9,300000],[10,225000],[11,150000],[12,150000],[13,150000],[14,150000],[15,150000],[16,112500],[17,112500],[18,112500],[19,112500],[20,112500],[21,50000],[22,50000],[23,50000],[24,50000],[25,50000],[26,50000],[27,50000],[28,50000],[29,50000],[30,50000],[31,50000],[32,50000],[33,50000],[34,50000],[35,50000],[36,50000],[37,50000],[38,50000],[39,50000],[40,50000],[41,50000],[42,50000],[43,50000],[44,50000],[45,50000],[46,50000],[47,50000],[48,50000],[49,50000],[50,50000],[51,50000],[52,50000],[53,50000],[54,50000],[55,50000],[56,50000],[57,50000],[58,50000],[59,50000],[60,50000],[61,50000],[62,50000],[63,50000],[64,50000],[65,50000],[66,50000],[67,50000],[68,50000],[69,50000],[70,50000],[71,50000],[72,50000],[73,50000],[74,50000],[75,50000],[76,50000],[77,50000],[78,50000],[79,50000],[80,50000],[81,50000],[82,50000],[83,50000],[84,50000],[85,50000],[86,50000],[87,50000],[88,50000],[89,50000],[90,50000],[91,50000],[92,50000],[93,50000],[94,50000],[95,50000],[96,50000],[97,50000],[98,50000],[99,50000],[100,50000]],"h2":[[1,1500000],[2,1125000],[3,900000],[4,750000],[5,450000],[6,225000],[7,187500],[8,187500],[9,112500],[10,112500],[11,50000],[12,50000],[13,50000],[14,50000],[15,50000],[16,50000],[17,50000],[18,50000],[19,50000],[20,50000],[21,50000],[22,50000],[23,50000],[24,50000],[25,50000],[26,50000],[27,50000],[28,50000],[29,50000],[30,50000],[31,50000],[32,50000],[33,50000],[34,50000],[35,50000],[36,50000],[37,50000],[38,50000],[39,50000],[40,50000],[41,50000],[42,50000],[43,50000],[44,50000],[45,50000],[46,50000],[47,50000],[48,50000],[49,50000],[50,50000]]};
+// Финалы FNCS 2019 у регионов без таблиц Tracker (Liquipedia, на игрока): 3 — Season X, 4 — C2S1.
+const CC_MX_PAY_2019_LQ={};
 // Финалисты Нью-Йорка (Liquipedia): h1 — 100 соло, h2 — 50 дуо; квота недели Online Open по региону.
 const WC2019_FIELD={"h1":[["Bugha"],["psalm"],["EpikWhale"],["Kreo"],["k1nG"],["crue"],["Skite"],["nayte"],["Riversan"],["Fatch"],["Rhux"],["Tchub"],["Mongraal"],["Stompy"],["Dubs"],["Pika"],["BELAEU"],["Clix"],["Peterpan"],["Commandment"],["Domentos"],["Skailer"],["Bizzle"],["Endretta"],["benjyfishy"],["Kinstaar"],["kurtz"],["Klass"],["MrSavage"],["K1nzell"],["fwexY"],["LeTsHe"],["TAKAMURA"],["Pzuhs"],["RogueShark"],["Zayt"],["Issa"],["Vivid"],["4DRStorm"],["DiegoGB"],["LeftEye"],["kolorful"],["teeq"],["smeef"],["DRG"],["Prisi0n3r0"],["Klusia"],["wakie"],["Core"],["Chenkinz"],["Nicks"],["JarkoS"],["Arkhram"],["Evilmare"],["Hood.J"],["clarityG"],["leleo"],["lolb0om"],["letw1k3"],["Ceice"],["Aspect"],["Megga"],["Fledermoys"],["Bucke"],["Banny"],["Emqu"],["Tfue"],["sozman"],["Unknown"],["Kawzmik"],["Lasers"],["Erouce"],["FaxFox"],["Snow"],["drakoNz"],["Touzii"],["Luneze"],["slaya"],["Blax"],["LYGHT"],["BlastR"],["luKi"],["Link"],["marteen"],["karhu"],["Robabz"],["Astonish"],["Snayzy"],["Legedien"],["Reverse2k"],["Maufin"],["Nittle"],["Hornet"],["aqua"],["Cat"],["Jordan"],["Herrions"],["Clipnode"],["Funk"],["Arius"]],"h2":[["nyhrox","aqua"],["Wolfiez","Rojo"],["Ceice","Elevate"],["Zayt","Saf"],["Arkhram","Falconer"],["Mongraal","Mitr0"],["Dubs","Megga"],["itemm","derox"],["ZexRow","Vinny1x"],["Skite","Vato"],["Deadra","M11Z"],["EpikWhale","4DRStorm"],["4zr","Noward"],["MrSavage","benjyfishy"],["Slackes","Keys"],["MackWood","yung calculator"],["Crimz","Spades"],["serpennt","Hype"],["BadSniper","Oslo"],["Scarlet","bell"],["Klusia","Th0masHD"],["crue","chapix"],["Hunter","Kinstaar"],["RedRush","znappy"],["Stompy","Tschinken"],["Vorwenn","Tuckz"],["KBB","YuWang"],["ronaldo","XXiF"],["Airwaks","Nikof"],["Lanjok","Punisher"],["Nate Hill","Funk"],["fwexY","letw1k3"],["7ssk7","Jamside"],["Tetchra","Eclipsae"],["Clix","Sceptic"],["Brush","CizLucky"],["Sean","Aydan"],["little","Jay"],["xOwN","k1nG"],["volx","parpy"],["Leno","Barl"],["Puzz","Ming"],["LeNain","Tyler15"],["Lnuef","Quinten"],["Mexe","Skram"],["RoAtDW","BlooTea"],["pfzin","Nicks"],["wisheydp","Gustavo"],["XXM","Xmende"],["CoverH","Twizz"]]};
 const WC2019_QUOTA={"h1":{"EU":9,"NAC":7,"NAW":1,"BR":2,"ASIA":2,"OCE":1},"h2":{"EU":5,"NAC":4,"NAW":1,"BR":1,"ASIA":1,"OCE":1}};
@@ -106731,7 +106738,7 @@ function careerCentreHTML(card, a){
   const dayEvents=careerEvents();
   const KIND_WORD={cup:L().chWkCup, final:L().calWeeklyFinal, eval:L().calPerfEval,
                    victory:L().chWkVictory,
-                   major:L().chWkMajor, gc:L().chWkGC, reload:L().chWkReload};
+                   major:ccWkMajorWord(), gc:L().chWkGC, reload:L().chWkReload};
   // The pip under the number, standing in for the reference's icon per fixture.
   // A colour is enough to tell a cup night from a Reload night at a glance, and
   // the word beside it says which for anyone who is not going by colour — the
@@ -109618,6 +109625,8 @@ function ccWithEventSize(n, fn){
   const prev=CC_EVENT_SIZE; CC_EVENT_SIZE=n||0;
   try{ return fn(); } finally{ CC_EVENT_SIZE=prev; }
 }
+// Тег «Мейджор» в календаре: до 2023-го Мейджоров не было — шли сезоны FNCS (и World Cup).
+function ccWkMajorWord(){ const y=ccCalYear(); return (ccPastYear(y) && y<=2022) ? 'FNCS' : L().chWkMajor; }
 function careerSquadSize(){
   if(CC_EVENT_SIZE) return CC_EVENT_SIZE;
   const n=CAREER && CAREER.career && CAREER.career.size;
@@ -109736,7 +109745,26 @@ function careerMigrateSize(){
 const CC_TRIO_ISLANDS=[{from:'2026-05-01', set:'t2'}, {from:'2026-07-01', set:'t3'}];
 // 2025-й: остров меняется с Плей-Ином следующего Мейджора (даты — CAREER_YEAR_2025).
 const CC_TRIO_ISLANDS_2025=[{from:'2025-04-09', set:'t2'}, {from:'2025-07-16', set:'t3'}];
+/* Остров прошлого года (2019–2024) — по дате, при любом размере команды: трио-годы (2020,
+   2021) и вечера в своём формате (2019) иначе проваливались в острова 2025–2026. */
+function ccPastYearIsland(){
+  if(!ccPastYear(ccCalYear()) || ccIs2025()) return null;
+  if(ccIs2024()){ const d0=careerToday(); return d0>='2024-08-16' ? 'f4' : d0>='2024-06-14' ? 'f3' : d0>='2024-04-12' ? 'f2' : 'f1'; }
+  // 2022-й — Chapter 3: остров по сезону (C3S2 с 20.03, C3S3 с 5.06, C3S4 с 18.09 — Роли).
+  // 2021-й — Chapter 2: остров по сезону (C2S6 с 16.03, C2S7 с 8.06, C2S8 с 13.09).
+  // 2019-й: World Cup — Season 9, осень — Season X, с 13.10 — Chapter 2 Season 1.
+  if(ccIs2019()){ const d0=careerToday(); const k=d0>='2019-10-13' ? 'h4' : d0>='2019-08-01' ? 'h3' : 'h1';
+    return ZONE_SETS[k] ? k : 'j1'; }
+  if(ccIs2021()){ const d0=careerToday(); const k=d0>='2021-09-13' ? 4 : d0>='2021-06-08' ? 3 : d0>='2021-03-16' ? 2 : 1;
+    return ZONE_SETS['j'+k] ? 'j'+k : ZONE_SETS['k'+k] ? 'k'+k : 'f'+k; }
+  if(ccIs2022()){ const d0=careerToday(); const k=d0>='2022-09-18' ? 4 : d0>='2022-06-05' ? 3 : d0>='2022-03-20' ? 2 : 1;
+    return ZONE_SETS['k'+k] ? 'k'+k : ZONE_SETS['e'+k] ? 'e'+k : 'f'+k; }
+  if(ccIs2023()){ const d0=careerToday(); const k=d0>='2023-08-25' ? 4 : d0>='2023-06-09' ? 3 : d0>='2023-03-10' ? 2 : 1;
+    return ZONE_SETS['e'+k] ? 'e'+k : 'f'+k; }
+  return null;
+}
 function careerBrSet(){
+  const py=ccPastYearIsland(); if(py) return py;
   if(careerSquadSize()!==3){
     /* Остров дуо-года — по сезону Fortnite, как у трио-года. Тестер, 16.09:
        «начинается сезон S40, и карта меняется только в соло, а в дуо меняется
@@ -109747,20 +109775,8 @@ function careerBrSet(){
     /* 2024-й — остров Chapter 5, которого у нас нет (ни карты, ни клеток, ни лута):
        стоим на первом острове Chapter 6 (t1, декабрь 2024) — ближайшем по времени.
        Снять Chapter 5 с fortnite.gg — отдельная работа. */
-    if(ccIs2024()){ const d0=careerToday(); return d0>='2024-08-16' ? 'f4' : d0>='2024-06-14' ? 'f3' : d0>='2024-04-12' ? 'f2' : 'f1'; }
     /* 2023-й — Chapter 4: остров по Мейджору (C4S1 до 10.03, C4S2 до 9.06, C4S3 до 25.08, дальше
        C4S4 — Копенгаген). Пока островов Chapter 4 в сборке нет, стоят острова 2024-го. */
-    // 2022-й — Chapter 3: остров по сезону (C3S2 с 20.03, C3S3 с 5.06, C3S4 с 18.09 — Роли).
-    // 2021-й — Chapter 2: остров по сезону (C2S6 с 16.03, C2S7 с 8.06, C2S8 с 13.09).
-    // 2019-й: World Cup — Season 9, осень — Season X, с 13.10 — Chapter 2 Season 1.
-    if(ccIs2019()){ const d0=careerToday(); const k=d0>='2019-10-13' ? 'h4' : d0>='2019-08-01' ? 'h3' : 'h1';
-      return ZONE_SETS[k] ? k : 'j1'; }
-    if(ccIs2021()){ const d0=careerToday(); const k=d0>='2021-09-13' ? 4 : d0>='2021-06-08' ? 3 : d0>='2021-03-16' ? 2 : 1;
-      return ZONE_SETS['j'+k] ? 'j'+k : ZONE_SETS['k'+k] ? 'k'+k : 'f'+k; }
-    if(ccIs2022()){ const d0=careerToday(); const k=d0>='2022-09-18' ? 4 : d0>='2022-06-05' ? 3 : d0>='2022-03-20' ? 2 : 1;
-      return ZONE_SETS['k'+k] ? 'k'+k : ZONE_SETS['e'+k] ? 'e'+k : 'f'+k; }
-    if(ccIs2023()){ const d0=careerToday(); const k=d0>='2023-08-25' ? 4 : d0>='2023-06-09' ? 3 : d0>='2023-03-10' ? 2 : 1;
-      return ZONE_SETS['e'+k] ? 'e'+k : 'f'+k; }
     if(d>='2026-08-21') return 's42';
     return d>=CC_SEASONS[2].from ? 'm2' : 'm1';
   }
@@ -109795,7 +109811,7 @@ function careerBrSet(){
    сыграет careerNightSet. Один ответ на вкладку метки, карточку вечера и дом
    в раздаче (ccSoloHomeZone). */
 function careerSoloSet(){
-  if(careerSquadSize()!==3) return careerBrSet();
+  if(careerSquadSize()!==3 || ccPastYearIsland()) return careerBrSet();
   const days=(typeof careerYearDays==='function') ? careerYearDays() : null;
   if(days && typeof careerNightSet==='function' && typeof careerNightSolo==='function'){
     const today=careerToday();
@@ -112184,19 +112200,19 @@ function ccYearLabel(id, day, from){
   /* 2021-й: квалификатор (раунды вечера), полуфинал (день), Reboot Round, Гранд-финал; «Мейджор 5» — Grand Royale. */
   const m21=/^Major(\d)_2021_(?:Q([123])R([1-4]+)|Semi([12])|(Reboot)|Final)$/.exec(id);
   if(m21){
-    const n21=+m21[1];
-    if(m21[2]) return L().ccYr24Qual(n21, +m21[2], m21[3].split('').join('–'));
-    if(m21[4]) return L().ccYr24Semi(n21, +m21[4]);
-    if(m21[5]) return L().ccYr21Reboot(n21);
-    if(n21===5) return L().ccYr21Gr;
-    id='Major'+n21+'_Final';
+    const n21=+m21[1], nm21=ccSeasonEvName(2021, n21);
+    if(m21[2]) return nm21+' · '+L().ccYrXWeek(+m21[2], m21[3].split('').join('–'), true);
+    if(m21[4]) return nm21+' · '+L().ccYrSemiDay(+m21[4]);
+    if(m21[5]) return nm21+' · Reboot Round';
+    return nm21+' · '+L().ccYrXFinal(false);
   }
   /* 2022-й: квалификатор (раунды вечера), полуфинал (сессия), Гранд-финал; Invitational — Роли. */
   const m22=/^Major(\d)_2022_(?:Q([123])R([1-4]+)|Semi([123])|Final)$/.exec(id);
   if(m22){
-    if(m22[2]) return L().ccYr24Qual(+m22[1], +m22[2], m22[3].split('').join('–'));
-    if(m22[4]) return L().ccYr24Semi(+m22[1], +m22[4]);
-    id='Major'+m22[1]+'_Final';
+    const nm22=ccSeasonEvName(2022, +m22[1]);
+    if(m22[2]) return nm22+' · '+L().ccYrXWeek(+m22[2], m22[3].split('').join('–'), true);
+    if(m22[4]) return nm22+' · '+L().ccYrSemiDay(+m22[4]);
+    return nm22+' · '+L().ccYrXFinal(false);
   }
   if(id==='Invitational2022') return L().ccYr22Inv;
   /* 2023-й: недели (день 1, день 2, финал недели), Surge Week, финал; «Мейджор 4» — Last Chance Major. */
@@ -120068,7 +120084,7 @@ const CC_POST_BY={
   ccNewsRetired:'press', ccNewsRetiredForced:'press',
   ccNewsDuoAgain:'you', ccNewsDuoSplit:'you', ccNewsDuoOutgrown:'you',
   ccNewsDuoAnnounce:'you',
-  ccNewsMajThrough:'you', ccNewsMajOut:'you', ccNewsMajCash:'you', ccNewsMajNoCash:'you',
+  ccNewsMajThrough:'you', ccNewsMajOut:'you', ccNewsMajCash:'you', ccNewsMajNoCash:'you', ccNewsEvCash:'you', ccNewsEvNoCash:'you',
   ccNewsSumThrough:'you', ccNewsSumOut:'you', ccNewsSumCash:'you', ccNewsSumNoCash:'you',
   ccNewsSoloThrough:'you', ccNewsSoloOut:'you', ccNewsSoloCash:'you',
   ccNewsRcThrough:'you', ccNewsRcDrop:'you', ccNewsRcOut:'you', ccNewsRcCash:'you', ccNewsRcChamp:'you',
@@ -129125,7 +129141,7 @@ const CC_FF_ART={
    подпись — иначе один турнир назывался бы в календаре и в итоге по-разному. */
 function ccFfKindWord(kind){
   const w={cup:L().chWkCup, final:L().calWeeklyFinal, eval:L().calPerfEval,
-           victory:L().chWkVictory, major:L().chWkMajor, gc:L().chWkGC,
+           victory:L().chWkVictory, major:ccWkMajorWord(), gc:L().chWkGC,
            reload:L().chWkReload};
   return w[kind]||'';
 }
@@ -135608,6 +135624,13 @@ function ccMajorSeedRows(ev){
    очки серии (место в финале недели). У World Cup очков серии нет: верх недели по квоте
    региона (WC2019_QUOTA) — сразу в финал Нью-Йорка, и дальше недели уже не нужны.
    После недель — хиты из серии змейкой (план хитов в спеке), потом финал. */
+/* Имя сезона-«Мейджора» для лет, когда Мейджоров не было: 2019–2020 — из спеки, 2021 — FNCS C2S5–C2S8
+   и Grand Royale, 2022 — FNCS C3S1–C3S3. Для 2023+ — null (там это и есть Мейджоры). */
+function ccSeasonEvName(y, n){
+  if(y===2022) return 'FNCS C3S'+n;
+  if(y===2021) return n===5 ? 'FNCS Grand Royale' : 'FNCS C2S'+(n+4);
+  const sp=ccMXSpec(y, n); return sp ? sp.name : null;
+}
 function ccMXSpec(y, n){ return (CC_MX_SPEC[y]||{})[n] || null; }
 function ccMXLobby(size){ return size===1 ? 100 : size===2 ? 50 : size===3 ? 33 : 25; }
 function ccMXOf(y, n){
@@ -135874,10 +135897,10 @@ async function ccMXRun(ev, sp){
     cash=majorPrize(place);
     if(cash) ccPayIn(ccShareOf(cash, you));
     careerReachAdd(careerReachResult(place, field.length, 1, 'major'));
-    careerNews(cash?'good':'flat', cash?'ccNewsMajCash':'ccNewsMajNoCash',
-               cash?[ev.n, place, ccNum(cash)]:[ev.n, place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
+    careerNews(cash?'good':'flat', cash?'ccNewsEvCash':'ccNewsEvNoCash',
+               cash?[sp.name, place, ccNum(cash)]:[sp.name, place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
     if(place>field.length/2) careerNews('bad', 'ccPostTriedBest', []);
-    careerCongrats(ranked, you, sp.name);
+    careerCongrats(ranked, you, L().ccCongratsEv(sp.name));
     cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
   } else {
     careerNews(through?'good':'flat', through?'ccNewsMajThrough':'ccNewsMajOut',
@@ -135910,7 +135933,8 @@ async function ccMXRun(ev, sp){
 function ccMXPrize(y, n, place){
   const sp=ccMXSpec(y, n); if(!sp) return 0;
   const t=sp.kind==='wc' ? {EU:((typeof WC2019_PAY!=='undefined' && WC2019_PAY[sp.set])||[])}
-        : (((y===2019 ? (typeof CC_MX_PAY_2019!=='undefined' && CC_MX_PAY_2019) : (typeof CC_MX_PAY_2020!=='undefined' && CC_MX_PAY_2020))||{})[n]||{});
+        : y===2019 ? Object.assign({}, ((typeof CC_MX_PAY_2019_LQ!=='undefined' && CC_MX_PAY_2019_LQ[n])||{}), ((typeof CC_MX_PAY_2019!=='undefined' && CC_MX_PAY_2019[n])||{}))
+        : (((typeof CC_MX_PAY_2020!=='undefined' && CC_MX_PAY_2020)||{})[n]||{});
   return ccPay24(t, place)*sp.size;
 }
 // ==== /FNCS 2019–2020 machine ====
@@ -136180,7 +136204,7 @@ async function runCareerMajor2021(){
           seen.add(ccSeatKey(t)); field.push(t);
         });
       }
-      stageLabel=L().ccYr24Qual(ev.n, ev.q, r);
+      stageLabel=ccYearLabel('Major'+ev.n+'_2021_Q'+ev.q+'R'+r, careerToday(), careerToday());
       ranked=await play(field, spec, stageLabel, open);
       place=ranked.indexOf(you)+1;
       if(r===R){
@@ -136212,7 +136236,7 @@ async function runCareerMajor2021(){
     spec={games:CC_M21.semi.games, cut:heat.cut};
     field=rowsOf(heat.rows);
     if(field.indexOf(you)<0) field.push(you);
-    stageLabel=L().ccYr21Heat(ev.n, hi+1);
+    stageLabel=L().ccYrXHeatN(ev.label, hi+1);
     ranked=await play(field, spec, stageLabel, false);
     place=ranked.indexOf(you)+1;
     m.heatRes[hi]={up:ranked.slice(0, heat.cut).map(seedOf), rest:ranked.slice(heat.cut).map(seedOf)};
@@ -136254,10 +136278,10 @@ async function runCareerMajor2021(){
     cash=majorPrize(place);
     if(cash) ccPayIn(ccShareOf(cash, you));
     careerReachAdd(careerReachResult(place, field.length, 1, 'major'));
-    careerNews(cash?'good':'flat', cash?'ccNewsMajCash':'ccNewsMajNoCash',
-               cash?[ev.n, place, ccNum(cash)]:[ev.n, place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
+    careerNews(cash?'good':'flat', cash?'ccNewsEvCash':'ccNewsEvNoCash',
+               cash?[ccSeasonEvName(2021, ev.n), place, ccNum(cash)]:[ccSeasonEvName(2021, ev.n), place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
     if(place>field.length/2) careerNews('bad', 'ccPostTriedBest', []);
-    careerCongrats(ranked, you, ev.n===5 ? L().ccYr21Gr : L().ccCongratsMajor(ev.n));
+    careerCongrats(ranked, you, L().ccCongratsEv(ccSeasonEvName(2021, ev.n)));
     cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
   } else {
     careerNews(through?'good':'flat', through?'ccNewsMajThrough':'ccNewsMajOut',
@@ -136521,7 +136545,7 @@ async function runCareerMajor2022(){
           seen.add(ccSeatKey(t)); field.push(t);
         });
       }
-      stageLabel=L().ccYr24Qual(ev.n, ev.q, r);
+      stageLabel=ccYearLabel('Major'+ev.n+'_2022_Q'+ev.q+'R'+r, careerToday(), careerToday());
       ranked=await play(field, spec, stageLabel, open);
       place=ranked.indexOf(you)+1;
       if(r===R){
@@ -136583,10 +136607,10 @@ async function runCareerMajor2022(){
     cash=majorPrize(place);
     if(cash) ccPayIn(ccShareOf(cash, you));
     careerReachAdd(careerReachResult(place, field.length, 1, 'major'));
-    careerNews(cash?'good':'flat', cash?'ccNewsMajCash':'ccNewsMajNoCash',
-               cash?[ev.n, place, ccNum(cash)]:[ev.n, place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
+    careerNews(cash?'good':'flat', cash?'ccNewsEvCash':'ccNewsEvNoCash',
+               cash?[ccSeasonEvName(2022, ev.n), place, ccNum(cash)]:[ccSeasonEvName(2022, ev.n), place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
     if(place>field.length/2) careerNews('bad', 'ccPostTriedBest', []);
-    careerCongrats(ranked, you, L().ccCongratsMajor(ev.n));
+    careerCongrats(ranked, you, L().ccCongratsEv(ccSeasonEvName(2022, ev.n)));
     cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
   } else {
     careerNews(through?'good':'flat', through?'ccNewsMajThrough':'ccNewsMajOut',
@@ -142022,7 +142046,7 @@ function ccLogName(e){
       .find(x=>ID[e.kind] ? x.id===ID[e.kind] : x.kind===e.kind);
     if(onDay && onDay.label) return esc(onDay.label);
     const W={final:L().calWeeklyFinal, eval:L().calPerfEval, victory:L().chWkVictory,
-             major:L().chWkMajor, gclc:L().chWkGC, globals:L().chWkGC,
+             major:ccWkMajorWord(), gclc:L().chWkGC, globals:L().chWkGC,
              reload:L().chWkReload, summit:L().brk_lan, rc:L().brk_rc,
              solo:'Solo Series'};
     if(W[e.kind]) return W[e.kind];

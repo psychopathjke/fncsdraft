@@ -59,8 +59,8 @@ rep("{key:'h1', label:'Chapter 1 Season 9'}, {key:'h3', label:'Chapter 1 Season 
 rep('  h4:"art/map-h4.jpg",\n', '  h4:"art/map-h4.jpg",\n  i1:"art/map-i1.jpg",\n  i2:"art/map-i2.jpg",\n  i3:"art/map-i3.jpg",\n');
 rep("                  h1:'2048/2048', h3:'2048/2048', h4:'2048/2048',\n", "                  h1:'2048/2048', h3:'2048/2048', h4:'2048/2048', i1:'2048/2048', i2:'2048/2048', i3:'2048/2048',\n");
 rep("h1:'wiki', h3:'wiki', h4:'wiki', m1:'Kinch'", "h1:'wiki', h3:'wiki', h4:'wiki', i1:'wiki', i2:'wiki', i3:'wiki', m1:'Kinch'");
-rep("    if(ccIs2019()){ const d0=careerToday();",
-    "    // 2020-й: остров сезона (C2S3 с 17.06, C2S4 с 27.08).\n    if(ccIs2020()){ const d0=careerToday(); const k=d0>='2020-08-27' ? 'i3' : d0>='2020-06-17' ? 'i2' : 'i1';\n      return ZONE_SETS[k] ? k : 'h4'; }\n    if(ccIs2019()){ const d0=careerToday();");
+rep("  if(ccIs2019()){ const d0=careerToday();",
+    "  // 2020-й: остров сезона (C2S3 с 17.06, C2S4 с 27.08).\n  if(ccIs2020()){ const d0=careerToday(); const k=d0>='2020-08-27' ? 'i3' : d0>='2020-06-17' ? 'i2' : 'i1';\n    return ZONE_SETS[k] ? k : 'h4'; }\n  if(ccIs2019()){ const d0=careerToday();");
 rep("&& !ccIs2021() && !ccIs2019()) ? 's42' : careerBrSet();", "&& !ccIs2021() && !ccIs2020() && !ccIs2019()) ? 's42' : careerBrSet();");
 rep("|| y===2021 || y===2019; }", "|| y===2021 || y===2020 || y===2019; }");
 rep("function ccIs2019(){ return ccCalYear()===2019; }\n", "function ccIs2019(){ return ccCalYear()===2019; }\n// 2020-й — FNCS онлайн, формат на вечер; см. CAREER_YEAR_2020.\nfunction ccIs2020(){ return ccCalYear()===2020; }\n");

@@ -231,7 +231,7 @@ async function runCareerMajor2022(){
           seen.add(ccSeatKey(t)); field.push(t);
         });
       }
-      stageLabel=L().ccYr24Qual(ev.n, ev.q, r);
+      stageLabel=ccYearLabel('Major'+ev.n+'_2022_Q'+ev.q+'R'+r, careerToday(), careerToday());
       ranked=await play(field, spec, stageLabel, open);
       place=ranked.indexOf(you)+1;
       if(r===R){
@@ -293,10 +293,10 @@ async function runCareerMajor2022(){
     cash=majorPrize(place);
     if(cash) ccPayIn(ccShareOf(cash, you));
     careerReachAdd(careerReachResult(place, field.length, 1, 'major'));
-    careerNews(cash?'good':'flat', cash?'ccNewsMajCash':'ccNewsMajNoCash',
-               cash?[ev.n, place, ccNum(cash)]:[ev.n, place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
+    careerNews(cash?'good':'flat', cash?'ccNewsEvCash':'ccNewsEvNoCash',
+               cash?[ccSeasonEvName(2022, ev.n), place, ccNum(cash)]:[ccSeasonEvName(2022, ev.n), place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
     if(place>field.length/2) careerNews('bad', 'ccPostTriedBest', []);
-    careerCongrats(ranked, you, L().ccCongratsMajor(ev.n));
+    careerCongrats(ranked, you, L().ccCongratsEv(ccSeasonEvName(2022, ev.n)));
     cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
   } else {
     careerNews(through?'good':'flat', through?'ccNewsMajThrough':'ccNewsMajOut',

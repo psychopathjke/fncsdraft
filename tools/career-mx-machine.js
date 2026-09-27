@@ -9,6 +9,13 @@
    очки серии (место в финале недели). У World Cup очков серии нет: верх недели по квоте
    региона (WC2019_QUOTA) — сразу в финал Нью-Йорка, и дальше недели уже не нужны.
    После недель — хиты из серии змейкой (план хитов в спеке), потом финал. */
+/* Имя сезона-«Мейджора» для лет, когда Мейджоров не было: 2019–2020 — из спеки, 2021 — FNCS C2S5–C2S8
+   и Grand Royale, 2022 — FNCS C3S1–C3S3. Для 2023+ — null (там это и есть Мейджоры). */
+function ccSeasonEvName(y, n){
+  if(y===2022) return 'FNCS C3S'+n;
+  if(y===2021) return n===5 ? 'FNCS Grand Royale' : 'FNCS C2S'+(n+4);
+  const sp=ccMXSpec(y, n); return sp ? sp.name : null;
+}
 function ccMXSpec(y, n){ return (CC_MX_SPEC[y]||{})[n] || null; }
 function ccMXLobby(size){ return size===1 ? 100 : size===2 ? 50 : size===3 ? 33 : 25; }
 function ccMXOf(y, n){
@@ -275,10 +282,10 @@ async function ccMXRun(ev, sp){
     cash=majorPrize(place);
     if(cash) ccPayIn(ccShareOf(cash, you));
     careerReachAdd(careerReachResult(place, field.length, 1, 'major'));
-    careerNews(cash?'good':'flat', cash?'ccNewsMajCash':'ccNewsMajNoCash',
-               cash?[ev.n, place, ccNum(cash)]:[ev.n, place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
+    careerNews(cash?'good':'flat', cash?'ccNewsEvCash':'ccNewsEvNoCash',
+               cash?[sp.name, place, ccNum(cash)]:[sp.name, place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
     if(place>field.length/2) careerNews('bad', 'ccPostTriedBest', []);
-    careerCongrats(ranked, you, sp.name);
+    careerCongrats(ranked, you, L().ccCongratsEv(sp.name));
     cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
   } else {
     careerNews(through?'good':'flat', through?'ccNewsMajThrough':'ccNewsMajOut',
