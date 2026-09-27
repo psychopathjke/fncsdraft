@@ -59848,7 +59848,7 @@ async function shareResultImage(){
       // the live table prefixes your own row with "Your squad:"; a broadcast
       // standings row is just the team, so it comes off here.
       let nm=t.name.replace(/<[^>]+>/g,'').replace(/&amp;/g,'&')
-        .replace(/^s*(Твой состав|Your squad)s*:s*/i,'')
+        .replace(/^\s*(Твой состав|Your squad)\s*:\s*/i,'')
         .replace(/&/g,'+').toUpperCase();
       let nf=21; ctx.font='900 '+nf+'px '+fam;
       while(ctx.measureText(nm).width>teamMax && nf>12){ nf--; ctx.font='900 '+nf+'px '+fam; }
@@ -62324,7 +62324,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='cc36ad0e';
+const CC_BUILD='ad20f95a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -70813,6 +70813,8 @@ function ccEvalR1Games(){ return (ccIs2025() || ccIs2024()) ? 7 : CC_EVAL_R1_GAM
    2026-го. Календарь при этом 2026-й. Пары в дуо-год — ядра трио 2025-го,
    остальные собираются по силе (ccContinuityDuos). */
 function ccNowYear(){
+  // Расчёт целей потенциала (ccRealTargets) смотрит на год календаря как свежая карьера.
+  if(typeof CC_NOW_YEAR_FORCE!=='undefined' && CC_NOW_YEAR_FORCE) return CC_NOW_YEAR_FORCE;
   if(typeof SHOWN_SCREEN!=='undefined' && SHOWN_SCREEN==='screen-career-create' && typeof CC!=='undefined' && CC)
     return (CC.year===2025 || CC.year===2024) ? CC.year : 2026;
   const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
@@ -71996,7 +71998,8 @@ let CC_NOW_CARDS={}, CC_NOW_TAG=null, CC_ARC_PAIRS={};
    другой слот — старые числа надо забыть. Внутри одной карьеры кэш живёт
    дальше, а сбрасывает его тот, кто сдвиги меняет, — careerGrowField. */
 function ccSceneTag(){
-  const y='|y'+ccCalYear();
+  // Неделя подтягивания к рейтингу из жизни (ccRealPull) — сцена пересобирается раз в неделю.
+  const y='|y'+ccCalYear()+'|p'+ccRealPullStep();
   if(!CAREER) return 'none'+y;
   return ccSlot()+'|'+((CAREER.player&&CAREER.player.nick)||'')+'|'+((CAREER.career&&CAREER.career.season)||0)+y;
 }
@@ -72054,6 +72057,26 @@ function ccSceneRoster(reg){
       ccSceneLift(c); now.set(k, c);
     }
   });
+  /* И дебютанты следующих лет (ccDebutants) — самой свежей карточкой года
+     дебюта, с настоящим рейтингом того года. */
+  const debut=ccDebutants(reg);
+  if(debut && debut.size){
+    const pick=new Map();
+    PLAYERS.forEach(p=>{
+      if((p.region||'')!==reg) return;
+      const k=hKey(p), d=debut.get(k);
+      if(!d || ccCardYear(p)!==d.year || now.has(k)) return;
+      const day=ccCardDay(p) || d.year*10000, cur=pick.get(k);
+      if(!cur || day>cur.day) pick.set(k, {p:p, d:d, day:day});
+    });
+    pick.forEach(({p, d, day}, k)=>{
+      const c=ccDebutCard(p, d);
+      c._day=day;
+      const org=ccSeasonOrg(c, reg);
+      if(org) c.org=org;
+      ccSceneLift(c); now.set(k, c);
+    });
+  }
   // Люди своего клуба носят его герб — см. ccClubStamp.
   CC_NOW_CARDS[reg]=ccClubStamp([...now.values()].sort((a,b)=>b._ovr-a._ovr));
   return CC_NOW_CARDS[reg];
@@ -72807,7 +72830,9 @@ function ccSeasonOvr(){
 }
 let CC_EU_ALL={};
 function ccEuCards(){
-  const reg=ccPoolRegion()+(ccNowYear()<2026 ? '|'+ccNowYear() : '');
+  // Карьера, перешедшая в следующий год, держит ещё и дебютантов (ccDebutants) — своим ключом.
+  const debut=ccDebutants();
+  const reg=ccPoolRegion()+(ccNowYear()<2026 ? '|'+ccNowYear() : '')+(debut ? '|d'+ccCalYear() : '');
   if(CC_EU_ALL[reg]) return CC_EU_ALL[reg];
   const season=ccSeasonOvr();
   const reg0=ccPoolRegion(), yearCap=ccNowYear();
@@ -72837,6 +72862,13 @@ function ccEuCards(){
                      }
                      return c;
                    });
+  if(debut && debut.size){
+    PLAYERS.forEach(p=>{
+      if(reg0!=='ALL' && (p.region||'')!==reg0) return;
+      const d=debut.get(hKey(p));
+      if(d && ccCardYear(p)===d.year) CC_EU_ALL[reg].push(ccDebutCard(p, d));
+    });
+  }
   return CC_EU_ALL[reg];
 }
 // One card per person inside one set of events — the strongest, because a
@@ -72952,8 +72984,79 @@ let CC_POOLS=null;
    стоит в шести местах (трансфер, переезд, новый сезон), и здесь он читается
    как «всё устарело». */
 let CC_POOLS_AWAY={};
+/* СОСТАВЫ ГОДА КАЛЕНДАРЯ — для карьеры, перешедшей в следующий год.
+
+   Идея тестера, 27 сентября: «когда настоящий сезон 24 заканчивал и
+   переходил в 25, чтобы триосы становились как в жизни, и потом когда из 25
+   года в 26». Решение по ней: люди и рейтинги остаются свои (карьера живёт
+   людьми года, с которого началась, с тем, что они наиграли), а КТО С КЕМ
+   играет — берётся из записей года календаря: трио 2025-го, дуо 2026-го.
+   Состав игрока не меняется — он со своим напарником ищет +1.
+
+   Снимок года календаря — тот же, что взяла бы свежая карьера этого года
+   (Мейджоры по датам); записи — с карточек этого года. В состав сажаются
+   только те, кто есть на сцене карьеры: нет человека в мире карьеры — его
+   место пустое, двое оставшихся стоят парой, один — свободным агентом. */
+function ccRealSnap(year){
+  const list=year===2025 ? CC_SNAPSHOTS_2025 : year===2024 ? CC_SNAPSHOTS_2024 : CC_SNAPSHOTS;
+  const today=careerToday();
+  let s=list[0]; list.forEach(x=>{ if(today>=x.from) s=x; });
+  return s;
+}
+function ccRealTeamDuos(year, snap){
+  const res=[snap.playIn];
+  if(snap.lcq) res.push(snap.lcq);
+  if(year>=2026) res.push(/Division 1 . Week \d+ Finals/);
+  const reg0=ccPoolRegion();
+  // Люди мира карьеры: по человеку одна карточка — своего года, иначе сильнейшая.
+  const people=new Map(), yr=ccNowYear();
+  ccEuCards().forEach(c=>{
+    const cur=people.get(c._k);
+    if(!cur) { people.set(c._k, c); return; }
+    const mine=ccCardYear(c)===yr, curMine=ccCardYear(cur)===yr;
+    if((mine && !curMine) || (mine===curMine && c._ovr>cur._ovr)) people.set(c._k, c);
+  });
+  const seen=new Map();
+  PLAYERS.forEach(p=>{
+    if(reg0!=='ALL' && (p.region||'')!==reg0) return;
+    if(ccCardYear(p)!==year) return;
+    const ev=String(p.event||'');
+    if(!res.some(r=>r.test(ev))) return;
+    rosterEntriesOf(p).forEach(({entry})=>{
+      const hs=(entry.duo||[]).map(h=>hKey(h)).filter(Boolean);
+      if(hs.length<2) return;
+      const id=hs.slice().sort().join('|');
+      if(!seen.has(id)) seen.set(id, hs);
+    });
+  });
+  const out=[];
+  seen.forEach(hs=>{
+    const here=hs.filter(h=>people.has(h));
+    if(here.length<2) return;
+    const a=people.get(here[0]), b=people.get(here[1]);
+    const third=here.length>2 ? here[2] : null;
+    out.push({cards:[a, b], avg:(a._ovr+b._ovr)/2, third:third, _real:true});
+  });
+  return out;
+}
+/* Настоящий состав года разводится только тем, что случилось В ЭТОМ году:
+   прошлогодние разводы и межсезонный бросок (ccDuoBroken считает его от
+   номера сезона) к составу, который собрала сама жизнь, не относятся. */
+function ccRealTeamBroken(d, cr){
+  const c=cr || (CAREER && CAREER.career);
+  const key=d.cards.map(x=>hKey(x)).sort().join('+');
+  const when=c && (c.duoSplits||{})[key];
+  return !!(when && String(when)>=ccYearFrom());
+}
 function careerPools(){
-  const snap=ccSnapshotNow();
+  const snap0=ccSnapshotNow();
+  // Карьера, перешедшая в следующий год: составы — года календаря (ccRealTeamDuos).
+  const cont=ccContinuity();
+  const real=cont ? ccRealSnap(ccCalYear()) : null;
+  // Посев троек — по снимку года, кэш пула — ещё и по неделе потенциала (ccRealPull):
+  // иначе недельная пересборка стирала бы тройки каждую неделю.
+  const seedTag=real ? 'R'+ccCalYear()+real.tag : snap0.tag;
+  const snap=real ? Object.assign({}, snap0, {tag:seedTag+'p'+ccRealPullStep()}) : snap0;
   // The world pool is cached under its own key beside the region's. See ccAsWorld.
   const reg=ccPoolRegion();
   if(!CC_POOLS) CC_POOLS_AWAY={};
@@ -72962,13 +73065,16 @@ function careerPools(){
     if(away && away.tag===snap.tag) return away;
   } else if(CC_POOLS && CC_POOLS.tag===snap.tag && CC_POOLS.reg===reg) return CC_POOLS;
   const seated=new Set();
-  const duos=ccSeat(ccDuosOf(snap.playIn, ccPeopleOf(snap.playIn)), seated);
+  const duos=real ? ccSeat(ccRealTeamDuos(ccCalYear(), real), seated)
+                  : ccSeat(ccDuosOf(snap.playIn, ccPeopleOf(snap.playIn)), seated);
   /* 2025: третьи — с карточек, один раз на снимок. Записываются в ЖИВУЮ
-     карьеру, потому что читает их комната оттуда (careerCupField). */
-  if(ccNowYear()===2025 && careerSquadSize()===3 && CAREER && CAREER.career && !CC_REGION_AS && CAREER.career.triosSeeded!==snap.tag){
-    const cr=CAREER.career; cr.trios=cr.trios||{};
+     карьеру, потому что читает их комната оттуда (careerCupField). То же в
+     трио-году карьеры, перешедшей из 2024-го: третьи — настоящие 2025-го, и
+     память троек прошлых лет им не мешает (стирается при посеве). */
+  if((ccNowYear()===2025 || real) && careerSquadSize()===3 && CAREER && CAREER.career && !CC_REGION_AS && CAREER.career.triosSeeded!==seedTag){
+    const cr=CAREER.career; cr.trios=real ? {} : (cr.trios||{});
     duos.forEach(d=>{ if(d.third && !seated.has(d.third)){ cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')]=d.third; seated.add(d.third); } });
-    cr.triosSeeded=snap.tag;
+    cr.triosSeeded=seedTag;
     if(typeof careerSave==='function') careerSave();
   }
   /* И те, кто зашёл в Мейджор с другой стороны.
@@ -73002,7 +73108,9 @@ function careerPools(){
      Division 1 players. The spec's line is that Division 1 runs about 75 to 96,
      and taking everybody dropped the room's average rating to 70 - Division 3's
      band, which makes it not a division. */
-  if(snap.lcq) ccSeat(ccDuosOf(snap.lcq, ccPeopleOf(snap.lcq)), seated)
+  // Карьере, перешедшей в следующий год, Ласт Ченс и финалы недель уже взяты
+  // из года календаря (ccRealTeamDuos); прошлогодние пары сюда не идут.
+  if(snap.lcq && !real) ccSeat(ccDuosOf(snap.lcq, ccPeopleOf(snap.lcq)), seated)
                  .forEach(d=>duos.push(d));
   /* И финалы недели самого дивизиона.
 
@@ -73015,8 +73123,10 @@ function careerPools(){
      Третья дверь — сами финалы недели дивизиона 1: играть их может только тот,
      кто в дивизионе стоит, так что это его состав по определению, и в нём есть
      люди, которых нет ни в одном Плей-Ине. */
-  const divRe=/Division 1 . Week d+ Finals/;
-  ccSeat(ccDuosOf(divRe, ccPeopleOf(divRe)), seated).forEach(d=>duos.push(d));
+  /* Здесь с 28 августа стояло «Week d+» — обратный слэш потерялся при правке,
+     и регулярка искала букву d: третья дверь не открывалась ни разу. */
+  const divRe=/Division 1 . Week \d+ Finals/;
+  if(!real) ccSeat(ccDuosOf(divRe, ccPeopleOf(divRe)), seated).forEach(d=>duos.push(d));
   /* И то, что эта карьера с ними сделала.
 
      Книга роста сцены писалась и никуда не попадала. Замерено 22 августа: после
@@ -73040,7 +73150,7 @@ function careerPools(){
     if(!c) return c;
     const k=hKey(c);
     if(lifted.has(k)) return lifted.get(k);
-    const out=careerDevOf(c) ? ccSceneLift({...c}) : c;
+    const out=(careerDevOf(c) || ccRealPull(c)) ? ccSceneLift({...c}) : c;
     lifted.set(k, out);
     return out;
   };
@@ -73090,7 +73200,7 @@ function careerPools(){
   const duosLive=duos.filter(function(d){
     const k=d.cards.map(c=>hKey(c)).sort().join('+');
     const split=splitBook[k];
-    const broken=!!split || ccDuoBroken(d);
+    const broken=!!split || (d._real ? ccRealTeamBroken(d) : ccDuoBroken(d));
     if(broken) d.cards.forEach(c=>{
       if(!c || inTrio.has(hKey(c))) return;
       if(split && ccDaysBetween(split, today)<CC_FA_DAYS) return;   // ещё на рынке
@@ -73132,7 +73242,7 @@ function careerPools(){
     pooled.add(k);
     // Копия со своим _k: ростерные объекты общие со всем приложением, а _k —
     // ключ, по которому пул считает людей и careerRealPlayers режет занятых.
-    const c=careerDevOf(p) ? ccSceneLift({...p}) : {...p};
+    const c=(careerDevOf(p) || ccRealPull(p)) ? ccSceneLift({...p}) : {...p};
     c._k=k;
     players.push(c);
   });
@@ -74702,9 +74812,121 @@ function ccDevLTrim(){
   keys.sort((a,b)=>Math.abs(lad[b])-Math.abs(lad[a]))
       .slice(CC_DEV_L_MAX).forEach(k=>{ delete lad[k]; });
 }
+/* ПОТЕНЦИАЛ ИЗ ЖИЗНИ — рейтинг следующего года.
+
+   Его слово, 27 сентября: «хз как сделать, чтоб рейтинги менялись в 25, 26 —
+   другие же у игроков, мб потенциал у них и быстрее развиваются в этих годах,
+   или наоборот уменьшается». Выбор из трёх: постепенно за сезон.
+
+   Карьера, перешедшая в следующий год (ccContinuity), живёт людьми года
+   старта — но у большинства из них есть карточка года календаря, и её рейтинг
+   и есть то, куда человек в жизни пришёл. Он становится целью: каждый вечер
+   рейтинг подтягивается к ней, половина разницы за CC_REAL_PULL_HALF дней
+   (к первому Мейджору), к концу сезона почти вся. Считается от даты, а не
+   копится в сейве: одинаково у всех в гонке и после перезагрузки. Шаг —
+   неделя, чтобы сцена не пересобиралась каждый день (ccSceneTag).
+   Сверху по-прежнему ложится то, что человек наиграл в этой карьере
+   (careerDevOf). Нет карточки года календаря — нет и цели: отсутствие в
+   записях не значит, что он бросил, мы пишем не все турниры. */
+// Год начинается в декабре, первый Мейджор — в марте: ~90 дней = половина разницы, к концу сезона ~90%.
+const CC_REAL_PULL_HALF=90;
+let CC_NOW_YEAR_FORCE=0;
+const CC_REAL_TARGETS={};
+function ccRealPullStep(){
+  if(typeof CAREER==='undefined' || !CAREER || !CAREER.career || !ccContinuity()) return 0;
+  return 1+Math.floor(ccDaysBetween(ccYearFrom(), careerToday())/7);
+}
+function ccRealPullFrac(){
+  const step=ccRealPullStep();
+  return step ? 1-Math.pow(0.5, (step-1)*7/CC_REAL_PULL_HALF) : 0;
+}
+// Рейтинг каждого человека в году year — так, как его считает свежая карьера того года.
+// reg — регион сцены (по умолчанию тот, чей пул сейчас строится).
+function ccRealTargets(year, reg){
+  const R=reg || ccPoolRegion();
+  const key=year+'|'+R;
+  if(CC_REAL_TARGETS[key]) return CC_REAL_TARGETS[key];
+  const m=new Map(), was=CC_NOW_YEAR_FORCE;
+  const run=()=>ccEuCards().forEach(c=>{
+    if(ccCardYear(c)!==year) return;
+    const cur=m.get(c._k);
+    if(cur==null || c._ovr>cur) m.set(c._k, c._ovr);
+  });
+  CC_NOW_YEAR_FORCE=year;
+  try{
+    if(R===ccPoolRegion()) run();
+    else if(R==='ALL') ccAsWorld(run);
+    else ccAsRegion(R, run);
+  } finally { CC_NOW_YEAR_FORCE=was; }
+  CC_REAL_TARGETS[key]=m;
+  return m;
+}
+/* ДЕБЮТАНТЫ СЛЕДУЮЩИХ ЛЕТ.
+
+   Его «да» 27 сентября на вопрос: у карьеры, начатой в 2024-м, в 2025-м нет
+   ни одного новичка 2025-го — 593 человека в Европе, 97 из топ-300 года, — и
+   настоящие трио с ними стояли без третьего. Теперь на стыке года в сцену
+   входят те, у кого нет ни одной карточки до года старта карьеры, но есть
+   карточка следующего года (до года календаря включительно): со своей
+   карточкой года дебюта и своим настоящим рейтингом того года. Дальше их ведёт
+   тот же потенциал (ccRealPull) — цепочка с года дебюта. */
+const CC_DEBUT={};
+function ccDebutants(reg){
+  if(CC_NOW_YEAR_FORCE || typeof CAREER==='undefined' || !CAREER || !CAREER.career || !ccContinuity()) return null;
+  const R=reg || ccPoolRegion(), y0=ccNowYear(), y1=ccCalYear();
+  const key=R+'|'+y0+'|'+y1;
+  if(CC_DEBUT[key]) return CC_DEBUT[key];
+  const inReg=p=>R==='ALL' || (p.region||'')===R;
+  const known=new Set();
+  PLAYERS.forEach(p=>{ if(inReg(p) && ccCardYear(p)<=y0) known.add(hKey(p)); });
+  const m=new Map();
+  for(let y=y0+1; y<=y1; y++){
+    ccRealTargets(y, R).forEach((ovr, k)=>{
+      if(!known.has(k) && !m.has(k)) m.set(k, {year:y, ovr:ovr});
+    });
+  }
+  CC_DEBUT[key]=m;
+  return m;
+}
+// Копия карточки дебютанта: рейтинг — настоящий рейтинг года дебюта.
+function ccDebutCard(p, deb){
+  const c={...p}, a=attrsFor(p);
+  c._k=hKey(p);
+  c._attrs={...a, _floored:false};
+  c._targetOvr=deb.ovr; c.rating=deb.ovr; c._ovr=deb.ovr;
+  c._debut=deb.year;
+  return c;
+}
+/* Годы идут цепочкой: следующий начинается с того, на чём закончился прошлый.
+   Иначе каждый новый год считался бы от рейтинга года старта, и прошлогодний
+   рост пропадал на стыке — замер S1neD: 2025-й 76 → 80, как в жизни, а в
+   декабре 2026-го снова 76. */
+function ccRealYearSpan(y){
+  return y===2024 ? [CC_YEAR_2024_FROM, CC_YEAR_2024_TO]
+       : y===2025 ? [CC_YEAR_2025_FROM, CC_YEAR_2025_TO]
+       : [CC_YEAR_FROM, CC_YEAR_TO];
+}
+function ccRealYearEndFrac(y){
+  const s=ccRealYearSpan(y), step=1+Math.floor(ccDaysBetween(s[0], s[1])/7);
+  return 1-Math.pow(0.5, (step-1)*7/CC_REAL_PULL_HALF);
+}
+function ccRealPull(c){
+  if(!c || !ccRealPullStep()) return 0;
+  const base=(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr);
+  if(!(base>0)) return 0;
+  const k=c._k||hKey(c);
+  let start=base;
+  for(let y=ccNowYear()+1; y<ccCalYear(); y++){
+    const ty=ccRealTargets(y).get(k);
+    if(ty!=null) start+=(ty-start)*ccRealYearEndFrac(y);
+  }
+  const t=ccRealTargets(ccCalYear()).get(k);
+  if(t==null) return start-base;
+  return (start-base)+(t-start)*ccRealPullFrac();
+}
 // Карточка роастера, поднятая на то, что эта карьера с ней сделала.
 function ccSceneLift(c){
-  const d=careerDevOf(c);
+  const d=careerDevOf(c)+ccRealPull(c);
   if(!d || !c) return c;
   const base=(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr);
   if(!(base>0)) return c;
@@ -88698,6 +88920,7 @@ function ccTrioMarket(cr, force){
   const c=cr || (CAREER && CAREER.career);
   if(!c || careerSquadSize()!==3) return 0;
   if(ccIs2025() && ccNowYear()===2025) return 0;   // трио 2025-го настоящие, с карточек — рынку тут нечего делать
+  if(ccContinuity()) return 0;                     // и у карьеры, перешедшей в следующий год: составы года календаря (ccRealTeamDuos)
   // На стыке года рынок открывается ВСЕГДА (force): метка там ещё от прошлого
   // сезона, а сезон уже новый.
   if(!force && c.raided===c.season) return 0;
@@ -90781,7 +91004,7 @@ function majorPrize(place){
    доски у двоих не сходились никогда. Доска рейтинга подпись снимала (careerPrAdd), доска
    денег — нет. Скриншот: слева «Твой состав: Malibuca» 58 вечеров $553k, справа
    «Malibuca» 50 вечеров $324k. */
-const ccBoardName=n=>String(n||'').replace(/<[^>]*>/g, '').replace(/^[^:&+]{1,40}:s*/, '').trim();
+const ccBoardName=n=>String(n||'').replace(/<[^>]*>/g, '').replace(/^[^:&+]{1,40}:\s*/, '').trim();
 function careerMoney(){
   const cr=CAREER.career;
   if(!cr.money) cr.money={rows:{}};
