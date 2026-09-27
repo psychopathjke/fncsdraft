@@ -69058,7 +69058,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='52024efe';
+const CC_BUILD='ad20f95a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -78791,6 +78791,26 @@ function ccSceneRoster(reg){
       ccSceneLift(c); now.set(k, c);
     }
   });
+  /* И дебютанты следующих лет (ccDebutants) — самой свежей карточкой года
+     дебюта, с настоящим рейтингом того года. */
+  const debut=ccDebutants(reg);
+  if(debut && debut.size){
+    const pick=new Map();
+    PLAYERS.forEach(p=>{
+      if((p.region||'')!==reg) return;
+      const k=hKey(p), d=debut.get(k);
+      if(!d || ccCardYear(p)!==d.year || now.has(k)) return;
+      const day=ccCardDay(p) || d.year*10000, cur=pick.get(k);
+      if(!cur || day>cur.day) pick.set(k, {p:p, d:d, day:day});
+    });
+    pick.forEach(({p, d, day}, k)=>{
+      const c=ccDebutCard(p, d);
+      c._day=day;
+      const org=ccSeasonOrg(c, reg);
+      if(org) c.org=org;
+      ccSceneLift(c); now.set(k, c);
+    });
+  }
   // Люди своего клуба носят его герб — см. ccClubStamp.
   CC_NOW_CARDS[reg]=ccClubStamp([...now.values()].sort((a,b)=>b._ovr-a._ovr));
   return CC_NOW_CARDS[reg];
@@ -79544,7 +79564,9 @@ function ccSeasonOvr(){
 }
 let CC_EU_ALL={};
 function ccEuCards(){
-  const reg=ccPoolRegion()+(ccNowYear()<2026 ? '|'+ccNowYear() : '');
+  // Карьера, перешедшая в следующий год, держит ещё и дебютантов (ccDebutants) — своим ключом.
+  const debut=ccDebutants();
+  const reg=ccPoolRegion()+(ccNowYear()<2026 ? '|'+ccNowYear() : '')+(debut ? '|d'+ccCalYear() : '');
   if(CC_EU_ALL[reg]) return CC_EU_ALL[reg];
   const season=ccSeasonOvr();
   const reg0=ccPoolRegion(), yearCap=ccNowYear();
@@ -79574,6 +79596,13 @@ function ccEuCards(){
                      }
                      return c;
                    });
+  if(debut && debut.size){
+    PLAYERS.forEach(p=>{
+      if(reg0!=='ALL' && (p.region||'')!==reg0) return;
+      const d=debut.get(hKey(p));
+      if(d && ccCardYear(p)===d.year) CC_EU_ALL[reg].push(ccDebutCard(p, d));
+    });
+  }
   return CC_EU_ALL[reg];
 }
 // One card per person inside one set of events — the strongest, because a
@@ -81546,20 +81575,61 @@ function ccRealPullFrac(){
   return step ? 1-Math.pow(0.5, (step-1)*7/CC_REAL_PULL_HALF) : 0;
 }
 // Рейтинг каждого человека в году year — так, как его считает свежая карьера того года.
-function ccRealTargets(year){
-  const key=year+'|'+ccPoolRegion();
+// reg — регион сцены (по умолчанию тот, чей пул сейчас строится).
+function ccRealTargets(year, reg){
+  const R=reg || ccPoolRegion();
+  const key=year+'|'+R;
   if(CC_REAL_TARGETS[key]) return CC_REAL_TARGETS[key];
   const m=new Map(), was=CC_NOW_YEAR_FORCE;
+  const run=()=>ccEuCards().forEach(c=>{
+    if(ccCardYear(c)!==year) return;
+    const cur=m.get(c._k);
+    if(cur==null || c._ovr>cur) m.set(c._k, c._ovr);
+  });
   CC_NOW_YEAR_FORCE=year;
   try{
-    ccEuCards().forEach(c=>{
-      if(ccCardYear(c)!==year) return;
-      const cur=m.get(c._k);
-      if(cur==null || c._ovr>cur) m.set(c._k, c._ovr);
-    });
+    if(R===ccPoolRegion()) run();
+    else if(R==='ALL') ccAsWorld(run);
+    else ccAsRegion(R, run);
   } finally { CC_NOW_YEAR_FORCE=was; }
   CC_REAL_TARGETS[key]=m;
   return m;
+}
+/* ДЕБЮТАНТЫ СЛЕДУЮЩИХ ЛЕТ.
+
+   Его «да» 27 сентября на вопрос: у карьеры, начатой в 2024-м, в 2025-м нет
+   ни одного новичка 2025-го — 593 человека в Европе, 97 из топ-300 года, — и
+   настоящие трио с ними стояли без третьего. Теперь на стыке года в сцену
+   входят те, у кого нет ни одной карточки до года старта карьеры, но есть
+   карточка следующего года (до года календаря включительно): со своей
+   карточкой года дебюта и своим настоящим рейтингом того года. Дальше их ведёт
+   тот же потенциал (ccRealPull) — цепочка с года дебюта. */
+const CC_DEBUT={};
+function ccDebutants(reg){
+  if(CC_NOW_YEAR_FORCE || typeof CAREER==='undefined' || !CAREER || !CAREER.career || !ccContinuity()) return null;
+  const R=reg || ccPoolRegion(), y0=ccNowYear(), y1=ccCalYear();
+  const key=R+'|'+y0+'|'+y1;
+  if(CC_DEBUT[key]) return CC_DEBUT[key];
+  const inReg=p=>R==='ALL' || (p.region||'')===R;
+  const known=new Set();
+  PLAYERS.forEach(p=>{ if(inReg(p) && ccCardYear(p)<=y0) known.add(hKey(p)); });
+  const m=new Map();
+  for(let y=y0+1; y<=y1; y++){
+    ccRealTargets(y, R).forEach((ovr, k)=>{
+      if(!known.has(k) && !m.has(k)) m.set(k, {year:y, ovr:ovr});
+    });
+  }
+  CC_DEBUT[key]=m;
+  return m;
+}
+// Копия карточки дебютанта: рейтинг — настоящий рейтинг года дебюта.
+function ccDebutCard(p, deb){
+  const c={...p}, a=attrsFor(p);
+  c._k=hKey(p);
+  c._attrs={...a, _floored:false};
+  c._targetOvr=deb.ovr; c.rating=deb.ovr; c._ovr=deb.ovr;
+  c._debut=deb.year;
+  return c;
 }
 /* Годы идут цепочкой: следующий начинается с того, на чём закончился прошлый.
    Иначе каждый новый год считался бы от рейтинга года старта, и прошлогодний

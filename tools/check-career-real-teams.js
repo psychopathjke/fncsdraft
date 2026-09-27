@@ -66,13 +66,22 @@ const BOOT = `
       const t=cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')];
       if(t){ trioChecked++; if(b25.has([...d.cards.map(c=>hKey(c)), t].sort().join('|'))) trioReal++; }
     });
-    const yr24=real1.reduce((n,d)=>n+d.cards.filter(c=>ccCardYear(c)===2024).length, 0);
+    const yr24=real1.reduce((n,d)=>n+d.cards.filter(c=>!c._debut && ccCardYear(c)<=2024).length, 0);
+    // Дебютанты 2025-го: без карточек до 2024-го включительно, рейтинг — настоящий 2025-го.
+    const T25d=ccRealTargets(2025);
+    const debs=real1.reduce((a,d)=>a.concat(d.cards.filter(c=>c._debut)), []);
+    const debOk=debs.filter(c=>c._debut===2025 && ccCardYear(c)===2025 && T25d.get(c._k||hKey(c))===ccCardOvr(c)).length;
+    const deb=ccDebutants();
+    out.notes.debut={inScene:deb ? deb.size : 0, inPairs:debs.length, ratingOk:debOk, sample:debs.slice(0,4).map(c=>c.handle+' '+ccCardOvr(c))};
+    check('дебютанты 2025-го есть в сцене', deb && deb.size>=100, String(deb && deb.size));
+    check('дебютанты стоят в настоящих составах', debs.length>=50, String(debs.length));
+    check('рейтинг дебютанта — настоящий 2025-го', debOk===debs.length, debOk+'/'+debs.length);
+    check('остальные люди — карточки 2024-го', yr24+debs.length===real1.length*2, (yr24+debs.length)+'/'+(real1.length*2));
     out.notes.y25={duos:p1.duos.length, real:real1.length, pairReal, pairOld, thirds:thirds.length, trioChecked, trioReal,
       people2024:yr24+'/'+(real1.length*2), sample:real1.slice(0,4).map(d=>d.cards.map(c=>c.handle).join(' + ')+(cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')]?' + '+cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')]:''))};
     check('2024→2025: пары сцены — настоящие составы 2025-го', real1.length>=40, String(real1.length));
     check('2024→2025: каждая пара записана в 2025-м вместе', pairReal===real1.length, pairReal+'/'+real1.length);
     check('2024→2025: третьи посеяны из 2025-го', trioChecked>=20 && trioReal===trioChecked, trioReal+'/'+trioChecked);
-    check('2024→2025: люди — карточки 2024-го', yr24>=real1.length*2*0.9, out.notes.y25.people2024);
     check('2024→2025: рынок трио не открывается', ccTrioMarket(cr, true)===0);
     // 1б. Потенциал из жизни: рейтинг идёт к рейтингу года календаря, постепенно.
     const pot=(day)=>{
@@ -129,9 +138,11 @@ const BOOT = `
     check('свежий 2024-й: ccContinuity выключен', ccContinuity()===false);
     check('свежий 2024-й: потенциала нет', ccRealPullStep()===0);
     check('свежий 2024-й: пары — свои, без _real', p3.duos.filter(d=>d._real).length===0);
-    // 4. Свежий 2026-й — только замер (сколько пар даёт сцена дивизиона 1).
+    // 4. Свежие 2025-й и 2026-й — только замер (сколько пар даёт сцена дивизиона 1).
     seed({season:1, size:2, year:2026, year0:2026, day:'2026-02-20'});
     out.notes.y26fresh={duos:careerPools().duos.length};
+    seed({season:1, size:3, year:2025, year0:2025, day:'2025-02-20'});
+    out.notes.y25fresh={duos:careerPools().duos.length, thirds:Object.keys(CAREER.career.trios||{}).length};
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
