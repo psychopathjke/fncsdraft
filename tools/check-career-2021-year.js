@@ -63,7 +63,7 @@ const BOOT = `
     // 0. Карточки года и календарь.
     const k=PLAYERS.filter(p=>/^j[1234]$/.test(p.cardSet));
     out.notes.cards=k.length;
-    check('карточки 2021-го есть', k.length>5000, String(k.length));
+    check('карточки 2021-го есть', k.length>4000, String(k.length));
     seed(CC_YEAR_2021_FROM);
     check('год — 2021', ccCalYear()===2021 && ccIs2021(), String(ccCalYear()));
     check('трио', careerSquadSize()===3 && ccTeams(50)===33, String(careerSquadSize()));

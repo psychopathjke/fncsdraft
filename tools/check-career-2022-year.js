@@ -63,7 +63,7 @@ const BOOT = `
     // 0. Карточки года и календарь.
     const k=PLAYERS.filter(p=>/^k[123]$/.test(p.cardSet));
     out.notes.cards=k.length;
-    check('карточки 2022-го есть', k.length>6000, String(k.length));
+    check('карточки 2022-го есть', k.length>4000, String(k.length));
     seed(CC_YEAR_2022_FROM);
     check('год — 2022', ccCalYear()===2022 && ccIs2022(), String(ccCalYear()));
     check('в январе дивизионов нет', ccNoDivisions());

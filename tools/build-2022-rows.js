@@ -2,7 +2,7 @@
 //
 // Per season (S19 = C3S1, S20 = C3S2, S21 = C3S3) and region — EU, NA East (-> NAC), NA West,
 // BR, ASIA, ME, OCE — three stages, as the 2023/2024 sets read them:
-//   Q  (L) — the qualifiers' second-to-last round (S19 Round 2, S20/S21 Round 3; top 200),
+//   Q  (L) — the qualifiers' second-to-last round (S19 Round 2, S20/S21 Round 3; top 120),
 //            each duo once, at its best qualifier;
 //   S  (P) — the Semi-Final sessions (3 × 50), each duo once, at its best session;
 //   GF (G) — the Grand Final, both sessions summed.
@@ -58,8 +58,8 @@ for (const [set, season] of Object.entries(SETS)) {
   for (const reg of REGS) {
     const src = SRC[reg] || reg;
     const qRe = season === 'S19' ? /Qualifier\d_Round2$/ : /Qualifier\d_Round3$/;
-    // Q — топ-200, как Day 2 у 2023-го: весь раунд (до 580 дуо) выводил app.js за 9 МБ.
-    const stages = { Q: best(boards(season, src, qRe)).slice(0, 200), S: best(boards(season, src, /SemiFinals_Round\d$/)), GF: [] };
+    // Q — топ-120: весь раунд (до 580 дуо) выводил app.js за 9 МБ, а с годом 2021 и топ-200 стоял на линии.
+    const stages = { Q: best(boards(season, src, qRe)).slice(0, 120), S: best(boards(season, src, /SemiFinals_Round\d$/)), GF: [] };
     // Finals_Round1/2 — the regex above also matches SemiFinals_Round*: keep only the Finals event.
     stages.GF = summed(Object.keys(H).filter(k => k.startsWith(season + '_FNCS_Finals|' + src + '|')).map(k => H[k]).filter(b => b.rows));
     // У финалов NA East / West 2022-го на Tracker таблиц нет (окна пустые) — места берутся с
