@@ -260,9 +260,17 @@
   .hero-chips .cstrip-tag{margin-right:2px;}
   .hero-chips .cstrip-chip{border-color:rgba(126,240,221,.32);background:rgba(126,240,221,.08);color:#dff6f1;}
   /* Строка «с другом»: три командные двери мельче главных, одной строкой. */
-  .hero-about{margin:10px 0 0;text-align:center}
-.hero-about a{color:var(--ink-dim,#96a3b5);font-size:13px;text-decoration:underline;text-underline-offset:3px}
-.hero-about a:hover{color:var(--ink,#e6ecf5)}
+  .hero-about{margin:10px 0 0;text-align:left}
+/* Тихая третья кнопка ряда: та же таблетка и тот же узкий капс, что у
+   «начать карьеру» и «в драфт», но без заливки и на тон темнее — она
+   объясняет, а не зовёт. Скоса здесь нет: соседние кнопки скруглены, и
+   параллелограмм рядом с ними читался бы как чужой элемент. */
+.hero-about a{display:inline-block;font-family:var(--font-display);font-weight:500;font-size:12px;
+  letter-spacing:.08em;text-transform:uppercase;line-height:1;padding:9px 18px 8px;border-radius:999px;
+  color:var(--ink-dim,#96a3b5);text-decoration:none;border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.03);transition:color .15s,border-color .15s;}
+.hero-about a:hover{color:var(--ink,#e6ecf5);border-color:rgba(255,255,255,.34);}
+.hero-about a:focus-visible{outline:2px solid var(--go,#ffdd00);outline-offset:2px;}
 .hero-team{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;}
   .hero-team[hidden]{display:none;}
   .hero-team-lbl{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#9fc9c4;margin-right:2px;}
@@ -1789,7 +1797,57 @@
   .cc-tabs{position:relative;z-index:2;display:flex;gap:2px;margin-bottom:14px;}
   /* Год — первой панелью над вкладками; чипы года в одну строку на всю ширину. */
   .cc-year-panel{margin-bottom:14px;}
-  .cc-year-panel .cc-chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;max-width:620px;}   /* три года в ряд: 2026 / 2025 / 2024 */
+  .cc-year-panel .cc-chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}   /* три года в ряд во всю ширину панели */
+  /* Пластина сезона — та же превьюха, что на первом экране: арт года под
+     затемнением, номер года узким капсом поверх, под ним формат и международка.
+     Его слово: «хочу фнкс стиль типо как превьюхи». Арт приезжает переменной
+     --yr-art с самой кнопки. Полоса выбранного БЕЛАЯ и никакого цвета не
+     несёт: цвет сезона давал три разных состояния в ряд, жёлтый лез в арт
+     2026-го. Выбранный виден толщиной полосы и яркостью арта (его слова
+     27.09: «обводку убери», «не нравится выделение разным цветом», «желтая
+     у2026»). */
+  #screen-career-create .cc-year-panel .cc-year-tile{position:relative;display:block;text-align:left;
+    padding:34px 12px 10px;border:1px solid rgba(255,255,255,.14);border-radius:0;
+    background-color:#0e2f38;background-image:var(--yr-art);background-size:cover;
+    background-position:center 38%;background-repeat:no-repeat;
+    color:var(--ink,#e6ecf5);clip-path:var(--cut);overflow:hidden;
+    font-family:var(--font-display);line-height:1;
+    transition:border-color .15s,background-size .3s ease;}
+  /* Читаемость поверх арта: та же вуаль снизу вверх, что у превьюх (.ec-foot). */
+  #screen-career-create .cc-year-panel .cc-year-tile:not(.on){filter:saturate(.5) brightness(.62);}
+  #screen-career-create .cc-year-panel .cc-year-tile::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(to top, rgba(8,44,46,.96) 42%, rgba(8,44,46,.62) 72%, rgba(8,44,46,.28));
+    pointer-events:none;}
+  #screen-career-create .cc-year-panel .cc-year-tile b{position:relative;z-index:2;display:block;
+    font-size:28px;font-weight:600;letter-spacing:.01em;text-shadow:0 2px 10px rgba(0,0,0,.5);
+    transform:skewX(-7deg);transform-origin:left;}
+  #screen-career-create .cc-year-panel .cc-year-tile small{position:relative;z-index:2;display:block;
+    margin-top:6px;font-size:10.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;opacity:.85;}
+  #screen-career-create .cc-year-panel .cc-year-tile i{position:relative;z-index:2;display:block;
+    margin-top:2px;font-style:normal;font-size:9.5px;font-weight:400;letter-spacing:.12em;
+    text-transform:uppercase;opacity:.6;}
+  #screen-career-create .cc-year-panel .cc-year-tile:hover{border-color:rgba(255,255,255,.34);background-size:112%;}
+  /* Выбранный — сезон, в котором играешь: рамка его цветом, вуаль тоньше, арт ярче. */
+  /* Арт выбранного приходится вернуть вручную: у соседнего правила экрана
+     (#screen-career-create .cc-chip.on) фон записан СОКРАЩЁННО — background:,
+     а сокращённая запись стирает background-image. Пока здесь стояли только
+     рамка и тень, выбранный год оставался без арта. */
+  /* Выбранный сезон отмечен АРТОМ, а не рамкой. Рамка здесь была ошибкой:
+     у плитки срезан угол (clip-path), а inset-тень идёт по прямоугольнику —
+     на срезе она обрывалась, и это читалось как рваные пиксели (его слово:
+     «обводку убери… как-то пиксели рвутся»). Теперь выбранный отличается тем,
+     что у него ярче арт и толще полоса своего цвета, а остальные притушены.
+     Арт переобъявляется целиком: у соседнего правила экрана фон записан
+     сокращённо (background:), а сокращённая запись стирает background-image. */
+  #screen-career-create .cc-year-panel .cc-year-tile.on{
+    border-color:rgba(255,255,255,.2);
+    background-color:#0e2f38;background-image:var(--yr-art);background-size:cover;
+    background-position:center 38%;background-repeat:no-repeat;}
+  #screen-career-create .cc-year-panel .cc-year-tile.on::after{
+    background:linear-gradient(to top, rgba(8,44,46,.82) 34%, rgba(8,44,46,.34) 70%, rgba(8,44,46,0));}
+  #screen-career-create .cc-year-panel .cc-year-tile:disabled{opacity:.4;cursor:not-allowed;}
+  #screen-career-create .cc-year-panel .cc-year-tile:disabled:hover{border-color:rgba(255,255,255,.14);background-size:cover;}
+  @media (prefers-reduced-motion:reduce){ #screen-career-create .cc-year-panel .cc-year-tile{transition:none;} }
   .cc-tab{border:none;cursor:pointer;font-weight:900;font-style:italic;font-size:12px;
     letter-spacing:.05em;text-transform:uppercase;padding:10px 18px;
     background:#0b0f12;color:#fff;opacity:.42;transition:opacity .12s;}
@@ -2194,6 +2252,9 @@
   .cc-flat-where:focus{outline:2px solid var(--accent);outline-offset:1px;}
   .cc-duo-sort{float:right;display:inline-flex;gap:4px;align-items:center}
   .cc-duo-sort .cc-job-h.on{outline:1px solid var(--primary,#ffd400)}
+  .cc-duo-nat{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:4px;}
+  .cc-duo-flag{display:inline-flex;align-items:center;gap:4px;}
+  .cc-duo-flag img{height:10px;width:auto;border-radius:2px;display:block;}
   .cc-duo-q{width:100%;margin:10px 0 4px;padding:9px 12px;border-radius:9px;
     border:1px solid var(--line);background:rgba(0,0,0,.28);color:inherit;
     font:inherit;font-size:14px;}
@@ -3603,6 +3664,16 @@
   .x-shot-r.win i{color:#ffd166;}
   .x-shot-r.win b{color:#ffd166;}
   .x-shot-r.me{background:rgba(62,233,184,.08);}
+  /* Строка доски лидеров: слева показатель, справа число и ник. Числа
+     табличными цифрами, чтобы столбец не плясал. */
+  .x-lead-r{grid-template-columns:minmax(0,1fr) auto fit-content(40%);}
+  .x-lead-r b{font-weight:700;color:#8ea6d6;}
+  .x-lead-r .x-lead-ico{margin-right:6px;font-size:12px;line-height:1;}
+  .x-lead-r i img{margin-right:4px;}
+  .x-lead-r em{color:#e8f0ff;font-weight:800;font-variant-numeric:tabular-nums;}
+  .x-lead-r i{color:#6f83ab;font-style:normal;min-width:0;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap;}
+  .x-lead-r.me em, .x-lead-r.me i{color:#3ee9b8;}
   .x-shot-r.me b{color:#3ee9b8;}
   /* Широкий вид — тот, который постят: слева места с матчами, победами и
      киллами, справа очки и сводка. См. ccStageShot. */
@@ -5822,7 +5893,7 @@
           <button class="hero-btn hero-btn-go" type="button" onclick="careerStart()"><span data-i18n="heroCareer">Start a career</span></button>
           <button class="hero-btn hero-btn-alt" type="button" onclick="document.getElementById('modeYears').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})"><span data-i18n="heroDraft">Go to draft</span></button>
         </div>
-        <div class="hero-about"><a href="about.html" data-i18n="aboutLink">What this game is</a></div>
+        <div class="hero-about"><a href="about.html"><span data-i18n="aboutLink">What this game is</span></a></div>
         <div class="hero-team" id="heroTeam" hidden>
           <span class="hero-team-lbl" data-i18n="heroTeamLbl">With a friend:</span>
           <button class="cstrip-btn cstrip-btn-duo" id="cstripDuo" type="button" hidden onclick="careerMpNew()" data-i18n="heroDuo">Play as a duo</button>
@@ -6035,7 +6106,7 @@
         <div class="region-note" data-i18n="synergyNote">In reality FNCS 2026 is played in duos - that is the real format. Trio and Squad are fantasy: the players are real, but you build the roster yourself. Synergy is drawn as a triangle (trio) or square (squad), and the lines light up for real teammates or compatriots.</div>
       </div>
 
-      <div class="roster-note" data-i18n="sourcesNote"><b>Card sources - which tournaments the players are actually pulled from:</b><br>304 tournaments, 29134 cards in total.<br><br>• <b>FNCS 2026 Major 2</b> - Play-In, Last Chance Qualifier and Grand Finals across all 7 regions (18 Jul - 2 Aug 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> - Group Stage, Upper Bracket and Grand Finals (Düsseldorf <img src="flags/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 May 2026)<br>• <b>FNCS 2026 Major 1</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions (Mar - May 2026)<br>• <b>FNCS 2025 Global Championship</b> - Grand Finals (Lyon <img src="flags/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 Sep 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions, trios (Jan - Aug 2025)<br>• <b>FNCS 2024 Global Championship</b> - Grand Finals (Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 Sep 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> - Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> - Grand Finals (Copenhagen <img src="flags/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 Oct 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> - Grand Finals Europe (Mar / May / Jun 2023)<br>• <b>FNCS Invitational 2022</b> - Grand Finals (Raleigh <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 Nov 2022)<br>• <b>FNCS 2021 Grand Royale</b> - Europe (21 Nov 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> - Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> - Solo Grand Finals Europe (26 Jun 2021)<br><br>Each player card shows exactly which tournament its result came from. The same real person can have multiple cards - one per tournament where a result was found.<br><br><b>Card rarity:</b><br>The colour comes from the very OVR printed on the card - what you see is what you get. The ladder is the one Fortnite uses and the colours match the game.<br>• <b style="color:var(--mythic)">95+ · Mythic (gold)</b><br>• <b style="color:var(--legendary)">90–94 · Legendary (orange)</b><br>• <b style="color:var(--epic)">80–89 · Epic (purple)</b><br>• <b style="color:var(--rare)">70–79 · Rare (blue)</b><br>• <b style="color:var(--uncommon)">60–69 · Uncommon (green)</b><br>• <b style="color:var(--common)">below 60 · Common (grey)</b><br>Mythic is for a season with no weak stage in it - the Grand Final, the heats and the cups all held at once. The same six colours tint the weapons and heals in the loot packs.</div>
+      <div class="roster-note" data-i18n="sourcesNote"><b>Card sources - which tournaments the players are actually pulled from:</b><br>318 tournaments, 32847 cards in total.<br><br>• <b>FNCS 2026 Major 2</b> - Play-In, Last Chance Qualifier and Grand Finals across all 7 regions (18 Jul - 2 Aug 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> - Group Stage, Upper Bracket and Grand Finals (Düsseldorf <img src="flags/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 May 2026)<br>• <b>FNCS 2026 Major 1</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions (Mar - May 2026)<br>• <b>FNCS 2025 Global Championship</b> - Grand Finals (Lyon <img src="flags/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 Sep 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions, trios (Jan - Aug 2025)<br>• <b>FNCS 2024 Global Championship</b> - Grand Finals (Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 Sep 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> - Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> - Grand Finals (Copenhagen <img src="flags/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 Oct 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> - Grand Finals Europe (Mar / May / Jun 2023)<br>• <b>FNCS Invitational 2022</b> - Grand Finals (Raleigh <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 Nov 2022)<br>• <b>FNCS 2021 Grand Royale</b> - Europe (21 Nov 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> - Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> - Solo Grand Finals Europe (26 Jun 2021)<br><br>Each player card shows exactly which tournament its result came from. The same real person can have multiple cards - one per tournament where a result was found.<br><br><b>Card rarity:</b><br>The colour comes from the very OVR printed on the card - what you see is what you get. The ladder is the one Fortnite uses and the colours match the game.<br>• <b style="color:var(--mythic)">95+ · Mythic (gold)</b><br>• <b style="color:var(--legendary)">90–94 · Legendary (orange)</b><br>• <b style="color:var(--epic)">80–89 · Epic (purple)</b><br>• <b style="color:var(--rare)">70–79 · Rare (blue)</b><br>• <b style="color:var(--uncommon)">60–69 · Uncommon (green)</b><br>• <b style="color:var(--common)">below 60 · Common (grey)</b><br>Mythic is for a season with no weak stage in it - the Grand Final, the heats and the cups all held at once. The same six colours tint the weapons and heals in the loot packs.</div>
       <div class="roster-note" style="margin-top:14px;" data-i18n="confirmedNote"><b>What's confirmed:</b> names and region come from official participant lists and final standings (Liquipedia, Esports Earnings, esports.gg, fortnitetracker.com, and screenshots you sent).<br><br><b>About lobby size:</b> there aren't enough real players to exactly hit the target team counts - missing AI-lobby slots (except in the Grands) are filled with clearly labeled reserve teams, shown without a flag.<br><br><b>Flags:</b> nationality isn't confirmed for everyone - where there's no source, no flag is shown.</div>
     </details>
   </div>
@@ -6649,7 +6720,7 @@
   </div>
 </div>
 
-<style>#fdBoot{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;max-width:min(92vw,560px);padding:10px 16px;border-radius:12px;background:rgba(10,14,28,.94);color:#fff;font:600 13px/1.4 system-ui,"Segoe UI",Arial,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.14);opacity:0;transition:opacity .35s,transform .35s;pointer-events:none}#fdBoot.on{opacity:1;pointer-events:auto}#fdBoot i{flex:none;width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#ffd600;animation:fdSpin .8s linear infinite}@keyframes fdSpin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#fdBoot i{animation:none}}#fdBoot.slow{border-color:#ffd600}#fdBoot.fail{border-color:#ff5c5c}#fdBoot.fail i{animation:none;border-color:#ff5c5c}#fdBoot button{flex:none;background:#ffd600;color:#111;border:0;border-radius:8px;padding:6px 12px;font:800 12px system-ui,"Segoe UI",Arial,sans-serif;cursor:pointer}#fdBoot.nudge{transform:translateX(-50%) scale(1.06)}#fdBoot.off{opacity:0;transform:translateX(-50%) translateY(12px)}</style><script>window.__fdBoot=(function(){var ru=/^ru/i.test(navigator.language||"");var T=ru?{wait:"\u0417\u0430\u0433\u0440\u0443\u0436\u0430\u0435\u043c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435\u2026",slow:"\u0421\u0435\u0442\u044c \u043c\u0435\u0434\u043b\u0435\u043d\u043d\u0430\u044f \u2014 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0435\u0449\u0451 \u0435\u0434\u0435\u0442. \u0415\u0441\u043b\u0438 \u0442\u0430\u043a \u0438 \u043d\u0435 \u043e\u0442\u043a\u0440\u043e\u0435\u0442\u0441\u044f: \u043e\u0431\u043d\u043e\u0432\u0438\u0442\u0435 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0443 (Ctrl+F5), \u0441\u043c\u0435\u043d\u0438\u0442\u0435 DNS (1.1.1.1) \u0438\u043b\u0438 \u0432\u043a\u043b\u044e\u0447\u0438\u0442\u0435 VPN.",fail:"\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u043d\u0435 \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u043b\u043e\u0441\u044c.",retry:"\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c"}:{wait:"Loading the app\u2026",slow:"Slow network \u2014 the app is still on its way. If it never opens: reload (Ctrl+F5), change DNS (1.1.1.1) or use a VPN.",fail:"The app did not load.",retry:"Reload"};var el=null,t=null,done=false;function make(){if(el)return el;el=document.createElement("div");el.id="fdBoot";el.setAttribute("role","status");el.innerHTML="<i></i><span></span>";el.lastChild.textContent=T.wait;document.body.appendChild(el);return el;}function show(){if(done)return;make();el.className="on";}show();t=setTimeout(function(){if(done)return;show();el.className="on slow";el.lastChild.textContent=T.slow;},15000);document.addEventListener("click",function(){if(done||!el)return;el.className+=" nudge";setTimeout(function(){if(el)el.className=el.className.replace(" nudge","");},500);},true);return{ok:function(){done=true;clearTimeout(t);if(el){el.className="off";setTimeout(function(){if(el&&el.parentNode)el.parentNode.removeChild(el);el=null;},400);}},fail:function(){if(done)return;clearTimeout(t);show();el.className="on fail";el.innerHTML="<i></i><span></span><button type=\"button\"></button>";el.children[1].textContent=T.fail;el.children[2].textContent=T.retry;el.children[2].onclick=function(){location.reload();};}};})();</script><script src="app.js?v=ab6f4fca" onload="__fdBoot.ok()" onerror="__fdBoot.fail()"></script>
+<style>#fdBoot{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;max-width:min(92vw,560px);padding:10px 16px;border-radius:12px;background:rgba(10,14,28,.94);color:#fff;font:600 13px/1.4 system-ui,"Segoe UI",Arial,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.14);opacity:0;transition:opacity .35s,transform .35s;pointer-events:none}#fdBoot.on{opacity:1;pointer-events:auto}#fdBoot i{flex:none;width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#ffd600;animation:fdSpin .8s linear infinite}@keyframes fdSpin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#fdBoot i{animation:none}}#fdBoot.slow{border-color:#ffd600}#fdBoot.fail{border-color:#ff5c5c}#fdBoot.fail i{animation:none;border-color:#ff5c5c}#fdBoot button{flex:none;background:#ffd600;color:#111;border:0;border-radius:8px;padding:6px 12px;font:800 12px system-ui,"Segoe UI",Arial,sans-serif;cursor:pointer}#fdBoot.nudge{transform:translateX(-50%) scale(1.06)}#fdBoot.off{opacity:0;transform:translateX(-50%) translateY(12px)}</style><script>window.__fdBoot=(function(){var ru=/^ru/i.test(navigator.language||"");var T=ru?{wait:"\u0417\u0430\u0433\u0440\u0443\u0436\u0430\u0435\u043c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435\u2026",slow:"\u0421\u0435\u0442\u044c \u043c\u0435\u0434\u043b\u0435\u043d\u043d\u0430\u044f \u2014 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0435\u0449\u0451 \u0435\u0434\u0435\u0442. \u0415\u0441\u043b\u0438 \u0442\u0430\u043a \u0438 \u043d\u0435 \u043e\u0442\u043a\u0440\u043e\u0435\u0442\u0441\u044f: \u043e\u0431\u043d\u043e\u0432\u0438\u0442\u0435 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0443 (Ctrl+F5), \u0441\u043c\u0435\u043d\u0438\u0442\u0435 DNS (1.1.1.1) \u0438\u043b\u0438 \u0432\u043a\u043b\u044e\u0447\u0438\u0442\u0435 VPN.",fail:"\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u043d\u0435 \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u043b\u043e\u0441\u044c.",retry:"\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c"}:{wait:"Loading the app\u2026",slow:"Slow network \u2014 the app is still on its way. If it never opens: reload (Ctrl+F5), change DNS (1.1.1.1) or use a VPN.",fail:"The app did not load.",retry:"Reload"};var el=null,t=null,done=false;function make(){if(el)return el;el=document.createElement("div");el.id="fdBoot";el.setAttribute("role","status");el.innerHTML="<i></i><span></span>";el.lastChild.textContent=T.wait;document.body.appendChild(el);return el;}function show(){if(done)return;make();el.className="on";}show();t=setTimeout(function(){if(done)return;show();el.className="on slow";el.lastChild.textContent=T.slow;},15000);document.addEventListener("click",function(){if(done||!el)return;el.className+=" nudge";setTimeout(function(){if(el)el.className=el.className.replace(" nudge","");},500);},true);return{ok:function(){done=true;clearTimeout(t);if(el){el.className="off";setTimeout(function(){if(el&&el.parentNode)el.parentNode.removeChild(el);el=null;},400);}},fail:function(){if(done)return;clearTimeout(t);show();el.className="on fail";el.innerHTML="<i></i><span></span><button type=\"button\"></button>";el.children[1].textContent=T.fail;el.children[2].textContent=T.retry;el.children[2].onclick=function(){location.reload();};}};})();</script><script src="app.js?v=b42bf804" onload="__fdBoot.ok()" onerror="__fdBoot.fail()"></script>
 <script>
 /* Mode-tile art, fetched a screen ahead of the scroll rather than all at once.
    See the note on data-art: seven tiles were 368KB before the first screen had

@@ -379,6 +379,7 @@ s_matsFarmed:'Нафармлено метсов', s_woodFarmed:'Нафармле
 s_matsCollected:'Собрано метсов', s_woodCollected:'Собрано дерева', s_stoneCollected:'Собрано камня', s_metalCollected:'Собрано металла',
 s_timeAlive:'Время в живых', s_timeStorm:'Время в шторме', s_stormDmg:'Урон от шторма',
 s_surge:'Surge-хиты', s_distance:'Пройдено',
+s_dmgNet:'Чистый урон', s_dpm:'Урон в минуту',
 winnersWord:'ПОБЕДИТЕЛИ', wTotalPts:'ВСЕГО ОЧКОВ', wPlacePts:'ОЧКИ ЗА МЕСТО',
 wElims:'ВСЕГО УБИЙСТВ', wVrs:'VICTORY ROYALES', wGames:n=>n+(n===1?' ИГРА':(n<5?' ИГРЫ':' ИГР')), wYouTag:'ЭТО ТЫ',
 rolesLabel:'Роли:',
@@ -658,6 +659,7 @@ chSquad:'Дуо', ccDuoFindTitle:'Кому написать',
 ccDuoFindHint:'Любому игроку своего региона можно написать первым. Ответит он сам — и не всякий согласится.',
 ccDuoSearchPh:'Поиск по нику',
 ccDuoSortBy:'Сортировать', ccDuoSortOvr:'рейтинг', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoNat:'Флаг', ccDuoNatAll:'все',
 ccDuoWrite:'Написать',
 ccDuoFree:'без дуо',
 ccDuoWith:n=>'дуо с '+n,
@@ -904,6 +906,7 @@ ccNewsRcDrop:(what,p)=>what+': '+ccTop(p)+' — в стадию выживани
 ccNewsRcOut:(what,p)=>what+': '+ccTop(p)+' — Париж закончен',
 ccNewsRcCash:(p,m)=>'Париж: '+ccTop(p)+', заработано $'+m,
 ccNewsRcChamp:m=>'ЧЕМПИОН Reload Championship — $'+m,
+ccNewsRcMvp:(n,m)=>'MVP Reload Championship — '+n+', $'+m,
 ccMajLobby:'Ласт ченс лобби',
 ccMajTicket:'Победа в матче — билет в финал мейджора',
 ccMajNoTicket:'Ни одной победы в лобби — билета нет',
@@ -1412,6 +1415,9 @@ ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:'';
 ccPostBdayEpic:(h,a)=>'С днём рождения, @'+h+'! Сегодня '+a+'. Хорошего сезона 🎂',
 ccBornHint:'Дата рождения — по желанию. Укажи, и в этот день тебя поздравят. Число сверху — сколько тебе на день старта сезона; день рождения ты встретишь уже в нём.',
 ccNewsCongrats:(n,ev)=>'Поздравляем '+n+' с победой — '+ev+'! 🏆',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'РАЗБОР · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' игр, среднее место '+avg+', элимов '+el+' ('+epg+' за игру). Очки: '+plp+' за места, '+elp+' за элимы. По элимам в лобби — '+ccTop(er)+'.',
+ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'лидеры вечера',
+ccLeadCap:'лидеры вечера',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['ВЗЯЛИ 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' наш'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:'';
@@ -2369,6 +2375,7 @@ s_matsFarmed:'Mats Farmed', s_woodFarmed:'Wood Farmed', s_stoneFarmed:'Stone Far
 s_matsCollected:'Mats Collected', s_woodCollected:'Wood Collected', s_stoneCollected:'Stone Collected', s_metalCollected:'Metal Collected',
 s_timeAlive:'Time Alive', s_timeStorm:'Time in Storm', s_stormDmg:'Storm Damage Taken',
 s_surge:'Surge Hits', s_distance:'Distance Traveled',
+s_dmgNet:'Net damage', s_dpm:'Damage per minute',
 winnersWord:'WINNERS', wTotalPts:'TOTAL POINTS', wPlacePts:'PLACEMENT POINTS',
 wElims:'TOTAL ELIMINATIONS', wVrs:'VICTORY ROYALES', wGames:n=>n+(n===1?' GAME':' GAMES'), wYouTag:'THAT’S YOU',
 rolesLabel:'Roles:',
@@ -2645,6 +2652,7 @@ chSquad:'Duo', ccDuoFindTitle:'Who to write to',
 ccDuoFindHint:'You can write first to anybody in your region. They answer for themselves, and not everybody says yes.',
 ccDuoSearchPh:'Search by name',
 ccDuoSortBy:'Sort by', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoNat:'Flag', ccDuoNatAll:'all',
 ccDuoWrite:'Write',
 ccDuoFree:'no duo',
 ccDuoWith:n=>'duo with '+n,
@@ -2891,6 +2899,7 @@ ccNewsRcDrop:(what,p)=>what+': '+ccTop(p)+' — down to Survival',
 ccNewsRcOut:(what,p)=>what+': '+ccTop(p)+' — Paris ends here',
 ccNewsRcCash:(p,m)=>'Paris: '+ccTop(p)+', $'+m+' earned',
 ccNewsRcChamp:m=>'RELOAD CHAMPIONSHIP CHAMPION — $'+m,
+ccNewsRcMvp:(n,m)=>'RELOAD CHAMPIONSHIP MVP — '+n+', $'+m,
 ccMajLobby:'Last Chance Lobby',
 ccMajTicket:'A win in the lobby — a ticket to the Major Finals',
 ccMajNoTicket:'No win in the lobby — no ticket',
@@ -3398,6 +3407,9 @@ ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:'';
 ccPostBdayEpic:(h,a)=>'Happy birthday @'+h+' — '+a+' today. Have a good season 🎂',
 ccBornHint:'Date of birth — optional. Fill it in and the scene wishes you a happy birthday on the day. The number above is your age on the day the season starts; the birthday itself falls inside it.',
 ccNewsCongrats:(n,ev)=>'Congratulations to '+n+' on the win — '+ev+'! 🏆',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
+ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
+ccLeadCap:'stats leaders',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['WE WON IT 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' is ours'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:'';
@@ -4279,6 +4291,7 @@ s_timeAlive:'Temps en vie',
 s_timeStorm:'Temps dans la tempête',
 s_stormDmg:'Dégâts de tempête subis',
 s_surge:'Coups de surtension',
+s_dmgNet:'Dégâts nets', s_dpm:'Dégâts par minute',
 s_distance:'Distance parcourue',
 winnersWord:'VAINQUEURS',
 wTotalPts:'POINTS TOTAUX',
@@ -4670,6 +4683,9 @@ ccPingServer:city=>'vers le serveur de '+city,
 ccPostBdayEpic:(h,a)=>'Joyeux anniversaire @'+h+' ! '+a+' ans aujourd’hui — bonne saison 🎂',
 ccBornHint:'Date de naissance — facultative. Renseigne-la et le jour venu, on te souhaitera ton anniversaire. Le nombre au-dessus est ton âge au premier jour de la saison ; l’anniversaire, lui, tombe pendant celle-ci.',
 ccNewsCongrats:(n,ev)=>'Félicitations à '+n+' pour la victoire — '+ev+' ! 🏆',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
+ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
+ccLeadCap:'stats leaders',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
   return ['ON L’A GAGNÉ 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' est à nous'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:'';
@@ -4857,6 +4873,7 @@ ccNewsRcDrop:(what,p)=>what+' : '+ccTop(p)+' — redescente en Survival',
 ccNewsRcOut:(what,p)=>what+' : '+ccTop(p)+' — Paris s’arrête ici',
 ccNewsRcCash:(p,m)=>'Paris : '+ccTop(p)+', '+m+' $ gagnés',
 ccNewsRcChamp:m=>'CHAMPION DU RELOAD CHAMPIONSHIP — '+m+' $',
+ccNewsRcMvp:(n,m)=>'MVP DU RELOAD CHAMPIONSHIP — '+n+', '+m+' $',
 ccNewsMajThrough:(what,p,of)=>what+' : '+ccTop(p)+' sur '+of+', qualifié',
 ccNewsMajOut:(what,p,of)=>what+' : '+ccTop(p)+' sur '+of+', le parcours s’arrête',
 ccNewsMajCash:(n,p,m)=>'Finale du Major '+n+' : '+ccTop(p)+', '+m+' $ gagnés',
@@ -5527,6 +5544,7 @@ ccDuoFindTitle:'À qui écrire',
 ccDuoFindHint:'Tu peux écrire en premier à n’importe qui de ta région. Chacun répond pour soi, et tout le monde ne dit pas oui.',
 ccDuoSearchPh:'Chercher par nom',
 ccDuoSortBy:'Trier par', ccDuoSortOvr:'note', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoNat:'Drapeau', ccDuoNatAll:'tous',
 ccDuoWrite:'Écrire',
 ccDuoFree:'sans duo',
 ccDuoNobody:'Personne trouvé',
@@ -7035,6 +7053,7 @@ ccNewsRcDrop:(what,p)=>what+': '+ccTop(p)+' — gi\u00f9 alla Survival',
 ccNewsRcOut:(what,p)=>what+': '+ccTop(p)+' — Parigi finisce qui',
 ccNewsRcCash:(p,m)=>'Parigi: '+ccTop(p)+', $'+m+' guadagnati',
 ccNewsRcChamp:m=>'CAMPIONE DEL RELOAD CHAMPIONSHIP — $'+m,
+ccNewsRcMvp:(n,m)=>'MVP DEL RELOAD CHAMPIONSHIP — '+n+', $'+m,
 ccNewsMajThrough:(what,p,of)=>what+': '+ccTop(p)+' su '+of+', passato',
 ccNewsMajOut:(what,p,of)=>what+': '+ccTop(p)+' su '+of+', il percorso finisce',
 ccNewsMajCash:(n,p,m)=>'Finali del Major '+n+': '+ccTop(p)+', $'+m+' guadagnati',
@@ -7233,6 +7252,9 @@ ccShotCap:d=>'Coppa Divisione '+d,
 ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:''; if(p===1) return ['TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6'+a, 'un\u2019altra \ud83d\udc10'+a][(v||0)%3]; if(p<=3) return [''+ccTop(p)+' \ud83d\udcaa'+a, ''+ccTop(p)+a+' \ud83d\udd25', ''+ccTop(p)+', per un soffio'+a][(v||0)%3]; return [''+ccTop(p)+' — Divisione '+d+a, ''+ccTop(p)+' questa settimana'+a+'. più in alto la prossima', ''+ccTop(p)+a+'. si continua'][(v||0)%3];},
 ccPostBdayEpic:(h,a)=>'Buon compleanno @'+h+' — '+a+' anni oggi. Buona stagione \ud83c\udf82',
 ccNewsCongrats:(n,ev)=>'Complimenti a '+n+' per la vittoria — '+ev+'! \ud83c\udfc6',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
+ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
+ccLeadCap:'stats leaders',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:''; return ['ABBIAMO VINTO \ud83c\udfc6 '+ev+a, ev+'. TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6 '+ev+a, ev+' \u00e8 nostro'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:''; return [''+ccTopC(p)+' — '+ev+' \ud83d\udcaa'+a, ev+': '+ccTop(p)+a+' \ud83d\udd25', ''+ccTopC(p)+' a '+ev+a][(v||0)%3];},
 ccNewsD1Table:w=>'Divisione 1 dopo la settimana '+w+' — ecco come sta la corsa della stagione',
@@ -7823,6 +7845,7 @@ ccNewsVicNoWin:"Victory Cup: Round 2 senza vittorie",
 ccDuoFindTitle:"A chi scrivere",
 ccDuoSearchPh:"Cerca per nome",
 ccDuoSortBy:'Ordina per', ccDuoSortOvr:'valutazione', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoNat:'Bandiera', ccDuoNatAll:'tutti',
 ccDuoWrite:"Scrivi",
 ccDuoFree:"senza duo",
 ccDuoNobody:"Nessun risultato",
@@ -8207,6 +8230,7 @@ s_timeAlive:"Tempo in vita",
 s_timeStorm:"Tempo nella tempesta",
 s_stormDmg:"Danno da tempesta subito",
 s_surge:"Colpi di Surge",
+s_dmgNet:'Danni netti', s_dpm:'Danni al minuto',
 s_distance:"Distanza percorsa",
 winnersWord:"VINCITORI",
 wTotalPts:"PUNTI TOTALI",
@@ -9547,6 +9571,7 @@ ccNewsRcDrop:(what,p)=>what+': '+ccTop(p)+' — desce para a Survival',
 ccNewsRcOut:(what,p)=>what+': '+ccTop(p)+' — Paris acaba aqui',
 ccNewsRcCash:(p,m)=>'Paris: '+ccTop(p)+', $'+m+' ganhos',
 ccNewsRcChamp:m=>'CAMPE\u00c3O DO RELOAD CHAMPIONSHIP — $'+m,
+ccNewsRcMvp:(n,m)=>'MVP DO RELOAD CHAMPIONSHIP — '+n+', $'+m,
 ccNewsMajThrough:(what,p,of)=>what+': '+ccTop(p)+' de '+of+', passou',
 ccNewsMajOut:(what,p,of)=>what+': '+ccTop(p)+' de '+of+', a caminhada acaba',
 ccNewsMajCash:(n,p,m)=>'Finais do Major '+n+': '+ccTop(p)+', $'+m+' ganhos',
@@ -9745,6 +9770,9 @@ ccShotCap:d=>'Copa da Divis\u00e3o '+d,
 ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:''; if(p===1) return ['TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6'+a, 'mais uma \ud83d\udc10'+a][(v||0)%3]; if(p<=3) return [''+ccTop(p)+' \ud83d\udcaa'+a, ''+ccTop(p)+a+' \ud83d\udd25', ''+ccTop(p)+', por pouco'+a][(v||0)%3]; return [''+ccTop(p)+' — Divis\u00e3o '+d+a, ''+ccTop(p)+' essa semana'+a+'. mais alto na pr\u00f3xima', ''+ccTop(p)+a+'. seguimos'][(v||0)%3];},
 ccPostBdayEpic:(h,a)=>'Feliz anivers\u00e1rio @'+h+' — '+a+' hoje. Boa temporada \ud83c\udf82',
 ccNewsCongrats:(n,ev)=>'Parab\u00e9ns a '+n+' pela vit\u00f3ria — '+ev+'! \ud83c\udfc6',
+ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
+ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
+ccLeadCap:'stats leaders',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:''; return ['GANHAMOS \ud83c\udfc6 '+ev+a, ev+'. TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6 '+ev+a, ev+' \u00e9 nosso'+a][(v||0)%4];},
 ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:''; return [''+ccTopC(p)+' — '+ev+' \ud83d\udcaa'+a, ev+': '+ccTop(p)+a+' \ud83d\udd25', ''+ccTopC(p)+' no '+ev+a][(v||0)%3];},
 ccNewsD1Table:w=>'Divis\u00e3o 1 depois da semana '+w+' — a corrida da temporada est\u00e1 assim',
@@ -10335,6 +10363,7 @@ ccNewsVicNoWin:"Victory Cup: Rodada 2 sem vitória",
 ccDuoFindTitle:"Para quem escrever",
 ccDuoSearchPh:"Buscar por nome",
 ccDuoSortBy:'Ordenar por', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoNat:'Bandeira', ccDuoNatAll:'todos',
 ccDuoWrite:"Escrever",
 ccDuoFree:"sem dupla",
 ccDuoNobody:"Ninguém encontrado",
@@ -10719,6 +10748,7 @@ s_timeAlive:"Tempo vivo",
 s_timeStorm:"Tempo na tempestade",
 s_stormDmg:"Dano de tempestade sofrido",
 s_surge:"Acertos de Surge",
+s_dmgNet:'Dano líquido', s_dpm:'Dano por minuto',
 s_distance:"Distância percorrida",
 winnersWord:"VENCEDORES",
 wTotalPts:"PONTOS TOTAIS",
@@ -12775,6 +12805,9 @@ function tierCapForEvent(event){
 }
 
 function pushCard(card){
+  // Написание чистится ЗДЕСЬ, до ключа склейки: иначе «Japko » и «Japko» с
+  // одного турнира лягут двумя карточками. См. hKey.
+  card.handle=String(card.handle||'').trim();
   const key=card.handle+'|'+card.event+'|'+card.placement;
   if(cardKeys.has(key)) return;
   cardKeys.add(key);
@@ -24362,7 +24395,163 @@ function rowEntry(r, opts){
 // bottom by the match count, so every existing card is unmoved.
 function m1Entry(r){ return rowEntry(r); }
 const _M1P=CARD_M1_PLAYIN_RAW.map(m1Entry);
+/* M1_EU: открытая сессия 1 Ласт-Ченса, 2026-04-20 (окно S40_FNCSMajor1_LastChanceQualifier_EU, всего страниц 100; лобби того же Ласт-Ченса — 50 команд, они здесь не повторяются) */
+const CARD_M1_LCQ1_RAW=[
+[51,361,9,1,9.56,14.56,"Callejr 88","Hyper"],
+[52,361,11,1,6.55,18.82,"Mаtez","Kacpi"],
+[53,361,9,0,8.33,16.22,"big kr4t4y 10ǃ","Quix"],
+[54,359,9,2,11.22,13.67,"noia","1Vanjkee"],
+[55,359,11,2,7.91,24.18,"Fastroki","bevvys"],
+[56,359,9,2,6.78,14.22,"SWT Samux7","zLeoSZN"],
+[57,359,10,1,7.4,15.3,"Prism","Casperinovic"],
+[58,359,9,0,7,10.56,"R4C Chasseur","K13 nyrrox 17"],
+[59,358,9,1,7.89,12.33,"coldr","1p Coldr"],
+[60,357,8,1,4.5,8.13,"Otis.EXE","Lukas"],
+[61,356,10,2,7.4,15.5,"MaSiDaǃ","HAO Noobleon1231"],
+[62,356,10,2,4,16.2,"Porsaat","ʙambi"],
+[63,356,9,1,8.11,11.78,"Ihminen dreadx1","ihminen ʕᵒᴥᵒʔ"],
+[64,356,10,0,13.6,17.6,"nayzix7","x6 soby ǃ"],
+[65,355,9,2,10.11,16.44,"Efexy","Dela"],
+[66,354,11,3,6.64,20.36,"Lyzpichu","DTCT junex"],
+[67,354,10,1,8.1,16.7,"11 Aliǃ","maligoty 11"],
+[68,354,11,1,6.09,20.55,"Fruzzy 7","tоmuk"],
+[69,354,10,1,5.1,16.7,"Mald1s","Lericx"],
+[70,354,10,1,3.9,13.7,"ksent0sik8","flopyk666"],
+[71,353,10,1,9.6,18.7,"MrSavage","Velo"],
+[72,353,11,1,6.73,20,"yumafv.","Krisssssssssssǃ"],
+[73,353,8,1,5.75,9.63,"Layn","BadSniper"],
+[74,353,9,1,5.56,11.56,"r4uuL イ","dxfelipe schranz"],
+[75,352,11,2,8,18.36,"l7x kanekiǃ","Nstar Mickie"],
+[76,352,11,2,4.73,18.45,"ARS Pogba","Tenq"],
+[77,352,9,2,3.33,11.33,"FataL n3","Olivеr Hernández"],
+[78,351,9,2,9.67,16.11,"NaVi Barrett ツ","Wed1"],
+[79,351,9,1,7.56,14,"Hedra","Shadox"],
+[80,351,11,1,7.27,19.64,"EXA Buzzbusy","garnerbotǃ"],
+[81,351,10,0,3.3,15.1,"Gely","nov 17"],
+[82,350,11,1,9,20.91,"Srapt","Hellfire"],
+[83,350,11,1,7,22,"aimx luiiss dvdv","tiny1ǃ"],
+[84,350,11,1,5.55,16.55,"Rz Pruzen 10","madjo Ӝ"],
+[85,350,10,1,5.3,14.2,"wally 9","Captinite"],
+[86,350,9,1,2.56,9.67,"Petyaafn","auraking xeroxǃ"],
+[87,350,9,0,5.56,11.56,"Trusio","Foczka"],
+[88,349,10,2,5.3,14.9,"sirozbozǃ","headhurting212"],
+[89,349,8,1,7.75,10.38,"MD VylaAIM7 yX亗ǃ","DX NAFRIKID7"],
+[90,349,10,1,5.8,16.8,"piecek1ng BABA","Sakee"],
+[91,349,10,0,6.9,17.5,"Xantify","Poyo werzzǃ"],
+[92,349,11,0,6.45,19.36,"Lorifnz","Poyo Speedsaw281"],
+[93,349,11,0,5,18.18,"уаri gabby ac","Roxiz"],
+[94,348,11,2,7.82,22.27,"W1N Drukly","AmoZz"],
+[95,348,9,2,6.22,15.44,"selfix .","laenum 26"],
+[96,348,11,2,4.18,19.18,"Matiken","airamǃ"],
+[97,348,9,1,3.89,11.11,"AlloDoudou Pxyko","X6jd123xx"],
+[98,347,6,2,13.17,7,"Joy","EGO Loxzyfvǃ 26"],
+[99,347,9,2,7.22,12.67,"AURA BenjaFX.","Virus 210 XD"],
+[100,347,9,2,5.44,14,"Poyo Oeht","NVK suires"],
+[101,347,10,2,5.1,14.2,"Yoichi.Isagi","Alv4rooooo"],
+[102,346,9,2,10.44,16.22,"TwitchKalasOtto","liamshter"],
+[103,346,11,2,8.18,23.09,"Drey","FLY darkyǃ"],
+[104,346,11,2,6.36,21.18,"Toose","Malash9 ʕᵒᴥᵒʔ"],
+[105,346,10,2,6.2,17.9,"IVORY kaicep 10","maka"],
+[106,346,9,2,3.78,13.67,"Juikelii","patuzze"],
+[107,346,11,1,5,17.27,"Yolin","Kar4sen"],
+[108,346,11,0,4,17.45,"jarne 66","renng0d"],
+[109,345,10,2,5.7,15.8,"egy 2ndǃ","CraaxWRLD"],
+[110,345,9,1,8,12.33,"Sbari","Aleezy"],
+[111,345,9,0,4.78,14,"batman chapix 74","LoneSurvivor2008"],
+[112,344,10,3,5.5,16.2,"Ivory veazybot","Joni"],
+[113,344,11,2,6.36,18.27,"keerann","Zeepahh"],
+[114,344,9,1,6.11,12.33,"games dead么","Vira osku 6"],
+[115,344,10,1,4.9,16.7,"ORA Нирокс","NTO zedroxski 23"],
+[116,343,11,3,3.82,21.55,"amakazzǃ","mixiǃ"],
+[117,343,11,2,10.27,27.18,"savageǃ","twtr fightfnr"],
+[118,343,9,2,6.11,15,"kloceq","95V vigranfishy"],
+[119,343,10,2,5.5,17,"ZiroxCOW","Diktator Alex"],
+[120,343,11,2,5.36,18.73,"Sangild","Winther"],
+[121,343,10,2,5.1,14.9,"FOMO FEE0","ROMANIAN BANA メ."],
+[122,343,9,1,8.44,15.56,"Noah","luu 11ǃ"],
+[123,343,11,1,5.27,17.45,"Fermín sherbyǃ","otmz avlyspomboǃ"],
+[124,343,9,1,3.56,12.22,"vernow.","TSM_200pamp"],
+[125,343,10,0,10.1,14.8,"big vinicius","しukq"],
+[126,343,11,0,5.18,18,"Fεnom","gtz cechiiiii777"],
+[127,343,11,0,3.18,19.18,"lele 7.","marvin"],
+[128,342,10,2,7.4,17,"Neyx","Zane"],
+[129,342,10,2,7.4,19.1,"Zerway","9C MathoR"],
+[130,342,11,2,5.82,20.64,"juvezzi","0gitsu"],
+[131,342,9,2,5.78,13.11,"xperier on 60hzツ","aizen x sanchoǃ"],
+[132,342,11,2,4.55,20.18,"Fly6n","costafv"],
+[133,342,10,2,4.4,18.2,"TT COACH AXIOM","teezy diggi"],
+[134,342,10,1,8.7,17,"FL Bugsy","Nstar Cracky"],
+[135,342,10,1,4.7,16.3,"neuf millimètres","mertshter"],
+[136,341,10,2,4.3,17.6,"Atlantic ChxrkZz","Ralf X Timo CORE"],
+[137,341,11,1,3.27,17.09,"LD1 Davix","topino quittino"],
+[138,340,11,2,3.82,19.64,"TSǃㅤ","Hitzig_keks"],
+[139,340,10,2,3.2,16.2,"Leoxloll","ValeCP 30ǃ"],
+[140,340,9,1,9.44,14.22,"Gabix","Splasheax"],
+[141,340,10,1,7.7,17.1,"sky splikǃ","Karmaa"],
+[142,340,10,1,6.9,15.8,"freuzi","Kentу"],
+[143,340,9,1,3.89,10.33,"200IQ svnc. ʵ","foxy.48 ʵ"],
+[144,340,9,1,2.78,12.56,"spokkiǃ","gino formagginoǃ"],
+[145,340,11,0,3.64,16.82,"pirla de caraibi","Gidaneǃ"],
+[146,339,11,3,12,23.91,"Art1st","AUR heror3h 89ǃ"],
+[147,339,11,2,6.45,19.45,"zoom3rx 3 6 9","FuryLegendary"],
+[148,339,10,2,5.7,16.7,"fv medvegod 77ǃ","ДИКИЙ_Бизон"],
+[149,339,9,2,4.78,12.11,"wissam mvp","MISSV MY LOVE 8"],
+[150,339,11,1,7.82,20,"förma cloudz 10ǃ","redzfnr -ω-"],
+[151,339,8,1,7.75,12.63,"SpiltMartin NáCi","Benqÿ 58"],
+[152,339,10,1,7.2,16.1,"TruleX","Chico"],
+[153,339,10,1,5.8,18.2,"GudnBre","King nudel22ψ"],
+[154,339,9,1,4.89,12.67,"gelo 23ǃ","LATTYMONEK"],
+[155,339,10,1,4,15.2,"Splaet.","Elämä on laiffii"],
+[156,339,10,1,4,15.2,"NyxsChaChi","Cyrox BIBLE"],
+[157,339,11,1,2,15.18,"TGA azzedilu","carp1täǃ"],
+[158,338,11,1,5.91,21.64,"lfc simg0dǃ","Algyz"],
+[159,338,11,1,5.18,18.91,"Cxshy","Firen"],
+[160,338,10,0,3.6,15.5,"lenn3rt","pth taido"],
+[161,337,10,3,5.4,18.2,"Twtr T3irty2","Clean 001"],
+[162,337,11,2,7,18.91,"Snak","Reevers"],
+[163,337,11,2,6.27,19.27,"hyyt3g","LosOskuTV"],
+[164,337,11,2,5.36,19.64,"SN Ocuśǃ","Hinzuǃ"],
+[165,337,11,1,6.55,18,"asc meyji jrǃ","Benek3k"],
+[166,337,11,1,3.45,20.09,"Tiktok Hexofps7","falcon seamusǃ"],
+[167,336,9,2,5.33,12.78,"DamageGOTY 7","RG22 flex"],
+[168,336,11,1,5,19.73,"M1 bepro krixx","SenQu"],
+[169,336,11,1,4.82,19.82,"syylo 10ǃ","wiskay 23"],
+[170,336,10,1,3.3,14.9,"K2 Iskra95ǃ","K2 Kaspix95ǃ"],
+[171,335,10,2,8.5,18.9,"noahлучший","Deyydodger"],
+[172,335,10,2,7.1,17.4,"SNM Sfetofar4o","User-672c861a1c"],
+[173,335,10,1,6.2,16.8,"Theosfvǃ","Blommanǃ"],
+[174,335,10,1,6,15.2,"pqtǃ","AV DemonKaneFN"],
+[175,335,10,1,4.4,15.2,"shizzuǃ","Yernix_Le_Bavard"],
+[176,335,10,0,3.5,15.1,"solweyǃ","Arym z z z"],
+[177,335,10,0,3.5,16.3,"JessePinkmanxz","flyx gammi421"],
+[178,334,10,2,5.2,17.7,"aj tarik 10","solana trenches."],
+[180,334,10,1,4.7,15.2,"Tayylan 24","W1N Akayeǃ"],
+[181,334,9,1,3.44,11.22,"Fozzy0452","Meltz"],
+[182,334,10,0,8.2,16,"Soree yX","TGA Dylangodoy9"],
+[183,333,11,2,5.36,19.91,"NvK Slayzz","Asc Fluxy 10ǃ"],
+[184,333,11,1,7.45,21.45,"RB LF7","Zaxi Jane"],
+[185,333,11,1,5.82,20.82,"Matrekarrr","Sweey"],
+[186,333,10,1,4.4,14.8,"Riix Savdx74.","NTO kanlyx LM10ǃ"],
+[187,333,10,1,3.6,13.9,"MIA MIA MIAOUUUU","xavier fosterr"],
+[188,333,9,0,9.89,15.56,"Deckzee","Upl"],
+[189,332,11,2,6.36,21.45,"CPT422007 ʚɞ","ESP Mexi"],
+[190,332,11,2,3.82,20.45,"Aventus Tofn","TIMIC 7"],
+[191,332,11,0,5.82,17.64,"thelordjesus1x","danycekPS4godbtw"],
+[192,331,10,3,3.2,15.5,"dxvxdling ʚɞ","craneǃ"],
+[193,331,8,2,9.88,14.25,"hiksi","chef leksa"],
+[194,331,11,2,7.55,19.91,"KoS webhakǃ","robymasteя"],
+[195,331,10,2,5.5,19.9,"AUR Hejn","ave senseiǃ"],
+[196,331,9,2,4.56,14.56,"ANT Seyxrk 10","ANT Hxpnotique."],
+[197,331,9,2,3.89,13.44,"SLOZYX","Coach Woqz"],
+[198,331,11,2,3.55,18.55,"Pandoro 777","SAB Giqmmq"],
+[199,331,11,1,8.55,21.09,"Tidi","KovaaksXD"],
+[200,331,9,1,7.11,13.78,"Slice","Tjorbenyeye 10"]
+];
+const M1_LCQ1_NAT={"0gitsu":"fi","11 Aliǃ":"us","1Vanjkee":"rs","1p Coldr":"gb","200IQ svnc. ʵ":"de","95V vigranfishy":"pl","9C MathoR":"fr","ANT Seyxrk 10":"fr","ARS Pogba":"pl","AUR Hejn":"de","AUR heror3h 89ǃ":"ru","AURA BenjaFX.":"be","AV DemonKaneFN":"de","Aleezy":"it","Algyz":"gb","Alv4rooooo":"fr","AmoZz":"de","Art1st":"ru","Arym z z z":"fr","Asc Fluxy 10ǃ":"fr","Atlantic ChxrkZz":"dk","Benek3k":"de","Benqÿ 58":"hu","Blommanǃ":"se","CPT422007 ʚɞ":"dk","Callejr 88":"se","Captinite":"gb","Casperinovic":"be","Chico":"ba","Clean 001":"se","Coach Woqz":"gb","CraaxWRLD":"pl","Cxshy":"pl","Cyrox BIBLE":"mk","DTCT junex":"se","DamageGOTY 7":"gb","Deckzee":"dk","Dela":"se","Diktator Alex":"de","Drey":"it","EGO Loxzyfvǃ 26":"gr","ESP Mexi":"dk","EXA Buzzbusy":"fr","Efexy":"se","Elämä on laiffii":"ru","FL Bugsy":"dk","FLY darkyǃ":"it","FOMO FEE0":"es","FataL n3":"de","Fermín sherbyǃ":"pt","Firen":"pl","Fly6n":"pl","Foczka":"pl","Fozzy0452":"gb","Fruzzy 7":"no","FuryLegendary":"ru","Fεnom":"pt","Gabix":"de","Gely":"ro","Gidaneǃ":"it","GudnBre":"se","HAO Noobleon1231":"se","Hedra":"fr","Hinzuǃ":"pl","Hyper":"fi","IVORY kaicep 10":"it","Ihminen dreadx1":"no","Ivory veazybot":"se","JessePinkmanxz":"pl","Joni":"de","Joy":"gr","Juikelii":"fi","K13 nyrrox 17":"fr","K2 Iskra95ǃ":"pl","K2 Kaspix95ǃ":"pl","Kacpi":"pl","Kar4sen":"pl","Karmaa":"fr","King nudel22ψ":"se","KoS webhakǃ":"it","Krisssssssssssǃ":"pl","LATTYMONEK":"pl","LD1 Davix":"it","Leoxloll":"it","Lericx":"dk","LoneSurvivor2008":"ge","Lorifnz":"ru","LosOskuTV":"fi","Lukas":"de","Lyzpichu":"se","M1 bepro krixx":"pl","MD VylaAIM7 yX亗ǃ":"de","MIA MIA MIAOUUUU":"fr","MISSV MY LOVE 8":"xk","MaSiDaǃ":"dk","Malash9 ʕᵒᴥᵒʔ":"by","Mald1s":"dk","Matiken":"se","Matrekarrr":"fr","Meltz":"ie","Mаtez":"pl","NTO kanlyx LM10ǃ":"ro","NTO zedroxski 23":"fr","NVK suires":"fr","NaVi Barrett ツ":"ua","Neyx":"de","Noah":"de","Nstar Cracky":"dk","Nstar Mickie":"es","NvK Slayzz":"fr","NyxsChaChi":"nl","ORA Нирокс":"fr","Olivеr Hernández":"de","Petyaafn":"hu","Porsaat":"fi","Poyo Oeht":"fr","Poyo Speedsaw281":"ru","Poyo werzzǃ":"nl","Prism":"gb","Quix":"de","R4C Chasseur":"fr","RB LF7":"gb","RG22 flex":"gb","Ralf X Timo CORE":"dk","Reevers":"be","Riix Savdx74.":"al","Roxiz":"se","Rz Pruzen 10":"de","SAB Giqmmq":"it","SN Ocuśǃ":"pl","SNM Sfetofar4o":"bg","SWT Samux7":"it","Sakee":"de","Sbari":"it","SenQu":"pl","Shadox":"fr","Snak":"fr","Soree yX":"es","SpiltMartin NáCi":"hu","Splaet.":"gb","Splasheax":"ch","Srapt":"dk","Sweey":"fr","TGA Dylangodoy9":"es","TGA azzedilu":"mn","TIMIC 7":"de","TSM_200pamp":"ch","TSǃㅤ":"de","TT COACH AXIOM":"de","Tayylan 24":"de","Tenq":"pl","Theosfvǃ":"se","Tidi":"nl","Tiktok Hexofps7":"lv","Tjorbenyeye 10":"de","TruleX":"rs","Trusio":"pl","Twtr T3irty2":"gb","Upl":"ee","User-672c861a1c":"zm","ValeCP 30ǃ":"it","Velo":"be","Vira osku 6":"pl","Virus 210 XD":"ma","W1N Akayeǃ":"de","W1N Drukly":"de","Wed1":"ua","Winther":"dk","X6jd123xx":"fr","Xantify":"nl","Yernix_Le_Bavard":"fr","Yoichi.Isagi":"es","Yolin":"pl","Zane":"de","Zaxi Jane":"pl","Zeepahh":"no","Zerway":"fr","ZiroxCOW":"de","aimx luiiss dvdv":"gb","airamǃ":"se","aizen x sanchoǃ":"fr","aj tarik 10":"gb","amakazzǃ":"pl","asc meyji jrǃ":"de","auraking xeroxǃ":"bg","ave senseiǃ":"de","batman chapix 74":"by","big kr4t4y 10ǃ":"ch","big vinicius":"ro","carp1täǃ":"es","chef leksa":"rs","coldr":"nl","costafv":"pl","craneǃ":"de","danycekPS4godbtw":"cz","dxfelipe schranz":"es","dxvxdling ʚɞ":"de","egy 2ndǃ":"pl","falcon seamusǃ":"ie","flopyk666":"ru","flyx gammi421":"pl","foxy.48 ʵ":"de","freuzi":"ua","fv medvegod 77ǃ":"ru","förma cloudz 10ǃ":"de","games dead么":"gb","garnerbotǃ":"fr","gelo 23ǃ":"pl","gino formagginoǃ":"it","gtz cechiiiii777":"pt","headhurting212":"gb","hiksi":"hr","hyyt3g":"fi","ihminen ʕᵒᴥᵒʔ":"fi","jarne 66":"be","juvezzi":"fi","keerann":"no","kloceq":"pl","ksent0sik8":"ru","l7x kanekiǃ":"de","laenum 26":"de","lele 7.":"it","lenn3rt":"de","lfc simg0dǃ":"pl","luu 11ǃ":"de","maka":"it","maligoty 11":"de","marvin":"it","mertshter":"se","mixiǃ":"pl","nayzix7":"fr","neuf millimètres":"de","noahлучший":"gb","noia":"fr","nov 17":"ro","otmz avlyspomboǃ":"pt","piecek1ng BABA":"de","pirla de caraibi":"it","pqtǃ":"de","pth taido":"de","r4uuL イ":"es","renng0d":"gb","robymasteя":"it","savageǃ":"no","selfix .":"at","shizzuǃ":"fr","sirozbozǃ":"gb","sky splikǃ":"fr","solana trenches.":"ro","solweyǃ":"fr","spokkiǃ":"it","teezy diggi":"de","thelordjesus1x":"cz","tiny1ǃ":"es","topino quittino":"it","twtr fightfnr":"gb","tоmuk":"gb","vernow.":"gb","wally 9":"gb","wiskay 23":"fr","wissam mvp":"fr","x6 soby ǃ":"be","xavier fosterr":"fr","xperier on 60hzツ":"gb","yumafv.":"pl","zLeoSZN":"it","zoom3rx 3 6 9":"by","ʙambi":"fi","уаri gabby ac":"gb","しukq":"ro"};
+const CARD_M1_LCQ1_EVENT="FNCS 2026 Major 1 — Last Chance Qualifier Session 1 (Europe)";
+const CARD_M1_LCQ1_DATE="20 апр 2026";
 const _M1L=CARD_M1_LCQ_RAW.map(m1Entry);
+const _M1L1=CARD_M1_LCQ1_RAW.map(m1Entry);
 const _M1G=CARD_M1_GF_RAW.map(m1Entry);
 const sortBy=(arr,f)=>arr.map(f).sort((a,b)=>a-b);
 
@@ -24390,6 +24579,7 @@ function mkSorts(arr){
           end:sortBy(arr,r=>r.endShare)};
 }
 const _S={m1p:mkSorts(_M1P), m1l:mkSorts(_M1L), m1g:mkSorts(_M1G)};
+_S.m1l1=mkSorts(_M1L1);
 
 // Ranked lazily: every stage has to have registered before the distribution
 // means anything, and the first card is not built until the draft opens.
@@ -24462,7 +24652,9 @@ function buildM1Attrs(entry, name, sorts, base, penalty){
 }
 
 const m1PlayinBase = r => 96 - ((r-1)/Math.max(_M1P.length-1,1))*34;
-const m1LcqBase    = r => 62 - ((r-1)/Math.max(_M1L.length-1,1))*14;
+const m1LcqLen  = () => _M1L.length + _M1L1.length;
+const m1LcqBase    = r => 62 - ((r-1)/Math.max(m1LcqLen()-1,1))*14;
+const m1Lcq1Base   = r => 62 - ((_M1L.length+r-1)/Math.max(m1LcqLen()-1,1))*14;
 const m1GfBase     = r => 96 - ((r-1)/Math.max(_M1G.length-1,1))*26;
 
 /* Один человек — один регион круга.
@@ -24539,7 +24731,7 @@ const CARD_DUOS_M1=[];
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(base(entry.rank), 30, 99));
-      const code = M1_NAT_LIQUI[nm] || M1_NAT_TRN[nm] || '';
+      const code = M1_NAT_LIQUI[nm] || M1_NAT_TRN[nm] || M1_LCQ1_NAT[nm] || '';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource: M1_NAT_LIQUI[nm] ? 'liquipedia' : 'tracker',
@@ -24556,6 +24748,7 @@ const CARD_DUOS_M1=[];
   _M1P.forEach(e=>{ if(cardNotHere('m1', 'EU', e.duo)) return;
                     TEAMMATE_GROUPS.push(e.duo.slice()); add(e, CARD_M1_PLAYIN_EVENT, CARD_M1_PLAYIN_DATE, m1PlayinBase, 'Playin'); });
   _M1L.forEach(e=>add(e, CARD_M1_LCQ_EVENT, CARD_M1_LCQ_DATE, m1LcqBase, 'Lcq'));
+  _M1L1.forEach(e=>add(e, CARD_M1_LCQ1_EVENT, CARD_M1_LCQ1_DATE, m1Lcq1Base, 'Lcq1'));
   _M1G.forEach(e=>add(e, CARD_M1_GF_EVENT, CARD_M1_GF_DATE, m1GfBase, 'Gf'));
 
   // Same rule as Major 2: finalists are rebuilt from the Grand Finals, everyone
@@ -24865,15 +25058,173 @@ const CARD_N1_LCQ_EVENT='FNCS 2026 Major 1 — Last Chance Qualifier (NA Central
 const CARD_N1_GF_EVENT='FNCS 2026 Major 1 — Grand Finals (NA Central)';
 
 const _N1P=CARD_N1_PLAYIN_RAW.map(m1Entry);
+/* M1_NAC: открытая сессия 1 Ласт-Ченса, 2026-04-20 (окно S40_FNCSMajor1_LastChanceQualifier_NAC, всего страниц 100; лобби того же Ласт-Ченса — 50 команд, они здесь не повторяются) */
+const CARD_N1_LCQ1_RAW=[
+[51,337,10,0,9.1,17.3,"Cam","Aiden"],
+[52,335,9,1,6.67,15.67,"Jemitty","Avenger"],
+[53,334,9,1,4.78,15.56,"Losknifes","gsus"],
+[54,334,9,0,4.67,12.56,"Kevo","odyssey breezy6"],
+[55,333,8,3,4.5,11.63,"dogo jane","twitter douldss"],
+[56,332,11,3,3.73,18.82,"Braytryona 11","anec 7"],
+[57,332,10,2,7.2,17.9,"mattius281","Alex"],
+[58,332,10,1,6.3,19.1,"pralyse","Ŝcooby"],
+[59,332,11,1,4.09,20.91,"twitch peyyyszn","kelso 713"],
+[60,332,9,1,2.33,11,"King Cito옷","dazed xarǃ"],
+[61,331,10,2,3.7,17.8,"fear beleifxyzǃ","La chickfilafry"],
+[62,331,11,1,6.55,19.82,"iwnlǃ","Weeze"],
+[63,331,9,1,4.44,13.11,"tt Kickwyd","retical 10ǃ"],
+[64,330,10,2,5,17.1,"codack","Mirops"],
+[65,330,11,2,3.82,19.09,"tundra dog","asianshota"],
+[66,330,10,1,4.1,13.9,"Hawk","crz"],
+[67,328,9,1,7.89,14.22,"Professor of BXF","Twitch Crxptify"],
+[68,328,10,1,4.7,14.9,"Haxaroonie","Jxsh"],
+[69,328,10,0,7.6,17.3,"KEZEMON","AbgworshipperӜ"],
+[70,327,9,2,6.56,13.78,"Sleaze","Chronic"],
+[71,327,10,2,3.3,17.3,"Jaegerr","Fwshy"],
+[72,327,9,1,8,15.89,"Jayse1x","BatmanJoe"],
+[73,326,9,2,8,13.56,"hadi","hadi"],
+[74,326,10,1,4.5,18.1,"أبو اليُز","AbdibasidYT"],
+[75,326,9,0,5.56,15.67,"Skyy","hxpe"],
+[76,325,10,2,3.7,17.9,"zay 333","noaie123"],
+[77,325,11,1,8.36,21.82,"cauzerz","jeze 309"],
+[78,325,9,1,4,14.89,"wixiepoo","UKOiQ"],
+[79,324,11,2,6.36,23,"Dan","Lawrence"],
+[80,324,10,2,4.6,17.4,"Scripted","обрекает"],
+[81,324,10,0,2.6,16.3,"ravejerss","Moon"],
+[82,323,10,2,6.3,18.6,"twitter cyrizfn","Zire"],
+[83,323,10,0,4.9,14.4,"ttv xt3 jufn6","Twitch Cucoszn"],
+[84,322,8,1,5.88,14.13,"Khaki","jnt Supahxex"],
+[85,322,9,1,5.67,13.78,"twitch mookyzzz","capaǃ"],
+[86,322,11,1,5,21.36,"twitch kyle1x","Passion 米"],
+[87,322,10,1,4.7,16,"siccwitіt","twitch typ1call"],
+[88,322,10,0,4.8,18.1,"s33ǃ Saphz","shinnster9000"],
+[89,322,9,0,4.44,12.11,"Dom","Hairycarrоt"],
+[90,321,9,3,6.67,16.89,"Xtrasaucy churro","Agartha Mogger"],
+[91,321,8,2,7.88,15.63,"mikeybot 30ǃ","darigelina"],
+[92,321,9,2,5,15.44,"DUCKIE SLAM JAM","Puhzessed 斗争"],
+[93,321,11,1,4,19.82,"footy","enriqueǃ"],
+[94,321,9,1,3.56,15.44,"keron","thebes"],
+[95,321,10,1,3.2,17.5,"vuto506","ysl kur"],
+[96,321,9,0,1.22,10.44,"brennenboiᵀᴵᴷᵀᴼᴷ","na east velo"],
+[97,320,8,2,3.75,9.75,"Tease","blurkbm"],
+[98,320,10,1,5.1,16.6,"STM KursedKame44","strdux23 yt"],
+[99,320,9,1,4.56,17,"sprite yhyhǃ","venox larps"],
+[100,320,11,1,3.36,19,"Kqstle 7","zvfty"],
+[101,320,9,0,5.56,15.56,"Swappey","Gal"],
+[102,320,9,0,4.67,13.11,"zelofvǃ","cverce"],
+[103,319,11,2,3.55,20.36,"fire","twitch sebifn6"],
+[104,319,10,2,3.5,19.6,"Clone Dimer 003","1C Blexyǃ"],
+[105,319,11,1,5.82,23.45,"inputski 23","gxvin"],
+[106,318,9,1,5.44,14.11,"Faith","grusx"],
+[107,317,11,2,5.18,20.18,"Chase","Xdzys"],
+[108,317,10,1,3.2,15.7,"twitch nickfnx","jordan poole 33"],
+[109,317,10,0,2.7,16.1,"youtube hanmafnǃ","DISRESPECTED DRE"],
+[110,316,11,2,2.73,17,"doxwtwǃ","EJdontzen"],
+[111,316,11,1,5.91,20.09,"flaco el tacoǃ","Kyro"],
+[112,316,11,1,3.73,19.55,"twfleツ","źáky"],
+[114,316,10,0,6.2,16.7,"Slixx 7.","Suspects"],
+[115,316,10,0,4,15.6,"NOOB TEYO","Tabnae"],
+[116,315,8,2,4.88,11.13,"Lesnay","trauma"],
+[117,315,11,1,5.27,23.09,"clehver","Neemo"],
+[118,315,11,0,4.64,21.45,"inqyns 7","7VEN Muggy TATER"],
+[119,314,9,2,4.89,17.78,"Pykz","pigǃ"],
+[120,314,11,1,4.09,21.09,"Fat Reet 007","AbdibariSZN"],
+[121,314,11,0,6.91,18.82,"HH Marheinski","Bobby"],
+[122,314,11,0,4.55,18.73,"Cents","CYN Kro14"],
+[123,313,8,1,10.25,18.88,"Cugo","fozgy"],
+[124,313,11,1,6.36,20,"Breci","darkkwyd"],
+[125,313,11,1,5.82,22.36,"rxlphy","Jerry"],
+[126,313,11,1,4,20,"buttonǃ","Lxter 207ǃ"],
+[127,313,11,1,3.45,17.27,"Dert1414","sou rexgr tdgesf"],
+[129,312,11,2,3.45,20.55,"twitch ferox1xǃ","Zell 10."],
+[130,312,9,2,3.33,15.11,"hippofragger23","Grapido"],
+[131,312,9,1,7,16.67,"Mason","Decay"],
+[132,312,10,1,4.3,16,"Tincitofn.","qte francho"],
+[133,312,11,1,4.09,18.36,"TT light","Zed 9ǃ"],
+[134,311,10,1,5.6,16.9,"scare 44ǃ","Bailout Ninja"],
+[135,311,10,1,4.6,16,"fluprs 11ǃ","YT DarriusHutton"],
+[136,311,11,1,2.91,18.55,"youtube owen1x_","sparky"],
+[137,310,11,3,3.55,21.55,"svj astro taǃ","TIKTOK MONK3YFN"],
+[138,310,11,1,5.73,18.27,"matt","2014DolphZiggler"],
+[139,310,11,0,5.82,22.73,"Lahey","Ultra"],
+[140,310,10,0,5.4,15,"Twitter Flyxzfv","Samipikafresa"],
+[141,310,8,0,5,9.63,"Paaragon","san obrero."],
+[142,309,10,1,5.8,15.4,"goma","agileszn"],
+[143,309,10,1,3.8,17.2,"Wavy1xx","cuflah"],
+[144,309,9,1,3.78,13.22,"KJC黒人","Scotts Hamburger"],
+[145,308,11,2,4.73,22.64,"Twitch Umarfv23","Angles406"],
+[146,308,10,2,4.4,19.2,"doxaǃ","ghoul 10ǃ"],
+[147,308,10,1,5.3,18,"batman chud","bowlcut oogway"],
+[148,308,11,1,3.18,19.36,"Stroud","Allure"],
+[149,307,11,2,8.27,22.55,"Muzz hot beard","Aj"],
+[150,307,11,2,7,20.64,"Safest","Krobsi"],
+[151,307,11,2,2.82,21.91,"SRG chapafvǃ","SRG fartmachine"],
+[152,307,10,2,2.7,17,"Twitch Jrmylol","Gray"],
+[153,307,10,1,7.2,18.2,"Roxxane","Dorito"],
+[154,307,11,1,4.73,20.73,"Vova","MikRik"],
+[155,306,11,3,3.91,19.91,"Stoopid","balratttt"],
+[156,306,11,2,5.45,21.82,"Apy on my wrist","Autizc_1025"],
+[157,306,9,1,2.56,13.56,"crxzylol.","tulonǃ"],
+[158,306,11,0,8.36,19.45,"Aoxy","jojofishy"],
+[159,306,10,0,3.4,16.8,"axtro xz","emis goodboy"],
+[160,305,11,2,3.91,18.09,"d1 clipzy fanǃ","MARZ BANG GO"],
+[161,305,10,1,5.2,17.8,"Turbulence","LuckyTeed"],
+[162,305,9,1,4.22,15.33,"high 88ǃ","C1apzy_"],
+[163,305,10,1,4.2,18.7,"Bryans my papa","Minty"],
+[164,305,11,1,2.36,21.55,"Zilay","BooTheSeal"],
+[165,305,11,0,3.55,17.45,"dinero 1 1","1click"],
+[166,304,9,2,3.33,15.67,"rails1x","void kdotǃ"],
+[167,304,9,1,5.67,14,"Lyts","Lukin"],
+[168,304,9,1,3,12.22,"SICKOLUCKY111","FREE SMURK FNG"],
+[169,304,11,1,2.64,17.45,"dev","spazzxyz"],
+[170,304,11,0,3.64,16.55,"void mateo","ttv monacokbm"],
+[171,304,11,0,2.18,18.27,"Qwad","BIG CLIFFORDǃ"],
+[172,303,10,1,7.6,16.8,"Tiktok Vuixy","Tiktok Hzyafn"],
+[173,303,9,1,6.89,16.44,"xo virusǃ","itachiǃ."],
+[174,303,9,1,6,14.22,"vaefo 852","Twitter Tightfv"],
+[175,303,9,0,6.11,15.78,"коро supero 289","Plurreyli Ӝ"],
+[176,303,11,0,2.82,19.09,"Lman","Sun 222"],
+[177,303,11,0,2.64,17.64,"mtrx yanoǃ","dzd versǃ"],
+[178,303,9,0,2.33,16.33,"clipzz 11","Goonjerrs"],
+[179,302,9,2,5.56,15.33,"VIP MeinKampf 27","VIP xen2kbrn"],
+[180,302,11,2,4.18,22.09,"Chubs","statixxǃ"],
+[181,302,11,1,3.36,21.73,"md junior ytǃ","ToT 8ǃ"],
+[182,302,10,1,2.9,17.1,"Lightning08Pro","fear visonz."],
+[183,302,9,1,1.89,15.22,"33 Blazzaa","FEVER 557"],
+[184,302,10,0,9.8,18.4,"ARM Jafet","Tonyfv"],
+[185,302,9,0,2.89,11.56,"kest xp","lvs val"],
+[186,301,10,2,4.1,17.5,"naisu 2ǃ","LUMINEXヤ"],
+[187,301,11,2,3.36,18.18,"teeny tigerǃ","Snuggly Sloth"],
+[188,301,11,2,2.09,20.27,"yt tadzyfv","bugar sugar 69"],
+[189,301,10,1,6.4,16.5,"range235","itzmeduty"],
+[190,301,9,1,5.78,13.56,"pringles canGOTY","rat simulator."],
+[191,301,10,1,4.6,16.1,"vibеzǃ","benardohǃ"],
+[192,301,10,1,4.6,19,"Twitch Huntze7","cag"],
+[193,301,11,1,2.18,22.09,"Yumply retired","Güeroo."],
+[194,301,11,0,3.36,20,"Twitch SwiftyABC","JCD kissed u"],
+[195,300,11,1,5.73,21.36,"moss 7","yhyh ghoulfvǃ"],
+[196,300,9,1,5.67,16.44,"Zusto","prl rey 7ǃ"],
+[197,300,10,1,5.5,20.3,"Boogy","vixy"],
+[198,300,8,1,3.12,10.5,"JBabbstreams","5TEV3."],
+[199,300,9,1,2.56,14.33,"Gr1ndfn","bzarooniee"],
+[200,300,9,0,6.67,15.22,"fright","zydebot 19ǃ"]
+];
+const N1_LCQ1_NAT={"1C Blexyǃ":"fr","1click":"us","2014DolphZiggler":"us","5TEV3.":"ca","7VEN Muggy TATER":"us","ARM Jafet":"mx","AbdibariSZN":"kr","AbdibasidYT":"so","AbgworshipperӜ":"us","Agartha Mogger":"il","Aiden":"us","Alex":"us","Allure":"us","Aoxy":"us","Apy on my wrist":"ca","Autizc_1025":"pr","Avenger":"us","BIG CLIFFORDǃ":"us","Bailout Ninja":"it","BatmanJoe":"us","Bobby":"us","BooTheSeal":"us","Boogy":"tr","Breci":"us","Bryans my papa":"do","C1apzy_":"us","CYN Kro14":"mx","Cents":"ae","Chase":"us","Chronic":"ca","Clone Dimer 003":"ua","Cugo":"us","DUCKIE SLAM JAM":"bs","Dan":"iq","Decay":"jm","Dert1414":"mx","Dom":"it","Dorito":"mx","EJdontzen":"us","FEVER 557":"us","Faith":"ca","Fat Reet 007":"us","Fwshy":"us","Gal":"np","Gr1ndfn":"ax","Grapido":"pr","HH Marheinski":"do","Hairycarrоt":"us","Hawk":"us","Haxaroonie":"us","JBabbstreams":"us","Jaegerr":"us","Jayse1x":"us","Jemitty":"us","Jerry":"us","Jxsh":"us","KEZEMON":"jm","Kevo":"ru","Khaki":"us","Kqstle 7":"us","Krobsi":"so","Kyro":"us","LUMINEXヤ":"us","Lahey":"us","Lawrence":"us","Lesnay":"pr","Lightning08Pro":"cw","Lman":"us","Losknifes":"mx","LuckyTeed":"us","Lukin":"us","Lyts":"us","MARZ BANG GO":"ca","MikRik":"ru","Minty":"us","Mirops":"us","Moon":"hu","Muzz hot beard":"us","NOOB TEYO":"us","Neemo":"us","Paaragon":"pa","Plurreyli Ӝ":"us","Professor of BXF":"sg","Puhzessed 斗争":"ps","Qwad":"us","SRG chapafvǃ":"us","SRG fartmachine":"us","Safest":"us","Samipikafresa":"mx","Scotts Hamburger":"us","Scripted":"us","Skyy":"jm","Sleaze":"ca","Stroud":"us","Sun 222":"us","Swappey":"us","TT light":"us","Tease":"us","Tiktok Hzyafn":"il","Tiktok Vuixy":"us","Tincitofn.":"co","ToT 8ǃ":"jm","Tonyfv":"mx","Turbulence":"us","Twitch Huntze7":"us","Twitch Jrmylol":"cu","Twitter Flyxzfv":"mx","Twitter Tightfv":"us","UKOiQ":"us","Ultra":"us","VIP MeinKampf 27":"cr","Vova":"us","Xdzys":"it","Zilay":"us","Zire":"us","Zusto":"mx","agileszn":"us","anec 7":"us","asianshota":"jp","balratttt":"us","batman chud":"us","benardohǃ":"mx","blurkbm":"br","bowlcut oogway":"us","brennenboiᵀᴵᴷᵀᴼᴷ":"us","bugar sugar 69":"ca","bzarooniee":"ne","cag":"gl","cauzerz":"us","clehver":"us","clipzz 11":"do","codack":"us","crz":"us","cuflah":"us","cverce":"us","d1 clipzy fanǃ":"im","darigelina":"ca","darkkwyd":"us","dazed xarǃ":"us","dev":"in","dinero 1 1":"bo","dogo jane":"hn","doxwtwǃ":"il","enriqueǃ":"kr","fear beleifxyzǃ":"us","fear visonz.":"ma","fire":"us","footy":"gb","fright":"us","goma":"mx","grusx":"us","gsus":"mx","hadi":"lb","high 88ǃ":"us","hippofragger23":"hn","hxpe":"us","itachiǃ.":"kr","itzmeduty":"us","iwnlǃ":"us","jeze 309":"mx","jnt Supahxex":"jm","jojofishy":"us","jordan poole 33":"ru","kelso 713":"us","keron":"tt","kest xp":"mx","matt":"sv","mattius281":"ro","md junior ytǃ":"us","mikeybot 30ǃ":"us","mtrx yanoǃ":"us","na east velo":"us","naisu 2ǃ":"pr","noaie123":"us","odyssey breezy6":"us","pralyse":"mx","prl rey 7ǃ":"us","qte francho":"co","rails1x":"us","rat simulator.":"us","ravejerss":"us","rxlphy":"us","scare 44ǃ":"co","siccwitіt":"us","sou rexgr tdgesf":"vi","sparky":"ru","spazzxyz":"us","sprite yhyhǃ":"us","strdux23 yt":"tn","svj astro taǃ":"mx","teeny tigerǃ":"us","thebes":"us","trauma":"pr","ttv monacokbm":"us","ttv xt3 jufn6":"us","tulonǃ":"ua","tundra dog":"us","twitch ferox1xǃ":"sm","twitch kyle1x":"cz","twitch mookyzzz":"ca","twitch nickfnx":"es","twitch sebifn6":"us","twitch typ1call":"us","twitter cyrizfn":"us","twitter douldss":"pr","vaefo 852":"us","venox larps":"us","vibеzǃ":"us","vixy":"us","void kdotǃ":"us","void mateo":"mx","vuto506":"us","wixiepoo":"ug","xo virusǃ":"ca","youtube hanmafnǃ":"us","youtube owen1x_":"il","ysl kur":"us","yt tadzyfv":"ca","zay 333":"us","zvfty":"mx","zydebot 19ǃ":"us","źáky":"mx","обрекает":"us","أبو اليُز":"ae"};
+const CARD_N1_LCQ1_EVENT="FNCS 2026 Major 1 — Last Chance Qualifier Session 1 (NA Central)";
+const CARD_N1_LCQ1_DATE="20 апр 2026";
 const _N1L=CARD_N1_LCQ_RAW.map(m1Entry);
+const _N1L1=CARD_N1_LCQ1_RAW.map(m1Entry);
 const _N1G=CARD_N1_GF_RAW.map(m1Entry);
 _S.n1p=mkSorts(_N1P);
 _S.n1l=mkSorts(_N1L);
+_S.n1l1=mkSorts(_N1L1);
 _S.n1g=mkSorts(_N1G);
 
 // Each region is ranked inside its own field, so the bands match Europe's.
 const n1PlayinBase = r => 96 - ((r-1)/Math.max(_N1P.length-1,1))*34;
-const n1LcqBase    = r => 62 - ((r-1)/Math.max(_N1L.length-1,1))*14;
+const n1LcqLen  = () => _N1L.length + _N1L1.length;
+const n1LcqBase    = r => 62 - ((r-1)/Math.max(n1LcqLen()-1,1))*14;
+const n1Lcq1Base   = r => 62 - ((_N1L.length+r-1)/Math.max(n1LcqLen()-1,1))*14;
 const n1GfBase     = r => 96 - ((r-1)/Math.max(_N1G.length-1,1))*26;
 
 (function buildMajor1NAC(){
@@ -24886,7 +25237,7 @@ const n1GfBase     = r => 96 - ((r-1)/Math.max(_N1G.length-1,1))*26;
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(base(entry.rank), 30, 99));
-      const code = N1_NAT_LIQUI[nm] || N1_NAT_TRN[nm] || '';
+      const code = N1_NAT_LIQUI[nm] || N1_NAT_TRN[nm] || N1_LCQ1_NAT[nm] || '';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource: N1_NAT_LIQUI[nm] ? 'liquipedia' : 'tracker',
@@ -24902,6 +25253,7 @@ const n1GfBase     = r => 96 - ((r-1)/Math.max(_N1G.length-1,1))*26;
   };
   _N1P.forEach(e=>{ TEAMMATE_GROUPS.push(e.duo.slice()); add(e, CARD_N1_PLAYIN_EVENT, CARD_M1_PLAYIN_DATE, n1PlayinBase, 'Playin'); });
   _N1L.forEach(e=>add(e, CARD_N1_LCQ_EVENT, CARD_M1_LCQ_DATE, n1LcqBase, 'Lcq'));
+  _N1L1.forEach(e=>add(e, CARD_N1_LCQ1_EVENT, CARD_N1_LCQ1_DATE, n1Lcq1Base, 'Lcq1'));
   _N1G.forEach(e=>add(e, CARD_N1_GF_EVENT, CARD_M1_GF_DATE, n1GfBase, 'Gf'));
 
   const byName={};
@@ -25205,14 +25557,177 @@ const CARD_W1_LCQ_EVENT='FNCS 2026 Major 1 — Last Chance Qualifier (NA West)';
 const CARD_W1_GF_EVENT='FNCS 2026 Major 1 — Grand Finals (NA West)';
 
 const _W1P=CARD_W1_PLAYIN_RAW.map(m1Entry);
+/* M1_NAW: открытая сессия 1 Ласт-Ченса, 2026-04-21 (окно S40_FNCSMajor1_LastChanceQualifier_NAW, всего страниц 27; лобби того же Ласт-Ченса — 47 команд, они здесь не повторяются) */
+const CARD_W1_LCQ1_RAW=[
+[48,302,10,0,3.8,15.2,"TT fndatboi","bensonn boone"],
+[49,300,10,2,3,17.1,"blixy","Mystical"],
+[50,299,9,1,3.56,12.33,"AST Alexfnw 21","tiktok necrofv"],
+[51,299,9,0,8.78,15.67,"thetungslayer13","silv lebon"],
+[52,299,8,0,7.62,12.75,"creekǃ","38 remi"],
+[53,298,10,2,4.2,18.4,"Fern 444","Tegrat 121ǃ"],
+[54,298,11,1,4.27,22,"twitch roxxaim","zain"],
+[55,298,10,0,3.4,15.4,"tiktok beanzzorr","tt yqzmin1"],
+[56,298,10,0,2.4,15.6,"FNR SILENCE","julian quiñones."],
+[57,297,10,1,3.2,15.9,"TT Skibidi Timǃ","YaoTim"],
+[58,297,11,0,3.55,21.55,"carboner","Youtube SEED1x"],
+[59,297,9,0,3.22,15,"böshi","rain yhyhǃ"],
+[60,296,11,2,5.09,20.36,"polar 10ǃ","Kay"],
+[61,296,9,1,4.11,14.67,"pxmp5x","cozy 23ǃ"],
+[62,294,10,2,5.2,18,"twitch uxsif","Ollie"],
+[63,294,11,0,4.55,20.73,"yonder july","Ѕhallo"],
+[64,293,8,2,4.12,11.75,"tek","Kadvn"],
+[65,293,11,2,3.18,21.27,"sfg slapǃ","аngela whiteǃ"],
+[66,293,11,1,7.27,22.91,"clouds cс","Teak"],
+[67,293,10,0,4.3,17.5,"waschsalоn","Friskies42"],
+[68,292,10,1,4.1,17.7,"Skybot","tiktok prettyfnb"],
+[69,292,10,0,4.2,17.2,"Rio","raikenbcǃ"],
+[70,292,10,0,2.2,15.3,"аﱞuz","switcﱞh"],
+[71,291,11,1,3.09,22.09,"Toxic","Hyper On Combat"],
+[72,291,9,0,3.22,16.78,"Rays","sub 005"],
+[73,290,10,1,4.7,16.6,"Flexito1v","GL 19k"],
+[74,290,10,0,6.4,19.4,"denvarǃ","KomanderK"],
+[75,289,11,1,3.64,22,"carnagefvǃ","Akame Ga Ospa"],
+[76,289,11,0,3.55,19.55,"naathan","Ray"],
+[77,289,9,0,3.22,14.89,"Sav on yt","neternn"],
+[78,288,9,2,3.78,16.33,"sybau.neegy.","brando"],
+[79,288,11,2,2.18,21.45,"hanii_w","twitter sxntfnr"],
+[80,288,10,1,9.1,20.6,"soleanäǃ","kjcoins"],
+[81,288,10,1,5.3,21.2,"bray","Zafuu"],
+[82,287,11,2,3,22.64,"kemokiǃ","Quantizeǃ"],
+[83,287,10,0,5.7,16.9,"Pax","shark"],
+[84,287,10,0,2.7,15.3,"Tiktok Jumpy","kxngs."],
+[85,286,10,0,6.2,19.9,"arm peralta 17ǃ","ARM Devury 7"],
+[86,286,10,0,3.6,17.6,"ig osccqr","DAGbeastt"],
+[87,285,11,1,5.45,19.36,"Pacz","TTV ZenonLives"],
+[88,285,11,1,4.73,23.36,"pruzZzo0oǃ","oofersfvǃ"],
+[89,285,9,1,3.78,14.78,"nxt jigǃ","Supernal."],
+[90,285,11,0,6.09,22.18,"LordofcoolGOTY","Spidr GOTY7"],
+[91,285,11,0,3.36,19.27,"Zerxreyli 30","krissy lover 18"],
+[92,284,9,0,2.44,13.56,"jordanchamp77","javibotǃ"],
+[93,283,9,1,2.44,14.44,"Avinǃ","naw RARE"],
+[94,283,11,0,4.82,20.55,"sfg metro","Rave"],
+[95,282,10,1,4.9,19.1,"TT optionnugget","Kuma"],
+[96,281,11,1,3.09,22.73,"tiktok vBqtify","Nerve Focake"],
+[97,281,11,1,2.91,21.27,"believeah 11ǃ","tiktok meatog"],
+[98,281,11,0,3.36,20.91,"swoosh 450","OFFICIAL G0D"],
+[99,280,11,1,5.36,23.82,"Moonkme","S4NT1v"],
+[100,279,10,1,4.4,19.7,"wade LLNM 10","JÐÏddÏ"],
+[101,279,10,1,3.8,19.6,"tt frenchiefnbr","FatalGinger5559"],
+[102,278,9,2,3.33,14.67,"Flip","matmit"],
+[103,278,9,1,4.33,15.67,"KING BΑLDWIN IV","quvozxyz"],
+[104,278,11,0,5.09,20.09,"larsofv","panish"],
+[105,277,11,1,4.36,21.18,"Quinn","Typical Gamer"],
+[106,277,11,0,6.64,23.36,"Jerry","dwavyrex13"],
+[107,277,11,0,5.36,24.73,"Creep","Dom"],
+[108,277,11,0,3.73,19.18,"virt","FataL Slak"],
+[109,276,11,1,5.18,22.27,"blizzy 505","wukong 43ǃ"],
+[110,276,9,1,4.11,17,"VIN ϟNip","cofe zxz"],
+[111,276,10,0,4.2,16.8,"Leo","JennaOrtegaFan67"],
+[112,275,11,2,4.45,21.82,"Mustaine","Ikrr"],
+[113,275,11,1,3.09,18.45,"Yarter","mistvibritannia"],
+[114,275,11,1,2.55,19.27,"Cloudyy","mechsta."],
+[115,275,11,0,5.73,20.45,"sunny 2ǃ","zookies"],
+[116,275,10,0,3.7,16.9,"stitch.pdf","XtremeBumblebee4"],
+[117,274,10,1,4.5,16.6,"xMaxñañinx67 _l_","te amo abril ."],
+[118,274,10,1,2.7,19.9,"SoyxAir","pigeonzorah7"],
+[119,274,11,0,5.09,22.27,"rеxǃ","Jakeyreyli Ӝ"],
+[120,274,10,0,2.8,18.5,"BananaApple fvǃ","moony 77"],
+[121,274,9,0,2.44,14.78,"Justin 10ǃ","Aﱞ1R"],
+[122,273,11,1,6.55,21.91,"fx1ine 6.8","skeptasia 38"],
+[123,273,9,1,3.78,16,"bricefv","Stickybandit옻"],
+[124,273,7,1,3.14,13.29,"bubzskii","E girl Emma 1x"],
+[125,272,10,1,4.5,17.5,"swxz haha","yvzǃ"],
+[126,272,10,1,2.9,16.4,"ZR Lixnyy","Flyv 679"],
+[127,272,10,0,4.8,19,"12am Jewpid","Timyoshi_"],
+[128,272,10,0,4.4,16,"Neyto","Aarush"],
+[129,272,11,0,2,19.09,"Hyperkitten101","batman yousefツ"],
+[130,271,10,2,4.7,19.4,"igunknown","shiestied krozeǃ"],
+[131,271,11,2,2.64,20.55,"Kobby セ","mtrx vaxi 92ǃ"],
+[132,271,11,1,2.55,23.45,"Frio 16ǃ","TTK Savagė."],
+[133,271,10,0,6.1,19.5,"Zutano","Bizzie"],
+[134,271,9,0,2.33,16,"Vision","aspect 20"],
+[135,270,11,1,7.91,22,"Lukey","WittytheKitty69"],
+[136,270,11,0,5.64,22.18,"LeChaewon","86 VEZ"],
+[137,270,10,0,2.4,16.7,"qte drom7","only hot girlsǃ"],
+[138,270,10,0,2,16,"tyt impail","Fuzion"],
+[139,269,10,1,6,18.2,"lucks","Spoky"],
+[140,269,11,1,4.73,22.64,"james israel IV","Sunder"],
+[141,269,11,1,3.27,24.36,"Code Wordy","visionnn!"],
+[142,269,9,1,2.89,15.44,"Nudeǃ","Señor Cox"],
+[143,269,10,1,2,18.1,"Twtr YensFN","spartix adebayo"],
+[144,269,11,0,2.64,20.45,"abg lvr tec","vorgzangiefff"],
+[145,268,11,1,3.73,22.91,"EL sqeak piece9ǃ","scrappyBARAǃ"],
+[146,268,10,0,2.8,17.8,"рrеtti","Zaxy"],
+[147,268,8,0,2.5,10.75,"chase","Lachico Yamal 19"],
+[148,268,10,0,2.4,16.4,"sfg ark","HEY ITS ME DOM"],
+[149,268,10,0,2.2,18,"Exotic","сxsmic"],
+[150,267,11,1,5.09,24.82,"sound","ǃdex 7"],
+[151,267,8,1,5,13.63,"shay 6","Vehhl"],
+[152,267,11,1,2.91,20.36,"batman ape","braindead lurker"],
+[153,267,11,1,2,20.36,"is it still time","margiela zxzxzx"],
+[154,267,11,0,2.09,19.45,"Triхd","dear chico"],
+[155,267,10,0,1.3,16.1,"Dargon10","G.A.L.A.X.Yシ"],
+[156,266,10,1,2.3,18,"Nativ","Wraxps"],
+[157,266,11,0,3.27,19.82,"secret 3ǃ","mccomb xdxdxd"],
+[158,266,9,0,2.22,16,"fc trickgha 361","reid 6"],
+[159,266,11,0,1.45,20.36,"W key slezzy","zqiroツ"],
+[160,265,10,2,3.7,21.6,"Naterade-","bakedcuhǃ"],
+[161,265,10,1,3.6,18.8,"S1lv3r wya","ARM DyAzǃ"],
+[162,265,10,0,4.7,20,"Cole","Chele"],
+[163,264,9,0,3.33,13.56,"Capital","Bob Weavesᵗᵛ"],
+[164,264,8,0,1.75,11.63,"pedro 10ǃ","D0WN3R 13"],
+[165,263,11,0,2.64,19.18,"i just mantled","keﱞ o"],
+[166,262,11,1,9.18,21.18,"xenon","Velo"],
+[167,262,10,0,2.8,18.2,"frenzuo","Unspoken"],
+[168,261,10,1,4.2,19,"IceCreamGuy67","Flames"],
+[169,261,11,1,2.36,24,"Leeph","Twitch Spexxbtw"],
+[170,261,11,1,2.18,22.36,"MR.Sythe.","seen 54"],
+[171,261,11,0,3.18,22.36,"Spqm.","KamaalFN"],
+[172,261,11,0,2.09,20,"hippomatamus.","V_ulo."],
+[173,261,10,0,1.3,15.9,"SCUTI BØY","E5 PAIN"],
+[174,260,11,1,6.27,19.09,"sorri sarah","310 escort"],
+[175,260,11,1,3.73,20.91,"Ej 1112ǃ","darktriad ruin"],
+[176,260,11,0,3.09,22.91,"How I Tes","theveritymovie"],
+[177,260,11,0,2.91,20.73,"Jdunkz tt","Flex"],
+[178,260,10,0,2.8,18.6,"qvs 24ǃ","Andrewfv"],
+[179,260,10,0,1.6,18.4,"div.ine.","rukiaǃㅤ"],
+[180,260,11,0,1.09,19.64,"Washed Ethernet","0 PING SAMǃ"],
+[181,259,5,2,11.8,12.8,"Jqnixr","Ricard"],
+[182,259,11,2,4.09,21.91,"Kika","Extinct"],
+[183,259,11,2,3.18,23.73,"shade 18ǃ","Twitch bash350_"],
+[184,259,11,1,3.09,21.73,"KC Suygetsuu","vxlz"],
+[185,259,9,1,2,16.22,"sfg venomǃ","tna benz"],
+[186,259,10,0,3.9,17.6,"ziok.","Duller 17-1"],
+[187,258,11,2,3.82,20.73,"plup","Jeree"],
+[188,258,11,2,1.45,22.73,"ㄺsceparooni jitǃ","PashaØ"],
+[189,258,11,1,2.82,22.73,"Sciaticapple902","saulin prepusin"],
+[190,258,11,1,2.64,21.09,"Playboi Leri","jack-o-zacez"],
+[191,258,11,1,1.91,20.55,"Ra1x","MIH Jaw"],
+[192,258,11,0,5.09,23.18,"chiicoHD","el plebe mediano"],
+[193,258,11,0,2.73,21.73,"ZOOMFC1","SFG Menace"],
+[194,258,10,0,2.6,17.1,"Chicha","Chacortaǃ"],
+[195,258,9,0,1.33,14.89,"5iᴠe","jrеn"],
+[196,257,10,1,2.4,19.5,"cedobleuu.","sagoalex"],
+[197,257,11,0,8.27,28.27,"Inact","ZLinkRain"],
+[198,257,10,0,3.3,18.9,"Hala Μadridǃ","Striker"],
+[199,257,11,0,2.82,20,"Jahzoom","SeoulAim"],
+[200,257,10,0,2.1,18.1,"User-d1184b84cc","lyfë 3"]
+];
+const W1_LCQ1_NAT={"12am Jewpid":"us","310 escort":"us","38 remi":"us","5iᴠe":"us","86 VEZ":"us","ARM DyAzǃ":"mx","AST Alexfnw 21":"mx","Aarush":"ng","Andrewfv":"us","Avinǃ":"ca","Aﱞ1R":"us","Chele":"mx","Chicha":"mx","Cloudyy":"us","Cole":"ca","Creep":"ca","Dom":"ca","Duller 17-1":"mx","E girl Emma 1x":"us","EL sqeak piece9ǃ":"us","Ej 1112ǃ":"ca","Exotic":"us","Extinct":"us","FataL Slak":"ca","Fern 444":"us","Flames":"us","Flex":"us","Flexito1v":"mx","Flyv 679":"mx","Friskies42":"us","GL 19k":"mx","Ikrr":"mx","Jahzoom":"us","JennaOrtegaFan67":"pr","Jeree":"de","Jerry":"us","Kadvn":"us","KamaalFN":"ca","Kay":"ca","Kobby セ":"us","KomanderK":"us","Kuma":"us","LeChaewon":"us","Leeph":"us","Leo":"mx","LordofcoolGOTY":"us","MIH Jaw":"us","Moonkme":"mx","Mustaine":"mx","Mystical":"us","Nativ":"us","Nerve Focake":"us","Neyto":"fr","OFFICIAL G0D":"us","Ollie":"ca","Pacz":"mx","PashaØ":"us","Pax":"us","Quantizeǃ":"us","Rave":"us","Ray":"eg","Rays":"us","Ricard":"mx","SeoulAim":"us","Skybot":"mx","SoyxAir":"mx","Spidr GOTY7":"us","Spoky":"us","Striker":"us","Sunder":"kr","Supernal.":"us","TT Skibidi Timǃ":"us","TT optionnugget":"us","TTV ZenonLives":"us","Teak":"sv","Tiktok Jumpy":"us","Toxic":"us","Triхd":"us","Twitch Spexxbtw":"ca","Twitch bash350_":"ca","Twtr YensFN":"ca","Unspoken":"us","User-d1184b84cc":"us","VIN ϟNip":"us","V_ulo.":"us","Velo":"uy","Vision":"pt","Washed Ethernet":"us","Wraxps":"ca","YaoTim":"us","Yarter":"us","Youtube SEED1x":"us","ZLinkRain":"mx","ZR Lixnyy":"mx","Zaxy":"gb","Zutano":"mx","abg lvr tec":"us","arm peralta 17ǃ":"mx","aspect 20":"am","batman ape":"us","believeah 11ǃ":"us","blixy":"us","blizzy 505":"mx","brando":"us","bray":"us","bricefv":"pe","bubzskii":"us","carnagefvǃ":"mx","cedobleuu.":"mx","chase":"ne","chiicoHD":"mx","clouds cс":"ca","creekǃ":"in","darktriad ruin":"us","denvarǃ":"us","div.ine.":"us","dwavyrex13":"us","fx1ine 6.8":"ca","hanii_w":"mx","ig osccqr":"mx","igunknown":"us","is it still time":"us","james israel IV":"us","javibotǃ":"us","jordanchamp77":"us","jrеn":"us","keﱞ o":"us","krissy lover 18":"us","larsofv":"us","lyfë 3":"gt","margiela zxzxzx":"ca","matmit":"ca","mccomb xdxdxd":"ca","mechsta.":"ca","mistvibritannia":"us","moony 77":"us","mtrx vaxi 92ǃ":"ca","naathan":"us","neternn":"ca","nxt jigǃ":"us","only hot girlsǃ":"mx","oofersfvǃ":"us","panish":"us","polar 10ǃ":"us","pruzZzo0oǃ":"us","pxmp5x":"us","quvozxyz":"es","sagoalex":"mx","saulin prepusin":"mx","scrappyBARAǃ":"us","sfg ark":"us","shade 18ǃ":"ca","shark":"de","shiestied krozeǃ":"ca","skeptasia 38":"us","soleanäǃ":"us","sound":"mx","spartix adebayo":"us","stitch.pdf":"us","sub 005":"lb","swoosh 450":"us","swxz haha":"us","te amo abril .":"mx","tek":"am","tiktok necrofv":"ve","tiktok prettyfnb":"mx","tna benz":"ca","tt frenchiefnbr":"tv","tt yqzmin1":"us","twitter sxntfnr":"mx","tyt impail":"us","virt":"ca","vxlz":"sr","wade LLNM 10":"us","waschsalоn":"us","xMaxñañinx67 _l_":"mx","xenon":"us","yonder july":"us","yvzǃ":"us","zookies":"ca","ǃdex 7":"mx","Ѕhallo":"lb","аngela whiteǃ":"us","аﱞuz":"ca"};
+const CARD_W1_LCQ1_EVENT="FNCS 2026 Major 1 — Last Chance Qualifier Session 1 (NA West)";
+const CARD_W1_LCQ1_DATE="21 апр 2026";
 const _W1L=CARD_W1_LCQ_RAW.map(m1Entry);
+const _W1L1=CARD_W1_LCQ1_RAW.map(m1Entry);
 const _W1G=CARD_W1_GF_RAW.map(m1Entry);
 _S.w1p=mkSorts(_W1P);
 _S.w1l=mkSorts(_W1L);
+_S.w1l1=mkSorts(_W1L1);
 _S.w1g=mkSorts(_W1G);
 
 const w1PlayinBase = r => REGION_TOP.NAW - ((r-1)/Math.max(_W1P.length-1,1))*(REGION_TOP.NAW-62);
-const w1LcqBase    = r => 62 - ((r-1)/Math.max(_W1L.length-1,1))*14;
+const w1LcqLen  = () => _W1L.length + _W1L1.length;
+const w1LcqBase    = r => 62 - ((r-1)/Math.max(w1LcqLen()-1,1))*14;
+const w1Lcq1Base   = r => 62 - ((_W1L.length+r-1)/Math.max(w1LcqLen()-1,1))*14;
 const w1GfBase     = r => REGION_TOP.NAW - ((r-1)/Math.max(_W1G.length-1,1))*(REGION_TOP.NAW-70);
 
 (function buildMajor1NAW(){
@@ -25223,7 +25738,7 @@ const w1GfBase     = r => REGION_TOP.NAW - ((r-1)/Math.max(_W1G.length-1,1))*(RE
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(base(entry.rank), 30, 99));
-      const code = W1_NAT_LIQUI[nm] || W1_NAT_TRN[nm] || '';
+      const code = W1_NAT_LIQUI[nm] || W1_NAT_TRN[nm] || W1_LCQ1_NAT[nm] || '';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource: W1_NAT_LIQUI[nm] ? 'liquipedia' : 'tracker',
@@ -25239,6 +25754,7 @@ const w1GfBase     = r => REGION_TOP.NAW - ((r-1)/Math.max(_W1G.length-1,1))*(RE
   };
   _W1P.forEach(e=>{ TEAMMATE_GROUPS.push(e.duo.slice()); add(e, CARD_W1_PLAYIN_EVENT, CARD_M1_PLAYIN_DATE, w1PlayinBase, 'Playin'); });
   _W1L.forEach(e=>add(e, CARD_W1_LCQ_EVENT, CARD_M1_LCQ_DATE, w1LcqBase, 'Lcq'));
+  _W1L1.forEach(e=>add(e, CARD_W1_LCQ1_EVENT, CARD_W1_LCQ1_DATE, w1Lcq1Base, 'Lcq1'));
   _W1G.forEach(e=>add(e, CARD_W1_GF_EVENT, CARD_M1_GF_DATE, w1GfBase, 'Gf'));
 
   const byName={};
@@ -25544,14 +26060,175 @@ const CARD_B1_LCQ_EVENT='FNCS 2026 Major 1 — Last Chance Qualifier (Brazil)';
 const CARD_B1_GF_EVENT='FNCS 2026 Major 1 — Grand Finals (Brazil)';
 
 const _B1P=CARD_B1_PLAYIN_RAW.map(m1Entry);
+/* M1_BR: открытая сессия 1 Ласт-Ченса, 2026-04-20 (окно S40_FNCSMajor1_LastChanceQualifier_BR, всего страниц 57; лобби того же Ласт-Ченса — 49 команд, они здесь не повторяются) */
+const CARD_B1_LCQ1_RAW=[
+[50,322,9,0,5.56,14.78,"maxifv99","281 v1nta"],
+[51,321,11,1,5.09,19.91,"I love DHT","Brianv2_"],
+[52,320,9,3,3.89,15.22,"Diabloorr.","OVT INSANEBUCA"],
+[53,320,10,2,3.4,15.6,"zivecc 10ǃ","ᴀꜱᴛʀᴏ ネ"],
+[54,320,9,1,4.78,13.44,"Igvnaciio","cold fv"],
+[55,319,9,1,8.67,15.78,"renat0","Lorde"],
+[56,318,11,1,11.18,22.45,"Royale","Puzera"],
+[57,317,10,3,5,18.3,"nox tryona","darling お"],
+[58,317,11,2,3.73,18.73,"Gødwinn","Hakizfv"],
+[59,317,11,1,3.45,18.18,"El Dictazude","El Ditadoxie bää"],
+[60,317,11,0,3.36,19.27,"patobuca","nayxeat 19"],
+[61,316,11,1,3.18,21.82,"brz KingJVち","vnly rapha"],
+[62,315,11,2,5.55,18.55,"olivier parfums","k1s evil sideǃ"],
+[63,315,10,1,3.8,17.5,"void kazerbotǃ","lucknix"],
+[64,315,10,0,5.7,18.8,"gb yunk vino","ASTR cÿrax"],
+[65,315,8,0,3.12,9,"knz 08","rama"],
+[66,314,11,1,3,20.18,"Kramzrr1","BLD ysitxs"],
+[67,314,9,1,2.78,14,"knzfv","rodriguez 157"],
+[68,313,11,2,8.27,22.18,"NhouLM10","chivirimaxsteel8"],
+[69,313,10,2,5.9,19.1,"babayaga mjǃ","Yanluǃ"],
+[70,313,9,1,5.11,15.11,"realcabra viper","OneLastRun."],
+[71,313,11,1,4,17.91,"balanuno33stro","darkzenn1"],
+[72,313,11,0,5.73,19.45,"dizzy 19.","fɑlсοn роⅼⅼοǃ"],
+[73,313,11,0,3.91,19,"Tsu Betrayed","M8 Mthzin本"],
+[74,312,10,1,4.1,16.5,"Atllas .","M7 Vitto"],
+[75,312,9,0,4.44,13,"old tizian","greed tamucl"],
+[76,311,10,1,4,17.4,"DRZ Rayyz 19ǃ","drz psta21ǃ"],
+[77,311,11,0,7.36,18.64,"C0ntr0ll3rrr","rfasjfjgjlfd578"],
+[78,311,11,0,4.64,20.82,"Palma","santyssj"],
+[79,310,9,2,5.78,13.78,"killerkjj","N6hue"],
+[80,310,11,1,5.36,19.18,"bzn mlkZikaǃ","Guiby mlkZikaǃ"],
+[81,310,11,1,5.36,21.45,"brn pistoleiro","leozxra.senju1x"],
+[82,310,9,1,3.44,15.44,"tutuvlogstv","newbotǃ"],
+[83,309,11,1,6.36,20.91,"vinimané","russian guizin x"],
+[84,309,10,1,3.4,15.9,"douefiez","gǃkǃxǃyǃkame44"],
+[85,309,11,0,6.82,19.73,"Retlaw","iMeyfishy"],
+[86,308,10,0,7,17.4,"Potato","Chizi"],
+[87,307,10,1,5.2,16.4,"Pellistraka","aguus wonkru"],
+[88,307,10,1,4.4,18.4,"Deadgameplays157","mambrizz7k"],
+[89,307,11,1,4.18,19.18,"Nikizrr","Jayagu"],
+[90,306,10,1,6.1,15.9,"zvkoǃ","Zlaby"],
+[91,306,9,0,5.78,14.44,"Kauazinwyy","Trickster 333"],
+[92,306,10,0,3.4,17.9,"1st zuяdo7ǃ","Xavi SSJ."],
+[93,306,9,0,3.11,11.56,"PMB Tacu","BC Only."],
+[94,306,11,0,2.91,18.82,"PMB Taituz 殺","R1 Alejobtw"],
+[95,305,11,2,4.27,21.64,"la flamitos","new yagamiǃ x"],
+[96,305,10,1,5.6,18.2,"pixy 2zz","guboyfv"],
+[97,305,10,1,3.6,17.2,"big niс0","Klaus Chevalier"],
+[98,305,9,1,3.11,15.33,"khabib win","bolina 67"],
+[99,305,10,0,1.9,14,"boxedinho","demonio migue."],
+[100,304,9,3,4.33,19.78,"VickyGutierrez51","cuchito"],
+[101,304,11,2,4.55,20.09,"paris 88ǃ","nuno fv"],
+[102,304,10,0,5,18.9,"B4utiL55","Derkiifinalboss."],
+[103,303,11,0,4.09,17.91,"joacorr.","flowcanoa"],
+[104,303,9,0,2.78,13,"zaiko x end","Sendo Dumont."],
+[105,302,10,1,5.5,18,"rafaꜱx","sonso discreto"],
+[106,302,11,0,8.55,21,"Dxlba","Truit"],
+[107,302,10,0,3.8,19.3,"Duhfvǃ","cria do baile157"],
+[108,302,10,0,2.2,16,"DEKKA A NOVA ERA","hardi.3x"],
+[109,301,10,1,6,20.3,"Suetam","Pietriinnn"],
+[110,301,10,1,2.4,17.1,"raiderZL1","ɨrecks da gon"],
+[111,301,11,0,3.73,18.73,"itsLautaǃ","Gongia1975"],
+[112,301,11,0,3,18.18,"GueVolta 17","BLD milo1st"],
+[113,300,10,2,5,18.8,"34vls","tqmi"],
+[114,300,11,1,4.09,21.45,"evo wyn44ǃ","1mafiu"],
+[115,300,10,1,3.7,17.4,"rodri btj","Russikame44"],
+[116,300,11,1,2.82,18.45,"falcon Nasciǃ","LuffyziNnnz"],
+[117,300,10,0,5.2,15,"gustaskj","diamonds bleer"],
+[118,299,11,2,5.55,22.55,"Deuscriaeunatk","Brayan ketchup"],
+[119,299,9,1,6,16.89,"amvǃ","matibuca."],
+[120,298,11,2,3.82,21.36,"Naccanada","z disaster"],
+[121,298,11,1,3.73,19.18,"joaopedrogamesfv","luk mx ネ"],
+[122,297,9,1,3.33,16.33,"L I M A LBDT","Cench 232323"],
+[123,296,10,1,4.3,17.9,"Ambitionzz Ridah","weltinǃ"],
+[124,296,10,1,3.5,18.2,"Kxnjifv 10ǃ","kzl 23"],
+[125,296,11,1,2.82,18.73,"ivanchu marko","HEROEDEL IVANCHU"],
+[126,296,10,0,2.8,15.4,"anthony mudanças","peter angola 2"],
+[127,296,9,0,2.67,14.44,"PERRO BOMBASTIC.","SAB Bautiy"],
+[128,295,11,2,5.18,21.73,"Gelatina","Coringa -_-"],
+[129,295,10,1,4.6,16.6,"iuri de boa","destinyprevailsǃ"],
+[130,295,11,0,8.64,21.82,"LautyGramDeyy1","joacochispa32"],
+[131,295,10,0,5.9,17.6,"insanofv.","dreeamxn"],
+[132,295,9,0,3.44,14.78,"I BELONG TØ DIOS","DementikFN"],
+[133,295,10,0,3.1,16.6,"todalaplata32bxt","1 lolom 1"],
+[134,295,10,0,3.1,16.7,"naltao","capitaowrld"],
+[135,294,8,2,4.75,11.88,"Ismail_182","COMET alxzin"],
+[136,294,11,1,3.18,20.18,"softnsweet1000","User-23e58284d7"],
+[137,294,10,1,2.9,17,"7RX Tortu","BORNTOWINǃ"],
+[138,293,11,2,2.82,20.09,"magrelo on celta","matyzх"],
+[139,293,10,0,4.7,19.3,"o ey Bauti","legend m llao"],
+[140,293,10,0,4.1,18.3,"wolf fvǃ","puello return"],
+[141,293,10,0,3.1,20.3,"ChanieI","Jere re escabio"],
+[142,293,11,0,2.64,17.45,"rotten l2r2","Shutzstappenǃ"],
+[143,293,9,0,2.56,11.44,"franssv2","knfv 17"],
+[144,292,8,2,6.25,16.38,"Milobotfvǃ","jjuanznn"],
+[145,292,10,2,4.4,17.9,"señor extǃ","conti dictator"],
+[146,292,10,1,4.7,16.3,"ᴀʀʀᴏᴢ","sennabotǃ aa"],
+[147,292,11,1,4.09,19.18,"Tavimdx","brooootal holyyy"],
+[148,292,8,1,2.88,12.13,"tr7 jg.","nicoh maverick"],
+[149,292,9,1,2.78,12.78,"shxderǃ","mxtterasu"],
+[150,292,11,1,2.45,19.91,"x sanxyzrr 29","El Lechosoǃ"],
+[151,292,9,0,5.33,14.11,"jpedron1","tapo ama L"],
+[152,292,10,0,5,17.3,"leanzin","kobyǃ"],
+[153,292,10,0,2.6,14.7,"MxS Nyx Zero","RDX chinx NRǃ"],
+[154,292,11,0,2.18,19.55,"iguinho7s","vyre santnway"],
+[155,291,9,1,8.22,15.44,"Pulga","chief ruka .x"],
+[156,291,11,1,6.73,20.91,"Ths","leopatinhas אריה"],
+[157,291,11,1,2.73,18.73,"Sk1zzǃ","Strayker 333."],
+[158,291,11,0,2.82,18.73,"PG Fr4ntach","PG Matzzz"],
+[159,290,10,2,3,17.6,"Lasso231.","User-76ebb0b173"],
+[160,290,8,1,4.38,11,"ǃblessedboy","sińk"],
+[161,290,9,0,3.33,14.11,"Matriz katchau","TikTok yBelga 7"],
+[162,290,9,0,2,13.67,"ᴏʟɪᴠᴇʀツ.","Esbenjykid"],
+[163,289,8,2,3.12,11.75,"Kalani lhz1n2022","twitter villarfn"],
+[164,289,10,2,2.7,19.2,"easy7 mathfvǃ","laranja do pcc"],
+[165,289,10,1,5.2,18,"bar4bar11","Juanovichh7"],
+[166,289,10,1,2.8,16.7,"set do chapaNK","Romanos 8.28"],
+[167,289,11,0,3,20.45,"znxlörrach","zenn perfums"],
+[168,289,10,0,2.7,16.9,"shifttykrpz 参","SAO kachau7"],
+[169,289,9,0,1.22,14.44,"s4nTyw-","bensh111"],
+[170,288,9,2,5.78,16.44,"Marçal vote 28.","Chavees 7"],
+[171,288,11,2,4.73,19.82,"wavefvǃ","Hidra Dk"],
+[172,288,11,1,5.55,19.55,"quejo lalelu","tнz1nz7"],
+[173,288,11,1,4.27,21.55,"kos alanwow","ferran444"],
+[174,287,9,2,5,17.56,"BC Xalf.","mnxoo65-"],
+[175,287,8,1,5.25,15.63,"ChubutPlayer 贝","chucho only head"],
+[176,287,11,1,4.73,20,"honguito n115","IG LAUTIIJEREZ66"],
+[177,287,10,1,2.2,16.5,"febas tralha","rxposo canalha"],
+[178,287,10,1,2,18.5,"Bauti","52517525"],
+[179,287,9,0,9.44,19,"VxttorFN","theusvyy"],
+[180,287,9,0,3.89,16.89,"SlendyDEUS","Now ik"],
+[181,287,11,0,3.73,18.09,"mickeyzrr","22poraobolsonaro"],
+[182,287,11,0,3.55,20.27,"ay Suko","burrows x"],
+[183,286,9,2,4.67,17.56,"señor avelar","night xtzǃ"],
+[184,286,11,2,4.18,20.55,"Ktrxwqǃ","falcon russianǃ"],
+[185,286,11,1,2.82,20.18,"BLD BastyWRLD","quilmesalritmo32"],
+[186,286,11,0,2.36,17.82,"4puntosbeatzǃ","Kid Neo 7"],
+[187,285,9,2,3,14.56,"user-237zotik911","Tutzx"],
+[188,285,11,1,7.82,21.91,"Byel","Fabin"],
+[189,285,11,1,5.82,23.27,"enbrevecorono777","auraking ψ"],
+[190,285,11,1,4.55,20.36,"enlamia3279_","n1ckozzr svjǃ"],
+[191,285,11,1,3.82,20.64,"Flowsstarr","backesbotǃ"],
+[192,285,9,1,3.11,15.56,"naughtyǃ","zzz yunoǃ"],
+[193,285,11,0,5,19.91,"Near1x.AIMǃ","bandana-sabia"],
+[194,285,11,0,2.45,20.18,"mah skylight愛してる","SYNC ppmak"],
+[195,285,9,0,1.89,16.22,"mile la mas pro","KchaMostrolikos"],
+[196,284,11,2,5.82,21.45,"PicaFio 911","pantera pret7"],
+[197,284,10,1,4.3,20.1,"7RX romexzrr.","7RX xalo ボ"],
+[198,284,11,1,3.36,20.64,"avixfv","macacayson"],
+[199,284,8,1,2.88,11.13,"Joney","nevess"],
+[200,284,8,0,4.25,13.25,"matacaballo67","1st cr1skyǃ"]
+];
+const B1_LCQ1_NAT={"1mafiu":"uy","1st cr1skyǃ":"pe","1st zuяdo7ǃ":"ar","22poraobolsonaro":"br","281 v1nta":"ar","4puntosbeatzǃ":"pe","7RX Tortu":"ar","7RX romexzrr.":"ar","7RX xalo ボ":"nu","ASTR cÿrax":"br","Atllas .":"br","B4utiL55":"ar","BC Only.":"pe","BLD BastyWRLD":"cl","BLD milo1st":"cl","BORNTOWINǃ":"ar","Bauti":"ar","Brianv2_":"br","Byel":"br","ChanieI":"cl","Chavees 7":"br","Chizi":"pe","ChubutPlayer 贝":"ar","DEKKA A NOVA ERA":"cl","DRZ Rayyz 19ǃ":"uy","Deadgameplays157":"br","Derkiifinalboss.":"ar","Deuscriaeunatk":"br","Diabloorr.":"ar","Duhfvǃ":"br","El Ditadoxie bää":"br","El Lechosoǃ":"ar","Fabin":"no","Flowsstarr":"ar","Gelatina":"br","GueVolta 17":"ar","Hakizfv":"br","Hidra Dk":"br","I love DHT":"br","Igvnaciio":"ad","Jayagu":"cl","Joney":"it","Juanovichh7":"uy","Kalani lhz1n2022":"br","KchaMostrolikos":"pe","Kid Neo 7":"pe","Kramzrr1":"cl","Kxnjifv 10ǃ":"uy","L I M A LBDT":"ar","Lasso231.":"ar","LautyGramDeyy1":"ar","Lorde":"br","M7 Vitto":"br","Milobotfvǃ":"ar","MxS Nyx Zero":"pe","N6hue":"ar","Naccanada":"ar","Near1x.AIMǃ":"pe","NhouLM10":"ar","Nikizrr":"ar","Now ik":"pe","OVT INSANEBUCA":"ar","OneLastRun.":"np","PG Matzzz":"ar","PMB Tacu":"pe","Palma":"cl","Pellistraka":"uy","PicaFio 911":"br","Potato":"pe","Pulga":"br","Puzera":"br","R1 Alejobtw":"pe","Retlaw":"pe","Romanos 8.28":"br","Royale":"br","SAB Bautiy":"ar","Shutzstappenǃ":"ar","Sk1zzǃ":"ar","SlendyDEUS":"ar","Ths":"br","TikTok yBelga 7":"br","Tsu Betrayed":"br","Tutzx":"br","User-23e58284d7":"br","VickyGutierrez51":"pe","Xavi SSJ.":"uy","Yanluǃ":"cl","Zlaby":"cl","aguus wonkru":"uy","amvǃ":"uy","auraking ψ":"cl","avixfv":"br","ay Suko":"ar","backesbotǃ":"br","balanuno33stro":"au","bandana-sabia":"br","bar4bar11":"uy","big niс0":"br","boxedinho":"ar","brn pistoleiro":"br","brooootal holyyy":"br","brz KingJVち":"br","burrows x":"cl","bzn mlkZikaǃ":"br","chief ruka .x":"br","chivirimaxsteel8":"ar","chucho only head":"cl","cold fv":"ar","conti dictator":"ar","cria do baile157":"br","darkzenn1":"br","darling お":"br","destinyprevailsǃ":"br","diamonds bleer":"br","dizzy 19.":"cl","dreeamxn":"br","easy7 mathfvǃ":"br","enbrevecorono777":"uy","evo wyn44ǃ":"ar","falcon russianǃ":"uy","ferran444":"ar","flowcanoa":"uy","franssv2":"ar","fɑlсοn роⅼⅼοǃ":"cl","gb yunk vino":"br","greed tamucl":"cl","gǃkǃxǃyǃkame44":"uy","honguito n115":"cl","iMeyfishy":"pe","itsLautaǃ":"ar","ivanchu marko":"ar","jjuanznn":"ar","joacochispa32":"ar","joacorr.":"mo","joaopedrogamesfv":"br","jpedron1":"br","k1s evil sideǃ":"br","khabib win":"br","killerkjj":"br","knfv 17":"cl","knz 08":"ar","knzfv":"br","kos alanwow":"ar","kzl 23":"cl","la flamitos":"br","leanzin":"ar","legend m llao":"ar","leopatinhas אריה":"br","lucknix":"cl","luk mx ネ":"br","macacayson":"it","mah skylight愛してる":"br","mambrizz7k":"br","matibuca.":"ar","maxifv99":"cl","mile la mas pro":"ar","mnxoo65-":"cl","mxtterasu":"py","n1ckozzr svjǃ":"ar","naltao":"br","nayxeat 19":"de","nevess":"br","new yagamiǃ x":"br","newbotǃ":"br","nicoh maverick":"br","nox tryona":"de","nuno fv":"br","o ey Bauti":"ar","old tizian":"se","olivier parfums":"br","pantera pret7":"br","paris 88ǃ":"br","patobuca":"uy","puello return":"br","quilmesalritmo32":"ar","rafaꜱx":"br","raiderZL1":"py","rama":"ar","renat0":"br","rfasjfjgjlfd578":"cl","rodri btj":"ar","rodriguez 157":"br","rotten l2r2":"ar","santyssj":"ar","sennabotǃ aa":"br","señor extǃ":"br","shxderǃ":"cl","sińk":"br","sonso discreto":"br","theusvyy":"br","todalaplata32bxt":"ar","tqmi":"ar","tutuvlogstv":"br","user-237zotik911":"br","vinimané":"br","void kazerbotǃ":"ar","wavefvǃ":"br","weltinǃ":"br","wolf fvǃ":"br","x sanxyzrr 29":"ar","z disaster":"ar","zaiko x end":"ar","zenn perfums":"kr","zivecc 10ǃ":"si","znxlörrach":"br","zvkoǃ":"cl","ǃblessedboy":"br","ɨrecks da gon":"ar","ᴀʀʀᴏᴢ":"br","ᴏʟɪᴠᴇʀツ.":"ar"};
+const CARD_B1_LCQ1_EVENT="FNCS 2026 Major 1 — Last Chance Qualifier Session 1 (Brazil)";
+const CARD_B1_LCQ1_DATE="20 апр 2026";
 const _B1L=CARD_B1_LCQ_RAW.map(m1Entry);
+const _B1L1=CARD_B1_LCQ1_RAW.map(m1Entry);
 const _B1G=CARD_B1_GF_RAW.map(m1Entry);
 _S.b1p=mkSorts(_B1P);
 _S.b1l=mkSorts(_B1L);
+_S.b1l1=mkSorts(_B1L1);
 _S.b1g=mkSorts(_B1G);
 
 const b1PlayinBase = r => REGION_TOP.BR - ((r-1)/Math.max(_B1P.length-1,1))*(REGION_TOP.BR-62);
-const b1LcqBase    = r => 62 - ((r-1)/Math.max(_B1L.length-1,1))*14;
+const b1LcqLen  = () => _B1L.length + _B1L1.length;
+const b1LcqBase    = r => 62 - ((r-1)/Math.max(b1LcqLen()-1,1))*14;
+const b1Lcq1Base   = r => 62 - ((_B1L.length+r-1)/Math.max(b1LcqLen()-1,1))*14;
 const b1GfBase     = r => REGION_TOP.BR - ((r-1)/Math.max(_B1G.length-1,1))*(REGION_TOP.BR-70);
 
 (function buildMajor1BR(){
@@ -25562,7 +26239,7 @@ const b1GfBase     = r => REGION_TOP.BR - ((r-1)/Math.max(_B1G.length-1,1))*(REG
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(base(entry.rank), 30, 99));
-      const code = B1_NAT_LIQUI[nm] || B1_NAT_TRN[nm] || '';
+      const code = B1_NAT_LIQUI[nm] || B1_NAT_TRN[nm] || B1_LCQ1_NAT[nm] || '';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource: B1_NAT_LIQUI[nm] ? 'liquipedia' : 'tracker',
@@ -25578,6 +26255,7 @@ const b1GfBase     = r => REGION_TOP.BR - ((r-1)/Math.max(_B1G.length-1,1))*(REG
   };
   _B1P.forEach(e=>{ TEAMMATE_GROUPS.push(e.duo.slice()); add(e, CARD_B1_PLAYIN_EVENT, CARD_M1_PLAYIN_DATE, b1PlayinBase, 'Playin'); });
   _B1L.forEach(e=>add(e, CARD_B1_LCQ_EVENT, CARD_M1_LCQ_DATE, b1LcqBase, 'Lcq'));
+  _B1L1.forEach(e=>add(e, CARD_B1_LCQ1_EVENT, CARD_B1_LCQ1_DATE, b1Lcq1Base, 'Lcq1'));
   _B1G.forEach(e=>add(e, CARD_B1_GF_EVENT, CARD_M1_GF_DATE, b1GfBase, 'Gf'));
 
   const byName={};
@@ -25882,14 +26560,175 @@ const CARD_O1_LCQ_EVENT='FNCS 2026 Major 1 — Last Chance Qualifier (Oceania)';
 const CARD_O1_GF_EVENT='FNCS 2026 Major 1 — Grand Finals (Oceania)';
 
 const _O1P=CARD_O1_PLAYIN_RAW.map(m1Entry);
+/* M1_OCE: открытая сессия 1 Ласт-Ченса, 2026-04-20 (окно S40_FNCSMajor1_LastChanceQualifier_OCE, всего страниц 19; лобби того же Ласт-Ченса — 48 команд, они здесь не повторяются) */
+const CARD_O1_LCQ1_RAW=[
+[44,297,11,2,4.45,22.09,"voiﱞdǃ","solly11111"],
+[50,295,10,0,3.3,16.3,"brxy","Jules jr"],
+[51,294,11,2,1.82,19.09,"yxngyellowfellow","PWR Alex8x ﾠ"],
+[52,294,10,1,3.9,16.5,"orvix","Brakz"],
+[53,294,8,0,6.5,11.5,"Bingle","Xset Goatisbotǃ"],
+[54,294,10,0,2.4,15.7,"fg 2 toxicǃ","twizz on nothing"],
+[55,292,11,3,3,24.09,"Twixae","vaxsr"],
+[56,292,11,1,2.82,19.91,"οne single lie.","falcon surge 10ǃ"],
+[57,290,10,2,5.6,20.9,"tj singh臭","Drizzlx"],
+[58,290,9,2,3.11,15.56,"Better","salgod 74"],
+[59,289,11,1,6.18,21.18,"twis speedy 95ǃ","krimz"],
+[60,288,11,1,5.36,22.36,"STALKZǃ","bandit 水"],
+[61,288,10,1,3.9,19.3,"Hawk","yofk."],
+[62,288,10,1,3.7,18.4,"xavz","Astrixnara"],
+[63,288,10,0,3.6,17.4,"vﱞax","Zane"],
+[64,288,10,0,3,15.8,"Snakk","Osky"],
+[65,287,11,2,3.91,22.36,"ClarxGOTY 7","Clxudzr"],
+[66,287,9,2,3,15.56,"jake on gfuel 10","2rykuǃ"],
+[67,287,11,1,7.27,21.55,"twitch kaiuuuu_","Bl4ckandChi1dish"],
+[68,287,9,1,2.67,16.67,"goose17 fvǃ","pxr bostonǃ"],
+[69,287,9,0,2.11,13.44,"polarcuhh","lootboy frewzo"],
+[70,286,9,1,3,14.33,"LeMickey Nico","Kcrzzy"],
+[71,285,10,1,9.8,20.7,"peppy","orix zzz 200ǃ"],
+[72,285,10,1,7.4,19.3,"FA いわし 74","LUCK RUU"],
+[73,285,11,0,5.55,22.09,"envyreyli 7","dyre"],
+[74,285,9,0,4.78,14.89,"xset curvebotǃ","Disrupts Return"],
+[75,285,11,0,2.64,21.27,"Marogi.","Scythefntt"],
+[76,284,11,0,5.09,24,"Wiz","Ceeq"],
+[77,283,10,1,3.2,17.7,"Jam dinkyǃ","Batman Jackoǃ"],
+[78,282,10,1,8.9,18.5,"ztibzrǃǃ","antzuru"],
+[79,282,11,1,7.55,23,"Pudnara","Sanjog"],
+[80,282,11,1,3.36,20.27,"Jacko","spickermin"],
+[81,282,10,1,3.3,18,"vanill 1","Bubbles"],
+[82,281,11,1,6.18,23.09,"Brock","Syncc"],
+[83,281,11,0,3.73,19.91,"alexxnada","hwk bando"],
+[84,279,10,1,5.4,18.3,"Cazo","Senspect"],
+[85,279,10,1,4.4,18.3,"Tommy48000","Pencil"],
+[86,279,10,0,5.3,17.2,"kingstonǃ","chrome bayleyzrǃ"],
+[87,279,11,0,4.82,18,"lukez 01","Lunarethǃ"],
+[88,279,9,0,3.22,15.11,"zzz jaydog","Hamzawingu"],
+[89,278,11,1,5.18,22.73,"tyce zzz","zzmech 7"],
+[90,277,11,0,3.18,19.91,"BS azzy1","Sincq"],
+[91,276,10,1,2.3,17.3,"huddyそ","brazil au"],
+[92,276,10,1,2.1,19.4,"I luv Woodstock.","Wharfers"],
+[93,276,11,0,3.45,22.55,"valix 13ǃ","Mask Spect"],
+[94,276,11,0,2.18,22.09,"aura exra 7","relmy"],
+[95,276,8,0,1.75,10.38,"grands fvǃ","lewis 17ǃ"],
+[96,275,10,1,7.6,18,"Sxrgeǃ","DoopsyGOTY"],
+[97,274,11,0,5.45,20.36,"SOLOS IS MINEǃǃǃ","LordPlanberry"],
+[98,274,10,0,3.8,19.3,"Arielle Kebbel","unlach"],
+[99,274,11,0,1.82,20.27,"humbl 80","mns chiefs"],
+[100,273,10,0,3.5,17.6,"Vainz","atrox x jitǃ"],
+[101,272,10,2,4.8,22,"xnnea","ClexerM"],
+[102,272,11,0,4.55,21.36,"TikTok Ruday444","flіxbuca"],
+[103,272,10,0,3.4,17.2,"eloxzreyli","jackozr"],
+[104,272,10,0,3.2,17,"lluvvrs","seb haha"],
+[105,271,10,1,4.6,19.2,"bob","SRG styx"],
+[106,270,11,2,4.55,24.27,"catgirl jestarǃ","catboy will"],
+[107,269,10,1,4,18,"pqkzyǃ","Rhys"],
+[108,269,11,0,3.55,21.91,"Jаck ϟ","MIMIC"],
+[109,268,11,1,4.09,22.73,"mеrс sv","Astral"],
+[110,268,10,1,3.7,19.3,"aoi corz","plump psycho 100"],
+[111,268,8,1,2.38,14.13,"Loyal Zippy","castro 19ǃ"],
+[112,267,9,1,5.56,16.33,"Raxy","Noah on filth"],
+[113,267,11,0,1.91,18.09,"sole no1 chudmax","toaster 10"],
+[114,266,10,1,5.7,20.7,"propa meld","Insight"],
+[115,265,10,2,1.9,17.7,"PRIME Brxndonǃ","Mxgnusǃ"],
+[116,265,11,1,2.18,18.73,"pxnther quitCOMP","AMEN pommyǃ"],
+[117,265,9,0,6.56,17.78,"hwk Wavy 222ǃ","lxcas"],
+[118,265,11,0,3.55,23.36,"kazza iclia","loyal rodrigoǃ"],
+[119,264,11,1,4.64,20.91,"Furium","mancity cski 35"],
+[120,264,10,1,4.1,22.4,"Rock is hench","Joker"],
+[121,264,11,0,3.09,20.45,"up the canes","аngry liоn"],
+[122,264,11,0,1.64,20.27,"Darkaroo","KrispyNugget723"],
+[123,263,11,1,4.55,22.18,"Caleb","coffinːrock"],
+[124,263,11,1,4,22.36,"maxy女","NeoPK"],
+[125,263,11,0,5.18,22.64,"Meki","hwk spinx 神"],
+[126,263,11,0,1.18,20.55,"hxyl","SlimySquirrel27"],
+[127,262,11,2,4.36,25.82,"skittles","CLAYTON BALDINĞ"],
+[128,262,8,1,3.38,12.38,"Twis Razzǃ","Pal 237"],
+[129,262,9,0,2.22,14.33,"MNS Hunterr ᵔᴥᵔ","zoamy 9ǃ"],
+[130,261,9,1,3.78,14.33,"Darth","Jupiter"],
+[131,261,11,1,2,22.64,"brotha im hench","Morelloǃ"],
+[132,261,10,0,1.9,18.8,"seniqfnt","lachsaim"],
+[133,260,11,1,6.09,23.09,"clxpzz yhyhǃ","splintsteincpabc"],
+[134,260,9,0,3.56,15.44,"LA LAKERS IN 5","Chonaz"],
+[135,260,9,0,3.11,15.11,"bolt 74","Triz"],
+[136,260,11,0,2.55,19.55,"Ice","cyx"],
+[137,259,10,1,6.2,19.8,"zert","crashÿ"],
+[138,259,11,1,3.09,20.82,"RelevanceFN","onyx"],
+[139,259,11,0,3,17.82,"kenji 73","remy on rolla"],
+[140,258,9,0,5.11,17.11,"Gilt874","STRE4MLESS"],
+[141,258,11,0,2,20.91,"acidfrags.","paltbraaa"],
+[142,258,10,0,1.6,18.6,"EXD Sherbuca","xbxstr."],
+[143,257,11,1,5.82,21.55,"wxvÿ xyz","Zeng"],
+[144,257,11,1,3.64,21.82,"Jinra","yuta"],
+[145,257,11,0,2.09,22.45,"fishy woohoo","ploieyǃ"],
+[146,256,11,2,1.45,22.09,"Simba","luca"],
+[147,256,10,1,3.1,21.6,"nxt tweeks","Twitch Jäunty"],
+[148,256,11,0,5.45,21.82,"rRezu 16ǃ","Jaysonfv."],
+[149,256,11,0,3.82,19.45,"ссǃ","fluxx.vfx"],
+[150,256,9,0,3.78,16.33,"Ѕwitchezǃ","Xnvу 7"],
+[151,256,11,0,2.91,20.82,"Truly Espada","konqx the ox"],
+[152,256,11,0,2.36,20.73,"zerokool 22","lunr メ"],
+[153,256,9,0,1.11,15.78,"xbingo","Jackydee"],
+[154,255,11,2,4.27,21.73,"king cookie ψ","Litrareylibot"],
+[155,255,10,1,3.2,20.2,"scwipt 42ǃ fv","zeddy 281ǃ"],
+[156,255,10,1,2.6,21.6,"kettama fvǃ","Rachael Zanelol"],
+[157,255,10,0,4.9,18.4,"smqked","Hezza"],
+[158,255,11,0,1.91,20.73,"Ðąɱō","mitch sieteǃ"],
+[159,254,10,1,3.5,21.2,"John","Metrq"],
+[160,254,10,1,3.1,17.4,"FeetLoverKanye","TT Augustcuh-"],
+[161,254,11,0,6,22.64,"makis come back","glokk40kingyuz"],
+[162,254,10,0,1.4,16.9,"starkz yhyhǃ","YEEZUSǃ"],
+[163,253,8,1,2.75,14.13,"buzzy 24","nenzoǃ"],
+[164,253,11,0,3.73,20.18,"Bakas Clint fan","Gabe"],
+[165,253,11,0,2.27,18.55,"starsbot ϟ","ig crea"],
+[166,253,11,0,1.91,19.18,"IAm centszn","Haggis Zee"],
+[167,253,11,0,1.91,23,"Ryo","G Nixon"],
+[168,253,10,0,1.5,15.9,"jaspar patroller","Vine"],
+[169,252,11,2,2.55,23.36,"User-efc06f05ee","oce t3eny"],
+[170,252,11,1,3.18,20.18,"camp丆","Lilysmanxo"],
+[171,252,11,0,5.09,20.55,"tribal gr3y","honor resignzfvǃ"],
+[172,252,10,0,3.4,19.4,"swee","AUR fxshÿ"],
+[173,252,10,0,3,20.6,"JOGO Oatleу","eggman 34563456"],
+[174,252,9,0,1.56,15,"nickey","emix le scott"],
+[175,252,10,0,1.2,17.9,"Clappedbytyty","FazeAryan_BTW"],
+[176,251,11,1,5.64,24.82,"tiktok tiltfnbr","kiarad the demon"],
+[177,251,8,1,4.5,14,"Manureyli fvǃ","jjj javzx"],
+[178,251,10,1,4.2,23,"maxi","axoz"],
+[179,251,11,1,2.55,21.64,"Slvǃ","рhoenixǃ"],
+[181,251,11,1,1.09,18.82,"zilan","Viperzx"],
+[182,251,9,0,5.44,18.44,"Onyx Zitoulouu","Saﱞf"],
+[183,250,10,0,4,20.6,"jerks","lucasqn"],
+[184,250,11,0,3.64,21.36,"darkreyliǃ","Skyking1x"],
+[185,250,11,0,3.64,22,"lawz 1st","criptozreyli!"],
+[186,250,9,0,3.11,16.78,"AUR Joz","twis wxves 11ǃ"],
+[187,250,11,0,2.55,23.82,"kingbobㅤㅤ","Luckii"],
+[188,250,10,0,2,20,"0ms Lasher","167ms Jenno"],
+[189,250,11,0,1.64,21.82,"Squido","Whitejaǃ"],
+[190,250,11,0,1.45,24.36,"chrome avlystbot","crimson 潼"],
+[191,249,10,1,4.2,21.1,"mannysznǃ","asc winkbotbotǃ"],
+[192,249,9,0,4.78,15.56,"Purple turkey 92","Twitch Voidziey"],
+[193,249,8,0,3.62,12.75,"mimix to japan","retnuhfv"],
+[194,249,11,0,3.55,20.27,"User-d436639a36","rileyfps"],
+[195,249,7,0,3,10.43,"tt zeko.","tiktok m0skfn"],
+[196,249,10,0,1.9,20.7,"Secrets 本","C0pperG00se"],
+[197,249,10,0,1.3,17.9,"TTV WkeyDadGhost","Shebemclovin me"],
+[198,248,8,2,3.5,16.88,"reflex 16","Jarred cheatert"],
+[199,248,8,0,3.25,13.5,"babyynlko","spexzbot"],
+[200,247,10,1,2.6,19,"audioz 47","Sycherman"]
+];
+const O1_LCQ1_NAT={"167ms Jenno":"au","2rykuǃ":"au","AMEN pommyǃ":"au","AUR Joz":"au","AUR fxshÿ":"au","Astral":"nz","Astrixnara":"au","BS azzy1":"au","Better":"au","Bingle":"au","Brakz":"au","Brock":"au","Caleb":"au","Cazo":"au","Chonaz":"au","Clappedbytyty":"au","ClarxGOTY 7":"gb","ClexerM":"nz","Clxudzr":"nz","Darkaroo":"au","Disrupts Return":"au","Drizzlx":"au","EXD Sherbuca":"au","FA いわし 74":"au","FazeAryan_BTW":"au","FeetLoverKanye":"nz","Furium":"au","G Nixon":"nz","Gilt874":"au","Hawk":"au","Hezza":"au","I luv Woodstock.":"aq","IAm centszn":"au","Insight":"nz","JOGO Oatleу":"no","Jacko":"nz","Jarred cheatert":"au","Jaysonfv.":"kw","Jinra":"au","John":"nz","Jules jr":"au","Jupiter":"fj","Jаck ϟ":"au","KrispyNugget723":"au","LA LAKERS IN 5":"au","LUCK RUU":"jp","Litrareylibot":"nz","Loyal Zippy":"au","Luckii":"nz","MIMIC":"au","MNS Hunterr ᵔᴥᵔ":"au","Marogi.":"au","Meki":"au","Metrq":"pl","Mxgnusǃ":"au","NeoPK":"nz","Noah on filth":"au","Onyx Zitoulouu":"au","PWR Alex8x ﾠ":"au","Pal 237":"ss","Pencil":"au","Pudnara":"au","Purple turkey 92":"nz","Raxy":"au","RelevanceFN":"vg","Rhys":"au","Rock is hench":"au","Ryo":"au","SOLOS IS MINEǃǃǃ":"au","STRE4MLESS":"nz","Sanjog":"au","Saﱞf":"au","Scythefntt":"au","Simba":"gb","Sincq":"au","Skyking1x":"al","SlimySquirrel27":"au","Slvǃ":"au","Snakk":"nz","Sxrgeǃ":"au","Sycherman":"au","Syncc":"cl","TikTok Ruday444":"au","Tommy48000":"au","Triz":"au","Twis Razzǃ":"au","Twitch Voidziey":"au","Twixae":"au","User-efc06f05ee":"au","Vine":"co","Viperzx":"au","Wharfers":"au","Whitejaǃ":"au","Wiz":"au","Xset Goatisbotǃ":"us","YEEZUSǃ":"dj","Zane":"au","Zeng":"au","acidfrags.":"au","alexxnada":"au","aoi corz":"au","asc winkbotbotǃ":"jp","atrox x jitǃ":"au","audioz 47":"au","axoz":"au","bandit 水":"wf","bob":"nz","bolt 74":"au","brxy":"au","camp丆":"au","castro 19ǃ":"au","catboy will":"lb","chrome avlystbot":"ar","chrome bayleyzrǃ":"nl","clxpzz yhyhǃ":"au","coffinːrock":"au","crashÿ":"au","criptozreyli!":"nz","cyx":"sg","darkreyliǃ":"ax","dyre":"hu","eggman 34563456":"au","eloxzreyli":"au","envyreyli 7":"au","falcon surge 10ǃ":"mc","fg 2 toxicǃ":"au","fluxx.vfx":"au","flіxbuca":"au","grands fvǃ":"de","huddyそ":"au","hwk Wavy 222ǃ":"nz","hwk bando":"br","hwk spinx 神":"au","hxyl":"au","jaspar patroller":"ee","jerks":"au","kazza iclia":"au","kenji 73":"au","kettama fvǃ":"cz","kiarad the demon":"pl","king cookie ψ":"au","kingbobㅤㅤ":"au","kingstonǃ":"au","krimz":"de","lawz 1st":"au","lluvvrs":"au","lootboy frewzo":"nz","luca":"cl","lucasqn":"hr","lukez 01":"au","lunr メ":"it","lxcas":"tn","makis come back":"au","mancity cski 35":"dk","maxi":"au","maxy女":"nz","mеrс sv":"au","nenzoǃ":"ph","nickey":"au","oce t3eny":"au","onyx":"au","orix zzz 200ǃ":"au","ploieyǃ":"au","plump psycho 100":"au","pxnther quitCOMP":"gb","pxr bostonǃ":"gr","reflex 16":"au","relmy":"au","salgod 74":"nz","scwipt 42ǃ fv":"au","seniqfnt":"au","skittles":"nz","smqked":"au","sole no1 chudmax":"va","solly11111":"ru","spexzbot":"au","starkz yhyhǃ":"hm","swee":"nz","tiktok m0skfn":"gr","tiktok tiltfnbr":"au","tj singh臭":"au","toaster 10":"au","tt zeko.":"fr","twis wxves 11ǃ":"au","tyce zzz":"au","up the canes":"nz","valix 13ǃ":"au","vaxsr":"au","voiﱞdǃ":"it","wxvÿ xyz":"au","xavz":"au","xbxstr.":"nz","xset curvebotǃ":"au","yofk.":"au","yuta":"au","yxngyellowfellow":"au","zerokool 22":"au","zert":"au","zilan":"tr","zoamy 9ǃ":"au","ztibzrǃǃ":"au","zzz jaydog":"au","οne single lie.":"au","Ѕwitchezǃ":"au","аngry liоn":"it","рhoenixǃ":"vn"};
+const CARD_O1_LCQ1_EVENT="FNCS 2026 Major 1 — Last Chance Qualifier Session 1 (Oceania)";
+const CARD_O1_LCQ1_DATE="20 апр 2026";
 const _O1L=CARD_O1_LCQ_RAW.map(m1Entry);
+const _O1L1=CARD_O1_LCQ1_RAW.map(m1Entry);
 const _O1G=CARD_O1_GF_RAW.map(m1Entry);
 _S.o1p=mkSorts(_O1P);
 _S.o1l=mkSorts(_O1L);
+_S.o1l1=mkSorts(_O1L1);
 _S.o1g=mkSorts(_O1G);
 
 const o1PlayinBase = r => REGION_TOP.OCE - ((r-1)/Math.max(_O1P.length-1,1))*(REGION_TOP.OCE-62);
-const o1LcqBase    = r => 62 - ((r-1)/Math.max(_O1L.length-1,1))*14;
+const o1LcqLen  = () => _O1L.length + _O1L1.length;
+const o1LcqBase    = r => 62 - ((r-1)/Math.max(o1LcqLen()-1,1))*14;
+const o1Lcq1Base   = r => 62 - ((_O1L.length+r-1)/Math.max(o1LcqLen()-1,1))*14;
 const o1GfBase     = r => REGION_TOP.OCE - ((r-1)/Math.max(_O1G.length-1,1))*(REGION_TOP.OCE-70);
 
 (function buildMajor1OCE(){
@@ -25900,7 +26739,7 @@ const o1GfBase     = r => REGION_TOP.OCE - ((r-1)/Math.max(_O1G.length-1,1))*(RE
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(base(entry.rank), 30, 99));
-      const code = O1_NAT_LIQUI[nm] || O1_NAT_TRN[nm] || '';
+      const code = O1_NAT_LIQUI[nm] || O1_NAT_TRN[nm] || O1_LCQ1_NAT[nm] || '';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource: O1_NAT_LIQUI[nm] ? 'liquipedia' : 'tracker',
@@ -25916,6 +26755,7 @@ const o1GfBase     = r => REGION_TOP.OCE - ((r-1)/Math.max(_O1G.length-1,1))*(RE
   };
   _O1P.forEach(e=>{ TEAMMATE_GROUPS.push(e.duo.slice()); add(e, CARD_O1_PLAYIN_EVENT, CARD_M1_PLAYIN_DATE, o1PlayinBase, 'Playin'); });
   _O1L.forEach(e=>add(e, CARD_O1_LCQ_EVENT, CARD_M1_LCQ_DATE, o1LcqBase, 'Lcq'));
+  _O1L1.forEach(e=>add(e, CARD_O1_LCQ1_EVENT, CARD_O1_LCQ1_DATE, o1Lcq1Base, 'Lcq1'));
   _O1G.forEach(e=>add(e, CARD_O1_GF_EVENT, CARD_M1_GF_DATE, o1GfBase, 'Gf'));
 
   const byName={};
@@ -26221,14 +27061,175 @@ const CARD_A1_LCQ_EVENT='FNCS 2026 Major 1 — Last Chance Qualifier (Asia)';
 const CARD_A1_GF_EVENT='FNCS 2026 Major 1 — Grand Finals (Asia)';
 
 const _A1P=CARD_A1_PLAYIN_RAW.map(m1Entry);
+/* M1_ASIA: открытая сессия 1 Ласт-Ченса, 2026-04-20 (окно S40_FNCSMajor1_LastChanceQualifier_ASIA, всего страниц 37; лобби того же Ласт-Ченса — 49 команд, они здесь не повторяются) */
+const CARD_A1_LCQ1_RAW=[
+[50,307,11,1,4,20.36,"clutch rag1s","Atrct skywxlk3r"],
+[51,305,9,2,5.89,14.11,"daijinfnX","ウルップルブレイド"],
+[52,305,9,1,4,15.44,"太鼓の達人Wii超ごうか版","sana"],
+[53,305,10,1,4,17.9,"Redo ナツキトウマ 1が6個","My Dear Momentsǃ"],
+[54,304,9,1,5.44,15.44,"RAGE Hakkun","Raru 7ǃ"],
+[55,304,10,1,3.5,17.8,"a2976q2yr0awf83k","cherry clixǃ"],
+[56,304,8,1,3.12,10.5,"Celis つつ上等","Liberta MoCchA"],
+[57,304,11,1,2.45,19,"Aim","Harukiyo"],
+[58,304,9,0,4,12.56,"NE とりむとらず","HerbWorldNight夜"],
+[59,303,8,1,2.5,9.88,"gents-c くろま","Leaf ばつǃǃ"],
+[60,303,11,0,3,20,"FCT 波乗りペンギン","おかっぱがふ子"],
+[61,302,10,1,4.7,18.8,"meah._x","あやあやあやあやあやあやせ"],
+[62,302,9,1,3.89,16.56,"あいりす","みるやちぇ"],
+[63,301,11,2,6.27,20.73,"pocari sweat3sk","9amis"],
+[64,301,9,1,2.89,14.56,"wcr シルス","hst basil"],
+[65,300,10,2,3,18.4,"レザリク０４３０","りくとかい15才."],
+[66,300,11,0,5.27,19.55,"PFL Se1kingﾊﾞｧｯǃ","RYZ Ţoɱÿacheǃ"],
+[67,299,11,0,2.64,18.55,"れんむZ","TakoBeL"],
+[68,298,11,0,5.27,21.64,"8x8ぼぶだっちゃ","BRNw よんちゃǃ"],
+[69,297,10,2,4.9,20.1,"老害もときfn","Twitter chachaFN"],
+[70,297,10,2,3.7,17.1,"ただのさいとうなおき","ただのたわしー"],
+[71,297,11,1,5.09,21.91,"888fv","AMORIS Ragna 狂剣王"],
+[72,296,9,1,5.44,15.33,"KЁЯΙS 君はこれ以上進めない","KЁЯΙS Reaper 77ǃ"],
+[73,296,11,0,6.55,21.55,"Nika","fuwa"],
+[74,296,11,0,3.09,19.64,"FA irodori","モバイル勢のまかろん"],
+[75,295,11,2,8.64,25.64,"wsr guppafvǃwkeÿ","我が名はyhwach"],
+[76,295,10,2,5.7,21.1,"Rialy","Lit erunfnz"],
+[77,294,11,2,6.18,21.73,"むーこにっく","SayarA"],
+[78,294,10,1,5.7,19.6,"でーもんくらげǃ","TsV RazNotyǃ"],
+[79,294,11,1,3.55,17.27,"Lucy x Ackerman","暗黒騎士tigger侍ǃ"],
+[80,294,10,1,2.7,14.6,"Ary今僕の中にある言葉のカケラ","Ary Zzz"],
+[81,294,11,1,2.64,21.09,"ZYNBL prurun","user10764"],
+[82,293,11,2,3.73,20.64,"ryouryou ℜ","ragutteÿǃ"],
+[83,293,8,1,5,13.13,"atrct 15181603xǃ","さえぎ ﾃﾞｭｸｼ"],
+[84,293,11,0,5.18,19.18,"Noxa たいたい","ごっとこた"],
+[85,293,11,0,3.55,19.64,"ptt 綾小路清隆","物乞いします"],
+[86,293,9,0,3.22,14.67,"FPG ノリアキ覚醒","FTW しんぴよsays bye"],
+[87,293,10,0,2.9,17,"れいな67","LUCK 100rebe"],
+[88,292,11,1,5.18,20.91,"Celis あおねこ416","さんげん"],
+[89,291,9,2,5.67,15.22,"CH.ゴハンダ 姫","Now King."],
+[90,291,9,2,4.11,14.78,"ジェノワーズたかし","Hall of fame 7"],
+[91,291,9,1,4.89,15,"KЁЯΙS_夏へのトンネル","Herb らずととりむ"],
+[92,291,11,1,3.64,21.73,"merem","Buyuriru"],
+[93,291,11,0,4.82,21.73,"suac falconpunch","styx helixǃ"],
+[94,290,10,2,1.4,17.2,"GENIUS-A Lizard","BoF くらうどǃ"],
+[95,290,11,1,3.73,23.91,"SH りゅどらとかいりんご","SH かいりとりゅどらんど"],
+[96,290,11,1,2.82,22.45,"245ddfddgdfghwa","jy zaax"],
+[97,290,11,0,2.36,17.73,"ましゅぴっぴのゲーム部屋で検索","チン族ぎゅうにゅう"],
+[98,289,10,1,7.4,20.6,"宇宙HERO","ATRCT FVǃ"],
+[99,289,11,1,4.73,20.36,"PineapplePizza8k","XERO shxrkǃ"],
+[100,289,11,0,3.91,19.18,"えごいすとらじおごおと","Celis Kou"],
+[101,288,10,1,5.5,19.2,"ʰᵃᵛᵒᵏ ˢʷⁱᶻᶻуǃ","Lets Peterbot"],
+[102,288,10,1,3.7,17.3,"FTW あらきりょうすけ","DIE Nx1xyfvǃ"],
+[103,288,10,0,4.6,19.9,"佐藤唯人と高橋航大","くらっちちゃま"],
+[104,288,11,0,2.55,19.18,"Ӝ Midori Ӝ","Frisk_freedom"],
+[105,287,10,1,4.6,19.4,"SH てぃーかわ","Redo かふジャイロ"],
+[106,287,9,1,3.78,15.56,"EGK ちゅるっぴ 1st","EGK Luar"],
+[107,286,11,2,4.18,20.91,"hamu","GT はいちゅー 鬼"],
+[108,286,11,1,9.55,24.82,"SkyJump ǃ","phantomRequien"],
+[109,286,9,1,4.33,14.33,"Duskydemiseǃ","リョガタ"],
+[110,286,10,1,2.7,19.7,"Rz アイスを愛す","nyleyache32"],
+[111,285,10,0,4.1,18.6,"SE LxiyLza 97ǃ","SE Ruruǃ"],
+[112,285,10,0,2.5,15.7,"BRNz habu yhyh","チン族らいちん"],
+[113,284,9,1,5,18.22,"Redo はあちゃまfvǃǃӜ","73歳女子高校生のVlog"],
+[114,284,11,0,4.91,24.73,"kl meentosyyfvǃ","никитос ауе"],
+[115,284,11,0,2,20.91,"GR きのでーす","RGL れーくんぺー"],
+[116,282,7,2,4.29,11.57,"ECS Zorua.ゾロア配信中","るか にょっすーǃ"],
+[117,282,10,1,5.5,19.3,"きゅうり128本","KЁЯΙS saeta 轟"],
+[118,282,11,0,4.73,19,"NXFZなぎだっちょǃ","CALM かずにょっす"],
+[119,282,9,0,4,14.22,"すーぱー覚醒しょうりん","Floydfnx"],
+[120,281,11,2,2.45,23.36,"wzd kylix","うおwwwwwwww"],
+[121,281,11,1,3.64,21.73,"Lit Player Ama","GR あまくろー 帯"],
+[122,281,11,1,3.45,21.64,"他責思考toxic king","KC ユッケでましましなゆっき"],
+[123,281,11,1,3.45,21.91,"KC ちょいまめ","Herb-N ℛielyǃ"],
+[124,280,10,0,2.4,16.8,"ECSメンズコーチココア","ECSメンズコーチヤク"],
+[125,279,11,1,5.45,23.91,"ℭhrome くりたるǃ","NASTOR 74"],
+[126,279,10,1,4.4,19.3,"KC Tjino","乃木 憂助"],
+[127,279,10,1,4.2,19.5,"私はよっしーあなたはだーれ","おかっぱえいど"],
+[128,279,10,1,3.2,17.3,"RVLnittan91波","JSR Xiaojie"],
+[129,279,10,1,3,20.2,"KЁЯΙS vazengod 7","wcr Reijiyfishy"],
+[130,279,11,0,5.36,20.82,"どらちぐ 7z7z7z7z7z7","ReLit Ryle 19ǃ"],
+[131,279,11,0,3.73,21.18,"hst lark","roza zerochafnx"],
+[132,279,9,0,3.22,14.89,"herb あらいぐましーちゃん","Redo ねこきちまる"],
+[133,278,10,2,4,18.1,"覚醒EX極","dig acorn4x"],
+[134,278,11,2,3.45,19.82,"suac ZmjjKK.","四捨五入したらイモータル"],
+[135,278,9,1,5.89,18.56,"NEXUS-A ハイグレ玉夫","FTW 魚介風味にされたゆで"],
+[136,278,9,1,3.67,17.67,"rel castlaDANǃ","NanaDANǃ"],
+[137,278,9,1,2.78,14.67,"lila れいちゃん","天沢一夏ǃ"],
+[138,278,9,0,1.78,15.44,"XSET Muzxx","uiÿ"],
+[139,277,10,1,2,18.5,"どいきん","LTW ただのざ高校生"],
+[140,277,10,1,1.6,19.7,"IPF ウンǃボクつよいǃ","ウンǃボクよわいǃ"],
+[141,277,9,0,3.67,14.11,"おこらしたらやばい人","Zst C-RA ｼｲﾗｧｧｧ"],
+[142,276,11,1,7,24.91,"Raito","Zerokun"],
+[143,276,10,1,4.5,17.7,"サタンǃ","SE-A yunaǃ"],
+[144,276,10,0,4.6,18.8,"fаlсоn pоllo 10ǃ","リーパーの正体最強ふれだーjr"],
+[145,276,11,0,4.36,21.36,"LIL ramusei","foxzy4qzx."],
+[146,276,9,0,2.89,14.78,"faction fiskerだゾ","hst-o スイドラください"],
+[147,276,10,0,1.8,16.7,"すっとこえいぴぃǃǃ","高田ふーみん 福島ミュート中"],
+[148,275,9,1,3.56,16.56,"lvt 野口衣織","CALM shelom.jr"],
+[149,275,11,0,4.64,20.82,"Yuna King 7","TW UnosukeZz"],
+[150,275,10,0,2.3,18,"Coach Pоrk","OBI-F Aostachǃ"],
+[151,275,9,0,2.11,16.33,"mineral waterr 7","dyd talacoofn"],
+[152,275,10,0,1.9,16.6,"Monkeybotǃǃ","MMC PANDA"],
+[153,274,8,1,4.88,14,"FA Ren 10ǃ","NEOS RIBEL"],
+[154,274,9,1,4.11,14.33,"Novaりまclutch","rvl dorack3xyz"],
+[155,274,11,1,2.82,20.09,"らりむ 配信中","Lit Buyureyli"],
+[156,274,9,0,5.56,14.22,"skk.jp","Space acornǃ"],
+[157,274,10,0,5.2,18.3,"Alpha みあやちぇ","不组队就能获胜的三好"],
+[158,274,11,0,3.45,20.73,"UC.Yama 橘","Celis Plank"],
+[159,274,10,0,2,17.7,"VIO じゃがりこ代表","vor owner.aron"],
+[160,273,10,2,6.5,20,"毛蟹ǃ","arikihgh 1ǃ"],
+[161,273,11,1,3.27,21.55,"NŁT 星降る夜に","soraa822"],
+[162,273,10,1,2.8,16.6,"Zard tossybotǃǃ","EXV mAximum24"],
+[163,273,11,1,2.73,21,"くれ乳ビンビンfvǃ","Twitter Ruufnbrǃ"],
+[164,273,9,0,3,12.33,"遠藤大平","ピンセット栗林"],
+[165,273,10,0,1.9,17.9,"IPF ダークネスしょうま","brnw ryukunfn5"],
+[166,273,9,0,1,14.89,"かめニキ","音ノ瀬らこ"],
+[167,272,9,1,5.44,15.11,"YAH Bri YHVHǃ","SNM Oscarǃ"],
+[168,272,9,1,2.56,16,"たけし818","clutch lilyyt96"],
+[169,272,10,1,2.3,19.7,"zst-a ゆは 苺","ぴたまん"],
+[170,272,11,1,1.55,19.73,"Alpha ねむじすた","復帰勢のてるごんǃ"],
+[171,271,11,2,5.55,23.91,"Lum1ns.りりむ","CR.知ってますか"],
+[172,271,9,1,4,17.33,"ᶫᵁᵛTSUNOカエルʕºᴥºʔ","ほこEspressoʕºᴥºʔ"],
+[173,271,9,0,4.33,16.89,"ZETA уuma4x","YOTTA 泥沼"],
+[174,271,11,0,3.36,22.36,"My OrdinaryLife","YouTube まるちゃんch"],
+[175,271,11,0,3,20.45,"Œ IGNITE.Muscat","Lucqxieπ にゃー"],
+[176,270,11,1,9.55,23.27,"AUR PinkerBell 8","しーかすｂｒｒｒｒｒｒｒｒｒ"],
+[177,270,11,1,7.55,23.09,"Т1 demuś 10ǃ","FTW ひつじ 1st"],
+[178,270,8,1,5.62,13.63,"brnw Elfaria","たまきんちゃんあのね"],
+[179,270,11,1,2.82,20.64,"SUAC みつばǃ","fct regpxzrr"],
+[180,270,11,0,4.73,21.91,"NEXUS Persia","MCI cold palmer"],
+[181,270,11,0,2.91,19.55,"Rz sahatteÿǃ","田中バルクス闘莉王"],
+[182,270,10,0,2.8,18.7,"障害者スポーツでもやっとけよw","Temu Cruise"],
+[183,269,10,1,3.8,17.5,"Acris かすかまいど168","ミッチェルサニかMoet"],
+[184,269,11,1,2.55,21.18,"DX Nicolas67","てるだっちゃ"],
+[185,269,11,1,2.36,19.36,"ぷにぷにッǃ","サンドくんです"],
+[186,269,11,0,7.73,24.91,"kaf","しこぴよフォートナイト"],
+[187,269,8,0,3.62,12.63,"gents-c らいりーやけん","NŁT 譲らないあいる"],
+[188,269,9,0,3,15.56,"ヤニやき","マインド雑魚W"],
+[189,269,11,0,1.55,20.18,"MONSTIEZ ららǃ","どぶにうむ"],
+[190,268,9,1,2.56,17.67,"DYD すなりー修行中","CH.ぴよぴよ 姫"],
+[191,268,9,1,2.33,16,"Zero 95ǃ","safaiafvǃ"],
+[192,268,9,0,5.11,17.78,"gafu.442","AUR shxrkÿǃǃ"],
+[193,268,10,0,3.6,16.9,"Ascend sinigami","Asnd領域展開恋 ミリプロ"],
+[194,268,10,0,2,16.8,"HIPE SEEKER ǃ","君を愛する為だけにᶫᵒᵛᵉᵧₒᵤ"],
+[195,267,11,1,3.64,22.64,"小鳥遊ホシノǃ","ECS LALWINNER"],
+[196,267,9,1,3.33,17.11,"ptt やなぎんちょすだにょん","AXIS りくとψ"],
+[197,267,11,1,2.55,21.09,"NBL ぐんさん PULISIC","EXV ありけんJr.ちゅん"],
+[198,266,8,1,3.88,13.25,"しろピクミンやねんǃ","ReN Bää최지우"],
+[199,266,11,0,4,20.45,"Redo れあちゃゆｗ","ネット恋愛の理想と現実"],
+[200,266,9,0,2.67,13.44,"DELTA たつんか","FPG るる"]
+];
+const A1_LCQ1_NAT={"888fv":"jp","9amis":"jp","AMORIS Ragna 狂剣王":"jp","AUR PinkerBell 8":"jp","AUR shxrkÿǃǃ":"jp","Acris かすかまいど168":"jp","BRNw よんちゃǃ":"jp","BRNz habu yhyh":"jp","Celis Kou":"jp","Coach Pоrk":"jp","Duskydemiseǃ":"jp","ECSメンズコーチヤク":"jp","EXV ありけんJr.ちゅん":"jp","FA irodori":"jp","FPG ノリアキ覚醒":"jp","FTW しんぴよsays bye":"jp","Frisk_freedom":"jp","GENIUS-A Lizard":"jp","Herb らずととりむ":"jp","IPF ダークネスしょうま":"jp","KC Tjino":"jp","KC ユッケでましましなゆっき":"jp","KЁЯΙS saeta 轟":"jp","KЁЯΙS 君はこれ以上進めない":"jp","Lets Peterbot":"jp","Liberta MoCchA":"jp","My Dear Momentsǃ":"jp","My OrdinaryLife":"jp","Now King.":"jp","NŁT 星降る夜に":"jp","NŁT 譲らないあいる":"jp","PFL Se1kingﾊﾞｧｯǃ":"jp","PineapplePizza8k":"jp","RYZ Ţoɱÿacheǃ":"jp","Raru 7ǃ":"jp","Rialy":"jp","Rz アイスを愛す":"jp","SH りゅどらとかいりんご":"jp","SNM Oscarǃ":"jp","SUAC みつばǃ":"jp","SayarA":"jp","SkyJump ǃ":"jp","Space acornǃ":"jp","TW UnosukeZz":"jp","TakoBeL":"jp","Temu Cruise":"jp","Twitter Ruufnbrǃ":"jp","Twitter chachaFN":"jp","XERO shxrkǃ":"jp","XSET Muzxx":"jp","YAH Bri YHVHǃ":"it","Yuna King 7":"jp","ZETA уuma4x":"jp","ZYNBL prurun":"jp","Zard tossybotǃǃ":"jp","Zero 95ǃ":"jp","arikihgh 1ǃ":"jp","brnw Elfaria":"jp","clutch lilyyt96":"jp","dig acorn4x":"jp","faction fiskerだゾ":"jp","fаlсоn pоllo 10ǃ":"jp","gents-c くろま":"jp","gents-c らいりーやけん":"jp","hst lark":"jp","kaf":"jp","kl meentosyyfvǃ":"ru","meah._x":"jp","merem":"jp","phantomRequien":"jp","ptt 綾小路清隆":"ru","ragutteÿǃ":"jp","sana":"jp","user10764":"jp","wcr Reijiyfishy":"jp","wcr シルス":"us","ʰᵃᵛᵒᵏ ˢʷⁱᶻᶻуǃ":"jp","никитос ауе":"ru","Ӝ Midori Ӝ":"cv","あいりす":"jp","えごいすとらじおごおと":"jp","さんげん":"jp","しこぴよフォートナイト":"jp","しーかすｂｒｒｒｒｒｒｒｒｒ":"jp","すっとこえいぴぃǃǃ":"jp","ただのさいとうなおき":"jp","ぷにぷにッǃ":"jp","ましゅぴっぴのゲーム部屋で検索":"jp","みるやちぇ":"jp","むーこにっく":"jp","らりむ 配信中":"jp","れいな67":"hk","れんむZ":"jp","ウルップルブレイド":"jp","モバイル勢のまかろん":"zw","リーパーの正体最強ふれだーjr":"jp","不组队就能获胜的三好":"jp","宇宙HERO":"jp","我が名はyhwach":"jp","音ノ瀬らこ":"jp"};
+const CARD_A1_LCQ1_EVENT="FNCS 2026 Major 1 — Last Chance Qualifier Session 1 (Asia)";
+const CARD_A1_LCQ1_DATE="20 апр 2026";
 const _A1L=CARD_A1_LCQ_RAW.map(m1Entry);
+const _A1L1=CARD_A1_LCQ1_RAW.map(m1Entry);
 const _A1G=CARD_A1_GF_RAW.map(m1Entry);
 _S.a1p=mkSorts(_A1P);
 _S.a1l=mkSorts(_A1L);
+_S.a1l1=mkSorts(_A1L1);
 _S.a1g=mkSorts(_A1G);
 
 const a1PlayinBase = r => REGION_TOP.ASIA - ((r-1)/Math.max(_A1P.length-1,1))*(REGION_TOP.ASIA-62);
-const a1LcqBase    = r => 62 - ((r-1)/Math.max(_A1L.length-1,1))*14;
+const a1LcqLen  = () => _A1L.length + _A1L1.length;
+const a1LcqBase    = r => 62 - ((r-1)/Math.max(a1LcqLen()-1,1))*14;
+const a1Lcq1Base   = r => 62 - ((_A1L.length+r-1)/Math.max(a1LcqLen()-1,1))*14;
 const a1GfBase     = r => REGION_TOP.ASIA - ((r-1)/Math.max(_A1G.length-1,1))*(REGION_TOP.ASIA-70);
 
 (function buildMajor1ASIA(){
@@ -26239,7 +27240,7 @@ const a1GfBase     = r => REGION_TOP.ASIA - ((r-1)/Math.max(_A1G.length-1,1))*(R
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(base(entry.rank), 30, 99));
-      const code = A1_NAT_LIQUI[nm] || A1_NAT_TRN[nm] || '';
+      const code = A1_NAT_LIQUI[nm] || A1_NAT_TRN[nm] || A1_LCQ1_NAT[nm] || '';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource: A1_NAT_LIQUI[nm] ? 'liquipedia' : 'tracker',
@@ -26255,6 +27256,7 @@ const a1GfBase     = r => REGION_TOP.ASIA - ((r-1)/Math.max(_A1G.length-1,1))*(R
   };
   _A1P.forEach(e=>{ TEAMMATE_GROUPS.push(e.duo.slice()); add(e, CARD_A1_PLAYIN_EVENT, CARD_M1_PLAYIN_DATE, a1PlayinBase, 'Playin'); });
   _A1L.forEach(e=>add(e, CARD_A1_LCQ_EVENT, CARD_M1_LCQ_DATE, a1LcqBase, 'Lcq'));
+  _A1L1.forEach(e=>add(e, CARD_A1_LCQ1_EVENT, CARD_A1_LCQ1_DATE, a1Lcq1Base, 'Lcq1'));
   _A1G.forEach(e=>add(e, CARD_A1_GF_EVENT, CARD_M1_GF_DATE, a1GfBase, 'Gf'));
 
   const byName={};
@@ -26558,14 +27560,177 @@ const CARD_E1_LCQ_EVENT='FNCS 2026 Major 1 — Last Chance Qualifier (Middle Eas
 const CARD_E1_GF_EVENT='FNCS 2026 Major 1 — Grand Finals (Middle East)';
 
 const _E1P=CARD_E1_PLAYIN_RAW.map(m1Entry);
+/* M1_ME: открытая сессия 1 Ласт-Ченса, 2026-04-20 (окно S40_FNCSMajor1_LastChanceQualifier_ME, всего страниц 27; лобби того же Ласт-Ченса — 47 команд, они здесь не повторяются) */
+const CARD_E1_LCQ1_RAW=[
+[33,320,11,2,8.18,21.55,"ziMshary.","king Brhoomǃ"],
+[49,312,11,0,5.82,20.09,"Arrow","Faisal Bin N7eet"],
+[50,311,10,1,4.8,15.6,"Fatla","ǃVireⅹǃ"],
+[51,310,9,1,5.22,16.22,"hamzdbouz","Ruxrk"],
+[52,310,11,0,2.73,17.55,"RyZée","Ahti"],
+[53,309,9,0,2.78,13.56,"el pedriAIM yX 亗","Atc Mar1xsky 23k"],
+[54,307,11,0,5.55,24.18,"Faiﱞsal","bazzy 么"],
+[55,305,10,2,8.7,19.3,"Plaka La Mousse","User-Fußzeh84574"],
+[56,305,9,2,2.33,14.67,"whiffy444","Iucas444"],
+[57,305,10,1,5.8,17.5,"LegenD I1","Quaze 97Q8ǃ"],
+[58,304,10,2,7,18.5,"Kalgamer","BySaLva"],
+[59,303,11,0,3.55,19.82,"zxens","Aftk 75"],
+[60,301,10,2,5.3,22.2,"Mody","AB03LWz"],
+[61,299,11,2,6.09,20.82,"Bolt Lnd3kǃ","ManCity PnP"],
+[62,299,9,1,4.67,18.22,"Vowlka","iKyatoo"],
+[63,299,9,1,4.22,15.44,"AlUla BIGHEAD","yvl4lf wtf2xdddd"],
+[64,299,10,0,6.3,17.8,"ATC FERNANDINH0","Pligz"],
+[65,299,11,0,3.55,19.09,"SWT Likalee 91","20s cive -_-"],
+[66,298,9,2,7.11,16.89,"n4οh","Stark"],
+[67,298,10,1,3.5,16.8,"KPI PUNISHER24","14 dizzý"],
+[68,297,11,1,6,20.64,"localtoaster47","RAZ ǃ"],
+[69,297,11,1,4.73,22.73,"drippy Il","lildurk 300"],
+[70,296,11,1,4.64,21.09,"Fasool.exe","Lynchinho."],
+[71,296,11,1,2.27,17.09,"Tarian Bulan","17Q9 J"],
+[72,295,9,2,4.33,23,"HEMIX911ネ","HeroGoty"],
+[73,294,10,1,5.1,16.6,"7md Q8","SPESHO Q8"],
+[74,294,11,1,3.73,20.55,"Saw Gyro","7ussainQ8ǃ"],
+[75,293,11,2,4.27,20.82,"Roit","Zayed"],
+[76,293,11,1,6.91,22.45,"AZMonsterǃ","Beam Baratheon"],
+[77,293,10,1,5,20.2,"Tkay","Guyy75"],
+[78,293,10,1,2.2,17.4,"kxrmaxyy","tbskÿ"],
+[79,293,11,0,2.82,19.09,"vvs rodrigotyǃ","Aimx Munoz"],
+[80,292,10,1,4.9,19.4,"stbfv","Mancity 33ǃ"],
+[81,292,10,1,2.3,17.3,"mami van pelt 7","tea"],
+[82,291,11,1,6.73,20.45,"21 jebzfvǃ","ifntL 111ǃ"],
+[83,291,10,1,6,18.6,"Tiger","Nasuh21"],
+[84,291,11,1,4.91,21.09,"Sythic","Rio 9ǃ"],
+[85,290,11,1,6.27,23.27,"senderstan","MazenDrinkB33rǃ"],
+[86,290,10,1,4.9,18.4,"21 Soulix","Cold FHD"],
+[87,290,11,0,2.55,18.64,"Mhyar 821","CP A7mD"],
+[88,290,9,0,1.11,14.33,"APEGADO 1938","Edgαr ssj"],
+[89,289,11,1,5.09,19.09,"HTN Jafar","Reds Nutella"],
+[90,289,10,0,11.3,21,"C10yyy","Twx"],
+[91,289,10,0,2.9,16.9,"YONTI DAS","Nulu 7"],
+[92,288,9,1,3,14.33,"GhostyNallanVort","indian ghosty4k"],
+[93,288,11,1,2.64,19.27,"KatanaRizzKing","REV"],
+[94,288,11,0,4.91,19.55,"broskidelrayǃ","Arctic"],
+[95,287,10,2,4.3,19.3,"Rynex 10ǃ","F5R fv ǃ"],
+[96,287,9,0,4.33,13.33,"Omaar","Cryxtal"],
+[97,287,8,0,3.62,10.75,"Brett Scallionsǃ","ASHTON NORTIER"],
+[98,286,8,1,6.88,14.75,"Hybridxrkÿ","kovaaksǃ"],
+[99,286,10,0,3.2,16.2,"spktah","Andreylі ӝ"],
+[100,285,10,1,4.2,18.7,"plankton 17ǃ","RL meduzi 01x01"],
+[101,284,11,2,5.64,21,"7sen 99","SLIDYﾠﾠ"],
+[102,284,11,1,3.73,21.73,"kayoopaQ8","Vysi"],
+[103,283,8,0,3.88,11.25,"sanzǃ","rulax lisbonǃ"],
+[104,283,10,0,3.3,16.4,"German Slax 9ǃ","7med1x."],
+[105,283,10,0,2.1,16.6,"blayzy1x","Ezzussi"],
+[106,282,9,1,2.56,16.78,"RXB Jxckazine 7","Milxno-PS"],
+[107,282,10,0,2.8,16,"fenixxyz 9","Saeed 2nd"],
+[108,281,10,0,3.7,16.5,"Sаw L","bmo.aim"],
+[109,281,11,0,2.45,22.27,"hay","xenon 11ǃ"],
+[110,279,9,1,4.67,16.33,"Hamzafvǃ","Foxes Aboud 99"],
+[111,279,11,1,4.55,21.36,"nlxfvv","Khd 7ǃ"],
+[112,279,10,1,1,16.4,"Ｐｒａｋｈａｒ〆","999 Big Chadha"],
+[113,279,11,0,6.64,24,"Zay","Claus ǃ"],
+[114,279,10,0,3.3,20.8,"VN AgAM Pro","DashiiX-_"],
+[115,278,11,1,6.27,22,"Abu3zhǃ","NSHE6"],
+[116,277,11,1,5.27,22.45,"21 Lorxfvǃ","Wizzixfvǃ"],
+[117,276,11,1,4.64,22.27,"Tico is quit","Dizawwz"],
+[118,276,10,1,3.1,18.8,"SUPER UNAI EMERY","Nobua_a 10ǃ"],
+[119,276,9,0,6.22,16.22,"Pluey","3jmy"],
+[120,276,10,0,3.4,17.1,"Bad Valar yhyh.","ManCity 515ǃ"],
+[121,276,9,0,3.33,13.44,"Ewin3x","B6L1x"],
+[122,276,11,0,2.36,18.82,"fei 7","NoAnxiety 7"],
+[123,275,11,1,2.91,22.55,"Tronzi 16","dekeltryr."],
+[124,275,10,0,3.7,17.8,"Muath 10.","SlowQ8ǃ"],
+[125,275,11,0,2.45,21.27,"Dragsǃ","hylnd fv"],
+[126,275,10,0,1.9,15.4,"TWTR KREOFTN","twtr kiroxxfn_"],
+[127,274,11,1,2.64,21.64,"381 Genos","Fikiris Ъ"],
+[128,274,9,0,4,14.33,"adolf k.o","dpro 9"],
+[129,274,10,0,3.8,18.7,"GM Ścott 亗","GM Faisal"],
+[130,274,11,0,2,17.91,"Lircy .","Yy Snokr"],
+[131,273,11,1,4,22.91,"LWA","Jaser lowkeyǃ"],
+[132,273,11,1,3.45,19.09,"Molakhfv","Slmitro 2312."],
+[133,273,8,1,3,12,"devil 10ǃ","imänǃ"],
+[134,273,11,0,6.27,20.91,"bolt kaibucaǃ","Parm 10ǃ"],
+[135,273,11,0,5.73,18.91,"NJR 001","JWYJH"],
+[136,273,10,0,2.3,18.4,"Indian scammer .","Bengali Scammer."],
+[137,272,10,1,3.3,18.5,"kummi targaryen","TaysonLordMC"],
+[138,272,10,0,3,15.7,"BS クヴァラツヘリア","waiboo 1stǃ"],
+[139,271,11,1,2.36,19.45,"ABDUL ON TOP个","XGAME 7ǃ"],
+[140,271,11,0,2.64,20.73,"281 javizǃ","281 purdiz"],
+[141,271,10,0,2.3,16.4,"Laith 7ǃ","Ibrahim 10ǃ"],
+[142,271,10,0,1.9,18.3,"hvk aquxǃǃ","Venom"],
+[143,270,11,0,6.18,18.91,"LWTGM 7ǃ","Atomizer."],
+[144,270,9,0,3.11,14,"911 E9xT","Tik wizard"],
+[145,270,9,0,1.33,13.22,"hatrix9","jkl jhonnzz 15."],
+[146,270,11,0,1.27,18.27,"MrLomby","pvskybot."],
+[147,269,8,2,4.88,17.88,"x8 Lucille","abodyy 10ǃ"],
+[148,269,11,1,4,22.91,"Meero 67","Hadron Lurks"],
+[149,269,9,0,2.11,12.89,"Dyl Lecoqǃ","Falcon Rmibotǃ"],
+[150,269,10,0,2.1,16,"MFX K. 1x","santana jackk"],
+[151,269,10,0,1.9,16,"Bandito343.","124sdawdaf"],
+[152,269,9,0,1.89,16.78,"Nᴏᴛ ɪQ","Void ZeTeX 30ǃ"],
+[153,268,11,0,2,19.64,"Kayzix 1st","Pedri Gonzàlez"],
+[154,267,10,2,5.7,19.5,"Tik Selo99","Bavy 76"],
+[155,267,11,2,2.82,20.91,"Mustafa 818","Mustaach"],
+[156,267,11,1,7.64,23.27,"Kukzytryona","RVL Alfadh1i 7ǃ"],
+[157,267,11,1,3.45,21.36,"cl1oz 23","Dan ǃ"],
+[158,267,11,0,3.91,21.36,"TS Chiiriǃ","Detect 555"],
+[159,267,10,0,2.9,17.6,"Salvatore 1st","BenBen 1st"],
+[160,267,9,0,2.78,16.11,"caillou 69.","Discard Otro Way"],
+[161,267,10,0,1.7,19,"paNz trencher","Rami Fortis"],
+[162,266,10,1,3.5,19.4,"yupweǃ","FA cxshÿǃ"],
+[163,266,10,0,4.8,17.2,"21 MO 3k","Wiiioklee 15 ǃ"],
+[164,266,10,0,1.2,17,"DTC JoniGioh","unlucky jason"],
+[165,265,9,0,3.89,16.11,"Agenda","User-27ac05e530"],
+[166,265,11,0,1.91,19.18,"babyynxyn","Void Zeyko"],
+[167,265,9,0,1.67,14.56,"el aimshawn 亗","KPI dolphin"],
+[168,264,11,2,1.09,21.27,"LohiFN","ebu ahh blud"],
+[169,264,11,1,4.09,22.73,"9 January","insta x3taibii"],
+[170,264,11,0,2.36,19.91,"jerbiǃ","PerryBath"],
+[171,264,9,0,1.78,15.11,"yunestryona","Amiksiwnl"],
+[172,263,9,1,4.44,18.56,"عنزه ما تنحني","3zwǃ"],
+[173,263,11,1,3.64,23.18,"Kaldy 2","Nadav Laz"],
+[174,263,9,1,3.56,14.33,"zyktive hatake","kapeyo p4l"],
+[175,263,11,0,3.91,20.55,"ZEER","Wardﾠ"],
+[176,262,11,1,5.91,21.73,"Raymond X Liz","Abdullah ネ"],
+[177,262,11,1,5.18,20.18,"Rtlqk v","Ntyreyli ǃ"],
+[178,262,10,1,4.5,22.7,"Solid","ǃMjr"],
+[179,262,11,1,1.55,19.45,"lyones112","TURIDDU_PRIME10"],
+[180,262,10,0,4.8,19.5,"Yg metro 11ǃ","Azizbotǃ"],
+[181,262,11,0,4.55,21.91,"Sohib fvǃ","Anas bää"],
+[182,262,11,0,2.55,21.09,"Dictator Mbapp3","fettiwap人"],
+[183,262,10,0,1.6,16.4,"Tareq.3","PAẞLÓ"],
+[184,262,9,0,1.33,13.78,"KLD Legoshi 愛孤狼獣","M A K O O."],
+[185,261,11,2,3,23.27,"3zix","MSHQ8."],
+[186,261,11,1,4.18,21.73,"Ryu Ishigoriǃ","Fidio Aldena 10"],
+[187,261,9,1,2,16.56,"krned fvǃ","Talalǃ"],
+[188,261,11,1,2,19.82,"yehuda1x","FeRiX メ"],
+[189,261,11,0,3.91,19.91,"Deexrk","Bravechiiri 23"],
+[190,261,11,0,3.73,19.36,"Toxic_Reyan","Grizzlyfv."],
+[191,260,11,2,2.18,23.36,"Sailoskiiǃ","Mjǃǃ"],
+[192,260,11,1,2.64,21.82,"LastDanceAriel1x","đáŋᶖėĮ11ǃ"],
+[193,260,11,0,5.45,19.82,"Ey4DFvǃ","noisyǃ"],
+[194,260,11,0,3.45,19.91,"Shadi ǃ","BLZ Pxlsar 78"],
+[195,260,11,0,2.36,21.55,"hunterdacold","dragons comeback"],
+[196,260,10,0,1.8,16.4,"FIEX116","HAYUN115ǃ"],
+[197,260,10,0,1.4,17.2,"ntx shanks1x","ohhhhhThatGuy 7ǃ"],
+[198,259,11,2,4.82,22.55,"z2tw","A1prain."],
+[199,259,11,2,3.36,21.09,"soulQ8.","dxter fv"],
+[200,259,9,1,3.56,17.78,"FataL omri","Grizzy yhyhǃ"]
+];
+const E1_LCQ1_NAT={"14 dizzý":"es","17Q9 J":"ae","20s cive -_-":"it","21 MO 3k":"ae","281 javizǃ":"es","281 purdiz":"es","381 Genos":"rs","3jmy":"kw","3zwǃ":"sa","7md Q8":"kw","7med1x.":"jo","7ussainQ8ǃ":"kw","911 E9xT":"sa","ABDUL ON TOP个":"sa","APEGADO 1938":"pt","ASHTON NORTIER":"za","ATC FERNANDINH0":"es","AZMonsterǃ":"sa","Aftk 75":"ae","Agenda":"kw","Ahti":"pk","Aimx Munoz":"es","Amiksiwnl":"de","Anas bää":"sa","Arctic":"br","Atc Mar1xsky 23k":"es","Atomizer.":"sa","B6L1x":"sa","BS クヴァラツヘリア":"br","Bavy 76":"sa","BenBen 1st":"il","Bengali Scammer.":"pk","Brett Scallionsǃ":"zw","C10yyy":"sa","Claus ǃ":"kw","Cryxtal":"pk","DashiiX-_":"il","Detect 555":"sa","Dictator Mbapp3":"ug","Discard Otro Way":"es","Dragsǃ":"in","Dyl Lecoqǃ":"us","Edgαr ssj":"pt","Ey4DFvǃ":"sa","F5R fv ǃ":"sa","FA cxshÿǃ":"gb","FIEX116":"il","Faiﱞsal":"sa","Falcon Rmibotǃ":"sa","Fasool.exe":"kw","FataL omri":"de","Fatla":"eg","FeRiX メ":"il","Fidio Aldena 10":"sa","Fikiris Ъ":"hr","Foxes Aboud 99":"ae","GM Faisal":"sa","GhostyNallanVort":"gb","Grizzlyfv.":"kw","Grizzy yhyhǃ":"sa","Guyy75":"sa","HAYUN115ǃ":"il","Hadron Lurks":"pk","Hamzafvǃ":"pk","Hybridxrkÿ":"iq","Ibrahim 10ǃ":"jo","JWYJH":"sa","Jaser lowkeyǃ":"kw","KLD Legoshi 愛孤狼獣":"es","KPI PUNISHER24":"es","KPI dolphin":"es","Kaldy 2":"us","KatanaRizzKing":"cn","Kukzytryona":"ae","LWA":"sa","LastDanceAriel1x":"es","LegenD I1":"ps","Lircy .":"sa","LohiFN":"fi","Lynchinho.":"vi","M A K O O.":"es","MFX K. 1x":"ge","ManCity PnP":"sa","Mancity 33ǃ":"dz","MazenDrinkB33rǃ":"fr","Meero 67":"sy","Mhyar 821":"sa","Milxno-PS":"gb","Mjǃǃ":"bh","Mody":"ps","Molakhfv":"pk","MrLomby":"sa","Muath 10.":"sa","Mustaach":"pk","NJR 001":"sa","NSHE6":"sa","Nadav Laz":"us","Nasuh21":"jo","NoAnxiety 7":"sa","Nobua_a 10ǃ":"sa","Ntyreyli ǃ":"sa","Nulu 7":"mc","Nᴏᴛ ɪQ":"iq","Omaar":"sa","PAẞLÓ":"jo","Parm 10ǃ":"ae","Pedri Gonzàlez":"no","PerryBath":"il","Pligz":"es","Quaze 97Q8ǃ":"kw","RAZ ǃ":"sa","REV":"om","RVL Alfadh1i 7ǃ":"kw","RXB Jxckazine 7":"gb","Rami Fortis":"il","Raymond X Liz":"sa","Reds Nutella":"sa","Rio 9ǃ":"jo","Roit":"jo","Rtlqk v":"sd","Ruxrk":"sa","RyZée":"ae","Ryu Ishigoriǃ":"sa","SLIDYﾠﾠ":"sa","SPESHO Q8":"kw","SWT Likalee 91":"it","Saeed 2nd":"eg","Sailoskiiǃ":"bh","Salvatore 1st":"sa","Saw Gyro":"qa","Shadi ǃ":"ae","Slmitro 2312.":"pk","SlowQ8ǃ":"kw","Sohib fvǃ":"sa","Solid":"ye","Stark":"kw","Sythic":"ps","Sаw L":"ae","TS Chiiriǃ":"sa","TWTR KREOFTN":"fr","Talalǃ":"sa","Tareq.3":"jo","TaysonLordMC":"ae","Tico is quit":"om","Tiger":"sa","Tik Selo99":"sa","Tik wizard":"sa","Tkay":"de","Twx":"sa","VN AgAM Pro":"il","Venom":"tn","Void ZeTeX 30ǃ":"iq","Void Zeyko":"fr","Vowlka":"sa","Vysi":"qa","Wizzixfvǃ":"ae","XGAME 7ǃ":"sa","YONTI DAS":"es","Yg metro 11ǃ":"sd","Yy Snokr":"kw","ZEER":"jo","Zay":"sa","abodyy 10ǃ":"om","adolf k.o":"qa","bazzy 么":"gb","bmo.aim":"ps","bolt kaibucaǃ":"ae","broskidelrayǃ":"us","caillou 69.":"es","cl1oz 23":"sa","dekeltryr.":"sa","devil 10ǃ":"sd","dpro 9":"bh","dragons comeback":"pk","drippy Il":"sa","ebu ahh blud":"fi","el pedriAIM yX 亗":"es","fenixxyz 9":"de","fettiwap人":"ke","hay":"eg","hunterdacold":"pk","imänǃ":"ir","indian ghosty4k":"gb","jerbiǃ":"il","kapeyo p4l":"es","kayoopaQ8":"kw","kxrmaxyy":"de","lildurk 300":"ca","localtoaster47":"ae","lyones112":"it","mami van pelt 7":"qa","n4οh":"sa","nlxfvv":"kw","paNz trencher":"sa","plankton 17ǃ":"sa","rulax lisbonǃ":"es","sanzǃ":"es","senderstan":"ru","spktah":"kw","tbskÿ":"de","twtr kiroxxfn_":"fr","unlucky jason":"de","waiboo 1stǃ":"ae","whiffy444":"pt","xenon 11ǃ":"jo","yehuda1x":"il","yunestryona":"tn","yupweǃ":"sa","ziMshary.":"sa","zxens":"qa","đáŋᶖėĮ11ǃ":"fr","ǃVireⅹǃ":"sa","عنزه ما تنحني":"sa"};
+const CARD_E1_LCQ1_EVENT="FNCS 2026 Major 1 — Last Chance Qualifier Session 1 (Middle East)";
+const CARD_E1_LCQ1_DATE="20 апр 2026";
 const _E1L=CARD_E1_LCQ_RAW.map(m1Entry);
+const _E1L1=CARD_E1_LCQ1_RAW.map(m1Entry);
 const _E1G=CARD_E1_GF_RAW.map(m1Entry);
 _S.e1p=mkSorts(_E1P);
 _S.e1l=mkSorts(_E1L);
+_S.e1l1=mkSorts(_E1L1);
 _S.e1g=mkSorts(_E1G);
 
 const e1PlayinBase = r => REGION_TOP.ME - ((r-1)/Math.max(_E1P.length-1,1))*(REGION_TOP.ME-62);
-const e1LcqBase    = r => 62 - ((r-1)/Math.max(_E1L.length-1,1))*14;
+const e1LcqLen  = () => _E1L.length + _E1L1.length;
+const e1LcqBase    = r => 62 - ((r-1)/Math.max(e1LcqLen()-1,1))*14;
+const e1Lcq1Base   = r => 62 - ((_E1L.length+r-1)/Math.max(e1LcqLen()-1,1))*14;
 const e1GfBase     = r => REGION_TOP.ME - ((r-1)/Math.max(_E1G.length-1,1))*(REGION_TOP.ME-70);
 
 (function buildMajor1ME(){
@@ -26576,7 +27741,7 @@ const e1GfBase     = r => REGION_TOP.ME - ((r-1)/Math.max(_E1G.length-1,1))*(REG
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(base(entry.rank), 30, 99));
-      const code = E1_NAT_LIQUI[nm] || E1_NAT_TRN[nm] || '';
+      const code = E1_NAT_LIQUI[nm] || E1_NAT_TRN[nm] || E1_LCQ1_NAT[nm] || '';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource: E1_NAT_LIQUI[nm] ? 'liquipedia' : 'tracker',
@@ -26592,6 +27757,7 @@ const e1GfBase     = r => REGION_TOP.ME - ((r-1)/Math.max(_E1G.length-1,1))*(REG
   };
   _E1P.forEach(e=>{ TEAMMATE_GROUPS.push(e.duo.slice()); add(e, CARD_E1_PLAYIN_EVENT, CARD_M1_PLAYIN_DATE, e1PlayinBase, 'Playin'); });
   _E1L.forEach(e=>add(e, CARD_E1_LCQ_EVENT, CARD_M1_LCQ_DATE, e1LcqBase, 'Lcq'));
+  _E1L1.forEach(e=>add(e, CARD_E1_LCQ1_EVENT, CARD_E1_LCQ1_DATE, e1Lcq1Base, 'Lcq1'));
   _E1G.forEach(e=>add(e, CARD_E1_GF_EVENT, CARD_M1_GF_DATE, e1GfBase, 'Gf'));
 
   const byName={};
@@ -27041,14 +28207,174 @@ const CARD_M2_GF_DATE='1\u20132 \u0430\u0432\u0433 2026';
 const CARD_DUOS=[];
 
 const _M2P=CARD_M2_PLAYIN_RAW.map(m1Entry);
+/* M2_EU: открытая сессия 1 Ласт-Ченса, 2026-07-27 (окно S41_FNCSMajor2_LastChanceQualifier_EU, всего страниц 100; лобби того же Ласт-Ченса — 50 команд, они здесь не повторяются) */
+const CARD_M2_LCQ1_RAW=[
+[51,362,10,3,5.5,14.7,"Aevion wayqǃ","Woqz"],
+[52,362,9,3,5.44,12.33,"morlezǃ","Haste 26"],
+[53,362,8,2,9.25,10.63,"Kqrma","CLUE YUICE 21"],
+[54,362,9,1,6.56,13.44,"NTO Lickzsy","ikr 32"],
+[55,362,10,1,6.5,16.3,"redzfnr -ω-","enefy m4x -ω-"],
+[56,361,10,1,7.8,16.6,"Maloyache","AUR heror3h 89ǃ"],
+[57,361,9,0,10.56,14.44,"Cxshy","Maciak"],
+[58,359,10,3,5.4,17.5,"norya ays 1stǃ","SenQu"],
+[59,359,11,1,9.45,19.27,"masnǃ","Ziffy 73"],
+[60,359,10,1,6.2,16.2,"jaimeasdf ysh","snyps 10ǃ"],
+[61,358,10,2,8.4,20.8,"aegis sekayg0d","Ary"],
+[62,358,10,1,6.5,15.9,"SaNyaGoD","Kreg 逝"],
+[63,356,10,2,4.4,13.5,"LOEWE Zdynek","matil."],
+[64,356,11,0,4.18,16.64,"Theosfvǃ","Blommanǃ"],
+[65,355,10,2,12.3,17.1,"Tyy74","x6 soby ǃ"],
+[66,355,11,1,6.73,18.73,"vangucci fv 79","ASP Falex"],
+[67,355,10,1,3.8,16.3,"king solar亗","Lukas"],
+[68,355,11,0,3.91,17.91,"x27tim","AF 24."],
+[69,354,9,3,5.89,13,"topino quittino","ValeCP 30ǃ"],
+[70,354,11,2,8.73,19.27,"sunthementalist","EGO vy7"],
+[71,354,10,2,4.8,16,"Avox Rank 1","PDR lélé"],
+[72,353,10,2,6.1,17.3,"Seekk","Kenrop"],
+[73,353,11,1,9.45,22.82,"Aryan Jane","Kayd"],
+[74,353,11,1,8,18.91,"Ski","Crisbuca"],
+[75,352,11,3,6.45,19.45,"Klown","Gabix"],
+[76,352,11,2,4.55,18,"hydrox 10ǃ","ABZ FXBIOMAR 24ǃ"],
+[77,352,10,1,6.1,14.9,"gastro 8ǃ","Adasek Jr"],
+[78,351,10,1,11.2,18.6,"Xantify","Jurdy"],
+[79,351,9,1,8.44,14.89,"levakh","M8 сынvаnyak3ka"],
+[80,351,11,1,7.82,17.82,"Keuhki 10ǃ","Accepted it."],
+[81,351,9,1,6.22,11.67,"95V Chrisky 10ǃ","KoS snaip"],
+[82,350,10,2,7.4,19,"simple woopwoop.","Litr0L"],
+[83,350,11,2,3.45,20,"ZNN tarzy 7","zx navarroo"],
+[84,350,9,1,5.67,13.11,"G1T wolgun","dostepny 17ǃ"],
+[85,350,10,1,5.5,16.1,"pth Nic ダ","qerz"],
+[86,350,9,1,5.44,13.44,"X6 Magma","Mίdiаk ǃ"],
+[87,349,9,2,6.78,13.11,"louieblanc","Rigby"],
+[88,349,10,2,5.9,17.4,"maruke uch","Siren"],
+[89,349,10,1,9.4,16.9,"AmoZz","Vampi"],
+[90,348,10,3,3.7,16.3,"Camz亗","hx minx2x"],
+[91,348,11,2,6.91,20.73,"k0tyarich","Mappi"],
+[92,348,11,2,6.55,19.73,"Asc NixGOTY","Asc Fluxy 10ǃ"],
+[93,347,10,2,2.1,16.1,"rt kiwz ち","Gied 5ǃ"],
+[94,347,9,1,5.11,10.89,"Okram","Aegis Kijarssf"],
+[95,346,9,0,5.33,10.78,"Wooka Layk3k","R4C Punkt"],
+[96,345,9,2,6.11,16.78,"crazyfrogIY11","BNT perszing"],
+[97,345,10,1,4.6,15,"nevermeanttostay","Bena"],
+[98,344,9,3,3.44,11.89,"cursed flikss","Astrl Wissem"],
+[99,344,9,2,7.33,16,"Fεnom","borderg0d Mr UCL"],
+[100,344,11,1,5,19.91,"CDDDGG","fatal dniceÆæ"],
+[101,344,9,0,6.44,14,"kyrxÿ 798ǃ","reaceGOTY"],
+[102,343,10,2,8.7,24.6,"twitter kalofv74","Gtz janereis777"],
+[103,342,11,2,9.64,21.73,"John Cena 333666","evo pixie bää"],
+[104,342,9,1,10.33,16.67,"jayden","Atlantic Molle"],
+[105,342,11,1,4.82,18,"twtr vexdylan","Flickzy ʚɞ"],
+[106,342,11,1,3.91,18.18,"FataL senko","BABOS MAXNADA"],
+[107,342,10,0,6.6,15.7,"smoshybear","radde1st"],
+[108,341,10,1,2.6,16.8,"RT jxco jane.","FTL edoo1x"],
+[109,341,11,0,6.09,19.45,"Fly6n","LATTYMONEK"],
+[110,341,10,0,4.7,16.6,"RG22 Predagemon","Eddie ʚɞ"],
+[111,340,11,1,6.82,21.18,"Tisma","Plaazy"],
+[112,340,10,0,9,16.3,"Zaxi Jane","symbol of pіece"],
+[113,339,9,2,9,17.11,"Bayer4ik","f3kserǃ"],
+[114,339,10,2,6.7,18,"ldar 7","Tasfnr"],
+[115,339,11,1,4.18,18.36,"Hubx 85","zeti yshǃ"],
+[116,339,11,0,6.27,21.55,"kivoraga","paanixxÿ"],
+[117,339,10,0,4.9,15.2,"X6 linqish915","Juxzǃ"],
+[118,339,10,0,4.7,14.4,"monto 1721912ǃ","Poz1vsky"],
+[119,338,10,2,5.6,17.5,"denireyli 27","Capplyx"],
+[120,338,11,2,4.55,18.55,"fiotosoǃ","chitareyli"],
+[121,338,11,2,3.45,18.91,"92i chxrlyszn","MilassLeSaboteur"],
+[122,338,10,1,9.1,16.3,"piecek1ng BABA","W1N MostWantedǃ"],
+[123,338,11,1,6.64,19.09,"cehkukow","ARCLIGHT"],
+[124,338,10,1,5.7,16,"Ryzen","rt miumau"],
+[125,338,11,1,5,19.82,"King Bunker Ψ","øway ka1do"],
+[126,338,11,1,4.45,18.18,"yannis de playa","Esref Rüya."],
+[127,338,9,0,6.22,13.44,"lfc simg0dǃ","Algyz"],
+[128,337,11,2,3,20,"Hаshi","ptlzikǃ"],
+[129,337,11,1,8.18,20.27,"ryngo","Eque 7"],
+[130,337,10,1,6.2,15.8,"vace 7ǃ","Erty"],
+[131,337,11,1,4.91,19.09,"Venox in Lucka","F1 Krtko"],
+[132,337,10,1,4.6,16.1,"King Kirk28 ψ","Hao Ratanelli"],
+[133,337,10,1,4.2,15.3,"RG22 DSSǃ","Zevoksfvǃ"],
+[134,337,11,0,6.82,20,"zoom3rx 3 6 9","FuryLegendary"],
+[135,337,9,0,5.22,12.22,"User-1adaf69263","Aura donald"],
+[136,336,10,3,5.5,18.6,"Ronaldo187Gucci","Εmmy."],
+[137,336,11,2,7.45,21.91,"JAMMUHA611 ʕᵒᴥᵒʔ","Kapf3l6K"],
+[138,336,10,2,7.2,16.6,"Adrx","stefanicu 67"],
+[139,336,8,2,6,11.25,"SWT Samux7","iceleoǃ"],
+[140,336,10,2,4,14.1,"AVR pedrÿ","Clumpÿǃ 亗"],
+[141,336,9,1,5.89,13.11,"Azoxxxxxxxxxx","tamettutǃ"],
+[142,336,11,1,5.36,19.18,"moxeǃ","CraaxWRLD"],
+[143,336,10,1,4.1,14.6,"SAB Rocket","sab astro 7"],
+[144,336,10,0,3.4,15.4,"Rauldit 10","reboxinho 7ǃ"],
+[145,335,11,2,5.91,22.09,"astrix281","jso m ǃ"],
+[146,335,11,1,7.64,22.91,"falcon neobotǃ","sverre yaya"],
+[147,335,11,1,6,19.09,"leif7 fvǃ","GG.Snaisy3k"],
+[148,335,10,1,3.2,14.6,"kuіd","Ottxr 2527ǃ"],
+[149,335,9,0,1.89,9.44,"Kvara Prime7ǃ","Nuno Prime 7"],
+[150,334,11,2,4.36,19.18,"twtr Neyzoxfn6","Twitter DroyYz67"],
+[151,334,10,1,5.1,18.4,"alexfrǃ","Luxernǃ"],
+[152,334,10,0,4.8,15.6,"Wka kisk","Wka CTJMFTDHǃ"],
+[153,334,10,0,4.8,15.9,"WerrGOTYǃ","devil 321ǃ"],
+[154,334,11,0,2.91,17.18,"MV atuny yX","yX Bruce 亗"],
+[155,333,11,2,5.36,18.55,"EGY fvǃǃ","odibafodouro 19ǃ"],
+[156,333,11,2,4.82,20.36,"ns coldfv","Juikelii"],
+[157,333,10,1,10.2,19.5,"TGA Pablete 1stǃ","Actfv"],
+[158,333,10,1,7.4,18.3,"ASP vortec","Neyx"],
+[159,333,10,1,6.4,19.5,"Turtle","Yanni"],
+[160,333,9,1,6,12.89,"rt skiiii","enc lupxn"],
+[161,333,10,1,5.8,16.1,"OMP fabrizio 49","Xae"],
+[162,333,9,1,5.33,12.44,"Michi 10ǃ","Rekins"],
+[163,333,10,1,2.8,13.9,"Detect Steǃ","kyos bananaplǃt"],
+[164,333,9,0,5.67,12,"yellGOTy","Capitano kryx 27"],
+[165,333,11,0,5.36,17.45,"pth finnreyli 10","pqtǃ"],
+[166,333,9,0,3.22,12.33,"Mewanamal 10ǃ","kiira ǃ"],
+[167,332,10,1,10.5,19.2,"Pepe 2ǃ","aegis newkeiedx"],
+[168,332,11,1,7.55,20.45,"Kielba","ogryzek"],
+[169,332,10,1,6.7,15.3,"vendoxx","Borcek7"],
+[170,332,9,1,6.33,13.11,"Corey","vicc 1"],
+[171,332,11,1,4.82,19.45,"Lunar","karad1m"],
+[172,332,10,1,3.3,13.9,"FataL Sway Ψ","ld1 Бойерр"],
+[173,332,11,0,5.27,18.09,"Aquana","PTH PATRICE BABA"],
+[174,332,9,0,4.89,11.44,"ch1light","ivifom"],
+[175,332,11,0,3.45,18.09,"Merichkame 44","W1N igo crolix"],
+[176,331,11,1,7.82,19.09,"Spleez","Anden 10ǃ"],
+[177,331,9,1,7.33,13.33,"srt137mon","95V Crunkez"],
+[178,331,11,1,6.91,19.45,"nf rezpaaan 73ǃ","Tw1gzZzero0o"],
+[179,331,10,1,5.2,17.2,"Acr0HD yhyh","alpstigǃ"],
+[180,331,10,1,5,17.5,"BABOS FINNFN","Eclipse"],
+[181,331,11,1,4,18.45,"bruno 10ǃ","Vortrex 7"],
+[182,331,10,1,3.8,16.3,"Netslayerツ","Lillen 2ǃ"],
+[183,331,11,1,3.45,15.64,"malinagoty","TezzYʚɞ"],
+[184,330,11,3,5.55,19.91,"veloskiǃ","ESPLORAFIGHE 248"],
+[185,330,9,2,6.44,17.22,"Acidz","Misq"],
+[186,330,9,2,5.33,14.33,"RyetZzZǃ","DUX IY11"],
+[187,330,10,1,3.5,14.7,"jak0v 111","el julsshawn 亗"],
+[188,330,9,0,5.56,11.89,"polskiǃ","warpfnxxxxxxxxxx"],
+[189,329,11,3,3.45,21.55,"destyヤ","enc moonnǃ"],
+[190,329,11,2,4.82,19.73,"aimar z","lck dorian dvǃ"],
+[191,329,9,2,4.33,13.67,"clue myersǃ","pingüǃ"],
+[192,329,11,2,3.91,21.45,"JessePinkmanxz","Patiszonek23"],
+[193,329,10,2,3.7,16.7,"craekǃ","MrQuota"],
+[194,329,10,1,7.4,15.4,"Gold","Peshka"],
+[195,329,10,1,7,18.6,"Meltz","1p Coldr"],
+[196,329,10,1,6,18,"ave senseiǃ","lenny"],
+[197,329,10,1,5.8,18.1,"Mark McClarkey","syhx 10ǃ"],
+[198,329,11,1,4.36,19.09,"psycho 7.","SurvitDaMax"],
+[199,329,9,1,4.22,11.22,"sley x venox","venox x sley"],
+[200,329,9,1,3.78,13.56,"Sandi 874ǃ","mexroǃ"]
+];
+const M2_LCQ1_NAT={"1p Coldr":"gb","92i chxrlyszn":"fr","95V Chrisky 10ǃ":"it","95V Crunkez":"ua","ABZ FXBIOMAR 24ǃ":"pl","AF 24.":"gb","ARCLIGHT":"gr","AUR heror3h 89ǃ":"ru","AVR pedrÿ":"gb","Acidz":"gb","Acr0HD yhyh":"gb","Actfv":"gb","Adasek Jr":"pl","Adrx":"es","Aegis Kijarssf":"it","Aevion wayqǃ":"dk","Algyz":"gb","AmoZz":"de","Anden 10ǃ":"dk","Aquana":"de","Aryan Jane":"gb","Asc Fluxy 10ǃ":"fr","Asc NixGOTY":"fr","Atlantic Molle":"dk","Aura donald":"fr","Avox Rank 1":"fr","BABOS FINNFN":"de","BABOS MAXNADA":"de","BNT perszing":"pl","Bayer4ik":"ru","Bena":"it","Blommanǃ":"se","Borcek7":"si","CDDDGG":"ru","CLUE YUICE 21":"de","Camz亗":"om","Capitano kryx 27":"se","Capplyx":"cz","Clumpÿǃ 亗":"fr","Corey":"gb","CraaxWRLD":"pl","Crisbuca":"ro","Cxshy":"pl","DUX IY11":"gb","Detect Steǃ":"it","EGO vy7":"gb","EGY fvǃǃ":"gr","Eclipse":"gb","Eque 7":"de","Erty":"gb","Esref Rüya.":"de","FTL edoo1x":"it","FataL Sway Ψ":"it","FataL senko":"de","Flickzy ʚɞ":"gr","Fly6n":"pl","FuryLegendary":"ru","Fεnom":"pt","G1T wolgun":"pl","GG.Snaisy3k":"at","Gabix":"de","Gold":"ru","Gtz janereis777":"pt","Hao Ratanelli":"pt","Haste 26":"gb","Hubx 85":"pl","Hаshi":"se","JAMMUHA611 ʕᵒᴥᵒʔ":"gi","JessePinkmanxz":"pl","Juikelii":"fi","Jurdy":"nl","Juxzǃ":"se","Kapf3l6K":"ua","Kayd":"gb","Kenrop":"fr","Keuhki 10ǃ":"fi","Kielba":"pl","King Bunker Ψ":"gb","King Kirk28 ψ":"gb","Klown":"se","KoS snaip":"it","Kqrma":"de","Kreg 逝":"ru","Kvara Prime7ǃ":"fr","LATTYMONEK":"pl","LOEWE Zdynek":"pl","Lillen 2ǃ":"se","Litr0L":"dk","Lukas":"de","Lunar":"gr","Luxernǃ":"no","M8 сынvаnyak3ka":"by","MV atuny yX":"es","Maciak":"pl","Maloyache":"by","Mark McClarkey":"no","Meltz":"ie","Merichkame 44":"de","Mewanamal 10ǃ":"fr","Michi 10ǃ":"it","MilassLeSaboteur":"fr","Misq":"gb","MrQuota":"lt","Mίdiаk ǃ":"fr","NTO Lickzsy":"be","Netslayerツ":"se","Neyx":"de","Nuno Prime 7":"fr","OMP fabrizio 49":"it","Okram":"it","PDR lélé":"fr","PTH PATRICE BABA":"de","Patiszonek23":"pl","Pepe 2ǃ":"de","Plaazy":"fr","Poz1vsky":"ua","R4C Punkt":"fr","RG22 DSSǃ":"fr","RT jxco jane.":"it","Rauldit 10":"es","Rekins":"it","Rigby":"gb","RyetZzZǃ":"kr","Ryzen":"hu","SAB Rocket":"it","SWT Samux7":"it","SaNyaGoD":"ru","Sandi 874ǃ":"no","Seekk":"fr","SenQu":"pl","Ski":"gb","Spleez":"dk","SurvitDaMax":"gb","TGA Pablete 1stǃ":"es","Tasfnr":"nl","TezzYʚɞ":"pl","Theosfvǃ":"se","Turtle":"de","Tw1gzZzero0o":"pl","Twitter DroyYz67":"fr","User-1adaf69263":"fr","ValeCP 30ǃ":"it","Vampi":"de","Venox in Lucka":"cz","Vortrex 7":"cz","W1N MostWantedǃ":"de","W1N igo crolix":"de","WerrGOTYǃ":"it","Wka CTJMFTDHǃ":"fr","Wooka Layk3k":"fr","Woqz":"se","X6 Magma":"fr","X6 linqish915":"se","Xae":"it","Xantify":"nl","Yanni":"de","ZNN tarzy 7":"es","Zaxi Jane":"pl","Zevoksfvǃ":"fr","Ziffy 73":"nl","aegis sekayg0d":"pl","aimar z":"es","alexfrǃ":"no","alpstigǃ":"se","astrix281":"gb","ave senseiǃ":"de","borderg0d Mr UCL":"pt","bruno 10ǃ":"sk","cehkukow":"fi","ch1light":"ru","chitareyli":"pt","clue myersǃ":"at","craekǃ":"gb","cursed flikss":"fr","denireyli 27":"cz","destyヤ":"it","devil 321ǃ":"it","dostepny 17ǃ":"pl","el julsshawn 亗":"at","enc lupxn":"it","enc moonnǃ":"it","enefy m4x -ω-":"de","evo pixie bää":"gb","f3kserǃ":"it","falcon neobotǃ":"gb","fiotosoǃ":"pt","gastro 8ǃ":"pl","hx minx2x":"gb","hydrox 10ǃ":"no","iceleoǃ":"it","ikr 32":"be","ivifom":"by","jak0v 111":"hr","jayden":"gb","jso m ǃ":"hu","k0tyarich":"ua","karad1m":"gr","kiira ǃ":"fr","kivoraga":"de","kyos bananaplǃt":"it","kyrxÿ 798ǃ":"gb","lck dorian dvǃ":"es","ld1 Бойерр":"it","ldar 7":"gb","leif7 fvǃ":"de","lenny":"de","levakh":"ru","lfc simg0dǃ":"pl","louieblanc":"gb","malinagoty":"pl","maruke uch":"ma","masnǃ":"se","matil.":"pl","mexroǃ":"no","monto 1721912ǃ":"ua","morlezǃ":"es","moxeǃ":"pl","nevermeanttostay":"se","nf rezpaaan 73ǃ":"pl","norya ays 1stǃ":"pl","odibafodouro 19ǃ":"gr","ogryzek":"pl","paanixxÿ":"us","piecek1ng BABA":"de","pingüǃ":"de","polskiǃ":"mh","pqtǃ":"de","psycho 7.":"tn","pth Nic ダ":"de","pth finnreyli 10":"de","ptlzikǃ":"ua","qerz":"de","radde1st":"se","reaceGOTY":"gb","reboxinho 7ǃ":"es","rt kiwz ち":"it","rt miumau":"fi","ryngo":"de","sab astro 7":"it","simple woopwoop.":"dk","sley x venox":"fr","smoshybear":"gb","snyps 10ǃ":"de","srt137mon":"ru","stefanicu 67":"es","sunthementalist":"gb","syhx 10ǃ":"no","symbol of pіece":"gb","topino quittino":"it","twitter kalofv74":"pt","twtr Neyzoxfn6":"fr","twtr vexdylan":"gb","vace 7ǃ":"de","vangucci fv 79":"gb","veloskiǃ":"se","vendoxx":"gb","vicc 1":"de","warpfnxxxxxxxxxx":"gb","x27tim":"de","x6 soby ǃ":"be","yX Bruce 亗":"es","yannis de playa":"fr","yellGOTy":"de","zeti yshǃ":"pl","zoom3rx 3 6 9":"by","zx navarroo":"es","øway ka1do":"gb"};
+const CARD_M2_LCQ1_EVENT="FNCS 2026 Major 2 — Last Chance Qualifier Session 1 (Europe)";
+const CARD_M2_LCQ1_DATE="27 июл 2026";
 const _M2L=CARD_M2_LCQ_RAW.map(m1Entry);
+const _M2L1=CARD_M2_LCQ1_RAW.map(m1Entry);
 const _M2G=CARD_M2_GF_RAW.map(m1Entry);
 _S.m2p=mkSorts(_M2P);
 _S.m2l=mkSorts(_M2L);
+_S.m2l1=mkSorts(_M2L1);
 _S.m2g=mkSorts(_M2G);
 
 const m2PlayinBase = r => REGION_TOP.EU - ((r-1)/Math.max(_M2P.length-1,1))*(REGION_TOP.EU-62);
-const m2LcqBase    = r => 62 - ((r-1)/Math.max(_M2L.length-1,1))*14;
+const m2LcqLen  = () => _M2L.length + _M2L1.length;
+const m2LcqBase    = r => 62 - ((r-1)/Math.max(m2LcqLen()-1,1))*14;
+const m2Lcq1Base   = r => 62 - ((_M2L.length+r-1)/Math.max(m2LcqLen()-1,1))*14;
 const m2GfBase     = r => REGION_TOP.EU - ((r-1)/Math.max(_M2G.length-1,1))*(REGION_TOP.EU-70);
 
 (function buildMajor2EU(){
@@ -27059,7 +28385,7 @@ const m2GfBase     = r => REGION_TOP.EU - ((r-1)/Math.max(_M2G.length-1,1))*(REG
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(base(entry.rank), 30, 99));
-      const code = M2_NAT_LIQUI[nm] || M2_NAT_TRN[nm] || '';
+      const code = M2_NAT_LIQUI[nm] || M2_NAT_TRN[nm] || M2_LCQ1_NAT[nm] || '';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource: M2_NAT_LIQUI[nm] ? 'liquipedia' : 'tracker',
@@ -27075,6 +28401,7 @@ const m2GfBase     = r => REGION_TOP.EU - ((r-1)/Math.max(_M2G.length-1,1))*(REG
   };
   _M2P.forEach(e=>{ TEAMMATE_GROUPS.push(e.duo.slice()); add(e, CARD_M2_PLAYIN_EVENT, CARD_M2_PLAYIN_DATE, m2PlayinBase, 'Playin'); });
   _M2L.forEach(e=>add(e, CARD_M2_LCQ_EVENT, CARD_M2_LCQ_DATE, m2LcqBase, 'Lcq'));
+  _M2L1.forEach(e=>add(e, CARD_M2_LCQ1_EVENT, CARD_M2_LCQ1_DATE, m2Lcq1Base, 'Lcq1'));
   _M2G.forEach(e=>add(e, CARD_M2_GF_EVENT, CARD_M2_GF_DATE, m2GfBase, 'Gf'));
 
   const byName={};
@@ -27382,15 +28709,175 @@ const CARD_N2_LCQ_EVENT='FNCS 2026 Major 2 — Last Chance Qualifier (NA Central
 const CARD_N2_GF_EVENT='FNCS 2026 Major 2 — Grand Finals (NA Central)';
 
 const _N2P=CARD_N2_PLAYIN_RAW.map(m1Entry);
+/* M2_NAC: открытая сессия 1 Ласт-Ченса, 2026-07-27 (окно S41_FNCSMajor2_LastChanceQualifier_NAC, всего страниц 100; лобби того же Ласт-Ченса — 50 команд, они здесь не повторяются) */
+const CARD_N2_LCQ1_RAW=[
+[51,344,11,1,8.82,21.64,"Status","pluzzyfvǃ"],
+[52,344,11,1,7.36,18.09,"jefe weemsfv","Zaris"],
+[53,344,8,1,6.12,8.88,"Zusto","prl rey 7ǃ"],
+[54,343,11,1,7.82,20.36,"Wagers","Doxey"],
+[55,342,7,3,11,14.29,"cnxǃ","yоra"],
+[56,342,11,2,7.64,19.91,"7cozmo","Champo"],
+[57,342,10,1,5.1,14.5,"Polobcool.","Stage 5 Cancer."],
+[58,342,8,0,8,10,"Carbone","Highr"],
+[59,340,9,2,4.44,15.44,"B1g_Sh0t76","M8 Vergо 10ǃ"],
+[60,338,9,2,6.89,13.67,"dzd vosh 15","Yan"],
+[61,338,11,2,5.82,17.18,"312 kaje","retired tier 7"],
+[62,338,10,1,5.9,19.6,"1click","i dont cheatﾠﾠ"],
+[63,338,10,0,7,19,"locked up walter","Weeze"],
+[64,338,10,0,4.8,16.2,"matt","2014DolphZiggler"],
+[65,337,11,1,9.27,21.09,"1xǃ","twitter hazefv7"],
+[66,337,11,1,6,21,"Nick","7VEN Yawnǃ"],
+[67,337,11,1,3.82,18.64,"axl3768ǃ","Rubby"],
+[68,336,10,1,10.3,17.7,"jeze 309","Vibez Juh"],
+[69,336,11,1,8.82,22.27,"Unrealiana","Echo"],
+[70,336,11,1,6.27,16.36,"Evanescent文","busy"],
+[71,335,11,1,5.64,18,"crocfv","haliboozus 17"],
+[72,335,10,0,6.7,16.9,"Throlz","Kenny セ"],
+[73,334,10,1,5.5,16.1,"Stroud","Allure"],
+[74,334,10,0,3.6,14.1,"Asap no Rockyǃ","Angelzrr"],
+[75,333,9,2,6.78,13.56,"Voltz","LuLu"],
+[76,333,9,1,6,14.22,"tenyа","proхy 19"],
+[77,333,11,1,5.09,20.55,"Twitch Elsafn","TJ Who Cares"],
+[78,333,10,1,4.2,16.2,"slip","Kris"],
+[79,332,10,3,6.7,20,"Sxkezǃ","oni void 11"],
+[80,332,9,1,7.89,15.22,"scrt jit 81","kyrie jit"],
+[81,332,11,1,7.18,20.18,"Amplify","Lorzizs"],
+[82,332,10,1,4.7,15.8,"Scripted","roland"],
+[83,330,11,2,5.64,19.55,"Sapphire7ǃ","hullofan14"],
+[84,330,11,2,4.55,20,"Mikebotǃ","Daejon Love fanǃ"],
+[85,330,11,1,6.45,20.73,"clehver","essthagoat"],
+[86,330,10,0,2.2,15.5,"egy xarhexok","gc zykoǃ"],
+[87,329,10,1,6.4,16.8,"xylo 13ǃ","t2g r5ǃ"],
+[88,329,9,1,4,12.22,"xo","vertify 15"],
+[89,329,11,0,7,20.82,"DIG Aden.","xa swift"],
+[90,329,10,0,5.3,16.4,"wickfpsx","s7 criptic"],
+[91,328,8,1,4.62,11.25,"Dazed Sonder","Marzz"],
+[92,328,10,0,9,17.5,"Deyy","Passion 米"],
+[93,327,9,2,5,13.33,"Shores1x","Myrek"],
+[94,327,11,2,3.36,19.64,"dzd mushy","Trollz"],
+[95,327,10,1,4.2,15.8,"Cryptic3x","Squeakzy"],
+[96,327,10,0,5.7,16.1,"twitter cactiwyd","clxut"],
+[97,326,11,4,5.45,24.82,"WALK BABA","User-eb23a52223"],
+[98,326,11,2,6.18,20.18,"Hawk","lie 5"],
+[99,326,11,1,9,21.36,"oreoraga","Rogue"],
+[100,326,11,1,8.64,21.82,"Boogy","Pres"],
+[101,326,11,0,4.55,17.82,"ChroniccaX","auraking zerofv"],
+[102,325,10,2,4.3,19.7,"too piecey","Twitch Smoxzzy"],
+[103,325,10,1,3.2,14.5,"Twitter Brnd7n","prime chrxme"],
+[104,325,11,0,9.18,21.73,"twtr raikuwyd","Syn"],
+[105,325,10,0,7.3,16.3,"strez","Gal"],
+[106,325,10,0,6.5,17.4,"fluち","tomato 6ǃ"],
+[107,324,10,2,9.4,19.8,"Aimfv","PureBx"],
+[108,324,10,1,3.7,16.9,"pralyse","luxfnw 23ǃ"],
+[109,323,10,2,4.7,18.1,"Zeus","Tonyfv"],
+[110,323,11,1,6.36,19.27,"mcdo chaque jour","Nekyzs"],
+[111,323,9,1,5.33,14.56,"dimzy","Piece Demon."],
+[112,323,11,1,3.45,20.27,"TWITCH CEOPLUGTV","Mfv 1v1 Map"],
+[113,323,9,0,3.89,13.33,"Stonefvv","wolfvv"],
+[114,322,9,2,7.56,16.33,"Sleaze","gxvin"],
+[115,322,10,1,4.9,18.3,"mattranks.","Vazforceː0"],
+[116,322,11,1,4.64,19.36,"coxfvǃ","ehmjax"],
+[117,321,11,1,5.64,18.45,"skeptuh","jinxZzero0"],
+[118,321,11,1,5.64,19.55,"Degen","kasz 7"],
+[119,321,9,1,4.22,15.67,"Twitch GodLurk7","Jôper"],
+[120,321,9,1,3.78,13.33,"Safest","spazzxyz"],
+[121,321,11,1,3.09,18.64,"minka sbǃ","yung 669"],
+[122,320,11,2,6,18.82,"Riot","Braiby"],
+[123,320,11,2,4.18,20.36,"avery choom","landoh1x"],
+[124,320,11,2,2.91,20.36,"syn omega","twtr poskii1x"],
+[125,320,11,1,3.18,18.64,"twtr wydwix","avert 12.25.24"],
+[126,319,10,3,2.2,17.9,"Reboundz 67","vin lukiebearǃ"],
+[127,319,10,2,6.1,18,"iwnlǃ","Raven"],
+[128,319,11,1,5.27,20.82,"Aerctix","faallenǃ"],
+[129,319,11,1,4.91,18.18,"Scrabble","SparX"],
+[130,319,10,1,3.4,18.7,"flixlols","ozy"],
+[131,319,11,0,3.73,17.55,"reko ǃ","AURA cyrox 7"],
+[132,319,10,0,2.9,14.7,"spankywyd","Isay lvs mari"],
+[133,319,11,0,2.09,19.91,"DrakeSZN","gamingwarrior196"],
+[134,318,11,1,9,19.64,"rxlphy","Jerry"],
+[135,318,11,1,8.27,23.18,"scubuch17","weemsbtww"],
+[136,318,9,1,4.11,14.11,"ᴿᴳᴿ ANDYBALA.","1px Skyz ム"],
+[137,318,11,1,3.73,17.73,"LeQuartzMAX","Twitch Fluid1ko"],
+[138,318,11,0,3.45,17.55,"fear3k-","crystal5x"],
+[139,317,9,2,3.67,14.56,"Flyso_On_45_Ping","daeychino"],
+[140,317,11,2,3.18,19.45,"rаfi 13","psr pigeon jit1"],
+[141,317,10,1,4.4,16,"Musky","Kingston"],
+[142,317,11,1,3.09,20.18,"rt tidee 7","agent"],
+[143,317,9,1,2.89,13.11,"Paaragon","twitter douldss"],
+[144,317,11,0,7,21.09,"M8 Winner","AURAKINGG Bäää"],
+[145,317,10,0,6.5,15.2,"DZD Ryxxi","chrisbotǃ"],
+[146,316,8,2,3,10.75,"before im gone","Banx"],
+[147,316,11,1,7.73,21.55,"slixx ap","slamdunk 23ǃ"],
+[148,316,11,1,6.27,23.36,"eulogy","Stiffaroonie"],
+[149,316,11,1,3.91,18.91,"La fairs","Chiaǃ"],
+[150,316,9,1,3.67,15.11,"Ephesians","ǃreezerZ NON RCF"],
+[151,316,11,0,6.18,21.64,"Tobs1.","KEZEMON"],
+[152,315,10,2,4.9,18.3,"Chaos","slipzz"],
+[153,315,9,2,4.11,13.33,"Tiktok jjjam115","Juulsie."],
+[154,315,10,1,6.8,19.1,"hadi","Noiz"],
+[155,315,11,1,6.18,21.36,"Jxsh","Firenz"],
+[156,315,9,1,4,13.22,"Fearzyǃ","fuji 413"],
+[157,315,9,1,3.78,14.44,"MadaKataǃ","milk1xer"],
+[158,315,10,0,3.1,15.7,"otter 281ǃ","Cosmic 1ǃ"],
+[159,314,10,2,3.6,18.4,"BGT Trick","Twitch bizerx7"],
+[160,314,10,2,3.2,16.9,"khaosbotǃ","DISRESPECTED DRE"],
+[161,314,9,1,6.33,15.22,"Jeepǃ","bluff gtfo"],
+[162,314,9,1,5.67,14.67,"mattius281","Alex"],
+[163,314,10,1,3.3,16.1,"DIZHONPRIME77 XP","Schwiǃǃ"],
+[164,314,10,1,2.9,17.3,"mistake 11ǃ","kraken"],
+[165,314,10,0,4.6,13.6,"saudra 8","ttv.russianlogic"],
+[166,314,10,0,2.6,16.3,"Chudd.4life","Nootake 200X"],
+[167,314,10,0,2.4,15.8,"razztfupǃ","Ghxst 999"],
+[168,313,8,2,5.88,13.38,"footy","enriqueǃ"],
+[169,313,11,1,8,22.09,"WAMBOWAMBOWAMBOW","Bxltzrr"],
+[170,313,11,1,7.64,20,"Cale","flish"],
+[171,313,10,0,5.3,15,"413NOT4321","Vendetta hate YN"],
+[172,313,11,0,3.73,21,"Voidiana","Fhay"],
+[173,313,10,0,2.7,16,"hippofragger23","dogo jane"],
+[174,312,11,0,5.82,20.64,"ysl kur","2024 Juiceefv"],
+[175,312,8,0,3.5,9.75,"hi im cј","vsl mur 19"],
+[176,312,9,0,3.33,14.33,"aimshrk","Twitch Tappzfv"],
+[177,312,10,0,2.6,14,"Water washtt me","i like my jetski"],
+[178,312,10,0,1.8,15,"Pfluger.","Screen"],
+[179,311,11,2,3.91,17.73,"Apy on my wrist","Autizc_1025"],
+[180,311,8,1,6.5,12.75,"swexey 5","Omeezy 6"],
+[181,311,10,1,5.8,18.5,"аpрlё","Vаguestǃ"],
+[182,311,10,1,4.4,18.4,"bluish 155 6.21","Exist"],
+[183,311,11,1,3.82,22,"ali zequinha","Tony Manker"],
+[184,310,10,2,4.6,17.6,"ATP Txrms","ATP SHEP"],
+[185,310,10,2,4.4,19.5,"root 82","remz 16"],
+[186,310,11,1,7.73,24.82,"Dan","Neemo"],
+[187,310,9,1,7,14.78,"mtrx rises","vediits"],
+[188,310,7,1,6.43,8.57,"Wrecklеss","cappzie."],
+[189,310,11,1,4.27,17.45,"Tiktok B1ionic","tca abuuropǃǃ"],
+[190,310,10,1,4.1,17.5,"KillAǃ","EGY RaMǃ"],
+[191,310,11,1,3.55,21.64,"SOLO MADEǃ","S p i r o d o n"],
+[192,310,11,1,2.09,20.55,"kash1kx","StickyTip911"],
+[193,310,10,0,7,15.1,"Jahreyli 10ǃ","Born Bot"],
+[194,310,10,0,5.4,16.4,"cyrz 30ǃ","doxaǃ"],
+[195,309,10,1,5,18.5,"the big twin","BussLightyear42"],
+[196,309,10,1,4.4,17.5,"tiwako","arm letaaaaaaaa"],
+[197,309,11,1,2,16.73,"So1lv","Prime jewgha ψ"],
+[198,309,11,0,7,18,"twitch typ1call","twitch peyyyszn"],
+[199,309,8,0,4.12,12.63,"CadeLin Clarkǃ","Jackyfv jit1"],
+[200,308,11,2,7.27,23.36,"keron","Cents"]
+];
+const N2_LCQ1_NAT={"1click":"us","1px Skyz ム":"mx","1xǃ":"ar","2014DolphZiggler":"us","2024 Juiceefv":"us","413NOT4321":"us","7VEN Yawnǃ":"us","7cozmo":"us","ATP SHEP":"us","ATP Txrms":"us","Aerctix":"nl","Aimfv":"us","Alex":"us","Allure":"us","Amplify":"us","Angelzrr":"ni","Apy on my wrist":"ca","Autizc_1025":"pr","B1g_Sh0t76":"us","BGT Trick":"us","Banx":"us","Boogy":"tr","Braiby":"us","BussLightyear42":"us","Bxltzrr":"us","CadeLin Clarkǃ":"us","Carbone":"ca","Cents":"ae","ChroniccaX":"us","Chudd.4life":"us","Cosmic 1ǃ":"ca","DIZHONPRIME77 XP":"mx","DZD Ryxxi":"pr","Dan":"iq","Doxey":"us","DrakeSZN":"gb","EGY RaMǃ":"us","Echo":"ve","Ephesians":"us","Evanescent文":"us","Exist":"us","Fearzyǃ":"us","Fhay":"us","Firenz":"us","Flyso_On_45_Ping":"us","Gal":"np","Hawk":"us","Isay lvs mari":"mx","Jackyfv jit1":"us","Jahreyli 10ǃ":"us","Jeepǃ":"us","Jerry":"us","Juulsie.":"us","Jxsh":"us","KEZEMON":"jm","Kenny セ":"pr","KillAǃ":"us","Kingston":"us","Kris":"qa","La fairs":"us","Lorzizs":"hr","MadaKataǃ":"ca","Mikebotǃ":"us","Musky":"us","Myrek":"us","Neemo":"us","Nekyzs":"ca","Nick":"us","Noiz":"us","Omeezy 6":"us","Paaragon":"pa","Pfluger.":"us","Polobcool.":"us","Pres":"us","PureBx":"us","Raven":"us","Reboundz 67":"us","Riot":"mx","Rogue":"us","Rubby":"us","S p i r o d o n":"us","SOLO MADEǃ":"th","Safest":"us","Sapphire7ǃ":"us","Scrabble":"us","Screen":"us","Scripted":"us","Shores1x":"us","Sleaze":"ca","SparX":"us","Squeakzy":"pa","Stage 5 Cancer.":"us","Status":"us","StickyTip911":"bz","Stiffaroonie":"us","Stonefvv":"ca","Stroud":"us","Sxkezǃ":"ca","Syn":"fj","TJ Who Cares":"us","Throlz":"kh","Tiktok B1ionic":"mx","Tiktok jjjam115":"tg","Tobs1.":"ar","Tonyfv":"mx","Twitch Elsafn":"us","Twitch Fluid1ko":"us","Twitch Smoxzzy":"us","Twitch Tappzfv":"us","Twitch bizerx7":"us","Twitter Brnd7n":"us","Vazforceː0":"us","Voidiana":"pr","Voltz":"us","Vаguestǃ":"mx","Wagers":"us","Water washtt me":"us","Wrecklеss":"us","Zaris":"pr","Zeus":"mx","Zusto":"mx","agent":"us","aimshrk":"us","arm letaaaaaaaa":"mx","auraking zerofv":"us","avert 12.25.24":"na","avery choom":"us","axl3768ǃ":"ca","before im gone":"de","bluff gtfo":"us","bluish 155 6.21":"us","busy":"ni","cappzie.":"us","clehver":"us","clxut":"ao","coxfvǃ":"us","crocfv":"us","daeychino":"us","dimzy":"us","dogo jane":"hn","dzd mushy":"th","dzd vosh 15":"us","egy xarhexok":"pr","ehmjax":"us","enriqueǃ":"kr","essthagoat":"kr","eulogy":"ca","faallenǃ":"us","flish":"ca","fluち":"us","footy":"gb","fuji 413":"us","gamingwarrior196":"us","gc zykoǃ":"us","hadi":"ca","hi im cј":"us","hippofragger23":"hn","i like my jetski":"us","iwnlǃ":"us","jeze 309":"mx","jinxZzero0":"fi","kasz 7":"ve","keron":"tt","khaosbotǃ":"us","kyrie jit":"ca","landoh1x":"us","luxfnw 23ǃ":"mx","matt":"sv","mattius281":"ro","mattranks.":"us","mcdo chaque jour":"ca","minka sbǃ":"us","mistake 11ǃ":"us","mtrx rises":"um","oni void 11":"us","otter 281ǃ":"us","ozy":"us","pluzzyfvǃ":"ca","pralyse":"mx","prime chrxme":"us","prl rey 7ǃ":"us","proхy 19":"us","razztfupǃ":"us","reko ǃ":"mx","remz 16":"us","retired tier 7":"us","root 82":"by","rt tidee 7":"ca","rxlphy":"us","rаfi 13":"bl","saudra 8":"us","scrt jit 81":"us","scubuch17":"ua","skeptuh":"us","slamdunk 23ǃ":"us","slip":"us","slipzz":"ca","spazzxyz":"us","strez":"us","swexey 5":"ca","syn omega":"in","t2g r5ǃ":"ca","tenyа":"ca","the big twin":"us","tiwako":"pe","ttv.russianlogic":"ru","twitch typ1call":"us","twitter cactiwyd":"us","twitter douldss":"pr","twtr poskii1x":"sk","twtr raikuwyd":"us","twtr wydwix":"us","vediits":"us","vertify 15":"us","vin lukiebearǃ":"kz","wickfpsx":"us","wolfvv":"us","xa swift":"us","ysl kur":"us","yung 669":"us","yоra":"ca","аpрlё":"mx","ᴿᴳᴿ ANDYBALA.":"mx"};
+const CARD_N2_LCQ1_EVENT="FNCS 2026 Major 2 — Last Chance Qualifier Session 1 (NA Central)";
+const CARD_N2_LCQ1_DATE="27 июл 2026";
 const _N2L=CARD_N2_LCQ_RAW.map(m1Entry);
+const _N2L1=CARD_N2_LCQ1_RAW.map(m1Entry);
 const _N2G=CARD_N2_GF_RAW.map(m1Entry);
 _S.n2p=mkSorts(_N2P);
 _S.n2l=mkSorts(_N2L);
+_S.n2l1=mkSorts(_N2L1);
 _S.n2g=mkSorts(_N2G);
 
 // NA Central is as deep a region as Europe, so it gets the same rating bands.
 const n2PlayinBase = r => REGION_TOP.NAC - ((r-1)/Math.max(_N2P.length-1,1))*(REGION_TOP.NAC-62);
-const n2LcqBase    = r => 62 - ((r-1)/Math.max(_N2L.length-1,1))*14;
+const n2LcqLen  = () => _N2L.length + _N2L1.length;
+const n2LcqBase    = r => 62 - ((r-1)/Math.max(n2LcqLen()-1,1))*14;
+const n2Lcq1Base   = r => 62 - ((_N2L.length+r-1)/Math.max(n2LcqLen()-1,1))*14;
 const n2GfBase     = r => REGION_TOP.NAC - ((r-1)/Math.max(_N2G.length-1,1))*(REGION_TOP.NAC-70);
 
 (function buildMajor2NAC(){
@@ -27401,7 +28888,7 @@ const n2GfBase     = r => REGION_TOP.NAC - ((r-1)/Math.max(_N2G.length-1,1))*(RE
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(base(entry.rank), 30, 99));
-      const code = N2_NAT_LIQUI[nm] || N2_NAT_TRN[nm] || '';
+      const code = N2_NAT_LIQUI[nm] || N2_NAT_TRN[nm] || N2_LCQ1_NAT[nm] || '';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource: N2_NAT_LIQUI[nm] ? 'liquipedia' : 'tracker',
@@ -27418,6 +28905,7 @@ const n2GfBase     = r => REGION_TOP.NAC - ((r-1)/Math.max(_N2G.length-1,1))*(RE
   };
   _N2P.forEach(e=>{ TEAMMATE_GROUPS.push(e.duo.slice()); add(e, CARD_N2_PLAYIN_EVENT, CARD_M2_PLAYIN_DATE, n2PlayinBase, 'Playin'); });
   _N2L.forEach(e=>add(e, CARD_N2_LCQ_EVENT, CARD_M2_LCQ_DATE, n2LcqBase, 'Lcq'));
+  _N2L1.forEach(e=>add(e, CARD_N2_LCQ1_EVENT, CARD_N2_LCQ1_DATE, n2Lcq1Base, 'Lcq1'));
   _N2G.forEach(e=>add(e, CARD_N2_GF_EVENT, CARD_M2_GF_DATE, n2GfBase, 'Gf'));
 
   const byName={};
@@ -27725,15 +29213,175 @@ const CARD_W2_LCQ_EVENT='FNCS 2026 Major 2 — Last Chance Qualifier (NA West)';
 const CARD_W2_GF_EVENT='FNCS 2026 Major 2 — Grand Finals (NA West)';
 
 const _W2P=CARD_W2_PLAYIN_RAW.map(m1Entry);
+/* M2_NAW: открытая сессия 1 Ласт-Ченса, 2026-07-28 (окно S41_FNCSMajor2_LastChanceQualifier_NAW, всего страниц 32; лобби того же Ласт-Ченса — 50 команд, они здесь не повторяются) */
+const CARD_W2_LCQ1_RAW=[
+[51,313,11,3,4.91,21.09,"PrimoDeFausto","Souzyy"],
+[52,313,8,1,4.5,11.13,"jxsryy","snipez"],
+[53,312,11,1,5,20.36,"Vxrgeǃ","omarsito fvǃ"],
+[54,311,9,0,5.67,16.11,"Rex","S4NT1v"],
+[55,310,8,1,4.88,10.75,"Yuma","Rapi"],
+[56,310,11,1,2.82,19.18,"zapzGetEM ǃ","mirked"],
+[57,309,10,1,3,16.2,"Twitter ReczoFn","Oaks adebayo"],
+[58,309,10,1,2.8,18.6,"WittytheKitty69","flugame clxmatic"],
+[59,304,11,2,4.36,20.91,"Dictator Mixxr","OFFICIAL G0D"],
+[60,304,9,0,5.78,14.33,"Supernal.","seal 7"],
+[61,303,10,1,6.2,20.1,"xxfv","Fern"],
+[62,302,11,2,5.45,23.27,"Ѕhallo","pxmp5x"],
+[63,301,11,1,4.18,20,"shrehx","zro 11ǃ"],
+[64,299,10,1,3.6,19.1,"Kadvn","TANKSLAM"],
+[65,299,11,0,3.91,18.36,"BananaApple fvǃ","Triхd"],
+[66,298,8,1,4.38,11.38,"Kerzuh`","dwavyrex13"],
+[67,298,11,1,4.27,22.91,"twitch uxsif","nvKu"],
+[68,298,10,1,3.9,16.1,"Cloudyy","jennierubyjaneǃ"],
+[69,298,9,0,2.67,13.44,"Donkeyfv.ǃ","javierfvǃ"],
+[70,297,11,1,4.73,20.91,"nozzybot","Spqm."],
+[71,297,10,1,4.4,19,"Cofts","Yasir"],
+[72,297,9,0,1.89,14.22,"ttv sinnslol","twis usxr 11ǃ"],
+[73,295,11,1,3.27,23.18,"damfvǃ","Hawk75424242ǃ"],
+[74,295,11,0,6.27,21.55,"twitch lyrikwya","bullyslayrr"],
+[75,295,10,0,2.9,15.9,"Lizzos GLP1","Adrie."],
+[76,295,9,0,2.33,13.22,"qte kvor.","kraztㅤ"],
+[77,294,11,1,4.45,23.36,"りーむたりむたりーむたりむた","just danceǃ"],
+[78,294,11,1,3.18,19.82,"kуtix 11ǃ","Splated"],
+[79,293,9,2,4.33,15.11,"dignitas shot445","skix"],
+[80,293,10,1,3.6,18,"sigmacool03","202 parzZzero0"],
+[81,292,11,2,2.18,19.27,"Mustaine","Ikrr"],
+[82,292,9,0,3.78,16.89,"larsofv","sfg fatal"],
+[83,291,9,1,2.89,15.33,"joorchzxzxzx","rhx hattori 1ǃ"],
+[84,291,11,0,7.18,22.09,"james israel IV","Sunder"],
+[85,291,11,0,3,19.27,"Poshern","Yuvi_Cookie"],
+[86,289,9,2,5.89,16.22,"denvarǃ","purple"],
+[87,289,11,1,3.64,21.45,"Zutano","Bizzie"],
+[88,289,10,1,2.4,17.3,"Otazy","shark"],
+[89,289,8,0,3.38,12.5,"cold","Jﱞordan"],
+[90,288,11,1,4.09,18.73,"flixx 203","powersǃ"],
+[91,288,10,1,2.7,16,"qvs 24ǃ","chase"],
+[92,288,11,1,2.45,19.64,"YaoTim","chewiee bääǃ"],
+[93,288,10,0,6.6,21,"prime gattouz0ǃ","biyloх"],
+[94,288,10,0,4.8,19.5,"waschsalоn","Friskies42"],
+[95,287,10,1,8.2,19.5,"Bobjrfv","lionel xourtle"],
+[96,287,11,1,2.36,20.82,"1PX Axelinkǃ","POLARDEME"],
+[97,287,11,0,4.64,19.18,"instalock cloveǃ","distant xzǃ"],
+[98,287,10,0,3.5,17.4,"pickleftw.","zzz33ǃ"],
+[99,286,9,1,5.67,16.56,"dig ark2x","Lacy"],
+[100,286,8,1,3.88,11.25,"EGO kikifvǃ","twitch rohanfvǃ"],
+[101,286,10,1,2.3,17.7,"Avinǃ","naw RARE"],
+[102,286,9,0,4.44,16.33,"NobleD1x","VIN ϟNip"],
+[103,285,9,0,3.22,13.22,"onlinefrankie","Controllerₐ"],
+[104,285,11,0,3,20.18,"DC royceǃ","LaEnchulada"],
+[105,284,10,1,3.3,17.3,"Shah","Cristiano Knaldo"],
+[106,284,11,0,2.91,18.91,"Dexterび","Snacksfv"],
+[107,283,9,2,2.56,15,"Resypical","Mac"],
+[108,283,11,1,5.27,24,"Skybot","Anik"],
+[109,282,10,0,5.8,19.8,"clodǃ","SteezyZﾠ"],
+[110,282,11,0,1.64,21.73,"Hex 9-5","jxnasbcǃ"],
+[111,281,10,0,6.1,19.4,"blizzy 505","tracktorǃ"],
+[112,280,10,1,5.1,20.2,"1 2 coming 4 you","turtle xz"],
+[113,280,10,1,3.3,17.8,"KS22 dax","sorin peeker 17ǃ"],
+[114,280,10,0,3,18,"kzfv","NoAimNoMechsfv"],
+[115,280,10,0,3,18.4,"EL sqeak piece9ǃ","Mo Bambaム"],
+[116,279,10,3,4.6,21.6,"twentyoneeǃ","Kazugoo"],
+[117,279,10,1,3.2,17.2,"cero calories","aeirsuit ʚɞ"],
+[118,278,10,2,5.2,17.9,"BbossFN","Mint1x"],
+[119,278,9,1,4.11,17.78,"sfg greyǃ","TRON SERVICES Ӝ."],
+[120,278,11,1,3.55,20.18,"twitter xinvvs","Kika"],
+[121,278,11,1,3.36,22.27,"ify 26","Alех ."],
+[122,278,8,1,2.88,13.88,"buzz core","dre imri"],
+[123,278,10,0,4.2,18.5,"shrimpzybcǃ","Digital"],
+[124,278,11,0,1.27,19.82,"シDemiシ","ranger danger."],
+[125,277,9,1,6.67,16.67,"Swxfter","azazelǃ"],
+[126,277,10,1,3,18.6,"6 En1gma 7ǃ","CesarFN"],
+[127,277,9,0,1.89,15,"Zominiğer","EVD lxrk 2"],
+[128,276,11,1,3.18,21.27,"RY2 Vadhir1x","RY2 Slapdinhoǃ"],
+[129,276,10,0,3.6,16.7,"kookzarc","lameatrom 11ǃ"],
+[130,276,11,0,3.45,19.09,"fxma piracy","ᴿᵉⁱᵍⁿTwenty"],
+[131,276,9,0,2.22,12.44,"Batman Parker","313 LeSmiley"],
+[132,276,10,0,2.2,14.9,"My pump does 36.","i hate solos."],
+[133,275,9,2,3,15.78,"sfg venomǃ","aydxn ǃ"],
+[134,275,8,1,3,11.5,"ondeadoftw","Moonkme"],
+[135,275,9,0,7.89,17.44,"Saynx 11ǃ","Tups"],
+[136,275,10,0,4.1,17.6,"yo dg","bakedcuhǃ"],
+[137,275,11,0,3.36,22,"Compton171er","carboner"],
+[138,275,8,0,2.62,11.5,"cruz","Mythical Indian"],
+[139,275,10,0,1.5,16.9,"YT Smackingkid","Mystical"],
+[140,274,8,2,3.75,13,"cvx sona 10ǃ","odyssey breezy6"],
+[141,274,10,1,4.3,18.6,"hillyǃ","ynnginxo"],
+[142,274,10,0,7,17,"ice fv 10ǃ","Coco 8."],
+[143,274,10,0,2.8,17.7,"Stickеrz","TTV Fizonion"],
+[144,274,10,0,2.6,19.7,"Xmas GuadaPou 7","SoyxAir"],
+[145,274,10,0,2.2,15.2,"Keman","tyson x izeya"],
+[146,274,10,0,1.6,16.5,"cogvvs","BASS KILLA VED"],
+[147,273,9,1,2.44,15.33,"chker.","Mist Cardinal 22"],
+[148,273,10,0,4.7,17.6,"hoverr.","Suave Jimenez"],
+[149,273,11,0,3.91,20,"Faye 8","SShiftǃ"],
+[150,273,10,0,3.1,18.6,"lyfë 3","sub 005"],
+[151,273,11,0,2.64,18.36,"tt realahhjoint","IcyEsCutie"],
+[152,272,11,0,2.91,20.91,"BIGJustina","AskaGOTY"],
+[153,271,11,1,3.64,24.45,"plup","gana osamason"],
+[154,271,9,1,3.11,15.56,"raрtorǃ","bahn fvǃ"],
+[155,271,11,0,3.36,20.18,"Flech","perkian"],
+[156,271,10,0,3.3,19.7,"Letzǃ","Frost"],
+[157,271,10,0,3.1,16,"Keoni","sfg purqǃ"],
+[158,271,11,0,3,21.91,"wheredoistarﱞt","Dreamer plumitaǃ"],
+[159,271,10,0,1.7,16,"GodzyWhale","Wu-Zi Mu"],
+[160,271,10,0,1.5,16.8,"pazix 11ǃ","Kashy fvǃ"],
+[161,270,10,1,3.9,20.1,"quilmaster672758","yukon1xǃ"],
+[162,269,9,2,3.44,15.78,"Tiktok Soloskixz","ttv immacoustic"],
+[163,269,11,1,3.09,19.64,"zookies","Deeploy"],
+[164,269,9,0,3.89,15.11,"apegod.","margiela zxzxzx"],
+[165,269,11,0,3.55,19.91,"atlaşǃ","nighţ."],
+[166,269,10,0,2.9,17.1,"fvr 19.","twitch wydidrxp"],
+[167,269,9,0,2.56,15.67,"TIKTOK VEXSEIXY","iseekjckz"],
+[168,268,10,1,6.1,22.2,"sanaxity","cr7fanlol7"],
+[169,268,11,1,5.91,20.91,"agentkpbcǃ","clixyvi on tt"],
+[170,268,11,1,2.64,21.09,"shrubby ʚɞ","le sparxz"],
+[171,268,9,1,2.11,16.89,"Taco","Golzz."],
+[172,268,9,0,3.56,14.78,"Trilucent","wfm cheech 11"],
+[173,267,8,1,3.75,12.13,"jahjahjаhǃ","Zaf"],
+[174,267,11,1,3.27,20.18,"s1av.74","riko ǃ"],
+[175,267,9,0,5.22,16.44,"Twitch Spexxbtw","KamaalFN"],
+[176,267,11,0,3.18,21.55,"danomar030382","painify 200"],
+[177,267,9,0,2.56,15.67,"Ren amamiya五行進","M3jill0n"],
+[178,267,11,0,2.45,21.64,"Bravo","fouleǃ"],
+[179,267,11,0,1.18,21.36,"Yarter","dear chico"],
+[180,266,10,1,4.9,19.5,"Lukey","naathan"],
+[181,265,9,1,3.33,15.56,"Rpentǃ","eranit. 58"],
+[182,265,9,1,3.11,15.44,"visionnn!","Andrewfv"],
+[183,265,10,0,4.5,19.6,"Noxybot 15","X7 ederfvǃ"],
+[184,265,11,0,2.82,20.36,"xsеt ninaǃ","xset regs"],
+[185,265,9,0,2.78,16.89,"mexicanmax.","Benskinator"],
+[186,264,9,1,4.33,19,"sebbǃ","ZZZ prilse 3ǃ"],
+[187,264,11,1,4.09,21.91,"bxxzyb3nzzǃ","TT KingSauul"],
+[188,264,11,1,3.55,20.36,"nixk Ø","Aidennv8"],
+[189,264,8,0,3.5,11.38,"Justin 10ǃ","liamfnx"],
+[190,263,11,1,2.73,20.45,"Roti乂","FREE SMOKEEEEE"],
+[191,263,10,0,4.1,17.2,"NessQuixs","helsity"],
+[192,263,10,0,1.7,17.1,"Dargon10","G.A.L.A.X.Yシ"],
+[193,262,11,2,2.55,20.73,"Woz 21","Toohli"],
+[194,262,10,1,2.9,18.1,"bricefv","Stickybandit옻"],
+[195,262,10,0,5,19.1,"OG HOBOMAN 420","di4gox"],
+[196,262,11,0,2.73,21.45,"DevNintendo","ttvWarriorX25666"],
+[197,261,11,1,2.18,22.64,"Sw3nky","Bacio lol"],
+[198,261,10,0,2.9,16.3,"elmzǃ","Tier 1 Neegy"],
+[199,261,10,0,2.3,19.7,"Adanǃ 1","ᴋᴇɴɴᴇꜱɪꜱꜱ ϟ"],
+[200,261,11,0,1.91,20.18,"jay T1WR","JALAPENO T1WR"]
+];
+const W2_LCQ1_NAT={"1 2 coming 4 you":"us","1PX Axelinkǃ":"mx","202 parzZzero0":"ma","6 En1gma 7ǃ":"mx","Alех .":"us","Andrewfv":"us","AskaGOTY":"ca","Avinǃ":"ca","BASS KILLA VED":"ca","BIGJustina":"ca","BbossFN":"us","Benskinator":"us","Bravo":"us","CesarFN":"mx","Cloudyy":"us","Cofts":"us","Compton171er":"ng","Controllerₐ":"us","DC royceǃ":"us","Deeploy":"us","DevNintendo":"ca","Dexterび":"us","Dictator Mixxr":"hr","Digital":"us","EGO kikifvǃ":"us","EL sqeak piece9ǃ":"us","EVD lxrk 2":"us","Fern":"mx","Flech":"mx","Friskies42":"us","Frost":"us","GodzyWhale":"mx","Hex 9-5":"ca","Ikrr":"mx","Jﱞordan":"us","Kadvn":"us","KamaalFN":"ca","Kashy fvǃ":"us","Kazugoo":"us","Keman":"us","Keoni":"um","Kerzuh`":"hk","LaEnchulada":"us","Lacy":"us","Letzǃ":"us","Mint1x":"us","Mist Cardinal 22":"us","Mo Bambaム":"us","Moonkme":"mx","Mustaine":"mx","Mystical":"us","Mythical Indian":"us","NessQuixs":"us","NoAimNoMechsfv":"ir","NobleD1x":"us","Noxybot 15":"mx","OFFICIAL G0D":"us","Otazy":"ar","POLARDEME":"mx","Poshern":"us","PrimoDeFausto":"mx","RY2 Slapdinhoǃ":"mx","RY2 Vadhir1x":"mx","Rapi":"mx","Resypical":"us","Rex":"mx","Rpentǃ":"us","Saynx 11ǃ":"mx","Skybot":"mx","Souzyy":"mx","SoyxAir":"mx","Splated":"ch","Stickеrz":"us","Sunder":"kr","Supernal.":"us","Sw3nky":"us","Swxfter":"us","TANKSLAM":"us","TIKTOK VEXSEIXY":"us","TT KingSauul":"us","TTV Fizonion":"us","Tier 1 Neegy":"ca","Tiktok Soloskixz":"us","Triхd":"us","Tups":"mx","Twitch Spexxbtw":"ca","Twitter ReczoFn":"tv","VIN ϟNip":"us","Woz 21":"us","X7 ederfvǃ":"mx","YT Smackingkid":"us","YaoTim":"us","Yarter":"us","Yuma":"mx","Zaf":"us","Zutano":"mx","aeirsuit ʚɞ":"us","agentkpbcǃ":"us","aydxn ǃ":"ne","bahn fvǃ":"us","biyloх":"us","blizzy 505":"mx","bricefv":"pe","bullyslayrr":"us","buzz core":"us","bxxzyb3nzzǃ":"us","chase":"ne","cogvvs":"us","cold":"us","cruz":"us","cvx sona 10ǃ":"ge","damfvǃ":"mx","denvarǃ":"us","dignitas shot445":"il","dwavyrex13":"us","eranit. 58":"ca","flixx 203":"us","fouleǃ":"ca","fvr 19.":"pt","gana osamason":"us","helsity":"us","hoverr.":"us","i hate solos.":"us","ice fv 10ǃ":"us","instalock cloveǃ":"tr","james israel IV":"us","just danceǃ":"cn","jxnasbcǃ":"it","kraztㅤ":"mx","lameatrom 11ǃ":"us","larsofv":"us","liamfnx":"it","lionel xourtle":"us","lyfë 3":"gt","margiela zxzxzx":"ca","mexicanmax.":"ao","mirked":"mg","naathan":"us","nighţ.":"us","nixk Ø":"ca","nozzybot":"mx","nvKu":"mx","odyssey breezy6":"us","omarsito fvǃ":"us","onlinefrankie":"us","pazix 11ǃ":"us","perkian":"us","pickleftw.":"us","powersǃ":"us","prime gattouz0ǃ":"ca","purple":"us","pxmp5x":"us","qte kvor.":"mx","rhx hattori 1ǃ":"mx","seal 7":"ne","sfg purqǃ":"us","shark":"de","shrehx":"us","shrimpzybcǃ":"us","shrubby ʚɞ":"us","sigmacool03":"ca","skix":"cn","snipez":"us","sub 005":"lb","tracktorǃ":"mx","tt realahhjoint":"us","ttv immacoustic":"us","ttv sinnslol":"us","ttvWarriorX25666":"us","turtle xz":"us","twentyoneeǃ":"us","twitch lyrikwya":"us","twitch rohanfvǃ":"ca","twitch wydidrxp":"us","twitter xinvvs":"us","tyson x izeya":"ch","waschsalоn":"us","wfm cheech 11":"us","wheredoistarﱞt":"mx","xset regs":"mx","xxfv":"us","ynnginxo":"mx","yo dg":"us","yukon1xǃ":"us","zookies":"ca","zro 11ǃ":"mx","Ѕhallo":"lb","ᴋᴇɴɴᴇꜱɪꜱꜱ ϟ":"us","りーむたりむたりーむたりむた":"jp"};
+const CARD_W2_LCQ1_EVENT="FNCS 2026 Major 2 — Last Chance Qualifier Session 1 (NA West)";
+const CARD_W2_LCQ1_DATE="28 июл 2026";
 const _W2L=CARD_W2_LCQ_RAW.map(m1Entry);
+const _W2L1=CARD_W2_LCQ1_RAW.map(m1Entry);
 const _W2G=CARD_W2_GF_RAW.map(m1Entry);
 _S.w2p=mkSorts(_W2P);
 _S.w2l=mkSorts(_W2L);
+_S.w2l1=mkSorts(_W2L1);
 _S.w2g=mkSorts(_W2G);
 
 // Ranked inside its own field, against the band REGION_TOP sets for NAW.
 const w2PlayinBase = r => REGION_TOP.NAW - ((r-1)/Math.max(_W2P.length-1,1))*(REGION_TOP.NAW-62);
-const w2LcqBase    = r => 62 - ((r-1)/Math.max(_W2L.length-1,1))*14;
+const w2LcqLen  = () => _W2L.length + _W2L1.length;
+const w2LcqBase    = r => 62 - ((r-1)/Math.max(w2LcqLen()-1,1))*14;
+const w2Lcq1Base   = r => 62 - ((_W2L.length+r-1)/Math.max(w2LcqLen()-1,1))*14;
 const w2GfBase     = r => REGION_TOP.NAW - ((r-1)/Math.max(_W2G.length-1,1))*(REGION_TOP.NAW-70);
 
 (function buildMajor2NAW(){
@@ -27744,7 +29392,7 @@ const w2GfBase     = r => REGION_TOP.NAW - ((r-1)/Math.max(_W2G.length-1,1))*(RE
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(base(entry.rank), 30, 99));
-      const code = W2_NAT_LIQUI[nm] || W2_NAT_TRN[nm] || '';
+      const code = W2_NAT_LIQUI[nm] || W2_NAT_TRN[nm] || W2_LCQ1_NAT[nm] || '';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource: W2_NAT_LIQUI[nm] ? 'liquipedia' : 'tracker',
@@ -27761,6 +29409,7 @@ const w2GfBase     = r => REGION_TOP.NAW - ((r-1)/Math.max(_W2G.length-1,1))*(RE
   };
   _W2P.forEach(e=>{ TEAMMATE_GROUPS.push(e.duo.slice()); add(e, CARD_W2_PLAYIN_EVENT, CARD_M2_PLAYIN_DATE, w2PlayinBase, 'Playin'); });
   _W2L.forEach(e=>add(e, CARD_W2_LCQ_EVENT, CARD_M2_LCQ_DATE, w2LcqBase, 'Lcq'));
+  _W2L1.forEach(e=>add(e, CARD_W2_LCQ1_EVENT, CARD_W2_LCQ1_DATE, w2Lcq1Base, 'Lcq1'));
   _W2G.forEach(e=>add(e, CARD_W2_GF_EVENT, CARD_M2_GF_DATE, w2GfBase, 'Gf'));
 
   const byName={};
@@ -28068,15 +29717,176 @@ const CARD_B2_LCQ_EVENT='FNCS 2026 Major 2 — Last Chance Qualifier (Brazil)';
 const CARD_B2_GF_EVENT='FNCS 2026 Major 2 — Grand Finals (Brazil)';
 
 const _B2P=CARD_B2_PLAYIN_RAW.map(m1Entry);
+/* M2_BR: открытая сессия 1 Ласт-Ченса, 2026-07-27 (окно S41_FNCSMajor2_LastChanceQualifier_BR, всего страниц 57; лобби того же Ласт-Ченса — 49 команд, они здесь не повторяются) */
+const CARD_B2_LCQ1_RAW=[
+[50,324,9,0,4.67,13.44,"grego 1337ǃ","fran .x"],
+[51,323,9,1,7.33,14.56,"White","Spectral"],
+[52,323,11,0,9.91,22.73,"Blazerd","dmrdanii IGL"],
+[53,322,11,2,7.27,19.45,"imattztryona","Gu1 Prime"],
+[54,322,10,0,5.8,18.5,"Avoxy","chief guizеra .x"],
+[55,321,11,2,4.82,20.82,"mguelpingola2000","slayerscroniak."],
+[56,321,11,2,3.91,20.55,"avixfv","raik low warrior"],
+[57,321,10,2,3.7,17.3,"new yagamiǃ x","Prod by Kazuza"],
+[58,321,10,2,3.1,16.4,"Lil lxbios","47 glimǃ"],
+[59,321,9,1,4.44,12.89,"nocc 7ǃ","roubeumcoolerv1"],
+[60,321,11,0,5.55,21.91,"thirazgǃ","zipus 9"],
+[61,320,10,2,7.2,19.7,"wdym twz","iiyrus"],
+[62,320,10,2,6.4,17.2,"LEAL blyzz","Polar1z mt frio"],
+[63,320,8,1,4.38,11.38,"Lord Amém Jesus","blx descolado"],
+[64,320,9,1,4.11,13.22,"imccaii ψ","vichoouk"],
+[65,318,11,3,4.45,21.73,"Felipe tri naѕk","blk astrothunder"],
+[66,318,10,2,3.2,15.9,"RICH OR DEAD 7ǃ","SAO kachau7"],
+[67,318,8,1,6.62,12.38,"tr7 jg.","μgle."],
+[68,318,9,1,6.11,13,"zvkoǃ","Zlaby"],
+[69,318,11,1,4.64,19.27,"santifv.","cria do baile157"],
+[70,318,10,1,3.5,15.3,"rulamonfv","clxpiuun ay7"],
+[71,318,10,0,4.2,14.8,"manu tails","Marcelo Sajen"],
+[72,318,9,0,4,12.56,"thiago281 yhyh","la postadel game"],
+[73,317,11,1,3.27,20.27,"SxantosWoW","Numb7 々"],
+[74,317,10,0,3.3,14.8,"1Dalø","Jerok3k"],
+[75,316,11,1,6.27,19.36,"NhouLM10","Chukazoǃ"],
+[76,316,11,0,5.64,20.18,"Kenyto","Bigod"],
+[77,315,11,1,5.09,20.55,"LOAN NAZABOT 23.","clappd Ӝ"],
+[78,315,11,0,6.45,18.91,"brаx 1","1mafiu"],
+[79,315,8,0,4.12,9.38,"texz 3","Yzаn"],
+[80,315,11,0,2.82,18.09,"brünо","früet"],
+[81,314,11,2,3.45,20,"Señor sicarioǃ","hollow player 1"],
+[82,314,9,0,5.11,12.44,"fedezrr betrayed","mag richboy usd"],
+[83,314,9,0,4.22,12.44,"totossj -.-","pipo 9ǃ"],
+[84,313,10,1,6,16.1,"DEATHSTROKE_UFC","ÿunoǃ"],
+[85,313,9,1,4.22,13.89,"Chorãofv","twitch seibelftn"],
+[86,312,11,1,4.27,18.09,"Jairoo","housen sebäszrrǃ"],
+[87,312,11,0,4.36,19.18,"jovem tralha 227","rayzao fahda 304"],
+[88,311,11,2,4.09,20.45,"big niс0","Klaus Chevalier"],
+[89,310,11,0,6,17.55,"Hidra Dk","theux blessed"],
+[90,310,11,0,5.82,18.82,"filho do diguera","savitar YOHAN亗"],
+[91,308,10,1,6.1,19.2,"rafao bää","vini 염소"],
+[92,308,10,0,5.2,15.6,"666 Aceǃ","Retrofv ǃ"],
+[93,308,11,0,4,18.91,"miguelcriolo.","chief kngzrr .x"],
+[94,307,11,2,4.64,22.45,"nobrega 1","sonso discreto"],
+[95,307,11,1,3.82,19.18,"venly rapha","tireless davidǃ"],
+[96,307,10,0,3.9,16.9,"valinskyǃ","EKN vazzykfv"],
+[97,306,10,1,6.1,18.4,"lex matikagoat","Palma"],
+[98,306,9,1,5.89,15.67,"vasto lorde SS","chronic"],
+[99,306,11,1,5,19.55,"7hendrick on igǃ","enaldo neto"],
+[100,306,11,1,3,19.45,"unknowuser.","naojgbolanamavie"],
+[101,306,10,0,4.4,17.1,"M7 Vitto","Voltzzz"],
+[102,305,11,1,4.55,19.91,"Lukaroman9","zinvistear"],
+[103,305,8,1,3,9.88,"vv snacky 7ǃ","Sneaky zRauh dv亗"],
+[104,305,10,0,4.3,16.5,"ʏᴀɴ ʙʟᴏᴄᴋтатибот","アスタ skzin"],
+[105,304,10,2,4.8,18.5,"4e Scooby-Doo","Mvtnfiez"],
+[106,304,11,1,4.64,21.09,"klokerre tete","benjy ag"],
+[107,304,11,1,3.36,18.18,"xtᴏmiwc","ChanieI"],
+[108,304,9,1,3.22,13.89,"Twitch icki22","twitch t0cruz"],
+[109,304,11,0,3.27,18.91,"Drk Champ1","Twitch gabdiasss"],
+[110,303,11,2,6.09,20.36,"pipo washed.","SilinceMaty"],
+[111,303,11,2,3.18,20.73,"SK7 sveikydeuS","agxzzzshawn"],
+[112,303,11,1,7.27,21.45,"Tecne","Thiagin"],
+[113,303,11,1,7.27,22.45,"Takadaǃ","kyzenn7ko.O"],
+[114,303,11,1,4.18,19.73,"soru1kk","cordzpieceofcak7"],
+[115,302,10,2,2.6,19.1,"Seanzx1","diegoldenboy 999"],
+[116,302,10,1,6.3,19.3,"señor extǃ","conti dictator"],
+[117,302,11,1,3.73,18.82,"CZ Neo","Tyrone Thxmax"],
+[118,302,10,1,2.1,17.9,"sxxnntiiwav 66s","vxlenkǃ"],
+[119,302,11,0,4.91,16.09,"Ismail_182","COMET alxzin"],
+[120,301,11,1,6.91,21,"berlin","salastkbron"],
+[121,301,10,0,1.7,16.7,"1st turcoǃ","matekzrr козел"],
+[122,300,8,2,12.25,17.5,"Johnfv هت","guboyfv"],
+[123,300,10,1,6.7,19.3,"coco stylo32","N6hue"],
+[124,300,8,1,4.38,10.63,"guiz0nesǃ","shipps 7"],
+[125,300,10,1,2.9,15.7,"ÑETO CORI","аguswow"],
+[126,300,11,0,4,19.73,"Vini Gardenal","Revers 10ǃ"],
+[127,300,11,0,2.18,21.45,"Sáks","Slaysitoo"],
+[128,299,10,1,4,18.2,"redzin la cabra","barreto 10ǃ"],
+[129,299,11,1,4,20.82,"sann-woo","YSL bastiwowǃ"],
+[130,299,11,0,4.64,20.82,"guizin 71","Pietro.Dior"],
+[131,299,10,0,2.5,15.6,"ludiusdeekid","olivier parfums"],
+[132,298,11,2,7.09,23.55,"evo wyn44ǃ","Tarko"],
+[133,298,10,0,3.8,15.2,"nicoh maverick","mäthewzzǃ"],
+[134,298,11,0,3.64,18.82,"XRP dukes fmlǃ","KDG Marki Vrgs"],
+[135,297,10,2,7.3,20.1,"BLD Pǃn Nova","el guizinshawn 亗"],
+[136,297,11,0,3,19.09,"GOTy Kamikaze","Bonsoir Kamikaze"],
+[137,296,9,2,6,17.67,"Drolby Charizard","alxnsofv"],
+[138,296,11,1,5.18,22,"Ted","dexter morgan281"],
+[139,296,10,1,3.3,18.3,"912 Tadegolǃ","912 rui"],
+[140,296,10,1,2.9,18.8,"prax Salvatore","kalifaxz"],
+[141,296,11,1,2.82,18.18,"Slapp ち","7RX Zeta"],
+[142,295,11,1,3.64,18.91,"prime kidplayer神","PARFUMS GBR"],
+[143,295,11,1,3.45,18.73,"PMB Cxcao 天使","Mag Yxwi."],
+[144,295,11,1,3.45,22.73,"Benjitix.","Mag FiftySeven"],
+[145,295,11,0,8.09,20.45,"Goat de MG","BATMAN I LOVE U"],
+[146,295,11,0,7.73,18.91,"alejo314ARG","frosty katchau"],
+[147,295,11,0,5,17.45,"bubu The Chosen","Blessed Nick7"],
+[148,295,10,0,3.5,16,"Luks George","cachorro ouvidoǃ"],
+[149,295,9,0,3.22,14.33,"mbxppewq","ttoto17"],
+[150,295,10,0,3.1,16.9,"reflex 10ǃ","sorvado 10"],
+[151,295,10,0,2.9,14.9,"code ONERBFTN","Atllas ."],
+[152,294,9,2,6.89,20.56,"first","grx"],
+[153,294,10,1,4.3,16,"crichiibotǃ","chava 10ǃ"],
+[154,294,11,1,2.82,19.91,"pgod鬼","PMB Taituz 殺"],
+[155,294,9,0,3.78,14.89,"k2","Bauti"],
+[156,294,9,0,3.56,13.78,"Simvnnfvǃ","Anvbaa 7"],
+[157,293,11,2,5,22.64,"zeit1337","7VEN krystov"],
+[158,293,9,1,7.78,20,"cırın","klawryboltzprime"],
+[159,293,11,1,4,21.82,"x negatrom","hxnrysosa"],
+[160,293,11,1,3.64,19.73,"vitorbotǃ","tteuwxz7"],
+[161,293,11,0,3.91,18.91,"nox tryona","nexz 19ǃ"],
+[162,292,11,1,5.73,21.82,"andersonXmarcia","2Asdwkrio_n."],
+[163,292,9,1,4.33,14.22,"martinpasteleria","Kttivo"],
+[164,292,11,1,3.73,18.73,"Tavimdx","Sarli LDcria"],
+[165,292,10,0,5,18.7,"Canvinis","zangetsufvǃ"],
+[166,291,11,2,3.55,19.45,"tatatatambre","CZ Sekiro"],
+[167,291,11,1,6.18,21.27,"johny.7a","lvx meno quentão"],
+[168,291,9,1,5.56,13.56,"Büttowski","auraking ψ"],
+[169,291,11,1,1.82,20.09,"shifttykrpz 参","trap caposǃ"],
+[170,291,8,0,3.12,10.38,"brokenfn6","00 cuccax 梦永"],
+[171,291,10,0,3.1,15.7,"cwxrneer 6","villak3k"],
+[172,291,10,0,2.9,16.2,"TPM Lautha","sacado parda"],
+[173,290,11,1,4.45,22.36,"CTL T6 Kid","CTL guimare"],
+[174,290,10,1,3.7,16.3,"OP kiro0.","4e vxcho ł."],
+[175,290,11,1,2.27,20.64,"sdl lev1zrr ﾒ","67 Gxrbotzǃ"],
+[176,289,11,2,2.45,18.73,"Gatica ユートピア","Matirxǃ"],
+[177,289,9,1,4.44,14.89,"nizy jr","daxx 604648"],
+[178,289,10,1,2.8,17.2,"f4t lukziп","Tortuga Sapecuxo"],
+[179,289,10,0,3.5,16.7,"ARROGANTHI.","twitch spotftn"],
+[180,289,10,0,2.5,15.7,"Kalani lhz1n2022","IgorLorens"],
+[181,288,10,1,7.5,18.8,"Kachu leo","Yoichi Atreides"],
+[182,288,9,1,6.33,14.67,"Pichonǃ","Thiago"],
+[183,288,10,1,3.5,18.3,"LipeツBaka-Chan","Drx love Amorim"],
+[184,288,11,1,3.36,19.73,"señor chipita","Detpullzzz"],
+[185,287,11,1,2.91,21.36,"lima ayase","Rhixn chucro"],
+[186,287,9,0,5,16.56,"lsz 9ǃ","art.213 vinizera"],
+[187,287,11,0,4.64,18.55,"biniwilybuca.aa1","nova éra"],
+[188,287,10,0,3.5,16.2,"sable lugim","sabugosabugosabu"],
+[189,287,9,0,2.78,14.33,"grd stevenonfire","greed patozin"],
+[190,287,11,0,2.45,18.36,"znn apolo","sosa 將返回"],
+[191,286,11,1,7.18,25.91,"killuafvǃ","santyssj"],
+[192,286,11,1,4.45,24.18,"brn pistoleiro","leozxra.senju1x"],
+[193,286,11,1,3.18,19.82,"clue seven 78","red jonh77777777"],
+[194,286,11,1,3,20.55,"benjk281 yhyhǃ","1st ødrazrr 亗"],
+[195,286,9,1,2.33,15.67,"trvcs 7","casana chero 7"],
+[196,286,11,0,6.73,22.18,"Padd 23","honguito n115"],
+[197,286,11,0,2.91,20.82,"dig coop6","vinifvǃ"],
+[198,286,10,0,2.8,17.6,"Twitch 1stPxdrin","htxxcr7."],
+[199,286,11,0,1.82,18.45,"toyrok3k 逸材","blasthi yhyh 10"],
+[200,285,11,2,2.82,21.27,"shaaka nxpi 1","ypietrin fvǃ"]
+];
+const B2_LCQ1_NAT={"00 cuccax 梦永":"ar","1Dalø":"cl","1mafiu":"uy","1st turcoǃ":"ar","1st ødrazrr 亗":"cl","2Asdwkrio_n.":"ar","47 glimǃ":"br","4e Scooby-Doo":"cl","4e vxcho ł.":"cl","666 Aceǃ":"py","7RX Zeta":"ar","912 Tadegolǃ":"ar","912 rui":"ar","ARROGANTHI.":"br","Anvbaa 7":"cl","Atllas .":"br","BLD Pǃn Nova":"cl","Bauti":"ar","Benjitix.":"ar","Bigod":"ar","Blazerd":"br","Bonsoir Kamikaze":"fr","Büttowski":"ar","CTL T6 Kid":"br","CTL guimare":"br","CZ Neo":"ar","CZ Sekiro":"ar","ChanieI":"cl","Chukazoǃ":"ar","Detpullzzz":"py","Drk Champ1":"br","Drolby Charizard":"pe","EKN vazzykfv":"ar","Felipe tri naѕk":"ph","GOTy Kamikaze":"ar","Gatica ユートピア":"cl","Goat de MG":"br","Hidra Dk":"br","IgorLorens":"br","Jairoo":"pe","Jerok3k":"ar","KDG Marki Vrgs":"pe","Kachu leo":"cl","Kalani lhz1n2022":"br","Kttivo":"ar","LEAL blyzz":"bt","LOAN NAZABOT 23.":"ar","Lord Amém Jesus":"br","Lukaroman9":"uy","M7 Vitto":"br","Mag FiftySeven":"ar","Mag Yxwi.":"ar","Marcelo Sajen":"uy","Mvtnfiez":"cl","N6hue":"ar","NhouLM10":"ar","Numb7 々":"cl","OP kiro0.":"cl","PMB Cxcao 天使":"pe","Palma":"cl","Pichonǃ":"ar","Pietro.Dior":"br","Polar1z mt frio":"br","Prod by Kazuza":"br","RICH OR DEAD 7ǃ":"cl","Retrofv ǃ":"ar","Revers 10ǃ":"br","Rhixn chucro":"br","SK7 sveikydeuS":"cl","Sarli LDcria":"br","Señor sicarioǃ":"pe","SilinceMaty":"cl","Simvnnfvǃ":"cl","Slapp ち":"cl","Slaysitoo":"bo","Sáks":"cl","TPM Lautha":"ar","Tarko":"ar","Tecne":"ar","Ted":"br","Thiagin":"ar","Thiago":"lv","Tortuga Sapecuxo":"br","Twitch 1stPxdrin":"br","Twitch gabdiasss":"br","Tyrone Thxmax":"ar","Vini Gardenal":"br","White":"br","XRP dukes fmlǃ":"pe","YSL bastiwowǃ":"cl","Yzаn":"br","Zlaby":"cl","agxzzzshawn":"cl","alejo314ARG":"ar","alxnsofv":"pe","andersonXmarcia":"vc","auraking ψ":"cl","avixfv":"br","benjy ag":"ar","berlin":"cl","big niс0":"br","blx descolado":"br","brn pistoleiro":"br","brokenfn6":"cl","brаx 1":"ar","cachorro ouvidoǃ":"de","chava 10ǃ":"cl","chief guizеra .x":"br","chief kngzrr .x":"br","chronic":"bo","clappd Ӝ":"ar","clue seven 78":"dk","coco stylo32":"ar","code ONERBFTN":"br","conti dictator":"ar","cria do baile157":"br","crichiibotǃ":"cl","cwxrneer 6":"cl","cırın":"ar","daxx 604648":"br","dexter morgan281":"br","diegoldenboy 999":"cl","dig coop6":"br","el guizinshawn 亗":"cl","evo wyn44ǃ":"ar","first":"cl","frosty katchau":"ar","grd stevenonfire":"pe","greed patozin":"pe","grx":"ar","guiz0nesǃ":"br","honguito n115":"cl","housen sebäszrrǃ":"pe","htxxcr7.":"br","hxnrysosa":"br","imattztryona":"br","johny.7a":"br","k2":"cl","kalifaxz":"de","killuafvǃ":"br","klawryboltzprime":"ar","klokerre tete":"ar","kyzenn7ko.O":"br","lima ayase":"br","lsz 9ǃ":"va","ludiusdeekid":"jp","mag richboy usd":"ar","martinpasteleria":"ar","matekzrr козел":"ar","mbxppewq":"uy","new yagamiǃ x":"br","nexz 19ǃ":"br","nicoh maverick":"br","nizy jr":"br","nobrega 1":"il","nocc 7ǃ":"br","nova éra":"br","nox tryona":"de","olivier parfums":"br","pgod鬼":"pe","pipo 9ǃ":"ar","pipo washed.":"ar","prax Salvatore":"ar","rafao bää":"br","raik low warrior":"br","rayzao fahda 304":"br","reflex 10ǃ":"br","roubeumcoolerv1":"br","rulamonfv":"ar","sable lugim":"br","salastkbron":"ar","sann-woo":"ar","santifv.":"br","santyssj":"ar","savitar YOHAN亗":"br","sdl lev1zrr ﾒ":"ar","señor chipita":"py","señor extǃ":"br","shipps 7":"br","sonso discreto":"br","sxxnntiiwav 66s":"no","tatatatambre":"ar","theux blessed":"br","thirazgǃ":"br","tireless davidǃ":"br","totossj -.-":"ar","trvcs 7":"pe","twitch seibelftn":"br","twitch spotftn":"br","twitch t0cruz":"br","valinskyǃ":"ar","vasto lorde SS":"ar","venly rapha":"br","vichoouk":"cl","villak3k":"ar","vini 염소":"br","vinifvǃ":"br","vxlenkǃ":"ar","ypietrin fvǃ":"br","zangetsufvǃ":"br","zeit1337":"ar","zinvistear":"br","zipus 9":"br","znn apolo":"ar","zvkoǃ":"cl","ÑETO CORI":"ar","ʏᴀɴ ʙʟᴏᴄᴋтатибот":"cl","аguswow":"ar","アスタ skzin":"cl"};
+const CARD_B2_LCQ1_EVENT="FNCS 2026 Major 2 — Last Chance Qualifier Session 1 (Brazil)";
+const CARD_B2_LCQ1_DATE="27 июл 2026";
 const _B2L=CARD_B2_LCQ_RAW.map(m1Entry);
+const _B2L1=CARD_B2_LCQ1_RAW.map(m1Entry);
 const _B2G=CARD_B2_GF_RAW.map(m1Entry);
 _S.b2p=mkSorts(_B2P);
 _S.b2l=mkSorts(_B2L);
+_S.b2l1=mkSorts(_B2L1);
 _S.b2g=mkSorts(_B2G);
 
 // Ranked inside its own field, against the band REGION_TOP sets for BR.
 const b2PlayinBase = r => REGION_TOP.BR - ((r-1)/Math.max(_B2P.length-1,1))*(REGION_TOP.BR-62);
-const b2LcqBase    = r => 62 - ((r-1)/Math.max(_B2L.length-1,1))*14;
+const b2LcqLen  = () => _B2L.length + _B2L1.length;
+const b2LcqBase    = r => 62 - ((r-1)/Math.max(b2LcqLen()-1,1))*14;
+const b2Lcq1Base   = r => 62 - ((_B2L.length+r-1)/Math.max(b2LcqLen()-1,1))*14;
 const b2GfBase     = r => REGION_TOP.BR - ((r-1)/Math.max(_B2G.length-1,1))*(REGION_TOP.BR-70);
 
 (function buildMajor2BR(){
@@ -28087,7 +29897,7 @@ const b2GfBase     = r => REGION_TOP.BR - ((r-1)/Math.max(_B2G.length-1,1))*(REG
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(base(entry.rank), 30, 99));
-      const code = B2_NAT_LIQUI[nm] || B2_NAT_TRN[nm] || '';
+      const code = B2_NAT_LIQUI[nm] || B2_NAT_TRN[nm] || B2_LCQ1_NAT[nm] || '';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource: B2_NAT_LIQUI[nm] ? 'liquipedia' : 'tracker',
@@ -28104,6 +29914,7 @@ const b2GfBase     = r => REGION_TOP.BR - ((r-1)/Math.max(_B2G.length-1,1))*(REG
   };
   _B2P.forEach(e=>{ TEAMMATE_GROUPS.push(e.duo.slice()); add(e, CARD_B2_PLAYIN_EVENT, CARD_M2_PLAYIN_DATE, b2PlayinBase, 'Playin'); });
   _B2L.forEach(e=>add(e, CARD_B2_LCQ_EVENT, CARD_M2_LCQ_DATE, b2LcqBase, 'Lcq'));
+  _B2L1.forEach(e=>add(e, CARD_B2_LCQ1_EVENT, CARD_B2_LCQ1_DATE, b2Lcq1Base, 'Lcq1'));
   _B2G.forEach(e=>add(e, CARD_B2_GF_EVENT, CARD_M2_GF_DATE, b2GfBase, 'Gf'));
 
   const byName={};
@@ -28404,15 +30215,177 @@ const CARD_A2_LCQ_EVENT='FNCS 2026 Major 2 — Last Chance Qualifier (Asia)';
 const CARD_A2_GF_EVENT='FNCS 2026 Major 2 — Grand Finals (Asia)';
 
 const _A2P=CARD_A2_PLAYIN_RAW.map(m1Entry);
+/* M2_ASIA: открытая сессия 1 Ласт-Ченса, 2026-07-27 (окно S41_FNCSMajor2_LastChanceQualifier_ASIA, всего страниц 37; лобби того же Ласт-Ченса — 48 команд, они здесь не повторяются) */
+const CARD_A2_LCQ1_RAW=[
+[34,326,10,2,3.8,16.9,"Higepiku","A_α Ungrateful"],
+[50,308,11,0,3.09,19.27,"〆るひとǃ","Twitch しむる潔で検索"],
+[51,307,8,1,7.75,12.5,"NEOS JINBEI","NaItOわほー"],
+[52,307,11,1,3.09,21.27,"Celis あおねこ416","suac falconpunch"],
+[53,307,11,1,2.55,18.55,"gents-c らいりーやけん","ゴミ焼却炉アッシュ"],
+[54,305,9,2,5.67,14.56,"EGK ちゅるっぴ 1st","EGK Luar"],
+[55,305,10,1,5.8,17.6,"Lum1ns.りりむ","CR.知ってますか"],
+[56,305,8,0,3.38,10.38,"SE LxiyLza 97ǃ","SE Ruruǃ"],
+[57,304,11,1,8.82,22.45,"CR Huggy ういー","huggyfv"],
+[58,304,10,1,3.7,16.1,"FU-FUPANTU","Syaaz holi"],
+[59,304,9,0,5.78,15.44,"Shaker","Goki"],
+[60,303,10,0,3.5,14.7,"KЁЯΙS misery.","せんすぜろ"],
+[61,302,8,1,5.38,13.25,"REBEL shxrkÿ","KC R1mo swäg"],
+[62,301,11,3,4.36,23.09,"milli bola","risaspheneǃ"],
+[63,301,11,1,5.64,19.45,"steamywiny","yotta samiifvǃ"],
+[64,301,9,1,3.33,16.67,"SKRS Ćɑnĸÿ bää","RYZ Ţoɱÿacheǃ"],
+[65,300,11,1,9,22.18,"でーもんくらげǃ","でーもんすかいfnbr_"],
+[66,300,8,0,4.5,10.38,"pocari sweat3sk","dyd シンプル編集のぷりなの"],
+[67,299,9,2,4.11,17.56,"FA Ren 10ǃ","とっしー沼158cm高身長"],
+[68,299,9,1,7.33,17.67,"Ramaの脳死従者 修羅","Ramuの脳死従者 修羅"],
+[69,299,11,1,5.27,19.18,"ϟAssarϟ ㅤ","BLACK LAGÖÖN"],
+[70,299,9,1,3.56,15.67,"ℭhrome くりたるǃ","FTW しんぴよsays bye"],
+[71,298,10,1,5.5,20.5,"ぜつぼー","ib"],
+[72,298,11,1,1.91,20.64,"URF む る こ ぎǃ ǃ","TikTok とあるプロのサブ垢"],
+[73,298,9,0,2.44,13.33,"KC shxrk 10","wagers 17ǃ"],
+[74,297,10,2,5.1,19.5,"カニカマは一生カニに届かない","GR-T ほっくぴやから"],
+[75,296,10,1,6.9,20.2,"野菜栽培者ZAZAだいすき420","OTP_BRIZZY"],
+[76,296,10,1,3.3,17.5,"SH てぃーかわ","Redo かふジャイロ"],
+[77,295,11,2,5.55,24.36,"SkyJump ǃ","phantomRequien"],
+[78,295,11,1,5.09,21,"BoF まうしゃまうま","ECS ぺぽ推しのこーくん"],
+[79,295,11,1,4,18.45,"RYZ すぽんじなのだǃǃ","リオネルメッシǃ"],
+[80,295,9,1,2.67,16,"Celis つつ上等","cue ガリマルザウルス"],
+[81,294,11,2,3.82,19.55,"RAGE Hakkun","Raru 7ǃ"],
+[82,294,10,1,5.7,18.4,"IGL まなのかも","たっキング"],
+[83,293,11,1,2.55,19.73,"わたあめうゆ","Marikoro きーさんの弟"],
+[84,293,10,0,4.9,18.5,"ゆの","りんねまん"],
+[85,293,9,0,4.56,14.78,"RYZ ひろやちぇ","KC そうと"],
+[86,292,11,1,6.82,23,"みかん","Rabbit"],
+[87,292,11,1,5.73,21.45,"冷笑系アホー","ATRCT 五条パイナップル"],
+[88,292,10,0,5.2,19.3,"TsV もふだっちゃ","KЁЯΙS てる覚醒"],
+[89,292,10,0,3.4,19.1,"Moet 飛べないとりっぴー","Moet るるまる 723."],
+[90,291,11,1,2.55,21.36,"CLP うむǃ","TSM Snackyyyǃ"],
+[91,291,9,1,2,12.89,"RYZ timkoǃ","DIE ルビー"],
+[92,291,10,0,6.3,18.9,"Æ IGNITE.SALMON","ばたこ"],
+[93,291,11,0,6.09,21.64,"Smile","merem"],
+[94,290,10,2,3.6,18.9,"zard muifishǃ","orz blueÿetiǃ"],
+[95,290,11,1,5.36,19.64,"KÁiℛÝxǃ","SuperRizukenxyz"],
+[96,290,9,1,3.22,15.56,"DIE Nx1xyfvǃ","yuki"],
+[97,290,11,0,4.18,19.91,"AXIS むちままǃǃ","りいちぼっちーǃ"],
+[98,289,11,3,8.55,26,"Raito","EDGE Unger"],
+[99,289,11,1,7.09,24.18,"TsV RazNotyǃ","fuwa"],
+[100,289,11,0,4.45,21.09,"ゆい弱","りずむどこいったǃए"],
+[101,289,11,0,2.64,19.55,"Herb しゃか","GRE mxrxku 30ǃ"],
+[102,289,11,0,2.09,19.45,"invia あごあにひ","hamtaroǃ"],
+[103,288,11,1,5.36,22.18,"fct ロシアンくきず","ruca."],
+[104,288,10,1,4.7,18.5,"LIL ramusei","螺愚那六総長てんせい"],
+[105,288,8,0,4.5,10.25,"PHD ShakerMcPuff","RXLY dabǃ"],
+[106,288,9,0,3.33,14.22,"ptt みんと我の屁は温泉卵臭","KC ユッケでましましなゆっき"],
+[107,288,8,0,3.25,12.5,"IGNUM woods56","Blue_P YUYA"],
+[108,287,9,0,3.22,14.44,"Joshreyli ǃǃ","れっくすとりこるん"],
+[109,286,11,0,5.64,21.09,"SUAC PETERBOT 23","AMORIS Ragna 狂剣王"],
+[110,286,11,0,4.73,21.64,"NEOS KIRA","チートをuseするために."],
+[111,285,9,1,5.11,15.56,"Mash Plus Ultra.","dyd 動きヤバイうにとよしと"],
+[112,285,11,1,2,20.73,"NEOS ふぁいんǃ","NEOS hirop"],
+[113,285,11,0,5.73,20.45,"User-edc608b6c7","ilya6."],
+[114,284,11,1,4.82,20.82,"NEOS SHU27","BoF_HIYU"],
+[115,284,9,1,4.78,16.33,"まゆにゃんにゃん","Beryl Lxzyǃϟ"],
+[116,284,11,1,2.09,23.36,"Aile9 野口衣織ᵈᵘˣˢʰⁱ","皐 NiziUあやか 620"],
+[117,284,11,0,5.45,21.09,"SHUNRo0O","SPINZ"],
+[118,284,11,0,4.91,23.36,"AUR PinkerBell 8","sena"],
+[119,283,11,1,6.73,20.45,"Math1aszǃ","Kid egoǃ"],
+[120,283,10,0,3.3,16.4,"invia minit 10ǃ","zst meary"],
+[121,282,8,2,3.5,13,"ЯERI ToT","Cue.こんそーるごーと"],
+[122,282,8,1,7.62,13.63,"fancy auraǃ","AxisHaventMetYou"],
+[123,282,10,1,6.9,17.1,"EXV mAximum24","zst Airyfnbr"],
+[124,282,10,1,4.9,19.3,"Redo フェニックスモードびぶ","rax auraking bää"],
+[125,281,9,1,6.89,18,"gk panzer111111","デストロイモードりく"],
+[126,281,10,0,3.1,19.5,"gents-c Watchǃ","gents-c くろま"],
+[127,281,11,0,2.27,21.27,"FPG マンモスジン男","gents-c りおお24"],
+[128,280,10,1,3.3,17.7,"まあとずみい","wcr 疎羽羽津人間"],
+[129,279,10,1,5,19.5,"Zst kogane","die 雑魚るーじゃがいもrex"],
+[130,279,11,1,2.73,21.73,"diE White T1gers","NexF しろくまEXdajo"],
+[131,279,11,1,2.55,20.09,"NE とりむとらず","ftw toruko"],
+[132,279,10,1,2,18.4,"XERO Cr1nge","touya 町田シュウト"],
+[133,279,11,0,5.55,22.55,"quahbuca 62","なにひりん"],
+[134,279,8,0,2.88,11.38,"ふぃじかるかなきんぐ","Mega_loDorN"],
+[135,278,10,2,4.8,19.9,"Herb Complæxity","PARON じんくん"],
+[136,278,11,1,9.36,21.82,"REINER","リョガタ"],
+[137,278,11,1,6.27,24.91,"NEOS すぱいく","NEOS GINTA.狼"],
+[138,278,11,1,3.36,20.55,"イケイケあんぱん","KЁЯΙS Reaper 77ǃ"],
+[139,278,11,1,3.36,21,"ばりにょっすです","PhantomThiefKid."],
+[140,277,8,1,3.75,12,"BIG Malibuca 8","Redo デーモンりゅか."],
+[141,277,10,1,2.4,19.8,"GENIUS-A Lizard","GENIUS-A しゅうぽん"],
+[142,277,9,0,6.33,16.11,"рубик кубика","shxrkworks11"],
+[143,277,11,0,2.64,18,"doknǃ","Youtube Yukidoke"],
+[144,277,9,0,2.11,13,"asakiyumemi4","clover 1119181"],
+[145,276,11,2,4.36,23.09,"すぱーくǃ","voltex ゆき"],
+[146,276,11,1,4.27,23.27,"ftw amoN","KЁЯΙS ろいおんきんぐ"],
+[147,276,10,1,4.1,18,"Saku","SH KING PIECEǃǃ"],
+[148,276,11,1,4.09,21.82,"skrs qerzǃ","kinaztryona"],
+[149,276,11,1,3.36,22.73,"demonれんころ俺の時代","kinoko4x"],
+[150,276,11,0,4,18.73,"ptt やなぎんちょすだにょん","MV.demonking鬼龍覇気"],
+[151,276,11,0,2.55,21.45,"My OrdinaryLife","AMORIS たかやIGL"],
+[152,275,10,2,5.3,20.9,"My Dear Momentsǃ","user10764"],
+[153,275,11,1,4.55,20.73,"Aki","kamv."],
+[154,275,10,1,4.4,17,"ナラーめん","ふつうのぬっこ"],
+[155,275,10,1,3.6,19.6,"UC.かえん","Bob"],
+[156,275,10,1,2.4,17,"valx RqzrIm3の弟","FA 兵どもが夢の跡.ᵖᵒᵐ"],
+[157,275,10,1,2.4,20.8,"dyd モクローの羽","BRNw ぷれいやー かいり"],
+[158,275,8,0,2.62,12.75,"MMC せいきんﾌﾞﾘｯ","nexel ne 弱"],
+[159,275,11,0,2.09,21,"UC.HIRO","UC.そみー"],
+[160,274,10,1,4.1,19.3,"monchanawesomer","hst-o スイドラください"],
+[161,274,11,1,3.55,20.18,"ヤニやき","るーくん給食当番"],
+[162,274,11,0,8.91,25.82,"Provethemwrong.","しこぴよフォートナイト"],
+[163,274,9,0,4.67,14.67,"78123819","IPF shxrk"],
+[164,274,11,0,2.91,19.36,"Lum1ns ブレインロット部門","Riddιe Rise"],
+[165,274,11,0,2.55,20.55,"До свидания Ӝ","zen ギア2ǃ"],
+[166,274,11,0,2.18,19.09,"Alpha amyǃ","Cabbage 7ǃ"],
+[167,273,10,1,5.2,20.7,"GENIUS ばちこり","krmrzfvǃ"],
+[168,273,9,1,3.78,14.11,"NE Neymar Jr.","Falk ichxgo."],
+[169,273,11,1,3.27,19.55,"calm Lqmbdx3z.","dyd w24lëkdż"],
+[170,273,10,0,3.3,18.3,"たけし０１２１","dyd Qrenεïз ǃ"],
+[171,273,11,0,3.18,20.36,"宙AIM こはくきゅん","Rz sahatteÿǃ"],
+[172,272,9,1,5.22,17.56,"nezah","あいりす"],
+[173,272,11,1,5,21.27,"w.t.rex","penfnzǃ"],
+[174,272,11,1,4.82,19.64,"乃木 憂助","老デウス86 人神の使徒だったか"],
+[175,272,10,1,4.1,18.2,"die tryona","LUCKぽよじろうではありません"],
+[176,272,10,1,3.3,21.5,"小鳥遊ホシノǃ","ECS LALWINNER"],
+[177,272,11,0,4.73,22.09,"しゅんてゃん","むーこにっく"],
+[178,272,9,0,2.89,13.33,"meteor 魅","Jarl 397"],
+[179,271,11,2,2.64,21.09,"ORIUS koga 魅","ORIUS 怪我人代表Lucyǃ"],
+[180,271,11,1,3.27,21.82,"Lit Buyureyli","hst basil"],
+[181,271,9,1,2.22,14.89,"ⵌFUNYY t3eny 7","Z3ct 超拡声みみっち"],
+[182,271,11,1,2.18,21.18,"今日が最強になる日だって良い","君のソーセージをしゃぶりたくて"],
+[183,271,9,0,5.22,17.56,"築二千年の寺でチクニー専念ǃ","さらに向こうへプルスウルトラアァ"],
+[184,271,11,0,2.45,17.27,"障害者スポーツでもやっとけよw","FA Harufn"],
+[185,270,11,1,2.45,20.36,"zst-a ゆは 苺","ぴたまん"],
+[186,270,11,1,1.91,24,"NexF ぱずるくん","NexF 覚醒ぱずるくんv2"],
+[187,270,11,0,4,21.27,"FPG るる","Lucqxieπ にゃー"],
+[188,270,11,0,2.91,20.64,"ptt ろず","Msy わっしょう声で圧倒"],
+[189,269,11,1,3.27,19.82,"陰の陰謀者Luke","LooperHD yhyh"],
+[190,269,11,1,3.27,21.09,"NexF ぜまと色違いコイキング","DIE kallnyache44"],
+[191,269,9,1,1.78,15,"チン族らいちん","チン族ぎゅうにゅう"],
+[192,269,9,1,1.78,15.56,"IGNXL wonthǃ","xСatch"],
+[193,269,11,0,5.91,21.45,"OBI z1ph31xGy","CALM アマヤドリレイコꚄ"],
+[194,269,10,0,4.9,18,"N e k o swervery","N e k o doolyǃ"],
+[195,268,11,2,4.18,24,"NXFZ Swizzyǃ","JOJO 雪AIM"],
+[196,268,11,2,3.82,23.09,"KЁЯΙS Lilybloom","ftw т т"],
+[197,268,10,1,7.1,20.2,"VinÖLoW fvǃ","Habibifn69 on X"],
+[198,268,10,1,3.1,17.6,"BananaKemp","俺 渋井丸 拓男 略してシブタク"],
+[199,268,10,0,4,19.9,"alivenoah","みずるん."],
+[200,268,8,0,3.75,11.88,"yumubataa","歯磨き粉はみんと味いいいいいい"]
+];
+const A2_LCQ1_NAT={"AMORIS Ragna 狂剣王":"jp","AUR PinkerBell 8":"jp","AXIS むちままǃǃ":"jp","Beryl Lxzyǃϟ":"jp","CALM アマヤドリレイコꚄ":"jp","CR Huggy ういー":"jp","Cue.こんそーるごーと":"jp","FTW しんぴよsays bye":"jp","GENIUS-A Lizard":"jp","Herb しゃか":"jp","IGNUM woods56":"jp","IPF shxrk":"jp","Jarl 397":"jp","KC shxrk 10":"lv","KC そうと":"jp","KC ユッケでましましなゆっき":"jp","Kid egoǃ":"br","KЁЯΙS ろいおんきんぐ":"jp","LooperHD yhyh":"jp","MMC せいきんﾌﾞﾘｯ":"jp","Math1aszǃ":"br","Moet るるまる 723.":"jp","My Dear Momentsǃ":"jp","My OrdinaryLife":"jp","N e k o swervery":"ph","NEOS KIRA":"jp","NaItOわほー":"jp","NexF しろくまEXdajo":"jp","NexF ぜまと色違いコイキング":"jp","ORIUS koga 魅":"jp","OTP_BRIZZY":"jp","PARON じんくん":"jp","PHD ShakerMcPuff":"ph","RYZ Ţoɱÿacheǃ":"jp","Raru 7ǃ":"jp","Redo デーモンりゅか.":"jp","Riddιe Rise":"jp","SKRS Ćɑnĸÿ bää":"jp","SPINZ":"jp","SUAC PETERBOT 23":"jp","Shaker":"jp","SkyJump ǃ":"jp","Syaaz holi":"jp","TSM Snackyyyǃ":"jp","UC.かえん":"jp","Zst kogane":"jp","alivenoah":"jp","calm Lqmbdx3z.":"jp","doknǃ":"jp","fancy auraǃ":"jp","gents-c Watchǃ":"jp","gents-c くろま":"jp","gents-c らいりーやけん":"jp","huggyfv":"jp","ib":"jp","invia minit 10ǃ":"jp","merem":"jp","meteor 魅":"jp","milli bola":"no","monchanawesomer":"jp","orz blueÿetiǃ":"jp","phantomRequien":"jp","ptt みんと我の屁は温泉卵臭":"jp","ruca.":"jp","sena":"jp","shxrkworks11":"ru","steamywiny":"jp","user10764":"jp","yotta samiifvǃ":"th","yuki":"jp","zard muifishǃ":"jp","zst meary":"jp","ϟAssarϟ ㅤ":"jp","ⵌFUNYY t3eny 7":"jp","あいりす":"jp","しこぴよフォートナイト":"jp","しゅんてゃん":"jp","たけし０１２１":"jp","でーもんすかいfnbr_":"jp","ばたこ":"jp","みかん":"jp","みずるん.":"jp","むーこにっく":"jp","ゆの":"jp","りんねまん":"jp","チートをuseするために.":"jp","今日が最強になる日だって良い":"jp","俺 渋井丸 拓男 略してシブタク":"jp","冷笑系アホー":"jp","皐 NiziUあやか 620":"jp","野菜栽培者ZAZAだいすき420":"se"};
+const CARD_A2_LCQ1_EVENT="FNCS 2026 Major 2 — Last Chance Qualifier Session 1 (Asia)";
+const CARD_A2_LCQ1_DATE="27 июл 2026";
 const _A2L=CARD_A2_LCQ_RAW.map(m1Entry);
+const _A2L1=CARD_A2_LCQ1_RAW.map(m1Entry);
 const _A2G=CARD_A2_GF_RAW.map(m1Entry);
 _S.a2p=mkSorts(_A2P);
 _S.a2l=mkSorts(_A2L);
+_S.a2l1=mkSorts(_A2L1);
 _S.a2g=mkSorts(_A2G);
 
 // Ranked inside its own field, against the band REGION_TOP sets for ASIA.
 const a2PlayinBase = r => REGION_TOP.ASIA - ((r-1)/Math.max(_A2P.length-1,1))*(REGION_TOP.ASIA-62);
-const a2LcqBase    = r => 62 - ((r-1)/Math.max(_A2L.length-1,1))*14;
+const a2LcqLen  = () => _A2L.length + _A2L1.length;
+const a2LcqBase    = r => 62 - ((r-1)/Math.max(a2LcqLen()-1,1))*14;
+const a2Lcq1Base   = r => 62 - ((_A2L.length+r-1)/Math.max(a2LcqLen()-1,1))*14;
 const a2GfBase     = r => REGION_TOP.ASIA - ((r-1)/Math.max(_A2G.length-1,1))*(REGION_TOP.ASIA-70);
 
 (function buildMajor2ASIA(){
@@ -28423,7 +30396,7 @@ const a2GfBase     = r => REGION_TOP.ASIA - ((r-1)/Math.max(_A2G.length-1,1))*(R
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(base(entry.rank), 30, 99));
-      const code = A2_NAT_LIQUI[nm] || A2_NAT_TRN[nm] || '';
+      const code = A2_NAT_LIQUI[nm] || A2_NAT_TRN[nm] || A2_LCQ1_NAT[nm] || '';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource: A2_NAT_LIQUI[nm] ? 'liquipedia' : 'tracker',
@@ -28440,6 +30413,7 @@ const a2GfBase     = r => REGION_TOP.ASIA - ((r-1)/Math.max(_A2G.length-1,1))*(R
   };
   _A2P.forEach(e=>{ TEAMMATE_GROUPS.push(e.duo.slice()); add(e, CARD_A2_PLAYIN_EVENT, CARD_M2_PLAYIN_DATE, a2PlayinBase, 'Playin'); });
   _A2L.forEach(e=>add(e, CARD_A2_LCQ_EVENT, CARD_M2_LCQ_DATE, a2LcqBase, 'Lcq'));
+  _A2L1.forEach(e=>add(e, CARD_A2_LCQ1_EVENT, CARD_A2_LCQ1_DATE, a2Lcq1Base, 'Lcq1'));
   _A2G.forEach(e=>add(e, CARD_A2_GF_EVENT, CARD_M2_GF_DATE, a2GfBase, 'Gf'));
 
   const byName={};
@@ -28746,15 +30720,177 @@ const CARD_E2_LCQ_EVENT='FNCS 2026 Major 2 — Last Chance Qualifier (Middle Eas
 const CARD_E2_GF_EVENT='FNCS 2026 Major 2 — Grand Finals (Middle East)';
 
 const _E2P=CARD_E2_PLAYIN_RAW.map(m1Entry);
+/* M2_ME: открытая сессия 1 Ласт-Ченса, 2026-07-27 (окно S41_FNCSMajor2_LastChanceQualifier_ME, всего страниц 30; лобби того же Ласт-Ченса — 48 команд, они здесь не повторяются) */
+const CARD_E2_LCQ1_RAW=[
+[49,311,11,2,6.27,21.09,"kayoopaQ8","Cxrsed 218"],
+[50,311,9,1,3.33,15.11,"ManCity 1 1 1 1","dpro 9"],
+[51,311,9,0,1.22,11.11,"lyones112","mensolinho"],
+[52,310,11,2,7.09,20,"Saw Gyro","twzzk"],
+[53,310,11,2,6.73,19.27,"3bood","F1 Venix ǃ"],
+[54,308,9,1,2.56,15.11,"Saw 1111","idkbruhyy"],
+[55,308,10,0,7.2,17.5,"Parm 10ǃ","r2ǃ"],
+[56,308,9,0,2.89,12.89,"AdryYahu ӝ","m1chxxl svjǃ"],
+[57,307,11,3,6,25.09,"hamdanfvǃ","21شمر ملوك الدار"],
+[58,307,9,0,2.33,12.33,"Zrrto 朕","juliann1700x"],
+[59,306,10,2,5.8,19.7,"Abu3zhǃ","Chaozfv"],
+[60,306,11,2,3.27,18.36,"Amro ǃ","HTN Jafar"],
+[61,306,11,1,2.09,16.73,"PO hadov ʕᵒᴥᵒʔ","ManCity SaeedHD"],
+[62,305,11,1,6,22.27,"3idQ8","3пd"],
+[63,304,10,0,4.2,18.8,"soulQ8.","modi 27ǃ"],
+[64,304,11,0,3.45,19.36,"dxter fv","obix 7"],
+[65,302,8,2,5,12.88,"pexityfnr","Yufi 874"],
+[66,302,9,1,3.67,15.89,"Aftk 75","Hadron Lurks"],
+[67,301,11,1,2,18.82,"Agenda","REV"],
+[68,301,11,0,4.64,18.18,"batcuh splaash","BLZ Meli"],
+[69,301,11,0,2.82,18.27,"ǃRAZ 15","Fatal Nando 14"],
+[70,300,10,1,6.1,20.2,"Cldy adam ح","Tronzi 16"],
+[71,300,11,1,5.73,23.09,"Brosky 02","Pulse 01"],
+[72,299,10,1,7.6,17.4,"Dergo 97 ψ","acoyn"],
+[73,299,11,0,7.91,21.64,"ROYL 10","Mozart 10"],
+[74,299,11,0,7.91,21.82,"Ghost","Claus ǃ"],
+[75,298,10,1,4.5,18.7,"Salvatore 1st","BenBen 1st"],
+[76,297,11,1,7.27,21.09,"PityXc","L5MH 7ǃ"],
+[77,297,11,0,4.09,20.91,"CHADLITE grozini","AUR a3enÿ"],
+[78,296,11,2,2.55,20.27,"tik broetaa","falcon 7bgbotǃ"],
+[79,296,8,1,5.38,11.75,"AT7JX 7ǃ","21 المهندس"],
+[80,296,10,1,3.5,17.3,"SirR3b 亗","Bolt Abadiǃ"],
+[81,296,9,1,2.78,15.11,"broskidelrayǃ","go nadavush go"],
+[82,296,11,0,7.82,21.45,"HEMIX911ネ","RVL Alfadh1i 7ǃ"],
+[83,296,10,0,3.8,15.6,"fastballiq2x","notprocǃ"],
+[84,295,10,1,5.2,18.3,"raz 19ǃ","yali 88ǃ"],
+[85,295,11,0,5,19.09,"M7sntaa3k","Tik Taker 73"],
+[86,295,11,0,4.09,19.09,"A4kfnǃ","Mishal 111ǃ"],
+[87,295,11,0,2.45,17.64,"avora optimusg0d","Cushi"],
+[88,294,10,0,3,16.4,"Tslaǃ","17YQ8ǃ"],
+[89,293,10,0,6.3,16.2,"Joy","Chriskp"],
+[90,293,11,0,3.55,18.09,"Musabot 23ǃ","rxzr"],
+[91,293,11,0,3.18,18.64,"RvL Mósk 17ǃ","HEX ﾠﾠﾠ"],
+[92,292,9,2,4.89,17.44,"Shin0bii1ǃ","Kaizen EGT"],
+[93,292,8,2,4.5,14.75,"The Goat Deleme","chiny jr"],
+[94,292,10,1,5.7,18.3,"User-715d9e09c8","layzer aim7"],
+[95,292,9,1,1.89,16.33,"Lunitsh","z2tw"],
+[96,291,10,1,3.4,16.2,"sanzǃ","TW Xenovers_"],
+[97,291,9,0,3.44,11.89,"fenixxyz 9","Nulu 7"],
+[98,290,11,2,5.27,21.27,"Smsomfishy","GHOST 11ǃ"],
+[99,290,10,1,5.1,17.2,"CLexTr","Voetx"],
+[100,290,8,1,4.62,13.5,"ßraindeadǃ","Anoos bää"],
+[101,290,10,1,3.9,17.6,"tutitryona 1stǃ","barerhickǃ"],
+[102,290,10,1,3.3,20.1,"Dictator Novala","Kayzix 1st"],
+[103,290,11,0,3.45,18.55,"Brett Scallionsǃ","Evil Xneon"],
+[104,290,8,0,2.5,10,"Ŕiẑox 47","DashiiX-_"],
+[105,289,11,1,6.36,20.27,"Reaper","KairuV2ﱞ"],
+[106,289,10,1,4.4,16.9,"BLZ Mario","BLZ 200IQǃ"],
+[107,289,10,0,3.1,18.3,"stonfvǃ","lenixfvǃ"],
+[108,288,11,1,2.82,20.36,"RezyFv","10K 38RB"],
+[109,288,10,1,2.7,18.4,"pract 33ǃ","crypto"],
+[110,288,9,0,4.67,13.56,"Bein kylo","Bein Jab"],
+[111,288,10,0,2.4,16.9,"Blz Bufnik 007","ح d4yan ɪꜱ ɢᴏᴅ"],
+[112,287,11,1,5.64,21.18,"Mato r1ǃ","L7N"],
+[113,287,10,0,2.1,14.3,"nico2cartier","BS クヴァラツヘリア"],
+[114,287,11,0,1.73,17.73,"unter ayri picǃ","du free kill"],
+[115,286,10,0,7,18.7,"shakerGoty 7ǃ","bylinxǃ"],
+[116,286,9,0,4,14.78,"Kein callDE","BLZ kwixnada"],
+[117,286,10,0,2.8,16.4,"localtoaster47","RAZ ǃ"],
+[118,285,11,1,2,18.73,"SWT skim","TURIDDU_PRIME10"],
+[119,285,10,0,1.7,15.1,"Syphon","falcon ogurbotツ"],
+[120,285,10,0,1.5,16.9,"grrr dapssss","brokenpay"],
+[121,284,11,2,6,22.55,"Agent","ZEER"],
+[122,284,11,1,1.73,18.55,"Vinsmoke 974.","Kal.EL 974"],
+[123,283,11,1,2.91,19.36,"klvr ǃ","Vorce 4ǃ"],
+[124,283,11,0,1.91,19.36,"Vǃ9","YH 17"],
+[125,283,11,0,1.91,19.91,"cold_kq","Qusai.1ST"],
+[126,283,10,0,1.3,15,"Spicy 1st","khalid3k 亗"],
+[127,282,11,1,3.91,21.82,"Saif3k","Skytore"],
+[128,282,10,0,3.6,16.1,"Rami Fortis","QUE ENTACHE DAS"],
+[129,281,10,1,1.4,15.7,"Alula vello","batman ronii 7ǃ"],
+[130,281,11,0,2.45,21,"Ragna 23ǃ","SlowQ8ǃ"],
+[131,280,8,1,4.62,13.25,"ʚ220408ɞ","s3ǃﾠ"],
+[132,280,11,0,2.36,20.91,"flicker 1stǃ","VS SPY5ER"],
+[133,279,10,0,3.5,18.2,"solo cheeta","eudald kurenaiǃ"],
+[134,279,8,0,2.88,12.13,"W orel yhyh","desables roses"],
+[135,279,10,0,2.5,16.3,"THIJBRUBLUD1394","x ceyy 10ǃ"],
+[136,278,11,1,5.55,19.36,"Nmx 5ǃǃ","M7. . ."],
+[137,278,11,1,3.55,20.45,"JO GENERAL","5.5xy"],
+[138,278,11,1,3.18,20.27,"EyadGOTy 7","HxvaWrldǃ"],
+[139,278,11,1,1.91,19.91,"TGA bloskiǃ","FNR zetareaperǃ"],
+[140,278,11,0,2.73,21.36,"SAE 111","VSTL ǃ"],
+[141,278,10,0,1.8,18.4,"BLZ DARK 22","Doksha Tweaks305"],
+[142,277,10,1,6.2,20,"fyperfv","kaktusiwnl"],
+[143,277,11,1,4.18,21.64,"AE Floxzyyǃ","el scarypika 亗"],
+[144,277,10,1,3.4,18.3,"prime swizi7","rasnfnw 1stǃ"],
+[145,277,11,0,5.36,21.09,"WAR Mjno0Nk","Stark"],
+[146,277,11,0,3.36,20.91,"korx corty 33.","EGY Brayan 7 ᴅᴠ"],
+[147,277,11,0,2.09,21,"roei fv 11","1vx noam"],
+[148,277,7,0,1.57,8,"Kyle 874","lnx fvǃ"],
+[149,277,8,0,1.38,9.88,"Frozone1.","prs Razox"],
+[150,276,11,1,3.55,23.18,"ColdK2 777ǃ","First Dance 4ǃ"],
+[151,276,9,0,4.22,13.67,"Andreylі ӝ","destrok1sny"],
+[152,276,9,0,1.56,13.11,"RAGE","Noirrǃ"],
+[153,275,9,0,4.33,16.67,"Raymond X Liz","ZoZfv"],
+[154,275,11,0,3.73,20.45,"hay","rumblezraga 23ǃ"],
+[155,275,9,0,2.56,13.33,"NWAǃ","Ryx fvǃ"],
+[156,274,11,0,1.64,18.91,"vynz sercoreyli","999 panabøtǃ"],
+[157,273,10,1,4.4,18.2,"Hybridxrkÿ","xpf5m 11"],
+[158,273,10,1,3.6,19.8,"Molakhfv","arctreyli"],
+[159,273,11,1,2.18,21.91,"sailor 19ǃ","Twitter Zeraxfn1"],
+[160,273,9,0,1.67,12.22,"Aris Naisix","Kirusshi"],
+[161,272,11,2,3.27,22.82,"22 tntl ǃ","Omar fvǃ"],
+[162,272,10,2,2,18,"rkn","Kukzytryona"],
+[163,272,11,0,5.64,22.55,"Unknown AI ォ","MelancholyMoment"],
+[164,272,11,0,4.36,19.73,"yupweǃ","19Q8"],
+[165,272,10,0,2,18.3,"frozyx","FTLDavidMartinez"],
+[166,271,9,1,4.22,15.67,"Maria Anthuanet","yonyonloǃ"],
+[167,271,10,1,4.2,18.2,"Sultan","Raizoo ay лол"],
+[168,271,11,1,4,26.55,"Yuta 7z","23egǃ"],
+[169,271,9,0,4.11,15.22,"King R7N ǃ","Striker Mjǃ"],
+[170,271,11,0,3,18.27,"аlwаys оn heіght","Spydеr"],
+[171,270,11,2,5.64,22.73,"Klory.","yazed9."],
+[172,270,10,2,3.2,18.7,"washed chilly","RxdnQ8ǃ"],
+[173,270,11,1,7.55,25.36,"mhd is coming","EGY NxF"],
+[174,270,10,0,1.8,17.1,"Lircy .","F1 514ǃǃ"],
+[175,270,11,0,0.36,20,"B2B ｌｕｃｋｙ彡","ʀʀᴇтʀσх 11ǃ"],
+[176,269,10,1,3.6,18.9,"shoxy","5coRpzY Q8"],
+[177,269,11,1,3.09,20,"Lazy RD","cl1oz 23"],
+[178,269,11,0,4.27,19.73,"WiLLER 1","Rivo fv"],
+[179,269,9,0,1.22,12.44,"STRYDER LAND","Dr-Sole"],
+[180,268,11,2,4.36,20.18,"Rexfiteǃ","عبد الله ǃ"],
+[181,268,11,2,3.27,25,"Wkey 7amas","Sl6 RAYANǃ"],
+[182,268,11,1,5.55,23.27,"Siakoreyli","EGY invisshot"],
+[183,268,10,1,3.7,17.3,"Уuniix來","BLZ Serpico"],
+[184,268,11,1,3,20.36,"AB03LWz","TER FENDI"],
+[185,268,10,1,2.9,19.1,"R3P3kǃ","ManCity 515ǃ"],
+[186,268,10,1,1.9,16.6,"BLZ Kaido Shin","TIKTOK ZAMZYREXX"],
+[187,268,11,0,6,23.64,"EvilMan","ovler404"],
+[188,268,11,0,4.36,19.09,"Akxrsh 92.","La Peacȩ"],
+[189,267,11,1,2.91,19.55,"onrrw is coming","its nrt"],
+[190,267,10,1,1.8,15.7,"lnCRDBL","64 saif"],
+[191,267,11,0,5.91,20.09,"Tofu Starǃ","3liǃǃ"],
+[192,267,10,0,4.7,19.8,"NBK beru 7ǃ","sinreyli 33"],
+[193,267,10,0,4.5,17.8,"21 jebzfvǃ","21 ABR"],
+[194,266,8,1,2.88,12.13,"TRK","BLZ JINXSǃ"],
+[195,266,10,1,1.3,16.8,"KLZ Sn1ckehǃ","osto ǃ"],
+[196,266,11,0,2.73,20.82,"Real 3Z","Rizr 1ǃ"],
+[197,266,9,0,2.44,14.67,"ÿazeed ǃ","luther 333"],
+[198,265,11,1,2.73,20.82,"Rynex 10ǃ","Hap 17ǃǃ"],
+[199,265,10,1,2.4,20.2,"reaper 7.","User-27ac05e530"],
+[200,265,11,0,3.91,24.45,"magician ǃ","Beam Baratheon"]
+];
+const E2_LCQ1_NAT={"1vx noam":"il","21 ABR":"qa","22 tntl ǃ":"om","23egǃ":"eg","3bood":"jo","3idQ8":"kw","3liǃǃ":"ae","5.5xy":"ar","999 panabøtǃ":"es","AE Floxzyyǃ":"fr","AUR a3enÿ":"cn","AdryYahu ӝ":"es","Aftk 75":"ae","Agenda":"kw","Agent":"jo","Akxrsh 92.":"in","Alula vello":"ae","Amro ǃ":"sa","Aris Naisix":"re","BLZ DARK 22":"sa","BLZ JINXSǃ":"sa","BLZ Kaido Shin":"es","BLZ Mario":"gb","BLZ Meli":"ae","BLZ Serpico":"ir","BLZ kwixnada":"us","BS クヴァラツヘリア":"br","Bein Jab":"sa","Bein kylo":"ae","BenBen 1st":"il","Blz Bufnik 007":"sa","Bolt Abadiǃ":"sa","Brett Scallionsǃ":"zw","Brosky 02":"ae","CHADLITE grozini":"il","CLexTr":"ae","Chaozfv":"se","Chriskp":"gr","Claus ǃ":"kw","Cldy adam ح":"sa","Cushi":"sa","DashiiX-_":"il","Dergo 97 ψ":"sa","Doksha Tweaks305":"iq","Dr-Sole":"in","EGY Brayan 7 ᴅᴠ":"es","EGY invisshot":"iq","Evil Xneon":"za","EvilMan":"jo","EyadGOTy 7":"sa","F1 Venix ǃ":"sa","FNR zetareaperǃ":"es","FTLDavidMartinez":"be","Frozone1.":"fr","GHOST 11ǃ":"ae","Ghost":"iq","HEX ﾠﾠﾠ":"sa","Hadron Lurks":"pk","HxvaWrldǃ":"sa","Hybridxrkÿ":"iq","JO GENERAL":"jo","Joy":"gr","KLZ Sn1ckehǃ":"fi","Kaizen EGT":"za","Kein callDE":"de","King R7N ǃ":"bh","Kirusshi":"fr","Kukzytryona":"ae","Kyle 874":"za","La Peacȩ":"in","Lazy RD":"jo","Lircy .":"sa","Lunitsh":"sa","M7. . .":"sa","ManCity 1 1 1 1":"sa","Maria Anthuanet":"ck","MelancholyMoment":"bh","Molakhfv":"pk","Musabot 23ǃ":"pk","NBK beru 7ǃ":"sa","NWAǃ":"sa","Nmx 5ǃǃ":"sa","Noirrǃ":"pk","Nulu 7":"mc","Omar fvǃ":"om","PO hadov ʕᵒᴥᵒʔ":"il","Parm 10ǃ":"ae","PityXc":"sa","Pulse 01":"ae","R3P3kǃ":"sa","RAGE":"pk","RAZ ǃ":"sa","REV":"om","RVL Alfadh1i 7ǃ":"kw","Ragna 23ǃ":"sa","Rami Fortis":"il","Raymond X Liz":"sa","Reaper":"bh","Rivo fv":"eg","RvL Mósk 17ǃ":"sa","RxdnQ8ǃ":"kw","STRYDER LAND":"in","SWT skim":"it","Saif3k":"ae","Salvatore 1st":"sa","Saw 1111":"ye","Saw Gyro":"qa","SirR3b 亗":"sa","Skytore":"ae","SlowQ8ǃ":"kw","Smsomfishy":"ae","Stark":"kw","Striker Mjǃ":"bh","Syphon":"pt","TGA bloskiǃ":"es","THIJBRUBLUD1394":"nl","TIKTOK ZAMZYREXX":"es","TRK":"sa","TW Xenovers_":"es","The Goat Deleme":"iq","Tik Taker 73":"sa","Tofu Starǃ":"ae","Twitter Zeraxfn1":"eg","VS SPY5ER":"ae","Vinsmoke 974.":"qa","Voetx":"iq","Vorce 4ǃ":"ae","W orel yhyh":"il","WAR Mjno0Nk":"jo","WiLLER 1":"eg","Wkey 7amas":"om","YH 17":"sa","Yufi 874":"bh","Yuta 7z":"eg","ZEER":"jo","ZoZfv":"sa","Zrrto 朕":"hk","acoyn":"ae","arctreyli":"qa","avora optimusg0d":"lt","barerhickǃ":"ae","batcuh splaash":"kw","brokenpay":"fr","broskidelrayǃ":"us","cl1oz 23":"sa","crypto":"si","desables roses":"il","dpro 9":"bh","el scarypika 亗":"fr","eudald kurenaiǃ":"es","falcon 7bgbotǃ":"sa","fastballiq2x":"sa","fenixxyz 9":"de","flicker 1stǃ":"ae","frozyx":"ch","fyperfv":"eg","go nadavush go":"us","grrr dapssss":"fr","hamdanfvǃ":"ae","hay":"eg","juliann1700x":"nl","kayoopaQ8":"kw","khalid3k 亗":"sa","klvr ǃ":"ca","korx corty 33.":"es","layzer aim7":"md","lenixfvǃ":"qa","localtoaster47":"ae","luther 333":"sa","lyones112":"it","m1chxxl svjǃ":"es","magician ǃ":"ae","mensolinho":"it","modi 27ǃ":"sy","nico2cartier":"it","notprocǃ":"sa","ovler404":"jo","pract 33ǃ":"de","prime swizi7":"il","prs Razox":"be","r2ǃ":"sa","rasnfnw 1stǃ":"pl","raz 19ǃ":"sa","reaper 7.":"aq","rkn":"ps","roei fv 11":"il","rumblezraga 23ǃ":"ae","rxzr":"se","s3ǃﾠ":"in","sailor 19ǃ":"eg","sanzǃ":"es","shakerGoty 7ǃ":"iq","shoxy":"sa","sinreyli 33":"ch","solo cheeta":"es","stonfvǃ":"qa","tik broetaa":"sa","tutitryona 1stǃ":"sa","twzzk":"sa","washed chilly":"fr","x ceyy 10ǃ":"nl","xpf5m 11":"sa","yali 88ǃ":"il","yazed9.":"sa","yonyonloǃ":"il","yupweǃ":"sa","ÿazeed ǃ":"sa","Ŕiẑox 47":"il","ǃRAZ 15":"it","ʚ220408ɞ":"sa","аlwаys оn heіght":"in","ح d4yan ɪꜱ ɢᴏᴅ":"sa","عبد الله ǃ":"sa"};
+const CARD_E2_LCQ1_EVENT="FNCS 2026 Major 2 — Last Chance Qualifier Session 1 (Middle East)";
+const CARD_E2_LCQ1_DATE="27 июл 2026";
 const _E2L=CARD_E2_LCQ_RAW.map(m1Entry);
+const _E2L1=CARD_E2_LCQ1_RAW.map(m1Entry);
 const _E2G=CARD_E2_GF_RAW.map(m1Entry);
 _S.e2p=mkSorts(_E2P);
 _S.e2l=mkSorts(_E2L);
+_S.e2l1=mkSorts(_E2L1);
 _S.e2g=mkSorts(_E2G);
 
 // Ranked inside its own field, against the band REGION_TOP sets for ME.
 const e2PlayinBase = r => REGION_TOP.ME - ((r-1)/Math.max(_E2P.length-1,1))*(REGION_TOP.ME-62);
-const e2LcqBase    = r => 62 - ((r-1)/Math.max(_E2L.length-1,1))*14;
+const e2LcqLen  = () => _E2L.length + _E2L1.length;
+const e2LcqBase    = r => 62 - ((r-1)/Math.max(e2LcqLen()-1,1))*14;
+const e2Lcq1Base   = r => 62 - ((_E2L.length+r-1)/Math.max(e2LcqLen()-1,1))*14;
 const e2GfBase     = r => REGION_TOP.ME - ((r-1)/Math.max(_E2G.length-1,1))*(REGION_TOP.ME-70);
 
 (function buildMajor2ME(){
@@ -28767,7 +30903,7 @@ const e2GfBase     = r => REGION_TOP.ME - ((r-1)/Math.max(_E2G.length-1,1))*(REG
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(base(entry.rank), 30, 99));
-      const code = E2_NAT_LIQUI[nm] || E2_NAT_TRN[nm] || '';
+      const code = E2_NAT_LIQUI[nm] || E2_NAT_TRN[nm] || E2_LCQ1_NAT[nm] || '';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource: E2_NAT_LIQUI[nm] ? 'liquipedia' : 'tracker',
@@ -28785,6 +30921,7 @@ const e2GfBase     = r => REGION_TOP.ME - ((r-1)/Math.max(_E2G.length-1,1))*(REG
   _E2P.forEach(e=>{ if(cardNotHere('m2', 'ME', e.duo)) return;
                     TEAMMATE_GROUPS.push(e.duo.slice()); add(e, CARD_E2_PLAYIN_EVENT, CARD_M2_PLAYIN_DATE, e2PlayinBase, 'Playin'); });
   _E2L.forEach(e=>add(e, CARD_E2_LCQ_EVENT, CARD_M2_LCQ_DATE, e2LcqBase, 'Lcq'));
+  _E2L1.forEach(e=>add(e, CARD_E2_LCQ1_EVENT, CARD_E2_LCQ1_DATE, e2Lcq1Base, 'Lcq1'));
   _E2G.forEach(e=>add(e, CARD_E2_GF_EVENT, CARD_M2_GF_DATE, e2GfBase, 'Gf'));
 
   const byName={};
@@ -29094,15 +31231,175 @@ const CARD_O2_LCQ_EVENT='FNCS 2026 Major 2 — Last Chance Qualifier (Oceania)';
 const CARD_O2_GF_EVENT='FNCS 2026 Major 2 — Grand Finals (Oceania)';
 
 const _O2P=CARD_O2_PLAYIN_RAW.map(m1Entry);
+/* M2_OCE: открытая сессия 1 Ласт-Ченса, 2026-07-27 (окно S41_FNCSMajor2_LastChanceQualifier_OCE, всего страниц 18; лобби того же Ласт-Ченса — 50 команд, они здесь не повторяются) */
+const CARD_O2_LCQ1_RAW=[
+[10,359,9,1,5.78,14.11,"pxyzr","gly"],
+[52,297,11,1,3.45,19.36,"corqо","Swavy Cuz"],
+[53,296,10,1,2.3,16.3,"blz russ 72ǃ","Pal 237"],
+[54,296,9,0,4.89,16.11,"Nazareth","2rykuǃ"],
+[55,295,11,2,5,18.82,"Brock","Takeru"],
+[56,295,9,2,3.67,17,"solo lovell","georgefentfv"],
+[57,295,10,1,4.8,18.6,"Mr Yeets Ω","onyx"],
+[58,295,10,0,2.3,19.2,"mns fishy 10ǃ","Zane"],
+[59,294,10,0,11.4,22.1,"quickzytryona","Sanjog"],
+[60,293,9,2,5,16.78,"archiereyli281ǃ","ktrl fv"],
+[61,293,9,0,3.44,14.44,"Christsavvedme","strawhat spiralǃ"],
+[62,292,11,1,8.82,23.82,"glokk40kingfirez","marley"],
+[63,292,10,1,5.1,18,"Ming Fvǃ","HvK jasperbotǃ"],
+[64,291,10,0,4.3,16.6,"hwk Wavy 222ǃ","Vepz"],
+[65,290,8,2,6.25,13.63,"Clayrixx","epsybotbotǃ"],
+[66,290,9,1,3.89,14.56,"coast toxicǃ","ddev ross"],
+[67,290,11,0,4,21.36,"krimz","demayache3k"],
+[68,289,10,0,2.9,16,"BabyBoyJordy","baza"],
+[69,287,11,1,5.82,18.82,"laflvr","bonkyi"],
+[70,287,10,1,4.8,16.8,"kirbÿ 23","crashÿ"],
+[71,287,9,0,4.56,14.44,"Colgnore","MINTOOǃ"],
+[72,287,9,0,4.11,13.78,"Pressieǃ","lucas fvㅤ"],
+[73,285,9,2,5.22,15.89,"flynnfv","wazy"],
+[74,285,11,1,7.45,22.18,"twitch czntrades","Shawarma Goodman"],
+[75,285,10,0,1.7,13.7,"Č137 Ṯøxīc ツ","Chrome fluixǃ"],
+[76,284,11,0,3.27,19.55,"lxgxn ʚɞ","eggzotic."],
+[77,284,11,0,2.55,20.09,"codyǃ","tobi zens"],
+[78,283,10,1,4.6,17.7,"Ripleyysznǃ Ψ","clxpzz yhyhǃ"],
+[79,283,11,1,2.91,20.36,"рlаin","Gilt874"],
+[80,283,9,0,3.67,14.89,"Seals","JXIDEN"],
+[81,283,9,0,2.33,15.67,"Wxlfsullyǃ","mns harvzzfnt"],
+[82,282,10,1,3.9,16.9,"david cibula","sxlarǃ"],
+[83,282,11,1,2.82,20.18,"Marogi.","Choomba Dupe"],
+[84,282,9,1,2.33,15.22,"Slvǃ","Scythefntt"],
+[85,281,11,2,3.36,21.91,"chrome 34ǃ","Viperzx"],
+[86,281,10,1,6,18.5,"Forbzジ","stappabotǃ"],
+[87,281,10,0,2.7,18.7,"Simba","aoi corz"],
+[88,280,10,1,3.1,16.9,"zrzxzx","Moufa"],
+[89,280,11,0,2.91,19.55,"jords","90210 Adamǃ"],
+[90,280,11,0,2.55,20.27,"alexxnada","prime woodsy"],
+[91,279,10,2,2.3,18,"Guilty","ray"],
+[92,278,11,1,3,20.73,"MrSpiritt","mälsǃ"],
+[93,278,10,0,3.2,18.8,"ur lie in aprilǃ","Agility"],
+[94,277,10,0,0.3,15.6,"がらぱぱっぱらぱー","ラルセイの炎魔法に焼かれたい"],
+[95,276,11,2,4,23.18,"ZO Blitznadaǃ","ryln 25ǃ"],
+[96,276,10,0,1,15.2,"CABBAGE KING.","Chonaz"],
+[97,275,10,0,2.3,17,"Tota","Nugget Overlord2"],
+[98,274,11,0,3.27,19.82,"blz dictator","Jackyyzx_"],
+[99,274,10,0,2.6,17,"I N I C I T Y","jackyjerky 17"],
+[100,273,10,1,4.6,18.8,"Jude Blnkify 10ǃ","ryz"],
+[101,273,9,1,2.67,14.22,"ᴏᴄᴇ ꜰʀᴀᴀɴᴛɪᴄ","Falcon idgafbot"],
+[102,272,9,1,3.22,17,"Cazo","vaxsr"],
+[103,272,10,1,1.7,17.1,"vanyak fv","Platypus 27"],
+[104,272,10,0,6.4,17.4,"cented fv","linkyǃ"],
+[105,272,9,0,3.78,16.78,"xbingo","pulsar"],
+[106,271,6,1,11,12.17,"AUR Joz","valix 13ǃ"],
+[107,271,11,0,2.27,20.36,"newy monster 15","gen yhyh 7"],
+[108,270,10,0,5.6,20.7,"Cqexy","fliccǃ"],
+[109,270,10,0,3.2,17.2,"falcon isaacǃ","mns expandǃ"],
+[110,270,11,0,1.64,19.36,"kailashfv","tassieuk"],
+[111,269,10,0,3.9,18.6,"killsh0t.","Arielle Kebbel"],
+[112,269,9,0,1.22,12.22,"Jackydee","aoxylol"],
+[113,268,9,0,3.33,16.11,"Rileybot","eddie costanza"],
+[114,268,11,0,2,19.09,"Nic 1x","cookedbychefcyan"],
+[115,267,10,0,3.3,19.5,"Ryo","Rhythmic ち"],
+[116,266,10,2,2.2,19.8,"sole no1 chudmax","toaster 10"],
+[117,266,8,1,3.62,13.38,"liviqsǃ","Sitruk"],
+[118,266,11,1,3.36,22.91,"paco luciano","Jace"],
+[119,266,10,0,4.4,15.4,"SASA JonkartaPec","LEGO Sweat"],
+[120,266,10,0,4,21.4,"Eddybear1309","clersie3"],
+[121,266,9,0,3.78,15.89,"gizmo","JFT TuckleBuckle"],
+[122,265,9,0,5.22,14.78,"Caleb","Hoboǃ"],
+[123,264,10,1,1.9,18.5,"kingkaicuz","dodxǃ"],
+[124,264,10,0,3.2,19.4,"Chur Monty","CНROLLO LUCILFЕR"],
+[125,264,11,0,2.55,21,"ttv auvanquish","budoo mucher 67ǃ"],
+[126,264,11,0,1.82,21.64,"Icey383","313 syxc"],
+[127,263,11,1,4,22.27,"Jomiǃ","Apollo ᶰ1"],
+[128,263,10,1,2.6,20.1,"nxg zʞɔnl luckz","小约翰2314ǃǃǃ"],
+[129,263,11,1,1.45,21.09,"bri seisǃ","mitch sieteǃ"],
+[130,263,8,0,5.12,13.63,"bas","tilly"],
+[131,263,9,0,2.33,15.56,"Sinful Essqortsu","claytobruhhh"],
+[132,262,11,2,3.09,24.27,"Luckii","oce t3eny"],
+[133,262,11,1,4.45,21.18,"Flopper kaz","zero"],
+[134,262,9,1,3.44,14.89,"Jаck ϟ","MIMIC"],
+[135,262,11,1,2.27,22.09,"Applecuhh 7.","Lуйх FЙT"],
+[136,261,11,2,4.09,24.82,"VortexM","Protoon"],
+[137,261,11,1,2.91,21,"Tiktok Xoiknada","jde lotus fvǃ"],
+[138,261,11,0,4.09,21.64,"nixonduney","Coast ashxz3xǃ"],
+[139,261,11,0,3.55,23.09,"Kwack","tj singh臭"],
+[140,260,11,1,2.27,18.82,"brutus adlibǃ","cÿnon 11ǃ"],
+[141,260,10,0,3.2,16.9,"Shхrр","ST4ALTH"],
+[142,259,10,1,4.8,19.2,"acidfrags.","Zavai"],
+[143,259,11,1,3.09,22.09,"jedjedjedjedǃ","sweatzuǃ"],
+[144,259,11,0,4.45,21.18,"skydox 1234","eggman 34563456"],
+[145,259,10,0,4.3,19,"glokk 4ǃ","AUR luxÿ"],
+[146,259,10,0,3.5,17.9,"zo rileyぞ","twis wxves 11ǃ"],
+[147,259,10,0,2.5,16.8,"Beeflessツ","Twitch RosettaAU"],
+[148,258,11,1,6.45,22.18,"damoǃǃ","Zennbuca"],
+[149,258,9,1,5,19.22,"rekznada","Solarzr"],
+[150,258,11,0,2.36,22.64,"Cals","Fever 23ǃ"],
+[151,257,11,1,2.55,20,"tiktok A7sxc愛","Pulse_fnツ"],
+[152,257,9,1,2.22,16.89,"marxgod.","kre 10ÿ"],
+[153,257,11,0,3.73,17.73,"crylix","maxi"],
+[154,257,10,0,3.1,16.8,"texy 14","Morelloǃ"],
+[155,257,10,0,1.3,16.1,"brxy","twitch weeziefn"],
+[156,256,9,1,4.33,16.78,"kazobotǃ","Mxhlo2Kǃ"],
+[157,256,10,1,3.5,18.8,"clawzv2","Tiktok dr1pfnt"],
+[158,256,11,1,3,22.36,"catgirl jestarǃ","catboy will"],
+[159,256,10,1,2.7,17.5,"Lelouchǃ 影","La peace Ashuraǃ"],
+[160,256,11,1,1.18,22.18,"Chud Jazzi","kettama fvǃ"],
+[161,256,11,0,3.82,21.36,"qwiizlyreyli ysh","yеrp"],
+[162,256,9,0,3.11,16.67,"MNS Fear Godǃ","relaxed"],
+[163,256,10,0,3,18.5,"the big zǃ","Rainxz 23ǃ"],
+[164,256,9,0,2.22,14.89,"しょうぽったー","えいじ組しんアンドしん"],
+[165,255,9,1,3.56,17.44,"TheEvilSigmaǃ","STRE4MLESS"],
+[166,255,11,0,3,20.27,"repulse svj","bandit 水"],
+[167,255,9,0,2.78,16.22,"wingu jit","Seaport"],
+[168,254,10,0,3.6,21.4,"pqkzyǃ","TR Hutchzz"],
+[169,254,10,0,1.2,15.3,"Eddiefvǃ","TNG Benjifvǃ"],
+[170,253,11,2,4.82,21.09,"deqx 30","Brix"],
+[171,253,10,2,3.1,19.4,"nxg sours","nxg carnageGOTY"],
+[172,253,10,1,4,19.6,"tt zeko.","tiktok m0skfn"],
+[173,253,10,1,2.6,16.4,"rhyminǃ","Batman aceǃ"],
+[174,253,11,0,3.36,20.82,"scwipt 42ǃ fv","zeddy 281ǃ"],
+[175,253,11,0,2.45,20.64,"mns Masterfvǃ","mayoǃ"],
+[176,251,10,0,1.3,18,"Zinky81","falcon Riley 10ǃ"],
+[177,250,10,0,3.6,21.6,"zyrobulla","drkL 24ǃ"],
+[178,250,10,0,2.4,18.9,"yayayiiiii","Vader"],
+[179,249,10,0,2.1,16.5,"Taze","Olivia Bakerǃ"],
+[180,248,11,1,3.91,23.27,"vаΙzz","Qy Thunder E85"],
+[181,248,11,1,3.73,23.18,"falcon vero 10ǃ","Leusheppy"],
+[182,248,11,0,3.64,20.82,"bob","SRG styx"],
+[183,248,11,0,1.27,21.91,"bunny618gleaming","16IQ Achez"],
+[184,247,9,1,5.78,20,"Zinxii","Tom"],
+[185,247,11,0,3.73,22,"falcon farquaad","locko 27"],
+[186,246,11,1,3.36,22.27,"jkaaneǃ","willza jitǃ"],
+[187,246,11,1,2.27,22.27,"king worthy 亗","icyzx 神"],
+[188,246,11,1,1.36,20.64,"golden","vexx"],
+[189,246,10,0,3.2,20.5,"vexi","167ms Jenno"],
+[190,246,11,0,2.55,23.64,"ʟᴀᴄʜɪᴇ.","OSHᴳᶻ"],
+[191,246,9,0,2.44,16.56,"ton","Jinra"],
+[192,246,10,0,1.8,18.3,"drozzy07","volk魚"],
+[193,246,11,0,1.64,18.73,"chef staticgblg2","falcon wyzx 10ǃ"],
+[194,245,11,1,3.45,21.82,"tt hazaa","Kuri 6th"],
+[195,245,11,1,2.91,24.73,"camp丆","big yahuuuu"],
+[196,245,9,0,4.33,19.78,"PXR kira","mickybot 80"],
+[197,245,8,0,2.38,12.25,"Jacko","pxr bostonǃ"],
+[198,245,11,0,2.27,23.18,"lluvvrs","ploieyǃ"],
+[199,244,11,0,5.82,25.09,"Rhys","orix zzz 200ǃ"],
+[200,244,10,0,2.6,20.4,"TonkaFN","harexuk."]
+];
+const O2_LCQ1_NAT={"167ms Jenno":"au","16IQ Achez":"au","2rykuǃ":"au","90210 Adamǃ":"au","AUR Joz":"au","AUR luxÿ":"sv","Agility":"nz","BabyBoyJordy":"au","Batman aceǃ":"nz","Beeflessツ":"au","Brix":"au","Brock":"au","CABBAGE KING.":"ee","Caleb":"au","Cals":"au","Cazo":"au","Chonaz":"au","Chrome fluixǃ":"gf","Chud Jazzi":"au","Chur Monty":"nz","Clayrixx":"au","Colgnore":"nz","Cqexy":"au","CНROLLO LUCILFЕR":"nz","Fever 23ǃ":"au","Gilt874":"au","HvK jasperbotǃ":"au","Icey383":"au","JFT TuckleBuckle":"au","JXIDEN":"au","Jace":"au","Jacko":"nz","Jinra":"au","Jomiǃ":"nz","Jude Blnkify 10ǃ":"au","Jаck ϟ":"au","Kwack":"au","LEGO Sweat":"au","Lelouchǃ 影":"au","Leusheppy":"au","Luckii":"nz","Lуйх FЙT":"au","MIMIC":"au","MINTOOǃ":"au","MNS Fear Godǃ":"au","Marogi.":"au","Moufa":"au","Mr Yeets Ω":"al","MrSpiritt":"au","Mxhlo2Kǃ":"au","Nazareth":"au","Nic 1x":"au","Olivia Bakerǃ":"au","Pal 237":"ss","Platypus 27":"au","Pressieǃ":"au","Rhys":"au","Rhythmic ち":"au","Rileybot":"nz","Ripleyysznǃ Ψ":"is","Ryo":"au","SASA JonkartaPec":"au","STRE4MLESS":"nz","Sanjog":"au","Scythefntt":"au","Seals":"ch","Shхrр":"au","Simba":"gb","Sinful Essqortsu":"au","Slvǃ":"au","Solarzr":"au","Swavy Cuz":"au","TR Hutchzz":"au","Taze":"au","TheEvilSigmaǃ":"au","Tiktok Xoiknada":"au","Tiktok dr1pfnt":"au","Tom":"au","Tota":"au","Twitch RosettaAU":"au","Vepz":"au","Viperzx":"au","Wxlfsullyǃ":"nz","ZO Blitznadaǃ":"au","Zane":"au","Zavai":"nz","Zennbuca":"au","acidfrags.":"au","alexxnada":"au","aoi corz":"au","archiereyli281ǃ":"au","bandit 水":"wf","bas":"au","baza":"au","blz russ 72ǃ":"au","bob":"nz","bonkyi":"au","brxy":"au","camp丆":"au","catboy will":"lb","cented fv":"nz","chef staticgblg2":"au","chrome 34ǃ":"pl","claytobruhhh":"au","clxpzz yhyhǃ":"au","codyǃ":"au","cookedbychefcyan":"au","corqо":"au","crashÿ":"au","crylix":"au","damoǃǃ":"au","ddev ross":"ca","deqx 30":"au","eddie costanza":"au","eggman 34563456":"au","epsybotbotǃ":"au","falcon Riley 10ǃ":"nz","falcon isaacǃ":"au","falcon vero 10ǃ":"au","falcon wyzx 10ǃ":"au","fliccǃ":"au","flynnfv":"au","gen yhyh 7":"au","georgefentfv":"au","gizmo":"au","glokk 4ǃ":"tc","glokk40kingfirez":"nz","golden":"au","harexuk.":"au","hwk Wavy 222ǃ":"nz","icyzx 神":"nz","jackyjerky 17":"au","jde lotus fvǃ":"au","jedjedjedjedǃ":"au","jords":"au","kazobotǃ":"au","kettama fvǃ":"cz","killsh0t.":"au","king worthy 亗":"nz","kingkaicuz":"au","kirbÿ 23":"nz","kre 10ÿ":"nz","krimz":"de","ktrl fv":"au","laflvr":"aq","linkyǃ":"au","liviqsǃ":"au","lluvvrs":"au","marley":"au","maxi":"au","mayoǃ":"au","mns Masterfvǃ":"au","mns expandǃ":"au","mns fishy 10ǃ":"au","mälsǃ":"nz","nxg carnageGOTY":"au","nxg sours":"rs","nxg zʞɔnl luckz":"au","oce t3eny":"au","onyx":"au","orix zzz 200ǃ":"au","ploieyǃ":"au","prime woodsy":"au","pulsar":"nz","pxr bostonǃ":"gr","pxyzr":"nz","quickzytryona":"au","qwiizlyreyli ysh":"ru","ray":"au","relaxed":"au","repulse svj":"au","rhyminǃ":"au","ryln 25ǃ":"sy","scwipt 42ǃ fv":"au","skydox 1234":"au","sole no1 chudmax":"va","solo lovell":"au","strawhat spiralǃ":"au","sweatzuǃ":"nz","sxlarǃ":"au","tassieuk":"au","tiktok m0skfn":"gr","tilly":"au","tj singh臭":"au","toaster 10":"au","ton":"mx","tt zeko.":"fr","ttv auvanquish":"au","twis wxves 11ǃ":"au","twitch czntrades":"lb","twitch weeziefn":"au","ur lie in aprilǃ":"au","valix 13ǃ":"au","vaxsr":"au","vexi":"au","vexx":"au","vаΙzz":"au","wazy":"au","yayayiiiii":"jp","yеrp":"au","zero":"au","zo rileyぞ":"au","zrzxzx":"au","zyrobulla":"au","がらぱぱっぱらぱー":"jp","小约翰2314ǃǃǃ":"au"};
+const CARD_O2_LCQ1_EVENT="FNCS 2026 Major 2 — Last Chance Qualifier Session 1 (Oceania)";
+const CARD_O2_LCQ1_DATE="27 июл 2026";
 const _O2L=CARD_O2_LCQ_RAW.map(m1Entry);
+const _O2L1=CARD_O2_LCQ1_RAW.map(m1Entry);
 const _O2G=CARD_O2_GF_RAW.map(m1Entry);
 _S.o2p=mkSorts(_O2P);
 _S.o2l=mkSorts(_O2L);
+_S.o2l1=mkSorts(_O2L1);
 _S.o2g=mkSorts(_O2G);
 
 // Ranked inside its own field, against the band REGION_TOP sets for OCE.
 const o2PlayinBase = r => REGION_TOP.OCE - ((r-1)/Math.max(_O2P.length-1,1))*(REGION_TOP.OCE-62);
-const o2LcqBase    = r => 62 - ((r-1)/Math.max(_O2L.length-1,1))*14;
+const o2LcqLen  = () => _O2L.length + _O2L1.length;
+const o2LcqBase    = r => 62 - ((r-1)/Math.max(o2LcqLen()-1,1))*14;
+const o2Lcq1Base   = r => 62 - ((_O2L.length+r-1)/Math.max(o2LcqLen()-1,1))*14;
 const o2GfBase     = r => REGION_TOP.OCE - ((r-1)/Math.max(_O2G.length-1,1))*(REGION_TOP.OCE-70);
 
 (function buildMajor2OCE(){
@@ -29113,7 +31410,7 @@ const o2GfBase     = r => REGION_TOP.OCE - ((r-1)/Math.max(_O2G.length-1,1))*(RE
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(base(entry.rank), 30, 99));
-      const code = O2_NAT_LIQUI[nm] || O2_NAT_TRN[nm] || '';
+      const code = O2_NAT_LIQUI[nm] || O2_NAT_TRN[nm] || O2_LCQ1_NAT[nm] || '';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource: O2_NAT_LIQUI[nm] ? 'liquipedia' : 'tracker',
@@ -29130,6 +31427,7 @@ const o2GfBase     = r => REGION_TOP.OCE - ((r-1)/Math.max(_O2G.length-1,1))*(RE
   };
   _O2P.forEach(e=>{ TEAMMATE_GROUPS.push(e.duo.slice()); add(e, CARD_O2_PLAYIN_EVENT, CARD_M2_PLAYIN_DATE, o2PlayinBase, 'Playin'); });
   _O2L.forEach(e=>add(e, CARD_O2_LCQ_EVENT, CARD_M2_LCQ_DATE, o2LcqBase, 'Lcq'));
+  _O2L1.forEach(e=>add(e, CARD_O2_LCQ1_EVENT, CARD_O2_LCQ1_DATE, o2Lcq1Base, 'Lcq1'));
   _O2G.forEach(e=>add(e, CARD_O2_GF_EVENT, CARD_M2_GF_DATE, o2GfBase, 'Gf'));
 
   const byName={};
@@ -43130,7 +45428,12 @@ function attrsFor(p){
 // and "shxrk", "FoCuS" and "Focus". Every check for "is this player already in
 // the lobby" goes through this, so a bot can never end up with another card of
 // someone the player has already drafted.
-function hKey(p){ return String(p && p.handle || p || '').toLowerCase(); }
+/* Пробел по краям ника — мусор выгрузки, а не имя: в таблицах 2024-2025 тот же
+   человек приезжает как «Japko », а в 2026-м как «Japko», и без trim это два
+   разных человека во всём файле сразу — в парах, в ростере, в пуле карьеры.
+   Отзыв: «только двое japko в 25 году». Замер до правки: 90 ников с пробелом
+   по краям, у 71 есть близнец без пробела. */
+function hKey(p){ return String(p && p.handle || p || '').toLowerCase().trim(); }
 
 function attrsForRaw(p){
   if(p._attrs) return p._attrs;
@@ -43173,6 +45476,8 @@ function attrsForRaw(p){
     p.missedGf ? missedGfPlayinBase(p._m2Playin.rank, _M2P.length) : m2PlayinBase(p._m2Playin.rank), 0); return p._attrs; }
   if(p._m2Lcq){ p._attrs=buildM1Attrs(p._m2Lcq, p.handle, _S.m2l,
     p.missedGf ? missedGfLcqBase(p._m2Lcq.rank, _M2L.length) : m2LcqBase(p._m2Lcq.rank), 0); return p._attrs; }
+  if(p._m2Lcq1){ p._attrs=buildM1Attrs(p._m2Lcq1, p.handle, _S.m2l1,
+    p.missedGf ? missedGfLcqBase(_M2L.length+p._m2Lcq1.rank, m2LcqLen()) : m2Lcq1Base(p._m2Lcq1.rank), 0); return p._attrs; }
   if(p._n2Gf){ p._attrs=buildM1Attrs(p._n2Gf, p.handle, _S.n2g, n2GfBase(p._n2Gf.rank), 0); return p._attrs; }
   if(p._w2Gf){ p._attrs=buildM1Attrs(p._w2Gf, p.handle, _S.w2g, w2GfBase(p._w2Gf.rank), 0); return p._attrs; }
   if(p._b2Gf){ p._attrs=buildM1Attrs(p._b2Gf, p.handle, _S.b2g, b2GfBase(p._b2Gf.rank), 0); return p._attrs; }
@@ -43183,61 +45488,87 @@ function attrsForRaw(p){
     p.missedGf ? missedGfPlayinBase(p._o2Playin.rank, _O2P.length) : o2PlayinBase(p._o2Playin.rank), 0); return p._attrs; }
   if(p._o2Lcq){ p._attrs=buildM1Attrs(p._o2Lcq, p.handle, _S.o2l,
     p.missedGf ? missedGfLcqBase(p._o2Lcq.rank, _O2L.length) : o2LcqBase(p._o2Lcq.rank), 0); return p._attrs; }
+  if(p._o2Lcq1){ p._attrs=buildM1Attrs(p._o2Lcq1, p.handle, _S.o2l1,
+    p.missedGf ? missedGfLcqBase(_O2L.length+p._o2Lcq1.rank, o2LcqLen()) : o2Lcq1Base(p._o2Lcq1.rank), 0); return p._attrs; }
   if(p._e2Playin){ p._attrs=buildM1Attrs(p._e2Playin, p.handle, _S.e2p,
     p.missedGf ? missedGfPlayinBase(p._e2Playin.rank, _E2P.length) : e2PlayinBase(p._e2Playin.rank), 0); return p._attrs; }
   if(p._e2Lcq){ p._attrs=buildM1Attrs(p._e2Lcq, p.handle, _S.e2l,
     p.missedGf ? missedGfLcqBase(p._e2Lcq.rank, _E2L.length) : e2LcqBase(p._e2Lcq.rank), 0); return p._attrs; }
+  if(p._e2Lcq1){ p._attrs=buildM1Attrs(p._e2Lcq1, p.handle, _S.e2l1,
+    p.missedGf ? missedGfLcqBase(_E2L.length+p._e2Lcq1.rank, e2LcqLen()) : e2Lcq1Base(p._e2Lcq1.rank), 0); return p._attrs; }
   if(p._a2Playin){ p._attrs=buildM1Attrs(p._a2Playin, p.handle, _S.a2p,
     p.missedGf ? missedGfPlayinBase(p._a2Playin.rank, _A2P.length) : a2PlayinBase(p._a2Playin.rank), 0); return p._attrs; }
   if(p._a2Lcq){ p._attrs=buildM1Attrs(p._a2Lcq, p.handle, _S.a2l,
     p.missedGf ? missedGfLcqBase(p._a2Lcq.rank, _A2L.length) : a2LcqBase(p._a2Lcq.rank), 0); return p._attrs; }
+  if(p._a2Lcq1){ p._attrs=buildM1Attrs(p._a2Lcq1, p.handle, _S.a2l1,
+    p.missedGf ? missedGfLcqBase(_A2L.length+p._a2Lcq1.rank, a2LcqLen()) : a2Lcq1Base(p._a2Lcq1.rank), 0); return p._attrs; }
   if(p._b2Playin){ p._attrs=buildM1Attrs(p._b2Playin, p.handle, _S.b2p,
     p.missedGf ? missedGfPlayinBase(p._b2Playin.rank, _B2P.length) : b2PlayinBase(p._b2Playin.rank), 0); return p._attrs; }
   if(p._b2Lcq){ p._attrs=buildM1Attrs(p._b2Lcq, p.handle, _S.b2l,
     p.missedGf ? missedGfLcqBase(p._b2Lcq.rank, _B2L.length) : b2LcqBase(p._b2Lcq.rank), 0); return p._attrs; }
+  if(p._b2Lcq1){ p._attrs=buildM1Attrs(p._b2Lcq1, p.handle, _S.b2l1,
+    p.missedGf ? missedGfLcqBase(_B2L.length+p._b2Lcq1.rank, b2LcqLen()) : b2Lcq1Base(p._b2Lcq1.rank), 0); return p._attrs; }
   if(p._w2Playin){ p._attrs=buildM1Attrs(p._w2Playin, p.handle, _S.w2p,
     p.missedGf ? missedGfPlayinBase(p._w2Playin.rank, _W2P.length) : w2PlayinBase(p._w2Playin.rank), 0); return p._attrs; }
   if(p._w2Lcq){ p._attrs=buildM1Attrs(p._w2Lcq, p.handle, _S.w2l,
     p.missedGf ? missedGfLcqBase(p._w2Lcq.rank, _W2L.length) : w2LcqBase(p._w2Lcq.rank), 0); return p._attrs; }
+  if(p._w2Lcq1){ p._attrs=buildM1Attrs(p._w2Lcq1, p.handle, _S.w2l1,
+    p.missedGf ? missedGfLcqBase(_W2L.length+p._w2Lcq1.rank, w2LcqLen()) : w2Lcq1Base(p._w2Lcq1.rank), 0); return p._attrs; }
   if(p._n2Playin){ p._attrs=buildM1Attrs(p._n2Playin, p.handle, _S.n2p,
     p.missedGf ? missedGfPlayinBase(p._n2Playin.rank, _N2P.length) : n2PlayinBase(p._n2Playin.rank), 0); return p._attrs; }
   if(p._n2Lcq){ p._attrs=buildM1Attrs(p._n2Lcq, p.handle, _S.n2l,
     p.missedGf ? missedGfLcqBase(p._n2Lcq.rank, _N2L.length) : n2LcqBase(p._n2Lcq.rank), 0); return p._attrs; }
+  if(p._n2Lcq1){ p._attrs=buildM1Attrs(p._n2Lcq1, p.handle, _S.n2l1,
+    p.missedGf ? missedGfLcqBase(_N2L.length+p._n2Lcq1.rank, n2LcqLen()) : n2Lcq1Base(p._n2Lcq1.rank), 0); return p._attrs; }
   if(p._m1Gf){ p._attrs=buildM1Attrs(p._m1Gf, p.handle, _S.m1g, m1GfBase(p._m1Gf.rank), 0); return p._attrs; }
   if(p._m1Playin){ p._attrs=buildM1Attrs(p._m1Playin, p.handle, _S.m1p,
     p.missedGf ? missedGfPlayinBase(p._m1Playin.rank, _M1P.length) : m1PlayinBase(p._m1Playin.rank), 0); return p._attrs; }
   if(p._m1Lcq){ p._attrs=buildM1Attrs(p._m1Lcq, p.handle, _S.m1l,
     p.missedGf ? missedGfLcqBase(p._m1Lcq.rank, _M1L.length) : m1LcqBase(p._m1Lcq.rank), 0); return p._attrs; }
+  if(p._m1Lcq1){ p._attrs=buildM1Attrs(p._m1Lcq1, p.handle, _S.m1l1,
+    p.missedGf ? missedGfLcqBase(_M1L.length+p._m1Lcq1.rank, m1LcqLen()) : m1Lcq1Base(p._m1Lcq1.rank), 0); return p._attrs; }
   if(p._n1Gf){ p._attrs=buildM1Attrs(p._n1Gf, p.handle, _S.n1g, n1GfBase(p._n1Gf.rank), 0); return p._attrs; }
   if(p._n1Playin){ p._attrs=buildM1Attrs(p._n1Playin, p.handle, _S.n1p,
     p.missedGf ? missedGfPlayinBase(p._n1Playin.rank, _N1P.length) : n1PlayinBase(p._n1Playin.rank), 0); return p._attrs; }
   if(p._n1Lcq){ p._attrs=buildM1Attrs(p._n1Lcq, p.handle, _S.n1l,
     p.missedGf ? missedGfLcqBase(p._n1Lcq.rank, _N1L.length) : n1LcqBase(p._n1Lcq.rank), 0); return p._attrs; }
+  if(p._n1Lcq1){ p._attrs=buildM1Attrs(p._n1Lcq1, p.handle, _S.n1l1,
+    p.missedGf ? missedGfLcqBase(_N1L.length+p._n1Lcq1.rank, n1LcqLen()) : n1Lcq1Base(p._n1Lcq1.rank), 0); return p._attrs; }
   if(p._w1Gf){ p._attrs=buildM1Attrs(p._w1Gf, p.handle, _S.w1g, w1GfBase(p._w1Gf.rank), 0); return p._attrs; }
   if(p._w1Playin){ p._attrs=buildM1Attrs(p._w1Playin, p.handle, _S.w1p,
     p.missedGf ? missedGfPlayinBase(p._w1Playin.rank, _W1P.length) : w1PlayinBase(p._w1Playin.rank), 0); return p._attrs; }
   if(p._w1Lcq){ p._attrs=buildM1Attrs(p._w1Lcq, p.handle, _S.w1l,
     p.missedGf ? missedGfLcqBase(p._w1Lcq.rank, _W1L.length) : w1LcqBase(p._w1Lcq.rank), 0); return p._attrs; }
+  if(p._w1Lcq1){ p._attrs=buildM1Attrs(p._w1Lcq1, p.handle, _S.w1l1,
+    p.missedGf ? missedGfLcqBase(_W1L.length+p._w1Lcq1.rank, w1LcqLen()) : w1Lcq1Base(p._w1Lcq1.rank), 0); return p._attrs; }
   if(p._b1Gf){ p._attrs=buildM1Attrs(p._b1Gf, p.handle, _S.b1g, b1GfBase(p._b1Gf.rank), 0); return p._attrs; }
   if(p._b1Playin){ p._attrs=buildM1Attrs(p._b1Playin, p.handle, _S.b1p,
     p.missedGf ? missedGfPlayinBase(p._b1Playin.rank, _B1P.length) : b1PlayinBase(p._b1Playin.rank), 0); return p._attrs; }
   if(p._b1Lcq){ p._attrs=buildM1Attrs(p._b1Lcq, p.handle, _S.b1l,
     p.missedGf ? missedGfLcqBase(p._b1Lcq.rank, _B1L.length) : b1LcqBase(p._b1Lcq.rank), 0); return p._attrs; }
+  if(p._b1Lcq1){ p._attrs=buildM1Attrs(p._b1Lcq1, p.handle, _S.b1l1,
+    p.missedGf ? missedGfLcqBase(_B1L.length+p._b1Lcq1.rank, b1LcqLen()) : b1Lcq1Base(p._b1Lcq1.rank), 0); return p._attrs; }
   if(p._o1Gf){ p._attrs=buildM1Attrs(p._o1Gf, p.handle, _S.o1g, o1GfBase(p._o1Gf.rank), 0); return p._attrs; }
   if(p._o1Playin){ p._attrs=buildM1Attrs(p._o1Playin, p.handle, _S.o1p,
     p.missedGf ? missedGfPlayinBase(p._o1Playin.rank, _O1P.length) : o1PlayinBase(p._o1Playin.rank), 0); return p._attrs; }
   if(p._o1Lcq){ p._attrs=buildM1Attrs(p._o1Lcq, p.handle, _S.o1l,
     p.missedGf ? missedGfLcqBase(p._o1Lcq.rank, _O1L.length) : o1LcqBase(p._o1Lcq.rank), 0); return p._attrs; }
+  if(p._o1Lcq1){ p._attrs=buildM1Attrs(p._o1Lcq1, p.handle, _S.o1l1,
+    p.missedGf ? missedGfLcqBase(_O1L.length+p._o1Lcq1.rank, o1LcqLen()) : o1Lcq1Base(p._o1Lcq1.rank), 0); return p._attrs; }
   if(p._a1Gf){ p._attrs=buildM1Attrs(p._a1Gf, p.handle, _S.a1g, a1GfBase(p._a1Gf.rank), 0); return p._attrs; }
   if(p._a1Playin){ p._attrs=buildM1Attrs(p._a1Playin, p.handle, _S.a1p,
     p.missedGf ? missedGfPlayinBase(p._a1Playin.rank, _A1P.length) : a1PlayinBase(p._a1Playin.rank), 0); return p._attrs; }
   if(p._a1Lcq){ p._attrs=buildM1Attrs(p._a1Lcq, p.handle, _S.a1l,
     p.missedGf ? missedGfLcqBase(p._a1Lcq.rank, _A1L.length) : a1LcqBase(p._a1Lcq.rank), 0); return p._attrs; }
+  if(p._a1Lcq1){ p._attrs=buildM1Attrs(p._a1Lcq1, p.handle, _S.a1l1,
+    p.missedGf ? missedGfLcqBase(_A1L.length+p._a1Lcq1.rank, a1LcqLen()) : a1Lcq1Base(p._a1Lcq1.rank), 0); return p._attrs; }
   if(p._e1Gf){ p._attrs=buildM1Attrs(p._e1Gf, p.handle, _S.e1g, e1GfBase(p._e1Gf.rank), 0); return p._attrs; }
   if(p._e1Playin){ p._attrs=buildM1Attrs(p._e1Playin, p.handle, _S.e1p,
     p.missedGf ? missedGfPlayinBase(p._e1Playin.rank, _E1P.length) : e1PlayinBase(p._e1Playin.rank), 0); return p._attrs; }
   if(p._e1Lcq){ p._attrs=buildM1Attrs(p._e1Lcq, p.handle, _S.e1l,
     p.missedGf ? missedGfLcqBase(p._e1Lcq.rank, _E1L.length) : e1LcqBase(p._e1Lcq.rank), 0); return p._attrs; }
+  if(p._e1Lcq1){ p._attrs=buildM1Attrs(p._e1Lcq1, p.handle, _S.e1l1,
+    p.missedGf ? missedGfLcqBase(_E1L.length+p._e1Lcq1.rank, e1LcqLen()) : e1Lcq1Base(p._e1Lcq1.rank), 0); return p._attrs; }
   // No stage entry for this card — reserves, and anyone whose only record is a
   // final standing with no per-match line. There is exactly one real number to
   // work from, the rating the placement earned, so the profile is flat at that
@@ -48409,6 +50740,9 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
           const gamePts=pointsFn(place)+ccKillPts(elims, killMult);
           t[ptsKey]+=gamePts; t[elimsKey]+=elims;
           t[logKey].push({game:g+1, place, elims, pts:gamePts, elimPts:ccKillPts(elims, killMult), label:thresholdLabel(place), feed:t._feed});
+          // Матчевая статистика вечера — здесь же: живой показ копит её наравне с
+          // быстрым счётом, иначе доска лидеров после сыгранного вечера пуста.
+          accumulateMatchStats(t, place, order.length, pointsFn(place), ccKillPts(elims, killMult));
           // Only where a win ends your stage is a win a qualification, and only
           // then does it earn the first pick next time — see byQualOrder.
           if(place===1){ t.gotVR=true; t.wins++; if(opts.stopOnWin) t.qualByWin=true; }
@@ -48730,6 +51064,9 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       const landingOutcome = (landingWins.has(t) || landingBonusElims.has(t)) ? 'won'
                            : ((dropOnMap ? t._droppedOut : eliminatedSet.has(t)) ? 'lost' : null);
       t[logKey].push({game:g+1, place, elims, pts:gamePts, elimPts:ccKillPts(elims, killMult), label:thresholdLabel(place), feed:t._feed, landingOutcome});
+      // Матчевая статистика вечера — здесь же: живой показ копит её наравне с
+      // быстрым счётом, иначе доска лидеров после сыгранного вечера пуста.
+      accumulateMatchStats(t, place, order.length, pointsFn(place), ccKillPts(elims, killMult));
       // As above: a win is a qualification only where it ends the stage.
       if(place===1){ t.gotVR=true; t.wins++; if(opts.stopOnWin) t.qualByWin=true; }
     });
@@ -56476,13 +58813,44 @@ function accumulateMatchStats(t, place, total, placePts, elimPts){
   s.placementPts += placePts;
   s.elimPts += elimPts;
   s.elims += elims;
-  s.assists += Math.round(elims*srnd(0.8,1.3));
+  // Ассисты щедрые: любой вклад в выбитого считается. Лидер дня у Кинча — 26
+  // на игрока за шесть игр, у нас до правки выходило 13.5.
+  s.assists += Math.round(elims*srnd(1.6,2.5));
 
-  const hits = Math.round(elims*srnd(7,11) + surv*size*srnd(12,24) + srnd(4,16));
+  /* ЧИСЛА ПРИВЯЗАНЫ К НАСТОЯЩИМ, а не подобраны на глаз. Опорная точка — пост
+     Kinch Analytics за день 1 Глобалов 2026 (26 сентября): лидеры дня на ИГРОКА
+     за шесть игр — урон 4128, урон в минуту 41.28, чистый урон 2063,
+     соотношение урона 2.67, ассисты 26, нафармлено 20327, пройдено 34.02 км,
+     время в шторме 47:03. Замер нашей модели до правки (проба на 50 дуо и шесть
+     игр) давал урон 9108 (×2.2), урон в минуту 157 (×3.8), ассисты 13.5 (×0.52),
+     нафармлено 3932 (×0.19), шторм 927 с (×0.33). Время в живых сходилось точно:
+     101 минута против ста у Кинча — его и не трогаем.
+
+     Урон теперь сильнее привязан ко времени и слабее к постоянной части: раньше
+     команда, вылетевшая рано, всё равно набирала базовый урон, и её урон в
+     минуту улетал выше лидера. В жизни лидер по урону и лидер по урону в минуту
+     — один и тот же человек, что и видно в посте. */
+  /* Разброс сужен нарочно. Урон в минуту — это отношение, и у отношения
+     максимум по лобби растёт от ШУМА, а не от силы: широкий разброс давал
+     лидера по урону в минуту в полтора раза выше настоящего, хотя лидер по
+     урону сходился в ноль. У Кинча лидер по урону и лидер по урону в минуту —
+     один и тот же человек; узкий разброс это и воспроизводит. */
+  const alive = Math.round(55 + surv*srnd(960,1180));
+  /* Время в шторме: у Кинча лидер дня провёл в нём 47:03 при сотне минут
+     в живых — то есть почти половину. У нас стояло от пяти до двадцати
+     процентов, и за день выходило 927 секунд против его 2 823. */
+  const storm = Math.round(alive*srnd(0.22,0.62));
+  const mins = alive/60;
+  /* Попадания идут от МИНУТ, а не от отдельного броска: файты случаются во
+     времени. Иначе урон и время — два независимых случая, и максимум их
+     отношения по лобби улетает выше настоящего лидера (см. patch-dpm.js). */
+  const hits = Math.round(elims*srnd(4.0,4.5) + mins*size*srnd(0.50,0.60) + srnd(1,2));
   const acc  = clamp(0.072 + sk*0.055 + srnd(-0.012,0.012), 0.045, 0.19);
   const shots = Math.round(hits/acc);
   const dmgTo = Math.round(hits*srnd(33,43));
-  const dmgFrom = Math.round(dmgTo/clamp(0.8 + sk*0.9 + srnd(-0.28,0.28), 0.42, 2.7));
+  // Соотношение урона у лучших доходит до 2.67 (лидер дня у Кинча), поэтому
+  // верхняя граница поднята: раньше потолок держал лидера на 1.95.
+  const dmgFrom = Math.round(dmgTo/clamp(0.8 + sk*1.3 + srnd(-0.28,0.28), 0.42, 3.2));
 
   s.hits += hits; s.shots += shots; s.dmgTo += dmgTo; s.dmgFrom += dmgFrom;
   s.ovHits += hits + Math.round(shots*srnd(0.008,0.03));
@@ -56508,20 +58876,23 @@ function accumulateMatchStats(t, place, total, placePts, elimPts){
   const editMs = clamp(720 - sk*340 + srnd(-45,45), 240, 780);
   s.editTotal += edits; s.editOk += Math.round(edits*editAcc); s.editTimeSum += editMs*edits;
 
-  const wood = Math.round(surv*srnd(380,880) + srnd(140,400));
-  const stone = Math.round(surv*srnd(55,175) + srnd(20,70));
-  const metal = Math.round(surv*srnd(85,225) + srnd(30,95));
+  /* Метсы: у Кинча лидер дня нафармил 20 327 за шесть игр, то есть больше трёх
+     тысяч за игру на человека — ферма в комп-Фортнайте идёт весь матч. У нас
+     до правки выходило 3 932 за день, впятеро меньше. */
+  const wood = Math.round(surv*srnd(1980,4580) + srnd(730,2080));
+  const stone = Math.round(surv*srnd(285,910) + srnd(105,365));
+  const metal = Math.round(surv*srnd(440,1170) + srnd(155,495));
   s.wood += wood; s.stone += stone; s.metal += metal;
   s.woodC += Math.round(wood*srnd(1.7,2.6) + srnd(180,600));
   s.stoneC += Math.round(stone*srnd(6,15) + srnd(200,700));
   s.metalC += Math.round(metal*srnd(6,14) + srnd(200,700));
 
-  const alive = Math.round(55 + surv*srnd(880,1260));
-  const storm = Math.round(alive*srnd(0.05,0.2));
   s.timeAlive += alive; s.inStorm += storm;
   s.stormDmg += Math.round(storm*srnd(1.4,4.6));
   if(Math.random()<0.22) s.surge += Math.round(srnd(1,4));
-  s.dist += Math.round(1100 + surv*srnd(4200,7800));
+  /* Пройдено: у Кинча лидер дня 34.02 км за шесть игр. До правки у нас
+     выходило 39.97, теперь совпадает в пределах десятой. */
+  s.dist += Math.round(950 + surv*srnd(3600,6700));
 }
 
 // Split team totals into per-player lines. Volume stats are divided by a
@@ -58336,13 +60707,30 @@ function ccPingEdge(ms){
    оно там, где комнату меряют: в окнах check-career-field и check-career-pools.
    Число, описывающее комнату, и число, задающее лестницу, — разные числа. */
 const CC_DIV_RATING={1:82, 2:75, 3:68, 4:61, 5:54};
+/* Сколько ступеней у региона. У Epic дивизионные капы 4 и 5 идут только в
+   Европе и NA Central — в остальных пяти регионах лестница кончается третьим
+   (проверено по id событий: 177 капов в архиве Tracker, D1-D3 везде, D4-D5
+   только EU и NAC). */
+const CC_DIV_DEEP=['EU','NAC'];
+function ccDivCount(reg){
+  const r=reg || (typeof ccCareerRegion==='function' ? ccCareerRegion() : 'EU');
+  return CC_DIV_DEEP.indexOf(r)>=0 ? 5 : 3;
+}
+/* Три ступени держат ту же полосу, что и пять: верх остаётся верхом, низ —
+   входом. Отрезать 4 и 5 было нельзя: тогда третий дивизион Мидл Иста стал бы
+   на четырнадцать очков выше входа, то есть вход в карьеру там оказался бы
+   сильнее, чем в Европе. Его решение 26 сентября. */
+const CC_DIV_RATING_3={1:82, 2:68, 3:54};
 function ccDivShift(reg){
   const r=reg || (typeof ccCareerRegion==='function' ? ccCareerRegion() : 'EU');
   const top=REGION_TOP[r];
   return (top==null ? 0 : top-REGION_TOP.EU);
 }
 // Every band in the mode reads through here, so a region's ladder is its own.
-function ccBand(div, reg){ return (CC_DIV_RATING[div]||54)+ccDivShift(reg); }
+function ccBand(div, reg){
+  const tbl=ccDivCount(reg)===3 ? CC_DIV_RATING_3 : CC_DIV_RATING;
+  return (tbl[div]||54)+ccDivShift(reg);
+}
 // And the line nothing invented may cross moves with it: a generated 80 in
 // Oceania would be a name at the top of the region, which is the same thing
 // CC_GEN_TOP exists to stop in Europe.
@@ -58887,6 +61275,10 @@ function ccPickRegion(r){
   document.getElementById('ccNick').value='';
   document.getElementById('ccAge').value='16';
   ccRenderRegions();
+  /* Чипы дивизиона зависят от региона дважды: сколько их (в Океании три
+     ступени, в Европе пять) и какая полоса рейтинга под каждой. Без этой
+     строки после смены региона оставались и лишние ступени, и чужие числа. */
+  ccRenderChips();
   ccRenderPhoto();
   ccRenderList();
   ccSync();
@@ -58930,7 +61322,13 @@ function ccRenderChips(){
   if(divLab) divLab.textContent=noDiv ? L().ccStartOvr : L().ccDivision;
   const divNote=document.querySelector('#ccDivField .cc-note');
   if(divNote) divNote.textContent=noDiv ? L().ccStartOvrNote : L().ccDivNote;
-  document.getElementById('ccDivChips').innerHTML=[1,2,3,4,5].map(d=>{
+  /* Ступеней столько, сколько их в выбранном регионе: в Океании нет ни
+     четвёртого дивизиона, ни пятого. Выбор, оставшийся за краем (сменили
+     регион с Европы на Азию), съезжает на нижнюю ступень. */
+  const divN=ccDivCount(CC.region);
+  if((CC.div||1)>divN) CC.div=divN;
+  const divList=[]; for(let d=1; d<=divN; d++) divList.push(d);
+  document.getElementById('ccDivChips').innerHTML=divList.map(d=>{
     const on=CC.div===d;
     return `<button class="cc-chip${on?' on':''}" `+
       `onclick="ccPickDiv(${d})">${d}<small>${card?'':ccBand(d, CC.region)}</small></button>`;
@@ -58940,10 +61338,18 @@ function ccRenderChips(){
   const ychips=document.getElementById('ccYearChips');
   if(ychips){
     const lockY=ccMpLockedYear();
+    /* Международка года — та, ради которой сезон и играется. Имена городов
+       одинаковы на всех языках, поэтому строкой словаря не идут. */
+    /* Арт — тот же файл, которым сезон подписан на лендинге (MODE_ART):
+       2026 ключевой арт года, 2025 его Мейджор 1, 2024 остров Мейджора 1. */
+    const YEAR_LOOK={2026:{lan:'Antwerp',    art:'art/fncs-2026.jpg'},
+                     2025:{lan:'Lyon',       art:'art/mode-major1-2025.jpg'},
+                     2024:{lan:'Fort Worth', art:'art/fncs-2024.jpg'}};
     ychips.innerHTML=[2026, 2025, 2024].map(y=>{
       const on=(CC.year||2026)===y;
       const off=lockY && y!==lockY;
-      return `<button class="cc-chip${on?' on':''}${off?' soon':''}" ${off?'disabled title="'+esc(L().ccMpLockedBy)+'"':''} onclick="ccPickYear(${y})">${y}<small>${L()['ccYear'+y]}</small></button>`;
+      const look=YEAR_LOOK[y]||{lan:''};
+      return `<button class="cc-chip cc-year-tile${on?' on':''}${off?' soon':''}" style="--yr-art:url(${look.art})" ${off?'disabled title="'+esc(L().ccMpLockedBy)+'"':''} onclick="ccPickYear(${y})"><b>${y}</b><small>${L()['ccYear'+y]}</small><i>${look.lan}</i></button>`;
     }).join('');
     const yn=document.getElementById('ccYearNote');
     if(yn) yn.textContent=(lockY ? L().ccMpLockedBy+' · ' : '')+L()['ccYearNote'+(CC.year||2026)];
@@ -59791,7 +62197,7 @@ function careerLoad(){
   // at the hub with an empty seat and a person sat in it.
   if(CAREER){ careerNotesMigrate(); careerMigrateSize(); careerMigratePartners();
               careerMigrateHome(); careerMigrateDiff(); careerMigrateSpotIslands();
-              careerMigrateNoDiv();
+              careerMigrateNoDiv(); careerMigrateDivDepth();
               careerMigrateBeefsOff();
               // Сейв, раздутый линейной формулой твича, — под потолок. См. CC_TW_CEIL.
               careerMigrateTwitch();
@@ -59913,7 +62319,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='e0484705';
+const CC_BUILD='989bff55';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -66904,6 +69310,15 @@ function ccLogMates(mates){
    month's rent forgiven once, to a handful of saves, and worth it. */
 /* Сейв, заведённый до этой правки, стоит в том дивизионе, который выбрали на
    экране создания, и выйти из него ему нечем. Один раз — в первый. */
+/* Сейв из региона, где ступеней три, мог сидеть в четвёртом или пятом:
+   до сегодняшней правки их предлагали везде. Опускаем на нижнюю ступень
+   региона — это то же место в лестнице, просто названное верно. */
+function careerMigrateDivDepth(){
+  const cr=CAREER && CAREER.career;
+  if(!cr) return;
+  const n=ccDivCount(typeof ccCareerRegion==='function' ? ccCareerRegion() : null);
+  if((cr.division||1)>n){ cr.division=n; if(typeof careerSave==='function') careerSave(); }
+}
 function careerMigrateNoDiv(){
   const cr=CAREER && CAREER.career;
   if(!cr || !ccNoDivisions()) return;
@@ -73245,7 +75660,7 @@ const CAREER_CRESTS=new Set([
   'Lynox_Esport.png','Lyost_Esport.png','MGA_Esport.png','MOUZ.png','Matrix.png','NEXUS.png',
   'NOM_eSports.png','NTO_Corp.png','Natare_Six.png','Natus_Vincere.png',
   'Northern_Star_Gaming.png','OCE5N.png','ORA_Esport.png','PARIVISION.png','PWR.png',
-  'Poyo_Esports.png','QT_DIG.png','R8_Esports.png','ROC_Esports.png','SORIN.png','Shimo.png',
+  'Drayko_Esport.png','Poyo_Esports.png','QT_DIG.png','R8_Esports.png','ROC_Esports.png','SORIN.png','Shimo.png',
   'ShindeN.png','Solary.png','T1.png','TRKF_E-Sport.png','TSM.png','TYT_Esports.png',
   'Team_Falcons.png','Team_HavoK.png','Team_Liquid.png','Team_STM.png','Team_Spirit.png',
   'Team_Vitality.png','Twisted_Minds.png','Virtus.pro.png','Void_Esports.png','Vulcan_Esport.png',
@@ -73362,6 +75777,12 @@ const CC_ORG_NEW=[
      Liquipedia — молодой клуб; уровень 80 — чуть выше пола списка (CC_ORG_EARN_FLOOR 78),
      это оценка, а не замер. */
   {name:'Shimo',          tier:80, n:0, newcomer:true},   // 21.09 вечер, отзыв: «Shimo, просто не Crew»
+  /* Drayko Esport — его просьба 26.09 (x.com/Esportdrayko). Основан в 2026-м,
+     в шапке профиля сам пишет свой счёт: «1x final div | 3x final solo | 900$».
+     Ни на esportsearnings, ни на Liquipedia его нет, состава в карточках тоже
+     нет — уровень ставится полом списка, ниже Shimo: это самый молодой клуб
+     здесь, и любая цифра выше была бы выдумкой в его пользу. */
+  {name:'Drayko Esport',  tier:78, n:0, newcomer:true},   // 26.09, герб logos/Drayko_Esport.png с аватара
   /* Его четыре, 30 августа («на рабочем столе орги, добавил новые»): гербы
      легли в logos/. Уровни — по тому же ряду призовых esportsearnings, что и
      выше: TSM (~$15M за историю) рядом с Vitality/Cloud9, Gambit (~$18M, но
@@ -76247,6 +78668,8 @@ function careerNews(kind, key, args, opt){
   cr.news.unshift({season:cr.season, day, kind, k:key, a:args||[], f:cr.reach||0,
                    dv:cr.division, id:'n'+(cr.newsN=(cr.newsN||0)+1),
                    by:(opt&&opt.by)||undefined, tbl,
+                   // Доска лидеров вечера — вложение того же рода, что и tbl.
+                   lead:(opt&&opt.lead)||undefined,
                    // Объявленная точка: номер клетки и остров, на котором она.
                    zone:(opt&&opt.zone!=null)?opt.zone:undefined,
                    set:(opt&&opt.set)||undefined,
@@ -76305,6 +78728,8 @@ const CC_POST_BY={
   // scene reports. The room finds out because they said so.
   // Who represents you and what they took: the player's own week again.
   ccNewsPromoted:'press', ccNewsWinner:'press',
+  ccNewsKinch:'analyst',
+  ccNewsStatBoard:'analyst',
   // The Performance Evaluation is a Division 1 night, so the press gate let
   // these through — but what they say is where the player finished, and a
   // scene account does not post "I went out in Round 1". Same rule that moved
@@ -76414,6 +78839,7 @@ const CC_POST_BY={
   ccNewsSumThrough:'you', ccNewsSumOut:'you', ccNewsSumCash:'you', ccNewsSumNoCash:'you',
   ccNewsSoloThrough:'you', ccNewsSoloOut:'you', ccNewsSoloCash:'you',
   ccNewsRcThrough:'you', ccNewsRcDrop:'you', ccNewsRcOut:'you', ccNewsRcCash:'you', ccNewsRcChamp:'you',
+  ccNewsRcMvp:'you',
   ccNewsGcThrough:'you', ccNewsGcIn:'you', ccNewsGcOut:'you', ccNewsGcCash:'you', ccNewsGcNoCash:'you',
   ccNewsGcSeat:'you',
   ccNewsGlobCash:'you', ccNewsGlobNoCash:'you', ccNewsGlobChamp:'you',
@@ -76506,6 +78932,9 @@ function ccPressWorthy(e){
    сидел под кружком с двумя буквами: у игрока и у напарника лица берутся с
    карточки, а у сцены карточки нет и взять было неоткуда. Файл лежит там же,
    где портреты, — это лицо в ленте, а не эмблема клуба. */
+/* Аналитик сцены: свой аккаунт, как у прессы, со своим лицом. */
+const CC_ANALYST={name:'Kinch Analytics', handle:'KinchAnalytics', verified:true,
+                  av:'KinchAnalytics.jpg'};
 const CC_PRESS={name:'Fortnite Competitive', handle:'FNCompetitive', verified:true,
                 av:'FNCompetitive.png'};
 // The action row's glyphs, drawn rather than lettered so they read at 13px and
@@ -76984,6 +79413,8 @@ function ccPostAuthor(e){
   // (её перехватил бы e.by выше), так что это страховка: пост без автора —
   // пост игрока, как и всякая неназванная строка.
   if(who==='by') who='you';
+  // Разбор пишет аналитик и только он: это его формат, не пресса и не игрок.
+  if(who==='analyst') return Object.assign({}, CC_ANALYST);
   if(who==='press' && !ccPressWorthy(e)) who='you';
   if(who==='you'){
     const pl=CAREER.player;
@@ -77033,6 +79464,26 @@ function ccAvatar(a){
 // The standings as an attachment. Five rows is what fits in a screenshot before
 // anybody stops reading, and the poster's own row is pinned in if it falls below
 // them — the point of posting a table is being in it.
+/* Доска лидеров как ВЛОЖЕНИЕ, а не строкой текста.
+   Его слово: «делай как у кинча реал». У Кинча это картинка-таблица: слева
+   показатель, справа число и ник. Здесь та же карточка, что уже носит таблицу
+   этапа (.x-shot), только колонки свои. Своя строка подсвечивается — как и в
+   таблице этапа: смысл доски в том, чтобы искать на ней себя. */
+function ccLeadHTML(lead){
+  if(!lead || !lead.rows || !lead.rows.length) return '';
+  const me=ccHandle((CAREER.player && CAREER.player.nick) || '');
+  const rows=lead.rows.map(r=>{
+    const who=String(r[2]||'');
+    const mine=who.toLowerCase()===String(me).toLowerCase();
+    const ico=CC_LEAD_ICO[r[0]] || '';
+    const flag=r[3] ? flagImg(r[3], 11) : '';
+    return `<div class="x-shot-r x-lead-r${mine?' me':''}">`+
+           `<b><span class="x-lead-ico">${ico}</span>${esc(L()[r[0]]||r[0])}</b>`+
+           `<em>${esc(String(r[1]))}</em><i>${flag}@${esc(who)}</i></div>`;
+  }).join('');
+  return `<div class="x-shot"><div class="x-shot-h"><span>${esc(lead.cap||'')}</span>`+
+         `<span><span class="x-lead-ico">🔥</span>${esc(L().ccLeadCap)}</span></div>${rows}</div>`;
+}
 function ccShotHTML(tbl){
   if(!tbl || !tbl.rows || !tbl.rows.length) return '';
   /* Старые записи в сейве несут только место, имя и очки — у них колонок
@@ -77352,7 +79803,7 @@ function ccQuoteHTML(n){
     <div class="x-quote-h">${ccAvatar(who)}<b>${esc(who.name)}</b>
       <span>@${esc(who.handle)}</span><span class="x-dot">·</span><span>${ccStamp(src)}</span></div>
     <p>${ccMentions(ccText(src))}</p>
-    ${ccShotHTML(src.tbl)}${ccArtHTML(src)}</div>`;
+    ${ccShotHTML(src.tbl)+ccLeadHTML(src.lead)}${ccArtHTML(src)}</div>`;
 }
 /* Карта с обведённой точкой — картинка под объявлением высадки.
 
@@ -77668,7 +80119,7 @@ function ccNewsLeadHTML(lead){
       <em class="nh-kicker">${L()['ccNewsCat'+ccNewsCat(lead)]} · ${ccStamp(lead)}</em>
       <h5>${ccMentions(ccText(lead))}</h5>
       <div class="nh-by">${ccAvatar(who)}<span><b>${esc(who.name)}</b>@${esc(who.handle)}</span></div>
-      ${ccShotHTML(lead.tbl)}
+      ${ccShotHTML(lead.tbl)+ccLeadHTML(lead.lead)}
       ${ccCardShotHTML(lead.card)}
       <button class="cc-back nh-open" onclick="careerOpenFeed()">${L().ccNewsOpen}</button>
     </div>`;
@@ -78411,7 +80862,7 @@ function ccPostHTML(n){
         `${who.you?'':ccRegChipHTML(who.card)}`+
         `<span>@${esc(who.handle)}</span><span class="x-dot">·</span><span>${stamp}</span></header>`+
         `<p>${ccMentions(ccText(n))}</p>`+
-        ccShotHTML(n.tbl)+
+        ccShotHTML(n.tbl)+ccLeadHTML(n.lead)+
         ccDropMapHTML(n)+
         ccArtHTML(n)+
         ccQuoteHTML(n)+
@@ -79995,7 +82446,7 @@ function ccDmResume(who){
   }
   // 2. Настоящая карточка: опубликованные результаты.
   if(who.roster && typeof PLAYERS!=='undefined'){
-    const mine=PLAYERS.filter(p=>hKey(p)===hk && p.placement>0);
+    const mine=(ccCardsByKey().get(hk)||[]).filter(p=>p.placement>0);
     const pick=list=>list.slice().sort((a,b)=>ccDmResumeRank(a.event)-ccDmResumeRank(b.event) || a.placement-b.placement)[0];
     const fresh=mine.filter(p=>/2026/.test(String(p.event||'')+' '+String(p.date||'')));
     const b=pick(fresh.length ? fresh : mine);
@@ -81862,6 +84313,15 @@ let CC_DUO_Q='';
    каждому человеку (careerPrRows); призовые и места ботов она не пишет. */
 let CC_DUO_SORT='ovr';
 function ccDuoFindSort(v){ CC_DUO_SORT=(v==='pr' ? 'pr' : 'ovr'); ccDuoFindRender(); }
+/* Отбор по флагу. Пусто — все; иначе код страны, как его знает FLAG_CODE.
+   Живёт рядом с сортировкой и сбрасывается там же, где строка поиска. */
+let CC_DUO_NAT='';
+function ccDuoFindNat(v){ CC_DUO_NAT=(String(v||'')===CC_DUO_NAT) ? '' : String(v||''); ccDuoFindRender(); }
+// Код страны человека из списка: в карточках лежит НАЗВАНИЕ страны, не код.
+function ccDuoNatCode(w){
+  const n=(w && (w.nat || (w.card && w.card.nat))) || '';
+  return n ? String(FLAG_CODE[n] || '').toLowerCase() : '';
+}
 /* The chair the search was opened from, if it was opened from one. Null is "any
    chair", which is what the day panel means when it says the squad is a player
    short — there, the player has not picked anybody to lose. */
@@ -81874,7 +84334,7 @@ function ccDuoFindOpen(seat){
      предложить его может любой из двоих — раньше список молча не открывался
      у второго в лобби, и если роли перепутались, то и у владельца. */
   if(ccMpOn() && ccMpMateRecs().length >= ccMpBotSeats()) return;
-  CC_DUO_Q='';
+  CC_DUO_Q=''; CC_DUO_NAT='';
   CC_DUO_SEAT=(typeof seat==='number' && seat>=0 && seat<careerMateSeats()) ? seat : null;
   ccDuoFindRender();
   document.getElementById('duoFindModal').style.display='flex';
@@ -81939,7 +84399,16 @@ function ccDuoFindRender(keepFocus){
   const prMap=new Map(careerPrRows().map((r,i)=>[hKey(r.name), {pr:r.pr, rank:i+1}]));
   const prOf=new Map(all.map(w=>[w, prMap.get(hKey(w.handle))||null]));
   if(CC_DUO_SORT==='pr') all.sort((a,b)=>((prOf.get(b)||{}).pr||0)-((prOf.get(a)||{}).pr||0) || b.ovr-a.ovr);
-  const list=(q ? all.filter(w=>String(w.handle).toLowerCase().indexOf(q)>=0) : all).slice(0, 120);
+  // Сначала флаг, потом набранное имя: флаг сужает, строка ищет внутри.
+  const byNat=CC_DUO_NAT ? all.filter(w=>ccDuoNatCode(w)===CC_DUO_NAT) : all;
+  const list=(q ? byNat.filter(w=>String(w.handle).toLowerCase().indexOf(q)>=0) : byNat).slice(0, 120);
+  /* Флаги — те, что в списке есть, с числом людей у каждого. Десять самых
+     населённых: строка фильтров шире экрана телефона бесполезна, а хвост из
+     стран с одним человеком ищется строкой быстрее, чем флагом. */
+  const natCount={};
+  all.forEach(w=>{ const c=ccDuoNatCode(w); if(c) natCount[c]=(natCount[c]||0)+1; });
+  const natTop=Object.keys(natCount).sort((a,b)=>natCount[b]-natCount[a]).slice(0, 10);
+  if(CC_DUO_NAT && natTop.indexOf(CC_DUO_NAT)<0) natTop.push(CC_DUO_NAT);
   const rows=list.map(w=>{
     const said=careerDmFind(w.handle);
     const wrote=!!(said && said.msgs && said.msgs.some(m=>m.from==='you'));
@@ -81980,6 +84449,10 @@ function ccDuoFindRender(keepFocus){
             oninput="ccDuoFindQ(this.value)">
      <div class="ch-hint cc-duo-n">${list.length ? L().ccDuoFound(list.length) : L().ccDuoNobody}
        <span class="cc-duo-sort">${esc(L().ccDuoSortBy)}: <button class="cc-job-h${CC_DUO_SORT==='ovr'?' on':''}" onclick="ccDuoFindSort('ovr')">${esc(L().ccDuoSortOvr)}</button> <button class="cc-job-h${CC_DUO_SORT==='pr'?' on':''}" onclick="ccDuoFindSort('pr')">${esc(L().ccDuoSortPr)}</button></span></div>
+     <div class="ch-hint cc-duo-nat">${esc(L().ccDuoNat)}:
+       <button class="cc-job-h${CC_DUO_NAT?'':' on'}" onclick="ccDuoFindNat('')">${esc(L().ccDuoNatAll)}</button>
+       ${natTop.map(c=>`<button class="cc-job-h cc-duo-flag${CC_DUO_NAT===c?' on':''}" onclick="ccDuoFindNat('${c}')"><img src="flags/w20/${c}.png" alt="" onerror="this.remove()">${natCount[c]||0}</button>`).join('')}
+     </div>
      <div class="cc-buys">${rows}</div>`;
   if(keepFocus){
     const f=document.getElementById('duoFindQ');
@@ -82413,8 +84886,117 @@ function careerWorldD1(iso){
 // circuit's finals. The winners are tagged the way a real account tags them,
 // the player's own duo included, and the post carries the standings screenshot
 // with the event's name on it.
+/* Разбор вечера цифрами. Считается по журналу игр, который уже собран
+   вечером: места, элимы и разложение очков. Лобби меряется тем же полем,
+   что стоит в таблице, поэтому «по элимам в лобби» — не оценка, а место.
+   Одна игра — не разбор: вечер, оборванный на первой, промолчит. */
+function ccKinchPost(ranked, you, label){
+  if(!you || !ranked || !ranked.length) return;
+  const log=(you.stageLog||[]).filter(g=>g && g.place!=null);
+  if(log.length<2) return;
+  const games=log.length;
+  const place=ranked.indexOf(you)+1;
+  if(place<1) return;
+  const avg=log.reduce((s,g)=>s+g.place, 0)/games;
+  const elims=log.reduce((s,g)=>s+(g.elims||0), 0);
+  const elimPts=log.reduce((s,g)=>s+(g.elimPts||0), 0);
+  const pts=(you.stagePts!=null ? you.stagePts : log.reduce((s,g)=>s+(g.pts||0), 0));
+  const placePts=Math.max(0, pts-elimPts);
+  const better=ranked.filter(t=>t!==you && (t.stageElims||0)>elims).length;
+  careerNews('flat', 'ccNewsKinch', [label, place, games, avg.toFixed(1), elims,
+             (elims/games).toFixed(1), ccNum(placePts), ccNum(elimPts), better+1]);
+}
+/* Лидеры вечера — доска в формате самого Kinch Analytics.
+   Его пост от 26 сентября (Global Champs 2026, день 1): «Damage: 4128 @Koyota0 ·
+   Elims: 16 · Assists: 26 · Damage Ratio: 2.67 · Net Damage: 2063 · Damage Per
+   Minute: 41.28 · Builds · Farmed · Distance · Storm Time». Его слово: «все
+   статистики можно добавить как-то».
+   Ничего для этого считать не пришлось: матчевая статистика в моде уже есть —
+   accumulateMatchStats ведёт по каждой команде урон нанесённый и полученный,
+   ассисты, метсы, время в живых, время в шторме и пройденное расстояние. Доска
+   просто достаёт из неё лидера по каждой строке.
+   Двух строк Кинча здесь нет, и это честнее, чем подделать: ПОСТРОЕК движок не
+   считает вовсе (есть только метсы), а Solo Clutch Points — метрика Epic про
+   очки, набранные последним выжившим в команде, которой у нас нет. */
+/* Значки строк — те же, что в посте Кинча. Языка у них нет, поэтому они
+   живут в коде, а не в словарях. */
+const CC_LEAD_ICO={s_dmgTo:'💥', s_elims:'🎯', s_assists:'💁',
+  s_dmgRatio:'👍', s_dmgNet:'📈', s_dpm:'⏰',
+  s_matsFarmed:'⛏️', s_distance:'🏃', s_timeStorm:'🌧️'};
+/* Флаг лидера — его собственный, с карточки: доску читают по людям, а
+   человек в этой сцене узнаётся по флагу раньше, чем по нику. */
+function ccStatNat(t){
+  const sq=(t && (t.squad||t._cards||t.cards)) || [];
+  const best=sq.slice().sort((a,b)=>((b&&(b.rating||b._ovr))||0)-((a&&(a.rating||a._ovr))||0))[0];
+  if(t && t.isYou){ const c=(typeof careerCard==='function') ? careerCard() : null; return (c && c.nat) || (best && best.nat) || null; }
+  return (best && best.nat) || null;
+}
+function ccStatFace(t){
+  if(t && t.isYou) return ccHandle(CAREER.player.nick);
+  const sq=(t && (t.squad||t._cards||t.cards)) || [];
+  const best=sq.slice().sort((a,b)=>((b&&(b.rating||b._ovr))||0)-((a&&(a.rating||a._ovr))||0))[0];
+  return ccHandle((best && best.handle) || ccOneOf(t && t.name) || '');
+}
+function ccMmSs(sec){
+  const s=Math.max(0, Math.round(sec||0));
+  return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+}
+function ccStatLeaders(ranked){
+  const rows=[];
+  const POOL=(ranked||[]).filter(t=>t && t.mstats && t.mstats.games>0);
+  const teams=POOL;
+  if(teams.length<3) return rows;
+  /* У ОТНОШЕНИЙ свой отбор, как на настоящих досках. Урон в минуту и
+     соотношение урона — это дроби, и максимум дроби по лобби вытягивает не
+     сильнейший, а тот, кто рано умер с удачной перестрелкой: у Кинча лидер по
+     урону и лидер по урону в минуту — один и тот же человек, а у нас без отбора
+     второй выходил в полтора раза выше. Поэтому дроби считаются только среди
+     тех, кто прожил не меньше среднего по лобби. */
+  const aliveMid=(function(){ const a=teams.map(t=>t.mstats.timeAlive).sort((x,y)=>x-y);
+    return a[Math.floor(a.length/2)]||0; })();
+  const deep=teams.filter(t=>t.mstats.timeAlive>=aliveMid);
+  const lead=(key, val, fmt, pool)=>{
+    const teams=pool||POOL;
+    let best=null, bv=-Infinity;
+    teams.forEach(t=>{ const v=val(t.mstats, t); if(v!=null && isFinite(v) && v>bv){ bv=v; best=t; } });
+    if(!best || bv<=0) return;
+    rows.push([key, fmt(bv), ccStatFace(best), ccStatNat(best)||'']);
+  };
+  const num=v=>ccNum(Math.round(v));
+  /* НА ИГРОКА, а не на команду. Доска называет одного человека, и число рядом
+     с ним должно быть его: у Кинча лидер дня по урону — 4128, и это урон
+     игрока, а не пары. Объёмы делятся на размер состава, а время в живых,
+     время в шторме и расстояние — нет: их пара проживает вместе, а не
+     складывает (то же правило, что в playerShares). Урон в минуту делится
+     вместе с уроном, потому что время общее. */
+  const mates=t=>Math.max(1, ((t.squad||t._cards||t.cards)||[]).length||1);
+  const per=(f)=>(s,t)=>f(s)/mates(t);
+  lead('s_dmgTo',     per(s=>s.dmgTo), num);
+  lead('s_elims',     per(s=>s.elims), num);
+  lead('s_assists',   per(s=>s.assists), num);
+  lead('s_dmgRatio',  s=>s.dmgFrom>0 ? s.dmgTo/s.dmgFrom : 0, v=>v.toFixed(2), deep);
+  lead('s_dmgNet',    per(s=>s.dmgTo-s.dmgFrom), num);
+  lead('s_dpm',       per(s=>s.timeAlive>0 ? s.dmgTo/(s.timeAlive/60) : 0), v=>v.toFixed(2), deep);
+  lead('s_matsFarmed',per(s=>s.wood+s.stone+s.metal), num);
+  lead('s_distance',  s=>s.dist, v=>(v/1000).toFixed(2)+' km');
+  lead('s_timeStorm', s=>s.inStorm, ccMmSs);
+  return rows;
+}
+/* Один вызов на конец турнира: личный разбор и доска лидеров.
+   Зовётся из каждого раннера, чей вечер — финал. */
+function ccBoardAfter(ranked, you, label){
+  ccKinchPost(ranked, you, label);
+  ccStatBoardPost(ranked, label);
+}
+function ccStatBoardPost(ranked, label){
+  const rows=ccStatLeaders(ranked);
+  if(rows.length<4) return;
+  careerNews('flat', 'ccNewsStatBoard', [label, rows], {lead:{cap:label, rows:rows}});
+}
 function careerCongrats(ranked, you, label){
   if(!ranked || !ranked.length) return;
+  ccKinchPost(ranked, you, label);
+  ccStatBoardPost(ranked, label);
   const w=ranked[0];
   const bare=t=>String(t.name||'').replace(/<[^>]*>/g,'');
   let handles;
@@ -83235,6 +85817,11 @@ const CC_COACH_DAYS=30;
    left null until the picture is actually in the folder — an avatar nobody has
    is not invented, it degrades to the initials the same way an agent's does. */
 const CC_COACHES=[
+  /* Первый по списку, и это не оценка на глаз: 82 100 подписчиков и ростер,
+     перечисленный в его же шапке — Kami, charyy, Rapid, Clix, Rise, Muz, Kaan,
+     Faded, Peterbot, Pollo. Условия ему, как и всем, назначит место
+     (ccCoachRankTerms); чему учит — строки нет, значит все шесть. */
+  {id:'bloodx', name:'Bloodx',     at:'BloodxEU',     reg:'EU',    cost:3500, train:0.35, keys:ATTR_KEYS.slice(), chem:0.4, photo:'BloodxEU.jpg'},
   // The top of the list: eight FNCS and two Globals, and the roster of people
   // he works with is most of Division 1.
   {id:'raz',    name:'RazZzero0o', at:'RazZzero0oFN', reg:'EU',    cost:3500, train:0.30, keys:ATTR_KEYS.slice(), chem:0.4, photo:'RazZzero0oFN.jpg'},
@@ -87070,9 +89657,87 @@ function ccSeatKey(t){
 
    Кого записывать — решает сам раннер, у него на руках таблица; см.
    runCareerReloadChampionship. */
+/* Сорок пар парижского ЛАНа 2026 года в порядке итогового места.
+   Источник — liquipedia.net/fortnite/Reload_Elite_Series/2026 — Esports World Cup 2026, Paris, 19-22 авг.
+   По регионам: EU 12, BR 4, NAW 4, ME 4, NAC 8, ASIA 4, OCE 4. */
+const RC_TEAMS_2026=[
+{p:"1",r:"EU",c:260000,d:["vic0","Malibuca"]},
+{p:"2",r:"EU",c:150000,d:["Momsy","SkyJump"]},
+{p:"3",r:"EU",c:90000,d:["shxrk","t3eny"]},
+{p:"4",r:"EU",c:60000,d:["SwizzY","Pixie"]},
+{p:"5",r:"BR",c:45000,d:["Lewa","Romero"]},
+{p:"6",r:"EU",c:35000,d:["charyy","Kami"]},
+{p:"7",r:"NAW",c:30000,d:["VicterV","Khanada"]},
+{p:"8",r:"EU",c:28000,d:["Demus","Darm"]},
+{p:"9",r:"EU",c:26000,d:["Faded","Kaan"]},
+{p:"10",r:"ME",c:24000,d:["SaLva","Yassen"]},
+{p:"11",r:"EU",c:22000,d:["Sky","Scroll"]},
+{p:"12",r:"NAC",c:20000,d:["Peterbot","Pollo"]},
+{p:"13",r:"EU",c:18000,d:["Tjino","PabloWingu"]},
+{p:"14",r:"NAC",c:16000,d:["josh","Eomzo"]},
+{p:"15",r:"ASIA",c:15000,d:["Minipiyo","FuuKun"]},
+{p:"16",r:"EU",c:14000,d:["Nociff","Izzi"]},
+{p:"17",r:"NAC",c:13000,d:["Muz","Sphinx"]},
+{p:"18",r:"NAC",c:12000,d:["Cold","Rapid"]},
+{p:"19",r:"OCE",c:11000,d:["Goofy","ZDog"]},
+{p:"20",r:"NAC",c:10000,d:["Acorn","Boltz"]},
+{p:"21",r:"ASIA",c:9500,d:["Koyota","yuma"]},
+{p:"22",r:"NAC",c:9000,d:["Bugha","Braydz"]},
+{p:"23",r:"BR",c:8500,d:["Night","916Gon"]},
+{p:"24",r:"EU",c:8000,d:["Cringe","Volko"]},
+{p:"25",r:"OCE",c:7500,d:["Oatley","Spookz"]},
+{p:"26",r:"ASIA",c:7000,d:["Mofu","tomat"]},
+{p:"27",r:"ME",c:6500,d:["Mshary","5aald"]},
+{p:"28",r:"ME",c:6000,d:["Moda","Rew"]},
+{p:"29",r:"OCE",c:5500,d:["Vazen","Anon"]},
+{p:"30",r:"EU",c:5000,d:["panzer","Japko"]},
+{p:"31",r:"BR",c:4500,d:["Edson","Phzin"]},
+{p:"32",r:"NAC",c:4000,d:["Shadow","Vergo"]},
+{p:"33",r:"NAC",c:3500,d:["Aoxy","Jojofishy"]},
+{p:"34",r:"NAW",c:3000,d:["phoenix","Retro"]},
+{p:"35-36",r:"ASIA",c:2500,d:["Rainy","Nalu"]},
+{p:"35-36",r:"NAW",c:2500,d:["Inact","Salko"]},
+{p:"37-38",r:"NAW",c:2250,d:["EpikWhale","PXMP"]},
+{p:"37-38",r:"BR",c:2250,d:["axadasz","Seven"]},
+{p:"39-40",r:"OCE",c:2000,d:["alex","Wreckless"]},
+{p:"39-40",r:"ME",c:2000,d:["Henchman","Snowvaks"]}
+];
+
+/* Настоящее поле Парижа: те же сорок пар, что приехали на Esports World Cup.
+
+   Отзыв игрока 26 сентября: ЛАН собирался людьми его же региона, а в жизни это
+   один мировой турнир на сорок дуо — двенадцать европейских, восемь из NA
+   Central, по четыре из остальных пяти регионов. Пары садятся тем же
+   ccLanSeats, что и Саммит с Глобалами, поэтому регион приезжает вместе с парой
+   и колонка «Регион» в таблице показывает её собственный, а не регион первой
+   карточки.
+
+   Кого нет в карточках — того пропускаем молча: список настоящий, а набор
+   карточек своего года, и пара из чужого года просто не находится. Если
+   осталось меньше половины, поле строится по-старому броском. */
+let CC_RC_REAL=null;
+function ccRcRealTeams(seated){
+  if(ccNowYear()!==2026) return null;
+  if(CC_RC_REAL) return CC_RC_REAL;
+  const rows=RC_TEAMS_2026.map(t=>({duo:t.d, reg:t.r}));
+  const built=ccLanSeats(rows, rows.length, null, seated||new Set());
+  CC_RC_REAL=(built.length>=RC_TEAMS_2026.length/2) ? built : null;
+  return CC_RC_REAL;
+}
 function ccRcField(cr, worldCr, drafted, stage, teams){
-  const draw=(n, salt, skip)=>ccAsWorld(()=>careerCupField(worldCr,
+  const mine=new Set((drafted||[]).map(c=>hKey(c)));
+  const real=ccRcRealTeams(mine);
+  /* Настоящие сорок пар идут в том порядке, в каком они закончили турнир:
+     группа берёт верх списка, сёрвайвл и финал — следующих, мимо уже взятых.
+     Без списка (не 2026-й или карточек не хватило) — прежний бросок. */
+  const draw=(n, salt, skip)=>{
+    if(real){
+      const used=new Set((skip||[]).map(c=>hKey(c)));
+      return real.filter(t=>!((t.squad||[]).some(c=>used.has(hKey(c))))).slice(0, n);
+    }
+    return ccAsWorld(()=>careerCupField(worldCr,
       drafted.concat(skip||[]), n, salt, false, CC_FIELD_SHARP.globals));
+  };
   const cards=t=>(t && (t.squad||t._cards||t.cards)) || [];
   const A=draw(CC_RC_GROUP.teams, null, null);
   /* Групповой этап играется в комнате ЭТОГО сезона, а не в двадцатке дуо.
@@ -87124,6 +89789,9 @@ function ccRcStage(st){
 }
 /* The published purse, place by place. It steps: a thousand a place from
    fifteenth to twentieth, five hundred a place to thirtieth, then the tail. */
+/* Награда MVP — сверх таблицы призовых: на настоящем ЛАНе 2026 года это
+   $25 000 (Liquipedia, Reload Elite Series/2026). */
+const CC_RC_MVP=25000;
 function rcPrize(place){
   const top=[260000,150000,90000,60000,45000,35000,30000,28000,26000,24000,
              22000,20000,18000,16000,15000];
@@ -89120,6 +91788,8 @@ async function runCareerEval(){
     through ? L().ccEvalPass(evalCut) : L().ccEvalFail(evalCut));
   await revealStandings(shell1, ranked1, you, evalCut);
   careerPrAdd(ranked1, {div:1, kind:'eval'});
+  // Итоговая таблица вечера оценки — второй раунд, он же последний.
+  let evalFinal=ranked1;
 
   let wins=0, cash=0, place2=null;
   /* Гонка: второй раунд общий, только если ВСЯ комната прошла первый — как у Victory Cup.
@@ -89153,6 +91823,7 @@ async function runCareerEval(){
        разных вечера, и в обоих одни и те же восемь дуо на местах 43-50 подряд,
        причём команда с шестью элимами стояла ниже команды с нулём. */
     const ranked2=careerRankField(r2);
+    evalFinal=ranked2;
     // Вечер платит каждому, у кого есть победы, — и таблица призовых должна это
     // видеть, как видит Weekly Final. Кошелёк (ccPayIn ниже) — отдельный счёт.
     const top5=ccEvalTop5Cash();
@@ -89171,6 +91842,7 @@ async function runCareerEval(){
     await revealStandings(shell2, ranked2, you, 0, null, null, null, null, true);
   }
   removeSkipButton();
+  ccBoardAfter(evalFinal, you, L().calPerfEval);
 
   if(cash){
     const mine=ccShareOf(cash, you);
@@ -89331,6 +92003,7 @@ async function runCareerGclc(){
   await revealStandings(shell, ranked, you, ev.final ? seatSlots : st.cut,
     null, null, null, null, !!ev.final);
   careerPrAdd(ranked, {div:CAREER.career.division, kind:'gclc'});
+  if(ev.final) ccBoardAfter(ranked, you, ev.label);
 
   cr.gclc=cr.gclc||{};
   if(ev.final){
@@ -89551,6 +92224,18 @@ async function runCareerReloadChampionship(){
     careerNews(champ?'good':cash?'good':'flat',
                champ?'ccNewsRcChamp':'ccNewsRcCash',
                champ?[ccNum(cash)]:[place, ccNum(cash)]);
+    /* MVP турнира. Судить по игре некого: сим пишет киллы и очки команде, а
+       не человеку, — поэтому награду берёт сильнейший по карточке игрок
+       команды-чемпиона. Деньги личные и не делятся: ccShareOf здесь не место. */
+    const champT=ranked[0];
+    const mvpCard=((champT && (champT.squad||champT._cards||[])) || []).slice()
+      .sort((a,b)=>((b&&(b.rating||b._ovr))||0)-((a&&(a.rating||a._ovr))||0))[0];
+    if(mvpCard){
+      const mvpMine = champT===you && !!mvpCard.isYou;
+      if(mvpMine) ccPayIn(CC_RC_MVP);
+      careerNews(mvpMine?'good':'flat', 'ccNewsRcMvp',
+                 [mvpCard.handle||mvpCard.nick||'', ccNum(CC_RC_MVP)]);
+    }
     // A proper noun, the same in every language, so no string carries it.
     careerCongrats(ranked, you, 'Reload Championship');
   } else {
@@ -92757,6 +95442,9 @@ async function runCareerVictory(){
   const ranked1=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place1=ranked1.indexOf(you)+1;
   careerPrAdd(ranked1, {div:CAREER.career.division, kind:'victory'});
+  /* Итоговая таблица вечера: второй раунд, если он был. Доска лидеров идёт
+     после него, иначе она объявляла бы лидеров посреди турнира. */
+  let vicFinal=ranked1;
   const through=place1<=vCut;
 
   const shell1=createStageCardShell(L().ccVicR1Title(field.length));
@@ -92809,6 +95497,7 @@ async function runCareerVictory(){
        разных вечера, и в обоих одни и те же восемь дуо на местах 43-50 подряд,
        причём команда с шестью элимами стояла ниже команды с нулём. */
     const ranked2=careerRankField(r2);
+    vicFinal=ranked2;
     place2=ranked2.indexOf(you)+1;
     wins=you.wins||0;
     cash=payCup ? ccVictoryPayOf(ev, place2) : wins*rate;
@@ -92823,6 +95512,11 @@ async function runCareerVictory(){
     await revealStandings(shell2, ranked2, you, 0, null, null, null, null, true);
   }
   removeSkipButton();
+  /* У записи капа нет label — имя вечера живёт в календаре (DreamCup, Squid
+     Grounds, «Duos Victory Cup 2»). Без него пост аналитика выходил
+     «undefined — stats leaders». */
+  const vicName=((careerYearDays().get(ev.day)||[]).find(x=>x.kind==='victory')||{}).label || ev.lan || ev.name || 'Victory Cup';
+  ccBoardAfter(vicFinal, you, vicName);
 
   if(cash){
     const mine=ccShareOf(cash, you);
@@ -93732,6 +96426,7 @@ async function runCareerProAm(){
   await revealStandings(shell, ranked, you, 0, null, null, null, null, true);
   removeSkipButton();
   careerPrAdd(ranked, {div:cr.division, kind:'proam'});
+  ccBoardAfter(ranked, you, ev.label);
   if(cash){
     const mine=ccShareOf(cash, you);
     ccPayIn(mine);
@@ -94453,6 +97148,8 @@ async function runCareerSoloSeries(){
   const ranked=field.slice().sort((a,b)=>b.stagePts-a.stagePts || (b.wins||0)-(a.wins||0) || b.stageElims-a.stageElims);
   const place=ranked.indexOf(you)+1;
   careerPrAdd(ranked, {div:cr.division, kind:'solo', stage:ev.stage});
+  // Соло играется в несколько вечеров: доска — только на финальном.
+  if(ev.stage==='final') ccBoardAfter(ranked, you, ev.label);
   const cut=spec ? ccSolosCut(spec)
           : ev.stage==='qual' ? soloSeriesQualCut()
           : ev.stage==='heats' ? soloSeriesHeatCut() : 0;
