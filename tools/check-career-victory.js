@@ -62,7 +62,7 @@ const BOOT = `
         closeRangeEdge:6, region:'EU', ovr:ovr, role:'roleIGL', attrs:null, ageEdge:4,
         photo:null, handle:null, cardRegion:null, nat:null},
       career:{season:1, day:day, division:div, earnings:0, balance:0, reach:0,
-              tokens:[], log:[], news:[]},
+              tokens:[], log:[], news:[], life:{rp:500}},   // ранг Diamond: порог капа проверяет check-career-life
       partner:null}));
     const s = JSON.parse(localStorage.getItem('fncsdraft_career'));
     s.player.attrs = ccRookieAttrs(ovr, 'roleIGL');

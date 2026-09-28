@@ -18250,6 +18250,57 @@ let LANG=(function(){
   if(nav.indexOf('pt')===0) return 'pt';
   return 'en';
 })();
+/* Строки «жизни между турнирами» (оценка вечера, награды, клуб, скримы, тренировка,
+   усталость, поездки, скандалы, икон-скин, ранкед) — русский и английский; остальные
+   языки берут английский из-под себя (см. L). */
+Object.assign(I18N.ru, {
+  lfRate:'Оценка за вечер', lfMvp:'MVP вечера', lfMvpYou:'ты — MVP вечера', lfAvgRate:'Средняя оценка сезона', lfMvpCount:'MVP за сезон',
+  lfTitle:'Между турнирами', lfToday:'Сегодня', lfRank:'Ранкед', lfHurt:'Травма', lfWrist:'запястье', lfIll:'болезнь', lfUntil:'до', lfCaseOpen:'Разбирательство',
+  lfBan:'Бан открытых турниров', lfIcon:'Икон-скин', lfTrip:'Поездка', lfTripOk:'оформлена', lfTripBook:'Оформить',
+  lfVisa:n=>'виза '+n+' дн.', lfWeek:'неделя', lfSessions:'сессий',
+  lfWhyHurt:'Травма — играть нельзя', lfWhyBan:'Бан открытых турниров', lfWhyRank:'Нужен ранг Diamond', lfTripNone:'Поездка не оформлена', lfTripVisa:'Виза не успела',
+  lfCaseteam:'тиминг', lfCasesnipe:'стрим-снайпинг', lfCasetoxic:'токсичный пост',
+  ccActnoble:'Noble Pro Scrims',
+  lfNewsRankUp:r=>'Новый ранг в ранкеде: '+r,
+  lfNewsNoble:(s,p,of,k,pts)=>s+': #'+p+' из '+of+', '+k+' килл., '+pts+' очк.',
+  lfNewsWrist:n=>'Боль в запястье: врач запретил играть '+n+' дн.',
+  lfNewsIll:n=>'Заболел — '+n+' дн. без игры',
+  lfNewsHealed:()=>'Снова в строю',
+  lfNewsCase:c=>'Жалоба на тебя: '+c+'. Epic разбирается',
+  lfNewsCleared:c=>'Жалоба ('+c+') не подтвердилась',
+  lfNewsFined:(c,f)=>'Жалоба ('+c+') подтвердилась: штраф '+f,
+  lfNewsBanned:(c,n)=>'Бан на '+n+' дн. за '+c+': открытые турниры закрыты',
+  lfNewsSceneBan:(h,c)=>h+' получил бан за '+c,
+  lfNewsIcon:(n,p)=>'Epic выпускает скин '+n+' в серии Icon! Разовая выплата '+p,
+  lfNewsTripBooked:(c,p)=>'Перелёт в '+c+' оформлен: '+p,
+  lfNewsTripBroke:(c,p)=>'На перелёт в '+c+' не хватает денег: нужно '+p,
+  lfNewsJetlag:()=>'Джетлаг: прилетел поздно — сегодня тяжелее',
+  lfTlIcon:()=>'Свой скин в серии Icon'
+});
+Object.assign(I18N.en, {
+  lfRate:'Match rating', lfMvp:'Player of the night', lfMvpYou:'you were the player of the night', lfAvgRate:'Season average rating', lfMvpCount:'Player-of-the-night awards',
+  lfTitle:'Between events', lfToday:'Today', lfRank:'Ranked', lfHurt:'Injury', lfWrist:'wrist', lfIll:'illness', lfUntil:'until', lfCaseOpen:'Under review',
+  lfBan:'Banned from open events', lfIcon:'Icon skin', lfTrip:'Trip', lfTripOk:'booked', lfTripBook:'Book',
+  lfVisa:n=>'visa '+n+'d', lfWeek:'week', lfSessions:'sessions',
+  lfWhyHurt:'Injured — cannot play', lfWhyBan:'Banned from open events', lfWhyRank:'Needs Diamond rank', lfTripNone:'Trip not booked', lfTripVisa:'Visa not ready in time',
+  lfCaseteam:'teaming', lfCasesnipe:'stream sniping', lfCasetoxic:'a toxic post',
+  ccActnoble:'Noble Pro Scrims',
+  lfNewsRankUp:r=>'New ranked rank: '+r,
+  lfNewsNoble:(s,p,of,k,pts)=>s+': #'+p+' of '+of+', '+k+' kills, '+pts+' pts',
+  lfNewsWrist:n=>'Wrist pain: the doctor says no games for '+n+' days',
+  lfNewsIll:n=>'Ill — '+n+' days off',
+  lfNewsHealed:()=>'Back in action',
+  lfNewsCase:c=>'A report against you: '+c+'. Epic is looking into it',
+  lfNewsCleared:c=>'The report ('+c+') was not upheld',
+  lfNewsFined:(c,f)=>'The report ('+c+') was upheld: fined '+f,
+  lfNewsBanned:(c,n)=>n+'-day ban for '+c+': open events are closed',
+  lfNewsSceneBan:(h,c)=>h+' banned for '+c,
+  lfNewsIcon:(n,p)=>'Epic is releasing a '+n+' Icon Series skin! One-off payment '+p,
+  lfNewsTripBooked:(c,p)=>'Flight to '+c+' booked: '+p,
+  lfNewsTripBroke:(c,p)=>'Not enough money for the flight to '+c+': '+p+' needed',
+  lfNewsJetlag:()=>'Jet lag: you landed late — tonight is harder',
+  lfTlIcon:()=>'An Icon Series skin of your own'
+});
 function L(){
   if(CC_L_CACHE[LANG]) return CC_L_CACHE[LANG];
   const own=I18N[LANG]||I18N.en;
@@ -109575,7 +109626,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='1354c5ed';
+const CC_BUILD='47cb8019';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -112749,6 +112800,7 @@ function ccApplyTeamState(t){
 }
 function careerSave(){
   if(!CAREER) return;
+  try{ ccNightStamp(); }catch(e){}
   /* В командной карьере командная половина живёт на сервере, а не здесь.
      Пишется всё равно всё: localStorage — это кэш на случай обрыва, и карьера
      должна открыться, даже когда лобби недоступно. Наверх уходит только
@@ -114025,6 +114077,7 @@ function careerCentreHTML(card, a){
       <!-- The profile leads the centre and the tournament card sits with the
            career, his call, 18 August: the two swapped places. -->
       ${careerProfileTileHTML()}
+      ${typeof ccLifeTileHTML==='function' ? ccLifeTileHTML() : ''}
       ${careerNewsHubHTML()}
     </div>
   </div>`;
@@ -115517,6 +115570,9 @@ const CC_DAY_ACTS=[
      morale falling, nothing to do about it. */
   {id:'scrim',   energy:38, morale:6, versus:true,
    gain:{aim:ccStep('aim')/4, sur:ccStep('sur')/4, clu:ccStep('clu')/4, con:ccStep('con')/4}},
+  // Сессия Noble Pro Scrims (сервер — по уровню, см. ccNobleServer): игра на сотню, таблица недели.
+  {id:'noble',   energy:32, noble:true,
+   gain:{end:ccStep('end')/3, sur:ccStep('sur')/3, clu:ccStep('clu')/3}},
   /* Поговорить — второй способ держать настрой, и он не про тренировку.
    *
    * Правка: «сделаю реалистичней диалог между дуо или трио и чтоб мораль
@@ -116013,6 +116069,8 @@ function careerDoAct(id){
   // The store is what says how much of a day there is, and the three things
   // that take all of it say when there is none left. See careerDayClosed.
   if(careerDayClosed()) return null;
+  // С травмой — только отдых, разговор и эфир.
+  if(typeof ccLifeHurt==='function' && ccLifeHurt() && !(act.rest || act.id==='talk' || act.id==='stream')) return null;
   /* Цена вечера — у ВИДА эфира, а не у кнопки дня. Виды стоят по-разному
      (марафон 55, эфир с турнира 20), и раньше careerDoAct брал плоские
      тридцать, а разницу доплачивал вызывающий. Пока виды были только дороже,
@@ -116107,6 +116165,9 @@ function careerDoAct(id){
   // audience and posts, which is the only reason the growth is visible at all.
   // Разбор меты: день в новом сезоне, который снимает штраф. См. careerMetaDay.
   if(act.meta) careerMetaDay();
+  // Сессия Noble и день в ранкеде двигают ранг (см. ccRankAdd).
+  if(act.noble) ccNobleRun();
+  if(act.id==='trSur') ccRankAdd(12+Math.round(ccLifeRng('ranked')()*14));
   if(act.reach){
     // A night on stream, priced per rung. See CC_STREAM_REACH.
     /* Вид эфира. Кнопка дня — это 'grind' с множителями в единицу, поэтому
@@ -116402,6 +116463,216 @@ function careerAdvanceTo(iso){
   if(typeof ccSyncPhaseRoster==='function') ccSyncPhaseRoster();
   careerSave();
 }
+/* ЖИЗНЬ МЕЖДУ ТУРНИРАМИ — ранкед, травмы, поездки на ЛАН, скандалы, икон-скин, Noble.
+
+   Всё хранится в cr.life; тик — раз в день (ccLifeTick из careerAdvanceBody), запреты —
+   в careerCanPlayKindOn через ccLifeWhy. Числа — оценка режима, кроме того, что названо
+   источником: серверы и формат Noble — nobleprac.com (сессия = одна игра на 90–100 человек,
+   уровни Practice / Division 3–1 / Pro Scrims), ранги — лестница Ranked Epic. */
+function ccLife(){ const cr=CAREER.career; if(!cr.life) cr.life={}; return cr.life; }
+function ccLifeRng(tag){ return careerRng(ccHashStr('life|'+tag+'|'+(CAREER.player.nick||'')+'|'+careerToday())); }
+
+// ---- Ранкед: Bronze → Unreal, по сто очков на ранг. С 2023-го кэшкапы — от Diamond.
+const CC_RANKS=['Bronze','Silver','Gold','Platinum','Diamond','Elite','Champion','Unreal'];
+const CC_RANK_CUP=4;   // Diamond — оценка режима: порог входа в Victory/Cash Cup
+function ccRankPts(){
+  const lf=ccLife();
+  if(lf.rp==null){ const o=(CAREER.player && CAREER.player.ovr)||70; lf.rp=clamp(Math.round((o-55)*20), 0, 790); }
+  return lf.rp;
+}
+function ccRank(){ return Math.min(CC_RANKS.length-1, Math.floor(ccRankPts()/100)); }
+function ccRankName(i){ return CC_RANKS[i==null ? ccRank() : i]; }
+function ccRankAdd(n){ const lf=ccLife(); const was=ccRank(); lf.rp=clamp(ccRankPts()+n, 0, 799);
+  const now=ccRank(); if(now>was) careerNews('good', 'lfNewsRankUp', [ccRankName(now)]); }
+// Нужен ли ранг этому капу: Victory/Cash Cup без приглашения, с 2023-го.
+function ccRankNeed(ev){ return !!ev && !ev.invite && !ev.lan && ccCalYear()>=2023 ? CC_RANK_CUP : 0; }
+
+// ---- Травмы: при выгорании (careerBurnout) растёт риск — запястье или болезнь.
+function ccLifeHurt(day){ const h=ccLife().hurt; return h && (day||careerToday())<=h.until ? h : null; }
+
+// ---- Скандалы: жалоба → разбор → оправдан / штраф / бан открытых турниров.
+const CC_BAN_KINDS=['cup','final','victory','solo','eval','reload'];
+function ccLifeBan(day){ const b=ccLife().ban; return b && (day||careerToday())<=b ? b : null; }
+
+// ---- Поездки на офлайн-турниры (ЛАН с городом): регион города, цена, виза, джетлаг.
+const CC_CITY_REG={'San Diego':'NAW', 'Los Angeles':'NAW', 'Phoenix':'NAW', 'Dallas':'NAC', 'Arlington':'NAC',
+  'Atlanta':'NAC', 'Jönköping':'EU', 'Edinburgh':'EU', 'Cologne':'EU', 'Vienna':'EU', 'Hamburg':'EU',
+  'Riyadh':'ME', 'Doha':'ME'};
+function ccTripOf(ev){
+  if(!ev || !ev.lan || !ev.invite) return null;
+  const city=String(ev.lan).split(' · ')[1]||'';
+  const to=CC_CITY_REG[city]; if(!to) return null;
+  const from=ccCareerRegion();
+  const na=r=>r==='NAC'||r==='NAW';
+  const cost = from===to ? 150 : (na(from)&&na(to)) ? 300 : ((from==='EU'&&na(to))||(na(from)&&to==='EU')) ? 900
+             : ((from==='EU'&&to==='ME')||(from==='ME'&&to==='EU')) ? 500 : 1200;
+  // Виза — сколько дней до вылета она делается: в США из-за Северной Америки — 10, в ЕС извне — 7.
+  const visa = na(to) && !na(from) ? 10 : (to==='EU' && from!=='EU') ? 7 : 0;
+  return {city, to, from, cost, visa, far: from!==to && !(na(from)&&na(to))};
+}
+function ccTripBooked(ev){ const t=ccLife().trips||{}; return t[ev.id+'|'+ev.day]||null; }
+function ccTripWhy(ev, day){
+  const tr=ccTripOf(ev); if(!tr) return null;
+  const b=ccTripBooked(ev);
+  if(!b) return 'lfTripNone';
+  if(tr.visa && ccDaysBetween(b.day, ev.day)<tr.visa) return 'lfTripVisa';
+  return null;
+}
+function ccDaysBetween(a, b){ return Math.round((new Date(b+'T00:00:00Z')-new Date(a+'T00:00:00Z'))/86400000); }
+function careerTripBook(id, day){
+  const ev=ccVictoryList().find(v=>v.id===id && v.day===day); const tr=ccTripOf(ev); if(!tr) return;
+  const cr=CAREER.career;
+  if((cr.balance||0)<tr.cost){ careerNews('bad', 'lfNewsTripBroke', [tr.city, ccMoney(tr.cost)]); careerRenderHub(CH_TAB); return; }
+  cr.balance-=tr.cost;
+  const lf=ccLife(); lf.trips=lf.trips||{};
+  lf.trips[id+'|'+day]={day:careerToday(), cost:tr.cost};
+  careerNews('flat', 'lfNewsTripBooked', [tr.city, ccMoney(tr.cost)]);
+  careerSave(); careerRenderHub(CH_TAB);
+}
+// Джетлаг: далёкий перелёт, оформленный меньше чем за пять дней, — минус форма на вечер.
+function ccTripJetlag(ev){
+  const tr=ccTripOf(ev), b=tr && ccTripBooked(ev);
+  return !!(tr && tr.far && b && ccDaysBetween(b.day, ev.day)<5);
+}
+
+// Почему этот вид вечера сегодня закрыт жизнью (null — открыт).
+function ccLifeWhy(day, kind){
+  if(ccLifeHurt(day)) return 'lfWhyHurt';
+  if(ccLifeBan(day) && CC_BAN_KINDS.indexOf(kind)>=0) return 'lfWhyBan';
+  if(kind==='victory'){
+    const ev=careerVictoryOn(day);
+    const need=ccRankNeed(ev); if(need && ccRank()<need) return 'lfWhyRank';
+    const tw=ccTripWhy(ev, day); if(tw) return tw;
+  }
+  return null;
+}
+
+// ---- Noble Pro Scrims: сессия — одна игра, таблица по игрокам, сервер по уровню.
+function ccNobleServer(){
+  const cr=CAREER.career, pr=(typeof careerPrPlace==='function') ? careerPrPlace() : null;
+  const o=(CAREER.player && CAREER.player.ovr)||70;
+  if((cr.division===1 && (pr && pr<=100 || o>=88)) || o>=92) return {name:'Noble Pro Scrims', avg:88};
+  if(cr.division<=3 && !ccNoDivisions()) return {name:'Noble Division '+cr.division, avg:[0,84,80,76][cr.division]};
+  return o>=80 ? {name:'Noble Solos Closed', avg:80} : {name:'Noble Practice Scrims', avg:72};
+}
+function ccNobleRun(){
+  const lf=ccLife(), sv=ccNobleServer(), rng=ccLifeRng('noble');
+  const o=(CAREER.player && CAREER.player.ovr)||70, of=90+Math.floor(rng()*9);
+  const g=()=>{ let s=0; for(let i=0;i<6;i++) s+=rng(); return (s-3)/Math.sqrt(0.5); };
+  const z=(o+careerForm()+g()*4-sv.avg)/5.5;
+  const pct=1/(1+Math.exp(-1.7*z));
+  const place=Math.max(1, Math.min(of, Math.round((1-pct)*(of-1))+1));
+  const kills=Math.max(0, Math.round(pct*6+g()*1.5));
+  const pts=victoryR1Points(place)+kills*2;
+  const wk=ccMonthKey(careerToday())+'|'+Math.floor(((+careerToday().slice(8,10))-1)/7);
+  if(!lf.noble || lf.noble.wk!==wk) lf.noble={wk, server:sv.name, me:0, n:0, rows:ccNobleRivals(sv, wk)};
+  lf.noble.me+=pts; lf.noble.n++; lf.noble.server=sv.name;
+  // Соперники сервера играют ту же сессию.
+  Object.keys(lf.noble.rows).forEach(h=>{ const r=lf.noble.rows[h]; r.p+=Math.max(0, Math.round(victoryR1Points(1+Math.floor(rng()*of))+rng()*8)); });
+  careerNews(place<=10?'good':'flat', 'lfNewsNoble', [sv.name, place, of, kills, pts]);
+  ccRankAdd(Math.round((pct-0.4)*20));
+  return {server:sv.name, place, of, kills, pts};
+}
+function ccNobleRivals(sv, wk){
+  const reg=ccCareerRegion(), rows={};
+  const pool=PLAYERS.filter(p=>p.region===reg && (p._ovr||p.rating||0)>=sv.avg-4).slice(0, 400);
+  const rng=careerRng(ccHashStr('noblewk|'+wk+'|'+reg));
+  for(let i=0;i<12 && pool.length;i++){ const p=pool.splice(Math.floor(rng()*pool.length),1)[0]; if(p && p.handle && !rows[p.handle]) rows[p.handle]={p:0}; }
+  return rows;
+}
+
+// ---- Икон-скин: титул Глобалов, два титула Мейджора или миллион призовых.
+function ccIconDue(){
+  const cr=CAREER.career, lf=ccLife(); if(lf.icon) return false;
+  const log=cr.log||[];
+  const gc=log.some(e=>e.kind==='globals' && e.place===1);
+  const mj=log.filter(e=>e.kind==='major' && e.stage==='final' && e.place===1).length;
+  return gc || mj>=2 || (cr.earnings||0)>=1000000;
+}
+
+// ---- Дневной тик.
+function ccLifeTick(){
+  const cr=CAREER.career, lf=ccLife(), today=careerToday();
+  const from=lf.tick||today; lf.tick=today;
+  const days=Math.min(60, Math.max(0, ccDaysBetween(from, today)));
+  for(let i=1;i<=days;i++){
+    const d=ccAddDays(from, i), rng=careerRng(ccHashStr('lifeday|'+d+'|'+(CAREER.player.nick||'')));
+    // Выздоровление.
+    if(lf.hurt && d>lf.hurt.until){ careerNews('good', 'lfNewsHealed', []); lf.hurt=null; }
+    // Травма от выгорания.
+    const b=careerBurnout();
+    if(!lf.hurt && b>0 && rng()<0.02*b){
+      const wrist=rng()<0.6, n=wrist ? 3+Math.floor(rng()*8) : 2+Math.floor(rng()*4);
+      lf.hurt={k:wrist?'wrist':'ill', until:ccAddDays(d, n)};
+      careerNews('bad', wrist?'lfNewsWrist':'lfNewsIll', [n]);
+    }
+    // Разбор жалобы.
+    if(lf.case && d>=lf.case.until){
+      const r=rng(), k=lf.case.k; lf.case=null;
+      if(r<0.55) careerNews('good', 'lfNewsCleared', [L()['lfCase'+k]]);
+      else if(r<0.85){ const fine=Math.max(100, Math.round((cr.balance||0)*0.05/50)*50); cr.balance=Math.max(0,(cr.balance||0)-fine);
+        careerNews('bad', 'lfNewsFined', [L()['lfCase'+k], ccMoney(fine)]); }
+      else { lf.ban=ccAddDays(d, 14); careerNews('bad', 'lfNewsBanned', [L()['lfCase'+k], 14]); careerReachAdd(-Math.round(careerReach()*0.05), true); }
+    }
+    // Новая жалоба: редко, чаще с большим охватом.
+    if(!lf.case && !ccLifeBan(d) && rng()<(1+Math.min(3, careerReach()/200000))/240){
+      const k=['team','snipe','toxic'][Math.floor(rng()*3)];
+      lf.case={k, until:ccAddDays(d, 3+Math.floor(rng()*5))};
+      careerNews('bad', 'lfNewsCase', [L()['lfCase'+k]]);
+    }
+    // Бан на сцене — у чужих тоже (новость).
+    if(rng()<1/75){
+      const reg=ccCareerRegion(), pool=PLAYERS.filter(p=>p.region===reg && (p._ovr||0)>=80);
+      const p=pool[Math.floor(rng()*pool.length)];
+      if(p) careerNews('flat', 'lfNewsSceneBan', [p.handle, L()['lfCase'+(rng()<0.6?'team':'snipe')]]);
+    }
+  }
+  // Икон-скин.
+  if(ccIconDue()){
+    const pay=150000+Math.round(Math.min(350000, careerReach()*0.5)/1000)*1000;
+    lf.icon={day:today, pay};
+    cr.balance=(cr.balance||0)+pay; cr.side=(cr.side||0)+pay;
+    careerReachAdd(Math.round(Math.max(20000, careerReach()*0.3)), true);
+    careerNews('good', 'lfNewsIcon', [(CAREER.player.nick||''), ccMoney(pay)]);
+    if(typeof careerEvent==='function') careerEvent('lfTlIcon', []);
+  }
+}
+
+// ---- Плитка хаба.
+function ccLifeTileHTML(){
+  if(!CAREER || !CAREER.career) return '';
+  const lf=ccLife(), cr=CAREER.career, rows=[];
+  // Почему сегодняшний вечер закрыт — кнопка «Играть» сама причину не пишет.
+  const todayEv=(careerYearDays().get(careerToday())||[]);
+  const whyK=todayEv.map(e=>ccLifeWhy(careerToday(), e.kind)).find(Boolean);
+  if(whyK) rows.push(`<div class="ch-row"><em>${L().lfToday}</em><b style="color:var(--bad,#f66);">${L()[whyK]}</b></div>`);
+  rows.push(`<div class="ch-row"><em>${L().lfRank}</em><b>${ccRankName()} · ${ccRankPts()%100}/100</b></div>`);
+  const h=ccLifeHurt(); if(h) rows.push(`<div class="ch-row"><em>${L().lfHurt}</em><b>${L()[h.k==='wrist'?'lfWrist':'lfIll']} · ${L().lfUntil} ${ccFmtDay(h.until)}</b></div>`);
+  if(lf.case) rows.push(`<div class="ch-row"><em>${L().lfCaseOpen}</em><b>${L()['lfCase'+lf.case.k]}</b></div>`);
+  const bn=ccLifeBan(); if(bn) rows.push(`<div class="ch-row"><em>${L().lfBan}</em><b>${L().lfUntil} ${ccFmtDay(bn)}</b></div>`);
+  if(lf.icon) rows.push(`<div class="ch-row"><em>${L().lfIcon}</em><b>Icon Series · ${ccMoney(lf.icon.pay)}</b></div>`);
+  // Ближайшие ЛАНы с перелётом — оформить.
+  const today=careerToday();
+  ccVictoryList().filter(v=>v.invite && v.day>=today && ccDaysBetween(today, v.day)<=30).forEach(v=>{
+    const tr=ccTripOf(v); if(!tr) return;
+    const b=ccTripBooked(v);
+    rows.push(`<div class="ch-row"><em>${esc(L().lfTrip)} · ${esc(tr.city)} · ${ccFmtDay(v.day)}</em><b>${b ? L().lfTripOk
+      : `<button class="cc-back" onclick="careerTripBook('${v.id}','${v.day}')">${L().lfTripBook} ${ccMoney(tr.cost)}${tr.visa?' · '+L().lfVisa(tr.visa):''}</button>`}</b></div>`);
+  });
+  // Noble — неделя.
+  if(lf.noble && lf.noble.n){
+    const me=(CAREER.player.nick||'you');
+    const board=Object.keys(lf.noble.rows).map(k=>({n:k, p:lf.noble.rows[k].p})).concat([{n:me, p:lf.noble.me, you:true}])
+      .sort((a,b)=>b.p-a.p).slice(0,8);
+    rows.push(`<div class="ch-row"><em>${esc(lf.noble.server)} · ${L().lfWeek}</em><b>${lf.noble.n} ${L().lfSessions}</b></div>`);
+    board.forEach((r,i)=>rows.push(`<div class="ch-row"><em>${i+1}. ${esc(r.n)}</em><b class="${r.you?'ch-goal-met':''}">${r.p}</b></div>`));
+  }
+  const sr=ccSeasonRating();
+  if(sr) rows.push(`<div class="ch-row"><em>${L().lfAvgRate}</em><b>${sr.avg.toFixed(1)} · ${L().lfMvpCount}: ${sr.mvp}</b></div>`);
+  return `<div class="ch-tile"><h4>${L().lfTitle}</h4>${rows.join('')}</div>`;
+}
+function ccFmtDay(iso){ return String(iso||'').slice(8,10)+'.'+String(iso||'').slice(5,7); }
+
 function careerAdvanceBody(iso){
   const cr=CAREER.career;
   // The month's objective is judged before the clock leaves the day that may
@@ -116459,6 +116730,7 @@ function careerAdvanceBody(iso){
   // own. Both are judged after the clock has moved, because the month is only
   // over once the day is in the next one.
   careerAwardCheck();
+  try{ ccLifeTick(); }catch(e){ if(typeof console!=='undefined') console.warn('life tick', e); }
   if(typeof careerSacTick==='function') careerSacTick();       // код поддержки — за месяц
   if(typeof careerTwSubsTick==='function') careerTwSubsTick(); // подписки на каналы — продление
   if(cr.seasonOver) careerAwardSeason();
@@ -132980,7 +133252,7 @@ function careerDayPanelHTML(locked){
     }
     /* Группы, как список квестов в лобби: заголовок перед первой строкой
        группы и цветная кромка слева по группе (g-train/g-team/g-life). */
-    const grp=String(a.id).indexOf('tr')===0 ? 'train' : (a.id==='scrim'||a.id==='talk') ? 'team' : 'life';
+    const grp=String(a.id).indexOf('tr')===0 ? 'train' : (a.id==='scrim'||a.id==='talk'||a.id==='noble') ? 'team' : 'life';
     const grpHead=(a.id==='trAim'||a.id==='scrim'||a.id==='stream')
       ? '<div class="cc-act-grp">'+(L()['ccActGrp'+grp.charAt(0).toUpperCase()+grp.slice(1)]||'')+'</div>' : '';
     return grpHead+'<button class="cc-act g-'+grp+(can?'':' off')+(done.indexOf(a.id)>=0?' did':'')+'" '+
@@ -136361,6 +136633,8 @@ function careerCanPlayKind(kind){ return careerCanPlayKindOn(careerToday(), kind
    и не изменится. */
 function careerCanPlayKindOn(day, kind){
   if(CC_PLAYABLE.indexOf(kind)<0) return false;
+  // Травма, бан, неоформленная поездка или ранг ниже порога капа (см. ccLifeWhy).
+  if(typeof ccLifeWhy==='function' && ccLifeWhy(day, kind)) return false;
   /* Без связи с лобби командный вечер не начинается — и кнопка это знает.
      Иначе нажатие уходило бы в ccMpGate и висело там молча: вечер ждёт
      «оба готовы», а сказать это некому. Причину печатает ccMpWhy. */
@@ -136618,6 +136892,7 @@ function ccZoneTuneRound(type, round, extra){
 }
 function careerPlayRun(next){
   if(!next) return;
+  CC_NIGHT_RATE=null; CC_NIGHT_SHOWN=null;   // оценка — своя у каждого вечера (ccNightRate)
   CC_DRAFT_RUN=false;   // карьерный вечер — не драфт (см. ccMpOn)
   ccZoneTuneFor(next);  // комната этого дивизиона дерётся по своим реплеям
   // Этапы вечера нумеруются с нуля у каждого раннера — жетон высадки
@@ -146004,6 +146279,7 @@ function careerReloadResultCard(r){
       // Reload circuit and said "a seat at the Esports World Cup" whoever asked.
       (r.seat?'<div>'+esc(r.seatText||L().ccRelSeat)+'</div>':'')+
       (r.money?'<div>'+L().chEarnings+': $'+ccNum((CAREER.career.earnings||0))+'</div>':'')+
+      ccNightRateLine()+
     '</div>'+
     '<div class="stage-actions"><button class="btn-primary" onclick="careerBackToHub()">'+
       L().ccBackToHub+'</button></div>';
@@ -146016,8 +146292,11 @@ function careerReloadResultCard(r){
 async function runCareerVictory(){
   const ev=careerVictoryOn(careerToday());
   CC_ZB=!!(ev && ev.zb);
+  // Джетлаг: далёкий перелёт, оформленный поздно, — минус один шаг формы на этот вечер.
+  const jet=typeof ccTripJetlag==='function' && ccTripJetlag(ev), cr0=CAREER.career;
+  if(jet){ cr0.form=(cr0.form||0)-1; careerNews('bad', 'lfNewsJetlag', []); }
   try{ return await runCareerVictoryNight(); }
-  finally{ CC_ZB=false; }
+  finally{ CC_ZB=false; if(jet) cr0.form=(cr0.form||0)+1; }
 }
 async function runCareerVictoryNight(){
   const cr=CAREER.career;
@@ -148309,6 +148588,7 @@ function careerCupResultCard(r){
       ${r.morale ? `<div>${L().ccResPartner}: ${r.morale.left ? ccSay('ccNewsPartnerLeft', r.morale.name)
           : L()[careerMoodKey(r.morale.after)]+' ('+r.morale.before+' '+(r.morale.move>=0?'▲':'▼')+' '+r.morale.after+')'}</div>` : ''}
       ${cr.seasonOver?`<div>${L().ccSeasonOver} — ${L().ccSeasonOverSub}</div>`:''}
+      ${ccNightRateLine()}
     </div>
     <div style="margin-top:12px;"><button class="go-btn" style="margin:0;width:auto;padding:10px 20px;"
       onclick="careerBackToHub()">${L().ccBackToHub}</button></div>`;
@@ -148353,6 +148633,7 @@ function careerTwoRoundResultCard(r){
       <div>${line}</div>
       <div>${L().ccResEarned}: ${r.cash ? ccMoney(r.cash) : L().ccResNoMoney}</div>
       <div>${L().chEarnings}: ${ccMoney(CAREER.career.earnings||0)}</div>
+      ${ccNightRateLine()}
     </div>
     <div class="stage-actions"><button class="btn-primary"
       onclick="careerBackToHub()">${L().ccBackToHub}</button></div>`;
@@ -148493,8 +148774,68 @@ function ccNamesPeekHTML(t){
   const m=String(t.name||'').match(/^([^:<]{1,40}:)\s*/);
   return (m ? esc(m[1])+' ' : '')+links;
 }
+/* ОЦЕНКА ЗА ВЕЧЕР И MVP — как в FIFA: 1.0–10.0 после каждого вечера.
+
+   Считается из итоговой таблицы вечера (последний careerPrAdd дня — финальная комната):
+   место в перцентилях комнаты — 60 %, элимы против медианы комнаты — 25 %, победы — 15 %.
+   Веса — оценка режима, не чьё-то измерение. MVP вечера — у команды-победителя: сам игрок,
+   если победил он и оценка от 8.5, иначе сильнейшая карточка победителей (кто из них был
+   лучшим в той игре, журнал не хранит). В строку журнала вечера оценка приклеивается при
+   сохранении (ccNightStamp), потому что строки пишут двадцать разных раннеров. */
+let CC_NIGHT_RATE=null;
+function ccNightRate(ranked){
+  const you=ranked.find(t=>t && t.isYou);
+  if(!you) return null;
+  const of=ranked.length, place=ranked.indexOf(you)+1;
+  const pct=of>1 ? 1-(place-1)/(of-1) : 1;
+  const el=ranked.map(t=>t.stageElims||0).sort((a,b)=>a-b), med=el[Math.floor(el.length/2)]||0;
+  const mine=you.stageElims||0;
+  const elimS=Math.max(0, Math.min(1, 0.5+(mine-med)/Math.max(2, med*3)));
+  const winS=Math.min(1, (you.wins||0)/2);
+  const rating=Math.round(10*(1+9*(0.6*pct+0.25*elimS+0.15*winS)))/10;
+  const top=ranked[0], sq=(top && top.squad)||[];
+  let mvp=null, mvpYou=false;
+  if(top===you && rating>=8.5){ mvp=(CAREER.player && (CAREER.player.handle||CAREER.player.nick))||null; mvpYou=true; }
+  else if(sq.length){ const c=sq.slice().sort((a,b)=>((b&&b._ovr)||(b&&b.rating)||0)-((a&&a._ovr)||(a&&a.rating)||0))[0]; mvp=c && c.handle; }
+  return {day:careerToday(), rating, mvp, mvpYou, place, of};
+}
+// Приклеить оценку вечера к его строке журнала (последняя строка этого дня без оценки).
+function ccNightStamp(){
+  const n=CC_NIGHT_RATE, cr=CAREER && CAREER.career;
+  if(!n || !cr || !cr.log) return;
+  for(let i=cr.log.length-1; i>=0; i--){
+    const e=cr.log[i];
+    if(e.day!==n.day) { if(e.day<n.day) break; continue; }
+    if(e.rating==null){ e.rating=n.rating; if(n.mvp) e.mvp=n.mvp; if(n.mvpYou) e.mvpYou=true; CC_NIGHT_SHOWN=n; CC_NIGHT_RATE=null; }
+    return;
+  }
+}
+// Средняя оценка сезона и число MVP — для профиля и для клубов.
+function ccSeasonRating(season){
+  const cr=CAREER && CAREER.career; if(!cr) return null;
+  const s=season==null ? cr.season : season;
+  const r=(cr.log||[]).filter(e=>e.season===s && e.rating!=null);
+  if(!r.length) return null;
+  return {avg:Math.round(10*r.reduce((a,e)=>a+e.rating,0)/r.length)/10, n:r.length, mvp:r.filter(e=>e.mvpYou).length};
+}
+// Строка оценки вечера для карточки итога (CC_NIGHT_RATE или уже приклеенная — CC_NIGHT_SHOWN).
+let CC_NIGHT_SHOWN=null;
+function ccNightRateLine(){
+  const n=CC_NIGHT_RATE || CC_NIGHT_SHOWN;
+  if(!n) return '';
+  const mvp=n.mvpYou ? L().lfMvpYou : (n.mvp ? L().lfMvp+': '+esc(n.mvp) : '');
+  return '<div>'+L().lfRate+': <b>'+n.rating.toFixed(1)+'</b>'+(mvp ? ' · '+mvp : '')+'</div>';
+}
 function careerPrAdd(ranked, meta){
   if(!ranked || ranked.length<2) return;
+  try{
+    const nr=ccNightRate(ranked);
+    if(nr){
+      // Ранг двигается раз за вечер: первая таблица дня двигает, следующие раунды — нет.
+      if(!CC_NIGHT_RATE || CC_NIGHT_RATE.day!==nr.day) ccRankAdd(Math.round(((nr.of>1 ? 1-(nr.place-1)/(nr.of-1) : 1)-0.4)*25));
+      CC_NIGHT_RATE=nr;
+    }
+  }catch(e){}
   const t=careerPrTally(), of=ranked.length;
   // Поле турнира спрашивается один раз на вечер, а не на каждую из полутора
   // сотен строк: ccNextShape перебирает календарь.
