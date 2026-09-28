@@ -109902,7 +109902,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='201cb2f0';
+const CC_BUILD='ad9dd896';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -116891,16 +116891,13 @@ function ccTripOf(ev){
   const na=r=>r==='NAC'||r==='NAW';
   const cost = from===to ? 150 : (na(from)&&na(to)) ? 300 : ((from==='EU'&&na(to))||(na(from)&&to==='EU')) ? 900
              : ((from==='EU'&&to==='ME')||(from==='ME'&&to==='EU')) ? 500 : 1200;
-  // Виза — сколько дней до вылета она делается: в США из-за Северной Америки — 10, в ЕС извне — 7.
-  const visa = na(to) && !na(from) ? 10 : (to==='EU' && from!=='EU') ? 7 : 0;
-  return {city, to, from, cost, visa, far: from!==to && !(na(from)&&na(to))};
+  return {city, to, from, cost, far: from!==to && !(na(from)&&na(to))};
 }
 function ccTripBooked(ev){ const t=ccLife().trips||{}; return t[ev.id+'|'+ev.day]||null; }
 function ccTripWhy(ev, day){
   const tr=ccTripOf(ev); if(!tr) return null;
   const b=ccTripBooked(ev);
   if(!b) return 'lfTripNone';
-  if(tr.visa && ccDaysBetween(b.day, ev.day)<tr.visa) return 'lfTripVisa';
   return null;
 }
 function ccDaysBetween(a, b){ return Math.round((new Date(b+'T00:00:00Z')-new Date(a+'T00:00:00Z'))/86400000); }
@@ -117042,7 +117039,7 @@ function ccLifeTileHTML(){
     const tr=ccTripOf(v); if(!tr) return;
     const b=ccTripBooked(v);
     rows.push(`<div class="ch-row"><em>${esc(L().lfTrip)} · ${esc(tr.city)} · ${ccFmtDay(v.day)}</em><b>${b ? L().lfTripOk
-      : `<button class="cc-back" onclick="careerTripBook('${v.id}','${v.day}')">${L().lfTripBook} ${ccMoney(tr.cost)}${tr.visa?' · '+L().lfVisa(tr.visa):''}</button>`}</b></div>`);
+      : `<button class="cc-back" onclick="careerTripBook('${v.id}','${v.day}')">${L().lfTripBook} ${ccMoney(tr.cost)}</button>`}</b></div>`);
   });
   // Noble — неделя.
   if(lf.noble && lf.noble.n){

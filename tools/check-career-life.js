@@ -87,7 +87,7 @@ const BOOT = `
     out.notes.noble=(CAREER.career.news||[]).find(n=>n.k==='lfNewsNoble');
     check('новость Noble', !!out.notes.noble);
     out.notes.tile=ccLifeTileHTML().replace(/<[^>]+>/g,' ').replace(/ +/g,' ').slice(0,400);
-    // 5. Поездка: DreamHack Winter 2022 (Йёнчёпинг) из NA — оформить, виза 7 дней.
+    // 5. Поездка: DreamHack Winter 2022 (Йёнчёпинг) из NA — оформить билет.
     setY('2022-11-10', 2022, {region:'NAC'});
     CAREER.player.region='NAC'; if(CAREER.career) CAREER.career.region='NAC';
     const ev=ccVictoryList().find(v=>v.day==='2022-11-27');
@@ -97,7 +97,8 @@ const BOOT = `
     careerTripBook(ev.id, ev.day);
     check('с билетом за 17 дней открыт', ccTripWhy(ev)===null, ccTripWhy(ev));
     ccLife().trips={}; ccLife().trips[ev.id+'|'+ev.day]={day:'2022-11-24', cost:900};
-    check('виза не успела за 3 дня', ccTripWhy(ev)==='lfTripVisa', ccTripWhy(ev));
+    // Визы в режиме нет: поздний билет всё равно пускает, только с джетлагом.
+    check('поздний билет пускает', ccTripWhy(ev)===null, ccTripWhy(ev));
     check('джетлаг при позднем билете', ccTripJetlag(ev)===true);
     // 6. Икон-скин: миллион призовых.
     setY('2026-04-01', 2026);
