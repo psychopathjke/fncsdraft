@@ -103961,7 +103961,7 @@ function ccKitPanel(lobby, frame){
      Полоски показывают ровно эти два числа. Кадр без щита (старая запись) —
      щит полный. */
   const shield=Math.max(0, Math.min(100, Math.round(d.sh==null ? 100 : d.sh)));
-  const health=hp;
+  const health=Math.round(hp);   // целым, как щит: «99.90000000166» на скрине 28.09
   /* Ресы — тоже одно число модели, разложенное на дерево, кирпич и металл в
      привычной пропорции 40/35/25; сумма стопок равна числу, которое тратит и
      пополняет модель. */
@@ -127979,6 +127979,8 @@ function careerNews(kind, key, args, opt){
                    // Арт события под постом и цитируемая запись — см. ccArtHTML
                    // и ccQuoteHTML.
                    art:(opt&&opt.art)||undefined,
+                   // Постер турнира этого дня, если он свой (см. ccNewsArtOf).
+                   evArt:(opt&&opt.evArt)||(()=>{ try{ return ccEventArtOwn((careerYearDays().get(day)||[])[0])||undefined; }catch(e){ return undefined; } })(),
                    q:(opt&&opt.q)||undefined,
                    // Ник, чья карточка (био + PR) висит под постом. Хранится
                    // ник, а не сама карточка: числа считаются на показ, и
@@ -129303,11 +129305,34 @@ const CC_NEWS_KIND=[[/^ccNewsMaj/, 'major'], [/^ccNewsRel|^ccNewsRc/, 'reload'],
   [/^ccNewsSolo/, 'solo'], [/^ccNewsGlob|^ccNewsGc/, 'gc'], [/^ccNewsSum/, 'summit'],
   [/^ccNewsVic/, 'victory'], [/^ccNewsEval/, 'eval'], [/^ccNewsWf|^ccNewsResultWeek/, 'final'],
   [/^ccNewsResult|^ccPostWon|^ccPostPodium|^ccNewsCongrats|^ccPostOrgWin|^ccNewsWinner|^ccNewsD1Table/, 'cup']];
+/* Обложка новости — в оформлении того, что игралось (его правка 28.09, скрин поста Kinch
+   про ESL Katowice 2019 с гербом FNCS 2026): свой постер у турнира дня (n.evArt, пишется в
+   careerNews), иначе постер сезона FNCS, в котором вышел пост; 2026-й — как раньше, по виду. */
+function ccSeasonArtOn(day){
+  const d=String(day||'');
+  if(!d || d>='2025-11-29') return '';
+  const all=[].concat(CC_SEASONS_2019, CC_SEASONS_2020, CC_SEASONS_2021, CC_SEASONS_2022,
+                      CC_SEASONS_2023, CC_SEASONS_2024, CC_SEASONS_2025);
+  const s=all.find(x=>d>=x.from && d<=x.to);
+  const num=s ? +String(s.id).slice(1) : 0;
+  if(!num) return d<'2019-12-31' ? 'art/fncs-2019.jpg' : 'art/fncs-'+d.slice(0,4)+'.jpg';
+  if(num<=9) return 'art/fncs-2019.jpg';
+  if(num===22) return 'art/cups/f22inv.jpg';
+  if(num<=25) return 'art/cups/f'+num+'.jpg';
+  if(num<=27) return 'art/fncs-2023.jpg';
+  if(num<=31) return 'art/cups/f28.jpg';
+  return num<=33 ? 'art/mode-major1-2025.jpg' : num<=35 ? 'art/mode-major2-2025.jpg' : 'art/mode-major3-2025.jpg';
+}
+// Свой постер события (сезон FNCS, id, постер капа) — без запасной обложки по виду.
+function ccEventArtOwn(ev){
+  if(!ev) return '';
+  return ccFncsPoster(ev.id||ev.eid) || CAREER_EV_ART_ID[ev.id||ev.eid||''] || ccCupPoster(ev.id||ev.eid) || '';
+}
 function ccNewsArtOf(n){
   const k=String(n.k||'');
   for(let i=0;i<CC_NEWS_KIND.length;i++)
     if(CC_NEWS_KIND[i][0].test(k)){
-      const art=CAREER_EV_ART[CC_NEWS_KIND[i][1]] || CAREER_EV_ART.cup;
+      const art=n.evArt || ccSeasonArtOn(n.day) || CAREER_EV_ART[CC_NEWS_KIND[i][1]] || CAREER_EV_ART.cup;
       if(art) return {src:art, kind:'art'};
     }
   const who=ccPostAuthor(n);
@@ -129318,7 +129343,7 @@ function ccNewsArtOf(n){
   /* Картинка есть ВСЕГДА — отзыв: «чтоб новости там были и картинки
      фортнайт». Новость без арта на этом экране выглядит как пустая карточка,
      поэтому последним рубежом стоит афиша сезона. */
-  return {src:CAREER_EV_ART.cup, kind:'art'};
+  return {src:n.evArt || ccSeasonArtOn(n.day) || CAREER_EV_ART.cup, kind:'art'};
 }
 function careerNewsCat(c){ CH_NEWS_CAT=c; CH_NEWS_PICK=null; careerRenderHub('centre'); }
 /* Выбранная руками новость останавливает карусель: игрок читает то, что открыл,

@@ -100,6 +100,16 @@ const BOOT = `
     check('в полосе сегодня видны сделанные занятия', !!document.querySelector('#chBody .tw-day.now .tw-did i'));
     check('карты Creative в тренировке', document.querySelector('#chBody').innerHTML.indexOf('Clix Box Fights')>=0);
 
+    // ---- Обложка новости — сезона, в котором она вышла (или своего турнира).
+    check('пост марта 2019 — ключевой арт 2019-го', ccNewsArtOf({k:'ccNewsKinch', day:'2019-03-02', a:[]}).src==='art/fncs-2019.jpg',
+          ccNewsArtOf({k:'ccNewsKinch', day:'2019-03-02', a:[]}).src);
+    check('март 2021 — постер C2S5 (f15)', ccSeasonArtOn('2021-03-01')==='art/cups/f15.jpg', ccSeasonArtOn('2021-03-01'));
+    check('2026-й — без сезонного постера, по виду', ccSeasonArtOn('2026-03-01')==='');
+    check('у поста со своим турниром — его постер', ccNewsArtOf({k:'ccNewsKinch', day:'2021-03-01', evArt:'art/cups/f16.jpg', a:[]}).src==='art/cups/f16.jpg');
+    const cupDay=[...careerYearDays().keys()].find(d=>ccEventArtOwn((careerYearDays().get(d)||[])[0]));
+    if(cupDay){ CAREER.career.day=cupDay; careerNews('flat', 'ccNewsKinch', ['x',1,2,'1.0',1,'0.5','1','1',1]);
+      check('пост в день турнира несёт его постер', CAREER.career.news[0].evArt===ccEventArtOwn(careerYearDays().get(cupDay)[0]), CAREER.career.news[0].evArt); }
+
     // ---- 2026: ранкед, Арены нет.
     seed(2026, '2026-02-18', 70, 2);
     CAREER.career.day=freeDay('2026-02-18'); careerSave();
