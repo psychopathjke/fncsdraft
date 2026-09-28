@@ -2241,6 +2241,24 @@
      there as an empty outline asking to be refilled. */
   .ch-en-bar.out{box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);}
   .ch-purse .ch-en b{min-width:26px;text-align:right;}
+  .ch-mood .ch-en-bar i{background:linear-gradient(180deg,#bcd0ff 0%,#7aa2ff 50%,#4c6fd6 100%);box-shadow:0 0 7px rgba(122,162,255,.45);}
+  .ch-mood .ch-en-bar.low i{background:linear-gradient(180deg,#ffb0a8 0%,#ff6b5e 55%,#c23b30 100%);}
+  #chPurseNow .ch-en-row{justify-content:flex-start;}
+  .ch-go{cursor:pointer;transition:filter .15s;} .ch-go:hover{filter:brightness(1.15);}
+  .ch-ovr-side{display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin-left:7px;}
+  .ch-ovr-side small{margin-left:0 !important;}
+  .ch-ovr-d,.ch-ovr-rk{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.04em;line-height:1;
+    padding:2px 5px;border-radius:3px;background:rgba(0,0,0,.18);white-space:nowrap;}
+  .ch-ovr-d.up{color:#0b6b2e;} .ch-ovr-d.down{color:#a1231a;}
+  .ch-ovr-rk{text-transform:uppercase;}
+  .ch-next{flex:1 0 100%;display:flex;align-items:center;gap:10px;padding:6px 18px;cursor:pointer;
+    font-size:12px;border-top:1px solid rgba(180,200,255,.12);background:rgba(255,255,255,.03);min-width:0;}
+  .ch-next img{width:44px;height:25px;object-fit:cover;border-radius:3px;flex:none;}
+  .ch-next em{font-style:normal;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
+    color:#0b1a3a;background:#ffdd00;padding:2px 6px;border-radius:3px;flex:none;}
+  .ch-next b{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+  .ch-next span{color:#8b98a5;font-weight:800;white-space:nowrap;margin-left:auto;flex:none;}
+  .ch-next:hover{background:rgba(255,255,255,.07);}
 
   /* Tabs */
   /* The strip wraps rather than running off the edge. Six tabs want 573px and a
@@ -18349,6 +18367,7 @@ let LANG=(function(){
    языки берут английский из-под себя (см. L). */
 Object.assign(I18N.ru, {
   lfRate:'Оценка за вечер', lfMvp:'MVP вечера', lfMvpYou:'ты — MVP вечера', lfAvgRate:'Средняя оценка сезона', lfMvpCount:'MVP за сезон',
+  lfHdrNext:'Далее', lfHdrToday:'Сегодня', lfHdrPlay:'можно играть', lfHdrIn:n=>n===1?'завтра':'через '+n+' дн.', lfHdrSeason:'Рейтинг за сезон',
   lfTitle:'Между турнирами', lfToday:'Сегодня', lfFatigue:'Усталость', lfGalaYouH:'Твой год', lfGalaMates:'Тиммейтов', lfGalaBestNight:'Лучший вечер', lfGalaTopMate:'Чаще всего вместе', lfVod:'Разобрать реплей: в чём была главная ошибка?', lfVod_drop:'Дроп', lfVod_rot:'Ротации и зона', lfVod_fight:'Файты', lfVodOk:'Верно — опыт +0.4, форма чуть лучше', lfVodNo:t=>'Не то — главная беда была: '+t, lfNewsVodOk:t=>'Разобрал реплей: ошибка — '+t+'. Понял, что делать', lfNewsVodNo:t=>'Разбор реплея не зашёл — на самом деле проблема была: '+t, lfScout:'Разведка', lfScoutYou:p=>'ты в топ-'+p+'% сцены', lfScoutFav:'Фавориты сцены', lfScoutForm:'В форме (PR)', lfChem:'Сыгранность', lfChemHint:d=>'Растёт от дней вместе ('+d+' до максимума), вечер вместе считается за 3 дня, скрим — за 2.', lfChemBonus:'Бонус к силе команды', lfYouTag:'ты', lfWordSoloOne:'соло', lfNewsStandin:n=>'На кап своего состава нет — играю со стэнд-инами: '+n, lfRateShort:'Оценка', lfAvgRateAll:'Средняя оценка', lfMvpAll:'MVP вечеров', lfLastNights:'Последние вечера', lfAwards:'Награды', lfAwYear:'Игрок года', lfAwMonth:'Игрок месяца', lfAwNone:'Пока наград нет. Игрок месяца, игрок года и номинации решаются по Power Ranking.', lfMetaGive:'форма в новом сезоне', lfFatFresh:'свежий', lfFatTired:'устал', lfFatBurn:'выгорание', lfInjuryRisk:p=>'риск травмы '+p+'% в день', lfCoachBoost:p=>'коуч +'+p+'%', chTabClub:'Клуб', lfContract:'Контракт', lfNoOrg:'Без клуба. Предложения приходят в личку после результатов.', lfSalary:'Зарплата в месяц', lfCut:'Доля клуба с призовых', lfGoal:'Цель сезона', lfGoalMet:'выполнена', lfGoalOpen:'пока нет', lfBuyout:'Отступные', lfSince:'В клубе с сезона', lfPaid:'Выплачено клубом', lfIncome:'Доходы', lfPrize:'Призовые', lfWages:'Зарплата', lfSide:'Побочные', lfSponsor:'Спонсоры', lfOrgCut:'Ушло клубу', lfBalance:'Баланс', lfRosters:'Составы', lfRostersHint:'У дуо, трио и сквада — свои составы; этап года выбирает, какой играет.', lfRosterDuo:'Дуо', lfRosterTrio:'Трио', lfRosterSquad:'Сквад', lfRosterNow:'сейчас', lfRosterEmpty:'пусто', lfWordSolo:'игроков', lfWordSquads:'сквадов', lfRank:'Ранкед', lfHurt:'Травма', lfWrist:'запястье', lfIll:'болезнь', lfUntil:'до', lfCaseOpen:'Разбирательство',
   lfBan:'Бан открытых турниров', lfIcon:'Икон-скин', lfTrip:'Поездка', lfTripOk:'оформлена', lfTripBook:'Оформить',
   lfVisa:n=>'виза '+n+' дн.', lfWeek:'неделя', lfSessions:'сессий',
@@ -18373,6 +18392,7 @@ Object.assign(I18N.ru, {
 });
 Object.assign(I18N.en, {
   lfRate:'Match rating', lfMvp:'Player of the night', lfMvpYou:'you were the player of the night', lfAvgRate:'Season average rating', lfMvpCount:'Player-of-the-night awards',
+  lfHdrNext:'Next', lfHdrToday:'Today', lfHdrPlay:'ready to play', lfHdrIn:n=>n===1?'tomorrow':'in '+n+' days', lfHdrSeason:'Rating this season',
   lfTitle:'Between events', lfToday:'Today', lfFatigue:'Fatigue', lfGalaYouH:'Your year', lfGalaMates:'Teammates', lfGalaBestNight:'Best night', lfGalaTopMate:'Most nights with', lfVod:'Review the replay: what was the main mistake?', lfVod_drop:'The drop', lfVod_rot:'Rotations and zone', lfVod_fight:'Fights', lfVodOk:'Right — experience +0.4, a bit more form', lfVodNo:t=>'Not quite — the real problem was: '+t, lfNewsVodOk:t=>'Reviewed the replay: the mistake was '+t+'. Got it', lfNewsVodNo:t=>'The replay review missed — the real problem was: '+t, lfScout:'Scouting', lfScoutYou:p=>'you are top '+p+'% of the scene', lfScoutFav:'Scene favourites', lfScoutForm:'In form (PR)', lfChem:'Chemistry', lfChemHint:d=>'Grows with days together ('+d+' to max); a night together counts as 3 days, a scrim as 2.', lfChemBonus:'Team strength bonus', lfYouTag:'you', lfWordSoloOne:'solo', lfNewsStandin:n=>'No roster of my own for this cup — playing with stand-ins: '+n, lfRateShort:'Rating', lfAvgRateAll:'Average rating', lfMvpAll:'Nights as MVP', lfLastNights:'Last nights', lfAwards:'Awards', lfAwYear:'Player of the year', lfAwMonth:'Player of the month', lfAwNone:'No awards yet. Player of the month, of the year and the season categories are decided by Power Ranking.', lfMetaGive:'form in the new season', lfFatFresh:'fresh', lfFatTired:'tired', lfFatBurn:'burnt out', lfInjuryRisk:p=>'injury risk '+p+'% a day', lfCoachBoost:p=>'coach +'+p+'%', chTabClub:'Club', lfContract:'Contract', lfNoOrg:'No club. Offers arrive in your DMs after results.', lfSalary:'Monthly salary', lfCut:'Club share of prize money', lfGoal:'Season goal', lfGoalMet:'done', lfGoalOpen:'not yet', lfBuyout:'Buyout', lfSince:'At the club since season', lfPaid:'Paid by the club', lfIncome:'Income', lfPrize:'Prize money', lfWages:'Salary', lfSide:'Side income', lfSponsor:'Sponsors', lfOrgCut:'Went to the club', lfBalance:'Balance', lfRosters:'Rosters', lfRostersHint:'Duos, trios and squads keep their own rosters; the stage of the year picks which one plays.', lfRosterDuo:'Duos', lfRosterTrio:'Trios', lfRosterSquad:'Squads', lfRosterNow:'now', lfRosterEmpty:'empty', lfWordSolo:'players', lfWordSquads:'squads', lfRank:'Ranked', lfHurt:'Injury', lfWrist:'wrist', lfIll:'illness', lfUntil:'until', lfCaseOpen:'Under review',
   lfBan:'Banned from open events', lfIcon:'Icon skin', lfTrip:'Trip', lfTripOk:'booked', lfTripBook:'Book',
   lfVisa:n=>'visa '+n+'d', lfWeek:'week', lfSessions:'sessions',
@@ -109731,7 +109751,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='527a93c7';
+const CC_BUILD='90215a17';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -113657,6 +113677,24 @@ function ccMyShownOvr(){
   return a ? Math.min(CAREER_SCALE_TOP, Math.round(a.ovr + (card._pingEdge||0) + (card._ageEdge||0)))
            : (CAREER && CAREER.player ? CAREER.player.ovr : 0);
 }
+/* Шапка: ближайший играбельный турнир (сегодня или впереди, до 120 дней) — старший
+   по CC_KIND_RANK, если в день их несколько. */
+function ccHdrNext(){
+  const days=careerEvents(), today=careerToday(), rank=e=>{ const i=CC_KIND_RANK.indexOf(e.kind); return i<0 ? 99 : i; };
+  for(let n=0, d=today; n<=120; n++, d=ccAddDays(d, 1)){
+    if(d>CC_YEAR_TO) break;
+    const on=(days.get(d)||[]).filter(e=>CC_PLAYABLE.indexOf(e.kind)>=0 && (n || careerCanPlayKind(e.kind)));
+    if(on.length) return {ev:on.slice().sort((a,b)=>rank(a)-rank(b))[0], day:d, n:n};
+  }
+  return null;
+}
+function ccHdrDate(iso){ const m=(L().calMonthsShort||[])[Number(String(iso).slice(5,7))-1];
+  return m ? Number(String(iso).slice(8,10))+' '+m : ccFmtDay(iso); }
+// Сдвиг рейтинга за сезон: от первого вечера сезона до сейчас.
+function ccHdrSeasonDelta(){
+  const cr=CAREER.career, first=(cr.log||[]).find(r=>r.season===cr.season && r.ovr!=null);
+  return first ? Math.round((CAREER.player.ovr||0)-first.ovr) : 0;
+}
 function careerRenderHubBody(tab){
   CH_TAB=tab||CH_TAB;
   const pl=CAREER.player, cr=CAREER.career;
@@ -113693,7 +113731,12 @@ function careerRenderHubBody(tab){
       L()[a?a.roleKey:pl.role]||'',
       careerTopHonour()
     ].filter(Boolean).join(' · ')}</div></div>`;
-  document.getElementById('chOvr').innerHTML=`${shown}<small>${L().ccRoOvr}</small>`;
+  const dOvr=ccHdrSeasonDelta();
+  document.getElementById('chOvr').innerHTML=`${shown}<span class="ch-ovr-side"><small>${L().ccRoOvr}</small>`+
+    (dOvr ? `<i class="ch-ovr-d ${dOvr>0?'up':'down'}" title="${esc(L().lfHdrSeason)}">${dOvr>0?'▲ +'+dOvr:'▼ '+dOvr}</i>` : '')+
+    (ccCalYear()>=2023 ? `<i class="ch-ovr-rk" title="${esc(L().lfRank)}">${esc(ccRankName())}</i>` : '')+`</span>`;
+  const chOvrEl=document.getElementById('chOvr');
+  chOvrEl.onclick=()=>careerTab('log'); chOvrEl.classList.add('ch-go');
   // Energy is the only number up here that belongs to today rather than to the
   // career, and it was only ever drawn inside the day panel — which is the one
   // thing that is not on screen on a day with a tournament on it. It leads the
@@ -113707,11 +113750,17 @@ function careerRenderHubBody(tab){
       `<span class="ch-en-bar${energyLeft?'':' out'}">`+
       `<i style="width:${Math.round(energyLeft/careerEnergyMax()*100)}%"></i></span>`+
       `<b class="${energyLeft?'':'ch-spent'}">${energyLeft}</b></div></div>`+
+    // Настрой напарника — рядом с энергией, только когда напарник есть.
+    ((careerMateRec() || (typeof ccMpTeam==='function' && ccMpTeam())) ? (()=>{ const m=Math.round(careerPatience());
+      return `<div class="ch-en ch-mood"><em>${L().ccRingMood}</em>`+
+        `<div class="ch-en-row"><span class="ch-en-mark">🤝</span>`+
+        `<span class="ch-en-bar${m<35?' low':''}"><i style="width:${Math.max(0,Math.min(100,m))}%"></i></span>`+
+        `<b>${m}</b></div></div>`; })() : '')+
     // The balance rather than the lifetime prize money: this strip is read
     // before spending — a coach, a month at the bootcamp, a rig — and the
     // number that answers "can I" is what is left, not what was ever won. The
     // career's total keeps its place in the ladder tile and the history.
-    `<div><em>${L().ccBalance}</em><b class="ch-cash">${ccMoney(cr.balance||0)}</b></div>`+
+    `<div class="ch-go" onclick="careerTab('shop')"><em>${L().ccBalance}</em><b class="ch-cash">${ccMoney(cr.balance||0)}</b></div>`+
     /* Form, reputation and burnout, which used to live in the ladder tile.
 
        They belong up here rather than in a tile you scroll to: all three are the
@@ -113736,10 +113785,25 @@ function careerRenderHubBody(tab){
         L().ccBurnoutDays(cr.grind||0)} · -${b}</b></div>`; })();
   document.getElementById('chPurse').innerHTML=
     `<div><em>${L().chSeason}</em><b>${cr.season}</b></div>`+
-    `<div><em>${L().chWeek}</em><b>${careerWeek()}/${ccYearWeeks()}</b></div>`+
-    `<div><em>${L().xFollowers}</em><b>${ccFollowers(careerReach())}</b></div>`+
-    // Твич — своя аудитория, врозь с твиттером. Пункт 8 страницы «ы».
-    `<div><em>Twitch</em><b>${ccFollowers(CAREER.career.twitch||0)}</b></div>`;
+    `<div class="ch-go" onclick="careerTab('calendar')"><em>${L().chWeek} ${careerWeek()}/${ccYearWeeks()}</em><b>${
+      esc(ccHdrDate(careerToday()))}</b></div>`+
+    `<div class="ch-go" onclick="careerTab('social')"><em>${L().xFollowers}</em><b>${ccFollowers(careerReach())}</b></div>`+
+    // Твич — своя аудитория, врозь с твиттером.
+    `<div class="ch-go" onclick="careerTab('streams')"><em>Twitch</em><b>${ccFollowers(CAREER.career.twitch||0)}</b></div>`;
+  // Полоса «Далее»: ближайший турнир и сколько до него дней.
+  let nx=document.getElementById('chNext');
+  if(!nx){ nx=document.createElement('div'); nx.id='chNext'; nx.className='ch-next';
+    const top=document.querySelector('#screen-career-hub .ch-top'); if(top) top.appendChild(nx); }
+  const nxt=cr.seasonOver ? null : ccHdrNext();
+  nx.style.display=nxt ? '' : 'none';
+  if(nxt){
+    const art=(typeof ccEventArt==='function') ? ccEventArt(nxt.ev) : '';
+    nx.onclick=()=>careerTab(nxt.n ? 'calendar' : 'centre');
+    nx.innerHTML=(art ? `<img src="${esc(art)}" alt="" onerror="this.remove()">` : '')+
+      `<em>${esc(nxt.n ? L().lfHdrNext : L().lfHdrToday)}</em>`+
+      `<b>${esc(nxt.ev.label||'')}</b>`+
+      `<span>${esc(nxt.n ? L().lfHdrIn(nxt.n)+' · '+ccHdrDate(nxt.day) : L().lfHdrPlay)}</span>`;
+  }
 
   document.querySelectorAll('#screen-career-hub .ch-tab').forEach(b=>{
     b.classList.toggle('on', b.dataset.tab===CH_TAB);
