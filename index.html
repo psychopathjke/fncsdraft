@@ -3517,6 +3517,15 @@
   .cc-fat-bar i{display:block;height:100%;background:#00d6a4;}
   .cc-fat-bar.s-lfFatTired i{background:#ffb13d;} .cc-fat-bar.s-lfFatBurn i{background:#ff5f56;}
   .cc-tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+  .ev-rate{font-weight:900;} .ev-rate.hi{color:#00d6a4;} .ev-rate.lo{color:#ff7d70;}
+  .ev-rspark span{display:flex;align-items:flex-end;gap:2px;height:28px;}
+  .ev-rbar{display:block;width:6px;border-radius:2px;background:#7aa2ff;}
+  .ev-rbar.hi{background:#00d6a4;} .ev-rbar.lo{background:#ff7d70;}
+  .aw-shelf{margin:10px 0;}
+  .aw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;}
+  .aw-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:12px;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,214,0,.25);text-align:center;}
+  .aw-item i{font-style:normal;font-size:24px;} .aw-item b{font-size:12px;font-weight:900;} .aw-item small{font-size:10px;color:#9fb0e8;font-weight:800;}
   .cc-tcard{display:flex;flex-direction:column;gap:3px;min-height:118px;margin:0;width:auto;box-sizing:border-box;}
   .cc-tc-top{display:flex;justify-content:space-between;align-items:center;}
   .cc-tc-ico{font-style:normal;font-size:20px;line-height:1;}
@@ -18281,7 +18290,7 @@ let LANG=(function(){
    языки берут английский из-под себя (см. L). */
 Object.assign(I18N.ru, {
   lfRate:'Оценка за вечер', lfMvp:'MVP вечера', lfMvpYou:'ты — MVP вечера', lfAvgRate:'Средняя оценка сезона', lfMvpCount:'MVP за сезон',
-  lfTitle:'Между турнирами', lfToday:'Сегодня', lfFatigue:'Усталость', lfMetaGive:'форма в новом сезоне', lfFatFresh:'свежий', lfFatTired:'устал', lfFatBurn:'выгорание', lfInjuryRisk:p=>'риск травмы '+p+'% в день', lfCoachBoost:p=>'коуч +'+p+'%', chTabClub:'Клуб', lfContract:'Контракт', lfNoOrg:'Без клуба. Предложения приходят в личку после результатов.', lfSalary:'Зарплата в месяц', lfCut:'Доля клуба с призовых', lfGoal:'Цель сезона', lfGoalMet:'выполнена', lfGoalOpen:'пока нет', lfBuyout:'Отступные', lfSince:'В клубе с сезона', lfPaid:'Выплачено клубом', lfIncome:'Доходы', lfPrize:'Призовые', lfWages:'Зарплата', lfSide:'Побочные', lfSponsor:'Спонсоры', lfOrgCut:'Ушло клубу', lfBalance:'Баланс', lfRosters:'Составы', lfRostersHint:'У дуо, трио и сквада — свои составы; этап года выбирает, какой играет.', lfRosterDuo:'Дуо', lfRosterTrio:'Трио', lfRosterSquad:'Сквад', lfRosterNow:'сейчас', lfRosterEmpty:'пусто', lfWordSolo:'игроков', lfWordSquads:'сквадов', lfRank:'Ранкед', lfHurt:'Травма', lfWrist:'запястье', lfIll:'болезнь', lfUntil:'до', lfCaseOpen:'Разбирательство',
+  lfTitle:'Между турнирами', lfToday:'Сегодня', lfFatigue:'Усталость', lfRateShort:'Оценка', lfAvgRateAll:'Средняя оценка', lfMvpAll:'MVP вечеров', lfLastNights:'Последние вечера', lfAwards:'Награды', lfAwYear:'Игрок года', lfAwMonth:'Игрок месяца', lfAwNone:'Пока наград нет. Игрок месяца, игрок года и номинации решаются по Power Ranking.', lfMetaGive:'форма в новом сезоне', lfFatFresh:'свежий', lfFatTired:'устал', lfFatBurn:'выгорание', lfInjuryRisk:p=>'риск травмы '+p+'% в день', lfCoachBoost:p=>'коуч +'+p+'%', chTabClub:'Клуб', lfContract:'Контракт', lfNoOrg:'Без клуба. Предложения приходят в личку после результатов.', lfSalary:'Зарплата в месяц', lfCut:'Доля клуба с призовых', lfGoal:'Цель сезона', lfGoalMet:'выполнена', lfGoalOpen:'пока нет', lfBuyout:'Отступные', lfSince:'В клубе с сезона', lfPaid:'Выплачено клубом', lfIncome:'Доходы', lfPrize:'Призовые', lfWages:'Зарплата', lfSide:'Побочные', lfSponsor:'Спонсоры', lfOrgCut:'Ушло клубу', lfBalance:'Баланс', lfRosters:'Составы', lfRostersHint:'У дуо, трио и сквада — свои составы; этап года выбирает, какой играет.', lfRosterDuo:'Дуо', lfRosterTrio:'Трио', lfRosterSquad:'Сквад', lfRosterNow:'сейчас', lfRosterEmpty:'пусто', lfWordSolo:'игроков', lfWordSquads:'сквадов', lfRank:'Ранкед', lfHurt:'Травма', lfWrist:'запястье', lfIll:'болезнь', lfUntil:'до', lfCaseOpen:'Разбирательство',
   lfBan:'Бан открытых турниров', lfIcon:'Икон-скин', lfTrip:'Поездка', lfTripOk:'оформлена', lfTripBook:'Оформить',
   lfVisa:n=>'виза '+n+' дн.', lfWeek:'неделя', lfSessions:'сессий',
   lfWhyHurt:'Травма — играть нельзя', lfWhyBan:'Бан открытых турниров', lfWhyRank:'Нужен ранг Diamond', lfTripNone:'Поездка не оформлена', lfTripVisa:'Виза не успела',
@@ -18305,7 +18314,7 @@ Object.assign(I18N.ru, {
 });
 Object.assign(I18N.en, {
   lfRate:'Match rating', lfMvp:'Player of the night', lfMvpYou:'you were the player of the night', lfAvgRate:'Season average rating', lfMvpCount:'Player-of-the-night awards',
-  lfTitle:'Between events', lfToday:'Today', lfFatigue:'Fatigue', lfMetaGive:'form in the new season', lfFatFresh:'fresh', lfFatTired:'tired', lfFatBurn:'burnt out', lfInjuryRisk:p=>'injury risk '+p+'% a day', lfCoachBoost:p=>'coach +'+p+'%', chTabClub:'Club', lfContract:'Contract', lfNoOrg:'No club. Offers arrive in your DMs after results.', lfSalary:'Monthly salary', lfCut:'Club share of prize money', lfGoal:'Season goal', lfGoalMet:'done', lfGoalOpen:'not yet', lfBuyout:'Buyout', lfSince:'At the club since season', lfPaid:'Paid by the club', lfIncome:'Income', lfPrize:'Prize money', lfWages:'Salary', lfSide:'Side income', lfSponsor:'Sponsors', lfOrgCut:'Went to the club', lfBalance:'Balance', lfRosters:'Rosters', lfRostersHint:'Duos, trios and squads keep their own rosters; the stage of the year picks which one plays.', lfRosterDuo:'Duos', lfRosterTrio:'Trios', lfRosterSquad:'Squads', lfRosterNow:'now', lfRosterEmpty:'empty', lfWordSolo:'players', lfWordSquads:'squads', lfRank:'Ranked', lfHurt:'Injury', lfWrist:'wrist', lfIll:'illness', lfUntil:'until', lfCaseOpen:'Under review',
+  lfTitle:'Between events', lfToday:'Today', lfFatigue:'Fatigue', lfRateShort:'Rating', lfAvgRateAll:'Average rating', lfMvpAll:'Nights as MVP', lfLastNights:'Last nights', lfAwards:'Awards', lfAwYear:'Player of the year', lfAwMonth:'Player of the month', lfAwNone:'No awards yet. Player of the month, of the year and the season categories are decided by Power Ranking.', lfMetaGive:'form in the new season', lfFatFresh:'fresh', lfFatTired:'tired', lfFatBurn:'burnt out', lfInjuryRisk:p=>'injury risk '+p+'% a day', lfCoachBoost:p=>'coach +'+p+'%', chTabClub:'Club', lfContract:'Contract', lfNoOrg:'No club. Offers arrive in your DMs after results.', lfSalary:'Monthly salary', lfCut:'Club share of prize money', lfGoal:'Season goal', lfGoalMet:'done', lfGoalOpen:'not yet', lfBuyout:'Buyout', lfSince:'At the club since season', lfPaid:'Paid by the club', lfIncome:'Income', lfPrize:'Prize money', lfWages:'Salary', lfSide:'Side income', lfSponsor:'Sponsors', lfOrgCut:'Went to the club', lfBalance:'Balance', lfRosters:'Rosters', lfRostersHint:'Duos, trios and squads keep their own rosters; the stage of the year picks which one plays.', lfRosterDuo:'Duos', lfRosterTrio:'Trios', lfRosterSquad:'Squads', lfRosterNow:'now', lfRosterEmpty:'empty', lfWordSolo:'players', lfWordSquads:'squads', lfRank:'Ranked', lfHurt:'Injury', lfWrist:'wrist', lfIll:'illness', lfUntil:'until', lfCaseOpen:'Under review',
   lfBan:'Banned from open events', lfIcon:'Icon skin', lfTrip:'Trip', lfTripOk:'booked', lfTripBook:'Book',
   lfVisa:n=>'visa '+n+'d', lfWeek:'week', lfSessions:'sessions',
   lfWhyHurt:'Injured — cannot play', lfWhyBan:'Banned from open events', lfWhyRank:'Needs Diamond rank', lfTripNone:'Trip not booked', lfTripVisa:'Visa not ready in time',
@@ -109663,7 +109672,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a0ac4018';
+const CC_BUILD='bfbf350b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -150385,6 +150394,7 @@ function careerProfileHTML(){
       <td class="ev-num"><span class="ev-place${podium?' top':(cut?' cut':'')}">#${e.place}</span>
         <small>/${e.of}</small></td>
       <td class="ev-num ev-pts">${e.pts}</td>
+      <td class="ev-num ev-rate${e.rating>=8?' hi':e.rating!=null&&e.rating<5?' lo':''}">${e.rating!=null ? e.rating.toFixed(1)+(e.mvpYou?' ★':'') : '—'}</td>
       <td class="ev-num ev-pr${pr.counted.has(e)?' in':''}"
           title="${esc(pr.counted.has(e)?L().evPrIn:L().evPrOut)} · ×${ccPrMult(e)}">${
         rating!=null ? ccNum(rating) : '—'}</td>
@@ -150415,13 +150425,15 @@ function careerProfileHTML(){
         <div><em>${L().killsHeader}</em><b>${elims}</b></div>
         <div><em>${L().evAvg}</em><b>${avg}</b></div>
         <div><em>${L().chEarnings}</em><b>${ccMoney(CAREER.career.earnings||0)}</b></div>
+        ${ccRateTotalsHTML(log)}
       </div>
     </div>
+    ${ccAwardsShelfHTML()}
     <div class="ev-tablewrap">
       <table class="ev-table">
         <thead><tr>
           <th style="cursor:pointer;" onclick="careerLogSort(null)">${L().evEvent}${CH_LOG_SORT?'':' ▾'}</th><th class="ev-num">${L().rankHeader}</th>
-          <th class="ev-num">${L().ptsHeader}</th><th class="ev-num">${L().evPr}</th>
+          <th class="ev-num">${L().ptsHeader}</th><th class="ev-num">${L().lfRateShort}</th><th class="ev-num">${L().evPr}</th>
           <th class="ev-num" style="cursor:pointer;" onclick="careerLogSort(\'prize\')">${L().prizeHeader}${CH_LOG_SORT==='prize'?' ▾':''}</th>
           <th>${L().ccResPartner}</th><th class="ev-num">${L().matchesWord}</th>
           <th class="ev-num">${L().winsWord}</th><th class="ev-num">${L().killsHeader}</th>
@@ -150433,6 +150445,32 @@ function careerProfileHTML(){
   </div>`;
 }
 
+/* Оценки вечеров в итогах профиля: средняя, число MVP и последние двенадцать столбиками
+   (зелёный — 8+, красный — ниже 5). Журнал — от новых к старым, график — слева направо. */
+function ccRateTotalsHTML(log){
+  const r=log.filter(e=>e.rating!=null);
+  if(!r.length) return '';
+  const avg=r.reduce((a,e)=>a+e.rating,0)/r.length, mvp=r.filter(e=>e.mvpYou).length;
+  const last=r.slice(0,12).reverse();
+  const bars=last.map(e=>'<i class="ev-rbar'+(e.rating>=8?' hi':e.rating<5?' lo':'')+'" style="height:'+Math.max(8, Math.round(e.rating*10))+'%" title="'+e.rating.toFixed(1)+'"></i>').join('');
+  return '<div><em>'+L().lfAvgRateAll+'</em><b>'+avg.toFixed(1)+'</b></div>'+
+         '<div><em>'+L().lfMvpAll+'</em><b>'+mvp+'</b></div>'+
+         '<div class="ev-rspark"><em>'+L().lfLastNights+'</em><span>'+bars+'</span></div>';
+}
+/* Полка наград: игрок месяца, игрок года и номинации сезона, которые взял сам игрок
+   (careerAwards().won с you) — с месяцами и сезонами, а не одним числом. */
+function ccAwardsShelfHTML(){
+  if(typeof careerAwards!=='function') return '';
+  const won=(careerAwards().won||[]).filter(a=>a.you);
+  const month=won.filter(a=>a.kind==='month'), season=won.filter(a=>a.kind==='season'), cat=won.filter(a=>a.kind==='cat');
+  const item=(ico, name, sub)=>'<div class="aw-item"><i>'+ico+'</i><b>'+esc(name)+'</b><small>'+esc(sub)+'</small></div>';
+  const items=[]
+    .concat(season.map(a=>item('🏆', L().lfAwYear, L().ccMoneySeason(a.season))))
+    .concat(cat.map(a=>item('🎖️', (typeof ccAwCatLabel==='function' ? ccAwCatLabel(a.cat) : a.cat), L().ccMoneySeason(a.season))))
+    .concat(month.map(a=>item('⭐', L().lfAwMonth, (typeof ccMonthName==='function' ? ccMonthName(a.key) : a.key))));
+  return '<div class="ch-tile aw-shelf"><h4>'+L().lfAwards+'</h4>'+
+    (items.length ? '<div class="aw-grid">'+items.join('')+'</div>' : '<div class="ch-empty">'+L().lfAwNone+'</div>')+'</div>';
+}
 // The rating over the career, drawn from the log itself. The reference puts the
 // number's own curve behind it, and it is the one chart a career has: eleven
 // points a season, and the shape of them is the whole story of the mode.
