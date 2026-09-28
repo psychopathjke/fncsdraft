@@ -2381,6 +2381,21 @@
     background:rgba(255,130,150,.08);color:#ffc3cd;}
   .ch-sp-btns button.cc-spa-minus:hover{background:rgba(255,130,150,.16);}
   .ch-sp-btns button:disabled{opacity:.4;cursor:default;}
+  /* Свои статы на создании (ccSpaRender): строка «иконка имя · − число + · цена». */
+  .cc-spa-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:6px;}
+  @media (max-width:520px){.cc-spa-grid{grid-template-columns:1fr;}}
+  .cc-spa-row{display:grid;grid-template-columns:1fr 26px 32px 26px 22px;align-items:center;gap:4px;
+    padding:3px 6px;border-radius:6px;background:rgba(255,255,255,.04);}
+  .cc-spa-row.up{background:rgba(0,255,208,.09);} .cc-spa-row.down{background:rgba(255,130,150,.08);}
+  .cc-spa-name{font-size:11px;font-weight:800;color:#cfe0ff;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-spa-val{text-align:center;font-size:15px;color:#fff;font-variant-numeric:tabular-nums;}
+  .cc-spa-row.up .cc-spa-val{color:#7ef0dd;} .cc-spa-row.down .cc-spa-val{color:#ffc3cd;}
+  .cc-spa-btn{height:26px;border-radius:6px;border:1px solid rgba(0,255,208,.4);background:rgba(0,255,208,.08);
+    color:#aefce9;font-weight:900;font-size:15px;line-height:1;cursor:pointer;padding:0;}
+  .cc-spa-btn:disabled{opacity:.3;cursor:default;}
+  .cc-spa-cost{font-size:10px;color:#8fa3c8;text-align:right;}
+  .cc-spa-reset{margin-left:8px;font-size:10px;font-weight:800;border-radius:6px;padding:2px 7px;cursor:pointer;
+    border:1px solid rgba(255,255,255,.2);background:transparent;color:#9fb3d8;}
 
   .ch-sp{margin-top:8px;}
   .ch-sp em{font-size:11px;color:#9fb3d8;font-style:normal;font-weight:800;
@@ -6513,7 +6528,7 @@
                один раз». Взятой карточке поле не показывается: реальному
                человеку статы не дарят. -->
           <div class="cc-field" id="ccSpField">
-            <label data-i18n="ccSpTitle"></label>
+            <label data-i18n="ccSpaTitle"></label>
             <div class="cc-spa-note"><span data-i18n="ccSpCreateHint"></span></div>
             <div class="ch-sp" id="ccSpRows"></div>
           </div>
@@ -8987,7 +9002,7 @@ ccSlab:'Создай игрока',
 ccTabRookie:'Новичок',
 ccTabCard:'Готовая карточка',
 ccPhotoHint:'Нажми, чтобы<br>загрузить фото',
-ccNick:'Никнейм', ccSex:'Пол', ccSexM:'Мужской', ccSexF:'Женский', ccSpTitle:'Очки прокачки', ccSpHow:'Дают за результаты: титул +3, подиум +2, топ-25% лобби +1', ccSpLeft:'Осталось:', ccSpCreateHint:'Раздаются один раз, здесь: +0.5 к стату за очко', ccNewsSp:(g,t)=>'Очки прокачки: +'+g+' (всего '+t+')', ccJobTitle:'Подработка', ccJobH:'ч', ccJobPerH:'/час', ccNewsJob:(h,p)=>'Смена '+h+' ч — $'+p, ccPowerNote:'Отключили свет — вечер пропал', ccSickNote:d=>'Болеешь до '+d+' — сил меньше обычного', ccNewsSick:d=>'Слёг с простудой — до '+d, ccCheatRow:'Прицел сам наводится. Никто не узнает', ccCheatDl:'Скачать', ccCheat1:'Это читы.', ccCheat1Sub:'Ты правда собираешься это поставить?', ccCheatYes:'Да, качаю', ccCheatNo:'Нет', ccCheat2:'Epic банит за это навсегда.', ccCheat2Sub:'Аккаунт, скины, карьера — всё сгорит.', ccCheatR3:'Каждый килл пишется в реплей.', ccCheatR3Sub:'Повторы пересматривают тысячи глаз — аим, который сам доводится, видно с первой секунды.', ccCheatR4:'Спонсоры уходят в день бана.', ccCheatR4Sub:'Контракт, зарплата, баннеры — никто не платит читеру.', ccCheatR5:'Об этом узнают все.', ccCheatR5Sub:'Напарник, клуб, вся лента — для них ты навсегда останешься читером.', ccCheatStill:'Всё равно', ccCheatBack:'Одуматься', ccAskYes:'Да', ccAskNo:'Отмена', ccCheat3:'Последний шанс.', ccCheat3Sub:'Держи $100 — просто закрой это окно.', ccCheatTake:'Взять $100', ccNewsCheatPaid:'Не стал качать читы. +$100 за здравый смысл', ccNewsBanned:'АККАУНТ ЗАБАНЕН: читы. Карьера завершена', ccNewsBdayGift:g=>'Подарки на день рождения: +$'+g, ccPostBdayPro:(w,n)=>'с днём рождения, @'+n+'! 🎉', ccPostBanSad1:(w,n)=>'не ожидал такого от @'+n+'. Разочарован', ccPostBanSad2:(w,n)=>'грустно. @'+n+', мы же играли вместе…', ccPostBanSad3:(w,n)=>'@'+n+' с читами. До сих пор не верится', ccNewsStreamStats:(v,p,f,d,t,h)=>'Стрим ('+(h||2)+' ч): зрители в среднем '+v+', пик '+p+' · +'+f+' фолловеров твича (всего '+t+') · заработано $'+d, ccNewsStreamBanner:(b,c)=>'Менеджер повесил баннер '+b+' на эфир: +$'+c, ccFriends:'Друзья', ccFriendsNone:'Пока никого — кинь запрос из поиска дуо', ccFriendsNonet:'Пока никого — кинь запрос из поиска трио', ccFriendAdd:'В друзья', ccFriendIs:'Друг', ccNewsFriendYes:h=>'@'+h+' принял запрос в друзья', ccNewsFriendNo:h=>'@'+h+' не ответил на запрос в друзья', ccNews1v1:(h,a,b)=>(a>b?'Победа':'Поражение')+' в 1v1 с @'+h+': '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' и '+b+' расходятся после серии провалов', ccPostDuoSplitBy:(a,b,t)=>'я больше не в дуо с @'+b+'. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'мы с @'+b+' ищем трио. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'я больше не в трио с @'+b+'. '+t+' 🙏', ccCoSad:['не расходитесь 😭','вы же лучшие','грустно это читать','F','конец эпохи','ну нет…'],
+ccNick:'Никнейм', ccSex:'Пол', ccSexM:'Мужской', ccSexF:'Женский', ccSpTitle:'Очки прокачки', ccSpHow:'Дают за результаты: титул +3, подиум +2, топ-25% лобби +1', ccSpLeft:'Осталось:', ccSpCreateHint:'Опусти одни статы и подними другие — «+1» стоит столько очков, сколько весит стат в рейтинге (цифра справа). Один раз, здесь.', ccSpaTitle:'Статы', ccSpReset:'Сбросить', ccNewsSp:(g,t)=>'Очки прокачки: +'+g+' (всего '+t+')', ccJobTitle:'Подработка', ccJobH:'ч', ccJobPerH:'/час', ccNewsJob:(h,p)=>'Смена '+h+' ч — $'+p, ccPowerNote:'Отключили свет — вечер пропал', ccSickNote:d=>'Болеешь до '+d+' — сил меньше обычного', ccNewsSick:d=>'Слёг с простудой — до '+d, ccCheatRow:'Прицел сам наводится. Никто не узнает', ccCheatDl:'Скачать', ccCheat1:'Это читы.', ccCheat1Sub:'Ты правда собираешься это поставить?', ccCheatYes:'Да, качаю', ccCheatNo:'Нет', ccCheat2:'Epic банит за это навсегда.', ccCheat2Sub:'Аккаунт, скины, карьера — всё сгорит.', ccCheatR3:'Каждый килл пишется в реплей.', ccCheatR3Sub:'Повторы пересматривают тысячи глаз — аим, который сам доводится, видно с первой секунды.', ccCheatR4:'Спонсоры уходят в день бана.', ccCheatR4Sub:'Контракт, зарплата, баннеры — никто не платит читеру.', ccCheatR5:'Об этом узнают все.', ccCheatR5Sub:'Напарник, клуб, вся лента — для них ты навсегда останешься читером.', ccCheatStill:'Всё равно', ccCheatBack:'Одуматься', ccAskYes:'Да', ccAskNo:'Отмена', ccCheat3:'Последний шанс.', ccCheat3Sub:'Держи $100 — просто закрой это окно.', ccCheatTake:'Взять $100', ccNewsCheatPaid:'Не стал качать читы. +$100 за здравый смысл', ccNewsBanned:'АККАУНТ ЗАБАНЕН: читы. Карьера завершена', ccNewsBdayGift:g=>'Подарки на день рождения: +$'+g, ccPostBdayPro:(w,n)=>'с днём рождения, @'+n+'! 🎉', ccPostBanSad1:(w,n)=>'не ожидал такого от @'+n+'. Разочарован', ccPostBanSad2:(w,n)=>'грустно. @'+n+', мы же играли вместе…', ccPostBanSad3:(w,n)=>'@'+n+' с читами. До сих пор не верится', ccNewsStreamStats:(v,p,f,d,t,h)=>'Стрим ('+(h||2)+' ч): зрители в среднем '+v+', пик '+p+' · +'+f+' фолловеров твича (всего '+t+') · заработано $'+d, ccNewsStreamBanner:(b,c)=>'Менеджер повесил баннер '+b+' на эфир: +$'+c, ccFriends:'Друзья', ccFriendsNone:'Пока никого — кинь запрос из поиска дуо', ccFriendsNonet:'Пока никого — кинь запрос из поиска трио', ccFriendAdd:'В друзья', ccFriendIs:'Друг', ccNewsFriendYes:h=>'@'+h+' принял запрос в друзья', ccNewsFriendNo:h=>'@'+h+' не ответил на запрос в друзья', ccNews1v1:(h,a,b)=>(a>b?'Победа':'Поражение')+' в 1v1 с @'+h+': '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' и '+b+' расходятся после серии провалов', ccPostDuoSplitBy:(a,b,t)=>'я больше не в дуо с @'+b+'. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'мы с @'+b+' ищем трио. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'я больше не в трио с @'+b+'. '+t+' 🙏', ccCoSad:['не расходитесь 😭','вы же лучшие','грустно это читать','F','конец эпохи','ну нет…'],
 ccAge:'Возраст',
 ccPingTitle:'ПИНГ (мс)',
 ccPingServer:city=>'до сервера '+city,
@@ -10965,7 +10980,7 @@ ccSlab:'Create your player',
 ccTabRookie:'Rookie',
 ccTabCard:'Existing card',
 ccPhotoHint:'Click to<br>upload a photo',
-ccNick:'Nickname', ccSex:'Gender', ccSexM:'Male', ccSexF:'Female', ccSpTitle:'Skill points', ccSpHow:'Earned by results: title +3, podium +2, top 25% of the lobby +1', ccSpLeft:'Left:', ccSpCreateHint:'Handed out once, here: +0.5 to a stat per point', ccNewsSp:(g,t)=>'Skill points: +'+g+' ('+t+' banked)', ccJobTitle:'Part-time job', ccJobH:'h', ccJobPerH:'/hr', ccNewsJob:(h,p)=>'Worked a '+h+'h shift — $'+p, ccPowerNote:'Power cut — the evening is gone', ccSickNote:d=>'Sick until '+d+' — less energy than usual', ccNewsSick:d=>'Came down with a cold — until '+d, ccCheatRow:'The crosshair aims itself. Nobody will know', ccCheatDl:'Download', ccCheat1:'These are cheats.', ccCheat1Sub:'You are really about to install this?', ccCheatYes:'Yes, downloading', ccCheatNo:'No', ccCheat2:'Epic bans this forever.', ccCheat2Sub:'The account, the skins, the career — all of it burns.', ccCheatR3:'Every kill goes into a replay.', ccCheatR3Sub:'Thousands of eyes rewatch them — an aim that snaps on its own shows from the first second.', ccCheatR4:'Sponsors leave the day of the ban.', ccCheatR4Sub:'The contract, the wage, the banners — nobody pays a cheater.', ccCheatR5:'Everybody finds out.', ccCheatR5Sub:'Your duo, the club, the whole feed — to them you stay a cheater forever.', ccCheatStill:'Still yes', ccCheatBack:'Think again', ccAskYes:'Yes', ccAskNo:'Cancel', ccCheat3:'Last chance.', ccCheat3Sub:'Here is $100 — just close this window.', ccCheatTake:'Take the $100', ccNewsCheatPaid:'Did not download the cheats. +$100 for common sense', ccNewsBanned:'ACCOUNT BANNED: cheats. Career over', ccNewsBdayGift:g=>'Birthday gifts: +$'+g, ccPostBdayPro:(w,n)=>'happy birthday, @'+n+'! 🎉', ccPostBanSad1:(w,n)=>'did not expect that from @'+n+'. Disappointed', ccPostBanSad2:(w,n)=>'this one hurts. We played together, @'+n+'…', ccPostBanSad3:(w,n)=>'@'+n+' cheating. Still hard to believe', ccNewsStreamStats:(v,p,f,d,t,h)=>'Stream ('+(h||2)+'h): '+v+' avg viewers, '+p+' peak · +'+f+' Twitch followers ('+t+' total) · $'+d+' earned', ccNewsStreamBanner:(b,c)=>'The manager hung a '+b+' banner on the stream: +$'+c, ccFriends:'Friends', ccFriendsNone:'Nobody yet — send a request from the duo search', ccFriendsNonet:'Nobody yet — send a request from the trio search', ccFriendAdd:'Add friend', ccFriendIs:'Friend', ccNewsFriendYes:h=>'@'+h+' accepted the friend request', ccNewsFriendNo:h=>'@'+h+' left the friend request unanswered', ccNews1v1:(h,a,b)=>(a>b?'Won':'Lost')+' a 1v1 against @'+h+': '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' and '+b+' split after a run of bad nights', ccPostDuoSplitBy:(a,b,t)=>'not duo with @'+b+' anymore. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'me and @'+b+' looking for a trio. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'not trio with @'+b+' anymore. '+t+' 🙏', ccCoSad:['don’t split 😭','you two were the best','sad to read this','F','end of an era','no way…'],
+ccNick:'Nickname', ccSex:'Gender', ccSexM:'Male', ccSexF:'Female', ccSpTitle:'Skill points', ccSpHow:'Earned by results: title +3, podium +2, top 25% of the lobby +1', ccSpLeft:'Left:', ccSpCreateHint:'Lower some stats and raise others — +1 costs as many points as the stat weighs in the rating (the number on the right). Once, here.', ccSpaTitle:'Stats', ccSpReset:'Reset', ccNewsSp:(g,t)=>'Skill points: +'+g+' ('+t+' banked)', ccJobTitle:'Part-time job', ccJobH:'h', ccJobPerH:'/hr', ccNewsJob:(h,p)=>'Worked a '+h+'h shift — $'+p, ccPowerNote:'Power cut — the evening is gone', ccSickNote:d=>'Sick until '+d+' — less energy than usual', ccNewsSick:d=>'Came down with a cold — until '+d, ccCheatRow:'The crosshair aims itself. Nobody will know', ccCheatDl:'Download', ccCheat1:'These are cheats.', ccCheat1Sub:'You are really about to install this?', ccCheatYes:'Yes, downloading', ccCheatNo:'No', ccCheat2:'Epic bans this forever.', ccCheat2Sub:'The account, the skins, the career — all of it burns.', ccCheatR3:'Every kill goes into a replay.', ccCheatR3Sub:'Thousands of eyes rewatch them — an aim that snaps on its own shows from the first second.', ccCheatR4:'Sponsors leave the day of the ban.', ccCheatR4Sub:'The contract, the wage, the banners — nobody pays a cheater.', ccCheatR5:'Everybody finds out.', ccCheatR5Sub:'Your duo, the club, the whole feed — to them you stay a cheater forever.', ccCheatStill:'Still yes', ccCheatBack:'Think again', ccAskYes:'Yes', ccAskNo:'Cancel', ccCheat3:'Last chance.', ccCheat3Sub:'Here is $100 — just close this window.', ccCheatTake:'Take the $100', ccNewsCheatPaid:'Did not download the cheats. +$100 for common sense', ccNewsBanned:'ACCOUNT BANNED: cheats. Career over', ccNewsBdayGift:g=>'Birthday gifts: +$'+g, ccPostBdayPro:(w,n)=>'happy birthday, @'+n+'! 🎉', ccPostBanSad1:(w,n)=>'did not expect that from @'+n+'. Disappointed', ccPostBanSad2:(w,n)=>'this one hurts. We played together, @'+n+'…', ccPostBanSad3:(w,n)=>'@'+n+' cheating. Still hard to believe', ccNewsStreamStats:(v,p,f,d,t,h)=>'Stream ('+(h||2)+'h): '+v+' avg viewers, '+p+' peak · +'+f+' Twitch followers ('+t+' total) · $'+d+' earned', ccNewsStreamBanner:(b,c)=>'The manager hung a '+b+' banner on the stream: +$'+c, ccFriends:'Friends', ccFriendsNone:'Nobody yet — send a request from the duo search', ccFriendsNonet:'Nobody yet — send a request from the trio search', ccFriendAdd:'Add friend', ccFriendIs:'Friend', ccNewsFriendYes:h=>'@'+h+' accepted the friend request', ccNewsFriendNo:h=>'@'+h+' left the friend request unanswered', ccNews1v1:(h,a,b)=>(a>b?'Won':'Lost')+' a 1v1 against @'+h+': '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' and '+b+' split after a run of bad nights', ccPostDuoSplitBy:(a,b,t)=>'not duo with @'+b+' anymore. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'me and @'+b+' looking for a trio. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'not trio with @'+b+' anymore. '+t+' 🙏', ccCoSad:['don’t split 😭','you two were the best','sad to read this','F','end of an era','no way…'],
 ccAge:'Age',
 ccPingTitle:'PING (ms)',
 ccPingServer:city=>'to the '+city+' server',
@@ -13225,7 +13240,7 @@ ccSlab:'Crée ton joueur',
 ccTabRookie:'Débutant',
 ccTabCard:'Carte existante',
 ccPhotoHint:'Clique pour<br>ajouter une photo',
-ccNick:'Pseudo', ccSex:'Genre', ccSexM:'Homme', ccSexF:'Femme', ccSpTitle:'Points de progression', ccSpHow:'Gagnés par les résultats : titre +3, podium +2, top 25 % du lobby +1', ccSpLeft:'Restant :', ccSpCreateHint:'Distribués une seule fois, ici : +0.5 par point', ccNewsSp:(g,t)=>'Points de progression : +'+g+' ('+t+' en réserve)', ccJobTitle:'Petit boulot', ccJobH:'h', ccJobPerH:'/h', ccNewsJob:(h,p)=>'Un service de '+h+' h — '+p+' $', ccPowerNote:'Coupure de courant — la soirée est perdue', ccSickNote:d=>'Malade jusqu’au '+d+' — moins d’énergie', ccNewsSick:d=>'Un rhume — jusqu’au '+d, ccCheatRow:'Le viseur vise tout seul. Personne ne saura', ccCheatDl:'Télécharger', ccCheat1:'Ce sont des cheats.', ccCheat1Sub:'Tu vas vraiment installer ça ?', ccCheatYes:'Oui, je télécharge', ccCheatNo:'Non', ccCheat2:'Epic bannit ça à vie.', ccCheat2Sub:'Le compte, les skins, la carrière — tout brûle.', ccCheatR3:'Chaque kill part dans un replay.', ccCheatR3Sub:'Des milliers d’yeux les revoient — une visée qui s’accroche toute seule se voit dès la première seconde.', ccCheatR4:'Les sponsors partent le jour du ban.', ccCheatR4Sub:'Le contrat, le salaire, les bannières — personne ne paie un cheateur.', ccCheatR5:'Tout le monde le saura.', ccCheatR5Sub:'Ton duo, le club, tout le fil — pour eux tu resteras un cheateur à vie.', ccCheatStill:'Quand même', ccCheatBack:'Se raviser', ccAskYes:'Oui', ccAskNo:'Annuler', ccCheat3:'Dernière chance.', ccCheat3Sub:'Voilà 100 $ — ferme juste cette fenêtre.', ccCheatTake:'Prendre les 100 $', ccNewsCheatPaid:'N’a pas téléchargé les cheats. +100 $ de bon sens', ccNewsBanned:'COMPTE BANNI : cheats. Carrière terminée', ccNewsBdayGift:g=>'Cadeaux d’anniversaire : +'+g+' $', ccPostBdayPro:(w,n)=>'joyeux anniversaire, @'+n+' ! 🎉', ccPostBanSad1:(w,n)=>'je ne m’attendais pas à ça de @'+n+'. Déçu', ccPostBanSad2:(w,n)=>'ça fait mal. On a joué ensemble, @'+n+'…', ccPostBanSad3:(w,n)=>'@'+n+' qui triche. Encore dur à croire', ccNewsStreamStats:(v,p,f,d,t,h)=>'Stream ('+(h||2)+' h) : '+v+' viewers en moyenne, pic '+p+' · +'+f+' followers Twitch ('+t+' au total) · '+d+' $ gagnés', ccNewsStreamBanner:(b,c)=>'Le manager a mis une bannière '+b+' sur le stream : +'+c+' $', ccFriends:'Amis', ccFriendsNone:'Personne pour l’instant — envoie une demande depuis la recherche de duo', ccFriendsNonet:'Personne pour l’instant — envoie une demande depuis la recherche de trio', ccFriendAdd:'Ajouter', ccFriendIs:'Ami', ccNewsFriendYes:h=>'@'+h+' a accepté la demande d’ami', ccNewsFriendNo:h=>'@'+h+' n’a pas répondu à la demande', ccNews1v1:(h,a,b)=>(a>b?'Victoire':'Défaite')+' en 1v1 contre @'+h+' : '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' et '+b+' se séparent après une série de soirées ratées', ccPostDuoSplitBy:(a,b,t)=>'je ne suis plus en duo avec @'+b+'. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'@'+b+' et moi cherchons un trio. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'je ne suis plus en trio avec @'+b+'. '+t+' 🙏', ccCoSad:['ne vous séparez pas 😭','vous étiez les meilleurs','triste à lire','F','fin d’une époque','non…'],
+ccNick:'Pseudo', ccSex:'Genre', ccSexM:'Homme', ccSexF:'Femme', ccSpTitle:'Points de progression', ccSpHow:'Gagnés par les résultats : titre +3, podium +2, top 25 % du lobby +1', ccSpLeft:'Restant :', ccSpCreateHint:'Baisse certaines stats et monte les autres — +1 coûte autant de points que le poids de la stat dans la note (chiffre à droite). Une seule fois, ici.', ccSpaTitle:'Stats', ccSpReset:'Réinitialiser', ccNewsSp:(g,t)=>'Points de progression : +'+g+' ('+t+' en réserve)', ccJobTitle:'Petit boulot', ccJobH:'h', ccJobPerH:'/h', ccNewsJob:(h,p)=>'Un service de '+h+' h — '+p+' $', ccPowerNote:'Coupure de courant — la soirée est perdue', ccSickNote:d=>'Malade jusqu’au '+d+' — moins d’énergie', ccNewsSick:d=>'Un rhume — jusqu’au '+d, ccCheatRow:'Le viseur vise tout seul. Personne ne saura', ccCheatDl:'Télécharger', ccCheat1:'Ce sont des cheats.', ccCheat1Sub:'Tu vas vraiment installer ça ?', ccCheatYes:'Oui, je télécharge', ccCheatNo:'Non', ccCheat2:'Epic bannit ça à vie.', ccCheat2Sub:'Le compte, les skins, la carrière — tout brûle.', ccCheatR3:'Chaque kill part dans un replay.', ccCheatR3Sub:'Des milliers d’yeux les revoient — une visée qui s’accroche toute seule se voit dès la première seconde.', ccCheatR4:'Les sponsors partent le jour du ban.', ccCheatR4Sub:'Le contrat, le salaire, les bannières — personne ne paie un cheateur.', ccCheatR5:'Tout le monde le saura.', ccCheatR5Sub:'Ton duo, le club, tout le fil — pour eux tu resteras un cheateur à vie.', ccCheatStill:'Quand même', ccCheatBack:'Se raviser', ccAskYes:'Oui', ccAskNo:'Annuler', ccCheat3:'Dernière chance.', ccCheat3Sub:'Voilà 100 $ — ferme juste cette fenêtre.', ccCheatTake:'Prendre les 100 $', ccNewsCheatPaid:'N’a pas téléchargé les cheats. +100 $ de bon sens', ccNewsBanned:'COMPTE BANNI : cheats. Carrière terminée', ccNewsBdayGift:g=>'Cadeaux d’anniversaire : +'+g+' $', ccPostBdayPro:(w,n)=>'joyeux anniversaire, @'+n+' ! 🎉', ccPostBanSad1:(w,n)=>'je ne m’attendais pas à ça de @'+n+'. Déçu', ccPostBanSad2:(w,n)=>'ça fait mal. On a joué ensemble, @'+n+'…', ccPostBanSad3:(w,n)=>'@'+n+' qui triche. Encore dur à croire', ccNewsStreamStats:(v,p,f,d,t,h)=>'Stream ('+(h||2)+' h) : '+v+' viewers en moyenne, pic '+p+' · +'+f+' followers Twitch ('+t+' au total) · '+d+' $ gagnés', ccNewsStreamBanner:(b,c)=>'Le manager a mis une bannière '+b+' sur le stream : +'+c+' $', ccFriends:'Amis', ccFriendsNone:'Personne pour l’instant — envoie une demande depuis la recherche de duo', ccFriendsNonet:'Personne pour l’instant — envoie une demande depuis la recherche de trio', ccFriendAdd:'Ajouter', ccFriendIs:'Ami', ccNewsFriendYes:h=>'@'+h+' a accepté la demande d’ami', ccNewsFriendNo:h=>'@'+h+' n’a pas répondu à la demande', ccNews1v1:(h,a,b)=>(a>b?'Victoire':'Défaite')+' en 1v1 contre @'+h+' : '+a+'–'+b, ccNewsDuoWorldSplit:(a,b)=>a+' et '+b+' se séparent après une série de soirées ratées', ccPostDuoSplitBy:(a,b,t)=>'je ne suis plus en duo avec @'+b+'. '+t+' 🙏', ccPostTrioLF:(a,b,t)=>'@'+b+' et moi cherchons un trio. '+t+' \ud83d\ude4f', ccPostDuoSplitByt:(a,b,t)=>'je ne suis plus en trio avec @'+b+'. '+t+' 🙏', ccCoSad:['ne vous séparez pas 😭','vous étiez les meilleurs','triste à lire','F','fin d’une époque','non…'],
 ccAge:'Âge',
 ccRole:'Rôle', ccMateKick:'Retirer de l’équipe', ccMateKickAsk:n=>'Retirer '+n+' de l’équipe ? La place gagnée ensemble est perdue.', ccRoleSwapTo:r=>'Passer '+r, ccRoleLockedTwo:'L’équipe a déjà un IGL, et elle ne peut pas en avoir deux.', ccRoleLockedNone:'Tu es le seul IGL de l’équipe, et une équipe sans IGL ne joue pas.',
 ccDivision:'Division',
@@ -13570,7 +13585,7 @@ ccSexF:"Femmina",
 ccAge:"Età",
 ccRole:"Ruolo",
 ccSpTitle:"Punti abilità",
-ccSpCreateHint:"Assegnati una volta sola, qui: +0.5 a una statistica per punto",
+ccSpCreateHint:"Abbassa alcune statistiche e alza le altre — +1 costa tanti punti quanto pesa la statistica nel rating (il numero a destra). Una volta sola, qui.", ccSpaTitle:"Statistiche", ccSpReset:"Azzera",
 ccDivision:"Divisione",
 ccYear:"Anno", ccYear2026:"duo → trio", ccYear2025:"trio", ccYear2024:'duo', ccYear2023:'duo', ccYear2022:'duo', ccYear2021:'trio', ccYear2020:'duo → solo → trio', ccYear2019:'solo e duo → trio → squadre', ccYrXWeek:(w,r,q)=>(w===0 ? 'riscaldamento' : (q ? 'qualificazione ' : 'settimana ')+w)+' · round '+r, ccYrXHeats:d=>'heat · giorno '+d, ccYrXHeatN:(l,h)=>l+' · heat '+h, ccYrXFinal:wc=>wc ? 'finale · New York' : 'finale', ccYrXWcIn:k=>'Top '+k+' della regione — alla finale della World Cup a New York', ccYr21Heat:(n,h)=>'Major '+n+' · semifinali · heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Non passati — resta il Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Una Gran Finale di stagione — invito al FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' della qualificazione — direttamente in Gran Finale', ccYr22SemiUp:'In Gran Finale', ccYr22SemiNext:'Non passati — prossima sessione delle semifinali', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — invito al FNCS Invitational a Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · settimana '+w+' · giorno '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · finale della settimana '+w, ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'finale' : 'giorno '+d), ccYr23SurgeWon:'Top 10 della Surge Week — biglietto per la finale del Major', ccYr23SeriesTicket:k=>'Top '+k+' della serie — finale del Major', ccYr23NoTicket:k=>'Fuori dal top '+k+' della serie — resta la Surge Week', ccYr23GcDay:d=>['upper bracket','lower bracket','finale'][d-1]||'', ccYr23GcUp:'Top 25 — direttamente in finale', ccYr23GcDown:'Lower bracket — seconda possibilità', ccYr23GcOut:'Lower bracket: eliminati', ccMajSeatGc23:n=>'Il top '+n+' va al Global Championship a Copenaghen', ccYr23EliteOnly:'Major 1 — solo divisione 1 (Elite)', ccYr23LcmSeat:n=>'Top '+n+' — lower bracket di Copenaghen', ccYr24Qual:(n,q,r)=>'Major '+n+' · Open Qualifier '+q+' · round '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinali · giorno '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Punti serie: '+p+' · posto '+k, ccYr24ToUpper:'Upper bracket delle semifinali — sui punti serie', ccYr24ToLower:'Lower bracket delle semifinali — sui punti serie', ccYr24NoSemi:'Nessun posto in semifinale — punti serie insufficienti', ccYr24VrTicket:'Una Vittoria reale — un biglietto per la finale del Major', ccYr24Down:'Nessun biglietto — retrocessione nel lower bracket', ccYr24World:'L’altro bracket gioca la stessa sera', ccYr25Group:n=>'girone '+n, ccYr25Lobby:'lobby dell\'ultima chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · round '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · round '+r,
 ccYearNote2026:"FNCS 2026: coppe divisionali, due Major, Reload, Global Championship ad Anversa. Il secondo anno è in trio.",
@@ -16085,7 +16100,7 @@ ccSexF:"Feminino",
 ccAge:"Idade",
 ccRole:"Função",
 ccSpTitle:"Pontos de habilidade",
-ccSpCreateHint:"Distribuídos uma única vez, aqui: +0,5 em um atributo por ponto",
+ccSpCreateHint:"Baixe alguns atributos e suba outros — +1 custa tantos pontos quanto o atributo pesa no rating (o número à direita). Uma vez só, aqui.", ccSpaTitle:"Atributos", ccSpReset:"Zerar",
 ccDivision:"Divisão",
 ccYear:"Ano", ccYear2026:"duplas → trios", ccYear2025:"trios", ccYear2024:'duplas', ccYear2023:'duplas', ccYear2022:'duplas', ccYear2021:'trios', ccYear2020:'duplas → solo → trios', ccYear2019:'solo e duplas → trios → squads', ccYrXWeek:(w,r,q)=>(w===0 ? 'aquecimento' : (q ? 'classificatória ' : 'semana ')+w)+' · rodada '+r, ccYrXHeats:d=>'heats · dia '+d, ccYrXHeatN:(l,h)=>l+' · heat '+h, ccYrXFinal:wc=>wc ? 'final · Nova York' : 'final', ccYrXWcIn:k=>'Top '+k+' da região — para a final da World Cup em Nova York', ccYr21Heat:(n,h)=>'Major '+n+' · semifinais · heat '+h, ccYr21Reboot:n=>'Major '+n+' · Reboot Round', ccYr21ToReboot:'Não passaram — resta o Reboot Round', ccYr21Gr:'FNCS Grand Royale', ccMajSeatGr21:'Uma Grande Final de temporada — convite para o FNCS Grand Royale', ccYr22Direct:k=>'Top '+k+' da classificatória — direto para a Grande Final', ccYr22SemiUp:'Vaga na Grande Final', ccYr22SemiNext:'Não passaram — próxima sessão das semifinais', ccYr22Inv:'FNCS Invitational · Raleigh', ccMajSeatInv22:n=>'Top '+n+' — convite para o FNCS Invitational em Raleigh', ccYr23Day:(n,w,d)=>'Major '+n+' · semana '+w+' · dia '+d, ccYr23WeekFinal:(n,w)=>'Major '+n+' · final da semana '+w, ccYr23Surge:n=>'Major '+n+' · Surge Week', ccYr23Lcm:d=>'Last Chance Major · '+(d===3 ? 'final' : 'dia '+d), ccYr23SurgeWon:'Top 10 da Surge Week — vaga na final do Major', ccYr23SeriesTicket:k=>'Top '+k+' da série — final do Major', ccYr23NoTicket:k=>'Fora do top '+k+' da série — resta a Surge Week', ccYr23GcDay:d=>['chave superior','chave inferior','final'][d-1]||'', ccYr23GcUp:'Top 25 — direto para a final', ccYr23GcDown:'Chave inferior — segunda chance', ccYr23GcOut:'Chave inferior: eliminados', ccMajSeatGc23:n=>'O top '+n+' vai ao Global Championship em Copenhague', ccYr23EliteOnly:'Major 1 — só divisão 1 (Elite)', ccYr23LcmSeat:n=>'Top '+n+' — chave inferior de Copenhague', ccYr24Qual:(n,q,r)=>'Major '+n+' · classificatória aberta '+q+' · rodada '+r, ccYr24Semi:(n,r)=>'Major '+n+' · semifinais · dia '+r, ccYr24Upper:'upper bracket', ccYr24Lower:'lower bracket', ccYr24Series:(p,k)=>'Pontos de série: '+p+' · posição '+k, ccYr24ToUpper:'Upper bracket das semifinais — pelos pontos de série', ccYr24ToLower:'Lower bracket das semifinais — pelos pontos de série', ccYr24NoSemi:'Sem vaga nas semifinais — faltaram pontos de série', ccYr24VrTicket:'Uma Vitória Royale — um bilhete para a final do Major', ccYr24Down:'Sem bilhete — rebaixado para o lower bracket', ccYr24World:'O outro bracket joga na mesma noite', ccYr25Group:n=>'grupo '+n, ccYr25Lobby:'lobby da última chance', ccYr25Showdown:(n,r)=>'FNCS Showdown '+n+' · rodada '+r, ccYr25SoloCash:(n,r)=>'Solo Cash Cup '+n+' · rodada '+r,
 ccYearNote2026:"FNCS 2026: copas divisionais, dois Majors, Reload, Global Championship em Antuérpia. O segundo ano é em trios.",
@@ -109355,28 +109370,41 @@ function ccMateNow(card){
   return best ? best.join(', ') : null;
 }
 function ccPickCountry(code){ CC.country=code; ccRenderList(); ccSync(); }
-/* Стартовые очки — раздача на этом экране, один раз. См. поле ccSpField. */
-const CC_SP_START=10;
+/* СВОИ СТАТЫ НА СОЗДАНИИ (его просьба 29.09: «чтоб игрок мог себе сам статы, которые хочет
+   поставить»). Было: десять очков по +0.5 к стату, только вверх. Стало: шесть строк «− число +»
+   — любой стат можно опустить и отдать в другой, плюс небольшой запас сверху.
+
+   Бюджет — в очках, цена «+1» у стата пропорциональна его весу в общем рейтинге (ATTR_W × 50:
+   стрельба 11, выносливость и выживание по 10, опыт 5, клатч 6, стабильность 8). Поэтому
+   переложить опыт в стрельбу — не бесплатный рост рейтинга: минус опыта возвращает 5, плюс
+   стрельбы стоит 11. Запас CC_SP_START = 50 очков — это +1 к общему рейтингу, как и прежние
+   десять очков по +0.5 (их среднее — +0.8…+1.1). Каждый стат — в пределах ±CC_SP_SPAN от
+   шаблона роли и 35…99. CC.spa хранит сдвиг каждого стата (может быть отрицательным). */
+const CC_SP_START=50, CC_SP_SPAN=20;
+function ccSpaCost(k){ return Math.round(ATTR_W[k]*50); }
 function ccSpaLeft(){
   const a=CC.spa||{};
-  return CC_SP_START - ATTR_KEYS.reduce((s,k)=>s+(a[k]||0), 0);
+  return CC_SP_START - ATTR_KEYS.reduce((s,k)=>s+(a[k]||0)*ccSpaCost(k), 0);
 }
+// Шаблон роли на текущей полосе — от него отсчитываются сдвиги (то же, что строит ccMakePlayer).
+function ccSpaBase(){ return ccRookieAttrs(ccBand(CC.div, CC.region), CC.role); }
 function ccSpaAdd(k, d){
   CC.spa=CC.spa||{};
-  const v=(CC.spa[k]||0)+d;
-  if(v<0 || (d>0 && ccSpaLeft()<=0)) return;
+  const v=(CC.spa[k]||0)+d, base=ccSpaBase()[k];
+  if(Math.abs(v)>CC_SP_SPAN || base+v<35 || base+v>99) return;
+  if(d>0 && ccSpaLeft()<ccSpaCost(k)) return;
   CC.spa[k]=v;
   ccSpaRender();
-  // Очко ложится в карточку сразу: превью строится через ccMakePlayer, а тот
+  // Сдвиг ложится в карточку сразу: превью строится через ccMakePlayer, а тот
   // прогоняет статы сквозь ccSpaApply — клик виден на овере в ту же секунду.
   ccSync();
 }
-/* Раздача, вложенная в статы: +0.5 за очко, овер и лучший стат пересчитаны.
-   Одна арифметика на превью (ccMakePlayer) и на старт (ccStart) — чтобы
-   карточка на экране создания и карточка в сейве были одним числом. */
+function ccSpaReset(){ CC.spa={}; ccSpaRender(); ccSync(); }
+/* Сдвиги, вложенные в статы; овер и лучший стат пересчитаны. Одна арифметика на превью
+   (ccMakePlayer) и на старт (ccStart) — карточка на экране и в сейве одним числом. */
 function ccSpaApply(attrs){
   const a=CC.spa||{};
-  ATTR_KEYS.forEach(k=>{ if(a[k]) attrs[k]=clamp(attrs[k]+a[k]*0.5, 35, 99); });
+  ATTR_KEYS.forEach(k=>{ if(a[k]) attrs[k]=clamp(attrs[k]+a[k], 35, 99); });
   attrs.ovr=Math.round(ATTR_KEYS.reduce((s,k)=>s+attrs[k]*ATTR_W[k], 0));
   attrs.bestAttr=bestPlayAttr(attrs);
   return attrs.ovr;
@@ -109385,16 +109413,20 @@ function ccSpaRender(){
   const rows=document.getElementById('ccSpRows');
   if(!rows) return;
   CC.spa=CC.spa||{};
-  const left=ccSpaLeft();
-  // Одежда карьерной плитки: em-заголовок со счётчиком и пилюли «+ стат».
-  // У тронутого стата в пилюле его прибавка, рядом красный минус — забрать.
-  rows.innerHTML=`<em>${L().ccSpLeft} <b>${left}</b></em>
-    <div class="ch-sp-btns">${ATTR_KEYS.map(k=>{
-      const n=CC.spa[k]||0;
-      const name=L()['attr'+k.charAt(0).toUpperCase()+k.slice(1)];
-      return `<button type="button" onclick="ccSpaAdd('${k}',1)"${left?'':' disabled'} title="+0.5">+ ${name}${
-          n?` · +${(n*0.5).toFixed(1)}`:''}</button>`+
-        (n?`<button type="button" class="cc-spa-minus" onclick="ccSpaAdd('${k}',-1)" title="−0.5">−</button>`:'');
+  const left=ccSpaLeft(), base=ccSpaBase(), T=L();
+  const any=ATTR_KEYS.some(k=>CC.spa[k]);
+  rows.innerHTML=`<em>${T.ccSpLeft} <b>${left}</b></em>${any ? ` <button type="button" class="cc-spa-reset" onclick="ccSpaReset()">${T.ccSpReset}</button>` : ''}
+    <div class="cc-spa-grid">${ATTR_KEYS.map(k=>{
+      const n=CC.spa[k]||0, v=clamp(base[k]+n, 35, 99), cost=ccSpaCost(k);
+      const name=T['attr'+k.charAt(0).toUpperCase()+k.slice(1)];
+      const canUp=n<CC_SP_SPAN && v<99 && left>=cost, canDown=n>-CC_SP_SPAN && v>35;
+      return `<div class="cc-spa-row${n>0?' up':n<0?' down':''}">
+        <span class="cc-spa-name">${CC_ATTR_ICON[k]||''} ${name}</span>
+        <button type="button" class="cc-spa-btn" onclick="ccSpaAdd('${k}',-1)"${canDown?'':' disabled'} aria-label="−1 ${name}">−</button>
+        <b class="cc-spa-val">${v}</b>
+        <button type="button" class="cc-spa-btn" onclick="ccSpaAdd('${k}',1)"${canUp?'':' disabled'} aria-label="+1 ${name}">+</button>
+        <span class="cc-spa-cost">${cost}</span>
+      </div>`;
     }).join('')}</div>`;
 }
 
@@ -109710,9 +109742,8 @@ function ccStart(){
   const startDiv = ccNoDivisions() ? 1 : CC.div;
   const role = card ? attrsFor(card).roleKey : CC.role;
   const attrs = card ? null : ccRookieAttrs(ovr, role);
-  /* Розданные на этом экране очки ложатся в статы прямо сейчас — один раз и
-     навсегда, той же ценой, что стоила трата в карьере: +0.5 за очко. Та же
-     ccSpaApply, что красила превью, — сейв не может разойтись с экраном. */
+  /* Статы, выставленные на этом экране, ложатся в сейв прямо сейчас — один раз и
+     навсегда. Та же ccSpaApply, что красила превью, — сейв не может разойтись с экраном. */
   // Очки прокачки — только построенному: настоящему человеку статы не дарят.
   if(!card && !creator) ovr=ccSpaApply(attrs);
   const save={
