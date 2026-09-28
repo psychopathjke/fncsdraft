@@ -2394,6 +2394,9 @@
     color:#aefce9;font-weight:900;font-size:15px;line-height:1;cursor:pointer;padding:0;}
   .cc-spa-btn:disabled{opacity:.3;cursor:default;}
   .cc-spa-cost{font-size:10px;color:#8fa3c8;text-align:right;}
+  /* Что дают возраст и страна (ccGainNotes). */
+  .cc-gain{margin-top:6px;font-size:11px;line-height:1.35;color:#9fb3d8;}
+  .cc-gain b{color:#7ef0dd;font-weight:800;}
   .cc-spa-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
   .cc-spa-free{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;color:#cfe0ff;cursor:pointer;}
   #ccSpRows .cc-spa-in{width:44px;min-width:0;height:26px;padding:0;margin:0;box-shadow:none;text-align:center;font:inherit;font-size:15px;font-weight:800;color:#fff;
@@ -6518,6 +6521,7 @@
             <div class="cc-warn" id="ccAgeWarn"></div>
             <input id="ccAge" type="text" inputmode="numeric" maxlength="2" value="16"
                    oninput="ccAgeInput()" onblur="ccAgeClamp()">
+            <div class="cc-gain" id="ccAgeGain"></div>
             <!-- И день, если игрок хочет, чтобы он был.
 
                  Возраст — это число, а дата рождения — это ещё и день в году,
@@ -6570,6 +6574,7 @@
           </div>
           <div class="cc-grid" id="ccGrid"></div>
           <div class="cc-cards" id="ccCards" style="display:none;"></div>
+          <div class="cc-gain" id="ccPingGain"></div>
           <div class="cc-note" data-i18n="ccPingNote"></div>
         </div>
       </div>
@@ -7457,6 +7462,9 @@ rolesLabel:'Роли:',
 attrPing:'ПНГ',
 attrAge:'ВЗР',
 attrAgeFull:'Возраст — прибавка ко всей силе',
+ccAgeGain:(a,e,mx,pk,fd)=>'<b>Возраст '+a+' → '+e+' ко всей силе.</b> До '+pk+' лет — +'+mx+', к '+fd+' — +'+(mx/2)+', дальше меньше.',
+ccPingGain:(c,ms,e,mx,lo,hi)=>'<b>'+c+': пинг '+ms+' мс → '+e+' в ближнем бою.</b> До '+lo+' мс — +'+mx+', от '+hi+' мс — 0.',
+ccPingGainNone:(mx,lo,hi)=>'<b>Страна даёт пинг до сервера — до +'+mx+' в ближнем бою.</b> До '+lo+' мс — +'+mx+', от '+hi+' мс — 0. Выбери страну на карте.',
 ccRoAge:'Возраст',
 ccAgeTooYoung:'В FNCS нельзя играть младше {N} лет — это возрастной порог самого Fortnite. Карьеру не начать.',
 ccAgeTooOld:'Больше {N} — уже не карьера. Поставь возраст не выше {N}.',
@@ -9450,6 +9458,9 @@ rolesLabel:'Roles:',
 attrPing:'PNG',
 attrAge:'AGE',
 attrAgeFull:'Age — bonus to overall power',
+ccAgeGain:(a,e,mx,pk,fd)=>'<b>Age '+a+' → '+e+' to overall power.</b> Up to '+pk+': +'+mx+', by '+fd+': +'+(mx/2)+', less after that.',
+ccPingGain:(c,ms,e,mx,lo,hi)=>'<b>'+c+': '+ms+' ms ping → '+e+' in close fights.</b> Under '+lo+' ms: +'+mx+', from '+hi+' ms: 0.',
+ccPingGainNone:(mx,lo,hi)=>'<b>Your country sets your ping to the server — up to +'+mx+' in close fights.</b> Under '+lo+' ms: +'+mx+', from '+hi+' ms: 0. Pick a country on the map.',
 ccRoAge:'Age',
 ccAgeTooYoung:'You cannot compete in FNCS under {N} — that is Fortnite\'s own age floor. No career from here.',
 ccAgeTooOld:'Past {N} this stops being a career. Set an age of {N} or under.',
@@ -11367,6 +11378,9 @@ wYouTag:'C’EST TOI',
 attrPing:'PNG',
 attrAge:'ÂGE',
 attrAgeFull:'Âge — bonus à la puissance globale',
+ccAgeGain:(a,e,mx,pk,fd)=>'<b>Âge '+a+' → '+e+' à la puissance globale.</b> Jusqu’à '+pk+' ans : +'+mx+', à '+fd+' : +'+(mx/2)+', moins ensuite.',
+ccPingGain:(c,ms,e,mx,lo,hi)=>'<b>'+c+' : ping '+ms+' ms → '+e+' au corps à corps.</b> Moins de '+lo+' ms : +'+mx+', dès '+hi+' ms : 0.',
+ccPingGainNone:(mx,lo,hi)=>'<b>Le pays fixe ton ping — jusqu’à +'+mx+' au corps à corps.</b> Moins de '+lo+' ms : +'+mx+', dès '+hi+' ms : 0. Choisis un pays sur la carte.',
 cardOvrFull:'Note affichée = base + bonus de ping + bonus d’âge (99 maximum).',
 attrPingFull:'Ping — bonus au corps à corps',
 evEvent:'Tournoi',
@@ -14652,6 +14666,9 @@ championMajor:"Campione del Major FNCS!",
 attrPing:"PNG",
 attrAge:"ETÀ",
 attrAgeFull:"Età — bonus alla potenza complessiva",
+ccAgeGain:(a,e,mx,pk,fd)=>"<b>Età "+a+" → "+e+" alla potenza complessiva.</b> Fino a "+pk+" anni: +"+mx+", a "+fd+": +"+(mx/2)+", poi meno.",
+ccPingGain:(c,ms,e,mx,lo,hi)=>"<b>"+c+": ping "+ms+" ms → "+e+" a corto raggio.</b> Sotto "+lo+" ms: +"+mx+", da "+hi+" ms: 0.",
+ccPingGainNone:(mx,lo,hi)=>"<b>Il paese decide il ping — fino a +"+mx+" a corto raggio.</b> Sotto "+lo+" ms: +"+mx+", da "+hi+" ms: 0. Scegli un paese sulla mappa.",
 attrPingFull:"Ping — bonus a corto raggio",
 calMonths:['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'],
 calDows:['Lun','Mar','Mer','Gio','Ven','Sab','Dom'],
@@ -17167,6 +17184,9 @@ championMajor:"Campeão do Major da FNCS!",
 attrPing:"PNG",
 attrAge:"IDADE",
 attrAgeFull:"Idade — bônus no poder geral",
+ccAgeGain:(a,e,mx,pk,fd)=>"<b>Idade "+a+" → "+e+" no poder geral.</b> Até "+pk+" anos: +"+mx+", aos "+fd+": +"+(mx/2)+", menos depois.",
+ccPingGain:(c,ms,e,mx,lo,hi)=>"<b>"+c+": ping "+ms+" ms → "+e+" no combate de perto.</b> Abaixo de "+lo+" ms: +"+mx+", a partir de "+hi+" ms: 0.",
+ccPingGainNone:(mx,lo,hi)=>"<b>O país define o ping — até +"+mx+" no combate de perto.</b> Abaixo de "+lo+" ms: +"+mx+", a partir de "+hi+" ms: 0. Escolha um país no mapa.",
 attrPingFull:"Ping — bônus de curta distância",
 calMonths:['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
 calDows:['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
@@ -93831,7 +93851,10 @@ function futCardHTML(p, opts){
   // colour — so it sits below a rule, marked as the thing the country buys.
   // Zero is not a stat: since ping and age stopped giving anything, a career
   // card carries the rows only if an old save still holds a real number.
-  const ageRow = (!p._ageEdge) ? '' : (()=>{
+  /* Прибавки за возраст и пинг на карточке не рисуются (его правка 29.09, Notion «27» скрин 22:
+     «пусть это не пишется на карте, пусть будет понятно за что дают в начале выбора страны,
+     возраста»). Объяснение — на экране создания, ccGainNotes. */
+  const ageRow = true ? '' : (()=>{
     const e=p._ageEdge;
     const pct=clamp((e+CC_AGE_EDGE)/(CC_AGE_EDGE*2)*100, 3, 100);
     return `<div class="fut-attr fut-attr-ping${e<0?' neg':''}" style="font-size:${wide?11:10}px;"
@@ -93841,7 +93864,7 @@ function futCardHTML(p, opts){
       <span class="fut-bar"><i style="width:${pct.toFixed(0)}%;"></i></span>
     </div>`;
   })();
-  const pingRow = (!p._pingEdge) ? '' : (()=>{
+  const pingRow = true ? '' : (()=>{
     const pct=clamp(p._pingEdge/CC_PING_EDGE*100, 3, 100);
     const ms=p._pingMs!=null ? p._pingMs+' ms' : '';
     return `<div class="fut-attr fut-attr-ping" style="font-size:${wide?11:10}px;"
@@ -109580,7 +109603,27 @@ function ccRenderPhoto(){
 }
 
 const CC_AGE_MIN=13, CC_AGE_MAX=50;
+/* Что дают возраст и страна — словами, прямо у выбора (вместо строк PNG/AGE на карточке).
+   Только построенному: взятой карточке и креатору прибавок нет (см. ccStart). */
+function ccGainNotes(){
+  const T=L(), built=CC.mode==='rookie';
+  const ag=document.getElementById('ccAgeGain'), pg=document.getElementById('ccPingGain');
+  if(ag){
+    const age=parseInt((document.getElementById('ccAge')||{}).value,10);
+    const e=isFinite(age) ? ccAgeEdge(age) : 0;
+    ag.style.display=built ? '' : 'none';
+    ag.innerHTML=T.ccAgeGain(isFinite(age)?age:'—', (e>0?'+':'')+e, CC_AGE_EDGE, CC_AGE_PEAK, CC_AGE_FADE);
+  }
+  if(pg){
+    pg.style.display=built ? '' : 'none';
+    const ms=CC.country ? ccPingOf(CC.country, CC.region) : null;
+    pg.innerHTML=CC.country && ms!=null
+      ? T.ccPingGain(esc(ccCountryName(CC.country)||CC.country), ms, '+'+ccPingEdge(ms), CC_PING_EDGE, CC_PING_FREE, CC_PING_MAX)
+      : T.ccPingGainNone(CC_PING_EDGE, CC_PING_FREE, CC_PING_MAX);
+  }
+}
 function ccSync(){
+  ccGainNotes();
   const nick=(document.getElementById('ccNick').value||'').trim();
   const age=parseInt(document.getElementById('ccAge').value,10);
   const warn=document.getElementById('ccAgeWarn');
