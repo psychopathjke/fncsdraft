@@ -3503,20 +3503,30 @@
   .cc-act-h b{font-size:13px;font-weight:900;}
   .cc-act-h em{font-style:normal;font-size:11px;font-weight:900;color:#00d6a4;}
   .cc-act-g{display:flex;flex-wrap:wrap;gap:4px 9px;}
-  /* Тренировочный центр: панель атрибутов и карточки по две в ряд. */
-  .cc-tpanel{margin:2px 0 8px;}
-  .cc-ta-grid{display:grid;grid-template-columns:1fr;gap:5px;margin:6px 0 8px;}
-  .cc-ta{display:grid;grid-template-columns:92px 1fr 34px 30px;align-items:center;gap:6px;font-size:11px;}
-  .cc-ta-n{font-weight:800;color:#cfd8ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .cc-ta-bar{height:6px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;}
-  .cc-ta-bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#00d6a4,#7aa2ff);}
-  .cc-ta-v{font-weight:900;font-size:12px;color:#fff;min-width:30px;text-align:right;}
-  .cc-ta-wk{font-style:normal;font-size:10px;font-weight:900;color:#00d6a4;}
-  .cc-fat{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;font-size:11px;font-weight:800;color:#cfd8ff;margin-bottom:6px;}
-  .cc-fat-bar{height:6px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;}
+  /* Тренировочный центр: атрибуты чипами, тренировки — в три колонки, компактно. */
+  .cc-tpanel{margin:0 0 6px;}
+  .cc-ta-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin:4px 0 6px;}
+  .cc-ta{position:relative;display:flex;align-items:baseline;gap:4px;min-width:0;overflow:hidden;padding:4px 6px 6px;border-radius:8px;background:rgba(255,255,255,.06);font-size:10px;}
+  .cc-ta span{font-weight:900;color:#9fb0e8;} .cc-ta b{font-weight:900;font-size:12px;color:#fff;}
+  .cc-ta i{font-style:normal;font-weight:900;color:#00d6a4;font-size:10px;}
+  .cc-ta u{position:absolute;left:6px;right:6px;bottom:2px;height:2px;border-radius:2px;background:rgba(255,255,255,.12);text-decoration:none;}
+  .cc-ta u s{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,#00d6a4,#7aa2ff);text-decoration:none;}
+  .cc-fat{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;font-size:10px;font-weight:800;color:#cfd8ff;margin-bottom:6px;}
+  .cc-fat-bar{height:5px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;}
   .cc-fat-bar i{display:block;height:100%;background:#00d6a4;}
   .cc-fat-bar.s-lfFatTired i{background:#ffb13d;} .cc-fat-bar.s-lfFatBurn i{background:#ff5f56;}
-  .cc-tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+  .cc-tgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-bottom:6px;}
+  @media (max-width:520px){ .cc-tgrid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  .cc-tcard{display:flex;flex-direction:column;gap:2px;margin:0;width:auto;min-width:0;overflow:hidden;min-height:0;padding:6px 7px !important;box-sizing:border-box;}
+  .cc-tc-top{display:flex;align-items:center;gap:5px;min-width:0;}
+  .cc-tc-ico{font-style:normal;font-size:14px;line-height:1;flex:none;}
+  .cc-tc-name{font-size:11px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-tc-row{display:flex;justify-content:space-between;align-items:baseline;gap:4px;}
+  .cc-tc-row em{font-style:normal;font-size:10px;font-weight:900;color:#00d6a4;}
+  .cc-tc-gain{font-size:13px;font-weight:900;color:#00d6a4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+  .cc-tc-gain i{font-style:normal;font-size:9px;font-weight:900;color:#9fb0e8;}
+  .cc-tc-coach{font-style:normal;font-size:9px;font-weight:800;color:#c9a7ff;}
+  .cc-tc-why{font-style:normal;font-size:9px;font-weight:800;color:#ff7d70;line-height:1.1;}
   .ev-rate{font-weight:900;} .ev-rate.hi{color:#00d6a4;} .ev-rate.lo{color:#ff7d70;}
   .ev-rspark span{display:flex;align-items:flex-end;gap:2px;height:28px;}
   .ev-rbar{display:block;width:6px;border-radius:2px;background:#7aa2ff;}
@@ -3526,16 +3536,6 @@
   .aw-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:12px;
     background:rgba(255,255,255,.06);border:1px solid rgba(255,214,0,.25);text-align:center;}
   .aw-item i{font-style:normal;font-size:24px;} .aw-item b{font-size:12px;font-weight:900;} .aw-item small{font-size:10px;color:#9fb0e8;font-weight:800;}
-  .cc-tcard{display:flex;flex-direction:column;gap:3px;min-height:118px;margin:0;width:auto;box-sizing:border-box;}
-  .cc-tc-top{display:flex;justify-content:space-between;align-items:center;}
-  .cc-tc-ico{font-style:normal;font-size:20px;line-height:1;}
-  .cc-tc-top em{font-style:normal;font-size:11px;font-weight:900;color:#00d6a4;}
-  .cc-tc-name{font-size:13px;font-weight:900;}
-  .cc-tc-attr{font-size:10px;font-weight:800;color:#9fb0e8;text-transform:uppercase;letter-spacing:.04em;}
-  .cc-tc-gain{font-size:18px;font-weight:900;color:#00d6a4;display:flex;align-items:baseline;gap:6px;}
-  .cc-tc-gain i{font-style:normal;font-size:10px;font-weight:800;color:#8ad9c0;}
-  .cc-tc-coach{font-style:normal;font-size:10px;font-weight:800;color:#c9a7ff;}
-  .cc-tc-why{font-style:normal;font-size:10px;font-weight:800;color:#ff7d70;}
 
   .cc-act-g i{font-style:normal;font-size:10px;font-weight:800;color:#8ad9c0;}
   .cc-act-g .cc-give-reach{color:#7aa2ff;}
@@ -109672,7 +109672,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='bfbf350b';
+const CC_BUILD='a3251328';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -133266,21 +133266,22 @@ const CC_TRAIN_ICON={trAim:'🎯', trSur:'🏆', trCon:'💪', trClu:'⚔️', t
 function ccWeekTag(d){ d=d||careerToday(); return ccMonthKey(d)+'|'+Math.floor(((+d.slice(8,10))-1)/7); }
 function ccAttrFull(k){ return L()['attr'+k.charAt(0).toUpperCase()+k.slice(1)+'Full'] || (L()['ccAttr'+k.toUpperCase()]||k); }
 function ccTrainPanelHTML(six){
+  // Компактно: атрибуты чипами в три колонки (сокращение, число, тонкая полоса, прирост
+  // недели), усталость одной строкой. Полное имя атрибута — в подсказке чипа.
   const lf=(typeof ccLife==='function') ? ccLife() : {};
   const tw=(lf.tw && lf.tw.wk===ccWeekTag()) ? lf.tw.g : {};
-  const rows=ATTR_KEYS.map(k=>{
+  const chips=ATTR_KEYS.map(k=>{
     const v=six[k]!=null ? six[k] : 50, pct=Math.max(0, Math.min(100, (v-35)/(99-35)*100));
-    const wk=tw[k] ? '<i class="cc-ta-wk">+'+(Math.round(tw[k]*10)/10).toFixed(1)+'</i>' : '';
-    return '<div class="cc-ta"><span class="cc-ta-n">'+esc(ccAttrFull(k))+'</span>'+
-      '<span class="cc-ta-bar"><i style="width:'+pct.toFixed(1)+'%"></i></span>'+
-      '<b class="cc-ta-v">'+(Math.round(v*10)/10).toFixed(1)+'</b>'+wk+'</div>';
+    const wk=tw[k] ? '<i>+'+(Math.round(tw[k]*10)/10).toFixed(1)+'</i>' : '';
+    return '<div class="cc-ta" title="'+esc(ccAttrFull(k))+'"><span>'+(L()['ccAttr'+k.toUpperCase()]||k)+'</span>'+
+      '<b>'+(Math.round(v*10)/10).toFixed(1)+'</b>'+wk+'<u><s style="width:'+pct.toFixed(0)+'%"></s></u></div>';
   }).join('');
   const cr=CAREER.career, grind=cr.grind||0, top=CC_GRIND_FREE+CC_GRIND_MAX/CC_GRIND_STEP;
   const fat=Math.max(0, Math.min(100, grind/top*100)), burn=careerBurnout();
   const state=burn>=1 ? 'lfFatBurn' : grind>CC_GRIND_FREE ? 'lfFatTired' : 'lfFatFresh';
   const risk=burn>0 ? Math.round(2*burn*10)/10 : 0;
   return '<div class="cc-tpanel"><div class="cc-act-grp">'+(L().ccActGrpTrain||'')+'</div>'+
-    '<div class="cc-ta-grid">'+rows+'</div>'+
+    '<div class="cc-ta-grid">'+chips+'</div>'+
     '<div class="cc-fat"><span>'+L().lfFatigue+'</span><span class="cc-fat-bar s-'+state+'"><i style="width:'+fat.toFixed(0)+'%"></i></span>'+
       '<b>'+L()[state]+(risk ? ' · '+L().lfInjuryRisk(risk) : '')+'</b></div></div>';
 }
@@ -133294,14 +133295,14 @@ function ccTrainCardHTML(a, o){
   const why = o.closed ? '' : o.maxed ? L().ccAttrMaxed
             : (k && !o.gainsMove) ? L().ccNoGain
             : o.left<a.energy ? L().ccNeedEnergy(a.energy-o.left) : '';
-  return '<button class="cc-act cc-tcard g-train'+(o.can?'':' off')+(o.did?' did':'')+'" '+
+  const tip=k ? ccAttrFull(k)+': '+num(from)+' → '+num(to) : L().lfMetaGive;
+  return '<button class="cc-act cc-tcard g-train'+(o.can?'':' off')+(o.did?' did':'')+'" title="'+esc(tip)+'" '+
     (o.can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
-    '<span class="cc-tc-top"><i class="cc-tc-ico">'+(CC_TRAIN_ICON[a.id]||'•')+'</i><em>'+a.energy+L().ccEnergyMark+'</em></span>'+
-    '<b class="cc-tc-name">'+(L()['ccAct'+a.id]||a.id)+'</b>'+
-    (k ? '<span class="cc-tc-attr">'+esc(ccAttrFull(k))+'</span>'+
-         '<span class="cc-tc-gain">+'+num(to-from)+'<i>'+num(from)+' → '+num(to)+'</i></span>' : '<span class="cc-tc-attr">'+L().lfMetaGive+'</span>')+
-    (coachOn ? '<i class="cc-tc-coach">'+L().lfCoachBoost(Math.round(o.dayCoach.train*100))+'</i>' : '')+
-    (why ? '<i class="cc-tc-why">'+esc(why)+'</i>' : '')+
+    '<span class="cc-tc-top"><i class="cc-tc-ico">'+(CC_TRAIN_ICON[a.id]||'•')+'</i><b class="cc-tc-name">'+(L()['ccAct'+a.id]||a.id)+'</b></span>'+
+    '<span class="cc-tc-row">'+(k ? '<span class="cc-tc-gain">+'+num(to-from)+' <i>'+(L()['ccAttr'+k.toUpperCase()]||k)+'</i></span>'
+                                   : '<span class="cc-tc-gain"><i>'+L().lfMetaGive+'</i></span>')+
+      '<em>'+a.energy+L().ccEnergyMark+'</em></span>'+
+    (why ? '<i class="cc-tc-why">'+esc(why)+'</i>' : coachOn ? '<i class="cc-tc-coach">'+L().lfCoachBoost(Math.round(o.dayCoach.train*100))+'</i>' : '')+
     '</button>';
 }
 function careerDayPanelHTML(locked){
