@@ -77,7 +77,8 @@ const BOOT = `
     // And a maxed attribute is not a day to spend: the button says so rather
     // than taking the energy for a number that cannot move.
     CAREER.player.attrs.aim = 99;
-    const panel = careerDayPanelHTML(null);
+    // Тренировки живут во вкладке «Тренировка» — панель дня в её виде.
+    CC_DAY_VIEW = 'train'; const panel = careerDayPanelHTML(null); CC_DAY_VIEW = '';
     check('a session on a maxed attribute is shut', panel.indexOf(L().ccAttrMaxed) >= 0);
     const held = CAREER.player.attrs.aim;
     CAREER.career.energy = careerEnergyMax();
