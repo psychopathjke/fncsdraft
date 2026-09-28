@@ -2395,6 +2395,7 @@
   .cc-spa-btn:disabled{opacity:.3;cursor:default;}
   .cc-spa-cost{font-size:10px;color:#8fa3c8;text-align:right;}
   /* Что дают возраст и страна (ccGainNotes). */
+  .cc-car-se{font-size:18px !important;}
   .cc-gain{margin-top:6px;font-size:11px;line-height:1.35;color:#9fb3d8;}
   .cc-gain b{color:#7ef0dd;font-weight:800;}
   .cc-spa-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
@@ -8619,7 +8620,7 @@ ccGalaNext:'Дальше', ccGalaBack:'Назад', ccGalaSkip:'Закрыть',
 ccSlots:'Карьеры', ccSlotsTitle:'Карьеры', ccSlotsSub:'Выбери, в какую вернуться, или заведи новую',
 ccSlotEmpty:'Пусто', ccSlotStart:'Начать', ccSlotOpen:'Продолжить', ccSlotDelete:'Удалить',
 ccSlotsNew:'Новая карьера', ccSlotsFree:n=>n===1?'свободен один слот':'свободно слотов: '+n,
-ccSlotDropSure:'Точно удалить?', ccSlotHere:'открыта', ccSlotSeason:'Сезон',
+ccSlotDropSure:'Точно удалить?', ccSlotHere:'открыта', ccSlotSeason:'Сезон', ccChapterSeason:(c,n)=>'Глава '+c+', сезон '+n, ccChapterName:(c,nm)=>'Глава '+c+' · '+nm,
 ccSlotWhen:'Дата', ccSlotClub:'Клуб', ccSlotNoMate:'нет', ccSlotDuoLive:'вдвоём', ccSlotRetired:'Карьера завершена',
 ccSlotSeasonOver:'Сезон окончен',
 ccTimeline:'Что было в карьере',
@@ -10610,7 +10611,7 @@ ccGalaNext:'Next', ccGalaBack:'Back', ccGalaSkip:'Close',
 ccSlots:'Careers', ccSlotsTitle:'Careers', ccSlotsSub:'Pick the one to go back to, or start a new one',
 ccSlotEmpty:'Empty', ccSlotStart:'Start', ccSlotOpen:'Continue', ccSlotDelete:'Delete',
 ccSlotsNew:'New career', ccSlotsFree:n=>n===1?'one slot free':n+' slots free',
-ccSlotDropSure:'Delete for good?', ccSlotHere:'open', ccSlotSeason:'Season',
+ccSlotDropSure:'Delete for good?', ccSlotHere:'open', ccSlotSeason:'Season', ccChapterSeason:(c,n)=>'Chapter '+c+', Season '+n, ccChapterName:(c,nm)=>'Chapter '+c+' · '+nm,
 ccSlotWhen:'Date', ccSlotClub:'Club', ccSlotNoMate:'none', ccSlotDuoLive:'with a friend', ccSlotRetired:'Career over',
 ccSlotSeasonOver:'Season over',
 ccTimeline:'What happened in this career',
@@ -11692,7 +11693,7 @@ ccShoppcelite:'Configuration ÉLITE · 360 Hz',
 ccSlotDelete:'Supprimer',
 ccSlotDropSure:'Supprimer définitivement ?',
 ccSlotHere:'libre',
-ccSlotSeason:'Saison',
+ccSlotSeason:'Saison', ccChapterSeason:(c,n)=>'Chapitre '+c+', saison '+n, ccChapterName:(c,nm)=>'Chapitre '+c+' · '+nm,
 ccSlotWhen:'Date',
 ccSlotClub:'Club', ccSlotNoMate:'aucun', ccSlotDuoLive:'à deux',
 ccSlotRetired:'Carrière terminée',
@@ -15815,7 +15816,7 @@ ccSlotOpen:"Continua",
 ccSlotDelete:"Elimina",
 ccSlotDropSure:"Eliminare per sempre?",
 ccSlotHere:"aperta",
-ccSlotSeason:"Stagione",
+ccSlotSeason:"Stagione", ccChapterSeason:(c,n)=>"Capitolo "+c+", stagione "+n, ccChapterName:(c,nm)=>"Capitolo "+c+" · "+nm,
 ccSlotWhen:"Data",
 ccSlotClub:"Club", ccSlotNoMate:'nessuno', ccSlotDuoLive:'in due',
 ccSlotRetired:"Carriera finita",
@@ -18333,7 +18334,7 @@ ccSlotOpen:"Continuar",
 ccSlotDelete:"Apagar",
 ccSlotDropSure:"Apagar de vez?",
 ccSlotHere:"aberta",
-ccSlotSeason:"Temporada",
+ccSlotSeason:"Temporada", ccChapterSeason:(c,n)=>"Capítulo "+c+", temporada "+n, ccChapterName:(c,nm)=>"Capítulo "+c+" · "+nm,
 ccSlotWhen:"Data",
 ccSlotClub:"Clube", ccSlotNoMate:'ninguém', ccSlotDuoLive:'a dois',
 ccSlotRetired:"Carreira encerrada",
@@ -110025,6 +110026,16 @@ function ccSlotWipe(n){
   try{ localStorage.removeItem(LS_SLOT(n)); }catch(e){}
 }
 // What a slot says about itself on the picker, without loading it.
+// Старый сейв без флага: годы без дивизионных кубков по сезону дня — до S18 (2019–2021) и
+// 2024-й (S28–S32); 2022 и 2023 — по своим окнам дивизионов.
+function ccSlotNoDivGuess(day){
+  const n=ccSeasonNumOn(day);
+  if(n && n<=18) return true;
+  if(n>=28 && n<=32) return true;
+  if(n>=19 && n<=22) return day<CC_DIV_FROM_2022 || day>CC_DIV_END_2022;
+  if(n>=23 && n<=27) return day>CC_DIV_END_2023;
+  return false;
+}
 function ccSlotCard(n){
   const s=ccSlotRead(n);
   if(!s || !s.player || !s.career) return null;
@@ -110055,6 +110066,7 @@ function ccSlotCard(n){
           div:s.career.division||5, season:s.career.season||1,
           day:s.career.day||CC_YEAR_FROM, earnings:s.career.earnings||0,
           org:(s.org&&s.org.name)||null, over:!!s.career.seasonOver,
+          noDiv:s.career.noDiv!=null ? !!s.career.noDiv : ccSlotNoDivGuess(s.career.day||CC_YEAR_FROM),
           retired:!!s.career.retired};
 }
 /* ДЕНЬГИ ПО ССЫЛКЕ — ТОЛЬКО ТАМ, ГДЕ ИДЁТ ОТЛАДКА.
@@ -113400,6 +113412,8 @@ function ccApplyTeamState(t){
 }
 function careerSave(){
   if(!CAREER) return;
+  // Экран карьер читает сейв не загружая его — пусть знает, есть ли у карьеры дивизионы сейчас.
+  try{ if(CAREER.career) CAREER.career.noDiv=!!ccNoDivisions(); }catch(e){}
   try{ ccNightStamp(); }catch(e){}
   /* В командной карьере командная половина живёт на сервере, а не здесь.
      Пишется всё равно всё: localStorage — это кэш на случай обрыва, и карьера
@@ -113917,7 +113931,7 @@ function careerRenderSlots(){
       c.age ? String(c.age) : '',
       c.country ? '<img class="cc-car-flag" src="flags/w20/'+
         esc(ccCountryOf(String(c.country).toLowerCase()))+'.png" alt="">' : '',
-      L().ccSlotSeason+' '+c.season,
+      (function(){ const t=ccSeasonTag(c.day); return String(c.day||'').slice(0,4)+(t.full ? ' · '+esc(t.full) : ''); })(),
       esc(state),
       c.mate ? esc(c.mate)+(c.mates>1 ? ' +'+(c.mates-1) : '') : '',
       c.org ? esc(c.org) : '',
@@ -113930,7 +113944,9 @@ function careerRenderSlots(){
         (c.team ? ' <span class="cc-car-duo">'+L().ccSlotDuoLive+'</span>' : '')+'</b>'+
         '<em>'+meta+'</em></div>'+
       '<div class="cc-car-ovr"><small>'+L().ccRoOvr+'</small>'+c.ovr+'</div>'+
-      '<div class="cc-car-div"><small>'+L().ccDivision+'</small>'+c.div+'</div>'+
+      (c.noDiv
+        ? '<div class="cc-car-div cc-car-se"><small>'+L().ccSlotSeason+'</small>'+esc(ccSeasonTag(c.day).short||'—')+'</div>'
+        : '<div class="cc-car-div"><small>'+L().ccDivision+'</small>'+c.div+'</div>')+
       '<div class="cc-car-go">'+
         '<button class="'+(n===here?'ch-play':'cc-car-open')+'" onclick="careerSlotOpen('+n+')">'+
           L().ccSlotOpen+'</button>'+
@@ -118730,6 +118746,35 @@ function ccSeasonNumOn(day){
   if(s) return +String(s.id).slice(1);
   const f=(typeof careerFncsSeason==='function') ? careerFncsSeason(d) : null;
   return f ? +String(f.id).slice(1) : 0;
+}
+/* ГЛАВА И СЕЗОН ПО НОМЕРУ (его правка 29.09, Notion «27» скрин 24: «пусть больше информации
+   будет, какой сезон и чаптер»). Нумерация Fortnite: S1–S10 — Глава 1, S11–S18 — Глава 2,
+   S19–S22 — Глава 3, S23–S26 — Глава 4 и S27 — OG, S28–S31 — Глава 5 и S32 — Remix, S33–S37 —
+   Глава 6 (S35 — мини-сезон Galactic Battle, дальше счёт главы идёт с S36 как с сезона 3),
+   S38 — мини-сезон, S39–S41 — Глава 7. Дальше номеров Epic нет — только «S42». */
+function ccChapterOf(n){
+  if(!(n>0)) return null;
+  if(n<=10) return {c:1, s:n};
+  if(n<=18) return {c:2, s:n-10};
+  if(n<=22) return {c:3, s:n-18};
+  if(n<=26) return {c:4, s:n-22};
+  if(n===27) return {c:4, name:'OG'};
+  if(n<=31) return {c:5, s:n-27};
+  if(n===32) return {c:5, name:'Remix'};
+  if(n<=34) return {c:6, s:n-32};
+  if(n===35) return {c:6, name:'Galactic Battle'};
+  if(n<=37) return {c:6, s:n-33};
+  if(n===38) return {c:6, name:'Mini'};
+  if(n<=41) return {c:7, s:n-38};
+  return {n:n};
+}
+// Полное имя («Глава 2, сезон 5») и короткое («C2S5») сезона дня.
+function ccSeasonTag(day){
+  const n=ccSeasonNumOn(day), c=ccChapterOf(n), T=L();
+  if(!c) return {full:'', short:''};
+  if(c.n) return {full:'S'+c.n, short:'S'+c.n};
+  if(c.name) return {full:T.ccChapterName(c.c, c.name), short:'C'+c.c+' '+c.name};
+  return {full:T.ccChapterSeason(c.c, c.s), short:'C'+c.c+'S'+c.s};
 }
 function ccEvPalOf(fam){ const i=CC_EV_COL[fam]; return i==null ? null : CC_EV_PAL[i]; }
 function ccEvPalette(ev, day){
