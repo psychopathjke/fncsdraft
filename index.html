@@ -3527,6 +3527,39 @@
   .cc-tc-gain i{font-style:normal;font-size:9px;font-weight:900;color:#9fb0e8;}
   .cc-tc-coach{font-style:normal;font-size:9px;font-weight:800;color:#c9a7ff;}
   .cc-tc-why{font-style:normal;font-size:9px;font-weight:800;color:#ff7d70;line-height:1.1;}
+  .cc-tc-fx{gap:2px 6px !important;} .cc-tc-fx i{font-size:9px !important;}
+  .cc-bars{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:2px 0 10px;width:100%;}
+  .cc-meter{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px;font-size:10px;font-weight:900;color:#8094c4;text-transform:uppercase;letter-spacing:.04em;}
+  .cc-meter u{display:block;height:7px;border-radius:5px;background:rgba(255,255,255,.12);overflow:hidden;text-decoration:none;}
+  .cc-meter u s{display:block;height:100%;border-radius:5px;text-decoration:none;}
+  .cc-meter.m-energy u s{background:#00d6a4;} .cc-meter.m-mood u s{background:#7aa2ff;}
+  .cc-meter b{font-size:13px;color:#fff;}
+  /* Шапка карьеры на телефоне — сеткой, ничего не обрезается справа. */
+  @media(max-width:700px){
+    #screen-career-hub .ch-purse{width:100%;box-sizing:border-box;padding:6px 14px;gap:10px;}
+    #screen-career-hub #chPurseNow{display:grid;grid-template-columns:minmax(0,1fr) auto;}
+    #screen-career-hub #chPurse{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding-top:0;}
+    #screen-career-hub .ch-purse > *{min-width:0;}
+    /* Вкладки — одной полосой внизу экрана, с прокруткой вбок и иконками. */
+    #screen-career-hub .ch-tabs{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;flex-wrap:nowrap;
+      overflow-x:auto;gap:2px;padding:6px 6px calc(6px + env(safe-area-inset-bottom));margin:0;
+      background:rgba(8,18,50,.97);box-shadow:0 -1px 0 rgba(180,200,255,.18);-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+    #screen-career-hub .ch-tabs::-webkit-scrollbar{display:none;}
+    #screen-career-hub .ch-tab{flex:none;display:flex;flex-direction:column;align-items:center;gap:1px;
+      font-size:9.5px !important;padding:4px 9px !important;min-width:58px;}
+    #screen-career-hub .ch-tab::before{font-size:17px;line-height:1.1;}
+    #screen-career-hub{padding-bottom:78px;}
+    /* Лента недели — прокрутка вбок, дни шире. */
+    #screen-career-hub .ch-weeks.ch-days{display:flex !important;overflow-x:auto;scrollbar-width:none;}
+    #screen-career-hub .ch-weeks.ch-days > *{flex:0 0 96px;}
+  }
+  #screen-career-hub .ch-tab[data-tab="centre"]::before{content:'🏠';} #screen-career-hub .ch-tab[data-tab="log"]::before{content:'👤';}
+  #screen-career-hub .ch-tab[data-tab="me"]::before{content:'🎮';} #screen-career-hub .ch-tab[data-tab="club"]::before{content:'🏢';}
+  #screen-career-hub .ch-tab[data-tab="calendar"]::before{content:'📅';} #screen-career-hub .ch-tab[data-tab="social"]::before{content:'💬';}
+  #screen-career-hub .ch-tab[data-tab="streams"]::before{content:'📺';} #screen-career-hub .ch-tab[data-tab="table"]::before{content:'📊';}
+  #screen-career-hub .ch-tab[data-tab="shop"]::before{content:'🛒';} #screen-career-hub .ch-tab[data-tab="hist"]::before{content:'📜';}
+  #screen-career-hub .ch-tab[data-tab="stats"]::before{content:'📈';}
+  @media(min-width:701px){ #screen-career-hub .ch-tab::before{margin-right:6px;} }
   .ev-rate{font-weight:900;} .ev-rate.hi{color:#00d6a4;} .ev-rate.lo{color:#ff7d70;}
   .ev-rspark span{display:flex;align-items:flex-end;gap:2px;height:28px;}
   .ev-rbar{display:block;width:6px;border-radius:2px;background:#7aa2ff;}
@@ -109672,7 +109705,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='c2eb4cde';
+const CC_BUILD='26d54e88';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -133267,9 +133300,14 @@ function careerJobWork(h){
    карточками по две в ряд: иконка, какой атрибут и насколько поднимет сегодня, цена в
    энергии, бонус коуча и причина, если сегодня нельзя. Арифметика — та же, что у дня
    (careerDoAct): выносится только показ. */
-const CC_TRAIN_ICON={trAim:'🎯', trSur:'🏆', trCon:'💪', trClu:'⚔️', trExp:'📼', trEnd:'🧱', trMeta:'🧭'};
+const CC_TRAIN_ICON={trAim:'🎯', trSur:'🏆', trCon:'💪', trClu:'⚔️', trExp:'📼', trEnd:'🧱', trMeta:'🧭',
+  scrim:'🤝', noble:'🏟️', talk:'💬', stream:'📺', host:'🎪', rest:'😴'};
 function ccWeekTag(d){ d=d||careerToday(); return ccMonthKey(d)+'|'+Math.floor(((+d.slice(8,10))-1)/7); }
 function ccAttrFull(k){ return L()['attr'+k.charAt(0).toUpperCase()+k.slice(1)+'Full'] || (L()['ccAttr'+k.toUpperCase()]||k); }
+function ccMeterHTML(label, v, max, kind){
+  const pct=Math.max(0, Math.min(100, max ? v/max*100 : 0));
+  return '<div class="cc-meter m-'+kind+'"><span>'+esc(label)+'</span><u><s style="width:'+pct.toFixed(0)+'%"></s></u><b>'+Math.round(v)+'</b></div>';
+}
 function ccTrainPanelHTML(six){
   // Компактно: атрибуты чипами в три колонки (сокращение, число, тонкая полоса, прирост
   // недели), усталость одной строкой. Полное имя атрибута — в подсказке чипа.
@@ -133446,12 +133484,22 @@ function careerDayPanelHTML(locked){
         ccTrainCardHTML(a, {can, did:done.indexOf(a.id)>=0, keys, six, dayMult, dayCoach, left, maxed, gainsMove, closed})+
         (a===trains[trains.length-1] ? '</div>' : '');
     }
-    const grpHead=(a.id==='trAim'||a.id==='scrim'||a.id==='stream')
-      ? '<div class="cc-act-grp">'+(L()['ccActGrp'+grp.charAt(0).toUpperCase()+grp.slice(1)]||'')+'</div>' : '';
-    return grpHead+'<button class="cc-act g-'+grp+(can?'':' off')+(done.indexOf(a.id)>=0?' did':'')+'" '+
+    /* Команда и жизнь — такими же карточками, как тренировки: сетка своей группы,
+       иконка, прирост одной строкой (сумма по атрибутам), энергия, эффекты значками. */
+    const grpOf=x=>String(x.id).indexOf('tr')===0 ? 'train' : (x.id==='scrim'||x.id==='talk'||x.id==='noble') ? 'team' : 'life';
+    const mates=allActs.filter(x=>grpOf(x)===grp);
+    const grpHead=a===mates[0]
+      ? '<div class="cc-act-grp">'+(L()['ccActGrp'+grp.charAt(0).toUpperCase()+grp.slice(1)]||'')+'</div><div class="cc-tgrid cc-agrid">' : '';
+    const tot=keys.reduce((sum,k)=>sum+a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1), 0);
+    const shortG=keys.length ? '<span class="cc-tc-gain">+'+(Math.round(tot*10)/10).toFixed(1)+' <i>'+
+      keys.map(k=>L()['ccAttr'+k.toUpperCase()]||k).join(' ')+'</i></span>' : '<span class="cc-tc-gain"></span>';
+    return grpHead+'<button class="cc-act cc-tcard g-'+grp+(can?'':' off')+(done.indexOf(a.id)>=0?' did':'')+'" '+
       (can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
-      '<span class="cc-act-h"><b>'+L()['ccAct'+a.id]+'</b><em>'+a.energy+L().ccEnergyMark+'</em></span>'+
-      '<span class="cc-act-g">'+gains+extra.join('')+'</span></button>';
+      '<span class="cc-tc-top"><i class="cc-tc-ico">'+(CC_TRAIN_ICON[a.id]||'•')+'</i><b class="cc-tc-name">'+L()['ccAct'+a.id]+'</b></span>'+
+      '<span class="cc-tc-row">'+shortG+'<em>'+a.energy+L().ccEnergyMark+'</em></span>'+
+      '<span class="cc-act-g cc-tc-fx">'+extra.join('')+
+        ((maxed||restFull||(!closed && left<a.energy)||(keys.length && !gainsMove)) ? gains.replace(/<i>[^<]*<\/i>/g,'') : '')+'</span></button>'+
+      (a===mates[mates.length-1] ? '</div>' : '');
   }).join('');
   return '<div class="ch-art cc-day" style="background-image:url('+CAREER_EV_ART.cup+');">'+
     // Which day it is, beside what is on it: his ask, 17 August.
@@ -133497,9 +133545,10 @@ function careerDayPanelHTML(locked){
       evBox+
       (typeof ccMpFfOfferHTML==='function' ? ccMpFfOfferHTML() : '')+
       (typeof ccMpCatchUpHTML==='function' ? ccMpCatchUpHTML() : '')+
-      '<div class="cc-rings">'+
-        careerRingHTML(L().ccRingEnergy, left, careerEnergyMax(), 'energy')+
-        careerRingHTML(L().ccRingMood, (careerMateRec() || (typeof ccMpTeam==='function' && ccMpTeam()))?careerPatience():0, 100, 'mood')+
+      // Энергия и настрой — двумя полосками в строку, а не двумя кругами (экономит пол-экрана).
+      '<div class="cc-bars">'+
+        ccMeterHTML(L().ccRingEnergy, left, careerEnergyMax(), 'energy')+
+        ccMeterHTML(L().ccRingMood, (careerMateRec() || (typeof ccMpTeam==='function' && ccMpTeam()))?careerPatience():0, 100, 'mood')+
       '</div>'+
       '<div class="cc-acts">'+rows+'</div>'+
       careerJobHTML(closed, left)+
