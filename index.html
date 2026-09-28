@@ -76706,6 +76706,14 @@ function tBase(set, reg, st, rank){
 // kept apart rather than merged.
 const CARD_TRIOS_BY_SET={i1:[], i2:[], i3:[], h1:[], h2:[], h3:[], h4:[], j1:[], j2:[], j3:[], j4:[], k1:[], k2:[], k3:[], e1:[], e2:[], e3:[], f1:[], f2:[], f3:[], t1:[], t2:[], t3:[]};
 function buildCardSetRegion(cfg){
+  /* Один человек — одно написание на весь набор. Строки этапов собраны с разных страниц,
+     и финал World Cup Duos писал «nyhrox»/«aqua», а квалы — «Nyhrox»/«Aqua»: чемпионы мира
+     не находили своей строки финала и читались «не дошли до финала». Ник берётся из первого
+     этапа, где он встретился (P, потом L, потом G). */
+  const canon=new Map();
+  ['P','L','G'].forEach(st=>(cfg.stages[st]||[]).forEach(e=>{
+    e.duo=e.duo.map(nm=>{ const k=String(nm).toLowerCase(); if(!canon.has(k)) canon.set(k, nm); return canon.get(k); });
+  }));
   const known=new Set();
   const trios=CARD_TRIOS_BY_SET[cfg.set];
   const stageDate=T_STAGE_DATE[cfg.set];
@@ -78021,6 +78029,35 @@ var RATING_FLOOR={};
     });
   });
   if(typeof console!=='undefined' && console.debug) console.debug('cards lifted by career rating:', lifted);
+
+  /* РЕЙТИНГ ГОДА по всем форматам прошлых лет (2019–2024): у игрока в году несколько карточек —
+     соло, дуо, трио, сквады, — и каждая считалась только по своему формату. Чемпион мира
+     соло 2019 (96) в дуо-весне карьеры играл дуо-карточкой 80. Теперь карточки года — одна
+     формула на год: Σ(число этапа × вес этапа) / Σ(вес), веса как в ledger, кроме финала World Cup —
+     (8.0: чемпионат мира с $3M за первое место, в разы больше Саммита 3.0 и финала FNCS 2.0;
+     хиты/полуфинал 0.9, недели Online Open 0.6, квалы 0.5).
+     Карточка только поднимается до числа года, не опускается. */
+  const YEAR_OF_SET={h:2019, i:2020, j:2021, k:2022, e:2023, f:2024};
+  const yearW=q=>{
+    const wc=q.cardSet==='h1' || q.cardSet==='h2';
+    return q._t1Stage==='G' ? (wc ? 8.0 : 2.0) : q._t1Stage==='P' ? (wc ? 0.6 : 0.9) : (wc ? 0.4 : 0.5);
+  };
+  const yearOf={};
+  PLAYERS_BASE.forEach(q=>{
+    const y=YEAR_OF_SET[String(q.cardSet||'').charAt(0)];
+    if(!y || !/^[hijkef][1-4]$/.test(q.cardSet||'') || q._eventOvr==null || q._eventOvr>100) return;
+    const key=y+'|'+(q.region||'')+'|'+q.handle.toLowerCase();
+    (yearOf[key]=yearOf[key]||[]).push(q);
+  });
+  let yearLifted=0;
+  Object.values(yearOf).forEach(list=>{
+    if(list.length<2) return;
+    let s=0, w=0; list.forEach(q=>{ const k=yearW(q); s+=q._eventOvr*k; w+=k; });
+    const yr=Math.round(s/w);
+    list.forEach(q=>{ q._yearOvr=yr;
+      if(yr>q.rating){ q.rating=yr; q.rarity=rarityForRating(yr); yearLifted++; } });
+  });
+  if(typeof console!=='undefined' && console.debug) console.debug('cards lifted by year rating:', yearLifted);
 
   // Final standings of the three events that decide who the best players are:
   // the Major 1 Summit LAN and both European Grand Finals. A finish is turned
@@ -109820,7 +109857,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='85268a42';
+const CC_BUILD='c46004a5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
