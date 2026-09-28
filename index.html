@@ -3616,6 +3616,7 @@
   .tw-did i{font-style:normal;font-size:12px;display:inline-flex;align-items:baseline;gap:1px;}
   .tw-did i b{font-size:9px;font-weight:900;}
   .tw-free{font-size:10px;font-weight:800;color:#8fa1cc;}
+  .tw-noble{margin-top:8px;} .hg-alerts{margin-bottom:4px;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,.12);}
   @media (max-width:520px){ .tw-week{gap:3px;} .tw-day{padding:4px 3px;} .tw-ev{font-size:0;} .tw-ev .ch-pip{font-size:10px;} }
   .tp-x{grid-column:2;grid-row:1 / span 2;border:0;background:rgba(255,255,255,.08);color:#cfd8ff;border-radius:8px;width:28px;height:28px;cursor:pointer;}
   .tp-done{margin-top:8px;font-size:12px;font-weight:900;color:#00d6a4;}
@@ -114511,7 +114512,6 @@ function careerCentreHTML(card, a){
       ${careerNewsHubHTML()}
       ${ccGoalsTileHTML()}
       ${ccDevTileHTML()}
-      ${typeof ccLifeTileHTML==='function' ? ccLifeTileHTML() : ''}
     </div>
   </div>`;
 }
@@ -116083,8 +116083,6 @@ const CC_DAY_ACTS=[
      вчетверо. */
   {id:'talk',    energy:20, gain:{}, talk:true, morale:1},
   {id:'stream',  energy:30, gain:{}, reach:1, focus:-1},
-  // Своя кастомка — см. ccHostRun; охват и деньги считает она сама.
-  {id:'host',    energy:34, gain:{}, host:true},
   {id:'rest',    energy:0,  gain:{}, rest:CC_ENERGY_REST}
 ];
 /* Чего стоит разговор — и почему не всегда одного и того же.
@@ -117129,8 +117127,11 @@ function ccLifeTick(){
 }
 
 // ---- Плитка хаба.
-function ccLifeTileHTML(){
-  if(!CAREER || !CAREER.career) return '';
+/* Срочные дела жизни — строками в плитке «Цели»: почему вечер закрыт, травма, жалоба,
+   бан, перелёты на ЛАН (без брони ЛАН не пускает). Отдельной плитки «Между турнирами»
+   больше нет (его правка 28.09); Noble — во вкладке «Тренировка», оценка — в профиле. */
+function ccLifeAlertRows(){
+  if(!CAREER || !CAREER.career) return [];
   const lf=ccLife(), cr=CAREER.career, rows=[];
   // Почему сегодняшний вечер закрыт — кнопка «Играть» сама причину не пишет.
   const todayEv=(careerYearDays().get(careerToday())||[]);
@@ -117140,7 +117141,6 @@ function ccLifeTileHTML(){
   const h=ccLifeHurt(); if(h) rows.push(`<div class="ch-row"><em>${L().lfHurt}</em><b>${L()[h.k==='wrist'?'lfWrist':'lfIll']} · ${L().lfUntil} ${ccFmtDay(h.until)}</b></div>`);
   if(lf.case) rows.push(`<div class="ch-row"><em>${L().lfCaseOpen}</em><b>${L()['lfCase'+lf.case.k]}</b></div>`);
   const bn=ccLifeBan(); if(bn) rows.push(`<div class="ch-row"><em>${L().lfBan}</em><b>${L().lfUntil} ${ccFmtDay(bn)}</b></div>`);
-  if(lf.icon) rows.push(`<div class="ch-row"><em>${L().lfIcon}</em><b>Icon Series · ${ccMoney(lf.icon.pay)}</b></div>`);
   // Ближайшие ЛАНы с перелётом — оформить.
   const today=careerToday();
   ccVictoryList().filter(v=>v.invite && v.day>=today && ccDaysBetween(today, v.day)<=30).forEach(v=>{
@@ -117149,6 +117149,11 @@ function ccLifeTileHTML(){
     rows.push(`<div class="ch-row"><em>${esc(L().lfTrip)} · ${esc(tr.city)} · ${ccFmtDay(v.day)}</em><b>${b ? L().lfTripOk
       : `<button class="cc-back" onclick="careerTripBook('${v.id}','${v.day}')">${L().lfTripBook} ${ccMoney(tr.cost)}</button>`}</b></div>`);
   });
+  return rows;
+}
+// Таблица недели Noble Pro Scrims — во вкладке «Тренировка».
+function ccNobleBoardHTML(){
+  const lf=ccLife(), rows=[];
   // Noble — неделя.
   if(lf.noble && lf.noble.n){
     const me=(CAREER.player.nick||'you');
@@ -117157,10 +117162,7 @@ function ccLifeTileHTML(){
     rows.push(`<div class="ch-row"><em>${esc(lf.noble.server)} · ${L().lfWeek}</em><b>${lf.noble.n} ${L().lfSessions}</b></div>`);
     board.forEach((r,i)=>rows.push(`<div class="ch-row"><em>${i+1}. ${esc(r.n)}</em><b class="${r.you?'ch-goal-met':''}">${r.p}</b></div>`));
   }
-  const sr=ccSeasonRating();
-  if(sr) rows.push(`<div class="ch-row"><em>${L().lfAvgRate}</em><b>${sr.avg.toFixed(1)} · ${L().lfMvpCount}: ${sr.mvp}</b></div>`);
-  if(!rows.length) return '';
-  return `<div class="ch-tile"><h4>${L().lfTitle}</h4>${rows.join('')}</div>`;
+  return rows.length ? '<div class="tw-noble">'+rows.join('')+'</div>' : '';
 }
 function ccFmtDay(iso){ return String(iso||'').slice(8,10)+'.'+String(iso||'').slice(5,7); }
 
@@ -117193,7 +117195,9 @@ function ccGoalsTileHTML(){
   if(f) rows.push(row(L().lfFocusH, ccAttrFull(f), '+'+Math.round(CC_FOCUS_BONUS*100)+'%', false));
   const empty=!rows.length ? `<div class="ch-empty">${esc(org ? L().hgNone : L().hgNoClub)}</div>` : '';
   const ask=(!g || g.done || !f) ? `<button class="hg-go" onclick="careerTab('train')">${esc(L().hgSet)}</button>` : '';
-  return `<div class="ch-tile hg-tile"><h4>${L().hgTitle}</h4>${rows.join('')}${empty}${ask}</div>`;
+  // Срочное сверху: закрытый вечер, травма, бан, перелёт на ЛАН (ccLifeAlertRows).
+  const alerts=ccLifeAlertRows();
+  return `<div class="ch-tile hg-tile"><h4>${L().hgTitle}</h4>${alerts.length ? '<div class="hg-alerts">'+alerts.join('')+'</div>' : ''}${rows.join('')}${empty}${ask}</div>`;
 }
 // Развитие: рейтинг и его ход за сезон, ранг, шесть атрибутов с приростом недели и усталость.
 function ccDevTileHTML(){
@@ -133966,7 +133970,7 @@ function ccTrainWeekHTML(){
     return '<div class="tw-day'+(iso===today?' now':'')+(iso<today?' past':'')+'"><em>'+L().calDows[d]+'</em><b>'+
       new Date(iso+'T00:00:00Z').getUTCDate()+'</b>'+body+'</div>';
   }).join('');
-  return '<div class="ch-tile tw-tile"><h4>'+esc(L().lfTwH)+'</h4>'+ccLadderRowHTML()+'<div class="tw-week">'+cells+'</div></div>';
+  return '<div class="ch-tile tw-tile"><h4>'+esc(L().lfTwH)+'</h4>'+ccLadderRowHTML()+'<div class="tw-week">'+cells+'</div>'+ccNobleBoardHTML()+'</div>';
 }
 // Где проходит занятие: настоящие карты Creative и плейлисты. Имена — как в игре.
 const CC_DRILL_MAP={trClu:"Enigma's Galaxy 1v1 Arena", trBox:'Clix Box Fights · Pandvil', trZw:'Desert Zone Wars',

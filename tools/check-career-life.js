@@ -86,7 +86,7 @@ const BOOT = `
     check('сессия Noble сыграна', !!r && ccLife().noble && ccLife().noble.n===1, JSON.stringify(ccLife().noble||null).slice(0,200));
     out.notes.noble=(CAREER.career.news||[]).find(n=>n.k==='lfNewsNoble');
     check('новость Noble', !!out.notes.noble);
-    out.notes.tile=ccLifeTileHTML().replace(/<[^>]+>/g,' ').replace(/ +/g,' ').slice(0,400);
+    out.notes.tile=ccLifeAlertRows().join(' ').replace(/<[^>]+>/g,' ').replace(/ +/g,' ').slice(0,400);
     // 5. Поездка: DreamHack Winter 2022 (Йёнчёпинг) из NA — оформить билет.
     setY('2022-11-10', 2022, {region:'NAC'});
     CAREER.player.region='NAC'; if(CAREER.career) CAREER.career.region='NAC';
