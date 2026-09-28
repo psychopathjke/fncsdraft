@@ -5934,6 +5934,9 @@
   html.ev-pal .lobby-table tr.lobby-you td:last-child,html.ev-pal .lobby-table tr.you td:last-child,html.ev-pal .lobby-table tr.lobby-first td:last-child{
     box-shadow:inset -2px 0 0 var(--ev-h),inset 0 2px 0 var(--ev-h),inset 0 -2px 0 var(--ev-h);}
   html.ev-pal .lobby-table tr.lobby-cut td{border-bottom:2px solid var(--ev-h);}
+  /* Приз у ника в таблице этапа (revealStandings). */
+  .st-prize{display:inline-block;margin-left:8px;padding:1px 7px;border-radius:999px;background:rgba(255,209,102,.16);
+    color:#ffd166;font-weight:900;font-size:12px;white-space:nowrap;vertical-align:1px;}
   /* Плашка «Следующий раунд» (ccRoundChoice) — снизу по центру, поверх вечера. */
   .cc-round-ask{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9500;width:min(560px,calc(100vw - 32px));
     background:#0b1640;border:2px solid #ffe600;border-radius:14px;padding:14px 16px;color:#fff;box-shadow:0 10px 40px rgba(0,0,0,.55);
@@ -101954,7 +101957,7 @@ async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, p
           ${showDrop?`<th class="num">${L().dropHeader}</th>`:''}
           <th class="num">${L().matchesWord}</th><th class="num">${L().winsWord}</th>
           <th class="num">${L().killsHeader}</th><th class="num">${L().ptsHeader}</th>
-          ${prizeTable?`<th class="num">${L().prizeHeader}</th>`:''}</tr></thead>
+          </tr></thead>
         <tbody></tbody>
       </table>
     </div>`;
@@ -102036,17 +102039,18 @@ async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, p
       : seated
       ? tag(L().alreadyQualTag, '#ffd166', 'rgba(255,209,102,.45)', L().alreadyQualHint)
       : '';
+    // Приз — прямо у ника (его правка 28.09: «просто пусть пишет возле ника сколько призов»):
+    // на телефоне отдельная колонка уезжала за край прокрутки.
+    const prizeNow=prizeTable ? prizeFor(prizeTable, i+1) : 0;
     tr.innerHTML=`<td class="num" style="width:44px;">#${ccRankShow(i+1)}</td>
-      <td>${ccNamesPeekHTML(t)}${mark}</td>
+      <td>${ccNamesPeekHTML(t)}${mark}${prizeNow?`<span class="st-prize">${fmtMoney(prizeNow)}</span>`:''}</td>
       <td style="color:var(--ink-dimmer);font-size:11px;white-space:nowrap;">${reg?regionName(reg):''}</td>
       ${showRegion?`<td class="num" style="white-space:nowrap;">${regionResultHTML(t)}</td>`:''}
       ${showDrop?`<td class="num" style="color:var(--ink-dim);white-space:nowrap;">${landingCellHTML(t)}</td>`:''}
       <td class="num">${played}</td>
       <td class="num">${t.wins||0}</td>
       <td class="num">${t.stageElims||0}</td>
-      <td class="num"><b>${t.stagePts||0}</b></td>
-      ${prizeTable?(()=>{const pr=prizeFor(prizeTable, i+1);
-        return `<td class="num" style="color:${pr?'#ffd166':'var(--ink-dimmer)'};font-weight:${pr?'800':'400'};">${pr?fmtMoney(pr):'—'}</td>`;})():''}`;
+      <td class="num"><b>${t.stagePts||0}</b></td>`;
     body.appendChild(tr);
   }
   const mineRow=body.querySelector('tr.you');

@@ -177,7 +177,8 @@ const BOOT = `
        пробел (U+00A0), а innerHTML отдаёт его как &nbsp; — и «$10 000» из
        той же функции никогда не совпадало само с собой. */
     const tableHTML = last ? last.textContent : '';
-    if (tableHTML.indexOf(L().prizeHeader) < 0) fail('the standings drew no prize column');
+    // Приз стоит у ника (.st-prize), отдельной колонки больше нет.
+    if (!last || !last.querySelector('.st-prize')) fail('the standings show no prize beside the names');
     if (tableHTML.indexOf(fmtMoney(wfPrize(1))) < 0)
       fail('the winner row does not show ' + fmtMoney(wfPrize(1)));
     out.steps.push('the standings show the money, top prize ' + fmtMoney(wfPrize(1)));
