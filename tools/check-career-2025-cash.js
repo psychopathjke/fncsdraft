@@ -71,7 +71,8 @@ const BOOT = `
     out.notes.kinds=kinds;
     check('оценка: 31 вечер, без Reload', kinds.eval===31, String(kinds.eval));
     check('Solo Cash Cup: 16 × 2 раунда', kinds.solo===32, String(kinds.solo));
-    check('дуо-капы с деньгами: 3 Squid (Reload Quick Cup снят 21.09)', kinds.victory===3, String(kinds.victory));
+    // Архивные капы (выбор «34», 28.09) идут сверху трёх Squid.
+    check('дуо-капы с деньгами: 3 Squid + архив', kinds.victory>=3, String(kinds.victory));
     check('Мейджоры 27 дней + Showdown 6', kinds.major===33, String(kinds.major));
     check('17 марта в 2025-м Reload-оценки нет', !(days.get('2025-03-17')||[]).some(e=>/Reload/.test(e.label)));
     check('обычная оценка — на острове сезона', careerNightSet({type:'eval', day:'2025-03-18'})==='t1', careerNightSet({type:'eval', day:'2025-03-18'}));
@@ -81,7 +82,7 @@ const BOOT = `
     check('ярлык Solo Cash Cup', /Solo Cash Cup 3/.test(lbl('SoloCash3_R1')), lbl('SoloCash3_R1'));
     check('ярлык Showdown', /Showdown 1/.test(lbl('Showdown4_2025_LCQ')), lbl('Showdown4_2025_LCQ'));
     check('Squid Grounds в календаре по имени', /Squid Grounds Cash Cup 2/.test((days.get('2025-07-25')||[]).map(e=>e.label).join(' ')), (days.get('2025-07-25')||[]).map(e=>e.label).join(' '));
-    check('Reload Quick Cup 5 сентября снят', !/Reload Quick Cup/.test((days.get('2025-09-05')||[]).map(e=>e.label).join(' ')));
+    // Reload Quick Cup вернулся архивом (выбор «34», 28.09) — проверка снята.
     // Solo Cash Cup 3: раунд 1 (10 января) → раунд 2 (12 января).
     seed(1, '2025-01-10');
     const ev1=careerSoloSeriesOn('2025-01-10');

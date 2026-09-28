@@ -95868,7 +95868,10 @@ function ccSquadKeep(set){
   CC_SQUAD_KEEP[set]=out;
   return out;
 }
+/* Под какой размер команды обрезан загруженный остров — см. проверку в simulateGamesLive. */
+let LANDING_TRIM_SIZE=0;
 function trimLandingZonesForMode(){
+  LANDING_TRIM_SIZE=squadSize;
   if(ZONE_SETS_SOLO_READY[ACTIVE_LANDING_SET]) return;
   if(squadSize===1) return splitLandingZonesForSolo();
   if(squadSize===4){
@@ -97583,6 +97586,11 @@ let CC_RUN_MAP=null;
 async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefix, maxGap, squadKillDampen, zoneGroups, opts){
   opts=opts||{};
   CC_SEATS_REMIX=false;
+  /* Остров обрезается под размер команды в момент загрузки (trimLandingZonesForMode). Загруженный
+     при чужом размере (сквад-состав на дуо-вечере) оставлял 19–20 клеток из сорока — по две-три
+     команды на точку и треть лобби мёртвой к первой зоне. Вечер перезагружает остров под свои команды. */
+  { const sz=(teams[0] && teams[0].squad && teams[0].squad.length) || squadSize;
+    if(sz && sz!==LANDING_TRIM_SIZE && ZONE_SETS[ACTIVE_LANDING_SET]){ const was=squadSize; squadSize=sz; useLandingSet(ACTIVE_LANDING_SET); squadSize=was; } }
   // Общая комната гонки: люди в поле и в одном лобби (together), иначе большое поле
   // развело бы их по разным; боты у всех уже одинаковы (общий сид, см. ccRaceFieldSync).
   if(typeof ccRaceLock==='function' && ccRaceLock()){
@@ -109902,7 +109910,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='86eea2ed';
+const CC_BUILD='cccf061f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого

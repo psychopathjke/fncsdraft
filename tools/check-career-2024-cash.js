@@ -65,9 +65,10 @@ const BOOT = `
     const days=careerYearDays(); const kinds={};
     days.forEach(list=>list.forEach(e=>{ kinds[e.kind]=(kinds[e.kind]||0)+1; }));
     out.notes.kinds=kinds;
-    check('капы с деньгами: 46', kinds.victory===46, String(kinds.victory));
+    // Архивные капы Tracker (выбор «34», 28.09) идут сверху базовых 46.
+    check('капы с деньгами: 46 своих + архив', kinds.victory>=46, String(kinds.victory));
     check('Duos Cash Cup 9 декабря по имени', /Duos Cash Cup 1/.test((days.get('2023-12-09')||[]).map(e=>e.label).join(' ')), (days.get('2023-12-09')||[]).map(e=>e.label).join(' '));
-    check('Reload Duos Cash Cup 30 августа снят', !(days.get('2024-08-30')||[]).some(e=>/Reload/.test(e.label)));
+    // Reload-капы вернулись архивом (выбор «34», 28.09) — проверка снята.
     check('карт Reload под метку в 2024-м нет', !careerSpotSets().some(s=>/^r/.test(s.grid)), careerSpotSets().map(s=>s.grid).join(','));
     check('оценка 5 декабря — остров Chapter 5 сезона 1', careerNightSet({type:'eval', day:'2023-12-05'})==='f1', careerNightSet({type:'eval', day:'2023-12-05'}));
     check('оценка: 7 игр', ccEvalR1Games()===7, String(ccEvalR1Games()));
@@ -122,7 +123,7 @@ const BOOT = `
     // Не-Европа: оценки в календаре нет.
     seed(1, '2024-01-26', {homeRegion:'NAC'}); CAREER.player.region='NAC'; ccWorldReset();
     const kn={}; careerYearDays().forEach(list=>list.forEach(e=>{ kn[e.kind]=(kn[e.kind]||0)+1; }));
-    check('NA Central: оценки нет, всё остальное на месте', !kn.eval && kn.major===33 && kn.victory===46, JSON.stringify(kn));
+    check('NA Central: оценки нет, всё остальное на месте', !kn.eval && kn.major===33 && kn.victory>=46, JSON.stringify(kn));
     // Форт-Уэрт: место с финала — Глобалы играются, платят $400 000 за первое.
     seed(1, '2024-09-07', {log:[{season:1, day:'2024-07-27', kind:'major', stage:'final', place:1, of:50, prize:85000}]});
     check('место в Форт-Уэрт есть', !!ccGlobalsSeat(), JSON.stringify(ccGlobalsSeat()));
