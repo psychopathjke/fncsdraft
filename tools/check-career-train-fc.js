@@ -110,6 +110,17 @@ const BOOT = `
     if(cupDay){ CAREER.career.day=cupDay; careerNews('flat', 'ccNewsKinch', ['x',1,2,'1.0',1,'0.5','1','1',1]);
       check('пост в день турнира несёт его постер', CAREER.career.news[0].evArt===ccEventArtOwn(careerYearDays().get(cupDay)[0]), CAREER.career.news[0].evArt); }
 
+    // ---- Таблицы в цветах турнира (палитры Epic).
+    const pal=(id,d)=>(ccEvPalette({id:id}, d)||[]).slice(0,2).join(',');
+    check('World Cup 2019 — фиолетово-оранжевая', pal('Major1_2019_W1R1','2019-04-13')==='7E00FF,F33C17', pal('Major1_2019_W1R1','2019-04-13'));
+    check('кап S15 — своя палитра', pal('S15_CashCup','2021-01-10')==='17D6FF,FD2ED8', pal('S15_CashCup','2021-01-10'));
+    check('FNCS C2S7 — зелёная', pal('Major3_2021_Final','2021-09-05')==='0CA104,67E10D', pal('Major3_2021_Final','2021-09-05'));
+    check('серебро 2022 — шапка тёмная', ccEvLight(ccEvPalette({id:'Major2_2022_Final'}, '2022-06-01')));
+    ccEvPaletteApply({id:'S15_CashCup'});
+    check('палитра ставится на страницу', document.documentElement.classList.contains('ev-pal'));
+    careerBackToHub();
+    check('и снимается в хабе', !document.documentElement.classList.contains('ev-pal'));
+
     // ---- 2026: ранкед, Арены нет.
     seed(2026, '2026-02-18', 70, 2);
     CAREER.career.day=freeDay('2026-02-18'); careerSave();
