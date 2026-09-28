@@ -27,7 +27,7 @@ const BOOT = `
     const fresh = () => { CAREER = {player:{nick:'Probe', ovr:70, region:'EU', role:'roleIGL',
       country:'de', age:16, attrs:ccRookieAttrs(70,'roleIGL')},
       career:{season:1, day:CC_YEAR_FROM, division:3, balance:0, earnings:0, reach:60000,
-              energy:CC_ENERGY_DAY, did:{}, log:[], news:[], school:'in'},
+              energy:CC_ENERGY_DAY, did:{}, log:[], news:[]},
       partners:[{card:{handle:'Mate', region:'EU', tier:'ranked', rating:70, _targetOvr:70,
                      _attrs:ccRookieAttrs(70,'roleFRG')}, patience:60}],
       gear:{own:[], train:0}, sponsor:{id:'drink', since:1, paid:0}}; };
@@ -101,20 +101,6 @@ const BOOT = `
     check('every gated kind has an arrangement here',
           gated.every(e => arrange[e.id] && disarm[e.id]), gated.map(e => e.id).join(','));
 
-    /* Школа приходит по делу: шестнадцать лет, вопрос не задан — первый же
-       свободный день, и только один раз. Ответ снимает его навсегда. */
-    fresh(); delete CAREER.career.school;
-    const d0 = someFree(); CAREER.career.day = d0;
-    check('a sixteen-year-old is asked about school on the first free day',
-          (ccDayEventOn(d0)||{}).id === 'school');
-    careerRenderHub = function(){};
-    check('answering it works', careerDayEvent('school', 'online') === true);
-    check('and the answer is written down', CAREER.career.school === 'online');
-    const d1 = ccAddDays(d0, 1); CAREER.career.day = d1;
-    check('and the question does not come back', (ccDayEventOn(d1)||{}).id !== 'school');
-    check('online school costs five, not ten', ccSchoolCap(16) === 5);
-    CAREER.career.school = 'out';
-    check('dropping out costs nothing', ccSchoolCap(16) === 0);
     fresh();
 
     // The same day offers the same thing, twice: the roll is stored in

@@ -28,7 +28,7 @@ const BOOT = `
     const fresh = () => { CAREER = {player:{nick:'Probe', ovr:70, region:'EU', role:'roleIGL',
       country:'de', age:16, attrs:ccRookieAttrs(70,'roleIGL')},
       career:{season:1, day:CC_YEAR_FROM, division:3, balance:1000, earnings:0, reach:60000,
-              energy:CC_ENERGY_DAY, did:{}, log:[], news:[], school:'in'},
+              energy:CC_ENERGY_DAY, did:{}, log:[], news:[]},
       partners:[{card:{handle:'Mate', region:'EU', tier:'ranked', rating:70, _targetOvr:70,
                      _attrs:ccRookieAttrs(70,'roleFRG')}, patience:60}],
       gear:{own:[], train:0}, sponsor:null, org:null, coach:null}; };
@@ -143,12 +143,6 @@ const BOOT = `
     careerOrgQuitDue(iso); const q2 = JSON.stringify(CAREER.career.orgQuit||null);
     check('org: the closing roll is seeded', q1 === q2, q1 + ' vs ' + q2);
 
-    // 13. Онлайн-школа берёт плату, и без денег возвращает в обычную.
-    fresh(); CAREER.career.school = 'online'; CAREER.career.balance = 1000;
-    check('school: online is paid monthly', careerSchoolFee(2) === 2*CC_SCHOOL_ONLINE && CAREER.career.balance === 1000 - 2*CC_SCHOOL_ONLINE);
-    CAREER.career.balance = 10;
-    check('school: unpaid means back to the regular one', careerSchoolFee(1) === 0 && CAREER.career.school === 'in');
-    check('school: the regular one costs ten', ccSchoolCap(16) === 10 && ccSchoolCap(20) === 0);
 
     /* ---- Страница Notion 3 сентября: четыре правки соцсети ---- */
 
@@ -394,4 +388,4 @@ const out = JSON.parse(decodeURIComponent(m[1]));
 if (out.err) { console.error('FAILED: ' + out.err); process.exit(1); }
 console.log(JSON.stringify(out.notes, null, 1));
 if (out.fails.length) { out.fails.forEach(f => console.log('FAIL ' + f)); process.exit(1); }
-console.log('additions: stats, hall, meta, LAN trip, contract, school, forks; plus the Notion four: folded post, delayed ad, in-game table, X notifications, LAN mark, mate chat');
+console.log('additions: stats, hall, meta, LAN trip, contract, forks; plus the Notion four: folded post, delayed ad, in-game table, X notifications, LAN mark, mate chat');

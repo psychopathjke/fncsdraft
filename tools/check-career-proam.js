@@ -26,7 +26,7 @@ const BOOT = `
     const fresh = () => { CAREER = {player:{nick:'Probe', ovr:88, region:'EU', role:'roleIGL',
       country:'de', age:19, attrs:ccRookieAttrs(88,'roleIGL')},
       career:{season:1, day:'2026-07-12', division:1, balance:0, earnings:0, reach:0,
-              energy:CC_ENERGY_DAY, did:{}, log:[], news:[], school:'out'},
+              energy:CC_ENERGY_DAY, did:{}, log:[], news:[]},
       partners:[{card:{handle:'Mate', region:'EU', tier:'ranked', rating:88, _targetOvr:88,
                      _attrs:ccRookieAttrs(88,'roleFRG')}, patience:60}],
       gear:{own:[], train:0}, sponsor:null, org:null, coach:null}; };

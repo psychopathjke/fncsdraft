@@ -84,13 +84,7 @@ const BOOT = `
 
     // ---- the two that buy days rather than percentages ------------------
     fresh(20000);
-    /* Контракт изменился 22 августа (пункт 5 страницы «ы»): школьник 13–18
-       живёт после уроков, минус десять от запаса. Карьера-проба здесь
-       семнадцатилетняя, так что база — CC_ENERGY_DAY-10, и это проверяется
-       отдельно как правило, а не как дрейф. */
-    const school = (ccPlayerAge()>=13 && ccPlayerAge()<=18) ? 10 : 0;
-    check('a schoolkid pays ten to the school day', school === 10, 'age '+ccPlayerAge());
-    const base = CC_ENERGY_DAY - school;
+    const base = CC_ENERGY_DAY;
     check('a bare career has the plain store', careerEnergyMax() === base,
           String(careerEnergyMax()));
     careerBuy('chair');
