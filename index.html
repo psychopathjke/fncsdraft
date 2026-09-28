@@ -108922,7 +108922,7 @@ function openCareerCreate(){
 function ccSetMode(m){
   /* Вкладка «Свои статы до 99» — тот же новичок, только статы без бюджета (CC.spaFree). */
   const freeTab = m==='free'; if(freeTab) m='rookie';
-  if(!!CC.spaFree!==freeTab){ CC.spaFree=freeTab; CC.spa={}; }
+  if(!!CC.spaFree!==freeTab){ CC.spaFree=freeTab; CC.spa={}; CC.spaAbs={}; }
   // Hold the page still across the swap: the two panels are different heights, and
   // a browser reflowing under you looks like the screen jumped.
   const keep=window.scrollY;
@@ -109406,13 +109406,25 @@ function ccSpaBase(){ return ccRookieAttrs(ccBand(CC.div, CC.region), CC.role); 
    99 99 99»). Переключатель CC.spaFree: бюджета и коридора ±20 нет, любой стат 35…99 — кнопками,
    числом в поле или «Все 99». Общий рейтинг считается из статов как обычно, то есть 99 везде —
    это 99 общего. По умолчанию выключено: обычная раздача с бюджетом остаётся. */
-function ccSpaSet(k, val){
-  const base=ccSpaBase()[k], v=clamp(Math.round(+val||0), 35, 99);
-  CC.spa=CC.spa||{}; CC.spa[k]=v-base;
-  ccSpaRender(); ccSync();
+/* Во вкладке статы хранятся ЗНАЧЕНИЯМИ (CC.spaAbs), а не сдвигом от шаблона роли: смена
+   дивизиона или роли их не двигает. После каждой правки дивизион встаёт по рейтингу
+   (ccDivisionFor, как у взятой карточки): 99-му напарников ищут в Дивизионе 1, где живут
+   настоящие 90+, — ниже потолок дивизиона (ccDivCeil) держит поиск около 60 (его вопрос 29.09
+   «почему я 99 не могу тимейта найти по уровню»). Чип дивизиона можно сменить руками. */
+function ccSpaFreeVal(k){ const a=CC.spaAbs||{}; return a[k]!=null ? a[k] : ccSpaBase()[k]; }
+function ccSpaFreeDiv(){
+  const a={}; ATTR_KEYS.forEach(k=>{ a[k]=ccSpaFreeVal(k); });
+  const ovr=Math.round(ATTR_KEYS.reduce((s,k)=>s+a[k]*ATTR_W[k], 0));
+  const d=ccNoDivisions() ? CC.div : ccDivisionFor(ovr);
+  if(d!==CC.div){ CC.div=d; ccRenderChips(); }
 }
-function ccSpaAll(val){ ATTR_KEYS.forEach(k=>{ const base=ccSpaBase()[k]; CC.spa=CC.spa||{}; CC.spa[k]=clamp(val,35,99)-base; }); ccSpaRender(); ccSync(); }
+function ccSpaSet(k, val){
+  CC.spaAbs=CC.spaAbs||{}; CC.spaAbs[k]=clamp(Math.round(+val||0), 35, 99);
+  ccSpaFreeDiv(); ccSpaRender(); ccSync();
+}
+function ccSpaAll(val){ CC.spaAbs={}; ATTR_KEYS.forEach(k=>{ CC.spaAbs[k]=clamp(val,35,99); }); ccSpaFreeDiv(); ccSpaRender(); ccSync(); }
 function ccSpaAdd(k, d){
+  if(CC.spaFree){ ccSpaSet(k, ccSpaFreeVal(k)+d); return; }
   CC.spa=CC.spa||{};
   const v=(CC.spa[k]||0)+d, base=ccSpaBase()[k];
   if(base+v<35 || base+v>99) return;
@@ -109424,12 +109436,12 @@ function ccSpaAdd(k, d){
   // прогоняет статы сквозь ccSpaApply — клик виден на овере в ту же секунду.
   ccSync();
 }
-function ccSpaReset(){ CC.spa={}; ccSpaRender(); ccSync(); }
+function ccSpaReset(){ CC.spa={}; CC.spaAbs={}; if(CC.spaFree) ccSpaFreeDiv(); ccSpaRender(); ccSync(); }
 /* Сдвиги, вложенные в статы; овер и лучший стат пересчитаны. Одна арифметика на превью
    (ccMakePlayer) и на старт (ccStart) — карточка на экране и в сейве одним числом. */
 function ccSpaApply(attrs){
-  const a=CC.spa||{};
-  ATTR_KEYS.forEach(k=>{ if(a[k]) attrs[k]=clamp(attrs[k]+a[k], 35, 99); });
+  const a=CC.spa||{}, abs=CC.spaFree ? (CC.spaAbs||{}) : {};
+  ATTR_KEYS.forEach(k=>{ if(abs[k]!=null) attrs[k]=abs[k]; else if(a[k]) attrs[k]=clamp(attrs[k]+a[k], 35, 99); });
   attrs.ovr=Math.round(ATTR_KEYS.reduce((s,k)=>s+attrs[k]*ATTR_W[k], 0));
   attrs.bestAttr=bestPlayAttr(attrs);
   return attrs.ovr;
@@ -109441,13 +109453,13 @@ function ccSpaRender(){
   const free=!!CC.spaFree, left=ccSpaLeft(), base=ccSpaBase(), T=L();
   const hint=document.querySelector('#ccSpField .cc-spa-note span');
   if(hint) hint.textContent = free ? T.ccSpFreeHint : T.ccSpCreateHint;
-  const any=ATTR_KEYS.some(k=>CC.spa[k]);
+  const any=ATTR_KEYS.some(k=>CC.spa[k]) || (free && Object.keys(CC.spaAbs||{}).length>0);
   const head=free
     ? `<button type="button" class="cc-spa-reset" onclick="ccSpaAll(99)">${T.ccSpAll99}</button>`
     : `<em>${T.ccSpLeft} <b>${left}</b></em>`;
   rows.innerHTML=`<div class="cc-spa-head">${head}${any ? ` <button type="button" class="cc-spa-reset" onclick="ccSpaReset()">${T.ccSpReset}</button>` : ''}</div>
     <div class="cc-spa-grid">${ATTR_KEYS.map(k=>{
-      const n=CC.spa[k]||0, v=clamp(base[k]+n, 35, 99), cost=ccSpaCost(k);
+      const v=free ? ccSpaFreeVal(k) : clamp(base[k]+(CC.spa[k]||0), 35, 99), n=v-base[k], cost=ccSpaCost(k);
       const name=T['attr'+k.charAt(0).toUpperCase()+k.slice(1)];
       const canUp=v<99 && (free || (n<CC_SP_SPAN && left>=cost)), canDown=v>35 && (free || n>-CC_SP_SPAN);
       const val=free

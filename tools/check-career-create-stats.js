@@ -94,6 +94,10 @@ const BOOT = `
     ccSpaAll(99);
     const pv99=ccMakePlayer();
     check('превью 99', pv99.rating===99, pv99.rating);
+    check('99 встаёт в Дивизион 1', CC.div===1, CC.div);
+    ccPickDiv(5);
+    check('смена дивизиона не двигает статы', ccMakePlayer()._attrs.aim===99, ccMakePlayer()._attrs.aim);
+    ccSpaAll(99);
     ccSpaSet('exp', 60);
     check('число в поле ставит стат', ccMakePlayer()._attrs.exp===60, ccMakePlayer()._attrs.exp);
     ccSpaSet('exp', 150);
@@ -103,6 +107,12 @@ const BOOT = `
     out.notes.free={ovr:sv99&&sv99.player.ovr, attrs:sv99&&sv99.player.attrs&&ATTR_KEYS.map(k=>sv99.player.attrs[k]).join(',')};
     check('сейв: все шесть 99', !!sv99 && ATTR_KEYS.every(k=>sv99.player.attrs[k]===99), JSON.stringify(out.notes.free));
     check('сейв: общий 99', !!sv99 && Math.round(sv99.player.ovr)===99, JSON.stringify(out.notes.free));
+    check('сейв: Дивизион 1', !!sv99 && sv99.career.division===1, sv99 && sv99.career.division);
+    // Поиск напарника у 99-го — настоящие сильные игроки, а не шестидесятые.
+    try{ careerEntry(); }catch(e){}
+    const pool=careerDuoSearchPool(true).slice(0, 20).map(w=>w.ovr);
+    out.notes.mates=pool;
+    check('напарники 99-го — 85+', pool.length>0 && pool[0]>=85, pool.join(','));
     // И обычная вкладка возвращается к бюджету.
     openCareerCreate(); ccSetMode('rookie');
     check('в «Новичке» снова бюджет', !CC.spaFree && ccSpaLeft()===CC_SP_START);
