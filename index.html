@@ -114507,10 +114507,11 @@ function careerCentreHTML(card, a){
            career, his call, 18 August: the two swapped places. -->
       <!-- Как главная карьеры в EA FC: цели, развитие, жизнь, новости. Профиль соцсети
            (ник, фото) переехал во вкладку «Профиль». -->
+      <!-- Новости — первыми, их видно сразу без прокрутки (его правка 28.09). -->
+      ${careerNewsHubHTML()}
       ${ccGoalsTileHTML()}
       ${ccDevTileHTML()}
       ${typeof ccLifeTileHTML==='function' ? ccLifeTileHTML() : ''}
-      ${careerNewsHubHTML()}
     </div>
   </div>`;
 }
