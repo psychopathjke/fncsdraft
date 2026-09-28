@@ -6276,6 +6276,7 @@
              переходы, и переименовывать его ради подписи значит ломать их. -->
         <button class="ch-tab" data-tab="log" onclick="careerTab('log')" data-i18n="chTabLog"></button>
         <button class="ch-tab" data-tab="me" onclick="careerTab('me')" data-i18n="chTabMe"></button>
+        <button class="ch-tab" data-tab="club" onclick="careerTab('club')" data-i18n="chTabClub"></button>
         <button class="ch-tab" data-tab="calendar" onclick="careerTab('calendar')" data-i18n="chTabCalendar"></button>
         <button class="ch-tab" data-tab="social" onclick="careerTab('social')"><span data-i18n="chTabSocial"></span><i class="ch-dot" id="chDmDot"></i></button>
         <!-- Стримы стоят сразу за соцсетями — правка: это одна и та же
@@ -18255,7 +18256,7 @@ let LANG=(function(){
    языки берут английский из-под себя (см. L). */
 Object.assign(I18N.ru, {
   lfRate:'Оценка за вечер', lfMvp:'MVP вечера', lfMvpYou:'ты — MVP вечера', lfAvgRate:'Средняя оценка сезона', lfMvpCount:'MVP за сезон',
-  lfTitle:'Между турнирами', lfToday:'Сегодня', lfRank:'Ранкед', lfHurt:'Травма', lfWrist:'запястье', lfIll:'болезнь', lfUntil:'до', lfCaseOpen:'Разбирательство',
+  lfTitle:'Между турнирами', lfToday:'Сегодня', chTabClub:'Клуб', lfContract:'Контракт', lfNoOrg:'Без клуба. Предложения приходят в личку после результатов.', lfSalary:'Зарплата в месяц', lfCut:'Доля клуба с призовых', lfGoal:'Цель сезона', lfGoalMet:'выполнена', lfGoalOpen:'пока нет', lfBuyout:'Отступные', lfSince:'В клубе с сезона', lfPaid:'Выплачено клубом', lfIncome:'Доходы', lfPrize:'Призовые', lfWages:'Зарплата', lfSide:'Побочные', lfSponsor:'Спонсоры', lfOrgCut:'Ушло клубу', lfBalance:'Баланс', lfRosters:'Составы', lfRostersHint:'У дуо, трио и сквада — свои составы; этап года выбирает, какой играет.', lfRosterDuo:'Дуо', lfRosterTrio:'Трио', lfRosterSquad:'Сквад', lfRosterNow:'сейчас', lfRosterEmpty:'пусто', lfWordSolo:'игроков', lfWordSquads:'сквадов', lfRank:'Ранкед', lfHurt:'Травма', lfWrist:'запястье', lfIll:'болезнь', lfUntil:'до', lfCaseOpen:'Разбирательство',
   lfBan:'Бан открытых турниров', lfIcon:'Икон-скин', lfTrip:'Поездка', lfTripOk:'оформлена', lfTripBook:'Оформить',
   lfVisa:n=>'виза '+n+' дн.', lfWeek:'неделя', lfSessions:'сессий',
   lfWhyHurt:'Травма — играть нельзя', lfWhyBan:'Бан открытых турниров', lfWhyRank:'Нужен ранг Diamond', lfTripNone:'Поездка не оформлена', lfTripVisa:'Виза не успела',
@@ -18279,7 +18280,7 @@ Object.assign(I18N.ru, {
 });
 Object.assign(I18N.en, {
   lfRate:'Match rating', lfMvp:'Player of the night', lfMvpYou:'you were the player of the night', lfAvgRate:'Season average rating', lfMvpCount:'Player-of-the-night awards',
-  lfTitle:'Between events', lfToday:'Today', lfRank:'Ranked', lfHurt:'Injury', lfWrist:'wrist', lfIll:'illness', lfUntil:'until', lfCaseOpen:'Under review',
+  lfTitle:'Between events', lfToday:'Today', chTabClub:'Club', lfContract:'Contract', lfNoOrg:'No club. Offers arrive in your DMs after results.', lfSalary:'Monthly salary', lfCut:'Club share of prize money', lfGoal:'Season goal', lfGoalMet:'done', lfGoalOpen:'not yet', lfBuyout:'Buyout', lfSince:'At the club since season', lfPaid:'Paid by the club', lfIncome:'Income', lfPrize:'Prize money', lfWages:'Salary', lfSide:'Side income', lfSponsor:'Sponsors', lfOrgCut:'Went to the club', lfBalance:'Balance', lfRosters:'Rosters', lfRostersHint:'Duos, trios and squads keep their own rosters; the stage of the year picks which one plays.', lfRosterDuo:'Duos', lfRosterTrio:'Trios', lfRosterSquad:'Squads', lfRosterNow:'now', lfRosterEmpty:'empty', lfWordSolo:'players', lfWordSquads:'squads', lfRank:'Ranked', lfHurt:'Injury', lfWrist:'wrist', lfIll:'illness', lfUntil:'until', lfCaseOpen:'Under review',
   lfBan:'Banned from open events', lfIcon:'Icon skin', lfTrip:'Trip', lfTripOk:'booked', lfTripBook:'Book',
   lfVisa:n=>'visa '+n+'d', lfWeek:'week', lfSessions:'sessions',
   lfWhyHurt:'Injured — cannot play', lfWhyBan:'Banned from open events', lfWhyRank:'Needs Diamond rank', lfTripNone:'Trip not booked', lfTripVisa:'Visa not ready in time',
@@ -19619,7 +19620,11 @@ function pushCard(card){
   card.id=card.handle+'__'+cardSeq;
   card.rating=Math.min(card.rating, tierCapForEvent(card.event));
   PLAYERS_BASE.push(card);
+  // Индекс «набор|регион» — чтобы сборка набора не фильтровала все карточки на каждый регион.
+  const ik=(card.cardSet||'')+'|'+(card.region||'');
+  const il=CARDS_BY_SETREG.get(ik); if(il) il.push(card); else CARDS_BY_SETREG.set(ik, [card]);
 }
+const CARDS_BY_SETREG=new Map();
 
 RANKED.forEach(r=>{
   const names=r.duo.split(' & ');
@@ -70019,7 +70024,7 @@ const n1GfBase     = r => 96 - ((r-1)/Math.max(_N1G.length-1,1))*26;
   _N1G.forEach(e=>add(e, CARD_N1_GF_EVENT, CARD_M1_GF_DATE, n1GfBase, 'Gf'));
 
   const byName={};
-  PLAYERS_BASE.filter(p=>p.cardSet==='m1' && p.region==='NAC').forEach(p=>{ byName[p.handle]=p; });
+  (CARDS_BY_SETREG.get('m1|NAC')||[]).filter(p=>p.cardSet==='m1' && p.region==='NAC').forEach(p=>{ byName[p.handle]=p; });
   const finalists=new Set();
   _N1G.forEach(entry=>{
     CARD_DUOS_M1.unshift({handles:entry.duo.slice()});
@@ -70520,7 +70525,7 @@ const w1GfBase     = r => REGION_TOP.NAW - ((r-1)/Math.max(_W1G.length-1,1))*(RE
   _W1G.forEach(e=>add(e, CARD_W1_GF_EVENT, CARD_M1_GF_DATE, w1GfBase, 'Gf'));
 
   const byName={};
-  PLAYERS_BASE.filter(p=>p.cardSet==='m1' && p.region==='NAW').forEach(p=>{ byName[p.handle]=p; });
+  (CARDS_BY_SETREG.get('m1|NAW')||[]).filter(p=>p.cardSet==='m1' && p.region==='NAW').forEach(p=>{ byName[p.handle]=p; });
   const finalists=new Set();
   _W1G.forEach(entry=>{
     CARD_DUOS_M1.unshift({handles:entry.duo.slice()});
@@ -71021,7 +71026,7 @@ const b1GfBase     = r => REGION_TOP.BR - ((r-1)/Math.max(_B1G.length-1,1))*(REG
   _B1G.forEach(e=>add(e, CARD_B1_GF_EVENT, CARD_M1_GF_DATE, b1GfBase, 'Gf'));
 
   const byName={};
-  PLAYERS_BASE.filter(p=>p.cardSet==='m1' && p.region==='BR').forEach(p=>{ byName[p.handle]=p; });
+  (CARDS_BY_SETREG.get('m1|BR')||[]).filter(p=>p.cardSet==='m1' && p.region==='BR').forEach(p=>{ byName[p.handle]=p; });
   const finalists=new Set();
   _B1G.forEach(entry=>{
     CARD_DUOS_M1.unshift({handles:entry.duo.slice()});
@@ -71521,7 +71526,7 @@ const o1GfBase     = r => REGION_TOP.OCE - ((r-1)/Math.max(_O1G.length-1,1))*(RE
   _O1G.forEach(e=>add(e, CARD_O1_GF_EVENT, CARD_M1_GF_DATE, o1GfBase, 'Gf'));
 
   const byName={};
-  PLAYERS_BASE.filter(p=>p.cardSet==='m1' && p.region==='OCE').forEach(p=>{ byName[p.handle]=p; });
+  (CARDS_BY_SETREG.get('m1|OCE')||[]).filter(p=>p.cardSet==='m1' && p.region==='OCE').forEach(p=>{ byName[p.handle]=p; });
   const finalists=new Set();
   _O1G.forEach(entry=>{
     CARD_DUOS_M1.unshift({handles:entry.duo.slice()});
@@ -72022,7 +72027,7 @@ const a1GfBase     = r => REGION_TOP.ASIA - ((r-1)/Math.max(_A1G.length-1,1))*(R
   _A1G.forEach(e=>add(e, CARD_A1_GF_EVENT, CARD_M1_GF_DATE, a1GfBase, 'Gf'));
 
   const byName={};
-  PLAYERS_BASE.filter(p=>p.cardSet==='m1' && p.region==='ASIA').forEach(p=>{ byName[p.handle]=p; });
+  (CARDS_BY_SETREG.get('m1|ASIA')||[]).filter(p=>p.cardSet==='m1' && p.region==='ASIA').forEach(p=>{ byName[p.handle]=p; });
   const finalists=new Set();
   _A1G.forEach(entry=>{
     CARD_DUOS_M1.unshift({handles:entry.duo.slice()});
@@ -72523,7 +72528,7 @@ const e1GfBase     = r => REGION_TOP.ME - ((r-1)/Math.max(_E1G.length-1,1))*(REG
   _E1G.forEach(e=>add(e, CARD_E1_GF_EVENT, CARD_M1_GF_DATE, e1GfBase, 'Gf'));
 
   const byName={};
-  PLAYERS_BASE.filter(p=>p.cardSet==='m1' && p.region==='ME').forEach(p=>{ byName[p.handle]=p; });
+  (CARDS_BY_SETREG.get('m1|ME')||[]).filter(p=>p.cardSet==='m1' && p.region==='ME').forEach(p=>{ byName[p.handle]=p; });
   const finalists=new Set();
   _E1G.forEach(entry=>{
     CARD_DUOS_M1.unshift({handles:entry.duo.slice()});
@@ -73167,7 +73172,7 @@ const m2GfBase     = r => REGION_TOP.EU - ((r-1)/Math.max(_M2G.length-1,1))*(REG
   _M2G.forEach(e=>add(e, CARD_M2_GF_EVENT, CARD_M2_GF_DATE, m2GfBase, 'Gf'));
 
   const byName={};
-  PLAYERS_BASE.filter(p=>p.cardSet==='m2' && p.region==='EU').forEach(p=>{ byName[p.handle]=p; });
+  (CARDS_BY_SETREG.get('m2|EU')||[]).filter(p=>p.cardSet==='m2' && p.region==='EU').forEach(p=>{ byName[p.handle]=p; });
   const finalists=new Set();
   _M2G.forEach(entry=>{
     CARD_DUOS.unshift({handles:entry.duo.slice()});
@@ -73671,7 +73676,7 @@ const n2GfBase     = r => REGION_TOP.NAC - ((r-1)/Math.max(_N2G.length-1,1))*(RE
   _N2G.forEach(e=>add(e, CARD_N2_GF_EVENT, CARD_M2_GF_DATE, n2GfBase, 'Gf'));
 
   const byName={};
-  PLAYERS_BASE.filter(p=>p.cardSet==='m2' && p.region==='NAC').forEach(p=>{ byName[p.handle]=p; });
+  (CARDS_BY_SETREG.get('m2|NAC')||[]).filter(p=>p.cardSet==='m2' && p.region==='NAC').forEach(p=>{ byName[p.handle]=p; });
   const finalists=new Set();
   _N2G.forEach(entry=>{
     CARD_DUOS.unshift({handles:entry.duo.slice()});
@@ -74175,7 +74180,7 @@ const w2GfBase     = r => REGION_TOP.NAW - ((r-1)/Math.max(_W2G.length-1,1))*(RE
   _W2G.forEach(e=>add(e, CARD_W2_GF_EVENT, CARD_M2_GF_DATE, w2GfBase, 'Gf'));
 
   const byName={};
-  PLAYERS_BASE.filter(p=>p.cardSet==='m2' && p.region==='NAW').forEach(p=>{ byName[p.handle]=p; });
+  (CARDS_BY_SETREG.get('m2|NAW')||[]).filter(p=>p.cardSet==='m2' && p.region==='NAW').forEach(p=>{ byName[p.handle]=p; });
   const finalists=new Set();
   _W2G.forEach(entry=>{
     CARD_DUOS.unshift({handles:entry.duo.slice()});
@@ -74680,7 +74685,7 @@ const b2GfBase     = r => REGION_TOP.BR - ((r-1)/Math.max(_B2G.length-1,1))*(REG
   _B2G.forEach(e=>add(e, CARD_B2_GF_EVENT, CARD_M2_GF_DATE, b2GfBase, 'Gf'));
 
   const byName={};
-  PLAYERS_BASE.filter(p=>p.cardSet==='m2' && p.region==='BR').forEach(p=>{ byName[p.handle]=p; });
+  (CARDS_BY_SETREG.get('m2|BR')||[]).filter(p=>p.cardSet==='m2' && p.region==='BR').forEach(p=>{ byName[p.handle]=p; });
   const finalists=new Set();
   _B2G.forEach(entry=>{
     CARD_DUOS.unshift({handles:entry.duo.slice()});
@@ -75179,7 +75184,7 @@ const a2GfBase     = r => REGION_TOP.ASIA - ((r-1)/Math.max(_A2G.length-1,1))*(R
   _A2G.forEach(e=>add(e, CARD_A2_GF_EVENT, CARD_M2_GF_DATE, a2GfBase, 'Gf'));
 
   const byName={};
-  PLAYERS_BASE.filter(p=>p.cardSet==='m2' && p.region==='ASIA').forEach(p=>{ byName[p.handle]=p; });
+  (CARDS_BY_SETREG.get('m2|ASIA')||[]).filter(p=>p.cardSet==='m2' && p.region==='ASIA').forEach(p=>{ byName[p.handle]=p; });
   const finalists=new Set();
   _A2G.forEach(entry=>{
     CARD_DUOS.unshift({handles:entry.duo.slice()});
@@ -75687,7 +75692,7 @@ const e2GfBase     = r => REGION_TOP.ME - ((r-1)/Math.max(_E2G.length-1,1))*(REG
   _E2G.forEach(e=>add(e, CARD_E2_GF_EVENT, CARD_M2_GF_DATE, e2GfBase, 'Gf'));
 
   const byName={};
-  PLAYERS_BASE.filter(p=>p.cardSet==='m2' && p.region==='ME').forEach(p=>{ byName[p.handle]=p; });
+  (CARDS_BY_SETREG.get('m2|ME')||[]).filter(p=>p.cardSet==='m2' && p.region==='ME').forEach(p=>{ byName[p.handle]=p; });
   const finalists=new Set();
   _E2G.forEach(entry=>{
     if(cardNotHere('m2', 'ME', entry.duo)) return;
@@ -76193,7 +76198,7 @@ const o2GfBase     = r => REGION_TOP.OCE - ((r-1)/Math.max(_O2G.length-1,1))*(RE
   _O2G.forEach(e=>add(e, CARD_O2_GF_EVENT, CARD_M2_GF_DATE, o2GfBase, 'Gf'));
 
   const byName={};
-  PLAYERS_BASE.filter(p=>p.cardSet==='m2' && p.region==='OCE').forEach(p=>{ byName[p.handle]=p; });
+  (CARDS_BY_SETREG.get('m2|OCE')||[]).filter(p=>p.cardSet==='m2' && p.region==='OCE').forEach(p=>{ byName[p.handle]=p; });
   const finalists=new Set();
   _O2G.forEach(entry=>{
     CARD_DUOS.unshift({handles:entry.duo.slice()});
@@ -76569,7 +76574,7 @@ function buildCardSetRegion(cfg){
   // Finalists are rebuilt from the Grand Finals; everyone else keeps their
   // qualifying rating minus the miss penalty. Same rule as m1 and m2.
   const byName={};
-  PLAYERS_BASE.filter(p=>p.cardSet===cfg.set && p.region===cfg.region)
+  (CARDS_BY_SETREG.get(cfg.set+'|'+cfg.region)||[]).filter(p=>p.cardSet===cfg.set && p.region===cfg.region)
               .forEach(p=>{ byName[p.handle]=p; });
   const finalists=new Set();
   cfg.stages.G.forEach(entry=>{
@@ -77274,11 +77279,14 @@ function buildDivWeek(w, orgs){
 var CC_HANDLE_FOLD=[];
 (function foldCaptureSpellings(){
   const ODD='r4';
-  const norm=s=>String(s||'').toUpperCase()
+  const norm0=s=>String(s||'').toUpperCase()
     .normalize('NFD').replace(/[̀-ͯ]/g,'')
     .replace(/[^A-Z0-9]/g,'')
     .split('0').join('O').split('1').join('I')
     .split('5').join('S').split('3').join('E').split('4').join('A');
+  // Один ник встречается на многих карточках — нормализация запоминается (старт на телефоне).
+  const normMemo=new Map();
+  const norm=s=>{ const k=String(s||''); let v=normMemo.get(k); if(v===undefined){ v=norm0(k); normMemo.set(k, v); } return v; };
   const known=new Map();       // регион|нормализованное -> набор написаний
   const elsewhere=new Set();   // регион|ник, встреченный вне странного набора
   const held=new Set();        // регион|ник|событие|место — чтобы не задвоить
@@ -77656,7 +77664,8 @@ var RATING_FLOOR={};
   // tools/build-2025-orgs.js off the saved event page. Per-Major rosters would
   // pin the February transfers exactly; this does not pretend to.
   const ORG_2025={"5aald":"Glory Esports","Acorn":"Dignitas","Adapter":"Al Ula","Ajerss":"Elite Esports","alex":"PWR","Aminished":"Past Bliss","Anon":"PWR","Ark":"SORIN","Aspect":"RVL ESPORT","Bacca":"Marine Region","Balor":"Al Ula","Boltz":"Xen","Buyuriru":"DetonatioN FocusMe","Cadu":"Flame Hard","Cazi":"Armour Esports","charyy":"RVL ESPORT","Chico":"Team Falcons","Clix":"XSET","Cold":"Twisted Minds","Cooper":"Dignitas","Curly":"Witness The Journey","Darm":"BIG","Eomzo":"Elite Esports","EpikWhale":"FaZe Clan","Fazer":"ShindeN","FKS":"Al Ula","Flickzy":"AIGHT","Gabzera":"T6 eSports","Goofy":"PWR","Hero":"Al Ula","Higgs":"XSET","Hris":"BK ROG Esports","IDrop":"Team HavoK","Japko":"Team Falcons","Kami":"Al Qadsiah","Khanada":"Dignitas","Kimkana":"Crazy Raccoon","Koyota":"ZETA DIVISION","m0untain":"Lethal Region","Malibuca":"Gentle Mates","Mansour":"Al Ula","MariusCOW":"Gentle Mates","Merem":"QT DIG","Merstach":"Gentle Mates","MrSavage":"Red Bull eSports","Muz":"XSET","P1ng":"Gentle Mates","panzer":"GLORE","Peterbot":"Team Falcons","Pixie":"Team HavoK","pixx":"Team HavoK","Pollo":"Gentle Mates","PXMP":"Elite Esports","Queasy":"Twisted Minds","Raito":"EDGE","Rapid":"Xen","Razl":"Crazy Raccoon","Reet":"JOGO","Resignz":"PWR","Rew":"Al Ula","Rise":"Riddle","Ritual":"XSET","saad":"RAFHA eSPORTS","Salko":"2AM Esports","Setty":"Team Falcons","Shadow":"Fear Esports","Snowy":"Team Stallions","Stryker":"Gremio Esports","SwizzY":"Gentle Mates","Sxhool":"TYT Esports","TaySon":"Team Falcons","Tinka":"JFT Esports","Tisco":"ShindeN","Upl":"Northern Star Gaming","Vanyak3kk":"Gentle Mates","Veno":"XSET","vic0":"BIG","VicterV":"FaZe Clan","Visxals":"Past Bliss","VortexM":"PWR","WeY":"T6 eSports","wickesy":"FISTERIA","Wox":"Team HavoK","yuma":"ZETA DIVISION"};
-  const _orgNorm=s=>String(s==null?'':s).toLowerCase().replace(/[^a-z0-9]/g,'');
+  const _orgNormMemo=new Map();
+  const _orgNorm=s=>{ const k=String(s==null?'':s); let v=_orgNormMemo.get(k); if(v===undefined){ v=k.toLowerCase().replace(/[^a-z0-9]/g,''); _orgNormMemo.set(k, v); } return v; };
   const ORG_2025_BY_NORM={};
   Object.keys(ORG_2025).forEach(h=>{ const k=_orgNorm(h); if(!(k in ORG_2025_BY_NORM)) ORG_2025_BY_NORM[k]=ORG_2025[h]; });
   let org2025=0;
@@ -77680,7 +77689,10 @@ var RATING_FLOOR={};
   const _oyIdx={};
   Object.keys(ORGS_BY_YEAR).forEach(y=>{ _oyIdx[y]={}; Object.keys(ORGS_BY_YEAR[y]).forEach(k=>{ const m={}; Object.keys(ORGS_BY_YEAR[y][k]).forEach(h=>{ const n=_orgNorm(h); if(!m[n]) m[n]=ORGS_BY_YEAR[y][k][h]; }); _oyIdx[y][k]=m; }); });
   const _oyYear=q=>{ const s=String(q.cardSet||''); if(/^h[1-4]$/.test(s)) return 2019; if(/^i[1-3]$/.test(s)) return 2020; if(/^j[1-4]$/.test(s)) return 2021; if(/^k[1-3]$/.test(s)) return 2022; if(/^e[1-3]$/.test(s)) return 2023; if(/^f[1-3]$/.test(s)) return 2024; if(/^t[1-3]$/.test(s)) return 2025; const m=/(?:FNCS|Fortnite) (2019|2020|2021|2022|2023|2024|2025)/.exec(String(q.event||'')); return m ? +m[1] : 0; };
-  const _oyKeys=q=>{ const s=String(q.cardSet||''); const m=/^[ehijkft]([1-4])$/.exec(s); let n=m ? +m[1] : (/Major (\d)/.exec(String(q.event||''))||[])[1]; n=n ? +n : 0;
+  // Порядок этапов зависит только от набора и события — запоминается, а не строится на каждую карточку.
+  const _oyMemo=new Map();
+  const _oyKeys=q=>{ const mk=(q.cardSet||'')+'|'+(q.event||''); let v=_oyMemo.get(mk); if(!v){ v=_oyKeys0(q); _oyMemo.set(mk, v); } return v; };
+  const _oyKeys0=q=>{ const s=String(q.cardSet||''); const m=/^[ehijkft]([1-4])$/.exec(s); let n=m ? +m[1] : (/Major (\d)/.exec(String(q.event||''))||[])[1]; n=n ? +n : 0;
     const order=n ? [n, ...[1,2,3].filter(x=>x!==n).sort((a,b)=>Math.abs(a-n)-Math.abs(b-n))].reduce((acc,x)=>acc.concat(['major'+x, 'major'+x+'q']), []) : [];
     return n ? order.concat(['globals']) : ['globals','major3','major3q','major2','major2q','major1','major1q']; };
   let orgYear=0, orgYearCards=0;
@@ -109626,7 +109638,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='47cb8019';
+const CC_BUILD='3b0ed409';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -113689,6 +113701,7 @@ function careerRenderHubBody(tab){
      its own tab. The two cards, who you are, the seat beside you, and the four
      people who pay you or take a cut. */
   if(CH_TAB==='me'){ body.innerHTML=careerMeHTML(); return; }
+  if(CH_TAB==='club'){ body.innerHTML=careerClubTabHTML(); return; }
   // The card tab is gone — the centre already wears the card, and a whole tab
   // that repeated it sat between the calendar and the socials for no reason.
   body.innerHTML=careerCentreHTML(card, a);
@@ -114603,6 +114616,8 @@ function careerMeHTML(){
         m ? ccSay('ccMateReplace') : ccSay('ccFindDuo')}</button>
     </div>`);
   }
+  /* «Карьера» — только игра: состав слева, справа своя точка, составы по размерам и коуч.
+     Клуб, менеджер, маркетинг и SMM переехали во вкладку «Клуб» (careerClubTabHTML). */
   return `<div class="ch-grid ch-grid-me">
     <div class="ch-col">
       <!-- The duo reads first, the two cards under it, and the tournament last,
@@ -114613,15 +114628,62 @@ function careerMeHTML(){
     </div>
     <div class="ch-col">
       ${careerSpotTileHTML()}
-      <div class="ch-pair">
-        ${careerAgentTileHTML()}
-        ${careerOrgTileHTML()}
-      </div>
-      <div class="ch-pair">
-        ${careerMktTileHTML()}
-        ${careerSmmTileHTML()}
-        ${careerCoachColHTML()}
-      </div>
+      ${ccRostersTileHTML()}
+      ${careerCoachColHTML()}
+    </div>
+  </div>`;
+}
+// Составы по размерам — дуо, трио, сквад: кто в каком, какой играет сейчас.
+function ccRostersTileHTML(){
+  if(!CAREER) return '';
+  const now=CAREER.rosterSize||careerSquadSize();
+  const all=Object.assign({}, CAREER.rosters||{});
+  all[now]=(CAREER.partners||[]).slice();
+  const names={2:L().lfRosterDuo, 3:L().lfRosterTrio, 4:L().lfRosterSquad};
+  const rows=[2,3,4].filter(s=>all[s]).map(s=>{
+    const who=all[s].filter(Boolean).map(r=>{ const c=ccMateCardOf(r); return c && c.handle; }).filter(Boolean);
+    return `<div class="ch-row"><em>${names[s]}${s===now?' · '+L().lfRosterNow:''}</em><b>${who.length ? esc(who.join(', ')) : L().lfRosterEmpty}</b></div>`;
+  });
+  if(!rows.length) return '';
+  return `<div class="ch-tile"><h4>${L().lfRosters}</h4><div class="ch-hint">${L().lfRostersHint}</div>${rows.join('')}</div>`;
+}
+// Контракт и цель клуба на сезон.
+function ccContractTileHTML(){
+  const org=CAREER && CAREER.org, cr=CAREER.career;
+  if(!org) return `<div class="ch-tile"><h4>${L().lfContract}</h4><div class="ch-empty">${L().lfNoOrg}</div></div>`;
+  const rows=[];
+  rows.push(`<div class="ch-row"><em>${L().chOrg||'Club'}</em><b>${esc(org.name)}</b></div>`);
+  if(org.salary) rows.push(`<div class="ch-row"><em>${L().lfSalary}</em><b>${ccMoney(org.salary)}</b></div>`);
+  if(org.cut!=null) rows.push(`<div class="ch-row"><em>${L().lfCut}</em><b>${Math.round(org.cut*100)}%</b></div>`);
+  if(org.goal){
+    const met=careerOrgGoalMet();
+    rows.push(`<div class="ch-row"><em>${L().lfGoal}</em><b class="${met?'ch-goal-met':''}">${esc(careerOrgGoalText(org.goal))} · ${met?L().lfGoalMet:L().lfGoalOpen}</b></div>`);
+  }
+  if(!org.own && typeof careerBuyoutCost==='function' && careerBuyoutCost()) rows.push(`<div class="ch-row"><em>${L().lfBuyout}</em><b>${ccMoney(careerBuyoutCost())}</b></div>`);
+  if(org.since) rows.push(`<div class="ch-row"><em>${L().lfSince}</em><b>${org.since}</b></div>`);
+  if(org.paid) rows.push(`<div class="ch-row"><em>${L().lfPaid}</em><b>${ccMoney(org.paid)}</b></div>`);
+  return `<div class="ch-tile"><h4>${L().lfContract}</h4>${rows.join('')}</div>`;
+}
+// Доходы карьеры по статьям.
+function ccIncomeTileHTML(){
+  const cr=CAREER.career, rows=[];
+  const add=(k,v)=>{ if(v) rows.push(`<div class="ch-row"><em>${L()[k]}</em><b>${ccMoney(v)}</b></div>`); };
+  add('lfPrize', cr.earnings); add('lfWages', cr.wages); add('lfSide', cr.side); add('lfSponsor', cr.sponsored); add('lfOrgCut', cr.orgCut);
+  rows.push(`<div class="ch-row"><em>${L().lfBalance}</em><b>${ccMoney(cr.balance||0)}</b></div>`);
+  return `<div class="ch-tile"><h4>${L().lfIncome}</h4>${rows.join('')}</div>`;
+}
+// Вкладка «Клуб»: организация, контракт и цель, менеджер, маркетинг, SMM, доходы.
+function careerClubTabHTML(){
+  return `<div class="ch-grid ch-grid-me">
+    <div class="ch-col">
+      ${careerOrgTileHTML()}
+      ${ccContractTileHTML()}
+      ${ccIncomeTileHTML()}
+    </div>
+    <div class="ch-col">
+      ${careerAgentTileHTML()}
+      ${careerMktTileHTML()}
+      ${careerSmmTileHTML()}
     </div>
   </div>`;
 }
@@ -116839,6 +116901,30 @@ function ccPhaseRoster(){
 function ccSyncPhaseRoster(){
   const cr=CAREER && CAREER.career; if(!cr || CC_EVENT_SIZE) return;
   const ps=ccPhaseRoster(); if(ps && cr.size!==ps) cr.size=ps;
+  ccRosterSwap();
+}
+/* ДУО, ТРИО И СКВАД — ОТДЕЛЬНЫЕ СОСТАВЫ.
+
+   Просьба: «пусть дуо трио это отдельные составы чтоб ниче не путалось, но игроки могут
+   одинаковые быть». Раньше состав был один: пара, переходя в трио-этап года, добирала
+   третьего в ту же запись — и место на ЛАН пары, взятое в дуо, «ломалось» от приёма в трио.
+   Теперь на каждый размер свой список (CAREER.rosters[2|3|4]): когда размер состава года
+   меняется, текущий откладывается, а поднимается сохранённый для нового размера. Нового ещё
+   не было — он начинается с тех же людей (сколько влезает), дальше живёт сам. В командной
+   карьере состав общий на двоих и едет с сервера — там не трогаем. */
+function ccRosterSwap(){
+  if(!CAREER || !CAREER.career || CC_EVENT_SIZE) return;
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  const size=careerSquadSize();
+  if(!CAREER.rosters) CAREER.rosters={};
+  const was=CAREER.rosterSize;
+  if(was===size) return;
+  CAREER.rosterSize=size;
+  if(!was) return;
+  CAREER.rosters[was]=(CAREER.partners||[]).slice();
+  const saved=CAREER.rosters[size];
+  CAREER.partners = saved ? saved.slice() : (CAREER.partners||[]).slice(0, size-1);
+  careerSave();
 }
 /* What a season was played in, which is not what its number implies.
 
@@ -122684,8 +122770,9 @@ function ccSlotAsk(go){
 function careerDmAcceptAsk(id){
   // В команде третьего берут вдвоём — предложение уходит напарнику.
   if(ccMpOn()){ ccMpThirdAsk(id); return; }
-  // Кресло пустое — терять нечего: место сгорает от ЗАМЕНЫ, а не от посадки.
-  if(!careerPartnerCard()){ careerDmAccept(id); return; }
+  // Кресло пустое — терять нечего: место сгорает от ЗАМЕНЫ, а не от посадки. Это и
+  // свободное третье кресло: пара, берущая третьего в трио-этап года, не разрывается.
+  if(!careerPartnerCard() || careerMates().filter(Boolean).length<careerMateSeats()){ careerDmAccept(id); return; }
   ccSlotAsk(()=>careerDmAccept(id));
 }
 /* Третьего в команду берут ОБА.
@@ -125613,6 +125700,8 @@ function ccOrgPaysCoach(){ return !!(CAREER.org && CAREER.org.perk==='coach'); }
 // for: get up a rung. In Division 1 there is no rung left, so they want a
 // result — a top-20 finish in any cup this season.
 function careerOrgGoal(div){
+  // В годах без дивизионов подниматься некуда — цель по месту, как у Дивизиона 1.
+  if(typeof ccNoDivisions==='function' && ccNoDivisions()) return {type:'place', target:20};
   return div>1 ? {type:'promote', target:div-1} : {type:'place', target:20};
 }
 function careerOrgGoalText(goal){
@@ -127959,8 +128048,12 @@ function ccPostAuthor(e){
   if(who==='arg0'){
     const h=String(((e.a||[])[0])||'').trim();
     if(h){
-      const card=ccSceneRoster(ccCareerRegion()).find(x=>hKey(x)===hKey(h)) ||
-                 PLAYERS.find(x=>hKey(x)===hKey(h)) || null;
+      /* По индексам ника, а не перебором: PLAYERS.find по шестидесяти тысячам карточек
+         на каждый такой пост и на каждую перерисовку вешал хаб на телефоне на секунду
+         (профиль при CPU ×6: ccPostAuthor — 1,9 с из 2 с отрисовки «Центра»). */
+      const hk=hKey(h);
+      const card=ccNowByKey(ccSceneRoster(ccCareerRegion())).get(hk) ||
+                 ((ccCardsByKey().get(hk)||[])[0]) || null;
       return {name:h, handle:ccHandle(h), verified:false, card:card,
               ovr: card ? (card._ovr!=null?card._ovr:(attrsFor(card)||{}).ovr) : null};
     }
@@ -128117,8 +128210,9 @@ function ccWhoCard(handle){
   const k=hKey(handle);
   const pl=CAREER && CAREER.player;
   if(pl && pl.handle && hKey(pl.handle)===k) return null;   // свой — не из ростера
-  return ccSceneRoster(ccCareerRegion()).find(x=>hKey(x)===k) ||
-         PLAYERS.find(x=>hKey(x)===k) || null;
+  // Индексами ника, а не перебором всех карточек (см. ccPostAuthor).
+  return ccNowByKey(ccSceneRoster(ccCareerRegion())).get(k) ||
+         ((ccCardsByKey().get(k)||[])[0]) || null;
 }
 // Когда человек остался один: последняя запись о его разводе. Ключ книги —
 // «а+б» из ccSeatKey, поэтому ищется вхождение половинки.
@@ -132453,7 +132547,7 @@ function careerSocialHTML(){
             </div>`; })()
       : open.msgs.some(m=>m.from==='them') &&
         (open.state==='offer' || careerDmWouldAccept(open.who))
-        ? (()=>{ const held=careerPartnerCard() ? careerSlotHeld() : null;
+        ? (()=>{ const held=(careerPartnerCard() && careerMates().filter(Boolean).length>=careerMateSeats()) ? careerSlotHeld() : null;
             // The button still works. What it costs is written over it, because
             // this is the one press in the mode that gives a qualification away.
             // And the other button: closing a thread only deleted it, and the
@@ -142398,6 +142492,9 @@ function ccMajorSeatNote(ev){
 }
 function ccSummitSeat(){
   const cr=CAREER.career;
+  // Саммит есть только в календаре 2026-го: в прошлых годах финал Мейджора (World Cup,
+  // FNCS сезона) места на ЛАН не даёт — иначе пара «держала ЛАН», которого нет.
+  if(ccCalYear()<2026) return null;
   /* Этого года, а не любого.
 
      cr.log копится через сезоны, а место на Саммит выдаётся за финал Мейджора 1
@@ -149324,6 +149421,14 @@ function ccArcOldMajors(y){
   rows.forEach(r=>{ const m=re.exec(r[2]); if(m) ns.add(+m[1]); });
   return ns.size ? [...ns].sort((a,b)=>a-b) : null;
 }
+// Размер состава Мейджора в году сезона: у 2019–2020 — по спеке турнира, 2021 — трио, 2022–2023 — дуо.
+function ccArcMajorSize(sn, n, fallback){
+  const y=ccArcCalYear(sn), sp=(typeof ccMXSpec==='function') ? ccMXSpec(y, n) : null;
+  if(sp) return sp.size;
+  if(y===2021) return 3;
+  if(y===2022 || y===2023) return 2;
+  return fallback;
+}
 function ccArcMajors(sn){
   const y=ccArcCalYear(sn);
   return ccArcOldMajors(y) || (y===2026 ? [1,2] : [1,2,3]);
@@ -149445,7 +149550,10 @@ function careerArchiveSeason(sn){
     const perReg={};
     REGIONS.forEach(r=>{
       const own=r.code===mine && wins.majors[n];
-      const team=teamOf(r.code, scene[r.code].champs[mi]);
+      // Чемпион — составом САМОГО турнира: у World Cup Solo и C2S3 это один человек.
+      const evSz=ccArcMajorSize(sn, n, size);
+      const team0=teamOf(r.code, scene[r.code].champs[mi]);
+      const team=(team0 && evSz<team0.length) ? team0.slice(0, evSz) : team0;
       // Свой мейджор игрок отыграл: чемпион там тот, кого он видел, а не
       // тот, кого вычислила сцена. См. seenWin.
       const mSeen=r.code===mine ? seenWin(me.majors[n]) : null;
@@ -149863,14 +149971,34 @@ function careerArchiveFinal(sn, key){
     if(!ev) return null;
     kind=ev.slot; reg=ev.win.reg; champ=ev.win.team; mine=ev.mine; label=ev.label;
   }
-  const cfg=ccArcEvent(kind);
+  let cfg=ccArcEvent(kind);
+  /* Финалы прошлых лет — в своём формате, а не в составе сезона: World Cup Solo — сотня
+     одиночек, Duos — пятьдесят дуо, FNCS Season X — трио, C2S1 — сквады (CC_MX_SPEC); у
+     2021–2023 — лобби и таблица призов своего года (CC_MAJOR_PAY_<год>, по региону строки). */
+  const arcY=ccArcCalYear(sn);
+  let evSize=size, evPrize=null;
+  if(kind==='major'){
+    const mn=+p[1], sp=(typeof ccMXSpec==='function') ? ccMXSpec(arcY, mn) : null;
+    const tier=tb=>{ const t=tb && (tb[reg] || (reg==='NAW' && tb.NAC) || tb.EU); return t ? (pl=>{ const r=t.find(x=>pl<=x[0]); return r ? r[1] : 0; }) : null; };
+    if(sp){
+      evSize=sp.size;
+      cfg=Object.assign({}, cfg, {field:ccMXLobby(sp.size), games:sp.finalGames||cfg.games});
+      evPrize=pl=>ccMXPrize(arcY, mn, pl);
+    } else if(arcY>=2021 && arcY<=2023){
+      evSize=arcY===2021 ? 3 : 2;
+      const tb=({2021:CC_MAJOR_PAY_2021, 2022:CC_MAJOR_PAY_2022, 2023:CC_MAJOR_PAY_2023})[arcY];
+      const t=tb && tb[mn];
+      cfg=Object.assign({}, cfg, {field:arcY===2021 ? 33 : 50});
+      evPrize=tier(t);
+    }
+  }
   /* РАЗМЕР СОСТАВА У ЭТИХ ДВУХ — СВОЙ, А НЕ СЕЗОНА.
 
      Кубок наций играется сборными по четыре, соло — одиночками, и ни то ни
      другое не переводится в дуо/трио года: ccArcCount тут промолчит, иначе
      зал из двадцати пяти стран превратился бы в семнадцать. */
-  const seatSize = kind==='nations' ? CC_NATIONS_SQUAD : kind==='solo' ? 1 : size;
-  const n = (kind==='nations' || kind==='solo')
+  const seatSize = kind==='nations' ? CC_NATIONS_SQUAD : (kind==='solo' || evSize===1) ? 1 : evSize;
+  const n = (kind==='nations' || kind==='solo' || evSize!==size)
     ? Math.max(2, cfg.field)
     : Math.max(2, ccArcCount(size, cfg.field));
   const rng=careerRng(ccHashStr('arcT|'+(CAREER.player.nick||'')+'|'+sn+'|'+key));
@@ -149887,8 +150015,8 @@ function careerArchiveFinal(sn, key){
       ? ccArcNatRows().map(r=>({cards:r.top,
                                 reg:(r.top[0] && r.top[0].region) || reg,
                                 champ: !!(champ && champ[0] && r.top[0] && hKey(r.top[0])===hKey(champ[0]))}))
-    : kind==='solo' ? ccArcSoloSeats(n, champ)
-    : kind==='major' ? ccArcField(reg, size, n, rng, champ, skip, sn)
+    : (kind==='solo' || evSize===1) ? ccArcSoloSeats(n, champ && champ.slice(0,1))
+    : kind==='major' ? ccArcField(reg, evSize, n, rng, champ && champ.slice(0, evSize), skip, sn)
                      : ccArcLanField(size, n, rng, champ, reg, skip, sn);
   if(seats.length<2) return null;
   const bare=s=>String(s==null?'':s).replace(/<[^>]*>/g, '').trim();
@@ -149906,7 +150034,7 @@ function careerArchiveFinal(sn, key){
     const A=ranked[0], B=ranked[ci];
     ['name','_reg','_champ'].forEach(k=>{ const v=A[k]; A[k]=B[k]; B[k]=v; });
   }
-  const prize=ccArcPrize(kind, reg);
+  const prize=evPrize || ccArcPrize(kind, reg);
   const rows=ranked.map((t,i)=>({p:i+1, name:bare(t.name), reg:t._reg,
     pts:t.stagePts||0, wins:t.wins||0, elims:t.stageElims||0}));
   /* And the row that really happened goes in at the place it really finished.
@@ -149955,7 +150083,8 @@ function careerArchiveFinal(sn, key){
     if(rows.length>n) rows.length=n;
   }
   rows.forEach((r,i)=>{ r.p=i+1; r.prize=prize(i+1); });
-  const word=size===3 ? L().ccWordTrios : L().ccWordDuos;
+  const ws=kind==='major' ? evSize : size;
+  const word=ws===1 ? L().lfWordSolo : ws===4 ? L().lfWordSquads : ws===3 ? L().ccWordTrios : L().ccWordDuos;
   const out={cap:label, sub:L().arcTable(ccNum(rows.length), word, cfg.games),
              lan:kind!=='major', rows};
   CH_ARC_TBL[ck]=out;
@@ -150002,8 +150131,17 @@ function careerArcTableHTML(sn, key){
    отвечает на оба вопроса разом: и что это за турнир, и что на него смотрят,
    а не читают. Ключ строки уже несёт слот ('g|gc', 'm|1|EU'), другого источника
    не нужно. */
-function ccArcArt(key){
+/* Обложка строки — турнира СВОЕГО года: у 2019–2024 постер сезона FNCS (ccFncsPoster), у 2025 —
+   постеры Мейджоров, у Глобалов — свой город года; где своего нет — ключевой арт года. */
+function ccArcArt(key, sn){
   const k=String(key||'');
+  const y=sn!=null && typeof ccArcCalYear==='function' ? ccArcCalYear(sn) : ccCalYear();
+  if(y<2026){
+    const m=/^m\|(\d)/.exec(k);
+    if(m){ const id='Major'+m[1]+'_'+y; return ccFncsPoster(id) || CAREER_EV_ART_ID[id+'_Final'] || (y<=2024 ? 'art/fncs-'+y+'.jpg' : CAREER_EV_ART.cup); }
+    if(k.indexOf('g|gc')===0) return y===2022 ? ccFncsPoster('Invitational2022') : (CAREER_EV_ART_ID['GlobalChampionship'+y] || CAREER_EV_ART.gc);
+    if(k.indexOf('g|nations')===0) return CAREER_EV_ART_ID.nations || CAREER_EV_ART.gc;
+  }
   if(k.indexOf('g|summit')===0) return 'art/fncs-2026-major1.jpg';
   if(k.indexOf('g|rc')===0)     return CAREER_EV_ART.reload;
   if(k.indexOf('g|gc')===0)     return CAREER_EV_ART.gc;
@@ -150016,7 +150154,7 @@ function ccArcArt(key){
 }
 function ccArcRow(sn, key, label, valueHTML, you){
   const open=CH_ARC_OPEN===key;
-  const art=ccArcArt(key);
+  const art=ccArcArt(key, sn);
   return `<div class="ch-row arc-row${open?' arc-on':''}" onclick="careerArcOpen(\'${key}\')">
       <em>${art?`<img class="arc-logo" src="${art}" alt="" loading="lazy" onerror="this.remove()">`:''}${esc(label)}</em>
       <b class="${you?'ch-goal-met':''}">${valueHTML}<i class="arc-caret">${open?'▾':'▸'}</i></b>
@@ -150048,8 +150186,8 @@ function ccArcDoneBy(id){
 // Неразыгранный слот — та же строка с той же обложкой, только без победителя:
 // турнир этого сезона существует и до него ещё дойдут, а строка без картинки
 // рядом со строками с картинками читалась бы как другая порода.
-function ccArcSoonRow(label, key){
-  const art=ccArcArt(key);
+function ccArcSoonRow(label, key, sn){
+  const art=ccArcArt(key, sn!=null ? sn : CH_ARC_S);
   return `<div class="ch-row arc-row"><em>${
       art?`<img class="arc-logo" src="${art}" alt="" loading="lazy" onerror="this.remove()">`:''
     }${esc(label)}</em>
@@ -150082,13 +150220,13 @@ function careerArchiveHTML(){
   const chipsR=REGIONS.map(r=>`<button class="cc-back${r.code===reg?' cc-on':''}"
     onclick="careerArcReg(\'${r.code}\')">${esc(regionName(r.code))}</button>`).join('');
   const rowsR=a.regional.map(ev=>{const w=ev.perReg[reg];
-    if(partial && !ccArcDoneBy('Major'+ev.n+'_Final')) return ccArcSoonRow(ev.label, 'm|'+ev.n+'|'+reg);
+    if(partial && !ccArcDoneBy('Major'+ev.n+'_Final')) return ccArcSoonRow(ev.label, 'm|'+ev.n+'|'+reg, sn);
     return ccArcRow(sn, 'm|'+ev.n+'|'+reg, ev.label,
       esc(w.name)+(w.you?' · '+L().arcYou:''), w.you);}).join('');
   const CC_ARC_GID={summit:'Summit_Final', rc:'ReloadChampionshipParis', gc:'GlobalChampionship',
                     nations:'NationsFinal', solo:'SoloSeries_Final'};
   const rowsG=a.global.map(ev=>{
-    if(partial && !ccArcDoneBy(CC_ARC_GID[ev.slot]||'')) return ccArcSoonRow(ev.label, 'g|'+ev.slot);
+    if(partial && !ccArcDoneBy(CC_ARC_GID[ev.slot]||'')) return ccArcSoonRow(ev.label, 'g|'+ev.slot, sn);
     return ccArcRow(sn, 'g|'+ev.slot, ev.label,
       esc(ev.win.name)+' · '+esc(regionName(ev.win.reg))+(ev.win.you?' · '+L().arcYou:''),
       ev.win.you);}).join('');
