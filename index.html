@@ -3573,6 +3573,29 @@
   .tp-goal{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;margin-top:8px;font-size:13px;font-weight:800;}
   .tp-goal b{color:#ffdd00;margin-left:6px;} .tp-goal u{grid-column:1;display:block;height:9px;border-radius:6px;background:rgba(255,255,255,.1);overflow:hidden;text-decoration:none;}
   .tp-goal u s{display:block;height:100%;background:linear-gradient(90deg,#00d6a4,#7aa2ff);text-decoration:none;}
+  /* Главная: «Цели» и «Развитие» (ccGoalsTileHTML / ccDevTileHTML). */
+  .hg-row{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08);}
+  .hg-row:last-of-type{border-bottom:none;}
+  .hg-top{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline;}
+  .hg-top em{grid-column:1 / -1;font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
+  .hg-top b{font-size:13px;font-weight:800;color:#fff;min-width:0;}
+  .hg-top i{font-style:normal;font-size:12px;font-weight:900;color:#ffdd00;white-space:nowrap;}
+  .hg-row.ok .hg-top i{color:#00d6a4;}
+  .hg-bar{display:block;height:6px;margin-top:6px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;text-decoration:none;}
+  .hg-bar s{display:block;height:100%;background:linear-gradient(90deg,#00d6a4,#7aa2ff);text-decoration:none;}
+  .hg-go{display:block;width:100%;margin-top:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;}
+  .hg-go:hover{background:rgba(255,255,255,.14);}
+  .hg-go:focus-visible{outline:2px solid #00ffd0;outline-offset:2px;}
+  .hd-head{display:flex;align-items:center;gap:12px;margin:6px 0 8px;}
+  .hd-ovr{font-size:34px;font-weight:900;font-style:italic;line-height:1;color:#0b0f12;background:#ffdd00;border-radius:8px;padding:4px 10px;}
+  .hd-head span{display:flex;flex-direction:column;gap:2px;}
+  .hd-head em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
+  .hd-head i{font-style:normal;font-size:12px;font-weight:900;color:#cfd8ff;}
+  .hd-head i.up{color:#00d6a4;} .hd-head i.down{color:#ff5f56;}
+  .hd-rank{display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;gap:8px;margin:0 0 8px;font-size:12px;}
+  .hd-rank em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
+  .hd-rank b{font-weight:900;color:#fff;} .hd-rank .hg-bar{margin:0;} .hd-rank i{font-style:normal;font-weight:800;color:#cfd8ff;font-size:11px;}
+  .ch-prof-me{max-width:980px;margin:0 auto 12px;}
   .tp-x{grid-column:2;grid-row:1 / span 2;border:0;background:rgba(255,255,255,.08);color:#cfd8ff;border-radius:8px;width:28px;height:28px;cursor:pointer;}
   .tp-done{margin-top:8px;font-size:12px;font-weight:900;color:#00d6a4;}
   .dm-map{position:relative;width:100%;max-width:520px;margin:8px auto;border-radius:12px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(180,200,255,.2);}
@@ -4875,8 +4898,9 @@
   /* «Играть в эфире» — та же кнопка вечера, но в цветах твича: рядом с жёлтым
      «Играть» фиолетовое читается как другой вход в тот же вечер, а не как
      вторая главная кнопка. См. careerPlayLive. */
-  #screen-career-hub .ch-play.ch-live-go{background:#9147ff;color:#fff;margin-top:6px;}
-  #screen-career-hub .ch-play.ch-live-go:not(:disabled):hover{background:#a970ff;color:#fff;}
+  /* Эфир — второстепенная кнопка под главной «Играть»: контур, ниже ростом. */
+  #screen-career-hub .ch-play.ch-live-go{background:transparent;color:#bf94ff;border:2px solid #9147ff;margin-top:8px;padding-top:9px;padding-bottom:9px;font-size:.8em;}
+  #screen-career-hub .ch-play.ch-live-go:not(:disabled):hover{background:#9147ff;color:#fff;}
   #screen-career-hub .ch-play.ch-live-go:disabled{background:rgba(255,255,255,.16);color:#8fa1cc;}
   /* «До турнира» — рядом с «Пропустить день», синяя: движение, не игра. См. careerSkipToAsk. */
   #screen-career-hub .ch-play.ch-skipto{background:#3b6fd6;color:#fff;margin-top:6px;margin-left:6px;}
@@ -18480,6 +18504,22 @@ Object.assign(I18N.en, {
   lfNewsJetlag:()=>'Jet lag: you landed late — tonight is harder',
   lfTlIcon:()=>'An Icon Series skin of your own'
 });
+// Главная по образцу EA FC: плитки «Цели» и «Развитие».
+Object.assign(I18N.ru, {hgTitle:'Цели', hgClub:'Клуб', hgMonth:'Задача месяца', hgOwn:'Своя цель', hgDone:'выполнено',
+  hgNow:'сейчас', hgOpen:'в работе', hgNone:'Клуб целей не ставил', hgNoClub:'Без клуба целей сезона нет — поставь свою в тренировке',
+  hgSet:'Поставить цель и фокус', hdTitle:'Развитие', hdToTrain:'В тренировку'});
+Object.assign(I18N.en, {hgTitle:'Objectives', hgClub:'Club', hgMonth:'Monthly task', hgOwn:'Personal goal', hgDone:'done',
+  hgNow:'now', hgOpen:'in progress', hgNone:'The club has set no objectives', hgNoClub:'No club, no season objectives — set your own in training',
+  hgSet:'Set a goal and focus', hdTitle:'Development', hdToTrain:'To training'});
+Object.assign(I18N.fr, {hgTitle:'Objectifs', hgClub:'Club', hgMonth:'Mission du mois', hgOwn:'Objectif perso', hgDone:'fait',
+  hgNow:'actuel', hgOpen:'en cours', hgNone:'Le club n\'a fixé aucun objectif', hgNoClub:'Sans club, pas d\'objectifs de saison — fixe le tien à l\'entraînement',
+  hgSet:'Fixer un objectif et un focus', hdTitle:'Progression', hdToTrain:'Vers l\'entraînement'});
+Object.assign(I18N.it, {hgTitle:'Obiettivi', hgClub:'Club', hgMonth:'Compito del mese', hgOwn:'Obiettivo personale', hgDone:'fatto',
+  hgNow:'ora', hgOpen:'in corso', hgNone:'Il club non ha fissato obiettivi', hgNoClub:'Senza club niente obiettivi di stagione — fissa il tuo in allenamento',
+  hgSet:'Fissa obiettivo e focus', hdTitle:'Crescita', hdToTrain:'All\'allenamento'});
+Object.assign(I18N.pt, {hgTitle:'Objetivos', hgClub:'Clube', hgMonth:'Tarefa do mês', hgOwn:'Meta pessoal', hgDone:'feito',
+  hgNow:'agora', hgOpen:'em andamento', hgNone:'O clube não definiu objetivos', hgNoClub:'Sem clube, sem objetivos da temporada — defina o seu no treino',
+  hgSet:'Definir meta e foco', hdTitle:'Evolução', hdToTrain:'Para o treino'});
 function L(){
   if(CC_L_CACHE[LANG]) return CC_L_CACHE[LANG];
   const own=I18N[LANG]||I18N.en;
@@ -113995,7 +114035,7 @@ function careerRenderHubBody(tab){
   if(CH_TAB==='calendar'){ body.innerHTML=careerCalendarHTML(); return; }
   // 'log' — вкладка Профиль (ключ остался прежним ради сохранений),
   // 'hist' — История: сезоны и лента карьеры.
-  if(CH_TAB==='log'){ body.innerHTML=careerProfileHTML(); return; }
+  if(CH_TAB==='log'){ body.innerHTML='<div class="ch-prof-me">'+careerProfileTileHTML()+'</div>'+careerProfileHTML(); return; }
   if(CH_TAB==='hist'){ body.innerHTML=careerHistoryHTML(); return; }
   if(CH_TAB==='stats'){ body.innerHTML=ccSubTabsHTML('boards')+careerStatsHTML(); return; }
   if(CH_TAB==='streams'){ body.innerHTML=ccSubTabsHTML('media')+careerStreamsHTML(); return; }
@@ -114407,7 +114447,10 @@ function careerCentreHTML(card, a){
            week outranks what it signed last month. See careerNextCardHTML. -->
       <!-- The profile leads the centre and the tournament card sits with the
            career, his call, 18 August: the two swapped places. -->
-      ${careerProfileTileHTML()}
+      <!-- Как главная карьеры в EA FC: цели, развитие, жизнь, новости. Профиль соцсети
+           (ник, фото) переехал во вкладку «Профиль». -->
+      ${ccGoalsTileHTML()}
+      ${ccDevTileHTML()}
       ${typeof ccLifeTileHTML==='function' ? ccLifeTileHTML() : ''}
       ${careerNewsHubHTML()}
     </div>
@@ -117021,7 +117064,7 @@ function ccLifeTileHTML(){
   const todayEv=(careerYearDays().get(careerToday())||[]);
   const whyK=todayEv.map(e=>ccLifeWhy(careerToday(), e.kind)).find(Boolean);
   if(whyK) rows.push(`<div class="ch-row"><em>${L().lfToday}</em><b style="color:var(--bad,#f66);">${L()[whyK]}</b></div>`);
-  rows.push(`<div class="ch-row"><em>${L().lfRank}</em><b>${ccRankName()} · ${ccRankPts()%100}/100</b></div>`);
+  // Ранг живёт в плитке «Развитие» (ccDevTileHTML).
   const h=ccLifeHurt(); if(h) rows.push(`<div class="ch-row"><em>${L().lfHurt}</em><b>${L()[h.k==='wrist'?'lfWrist':'lfIll']} · ${L().lfUntil} ${ccFmtDay(h.until)}</b></div>`);
   if(lf.case) rows.push(`<div class="ch-row"><em>${L().lfCaseOpen}</em><b>${L()['lfCase'+lf.case.k]}</b></div>`);
   const bn=ccLifeBan(); if(bn) rows.push(`<div class="ch-row"><em>${L().lfBan}</em><b>${L().lfUntil} ${ccFmtDay(bn)}</b></div>`);
@@ -117044,9 +117087,61 @@ function ccLifeTileHTML(){
   }
   const sr=ccSeasonRating();
   if(sr) rows.push(`<div class="ch-row"><em>${L().lfAvgRate}</em><b>${sr.avg.toFixed(1)} · ${L().lfMvpCount}: ${sr.mvp}</b></div>`);
+  if(!rows.length) return '';
   return `<div class="ch-tile"><h4>${L().lfTitle}</h4>${rows.join('')}</div>`;
 }
 function ccFmtDay(iso){ return String(iso||'').slice(8,10)+'.'+String(iso||'').slice(5,7); }
+
+/* ГЛАВНАЯ ПО ОБРАЗЦУ КАРЬЕРЫ EA FC: слева следующее событие и одна главная кнопка,
+   справа — цели (клуб, месяц, своя), развитие игрока и новости. Цели были и раньше,
+   но жили по разным вкладкам (контракт — в «Клубе», месяц — там же, своя — в
+   «Тренировке»); здесь они собраны в одну плитку, как «цели сезона» у тренера в FC. */
+function ccGoalsTileHTML(){
+  if(!CAREER || !CAREER.career) return '';
+  const cr=CAREER.career, org=CAREER.org, lf=ccLife(), rows=[];
+  const row=(who, what, state, ok, bar)=>`<div class="hg-row${ok?' ok':''}"><div class="hg-top"><em>${esc(who)}</em>`+
+    `<b>${esc(what)}</b><i>${state}</i></div>${bar!=null ? `<u class="hg-bar"><s style="width:${Math.round(bar)}%"></s></u>` : ''}</div>`;
+  if(org && !org.own && org.goal){
+    const met=careerOrgGoalMet();
+    let now;
+    if(org.goal.type==='promote') now=L().ccDivision+' '+cr.division;
+    else { const best=(cr.log||[]).filter(e=>e.season===cr.season).reduce((b,e)=>Math.min(b, e.place||999), 999);
+      now=best<999 ? '#'+best : '—'; }
+    rows.push(row(L().hgClub+' · '+org.name, careerOrgGoalText(org.goal), met ? '✓ '+esc(L().hgDone) : esc(L().hgNow)+' '+esc(now), met));
+  }
+  const mg=careerMonthGoal();
+  if(mg){ const met=careerMonthGoalMet();
+    rows.push(row(L().hgMonth, careerMonthGoalText(mg)+' · '+ccMoney(mg.bonus), met ? '✓ '+esc(L().hgDone) : esc(L().hgOpen), met)); }
+  const g=lf.goal, six=CAREER.player.attrs||ccOwnAttrs();
+  if(g && !g.done){
+    const v=six[g.k]||0, pct=Math.max(0, Math.min(100, (v-g.from)/Math.max(0.1, g.to-g.from)*100));
+    rows.push(row(L().hgOwn, ccAttrFull(g.k)+' → '+g.to, (Math.round(v*10)/10).toFixed(1)+' / '+g.to, false, pct));
+  }
+  const wk=ccWeekTag(), f=(lf.focus && lf.focus.wk===wk) ? lf.focus.k : null;
+  if(f) rows.push(row(L().lfFocusH, ccAttrFull(f), '+'+Math.round(CC_FOCUS_BONUS*100)+'%', false));
+  const empty=!rows.length ? `<div class="ch-empty">${esc(org ? L().hgNone : L().hgNoClub)}</div>` : '';
+  const ask=(!g || g.done || !f) ? `<button class="hg-go" onclick="careerTab('train')">${esc(L().hgSet)}</button>` : '';
+  return `<div class="ch-tile hg-tile"><h4>${L().hgTitle}</h4>${rows.join('')}${empty}${ask}</div>`;
+}
+// Развитие: рейтинг и его ход за сезон, ранг, шесть атрибутов с приростом недели и усталость.
+function ccDevTileHTML(){
+  if(!CAREER || !CAREER.career) return '';
+  const six=CAREER.player.attrs || ccOwnAttrs();
+  const d=ccHdrSeasonDelta();
+  const rank=(typeof ccLadderRowHTML==='function') ? ccLadderRowHTML() : '';
+  return `<div class="ch-tile hd-tile"><h4>${L().hdTitle}</h4>`+
+    `<div class="hd-head"><b class="hd-ovr">${ccMyShownOvr()}</b><span><em>${esc(L().ccRoOvr)}</em>`+
+    (d ? `<i class="${d>0?'up':'down'}">${d>0?'▲ +'+d:'▼ '+d} · ${esc(L().lfHdrSeason)}</i>` : `<i>${esc(L().lfHdrSeason)}: 0</i>`)+`</span></div>`+
+    rank+ccTrainPanelHTML(six, false)+
+    `<button class="hg-go" onclick="careerTab('train')">${esc(L().hdToTrain)}</button></div>`;
+}
+// Ранг в одну строку с полосой — ранкед с 2023-го (ccRank).
+function ccLadderRowHTML(){
+  if(ccCalYear()<2023) return '';
+  const p=ccRankPts()%100;
+  return `<div class="hd-rank"><em>${esc(L().lfRank)}</em><b>${esc(ccRankName())}</b>`+
+    `<u class="hg-bar"><s style="width:${ccRank()>=CC_RANKS.length-1?100:p}%"></s></u><i>${ccRank()>=CC_RANKS.length-1?'':p+'/100'}</i></div>`;
+}
 
 function careerAdvanceBody(iso){
   const cr=CAREER.career;
