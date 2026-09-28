@@ -109902,7 +109902,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ad9dd896';
+const CC_BUILD='86eea2ed';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -151688,7 +151688,8 @@ function ccStreamRunEnd(){
   if(last && last.day===careerToday()){ last.sum=sum; last.label=sum.label; }
   try{ careerSave(); }catch(e){}
   ccTvClose();
-  try{ careerRenderHub('streams'); }catch(e){}
+  // Конец эфира перерисовывает ту вкладку, где игрок сейчас, а не тащит его обратно в «Стримы».
+  try{ careerRenderHub(CH_TAB); }catch(e){}
   ccTvSummary(sum);
 }
 /* ---- ЭФИР С ТУРНИРА ---------------------------------------------------------
