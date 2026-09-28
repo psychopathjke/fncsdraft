@@ -5,7 +5,7 @@
    формате (см. runCareerMajorMX). Даты и квоты — окна Epic с Tracker
    (tools/measured/tracker-2019.json), финалы Нью-Йорка — Liquipedia; спека —
    docs/superpowers/specs/2026-09-27-career-year-2019-2020-design.md. */
-const CC_YEAR_2019_FROM='2019-04-01', CC_YEAR_2019_TO='2019-12-29';
+const CC_YEAR_2019_FROM='2019-01-21', CC_YEAR_2019_TO='2019-12-29';
 const CAREER_YEAR_2019=[
   // World Cup Solo («Мейджор 1»): суббота — открытый раунд, воскресенье — финал недели (3000).
   ['2019-04-13','2019-04-13','Major1_2019_W1R1','major'], ['2019-04-14','2019-04-14','Major1_2019_W1R2','major'],

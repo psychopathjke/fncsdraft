@@ -51,13 +51,13 @@ lans.forEach(l => {
   if (!payKey.has(js)) { payKey.set(js, pays.length); pays.push(t); }
   // Reload в id — по нему вечер садится на остров Reload (runCareerVictoryNight).
   const id = 'LAN_' + l.page.replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '') + (l.reload ? '_Reload' : '');
-  out.push({ day: l.day, id, mode: l.format === 1 ? 'solo' : l.format === 3 ? 'trio' : 'duo', n: 1, name: l.name, p: payKey.get(js), zb: !!l.zb, lan: l.name + ' · ' + l.city, invite: l.invite, reshuffle: !!l.reshuffle });
+  out.push({ day: l.day, id, mode: l.format === 1 ? 'solo' : l.format === 3 ? 'trio' : 'duo', n: 1, name: l.name, p: payKey.get(js), zb: !!l.zb, lan: l.name + ' · ' + l.city, invite: l.invite, reshuffle: !!l.reshuffle, region: l.region || '' });
 });
 out.sort((a, b) => a.day < b.day ? -1 : a.day > b.day ? 1 : 0);
 const body = 'const CC_CUPS_ARCH_PAY=' + JSON.stringify(pays).replace(/"(\w+)":/g, '$1:') + ';\n' +
   '// Постеры этих капов — архив Tracker (tools/fetch-archive-posters.js).\n' +
   'Object.assign(CC_CUP_POSTER, ' + JSON.stringify(art) + ');\n' +
-  'const CC_CUPS_ARCH=[\n' + out.map(v => "  {day:'" + v.day + "',id:'" + v.id + "',mode:'" + v.mode + "',n:" + v.n + ',name:' + JSON.stringify(v.name) + ',payT:CC_CUPS_ARCH_PAY[' + v.p + ']' + (v.zb ? ',zb:true' : '') + (v.lan ? ',lan:' + JSON.stringify(v.lan) + ',invite:' + v.invite : '') + (v.reshuffle ? ',reshuffle:true' : '') + '}').join(',\n') + '\n];\n';
+  'const CC_CUPS_ARCH=[\n' + out.map(v => "  {day:'" + v.day + "',id:'" + v.id + "',mode:'" + v.mode + "',n:" + v.n + ',name:' + JSON.stringify(v.name) + ',payT:CC_CUPS_ARCH_PAY[' + v.p + ']' + (v.zb ? ',zb:true' : '') + (v.lan ? ',lan:' + JSON.stringify(v.lan) + ',invite:' + v.invite : '') + (v.reshuffle ? ',reshuffle:true' : '') + (v.region ? ",region:'" + v.region + "'" : '') + '}').join(',\n') + '\n];\n';
 const file = path.join(__dirname, '..', 'index.html');
 let s = fs.readFileSync(file, 'utf8');
 const nl = s.includes('\r\n') ? '\r\n' : '\n';
