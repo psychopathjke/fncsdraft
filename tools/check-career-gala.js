@@ -103,10 +103,14 @@ const BOOT = `
     check('и призовые года', s2.indexOf(ccMoney(35200))>=0, out.notes.s2);
     check('и лучшее место', s2.indexOf('#2')>=0, out.notes.s2);
 
+    // Третий — «Твой год» (ccGalaYouSlide): оценки, MVP, тиммейты, ранг.
+    ccGalaGo(1);
+    const sYou=el().textContent;
+    check('третий экран — «твой год»', sYou.indexOf(L().lfGalaYouH)>=0, sYou.slice(0,80));
     ccGalaGo(1);
     const s3=el().textContent;
     out.notes.s3=s3.slice(0,80);
-    check('третий экран — вечера года', s3.indexOf(L().ccGalaRunsH)>=0, out.notes.s3);
+    check('четвёртый экран — вечера года', s3.indexOf(L().ccGalaRunsH)>=0, out.notes.s3);
     check('и в них большой вечер', s3.indexOf(L().ccRunMajor)>=0, out.notes.s3);
     check('и награда месяца', s3.indexOf(L().ccGalaAwardsH)>=0 &&
           s3.indexOf(L().ccGalaMonthWon(ccMonthName('2026-05')))>=0, out.notes.s3);
@@ -114,7 +118,7 @@ const BOOT = `
     // 10.09: перед игроком года — слайд номинаций (CC_GALA_SLIDES=5).
     ccGalaGo(1);
     const s35=el().innerHTML;
-    check('четвёртый экран — номинации, ещё не последний', !/ccGalaFinish/.test(s35) && s35.indexOf('ccGalaGo(1)')>=0);
+    check('пятый экран — номинации, ещё не последний', !/ccGalaFinish/.test(s35) && s35.indexOf('ccGalaGo(1)')>=0);
     ccGalaGo(1);
     const s4=el().innerHTML;
     check('последним — игрок года', s4.indexOf('cc-goty')>=0);

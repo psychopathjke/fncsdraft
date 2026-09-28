@@ -3527,6 +3527,32 @@
   .cc-tc-gain i{font-style:normal;font-size:9px;font-weight:900;color:#9fb0e8;}
   .cc-tc-coach{font-style:normal;font-size:9px;font-weight:800;color:#c9a7ff;}
   .cc-tc-why{font-style:normal;font-size:9px;font-weight:800;color:#ff7d70;line-height:1.1;}
+  .nr-box{display:grid;grid-template-columns:auto 1fr;gap:10px 12px;align-items:center;margin:8px 0 2px;}
+  .nr-rate{display:flex;flex-direction:column;align-items:center;justify-content:center;width:70px;height:70px;border-radius:14px;
+    background:rgba(122,162,255,.18);border:2px solid #7aa2ff;}
+  .nr-rate b{font-size:26px;font-weight:900;font-style:italic;line-height:1;color:#fff;}
+  .nr-rate span{font-size:8.5px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:#cfd8ff;margin-top:3px;text-align:center;}
+  .nr-rate.hi{background:rgba(0,214,164,.18);border-color:#00d6a4;} .nr-rate.lo{background:rgba(255,95,86,.16);border-color:#ff5f56;}
+  .nr-mvp{display:flex;align-items:center;gap:10px;min-width:0;}
+  .nr-mvp em{display:block;font-style:normal;font-size:10px;font-weight:900;color:#ffd400;text-transform:uppercase;letter-spacing:.05em;}
+  .nr-mvp b{font-size:14px;font-weight:900;}
+  .nr-top{grid-column:1 / -1;list-style:none;margin:0;padding:0;display:grid;gap:3px;}
+  .nr-top li{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;font-size:12px;padding:4px 8px;border-radius:8px;background:rgba(255,255,255,.05);}
+  .nr-top li i{font-style:normal;font-weight:900;color:#ffd400;} .nr-top li b{font-weight:900;}
+  .nr-top li.you{background:rgba(0,214,164,.14);}
+  .chem-row{display:grid;grid-template-columns:minmax(0,110px) 1fr 40px;gap:8px;align-items:center;font-size:12px;font-weight:800;margin:4px 0;}
+  .chem-row u{display:block;height:7px;border-radius:5px;background:rgba(255,255,255,.12);overflow:hidden;text-decoration:none;}
+  .chem-row u s{display:block;height:100%;background:linear-gradient(90deg,#c9a7ff,#00d6a4);text-decoration:none;}
+  .chem-row b{text-align:right;font-weight:900;}
+  .scout{margin:8px 0;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.06);font-size:12px;}
+  .scout summary{cursor:pointer;font-weight:900;color:#ffd400;}
+  .scout-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;}
+  .scout em{display:block;font-style:normal;font-size:10px;font-weight:900;color:#9fb0e8;text-transform:uppercase;margin-bottom:3px;}
+  .scout ol{margin:0;padding-left:16px;} .scout li{display:flex;justify-content:space-between;gap:6px;} .scout li b{font-weight:900;}
+  .scout p{margin:0;font-weight:800;}
+  .nr-vod{grid-column:1 / -1;padding:8px 10px;border-radius:10px;background:rgba(255,212,0,.08);border:1px dashed rgba(255,212,0,.4);}
+  .nr-vod em{display:block;font-style:normal;font-size:12px;font-weight:900;color:#ffd400;margin-bottom:6px;}
+  .nr-vod div{display:flex;gap:6px;flex-wrap:wrap;}
   .cc-tc-fx{gap:2px 6px !important;} .cc-tc-fx i{font-size:9px !important;}
   .cc-bars{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:2px 0 10px;width:100%;}
   .cc-meter{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px;font-size:10px;font-weight:900;color:#8094c4;text-transform:uppercase;letter-spacing:.04em;}
@@ -18323,7 +18349,7 @@ let LANG=(function(){
    языки берут английский из-под себя (см. L). */
 Object.assign(I18N.ru, {
   lfRate:'Оценка за вечер', lfMvp:'MVP вечера', lfMvpYou:'ты — MVP вечера', lfAvgRate:'Средняя оценка сезона', lfMvpCount:'MVP за сезон',
-  lfTitle:'Между турнирами', lfToday:'Сегодня', lfFatigue:'Усталость', lfWordSoloOne:'соло', lfNewsStandin:n=>'На кап своего состава нет — играю со стэнд-инами: '+n, lfRateShort:'Оценка', lfAvgRateAll:'Средняя оценка', lfMvpAll:'MVP вечеров', lfLastNights:'Последние вечера', lfAwards:'Награды', lfAwYear:'Игрок года', lfAwMonth:'Игрок месяца', lfAwNone:'Пока наград нет. Игрок месяца, игрок года и номинации решаются по Power Ranking.', lfMetaGive:'форма в новом сезоне', lfFatFresh:'свежий', lfFatTired:'устал', lfFatBurn:'выгорание', lfInjuryRisk:p=>'риск травмы '+p+'% в день', lfCoachBoost:p=>'коуч +'+p+'%', chTabClub:'Клуб', lfContract:'Контракт', lfNoOrg:'Без клуба. Предложения приходят в личку после результатов.', lfSalary:'Зарплата в месяц', lfCut:'Доля клуба с призовых', lfGoal:'Цель сезона', lfGoalMet:'выполнена', lfGoalOpen:'пока нет', lfBuyout:'Отступные', lfSince:'В клубе с сезона', lfPaid:'Выплачено клубом', lfIncome:'Доходы', lfPrize:'Призовые', lfWages:'Зарплата', lfSide:'Побочные', lfSponsor:'Спонсоры', lfOrgCut:'Ушло клубу', lfBalance:'Баланс', lfRosters:'Составы', lfRostersHint:'У дуо, трио и сквада — свои составы; этап года выбирает, какой играет.', lfRosterDuo:'Дуо', lfRosterTrio:'Трио', lfRosterSquad:'Сквад', lfRosterNow:'сейчас', lfRosterEmpty:'пусто', lfWordSolo:'игроков', lfWordSquads:'сквадов', lfRank:'Ранкед', lfHurt:'Травма', lfWrist:'запястье', lfIll:'болезнь', lfUntil:'до', lfCaseOpen:'Разбирательство',
+  lfTitle:'Между турнирами', lfToday:'Сегодня', lfFatigue:'Усталость', lfGalaYouH:'Твой год', lfGalaMates:'Тиммейтов', lfGalaBestNight:'Лучший вечер', lfGalaTopMate:'Чаще всего вместе', lfVod:'Разобрать реплей: в чём была главная ошибка?', lfVod_drop:'Дроп', lfVod_rot:'Ротации и зона', lfVod_fight:'Файты', lfVodOk:'Верно — опыт +0.4, форма чуть лучше', lfVodNo:t=>'Не то — главная беда была: '+t, lfNewsVodOk:t=>'Разобрал реплей: ошибка — '+t+'. Понял, что делать', lfNewsVodNo:t=>'Разбор реплея не зашёл — на самом деле проблема была: '+t, lfScout:'Разведка', lfScoutYou:p=>'ты в топ-'+p+'% сцены', lfScoutFav:'Фавориты сцены', lfScoutForm:'В форме (PR)', lfChem:'Сыгранность', lfChemHint:d=>'Растёт от дней вместе ('+d+' до максимума), вечер вместе считается за 3 дня, скрим — за 2.', lfChemBonus:'Бонус к силе команды', lfYouTag:'ты', lfWordSoloOne:'соло', lfNewsStandin:n=>'На кап своего состава нет — играю со стэнд-инами: '+n, lfRateShort:'Оценка', lfAvgRateAll:'Средняя оценка', lfMvpAll:'MVP вечеров', lfLastNights:'Последние вечера', lfAwards:'Награды', lfAwYear:'Игрок года', lfAwMonth:'Игрок месяца', lfAwNone:'Пока наград нет. Игрок месяца, игрок года и номинации решаются по Power Ranking.', lfMetaGive:'форма в новом сезоне', lfFatFresh:'свежий', lfFatTired:'устал', lfFatBurn:'выгорание', lfInjuryRisk:p=>'риск травмы '+p+'% в день', lfCoachBoost:p=>'коуч +'+p+'%', chTabClub:'Клуб', lfContract:'Контракт', lfNoOrg:'Без клуба. Предложения приходят в личку после результатов.', lfSalary:'Зарплата в месяц', lfCut:'Доля клуба с призовых', lfGoal:'Цель сезона', lfGoalMet:'выполнена', lfGoalOpen:'пока нет', lfBuyout:'Отступные', lfSince:'В клубе с сезона', lfPaid:'Выплачено клубом', lfIncome:'Доходы', lfPrize:'Призовые', lfWages:'Зарплата', lfSide:'Побочные', lfSponsor:'Спонсоры', lfOrgCut:'Ушло клубу', lfBalance:'Баланс', lfRosters:'Составы', lfRostersHint:'У дуо, трио и сквада — свои составы; этап года выбирает, какой играет.', lfRosterDuo:'Дуо', lfRosterTrio:'Трио', lfRosterSquad:'Сквад', lfRosterNow:'сейчас', lfRosterEmpty:'пусто', lfWordSolo:'игроков', lfWordSquads:'сквадов', lfRank:'Ранкед', lfHurt:'Травма', lfWrist:'запястье', lfIll:'болезнь', lfUntil:'до', lfCaseOpen:'Разбирательство',
   lfBan:'Бан открытых турниров', lfIcon:'Икон-скин', lfTrip:'Поездка', lfTripOk:'оформлена', lfTripBook:'Оформить',
   lfVisa:n=>'виза '+n+' дн.', lfWeek:'неделя', lfSessions:'сессий',
   lfWhyHurt:'Травма — играть нельзя', lfWhyBan:'Бан открытых турниров', lfWhyRank:'Нужен ранг Diamond', lfTripNone:'Поездка не оформлена', lfTripVisa:'Виза не успела',
@@ -18347,7 +18373,7 @@ Object.assign(I18N.ru, {
 });
 Object.assign(I18N.en, {
   lfRate:'Match rating', lfMvp:'Player of the night', lfMvpYou:'you were the player of the night', lfAvgRate:'Season average rating', lfMvpCount:'Player-of-the-night awards',
-  lfTitle:'Between events', lfToday:'Today', lfFatigue:'Fatigue', lfWordSoloOne:'solo', lfNewsStandin:n=>'No roster of my own for this cup — playing with stand-ins: '+n, lfRateShort:'Rating', lfAvgRateAll:'Average rating', lfMvpAll:'Nights as MVP', lfLastNights:'Last nights', lfAwards:'Awards', lfAwYear:'Player of the year', lfAwMonth:'Player of the month', lfAwNone:'No awards yet. Player of the month, of the year and the season categories are decided by Power Ranking.', lfMetaGive:'form in the new season', lfFatFresh:'fresh', lfFatTired:'tired', lfFatBurn:'burnt out', lfInjuryRisk:p=>'injury risk '+p+'% a day', lfCoachBoost:p=>'coach +'+p+'%', chTabClub:'Club', lfContract:'Contract', lfNoOrg:'No club. Offers arrive in your DMs after results.', lfSalary:'Monthly salary', lfCut:'Club share of prize money', lfGoal:'Season goal', lfGoalMet:'done', lfGoalOpen:'not yet', lfBuyout:'Buyout', lfSince:'At the club since season', lfPaid:'Paid by the club', lfIncome:'Income', lfPrize:'Prize money', lfWages:'Salary', lfSide:'Side income', lfSponsor:'Sponsors', lfOrgCut:'Went to the club', lfBalance:'Balance', lfRosters:'Rosters', lfRostersHint:'Duos, trios and squads keep their own rosters; the stage of the year picks which one plays.', lfRosterDuo:'Duos', lfRosterTrio:'Trios', lfRosterSquad:'Squads', lfRosterNow:'now', lfRosterEmpty:'empty', lfWordSolo:'players', lfWordSquads:'squads', lfRank:'Ranked', lfHurt:'Injury', lfWrist:'wrist', lfIll:'illness', lfUntil:'until', lfCaseOpen:'Under review',
+  lfTitle:'Between events', lfToday:'Today', lfFatigue:'Fatigue', lfGalaYouH:'Your year', lfGalaMates:'Teammates', lfGalaBestNight:'Best night', lfGalaTopMate:'Most nights with', lfVod:'Review the replay: what was the main mistake?', lfVod_drop:'The drop', lfVod_rot:'Rotations and zone', lfVod_fight:'Fights', lfVodOk:'Right — experience +0.4, a bit more form', lfVodNo:t=>'Not quite — the real problem was: '+t, lfNewsVodOk:t=>'Reviewed the replay: the mistake was '+t+'. Got it', lfNewsVodNo:t=>'The replay review missed — the real problem was: '+t, lfScout:'Scouting', lfScoutYou:p=>'you are top '+p+'% of the scene', lfScoutFav:'Scene favourites', lfScoutForm:'In form (PR)', lfChem:'Chemistry', lfChemHint:d=>'Grows with days together ('+d+' to max); a night together counts as 3 days, a scrim as 2.', lfChemBonus:'Team strength bonus', lfYouTag:'you', lfWordSoloOne:'solo', lfNewsStandin:n=>'No roster of my own for this cup — playing with stand-ins: '+n, lfRateShort:'Rating', lfAvgRateAll:'Average rating', lfMvpAll:'Nights as MVP', lfLastNights:'Last nights', lfAwards:'Awards', lfAwYear:'Player of the year', lfAwMonth:'Player of the month', lfAwNone:'No awards yet. Player of the month, of the year and the season categories are decided by Power Ranking.', lfMetaGive:'form in the new season', lfFatFresh:'fresh', lfFatTired:'tired', lfFatBurn:'burnt out', lfInjuryRisk:p=>'injury risk '+p+'% a day', lfCoachBoost:p=>'coach +'+p+'%', chTabClub:'Club', lfContract:'Contract', lfNoOrg:'No club. Offers arrive in your DMs after results.', lfSalary:'Monthly salary', lfCut:'Club share of prize money', lfGoal:'Season goal', lfGoalMet:'done', lfGoalOpen:'not yet', lfBuyout:'Buyout', lfSince:'At the club since season', lfPaid:'Paid by the club', lfIncome:'Income', lfPrize:'Prize money', lfWages:'Salary', lfSide:'Side income', lfSponsor:'Sponsors', lfOrgCut:'Went to the club', lfBalance:'Balance', lfRosters:'Rosters', lfRostersHint:'Duos, trios and squads keep their own rosters; the stage of the year picks which one plays.', lfRosterDuo:'Duos', lfRosterTrio:'Trios', lfRosterSquad:'Squads', lfRosterNow:'now', lfRosterEmpty:'empty', lfWordSolo:'players', lfWordSquads:'squads', lfRank:'Ranked', lfHurt:'Injury', lfWrist:'wrist', lfIll:'illness', lfUntil:'until', lfCaseOpen:'Under review',
   lfBan:'Banned from open events', lfIcon:'Icon skin', lfTrip:'Trip', lfTripOk:'booked', lfTripBook:'Book',
   lfVisa:n=>'visa '+n+'d', lfWeek:'week', lfSessions:'sessions',
   lfWhyHurt:'Injured — cannot play', lfWhyBan:'Banned from open events', lfWhyRank:'Needs Diamond rank', lfTripNone:'Trip not booked', lfTripVisa:'Visa not ready in time',
@@ -109705,7 +109731,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='26d54e88';
+const CC_BUILD='527a93c7';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -114126,6 +114152,7 @@ function careerCentreHTML(card, a){
                  место действительно держится, — см. careerQualHTML. -->
             ${careerQualHTML()}
             ${playable ? careerNightSpotHTML(next) : ''}
+            ${playable && typeof ccScoutHTML==='function' ? ccScoutHTML(next) : ''}
             ${/* В команде строка режима нужна ИМЕННО когда играть нельзя:
                  расхождение режимов чинится ею же. Спрятать её вместе с
                  кнопкой значило бы запереть игрока без выхода. */
@@ -114695,6 +114722,7 @@ function careerMeHTML(){
     </div>
     <div class="ch-col">
       ${careerSpotTileHTML()}
+      ${ccChemTileHTML()}
       ${ccRostersTileHTML()}
       ${careerCoachColHTML()}
     </div>
@@ -116296,6 +116324,7 @@ function careerDoAct(id){
   if(act.meta) careerMetaDay();
   // Сессия Noble и день в ранкеде двигают ранг (см. ccRankAdd).
   if(act.noble) ccNobleRun();
+  if(act.versus) ccChemBump(2);   // скрим вместе — сыгранность
   // Прирост недели — для панели Тренировочного центра (ccTrainPanelHTML).
   try{ const lf=ccLife(), wk=ccWeekTag(); if(!lf.tw || lf.tw.wk!==wk) lf.tw={wk, g:{}};
        Object.keys(moved).forEach(k=>{ lf.tw.g[k]=(lf.tw.g[k]||0)+moved[k]; }); }catch(e){}
@@ -123981,8 +124010,28 @@ function careerChemDays(){
      person still learning where everybody drops. */
   const recs=careerMateRecords().filter(p=>p && p.since);
   if(!recs.length) return 0;
+  // Совместные вечера и скримы ускоряют сыгранность: chemX — «дни», набранные вместе (ccChemBump).
   return Math.min.apply(null,
-    recs.map(p=>Math.max(0, ccDaysBetween(p.since, careerToday()))));
+    recs.map(p=>Math.max(0, ccDaysBetween(p.since, careerToday()))+(p.chemX||0)));
+}
+/* Сыгранность растёт не только от календаря: вечер, сыгранный вместе, — как три дня,
+   скрим — как два. Пишется в запись напарника, поэтому у дуо и трио она своя. */
+function ccChemBump(n){
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  careerMateRecords().forEach(p=>{ if(p && !p.standin) p.chemX=Math.min(CC_CHEM_DAYS, (p.chemX||0)+n); });
+}
+// Сыгранность с каждым тиммейтом — плиткой во вкладке «Карьера».
+function ccChemTileHTML(){
+  const recs=careerMateRecords().filter(Boolean);
+  if(!recs.length) return '';
+  const rows=recs.map(p=>{
+    const c=ccMateCardOf(p); if(!c) return '';
+    const d=(p.since ? Math.max(0, ccDaysBetween(p.since, careerToday())) : 0)+(p.chemX||0);
+    const pct=Math.min(100, Math.round(d/CC_CHEM_DAYS*100));
+    return '<div class="chem-row"><span>'+esc(c.handle)+'</span><u><s style="width:'+pct+'%"></s></u><b>'+pct+'%</b></div>';
+  }).join('');
+  return '<div class="ch-tile"><h4>'+L().lfChem+'</h4><div class="ch-hint">'+L().lfChemHint(CC_CHEM_DAYS)+'</div>'+rows+
+    '<div class="ch-row"><em>'+L().lfChemBonus+'</em><b>+'+careerChem()+'</b></div></div>';
 }
 function careerChem(){
   if(!careerPartnerCard()) return 0;
@@ -136349,6 +136398,25 @@ function careerNightSpotKey(next){
 
    Показывается ровно один — дом того острова, на котором играется ЭТОТ вечер;
    если дома на нём нет, блока нет вовсе, и это тоже сообщение. */
+/* РАЗВЕДКА перед вечером: кто фавориты сцены региона (сильнейшие карточки года, без тебя и
+   твоего состава), кто в форме (верх Power Ranking карьеры) и где ты сам — топ скольких
+   процентов сцены по рейтингу. Всё из того, что карьера уже знает; сворачивается. */
+function ccScoutHTML(next){
+  if(!next || next.type==='free') return '';
+  let scene=[]; try{ scene=ccSceneRoster(ccCareerRegion()); }catch(e){ return ''; }
+  if(!scene.length) return '';
+  const mine=new Set([hKey(CAREER.player.handle||CAREER.player.nick||'')].concat(careerMates().map(c=>hKey(c))));
+  const others=scene.filter(c=>!mine.has(hKey(c))).slice().sort((a,b)=>ccCardOvr(b)-ccCardOvr(a));
+  const fav=others.slice(0,5).map(c=>'<li><span>'+esc(c.handle)+'</span><b>'+Math.round(ccCardOvr(c))+'</b></li>').join('');
+  const me=(typeof ccMyShownOvr==='function') ? ccMyShownOvr() : (CAREER.player.ovr||0);
+  const above=others.filter(c=>ccCardOvr(c)>me).length;
+  const top=Math.max(1, Math.round((above+1)/(others.length+1)*100));
+  let form='';
+  try{ form=careerPrRows().filter(r=>!r.you).slice(0,3).map(r=>esc(r.name)).join(', '); }catch(e){}
+  return '<details class="scout"><summary>'+L().lfScout+' · '+L().lfScoutYou(top)+'</summary>'+
+    '<div class="scout-cols"><div><em>'+L().lfScoutFav+'</em><ol>'+fav+'</ol></div>'+
+    (form ? '<div><em>'+L().lfScoutForm+'</em><p>'+form+'</p></div>' : '')+'</div></details>';
+}
 function careerNightSpotHTML(next){
   const set=careerNightSet(next);
   // Соло-вечер в команде — личная соло-метка, а не дуо-дом сезона. См. careerNightSpotKey.
@@ -138219,7 +138287,7 @@ function careerSeasonAwardHTML(){
    уже кончились и confirm(), и окно про метку (см. careerSpotGate). Кнопка
    стоит на карточке конца сезона рядом с «Новым сезоном», а не вместо неё,
    поэтому старый путь «нажал .ch-play — поехал дальше» не тронут. */
-const CC_GALA_SLIDES=5;   // 10.09: слайд номинаций перед игроком года
+const CC_GALA_SLIDES=6;   // + слайд «Твой год» (ccGalaYouSlide) после цифр года   // 10.09: слайд номинаций перед игроком года
 let CC_GALA_STEP=0;
 // Год, собранный из того, что карьера УЖЕ записала: журнал, доска PR и список
 // наград. Церемония ничего не считает от себя — она читает.
@@ -138253,6 +138321,25 @@ function ccGalaYear(){
 function ccGalaNum(v, label){
   return `<div class="cc-gala-num"><b>${v}</b><em>${label}</em></div>`;
 }
+/* «Твой год» — личное, чего нет в цифрах года: оценки вечеров, лучший вечер, MVP, с кем
+   играл (и с кем чаще всего), ранг и сессии Noble. Из журнала сезона и cr.life. */
+function ccGalaYouSlide(){
+  const cr=CAREER.career, log=(cr.log||[]).filter(e=>e.season===cr.season);
+  const rated=log.filter(e=>e.rating!=null);
+  const avg=rated.length ? (rated.reduce((a,e)=>a+e.rating,0)/rated.length).toFixed(1) : '—';
+  const best=rated.slice().sort((a,b)=>b.rating-a.rating)[0];
+  const mvp=rated.filter(e=>e.mvpYou).length;
+  const mates={}; log.forEach(e=>(e.mates||(e.mate?[e.mate]:[])).forEach(m=>{ if(m) mates[m]=(mates[m]||0)+1; }));
+  const mateList=Object.keys(mates).sort((a,b)=>mates[b]-mates[a]);
+  const lf=cr.life||{};
+  return '<h4>'+L().lfGalaYouH+'</h4><div class="cc-gala-nums">'+
+    ccGalaNum(avg, L().lfAvgRateAll)+ccGalaNum(ccNum(mvp), L().lfMvpAll)+
+    ccGalaNum(ccNum(mateList.length), L().lfGalaMates)+
+    ccGalaNum(typeof ccRankName==='function' ? ccRankName() : '—', L().lfRank)+'</div>'+
+    (best ? '<div class="cc-gala-row"><em>'+L().lfGalaBestNight+'</em><b>'+best.rating.toFixed(1)+' · '+ccLogName(best)+'</b></div>' : '')+
+    (mateList.length ? '<div class="cc-gala-row"><em>'+L().lfGalaTopMate+'</em><b>'+esc(mateList[0])+' · '+mates[mateList[0]]+'</b></div>' : '')+
+    (lf.icon ? '<div class="cc-gala-row me"><em>'+L().lfIcon+'</em><b>Icon Series</b></div>' : '');
+}
 function ccGalaSlide(i, y){
   if(i===0) return `<div class="cc-gala-open">
       <div class="cc-gala-big">${esc(String(y.season))}</div>
@@ -138270,7 +138357,8 @@ function ccGalaSlide(i, y){
     </div>
     <div class="cc-gala-row"><em>${L().ccGalaOvr}</em><b>${y.ovr} <i>${
       esc(L().ccGalaOvrUp(y.grew))}</i></b></div>`;
-  if(i===2) return `<h4>${L().ccGalaRunsH}</h4>
+  if(i===2) return ccGalaYouSlide();
+  if(i===3) return `<h4>${L().ccGalaRunsH}</h4>
     ${y.runs.length ? y.runs.map(r=>`<div class="cc-gala-row"><em>${esc(careerRunLabel(r))}</em><b>${
         L().ccBoardPlace(r.place, r.of)}${r.prize ? ' · '+ccMoney(r.prize) : ''}</b></div>`).join('')
       : `<div class="cc-gala-hint">${L().ccGalaRunsNone}</div>`}
@@ -138282,7 +138370,7 @@ function ccGalaSlide(i, y){
             esc(L().ccGalaMonthWon(ccMonthName(m.key)))}</em><b>🏅</b></div>`).join('')
       : `<div class="cc-gala-hint">${L().ccGalaAwardsNone}</div>`}`;
   // Номинации сезона — перед игроком года (careerSeasonCatsHTML).
-  if(i===3) return careerSeasonCatsHTML() || `<div class="cc-gala-hint">${L().ccGalaAwardsNone}</div>`;
+  if(i===4) return careerSeasonCatsHTML() || `<div class="cc-gala-hint">${L().ccGalaAwardsNone}</div>`;
   // Последним — игрок года: ровно та же плитка, что стоит на экране конца
   // сезона, чтобы церемония и хаб не разошлись в числах.
   return careerSeasonAwardHTML() ||
@@ -149080,10 +149168,12 @@ function ccNightRate(ranked){
   const winS=Math.min(1, (you.wins||0)/2);
   const rating=Math.round(10*(1+9*(0.6*pct+0.25*elimS+0.15*winS)))/10;
   const top=ranked[0], sq=(top && top.squad)||[];
-  let mvp=null, mvpYou=false;
-  if(top===you && rating>=8.5){ mvp=(CAREER.player && (CAREER.player.handle||CAREER.player.nick))||null; mvpYou=true; }
-  else if(sq.length){ const c=sq.slice().sort((a,b)=>((b&&b._ovr)||(b&&b.rating)||0)-((a&&a._ovr)||(a&&a.rating)||0))[0]; mvp=c && c.handle; }
-  return {day:careerToday(), rating, mvp, mvpYou, place, of};
+  let mvp=null, mvpYou=false, mvpCard=null;
+  if(top===you && rating>=8.5){ mvp=(CAREER.player && (CAREER.player.handle||CAREER.player.nick))||null; mvpYou=true; mvpCard=(typeof careerCard==='function') ? careerCard() : null; }
+  else if(sq.length){ const c=sq.slice().sort((a,b)=>((b&&b._ovr)||(b&&b.rating)||0)-((a&&a._ovr)||(a&&a.rating)||0))[0]; mvp=c && c.handle; mvpCard=c||null; }
+  // Тройка вечера — для экрана итога (ccNightRateLine); в журнал не пишется.
+  const podium=ranked.slice(0,3).map(t=>({n:String(t.name||'').replace(/<[^>]*>/g,''), p:Math.round(t.stagePts||0), you:!!t.isYou}));
+  return {day:careerToday(), rating, mvp, mvpYou, mvpCard, podium, place, of};
 }
 // Приклеить оценку вечера к его строке журнала (последняя строка этого дня без оценки).
 function ccNightStamp(){
@@ -149109,8 +149199,41 @@ let CC_NIGHT_SHOWN=null;
 function ccNightRateLine(){
   const n=CC_NIGHT_RATE || CC_NIGHT_SHOWN;
   if(!n) return '';
-  const mvp=n.mvpYou ? L().lfMvpYou : (n.mvp ? L().lfMvp+': '+esc(n.mvp) : '');
-  return '<div>'+L().lfRate+': <b>'+n.rating.toFixed(1)+'</b>'+(mvp ? ' · '+mvp : '')+'</div>';
+  /* Итог вечера крупно: плашка оценки (цвет по уровню), MVP с портретом и тройка вечера. */
+  const cls=n.rating>=8 ? 'hi' : n.rating<5 ? 'lo' : 'mid';
+  const face=(n.mvpCard && typeof portraitHTML==='function') ? portraitHTML(n.mvpCard, 46) : '';
+  const mvp=n.mvp ? '<div class="nr-mvp">'+face+'<div><em>'+L().lfMvp+'</em><b>'+esc(n.mvp)+(n.mvpYou ? ' · '+L().lfYouTag : '')+'</b></div></div>' : '';
+  const pod=(n.podium||[]).map((r,i)=>'<li class="'+(r.you?'you':'')+'"><i>'+(i+1)+'</i><span>'+esc(r.n)+'</span><b>'+r.p+'</b></li>').join('');
+  return '<div class="nr-box"><div class="nr-rate '+cls+'"><b>'+n.rating.toFixed(1)+'</b><span>'+L().lfRate+'</span></div>'+mvp+
+    (pod ? '<ol class="nr-top">'+pod+'</ol>' : '')+ccVodHTML(n)+'</div>';
+}
+/* РАЗБОР РЕПЛЕЯ после плохого вечера (оценка ниже 5.5): «в чём была ошибка?» — дроп,
+   ротация или файты. Верный ответ читается из самого вечера (строка журнала): много смертей
+   рано и мало элимов — дроп; элимы есть, а место плохое — ротация; мало элимов при
+   среднем месте — файты. Верно — опыт +0.4 и шаг формы; раз за вечер. */
+function ccVodTruth(){
+  const e=(CAREER.career.log||[]).slice(-1)[0]; if(!e) return 'fight';
+  const g=Math.max(1, e.games||1), perG=(e.elims||0)/g, avg=e.avg!=null ? e.avg : 50;
+  const lobby=e.of>=90 ? 100 : 50;
+  if(avg>lobby*0.6 && perG<1) return 'drop';
+  if(perG>=1.5 && avg>lobby*0.35) return 'rot';
+  return 'fight';
+}
+function ccVodHTML(n){
+  const lf=(typeof ccLife==='function') ? ccLife() : {};
+  if(!n || n.rating>=5.5 || (lf.vod && lf.vod===n.day)) return '';
+  return '<div class="nr-vod" id="nrVod"><em>'+L().lfVod+'</em><div>'+
+    ['drop','rot','fight'].map(k=>'<button class="cc-back" onclick="ccVodAnswer(\''+k+'\')">'+L()['lfVod_'+k]+'</button>').join('')+'</div></div>';
+}
+function ccVodAnswer(k){
+  const lf=ccLife(), n=CC_NIGHT_RATE || CC_NIGHT_SHOWN; if(!n || lf.vod===n.day) return;
+  lf.vod=n.day;
+  const truth=ccVodTruth(), ok=k===truth;
+  if(ok){ careerStatBump('exp', 0.4); const cr=CAREER.career; cr.form=Math.min(CC_FORM_MAX, (cr.form||0)+0.5); }
+  careerNews(ok?'good':'flat', ok?'lfNewsVodOk':'lfNewsVodNo', [L()['lfVod_'+truth]]);
+  careerSave();
+  const box=document.getElementById('nrVod');
+  if(box) box.innerHTML='<em>'+(ok ? L().lfVodOk : L().lfVodNo(L()['lfVod_'+truth]))+'</em>';
 }
 function careerPrAdd(ranked, meta){
   if(!ranked || ranked.length<2) return;
@@ -149118,7 +149241,7 @@ function careerPrAdd(ranked, meta){
     const nr=ccNightRate(ranked);
     if(nr){
       // Ранг двигается раз за вечер: первая таблица дня двигает, следующие раунды — нет.
-      if(!CC_NIGHT_RATE || CC_NIGHT_RATE.day!==nr.day) ccRankAdd(Math.round(((nr.of>1 ? 1-(nr.place-1)/(nr.of-1) : 1)-0.4)*25));
+      if(!CC_NIGHT_RATE || CC_NIGHT_RATE.day!==nr.day){ ccRankAdd(Math.round(((nr.of>1 ? 1-(nr.place-1)/(nr.of-1) : 1)-0.4)*25)); ccChemBump(3); }
       CC_NIGHT_RATE=nr;
     }
   }catch(e){}
