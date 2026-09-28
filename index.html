@@ -95910,6 +95910,21 @@ function trimLandingZonesForMode(){
 let ACTIVE_LANDING_SET='m2';
 // Чей счёт сундуков у острова (поле chests в ZONE_STATS): подпись в подсказке точки.
 const CC_CHESTS_SRC={s42:'fortnite.gg', s42solo:'fortnite.gg', t1:'wiki', t2:'wiki', t3:'wiki', f1:'wiki', f2:'wiki', f3:'wiki', f4:'wiki', e1:'wiki', e2:'wiki', e3:'wiki', e4:'wiki', k1:'wiki', k2:'wiki', k3:'wiki', k4:'wiki', j1:'wiki', j2:'wiki', j3:'wiki', j4:'wiki', h1:'wiki', h3:'wiki', h4:'wiki', i1:'wiki', i2:'wiki', i3:'wiki', m1:'Kinch', m2:'Kinch'};
+/* МИФИЧЕСКИЕ POI Chapter 5–6 (острова 2024 f1–f4 и 2025 t1–t3): точка, где стоит босс с мификом.
+   Босс и его место — вики (страница Bosses и страницы боссов), клетка — по маркеру локации на
+   вики-карте патча финала (tools/build-2025-zone-loot.js, DUMP_POIS). Ключ — индекс клетки в
+   ZONE_SETS. Точка ценится как лучшая на острове плюс CC_MYTHIC_POW: сюда летят сильные,
+   и кто выжил на высадке, уходит с мификом (прибавка к силе на игру). */
+const CC_MYTHIC_POW=3;
+const CC_MYTHIC_POI={
+  f1:{6:'Oscar', 7:'Nisha', 14:'Montague', 15:'Valeria'},
+  f2:{10:'Hades', 15:'Cerberus', 30:'Zeus', 32:'Medusa', 39:'Ares'},
+  f3:{28:'Ringmaster Scarr', 36:'The Machinist', 37:'Megalo Don'},
+  f4:{5:'Mysterio', 7:'Doctor Doom', 23:'Emma Frost'},
+  t1:{5:'Night Rose', 24:'Shogun X'},
+  t2:{4:'Fletcher Kane', 26:'Shogun X'},
+  t3:{21:'Daigo'}
+};
 function useLandingSet(key){
   const set = ZONE_SETS[key] ? key : 'm2';
   ACTIVE_LANDING_SET=set;
@@ -95937,6 +95952,9 @@ function useLandingSet(key){
     const pct=rated.filter(v=>v<z.r).length/rated.length;
     z.points=Math.max(1, Math.min(LANDING_POINTS_MAX, 1+Math.floor(pct*LANDING_POINTS_MAX)));
   });
+  // Мифические POI 2024–2025: босс с мификом на точке — она дороже любой другой (см. CC_MYTHIC_POI).
+  const myth=CC_MYTHIC_POI[set];
+  if(myth) ALL_LANDING_ZONES.forEach((z,i)=>{ if(myth[i]){ z.mythic=myth[i]; z.points=LANDING_POINTS_MAX+CC_MYTHIC_POW; } });
   trimLandingZonesForMode();
   document.querySelectorAll('.map-frame').forEach(el=>{ el.style.aspectRatio=MAP_ASPECT[set]; });
   const picker=document.querySelector('#landingMapWrap img');
@@ -96119,6 +96137,7 @@ function showLandingPicker(){
     const label=document.createElement('div');
     label.className='land-zone-label';
     label.textContent=isTaken ? L().landingTaken.toUpperCase()+' · '+L().landingPoints(z.points) : L().landingPoints(z.points);
+    if(z.mythic) label.textContent+=' · ⚡ '+z.mythic;
     el.appendChild(label);
     ccChestBadge(el, z);
     el.onclick=()=>{
@@ -100080,7 +100099,7 @@ async function pickInitialZone(you, bots, title, seat, room){
       fillZoneNames(plot, later, z);
       const label=document.createElement('div');
       label.className='land-zone-label';
-      label.textContent=L().landingPoints(z.points);
+      label.textContent=L().landingPoints(z.points); if(z.mythic) label.textContent+=' · ⚡ '+z.mythic;
       plot.appendChild(label);
     } else {
       // Nobody drops here. The reference never draws an empty box at all, so
@@ -100091,7 +100110,7 @@ async function pickInitialZone(you, bots, title, seat, room){
       plot.style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.10)';
       const label=document.createElement('div');
       label.className='land-zone-label';
-      label.textContent=L().landingPoints(z.points);
+      label.textContent=L().landingPoints(z.points); if(z.mythic) label.textContent+=' · ⚡ '+z.mythic;
       plot.appendChild(label);
     }
     // Свои точки видны на карте всегда — и когда пусты, и когда в них стоят
@@ -109910,7 +109929,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='7c99d50d';
+const CC_BUILD='ca346e0f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
