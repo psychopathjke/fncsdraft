@@ -3503,6 +3503,31 @@
   .cc-act-h b{font-size:13px;font-weight:900;}
   .cc-act-h em{font-style:normal;font-size:11px;font-weight:900;color:#00d6a4;}
   .cc-act-g{display:flex;flex-wrap:wrap;gap:4px 9px;}
+  /* Тренировочный центр: панель атрибутов и карточки по две в ряд. */
+  .cc-tpanel{margin:2px 0 8px;}
+  .cc-ta-grid{display:grid;grid-template-columns:1fr;gap:5px;margin:6px 0 8px;}
+  .cc-ta{display:grid;grid-template-columns:92px 1fr 34px 30px;align-items:center;gap:6px;font-size:11px;}
+  .cc-ta-n{font-weight:800;color:#cfd8ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-ta-bar{height:6px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;}
+  .cc-ta-bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#00d6a4,#7aa2ff);}
+  .cc-ta-v{font-weight:900;font-size:12px;color:#fff;min-width:30px;text-align:right;}
+  .cc-ta-wk{font-style:normal;font-size:10px;font-weight:900;color:#00d6a4;}
+  .cc-fat{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;font-size:11px;font-weight:800;color:#cfd8ff;margin-bottom:6px;}
+  .cc-fat-bar{height:6px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;}
+  .cc-fat-bar i{display:block;height:100%;background:#00d6a4;}
+  .cc-fat-bar.s-lfFatTired i{background:#ffb13d;} .cc-fat-bar.s-lfFatBurn i{background:#ff5f56;}
+  .cc-tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+  .cc-tcard{display:flex;flex-direction:column;gap:3px;min-height:118px;margin:0;width:auto;box-sizing:border-box;}
+  .cc-tc-top{display:flex;justify-content:space-between;align-items:center;}
+  .cc-tc-ico{font-style:normal;font-size:20px;line-height:1;}
+  .cc-tc-top em{font-style:normal;font-size:11px;font-weight:900;color:#00d6a4;}
+  .cc-tc-name{font-size:13px;font-weight:900;}
+  .cc-tc-attr{font-size:10px;font-weight:800;color:#9fb0e8;text-transform:uppercase;letter-spacing:.04em;}
+  .cc-tc-gain{font-size:18px;font-weight:900;color:#00d6a4;display:flex;align-items:baseline;gap:6px;}
+  .cc-tc-gain i{font-style:normal;font-size:10px;font-weight:800;color:#8ad9c0;}
+  .cc-tc-coach{font-style:normal;font-size:10px;font-weight:800;color:#c9a7ff;}
+  .cc-tc-why{font-style:normal;font-size:10px;font-weight:800;color:#ff7d70;}
+
   .cc-act-g i{font-style:normal;font-size:10px;font-weight:800;color:#8ad9c0;}
   .cc-act-g .cc-give-reach{color:#7aa2ff;}
   .cc-act-g .cc-give-mood{color:#c9a7ff;}
@@ -18256,7 +18281,7 @@ let LANG=(function(){
    языки берут английский из-под себя (см. L). */
 Object.assign(I18N.ru, {
   lfRate:'Оценка за вечер', lfMvp:'MVP вечера', lfMvpYou:'ты — MVP вечера', lfAvgRate:'Средняя оценка сезона', lfMvpCount:'MVP за сезон',
-  lfTitle:'Между турнирами', lfToday:'Сегодня', chTabClub:'Клуб', lfContract:'Контракт', lfNoOrg:'Без клуба. Предложения приходят в личку после результатов.', lfSalary:'Зарплата в месяц', lfCut:'Доля клуба с призовых', lfGoal:'Цель сезона', lfGoalMet:'выполнена', lfGoalOpen:'пока нет', lfBuyout:'Отступные', lfSince:'В клубе с сезона', lfPaid:'Выплачено клубом', lfIncome:'Доходы', lfPrize:'Призовые', lfWages:'Зарплата', lfSide:'Побочные', lfSponsor:'Спонсоры', lfOrgCut:'Ушло клубу', lfBalance:'Баланс', lfRosters:'Составы', lfRostersHint:'У дуо, трио и сквада — свои составы; этап года выбирает, какой играет.', lfRosterDuo:'Дуо', lfRosterTrio:'Трио', lfRosterSquad:'Сквад', lfRosterNow:'сейчас', lfRosterEmpty:'пусто', lfWordSolo:'игроков', lfWordSquads:'сквадов', lfRank:'Ранкед', lfHurt:'Травма', lfWrist:'запястье', lfIll:'болезнь', lfUntil:'до', lfCaseOpen:'Разбирательство',
+  lfTitle:'Между турнирами', lfToday:'Сегодня', lfFatigue:'Усталость', lfMetaGive:'форма в новом сезоне', lfFatFresh:'свежий', lfFatTired:'устал', lfFatBurn:'выгорание', lfInjuryRisk:p=>'риск травмы '+p+'% в день', lfCoachBoost:p=>'коуч +'+p+'%', chTabClub:'Клуб', lfContract:'Контракт', lfNoOrg:'Без клуба. Предложения приходят в личку после результатов.', lfSalary:'Зарплата в месяц', lfCut:'Доля клуба с призовых', lfGoal:'Цель сезона', lfGoalMet:'выполнена', lfGoalOpen:'пока нет', lfBuyout:'Отступные', lfSince:'В клубе с сезона', lfPaid:'Выплачено клубом', lfIncome:'Доходы', lfPrize:'Призовые', lfWages:'Зарплата', lfSide:'Побочные', lfSponsor:'Спонсоры', lfOrgCut:'Ушло клубу', lfBalance:'Баланс', lfRosters:'Составы', lfRostersHint:'У дуо, трио и сквада — свои составы; этап года выбирает, какой играет.', lfRosterDuo:'Дуо', lfRosterTrio:'Трио', lfRosterSquad:'Сквад', lfRosterNow:'сейчас', lfRosterEmpty:'пусто', lfWordSolo:'игроков', lfWordSquads:'сквадов', lfRank:'Ранкед', lfHurt:'Травма', lfWrist:'запястье', lfIll:'болезнь', lfUntil:'до', lfCaseOpen:'Разбирательство',
   lfBan:'Бан открытых турниров', lfIcon:'Икон-скин', lfTrip:'Поездка', lfTripOk:'оформлена', lfTripBook:'Оформить',
   lfVisa:n=>'виза '+n+' дн.', lfWeek:'неделя', lfSessions:'сессий',
   lfWhyHurt:'Травма — играть нельзя', lfWhyBan:'Бан открытых турниров', lfWhyRank:'Нужен ранг Diamond', lfTripNone:'Поездка не оформлена', lfTripVisa:'Виза не успела',
@@ -18280,7 +18305,7 @@ Object.assign(I18N.ru, {
 });
 Object.assign(I18N.en, {
   lfRate:'Match rating', lfMvp:'Player of the night', lfMvpYou:'you were the player of the night', lfAvgRate:'Season average rating', lfMvpCount:'Player-of-the-night awards',
-  lfTitle:'Between events', lfToday:'Today', chTabClub:'Club', lfContract:'Contract', lfNoOrg:'No club. Offers arrive in your DMs after results.', lfSalary:'Monthly salary', lfCut:'Club share of prize money', lfGoal:'Season goal', lfGoalMet:'done', lfGoalOpen:'not yet', lfBuyout:'Buyout', lfSince:'At the club since season', lfPaid:'Paid by the club', lfIncome:'Income', lfPrize:'Prize money', lfWages:'Salary', lfSide:'Side income', lfSponsor:'Sponsors', lfOrgCut:'Went to the club', lfBalance:'Balance', lfRosters:'Rosters', lfRostersHint:'Duos, trios and squads keep their own rosters; the stage of the year picks which one plays.', lfRosterDuo:'Duos', lfRosterTrio:'Trios', lfRosterSquad:'Squads', lfRosterNow:'now', lfRosterEmpty:'empty', lfWordSolo:'players', lfWordSquads:'squads', lfRank:'Ranked', lfHurt:'Injury', lfWrist:'wrist', lfIll:'illness', lfUntil:'until', lfCaseOpen:'Under review',
+  lfTitle:'Between events', lfToday:'Today', lfFatigue:'Fatigue', lfMetaGive:'form in the new season', lfFatFresh:'fresh', lfFatTired:'tired', lfFatBurn:'burnt out', lfInjuryRisk:p=>'injury risk '+p+'% a day', lfCoachBoost:p=>'coach +'+p+'%', chTabClub:'Club', lfContract:'Contract', lfNoOrg:'No club. Offers arrive in your DMs after results.', lfSalary:'Monthly salary', lfCut:'Club share of prize money', lfGoal:'Season goal', lfGoalMet:'done', lfGoalOpen:'not yet', lfBuyout:'Buyout', lfSince:'At the club since season', lfPaid:'Paid by the club', lfIncome:'Income', lfPrize:'Prize money', lfWages:'Salary', lfSide:'Side income', lfSponsor:'Sponsors', lfOrgCut:'Went to the club', lfBalance:'Balance', lfRosters:'Rosters', lfRostersHint:'Duos, trios and squads keep their own rosters; the stage of the year picks which one plays.', lfRosterDuo:'Duos', lfRosterTrio:'Trios', lfRosterSquad:'Squads', lfRosterNow:'now', lfRosterEmpty:'empty', lfWordSolo:'players', lfWordSquads:'squads', lfRank:'Ranked', lfHurt:'Injury', lfWrist:'wrist', lfIll:'illness', lfUntil:'until', lfCaseOpen:'Under review',
   lfBan:'Banned from open events', lfIcon:'Icon skin', lfTrip:'Trip', lfTripOk:'booked', lfTripBook:'Book',
   lfVisa:n=>'visa '+n+'d', lfWeek:'week', lfSessions:'sessions',
   lfWhyHurt:'Injured — cannot play', lfWhyBan:'Banned from open events', lfWhyRank:'Needs Diamond rank', lfTripNone:'Trip not booked', lfTripVisa:'Visa not ready in time',
@@ -109638,7 +109663,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='3b0ed409';
+const CC_BUILD='a0ac4018';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -116229,6 +116254,9 @@ function careerDoAct(id){
   if(act.meta) careerMetaDay();
   // Сессия Noble и день в ранкеде двигают ранг (см. ccRankAdd).
   if(act.noble) ccNobleRun();
+  // Прирост недели — для панели Тренировочного центра (ccTrainPanelHTML).
+  try{ const lf=ccLife(), wk=ccWeekTag(); if(!lf.tw || lf.tw.wk!==wk) lf.tw={wk, g:{}};
+       Object.keys(moved).forEach(k=>{ lf.tw.g[k]=(lf.tw.g[k]||0)+moved[k]; }); }catch(e){}
   if(act.id==='trSur') ccRankAdd(12+Math.round(ccLifeRng('ranked')()*14));
   if(act.reach){
     // A night on stream, priced per rung. See CC_STREAM_REACH.
@@ -116664,7 +116692,7 @@ function ccLifeTick(){
     // Травма от выгорания.
     const b=careerBurnout();
     if(!lf.hurt && b>0 && rng()<0.02*b){
-      const wrist=rng()<0.6, n=wrist ? 3+Math.floor(rng()*8) : 2+Math.floor(rng()*4);
+      const wrist=true, n=3+Math.floor(rng()*8);   // болезнь у карьеры своя (sickUntil) — здесь только запястье
       lf.hurt={k:wrist?'wrist':'ill', until:ccAddDays(d, n)};
       careerNews('bad', wrist?'lfNewsWrist':'lfNewsIll', [n]);
     }
@@ -133218,6 +133246,55 @@ function careerJobWork(h){
   careerSave();
   careerRenderHub('centre');
 }
+/* ТРЕНИРОВОЧНЫЙ ЦЕНТР — вместо списка одинаковых строк.
+
+   Сверху шесть атрибутов полными словами: где ты сейчас, полоса до 99 и сколько
+   прибавилось за эту неделю; под ними — усталость (cr.grind) и риск травмы. Тренировки —
+   карточками по две в ряд: иконка, какой атрибут и насколько поднимет сегодня, цена в
+   энергии, бонус коуча и причина, если сегодня нельзя. Арифметика — та же, что у дня
+   (careerDoAct): выносится только показ. */
+const CC_TRAIN_ICON={trAim:'🎯', trSur:'🏆', trCon:'💪', trClu:'⚔️', trExp:'📼', trEnd:'🧱', trMeta:'🧭'};
+function ccWeekTag(d){ d=d||careerToday(); return ccMonthKey(d)+'|'+Math.floor(((+d.slice(8,10))-1)/7); }
+function ccAttrFull(k){ return L()['attr'+k.charAt(0).toUpperCase()+k.slice(1)+'Full'] || (L()['ccAttr'+k.toUpperCase()]||k); }
+function ccTrainPanelHTML(six){
+  const lf=(typeof ccLife==='function') ? ccLife() : {};
+  const tw=(lf.tw && lf.tw.wk===ccWeekTag()) ? lf.tw.g : {};
+  const rows=ATTR_KEYS.map(k=>{
+    const v=six[k]!=null ? six[k] : 50, pct=Math.max(0, Math.min(100, (v-35)/(99-35)*100));
+    const wk=tw[k] ? '<i class="cc-ta-wk">+'+(Math.round(tw[k]*10)/10).toFixed(1)+'</i>' : '';
+    return '<div class="cc-ta"><span class="cc-ta-n">'+esc(ccAttrFull(k))+'</span>'+
+      '<span class="cc-ta-bar"><i style="width:'+pct.toFixed(1)+'%"></i></span>'+
+      '<b class="cc-ta-v">'+(Math.round(v*10)/10).toFixed(1)+'</b>'+wk+'</div>';
+  }).join('');
+  const cr=CAREER.career, grind=cr.grind||0, top=CC_GRIND_FREE+CC_GRIND_MAX/CC_GRIND_STEP;
+  const fat=Math.max(0, Math.min(100, grind/top*100)), burn=careerBurnout();
+  const state=burn>=1 ? 'lfFatBurn' : grind>CC_GRIND_FREE ? 'lfFatTired' : 'lfFatFresh';
+  const risk=burn>0 ? Math.round(2*burn*10)/10 : 0;
+  return '<div class="cc-tpanel"><div class="cc-act-grp">'+(L().ccActGrpTrain||'')+'</div>'+
+    '<div class="cc-ta-grid">'+rows+'</div>'+
+    '<div class="cc-fat"><span>'+L().lfFatigue+'</span><span class="cc-fat-bar s-'+state+'"><i style="width:'+fat.toFixed(0)+'%"></i></span>'+
+      '<b>'+L()[state]+(risk ? ' · '+L().lfInjuryRisk(risk) : '')+'</b></div></div>';
+}
+function ccTrainCardHTML(a, o){
+  const k=o.keys[0];
+  const from=k ? (o.six[k]!=null ? o.six[k] : 50) : 0;
+  const coachOn=!!(k && o.dayCoach && o.dayCoach.keys.indexOf(k)>=0);
+  const by=k ? a.gain[k]*o.dayMult*(coachOn ? 1+o.dayCoach.train : 1) : 0;
+  const to=Math.max(35, Math.min(99, from+by));
+  const num=v=>(Math.round(v*10)/10).toFixed(1);
+  const why = o.closed ? '' : o.maxed ? L().ccAttrMaxed
+            : (k && !o.gainsMove) ? L().ccNoGain
+            : o.left<a.energy ? L().ccNeedEnergy(a.energy-o.left) : '';
+  return '<button class="cc-act cc-tcard g-train'+(o.can?'':' off')+(o.did?' did':'')+'" '+
+    (o.can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
+    '<span class="cc-tc-top"><i class="cc-tc-ico">'+(CC_TRAIN_ICON[a.id]||'•')+'</i><em>'+a.energy+L().ccEnergyMark+'</em></span>'+
+    '<b class="cc-tc-name">'+(L()['ccAct'+a.id]||a.id)+'</b>'+
+    (k ? '<span class="cc-tc-attr">'+esc(ccAttrFull(k))+'</span>'+
+         '<span class="cc-tc-gain">+'+num(to-from)+'<i>'+num(from)+' → '+num(to)+'</i></span>' : '<span class="cc-tc-attr">'+L().lfMetaGive+'</span>')+
+    (coachOn ? '<i class="cc-tc-coach">'+L().lfCoachBoost(Math.round(o.dayCoach.train*100))+'</i>' : '')+
+    (why ? '<i class="cc-tc-why">'+esc(why)+'</i>' : '')+
+    '</button>';
+}
 function careerDayPanelHTML(locked){
   const cr=CAREER.career;
   const woe=ccMisfortune(careerToday());
@@ -133278,7 +133355,7 @@ function careerDayPanelHTML(locked){
   const dayMult = careerDayGear()*clamp((careerTrainCap()-nowOvr)/CAREER_TAPER, 0, 1);
   const dayCoach = ccCoach();
   const six = CAREER.player.attrs || ccOwnAttrs();
-  const rows=CC_DAY_ACTS.filter(function(a){ return !a.meta || ccMetaOpen(); }).map(function(a){
+  const rows=CC_DAY_ACTS.filter(function(a){ return !a.meta || ccMetaOpen(); }).map(function(a, ai, allActs){
     const keys=Object.keys(a.gain||{});
     // A ninety-nine cannot be trained: the day would be spent on a number that
     // cannot move, so the button says so rather than taking the energy.
@@ -133347,6 +133424,13 @@ function careerDayPanelHTML(locked){
     /* Группы, как список квестов в лобби: заголовок перед первой строкой
        группы и цветная кромка слева по группе (g-train/g-team/g-life). */
     const grp=String(a.id).indexOf('tr')===0 ? 'train' : (a.id==='scrim'||a.id==='talk'||a.id==='noble') ? 'team' : 'life';
+    // Тренировки — карточками «Тренировочного центра» (ccTrainCardHTML), с панелью атрибутов сверху.
+    if(grp==='train'){
+      const trains=allActs.filter(x=>String(x.id).indexOf('tr')===0);
+      return (a===trains[0] ? ccTrainPanelHTML(six)+'<div class="cc-tgrid">' : '')+
+        ccTrainCardHTML(a, {can, did:done.indexOf(a.id)>=0, keys, six, dayMult, dayCoach, left, maxed, gainsMove, closed})+
+        (a===trains[trains.length-1] ? '</div>' : '');
+    }
     const grpHead=(a.id==='trAim'||a.id==='scrim'||a.id==='stream')
       ? '<div class="cc-act-grp">'+(L()['ccActGrp'+grp.charAt(0).toUpperCase()+grp.slice(1)]||'')+'</div>' : '';
     return grpHead+'<button class="cc-act g-'+grp+(can?'':' off')+(done.indexOf(a.id)>=0?' did':'')+'" '+
