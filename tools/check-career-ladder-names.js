@@ -75,16 +75,21 @@ const BOOT = `
       .filter(p => p.tier === 'cardmode').length, 0);
     out.notes.div5RealCards = cards5;
     check('Division 5 seats no real cards', cards5 === 0, String(cards5));
-    /* Его правка 5 сентября: «с 5 дива по 2 никнеймы без цифр и маленькими
-       буквами». Всё выдуманное в Дивизионах 5 и 2 — только строчные латинские. */
+    /* Его правка 29.09 (сменила правило 5 сентября «строчными без цифр»): «вместо случайных
+       ников — реальные, которые встречаются». Ники Дивизионов 5 и 2 — в основном настоящие
+       люди, игравшие кубки дивизионов своего региона (CC_LADDER_REAL), и никого из сцены. */
+    const realSet = new Set((CC_LADDER_REAL[ccCareerRegion()] || []).map(e => e[0]));
+    const scene = ccRealNames();
     [5, 2].forEach(div => {
       const f = div === 5 ? f5 : careerCupField(CAREER.career, seed(cupDay, div), careerCupSize(div));
       const made = [];
       f.forEach(t => (t.squad||[]).forEach(p => { if (p.tier === 'ladder') made.push(String(p.handle)); }));
-      const odd = made.filter(h => !/^[a-z]+$/.test(h));
-      out.notes['plain' + div] = {made: made.length, odd: odd.slice(0, 5), sample: made.slice(0, 5)};
-      check('Division ' + div + ' nicks are lowercase without digits', made.length > 0 && odd.length === 0,
-            JSON.stringify(out.notes['plain' + div]));
+      const real = made.filter(h => realSet.has(h));
+      const sceneHit = made.filter(h => scene.has(h.toLowerCase()));
+      out.notes['real' + div] = {made: made.length, real: real.length, sample: real.slice(0, 5), scene: sceneHit.slice(0, 5)};
+      check('Division ' + div + ' nicks are mostly real ladder players', made.length > 0 && real.length >= made.length * 0.5,
+            JSON.stringify(out.notes['real' + div]));
+      check('Division ' + div + ' holds nobody from the scene', sceneHit.length === 0, sceneHit.join(','));
     });
 
     /* Division 1 is the other half of the same rule: all real, none generated.

@@ -293,14 +293,16 @@ const BOOT = `
        циферок, маленькими буквами; про и креаторы могут иногда». Считается
        по списку людей эфира: не меньше двух третей — выдуманные строчные
        без цифр, и хоть один настоящий (напарник сидит в чате всегда). */
+    /* С 29.09 («вместо случайных ников — реальные, которые встречаются») зрители — настоящие
+       игроки региона с кубков дивизионов (CC_LADDER_REAL), а люди сцены — по-прежнему меньшинство. */
     const nicks = CC_TV_WHO.map(w => w.who);
-    const plain = nicks.filter(h => /^[a-z]+$/.test(h)).length;
-    out.steps.push('chat people: ' + nicks.slice(0, 12).join(', ') + ' … plain ' + plain + '/' + nicks.length);
-    check('the chat is mostly random lowercase nicks without digits', plain >= Math.ceil(nicks.length * 2 / 3), plain + '/' + nicks.length);
-    // Цифры и заглавные — только у настоящих (vic0 остаётся vic0), то есть у меньшинства.
-    const real = nicks.filter(h => !/^[a-z]+$/.test(h));
-    check('the scene is the minority in the chat', real.length <= Math.floor(nicks.length / 3), real.join(','));
-    check('and a made-up nick never carries a digit', Array.from({length: 50}, () => ccChatNick()).every(h => /^[a-z]+$/.test(h)));
+    const pool = new Set((CC_LADDER_REAL[ccCareerRegion()] || []).map(e => e[0]));
+    const viewers = nicks.filter(h => pool.has(h) || /^[a-z]+$/.test(h)).length;
+    out.steps.push('chat people: ' + nicks.slice(0, 12).join(', ') + ' … viewers ' + viewers + '/' + nicks.length);
+    check('the chat is mostly ladder players, not the scene', viewers >= Math.ceil(nicks.length * 2 / 3), viewers + '/' + nicks.length);
+    const sceneN = nicks.filter(h => !(pool.has(h) || /^[a-z]+$/.test(h)));
+    check('the scene is the minority in the chat', sceneN.length <= Math.floor(nicks.length / 3), sceneN.join(','));
+    check('and a viewer nick comes from the real pool', Array.from({length: 50}, () => ccChatNick()).filter(h => pool.has(h)).length >= 40);
     check('and the uptime clock', /^\\d+:\\d\\d$/.test((document.getElementById('ccTvUp')||{}).textContent || ''),
           (document.getElementById('ccTvUp')||{}).textContent);
     ccTvFold();
