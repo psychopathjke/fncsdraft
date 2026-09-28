@@ -26,6 +26,9 @@ const BOOT = `
   const out = {fails: [], notes: {}, err: null};
   const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
   try {
+    // Оценка занятия D…A+ (ccDrillGrade) — случайный множитель; этот харнесс меряет
+    // арифметику дня, поэтому оценка здесь всегда B (×1). Её саму проверяет check-career-train-fc.
+    ccDrillGrade = function(){ return {g:'B', mult:1}; };
     const DAY = 0.5;
     // Half a point of the stat, whichever stat the session is for. The scrim is
     // the one that splits it, a quarter into each of the four it plays.

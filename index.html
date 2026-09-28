@@ -3596,6 +3596,27 @@
   .hd-rank em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
   .hd-rank b{font-weight:900;color:#fff;} .hd-rank .hg-bar{margin:0;} .hd-rank i{font-style:normal;font-weight:800;color:#cfd8ff;font-size:11px;}
   .ch-prof-me{max-width:980px;margin:0 auto 12px;}
+  /* Тренировка: карта занятия, оценка D…A+, полоса недели. */
+  .cc-tc-map{display:block;font-size:10px;font-weight:700;color:#9fb0e8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-tc-grade{margin-left:auto;flex:none;font-style:normal;font-size:10px;font-weight:900;padding:1px 5px;border-radius:5px;background:rgba(255,255,255,.12);color:#fff;}
+  .g-D{color:#ff5f56 !important;} .g-C{color:#ffb13d !important;} .g-B{color:#cfd8ff !important;} .g-A{color:#00d6a4 !important;} .g-Ap{color:#ffdd00 !important;}
+  .cc-tc-mapcard .hg-bar{margin:3px 0 2px;height:4px;}
+  .tw-tile{max-width:1100px;margin:0 auto 10px;}
+  /* Два атрибута у карт Creative — прирост переносится на вторую строку, а не режется. */
+  .cc-tc-gain{white-space:normal;line-height:1.15;}
+  .cc-day-train .cc-tc-gain{font-size:15px;}
+  .tw-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:6px;}
+  .tw-day{display:flex;flex-direction:column;gap:2px;min-width:0;padding:6px;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);}
+  .tw-day.now{border-color:#ffdd00;background:rgba(255,221,0,.08);}
+  .tw-day.past{opacity:.8;}
+  .tw-day em{font-style:normal;font-size:9px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
+  .tw-day > b{font-size:17px;font-weight:900;font-style:italic;color:#fff;line-height:1;}
+  .tw-ev{display:flex;align-items:center;gap:3px;font-size:9px;font-weight:800;color:#cfd8ff;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+  .tw-did{display:flex;flex-wrap:wrap;gap:2px 4px;}
+  .tw-did i{font-style:normal;font-size:12px;display:inline-flex;align-items:baseline;gap:1px;}
+  .tw-did i b{font-size:9px;font-weight:900;}
+  .tw-free{font-size:10px;font-weight:800;color:#8fa1cc;}
+  @media (max-width:520px){ .tw-week{gap:3px;} .tw-day{padding:4px 3px;} .tw-ev{font-size:0;} .tw-ev .ch-pip{font-size:10px;} }
   .tp-x{grid-column:2;grid-row:1 / span 2;border:0;background:rgba(255,255,255,.08);color:#cfd8ff;border-radius:8px;width:28px;height:28px;cursor:pointer;}
   .tp-done{margin-top:8px;font-size:12px;font-weight:900;color:#00d6a4;}
   .dm-map{position:relative;width:100%;max-width:520px;margin:8px auto;border-radius:12px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(180,200,255,.2);}
@@ -18504,6 +18525,42 @@ Object.assign(I18N.en, {
   lfNewsJetlag:()=>'Jet lag: you landed late — tonight is harder',
   lfTlIcon:()=>'An Icon Series skin of your own'
 });
+// Тренировка: карты Creative, оценки, Арена, своя карта, полоса недели.
+Object.assign(I18N.ru, {ccActtrBox:'Бокс-файты', ccActtrZw:'Зон-вары', ccActtrEdit:'Эдит-курс', ccActtrMap:'Своя карта',
+  lfArena:'Арена', lfArenaDiv:'див.', lfWhyArena:'Кэш-капы — с Champion League на Арене',
+  lfNewsArena:(d,n,b)=>'Арена: '+d+' Hype, '+n+' · лучшее место #'+b, lfNewsArenaChamp:()=>'Champion League! Кэш-капы открыты',
+  lfGradeLast:'Последняя оценка', lfMapBuild:(p,n)=>'Стройка: '+p+' из '+n+' вечеров', lfMapLive:(nm,c,pl,e)=>nm+' · '+c+' · '+pl+' игр за месяц · всего '+e,
+  lfMapUpdate:'Обновить карту', lfMapGive:'деньги за игры', lfNewsMapOut:(nm,c)=>'Моя карта вышла: '+nm+' — код '+c,
+  lfNewsMapUpd:nm=>'Обновил карту '+nm, lfNewsMapPay:(nm,pl,m)=>nm+': '+pl+' игр за месяц, выплата '+m,
+  lfTwH:'Неделя', lfTwPick:'выбери'});
+Object.assign(I18N.en, {ccActtrBox:'Box fights', ccActtrZw:'Zone wars', ccActtrEdit:'Edit course', ccActtrMap:'Own map',
+  lfArena:'Arena', lfArenaDiv:'div.', lfWhyArena:'Cash cups need Champion League in Arena',
+  lfNewsArena:(d,n,b)=>'Arena: '+d+' Hype, '+n+' · best place #'+b, lfNewsArenaChamp:()=>'Champion League! Cash cups are open',
+  lfGradeLast:'Last grade', lfMapBuild:(p,n)=>'Building: '+p+' of '+n+' evenings', lfMapLive:(nm,c,pl,e)=>nm+' · '+c+' · '+pl+' plays this month · '+e+' total',
+  lfMapUpdate:'Update the map', lfMapGive:'money from plays', lfNewsMapOut:(nm,c)=>'My map is out: '+nm+' — code '+c,
+  lfNewsMapUpd:nm=>'Updated my map '+nm, lfNewsMapPay:(nm,pl,m)=>nm+': '+pl+' plays this month, payout '+m,
+  lfTwH:'Week', lfTwPick:'pick'});
+Object.assign(I18N.fr, {ccActtrBox:'Box fights', ccActtrZw:'Zone wars', ccActtrEdit:'Parcours d\'édit', ccActtrMap:'Ma map',
+  lfArena:'Arène', lfArenaDiv:'div.', lfWhyArena:'Cash cups : Champion League en Arène requise',
+  lfNewsArena:(d,n,b)=>'Arène : '+d+' Hype, '+n+' · meilleure place #'+b, lfNewsArenaChamp:()=>'Champion League ! Cash cups ouvertes',
+  lfGradeLast:'Dernière note', lfMapBuild:(p,n)=>'Construction : '+p+' soirées sur '+n, lfMapLive:(nm,c,pl,e)=>nm+' · '+c+' · '+pl+' parties ce mois · '+e+' au total',
+  lfMapUpdate:'Mettre à jour la map', lfMapGive:'argent des parties', lfNewsMapOut:(nm,c)=>'Ma map est sortie : '+nm+' — code '+c,
+  lfNewsMapUpd:nm=>'Map '+nm+' mise à jour', lfNewsMapPay:(nm,pl,m)=>nm+' : '+pl+' parties ce mois, versement '+m,
+  lfTwH:'Semaine', lfTwPick:'à choisir'});
+Object.assign(I18N.it, {ccActtrBox:'Box fight', ccActtrZw:'Zone wars', ccActtrEdit:'Percorso edit', ccActtrMap:'La mia mappa',
+  lfArena:'Arena', lfArenaDiv:'div.', lfWhyArena:'Per le cash cup serve la Champion League in Arena',
+  lfNewsArena:(d,n,b)=>'Arena: '+d+' Hype, '+n+' · miglior posto #'+b, lfNewsArenaChamp:()=>'Champion League! Cash cup aperte',
+  lfGradeLast:'Ultimo voto', lfMapBuild:(p,n)=>'Costruzione: '+p+' serate su '+n, lfMapLive:(nm,c,pl,e)=>nm+' · '+c+' · '+pl+' partite nel mese · '+e+' in totale',
+  lfMapUpdate:'Aggiorna la mappa', lfMapGive:'soldi dalle partite', lfNewsMapOut:(nm,c)=>'La mia mappa è uscita: '+nm+' — codice '+c,
+  lfNewsMapUpd:nm=>'Mappa '+nm+' aggiornata', lfNewsMapPay:(nm,pl,m)=>nm+': '+pl+' partite nel mese, pagamento '+m,
+  lfTwH:'Settimana', lfTwPick:'scegli'});
+Object.assign(I18N.pt, {ccActtrBox:'Box fights', ccActtrZw:'Zone wars', ccActtrEdit:'Curso de edit', ccActtrMap:'Meu mapa',
+  lfArena:'Arena', lfArenaDiv:'div.', lfWhyArena:'Cash cups exigem Champion League na Arena',
+  lfNewsArena:(d,n,b)=>'Arena: '+d+' Hype, '+n+' · melhor lugar #'+b, lfNewsArenaChamp:()=>'Champion League! Cash cups liberadas',
+  lfGradeLast:'Última nota', lfMapBuild:(p,n)=>'Construção: '+p+' de '+n+' noites', lfMapLive:(nm,c,pl,e)=>nm+' · '+c+' · '+pl+' partidas no mês · '+e+' no total',
+  lfMapUpdate:'Atualizar o mapa', lfMapGive:'dinheiro das partidas', lfNewsMapOut:(nm,c)=>'Meu mapa saiu: '+nm+' — código '+c,
+  lfNewsMapUpd:nm=>'Mapa '+nm+' atualizado', lfNewsMapPay:(nm,pl,m)=>nm+': '+pl+' partidas no mês, pagamento '+m,
+  lfTwH:'Semana', lfTwPick:'escolha'});
 // Главная по образцу EA FC: плитки «Цели» и «Развитие».
 Object.assign(I18N.ru, {hgTitle:'Цели', hgClub:'Клуб', hgMonth:'Задача месяца', hgOwn:'Своя цель', hgDone:'выполнено',
   hgNow:'сейчас', hgOpen:'в работе', hgNone:'Клуб целей не ставил', hgNoClub:'Без клуба целей сезона нет — поставь свою в тренировке',
@@ -113934,7 +113991,8 @@ function careerRenderHubBody(tab){
   const dOvr=ccHdrSeasonDelta();
   document.getElementById('chOvr').innerHTML=`${shown}<span class="ch-ovr-side"><small>${L().ccRoOvr}</small>`+
     (dOvr ? `<i class="ch-ovr-d ${dOvr>0?'up':'down'}" title="${esc(L().lfHdrSeason)}">${dOvr>0?'▲ +'+dOvr:'▼ '+dOvr}</i>` : '')+
-    (ccCalYear()>=2023 ? `<i class="ch-ovr-rk" title="${esc(L().lfRank)}">${esc(ccRankName())}</i>` : '')+`</span>`;
+    (ccCalYear()>=2023 ? `<i class="ch-ovr-rk" title="${esc(L().lfRank)}">${esc(ccRankName())}</i>`
+      : `<i class="ch-ovr-rk" title="${esc(L().lfArena)}">${esc(ccArenaLeague(ccArenaDiv()))}</i>`)+`</span>`;
   const chOvrEl=document.getElementById('chOvr');
   chOvrEl.onclick=()=>careerTab('log'); chOvrEl.classList.add('ch-go');
   // Energy is the only number up here that belongs to today rather than to the
@@ -115977,6 +116035,14 @@ const CC_DAY_ACTS=[
   {id:'trClu', energy:30, gain:{clu:ccStep('clu')}},
   {id:'trExp', energy:22, gain:{exp:ccStep('exp')}},
   {id:'trEnd', energy:26, gain:{end:ccStep('end')}},
+  /* Карты Creative, на которых тренируются настоящие: Clix Box Fights (сделал Pandvil),
+     Desert Zone Wars, эдит-курс. Каждая качает два атрибута по половине шага — за ту же
+     энергию, что и занятие на один атрибут, то есть скорость роста не меняется. */
+  {id:'trBox',  energy:30, gain:{clu:ccStep('clu')/2, aim:ccStep('aim')/2}},
+  {id:'trZw',   energy:30, gain:{end:ccStep('end')/2, sur:ccStep('sur')/2}},
+  {id:'trEdit', energy:30, gain:{clu:ccStep('clu')/2, con:ccStep('con')/2}},
+  // Своя карта в Creative: пять вечеров стройки, потом выплаты за игры (ccMapPay).
+  {id:'trMap',  energy:30, gain:{}, map:true},
   // Разбор меты нового сезона: показывается три недели после смены сезона,
   // три дня — и форма, вместо штрафа за незнание острова. См. ccMetaOpen.
   {id:'trMeta', energy:24, gain:{}, meta:true},
@@ -116555,9 +116621,11 @@ function careerDoAct(id){
        cut what a session pays. Same factor the develop term already uses, so
        one setting means one thing everywhere: Easy 1.00, Pro 0.50, Elite 0.25,
        Legend 0.10. Easy is untouched. */
+    // Оценка занятия D…A+ (ccDrillGrade) — только у тренировок с приростом.
+    const grade=(String(act.id).indexOf('tr')===0 && Object.keys(act.gain||{}).length) ? ccDrillGrade(act.id) : null;
     Object.keys(act.gain||{}).forEach(k=>{
       const by=act.gain[k]*mult*(coach && coach.keys.indexOf(k)>=0 ? 1+coach.train : 1)
-               *careerDiff().age*(scrim ? scrim.mult : 1)*ccFocusMult(k);
+               *careerDiff().age*(scrim ? scrim.mult : 1)*ccFocusMult(k)*(grade ? grade.mult : 1);
       pl.attrs[k]=clamp((pl.attrs[k]||50)+by, 35, 99);
       moved[k]=by;
     });
@@ -116588,7 +116656,9 @@ function careerDoAct(id){
   // Прирост недели — для панели Тренировочного центра (ccTrainPanelHTML).
   try{ const lf=ccLife(), wk=ccWeekTag(); if(!lf.tw || lf.tw.wk!==wk) lf.tw={wk, g:{}};
        Object.keys(moved).forEach(k=>{ lf.tw.g[k]=(lf.tw.g[k]||0)+moved[k]; }); }catch(e){}
-  if(act.id==='trSur') ccRankAdd(12+Math.round(ccLifeRng('ranked')()*14));
+  // До 2023-го ранкеда не было — была Арена с Hype (ccArenaRun).
+  if(act.id==='trSur'){ if(ccCalYear()<2023) ccArenaRun(); else ccRankAdd(12+Math.round(ccLifeRng('ranked')()*14)); }
+  if(act.map) ccMapWork();
   if(act.reach){
     // A night on stream, priced per rung. See CC_STREAM_REACH.
     /* Вид эфира. Кнопка дня — это 'grind' с множителями в единицу, поэтому
@@ -116960,6 +117030,7 @@ function ccLifeWhy(day, kind){
   if(kind==='victory'){
     const ev=careerVictoryOn(day);
     const need=ccRankNeed(ev); if(need && ccRank()<need) return 'lfWhyRank';
+    if(ccArenaNeed(ev) && ccArenaDiv()<CC_ARENA_CHAMP) return 'lfWhyArena';
     const tw=ccTripWhy(ev, day); if(tw) return tw;
   }
   return null;
@@ -117135,9 +117206,132 @@ function ccDevTileHTML(){
     rank+ccTrainPanelHTML(six, false)+
     `<button class="hg-go" onclick="careerTab('train')">${esc(L().hdToTrain)}</button></div>`;
 }
-// Ранг в одну строку с полосой — ранкед с 2023-го (ccRank).
+/* ОЦЕНКА ЗАНЯТИЯ, как у дриллов в EA FC: D, C, B, A, A+. Множитель прироста — оценка
+   режима, не замер; средний по свежему игроку ≈1.0, так что темп роста карьеры не
+   меняется, меняется разброс. Усталость и выгорание тянут оценку вниз. */
+const CC_GRADES=[['D',0.7],['C',0.85],['B',1],['A',1.15],['A+',1.3]];
+function ccDrillGrade(id){
+  const cr=CAREER.career, lf=ccLife(), today=careerToday();
+  const n=((cr.did||{})[today]||[]).length;
+  const burn=careerBurnout(), tired=(cr.grind||0)>CC_GRIND_FREE;
+  const s=0.52+(ccLifeRng('drill|'+id+'|'+n)()-0.5)*0.8-(burn>=1 ? 0.25 : tired ? 0.1 : 0);
+  const i=s<0.2 ? 0 : s<0.4 ? 1 : s<0.62 ? 2 : s<0.82 ? 3 : 4;
+  lf.gr=lf.gr||{};
+  (lf.gr[today]=lf.gr[today]||[]).push({id:id, g:CC_GRADES[i][0]});
+  // Хранится три недели — столько видит полоса недели и её соседи.
+  Object.keys(lf.gr).forEach(d=>{ if(ccDaysBetween(d, today)>21) delete lf.gr[d]; });
+  return {g:CC_GRADES[i][0], mult:CC_GRADES[i][1]};
+}
+function ccDrillLast(id){
+  const gr=ccLife().gr||{}; const days=Object.keys(gr).sort().reverse();
+  for(const d of days){ const r=gr[d].filter(x=>x.id===id).pop(); if(r) return r.g; }
+  return '';
+}
+
+/* АРЕНА (Fortnite, до v24.40 — май 2023, дальше Ranked). Числа — вики Fortnite,
+   страница «Competitive (Gamemode)», сохранена в tools/measured/wiki-arena-competitive.txt:
+   десять дивизионов в трёх лигах, пороги Hype (старые — до v21.10, новые — после),
+   плата за автобус по дивизиону, очки за места и убийства (формат v21.10; более ранней
+   таблицы очков на вики нет — берём её же). Кэш-капы пускали с Champion League (див. 8).
+   Модель матча — места от рейтинга против уровня дивизиона — оценка режима. */
+const CC_ARENA_OLD=[0,250,500,1000,1500,2500,4000,6000,12000,16000];
+const CC_ARENA_NEW=[0,400,800,1200,2000,3000,5000,7500,10000,15000];
+const CC_ARENA_NEW_FROM='2022-06-21';
+const CC_ARENA_FARE=[0,0,0,0,30,40,50,60,70,70];
+const CC_ARENA_CHAMP=7;   // индекс дивизиона 8
+const CC_ARENA_PTS={
+  1:{teams:100, rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[10,10],[20,15],[25,15],[30,10],[40,10],[50,10]], elim:[15,15,15,10,10,10,10,5,5,5]},
+  2:{teams:50,  rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[10,10],[12,15],[15,15],[17,10],[20,10],[25,10]], elim:[15,15,15,5,5,5,5,5,5,5]},
+  3:{teams:33,  rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[6,10],[7,15],[8,15],[9,10],[10,10],[15,10]], elim:[10,10,10,10,5,5,5,5,5,5]}
+};
+const CC_ARENA_GAMES=5;   // матчей за вечер — оценка режима
+function ccArenaTable(day){ return (day||careerToday())>=CC_ARENA_NEW_FROM ? CC_ARENA_NEW : CC_ARENA_OLD; }
+function ccArenaHype(){
+  const lf=ccLife();
+  if(lf.hype==null){ const o=(CAREER.player && CAREER.player.ovr)||70; lf.hype=clamp(Math.round((o-55)*650), 0, 20000); }
+  return lf.hype;
+}
+function ccArenaDiv(h){ const t=ccArenaTable(); h=h==null ? ccArenaHype() : h;
+  let i=0; t.forEach((v,j)=>{ if(h>=v) i=j; }); return i; }
+function ccArenaLeague(i){ return i>=7 ? 'Champion' : i>=4 ? 'Contender' : 'Open'; }
+function ccArenaName(i){ i=i==null ? ccArenaDiv() : i; return ccArenaLeague(i)+' · '+L().lfArenaDiv+' '+(i+1); }
+function ccArenaMatchPts(size, div, place, elims){
+  const t=CC_ARENA_PTS[size];
+  const pl=t.rows.reduce((s,r,j)=>s+((place<=r[0] && (j<t.rows.length-1 || div<CC_ARENA_CHAMP)) ? r[1] : 0), 0);
+  return pl+elims*t.elim[div]-CC_ARENA_FARE[div];
+}
+function ccArenaRun(){
+  const lf=ccLife(), size=Math.min(3, Math.max(1, careerSquadSize()||1)), t=CC_ARENA_PTS[size];
+  const ovr=ccMyShownOvr(), rnd=ccLifeRng('arena');
+  const from=ccArenaHype(), divFrom=ccArenaDiv(from);
+  let h=from, best=t.teams;
+  for(let g=0; g<CC_ARENA_GAMES; g++){
+    const div=ccArenaDiv(h);
+    // Уровень дивизиона: рейтинг ~65 держится у границы Champion, про-игроки 85+ — выше.
+    const q=clamp(0.5+(ovr-(50+div*2.2))/30+(rnd()-0.5)*0.7, 0.01, 0.995);
+    const place=clamp(Math.ceil(t.teams*(1-q)), 1, t.teams);
+    const elims=Math.floor(rnd()*(1+q*4));
+    best=Math.min(best, place);
+    h=Math.max(0, h+ccArenaMatchPts(size, div, place, elims));
+  }
+  lf.hype=h;
+  const divTo=ccArenaDiv(h);
+  careerNews(h>=from ? 'good' : 'bad', 'lfNewsArena', [(h>=from?'+':'')+(h-from), ccArenaName(divTo), best]);
+  if(divTo>divFrom && divTo>=CC_ARENA_CHAMP && divFrom<CC_ARENA_CHAMP) careerNews('good', 'lfNewsArenaChamp', []);
+  return {from, to:h, best};
+}
+// Нужна ли Champion League этому капу: до 2023-го, открытые кэш-капы.
+function ccArenaNeed(ev){ return !!ev && !ev.invite && !ev.lan && ccCalYear()<2023; }
+
+/* СВОЯ КАРТА В CREATIVE. Пять вечеров стройки (trMap), потом карта выходит и платит
+   раз в месяц — как выплаты авторам островов у Epic. Число игр — от охвата и качества
+   (оценки вечеров стройки), без обновлений тает на десятую в месяц; цена тысячи игр
+   CC_MAP_RATE — оценка режима, настоящих выплат по картам про-игроков нет в открытом виде. */
+const CC_MAP_BUILD=5, CC_MAP_RATE=3;
+function ccMap(){ const lf=ccLife(); return lf.map||null; }
+function ccMapWork(){
+  const lf=ccLife(), nick=CAREER.player.nick||'Player';
+  const g=ccLifeRng('map|'+(lf.map ? lf.map.prog : 0))();
+  if(!lf.map) lf.map={prog:0, q:1, plays:0, earned:0};
+  const m=lf.map;
+  if(!m.pub){
+    m.prog++; m.q=clamp(m.q+(g-0.45)*0.2, 0.6, 1.5);
+    if(m.prog>=CC_MAP_BUILD){
+      const r=careerRng(ccHashStr('mapcode|'+nick));
+      const code=[0,1,2].map(()=>String(1000+Math.floor(r()*9000))).join('-');
+      m.pub=careerToday(); m.upd=m.pub; m.code=code;
+      m.name=nick+' '+(['Box Fights','Zone Wars','1v1 Build Fights','Edit Course'][Math.floor(r()*4)]);
+      careerNews('good', 'lfNewsMapOut', [m.name, code]);
+    }
+  } else {
+    m.upd=careerToday(); m.q=clamp(m.q+0.05, 0.6, 1.5);
+    careerNews('flat', 'lfNewsMapUpd', [m.name]);
+  }
+}
+function ccMapPay(months){
+  const m=ccMap(); if(!m || !m.pub || !months) return 0;
+  const cr=CAREER.career;
+  let paid=0;
+  for(let i=0; i<months; i++){
+    const stale=Math.max(0, Math.floor(ccDaysBetween(m.upd, careerToday())/30));
+    const plays=Math.round((500+careerReach()*1.2)*m.q*Math.pow(0.9, stale));
+    const pay=Math.round(plays*CC_MAP_RATE/1000);
+    m.plays=(m.plays||0)+plays; m.last=plays; paid+=pay;
+  }
+  if(paid){ cr.balance=(cr.balance||0)+paid; m.earned=(m.earned||0)+paid;
+    careerNews('good', 'lfNewsMapPay', [m.name, ccNum(m.last), ccMoney(paid)]); }
+  return paid;
+}
+
+// Ранг в одну строку с полосой — ранкед с 2023-го (ccRank), до него — Арена с Hype.
 function ccLadderRowHTML(){
-  if(ccCalYear()<2023) return '';
+  if(ccCalYear()<2023){
+    const t=ccArenaTable(), h=ccArenaHype(), i=ccArenaDiv(h);
+    const lo=t[i], hi=t[i+1];
+    const pct=hi ? Math.round((h-lo)/(hi-lo)*100) : 100;
+    return `<div class="hd-rank"><em>${esc(L().lfArena)}</em><b>${esc(ccArenaName(i))}</b>`+
+      `<u class="hg-bar"><s style="width:${pct}%"></s></u><i>${ccNum(h)} Hype${hi ? ' / '+ccNum(hi) : ''}</i></div>`;
+  }
   const p=ccRankPts()%100;
   return `<div class="hd-rank"><em>${esc(L().lfRank)}</em><b>${esc(ccRankName())}</b>`+
     `<u class="hg-bar"><s style="width:${ccRank()>=CC_RANKS.length-1?100:p}%"></s></u><i>${ccRank()>=CC_RANKS.length-1?'':p+'/100'}</i></div>`;
@@ -117157,8 +117351,9 @@ function careerAdvanceBody(iso){
   // And the person paid to post, posts — on the days nothing was won too.
   if(nights) ccSmmWork(nights);
   const paid=careerPayWages(cr.day, to);
-  // Бонус клуба за финал Мейджора — тем же днём.
+  // Бонус клуба за финал Мейджора и выплата за свою карту — тем же днём.
   careerOrgBonusTick();
+  ccMapPay(careerWagePaydays().filter(d=>d>cr.day && d<=to).length);
   // The rest of the scene keeps playing while the player's own week passes.
   careerWorldTurns(cr.day, to);
   // And has birthdays while it does.
@@ -133704,7 +133899,7 @@ function careerJobWork(h){
    карточками по две в ряд: иконка, какой атрибут и насколько поднимет сегодня, цена в
    энергии, бонус коуча и причина, если сегодня нельзя. Арифметика — та же, что у дня
    (careerDoAct): выносится только показ. */
-const CC_TRAIN_ICON={trAim:'🎯', trSur:'🏆', trCon:'💪', trClu:'⚔️', trExp:'📼', trEnd:'🧱', trMeta:'🧭',
+const CC_TRAIN_ICON={trAim:'🎯', trSur:'🏆', trBox:'📦', trZw:'🌀', trEdit:'✏️', trMap:'🗺️', trCon:'💪', trClu:'⚔️', trExp:'📼', trEnd:'🧱', trMeta:'🧭',
   scrim:'🤝', noble:'🏟️', talk:'💬', stream:'📺', host:'🎪', rest:'😴'};
 const CC_ATTR_ICON={aim:'🎯', end:'🧱', sur:'🏆', exp:'📼', clu:'⚔️', con:'💪'};
 function ccWeekTag(d){ d=d||careerToday(); return ccMonthKey(d)+'|'+Math.floor(((+d.slice(8,10))-1)/7); }
@@ -133737,7 +133932,54 @@ function ccTrainPanelHTML(six, wide){
     '<div class="cc-fat"><span>'+L().lfFatigue+'</span><span class="cc-fat-bar s-'+state+'"><i style="width:'+fat.toFixed(0)+'%"></i></span>'+
       '<b>'+L()[state]+(risk ? ' · '+L().lfInjuryRisk(risk) : '')+'</b></div></div>';
 }
+// Своя карта: стройка (вечер из пяти) или обновление вышедшей; ниже — игры и деньги.
+function ccMapCardHTML(a, o){
+  const m=ccMap();
+  const line = !m || !m.pub ? L().lfMapBuild((m ? m.prog : 0), CC_MAP_BUILD)
+    : L().lfMapLive(m.name, m.code, ccNum(m.last||0), ccMoney(m.earned||0));
+  const why = o.closed ? '' : o.left<a.energy ? L().ccNeedEnergy(a.energy-o.left) : '';
+  return '<button class="cc-act cc-tcard g-train cc-tc-mapcard'+(o.can?'':' off')+(o.did?' did':'')+'" '+
+    (o.can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
+    '<span class="cc-tc-top"><i class="cc-tc-ico">'+CC_TRAIN_ICON.trMap+'</i><b class="cc-tc-name">'+
+      esc(m && m.pub ? L().lfMapUpdate : L().ccActtrMap)+'</b></span>'+
+    '<span class="cc-tc-map">'+esc(line)+'</span>'+
+    (m && !m.pub ? '<u class="hg-bar"><s style="width:'+Math.round(m.prog/CC_MAP_BUILD*100)+'%"></s></u>' : '')+
+    '<span class="cc-tc-row"><span class="cc-tc-gain"><i>'+esc(L().lfMapGive)+'</i></span><em>'+a.energy+L().ccEnergyMark+'</em></span>'+
+    (why ? '<i class="cc-tc-why">'+esc(why)+'</i>' : '')+'</button>';
+}
+/* Полоса недели во вкладке «Тренировка»: что сделано в каждый день и с какой оценкой.
+   Это журнал, а не расписание: план на неделю вперёд уже был и снят (3.09) — день
+   выбирается в свой день. */
+function ccTrainWeekHTML(){
+  const cr=CAREER.career, gr=ccLife().gr||{}, today=careerToday(), mon=careerMonday(today);
+  const evs=careerEvents();
+  const cells=[0,1,2,3,4,5,6].map(d=>{
+    const iso=ccAddDays(mon, d), on=evs.get(iso)||[], did=(cr.did||{})[iso]||[];
+    const grades=gr[iso]||[];
+    let body;
+    if(on.length) body='<span class="tw-ev"><i class="ch-pip ch-pip-'+(on[0].kind||'cup')+'">'+ccKindIconSVG(on[0].kind)+'</i>'+esc(on[0].label||'')+'</span>';
+    else if(did.length) body='<span class="tw-did">'+did.filter(x=>String(x).indexOf('ev:')!==0).map(id=>{
+        const g=(grades.find(r=>r.id===id)||{}).g;
+        return '<i title="'+esc(ccActName(id))+'">'+(CC_TRAIN_ICON[id]||'•')+(g ? '<b class="g-'+g.replace('+','p')+'">'+g+'</b>' : '')+'</i>'; }).join('')+'</span>';
+    else body='<span class="tw-free">'+(iso<today ? '—' : iso===today ? esc(L().lfTwPick) : '')+'</span>';
+    return '<div class="tw-day'+(iso===today?' now':'')+(iso<today?' past':'')+'"><em>'+L().calDows[d]+'</em><b>'+
+      new Date(iso+'T00:00:00Z').getUTCDate()+'</b>'+body+'</div>';
+  }).join('');
+  return '<div class="ch-tile tw-tile"><h4>'+esc(L().lfTwH)+'</h4>'+ccLadderRowHTML()+'<div class="tw-week">'+cells+'</div></div>';
+}
+// Где проходит занятие: настоящие карты Creative и плейлисты. Имена — как в игре.
+const CC_DRILL_MAP={trClu:"Enigma's Galaxy 1v1 Arena", trBox:'Clix Box Fights · Pandvil', trZw:'Desert Zone Wars',
+  };
+function ccDrillPlace(id){
+  if(id==='trSur') return ccCalYear()<2023 ? 'Arena · '+ccArenaName() : 'Ranked · '+ccRankName();
+  return CC_DRILL_MAP[id]||'';
+}
+function ccActName(id){
+  if(id==='trSur' && ccCalYear()<2023) return 'Arena';
+  return L()['ccAct'+id]||id;
+}
 function ccTrainCardHTML(a, o){
+  if(a.map) return ccMapCardHTML(a, o);
   const k=o.keys[0];
   const from=k ? (o.six[k]!=null ? o.six[k] : 50) : 0;
   const coachOn=!!(k && o.dayCoach && o.dayCoach.keys.indexOf(k)>=0);
@@ -133750,8 +133992,15 @@ function ccTrainCardHTML(a, o){
   const tip=k ? ccAttrFull(k)+': '+num(from)+' → '+num(to) : L().lfMetaGive;
   return '<button class="cc-act cc-tcard g-train'+(o.can?'':' off')+(o.did?' did':'')+'" title="'+esc(tip)+'" '+
     (o.can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
-    '<span class="cc-tc-top"><i class="cc-tc-ico">'+(CC_TRAIN_ICON[a.id]||'•')+'</i><b class="cc-tc-name">'+(L()['ccAct'+a.id]||a.id)+'</b></span>'+
-    '<span class="cc-tc-row">'+(k ? '<span class="cc-tc-gain">+'+num(to-from)+' <i>'+(L()['ccAttr'+k.toUpperCase()]||k)+'</i></span>'
+    '<span class="cc-tc-top"><i class="cc-tc-ico">'+(CC_TRAIN_ICON[a.id]||'•')+'</i><b class="cc-tc-name">'+esc(ccActName(a.id))+'</b>'+
+      (ccDrillLast(a.id) ? '<i class="cc-tc-grade g-'+ccDrillLast(a.id).replace('+','p')+'" title="'+esc(L().lfGradeLast)+'">'+ccDrillLast(a.id)+'</i>' : '')+'</span>'+
+    (ccDrillPlace(a.id) ? '<span class="cc-tc-map">'+esc(ccDrillPlace(a.id))+'</span>' : '')+
+    // Каждый атрибут занятия своим приростом — у карт Creative их два.
+    '<span class="cc-tc-row">'+(k ? '<span class="cc-tc-gain">'+o.keys.map(kk=>{
+        const f=o.six[kk]!=null ? o.six[kk] : 50;
+        const c=!!(o.dayCoach && o.dayCoach.keys.indexOf(kk)>=0);
+        const t=Math.max(35, Math.min(99, f+a.gain[kk]*o.dayMult*(c ? 1+o.dayCoach.train : 1)*ccFocusMult(kk)));
+        return '+'+num(t-f)+' <i>'+(L()['ccAttr'+kk.toUpperCase()]||kk)+'</i>'; }).join(' ')+'</span>'
                                    : '<span class="cc-tc-gain"><i>'+L().lfMetaGive+'</i></span>')+
       '<em>'+a.energy+L().ccEnergyMark+'</em></span>'+
     (why ? '<i class="cc-tc-why">'+esc(why)+'</i>' : coachOn ? '<i class="cc-tc-coach">'+L().lfCoachBoost(Math.round(o.dayCoach.train*100))+'</i>' : '')+
@@ -134012,10 +134261,10 @@ function careerTrainTabHTML(){
   const six=CAREER.player.attrs || ccOwnAttrs();
   if(ccCentreDayOpen()){
     CC_DAY_VIEW='train';
-    try{ return '<div class="cc-train-tab">'+ccTrainPlanHTML()+careerDayPanelHTML(null)+'</div>'; } finally{ CC_DAY_VIEW=''; }
+    try{ return '<div class="cc-train-tab">'+ccTrainWeekHTML()+ccTrainPlanHTML()+careerDayPanelHTML(null)+'</div>'; } finally{ CC_DAY_VIEW=''; }
   }
   const cr=CAREER.career, next=careerNext();
-  return '<div class="cc-train-tab">'+ccTrainPlanHTML()+'<div class="ch-art cc-day cc-day-train" style="background-image:url('+CAREER_EV_ART.cup+');">'+
+  return '<div class="cc-train-tab">'+ccTrainWeekHTML()+ccTrainPlanHTML()+'<div class="ch-art cc-day cc-day-train" style="background-image:url('+CAREER_EV_ART.cup+');">'+
     '<div class="ch-livebar"><b class="ch-live-soon">'+L().ccDayTag+'</b><span>'+esc(ccDayFull(careerToday()))+'</span></div>'+
     '<div class="ch-art-in cc-day-in">'+ccTrainPanelHTML(six, true)+
     '<div class="cc-day-locked">'+esc(cr.seasonOver ? L().ccSeasonOver : L().lfTrainEventDay(next.title||''))+'</div>'+

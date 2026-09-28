@@ -23,6 +23,9 @@ const BOOT = `
   const out = {fails: [], notes: {}, err: null};
   const check = (n, ok, d) => { if(!ok) out.fails.push(n + (d ? ': ' + d : '')); };
   try {
+    // Оценка занятия D…A+ (ccDrillGrade) — случайный множитель; этот харнесс меряет
+    // арифметику дня, поэтому оценка здесь всегда B (×1). Её саму проверяет check-career-train-fc.
+    ccDrillGrade = function(){ return {g:'B', mult:1}; };
     const fresh = money => { CAREER = {player: {nick:'Probe', ovr:82, region:'EU', country:'de', age:16, role:'roleIGL', attrs:ccRookieAttrs(82,'roleIGL')},
       career: {season:1, day:'2026-02-10', division:1, balance:money, earnings:money,
                log:[], news:[]}, partner:null, gear:{own:[], train:0}}; };
