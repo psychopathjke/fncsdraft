@@ -3392,10 +3392,10 @@
   .ch-subtab.on{color:#0b1a3a;background:#ffdd00;box-shadow:none;}
   .mc-block{margin:6px 0 12px;} .mc-head{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:8px;font-weight:900;font-size:13px;}
   .mc-head span:last-child{text-align:right;} .mc-head em{font-style:italic;color:#ffdd00;margin-left:4px;} .mc-head i{font-style:normal;font-size:10px;color:#8094c4;text-transform:uppercase;}
-  .mc-row{display:grid;grid-template-columns:38px 1fr 46px 1fr 38px;gap:6px;align-items:center;margin:4px 0;font-size:11px;}
-  .mc-row b{font-weight:900;color:#cfd8ff;text-align:center;} .mc-row b.win{color:#00d6a4;}
+  .mc-row{display:grid;grid-template-columns:30px 1fr 64px 1fr 30px;gap:8px;align-items:center;margin:6px 0;font-size:13px;}
+  .mc-row b{font-weight:900;color:#cfd8ff;text-align:center;font-variant-numeric:tabular-nums;} .mc-row b.win{color:#00d6a4;}
   .mc-row span{text-align:center;font-weight:900;color:#8094c4;font-size:10px;text-transform:uppercase;}
-  .mc-row u{display:flex;height:7px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden;text-decoration:none;}
+  .mc-row u{display:flex;height:9px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden;text-decoration:none;}
   .mc-row u.l{justify-content:flex-end;} .mc-row u s{display:block;height:100%;border-radius:5px;background:#7aa2ff;text-decoration:none;} .mc-row u.l s{background:#00d6a4;}
   .cc-nb{position:relative;display:inline-flex;align-items:center;justify-content:center;
     width:34px;height:30px;border-radius:8px;border:1px solid #24314e;background:#131c30;
@@ -124894,17 +124894,21 @@ function ccChemBump(n){
    в строке — подсвечен. По тиммейту на блок (в трио — двое). */
 function ccMateCompareHTML(){
   const recs=careerMateRecords().filter(Boolean); if(!recs.length) return '';
-  const mine=CAREER.player.attrs || ccOwnAttrs(), myOvr=ccMyShownOvr();
-  const num=v=>(Math.round(v*10)/10).toFixed(1);
+  /* Числа — те же, что на карточках (Notion «27» скрин 23: «некрасиво и цифры не точные» —
+     здесь стояли сырые статы с десятыми, 98.8 при 99 на карточке). Своя сторона — с карточки
+     игрока (attrsFor(careerCard())), чужая — с карточки напарника; целыми, как на карточках. */
+  const myCard=careerCard(), mineA=myCard ? attrsFor(myCard) : null;
+  const mine=mineA || CAREER.player.attrs || ccOwnAttrs(), myOvr=ccMyShownOvr();
+  const num=v=>String(Math.round(v));
   const blocks=recs.map(p=>{
     const c=ccMateCardOf(p); if(!c) return '';
     const a=attrsFor(c), mo=Math.round(a.ovr||c.rating||0);
     const rows=ATTR_KEYS.map(k=>{
-      const x=mine[k]!=null ? mine[k] : 50, y=a[k]!=null ? a[k] : 50;
+      const x=Math.round(mine[k]!=null ? mine[k] : 50), y=Math.round(a[k]!=null ? a[k] : 50);
       const px=Math.max(0, Math.min(100, (x-35)/64*100)), py=Math.max(0, Math.min(100, (y-35)/64*100));
-      return '<div class="mc-row"><b class="'+(x>y+0.05?'win':'')+'">'+num(x)+'</b>'+
-        '<u class="l"><s style="width:'+px.toFixed(0)+'%"></s></u><span>'+(L()['ccAttr'+k.toUpperCase()]||k)+'</span>'+
-        '<u class="r"><s style="width:'+py.toFixed(0)+'%"></s></u><b class="'+(y>x+0.05?'win':'')+'">'+num(y)+'</b></div>';
+      return '<div class="mc-row"><b class="'+(x>y?'win':'')+'">'+num(x)+'</b>'+
+        '<u class="l"><s style="width:'+px.toFixed(0)+'%"></s></u><span>'+(CC_ATTR_ICON[k]||'')+' '+(L()['ccAttr'+k.toUpperCase()]||k)+'</span>'+
+        '<u class="r"><s style="width:'+py.toFixed(0)+'%"></s></u><b class="'+(y>x?'win':'')+'">'+num(y)+'</b></div>';
     }).join('');
     return '<div class="mc-block"><div class="mc-head"><span>'+esc(CAREER.player.nick||'')+' <em>'+myOvr+'</em></span><i>vs</i>'+
       '<span>'+esc(c.handle)+' <em>'+mo+'</em></span></div>'+rows+'</div>';
