@@ -87,19 +87,20 @@ const BOOT = `
     out.notes.noble=(CAREER.career.news||[]).find(n=>n.k==='lfNewsNoble');
     check('новость Noble', !!out.notes.noble);
     out.notes.tile=ccLifeAlertRows().join(' ').replace(/<[^>]+>/g,' ').replace(/ +/g,' ').slice(0,400);
-    // 5. Поездка: DreamHack Winter 2022 (Йёнчёпинг) из NA — оформить билет.
+    // 5. Поездок в режиме нет (снято 29.09): ЛАН из другого региона не закрыт билетом,
+    //    в «Целях» нет строк «Поездка · город · оформить».
     setY('2022-11-10', 2022, {region:'NAC'});
     CAREER.player.region='NAC'; if(CAREER.career) CAREER.career.region='NAC';
-    const ev=ccVictoryList().find(v=>v.day==='2022-11-27');
-    out.notes.trip=JSON.stringify(ccTripOf(ev));
-    check('без билета закрыт', ccTripWhy(ev)==='lfTripNone', ccTripWhy(ev));
-    CAREER.career.balance=5000;
-    careerTripBook(ev.id, ev.day);
-    check('с билетом за 17 дней открыт', ccTripWhy(ev)===null, ccTripWhy(ev));
-    ccLife().trips={}; ccLife().trips[ev.id+'|'+ev.day]={day:'2022-11-24', cost:900};
-    // Визы в режиме нет: поздний билет всё равно пускает, только с джетлагом.
-    check('поздний билет пускает', ccTripWhy(ev)===null, ccTripWhy(ev));
-    check('джетлаг при позднем билете', ccTripJetlag(ev)===true);
+    check('функций поездок нет', typeof ccTripOf==='undefined' && typeof careerTripBook==='undefined');
+    check('ЛАН в Йёнчёпинге не закрыт', ccLifeWhy('2022-11-27','victory')!=='lfTripNone', ccLifeWhy('2022-11-27','victory'));
+    const goalsTxt=ccLifeAlertRows().join(' ');
+    check('в плитке нет «Оформить»', !/careerTripBook/.test(goalsTxt), goalsTxt.slice(0,200));
+    // 5б. Кап в один раунд (cut 0) без денег — без «раунд 2 без тебя» и «ниже Дивизиона 1».
+    setY('2019-10-01', 2019);
+    careerTwoRoundResultCard({title:'Solo Platform Cash Cup 9', place:28, through:false, wins:0, cash:0, cut:0});
+    const card=[...document.querySelectorAll('.stage-card')].pop().textContent;
+    check('кап в один раунд — нет «Round 2»', !/Round 2|раунд 2/i.test(card) && !/top 0|топ-0/i.test(card), card.slice(0,200));
+    check('кап 2019 — нет «Division 1»', !/Division 1|Дивизиона 1/i.test(card), card.slice(0,200));
     // 6. Икон-скин: миллион призовых.
     setY('2026-04-01', 2026);
     CAREER.career.earnings=1200000; const bal=CAREER.career.balance||0;
