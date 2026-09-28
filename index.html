@@ -106468,11 +106468,11 @@ function renderLobby(teams, you){
       headRow.appendChild(th);
     } else if(!showDrop && dropTh){ dropTh.remove(); }
     const existing=headRow.querySelector('th.prize-col');
-    if(lobbyPrizeTable && !existing){
+    if(false && lobbyPrizeTable && !existing){
       const th=document.createElement('th');
       th.className='num prize-col'; th.textContent=L().prizeHeader;
       headRow.appendChild(th);
-    } else if(!lobbyPrizeTable && existing){ existing.remove(); }
+    } else if(existing){ existing.remove(); }
   }
   body.innerHTML='';
   teams.forEach((t,i)=>{
@@ -106486,11 +106486,10 @@ function renderLobby(teams, you){
     const matches = (t.gameLog ? t.gameLog.filter(g=>!g.isLandingBonus).length : (t.stageLog ? t.stageLog.filter(g=>!g.isLandingBonus).length : NUM_GAMES))
                     + (t._carryGames||0);
     const prize = lobbyPrizeTable ? prizeFor(lobbyPrizeTable, i+1) : 0;
-    const prizeCell = lobbyPrizeTable
-      ? `<td class="num lobby-num" style="color:${prize?'#ffd166':'var(--ink-dimmer)'};font-weight:${prize?'800':'400'};">${prize?fmtMoney(prize):'—'}</td>`
-      : '';
+    // Приз — у ника, как во всех таблицах с деньгами (правка 28.09); колонки нет.
+    const prizeCell = '';
     const dropCell = showDrop ? `<td class="num lobby-num" style="color:var(--ink-dim);white-space:nowrap;">${landingCellHTML(t)}</td>` : '';
-    tr.innerHTML=`<td class="lobby-rank">#${i+1}</td><td>${nameStyled}</td><td class="num lobby-pts">${t.totalPts}</td><td class="num lobby-num">${matches}</td><td class="num lobby-num">${t.wins||0}</td><td class="num lobby-num">${t.totalElims}</td><td class="num lobby-num">${powerCell}</td>${dropCell}${prizeCell}`;
+    tr.innerHTML=`<td class="lobby-rank">#${i+1}</td><td>${nameStyled}${prize?`<span class="st-prize">${fmtMoney(prize)}</span>`:''}</td><td class="num lobby-pts">${t.totalPts}</td><td class="num lobby-num">${matches}</td><td class="num lobby-num">${t.wins||0}</td><td class="num lobby-num">${t.totalElims}</td><td class="num lobby-num">${powerCell}</td>${dropCell}${prizeCell}`;
     tr.style.cursor='pointer';
     tr.onclick=()=>showMatchHistory(t);
     body.appendChild(tr);
@@ -151389,15 +151388,14 @@ function careerArcTableHTML(sn, key){
   // a phone, and the first thing to fall off the right of it is the prize.
   const head=`<th class="arc-h">#</th><th>${L().teamHeader}</th>`+
     `<th class="ev-num">${L().ptsHeader}</th><th class="ev-num">${L().winsWord}</th>`+
-    `<th class="ev-num">${L().killsHeader}</th><th class="ev-num">${L().prizeHeader}</th>`;
+    `<th class="ev-num">${L().killsHeader}</th>`;
   const body=t.rows.map(r=>`<tr class="${r.you?'arc-me':''}">
       <td><span class="ev-place${r.p<=3?' top':(r.you?' cut':'')}">${r.p}</span></td>
-      <td class="arc-n">${esc(r.name)}${r.you?` <i>${L().arcYou}</i>`:''}${
+      <td class="arc-n">${esc(r.name)}${r.prize?`<span class="st-prize">${ccMoney(r.prize)}</span>`:''}${r.you?` <i>${L().arcYou}</i>`:''}${
         t.lan?`<small>${esc(regionName(r.reg))}</small>`:''}</td>
       <td class="ev-num arc-pts">${ccNum(r.pts)}</td>
       <td class="ev-num">${r.wins||'—'}</td>
       <td class="ev-num">${ccNum(r.elims)}</td>
-      <td class="ev-num ev-cash">${r.prize?ccMoney(r.prize):'—'}</td>
     </tr>`).join('');
   return `<div class="arc-wrap">
     <div class="arc-cap">${esc(t.cap)}<span>${esc(t.sub)}</span></div>
