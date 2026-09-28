@@ -151506,7 +151506,7 @@ function careerProfileHTML(){
       </div>
     </div>
     ${ccAwardsShelfHTML()}
-    ${ccDropMapHTML()}
+    ${ccMyDropsHTML()}
     <div class="ev-tablewrap">
       <table class="ev-table">
         <thead><tr>
@@ -151547,7 +151547,7 @@ function ccDropRec(t, place, total){
   const r=d[k]||(d[k]={n:0, pct:0, w:0});
   r.n++; r.pct+=total>1 ? 1-(place-1)/(total-1) : 1; if(place===1) r.w++;
 }
-function ccDropMapHTML(){
+function ccMyDropsHTML(){   // не ccDropMapHTML: то имя — у вырезки карты под постом, это перекрывало её (скрин 28.09)
   const d=(CAREER.career.life||{}).drops; if(!d) return '';
   const bySet={}; Object.keys(d).forEach(k=>{ const s=k.split('|')[0]; bySet[s]=(bySet[s]||0)+d[k].n; });
   const set=Object.keys(bySet).sort((a,b)=>bySet[b]-bySet[a])[0];
