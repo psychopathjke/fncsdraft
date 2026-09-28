@@ -121,6 +121,13 @@ const BOOT = `
     careerBackToHub();
     check('и снимается в хабе', !document.documentElement.classList.contains('ev-pal'));
 
+    // ---- Раунды капа по окнам Epic.
+    check('Daily Duos 2020 — один раунд', ccCupRounds({id:'S12_DailyDuos'})===1);
+    check('Solo Cash Cup 2019–20 — один раунд', ccCupRounds({id:'S11_CC_Contenders'})===1);
+    check('Cash Cup V2 весной 2020 — два раунда', ccCupRounds({id:'S12_CCV2_Platform'})===2);
+    check('Victory Cup 2023 — два раунда', ccCupRounds({id:'S24_SoloVictoryCup'})===2);
+    check('своё событие — как было', ccCupRounds({id:'NationsFinal'})===null);
+
     // ---- 2026: ранкед, Арены нет.
     seed(2026, '2026-02-18', 70, 2);
     CAREER.career.day=freeDay('2026-02-18'); careerSave();
