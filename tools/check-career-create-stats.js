@@ -85,6 +85,27 @@ const BOOT = `
     const got=sv && sv.player && sv.player.attrs ? ATTR_KEYS.map(k=>sv.player.attrs[k]).join(',') : null;
     out.notes.saved=got;
     check('сейв = превью', got===shape, got+' vs '+shape);
+    // Вкладка «Свои статы до 99»: без бюджета, «Все 99» → сейв с 99 во всех шести и 99 общего.
+    localStorage.removeItem('fncsdraft_career');
+    openCareerCreate(); ccSetMode('free');
+    check('вкладка свободных статов подсвечена', document.getElementById('ccTabFree').classList.contains('on') && !document.getElementById('ccTabRookie').classList.contains('on'));
+    check('поле статов видно', getComputedStyle(document.getElementById('ccSpField')).display!=='none');
+    document.getElementById('ccNick').value='Maxman'; ccSync();
+    ccSpaAll(99);
+    const pv99=ccMakePlayer();
+    check('превью 99', pv99.rating===99, pv99.rating);
+    ccSpaSet('exp', 60);
+    check('число в поле ставит стат', ccMakePlayer()._attrs.exp===60, ccMakePlayer()._attrs.exp);
+    ccSpaSet('exp', 150);
+    check('выше 99 не бывает', ccMakePlayer()._attrs.exp===99);
+    ccStart();
+    const sv99=JSON.parse(localStorage.getItem('fncsdraft_career')||'null');
+    out.notes.free={ovr:sv99&&sv99.player.ovr, attrs:sv99&&sv99.player.attrs&&ATTR_KEYS.map(k=>sv99.player.attrs[k]).join(',')};
+    check('сейв: все шесть 99', !!sv99 && ATTR_KEYS.every(k=>sv99.player.attrs[k]===99), JSON.stringify(out.notes.free));
+    check('сейв: общий 99', !!sv99 && Math.round(sv99.player.ovr)===99, JSON.stringify(out.notes.free));
+    // И обычная вкладка возвращается к бюджету.
+    openCareerCreate(); ccSetMode('rookie');
+    check('в «Новичке» снова бюджет', !CC.spaFree && ccSpaLeft()===CC_SP_START);
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
