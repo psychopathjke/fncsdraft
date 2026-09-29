@@ -2289,10 +2289,20 @@
   .cc-duo-sort .cc-job-h.on{outline:1px solid var(--primary,#ffd400)}
   .cc-duo-bar{display:flex;gap:8px;align-items:center;margin:10px 0 4px;}
   .cc-duo-bar .cc-duo-q{flex:1 1 auto;min-width:0;margin:0;}
-  .cc-duo-natsel{flex:0 0 auto;max-width:44%;padding:9px 10px;border-radius:9px;
-    border:1px solid var(--line);background:rgba(0,0,0,.28);color:inherit;font:inherit;font-size:14px;}
+  .cc-duo-natdd{position:relative;flex:0 0 auto;max-width:48%;}
+  .cc-duo-natsel{display:flex;align-items:center;gap:6px;width:100%;padding:9px 10px;border-radius:9px;cursor:pointer;
+    border:1px solid var(--line);background:rgba(0,0,0,.28);color:inherit;font:inherit;font-size:14px;white-space:nowrap;}
+  .cc-duo-natsel span{overflow:hidden;text-overflow:ellipsis;}
+  .cc-duo-natsel i{font-style:normal;opacity:.7;margin-left:auto;}
   .cc-duo-natsel.on{border-color:var(--primary,#ffd400);color:var(--primary,#ffd400);}
-  .cc-duo-natsel option{background:#141a26;color:#fff;}
+  .cc-duo-natsel img, .cc-duo-natlist img{width:20px;height:auto;border-radius:2px;flex:0 0 auto;display:block;}
+  .cc-duo-natlist{position:absolute;right:0;top:calc(100% + 4px);z-index:20;width:220px;max-height:320px;overflow-y:auto;
+    background:#141a26;border:1px solid var(--line);border-radius:10px;padding:4px;box-shadow:0 10px 30px rgba(0,0,0,.55);}
+  .cc-duo-natlist button{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:0;border-radius:7px;
+    background:none;color:#fff;font:inherit;font-size:14px;text-align:left;cursor:pointer;}
+  .cc-duo-natlist button:hover{background:rgba(255,255,255,.07);}
+  .cc-duo-natlist button.on{background:rgba(255,212,0,.14);color:var(--primary,#ffd400);}
+  .cc-duo-natlist button b{margin-left:auto;font-weight:700;opacity:.6;}
   /* Инициалы под фото: фото легло — закрыло их, не легло — они и есть аватарка. */
   .cc-duo-ava{position:relative;overflow:hidden;}
   .cc-duo-ava img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
@@ -111206,7 +111216,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b8c1699c';
+const CC_BUILD='52bb2bc8';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -135352,7 +135362,7 @@ let CC_DUO_SORT='ovr';
 function ccDuoFindSort(v){ CC_DUO_SORT=(v==='pr' ? 'pr' : 'ovr'); ccDuoFindRender(); }
 /* Отбор по флагу. Пусто — все; иначе код страны, как его знает FLAG_CODE.
    Живёт рядом с сортировкой и сбрасывается там же, где строка поиска. */
-let CC_DUO_NAT='';
+let CC_DUO_NAT='', CC_DUO_NAT_OPEN=false;
 function ccDuoFindNat(v){ CC_DUO_NAT=(String(v||'')===CC_DUO_NAT) ? '' : String(v||''); ccDuoFindRender(); }
 // Код страны человека из списка: в карточках лежит НАЗВАНИЕ страны, не код.
 function ccDuoNatCode(w){
@@ -135376,7 +135386,7 @@ function ccDuoFindOpen(seat, fmt){
      предложить его может любой из двоих — раньше список молча не открывался
      у второго в лобби, и если роли перепутались, то и у владельца. */
   if(ccMpOn() && ccMpMateRecs().length >= ccMpBotSeats()) return;
-  CC_DUO_Q=''; CC_DUO_NAT='';
+  CC_DUO_Q=''; CC_DUO_NAT=''; CC_DUO_NAT_OPEN=false;
   CC_DUO_SEAT=(typeof seat==='number' && seat>=0 && seat<careerMateSeats()) ? seat : null;
   ccDuoFindRender();
   document.getElementById('duoFindModal').style.display='flex';
@@ -135456,7 +135466,8 @@ function ccDuoFindRender(keepFocus){
   if(CC_DUO_NAT && natAll.indexOf(CC_DUO_NAT)<0) natAll.unshift(CC_DUO_NAT);
   let natName=c=>c.toUpperCase();
   try{ const dn=new Intl.DisplayNames([LANG||'en'], {type:'region'}); natName=c=>{ try{ return dn.of(c==='uk' ? 'GB' : c.toUpperCase())||c.toUpperCase(); }catch(e){ return c.toUpperCase(); } }; }catch(e){}
-  const natEmoji=c=>{ const u=(c==='uk' ? 'gb' : c).toUpperCase(); return /^[A-Z]{2}$/.test(u) ? String.fromCodePoint(...[...u].map(x=>0x1F1E6+x.charCodeAt(0)-65)) : ''; };
+  /* Флаг картинкой, а не эмодзи: Windows эмодзи-флагов не рисует и пишет буквы «DE», «FR» (скрин 29.09). */
+  const natFlag=c=>`<img src="flags/w20/${c}.png" alt="" onerror="this.remove()">`;
   const rows=list.map(w=>{
     const said=careerDmFind(w.handle);
     const wrote=!!(said && said.msgs && said.msgs.some(m=>m.from==='you'));
@@ -135497,10 +135508,14 @@ function ccDuoFindRender(keepFocus){
      <div class="cc-duo-bar"><input id="duoFindQ" class="cc-duo-q" type="text" autocomplete="off"
             placeholder="${esc(L().ccDuoSearchPh)}" value="${esc(CC_DUO_Q)}"
             oninput="ccDuoFindQ(this.value)">
-       <select class="cc-duo-natsel${CC_DUO_NAT?' on':''}" aria-label="${esc(L().ccDuoNat)}" onchange="CC_DUO_NAT=this.value;ccDuoFindRender()">
-         <option value="">🌍 ${esc(L().ccDuoNatAll)} · ${all.length}</option>
-         ${natAll.map(c=>`<option value="${c}"${CC_DUO_NAT===c?' selected':''}>${natEmoji(c)} ${esc(natName(c))} · ${natCount[c]||0}</option>`).join('')}
-       </select></div>
+       <div class="cc-duo-natdd${CC_DUO_NAT_OPEN?' open':''}">
+         <button type="button" class="cc-duo-natsel${CC_DUO_NAT?' on':''}" aria-label="${esc(L().ccDuoNat)}" onclick="CC_DUO_NAT_OPEN=!CC_DUO_NAT_OPEN;ccDuoFindRender()">${
+           CC_DUO_NAT ? natFlag(CC_DUO_NAT)+'<span>'+esc(natName(CC_DUO_NAT))+'</span>' : '<span>'+esc(L().ccDuoNat)+': '+esc(L().ccDuoNatAll)+'</span>'}<i>▾</i></button>
+         ${CC_DUO_NAT_OPEN ? `<div class="cc-duo-natlist">
+           <button type="button" class="${CC_DUO_NAT?'':'on'}" onclick="CC_DUO_NAT='';CC_DUO_NAT_OPEN=false;ccDuoFindRender()"><span>${esc(L().ccDuoNatAll)}</span><b>${all.length}</b></button>
+           ${natAll.map(c=>`<button type="button" class="${CC_DUO_NAT===c?'on':''}" onclick="CC_DUO_NAT='${c}';CC_DUO_NAT_OPEN=false;ccDuoFindRender()">${natFlag(c)}<span>${esc(natName(c))}</span><b>${natCount[c]||0}</b></button>`).join('')}
+         </div>` : ''}
+       </div></div>
      <div class="ch-hint cc-duo-n">${list.length ? L().ccDuoFound(list.length) : L().ccDuoNobody}
        <span class="cc-duo-sort">${esc(L().ccDuoSortBy)}: <button class="cc-job-h${CC_DUO_SORT==='ovr'?' on':''}" onclick="ccDuoFindSort('ovr')">${esc(L().ccDuoSortOvr)}</button> <button class="cc-job-h${CC_DUO_SORT==='pr'?' on':''}" onclick="ccDuoFindSort('pr')">${esc(L().ccDuoSortPr)}</button></span></div>
      <div class="cc-buys">${rows}</div>`;
