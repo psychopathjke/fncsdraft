@@ -2287,9 +2287,16 @@
   .cc-flat-where:focus{outline:2px solid var(--accent);outline-offset:1px;}
   .cc-duo-sort{float:right;display:inline-flex;gap:4px;align-items:center}
   .cc-duo-sort .cc-job-h.on{outline:1px solid var(--primary,#ffd400)}
-  .cc-duo-nat{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:4px;}
-  .cc-duo-flag{display:inline-flex;align-items:center;gap:4px;}
-  .cc-duo-flag img{height:10px;width:auto;border-radius:2px;display:block;}
+  .cc-duo-bar{display:flex;gap:8px;align-items:center;margin:10px 0 4px;}
+  .cc-duo-bar .cc-duo-q{flex:1 1 auto;min-width:0;margin:0;}
+  .cc-duo-natsel{flex:0 0 auto;max-width:44%;padding:9px 10px;border-radius:9px;
+    border:1px solid var(--line);background:rgba(0,0,0,.28);color:inherit;font:inherit;font-size:14px;}
+  .cc-duo-natsel.on{border-color:var(--primary,#ffd400);color:var(--primary,#ffd400);}
+  .cc-duo-natsel option{background:#141a26;color:#fff;}
+  /* Инициалы под фото: фото легло — закрыло их, не легло — они и есть аватарка. */
+  .cc-duo-ava{position:relative;overflow:hidden;}
+  .cc-duo-ava img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  #duoFindModal .cc-duo-fr{flex:0 0 auto;white-space:nowrap;}
   .cc-duo-q{width:100%;margin:10px 0 4px;padding:9px 12px;border-radius:9px;
     border:1px solid var(--line);background:rgba(0,0,0,.28);color:inherit;
     font:inherit;font-size:14px;}
@@ -111199,7 +111206,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f7cd1231';
+const CC_BUILD='b8c1699c';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -135442,8 +135449,14 @@ function ccDuoFindRender(keepFocus){
      стран с одним человеком ищется строкой быстрее, чем флагом. */
   const natCount={};
   all.forEach(w=>{ const c=ccDuoNatCode(w); if(c) natCount[c]=(natCount[c]||0)+1; });
-  const natTop=Object.keys(natCount).sort((a,b)=>natCount[b]-natCount[a]).slice(0, 10);
-  if(CC_DUO_NAT && natTop.indexOf(CC_DUO_NAT)<0) natTop.push(CC_DUO_NAT);
+  /* Страна — выпадающим списком рядом с поиском (его слово 29.09: ряд флагов «не нравится», «фильтр,
+     чтоб выбор был тут же, не все»): закрытым он занимает одну кнопку, открытым — все страны списка
+     по числу людей, с названием, а не только картинкой. */
+  const natAll=Object.keys(natCount).sort((a,b)=>natCount[b]-natCount[a]);
+  if(CC_DUO_NAT && natAll.indexOf(CC_DUO_NAT)<0) natAll.unshift(CC_DUO_NAT);
+  let natName=c=>c.toUpperCase();
+  try{ const dn=new Intl.DisplayNames([LANG||'en'], {type:'region'}); natName=c=>{ try{ return dn.of(c==='uk' ? 'GB' : c.toUpperCase())||c.toUpperCase(); }catch(e){ return c.toUpperCase(); } }; }catch(e){}
+  const natEmoji=c=>{ const u=(c==='uk' ? 'gb' : c).toUpperCase(); return /^[A-Z]{2}$/.test(u) ? String.fromCodePoint(...[...u].map(x=>0x1F1E6+x.charCodeAt(0)-65)) : ''; };
   const rows=list.map(w=>{
     const said=careerDmFind(w.handle);
     const wrote=!!(said && said.msgs && said.msgs.some(m=>m.from==='you'));
@@ -135463,8 +135476,10 @@ function ccDuoFindRender(keepFocus){
     const fits=!ad || ccAdFits(ad);
     return `<div class="cc-buy">
       ${(function(){ const u=w.card ? photoURL(w.card) : null;
-          return u ? `<img class="cc-buy-img cc-buy-face" src="${u}" alt="" loading="lazy" onerror="this.remove()">`
-                   : `<span class="cc-buy-img cc-buy-face cc-buy-mono">${esc(String(w.handle||'?').slice(0,2).toUpperCase())}</span>`;
+          /* Инициалы стоят всегда, фото — поверх них: не загрузилось — остаются инициалы, а не
+             пустое место и сдвинутая строка (скрин 29.09: у Crue, Nayte, Stompy не было ничего). */
+          return `<span class="cc-buy-img cc-buy-face cc-buy-mono cc-duo-ava">${esc(String(w.handle||'?').slice(0,2).toUpperCase())}${
+            u ? `<img src="${u}" alt="" loading="lazy" onerror="this.remove()">` : ''}</span>`;
         })()}
       <div class="cc-buy-in"><b>${esc(w.handle)} <i>${w.ovr}</i></b><i>${under}</i>${
         ad ? `<i class="cc-buy-ad${fits?'':' no'}">${esc(L().ccAdWant(L()[ad.want]||'', ad.div, ad.pr))}</i>` : ''}</div>
@@ -135473,21 +135488,21 @@ function ccDuoFindRender(keepFocus){
               : `<button class="ch-sign" onclick="ccDuoFindWrite('${esc(w.handle).replace(/'/g,"\\'")}')">${L().ccDuoWrite}</button>`}
       ${(CAREER.career.friends||[]).indexOf(w.handle)>=0
         ? `<span class="cc-owned">${L().ccFriendIs}</span>`
-        : `<button class="cc-job-h" onclick="careerFriendAsk('${esc(w.handle).replace(/'/g,"\\'")}')">${L().ccFriendAdd}</button>`}
+        : `<button class="cc-job-h cc-duo-fr" onclick="careerFriendAsk('${esc(w.handle).replace(/'/g,"\\'")}')">${L().ccFriendAdd}</button>`}
     </div>`;
   }).join('');
   document.getElementById('duoFindBody').innerHTML=
     `<h4 class="cc-pick-h">${CC_DUO_FMT ? esc(L().rsFindTitle(CC_DUO_FMT)) : L().ccDuoFindTitle}</h4>
      <div class="ch-hint">${L().ccDuoFindHint}</div>
-     <input id="duoFindQ" class="cc-duo-q" type="text" autocomplete="off"
+     <div class="cc-duo-bar"><input id="duoFindQ" class="cc-duo-q" type="text" autocomplete="off"
             placeholder="${esc(L().ccDuoSearchPh)}" value="${esc(CC_DUO_Q)}"
             oninput="ccDuoFindQ(this.value)">
+       <select class="cc-duo-natsel${CC_DUO_NAT?' on':''}" aria-label="${esc(L().ccDuoNat)}" onchange="CC_DUO_NAT=this.value;ccDuoFindRender()">
+         <option value="">🌍 ${esc(L().ccDuoNatAll)} · ${all.length}</option>
+         ${natAll.map(c=>`<option value="${c}"${CC_DUO_NAT===c?' selected':''}>${natEmoji(c)} ${esc(natName(c))} · ${natCount[c]||0}</option>`).join('')}
+       </select></div>
      <div class="ch-hint cc-duo-n">${list.length ? L().ccDuoFound(list.length) : L().ccDuoNobody}
        <span class="cc-duo-sort">${esc(L().ccDuoSortBy)}: <button class="cc-job-h${CC_DUO_SORT==='ovr'?' on':''}" onclick="ccDuoFindSort('ovr')">${esc(L().ccDuoSortOvr)}</button> <button class="cc-job-h${CC_DUO_SORT==='pr'?' on':''}" onclick="ccDuoFindSort('pr')">${esc(L().ccDuoSortPr)}</button></span></div>
-     <div class="ch-hint cc-duo-nat">${esc(L().ccDuoNat)}:
-       <button class="cc-job-h${CC_DUO_NAT?'':' on'}" onclick="ccDuoFindNat('')">${esc(L().ccDuoNatAll)}</button>
-       ${natTop.map(c=>`<button class="cc-job-h cc-duo-flag${CC_DUO_NAT===c?' on':''}" onclick="ccDuoFindNat('${c}')"><img src="flags/w20/${c}.png" alt="" onerror="this.remove()">${natCount[c]||0}</button>`).join('')}
-     </div>
      <div class="cc-buys">${rows}</div>`;
   if(keepFocus){
     const f=document.getElementById('duoFindQ');
