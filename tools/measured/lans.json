@@ -5497,5 +5497,206 @@
     214
    ]
   ]
+ },
+ {
+  "page": "Twitch Rivals/Cracked Cup/TwitchCon Europe",
+  "name": "Twitch Rivals Cracked Cup 2025",
+  "day": "2025-05-31",
+  "city": "Rotterdam",
+  "format": 2,
+  "invite": 40,
+  "zb": false,
+  "reload": true,
+  "region": "EU",
+  "pay": [
+   [
+    1,
+    2250
+   ],
+   [
+    2,
+    2200
+   ],
+   [
+    3,
+    2150
+   ],
+   [
+    4,
+    2100
+   ],
+   [
+    5,
+    2050
+   ],
+   [
+    6,
+    2000
+   ],
+   [
+    7,
+    1950
+   ],
+   [
+    8,
+    1900
+   ],
+   [
+    9,
+    1850
+   ],
+   [
+    10,
+    1800
+   ],
+   [
+    15,
+    1750
+   ],
+   [
+    20,
+    1700
+   ]
+  ]
+ },
+ {
+  "page": "Games of the Future/2025",
+  "name": "Games of the Future 2025",
+  "day": "2025-12-18",
+  "city": "Abu Dhabi",
+  "format": 2,
+  "invite": 40,
+  "zb": true,
+  "reload": true,
+  "pay": [
+   [
+    1,
+    35000
+   ],
+   [
+    2,
+    32500
+   ],
+   [
+    3,
+    27500
+   ],
+   [
+    4,
+    22500
+   ],
+   [
+    5,
+    20000
+   ],
+   [
+    10,
+    17500
+   ],
+   [
+    15,
+    15000
+   ],
+   [
+    20,
+    10000
+   ]
+  ]
+ },
+ {
+  "page": "Amar/Lost Legends/European Showdown",
+  "name": "Lost Legends: European Showdown",
+  "day": "2026-03-21",
+  "city": "Online",
+  "format": 4,
+  "invite": 88,
+  "zb": true,
+  "region": "EU",
+  "pay": [
+   [
+    1,
+    25000
+   ],
+   [
+    2,
+    8750
+   ],
+   [
+    3,
+    6250
+   ],
+   [
+    4,
+    4250
+   ],
+   [
+    5,
+    2250
+   ],
+   [
+    6,
+    1750
+   ],
+   [
+    7,
+    1500
+   ],
+   [
+    8,
+    1250
+   ],
+   [
+    10,
+    750
+   ],
+   [
+    20,
+    500
+   ]
+  ]
+ },
+ {
+  "page": "Virtuocity Battleground Qatar/2026",
+  "name": "Virtuocity Battleground Qatar 2026",
+  "day": "2026-09-17",
+  "city": "Doha",
+  "format": 2,
+  "invite": 40,
+  "zb": false,
+  "region": "ME",
+  "pay": [
+   [
+    1,
+    6250
+   ],
+   [
+    2,
+    3750
+   ],
+   [
+    3,
+    2500
+   ],
+   [
+    4,
+    2000
+   ],
+   [
+    5,
+    1750
+   ],
+   [
+    6,
+    1500
+   ],
+   [
+    7,
+    1250
+   ],
+   [
+    8,
+    750
+   ]
+  ]
  }
 ]

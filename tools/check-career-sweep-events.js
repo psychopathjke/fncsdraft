@@ -1,6 +1,7 @@
 // Турниры сверки с Liquipedia 29.09: ESL Katowice Royale Polish Edition 2019 (только поляки), World Cup
 // Warmup 2019 (онлайн-кап по регионам), Australian Open Summer Smash 2020/2022/2023 (OCE),
-// Ascension 2024 (французы), Amar x Rohat Cup 2024. Стоят ли в календаре и кого зовут; два вечера играются.
+// Ascension 2024 (французы), Amar x Rohat Cup 2024; 2025–26: Cracked Cup, Games of the Future,
+// Lost Legends European Showdown (ZB-сквады), Virtuocity Qatar 2026 (ME). Стоят ли в календаре и кого зовут; два вечера играются.
 //
 //   node tools/check-career-sweep-events.js
 const fs = require('fs'), os = require('os'), path = require('path');
@@ -74,6 +75,10 @@ const BOOT = `
       ['2020-02-02', {c:'de'}, 'LAN_Australian_Open_Summer_Smash_2020', false],
       ['2022-01-30', {c:'au', r:'OCE'}, 'LAN_Australian_Open_Summer_Smash_2022', true],
       ['2023-01-29', {c:'au', r:'OCE'}, 'LAN_Australian_Open_Summer_Smash_2023', true],
+      ['2025-05-31', {c:'de'}, 'LAN_Twitch_Rivals_Cracked_Cup_TwitchCon_Europe_Reload', true],
+      ['2026-03-21', {c:'de'}, 'LAN_Amar_Lost_Legends_European_Showdown', true],
+      ['2026-09-17', {c:'sa', r:'ME'}, 'LAN_Virtuocity_Battleground_Qatar_2026', true],
+      ['2026-09-17', {c:'de'}, 'LAN_Virtuocity_Battleground_Qatar_2026', false],
     ];
     for(const [d, who, id, inv] of C){
       const r=at(d, who);
@@ -82,7 +87,7 @@ const BOOT = `
       check(d+' '+who.c+' приглашение '+inv, !!r.inv===inv, JSON.stringify(r));
     }
     // Осень 2024: какой год карьеры их видит (2024-й кончается 29.09).
-    out.notes.asc=at('2024-10-26', {c:'fr'}); out.notes.amar=at('2024-11-09', {c:'de'});
+    out.notes.asc=at('2024-10-26', {c:'fr'}); out.notes.amar=at('2024-11-09', {c:'de'}); seed('2025-12-18', {year:2026, year0:2026}, {c:'de'}); CC_VICTORY_LIST=null; { const v=careerVictoryOn('2025-12-18'); out.notes.gotf={id:v&&v.id, inv:v?ccVictoryInvited(v):null, y:ccCalYear()}; check('Games of the Future в 2026-м', v && v.id==='LAN_Games_of_the_Future_2025_Reload', JSON.stringify(out.notes.gotf)); }
     seed('2019-02-24', null, {c:'pl'});
     const h1=await playThrough('Katowice PL solo');
     const l1=lastLog();
@@ -92,6 +97,11 @@ const BOOT = `
     const h2=await playThrough('Warmup');
     const l2=lastLog();
     out.steps.push('Warmup: '+h2+' · #'+(l2&&l2.place)+' $'+(l2&&l2.prize));
+    seed('2026-03-21', null, {c:'de'});
+    const h3=await playThrough('Lost Legends');
+    const l3=lastLog();
+    out.steps.push('Lost Legends: '+h3+' · #'+(l3&&l3.place)+' $'+(l3&&l3.prize)+' size '+(l3&&l3.size));
+    check('Lost Legends записан', l3 && l3.kind==='victory', JSON.stringify(l3));
     check('Warmup записан', l2 && l2.kind==='victory', JSON.stringify(l2));
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
   }catch(e){ out.err=String(e && e.stack || e); }

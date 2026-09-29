@@ -57,7 +57,7 @@ lans.forEach(l => {
   // online — обычный кап без приглашения (в свободный день, как капы архива Tracker).
   if (l.online) { out.push({ day: l.day, id: id.replace(/^LAN_/, 'ONL_'), mode: l.format === 1 ? 'solo' : l.format === 3 ? 'trio' : l.format === 4 ? 'squad' : 'duo', n: 1, name: l.name, p: payKey.get(js), zb: false }); return; }
   // nat — турнир для граждан своих стран (ESL Katowice Royale Polish Edition, Ascension во Франции).
-  out.push({ day: l.day, id, mode: l.format === 1 ? 'solo' : l.format === 3 ? 'trio' : 'duo', n: 1, name: l.name, p: payKey.get(js), zb: !!l.zb, lan: l.name + ' · ' + l.city, nat: l.nat || null, invite: l.invite, reshuffle: !!l.reshuffle, region: l.region || '',
+  out.push({ day: l.day, id, mode: l.format === 1 ? 'solo' : l.format === 3 ? 'trio' : l.format === 4 ? 'squad' : 'duo', n: 1, name: l.name, p: payKey.get(js), zb: !!l.zb, lan: l.name + ' · ' + l.city, nat: l.nat || null, invite: l.invite, reshuffle: !!l.reshuffle, region: l.region || '',
             qualFrom: (l.qualFrom || []).map(idOf), qualTop: l.qualTop || 0, prInvite: l.prInvite == null ? null : l.prInvite, ewc24: !!l.ewc24 });
 });
 out.sort((a, b) => a.day < b.day ? -1 : a.day > b.day ? 1 : 0);
