@@ -93,6 +93,17 @@ const BOOT = `
     seed('2022-09-28');
     careerAdvanceTo('2022-09-28');
     check('осенью дивизионы есть', !ccNoDivisions() && CAREER.career.div22===1, CAREER.career.division+'/'+CAREER.career.div22);
+    // 2б. Placement Cup 24.09.2022: итог — ступень, карточки пишут посев, а не «не прошёл / без денег» (аудит 29.09).
+    seed('2022-09-24');
+    const pv=careerVictoryOn('2022-09-24');
+    check('Placement Cup в календаре', pv && pv.placement, JSON.stringify(pv));
+    const ph=await playThrough('Placement Cup');
+    const pc=JSON.parse(localStorage.getItem('fncsdraft_career')).career;
+    const stagesTxt=document.getElementById('majorStages').innerText;
+    check('Placement Cup: ступень поставлена', pc.placed===pc.season && pc.division>=1, JSON.stringify({div:pc.division, placed:pc.placed}));
+    check('Placement Cup: карточки пишут посев', stagesTxt.indexOf(L().lfNewsPlaced(pc.division))>=0, stagesTxt.slice(-400));
+    check('Placement Cup: нет «без денег»', stagesTxt.indexOf(L().ccWfNoCash)<0 && stagesTxt.indexOf(L().ccResNoMoney)<0);
+    out.steps.push('Placement: '+ph+' · div '+pc.division);
     // 3. Квалификатор 1 Мейджора 1, раунд 1 — своими руками.
     seed('2022-02-17');
     const q1=await playThrough('Major 1 Q1 R1');

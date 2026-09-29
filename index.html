@@ -143878,12 +143878,17 @@ function ccTrialDiv(ev, place, n){
   const c=(ev.cuts||[]).find(x=>p<=x[0]); return Math.min(low, c ? c[1] : low);
 }
 const CC_PLACE_D1=200/1400, CC_PLACE_D2=1200/1400;
-function ccPlacementApply(through, place2, r2n, ev, place1, n1){
+// Ступень по итогу вечера — без записи (карточки вечера пишут её до ccPlacementApply).
+function ccPlacementDivOf(through, place2, r2n, ev, place1, n1){
   const cr=CAREER.career, low=(typeof ccDivCount==='function' ? ccDivCount() : 3);
   // Trial только поднимает: кто уже выше (Д1 по прошлому сезону), тот там и остаётся.
-  const div = (ev && ev.single) ? Math.min(cr.division||low, ccTrialDiv(ev, place1, n1))
+  return (ev && ev.single) ? Math.min(cr.division||low, ccTrialDiv(ev, place1, n1))
             : !through ? low : place2<=Math.max(1, Math.round(r2n*CC_PLACE_D1)) ? 1
             : place2<=Math.round(r2n*CC_PLACE_D2) ? Math.min(2, low) : low;
+}
+function ccPlacementApply(through, place2, r2n, ev, place1, n1){
+  const cr=CAREER.career;
+  const div=ccPlacementDivOf(through, place2, r2n, ev, place1, n1);
   cr.division=div; cr.placed=cr.season;
   careerNews(div===1 ? 'good' : 'flat', 'lfNewsPlaced', [div]);
   return div;
@@ -150560,7 +150565,9 @@ async function runCareerVictoryNight(){
   finalizeStageCard(shell1, place1, field.length, you.stagePts, (lanN || oneRound) ? lanCash>0 : through, false,
     (lanN || oneRound) ? (lanCash ? L().ccVicPlaceCash(place1, lanCash) : L().ccWfNoCash)
          : ev.single ? L().lfNewsPlaced(ccTrialDiv(ev, place1, field.length))
-         : through ? L().ccVicPass(vCut) : L().ccVicFail(vCut));
+         : through ? L().ccVicPass(vCut)
+         : ev.placement ? L().lfNewsPlaced(ccPlacementDivOf(false, null, vCut, ev, place1, field.length))
+         : L().ccVicFail(vCut));
   await revealStandings(shell1, ranked1, you, vCut, null, null,
     (lanN || oneRound) ? function(place){ return ccVictoryPayOf(ev, place); } : null, null, lanN || oneRound);
 
@@ -150623,8 +150630,11 @@ async function runCareerVictoryNight(){
     else careerMoneyAdd(r2, function(_place, t){ return (t.wins||0)*rate; });
     const shell2=createStageCardShell(L().ccVicR2Title(r2.length));
     await revealStageLog(you, shell2, true);
-    finalizeStageCard(shell2, place2, r2.length, you.stagePts, cash>0, false,
-      payCup ? (cash ? L().ccVicPlaceCash(place2, cash) : L().ccWfNoCash) : (wins ? L().ccVicCash(wins, cash) : L().ccVicNoWin));
+    /* Placement Cup денег не платит — его итог ступень (аудит 29.09: карточка писала «без денег» и красным). */
+    const pDiv2=ev.placement ? ccPlacementDivOf(true, place2, vCut, ev, place1, field.length) : 0;
+    finalizeStageCard(shell2, place2, r2.length, you.stagePts, ev.placement ? pDiv2<ccDivCount() : cash>0, false,
+      ev.placement ? L().lfNewsPlaced(pDiv2)
+      : payCup ? (cash ? L().ccVicPlaceCash(place2, cash) : L().ccWfNoCash) : (wins ? L().ccVicCash(wins, cash) : L().ccVicNoWin));
     // Колонка «Приз» у кэш-капа — сколько взяло каждое место (его правка 28.09: «призы у
     // каждого не пишутся в таблице второго раунда»). Кап за победы платит не по месту — без колонки.
     await revealStandings(shell2, ranked2, you, 0, null, null,
@@ -150683,7 +150693,8 @@ async function runCareerVictoryNight(){
   CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet); CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerTwoRoundResultCard({title:(ev.name ? ev.name : ev.mode==='duo'?ccVictoryCupName():L().calVictorySolo)+' '+ev.n,
-    place:place2||place1, through:through || ((lanN || oneRound) && cash>0), wins:wins, cash:cash, cut:vCut, byPlace:!!(lanN || oneRound || payCup)});
+    place:place2||place1, through: placedDiv ? placedDiv<ccDivCount() : (through || ((lanN || oneRound) && cash>0)), wins:wins, cash:cash, cut:vCut,
+    byPlace:!!(lanN || oneRound || payCup), placed:placedDiv||0});
 }
 
 /* ===== The Solo Series =====================================================
@@ -152770,13 +152781,14 @@ function careerTwoRoundResultCard(r){
      имеет: cut 0. Строки «мимо топ-0 — раунд 2 без тебя» и «ниже Дивизиона 1 призовых
      нет» там врали — второго раунда нет, дивизионов в те годы тоже. */
   // Кап, который платит за место (таблица, ЛАН, один раунд), — «место — $», а не «N побед — $».
-  const line = r.cash ? (r.byPlace ? L().ccVicPlaceCash(r.place, r.cash) : L().ccVicCash(r.wins, r.cash))
+  const line = r.placed ? L().lfNewsPlaced(r.placed)
+             : r.cash ? (r.byPlace ? L().ccVicPlaceCash(r.place, r.cash) : L().ccVicCash(r.wins, r.cash))
              : r.through ? L().ccVicNoWin
              : r.cut ? L().ccVicFail(r.cut) : '';
   box.innerHTML=`<h4>${esc(r.title)} <span class="stage-badge ${r.through?'pass':'fail'}">${ccTopC(r.place)}</span></h4>
     <div class="stage-detail">
       ${line ? `<div>${line}</div>` : ''}
-      <div>${L().ccResEarned}: ${r.cash ? ccMoney(r.cash) : r.cut && !ccNoDivisions() ? L().ccResNoMoney : ccMoney(0)}</div>
+      ${r.placed ? '' : `<div>${L().ccResEarned}: ${r.cash ? ccMoney(r.cash) : r.cut && !ccNoDivisions() ? L().ccResNoMoney : ccMoney(0)}</div>`}
       <div>${L().chEarnings}: ${ccMoney(CAREER.career.earnings||0)}</div>
       ${ccNightRateLine()}
     </div>
