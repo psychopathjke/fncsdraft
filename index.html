@@ -145111,15 +145111,30 @@ function ccSeasonEvName(y, n){
 }
 function ccMXSpec(y, n){ return (CC_MX_SPEC[y]||{})[n] || null; }
 function ccMXLobby(size){ return size===1 ? 100 : size===2 ? 50 : size===3 ? 33 : 25; }
+/* Своё состояние у каждого турнира сезона (cr.majorxs[y|n]). Была одна ячейка cr.majorx на всех:
+   недели World Cup Solo и Duos чередуются, и первая же сыгранная неделя Duos затирала состояние Solo
+   вместе с билетом в Нью-Йорк (его правка 29.09: «квальнулся в финал ворлд капа и не сыграл его»).
+   cr.majorx по-прежнему указывает на последний сыгранный — для старых сейвов и чтения. */
 function ccMXOf(y, n){
   const cr=CAREER && CAREER.career; if(!cr) return null;
-  const m=cr.majorx;
-  return (m && m.y===y && m.n===n && m.season===cr.season) ? m : null;
+  const all=cr.majorxs=cr.majorxs||{};
+  const old=cr.majorx; if(old && old.y!=null && !all[old.y+'|'+old.n] && old.season===cr.season) all[old.y+'|'+old.n]=old;
+  const m=all[y+'|'+n];
+  return (m && m.season===cr.season) ? m : null;
 }
 function ccMXState(y, n){
   const cr=CAREER.career;
   let m=ccMXOf(y, n);
-  if(!m) m=cr.majorx={y:y, n:n, season:cr.season, got:{}, q:{}, series:{}, seriesRows:{}, heats:null, heatRes:{}, youKey:null, ticket:false};
+  if(!m){ m={y:y, n:n, season:cr.season, got:{}, q:{}, series:{}, seriesRows:{}, heats:null, heatRes:{}, youKey:null, ticket:false};
+          cr.majorxs[y+'|'+n]=m;
+          /* Сейв, где билет затёрла чужая неделя: журнал помнит пройденный финал недели World Cup
+             (день воскресенья этой недели, тот же размер состава, «прошёл») — билет возвращается. */
+          const sp=ccMXSpec(y, n);
+          if(sp && sp.kind==='wc'){
+            const days=new Set((sp.weeks||[]).map(w=>ccMXDayOf(y, n, 'W'+w+'R'+sp.rounds.length)).filter(Boolean));
+            m.ticket=(cr.log||[]).some(e=>e && e.kind==='major' && e.passed && e.season===cr.season && e.size===sp.size && days.has(e.day));
+          } }
+  cr.majorx=m;
   return m;
 }
 function ccMXRowId(y, n, tail){ return 'Major'+n+'_'+y+'_'+tail; }
