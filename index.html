@@ -6004,6 +6004,20 @@
   html.ev-classic .lobby-table td[style*="--danger"]{color:#fff!important;background:rgba(0,0,0,.32)!important;font-weight:900;}
   html.ev-classic .lobby-table tr.lobby-first .st-prize,html.ev-classic .lobby-table tr.lobby-you .st-prize,
   html.ev-classic .lobby-table tr.you .st-prize{background:#11141c;color:#ffd166;}
+  /* Живой этап (карта + таблица) — рамка в той же палитре, что таблица, а не синяя сайта
+     (его скрин 37, 29.09). Заголовок игры — как шапка таблицы. */
+  html.ev-pal #majorStages .stage-card:has(.lobby-live){
+    background:linear-gradient(rgba(6,8,14,.5),rgba(6,8,14,.5)),linear-gradient(120deg,var(--ev-l) 0%,var(--ev-r) 100%);
+    border:1px solid color-mix(in srgb,var(--ev-h) 55%,transparent);}
+  html.ev-pal.ev-light #majorStages .stage-card:has(.lobby-live){
+    background:linear-gradient(rgba(6,8,14,.66),rgba(6,8,14,.66)),linear-gradient(120deg,var(--ev-l) 0%,var(--ev-r) 100%);}
+  html.ev-pal #majorStages .stage-card:has(.lobby-live) h4{font-family:var(--font-display);font-weight:700;
+    font-size:clamp(16px,2.2vw,22px);letter-spacing:.02em;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.25);
+    margin:0 0 12px;padding:0 0 10px;border-bottom:2px solid color-mix(in srgb,var(--ev-h) 70%,transparent);}
+  html.ev-pal #majorStages .stage-card:has(.lobby-live) .live-note{color:rgba(255,255,255,.85);}
+  html.ev-pal #majorStages .stage-card:has(.lobby-live) .lobby-wrap{box-shadow:0 6px 18px rgba(0,0,0,.35);
+    scrollbar-color:var(--ev-h) rgba(0,0,0,.3);}
+  html.ev-pal #majorStages .stage-card:has(.lobby-live) .zone-replay{box-shadow:0 0 0 2px color-mix(in srgb,var(--ev-h) 60%,transparent),0 6px 18px rgba(0,0,0,.35);}
   /* Приз у ника в таблице этапа (revealStandings). */
   .st-prize{display:inline-block;margin-left:8px;padding:1px 7px;border-radius:999px;background:rgba(255,209,102,.16);
     color:#ffd166;font-weight:900;font-size:12px;white-space:nowrap;vertical-align:1px;}
