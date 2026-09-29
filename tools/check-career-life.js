@@ -117,7 +117,7 @@ const BOOT = `
     clearInterval(sk);
     const last=(CAREER.career.log||[]).slice(-1)[0];
     check('оценка в журнале', last && last.rating>=1 && last.rating<=10, JSON.stringify(last).slice(0,200));
-    check('оценка на карточке', !!c && /Оценка за вечер|Match rating/.test(c.textContent));
+    check('оценка на карточке', !!c && /Оценка за вечер|Match rating|Твоя оценка|Your rating/.test(c.textContent));
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';

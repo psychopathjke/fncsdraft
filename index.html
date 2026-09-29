@@ -118221,7 +118221,13 @@ const CC_ARENA_GAMES=5;   // матчей за вечер — оценка ре�
 function ccArenaTable(day){ return (day||careerToday())>=CC_ARENA_NEW_FROM ? CC_ARENA_NEW : CC_ARENA_OLD; }
 function ccArenaHype(){
   const lf=ccLife();
-  if(lf.hype==null){ const o=(CAREER.player && CAREER.player.ovr)||70; lf.hype=clamp(Math.round((o-55)*650), 0, 20000); }
+  const o=(CAREER.player && CAREER.player.ovr)||70, floor=clamp(Math.round((o-55)*650), 0, 20000);
+  if(lf.hype==null) lf.hype=floor;
+  /* Лига Арены не ниже той, что соответствует рейтингу сейчас. Раньше Hype ставился один раз при
+     первом чтении: карточка 55 навсегда оставалась в Open, даже выросши до 78, а денежные капы
+     2019–2022 пускают только Champion League — в полном прогоне 2019→2026 весь 2021-й прошёл без
+     единого капа (его вопрос 29.09: «как в 21 призы только с финалов»). Арена даёт сверх этого. */
+  if(lf.hype<floor) lf.hype=floor;
   return lf.hype;
 }
 function ccArenaDiv(h){ const t=ccArenaTable(); h=h==null ? ccArenaHype() : h;
