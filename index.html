@@ -94713,7 +94713,7 @@ function draftFmtWalls(){
     art.classList.add('fmt-art', 'fmt-'+k);
     art.removeAttribute('data-art');
     art.style.backgroundImage='url('+list[list.length-1]+')';
-    const rest=list.slice(0, -1).reverse(), show=rest.slice(0, 4);
+    const rest=list.slice(0, -1).reverse(), show=rest.slice(0, 3);
     if(show.length) art.insertAdjacentHTML('afterbegin', '<div class="fmt-wall">'+
       show.map(src=>'<i style="background-image:url('+src+')"></i>').join('')+
       (rest.length>show.length ? '<b>+'+(rest.length-show.length)+'</b>' : '')+'</div>');
