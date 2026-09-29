@@ -92,7 +92,18 @@ const BOOT = `
     const h=await playThrough('C2S2 heat');
     const lh=lastLog();
     check('дуо-хит записан', lh && lh.stage==='heat' && lh.of===50 && lh.size===2, JSON.stringify(lh));
-    out.steps.push('C2S2 heat: '+h+' · #'+(lh&&lh.place));
+    out.steps.push('C2S2 heat: '+h+' · #'+(lh&&lh.place)+' $'+(lh&&lh.prize));
+    // Хит платит тем, кто не прошёл (Liquipedia: EU C2S2 — $1 800 на дуо за 13–50-е), прошедшим — ноль.
+    check('хит: не прошёл — деньги, прошёл — ноль', lh && (lh.place<=12 ? !(lh.prize>0) : lh.prize===900), JSON.stringify(lh && {place:lh.place, prize:lh.prize}));
+    const hp=ccMXHeatPrize(ccMXSpec(2020, 1), 1, 0, 12);
+    check('таблица хита C2S2: 12-е 0, 13-е $1 800 на дуо', !!hp && hp(12)===0 && hp(13)===1800 && hp(50)===1800, String(hp && [hp(12), hp(13), hp(50)]));
+    // Недели 2020-го: своя таблица, а не строка Season X 2019-го (C2S4 — n=3, как Season X).
+    const w1=ccMXWeekPrize(ccMXSpec(2020, 1), 1, 2, 1), w2=ccMXWeekPrize(ccMXSpec(2020, 2), 1, 2, 2), w3=ccMXWeekPrize(ccMXSpec(2020, 3), 1, 2, 3);
+    check('неделя C2S2: $5 000 первой дуо', !!w1 && w1(1)===5000, String(w1 && w1(1)));
+    check('квалификатор C2S3: $5 000 первому, $200 сотому', !!w2 && w2(1)===5000 && w2(100)===200, String(w2 && [w2(1), w2(100)]));
+    check('неделя C2S4: $12 000 первой тройке, $600 33-й', !!w3 && w3(1)===12000 && w3(33)===600 && w3(5)!==w3(1), String(w3 && [w3(1), w3(5), w3(33)]));
+    check('раунд 1 недели 2020 не платит', ccMXWeekPrize(ccMXSpec(2020, 1), 1, 1, 1)===null);
+    check('2019 не задет: Season X раунд 2 — $960', ccMXWeekPrize(ccMXSpec(2019, 3), 3, 2, 3)(22)===960);
     // Трио-финал C2S4.
     seed('2020-10-31', {majorx:{y:2020, n:3, season:1, got:{}, q:{}, series:{}, seriesRows:{}, heats:null, heatRes:{}, youKey:'X', ticket:true}});
     const f=await playThrough('C2S4 final');
