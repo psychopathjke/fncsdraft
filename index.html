@@ -123953,7 +123953,10 @@ function careerRealDuos(taken, rnd, scope, seats, sharp){
    rating - which is also what the earlier complaint was actually about: not that
    an offered player was invented, but that an invented one read 96 in Division
    5. Generated at your rating, they read like the division they are in. */
-function ccRealNamesHere(){ return (CAREER.career.division||5)===1; }
+/* Настоящие имена — в Дивизионе 1 и во все годы без дивизионов (его слово 29.09: «я 99, но в выборе не все игроки»):
+   в 2019–2021, 2024 и вне дивизионных недель 2022–23 карьера числилась в своей ступени, и поиск/личка/лента
+   показывали сгенерированную лестницу этой ступени вместо сцены. */
+function ccRealNamesHere(){ return (CAREER.career.division||5)===1 || (typeof ccNoDivisions==='function' && ccNoDivisions()); }
 // The same pool read as people rather than pairs, for the events that seat
 // individuals: a solo lobby, and the list of who is around to talk to.
 function careerRealPlayers(taken, rnd, scope){
