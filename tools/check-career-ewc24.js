@@ -68,6 +68,7 @@ const BOOT = `
     seed('2024-06-01', null, {c:'de'});
     check('Dallas стоит и зовёт', (inv('2024-06-01')||{}).inv===true, JSON.stringify(inv('2024-06-01')));
     check('EWC без путёвки не зовёт', (inv('2024-08-08')||{}).inv===false, JSON.stringify(inv('2024-08-08')));
+    { const am=document.getElementById('ccAskModal'); if(am) am.style.display='none'; const ok=careerSpotGate(careerNext()); check('метка на Dallas не нужна', ok===true && !(am && am.style.display==='flex'), String(ok)); }
     const h1=await playThrough('Dallas');
     const s1=st(), l1=lastLog();
     out.steps.push('Dallas: '+h1+' · #'+(l1&&l1.place)+' $'+(l1&&l1.prize)+' · top6 '+JSON.stringify(s1.dallas));

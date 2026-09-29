@@ -3586,6 +3586,12 @@
   .cc-fat-bar.s-lfFatTired i{background:#ffb13d;} .cc-fat-bar.s-lfFatBurn i{background:#ff5f56;}
   .cc-tgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-bottom:6px;}
   @media (max-width:520px){ .cc-tgrid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  /* Команда и «стрим и отдых» — по ширине самой колонки, а не окна: в узкой колонке хаба три
+     колонки давали плитки по 60 px с обрезанными названиями (скрин «29»). Не уже 150 px. */
+  .cc-tgrid.cc-agrid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;}
+  .cc-agrid .cc-tcard{padding:8px 10px !important;gap:3px;}
+  .cc-agrid .cc-tc-name{font-size:12px;white-space:normal;}
+  .cc-agrid .cc-tc-why{font-size:10px;}
   .cc-tcard{display:flex;flex-direction:column;gap:2px;margin:0;width:auto;min-width:0;overflow:hidden;min-height:0;padding:6px 7px !important;box-sizing:border-box;}
   .cc-tc-top{display:flex;align-items:center;gap:5px;min-width:0;}
   .cc-tc-ico{font-style:normal;font-size:14px;line-height:1;flex:none;}
@@ -6089,15 +6095,12 @@
   .dp-title{margin:2px 0 0;font-family:var(--font-display);font-size:clamp(30px,4.5vw,44px);font-weight:700;font-style:italic;text-transform:uppercase;line-height:1;color:#fff;}
   .hero-mode-tag{margin-bottom:8px;}
   .hero.hero-draft{margin-top:16px;}
-  .fmt-art{position:relative;overflow:hidden;background:#0d1650;}
-  /* Коллаж: плитки логотипов заполняют превью целиком (последний ряд тянется), подпись — внизу
-     на градиенте, как у остальных плиток (скрин «29»: подпись съезжала на коллаж, внизу пустые клетки). */
-  .fmt-wall{position:absolute;inset:0;display:flex;flex-wrap:wrap;gap:3px;align-content:stretch;}
-  .fmt-wall i{display:block;flex:1 1 22%;background-size:cover;background-position:50% 30%;min-height:0;}
-  .fmt-wall.fmt-n9 i,.fmt-wall.fmt-n8 i,.fmt-wall.fmt-n7 i{flex-basis:30%;}
-  .fmt-wall.fmt-n1 i{flex-basis:100%;background-position:50% 28%;}
+  .fmt-art{position:relative;overflow:hidden;background:#0d1650 center/cover no-repeat;}
+  /* Постер формата на всю плитку, подпись внизу на градиенте; остальные сезоны — миниатюры справа сверху. */
+  .fmt-wall{position:absolute;top:10px;right:10px;z-index:2;display:flex;gap:4px;align-items:center;}
+  .fmt-wall i{display:block;width:30px;height:30px;border-radius:6px;background-size:cover;background-position:50% 30%;box-shadow:0 0 0 1.5px rgba(255,255,255,.55),0 2px 6px rgba(0,0,0,.45);}
+  .fmt-wall b{font-size:11px;font-weight:900;color:#fff;padding:0 7px;height:30px;line-height:30px;border-radius:6px;background:rgba(8,14,44,.72);box-shadow:0 0 0 1.5px rgba(255,255,255,.35);}
   .fmt-art .ec-foot{z-index:2;} .fmt-art .ec-pill{position:absolute;z-index:2;}
-  .fmt-art::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(0deg,rgba(8,14,44,.92) 0%,rgba(8,14,44,.2) 55%,rgba(8,14,44,0) 100%);}
   .hd-logos{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 70% 40%,#2a3f9e 0%,#101a52 60%,#0a1033 100%);}
   .hd-logos::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(12,20,64,.85) 0%,rgba(12,20,64,0) 22%),linear-gradient(0deg,rgba(10,16,51,.55) 0%,rgba(10,16,51,0) 30%);}
   .hd-wall{position:absolute;inset:-12% -8% -12% 4%;display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-content:center;transform:rotate(-9deg);}
@@ -94705,10 +94708,15 @@ function draftFmtWalls(){
   box.querySelectorAll('.mode-card > .ec-art').forEach((art, i)=>{
     const k=keys[i]; if(!k || art.querySelector('.fmt-wall')) return;
     const list=DRAFT_FMT_LOGOS[k];
+    /* Один постер на всю плитку (самый свежий турнир формата), остальные сезоны — полоской
+       миниатюр в углу: коллаж из обрезанных постеров с подписью поверх выглядел кашей (скрин «29»). */
     art.classList.add('fmt-art', 'fmt-'+k);
-    art.style.backgroundImage='none'; art.removeAttribute('data-art');
-    art.insertAdjacentHTML('afterbegin', '<div class="fmt-wall fmt-n'+Math.min(list.length, 9)+'">'+
-      list.map(src=>'<i style="background-image:url('+src+')"></i>').join('')+'</div>');
+    art.removeAttribute('data-art');
+    art.style.backgroundImage='url('+list[list.length-1]+')';
+    const rest=list.slice(0, -1).reverse(), show=rest.slice(0, 4);
+    if(show.length) art.insertAdjacentHTML('afterbegin', '<div class="fmt-wall">'+
+      show.map(src=>'<i style="background-image:url('+src+')"></i>').join('')+
+      (rest.length>show.length ? '<b>+'+(rest.length-show.length)+'</b>' : '')+'</div>');
   });
 }
 function draftPastRowHTML(g){
@@ -139297,6 +139305,8 @@ function careerSpotGate(next){
   const cr=CAREER && CAREER.career;
   if(!cr || !next) return true;
   if(typeof CC_FF!=='undefined' && CC_FF) return true;
+  // EWC 2024, Dallas и отборы — арены 4 на 4, высадки нет: метка не нужна.
+  if((next.type||next.kind)==='victory'){ const v=careerVictoryOn(careerToday()); if(v && v.ewc24) return true; }
   const set=careerNightSet(next);
   const key=careerNightSpotKey(next);
   if(careerSpotList(key).length) return true;
