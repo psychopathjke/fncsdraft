@@ -118827,7 +118827,13 @@ function ccEvPaletteApply(ev){
      цвета 2026» — Victory Cup красил таблицу в розово-оранжевый с бордовыми строками). Палитры
      турниров и экран тех лет — для прошлых годов, 2019–2025. */
   const own2026=!!(CAREER && CAREER.career) && ccCalYear()>=2026;
-  const p=own2026 ? null : ccEvPalette(ev);
+  /* Прошлый год без своей палитры у события (ЛАН, свой турнир) — палитра года, как у хаба
+     (ccYearThemeApply): сезон дня, до Season X — Online Open 2019. Его правка 29.09: «пусть дизайн
+     будет в стиле карьеры, в котором году он играет, а не синий, как в 26 году». */
+  const past=!!(CAREER && CAREER.career) && ccCalYear()<2026;
+  const dayP=()=>{ const d=careerToday(), n=ccSeasonNumOn(d);
+    return ccEvPalette({id:''}, d) || (n<=9 ? ccEvPalOf('OnlineOpen_Week1') : null); };
+  const p=own2026 ? null : (ccEvPalette(ev) || (past ? dayP() : null));
   if(!p){ root.classList.remove('ev-pal', 'ev-classic', 'ev-light'); return; }
   const s=root.style;
   s.setProperty('--ev-l', '#'+p[0]); s.setProperty('--ev-r', '#'+p[1]);
