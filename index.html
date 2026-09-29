@@ -5988,6 +5988,14 @@
   html.ev-classic .lobby-table tr.lobby-you td:first-child,html.ev-classic .lobby-table tr.you td:first-child{color:#11141c;}
   html.ev-classic .lobby-table tr.lobby-you td:first-child,html.ev-classic .lobby-table tr.you td:first-child{box-shadow:inset 5px 0 0 #11141c!important;}
   html.ev-classic .lobby-table tr.lobby-first td.lobby-num,html.ev-classic .lobby-table tr.lobby-you td.lobby-num{color:#3a4152;}
+  /* Приглушённые ячейки (регион, счёт высадок) и строка отсечки красятся в разметке — на ярком
+     фоне их не видно (его скрин 29.09 «не виден текст»). На цветных строках — белым, на белых —
+     тёмным; отсечка — белая на тёмной полосе. */
+  html.ev-classic .lobby-table td[style*="--ink-dim"],html.ev-classic .lobby-table td[style*="--ink-dim"] *{color:rgba(255,255,255,.9)!important;}
+  html.ev-classic .lobby-table tbody tr.lobby-first td[style*="--ink-dim"],html.ev-classic .lobby-table tbody tr.lobby-first td[style*="--ink-dim"] *,
+  html.ev-classic .lobby-table tbody tr.lobby-you td[style*="--ink-dim"],html.ev-classic .lobby-table tbody tr.lobby-you td[style*="--ink-dim"] *,
+  html.ev-classic .lobby-table tbody tr.you td[style*="--ink-dim"],html.ev-classic .lobby-table tbody tr.you td[style*="--ink-dim"] *{color:#3a4152!important;}
+  html.ev-classic .lobby-table td[style*="--danger"]{color:#fff!important;background:rgba(0,0,0,.32)!important;font-weight:900;}
   html.ev-classic .lobby-table tr.lobby-first .st-prize,html.ev-classic .lobby-table tr.lobby-you .st-prize,
   html.ev-classic .lobby-table tr.you .st-prize{background:#11141c;color:#ffd166;}
   /* Приз у ника в таблице этапа (revealStandings). */
