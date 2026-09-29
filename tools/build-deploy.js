@@ -85,7 +85,10 @@ fs.writeFileSync(path.join(OUT, 'app.js'), html.slice(best.from, best.end), 'utf
   const appPath = path.join(OUT, 'app.js'), before = fs.statSync(appPath).size;
   const tmpOut = appPath + '.min';
   try {
-    execFileSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['-y', 'terser@5', appPath, '--comments', 'false', '-o', tmpOut],
+    // На Windows с shell:true аргументы склеиваются без кавычек — путь с пробелами («Рабочий стол до 07.09»)
+    // рвался, terser падал, и app.js уезжал с комментариями (11,8 млн байт вместо 8,7).
+    const q = s => process.platform === 'win32' ? '"' + s + '"' : s;
+    execFileSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['-y', 'terser@5', q(appPath), '--comments', 'false', '-o', q(tmpOut)],
       { stdio: ['ignore', 'ignore', 'inherit'], shell: process.platform === 'win32', timeout: 600000 });
     fs.renameSync(tmpOut, appPath);
     console.log('app.js без комментариев: ' + before + ' → ' + fs.statSync(appPath).size + ' байт');

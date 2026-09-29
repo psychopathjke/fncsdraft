@@ -111235,7 +111235,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='c026375e';
+const CC_BUILD='8a5d6bdc';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -115635,8 +115635,6 @@ function careerCentreHTML(card, a){
   </div>
   <div class="ch-grid ch-grid-main">
     <div class="ch-col ch-col-play">
-      <!-- Входящие — строкой значков сверху слева, как на проде (его слово 29.09: «как на fncsdraft сделай
-           CENTRE», «хаб такой же как был»). Колокольчик из шапки снят. См. careerNoteBarHTML. -->
       ${careerNoteBarHTML()}
       ${typeof ccRosterSoonHTML==='function' ? ccRosterSoonHTML() : ''}
       ${careerMpTileHTML()}
@@ -115699,10 +115697,6 @@ function careerCentreHTML(card, a){
                     ? `<div class="ch-big"><b>${sh.cut}</b><span>${L().ccAdvanceOf(sh.of)}</span></div>`
                     : `<div class="ch-big"><b>${sh.of}</b><span>${ccSquadWordCap()}</span></div>`; })()
               : `<p>${next.sub}</p>`}
-            <!-- Формат сезона, а не слово "дуо" на все годы: в трио-сезоне
-                 карточка дня печатала DUOS над трио-лобби. тестер, 21
-                 августа: «во втором сезоне… ещё див капы в дуо». Счёт команд
-                 уже пересчитывался через ccTeams, а слово рядом — нет. -->
             <div class="ch-mode"><span>${[careerNightSolo(next) ? L().ccSpotSoloTab : ccSquadWordCap(),
                 ccNoDivisions() ? '' : L().ccDivision+' '+cr.division].filter(Boolean).join(' · ')}</span></div>
             <!-- Про-Ам играется НЕ с напарником, а с контент-мейкером, и это
@@ -154487,7 +154481,6 @@ function careerProfileHTML(){
       </div>
     </div>
     ${ccAwardsShelfHTML()}
-    <!-- «Где я сажусь» снят с профиля (его слово 29.09: «where i land убери»). -->
     <div class="ev-tablewrap">
       <table class="ev-table">
         <thead><tr>
