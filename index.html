@@ -1766,8 +1766,9 @@
   .cc-spot-drops{display:flex;flex-direction:column;gap:3px;margin:2px 0 6px;font-size:12px;color:var(--ink-dim);}
   .cc-spot-drops span{display:flex;align-items:center;gap:6px;}
   .cc-spot-drops .zp-ic{height:22px;width:22px;margin:0;}
-  .land-zone.cc-spot-peeked{border-color:#ffd400 !important;
-    box-shadow:inset 0 0 0 1px rgba(0,0,0,.55), 0 0 0 2px rgba(255,212,0,.45) !important;}
+  /* Выбранная коробка — белая: жёлтая путалась с золотой рамкой мифической точки. */
+  .land-zone.cc-spot-peeked{border-color:#fff !important;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.55), 0 0 0 2px rgba(255,255,255,.45) !important;}
   @media(max-width:560px){.cc-spot-peek{flex-direction:column;}
     .cc-spot-shot{flex:none; height:130px;}}
 
@@ -111318,7 +111319,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5f65bab9';
+const CC_BUILD='bbb84363';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -116655,13 +116656,27 @@ function careerSpotPointsOf(i, set){
 function careerSpotPowOf(i, set){
   // Ключ хранения может быть островом ('r12'), а сетка и картинка — у круга.
   const key=careerSpotGrid(set||careerBrSet());
-  const z=(ZONE_SETS[key]||[])[i];
-  if(!z) return null;
-  const live=ALL_LANDING_ZONES.find(q=>Math.abs(q.x-z.x)<0.01 && Math.abs(q.y-z.y)<0.01);
-  if(live) return live.points;
-  // Сквадный набор мог выбросить коробку из загруженного острова — мифик тогда считается сам.
-  const m=(CC_MYTHIC_POI[key]||{})[i];
-  return m ? LANDING_POINTS_MAX+CC_MYTHIC_POW : null;
+  if(!(ZONE_SETS[key]||[])[i]) return null;
+  /* Считается по САМОМУ острову, а не по загруженному в игру: выбор спота открывает и
+     острова других сезонов, и там подпись силы была только у мифических точек (скрин
+     Notion «29», Chapter 5 S1 — у обычных коробок голый номер). */
+  return zonePointsOfSet(key)[i];
+}
+/* Сила каждой коробки острова — то же правило, что в useLandingSet: место в рейтинге
+   своего острова даёт 1..LANDING_POINTS_MAX, мифическая точка — максимум плюс CC_MYTHIC_POW. */
+const ZONE_POINTS_CACHE={};
+function zonePointsOfSet(set){
+  if(ZONE_POINTS_CACHE[set]) return ZONE_POINTS_CACHE[set];
+  const stats=ZONE_STATS[set]||[];
+  const rs=(ZONE_SETS[set]||[]).map((z,i)=>{ const r=(stats[i]||{}).r; return r!=null ? r : z.r; });
+  const rated=rs.filter(v=>v!=null).sort((a,b)=>a-b);
+  const myth=CC_MYTHIC_POI[set]||{};
+  return ZONE_POINTS_CACHE[set]=rs.map((r,i)=>{
+    if(myth[i]) return LANDING_POINTS_MAX+CC_MYTHIC_POW;
+    if(r==null || !rated.length) return 1;
+    const pct=rated.filter(v=>v<r).length/rated.length;
+    return Math.max(1, Math.min(LANDING_POINTS_MAX, 1+Math.floor(pct*LANDING_POINTS_MAX)));
+  });
 }
 /* Острова, на которых у карьеры может быть дом.
 
