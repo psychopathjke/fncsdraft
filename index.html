@@ -3701,6 +3701,9 @@
     background:rgba(122,162,255,.18);border:2px solid #7aa2ff;}
   .nr-rate b{font-size:26px;font-weight:900;font-style:italic;line-height:1;color:#fff;}
   .nr-rate span{font-size:8.5px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:#cfd8ff;margin-top:3px;text-align:center;}
+  /* Место своей команды под оценкой: без него 4.4 рядом с MVP победителей читалась как их оценка. */
+  .nr-rate small{font-size:9px;font-weight:800;color:#fff;opacity:.8;margin-top:1px;}
+  .nr-rate:has(small){width:78px;height:auto;min-height:70px;padding:6px 0;}
   .nr-rate.hi{background:rgba(0,214,164,.18);border-color:#00d6a4;} .nr-rate.lo{background:rgba(255,95,86,.16);border-color:#ff5f56;}
   .nr-mvp{display:flex;align-items:center;gap:10px;min-width:0;}
   .nr-mvp em{display:block;font-style:normal;font-size:10px;font-weight:900;color:#ffd400;text-transform:uppercase;letter-spacing:.05em;}
@@ -18693,6 +18696,8 @@ Object.assign(I18N.en, {ccYrXHeatsIn:k=>'Top '+k+' of the series — into the He
 Object.assign(I18N.fr, {ccYrXHeatsIn:k=>'Top '+k+' de la série — en heats', ccYrXHeatsZone:k=>'Zone des heats : top '+k+' de la série', ccYrXHeatsOut:k=>'Hors du top '+k+' de la série — pas de heats'});
 Object.assign(I18N.it, {ccYrXHeatsIn:k=>'Top '+k+' della serie — negli heat', ccYrXHeatsZone:k=>'Zona heat: top '+k+' della serie', ccYrXHeatsOut:k=>'Fuori dal top '+k+' della serie — niente heat'});
 Object.assign(I18N.pt, {ccYrXHeatsIn:k=>'Top '+k+' da série — nos heats', ccYrXHeatsZone:k=>'Zona dos heats: top '+k+' da série', ccYrXHeatsOut:k=>'Fora do top '+k+' da série — sem heats'});
+Object.assign(I18N.ru, {lfRateYou:'Твоя оценка'}); Object.assign(I18N.en, {lfRateYou:'Your rating'});
+Object.assign(I18N.fr, {lfRateYou:'Ta note'}); Object.assign(I18N.it, {lfRateYou:'Il tuo voto'}); Object.assign(I18N.pt, {lfRateYou:'Tua nota'});
 Object.assign(I18N.ru, {stPrizeEach:'каждому'}); Object.assign(I18N.en, {stPrizeEach:'each'});
 Object.assign(I18N.fr, {stPrizeEach:'chacun'}); Object.assign(I18N.it, {stPrizeEach:'a testa'}); Object.assign(I18N.pt, {stPrizeEach:'cada'});
 Object.assign(I18N.ru, {rcNextH:'Следующий раунд',rcNextSub:s=>'Играть самому или симулировать? Через '+s+' с — симуляция',
@@ -150637,7 +150642,10 @@ function ccNightRateLine(){
   const pod=(n.podium||[]).map((r,i)=>{ const rc=r.r==null ? '' : r.r>=8 ? 'hi' : r.r<5 ? 'lo' : 'mid';
     return '<li class="'+(r.you?'you':'')+'"><i>'+(i+1)+'</i><span>'+esc(r.n)+' <small>'+r.p+' '+esc(L().lfPtsShort)+'</small></span>'+
       (r.r!=null ? '<b class="nr-mini '+rc+'">'+r.r.toFixed(1)+'</b>' : '<b>'+r.p+'</b>')+'</li>'; }).join('');
-  return '<div class="nr-box"><div class="nr-rate '+cls+'"><b>'+n.rating.toFixed(1)+'</b><span>'+L().lfRate+'</span></div>'+mvp+
+  // «Твоя оценка» и место своей команды (его скрин 40: «они выиграли, но почему-то рейтинг такой» —
+  // 4.4 была его, 11-е место, а стояла вплотную к MVP победителей под нейтральным «Match rating»).
+  const where=n.place ? '<small>#'+n.place+(n.of ? ' / '+n.of : '')+'</small>' : '';
+  return '<div class="nr-box"><div class="nr-rate '+cls+'"><b>'+n.rating.toFixed(1)+'</b><span>'+L().lfRateYou+'</span>'+where+'</div>'+mvp+
     (pod ? '<ol class="nr-top">'+pod+'</ol>' : '')+ccVodHTML(n)+'</div>';
 }
 /* РАЗБОР РЕПЛЕЯ после плохого вечера (оценка ниже 5.5): «в чём была ошибка?» — дроп,
