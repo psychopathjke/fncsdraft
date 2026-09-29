@@ -78198,6 +78198,15 @@ function buildDivWeek(w, orgs){
   });
 }
 (function(){ const orgs=divOrgOf(); DIV_WEEKS.forEach(w=>buildDivWeek(w, orgs)); })();
+/* Официальный игрок по просьбе (Notion «29», 29.09: «add this guy as a official player, he's div 1»).
+   rxven — Epic «rxven ʚɞ», Tracker: Европа, FNCS 2026 Division 1 Practice #573–#620 (7–14 сен),
+   Performance Evaluation #351–#893, PR 8 395 (#1 664 EU), напарник в сентябре — «5 souter rd sam».
+   В финалы недель Дивизиона 1 он не проходил, а карточки D1 — это их топ-50 (нижний — 68 за 49–50-е
+   место), поэтому рейтинг 67: ступенью ниже всех, кто финал недели брал. Не выдумка поверх данных —
+   его место в D1 по тем же данным. Страны в профиле Tracker нет. */
+pushCard({handle:'rxven', nat:null, natSource:'tracker', region:'EU',
+          event:'FNCS 2026 Division 1 Practice — Event 3 (Europe)', date:'7 сен 2026', placement:573, note:'',
+          tier:'cardmode', cardSet:'d4', org:null, rarity:rarityForRating(67), rating:67});
 
 /* Один человек — одно написание.
 
@@ -128629,7 +128638,12 @@ const CC_AGENTS=[
      шапке не назван, поэтому имя без тега; агент crunkezz, jayzfnn «& more».
      Страны в профиле нет — nat пустой. Между Drazox и Vira Askey: у новичков
      вне ручного порядка таблица идёт по фолловерам. */
-  {name:'Apolin',       at:'Apolinmng2',    nat:null, photo:'Apolinmng2.jpg',    x:601},
+  // Тег — @apolinmng: так он сам попросил 29.09 («for the @, you can just use apolinmng»).
+  {name:'Apolin',       at:'apolinmng',     nat:null, photo:'Apolinmng2.jpg',    x:601},
+  /* x.com/Skyforcemng272, 463 фолловера, 29 сентября. «BS Skyforce» — Head of Fortnite
+     в Team Blindspot (@_Team_BS), агент joyyfnrr, NATEKFN1, Karotek_ «& more», staff
+     @REC_2027. Страны в профиле нет — nat пустой. Между Apolin и FA ZERKO по фолловерам. */
+  {name:'BS Skyforce',  at:'Skyforcemng272', nat:null, photo:'Skyforcemng272.jpg', x:463},
   /* x.com/Zerkomng, 461 фолловер, 27 сентября. Имя — как в профиле, «FA
      ZERKO»; «Head of Fortnite for @?» — клуб не назван. Агент insaneebtw,
      cuhkifn, eonshh «& more». В шапке два флага, 🇫🇷🇵🇹, — берётся первый. */
