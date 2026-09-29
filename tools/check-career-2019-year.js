@@ -101,7 +101,8 @@ const BOOT = `
     const w2=await playThrough('WC Solo W1 R2');
     const l2=lastLog();
     check('финал недели записан', l2 && l2.stage==='q', JSON.stringify(l2));
-    out.steps.push('WC Solo R2: '+w2+' · #'+(l2&&l2.place)+' of '+(l2&&l2.of)+' ticket '+CAREER.career.majorx.ticket);
+    out.steps.push('WC Solo R2: '+w2+' · #'+(l2&&l2.place)+' of '+(l2&&l2.of)+' ticket '+CAREER.career.majorx.ticket+' prize '+(l2&&l2.prize));
+    check('финал недели платит призовые (Online Open)', !!l2 && (l2.place>2000 || (l2.prize||0)>0), JSON.stringify(l2 && {place:l2.place, prize:l2.prize}));
     // 4. Финал World Cup Duos с билетом — 50 дуо, $3 000 000 первым.
     seed('2019-07-27', {majorx:{y:2019, n:2, season:1, got:{}, q:{}, series:{}, seriesRows:{}, heats:null, heatRes:{}, youKey:'X', ticket:true}});
     const d=await playThrough('WC Duos final');
