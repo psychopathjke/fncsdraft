@@ -6033,6 +6033,20 @@
   /* Приз у ника в таблице этапа (revealStandings). */
   .st-prize{display:inline-block;margin-left:8px;padding:1px 7px;border-radius:999px;background:rgba(255,209,102,.16);
     color:#ffd166;font-weight:900;font-size:12px;white-space:nowrap;vertical-align:1px;}
+  /* ХАБ КАК НА ПРОДЕ (его слово 29.09: «как на fncsdraft сделай CENTRE», «хаб такой же как был
+     без значков у вкладок»). Функции не удалены — снято то, что меняло вид: значки вкладок,
+     вторая и третья строки шапки (ранг и дельта у рейтинга, мораль, полоса «сегодня»),
+     широкая левая колонка «Центра». */
+  #screen-career-hub .ch-tab::before{content:none !important;display:none !important;}
+  #screen-career-hub .ch-hnext,#screen-career-hub #chNext{display:none !important;}
+  #screen-career-hub .ch-ovr-d,#screen-career-hub .ch-ovr-rk{display:none !important;}
+  #screen-career-hub .ch-top .ch-mood{display:none !important;}
+  #screen-career-hub .ch-grid-main{grid-template-columns:300px minmax(0,1fr);}
+  @media(max-width:900px){ #screen-career-hub .ch-grid-main{grid-template-columns:1fr;} }
+  .ch-train-goals{margin-bottom:16px;} .ch-train-goals .hg-go{display:none;}
+  #screen-career-hub .ch-play.ch-live-go{background:#9147ff !important;color:#fff !important;border:0 !important;margin-top:6px;padding-top:11px;padding-bottom:11px;font-size:1em;}
+  #screen-career-hub .ch-play.ch-live-go:not(:disabled):hover{background:#a970ff !important;}
+  .cc-nb-clear{font-weight:900;font-size:14px;}
   /* Плашка «Следующий раунд» (ccRoundChoice) — снизу по центру, поверх вечера. */
   .cc-round-ask{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9500;width:min(560px,calc(100vw - 32px));
     --th:var(--fn-yellow);color:#fff;padding:14px 16px 12px;border-radius:6px;overflow:hidden;
@@ -114337,7 +114351,7 @@ function careerRenderHubBody(tab){
       L()[a?a.roleKey:pl.role]||'',
       careerTopHonour()
     ].filter(Boolean).join(' · ')}</div></div>`+
-    `<span class="ch-bellw" id="chBell">${ccBellHTML()}</span>`;
+    '';   // колокольчик снят 29.09 («хаб такой же как был») — входящие строкой в «Центре»
   const dOvr=ccHdrSeasonDelta();
   document.getElementById('chOvr').innerHTML=`${shown}<span class="ch-ovr-side"><small>${L().ccRoOvr}</small>`+
     (dOvr ? `<i class="ch-ovr-d ${dOvr>0?'up':'down'}" title="${esc(L().lfHdrSeason)}">${dOvr>0?'▲ +'+dOvr:'▼ '+dOvr}</i>` : '')+
@@ -114443,7 +114457,7 @@ function careerRenderHubBody(tab){
   if(CH_TAB==='calendar'){ body.innerHTML=careerCalendarHTML(); return; }
   // 'log' — вкладка Профиль (ключ остался прежним ради сохранений),
   // 'hist' — История: сезоны и лента карьеры.
-  if(CH_TAB==='log'){ body.innerHTML='<div class="ch-prof-me">'+careerProfileTileHTML()+'</div>'+careerProfileHTML(); return; }
+  if(CH_TAB==='log'){ body.innerHTML=careerProfileHTML(); return; }
   if(CH_TAB==='hist'){ body.innerHTML=careerHistoryHTML(); return; }
   if(CH_TAB==='stats'){ body.innerHTML=ccSubTabsHTML('boards')+careerStatsHTML(); return; }
   if(CH_TAB==='streams'){ body.innerHTML=ccSubTabsHTML('media')+careerStreamsHTML(); return; }
@@ -114468,7 +114482,8 @@ function careerRenderHubBody(tab){
      people who pay you or take a cut. */
   if(CH_TAB==='me'){ body.innerHTML=careerMeHTML(); return; }
   if(CH_TAB==='club'){ body.innerHTML=careerClubTabHTML(); return; }
-  if(CH_TAB==='train'){ body.innerHTML=careerTrainTabHTML(); return; }
+  // Цели и развитие — сверху «Тренировки»: с «Центра» они ушли, когда он вернулся к виду прода (29.09).
+  if(CH_TAB==='train'){ body.innerHTML='<div class="ch-grid ch-grid-me ch-train-goals">'+ccGoalsTileHTML()+ccDevTileHTML()+'</div>'+careerTrainTabHTML(); return; }
   // The card tab is gone — the centre already wears the card, and a whole tab
   // that repeated it sat between the calendar and the socials for no reason.
   body.innerHTML=careerCentreHTML(card, a);
@@ -114745,7 +114760,9 @@ function careerCentreHTML(card, a){
   </div>
   <div class="ch-grid ch-grid-main">
     <div class="ch-col ch-col-play">
-      <!-- Входящие (клубы, напарники, фанаты, хейтеры, лента) — колокольчиком в шапке, см. ccBellHTML. -->
+      <!-- Входящие — строкой значков сверху слева, как на проде (его слово 29.09: «как на fncsdraft сделай
+           CENTRE», «хаб такой же как был»). Колокольчик из шапки снят. См. careerNoteBarHTML. -->
+      ${careerNoteBarHTML()}
       ${careerMpTileHTML()}
       ${careerRaceTileHTML()}
       ${cr.seasonOver ? '' : careerInterviewHTML()}
@@ -114826,7 +114843,6 @@ function careerCentreHTML(card, a){
                  место действительно держится, — см. careerQualHTML. -->
             ${careerQualHTML()}
             ${playable ? careerNightSpotHTML(next) : ''}
-            ${playable && typeof ccScoutHTML==='function' ? ccScoutHTML(next) : ''}
             ${/* В команде строка режима нужна ИМЕННО когда играть нельзя:
                  расхождение режимов чинится ею же. Спрятать её вместе с
                  кнопкой значило бы запереть игрока без выхода. */
@@ -114857,12 +114873,9 @@ function careerCentreHTML(card, a){
            week outranks what it signed last month. See careerNextCardHTML. -->
       <!-- The profile leads the centre and the tournament card sits with the
            career, his call, 18 August: the two swapped places. -->
-      <!-- Как главная карьеры в EA FC: цели, развитие, жизнь, новости. Профиль соцсети
-           (ник, фото) переехал во вкладку «Профиль». -->
-      <!-- Новости — первыми, их видно сразу без прокрутки (его правка 28.09). -->
+      <!-- Как на проде: профиль, под ним новости. Цели и развитие — во вкладке «Тренировка». -->
+      ${careerProfileTileHTML()}
       ${careerNewsHubHTML()}
-      ${ccGoalsTileHTML()}
-      ${ccDevTileHTML()}
     </div>
   </div>`;
 }
@@ -118967,8 +118980,13 @@ function ccEvPaletteApply(ev){
    в годах были»). Хаб прошлых лет — в палитре FNCS текущего сезона (Epic, CC_EV_PAL):
    фон, шапка с постером сезона, плашки плиток, активная вкладка. 2026-й — как был (его
    бирюза и есть палитра года). До FNCS 2019-го (S8–S9) — палитра World Cup / Online Open. */
+/* Выключено 29.09 его словом: «верни дизайн как было … главного меню и centre», «раньше
+   выглядело лучше». Хаб и «Центр» снова в оформлении сайта; палитры турниров остаются у
+   таблиц и экрана вечера (ccEvPaletteApply). Включить обратно — true. */
+const CC_YEAR_THEME=false;
 function ccYearThemeApply(){
   const root=document.documentElement;
+  if(!CC_YEAR_THEME){ root.classList.remove('yr-pal'); return; }
   const today=(CAREER && CAREER.career) ? careerToday() : '';
   const y=today ? ccCalYear() : 2026;
   if(y>=2026){ root.classList.remove('yr-pal'); return; }
@@ -130961,6 +130979,7 @@ function careerNoteBarHTML(){
       title="${esc(L().ccNews)}" aria-label="${esc(L().ccNews)}">
       <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M4 4h13a1 1 0 0 1 1 1v13a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2V4Zm2 3v3h9V7H6Zm0 5v2h9v-2H6Zm0 4v2h6v-2H6Z"/></svg>
       ${posts?`<i>${posts>99?'99+':posts}</i>`:''}</button>
+    ${(dms.length || posts) ? `<button class="cc-nb cc-nb-clear" onclick="ccBellClearAll(event)" title="${esc(L().ccBellClear)}" aria-label="${esc(L().ccBellClear)}">✓</button>` : ''}
   </div>`;
 }
 /* Колокольчик в шапке: сумма всего непрочитанного, по нажатию — те же пять кнопок
@@ -135617,6 +135636,15 @@ function careerWorldFinals(fromISO, toISO){
     if(paid[key]) return;
     if(log.some(r=>r.kind===kind && r.season===cr.season && (r.stage==null || r.stage==='final') &&
                    Math.abs(ccDaysBetween(r.day, day))<=3)){ paid[key]=1; return; }
+    /* Копенгаген-2023: сетки пишут строки 'upper'/'lower', и мир, не найдя 'final', играл второй
+       финал с выплатой всем (аудит 29.09). Финал за игроком, пока он в нём (gc23.you 'final'/'done'). */
+    if(kind==='globals' && cr.gc23 && cr.gc23.season===cr.season && cr.gc23.you){
+      const g=cr.gc23.you;
+      if(g==='done') { paid[key]=1; return; }
+      // В сетке — ждём: финал сыграет игрок. Ушёл с дня финала, не сыграв, — тогда мир.
+      let lastGc=null; careerYearDays().forEach((l, iso)=>{ if(l.some(x=>x.kind==='globals') && (!lastGc || iso>lastGc)) lastGc=iso; });
+      if(g!=='out' && day!==lastGc) return;
+    }
     let room=null;
     try{ room=(build()||[]).filter(t=>t && !t._stub); }catch(e){ room=null; }
     if(!room || room.length<2) return;
@@ -135624,7 +135652,8 @@ function careerWorldFinals(fromISO, toISO){
     room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
     ccWorldRun('fin|'+key, ()=>simulateGames(room, games, pts, kill));
     const ranked=rank(room);
-    careerMoneyAdd(ranked, prize);
+    CC_PRIZE_DAY=day;
+    try{ careerMoneyAdd(ranked, prize); } finally { CC_PRIZE_DAY=null; }
     careerPrAdd(ranked, meta);
     const w=ranked[0];
     CC_POST_DAY=day;   // лента датируется днём вечера, а не днём, с которого ушёл игрок
@@ -140415,6 +140444,9 @@ function ccMajorLcRoom(you, ev){
    поэтому день ставит dropEachGame (он зовётся раз на игру), а читают его
    ccM24PointsGf и ccM24KillGf. */
 const CC_M24_KILL=4, CC_M24_DAY2=1.5, CC_M24_DAY1_GAMES=6;
+/* Квалификаторы 2024-го — два за элим: правила Epic S28–S30 FNCS_Major*_Qualifier1/2 (kill 2),
+   а полуфиналы и Гранд-финалы — четыре (аудит 29.09 по CC_CUP_SCORE). Лестница мест та же. */
+const CC_M24_KILL_Q=2;
 let CC_M24_GAME=0;
 function ccM24Day(){ return (CC_M24_GAME>CC_M24_DAY1_GAMES) ? CC_M24_DAY2 : 1; }
 /* Таблица ДУО, а не текущего состава: 2024-й играется в дуо весь год, и
@@ -140952,7 +140984,10 @@ function careerMajorCan(ev){
       ccM24Brackets(s);
       const br=s.bracket && s[s.bracket];
       if(!br || s.ticket) return false;
-      const prev=ev.r===1 ? br.rows : br['r'+(ev.r-1)];
+      /* Упавший из верхней сетки сидит в upper.down[r], а не в нижней сетке прошлого дня —
+         комната нижней сетки собирается ccM24LowerRoom. Без этого «Играть» гасла после
+         «падение в нижнюю сетку» (аудит 29.09). */
+      const prev=s.bracket==='lower' ? ccM24LowerRoom(s, ev.r) : (ev.r===1 ? br.rows : br['r'+(ev.r-1)]);
       return !!(prev && prev.indexOf('you')>=0);
     }
     return !gaveUp && !!(s && s.ticket);
@@ -141007,8 +141042,11 @@ function ccRegionTable(tables){
 // Showdown 2025: на игрока №1 $3 000, №2 $1 000, №3 $750, 4–10 $300, 11–15 $250, 16–25 $150 — на трио втрое.
 const CC_SHOWDOWN_PAY=[[1,3000],[2,1000],[3,750],[10,300],[15,250],[25,150]];
 function showdownPrize(place){ const row=CC_SHOWDOWN_PAY.find(r=>place<=r[0]); return row ? row[1]*careerSquadSize() : 0; }
+/* День, за который платят: мир, доигрывая пропущенный финал, считает деньги в день того финала,
+   а не в день, с которого ушёл игрок (иначе таблица бралась у другого Мейджора — аудит 29.09). */
+let CC_PRIZE_DAY=null;
 function majorPrize(place){
-  const ev=careerMajorOn(careerToday());
+  const ev=careerMajorOn(CC_PRIZE_DAY || careerToday());
   if(ev && ccMajorIsShowdown(ev.n)) return showdownPrize(place);
   // 2024-й: таблица окна Day 2 Finals своего региона (Tracker), на игрока — на дуо вдвое.
   if(ccIs2024()) return ccPay24(CC_MAJOR_PAY_2024, place)*careerSquadSize();
@@ -142972,8 +143010,9 @@ async function runCareerGclc(){
     ev.final ? (wonSeat ? L().ccGcSeatWon(seatSlots, ccLanCity('globals'))
                         : L().ccGcSeatMissed(seatSlots)) + ' · ' + cashLine
              : through ? L().ccRelPass(st.cut) : L().ccRelFail(st.cut));
+  // Приз у ника — таблица финала Ласт Ченса (платит всем, аудит 29.09: чипа не было).
   await revealStandings(shell, ranked, you, ev.final ? seatSlots : st.cut,
-    null, null, null, null, !!ev.final);
+    null, null, ev.final ? gclcPrize : null, null, !!ev.final);
   careerPrAdd(ranked, {div:CAREER.career.division, kind:'gclc'});
   if(ev.final) ccBoardAfter(ranked, you, ev.label);
 
@@ -144612,7 +144651,7 @@ async function runCareerSummit(){
   // The night is played, so the night teaches. See careerGrowEvent.
   careerGrowEvent(place, field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:1, place:place, of:field.length,
-               pts:you.stagePts, passed:through, ovr:CAREER.player.ovr,
+               pts:you.stagePts, passed:through || cash>0, ovr:CAREER.player.ovr,
                games:st.games, wins:you.wins||0, elims:you.stageElims||0,
                avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
                mate: mate ? mate.handle : null, mates: ccLogMates(mates), prize:ccShareOf(cash, you), kind:'summit', stage:ev.stage,
@@ -145065,7 +145104,8 @@ async function runCareerGlobals(){
 
   const shell=createStageCardShell(ev.label+' — '+field.length);
   await revealStageLog(you, shell, true);
-  finalizeStageCard(shell, place, field.length, you.stagePts, place===1, false,
+  // Призовое место Глобалов — зелёная плашка, как у карточки итога (было: только первое).
+  finalizeStageCard(shell, place, field.length, you.stagePts, place===1 || gcPrize(place)>0, false,
     place===1 ? L().gcChampion : L().gcPlaceNote(place));
   // Из финала Глобалов не проходят никуда — «топ-10» здесь был той же ложной
   // линией, что и на финале Мейджора. Деньги показывает колонка призовых.
@@ -146477,7 +146517,7 @@ async function runCareerMajor2024(){
   const fin0=(ev.stage==='final');
   CC_M24_GAME=0;
   await simulateGamesLive(field, spec.games, fin0 ? ccM24PointsGf : ccM24Points,
-    fin0 ? ccM24KillGf : CC_M24_KILL, 'stage', 0, null, null,
+    fin0 ? ccM24KillGf : ev.stage==='q' ? CC_M24_KILL_Q : CC_M24_KILL, 'stage', 0, null, null,
     {lobbySize:ccTeams(50), stageName:stageLabel, mapReplay:true, choices:true, stopOnYourDeath:true,
      stopOnWin:!!spec.vr, roomOnly:!openRound,
      // Второй день гранд-финала — ×1.5, и какая игра идёт, знает только этот вопрос.
@@ -146489,6 +146529,7 @@ async function runCareerMajor2024(){
   m.got[ev.id]=true;
   /* Европа и NA Central, суббота: раунд 2 показан своей карточкой, прошедшие тут же играют
      раунд 3 — и дальше вечер считается по нему (в записи q[..].r2 лежит топ-250 третьего). */
+  let shownOut=false, stay=false;
   if(ev.stage==='q' && ev.r===2 && ccM24Deep()){
     const pass2=place<=spec.cut;
     const sh1=createStageCardShell(stageLabel+' — '+field.length);
@@ -146503,12 +146544,12 @@ async function runCareerMajor2024(){
       const label3=L().ccYr24Qual(ev.n, ev.q, 3);
       room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; t.stageLog=[]; });
       CC_M24_GAME=0;
-      await simulateGamesLive(room, sp3.games, ccM24Points, CC_M24_KILL, 'stage', 0, null, null,
+      await simulateGamesLive(room, sp3.games, ccM24Points, CC_M24_KILL_Q, 'stage', 0, null, null,
         {lobbySize:ccTeams(50), stageName:label3, mapReplay:true, choices:true, stopOnYourDeath:true, roomOnly:true,
          dropEachGame:(g,rm)=>{ CC_M24_GAME=g; return careerLandingPick(rm||room, you, label3, ['major']); }});
       field=room; spec=sp3; stageLabel=label3; twoRounds=true;
       ranked=ccM24Rank(field); place=ranked.indexOf(you)+1;
-    }
+    } else shownOut=true;   // вылет в раунде 2: его карточка уже показана — второй раз её не рисовать
   }
   if(ev.stage==='q'){
     if(ev.r<3){
@@ -146520,8 +146561,11 @@ async function runCareerMajor2024(){
       // Очки серии: линейно по месту последнего раунда, за оба квалификатора.
       ranked.forEach((t,i)=>{ const k=ccSeatKey(t); m.series[k]=(m.series[k]||0)+Math.max(0, ranked.length-i); m.seriesRows[k]=seedOf(t); });
       m.youKey=ccSeatKey(you);
-      through=true;
-      note=L().ccYr24Series(m.series[m.youKey]||0, ccM24SeriesRank(m, m.youKey));
+      /* Серия решает полуфинал после второго квалификатора: верх — upperSize+lowerSize.
+         Раньше плашка горела зелёным у всех (аудит 29.09). После первого — ещё не решено. */
+      const semiSeats=CC_M24.upperSize+CC_M24.lowerSize, sr=ccM24SeriesRank(m, m.youKey);
+      through=ev.q<2 || (sr>0 && sr<=semiSeats);
+      note=L().ccYr24Series(m.series[m.youKey]||0, sr)+(ev.q>=2 ? ' · '+(through ? L().ccYrSemiZone(semiSeats) : L().ccYrSemiOut(semiSeats)) : '');
     }
   } else if(ev.stage==='semi'){
     const bracket=m.bracket;
@@ -146536,6 +146580,8 @@ async function runCareerMajor2024(){
       const keep=(spec.keep!=null) ? spec.keep : rest.length;
       const dropped=!through && rest.indexOf(you)>=keep;
       if(dropped) m.bracket='lower';
+      // Остался в верхней сетке — вечер пройден (зелёная плашка), хоть билета и нет.
+      stay=!through && !dropped;
       note = through ? L().ccYr24VrTicket : dropped ? L().ccYr24Down : L().ccMajNoTicket;
     }
     else { if(ev.r===3) m.ticket=m.ticket||through; note=through ? L().ccRelPass(spec.cut) : L().ccRelFail(spec.cut); }
@@ -146544,13 +146590,15 @@ async function runCareerMajor2024(){
   }
   removeSkipButton();
   const fin=ev.stage==='final';
-  const shell=createStageCardShell(stageLabel+' — '+field.length);
-  await revealStageLog(you, shell, true);
-  finalizeStageCard(shell, place, field.length, you.stagePts,
-    ccStagePassed(through, spec, place, fin ? majorPrize : null), false,
-    fin ? ccMajorSeatNote(ev) : note);
-  await revealStandings(shell, ranked, you, spec.cut||0, null, null, fin ? majorPrize : null, null, fin);
-  careerPrAdd(ranked, {div:cr.division, kind:'major', stage:ev.stage});
+  if(!shownOut){
+    const shell=createStageCardShell(stageLabel+' — '+field.length);
+    await revealStageLog(you, shell, true);
+    finalizeStageCard(shell, place, field.length, you.stagePts,
+      ccStagePassed(through || stay, spec, place, fin ? majorPrize : null), false,
+      fin ? ccMajorSeatNote(ev) : note);
+    await revealStandings(shell, ranked, you, spec.cut||0, null, null, fin ? majorPrize : null, null, fin);
+    careerPrAdd(ranked, {div:cr.division, kind:'major', stage:ev.stage});
+  }
   let cash=0;
   if(fin){
     careerMoneyAdd(ranked, majorPrize);
@@ -146565,7 +146613,7 @@ async function runCareerMajor2024(){
     m.gf=ranked.map(seedOf);
     cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
   } else {
-    careerNews(through?'good':'flat', through?'ccNewsMajThrough':'ccNewsMajOut',
+    careerNews((through || stay)?'good':'flat', (through || stay)?'ccNewsMajThrough':'ccNewsMajOut',
                [ev.label, place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
     if(!through && spec.cut && place===spec.cut+1) careerNews('bad', 'ccPostOneOff', [ev.label]);
     const prev=(cr.major && cr.major.n===ev.n) ? cr.major : null;
@@ -146576,7 +146624,7 @@ async function runCareerMajor2024(){
   careerGrowEvent(place, field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:cr.division,
                place:place, of:field.length, pts:you.stagePts,
-               passed: fin ? cash>0 : through,
+               passed: fin ? cash>0 : (through || stay),
                ovr:CAREER.player.ovr, games:spec.games*(twoRounds ? 2 : 1), wins:you.wins||0,
                elims:you.stageElims||0,
                avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
@@ -146598,7 +146646,7 @@ async function runCareerMajor2024(){
   careerRenderHub('centre');
   const lanSeat = fin && (ccGlobalsSeat()||{}).via==='major2' ? L().ccRelSeatGc(ccLanCity('globals')) : null;
   careerReloadResultCard({label:stageLabel, place:place, of:field.length,
-    through: fin ? cash>0 : through, cut:spec.cut||0,
+    through: fin ? cash>0 : (through || stay), cut:spec.cut||0,
     // Та же строка, что и на карточке этапа: очки серии, билет за победу в
     // матче, отсечка — смотря чем этот вечер кончается. См. careerReloadResultCard.
     note: fin ? null : note,
@@ -147356,6 +147404,10 @@ async function runCareerMajor(){
   // The Last Chance Lobby: the fifty who came through, four matches, and only a
   // win is worth anything.
   let ticket=false, lobbyPlace=null;
+  /* 2025: Ласт Ченс Мейджора и раунд 1 FNCS Showdown проходят местом (топ-33), без лобби «только
+     победа» из 2026-го. Showdown попадал в то лобби, и без победы в нём раунд 2 не открывался;
+     LCQ Мейджора писал «не прошёл» по пустому билету (аудит 29.09). */
+  const lcByPlace=ev.stage==='lcq' && ccIs2025();
   // Гонка: лобби Ласт Ченса общее, только если ВСЯ комната прошла открытый этап (как у Victory Cup и Evaluation).
   if(ev.stage==='lcq' && typeof ccRaceLock==='function' && ccRaceLock()){
     const top=ranked.slice(0, ccTeams(CAREER_CUP_CUT));
@@ -147367,7 +147419,7 @@ async function runCareerMajor(){
   if(ev.stage==='lcq' && through && ccMajLc2025(ev)){
     cr.majorLc={n:ev.n, season:cr.season, rows:ranked.slice(0, st.cut).map(t=>ccSeedRow(t, you, ccMajorSeatRow))};
   }
-  if(ev.stage==='lcq' && through && !ccMajLc2025(ev)){
+  if(ev.stage==='lcq' && through && !lcByPlace){
     const lobby=ranked.slice(0, ccTeams(CAREER_CUP_CUT));
     ensureSkipButton();
     // Лобби Ласт Ченса — одна комната из пятидесяти, и точка в ней выбирается,
@@ -147421,7 +147473,7 @@ async function runCareerMajor(){
     careerCongrats(ranked, you, L().ccCongratsMajor(ev.n));
     cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
   } else {
-    const won = (ev.stage==='lcq' && !ccMajLc2025(ev)) ? ticket : through;
+    const won = (ev.stage==='lcq' && !lcByPlace) ? ticket : through;
     /* Two different facts, and they were one field.
 
        His screenshot, 17 August: a Division 4 career told it was holding a slot
@@ -147545,7 +147597,7 @@ async function runCareerMajor(){
   careerGrowEvent(lobbyPlace||place, field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:cr.division,
                place:lobbyPlace||place, of:field.length, pts:you.stagePts,
-               passed: ev.stage==='lcq' ? ticket : (ev.stage==='final' ? cash>0 : through),
+               passed: (ev.stage==='lcq' && !lcByPlace) ? ticket : (ev.stage==='final' ? cash>0 : through),
                ovr:CAREER.player.ovr, games:st.games, wins:you.wins||0,
                elims:you.stageElims||0,
                avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
@@ -147573,7 +147625,7 @@ async function runCareerMajor(){
                 : (ccSummitSeat()==='main' ? L().ccRelSeatLan : null))
     : null;
   careerReloadResultCard({label:ev.label, place:lobbyPlace||place, of:field.length,
-    through: ev.stage==='lcq' ? ticket : (ev.stage==='final' ? cash>0 : through),
+    through: (ev.stage==='lcq' && !lcByPlace) ? ticket : (ev.stage==='final' ? cash>0 : through),
     cut:st.cut||CAREER_CUP_CUT,
     /* 16.09, тестер: «после квала на какой-то турнир всегда пишет "место на
        Esports World Cup"». Хиты и LCQ ставили seat без текста, а запасной текст
@@ -147926,7 +147978,7 @@ async function runCareerReload(){
     CC_REL_HELD=ccRelHoldsSeat(you);
     relSeats=new Set(awardSeats(ranked, st.cut, holdsLanSeat));
   }
-  await revealStandings(shell, ranked, you, banking ? 0 : st.cut, null, relSeats, null, null, ev.stage==='final');
+  await revealStandings(shell, ranked, you, banking ? 0 : st.cut, null, relSeats, p=>relStagePrize(ev.stage, p), null, ev.stage==='final');
   CC_REL_HELD=null;
   CC_RANK_SCALE = 1;
 
@@ -148410,11 +148462,12 @@ async function runCareerVictoryNight(){
     const tThrough=ranked1.indexOf(t)<vCut;
     const tPlace2=(tThrough && ranked2v) ? ranked2v.indexOf(t)+1 : null;
     // Кап с таблицей мест платит за место второго раунда, а не за победы — и журнал пишет то же.
-    const tCash=lanN ? ccVictoryPayOf(ev, ranked1.indexOf(t)+1)
+    // Кап в один раунд платит за место этого раунда, как ЛАН (аудит 29.09: журнал писал $0 и «не прошёл»).
+    const tCash=(lanN || oneRound) ? ccVictoryPayOf(ev, ranked1.indexOf(t)+1)
                : payCup ? (tPlace2 ? ccVictoryPayOf(ev, tPlace2) : 0) : (t.wins||0)*rate*(tThrough ? 1 : 0);
     const placesT=(t.stageLog||[]).map(g=>g.place);
     cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:tPlace2||(ranked1.indexOf(t)+1),
-               of:tThrough?vCut:field.length, pts:t.stagePts, passed:tThrough,
+               of:tThrough?vCut:field.length, pts:t.stagePts, passed:tThrough || ((lanN || oneRound) && tCash>0),
                ovr: isMe ? CAREER.player.ovr : Math.round((pc && (pc._targetOvr||pc.rating))||0),
                games:tThrough?CC_VICTORY_R1_GAMES+(payCup ? 6 : CC_VICTORY_R2_GAMES):CC_VICTORY_R1_GAMES,
                wins:t.wins||0, elims:t.stageElims||0,
@@ -148430,7 +148483,7 @@ async function runCareerVictoryNight(){
   CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; useLandingSet(prevSet); CC_KILL_CAP=0;
   careerRenderHub('centre');
   careerTwoRoundResultCard({title:(ev.name ? ev.name : ev.mode==='duo'?ccVictoryCupName():L().calVictorySolo)+' '+ev.n,
-    place:place2||place1, through:through, wins:wins, cash:cash, cut:vCut});
+    place:place2||place1, through:through || ((lanN || oneRound) && cash>0), wins:wins, cash:cash, cut:vCut, byPlace:!!(lanN || oneRound || payCup)});
 }
 
 /* ===== The Solo Series =====================================================
@@ -149294,7 +149347,7 @@ async function runCareerProAm(){
   await revealStageLog(you, shell, true);
   finalizeStageCard(shell, place, field.length, you.stagePts, cash>0, false,
     cash ? L().ccProAmCash(ccMoney(ccShareOf(cash, you))) : L().ccProAmNoCash);
-  await revealStandings(shell, ranked, you, 0, null, null, null, null, true);
+  await revealStandings(shell, ranked, you, 0, null, null, (p)=>P.prize[p-1] || 0, null, true);
   removeSkipButton();
   careerPrAdd(ranked, {div:cr.division, kind:'proam'});
   ccBoardAfter(ranked, you, ev.label);
@@ -150035,7 +150088,8 @@ async function runCareerSoloSeries(){
     return th;
   };
   const prizeFn=spec ? (spec.prize||null) : (ev.stage==='final' ? soloSeriesPrize : null);
-  const through=passOf(you);
+  // Любое место дальше — проход (Fast Track: 9–100 в хиты, хиты 36–50 — в LCQ Final), не только финал (аудит 29.09).
+  const through=spec ? !!seatOf(you) : passOf(you);
   removeSkipButton();
 
   const shell=createStageCardShell(ev.label+' — '+field.length);
@@ -150515,7 +150569,8 @@ function careerTwoRoundResultCard(r){
   /* Кап в один раунд (дейли, соло-капы 2019–20, капы 2021 — ccCupRounds) отсечки не
      имеет: cut 0. Строки «мимо топ-0 — раунд 2 без тебя» и «ниже Дивизиона 1 призовых
      нет» там врали — второго раунда нет, дивизионов в те годы тоже. */
-  const line = r.cash ? L().ccVicCash(r.wins, r.cash)
+  // Кап, который платит за место (таблица, ЛАН, один раунд), — «место — $», а не «N побед — $».
+  const line = r.cash ? (r.byPlace ? L().ccVicPlaceCash(r.place, r.cash) : L().ccVicCash(r.wins, r.cash))
              : r.through ? L().ccVicNoWin
              : r.cut ? L().ccVicFail(r.cut) : '';
   box.innerHTML=`<h4>${esc(r.title)} <span class="stage-badge ${r.through?'pass':'fail'}">${ccTopC(r.place)}</span></h4>
