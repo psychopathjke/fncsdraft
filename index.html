@@ -119740,13 +119740,14 @@ function ccPastMajorScore(ev){
   const fin=ev.stage==='final' || /Final|_GF|Grand/i.test(id);
   /* Полуфинал — своим правилом Epic (S15–S17 SemiFinals, S18 SemiFinals_Day1, S19–S21 SemiFinals):
      раньше брался первый по алфавиту квалификатор (аудит 29.09). Правило «только победа»
-     (Reboot Round, S18 Day2: 10 за победу, 0 за элим) — формат «выиграл — прошёл», под который
-     раннер не собран: такой полуфинал остаётся на прежнем правиле. */
+     (Reboot Round, S18 Day2: 10 за победу, 0 за элим) — CC_WIN_ONLY: место в таблице решают победы. */
+  if(ev.stage==='reboot') return CC_WIN_ONLY;
   if(ev.stage==='semi'){
     const semi=fams.find(k=>new RegExp('SemiFinals_Day'+(ev.r||1)+'$').test(k)) || fams.find(k=>/SemiFinals$/.test(k));
     const rule=semi && CC_CUP_SCORE[semi] && CC_SCORE_R[CC_CUP_SCORE[semi][0]];
     const winOnly=rule && rule[0].length===1 && !rule[1];
-    if(semi && !winOnly) return ccCupScoreOf(semi, 1);
+    if(winOnly) return CC_WIN_ONLY;
+    if(semi) return ccCupScoreOf(semi, 1);
   }
   const pick=fin ? fams.find(k=>/Final/i.test(k) && !/Semi/i.test(k))
                  : fams.find(k=>/Week|Qualifier|Heat|SemiFinal|Semi/i.test(k) && !/Grand/i.test(k));
@@ -147157,10 +147158,15 @@ function ccM21Field(){ return ccTeams(50); }
 // Хиты полуфинала: день и квота. prev — хит второго дня из не прошедших первый (C2S8).
 function ccM21HeatPlan(n){
   if(n===1) return [{day:1, cut:8}, {day:1, cut:8}, {day:2, cut:8}, {day:2, cut:8}];
-  if(n===4) return [{day:1, cut:4}, {day:1, cut:4}, {day:2, cut:7, prev:true}, {day:2, cut:7, prev:true}];
+  // C2S8, день 2 — Reboot Round 1 и 2 (Liquipedia): 6 матчей, очки только за победу, топ-6 каждого.
+  if(n===4) return [{day:1, cut:4}, {day:1, cut:4}, {day:2, cut:6, prev:true, winOnly:true}, {day:2, cut:6, prev:true, winOnly:true}];
   return [{day:1, cut:6}, {day:1, cut:6}, {day:1, cut:6}];
 }
 function ccM21RebootCut(n){ return n===1 ? 1 : (n===2 || n===3) ? 6 : 0; }
+/* Reboot Round (Liquipedia): C2S5 — один матч, проходит победитель; C2S6/C2S7 — два раунда по три матча, проходят
+   победители (у нас одним вечером — шесть матчей). Очки — правило Epic «только победа»: 10 за Victory Royale, 0 за элим. */
+function ccM21RebootGames(n){ return n===1 ? 1 : 6; }
+const CC_WIN_ONLY={pts:p=>p===1 ? 10 : 0, kill:0};
 function ccM21Of(n){
   const cr=CAREER && CAREER.career; if(!cr) return null;
   const m=cr.major21;
@@ -147254,7 +147260,8 @@ function ccM21SettleHeats(m){
     if(!day || careerToday()<=day) return;
     const room=h.rows.filter(r=>r!=='you').map(ccMajorTeamFrom);
     room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
-    ccWorldRun('m21h|'+m.season+'|'+m.n+'|'+i, ()=>simulateGames(room, CC_M21.semi.games, ccM24Points, CC_M24_KILL));
+    const sc=h.winOnly ? CC_WIN_ONLY : {pts:ccM24Points, kill:CC_M24_KILL};
+    ccWorldRun('m21h|'+m.season+'|'+m.n+'|'+i, ()=>simulateGames(room, CC_M21.semi.games, sc.pts, sc.kill));
     const ranked=ccM24Rank(room);
     m.heatRes[i]={up:ranked.slice(0, h.cut).map(ccMajorSeatRow), rest:ranked.slice(h.cut).map(ccMajorSeatRow)};
   });
@@ -147282,7 +147289,7 @@ function ccM21SettleReboot(m){
   const room=ccM21RebootRoom(m).filter(r=>r!=='you').map(ccMajorTeamFrom);
   if(!room.length){ m.reboot={up:[]}; return; }
   room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
-  ccWorldRun('m21r|'+m.season+'|'+m.n, ()=>simulateGames(room, CC_M21.reboot.games, ccM24Points, CC_M24_KILL));
+  ccWorldRun('m21r|'+m.season+'|'+m.n, ()=>simulateGames(room, ccM21RebootGames(m.n), CC_WIN_ONLY.pts, CC_WIN_ONLY.kill));
   m.reboot={up:ccM24Rank(room).slice(0, cut).map(ccMajorSeatRow)};
 }
 // Финал: прямые, прошедшие хиты и Reboot Round; недобор — по серии. Grand Royale — трио региона.
@@ -147456,7 +147463,7 @@ async function runCareerMajor2021(){
     if(day2) alive=true;
   } else if(ev.stage==='reboot'){
     const cut=ccM21RebootCut(ev.n);
-    spec={games:CC_M21.reboot.games, cut:cut};
+    spec={games:ccM21RebootGames(ev.n), cut:cut};
     field=rowsOf(ccM21RebootRoom(m));
     if(field.indexOf(you)<0) field.push(you);
     ranked=await play(field, spec, stageLabel, false);

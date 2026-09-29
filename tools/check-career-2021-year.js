@@ -108,11 +108,25 @@ const BOOT = `
     out.steps.push('Heat: '+sm+' · #'+(ls&&ls.place));
     // 5. Reboot Round — если хит не прошёл.
     const st=CAREER.career.major21;
+    // Хит прошёл — переносим себя в не прошедшие, чтобы Reboot Round сыграть в любом случае.
+    if(st.ticket){ Object.values(st.heatRes||{}).forEach(h=>{ const i=(h.up||[]).indexOf('you'); if(i>=0){ h.up.splice(i, 1); (h.rest=h.rest||[]).unshift('you'); } }); st.ticket=false; }
     if(!st.ticket){
       careerAdvanceTo('2021-05-23');
       const rEv=careerMajorOn('2021-05-23');
       check('Reboot Round открыт после хита', rEv && rEv.stage==='reboot' && careerMajorCan(rEv), JSON.stringify(rEv));
+      const rb=await playThrough('Major 2 reboot');
+      const lr=lastLog();
+      check('Reboot Round записан: шесть матчей', lr && lr.stage==='reboot' && lr.games<=6, JSON.stringify(lr));
+      out.steps.push('Reboot: '+rb+' · #'+(lr&&lr.place)+' pts '+(lr&&lr.pts));
     }
+    // Очки Reboot Round и второго дня C2S8 — «только победа» (Epic S18 SemiFinals_Day2, Liquipedia).
+    const sR=ccPastMajorScore({id:'Major2_2021_Reboot', day:'2021-05-23', stage:'reboot'});
+    check('Reboot: 10 за победу, 0 за второе место и элим', sR && sR.pts(1)===10 && sR.pts(2)===0 && sR.kill===0, JSON.stringify(sR));
+    const sD2=ccPastMajorScore({id:'Major4_2021_Semi2', day:'2021-10-29', stage:'semi', r:2});
+    check('C2S8 день 2: только победа', sD2 && sD2.pts(1)===10 && sD2.pts(3)===0 && sD2.kill===0, JSON.stringify(sD2));
+    const p8=ccM21HeatPlan(4);
+    check('C2S8 день 2: топ-6 из каждого Reboot Round', p8[2].cut===6 && p8[3].cut===6 && p8[2].winOnly, JSON.stringify(p8));
+    check('C2S5 Reboot: один матч', ccM21RebootGames(1)===1 && ccM21RebootCut(1)===1);
     // 6. Гранд-финал с билетом.
     seed('2021-05-29', {major21:{n:2, season:1, got:{}, q:{}, series:{}, seriesRows:{}, direct:[], heats:null, heatRes:{}, reboot:null, youKey:'X', ticket:true}});
     const gf=await playThrough('Major 2 final');
