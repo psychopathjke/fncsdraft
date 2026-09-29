@@ -6006,16 +6006,25 @@
   html.ev-classic .lobby-table tr.you .st-prize{background:#11141c;color:#ffd166;}
   /* Живой этап (карта + таблица) — рамка в той же палитре, что таблица, а не синяя сайта
      (его скрин 37, 29.09). Заголовок игры — как шапка таблицы. */
-  html.ev-pal #majorStages .stage-card:has(.lobby-live){
+  /* Скрин 39: и карточки итогов этапа, и итог вечера (оценка, MVP), и вопросы перед игрой —
+     все карточки вечера в той же палитре. Полоса «прошёл/не прошёл» слева остаётся. */
+  html.ev-pal #majorStages .stage-card{
     background:linear-gradient(rgba(6,8,14,.5),rgba(6,8,14,.5)),linear-gradient(120deg,var(--ev-l) 0%,var(--ev-r) 100%);
     border:1px solid color-mix(in srgb,var(--ev-h) 55%,transparent);}
-  html.ev-pal.ev-light #majorStages .stage-card:has(.lobby-live){
+  html.ev-pal.ev-light #majorStages .stage-card{
     background:linear-gradient(rgba(6,8,14,.66),rgba(6,8,14,.66)),linear-gradient(120deg,var(--ev-l) 0%,var(--ev-r) 100%);}
-  html.ev-pal #majorStages .stage-card:has(.lobby-live) h4{font-family:var(--font-display);font-weight:700;
+  html.ev-pal #majorStages .stage-card.pass{border-left:4px solid var(--accent);}
+  html.ev-pal #majorStages .stage-card.fail{border-left:4px solid var(--danger);}
+  html.ev-pal #majorStages .stage-card::before{background:none;}
+  html.ev-pal #majorStages .stage-card.cc-choice .cc-choice-head b{background:rgba(0,0,0,.35);box-shadow:inset 4px 0 0 var(--ev-h);}
+  html.ev-pal #majorStages .stage-card .cc-choice-btn{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.22);}
+  html.ev-pal #majorStages .stage-card .cc-choice-btn:hover{border-color:#fff;box-shadow:0 0 0 1.5px #fff;}
+  html.ev-pal #majorStages .stage-card .stage-detail,html.ev-pal #majorStages .stage-card .stage-when{color:rgba(255,255,255,.88);}
+  html.ev-pal #majorStages .stage-card>h4{font-family:var(--font-display);font-weight:700;
     font-size:clamp(16px,2.2vw,22px);letter-spacing:.02em;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.25);
     margin:0 0 12px;padding:0 0 10px;border-bottom:2px solid color-mix(in srgb,var(--ev-h) 70%,transparent);}
-  html.ev-pal #majorStages .stage-card:has(.lobby-live) .live-note{color:rgba(255,255,255,.85);}
-  html.ev-pal #majorStages .stage-card:has(.lobby-live) .lobby-wrap{box-shadow:0 6px 18px rgba(0,0,0,.35);
+  html.ev-pal #majorStages .stage-card .live-note{color:rgba(255,255,255,.85);}
+  html.ev-pal #majorStages .stage-card .lobby-wrap{box-shadow:0 6px 18px rgba(0,0,0,.35);
     scrollbar-color:var(--ev-h) rgba(0,0,0,.3);}
   html.ev-pal #majorStages .stage-card:has(.lobby-live) .zone-replay{box-shadow:0 0 0 2px color-mix(in srgb,var(--ev-h) 60%,transparent),0 6px 18px rgba(0,0,0,.35);}
   /* Приз у ника в таблице этапа (revealStandings). */
@@ -6023,15 +6032,29 @@
     color:#ffd166;font-weight:900;font-size:12px;white-space:nowrap;vertical-align:1px;}
   /* Плашка «Следующий раунд» (ccRoundChoice) — снизу по центру, поверх вечера. */
   .cc-round-ask{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9500;width:min(560px,calc(100vw - 32px));
-    background:#0b1640;border:2px solid #ffe600;border-radius:14px;padding:14px 16px;color:#fff;box-shadow:0 10px 40px rgba(0,0,0,.55);
-    display:flex;flex-direction:column;gap:6px;text-align:center;}
-  .cc-round-ask b{font-size:18px;font-weight:900;font-style:italic;text-transform:uppercase;}
-  .cc-round-ask span{font-size:12px;color:#b7c3e6;font-weight:700;}
-  .cc-round-ask div{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px;}
-  .cc-round-ask button{flex:1 1 140px;padding:10px 12px;border-radius:999px;border:none;font:inherit;font-weight:900;font-size:13px;cursor:pointer;
-    background:rgba(150,180,255,.28);color:#fff;}
-  .cc-round-ask button.rc-play{background:#ffe600;color:#0b0f12;}
-  .cc-round-ask button:hover{outline:3px solid rgba(255,255,255,.92);}
+    --th:var(--fn-yellow);color:#fff;padding:14px 16px 12px;border-radius:6px;overflow:hidden;
+    background:linear-gradient(160deg, rgba(29,59,140,.96) 0%, rgba(19,38,95,.98) 46%, rgba(11,22,64,.99) 100%);
+    border:1px solid var(--fn-line);box-shadow:inset 0 0 0 1px rgba(180,200,255,.14), 0 18px 40px rgba(4,10,30,.55);}
+  .cc-round-ask::before{content:'';position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(112deg, transparent 0 90px, rgba(150,180,255,.06) 90px 130px);}
+  .cc-round-ask>*{position:relative;}
+  .cc-round-ask .cc-choice-head b{margin:-14px -16px 9px;padding-left:16px;}
+  .cc-round-ask .cc-choice-head>span{display:block;}
+  .cc-round-ask .cc-choice-btn{flex:1 1 140px;}
+  .cc-round-ask .cc-choice-btn b{margin:0;font-size:14px;}
+  .cc-round-ask .cc-choice-btn.rc-play{background:var(--th);border-color:var(--th);}
+  .cc-round-ask .cc-choice-btn.rc-play b{color:#0b0f12;}
+  .cc-round-ask .cc-choice-bar i{animation:rcBar var(--rc-ms,10s) linear forwards;}
+  @keyframes rcBar{from{transform:scaleX(1);}to{transform:scaleX(0);}}
+  @media (prefers-reduced-motion:reduce){.cc-round-ask .cc-choice-bar{display:none;}}
+  /* В годы с палитрой турнира — её цвета, как у таблиц: фон, акцент шапки, кнопка «Играть». */
+  html.ev-pal .cc-round-ask{--th:var(--ev-h);border-color:color-mix(in srgb,var(--ev-h) 55%,transparent);
+    background:linear-gradient(rgba(6,8,14,.5),rgba(6,8,14,.5)),linear-gradient(120deg,var(--ev-l) 0%,var(--ev-r) 100%);}
+  html.ev-pal .cc-round-ask .cc-choice-head b{background:rgba(0,0,0,.35);}
+  html.ev-pal .cc-round-ask .cc-choice-btn{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.22);}
+  html.ev-pal .cc-round-ask .cc-choice-btn.rc-play{background:#fff;border-color:#fff;}
+  html.ev-pal .cc-round-ask .cc-choice-btn.rc-play b{color:#11141c;}
+  html.ev-pal .cc-round-ask .cc-choice-btn:hover{border-color:#fff;box-shadow:0 0 0 1.5px #fff;}
   /* Тема карьеры прошлых лет — палитра сезона (html.yr-pal, ccYearThemeApply). */
   html.yr-pal #screen-career-hub .ch-stage{background:linear-gradient(160deg,color-mix(in srgb,var(--yr-l) 38%,#060a16) 0%,color-mix(in srgb,var(--yr-r) 30%,#060a16) 100%);}
   html.yr-pal #screen-career-hub .ch-top{
@@ -97773,11 +97796,16 @@ async function ccRoundChoiceMaybe(){
 function ccRoundChoice(){
   return new Promise(function(done){
     const box=document.createElement('div');
+    /* Та же карточка, что вопрос перед игрой (.cc-choice-head, .cc-choice-btn, полоса
+       времени), а в годы с палитрой — в цветах таблиц турнира (его скрин 38, 29.09). */
     box.className='cc-round-ask';
-    box.innerHTML='<b>'+esc(L().rcNextH)+'</b><span>'+esc(L().rcNextSub(Math.round(CC_ROUND_ASK_MS/1000)))+'</span>'+
-      '<div><button class="cc-choice-btn" data-p="sim">'+esc(L().rcSim)+'</button>'+
-      '<button class="cc-choice-btn rc-all" data-p="all">'+esc(L().rcSimAll)+'</button>'+
-      '<button class="cc-choice-btn rc-play" data-p="play">'+esc(L().rcPlay)+'</button></div>';
+    box.style.setProperty('--rc-ms', CC_ROUND_ASK_MS+'ms');
+    box.innerHTML='<div class="cc-choice-head"><b><span class="cc-choice-t">'+esc(L().rcNextH)+'</span></b>'+
+      '<span>'+esc(L().rcNextSub(Math.round(CC_ROUND_ASK_MS/1000)))+'</span></div>'+
+      '<div class="cc-choice-row"><button class="cc-choice-btn def" data-p="sim"><b>'+esc(L().rcSim)+'</b></button>'+
+      '<button class="cc-choice-btn rc-all" data-p="all"><b>'+esc(L().rcSimAll)+'</b></button>'+
+      '<button class="cc-choice-btn rc-play" data-p="play"><b>'+esc(L().rcPlay)+'</b></button></div>'+
+      '<div class="cc-choice-bar"><i></i></div>';
     let over=false;
     const end=p=>{ if(over) return; over=true; box.remove(); done(p); };
     box.querySelectorAll('button').forEach(b=>b.onclick=()=>end(b.dataset.p));
