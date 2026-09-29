@@ -6063,6 +6063,10 @@
   .hm-card-draft i{background:#fff;}
   .home-modes.hm-draft-on .hm-card-draft{box-shadow:inset 0 0 0 2px #ffe600,0 14px 34px rgba(4,10,30,.45);}
   .modes-panel.dp-shut{display:none;}
+  .dp-head{margin:2px 0 14px;} .dp-head .dp-sub{margin:4px 0 0;font-size:13px;color:#cfd8ff;max-width:640px;}
+  .dp-tag{display:inline-block;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#7ef0dd;}
+  .dp-title{margin:2px 0 0;font-family:var(--font-display);font-size:clamp(30px,4.5vw,44px);font-weight:700;font-style:italic;text-transform:uppercase;line-height:1;color:#fff;}
+  .hero-mode-tag{margin-bottom:8px;}
   .dp-years{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px;}
   .dp-chip{border:0;cursor:pointer;font:inherit;font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:.04em;
     padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.08);color:#cfd8ff;box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);}
@@ -6410,8 +6414,9 @@
          (вдвоём, гонка, по коду; ходят за флагом CC_MP_OPEN в setLang).
          Id кнопок cstripDuo/cstripRace/cstripCode сохранены: на них смотрят
          check-mp-doors и setLang. Арт — ключевой арт Major 1, один. -->
-    <section class="hero" aria-labelledby="heroTitle">
+    <section class="hero hero-career" aria-labelledby="heroTitle">
       <div class="hero-body">
+        <span class="dp-tag hero-mode-tag" data-i18n="hmCareerTag"></span>
         <h1 class="hero-title" id="heroTitle" data-i18n="heroTitle"></h1>
         <p class="hero-sub" id="tagline" data-i18n="tagline"></p>
         <div class="cstrip-chips hero-chips">
@@ -6435,20 +6440,14 @@
           <button class="cstrip-btn cstrip-btn-code" id="cstripCode" type="button" onclick="careerMpJoinNew()" data-i18n="ccMpEnter"></button>
         </div>
       </div>
-      <div class="hero-art" style="background-image:url(art/fncs-2026-major1.jpg)" role="img" aria-label="FNCS 2026 Major 1"></div>
+      <div class="hero-art" style="background-image:url(art/fncs-2026-major1.jpg);cursor:pointer" role="img" aria-label="FNCS 2026 Major 1" onclick="careerStart()"></div>
     </section>
-    <!-- ДВА РЕЖИМА (его слово 29.09: «на главной странице сделать 2 режима — карьера и драфт, и когда
-         нажимаешь играть драфт, там все года»). Драфт раскрывает панель годов ниже. -->
-    <div class="home-modes" id="homeModes">
-      <button class="hm-card" type="button" onclick="careerStart()" style="--hm-art:url(art/fncs-2026-major1.jpg)">
-        <span class="hm-tag" data-i18n="hmCareerTag"></span><b data-i18n="hmCareerTitle"></b><em data-i18n="hmCareerSub"></em><i data-i18n="hmPlay"></i></button>
-      <button class="hm-card hm-card-draft" type="button" onclick="homeOpenDraft()" style="--hm-art:url(art/mode-all-fncs.jpg)">
-        <span class="hm-tag" data-i18n="hmDraftTag"></span><b data-i18n="hmDraftTitle"></b><em data-i18n="hmDraftSub"></em><i data-i18n="hmPlay"></i></button>
-    </div>
     <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Скриншот (красная рамка вокруг всех рядов): «с этими
          прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
          первый выделяется». -->
-    <section class="modes-panel dp-shut" id="draftPanel">
+    <!-- ДВА РЕЖИМА (его слово 29.09): большой блок сверху — КАРЬЕРА, ниже — ДРАФТ со всеми годами 2019–2026. -->
+    <section class="modes-panel" id="draftPanel">
+    <div class="dp-head"><span class="dp-tag" data-i18n="hmDraftTag"></span><h2 class="dp-title" data-i18n="hmDraftTitle"></h2><p class="dp-sub" data-i18n="hmDraftSub"></p></div>
     <div class="dp-years" id="dpYears"></div>
     <div class="year-row" id="modeYears">
       <div class="year-label">2026</div>
@@ -18837,19 +18836,19 @@ Object.assign(I18N.fr, {ccYrSemiZone:k=>'Zone des demi-finales : top '+k+' de la
 Object.assign(I18N.it, {ccYrSemiZone:k=>'Zona semifinali: top '+k+' della serie', ccYrSemiOut:k=>'Fuori dal top '+k+' della serie — niente semifinali'});
 Object.assign(I18N.pt, {ccYrSemiZone:k=>'Zona das semifinais: top '+k+' da série', ccYrSemiOut:k=>'Fora do top '+k+' da série — sem semifinais'});
 /* Главная: два режима и драфт по годам (29.09). */
-Object.assign(I18N.ru, {hmCareerTag:'Режим 1', hmCareerTitle:'Карьера', hmCareerSub:'Один игрок, сезон за сезоном по настоящему календарю 2019–2026: дивизионы, Мейджоры, клубы, ЛАНы', hmPlay:'Играть',
+Object.assign(I18N.ru, {hmCareerTag:'Режим 1 · Карьера', hmCareerTitle:'Карьера', hmCareerSub:'Один игрок, сезон за сезоном по настоящему календарю 2019–2026: дивизионы, Мейджоры, клубы, ЛАНы', hmPlay:'Играть',
   hmDraftTag:'Режим 2', hmDraftTitle:'Драфт', hmDraftSub:'Собери команду из реальных карточек и пройди турнир: любой год 2019–2026, All FNCS, дуо, трио, сквады',
   dpFormats:'All FNCS · форматы', dpRealCards:'Реальные карточки', dpPastDesc:'Карточки игроков по их настоящим результатам на этом турнире. Круг — Play-In, хиты и финал.'});
-Object.assign(I18N.en, {hmCareerTag:'Mode 1', hmCareerTitle:'Career', hmCareerSub:'One player, season after season on the real 2019–2026 calendar: divisions, Majors, clubs, LANs', hmPlay:'Play',
+Object.assign(I18N.en, {hmCareerTag:'Mode 1 · Career', hmCareerTitle:'Career', hmCareerSub:'One player, season after season on the real 2019–2026 calendar: divisions, Majors, clubs, LANs', hmPlay:'Play',
   hmDraftTag:'Mode 2', hmDraftTitle:'Draft', hmDraftSub:'Build a team from real cards and run the tournament: any year 2019–2026, All FNCS, duos, trios, squads',
   dpFormats:'All FNCS · formats', dpRealCards:'Real cards', dpPastDesc:'Player cards built from their real results at this event. The run is Play-In, Heats and Finals.'});
-Object.assign(I18N.fr, {hmCareerTag:'Mode 1', hmCareerTitle:'Carrière', hmCareerSub:'Un joueur, saison après saison sur le vrai calendrier 2019–2026 : divisions, Majors, clubs, LAN', hmPlay:'Jouer',
+Object.assign(I18N.fr, {hmCareerTag:'Mode 1 · Carrière', hmCareerTitle:'Carrière', hmCareerSub:'Un joueur, saison après saison sur le vrai calendrier 2019–2026 : divisions, Majors, clubs, LAN', hmPlay:'Jouer',
   hmDraftTag:'Mode 2', hmDraftTitle:'Draft', hmDraftSub:'Monte une équipe de vraies cartes et joue le tournoi : n\'importe quelle année 2019–2026, All FNCS, duos, trios, squads',
   dpFormats:'All FNCS · formats', dpRealCards:'Vraies cartes', dpPastDesc:'Cartes des joueurs d\'après leurs vrais résultats sur cet événement. Play-In, heats et finale.'});
-Object.assign(I18N.it, {hmCareerTag:'Modalità 1', hmCareerTitle:'Carriera', hmCareerSub:'Un giocatore, stagione dopo stagione sul vero calendario 2019–2026: divisioni, Major, club, LAN', hmPlay:'Gioca',
+Object.assign(I18N.it, {hmCareerTag:'Modalità 1 · Carriera', hmCareerTitle:'Carriera', hmCareerSub:'Un giocatore, stagione dopo stagione sul vero calendario 2019–2026: divisioni, Major, club, LAN', hmPlay:'Gioca',
   hmDraftTag:'Modalità 2', hmDraftTitle:'Draft', hmDraftSub:'Crea una squadra di carte reali e gioca il torneo: qualsiasi anno 2019–2026, All FNCS, duo, trio, squad',
   dpFormats:'All FNCS · formati', dpRealCards:'Carte reali', dpPastDesc:'Carte dei giocatori dai loro veri risultati a questo evento. Play-In, heat e finale.'});
-Object.assign(I18N.pt, {hmCareerTag:'Modo 1', hmCareerTitle:'Carreira', hmCareerSub:'Um jogador, temporada após temporada no calendário real 2019–2026: divisões, Majors, clubes, LANs', hmPlay:'Jogar',
+Object.assign(I18N.pt, {hmCareerTag:'Modo 1 · Carreira', hmCareerTitle:'Carreira', hmCareerSub:'Um jogador, temporada após temporada no calendário real 2019–2026: divisões, Majors, clubes, LANs', hmPlay:'Jogar',
   hmDraftTag:'Modo 2', hmDraftTitle:'Draft', hmDraftSub:'Monte um time de cartas reais e jogue o torneio: qualquer ano 2019–2026, All FNCS, duplas, trios, squads',
   dpFormats:'All FNCS · formatos', dpRealCards:'Cartas reais', dpPastDesc:'Cartas dos jogadores pelos resultados reais neste evento. Play-In, heats e final.'});
 /* Своя организация: основание, штат, отделы (29.09). */
@@ -94604,7 +94603,6 @@ function homeDraftYear(y, quiet){
 function homeOpenDraft(){
   const panel=document.getElementById('draftPanel'); if(!panel) return;
   panel.classList.remove('dp-shut');
-  document.getElementById('homeModes') && document.getElementById('homeModes').classList.add('hm-draft-on');
   homeDraftInit();
   panel.scrollIntoView({behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start'});
 }
