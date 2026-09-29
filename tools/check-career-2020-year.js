@@ -120,6 +120,23 @@ const BOOT = `
     const wp=ccMXWildPrize(ccMXSpec(2020, 3));
     check('Wildcard: 1-е ноль, 2-е $1800 на тройку', !!wp && wp(1)===0 && wp(2)===1800 && wp(32)===1800, String(wp && [wp(1), wp(2), wp(32)]));
     out.steps.push('C2S4 wildcard: '+wc+' · '+JSON.stringify(lw.map(x=>x.stage+' #'+x.place+'/'+x.of+' $'+x.prize)));
+    // Победа в Wildcard: первая таблица с тобой ставит тебя первым — дальше тот же вечер идёт в Гранд-финал (33 трио).
+    seed('2020-10-31', {majorx:{y:2020, n:3, season:1, got:{}, q:{}, series:{}, seriesRows:{}, heats:null, heatRes:{}, youKey:'X', ticket:false, wild:true}});
+    // ccM24Rank — const; подменяем сыгранный матч: после первой комнаты с тобой твоей команде +1000 очков.
+    const sgl0=simulateGamesLive; let forced=false;
+    simulateGamesLive=async function(teams){ const r=await sgl0.apply(this, arguments);
+      const y=!forced && (teams||[]).find(t=>t && (t.isYou || String(t.name||'').indexOf('Yearman')>=0));
+      if(y){ forced=true; y.stagePts=(y.stagePts||0)+1000; } return r; };
+    let ww;
+    try{ ww=await playThrough('C2S4 wildcard win'); } finally { simulateGamesLive=sgl0; }
+    const lw2=CAREER.career.log.filter(x=>x.day==='2020-10-31');
+    const st2=CAREER.career.majorx||{};
+    check('Wildcard выигран: путёвка и Гранд-финал в тот же вечер', forced && st2.ticket && lw2.some(x=>x.stage==='final' && x.of===33) && !lw2.some(x=>x.stage==='wild'),
+      JSON.stringify({forced, ticket:st2.ticket, log:lw2.map(x=>({st:x.stage, of:x.of, place:x.place, prize:x.prize}))}));
+    // Без регулярок: внутри шаблона BOOT обратные слэши теряются.
+    const gfCards=[...document.querySelectorAll('#majorStages .stage-card h4')].map(h=>h.textContent);
+    check('Wildcard выигран: карточка Wildcard и карточка финала', gfCards.some(t=>t.indexOf('Wildcard')>=0) && gfCards.some(t=>t.indexOf('Final')>=0 && t.indexOf('Wildcard')<0), JSON.stringify(gfCards));
+    out.steps.push('C2S4 wildcard win: '+ww+' · '+JSON.stringify(lw2.map(x=>x.stage+' #'+x.place+'/'+x.of+' $'+x.prize)));
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
