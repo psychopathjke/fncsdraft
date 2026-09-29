@@ -146536,10 +146536,75 @@ function ccMXSettleHeats(m){
 }
 function ccMXYourHeat(m, d){ return ccMXHeats(m).findIndex(h=>h.day===d && h.rows.indexOf('you')>=0); }
 // Финал: World Cup — настоящие финалисты Нью-Йорка; FNCS — прошедшие хиты, недобор по серии.
+/* ФИНАЛ WORLD CUP — ИЗ СЫГРАННЫХ НЕДЕЛЬ (его слово 29.09: «пусть из нашей симуляции игроки попадают,
+   которые квальнутся недель», «и так должно быть на всех турнирах»). Был готовый список настоящих
+   финалистов Нью-Йорка (WC2019_FIELD). Теперь каждая неделя Online Open каждого региона — комната
+   финала недели из настоящих карточек World Cup этого региона (дуо — реальными парами из истории),
+   сыгранная движком; путёвки — верх таблицы по квоте региона (WC2019_QUOTA, приведённой к размеру
+   финала), уже прошедшие путёвку не занимают. Свой регион в сыгранную неделю — твоя таблица (ccMXRun).
+   Комнаты считаются один раз после конца недели и лежат в сейве (m.wcq), так что финал не меняется. */
+function ccMXWcRowKey(r){ return r==='you' ? 'you' : (Array.isArray(r) ? r : [r]).map(x=>hKey(typeof x==='string' ? x : x.h)).sort().join('+'); }
+function ccMXWcTaken(m, before){
+  const out=new Set(), W=m.wcq||{};
+  Object.keys(W).forEach(w=>{ if(before!=null && +w>=before) return; Object.values(W[w]).forEach(rows=>(rows||[]).forEach(r=>out.add(ccMXWcRowKey(r)))); });
+  return out;
+}
+function ccMXWcPool(sp, reg){
+  const cards=(typeof CARDS_BY_SETREG!=='undefined' && CARDS_BY_SETREG.get(sp.set+'|'+reg)||[]).slice().sort((a,b)=>(b.rating||0)-(a.rating||0));
+  const row=c=>({h:c.handle, n:c.nat||null, o:Math.round(c.rating||0), k:(attrsFor(c)||{}).roleKey||null});
+  if(sp.size===1) return cards.map(c=>[row(c)]);
+  // Дуо — настоящими парами из истории (TEAMMATE_GROUPS), остальные — соседями по рейтингу.
+  const by=new Map(cards.map(c=>[hKey(c.handle), c])), used=new Set(), out=[];
+  (typeof TEAMMATE_GROUPS!=='undefined' ? TEAMMATE_GROUPS : []).forEach(g=>{
+    if(!g || g.length!==sp.size) return;
+    const cs=g.map(h=>by.get(hKey(h)));
+    if(cs.some(c=>!c || used.has(hKey(c.handle)))) return;
+    cs.forEach(c=>used.add(hKey(c.handle))); out.push(cs.map(row));
+  });
+  const rest=cards.filter(c=>!used.has(hKey(c.handle)));
+  for(let i=0; i+sp.size-1<rest.length; i+=sp.size) out.push(rest.slice(i, i+sp.size).map(row));
+  return out.sort((a,b)=>b.reduce((s,x)=>s+x.o,0)-a.reduce((s,x)=>s+x.o,0));
+}
+function ccMXWcRows(m, sp){
+  const Q=(typeof WC2019_QUOTA!=='undefined' && WC2019_QUOTA[sp.set]) || null;
+  if(!Q || !sp.weeks) return null;
+  const F=ccMXLobby(sp.size), regs=Object.keys(Q);
+  const total=regs.reduce((s,r)=>s+Q[r], 0)*sp.weeks.length;
+  const q=r=>Math.max(1, Math.round(Q[r]*F/total));
+  const W=m.wcq=m.wcq||{};
+  const R=sp.rounds.length, games=sp.rounds[R-1].games;
+  const out=[];
+  sp.weeks.forEach(w=>{
+    const end=ccMXWeekEnd(m.y, m.n, w);
+    if(!end || careerToday()<=end && !(W[w] && Object.keys(W[w]).length)) return;
+    const Ww=W[w]=W[w]||{};
+    regs.forEach(reg=>{
+      if(!Ww[reg] && careerToday()>end){
+        const taken=ccMXWcTaken(m, w);
+        const pool=ccMXWcPool(sp, reg).filter(r=>!taken.has(ccMXWcRowKey(r)));
+        const rnd=careerRng(ccHashStr('wcq|'+m.season+'|'+m.n+'|'+w+'|'+reg));
+        const top=pool.slice(0, F*2);
+        for(let i=top.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); const t=top[i]; top[i]=top[j]; top[j]=t; }
+        const room=top.slice(0, F).map(r=>{ const t=ccMajorTeamFrom(r); t._row=r; return t; });
+        if(room.length){
+          ccWithEventSize(sp.size, ()=>{
+            room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
+            ccWorldRun('wcq|'+m.season+'|'+m.n+'|'+w+'|'+reg, ()=>simulateGames(room, games, ccM24Points, CC_M24_KILL));
+          });
+          Ww[reg]=ccM24Rank(room).slice(0, q(reg)).map(t=>t._row);
+        } else Ww[reg]=[];
+      }
+      (Ww[reg]||[]).forEach(r=>out.push(r));
+    });
+  });
+  if(m.ticket && !out.includes('you')) out.unshift('you');
+  return out.length ? out : null;
+}
 function ccMXGfRows(y, n, m){
   const sp=ccMXSpec(y, n), F=ccMXLobby(sp.size), out=[], seen=new Set();
   const add=r=>{ const k=ccMXKey(r); if(!r || seen.has(k) || out.length>=F) return; seen.add(k); out.push(r); };
-  if(sp.kind==='wc'){ ((typeof WC2019_FIELD!=='undefined' && WC2019_FIELD[sp.set])||[]).forEach(add); return out; }
+  // World Cup: финал — те, кто взял путёвки сыгранных недель (ccMXWcRows); без карьеры — настоящий список.
+  if(sp.kind==='wc'){ ((m ? ccMXWcRows(m, sp) : null) || (typeof WC2019_FIELD!=='undefined' && WC2019_FIELD[sp.set]) || []).forEach(add); return out; }
   if(!m) return out;
   ccMXSettleWeeks(m); ccMXSettleHeats(m);
   ccMXHeats(m).forEach((h,i)=>((m.heatRes[i]||{}).up||[]).forEach(add));
@@ -146656,7 +146721,13 @@ async function ccMXRun(ev, sp){
       let heatsNote=null;
       if(r===R){
         through=wc && place<=spec.cut;
-        if(wc){ if(through) m.ticket=true; }
+        if(wc){
+          if(through) m.ticket=true;
+          // Кто из твоего региона взял путёвки этой недели — они и едут в Нью-Йорк (ccMXWcRows).
+          const W=m.wcq=m.wcq||{}, done=ccMXWcTaken(m, ev.w);
+          (W[ev.w]=W[ev.w]||{})[careerPrizeRegion()==='NAW' ? 'NAW' : careerPrizeRegion()]=
+            ranked.map(seedOf).filter(r=>r==='you' || !done.has(ccMXWcRowKey(r))).slice(0, spec.cut);
+        }
         else {
           ccMXSeriesAdd(m, ranked, seedOf);
           /* Хиты берут верх серии: хитов × лобби (ccMXHeats). Карточка финала недели ставила «не
