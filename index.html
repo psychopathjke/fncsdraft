@@ -6105,6 +6105,11 @@
   @keyframes ccRarShine{0%{background-position:150% 0}100%{background-position:-100% 0}}
   @media (prefers-reduced-motion:reduce){ #screen-career-create .cc-chip.cc-rar-legend::after{animation:none;background-position:50% 0;} }
   /* Окно состава на кап другого формата (ccEventRosterPick). */
+  .cc-soon{border:1px solid rgba(255,200,60,.55) !important;background:linear-gradient(160deg,rgba(255,190,40,.16),rgba(255,190,40,.04)) !important;}
+  .cc-soon-h{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#ffcf4d;margin-bottom:4px;}
+  .cc-soon b{display:block;font-size:15px;color:#fff;}
+  .cc-soon-line{font-size:12px;color:#dfe7ff;margin:4px 0 10px;}
+  .cc-soon-go{width:100%;}
   .cc-evpick-wrap{position:fixed;inset:0;z-index:9600;background:rgba(4,8,24,.72);display:flex;align-items:center;justify-content:center;padding:16px;}
   .cc-evpick{width:min(460px,100%);max-height:88vh;overflow:auto;background:linear-gradient(180deg,#1b2a66,#101a44);border:1px solid rgba(160,185,255,.3);border-radius:14px;padding:16px;color:#fff;box-shadow:0 20px 50px rgba(0,0,0,.5);}
   .cc-evpick h4{margin:0 0 4px;font-family:var(--font-display);font-size:18px;text-transform:uppercase;}
@@ -19009,6 +19014,11 @@ Object.assign(I18N.en, {evPickH:(e,n)=>'Roster for '+e+': add '+n, evPickSub:'Wh
 Object.assign(I18N.fr, {evPickH:(e,n)=>'Roster pour '+e+' : ajoute '+n, evPickSub:'Qui emmènes-tu sur cette cup ? Ils restent dans ton roster de ce format.', evPickAuto:'Choisis pour moi', evPickGo:(k,n)=>'Jouer · '+k+'/'+n, evPickHave:'dans le roster'});
 Object.assign(I18N.it, {evPickH:(e,n)=>'Roster per '+e+': aggiungi '+n, evPickSub:'Chi porti a questa cup? Restano nel tuo roster di questo formato.', evPickAuto:'Scegli tu per me', evPickGo:(k,n)=>'Gioca · '+k+'/'+n, evPickHave:'nel roster'});
 Object.assign(I18N.pt, {evPickH:(e,n)=>'Line-up para '+e+': adicione '+n, evPickSub:'Quem você leva para esta copa? Eles ficam na sua line-up deste formato.', evPickAuto:'Escolha por mim', evPickGo:(k,n)=>'Jogar · '+k+'/'+n, evPickHave:'na line-up'});
+Object.assign(I18N.ru, {rsSoonH:(k,d)=>(k===0 ? 'Сегодня' : k===1 ? 'Завтра' : 'Через '+k+' дн.')+' · '+d, rsFmt:n=>({2:'дуо',3:'трио',4:'сквад'})[n]||'', rsHave:(who,n,f)=>'Состав: '+who+' · '+n+' из '+f, rsGo:n=>'Собрать состав · добрать '+n});
+Object.assign(I18N.en, {rsSoonH:(k,d)=>(k===0 ? 'Today' : k===1 ? 'Tomorrow' : 'In '+k+' days')+' · '+d, rsFmt:n=>({2:'duos',3:'trios',4:'squads'})[n]||'', rsHave:(who,n,f)=>'Roster: '+who+' · '+n+' of '+f, rsGo:n=>'Build the roster · add '+n});
+Object.assign(I18N.fr, {rsSoonH:(k,d)=>(k===0 ? 'Aujourd’hui' : k===1 ? 'Demain' : 'Dans '+k+' jours')+' · '+d, rsFmt:n=>({2:'duo',3:'trio',4:'squad'})[n]||'', rsHave:(who,n,f)=>'Roster : '+who+' · '+n+' sur '+f, rsGo:n=>'Compléter le roster · ajouter '+n});
+Object.assign(I18N.it, {rsSoonH:(k,d)=>(k===0 ? 'Oggi' : k===1 ? 'Domani' : 'Tra '+k+' giorni')+' · '+d, rsFmt:n=>({2:'duo',3:'trio',4:'squad'})[n]||'', rsHave:(who,n,f)=>'Roster: '+who+' · '+n+' su '+f, rsGo:n=>'Completa il roster · aggiungi '+n});
+Object.assign(I18N.pt, {rsSoonH:(k,d)=>(k===0 ? 'Hoje' : k===1 ? 'Amanhã' : 'Em '+k+' dias')+' · '+d, rsFmt:n=>({2:'duo',3:'trio',4:'squad'})[n]||'', rsHave:(who,n,f)=>'Line-up: '+who+' · '+n+' de '+f, rsGo:n=>'Montar a line-up · adicionar '+n});
 /* Драфт прошлых лет: этапы (29.09). */
 Object.assign(I18N.ru, {dpPastDesc2:'Карточки — по настоящим результатам игроков на этом турнире. Формат, очки, призы и остров — того же сезона.'});
 Object.assign(I18N.en, {dpPastDesc2:'Cards built from the players’ real results at this event. Format, scoring, prize money and island of that season.'});
@@ -115550,6 +115560,7 @@ function careerCentreHTML(card, a){
       <!-- Входящие — строкой значков сверху слева, как на проде (его слово 29.09: «как на fncsdraft сделай
            CENTRE», «хаб такой же как был»). Колокольчик из шапки снят. См. careerNoteBarHTML. -->
       ${careerNoteBarHTML()}
+      ${typeof ccRosterSoonHTML==='function' ? ccRosterSoonHTML() : ''}
       ${careerMpTileHTML()}
       ${careerRaceTileHTML()}
       ${cr.seasonOver ? '' : careerInterviewHTML()}
@@ -149226,7 +149237,7 @@ function careerReloadResultCard(r){
 async function runCareerVictory(){
   const ev=careerVictoryOn(careerToday());
   CC_ZB=!!(ev && ev.zb);
-  await ccEventRosterPick(ev, ccVictoryFormat(ev));
+  await ccEventRosterPick(ev, ccPickFormat(ev));
   const fmtSwap=ccEventRosterBegin(ccVictoryFormat(ev));
   try{ return await runCareerVictoryNight(); }
   finally{ CC_ZB=false; ccEventRosterEnd(fmtSwap); }
@@ -149271,6 +149282,41 @@ function ccEventRosterEnd(sw){
   CAREER.partners=sw.prev;
   careerSave();
 }
+/* СОСТАВ НА БЛИЖАЙШИЙ КАП ДРУГОГО ФОРМАТА — ЗАРАНЕЕ (его слово 29.09: «когда ближайшие турниры в других
+   режимах, пусть окошечко высвечивается, где будет состав, чтоб игрок не забыл»). Семь дней вперёд:
+   кап, на который зовут, в формате не своего года, и в составе этого формата не хватает людей —
+   плашка в Центре с составом и кнопкой «Собрать состав» (то же окно, что перед вечером). */
+// EWC 2024, Dallas и отборы — 4 на 4: состав сквада, в каком бы формате ни был год.
+function ccPickFormat(ev){ return ev && ev.ewc24 ? 4 : ccVictoryFormat(ev); }
+function ccRosterSoon(){
+  if(!CAREER || !CAREER.career || CC_EVENT_SIZE) return null;
+  if((typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRacePairOn==='function' && ccRacePairOn())) return null;
+  const base=careerSquadSize(), today=careerToday();
+  for(let k=0; k<=7; k++){
+    const day=ccAddDays(today, k);
+    const ev=careerVictoryOn(day);
+    if(!ev || ((ev.invite || ev.ewc24) && !ccVictoryInvited(ev))) continue;
+    const fmt=ccPickFormat(ev);
+    if(!fmt || fmt===1 || fmt===base) continue;
+    const own=((CAREER.rosters||{})[fmt] || CAREER.partners || []).filter(Boolean).slice(0, fmt-1);
+    if(own.length>=fmt-1) continue;
+    return {ev, day, k, fmt, own};
+  }
+  return null;
+}
+function ccRosterSoonHTML(){
+  const r=ccRosterSoon(); if(!r) return '';
+  const T=L();
+  const names=[CAREER.player.nick||CAREER.player.handle||T.ewc24You2].concat(r.own.map(x=>(ccMateCardOf(x)||{}).handle).filter(Boolean));
+  return '<div class="ch-tile cc-soon"><div class="cc-soon-h">'+esc(T.rsSoonH(r.k, ccDayLabel(r.day)))+'</div>'+
+    '<b>'+esc(r.ev.name)+' · '+esc(T.rsFmt(r.fmt))+'</b>'+
+    '<div class="cc-soon-line">'+esc(T.rsHave(names.join(', '), names.length, r.fmt))+'</div>'+
+    '<button class="btn-primary cc-soon-go" onclick="ccRosterSoonOpen()">'+esc(T.rsGo(r.fmt-names.length))+'</button></div>';
+}
+function ccRosterSoonOpen(){
+  const r=ccRosterSoon(); if(!r) return;
+  ccEventRosterPick(r.ev, r.fmt).then(()=>careerRenderHub('centre'));
+}
 /* СОСТАВ НА КАП ДРУГОГО ФОРМАТА — ВЫБИРАЕТ ИГРОК.
 
    Его слово 29.09: «squad victory cash cup играется рандомными игроками, я их не выбирал».
@@ -149279,7 +149325,9 @@ function ccEventRosterEnd(sw){
    ближайших по рейтингу игрок отмечает недостающих. Выбранные записываются в CAREER.rosters[fmt] —
    следующий кап того же формата играется ими без вопроса. «Подобрать за меня» и тишина 30 с —
    прежний добор. Командная карьера, гонка и перемотка не спрашивают. */
-const CC_EV_PICK_MS=30000;
+// Тишина не собирает состав за игрока (его слово 29.09: «чтоб турнир случайно не сыграл, потому что тиммейта нет»);
+// десять минут — только чтобы вечер без человека (пробы, забытая вкладка) не висел вечно.
+const CC_EV_PICK_MS=600000;
 function ccEventRosterPick(ev, fmt){
   if(!fmt || fmt===1 || !CAREER || CC_EVENT_SIZE) return Promise.resolve();
   if((typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRacePairOn==='function' && ccRacePairOn())) return Promise.resolve();
@@ -149304,7 +149352,7 @@ function ccEventRosterPick(ev, fmt){
       box.innerHTML='<div class="cc-evpick"><h4>'+esc(T.evPickH(ev && ev.name || '', need))+'</h4><p>'+esc(T.evPickSub)+'</p>'+
         '<div class="cc-evpick-list">'+own.map(r=>ccMateCardOf(r)).filter(Boolean).map(c=>row(c, -1, true)).join('')+
           pool.map((c, i)=>row(c, i, false)).join('')+'</div>'+
-        '<div class="cc-evpick-act"><button class="cc-evpick-auto" data-k="auto">'+esc(T.evPickAuto)+'</button>'+
+        '<div class="cc-evpick-act"><button class="cc-evpick-auto cc-choice-btn" data-k="auto">'+esc(T.evPickAuto)+'</button>'+
         '<button class="btn-primary cc-evpick-go" data-k="go"'+(pick.size===need ? '' : ' disabled')+'>'+esc(T.evPickGo(pick.size, need))+'</button></div></div>';
       box.querySelectorAll('.cc-evpick-p[data-i]').forEach(b=>{ const i=+b.dataset.i; if(pick.has(i)) b.classList.add('on');
         b.onclick=()=>{ if(pick.has(i)) pick.delete(i); else if(pick.size<need) pick.add(i); draw(); }; });
@@ -149687,7 +149735,9 @@ function ewc24MyTeam(busy){
   const T=L(), me=careerCard(); if(!me) return null;
   const reg=CAREER.player.region||'EU';
   const taken=new Set((busy||[]).map(h=>String(h).toLowerCase()));
-  const mine=[me].concat((careerMates()||[]).filter(Boolean)).slice(0, 4);
+  // Своя четвёрка — сквад-состав игрока (CAREER.rosters[4], собирается в окне состава), иначе напарники года.
+  const r4=((CAREER.rosters||{})[4]||[]).map(r=>ccMateCardOf(r)).filter(Boolean);
+  const mine=[me].concat(r4.length ? r4 : (careerMates()||[]).filter(Boolean)).slice(0, 4);
   mine.forEach(c=>taken.add(String(c.handle||'').toLowerCase()));
   const myOvr=(CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr)||80;
   const pool=PLAYERS.filter(p=>p && /^f\d$/.test(String(p.cardSet||'')) && p.region===reg && !taken.has(String(p.handle||'').toLowerCase()) && (p.rating||0)<=myOvr+2)

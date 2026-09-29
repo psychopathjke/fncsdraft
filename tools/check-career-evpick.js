@@ -22,7 +22,7 @@ const BOOT = `
     if(am && am.style.display==="flex"){ const no=document.getElementById("ccAskNo"), yes=document.getElementById("ccAskYes");
       if(no && no.textContent===L().ccSpotGatePlay){ no.click(); return; }
       if(yes && yes.textContent===L().ccSpotGateSet){ careerSpotEnsure(); am.style.display="none"; careerPlay(); return; } }
-    const cb=document.querySelector(".cc-choice-btn"); if(cb){ cb.click(); return; }
+    const cb=document.querySelector(".cc-choice-btn:not(.cc-evpick-auto)"); if(cb){ cb.click(); return; }
     const p=document.querySelector(".landing-picker"); if(!p) return;
     const z=p.querySelectorAll(".land-zone"); if(!z.length) return;
     z[0].click();
@@ -89,6 +89,23 @@ const BOOT = `
     const l=lastLog();
     out.steps.push('night: '+h+' · mates '+JSON.stringify(l && l.mates));
     check('вечер сыгран выбранными', l && names.every(n=>(l.mates||[]).indexOf(n)>=0), JSON.stringify(l && l.mates));
+    // Заранее: за пять дней до DreamHack Dallas 2024 (4 на 4) — плашка «Собрать состав»; выбранные играют EWC-вечер.
+    seed('2024-05-27', {size:2}, {c:'de'});
+    CAREER.partners=(CAREER.partners||[]).slice(0, 1); CAREER.rosters={}; careerSave(); CC_VICTORY_LIST=null;
+    const soon=ccRosterSoon();
+    out.steps.push('soon: '+JSON.stringify(soon && {id:soon.ev.id, k:soon.k, fmt:soon.fmt}));
+    check('плашка видит Dallas как сквад', soon && soon.ev.ewc24==='dallas' && soon.fmt===4, JSON.stringify(soon && soon.ev.id));
+    careerRenderHub('centre');
+    check('плашка в Центре', !!document.querySelector('.cc-soon .cc-soon-go'));
+    document.querySelector('.cc-soon .cc-soon-go').click(); await wait(50);
+    const eb=[...document.querySelectorAll('.cc-evpick-p[data-i]')];
+    const en=[eb[0], eb[1]].map(b=>b.querySelector('b').textContent);
+    eb[0].click(); await wait(10); document.querySelectorAll('.cc-evpick-p[data-i]')[1].click(); await wait(10);
+    document.querySelector('.cc-evpick-go').click(); await wait(50);
+    const team=ewc24MyTeam([]);
+    out.steps.push('ewc team: '+team.squad.map(c=>c.handle).join(', ')+' picked '+JSON.stringify(en));
+    check('четвёрка EWC — выбранные', en.every(n=>team.squad.some(c=>c.handle===n)), team.squad.map(c=>c.handle).join(','));
+    check('после выбора плашки нет', !ccRosterSoon());
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
