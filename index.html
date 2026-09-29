@@ -6068,6 +6068,13 @@
   .dp-title{margin:2px 0 0;font-family:var(--font-display);font-size:clamp(30px,4.5vw,44px);font-weight:700;font-style:italic;text-transform:uppercase;line-height:1;color:#fff;}
   .hero-mode-tag{margin-bottom:8px;}
   .hero.hero-draft{margin-top:16px;}
+  .fmt-art{position:relative;overflow:hidden;background:#0d1650;}
+  .fmt-wall{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:1fr;gap:3px;}
+  .fmt-wall i{display:block;background-size:cover;background-position:50% 30%;min-height:0;}
+  .fmt-wall.fmt-n9,.fmt-wall.fmt-n8,.fmt-wall.fmt-n7{grid-template-columns:repeat(3,1fr);}
+  .fmt-wall.fmt-n1{grid-template-columns:1fr;} .fmt-wall.fmt-n1 i{background-position:50% 28%;}
+  .fmt-art .ec-foot,.fmt-art .ec-pill{position:relative;z-index:2;}
+  .fmt-art::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(0deg,rgba(8,14,44,.92) 0%,rgba(8,14,44,.2) 55%,rgba(8,14,44,0) 100%);}
   .hd-logos{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 70% 40%,#2a3f9e 0%,#101a52 60%,#0a1033 100%);}
   .hd-logos::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(12,20,64,.85) 0%,rgba(12,20,64,0) 22%),linear-gradient(0deg,rgba(10,16,51,.55) 0%,rgba(10,16,51,0) 30%);}
   .hd-wall{position:absolute;inset:-12% -8% -12% 4%;display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-content:center;transform:rotate(-9deg);}
@@ -6576,9 +6583,7 @@
       <div class="mode-grid mode-grid-3">
       <div class="mode-card mode-card-span">
         <!-- 2024: своих постеров у Мейджоров нет — острова пятой главы, как в карьере. -->
-        <div class="ec-art" style="background-image:url(art/map-f1.jpg)">
-          <i class="ec-slice" style="background-image:url(art/map-f2.jpg)"></i>
-          <i class="ec-slice ec-slice-3" style="background-image:url(art/map-f3.jpg)"></i>
+        <div class="ec-art" style="background-image:url(art/fncs-2024.jpg);background-position:center">
           <span class="ec-pill ec-pill-l" data-i18n="ecScope6"></span>
           <div class="ec-foot">
             <div class="ec-when" data-i18n="ecDate2024"></div>
@@ -18874,6 +18879,17 @@ Object.assign(I18N.en, {ccYrSemiZone:k=>'In the Semi-Finals zone: series top '+k
 Object.assign(I18N.fr, {ccYrSemiZone:k=>'Zone des demi-finales : top '+k+' de la série', ccYrSemiOut:k=>'Hors du top '+k+' de la série — pas de demi-finales'});
 Object.assign(I18N.it, {ccYrSemiZone:k=>'Zona semifinali: top '+k+' della serie', ccYrSemiOut:k=>'Fuori dal top '+k+' della serie — niente semifinali'});
 Object.assign(I18N.pt, {ccYrSemiZone:k=>'Zona das semifinais: top '+k+' da série', ccYrSemiOut:k=>'Fora do top '+k+' da série — sem semifinais'});
+/* Драфт прошлых лет: этапы (29.09). */
+Object.assign(I18N.ru, {dpPastDesc2:'Карточки — по настоящим результатам игроков на этом турнире. Формат, очки, призы и остров — того же сезона.'});
+Object.assign(I18N.en, {dpPastDesc2:'Cards built from the players’ real results at this event. Format, scoring, prize money and island of that season.'});
+Object.assign(I18N.fr, {dpPastDesc2:'Cartes d’après les vrais résultats. Format, points, gains et île de la même saison.'});
+Object.assign(I18N.it, {dpPastDesc2:'Carte dai veri risultati. Formato, punti, premi e isola della stessa stagione.'});
+Object.assign(I18N.pt, {dpPastDesc2:'Cartas pelos resultados reais. Formato, pontos, prêmios e ilha da mesma temporada.'});
+Object.assign(I18N.ru, {pdQual:(i,k)=>'Квалификатор · раунд '+i+' из '+k, pdWeekFinal:'Финал недели', pdHeat:h=>'Хит '+h, pdSemis:'Полуфинал', pdFinal:'Гранд-финал'});
+Object.assign(I18N.en, {pdQual:(i,k)=>'Qualifier · round '+i+' of '+k, pdWeekFinal:'Week Finals', pdHeat:h=>'Heat '+h, pdSemis:'Semi-Finals', pdFinal:'Grand Finals'});
+Object.assign(I18N.fr, {pdQual:(i,k)=>'Qualificatif · manche '+i+' sur '+k, pdWeekFinal:'Finale de la semaine', pdHeat:h=>'Heat '+h, pdSemis:'Demi-finales', pdFinal:'Grande finale'});
+Object.assign(I18N.it, {pdQual:(i,k)=>'Qualificazione · round '+i+' di '+k, pdWeekFinal:'Finale della settimana', pdHeat:h=>'Heat '+h, pdSemis:'Semifinali', pdFinal:'Gran finale'});
+Object.assign(I18N.pt, {pdQual:(i,k)=>'Classificatória · rodada '+i+' de '+k, pdWeekFinal:'Final da semana', pdHeat:h=>'Heat '+h, pdSemis:'Semifinais', pdFinal:'Grande final'});
 /* Главная: два режима и драфт по годам (29.09). */
 Object.assign(I18N.ru, {hcHeroTitle:'Стань про. <em>Сезон за сезоном.</em>', hdHeroTitle:'Собери состав. <em>Любой год FNCS.</em>', hdChipFormats:'Дуо · Трио · Сквады', hdPlay:'Играть драфт'});
 Object.assign(I18N.en, {hcHeroTitle:'Go pro. <em>Season after season.</em>', hdHeroTitle:'Build a squad. <em>Any FNCS year.</em>', hdChipFormats:'Duos · Trios · Squads', hdPlay:'Play the draft'});
@@ -89555,8 +89571,13 @@ Object.keys(SEASON_LOOT).forEach(y=>{
 // whichever years the player left selected in the era filter.
 // Which island's loot is in play: the Major's own in card mode, and in the free
 // modes whichever island the player picked on the mode screen.
+/* Набор без своего острова играет на острове своего сезона (его слово 29.09: «оружие у драфта со своего
+   сезона должно быть»): World Cup Duos 2019 (h2) — Season 9, как World Cup Solo (h1). Без этого h2
+   падал на остров и лут 2026-го. */
+const SET_ISLAND={h2:'h1'};
 function activeIslandSet(){
-  return CARD_MODE ? CARD_SET : (typeof pendingMapSet==='undefined' ? null : pendingMapSet);
+  const k=CARD_MODE ? CARD_SET : (typeof pendingMapSet==='undefined' ? null : pendingMapSet);
+  return (k && SET_ISLAND[k]) || k;
 }
 function activeWeaponPool(){
   if(T_WEAPON_POOLS[activeIslandSet()]) return T_WEAPON_POOLS[activeIslandSet()];
@@ -90236,7 +90257,7 @@ const E2_CONSUMABLE_POOL=[
   {name:"Shield Potion", rarity:"blue", icon:'shield'},
   {name:"Small Shield Potion", rarity:"green", icon:'shield'},
   {name:"Slap Juice", rarity:"blue", icon:'drink'},
-  {name:"Slurp Juice", rarity:"gold", icon:'drink'},
+  {name:"Slurp Juice", rarity:"purple", icon:'drink'},
   {name:"Chug Splash", rarity:"blue", icon:'drink'},
   {name:"Shield Keg", rarity:"blue", icon:'shield'},
   {name:"Shield Bubble", rarity:"blue", icon:'shield'},
@@ -90267,7 +90288,7 @@ const E3_CONSUMABLE_POOL=[
   {name:"Shield Potion", rarity:"blue", icon:'shield'},
   {name:"Small Shield Potion", rarity:"green", icon:'shield'},
   {name:"Slap Juice", rarity:"blue", icon:'drink'},
-  {name:"Slurp Juice", rarity:"gold", icon:'drink'},
+  {name:"Slurp Juice", rarity:"purple", icon:'drink'},
   {name:"Slap Splash", rarity:"blue", icon:'drink'},
   {name:"Shockwave Grenade", rarity:"purple", icon:'shield'},
   {name:"Cloak Gauntlets", rarity:"purple", icon:'shield'},
@@ -90296,7 +90317,7 @@ const E4_CONSUMABLE_POOL=[
   {name:"Med-Mist", rarity:"green", icon:'heal'},
   {name:"Shield Potion", rarity:"blue", icon:'shield'},
   {name:"Small Shield Potion", rarity:"green", icon:'shield'},
-  {name:"Slurp Juice", rarity:"gold", icon:'drink'},
+  {name:"Slurp Juice", rarity:"purple", icon:'drink'},
   {name:"Chug Splash", rarity:"blue", icon:'drink'},
   {name:"Slap Splash", rarity:"blue", icon:'drink'},
   {name:"Crash Pad Jr.", rarity:"green", icon:'shield'},
@@ -90322,19 +90343,19 @@ const K1_WEAPON_NAMES=[
 ];
 const K1_WEAPON_POOL=ladderPool(K1_WEAPON_NAMES);
 const K1_CONSUMABLE_POOL=[
-  {name:"Bandage", rarity:"gold", icon:'heal'},
-  {name:"Med Kit", rarity:"gold", icon:'heal'},
-  {name:"Guzzle Juice", rarity:"gold", icon:'drink'},
-  {name:"Med-Mist", rarity:"gold", icon:'heal'},
-  {name:"Shield Potion", rarity:"gold", icon:'shield'},
-  {name:"Small Shield Potion", rarity:"gold", icon:'shield'},
-  {name:"Harpoon Gun", rarity:"gold", icon:'shield'},
-  {name:"Chug Splash", rarity:"gold", icon:'drink'},
-  {name:"Shield Keg", rarity:"gold", icon:'shield'},
-  {name:"Pizza Slices", rarity:"gold", icon:'shield'},
-  {name:"Pizza Party", rarity:"gold", icon:'shield'},
-  {name:"Tent", rarity:"gold", icon:'shield'},
-  {name:"Flare Gun", rarity:"gold", icon:'shield'}
+  {name:"Bandage", rarity:"grey", icon:'heal'},
+  {name:"Med Kit", rarity:"green", icon:'heal'},
+  {name:"Guzzle Juice", rarity:"green", icon:'drink'},
+  {name:"Med-Mist", rarity:"green", icon:'heal'},
+  {name:"Shield Potion", rarity:"blue", icon:'shield'},
+  {name:"Small Shield Potion", rarity:"green", icon:'shield'},
+  {name:"Harpoon Gun", rarity:"blue", icon:'shield'},
+  {name:"Chug Splash", rarity:"blue", icon:'drink'},
+  {name:"Shield Keg", rarity:"purple", icon:'shield'},
+  {name:"Pizza Slices", rarity:"green", icon:'shield'},
+  {name:"Pizza Party", rarity:"purple", icon:'shield'},
+  {name:"Tent", rarity:"blue", icon:'shield'},
+  {name:"Flare Gun", rarity:"blue", icon:'shield'}
 ].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
 const K2_WEAPON_NAMES=[
   ["MK-Seven Assault Rifle",'rifle','common','legendary'],
@@ -90365,8 +90386,8 @@ const K2_CONSUMABLE_POOL=[
   {name:"Shield Keg", rarity:"blue", icon:'shield'},
   {name:"Recon Scanner", rarity:"blue", icon:'shield'},
   {name:"Repair Torch", rarity:"blue", icon:'shield'},
-  {name:"Air Strike", rarity:"gold", icon:'shield'},
-  {name:"Jetpack", rarity:"gold", icon:'shield'},
+  {name:"Air Strike", rarity:"legendary", icon:'shield'},
+  {name:"Jetpack", rarity:"legendary", icon:'shield'},
   {name:"Balloon", rarity:"blue", icon:'shield'},
   {name:"Rift-To-Go", rarity:"purple", icon:'shield'},
   {name:"Shockwave Grenade", rarity:"purple", icon:'shield'}
@@ -90403,7 +90424,7 @@ const K3_CONSUMABLE_POOL=[
   {name:"Boogie Bomb", rarity:"blue", icon:'shield'},
   {name:"Repair Torch", rarity:"blue", icon:'shield'},
   {name:"Ripsaw Launcher", rarity:"blue", icon:'shield'},
-  {name:"Lil'Whip's Special Serve", rarity:"gold", icon:'shield'},
+  {name:"Lil'Whip's Special Serve", rarity:"legendary", icon:'shield'},
   {name:"Frozen Icecream Cone", rarity:"grey", icon:'shield'},
   {name:"Icecream Cone", rarity:"grey", icon:'shield'},
   {name:"Spicy Icecream Cone", rarity:"grey", icon:'shield'},
@@ -90556,7 +90577,7 @@ const J4_CONSUMABLE_POOL=[
   {name:"Small Shield Potion", rarity:"green", icon:'shield'},
   {name:"Harpoon Gun", rarity:"blue", icon:'shield'},
   {name:"Chug Splash", rarity:"blue", icon:'drink'},
-  {name:"Shockwave Launcher", rarity:"gold", icon:'shield'}
+  {name:"Shockwave Launcher", rarity:"purple", icon:'shield'}
 ].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
 // ==== /FNCS 2021 loot ====
 // ==== FNCS 2019–2020 loot (tools/build-mx-loot.js) ====
@@ -90599,17 +90620,17 @@ const H1_CONSUMABLE_POOL=[
   {name:"Small Shield Potion", rarity:"green", icon:'shield'},
   {name:"Chug Splash", rarity:"blue", icon:'drink'},
   {name:"Slurp Juice", rarity:"purple", icon:'drink'},
-  {name:"Chug Jug", rarity:"gold", icon:'drink'},
-  {name:"Bush", rarity:"gold", icon:'shield'},
+  {name:"Chug Jug", rarity:"legendary", icon:'drink'},
+  {name:"Bush", rarity:"legendary", icon:'shield'},
   {name:"Boogie Bomb", rarity:"blue", icon:'shield'},
   {name:"Stink Bomb", rarity:"blue", icon:'shield'},
   {name:"Storm Flip", rarity:"purple", icon:'shield'},
-  {name:"Air Strike", rarity:"gold", icon:'shield'},
+  {name:"Air Strike", rarity:"legendary", icon:'shield'},
   {name:"Impulse Grenade", rarity:"blue", icon:'shield'},
   {name:"Shockwave Grenade", rarity:"purple", icon:'shield'},
   {name:"Shadow Bomb", rarity:"green", icon:'shield'},
   {name:"Rift-To-Go", rarity:"purple", icon:'shield'},
-  {name:"Jetpack", rarity:"gold", icon:'shield'},
+  {name:"Jetpack", rarity:"legendary", icon:'shield'},
   {name:"Icecream Cone", rarity:"grey", icon:'shield'}
 ].map(w=>({...w, mod:CONSUMABLE_MOD[w.rarity]}));
 const H3_WEAPON_NAMES=[
@@ -90648,8 +90669,8 @@ const H3_CONSUMABLE_POOL=[
   {name:"Small Shield Potion", rarity:"green", icon:'shield'},
   {name:"Chug Splash", rarity:"blue", icon:'drink'},
   {name:"Slurp Juice", rarity:"purple", icon:'drink'},
-  {name:"Chug Jug", rarity:"gold", icon:'drink'},
-  {name:"Bush", rarity:"gold", icon:'shield'},
+  {name:"Chug Jug", rarity:"legendary", icon:'drink'},
+  {name:"Bush", rarity:"legendary", icon:'shield'},
   {name:"Boogie Bomb", rarity:"blue", icon:'shield'},
   {name:"Stink Bomb", rarity:"blue", icon:'shield'},
   {name:"Storm Flip", rarity:"purple", icon:'shield'},
@@ -94601,21 +94622,55 @@ function draftSetArt(s){
 // Плитки — сразу; обложки — при первой отрисовке (ccFncsPoster читает константу, объявленную ниже по файлу).
 DRAFT_PAST.forEach(g=>g.sets.forEach(s=>{ TILE_CARD_SET['cards_'+s]=s; }));
 let DP_YEAR='2026';
+const DRAFT_YEAR_ART={
+  2023:{main:'art/fncs-2023.jpg', big:['art/cups/f25.jpg', 'art/cups/f24.jpg']},
+  2022:{main:'art/fncs-2022.jpg', big:['art/cups/f22inv.jpg', 'art/cups/f21.jpg']},
+  2021:{main:'art/fncs-2021.jpg', big:['art/cups/f18gr.jpg', 'art/cups/f17.jpg']},
+  2020:{main:'art/fncs-2020.jpg', big:['art/cups/f14.jpg', 'art/cups/f12.jpg']},
+  2019:{main:'art/fncs-2019.jpg', big:['art/cups/f10.jpg', 'art/cups/f11.jpg']}
+};
+/* Плитки форматов — коллаж логотипов своих сезонов (его слово 29.09: «в all fncs куча логотипов всех
+   фнкс, дуо — логотипы всех дуо, трио — всех трио, сквад — логотип сквада, он вроде один»). */
+const DRAFT_FMT_LOGOS={
+  all:['art/fncs-2019.jpg','art/cups/f10.jpg','art/cups/f11.jpg','art/cups/f12.jpg','art/cups/f14.jpg','art/cups/f15.jpg','art/cups/f18gr.jpg',
+       'art/cups/f19.jpg','art/cups/f22inv.jpg','art/cups/f23.jpg','art/cups/f25.jpg','art/cups/f28.jpg','art/mode-major1-2025.jpg','art/fncs-2026.jpg'],
+  duo:['art/fncs-2019.jpg','art/cups/f12.jpg','art/cups/f19.jpg','art/cups/f20.jpg','art/cups/f21.jpg','art/cups/f23.jpg','art/cups/f24.jpg',
+       'art/cups/f25.jpg','art/cups/f28.jpg','art/fncs-2026.jpg'],
+  trio:['art/cups/f10.jpg','art/cups/f14.jpg','art/cups/f15.jpg','art/cups/f16.jpg','art/cups/f17.jpg','art/cups/f18.jpg',
+        'art/mode-major1-2025.jpg','art/mode-major2-2025.jpg','art/mode-major3-2025.jpg'],
+  squad:['art/cups/f11.jpg']
+};
+function draftFmtWalls(){
+  const box=document.getElementById('dpFormats'); if(!box) return;
+  const keys=['all','duo','trio','squad'];
+  box.querySelectorAll('.mode-card > .ec-art').forEach((art, i)=>{
+    const k=keys[i]; if(!k || art.querySelector('.fmt-wall')) return;
+    const list=DRAFT_FMT_LOGOS[k];
+    art.classList.add('fmt-art', 'fmt-'+k);
+    art.style.backgroundImage='none'; art.removeAttribute('data-art');
+    art.insertAdjacentHTML('afterbegin', '<div class="fmt-wall fmt-n'+Math.min(list.length, 9)+'">'+
+      list.map(src=>'<i style="background-image:url('+src+')"></i>').join('')+'</div>');
+  });
+}
 function draftPastRowHTML(g){
   const T=L(), sub=n=>n===4 ? T.ecSubSquads : n===3 ? T.ecSubTrios : T.ecSubDuos;
-  const arts=g.sets.map(draftSetArt);
+  // Превью года — ключевой арт года в полном размере и постеры его крупнейших турниров
+  // (его слово 29.09: «превьюхи у каждого года — самые большие турниры и в хорошем качестве»).
+  const YA=DRAFT_YEAR_ART[g.y];
+  // Одна картинка года целиком: куски постеров рядом резали скины и смотрелись неуместно (его слово 29.09).
+  const arts=YA ? [YA.main] : g.sets.map(draftSetArt);
   const name=s=>String((typeof T_EVENT_NAME!=='undefined' && T_EVENT_NAME[s]) || s).replace(/^(FNCS|Fortnite) \d{4} /, '');
   const sizes=[...new Set(g.sets.map(s=>DRAFT_SET_SIZE[s]))].map(sub).join(' · ');
   return '<div class="year-row dp-past" data-year="'+g.y+'"><div class="year-label">'+g.y+'</div>'+
     '<div class="mode-grid mode-grid-3"><div class="mode-card mode-card-span">'+
-      '<div class="ec-art" style="background-image:url('+arts[0]+')">'+
+      '<div class="ec-art" style="background-image:url('+arts[0]+');background-position:center">'+
         arts.slice(1, 3).map((a,i)=>'<i class="ec-slice'+(i?' ec-slice-3':'')+'" style="background-image:url('+a+')"></i>').join('')+
         '<span class="ec-pill ec-pill-l">'+esc(T.dpRealCards)+'</span>'+
         '<div class="ec-foot"><div class="ec-when">'+g.y+'</div><h3 class="ec-title">FNCS '+g.y+'</h3>'+
         '<div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub">'+esc(sizes)+'</span></div></div></div>'+
       '<div class="ec-cups">'+g.sets.map(s=>'<button class="ec-cup ec-cup-arted" style="--cup-art:url('+draftSetArt(s)+')" '+
         'onclick="event.stopPropagation();chooseMode('+DRAFT_SET_SIZE[s]+',\'cards_'+s+'\')"><span>'+esc(name(s))+'</span><small>'+esc(sub(DRAFT_SET_SIZE[s]))+'</small></button>').join('')+'</div>'+
-      '<p>'+esc(T.dpPastDesc)+'</p>'+
+      '<p>'+esc(T.dpPastDesc2)+'</p>'+
     '</div></div></div>';
 }
 /* ЭКРАН ДРАФТА (его слово 29.09: «когда нажимаю play the draft, переношусь на новую вкладку, где сверху
@@ -94655,6 +94710,7 @@ function homeDraftInit(){
     fmt.insertAdjacentHTML('beforebegin', '<div class="dp-fmt-label year-label" data-i18n="dpFormats"></div>');
   }
   const fl=panel.querySelector('.dp-fmt-label'); if(fl) fl.textContent=L().dpFormats;
+  draftFmtWalls();
   // Полоса лет больше не нужна: все годы видны сразу.
   const bar=document.getElementById('dpYears'); if(bar) bar.innerHTML='';
   panel.querySelectorAll('[data-year]').forEach(el=>{ el.style.display=''; });
@@ -95036,6 +95092,8 @@ function startDraft(size, major){
   teamPickList=[];
   CARD_MODE=pendingCards;
   CARD_SET=pendingCardSet;
+  // Палитра прошлого драфта не переезжает в следующий: её ставит сам круг (pastDraftPalette).
+  document.documentElement.classList.remove('ev-pal', 'ev-classic', 'ev-light');
   // Год начинается с первого круга и с чистой памяти о нём: место на LAN,
   // которое даёт Саммит, и сводка по кругам копятся ТОЛЬКО внутри одного года.
   YEAR_KEY=pendingYear; YEAR_AT=0; YEAR_LEGS=[]; YEAR_SEAT=false;
@@ -96625,6 +96683,7 @@ const CC_MYTHIC_POI={
   t3:{21:'Daigo'}
 };
 function useLandingSet(key){
+  if(key && typeof SET_ISLAND!=='undefined' && SET_ISLAND[key]) key=SET_ISLAND[key];
   const set = ZONE_SETS[key] ? key : 'm2';
   ACTIVE_LANDING_SET=set;
   const stats = ZONE_STATS[set] || [];
@@ -101403,6 +101462,8 @@ async function computeQuietLCQWinners(field, lclGames){
 async function runMajorTournament(){
   // 2024-й играется своим кругом: квалификатор → серия → две сетки → финал. См. runMajor2024Tournament.
   if(/^f\d$/.test(String(CARD_SET||''))) return runMajor2024Tournament();
+  // 2019–2023: свой формат, очки Epic и призы своего сезона. См. runPastDraftTournament.
+  if(CARD_MODE && typeof PAST_DRAFT!=='undefined' && PAST_DRAFT[CARD_SET]) return runPastDraftTournament();
   // A new event is watched again: the skip a player pressed last night was for
   // last night. CC_SKIP_RUN is what makes one press cover a whole tournament.
   skipAnimation=false; CC_SKIP_RUN=false;
@@ -101920,6 +101981,189 @@ async function runGlobalChampionship2024(you, regionRank, region, regionalFinal)
   removeSkipButton();
   if(rank===1) await celebrate(L().celKicker, L().celWorldChampTitle, L().celWorldChamp2024Sub, 'gold', 160);
   return {ranked, rank, total:field.length, champion:rank===1};
+}
+/* ===== ДРАФТ ПРОШЛЫХ ЛЕТ (2019–2023): формат, очки, призы и остров своего сезона =====
+   Его слова 29.09: «поинт система у драфтов не такая как у настоящих турниров», «и формат турнира не
+   такой», «и призы все не так». Общий движок Мейджора 2026 для этих наборов не годился. Здесь круг
+   собирается из тех же спецификаций, по которым идёт карьера (CC_MX_SPEC, CC_M21, CC_M22, CC_M23):
+   число раундов квалификатора и игр в них, хиты/полуфинал этого года, игры финала. Очки каждого этапа —
+   правила Epic своего сезона (ccPastMajorScore по id и дню события из календаря года), призы —
+   таблица финала своего сезона и региона (на игрока × размер состава). Поле драфта меньше настоящего,
+   поэтому отсечки масштабируются так, чтобы до хитов/полуфинала и финала доходило их настоящее число
+   лобби. */
+const PAST_DRAFT={h2:{y:2019, n:2, wc:true}, h3:{y:2019, n:3}, h4:{y:2019, n:4}, i1:{y:2020, n:1}, i3:{y:2020, n:3},
+  j1:{y:2021, n:1}, j2:{y:2021, n:2}, j3:{y:2021, n:3}, j4:{y:2021, n:4},
+  k1:{y:2022, n:1}, k2:{y:2022, n:2}, k3:{y:2022, n:3}, e1:{y:2023, n:1}, e2:{y:2023, n:2}, e3:{y:2023, n:3}};
+function pastDraftRows(y){ return ({2019:CAREER_YEAR_2019, 2020:CAREER_YEAR_2020, 2021:CAREER_YEAR_2021, 2022:CAREER_YEAR_2022, 2023:CAREER_YEAR_2023})[y]||[]; }
+// День и id события этого Мейджора для этапа: квалификатор, полуфинал/хиты, финал.
+function pastDraftEv(set, stage){
+  const P=PAST_DRAFT[set], pre='Major'+P.n+'_'+P.y+'_';
+  const rows=pastDraftRows(P.y).filter(r=>String(r[2]).indexOf(pre)===0);
+  const is=stage==='final' ? (id=>/Final/.test(id)) : stage==='semi' ? (id=>/Heat|Semi/.test(id)) : (id=>!/Heat|Semi|Final|Reboot/.test(id));
+  const row=rows.find(r=>is(String(r[2]))) || rows[0] || [String(P.y)+'-06-01', '', pre+'X'];
+  return {id:row[2], day:row[0], stage:stage==='q' ? 'q' : stage, r:1};
+}
+function pastDraftScore(set, stage){
+  const s=(typeof ccPastMajorScore==='function') ? ccPastMajorScore(pastDraftEv(set, stage)) : null;
+  return s || {pts:majorPoints, kill:4};
+}
+function pastDraftPlan(set){
+  const P=PAST_DRAFT[set], y=P.y, n=P.n;
+  if(y<=2020){
+    const sp=ccMXSpec(y, n);
+    return {quals:sp.rounds.map(r=>({games:r.games})),
+            semis:(sp.kind==='wc' || !(sp.heats||[]).length) ? null : {rooms:sp.heats.length, games:sp.heatGames||6, heats:true},
+            final:{games:sp.finalGames||12}};
+  }
+  if(y===2021) return {quals:[1,2,3,4].map(r=>({games:ccM21Spec(n, r).games})),
+                       semis:{rooms:ccM21HeatPlan(n).filter(h=>!h.prev).length, games:CC_M21.semi.games, heats:true},
+                       final:{games:CC_M21.final.games}};
+  if(y===2022) return {quals:Array.from({length:ccM22Rounds(n)}, (_, i)=>({games:ccM22Spec(n, i+1).games})),
+                       semis:{rooms:1, games:CC_M22.semi.games},
+                       final:{games:CC_M22.final.games}};
+  return {quals:[{games:CC_M23.d1.games}, {games:CC_M23.d2.games}, {games:CC_M23.wf.games, wf:true}],
+          semis:null, final:{games:CC_M23.final.games}};
+}
+// Таблица финала своего сезона и региона — на игрока; строки [последнее место, $].
+function pastDraftPayRows(set, reg){
+  const P=PAST_DRAFT[set];
+  let T=null;
+  try{
+    if(P.y===2019) T=P.wc ? {EU:(WC2019_PAY||{})[ccMXSpec(2019, P.n).set]}
+                          : Object.assign({}, (typeof CC_MX_PAY_2019_LQ!=='undefined' && CC_MX_PAY_2019_LQ[P.n])||{}, (CC_MX_PAY_2019||{})[P.n]||{});
+    else if(P.y===2020) T=(CC_MX_PAY_2020||{})[P.n];
+    else T=(({2021:CC_MAJOR_PAY_2021, 2022:CC_MAJOR_PAY_2022, 2023:CC_MAJOR_PAY_2023})[P.y]||{})[P.n];
+  }catch(e){ T=null; }
+  if(!T) return null;
+  let r=reg;
+  if(!T[r] && r==='NAW') r='NAC';
+  if(!T[r] && r==='NAC') r='NAE';
+  return T[r] || T.EU || null;
+}
+function pastDraftPrize(set, reg){
+  const rows=pastDraftPayRows(set, reg);
+  return p=>{ if(!rows) return 0; for(const x of rows) if(p<=x[0]) return x[1]*squadSize; return 0; };
+}
+/* Таблицы драфта прошлых лет — в цветах своего турнира и в виде экрана тех лет, как в карьере
+   (его слово 29.09: «в драфтах… дизайн таблиц»). ccEvPaletteApply решает «прошлый год или нет» по
+   карьере, поэтому здесь своя установка: палитра события по id и дню его финала. */
+function pastDraftPalette(set, label){
+  const root=document.documentElement, ev=pastDraftEv(set, 'final');
+  const p=(typeof ccEvPalette==='function') ? ccEvPalette({id:ev.id}, ev.day) : null;
+  if(!p){ root.classList.remove('ev-pal', 'ev-classic', 'ev-light'); return; }
+  const s=root.style;
+  s.setProperty('--ev-l', '#'+p[0]); s.setProperty('--ev-r', '#'+p[1]);
+  s.setProperty('--ev-h', '#'+(p[2]||'FFE600'));
+  s.setProperty('--ev-th', ccEvLight(p) ? '#0b0f16' : '#fff');
+  root.classList.add('ev-pal', 'ev-classic');
+  root.classList.toggle('ev-light', ccEvLight(p));
+  const q=v=>'"'+String(v||'').replace(/["\\]/g,'').toUpperCase()+'"';
+  s.setProperty('--ev-name', q(label));
+  let reg=''; try{ reg=regionName(ccHomeRegion()); }catch(e){}
+  s.setProperty('--ev-reg', reg ? q('('+reg+')') : '""');
+}
+async function runPastDraftTournament(){
+  skipAnimation=false; CC_SKIP_RUN=false;
+  resetRunRecord();
+  document.getElementById('majorStages').innerHTML='';
+  const rsPrev=document.getElementById('runSummary'); if(rsPrev) rsPrev.innerHTML='';
+  document.getElementById('lobbyTitle').textContent='';
+  document.getElementById('lobbyBody').innerHTML='';
+  clearEventPanel();
+  document.getElementById('finalBanner').style.display='none';
+  clearLandingResultsMap();
+  show('screen-results');
+  ensureSkipButton();
+  const set=CARD_SET, plan=pastDraftPlan(set), T=L();
+  const evName=String((typeof T_EVENT_NAME!=='undefined' && T_EVENT_NAME[set]) || set);
+  try{ pastDraftPalette(set, evName); }catch(e){}
+  const teams=buildFullLobby();
+  const you=teams.find(t=>t.isYou);
+  const lobby=TEAM_TARGET[squadSize]||50;
+  const out=async note=>{ document.getElementById('finalSub').textContent=note; finishMajorEliminatedAnim(you); };
+  const card=async(title, ranked, cut, passed, note, prize)=>{
+    const shell=createStageCardShell(title);
+    await revealStageLog(you, shell, true);
+    finalizeStageCard(shell, ranked.indexOf(you)+1, ranked.length, you.stagePts, passed, you.gotVR, note);
+    await revealStandings(shell, ranked, you, cut, null, null, prize||null, null, !!prize);
+  };
+  // Сколько команд должно дойти до хитов/полуфинала и до финала.
+  const semiField=plan.semis ? Math.min(teams.length, plan.semis.rooms*lobby) : 0;
+  const target=plan.semis ? semiField : lobby;
+  const qs=plan.quals, K=qs.length, F0=teams.length;
+  const cutAt=i=>i===K-1 ? Math.min(target, F0) : Math.max(target, Math.round(F0*Math.pow(target/F0, (i+1)/K)));
+  const qScore=pastDraftScore(set, 'q');
+  let field=teams;
+  // ---- квалификатор: раунды года, отсечка к хитам/полуфиналу/финалу ----
+  for(let i=0; i<K; i++){
+    reset24(field);
+    const title=evName+' · '+(plan.quals[i].wf ? T.pdWeekFinal : T.pdQual(i+1, K));
+    const cut=cutAt(i);
+    if(field.length<=lobby){
+      const zones=await stageLandingPicker(field, you, title);
+      await simulateGamesLive(field, qs[i].games, qScore.pts, qScore.kill, 'stage', 0, null, zones, {mapReplay:true, choices:true, stageName:title});
+    } else await simulateGamesRandomLobbies(field, qs[i].games, lobby, qScore.pts, qScore.kill);
+    const ranked=rank24(field);
+    const ok=ranked.indexOf(you)<cut;
+    await card(title, ranked, cut, ok, ok ? T.ccRelPass(cut) : T.ccRelFail(cut));
+    if(!ok){ await out(T.ccRelFail(cut)); return; }
+    field=ranked.slice(0, cut);
+  }
+  // ---- хиты / полуфинал ----
+  if(plan.semis){
+    const sScore=pastDraftScore(set, 'semi');
+    const R=Math.max(1, plan.semis.rooms), per=Math.ceil(lobby/R);
+    const rooms=Array.from({length:R}, ()=>[]);
+    field.forEach((t, i)=>{ const round=Math.floor(i/R), pos=i%R; rooms[round%2 ? R-1-pos : pos].push(t); });
+    const next=[];
+    for(let h=0; h<R; h++){
+      const room=rooms[h]; reset24(room);
+      const mine=room.indexOf(you)>=0;
+      const title=evName+' · '+(plan.semis.heats ? T.pdHeat(h+1) : T.pdSemis);
+      if(mine){
+        const zones=await stageLandingPicker(room, you, title);
+        await simulateGamesLive(room, plan.semis.games, sScore.pts, sScore.kill, 'stage', 0, null, zones, {mapReplay:true, choices:true, stageName:title});
+      } else simulateGames(room, plan.semis.games, sScore.pts, sScore.kill);
+      const r=rank24(room), pass=r.slice(0, per);
+      pass.forEach(t=>next.push(t));
+      if(mine){
+        const ok=pass.includes(you);
+        await card(title, r, per, ok, ok ? T.ccRelPass(per) : T.ccRelFail(per));
+        if(!ok){ await out(T.ccRelFail(per)); return; }
+        await celebrate(T.celKicker, T.celFinalsTitle, T.celFinalsSub, 'green', 40);
+      }
+    }
+    field=next.slice(0, lobby);
+    if(field.indexOf(you)<0) field[field.length-1]=you;
+  }
+  // ---- финал ----
+  const fScore=pastDraftScore(set, 'final');
+  const fin=field.slice(0, lobby); reset24(fin);
+  const zoneGroups=await stageLandingPicker(fin, you, T.finalsLandingTitle);
+  await simulateGamesLive(fin, plan.final.games, fScore.pts, fScore.kill, 'stage', 0, null, zoneGroups,
+    {mapReplay:true, choices:true, stageName:evName+' · '+T.pdFinal});
+  const finalRanked=rank24(fin);
+  const rank=finalRanked.indexOf(you)+1;
+  const myReg=ccHomeRegion();
+  const prize=pastDraftPrize(set, myReg);
+  await card(evName+' · '+T.pdFinal+' — '+fin.length, finalRanked, 0, rank===1 ? true : (prize(rank)>0 ? true : null),
+    rank===1 ? T.championMajor : T.placeInFinals(rank, fin.length), prize);
+  removeSkipButton();
+  const cash=prize(rank);
+  if(cash){ const lbl=T.prizeRegional(regionName(myReg), rank); recordEarning(lbl, cash); renderPrizeCard([{label:lbl, amount:cash}], cash); if(!skipAnimation) await sleep(900); }
+  renderRunSummaryCard();
+  finalRanked.forEach(t=>{ t.totalPts=t.stagePts; t.totalElims=t.stageElims; });
+  you.gameLog=you.stageLog;
+  document.getElementById('finalBanner').style.display='block';
+  document.getElementById('finalPlace').textContent='#'+rank;
+  document.getElementById('finalSub').textContent = rank===1 ? T.championMajor : T.placeInFinals(rank, fin.length);
+  document.getElementById('lobbyTitle').innerHTML = T.majorFinalsResultTitle(fin.length);
+  document.getElementById('lobbyTitle').scrollIntoView({block:'start', behavior:'smooth'});
+  renderLobby(finalRanked, you);
+  renderGameHistory(you);
+  renderStats();
+  finalizeRunStats(squadSize, true, rank, finalRanked.length, rank===1, false, true, you, finalRanked);
+  showShareButton(you, rank, finalRanked.length, true, finalRanked);
 }
 async function runMajor2024Tournament(){
   skipAnimation=false; CC_SKIP_RUN=false;
@@ -106690,6 +106934,13 @@ function ccLootSet(set){
   let s=set;
   // Остров Reload на столе (r1–r4) — вечер Reload: лут его круга по дню, не острова.
   if(!s && /^r[1-4]$/.test(ACTIVE_LANDING_SET||'')) return ccRelLootSeries();
+  /* Драфт — лут острова своего турнира (набор карточек или выбранный остров), а не карьеры и не
+     2026-го по умолчанию (его слово 29.09: «где выборы, иногда предметы лута из этого года, а не того
+     сезона»). Без карьеры здесь всегда выходил m2. */
+  if(!s && typeof CC_DRAFT_RUN!=='undefined' && CC_DRAFT_RUN && !CAREER_RUN){
+    const d=(typeof activeIslandSet==='function') ? activeIslandSet() : null;
+    s=(d && CC_LOOT_BY_SET[d]) ? d : (CC_LOOT_BY_SET[ACTIVE_LANDING_SET] ? ACTIVE_LANDING_SET : null);
+  }
   if(!s){ try{ s=(CAREER && CAREER.career) ? careerBrSet() : null; }catch(e){ s=null; } }
   return CC_LOOT_BY_SET[s] ? s : 'm2';
 }
