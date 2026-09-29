@@ -125139,10 +125139,19 @@ function ccMateCardOf(pr){
   // The newest 2026 card first — a handle used to resolve to whichever card of
   // that person PLAYERS happened to list first, any era — then the whole
   // roster for a legacy save whose partner has no card this year.
+  /* В СОСТАВЕ РЕЙТИНГ НЕ ИДЁТ ЗА РЕАЛЬНОЙ ИСТОРИЕЙ (его слово 29.09: «пусть деградация наступает, если
+     результаты плохие»). Карточка года даёт человеку статы и клуб, но основа рейтинга — та, с которой он
+     сел в состав (pr.base, пишется при первом чтении); дальше его двигают только ваши вечера и возраст
+     (pr.dev, careerMateDevelop). Монграл, взятый в 2019-м на 96, в 2021-м не падает к своим 62 сам —
+     только если вы играете хуже, чем должны. Ушёл из состава — снова живёт по карточке года. */
   const now=careerRosterNowEU().find(x=>x.handle===pr.handle);
-  if(now) return cast(ccMateLift({...now}, dev));
-  const found=PLAYERS.find(x=>x.handle===pr.handle && x.region===(pr.cardRegion||'EU') && (ccNowYear()>=2026 || ccCardYear(x)<=ccNowYear()));
-  return found ? cast(ccMateLift({...found}, dev)) : null;
+  const found=now || PLAYERS.find(x=>x.handle===pr.handle && x.region===(pr.cardRegion||'EU') && (ccNowYear()>=2026 || ccCardYear(x)<=ccNowYear()));
+  if(!found) return null;
+  const c={...found};
+  const own=(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr);
+  if(pr.base==null && own>0) pr.base=Math.round(own);
+  if(pr.base>0 && pr.base!==own){ c._ovr=pr.base; c._targetOvr=pr.base; c.rating=pr.base; delete c._attrs; delete c._floored; }
+  return cast(ccMateLift(c, dev));
 }
 /* ---- Сцена растёт от своих результатов -------------------------------------
  *
