@@ -1749,7 +1749,11 @@
   /* В выборе спота подпись короткая («11 · +7 ⚡») — пусть вылезает за узкую коробку, а не режется в «11 · …». */
   .cc-spot-map .land-zone{overflow:visible;}
   .cc-spot-map .land-zone-label{max-width:none;overflow:visible;position:relative;z-index:2;}
-  .land-zone.cc-spot-mythic:not(.cc-spot-mine){border-color:#ff9f1a !important;border-style:dashed;}
+  /* Мифическая точка — сплошная золотая обводка на всех картах (отзыв: пунктир «не видно»). */
+  .land-zone.cc-spot-mythic:not(.cc-spot-mine), .land-zone.zp-myth-box, .land-plot.zp-myth-box{
+    border:2.5px solid #ffd200 !important; border-style:solid !important;
+    box-shadow:0 0 0 1px rgba(0,0,0,.6), 0 0 8px 1px rgba(255,210,0,.55) !important;}
+  .land-zone.cc-spot-mythic.cc-spot-peeked{border-color:#fff !important;}
   .land-zone.cc-spot-mythic .land-zone-label{color:var(--mythic);}
   .cc-spot-mythic-row b{color:var(--mythic);}
   /* Что роняет босс мифической точки: иконки на подписи коробки и списком в превью спота. */
@@ -97178,7 +97182,7 @@ function showLandingPicker(){
     const z=ALL_LANDING_ZONES[zoneIdx];
     const isTaken=slot===takenSlot;
     const el=document.createElement('div');
-    el.className='land-zone'+(isTaken?' taken':'');
+    el.className='land-zone'+(isTaken?' taken':'')+(z.mythic?' zp-myth-box':'');
     el.style.borderColor='#00b090'; el.style.background='rgba(0,176,144,.10)'; el.style.boxShadow='0 0 10px 2px rgba(0,176,144,.5), inset 0 0 0 1px rgba(0,0,0,.5)';
     el.style.left=z.x+'%'; el.style.top=z.y+'%';
     el.style.width=z.w+'%'; el.style.height=z.h+'%';
@@ -101208,6 +101212,8 @@ async function pickInitialZone(you, bots, title, seat, room){
     // Свои точки видны на карте всегда — и когда пусты, и когда в них стоят
     // чужие. Бирюза здесь значит то же, что везде в карьере: это твоё.
     const slot=mine ? mine.get(z) : null;
+    // Мифическая точка — сплошная золотая обводка (пунктир «не видно»); красный контест и свой дом важнее.
+    if(z.mythic && !slot && !(group && group.length>=2)) plot.classList.add('zp-myth-box');
     if(slot){
       plot.style.borderColor='var(--accent)';
       plot.style.boxShadow='inset 0 0 0 1px rgba(0,0,0,.55), 0 0 0 2px rgba(0,208,168,.35)';
@@ -107890,7 +107896,7 @@ function renderLandingResultsMap(teams){
   zoneMap.forEach((entries,z)=>{
     const contested = entries.length>=2;
     const plot=document.createElement('div');
-    plot.className='land-plot'+(contested?' contested':'');
+    plot.className='land-plot'+(contested?' contested':(z.mythic?' zp-myth-box':''));
     if(!contested){
       plot.style.borderColor='#0a0a0a'; plot.style.background='rgba(0,0,0,.4)';
     }
@@ -111312,7 +111318,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a08ddcc2';
+const CC_BUILD='5f65bab9';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -116872,7 +116878,7 @@ function careerSpotTileHTML(){
     const boss=myth[i] ? (ccMythicIconsHTML(gridKey, myth[i]) || ' ⚡') : '';
     // Сколько силы даёт коробка — числом рядом с номером («11 · +7»), слово «сила» в превью.
     const pw=careerSpotPowOf(i, set);
-    const powTag=pw!=null ? ' · +'+pw : '';
+    const powTag=pw!=null ? ' · '+L().landingPoints(pw) : '';   // «4 · +3 силы» — видно, что это сила
     return `<div class="land-zone${mine?' cc-spot-mine':''}${CC_SPOT_PEEK===i?' cc-spot-peeked':''}${myth[i]?' cc-spot-mythic':''}"
       title="${L().landingZoneSuffix(i+1)}"
       onclick="careerSpotPeek(${i})"
