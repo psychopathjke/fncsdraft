@@ -1752,6 +1752,16 @@
   .land-zone.cc-spot-mythic:not(.cc-spot-mine){border-color:#ff9f1a !important;border-style:dashed;}
   .land-zone.cc-spot-mythic .land-zone-label{color:var(--mythic);}
   .cc-spot-mythic-row b{color:var(--mythic);}
+  /* Что роняет босс мифической точки: иконки на подписи коробки и списком в превью спота. */
+  .land-zone-label.zp-myth{color:var(--mythic);max-width:none;overflow:visible;position:relative;z-index:3;
+    display:inline-flex;align-items:center;gap:1px;}
+  .zp-ic{height:14px;width:14px;object-fit:contain;vertical-align:middle;margin-left:2px;
+    filter:drop-shadow(0 0 2px rgba(255,210,0,.55));}
+  .zp-ic.zp-med{filter:drop-shadow(0 0 2px rgba(255,140,26,.7));}
+  .cc-spot-map .land-zone-label .zp-ic{height:12px;width:12px;}
+  .cc-spot-drops{display:flex;flex-direction:column;gap:3px;margin:2px 0 6px;font-size:12px;color:var(--ink-dim);}
+  .cc-spot-drops span{display:flex;align-items:center;gap:6px;}
+  .cc-spot-drops .zp-ic{height:22px;width:22px;margin:0;}
   .land-zone.cc-spot-peeked{border-color:#ffd400 !important;
     box-shadow:inset 0 0 0 1px rgba(0,0,0,.55), 0 0 0 2px rgba(255,212,0,.45) !important;}
   @media(max-width:560px){.cc-spot-peek{flex-direction:column;}
@@ -96905,12 +96915,36 @@ const CC_CHESTS_SRC={s42:'fortnite.gg', s42solo:'fortnite.gg', t1:'wiki', t2:'wi
 const CC_MYTHIC_POW=3;
 const CC_MYTHIC_POI={
   f1:{6:'Oscar', 7:'Nisha', 14:'Montague', 15:'Valeria'},
-  f2:{10:'Hades', 15:'Cerberus', 30:'Zeus', 32:'Medusa', 39:'Ares'},
+  f2:{10:'Hades', 15:'Cerberus', 30:'Zeus', 39:'Ares'},
   f3:{28:'Ringmaster Scarr', 36:'The Machinist', 37:'Megalo Don'},
   f4:{5:'Mysterio', 7:'Doctor Doom', 23:'Emma Frost'},
   t1:{5:'Night Rose', 24:'Shogun X'},
   t2:{4:'Fletcher Kane', 26:'Shogun X'},
   t3:{21:'Daigo'}
+};
+/* Что роняет босс мифической точки — вики, страница Bosses (таблицы Chapter 5–6): мифик(и)
+   и медальон ([имя, иконка items/boss/<иконка>.webp, 1 = медальон]). Medusa в Chapter 5 S2 —
+   торговец, а не босс: ни мифика, ни медальона, поэтому её клетки в CC_MYTHIC_POI больше нет. */
+const CC_MYTHIC_DROP={
+  f1:{"Oscar":[["Oscar's Frenzy Auto Shotgun","modular-frenzy-auto-shotgun"],["Oscar's Medallion","oscar-s-medallion",1]],
+      "Nisha":[["Nisha's Striker AR","striker-ar"],["Nisha's Medallion","nisha-s-medallion",1]],
+      "Montague":[["Montague's Nemesis AR","nemesis-ar"],["Montague's Medallion","montague-s-medallion",1]],
+      "Valeria":[["Valeria's Hyper SMG","hyper-smg"],["Valeria's Medallion","valeria-s-medallion",1]]},
+  f2:{"Hades":[["Hades' Harbinger SMG","modular-harbinger-smg"],["Chains of Hades","chains-of-hades"],["Aspect of Siphon","aspect-of-siphon",1]],
+      "Cerberus":[["Cerberus' Gatekeeper Shotgun","modular-gatekeeper-shotgun"],["Aspect of Agility","aspect-of-agility",1]],
+      "Zeus":[["Zeus' Huntress DMR","modular-huntress-dmr"],["Thunderbolt of Zeus","thunderbolt-of-zeus"],["Aspect of Speed","aspect-of-speed",1]],
+      "Ares":[["Ares' Warforged Assault Rifle","warforged-assault-rifle"],["Aspect of Combat","aspect-of-combat",1]]},
+  f3:{"Ringmaster Scarr":[["Ringmaster's Boom Bolt","modular-boom-bolt"],["Ringmaster Scarr's Medallion","ringmaster-scarr-s-medallion",1]],
+      "The Machinist":[["The Machinist's Modular Combat Assault Rifle","modular-combat-assault-rifle"],["The Machinist's Medallion","the-machinist-s-medallion",1]],
+      "Megalo Don":[["Megalo Don's Combat Shotgun","modular-combat-shotgun"],["Megalo Don's Nitro Fists","nitro-fists"],["Megalo Don's Medallion","megalo-don-s-medallion",1]]},
+  f4:{"Mysterio":[["Mysterio's Sovereign Shotgun","modular-sovereign-shotgun"],["Mysterio's Stealth Medallion","mysterio-s-stealth-medallion",1]],
+      "Doctor Doom":[["Doctor Doom's Monarch Pistol","modular-monarch-pistol"],["Doctor Doom's Arcane Gauntlets","doctor-doom-s-arcane-gauntlets"],["Doombot's Siphon Medallion","doombot-s-siphon-medallion",1]],
+      "Emma Frost":[["Emma Frost's Striker Burst AR","modular-striker-burst-rifle"],["Emma Frost's Reveal Medallion","emma-frost-s-reveal-medallion",1]]},
+  t1:{"Night Rose":[["Night Rose Veiled Precision SMG","veiled-precision-smg"],["Night Rose's Void Oni Mask","void-oni-mask"],["Night Rose Medallion","night-rose-medallion",1]],
+      "Shogun X":[["Typhoon Blade","typhoon-blade"],["Shogun X's Fire Oni Mask","fire-oni-mask"],["Shogun X Medallion","shogun-x-medallion",1]]},
+  t2:{"Fletcher Kane":[["Baron's Double Down Pistol","mammoth-pistol"],["Unstoppable Medallion","unstoppable-medallion",1]],
+      "Shogun X":[["Enhanced Holo Twister Assault Rifle","holo-twister-assault-rifle"],["Super Shield Medallion","super-shield-medallion",1]]},
+  t3:{"Daigo":[["Enhanced Spire Rifle","spire-rifle"],["Infernal Defenses Medallion","infernal-defenses-medallion",1]]},
 };
 function useLandingSet(key){
   if(key && typeof SET_ISLAND!=='undefined' && SET_ISLAND[key]) key=SET_ISLAND[key];
@@ -96942,7 +96976,7 @@ function useLandingSet(key){
   });
   // Мифические POI 2024–2025: босс с мификом на точке — она дороже любой другой (см. CC_MYTHIC_POI).
   const myth=CC_MYTHIC_POI[set];
-  if(myth) ALL_LANDING_ZONES.forEach((z,i)=>{ if(myth[i]){ z.mythic=myth[i]; z.points=LANDING_POINTS_MAX+CC_MYTHIC_POW; } });
+  if(myth) ALL_LANDING_ZONES.forEach((z,i)=>{ if(myth[i]){ z.mythic=myth[i]; z.mythicSet=set; z.points=LANDING_POINTS_MAX+CC_MYTHIC_POW; } });
   trimLandingZonesForMode();
   document.querySelectorAll('.map-frame').forEach(el=>{ el.style.aspectRatio=MAP_ASPECT[set]; });
   const picker=document.querySelector('#landingMapWrap img');
@@ -96986,8 +97020,27 @@ function zoneShortName(handle){
 function zonePowLabel(z){
   const label=document.createElement('div');
   label.className='land-zone-label';
-  label.textContent=L().landingPoints(z.points)+(z.mythic ? ' · ⚡ '+z.mythic : '');
+  label.textContent=L().landingPoints(z.points);
+  ccMythicMark(label, z);
   return label;
+}
+/* Мифическая точка на подписи: вместо имени босса — то, что он роняет (мифик и медальон,
+   иконки с вики, CC_MYTHIC_DROP). Отзыв: «где зевс добавить монетку или что там дают такого,
+   что даёт силу». Имя босса и названия предметов — в подсказке и в превью спота. */
+function ccMythicDrops(set, boss){
+  return ((CC_MYTHIC_DROP[set]||{})[boss]||[]).map(([n, ic, med])=>({n, src:'items/boss/'+ic+'.webp', med:!!med}));
+}
+function ccMythicIconsHTML(set, boss){
+  return ccMythicDrops(set, boss).map(d=>
+    `<img class="zp-ic${d.med?' zp-med':''}" src="${d.src}" alt="" title="${esc(d.n)}" decoding="async">`).join('');
+}
+function ccMythicMark(label, z){
+  if(!z || !z.mythic) return;
+  const set=z.mythicSet||ACTIVE_LANDING_SET;
+  label.classList.add('zp-myth');
+  label.title=z.mythic+': '+ccMythicDrops(set, z.mythic).map(d=>d.n).join(', ');
+  const icons=ccMythicIconsHTML(set, z.mythic);
+  label.insertAdjacentHTML('beforeend', icons || ' ⚡ '+esc(z.mythic));
 }
 function fillZoneNames(plot, teams, zone){
   // A block per squad, so the cut below can only ever fall between squads —
@@ -97133,7 +97186,7 @@ function showLandingPicker(){
     const label=document.createElement('div');
     label.className='land-zone-label';
     label.textContent=isTaken ? L().landingTaken.toUpperCase()+' · '+L().landingPoints(z.points) : L().landingPoints(z.points);
-    if(z.mythic) label.textContent+=' · ⚡ '+z.mythic;
+    ccMythicMark(label, z);
     el.appendChild(label);
     ccChestBadge(el, z);
     el.onclick=()=>{
@@ -111259,7 +111312,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b3d0e803';
+const CC_BUILD='a08ddcc2';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -116799,7 +116852,9 @@ function careerSpotTileHTML(){
           <div class="ch-row"><em>${L().ccSpotLoot}</em><b>${
             careerSpotPointsOf(CC_SPOT_PEEK, set)}</b></div>
           ${(CC_MYTHIC_POI[gridKey]||{})[CC_SPOT_PEEK] ? `<div class="ch-row cc-spot-mythic-row"><em>⚡ ${
-            L().ccRaritymythic}</em><b>${esc(CC_MYTHIC_POI[gridKey][CC_SPOT_PEEK])}</b></div>` : ''}
+            L().ccRaritymythic}</em><b>${esc(CC_MYTHIC_POI[gridKey][CC_SPOT_PEEK])}</b></div>
+            <div class="cc-spot-drops">${ccMythicDrops(gridKey, CC_MYTHIC_POI[gridKey][CC_SPOT_PEEK]).map(d=>
+              `<span><img class="zp-ic${d.med?' zp-med':''}" src="${d.src}" alt="" decoding="async">${esc(d.n)}</span>`).join('')}</div>` : ''}
           ${peekBtns}
         </div></div>`
     : `<div class="ch-hint">${L().ccSpotTap}</div>`;
@@ -116814,7 +116869,7 @@ function careerSpotTileHTML(){
     const at=slotOf(i);
     const mine=at>=0;
     // На коробке только молния: имя в узкой подписи режется в «11 · …», полностью оно в превью.
-    const boss=myth[i] ? ' ⚡' : '';
+    const boss=myth[i] ? (ccMythicIconsHTML(gridKey, myth[i]) || ' ⚡') : '';
     // Сколько силы даёт коробка — числом рядом с номером («11 · +7»), слово «сила» в превью.
     const pw=careerSpotPowOf(i, set);
     const powTag=pw!=null ? ' · +'+pw : '';
