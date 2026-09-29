@@ -139206,7 +139206,9 @@ function careerFfDigest(ff){
   const days=ccDaysBetween(ff.from.day, careerToday());
 
   const tiles=ff.played.map((r,i)=>{
-    const art=CC_FF_ART[r.kind]||'';
+    // Обложка своего турнира того дня (как в журнале профиля, ccLogArt), а не общая по виду вечера —
+    // недели World Cup 2019 выходили картинкой FNCS (Notion «29»: «при перемотке не те превью»).
+    const art=(typeof ccLogArt==='function' && ccLogArt({kind:r.kind, day:r.day})) || CC_FF_ART[r.kind] || '';
     const win=r.place===1, pod=!win && r.place<=3;
     const kind=(typeof ccFfKindWord==='function') ? ccFfKindWord(r.kind) : '';
     const more=[
