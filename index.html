@@ -146553,14 +146553,11 @@ function ccMXWcPool(sp, reg){
   const cards=(typeof CARDS_BY_SETREG!=='undefined' && CARDS_BY_SETREG.get(sp.set+'|'+reg)||[]).slice().sort((a,b)=>(b.rating||0)-(a.rating||0));
   const row=c=>({h:c.handle, n:c.nat||null, o:Math.round(c.rating||0), k:(attrsFor(c)||{}).roleKey||null});
   if(sp.size===1) return cards.map(c=>[row(c)]);
-  // Дуо — настоящими парами из истории (TEAMMATE_GROUPS), остальные — соседями по рейтингу.
-  const by=new Map(cards.map(c=>[hKey(c.handle), c])), used=new Set(), out=[];
-  (typeof TEAMMATE_GROUPS!=='undefined' ? TEAMMATE_GROUPS : []).forEach(g=>{
-    if(!g || g.length!==sp.size) return;
-    const cs=g.map(h=>by.get(hKey(h)));
-    if(cs.some(c=>!c || used.has(hKey(c.handle)))) return;
-    cs.forEach(c=>used.add(hKey(c.handle))); out.push(cs.map(row));
-  });
+  // Дуо — настоящими парами World Cup: у пары в карточках одно событие и одно место (Benjyfishy и
+  // MrSavage — оба 1-е в Online Open Europe). Остальные — соседями по рейтингу.
+  const used=new Set(), out=[], grp=new Map();
+  cards.forEach(c=>{ const k=(c.gfEvent||c.event||'')+'|'+(c.placement||''); if(!c.placement) return; (grp.get(k)||grp.set(k, []).get(k)).push(c); });
+  grp.forEach(cs=>{ if(cs.length!==sp.size || cs.some(c=>used.has(hKey(c.handle)))) return; cs.forEach(c=>used.add(hKey(c.handle))); out.push(cs.map(row)); });
   const rest=cards.filter(c=>!used.has(hKey(c.handle)));
   for(let i=0; i+sp.size-1<rest.length; i+=sp.size) out.push(rest.slice(i, i+sp.size).map(row));
   return out.sort((a,b)=>b.reduce((s,x)=>s+x.o,0)-a.reduce((s,x)=>s+x.o,0));
