@@ -109866,7 +109866,11 @@ function ccStart(){
       closeRangeEdge: (card || creator) ? 0 : ccPingEdge(ping),
       // The region the career competes in. A rookie's is always Europe - the
       // country map is - and a taken card's is whichever one it was taken from.
-      region: CC.region||'EU', ovr, role, attrs, ageEdge: (card || creator) ? 0 : ccAgeEdge(age),
+      region: CC.region||'EU', ovr, role, attrs,
+      // «Свои статы до 99»: выставленное — нижний предел, ниже результаты статы не опускают
+      // (его скрин 29.09: «я везде выбирал 99» — через пару вечеров стало 98.6). См. ccAttrFloor.
+      attrsFloor: (!card && !creator && CC.spaFree && attrs) ? ATTR_KEYS.reduce((o,k)=>(o[k]=attrs[k], o), {}) : undefined,
+      ageEdge: (card || creator) ? 0 : ccAgeEdge(age),
       // Where this career is from, which is what rent is measured against. A
       // career that starts in NA Central is not renting NA Central. See ccRentNow.
       homeRegion: CC.region||'EU',
@@ -116871,7 +116875,7 @@ function careerDoAct(id){
     Object.keys(act.gain||{}).forEach(k=>{
       const by=act.gain[k]*mult*(coach && coach.keys.indexOf(k)>=0 ? 1+coach.train : 1)
                *careerDiff().age*(scrim ? scrim.mult : 1)*ccFocusMult(k)*(grade ? grade.mult : 1);
-      pl.attrs[k]=clamp((pl.attrs[k]||50)+by, 35, 99);
+      pl.attrs[k]=clamp((pl.attrs[k]||50)+by, ccAttrFloor(k), 99);
       moved[k]=by;
     });
     if(Object.keys(moved).length){
@@ -125310,7 +125314,7 @@ function careerApplyGrowth(place, total, you, field){
   // the roster's, so this only runs where there is something to pay into.
   if(!pl.handle || pl.attrs){
     if(!pl.attrs) pl.attrs=ccRookieAttrs(pl.ovr, pl.role);
-    ATTR_KEYS.forEach(k=>{ pl.attrs[k]=clamp((pl.attrs[k]||50)+delta, 35, 99); });
+    ATTR_KEYS.forEach(k=>{ pl.attrs[k]=clamp((pl.attrs[k]||50)+delta, ccAttrFloor(k), 99); });
     pl.ovrExact=clamp(ATTR_KEYS.reduce((s,k)=>s+pl.attrs[k]*ATTR_W[k], 0), 40, 99);
     pl.ovr=Math.round(pl.ovrExact);
     // The rating the six add up to, kept beside them: attrsFor starts its lift
@@ -154069,10 +154073,15 @@ function ccWeakestAttr(){
   const six=(CAREER.player.attrs) || ccOwnAttrs();
   return ATTR_KEYS.slice().sort((a,b)=>(six[a]||50)-(six[b]||50))[0];
 }
+// Нижний предел стата: выставленное на вкладке «Свои статы до 99», иначе 35.
+function ccAttrFloor(k){
+  const f=CAREER && CAREER.player && CAREER.player.attrsFloor;
+  return (f && f[k]!=null) ? Math.min(99, f[k]) : 35;
+}
 function careerStatBump(k, by){
   const pl=CAREER.player;
   if(!pl.attrs) pl.attrs=ccOwnAttrs();
-  pl.attrs[k]=clamp((pl.attrs[k]||50)+by, 35, 99);
+  pl.attrs[k]=clamp((pl.attrs[k]||50)+by, ccAttrFloor(k), 99);
   const raw=ATTR_KEYS.reduce((sum,x)=>sum+(pl.attrs[x]||50)*ATTR_W[x],0);
   const now=pl.ovrExact!=null?pl.ovrExact:pl.ovr;
   pl.ovrExact=clamp(Math.max(now, Math.min(raw, careerTrainCap())), 40, 99);

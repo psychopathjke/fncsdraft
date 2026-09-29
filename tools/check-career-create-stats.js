@@ -108,6 +108,10 @@ const BOOT = `
     check('сейв: все шесть 99', !!sv99 && ATTR_KEYS.every(k=>sv99.player.attrs[k]===99), JSON.stringify(out.notes.free));
     check('сейв: общий 99', !!sv99 && Math.round(sv99.player.ovr)===99, JSON.stringify(out.notes.free));
     check('сейв: Дивизион 1', !!sv99 && sv99.career.division===1, sv99 && sv99.career.division);
+    check('сейв: нижний предел = выставленное', !!sv99 && sv99.player.attrsFloor && ATTR_KEYS.every(k=>sv99.player.attrsFloor[k]===99), JSON.stringify(sv99 && sv99.player.attrsFloor));
+    try{ careerEntry(); }catch(e){}
+    careerStatBump('aim', -3);
+    check('стат 99 не падает ниже выставленного', CAREER.player.attrs.aim===99, CAREER.player.attrs.aim);
     // Поиск напарника у 99-го — настоящие сильные игроки, а не шестидесятые.
     try{ careerEntry(); }catch(e){}
     const pool=careerDuoSearchPool(true).slice(0, 20).map(w=>w.ovr);
