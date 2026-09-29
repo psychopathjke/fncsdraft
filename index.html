@@ -6245,11 +6245,13 @@
           <button class="hero-btn hero-btn-alt" type="button" onclick="document.getElementById('modeYears').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})"><span data-i18n="heroDraft"></span></button>
         </div>
         <div class="hero-about"><a href="about.html"><span data-i18n="aboutLink"></span></a></div>
-        <div class="hero-team" id="heroTeam" hidden>
+        <!-- Видно сразу, а не после загрузки app.js (его правка 29.09: «с задержкой появляется with a friend»);
+             CC_MP_OPEN=false по-прежнему прячет ряд из setLang. -->
+        <div class="hero-team" id="heroTeam">
           <span class="hero-team-lbl" data-i18n="heroTeamLbl"></span>
-          <button class="cstrip-btn cstrip-btn-duo" id="cstripDuo" type="button" hidden onclick="careerMpNew()" data-i18n="heroDuo"></button>
-          <button class="cstrip-btn cstrip-btn-duo" id="cstripRace" type="button" hidden onclick="careerRaceNew()" data-i18n="ccRaceMake"></button>
-          <button class="cstrip-btn cstrip-btn-code" id="cstripCode" type="button" hidden onclick="careerMpJoinNew()" data-i18n="ccMpEnter"></button>
+          <button class="cstrip-btn cstrip-btn-duo" id="cstripDuo" type="button" onclick="careerMpNew()" data-i18n="heroDuo"></button>
+          <button class="cstrip-btn cstrip-btn-duo" id="cstripRace" type="button" onclick="careerRaceNew()" data-i18n="ccRaceMake"></button>
+          <button class="cstrip-btn cstrip-btn-code" id="cstripCode" type="button" onclick="careerMpJoinNew()" data-i18n="ccMpEnter"></button>
         </div>
       </div>
       <div class="hero-art" style="background-image:url(art/fncs-2026-major1.jpg)" role="img" aria-label="FNCS 2026 Major 1"></div>
