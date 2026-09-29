@@ -1,4 +1,4 @@
-// Турниры сверки с Liquipedia 29.09: ESL Katowice Royale Polish Edition 2019 (только поляки), World Cup
+// Турниры сверки с Liquipedia 29.09 (Katowice Polish сняты: 2019-й с 1 марта): World Cup
 // Warmup 2019 (онлайн-кап по регионам), Australian Open Summer Smash 2020/2022/2023 (OCE),
 // 2025–26: Cracked Cup, Games of the Future,
 // Lost Legends European Showdown (ZB-сквады), Virtuocity Qatar 2026 (ME). Стоят ли в календаре и кого зовут; два вечера играются.
@@ -67,9 +67,6 @@ const BOOT = `
   try{
     const at=(day, who)=>{ seed(day, null, who); CC_VICTORY_LIST=null; const v=careerVictoryOn(day); return {id:v&&v.id, inv:v?ccVictoryInvited(v):null, y:ccCalYear()}; };
     const C=[
-      ['2019-02-23', {c:'pl'}, 'LAN_ESL_Katowice_Royale_Polish_Edition_Duos', true],
-      ['2019-02-23', {c:'de'}, 'LAN_ESL_Katowice_Royale_Polish_Edition_Duos', false],
-      ['2019-02-24', {c:'pl'}, 'LAN_ESL_Katowice_Royale_Polish_Edition_Solos', true],
       ['2019-04-07', {c:'de'}, 'ONL_Fortnite_World_Cup_2019_Warmup', true],
       ['2020-02-02', {c:'au', r:'OCE'}, 'LAN_Australian_Open_Summer_Smash_2020', true],
       ['2020-02-02', {c:'de'}, 'LAN_Australian_Open_Summer_Smash_2020', false],
@@ -87,11 +84,6 @@ const BOOT = `
       check(d+' '+who.c+' приглашение '+inv, !!r.inv===inv, JSON.stringify(r));
     }
     seed('2025-12-18', {year:2026, year0:2026}, {c:'de'}); CC_VICTORY_LIST=null; { const v=careerVictoryOn('2025-12-18'); out.notes.gotf={id:v&&v.id, inv:v?ccVictoryInvited(v):null, y:ccCalYear()}; check('Games of the Future в 2026-м', v && v.id==='LAN_Games_of_the_Future_2025_Reload', JSON.stringify(out.notes.gotf)); }
-    seed('2019-02-24', null, {c:'pl'});
-    const h1=await playThrough('Katowice PL solo');
-    const l1=lastLog();
-    out.steps.push('Katowice: '+h1+' · #'+(l1&&l1.place)+' $'+(l1&&l1.prize));
-    check('Katowice записан', l1 && l1.kind==='victory', JSON.stringify(l1));
     seed('2019-04-07', null, {c:'de'});
     const h2=await playThrough('Warmup');
     const l2=lastLog();
