@@ -5355,5 +5355,61 @@
     750
    ]
   ]
+ },
+ {
+  "page": "DreamHack/Dallas/2024",
+  "name": "DreamHack Dallas 2024",
+  "day": "2024-06-01",
+  "city": "Dallas",
+  "format": 2,
+  "invite": 148,
+  "zb": false,
+  "ewc24": "dallas",
+  "pay": [
+   [
+    1,
+    25000
+   ],
+   [
+    2,
+    11000
+   ],
+   [
+    3,
+    7000
+   ],
+   [
+    4,
+    4500
+   ],
+   [
+    6,
+    2500
+   ],
+   [
+    8,
+    1500
+   ],
+   [
+    16,
+    875
+   ]
+  ]
+ },
+ {
+  "page": "Esports World Cup/2024/Qualifier",
+  "name": "EWC 2024 Qualifier",
+  "day": "2024-07-05",
+  "city": "Online",
+  "format": 2,
+  "invite": 999,
+  "zb": false,
+  "ewc24": "qual",
+  "pay": [
+   [
+    1,
+    0
+   ]
+  ]
  }
 ]
