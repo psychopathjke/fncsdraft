@@ -110,6 +110,16 @@ const BOOT = `
     const lf=lastLog();
     check('трио-финал записан', lf && lf.stage==='final' && lf.of===33 && lf.size===3, JSON.stringify(lf));
     out.steps.push('C2S4 final: '+f+' · #'+(lf&&lf.place)+' $'+(lf&&lf.prize));
+    // Wildcard C2S4 (Liquipedia): 9–16-е хитов, один матч 31.10, победитель — в Гранд-финал; EU платит $1800 на тройку за 2–32-е.
+    seed('2020-10-31', {majorx:{y:2020, n:3, season:1, got:{}, q:{}, series:{}, seriesRows:{}, heats:null, heatRes:{}, youKey:'X', ticket:false, wild:true}});
+    check('Wildcard: вечер финала открыт без путёвки', careerMajorCan(careerMajorOn(careerToday())));
+    const wc=await playThrough('C2S4 wildcard');
+    const lw=CAREER.career.log.filter(x=>x.day==='2020-10-31');
+    const wLost=lw.find(x=>x.stage==='wild'), wFin=lw.find(x=>x.stage==='final');
+    check('Wildcard: либо вылет из 32 с $600, либо проход в финал из 33', (wLost && wLost.of===32 && wLost.prize===600 && !wFin) || (wFin && wFin.of===33 && !wLost), JSON.stringify(lw.map(x=>({st:x.stage, of:x.of, place:x.place, prize:x.prize}))));
+    const wp=ccMXWildPrize(ccMXSpec(2020, 3));
+    check('Wildcard: 1-е ноль, 2-е $1800 на тройку', !!wp && wp(1)===0 && wp(2)===1800 && wp(32)===1800, String(wp && [wp(1), wp(2), wp(32)]));
+    out.steps.push('C2S4 wildcard: '+wc+' · '+JSON.stringify(lw.map(x=>x.stage+' #'+x.place+'/'+x.of+' $'+x.prize)));
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';

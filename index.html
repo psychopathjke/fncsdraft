@@ -19045,6 +19045,11 @@ Object.assign(I18N.fr, {evPickH:(e,n)=>'Roster pour '+e+' : ajoute '+n, evPickSu
 Object.assign(I18N.it, {evPickH:(e,n)=>'Roster per '+e+': aggiungi '+n, evPickSub:'Chi porti a questa cup? Restano nel tuo roster di questo formato.', evPickAuto:'Scegli tu per me', evPickGo:(k,n)=>'Gioca · '+k+'/'+n, evPickHave:'nel roster'});
 Object.assign(I18N.pt, {evPickH:(e,n)=>'Line-up para '+e+': adicione '+n, evPickSub:'Quem você leva para esta copa? Eles ficam na sua line-up deste formato.', evPickAuto:'Escolha por mim', evPickGo:(k,n)=>'Jogar · '+k+'/'+n, evPickHave:'na line-up'});
 Object.assign(I18N.ru, {lfRosterAsk:'Позвать'}); Object.assign(I18N.en, {lfRosterAsk:'Invite'}); Object.assign(I18N.fr, {lfRosterAsk:'Inviter'}); Object.assign(I18N.it, {lfRosterAsk:'Invita'}); Object.assign(I18N.pt, {lfRosterAsk:'Chamar'});
+Object.assign(I18N.ru, {ccYrXWildIn:'Wildcard: один матч в день Гранд-финала, победитель проходит', ccYrXWildLabel:n=>n+' · Wildcard'});
+Object.assign(I18N.en, {ccYrXWildIn:'Wildcard: one match on Grand Finals day, the winner goes through', ccYrXWildLabel:n=>n+' · Wildcard'});
+Object.assign(I18N.fr, {ccYrXWildIn:'Wildcard : un match le jour de la Grande finale, le vainqueur passe', ccYrXWildLabel:n=>n+' · Wildcard'});
+Object.assign(I18N.it, {ccYrXWildIn:'Wildcard: una partita il giorno della Grand Final, passa il vincitore', ccYrXWildLabel:n=>n+' · Wildcard'});
+Object.assign(I18N.pt, {ccYrXWildIn:'Wildcard: uma partida no dia da Grande Final, o vencedor avança', ccYrXWildLabel:n=>n+' · Wildcard'});
 Object.assign(I18N.ru, {evPickWho:e=>'С кем идёшь на '+e+'?', evPickSub2:n=>n===1 ? 'Нажми на того, с кем играешь, — или позови другого в личке.' : 'Нажми на тех, с кем играешь, — или позови других в личке.', evPickPlay:w=>'Играть: '+w});
 Object.assign(I18N.en, {evPickWho:e=>'Who do you take to '+e+'?', evPickSub2:n=>n===1 ? 'Tap who you play with — or ask someone else in DMs.' : 'Tap who you play with — or ask others in DMs.', evPickPlay:w=>'Play: '+w});
 Object.assign(I18N.fr, {evPickWho:e=>'Avec qui vas-tu à '+e+' ?', evPickSub2:n=>'Touche ton coéquipier — ou écris à quelqu’un d’autre en MP.', evPickPlay:w=>'Jouer : '+w});
@@ -99794,7 +99799,8 @@ function fmtMoney(v){ return '$'+Math.round(v).toLocaleString(LANG==='ru'?'ru-RU
 function stPrizeHTML(total, size){
   if(!total) return '';
   const n=Math.max(1, size||1);
-  return '<span class="st-prize">'+fmtMoney(total/n)+(n>1 ? ' '+esc(L().stPrizeEach) : '')+'</span>';
+  /* Обе суммы рядом (его слово 29.09: «пиши две суммы — всего и each рядом»): на команду и на игрока. */
+  return '<span class="st-prize">'+fmtMoney(total)+(n>1 ? ' · '+fmtMoney(total/n)+' '+esc(L().stPrizeEach) : '')+'</span>';
 }
 
 // A single earnings card: regional final, the Summit, and the squad total.
@@ -111224,7 +111230,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='096e53c9';
+const CC_BUILD='5a373c5e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -120425,6 +120431,41 @@ const CC_SNAPSHOTS_2020=[{tag:'i1', from:CC_YEAR_2020_FROM, playIn:/2020 C2S[234
 var CC_MX_SPEC=CC_MX_SPEC||{};
 CC_MX_SPEC[2020]={1:{set:'i1',name:'FNCS Chapter 2 Season 2',size:2,qual:false,weeks:[1,2,3,4],rounds:[{games:10,cut:50,open:true},{games:6,cut:0}],heats:[{day:1,cut:12},{day:1,cut:12},{day:2,cut:12},{day:2,cut:12}],heatGames:6,finalGames:12,island:'i1'},2:{set:'i2',name:'FNCS Chapter 2 Season 3',size:1,qual:true,weeks:[1,2,3,4],rounds:[{games:10,cut:100,open:true},{games:6,cut:0}],heats:[{day:1,cut:25},{day:1,cut:25},{day:2,cut:25},{day:2,cut:25}],heatGames:6,finalGames:12,island:'i2'},3:{set:'i3',name:'FNCS Chapter 2 Season 4',size:3,qual:false,weeks:[1,2,3],rounds:[{games:10,cut:33,open:true},{games:6,cut:0}],heats:[{day:1,cut:8},{day:1,cut:8},{day:1,cut:8},{day:1,cut:8}],heatGames:6,finalGames:12,island:'i3'}};
 // ==== /FNCS 2020 cal ====
+/* WILDCARD C2S4 (Liquipedia «Fortnite Champion Series/Chapter 2/Season 4/Wildcard/<регион>», окна Epic
+   S14_FNCS_Finals_*_Wildcard_Event1): 31 октября в 17:00, за 45 минут до Гранд-финала, — один матч. Играют
+   9–16-е места каждого из четырёх хитов (32 команды; хит-призы Epic за 9–16 нулевые именно поэтому),
+   победитель — 33-я команда Гранд-финала. Призы на игрока: EU $1800 и NAE $1200 на команду за 2–32-е,
+   остальные регионы — ноль. Вне генератора build-2020-cal.js, чтобы пересборка календаря это не стёрла. */
+if(CC_MX_SPEC[2020] && CC_MX_SPEC[2020][3]) CC_MX_SPEC[2020][3].wild={from:9, to:16, games:1,
+  pay:{EU:[[1,0],[32,600]], NAC:[[1,0],[32,400]]}};
+function ccMXWildRows(m, sp){
+  ccMXSettleHeats(m);
+  const n=sp.wild.to-sp.wild.from+1, out=[];
+  ccMXHeats(m).forEach((h,i)=>((m.heatRes[i]||{}).rest||[]).slice(0, n).forEach(r=>{ if(r!=='you') out.push(r); }));
+  return out;
+}
+// Победитель Wildcard без тебя — один матч движком, раз на сезон (m.wildRes). Пока ты сам в Wildcard и не сыграл его — никого.
+function ccMXWildWinner(m, sp){
+  if(m.wildRes) return m.wildRes.win;
+  if(m.wild) return null;
+  const rows=ccMXWildRows(m, sp);
+  if(!rows.length) return null;
+  let win=null;
+  ccWithEventSize(sp.size, ()=>{
+    const room=rows.map(ccMajorTeamFrom);
+    room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
+    ccWorldRun('mxw|'+m.season+'|'+m.y+'|'+m.n, ()=>simulateGames(room, sp.wild.games, ccM24Points, CC_M24_KILL));
+    win=ccMajorSeatRow(ccM24Rank(room)[0]);
+  });
+  m.wildRes={win};
+  return win;
+}
+function ccMXWildPrize(sp){
+  const t=(sp.wild.pay||{})[careerPrizeRegion()];
+  // Таблица на игрока, как хиты 2020-го (ccMXHeatPrize), — функция отдаёт сумму на команду.
+  // Без таблицы региона — ноль (NAW/BR/OCE/ASIA/ME Wildcard не платили), а не европейская, как в ccPay24.
+  return t ? (place=>{ const row=t.find(x=>place<=x[0]); return (row ? row[1] : 0)*sp.size; }) : null;
+}
 // ==== FNCS 2021 cal (tools/splice-2021.js) ====
 /* ---- FNCS 2021 в карьере ------------------------------------------------------
    Трио весь год, Chapter 2 (сезоны 5–8), ЛАНов нет. Даты и квоты — окна Epic с архива
@@ -146760,6 +146801,7 @@ function ccMXGfRows(y, n, m){
   if(!m) return out;
   ccMXSettleWeeks(m); ccMXSettleHeats(m);
   ccMXHeats(m).forEach((h,i)=>((m.heatRes[i]||{}).up||[]).forEach(add));
+  if(sp.wild){ const w=ccMXWildWinner(m, sp); if(w) add(w); }
   Object.keys(m.series).sort((a,b)=>m.series[b]-m.series[a]).forEach(k=>add(m.seriesRows[k]));
   return out;
 }
@@ -146795,7 +146837,8 @@ function ccMXCanStage(ev, cr, gaveUp){
     ccMXSettleHeats(s);
     return ccMXYourHeat(s, ev.r)>=0;
   }
-  return !gaveUp && !!(s && s.ticket);
+  // Гранд-финал — с путёвкой; C2S4 — и с местом в Wildcard (9–16-е в хите): тот же вечер, сначала один матч.
+  return !gaveUp && !!(s && (s.ticket || (sp.wild && s.wild && !s.wildRes)));
 }
 async function runCareerMajorMX(){
   const ev=careerMajorOn(careerToday());
@@ -146837,7 +146880,7 @@ async function ccMXRun(ev, sp){
   const rowsOf=rows=>(rows||[]).map(r=>r==='you' ? you : ccMajorTeamFrom(r));
   const seedOf=t=>ccSeedRow(t, you, ccMajorSeatRow);
   let field, spec, stageLabel=ev.label, through=false, note='', games=0;
-  let ranked=[], place=0, heatPay=null;
+  let ranked=[], place=0, heatPay=null, wildOut=false;
   const play=async (room, sp2, label, open)=>{
     room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; t.stageLog=[]; });
     CC_M24_GAME=0;
@@ -146930,9 +146973,36 @@ async function ccMXRun(ev, sp){
     through=place<=heat.cut;
     if(through) m.ticket=true;
     note=through ? L().ccYr22SemiUp : L().ccRelFail(heat.cut);
+    if(!through && sp.wild && place<=heat.cut+(sp.wild.to-sp.wild.from+1)){ m.wild=true; note=L().ccYrXWildIn; }
     // Хиты 2020-го платили не прошедшим (ccMXHeatPrize) — деньги идут той же веткой, что неделя.
     heatPay=ccMXHeatPrize(sp, ev.n, hi, heat.cut);
   } else {
+    if(!m.ticket && m.wild && sp.wild && !m.wildRes){
+      // Wildcard: один матч, проходит только победитель. Проиграл — вечер кончается здесь (wildOut).
+      // 32 места: 8 с каждого хита, одно из них твоё.
+      const wf=rowsOf(ccMXWildRows(m, sp).slice(0, (sp.heats||[]).length*(sp.wild.to-sp.wild.from+1)-1));
+      if(wf.indexOf(you)<0) wf.unshift(you);
+      const wl=L().ccYrXWildLabel(sp.name), wspec={games:sp.wild.games, cut:1};
+      const wr=await play(wf, wspec, wl, false);
+      const wp=wr.indexOf(you)+1;
+      m.wildRes={win:seedOf(wr[0])};
+      if(wp===1){
+        m.ticket=true;
+        const pf=ccMXWildPrize(sp);
+        const sh=createStageCardShell(wl+' — '+wf.length);
+        await revealStageLog(you, sh, true);
+        finalizeStageCard(sh, wp, wf.length, you.stagePts, true, false, L().ccYr22SemiUp);
+        await revealStandings(sh, wr, you, 1, null, null, pf, null, !!pf);
+        careerPrAdd(wr, {div:cr.division, kind:'major', stage:'wild'});
+        if(pf) careerMoneyAdd(wr, pf);
+        careerNews('good', 'ccNewsMajThrough', [wl, 1, wf.length], {tbl:ccStageShot(wr, you, 1, wl)});
+      } else {
+        wildOut=true; field=wf; ranked=wr; place=wp; spec=wspec; stageLabel=wl;
+        through=false; note=L().ccRelFail(1); heatPay=ccMXWildPrize(sp);
+      }
+    }
+  }
+  if(ev.stage==='final' && !wildOut){
     spec={games:sp.finalGames||12, cut:0};
     field=rowsOf(ccMXGfRows(ev.yx, ev.n, m));
     if(field.indexOf(you)<0) field.unshift(you);
@@ -146943,7 +147013,7 @@ async function ccMXRun(ev, sp){
   }
   m.got[ev.id]=true;
   removeSkipButton();
-  const fin=ev.stage==='final';
+  const fin=ev.stage==='final' && !wildOut;
   // Неделя World Cup, сыгранная до финала недели, — платит по таблице недели своего региона.
   // Только за последний раунд вечера: промежуточные платятся в цикле (иначе вылет на раунде 2 платил бы дважды).
   const wcPrize=heatPay || ((!fin && ev.stage!=='heat' && lastR && ev.rounds && lastR===ev.rounds[ev.rounds.length-1]) ? ccMXWeekPrize(sp, ev.w, lastR, ev.n) : null);
@@ -146987,7 +147057,7 @@ async function ccMXRun(ev, sp){
   cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:place, of:field.length, pts:you.stagePts,
                passed: fin ? cash>0 : through, ovr:CAREER.player.ovr, games:games||spec.games, wins:you.wins||0, elims:you.stageElims||0,
                avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
-               mate: (sp.size>1 && mate) ? mate.handle : null, mates: ccLogMates(mates.slice(0, sp.size-1)), prize:ccShareOf(cash, you), kind:'major', stage:fin ? 'final' : ev.stage,
+               mate: (sp.size>1 && mate) ? mate.handle : null, mates: ccLogMates(mates.slice(0, sp.size-1)), prize:ccShareOf(cash, you), kind:'major', stage:fin ? 'final' : wildOut ? 'wild' : ev.stage,
                size: sp.size, won: fin ? ccStageSeatRow(ranked[0]) : undefined, top: fin ? ccStageTop(ranked, you) : undefined});
   await ccMpClose(ranked);
   careerAdvanceTo(ccAddDays(careerToday(), 1));
