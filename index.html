@@ -135274,7 +135274,9 @@ function careerDuoSearchPool(any){
    * Порядок остался прежним по смыслу: тот, кого можно посадить прямо сейчас,
    * идёт первым, остальные под ним. */
   const want=any ? null : ccSeatRoleWanted(CC_DUO_SEAT);
-  const byWant=(a,b)=>(want ? (a.role===want?0:1)-(b.role===want?0:1) : 0) || b.ovr-a.ovr;
+  /* По рейтингу, нужная роль — только при равном (его скрин 29.09: «я 99, а выбрать могу максимум 90»): роль стояла
+     первым ключом, и 120 строк списка кончались на ИГЛах 85–90, а фраггеры 91–96 уходили за край. */
+  const byWant=(a,b)=>b.ovr-a.ovr || (want ? (a.role===want?0:1)-(b.role===want?0:1) : 0);
   if(ccRealNamesHere()){
     return careerRosterNowEU().filter(p=>!mine.has(hKey(p)))
       .map(p=>({handle:p.handle, ovr:p._ovr!=null?p._ovr:attrsFor(p).ovr, nat:p.nat,
