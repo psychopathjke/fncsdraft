@@ -111235,7 +111235,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5a373c5e';
+const CC_BUILD='f27c691b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -146161,9 +146161,10 @@ function ccGcKeepFinal(year, n, rows){
   if(!CAREER || !CAREER.career) return;
   const cr=CAREER.career, k=cr.gfKeep=cr.gfKeep||{};
   k[year+'|'+n]={season:cr.season, reg:ccCareerRegion(), rows:(rows||[]).slice()};
+  if(cr.gcSim && cr.gcSim.season===cr.season) delete cr.gcSim[year];
 }
 const CC_GC_SIM={
-  INV2022_DUOS:{year:2022, size:2, sets:['k1','k2','k3'], n:0, seats:()=>INV2022_SEATS, order:0},
+  INV2022_DUOS:{year:2022, size:2, sets:['k1','k2','k3'], n:0, keepAll:[1,2,3], keepTop:()=>ccInv22Quota(), seats:()=>INV2022_SEATS, order:0},
   'GC2023_DUOS.m1':{year:2023, size:2, sets:['e1'], n:1, list:()=>GC2023_DUOS.m1, order:1},
   'GC2023_DUOS.m2':{year:2023, size:2, sets:['e2'], n:2, list:()=>GC2023_DUOS.m2, order:2},
   'GC2023_DUOS.m3':{year:2023, size:2, sets:['e3'], n:3, list:()=>GC2023_DUOS.m3, order:3},
@@ -146218,9 +146219,13 @@ function ccGcSimYear(year){
       if(!need) return;
       const free=r=>!r.some(h=>taken.has(hKey(h)));
       let pick=[];
-      const kept=cr.gfKeep && spec.n && cr.gfKeep[year+'|'+spec.n];
-      if(kept && kept.season===cr.season && kept.reg===reg){
-        pick=(kept.rows||[]).filter(r=>r!=='you').map(r=>r.map(x=>typeof x==='string' ? x : x.h)).filter(free).slice(0, need);
+      const ownOf=kept=>(kept && kept.season===cr.season && kept.reg===reg) ? (kept.rows||[]).filter(r=>r!=='you').map(r=>r.map(x=>typeof x==='string' ? x : x.h)) : [];
+      if(spec.keepAll){
+        // Роли: приглашение давал любой из трёх финалов сезона 2022 (верх по квоте ccInv22Quota) — берём их по порядку.
+        spec.keepAll.forEach(k=>ownOf(cr.gfKeep && cr.gfKeep[year+'|'+k]).slice(0, spec.keepTop()).forEach(r=>{
+          if(pick.length<need && free(r) && !pick.some(p=>p.join('+')===r.join('+'))) pick.push(r); }));
+      } else if(spec.n){
+        pick=ownOf(cr.gfKeep && cr.gfKeep[year+'|'+spec.n]).filter(free).slice(0, need);
       }
       if(pick.length<need){
         const pool=ccGcRegionTeams(spec, reg).filter(t=>free(t.row) && !pick.some(p=>p.join('+')===t.row.join('+')));
@@ -147864,6 +147869,7 @@ async function runCareerMajor2022(){
                cash?[ccSeasonEvName(2022, ev.n), place, ccNum(cash)]:[ccSeasonEvName(2022, ev.n), place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});
     if(place>field.length/2) careerNews('bad', 'ccPostTriedBest', []);
     careerCongrats(ranked, you, L().ccCongratsEv(ccSeasonEvName(2022, ev.n)));
+    ccGcKeepFinal(2022, ev.n, ranked.map(seedOf));
     cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
   } else {
     careerNews(through?'good':'flat', through?'ccNewsMajThrough':'ccNewsMajOut',
@@ -148954,6 +148960,7 @@ async function runCareerMajor(){
        8,5 тысячи лайков). Ниже середины поля — значит вечер не получился. */
     if(place>field.length/2) careerNews('bad', 'ccPostTriedBest', []);
     careerCongrats(ranked, you, L().ccCongratsMajor(ev.n));
+    if(typeof ccIs2025==='function' && ccIs2025() && !ccMajorIsShowdown(ev.n)) ccGcKeepFinal(2025, ev.n, ranked.map(t=>ccSeedRow(t, you, ccMajorSeatRow)));
     cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
   } else {
     const won = (ev.stage==='lcq' && !lcByPlace) ? ticket : through;

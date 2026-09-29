@@ -135,6 +135,9 @@ const BOOT = `
     check('финал записан', lg && lg.stage==='final' && lg.of===50 && lg.games===12, JSON.stringify(lg));
     check('призовые финала — таблица Европы C3S1', majorPrize(1)===300000, String(majorPrize(1)));
     out.steps.push('GF: '+gf+' · #'+(lg&&lg.place)+' $'+(lg&&lg.prize));
+    // Роли из симуляции: твой финал сезона в книге, и его верх (кроме тебя) — среди приглашённых своего региона.
+    const kp=(CAREER.career.gfKeep||{})['2022|1'];
+    check('финал 2022 записан для Роли', !!kp && kp.rows.length>=10, JSON.stringify(kp && kp.rows.length));
     // 7. Invitational — приглашение с Гранд-финала C3S3.
     seed('2022-11-12', {log:[{kind:'major', stage:'final', day:'2022-08-13', place:1, of:50, games:12, season:1, passed:true}]});
     const seat=ccGlobalsSeat();
