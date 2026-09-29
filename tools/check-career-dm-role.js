@@ -153,6 +153,47 @@ const BOOT = `
       check('and it survives him developing',
             attrsFor(careerPartnerCard()).roleKey==='roleIGL',
             JSON.stringify(out.notes.afterDev));
+
+      /* ---- его роль держит НАПАРНИК, а не ты ----------------------------
+         Скрин 29.09: трио, ты ФРГ, рядом ИГЛ, пишет ещё один ИГЛ. «Беру ФРГ я»
+         ничего не меняло — ты уже ФРГ — и ветка шла по кругу: «Ты тоже ИГЛ» /
+         «Хорошо, тогда ФРГ беру я» раз за разом. Теперь называется напарник,
+         «пересяду сам» не предлагается, повторное нажатие реплик не множит. */
+      const realSize=careerSquadSize, realSeats=careerMateSeats;
+      careerSquadSize=()=>3; careerMateSeats=()=>2;
+      const t4=clashThread() || (()=>{ throw new Error('no second IGL'); })();
+      // Пишет ИГЛ, а не игрок той же роли, что ты: clashThread берёт роль игрока (ФРГ).
+      const igl=careerRosterNowEU().find(p=>attrsFor(p).roleKey==='roleIGL' && !ccMyPeople().has(hKey(p)));
+      t4.who={handle:igl.handle, ovr:igl._ovr, nat:igl.nat, role:'roleIGL', roster:true,
+              cardRegion:igl.region||'EU', club:null, pay:0};
+      const m0=t4.msgs.length;
+      careerDmAccept(t4.id);
+      const m1=t4.msgs.length;
+      const last=t4.msgs[t4.msgs.length-1]||{};
+      careerDmRoleMine(t4.id); careerDmRoleMine(t4.id); careerDmAccept(t4.id);
+      out.notes.mateHolds={mine:ccRoleNow(), need:t4.roleFix, mineOk:t4.roleMineOk,
+        mate:t4.roleMate, key:last.key||last.k||last.text, msgs:[m0, m1, t4.msgs.length]};
+      check('the clash names the mate who holds the role', t4.roleMineOk===false && !!t4.roleMate,
+            JSON.stringify(out.notes.mateHolds));
+      check('and says so, not «you are an IGL too»', JSON.stringify(last).indexOf('dmRoleClashMate')>=0,
+            JSON.stringify(last));
+      check('pressing «I take it» again adds nothing', t4.msgs.length===m1,
+            JSON.stringify(out.notes.mateHolds));
+      check('with a free seat left there is nobody to replace', t4.roleMate && t4.roleMate.swap===false,
+            JSON.stringify(t4.roleMate));
+      // Полный состав: ИГЛ-напарник сильнее ФРГ-напарника, уходит слабый — ИГЛ остаётся.
+      const realMates=careerMates;
+      const scroll=realMates()[0];
+      const weakFrg=careerRosterNowEU().filter(p=>attrsFor(p).roleKey==='roleFRG' && !ccMyPeople().has(hKey(p)))
+        .sort((a,b)=>attrsFor(a).ovr-attrsFor(b).ovr)[0];
+      careerMates=()=>[scroll, weakFrg];
+      t4.roleFix=null; t4.roleFixKey=null;
+      careerDmAccept(t4.id);
+      out.notes.full={mate:t4.roleMate, mineOk:t4.roleMineOk};
+      check('a full squad offers to take the mate’s seat', t4.roleMate && t4.roleMate.swap===true &&
+            t4.roleMate.handle===scroll.handle, JSON.stringify(out.notes.full));
+      careerMates=realMates;
+      careerSquadSize=realSize; careerMateSeats=realSeats;
     }catch(e){ out.err=String(e && e.stack || e); }
     document.getElementById('__out').textContent=
       'PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';

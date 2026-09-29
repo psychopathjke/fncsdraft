@@ -8749,7 +8749,7 @@ dmKeepPromise:'Дай мне месяц. Я вытащу',
 dmKeepRole:r=>'Возьму '+r+', если тебе так удобнее играть',
 dmRoleClash:r=>'Ты тоже '+r+' — кто-то из нас должен пересесть, иначе в команде некому звать',
 dmRoleNeed:r=>'Команде не хватает '+r+'. Кто-то из вас должен в неё сесть',
-dmRoleAskHim:'Попросить его пересесть',
+dmRoleClashMate:(r,m)=>'У меня в команде уже есть '+r+' — '+m+'. Двух не бывает: пересесть придётся тебе, или ты садишься вместо него', dmRoleReplace:m=>'Взять вместо '+m, dmRoleAskHim:'Попросить его пересесть',
 dmRoleTakeIt:r=>'Пересесть самому в '+r,
 dmRoleYes:r=>'Ладно, могу '+r+'. Давай попробуем',
 dmRoleNo:r=>'Не, '+r+' — не моё. Я так не играю',
@@ -10741,7 +10741,7 @@ dmKeepPromise:'Give me a month. I will carry it',
 dmKeepRole:r=>'I will take '+r+' if that suits you better',
 dmRoleClash:r=>'You are '+r+' as well — one of us has to move over, or the squad has nobody calling',
 dmRoleNeed:r=>'The squad is short a '+r+'. One of you has to take it',
-dmRoleAskHim:'Ask him to move over',
+dmRoleClashMate:(r,m)=>'My team already has an '+r+' — '+m+'. There can’t be two: either you switch or you take their seat', dmRoleReplace:m=>'Take them instead of '+m, dmRoleAskHim:'Ask him to move over',
 dmRoleTakeIt:r=>'Take '+r+' myself',
 dmRoleYes:r=>'Alright, I can play '+r+'. Let us try it',
 dmRoleNo:r=>'Nah, '+r+' is not me. That is not how I play',
@@ -13086,7 +13086,7 @@ dmMateBad:(p,o)=>ccTopC(p)+' sur '+o+'. On n’ira nulle part comme ça',
 dmKeepRole:r=>'Je prends '+r+' si ça t’arrange mieux',
 dmRoleClash:r=>'Tu es '+r+' aussi — l’un de nous doit changer de rôle',
 dmRoleNeed:r=>'Il manque un '+r+' à l’équipe. L’un de vous doit le prendre',
-dmRoleAskHim:'Lui demander de changer',
+dmRoleClashMate:(r,m)=>'Mon équipe a déjà un '+r+' — '+m+'. Pas deux : soit tu changes, soit tu prends sa place', dmRoleReplace:m=>'Le prendre à la place de '+m, dmRoleAskHim:'Lui demander de changer',
 dmRoleTakeIt:r=>'Passer '+r+' moi-même',
 dmRoleYes:r=>'D’accord, je peux jouer '+r+'. On essaie',
 dmRoleNo:r=>'Non, '+r+' ce n’est pas moi. Je ne joue pas comme ça',
@@ -16093,7 +16093,7 @@ dmMateLeaving3:"Un altro duo mi vuole. Dammi un motivo per restare",
 dmMateLeaving4:"Ho un'offerta da un altro. Ci sto pensando",
 dmMateLeaving:"Senti. Mi hanno chiesto di giocare con loro e ci sto pensando",
 dmKeepPromise:"Dammi un mese. Me la porto io",
-dmRoleAskHim:"Chiedigli di spostarsi",
+dmRoleClashMate:(r,m)=>'La mia squadra ha già un '+r+' — '+m+'. Non possono essere due: o cambi tu o prendi il suo posto', dmRoleReplace:m=>'Prendilo al posto di '+m, dmRoleAskHim:"Chiedigli di spostarsi",
 dmKeepStay:"Va bene. Resto, andiamo avanti",
 dmKeepMaybe:"Non lo so. Dammi qualcos'altro",
 dmKeepGo:"No, ho deciso. Grazie delle partite",
@@ -18611,7 +18611,7 @@ dmMateLeaving3:"Outra dupla me quer. Me dá um motivo para ficar",
 dmMateLeaving4:"Tenho proposta de outro. Estou considerando",
 dmMateLeaving:"Olha. Me chamaram para jogar com eles e estou pensando",
 dmKeepPromise:"Me dá um mês. Eu carrego",
-dmRoleAskHim:"Peça para ele mudar de função",
+dmRoleClashMate:(r,m)=>'Meu time já tem um '+r+' — '+m+'. Não dá para ter dois: ou você muda ou fica no lugar dele', dmRoleReplace:m=>'Colocar no lugar de '+m, dmRoleAskHim:"Peça para ele mudar de função",
 dmKeepStay:"Beleza. Eu fico, vamos seguir",
 dmKeepMaybe:"Não sei. Me dá outra coisa",
 dmKeepGo:"Não, já decidi. Valeu pelas partidas",
@@ -111319,7 +111319,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='bbb84363';
+const CC_BUILD='191e9e62';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -134230,11 +134230,28 @@ function careerDmRoleMine(id){
   const t=careerDms().find(x=>x.id===id);
   if(!t || !t.roleFix) return;
   const role=L()[t.roleFix]||'';
-  if(ccRoleNow()!==t.roleFix && !ccRoleSwitch(t.roleFix)) return;
+  // Уже в этой роли — пересаживаться некуда, и реплика «беру я» только крутила круг.
+  // Старая ветка (до этой правки) пересчитывается заново: назовёт напарника и уберёт эту кнопку.
+  if(ccRoleNow()===t.roleFix){
+    if(t.roleFixKey==null){ t.roleFix=null; careerDmAccept(id); } else careerDmOpen(id);
+    return;
+  }
+  if(!ccRoleSwitch(t.roleFix)) return;
   careerDmPush(t, 'you', 'dmRoleMine', [role]);
-  t.roleFix=null;
+  t.roleFix=null; t.roleFixKey=null;
   careerSave();
   careerDmAccept(id);
+}
+// «Взять вместо него»: он садится на место напарника, который держит ту же роль.
+function careerDmRoleReplace(id){
+  const t=careerDms().find(x=>x.id===id);
+  if(!t || !t.roleFix || !t.roleMate || !t.roleMate.swap) return;
+  const mates=careerMates(), at=t.roleMate.at;
+  if(!mates[at] || hKey(mates[at].handle)!==hKey(t.roleMate.handle)){ t.roleFix=null; t.roleFixKey=null; careerDmAccept(id); return; }
+  t.seat=at;
+  t.roleFix=null; t.roleFixKey=null; t.roleMate=null;
+  careerSave();
+  careerDmAcceptAsk(id);
 }
 function careerDmAccept(id){
   const t=careerDms().find(x=>x.id===id); if(!t) return;
@@ -134288,9 +134305,24 @@ function careerDmAccept(id){
   // Роли сверяются с составом года; письмо в состав другого формата (t.fmt) этим не связано.
   if(!(t.fmt && t.fmt!==careerSquadSize()) && t.who && t.who.role && !ccSquadRoleFits(roles.concat([t.who.role]), careerSquadSize())){
     const need=ccRoleOther(t.who.role);
-    if(t.roleFix!==need){
+    /* Помогает ли, если пересядешь ты. Если ты уже в нужной роли, а его роль держит
+       напарник (скрин Notion «29»: Qoo ИГЛ, ты ФРГ, ИГЛ — напарник), «беру я» ничего
+       не меняло и разговор шёл по кругу. Тогда называется напарник, а вместо
+       «пересяду сам» — «взять вместо него» (если состав полон и место есть кому освободить). */
+    const others=careerMates().map((m,i)=>i===seatOut ? null : attrsFor(m).roleKey);
+    const mineOk=ccRoleNow()!==need &&
+      ccSquadRoleFits([need].concat(others.filter(Boolean), [t.who.role]), careerSquadSize());
+    const mateAt=mineOk ? -1 : others.findIndex(r=>r===t.who.role);
+    const mate=mateAt>=0 ? careerMates()[mateAt] : null;
+    const full=careerMates().length>=careerMateSeats();
+    const fixKey=need+'|'+(mineOk ? 'me' : (mate ? hKey(mate.handle) : '-'));
+    if(t.roleFix!==need || t.roleFixKey!==fixKey){
       t.roleFix=need;
-      careerDmPush(t, 'you', 'dmRoleClash', [L()[t.who.role]||'']);
+      t.roleFixKey=fixKey;
+      t.roleMineOk=mineOk;
+      t.roleMate=mate ? {at:mateAt, handle:mate.handle, swap:full} : null;
+      if(mineOk || !mate) careerDmPush(t, 'you', 'dmRoleClash', [L()[t.who.role]||'']);
+      else careerDmPush(t, 'you', 'dmRoleClashMate', [L()[t.who.role]||'', ccHandle(mate.handle)]);
     }
     careerSave();
     careerDmOpen(id);
@@ -135125,8 +135157,10 @@ function careerSocialHTML(){
               <div class="dm-ask">
                 <button class="cc-back" onclick="careerDmRoleTheirs(\'${open.id}\')">${
                   L().dmRoleAskHim}</button>
-                <button class="cc-back" onclick="careerDmRoleMine(\'${open.id}\')">${
-                  L().dmRoleTakeIt(L()[open.roleFix]||'')}</button>
+                ${open.roleMineOk!==false ? `<button class="cc-back" onclick="careerDmRoleMine(\'${open.id}\')">${
+                  L().dmRoleTakeIt(L()[open.roleFix]||'')}</button>` : ''}
+                ${open.roleMineOk===false && open.roleMate && open.roleMate.swap ? `<button class="cc-back" onclick="careerDmRoleReplace(\'${open.id}\')">${
+                  L().dmRoleReplace(esc(ccHandle(open.roleMate.handle)))}</button>` : ''}
               </div></div>`;
             return `<div class="dm-foot">${held ? `<div class="dm-asked">${
               L().ccSlotLoseHint(careerPartnerCard().handle, held.what)}</div>` : ''}
