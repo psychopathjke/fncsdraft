@@ -4080,7 +4080,14 @@
     44,
     5000
    ]
-  ]
+  ],
+  "qualFrom": [
+   "DreamHack San Diego/2023",
+   "DreamHack Dallas/2023",
+   "DreamHack Summer/2023"
+  ],
+  "qualTop": 10,
+  "prInvite": 18
  },
  {
   "page": "DreamHack Winter/2023",

@@ -6069,11 +6069,13 @@
   .hero-mode-tag{margin-bottom:8px;}
   .hero.hero-draft{margin-top:16px;}
   .fmt-art{position:relative;overflow:hidden;background:#0d1650;}
-  .fmt-wall{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:1fr;gap:3px;}
-  .fmt-wall i{display:block;background-size:cover;background-position:50% 30%;min-height:0;}
-  .fmt-wall.fmt-n9,.fmt-wall.fmt-n8,.fmt-wall.fmt-n7{grid-template-columns:repeat(3,1fr);}
-  .fmt-wall.fmt-n1{grid-template-columns:1fr;} .fmt-wall.fmt-n1 i{background-position:50% 28%;}
-  .fmt-art .ec-foot,.fmt-art .ec-pill{position:relative;z-index:2;}
+  /* Коллаж: плитки логотипов заполняют превью целиком (последний ряд тянется), подпись — внизу
+     на градиенте, как у остальных плиток (скрин «29»: подпись съезжала на коллаж, внизу пустые клетки). */
+  .fmt-wall{position:absolute;inset:0;display:flex;flex-wrap:wrap;gap:3px;align-content:stretch;}
+  .fmt-wall i{display:block;flex:1 1 22%;background-size:cover;background-position:50% 30%;min-height:0;}
+  .fmt-wall.fmt-n9 i,.fmt-wall.fmt-n8 i,.fmt-wall.fmt-n7 i{flex-basis:30%;}
+  .fmt-wall.fmt-n1 i{flex-basis:100%;background-position:50% 28%;}
+  .fmt-art .ec-foot{z-index:2;} .fmt-art .ec-pill{position:absolute;z-index:2;}
   .fmt-art::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(0deg,rgba(8,14,44,.92) 0%,rgba(8,14,44,.2) 55%,rgba(8,14,44,0) 100%);}
   .hd-logos{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 70% 40%,#2a3f9e 0%,#101a52 60%,#0a1033 100%);}
   .hd-logos::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(12,20,64,.85) 0%,rgba(12,20,64,0) 22%),linear-gradient(0deg,rgba(10,16,51,.55) 0%,rgba(10,16,51,0) 30%);}
@@ -7372,7 +7374,7 @@ heroDraft:'К драфту',
 supportBtn:'Поддержать',
 dataCreditText:'Флаги, составы и данные игроков — с', dataCreditAnd:'и',
 badgeMode:'выбор режима',
-ecDateAll:'2021 - 2026', ecDateM1:'мар - май 2026', ecDateM2:'18 июл - 2 авг 2026',
+ecDateAll:'2019 - 2026', ecDateM1:'мар - май 2026', ecDateM2:'18 июл - 2 авг 2026',
 ecDateT1:'янв - фев 2025',
 ecDateT2:'апр 2025',
 ecDateT3:'июл - авг 2025',
@@ -9417,7 +9419,7 @@ heroDraft:'Go to draft',
 supportBtn:'Support',
 dataCreditText:'Flags, squads and player data sourced from', dataCreditAnd:'and',
 badgeMode:'select mode',
-ecDateAll:'2021 - 2026', ecDateM1:'Mar - May 2026', ecDateM2:'18 Jul - 2 Aug 2026',
+ecDateAll:'2019 - 2026', ecDateM1:'Mar - May 2026', ecDateM2:'18 Jul - 2 Aug 2026',
 ecDateT1:'Jan - Feb 2025',
 ecDateT2:'Apr 2025',
 ecDateT3:'Jul - Aug 2025',
@@ -13422,7 +13424,7 @@ yearCardTitle:name=>'Bilan : '+name,
 yearCardLeg:'Étape',
 yearCardTotal:'Total de l’année',
 modeFncs2025Count:'3 joueurs · play-in, groupes, finale régionale',
-ecDateAll:'2021 - 2026',
+ecDateAll:'2019 - 2026',
 modeMajorTitle:'TOUS LES FNCS',
 modeMajorDesc:'Tout le roster, toutes saisons FNCS confondues. Duo uniquement : Play-In → Heats → Finales du Major avec une seule équipe, élimination possible à chaque étape.',
 modeMajorCount:'2 joueurs · roster complet',
@@ -14805,7 +14807,7 @@ majorPick3:"Major 3",
 modeFncs2025Title:"FNCS 2025",
 modeEwcTitle:"Reload Elite Series",
 modeMajorTitle:"ALL FNCS",
-ecDateAll:"2021 - 2026",
+ecDateAll:"2019 - 2026",
 howToRow3b:"+1…+5",
 attrRowEnd:"END · Endgame",
 attrRowClu:"CLU · Clutch",
@@ -17323,7 +17325,7 @@ majorPick3:"Major 3",
 modeFncs2025Title:"FNCS 2025",
 modeEwcTitle:"Reload Elite Series",
 modeMajorTitle:"ALL FNCS",
-ecDateAll:"2021 - 2026",
+ecDateAll:"2019 - 2026",
 howToRow3b:"+1…+5",
 attrRowEnd:"END · Endgame",
 attrRowClu:"CLU · Clutch",
@@ -139151,19 +139153,33 @@ function careerCanPlayKindOn(day, kind){
 /* Офлайн-турнир прошлых лет (ev.invite — сколько человек там реально играло) зовёт тех, кто
    в Power Ranking карьеры стоит не ниже этого числа: как на настоящие ЛАНы, куда звали по
    результатам сезона. Открытые капы (без invite) играет любой. */
+/* Место по результату другого ЛАНа: Gamers8 2023 брал топ-10 каждого из трёх DreamHack 2023
+   (Liquipedia: 30 дуо с DreamHack, 5 с отбора Ближнего Востока, 9 приглашённых). ev.qualFrom — id этих
+   ЛАНов, ev.qualTop — сколько мест проходит; остальные — по PR до ev.prInvite. */
+function ccLanQualified(ev){
+  if(!ev || !ev.qualFrom || !ev.qualFrom.length || typeof CC_CUPS_ARCH==='undefined') return false;
+  const days=new Set(CC_CUPS_ARCH.filter(x=>ev.qualFrom.indexOf(x.id)>=0).map(x=>x.day));
+  const cr=CAREER && CAREER.career; if(!cr) return false;
+  return (cr.log||[]).some(r=>r && r.kind==='victory' && days.has(r.day) && r.place<=(ev.qualTop||10));
+}
 function ccVictoryInvited(ev){
   if(!ev || !ev.invite) return true;
   // Региональный ЛАН (Australian Open — только OCE).
   if(ev.region && CAREER.player && CAREER.player.region!==ev.region) return false;
+  if(ev.qualFrom && ev.qualFrom.length){
+    if(ccLanQualified(ev)) return true;
+    if(ev.prInvite==null) return false;
+  }
+  const lim=(ev.qualFrom && ev.qualFrom.length) ? ev.prInvite : ev.invite;
   const p=(typeof careerPrPlace==='function') ? careerPrPlace() : null;
-  if(p) return p<=ev.invite;
+  if(p) return p<=lim;
   /* Места в PR ещё нет (начало года, турниров не было) — зовут по силе, как звали по
      результатам прошлого сезона: место по рейтингу среди карточек своего региона этого года. */
   const set={2019:'h1', 2020:'i1', 2021:'j1', 2022:'k1', 2023:'e1', 2024:'f1'}[ccCalYear()];
   if(!set) return false;
   const reg=CAREER.player.region, mine=ccMyShownOvr();
   const ahead=(CARDS_BY_SETREG.get(set+'|'+reg)||[]).filter(q=>q.rating>mine).length;
-  return ahead+1<=ev.invite;
+  return ahead+1<=lim;
 }
 function careerCanPlay(next){ return !!next && careerCanPlayKind(next.type); }
 async function careerPlay(){
@@ -143197,7 +143213,7 @@ const CC_CUPS_ARCH=[
   {day:'2023-06-19',id:'S25_PlaystationCupJune',mode:'solo',n:1,name:"PlayStation Cup Battle Royale",payT:CC_CUPS_ARCH_PAY[85]},
   {day:'2023-06-25',id:'S25_DuosZBVictoryCashCup',mode:'duo',n:2,name:"Zero Build Duos Victory Cup",payT:CC_CUPS_ARCH_PAY[44],zb:true},
   {day:'2023-06-30',id:'S25_DuosZBVictoryCashCup',mode:'duo',n:3,name:"Zero Build Duos Victory Cup",payT:CC_CUPS_ARCH_PAY[44],zb:true},
-  {day:'2023-07-07',id:'LAN_Gamers8_2023',mode:'duo',n:1,name:"Gamers8 2023",payT:CC_CUPS_ARCH_PAY[123],lan:"Gamers8 2023 · Riyadh",invite:88},
+  {day:'2023-07-07',id:'LAN_Gamers8_2023',mode:'duo',n:1,name:"Gamers8 2023",payT:CC_CUPS_ARCH_PAY[123],lan:"Gamers8 2023 · Riyadh",invite:88,qualFrom:["LAN_DreamHack_San_Diego_2023","LAN_DreamHack_Dallas_2023","LAN_DreamHack_Summer_2023"],qualTop:10,prInvite:18},
   {day:'2023-07-23',id:'S25_DuosZBVictoryCashCup',mode:'duo',n:4,name:"Zero Build Duos Victory Cup",payT:CC_CUPS_ARCH_PAY[44],zb:true},
   {day:'2023-07-30',id:'S25_DuosZBVictoryCashCup',mode:'duo',n:5,name:"Zero Build Duos Victory Cup",payT:CC_CUPS_ARCH_PAY[44],zb:true},
   {day:'2023-08-06',id:'S25_DuosZBVictoryCashCup',mode:'duo',n:6,name:"Zero Build Duos Victory Cup",payT:CC_CUPS_ARCH_PAY[44],zb:true},
