@@ -103,6 +103,27 @@ const BOOT = `
     const mvpLine=(document.querySelector('#majorStages .ewc-mvp-line')||{}).textContent||'';
     check('MVP турнира — из чемпиона', mvpLine.indexOf('('+list[0]+')')>=0, mvpLine+' vs '+list[0]);
     check('путёвка — в поле один раз', list.filter(n=>n===L().ewc24You || n===((CAREER.org||{}).name)).length===1, list.join(', '));
+    // Вживую, без «Пропустить»: своя карта со схемой режима, вопрос тактики, запись вечера.
+    seed('2024-08-08', {ewc24:tk}, {c:'de'});
+    const seen={live:0, ask:0, img:{}, modes:{}};
+    const mo=new MutationObserver(()=>{
+      const lv=document.querySelector('.ewc-live .ewc-live-map');
+      if(lv){ seen.live++; const m=(lv.getAttribute('style')||'').split('art/ewc/')[1]; if(m) seen.img[m.split(')')[0]]=1;
+        const t=(document.querySelector('.ewc-live-top span')||{}).textContent||''; ['Capture the Flag','Hardpoint','Keeper'].forEach(k=>{ if(t.indexOf(k)>=0) seen.modes[k]=1; }); }
+      if(document.querySelector('.ewc-ask')) seen.ask++;
+    });
+    mo.observe(document.body, {childList:true, subtree:true});
+    const skipT=setInterval(()=>{}, 1000);
+    const n0=(JSON.parse(localStorage.getItem('fncsdraft_career')).career.log||[]).length;
+    await runCareerEwc2024(careerVictoryOn('2024-08-08'));
+    clearInterval(skipT); mo.disconnect();
+    const n1=(JSON.parse(localStorage.getItem('fncsdraft_career')).career.log||[]).length;
+    out.steps.push('live: '+JSON.stringify(seen).slice(0, 200));
+    check('живая карта показана', seen.live>20, JSON.stringify(seen));
+    check('вопрос тактики был', seen.ask>0, JSON.stringify(seen));
+    check('все три режима вживую', Object.keys(seen.modes).length===3, JSON.stringify(seen.modes));
+    check('живой вечер записан', n1===n0+1, n0+' -> '+n1);
+    check('после вечера вопросов не осталось', !document.querySelector('.ewc-ask') && !document.querySelector('.ewc-live'));
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';

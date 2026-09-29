@@ -6073,6 +6073,24 @@
   .ewc-stats div:not(.ewc-stats-h){display:grid;grid-template-columns:1fr auto auto auto;gap:10px;font-size:12px;color:#dfe7ff;padding:2px 0;}
   .ewc-stats span{color:#8fa1cc;font-variant-numeric:tabular-nums;}
   .ewc-mvp-line{color:#ffe600;font-weight:800;}
+  /* Живая карта EWC: счёт, скриншот арены со схемой режима поверх, тактики, лента. */
+  .ewc-live{padding:12px !important;}
+  .ewc-live-top{display:flex;justify-content:space-between;gap:8px;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
+  .ewc-live-score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin:8px 0;}
+  .ewc-live-score b{font-size:14px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ewc-live-score b.y{color:#00d6a4;} .ewc-live-score b.o{color:#ff6b5e;text-align:right;}
+  .ewc-live-score i{font-style:normal;font-family:var(--font-display);font-weight:700;font-size:26px;color:#fff;text-align:center;line-height:1;}
+  .ewc-live-score i small{display:block;font-family:inherit;font-size:10px;color:#ffe600;letter-spacing:.04em;}
+  .ewc-live-map{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#0d1650 center/cover no-repeat;}
+  .ewc-live-map::before{content:'';position:absolute;inset:0;background:rgba(6,12,40,.45);}
+  .ewc-live-map svg{position:absolute;inset:0;width:100%;height:100%;}
+  .ewc-live-clock{position:absolute;left:8px;top:6px;font-size:11px;font-weight:900;color:#fff;background:rgba(6,12,40,.7);padding:2px 8px;border-radius:6px;}
+  .ewc-live-note{position:absolute;right:8px;bottom:6px;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6);}
+  .ewc-live-tac{display:flex;justify-content:space-between;gap:10px;margin-top:8px;font-size:11px;color:#8fa1cc;}
+  .ewc-live-tac b{color:#fff;}
+  .ewc-live-feed{margin-top:6px;min-height:58px;font-size:11px;font-weight:700;}
+  .ewc-live-feed div{padding:2px 0;} .ewc-live-feed .y{color:#7ef0dd;} .ewc-live-feed .o{color:#ffb0a8;}
+  .ewc-ask-auto{display:block;margin:8px auto 0;background:none;border:0;color:#8fa1cc;font-size:11px;font-weight:800;text-decoration:underline;cursor:pointer;}
   .ewc-h5{margin:12px 0 4px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8fa1cc;}
   /* Главная: два режима, драфт по годам (29.09). */
   .home-modes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0;}
@@ -18941,6 +18959,21 @@ Object.assign(I18N.pt, {ewc24Title:'Esports World Cup 2024 · Riad', ewc24Intro:
   ewc24QTitle:r=>'Qualificatória EWC 2024 · '+r, ewc24QIntro:n=>'Qualificatória online da tua região: grupos (três vitórias), dupla eliminação. Vagas para Riad: '+n+'. Sem premiação.', ewc24QPlayoffs:'Playoffs da qualificatória',
   ewc24ViaDallas:p=>'Vaga: DreamHack Dallas 2024, '+p+'º lugar', ewc24ViaQual:r=>'Vaga: qualificatória online '+r, ewc24MvpTour:(p,t)=>'MVP do torneio: '+p+' ('+t+')',
   ccNewsEwc24Ticket:e=>e+': vaga na Esports World Cup 2024 em Riad ✈️', ccNewsEwc24Mvp:c=>'MVP da Esports World Cup 2024 — você! +$'+c});
+Object.assign(I18N.ru, {ewc24T:{rush:['Раш флага','вчетвером за чужим флагом'], split:['Сплит 2–2','двое на флаг, двое держат базу'], def:['Защита и контратака','встречать раш у своей базы'], hold:['Держать точку','стоять на холме до конца'], hunt:['Охота на подходах','ловить соперника на ротации'], rot:['Ротация заранее','первыми занять следующую точку'], press:['Давить на носителя','всей командой за ключом'], hide:['Прятать носителя','трое прикрывают ключ'], spread:['Рассыпаться','ждать спавна ключа по всей карте']},
+  ewc24AskH:(i,m,p)=>'Карта '+i+' · '+m+' · '+p, ewc24AskSub:(o,a,b)=>'Против '+o+' · серия '+a+':'+b+'. Тактика на карту:', ewc24SerLine:(a,b,bo)=>'серия '+a+':'+b+' · до '+Math.ceil(bo/2), ewc24Auto:'Решай сам до конца турнира', ewc24MidH:'Проигрываете — подстроиться?', ewc24Read:(o,t)=>o+' играет: '+t,
+  ewc24H1:'1-й тайм', ewc24H2:'2-й тайм', ewc24OT:'Овертайм', ewc24Rot:n=>'Точка '+n+'/5', ewc24Rnd:n=>'Раунд '+n, ewc24Scheme:'схема режима', ewc24You2:'Ты', ewc24Cap:n=>n+' приносит флаг', ewc24Kill:(a,b)=>a+' ✕ '+b, ewc24KeyTake:n=>n+' взял ключ', ewc24HillTake:(t,n)=>'Точка '+n+' — за '+t});
+Object.assign(I18N.en, {ewc24T:{rush:['Flag rush','all four go for their flag'], split:['Split 2–2','two on the flag, two hold base'], def:['Defend and counter','meet the rush at your base'], hold:['Hold the point','stay on the hill to the end'], hunt:['Hunt the approaches','catch them rotating'], rot:['Rotate early','take the next point first'], press:['Pressure the carrier','whole team on the key'], hide:['Hide the carrier','three guard the key'], spread:['Spread out','wait for the key spawn map-wide']},
+  ewc24AskH:(i,m,p)=>'Map '+i+' · '+m+' · '+p, ewc24AskSub:(o,a,b)=>'Versus '+o+' · series '+a+':'+b+'. Tactic for this map:', ewc24SerLine:(a,b,bo)=>'series '+a+':'+b+' · first to '+Math.ceil(bo/2), ewc24Auto:'Decide for me until the end', ewc24MidH:'Behind — adjust?', ewc24Read:(o,t)=>o+' are playing: '+t,
+  ewc24H1:'1st half', ewc24H2:'2nd half', ewc24OT:'Overtime', ewc24Rot:n=>'Point '+n+'/5', ewc24Rnd:n=>'Round '+n, ewc24Scheme:'mode diagram', ewc24You2:'You', ewc24Cap:n=>n+' captures the flag', ewc24Kill:(a,b)=>a+' ✕ '+b, ewc24KeyTake:n=>n+' takes the key', ewc24HillTake:(t,n)=>'Point '+n+' — '+t});
+Object.assign(I18N.fr, {ewc24T:{rush:['Rush du drapeau','à quatre sur leur drapeau'], split:['Split 2–2','deux au drapeau, deux en défense'], def:['Défense et contre','accueillir le rush à la base'], hold:['Tenir le point','rester sur la zone jusqu’au bout'], hunt:['Chasser les accès','les prendre en rotation'], rot:['Rotation anticipée','prendre le point suivant en premier'], press:['Presser le porteur','toute l’équipe sur la clé'], hide:['Cacher le porteur','trois protègent la clé'], spread:['S’écarter','attendre l’apparition de la clé partout']},
+  ewc24AskH:(i,m,p)=>'Carte '+i+' · '+m+' · '+p, ewc24AskSub:(o,a,b)=>'Contre '+o+' · série '+a+':'+b+'. Tactique pour la carte :', ewc24SerLine:(a,b,bo)=>'série '+a+':'+b+' · en '+Math.ceil(bo/2), ewc24Auto:'Décide pour moi jusqu’à la fin', ewc24MidH:'Mené — s’adapter ?', ewc24Read:(o,t)=>o+' jouent : '+t,
+  ewc24H1:'1re mi-temps', ewc24H2:'2e mi-temps', ewc24OT:'Prolongation', ewc24Rot:n=>'Point '+n+'/5', ewc24Rnd:n=>'Manche '+n, ewc24Scheme:'schéma du mode', ewc24You2:'Toi', ewc24Cap:n=>n+' ramène le drapeau', ewc24Kill:(a,b)=>a+' ✕ '+b, ewc24KeyTake:n=>n+' prend la clé', ewc24HillTake:(t,n)=>'Point '+n+' — '+t});
+Object.assign(I18N.it, {ewc24T:{rush:['Rush alla bandiera','tutti e quattro sulla loro bandiera'], split:['Split 2–2','due sulla bandiera, due in difesa'], def:['Difesa e contropiede','aspettare il rush alla base'], hold:['Tenere il punto','restare sulla zona fino alla fine'], hunt:['Caccia agli accessi','prenderli in rotazione'], rot:['Rotazione anticipata','prendere per primi il punto dopo'], press:['Pressare il portatore','tutta la squadra sulla chiave'], hide:['Nascondere il portatore','tre proteggono la chiave'], spread:['Sparpagliarsi','aspettare la chiave su tutta la mappa']},
+  ewc24AskH:(i,m,p)=>'Mappa '+i+' · '+m+' · '+p, ewc24AskSub:(o,a,b)=>'Contro '+o+' · serie '+a+':'+b+'. Tattica per la mappa:', ewc24SerLine:(a,b,bo)=>'serie '+a+':'+b+' · al meglio di '+bo, ewc24Auto:'Decidi tu fino alla fine', ewc24MidH:'Sotto — adattarsi?', ewc24Read:(o,t)=>o+' giocano: '+t,
+  ewc24H1:'1° tempo', ewc24H2:'2° tempo', ewc24OT:'Supplementari', ewc24Rot:n=>'Punto '+n+'/5', ewc24Rnd:n=>'Round '+n, ewc24Scheme:'schema della modalità', ewc24You2:'Tu', ewc24Cap:n=>n+' porta la bandiera', ewc24Kill:(a,b)=>a+' ✕ '+b, ewc24KeyTake:n=>n+' prende la chiave', ewc24HillTake:(t,n)=>'Punto '+n+' — '+t});
+Object.assign(I18N.pt, {ewc24T:{rush:['Rush na bandeira','os quatro na bandeira deles'], split:['Split 2–2','dois na bandeira, dois na base'], def:['Defesa e contra-ataque','segurar o rush na base'], hold:['Segurar o ponto','ficar no ponto até o fim'], hunt:['Caçar nas entradas','pegá-los na rotação'], rot:['Rotação antecipada','pegar o próximo ponto primeiro'], press:['Pressionar o portador','o time todo na chave'], hide:['Esconder o portador','três protegem a chave'], spread:['Espalhar','esperar a chave pelo mapa todo']},
+  ewc24AskH:(i,m,p)=>'Mapa '+i+' · '+m+' · '+p, ewc24AskSub:(o,a,b)=>'Contra '+o+' · série '+a+':'+b+'. Tática para o mapa:', ewc24SerLine:(a,b,bo)=>'série '+a+':'+b+' · melhor de '+bo, ewc24Auto:'Decida por mim até o fim', ewc24MidH:'Atrás — ajustar?', ewc24Read:(o,t)=>o+' jogam: '+t,
+  ewc24H1:'1º tempo', ewc24H2:'2º tempo', ewc24OT:'Prorrogação', ewc24Rot:n=>'Ponto '+n+'/5', ewc24Rnd:n=>'Round '+n, ewc24Scheme:'esquema do modo', ewc24You2:'Você', ewc24Cap:n=>n+' captura a bandeira', ewc24Kill:(a,b)=>a+' ✕ '+b, ewc24KeyTake:n=>n+' pega a chave', ewc24HillTake:(t,n)=>'Ponto '+n+' — '+t});
 /* Драфт прошлых лет: этапы (29.09). */
 Object.assign(I18N.ru, {dpPastDesc2:'Карточки — по настоящим результатам игроков на этом турнире. Формат, очки, призы и остров — того же сезона.'});
 Object.assign(I18N.en, {dpPastDesc2:'Cards built from the players’ real results at this event. Format, scoring, prize money and island of that season.'});
@@ -149282,40 +149315,243 @@ function ewc24Series(A, B, bo, rng, modes){
   const mvp=ewc24Best(win, rng, win.isYou ? Object.values(agg) : null);
   return {A, B, win, lose, score:[a, b], maps, mvp};
 }
+/* ===== EWC 2024 ВЖИВУЮ: карта, тактика, выбор по ходу =====
+   Его слово 29.09: «с картой симуляцию и выборами, как в реальной жизни; карты — те, что были у EWC».
+   Карты настоящие (Liquipedia, Esports World Cup 2024 Maps): Chalet и Panther — CTF и Hardpoint,
+   Taverna Zoni — Keeper; картинки — скриншоты арен ESL с Liquipedia (Chalet, Panther) и обложка
+   острова ESL Keeper 9893-8645-4604 (Taverna Zoni скриншота нет). Плана сверху ни у одной карты нет —
+   поверх картинки схема режима (базы и флаги, пять точек Hardpoint, ключ Keeper), подписанная как схема.
+   Правила карт — со страниц Liquipedia: CTF до 5 флагов, 10 минут двумя таймами, овертайм 2:30;
+   Hardpoint до 250, точка переезжает каждые 60 с (здесь пять точек, по 100 очков на ротацию, как
+   в сыгранных счетах 250 : 75…246); Keeper — раунды до 150 очков или 5 минут, карта до двух раундов.
+   Выбор перед каждой своей картой — тактика режима из трёх, по кругу бьющих друг друга; стиль соперника
+   от его имени с долей случая. В Эр-Рияде, если проигрываешь к середине карты, — ещё выбор: видно,
+   как играет соперник, можно подстроиться. Поправка тактики ±0,35 в логите (около ±8 %) — сила
+   состава решает больше. «Решай сам» выключает вопросы до конца турнира; «Пропустить» — показ. */
+const EWC24_ART={'Chalet':'art/ewc/chalet.jpg', 'Panther':'art/ewc/panther.jpg', 'Taverna Zoni':'art/ewc/taverna.jpg'};
+// Каждая тактика бьёт следующую: раш ловит сплит, сплит обходит защиту, защита встречает раш.
+const EWC24_TACT={'Capture the Flag':['rush','split','def'], 'Hardpoint':['hold','hunt','rot'], 'Keeper':['press','hide','spread']};
+const EWC24_HILLS=[[45,26],[116,30],[80,60],[38,66],[124,64]];
+const EWC24_ASK_MS=8000, EWC24_FRAME_MS=70;
+let EWC24_AUTO=false, EWC24_LIVE_BIG=false;
+function ewc24Edge(mine, theirs, mode){
+  const l=EWC24_TACT[mode]||[], i=l.indexOf(mine), j=l.indexOf(theirs);
+  if(i<0 || j<0 || i===j) return 0;
+  return (i+1)%3===j ? 0.35 : -0.35;
+}
+function ewc24Style(t, mode, rng){
+  const l=EWC24_TACT[mode];
+  return rng()<0.3 ? l[Math.floor(rng()*3)] : l[Math.abs(ccHashStr(String(t.label)+'|'+mode))%3];
+}
+async function ewc24Play(A, B, bo, rng, modes, tag){
+  if((A.isYou || B.isYou) && !skipAnimation) return ewc24SeriesLive(A, B, bo, rng, modes, tag);
+  return ewc24Series(A, B, bo, rng, modes);
+}
+function ewc24Ask(head, sub, opts){
+  if(skipAnimation || EWC24_AUTO) return Promise.resolve(null);
+  return new Promise(done=>{
+    const box=document.createElement('div');
+    box.className='cc-round-ask ewc-ask';
+    box.style.setProperty('--rc-ms', EWC24_ASK_MS+'ms');
+    box.innerHTML='<div class="cc-choice-head"><b><span class="cc-choice-t">'+esc(head)+'</span></b><span>'+esc(sub)+'</span></div>'+
+      '<div class="cc-choice-row">'+opts.map((o, i)=>'<button class="cc-choice-btn'+(i===0 ? ' def' : '')+'" data-k="'+o.k+'"><b>'+esc(o.name)+'</b><em>'+esc(o.desc)+'</em></button>').join('')+'</div>'+
+      '<button class="ewc-ask-auto" data-k="auto">'+esc(L().ewc24Auto)+'</button>'+
+      '<div class="cc-choice-bar"><i></i></div>';
+    let over=false;
+    const end=k=>{ if(over) return; over=true; box.remove(); if(k==='auto'){ EWC24_AUTO=true; k=null; } done(k||null); };
+    box.querySelectorAll('button').forEach(b=>b.onclick=()=>end(b.dataset.k));
+    document.body.appendChild(box);
+    setTimeout(()=>end(null), EWC24_ASK_MS);
+  });
+}
+async function ewc24SeriesLive(A, B, bo, rng, modes, tag){
+  modes=modes || EWC24_MODES[bo===7 ? 'bo7' : bo===3 ? 'bo3' : 'bo5'];
+  const need=Math.ceil(bo/2), maps=[], agg={};
+  const you=A.isYou ? A : B;
+  let a=0, b=0;
+  const box=document.createElement('div');
+  box.className='stage-card ewc-card ewc-live';
+  document.getElementById('majorStages').appendChild(box);
+  box.scrollIntoView({block:'center', behavior:'smooth'});
+  for(let i=0; a<need && b<need; i++){
+    const mode=modes[i % modes.length];
+    const pool=EWC24.maps[mode]||['Arena'];
+    const map=pool[Math.floor(rng()*pool.length)];
+    const r=await ewc24LiveMap(box, {A, B, you, mode, map, rng, series:[a, b], bo, idx:i+1, tag});
+    const m={mode, map, s:r.s};
+    m.me=ewc24MapStats(you, mode, r.youWon, rng);
+    m.me.forEach(x=>{ const g=agg[x.h]||(agg[x.h]={h:x.h, e:0, d:0}); g.e+=x.e; g.d+=x.d; });
+    if(r.aWins) a++; else b++;
+    maps.push(m);
+    if(!skipAnimation) await sleep(700);
+  }
+  box.remove();
+  const win=a>b ? A : B, lose=a>b ? B : A;
+  const mvp=ewc24Best(win, rng, win.isYou ? Object.values(agg) : null);
+  return {A, B, win, lose, score:[a, b], maps, mvp};
+}
+// Восемь фигурок: 0–3 свои (слева), 4–7 соперник (справа).
+function ewc24Dots(){
+  return Array.from({length:8}, (_, i)=>{ const x=i<4 ? 22 : 138, y=24+(i%4)*14; return {x, y, tx:x, ty:y}; });
+}
+function ewc24Aim(st, rng){
+  const pick=(cx, cy, r)=>[Math.max(6, Math.min(154, cx+(rng()-0.5)*r)), Math.max(8, Math.min(82, cy+(rng()-0.5)*r*0.7))];
+  st.dots.forEach((d, i)=>{
+    const mine=i<4;
+    let c;
+    if(st.mode==='Hardpoint'){ const h=EWC24_HILLS[st.obj||0]; c=pick(h[0], h[1], 34); }
+    else if(st.mode==='Keeper'){ c=pick(st.key[0], st.key[1], 40); }
+    else {
+      // CTF: часть идёт на чужую базу, часть держит свою, остальные — середина.
+      const role=(i%4)/3;
+      const home=mine ? 20 : 140, away=mine ? 140 : 20;
+      c=role<0.34 ? pick(away, 45, 26) : role>0.9 ? pick(home, 45, 22) : pick(80, 45, 60);
+    }
+    d.tx=c[0]; d.ty=c[1];
+  });
+}
+function ewc24Move(st, rng){
+  if(rng()<0.35) ewc24Aim(st, rng);
+  st.dots.forEach(d=>{ d.x+=(d.tx-d.x)*0.3+(rng()-0.5)*2; d.y+=(d.ty-d.y)*0.3+(rng()-0.5)*2; });
+}
+function ewc24SceneHTML(o, st, mine, theirs, known){
+  const T=L(), you=o.you, opp=o.A===you ? o.B : o.A;
+  const ser=o.A===you ? o.series : [o.series[1], o.series[0]];
+  const mm=Math.floor(st.clock/60), ss=String(Math.floor(st.clock%60)).padStart(2, '0');
+  let svg='<rect x="3" y="3" width="154" height="84" rx="6" fill="rgba(6,12,40,.35)" stroke="rgba(255,255,255,.35)" stroke-width=".6"/>';
+  if(st.mode==='Capture the Flag'){
+    svg+='<line x1="80" y1="6" x2="80" y2="84" stroke="rgba(255,255,255,.25)" stroke-dasharray="2 2" stroke-width=".5"/>'+
+      '<circle cx="20" cy="45" r="10" fill="rgba(0,214,164,.25)" stroke="#00d6a4" stroke-width=".8"/>'+
+      '<circle cx="140" cy="45" r="10" fill="rgba(255,107,94,.25)" stroke="#ff6b5e" stroke-width=".8"/>'+
+      (st.flag!==1 ? '<path d="M18 38v10M18 38l7 3-7 3" stroke="#00d6a4" stroke-width="1.2" fill="#00d6a4"/>' : '')+
+      (st.flag!==0 ? '<path d="M138 38v10M138 38l7 3-7 3" stroke="#ff6b5e" stroke-width="1.2" fill="#ff6b5e"/>' : '');
+  } else if(st.mode==='Hardpoint'){
+    EWC24_HILLS.forEach((h, i)=>{ const on=i===st.obj;
+      svg+='<circle cx="'+h[0]+'" cy="'+h[1]+'" r="'+(on ? 11 : 6)+'" fill="'+(on ? (st.hold===0 ? 'rgba(0,214,164,.35)' : st.hold===1 ? 'rgba(255,107,94,.35)' : 'rgba(255,230,0,.2)') : 'rgba(255,255,255,.06)')+'" stroke="'+(on ? '#ffe600' : 'rgba(255,255,255,.3)')+'" stroke-width="'+(on ? 1 : .5)+'"/>'+
+        '<text x="'+h[0]+'" y="'+(h[1]+2)+'" font-size="5" text-anchor="middle" fill="rgba(255,255,255,.7)">'+(i+1)+'</text>'; });
+  } else {
+    svg+='<path d="M'+st.key[0]+' '+(st.key[1]-5)+'l4 5-4 5-4-5z" fill="#ffe600" stroke="#fff" stroke-width=".5"/>';
+  }
+  st.dots.forEach((d, i)=>{ svg+='<circle cx="'+d.x.toFixed(1)+'" cy="'+d.y.toFixed(1)+'" r="2.6" fill="'+(i<4 ? '#00d6a4' : '#ff6b5e')+'" stroke="#fff" stroke-width=".6"'+(st.carrier===i ? ' style="filter:drop-shadow(0 0 2px #ffe600)"' : '')+'/>'; });
+  const sub=st.mode==='Keeper' ? '<small>'+esc(T.ewc24Rnd(st.rnum))+' · '+st.pts[0]+' : '+st.pts[1]+'</small>' : '';
+  return '<div class="ewc-live-top"><span>'+esc(T.ewc24AskH(o.idx, st.mode, st.map))+'</span><span>'+esc(T.ewc24SerLine(ser[0], ser[1], o.bo))+'</span></div>'+
+    '<div class="ewc-live-score"><b class="y">'+esc(you.label)+'</b><i>'+st.sc[0]+' : '+st.sc[1]+sub+'</i><b class="o">'+esc(opp.label)+'</b></div>'+
+    '<div class="ewc-live-map" style="background-image:url('+(EWC24_ART[st.map]||'')+')"><svg viewBox="0 0 160 90" preserveAspectRatio="none">'+svg+'</svg>'+
+      '<span class="ewc-live-clock">'+esc(st.half)+' · '+mm+':'+ss+'</span><span class="ewc-live-note">'+esc(T.ewc24Scheme)+'</span></div>'+
+    '<div class="ewc-live-tac"><span>'+esc(T.ewc24You2)+': <b>'+esc(T.ewc24T[mine][0])+'</b></span><span>'+esc(opp.label)+': <b>'+esc(known ? T.ewc24T[theirs][0] : '?')+'</b></span></div>'+
+    '<div class="ewc-live-feed">'+st.feed.slice(0, 4).map(f=>'<div class="'+(f.w===0 ? 'y' : 'o')+'">'+esc(f.txt)+'</div>').join('')+'</div>';
+}
+async function ewc24LiveMap(box, o){
+  const T=L(), {A, B, you, mode, map, rng}=o;
+  const opp=A===you ? B : A, youA=A===you;
+  const tl=EWC24_TACT[mode];
+  let theirs=ewc24Style(opp, mode, rng), known=false;
+  const opts=()=>tl.map(k=>({k, name:T.ewc24T[k][0], desc:T.ewc24T[k][1]}));
+  const ser=youA ? o.series : [o.series[1], o.series[0]];
+  let mine=await ewc24Ask(T.ewc24AskH(o.idx, mode, map), T.ewc24AskSub(opp.label, ser[0], ser[1]), opts());
+  if(!mine) mine=tl[Math.floor(rng()*3)];
+  const diff=(you.pow-opp.pow)/3.2;
+  const pYou=()=>1/(1+Math.exp(-(diff+ewc24Edge(mine, theirs, mode))));
+  const st={mode, map, sc:[0, 0], clock:0, feed:[], dots:ewc24Dots(), obj:0, hold:-1, flag:-1, carrier:-1, key:[80, 45], half:'', rnum:1, pts:[0, 0]};
+  const live=()=>!skipAnimation;
+  const draw=()=>{ if(live()) box.innerHTML=ewc24SceneHTML(o, st, mine, theirs, known); };
+  const tick=async n=>{ for(let f=0; f<n && live(); f++){ ewc24Move(st, rng); draw(); await sleep(EWC24_FRAME_MS); } };
+  const nm=w=>{ const sq=(w===0 ? you : opp).squad; return (sq[Math.floor(rng()*sq.length)]||{}).handle||'?'; };
+  const kill=()=>{ if(rng()<0.55){ const w=rng()<pYou() ? 0 : 1; st.feed.unshift({w, txt:T.ewc24Kill(nm(w), nm(1-w))}); } };
+  // Соперник тоже подстраивается: проигрывая к середине, в половине случаев берёт то, что бьёт твоё.
+  const beater=k=>tl[(tl.indexOf(k)+2)%3];
+  const midway=async()=>{
+    if(st.sc[1]>st.sc[0] && rng()<0.5) theirs=beater(mine);
+    if(!EWC24_LIVE_BIG || st.sc[0]>=st.sc[1] || !live()) return;
+    known=true; draw();
+    const pick=await ewc24Ask(T.ewc24MidH, T.ewc24Read(opp.label, T.ewc24T[theirs][0]), opts());
+    if(pick) mine=pick;
+    draw();
+  };
+  ewc24Aim(st, rng); draw();
+  if(mode==='Capture the Flag'){
+    st.half=T.ewc24H1;
+    for(let seg=0; seg<10 && st.sc[0]<5 && st.sc[1]<5; seg++){
+      if(seg===5){ st.half=T.ewc24H2; await midway(); }
+      st.clock=seg*60; await tick(4); kill();
+      if(rng()<0.5){ const w=rng()<pYou() ? 0 : 1; st.flag=w; st.carrier=w===0 ? 0 : 4; await tick(3);
+        st.sc[w]++; st.feed.unshift({w, txt:T.ewc24Cap(nm(w))}); st.flag=-1; st.carrier=-1; }
+      st.clock=seg*60+59; draw();
+    }
+    if(st.sc[0]===st.sc[1]){
+      st.half=T.ewc24OT;
+      for(let k=0; k<3 && st.sc[0]===st.sc[1]; k++){ st.clock=600+k*50; await tick(4); if(rng()<0.55){ const w=rng()<pYou() ? 0 : 1; st.sc[w]++; st.feed.unshift({w, txt:T.ewc24Cap(nm(w))}); } }
+      if(st.sc[0]===st.sc[1]){ const w=rng()<pYou() ? 0 : 1; st.sc[w]++; st.feed.unshift({w, txt:T.ewc24Cap(nm(w))}); }
+    }
+  } else if(mode==='Hardpoint'){
+    for(let rot=0; rot<5 && st.sc[0]<250 && st.sc[1]<250; rot++){
+      st.obj=rot; st.half=T.ewc24Rot(rot+1);
+      if(rot===2) await midway();
+      for(let q=0; q<4 && st.sc[0]<250 && st.sc[1]<250; q++){
+        const sh=Math.max(0.05, Math.min(0.95, pYou()+(rng()-0.5)*0.5));
+        st.sc[0]=Math.min(250, st.sc[0]+Math.round(25*sh)); st.sc[1]=Math.min(250, st.sc[1]+Math.round(25*(1-sh)));
+        st.hold=sh>=0.5 ? 0 : 1; st.clock=rot*60+q*15; kill();
+        await tick(2);
+      }
+      st.feed.unshift({w:st.hold, txt:T.ewc24HillTake((st.hold===0 ? you : opp).label, rot+1)});
+    }
+    // Время вышло без 250 — у кого больше; ровно — овертайм до первого перевеса.
+    while(st.sc[0]===st.sc[1]){ const w=rng()<pYou() ? 0 : 1; st.sc[w]+=5; st.half=T.ewc24OT; await tick(2); }
+  } else {
+    // Keeper: раунды до 150 очков или пяти минут, карта — до двух выигранных раундов.
+    while(st.sc[0]<2 && st.sc[1]<2){
+      st.pts=[0, 0]; st.key=[30+Math.floor(rng()*100), 18+Math.floor(rng()*54)]; st.half=T.ewc24Rnd(st.rnum);
+      for(let m=0; m<5 && st.pts[0]<150 && st.pts[1]<150; m++){
+        const sh=Math.max(0.05, Math.min(0.95, pYou()+(rng()-0.5)*0.6));
+        st.pts[0]=Math.min(150, st.pts[0]+Math.round(55*sh)); st.pts[1]=Math.min(150, st.pts[1]+Math.round(55*(1-sh)));
+        st.carrier=sh>=0.5 ? 0 : 4; st.clock=m*60; kill();
+        if(m===0) st.feed.unshift({w:sh>=0.5 ? 0 : 1, txt:T.ewc24KeyTake(nm(sh>=0.5 ? 0 : 1))});
+        await tick(3);
+      }
+      const w=st.pts[0]===st.pts[1] ? (rng()<pYou() ? 0 : 1) : (st.pts[0]>st.pts[1] ? 0 : 1);
+      st.sc[w]++; st.rnum++; st.carrier=-1;
+      if(st.sc[0]<2 && st.sc[1]<2) await midway();
+    }
+  }
+  draw();
+  if(live()) await sleep(500);
+  const youWon=st.sc[0]>st.sc[1];
+  return {youWon, aWins:youWon===youA, s:youA ? [st.sc[0], st.sc[1]] : [st.sc[1], st.sc[0]]};
+}
 // GSL-группа из четырёх: 1–3 и 2–4 открывают, победители — за 1-е место, проигравшие — на вылет.
-function ewc24Group(t, rng, bo, modes){
+async function ewc24Group(t, rng, bo, modes){
   bo=bo||5;
-  const m1=ewc24Series(t[0], t[2], bo, rng, modes), m2=ewc24Series(t[1], t[3], bo, rng, modes);
-  const wm=ewc24Series(m1.win, m2.win, bo, rng, modes), em=ewc24Series(m1.lose, m2.lose, bo, rng, modes);
-  const dm=ewc24Series(wm.lose, em.win, bo, rng, modes);
+  const m1=await ewc24Play(t[0], t[2], bo, rng, modes), m2=await ewc24Play(t[1], t[3], bo, rng, modes);
+  const wm=await ewc24Play(m1.win, m2.win, bo, rng, modes), em=await ewc24Play(m1.lose, m2.lose, bo, rng, modes);
+  const dm=await ewc24Play(wm.lose, em.win, bo, rng, modes);
   return {order:[wm.win, dm.win, dm.lose, em.lose], series:[m1, m2, wm, em, dm]};
 }
 /* Двойное выбывание на 2^k команд (посев сверху вниз). Верх: 1–N, 2–(N−1)…, дальше соседи. Низ:
    проигравшие первого раунда между собой, затем по кругу — выжившие низа против свежих проигравших
    верха и между собой, пока не останется один. Гранд-финал gfBo. places — группы мест снизу вверх. */
-function ewc24Double(seeded, bo, rng, modes, gfBo){
+async function ewc24Double(seeded, bo, rng, modes, gfBo){
   const n=seeded.length, series=[], out=[];
   let ub=[];
   for(let i=0;i<n/2;i++) ub.push(seeded[i], seeded[n-1-i]);
   let lb=[], ubR=0;
-  const play=(pairs, tag)=>pairs.map(([a,b])=>{ const s=ewc24Series(a, b, bo, rng, modes); s.tag=tag; series.push(s); return s; });
+  const play=async(pairs, tag)=>{ const r=[]; for(const [a,b] of pairs){ const s=await ewc24Play(a, b, bo, rng, modes, tag); s.tag=tag; series.push(s); r.push(s); } return r; };
   while(ub.length>1){
     ubR++;
-    const us=play(Array.from({length:ub.length/2}, (_, i)=>[ub[2*i], ub[2*i+1]]), 'ub'+ubR);
+    const us=await play(Array.from({length:ub.length/2}, (_, i)=>[ub[2*i], ub[2*i+1]]), 'ub'+ubR);
     ub=us.map(s=>s.win); const L=us.map(s=>s.lose);
     if(!lb.length){
-      const ls=play(Array.from({length:L.length/2}, (_, i)=>[L[2*i], L[2*i+1]]), 'lb');
+      const ls=await play(Array.from({length:L.length/2}, (_, i)=>[L[2*i], L[2*i+1]]), 'lb');
       lb=ls.map(s=>s.win); out.push(ls.map(s=>s.lose));
     } else {
-      const ls=play(lb.map((t, i)=>[t, L[L.length-1-i]]), 'lb');
+      const ls=await play(lb.map((t, i)=>[t, L[L.length-1-i]]), 'lb');
       lb=ls.map(s=>s.win); out.push(ls.map(s=>s.lose));
       if(lb.length>1 && ub.length>1){
-        const ms=play(Array.from({length:lb.length/2}, (_, i)=>[lb[2*i], lb[2*i+1]]), 'lb');
+        const ms=await play(Array.from({length:lb.length/2}, (_, i)=>[lb[2*i], lb[2*i+1]]), 'lb');
         lb=ms.map(s=>s.win); out.push(ms.map(s=>s.lose));
       }
     }
   }
-  const gf=ewc24Series(ub[0], lb[0], gfBo||bo, rng, modes); gf.tag='gf'; series.push(gf);
+  const gf=await ewc24Play(ub[0], lb[0], gfBo||bo, rng, modes, 'gf'); gf.tag='gf'; series.push(gf);
   out.push([gf.lose], [gf.win]);
   // Места: сверху вниз.
   const places=[]; let p=1;
@@ -149375,18 +149611,21 @@ function ewc24StatsHTML(you){
 }
 function ewc24Begin(){
   CAREER_RUN=true;
+  CC_SKIP_RUN=false; skipAnimation=false; EWC24_AUTO=false;
   document.getElementById('majorStages').innerHTML='';
   const rsPrev=document.getElementById('runSummary'); if(rsPrev) rsPrev.innerHTML='';
   document.getElementById('lobbyTitle').textContent='';
   document.getElementById('lobbyBody').innerHTML='';
   document.getElementById('finalBanner').style.display='none';
   show('screen-results');
+  ensureSkipButton();
   const host=document.getElementById('majorStages');
   return (title, body)=>{ const d=document.createElement('div'); d.className='stage-card ewc-card'; d.innerHTML='<h4>'+esc(title)+'</h4>'+body; host.appendChild(d); d.scrollIntoView({block:'end', behavior:'smooth'}); return d; };
 }
 function ewc24RosterLine(you){ return '<div class="ewc-roster">'+ewc24Nm(you)+' — '+you.squad.map(c=>esc(c.handle)+' <small>'+Math.round(ewc24Ovr(c))+'</small>').join(', ')+'</div>'; }
 function ewc24Finish(ev, title, myPlace, of, cash, passed){
   const cr=CAREER.career;
+  removeSkipButton();
   cr.log=cr.log||[];
   cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:myPlace, of, pts:0, passed:!!passed,
     ovr:CAREER.player.ovr, games:0, wins:0, elims:0, avg:null, mate:(careerMates()[0]||{}).handle||null, mates:ccLogMates(careerMates()),
@@ -149399,6 +149638,7 @@ function ewc24Finish(ev, title, myPlace, of, cash, passed){
 // ---- DreamHack Dallas 2024 ----
 async function ewc24RunDallas(ev){
   const T=L(), D=EWC24.dallas, st=ewc24State();
+  EWC24_LIVE_BIG=false;
   const rng=careerRng(ccHashStr('ewc24dh|'+CAREER.career.season+'|'+careerToday()));
   const busy=[].concat(...D.teams.map(t=>t.p));
   const you=ewc24MyTeam(busy); if(!you) return;
@@ -149413,7 +149653,7 @@ async function ewc24RunDallas(ev){
   const swMine=[];
   for(let r=0;r<3;r++){
     const order=field.slice().sort((a,b)=>(b.sw-a.sw) || (b.pow-a.pow) || (rng()-0.5));
-    for(let i=0;i+1<order.length;i+=2){ const s=ewc24Series(order[i], order[i+1], 3, rng, EWC24_MODES.bo3); s.win.sw++; if(s.A===you||s.B===you) swMine.push(s); }
+    for(let i=0;i+1<order.length;i+=2){ const s=await ewc24Play(order[i], order[i+1], 3, rng, EWC24_MODES.bo3, 'sw'); s.win.sw++; if(s.A===you||s.B===you) swMine.push(s); }
   }
   const seeded=field.slice().sort((a,b)=>(b.sw-a.sw) || (b.pow-a.pow));
   card(T.ewc24Swiss, swMine.map(ewc24SeriesHTML).join('')+'<div class="stage-detail">'+esc(T.ewc24SwissSeed(seeded.indexOf(you)+1, you.sw))+'</div>');
@@ -149421,7 +149661,7 @@ async function ewc24RunDallas(ev){
   // Плей-ин: посев 28–37 парами (28–37, 29–36…), проигравшие — 33–37.
   const top=seeded.slice(0, 27), pin=seeded.slice(27), pinOut=[];
   const pinS=[];
-  for(let i=0;i<5;i++){ const s=ewc24Series(pin[i], pin[9-i], 3, rng, EWC24_MODES.bo3); pinS.push(s); top.push(s.win); pinOut.push(s.lose); }
+  for(let i=0;i<5;i++){ const s=await ewc24Play(pin[i], pin[9-i], 3, rng, EWC24_MODES.bo3, 'pin'); pinS.push(s); top.push(s.win); pinOut.push(s.lose); }
   const myPin=pinS.find(s=>s.A===you||s.B===you);
   if(myPin){ card(T.ewc24PlayIn, ewc24SeriesHTML(myPin)); if(!skipAnimation) await sleep(700); }
   const places=[];
@@ -149429,17 +149669,17 @@ async function ewc24RunDallas(ev){
   const groups=Array.from({length:8}, ()=>[]);
   top.slice().sort((a,b)=>(b.sw-a.sw) || (b.pow-a.pow)).forEach((t, i)=>{ const r=Math.floor(i/8), c=i%8; groups[r%2 ? 7-c : c].push(t); });
   const thirds=[], fourths=[], po=[];
-  groups.forEach((g, gi)=>{
-    const r=ewc24Group(g, rng, 3, EWC24_MODES.bo3);
+  for(let gi=0; gi<groups.length; gi++){ const g=groups[gi];
+    const r=await ewc24Group(g, rng, 3, EWC24_MODES.bo3);
     po.push(r.order[0], r.order[1]); thirds.push(r.order[2]); fourths.push(r.order[3]);
     if(r.order.indexOf(you)>=0){
       card(T.ewc24DhGroup(String.fromCharCode(65+gi)), r.series.map(ewc24SeriesHTML).join('')+ewc24TableHTML(r.order.map((t,i)=>({from:i+1, to:i+1, teams:[t]})), you, 2));
     }
-  });
+  }
   if(!skipAnimation) await sleep(800);
   // Плей-офф: первые мест групп против вторых, двойное выбывание Bo3, гранд-финал Bo5.
   const firsts=po.filter((t, i)=>i%2===0), seconds=po.filter((t, i)=>i%2===1);
-  const bracket=ewc24Double(firsts.concat(seconds.reverse()), 3, rng, EWC24_MODES.bo3, 5);
+  const bracket=await ewc24Double(firsts.concat(seconds.reverse()), 3, rng, EWC24_MODES.bo3, 5);
   const mySer=bracket.series.filter(s=>s.A===you||s.B===you);
   if(mySer.length){ card(T.ewc24DhPlayoffs, mySer.map(s=>'<h5 class="ewc-h5">'+esc(T.ewc24Tag(s.tag))+'</h5>'+ewc24SeriesHTML(s)).join('')); if(!skipAnimation) await sleep(800); }
   bracket.places.forEach(p=>places.push(p));
@@ -149463,6 +149703,7 @@ async function ewc24RunDallas(ev){
 // ---- онлайн-отбор своего региона ----
 async function ewc24RunQual(ev){
   const T=L(), st=ewc24State();
+  EWC24_LIVE_BIG=false;
   const reg=EWC24_QREG[CAREER.player.region]||'EU', Q=EWC24.quals[reg];
   const rng=careerRng(ccHashStr('ewc24q|'+reg+'|'+CAREER.career.season+'|'+careerToday()));
   // Путёвки Dallas уже розданы — их обладатели в отбор не идут.
@@ -149479,15 +149720,15 @@ async function ewc24RunQual(ev){
   const G=size/4, groups=Array.from({length:G}, ()=>[]);
   seeded.forEach((t, i)=>{ const r=Math.floor(i/G), c=i%G; groups[r%2 ? G-1-c : c].push(t); });
   const firsts=[], seconds=[], thirds=[], fourths=[];
-  groups.forEach((g, gi)=>{
-    const r=ewc24Group(g, rng, 5, EWC24_MODES.q5);
+  for(let gi=0; gi<groups.length; gi++){ const g=groups[gi];
+    const r=await ewc24Group(g, rng, 5, EWC24_MODES.q5);
     firsts.push(r.order[0]); seconds.push(r.order[1]); thirds.push(r.order[2]); fourths.push(r.order[3]);
     if(r.order.indexOf(you)>=0){
       card(T.ewc24Group(String.fromCharCode(65+gi)), r.series.map(ewc24SeriesHTML).join('')+ewc24TableHTML(r.order.map((t,i)=>({from:i+1, to:i+1, teams:[t]})), you, 2));
     }
-  });
+  }
   if(!skipAnimation) await sleep(800);
-  const bracket=ewc24Double(firsts.concat(seconds.reverse()), 5, rng, EWC24_MODES.q5, 5);
+  const bracket=await ewc24Double(firsts.concat(seconds.reverse()), 5, rng, EWC24_MODES.q5, 5);
   const mySer=bracket.series.filter(s=>s.A===you||s.B===you);
   if(mySer.length){ card(T.ewc24QPlayoffs, mySer.map(s=>'<h5 class="ewc-h5">'+esc(T.ewc24Tag(s.tag))+'</h5>'+ewc24SeriesHTML(s)).join('')); if(!skipAnimation) await sleep(800); }
   const places=bracket.places.concat([{from:size/2+1, to:size/2+G, teams:thirds}, {from:size/2+G+1, to:size, teams:fourths}]);
@@ -149507,6 +149748,7 @@ async function runCareerEwc2024(ev){
   if(ev.ewc24==='dallas') return ewc24RunDallas(ev);
   if(ev.ewc24==='qual') return ewc24RunQual(ev);
   const cr=CAREER.career, T=L(), st=ewc24State();
+  EWC24_LIVE_BIG=true;
   const rng=careerRng(ccHashStr('ewc24|'+cr.season+'|'+careerToday()));
   const allP=[].concat(...EWC24.teams.map(t=>t.p), ...EWC24.dallas.teams.map(t=>t.p), ...Object.values(EWC24.quals).map(q=>[].concat(...q.teams.map(t=>t.p))));
   const you=ewc24MyTeam(allP); if(!you) return;
@@ -149546,16 +149788,17 @@ async function runCareerEwc2024(ev){
   if(!skipAnimation) await sleep(700);
   const gRes={};
   for(const g of ['A','B','C','D']){
-    const r=ewc24Group(groupOf(g), rng); gRes[g]=r;
+    const r=await ewc24Group(groupOf(g), rng); gRes[g]=r;
     if(r.order.indexOf(you)>=0){
       card(T.ewc24Group(g), r.series.map(ewc24SeriesHTML).join('')+'<div class="ewc-table">'+r.order.map((t,i)=>'<div class="'+(t===you?'you':'')+'"><i>'+(i+1)+'</i>'+ewc24Nm(t)+(i<2?' <em>'+esc(T.ewc24Through)+'</em>':'')+'</div>').join('')+'</div>');
       if(!skipAnimation) await sleep(900);
     }
   }
   const g1=g=>gRes[g].order[0], g2=g=>gRes[g].order[1];
-  const qf=[ewc24Series(g1('A'), g2('B'), 7, rng), ewc24Series(g1('D'), g2('C'), 7, rng), ewc24Series(g1('B'), g2('A'), 7, rng), ewc24Series(g1('C'), g2('D'), 7, rng)];
-  const sf=[ewc24Series(qf[0].win, qf[1].win, 7, rng), ewc24Series(qf[2].win, qf[3].win, 7, rng)];
-  const fin=ewc24Series(sf[0].win, sf[1].win, 7, rng);
+  const qf=[];
+  for(const [x, y] of [['A','B'], ['D','C'], ['B','A'], ['C','D']]) qf.push(await ewc24Play(g1(x), g2(y), 7, rng, null, 'qf'));
+  const sf=[await ewc24Play(qf[0].win, qf[1].win, 7, rng, null, 'sf'), await ewc24Play(qf[2].win, qf[3].win, 7, rng, null, 'sf')];
+  const fin=await ewc24Play(sf[0].win, sf[1].win, 7, rng, null, 'final');
   if(qf.some(s=>s.A===you||s.B===you)){
     card(T.ewc24Playoffs, [T.ewc24Qf, T.ewc24Sf, T.ewc24Final].map((h,i)=>'<h5 class="ewc-h5">'+esc(h)+'</h5>'+([qf, sf, [fin]][i]).map(ewc24SeriesHTML).join('')).join(''));
     if(!skipAnimation) await sleep(900);
