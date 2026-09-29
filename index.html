@@ -96981,6 +96981,14 @@ function zoneShortName(handle){
   const first=(w[0]||String(handle||'')).trim();
   return first.length>ZONE_NAME_SHORT_LEN ? first.slice(0, ZONE_NAME_SHORT_LEN) : first;
 }
+/* Подпись силы точки («+7 силы · ⚡ Zeus») — на КАЖДОЙ коробке, и на занятой тоже:
+   раньше занятая показывала только ники, и сколько даёт точка, было не видно. */
+function zonePowLabel(z){
+  const label=document.createElement('div');
+  label.className='land-zone-label';
+  label.textContent=L().landingPoints(z.points)+(z.mythic ? ' · ⚡ '+z.mythic : '');
+  return label;
+}
 function fillZoneNames(plot, teams, zone){
   // A block per squad, so the cut below can only ever fall between squads —
   // half a duo on the map read as a solo nobody could find in the list.
@@ -101125,6 +101133,7 @@ async function pickInitialZone(you, bots, title, seat, room){
         plot.style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.16)';
       }
       fillZoneNames(plot, group, z);
+      plot.appendChild(zonePowLabel(z));
     } else if(later.length){
       /* Сюда метят те, кто садится после тебя. Место ещё свободно — коробка
          рисуется пунктиром без тёмной заливки, ники приглушены, очки на месте.
@@ -101133,10 +101142,7 @@ async function pickInitialZone(you, bots, title, seat, room){
       plot.style.background='rgba(180,200,255,.06)';
       plot.style.boxShadow='inset 0 0 0 1px rgba(0,0,0,.35)';
       fillZoneNames(plot, later, z);
-      const label=document.createElement('div');
-      label.className='land-zone-label';
-      label.textContent=L().landingPoints(z.points); if(z.mythic) label.textContent+=' · ⚡ '+z.mythic;
-      plot.appendChild(label);
+      plot.appendChild(zonePowLabel(z));
     } else {
       // Nobody drops here. The reference never draws an empty box at all, so
       // this one stays out of the way: the same black line, no wash, and the
@@ -101144,10 +101150,7 @@ async function pickInitialZone(you, bots, title, seat, room){
       plot.style.borderColor='rgba(10,10,10,.75)';
       plot.style.background='transparent';
       plot.style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.10)';
-      const label=document.createElement('div');
-      label.className='land-zone-label';
-      label.textContent=L().landingPoints(z.points); if(z.mythic) label.textContent+=' · ⚡ '+z.mythic;
-      plot.appendChild(label);
+      plot.appendChild(zonePowLabel(z));
     }
     // Свои точки видны на карте всегда — и когда пусты, и когда в них стоят
     // чужие. Бирюза здесь значит то же, что везде в карьере: это твоё.
@@ -107846,6 +107849,7 @@ function renderLandingResultsMap(teams){
     // handles were written on a single line; per-line names make the squad size
     // just another row count.
     fillZoneNames(plot, entries.map(e=>e.t), z);
+    if(z.points!=null) plot.appendChild(zonePowLabel(z));
     layer.appendChild(plot);
   });
 
@@ -111255,7 +111259,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8976cc4e';
+const CC_BUILD='b3d0e803';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
