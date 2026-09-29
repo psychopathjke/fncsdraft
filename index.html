@@ -6095,7 +6095,6 @@
   #screen-career-create .cc-chip.cc-rar{--r1:#4fa8ff;--r2:#1b4f9c;position:relative;overflow:hidden;color:#fff;border-color:transparent;
     background:linear-gradient(160deg,var(--r1),var(--r2));opacity:.55;filter:saturate(.7);transition:opacity .15s,filter .15s,transform .15s;}
   #screen-career-create .cc-chip.cc-rar{letter-spacing:0;white-space:nowrap;}
-  @media (max-width:560px){ #ccDiffChips{flex-wrap:wrap;} #screen-career-create .cc-chip.cc-rar{flex:1 1 calc(50% - 6px);} }
   #screen-career-create .cc-chip.cc-rar-pro{--r1:#c46bff;--r2:#5b1f9a;}
   #screen-career-create .cc-chip.cc-rar-elite{--r1:#ffb347;--r2:#a2540f;}
   #screen-career-create .cc-chip.cc-rar-legend{--r1:#ffe45c;--r2:#b9870a;color:#241a00;}
@@ -8351,7 +8350,7 @@ ccYearNote2020:'Сезон 2020: FNCS онлайн, формат меняетс�
 ccYearNote2025:'Сезон FNCS 2025: трио весь год, три Мейджора с групповым этапом, Глобалы в Лионе. Соперники — карточки 2025-го. После Лиона карьера идёт в 2026-й.',
 ccDiff:'Сложность', ccDiffRow:'Сложность',
 ccDiffNote:'Меняет только одно — как быстро растёт рейтинг. Соперники, призовые и цены везде одинаковые: сложнее не значит сильнее лобби, значит дольше путь',
-ccDiffEasy:'Редкая', ccDiffPro:'Эпическая', ccDiffElite:'Легендарная', ccDiffLegend:'Мифическая',
+ccDiffEasy:'Лёгкая', ccDiffPro:'Про', ccDiffElite:'Элита', ccDiffLegend:'Легенда',
 ccContestTitle:'К кому летим',
 ccContestHint:'Занятые точки — выбирай, кого выбивать',
 ccContestNote:(p,l)=>'сила '+p+' · лут +'+l,
@@ -10344,7 +10343,7 @@ ccYearNote2020:'2020: online FNCS, the format changes by season — C2S2 duos, C
 ccYearNote2025:'FNCS 2025: trios all year, three Majors with a Group Stage, the Global Championship in Lyon. The field is the 2025 cards. After Lyon the career moves into 2026.',
 ccDiff:'Difficulty', ccDiffRow:'Difficulty',
 ccDiffNote:'Changes one thing only — how fast the rating climbs. The field, the prize money and the prices are the same on all of them: harder is not a stronger room, it is a longer road',
-ccDiffEasy:'Rare', ccDiffPro:'Epic', ccDiffElite:'Legendary', ccDiffLegend:'Mythic',
+ccDiffEasy:'Easy', ccDiffPro:'Pro', ccDiffElite:'Elite', ccDiffLegend:'Legend',
 ccContestTitle:'Who are we landing on',
 ccContestHint:'Taken spots — pick who you are clearing out',
 ccContestNote:(p,l)=>'power '+p+' · loot +'+l,
@@ -12465,10 +12464,10 @@ ccMoveAlready:'Tu habites déjà ici',
 ccOrgCutRow:'Le club prend sur les gains',
 ccOrgCutPaid:'Versé au club',
 ccDiffRow:'Difficulté',
-ccDiffEasy:'Rare',
-ccDiffPro:'Épique',
-ccDiffElite:'Légendaire',
-ccDiffLegend:'Mythique',
+ccDiffEasy:'Facile',
+ccDiffPro:'Pro',
+ccDiffElite:'Élite',
+ccDiffLegend:'Légende',
 ccContestTitle:'Sur qui on tombe',
 ccContestHint:'Spots occupés — choisis qui tu nettoies',
 ccContestNote:(p,l)=>'puissance '+p+' · butin +'+l,
@@ -15773,10 +15772,10 @@ ccMoveAlready:"Vivi già qui",
 ccOrgCutRow:"Il club prende sulle vincite",
 ccOrgCutPaid:"Pagato al club",
 ccDiffRow:"Difficoltà",
-ccDiffEasy:"Rara",
-ccDiffPro:"Epica",
-ccDiffElite:"Leggendaria",
-ccDiffLegend:"Mitica",
+ccDiffEasy:"Facile",
+ccDiffPro:"Pro",
+ccDiffElite:"Élite",
+ccDiffLegend:"Leggenda",
 ccContestTitle:"Su chi atterriamo",
 ccContestHint:"Punti occupati — scegli chi vai a sgomberare",
 ccDropTitle:"Fuori dallo spawn — dove atterriamo",
@@ -18291,10 +18290,10 @@ ccMoveAlready:"Você já mora aqui",
 ccOrgCutRow:"O clube fica com dos prêmios",
 ccOrgCutPaid:"Pago ao clube",
 ccDiffRow:"Dificuldade",
-ccDiffEasy:"Rara",
-ccDiffPro:"Épica",
-ccDiffElite:"Lendária",
-ccDiffLegend:"Mítica",
+ccDiffEasy:"Fácil",
+ccDiffPro:"Pro",
+ccDiffElite:"Elite",
+ccDiffLegend:"Lenda",
 ccContestTitle:"Em cima de quem a gente pousa",
 ccContestHint:"Pontos ocupados — escolha quem você vai tirar dali",
 ccDropTitle:"Saindo do ônibus — onde a gente pousa",
@@ -110073,7 +110072,7 @@ function ccRenderChips(){
   const dchips=document.getElementById('ccDiffChips');
   if(dchips) dchips.innerHTML=CC_DIFFS.map(d=>{
     const on=(CC.diff||'easy')===d.id;
-    // Сложность — редкостью Fortnite: синяя, фиолетовая, золотая, мифическая (его слово 29.09).
+    // Сложность в цветах редкостей Fortnite: синяя, фиолетовая, золотая, мифическая; названия прежние (его слово 29.09).
     return `<button class="cc-chip cc-rar cc-rar-${d.id}${on?' on':''}" `+
       `onclick="ccPickDiff(\'${d.id}\')">${L()['ccDiff'+d.id.charAt(0).toUpperCase()+d.id.slice(1)]}`+
       `<small>${L().ccDiffSpeed(d.age.toFixed(2))}</small></button>`;
