@@ -10,7 +10,7 @@ const fs = require('fs'), path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 let src = JSON.parse(fs.readFileSync(path.join(__dirname, 'measured', 'ladder-real-names.json'), 'utf8'));
 if (typeof src === 'string') src = JSON.parse(src);
-const CAP = 1600;
+const CAP = 5000;   // весь снятый запас: на большое лобби его едва хватает, слоги — только когда кончился
 
 // GeoIdentity → ISO: английское имя страны без пробелов и знаков, плюс то, что Epic пишет иначе.
 const geo = {};
@@ -31,9 +31,37 @@ const noFlag = new Set(['', 'global', 'fortnite', 'rainbow', 'pride']);
 const BAD = /n[i1!]gg|nigg|nazi|hitler|h[i1]tl|fag|f4g|retard|rape|porn|p0rn|sex|s3x|cum|dick|d1ck|cock|pussy|puss[i1]|penis|vagina|boob|tits|t1ts|anal|horny|hentai|nude|naked|ladyboy|whore|slut|bitch|b[i1]tch|fuck|fuk|f[u*]ck|shit|cunt|kkk|isis|jihad|terror|suicide|kys|pedo|p3do|onlyfans|milf|gay|lesb|trans|femboy|furry|hoe\b|thot|incel|negro|chink|spic|kike|tranny|cancer|autis|weed|cocaine|drug|blyat|suka|pidor|pid[o0]r|hui|huy|xyi|zalupa|mudak|ebal|eban|blya|scheisse|scheiße|hurensohn|puta|puto|mierda|cabron|cabrón|pendejo|verga|caralho|porra|buceta|merda|foda|putain|merde|salope|connard|cazzo|stronzo|vaffanculo|kurwa|chuj|jebac|pizda|orospu|amk|siktir|sik|göt|kanker|kut|lul\b|hoer|fitta|kuk|knull|jävla|perkele|vittu/i;
 const byReg = {};
 let unknown = {}, bad = 0;
+/* Ник — как его читают в таблице (его правка 29.09, скрин 25 «странно выглядит»: «twitch
+   neytoxfn», «nl brunixGOTy!», «daan! 7» рядом с обычными). Убирается обвес, который люди вешают
+   на имя в Epic: приставки стрима (twitch/ttv/yt/tiktok/kick), двух-трёхбуквенный тег впереди,
+   одиночное число в конце, «!»/«ǃ». Остаётся ник — буквы и цифры (._- внутри), не больше одного
+   пробела; что после чистки на ник не похоже — мимо. */
+const seenName = new Set();
+function cleanNick(raw) {
+  let n = String(raw || '').replace(/[\u0000-\u001f\u007f]/g, '').replace(/[ǃ!]+/g, ' ').replace(/\s+/g, ' ').trim();
+  n = n.replace(/^(twitch|ttv|yt|youtube|tiktok|tt|kick|twt)[\s_.\-]+/i, '').replace(/[\s_.\-]+(ttv|yt|twitch|tiktok|on twitch)$/i, '');
+  n = n.replace(/^(twitter|twitr|twtr|tw|x|ig|index|clip|clips)[\s_.\-]+/i, '');
+  n = n.replace(/\s+\d{1,3}$/, '').trim();
+  // Два слова: короткое (до 4 букв) — тег клуба или «тренд» (fv, yhyh, fn) — отбрасывается.
+  const w = n.split(' ');
+  if (w.length === 2) { if (w[1].length <= 4) n = w[0]; else if (w[0].length <= 4) n = w[1]; }
+  if (w.length > 2) return null;
+  if (!/^[\p{L}\p{N}._\-]+( [\p{L}\p{N}._\-]+)?$/u.test(n)) return null;
+  // Один алфавит на ник (латиница, кириллица, японский — но не вперемешку) и без «ÿÿÿ».
+  const latin = /[A-Za-zÀ-ɏ]/.test(n), other = /[^\u0000-ɏ\d._\- ]/.test(n);
+  if (latin && other) return null;
+  if (/(.)\1\1/u.test(n)) return null;
+  if (/^user[\s_.\-]?[0-9a-f]{6,}$/i.test(n)) return null;              // «User-0d4def18e4»
+  if (!/\p{L}/u.test(n)) return null;                                   // «168»
+  if (n.split(' ').some(t => /^[\d.\-_]{4,}$/.test(t))) return null;      // «Emond 12.21.2009»
+  if (!latin && [...n].length > 8) return null;                         // длинная фраза вместо ника
+  if (latin && n.length >= 8 && (n.match(/[aeiouyAEIOUY]/g) || []).length / n.length < 0.15) return null;  // «8b3v9bpkw7cgm»
+  return n;
+}
 for (const [reg, nick, g, div] of src.names) {
-  const name = String(nick || '').replace(/[\u0000-\u001f\u007f]/g, '').trim();
-  if (name.length < 3 || name.length > 16) continue;
+  const name = cleanNick(nick);
+  if (!name || name.length < 3 || name.length > 16) continue;
+  const key = reg + '|' + name.toLowerCase(); if (seenName.has(key)) continue; seenName.add(key);
   if (BAD.test(name.replace(/[\s._\-ǃ!]/g, ''))) { bad++; continue; }
   let iso = '';
   if (!noFlag.has(g)) { iso = geo[g] || ''; if (!iso) unknown[g] = (unknown[g] || 0) + 1; }
