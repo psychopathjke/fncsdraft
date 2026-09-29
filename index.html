@@ -1746,6 +1746,9 @@
     justify-content:center;}
   .cc-spot-peek-in > b{font-size:13px; text-transform:uppercase; letter-spacing:.05em;}
   .cc-spot-peek-in .ch-sign{margin-top:4px;}
+  /* В выборе спота подпись короткая («11 · +7 ⚡») — пусть вылезает за узкую коробку, а не режется в «11 · …». */
+  .cc-spot-map .land-zone{overflow:visible;}
+  .cc-spot-map .land-zone-label{max-width:none;overflow:visible;position:relative;z-index:2;}
   .land-zone.cc-spot-mythic:not(.cc-spot-mine){border-color:#ff9f1a !important;border-style:dashed;}
   .land-zone.cc-spot-mythic .land-zone-label{color:var(--mythic);}
   .cc-spot-mythic-row b{color:var(--mythic);}
@@ -7659,7 +7662,7 @@ teamPickNone:'В этом наборе нет ни одной настоящей
 teamPickNoMatch:'По этому нику команд не нашлось.',
 teamPickBtn:'Взять',
 weaponPackTitle:'Оружейный пак', weaponPackDesc:'Выбери оружие — влияет на силу состава.', lootPoolNote:n=>'Лут-пул сезона: '+n, healPackTitle:'Пак хила', healPackDesc:'Выбери расходник — тоже влияет на силу состава.', weaponLabel:'Оружие', loadoutLabel:'Экипировка:', totalPowerLabel:'Итоговая сила:',
-landingTitle:'Выбери точку высадки', landingChestsShow:'Показать сундуки', landingChestsHide:'Скрыть сундуки', landingChestsN:n=>n+' сунд.', landingHint:'Кликни по любой зоне на карте — свободные дают очки, занятые дают риск и бонус за победу в стычке', landingChosenText:n=>'Точка высадки №'+n+' выбрана', landingTaken:'занято', landingZoneSuffix:n=>'зона '+n, landingPoints:n=>'+'+ruPts(n), landingChosenPoints:(n,p)=>'Точка высадки №'+n+' выбрана — +'+ruPts(p), landingResultsTitle:'Куда упали составы', landingChosenContested:(n,p)=>'Точка высадки №'+n+' выбрана — там уже отряд! +'+ruPts(p)+', но риск стычки', landingFightWon:'⚔ выиграл стычку при высадке', landingFightLost:'💀 проиграл стычку при высадке', landingShared:'🤝 делили зону, всё обошлось', landingRiskTag:n=>n>=2?ruTeams(n)+' здесь — высокий риск':'занято — риск стычки', landingConfirmBtn:'Подтвердить высадку', landingAutoBtn:'Выбрать за меня', gameLandingTitle:(g,n)=>'Высадка — игра '+g+' из '+n, landingPickSeat:(n,total)=>'Ты выбираешь '+n+'-'+(ccPlayerFem()?'й':'м')+' из '+total+' — раньше '+(ccPlayerFem()?'квалифицировалась':'квалифицировался')+', раньше ставишь метку.', landingPickPrompt:'Кликни по зоне, чтобы посмотреть, кто там, потом подтверди высадку', landingFreePreview:p=>'Свободная зона — +'+ruPts(p)+', без риска', landingLaterNote:n=>'Сюда метят '+ruTeams(n)+' из хвоста очереди — они садятся после тебя и, если займёшь, выберут другое', landingOccupiedPreview:n=>n>=2?'Внимание: там уже '+ruTeams(n)+' — придётся победить всех':'Там уже отряд — будет стычка при высадке', scqTitle:'Second Chance Qualifier — последний шанс на LAN',
+landingTitle:'Выбери точку высадки', landingChestsShow:'Показать сундуки', landingChestsHide:'Скрыть сундуки', landingChestsN:n=>n+' сунд.', landingHint:'Кликни по любой зоне на карте — свободные дают очки, занятые дают риск и бонус за победу в стычке', landingChosenText:n=>'Точка высадки №'+n+' выбрана', landingTaken:'занято', landingZoneSuffix:n=>'зона '+n, landingPoints:n=>'+'+n+' силы', landingChosenPoints:(n,p)=>'Точка высадки №'+n+' выбрана — +'+p+' силы', landingResultsTitle:'Куда упали составы', landingChosenContested:(n,p)=>'Точка высадки №'+n+' выбрана — там уже отряд! +'+p+' силы, но риск стычки', landingFightWon:'⚔ выиграл стычку при высадке', landingFightLost:'💀 проиграл стычку при высадке', landingShared:'🤝 делили зону, всё обошлось', landingRiskTag:n=>n>=2?ruTeams(n)+' здесь — высокий риск':'занято — риск стычки', landingConfirmBtn:'Подтвердить высадку', landingAutoBtn:'Выбрать за меня', gameLandingTitle:(g,n)=>'Высадка — игра '+g+' из '+n, landingPickSeat:(n,total)=>'Ты выбираешь '+n+'-'+(ccPlayerFem()?'й':'м')+' из '+total+' — раньше '+(ccPlayerFem()?'квалифицировалась':'квалифицировался')+', раньше ставишь метку.', landingPickPrompt:'Кликни по зоне, чтобы посмотреть, кто там, потом подтверди высадку', landingFreePreview:p=>'Свободная зона — +'+p+' силы, без риска', landingLaterNote:n=>'Сюда метят '+ruTeams(n)+' из хвоста очереди — они садятся после тебя и, если займёшь, выберут другое', landingOccupiedPreview:n=>n>=2?'Внимание: там уже '+ruTeams(n)+' — придётся победить всех':'Там уже отряд — будет стычка при высадке', scqTitle:'Second Chance Qualifier — последний шанс на LAN',
 scqIntro:(reg,rank,slots)=>'В гранд-финале '+reg+' ты занял '+ccTop(rank)+', а на Summit едут топ-'+slots+'. Остаётся отборочный: он открыт всем из Division 1, кто не прошёл напрямую.',
 scqStageTitle:s=>'Second Chance Qualifier — Финал ('+s+' игр)',
 scqPass:(rank,slots)=>ccTopC(rank)+' при '+ruSlotsIn(slots)+' — ты на LAN. Стартуешь с нижней сетки в субботу.',
@@ -8407,7 +8410,7 @@ ccDiffNote:'Меняет только одно — как быстро раст�
 ccDiffEasy:'Лёгкая', ccDiffPro:'Про', ccDiffElite:'Элита', ccDiffLegend:'Легенда',
 ccContestTitle:'К кому летим',
 ccContestHint:'Занятые точки — выбирай, кого выбивать',
-ccContestNote:(p,l)=>'сила '+p+' · лут +'+l,
+ccContestNote:(p,l)=>'сила '+p+' · с точки +'+l,
 ccDropTitle:'Оффспавн — куда падаем',
 ccDropHint:'До первой зоны есть время решить: сесть на своё место или лететь к чужому',
 ccDropQuiet:'Сесть спокойно', ccDropQuietNote:'Свободная точка с лучшим лутом — собраться без драки',
@@ -8534,7 +8537,7 @@ ccSpotNoRoom:'Все три спота заняты — освободи оди�
 ccSpotFreeUp:(m,a)=>'Освободить: '+m+(a?' (сгорит аура '+a+')':''),
 ccSpotSwap:(n,a)=>'Вместо зоны '+n+(a?' (сгорит аура '+a+')':''),
 ccSpotDropAsk:a=>'Убрать точку? Аура ('+a+') сгорит — репутация остаётся месту',
-ccSpotLoot:'Лут точки', ccSpotHere:'Ты уже здесь', ccSpotMove:'Переехать сюда',
+ccSpotLoot:'Сила с точки', ccSpotHere:'Ты уже здесь', ccSpotMove:'Переехать сюда',
 ccSpotPick:'Выбрать точку', ccSpotChange:'Сменить локу', ccSpotClose:'Закрыть карту', ccSpotBack:'Назад в карьеру',
 ccSpotMoveAsk:a=>'Переехать? Аура старого места ('+a+') сгорит — репутация остаётся дому, а не тебе',
 ccSpotTag:a=>a>0?'ДОМ · '+a:'ДОМ',
@@ -9701,7 +9704,7 @@ teamPickNone:'This set has no real team of the right size for this mode.',
 teamPickNoMatch:'No team matches that handle.',
 teamPickBtn:'Take',
 weaponPackTitle:'Weapon pack', weaponPackDesc:'Pick a weapon — affects squad power.', lootPoolNote:n=>'Season loot pool: '+n, healPackTitle:'Heal pack', healPackDesc:'Pick a consumable — also affects squad power.', weaponLabel:'Weapon', loadoutLabel:'Loadout:', totalPowerLabel:'Total power:',
-landingTitle:'Choose your landing spot', landingChestsShow:'Show chests', landingChestsHide:'Hide chests', landingChestsN:n=>n+' chests', landingHint:'Click any zone on the map — free ones give points, occupied ones carry risk plus a bonus if you win the scrap', landingChosenText:n=>'Landing spot #'+n+' selected', landingTaken:'taken', landingZoneSuffix:n=>'zone '+n, landingPoints:n=>'+'+n+' pts', landingChosenPoints:(n,p)=>'Landing spot #'+n+' selected — +'+p+' pts', landingResultsTitle:'Where the squads dropped', landingChosenContested:(n,p)=>'Landing spot #'+n+' selected — a squad is already there! +'+p+' pts, but risk of a fight', landingFightWon:'⚔ won a landing fight', landingFightLost:'💀 lost a landing fight', landingShared:'🤝 shared the zone, no clash', landingRiskTag:n=>n>=2?'2 squads here — high risk':'occupied — risk of a fight', landingConfirmBtn:'Confirm landing', landingAutoBtn:'Pick for me', gameLandingTitle:(g,n)=>'Landing — game '+g+' of '+n, landingPickSeat:(n,total)=>'You pick '+n+(n%10===1&&n%100!==11?'st':n%10===2&&n%100!==12?'nd':n%10===3&&n%100!==13?'rd':'th')+' of '+total+' — qualify earlier, choose earlier.', landingPickPrompt:'Click a zone to see who is there, then confirm your landing', landingFreePreview:p=>'Free zone — +'+p+' pts, no risk', landingLaterNote:n=>n+' squad'+(n===1?'':'s')+' from behind you in the queue are aiming here — they land after you and will pick elsewhere if you take it', landingOccupiedPreview:n=>n>=2?'Careful: '+n+' squads already there — you would need to beat both':'A squad is already there — expect a fight on landing', scqTitle:'Second Chance Qualifier — last route to the LAN',
+landingTitle:'Choose your landing spot', landingChestsShow:'Show chests', landingChestsHide:'Hide chests', landingChestsN:n=>n+' chests', landingHint:'Click any zone on the map — free ones give points, occupied ones carry risk plus a bonus if you win the scrap', landingChosenText:n=>'Landing spot #'+n+' selected', landingTaken:'taken', landingZoneSuffix:n=>'zone '+n, landingPoints:n=>'+'+n+' power', landingChosenPoints:(n,p)=>'Landing spot #'+n+' selected — +'+p+' power', landingResultsTitle:'Where the squads dropped', landingChosenContested:(n,p)=>'Landing spot #'+n+' selected — a squad is already there! +'+p+' power, but risk of a fight', landingFightWon:'⚔ won a landing fight', landingFightLost:'💀 lost a landing fight', landingShared:'🤝 shared the zone, no clash', landingRiskTag:n=>n>=2?'2 squads here — high risk':'occupied — risk of a fight', landingConfirmBtn:'Confirm landing', landingAutoBtn:'Pick for me', gameLandingTitle:(g,n)=>'Landing — game '+g+' of '+n, landingPickSeat:(n,total)=>'You pick '+n+(n%10===1&&n%100!==11?'st':n%10===2&&n%100!==12?'nd':n%10===3&&n%100!==13?'rd':'th')+' of '+total+' — qualify earlier, choose earlier.', landingPickPrompt:'Click a zone to see who is there, then confirm your landing', landingFreePreview:p=>'Free zone — +'+p+' power, no risk', landingLaterNote:n=>n+' squad'+(n===1?'':'s')+' from behind you in the queue are aiming here — they land after you and will pick elsewhere if you take it', landingOccupiedPreview:n=>n>=2?'Careful: '+n+' squads already there — you would need to beat both':'A squad is already there — expect a fight on landing', scqTitle:'Second Chance Qualifier — last route to the LAN',
 scqIntro:(reg,rank,slots)=>'You finished '+ccTop(rank)+' in the '+reg+' Grand Finals and only the top '+slots+' fly out. The qualifier is still open — every Division 1 duo that missed the direct route is in it.',
 scqStageTitle:s=>'Second Chance Qualifier — Finals ('+s+' games)',
 scqPass:(rank,slots)=>ccTopC(rank)+' with '+slots+' slots — you are on the LAN, entering at the Lower Bracket on Saturday.',
@@ -10400,7 +10403,7 @@ ccDiffNote:'Changes one thing only — how fast the rating climbs. The field, th
 ccDiffEasy:'Easy', ccDiffPro:'Pro', ccDiffElite:'Elite', ccDiffLegend:'Legend',
 ccContestTitle:'Who are we landing on',
 ccContestHint:'Taken spots — pick who you are clearing out',
-ccContestNote:(p,l)=>'power '+p+' · loot +'+l,
+ccContestNote:(p,l)=>'power '+p+' · spot +'+l,
 ccDropTitle:'Off spawn — where do we land',
 ccDropHint:'There is time before the first circle: take your own ground or fly at somebody else',
 ccDropQuiet:'Land quiet', ccDropQuietNote:'The best free spot — loot up without a fight',
@@ -10525,7 +10528,7 @@ ccSpotNoRoom:'All three spots are taken — free one to settle here',
 ccSpotFreeUp:(m,a)=>'Free up: '+m+(a?' (loses aura '+a+')':''),
 ccSpotSwap:(n,a)=>'Instead of zone '+n+(a?' (loses aura '+a+')':''),
 ccSpotDropAsk:a=>'Drop it? The aura ('+a+') goes with it — a reputation belongs to the ground',
-ccSpotLoot:'Spot loot', ccSpotHere:'You are already here', ccSpotMove:'Move here',
+ccSpotLoot:'Spot power', ccSpotHere:'You are already here', ccSpotMove:'Move here',
 ccSpotPick:'Pick a spot', ccSpotChange:'Change the spot', ccSpotClose:'Close the map', ccSpotBack:'Back to the career',
 ccSpotMoveAsk:a=>'Move? The old place loses its aura ('+a+') — a reputation belongs to the ground, not to you',
 ccSpotTag:a=>a>0?'HOME · '+a:'HOME',
@@ -12524,7 +12527,7 @@ ccDiffElite:'Élite',
 ccDiffLegend:'Légende',
 ccContestTitle:'Sur qui on tombe',
 ccContestHint:'Spots occupés — choisis qui tu nettoies',
-ccContestNote:(p,l)=>'puissance '+p+' · butin +'+l,
+ccContestNote:(p,l)=>'puissance '+p+' · spot +'+l,
 ccDropTitle:'Off spawn — on tombe où',
 ccDropHint:'Il reste du temps avant la première zone : ton terrain ou celui d’un autre',
 ccDropQuiet:'Atterrir tranquille', ccDropQuietNote:'Le meilleur spot libre — looter sans bagarre',
@@ -12627,7 +12630,7 @@ ccSpotNoRoom:'Les trois spots sont pris — libères-en un pour t’installer ic
 ccSpotFreeUp:(m,a)=>'Libérer : '+m+(a?' (perd l’aura '+a+')':''),
 ccSpotSwap:(n,a)=>'À la place de la zone '+n+(a?' (perd l’aura '+a+')':''),
 ccSpotDropAsk:a=>'Retirer ? L’aura ('+a+') part avec — la réputation appartient au terrain',
-ccSpotLoot:'Butin du spot', ccSpotHere:'Tu y es déjà', ccSpotMove:'Déménager ici',
+ccSpotLoot:'Puissance du spot', ccSpotHere:'Tu y es déjà', ccSpotMove:'Déménager ici',
 ccSpotPick:'Choisir un spot', ccSpotChange:'Changer de spot', ccSpotClose:'Fermer la carte', ccSpotBack:'Retour à la carrière',
 ccSpotMoveAsk:a=>'Déménager ? L’ancienne place perd son aura ('+a+') — la réputation appartient au terrain, pas à toi',
 ccSpotTag:a=>a>0?'MAISON · '+a:'MAISON',
@@ -13336,12 +13339,12 @@ dmLeftYes:'Libre. On réessaie',
 dmYes:'Ouais, je suis libre. On le fait.',
 landingChosenText:n=>'Spot d’atterrissage n°'+n+' choisi',
 landingZoneSuffix:n=>'zone '+n,
-landingPoints:n=>'+'+n+' pts',
-landingChosenPoints:(n,p)=>'Spot d’atterrissage n°'+n+' choisi — +'+p+' pts',
-landingChosenContested:(n,p)=>'Spot d’atterrissage n°'+n+' choisi — une équipe y est déjà ! +'+p+' pts, mais risque de combat',
+landingPoints:n=>'+'+n+' puissance',
+landingChosenPoints:(n,p)=>'Spot d’atterrissage n°'+n+' choisi — +'+p+' puissance',
+landingChosenContested:(n,p)=>'Spot d’atterrissage n°'+n+' choisi — une équipe y est déjà ! +'+p+' puissance, mais risque de combat',
 landingRiskTag:n=>n>=2?'2 équipes ici — risque élevé':'occupée — risque de combat',
 landingPickSeat:(n,total)=>'Tu choisis en '+(n===1?'1er':n+'e')+' sur '+total+' — qualifie-toi plus tôt, choisis plus tôt.',
-landingFreePreview:p=>'Zone libre — +'+p+' pts, sans risque', landingLaterNote:n=>n+' équipe'+(n===1?'':'s')+' derrière toi dans la file visent ici — elles atterrissent après toi et iront ailleurs si tu la prends',
+landingFreePreview:p=>'Zone libre — +'+p+' puissance, sans risque', landingLaterNote:n=>n+' équipe'+(n===1?'':'s')+' derrière toi dans la file visent ici — elles atterrissent après toi et iront ailleurs si tu la prends',
 landingOccupiedPreview:n=>n>=2?'Attention : '+n+' équipes déjà là — il faudrait battre les deux':'Une équipe est déjà là — attends-toi à un combat à l’atterrissage',
 landingFieldTitle:n=>'Le lobby ('+n+' '+(squadSize===1?'joueurs':squadSize===3?'trios':squadSize===4?'squads':'duos')+')',
 stageCutLabel:n=>'— ligne de qualification : top '+n+' —',
@@ -14188,13 +14191,13 @@ teamPickDroppedMissing:(n)=>n===0?'':'Non elencate: '+n+' — un membro \u00e8 f
 lootPoolNote:n=>'Loot della stagione: '+n,
 landingChosenText:n=>'Punto di atterraggio #'+n+' scelto',
 landingZoneSuffix:n=>'zona '+n,
-landingPoints:n=>'+'+n+' pt',
-landingChosenPoints:(n,p)=>'Punto di atterraggio #'+n+' scelto — +'+p+' pt',
-landingChosenContested:(n,p)=>'Punto di atterraggio #'+n+' scelto — c\u2019\u00e8 gi\u00e0 una squadra! +'+p+' pt, ma rischio di scontro',
+landingPoints:n=>'+'+n+' potenza',
+landingChosenPoints:(n,p)=>'Punto di atterraggio #'+n+' scelto — +'+p+' potenza',
+landingChosenContested:(n,p)=>'Punto di atterraggio #'+n+' scelto — c\u2019\u00e8 gi\u00e0 una squadra! +'+p+' potenza, ma rischio di scontro',
 landingRiskTag:n=>n>=2?'2 squadre qui — rischio alto':'occupato — rischio di scontro',
 gameLandingTitle:(g,n)=>'Atterraggio — partita '+g+' di '+n,
 landingPickSeat:(n,total)=>'Scegli per '+n+'\u00b0 su '+total+' — chi si qualifica prima, sceglie prima.',
-landingFreePreview:p=>'Zona libera — +'+p+' pt, nessun rischio', landingLaterNote:n=>n+' squadre dietro di te in coda puntano qui — atterrano dopo di te e sceglieranno altrove se la prendi',
+landingFreePreview:p=>'Zona libera — +'+p+' potenza, nessun rischio', landingLaterNote:n=>n+' squadre dietro di te in coda puntano qui — atterrano dopo di te e sceglieranno altrove se la prendi',
 landingOccupiedPreview:n=>n>=2?'Attenzione: ci sono gi\u00e0 '+n+' squadre — dovresti batterle entrambe':'C\u2019\u00e8 gi\u00e0 una squadra — aspettati uno scontro all\u2019atterraggio',
 scqIntro:(reg,rank,slots)=>'Hai chiuso '+ccTop(rank)+' nelle Gran Finali '+reg+' e volano solo i primi '+slots+'. La qualificazione \u00e8 ancora aperta — ci sono tutti i duo di Divisione 1 che hanno mancato la strada diretta.',
 scqStageTitle:s=>'Second Chance Qualifier — Finali ('+s+' partite)',
@@ -14495,7 +14498,7 @@ ccFlatPays:n=>n+' mesi di affitto',
 ccFlatNotHere:n=>'Non vivi qui. Puoi comprare lo stesso, ma l\u2019affitto si ferma solo quando ti trasferisci a '+n+'.',
 ccFlatElsewhere:(what,where)=>what+' \u00e8 rimasta a '+where+' — l\u2019affitto qui non cambia',
 ccMoveGo:r=>'Trasferisciti in '+r,
-ccContestNote:(p,l)=>'potenza '+p+' · loot +'+l,
+ccContestNote:(p,l)=>'potenza '+p+' · punto +'+l,
 ccDropHomeNote:(a,n)=>(a?('Casa, aura '+a):'Casa, ancora nessuna aura')+' · '+(n>0?(n+' squadr'+(n>1?'e in arrivo':'a in arrivo')+' oggi'):'oggi non arriva nessuno'),
 ccLootSwapRisk:(b,f,p)=>p+'/'+(100-p)+': riuscito — +'+b+', fallito — danni extra, −'+f,
 ccLootHurt:v=>'POI non ripulito — danni extra, −'+v+' di potenza',
@@ -15904,7 +15907,7 @@ ccSpotPickHere:"Scegli un punto su questa mappa",
 ccSpotTake:"Fai di questo la tua casa",
 ccSpotDrop:"Lascia la casa su questa mappa",
 ccSpotNoRoom:"Tutti e tre i punti sono presi — liberane uno per stabilirti qui",
-ccSpotLoot:"Loot del punto",
+ccSpotLoot:"Potenza del punto",
 ccSpotHere:"Sei già qui",
 ccSpotMove:"Spostati qui",
 ccSpotPick:"Scegli un punto",
@@ -16706,13 +16709,13 @@ teamPickDroppedMissing:(n)=>n===0?'':'Fora da lista: '+n+' — um integrante est
 lootPoolNote:n=>'Loot da temporada: '+n,
 landingChosenText:n=>'Ponto de pouso #'+n+' escolhido',
 landingZoneSuffix:n=>'zona '+n,
-landingPoints:n=>'+'+n+' pts',
-landingChosenPoints:(n,p)=>'Ponto de pouso #'+n+' escolhido — +'+p+' pts',
-landingChosenContested:(n,p)=>'Ponto de pouso #'+n+' escolhido — j\u00e1 tem uma equipe ali! +'+p+' pts, mas com risco de briga',
+landingPoints:n=>'+'+n+' poder',
+landingChosenPoints:(n,p)=>'Ponto de pouso #'+n+' escolhido — +'+p+' poder',
+landingChosenContested:(n,p)=>'Ponto de pouso #'+n+' escolhido — j\u00e1 tem uma equipe ali! +'+p+' poder, mas com risco de briga',
 landingRiskTag:n=>n>=2?'2 equipes aqui — risco alto':'ocupado — risco de briga',
 gameLandingTitle:(g,n)=>'Pouso — partida '+g+' de '+n,
 landingPickSeat:(n,total)=>'Voc\u00ea escolhe em '+n+'\u00ba de '+total+' — quem se classifica antes, escolhe antes.',
-landingFreePreview:p=>'Zona livre — +'+p+' pts, sem risco', landingLaterNote:n=>n+' duplas atrás de você na fila miram aqui — elas pousam depois de você e vão escolher outro lugar se você tomar',
+landingFreePreview:p=>'Zona livre — +'+p+' poder, sem risco', landingLaterNote:n=>n+' duplas atrás de você na fila miram aqui — elas pousam depois de você e vão escolher outro lugar se você tomar',
 landingOccupiedPreview:n=>n>=2?'Cuidado: j\u00e1 tem '+n+' equipes ali — voc\u00ea teria que bater as duas':'J\u00e1 tem uma equipe ali — espere briga no pouso',
 scqIntro:(reg,rank,slots)=>'Voc\u00ea terminou '+ccTop(rank)+' nas Grandes Finais de '+reg+' e s\u00f3 os '+slots+' melhores viajam. A classificat\u00f3ria ainda est\u00e1 aberta — tem nela toda dupla da Divis\u00e3o 1 que perdeu o caminho direto.',
 scqStageTitle:s=>'Second Chance Qualifier — Finais ('+s+' partidas)',
@@ -17013,7 +17016,7 @@ ccFlatPays:n=>n+' meses de aluguel',
 ccFlatNotHere:n=>'Voc\u00ea n\u00e3o mora aqui. D\u00e1 para comprar mesmo assim, mas o aluguel s\u00f3 para quando voc\u00ea se mudar para '+n+'.',
 ccFlatElsewhere:(what,where)=>what+' ficou l\u00e1 em '+where+' — o aluguel aqui n\u00e3o muda',
 ccMoveGo:r=>'Mudar para '+r,
-ccContestNote:(p,l)=>'poder '+p+' · loot +'+l,
+ccContestNote:(p,l)=>'poder '+p+' · ponto +'+l,
 ccDropHomeNote:(a,n)=>(a?('Casa, aura '+a):'Casa, ainda sem aura')+' · '+(n>0?(n+' equipe'+(n>1?'s':'')+' vindo hoje'):'ningu\u00e9m vem hoje'),
 ccLootSwapRisk:(b,f,p)=>p+'/'+(100-p)+': deu certo — +'+b+', n\u00e3o deu — dano extra, −'+f,
 ccLootHurt:v=>'N\u00e3o limpou o POI — dano extra, −'+v+' de poder',
@@ -18422,7 +18425,7 @@ ccSpotPickHere:"Escolha um ponto neste mapa",
 ccSpotTake:"Faça deste a sua casa",
 ccSpotDrop:"Largar a casa neste mapa",
 ccSpotNoRoom:"Os três pontos estão ocupados — libere um para se fixar aqui",
-ccSpotLoot:"Loot do ponto",
+ccSpotLoot:"Poder do ponto",
 ccSpotHere:"Você já está aqui",
 ccSpotMove:"Mudar para cá",
 ccSpotPick:"Escolher um ponto",
@@ -111252,7 +111255,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='04cacc9e';
+const CC_BUILD='8976cc4e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -116581,12 +116584,21 @@ function ccDropSideHTML(home, set){
 }
 // Чего стоит лут коробки — теми же очками, что видит пикер на высадке.
 function careerSpotPointsOf(i, set){
+  const p=careerSpotPowOf(i, set);
+  return p==null ? '—' : L().landingPoints(p);
+}
+/* Сила, которую точка даёт команде на вечер (applyLandingPow: очки точки идут в силу
+   один к одному). null — точки нет на загруженном острове. */
+function careerSpotPowOf(i, set){
   // Ключ хранения может быть островом ('r12'), а сетка и картинка — у круга.
   const key=careerSpotGrid(set||careerBrSet());
   const z=(ZONE_SETS[key]||[])[i];
-  if(!z) return '—';
+  if(!z) return null;
   const live=ALL_LANDING_ZONES.find(q=>Math.abs(q.x-z.x)<0.01 && Math.abs(q.y-z.y)<0.01);
-  return live ? L().landingPoints(live.points) : '—';
+  if(live) return live.points;
+  // Сквадный набор мог выбросить коробку из загруженного острова — мифик тогда считается сам.
+  const m=(CC_MYTHIC_POI[key]||{})[i];
+  return m ? LANDING_POINTS_MAX+CC_MYTHIC_POW : null;
 }
 /* Острова, на которых у карьеры может быть дом.
 
@@ -116799,6 +116811,9 @@ function careerSpotTileHTML(){
     const mine=at>=0;
     // На коробке только молния: имя в узкой подписи режется в «11 · …», полностью оно в превью.
     const boss=myth[i] ? ' ⚡' : '';
+    // Сколько силы даёт коробка — числом рядом с номером («11 · +7»), слово «сила» в превью.
+    const pw=careerSpotPowOf(i, set);
+    const powTag=pw!=null ? ' · +'+pw : '';
     return `<div class="land-zone${mine?' cc-spot-mine':''}${CC_SPOT_PEEK===i?' cc-spot-peeked':''}${myth[i]?' cc-spot-mythic':''}"
       title="${L().landingZoneSuffix(i+1)}"
       onclick="careerSpotPeek(${i})"
@@ -116806,7 +116821,7 @@ function careerSpotTileHTML(){
         mine?'border-color:var(--accent);box-shadow:inset 0 0 0 1px rgba(0,0,0,.55),0 0 0 2px rgba(0,208,168,.35);'
             :'border-color:rgba(10,10,10,.75);background:transparent;'}"><div
       class="land-zone-label"${mine?' style="color:var(--accent);font-weight:900;"':''}>${
-      (mine ? L().ccSpotTag(list[at].aura||0) : (i+1))+boss}</div>${ccChestBadgeHTMLAt(gridKey, i)}</div>`;
+      (mine ? L().ccSpotTag(list[at].aura||0) : (i+1))+powTag+boss}</div>${ccChestBadgeHTMLAt(gridKey, i)}</div>`;
   }).join('');
   // Открытая карта называет себя: сюда попадают кликом по прямоугольнику, и
   // без подписи не видно, чей это остров.
@@ -116814,7 +116829,7 @@ function careerSpotTileHTML(){
   return `<div class="ch-tile">${head}
     <div class="cc-spot-open-head"><b>${mapName}</b>
       <span>${L().ccSpotHint}</span></div>
-    <div class="map-frame" style="position:relative;width:100%;aspect-ratio:${asp};border-radius:8px;
+    <div class="map-frame cc-spot-map" style="position:relative;width:100%;aspect-ratio:${asp};border-radius:8px;
          background:#000;border:1px solid var(--line);overflow:hidden;margin-top:8px;">
       <img src="${art}" alt="" decoding="async"
            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;">
