@@ -94973,7 +94973,10 @@ function buildMapChecks(){
   block.style.display = pendingCards ? 'none' : '';
   if(pendingCards) return;
   el.innerHTML='';
-  MAP_CHOICES.forEach(c=>{
+  // По порядку, от новых к старым: глава, потом сезон (Season X — десятый). Список выше собран по годам
+  // и шёл вперемешку — C7S2 перед C7S3, Chapter 1 между Chapter 2 (Notion «29»).
+  const ord=c=>{ const m=/Chapter (\d+) Season (\w+)/.exec(c.label)||[]; return (+m[1]||0)*100+(m[2]==='X' ? 10 : (+m[2]||0)); };
+  MAP_CHOICES.slice().sort((a,b)=>ord(b)-ord(a)).forEach(c=>{
     const b=document.createElement('button');
     b.className='rf-btn'+(c.key===pendingMapSet?' active':'');
     b.dataset.map=c.key;
