@@ -18688,6 +18688,11 @@ Object.assign(I18N.en, {
   lfTlIcon:()=>'An Icon Series skin of your own'
 });
 // Раунд за раундом: после пропуска — играть или симулировать следующий (ccRoundChoice).
+Object.assign(I18N.ru, {ccYrXHeatsIn:k=>'Топ-'+k+' серии — в хитах', ccYrXHeatsZone:k=>'В зоне хитов: топ-'+k+' серии', ccYrXHeatsOut:k=>'Вне топ-'+k+' серии — мимо хитов'});
+Object.assign(I18N.en, {ccYrXHeatsIn:k=>'Top '+k+' of the series — into the Heats', ccYrXHeatsZone:k=>'In the Heats zone: series top '+k, ccYrXHeatsOut:k=>'Outside the series top '+k+' — no Heats'});
+Object.assign(I18N.fr, {ccYrXHeatsIn:k=>'Top '+k+' de la série — en heats', ccYrXHeatsZone:k=>'Zone des heats : top '+k+' de la série', ccYrXHeatsOut:k=>'Hors du top '+k+' de la série — pas de heats'});
+Object.assign(I18N.it, {ccYrXHeatsIn:k=>'Top '+k+' della serie — negli heat', ccYrXHeatsZone:k=>'Zona heat: top '+k+' della serie', ccYrXHeatsOut:k=>'Fuori dal top '+k+' della serie — niente heat'});
+Object.assign(I18N.pt, {ccYrXHeatsIn:k=>'Top '+k+' da série — nos heats', ccYrXHeatsZone:k=>'Zona dos heats: top '+k+' da série', ccYrXHeatsOut:k=>'Fora do top '+k+' da série — sem heats'});
 Object.assign(I18N.ru, {stPrizeEach:'каждому'}); Object.assign(I18N.en, {stPrizeEach:'each'});
 Object.assign(I18N.fr, {stPrizeEach:'chacun'}); Object.assign(I18N.it, {stPrizeEach:'a testa'}); Object.assign(I18N.pt, {stPrizeEach:'cada'});
 Object.assign(I18N.ru, {rcNextH:'Следующий раунд',rcNextSub:s=>'Играть самому или симулировать? Через '+s+' с — симуляция',
@@ -145418,10 +145423,24 @@ async function ccMXRun(ev, sp){
       stageLabel=ccYearLabel(ccMXRowId(ev.yx, ev.n, 'W'+ev.w+'R'+r), careerToday(), careerToday());
       ranked=await play(field, spec, stageLabel, open);
       place=ranked.indexOf(you)+1;
+      let heatsNote=null;
       if(r===R){
         through=wc && place<=spec.cut;
         if(wc){ if(through) m.ticket=true; }
-        else ccMXSeriesAdd(m, ranked, seedOf);
+        else {
+          ccMXSeriesAdd(m, ranked, seedOf);
+          /* Хиты берут верх серии: хитов × лобби (ccMXHeats). Карточка финала недели ставила «не
+             прошёл» всегда — через неё шла только путёвка World Cup (его правка 29.09: «в финалах
+             нет плашки, что квал в хиты»). В последнюю неделю место уже окончательное — «в хитах»,
+             раньше — «в зоне хитов» по текущей серии. */
+          if((sp.heats||[]).length){
+            Q.done=true; ccMXSettleWeeks(m);
+            const need=sp.heats.length*F, sr=ccMXSeriesRank(m, ccSeatKey(you));
+            const lastWeek=ev.w===(sp.weeks||[])[(sp.weeks||[]).length-1];
+            through=sr>0 && sr<=need;
+            heatsNote=through ? (lastWeek ? L().ccYrXHeatsIn(need) : L().ccYrXHeatsZone(need)) : L().ccYrXHeatsOut(need);
+          }
+        }
         Q.done=true;
       } else {
         through=place<=spec.cut;
@@ -145430,7 +145449,8 @@ async function ccMXRun(ev, sp){
         Q['r'+r]=nextOpen ? (through ? ['you'] : []) : ranked.slice(0, spec.cut).map(seedOf);
       }
       m.youKey=ccSeatKey(you);
-      note = (r===R) ? (wc ? (through ? L().ccYrXWcIn(spec.cut) : L().ccRelFail(spec.cut)) : L().ccYr24Series(m.series[m.youKey]||0, ccMXSeriesRank(m, m.youKey)))
+      note = (r===R) ? (wc ? (through ? L().ccYrXWcIn(spec.cut) : L().ccRelFail(spec.cut))
+                              : L().ccYr24Series(m.series[m.youKey]||0, ccMXSeriesRank(m, m.youKey))+(heatsNote ? ' · '+heatsNote : ''))
                      : (through ? L().ccRelPass(spec.cut) : L().ccRelFail(spec.cut));
       if(i<ev.rounds.length-1){
         // Раунд недели с призовыми (Season X: раунд 2 платит топ-150) — деньги сразу.
@@ -145495,6 +145515,11 @@ async function ccMXRun(ev, sp){
     careerMoneyAdd(ranked, wcPrize);
     cash=wcPrize(place);
     if(cash){ ccPayIn(ccShareOf(cash, you)); careerNews('good', 'ccNewsEvCash', [stageLabel, place, ccNum(cash)], {tbl:ccStageShot(ranked, you, 1, stageLabel)}); }
+    // Неделя FNCS с призом — такой же этап, как без него: отметка о проходе не теряется.
+    if(sp.kind!=='wc'){
+      const prev=(cr.major && cr.major.n===ev.n) ? cr.major : null;
+      cr.major={n:ev.n, got:ev.stage, pass: through ? ev.stage : (prev ? prev.pass||null : null), ticket:!!m.ticket};
+    }
   } else {
     careerNews(through?'good':'flat', through?'ccNewsMajThrough':'ccNewsMajOut',
                [stageLabel, place, field.length], {tbl:ccStageShot(ranked, you, 1, stageLabel)});

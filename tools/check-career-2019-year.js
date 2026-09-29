@@ -129,6 +129,22 @@ const BOOT = `
     const lh=lastLog();
     check('хит трио записан', lh && lh.stage==='heat' && lh.of===33 && lh.size===3, JSON.stringify(lh));
     out.steps.push('FNCS X heat: '+h+' · #'+(lh&&lh.place));
+    // 5б. Финал последней недели C2S1 (сквады): карточка говорит про хиты, неделя платит.
+    // Серия уже с очками прошлых недель — место в топ-100 → «в хитах», плашка «прошёл».
+    const prevRows={}; for(let i=0;i<150;i++) prevRows['Z'+i]=['Z'+i];
+    const ser={}; for(let i=0;i<150;i++) ser['Z'+i]=1;
+    seed('2019-11-24', {majorx:{y:2019, n:4, season:1, got:{}, q:{0:{done:true},1:{done:true},2:{done:true},3:{done:true},4:{r2:['you']}}, series:ser, seriesRows:prevRows, heats:null, heatRes:{}, youKey:null, ticket:false}});
+    const wEv=careerMajorOn('2019-11-24');
+    check('финал недели 4 C2S1 открыт', wEv && careerMajorCan(wEv), JSON.stringify(wEv));
+    const wSt=CAREER.career.balance||0;
+    const wh=await playThrough('C2S1 W4 final');
+    const lw=lastLog();
+    const card=[...document.querySelectorAll('#majorStages .stage-card')].map(c=>c.textContent).join(' | ');
+    const inHeats=/Heats/.test(card);
+    check('карточка финала недели пишет про хиты', inHeats, card.slice(0,300));
+    check('в хитах → плашка «прошёл»', lw && lw.passed===true && lw.passed===(ccMXYourHeat(ccMXOf(2019,4), 1)>=0 || ccMXYourHeat(ccMXOf(2019,4), 2)>=0), JSON.stringify(lw && {passed:lw.passed, place:lw.place}));
+    check('неделя C2S1 платит за верх таблицы', !lw || lw.place>10 || (lw.prize||0)>0, JSON.stringify(lw && {place:lw.place, prize:lw.prize}));
+    out.steps.push('C2S1 W4 final: '+wh+' · #'+(lw&&lw.place)+' passed '+(lw&&lw.passed)+' $'+(lw&&lw.prize));
     // 6. Финал FNCS C2S1 — сквады.
     seed('2019-12-08', {majorx:{y:2019, n:4, season:1, got:{}, q:{}, series:{}, seriesRows:{}, heats:null, heatRes:{}, youKey:'X', ticket:true}});
     const f4=await playThrough('C2S1 final');
