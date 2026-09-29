@@ -28,6 +28,9 @@ for (const [key, r] of Object.entries(src)) {
   // Epic), Showdown, Performance Evaluation, Squid Grounds.
   if (/^OnlineOpen|PerformanceEval|PerfEval|SquidGround|Showdown/i.test(key.split('|')[1] + ' ' + r.name) ||
       /FNCS Pro-Am|Global Championship/i.test(r.name)) continue;
+  // MrBeast's Extreme Survival Challenge (S23_Lettuce): не королевская битва — соло на мини-играх и монетах,
+  // один победитель на весь мир ($1M, Liquipedia), у остальных ноль. Капом в карьере быть не может.
+  if (/Lettuce/.test(key.split('|')[1])) continue;
   const days = Object.keys(r.days || {}).filter(Boolean).sort();
   if (!days.length || !r.pay || !r.pay.EU) continue;
   const t = {};

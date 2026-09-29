@@ -95,8 +95,12 @@ const BOOT = `
     out.steps.push('signed '+JSON.stringify(got)+' rosters[4] '+JSON.stringify(r4)+' partners '+JSON.stringify(careerMates().map(m=>m.handle)));
     check('подписанные в сквад-составе, напарник остался', got.length===2 && got.every(h=>r4.indexOf(h)>=0) && r4.indexOf('M1')>=0, JSON.stringify(r4));
     check('состав года не тронут', careerMates().length===1, JSON.stringify(careerMates().map(m=>m.handle)));
-    let asked=false; const p2=ccEventRosterPick(ev, 4); await wait(30); asked=!!document.querySelector('.cc-evpick'); await p2;
-    check('с полным составом не спрашивает', !asked);
+    // Полный состав формата: спрашивает один раз на событие (29.09, Winter Royale), с кнопкой «Играть: …».
+    let asked=false; const p2=ccEventRosterPick(ev, 4); await wait(30); asked=!!document.querySelector('.cc-evpick [data-k="go"]');
+    const b2=document.querySelector('.cc-evpick [data-k="go"]'); if(b2) b2.click(); await p2;
+    check('с полным составом спрашивает один раз', asked);
+    let asked2=false; const p3=ccEventRosterPick(ev, 4); await wait(30); asked2=!!document.querySelector('.cc-evpick'); await p3;
+    check('второй раз на то же событие не спрашивает', !asked2);
     careerRenderHub('centre');
     const h=await playThrough('Squads cup');
     const l=lastLog();
