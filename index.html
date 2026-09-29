@@ -6067,12 +6067,29 @@
   .dp-tag{display:inline-block;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#7ef0dd;}
   .dp-title{margin:2px 0 0;font-family:var(--font-display);font-size:clamp(30px,4.5vw,44px);font-weight:700;font-style:italic;text-transform:uppercase;line-height:1;color:#fff;}
   .hero-mode-tag{margin-bottom:8px;}
+  .hero.hero-draft{margin-top:16px;}
+  .hd-logos{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 70% 40%,#2a3f9e 0%,#101a52 60%,#0a1033 100%);}
+  .hd-logos::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(12,20,64,.85) 0%,rgba(12,20,64,0) 22%),linear-gradient(0deg,rgba(10,16,51,.55) 0%,rgba(10,16,51,0) 30%);}
+  .hd-wall{position:absolute;inset:-12% -8% -12% 4%;display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-content:center;transform:rotate(-9deg);}
+  .hd-logo{position:relative;margin:0;aspect-ratio:3/4;border-radius:12px;overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.25);transition:transform .2s ease;}
+  .hd-logo img{width:100%;height:100%;object-fit:cover;object-position:50% 32%;display:block;}
+  .hd-logo.hd-wide img{object-position:50% 45%;transform:scale(1.35);}
+  .hd-logo figcaption{position:absolute;left:6px;bottom:6px;font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.04em;color:#fff;background:rgba(0,0,0,.55);padding:1px 7px;border-radius:999px;}
+  .hd-logos:hover .hd-logo{transform:translateY(-3px);}
+  .dp-fmt-label{text-align:left;width:auto;}
+  /* Два блока одного размера (его слово 29.09: «такого же размера»). */
+  @media(min-width:901px){ .hero.hero-career,.hero.hero-draft{min-height:480px;} }
   .dp-years{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px;}
   .dp-chip{border:0;cursor:pointer;font:inherit;font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:.04em;
     padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.08);color:#cfd8ff;box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);}
   .dp-chip:hover{background:rgba(255,255,255,.14);color:#fff;}
   .dp-chip.on{background:#ffe600;color:#0b0f12;box-shadow:none;}
   .dp-chip-fmt{text-transform:uppercase;font-size:14px;}
+  #screen-drafts .dp-top{display:flex;align-items:center;gap:16px;margin:4px 0 18px;}
+  .dp-back{border:0;cursor:pointer;font:inherit;font-weight:900;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.1);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2);}
+  .dp-back:hover{background:rgba(255,255,255,.18);}
+  #screen-drafts .dp-years:empty{display:none;}
+  .dp-fmt-label{margin:22px 0 8px;}
   /* Своя организация — плитками хаба (careerClubHTML, 29.09). */
   .og .og-sec{margin:18px 0 8px;font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:.04em;text-transform:uppercase;color:#fff;display:flex;gap:8px;align-items:baseline;}
   .og .og-sec i{font-style:normal;font-size:12px;color:#8fa1cc;}
@@ -6417,8 +6434,8 @@
     <section class="hero hero-career" aria-labelledby="heroTitle">
       <div class="hero-body">
         <span class="dp-tag hero-mode-tag" data-i18n="hmCareerTag"></span>
-        <h1 class="hero-title" id="heroTitle" data-i18n="heroTitle"></h1>
-        <p class="hero-sub" id="tagline" data-i18n="tagline"></p>
+        <h1 class="hero-title" id="heroTitle" data-i18n="hcHeroTitle"></h1>
+        <p class="hero-sub" id="tagline" data-i18n="hmCareerSub"></p>
         <div class="cstrip-chips hero-chips">
           <span class="cstrip-tag" data-i18n="modeNewBadge"></span>
           <span class="cstrip-chip" data-i18n="cstripChipDivs"></span>
@@ -6445,9 +6462,31 @@
     <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Скриншот (красная рамка вокруг всех рядов): «с этими
          прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
          первый выделяется». -->
-    <!-- ДВА РЕЖИМА (его слово 29.09): большой блок сверху — КАРЬЕРА, ниже — ДРАФТ со всеми годами 2019–2026. -->
-    <section class="modes-panel" id="draftPanel">
-    <div class="dp-head"><span class="dp-tag" data-i18n="hmDraftTag"></span><h2 class="dp-title" data-i18n="hmDraftTitle"></h2><p class="dp-sub" data-i18n="hmDraftSub"></p></div>
+    <!-- ДВА РЕЖИМА (его слово 29.09): два одинаковых больших блока — КАРЬЕРА и ДРАФТ («такого же размера»).
+         Кнопка драфта раскрывает под ним выбор года 2019–2026 и форматов. -->
+    <section class="hero hero-draft" aria-labelledby="heroDraftTitle">
+      <div class="hero-body">
+        <span class="dp-tag hero-mode-tag" data-i18n="hmDraftTag"></span>
+        <h2 class="hero-title" id="heroDraftTitle" data-i18n="hdHeroTitle"></h2>
+        <p class="hero-sub" data-i18n="hmDraftSub"></p>
+        <div class="cstrip-chips hero-chips">
+          <span class="cstrip-chip">2019 – 2026</span>
+          <span class="cstrip-chip">All FNCS</span>
+          <span class="cstrip-chip" data-i18n="hdChipFormats"></span>
+          <span class="cstrip-chip" data-i18n="dpRealCards"></span>
+        </div>
+        <div class="hero-cta">
+          <button class="hero-btn hero-btn-go" type="button" onclick="homeOpenDraft()"><span data-i18n="hdPlay"></span></button>
+          <button class="hero-btn hero-btn-alt" type="button" onclick="chooseMode(2, true)"><span>All FNCS</span></button>
+        </div>
+      </div>
+      <!-- Превью драфта — стена логотипов FNCS и World Cup 2019–2026 (его просьба 29.09: «на превью добавить все
+           логотипы фнксов, ворлд капа за эти года красиво»). Постеры сезонов — те же, что в карьере. -->
+      <div class="hero-art hd-logos" style="cursor:pointer" role="img" aria-label="FNCS · World Cup 2019–2026" onclick="homeOpenDraft()">
+        <div class="hd-wall"><figure class="hd-logo hd-wide"><img src="art/fncs-2019.jpg" alt="" loading="lazy"><figcaption>WC 2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f10.jpg" alt="" loading="lazy"><figcaption>2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f11.jpg" alt="" loading="lazy"><figcaption>2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f12.jpg" alt="" loading="lazy"><figcaption>2020</figcaption></figure><figure class="hd-logo"><img src="art/cups/f14.jpg" alt="" loading="lazy"><figcaption>2020</figcaption></figure><figure class="hd-logo"><img src="art/cups/f15.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f17.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f18gr.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f19.jpg" alt="" loading="lazy"><figcaption>2022</figcaption></figure><figure class="hd-logo"><img src="art/cups/f22inv.jpg" alt="" loading="lazy"><figcaption>2022</figcaption></figure><figure class="hd-logo"><img src="art/cups/f23.jpg" alt="" loading="lazy"><figcaption>2023</figcaption></figure><figure class="hd-logo"><img src="art/cups/f25.jpg" alt="" loading="lazy"><figcaption>2023</figcaption></figure><figure class="hd-logo"><img src="art/cups/f28.jpg" alt="" loading="lazy"><figcaption>2024</figcaption></figure><figure class="hd-logo hd-wide"><img src="art/mode-major1-2025.jpg" alt="" loading="lazy"><figcaption>2025</figcaption></figure><figure class="hd-logo hd-wide"><img src="art/fncs-2026.jpg" alt="" loading="lazy"><figcaption>2026</figcaption></figure></div>
+      </div>
+    </section>
+    <section class="modes-panel dp-shut" id="draftPanel">
     <div class="dp-years" id="dpYears"></div>
     <div class="year-row" id="modeYears">
       <div class="year-label">2026</div>
@@ -18836,21 +18875,26 @@ Object.assign(I18N.fr, {ccYrSemiZone:k=>'Zone des demi-finales : top '+k+' de la
 Object.assign(I18N.it, {ccYrSemiZone:k=>'Zona semifinali: top '+k+' della serie', ccYrSemiOut:k=>'Fuori dal top '+k+' della serie — niente semifinali'});
 Object.assign(I18N.pt, {ccYrSemiZone:k=>'Zona das semifinais: top '+k+' da série', ccYrSemiOut:k=>'Fora do top '+k+' da série — sem semifinais'});
 /* Главная: два режима и драфт по годам (29.09). */
+Object.assign(I18N.ru, {hcHeroTitle:'Стань про. <em>Сезон за сезоном.</em>', hdHeroTitle:'Собери состав. <em>Любой год FNCS.</em>', hdChipFormats:'Дуо · Трио · Сквады', hdPlay:'Играть драфт'});
+Object.assign(I18N.en, {hcHeroTitle:'Go pro. <em>Season after season.</em>', hdHeroTitle:'Build a squad. <em>Any FNCS year.</em>', hdChipFormats:'Duos · Trios · Squads', hdPlay:'Play the draft'});
+Object.assign(I18N.fr, {hcHeroTitle:'Deviens pro. <em>Saison après saison.</em>', hdHeroTitle:'Monte ton équipe. <em>N’importe quelle année FNCS.</em>', hdChipFormats:'Duos · Trios · Squads', hdPlay:'Jouer le draft'});
+Object.assign(I18N.it, {hcHeroTitle:'Diventa pro. <em>Stagione dopo stagione.</em>', hdHeroTitle:'Crea la squadra. <em>Qualsiasi anno FNCS.</em>', hdChipFormats:'Duo · Trio · Squad', hdPlay:'Gioca il draft'});
+Object.assign(I18N.pt, {hcHeroTitle:'Vire pro. <em>Temporada após temporada.</em>', hdHeroTitle:'Monte o time. <em>Qualquer ano do FNCS.</em>', hdChipFormats:'Duplas · Trios · Squads', hdPlay:'Jogar o draft'});
 Object.assign(I18N.ru, {hmCareerTag:'Режим 1 · Карьера', hmCareerTitle:'Карьера', hmCareerSub:'Один игрок, сезон за сезоном по настоящему календарю 2019–2026: дивизионы, Мейджоры, клубы, ЛАНы', hmPlay:'Играть',
-  hmDraftTag:'Режим 2', hmDraftTitle:'Драфт', hmDraftSub:'Собери команду из реальных карточек и пройди турнир: любой год 2019–2026, All FNCS, дуо, трио, сквады',
-  dpFormats:'All FNCS · форматы', dpRealCards:'Реальные карточки', dpPastDesc:'Карточки игроков по их настоящим результатам на этом турнире. Круг — Play-In, хиты и финал.'});
+  hmDraftTag:'Режим 2 · Драфт', hmDraftTitle:'Драфт', hmDraftSub:'Собери команду из реальных карточек и пройди турнир: любой год 2019–2026, All FNCS, дуо, трио, сквады',
+  dpFormats:'All FNCS · форматы', dpBack:'Назад', dpRealCards:'Реальные карточки', dpPastDesc:'Карточки игроков по их настоящим результатам на этом турнире. Круг — Play-In, хиты и финал.'});
 Object.assign(I18N.en, {hmCareerTag:'Mode 1 · Career', hmCareerTitle:'Career', hmCareerSub:'One player, season after season on the real 2019–2026 calendar: divisions, Majors, clubs, LANs', hmPlay:'Play',
-  hmDraftTag:'Mode 2', hmDraftTitle:'Draft', hmDraftSub:'Build a team from real cards and run the tournament: any year 2019–2026, All FNCS, duos, trios, squads',
-  dpFormats:'All FNCS · formats', dpRealCards:'Real cards', dpPastDesc:'Player cards built from their real results at this event. The run is Play-In, Heats and Finals.'});
+  hmDraftTag:'Mode 2 · Draft', hmDraftTitle:'Draft', hmDraftSub:'Build a team from real cards and run the tournament: any year 2019–2026, All FNCS, duos, trios, squads',
+  dpFormats:'All FNCS · formats', dpRealCards:'Real cards', dpBack:'Back', dpPastDesc:'Player cards built from their real results at this event. The run is Play-In, Heats and Finals.'});
 Object.assign(I18N.fr, {hmCareerTag:'Mode 1 · Carrière', hmCareerTitle:'Carrière', hmCareerSub:'Un joueur, saison après saison sur le vrai calendrier 2019–2026 : divisions, Majors, clubs, LAN', hmPlay:'Jouer',
-  hmDraftTag:'Mode 2', hmDraftTitle:'Draft', hmDraftSub:'Monte une équipe de vraies cartes et joue le tournoi : n\'importe quelle année 2019–2026, All FNCS, duos, trios, squads',
-  dpFormats:'All FNCS · formats', dpRealCards:'Vraies cartes', dpPastDesc:'Cartes des joueurs d\'après leurs vrais résultats sur cet événement. Play-In, heats et finale.'});
+  hmDraftTag:'Mode 2 · Draft', hmDraftTitle:'Draft', hmDraftSub:'Monte une équipe de vraies cartes et joue le tournoi : n\'importe quelle année 2019–2026, All FNCS, duos, trios, squads',
+  dpFormats:'All FNCS · formats', dpRealCards:'Vraies cartes', dpBack:'Retour', dpPastDesc:'Cartes des joueurs d\'après leurs vrais résultats sur cet événement. Play-In, heats et finale.'});
 Object.assign(I18N.it, {hmCareerTag:'Modalità 1 · Carriera', hmCareerTitle:'Carriera', hmCareerSub:'Un giocatore, stagione dopo stagione sul vero calendario 2019–2026: divisioni, Major, club, LAN', hmPlay:'Gioca',
-  hmDraftTag:'Modalità 2', hmDraftTitle:'Draft', hmDraftSub:'Crea una squadra di carte reali e gioca il torneo: qualsiasi anno 2019–2026, All FNCS, duo, trio, squad',
-  dpFormats:'All FNCS · formati', dpRealCards:'Carte reali', dpPastDesc:'Carte dei giocatori dai loro veri risultati a questo evento. Play-In, heat e finale.'});
+  hmDraftTag:'Modalità 2 · Draft', hmDraftTitle:'Draft', hmDraftSub:'Crea una squadra di carte reali e gioca il torneo: qualsiasi anno 2019–2026, All FNCS, duo, trio, squad',
+  dpFormats:'All FNCS · formati', dpBack:'Indietro', dpRealCards:'Carte reali', dpPastDesc:'Carte dei giocatori dai loro veri risultati a questo evento. Play-In, heat e finale.'});
 Object.assign(I18N.pt, {hmCareerTag:'Modo 1 · Carreira', hmCareerTitle:'Carreira', hmCareerSub:'Um jogador, temporada após temporada no calendário real 2019–2026: divisões, Majors, clubes, LANs', hmPlay:'Jogar',
-  hmDraftTag:'Modo 2', hmDraftTitle:'Draft', hmDraftSub:'Monte um time de cartas reais e jogue o torneio: qualquer ano 2019–2026, All FNCS, duplas, trios, squads',
-  dpFormats:'All FNCS · formatos', dpRealCards:'Cartas reais', dpPastDesc:'Cartas dos jogadores pelos resultados reais neste evento. Play-In, heats e final.'});
+  hmDraftTag:'Modo 2 · Draft', hmDraftTitle:'Draft', hmDraftSub:'Monte um time de cartas reais e jogue o torneio: qualquer ano 2019–2026, All FNCS, duplas, trios, squads',
+  dpFormats:'All FNCS · formatos', dpBack:'Voltar', dpRealCards:'Cartas reais', dpPastDesc:'Cartas dos jogadores pelos resultados reais neste evento. Play-In, heats e final.'});
 /* Своя организация: основание, штат, отделы (29.09). */
 Object.assign(I18N.ru, {ogFundH:'Деньги', ogFundSelf:'Свои деньги', ogFundSelfSub:'Клуб целиком твой, весь доход — клубу',
   ogFundInv:'С инвестором', ogFundInvSub:(p,b)=>'Остальное вносит инвестор: '+p+'% всего дохода клуба — ему, пока не выкупишь долю за $'+b,
@@ -94574,37 +94618,54 @@ function draftPastRowHTML(g){
       '<p>'+esc(T.dpPastDesc)+'</p>'+
     '</div></div></div>';
 }
+/* ЭКРАН ДРАФТА (его слово 29.09: «когда нажимаю play the draft, переношусь на новую вкладку, где сверху
+   вниз с 2026 года по 2019 драфты»). Панель годов из разметки главной переезжает на свой экран
+   screen-drafts один раз; там все ряды видны сразу, сверху вниз по годам, форматы — в конце. */
+function homeDraftScreen(){
+  let scr=document.getElementById('screen-drafts');
+  const panel=document.getElementById('draftPanel');
+  if(!scr){
+    const home=document.getElementById('screen-mode'); if(!home || !panel) return null;
+    scr=document.createElement('div');
+    scr.className='screen'; scr.id='screen-drafts';
+    scr.innerHTML='<div class="dp-top"><button class="dp-back" type="button" onclick="show(\'screen-mode\')">← <span data-i18n="dpBack"></span></button>'+
+      '<div><span class="dp-tag" data-i18n="hmDraftTag"></span><h2 class="dp-title" data-i18n="hmDraftTitle"></h2></div></div>';
+    home.parentNode.insertBefore(scr, home.nextSibling);
+  }
+  if(panel && panel.parentNode!==scr){ scr.appendChild(panel); }
+  if(panel) panel.classList.remove('dp-shut');
+  // Подписи новой шапки — тем же механизмом, что вся страница.
+  scr.querySelectorAll('[data-i18n]').forEach(el=>{ const v=L()[el.dataset.i18n]; if(typeof v==='string') el.innerHTML=v; });
+  return scr;
+}
 function homeDraftInit(){
-  const panel=document.getElementById('draftPanel'), bar=document.getElementById('dpYears');
-  if(!panel || !bar) return;
+  const panel=document.getElementById('draftPanel');
+  if(!panel) return;
   DRAFT_PAST.forEach(g=>g.sets.forEach(s=>{ MODE_ART['cards_'+s]=draftSetArt(s); }));
-  // Метки лет у готовых рядов разметки.
   panel.querySelectorAll('.year-row:not(.dp-past)').forEach(r=>{
     const lbl=r.querySelector('.year-label'); if(lbl && !r.dataset.year) r.dataset.year=String(lbl.textContent||'').trim();
   });
-  const fmt=document.getElementById('dpFormats'); if(fmt) fmt.dataset.year='fmt';
   // Ряды 2019–2023 — после ряда 2024 (перестраиваются при смене языка).
   panel.querySelectorAll('.dp-past').forEach(r=>r.remove());
   const after=panel.querySelector('.year-row[data-year="2024"]');
   if(after) after.insertAdjacentHTML('afterend', DRAFT_PAST.map(draftPastRowHTML).join(''));
-  const years=['2026','2025','2024'].concat(DRAFT_PAST.map(g=>String(g.y)));
-  bar.innerHTML='<button class="dp-chip dp-chip-fmt'+(DP_YEAR==='fmt'?' on':'')+'" onclick="homeDraftYear(\'fmt\')">'+esc(L().dpFormats)+'</button>'+
-    years.map(y=>'<button class="dp-chip'+(DP_YEAR===y?' on':'')+'" onclick="homeDraftYear(\''+y+'\')">'+y+'</button>').join('');
-  homeDraftYear(DP_YEAR, true);
+  // Форматы (All FNCS, дуо, трио, сквады) — своим рядом с подписью, в конце списка.
+  const fmt=document.getElementById('dpFormats');
+  if(fmt && !fmt.previousElementSibling?.classList?.contains('dp-fmt-label')){
+    fmt.insertAdjacentHTML('beforebegin', '<div class="dp-fmt-label year-label" data-i18n="dpFormats"></div>');
+  }
+  const fl=panel.querySelector('.dp-fmt-label'); if(fl) fl.textContent=L().dpFormats;
+  // Полоса лет больше не нужна: все годы видны сразу.
+  const bar=document.getElementById('dpYears'); if(bar) bar.innerHTML='';
+  panel.querySelectorAll('[data-year]').forEach(el=>{ el.style.display=''; });
+  panel.querySelectorAll('[data-art]').forEach(el=>{ if(!el.style.backgroundImage) el.style.backgroundImage='url('+el.dataset.art+')'; });
+  if(document.getElementById('screen-drafts')) homeDraftScreen();
 }
-function homeDraftYear(y, quiet){
-  DP_YEAR=String(y);
-  const panel=document.getElementById('draftPanel'); if(!panel) return;
-  panel.querySelectorAll('[data-year]').forEach(el=>{ el.style.display=(el.dataset.year===DP_YEAR) ? '' : 'none'; });
-  panel.querySelectorAll('.dp-chip').forEach(b=>b.classList.toggle('on', b.getAttribute('onclick').indexOf("'"+DP_YEAR+"'")>=0));
-  // Ленивые обложки (data-art) у рядов, которые только что показались.
-  panel.querySelectorAll('[data-year="'+DP_YEAR+'"] [data-art]').forEach(el=>{ if(!el.style.backgroundImage) el.style.backgroundImage='url('+el.dataset.art+')'; });
-}
+function homeDraftYear(){ /* полосы лет больше нет — все годы на экране драфта сразу */ }
 function homeOpenDraft(){
-  const panel=document.getElementById('draftPanel'); if(!panel) return;
-  panel.classList.remove('dp-shut');
   homeDraftInit();
-  panel.scrollIntoView({behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start'});
+  if(!homeDraftScreen()) return;
+  show('screen-drafts');
 }
 let MODE_ART_NOW=null;
 function modeArtFor(size, major){
