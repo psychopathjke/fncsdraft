@@ -6047,6 +6047,88 @@
   #screen-career-hub .ch-play.ch-live-go{background:#9147ff !important;color:#fff !important;border:0 !important;margin-top:6px;padding-top:11px;padding-bottom:11px;font-size:1em;}
   #screen-career-hub .ch-play.ch-live-go:not(:disabled):hover{background:#a970ff !important;}
   .cc-nb-clear{font-weight:900;font-size:14px;}
+  /* Своя организация — плитками хаба (careerClubHTML, 29.09). */
+  .og .og-sec{margin:18px 0 8px;font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:.04em;text-transform:uppercase;color:#fff;display:flex;gap:8px;align-items:baseline;}
+  .og .og-sec i{font-style:normal;font-size:12px;color:#8fa1cc;}
+  .og-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+  .og-card{position:relative;display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:12px;
+    background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(180,200,255,.14);min-width:0;}
+  .og-card.on{box-shadow:inset 0 0 0 1px rgba(0,214,164,.45);}
+  .og-card.og-wide{grid-column:1/-1;}
+  .og-card h6{margin:0;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8fa1cc;}
+  .og-kv{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:#cfd8ff;}
+  .og-kv b{color:#fff;font-weight:900;white-space:nowrap;}
+  .og-eff{font-size:12px;line-height:1.35;color:#e6ecff;font-weight:700;}
+  .og-eff-off{color:#8fa1cc;font-weight:600;}
+  .og-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;}
+  .og-btn{border:0;border-radius:999px;padding:9px 14px;font:inherit;font-size:12px;font-weight:900;letter-spacing:.03em;cursor:pointer;
+    background:rgba(255,255,255,.12);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);white-space:nowrap;}
+  .og-btn:hover:not(:disabled){background:rgba(255,255,255,.2);}
+  .og-btn:disabled{opacity:.45;cursor:not-allowed;}
+  .og-btn-sm{padding:6px 11px;font-size:11px;}
+  .og-btn-go{background:#ffe600;color:#0b0f12;box-shadow:none;}
+  .og-btn-go:hover:not(:disabled){background:#fff27a;}
+  .og-btn-ghost{background:transparent;color:#ff9d95;box-shadow:inset 0 0 0 1px rgba(255,120,110,.35);}
+  .og-pips{display:inline-flex;gap:3px;font-style:normal;}
+  .og-pips b{width:14px;height:5px;border-radius:3px;background:rgba(255,255,255,.15);}
+  .og-pips b.on{background:#00d6a4;}
+  .og-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:4px 0 10px;border-bottom:1px solid rgba(255,255,255,.1);}
+  .og-head-t{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1;}
+  .og-head-t > b{font-family:var(--font-display);font-size:26px;font-weight:700;line-height:1;color:#fff;letter-spacing:.02em;}
+  .og-head-t span{display:flex;gap:6px;flex-wrap:wrap;}
+  .og-pill{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;
+    background:rgba(0,214,164,.16);color:#7ef0dd;}
+  .og-pill-inv{background:rgba(255,209,102,.16);color:#ffd166;}
+  .og-cash{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+  .og-cash em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8fa1cc;}
+  .og-cash b{font-size:24px;font-weight:900;font-style:italic;color:#00d6a4;line-height:1;}
+  .og-cash b.neg{color:#ff6b5e;}
+  .og-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:12px 0 4px;}
+  .og-stat{padding:9px 11px;border-radius:10px;background:rgba(255,255,255,.05);}
+  .og-stat em{display:block;font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
+  .og-stat b{font-size:16px;font-weight:900;color:#fff;}
+  .og-stat.up b{color:#00d6a4;} .og-stat.down b{color:#ff6b5e;}
+  .og-inv{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;padding:8px 12px;border-radius:10px;
+    background:rgba(255,209,102,.08);font-size:12px;color:#ffe3a0;font-weight:700;}
+  .og-brand{margin-top:10px;} .og-brand summary{cursor:pointer;font-size:12px;font-weight:900;color:#8fa1cc;letter-spacing:.04em;}
+  .og-person{display:flex;align-items:center;gap:10px;}
+  .og-person b{display:block;color:#fff;font-size:14px;} .og-person em{display:block;font-style:normal;font-size:11px;color:#8fa1cc;margin-bottom:3px;}
+  .og-face{width:40px;height:40px;border-radius:50%;object-fit:cover;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.15);}
+  .og-face-none{display:block;background:rgba(255,255,255,.1);}
+  .og-cands{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow:auto;margin-top:4px;padding-top:8px;border-top:1px solid rgba(255,255,255,.1);}
+  .og-cand{display:flex;align-items:center;gap:8px;}
+  .og-cand .og-face{width:30px;height:30px;}
+  .og-cand-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .og-cand-t b{font-size:12px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .og-cand-t em{font-style:normal;font-size:10px;color:#8fa1cc;}
+  .og-max{font-style:normal;font-size:11px;font-weight:900;color:#7ef0dd;text-transform:uppercase;letter-spacing:.06em;}
+  .og-duo-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+  .og-duo-top b{font-size:13px;font-weight:900;color:#fff;line-height:1.25;min-width:0;word-break:break-word;}
+  .og-ovr{font-style:normal;flex:none;font-size:13px;font-weight:900;color:#0b0f12;background:#ffe600;border-radius:6px;padding:2px 7px;}
+  .og-tags{display:flex;gap:5px;flex-wrap:wrap;} .og-tags:empty{display:none;}
+  .og-tag{font-style:normal;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,.1);color:#cfd8ff;}
+  .og-tag.mine{background:rgba(0,214,164,.16);color:#7ef0dd;} .og-tag.buy{background:rgba(255,209,102,.14);color:#ffd166;}
+  .og-tag.perk{background:rgba(122,162,255,.18);color:#bcd0ff;} .og-tag.no{background:rgba(255,95,86,.14);color:#ff9d95;}
+  .og-toggles{display:flex;gap:6px;flex-wrap:wrap;} .og-toggles:empty{display:none;}
+  .og-toggle{display:inline-flex;align-items:center;cursor:pointer;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;
+    background:rgba(255,255,255,.06);color:#cfd8ff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);}
+  .og-toggle input{display:none;} .og-toggle.on{background:rgba(122,162,255,.22);color:#fff;box-shadow:inset 0 0 0 1px #7aa2ff;}
+  .og-offer{display:flex;align-items:center;gap:6px;margin-top:auto;}
+  .og-offer span{font-size:11px;color:#8fa1cc;font-weight:700;flex:1;min-width:0;}
+  .og .cc-club-sum{width:70px;}
+  .og-search input{width:100%;box-sizing:border-box;padding:9px 12px;border-radius:10px;border:1px solid rgba(180,200,255,.2);background:rgba(8,12,24,.45);color:#fff;font:inherit;margin-bottom:10px;}
+  .og-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+  .og-choices-3{grid-template-columns:repeat(3,minmax(0,1fr));}
+  @media(max-width:700px){ .og-choices,.og-choices-3{grid-template-columns:1fr;} }
+  .og-choice{display:flex;flex-direction:column;gap:4px;text-align:left;padding:12px 14px;border-radius:12px;border:0;cursor:pointer;font:inherit;color:#fff;
+    background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(180,200,255,.14);}
+  .og-choice b{font-family:var(--font-display);font-size:16px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;}
+  .og-choice i{font-style:normal;font-size:15px;font-weight:900;color:#ffe600;}
+  .og-choice em{font-style:normal;font-size:11px;color:#cfd8ff;line-height:1.35;}
+  .og-choice.on{background:rgba(255,230,0,.1);box-shadow:inset 0 0 0 2px #ffe600;}
+  .og-found{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+  .og-found input{flex:1;min-width:180px;padding:10px 12px;border-radius:10px;border:1px solid rgba(180,200,255,.2);background:rgba(8,12,24,.45);color:#fff;font:inherit;}
+  .og-close{margin-top:18px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);}
   /* Обложка турнира в строке профиля (ccLogArtHTML) — как у Fortnite Tracker. */
   .ev-name-in{display:flex;align-items:center;gap:10px;min-width:0;}
   .ev-name-in > div{min-width:0;}
@@ -18723,6 +18805,117 @@ Object.assign(I18N.en, {ccYrSemiZone:k=>'In the Semi-Finals zone: series top '+k
 Object.assign(I18N.fr, {ccYrSemiZone:k=>'Zone des demi-finales : top '+k+' de la série', ccYrSemiOut:k=>'Hors du top '+k+' de la série — pas de demi-finales'});
 Object.assign(I18N.it, {ccYrSemiZone:k=>'Zona semifinali: top '+k+' della serie', ccYrSemiOut:k=>'Fuori dal top '+k+' della serie — niente semifinali'});
 Object.assign(I18N.pt, {ccYrSemiZone:k=>'Zona das semifinais: top '+k+' da série', ccYrSemiOut:k=>'Fora do top '+k+' da série — sem semifinais'});
+/* Своя организация: основание, штат, отделы (29.09). */
+Object.assign(I18N.ru, {ogFundH:'Деньги', ogFundSelf:'Свои деньги', ogFundSelfSub:'Клуб целиком твой, весь доход — клубу',
+  ogFundInv:'С инвестором', ogFundInvSub:(p,b)=>'Остальное вносит инвестор: '+p+'% всего дохода клуба — ему, пока не выкупишь долю за $'+b,
+  ogFocusH:'Направление', ogFocusComp:'Киберспорт', ogFocusCompSub:'Классика: 20% с призовых составов',
+  ogFocusContent:'Контент', ogFocusContentSub:'Спонсоры ×1,6 и охват выше, с призовых — 10%',
+  ogFocusAcad:'Академия', ogFocusAcadSub:'Академия сразу и 5 мест в ней, спонсоры ×0,8, с призовых — 15%',
+  ogFound:'Основать', ogInvPill:p=>'инвестор '+p+'%', ogSponsors:'Спонсоры / мес', ogWages:'Зарплаты составов', ogStaffPay:'Штат',
+  ogUpkeep:'Содержание', ogNet:'Итог месяца', ogCutRow:'С призовых', ogInvLine:(p,s)=>'Инвестору идёт '+p+'% дохода · уже получил $'+s, ogBuyback:'Выкупить долю',
+  ogBrand:'Бренд: герб, цвет, тег, лого', ogPay:'Зарплата', ogReplace:'Заменить', ogFire:'Уволить', ogHire:'Нанять',
+  ccStaff_manager:'Менеджер команды', ccStaff_smm:'SMM-менеджер', ccStaff_coach:'Главный тренер',
+  ogEff_manager:t=>'Игроки просят на '+(4*t)+'% меньше, верность составов +'+(25*t)+'%, за проданных +'+(10*t)+'%',
+  ogEff_smm:t=>'Спонсоры +'+(15*t)+'%, клуб постит тебя: +'+(150*t)+' подписчиков в месяц',
+  ogEff_coach:t=>'Тренер у всех составов — отдельно за него не платишь',
+  ogWhy_manager:'Ведёт переговоры: дешевле контракты, составы реже уходят, дороже продажи',
+  ogWhy_smm:'Ведёт соцсети клуба: больше денег от спонсоров и подписчиков у тебя',
+  ogWhy_coach:'Один тренер на весь клуб вместо тренера за доплату у каждого состава',
+  ogStaffH:'Штат', ogDeptH:'Отделы', ogRosterH:'Составы', ogMarketH:'Трансферный рынок',
+  ogDept_sponsor:'Отдел спонсорства', ogDept_scout:'Скаутинг', ogDept_house:'Геймхаус',
+  ogDeptEff_sponsor:l=>l ? '+$'+(500*l)+' спонсора за каждый состав в месяц' : 'Приводит спонсоров: +$500 за состав на каждый уровень',
+  ogDeptEff_scout:l=>l ? 'Академия находит талант ближе к тебе, в списке на '+(4*l)+' больше' : 'Ищет молодых: сильнее кандидаты в академию',
+  ogDeptEff_house:l=>l ? 'Буткемп у всех составов — отдельно за него не платишь' : 'Общий дом для составов: буткемп всем сразу',
+  ogUpgrade:'Улучшить', ogBuild:'Построить', ogMax:'максимум',
+  ccNewsClubStaff:(c,n,r)=>c+': '+n+' — наш новый '+String(r).toLowerCase(), ccNewsClubBuyback:c=>c+': доля инвестора выкуплена, клуб снова целиком наш'});
+Object.assign(I18N.en, {ogFundH:'Funding', ogFundSelf:'Own money', ogFundSelfSub:'The club is all yours, every dollar stays in it',
+  ogFundInv:'With an investor', ogFundInvSub:(p,b)=>'An investor puts in the rest and takes '+p+'% of all club income until you buy the stake back for $'+b,
+  ogFocusH:'Direction', ogFocusComp:'Esports', ogFocusCompSub:'The classic: 20% of the rosters\' prize money',
+  ogFocusContent:'Content', ogFocusContentSub:'Sponsors ×1.6 and more reach, 10% of prize money',
+  ogFocusAcad:'Academy', ogFocusAcadSub:'Academy from day one with 5 seats, sponsors ×0.8, 15% of prize money',
+  ogFound:'Found', ogInvPill:p=>'investor '+p+'%', ogSponsors:'Sponsors / mo', ogWages:'Roster wages', ogStaffPay:'Staff',
+  ogUpkeep:'Upkeep', ogNet:'Month net', ogCutRow:'Prize cut', ogInvLine:(p,s)=>'The investor takes '+p+'% of income · paid so far $'+s, ogBuyback:'Buy the stake back',
+  ogBrand:'Brand: crest, colour, tag, logo', ogPay:'Salary', ogReplace:'Replace', ogFire:'Let go', ogHire:'Hire',
+  ccStaff_manager:'Team manager', ccStaff_smm:'Social media manager', ccStaff_coach:'Head coach',
+  ogEff_manager:t=>'Players ask '+(4*t)+'% less, roster loyalty +'+(25*t)+'%, sales +'+(10*t)+'%',
+  ogEff_smm:t=>'Sponsors +'+(15*t)+'%, the club posts you: +'+(150*t)+' followers a month',
+  ogEff_coach:t=>'A coach for every roster — no per-roster coaching fee',
+  ogWhy_manager:'Does the talking: cheaper contracts, rosters stay longer, better sale prices',
+  ogWhy_smm:'Runs the club\'s socials: more sponsor money and more followers for you',
+  ogWhy_coach:'One coach for the whole club instead of paying for one per roster',
+  ogStaffH:'Staff', ogDeptH:'Departments', ogRosterH:'Rosters', ogMarketH:'Transfer market',
+  ogDept_sponsor:'Partnerships', ogDept_scout:'Scouting', ogDept_house:'Gaming house',
+  ogDeptEff_sponsor:l=>l ? '+$'+(500*l)+' sponsorship per roster a month' : 'Brings sponsors: +$500 per roster for each level',
+  ogDeptEff_scout:l=>l ? 'The academy finds talent closer to your level, '+(4*l)+' more in the list' : 'Finds young players: stronger academy candidates',
+  ogDeptEff_house:l=>l ? 'A bootcamp for every roster — no per-roster fee' : 'A shared house: a bootcamp for everyone at once',
+  ogUpgrade:'Upgrade', ogBuild:'Build', ogMax:'max level',
+  ccNewsClubStaff:(c,n,r)=>c+': welcome '+n+', our new '+String(r).toLowerCase(), ccNewsClubBuyback:c=>c+': the investor\'s stake is bought back, the club is all ours again'});
+Object.assign(I18N.fr, {ogFundH:'Financement', ogFundSelf:'Fonds propres', ogFundSelfSub:'Le club est entièrement à toi',
+  ogFundInv:'Avec un investisseur', ogFundInvSub:(p,b)=>'L\'investisseur apporte le reste et prend '+p+'% des revenus jusqu\'au rachat pour $'+b,
+  ogFocusH:'Orientation', ogFocusComp:'Esport', ogFocusCompSub:'Classique : 20 % des gains des équipes',
+  ogFocusContent:'Contenu', ogFocusContentSub:'Sponsors ×1,6 et plus d\'audience, 10 % des gains',
+  ogFocusAcad:'Académie', ogFocusAcadSub:'Académie dès le début avec 5 places, sponsors ×0,8, 15 % des gains',
+  ogFound:'Fonder', ogInvPill:p=>'investisseur '+p+' %', ogSponsors:'Sponsors / mois', ogWages:'Salaires des équipes', ogStaffPay:'Staff',
+  ogUpkeep:'Entretien', ogNet:'Solde du mois', ogCutRow:'Part des gains', ogInvLine:(p,s)=>'L\'investisseur prend '+p+' % · déjà versé $'+s, ogBuyback:'Racheter la part',
+  ogBrand:'Marque : blason, couleur, tag, logo', ogPay:'Salaire', ogReplace:'Remplacer', ogFire:'Renvoyer', ogHire:'Embaucher',
+  ccStaff_manager:'Manager d\'équipe', ccStaff_smm:'Community manager', ccStaff_coach:'Coach principal',
+  ogEff_manager:t=>'Joueurs '+(4*t)+' % moins chers, fidélité +'+(25*t)+' %, ventes +'+(10*t)+' %',
+  ogEff_smm:t=>'Sponsors +'+(15*t)+' %, le club te met en avant : +'+(150*t)+' abonnés par mois',
+  ogEff_coach:t=>'Un coach pour chaque équipe, sans supplément',
+  ogWhy_manager:'Négocie : contrats moins chers, équipes plus fidèles, meilleures ventes',
+  ogWhy_smm:'Gère les réseaux du club : plus de sponsors et d\'abonnés pour toi',
+  ogWhy_coach:'Un seul coach pour tout le club au lieu d\'un par équipe',
+  ogStaffH:'Staff', ogDeptH:'Départements', ogRosterH:'Équipes', ogMarketH:'Marché des transferts',
+  ogDept_sponsor:'Partenariats', ogDept_scout:'Recrutement', ogDept_house:'Gaming house',
+  ogDeptEff_sponsor:l=>l ? '+$'+(500*l)+' de sponsor par équipe et par mois' : 'Amène des sponsors : +$500 par équipe par niveau',
+  ogDeptEff_scout:l=>l ? 'L\'académie trouve des talents plus proches de ton niveau, '+(4*l)+' de plus' : 'Repère les jeunes : meilleurs candidats pour l\'académie',
+  ogDeptEff_house:l=>l ? 'Bootcamp pour toutes les équipes, sans supplément' : 'Une maison commune : bootcamp pour tous',
+  ogUpgrade:'Améliorer', ogBuild:'Construire', ogMax:'niveau max',
+  ccNewsClubStaff:(c,n,r)=>c+' : bienvenue à '+n+', notre nouveau '+String(r).toLowerCase(), ccNewsClubBuyback:c=>c+' : part de l\'investisseur rachetée'});
+Object.assign(I18N.it, {ogFundH:'Fondi', ogFundSelf:'Soldi propri', ogFundSelfSub:'Il club è tutto tuo',
+  ogFundInv:'Con un investitore', ogFundInvSub:(p,b)=>'L\'investitore mette il resto e prende il '+p+'% delle entrate finché non ricompri la quota per $'+b,
+  ogFocusH:'Indirizzo', ogFocusComp:'Esport', ogFocusCompSub:'Classico: 20% dei premi dei roster',
+  ogFocusContent:'Contenuti', ogFocusContentSub:'Sponsor ×1,6 e più pubblico, 10% dei premi',
+  ogFocusAcad:'Accademia', ogFocusAcadSub:'Accademia da subito con 5 posti, sponsor ×0,8, 15% dei premi',
+  ogFound:'Fonda', ogInvPill:p=>'investitore '+p+'%', ogSponsors:'Sponsor / mese', ogWages:'Stipendi roster', ogStaffPay:'Staff',
+  ogUpkeep:'Mantenimento', ogNet:'Saldo del mese', ogCutRow:'Quota premi', ogInvLine:(p,s)=>'All\'investitore va il '+p+'% · già versati $'+s, ogBuyback:'Ricompra la quota',
+  ogBrand:'Brand: stemma, colore, tag, logo', ogPay:'Stipendio', ogReplace:'Sostituisci', ogFire:'Licenzia', ogHire:'Assumi',
+  ccStaff_manager:'Team manager', ccStaff_smm:'Social media manager', ccStaff_coach:'Allenatore capo',
+  ogEff_manager:t=>'Giocatori chiedono il '+(4*t)+'% in meno, fedeltà +'+(25*t)+'%, vendite +'+(10*t)+'%',
+  ogEff_smm:t=>'Sponsor +'+(15*t)+'%, il club ti promuove: +'+(150*t)+' follower al mese',
+  ogEff_coach:t=>'Un coach per ogni roster, senza supplemento',
+  ogWhy_manager:'Tratta: contratti più economici, roster più fedeli, vendite migliori',
+  ogWhy_smm:'Gestisce i social del club: più sponsor e più follower per te',
+  ogWhy_coach:'Un solo coach per tutto il club invece di uno per roster',
+  ogStaffH:'Staff', ogDeptH:'Reparti', ogRosterH:'Roster', ogMarketH:'Mercato',
+  ogDept_sponsor:'Partnership', ogDept_scout:'Scouting', ogDept_house:'Gaming house',
+  ogDeptEff_sponsor:l=>l ? '+$'+(500*l)+' di sponsor per roster al mese' : 'Porta sponsor: +$500 per roster per livello',
+  ogDeptEff_scout:l=>l ? 'L\'accademia trova talenti più vicini al tuo livello, '+(4*l)+' in più' : 'Cerca giovani: candidati migliori per l\'accademia',
+  ogDeptEff_house:l=>l ? 'Bootcamp per tutti i roster, senza supplemento' : 'Una casa comune: bootcamp per tutti',
+  ogUpgrade:'Migliora', ogBuild:'Costruisci', ogMax:'livello max',
+  ccNewsClubStaff:(c,n,r)=>c+': benvenuto '+n+', nostro nuovo '+String(r).toLowerCase(), ccNewsClubBuyback:c=>c+': quota dell\'investitore ricomprata'});
+Object.assign(I18N.pt, {ogFundH:'Dinheiro', ogFundSelf:'Dinheiro próprio', ogFundSelfSub:'O clube é todo seu',
+  ogFundInv:'Com investidor', ogFundInvSub:(p,b)=>'O investidor põe o resto e leva '+p+'% da receita até você recomprar a parte por $'+b,
+  ogFocusH:'Direção', ogFocusComp:'Esports', ogFocusCompSub:'Clássico: 20% da premiação das equipes',
+  ogFocusContent:'Conteúdo', ogFocusContentSub:'Patrocínio ×1,6 e mais alcance, 10% da premiação',
+  ogFocusAcad:'Academia', ogFocusAcadSub:'Academia desde o início com 5 vagas, patrocínio ×0,8, 15% da premiação',
+  ogFound:'Fundar', ogInvPill:p=>'investidor '+p+'%', ogSponsors:'Patrocínio / mês', ogWages:'Salários das equipes', ogStaffPay:'Staff',
+  ogUpkeep:'Manutenção', ogNet:'Saldo do mês', ogCutRow:'Parte da premiação', ogInvLine:(p,s)=>'O investidor leva '+p+'% · já recebeu $'+s, ogBuyback:'Recomprar a parte',
+  ogBrand:'Marca: escudo, cor, tag, logo', ogPay:'Salário', ogReplace:'Trocar', ogFire:'Demitir', ogHire:'Contratar',
+  ccStaff_manager:'Team manager', ccStaff_smm:'Social media', ccStaff_coach:'Técnico principal',
+  ogEff_manager:t=>'Jogadores pedem '+(4*t)+'% menos, lealdade +'+(25*t)+'%, vendas +'+(10*t)+'%',
+  ogEff_smm:t=>'Patrocínio +'+(15*t)+'%, o clube te divulga: +'+(150*t)+' seguidores por mês',
+  ogEff_coach:t=>'Técnico para todas as equipes, sem custo extra',
+  ogWhy_manager:'Negocia: contratos mais baratos, equipes mais fiéis, vendas melhores',
+  ogWhy_smm:'Cuida das redes do clube: mais patrocínio e mais seguidores para você',
+  ogWhy_coach:'Um técnico para o clube todo em vez de um por equipe',
+  ogStaffH:'Staff', ogDeptH:'Departamentos', ogRosterH:'Equipes', ogMarketH:'Mercado',
+  ogDept_sponsor:'Parcerias', ogDept_scout:'Olheiros', ogDept_house:'Gaming house',
+  ogDeptEff_sponsor:l=>l ? '+$'+(500*l)+' de patrocínio por equipe por mês' : 'Traz patrocinadores: +$500 por equipe por nível',
+  ogDeptEff_scout:l=>l ? 'A academia acha talentos mais perto do seu nível, '+(4*l)+' a mais' : 'Procura jovens: candidatos melhores para a academia',
+  ogDeptEff_house:l=>l ? 'Bootcamp para todas as equipes, sem custo extra' : 'Uma casa em comum: bootcamp para todos',
+  ogUpgrade:'Melhorar', ogBuild:'Construir', ogMax:'nível máx.',
+  ccNewsClubStaff:(c,n,r)=>c+': bem-vindo '+n+', nosso novo '+String(r).toLowerCase(), ccNewsClubBuyback:c=>c+': parte do investidor recomprada'});
 Object.assign(I18N.ru, {lfRateYou:'Твоя оценка'}); Object.assign(I18N.en, {lfRateYou:'Your rating'});
 Object.assign(I18N.fr, {lfRateYou:'Ta note'}); Object.assign(I18N.it, {lfRateYou:'Il tuo voto'}); Object.assign(I18N.pt, {lfRateYou:'Tua nota'});
 Object.assign(I18N.ru, {stPrizeEach:'каждому'}); Object.assign(I18N.en, {stPrizeEach:'each'});
@@ -125935,6 +126128,106 @@ const CC_CLUB_SEATS=3;         // сколько дуо держит клуб
 const CC_CLUB_CUT=0.2;         // доля клуба с призовых состава
 const CC_CLUB_SPONSOR=1000;    // спонсор за дуо в месяц
 function careerClub(){ const cr=CAREER && CAREER.career; return (cr && cr.club) || null; }
+/* ===== УСТРОЙСТВО СВОЕЙ ОРГАНИЗАЦИИ: деньги, направление, штат, отделы ===============
+   Его просьба 29.09: «улучшить вариативность в создании орги, управление, нанять менеджеров,
+   SMM и т. д., как в реальной организации».
+
+   ДЕНЬГИ ПРИ ОСНОВАНИИ. Свои — миллион, клуб целиком твой. С инвестором — вносишь
+   CC_CLUB_FUND.investor.pay, остальное даёт он и забирает долю share со всего дохода клуба
+   (спонсоры и доля с призовых), пока долю не выкупишь.
+   НАПРАВЛЕНИЕ. Киберспорт — классика (20% с призовых). Контент — спонсоры и охват выше, доля
+   с призовых ниже. Академия — своя академия с первого дня и больше мест в ней, спонсор ниже.
+   ШТАТ — реальные люди сцены из тех же списков, что личный найм: менеджеры (CC_AGENTS),
+   SMM (CC_SMM), тренеры (CC_COACHES). Уровень 1–3 — от их веса: подписчики или цена тренера.
+   ОТДЕЛЫ — постройка разово и содержание в месяц, по уровням.
+   Все числа здесь — оценка режима: открытых зарплат штата киберспортивных клубов нет. */
+const CC_CLUB_FUND={
+  self:    {pay:CC_CLUB_COST, share:0},
+  investor:{pay:350000, share:0.3, buyback:900000}
+};
+const CC_CLUB_FOCUS={
+  comp:   {cut:0.20, sponsor:1.0, reach:1.0},
+  content:{cut:0.10, sponsor:1.6, reach:1.6},
+  academy:{cut:0.15, sponsor:0.8, reach:1.0, acadFree:true, acadSeats:5}
+};
+function ccClubFocus(club){ return CC_CLUB_FOCUS[(club && club.focus)||'comp'] || CC_CLUB_FOCUS.comp; }
+function ccClubCut(club){ return ccClubFocus(club).cut; }
+function ccClubShare(club){ return (club && club.investor && !club.investor.bought) ? (club.investor.share||0) : 0; }
+function ccClubAcadMax(club){ return ccClubFocus(club).acadSeats || CC_CLUB_ACAD_SEATS; }
+// Штат.
+const CC_CLUB_ROLES=['manager', 'smm', 'coach'];
+function ccStaffPool(role){
+  if(role==='manager') return (typeof CC_AGENTS!=='undefined' ? CC_AGENTS : []).map(a=>({id:a.at, name:a.name, at:a.at, photo:a.photo, x:a.x||0}));
+  if(role==='smm')     return (typeof CC_SMM!=='undefined' ? CC_SMM : []).map(a=>({id:a.at, name:a.name, at:a.at, photo:a.photo, x:a.x||0}));
+  return (typeof CC_COACHES!=='undefined' ? CC_COACHES : []).map(c=>({id:c.id, name:c.name, at:c.at, photo:c.photo, cost:c.cost}));
+}
+function ccStaffTier(p){
+  if(!p) return 0;
+  if(p.cost) return p.cost>=3500 ? 3 : p.cost>=3000 ? 2 : 1;
+  const x=p.x||0; return x>=5000 ? 3 : x>=1500 ? 2 : 1;
+}
+function ccStaffPay(p){
+  if(!p) return 0;
+  if(p.cost) return p.cost;
+  return Math.round((700+Math.min(3300, (p.x||0)*0.2))/50)*50;
+}
+function ccClubStaff(role){ const c=careerClub(); return (c && c.staff && c.staff[role]) || null; }
+function ccStaffT(role){ const s=ccClubStaff(role); return s ? (s.t||1) : 0; }
+function careerClubHire(role, id){
+  const club=careerClub(); if(!club || CC_CLUB_ROLES.indexOf(role)<0) return false;
+  const p=ccStaffPool(role).find(x=>x.id===id); if(!p) return false;
+  club.staff=club.staff||{};
+  club.staff[role]={id:p.id, name:p.name, at:p.at||null, photo:p.photo||null, t:ccStaffTier(p), pay:ccStaffPay(p), since:careerToday()};
+  careerNews('good', 'ccNewsClubStaff', [club.name, p.name, L()['ccStaff_'+role]], {by:ccOrgBy(club.name)});
+  careerSave();
+  return true;
+}
+function careerClubFire(role){
+  const club=careerClub(); if(!club || !club.staff || !club.staff[role]) return false;
+  delete club.staff[role];
+  careerSave();
+  return true;
+}
+// Отделы.
+const CC_CLUB_DEPTS={
+  sponsor:{build:[60000, 150000, 300000], keep:[800, 1600, 2800]},   // +$500 спонсора за состав на уровень
+  scout:  {build:[40000, 100000, 200000], keep:[500, 1000, 1800]},   // академия: талант ближе к тебе, список шире
+  house:  {build:[250000], keep:[3500]}                              // геймхаус: буткемп у всех составов
+};
+function ccDeptLv(k){ const c=careerClub(); return (c && c.dept && c.dept[k]) || 0; }
+function ccDeptNextCost(k){ const d=CC_CLUB_DEPTS[k], lv=ccDeptLv(k); return (d && lv<d.build.length) ? d.build[lv] : 0; }
+function ccClubDeptKeep(club){
+  let s=0; const dp=(club && club.dept)||{};
+  Object.keys(CC_CLUB_DEPTS).forEach(k=>{ const lv=dp[k]||0; if(lv) s+=CC_CLUB_DEPTS[k].keep[lv-1]; });
+  return s;
+}
+function careerClubDeptUp(k){
+  const club=careerClub(), cr=CAREER && CAREER.career; if(!club || !cr || !CC_CLUB_DEPTS[k]) return false;
+  const cost=ccDeptNextCost(k); if(!cost) return false;
+  // Платит касса клуба, недостающее — твой баланс.
+  const fromClub=Math.min(cost, Math.max(0, club.cash||0)), rest=cost-fromClub;
+  if((cr.balance||0)<rest) return false;
+  club.cash=(club.cash||0)-fromClub; cr.balance=(cr.balance||0)-rest;
+  club.dept=club.dept||{}; club.dept[k]=(club.dept[k]||0)+1;
+  careerSave();
+  return true;
+}
+function careerClubBuyback(){
+  const club=careerClub(), cr=CAREER && CAREER.career; if(!club || !cr || !ccClubShare(club)) return false;
+  const cost=CC_CLUB_FUND.investor.buyback;
+  const fromClub=Math.min(cost, Math.max(0, club.cash||0)), rest=cost-fromClub;
+  if((cr.balance||0)<rest) return false;
+  club.cash=(club.cash||0)-fromClub; cr.balance=(cr.balance||0)-rest;
+  club.investor.bought=careerToday();
+  careerNews('good', 'ccNewsClubBuyback', [club.name], {by:ccOrgBy(club.name)});
+  careerSave();
+  return true;
+}
+// Спонсор за один наёмный состав в месяц — база, отдел, направление, SMM.
+function ccClubSponsorPer(club){
+  return Math.round((CC_CLUB_SPONSOR+500*ccDeptLv('sponsor'))*ccClubFocus(club).sponsor*(1+0.15*ccStaffT('smm')));
+}
+function ccClubStaffPay(club){ return CC_CLUB_ROLES.reduce((s, r)=>s+(((club && club.staff && club.staff[r])||{}).pay||0), 0); }
 /* Плитка клуба — на вкладке магазина, там же, где тратятся деньги. Пока клуба нет:
    строка с ценой и поле для названия. Есть: касса, состав с зарплатами и что каждое
    дуо принесло, и список свободных пар. */
@@ -126051,67 +126344,66 @@ function ccClubWall(){
 function careerClubHTML(){
   const cr=CAREER && CAREER.career; if(!cr) return '';
   const T=L(), club=careerClub();
+  /* ЭКРАН СВОЕЙ ОРГАНИЗАЦИИ — плитками хаба (его скрин 41, 29.09: «сделай дизайн в нашем
+     стиле, то чет странно выглядит»): вместо длинных строк на всю ширину — карточки. */
+  const pips=(n, of)=>'<i class="og-pips">'+Array.from({length:of}, (_, i)=>'<b class="'+(i<n?'on':'')+'"></b>').join('')+'</i>';
+  const money=v=>'$'+ccNum(Math.round(v||0));
   if(!club){
     const buyout=careerClubBuyout(), left=(CAREER.org && !CAREER.org.own) ? CAREER.org.name : null;
-    const can=(cr.balance||0)>=CC_CLUB_COST+buyout;
-    /* ЦЕНА — ЦЕННИКОМ, А НЕ ПОЛОСОЙ. Отзыв: «пусть не так отчётливо выглядит
-       кнопка покупки, а как выше типо нельзя купить». В хабе кнопки во всю ширину
-       (#screen-career-hub .ch-sign), и миллион растягивался жёлтой лентой через весь
-       экран, съедая поле с названием, — да ещё и звал нажать, когда денег нет. У
-       магазина для этого давно есть своя строка: cc-buy — имя слева, ценник справа
-       узкой кнопкой, и она гаснет, когда купить нельзя (.cc-buy .ch-sign:disabled).
-       Берём её. */
-    return '<div class="ch-tile cc-club cc-club-pre"><h4>'+esc(T.ccClubTitle)+'</h4>'+
+    const P=CC_CLUB_PICK, price=CC_CLUB_FUND[P.fund].pay+buyout;
+    const can=(cr.balance||0)>=price;
+    const choice=(k, v, title, sub, extra)=>'<button class="og-choice'+(P[k]===v?' on':'')+'" onclick="careerClubPick(\''+k+'\',\''+v+'\')">'+
+      '<b>'+esc(title)+'</b>'+(extra ? '<i>'+extra+'</i>' : '')+'<em>'+esc(sub)+'</em></button>';
+    return '<div class="ch-tile cc-club cc-club-pre og og-pre"><h4>'+esc(T.ccClubTitle)+'</h4>'+
       ccClubWall()+
       '<div class="ch-hint">'+esc(T.ccClubHint)+'</div>'+
-      '<div class="ch-row"><em>'+esc(T.ccClubKeep)+'</em><b>$'+ccNum(CC_CLUB_KEEP)+' '+esc(T.ccClubMonth)+'</b></div>'+
-      (left ? '<div class="ch-row"><em>'+esc(T.ccClubQuit(left))+'</em><b>$'+ccNum(buyout)+'</b></div>' : '')+
-      '<div class="cc-buy cc-club-found">'+
+      '<h5 class="og-sec">'+esc(T.ogFundH)+'</h5>'+
+      '<div class="og-choices">'+
+        choice('fund', 'self', T.ogFundSelf, T.ogFundSelfSub, money(CC_CLUB_FUND.self.pay))+
+        choice('fund', 'investor', T.ogFundInv, T.ogFundInvSub(Math.round(CC_CLUB_FUND.investor.share*100), ccNum(CC_CLUB_FUND.investor.buyback)), money(CC_CLUB_FUND.investor.pay))+
+      '</div>'+
+      '<h5 class="og-sec">'+esc(T.ogFocusH)+'</h5>'+
+      '<div class="og-choices og-choices-3">'+
+        choice('focus', 'comp', T.ogFocusComp, T.ogFocusCompSub)+
+        choice('focus', 'content', T.ogFocusContent, T.ogFocusContentSub)+
+        choice('focus', 'academy', T.ogFocusAcad, T.ogFocusAcadSub)+
+      '</div>'+
+      '<div class="og-kv"><span>'+esc(T.ccClubKeep)+'</span><b>'+money(CC_CLUB_KEEP)+' '+esc(T.ccClubMonth)+'</b></div>'+
+      (left ? '<div class="og-kv"><span>'+esc(T.ccClubQuit(left))+'</span><b>'+money(buyout)+'</b></div>' : '')+
+      '<div class="og-found">'+
         '<input id="ccClubName" maxlength="24" placeholder="'+esc(T.ccClubNamePh)+'">'+
-        '<button class="ch-sign"'+(can?'':' disabled')+' onclick="careerClubNew()">$'+ccNum(CC_CLUB_COST+buyout)+'</button>'+
+        '<button class="og-btn og-btn-go"'+(can?'':' disabled')+' onclick="careerClubNew()">'+esc(T.ogFound)+' · '+money(price)+'</button>'+
       '</div>'+
       (can ? '' : '<div class="ch-hint">'+esc(T.ccClubNoCash)+'</div>')+'</div>';
   }
   const roster=club.roster||[];
-  const perk=r=>[r.camp?T.ccClubCamp:'', r.coach?T.ccClubCoach:''].filter(Boolean).join(' · ');
-  const rows=roster.map(r=>
-    '<div class="ch-row cc-club-row"><em>'+esc((r.who||[]).join(' & '))+
-      (r.mine ? '<i class="cc-club-say">'+esc(T.ccClubMine)+'</i>' : '')+
-      (r.acad ? '<i class="cc-club-say">'+esc(T.ccClubYoung)+'</i>' : '')+
-      (r.offer ? '<i class="cc-club-say buy">'+esc(T.ccClubPoach(r.offer.org))+'</i>' : '')+
-      (perk(r) ? '<i class="cc-club-say perk">'+esc(perk(r))+'</i>' : '')+'</em>'+
-      '<span>'+r.ovr+' · $'+ccNum((r.salary||0)+careerClubPerkCost(r))+' '+esc(T.ccClubMonth)+
-        (r.won ? ' · '+esc(T.ccClubWon)+' $'+ccNum(Math.round(r.won)) : '')+'</span>'+
-      (r.offer
-        ? '<button class="ch-sign" onclick="careerClubLet(\''+esc(r.id)+'\')">'+esc(T.ccClubLet)+' $'+ccNum(r.offer.sum)+'</button>'+
-          '<button class="ch-sign cc-club-drop" onclick="careerClubNo(\''+esc(r.id)+'\')">'+esc(T.ccClubStay)+'</button>'
-        : (r.acad && careerClubSeats()<CC_CLUB_SEATS
-            ? '<button class="ch-sign" onclick="careerClubUp(\''+esc(r.id)+'\')">'+esc(T.ccClubUp)+'</button>' : '')+
-          '<button class="ch-sign cc-club-drop" onclick="careerClubOut(\''+esc(r.id)+'\')">'+esc(T.ccClubDrop)+'</button>')+'</div>').join('');
-  const talks=careerClubTalks();
-  const say=t=>!t ? '' : t.state==='yes' ? '' :
-    t.state==='ask' ? '<i class="cc-club-say">'+esc(T.ccClubSayAsk(ccNum(t.ask)))+'</i>' :
-    t.state==='no'  ? '<i class="cc-club-say no">'+esc(T.ccClubSayNo)+'</i>' :
-                      '<i class="cc-club-say no">'+esc(T.ccClubSayWait)+'</i>';
-  /* Одна строка разговора на всех: свой напарник торгуется ровно так же, как чужое дуо.
-     Галочки — это те самые условия, которые можно обговаривать. */
-  const deal=d=>{
-    const t=talks[d.id], base=(t && t.ask) ? t.ask : d.salary;
-    const ck=(k, on)=>'<label class="cc-club-ck"><input type="checkbox" id="ccClub'+k+'_'+esc(d.id)+'"'+(on?' checked':'')+
-      ' onchange="careerClubPerk(\''+esc(d.id)+'\')">'+esc(k==='Camp'?T.ccClubCamp:T.ccClubCoach)+'</label>';
-    const perks=CC_CLUB_PERKS[d.id]||{};
-    const ask=careerClubAsking(base, perks);
-    return '<div class="ch-row cc-club-row"><em>'+esc(d.who.join(' & '))+say(t)+
-        (d.mine ? '<i class="cc-club-say">'+esc(T.ccClubMine)+'</i>' : '')+
-        (d.org ? '<i class="cc-club-say buy">'+esc(T.ccClubBuyout(d.org))+' $'+ccNum(d.buyout)+'</i>' : '')+
-        '<i class="cc-club-perks">'+ck('Camp', !!perks.camp)+ck('Coach', !!perks.coach)+'</i></em>'+
-      '<span>'+d.ovr+' · $'+ccNum(ask)+' '+esc(T.ccClubMonth)+'</span>'+
-      '<input class="cc-club-sum" id="ccClubSum_'+esc(d.id)+'" value="'+ask+'" inputmode="numeric">'+
-      '<button class="ch-sign" onclick="careerClubAsk(\''+esc(d.id)+'\')">'+esc(T.ccClubTalk)+'</button></div>';
-  };
-  const mate=careerClubMateFree();
-  const free=(careerClubSeats()<CC_CLUB_SEATS ? careerClubFree(CC_CLUB_Q) : []).map(deal).join('');
-  const crest='<div class="cc-club-crest-box">'+careerClubCrest(64, 'cc-club-big')+
+  const focus=club.focus||'comp', share=ccClubShare(club);
+  // ---- финансы месяца
+  const hired=roster.filter(r=>!r.mine).length;
+  const sponsor=ccClubSponsorPer(club)*hired, inv=Math.round(sponsor*share);
+  const wages=roster.reduce((a,r)=>a+(r.salary||0)+careerClubPerkCost(r), 0);
+  const staffPay=ccClubStaffPay(club);
+  const keep=CC_CLUB_KEEP+(club.acad ? CC_CLUB_ACAD_KEEP : 0)+ccClubDeptKeep(club);
+  const net=sponsor-inv-wages-staffPay-keep;
+  const stat=(label, v, cls)=>'<div class="og-stat'+(cls?' '+cls:'')+'"><em>'+esc(label)+'</em><b>'+v+'</b></div>';
+  const head='<div class="og-head">'+careerClubCrest(56, 'cc-club-big')+
+    '<div class="og-head-t"><b>'+esc(club.name)+'</b>'+
+      '<span><i class="og-pill">'+esc(T['ogFocus'+({comp:'Comp', content:'Content', academy:'Acad'})[focus]])+'</i>'+
+      (share ? '<i class="og-pill og-pill-inv">'+esc(T.ogInvPill(Math.round(share*100)))+'</i>' : '')+'</span></div>'+
+    '<div class="og-cash"><em>'+esc(T.ccClubCash)+'</em><b class="'+((club.cash||0)<0?'neg':'')+'">'+money(club.cash)+'</b>'+
+      ((club.cash||0)>0 ? '<button class="og-btn og-btn-sm" onclick="careerClubTake2()">'+esc(T.ccClubOut2)+'</button>' : '')+'</div></div>';
+  const fin='<div class="og-stats">'+
+    stat(T.ogSponsors, '+'+money(sponsor-inv), 'up')+
+    stat(T.ogWages, '−'+money(wages))+
+    stat(T.ogStaffPay, '−'+money(staffPay))+
+    stat(T.ogUpkeep, '−'+money(keep))+
+    stat(T.ogNet, (net>=0?'+':'−')+money(Math.abs(net)), net>=0?'up':'down')+
+    stat(T.ogCutRow, Math.round(ccClubCut(club)*100)+'%')+
+  '</div>'+
+  (share ? '<div class="og-inv"><span>'+esc(T.ogInvLine(Math.round(share*100), ccNum(Math.round(club.inv||0))))+'</span>'+
+    '<button class="og-btn og-btn-sm" onclick="careerClubBuybackBtn()">'+esc(T.ogBuyback)+' · '+money(CC_CLUB_FUND.investor.buyback)+'</button></div>' : '');
+  // ---- бренд (герб) — свёрнут
+  const brand='<details class="og-brand"><summary>'+esc(T.ogBrand)+'</summary><div class="cc-club-crest-box">'+careerClubCrest(64, 'cc-club-big')+
     '<div class="cc-club-pick">'+
       '<div class="cc-club-shapes">'+CC_CLUB_SHAPES.map(sh=>
         '<button class="cc-club-sh'+(ccClubShape(club)===sh?' on':'')+'" onclick="careerClubSet(\'shape\',\''+sh+'\')">'+
@@ -126120,34 +126412,98 @@ function careerClubHTML(){
         '<button class="cc-club-hue'+(ccClubHue(club)===h?' on':'')+'" style="background:hsl('+h+' 55% 45%)" onclick="careerClubSet(\'hue\','+h+')"></button>').join('')+'</div>'+
       '<div class="cc-club-tagrow">'+
         '<input id="ccClubTag" maxlength="3" value="'+esc(ccClubTag(club))+'" oninput="careerClubSet(\'tag\', this.value)">'+
-        '<label class="ch-sign cc-club-file">'+esc(T.ccClubLogo)+'<input type="file" accept="image/*" hidden onchange="careerClubLogoPick(this)"></label>'+
-        (club.logo ? '<button class="ch-sign cc-club-drop" onclick="careerClubLogoClear()">'+esc(T.ccClubLogoOff)+'</button>' : '')+
-      '</div>'+
-    '</div></div>';
-  return '<div class="ch-tile cc-club"><h4>'+careerClubCrest(18, 'cc-club-crest')+esc(club.name)+'</h4>'+
-    crest+
-    '<div class="ch-hint">'+esc(T.ccClubCut(Math.round(CC_CLUB_CUT*100)))+'</div>'+
-    '<div class="ch-row"><em>'+esc(T.ccClubCash)+'</em><b class="'+((club.cash||0)<0?'':'ch-goal-met')+'">$'+ccNum(Math.round(club.cash||0))+'</b>'+
-      ((club.cash||0)>0 ? '<button class="ch-sign cc-club-cash" onclick="careerClubTake2()">'+esc(T.ccClubOut2)+'</button>' : '')+'</div>'+
-    '<div class="ch-row"><em>'+esc(T.ccClubIn)+' · '+esc(T.ccClubOut)+'</em><b>$'+ccNum(Math.round(club.got||0))+' · $'+ccNum(Math.round(club.paid||0))+'</b></div>'+
-    '<div class="ch-row"><em>'+esc(T.ccClubKeep)+'</em><b>$'+ccNum(CC_CLUB_KEEP)+' '+esc(T.ccClubMonth)+'</b></div>'+
-    '<div class="ch-row"><em>'+esc(T.ccClubSeats(careerClubSeats(), CC_CLUB_SEATS))+'</em><b></b></div>'+
-    (rows || '<div class="ch-empty">'+esc(T.ccClubEmpty)+'</div>')+
-    (mate ? '<div class="ch-hint">'+esc(T.ccClubMateHint)+'</div>'+deal(mate) : '')+
+        '<label class="og-btn og-btn-sm cc-club-file">'+esc(T.ccClubLogo)+'<input type="file" accept="image/*" hidden onchange="careerClubLogoPick(this)"></label>'+
+        (club.logo ? '<button class="og-btn og-btn-sm og-btn-ghost" onclick="careerClubLogoClear()">'+esc(T.ccClubLogoOff)+'</button>' : '')+
+      '</div></div></div></details>';
+  // ---- штат
+  const face=p=>p && p.photo ? '<img class="og-face" src="'+PHOTO_DIR+esc(p.photo)+'" alt="" loading="lazy" onerror="this.remove()">' : '<span class="og-face og-face-none"></span>';
+  const staffCard=role=>{
+    const s=ccClubStaff(role), open=CC_CLUB_STAFF_OPEN===role;
+    const eff=T['ogEff_'+role](s ? s.t : 0);
+    let body;
+    if(s){
+      body='<div class="og-person">'+face(s)+'<div><b>'+esc(s.name)+'</b>'+(s.at ? '<em>@'+esc(s.at)+'</em>' : '')+pips(s.t, 3)+'</div></div>'+
+        '<div class="og-kv"><span>'+esc(T.ogPay)+'</span><b>'+money(s.pay)+' '+esc(T.ccClubMonth)+'</b></div>'+
+        '<div class="og-eff">'+esc(eff)+'</div>'+
+        '<div class="og-acts"><button class="og-btn og-btn-sm" onclick="careerClubStaffOpen(\''+role+'\')">'+esc(T.ogReplace)+'</button>'+
+        '<button class="og-btn og-btn-sm og-btn-ghost" onclick="careerClubFireBtn(\''+role+'\')">'+esc(T.ogFire)+'</button></div>';
+    } else {
+      body='<div class="og-eff og-eff-off">'+esc(T['ogWhy_'+role])+'</div>'+
+        '<div class="og-acts"><button class="og-btn og-btn-go og-btn-sm" onclick="careerClubStaffOpen(\''+role+'\')">'+esc(T.ogHire)+'</button></div>';
+    }
+    const list=open ? '<div class="og-cands">'+ccStaffPool(role)
+      .filter(p=>!s || p.id!==s.id)
+      .sort((a,b)=>ccStaffTier(b)-ccStaffTier(a) || ccStaffPay(a)-ccStaffPay(b))
+      .map(p=>'<div class="og-cand">'+face(p)+'<div class="og-cand-t"><b>'+esc(p.name)+'</b>'+pips(ccStaffTier(p), 3)+
+        '<em>'+money(ccStaffPay(p))+' '+esc(T.ccClubMonth)+'</em></div>'+
+        '<button class="og-btn og-btn-sm og-btn-go" onclick="careerClubHireBtn(\''+role+'\',\''+esc(p.id)+'\')">'+esc(T.ogHire)+'</button></div>').join('')+'</div>' : '';
+    return '<div class="og-card'+(s?' on':'')+'"><h6>'+esc(T['ccStaff_'+role])+'</h6>'+body+list+'</div>';
+  };
+  const staff='<h5 class="og-sec">'+esc(T.ogStaffH)+'</h5><div class="og-grid">'+CC_CLUB_ROLES.map(staffCard).join('')+'</div>';
+  // ---- отделы
+  const deptCard=k=>{
+    const d=CC_CLUB_DEPTS[k], lv=ccDeptLv(k), max=d.build.length, cost=ccDeptNextCost(k);
+    const can=cost && ((club.cash||0)+(cr.balance||0))>=cost;
+    return '<div class="og-card'+(lv?' on':'')+'"><h6>'+esc(T['ogDept_'+k])+'</h6>'+pips(lv, max)+
+      '<div class="og-eff'+(lv?'':' og-eff-off')+'">'+esc(T['ogDeptEff_'+k](lv))+'</div>'+
+      (lv ? '<div class="og-kv"><span>'+esc(T.ogUpkeep)+'</span><b>'+money(d.keep[lv-1])+' '+esc(T.ccClubMonth)+'</b></div>' : '')+
+      '<div class="og-acts">'+(cost
+        ? '<button class="og-btn og-btn-sm og-btn-go"'+(can?'':' disabled')+' onclick="careerClubDeptBtn(\''+k+'\')">'+esc(lv?T.ogUpgrade:T.ogBuild)+' · '+money(cost)+'</button>'
+        : '<i class="og-max">'+esc(T.ogMax)+'</i>')+'</div></div>';
+  };
+  const depts='<h5 class="og-sec">'+esc(T.ogDeptH)+'</h5><div class="og-grid">'+Object.keys(CC_CLUB_DEPTS).map(deptCard).join('')+'</div>';
+  // ---- составы
+  const perk=r=>[(r.camp||ccClubCampAll())?T.ccClubCamp:'', (r.coach||ccClubCoachAll())?T.ccClubCoach:''].filter(Boolean);
+  const tag=(t, cls)=>'<i class="og-tag'+(cls?' '+cls:'')+'">'+esc(t)+'</i>';
+  const rosterCard=r=>'<div class="og-card og-duo">'+
+      '<div class="og-duo-top"><b>'+esc((r.who||[]).join(' & '))+'</b><i class="og-ovr">'+r.ovr+'</i></div>'+
+      '<div class="og-tags">'+(r.mine?tag(T.ccClubMine, 'mine'):'')+(r.acad?tag(T.ccClubYoung):'')+perk(r).map(p=>tag(p, 'perk')).join('')+
+        (r.offer?tag(T.ccClubPoach(r.offer.org), 'buy'):'')+'</div>'+
+      '<div class="og-kv"><span>'+esc(T.ogPay)+'</span><b>'+money((r.salary||0)+careerClubPerkCost(r))+' '+esc(T.ccClubMonth)+'</b></div>'+
+      (r.won ? '<div class="og-kv"><span>'+esc(T.ccClubWon)+'</span><b>'+money(r.won)+'</b></div>' : '')+
+      '<div class="og-acts">'+(r.offer
+        ? '<button class="og-btn og-btn-sm og-btn-go" onclick="careerClubLet(\''+esc(r.id)+'\')">'+esc(T.ccClubLet)+' '+money(r.offer.sum)+'</button>'+
+          '<button class="og-btn og-btn-sm og-btn-ghost" onclick="careerClubNo(\''+esc(r.id)+'\')">'+esc(T.ccClubStay)+'</button>'
+        : (r.acad && careerClubSeats()<CC_CLUB_SEATS ? '<button class="og-btn og-btn-sm" onclick="careerClubUp(\''+esc(r.id)+'\')">'+esc(T.ccClubUp)+'</button>' : '')+
+          '<button class="og-btn og-btn-sm og-btn-ghost" onclick="careerClubOut(\''+esc(r.id)+'\')">'+esc(T.ccClubDrop)+'</button>')+'</div></div>';
+  // ---- рынок: те же разговоры и галочки, что были (id полей сохранены)
+  const talks=careerClubTalks();
+  const say=t=>!t ? '' : t.state==='yes' ? '' :
+    t.state==='ask' ? tag(T.ccClubSayAsk(ccNum(t.ask))) :
+    t.state==='no'  ? tag(T.ccClubSayNo, 'no') : tag(T.ccClubSayWait, 'no');
+  const deal=d=>{
+    const t=talks[d.id], base=(t && t.ask) ? t.ask : d.salary;
+    const perks=CC_CLUB_PERKS[d.id]||{};
+    const ck=(k, on, all)=>all ? '' : '<label class="og-toggle'+(on?' on':'')+'"><input type="checkbox" id="ccClub'+k+'_'+esc(d.id)+'"'+(on?' checked':'')+
+      ' onchange="careerClubPerk(\''+esc(d.id)+'\')">'+esc(k==='Camp'?T.ccClubCamp:T.ccClubCoach)+'</label>';
+    const ask=careerClubAsking(base, perks);
+    return '<div class="og-card og-duo">'+
+      '<div class="og-duo-top"><b>'+esc(d.who.join(' & '))+'</b><i class="og-ovr">'+d.ovr+'</i></div>'+
+      '<div class="og-tags">'+(d.mine?tag(T.ccClubMine, 'mine'):'')+(d.org?tag(T.ccClubBuyout(d.org)+' '+money(d.buyout), 'buy'):'')+say(t)+'</div>'+
+      '<div class="og-toggles">'+ck('Camp', !!perks.camp, ccClubCampAll())+ck('Coach', !!perks.coach, ccClubCoachAll())+'</div>'+
+      '<div class="og-offer"><span>'+money(ask)+' '+esc(T.ccClubMonth)+'</span>'+
+        '<input class="cc-club-sum" id="ccClubSum_'+esc(d.id)+'" value="'+ask+'" inputmode="numeric">'+
+        '<button class="og-btn og-btn-sm og-btn-go" onclick="careerClubAsk(\''+esc(d.id)+'\')">'+esc(T.ccClubTalk)+'</button></div></div>';
+  };
+  const mate=careerClubMateFree();
+  const free=(careerClubSeats()<CC_CLUB_SEATS ? careerClubFree(CC_CLUB_Q) : []).map(deal).join('');
+  const acadMax=ccClubAcadMax(club);
+  return '<div class="ch-tile cc-club og">'+head+fin+brand+staff+depts+
+    '<h5 class="og-sec">'+esc(T.ogRosterH)+' <i>'+careerClubSeats()+'/'+CC_CLUB_SEATS+'</i></h5>'+
+    (roster.length ? '<div class="og-grid">'+roster.map(rosterCard).join('')+'</div>' : '<div class="ch-empty">'+esc(T.ccClubEmpty)+'</div>')+
+    (mate ? '<div class="ch-hint">'+esc(T.ccClubMateHint)+'</div><div class="og-grid">'+deal(mate)+'</div>' : '')+
     (careerClubSeats()<CC_CLUB_SEATS
-      ? '<div class="ch-hint">'+esc(T.ccClubFree)+'</div>'+
-        '<div class="cc-club-new"><input id="ccClubQ" value="'+esc(CC_CLUB_Q)+'" placeholder="'+esc(T.ccClubFind)+
-          '" oninput="careerClubSearch(this.value)"></div>'+free
+      ? '<h5 class="og-sec">'+esc(T.ogMarketH)+'</h5>'+
+        '<div class="og-search"><input id="ccClubQ" value="'+esc(CC_CLUB_Q)+'" placeholder="'+esc(T.ccClubFind)+'" oninput="careerClubSearch(this.value)"></div>'+
+        '<div class="og-grid">'+free+'</div>'
       : '')+
+    '<h5 class="og-sec">'+esc(T.ccClubAcad)+(club.acad ? ' <i>'+careerClubAcadSeats()+'/'+acadMax+'</i>' : '')+'</h5>'+
     (club.acad
-      ? '<div class="ch-hint">'+esc(T.ccClubAcadSeats(careerClubAcadSeats(), CC_CLUB_ACAD_SEATS))+'</div>'+
-        (careerClubAcadSeats()<CC_CLUB_ACAD_SEATS ? careerClubYoung(CC_CLUB_Q).map(deal).join('') : '')
-      : '<div class="ch-row"><em>'+esc(T.ccClubAcad)+'</em><b>$'+ccNum(CC_CLUB_ACAD)+'</b>'+
-        '<button class="ch-sign cc-club-cash" onclick="careerClubAcad()">'+esc(T.ccClubAcadBuild)+'</button></div>'+
-        '<div class="ch-hint">'+esc(T.ccClubAcadHint)+'</div>')+
-    // Закрыть клуб — внизу и с объяснением: это дверь обратно к чужим предложениям.
-    '<div class="ch-hint">'+esc(T.ccClubCloseHint)+'</div>'+
-    '<button class="ch-decline" onclick="careerClubCloseAsk()">'+esc(T.ccClubClose)+'</button>'+
+      ? (careerClubAcadSeats()<acadMax ? '<div class="og-grid">'+careerClubYoung(CC_CLUB_Q).map(deal).join('')+'</div>' : '')
+      : '<div class="og-card og-wide"><div class="og-eff">'+esc(T.ccClubAcadHint)+'</div><div class="og-acts">'+
+          '<button class="og-btn og-btn-sm og-btn-go" onclick="careerClubAcad()">'+esc(T.ccClubAcadBuild)+' · '+money(CC_CLUB_ACAD)+'</button></div></div>')+
+    '<div class="og-close"><div class="ch-hint">'+esc(T.ccClubCloseHint)+'</div>'+
+    '<button class="ch-decline" onclick="careerClubCloseAsk()">'+esc(T.ccClubClose)+'</button></div>'+
     '</div>';
 }
 /* ЗАКРЫТЬ СВОЙ КЛУБ. До 13 сентября дороги назад не было вовсе: основал — и чужие
@@ -126170,10 +126526,18 @@ function careerClubClose(){
   if(typeof careerRenderHub==='function') careerRenderHub('shop');
   return true;
 }
+let CC_CLUB_PICK={fund:'self', focus:'comp'};
+function careerClubPick(k, v){ CC_CLUB_PICK[k]=v; const el=document.getElementById('ccClubName'); const nm=el ? el.value : ''; careerRenderHub('shop'); const e2=document.getElementById('ccClubName'); if(e2) e2.value=nm; }
 function careerClubNew(){
   const el=document.getElementById('ccClubName');
-  if(careerClubFound(el && el.value)) careerRenderHub('shop');
+  if(careerClubFound(el && el.value, CC_CLUB_PICK.fund, CC_CLUB_PICK.focus)) careerRenderHub('shop');
 }
+function careerClubHireBtn(role, id){ if(careerClubHire(role, id)) careerRenderHub('shop'); }
+function careerClubFireBtn(role){ if(careerClubFire(role)) careerRenderHub('shop'); }
+function careerClubDeptBtn(k){ if(careerClubDeptUp(k)) careerRenderHub('shop'); }
+function careerClubBuybackBtn(){ if(careerClubBuyback()) careerRenderHub('shop'); }
+let CC_CLUB_STAFF_OPEN=null;
+function careerClubStaffOpen(role){ CC_CLUB_STAFF_OPEN=(CC_CLUB_STAFF_OPEN===role) ? null : role; careerRenderHub('shop'); }
 function careerClubSet(what, val){ if(careerClubCrestSet(what, val)) careerRenderHub('shop'); }
 let CC_CLUB_Q='';
 function careerClubSearch(q){
@@ -126236,10 +126600,16 @@ const CC_CLUB_CAMP=1200;       // буткемп, в месяц
 const CC_CLUB_COACH=900;       // тренер, в месяц
 const CC_CLUB_CAMP_OFF=0.12;   // насколько дешевле просят за буткемп
 const CC_CLUB_COACH_OFF=0.10;  // и за тренера
-function careerClubPerkCost(r){ return (r&&r.camp?CC_CLUB_CAMP:0)+(r&&r.coach?CC_CLUB_COACH:0); }
-function careerClubLoyal(r){ return 1+(r&&r.camp?0.5:0)+(r&&r.coach?0.4:0); }
+// Геймхаус даёт буткемп всем, главный тренер клуба — тренера всем: отдельно за них не платят.
+function ccClubCampAll(){ return ccDeptLv('house')>0; }
+function ccClubCoachAll(){ return !!ccClubStaff('coach'); }
+function careerClubPerkCost(r){ return (r&&r.camp&&!ccClubCampAll()?CC_CLUB_CAMP:0)+(r&&r.coach&&!ccClubCoachAll()?CC_CLUB_COACH:0); }
+// Менеджер команды держит людей: каждое его «очко» уровня — четверть к верности.
+function careerClubLoyal(r){ return 1+((r&&r.camp)||ccClubCampAll()?0.5:0)+((r&&r.coach)||ccClubCoachAll()?0.4:0)+0.25*ccStaffT('manager'); }
 function careerClubAsking(base, perks){
-  const off=1-((perks&&perks.camp)?CC_CLUB_CAMP_OFF:0)-((perks&&perks.coach)?CC_CLUB_COACH_OFF:0);
+  const camp=(perks&&perks.camp)||ccClubCampAll(), coach=(perks&&perks.coach)||ccClubCoachAll();
+  // Менеджер торгуется: минус 4% с просьбы за уровень.
+  const off=(1-(camp?CC_CLUB_CAMP_OFF:0)-(coach?CC_CLUB_COACH_OFF:0))*(1-0.04*ccStaffT('manager'));
   return Math.max(100, Math.round(base*off/10)*10);
 }
 /* Своё дуо и академия мест в составе не занимают: места — про наёмных.
@@ -126281,11 +126651,12 @@ function careerClubYoung(q){
       const cs=d.cards||[]; if(cs.length!==2) return false;
       if(cs.some(c=>!c || !c.handle || mine.has(hKey(c)) || c.org)) return false;   // из чужого клуба молодёжь не забирают
       const k=careerClubKey(d); if(have.has(k) || have.has('acad:'+k)) return false;
-      return d.avg<=me-CC_CLUB_ACAD_GAP;
+      // Скаутинг находит талант ближе к тебе по уровню: минус 3 к разрыву за уровень отдела.
+      return d.avg<=me-Math.max(2, CC_CLUB_ACAD_GAP-3*ccDeptLv('scout'));
     })
     .filter(d=>{ const t=String(q||'').trim().toLowerCase();
       return !t || d.cards.some(c=>String(c.handle||'').toLowerCase().indexOf(t)>=0); })
-    .sort((a,b)=>b.avg-a.avg).slice(0, 8)
+    .sort((a,b)=>b.avg-a.avg).slice(0, 8+4*ccDeptLv('scout'))
     .map(d=>({id:'acad:'+careerClubKey(d), who:d.cards.map(c=>c.handle), ovr:Math.round(d.avg),
               salary:Math.max(100, Math.round(careerClubSalary(d.avg)*CC_CLUB_ACAD_PAY/10)*10),
               org:null, buyout:0, acad:true}));
@@ -126342,7 +126713,8 @@ function careerClubPoach(){
     const rnd=careerRng(ccHashStr('poach|'+club.name+'|'+r.id+'|'+day+'|'+i));
     if(rnd()>=CC_CLUB_POACH/careerClubLoyal(r)) return;
     const org=ccClubRivalOrg(rnd); if(!org) return;
-    r.offer={org:org, sum:Math.round((r.salary||0)*CC_CLUB_BUYIN*(1+rnd()*0.8)/10)*10, day:day};
+    // Менеджер выбивает за проданных больше: +10% за уровень.
+    r.offer={org:org, sum:Math.round((r.salary||0)*CC_CLUB_BUYIN*(1+rnd()*0.8)*(1+0.1*ccStaffT('manager'))/10)*10, day:day};
     careerNews('flat', 'ccNewsClubWant', [org, (r.who||[]).join(' & ')], {by:ccOrgBy(org)});
     n++;
   });
@@ -126369,7 +126741,7 @@ function careerClubTalks(){ const c=careerClub(); if(!c) return {}; if(!c.talks)
 function careerClubOffer(id, sum, perks){
   const club=careerClub(); if(!club) return null;
   const duo=ccClubDuo(id); if(!duo) return null;
-  if(duo.acad && (!club.acad || careerClubAcadSeats()>=CC_CLUB_ACAD_SEATS)) return null;
+  if(duo.acad && (!club.acad || careerClubAcadSeats()>=ccClubAcadMax(club))) return null;
   if(!duo.mine && !duo.acad && careerClubSeats()>=CC_CLUB_SEATS) return null;
   const money=Math.max(0, Math.round(Number(sum)||0));
   const talks=careerClubTalks(), was=talks[id];
@@ -126433,13 +126805,15 @@ function careerClubBuyout(){
   if(!org || org.own) return 0;
   return Math.round((org.salary||0)*CC_CLUB_BUYOUT);
 }
-function careerClubFound(name){
+function careerClubFound(name, fund, focus){
   const cr=CAREER && CAREER.career; if(!cr || cr.club) return false;
   const nm=String(name||'').replace(/<[^>]*>/g,'').trim().slice(0, 24);
   if(!nm) return false;
+  const F=CC_CLUB_FUND[fund] ? fund : 'self', FO=CC_CLUB_FOCUS[focus] ? focus : 'comp';
+  const price=CC_CLUB_FUND[F].pay;
   const buyout=careerClubBuyout(), left=(CAREER.org && !CAREER.org.own) ? CAREER.org.name : null;
-  if((cr.balance||0)<CC_CLUB_COST+buyout) return false;
-  cr.balance-=CC_CLUB_COST+buyout;
+  if((cr.balance||0)<price+buyout) return false;
+  cr.balance-=price+buyout;
   if(left){
     // Контракт расторгнут — как при любом уходе: клуб объявляет, ты прощаешься.
     cr.wages=(cr.wages||0)-buyout;
@@ -126447,7 +126821,9 @@ function careerClubFound(name){
     careerNews('flat', 'ccPostBye', [ccHandle(left)]);
     try{ careerEvent('tlOrgLeft', [left]); }catch(e){}
   }
-  cr.club={name:nm, since:careerToday(), cash:0, roster:[], paid:0, got:0};
+  cr.club={name:nm, since:careerToday(), cash:0, roster:[], paid:0, got:0, focus:FO, staff:{}, dept:{},
+           investor: CC_CLUB_FUND[F].share ? {share:CC_CLUB_FUND[F].share, since:careerToday()} : null,
+           acad: !!CC_CLUB_FOCUS[FO].acadFree};
   /* Свой клуб — это и есть твой клуб: CAREER.org читают герб, таблицы и лента,
      поэтому он ставится туда же, только без зарплаты и без доли. */
   CAREER.org={name:nm, salary:0, cut:0, tier:70, own:true, since:cr.season, paid:0};
@@ -126460,7 +126836,7 @@ function careerClubFound(name){
 function careerClubSign(id, salary, perks){
   const club=careerClub(); if(!club) return false;
   const free=ccClubDuo(id); if(!free) return false;
-  if(free.acad && (!club.acad || careerClubAcadSeats()>=CC_CLUB_ACAD_SEATS)) return false;
+  if(free.acad && (!club.acad || careerClubAcadSeats()>=ccClubAcadMax(club))) return false;
   if(!free.mine && !free.acad && careerClubSeats()>=CC_CLUB_SEATS) return false;
   // Зарплата — та, о которой договорились; без разговора берётся их цена.
   const pay=Math.max(1, Math.round(Number(salary)||free.salary));
@@ -126524,7 +126900,7 @@ function careerClubTake(){
       const now=Math.round((rows[h]||{}).usd||0);
       const was=r.seen[h];
       if(was==null){ r.seen[h]=now; return; }   // первый вечер после подписи — точка отсчёта
-      if(now>was){ const cut=Math.round((now-was)*CC_CLUB_CUT); got+=cut; r.won=(r.won||0)+(now-was); }
+      if(now>was){ const cut=Math.round((now-was)*ccClubCut(club)*(1-ccClubShare(club))); got+=cut; r.won=(r.won||0)+(now-was); }
       r.seen[h]=now;
     });
   });
@@ -126546,12 +126922,17 @@ function careerClubMonth(months){
   for(let m=0; m<months; m++){
     const roster=club.roster||[];
     // Спонсор платит за наёмных: своё дуо спонсору не состав, а ты сам.
-    const sponsor=CC_CLUB_SPONSOR*roster.filter(r=>!r.mine).length;
-    const wages=roster.reduce((a,r)=>a+(r.salary||0)+careerClubPerkCost(r), 0);
-    const keep=CC_CLUB_KEEP+(club.acad ? CC_CLUB_ACAD_KEEP : 0);
+    // Спонсор (база + отдел + направление + SMM), доля инвестора; штат и отделы — расходы.
+    const sponsorAll=ccClubSponsorPer(club)*roster.filter(r=>!r.mine).length;
+    const inv=Math.round(sponsorAll*ccClubShare(club)), sponsor=sponsorAll-inv;
+    const wages=roster.reduce((a,r)=>a+(r.salary||0)+careerClubPerkCost(r), 0)+ccClubStaffPay(club);
+    const keep=CC_CLUB_KEEP+(club.acad ? CC_CLUB_ACAD_KEEP : 0)+ccClubDeptKeep(club);
     club.cash=(club.cash||0)+sponsor-keep-wages;
     club.paid=(club.paid||0)+keep+wages;
     club.got=(club.got||0)+sponsor;
+    club.inv=(club.inv||0)+inv;
+    // SMM клуба растит и твою аудиторию: клуб постит тебя.
+    const smm=ccStaffT('smm'); if(smm) careerReachAdd(Math.round(150*smm*ccClubFocus(club).reach), true);
     if(club.cash<0){
       const need=-club.cash;
       const have=Math.min(need, Math.max(0, cr.balance||0));
