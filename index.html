@@ -149438,7 +149438,7 @@ function ewc24SceneHTML(o, st, mine, theirs, known){
     '<div class="ewc-live-score"><b class="y">'+esc(you.label)+'</b><i>'+st.sc[0]+' : '+st.sc[1]+sub+'</i><b class="o">'+esc(opp.label)+'</b></div>'+
     '<div class="ewc-live-map" style="background-image:url('+(EWC24_ART[st.map]||'')+')"><svg viewBox="0 0 160 90" preserveAspectRatio="none">'+svg+'</svg>'+
       '<span class="ewc-live-clock">'+esc(st.half)+' · '+mm+':'+ss+'</span><span class="ewc-live-note">'+esc(T.ewc24Scheme)+'</span></div>'+
-    '<div class="ewc-live-tac"><span>'+esc(T.ewc24You2)+': <b>'+esc(T.ewc24T[mine][0])+'</b></span><span>'+esc(opp.label)+': <b>'+esc(known ? T.ewc24T[theirs][0] : '?')+'</b></span></div>'+
+    '<div class="ewc-live-tac"><span>'+esc(T.ewc24You2)+': <b>'+esc(mine ? T.ewc24T[mine][0] : '…')+'</b></span><span>'+esc(opp.label)+': <b>'+esc(known ? T.ewc24T[theirs][0] : '?')+'</b></span></div>'+
     '<div class="ewc-live-feed">'+st.feed.slice(0, 4).map(f=>'<div class="'+(f.w===0 ? 'y' : 'o')+'">'+esc(f.txt)+'</div>').join('')+'</div>';
 }
 async function ewc24LiveMap(box, o){
@@ -149448,13 +149448,16 @@ async function ewc24LiveMap(box, o){
   let theirs=ewc24Style(opp, mode, rng), known=false;
   const opts=()=>tl.map(k=>({k, name:T.ewc24T[k][0], desc:T.ewc24T[k][1]}));
   const ser=youA ? o.series : [o.series[1], o.series[0]];
-  let mine=await ewc24Ask(T.ewc24AskH(o.idx, mode, map), T.ewc24AskSub(opp.label, ser[0], ser[1]), opts());
+  const st={mode, map, sc:[0, 0], clock:0, feed:[], dots:ewc24Dots(), obj:0, hold:-1, flag:-1, carrier:-1, key:[80, 45], half:'', rnum:1, pts:[0, 0]};
+  const live=()=>!skipAnimation;
+  let mine=null;
+  const draw=()=>{ if(live()) box.innerHTML=ewc24SceneHTML(o, st, mine, theirs, known); };
+  // Карта с составами видна сразу, пока выбирается тактика.
+  draw();
+  mine=await ewc24Ask(T.ewc24AskH(o.idx, mode, map), T.ewc24AskSub(opp.label, ser[0], ser[1]), opts());
   if(!mine) mine=tl[Math.floor(rng()*3)];
   const diff=(you.pow-opp.pow)/3.2;
   const pYou=()=>1/(1+Math.exp(-(diff+ewc24Edge(mine, theirs, mode))));
-  const st={mode, map, sc:[0, 0], clock:0, feed:[], dots:ewc24Dots(), obj:0, hold:-1, flag:-1, carrier:-1, key:[80, 45], half:'', rnum:1, pts:[0, 0]};
-  const live=()=>!skipAnimation;
-  const draw=()=>{ if(live()) box.innerHTML=ewc24SceneHTML(o, st, mine, theirs, known); };
   const tick=async n=>{ for(let f=0; f<n && live(); f++){ ewc24Move(st, rng); draw(); await sleep(EWC24_FRAME_MS); } };
   const nm=w=>{ const sq=(w===0 ? you : opp).squad; return (sq[Math.floor(rng()*sq.length)]||{}).handle||'?'; };
   const kill=()=>{ if(rng()<0.55){ const w=rng()<pYou() ? 0 : 1; st.feed.unshift({w, txt:T.ewc24Kill(nm(w), nm(1-w))}); } };
