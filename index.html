@@ -18696,6 +18696,13 @@ Object.assign(I18N.en, {ccYrXHeatsIn:k=>'Top '+k+' of the series — into the He
 Object.assign(I18N.fr, {ccYrXHeatsIn:k=>'Top '+k+' de la série — en heats', ccYrXHeatsZone:k=>'Zone des heats : top '+k+' de la série', ccYrXHeatsOut:k=>'Hors du top '+k+' de la série — pas de heats'});
 Object.assign(I18N.it, {ccYrXHeatsIn:k=>'Top '+k+' della serie — negli heat', ccYrXHeatsZone:k=>'Zona heat: top '+k+' della serie', ccYrXHeatsOut:k=>'Fuori dal top '+k+' della serie — niente heat'});
 Object.assign(I18N.pt, {ccYrXHeatsIn:k=>'Top '+k+' da série — nos heats', ccYrXHeatsZone:k=>'Zona dos heats: top '+k+' da série', ccYrXHeatsOut:k=>'Fora do top '+k+' da série — sem heats'});
+Object.assign(I18N.ru, {ccYr21ToDay2:'Не прошли — завтра хиты второго дня'}); Object.assign(I18N.en, {ccYr21ToDay2:'Not through — the day-2 heats are tomorrow'});
+Object.assign(I18N.fr, {ccYr21ToDay2:'Pas qualifiés — heats du jour 2 demain'}); Object.assign(I18N.it, {ccYr21ToDay2:'Non passati — domani gli heat del giorno 2'}); Object.assign(I18N.pt, {ccYr21ToDay2:'Não passaram — amanhã os heats do dia 2'});
+Object.assign(I18N.ru, {ccYrSemiZone:k=>'В зоне полуфинала: топ-'+k+' серии', ccYrSemiOut:k=>'Вне топ-'+k+' серии — мимо полуфинала'});
+Object.assign(I18N.en, {ccYrSemiZone:k=>'In the Semi-Finals zone: series top '+k, ccYrSemiOut:k=>'Outside the series top '+k+' — no Semi-Finals'});
+Object.assign(I18N.fr, {ccYrSemiZone:k=>'Zone des demi-finales : top '+k+' de la série', ccYrSemiOut:k=>'Hors du top '+k+' de la série — pas de demi-finales'});
+Object.assign(I18N.it, {ccYrSemiZone:k=>'Zona semifinali: top '+k+' della serie', ccYrSemiOut:k=>'Fuori dal top '+k+' della serie — niente semifinali'});
+Object.assign(I18N.pt, {ccYrSemiZone:k=>'Zona das semifinais: top '+k+' da série', ccYrSemiOut:k=>'Fora do top '+k+' da série — sem semifinais'});
 Object.assign(I18N.ru, {lfRateYou:'Твоя оценка'}); Object.assign(I18N.en, {lfRateYou:'Your rating'});
 Object.assign(I18N.fr, {lfRateYou:'Ta note'}); Object.assign(I18N.it, {lfRateYou:'Il tuo voto'}); Object.assign(I18N.pt, {lfRateYou:'Tua nota'});
 Object.assign(I18N.ru, {stPrizeEach:'каждому'}); Object.assign(I18N.en, {stPrizeEach:'each'});
@@ -118837,6 +118844,16 @@ function ccPastMajorScore(ev){
   const fams=Object.keys(CC_CUP_SCORE).filter(k=>k.indexOf('S'+n+'_FNCS')===0 && !/Surge|Community|Warmup|Invitational/i.test(k)).sort();
   if(!fams.length) return null;
   const fin=ev.stage==='final' || /Final|_GF|Grand/i.test(id);
+  /* Полуфинал — своим правилом Epic (S15–S17 SemiFinals, S18 SemiFinals_Day1, S19–S21 SemiFinals):
+     раньше брался первый по алфавиту квалификатор (аудит 29.09). Правило «только победа»
+     (Reboot Round, S18 Day2: 10 за победу, 0 за элим) — формат «выиграл — прошёл», под который
+     раннер не собран: такой полуфинал остаётся на прежнем правиле. */
+  if(ev.stage==='semi'){
+    const semi=fams.find(k=>new RegExp('SemiFinals_Day'+(ev.r||1)+'$').test(k)) || fams.find(k=>/SemiFinals$/.test(k));
+    const rule=semi && CC_CUP_SCORE[semi] && CC_SCORE_R[CC_CUP_SCORE[semi][0]];
+    const winOnly=rule && rule[0].length===1 && !rule[1];
+    if(semi && !winOnly) return ccCupScoreOf(semi, 1);
+  }
   const pick=fin ? fams.find(k=>/Final/i.test(k) && !/Semi/i.test(k))
                  : fams.find(k=>/Week|Qualifier|Heat|SemiFinal|Semi/i.test(k) && !/Grand/i.test(k));
   return ccCupScoreOf(pick || fams[0], 1);
@@ -118846,7 +118863,10 @@ function ccDivCupScore(day, div){
   const n=ccSeasonNumOn(day||careerToday()); if(!n) return null;
   const fams=Object.keys(CC_CUP_SCORE).filter(k=>new RegExp('^S'+n+'_(FNCS)?Divis[io]*nalCups?(_|$)').test(k) && !/Trial|Finals/.test(k));
   if(!fams.length) return null;
-  const own=fams.find(k=>new RegExp('Division'+div+'$').test(k));
+  // 2022–23 (S22–S23) дивизионы у Epic по именам: 1 — Elite, 2 — Challenger, 3 — Contender
+  // (у Contender и элим дешевле всех — 1). Раньше искалось «DivisionN» и всё падало в Challenger.
+  const byName={1:'Elite', 2:'Challenger', 3:'Contender'}[div];
+  const own=fams.find(k=>new RegExp('Division'+div+'$').test(k)) || (byName && fams.find(k=>new RegExp('_'+byName+'$').test(k)));
   return ccCupScoreOf(own || fams.sort()[0], 1);
 }
 /* EVENT COLORS begin — tools/build-event-colors.js */
@@ -145851,7 +145871,7 @@ async function runCareerMajor2021(){
   const rowsOf=rows=>(rows||[]).map(r=>r==='you' ? you : ccMajorTeamFrom(r));
   const seedOf=t=>ccSeedRow(t, you, ccMajorSeatRow);
   let field, spec, stageLabel=ev.label, through=false, note='', games=0;
-  let ranked=[], place=0;
+  let ranked=[], place=0, shownOut=false, alive=false;
   const play=async (room, sp, label, open)=>{
     room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; t.stageLog=[]; });
     CC_M24_GAME=0;
@@ -145867,6 +145887,7 @@ async function runCareerMajor2021(){
     const R=ccM21Rounds(ev.n);
     for(let i=0; i<ev.rounds.length; i++){
       const r=ev.rounds[i];
+      let heatsNote=null, semiSeat=false;
       spec=ccM21Spec(ev.n, r);
       const open=(r===1);
       field=open ? [you, ...careerCupField(cr, drafted, careerLadderEntrants(), 'm21|'+ev.n+'|'+ev.q, true, 0)]
@@ -145890,20 +145911,33 @@ async function runCareerMajor2021(){
         ccM21SeriesAdd(m, ranked.slice(spec.cut), seedOf);
         if(through) m.ticket=true;
         Q.done=true;
+        /* Не прямое место — ещё не вылет: полуфинал набирается из серии (ccM21Heats: хиты первого
+           дня × лобби, без прямых). Плашка раньше горела красным всегда, хотя хит открывался. */
+        if(!through){
+          ccM21SettleQuals(m);
+          const direct=new Set(m.direct.map(ccM21Key)), myKey=ccSeatKey(you);
+          const order=Object.keys(m.series).filter(k=>!direct.has(ccM21Key(m.seriesRows[k]))).sort((a,b)=>m.series[b]-m.series[a]);
+          const need=ccM21HeatPlan(ev.n).filter(h=>!h.prev).length*F, at=order.indexOf(myKey)+1;
+          heatsNote=(at>0 && at<=need) ? L().ccYrXHeatsZone(need) : L().ccYrXHeatsOut(need);
+          semiSeat=at>0 && at<=need;
+        }
       } else {
         through=place<=spec.cut;
         Q['r'+r]=ranked.slice(0, spec.cut).map(seedOf);
       }
       m.youKey=ccSeatKey(you);
-      note = (r===R) ? (through ? L().ccYr22Direct(spec.cut) : L().ccYr24Series(m.series[m.youKey]||0, ccM21SeriesRank(m, m.youKey)))
+      note = (r===R) ? (through ? L().ccYr22Direct(spec.cut) : L().ccYr24Series(m.series[m.youKey]||0, ccM21SeriesRank(m, m.youKey))+(heatsNote ? ' · '+heatsNote : ''))
                      : (through ? L().ccRelPass(spec.cut) : L().ccRelFail(spec.cut));
+      // Место в полуфинале по серии — тоже проход (плашка, журнал, cr.major), но не билет в финал.
+      if(semiSeat) through=true;
       if(i<ev.rounds.length-1){
         const sh=createStageCardShell(stageLabel+' — '+field.length);
         await revealStageLog(you, sh, true);
         finalizeStageCard(sh, place, field.length, you.stagePts, through, false, note);
         await revealStandings(sh, ranked, you, spec.cut||0);
         careerPrAdd(ranked, {div:cr.division, kind:'major', stage:'q'});
-        if(!through) break;
+        // Вылет посреди вечера: карточка уже показана — общий блок ниже её не повторяет.
+        if(!through){ shownOut=true; break; }
       }
     }
   } else if(ev.stage==='semi'){
@@ -145918,7 +145952,10 @@ async function runCareerMajor2021(){
     m.heatRes[hi]={up:ranked.slice(0, heat.cut).map(seedOf), rest:ranked.slice(heat.cut).map(seedOf)};
     through=place<=heat.cut;
     if(through) m.ticket=true;
-    note=through ? L().ccYr22SemiUp : (ccM21RebootCut(ev.n) ? L().ccYr21ToReboot : L().ccRelFail(heat.cut));
+    // C2S8: не прошедшие первый день играют хиты второго (ccM21HeatPlan, prev) — это не конец.
+    const day2=!through && ccM21HeatPlan(ev.n).some(h=>h.prev) && !heat.prev;
+    note=through ? L().ccYr22SemiUp : day2 ? L().ccYr21ToDay2 : (ccM21RebootCut(ev.n) ? L().ccYr21ToReboot : L().ccRelFail(heat.cut));
+    if(day2) alive=true;
   } else if(ev.stage==='reboot'){
     const cut=ccM21RebootCut(ev.n);
     spec={games:CC_M21.reboot.games, cut:cut};
@@ -145942,12 +145979,14 @@ async function runCareerMajor2021(){
   m.got[ev.id]=true;
   removeSkipButton();
   const fin=ev.stage==='final';
-  const shell=createStageCardShell(stageLabel+' — '+field.length);
-  await revealStageLog(you, shell, true);
-  finalizeStageCard(shell, place, field.length, you.stagePts,
-    ccStagePassed(through, spec, place, fin ? majorPrize : null), false, fin ? ccMajorSeatNote(ev) : note);
-  await revealStandings(shell, ranked, you, spec.cut||0, null, null, fin ? majorPrize : null, null, fin);
-  careerPrAdd(ranked, {div:cr.division, kind:'major', stage:fin ? 'final' : ev.stage});
+  if(!shownOut){
+    const shell=createStageCardShell(stageLabel+' — '+field.length);
+    await revealStageLog(you, shell, true);
+    finalizeStageCard(shell, place, field.length, you.stagePts,
+      ccStagePassed(through || alive, spec, place, fin ? majorPrize : null), false, fin ? ccMajorSeatNote(ev) : note);
+    await revealStandings(shell, ranked, you, spec.cut||0, null, null, fin ? majorPrize : null, null, fin);
+    careerPrAdd(ranked, {div:cr.division, kind:'major', stage:fin ? 'final' : ev.stage});
+  }
   let cash=0;
   if(fin){
     careerMoneyAdd(ranked, majorPrize);
@@ -145969,7 +146008,7 @@ async function runCareerMajor2021(){
   cr.log=cr.log||[];
   careerGrowEvent(place, field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:place, of:field.length, pts:you.stagePts,
-               passed: fin ? cash>0 : through, ovr:CAREER.player.ovr, games:games||spec.games, wins:you.wins||0, elims:you.stageElims||0,
+               passed: fin ? cash>0 : (through || alive), ovr:CAREER.player.ovr, games:games||spec.games, wins:you.wins||0, elims:you.stageElims||0,
                avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
                mate: mate ? mate.handle : null, mates: ccLogMates(mates), prize:ccShareOf(cash, you), kind:'major', stage:fin ? 'final' : ev.stage,
                won: fin ? ccStageSeatRow(ranked[0]) : undefined, top: fin ? ccStageTop(ranked, you) : undefined});
@@ -145983,7 +146022,7 @@ async function runCareerMajor2021(){
   careerSave();
   CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
   careerRenderHub('centre');
-  careerReloadResultCard({label:stageLabel, place:place, of:field.length, through: fin ? cash>0 : through, cut:spec.cut||0,
+  careerReloadResultCard({label:stageLabel, place:place, of:field.length, through: fin ? cash>0 : (through || alive), cut:spec.cut||0,
     note: fin ? null : note, seat:false, seatText:null, money: fin ? cash : null});
 }
 // ==== /FNCS 2021 machine ====
@@ -146191,7 +146230,15 @@ async function runCareerMajor2022(){
   const rowsOf=rows=>(rows||[]).map(r=>r==='you' ? you : ccMajorTeamFrom(r));
   const seedOf=t=>ccSeedRow(t, you, ccMajorSeatRow);
   let field, spec, stageLabel=ev.label, through=false, note='', games=0;
-  let ranked=[], place=0;
+  let ranked=[], place=0, shownOut=false, alive=false;
+  /* Место в полуфинале по серии (ccM22SemiRoom: топ-50 серии без прямых мест). Плашка последнего
+     раунда горела красным всегда, хотя полуфинал открывался (аудит 29.09). */
+  const semiZone=()=>{
+    const direct=new Set(m.direct.map(ccM22Key)), myKey=ccSeatKey(you);
+    const order=Object.keys(m.series).filter(k=>!direct.has(ccM22Key(m.seriesRows[k]))).sort((a,b)=>m.series[b]-m.series[a]);
+    const at=order.indexOf(myKey)+1;
+    return at>0 && at<=CC_M22.semi.field;
+  };
   const play=async (room, sp, label, open)=>{
     room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; t.stageLog=[]; });
     CC_M24_GAME=0;
@@ -146238,15 +146285,21 @@ async function runCareerMajor2022(){
         if(r===R-1) ccM22SeriesAdd(m, ranked.slice(spec.cut), 1, seedOf);
       }
       m.youKey=ccSeatKey(you);
+      // Серию получают последний раунд и вылетевшие на предпоследнем — у них место в полуфинале решает она.
+      const bySeries=!through && (r===R || r===R-1);
+      const zone=bySeries && semiZone();
       note = (r===R) ? (through ? L().ccYr22Direct(spec.cut) : L().ccYr24Series(m.series[m.youKey]||0, ccM22SeriesRank(m, m.youKey)))
                      : (through ? L().ccRelPass(spec.cut) : L().ccRelFail(spec.cut));
+      if(bySeries) note+=' · '+(zone ? L().ccYrSemiZone(CC_M22.semi.field) : L().ccYrSemiOut(CC_M22.semi.field));
+      if(zone) alive=true;
       if(i<ev.rounds.length-1){
         const sh=createStageCardShell(stageLabel+' — '+field.length);
         await revealStageLog(you, sh, true);
-        finalizeStageCard(sh, place, field.length, you.stagePts, through, false, note);
+        finalizeStageCard(sh, place, field.length, you.stagePts, through || zone, false, note);
         await revealStandings(sh, ranked, you, spec.cut||0);
         careerPrAdd(ranked, {div:cr.division, kind:'major', stage:'q'});
-        if(!through) break;
+        // Вылет посреди вечера: карточка уже показана — общий блок ниже её не повторяет.
+        if(!through){ shownOut=true; break; }
       }
     }
   } else if(ev.stage==='semi'){
@@ -146272,12 +146325,14 @@ async function runCareerMajor2022(){
   m.got[ev.id]=true;
   removeSkipButton();
   const fin=ev.stage==='final';
-  const shell=createStageCardShell(stageLabel+' — '+field.length);
-  await revealStageLog(you, shell, true);
-  finalizeStageCard(shell, place, field.length, you.stagePts,
-    ccStagePassed(through, spec, place, fin ? majorPrize : null), false, fin ? ccMajorSeatNote(ev) : note);
-  await revealStandings(shell, ranked, you, spec.cut||0, null, null, fin ? majorPrize : null, null, fin);
-  careerPrAdd(ranked, {div:cr.division, kind:'major', stage:fin ? 'final' : ev.stage});
+  if(!shownOut){
+    const shell=createStageCardShell(stageLabel+' — '+field.length);
+    await revealStageLog(you, shell, true);
+    finalizeStageCard(shell, place, field.length, you.stagePts,
+      ccStagePassed(through || alive, spec, place, fin ? majorPrize : null), false, fin ? ccMajorSeatNote(ev) : note);
+    await revealStandings(shell, ranked, you, spec.cut||0, null, null, fin ? majorPrize : null, null, fin);
+    careerPrAdd(ranked, {div:cr.division, kind:'major', stage:fin ? 'final' : ev.stage});
+  }
   let cash=0;
   if(fin){
     careerMoneyAdd(ranked, majorPrize);
@@ -146299,7 +146354,7 @@ async function runCareerMajor2022(){
   cr.log=cr.log||[];
   careerGrowEvent(place, field.length, you, field);
   cr.log.push({season:cr.season, day:careerToday(), div:cr.division, place:place, of:field.length, pts:you.stagePts,
-               passed: fin ? cash>0 : through, ovr:CAREER.player.ovr, games:games||spec.games, wins:you.wins||0, elims:you.stageElims||0,
+               passed: fin ? cash>0 : (through || alive), ovr:CAREER.player.ovr, games:games||spec.games, wins:you.wins||0, elims:you.stageElims||0,
                avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
                mate: mate ? mate.handle : null, mates: ccLogMates(mates), prize:ccShareOf(cash, you), kind:'major', stage:fin ? 'final' : ev.stage,
                won: fin ? ccStageSeatRow(ranked[0]) : undefined, top: fin ? ccStageTop(ranked, you) : undefined});
@@ -146314,7 +146369,7 @@ async function runCareerMajor2022(){
   CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; CC_KILL_CAP=0;
   careerRenderHub('centre');
   const lanSeat = fin && ccGlobalsSeat() ? L().ccRelSeatGc(ccLanCity('globals')) : null;
-  careerReloadResultCard({label:stageLabel, place:place, of:field.length, through: fin ? cash>0 : through, cut:spec.cut||0,
+  careerReloadResultCard({label:stageLabel, place:place, of:field.length, through: fin ? cash>0 : (through || alive), cut:spec.cut||0,
     note: fin ? null : note, seat: !!lanSeat, seatText: lanSeat, money: fin ? cash : null});
 }
 /* ---- FNCS Invitational 2022 (Роли) -----------------------------------------------
