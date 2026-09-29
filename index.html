@@ -98777,6 +98777,8 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
         : '';
       const nameStyled = (t.isYou ? '<b style="color:var(--lb-you);">'+t.name+'</b>' : t.name)
         + regTag
+        // Приз за текущее место — у ника, как в итоговой таблице (его слово 29.09: «во всех таблицах, где есть призы»).
+        + (opts.prize ? stPrizeHTML(prizeFor(opts.prize, i+1), (t.squad||[]).length||squadSize) : '')
         + (done ? ' <span style="color:var(--accent);font-weight:900;" title="'+L().qualByVR+'">★</span>' : '');
       const powerVal = livePow(t);
       const op = done ? '.72' : '';
@@ -101561,9 +101563,11 @@ async function runLastChanceQualifier(stageName, you, allTeams, field, lclGames)
 
      Очередь — таблица первого раунда: round2Field и есть round1Ranked, срезанный
      по размеру лобби, так что порядок массива уже правильный. */
-  const lcqZones=await stageLandingPicker(round2Field, you, L().lcqLandingTitle);
+  // В драфте LCQ — ранний этап, одной таблицей; карта — на хитах и финале (его слово 29.09).
+  const lcqEarly=!CAREER_RUN;
+  const lcqZones=lcqEarly ? null : await stageLandingPicker(round2Field, you, L().lcqLandingTitle);
   await simulateGamesLive(round2Field, lclGames, heatsScoreForPlace, 0, 'stage', 0, null, lcqZones,
-    {stopOnWin:true, mapReplay:true, choices:true, stageName:L().liveLcqR2});
+    {stopOnWin:true, mapReplay:!lcqEarly, choices:!lcqEarly, stageName:L().liveLcqR2});
   const winners=round2Field.filter(t=>t.gotVR);
   const youAdvanced=winners.includes(you);
 
@@ -101789,7 +101793,7 @@ async function runMajorTournament(){
   // finalTeams собран в порядке квалификации — хиты, потом Ласт Ченс, — и это
   // тот порядок, в котором ставят метку. См. stampQualSeats.
   const zoneGroups=await stageLandingPicker(finalTeams, you, L().finalsLandingTitle);
-  await simulateGamesLive(finalTeams, (FMT.gfGames||12), pointsForPlace, (FMT.gfKill||4), 'stage', 0, null, zoneGroups, {mapReplay:true, choices:true, stageName:L().liveRegionalFinals});
+  await simulateGamesLive(finalTeams, (FMT.gfGames||12), pointsForPlace, (FMT.gfKill||4), 'stage', 0, null, zoneGroups, {mapReplay:true, choices:true, stageName:L().liveRegionalFinals, prize:CARD_MODE ? ccHomeRegion() : null});
   // Landing zone + fight now happen fresh before every one of the 12 games
   // (see pickZoneForGame, called from inside simulateGamesLive) instead of
   // once before the whole stage — so the bonus/penalty is already folded
@@ -102244,8 +102248,8 @@ async function runPastDraftTournament(){
     const title=evName+' · '+(plan.quals[i].wf ? T.pdWeekFinal : T.pdQual(i+1, K));
     const cut=cutAt(i);
     if(field.length<=lobby){
-      const zones=await stageLandingPicker(field, you, title);
-      await simulateGamesLive(field, qs[i].games, qScore.pts, qScore.kill, 'stage', 0, null, zones, {mapReplay:true, choices:true, stageName:title});
+      // Квалификация в драфте — одной таблицей, карта только на хитах и финале (его слово 29.09).
+      await simulateGamesLive(field, qs[i].games, qScore.pts, qScore.kill, 'stage', 0, null, null, {mapReplay:false, choices:false, stageName:title});
     } else await simulateGamesRandomLobbies(field, qs[i].games, lobby, qScore.pts, qScore.kill);
     const ranked=rank24(field);
     const ok=ranked.indexOf(you)<cut;
@@ -102285,7 +102289,7 @@ async function runPastDraftTournament(){
   const fin=field.slice(0, lobby); reset24(fin);
   const zoneGroups=await stageLandingPicker(fin, you, T.finalsLandingTitle);
   await simulateGamesLive(fin, plan.final.games, fScore.pts, fScore.kill, 'stage', 0, null, zoneGroups,
-    {mapReplay:true, choices:true, stageName:evName+' · '+T.pdFinal});
+    {mapReplay:true, choices:true, stageName:evName+' · '+T.pdFinal, prize:pastDraftPrize(set, ccHomeRegion())});
   const finalRanked=rank24(fin);
   const rank=finalRanked.indexOf(you)+1;
   const myReg=ccHomeRegion();
@@ -102303,6 +102307,8 @@ async function runPastDraftTournament(){
   document.getElementById('finalSub').textContent = rank===1 ? T.championMajor : T.placeInFinals(rank, fin.length);
   document.getElementById('lobbyTitle').innerHTML = T.majorFinalsResultTitle(fin.length);
   document.getElementById('lobbyTitle').scrollIntoView({block:'start', behavior:'smooth'});
+  // Итоговое лобби — с призами у ников (раньше таблица призов сюда не доходила).
+  lobbyPrizeTable=prize;
   renderLobby(finalRanked, you);
   renderGameHistory(you);
   renderStats();
@@ -102365,9 +102371,11 @@ async function runMajor2024Tournament(){
     for(let d=0; d<S.upper.length; d++){
       const sp=S.upper[d]; reset24(room);
       if(inUpper && alive && !youTicket){
-        const zones=await stageLandingPicker(room, you, upperTitle(d+1));
+        // В драфте квалификация — одной таблицей, карта только в финале (его слово 29.09).
+        const early=!CAREER_RUN;
+        const zones=early ? null : await stageLandingPicker(room, you, upperTitle(d+1));
         await simulateGamesLive(room, sp.games, ccM24Points, CC_M24_KILL, 'stage', 0, null, zones,
-          {stopOnWin:!!sp.vr, mapReplay:true, choices:true, stageName:upperTitle(d+1)});
+          {stopOnWin:!!sp.vr, mapReplay:!early, choices:!early, stageName:upperTitle(d+1)});
       } else if(sp.vr) simulateGamesStopOnWin(room, sp.games, ccM24Points, CC_M24_KILL);
       else simulateGames(room, sp.games, ccM24Points, CC_M24_KILL);
       const r=rank24(room);
@@ -102399,9 +102407,10 @@ async function runMajor2024Tournament(){
       const sp=S.lower[d]; reset24(room);
       const cut=(d===S.lower.length-1) ? Math.max(sp.cut, S.final.field-finalTeams.length) : sp.cut;
       if(!inUpper && alive){
-        const zones=await stageLandingPicker(room, you, lowerTitle(d+1));
+        const early=!CAREER_RUN;
+        const zones=early ? null : await stageLandingPicker(room, you, lowerTitle(d+1));
         await simulateGamesLive(room, sp.games, ccM24Points, CC_M24_KILL, 'stage', 0, null, zones,
-          {mapReplay:true, choices:true, stageName:lowerTitle(d+1)});
+          {mapReplay:!early, choices:!early, stageName:lowerTitle(d+1)});
       } else simulateGames(room, sp.games, ccM24Points, CC_M24_KILL);
       const r=rank24(room);
       const pass=r.slice(0, Math.min(cut, r.length));
@@ -102424,7 +102433,7 @@ async function runMajor2024Tournament(){
   const zoneGroups=await stageLandingPicker(fin, you, L().finalsLandingTitle);
   CC_M24_GAME=0;
   await simulateGamesLive(fin, S.final.games, ccM24PointsGf, ccM24KillGf, 'stage', 0, null, zoneGroups,
-    {mapReplay:true, choices:true, stageName:L().liveRegionalFinals,
+    {mapReplay:true, choices:true, stageName:L().liveRegionalFinals, prize:ccHomeRegion(),
      // Какая игра идёт — это и есть день: с седьмой счёт ×1.5. См. ccM24Day.
      dropEachGame:(g)=>{ CC_M24_GAME=g; return null; }});
   const finalRanked=rank24(fin);
