@@ -88972,6 +88972,23 @@ const LOADOUT_POW_SCALE=0.22;
    и ящики с вики, а не глазомер и не площадь. См. ZONE_STATS. */
 const LANDING_POINTS_MAX=4;
 
+/* Играли ли двое вместе — по индексу «ник → номера его составов» вместо прохода по всему
+   TEAMMATE_GROUPS на каждую пару. Открытый раунд собирает тысячи команд, и перебор давал
+   ~2 с тишины между «Играть» и таблицей (его жалоба 29.09, замер профилем: computeSynergy 2,0 с
+   из 2,3). Список только дописывается, поэтому индекс пересобирается, когда меняется длина. */
+let _tmIdx=null, _tmLen=-1;
+function ccWereTeammates(a, b){
+  if(_tmLen!==TEAMMATE_GROUPS.length){
+    _tmIdx=new Map();
+    TEAMMATE_GROUPS.forEach((g,i)=>g.forEach(h=>{ let s=_tmIdx.get(h); if(!s){ s=[]; _tmIdx.set(h, s); } if(s[s.length-1]!==i) s.push(i); }));
+    _tmLen=TEAMMATE_GROUPS.length;
+  }
+  const x=_tmIdx.get(a); if(!x) return false;
+  const y=_tmIdx.get(b); if(!y) return false;
+  // Оба списка идут по возрастанию номеров — слияние за один проход.
+  for(let i=0, j=0; i<x.length && j<y.length;){ if(x[i]===y[j]) return true; if(x[i]<y[j]) i++; else j++; }
+  return false;
+}
 function computeSynergy(squad){
   let bonus=0; const details=[]; const links=[];
   const seenPairs=new Set();
@@ -88980,7 +88997,7 @@ function computeSynergy(squad){
       if(p.handle>=p2.handle) return;
       const pairKey=p.handle+'|'+p2.handle;
       if(seenPairs.has(pairKey)) return;
-      const wereTeammates=TEAMMATE_GROUPS.some(g=>g.includes(p.handle)&&g.includes(p2.handle));
+      const wereTeammates=ccWereTeammates(p.handle, p2.handle);
       if(wereTeammates){
         seenPairs.add(pairKey);
         bonus+=SYN_TEAMMATES; details.push(p.handle+' + '+p2.handle+L().synergyPartner(SYN_TEAMMATES));
@@ -107183,7 +107200,7 @@ const ACHIEVEMENTS=[
     if(ctx.squad.length<2) return false;
     for(let i=0;i<ctx.squad.length;i++) for(let j=i+1;j<ctx.squad.length;j++){
       const a=ctx.squad[i].handle, b=ctx.squad[j].handle;
-      if(!TEAMMATE_GROUPS.some(g=>g.includes(a)&&g.includes(b))) return false;
+      if(!ccWereTeammates(a, b)) return false;
     }
     return true;
   }},
