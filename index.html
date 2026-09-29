@@ -118730,6 +118730,25 @@ function ccCupScoreOf(famKey, round){
 function ccCupScore(ev, round){ return ev ? ccCupScoreOf(ccCupFamily(String(ev.id||'')), round||1) : null; }
 // Кубок дивизиона: семейство сезона дня — FNCSDivisionalCup_DivisionN (2025–26) или
 // DivisionalCups_* (2022–23); у Epic очки у дивизионов одинаковые, берётся свой, иначе первый.
+/* Очки финалов и отборов прошлых лет — по правилам Epic своего события (его правка 29.09:
+   «птс система не та, на ворлд капе точно»; было — таблица FNCS 2024 для всех лет).
+   World Cup 2019: неделя Online Open (Epic OnlineOpen_WeekN) и финал в Нью-Йорке
+   (ONSITE_WorldCup_Solos/Duos). FNCS прошлых лет — семейство сезона дня: финал → *Final*,
+   остальное → неделя/квалификация/полуфинал. Нет правила — null (остаётся прежняя таблица). */
+function ccPastMajorScore(ev){
+  if(!ev || typeof CC_CUP_SCORE==='undefined') return null;
+  const id=String(ev.id||'');
+  const wc=/^Major([12])_2019_(?:W(\d+)|Final)/.exec(id);
+  if(wc) return ccCupScoreOf(wc[2] ? 'OnlineOpen_Week'+wc[2] : (wc[1]==='1' ? 'ONSITE_WorldCup_Solos' : 'ONSITE_WorldCup_Duos'), 1);
+  const n=ccSeasonNumOn(ev.day||careerToday()); if(!n) return null;
+  // Побочные события сезона (Surge Week — свои очки за «сёрдж», Community Cup, Warmup) — мимо.
+  const fams=Object.keys(CC_CUP_SCORE).filter(k=>k.indexOf('S'+n+'_FNCS')===0 && !/Surge|Community|Warmup|Invitational/i.test(k)).sort();
+  if(!fams.length) return null;
+  const fin=ev.stage==='final' || /Final|_GF|Grand/i.test(id);
+  const pick=fin ? fams.find(k=>/Final/i.test(k) && !/Semi/i.test(k))
+                 : fams.find(k=>/Week|Qualifier|Heat|SemiFinal|Semi/i.test(k) && !/Grand/i.test(k));
+  return ccCupScoreOf(pick || fams[0], 1);
+}
 function ccDivCupScore(day, div){
   if(typeof CC_CUP_SCORE==='undefined') return null;
   const n=ccSeasonNumOn(day||careerToday()); if(!n) return null;
@@ -145256,7 +145275,8 @@ async function ccMXRun(ev, sp){
   const play=async (room, sp2, label, open)=>{
     room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; t.stageLog=[]; });
     CC_M24_GAME=0;
-    await simulateGamesLive(room, sp2.games, ccM24Points, CC_M24_KILL, 'stage', 0, null, null,
+    const pS=ccPastMajorScore(ev);
+    await simulateGamesLive(room, sp2.games, pS ? pS.pts : ccM24Points, pS ? pS.kill : CC_M24_KILL, 'stage', 0, null, null,
       {lobbySize:F, stageName:label, mapReplay:true, choices:true, stopOnYourDeath:true, roomOnly:!open,
        dropEachGame:(g,rm)=>{ CC_M24_GAME=g; return open ? null : careerLandingPick(rm||room, you, label, ['major']); }});
     games+=sp2.games;
@@ -145627,7 +145647,8 @@ async function runCareerMajor2021(){
   const play=async (room, sp, label, open)=>{
     room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; t.stageLog=[]; });
     CC_M24_GAME=0;
-    await simulateGamesLive(room, sp.games, ccM24Points, CC_M24_KILL, 'stage', 0, null, null,
+    const pS=ccPastMajorScore(ev);
+    await simulateGamesLive(room, sp.games, pS ? pS.pts : ccM24Points, pS ? pS.kill : CC_M24_KILL, 'stage', 0, null, null,
       {lobbySize:F, stageName:label, mapReplay:true, choices:true, stopOnYourDeath:true, roomOnly:!open,
        dropEachGame:(g,rm)=>{ CC_M24_GAME=g; return open ? null : careerLandingPick(rm||room, you, label, ['major']); }});
     games+=sp.games;
@@ -145966,7 +145987,8 @@ async function runCareerMajor2022(){
   const play=async (room, sp, label, open)=>{
     room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; t.stageLog=[]; });
     CC_M24_GAME=0;
-    await simulateGamesLive(room, sp.games, ccM24Points, CC_M24_KILL, 'stage', 0, null, null,
+    const pS=ccPastMajorScore(ev);
+    await simulateGamesLive(room, sp.games, pS ? pS.pts : ccM24Points, pS ? pS.kill : CC_M24_KILL, 'stage', 0, null, null,
       {lobbySize:ccTeams(50), stageName:label, mapReplay:true, choices:true, stopOnYourDeath:true, roomOnly:!open,
        dropEachGame:(g,rm)=>{ CC_M24_GAME=g; return open ? null : careerLandingPick(rm||room, you, label, ['major']); }});
     games+=sp.games;
@@ -146541,7 +146563,8 @@ async function runCareerMajor2023(){
     if(field.indexOf(you)<0) field[field.length-1]=you;
   }
   CC_M24_GAME=0;
-  await simulateGamesLive(field, spec.games, ccM24Points, CC_M24_KILL, 'stage', 0, null, null,
+  const pS=ccPastMajorScore(ev);
+  await simulateGamesLive(field, spec.games, pS ? pS.pts : ccM24Points, pS ? pS.kill : CC_M24_KILL, 'stage', 0, null, null,
     {lobbySize:ccTeams(50), stageName:stageLabel, mapReplay:true, choices:true, stopOnYourDeath:true,
      roomOnly:!open,
      dropEachGame:(g,room)=>{ CC_M24_GAME=g;

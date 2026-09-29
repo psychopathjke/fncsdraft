@@ -72,6 +72,13 @@ const BOOT = `
     check('S23: R2 — только победа', at('S23_SoloCashCup',2,1)>0 && at('S23_SoloCashCup',2,2)===0 && kl('S23_SoloCashCup',2)===0);
     check('S41 Victory Cup = прежняя таблица 2026', [1,2,3,4,10,25,50,51].every(p=>at('S41_SoloVictoryCup',1,p)===victoryR1Points(p)) && kl('S41_SoloVictoryCup',1)===CC_VICTORY_R1_KILL,
       [1,2,10,50].map(p=>at('S41_SoloVictoryCup',1,p)+'/'+victoryR1Points(p)).join(' '));
+    // 1б. Мейджоры прошлых лет — по правилам своего события (World Cup 2019: 10/7/5/3, элим 1).
+    const pm=(id, day)=>{ const sc=ccPastMajorScore({id:id, day:day}); return sc ? [sc.pts(1), sc.pts(5), sc.pts(15), sc.pts(25), sc.kill].join('/') : 'null'; };
+    out.notes.past={wcW1:pm('Major1_2019_W1R1','2019-04-13'), wcFin:pm('Major1_2019_Final','2019-07-28'), wcDuoW2:pm('Major2_2019_W2R1','2019-04-20'),
+      sx:pm('Major3_2019_W1R1','2019-09-21'), c2s5q:pm('Major1_2021_Q1R1','2021-01-16'), c2s5f:pm('Major1_2021_Final','2021-02-14'), m23:pm('Major1_2023_W1R1','2023-02-05')};
+    check('World Cup Solo неделя: 10/7/5/3, элим 1', out.notes.past.wcW1==='10/7/5/3/1', out.notes.past.wcW1);
+    check('World Cup финал — правило Epic', out.notes.past.wcFin==='10/7/5/3/1', out.notes.past.wcFin);
+    check('прошлые FNCS находят правило', ['sx','c2s5q','c2s5f','m23'].every(k=>out.notes.past[k]!=='null'), JSON.stringify(out.notes.past));
     // 2. Покрытие: капы каждого года (кроме ЛАНов по приглашению) находят своё правило.
     out.notes.cover={};
     for(const y of [2019,2020,2021,2022,2023,2024,2025,2026]){
