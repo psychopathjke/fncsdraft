@@ -104911,7 +104911,10 @@ const CC_MATS_CAP_EACH=500, CC_MATS_START=600, CC_MATS_SURGE_FARM=1200;
    CC_MATS_FARM_SHORT (время ушло на теги). Комната фармит тем же правилом
    (ccRoomFarm), так что лестница дивизионов не двигается — меняется только
    цена решений. Числа — решение, не замер (в JSON реплеев трат нет). */
-const CC_MATS_EARLY_ZONE=100, CC_MATS_FARM=900, CC_MATS_FARM_SHORT=600;
+/* 29.09, его слово «материалы всегда фулл почти»: проба career-mats-band-probe (150 игр) — на восьмой зоне
+   58 % комнаты в верхней трети, 12 % в средней, 30 % в нижней при фарме +900/+600. Фарм +700/+450:
+   42 / 41 / 17 — середина игры идёт с ~1000, а не с потолком. Числа по-прежнему решение, не замер. */
+const CC_MATS_EARLY_ZONE=100, CC_MATS_FARM=700, CC_MATS_FARM_SHORT=450;
 function ccMatsZoneCost(zone){ return zone<=3 ? CC_MATS_EARLY_ZONE : CC_MATS_ZONE; }
 function ccMatsAdd(t, n){ if(t) t._mats=Math.min(CC_MATS_FULL, Math.max(0, ccMats(t))+n); }
 const CC_MATS_HG_EXTRA=250;  // высокая земля строится, и это дороже обычного круга
@@ -146516,7 +146519,10 @@ function ccMXCanStage(ev, cr, gaveUp){
   const s=ccMXOf(ev.yx, ev.n);
   if(s && s.got[ev.id]) return false;
   if(ev.stage==='q'){
-    if(s && s.ticket) return false;
+    /* World Cup 2019: прошедшие в Нью-Йорк играли следующие недели Online Open ради призовых (его слово 29.09:
+       «почему week 3 соло не играется, можно же играть, даже если квал»). Вторую путёвку неделя не даёт — она уже есть.
+       FNCS-недели после путёвки закрыты, как было. */
+    if(s && s.ticket && sp.kind!=='wc') return false;
     const first=ev.rounds[0];
     if(first===1) return true;
     const prev=s && s.q[ev.w] && s.q[ev.w]['r'+(first-1)];
