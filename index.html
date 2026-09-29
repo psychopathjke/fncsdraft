@@ -118793,7 +118793,11 @@ function ccEvPalette(ev, day){
 // Ставит палитру вечера на страницу: CSS-переменные --ev-* и класс ev-pal на <html>.
 function ccEvPaletteApply(ev){
   const root=document.documentElement;
-  const p=ccEvPalette(ev);
+  /* 2026-й — свой вид сайта, без палитр событий (его правка 29.09: «с таблицами не то, не те
+     цвета 2026» — Victory Cup красил таблицу в розово-оранжевый с бордовыми строками). Палитры
+     турниров и экран тех лет — для прошлых годов, 2019–2025. */
+  const own2026=!!(CAREER && CAREER.career) && ccCalYear()>=2026;
+  const p=own2026 ? null : ccEvPalette(ev);
   if(!p){ root.classList.remove('ev-pal', 'ev-classic', 'ev-light'); return; }
   const s=root.style;
   s.setProperty('--ev-l', '#'+p[0]); s.setProperty('--ev-r', '#'+p[1]);
