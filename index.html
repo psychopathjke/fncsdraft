@@ -142995,7 +142995,7 @@ function ccRankShow(i){
                       outside coverage of the series also quotes, which is the
                       only independent check available.
 
-   Europe only, and deliberately so: the saved pages are European, the one NA
+   Europe first; the other six regions are added below from Epic's own tables (29.09). It was Europe only because the saved pages were European, the one NA
    Central page in that folder was cut off before its Cash Prize column, and
    inventing the other six regions from Europe's shape is exactly the thing this
    file does not do. A region with no table pays nothing until its own pages are
@@ -143010,6 +143010,19 @@ const CC_REL_PRIZES={
            16:1000, 17:1000, 18:1000, 19:1000, 20:1000}
   }
 };
+/* Остальные шесть регионов (29.09, Tracker: imp_event.Windows[].PayoutTable событий
+   S39_ReloadEliteSeries1{Heat1,Final}_{REG} и S41_ReloadEliteSeries4 — таблицы одинаковы в сериях 1 и 4).
+   У Epic Quantity — на игрока, «до места N»; здесь, как у Европы выше, — на дуо (×2). */
+(function(){
+  const duo=rows=>{ const t={}; let from=1; rows.forEach(([upTo, v])=>{ for(let p=from; p<=upTo; p++) if(v) t[p]=v*2; from=upTo+1; }); return t; };
+  const F_NAC=[[1,10000],[2,7000],[3,5000],[4,4000],[5,3000],[6,2000],[7,1500],[8,1250],[9,1000],[10,750],[15,500],[20,250]];
+  const F_NAW=[[1,3000],[2,2000],[3,1500],[4,1000],[5,900],[6,800],[7,700],[8,600],[9,500],[10,400],[15,300],[20,250]];
+  const F_SM=[[1,1500],[2,1000],[3,750],[4,600],[5,500],[6,400],[7,350],[8,300],[9,250],[10,200],[20,150]];
+  CC_REL_PRIZES.NAC={heat:duo([[5,0],[10,200],[15,150],[20,100]]), final:duo(F_NAC)};
+  CC_REL_PRIZES.NAW={heat:duo([[5,0],[10,150],[15,100]]), final:duo(F_NAW)};
+  CC_REL_PRIZES.BR ={heat:duo([[5,0],[10,150],[15,100]]), final:duo(F_NAW)};
+  ['ME','ASIA','OCE'].forEach(r=>{ CC_REL_PRIZES[r]={heat:duo([[5,0],[10,100]]), final:duo(F_SM)}; });
+})();
 function relStagePrize(stage, place){
   const byRegion=CC_REL_PRIZES[careerPrizeRegion()];
   const t=byRegion && byRegion[stage];
