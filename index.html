@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- Тёмный фон с первого кадра: до основного блока стилей сотни килобайт, и холодная загрузка
+     успевала показать белый экран (его правка 29.09: «теперь белый экран когда сайт грузит»). -->
+<style>html,body{background:#0b1640;color:#e6ecff;}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
      «хочу чтоб мой сайт появлялся в браузере при вводе fortnite career».
@@ -1806,7 +1809,9 @@
   .cc-tabs{position:relative;z-index:2;display:flex;gap:2px;margin-bottom:14px;}
   /* Год — первой панелью над вкладками; чипы года в одну строку на всю ширину. */
   .cc-year-panel{margin-bottom:14px;}
-  .cc-year-panel .cc-chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}   /* три года в ряд во всю ширину панели */
+  .cc-year-panel .cc-chips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}   /* годы по четыре в ряд */
+  /* На телефоне по два в ряд. */
+  @media (max-width:560px){ .cc-year-panel .cc-chips{grid-template-columns:1fr 1fr;} }
   /* Пластина сезона — та же превьюха, что на первом экране: арт года под
      затемнением, номер года узким капсом поверх, под ним формат и международка.
      Отзыв: «хочу фнкс стиль типо как превьюхи». Арт приезжает переменной
@@ -2098,6 +2103,7 @@
 
   .cc-foot{position:relative;z-index:2;display:flex;align-items:center;gap:14px;
     flex-wrap:wrap;margin-top:16px;}
+  .cc-country-sel{margin-left:8px;padding:5px 8px;border-radius:6px;border:1px solid rgba(180,200,255,.35);background:#12224f;color:#fff;font:inherit;font-size:12px;max-width:180px;}
   .cc-readout{background:#0b0f12;color:#fff;border-radius:5px;padding:10px 14px;
     font-size:12px;font-weight:800;display:flex;gap:18px;flex-wrap:wrap;align-items:center;}
   .cc-readout em{font-style:normal;color:#7d8a9a;font-weight:700;margin-right:6px;
@@ -2239,6 +2245,24 @@
      there as an empty outline asking to be refilled. */
   .ch-en-bar.out{box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);}
   .ch-purse .ch-en b{min-width:26px;text-align:right;}
+  .ch-mood .ch-en-bar i{background:linear-gradient(180deg,#bcd0ff 0%,#7aa2ff 50%,#4c6fd6 100%);box-shadow:0 0 7px rgba(122,162,255,.45);}
+  .ch-mood .ch-en-bar.low i{background:linear-gradient(180deg,#ffb0a8 0%,#ff6b5e 55%,#c23b30 100%);}
+  #chPurseNow .ch-en-row{justify-content:flex-start;}
+  .ch-go{cursor:pointer;transition:filter .15s;} .ch-go:hover{filter:brightness(1.15);}
+  .ch-ovr-side{display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin-left:7px;}
+  .ch-ovr-side small{margin-left:0 !important;}
+  .ch-ovr-d,.ch-ovr-rk{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.04em;line-height:1;
+    padding:2px 5px;border-radius:3px;background:rgba(0,0,0,.18);white-space:nowrap;}
+  .ch-ovr-d.up{color:#0b6b2e;} .ch-ovr-d.down{color:#a1231a;}
+  .ch-ovr-rk{text-transform:uppercase;}
+  .ch-hnext{flex:1 0 100%;display:flex;align-items:center;gap:10px;padding:6px 18px;cursor:pointer;
+    font-size:12px;border-top:1px solid rgba(180,200,255,.12);background:rgba(255,255,255,.03);min-width:0;}
+  .ch-hnext img{width:44px;height:25px;object-fit:cover;border-radius:3px;flex:none;}
+  .ch-hnext em{font-style:normal;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
+    color:#0b1a3a;background:#ffdd00;padding:2px 6px;border-radius:3px;flex:none;}
+  .ch-hnext b{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+  .ch-hnext span{color:#dfe7ff;font-weight:800;white-space:nowrap;margin-left:auto;flex:none;}
+  .ch-hnext:hover{background:rgba(255,255,255,.07);}
 
   /* Tabs */
   /* The strip wraps rather than running off the edge. Six tabs want 573px and a
@@ -2263,9 +2287,26 @@
   .cc-flat-where:focus{outline:2px solid var(--accent);outline-offset:1px;}
   .cc-duo-sort{float:right;display:inline-flex;gap:4px;align-items:center}
   .cc-duo-sort .cc-job-h.on{outline:1px solid var(--primary,#ffd400)}
-  .cc-duo-nat{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:4px;}
-  .cc-duo-flag{display:inline-flex;align-items:center;gap:4px;}
-  .cc-duo-flag img{height:10px;width:auto;border-radius:2px;display:block;}
+  .cc-duo-bar{display:flex;gap:8px;align-items:center;margin:10px 0 4px;}
+  .cc-duo-bar .cc-duo-q{flex:1 1 auto;min-width:0;margin:0;}
+  .cc-duo-natdd{position:relative;flex:0 0 auto;max-width:48%;}
+  .cc-duo-natsel{display:flex;align-items:center;gap:6px;width:100%;padding:9px 10px;border-radius:9px;cursor:pointer;
+    border:1px solid var(--line);background:rgba(0,0,0,.28);color:inherit;font:inherit;font-size:14px;white-space:nowrap;}
+  .cc-duo-natsel span{overflow:hidden;text-overflow:ellipsis;}
+  .cc-duo-natsel i{font-style:normal;opacity:.7;margin-left:auto;}
+  .cc-duo-natsel.on{border-color:var(--primary,#ffd400);color:var(--primary,#ffd400);}
+  .cc-duo-natsel img, .cc-duo-natlist img{width:20px;height:auto;border-radius:2px;flex:0 0 auto;display:block;}
+  .cc-duo-natlist{position:absolute;right:0;top:calc(100% + 4px);z-index:20;width:220px;max-height:320px;overflow-y:auto;
+    background:#141a26;border:1px solid var(--line);border-radius:10px;padding:4px;box-shadow:0 10px 30px rgba(0,0,0,.55);}
+  .cc-duo-natlist button{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:0;border-radius:7px;
+    background:none;color:#fff;font:inherit;font-size:14px;text-align:left;cursor:pointer;}
+  .cc-duo-natlist button:hover{background:rgba(255,255,255,.07);}
+  .cc-duo-natlist button.on{background:rgba(255,212,0,.14);color:var(--primary,#ffd400);}
+  .cc-duo-natlist button b{margin-left:auto;font-weight:700;opacity:.6;}
+  /* Инициалы под фото: фото легло — закрыло их, не легло — они и есть аватарка. */
+  .cc-duo-ava{position:relative;overflow:hidden;}
+  .cc-duo-ava img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  #duoFindModal .cc-duo-fr{flex:0 0 auto;white-space:nowrap;}
   .cc-duo-q{width:100%;margin:10px 0 4px;padding:9px 12px;border-radius:9px;
     border:1px solid var(--line);background:rgba(0,0,0,.28);color:inherit;
     font:inherit;font-size:14px;}
@@ -2360,6 +2401,30 @@
     background:rgba(255,130,150,.08);color:#ffc3cd;}
   .ch-sp-btns button.cc-spa-minus:hover{background:rgba(255,130,150,.16);}
   .ch-sp-btns button:disabled{opacity:.4;cursor:default;}
+  /* Свои статы на создании (ccSpaRender): строка «иконка имя · − число + · цена». */
+  .cc-spa-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:6px;}
+  @media (max-width:520px){.cc-spa-grid{grid-template-columns:1fr;}}
+  .cc-spa-row{display:grid;grid-template-columns:1fr 26px 44px 26px 22px;align-items:center;gap:4px;
+    padding:3px 6px;border-radius:6px;background:rgba(255,255,255,.04);}
+  .cc-spa-row.up{background:rgba(0,255,208,.09);} .cc-spa-row.down{background:rgba(255,130,150,.08);}
+  .cc-spa-name{font-size:11px;font-weight:800;color:#cfe0ff;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-spa-val{text-align:center;font-size:15px;color:#fff;font-variant-numeric:tabular-nums;}
+  .cc-spa-row.up .cc-spa-val{color:#7ef0dd;} .cc-spa-row.down .cc-spa-val{color:#ffc3cd;}
+  .cc-spa-btn{height:26px;border-radius:6px;border:1px solid rgba(0,255,208,.4);background:rgba(0,255,208,.08);
+    color:#aefce9;font-weight:900;font-size:15px;line-height:1;cursor:pointer;padding:0;}
+  .cc-spa-btn:disabled{opacity:.3;cursor:default;}
+  .cc-spa-cost{font-size:10px;color:#8fa3c8;text-align:right;}
+  /* Что дают возраст и страна (ccGainNotes). */
+  .cc-car-se{font-size:18px !important;}
+  .cc-gain{margin-top:6px;font-size:11px;line-height:1.35;color:#9fb3d8;}
+  .cc-gain b{color:#7ef0dd;font-weight:800;}
+  .cc-spa-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+  .cc-spa-free{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;color:#cfe0ff;cursor:pointer;}
+  #ccSpRows .cc-spa-in{width:44px;min-width:0;height:26px;padding:0;margin:0;box-shadow:none;text-align:center;font:inherit;font-size:15px;font-weight:800;color:#fff;
+    background:rgba(0,0,0,.25);border:1px solid rgba(0,255,208,.35);border-radius:6px;-moz-appearance:textfield;appearance:textfield;}
+  .cc-spa-in::-webkit-inner-spin-button,.cc-spa-in::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+  .cc-spa-reset{margin-left:8px;font-size:10px;font-weight:800;border-radius:6px;padding:2px 7px;cursor:pointer;
+    border:1px solid rgba(255,255,255,.2);background:transparent;color:#9fb3d8;}
 
   .ch-sp{margin-top:8px;}
   .ch-sp em{font-size:11px;color:#9fb3d8;font-style:normal;font-weight:800;
@@ -3336,6 +3401,29 @@
      what is waiting in it. A pile with nothing in it stays in the row, dimmed,
      so the strip does not rearrange itself as the week goes on. */
   .cc-notebar{display:flex;gap:6px;align-items:center;margin-bottom:12px;}
+  .ch-bellw{position:relative;flex:none;margin-left:4px;align-self:center;}
+  .ch-bell{position:relative;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;border:0;cursor:pointer;color:#cfd8ff;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);}
+  .ch-bell.on{color:#ffdd00;}
+  .ch-bell i{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;border-radius:9px;background:#ff4d5e;color:#fff;font-style:normal;font-size:10px;font-weight:900;line-height:17px;text-align:center;}
+  .ch-bell-clear{display:block;width:100%;margin-top:8px;padding:7px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.18);
+    background:rgba(255,255,255,.06);color:#e6ecff;font-weight:800;font-size:12px;cursor:pointer;}
+  .ch-bell-clear:hover{background:rgba(255,255,255,.12);}
+  .ch-bell-pop{position:absolute;top:44px;left:0;z-index:80;padding:10px;border-radius:12px;background:#0f1d4a;box-shadow:0 12px 30px rgba(0,0,0,.45),inset 0 0 0 1px rgba(180,200,255,.2);}
+  .ch-bell-pop .cc-notebar{margin:0;}
+  .ch-subtabs{display:flex;gap:6px;margin:0 0 14px;flex-wrap:wrap;}
+  /* Над содержимым вкладки: окно Twitch во «Стримах» заезжает наверх и накрывало «Соцсети» —
+     кнопка не нажималась (его скрин 29.09 «не кликается кнопка обратно»). */
+  .ch-subtabs{position:relative;z-index:6;}
+  .ch-subtab{border:0;cursor:pointer;font:inherit;font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;
+    padding:8px 14px;border-radius:999px;color:#cfd8ff;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);}
+  .ch-subtab.on{color:#0b1a3a;background:#ffdd00;box-shadow:none;}
+  .mc-block{margin:6px 0 12px;} .mc-head{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:8px;font-weight:900;font-size:13px;}
+  .mc-head span:last-child{text-align:right;} .mc-head em{font-style:italic;color:#ffdd00;margin-left:4px;} .mc-head i{font-style:normal;font-size:10px;color:#8094c4;text-transform:uppercase;}
+  .mc-row{display:grid;grid-template-columns:30px 1fr 64px 1fr 30px;gap:8px;align-items:center;margin:6px 0;font-size:13px;}
+  .mc-row b{font-weight:900;color:#cfd8ff;text-align:center;font-variant-numeric:tabular-nums;} .mc-row b.win{color:#00d6a4;}
+  .mc-row span{text-align:center;font-weight:900;color:#8094c4;font-size:10px;text-transform:uppercase;}
+  .mc-row u{display:flex;height:9px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden;text-decoration:none;}
+  .mc-row u.l{justify-content:flex-end;} .mc-row u s{display:block;height:100%;border-radius:5px;background:#7aa2ff;text-decoration:none;} .mc-row u.l s{background:#00d6a4;}
   .cc-nb{position:relative;display:inline-flex;align-items:center;justify-content:center;
     width:34px;height:30px;border-radius:8px;border:1px solid #24314e;background:#131c30;
     color:#5d6f96;cursor:pointer;font-family:inherit;padding:0;}
@@ -3501,6 +3589,222 @@
   .cc-act-h b{font-size:13px;font-weight:900;}
   .cc-act-h em{font-style:normal;font-size:11px;font-weight:900;color:#00d6a4;}
   .cc-act-g{display:flex;flex-wrap:wrap;gap:4px 9px;}
+  /* Тренировочный центр: атрибуты чипами, тренировки — в три колонки, компактно. */
+  .cc-tpanel{margin:0 0 6px;}
+  .cc-ta-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin:4px 0 6px;}
+  .cc-ta{position:relative;display:flex;align-items:baseline;gap:4px;min-width:0;overflow:hidden;padding:4px 6px 6px;border-radius:8px;background:rgba(255,255,255,.06);font-size:10px;}
+  .cc-ta span{font-weight:900;color:#9fb0e8;} .cc-ta b{font-weight:900;font-size:12px;color:#fff;}
+  .cc-ta i{font-style:normal;font-weight:900;color:#00d6a4;font-size:10px;}
+  .cc-ta u{position:absolute;left:6px;right:6px;bottom:2px;height:2px;border-radius:2px;background:rgba(255,255,255,.12);text-decoration:none;}
+  .cc-ta u s{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,#00d6a4,#7aa2ff);text-decoration:none;}
+  .cc-fat{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;font-size:10px;font-weight:800;color:#cfd8ff;margin-bottom:6px;}
+  .cc-fat-bar{height:5px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;}
+  .cc-fat-bar i{display:block;height:100%;background:#00d6a4;}
+  .cc-fat-bar.s-lfFatTired i{background:#ffb13d;} .cc-fat-bar.s-lfFatBurn i{background:#ff5f56;}
+  .cc-tgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-bottom:6px;}
+  @media (max-width:520px){ .cc-tgrid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  /* Команда и «стрим и отдых» — по ширине самой колонки, а не окна: в узкой колонке хаба три
+     колонки давали плитки по 60 px с обрезанными названиями (скрин «29»). Не уже 150 px. */
+  .cc-tgrid.cc-agrid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;}
+  .cc-agrid .cc-tcard{padding:8px 10px !important;gap:3px;}
+  .cc-agrid .cc-tc-name{font-size:12px;white-space:normal;}
+  .cc-agrid .cc-tc-why{font-size:10px;}
+  .cc-tcard{display:flex;flex-direction:column;gap:2px;margin:0;width:auto;min-width:0;overflow:hidden;min-height:0;padding:6px 7px !important;box-sizing:border-box;}
+  .cc-tc-top{display:flex;align-items:center;gap:5px;min-width:0;}
+  .cc-tc-ico{font-style:normal;font-size:14px;line-height:1;flex:none;}
+  .cc-tc-name{font-size:11px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-tc-row{display:flex;justify-content:space-between;align-items:baseline;gap:4px;}
+  .cc-tc-row em{font-style:normal;font-size:10px;font-weight:900;color:#00d6a4;}
+  .cc-tc-gain{font-size:13px;font-weight:900;color:#00d6a4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+  .cc-tc-gain i{font-style:normal;font-size:9px;font-weight:900;color:#9fb0e8;}
+  .cc-tc-coach{font-style:normal;font-size:9px;font-weight:800;color:#c9a7ff;}
+  .cc-tc-why{font-style:normal;font-size:9px;font-weight:800;color:#ff7d70;line-height:1.1;}
+  /* Вкладка «Тренировка» — просторно: атрибуты в две колонки крупными карточками,
+     занятия — большими плитками с иконкой. */
+  .cc-train-tab{max-width:1100px;margin:0 auto;}
+  .tp-plan{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:14px;} @media(max-width:700px){ .tp-plan{grid-template-columns:1fr;} }
+  .tp-chips,.tp-goalpick{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .tp-chip{border:0;cursor:pointer;font:inherit;font-size:12px;font-weight:800;padding:7px 10px;border-radius:9px;color:#dfe7ff;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);}
+  .tp-chip.on{background:#00d6a4;color:#062a22;box-shadow:none;} .tp-chip:disabled:not(.on){opacity:.45;cursor:default;}
+  .tp-goal{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;margin-top:8px;font-size:13px;font-weight:800;}
+  .tp-goal b{color:#ffdd00;margin-left:6px;} .tp-goal u{grid-column:1;display:block;height:9px;border-radius:6px;background:rgba(255,255,255,.1);overflow:hidden;text-decoration:none;}
+  .tp-goal u s{display:block;height:100%;background:linear-gradient(90deg,#00d6a4,#7aa2ff);text-decoration:none;}
+  /* Главная: «Цели» и «Развитие» (ccGoalsTileHTML / ccDevTileHTML). */
+  .hg-row{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08);}
+  .hg-row:last-of-type{border-bottom:none;}
+  .hg-top{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline;}
+  .hg-top em{grid-column:1 / -1;font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
+  .hg-top b{font-size:13px;font-weight:800;color:#fff;min-width:0;}
+  .hg-top i{font-style:normal;font-size:12px;font-weight:900;color:#ffdd00;white-space:nowrap;}
+  .hg-row.ok .hg-top i{color:#00d6a4;}
+  .hg-bar{display:block;height:6px;margin-top:6px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;text-decoration:none;}
+  .hg-bar s{display:block;height:100%;background:linear-gradient(90deg,#00d6a4,#7aa2ff);text-decoration:none;}
+  .hg-go{display:block;width:100%;margin-top:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;}
+  .hg-go:hover{background:rgba(255,255,255,.14);}
+  .hg-go:focus-visible{outline:2px solid #00ffd0;outline-offset:2px;}
+  .hd-head{display:flex;align-items:center;gap:12px;margin:6px 0 8px;}
+  .hd-ovr{font-size:34px;font-weight:900;font-style:italic;line-height:1;color:#0b0f12;background:#ffdd00;border-radius:8px;padding:4px 10px;}
+  .hd-head span{display:flex;flex-direction:column;gap:2px;}
+  .hd-head em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
+  .hd-head i{font-style:normal;font-size:12px;font-weight:900;color:#cfd8ff;}
+  .hd-head i.up{color:#00d6a4;} .hd-head i.down{color:#ff5f56;}
+  .hd-rank{display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;gap:8px;margin:0 0 8px;font-size:12px;}
+  .hd-rank em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
+  .hd-rank b{font-weight:900;color:#fff;} .hd-rank .hg-bar{margin:0;} .hd-rank i{font-style:normal;font-weight:800;color:#cfd8ff;font-size:11px;}
+  .ch-prof-me{max-width:980px;margin:0 auto 12px;}
+  /* Тренировка: карта занятия, оценка D…A+, полоса недели. */
+  .cc-tc-map{display:block;font-size:10px;font-weight:700;color:#9fb0e8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-tc-grade{margin-left:auto;flex:none;font-style:normal;font-size:10px;font-weight:900;padding:1px 5px;border-radius:5px;background:rgba(255,255,255,.12);color:#fff;}
+  .g-D{color:#ff5f56 !important;} .g-C{color:#ffb13d !important;} .g-B{color:#cfd8ff !important;} .g-A{color:#00d6a4 !important;} .g-Ap{color:#ffdd00 !important;}
+  .cc-tc-mapcard .hg-bar{margin:3px 0 2px;height:4px;}
+  .tw-tile{max-width:1100px;margin:0 auto 10px;}
+  /* Два атрибута у карт Creative — прирост переносится на вторую строку, а не режется. */
+  .cc-tc-gain{white-space:normal;line-height:1.15;}
+  .cc-day-train .cc-tc-gain{font-size:15px;}
+  .tw-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:6px;}
+  .tw-day{display:flex;flex-direction:column;gap:2px;min-width:0;padding:6px;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);}
+  .tw-day.now{border-color:#ffdd00;background:rgba(255,221,0,.08);}
+  .tw-day.past{opacity:.8;}
+  .tw-day em{font-style:normal;font-size:9px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
+  .tw-day > b{font-size:17px;font-weight:900;font-style:italic;color:#fff;line-height:1;}
+  .tw-ev{display:flex;align-items:center;gap:3px;font-size:9px;font-weight:800;color:#cfd8ff;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+  .tw-did{display:flex;flex-wrap:wrap;gap:2px 4px;}
+  .tw-did i{font-style:normal;font-size:12px;display:inline-flex;align-items:baseline;gap:1px;}
+  .tw-did i b{font-size:9px;font-weight:900;}
+  .tw-free{font-size:10px;font-weight:800;color:#8fa1cc;}
+  .tw-noble{margin-top:8px;} .hg-alerts{margin-bottom:4px;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,.12);}
+  @media (max-width:520px){ .tw-week{gap:3px;} .tw-day{padding:4px 3px;} .tw-ev{font-size:0;} .tw-ev .ch-pip{font-size:10px;} }
+  .tp-x{grid-column:2;grid-row:1 / span 2;border:0;background:rgba(255,255,255,.08);color:#cfd8ff;border-radius:8px;width:28px;height:28px;cursor:pointer;}
+  .tp-done{margin-top:8px;font-size:12px;font-weight:900;color:#00d6a4;}
+  .dm-map{position:relative;width:100%;max-width:520px;margin:8px auto;border-radius:12px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(180,200,255,.2);}
+  .dm-map img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .dm-dot{position:absolute;transform:translate(-50%,-50%);border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:9px;font-weight:900;color:#0b1a3a;box-shadow:0 0 0 2px rgba(0,0,0,.45),0 0 10px rgba(0,0,0,.4);opacity:.92;}
+  .dm-top{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px;} .dm-top li{display:flex;gap:8px;font-size:12px;} .dm-top b{color:#ffdd00;min-width:30px;}
+  .cc-day-train .ch-art-in{padding:18px 20px !important;}
+  .cc-day-train .cc-act-grp{font-size:13px !important;margin:6px 0 10px !important;}
+  .cc-day-train .cc-ta-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:6px 0 14px;}
+  .cc-ta.cc-ta-wide{display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;
+    padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(180,200,255,.12);font-size:12px;}
+  .cc-ta-wide .cc-ta-ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+    font-size:20px;background:rgba(122,162,255,.16);}
+  .cc-ta-wide .cc-ta-body{text-align:left;min-width:0;display:flex;flex-direction:column;gap:8px;}
+  .cc-ta-wide .cc-ta-name{font-size:13px;font-weight:900;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-ta-wide .cc-ta-name em{font-style:normal;font-size:10px;color:#8094c4;margin-left:4px;}
+  .cc-ta-wide u{position:static;display:block;height:7px;border-radius:5px;}
+  .cc-ta-wide u s{border-radius:5px;}
+  .cc-ta-wide .cc-ta-num{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+  .cc-ta-wide .cc-ta-num b{font-size:22px;font-style:italic;line-height:1;}
+  .cc-ta-wide .cc-ta-num i{font-size:11px;} .cc-ta-wide .cc-ta-num i.z{color:#6b7aa8;}
+  .cc-day-train .cc-fat{font-size:12px;margin:0 0 14px;} .cc-day-train .cc-fat-bar{height:8px;}
+  .cc-day-train .cc-tgrid{gap:10px;margin-bottom:12px;}
+  .cc-day-train .cc-tcard{padding:14px 14px !important;gap:8px;border-radius:12px;}
+  .cc-day-train .cc-tc-ico{font-size:22px;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(0,214,164,.14);}
+  .cc-day-train .cc-tc-top{gap:10px;}
+  .cc-day-train .cc-tc-name{font-size:14px;white-space:normal;}
+  .cc-day-train .cc-tc-gain{font-size:18px;} .cc-day-train .cc-tc-gain i{font-size:11px;}
+  .cc-day-train .cc-tc-row em{font-size:12px;}
+  .cc-day-train .cc-tc-why,.cc-day-train .cc-tc-coach{font-size:11px;}
+  .cc-day-train .cc-bars{max-width:520px;}
+  @media (max-width:700px){
+    .cc-day-train .ch-art-in{padding:12px !important;}
+    .cc-day-train .cc-ta-grid{grid-template-columns:minmax(0,1fr);gap:8px;}
+    .cc-ta.cc-ta-wide{padding:10px 12px;}
+  }
+  .cc-train-promo{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 10px;padding:12px 14px;border:0;cursor:pointer;
+    border-radius:12px;color:#fff;text-align:left;font:inherit;
+    background:linear-gradient(90deg,rgba(0,214,164,.22),rgba(122,162,255,.14));box-shadow:inset 0 0 0 1px rgba(0,214,164,.35);}
+  .cc-train-promo:hover{filter:brightness(1.12);}
+  .cc-tp-ico{font-style:normal;font-size:22px;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.25);flex:none;}
+  .cc-tp-txt{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .cc-tp-txt b{font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;}
+  .cc-tp-txt em{font-style:normal;font-size:11px;font-weight:800;color:#cfd8ff;}
+  .cc-tp-go{margin-left:auto;font-size:12px;font-weight:900;color:#0b1a3a;background:#00d6a4;padding:6px 10px;border-radius:8px;white-space:nowrap;flex:none;}
+  .nr-box{display:grid;grid-template-columns:auto 1fr;gap:10px 12px;align-items:center;margin:8px 0 2px;}
+  .nr-rate{display:flex;flex-direction:column;align-items:center;justify-content:center;width:70px;height:70px;border-radius:14px;
+    background:rgba(122,162,255,.18);border:2px solid #7aa2ff;}
+  .nr-rate b{font-size:26px;font-weight:900;font-style:italic;line-height:1;color:#fff;}
+  .nr-rate span{font-size:8.5px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:#cfd8ff;margin-top:3px;text-align:center;}
+  /* Место своей команды под оценкой: без него 4.4 рядом с MVP победителей читалась как их оценка. */
+  .nr-rate small{font-size:9px;font-weight:800;color:#fff;opacity:.8;margin-top:1px;}
+  .nr-rate:has(small){width:78px;height:auto;min-height:70px;padding:6px 0;}
+  .nr-rate.hi{background:rgba(0,214,164,.18);border-color:#00d6a4;} .nr-rate.lo{background:rgba(255,95,86,.16);border-color:#ff5f56;}
+  .nr-mvp{display:flex;align-items:center;gap:10px;min-width:0;}
+  .nr-mvp em{display:block;font-style:normal;font-size:10px;font-weight:900;color:#ffd400;text-transform:uppercase;letter-spacing:.05em;}
+  .nr-mvp b{font-size:14px;font-weight:900;}
+  .nr-top{grid-column:1 / -1;list-style:none;margin:0;padding:0;display:grid;gap:3px;}
+  .nr-top li{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;font-size:12px;padding:4px 8px;border-radius:8px;background:rgba(255,255,255,.05);}
+  .nr-top li i{font-style:normal;font-weight:900;color:#ffd400;} .nr-top li b{font-weight:900;}
+  .nr-top li.you{background:rgba(0,214,164,.14);}
+  .nr-top li small{font-size:10px;font-weight:800;color:#8094c4;margin-left:6px;}
+  .nr-top li b.nr-mini{min-width:38px;text-align:center;padding:2px 6px;border-radius:6px;font-style:italic;font-size:13px;background:rgba(122,162,255,.18);box-shadow:inset 0 0 0 1px #7aa2ff;}
+  .nr-top li b.nr-mini.hi{background:rgba(0,214,164,.18);box-shadow:inset 0 0 0 1px #00d6a4;} .nr-top li b.nr-mini.lo{background:rgba(255,95,86,.16);box-shadow:inset 0 0 0 1px #ff5f56;}
+  .chem-row{display:grid;grid-template-columns:minmax(0,110px) 1fr 40px;gap:8px;align-items:center;font-size:12px;font-weight:800;margin:4px 0;}
+  .chem-row u{display:block;height:7px;border-radius:5px;background:rgba(255,255,255,.12);overflow:hidden;text-decoration:none;}
+  .chem-row u s{display:block;height:100%;background:linear-gradient(90deg,#c9a7ff,#00d6a4);text-decoration:none;}
+  .chem-row b{text-align:right;font-weight:900;}
+  .scout{margin:8px 0;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.06);font-size:12px;}
+  .scout summary{cursor:pointer;font-weight:900;color:#ffd400;}
+  .scout-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;}
+  .scout em{display:block;font-style:normal;font-size:10px;font-weight:900;color:#9fb0e8;text-transform:uppercase;margin-bottom:3px;}
+  .scout ol{margin:0;padding-left:16px;} .scout li{display:flex;justify-content:space-between;gap:6px;} .scout li b{font-weight:900;}
+  .scout p{margin:0;font-weight:800;}
+  .nr-vod{grid-column:1 / -1;padding:8px 10px;border-radius:10px;background:rgba(255,212,0,.08);border:1px dashed rgba(255,212,0,.4);}
+  .nr-vod em{display:block;font-style:normal;font-size:12px;font-weight:900;color:#ffd400;margin-bottom:6px;}
+  .nr-vod div{display:flex;gap:6px;flex-wrap:wrap;}
+  .cc-tc-fx{gap:2px 6px !important;} .cc-tc-fx i{font-size:9px !important;}
+  .cc-bars{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:2px 0 10px;width:100%;}
+  .cc-meter{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px;font-size:10px;font-weight:900;color:#8094c4;text-transform:uppercase;letter-spacing:.04em;}
+  .cc-meter u{display:block;height:7px;border-radius:5px;background:rgba(255,255,255,.12);overflow:hidden;text-decoration:none;}
+  .cc-meter u s{display:block;height:100%;border-radius:5px;text-decoration:none;}
+  .cc-meter.m-energy u s{background:#00d6a4;} .cc-meter.m-mood u s{background:#7aa2ff;}
+  .cc-meter b{font-size:13px;color:#fff;}
+  /* Шапка карьеры на телефоне — сеткой, ничего не обрезается справа. */
+  @media(max-width:700px){
+    #screen-career-hub .ch-purse{width:100%;box-sizing:border-box;padding:6px 14px;gap:10px;}
+    #screen-career-hub #chPurseNow{display:grid;grid-template-columns:minmax(0,1fr) auto;}
+    #screen-career-hub #chPurse{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding-top:0;}
+    #screen-career-hub .ch-purse > *{min-width:0;}
+    /* Вкладки — одной полосой внизу экрана, с прокруткой вбок и иконками. */
+    #screen-career-hub .ch-tabs{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;flex-wrap:nowrap;
+      overflow-x:auto;gap:2px;padding:6px 6px calc(6px + env(safe-area-inset-bottom));margin:0;
+      background:rgba(8,18,50,.97);box-shadow:0 -1px 0 rgba(180,200,255,.18);-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+    #screen-career-hub .ch-tabs::-webkit-scrollbar{display:none;}
+    #screen-career-hub .ch-tab{flex:none;display:flex;flex-direction:column;align-items:center;gap:1px;
+      font-size:9.5px !important;padding:4px 9px !important;min-width:58px;}
+    #screen-career-hub .ch-tab::before{width:20px;height:20px;margin-bottom:2px;}
+    #screen-career-hub{padding-bottom:78px;}
+    /* Лента недели — прокрутка вбок, дни шире. */
+    #screen-career-hub .ch-weeks.ch-days{display:flex !important;overflow-x:auto;scrollbar-width:none;}
+    #screen-career-hub .ch-weeks.ch-days > *{flex:0 0 96px;}
+  }
+  /* Значки вкладок — контурные, одного веса, цвета текста вкладки (маска + currentColor). */
+  #screen-career-hub .ch-tab::before{content:'';display:inline-block;width:17px;height:17px;flex:none;
+    background-color:currentColor;opacity:.85;vertical-align:-3px;
+    -webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat;}
+  #screen-career-hub .ch-tab.on::before{opacity:1;}
+  #screen-career-hub .ch-tab[data-tab="centre"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'/></svg>");}
+  #screen-career-hub .ch-tab[data-tab="log"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='8' r='4'/><path d='M4 21c0-4 3.6-6 8-6s8 2 8 6'/></svg>");}
+  #screen-career-hub .ch-tab[data-tab="me"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='8'/><circle cx='12' cy='12' r='2.5'/><path d='M12 2v4M12 18v4M2 12h4M18 12h4'/></svg>");}
+  #screen-career-hub .ch-tab[data-tab="club"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z'/><path d='M9 12l2 2 4-4'/></svg>");}
+  #screen-career-hub .ch-tab[data-tab="calendar"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='16' rx='2'/><path d='M3 10h18M8 3v4M16 3v4'/></svg>");}
+  #screen-career-hub .ch-tab[data-tab="social"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 5h16v11H10l-5 4v-4H4z'/><path d='M8 10h8'/></svg>");}
+  #screen-career-hub .ch-tab[data-tab="streams"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='4' width='20' height='13' rx='2'/><path d='M10 8l5 2.5-5 2.5zM8 21h8'/></svg>");}
+  #screen-career-hub .ch-tab[data-tab="table"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='4' width='18' height='16' rx='2'/><path d='M3 9h18M3 14h18M9 4v16'/></svg>");}
+  #screen-career-hub .ch-tab[data-tab="shop"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 8h14l-1 13H6z'/><path d='M9 8V6a3 3 0 0 1 6 0v2'/></svg>");}
+  #screen-career-hub .ch-tab[data-tab="hist"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M8 4h8v5a4 4 0 0 1-8 0z'/><path d='M8 6H4v1a3 3 0 0 0 4 3M16 6h4v1a3 3 0 0 1-4 3M12 13v4M8 21h8M10 17h4'/></svg>");}
+  #screen-career-hub .ch-tab[data-tab="stats"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 3v18h18'/><path d='M7 15l4-4 3 3 6-6'/></svg>");}
+  #screen-career-hub .ch-tab[data-tab="train"]{--ic:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12'/></svg>");}
+  @media(min-width:701px){ #screen-career-hub .ch-tab::before{margin-right:7px;} }
+  .ev-rate{font-weight:900;} .ev-rate.hi{color:#00d6a4;} .ev-rate.lo{color:#ff7d70;}
+  .ev-rspark span{display:flex;align-items:flex-end;gap:2px;height:28px;}
+  .ev-rbar{display:block;width:6px;border-radius:2px;background:#7aa2ff;}
+  .ev-rbar.hi{background:#00d6a4;} .ev-rbar.lo{background:#ff7d70;}
+  .aw-shelf{margin:10px 0;}
+  .aw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;}
+  .aw-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:12px;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,214,0,.25);text-align:center;}
+  .aw-item i{font-style:normal;font-size:24px;} .aw-item b{font-size:12px;font-weight:900;} .aw-item small{font-size:10px;color:#9fb0e8;font-weight:800;}
+
   .cc-act-g i{font-style:normal;font-size:10px;font-weight:800;color:#8ad9c0;}
   .cc-act-g .cc-give-reach{color:#7aa2ff;}
   .cc-act-g .cc-give-mood{color:#c9a7ff;}
@@ -4675,8 +4979,9 @@
   /* «Играть в эфире» — та же кнопка вечера, но в цветах твича: рядом с жёлтым
      «Играть» фиолетовое читается как другой вход в тот же вечер, а не как
      вторая главная кнопка. См. careerPlayLive. */
-  #screen-career-hub .ch-play.ch-live-go{background:#9147ff;color:#fff;margin-top:6px;}
-  #screen-career-hub .ch-play.ch-live-go:not(:disabled):hover{background:#a970ff;color:#fff;}
+  /* Эфир — второстепенная кнопка под главной «Играть»: контур, ниже ростом. */
+  #screen-career-hub .ch-play.ch-live-go{background:transparent;color:#bf94ff;border:2px solid #9147ff;margin-top:8px;padding-top:9px;padding-bottom:9px;font-size:.8em;}
+  #screen-career-hub .ch-play.ch-live-go:not(:disabled):hover{background:#9147ff;color:#fff;}
   #screen-career-hub .ch-play.ch-live-go:disabled{background:rgba(255,255,255,.16);color:#8fa1cc;}
   /* «До турнира» — рядом с «Пропустить день», синяя: движение, не игра. См. careerSkipToAsk. */
   #screen-career-hub .ch-play.ch-skipto{background:#3b6fd6;color:#fff;margin-top:6px;margin-left:6px;}
@@ -4741,6 +5046,8 @@
     outline-offset:-2px;box-shadow:0 0 0 1px rgba(122,229,183,.35),
     0 0 12px rgba(122,229,183,.3) inset;}
   #screen-career-hub .cal-day.cal-qual .cal-n{color:#7ae5b7;font-weight:900;}
+  #screen-career-hub .cal-badge{display:inline-block;margin-top:3px;padding:1px 6px;border-radius:5px;font-size:9px;font-weight:900;letter-spacing:.03em;text-transform:uppercase;position:relative;z-index:1;}
+  #screen-career-hub .cal-badge.ok{background:#00d6a4;color:#062a22;} #screen-career-hub .cal-badge.inv{background:#ffdd00;color:#0b1a3a;}
   /* И та же мысль на карточке дня: куда уже квалифицирован. */
   #screen-career-hub .ch-qual{display:flex;align-items:center;gap:6px;margin-top:6px;
     padding:4px 9px;border-radius:999px;align-self:flex-start;
@@ -4889,6 +5196,8 @@
   .cc-tab{transform:skewX(-8deg);font-family:var(--font-display);font-style:normal;font-weight:600;
     font-size:14px;letter-spacing:.06em;border-radius:2px;}
   .cc-tabs{gap:8px;}
+  /* Четыре вкладки (с «Свои статы до 99») на телефоне переносятся, а не уезжают за край. */
+  @media (max-width:560px){.cc-tabs{flex-wrap:wrap;} .cc-tab{flex:1 1 40%;}}
   .cc-tab.on{background:var(--go);color:var(--go-ink);}
   #screen-career-create .cc-map{border-radius:3px;}
   /* 7. Жёлтые кнопки — со срезом, Oswald. Тот же список селекторов, что у
@@ -5285,7 +5594,7 @@
      player's own card under it — they are the same subject, so they read as one
      stack — and the feed takes a column of its own on the right with the duo
      under it. */
-  .ch-grid-main{grid-template-columns:300px minmax(0,1fr);}
+  .ch-grid-main{grid-template-columns:minmax(360px,5fr) minmax(0,6fr);}
   /* The career tab: the person on the left, everyone with a claim on the right. */
   .ch-grid-me{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;}
   @media(max-width:1000px){.ch-grid-me{grid-template-columns:1fr;}}
@@ -5670,6 +5979,355 @@
     box-shadow:inset -2px 0 0 #ffe600,inset 0 2px 0 #ffe600,inset 0 -2px 0 #ffe600;}
   .lobby-table tr.lobby-first td{background:rgba(255,230,0,.1);}
   .lobby-table tr.lobby-cut td{border-bottom:2px solid #ffd23f;}
+  /* Вечер карьеры — в цветах своего турнира (html.ev-pal, ccEvPaletteApply): фон таблицы —
+     градиент палитры Epic, строки — тёмные с оттенком левого цвета (белый текст читается и на
+     серебряных палитрах FNCS 2022–2025), своя строка и лидер — в цвете выделения турнира. */
+  html.ev-pal .lobby-wrap{background:linear-gradient(135deg,var(--ev-l) 0%,var(--ev-r) 100%);}
+  html.ev-pal .lobby-table th{color:var(--ev-th,#fff);}
+  html.ev-pal .lobby-table td{background:color-mix(in srgb,var(--ev-l) 28%,#0b0f16);color:#f4f6ff;}
+  html.ev-pal .lobby-table tbody tr[style*="--lobby-row"]{background:color-mix(in srgb,var(--ev-l) 28%,#0b0f16)!important;}
+  html.ev-pal .lobby-table tbody tr:hover td{background:color-mix(in srgb,var(--ev-l) 40%,#0b0f16);}
+  html.ev-pal .lobby-table td.lobby-num{color:rgba(244,246,255,.72);}
+  html.ev-pal .lobby-table tr.lobby-you td,html.ev-pal .lobby-table tr.you td,html.ev-pal .lobby-table tr.lobby-first td{
+    background:color-mix(in srgb,var(--ev-r) 42%,#0b0f16);box-shadow:inset 0 2px 0 var(--ev-h),inset 0 -2px 0 var(--ev-h);}
+  html.ev-pal .lobby-table tr.lobby-you td:first-child,html.ev-pal .lobby-table tr.you td:first-child,html.ev-pal .lobby-table tr.lobby-first td:first-child{
+    box-shadow:inset 2px 0 0 var(--ev-h),inset 0 2px 0 var(--ev-h),inset 0 -2px 0 var(--ev-h);}
+  html.ev-pal .lobby-table tr.lobby-you td:last-child,html.ev-pal .lobby-table tr.you td:last-child,html.ev-pal .lobby-table tr.lobby-first td:last-child{
+    box-shadow:inset -2px 0 0 var(--ev-h),inset 0 2px 0 var(--ev-h),inset 0 -2px 0 var(--ev-h);}
+  html.ev-pal .lobby-table tr.lobby-cut td{border-bottom:2px solid var(--ev-h);}
+  /* Экран турнира прошлых лет (html.ev-pal.ev-classic) — по скринам игры 2019–2023. */
+  html.ev-classic .lobby-wrap{position:relative;border-radius:6px;padding:0 0 10px;
+    background:linear-gradient(120deg,var(--ev-l) 0%,var(--ev-r) 100%);}
+  html.ev-classic.ev-light .lobby-wrap{background:linear-gradient(rgba(8,10,20,.34),rgba(8,10,20,.34)),linear-gradient(120deg,var(--ev-l) 0%,var(--ev-r) 100%);}
+  /* Шапка — название и регион над таблицей; колонкой, чтобы длинное название в две строки
+     на телефоне не наезжало на регион. Пустая таблица по-прежнему скрыта (:has выше). */
+  html.ev-classic .lobby-wrap:not(:has(tbody:empty)){display:flex;flex-direction:column;}
+  html.ev-classic .lobby-wrap::before{content:var(--ev-name);order:-2;display:block;padding:14px 14px 2px;font-family:var(--font-display);
+    font-weight:700;font-size:clamp(20px,5.5vw,30px);line-height:1.05;letter-spacing:.01em;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.18);}
+  html.ev-classic .lobby-wrap::after{content:var(--ev-reg);order:-1;display:block;padding:0 14px 16px;font-family:var(--font-display);
+    font-weight:700;font-size:17px;color:#fff;opacity:.95;}
+  html.ev-classic .lobby-table{border-spacing:0;}
+  html.ev-classic .lobby-table th{color:rgba(255,255,255,.8);font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:4px 12px;text-shadow:none;}
+  html.ev-classic .lobby-table td,
+  html.ev-classic .lobby-table tbody tr[style*="--lobby-row"]{background:rgba(255,255,255,.13)!important;}
+  html.ev-classic .lobby-table td{color:#fff;font-weight:800;padding:8px 12px;border-radius:0!important;box-shadow:inset 0 -1px 0 rgba(0,0,0,.07)!important;}
+  html.ev-classic .lobby-table tbody tr:nth-child(even) td{background:rgba(255,255,255,.05)!important;}
+  html.ev-classic .lobby-table td.lobby-rank,html.ev-classic .lobby-table td:first-child{color:rgba(255,255,255,.72);}
+  html.ev-classic .lobby-table td.lobby-num{color:rgba(255,255,255,.85);}
+  html.ev-classic .lobby-table tbody tr.lobby-first td,html.ev-classic .lobby-table tbody tr.lobby-you td,html.ev-classic .lobby-table tbody tr.you td{
+    background:#fff!important;color:#11141c;box-shadow:none!important;}
+  html.ev-classic .lobby-table tr.lobby-first td:first-child{color:#e0a800;font-size:18px;font-style:italic;}
+  html.ev-classic .lobby-table tr.lobby-you td:first-child,html.ev-classic .lobby-table tr.you td:first-child{color:#11141c;}
+  html.ev-classic .lobby-table tr.lobby-you td:first-child,html.ev-classic .lobby-table tr.you td:first-child{box-shadow:inset 5px 0 0 #11141c!important;}
+  html.ev-classic .lobby-table tr.lobby-first td.lobby-num,html.ev-classic .lobby-table tr.lobby-you td.lobby-num{color:#3a4152;}
+  /* Приглушённые ячейки (регион, счёт высадок) и строка отсечки красятся в разметке — на ярком
+     фоне их не видно (его скрин 29.09 «не виден текст»). На цветных строках — белым, на белых —
+     тёмным; отсечка — белая на тёмной полосе. */
+  html.ev-classic .lobby-table td[style*="--ink-dim"],html.ev-classic .lobby-table td[style*="--ink-dim"] *{color:rgba(255,255,255,.9)!important;}
+  html.ev-classic .lobby-table tbody tr.lobby-first td[style*="--ink-dim"],html.ev-classic .lobby-table tbody tr.lobby-first td[style*="--ink-dim"] *,
+  html.ev-classic .lobby-table tbody tr.lobby-you td[style*="--ink-dim"],html.ev-classic .lobby-table tbody tr.lobby-you td[style*="--ink-dim"] *,
+  html.ev-classic .lobby-table tbody tr.you td[style*="--ink-dim"],html.ev-classic .lobby-table tbody tr.you td[style*="--ink-dim"] *{color:#3a4152!important;}
+  html.ev-classic .lobby-table td[style*="--danger"]{color:#fff!important;background:rgba(0,0,0,.32)!important;font-weight:900;}
+  html.ev-classic .lobby-table tr.lobby-first .st-prize,html.ev-classic .lobby-table tr.lobby-you .st-prize,
+  html.ev-classic .lobby-table tr.you .st-prize{background:#11141c;color:#ffd166;}
+  /* Живой этап (карта + таблица) — рамка в той же палитре, что таблица, а не синяя сайта
+     (его скрин 37, 29.09). Заголовок игры — как шапка таблицы. */
+  /* Скрин 39: и карточки итогов этапа, и итог вечера (оценка, MVP), и вопросы перед игрой —
+     все карточки вечера в той же палитре. Полоса «прошёл/не прошёл» слева остаётся. */
+  html.ev-pal #majorStages .stage-card{
+    background:linear-gradient(rgba(6,8,14,.5),rgba(6,8,14,.5)),linear-gradient(120deg,var(--ev-l) 0%,var(--ev-r) 100%);
+    border:1px solid color-mix(in srgb,var(--ev-h) 55%,transparent);}
+  html.ev-pal.ev-light #majorStages .stage-card{
+    background:linear-gradient(rgba(6,8,14,.66),rgba(6,8,14,.66)),linear-gradient(120deg,var(--ev-l) 0%,var(--ev-r) 100%);}
+  html.ev-pal #majorStages .stage-card.pass{border-left:4px solid var(--accent);}
+  html.ev-pal #majorStages .stage-card.fail{border-left:4px solid var(--danger);}
+  html.ev-pal #majorStages .stage-card::before{background:none;}
+  html.ev-pal #majorStages .stage-card.cc-choice .cc-choice-head b{background:rgba(0,0,0,.35);box-shadow:inset 4px 0 0 var(--ev-h);}
+  html.ev-pal #majorStages .stage-card .cc-choice-btn{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.22);}
+  html.ev-pal #majorStages .stage-card .cc-choice-btn:hover{border-color:#fff;box-shadow:0 0 0 1.5px #fff;}
+  html.ev-pal #majorStages .stage-card .stage-detail,html.ev-pal #majorStages .stage-card .stage-when{color:rgba(255,255,255,.88);}
+  html.ev-pal #majorStages .stage-card>h4{font-family:var(--font-display);font-weight:700;
+    font-size:clamp(16px,2.2vw,22px);letter-spacing:.02em;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.25);
+    margin:0 0 12px;padding:0 0 10px;border-bottom:2px solid color-mix(in srgb,var(--ev-h) 70%,transparent);}
+  html.ev-pal #majorStages .stage-card .live-note{color:rgba(255,255,255,.85);}
+  html.ev-pal #majorStages .stage-card .lobby-wrap{box-shadow:0 6px 18px rgba(0,0,0,.35);
+    scrollbar-color:var(--ev-h) rgba(0,0,0,.3);}
+  html.ev-pal #majorStages .stage-card:has(.lobby-live) .zone-replay{box-shadow:0 0 0 2px color-mix(in srgb,var(--ev-h) 60%,transparent),0 6px 18px rgba(0,0,0,.35);}
+  /* Приз у ника в таблице этапа (revealStandings). */
+  .st-prize{display:inline-block;margin-left:8px;padding:1px 7px;border-radius:999px;background:rgba(255,209,102,.16);
+    color:#ffd166;font-weight:900;font-size:12px;white-space:nowrap;vertical-align:1px;}
+  /* ХАБ КАК НА ПРОДЕ (его слово 29.09: «как на fncsdraft сделай CENTRE», «хаб такой же как был
+     без значков у вкладок»). Функции не удалены — снято то, что меняло вид: значки вкладок,
+     вторая и третья строки шапки (ранг и дельта у рейтинга, мораль, полоса «сегодня»),
+     широкая левая колонка «Центра». */
+  #screen-career-hub .ch-tab::before{content:none !important;display:none !important;}
+  #screen-career-hub .ch-hnext,#screen-career-hub #chNext{display:none !important;}
+  #screen-career-hub .ch-ovr-d,#screen-career-hub .ch-ovr-rk{display:none !important;}
+  #screen-career-hub .ch-top .ch-mood{display:none !important;}
+  #screen-career-hub .ch-grid-main{grid-template-columns:300px minmax(0,1fr);}
+  @media(max-width:900px){ #screen-career-hub .ch-grid-main{grid-template-columns:1fr;} }
+  .ch-train-goals{margin-bottom:16px;} .ch-train-goals .hg-go{display:none;}
+  #screen-career-hub .ch-play.ch-live-go{background:#9147ff !important;color:#fff !important;border:0 !important;margin-top:6px;padding-top:11px;padding-bottom:11px;font-size:1em;}
+  #screen-career-hub .ch-play.ch-live-go:not(:disabled):hover{background:#a970ff !important;}
+  .cc-nb-clear{font-weight:900;font-size:14px;}
+  /* EWC 2024: серии 4 на 4 (runCareerEwc2024). */
+  .ewc-ser{padding:8px 10px;margin:6px 0;border-radius:10px;background:rgba(255,255,255,.05);}
+  .ewc-ser.mine{box-shadow:inset 0 0 0 1px rgba(0,214,164,.5);background:rgba(0,214,164,.07);}
+  .ewc-ser-h{display:flex;align-items:center;gap:10px;font-size:13px;color:#fff;}
+  .ewc-ser-h i{font-style:normal;font-weight:900;font-size:15px;color:#ffe600;padding:1px 8px;border-radius:6px;background:rgba(0,0,0,.3);}
+  .ewc-maps{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+  .ewc-maps span{font-size:11px;font-weight:900;padding:3px 8px;border-radius:8px;background:rgba(255,255,255,.06);color:#fff;}
+  .ewc-maps span em{display:block;font-style:normal;font-weight:700;font-size:9px;color:#8fa1cc;text-transform:uppercase;letter-spacing:.04em;}
+  .ewc-maps span.a{box-shadow:inset 3px 0 0 #00d6a4;} .ewc-maps span.b{box-shadow:inset 3px 0 0 #ff6b5e;}
+  .ewc-table{margin-top:8px;} .ewc-table div{display:flex;gap:8px;align-items:center;padding:4px 8px;font-size:13px;color:#dfe7ff;}
+  .ewc-table div.you{background:rgba(0,214,164,.12);border-radius:8px;} .ewc-table i{font-style:normal;font-weight:900;min-width:38px;white-space:nowrap;color:#8fa1cc;}
+  .ewc-table em{font-style:normal;font-size:10px;font-weight:900;color:#00d6a4;text-transform:uppercase;}
+  .ewc-roster{margin-top:6px;font-size:12px;color:#cfd8ff;} .ewc-roster small{color:#8fa1cc;}
+  .ewc-mvp{margin-left:auto;font-size:10px;font-weight:900;letter-spacing:.04em;color:#ffe600;text-transform:uppercase;}
+  .ewc-maps span small{display:block;font-size:10px;font-weight:700;color:#00d6a4;margin-top:2px;}
+  .ewc-stats{margin-top:10px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04);}
+  .ewc-stats-h{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8fa1cc;margin-bottom:4px;}
+  .ewc-stats div:not(.ewc-stats-h){display:grid;grid-template-columns:1fr auto auto auto;gap:10px;font-size:12px;color:#dfe7ff;padding:2px 0;}
+  .ewc-stats span{color:#8fa1cc;font-variant-numeric:tabular-nums;}
+  .ewc-mvp-line{color:#ffe600;font-weight:800;}
+  /* Живая карта EWC: счёт, скриншот арены со схемой режима поверх, тактики, лента. */
+  .ewc-live{padding:12px !important;}
+  .ewc-live-top{display:flex;justify-content:space-between;gap:8px;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
+  .ewc-live-score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin:8px 0;}
+  .ewc-live-score b{font-size:14px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ewc-live-score b.y{color:#00d6a4;} .ewc-live-score b.o{color:#ff6b5e;text-align:right;}
+  .ewc-live-score i{font-style:normal;font-family:var(--font-display);font-weight:700;font-size:26px;color:#fff;text-align:center;line-height:1;}
+  .ewc-live-score i small{display:block;font-family:inherit;font-size:10px;color:#ffe600;letter-spacing:.04em;}
+  .ewc-live-map{position:relative;aspect-ratio:6/5;max-width:520px;margin:0 auto;border-radius:10px;overflow:hidden;background:#0d1650 center/100% 100% no-repeat;}
+  .ewc-live-map::before{content:'';position:absolute;inset:0;background:rgba(6,12,40,.12);}
+  .ewc-live-map svg{position:absolute;inset:0;width:100%;height:100%;}
+  .ewc-live-clock{position:absolute;left:8px;top:6px;font-size:11px;font-weight:900;color:#fff;background:rgba(6,12,40,.7);padding:2px 8px;border-radius:6px;}
+  .ewc-live-note{position:absolute;right:8px;bottom:6px;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6);}
+  .ewc-live-tac{display:flex;justify-content:space-between;gap:10px;margin-top:8px;font-size:11px;color:#8fa1cc;}
+  .ewc-live-tac b{color:#fff;}
+  .ewc-live-feed{margin-top:6px;min-height:58px;font-size:11px;font-weight:700;}
+  .ewc-live-feed div{padding:2px 0;} .ewc-live-feed .y{color:#7ef0dd;} .ewc-live-feed .o{color:#ffb0a8;}
+  /* Сложность карьеры — редкости Fortnite (Notion «29»): Rare синяя, Epic фиолетовая, Legendary
+     золотая, Mythic жёлто-золотая с бликом. Невыбранная — приглушённая, выбранная — во весь цвет. */
+  #screen-career-create .cc-chip.cc-rar{--r1:#4fa8ff;--r2:#1b4f9c;position:relative;overflow:hidden;color:#fff;border-color:transparent;
+    background:linear-gradient(160deg,var(--r1),var(--r2));opacity:.55;filter:saturate(.7);transition:opacity .15s,filter .15s,transform .15s;}
+  #screen-career-create .cc-chip.cc-rar{letter-spacing:0;white-space:nowrap;}
+  #screen-career-create .cc-chip.cc-rar-pro{--r1:#c46bff;--r2:#5b1f9a;}
+  #screen-career-create .cc-chip.cc-rar-elite{--r1:#ffb347;--r2:#a2540f;}
+  #screen-career-create .cc-chip.cc-rar-legend{--r1:#ffe45c;--r2:#b9870a;color:#241a00;}
+  #screen-career-create .cc-chip.cc-rar:hover{opacity:.85;filter:none;border-color:transparent;}
+  #screen-career-create .cc-chip.cc-rar.on{opacity:1;filter:none;border-color:#fff;box-shadow:0 0 0 1.5px #fff,0 6px 18px color-mix(in srgb,var(--r1) 45%,transparent);background:linear-gradient(160deg,var(--r1),var(--r2));transform:translateY(-1px);}
+  #screen-career-create .cc-chip.cc-rar-legend::after{content:'';position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 45%,transparent 60%);background-size:250% 100%;animation:ccRarShine 2.6s linear infinite;}
+  @keyframes ccRarShine{0%{background-position:150% 0}100%{background-position:-100% 0}}
+  @media (prefers-reduced-motion:reduce){ #screen-career-create .cc-chip.cc-rar-legend::after{animation:none;background-position:50% 0;} }
+  /* Окно состава на кап другого формата (ccEventRosterPick). */
+  .cc-rost-ask{margin-left:8px;padding:2px 10px;border-radius:8px;border:0;background:#ffe600;color:#101a44;font-size:11px;font-weight:900;cursor:pointer;vertical-align:middle;}
+  /* Шесть колонок тренировок в Центре (по характеристике). */
+  .cc-six{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;margin:4px 0 8px;}
+  .cc-six-t{display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 2px;border-radius:9px;border:1px solid rgba(180,200,255,.2);background:rgba(126,150,224,.18);color:#fff;cursor:pointer;min-width:0;}
+  .cc-six-t b{font-size:10px;font-weight:900;letter-spacing:.04em;color:#9fb0e8;}
+  .cc-six-t i{font-style:normal;font-family:var(--font-display);font-weight:700;font-size:18px;line-height:1.1;}
+  .cc-six-t em{font-style:normal;font-size:10px;font-weight:900;color:#00d6a4;}
+  .cc-six-t small{font-size:9px;font-weight:800;color:#8fa1cc;}
+  .cc-six-t.off{opacity:.4;cursor:default;} .cc-six-t.did{border-color:#00d6a4;}
+  .cc-six-t:not(.off):hover{background:rgba(160,185,255,.3);}
+  .cc-soon{border:1px solid rgba(255,200,60,.55) !important;background:linear-gradient(160deg,rgba(255,190,40,.16),rgba(255,190,40,.04)) !important;}
+  .cc-soon-h{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#ffcf4d;margin-bottom:4px;}
+  .cc-soon b{display:block;font-size:15px;color:#fff;}
+  .cc-soon-line{font-size:12px;color:#dfe7ff;margin:4px 0 10px;}
+  .cc-soon-go{width:100%;background:#ffe600;color:#101a44;border:0;border-radius:10px;padding:10px 14px;font-family:var(--font-display);font-weight:700;font-size:15px;text-transform:uppercase;cursor:pointer;}
+  .cc-evpick-wrap{position:fixed;inset:0;z-index:9600;background:rgba(4,8,24,.72);display:flex;align-items:center;justify-content:center;padding:16px;}
+  .cc-evpick{width:min(460px,100%);max-height:88vh;overflow:auto;background:linear-gradient(180deg,#1b2a66,#101a44);border:1px solid rgba(160,185,255,.3);border-radius:14px;padding:16px;color:#fff;box-shadow:0 20px 50px rgba(0,0,0,.5);}
+  .cc-evpick h4{margin:0 0 4px;font-family:var(--font-display);font-size:18px;text-transform:uppercase;}
+  .cc-evpick p{margin:0 0 10px;font-size:12px;color:#cfd8ff;}
+  .cc-evpick-list{display:flex;flex-direction:column;gap:5px;}
+  .cc-evpick-p{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;border:1px solid rgba(180,200,255,.2);background:rgba(126,150,224,.16);color:#fff;cursor:pointer;text-align:left;font-size:13px;}
+  .cc-evpick-p b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cc-evpick-p i{font-style:normal;font-weight:900;color:#ffe600;}
+  .cc-evpick-p.on{border-color:#ffe600;background:rgba(255,230,0,.12);}
+  .cc-evpick-p span{font-size:11px;color:#ffe600;opacity:.8;}
+  .cc-evpick-list{margin-bottom:10px;}
+  .cc-evpick-p em{font-style:normal;font-size:10px;font-weight:800;color:#8fa1cc;text-transform:uppercase;}
+  .cc-evpick-p.on{background:rgba(0,214,164,.25);border-color:#00d6a4;}
+  .cc-evpick-p.mine{opacity:.75;cursor:default;}
+  .cc-evpick-act{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:12px;}
+  .cc-evpick-auto{background:none;border:0;color:#8fa1cc;font-size:12px;font-weight:800;text-decoration:underline;cursor:pointer;}
+  .cc-evpick-go{background:#ffe600;color:#101a44;border:0;border-radius:10px;padding:10px 18px;font-family:var(--font-display);font-weight:700;font-size:15px;text-transform:uppercase;cursor:pointer;}
+  .cc-evpick-go:disabled{opacity:.45;cursor:not-allowed;}
+  .ewc-ask-auto{display:block;margin:8px auto 0;background:none;border:0;color:#8fa1cc;font-size:11px;font-weight:800;text-decoration:underline;cursor:pointer;}
+  .ewc-h5{margin:12px 0 4px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8fa1cc;}
+  /* Главная: два режима, драфт по годам (29.09). */
+  .home-modes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0;}
+  @media(max-width:700px){ .home-modes{grid-template-columns:1fr;} }
+  .hm-card{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;
+    min-height:190px;padding:20px 22px;border:0;border-radius:18px;cursor:pointer;font:inherit;color:#fff;
+    background:linear-gradient(100deg,rgba(8,14,40,.92) 0%,rgba(8,14,40,.7) 55%,rgba(8,14,40,.25) 100%),var(--hm-art) center/cover no-repeat;
+    box-shadow:inset 0 0 0 1px rgba(180,200,255,.2),0 14px 34px rgba(4,10,30,.45);transition:transform .15s ease,box-shadow .15s ease;}
+  .hm-card:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 2px #ffe600,0 18px 40px rgba(4,10,30,.55);}
+  .hm-card .hm-tag{font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#7ef0dd;}
+  .hm-card b{font-family:var(--font-display);font-size:clamp(30px,4.5vw,46px);font-weight:700;line-height:1;text-transform:uppercase;font-style:italic;}
+  .hm-card em{font-style:normal;font-size:13px;line-height:1.4;color:#dfe7ff;max-width:420px;}
+  .hm-card i{margin-top:auto;font-style:normal;font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;
+    padding:9px 18px;border-radius:999px;background:#ffe600;color:#0b0f12;}
+  .hm-card-draft i{background:#fff;}
+  .home-modes.hm-draft-on .hm-card-draft{box-shadow:inset 0 0 0 2px #ffe600,0 14px 34px rgba(4,10,30,.45);}
+  .modes-panel.dp-shut{display:none;}
+  .dp-head{margin:2px 0 14px;} .dp-head .dp-sub{margin:4px 0 0;font-size:13px;color:#cfd8ff;max-width:640px;}
+  .dp-tag{display:inline-block;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#7ef0dd;}
+  .dp-title{margin:2px 0 0;font-family:var(--font-display);font-size:clamp(30px,4.5vw,44px);font-weight:700;font-style:italic;text-transform:uppercase;line-height:1;color:#fff;}
+  .hero-mode-tag{margin-bottom:8px;}
+  .hero.hero-draft{margin-top:16px;}
+  .fmt-art{position:relative;overflow:hidden;background:#0d1650 center/cover no-repeat;}
+  /* Постер формата на всю плитку, подпись внизу на градиенте; остальные сезоны — миниатюры справа сверху. */
+  .fmt-wall{position:absolute;top:10px;right:10px;z-index:2;display:flex;gap:4px;align-items:center;}
+  .fmt-wall i{display:block;width:30px;height:30px;border-radius:6px;background-size:cover;background-position:50% 30%;box-shadow:0 0 0 1.5px rgba(255,255,255,.55),0 2px 6px rgba(0,0,0,.45);}
+  .fmt-wall b{font-size:11px;font-weight:900;color:#fff;padding:0 7px;height:30px;line-height:30px;border-radius:6px;background:rgba(8,14,44,.72);box-shadow:0 0 0 1.5px rgba(255,255,255,.35);}
+  .fmt-art .ec-foot{z-index:2;} .fmt-art .ec-pill{position:absolute;z-index:2;}
+  .hd-logos{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 70% 40%,#2a3f9e 0%,#101a52 60%,#0a1033 100%);}
+  .hd-logos::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(12,20,64,.85) 0%,rgba(12,20,64,0) 22%),linear-gradient(0deg,rgba(10,16,51,.55) 0%,rgba(10,16,51,0) 30%);}
+  .hd-wall{position:absolute;inset:-12% -8% -12% 4%;display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-content:center;transform:rotate(-9deg);}
+  .hd-logo{position:relative;margin:0;aspect-ratio:3/4;border-radius:12px;overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.25);transition:transform .2s ease;}
+  .hd-logo img{width:100%;height:100%;object-fit:cover;object-position:50% 32%;display:block;}
+  .hd-logo.hd-wide img{object-position:50% 45%;transform:scale(1.35);}
+  .hd-logo figcaption{position:absolute;left:6px;bottom:6px;font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.04em;color:#fff;background:rgba(0,0,0,.55);padding:1px 7px;border-radius:999px;}
+  .hd-logos:hover .hd-logo{transform:translateY(-3px);}
+  .dp-fmt-label{text-align:left;width:auto;}
+  /* Два блока одного размера (его слово 29.09: «такого же размера»). */
+  @media(min-width:901px){ .hero.hero-career,.hero.hero-draft{min-height:480px;} }
+  .dp-years{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px;}
+  .dp-chip{border:0;cursor:pointer;font:inherit;font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:.04em;
+    padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.08);color:#cfd8ff;box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);}
+  .dp-chip:hover{background:rgba(255,255,255,.14);color:#fff;}
+  .dp-chip.on{background:#ffe600;color:#0b0f12;box-shadow:none;}
+  .dp-chip-fmt{text-transform:uppercase;font-size:14px;}
+  #screen-drafts .dp-top{display:flex;align-items:center;gap:16px;margin:4px 0 18px;}
+  .dp-back{border:0;cursor:pointer;font:inherit;font-weight:900;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.1);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2);}
+  .dp-back:hover{background:rgba(255,255,255,.18);}
+  #screen-drafts .dp-years:empty{display:none;}
+  .dp-fmt-label{margin:22px 0 8px;}
+  /* Своя организация — плитками хаба (careerClubHTML, 29.09). */
+  .og .og-sec{margin:18px 0 8px;font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:.04em;text-transform:uppercase;color:#fff;display:flex;gap:8px;align-items:baseline;}
+  .og .og-sec i{font-style:normal;font-size:12px;color:#8fa1cc;}
+  .og-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+  .og-card{position:relative;display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:12px;
+    background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(180,200,255,.14);min-width:0;}
+  .og-card.on{box-shadow:inset 0 0 0 1px rgba(0,214,164,.45);}
+  .og-card.og-wide{grid-column:1/-1;}
+  .og-card h6{margin:0;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8fa1cc;}
+  .og-kv{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:#cfd8ff;}
+  .og-kv b{color:#fff;font-weight:900;white-space:nowrap;}
+  .og-eff{font-size:12px;line-height:1.35;color:#e6ecff;font-weight:700;}
+  .og-eff-off{color:#8fa1cc;font-weight:600;}
+  .og-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;}
+  .og-btn{border:0;border-radius:999px;padding:9px 14px;font:inherit;font-size:12px;font-weight:900;letter-spacing:.03em;cursor:pointer;
+    background:rgba(255,255,255,.12);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);white-space:nowrap;}
+  .og-btn:hover:not(:disabled){background:rgba(255,255,255,.2);}
+  .og-btn:disabled{opacity:.45;cursor:not-allowed;}
+  .og-btn-sm{padding:6px 11px;font-size:11px;}
+  .og-btn-go{background:#ffe600;color:#0b0f12;box-shadow:none;}
+  .og-btn-go:hover:not(:disabled){background:#fff27a;}
+  .og-btn-ghost{background:transparent;color:#ff9d95;box-shadow:inset 0 0 0 1px rgba(255,120,110,.35);}
+  .og-pips{display:inline-flex;gap:3px;font-style:normal;}
+  .og-pips b{width:14px;height:5px;border-radius:3px;background:rgba(255,255,255,.15);}
+  .og-pips b.on{background:#00d6a4;}
+  .og-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:4px 0 10px;border-bottom:1px solid rgba(255,255,255,.1);}
+  .og-head-t{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1;}
+  .og-head-t > b{font-family:var(--font-display);font-size:26px;font-weight:700;line-height:1;color:#fff;letter-spacing:.02em;}
+  .og-head-t span{display:flex;gap:6px;flex-wrap:wrap;}
+  .og-pill{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;
+    background:rgba(0,214,164,.16);color:#7ef0dd;}
+  .og-pill-inv{background:rgba(255,209,102,.16);color:#ffd166;}
+  .og-cash{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+  .og-cash em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8fa1cc;}
+  .og-cash b{font-size:24px;font-weight:900;font-style:italic;color:#00d6a4;line-height:1;}
+  .og-cash b.neg{color:#ff6b5e;}
+  .og-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:12px 0 4px;}
+  .og-stat{padding:9px 11px;border-radius:10px;background:rgba(255,255,255,.05);}
+  .og-stat em{display:block;font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
+  .og-stat b{font-size:16px;font-weight:900;color:#fff;}
+  .og-stat.up b{color:#00d6a4;} .og-stat.down b{color:#ff6b5e;}
+  .og-inv{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;padding:8px 12px;border-radius:10px;
+    background:rgba(255,209,102,.08);font-size:12px;color:#ffe3a0;font-weight:700;}
+  .og-brand{margin-top:10px;} .og-brand summary{cursor:pointer;font-size:12px;font-weight:900;color:#8fa1cc;letter-spacing:.04em;}
+  .og-person{display:flex;align-items:center;gap:10px;}
+  .og-person b{display:block;color:#fff;font-size:14px;} .og-person em{display:block;font-style:normal;font-size:11px;color:#8fa1cc;margin-bottom:3px;}
+  .og-face{width:40px;height:40px;border-radius:50%;object-fit:cover;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.15);}
+  .og-face-none{display:block;background:rgba(255,255,255,.1);}
+  .og-cands{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow:auto;margin-top:4px;padding-top:8px;border-top:1px solid rgba(255,255,255,.1);}
+  .og-cand{display:flex;align-items:center;gap:8px;}
+  .og-cand .og-face{width:30px;height:30px;}
+  .og-cand-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .og-cand-t b{font-size:12px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .og-cand-t em{font-style:normal;font-size:10px;color:#8fa1cc;}
+  .og-max{font-style:normal;font-size:11px;font-weight:900;color:#7ef0dd;text-transform:uppercase;letter-spacing:.06em;}
+  .og-duo-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+  .og-duo-top b{font-size:13px;font-weight:900;color:#fff;line-height:1.25;min-width:0;word-break:break-word;}
+  .og-ovr{font-style:normal;flex:none;font-size:13px;font-weight:900;color:#0b0f12;background:#ffe600;border-radius:6px;padding:2px 7px;}
+  .og-tags{display:flex;gap:5px;flex-wrap:wrap;} .og-tags:empty{display:none;}
+  .og-tag{font-style:normal;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,.1);color:#cfd8ff;}
+  .og-tag.mine{background:rgba(0,214,164,.16);color:#7ef0dd;} .og-tag.buy{background:rgba(255,209,102,.14);color:#ffd166;}
+  .og-tag.perk{background:rgba(122,162,255,.18);color:#bcd0ff;} .og-tag.no{background:rgba(255,95,86,.14);color:#ff9d95;}
+  .og-toggles{display:flex;gap:6px;flex-wrap:wrap;} .og-toggles:empty{display:none;}
+  .og-toggle{display:inline-flex;align-items:center;cursor:pointer;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;
+    background:rgba(255,255,255,.06);color:#cfd8ff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);}
+  .og-toggle input{display:none;} .og-toggle.on{background:rgba(122,162,255,.22);color:#fff;box-shadow:inset 0 0 0 1px #7aa2ff;}
+  .og-offer{display:flex;align-items:center;gap:6px;margin-top:auto;}
+  .og-offer span{font-size:11px;color:#8fa1cc;font-weight:700;flex:1;min-width:0;}
+  .og .cc-club-sum{width:70px;}
+  .og-search input{width:100%;box-sizing:border-box;padding:9px 12px;border-radius:10px;border:1px solid rgba(180,200,255,.2);background:rgba(8,12,24,.45);color:#fff;font:inherit;margin-bottom:10px;}
+  .og-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+  .og-choices-3{grid-template-columns:repeat(3,minmax(0,1fr));}
+  @media(max-width:700px){ .og-choices,.og-choices-3{grid-template-columns:1fr;} }
+  .og-choice{display:flex;flex-direction:column;gap:4px;text-align:left;padding:12px 14px;border-radius:12px;border:0;cursor:pointer;font:inherit;color:#fff;
+    background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(180,200,255,.14);}
+  .og-choice b{font-family:var(--font-display);font-size:16px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;}
+  .og-choice i{font-style:normal;font-size:15px;font-weight:900;color:#ffe600;}
+  .og-choice em{font-style:normal;font-size:11px;color:#cfd8ff;line-height:1.35;}
+  .og-choice.on{background:rgba(255,230,0,.1);box-shadow:inset 0 0 0 2px #ffe600;}
+  .og-found{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+  .og-found input{flex:1;min-width:180px;padding:10px 12px;border-radius:10px;border:1px solid rgba(180,200,255,.2);background:rgba(8,12,24,.45);color:#fff;font:inherit;}
+  .og-close{margin-top:18px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);}
+  /* Обложка турнира в строке профиля (ccLogArtHTML) — как у Fortnite Tracker. */
+  .ev-name-in{display:flex;align-items:center;gap:10px;min-width:0;}
+  .ev-name-in > div{min-width:0;}
+  .ev-thumb{flex:none;width:64px;height:36px;border-radius:6px;object-fit:cover;background:rgba(255,255,255,.08);
+    box-shadow:0 0 0 1px rgba(255,255,255,.12);display:block;}
+  @media(max-width:600px){ .ev-thumb{width:48px;height:27px;} }
+  /* Плашка «Следующий раунд» (ccRoundChoice) — снизу по центру, поверх вечера. */
+  .cc-round-ask{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9500;width:min(560px,calc(100vw - 32px));
+    --th:var(--fn-yellow);color:#fff;padding:14px 16px 12px;border-radius:6px;overflow:hidden;
+    background:linear-gradient(160deg, rgba(29,59,140,.96) 0%, rgba(19,38,95,.98) 46%, rgba(11,22,64,.99) 100%);
+    border:1px solid var(--fn-line);box-shadow:inset 0 0 0 1px rgba(180,200,255,.14), 0 18px 40px rgba(4,10,30,.55);}
+  .cc-round-ask::before{content:'';position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(112deg, transparent 0 90px, rgba(150,180,255,.06) 90px 130px);}
+  .cc-round-ask>*{position:relative;}
+  .cc-round-ask .cc-choice-head b{margin:-14px -16px 9px;padding-left:16px;}
+  .cc-round-ask .cc-choice-head>span{display:block;}
+  .cc-round-ask .cc-choice-btn{flex:1 1 140px;}
+  .cc-round-ask .cc-choice-btn b{margin:0;font-size:14px;}
+  .cc-round-ask .cc-choice-btn.rc-play{background:var(--th);border-color:var(--th);}
+  .cc-round-ask .cc-choice-btn.rc-play b{color:#0b0f12;}
+  .cc-round-ask .cc-choice-bar i{animation:rcBar var(--rc-ms,10s) linear forwards;}
+  @keyframes rcBar{from{transform:scaleX(1);}to{transform:scaleX(0);}}
+  @media (prefers-reduced-motion:reduce){.cc-round-ask .cc-choice-bar{display:none;}}
+  /* В годы с палитрой турнира — её цвета, как у таблиц: фон, акцент шапки, кнопка «Играть». */
+  html.ev-pal .cc-round-ask{--th:var(--ev-h);border-color:color-mix(in srgb,var(--ev-h) 55%,transparent);
+    background:linear-gradient(rgba(6,8,14,.5),rgba(6,8,14,.5)),linear-gradient(120deg,var(--ev-l) 0%,var(--ev-r) 100%);}
+  html.ev-pal .cc-round-ask .cc-choice-head b{background:rgba(0,0,0,.35);}
+  html.ev-pal .cc-round-ask .cc-choice-btn{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.22);}
+  html.ev-pal .cc-round-ask .cc-choice-btn.rc-play{background:#fff;border-color:#fff;}
+  html.ev-pal .cc-round-ask .cc-choice-btn.rc-play b{color:#11141c;}
+  html.ev-pal .cc-round-ask .cc-choice-btn:hover{border-color:#fff;box-shadow:0 0 0 1.5px #fff;}
+  /* Тема карьеры прошлых лет — палитра сезона (html.yr-pal, ccYearThemeApply). */
+  html.yr-pal #screen-career-hub .ch-stage{background:linear-gradient(160deg,color-mix(in srgb,var(--yr-l) 38%,#060a16) 0%,color-mix(in srgb,var(--yr-r) 30%,#060a16) 100%);}
+  html.yr-pal #screen-career-hub .ch-top{
+    background:linear-gradient(90deg,color-mix(in srgb,var(--yr-l) 34%,#060a16) 0%,color-mix(in srgb,var(--yr-l) 26%,rgba(6,10,22,.9)) 50%,rgba(6,10,22,.6) 100%),
+      var(--yr-art) right 30%/cover no-repeat;}
+  html.yr-pal #screen-career-hub .ch-tile h4{background:linear-gradient(90deg,color-mix(in srgb,var(--yr-l) 70%,#0b0f12),color-mix(in srgb,var(--yr-r) 55%,#0b0f12));
+    box-shadow:inset 4px 0 0 var(--yr-h);}
+  html.yr-pal #screen-career-hub .ch-tab.on{background:var(--yr-h);color:var(--yr-hi);border-color:var(--yr-h);}
+  html.yr-pal #screen-career-hub .ch-day.now::after{background:var(--yr-h);color:var(--yr-hi);}
   /* Вкладка «Соцсети» — как остальные: точка непрочитанного больше не стоит
      в строке текста, а сидит в правом верхнем углу пилюли, лаймовая, как
      точка у PASSES в навбаре игры. Отзыв: «в social сделай
@@ -5889,10 +6547,11 @@
          (вдвоём, гонка, по коду; ходят за флагом CC_MP_OPEN в setLang).
          Id кнопок cstripDuo/cstripRace/cstripCode сохранены: на них смотрят
          check-mp-doors и setLang. Арт — ключевой арт Major 1, один. -->
-    <section class="hero" aria-labelledby="heroTitle">
+    <section class="hero hero-career" aria-labelledby="heroTitle">
       <div class="hero-body">
-        <h1 class="hero-title" id="heroTitle" data-i18n="heroTitle">Draft real pros. <em>Play the season.</em></h1>
-        <p class="hero-sub" id="tagline" data-i18n="tagline">Draft a squad of real FNCS players and run the tournament. Or start a career: season after season on the real calendar, divisions, Majors, Reload and LANs. Solo or with a friend.</p>
+        <span class="dp-tag hero-mode-tag" data-i18n="hmCareerTag">Mode 1 · Career</span>
+        <h1 class="hero-title" id="heroTitle" data-i18n="hcHeroTitle">Go pro. <em>Season after season.</em></h1>
+        <p class="hero-sub" id="tagline" data-i18n="hmCareerSub">One player, season after season on the real 2019–2026 calendar: divisions, Majors, clubs, LANs</p>
         <div class="cstrip-chips hero-chips">
           <span class="cstrip-tag" data-i18n="modeNewBadge">NEW</span>
           <span class="cstrip-chip" data-i18n="cstripChipDivs">Divisions 5 → 1</span>
@@ -5902,22 +6561,49 @@
         </div>
         <div class="hero-cta">
           <button class="hero-btn hero-btn-go" type="button" onclick="careerStart()"><span data-i18n="heroCareer">Start a career</span></button>
-          <button class="hero-btn hero-btn-alt" type="button" onclick="document.getElementById('modeYears').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})"><span data-i18n="heroDraft">Go to draft</span></button>
+          <button class="hero-btn hero-btn-alt" type="button" onclick="homeOpenDraft()"><span data-i18n="heroDraft">Go to draft</span></button>
         </div>
         <div class="hero-about"><a href="about.html"><span data-i18n="aboutLink">What this game is</span></a></div>
-        <div class="hero-team" id="heroTeam" hidden>
+        <!-- Видно сразу, а не после загрузки app.js (его правка 29.09: «с задержкой появляется with a friend»);
+             CC_MP_OPEN=false по-прежнему прячет ряд из setLang. -->
+        <div class="hero-team" id="heroTeam">
           <span class="hero-team-lbl" data-i18n="heroTeamLbl">With a friend:</span>
-          <button class="cstrip-btn cstrip-btn-duo" id="cstripDuo" type="button" hidden onclick="careerMpNew()" data-i18n="heroDuo">Play as a duo</button>
-          <button class="cstrip-btn cstrip-btn-duo" id="cstripRace" type="button" hidden onclick="careerRaceNew()" data-i18n="ccRaceMake">Start a race</button>
-          <button class="cstrip-btn cstrip-btn-code" id="cstripCode" type="button" hidden onclick="careerMpJoinNew()" data-i18n="ccMpEnter">Join by code</button>
+          <button class="cstrip-btn cstrip-btn-duo" id="cstripDuo" type="button" onclick="careerMpNew()" data-i18n="heroDuo">Play as a duo</button>
+          <button class="cstrip-btn cstrip-btn-duo" id="cstripRace" type="button" onclick="careerRaceNew()" data-i18n="ccRaceMake">Start a race</button>
+          <button class="cstrip-btn cstrip-btn-code" id="cstripCode" type="button" onclick="careerMpJoinNew()" data-i18n="ccMpEnter">Join by code</button>
         </div>
       </div>
-      <div class="hero-art" style="background-image:url(art/fncs-2026-major1.jpg)" role="img" aria-label="FNCS 2026 Major 1"></div>
+      <div class="hero-art" style="background-image:url(art/fncs-2026-major1.jpg);cursor:pointer" role="img" aria-label="FNCS 2026 Major 1" onclick="careerStart()"></div>
     </section>
     <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Скриншот (красная рамка вокруг всех рядов): «с этими
          прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
          первый выделяется». -->
-    <section class="modes-panel">
+    <!-- ДВА РЕЖИМА (его слово 29.09): два одинаковых больших блока — КАРЬЕРА и ДРАФТ («такого же размера»).
+         Кнопка драфта раскрывает под ним выбор года 2019–2026 и форматов. -->
+    <section class="hero hero-draft" aria-labelledby="heroDraftTitle">
+      <div class="hero-body">
+        <span class="dp-tag hero-mode-tag" data-i18n="hmDraftTag">Mode 2 · Draft</span>
+        <h2 class="hero-title" id="heroDraftTitle" data-i18n="hdHeroTitle">Build a squad. <em>Any FNCS year.</em></h2>
+        <p class="hero-sub" data-i18n="hmDraftSub">Build a team from real cards and run the tournament: any year 2019–2026, All FNCS, duos, trios, squads</p>
+        <div class="cstrip-chips hero-chips">
+          <span class="cstrip-chip">2019 – 2026</span>
+          <span class="cstrip-chip">All FNCS</span>
+          <span class="cstrip-chip" data-i18n="hdChipFormats">Duos · Trios · Squads</span>
+          <span class="cstrip-chip" data-i18n="dpRealCards">Real cards</span>
+        </div>
+        <div class="hero-cta">
+          <button class="hero-btn hero-btn-go" type="button" onclick="homeOpenDraft()"><span data-i18n="hdPlay">Play the draft</span></button>
+          <button class="hero-btn hero-btn-alt" type="button" onclick="chooseMode(2, true)"><span>All FNCS</span></button>
+        </div>
+      </div>
+      <!-- Превью драфта — стена логотипов FNCS и World Cup 2019–2026 (его просьба 29.09: «на превью добавить все
+           логотипы фнксов, ворлд капа за эти года красиво»). Постеры сезонов — те же, что в карьере. -->
+      <div class="hero-art hd-logos" style="cursor:pointer" role="img" aria-label="FNCS · World Cup 2019–2026" onclick="homeOpenDraft()">
+        <div class="hd-wall"><figure class="hd-logo hd-wide"><img src="art/fncs-2019.jpg" alt="" loading="lazy"><figcaption>WC 2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f10.jpg" alt="" loading="lazy"><figcaption>2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f11.jpg" alt="" loading="lazy"><figcaption>2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f12.jpg" alt="" loading="lazy"><figcaption>2020</figcaption></figure><figure class="hd-logo"><img src="art/cups/f14.jpg" alt="" loading="lazy"><figcaption>2020</figcaption></figure><figure class="hd-logo"><img src="art/cups/f15.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f17.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f18gr.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f19.jpg" alt="" loading="lazy"><figcaption>2022</figcaption></figure><figure class="hd-logo"><img src="art/cups/f22inv.jpg" alt="" loading="lazy"><figcaption>2022</figcaption></figure><figure class="hd-logo"><img src="art/cups/f23.jpg" alt="" loading="lazy"><figcaption>2023</figcaption></figure><figure class="hd-logo"><img src="art/cups/f25.jpg" alt="" loading="lazy"><figcaption>2023</figcaption></figure><figure class="hd-logo"><img src="art/cups/f28.jpg" alt="" loading="lazy"><figcaption>2024</figcaption></figure><figure class="hd-logo hd-wide"><img src="art/mode-major1-2025.jpg" alt="" loading="lazy"><figcaption>2025</figcaption></figure><figure class="hd-logo hd-wide"><img src="art/fncs-2026.jpg" alt="" loading="lazy"><figcaption>2026</figcaption></figure></div>
+      </div>
+    </section>
+    <section class="modes-panel dp-shut" id="draftPanel">
+    <div class="dp-years" id="dpYears"></div>
     <div class="year-row" id="modeYears">
       <div class="year-label">2026</div>
       <!-- Две карточки, а не три: карьера уехала в свою полосу под героем. -->
@@ -6006,9 +6692,7 @@
       <div class="mode-grid mode-grid-3">
       <div class="mode-card mode-card-span">
         <!-- 2024: своих постеров у Мейджоров нет — острова пятой главы, как в карьере. -->
-        <div class="ec-art" style="background-image:url(art/map-f1.jpg)">
-          <i class="ec-slice" style="background-image:url(art/map-f2.jpg)"></i>
-          <i class="ec-slice ec-slice-3" style="background-image:url(art/map-f3.jpg)"></i>
+        <div class="ec-art" style="background-image:url(art/fncs-2024.jpg);background-position:center">
           <span class="ec-pill ec-pill-l" data-i18n="ecScope6">6 regions</span>
           <div class="ec-foot">
             <div class="ec-when" data-i18n="ecDate2024">2024 season · six regions</div>
@@ -6028,9 +6712,9 @@
       </div>
     </div>
 
-    <div class="mode-grid mode-grid-4" style="margin-top:16px;">
+    <div class="mode-grid mode-grid-4" id="dpFormats" style="margin-top:16px;">
       <div class="mode-card" onclick="chooseMode(2, true)">
-        <div class="ec-art" id="allFncsArt" data-art="art/mode-all-fncs.jpg"><span class="ec-pill ec-pill-l" data-i18n="ecScopeAll">All regions</span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateAll">2021 - 2026</div><h3 class="ec-title" data-i18n="modeMajorTitle">ALL FNCS</h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos">Duos</span></div></div></div>
+        <div class="ec-art" id="allFncsArt" data-art="art/mode-all-fncs.jpg"><span class="ec-pill ec-pill-l" data-i18n="ecScopeAll">All regions</span><div class="ec-foot"><div class="ec-when" data-i18n="ecDateAll">2019 - 2026</div><h3 class="ec-title" data-i18n="modeMajorTitle">ALL FNCS</h3><div class="ec-mode"><span class="ec-chip">Battle Royale</span><span class="ec-sub" data-i18n="ecSubDuos">Duos</span></div></div></div>
         <p data-i18n="modeMajorDesc">The whole roster across every FNCS season. Duo only: Play-In → Heats → Major Finals with one squad, elimination possible at any stage.</p>
         <span class="mode-count" data-i18n="modeMajorCount"><i>2 players</i><i>whole roster pool</i></span>
       </div>
@@ -6117,7 +6801,7 @@
         <div class="region-note" data-i18n="synergyNote">In reality FNCS 2026 is played in duos - that is the real format. Trio and Squad are fantasy: the players are real, but you build the roster yourself. Synergy is drawn as a triangle (trio) or square (squad), and the lines light up for real teammates or compatriots.</div>
       </div>
 
-      <div class="roster-note" data-i18n="sourcesNote"><b>Card sources - which tournaments the players are actually pulled from:</b><br>318 tournaments, 32847 cards in total.<br><br>• <b>FNCS 2026 Major 2</b> - Play-In, Last Chance Qualifier and Grand Finals across all 7 regions (18 Jul - 2 Aug 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> - Group Stage, Upper Bracket and Grand Finals (Düsseldorf <img src="flags/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 May 2026)<br>• <b>FNCS 2026 Major 1</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions (Mar - May 2026)<br>• <b>FNCS 2025 Global Championship</b> - Grand Finals (Lyon <img src="flags/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 Sep 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions, trios (Jan - Aug 2025)<br>• <b>FNCS 2024 Global Championship</b> - Grand Finals (Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 Sep 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> - Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> - Grand Finals (Copenhagen <img src="flags/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 Oct 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> - Grand Finals Europe (Mar / May / Jun 2023)<br>• <b>FNCS Invitational 2022</b> - Grand Finals (Raleigh <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 Nov 2022)<br>• <b>FNCS 2021 Grand Royale</b> - Europe (21 Nov 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> - Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> - Solo Grand Finals Europe (26 Jun 2021)<br><br>Each player card shows exactly which tournament its result came from. The same real person can have multiple cards - one per tournament where a result was found.<br><br><b>Card rarity:</b><br>The colour comes from the very OVR printed on the card - what you see is what you get. The ladder is the one Fortnite uses and the colours match the game.<br>• <b style="color:var(--mythic)">95+ · Mythic (gold)</b><br>• <b style="color:var(--legendary)">90–94 · Legendary (orange)</b><br>• <b style="color:var(--epic)">80–89 · Epic (purple)</b><br>• <b style="color:var(--rare)">70–79 · Rare (blue)</b><br>• <b style="color:var(--uncommon)">60–69 · Uncommon (green)</b><br>• <b style="color:var(--common)">below 60 · Common (grey)</b><br>Mythic is for a season with no weak stage in it - the Grand Final, the heats and the cups all held at once. The same six colours tint the weapons and heals in the loot packs.</div>
+      <div class="roster-note" data-i18n="sourcesNote"><b>Card sources - which tournaments the players are actually pulled from:</b><br>611 tournaments, 87561 cards in total.<br><br>• <b>FNCS 2026 Major 2</b> - Play-In, Last Chance Qualifier and Grand Finals across all 7 regions (18 Jul - 2 Aug 2026)<br>• <b>FNCS 2026 Major 1 Summit</b> - Group Stage, Upper Bracket and Grand Finals (Düsseldorf <img src="flags/w20/de.png" alt="" title="Germany" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 29–31 May 2026)<br>• <b>FNCS 2026 Major 1</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions (Mar - May 2026)<br>• <b>FNCS 2025 Global Championship</b> - Grand Finals (Lyon <img src="flags/w20/fr.png" alt="" title="France" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 6–7 Sep 2025)<br>• <b>FNCS 2025 Major 1 / 2 / 3</b> - Play-In, Last Chance Qualifier and regional Grand Finals across all 7 regions, trios (Jan - Aug 2025)<br>• <b>FNCS 2024 Global Championship</b> - Grand Finals (Fort Worth <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 7–8 Sep 2024)<br>• <b>FNCS 2024 Major 1 / 2 / 3</b> - Grand Finals Europe (2024)<br>• <b>FNCS 2023 Global Championship</b> - Grand Finals (Copenhagen <img src="flags/w20/dk.png" alt="" title="Denmark" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">, 13–15 Oct 2023)<br>• <b>FNCS 2023 Major 1 / 2 / 3</b> - Grand Finals Europe (Mar / May / Jun 2023)<br>• <b>FNCS Invitational 2022</b> - Grand Finals (Raleigh <img src="flags/w20/us.png" alt="" title="USA" style="height:11px;width:auto;vertical-align:-1px;border-radius:2px;display:inline-block;margin:0 1px;">,, 12–13 Nov 2022)<br>• <b>FNCS 2021 Grand Royale</b> - Europe (21 Nov 2021)<br>• <b>FNCS Chapter 2 Season 5 / 6 / 7 / 8</b> - Grand Finals Europe (2021)<br>• <b>FNCS All-Star Showdown 2021</b> - Solo Grand Finals Europe (26 Jun 2021)<br><br>Each player card shows exactly which tournament its result came from. The same real person can have multiple cards - one per tournament where a result was found.<br><br><b>Card rarity:</b><br>The colour comes from the very OVR printed on the card - what you see is what you get. The ladder is the one Fortnite uses and the colours match the game.<br>• <b style="color:var(--mythic)">95+ · Mythic (gold)</b><br>• <b style="color:var(--legendary)">90–94 · Legendary (orange)</b><br>• <b style="color:var(--epic)">80–89 · Epic (purple)</b><br>• <b style="color:var(--rare)">70–79 · Rare (blue)</b><br>• <b style="color:var(--uncommon)">60–69 · Uncommon (green)</b><br>• <b style="color:var(--common)">below 60 · Common (grey)</b><br>Mythic is for a season with no weak stage in it - the Grand Final, the heats and the cups all held at once. The same six colours tint the weapons and heals in the loot packs.</div>
       <div class="roster-note" style="margin-top:14px;" data-i18n="confirmedNote"><b>What's confirmed:</b> names and region come from official participant lists and final standings (Liquipedia, Esports Earnings, esports.gg, fortnitetracker.com, and screenshots you sent).<br><br><b>About lobby size:</b> there aren't enough real players to exactly hit the target team counts - missing AI-lobby slots (except in the Grands) are filled with clearly labeled reserve teams, shown without a flag.<br><br><b>Flags:</b> nationality isn't confirmed for everyone - where there's no source, no flag is shown.</div>
     </details>
   </div>
@@ -6148,6 +6832,8 @@
         <!-- Третьим — контент-мейкеры, правка: «добавь рядом
              ещё контент-мейкеры, чтоб могли выбрать за них играть». -->
         <button class="cc-tab" id="ccTabCreator" onclick="ccSetMode('creator')" data-i18n="ccTabCreator">Content creator</button>
+        <!-- Четвёртой — свой игрок с любыми статами до 99 (правка 29.09: «отдельной, после стримеров»). -->
+        <button class="cc-tab" id="ccTabFree" onclick="ccSetMode('free')" data-i18n="ccTabFree">Custom stats up to 99</button>
       </div>
 
       <div class="cc-body">
@@ -6180,6 +6866,7 @@
             <div class="cc-warn" id="ccAgeWarn"></div>
             <input id="ccAge" type="text" inputmode="numeric" maxlength="2" value="16"
                    oninput="ccAgeInput()" onblur="ccAgeClamp()">
+            <div class="cc-gain" id="ccAgeGain"></div>
             <!-- И день, если игрок хочет, чтобы он был.
 
                  Возраст — это число, а дата рождения — это ещё и день в году,
@@ -6199,8 +6886,8 @@
                один раз». Взятой карточке поле не показывается: реальному
                человеку статы не дарят. -->
           <div class="cc-field" id="ccSpField">
-            <label data-i18n="ccSpTitle">Skill points</label>
-            <div class="cc-spa-note"><span data-i18n="ccSpCreateHint">Handed out once, here: +0.5 to a stat per point</span></div>
+            <label data-i18n="ccSpaTitle">Stats</label>
+            <div class="cc-spa-note"><span data-i18n="ccSpCreateHint">Lower some stats and raise others — +1 costs as many points as the stat weighs in the rating (the number on the right). Once, here.</span></div>
             <div class="ch-sp" id="ccSpRows"></div>
           </div>
           <div class="cc-field" id="ccDivField">
@@ -6232,6 +6919,7 @@
           </div>
           <div class="cc-grid" id="ccGrid"></div>
           <div class="cc-cards" id="ccCards" style="display:none;"></div>
+          <div class="cc-gain" id="ccPingGain"></div>
           <div class="cc-note" data-i18n="ccPingNote">Ping is from the country’s nearest city of a million to the server — the best it has to offer. Europe’s numbers are measured; the other regions are the same curve applied to their own server. It says where you play from; the country does not move your strength.</div>
         </div>
       </div>
@@ -6274,15 +6962,15 @@
              переходы, и переименовывать его ради подписи значит ломать их. -->
         <button class="ch-tab" data-tab="log" onclick="careerTab('log')" data-i18n="chTabLog">Profile</button>
         <button class="ch-tab" data-tab="me" onclick="careerTab('me')" data-i18n="chTabMe">Career</button>
+        <button class="ch-tab" data-tab="train" onclick="careerTab('train')" data-i18n="chTabTrain">Training</button>
+        <button class="ch-tab" data-tab="club" onclick="careerTab('club')" data-i18n="chTabClub">Club</button>
         <button class="ch-tab" data-tab="calendar" onclick="careerTab('calendar')" data-i18n="chTabCalendar">Calendar</button>
-        <button class="ch-tab" data-tab="social" onclick="careerTab('social')"><span data-i18n="chTabSocial">Social</span><i class="ch-dot" id="chDmDot"></i></button>
+        <button class="ch-tab" data-tab="social" onclick="careerTab('social')"><span data-i18n="chTabMedia">Media</span><i class="ch-dot" id="chDmDot"></i></button>
         <!-- Стримы стоят сразу за соцсетями — правка: это одна и та же
              половина жизни игрока, лента и эфир. -->
-        <button class="ch-tab" data-tab="streams" onclick="careerTab('streams')" data-i18n="chTabStreams">Streams</button>
-        <button class="ch-tab" data-tab="table" onclick="careerTab('table')" data-i18n="chTabTable">Table</button>
+        <button class="ch-tab" data-tab="table" onclick="careerTab('table')" data-i18n="chTabBoards">Boards</button>
         <button class="ch-tab" data-tab="shop" onclick="careerTab('shop')"><span data-i18n="chTabShop">Shop</span><i class="ch-dot" id="chShopDot"></i></button>
         <button class="ch-tab" data-tab="hist" onclick="careerTab('hist')" data-i18n="chTabHist">History</button>
-        <button class="ch-tab" data-tab="stats" onclick="careerTab('stats')" data-i18n="chTabStats">Stats</button>
       </div>
       <div class="ch-body" id="chBody"></div>
       <div class="ch-foot">
@@ -6731,7 +7419,7 @@
   </div>
 </div>
 
-<style>#fdBoot{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;max-width:min(92vw,560px);padding:10px 16px;border-radius:12px;background:rgba(10,14,28,.94);color:#fff;font:600 13px/1.4 system-ui,"Segoe UI",Arial,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.14);opacity:0;transition:opacity .35s,transform .35s;pointer-events:none}#fdBoot.on{opacity:1;pointer-events:auto}#fdBoot i{flex:none;width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#ffd600;animation:fdSpin .8s linear infinite}@keyframes fdSpin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#fdBoot i{animation:none}}#fdBoot.slow{border-color:#ffd600}#fdBoot.fail{border-color:#ff5c5c}#fdBoot.fail i{animation:none;border-color:#ff5c5c}#fdBoot button{flex:none;background:#ffd600;color:#111;border:0;border-radius:8px;padding:6px 12px;font:800 12px system-ui,"Segoe UI",Arial,sans-serif;cursor:pointer}#fdBoot.nudge{transform:translateX(-50%) scale(1.06)}#fdBoot.off{opacity:0;transform:translateX(-50%) translateY(12px)}</style><script>window.__fdBoot=(function(){var ru=/^ru/i.test(navigator.language||"");var T=ru?{wait:"\u0417\u0430\u0433\u0440\u0443\u0436\u0430\u0435\u043c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435\u2026",slow:"\u0421\u0435\u0442\u044c \u043c\u0435\u0434\u043b\u0435\u043d\u043d\u0430\u044f \u2014 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0435\u0449\u0451 \u0435\u0434\u0435\u0442. \u0415\u0441\u043b\u0438 \u0442\u0430\u043a \u0438 \u043d\u0435 \u043e\u0442\u043a\u0440\u043e\u0435\u0442\u0441\u044f: \u043e\u0431\u043d\u043e\u0432\u0438\u0442\u0435 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0443 (Ctrl+F5), \u0441\u043c\u0435\u043d\u0438\u0442\u0435 DNS (1.1.1.1) \u0438\u043b\u0438 \u0432\u043a\u043b\u044e\u0447\u0438\u0442\u0435 VPN.",fail:"\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u043d\u0435 \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u043b\u043e\u0441\u044c.",retry:"\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c"}:{wait:"Loading the app\u2026",slow:"Slow network \u2014 the app is still on its way. If it never opens: reload (Ctrl+F5), change DNS (1.1.1.1) or use a VPN.",fail:"The app did not load.",retry:"Reload"};var el=null,t=null,done=false;function make(){if(el)return el;el=document.createElement("div");el.id="fdBoot";el.setAttribute("role","status");el.innerHTML="<i></i><span></span>";el.lastChild.textContent=T.wait;document.body.appendChild(el);return el;}function show(){if(done)return;make();el.className="on";}show();t=setTimeout(function(){if(done)return;show();el.className="on slow";el.lastChild.textContent=T.slow;},15000);document.addEventListener("click",function(){if(done||!el)return;el.className+=" nudge";setTimeout(function(){if(el)el.className=el.className.replace(" nudge","");},500);},true);return{ok:function(){done=true;clearTimeout(t);if(el){el.className="off";setTimeout(function(){if(el&&el.parentNode)el.parentNode.removeChild(el);el=null;},400);}},fail:function(){if(done)return;clearTimeout(t);show();el.className="on fail";el.innerHTML="<i></i><span></span><button type=\"button\"></button>";el.children[1].textContent=T.fail;el.children[2].textContent=T.retry;el.children[2].onclick=function(){location.reload();};}};})();</script><script src="app.js?v=6d5c4c18" onload="__fdBoot.ok()" onerror="__fdBoot.fail()"></script>
+<style>#fdBoot{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;max-width:min(92vw,560px);padding:10px 16px;border-radius:12px;background:rgba(10,14,28,.94);color:#fff;font:600 13px/1.4 system-ui,"Segoe UI",Arial,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.14);opacity:0;transition:opacity .35s,transform .35s;pointer-events:none}#fdBoot.on{opacity:1;pointer-events:auto}#fdBoot i{flex:none;width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#ffd600;animation:fdSpin .8s linear infinite}@keyframes fdSpin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#fdBoot i{animation:none}}#fdBoot.slow{border-color:#ffd600}#fdBoot.fail{border-color:#ff5c5c}#fdBoot.fail i{animation:none;border-color:#ff5c5c}#fdBoot button{flex:none;background:#ffd600;color:#111;border:0;border-radius:8px;padding:6px 12px;font:800 12px system-ui,"Segoe UI",Arial,sans-serif;cursor:pointer}#fdBoot.nudge{transform:translateX(-50%) scale(1.06)}#fdBoot.off{opacity:0;transform:translateX(-50%) translateY(12px)}</style><script>window.__fdBoot=(function(){var ru=/^ru/i.test(navigator.language||"");var T=ru?{wait:"\u0417\u0430\u0433\u0440\u0443\u0436\u0430\u0435\u043c \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435\u2026",slow:"\u0421\u0435\u0442\u044c \u043c\u0435\u0434\u043b\u0435\u043d\u043d\u0430\u044f \u2014 \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0435\u0449\u0451 \u0435\u0434\u0435\u0442. \u0415\u0441\u043b\u0438 \u0442\u0430\u043a \u0438 \u043d\u0435 \u043e\u0442\u043a\u0440\u043e\u0435\u0442\u0441\u044f: \u043e\u0431\u043d\u043e\u0432\u0438\u0442\u0435 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0443 (Ctrl+F5), \u0441\u043c\u0435\u043d\u0438\u0442\u0435 DNS (1.1.1.1) \u0438\u043b\u0438 \u0432\u043a\u043b\u044e\u0447\u0438\u0442\u0435 VPN.",fail:"\u041f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u043d\u0435 \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u043b\u043e\u0441\u044c.",retry:"\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c"}:{wait:"Loading the app\u2026",slow:"Slow network \u2014 the app is still on its way. If it never opens: reload (Ctrl+F5), change DNS (1.1.1.1) or use a VPN.",fail:"The app did not load.",retry:"Reload"};var el=null,t=null,done=false;function make(){if(el)return el;el=document.createElement("div");el.id="fdBoot";el.setAttribute("role","status");el.innerHTML="<i></i><span></span>";el.lastChild.textContent=T.wait;document.body.appendChild(el);return el;}function show(){if(done)return;make();el.className="on";}show();t=setTimeout(function(){if(done)return;show();el.className="on slow";el.lastChild.textContent=T.slow;},15000);document.addEventListener("click",function(){if(done||!el)return;el.className+=" nudge";setTimeout(function(){if(el)el.className=el.className.replace(" nudge","");},500);},true);return{ok:function(){done=true;clearTimeout(t);if(el){el.className="off";setTimeout(function(){if(el&&el.parentNode)el.parentNode.removeChild(el);el=null;},400);}},fail:function(){if(done)return;clearTimeout(t);show();el.className="on fail";el.innerHTML="<i></i><span></span><button type=\"button\"></button>";el.children[1].textContent=T.fail;el.children[2].textContent=T.retry;el.children[2].onclick=function(){location.reload();};}};})();</script><script src="app.js?v=26dc729d" onload="__fdBoot.ok()" onerror="__fdBoot.fail()"></script>
 <script>
 /* Mode-tile art, fetched a screen ahead of the scroll rather than all at once.
    See the note on data-art: seven tiles were 368KB before the first screen had
