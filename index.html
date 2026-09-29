@@ -18688,7 +18688,9 @@ Object.assign(I18N.en, {
   lfTlIcon:()=>'An Icon Series skin of your own'
 });
 // Раунд за раундом: после пропуска — играть или симулировать следующий (ccRoundChoice).
-Object.assign(I18N.ru, {rcNextH:'Следующий раунд', rcNextSub:s=>'Играть самому или симулировать? Через '+s+' с — симуляция',
+Object.assign(I18N.ru, {stPrizeEach:'каждому'}); Object.assign(I18N.en, {stPrizeEach:'each'});
+Object.assign(I18N.fr, {stPrizeEach:'chacun'}); Object.assign(I18N.it, {stPrizeEach:'a testa'}); Object.assign(I18N.pt, {stPrizeEach:'cada'});
+Object.assign(I18N.ru, {rcNextH:'Следующий раунд',rcNextSub:s=>'Играть самому или симулировать? Через '+s+' с — симуляция',
   rcSim:'Симулировать раунд', rcSimAll:'Симулировать всё', rcPlay:'Играть'});
 Object.assign(I18N.en, {rcNextH:'Next round', rcNextSub:s=>'Play it yourself or simulate? Simulating in '+s+' s',
   rcSim:'Simulate round', rcSimAll:'Simulate the rest', rcPlay:'Play'});
@@ -99078,6 +99080,13 @@ function prizeFor(table, rank){
   return t ? (t[String(rank)] || 0) : 0;
 }
 function fmtMoney(v){ return '$'+Math.round(v).toLocaleString(LANG==='ru'?'ru-RU':'en-US'); }
+/* Приз у ника: таблицы платят на команду, а Fortnite пишет долю игрока — «$320 each»
+   (его правка 29.09 «не пишет призы each»). Соло — без подписи. */
+function stPrizeHTML(total, size){
+  if(!total) return '';
+  const n=Math.max(1, size||1);
+  return '<span class="st-prize">'+fmtMoney(total/n)+(n>1 ? ' '+esc(L().stPrizeEach) : '')+'</span>';
+}
 
 // A single earnings card: regional final, the Summit, and the squad total.
 function renderPrizeCard(lines, total){
@@ -102173,7 +102182,7 @@ async function revealStandings(shell, ranked, you, cut, maxRows, qualifiedSet, p
     // на телефоне отдельная колонка уезжала за край прокрутки.
     const prizeNow=prizeTable ? prizeFor(prizeTable, i+1) : 0;
     tr.innerHTML=`<td class="num" style="width:44px;">#${ccRankShow(i+1)}</td>
-      <td>${ccNamesPeekHTML(t)}${mark}${prizeNow?`<span class="st-prize">${fmtMoney(prizeNow)}</span>`:''}</td>
+      <td>${ccNamesPeekHTML(t)}${mark}${stPrizeHTML(prizeNow, (t.squad||[]).length||squadSize)}</td>
       <td style="color:var(--ink-dimmer);font-size:11px;white-space:nowrap;">${reg?regionName(reg):''}</td>
       ${showRegion?`<td class="num" style="white-space:nowrap;">${regionResultHTML(t)}</td>`:''}
       ${showDrop?`<td class="num" style="color:var(--ink-dim);white-space:nowrap;">${landingCellHTML(t)}</td>`:''}
@@ -106619,7 +106628,7 @@ function renderLobby(teams, you){
     // Приз — у ника, как во всех таблицах с деньгами (правка 28.09); колонки нет.
     const prizeCell = '';
     const dropCell = showDrop ? `<td class="num lobby-num" style="color:var(--ink-dim);white-space:nowrap;">${landingCellHTML(t)}</td>` : '';
-    tr.innerHTML=`<td class="lobby-rank">#${i+1}</td><td>${nameStyled}${prize?`<span class="st-prize">${fmtMoney(prize)}</span>`:''}</td><td class="num lobby-pts">${t.totalPts}</td><td class="num lobby-num">${matches}</td><td class="num lobby-num">${t.wins||0}</td><td class="num lobby-num">${t.totalElims}</td><td class="num lobby-num">${powerCell}</td>${dropCell}${prizeCell}`;
+    tr.innerHTML=`<td class="lobby-rank">#${i+1}</td><td>${nameStyled}${stPrizeHTML(prize, (t.squad||[]).length||squadSize)}</td><td class="num lobby-pts">${t.totalPts}</td><td class="num lobby-num">${matches}</td><td class="num lobby-num">${t.wins||0}</td><td class="num lobby-num">${t.totalElims}</td><td class="num lobby-num">${powerCell}</td>${dropCell}${prizeCell}`;
     tr.style.cursor='pointer';
     tr.onclick=()=>showMatchHistory(t);
     body.appendChild(tr);
@@ -145408,7 +145417,7 @@ async function ccMXRun(ev, sp){
                      : (through ? L().ccRelPass(spec.cut) : L().ccRelFail(spec.cut));
       if(i<ev.rounds.length-1){
         // Раунд недели с призовыми (Season X: раунд 2 платит топ-150) — деньги сразу.
-        const pf=ccMXWeekPrize(sp, ev.w, r);
+        const pf=ccMXWeekPrize(sp, ev.w, r, ev.n);
         if(pf){ careerMoneyAdd(ranked, pf); const c=pf(place); if(c){ ccPayIn(ccShareOf(c, you)); careerNews('good', 'ccNewsEvCash', [stageLabel, place, ccNum(c)], {tbl:ccStageShot(ranked, you, 1, stageLabel)}); } }
         const sh=createStageCardShell(stageLabel+' — '+field.length);
         await revealStageLog(you, sh, true);
@@ -145445,7 +145454,7 @@ async function ccMXRun(ev, sp){
   const fin=ev.stage==='final';
   // Неделя World Cup, сыгранная до финала недели, — платит по таблице недели своего региона.
   // Только за последний раунд вечера: промежуточные платятся в цикле (иначе вылет на раунде 2 платил бы дважды).
-  const wcPrize=(!fin && ev.stage!=='heat' && lastR && ev.rounds && lastR===ev.rounds[ev.rounds.length-1]) ? ccMXWeekPrize(sp, ev.w, lastR) : null;
+  const wcPrize=(!fin && ev.stage!=='heat' && lastR && ev.rounds && lastR===ev.rounds[ev.rounds.length-1]) ? ccMXWeekPrize(sp, ev.w, lastR, ev.n) : null;
   const wcWeek=!!wcPrize;
   const prizeFn=fin ? majorPrize : wcWeek ? wcPrize : null;
   const shell=createStageCardShell(stageLabel+' — '+field.length);
@@ -145504,10 +145513,11 @@ const CC_WC_WEEK_PAY={"1":{"EU":[[1,5000],[2,4000],[3,3000],[4,2500],[5,2250],[6
    (tools/measured/fncs2019-week-pay.json). Season X платит раунд 2 и финал недели, C2S1 — финал недели. */
 const CC_FNCS19_WEEK_PAY={"3":{"1":{"EU":{"2":[[250,320]],"3":[[1,32000],[2,19200],[4,7040],[8,2560],[30,640],[150,320]]},"NAE":{"2":[[250,200]],"3":[[1,20000],[2,12000],[4,4400],[8,1600],[30,400],[150,200]]},"NAW":{"3":[[1,8000],[2,4000],[4,1600],[8,600],[30,400],[100,200]]},"BR":{"3":[[1,8000],[2,4000],[4,1600],[8,600],[30,400],[100,200]]},"ASIA":{"3":[[1,4000],[2,2800],[4,1000],[14,400],[50,200]]},"OCE":{"3":[[1,4000],[2,2800],[4,1000],[14,400],[50,200]]}},"2":{"EU":{"2":[[250,320]],"3":[[1,32000],[2,19200],[4,7040],[8,2560],[30,640],[150,320]]},"NAE":{"2":[[250,200]],"3":[[1,20000],[2,12000],[4,4400],[8,1600],[30,400],[150,200]]},"NAW":{"3":[[1,8000],[2,4000],[4,1600],[8,600],[30,400],[100,200]]},"BR":{"3":[[1,8000],[2,4000],[4,1600],[8,600],[30,400],[100,200]]},"ASIA":{"3":[[1,4000],[2,2800],[4,1000],[14,400],[50,200]]},"OCE":{"3":[[1,4000],[2,2800],[4,1000],[14,400],[50,200]]}},"3":{"EU":{"2":[[250,320]],"3":[[1,32000],[2,19200],[4,7040],[8,2560],[30,640],[150,320]]},"NAE":{"2":[[250,200]],"3":[[1,20000],[2,12000],[4,4400],[8,1600],[30,400],[150,200]]},"NAW":{"3":[[1,8000],[2,4000],[4,1600],[8,600],[30,400],[100,200]]},"BR":{"3":[[1,8000],[2,4000],[4,1600],[8,600],[30,400],[100,200]]},"ASIA":{"3":[[1,4000],[2,2800],[4,1000],[14,400],[50,200]]},"OCE":{"3":[[1,4000],[2,2800],[4,1000],[14,400],[50,200]]}},"4":{"EU":{"2":[[250,320]],"3":[[1,32000],[2,19200],[4,7040],[8,2560],[30,640],[150,320]]},"NAE":{"2":[[250,200]],"3":[[1,20000],[2,12000],[4,4400],[8,1600],[30,400],[150,200]]},"NAW":{"3":[[1,8000],[2,4000],[4,1600],[8,600],[30,400],[100,200]]},"BR":{"3":[[1,8000],[2,4000],[4,1600],[8,600],[30,400],[100,200]]},"ASIA":{"3":[[1,4000],[2,2800],[4,1000],[14,400],[50,200]]},"OCE":{"3":[[1,4000],[2,2800],[4,1000],[14,400],[50,200]]}},"5":{"EU":{"2":[[250,320]],"3":[[1,32000],[2,19200],[4,7040],[8,2560],[30,640],[150,320]]},"NAE":{"2":[[250,200]],"3":[[1,20000],[2,12000],[4,4400],[8,1600],[30,400],[150,200]]},"NAW":{"3":[[1,8000],[2,4000],[4,1600],[8,600],[30,400],[100,200]]},"BR":{"3":[[1,8000],[2,4000],[4,1600],[8,600],[30,400],[100,200]]},"ASIA":{"3":[[1,4000],[2,2800],[4,1000],[14,400],[50,200]]},"OCE":{"3":[[1,4000],[2,2800],[4,1000],[14,400],[50,200]]}}},"4":{"1":{"EU":{"3":[[1,9000],[2,4000],[3,3000],[5,2000],[10,1000]]},"NAE":{"3":[[1,5625],[2,2500],[3,1875],[5,1250],[10,625]]},"NAW":{"3":[[1,2250],[2,1000],[3,750],[5,500],[10,250]]},"BR":{"3":[[1,2250],[2,1000],[3,750],[5,500],[10,250]]},"ASIA":{"3":[[1,1250],[2,750],[5,375]]},"OCE":{"3":[[1,1250],[2,750],[5,375]]}},"2":{"EU":{"3":[[1,9000],[2,4000],[3,3000],[5,2000],[10,1000]]},"NAE":{"3":[[1,5625],[2,2500],[3,1875],[5,1250],[10,625]]},"NAW":{"3":[[1,2250],[2,1000],[3,750],[5,500],[10,250]]},"BR":{"3":[[1,2250],[2,1000],[3,750],[5,500],[10,250]]},"ASIA":{"3":[[1,1250],[2,750],[5,375]]},"OCE":{"3":[[1,1250],[2,750],[5,375]]}},"3":{"EU":{"3":[[1,9000],[2,4000],[3,3000],[5,2000],[10,1000]]},"NAE":{"3":[[1,5625],[2,2500],[3,1875],[5,1250],[10,625]]},"NAW":{"3":[[1,2250],[2,1000],[3,750],[5,500],[10,250]]},"BR":{"3":[[1,2250],[2,1000],[3,750],[5,500],[10,250]]},"ASIA":{"3":[[1,1250],[2,750],[5,375]]},"OCE":{"3":[[1,1250],[2,750],[5,375]]}},"4":{"EU":{"3":[[1,9000],[2,4000],[3,3000],[5,2000],[10,1000]]},"NAE":{"3":[[1,5625],[2,2500],[3,1875],[5,1250],[10,625]]},"NAW":{"3":[[1,2250],[2,1000],[3,750],[5,500],[10,250]]},"BR":{"3":[[1,2250],[2,1000],[3,750],[5,500],[10,250]]},"ASIA":{"3":[[1,1250],[2,750],[5,375]]},"OCE":{"3":[[1,1250],[2,750],[5,375]]}}}};
 function ccRegPay(t){ let r=careerPrizeRegion(); return r==='NAC' ? 'NAE' : (r==='ME' || !t[r]) ? 'EU' : r; }
-function ccMXWeekPrize(sp, w, r){
+function ccMXWeekPrize(sp, w, r, n){
   if(!sp) return null;
   if(sp.kind==='wc') return r===sp.rounds.length ? (p=>ccWcWeekPay(w, p)*sp.size) : null;
-  const t=((CC_FNCS19_WEEK_PAY[sp.n]||{})[w]); if(!t) return null;
+  // Номер сезона — с вечера (ev.n): в спеке его нет, и sp.n молча давал null (призов FNCS не было).
+  const t=((CC_FNCS19_WEEK_PAY[n!=null ? n : sp.n]||{})[w]); if(!t) return null;
   const rows=(t[ccRegPay(t)]||{})[r]; if(!rows) return null;
   return p=>{ for(const x of rows) if(p<=x[0]) return x[1]*sp.size; return 0; };
 }

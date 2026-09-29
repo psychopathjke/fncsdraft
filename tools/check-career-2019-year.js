@@ -115,6 +115,12 @@ const BOOT = `
     check('призовые дуо: $3 000 000 за первое', ccMXPrize(2019, 2, 1)===3000000, String(ccMXPrize(2019, 2, 1)));
     check('призовые соло: $3 000 000 за первое', ccMXPrize(2019, 1, 1)===3000000, String(ccMXPrize(2019, 1, 1)));
     out.steps.push('WC Duos final: '+d+' · #'+(ld&&ld.place));
+    // Призы недель FNCS: спека сезона без номера, номер идёт с вечера (ev.n) — раньше sp.n давал null.
+    const pX2=ccMXWeekPrize(ccMXSpec(2019, 3), 3, 2, 3), pX3=ccMXWeekPrize(ccMXSpec(2019, 3), 3, 3, 3);
+    check('Season X раунд 2 платит (EU топ-250 по $320)', !!pX2 && pX2(22)===960 && pX2(300)===0, String(pX2 && pX2(22)));
+    check('Season X финал недели: $96 000 первым трио', !!pX3 && pX3(1)===96000, String(pX3 && pX3(1)));
+    const c4=ccMXSpec(2019, 4)||ccMXSpec(2020, 4), pC=c4 && ccMXWeekPrize(c4, 1, 3, 4);
+    check('C2S1 финал недели платит', !!pC && pC(1)>0, String(pC && pC(1)));
     // 5. Хит FNCS Season X — трио, из серии.
     seed('2019-09-20', {majorx:{y:2019, n:3, season:1, got:{}, q:{1:{done:true},2:{done:true},3:{done:true},4:{done:true},5:{done:true}}, series:{X:5000}, seriesRows:{X:'you'}, heats:null, heatRes:{}, youKey:'X', ticket:false}});
     const hEv=careerMajorOn('2019-09-20');
