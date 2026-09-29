@@ -1,6 +1,6 @@
 // Турниры сверки с Liquipedia 29.09: ESL Katowice Royale Polish Edition 2019 (только поляки), World Cup
 // Warmup 2019 (онлайн-кап по регионам), Australian Open Summer Smash 2020/2022/2023 (OCE),
-// Ascension 2024 (французы), Amar x Rohat Cup 2024; 2025–26: Cracked Cup, Games of the Future,
+// 2025–26: Cracked Cup, Games of the Future,
 // Lost Legends European Showdown (ZB-сквады), Virtuocity Qatar 2026 (ME). Стоят ли в календаре и кого зовут; два вечера играются.
 //
 //   node tools/check-career-sweep-events.js
@@ -86,8 +86,7 @@ const BOOT = `
       check(d+' '+who.c+' стоит '+id, r.id===id, JSON.stringify(r));
       check(d+' '+who.c+' приглашение '+inv, !!r.inv===inv, JSON.stringify(r));
     }
-    // Осень 2024: какой год карьеры их видит (2024-й кончается 29.09).
-    out.notes.asc=at('2024-10-26', {c:'fr'}); out.notes.amar=at('2024-11-09', {c:'de'}); seed('2025-12-18', {year:2026, year0:2026}, {c:'de'}); CC_VICTORY_LIST=null; { const v=careerVictoryOn('2025-12-18'); out.notes.gotf={id:v&&v.id, inv:v?ccVictoryInvited(v):null, y:ccCalYear()}; check('Games of the Future в 2026-м', v && v.id==='LAN_Games_of_the_Future_2025_Reload', JSON.stringify(out.notes.gotf)); }
+    seed('2025-12-18', {year:2026, year0:2026}, {c:'de'}); CC_VICTORY_LIST=null; { const v=careerVictoryOn('2025-12-18'); out.notes.gotf={id:v&&v.id, inv:v?ccVictoryInvited(v):null, y:ccCalYear()}; check('Games of the Future в 2026-м', v && v.id==='LAN_Games_of_the_Future_2025_Reload', JSON.stringify(out.notes.gotf)); }
     seed('2019-02-24', null, {c:'pl'});
     const h1=await playThrough('Katowice PL solo');
     const l1=lastLog();
