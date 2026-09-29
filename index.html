@@ -19045,6 +19045,11 @@ Object.assign(I18N.fr, {evPickH:(e,n)=>'Roster pour '+e+' : ajoute '+n, evPickSu
 Object.assign(I18N.it, {evPickH:(e,n)=>'Roster per '+e+': aggiungi '+n, evPickSub:'Chi porti a questa cup? Restano nel tuo roster di questo formato.', evPickAuto:'Scegli tu per me', evPickGo:(k,n)=>'Gioca · '+k+'/'+n, evPickHave:'nel roster'});
 Object.assign(I18N.pt, {evPickH:(e,n)=>'Line-up para '+e+': adicione '+n, evPickSub:'Quem você leva para esta copa? Eles ficam na sua line-up deste formato.', evPickAuto:'Escolha por mim', evPickGo:(k,n)=>'Jogar · '+k+'/'+n, evPickHave:'na line-up'});
 Object.assign(I18N.ru, {lfRosterAsk:'Позвать'}); Object.assign(I18N.en, {lfRosterAsk:'Invite'}); Object.assign(I18N.fr, {lfRosterAsk:'Inviter'}); Object.assign(I18N.it, {lfRosterAsk:'Invita'}); Object.assign(I18N.pt, {lfRosterAsk:'Chamar'});
+Object.assign(I18N.ru, {ccMajSeatGc25:n=>'Топ-'+n+' едут на Global Championship в Лион'});
+Object.assign(I18N.en, {ccMajSeatGc25:n=>'Top '+n+' go to the Global Championship in Lyon'});
+Object.assign(I18N.fr, {ccMajSeatGc25:n=>'Le top '+n+' part au Global Championship de Lyon'});
+Object.assign(I18N.it, {ccMajSeatGc25:n=>'I primi '+n+' vanno al Global Championship di Lione'});
+Object.assign(I18N.pt, {ccMajSeatGc25:n=>'O top '+n+' vai para o Global Championship em Lyon'});
 Object.assign(I18N.ru, {ccYrXWildIn:'Wildcard: один матч в день Гранд-финала, победитель проходит', ccYrXWildLabel:n=>n+' · Wildcard'});
 Object.assign(I18N.en, {ccYrXWildIn:'Wildcard: one match on Grand Finals day, the winner goes through', ccYrXWildLabel:n=>n+' · Wildcard'});
 Object.assign(I18N.fr, {ccYrXWildIn:'Wildcard : un match le jour de la Grande finale, le vainqueur passe', ccYrXWildLabel:n=>n+' · Wildcard'});
@@ -145366,6 +145371,12 @@ function ccMajorSeatNote(ev){
   if(ev.y22) return L().ccMajSeatInv22(ccInv22Quota());
   if(ev.y21) return ev.n===5 ? '' : L().ccMajSeatGr21;
   if(ev.yx) return '';
+  /* 2025: финал Мейджора везёт в Лион по квоте региона (GC2025_M*_SEATS, как ccGlobalsSeat); FNCS Showdown
+     мест на ЛАН не давал. Раньше сюда шли строки 2026-го — Саммит и его квоты (аудит 29.09). */
+  if(typeof ccIs2025==='function' && ccIs2025()){
+    if(ccMajorIsShowdown(ev.n)) return '';
+    return L().ccMajSeatGc25(ccGcSlots(({1:GC2025_M1_SEATS, 2:GC2025_M2_SEATS, 3:GC2025_M3_SEATS})[ev.n]||GC2025_M3_SEATS));
+  }
   if(ev.n===1) return L().ccMajSeatSummit(ccTeams(CC_SUMMIT_EU_MAIN), ccTeams(CC_SUMMIT_EU_SCQ));
   if(ev.n===2) return L().ccMajSeatGc(ccGcSlots(MAJOR2_GC_SLOTS));
   return L().ccMajSeatNone;

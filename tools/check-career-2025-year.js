@@ -92,6 +92,9 @@ const BOOT = `
     check('кошелёк Лиона: $450 000 за первое', gcPrize(1)===450000 && gcPrize(33)>0, gcPrize(1)+'/'+gcPrize(33));
     out.steps.push('Lyon: '+head+' · #'+(rg&&rg.place)+' of '+(rg&&rg.of)+' · $'+(s.earnings||0));
     check('после Лиона год над', s.day>='2025-09-06', s.day);
+    // Карточка финала Мейджора 2025 пишет Лион, а не Саммит 2026-го (аудит 29.09).
+    const nM1=ccMajorSeatNote(careerMajorOn('2025-02-15'));
+    check('финал Мейджора 1 2025 — места в Лион', nM1===L().ccMajSeatGc25(ccGcSlots(GC2025_M1_SEATS)), nM1);
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
 })();
