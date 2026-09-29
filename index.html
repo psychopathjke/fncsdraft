@@ -6105,6 +6105,7 @@
   @keyframes ccRarShine{0%{background-position:150% 0}100%{background-position:-100% 0}}
   @media (prefers-reduced-motion:reduce){ #screen-career-create .cc-chip.cc-rar-legend::after{animation:none;background-position:50% 0;} }
   /* Окно состава на кап другого формата (ccEventRosterPick). */
+  .cc-rost-ask{margin-left:8px;padding:2px 10px;border-radius:8px;border:0;background:#ffe600;color:#101a44;font-size:11px;font-weight:900;cursor:pointer;vertical-align:middle;}
   .cc-soon{border:1px solid rgba(255,200,60,.55) !important;background:linear-gradient(160deg,rgba(255,190,40,.16),rgba(255,190,40,.04)) !important;}
   .cc-soon-h{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#ffcf4d;margin-bottom:4px;}
   .cc-soon b{display:block;font-size:15px;color:#fff;}
@@ -19014,6 +19015,12 @@ Object.assign(I18N.en, {evPickH:(e,n)=>'Roster for '+e+': add '+n, evPickSub:'Wh
 Object.assign(I18N.fr, {evPickH:(e,n)=>'Roster pour '+e+' : ajoute '+n, evPickSub:'Qui emmènes-tu sur cette cup ? Ils restent dans ton roster de ce format.', evPickAuto:'Choisis pour moi', evPickGo:(k,n)=>'Jouer · '+k+'/'+n, evPickHave:'dans le roster'});
 Object.assign(I18N.it, {evPickH:(e,n)=>'Roster per '+e+': aggiungi '+n, evPickSub:'Chi porti a questa cup? Restano nel tuo roster di questo formato.', evPickAuto:'Scegli tu per me', evPickGo:(k,n)=>'Gioca · '+k+'/'+n, evPickHave:'nel roster'});
 Object.assign(I18N.pt, {evPickH:(e,n)=>'Line-up para '+e+': adicione '+n, evPickSub:'Quem você leva para esta copa? Eles ficam na sua line-up deste formato.', evPickAuto:'Escolha por mim', evPickGo:(k,n)=>'Jogar · '+k+'/'+n, evPickHave:'na line-up'});
+Object.assign(I18N.ru, {lfRosterAsk:'Позвать'}); Object.assign(I18N.en, {lfRosterAsk:'Invite'}); Object.assign(I18N.fr, {lfRosterAsk:'Inviter'}); Object.assign(I18N.it, {lfRosterAsk:'Invita'}); Object.assign(I18N.pt, {lfRosterAsk:'Chamar'});
+Object.assign(I18N.ru, {evPickSub:'Позови недостающих в личке — или на этот вечер возьмутся стэнд-ины (в состав они не войдут).', evPickAuto:'Стэнд-ины на вечер', evPickFind:'Написать игрокам', rsFindTitle:n=>'Кого позвать в '+({3:'трио',4:'сквад'})[n]+'-состав'});
+Object.assign(I18N.en, {evPickSub:'Ask the missing players in DMs — or stand-ins play this night (they don’t join the roster).', evPickAuto:'Stand-ins for tonight', evPickFind:'Message players', rsFindTitle:n=>'Who to ask into the '+({3:'trio',4:'squad'})[n]+' roster'});
+Object.assign(I18N.fr, {evPickSub:'Invite les joueurs manquants en MP — ou des remplaçants jouent ce soir (ils n’entrent pas dans le roster).', evPickAuto:'Remplaçants ce soir', evPickFind:'Écrire aux joueurs', rsFindTitle:n=>'Qui inviter dans le roster '+({3:'trio',4:'squad'})[n]});
+Object.assign(I18N.it, {evPickSub:'Invita i giocatori mancanti in DM — oppure stasera giocano dei sostituti (non entrano nel roster).', evPickAuto:'Sostituti per stasera', evPickFind:'Scrivi ai giocatori', rsFindTitle:n=>'Chi invitare nel roster '+({3:'trio',4:'squad'})[n]});
+Object.assign(I18N.pt, {evPickSub:'Chame os que faltam por DM — ou reservas jogam esta noite (não entram na line-up).', evPickAuto:'Reservas nesta noite', evPickFind:'Mandar mensagem', rsFindTitle:n=>'Quem chamar para a line-up de '+({3:'trio',4:'squad'})[n]});
 Object.assign(I18N.ru, {rsSoonH:(k,d)=>(k===0 ? 'Сегодня' : k===1 ? 'Завтра' : 'Через '+k+' дн.')+' · '+d, rsFmt:n=>({2:'дуо',3:'трио',4:'сквад'})[n]||'', rsHave:(who,n,f)=>'Состав: '+who+' · '+n+' из '+f, rsGo:n=>'Собрать состав · добрать '+n});
 Object.assign(I18N.en, {rsSoonH:(k,d)=>(k===0 ? 'Today' : k===1 ? 'Tomorrow' : 'In '+k+' days')+' · '+d, rsFmt:n=>({2:'duos',3:'trios',4:'squads'})[n]||'', rsHave:(who,n,f)=>'Roster: '+who+' · '+n+' of '+f, rsGo:n=>'Build the roster · add '+n});
 Object.assign(I18N.fr, {rsSoonH:(k,d)=>(k===0 ? 'Aujourd’hui' : k===1 ? 'Demain' : 'Dans '+k+' jours')+' · '+d, rsFmt:n=>({2:'duo',3:'trio',4:'squad'})[n]||'', rsHave:(who,n,f)=>'Roster : '+who+' · '+n+' sur '+f, rsGo:n=>'Compléter le roster · ajouter '+n});
@@ -116233,11 +116240,15 @@ function ccRostersTileHTML(){
   const all=Object.assign({}, CAREER.rosters||{});
   all[now]=(CAREER.partners||[]).slice();
   const names={2:L().lfRosterDuo, 3:L().lfRosterTrio, 4:L().lfRosterSquad};
-  const rows=[2,3,4].filter(s=>all[s]).map(s=>{
-    const who=all[s].filter(Boolean).map(r=>{ const c=ccMateCardOf(r); return c && c.handle; }).filter(Boolean);
-    return `<div class="ch-row"><em>${names[s]}${s===now?' · '+L().lfRosterNow:''}</em><b>${who.length ? esc(who.join(', ')) : L().lfRosterEmpty}</b></div>`;
+  /* Всегда три строки — дуо, трио, сквад (его слово 29.09: «в карьере нет трио-состава, непонятно, с кем
+     играешь»): кто в составе, сколько из скольких, и у неполного — «Позвать» (поиск с личкой, ccDuoFindOpen(fmt)). */
+  const me=CAREER.player.nick||CAREER.player.handle||'';
+  const rows=[2,3,4].map(s=>{
+    const who=(all[s]||[]).filter(Boolean).map(r=>{ const c=ccMateCardOf(r); return c && c.handle; }).filter(Boolean).slice(0, s-1);
+    const full=who.length>=s-1;
+    const btn=(!full && s!==now) ? ` <button class="cc-rost-ask" onclick="ccDuoFindOpen(null, ${s})">${esc(L().lfRosterAsk)}</button>` : '';
+    return `<div class="ch-row"><em>${names[s]}${s===now?' · '+L().lfRosterNow:''} · ${who.length+1}/${s}</em><b>${esc([me].concat(who).join(', '))}${btn}</b></div>`;
   });
-  if(!rows.length) return '';
   return `<div class="ch-tile"><h4>${L().lfRosters}</h4><div class="ch-hint">${L().lfRostersHint}</div>${rows.join('')}</div>`;
 }
 // Контракт и цель клуба на сезон.
@@ -117213,8 +117224,7 @@ const CC_DAY_ACTS=[
   {id:'trBox',  energy:30, gain:{clu:ccStep('clu')/2, aim:ccStep('aim')/2}},
   {id:'trZw',   energy:30, gain:{end:ccStep('end')/2, sur:ccStep('sur')/2}},
   {id:'trEdit', energy:30, gain:{clu:ccStep('clu')/2, con:ccStep('con')/2}},
-  // Своя карта в Creative: пять вечеров стройки, потом выплаты за игры (ccMapPay).
-  {id:'trMap',  energy:30, gain:{}, map:true},
+  // «Своя карта» (trMap) снята из занятий его словом 29.09 («own map убрать»); вышедшая раньше карта платит по-прежнему (ccMapPay).
   // Разбор меты нового сезона: показывается три недели после смены сезона,
   // три дня — и форма, вместо штрафа за незнание острова. См. ccMetaOpen.
   {id:'trMeta', energy:24, gain:{}, meta:true},
@@ -119616,7 +119626,8 @@ const CC_CUP_SCORE={"Acrocanthosaurus_Official":[0,-1,0,0],"ArchitectPopUpDuoEU"
    Нет правила — null, и вечер считает, как считал. */
 // Свои id капов, записанные не так, как у Epic: Victory Cup 2024 у Epic — VictoryCashCup,
 // Reload-кап 2026 — ReloadReload…, Squid Grounds 2025 (дуо) — SquidGroundVictoryDuosCup.
-const CC_CUP_FAM_ALIAS={'S36_SquidGroundsCashCup':'S36_SquidGroundVictoryDuosCup'};
+// World Cup Warmup 2019 (кап из lans.json, id ONL_) — своё правило Epic WorldCupWarmup: 10 матчей, VR 10, топ-5 7, топ-10 5, топ-15 3, элим 1.
+const CC_CUP_FAM_ALIAS={'S36_SquidGroundsCashCup':'S36_SquidGroundVictoryDuosCup', 'ONL_Fortnite_World_Cup_2019_Warmup':'WorldCupWarmup'};
 function ccCupFamily(id){
   if(!id || typeof CC_CUP_SCORE==='undefined') return null;
   const tries=[CC_CUP_FAM_ALIAS[id], id, id.replace(/VictoryCup$/, 'VictoryCashCup'), id.replace(/_Reload/, '_ReloadReload')];
@@ -133709,7 +133720,7 @@ function careerDmMargin(who){
   }
   return pull-(who.ovr-CAREER_DM_REACH);
 }
-function careerDmWrite(handle, seat){
+function careerDmWrite(handle, seat, fmt){
   /* Написать самому — это и есть разблокировать.
 
      Список тех, кого зовут в дуо, блок и так фильтрует, но добраться до
@@ -133734,6 +133745,7 @@ function careerDmWrite(handle, seat){
     if(!aged){ careerDmOpen(existing.id); return; }
     CH_DM=existing.id;
     if(typeof seat==='number') existing.seat=seat;
+    existing.fmt=fmt||null;
     careerDmPush(existing, 'you', 'dmAsk');
     existing.args=0;
     existing.pending=null;
@@ -133754,6 +133766,7 @@ function careerDmWrite(handle, seat){
      by then — the thread is the only thing left that remembers which card the
      player was looking at when he wrote. Null means nobody was named. */
   t.seat=(typeof seat==='number') ? seat : null;
+  t.fmt=fmt||null;
   CH_DM=t.id;
   careerDmPush(t, 'you', 'dmAsk');
   /* And they answer. His rule, 17 August: a player writing to a player is a
@@ -134040,7 +134053,8 @@ function careerDmAccept(id){
    * его. Двое фраггеров — команде нужен зовущий; двое зовущих — нужен фраггер.
    * Поэтому вопрос ровно один — кто из вас в неё сядет, — и он записывается на
    * ветку, а не решается за игрока. Кнопки рисует careerDmThreadHTML. */
-  if(t.who && t.who.role && !ccSquadRoleFits(roles.concat([t.who.role]), careerSquadSize())){
+  // Роли сверяются с составом года; письмо в состав другого формата (t.fmt) этим не связано.
+  if(!(t.fmt && t.fmt!==careerSquadSize()) && t.who && t.who.role && !ccSquadRoleFits(roles.concat([t.who.role]), careerSquadSize())){
     const need=ccRoleOther(t.who.role);
     if(t.roleFix!==need){
       t.roleFix=need;
@@ -134051,6 +134065,23 @@ function careerDmAccept(id){
     return;
   }
   t.roleFix=null;
+  // Позвали в состав другого формата (трио/сквад на кап) — садится туда, состав года не трогается.
+  if(t.fmt && t.fmt>1 && t.fmt!==careerSquadSize()){
+    const f=t.fmt, w=t.who;
+    if(!CAREER.rosters) CAREER.rosters={};
+    // Состава этого формата ещё не было — он начинается с напарников года (как ccRosterSwap).
+    const list=(CAREER.rosters[f] || (CAREER.partners||[]).slice(0, f-1)).filter(Boolean);
+    const rec=w.roster ? {handle:w.handle, cardRegion:w.cardRegion||'EU', patience:CAREER_PATIENCE_START, since:careerToday()}
+                       : {card:w.card, patience:CAREER_PATIENCE_START, since:careerToday()};
+    if(!list.some(r=>hKey((ccMateCardOf(r)||{}).handle||'')===hKey(w.handle))) list.push(rec);
+    CAREER.rosters[f]=list.slice(-(f-1));
+    t.state='partner'; t.unread=false;
+    const tags=CAREER.rosters[f].map(r=>ccMateCardOf(r)).filter(Boolean).map(c=>'@'+ccHandle(c.handle)).join(' ');
+    careerNews('good', 'ccNewsSquadNew', [f===4 ? 'SQUAD' : 'TRIO', tags]);
+    careerSave();
+    careerRenderHub('social');
+    return;
+  }
   /* Who actually loses the chair.
 
      Asked for from under a card, it is that card. Asked for with nothing named,
@@ -135279,7 +135310,12 @@ function ccDuoNatCode(w){
    chair", which is what the day panel means when it says the squad is a player
    short — there, the player has not picked anybody to lose. */
 let CC_DUO_SEAT=null;
-function ccDuoFindOpen(seat){
+/* Поиск и для состава другого формата (его слово 29.09: «сразу выбирается игрок, нет переговоров
+   в лс»): fmt — размер состава капа (3 трио, 4 сквад). Письмо несёт его на ветке (t.fmt), и согласившийся
+   садится в CAREER.rosters[fmt], не трогая состав года. См. careerDmAccept. */
+let CC_DUO_FMT=null;
+function ccDuoFindOpen(seat, fmt){
+  CC_DUO_FMT=(fmt && fmt>1 && fmt!==careerSquadSize()) ? fmt : null;
   /* Третья дверь к взятому напарнику — «кому написать». В командной карьере
      она открыта ровно настолько, насколько открыты кресла для взятых: в дуо
      не открывается совсем, в трио — пока третий не сел. См. careerSeatDm. */
@@ -135299,13 +135335,13 @@ function ccDuoFindClose(){
   if(m) m.style.display='none';
   // A chair is only chosen for as long as the search that chose it is open. Left
   // set, the next search opened from the day panel would quietly aim at it.
-  CC_DUO_SEAT=null;
+  CC_DUO_SEAT=null; CC_DUO_FMT=null;
   document.removeEventListener('keydown', ccDuoFindKey);
 }
 function ccDuoFindKey(e){ if(e.key==='Escape') ccDuoFindClose(); }
 function ccDuoFindQ(v){ CC_DUO_Q=String(v||''); ccDuoFindRender(true); }
 // Read the seat before closing, because closing is what clears it.
-function ccDuoFindWrite(handle){ const seat=CC_DUO_SEAT; ccDuoFindClose(); careerDmWrite(handle, seat); }
+function ccDuoFindWrite(handle){ const seat=CC_DUO_SEAT, fmt=CC_DUO_FMT; ccDuoFindClose(); careerDmWrite(handle, seat, fmt); }
 /* ---- Объявление свободного агента ------------------------------------------
 
    В настоящей ленте «ищу дуо» — это анкета с требованиями, а не крик в пустоту.
@@ -135395,7 +135431,7 @@ function ccDuoFindRender(keepFocus){
     </div>`;
   }).join('');
   document.getElementById('duoFindBody').innerHTML=
-    `<h4 class="cc-pick-h">${L().ccDuoFindTitle}</h4>
+    `<h4 class="cc-pick-h">${CC_DUO_FMT ? esc(L().rsFindTitle(CC_DUO_FMT)) : L().ccDuoFindTitle}</h4>
      <div class="ch-hint">${L().ccDuoFindHint}</div>
      <input id="duoFindQ" class="cc-duo-q" type="text" autocomplete="off"
             placeholder="${esc(L().ccDuoSearchPh)}" value="${esc(CC_DUO_Q)}"
@@ -139360,6 +139396,11 @@ function careerCanPlay(next){ return !!next && careerCanPlayKind(next.type); }
 async function careerPlay(){
   const next=careerNext();
   if(!next) return;
+  // Кап другого формата с неполным составом — сначала вопрос: позвать людей в личке или стэнд-ины на вечер.
+  if(next.type==='victory'){
+    const ev0=careerVictoryOn(careerToday()), f0=ccPickFormat(ev0);
+    if(await ccEventRosterPick(ev0, f0)==='find'){ ccDuoFindOpen(null, f0); return; }
+  }
   /* A career night is played on the Battle Royale island unless it says otherwise.
 
      Ten runners call useLandingSet, and only three of them ever named an island:
@@ -149246,7 +149287,6 @@ function careerReloadResultCard(r){
 async function runCareerVictory(){
   const ev=careerVictoryOn(careerToday());
   CC_ZB=!!(ev && ev.zb);
-  await ccEventRosterPick(ev, ccPickFormat(ev));
   const fmtSwap=ccEventRosterBegin(ccVictoryFormat(ev));
   try{ return await runCareerVictoryNight(); }
   finally{ CC_ZB=false; ccEventRosterEnd(fmtSwap); }
@@ -149324,9 +149364,15 @@ function ccRosterSoonHTML(){
 }
 function ccRosterSoonOpen(){
   const r=ccRosterSoon(); if(!r) return;
-  ccEventRosterPick(r.ev, r.fmt).then(()=>careerRenderHub('centre'));
+  ccDuoFindOpen(null, r.fmt);
 }
-/* СОСТАВ НА КАП ДРУГОГО ФОРМАТА — ВЫБИРАЕТ ИГРОК.
+/* СОСТАВ НА КАП ДРУГОГО ФОРМАТА — ЧЕРЕЗ ЛИЧКУ (его слова 29.09: «рандомными игроками», «сразу выбирается,
+   нет переговоров в лс», «чтоб турнир случайно не сыграл, потому что тиммейта нет»). Перед вечером с
+   неполным составом — окно: «Написать игрокам» (вечер не начинается, открывается поиск с личкой для
+   этого формата, см. ccDuoFindOpen(fmt)) или «Стэнд-ины на вечер» (добор ccEventRosterBegin, в состав
+   не пишется). Ниже — прежнее описание.
+
+   СОСТАВ НА КАП ДРУГОГО ФОРМАТА — ВЫБИРАЕТ ИГРОК.
 
    Его слово 29.09: «squad victory cash cup играется рандомными игроками, я их не выбирал».
    Добор шёл молча (ccEventRosterBegin: ближайшие по рейтингу со сцены). Теперь, если в составе
@@ -149338,49 +149384,28 @@ function ccRosterSoonOpen(){
 // десять минут — только чтобы вечер без человека (пробы, забытая вкладка) не висел вечно.
 const CC_EV_PICK_MS=600000;
 function ccEventRosterPick(ev, fmt){
-  if(!fmt || fmt===1 || !CAREER || CC_EVENT_SIZE) return Promise.resolve();
-  if((typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRacePairOn==='function' && ccRacePairOn())) return Promise.resolve();
-  if((typeof CC_FF!=='undefined' && CC_FF) || CC_SKIP_ALL) return Promise.resolve();
-  if(fmt===careerSquadSize()) return Promise.resolve();
+  if(!fmt || fmt===1 || !CAREER || CC_EVENT_SIZE) return Promise.resolve('go');
+  if((typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRacePairOn==='function' && ccRacePairOn())) return Promise.resolve('go');
+  if((typeof CC_FF!=='undefined' && CC_FF) || CC_SKIP_ALL) return Promise.resolve('go');
+  if(fmt===careerSquadSize()) return Promise.resolve('go');
   const own=((CAREER.rosters||{})[fmt] || CAREER.partners || []).filter(Boolean).slice(0, fmt-1);
   const need=fmt-1-own.length;
-  if(need<=0) return Promise.resolve();
-  const T=L(), me=(CAREER.player && CAREER.player.ovr)||80;
-  const taken=new Set([hKey(CAREER.player.handle||CAREER.player.nick||'')]);
-  own.forEach(r=>{ const c=ccMateCardOf(r); if(c) taken.add(hKey(c)); });
-  const pool=ccSceneRoster(ccCareerRegion()).filter(c=>!taken.has(hKey(c)))
-    .sort((a,b)=>Math.abs(ccCardOvr(a)-me)-Math.abs(ccCardOvr(b)-me)).slice(0, 12);
-  if(!pool.length) return Promise.resolve();
+  if(need<=0) return Promise.resolve('go');
+  const T=L();
+  const names=[CAREER.player.nick||CAREER.player.handle||''].concat(own.map(r=>(ccMateCardOf(r)||{}).handle).filter(Boolean));
   return new Promise(done=>{
     const box=document.createElement('div');
     box.className='cc-evpick-wrap';
-    const pick=new Set();
-    const row=(c, i, mine)=>'<button class="cc-evpick-p'+(mine ? ' mine' : '')+'" '+(mine ? 'disabled' : 'data-i="'+i+'"')+'>'+
-      (c.nat && typeof flagImg==='function' ? flagImg(c.nat, 16) : '')+'<b>'+esc(c.handle)+'</b><i>'+Math.round(ccCardOvr(c))+'</i>'+(mine ? '<em>'+esc(T.evPickHave)+'</em>' : '')+'</button>';
-    const draw=()=>{
-      box.innerHTML='<div class="cc-evpick"><h4>'+esc(T.evPickH(ev && ev.name || '', need))+'</h4><p>'+esc(T.evPickSub)+'</p>'+
-        '<div class="cc-evpick-list">'+own.map(r=>ccMateCardOf(r)).filter(Boolean).map(c=>row(c, -1, true)).join('')+
-          pool.map((c, i)=>row(c, i, false)).join('')+'</div>'+
-        '<div class="cc-evpick-act"><button class="cc-evpick-auto cc-choice-btn" data-k="auto">'+esc(T.evPickAuto)+'</button>'+
-        '<button class="btn-primary cc-evpick-go" data-k="go"'+(pick.size===need ? '' : ' disabled')+'>'+esc(T.evPickGo(pick.size, need))+'</button></div></div>';
-      box.querySelectorAll('.cc-evpick-p[data-i]').forEach(b=>{ const i=+b.dataset.i; if(pick.has(i)) b.classList.add('on');
-        b.onclick=()=>{ if(pick.has(i)) pick.delete(i); else if(pick.size<need) pick.add(i); draw(); }; });
-      box.querySelector('[data-k="auto"]').onclick=()=>end(false);
-      box.querySelector('[data-k="go"]').onclick=()=>end(true);
-    };
+    box.innerHTML='<div class="cc-evpick"><h4>'+esc(T.evPickH(ev && ev.name || '', need))+'</h4>'+
+      '<div class="cc-soon-line">'+esc(T.rsHave(names.join(', '), names.length, fmt))+'</div>'+
+      '<p>'+esc(T.evPickSub)+'</p>'+
+      '<div class="cc-evpick-act"><button class="cc-evpick-auto cc-choice-btn" data-k="go">'+esc(T.evPickAuto)+'</button>'+
+      '<button class="cc-evpick-go" data-k="find">'+esc(T.evPickFind)+'</button></div></div>';
     let over=false;
-    const end=ok=>{
-      if(over) return; over=true; box.remove();
-      if(ok && pick.size===need){
-        if(!CAREER.rosters) CAREER.rosters={};
-        CAREER.rosters[fmt]=own.concat([...pick].map(i=>({card:{...pool[i]}, patience:60, since:careerToday(), dev:0})));
-        careerSave();
-      }
-      done();
-    };
-    draw();
+    const end=k=>{ if(over) return; over=true; box.remove(); done(k); };
+    box.querySelectorAll('button').forEach(b=>b.onclick=()=>end(b.dataset.k));
     document.body.appendChild(box);
-    setTimeout(()=>end(false), CC_EV_PICK_MS);
+    setTimeout(()=>end('go'), CC_EV_PICK_MS);
   });
 }
 const EWC24={"groups":{"A":["Team Falcons","XSET","ZETA DIVISION","DRAGONS eSports"],"B":["Exceed","Gaimin Gladiators","Al Ula","PWR"],"C":["Karmine Corp","FNATIC","R8 Esports","KS7"],"D":["HEROIC","BIG","Dignitas","w7m esports"]},"teams":[{"n":"XSET","r":"NAC","g":"A","p":["Muz","Edgey","Ritual","Cold"],"via":["qual","NAC",0]},{"n":"Team Falcons","r":"EU","g":"A","p":["TaySon","Chico","Japko","t3eny"],"via":["dallas",1]},{"n":"ZETA DIVISION","r":"ASIA (JP)","g":"A","p":["Minipiyo","Zagou","Koyota","Yuma"],"via":["qual","ASIA",0]},{"n":"DRAGONS eSports","r":"BR/LATAM","g":"A","p":["Randu","Itrol","Lewa","Romero"],"via":["qual","BR",0]},{"n":"Exceed","r":"NAC","g":"B","p":["Peterbot","Kwanti","Meelks","Okis"],"via":["dallas",2]},{"n":"Gaimin Gladiators","r":"EU","g":"B","p":["Howly","NeFrizi","S1neD","Vanyak3kk"],"via":["qual","EU",0]},{"n":"Al Ula","r":"ME","g":"B","p":["Adapter","FHD","Hero","Mansour"],"via":["qual","ME",0]},{"n":"PWR","r":"OCE","g":"B","p":["alex","looter","worthy","volx"],"via":["qual","OCE",0]},{"n":"Karmine Corp","r":"EU","g":"C","p":["Malibuca","Merstach","SwizzY","Anas"],"via":["dallas",3]},{"n":"FNATIC","r":"NAC","g":"C","p":["Ajerss","CizLucky","nounzy","Xccept"],"via":["dallas",5]},{"n":"R8 Esports","r":"EU","g":"C","p":["Voxe","Bloomy","xsweeze","Vortexers"],"via":["qual","EU",1]},{"n":"KS7","r":"ME","g":"C","p":["Kalgamer","k0ty","Kyry","Salvatore"],"via":["qual","ME",1]},{"n":"HEROIC","r":"EU","g":"D","p":["Th0masHD","Fredoxie","Hellfire","Kiro"],"via":["dallas",4]},{"n":"BIG","r":"EU","g":"D","p":["kiduoo","Trexer","Fray","cheetiin"],"via":["dallas",6]},{"n":"Dignitas","r":"NAC","g":"D","p":["Acorn","Pilky","Tkay","Khanada"],"via":["qual","NAC",1]},{"n":"w7m esports","r":"BR/LATAM","g":"D","p":["Frosty","Phzin","Seeyun","Kurtz"],"via":["qual","BR",1]}],"maps":{"Capture the Flag":["Chalet","Panther"],"Hardpoint":["Panther","Chalet"],"Keeper":["Taverna Zoni"]},"pay":[[1,400000],[2,160000],[4,80000],[8,40000],[12,20000],[16,10000]],"mvp":50000,"dallas":{"teams":[{"n":"Team Falcons","p":["TaySon","Chico","Japko","t3eny"],"s":1},{"n":"Agent Gaming","p":["Peterbot","Kwanti","Meelks","Okis"],"s":2},{"n":"Karmine Corp","p":["Malibuca","Merstach","veno","Anas"],"s":3},{"n":"HEROIC","p":["Th0masHD","Fredoxie","Hellfire","Kiro"],"s":4},{"n":"FNATIC","p":["Ajerss","CizLucky","nounzy","Xccept"],"s":5},{"n":"BIG","p":["kiduoo","Trexer","Fray","Cheatiin"],"s":6},{"n":"Manchester City Esports","p":["trippernn","Cold","Setty","Threats"],"s":7},{"n":"XSET","p":["Edgey","Muz","Ritual","Trashy"],"s":8},{"n":"Twisted Minds","p":["Dela","Pinq","Queasy","zAndy"],"s":9},{"n":"Ninjas In Pyjamas","p":["Refsgaard","Axeforce","Pixie","QB"],"s":10},{"n":"Stride Esports","p":["DeRoller","Crackly","miyu","npen"],"s":11},{"n":"Dignitas","p":["Khanada","Acorn","Reet","Tkay"],"s":12},{"n":"Gaimin Gladiators","p":["Bloomy","Moneymaker","Robban","Fnajen"],"s":13},{"n":"Degen","p":["Degen","Dukez","Pilky","Tavern"],"s":14},{"n":"Capybaras","p":["Lame","Cooper","Glubschi","Kylie"],"s":16},{"n":"unknown","p":["Floki","Leo the crack","Voxe","Werex"],"s":30},{"n":"Xen","p":["FoxMan","Bhronos","OliverOG","Trey"],"s":30},{"n":"Bush Bandits","p":["RottenTwinkies","Clasher","Jack","Sommerset"],"s":30},{"n":"T1","p":["Michael.","SAKI","SinOoh","Zerokun"],"s":30},{"n":"Guild Esports","p":["PabloWingu","Mappi","MariusCOW","Sangild"],"s":30},{"n":"Fractious Esports","p":["Blazer","Khaorz","Rabbit","Gordete"],"s":30},{"n":"Team Heretics","p":["Nakoo","Krizzii","Nebs","Vortexers"],"s":30},{"n":"PWR","p":["worthy","Looter","alex","volx"],"s":30},{"n":"Team Elite","p":["Pfluger","Moo","Tacts","Vexy"],"s":30},{"n":"LateArrival","p":["AdcSosa","Kronic11","Prizma","Wrxyth"],"s":30},{"n":"Underdogs","p":["Kadvn","Macyfishy","Pierson","Tez"],"s":30},{"n":"Mixed up one","p":["LocalT1nCan","Quantize","Sprays","Swinger"],"s":30},{"n":"FN enthusiast","p":["Kirbty","Bacon","nurface","Origin"],"s":30},{"n":"ZETA DIVISION","p":["Minipiyo","Zagou","Koyota","Yuma"],"s":30},{"n":"Outlaws","p":["Ceice","Blake","Laiys","pxmp"],"s":30},{"n":"Aura Maxers","p":["Drecept","Evagas","Jezejearim","slayt"],"s":30},{"n":"Team BECK","p":["Clement","BlastR","egrm","Kyzen"],"s":30},{"n":"SPRS","p":["Pandy","rafiki","Salt","SM1LY"],"s":30},{"n":"A-Tate","p":["Arid","Arrows","Kelz","Sweep"],"s":30},{"n":"Uprise Region","p":["Deeploy","JB3","Mills","sxzl"],"s":30},{"n":"Team Airbourn","p":["Co1azo","Repairs","Tristen","Tundra"],"s":30},{"n":"BBE","p":["Driven","Logan6x","Ponder","Skayter"],"s":30}],"alias":{"Agent Gaming":"Exceed"},"pay":[[1,100000],[2,44000],[3,28000],[4,18000],[6,10000],[8,6000],[16,3500]],"tickets":6},"quals":{"EU":{"teams":[{"n":"Gaimin Gladiators","p":["Howly","NeFrizi","S1neD","Vanyak3kk"]},{"n":"R8 Esports","p":["Voxe","Bloomy","xsweeze","Vortexers"]},{"n":"Twisted Minds","p":["Dela","Queasy","zAndy","Anas"]},{"n":"Ninjas In Pyjamas","p":["Refsgaard","Axeforce","Pixie","QB"]},{"n":"Team ammbrat","p":["ammbrat","Upl","Shura","Dandepuzo"]},{"n":"Guild Esports","p":["PabloWingu","Mappi","1lusha","Wheat"]},{"n":"Team DaanFN","p":["DaaN","Deckzee","Nakoo","Kantri"]},{"n":"Team Heretics","p":["IDrop","Krizzii","Nebs","Flickzy"]},{"n":"Team SlyFloki","p":["Floki","Andilex","BadSniper","Snayzy"]},{"n":"Team Art1st1kk","p":["Art1st","Karmy","paralizator","Toose"]},{"n":"Team G13ras","p":["G13ras","charyy","Kombek","Purchawa"]},{"n":"Team REZHEXX","p":["Rezhexx","boltye","Moneymaker","rudolph"]},{"n":"Team romix566","p":["romix56","rela1zz","keglya","warthy"]},{"n":"Team -gudn","p":["Gudn","Fnajen","Robban","Wox"]},{"n":"Team kxrv1nho","p":["kxrv","97default","Fury Legendary","Kiryache32"]},{"n":"Team Artembat9","p":["Artem","Eltensy","panzer","Rotory"]}],"slots":2},"NAC":{"teams":[{"n":"XSET","p":["Muz","Edgey","Ritual","Cold"]},{"n":"Dignitas","p":["Acorn","Pilky","Tkay","Khanada"]},{"n":"Stride Esports","p":["Crackly","DeRoller","miyu","Avivv"]},{"n":"Capybaras","p":["Cooper","Lame","Kylie","Reet"]},{"n":"Elite Esports","p":["Pfluger","Moo","Tacts","Vexy"]},{"n":"Team Cawsmiic","p":["Cawsmiic","ChaosGamingLive","Origin","Marrok"]},{"n":"Team munoz1x","p":["munoz","Laiys","Sycho","khor"]},{"n":"Team zenohasflag","p":["zeno","aaronxc","Frvsted","wydkaiii"]},{"n":"Team ShalloFN","p":["Shallo","djacoby","July","Omar"]},{"n":"Team flaco08","p":["Flaco","Clasher","Eulogy","Everfy"]},{"n":"Team Inkfv7","p":["Inkfv7","demaroonie","Elevattionn","Himothy"]},{"n":"Team Gh0st77","p":["Gh0st","Br1ghtinly","FL1X","iPanda"]},{"n":"Team metafn","p":["meta","Ducky","Hatch","shuexi"]},{"n":"PMG Esports","p":["HySky","bkzr","christian","Dragonisqt"]},{"n":"SATINgid","p":["Fifty","Chimp","Source","Twunti"]}],"slots":2},"BR":{"teams":[{"n":"DRAGONS eSports","p":["Randu","Itrol","Lewa","Romero"]},{"n":"w7m esports","p":["Frosty","Phzin","Seeyun","Kurtz"]},{"n":"LOS MOSQUITEROS","p":["Tecne","Fazer","K1nG","Thiagin"]},{"n":"LOUD","p":["Diguera","Gabzera","KING","Night"]},{"n":"Team Sanku40","p":["Sanku","Fishy","Talls","Trueno"]},{"n":"Team mojakfn","p":["Mojak","Kitoz","LORD","Puzera"]},{"n":"Faith","p":["Navars","Betto","Fffakkz","Riquelmee"]},{"n":"Team Liquid","p":["Pulga","Persa","EdRoadToGlory","Teuzz"]},{"n":"Vivo Keyd Stars","p":["GxT","Fuzettin","KaykyGames","wolfie"]},{"n":"Team Summit","p":["axadasz","Benado","Magni","Renato"]},{"n":"Team Emacasla","p":["Emacasla","enzo","TRCO-JUAN","Welzx"]},{"n":"Team yNotZeus-","p":["yNotZeus","Diazz","Porto","rtk"]},{"n":"Team mecvivv","p":["mecvivv","Nobreaks","Okabe","scottzito"]},{"n":"Team realmsxd","p":["realms","50PCB","ARTH0RF","mattzx7"]},{"n":"SmokeSolid Gaming","p":["Force","Hazzense","Gonzalobtw","Myst"]},{"n":"Team killuaprime","p":["killua","abestado","iagocts","Noisqueta"]}],"slots":2},"ME":{"teams":[{"n":"Al Ula","p":["Adapter","FHD","Hero","Mansour"]},{"n":"KS7","p":["Kalgamer","k0ty","Kyry","Salvatore"]},{"n":"siuuu","p":["Kaido","Calvo","Spyro","Sythic"]},{"n":"Team KaKaRoT 1","p":["KaKaRoT","Abodk","3BooD","LLJFT"]},{"n":"Team thatguyameen","p":["ameen","Spy","flucky","insanity"]},{"n":"Team g1ntlman","p":["GntL","Bd","5aald","Snowvaks"]},{"n":"Team Anasx1","p":["Anas","Kuro","noah","sohib"]}],"slots":2},"ASIA":{"teams":[{"n":"ZETA DIVISION","p":["Minipiyo","Zagou","Koyota","Yuma"]},{"n":"T1","p":["Michael.","SAKI","SinOoh","Vall"]},{"n":"AJS","p":["DayDus","Stain","Proboko","RqzriM3"]},{"n":"Team GTEdog","p":["Alice","Dog","Qjac","Raru"]},{"n":"ALBA E-sports","p":["3peace","MuuCONIQ","Tawashi","Mame"]},{"n":"Team macyfishyyy","p":["Macyfishy","Degen","Dukez","Job"]},{"n":"Team peterpan fn","p":["Peterpan","FaxFox","GODBAEKHO","Quickss"]},{"n":"ALBA Younth","p":["Hestin","Okan","ryudora","Salmon"]}],"slots":1},"OCE":{"teams":[{"n":"PWR","p":["alex","looter","worthy","volx"]},{"n":"Onyx Ravens","p":["anon","Aspect","Cazi","Fisher"]},{"n":"Team crypty1x","p":["Crypty","Deymo","Resignz","Vxmxn"]},{"n":"2x","p":["NJayyee","dummi","MooMoo","Tuckle Buckle"]},{"n":"Team GazerFn","p":["Gazer","Resignz","Skits","Protoon"]},{"n":"Team artorzx","p":["artor","Vepz","Xcon","Sznny"]},{"n":"Team Mazyok","p":["Mazyok","Arab","dyrusse","Kade"]},{"n":"Team STARUX7","p":["Starux","Speedyyyy","Splyse","SWEATYBOI7"]}],"slots":1}}};

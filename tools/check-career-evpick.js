@@ -64,48 +64,74 @@ const BOOT = `
   };
   const lastLog=()=>{ const s=JSON.parse(localStorage.getItem('fncsdraft_career')).career; return (s.log||[]).slice(-1)[0]||null; };
   try{
+    const sign=async(fmt, n)=>{
+      ccDuoFindOpen(null, fmt);
+      check('поиск открыт для формата '+fmt, CC_DUO_FMT===fmt && document.getElementById('duoFindModal').style.display==='flex');
+      const pool=careerDuoSearchPool().filter(w=>!ccMyPeople().has(hKey(w.handle))).sort((a,b)=>b.ovr-a.ovr);
+      ccDuoFindClose();
+      const got=[];
+      for(const w of pool){
+        if(got.length>=n) break;
+        CC_DUO_FMT=fmt; ccDuoFindWrite(w.handle);
+        const t=careerDms().find(x=>hKey(x.who && x.who.handle||'')===hKey(w.handle));
+        if(t && t.state==='offer'){ careerDmAccept(t.id); got.push(w.handle); }
+      }
+      return got;
+    };
+    // 1) Окно перед вечером: «Написать игрокам» — вечер не начинается.
     seed('2024-06-02', {size:2}, {c:'de'});
-    CAREER.partners=(CAREER.partners||[]).slice(0, 1); CAREER.rosters={}; careerSave();
-    CC_VICTORY_LIST=null;
+    CAREER.partners=(CAREER.partners||[]).slice(0, 1); CAREER.rosters={}; careerSave(); CC_VICTORY_LIST=null;
     const ev=careerVictoryOn('2024-06-02');
-    out.steps.push('ev: '+JSON.stringify(ev && {id:ev.id, mode:ev.mode}));
-    check('в этот день сквадовый кап', ev && ev.mode==='squad', JSON.stringify(ev));
-    const p=ccEventRosterPick(ev, 4);
-    await wait(50);
-    const btns=[...document.querySelectorAll('.cc-evpick-p[data-i]')];
-    check('окно состава открылось', !!document.querySelector('.cc-evpick') && btns.length>=2, String(btns.length));
-    const names=[btns[0], btns[1]].map(b=>b.querySelector('b').textContent);
-    btns[0].click(); await wait(10);
-    document.querySelectorAll('.cc-evpick-p[data-i]')[1].click(); await wait(10);
-    document.querySelector('.cc-evpick-go').click();
-    await p;
-    const st=JSON.parse(localStorage.getItem('fncsdraft_career'));
-    const r4=((st.rosters||{})[4]||[]).map(r=>r.card && r.card.handle);
-    out.steps.push('rosters[4]: '+JSON.stringify(r4)+' picked '+JSON.stringify(names));
-    check('выбранные записаны в сквад-состав', r4.length===3 && names.every(n=>r4.indexOf(n)>=0), JSON.stringify(r4));
-    let asked=false; const p2=ccEventRosterPick(ev, 4); await wait(50); asked=!!document.querySelector('.cc-evpick'); await p2;
-    check('второй раз не спрашивает', !asked);
+    check('в этот день сквадовый кап', ev && ev.mode==='squad', JSON.stringify(ev && ev.id));
+    const p=ccEventRosterPick(ev, 4); await wait(30);
+    check('окно спрашивает', !!document.querySelector('.cc-evpick [data-k="find"]'));
+    document.querySelector('.cc-evpick [data-k="find"]').click();
+    const ans=await p;
+    check('ответ «написать»', ans==='find', String(ans));
+    // 2) Переписка в формат сквада.
+    const got=await sign(4, 2);
+    careerRenderHub('centre');
+    const r4=(CAREER.rosters[4]||[]).map(r=>(ccMateCardOf(r)||{}).handle);
+    out.steps.push('signed '+JSON.stringify(got)+' rosters[4] '+JSON.stringify(r4)+' partners '+JSON.stringify(careerMates().map(m=>m.handle)));
+    check('подписанные в сквад-составе, напарник остался', got.length===2 && got.every(h=>r4.indexOf(h)>=0) && r4.indexOf('M1')>=0, JSON.stringify(r4));
+    check('состав года не тронут', careerMates().length===1, JSON.stringify(careerMates().map(m=>m.handle)));
+    let asked=false; const p2=ccEventRosterPick(ev, 4); await wait(30); asked=!!document.querySelector('.cc-evpick'); await p2;
+    check('с полным составом не спрашивает', !asked);
+    careerRenderHub('centre');
     const h=await playThrough('Squads cup');
     const l=lastLog();
     out.steps.push('night: '+h+' · mates '+JSON.stringify(l && l.mates));
-    check('вечер сыгран выбранными', l && names.every(n=>(l.mates||[]).indexOf(n)>=0), JSON.stringify(l && l.mates));
-    // Заранее: за пять дней до DreamHack Dallas 2024 (4 на 4) — плашка «Собрать состав»; выбранные играют EWC-вечер.
+    check('вечер сыгран подписанными', l && got.every(n=>(l.mates||[]).indexOf(n)>=0), JSON.stringify(l && l.mates));
+    // 3) Плашка за неделю до Dallas — ведёт в поиск сквада; EWC-четвёрка — подписанные.
     seed('2024-05-27', {size:2}, {c:'de'});
     CAREER.partners=(CAREER.partners||[]).slice(0, 1); CAREER.rosters={}; careerSave(); CC_VICTORY_LIST=null;
     const soon=ccRosterSoon();
-    out.steps.push('soon: '+JSON.stringify(soon && {id:soon.ev.id, k:soon.k, fmt:soon.fmt}));
     check('плашка видит Dallas как сквад', soon && soon.ev.ewc24==='dallas' && soon.fmt===4, JSON.stringify(soon && soon.ev.id));
     careerRenderHub('centre');
-    check('плашка в Центре', !!document.querySelector('.cc-soon .cc-soon-go'));
-    document.querySelector('.cc-soon .cc-soon-go').click(); await wait(50);
-    const eb=[...document.querySelectorAll('.cc-evpick-p[data-i]')];
-    const en=[eb[0], eb[1]].map(b=>b.querySelector('b').textContent);
-    eb[0].click(); await wait(10); document.querySelectorAll('.cc-evpick-p[data-i]')[1].click(); await wait(10);
-    document.querySelector('.cc-evpick-go').click(); await wait(50);
+    const go=document.querySelector('.cc-soon .cc-soon-go');
+    check('плашка в Центре', !!go);
+    if(go) go.click();
+    check('плашка открыла поиск сквада', CC_DUO_FMT===4);
+    ccDuoFindClose();
+    const got2=await sign(4, 2);
     const team=ewc24MyTeam([]);
-    out.steps.push('ewc team: '+team.squad.map(c=>c.handle).join(', ')+' picked '+JSON.stringify(en));
-    check('четвёрка EWC — выбранные', en.every(n=>team.squad.some(c=>c.handle===n)), team.squad.map(c=>c.handle).join(','));
-    check('после выбора плашки нет', !ccRosterSoon());
+    out.steps.push('ewc team: '+team.squad.map(c=>c.handle).join(', '));
+    check('четвёрка EWC — подписанные', got2.length===2 && got2.every(n=>team.squad.some(c=>c.handle===n)), team.squad.map(c=>c.handle).join(','));
+    check('после подписи плашки нет', !ccRosterSoon());
+    // 4) Плитка составов в «Карьере»: три строки.
+    careerRenderHub('me');
+    check('плитка составов показывает трио и сквад', document.body.innerHTML.indexOf('/3</em>')>=0 && document.body.innerHTML.indexOf('/4</em>')>=0);
+    // 5) Стэнд-ины на вечер: неполный состав, ответ «стэнд-ины» — вечер играется, в состав не пишутся.
+    seed('2024-06-02', {size:2}, {c:'de'});
+    CAREER.partners=(CAREER.partners||[]).slice(0, 1); CAREER.rosters={}; careerSave(); CC_VICTORY_LIST=null;
+    document.getElementById('majorStages').innerHTML=''; careerRenderHub('centre');
+    const sIv=setInterval(()=>{ const b=document.querySelector('.cc-evpick [data-k="go"]'); if(b) b.click(); }, 30);
+    const h2=await playThrough('Squads cup stand-ins');
+    clearInterval(sIv);
+    const l2=lastLog();
+    out.steps.push('stand-ins night: '+h2+' · '+JSON.stringify(l2).slice(0,400));
+    check('стэнд-ины сыграли вечер', l2 && (l2.mates||[]).length===3, JSON.stringify(l2 && l2.mates));
+    check('стэнд-ины не записаны в состав', !((CAREER.rosters||{})[4]||[]).length);
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
