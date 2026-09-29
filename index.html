@@ -6106,6 +6106,15 @@
   @media (prefers-reduced-motion:reduce){ #screen-career-create .cc-chip.cc-rar-legend::after{animation:none;background-position:50% 0;} }
   /* Окно состава на кап другого формата (ccEventRosterPick). */
   .cc-rost-ask{margin-left:8px;padding:2px 10px;border-radius:8px;border:0;background:#ffe600;color:#101a44;font-size:11px;font-weight:900;cursor:pointer;vertical-align:middle;}
+  /* Шесть колонок тренировок в Центре (по характеристике). */
+  .cc-six{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;margin:4px 0 8px;}
+  .cc-six-t{display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 2px;border-radius:9px;border:1px solid rgba(180,200,255,.2);background:rgba(126,150,224,.18);color:#fff;cursor:pointer;min-width:0;}
+  .cc-six-t b{font-size:10px;font-weight:900;letter-spacing:.04em;color:#9fb0e8;}
+  .cc-six-t i{font-style:normal;font-family:var(--font-display);font-weight:700;font-size:18px;line-height:1.1;}
+  .cc-six-t em{font-style:normal;font-size:10px;font-weight:900;color:#00d6a4;}
+  .cc-six-t small{font-size:9px;font-weight:800;color:#8fa1cc;}
+  .cc-six-t.off{opacity:.4;cursor:default;} .cc-six-t.did{border-color:#00d6a4;}
+  .cc-six-t:not(.off):hover{background:rgba(160,185,255,.3);}
   .cc-soon{border:1px solid rgba(255,200,60,.55) !important;background:linear-gradient(160deg,rgba(255,190,40,.16),rgba(255,190,40,.04)) !important;}
   .cc-soon-h{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#ffcf4d;margin-bottom:4px;}
   .cc-soon b{display:block;font-size:15px;color:#fff;}
@@ -135818,6 +135827,25 @@ function careerDayPanelHTML(locked){
       const grpOf0=x=>String(x.id).indexOf('tr')===0 ? 'train' : (x.id==='scrim'||x.id==='talk'||x.id==='noble') ? 'team' : 'life';
       const firstOf=allActs.find(x=>grpOf0(x)===grp);
       const head=a===firstOf ? '<div class="cc-act-grp">'+(L()['ccActGrp'+grp.charAt(0).toUpperCase()+grp.slice(1)]||'')+'</div>' : '';
+      /* Тренировки в Центре — шесть колонок, по одной на характеристику (его слово 29.09: «слишком много
+         спама, просто 6 колонок для каждой характеристики»): сокращение, значение, прирост за занятие,
+         энергия. Карты Creative на две характеристики — во вкладке «Тренировка». */
+      if(grp==='train'){
+        const SIX=['trAim','trSur','trCon','trClu','trExp','trEnd'];
+        const at=SIX.indexOf(a.id);
+        if(at<0) return a.meta ? '<button class="cc-act g-train'+(can?'':' off')+'" '+(can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
+          '<span class="cc-act-h"><b>'+L()['ccAct'+a.id]+'</b><em>'+a.energy+L().ccEnergyMark+'</em></span></button>' : '';
+        const k=keys[0], from=six[k]!=null ? six[k] : 50;
+        const by=a.gain[k]*dayMult*(dayCoach && dayCoach.keys.indexOf(k)>=0 ? 1+dayCoach.train : 1);
+        const up=Math.round((clamp(from+by, 35, 99)-from)*10)/10;
+        const tip=L()['ccAct'+a.id]+' · '+(L()['ccAttr'+k.toUpperCase()]||k)+' '+from.toFixed(1)+(up>0 ? ' → '+(from+up).toFixed(1) : '')+' · '+a.energy+L().ccEnergyMark;
+        return (at===0 ? head+'<div class="cc-six">' : '')+
+          '<button class="cc-six-t'+(can?'':' off')+(done.indexOf(a.id)>=0?' did':'')+'" title="'+esc(tip)+'" '+
+            (can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
+            '<b>'+(L()['ccAttr'+k.toUpperCase()]||k.toUpperCase())+'</b><i>'+Math.floor(from)+'</i>'+
+            '<em>'+(maxed||from>=99 ? 'MAX' : up>0 ? '+'+up.toFixed(1) : '·')+'</em><small>'+a.energy+L().ccEnergyMark+'</small></button>'+
+          (at===SIX.length-1 ? '</div>' : '');
+      }
       return head+'<button class="cc-act g-'+grp+(can?'':' off')+(done.indexOf(a.id)>=0?' did':'')+'" '+
         (can?'onclick="careerPickDay(\''+a.id+'\')"':'disabled')+'>'+
         '<span class="cc-act-h"><b>'+L()['ccAct'+a.id]+'</b><em>'+a.energy+L().ccEnergyMark+'</em></span>'+
