@@ -95092,7 +95092,9 @@ function buildPreRegionChecks(){
     const name=era ? (era[LANG] || era.en) : null;
     const b=document.createElement('button');
     b.className='rf-btn';
-    b.textContent = name ? name + ' · ' + y : String(y);
+    // Только год (его слово 29.09: «пусть будут года, только без чаптеров»); глава — в подсказке.
+    b.textContent = String(y);
+    if(name) b.title=name;
     b.dataset.year=String(y);
     eraEl.appendChild(b);
     yearBtns.push(b);
