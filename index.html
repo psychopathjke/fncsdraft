@@ -1746,6 +1746,9 @@
     justify-content:center;}
   .cc-spot-peek-in > b{font-size:13px; text-transform:uppercase; letter-spacing:.05em;}
   .cc-spot-peek-in .ch-sign{margin-top:4px;}
+  .land-zone.cc-spot-mythic:not(.cc-spot-mine){border-color:#ff9f1a !important;border-style:dashed;}
+  .land-zone.cc-spot-mythic .land-zone-label{color:var(--mythic);}
+  .cc-spot-mythic-row b{color:var(--mythic);}
   .land-zone.cc-spot-peeked{border-color:#ffd400 !important;
     box-shadow:inset 0 0 0 1px rgba(0,0,0,.55), 0 0 0 2px rgba(255,212,0,.45) !important;}
   @media(max-width:560px){.cc-spot-peek{flex-direction:column;}
@@ -96847,7 +96850,7 @@ function trimLandingZonesForMode(){
        «прямоугольники для всех карт должны быть под сквады». */
     const keep=ccSquadKeep(ACTIVE_LANDING_SET);
     if(keep.length>=ALL_LANDING_ZONES.length) return;
-    const kept=keep.map(i=>ALL_LANDING_ZONES[i]).filter(Boolean);
+    const kept=ccKeepMythic(keep.map(i=>ALL_LANDING_ZONES[i]).filter(Boolean));
     ALL_LANDING_ZONES.length=0;
     kept.forEach(z=>ALL_LANDING_ZONES.push(z));
     return;
@@ -96860,14 +96863,28 @@ function trimLandingZonesForMode(){
   // and still thin; the 2025 one carries 21 and is left whole.
   if(ALL_LANDING_ZONES.length<=30) return;
   const keep=Math.max(12, Math.round(ALL_LANDING_ZONES.length*share));
+  // Мифическая точка остаётся при любом прореживании: иначе в трио-вечере 2024-го
+  // (f3, f4) босса с мификом на карте просто не было (замер 29.09).
   const ranked=ALL_LANDING_ZONES
-    .map((z,i)=>({z, i, area:z.w*z.h}))
+    .map((z,i)=>({z, i, area:z.mythic ? Infinity : z.w*z.h}))
     .sort((a,b)=>b.area-a.area)
     .slice(0, keep)
     .sort((a,b)=>a.i-b.i)          // back to the original order
     .map(x=>x.z);
   ALL_LANDING_ZONES.length=0;
   ranked.forEach(z=>ALL_LANDING_ZONES.push(z));
+}
+/* Сквадный набор коробок подобран без наложений, и мифической точки в нём может не
+   быть. Она добавляется, а коробка набора, которую она заметно перекрывает, уходит. */
+function ccKeepMythic(kept){
+  const myth=ALL_LANDING_ZONES.filter(z=>z.mythic && !kept.includes(z));
+  if(!myth.length) return kept;
+  const over=(a,b)=>{
+    const w=Math.min(a.x+a.w, b.x+b.w)-Math.max(a.x, b.x), h=Math.min(a.y+a.h, b.y+b.h)-Math.max(a.y, b.y);
+    return w>0 && h>0 && w*h > 0.25*Math.min(a.w*a.h, b.w*b.h);
+  };
+  const out=kept.filter(z=>z.mythic || !myth.some(m=>over(m, z))).concat(myth);
+  return ALL_LANDING_ZONES.filter(z=>out.includes(z));   // исходный порядок
 }
 
 // Which island is actually loaded. In card mode it tracks CARD_SET, but the
@@ -111235,7 +111252,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8a5d6bdc';
+const CC_BUILD='04cacc9e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -116713,7 +116730,8 @@ function careerSpotTileHTML(){
         <b class="cc-spot-card-map">${t.label}</b>
         ${careerSpotShotHTML(sp.i, t.key)}
         <div class="cc-spot-card-in">
-          <span class="cc-spot-card-zone">${L().landingZoneSuffix(sp.i+1)}</span>
+          <span class="cc-spot-card-zone">${L().landingZoneSuffix(sp.i+1)}${
+            (CC_MYTHIC_POI[careerSpotGrid(t.key)]||{})[sp.i] ? ' · ⚡ '+esc(CC_MYTHIC_POI[careerSpotGrid(t.key)][sp.i]) : ''}</span>
           ${careerSpotAuraBarHTML(a)}
         </div></div>`;
     });
@@ -116764,22 +116782,31 @@ function careerSpotTileHTML(){
           <b>${L().landingZoneSuffix(CC_SPOT_PEEK+1)}</b>
           <div class="ch-row"><em>${L().ccSpotLoot}</em><b>${
             careerSpotPointsOf(CC_SPOT_PEEK, set)}</b></div>
+          ${(CC_MYTHIC_POI[gridKey]||{})[CC_SPOT_PEEK] ? `<div class="ch-row cc-spot-mythic-row"><em>⚡ ${
+            L().ccRaritymythic}</em><b>${esc(CC_MYTHIC_POI[gridKey][CC_SPOT_PEEK])}</b></div>` : ''}
           ${peekBtns}
         </div></div>`
     : `<div class="ch-hint">${L().ccSpotTap}</div>`;
-  const keepSq=(careerSpotSets().find(t=>t.key===set)||{}).squad ? new Set(ccSquadKeep(gridKey)) : null;
+  /* Мифические POI (CC_MYTHIC_POI) подписаны и здесь: отзыв 29.09 «когда выбираешь
+     спот не показывает» — на карте вечера молния с боссом была, а в выборе дома
+     стоял голый номер коробки. И сквадный набор их не теряет (ccKeepMythic). */
+  const myth=CC_MYTHIC_POI[gridKey]||{};
+  const keepSq=(careerSpotSets().find(t=>t.key===set)||{}).squad
+    ? new Set([...ccSquadKeep(gridKey), ...Object.keys(myth).map(Number)]) : null;
   const boxes=grid.map((z,i)=>{
     if(keepSq && !keepSq.has(i)) return '';
     const at=slotOf(i);
     const mine=at>=0;
-    return `<div class="land-zone${mine?' cc-spot-mine':''}${CC_SPOT_PEEK===i?' cc-spot-peeked':''}"
+    // На коробке только молния: имя в узкой подписи режется в «11 · …», полностью оно в превью.
+    const boss=myth[i] ? ' ⚡' : '';
+    return `<div class="land-zone${mine?' cc-spot-mine':''}${CC_SPOT_PEEK===i?' cc-spot-peeked':''}${myth[i]?' cc-spot-mythic':''}"
       title="${L().landingZoneSuffix(i+1)}"
       onclick="careerSpotPeek(${i})"
       style="left:${z.x}%;top:${z.y}%;width:${z.w}%;height:${z.h}%;${
         mine?'border-color:var(--accent);box-shadow:inset 0 0 0 1px rgba(0,0,0,.55),0 0 0 2px rgba(0,208,168,.35);'
             :'border-color:rgba(10,10,10,.75);background:transparent;'}"><div
       class="land-zone-label"${mine?' style="color:var(--accent);font-weight:900;"':''}>${
-      mine ? L().ccSpotTag(list[at].aura||0) : (i+1)}</div>${ccChestBadgeHTMLAt(gridKey, i)}</div>`;
+      (mine ? L().ccSpotTag(list[at].aura||0) : (i+1))+boss}</div>${ccChestBadgeHTMLAt(gridKey, i)}</div>`;
   }).join('');
   // Открытая карта называет себя: сюда попадают кликом по прямоугольнику, и
   // без подписи не видно, чей это остров.
