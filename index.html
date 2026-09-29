@@ -104177,8 +104177,8 @@ function buildGlobalChampionship2025Field(you, region, regionalFinal){
       field.push(gc2025BuildTeam(t, gc2025RegionOf(t), route, rating));
     });
   };
-  seatReal(GC2025_M1_TRIOS, 'm1', 90);
-  seatReal(GC2025_M2_TRIOS, 'm2', 88);
+  seatReal(ccGcList('GC2025_M1_TRIOS', GC2025_M1_TRIOS), 'm1', 90);
+  seatReal(ccGcList('GC2025_M2_TRIOS', GC2025_M2_TRIOS), 'm2', 88);
 
   // Major 3's seats. Your region sends what section 6 allocates it, and those
   // teams are the ones you just played against — the rest of the Major's places
@@ -104204,7 +104204,7 @@ function buildGlobalChampionship2025Field(you, region, regionalFinal){
   });
   mine.forEach(t=>field.push(t));
 
-  const realM3=GC2025_M3_TRIOS.map(t=>({handles:t, region:gc2025RegionOf(t)}));
+  const realM3=ccGcList('GC2025_M3_TRIOS', GC2025_M3_TRIOS).map(t=>({handles:t, region:gc2025RegionOf(t)}));
   const others=realM3.filter(t=>t.region!==region);
   const home=realM3.filter(t=>t.region===region);
   [...others, ...home].forEach(t=>{
@@ -146017,9 +146017,9 @@ function buildGlobalChampionship2024Field(you, drafted){
     const t=ccLanTeam(d, null, rating, seated);
     if(t){ t.gcRoute=route; field.push(t); }
   });
-  seat(GC2024_M1_DUOS, 'm1', 90);
-  seat(GC2024_M2_DUOS, 'm2', 88);
-  seat(GC2024_M3_DUOS, 'm3', 86);
+  seat(ccGcList('GC2024_M1_DUOS', GC2024_M1_DUOS), 'm1', 90);
+  seat(ccGcList('GC2024_M2_DUOS', GC2024_M2_DUOS), 'm2', 88);
+  seat(ccGcList('GC2024_M3_DUOS', GC2024_M3_DUOS), 'm3', 86);
   /* Недобор (тёзки, вытесненные) — верх своего региона; просить надо с запасом: верх
      Европы и есть эти самые люди, и из десяти предложенных девять уже сидят в зале. */
   if(field.length<CC_GLOB_FIELD-1){
@@ -146037,14 +146037,118 @@ function buildGlobalChampionship2024Field(you, drafted){
   capped.push(you);
   return capped;
 }
+/* GLOBAL CHAMPIONSHIP (и Invitational 2022) — ИЗ СИМУЛЯЦИИ, А НЕ ИЗ ИСТОРИИ (его слова 29.09: «пусть из
+   нашей симуляции игроки попадают», «и так должно быть на всех турнирах»). Залы Роли, Копенгагена,
+   Форт-Уэрта и Лиона собирались из настоящих списков прошедших (INV2022_DUOS, GC2023_DUOS,
+   GC2024_M*_DUOS, GC2025_M*_TRIOS). В карьере они подменяются: сколько мест было у региона на этой
+   дороге — столько и отдаётся, но кому — решает сыгранный финал Мейджора этого региона. Свой регион —
+   твой финал (cr.gfKeep, пишется в конце финала Мейджора), чужие — комната финала из настоящих команд
+   года этого региона (пары/трио — по одному событию и месту в карточках), сыгранная движком. Кто уже
+   взял место на ранней дороге, дальше не занимает. Считается один раз за сезон (cr.gcSim). В драфте —
+   настоящие списки, как было. */
+let CC_GC_SIM_DEPTH=0;
+function ccGcSimOn(fn){ CC_GC_SIM_DEPTH++; try{ return fn(); } finally{ CC_GC_SIM_DEPTH--; } }
+function ccGcKeepFinal(year, n, rows){
+  if(!CAREER || !CAREER.career) return;
+  const cr=CAREER.career, k=cr.gfKeep=cr.gfKeep||{};
+  k[year+'|'+n]={season:cr.season, reg:ccCareerRegion(), rows:(rows||[]).slice()};
+}
+const CC_GC_SIM={
+  INV2022_DUOS:{year:2022, size:2, sets:['k1','k2','k3'], n:0, seats:()=>INV2022_SEATS, order:0},
+  'GC2023_DUOS.m1':{year:2023, size:2, sets:['e1'], n:1, list:()=>GC2023_DUOS.m1, order:1},
+  'GC2023_DUOS.m2':{year:2023, size:2, sets:['e2'], n:2, list:()=>GC2023_DUOS.m2, order:2},
+  'GC2023_DUOS.m3':{year:2023, size:2, sets:['e3'], n:3, list:()=>GC2023_DUOS.m3, order:3},
+  'GC2023_DUOS.lcm':{year:2023, size:2, sets:['e3'], n:0, list:()=>GC2023_DUOS.lcm, order:4},
+  GC2024_M1_DUOS:{year:2024, size:2, sets:['f1'], n:1, seats:()=>GC2024_M1_SEATS, order:1},
+  GC2024_M2_DUOS:{year:2024, size:2, sets:['f2'], n:2, seats:()=>GC2024_M2_SEATS, order:2},
+  GC2024_M3_DUOS:{year:2024, size:2, sets:['f3'], n:3, seats:()=>GC2024_M3_SEATS, order:3},
+  GC2025_M1_TRIOS:{year:2025, size:3, sets:['t1'], n:1, seats:()=>GC2025_M1_SEATS, order:1},
+  GC2025_M2_TRIOS:{year:2025, size:3, sets:['t2'], n:2, seats:()=>GC2025_M2_SEATS, order:2},
+  GC2025_M3_TRIOS:{year:2025, size:3, sets:['t3'], n:3, seats:()=>GC2025_M3_SEATS, order:3}
+};
+// Регион настоящей строки списка — по карточке первого человека в наборах года.
+function ccGcRowRegion(row, sets){
+  const h=hKey(row[0]||'');
+  const c=PLAYERS.find(p=>p && hKey(p.handle)===h && sets.indexOf(String(p.cardSet||''))>=0) || PLAYERS.find(p=>p && hKey(p.handle)===h);
+  return (c && c.region) || 'EU';
+}
+function ccGcSeatsOf(spec){
+  if(spec.seats) return Object.assign({}, spec.seats());
+  const out={};
+  (spec.list()||[]).forEach(r=>{ const g=ccGcRowRegion(r, spec.sets); out[g]=(out[g]||0)+1; });
+  return out;
+}
+// Настоящие команды региона в наборах года: у тиммейтов одно событие и одно место.
+function ccGcRegionTeams(spec, reg){
+  const grp=new Map();
+  spec.sets.forEach(set=>((typeof CARDS_BY_SETREG!=='undefined' && CARDS_BY_SETREG.get(set+'|'+reg))||[]).forEach(c=>{
+    if(!c.placement) return;
+    const k=set+'|'+(c.gfEvent||c.event||'')+'|'+c.placement;
+    (grp.get(k)||grp.set(k, []).get(k)).push(c);
+  }));
+  const seen=new Set(), out=[];
+  grp.forEach(cs=>{
+    if(cs.length!==spec.size) return;
+    const key=cs.map(c=>hKey(c.handle)).sort().join('+');
+    if(seen.has(key)) return; seen.add(key);
+    out.push({row:cs.map(c=>c.handle), pow:cs.reduce((s,c)=>s+(+c.rating||0), 0)/cs.length});
+  });
+  return out.sort((a,b)=>b.pow-a.pow);
+}
+function ccGcSimYear(year){
+  const cr=CAREER.career;
+  const box=cr.gcSim=(cr.gcSim && cr.gcSim.season===cr.season) ? cr.gcSim : {season:cr.season};
+  if(box[year]) return box[year];
+  const lists={}, taken=new Set();
+  const names=Object.keys(CC_GC_SIM).filter(k=>CC_GC_SIM[k].year===year).sort((a,b)=>CC_GC_SIM[a].order-CC_GC_SIM[b].order);
+  names.forEach(name=>{
+    const spec=CC_GC_SIM[name], seats=ccGcSeatsOf(spec), rows=[];
+    const F=spec.size===3 ? 33 : 50;
+    Object.keys(seats).forEach(reg0=>{
+      const reg=reg0==='?' ? 'EU' : reg0, need=seats[reg0];
+      if(!need) return;
+      const free=r=>!r.some(h=>taken.has(hKey(h)));
+      let pick=[];
+      const kept=cr.gfKeep && spec.n && cr.gfKeep[year+'|'+spec.n];
+      if(kept && kept.season===cr.season && kept.reg===reg){
+        pick=(kept.rows||[]).filter(r=>r!=='you').map(r=>r.map(x=>typeof x==='string' ? x : x.h)).filter(free).slice(0, need);
+      }
+      if(pick.length<need){
+        const pool=ccGcRegionTeams(spec, reg).filter(t=>free(t.row) && !pick.some(p=>p.join('+')===t.row.join('+')));
+        const rnd=careerRng(ccHashStr('gcsim|'+cr.season+'|'+name+'|'+reg));
+        const top=pool.slice(0, F*2);
+        for(let i=top.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); const t=top[i]; top[i]=top[j]; top[j]=t; }
+        const room=top.slice(0, F).map(t=>{ const tm=ccLanTeam(t.row, null, Math.round(t.pow), null); if(tm) tm._row=t.row; return tm; }).filter(Boolean);
+        if(room.length){
+          ccWithEventSize(spec.size, ()=>{
+            room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
+            ccWorldRun('gcsim|'+cr.season+'|'+name+'|'+reg, ()=>simulateGames(room, 12, ccM24Points, CC_M24_KILL));
+          });
+          ccM24Rank(room).forEach(t=>{ if(pick.length<need && free(t._row)) pick.push(t._row); });
+        }
+      }
+      pick.forEach(r=>{ r.forEach(h=>taken.add(hKey(h))); rows.push(r); });
+    });
+    lists[name]=rows;
+  });
+  box[year]=lists;
+  return lists;
+}
+// Список дороги: в карьере (внутри ccGcSimOn) — сыгранный, иначе — настоящий.
+function ccGcList(name, real){
+  if(!CC_GC_SIM_DEPTH || typeof CAREER==='undefined' || !CAREER || !CAREER.career) return real;
+  const spec=CC_GC_SIM[name]; if(!spec) return real;
+  const l=ccGcSimYear(spec.year)[name];
+  return (l && l.length) ? l : real;
+}
 function careerGlobalsField(you, drafted, via){
-  if(ccIs2022()) return buildInvitational2022Field(you);
-  if(ccIs2023()) return buildGlobalChampionship2023Field(you);
-  if(ccIs2024()) return buildGlobalChampionship2024Field(you, drafted);
+  if(ccIs2022()) return ccGcSimOn(()=>buildInvitational2022Field(you));
+  if(ccIs2023()) return ccGcSimOn(()=>buildGlobalChampionship2023Field(you));
+  if(ccIs2024()) return ccGcSimOn(()=>buildGlobalChampionship2024Field(you, drafted));
   /* 2025: Лион — 33 трио, поле уже собрано режимом драфта из настоящих
      составов Лиона (buildGlobalChampionship2025Field): места Мейджоров 1 и 2 —
      реальные трио, Мейджора 3 — по регионам; твоё место вытесняет одно. */
-  if(ccIs2025()) return buildGlobalChampionship2025Field(you, ccCareerRegion(), null);
+  if(ccIs2025()) return ccGcSimOn(()=>buildGlobalChampionship2025Field(you, ccCareerRegion(), null));
   /* ЗАЛ ОДИН НА КОМНАТУ ГОНКИ. Список занятых мест начинался со СВОЕГО состава: строка
      записи, в которой стоит мой человек, у меня из зала выпадала, а у соседа — нет, и
      Глобалы у двоих собирались разные (годовая проба на шестерых, 01.10: 17 строк из 50
@@ -147661,7 +147765,7 @@ function buildInvitational2022Field(you){
   if(own) (own.squad||[]).forEach(p=>seated.add(_gcNorm(p.handle)));
   const limit=CC_GLOB_FIELD-(own?1:0);
   const room=[];
-  INV2022_DUOS.forEach(d=>{ if(room.length>=limit) return; const t=ccLanTeam(d, null, 88, seated); if(t){ t.gcRoute='inv'; room.push(t); } });
+  ccGcSimOn(()=>ccGcList('INV2022_DUOS', INV2022_DUOS)).forEach(d=>{ if(room.length>=limit) return; const t=ccLanTeam(d, null, 88, seated); if(t){ t.gcRoute='inv'; room.push(t); } });
   ccGc23Fill(room, limit, seated);
   if(own){ own.gcRoute='inv'; room.push(own); }
   return room;
@@ -147844,6 +147948,7 @@ async function runCareerMajor2024(){
     if(place>field.length/2) careerNews('bad', 'ccPostTriedBest', []);
     careerCongrats(ranked, you, L().ccCongratsMajor(ev.n));
     m.gf=ranked.map(seedOf);
+    ccGcKeepFinal(ccCalYear(), ev.n, m.gf);
     cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
   } else {
     careerNews((through || stay)?'good':'flat', (through || stay)?'ccNewsMajThrough':'ccNewsMajOut',
@@ -148163,6 +148268,7 @@ async function runCareerMajor2023(){
     if(place>field.length/2) careerNews('bad', 'ccPostTriedBest', []);
     careerCongrats(ranked, you, L().ccCongratsMajor(ev.n));
     m.gf=ranked.map(seedOf);
+    ccGcKeepFinal(ccCalYear(), ev.n, m.gf);
     cr.major={n:ev.n, got:'final', pass:'final', ticket:false};
   } else {
     careerNews(through?'good':'flat', through?'ccNewsMajThrough':'ccNewsMajOut',
@@ -148217,7 +148323,7 @@ function ccGc23Team(row){ return ccLanTeam(row, null, 85, null); }
 const CC_GC23={upper:{games:5, cut:25}, lower:{games:5, cut:25}, final:{games:6, cut:0}, field:50};
 function ccGc23Build(routes, rating, seated, limit){
   const out=[];
-  routes.forEach(route=>(GC2023_DUOS[route]||[]).forEach(d=>{
+  routes.forEach(route=>(ccGcSimOn(()=>ccGcList('GC2023_DUOS.'+route, GC2023_DUOS[route]))||[]).forEach(d=>{
     if(out.length>=limit) return;
     const duo=d.length>=2 ? d : [d[0], d[0]];
     const t=ccLanTeam(duo.slice(0, 2), null, rating, seated);
