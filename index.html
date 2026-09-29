@@ -6104,6 +6104,21 @@
     background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 45%,transparent 60%);background-size:250% 100%;animation:ccRarShine 2.6s linear infinite;}
   @keyframes ccRarShine{0%{background-position:150% 0}100%{background-position:-100% 0}}
   @media (prefers-reduced-motion:reduce){ #screen-career-create .cc-chip.cc-rar-legend::after{animation:none;background-position:50% 0;} }
+  /* Окно состава на кап другого формата (ccEventRosterPick). */
+  .cc-evpick-wrap{position:fixed;inset:0;z-index:9600;background:rgba(4,8,24,.72);display:flex;align-items:center;justify-content:center;padding:16px;}
+  .cc-evpick{width:min(460px,100%);max-height:88vh;overflow:auto;background:linear-gradient(180deg,#1b2a66,#101a44);border:1px solid rgba(160,185,255,.3);border-radius:14px;padding:16px;color:#fff;box-shadow:0 20px 50px rgba(0,0,0,.5);}
+  .cc-evpick h4{margin:0 0 4px;font-family:var(--font-display);font-size:18px;text-transform:uppercase;}
+  .cc-evpick p{margin:0 0 10px;font-size:12px;color:#cfd8ff;}
+  .cc-evpick-list{display:flex;flex-direction:column;gap:5px;}
+  .cc-evpick-p{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;border:1px solid rgba(180,200,255,.2);background:rgba(126,150,224,.16);color:#fff;cursor:pointer;text-align:left;font-size:13px;}
+  .cc-evpick-p b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cc-evpick-p i{font-style:normal;font-weight:900;color:#ffe600;}
+  .cc-evpick-p em{font-style:normal;font-size:10px;font-weight:800;color:#8fa1cc;text-transform:uppercase;}
+  .cc-evpick-p.on{background:rgba(0,214,164,.25);border-color:#00d6a4;}
+  .cc-evpick-p.mine{opacity:.75;cursor:default;}
+  .cc-evpick-act{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:12px;}
+  .cc-evpick-auto{background:none;border:0;color:#8fa1cc;font-size:12px;font-weight:800;text-decoration:underline;cursor:pointer;}
+  .cc-evpick-go:disabled{opacity:.45;cursor:not-allowed;}
   .ewc-ask-auto{display:block;margin:8px auto 0;background:none;border:0;color:#8fa1cc;font-size:11px;font-weight:800;text-decoration:underline;cursor:pointer;}
   .ewc-h5{margin:12px 0 4px;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8fa1cc;}
   /* Главная: два режима, драфт по годам (29.09). */
@@ -18988,6 +19003,11 @@ Object.assign(I18N.it, {ewc24T:{rush:['Rush alla bandiera','tutti e quattro sull
 Object.assign(I18N.pt, {ewc24T:{rush:['Rush na bandeira','os quatro na bandeira deles'], split:['Split 2–2','dois na bandeira, dois na base'], def:['Defesa e contra-ataque','segurar o rush na base'], hold:['Segurar o ponto','ficar no ponto até o fim'], hunt:['Caçar nas entradas','pegá-los na rotação'], rot:['Rotação antecipada','pegar o próximo ponto primeiro'], press:['Pressionar o portador','o time todo na chave'], hide:['Esconder o portador','três protegem a chave'], spread:['Espalhar','esperar a chave pelo mapa todo']},
   ewc24AskH:(i,m,p)=>'Mapa '+i+' · '+m+' · '+p, ewc24AskSub:(o,a,b)=>'Contra '+o+' · série '+a+':'+b+'. Tática para o mapa:', ewc24SerLine:(a,b,bo)=>'série '+a+':'+b+' · melhor de '+bo, ewc24Auto:'Decida por mim até o fim', ewc24MidH:'Atrás — ajustar?', ewc24Read:(o,t)=>o+' jogam: '+t,
   ewc24H1:'1º tempo', ewc24H2:'2º tempo', ewc24OT:'Prorrogação', ewc24Rot:n=>'Ponto '+n+'/5', ewc24Rnd:n=>'Round '+n, ewc24Scheme:'esquema do modo', ewc24You2:'Você', ewc24Cap:n=>n+' captura a bandeira', ewc24Kill:(a,b)=>a+' ✕ '+b, ewc24KeyTake:n=>n+' pega a chave', ewc24HillTake:(t,n)=>'Ponto '+n+' — '+t});
+Object.assign(I18N.ru, {evPickH:(e,n)=>'Состав на '+e+': добери '+n, evPickSub:'Кого берёшь на этот кап? Выбранные останутся в составе этого формата.', evPickAuto:'Подобрать за меня', evPickGo:(k,n)=>'Играть · '+k+'/'+n, evPickHave:'в составе'});
+Object.assign(I18N.en, {evPickH:(e,n)=>'Roster for '+e+': add '+n, evPickSub:'Who do you bring to this cup? They stay in your roster for this format.', evPickAuto:'Pick for me', evPickGo:(k,n)=>'Play · '+k+'/'+n, evPickHave:'in roster'});
+Object.assign(I18N.fr, {evPickH:(e,n)=>'Roster pour '+e+' : ajoute '+n, evPickSub:'Qui emmènes-tu sur cette cup ? Ils restent dans ton roster de ce format.', evPickAuto:'Choisis pour moi', evPickGo:(k,n)=>'Jouer · '+k+'/'+n, evPickHave:'dans le roster'});
+Object.assign(I18N.it, {evPickH:(e,n)=>'Roster per '+e+': aggiungi '+n, evPickSub:'Chi porti a questa cup? Restano nel tuo roster di questo formato.', evPickAuto:'Scegli tu per me', evPickGo:(k,n)=>'Gioca · '+k+'/'+n, evPickHave:'nel roster'});
+Object.assign(I18N.pt, {evPickH:(e,n)=>'Line-up para '+e+': adicione '+n, evPickSub:'Quem você leva para esta copa? Eles ficam na sua line-up deste formato.', evPickAuto:'Escolha por mim', evPickGo:(k,n)=>'Jogar · '+k+'/'+n, evPickHave:'na line-up'});
 /* Драфт прошлых лет: этапы (29.09). */
 Object.assign(I18N.ru, {dpPastDesc2:'Карточки — по настоящим результатам игроков на этом турнире. Формат, очки, призы и остров — того же сезона.'});
 Object.assign(I18N.en, {dpPastDesc2:'Cards built from the players’ real results at this event. Format, scoring, prize money and island of that season.'});
@@ -149205,6 +149225,7 @@ function careerReloadResultCard(r){
 async function runCareerVictory(){
   const ev=careerVictoryOn(careerToday());
   CC_ZB=!!(ev && ev.zb);
+  await ccEventRosterPick(ev, ccVictoryFormat(ev));
   const fmtSwap=ccEventRosterBegin(ccVictoryFormat(ev));
   try{ return await runCareerVictoryNight(); }
   finally{ CC_ZB=false; ccEventRosterEnd(fmtSwap); }
@@ -149248,6 +149269,61 @@ function ccEventRosterEnd(sw){
   CC_EVENT_SIZE=sw.was;
   CAREER.partners=sw.prev;
   careerSave();
+}
+/* СОСТАВ НА КАП ДРУГОГО ФОРМАТА — ВЫБИРАЕТ ИГРОК.
+
+   Его слово 29.09: «squad victory cash cup играется рандомными игроками, я их не выбирал».
+   Добор шёл молча (ccEventRosterBegin: ближайшие по рейтингу со сцены). Теперь, если в составе
+   этого формата не хватает людей, перед вечером — окно: свои уже стоят, из двенадцати свободных
+   ближайших по рейтингу игрок отмечает недостающих. Выбранные записываются в CAREER.rosters[fmt] —
+   следующий кап того же формата играется ими без вопроса. «Подобрать за меня» и тишина 30 с —
+   прежний добор. Командная карьера, гонка и перемотка не спрашивают. */
+const CC_EV_PICK_MS=30000;
+function ccEventRosterPick(ev, fmt){
+  if(!fmt || fmt===1 || !CAREER || CC_EVENT_SIZE) return Promise.resolve();
+  if((typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRacePairOn==='function' && ccRacePairOn())) return Promise.resolve();
+  if((typeof CC_FF!=='undefined' && CC_FF) || CC_SKIP_ALL) return Promise.resolve();
+  if(fmt===careerSquadSize()) return Promise.resolve();
+  const own=((CAREER.rosters||{})[fmt] || CAREER.partners || []).filter(Boolean).slice(0, fmt-1);
+  const need=fmt-1-own.length;
+  if(need<=0) return Promise.resolve();
+  const T=L(), me=(CAREER.player && CAREER.player.ovr)||80;
+  const taken=new Set([hKey(CAREER.player.handle||CAREER.player.nick||'')]);
+  own.forEach(r=>{ const c=ccMateCardOf(r); if(c) taken.add(hKey(c)); });
+  const pool=ccSceneRoster(ccCareerRegion()).filter(c=>!taken.has(hKey(c)))
+    .sort((a,b)=>Math.abs(ccCardOvr(a)-me)-Math.abs(ccCardOvr(b)-me)).slice(0, 12);
+  if(!pool.length) return Promise.resolve();
+  return new Promise(done=>{
+    const box=document.createElement('div');
+    box.className='cc-evpick-wrap';
+    const pick=new Set();
+    const row=(c, i, mine)=>'<button class="cc-evpick-p'+(mine ? ' mine' : '')+'" '+(mine ? 'disabled' : 'data-i="'+i+'"')+'>'+
+      (c.nat && typeof flagImg==='function' ? flagImg(c.nat, 16) : '')+'<b>'+esc(c.handle)+'</b><i>'+Math.round(ccCardOvr(c))+'</i>'+(mine ? '<em>'+esc(T.evPickHave)+'</em>' : '')+'</button>';
+    const draw=()=>{
+      box.innerHTML='<div class="cc-evpick"><h4>'+esc(T.evPickH(ev && ev.name || '', need))+'</h4><p>'+esc(T.evPickSub)+'</p>'+
+        '<div class="cc-evpick-list">'+own.map(r=>ccMateCardOf(r)).filter(Boolean).map(c=>row(c, -1, true)).join('')+
+          pool.map((c, i)=>row(c, i, false)).join('')+'</div>'+
+        '<div class="cc-evpick-act"><button class="cc-evpick-auto" data-k="auto">'+esc(T.evPickAuto)+'</button>'+
+        '<button class="btn-primary cc-evpick-go" data-k="go"'+(pick.size===need ? '' : ' disabled')+'>'+esc(T.evPickGo(pick.size, need))+'</button></div></div>';
+      box.querySelectorAll('.cc-evpick-p[data-i]').forEach(b=>{ const i=+b.dataset.i; if(pick.has(i)) b.classList.add('on');
+        b.onclick=()=>{ if(pick.has(i)) pick.delete(i); else if(pick.size<need) pick.add(i); draw(); }; });
+      box.querySelector('[data-k="auto"]').onclick=()=>end(false);
+      box.querySelector('[data-k="go"]').onclick=()=>end(true);
+    };
+    let over=false;
+    const end=ok=>{
+      if(over) return; over=true; box.remove();
+      if(ok && pick.size===need){
+        if(!CAREER.rosters) CAREER.rosters={};
+        CAREER.rosters[fmt]=own.concat([...pick].map(i=>({card:{...pool[i]}, patience:60, since:careerToday(), dev:0})));
+        careerSave();
+      }
+      done();
+    };
+    draw();
+    document.body.appendChild(box);
+    setTimeout(()=>end(false), CC_EV_PICK_MS);
+  });
 }
 const EWC24={"groups":{"A":["Team Falcons","XSET","ZETA DIVISION","DRAGONS eSports"],"B":["Exceed","Gaimin Gladiators","Al Ula","PWR"],"C":["Karmine Corp","FNATIC","R8 Esports","KS7"],"D":["HEROIC","BIG","Dignitas","w7m esports"]},"teams":[{"n":"XSET","r":"NAC","g":"A","p":["Muz","Edgey","Ritual","Cold"],"via":["qual","NAC",0]},{"n":"Team Falcons","r":"EU","g":"A","p":["TaySon","Chico","Japko","t3eny"],"via":["dallas",1]},{"n":"ZETA DIVISION","r":"ASIA (JP)","g":"A","p":["Minipiyo","Zagou","Koyota","Yuma"],"via":["qual","ASIA",0]},{"n":"DRAGONS eSports","r":"BR/LATAM","g":"A","p":["Randu","Itrol","Lewa","Romero"],"via":["qual","BR",0]},{"n":"Exceed","r":"NAC","g":"B","p":["Peterbot","Kwanti","Meelks","Okis"],"via":["dallas",2]},{"n":"Gaimin Gladiators","r":"EU","g":"B","p":["Howly","NeFrizi","S1neD","Vanyak3kk"],"via":["qual","EU",0]},{"n":"Al Ula","r":"ME","g":"B","p":["Adapter","FHD","Hero","Mansour"],"via":["qual","ME",0]},{"n":"PWR","r":"OCE","g":"B","p":["alex","looter","worthy","volx"],"via":["qual","OCE",0]},{"n":"Karmine Corp","r":"EU","g":"C","p":["Malibuca","Merstach","SwizzY","Anas"],"via":["dallas",3]},{"n":"FNATIC","r":"NAC","g":"C","p":["Ajerss","CizLucky","nounzy","Xccept"],"via":["dallas",5]},{"n":"R8 Esports","r":"EU","g":"C","p":["Voxe","Bloomy","xsweeze","Vortexers"],"via":["qual","EU",1]},{"n":"KS7","r":"ME","g":"C","p":["Kalgamer","k0ty","Kyry","Salvatore"],"via":["qual","ME",1]},{"n":"HEROIC","r":"EU","g":"D","p":["Th0masHD","Fredoxie","Hellfire","Kiro"],"via":["dallas",4]},{"n":"BIG","r":"EU","g":"D","p":["kiduoo","Trexer","Fray","cheetiin"],"via":["dallas",6]},{"n":"Dignitas","r":"NAC","g":"D","p":["Acorn","Pilky","Tkay","Khanada"],"via":["qual","NAC",1]},{"n":"w7m esports","r":"BR/LATAM","g":"D","p":["Frosty","Phzin","Seeyun","Kurtz"],"via":["qual","BR",1]}],"maps":{"Capture the Flag":["Chalet","Panther"],"Hardpoint":["Panther","Chalet"],"Keeper":["Taverna Zoni"]},"pay":[[1,400000],[2,160000],[4,80000],[8,40000],[12,20000],[16,10000]],"mvp":50000,"dallas":{"teams":[{"n":"Team Falcons","p":["TaySon","Chico","Japko","t3eny"],"s":1},{"n":"Agent Gaming","p":["Peterbot","Kwanti","Meelks","Okis"],"s":2},{"n":"Karmine Corp","p":["Malibuca","Merstach","veno","Anas"],"s":3},{"n":"HEROIC","p":["Th0masHD","Fredoxie","Hellfire","Kiro"],"s":4},{"n":"FNATIC","p":["Ajerss","CizLucky","nounzy","Xccept"],"s":5},{"n":"BIG","p":["kiduoo","Trexer","Fray","Cheatiin"],"s":6},{"n":"Manchester City Esports","p":["trippernn","Cold","Setty","Threats"],"s":7},{"n":"XSET","p":["Edgey","Muz","Ritual","Trashy"],"s":8},{"n":"Twisted Minds","p":["Dela","Pinq","Queasy","zAndy"],"s":9},{"n":"Ninjas In Pyjamas","p":["Refsgaard","Axeforce","Pixie","QB"],"s":10},{"n":"Stride Esports","p":["DeRoller","Crackly","miyu","npen"],"s":11},{"n":"Dignitas","p":["Khanada","Acorn","Reet","Tkay"],"s":12},{"n":"Gaimin Gladiators","p":["Bloomy","Moneymaker","Robban","Fnajen"],"s":13},{"n":"Degen","p":["Degen","Dukez","Pilky","Tavern"],"s":14},{"n":"Capybaras","p":["Lame","Cooper","Glubschi","Kylie"],"s":16},{"n":"unknown","p":["Floki","Leo the crack","Voxe","Werex"],"s":30},{"n":"Xen","p":["FoxMan","Bhronos","OliverOG","Trey"],"s":30},{"n":"Bush Bandits","p":["RottenTwinkies","Clasher","Jack","Sommerset"],"s":30},{"n":"T1","p":["Michael.","SAKI","SinOoh","Zerokun"],"s":30},{"n":"Guild Esports","p":["PabloWingu","Mappi","MariusCOW","Sangild"],"s":30},{"n":"Fractious Esports","p":["Blazer","Khaorz","Rabbit","Gordete"],"s":30},{"n":"Team Heretics","p":["Nakoo","Krizzii","Nebs","Vortexers"],"s":30},{"n":"PWR","p":["worthy","Looter","alex","volx"],"s":30},{"n":"Team Elite","p":["Pfluger","Moo","Tacts","Vexy"],"s":30},{"n":"LateArrival","p":["AdcSosa","Kronic11","Prizma","Wrxyth"],"s":30},{"n":"Underdogs","p":["Kadvn","Macyfishy","Pierson","Tez"],"s":30},{"n":"Mixed up one","p":["LocalT1nCan","Quantize","Sprays","Swinger"],"s":30},{"n":"FN enthusiast","p":["Kirbty","Bacon","nurface","Origin"],"s":30},{"n":"ZETA DIVISION","p":["Minipiyo","Zagou","Koyota","Yuma"],"s":30},{"n":"Outlaws","p":["Ceice","Blake","Laiys","pxmp"],"s":30},{"n":"Aura Maxers","p":["Drecept","Evagas","Jezejearim","slayt"],"s":30},{"n":"Team BECK","p":["Clement","BlastR","egrm","Kyzen"],"s":30},{"n":"SPRS","p":["Pandy","rafiki","Salt","SM1LY"],"s":30},{"n":"A-Tate","p":["Arid","Arrows","Kelz","Sweep"],"s":30},{"n":"Uprise Region","p":["Deeploy","JB3","Mills","sxzl"],"s":30},{"n":"Team Airbourn","p":["Co1azo","Repairs","Tristen","Tundra"],"s":30},{"n":"BBE","p":["Driven","Logan6x","Ponder","Skayter"],"s":30}],"alias":{"Agent Gaming":"Exceed"},"pay":[[1,100000],[2,44000],[3,28000],[4,18000],[6,10000],[8,6000],[16,3500]],"tickets":6},"quals":{"EU":{"teams":[{"n":"Gaimin Gladiators","p":["Howly","NeFrizi","S1neD","Vanyak3kk"]},{"n":"R8 Esports","p":["Voxe","Bloomy","xsweeze","Vortexers"]},{"n":"Twisted Minds","p":["Dela","Queasy","zAndy","Anas"]},{"n":"Ninjas In Pyjamas","p":["Refsgaard","Axeforce","Pixie","QB"]},{"n":"Team ammbrat","p":["ammbrat","Upl","Shura","Dandepuzo"]},{"n":"Guild Esports","p":["PabloWingu","Mappi","1lusha","Wheat"]},{"n":"Team DaanFN","p":["DaaN","Deckzee","Nakoo","Kantri"]},{"n":"Team Heretics","p":["IDrop","Krizzii","Nebs","Flickzy"]},{"n":"Team SlyFloki","p":["Floki","Andilex","BadSniper","Snayzy"]},{"n":"Team Art1st1kk","p":["Art1st","Karmy","paralizator","Toose"]},{"n":"Team G13ras","p":["G13ras","charyy","Kombek","Purchawa"]},{"n":"Team REZHEXX","p":["Rezhexx","boltye","Moneymaker","rudolph"]},{"n":"Team romix566","p":["romix56","rela1zz","keglya","warthy"]},{"n":"Team -gudn","p":["Gudn","Fnajen","Robban","Wox"]},{"n":"Team kxrv1nho","p":["kxrv","97default","Fury Legendary","Kiryache32"]},{"n":"Team Artembat9","p":["Artem","Eltensy","panzer","Rotory"]}],"slots":2},"NAC":{"teams":[{"n":"XSET","p":["Muz","Edgey","Ritual","Cold"]},{"n":"Dignitas","p":["Acorn","Pilky","Tkay","Khanada"]},{"n":"Stride Esports","p":["Crackly","DeRoller","miyu","Avivv"]},{"n":"Capybaras","p":["Cooper","Lame","Kylie","Reet"]},{"n":"Elite Esports","p":["Pfluger","Moo","Tacts","Vexy"]},{"n":"Team Cawsmiic","p":["Cawsmiic","ChaosGamingLive","Origin","Marrok"]},{"n":"Team munoz1x","p":["munoz","Laiys","Sycho","khor"]},{"n":"Team zenohasflag","p":["zeno","aaronxc","Frvsted","wydkaiii"]},{"n":"Team ShalloFN","p":["Shallo","djacoby","July","Omar"]},{"n":"Team flaco08","p":["Flaco","Clasher","Eulogy","Everfy"]},{"n":"Team Inkfv7","p":["Inkfv7","demaroonie","Elevattionn","Himothy"]},{"n":"Team Gh0st77","p":["Gh0st","Br1ghtinly","FL1X","iPanda"]},{"n":"Team metafn","p":["meta","Ducky","Hatch","shuexi"]},{"n":"PMG Esports","p":["HySky","bkzr","christian","Dragonisqt"]},{"n":"SATINgid","p":["Fifty","Chimp","Source","Twunti"]}],"slots":2},"BR":{"teams":[{"n":"DRAGONS eSports","p":["Randu","Itrol","Lewa","Romero"]},{"n":"w7m esports","p":["Frosty","Phzin","Seeyun","Kurtz"]},{"n":"LOS MOSQUITEROS","p":["Tecne","Fazer","K1nG","Thiagin"]},{"n":"LOUD","p":["Diguera","Gabzera","KING","Night"]},{"n":"Team Sanku40","p":["Sanku","Fishy","Talls","Trueno"]},{"n":"Team mojakfn","p":["Mojak","Kitoz","LORD","Puzera"]},{"n":"Faith","p":["Navars","Betto","Fffakkz","Riquelmee"]},{"n":"Team Liquid","p":["Pulga","Persa","EdRoadToGlory","Teuzz"]},{"n":"Vivo Keyd Stars","p":["GxT","Fuzettin","KaykyGames","wolfie"]},{"n":"Team Summit","p":["axadasz","Benado","Magni","Renato"]},{"n":"Team Emacasla","p":["Emacasla","enzo","TRCO-JUAN","Welzx"]},{"n":"Team yNotZeus-","p":["yNotZeus","Diazz","Porto","rtk"]},{"n":"Team mecvivv","p":["mecvivv","Nobreaks","Okabe","scottzito"]},{"n":"Team realmsxd","p":["realms","50PCB","ARTH0RF","mattzx7"]},{"n":"SmokeSolid Gaming","p":["Force","Hazzense","Gonzalobtw","Myst"]},{"n":"Team killuaprime","p":["killua","abestado","iagocts","Noisqueta"]}],"slots":2},"ME":{"teams":[{"n":"Al Ula","p":["Adapter","FHD","Hero","Mansour"]},{"n":"KS7","p":["Kalgamer","k0ty","Kyry","Salvatore"]},{"n":"siuuu","p":["Kaido","Calvo","Spyro","Sythic"]},{"n":"Team KaKaRoT 1","p":["KaKaRoT","Abodk","3BooD","LLJFT"]},{"n":"Team thatguyameen","p":["ameen","Spy","flucky","insanity"]},{"n":"Team g1ntlman","p":["GntL","Bd","5aald","Snowvaks"]},{"n":"Team Anasx1","p":["Anas","Kuro","noah","sohib"]}],"slots":2},"ASIA":{"teams":[{"n":"ZETA DIVISION","p":["Minipiyo","Zagou","Koyota","Yuma"]},{"n":"T1","p":["Michael.","SAKI","SinOoh","Vall"]},{"n":"AJS","p":["DayDus","Stain","Proboko","RqzriM3"]},{"n":"Team GTEdog","p":["Alice","Dog","Qjac","Raru"]},{"n":"ALBA E-sports","p":["3peace","MuuCONIQ","Tawashi","Mame"]},{"n":"Team macyfishyyy","p":["Macyfishy","Degen","Dukez","Job"]},{"n":"Team peterpan fn","p":["Peterpan","FaxFox","GODBAEKHO","Quickss"]},{"n":"ALBA Younth","p":["Hestin","Okan","ryudora","Salmon"]}],"slots":1},"OCE":{"teams":[{"n":"PWR","p":["alex","looter","worthy","volx"]},{"n":"Onyx Ravens","p":["anon","Aspect","Cazi","Fisher"]},{"n":"Team crypty1x","p":["Crypty","Deymo","Resignz","Vxmxn"]},{"n":"2x","p":["NJayyee","dummi","MooMoo","Tuckle Buckle"]},{"n":"Team GazerFn","p":["Gazer","Resignz","Skits","Protoon"]},{"n":"Team artorzx","p":["artor","Vepz","Xcon","Sznny"]},{"n":"Team Mazyok","p":["Mazyok","Arab","dyrusse","Kade"]},{"n":"Team STARUX7","p":["Starux","Speedyyyy","Splyse","SWEATYBOI7"]}],"slots":1}}};
 /* ===== ESPORTS WORLD CUP 2024 — ESL Featuring Fortnite (Эр-Рияд, 8–11 августа 2024) =====
