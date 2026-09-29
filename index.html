@@ -6047,6 +6047,12 @@
   #screen-career-hub .ch-play.ch-live-go{background:#9147ff !important;color:#fff !important;border:0 !important;margin-top:6px;padding-top:11px;padding-bottom:11px;font-size:1em;}
   #screen-career-hub .ch-play.ch-live-go:not(:disabled):hover{background:#a970ff !important;}
   .cc-nb-clear{font-weight:900;font-size:14px;}
+  /* Обложка турнира в строке профиля (ccLogArtHTML) — как у Fortnite Tracker. */
+  .ev-name-in{display:flex;align-items:center;gap:10px;min-width:0;}
+  .ev-name-in > div{min-width:0;}
+  .ev-thumb{flex:none;width:64px;height:36px;border-radius:6px;object-fit:cover;background:rgba(255,255,255,.08);
+    box-shadow:0 0 0 1px rgba(255,255,255,.12);display:block;}
+  @media(max-width:600px){ .ev-thumb{width:48px;height:27px;} }
   /* Плашка «Следующий раунд» (ccRoundChoice) — снизу по центру, поверх вечера. */
   .cc-round-ask{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9500;width:min(560px,calc(100vw - 32px));
     --th:var(--fn-yellow);color:#fff;padding:14px 16px 12px;border-radius:6px;overflow:hidden;
@@ -106390,8 +106396,8 @@ function simulateGame(teams, lobbyOpts){
       const loser = winner===a ? b : a;
       const loserSize = (loser.squad && loser.squad.length) || 1;
       winner._elims += loserSize;
-      winner._feed.push(L().feedElim(loser.name.replace(/<[^>]+>/g,'')));
-      loser._feed.push(L().feedDied(winner.name.replace(/<[^>]+>/g,'')));
+      winner._feed.push(L().feedElim(String(loser.name||'').replace(/<[^>]+>/g,'')));
+      loser._feed.push(L().feedDied(String(winner.name||'').replace(/<[^>]+>/g,'')));
       eliminationOrder.push(loser);
       alive.splice(alive.indexOf(loser),1);
 
@@ -139207,6 +139213,8 @@ function careerSeasonStartsOn(iso){
 // One rung of the ladder, which is what CC_DIV_RATING steps by: past that gap
 // the two of you are not in the same division any more.
 const CC_DUO_BEHIND=7;
+// Сколько дней пара должна быть вместе, чтобы стык сезона мог её развести (см. careerDuoHolds).
+const CC_DUO_MIN_DAYS=56;
 function careerDuoHolds(){
   const pr=careerMateRec();
   if(!pr) return {hold:false, why:'none'};
@@ -139265,7 +139273,9 @@ function careerDuoHolds(){
      than a rung above the person beside you means you are playing a different
      division from them. That is the point at which this scene moves on, and at
      that gap somebody better is already saying yes to you. */
-  if(mine-theirs>CC_DUO_BEHIND) return {hold:false, why:'behind'};
+  // И «перерос» — тоже не раньше, чем пара побыла вместе (свои статы 99 на старте давали разрыв на первом же стыке).
+  const togetherDays=pr.since ? ccDaysBetween(pr.since, careerToday()) : 999;
+  if(mine-theirs>CC_DUO_BEHIND && togetherDays>=CC_DUO_MIN_DAYS) return {hold:false, why:'behind'};
   /* And then it is a decision, not the absence of a complaint.
 
      His year, 17 August: a Division 5 career simulated a whole season and kept
@@ -139294,6 +139304,15 @@ function careerDuoHolds(){
   // варианта нет. См. loyal выше.
   if(loyal) return {hold:true};
   const cr=CAREER.career;
+  /* Бросок стыка — только для пары, у которой был сезон вместе. Карьера 2019-го стартует
+     21 января, стык S8 — 28 февраля, а турниров до апреля нет: напарник уходил через
+     5 недель, не сыграв с тобой ни вечера (его жалоба 29.09: «тимейт бросил меня в 2019
+     очень быстро»). Меньше CC_DUO_MIN_DAYS вместе или ни одного турнира вдвоём — держится. */
+  const since=pr.since || null;
+  const together=since ? ccDaysBetween(since, careerToday()) : 999;
+  const playedTogether=(cr.log||[]).some(r=>r && (!since || r.day>=since) &&
+    (r.mate===mate.handle || (Array.isArray(r.mates) && r.mates.indexOf(mate.handle)>=0)));
+  if(together<CC_DUO_MIN_DAYS || !playedTogether) return {hold:true};
   const rnd=careerRng(ccHashStr('duo|'+cr.season+'|'+(cr.seasonTurn||'')+'|'+mate.handle));
   const podiums=(cr.log||[]).filter(r=>r.season===cr.season && r.place<=3).length;
   // In between: 35% at the edge of unhappy, 85% at the edge of happy, and a
@@ -148324,6 +148343,7 @@ async function runCareerVictoryNight(){
         const cards=mine ? [(a===you?a:b).squad[0], (a===you?b:a).squad[0]] : [a.squad[0], b.squad[0]];
         const t=mine ? careerYouTeam(cards) : careerTeam(cards, false, true);
         if(mine){ t.isYou=true; t.name=L().yourTeamPrefix+teamLabel(cards); drafted=cards; }
+        else if(!t.name) t.name=teamLabel(cards);   // пара по жребию без имени роняла simulateGame (Reshuffle, 29.09)
         t._of=[a, b]; duos.push(t);
       }
       await simulateGamesLive(duos, 1, victoryR1Points, CC_VICTORY_R1_KILL, 'stage', 0, null, null,
@@ -152140,6 +152160,22 @@ function careerArchiveHTML(){
    хранится в строке — его знает календарь, и он же держит его на языке экрана,
    поэтому строка спрашивает свой день у календаря. День вне календаря (сейв
    другого года) получает хотя бы слово за тип турнира. */
+/* Обложка события в строке профиля — как у Fortnite Tracker в списке турниров игрока (его
+   просьба 29.09: «добавь картинки к эвентам, как на фортнайттрекере»). Та же картинка, что
+   в календаре и на карточке дня: событие этого дня того же вида → ccEventArt. */
+function ccLogArt(e){
+  if(!e) return '';
+  const ID={rc:'ReloadChampionshipParis', gclc:'GlobalChampionshipLastChance'};
+  const kind=e.kind||'cup';
+  let ev=null;
+  try{ ev=(careerYearDays().get(e.day)||[]).find(x=>ID[kind] ? x.id===ID[kind] : x.kind===kind); }catch(x){}
+  return (ev && ccEventArt(ev)) || CAREER_EV_ART[kind] || CAREER_EV_ART.cup || '';
+}
+function ccLogArtHTML(e){
+  const a=ccLogArt(e);
+  return a ? '<img class="ev-thumb" src="'+esc(a)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">'
+           : '<span class="ev-thumb"></span>';
+}
 function ccLogName(e){
   if(e.kind && e.kind!=='cup'){
     // Париж и Last Chance делят на календаре один kind 'gc' — различает id.
@@ -152188,8 +152224,8 @@ function careerProfileHTML(){
     const podium=e.place<=3, cut=e.passed;
     const rating=pr.by.get(e);
     return `<tr>
-      <td class="ev-name"><b>${ccLogName(e)}</b>
-        <small>${ccStamp(e)}</small></td>
+      <td class="ev-name"><div class="ev-name-in">${ccLogArtHTML(e)}<div><b>${ccLogName(e)}</b>
+        <small>${ccStamp(e)}</small></div></div></td>
       <td class="ev-num"><span class="ev-place${podium?' top':(cut?' cut':'')}">#${e.place}</span>
         <small>/${e.of}</small></td>
       <td class="ev-num ev-pts">${e.pts}</td>
@@ -152228,7 +152264,7 @@ function careerProfileHTML(){
       </div>
     </div>
     ${ccAwardsShelfHTML()}
-    ${ccMyDropsHTML()}
+    <!-- «Где я сажусь» снят с профиля (его слово 29.09: «where i land убери»). -->
     <div class="ev-tablewrap">
       <table class="ev-table">
         <thead><tr>
