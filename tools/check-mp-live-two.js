@@ -166,7 +166,16 @@ const boot = (who) => `
           screen:[...document.querySelectorAll('.screen')].filter(e=>e.offsetParent!==null).map(e=>e.id).join(','),
           next:nx&&{type:nx.type, title:nx.title, day:nx.day}, can:nx?careerCanPlay(nx):null,
           modal:[...document.querySelectorAll('.cc-evpick-wrap, #ccAskModal[style*="flex"], .landing-picker, .cc-choice')].map(e=>e.className||e.id).join(','),
-          peerHb:MP.peerHb||null, errs:(window.__errs||[]).slice(0,3)};
+          peerHb:MP.peerHb||null, errs:(window.__errs||[]).slice(0,3),
+          // Отпечатки личного, из чего может собираться поле: какой у двоих разный — там и расхождение.
+          dig:(function(){ const h=o=>{ const s=JSON.stringify(o==null?null:o); let x=0; for(let i=0;i<s.length;i++) x=(x*31+s.charCodeAt(i))|0; return (x>>>0).toString(16)+':'+s.length; };
+            const cr=CAREER.career||{}, out={};
+            ['dev','devL','splits','duoStreak','rosters'].forEach(k=>out[k]=h(CAREER[k]));
+            ['trios','majorxs','mxDone','seed','lobbySeed','pr','plog','exMates','duoSplits','table','events'].forEach(k=>out['c.'+k]=h(cr[k]));
+            try{ out.real=(CC_REAL_NAMES[ccCareerRegion()]||{size:-1}).size; }catch(e){}
+            try{ out.pools=CC_POOLS ? CC_POOLS.tag+'/'+(CC_POOLS.duos||[]).length : null; }catch(e){}
+            try{ out.lad=typeof CC_LADDER_SEASON!=='undefined' ? h(CC_LADDER_SEASON) : null; }catch(e){}
+            return out; })()};
       }catch(e){ out.notes.stall={err:String(e)}; }
       out.notes.table=(CAREER.career.log||[]).map(r=>[r.day, r.kind||'cup', r.stage||'', r.place, r.of, r.pts, r.wins, r.elims].join(' '));
       out.notes.split=[...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent);

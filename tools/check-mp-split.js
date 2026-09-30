@@ -61,7 +61,7 @@ const BOOT = `
     // с которого у команды идёт стаж дуо (28 августа, см. careerChemDays).
     check('состав командных полей ровно такой, как в спеке',
           out.notes.team.join(',') ===
-          ['beefs','chemSince','coach','d1','day','dev','diff','division','duoSplits','duoStreak',
+          ['beefs','chemSince','coach','d1','day','dev','devL','diff','division','duoSplits','duoStreak',
            // exMates — брошенные игроком напарники (ccMateParted, 16.09): едут с днём, как duoSplits.
            'events','ewc','exMates','gcSeed','gclc','gifts','globals','lft','log','major','majorSeed',
            'mates','mp','mxDone','rc','region','rel','relSeed','reload','season','seasonOver',

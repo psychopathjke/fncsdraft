@@ -111401,7 +111401,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6a344b1a';
+const CC_BUILD='4cb75b36';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -111477,7 +111477,9 @@ const CC_TEAM_KEYS=['seed','day','year','year0','mxDone','vpick','season','divis
    один зашёл в лобби с другого устройства: у него книги пустые, и до
    сезонного оборота, на котором всё сводится в cr.duoSplits, они у двоих
    разные. Личного в них нет ни строки: это про мир, а не про игрока. */
-const CC_TEAM_TOP=['dev','coach','duoStreak','splits','lft'];
+// devL — книга роста придуманных ботов: после личных соло-вечеров у двоих расходилась, и поле следующего
+// общего вечера собиралось из разных ботов (живой прогон 2019, 30.09).
+const CC_TEAM_TOP=['dev','devL','coach','duoStreak','splits','lft'];
 /* Сколько кресел в командной карьере занимают живые: ты и напарник. Всё, что
    сверх — кресла для взятых. В дуо-сезоне их ноль, в трио одно. */
 const CC_MP_HUMANS=2;
@@ -114583,12 +114585,16 @@ function ccApplyTeamState(t){
          if(k==='log' && Array.isArray(t.log) && Array.isArray(CAREER.career.log)){
            const me=hKey(careerCard()), sig=r=>[r.day, r.kind, r.stage, r.who||''].join('|');
            const have=new Set(t.log.map(sig));
-           const mine=CAREER.career.log.filter(r=>r && r.who===me && r.solo && !have.has(sig(r)));
+           // Только личные вечера соло-Мейджора: соло Victory Cup играется общим вечером и пишет строки
+           // за обоих — там перезапись, как была (слияние развело журналы, живой прогон 2020).
+           const mine=CAREER.career.log.filter(r=>r && r.who===me && r.solo && r.kind==='major' && !have.has(sig(r)));
            CAREER.career.log=t.log.concat(mine);
            return;
          }
          if(k==='mxDone' && t.mxDone && typeof t.mxDone==='object'){
-           CAREER.career.mxDone=Object.assign({}, CAREER.career.mxDone||{}, t.mxDone);
+           const u=Object.assign({}, CAREER.career.mxDone||{}, t.mxDone), o={};
+           Object.keys(u).sort().forEach(x=>{ o[x]=u[x]; });   // порядок ключей один у обоих
+           CAREER.career.mxDone=o;
            return;
          }
          CAREER.career[k]=t[k];
@@ -139492,6 +139498,10 @@ async function careerFastForward(days, agreed){
         break;
       }
       try{
+      /* Соло-Мейджор в команде — личные вечера, и день двигает ведущий (ccMXTeamSettle). Перемотка
+         шагала сама после вечера — у двоих двумя независимыми шагами, и следующий общий вечер
+         расходился с первой игры (живой прогон 2019). Здесь она ждёт день от ведущего. */
+      const mxSolo=ccMXSoloTeamDay();
       if(playable){
         const had=(cr.log||[]).length;
         await careerPlay();
@@ -139500,8 +139510,11 @@ async function careerFastForward(days, agreed){
         // Division 1's Monday banks and settles nothing, and a runner that
         // returns early leaves the clock where it was. Move it, or the loop
         // plays the same evening until the guard stops it.
-        if(careerToday()===day) step(day);
+        if(careerToday()===day){ if(mxSolo) await ccMXFfWait(day); else step(day); }
         document.getElementById('majorStages').innerHTML='';
+      } else if(mxSolo){
+        ccMXTeamSettle();
+        await ccMXFfWait(day);
       } else {
         if(careerFfSpendDay()) CC_FF.trained++;
         step(day);
@@ -147245,6 +147258,20 @@ async function runCareerMajorMX(){
    день шагает, когда отмечены оба. Состояние напарника, приехавшее посреди своего вечера, ждёт
    (CC_MX_PENDING) — применить его посреди игры значит выбросить кэши мира. */
 let CC_MX_SOLO_RUN=false, CC_MX_PENDING=null, CC_MX_SETTLING=false;
+// Сегодня — соло-Мейджор в командной карьере (личные вечера, день от ведущего).
+function ccMXSoloTeamDay(){
+  if(!ccMpTeam()) return false;
+  const ev=careerMajorOn(careerToday());
+  return !!(ev && ev.yx && (ccMXSpec(ev.yx, ev.n)||{}).size===1);
+}
+// Перемотка ждёт, пока день сдвинет ведущий; не дождалась за пять минут — встаёт с причиной.
+async function ccMXFfWait(day){
+  for(let i=0; i<600 && careerToday()===day; i++){
+    if(i%10===0) try{ ccMXTeamSettle(); }catch(e){}
+    await new Promise(r=>setTimeout(r, 500));
+  }
+  if(careerToday()===day && typeof CC_FF!=='undefined' && CC_FF) CC_FF.stop={text:L().ccMpSoloWait};
+}
 function ccMXTeamSettle(){
   if(CC_MX_SETTLING || CC_MX_SOLO_RUN) return false;
   if(!ccMpTeam() || typeof MP==='undefined' || CC_MP_RAND) return false;
@@ -147262,6 +147289,10 @@ function ccMXTeamSettle(){
     if(done[me]!==today && !careerMajorCan(ev)){ done[me]=today; careerSave(); }
     if(done[me]!==today) return false;
     if(peer && done[peer]!==today) return false;
+    /* День двигает ОДИН — тот, чей ник меньше; второй получает день его состоянием. Оба доиграли почти
+       разом — и оба шагнули сами, каждый со своим состоянием; следующий общий вечер разошёлся с первой
+       игры (живой прогон 2019, World Cup Duos неделя 2). */
+    if(peer && me>peer) return false;
     CC_MP_ALONE=true;
     try{ careerAdvanceTo(ccAddDays(today, 1)); }
     finally{ CC_MP_ALONE=false; }
