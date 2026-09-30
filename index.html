@@ -78309,6 +78309,19 @@ function buildDivWeek(w, orgs){
 pushCard({handle:'rxven', nat:null, natSource:'tracker', region:'EU',
           event:'FNCS 2026 Division 1 Practice — Event 3 (Europe)', date:'7 сен 2026', placement:573, note:'',
           tier:'cardmode', cardSet:'d4', org:null, rarity:rarityForRating(67), rating:67});
+/* Team Eldia — по просьбе 30.09 (x.com/Team_Eldia). Оба 17-летние, анонсы клуба 30.09.
+   Chainsaw mag — X @magmafavelado («magma», Бразилия; «сделает всё, чтобы попасть в финал FNCS»).
+   Tracker (профиль Chainsaw mag): Бразилия, FNCS Division 2 Practice #46 (14.09), #214 (31.08),
+   #519 (07.09), PR #704 BR сейчас. Дивизион 2 держит рейтинг ~75 при потолке 81 (ccBand/ccDivCeil),
+   #46 — верх дивизиона: 77.
+   Chapofn1 — X @emilfn12 (имя в профиле «Chapofn1», Дания; «будет пробиваться в Дивизион 1»).
+   Профиля на Tracker под этим ником нет — 75, середина Дивизиона 2: ОЦЕНКА до его игрового ника. */
+pushCard({handle:'Chainsaw mag', nat:'Бразилия', natSource:'x', region:'BR',
+          event:'FNCS 2026 Division 2 Practice — Event 4 (Brazil)', date:'14 сен 2026', placement:46, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Team Eldia', rarity:rarityForRating(77), rating:77});
+pushCard({handle:'Chapofn1', nat:'Дания', natSource:'x', region:'EU',
+          event:'FNCS 2026 Division 2 Practice — Event 4 (Europe)', date:'14 сен 2026', placement:null, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Team Eldia', rarity:rarityForRating(75), rating:75});
 
 /* Один человек — одно написание.
 
@@ -94391,6 +94404,8 @@ const PLAYER_PHOTO={
   "Joakofishy@BR": "Joakofishy.png",   // Twitch
   "Toadslayer@OCE": "Toadslayer.png",   // Twitch
   // ==== /Portraits by strongest card ====
+  // Team Eldia (30.09): аватары из X — @magmafavelado и @emilfn12.
+  "Chainsaw mag@BR":"Chainsaw_mag.jpg", "Chapofn1@EU":"Chapofn1.jpg"
 };
 
 // Strip a leading team tag ("S8UL KAAN BABA" -> "KAAN BABA") so the monogram
@@ -94452,7 +94467,8 @@ const CLUB_LOGO={
   'FOKUS':'FOKUS_CLAN.png',
   'Aspect Esports':'Aspect_Esport.png',
   'Knights of Shadows':'KoS_Esports.png',
-  'Falcons Esport':'Team_Falcons.png'
+  'Falcons Esport':'Team_Falcons.png',
+  'Team Eldia':'Team_Eldia.jpg'   // аватар x.com/Team_Eldia (30.09)
 };
 function clubLogoFile(org){
   if(CLUB_LOGO[org]) return CLUB_LOGO[org];
@@ -111429,7 +111445,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5ce2c6e4';
+const CC_BUILD='b0f05fbb';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -126820,7 +126836,7 @@ const CAREER_CRESTS=new Set([
   'Lynox_Esport.png','Lyost_Esport.png','MGA_Esport.png','MOUZ.png','Matrix.png','NEXUS.png',
   'NOM_eSports.png','NTO_Corp.png','Natare_Six.png','Natus_Vincere.png',
   'Northern_Star_Gaming.png','OCE5N.png','ORA_Esport.png','PARIVISION.png','PWR.png',
-  'Drayko_Esport.png','Poyo_Esports.png','QT_DIG.png','R8_Esports.png','ROC_Esports.png','SORIN.png','Shimo.png',
+  'Drayko_Esport.png','Poyo_Esports.png','QT_DIG.png','R8_Esports.png','ROC_Esports.png','SORIN.png','Shimo.png','Team_Eldia.jpg',
   'ShindeN.png','Solary.png','T1.png','TRKF_E-Sport.png','TSM.png','TYT_Esports.png',
   'Team_Falcons.png','Team_HavoK.png','Team_Liquid.png','Team_STM.png','Team_Spirit.png',
   'Team_Vitality.png','Twisted_Minds.png','Virtus.pro.png','Void_Esports.png','Vulcan_Esport.png',
@@ -126943,6 +126959,10 @@ const CC_ORG_NEW=[
      нет — уровень ставится полом списка, ниже Shimo: это самый молодой клуб
      здесь, и любая цифра выше была бы выдумкой в его пользу. */
   {name:'Drayko Esport',  tier:78, n:0, newcomer:true},   // герб logos/Drayko_Esport.png с аватара
+  /* Team Eldia — по просьбе 30.09 (x.com/Team_Eldia, «Team amateur fortnite», открыт 26.09.2026).
+     Любительский клуб: ни esportsearnings, ни Liquipedia — уровень пола списка, как у Drayko.
+     Состав из их же анонсов: Chainsaw mag (@magmafavelado, Бразилия) и Chapofn1 (@emilfn12, Дания). */
+  {name:'Team Eldia',     tier:78, n:0, newcomer:true},   // герб logos/Team_Eldia.jpg с аватара
   /* Его четыре, 30 августа («на рабочем столе орги, добавил новые»): гербы
      легли в logos/. Уровни — по тому же ряду призовых esportsearnings, что и
      выше: TSM (~$15M за историю) рядом с Vitality/Cloud9, Gambit (~$18M, но
