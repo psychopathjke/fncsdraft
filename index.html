@@ -116758,11 +116758,31 @@ function zonePointsOfSet(set){
 
    key — ключ хранения (остров), grid — сетка, по которой рисуется карта:
    у круга своя опубликованная дроп-карта, и показывать надо какую-то одну. */
+// Какие ключи Reload-меток нужны году: по вечерам его календаря (careerNightSpotKey). Кэш на год.
+let _CC_RELOAD_SPOT_KEYS={};
+function ccYearReloadSpotKeys(){
+  const y=ccCalYear();
+  if(_CC_RELOAD_SPOT_KEYS[y]) return _CC_RELOAD_SPOT_KEYS[y];
+  const out={};
+  if(y>=2026){ out.r12=true; out.r34=true; }
+  try{
+    careerYearDays().forEach((list, d)=>list.forEach(e=>{
+      const k=careerNightSpotKey({type:e.kind, day:d, id:e.id, title:e.title});
+      if(k==='r12' || k==='r34') out[k]=true;
+    }));
+  }catch(e){ return out; }
+  return (_CC_RELOAD_SPOT_KEYS[y]=out);
+}
 function careerSpotSets(){
   const out=[{key:careerBrSet(), grid:careerBrSet(), label:L().ccSpotSeasonTab}];
-  // Карты Reload под метку — только в 2026-м: в 2024/2025 Reload-вечеров в карьере нет (отзыв).
-  if(ZONE_SETS.r1 && ccCalYear()>=2026) out.push({key:'r12', grid:'r1', label:L().ccSpotReloadA});
-  if(ZONE_SETS.r3 && ccCalYear()>=2026) out.push({key:'r34', grid:'r3', label:L().ccSpotReloadB});
+  /* Карты Reload под метку — в тот год, где у карьеры есть вечера на них. Стояло «только
+     2026-й»: тогда в 2024/2025 Reload-вечеров не было, а с архивом капов они пришли
+     (S31 Reload Cash Cup, S37 Reload Quick Cup, Cracked Cup) — и окно «поставь метку»
+     открывало карту, которой нет в списке. Отзыв 30.09: «доходишь до турниров в релоуде —
+     не можешь поставить метку на карте». */
+  const rk=ccYearReloadSpotKeys();
+  if(ZONE_SETS.r1 && rk.r12) out.push({key:'r12', grid:'r1', label:L().ccSpotReloadA});
+  if(ZONE_SETS.r3 && rk.r34) out.push({key:'r34', grid:'r3', label:L().ccSpotReloadB});
   /* Четвёртая карта — СОЛО. Отзыв: «карты почему-то 3, до сих
      пор нет 4 для соло». Solo Series не командный турнир: точка на нём у
      каждого своя, хранится лично (cr.soloSpots, не ключ команды) и в три
