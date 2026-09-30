@@ -111429,7 +111429,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ab4c7c13';
+const CC_BUILD='5ce2c6e4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -116707,8 +116707,8 @@ function ccRostersStripHTML(){
     let key=null;
     try{
       const v=(day && typeof careerVictoryOn==='function') ? careerVictoryOn(day) : null;
-      key=(v && f!==cur && ((v.mode==='trio'?3:v.mode==='squad'?4:v.mode==='duo'?2:0)===f))
-        ? careerNightSpotKey({type:'victory', day:day}) : careerSpotKey(careerBrSet());
+      key=(f!==cur) ? ccFmtSpotKey(f, careerBrSet()) : careerSpotKey(careerBrSet());
+      if(v && f!==cur && ((v.mode==='trio'?3:v.mode==='squad'?4:v.mode==='duo'?2:0)===f)) key=careerNightSpotKey({type:'victory', day:day});
     }catch(e){ key=null; }
     if(!key || key==='solo') return '';
     const sp=careerSpotList(key)[0];
@@ -116953,6 +116953,9 @@ function ccYearReloadSpotKeys(){
   }catch(e){ return out; }
   return (_CC_RELOAD_SPOT_KEYS[y]=out);
 }
+// Ключ спота формата на острове: 'f3@m1'. См. careerSpotSets.
+function ccFmtSpotKey(f, isl){ return 'f'+f+'@'+(isl||careerBrSet()); }
+function ccIsFmtSpotKey(k){ return /^f[234]@/.test(String(k||'')); }
 function careerSpotSets(){
   const out=[{key:careerBrSet(), grid:careerBrSet(), label:L().ccSpotSeasonTab}];
   /* Карты Reload под метку — в тот год, где у карьеры есть вечера на них. Стояло «только
@@ -116976,6 +116979,13 @@ function careerSpotSets(){
      один человек, а вот ТУРНИР другой, и точка на нём своя. */
   // Остров — сезонный в дуо-год, ближайшего соло-вечера в трио-год: см. careerSoloSet.
   out.push({key:'solo', grid:careerSoloSet(), label:L().ccSpotSoloTab});
+  /* Споты форматов (его слово 30.09: «споты пишет, в career сквада и трио нет почему-то»): трио- и
+     сквад-капы в дуо-год (и дуо-капы в трио-год) садились на сезонный дом. Свой ключ на формат и
+     остров — 'f3@m1': командный склад (cr.spots, общий в игре вдвоём), слотов не занимает. */
+  try{
+    const isl=careerBrSet(), cur=careerSquadSize(), NAME={2:L().lfRosterDuo, 3:L().lfRosterTrio, 4:L().lfRosterSquad};
+    [2,3,4].forEach(f=>{ if(f!==cur && typeof ccFormatNext==='function' && ccFormatNext(f)) out.push({key:ccFmtSpotKey(f, isl), grid:isl, label:NAME[f]}); });
+  }catch(e){}
   /* Метка сборной на Кубок наций — своя (cr.natSpots), на сезонном острове, в командные слоты не
      считается; карта рисуется под сквады (ccSquadKeep). Появляется, пока висит карточка сборной.
      Отзыв: «где команда сборной, должен быть выбор локации». */
@@ -117011,6 +117021,7 @@ function careerSpotStore(key){
 }
 // Сетка, по которой рисуется остров под этим ключом хранения.
 function careerSpotGrid(key){
+  if(ccIsFmtSpotKey(key)) return String(key).split('@')[1];
   const s=careerSpotSets().find(x=>x.key===careerSpotKey(key));
   return (s && s.grid) || careerSpotKey(key);
 }
@@ -119377,10 +119388,10 @@ function careerSpotKey(set){
 function careerSpotUsed(){
   return careerSpotSets()
     .map(t=>careerSpotKey(t.key))
-    .filter(k=>k!=='solo' && k!=='nations' && careerSpotList(k).length).length;
+    .filter(k=>k!=='solo' && k!=='nations' && !ccIsFmtSpotKey(k) && careerSpotList(k).length).length;
 }
 function careerSpotRoom(set){
-  if(careerSpotKey(set)==='solo' || careerSpotKey(set)==='nations') return true;      // личная, слоты команды не занимает
+  if(careerSpotKey(set)==='solo' || careerSpotKey(set)==='nations' || ccIsFmtSpotKey(careerSpotKey(set))) return true;      // слоты команды не занимает
   // На этой карте дом уже есть — менять его можно всегда, это не новый спот.
   if(careerSpotList(set).length) return true;
   return careerSpotUsed()<CC_SPOT_SLOTS;
@@ -139318,7 +139329,14 @@ function careerNightSolo(next){
 function careerNightSpotKey(next){
   const set=careerNightSet(next);
   if(next && next.type==='nations') return 'nations';   // вечер сборной — её метка
-  return careerNightSolo(next) ? 'solo' : careerSpotKey(set);
+  if(careerNightSolo(next)) return 'solo';
+  // Кап другого формата на сезонном острове — спот этого формата (ccFmtSpotKey).
+  if(next && next.type==='victory' && set===careerBrSet()){
+    const v=careerVictoryOn(next.day||careerToday());
+    const f=v ? ({duo:2, trio:3, squad:4})[v.mode] : 0;
+    if(f && f!==careerSquadSize()) return ccFmtSpotKey(f, set);
+  }
+  return careerSpotKey(set);
 }
 /* Куда садимся сегодня — картинкой, на карточке матча.
 
