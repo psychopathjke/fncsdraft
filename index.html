@@ -3665,6 +3665,7 @@
   /* Составы по форматам в шапке профиля (ccRostersStripHTML). */
   .ch-ros{flex:1 1 auto;display:flex;gap:10px;min-width:0;margin:0 12px;flex-wrap:wrap;}
   .ch-tile-ros .ch-ros{margin:8px 0 0;}
+  .ch-ro-club{display:block;margin-top:3px;font-size:11px;padding:2px 8px;}
   .ch-me-edit-card{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0;}
   .ch-me-edit-card button{background:transparent;color:var(--ink-dim);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font:inherit;font-size:10px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;white-space:nowrap;}
   .ch-me-edit-card button:hover{color:#fff;border-color:rgba(255,255,255,.5);}
@@ -9170,7 +9171,7 @@ dmPromoted4:(d,o)=>'Д'+d+'. Я '+o+', свободен на сезон',
 dmYes:'Го. Я свободен.',
 dmNo:(o,d)=>'Спасибо, но я '+o+' и сижу в Дивизионе '+(d>1?d-1:1)+'. Пока не вариант.',
 dmNoDuo:m=>'Спасибо, но у меня дуо с '+m+' — мы продолжаем.',
-dmRealTeam:e=>'Новый сезон, '+e+' — играем тем составом, что был в жизни. Я в деле.',
+dmFmtAsk:(f,d)=>'Привет! Собираю состав на '+f+' — первый кап '+d+'. Сыграем вместе?', dmFmtPair:(m,f,d)=>'Мы с '+m+' ищем третьего на '+f+' — первый кап '+d+'. Залетай к нам?', roClubAsk:'Позвать в клуб', roClubNo:(o,d)=>o+' не берёт '+d+' — не их уровень', dmRealTeam:e=>'Новый сезон, '+e+' — играем тем составом, что был в жизни. Я в деле.',
 dmNoPartner:o=>'Слышал, ты без напарника. Я '+o+', тоже свободен. Скинемся?',
 dmSeatSour:(o,m)=>'С '+m+' сезон не идёт, ищу куда уйти. Я '+o+' — если у тебя место свободно, я в деле',
 dmLfd:o=>'Видел твой пост. Я '+o+', место есть — пробуем?',
@@ -11161,7 +11162,7 @@ dmPromoted4:(d,o)=>'D'+d+'. I am '+o+', free for the season',
 dmYes:'Yeah, I am free. Let us do it.',
 dmNo:(o,d)=>'Thanks, but I am '+o+' and sitting in Division '+(d>1?d-1:1)+'. Not right now.',
 dmNoDuo:m=>'Thanks, but I have a duo with '+m+' — we are running it back.',
-dmRealTeam:e=>'New season, '+e+' — let’s play it with our real roster. I’m in.',
+dmFmtAsk:(f,d)=>'Hey! Building a roster for '+f+' — first cup '+d+'. Play together?', dmFmtPair:(m,f,d)=>m+' and I need a third for '+f+' — first cup '+d+'. Want in?', roClubAsk:'Bring to the club', roClubNo:(o,d)=>o+' pass on '+d+' — not their level', dmRealTeam:e=>'New season, '+e+' — let’s play it with our real roster. I’m in.',
 dmNoPartner:o=>'Heard you have no duo. I am '+o+' and free. Want to run it?',
 dmSeatSour:(o,m)=>'The season with '+m+' is not working and I am looking to move. I am '+o+' — if your seat is open, I am in',
 dmLfd:o=>'Saw your post. I am '+o+' and I have room — want to try it?',
@@ -13215,7 +13216,7 @@ dmPromoted3:(d,o)=>'Division '+d+', il était temps. Je suis '+o+' et il me faut
 dmPromoted4:(d,o)=>'D'+d+'. Je suis '+o+', libre pour la saison',
 dmNo:(o,d)=>'Merci, mais je suis '+o+' et je suis en Division '+(d>1?d-1:1)+'. Pas maintenant.',
 dmNoDuo:m=>'Merci, mais j’ai un duo avec '+m+' — on repart ensemble.',
-dmRealTeam:e=>'Nouvelle saison, '+e+' — on la joue avec notre vraie équipe. Je suis partant.',
+dmFmtAsk:(f,d)=>'Salut ! Je monte une équipe pour '+f+' — première cup '+d+'. On joue ensemble ?', dmFmtPair:(m,f,d)=>'Avec '+m+' on cherche un troisième pour '+f+' — première cup '+d+'. Tu viens ?', roClubAsk:'Faire venir au club', roClubNo:(o,d)=>o+' ne prend pas '+d+' — pas leur niveau', dmRealTeam:e=>'Nouvelle saison, '+e+' — on la joue avec notre vraie équipe. Je suis partant.',
 dmNoPartner:o=>'J’ai entendu que tu n’avais pas de duo. Je suis '+o+' et libre. On tente ?',
 dmSeatSour:(o,m)=>'La saison avec '+m+' ne marche pas et je cherche à bouger. Je suis '+o+' — si ta place est libre, je suis là',
 dmLfd:o=>'J’ai vu ton post. Je suis '+o+' et j’ai de la place — on essaie ?',
@@ -14896,7 +14897,7 @@ dmPromoted3:(d,o)=>'Divisione '+d+', era ora. Sono '+o+' e mi serve qualcuno a q
 dmPromoted4:(d,o)=>'D'+d+'. Sono '+o+', libero per la stagione',
 dmNo:(o,d)=>'Grazie, ma sono '+o+' e sto in Divisione '+(d>1?d-1:1)+'. Non adesso.',
 dmNoDuo:m=>'Grazie, ma ho un duo con '+m+' — continuiamo insieme.',
-dmRealTeam:e=>'Nuova stagione, '+e+' — giochiamola con la nostra vera squadra. Io ci sono.',
+dmFmtAsk:(f,d)=>'Ciao! Formo una squadra per '+f+' — prima cup '+d+'. Giochiamo insieme?', dmFmtPair:(m,f,d)=>'Io e '+m+' cerchiamo un terzo per '+f+' — prima cup '+d+'. Ci stai?', roClubAsk:'Porta nel club', roClubNo:(o,d)=>o+' non prende '+d+' — non è il loro livello', dmRealTeam:e=>'Nuova stagione, '+e+' — giochiamola con la nostra vera squadra. Io ci sono.',
 dmNoPartner:o=>'Ho sentito che sei senza duo. Sono '+o+' e libero. Proviamo?',
 dmSeatSour:(o,m)=>'La stagione con '+m+' non funziona e sto cercando di muovermi. Sono '+o+' — se il tuo posto \u00e8 libero, ci sto',
 dmLfd:o=>'Ho visto il tuo post. Sono '+o+' e ho spazio — proviamo?',
@@ -17416,7 +17417,7 @@ dmPromoted3:(d,o)=>'Divis\u00e3o '+d+', at\u00e9 que enfim. Eu sou '+o+' e preci
 dmPromoted4:(d,o)=>'D'+d+'. Eu sou '+o+', livre para a temporada',
 dmNo:(o,d)=>'Valeu, mas eu sou '+o+' e estou na Divis\u00e3o '+(d>1?d-1:1)+'. Agora n\u00e3o.',
 dmNoDuo:m=>'Valeu, mas tenho dupla com '+m+' — vamos seguir juntos.',
-dmRealTeam:e=>'Nova temporada, '+e+' — bora jogar com o nosso time de verdade. Tô dentro.',
+dmFmtAsk:(f,d)=>'Salve! Montando time para '+f+' — primeira cup '+d+'. Bora jogar junto?', dmFmtPair:(m,f,d)=>'Eu e '+m+' procuramos um terceiro para '+f+' — primeira cup '+d+'. Topa?', roClubAsk:'Levar ao clube', roClubNo:(o,d)=>o+' não contrata '+d+' — não é o nível deles', dmRealTeam:e=>'Nova temporada, '+e+' — bora jogar com o nosso time de verdade. Tô dentro.',
 dmNoPartner:o=>'Soube que voc\u00ea est\u00e1 sem dupla. Eu sou '+o+' e estou livre. Bora?',
 dmSeatSour:(o,m)=>'A temporada com '+m+' n\u00e3o est\u00e1 funcionando e estou querendo mudar. Eu sou '+o+' — se a sua vaga estiver aberta, eu topo',
 dmLfd:o=>'Vi o seu post. Eu sou '+o+' e tenho espa\u00e7o — quer testar?',
@@ -111459,7 +111460,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='1da5932e';
+const CC_BUILD='a489a8d8';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -116721,14 +116722,17 @@ function ccRostersStripHTML(){
   };
   /* Тиммейт — не одним ником (его слово 30.09: «мало информации о тимейте»): фото, флаг, ник,
      рейтинг, роль и клуб. */
-  const mateHTML=c=>{
+  const orgName=(CAREER.org && CAREER.org.name && !(typeof careerClub==='function' && careerClub())) ? CAREER.org.name : null;
+  const mateHTML=(c, f)=>{
     const a=(typeof attrsFor==='function' ? attrsFor(c) : null)||{};
+    const bring=(orgName && f && c.org!==orgName && !(typeof ccMpOn==='function' && ccMpOn()))
+      ? '<button class="ch-ro-club" onclick="event.stopPropagation();ccOrgBringMate(\''+esc(String(c.handle).replace(/'/g, ''))+'\', '+f+')">'+esc(T.roClubAsk)+'</button>' : '';
     const ovr=Math.round(ccCardOvr(c)||a.ovr||c.rating||0);
     const u=photoURL(c);
     const meta=[ovr||'', T[a.roleKey]||'', c.org||''].filter(Boolean).map(x=>esc(String(x))).join(' · ');
     return '<span class="ch-ro-m"><span class="ch-ro-av">'+esc(String(c.handle||'?').slice(0,2).toUpperCase())+
       (u ? '<img src="'+u+'" alt="" loading="lazy" onerror="this.remove()">' : '')+'</span>'+
-      '<span class="ch-ro-t"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(c.handle)+'</b><small>'+meta+'</small></span></span>';
+      '<span class="ch-ro-t"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(c.handle)+'</b><small>'+meta+'</small>'+bring+'</span></span>';
   };
   /* И спот (его слово 30.09: «spot может ещё там»): метка высадки на острове, где этот формат
      играет первым — сезонный остров или остров вечера (Reload и т.п., careerNightSpotKey). Клик —
@@ -116752,7 +116756,7 @@ function ccRostersStripHTML(){
     const mates=cardsOf(f), need=f-1, full=mates.length>=need;
     const days=next ? ccDaysBetween(today, next) : 0;
     const soon=f!==cur && next && days<=CC_ROSTER_WEEK;
-    const who=mates.length ? '<span class="ch-ro-ms">'+mates.map(mateHTML).join('')+'</span>' : '<b><i>'+esc(T.lfRosterEmpty)+'</i></b>';
+    const who=mates.length ? '<span class="ch-ro-ms">'+mates.map(c=>mateHTML(c, f)).join('')+'</span>' : '<b><i>'+esc(T.lfRosterEmpty)+'</i></b>';
     const when=f===cur ? esc(T.lfRosterNow) : esc(T.roFirst(ccDayLabel(next)));
     const act=(f===cur && !full) ? '<button onclick="ccDuoFindOpen(null)">'+esc(T.roFind)+'</button>'
             : (soon && !full) ? '<button onclick="ccDuoFindOpen(null, '+f+')">'+esc(T.roGather)+'</button>'
@@ -118940,6 +118944,7 @@ function careerAdvanceBody(iso){
   careerDmDays(cr.day, to);
   // And the seat, if it is empty, hears from somebody who is free.
   careerSeatDms(cr.day, to);
+  careerFmtSeatDms(cr.day, to);
   // And a brand that has decided the audience is now worth a slot.
   careerSponsorDm();
   // And somebody who would like to do the talking with the clubs.
@@ -125596,7 +125601,10 @@ function ccMateCardOf(pr){
     if(c && pr.role) ccRecastRole(c, pr.role);
     return c;
   };
-  if(pr.card) return cast(ccMateLift(pr.card, dev));
+  /* Клуб записи (подписан вместе с тобой — careerOrgSignMates, или позван в клуб — ccOrgBringMate) главнее
+     клуба карточки года: иначе напарник, подписанный с тобой, так и висел в старом клубе. */
+  const withOrg=c=>{ if(c && pr.org) c.org=pr.org; return c; };
+  if(pr.card) return withOrg(cast(ccMateLift(pr.card, dev)));
   // The newest 2026 card first — a handle used to resolve to whichever card of
   // that person PLAYERS happened to list first, any era — then the whole
   // roster for a legacy save whose partner has no card this year.
@@ -125614,7 +125622,7 @@ function ccMateCardOf(pr){
   const own=(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr);
   if(pr.base==null && own>0) pr.base=Math.round(own);
   if(pr.base>0 && pr.base!==own){ c._ovr=pr.base; c._targetOvr=pr.base; c.rating=pr.base; delete c._attrs; delete c._floored; }
-  return cast(ccMateLift(c, dev));
+  return withOrg(cast(ccMateLift(c, dev)));
 }
 /* ---- Сцена растёт от своих результатов -------------------------------------
  *
@@ -134099,6 +134107,66 @@ function careerSeatDm(tag){
 }
 // Every day a career moves through brings one, up to the three that stand at
 // once — a week skipped is not a week nobody wrote in.
+/* ИЩУТ СОСТАВ НА КАП ДРУГОГО ФОРМАТА (идея игрока 30.09: «игроки могли бы сами связываться, когда ищут
+   тиммейта — дуо ищет третьего на трио»). За неделю до ближайшего трио/сквад/дуо-капа, пока состав этого
+   формата не полон, раз в день пишет кто-то своего уровня: свободный — «сыграем?», а стоящая пара — «мы
+   вдвоём, нужен третий» (согласился — садятся оба, t.fmtPair). Садятся в состав формата (t.fmt,
+   CAREER.rosters), состав года не трогается. В игре вдвоём — нет: состав формата общий, решает пара. */
+const CC_FMT_DMS=2;
+function careerFmtSeatDms(fromISO, toISO){
+  if(!CAREER || !CAREER.career || !CAREER.player) return;
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  if(!ccRealNamesHere()) return;
+  const cur=careerSquadSize();
+  const NAME={2:L().lfRosterDuo, 3:L().lfRosterTrio, 4:L().lfRosterSquad};
+  for(let d=ccAddDays(fromISO,1); d<=toISO; d=ccAddDays(d,1)){
+    [2,3,4].forEach(f=>{
+      if(f===cur) return;
+      const next=ccFormatNext(f);
+      if(!next || ccDaysBetween(d, next)>CC_ROSTER_WEEK || ccDaysBetween(d, next)<0) return;
+      const have=(((CAREER.rosters||{})[f])||[]).length;
+      if(have>=f-1) return;
+      if(careerDms().filter(t=>t.fmt===f && t.state==='offer').length>=CC_FMT_DMS) return;
+      const rnd=careerRng(ccHashStr('fmtseat|'+ccWorldSeed()+'|'+d+'|'+f));
+      const me=CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr;
+      const reg0=CC_DUO_REG; CC_DUO_REG='';   // свой регион, а не тот, что оставлен в поиске
+      let pool0=[]; try{ pool0=careerDuoSearchPool(true); } finally { CC_DUO_REG=reg0; }
+      // Уже написавший вторым в паре (t.fmtPair) и уже сидящий в составе формата — не пишут ещё раз.
+      const busy=new Set(careerDms().map(t=>t.fmtPair).filter(Boolean).map(hKey)
+        .concat((((CAREER.rosters||{})[f])||[]).map(r=>{ const c=ccMateCardOf(r); return c ? hKey(c.handle) : ''; })));
+      const pool=pool0.filter(w=>w && w.handle && w.ovr>=me-6 && w.ovr<=me+2 &&
+        !busy.has(hKey(w.handle)) && !ccBlocked(w.handle) && !careerDmFind(w.handle));
+      if(!pool.length) return;
+      const pick=pool[Math.floor(rnd()*pool.length)];
+      const mate=(f-1-have>=2 && f>2) ? ccPairMateOf(pick.handle) : null;
+      const mateOk=mate && mate.handle && !careerDmFind(mate.handle) && !ccMyPeople().has(hKey(mate.handle));
+      const t=careerDmThread(pick);
+      t.fmt=f; t.seat=null;
+      const word=String(NAME[f]||'').toLowerCase(), when=ccDayLabel(next);
+      if(mateOk){ t.fmtPair=mate.handle; careerDmPush(t, 'them', 'dmFmtPair', ['@'+ccHandle(mate.handle), word, when]); }
+      else careerDmPush(t, 'them', 'dmFmtAsk', [word, when]);
+      t.state='offer';
+    });
+  }
+}
+/* ПОЗВАТЬ НАПАРНИКА В СВОЙ КЛУБ (идея игрока 30.09: «чтобы дуо/трио были в одной организации, особенно на
+   EWC»). Клуб, подписавший дуо, подписывает и напарника (careerOrgSignMates), но напарник, пришедший позже,
+   оставался в чужом. Теперь его можно предложить клубу: берёт, если он не ниже уровня клуба (tier − 6),
+   иначе отказ новостью. Свой клуб (careerClub) берёт напарника своим рынком (careerClubMateFree). */
+function ccOrgBringMate(handle, fmt){
+  const org=CAREER.org; if(!org || !org.name) return;
+  const list=(fmt && fmt!==careerSquadSize()) ? (((CAREER.rosters||{})[fmt])||[]) : careerMateRecords();
+  const r=list.find(x=>{ const c=ccMateCardOf(x); return c && hKey(c.handle)===hKey(handle); });
+  if(!r) return;
+  const c=ccMateCardOf(r);
+  const ovr=Math.round(ccCardOvr(c)||(attrsFor(c)||{}).ovr||c.rating||0);
+  if(ovr>=(org.tier||80)-6){
+    r.org=org.name;
+    careerNews('good', 'ccNewsSignedDuo', [org.name, ccHandle(c.handle)], {by:ccOrgBy(org.name)});
+  } else careerNews('bad', 'roClubNo', [org.name, ccHandle(c.handle)]);
+  careerSave();
+  careerRenderHub();
+}
 function careerSeatDms(fromISO, toISO){
   for(let d=ccAddDays(fromISO,1); d<=toISO; d=ccAddDays(d,1))
     if(!careerSeatDm(d)) return;
@@ -134626,8 +134694,15 @@ function careerDmAccept(id){
     const rec=w.roster ? {handle:w.handle, cardRegion:w.cardRegion||'EU', patience:CAREER_PATIENCE_START, since:careerToday()}
                        : {card:w.card, patience:CAREER_PATIENCE_START, since:careerToday()};
     if(!list.some(r=>hKey((ccMateCardOf(r)||{}).handle||'')===hKey(w.handle))) list.push(rec);
+    // Писала пара («мы вдвоём, нужен третий») — садится и второй (careerFmtSeatDms).
+    if(t.fmtPair && !list.some(r=>hKey((ccMateCardOf(r)||{}).handle||'')===hKey(t.fmtPair))){
+      const pc=careerRosterNowEU().find(x=>hKey(x)===hKey(t.fmtPair));
+      if(pc) list.push({handle:pc.handle, cardRegion:pc.region||w.cardRegion||'EU', patience:CAREER_PATIENCE_START, since:careerToday()});
+    }
     CAREER.rosters[f]=list.slice(-(f-1));
     t.state='partner'; t.unread=false;
+    // Состав формата собран — остальные предложения на него уже не в силе.
+    if(CAREER.rosters[f].length>=f-1) careerDms().forEach(x=>{ if(x!==t && x.fmt===f && x.state==='offer') x.state='open'; });
     const tags=CAREER.rosters[f].map(r=>ccMateCardOf(r)).filter(Boolean).map(c=>'@'+ccHandle(c.handle)).join(' ');
     careerNews('good', 'ccNewsSquadNew', [f===4 ? 'SQUAD' : 'TRIO', tags]);
     careerSave();
@@ -150770,8 +150845,12 @@ function ewc24MyTeam(busy){
   const mine=[me].concat(r4.length ? r4 : (careerMates()||[]).filter(Boolean)).slice(0, 4);
   mine.forEach(c=>taken.add(String(c.handle||'').toLowerCase()));
   const myOvr=(CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr)||80;
-  const pool=PLAYERS.filter(p=>p && /^f\d$/.test(String(p.cardSet||'')) && p.region===reg && !taken.has(String(p.handle||'').toLowerCase()) && (p.rating||0)<=myOvr+2)
-                    .sort((a,b)=>(b.rating||0)-(a.rating||0));
+  /* Сперва люди своего клуба (идея игрока 30.09: «чтобы состав был одной организацией, особенно на EWC» —
+     EWC играется клубами): одноклубники года идут первыми и без потолка «не выше тебя +2», потом остальные. */
+  const myOrg=(CAREER.org && CAREER.org.name) || null;
+  const inOrg=p=>!!myOrg && p.org===myOrg;
+  const pool=PLAYERS.filter(p=>p && /^f\d$/.test(String(p.cardSet||'')) && p.region===reg && !taken.has(String(p.handle||'').toLowerCase()) && (inOrg(p) || (p.rating||0)<=myOvr+2))
+                    .sort((a,b)=>(inOrg(b)?1:0)-(inOrg(a)?1:0) || (b.rating||0)-(a.rating||0));
   const seen=new Set();
   for(const p of pool){ if(mine.length>=4) break; const k=String(p.handle).toLowerCase(); if(seen.has(k)) continue; seen.add(k); mine.push(p); }
   return {name:mine.map(c=>c.handle).join(' & '), squad:mine, isYou:true, pow:ewc24Pow(mine), label:(CAREER.org && CAREER.org.name) || T.ewc24You};
