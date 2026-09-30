@@ -3662,6 +3662,11 @@
   .hg-bar s{display:block;height:100%;background:linear-gradient(90deg,#00d6a4,#7aa2ff);text-decoration:none;}
   .hg-go{display:block;width:100%;margin-top:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;}
   .hg-go:hover{background:rgba(255,255,255,.14);}
+  .cc-valts{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0 4px;}
+  .cc-valts em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#cfe0ff;margin-right:2px;}
+  .cc-valt{padding:5px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.35);color:#fff;font:inherit;font-size:12px;font-weight:800;cursor:pointer;}
+  .cc-valt.on{background:#ffdd00;color:#0b0f12;border-color:#ffdd00;}
+  .cc-valt:focus-visible{outline:2px solid #00ffd0;outline-offset:2px;}
   .cc-duo-regsel{flex:0 0 auto;height:38px;padding:0 10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:13px;font-weight:800;cursor:pointer;}
   .cc-duo-regsel option{color:#0b0f12;}
   .cc-duo-regtag{font-size:10px;font-weight:900;letter-spacing:.05em;color:#ffdd00;margin-left:4px;}
@@ -8107,7 +8112,7 @@ chSquad:'Дуо', ccDuoFindTitle:'Кому написать',
 ccDuoFindHint:'Любому игроку своего региона можно написать первым. Ответит он сам — и не всякий согласится.',
 ccDuoSearchPh:'Поиск по нику',
 ccDuoSortBy:'Сортировать', ccDuoSortOvr:'рейтинг', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Флаг', ccDuoNatAll:'все', ccDuoReg:'Регион',
+ccDuoNat:'Флаг', ccVAltH:'Капы дня', ccDuoNatAll:'все', ccDuoReg:'Регион',
 ccDuoWrite:'Написать',
 ccDuoFree:'без дуо',
 ccDuoWith:n=>'дуо с '+n,
@@ -9137,6 +9142,7 @@ dmPromoted4:(d,o)=>'Д'+d+'. Я '+o+', свободен на сезон',
 dmYes:'Го. Я свободен.',
 dmNo:(o,d)=>'Спасибо, но я '+o+' и сижу в Дивизионе '+(d>1?d-1:1)+'. Пока не вариант.',
 dmNoDuo:m=>'Спасибо, но у меня дуо с '+m+' — мы продолжаем.',
+dmRealTeam:e=>'Новый сезон, '+e+' — играем тем составом, что был в жизни. Я в деле.',
 dmNoPartner:o=>'Слышал, ты без напарника. Я '+o+', тоже свободен. Скинемся?',
 dmSeatSour:(o,m)=>'С '+m+' сезон не идёт, ищу куда уйти. Я '+o+' — если у тебя место свободно, я в деле',
 dmLfd:o=>'Видел твой пост. Я '+o+', место есть — пробуем?',
@@ -10101,7 +10107,7 @@ chSquad:'Duo', ccDuoFindTitle:'Who to write to',
 ccDuoFindHint:'You can write first to anybody in your region. They answer for themselves, and not everybody says yes.',
 ccDuoSearchPh:'Search by name',
 ccDuoSortBy:'Sort by', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Flag', ccDuoNatAll:'all', ccDuoReg:'Region',
+ccDuoNat:'Flag', ccVAltH:'Cups today', ccDuoNatAll:'all', ccDuoReg:'Region',
 ccDuoWrite:'Write',
 ccDuoFree:'no duo',
 ccDuoWith:n=>'duo with '+n,
@@ -11127,6 +11133,7 @@ dmPromoted4:(d,o)=>'D'+d+'. I am '+o+', free for the season',
 dmYes:'Yeah, I am free. Let us do it.',
 dmNo:(o,d)=>'Thanks, but I am '+o+' and sitting in Division '+(d>1?d-1:1)+'. Not right now.',
 dmNoDuo:m=>'Thanks, but I have a duo with '+m+' — we are running it back.',
+dmRealTeam:e=>'New season, '+e+' — let’s play it with our real roster. I’m in.',
 dmNoPartner:o=>'Heard you have no duo. I am '+o+' and free. Want to run it?',
 dmSeatSour:(o,m)=>'The season with '+m+' is not working and I am looking to move. I am '+o+' — if your seat is open, I am in',
 dmLfd:o=>'Saw your post. I am '+o+' and I have room — want to try it?',
@@ -12996,7 +13003,7 @@ ccDuoFindTitle:'À qui écrire',
 ccDuoFindHint:'Tu peux écrire en premier à n’importe qui de ta région. Chacun répond pour soi, et tout le monde ne dit pas oui.',
 ccDuoSearchPh:'Chercher par nom',
 ccDuoSortBy:'Trier par', ccDuoSortOvr:'note', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Drapeau', ccDuoNatAll:'tous', ccDuoReg:'Région',
+ccDuoNat:'Drapeau', ccVAltH:'Cups du jour', ccDuoNatAll:'tous', ccDuoReg:'Région',
 ccDuoWrite:'Écrire',
 ccDuoFree:'sans duo',
 ccDuoNobody:'Personne trouvé',
@@ -13180,6 +13187,7 @@ dmPromoted3:(d,o)=>'Division '+d+', il était temps. Je suis '+o+' et il me faut
 dmPromoted4:(d,o)=>'D'+d+'. Je suis '+o+', libre pour la saison',
 dmNo:(o,d)=>'Merci, mais je suis '+o+' et je suis en Division '+(d>1?d-1:1)+'. Pas maintenant.',
 dmNoDuo:m=>'Merci, mais j’ai un duo avec '+m+' — on repart ensemble.',
+dmRealTeam:e=>'Nouvelle saison, '+e+' — on la joue avec notre vraie équipe. Je suis partant.',
 dmNoPartner:o=>'J’ai entendu que tu n’avais pas de duo. Je suis '+o+' et libre. On tente ?',
 dmSeatSour:(o,m)=>'La saison avec '+m+' ne marche pas et je cherche à bouger. Je suis '+o+' — si ta place est libre, je suis là',
 dmLfd:o=>'J’ai vu ton post. Je suis '+o+' et j’ai de la place — on essaie ?',
@@ -14860,6 +14868,7 @@ dmPromoted3:(d,o)=>'Divisione '+d+', era ora. Sono '+o+' e mi serve qualcuno a q
 dmPromoted4:(d,o)=>'D'+d+'. Sono '+o+', libero per la stagione',
 dmNo:(o,d)=>'Grazie, ma sono '+o+' e sto in Divisione '+(d>1?d-1:1)+'. Non adesso.',
 dmNoDuo:m=>'Grazie, ma ho un duo con '+m+' — continuiamo insieme.',
+dmRealTeam:e=>'Nuova stagione, '+e+' — giochiamola con la nostra vera squadra. Io ci sono.',
 dmNoPartner:o=>'Ho sentito che sei senza duo. Sono '+o+' e libero. Proviamo?',
 dmSeatSour:(o,m)=>'La stagione con '+m+' non funziona e sto cercando di muovermi. Sono '+o+' — se il tuo posto \u00e8 libero, ci sto',
 dmLfd:o=>'Ho visto il tuo post. Sono '+o+' e ho spazio — proviamo?',
@@ -15294,7 +15303,7 @@ ccNewsVicNoWin:"Victory Cup: Round 2 senza vittorie",
 ccDuoFindTitle:"A chi scrivere",
 ccDuoSearchPh:"Cerca per nome",
 ccDuoSortBy:'Ordina per', ccDuoSortOvr:'valutazione', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Bandiera', ccDuoNatAll:'tutti', ccDuoReg:'Regione',
+ccDuoNat:'Bandiera', ccVAltH:'Cup di oggi', ccDuoNatAll:'tutti', ccDuoReg:'Regione',
 ccDuoWrite:"Scrivi",
 ccDuoFree:"senza duo",
 ccDuoNobody:"Nessun risultato",
@@ -17379,6 +17388,7 @@ dmPromoted3:(d,o)=>'Divis\u00e3o '+d+', at\u00e9 que enfim. Eu sou '+o+' e preci
 dmPromoted4:(d,o)=>'D'+d+'. Eu sou '+o+', livre para a temporada',
 dmNo:(o,d)=>'Valeu, mas eu sou '+o+' e estou na Divis\u00e3o '+(d>1?d-1:1)+'. Agora n\u00e3o.',
 dmNoDuo:m=>'Valeu, mas tenho dupla com '+m+' — vamos seguir juntos.',
+dmRealTeam:e=>'Nova temporada, '+e+' — bora jogar com o nosso time de verdade. Tô dentro.',
 dmNoPartner:o=>'Soube que voc\u00ea est\u00e1 sem dupla. Eu sou '+o+' e estou livre. Bora?',
 dmSeatSour:(o,m)=>'A temporada com '+m+' n\u00e3o est\u00e1 funcionando e estou querendo mudar. Eu sou '+o+' — se a sua vaga estiver aberta, eu topo',
 dmLfd:o=>'Vi o seu post. Eu sou '+o+' e tenho espa\u00e7o — quer testar?',
@@ -17813,7 +17823,7 @@ ccNewsVicNoWin:"Victory Cup: Rodada 2 sem vitória",
 ccDuoFindTitle:"Para quem escrever",
 ccDuoSearchPh:"Buscar por nome",
 ccDuoSortBy:'Ordenar por', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Bandeira', ccDuoNatAll:'todos', ccDuoReg:'Região',
+ccDuoNat:'Bandeira', ccVAltH:'Cups do dia', ccDuoNatAll:'todos', ccDuoReg:'Região',
 ccDuoWrite:"Escrever",
 ccDuoFree:"sem dupla",
 ccDuoNobody:"Ninguém encontrado",
@@ -104808,8 +104818,30 @@ function ccYouKillSplit(you){
     const key=me ? hKey(me) : null;
     let seat=key ? sq.findIndex(c=>hKey(c)===key) : -1;
     if(seat<0) seat=0;
-    return {seat:seat, w:sq.map(c=>{ const a=(typeof attrsFor==='function') ? attrsFor(c) : null; return (a && a.aim) || 50; })};
+    /* НЕ ПОРОВНУ (идея игрока 30.09: «чтобы киллы не поровну делились у команды, для реалистичности»).
+       Вес был голым AIM — у двух про-игроков это 90 и 88, и элимы делились почти пополам. Теперь разница
+       в AIM растянута (четвёртая степень), а роль весит сама: фраггер берёт больше, ИГЛ меньше. Множители
+       ролей — оценка режима (у фраггера в дуо обычно около двух третей элимов), не замер. */
+    return {seat:seat, w:ccKillWeights(sq)};
   }catch(e){ return null; }
+}
+const CC_KILL_ROLE_W={roleFRG:1.5, roleIGL:0.75};
+function ccKillWeights(sq){
+  return sq.map(c=>{ const a=(typeof attrsFor==='function') ? attrsFor(c) : null;
+    const aim=(a && a.aim) || 50;
+    return Math.pow(aim/60, 4)*(CC_KILL_ROLE_W[a && a.roleKey]||1); });
+}
+// Доля элимов отряда у одного из его людей (журнал игроков, фраггер года) — то же правило.
+function ccMemberKills(team, name){
+  const total=(team && team.stageElims)||0;
+  try{
+    const sq=(team && team.squad||[]).filter(Boolean);
+    if(sq.length<2 || typeof ZoneReplay==='undefined' || !ZoneReplay.killShare) return total;
+    const seat=sq.findIndex(c=>hKey(c)===hKey(name));
+    if(seat<0) return total;
+    const v=ZoneReplay.killShare(total, ccKillWeights(sq), seat);
+    return v==null ? total : v;
+  }catch(e){ return total; }
 }
 // Сколько из отрядного счёта твои (правило одно, живёт в zone-replay).
 function ccYouKills(you, total){
@@ -107816,13 +107848,33 @@ function playerShares(team){
   return team._shares;
 }
 
+/* ДОЛИ ПО РОЛИ (идея игроков 30.09: «у фраггера фрагов больше, а у игл другие статы больше»).
+   Одна доля на всё давала сильнейшему по рейтингу больше во всём сразу — и элимов, и фарма, и
+   поднятых. Теперь боевое (элимы, урон, попадания, хедшоты) тянет фраггер, командное (ассисты,
+   поднятые и ребутнутые, фарм и сбор метсов, лечение) — ИГЛ, общее (полученный урон, шторм) —
+   без роли. Множители — те же, что у раскладки элимов (CC_KILL_ROLE_W), зеркально для ИГЛа;
+   оценка режима, не замер. */
+const CC_SUP_ROLE_W={roleIGL:1.5, roleFRG:0.75};
+const CC_STAT_SUP=new Set(['assists','healthHealed','shieldHealed','revived','rebooted','matsFarmed','woodFarmed',
+  'stoneFarmed','metalFarmed','matsCollected','woodCollected','stoneCollected','metalCollected']);
+const CC_STAT_NEU=new Set(['dmgFrom','gotRevived','gotRebooted','stormDmg','surge','overshield']);
+function playerRoleShares(team, table){
+  const base=playerShares(team), sq=team.squad||[];
+  const raw=base.map((b,i)=>{ let r=null; try{ r=(attrsFor(sq[i])||{}).roleKey; }catch(e){}
+    return b*((table && table[r])||1); });
+  const sum=raw.reduce((a,b)=>a+b,0)||1;
+  return raw.map(v=>v/sum);
+}
 function statsForView(team, playerIdx){
   const s=team.mstats;
   if(!s) return null;
-  if(playerIdx==null) return {s, w:1, n:(team.squad||[]).length||1, solo:false};
-  const shares=playerShares(team);
-  return {s, w:shares[playerIdx]||1, n:(team.squad||[]).length||1, solo:true};
+  if(playerIdx==null) return {s, w:1, wSup:1, wNeu:1, n:(team.squad||[]).length||1, solo:false};
+  const neu=playerShares(team);
+  const fight=(typeof CC_KILL_ROLE_W!=='undefined') ? playerRoleShares(team, CC_KILL_ROLE_W) : neu;
+  const sup=playerRoleShares(team, CC_SUP_ROLE_W);
+  return {s, w:fight[playerIdx]||1, wSup:sup[playerIdx]||1, wNeu:neu[playerIdx]||1, n:(team.squad||[]).length||1, solo:true};
 }
+function statShareFor(key, v){ return CC_STAT_SUP.has(key) ? v.wSup : CC_STAT_NEU.has(key) ? v.wNeu : v.w; }
 
 function fmtNum(n){ return Math.round(n).toLocaleString(LANG==='ru'?'ru-RU':'en-US'); }
 function fmtPct(v){ return (v*100).toFixed(2)+'%'; }
@@ -108110,7 +108162,7 @@ function playerStatSheetHTML(team, idx, p){
   }
   const v=statsForView(team, idx);
   const rows=STAT_ROWS.map(([key,lab,get,kind])=>`
-    <div class="srow"><span>${L()[lab]}</span><b>${fmtStat(kind,get(v.s,v.w))}</b></div>`).join('');
+    <div class="srow"><span>${L()[lab]}</span><b>${fmtStat(kind,get(v.s,statShareFor(key, v)))}</b></div>`).join('');
   return `<div class="fut-back" style="padding:15px 16px;">
     ${head}
     ${gfRows}
@@ -111349,7 +111401,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='46e4f79f';
+const CC_BUILD='6a344b1a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -111402,7 +111454,7 @@ const CC_BUILD='46e4f79f';
    это оно: биф рождается в стычке дома (careerBeefNight). */
 // year/year0 — общие (30.09): друг по ссылке хозяина, который уже перешёл в следующий год, оставался
 // в году начала — день приезжал 2021-й, а календарь года стоял 2019-й.
-const CC_TEAM_KEYS=['seed','day','year','year0','mxDone','season','division','diff','tokens','seasonOver','chemSince','beefs',
+const CC_TEAM_KEYS=['seed','day','year','year0','mxDone','vpick','season','division','diff','tokens','seasonOver','chemSince','beefs',
                     'sizes','trios','log','mp','region','mates','spots','seasonTurn',
                     'majorSeed','summitSeed','relSeed','gcSeed','duoSplits','exMates','table',
                     'events','d1','major','summit','globals','reload','rel','wf','rc',
@@ -114755,6 +114807,10 @@ function careerNext(){
       on=[ccMpOn() ? sorted[0]
                    : (sorted.find(e=>careerCanPlayKind(e.kind)) || sorted[0])];
     }
+    if(on.length && on[0].kind==='victory'){
+      const v=careerVictoryOn(today), hit=v && (days.get(today)||[]).find(e=>e.kind==='victory' && e.id===v.id);
+      if(hit) on=[hit];
+    }
     if(on.length){
       const div=CAREER && CAREER.career ? CAREER.career.division : 5;
       // The tournament's own name, not the name of the window it opens in.
@@ -115836,6 +115892,7 @@ function careerCentreHTML(card, a){
           <div class="ch-art-in">
             ${playable ? `<div class="ch-matchof">${L().chMatchOf(ccNextShape(next).games)}</div>` : ''}
             <h3>${cr.seasonOver ? L().ccSeasonOver : next.title}</h3>
+            ${!cr.seasonOver && next.type==='victory' ? ccVictoryAltsHTML() : ''}
             ${cr.seasonOver ? `<p>${L().ccSeasonOverSub}</p>`
               : playable
               ? (()=>{ const sh=ccNextShape(next);
@@ -118385,6 +118442,7 @@ function careerAdvanceTo(iso){
   CC_MP_HOLD=true;
   try{ careerAdvanceBody(iso); }
   finally{ CC_MP_HOLD=false; }
+  try{ ccRealTeamCall(); }catch(e){}
   // 2023-й: после Мейджора 1 дивизионов нет — ступень сходит в «вся сцена» (ccNoDivisions).
   if(typeof ccIs2023==='function' && ccIs2023()){ ccDiv23Place(); careerMigrateNoDiv(); }
   // 2022-й: дивизионы только осенью — ступень по рейтингу в день Placement Cup, после — «вся сцена».
@@ -118645,6 +118703,46 @@ function ccMapPay(months){
 
 // Ранг в одну строку с полосой — ранкед с 2023-го (ccRank), до него — Арена с Hype.
 
+/* НАСТОЯЩИЙ СОСТАВ ПИШЕТ САМ (идея игрока 30.09: «чтобы и персонаж игрока, если он настоящий, в реальную
+   команду попадал» — ответ ему: «в начале каждого сезона будут писать игроки, с которыми играл в реальной
+   жизни, и будет собираться настоящий состав»). Карьера за настоящую карточку: на смене снимка составов
+   (сезон FNCS, ccSnapshotNow) его настоящие напарники этого сезона — из тех же таблиц FNCS, что и снимок, —
+   пишут в личку готовым предложением (t.state='offer', одна кнопка — и он в составе). Раз на снимок
+   (cr.realCall). Своих, уже сидящих в составе, не зовут; кого нет в сцене года — тоже. */
+function ccRealTeamCall(){
+  const cr=CAREER && CAREER.career, pl=CAREER && CAREER.player;
+  if(!cr || !pl || !pl.handle || ccNowYear()>=2026) return;
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  const snap=ccSnapshotNow(); if(!snap || !snap.tag) return;
+  if(cr.realCall===snap.tag) return;
+  cr.realCall=snap.tag;
+  const me=hKey(pl.handle), res=[snap.playIn, snap.lcq].filter(Boolean);
+  let best=null, bestRank=-1;
+  const rankOf=st=>({Gf:3, Lcq:2, Playin:1}[st]||0);
+  PLAYERS.forEach(p=>{
+    if(hKey(p)!==me || !res.some(r=>r.test(String(p.event||'')))) return;
+    rosterEntriesOf(p).forEach(({stage, entry})=>{
+      const hs=(entry.duo||[]);
+      if(hs.length<2 || !hs.some(h=>hKey(h)===me)) return;
+      if(rankOf(stage)>bestRank){ bestRank=rankOf(stage); best={hs, ev:String(p.event||'').split(' — ')[0].replace(/\s*\(.*\)\s*$/, '')}; }
+    });
+  });
+  // Предложения прошлого сезона — уже не в силе.
+  careerDms().forEach(t=>{ if(t.realCall && t.realCall!==snap.tag && t.state==='offer') t.state='open'; });
+  if(!best) return;
+  const mine=new Set(careerMateRecords().map(r=>{ const c=ccMateCardOf(r); return c ? hKey(c) : null; }).filter(Boolean));
+  const scene=careerRosterNowEU();
+  best.hs.filter(h=>hKey(h)!==me && !mine.has(hKey(h))).slice(0, Math.max(1, careerMateSeats())).forEach(h=>{
+    const c=scene.find(x=>hKey(x)===hKey(h));
+    if(!c) return;
+    const who={handle:c.handle, ovr:c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr, nat:c.nat, role:(attrsFor(c)||{}).roleKey,
+               roster:true, card:c, cardRegion:c.region, club:c.org||null, pay:0};
+    const t=careerDmFind(c.handle) || careerDmThread(who);
+    t.who=t.who||who;
+    careerDmPush(t, 'them', 'dmRealTeam', [best.ev]);
+    t.state='offer'; t.realCall=snap.tag;
+  });
+}
 function careerAdvanceBody(iso){
   const cr=CAREER.career;
   // The month's objective is judged before the clock leaves the day that may
@@ -120469,7 +120567,11 @@ CAREER_YEAR_2019.forEach(r=>{
   if(m && !CAREER_EV_ART_ID[r[2]]) CAREER_EV_ART_ID[r[2]]=(m[1]==='1' || m[1]==='2') ? 'art/fncs-2019.jpg' : 'art/map-h'+m[1]+'.jpg';
 });
 const CC_SNAPSHOTS_2019=[
-  {tag:'h1', from:CC_YEAR_2019_FROM, playIn:/2019 (World Cup (Solo|Duos)|Season X|C2S1) . Grand Finals/, lcq:/2019 (World Cup (Solo|Duos)|Season X|C2S1) . (Semi-Finals|Qualifier|Online Open)/}
+  /* По сезону (с его первого дня): составы — того FNCS, что шёл в этом сезоне. Соло-сезоны
+     держат пары соседнего командного, C3S4 без онлайн-FNCS — C3S3. См. ccSnapshotNow. */
+  {tag:'h1', from:CC_YEAR_2019_FROM, playIn:/2019 World Cup (Solo|Duos) . Grand Finals/, lcq:/2019 World Cup (Solo|Duos) . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/},
+  {tag:'h3', from:'2019-08-01', playIn:/2019 Season X . Grand Finals/, lcq:/2019 Season X . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/},
+  {tag:'h4', from:'2019-10-13', playIn:/2019 C2S1 . Grand Finals/, lcq:/2019 C2S1 . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/}
 ];
 /* Сезоны 2019-го для машины runCareerMajorMX. rounds — раунды недели по порядку (open — зал
    из лестницы, без записи); у World Cup последний раунд — финал недели, верх по квоте региона
@@ -120535,7 +120637,13 @@ const CAREER_YEAR_2020=[
 ];
 const CC_SEASONS_2020=[{id:'S11', from:'2019-10-15', to:'2020-02-19'}, {id:'S12', from:'2020-02-20', to:'2020-06-16'}, {id:'S13', from:'2020-06-17', to:'2020-08-26'}, {id:'S14', from:'2020-08-27', to:'2020-12-01'}];
 CAREER_YEAR_2020.forEach(r=>{ const m=/^Major(\d)_2020_/.exec(r[2]); if(m && !CAREER_EV_ART_ID[r[2]]) CAREER_EV_ART_ID[r[2]]='art/map-i'+m[1]+'.jpg'; });
-const CC_SNAPSHOTS_2020=[{tag:'i1', from:CC_YEAR_2020_FROM, playIn:/2020 C2S[234] . Grand Finals/, lcq:/2020 C2S[234] . (Semi-Finals|Qualifier)/}];
+const CC_SNAPSHOTS_2020=[
+  /* По сезону (с его первого дня): составы — того FNCS, что шёл в этом сезоне. Соло-сезоны
+     держат пары соседнего командного, C3S4 без онлайн-FNCS — C3S3. См. ccSnapshotNow. */
+  {tag:'i0', from:CC_YEAR_2020_FROM, playIn:/2019 C2S1 . Grand Finals/, lcq:/2019 C2S1 . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/, yr:2019},
+  {tag:'i1', from:'2020-02-20', playIn:/2020 C2S2 . Grand Finals/, lcq:/2020 C2S2 . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/},
+  {tag:'i3', from:'2020-08-27', playIn:/2020 C2S4 . Grand Finals/, lcq:/2020 C2S4 . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/}
+];
 var CC_MX_SPEC=CC_MX_SPEC||{};
 CC_MX_SPEC[2020]={1:{set:'i1',name:'FNCS Chapter 2 Season 2',size:2,qual:false,weeks:[1,2,3,4],rounds:[{games:10,cut:50,open:true},{games:6,cut:0}],heats:[{day:1,cut:12},{day:1,cut:12},{day:2,cut:12},{day:2,cut:12}],heatGames:6,finalGames:12,island:'i1'},2:{set:'i2',name:'FNCS Chapter 2 Season 3',size:1,qual:true,weeks:[1,2,3,4],rounds:[{games:10,cut:100,open:true},{games:6,cut:0}],heats:[{day:1,cut:25},{day:1,cut:25},{day:2,cut:25},{day:2,cut:25}],heatGames:6,finalGames:12,island:'i2'},3:{set:'i3',name:'FNCS Chapter 2 Season 4',size:3,qual:false,weeks:[1,2,3],rounds:[{games:10,cut:33,open:true},{games:6,cut:0}],heats:[{day:1,cut:8},{day:1,cut:8},{day:1,cut:8},{day:1,cut:8}],heatGames:6,finalGames:12,island:'i3'}};
 // ==== /FNCS 2020 cal ====
@@ -120656,7 +120764,12 @@ CAREER_YEAR_2021.forEach(r=>{
 });
 // Одна книга трио на год: трио Гранд-финалов и полуфиналов четырёх сезонов (j1–j4).
 const CC_SNAPSHOTS_2021=[
-  {tag:'j1', from:CC_YEAR_2021_FROM, playIn:/2021 C2S[5-8] . Grand Finals/, lcq:/2021 C2S[5-8] . (Semi-Finals|Qualifier)/}
+  /* По сезону (с его первого дня): составы — того FNCS, что шёл в этом сезоне. Соло-сезоны
+     держат пары соседнего командного, C3S4 без онлайн-FNCS — C3S3. См. ccSnapshotNow. */
+  {tag:'j1', from:CC_YEAR_2021_FROM, playIn:/2021 C2S5 . Grand Finals/, lcq:/2021 C2S5 . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/},
+  {tag:'j2', from:'2021-03-16', playIn:/2021 C2S6 . Grand Finals/, lcq:/2021 C2S6 . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/},
+  {tag:'j3', from:'2021-06-08', playIn:/2021 C2S7 . Grand Finals/, lcq:/2021 C2S7 . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/},
+  {tag:'j4', from:'2021-09-13', playIn:/2021 C2S8 . Grand Finals/, lcq:/2021 C2S8 . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/}
 ];
 // Generated by tools/build-2021-cal.js — капы, выплаты и Grand Royale FNCS 2021.
 const CC_VICTORY_2021=[
@@ -120793,7 +120906,11 @@ CAREER_YEAR_2022.forEach(r=>{
 CAREER_EV_ART_ID.Invitational2022='art/map-k4.jpg';
 // Одна книга пар на год, как у 2023-го: пары Гранд-финалов и полуфиналов трёх сезонов (k1–k3).
 const CC_SNAPSHOTS_2022=[
-  {tag:'k1', from:CC_YEAR_2022_FROM, playIn:/2022 C3S[123] . Grand Finals/, lcq:/2022 C3S[123] . (Semi-Finals|Qualifier)/}
+  /* По сезону (с его первого дня): составы — того FNCS, что шёл в этом сезоне. Соло-сезоны
+     держат пары соседнего командного, C3S4 без онлайн-FNCS — C3S3. См. ccSnapshotNow. */
+  {tag:'k1', from:CC_YEAR_2022_FROM, playIn:/2022 C3S1 . Grand Finals/, lcq:/2022 C3S1 . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/},
+  {tag:'k2', from:'2022-03-20', playIn:/2022 C3S2 . Grand Finals/, lcq:/2022 C3S2 . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/},
+  {tag:'k3', from:'2022-06-05', playIn:/2022 C3S3 . Grand Finals/, lcq:/2022 C3S3 . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/}
 ];
 // Generated by tools/build-2022-cal.js — капы, выплаты и Invitational FNCS 2022.
 const CC_VICTORY_2022=[
@@ -121165,7 +121282,11 @@ function ccVictoryPayOf(ev, place){
 /* 2023-й — та же одна книга пар на год, что у 2024-го: пары Гранд-финалов и финалов
    недель всех трёх Мейджоров (наборы e1–e3). */
 const CC_SNAPSHOTS_2023=[
-  {tag:'e1', from:CC_YEAR_2023_FROM, playIn:/2023 Major [123] . Grand Finals/, lcq:/2023 Major [123] . (Week Finals|Week Qualifier)/}
+  /* По сезону (с его первого дня): составы — того FNCS, что шёл в этом сезоне. Соло-сезоны
+     держат пары соседнего командного, C3S4 без онлайн-FNCS — C3S3. См. ccSnapshotNow. */
+  {tag:'e1', from:CC_YEAR_2023_FROM, playIn:/2023 Major 1 . Grand Finals/, lcq:/2023 Major 1 . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/},
+  {tag:'e2', from:'2023-03-10', playIn:/2023 Major 2 . Grand Finals/, lcq:/2023 Major 2 . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/},
+  {tag:'e3', from:'2023-06-09', playIn:/2023 Major 3 . Grand Finals/, lcq:/2023 Major 3 . (Semi-Finals|Qualifier|Online Open|Week Finals|Week Qualifier)/}
 ];
 const CC_SNAPSHOTS_2024=[
   {tag:'f1', from:CC_YEAR_2024_FROM, playIn:/2024 (Global Championship|Major [123] . Grand Finals)/, lcq:/2024 Major [123] . (Semi-Finals|Open Qualifier)/},
@@ -123520,7 +123641,9 @@ function ccDuosOf(re, people){
       /* В 2025-м году трио — это настоящий состав: первые двое — ядро пары,
          третий запоминается и пишется в cr.trios (careerPools), а не
          разыгрывается рынком. */
-      const trio=ccNowYear()===2025 && entry.duo.length===3;
+      /* И тройки (и сквады — ядро и третий) прошлых лет: в трио-сезонах 2019–2023 записи трио
+         пропускались целиком, и настоящих троек в пуле не было вовсе (замер 30.09). */
+      const trio=ccNowYear()<2026 && entry.duo.length>=3;
       if(entry.duo.length!==2 && !trio) return;
       const keys=entry.duo.slice(0,2).map(h=>hKey(h)).sort(), id=keys.join('|');
       if(seen.has(id)) return;
@@ -123564,11 +123687,9 @@ function ccSnapshotNow(){
   if(ccNowYear()===2025){ let s25=CC_SNAPSHOTS_2025[0]; CC_SNAPSHOTS_2025.forEach(s=>{ if(today>=s.from) s25=s; }); return s25; }
   // Люди 2024-го: снимок по Мейджорам 2024-го; дальше (календарь 2025/2026) — последний, f3.
   if(ccNowYear()===2024){ let s24=CC_SNAPSHOTS_2024[0]; CC_SNAPSHOTS_2024.forEach(s=>{ if(today>=s.from) s24=s; }); return s24; }
-  if(ccNowYear()===2023) return CC_SNAPSHOTS_2023[0];
-  if(ccNowYear()===2022) return CC_SNAPSHOTS_2022[0];
-  if(ccNowYear()===2021) return CC_SNAPSHOTS_2021[0];
-  if(ccNowYear()===2019) return CC_SNAPSHOTS_2019[0];
-  if(ccNowYear()===2020) return CC_SNAPSHOTS_2020[0];
+  // 2019–2023 — по сезону (снимки с датами), как 2024/2025.
+  const past={2023:CC_SNAPSHOTS_2023, 2022:CC_SNAPSHOTS_2022, 2021:CC_SNAPSHOTS_2021, 2019:CC_SNAPSHOTS_2019, 2020:CC_SNAPSHOTS_2020}[ccNowYear()];
+  if(past){ let sp=past[0]; past.forEach(x=>{ if(today>=x.from) sp=x; }); return sp; }
   let snap=CC_SNAPSHOTS[0];
   if(typeof careerSquadSize==='function' && CAREER && CAREER.career && careerSquadSize()===3) return snap;
   CC_SNAPSHOTS.forEach(s=>{ if(today>=s.from) snap=s; });
@@ -123618,7 +123739,7 @@ function ccRealTeamDuos(year, snap){
   const seen=new Map();
   PLAYERS.forEach(p=>{
     if(reg0!=='ALL' && (p.region||'')!==reg0) return;
-    if(ccCardYear(p)!==year) return;
+    if(ccCardYear(p)!==(snap.yr||year)) return;
     const ev=String(p.event||'');
     if(!res.some(r=>r.test(ev))) return;
     rosterEntriesOf(p).forEach(({entry})=>{
@@ -123670,8 +123791,8 @@ function careerPools(){
      карьеру, потому что читает их комната оттуда (careerCupField). То же в
      трио-году карьеры, перешедшей из 2024-го: третьи — настоящие 2025-го, и
      память троек прошлых лет им не мешает (стирается при посеве). */
-  if((ccNowYear()===2025 || real) && careerSquadSize()===3 && CAREER && CAREER.career && !CC_REGION_AS && CAREER.career.triosSeeded!==seedTag){
-    const cr=CAREER.career; cr.trios=real ? {} : (cr.trios||{});
+  if((ccNowYear()<2026 || real) && careerSquadSize()>=3 && CAREER && CAREER.career && !CC_REGION_AS && CAREER.career.triosSeeded!==seedTag){
+    const cr=CAREER.career; cr.trios=(real || ccNowYear()<2025) ? {} : (cr.trios||{});
     duos.forEach(d=>{ if(d.third && !seated.has(d.third)){ cr.trios[d.cards.map(c=>hKey(c)).sort().join('+')]=d.third; seated.add(d.third); } });
     cr.triosSeeded=seedTag;
     if(typeof careerSave==='function') careerSave();
@@ -144097,8 +144218,8 @@ function ccVictoryList(){
   if(CC_VICTORY_LIST && CC_VICTORY_LIST_OF===y) return CC_VICTORY_LIST;
   const base=ccVictoryBase();
   if(typeof CC_CUPS_ARCH==='undefined'){ CC_VICTORY_LIST=base; CC_VICTORY_LIST_OF=y; return base; }
-  const from=ccYearFrom(), to=ccYearTo(), busy=new Set();
-  ccYearRows().forEach(r=>{ for(let d=r[0]; d<=r[1]; d=ccAddDays(d,1)) busy.add(d); });
+  const from=ccYearFrom(), to=ccYearTo(), busy=new Set(), hard=new Set();
+  ccYearRows().forEach(r=>{ for(let d=r[0]; d<=r[1]; d=ccAddDays(d,1)){ busy.add(d); hard.add(d); } });
   ccCupWeeks().forEach(w=>{ [w[1], w[2], w[3]].forEach(d=>{ if(d) busy.add(d); }); });
   /* ЛАН по приглашению в свой день важнее любого капа той же даты, и своего списка года
      тоже; FNCS, кубки дивизионов и остальной календарь года — важнее ЛАНа. 2026-й держит
@@ -144108,14 +144229,50 @@ function ccVictoryList(){
   const own=base.filter(v=>!lanDays.has(v.day))
     .concat(CC_PLACEMENT_CUPS.filter(v=>v.day>=from && v.day<=to && !lanDays.has(v.day)));
   own.forEach(v=>busy.add(v.day)); lanDays.forEach(d=>busy.add(d));
-  const extra=y>=2026 ? [] : CC_CUPS_ARCH.filter(v=>!v.invite && v.day>=from && v.day<=to && !busy.has(v.day) && (busy.add(v.day), true));
+  /* Капы архива — все в свой день (идея игроков 30.09: «в C3S4 были сквад-ZB-капы, в C3S3 — квик-капы
+     трио, жалко что их нет»). Стояло «один кап на день, кто первый»: пятничный квик-кап трио уступал
+     трио-капу ZB того же вечера, а субботний сквад-ZB — финалу недели кубков, в который проходят не все.
+     Теперь в дни кубков недели кап стоит рядом (не прошёл в финал — играешь кап, careerNext), а капов
+     одного дня может быть несколько — какой играть, выбирается (careerVictoryOn, cr.vpick). FNCS,
+     Мейджоры, свои события года и ЛАНы по-прежнему держат день целиком. */
+  const ownDays=new Set(own.map(v=>v.day));
+  const extra=y>=2026 ? [] : CC_CUPS_ARCH.filter(v=>!v.invite && v.day>=from && v.day<=to
+    && !hard.has(v.day) && !lanDays.has(v.day) && !ownDays.has(v.day));
   CC_VICTORY_LIST=own.concat(lans, extra).sort((a,b)=>a.day<b.day?-1:a.day>b.day?1:0);
   CC_VICTORY_LIST_OF=y;
   return CC_VICTORY_LIST;
 }
 // Остров Reload по году: 2026-й — четвёртый круг серии, 2025-й — первый (другого измеренного нет).
 function ccReloadSetOfYear(){ return (ccIs2025() || ccIs2024()) ? (ZONE_SETS.r1 ? 'r1' : careerBrSet()) : (ZONE_SETS.r4 ? 'r4' : careerBrSet()); }
-function careerVictoryOn(iso){ return ccVictoryList().find(v=>v.day===iso) || null; }
+function ccVictoryAlts(iso){ return ccVictoryList().filter(v=>v.day===iso); }
+function careerVictoryOn(iso){
+  const alts=ccVictoryAlts(iso);
+  if(alts.length<2) return alts[0] || null;
+  const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
+  const pick=cr && cr.vpick && cr.vpick[iso];
+  const hit=pick && alts.find(v=>v.id===pick);
+  if(hit) return hit;
+  // По умолчанию — обычный кап на ПК: не мобильный, не консольный, не Zero Build.
+  return alts.find(v=>!v.zb && !/Mobile|Console|Xbox|Playstation|ZB/i.test(v.id)) || alts[0];
+}
+function ccVictoryPick(id){
+  const cr=CAREER && CAREER.career; if(!cr) return;
+  const day=careerToday();
+  if(!ccVictoryAlts(day).some(v=>v.id===id)) return;
+  (cr.vpick=cr.vpick||{})[day]=id;
+  careerSave();
+  careerRenderHub(CH_TAB||'centre');
+}
+// Капы этого дня — кнопками под названием вечера, если их больше одного.
+function ccVictoryAltsHTML(){
+  const alts=ccVictoryAlts(careerToday());
+  if(alts.length<2) return '';
+  const cur=careerVictoryOn(careerToday());
+  // Капы на разных платформах в один день называются одинаково — платформа из id.
+  const plat=id=>/Mobile/i.test(id) ? 'Mobile' : /Console|Xbox|Playstation/i.test(id) ? 'Console' : /_PC|_PC$/.test(id) ? 'PC' : '';
+  const name=v=>{ const n=v.lan ? v.lan : (v.name||'Cup'), p=plat(v.id); return p && n.indexOf(p)<0 ? n+' · '+p : n; };
+  return '<div class="cc-valts"><em>'+esc(L().ccVAltH)+'</em>'+alts.map(v=>'<button class="cc-valt'+(cur && v.id===cur.id ? ' on' : '')+'" onclick="ccVictoryPick(\''+esc(v.id)+'\')">'+esc(name(v))+'</button>').join('')+'</div>';
+}
 
 /* A lobby of one-card teams.
 
@@ -153145,7 +153302,7 @@ function careerPlogAdd(name, meta, place, of, team, you){
   if(!cr.plog) cr.plog={};
   const rows=cr.plog[name] || (cr.plog[name]=[]);
   const kind=String(meta.kind||'cup')+(meta.stage ? ':'+String(meta.stage) : '');
-  rows.push([careerToday(), kind, place, of, team.wins||0, team.stageElims||0, Math.round(team.stagePts||0), meta.div||null]);
+  rows.push([careerToday(), kind, place, of, team.wins||0, ccMemberKills(team, name), Math.round(team.stagePts||0), meta.div||null]);
   if(rows.length>CC_PLOG_KEEP) rows.splice(0, rows.length-CC_PLOG_KEEP);
   if(you) cr.plogYou=name;
   const names=Object.keys(cr.plog);
