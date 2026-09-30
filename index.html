@@ -9464,7 +9464,7 @@ attrFlatNote:'Нет поматчевой статистики — профил�
 roleFRG:'ФРГ', roleBLD:'БЛД', roleSRV:'ВЖВ', roleIGL:'ИГЛ', roleCLU:'КЛЧ', roleANC:'АНК',
 cardBackBtn:'Стата', cardFrontBtn:'Атрибуты', cardPeekHint:'Нажми, чтобы посмотреть стату карточки',
 brkTitle:'Из чего сложился рейтинг',
-brk_lan:'LAN Summit', brk_rc:'LAN Reload Championship', brk_gf:'Гранд-финал', brk_heat:'Хит', brk_playin:'Play-In', brk_lcq:'Last Chance', brk_cup:'Кубок Div 1',
+brk_lan:'LAN Summit', brk_rc:'LAN Reload Championship', brk_gc26:'LAN Global Championship, Антверпен', brk_gf:'Гранд-финал', brk_heat:'Хит', brk_playin:'Play-In', brk_lcq:'Last Chance', brk_cup:'Кубок Div 1',
 brk_cup_nth:'неделя', brk_heat_nth:'группа',
 brkBlend:'Сумма / вес',
 brkNormalised:'После нормировки по региону',
@@ -11439,7 +11439,7 @@ attrFlatNote:'No per-match data — flat profile at the rating the placement ear
 roleFRG:'FRG', roleBLD:'BLD', roleSRV:'SRV', roleIGL:'IGL', roleCLU:'CLU', roleANC:'ANC',
 cardBackBtn:'Stats', cardFrontBtn:'Attributes', cardPeekHint:'Click to open this card\u2019s stat sheet',
 brkTitle:'How this rating was built',
-brk_lan:'Summit LAN', brk_rc:'Reload Championship LAN', brk_gf:'Grand Final', brk_heat:'Heat', brk_playin:'Play-In', brk_lcq:'Last Chance', brk_cup:'Div 1 Cup',
+brk_lan:'Summit LAN', brk_rc:'Reload Championship LAN', brk_gc26:'Global Championship LAN, Antwerp', brk_gf:'Grand Final', brk_heat:'Heat', brk_playin:'Play-In', brk_lcq:'Last Chance', brk_cup:'Div 1 Cup',
 brk_cup_nth:'week', brk_heat_nth:'group',
 brkBlend:'Total / weight',
 brkNormalised:'After the region is normalised',
@@ -11611,7 +11611,7 @@ cardBackBtn:'Stats',
 cardFrontBtn:'Attributs',
 cardPeekHint:'Clique pour ouvrir la fiche de stats de cette carte',
 brkTitle:'Comment cette note a été construite',
-brk_lan:'LAN du Summit', brk_rc:'LAN du Reload Championship',
+brk_lan:'LAN du Summit', brk_rc:'LAN du Reload Championship', brk_gc26:'LAN du Global Championship, Anvers',
 brk_gf:'Grande Finale',
 brk_heat:'Heat',
 brk_playin:'Play-In',
@@ -15139,7 +15139,7 @@ attrConSrc:"Punti per partita",
 attrFlatNote:"Nessun dato per partita — profilo piatto alla valutazione data dal piazzamento",
 brkTitle:"Come è stata costruita questa valutazione",
 brk_lan:"LAN Summit",
-brk_rc:"LAN Reload Championship",
+brk_rc:"LAN Reload Championship", brk_gc26:"LAN Global Championship, Antuérpia", brk_gc26:"LAN Global Championship, Anversa",
 brk_gf:"Gran Finale",
 brk_heat:"Heat",
 brk_playin:"Play-In",
@@ -88855,6 +88855,26 @@ var RATING_FLOOR={};
   const rcStage=reg=>({map:byHandle(RC_RANK[reg]), weight:3.0, label:'rc', field:20,
     score:r=>curve(r, 100, 24, 20)});
   Object.keys(S41).forEach(reg=>{ if(RC_RANK[reg]) S41[reg]=S41[reg].concat([rcStage(reg)]); });
+  /* Global Championship 2026, Антверпен, 26–27 сентября: пятьдесят дуо со всего мира, двенадцать
+     игр одной таблицей. Ссылка от него 30.09 («вот кап для статистики»): Tracker,
+     epicgames_MannekenPis_Official, выгрузка Epic в tools/measured/gc2026-antwerp.json.
+     Мировой ЛАН, как Саммит и Reload Championship: без региональной скидки, вес 3.0.
+     Ники — esportsNickname, регион — по карточке Мейджора 2 того же игрока (у кого ник
+     есть в двух регионах — по напарнику; Zynox, 1Lusha, Ark без карточки M2 — в регион
+     напарника). Места — общий итог двух дней. */
+  const GC26_RANK={
+    EU:{ "SwizzY":1, "Pixie":1, "Shxrk":2, "t3eny":2, "Malibuca":3, "vic0":3, "Scroll":5, "Sky":5, "Cr1nge":6, "Twi":6, "Tjino":7, "PabloWingu":7, "demus":9, "Darm":9, "JannisZ":13, "Rax":13, "Nxthan":15, "Nebs":15, "Nociff":16, "Izzi":16, "Firen":18, "Pixx":18, "Julle":19, "Tidi":19, "Chap":21, "Flickzy":21, "Focus":22, "Th0masHD":22, "Ghonzo":24, "IDrop":24, "Syaaz":27, "Scaryy":27, "charyy":28, "Kami":28, "Fant":30, "Volko":30, "Huty":34, "F1shyX":34, "Zynox":38, "Velo":38, "Cringe":44, "1Lusha":44, "Seyyto":48, "Momsy":48, "Pinq":49 },
+    NAC:{ "Rapid":4, "Clix":4, "Curve":10, "Higgs":10, "Cold":11, "Ritual":11, "Boltz":12, "Acorn":12, "Golden":17, "Ozone":17, "Peterbot":23, "Pollo":23, "Slepzi":25, "Wagers":25, "Rise":31, "Muz":31, "Eomzo":32, "josh":32, "Cooper":33, "Reet":33, "Kraez":36, "kingaling":36, "Veno":37, "Ajerss":37, "Encrypted":39, "Hcube":39, "Khanada":45, "Ark":45, "Vergo":50, "Shadow":50 },
+    ASIA:{ "yuma":8, "Koyota":8, "Minipiyo":26, "Fuukun":26, "ふーくん":26, "Rura":49 },
+    BR:{ "Romero":14, "Lewa":14, "Grx":29, "Randu":29, "Diguera":40, "Mack":40 },
+    OCE:{ "Phazma":20, "Crusades":20, "Solvey":35, "Sazers":35, "Resignz":47, "Tinka":47 },
+    ME:{ "Mshary":41, "BySaLva":41, "27Q8":46, "5AALD":46 },
+    NAW:{ "EpikWhale":42, "PXMP":42, "phoenix":43, "Retro":43 }
+  };
+  const GC26_BY=Object.assign({}, ...Object.values(GC26_RANK));
+  const gc26Stage=reg=>({map:byHandle(GC26_RANK[reg]), weight:3.0, label:'gc26', field:50,
+    score:r=>curve(r, 100, 24, 50)});
+  Object.keys(S41).forEach(reg=>{ if(GC26_RANK[reg]) S41[reg]=S41[reg].concat([gc26Stage(reg)]); });
   // ---------- FNCS 2025: the same ledger treatment the 2026 sets get ----------
   // Without this a 2025 card keeps the raw band of whichever stage it was cut
   // from, which leaves nothing between 70 and 89: the field's median came out at
@@ -89318,8 +89338,10 @@ var RATING_FLOOR={};
       // duo that won the LAN, which is precisely what the weighting was changed
       // to prevent. Major 2 has no Summit, so it falls through to the final.
       const lanRank=q=>{
-        if(set!=='m1') return Infinity;
-        const r=SUMMIT_RANK[q.handle] ?? (q.liquiName && SUMMIT_RANK[q.liquiName]);
+        // Мейджор 2 закрывает сезон Глобалами в Антверпене — они и разбивают ничью (как Саммит у M1).
+        const src=set==='m1' ? SUMMIT_RANK : set==='m2' ? GC26_BY : null;
+        if(!src) return Infinity;
+        const r=src[q.handle] ?? (q.liquiName && src[q.liquiName]);
         return r===undefined ? Infinity : r;
       };
       const seedOf=q=>{ const l=lanRank(q); return l!==Infinity ? l : 100+gfRank(q); };
@@ -99823,16 +99845,11 @@ const PRIZE_POOL_TOTAL={"EU":591500,"NAC":412000,"NAW":137000,"BR":137000,"ASIA"
 // GC2025_PRIZES is the Lyon Grand Finals: 33 places, $2,001,000, which is the
 // figure Epic published and exactly what these 33 numbers add up to.
 const GC2025_PRIZES={"1":450000,"2":300000,"3":225000,"4":180000,"5":135000,"6":90000,"7":75000,"8":60000,"9":45000,"10":36000,"11":33000,"12":30000,"13":27000,"14":27000,"15":24000,"16":24000,"17":21000,"18":21000,"19":18000,"20":18000,"21":15000,"22":15000,"23":15000,"24":15000,"25":15000,"26":12000,"27":12000,"28":12000,"29":12000,"30":12000,"31":9000,"32":9000,"33":9000};
-// Antwerp, 26-27 September 2026: 50 duos and a $2,000,000 pool. Epic published
-// the total and not the split, so this is the 2024 Global Championship's split,
-// read off the Liquipedia page rather than typed from memory.
-//
-// It is a stand-in and a well-fitted one: 2024 paid fifty places and totalled
-// exactly $2,000,000 — exactly Antwerp's field and exactly Antwerp's pool.
-// Nothing had to be scaled or invented to make it fit, and those two facts
-// agreeing is the reason to trust the shape rather than the year. If Epic
-// publishes a different split, replace these numbers and nothing else changes.
-const GC2026_PRIZES={"1":400000,"2":300000,"3":200000,"4":160000,"5":120000,"6":90000,"7":60000,"8":50000,"9":40000,"10":30000,"11":24000,"12":24000,"13":24000,"14":24000,"15":24000,"16":20000,"17":20000,"18":20000,"19":20000,"20":20000,"21":16000,"22":16000,"23":16000,"24":16000,"25":16000,"26":14000,"27":14000,"28":14000,"29":14000,"30":14000,"31":12000,"32":12000,"33":12000,"34":12000,"35":12000,"36":10000,"37":10000,"38":10000,"39":10000,"40":10000,"41":8000,"42":8000,"43":8000,"44":8000,"45":8000,"46":6000,"47":6000,"48":6000,"49":6000,"50":6000};
+// Antwerp, 26-27 September 2026: 50 duos, $2,000,000. Epic's own payout table, read off
+// the event after it was played (Tracker, epicgames_MannekenPis_Official, PayoutTable of the
+// cumulative leaderboard; tools/measured/gc2026-antwerp.json). Epic pays per player; these
+// are per duo, both halves together — the same unit the 2024 stand-in used.
+const GC2026_PRIZES={"1":400000,"2":240000,"3":160000,"4":120000,"5":100000,"6":80000,"7":70000,"8":60000,"9":50000,"10":40000,"11":38000,"12":36000,"13":34000,"14":32000,"15":30000,"16":28000,"17":26000,"18":24000,"19":22000,"20":20000,"21":18000,"22":18000,"23":18000,"24":18000,"25":18000,"26":16000,"27":16000,"28":16000,"29":16000,"30":16000,"31":14000,"32":14000,"33":14000,"34":14000,"35":14000,"36":12000,"37":12000,"38":12000,"39":12000,"40":12000,"41":10000,"42":10000,"43":10000,"44":10000,"45":10000,"46":8000,"47":8000,"48":8000,"49":8000,"50":8000};
 const P2025_PRIZES={"EU":{"1":180000,"2":120000,"3":81000,"4":60900,"5":47850,"6":34800,"7":34800,"8":34800,"9":34800,"10":34800,"11":17400,"12":17400,"13":17400,"14":17400,"15":17400,"16":8700,"17":8700,"18":8700,"19":8700,"20":8700,"21":4350,"22":4350,"23":4350,"24":4350,"25":4350},"NAC":{"1":180000,"2":76500,"3":51000,"4":35700,"5":28050,"6":20400,"7":20400,"8":20400,"9":20400,"10":20400,"11":10200,"12":10200,"13":10200,"14":10200,"15":10200,"16":5100,"17":5100,"18":5100,"19":5100,"20":5100,"21":2550,"22":2550,"23":2550,"24":2550,"25":2550},"NAW":{"1":45000,"2":27000,"3":18000,"4":15300,"5":11700,"6":7200,"7":7200,"8":7200,"9":7200,"10":7200,"11":3600,"12":3600,"13":3600,"14":3600,"15":3600,"16":1800,"17":1800,"18":1800,"19":1800,"20":1800},"BR":{"1":45000,"2":27000,"3":18000,"4":15300,"5":11700,"6":7200,"7":7200,"8":7200,"9":7200,"10":7200,"11":3600,"12":3600,"13":3600,"14":3600,"15":3600,"16":1800,"17":1800,"18":1800,"19":1800,"20":1800},"ASIA":{"1":27000,"2":13500,"3":9000,"4":7650,"5":5850,"6":3600,"7":3600,"8":3600,"9":3600,"10":3600,"11":1800,"12":1800,"13":1800,"14":1800,"15":1800},"ME":{"1":27000,"2":13500,"3":9000,"4":7650,"5":5850,"6":3600,"7":3600,"8":3600,"9":3600,"10":3600,"11":1800,"12":1800,"13":1800,"14":1800,"15":1800},"OCE":{"1":27000,"2":13500,"3":9000,"4":7650,"5":5850,"6":3600,"7":3600,"8":3600,"9":3600,"10":3600,"11":1800,"12":1800,"13":1800,"14":1800,"15":1800}};
 const PRIZE_TABLES_2025={t1:P2025_PRIZES, t2:P2025_PRIZES, t3:P2025_PRIZES};
 
@@ -111319,7 +111336,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='191e9e62';
+const CC_BUILD='67991824';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -146266,8 +146283,11 @@ function ccGcOwnSeats(n, drafted, seated, tag){
   if(n<=0) return [];
   const cr=CAREER.career;
   const lanCr=Object.assign({}, cr, {division:1});
-  // С запасом: часть команд отсеется теми, кто уже сидит в зале.
-  return careerCupField(lanCr, drafted, n+8, tag, false, CC_FIELD_SHARP.lan)
+  /* С запасом: часть команд отсеется теми, кто уже сидит в зале. Восьми не хватало — верх
+     Европы почти весь уже едет с Саммита, и после сдвига рейтингов Глобалами-2026 (30.09)
+     Мейджор 2 недосчитывался двух мест, а их добирал ласт ченс (check-career-globals).
+     Тот же урок, что у Форт-Уэрта ниже: «из десяти предложенных девять уже сидят в зале». */
+  return careerCupField(lanCr, drafted, n+40, tag, false, CC_FIELD_SHARP.lan)
     .filter(t=>{
       const keys=(t.squad||[]).map(c=>_gcNorm(c && c.handle));
       if(keys.some(k=>seated.has(k))) return false;
