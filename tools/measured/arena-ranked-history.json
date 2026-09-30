@@ -1,0 +1,186 @@
+{
+  "about": "Fortnite Arena (Hype) and Ranked rules by era, taken ONLY from fortnite.fandom.com wikitext (page histories via MediaWiki API, fetched 2026-09-30). Numbers not present in the wiki are null, never interpolated. thresholds = lower bound of Hype per division 1..10. busFare = Hype charged per match per division 1..10 (negative). points.<mode>.placement = [[place, bonus]] where bonus is the wiki's 'Reach Top N' increment (cumulative: a win collects every row); a bonus may be an array of 10 per-division values. elim = per-division array of 10, or a single flat number.",
+  "eras": [
+    {
+      "from": "2019-03-27", "to": "2019-08-01", "update": "v8.20", "mode": "arena",
+      "thresholds": null, "busFare": null, "points": null,
+      "eligibility": "v8.20 Luxe Cup (Duos, Mar 30-31 2019): must have reached Contender League. v8.40 World Cup Online Open Week 2 (Duos): both players must have reached Champion League. v8.50 WC Online Open (Solo): Champion League. v9.40 event: Champion League (an Xbox tournament: no division required).",
+      "notes": "Arena launched in v8.20 (Solo & Duos). Leagues Open -> Contender -> Champion, each split into divisions; 'Scoring will update from division to division, with an increasing amount of Bus Fare lost with each match at higher divisions'. The wiki has NO scoring table, division count or thresholds for Season 8/9 (Competitive page history only starts 2020-05-29; update pages have prose only). v8.10 pre-Arena 'Gauntlet' test events: Duo bus fare raised from -2 to -3 points; Solo +2 now from 15th place (was 10th); Duo +2 now from 7th (was 5th) - those are Gauntlet event points, not Arena Hype.",
+      "source": [
+        {"page": "Update v8.20", "revid": 827868},
+        {"page": "Content Update v8.20", "revid": 1149653},
+        {"page": "Update v8.10", "revid": 655062},
+        {"page": "Update v8.40", "revid": 1149648},
+        {"page": "Update v8.50", "revid": 1149647},
+        {"page": "Update v9.40", "revid": 547542}
+      ]
+    },
+    {
+      "from": "2019-08-01", "to": "2021-06-08", "update": "v10.00", "mode": "arena",
+      "thresholds": [0, 250, 500, 1000, 1500, 2500, 4000, 6000, 12000, 16000],
+      "busFare": [0, 0, 0, -10, -20, -30, null, -60, -60, -60],
+      "points": {
+        "solo": {"placement": [[1, 60], [5, 30], [15, 30], [25, 60]], "elim": 20},
+        "duo": {"placement": [[1, 60], [3, 30], [7, 30], [12, 60]], "elim": 10},
+        "trio": {"placement": [[1, 60], [2, 30], [4, 30], [8, 60]], "elim": 7}
+      },
+      "eligibility": "Wiki prose: 'Having a certain amount of points can enable you to compete in Cash Cups such as Contender Cash Cup'. FNCS page: FNCS (from Season X) open to players ranked Champion League in Arena. No per-cup thresholds given.",
+      "notes": "v10.00 (Season X): 'Hype will be reset ... new scoring structure ... 10 Divisions - point values have been increased, but progression should be roughly the same' (Solo & Trios Arena at season start). Points and bus fare are from the wiki prose first written 2021-01-28 (Chapter 2 Season 5) and unchanged until Sep 2021; the page trivia says the point system was revamped in Season X and next in Chapter 2 Season 7, which is why this row spans Season X..C2S6 - but the wiki has no table dated to Season X itself. Placement values are NOT per division in that prose (flat). Bus fare prose: D1-3 0, D4 10, D5 20, D6 30, 'goes on like this until you hit Champion League, where your bus fare will be 60' - D7 not stated (null); D8-10 = 60 per 'Champion League' wording (not split per division). No de-rank from bus fare before v18.10. Thresholds are the wiki's 'Old Requirements (Before v18.10)' table (first added 2021-09-22); the wiki does not say from which update they applied. Squads Arena existed in this period; no Squads numbers on the wiki. v19.00 note: C3S1 had no Arena Preseason.",
+      "source": [
+        {"page": "Competitive (Gamemode)", "revid": 174801, "timestamp": "2021-01-28", "what": "points + bus fare prose"},
+        {"page": "Competitive (Gamemode)", "revid": 296201, "timestamp": "2022-01-24", "what": "Old Requirements (Before v18.10) thresholds"},
+        {"page": "Update v10.00", "revid": 1159024},
+        {"page": "Fortnite Champion Series", "revid": 1124956}
+      ]
+    },
+    {
+      "from": "2021-06-08", "to": "2021-09-28", "update": "v17.00", "mode": "arena",
+      "thresholds": [0, 250, 500, 1000, 1500, 2500, 4000, 6000, 12000, 16000],
+      "busFare": null, "points": null,
+      "eligibility": "Champion League for FNCS (FNCS page, general statement).",
+      "notes": "Wiki trivia: point system revamped in Chapter 2 Season 7, but NO C2S7 table was ever written (the page kept the old prose through this period). v18.00 (2021-09-13): Duos/Trios/Squads Arena auto-filled; reverted when Hype was reset. Thresholds = 'Before v18.10' table.",
+      "source": [
+        {"page": "Competitive (Gamemode)", "revid": 249517, "timestamp": "2021-09-22"}
+      ]
+    },
+    {
+      "from": "2021-09-28", "to": "2022-06-21", "update": "v18.10", "mode": "arena",
+      "thresholds": [0, 400, 800, 1200, 2000, 3000, 5000, 7500, 10000, 15000],
+      "busFare": [0, 0, 0, -10, -20, -30, -50, -60, -70, -80],
+      "points": {
+        "solo": {
+          "placement": [[1, 50], [2, 25], [3, 10], [4, 10], [5, 20], [10, 10], [20, 15], [25, 15], [30, 10], [40, 10], [50, [10, 10, 10, 10, 10, 10, 10, 0, 0, 0]]],
+          "elim": [20, 20, 20, 15, 15, 15, 15, 10, 10, 10]
+        },
+        "duo": {
+          "placement": [[1, 50], [2, 25], [3, 10], [4, 10], [5, 20], [10, 10], [12, 15], [15, 15], [17, 10], [20, 10], [25, [10, 10, 10, 10, 10, 10, 10, 0, 0, 0]]],
+          "elim": [20, 20, 20, 10, 10, 10, 10, 10, 10, 10]
+        },
+        "trio": {
+          "placement": [[1, 50], [2, 25], [3, 10], [4, 10], [5, 20], [6, 10], [7, 15], [8, 15], [9, 10], [10, 10], [15, [10, 10, 10, 10, 10, 10, 10, 0, 0, 0]]],
+          "elim": [15, 15, 15, 15, 10, 10, 10, 10, 10, 10]
+        }
+      },
+      "eligibility": "Champion League for FNCS (FNCS page). No per-cup thresholds on the wiki.",
+      "notes": "v18.10 patch notes: 'Arena Hype has been reset for each player.' From v18.10 bus fare can de-rank you one division. Leagues: Open D1-4, Contender D5-7, Champion D8-10. Squads Arena no longer listed. Late Game Arena (separate mode, v17.40) is its own row.",
+      "source": [
+        {"page": "Competitive (Gamemode)", "revid": 268400, "timestamp": "2021-11-16", "what": "first Hype System table"},
+        {"page": "Competitive (Gamemode)", "revid": 303038, "timestamp": "2022-02-05", "what": "same table, labelled 'introduced in v18.10'; Current Requirements thresholds"},
+        {"page": "Update v18.10", "revid": 1078736}
+      ]
+    },
+    {
+      "from": "2022-06-21", "to": "2022-12-04", "update": "v21.10", "mode": "arena",
+      "thresholds": [0, 400, 800, 1200, 2000, 3000, 5000, 7500, 10000, 15000],
+      "busFare": [0, 0, 0, 0, -30, -40, -50, -60, -70, -70],
+      "points": {
+        "solo": {
+          "placement": [[1, 50], [2, 25], [3, 10], [4, 10], [5, 20], [10, 10], [20, 15], [25, 15], [30, 10], [40, 10], [50, [10, 10, 10, 10, 10, 10, 10, 0, 0, 0]]],
+          "elim": [15, 15, 15, 10, 10, 10, 10, 5, 5, 5]
+        },
+        "duo": {
+          "placement": [[1, 50], [2, 25], [3, 10], [4, 10], [5, 20], [10, 10], [12, 15], [15, 15], [17, 10], [20, 10], [25, [10, 10, 10, 10, 10, 10, 10, 0, 0, 0]]],
+          "elim": [15, 15, 15, 5, 5, 5, 5, 5, 5, 5]
+        },
+        "trio": {
+          "placement": [[1, 50], [2, 25], [3, 10], [4, 10], [5, 20], [6, 10], [7, 15], [8, 15], [9, 10], [10, 10], [15, [10, 10, 10, 10, 10, 10, 10, 0, 0, 0]]],
+          "elim": [10, 10, 10, 10, 5, 5, 5, 5, 5, 5]
+        }
+      },
+      "eligibility": "Champion League for FNCS (C3S3 FNCS; C3S4 had no online FNCS).",
+      "notes": "Placement bonuses and thresholds unchanged from v18.10; bus fare and elimination Hype changed (table edited 2022-06-23, two days after v21.10). Zero Build Trios Arena 2022-07-12..2022-08-30: same Hype system, separate Hype that did not transfer. Late Game Arena re-added v21.50 (2022-08-30) as Creative Royale, removed v22.00.",
+      "source": [
+        {"page": "Competitive (Gamemode)", "revid": 356115, "timestamp": "2022-06-23"},
+        {"page": "Competitive (Gamemode)", "revid": 1173077, "timestamp": "2026-08-05", "what": "final page, same table labelled v21.10 (= tools/measured/wiki-arena-competitive.txt)"}
+      ]
+    },
+    {
+      "from": "2022-12-04", "to": "2023-03-10", "update": "v23.00", "mode": "arena",
+      "thresholds": [0, 400, 800, 1200, 2000, 3000, 5000, 7500, 10000, 15000],
+      "busFare": [0, 0, 0, 0, -30, -40, -50, -60, -70, -70],
+      "points": "same as v21.10 row",
+      "eligibility": "Chapter 4 Season 1: FNCS required reaching Elite rank in the Divisional Cups instead of Champion League in Arena.",
+      "notes": "No Hype table change recorded on the wiki after v21.10. v23.00 notes mention the Placement Cup (Dec 10) and Divisional Cups but no Arena numbers.",
+      "source": [
+        {"page": "Fortnite Champion Series", "revid": 1124956},
+        {"page": "Update v23.00", "revid": 1159076}
+      ]
+    },
+    {
+      "from": "2023-03-10", "to": "2023-05-17", "update": "v24.00", "mode": "arena",
+      "thresholds": [0, 400, 800, 1200, 2000, 3000, 5000, 7500, 10000, 15000],
+      "busFare": [0, 0, 0, 0, -30, -40, -50, -60, -70, -70],
+      "points": "same as v21.10 row",
+      "eligibility": "Chapter 4 Season 2: FNCS participation reverted back to Arena (Champion League).",
+      "notes": "Arena removed and replaced by Ranked in v24.40 (Competitive page says May 15 2023; v24.40 page dated May 17 2023).",
+      "source": [
+        {"page": "Fortnite Champion Series", "revid": 1124956},
+        {"page": "Competitive (Gamemode)", "revid": 1173077}
+      ]
+    },
+    {
+      "from": "2021-08-17", "to": "2021-12-05", "update": "v17.40", "mode": "late_game_arena",
+      "thresholds": [0, 250, 500, 1000, 1500, 2500, 4000, 6000, 12000, 16000],
+      "busFare": null,
+      "points": {
+        "solo": {"placement": [[1, 8], [2, 5], [3, 4], [4, 3], [5, 10], [6, 0], [7, 0], [8, 0], [9, 0], [10, 6], [15, 5]], "elim": 3},
+        "trio": {"placement": [[1, 14], [2, 8], [3, 6], [4, 3], [5, 3], [6, 3], [7, 3], [8, 3], [9, 3], [10, 8], [15, 16]], "elim": 3},
+        "duo": null
+      },
+      "eligibility": null,
+      "notes": "Separate 60-player mode starting at storm phase 4, Solo & Trios only. Released v17.40, removed v18.00, re-added v18.10, removed v19.00; re-added v21.50 (Creative Royale), removed v22.00. The wiki shows one undated Hype table and the old-style ranking table; which LGA period it belongs to is not stated.",
+      "source": [{"page": "Late Game Arena", "revid": 770026, "timestamp": "2024-12-03"}]
+    },
+    {
+      "from": "2023-05-17", "to": "2023-08-25", "update": "v24.40", "mode": "ranked",
+      "thresholds": null, "busFare": null, "points": null,
+      "ranks": ["Bronze III", "Bronze II", "Bronze I", "Silver III", "Silver II", "Silver I", "Gold III", "Gold II", "Gold I", "Platinum III", "Platinum II", "Platinum I", "Diamond III", "Diamond II", "Diamond I", "Elite", "Champion", "Unreal"],
+      "progress": "Progress bar expressed as a percentage to the next rank; full = promote, 0 = demote. Change after a match depends on placement and team eliminations; later eliminations count more; the ranks of eliminated players count. Teams gain/lose equally; party rank (for matchmaking) = highest-ranked member. Unreal never de-ranks for the rest of the season; shows a global Unreal position. Starting rank from past performance + first ranked match (one match reveals rank). Separate BR and Zero Build ranks. No numeric point values published.",
+      "eligibility": "Remaining C4S2 tournaments: no rank requirement, except Console Champions Cup (May 23 2023): Platinum I or higher in Ranked BR. From C4S3 (v25.00, 2023-06-09): rank is one eligibility factor for Epic tournaments (Icon cups, FNCS); exact rank per tournament is in its official rules (not on the wiki). Example: Jujutsu Kaisen Cup (v25.30, Aug 11 2023, ZB Duos): Bronze or above in Ranked Zero Build + account level 15 + 2FA.",
+      "notes": "Season Zero ran to end of C4S3. v25.10 (2023-06-20): planned test reset of all BR and ZB ranks. Squads, not Trios, in Ranked.",
+      "source": [
+        {"page": "Update v24.40", "revid": 693040},
+        {"page": "Ranked", "revid": 494339, "timestamp": "2023-05-17", "what": "'percentage to the next rank'"},
+        {"page": "Ranked", "revid": 495259, "timestamp": "2023-05-22"},
+        {"page": "Update v25.10", "revid": 841749},
+        {"page": "Update v25.30", "revid": 719378}
+      ]
+    },
+    {
+      "from": "2023-08-25", "to": "2023-11-03", "update": "v26.00", "mode": "ranked",
+      "thresholds": null, "busFare": null, "points": null,
+      "eligibility": "Per-tournament official rules (not on the wiki). FNCS participation by Rank from C4S3.",
+      "notes": "C4S4: everyone's rank reset for a fresh start; one match reveals rank, first match does not decide the initial placement. Ranks reset every season from here on.",
+      "source": [{"page": "Update v26.00", "revid": 1159069}]
+    },
+    {
+      "from": "2023-11-03", "to": "2024-03-08", "update": "v27.00", "mode": "ranked",
+      "thresholds": null, "busFare": null, "points": null,
+      "eligibility": "Per-tournament official rules; Ranked Cups introduced (matched within the same rank pool).",
+      "notes": "Season OG: reset; 'rank progression will be faster at the higher and middle ranks'; 'penalized less for being eliminated early'; test: lobbies with 80+ players start if matchmaking is slow. C5S1 (v28.00, 2023-12-03): no ranked rule change in the wiki's patch notes.",
+      "source": [{"page": "Update v27.00", "revid": 1159072}]
+    },
+    {
+      "from": "2024-03-08", "to": "2026-04-17", "update": "v29.00", "mode": "ranked",
+      "thresholds": null, "busFare": null, "points": null,
+      "eligibility": "Per-tournament official rules (not on the wiki).",
+      "notes": "C5S2: 'We tweaked progression in the upper ranks to make it harder and more rewarding to reach Unreal'; 'Points are no longer granted for surviving without taking damage'. v34.10 (2025-03-11): Siphon returns to Ranked BR/ZB (+75 per elimination). No other BR progression changes found in the wiki patch notes v29-v40 (rank resets listed there are Rocket Racing / Reload / Ballistic).",
+      "source": [
+        {"page": "Update v29.00", "revid": 713727},
+        {"page": "Update v34.10", "revid": 944287}
+      ]
+    },
+    {
+      "from": "2026-04-17", "to": null, "update": "unknown (wiki edit 2026-04-17)", "mode": "ranked",
+      "thresholds": null, "busFare": null, "points": null,
+      "ranks": ["Bronze III", "Bronze II", "Bronze I", "Silver III", "Silver II", "Silver I", "Gold III", "Gold II", "Gold I", "Platinum III", "Platinum II", "Platinum I", "Diamond III", "Diamond II", "Diamond I", "Elite III", "Elite II", "Elite I", "Champion III", "Champion II", "Champion I", "Unreal"],
+      "eligibility": "Per-tournament official rules (not on the wiki).",
+      "notes": "Ranked page edit 'Added Tiered Ranks to Elite and Champion' (2026-04-17); the wiki does not name the update. v41.00 (2026-06-06, C7S3): new 'Unreal Legends' rank = Unreal + at least 2,500 Skill Rating + Top 500 on the Unreal leaderboard at the same time. v41.20/v41.30 ranked seasons in the patch notes are for Arenas (boxfight mode) and Reload, not BR.",
+      "source": [
+        {"page": "Ranked", "revid": 1098441, "timestamp": "2026-04-17"},
+        {"page": "Ranked", "revid": 1178010, "timestamp": "2026-09-09"},
+        {"page": "Update v41.00", "revid": 1176506}
+      ]
+    }
+  ]
+}

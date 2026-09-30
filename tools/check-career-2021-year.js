@@ -112,6 +112,8 @@ const BOOT = `
     if(st.ticket){ Object.values(st.heatRes||{}).forEach(h=>{ const i=(h.up||[]).indexOf('you'); if(i>=0){ h.up.splice(i, 1); (h.rest=h.rest||[]).unshift('you'); } }); st.ticket=false; }
     if(!st.ticket){
       careerAdvanceTo('2021-05-23');
+      // Состав хита правился прямо в сейве — хаб перерисовать, иначе на нём кнопка по старому состоянию.
+      careerRenderHub('centre');
       const rEv=careerMajorOn('2021-05-23');
       check('Reboot Round открыт после хита', rEv && rEv.stage==='reboot' && careerMajorCan(rEv), JSON.stringify(rEv));
       const rb=await playThrough('Major 2 reboot');
