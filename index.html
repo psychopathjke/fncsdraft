@@ -3662,6 +3662,19 @@
   .hg-bar s{display:block;height:100%;background:linear-gradient(90deg,#00d6a4,#7aa2ff);text-decoration:none;}
   .hg-go{display:block;width:100%;margin-top:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;}
   .hg-go:hover{background:rgba(255,255,255,.14);}
+  /* Составы по форматам в шапке профиля (ccRostersStripHTML). */
+  .ch-ros{flex:1 1 auto;display:flex;gap:10px;min-width:0;margin:0 12px;flex-wrap:wrap;}
+  .ch-ro{flex:1 1 180px;min-width:0;padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.22);display:flex;flex-direction:column;gap:3px;}
+  .ch-ro.on{border-color:rgba(0,214,164,.55);}
+  .ch-ro.soon{border-color:rgba(255,221,0,.6);}
+  .ch-ro em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
+  .ch-ro.on em{color:#00d6a4;} .ch-ro.soon em{color:#ffdd00;}
+  .ch-ro b{font-size:13px;font-weight:800;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ch-ro b i{font-style:normal;color:#8fa1cc;font-weight:700;}
+  .ch-ro small{font-size:11px;color:#b8c4e0;}
+  .ch-ro button{align-self:flex-start;margin-top:2px;padding:4px 10px;border-radius:8px;border:none;background:#ffdd00;color:#0b0f12;font:inherit;font-size:11px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;}
+  .ch-ro button:focus-visible{outline:2px solid #00ffd0;outline-offset:2px;}
+  @media (max-width:700px){ #screen-career-hub .ch-me-head{flex-wrap:wrap;} .ch-ros{order:3;flex:1 1 100%;margin:10px 0 0;} .ch-ro{flex:1 1 100%;} }
   .cc-valts{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0 4px;}
   .cc-valts em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#cfe0ff;margin-right:2px;}
   .cc-valt{padding:5px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.35);color:#fff;font:inherit;font-size:12px;font-weight:800;cursor:pointer;}
@@ -8112,7 +8125,7 @@ chSquad:'Дуо', ccDuoFindTitle:'Кому написать',
 ccDuoFindHint:'Любому игроку своего региона можно написать первым. Ответит он сам — и не всякий согласится.',
 ccDuoSearchPh:'Поиск по нику',
 ccDuoSortBy:'Сортировать', ccDuoSortOvr:'рейтинг', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Флаг', ccVAltH:'Капы дня', ccDuoNatAll:'все', ccDuoReg:'Регион',
+ccDuoNat:'Флаг', ccVAltH:'Капы дня', roFirst:d=>'первый турнир — '+d, roGather:'Собрать состав', roFind:'Найти напарника', roWeek:'Собрать можно за неделю до турнира', ccDuoNatAll:'все', ccDuoReg:'Регион',
 ccDuoWrite:'Написать',
 ccDuoFree:'без дуо',
 ccDuoWith:n=>'дуо с '+n,
@@ -10107,7 +10120,7 @@ chSquad:'Duo', ccDuoFindTitle:'Who to write to',
 ccDuoFindHint:'You can write first to anybody in your region. They answer for themselves, and not everybody says yes.',
 ccDuoSearchPh:'Search by name',
 ccDuoSortBy:'Sort by', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Flag', ccVAltH:'Cups today', ccDuoNatAll:'all', ccDuoReg:'Region',
+ccDuoNat:'Flag', ccVAltH:'Cups today', roFirst:d=>'first event — '+d, roGather:'Build roster', roFind:'Find a partner', roWeek:'You can build it a week before', ccDuoNatAll:'all', ccDuoReg:'Region',
 ccDuoWrite:'Write',
 ccDuoFree:'no duo',
 ccDuoWith:n=>'duo with '+n,
@@ -13003,7 +13016,7 @@ ccDuoFindTitle:'À qui écrire',
 ccDuoFindHint:'Tu peux écrire en premier à n’importe qui de ta région. Chacun répond pour soi, et tout le monde ne dit pas oui.',
 ccDuoSearchPh:'Chercher par nom',
 ccDuoSortBy:'Trier par', ccDuoSortOvr:'note', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Drapeau', ccVAltH:'Cups du jour', ccDuoNatAll:'tous', ccDuoReg:'Région',
+ccDuoNat:'Drapeau', ccVAltH:'Cups du jour', roFirst:d=>'premier tournoi — '+d, roGather:'Former l’équipe', roFind:'Trouver un coéquipier', roWeek:'À former une semaine avant', ccDuoNatAll:'tous', ccDuoReg:'Région',
 ccDuoWrite:'Écrire',
 ccDuoFree:'sans duo',
 ccDuoNobody:'Personne trouvé',
@@ -15303,7 +15316,7 @@ ccNewsVicNoWin:"Victory Cup: Round 2 senza vittorie",
 ccDuoFindTitle:"A chi scrivere",
 ccDuoSearchPh:"Cerca per nome",
 ccDuoSortBy:'Ordina per', ccDuoSortOvr:'valutazione', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Bandiera', ccVAltH:'Cup di oggi', ccDuoNatAll:'tutti', ccDuoReg:'Regione',
+ccDuoNat:'Bandiera', ccVAltH:'Cup di oggi', roFirst:d=>'primo torneo — '+d, roGather:'Forma la squadra', roFind:'Trova un compagno', roWeek:'Si forma una settimana prima', ccDuoNatAll:'tutti', ccDuoReg:'Regione',
 ccDuoWrite:"Scrivi",
 ccDuoFree:"senza duo",
 ccDuoNobody:"Nessun risultato",
@@ -17823,7 +17836,7 @@ ccNewsVicNoWin:"Victory Cup: Rodada 2 sem vitória",
 ccDuoFindTitle:"Para quem escrever",
 ccDuoSearchPh:"Buscar por nome",
 ccDuoSortBy:'Ordenar por', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Bandeira', ccVAltH:'Cups do dia', ccDuoNatAll:'todos', ccDuoReg:'Região',
+ccDuoNat:'Bandeira', ccVAltH:'Cups do dia', roFirst:d=>'primeiro torneio — '+d, roGather:'Montar o time', roFind:'Achar parceiro', roWeek:'Monte uma semana antes', ccDuoNatAll:'todos', ccDuoReg:'Região',
 ccDuoWrite:"Escrever",
 ccDuoFree:"sem dupla",
 ccDuoNobody:"Ninguém encontrado",
@@ -111401,7 +111414,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4cb75b36';
+const CC_BUILD='d3f0bf42';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -116628,6 +116641,53 @@ function careerPhotoPick(){
   const el=document.getElementById('chPhotoInput');
   if(el) el.click();
 }
+/* СОСТАВЫ ПО ФОРМАТАМ ГОДА — в шапке профиля (его скрин 30.09 с тремя рамками: «тут будут составы
+   смотря какие режимы есть в году; вот дуо сейчас — пишет дуо, а если трио есть в этом сезоне — будет
+   написано: турнир тогда-то первый трио, и за неделю можно собрать состав»). По блоку на каждый
+   командный формат, который в году ещё играется: текущий — с составом, будущий — с датой первого
+   турнира; за CC_ROSTER_WEEK дней до него — кнопка «Собрать состав» (личка того формата, ccDuoFindOpen). */
+const CC_ROSTER_WEEK=7;
+// Размер состава года на день: 2019/2020 — по этапам (ccPhaseRoster), остальные годы — как сейчас.
+function ccSizeOnDay(d){
+  if(typeof ccIs2019==='function' && ccIs2019()) return d<'2019-08-01' ? 2 : d<'2019-10-13' ? 3 : 4;
+  if(typeof ccIs2020==='function' && ccIs2020()) return d<'2020-08-27' ? 2 : 3;
+  const n=CAREER && CAREER.career && CAREER.career.size;
+  return n===3 ? 3 : n===4 ? 4 : 2;
+}
+// Первый день >= сегодня, когда играется формат f: этап года или кап этого формата.
+function ccFormatNext(f){
+  const today=careerToday(), to=ccYearTo();
+  let best=null;
+  const cand=d=>{ if(d>=today && d<=to && (!best || d<best)) best=d; };
+  if(ccSizeOnDay(today)===f) cand(today);
+  [['2019-08-01',3],['2019-10-13',4],['2020-08-27',3]].forEach(([d,n])=>{ if(n===f && ccSizeOnDay(d)===f) cand(d); });
+  const MODE={2:'duo', 3:'trio', 4:'squad'};
+  (typeof ccVictoryList==='function' ? ccVictoryList() : []).forEach(v=>{ if(v.mode===MODE[f] && !v.invite) cand(v.day); });
+  return best;
+}
+function ccRostersStripHTML(){
+  if(!CAREER || !CAREER.career || careerRetired()) return '';
+  const T=L(), today=careerToday(), cur=careerSquadSize();
+  const NAME={2:T.lfRosterDuo, 3:T.lfRosterTrio, 4:T.lfRosterSquad};
+  const handles=f=>{
+    if(f===cur) return careerMates().map(c=>c && c.handle).filter(Boolean);
+    return (((CAREER.rosters||{})[f])||[]).map(r=>(ccMateCardOf(r)||{}).handle).filter(Boolean);
+  };
+  const blocks=[2,3,4].map(f=>{
+    const next=ccFormatNext(f);
+    if(f!==cur && !next) return '';
+    const names=handles(f), need=f-1, full=names.length>=need;
+    const days=next ? ccDaysBetween(today, next) : 0;
+    const soon=f!==cur && next && days<=CC_ROSTER_WEEK;
+    const who=names.length ? esc(names.join(', ')) : '<i>'+esc(T.lfRosterEmpty)+'</i>';
+    const when=f===cur ? esc(T.lfRosterNow) : esc(T.roFirst(ccDayLabel(next)));
+    const act=(f===cur && !full) ? '<button onclick="ccDuoFindOpen(null)">'+esc(T.roFind)+'</button>'
+            : (soon && !full) ? '<button onclick="ccDuoFindOpen(null, '+f+')">'+esc(T.roGather)+'</button>'
+            : (f!==cur && !full) ? '<small>'+esc(T.roWeek)+'</small>' : '';
+    return '<div class="ch-ro'+(f===cur ? ' on' : '')+(soon ? ' soon' : '')+'"><em>'+esc(NAME[f])+' · '+when+'</em><b>'+who+'</b>'+act+'</div>';
+  }).filter(Boolean);
+  return blocks.length ? '<div class="ch-ros">'+blocks.join('')+'</div>' : '';
+}
 function careerProfileTileHTML(){
   const pl=CAREER.player, cr=CAREER.career;
   const me=careerCard();
@@ -116640,6 +116700,7 @@ function careerProfileTileHTML(){
         esc(String(pl.nick||'').slice(0,2).toUpperCase())}</span>
       <div class="ch-me-id"><b>${esc(pl.nick||'')}</b>
         <span>@${esc(ccHandle(pl.nick))}</span></div>
+      ${ccRostersStripHTML()}
       <div class="ch-me-edit">
         ${pl.handle ? '' :
           `<button type="button" onclick="careerNickAsk()">${L().ccNickAsk}</button>`}
