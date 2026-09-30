@@ -3664,6 +3664,10 @@
   .hg-go:hover{background:rgba(255,255,255,.14);}
   /* Составы по форматам в шапке профиля (ccRostersStripHTML). */
   .ch-ros{flex:1 1 auto;display:flex;gap:10px;min-width:0;margin:0 12px;flex-wrap:wrap;}
+  .ch-tile-ros .ch-ros{margin:8px 0 0;}
+  .ch-me-edit-card{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0;}
+  .ch-me-edit-card button{background:transparent;color:var(--ink-dim);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font:inherit;font-size:10px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;white-space:nowrap;}
+  .ch-me-edit-card button:hover{color:#fff;border-color:rgba(255,255,255,.5);}
   .ch-ro{flex:1 1 180px;min-width:0;padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.22);display:flex;flex-direction:column;gap:3px;}
   .ch-ro.on{border-color:rgba(0,214,164,.55);}
   .ch-ro.soon{border-color:rgba(255,221,0,.6);}
@@ -3673,6 +3677,10 @@
   .ch-ro b i{font-style:normal;color:#8fa1cc;font-weight:700;}
   .ch-ro small{font-size:11px;color:#b8c4e0;}
   .ch-ro-ms{display:flex;flex-direction:column;gap:6px;margin-top:2px;}
+  .ch-ro-spot{display:flex;align-items:baseline;gap:6px;margin-top:4px;padding-top:6px;border-top:1px solid rgba(255,255,255,.1);font-size:12px;font-weight:800;color:#fff;cursor:pointer;}
+  .ch-ro-spot em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
+  .ch-ro-spot i{font-style:normal;color:#ffdd00;font-weight:800;}
+  .ch-ro-spot:hover{color:#ffdd00;}
   .ch-ro-m{display:flex;align-items:center;gap:8px;min-width:0;}
   .ch-ro-av{position:relative;flex:none;width:30px;height:30px;border-radius:8px;overflow:hidden;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#cfe0ff;}
   .ch-ro-av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
@@ -8132,7 +8140,7 @@ chSquad:'Дуо', ccDuoFindTitle:'Кому написать',
 ccDuoFindHint:'Любому игроку своего региона можно написать первым. Ответит он сам — и не всякий согласится.',
 ccDuoSearchPh:'Поиск по нику',
 ccDuoSortBy:'Сортировать', ccDuoSortOvr:'рейтинг', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Флаг', ccVAltH:'Капы дня', roFirst:d=>'первый турнир — '+d, roGather:'Собрать состав', roFind:'Найти напарника', roWeek:'Собрать можно за неделю до турнира', ccDuoNatAll:'все', ccDuoReg:'Регион',
+ccDuoNat:'Флаг', ccVAltH:'Капы дня', roFirst:d=>'первый турнир — '+d, roGather:'Собрать состав', roFind:'Найти напарника', roWeek:'Собрать можно за неделю до турнира', roSpot:'Спот', roSpotNone:'не выбран — поставить', roNat:'Сборная', roCaptain:'ты капитан', roNatTrial:'Место в сборной — через отбор страны', ccDuoNatAll:'все', ccDuoReg:'Регион',
 ccDuoWrite:'Написать',
 ccDuoFree:'без дуо',
 ccDuoWith:n=>'дуо с '+n,
@@ -10127,7 +10135,7 @@ chSquad:'Duo', ccDuoFindTitle:'Who to write to',
 ccDuoFindHint:'You can write first to anybody in your region. They answer for themselves, and not everybody says yes.',
 ccDuoSearchPh:'Search by name',
 ccDuoSortBy:'Sort by', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Flag', ccVAltH:'Cups today', roFirst:d=>'first event — '+d, roGather:'Build roster', roFind:'Find a partner', roWeek:'You can build it a week before', ccDuoNatAll:'all', ccDuoReg:'Region',
+ccDuoNat:'Flag', ccVAltH:'Cups today', roFirst:d=>'first event — '+d, roGather:'Build roster', roFind:'Find a partner', roWeek:'You can build it a week before', roSpot:'Spot', roSpotNone:'not set — pick one', roNat:'National team', roCaptain:'you are captain', roNatTrial:'Your seat comes through the country trial', ccDuoNatAll:'all', ccDuoReg:'Region',
 ccDuoWrite:'Write',
 ccDuoFree:'no duo',
 ccDuoWith:n=>'duo with '+n,
@@ -13023,7 +13031,7 @@ ccDuoFindTitle:'À qui écrire',
 ccDuoFindHint:'Tu peux écrire en premier à n’importe qui de ta région. Chacun répond pour soi, et tout le monde ne dit pas oui.',
 ccDuoSearchPh:'Chercher par nom',
 ccDuoSortBy:'Trier par', ccDuoSortOvr:'note', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Drapeau', ccVAltH:'Cups du jour', roFirst:d=>'premier tournoi — '+d, roGather:'Former l’équipe', roFind:'Trouver un coéquipier', roWeek:'À former une semaine avant', ccDuoNatAll:'tous', ccDuoReg:'Région',
+ccDuoNat:'Drapeau', ccVAltH:'Cups du jour', roFirst:d=>'premier tournoi — '+d, roGather:'Former l’équipe', roFind:'Trouver un coéquipier', roWeek:'À former une semaine avant', roSpot:'Spot', roSpotNone:'pas choisi — en poser un', roNat:'Sélection', roCaptain:'tu es capitaine', roNatTrial:'Ta place passe par la sélection du pays', ccDuoNatAll:'tous', ccDuoReg:'Région',
 ccDuoWrite:'Écrire',
 ccDuoFree:'sans duo',
 ccDuoNobody:'Personne trouvé',
@@ -15323,7 +15331,7 @@ ccNewsVicNoWin:"Victory Cup: Round 2 senza vittorie",
 ccDuoFindTitle:"A chi scrivere",
 ccDuoSearchPh:"Cerca per nome",
 ccDuoSortBy:'Ordina per', ccDuoSortOvr:'valutazione', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Bandiera', ccVAltH:'Cup di oggi', roFirst:d=>'primo torneo — '+d, roGather:'Forma la squadra', roFind:'Trova un compagno', roWeek:'Si forma una settimana prima', ccDuoNatAll:'tutti', ccDuoReg:'Regione',
+ccDuoNat:'Bandiera', ccVAltH:'Cup di oggi', roFirst:d=>'primo torneo — '+d, roGather:'Forma la squadra', roFind:'Trova un compagno', roWeek:'Si forma una settimana prima', roSpot:'Spot', roSpotNone:'non scelto — sceglilo', roNat:'Nazionale', roCaptain:'sei il capitano', roNatTrial:'Il posto passa dalla selezione del paese', ccDuoNatAll:'tutti', ccDuoReg:'Regione',
 ccDuoWrite:"Scrivi",
 ccDuoFree:"senza duo",
 ccDuoNobody:"Nessun risultato",
@@ -17843,7 +17851,7 @@ ccNewsVicNoWin:"Victory Cup: Rodada 2 sem vitória",
 ccDuoFindTitle:"Para quem escrever",
 ccDuoSearchPh:"Buscar por nome",
 ccDuoSortBy:'Ordenar por', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Bandeira', ccVAltH:'Cups do dia', roFirst:d=>'primeiro torneio — '+d, roGather:'Montar o time', roFind:'Achar parceiro', roWeek:'Monte uma semana antes', ccDuoNatAll:'todos', ccDuoReg:'Região',
+ccDuoNat:'Bandeira', ccVAltH:'Cups do dia', roFirst:d=>'primeiro torneio — '+d, roGather:'Montar o time', roFind:'Achar parceiro', roWeek:'Monte uma semana antes', roSpot:'Spot', roSpotNone:'não escolhido — escolher', roNat:'Seleção', roCaptain:'você é o capitão', roNatTrial:'A vaga vem pela seletiva do país', ccDuoNatAll:'todos', ccDuoReg:'Região',
 ccDuoWrite:"Escrever",
 ccDuoFree:"sem dupla",
 ccDuoNobody:"Ninguém encontrado",
@@ -111421,7 +111429,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='7c92f999';
+const CC_BUILD='ab4c7c13';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -116427,6 +116435,7 @@ function careerMeHTML(){
   const cardTiles=[`<div class="ch-tile ch-tile-card">
       <h4>${esc(CAREER.player.nick||'')}</h4>
       <div class="ch-cardwrap">${card?futCardHTML(card,{wide:true, noEvent:true, peek:true}):''}</div>
+      ${ccMeEditHTML()}
       ${(CAREER.career.sp||0) ? `<div class="ch-sp">
         <!-- Очки в карьере больше не начисляются (правка: раздача
              один раз на экране создания). Плитка живёт только ради сейвов, в
@@ -116691,6 +116700,22 @@ function ccRostersStripHTML(){
       (u ? '<img src="'+u+'" alt="" loading="lazy" onerror="this.remove()">' : '')+'</span>'+
       '<span class="ch-ro-t"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(c.handle)+'</b><small>'+meta+'</small></span></span>';
   };
+  /* И спот (его слово 30.09: «spot может ещё там»): метка высадки на острове, где этот формат
+     играет первым — сезонный остров или остров вечера (Reload и т.п., careerNightSpotKey). Клик —
+     карта этого острова во вкладке, где живёт плитка спота. */
+  const spotOf=(f, day)=>{
+    let key=null;
+    try{
+      const v=(day && typeof careerVictoryOn==='function') ? careerVictoryOn(day) : null;
+      key=(v && f!==cur && ((v.mode==='trio'?3:v.mode==='squad'?4:v.mode==='duo'?2:0)===f))
+        ? careerNightSpotKey({type:'victory', day:day}) : careerSpotKey(careerBrSet());
+    }catch(e){ key=null; }
+    if(!key || key==='solo') return '';
+    const sp=careerSpotList(key)[0];
+    const myth=sp ? (CC_MYTHIC_POI[careerSpotGrid(key)]||{})[sp.i] : null;
+    const txt=sp ? esc(L().landingZoneSuffix(sp.i+1))+(myth ? ' · ⚡ '+esc(myth) : '') : '<i>'+esc(T.roSpotNone)+'</i>';
+    return '<span class="ch-ro-spot" onclick="careerTab(\'me\');careerSpotOpenFor(\''+esc(key)+'\')"><em>'+esc(T.roSpot)+'</em>'+txt+'</span>';
+  };
   const blocks=[2,3,4].map(f=>{
     const next=ccFormatNext(f);
     if(f!==cur && !next) return '';
@@ -116702,40 +116727,46 @@ function ccRostersStripHTML(){
     const act=(f===cur && !full) ? '<button onclick="ccDuoFindOpen(null)">'+esc(T.roFind)+'</button>'
             : (soon && !full) ? '<button onclick="ccDuoFindOpen(null, '+f+')">'+esc(T.roGather)+'</button>'
             : (f!==cur && !full) ? '<small>'+esc(T.roWeek)+'</small>' : '';
-    return '<div class="ch-ro'+(f===cur ? ' on' : '')+(soon ? ' soon' : '')+'"><em>'+esc(NAME[f])+' · '+when+'</em>'+who+act+'</div>';
+    return '<div class="ch-ro'+(f===cur ? ' on' : '')+(soon ? ' soon' : '')+'"><em>'+esc(NAME[f])+' · '+when+'</em>'+who+spotOf(f, next)+act+'</div>';
   }).filter(Boolean);
+  /* И сборная — Кубок наций (его слово 30.09: «и nation кап тоже там пусть будет, сборка состава»).
+     Страна, ближайший этап, состав (пустые места капитана — «пусто»), у капитана за неделю до
+     квалификации — «Собрать состав» (то же окно выбора, ccNatModalOpen). */
+  try{
+    const mine=(typeof ccNationsMine==='function') ? ccNationsMine() : null;
+    const N=mine ? ccNatState() : null;
+    const nd=mine ? ccNatNextDay() : null;
+    if(mine && nd && !N.finalDone){
+      const days=ccNatDays(), qd=days.qual, dq=qd ? ccDaysBetween(today, qd) : 99;
+      const others=(mine.squad||[]).filter((p,i)=>i>0);
+      const chips=others.map(p=>p ? mateHTML(p) : '<span class="ch-ro-m"><span class="ch-ro-av">?</span><span class="ch-ro-t"><b><i>'+esc(T.lfRosterEmpty)+'</i></b></span></span>').join('');
+      const needPick=typeof ccNatPickNeeded==='function' && ccNatPickNeeded();
+      const act=(mine.captain && needPick && dq<=CC_ROSTER_WEEK) ? '<button onclick="ccNatModalOpen()">'+esc(T.roGather)+'</button>'
+              : (mine.captain && needPick) ? '<small>'+esc(T.roWeek)+'</small>'
+              : (!mine.inSquad && mine.seat==='trial' && !mine.trialDone) ? '<small>'+esc(T.roNatTrial)+'</small>' : '';
+      const soon=mine.captain && needPick && dq<=CC_ROSTER_WEEK;
+      blocks.push('<div class="ch-ro ch-ro-nat'+(soon ? ' soon' : '')+'"><em>'+flagImg(mine.nat, 12)+' '+esc(T.roNat)+(mine.captain ? ' · '+esc(T.roCaptain) : '')+' · '+esc(T.roFirst(ccDayLabel(nd)))+'</em>'+
+        (chips ? '<span class="ch-ro-ms">'+chips+'</span>' : '')+act+'</div>');
+    }
+  }catch(e){}
   return blocks.length ? '<div class="ch-ros">'+blocks.join('')+'</div>' : '';
 }
 function careerProfileTileHTML(){
-  const pl=CAREER.player, cr=CAREER.career;
-  const me=careerCard();
-  const url=photoURL(pl.photo ? {_photo:pl.photo} : me);
-  const posts=(cr.news||[]).filter(n=>ccPostAuthor(n).you).length;
-  return `<div class="ch-tile ch-tile-me">
-    <div class="ch-me-head">
-      <span class="x-av x-av-you x-av-big">${
-        url ? `<img src="${url}" alt="" onerror="this.remove()">` : ''}${
-        esc(String(pl.nick||'').slice(0,2).toUpperCase())}</span>
-      <div class="ch-me-id"><b>${esc(pl.nick||'')}</b>
-        <span>@${esc(ccHandle(pl.nick))}</span></div>
-      ${ccRostersStripHTML()}
-      <div class="ch-me-edit">
-        ${pl.handle ? '' :
-          `<button type="button" onclick="careerNickAsk()">${L().ccNickAsk}</button>`}
-        <button type="button" onclick="careerPhotoPick()">${L().ccPhotoPick}</button>
-        ${pl.photo ? `<button type="button" onclick="careerPhotoSet(null)">${
-          L().ccPhotoClear}</button>` : ''}
-      </div>
-      <input type="file" id="chPhotoInput" accept="image/*"
-             style="display:none" onchange="careerPhotoChosen(this)">
-    </div>
-    <div class="ch-me-bio">${careerBioHTML()}</div>
-    <div class="ch-me-counts">
-      <span><b>${ccFollowers(careerReach())}</b>${L().xFollowers}</span>
-      <span><b>${careerDms().length}</b>${L().xFollowing}</span>
-      <span><b>${posts}</b>${L().xPosts}</span>
-    </div>
-  </div>`;
+  /* Только составы (его слово 30.09: «убери там вообще информацию о игроке, за которого играешь,
+     она есть точь-в-точь такая же сверху»). Ник, фото, возраст, флаг, клуб и подписчики — в шапке
+     карьеры; смена ника и фото — во вкладке «Профиль», под своей карточкой (ccMeEditHTML). */
+  const ros=ccRostersStripHTML();
+  return ros ? '<div class="ch-tile ch-tile-ros"><h4>'+esc(L().lfRosters)+'</h4>'+ros+'</div>' : '';
+}
+// Смена ника и фото — под своей карточкой во вкладке «Профиль».
+function ccMeEditHTML(){
+  const pl=CAREER.player;
+  return `<div class="ch-me-edit ch-me-edit-card">
+      ${pl.handle ? '' : `<button type="button" onclick="careerNickAsk()">${L().ccNickAsk}</button>`}
+      <button type="button" onclick="careerPhotoPick()">${L().ccPhotoPick}</button>
+      ${pl.photo ? `<button type="button" onclick="careerPhotoSet(null)">${L().ccPhotoClear}</button>` : ''}
+      <input type="file" id="chPhotoInput" accept="image/*" style="display:none" onchange="careerPhotoChosen(this)">
+    </div>`;
 }
 /* Плитка своей точки: где стоит метка, сколько на ней ауры и чем стоит переезд.
 
