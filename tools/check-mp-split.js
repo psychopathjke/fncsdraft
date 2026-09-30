@@ -71,7 +71,7 @@ const BOOT = `
               не знала — контракт протух, а не поле лишнее. */
            'seasonTurn','seed','sizes','solo','soloBy','solos','solosBy',
            'splits','spots','summit','summitSeed',
-           'table','tokens','trios','wf'].join(','),
+           'table','tokens','trios','wf','year','year0'].join(','),
           out.notes.team.join(','));
     check('журнал команды уехал', Array.isArray(t.log) && t.log.length === 1);
     check('книга роста уехала', t.dev && t.dev.scroll === 6, JSON.stringify(t.dev));

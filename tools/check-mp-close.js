@@ -126,7 +126,7 @@ const BOOT = `
     ['runCareerCup','runCareerMajor','runCareerSummit','runCareerGlobals','runCareerGclc',
      'runCareerReload','runCareerReloadChampionship','runCareerWeeklyFinal','runCareerEval',
      'runCareerVictory','runCareerSoloSeries'].forEach(fn => {
-      const at = src.indexOf('async function ' + fn + '(');
+      const at = src.indexOf('async function ' + (fn==='runCareerVictory' ? 'runCareerVictoryNight' : fn) + '(');
       const end = src.indexOf('\\nasync function ', at + 10);
       const body = at < 0 ? '' : src.slice(at, end < 0 ? at + 40000 : end);
       check(fn + ' закрывает вечер', body.indexOf('ccMpClose(') >= 0,

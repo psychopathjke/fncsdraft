@@ -94,7 +94,7 @@ const BOOT = `
     ['runCareerCup','runCareerMajor','runCareerSummit','runCareerGlobals','runCareerGclc',
      'runCareerReload','runCareerReloadChampionship','runCareerWeeklyFinal','runCareerEval',
      'runCareerVictory','runCareerSoloSeries'].forEach(fn => {
-      const at = src.indexOf('async function ' + fn + '(');
+      const at = src.indexOf('async function ' + (fn==='runCareerVictory' ? 'runCareerVictoryNight' : fn) + '(');
       const body = at < 0 ? '' : src.slice(at, at + 6000);
       // И называет свой вид вечера: ccMpGate('cup'), не ccMpGate(). См. lobby.ready и его скрин 29 августа.
       check(fn + ' спрашивает гейт и называет вид', /ccMpGate\\('[a-z]+'\\)/.test(body), at < 0 ? 'функции нет' : 'нет вызова с видом');

@@ -106,8 +106,9 @@ const BOOT = `
        У героя две двери — карьера и драфт; командные — в полосе. */
     check('в герое нет двери «вдвоём»', !el('heroDuo'));
     check('и нет строки «войти по коду»', !el('heroCode'));
-    const heroBtns = [...document.querySelectorAll('.hero-cta .hero-btn')];
-    check('у героя две двери: карьера и драфт', heroBtns.length === 2, String(heroBtns.length));
+    const heroCta = document.querySelector('.hero-cta');
+    const heroBtns = heroCta ? [...heroCta.querySelectorAll('.hero-btn')] : [];
+    check('у героя карьеры две двери: карьера и драфт', heroBtns.length === 2, String(heroBtns.length));
     check('первая — одиночная карьера', heroBtns[0] && heroBtns[0].textContent.trim() === L().heroCareer,
           JSON.stringify(heroBtns[0] && heroBtns[0].textContent.trim()));
 

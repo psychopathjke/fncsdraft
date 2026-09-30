@@ -122,7 +122,7 @@ const BOOT = `
     // Из сотни вычитаются ОБА человека (тёзки обоих). Его Sky и Scroll, 29 августа: «diff 1 of 4900: #278 scroll:96 vs sky:96».
     check('сотня строится без обоих людей', body.indexOf('careerSoloField(lobbyCr, mate ? [me, pc]')>=0);
     // Соло-Victory Cup в команде — та же схема: оба человека, тёзки обоих вычтены, вопросы адресные.
-    const atV=src.indexOf('async function runCareerVictory('); const bodyV=src.slice(atV, atV+20000);
+    const atV=src.indexOf('async function runCareerVictoryNight('); const bodyV=src.slice(atV, atV+20000);
     check('соло-Victory Cup: оба в сотне и тёзки вычтены', bodyV.indexOf('careerSoloField(cr, pc ? [me, pc] : drafted')>=0 && bodyV.indexOf('soloMate.isMate=true')>=0 && bodyV.indexOf('ccSoloDrops(')>=0);
     check('соло-вечер узнаётся по виду, а не по типу', careerNightSolo({type:'victory', day:'2026-03-08'})===true && careerNightSolo({type:'cup', day:'2026-03-08'})===false);
     // 3. Двое в одной сотне.

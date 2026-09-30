@@ -12,6 +12,7 @@
 //   node tools/check-mp-live-two.js            (Victory Cup, 2026-01-12)
 //   CC_DAY=2026-02-02 node tools/check-mp-live-two.js   (кубок Д1: дроп каждую игру)
 //   CC_SKIP_A=2000 CC_SKIP_B=25000  — когда жать пропуск (мс; 0 — не жать)
+//   CC_YEAR=2020 CC_DAY=2020-04-13  — карьера прошлого года (Daily Duos Cup 2020)
 const fs = require('fs'), os = require('os'), path = require('path'), http = require('http'), crypto = require('crypto');
 const { spawn } = require('child_process');
 const ROOT = path.resolve(__dirname, '..');
@@ -92,7 +93,7 @@ const boot = (who) => `
       v:1, player:{nick:${JSON.stringify(who.nick)}, age:${who.age}, source:'rookie', country:${JSON.stringify(who.country)}, countryPing:15,
         closeRangeEdge:${who.close}, region:'EU', ovr:${who.ovr}, role:${JSON.stringify(who.role)}, attrs:null, ageEdge:${who.ageEdge},
         photo:null, handle:null, cardRegion:null, nat:null},
-      career:{season:1, day:${JSON.stringify(DAY)}, division:1, earnings:${who.money}, balance:${who.money}, reach:${who.reach},
+      career:{season:1, day:${JSON.stringify(DAY)}, ${process.env.CC_YEAR ? 'year:'+Number(process.env.CC_YEAR)+', year0:'+Number(process.env.CC_YEAR)+',' : ''} division:1, earnings:${who.money}, balance:${who.money}, reach:${who.reach},
               tokens:[], log:[], news:[], form:${who.form}, grind:${who.grind},
               soloBy:${JSON.stringify(SOLO ? {livea:{got:SOLO, pass:SOLO}, liveb:{got:SOLO, pass:SOLO}} : undefined)||'undefined'}},
       partners:[]}));
