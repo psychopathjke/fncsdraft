@@ -3662,6 +3662,9 @@
   .hg-bar s{display:block;height:100%;background:linear-gradient(90deg,#00d6a4,#7aa2ff);text-decoration:none;}
   .hg-go{display:block;width:100%;margin-top:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;}
   .hg-go:hover{background:rgba(255,255,255,.14);}
+  .cc-duo-regsel{flex:0 0 auto;height:38px;padding:0 10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:13px;font-weight:800;cursor:pointer;}
+  .cc-duo-regsel option{color:#0b0f12;}
+  .cc-duo-regtag{font-size:10px;font-weight:900;letter-spacing:.05em;color:#ffdd00;margin-left:4px;}
   .hg-go:focus-visible{outline:2px solid #00ffd0;outline-offset:2px;}
   .hd-head{display:flex;align-items:center;gap:12px;margin:6px 0 8px;}
   .hd-ovr{font-size:34px;font-weight:900;font-style:italic;line-height:1;color:#0b0f12;background:#ffdd00;border-radius:8px;padding:4px 10px;}
@@ -8104,7 +8107,7 @@ chSquad:'Дуо', ccDuoFindTitle:'Кому написать',
 ccDuoFindHint:'Любому игроку своего региона можно написать первым. Ответит он сам — и не всякий согласится.',
 ccDuoSearchPh:'Поиск по нику',
 ccDuoSortBy:'Сортировать', ccDuoSortOvr:'рейтинг', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Флаг', ccDuoNatAll:'все',
+ccDuoNat:'Флаг', ccDuoNatAll:'все', ccDuoReg:'Регион',
 ccDuoWrite:'Написать',
 ccDuoFree:'без дуо',
 ccDuoWith:n=>'дуо с '+n,
@@ -10098,7 +10101,7 @@ chSquad:'Duo', ccDuoFindTitle:'Who to write to',
 ccDuoFindHint:'You can write first to anybody in your region. They answer for themselves, and not everybody says yes.',
 ccDuoSearchPh:'Search by name',
 ccDuoSortBy:'Sort by', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Flag', ccDuoNatAll:'all',
+ccDuoNat:'Flag', ccDuoNatAll:'all', ccDuoReg:'Region',
 ccDuoWrite:'Write',
 ccDuoFree:'no duo',
 ccDuoWith:n=>'duo with '+n,
@@ -12993,7 +12996,7 @@ ccDuoFindTitle:'À qui écrire',
 ccDuoFindHint:'Tu peux écrire en premier à n’importe qui de ta région. Chacun répond pour soi, et tout le monde ne dit pas oui.',
 ccDuoSearchPh:'Chercher par nom',
 ccDuoSortBy:'Trier par', ccDuoSortOvr:'note', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Drapeau', ccDuoNatAll:'tous',
+ccDuoNat:'Drapeau', ccDuoNatAll:'tous', ccDuoReg:'Région',
 ccDuoWrite:'Écrire',
 ccDuoFree:'sans duo',
 ccDuoNobody:'Personne trouvé',
@@ -15291,7 +15294,7 @@ ccNewsVicNoWin:"Victory Cup: Round 2 senza vittorie",
 ccDuoFindTitle:"A chi scrivere",
 ccDuoSearchPh:"Cerca per nome",
 ccDuoSortBy:'Ordina per', ccDuoSortOvr:'valutazione', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Bandiera', ccDuoNatAll:'tutti',
+ccDuoNat:'Bandiera', ccDuoNatAll:'tutti', ccDuoReg:'Regione',
 ccDuoWrite:"Scrivi",
 ccDuoFree:"senza duo",
 ccDuoNobody:"Nessun risultato",
@@ -17810,7 +17813,7 @@ ccNewsVicNoWin:"Victory Cup: Rodada 2 sem vitória",
 ccDuoFindTitle:"Para quem escrever",
 ccDuoSearchPh:"Buscar por nome",
 ccDuoSortBy:'Ordenar por', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
-ccDuoNat:'Bandeira', ccDuoNatAll:'todos',
+ccDuoNat:'Bandeira', ccDuoNatAll:'todos', ccDuoReg:'Região',
 ccDuoWrite:"Escrever",
 ccDuoFree:"sem dupla",
 ccDuoNobody:"Ninguém encontrado",
@@ -111346,7 +111349,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='984fcfa3';
+const CC_BUILD='c4bd6d50';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -125302,7 +125305,9 @@ function ccMateCardOf(pr){
      сел в состав (pr.base, пишется при первом чтении); дальше его двигают только ваши вечера и возраст
      (pr.dev, careerMateDevelop). Монграл, взятый в 2019-м на 96, в 2021-м не падает к своим 62 сам —
      только если вы играете хуже, чем должны. Ушёл из состава — снова живёт по карточке года. */
-  const now=careerRosterNowEU().find(x=>x.handle===pr.handle);
+  const own0=careerRosterNowEU().find(x=>x.handle===pr.handle);
+  const now=own0 || (pr.cardRegion && pr.cardRegion!==ccCareerRegion()
+    ? ccSceneRoster(pr.cardRegion).find(x=>x.handle===pr.handle) : null);
   const found=now || PLAYERS.find(x=>x.handle===pr.handle && x.region===(pr.cardRegion||'EU') && (ccNowYear()>=2026 || ccCardYear(x)<=ccNowYear()));
   if(!found) return null;
   const c={...found};
@@ -133952,6 +133957,8 @@ function careerDmWrite(handle, seat, fmt){
     // Anybody in the region, which is what the search offers. See careerDuoSearchPool.
     || careerDuoSearchPool(true).find(w=>hKey(w.handle)===hKey(handle));
   if(!who) return;
+  // Регион карточки — из поиска: запись состава помнит, из какой сцены человек (ccMateCardOf).
+  if(who.roster && !who.cardRegion) who.cardRegion=ccDuoRegNow();
   const t=existing || careerDmThread(who);
   /* Which chair this was asked for, carried by the conversation itself.
 
@@ -135496,9 +135503,14 @@ function careerDuoSearchPool(any){
      первым ключом, и 120 строк списка кончались на ИГЛах 85–90, а фраггеры 91–96 уходили за край. */
   const byWant=(a,b)=>b.ovr-a.ovr || (want ? (a.role===want?0:1)-(b.role===want?0:1) : 0);
   if(ccRealNamesHere()){
-    return careerRosterNowEU().filter(p=>!mine.has(hKey(p)))
+    /* Регион поиска (его отзыв 30.09, скрин: «не могу забрать игрока с Азии на EU»): список стоял на
+       сцене своего региона, и человека из другого найти было негде. Свой — по умолчанию, остальные —
+       выбором в шапке поиска (ccDuoFindReg). Регион карточки едет в запись состава (cardRegion). */
+    const reg=ccDuoRegNow();
+    const scene=reg===ccCareerRegion() ? careerRosterNowEU() : ccSceneRoster(reg);
+    return scene.filter(p=>!mine.has(hKey(p)))
       .map(p=>({handle:p.handle, ovr:p._ovr!=null?p._ovr:attrsFor(p).ovr, nat:p.nat,
-                role:attrsFor(p).roleKey, roster:true, card:p,
+                role:attrsFor(p).roleKey, roster:true, card:p, cardRegion:p.region||reg,
                 club:p.org||null, pay:0}))
       .sort(byWant);
   }
@@ -135529,6 +135541,14 @@ function ccDuoFindSort(v){ CC_DUO_SORT=(v==='pr' ? 'pr' : 'ovr'); ccDuoFindRende
 /* Отбор по флагу. Пусто — все; иначе код страны, как его знает FLAG_CODE.
    Живёт рядом с сортировкой и сбрасывается там же, где строка поиска. */
 let CC_DUO_NAT='', CC_DUO_NAT_OPEN=false;
+// Регион поиска: '' — свой. Сбрасывается при открытии окна, как строка поиска.
+let CC_DUO_REG='';
+function ccDuoRegNow(){
+  const own=ccCareerRegion();
+  const ok=(typeof ccYearRegions==='function' ? ccYearRegions() : CC_REGIONS)||[];
+  return (CC_DUO_REG && ok.indexOf(CC_DUO_REG)>=0) ? CC_DUO_REG : own;
+}
+function ccDuoFindReg(r){ CC_DUO_REG=String(r||''); CC_DUO_NAT=''; CC_DUO_NAT_OPEN=false; ccDuoFindRender(); }
 function ccDuoFindNat(v){ CC_DUO_NAT=(String(v||'')===CC_DUO_NAT) ? '' : String(v||''); ccDuoFindRender(); }
 // Код страны человека из списка: в карточках лежит НАЗВАНИЕ страны, не код.
 function ccDuoNatCode(w){
@@ -135552,7 +135572,7 @@ function ccDuoFindOpen(seat, fmt){
      предложить его может любой из двоих — раньше список молча не открывался
      у второго в лобби, и если роли перепутались, то и у владельца. */
   if(ccMpOn() && ccMpMateRecs().length >= ccMpBotSeats()) return;
-  CC_DUO_Q=''; CC_DUO_NAT=''; CC_DUO_NAT_OPEN=false;
+  CC_DUO_Q=''; CC_DUO_NAT=''; CC_DUO_NAT_OPEN=false; CC_DUO_REG='';
   CC_DUO_SEAT=(typeof seat==='number' && seat>=0 && seat<careerMateSeats()) ? seat : null;
   ccDuoFindRender();
   document.getElementById('duoFindModal').style.display='flex';
@@ -135658,7 +135678,7 @@ function ccDuoFindRender(keepFocus){
           return `<span class="cc-buy-img cc-buy-face cc-buy-mono cc-duo-ava">${esc(String(w.handle||'?').slice(0,2).toUpperCase())}${
             u ? `<img src="${u}" alt="" loading="lazy" onerror="this.remove()">` : ''}</span>`;
         })()}
-      <div class="cc-buy-in"><b>${esc(w.handle)} <i>${w.ovr}</i></b><i>${under}</i>${
+      <div class="cc-buy-in"><b>${esc(w.handle)} <i>${w.ovr}</i>${w.cardRegion && w.cardRegion!==ccCareerRegion() ? ` <small class="cc-duo-regtag">${esc(w.cardRegion)}</small>` : ''}</b><i>${under}</i>${
         ad ? `<i class="cc-buy-ad${fits?'':' no'}">${esc(L().ccAdWant(L()[ad.want]||'', ad.div, ad.pr))}</i>` : ''}</div>
       ${wrote ? `<span class="cc-owned">${L().ccDuoYouWrote}</span>`
               : !fits ? `<span class="cc-owned cc-ad-no">${L().ccAdNoFit(ad.pr)}</span>`
@@ -135681,7 +135701,8 @@ function ccDuoFindRender(keepFocus){
            <button type="button" class="${CC_DUO_NAT?'':'on'}" onclick="CC_DUO_NAT='';CC_DUO_NAT_OPEN=false;ccDuoFindRender()"><span>${esc(L().ccDuoNatAll)}</span><b>${all.length}</b></button>
            ${natAll.map(c=>`<button type="button" class="${CC_DUO_NAT===c?'on':''}" onclick="CC_DUO_NAT='${c}';CC_DUO_NAT_OPEN=false;ccDuoFindRender()">${natFlag(c)}<span>${esc(natName(c))}</span><b>${natCount[c]||0}</b></button>`).join('')}
          </div>` : ''}
-       </div></div>
+       </div>${ccRealNamesHere() ? `<select class="cc-duo-regsel" aria-label="${esc(L().ccDuoReg)}" onchange="ccDuoFindReg(this.value)">${
+         ((typeof ccYearRegions==='function' ? ccYearRegions() : CC_REGIONS)||[]).map(r=>`<option value="${r}"${r===ccDuoRegNow()?' selected':''}>${esc(L().ccDuoReg)}: ${esc(regionName(r))}</option>`).join('')}</select>` : ''}</div>
      <div class="ch-hint cc-duo-n">${list.length ? L().ccDuoFound(list.length) : L().ccDuoNobody}
        <span class="cc-duo-sort">${esc(L().ccDuoSortBy)}: <button class="cc-job-h${CC_DUO_SORT==='ovr'?' on':''}" onclick="ccDuoFindSort('ovr')">${esc(L().ccDuoSortOvr)}</button> <button class="cc-job-h${CC_DUO_SORT==='pr'?' on':''}" onclick="ccDuoFindSort('pr')">${esc(L().ccDuoSortPr)}</button></span></div>
      <div class="cc-buys">${rows}</div>`;
