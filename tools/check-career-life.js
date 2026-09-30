@@ -64,13 +64,10 @@ const BOOT = `
   const lastLog=()=>{ const s=JSON.parse(localStorage.getItem('fncsdraft_career')).career; return (s.log||[]).slice(-1)[0]||null; };
   try{
     const setY=(d,y,extra)=>{ seed(d, extra); const s=JSON.parse(localStorage.getItem('fncsdraft_career')); s.career.year=y; s.career.year0=y; localStorage.setItem('fncsdraft_career', JSON.stringify(s)); careerEntry(); careerRenderHub('centre'); };
-    // 1. Ранг: 2026, соло Victory Cup 8 марта. Ниже порога (CC_RANK_CUP, Platinum I) — закрыт, от него — открыт.
+    // 1. Ранга больше нет: 2026, соло Victory Cup 8 марта открыт без него.
     setY('2026-03-08', 2026);
     const lf=ccLife();
-    ccRankPts(); lf.rp=CC_RANK_CUP*100-50;
-    check('ранг ниже порога закрывает кап', !careerCanPlayKind('victory') && ccLifeWhy(careerToday(),'victory')==='lfWhyRank', ccLifeWhy(careerToday(),'victory'));
-    lf.rp=CC_RANK_CUP*100+50;
-    check('порог открывает кап', careerCanPlayKind('victory'), ccLifeWhy(careerToday(),'victory'));
+    check('кап открыт без ранга', careerCanPlayKind('victory') && ccLifeWhy(careerToday(),'victory')==null, ccLifeWhy(careerToday(),'victory'));
     // 2. Травма закрывает вечер и тренировки.
     lf.hurt={k:'wrist', until:ccAddDays(careerToday(), 3)};
     check('травма закрывает вечер', !careerCanPlayKind('victory'));
@@ -109,7 +106,7 @@ const BOOT = `
     check('икон-скин выдан', !!ccLife().icon && (CAREER.career.balance||0)>bal, JSON.stringify(ccLife().icon));
     // 7. Оценка вечера приклеивается к строке журнала.
     setY('2026-03-08', 2026);
-    ccLife().rp=CC_RANK_CUP*100+50; careerPrPlace=careerPrPlace;
+    careerPrPlace=careerPrPlace;
     const play=document.querySelector('#screen-career-hub .ch-play');
     const sk=setInterval(()=>{ const b=document.getElementById('majorSkipBtn'); if(b && !b.disabled) b.click(); }, 20);
     play.click();

@@ -36,34 +36,19 @@ const BOOT = `
   };
   const freeDay=(from)=>{ let d=from; for(let i=0;i<60;i++){ if(!(careerYearDays().get(d)||[]).length) return d; d=ccAddDays(d,1); } return from; };
   try{
-    // ---- Очки Арены по таблице вики.
-    check('соло, победа, 3 убийства, див. 1: 185+45', ccArenaMatchPts(1,0,1,3)===230, String(ccArenaMatchPts(1,0,1,3)));
-    check('дуо, победа, 2 убийства, див. 8: 175+10−60', ccArenaMatchPts(2,7,1,2)===125, String(ccArenaMatchPts(2,7,1,2)));
-    check('трио, 12-е место, див. 5: только топ-15, минус 30', ccArenaMatchPts(3,4,12,0)===-20, String(ccArenaMatchPts(3,4,12,0)));
-
-    // ---- 2021: Арена вместо ранкеда, кэш-капы — с Champion League.
+    // ---- Арены и ранкеда нет (его слово 30.09: «убери механику ранкеда и арену»).
     seed(2021, '2021-03-01', 64, 3);
     CAREER.career.day=freeDay('2021-03-02'); careerSave();
     check('год 2021', ccCalYear()===2021, String(ccCalYear()));
-    const h0=ccArenaHype();
-    check('посев Hype от рейтинга: 64 → 5850', h0===5850, String(h0));
-    check('5850 — Contender, див. 7 (старая таблица)', ccArenaDiv()===6, ccArenaName());
+    check('функций Арены и ранга нет', typeof ccArenaRun==='undefined' && typeof ccRankAdd==='undefined');
     const cup=ccVictoryList().find(v=>!v.invite && !v.lan && v.day>=careerToday());
     check('в 2021-м есть открытый кэш-кап', !!cup);
-    if(cup){
-      check('кэш-кап закрыт без Champion League', ccLifeWhy(cup.day, 'victory')==='lfWhyArena' || !careerVictoryOn(cup.day),
-            String(ccLifeWhy(cup.day, 'victory')));
-      ccLife().hype=6000;
-      check('с 6000 Hype — Champion, кап открыт', ccArenaDiv()===7 && ccLifeWhy(cup.day, 'victory')!=='lfWhyArena');
-      ccLife().hype=5850;
-    }
-    check('карточка ранкеда в 2021-м зовётся Арена', ccActName('trSur')==='Arena');
+    if(cup) check('кэш-кап не спрашивает ни лигу, ни ранг', ccLifeWhy(cup.day, 'victory')==null, String(ccLifeWhy(cup.day, 'victory')));
+    check('занятие «Выживание» зовётся Pubs', ccActName('trSur')===L().ccActtrSur && !/Arena|Ranked/.test(ccActName('trSur')), ccActName('trSur'));
     const e0=careerEnergy();
     const ok=careerDoAct('trSur');
-    check('вечер на Арене сыгран', !!ok && careerEnergy()<e0);
-    check('Hype сдвинулся', ccLife().hype!==5850, String(ccLife().hype));
-    check('новость про Арену', (CAREER.career.news||[]).some(n=>n.k==='lfNewsArena'));
-    out.steps.push('Арена: 5850 → '+ccLife().hype+' ('+ccArenaName()+')');
+    check('занятие сыграно', !!ok && careerEnergy()<e0);
+    check('Hype и ранг не пишутся', ccLife().hype==null && ccLife().rp==null, JSON.stringify({h:ccLife().hype, rp:ccLife().rp}));
 
     // ---- Оценка занятия.
     careerDoAct('trBox');
@@ -128,11 +113,11 @@ const BOOT = `
     check('Victory Cup 2023 — два раунда', ccCupRounds({id:'S24_SoloVictoryCup'})===2);
     check('своё событие — как было', ccCupRounds({id:'NationsFinal'})===null);
 
-    // ---- 2026: ранкед, Арены нет.
+    // ---- 2026: и тут без ранга.
     seed(2026, '2026-02-18', 70, 2);
     CAREER.career.day=freeDay('2026-02-18'); careerSave();
     careerDoAct('trSur');
-    check('в 2026-м тренировка — ранкед, Hype не трогается', ccLife().hype==null && ccLife().rp!=null);
+    check('в 2026-м ранг не пишется', ccLife().rp==null);
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';

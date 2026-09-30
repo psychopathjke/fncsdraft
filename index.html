@@ -3662,25 +3662,6 @@
   .hg-bar s{display:block;height:100%;background:linear-gradient(90deg,#00d6a4,#7aa2ff);text-decoration:none;}
   .hg-go{display:block;width:100%;margin-top:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font:inherit;font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;}
   .hg-go:hover{background:rgba(255,255,255,.14);}
-  .hg-hint{margin-top:6px;font-size:12px;line-height:1.35;color:#b8c4e0;}
-  /* Плитка Арены на Центре (ccArenaTileHTML). */
-  .ar-tile h4 span{font-size:11px;font-weight:900;letter-spacing:.05em;color:#8fa1cc;margin-left:6px;}
-  .ar-hype{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:4px 0 2px;}
-  .ar-hype b{font-size:28px;font-weight:900;font-style:italic;color:#ffdd00;line-height:1;}
-  .ar-hype em{font-style:normal;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
-  .ar-hype i{font-style:normal;font-size:12px;font-weight:800;color:#fff;margin-left:auto;}
-  .ar-tile.ok .ar-hype i{color:#00d6a4;}
-  .ar-play{display:block;margin-top:10px;width:100%;padding:10px 12px;border:none;border-radius:10px;background:#ffdd00;color:#0b0f12;font:inherit;font-size:13px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;}
-  .ar-play:hover:not([disabled]){background:#fff06a;}
-  .ar-play:focus-visible{outline:2px solid #00ffd0;outline-offset:2px;}
-  .ar-play[disabled]{opacity:.45;cursor:not-allowed;}
-  .ar-last{margin-top:10px;}
-  .ar-last>em{display:block;font-style:normal;font-size:11px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:#8fa1cc;margin-bottom:4px;}
-  .ar-last table{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums;}
-  .ar-last th{font-size:10px;font-weight:900;color:#8fa1cc;text-align:left;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.1);}
-  .ar-last td{padding:4px;border-bottom:1px solid rgba(255,255,255,.06);color:#fff;white-space:nowrap;}
-  .ar-last td small{color:#8fa1cc;}
-  .ar-up{color:#00d6a4 !important;} .ar-down{color:#ff6b6b !important;}
   .hg-go:focus-visible{outline:2px solid #00ffd0;outline-offset:2px;}
   .hd-head{display:flex;align-items:center;gap:12px;margin:6px 0 8px;}
   .hd-ovr{font-size:34px;font-weight:900;font-style:italic;line-height:1;color:#0b0f12;background:#ffdd00;border-radius:8px;padding:4px 10px;}
@@ -7922,7 +7903,7 @@ ccNoGain:'сессия уже ничего не даёт',
 ccSaveFail:v=>'Карьера не сохраняется ('+v+'). В браузере кончилось место под сохранения — '+
   'очисти данные сайта или удали лишний слот карьеры, иначе всё сыгранное пропадёт при перезагрузке',
 ccEnergyMark:'⚡', ccRingEnergy:'Энергия', ccRingFatigue:'Усталость', ccRingMood:'Настрой',
-ccActtrAim:'KovaaK\'s', ccActtrSur:'Ранкед', ccActtrCon:'Зал и режим',
+ccActtrAim:'KovaaK\'s', ccActtrSur:'Паблики', ccActtrCon:'Зал и режим',
 ccActtrClu:'1v1', ccActtrExp:'Разбор реплеев', ccActtrEnd:'Кастомки Noble',
 ccActscrim:'Скримы', ccActtalk:'Поговорить', ccActstream:'Стрим', ccActrest:'Отдых',
 ccActhost:'Своя кастомка', ccHostLine:(w,p)=>'$'+w+' за победу · фонд $'+p+' из своих', ccHostNeedReach:n=>'нужно '+n+' подписчиков, свой клуб или PR на кастомки', ccHostNeedCash:n=>'на фонд не хватает $'+n, ccHostReport:(w,c,who)=>'Провёл кастомку: своих побед '+w+' из 5 ('+(c?'+$'+c:'без денег')+'), победы взяли '+who, ccPostHosted:(w,who,m)=>'провёл кастомки, $'+w+' за победу. забрали: '+who+(m?'. одну я себе оставил':''),
@@ -9918,7 +9899,7 @@ ccNoGain:'this session no longer moves anything',
 ccSaveFail:v=>'This career is not being saved ('+v+'). The browser is out of room for saves — '+
   'clear this site\'s data or delete a career slot you are not using, or everything played will be gone on reload',
 ccEnergyMark:'⚡', ccRingEnergy:'Energy', ccRingFatigue:'Fatigue', ccRingMood:'Morale',
-ccActtrAim:'KovaaK\'s', ccActtrSur:'Ranked', ccActtrCon:'Gym and routine',
+ccActtrAim:'KovaaK\'s', ccActtrSur:'Pubs', ccActtrCon:'Gym and routine',
 ccActtrClu:'1v1s', ccActtrExp:'Watch replays', ccActtrEnd:'Noble endgames',
 ccActscrim:'Scrims', ccActtalk:'Talk it over', ccActstream:'Stream', ccActrest:'Rest',
 ccActhost:'Host customs', ccHostLine:(w,p)=>'$'+w+' per win · $'+p+' pot out of your pocket', ccHostNeedReach:n=>'takes '+n+' followers, your own club or the customs PR', ccHostNeedCash:n=>'$'+n+' short of the pot', ccHostReport:(w,c,who)=>'Hosted customs: '+w+' wins of 5 yourself ('+(c?'+$'+c:'no cash')+'), wins went to '+who, ccPostHosted:(w,who,m)=>'ran customs tonight, $'+w+' a win. taken by: '+who+(m?'. kept one myself':''),
@@ -12929,7 +12910,7 @@ ccRingEnergy:'Énergie',
 ccRingFatigue:'Fatigue',
 ccRingMood:'Moral',
 ccActtrAim:'KovaaK’s',
-ccActtrSur:'Classé',
+ccActtrSur:'Parties publiques',
 ccActtrCon:'Sport et routine',
 ccActtrClu:'1v1',
 ccActtrExp:'Regarder des replays',
@@ -15232,7 +15213,7 @@ ccRingEnergy:"Energia",
 ccRingFatigue:"Stanchezza",
 ccRingMood:"Morale",
 ccActtrAim:"KovaaK's",
-ccActtrSur:"Ranked",
+ccActtrSur:"Partite pubbliche",
 ccActtrCon:"Palestra e routine",
 ccActtrClu:"1v1",
 ccActtrExp:"Guarda i replay",
@@ -17751,7 +17732,7 @@ ccRingEnergy:"Energia",
 ccRingFatigue:"Cansaço",
 ccRingMood:"Moral",
 ccActtrAim:"KovaaK's",
-ccActtrSur:"Ranqueada",
+ccActtrSur:"Partidas públicas",
 ccActtrCon:"Academia e rotina",
 ccActtrClu:"1v1",
 ccActtrExp:"Assistir replays",
@@ -18981,7 +18962,7 @@ Object.assign(I18N.ru, {
   lfTitle:'Между турнирами', lfToday:'Сегодня', lfFatigue:'Усталость', lfGalaYouH:'Твой год', lfGalaMates:'Тиммейтов', lfGalaBestNight:'Лучший вечер', lfGalaTopMate:'Чаще всего вместе', lfVod:'Разобрать реплей: в чём была главная ошибка?', lfVod_drop:'Дроп', lfVod_rot:'Ротации и зона', lfVod_fight:'Файты', lfVodOk:'Верно — опыт +0.4, форма чуть лучше', lfVodNo:t=>'Не то — главная беда была: '+t, lfNewsVodOk:t=>'Разобрал реплей: ошибка — '+t+'. Понял, что делать', lfNewsVodNo:t=>'Разбор реплея не зашёл — на самом деле проблема была: '+t, lfScout:'Разведка', lfScoutYou:p=>'ты в топ-'+p+'% сцены', lfScoutFav:'Фавориты сцены', lfScoutForm:'В форме (PR)', lfChem:'Сыгранность', lfChemHint:d=>'Растёт от дней вместе ('+d+' до максимума), вечер вместе считается за 3 дня, скрим — за 2.', lfChemBonus:'Бонус к силе команды', lfYouTag:'ты', lfWordSoloOne:'соло', lfNewsStandin:n=>'На кап своего состава нет — играю со стэнд-инами: '+n, lfRateShort:'Оценка', lfAvgRateAll:'Средняя оценка', lfMvpAll:'MVP вечеров', lfLastNights:'Последние вечера', lfAwards:'Награды', lfAwYear:'Игрок года', lfAwMonth:'Игрок месяца', lfAwNone:'Пока наград нет. Игрок месяца, игрок года и номинации решаются по Power Ranking.', lfMetaGive:'форма в новом сезоне', lfFatFresh:'свежий', lfFatTired:'устал', lfFatBurn:'выгорание', lfInjuryRisk:p=>'риск травмы '+p+'% в день', lfCoachBoost:p=>'коуч +'+p+'%', chTabClub:'Клуб', lfContract:'Контракт', lfNoOrg:'Без клуба. Предложения приходят в личку после результатов.', lfSalary:'Зарплата в месяц', lfCut:'Доля клуба с призовых', lfGoal:'Цель сезона', lfGoalMet:'выполнена', lfGoalOpen:'пока нет', lfBuyout:'Отступные', lfSince:'В клубе с сезона', lfPaid:'Выплачено клубом', lfIncome:'Доходы', lfPrize:'Призовые', lfWages:'Зарплата', lfSide:'Побочные', lfSponsor:'Спонсоры', lfOrgCut:'Ушло клубу', lfBalance:'Баланс', lfRosters:'Составы', lfRostersHint:'У дуо, трио и сквада — свои составы; этап года выбирает, какой играет.', lfRosterDuo:'Дуо', lfRosterTrio:'Трио', lfRosterSquad:'Сквад', lfRosterNow:'сейчас', lfRosterEmpty:'пусто', lfWordSolo:'игроков', lfWordSquads:'сквадов', lfRank:'Ранкед', lfHurt:'Травма', lfWrist:'запястье', lfIll:'болезнь', lfUntil:'до', lfCaseOpen:'Разбирательство',
   lfBan:'Бан открытых турниров', lfIcon:'Икон-скин',
   lfWeek:'неделя', lfSessions:'сессий',
-  lfWhyHurt:'Травма — играть нельзя', lfWhyBan:'Бан открытых турниров', lfWhyRank:'Кэш-капы — с ранга Platinum I в ранкеде',
+  lfWhyHurt:'Травма — играть нельзя', lfWhyBan:'Бан открытых турниров',
   lfCaseteam:'тиминг', lfCasesnipe:'стрим-снайпинг', lfCasetoxic:'токсичный пост',
   ccActnoble:'Noble Pro Scrims',
   lfNewsRankUp:r=>'Новый ранг в ранкеде: '+r,
@@ -19004,7 +18985,7 @@ Object.assign(I18N.en, {
   lfTitle:'Between events', lfToday:'Today', lfFatigue:'Fatigue', lfGalaYouH:'Your year', lfGalaMates:'Teammates', lfGalaBestNight:'Best night', lfGalaTopMate:'Most nights with', lfVod:'Review the replay: what was the main mistake?', lfVod_drop:'The drop', lfVod_rot:'Rotations and zone', lfVod_fight:'Fights', lfVodOk:'Right — experience +0.4, a bit more form', lfVodNo:t=>'Not quite — the real problem was: '+t, lfNewsVodOk:t=>'Reviewed the replay: the mistake was '+t+'. Got it', lfNewsVodNo:t=>'The replay review missed — the real problem was: '+t, lfScout:'Scouting', lfScoutYou:p=>'you are top '+p+'% of the scene', lfScoutFav:'Scene favourites', lfScoutForm:'In form (PR)', lfChem:'Chemistry', lfChemHint:d=>'Grows with days together ('+d+' to max); a night together counts as 3 days, a scrim as 2.', lfChemBonus:'Team strength bonus', lfYouTag:'you', lfWordSoloOne:'solo', lfNewsStandin:n=>'No roster of my own for this cup — playing with stand-ins: '+n, lfRateShort:'Rating', lfAvgRateAll:'Average rating', lfMvpAll:'Nights as MVP', lfLastNights:'Last nights', lfAwards:'Awards', lfAwYear:'Player of the year', lfAwMonth:'Player of the month', lfAwNone:'No awards yet. Player of the month, of the year and the season categories are decided by Power Ranking.', lfMetaGive:'form in the new season', lfFatFresh:'fresh', lfFatTired:'tired', lfFatBurn:'burnt out', lfInjuryRisk:p=>'injury risk '+p+'% a day', lfCoachBoost:p=>'coach +'+p+'%', chTabClub:'Club', lfContract:'Contract', lfNoOrg:'No club. Offers arrive in your DMs after results.', lfSalary:'Monthly salary', lfCut:'Club share of prize money', lfGoal:'Season goal', lfGoalMet:'done', lfGoalOpen:'not yet', lfBuyout:'Buyout', lfSince:'At the club since season', lfPaid:'Paid by the club', lfIncome:'Income', lfPrize:'Prize money', lfWages:'Salary', lfSide:'Side income', lfSponsor:'Sponsors', lfOrgCut:'Went to the club', lfBalance:'Balance', lfRosters:'Rosters', lfRostersHint:'Duos, trios and squads keep their own rosters; the stage of the year picks which one plays.', lfRosterDuo:'Duos', lfRosterTrio:'Trios', lfRosterSquad:'Squads', lfRosterNow:'now', lfRosterEmpty:'empty', lfWordSolo:'players', lfWordSquads:'squads', lfRank:'Ranked', lfHurt:'Injury', lfWrist:'wrist', lfIll:'illness', lfUntil:'until', lfCaseOpen:'Under review',
   lfBan:'Banned from open events', lfIcon:'Icon skin',
   lfWeek:'week', lfSessions:'sessions',
-  lfWhyHurt:'Injured — cannot play', lfWhyBan:'Banned from open events', lfWhyRank:'Cash cups need Platinum I in Ranked',
+  lfWhyHurt:'Injured — cannot play', lfWhyBan:'Banned from open events',
   lfCaseteam:'teaming', lfCasesnipe:'stream sniping', lfCasetoxic:'a toxic post',
   ccActnoble:'Noble Pro Scrims',
   lfNewsRankUp:r=>'New ranked rank: '+r,
@@ -19274,36 +19255,36 @@ Object.assign(I18N.pt, {rcNextH:'Próxima rodada', rcNextSub:s=>'Jogar ou simula
   rcSim:'Simular rodada', rcSimAll:'Simular tudo', rcPlay:'Jogar'});
 // Тренировка: карты Creative, оценки, Арена, своя карта, полоса недели.
 Object.assign(I18N.ru, {ccActtrBox:'Бокс-файты', ccActtrZw:'Зон-вары', ccActtrEdit:'Эдит-курс', ccActtrMap:'Своя карта',
-  lfArena:'Арена', lfArenaDiv:'див.', lfWhyArena:'Кэш-капы — с Champion League на Арене: играй Арену — плитка «Арена» на Центре', hgArena:'Арена', hgArenaGo:'Hype до Champion League — откроет кэш-капы', hgArenaOk:'Champion League — кэш-капы открыты', hgArenaBtn:'Играть Арену', arTileRules:u=>'правила '+u, arTileDayBusy:'Сегодня турнирный день — Арена в свободный день', arTileLeft:n=>'ещё '+n+' до Champion League', arTileLast:d=>'Последняя сессия, '+d, arTileDiv:'Див.', arTilePlace:'Место', arTileElims:'Килы', arTileBus:'Автобус', hgArenaHow:'Тренировка → Арена: пять матчей за 30 энергии. Hype — за места и убийства, минус плата за автобус. Рост рейтинга тоже поднимает Hype.',
-  lfNewsArenaReset:u=>'Обновление '+u+': Hype на Арене сброшен, новые правила очков', lfNewsRankReset:sd=>'Новый сезон '+sd+': ранг в ранкеде сброшен', lfNewsArena:(d,n,b)=>'Арена: '+d+' Hype, '+n+' · лучшее место #'+b, lfNewsArenaChamp:()=>'Champion League! Кэш-капы открыты',
+  lfArena:'Арена', lfArenaDiv:'див.',
+  lfNewsArena:(d,n,b)=>'Арена: '+d+' Hype, '+n+' · лучшее место #'+b, lfNewsArenaChamp:()=>'Champion League! Кэш-капы открыты',
   lfGradeLast:'Последняя оценка', lfMapBuild:(p,n)=>'Стройка: '+p+' из '+n+' вечеров', lfMapLive:(nm,c,pl,e)=>nm+' · '+c+' · '+pl+' игр за месяц · всего '+e,
   lfMapUpdate:'Обновить карту', lfMapGive:'деньги за игры', lfNewsMapOut:(nm,c)=>'Моя карта вышла: '+nm+' — код '+c,
   lfNewsMapUpd:nm=>'Обновил карту '+nm, lfNewsMapPay:(nm,pl,m)=>nm+': '+pl+' игр за месяц, выплата '+m,
   lfTwH:'Неделя', lfTwPick:'выбери'});
 Object.assign(I18N.en, {ccActtrBox:'Box fights', ccActtrZw:'Zone wars', ccActtrEdit:'Edit course', ccActtrMap:'Own map',
-  lfArena:'Arena', lfArenaDiv:'div.', lfWhyArena:'Cash cups need Champion League in Arena — play Arena from the Arena tile on the Centre', hgArena:'Arena', hgArenaGo:'Hype to Champion League — unlocks cash cups', hgArenaOk:'Champion League — cash cups open', hgArenaBtn:'Play Arena', arTileRules:u=>u+' rules', arTileDayBusy:'Tournament day — play Arena on a free day', arTileLeft:n=>n+' more to Champion League', arTileLast:d=>'Last session, '+d, arTileDiv:'Div', arTilePlace:'Place', arTileElims:'Elims', arTileBus:'Bus', hgArenaHow:'Training → Arena: five matches for 30 energy. Hype comes from placement and eliminations, minus the bus fare. A higher rating raises Hype too.',
-  lfNewsArenaReset:u=>'Update '+u+': Arena Hype reset, new scoring rules', lfNewsRankReset:sd=>'New season '+sd+': ranked rank reset', lfNewsArena:(d,n,b)=>'Arena: '+d+' Hype, '+n+' · best place #'+b, lfNewsArenaChamp:()=>'Champion League! Cash cups are open',
+  lfArena:'Arena', lfArenaDiv:'div.',
+  lfNewsArena:(d,n,b)=>'Arena: '+d+' Hype, '+n+' · best place #'+b, lfNewsArenaChamp:()=>'Champion League! Cash cups are open',
   lfGradeLast:'Last grade', lfMapBuild:(p,n)=>'Building: '+p+' of '+n+' evenings', lfMapLive:(nm,c,pl,e)=>nm+' · '+c+' · '+pl+' plays this month · '+e+' total',
   lfMapUpdate:'Update the map', lfMapGive:'money from plays', lfNewsMapOut:(nm,c)=>'My map is out: '+nm+' — code '+c,
   lfNewsMapUpd:nm=>'Updated my map '+nm, lfNewsMapPay:(nm,pl,m)=>nm+': '+pl+' plays this month, payout '+m,
   lfTwH:'Week', lfTwPick:'pick'});
 Object.assign(I18N.fr, {ccActtrBox:'Box fights', ccActtrZw:'Zone wars', ccActtrEdit:'Parcours d\'édit', ccActtrMap:'Ma map',
-  lfArena:'Arène', lfArenaDiv:'div.', lfWhyArena:'Cash cups : Champion League en Arène requise — joue l’Arène depuis la tuile Arène du Centre', hgArena:'Arène', hgArenaGo:'Hype jusqu’à la Champion League — ouvre les cash cups', hgArenaOk:'Champion League — cash cups ouvertes', hgArenaBtn:'Jouer l’Arène', arTileRules:u=>'règles '+u, arTileDayBusy:'Jour de tournoi — l’Arène se joue un jour libre', arTileLeft:n=>'encore '+n+' jusqu’à la Champion League', arTileLast:d=>'Dernière session, '+d, arTileDiv:'Div.', arTilePlace:'Place', arTileElims:'Élims', arTileBus:'Bus', hgArenaHow:'Entraînement → Arène : cinq matchs pour 30 d’énergie. Le Hype vient des places et des éliminations, moins le prix du bus. Monter en note fait aussi monter le Hype.',
-  lfNewsArenaReset:u=>'Mise à jour '+u+' : Hype d’Arène remis à zéro, nouveau barème', lfNewsRankReset:sd=>'Nouvelle saison '+sd+' : rang classé réinitialisé', lfNewsArena:(d,n,b)=>'Arène : '+d+' Hype, '+n+' · meilleure place #'+b, lfNewsArenaChamp:()=>'Champion League ! Cash cups ouvertes',
+  lfArena:'Arène', lfArenaDiv:'div.',
+  lfNewsArena:(d,n,b)=>'Arène : '+d+' Hype, '+n+' · meilleure place #'+b, lfNewsArenaChamp:()=>'Champion League ! Cash cups ouvertes',
   lfGradeLast:'Dernière note', lfMapBuild:(p,n)=>'Construction : '+p+' soirées sur '+n, lfMapLive:(nm,c,pl,e)=>nm+' · '+c+' · '+pl+' parties ce mois · '+e+' au total',
   lfMapUpdate:'Mettre à jour la map', lfMapGive:'argent des parties', lfNewsMapOut:(nm,c)=>'Ma map est sortie : '+nm+' — code '+c,
   lfNewsMapUpd:nm=>'Map '+nm+' mise à jour', lfNewsMapPay:(nm,pl,m)=>nm+' : '+pl+' parties ce mois, versement '+m,
   lfTwH:'Semaine', lfTwPick:'à choisir'});
 Object.assign(I18N.it, {ccActtrBox:'Box fight', ccActtrZw:'Zone wars', ccActtrEdit:'Percorso edit', ccActtrMap:'La mia mappa',
-  lfArena:'Arena', lfArenaDiv:'div.', lfWhyArena:'Per le cash cup serve la Champion League in Arena — gioca l’Arena dal riquadro Arena del Centro', hgArena:'Arena', hgArenaGo:'Hype fino alla Champion League — apre i cash cup', hgArenaOk:'Champion League — cash cup aperti', hgArenaBtn:'Gioca Arena', arTileRules:u=>'regole '+u, arTileDayBusy:'Giorno di torneo — l’Arena si gioca in un giorno libero', arTileLeft:n=>'ancora '+n+' alla Champion League', arTileLast:d=>'Ultima sessione, '+d, arTileDiv:'Div.', arTilePlace:'Posto', arTileElims:'Elim.', arTileBus:'Bus', hgArenaHow:'Allenamento → Arena: cinque partite per 30 energia. Hype da piazzamenti ed eliminazioni, meno il costo del bus. Anche salire di valutazione alza lo Hype.',
-  lfNewsArenaReset:u=>'Aggiornamento '+u+': Hype dell’Arena azzerato, nuovo punteggio', lfNewsRankReset:sd=>'Nuova stagione '+sd+': grado classificato azzerato', lfNewsArena:(d,n,b)=>'Arena: '+d+' Hype, '+n+' · miglior posto #'+b, lfNewsArenaChamp:()=>'Champion League! Cash cup aperte',
+  lfArena:'Arena', lfArenaDiv:'div.',
+  lfNewsArena:(d,n,b)=>'Arena: '+d+' Hype, '+n+' · miglior posto #'+b, lfNewsArenaChamp:()=>'Champion League! Cash cup aperte',
   lfGradeLast:'Ultimo voto', lfMapBuild:(p,n)=>'Costruzione: '+p+' serate su '+n, lfMapLive:(nm,c,pl,e)=>nm+' · '+c+' · '+pl+' partite nel mese · '+e+' in totale',
   lfMapUpdate:'Aggiorna la mappa', lfMapGive:'soldi dalle partite', lfNewsMapOut:(nm,c)=>'La mia mappa è uscita: '+nm+' — codice '+c,
   lfNewsMapUpd:nm=>'Mappa '+nm+' aggiornata', lfNewsMapPay:(nm,pl,m)=>nm+': '+pl+' partite nel mese, pagamento '+m,
   lfTwH:'Settimana', lfTwPick:'scegli'});
 Object.assign(I18N.pt, {ccActtrBox:'Box fights', ccActtrZw:'Zone wars', ccActtrEdit:'Curso de edit', ccActtrMap:'Meu mapa',
-  lfArena:'Arena', lfArenaDiv:'div.', lfWhyArena:'Cash cups exigem Champion League na Arena — jogue Arena pelo bloco Arena no Centro', hgArena:'Arena', hgArenaGo:'Hype até a Champion League — libera os cash cups', hgArenaOk:'Champion League — cash cups liberados', hgArenaBtn:'Jogar Arena', arTileRules:u=>'regras '+u, arTileDayBusy:'Dia de torneio — jogue Arena num dia livre', arTileLeft:n=>'faltam '+n+' para a Champion League', arTileLast:d=>'Última sessão, '+d, arTileDiv:'Div.', arTilePlace:'Posição', arTileElims:'Elims', arTileBus:'Ônibus', hgArenaHow:'Treino → Arena: cinco partidas por 30 de energia. Hype vem de colocação e eliminações, menos o preço do ônibus. Subir o rating também sobe o Hype.',
-  lfNewsArenaReset:u=>'Atualização '+u+': Hype da Arena zerado, nova pontuação', lfNewsRankReset:sd=>'Nova temporada '+sd+': rank do ranqueado zerado', lfNewsArena:(d,n,b)=>'Arena: '+d+' Hype, '+n+' · melhor lugar #'+b, lfNewsArenaChamp:()=>'Champion League! Cash cups liberadas',
+  lfArena:'Arena', lfArenaDiv:'div.',
+  lfNewsArena:(d,n,b)=>'Arena: '+d+' Hype, '+n+' · melhor lugar #'+b, lfNewsArenaChamp:()=>'Champion League! Cash cups liberadas',
   lfGradeLast:'Última nota', lfMapBuild:(p,n)=>'Construção: '+p+' de '+n+' noites', lfMapLive:(nm,c,pl,e)=>nm+' · '+c+' · '+pl+' partidas no mês · '+e+' no total',
   lfMapUpdate:'Atualizar o mapa', lfMapGive:'dinheiro das partidas', lfNewsMapOut:(nm,c)=>'Meu mapa saiu: '+nm+' — código '+c,
   lfNewsMapUpd:nm=>'Mapa '+nm+' atualizado', lfNewsMapPay:(nm,pl,m)=>nm+': '+pl+' partidas no mês, pagamento '+m,
@@ -115359,9 +115340,7 @@ function careerRenderHubBody(tab){
     '';   // колокольчик снят 29.09 («хаб такой же как был») — входящие строкой в «Центре»
   const dOvr=ccHdrSeasonDelta();
   document.getElementById('chOvr').innerHTML=`${shown}<span class="ch-ovr-side"><small>${L().ccRoOvr}</small>`+
-    (dOvr ? `<i class="ch-ovr-d ${dOvr>0?'up':'down'}" title="${esc(L().lfHdrSeason)}">${dOvr>0?'▲ +'+dOvr:'▼ '+dOvr}</i>` : '')+
-    (!ccArenaOn() ? `<i class="ch-ovr-rk" title="${esc(L().lfRank)}">${esc(ccRankName())}</i>`
-      : `<i class="ch-ovr-rk" title="${esc(L().lfArena)}">${esc(ccArenaLeague(ccArenaDiv()))}</i>`)+`</span>`;
+    (dOvr ? `<i class="ch-ovr-d ${dOvr>0?'up':'down'}" title="${esc(L().lfHdrSeason)}">${dOvr>0?'▲ +'+dOvr:'▼ '+dOvr}</i>` : '')+`</span>`;
   const chOvrEl=document.getElementById('chOvr');
   chOvrEl.onclick=()=>careerTab('log'); chOvrEl.classList.add('ch-go');
   // Energy is the only number up here that belongs to today rather than to the
@@ -115730,7 +115709,7 @@ function careerCentreHTML(card, a){
           /* Арена, ранг, травма, бан (ccLifeWhy) закрывают вечер в careerCanPlayKindOn, а сюда
              не доходили: кэшкап 2019–2022 без Champion League печатал «Majors are not wired
              into a career yet» (скрин: «cant play any cashcups in chapter 1/2»). */
-          : ccLifeWhy(careerToday(), next.type) ? ccLifeWhyText(ccLifeWhy(careerToday(), next.type))
+          : ccLifeWhy(careerToday(), next.type) ? L()[ccLifeWhy(careerToday(), next.type)]
           : careerNoMate(next.type) ? (careerMatesOver()>0 ? L().ccMateOver : L().ccNoMateN(careerMatesShort()))
           : next.type==='victory'? L().ccVicNoInvite
           : next.type==='reload' ? L().ccRelLocked
@@ -115772,7 +115751,6 @@ function careerCentreHTML(card, a){
     <div class="ch-col ch-col-play">
       ${careerNoteBarHTML()}
       ${typeof ccRosterSoonHTML==='function' ? ccRosterSoonHTML() : ''}
-      ${typeof ccArenaTileHTML==='function' ? ccArenaTileHTML() : ''}
       ${careerMpTileHTML()}
       ${careerRaceTileHTML()}
       ${cr.seasonOver ? '' : careerInterviewHTML()}
@@ -115803,7 +115781,7 @@ function careerCentreHTML(card, a){
           /* Арена, ранг, травма, бан (ccLifeWhy) закрывают вечер в careerCanPlayKindOn, а сюда
              не доходили: кэшкап 2019–2022 без Champion League печатал «Majors are not wired
              into a career yet» (скрин: «cant play any cashcups in chapter 1/2»). */
-          : ccLifeWhy(careerToday(), next.type) ? ccLifeWhyText(ccLifeWhy(careerToday(), next.type))
+          : ccLifeWhy(careerToday(), next.type) ? L()[ccLifeWhy(careerToday(), next.type)]
           : careerNoMate(next.type) ? (careerMatesOver()>0 ? L().ccMateOver : L().ccNoMateN(careerMatesShort()))
           : next.type==='victory'? L().ccVicNoInvite
           : next.type==='reload' ? L().ccRelLocked
@@ -118085,14 +118063,11 @@ function careerDoAct(id){
   // audience and posts, which is the only reason the growth is visible at all.
   // Разбор меты: день в новом сезоне, который снимает штраф. См. careerMetaDay.
   if(act.meta) careerMetaDay();
-  // Сессия Noble и день в ранкеде двигают ранг (см. ccRankAdd).
   if(act.noble) ccNobleRun();
   if(act.versus) ccChemBump(2);   // скрим вместе — сыгранность
   // Прирост недели — для панели Тренировочного центра (ccTrainPanelHTML).
   try{ const lf=ccLife(), wk=ccWeekTag(); if(!lf.tw || lf.tw.wk!==wk) lf.tw={wk, g:{}};
        Object.keys(moved).forEach(k=>{ lf.tw.g[k]=(lf.tw.g[k]||0)+moved[k]; }); }catch(e){}
-  // До 2023-го ранкеда не было — была Арена с Hype (ccArenaRun).
-  if(act.id==='trSur'){ if(ccArenaOn()) ccArenaRun(); else ccRankAdd(12+Math.round(ccLifeRng('ranked')()*14)); }
   if(act.map) ccMapWork();
   if(act.reach){
     // A night on stream, priced per rung. See CC_STREAM_REACH.
@@ -118398,57 +118373,6 @@ function careerAdvanceTo(iso){
 function ccLife(){ const cr=CAREER.career; if(!cr.life) cr.life={}; return cr.life; }
 function ccLifeRng(tag){ return careerRng(ccHashStr('life|'+tag+'|'+(CAREER.player.nick||'')+'|'+careerToday())); }
 
-/* ---- РАНКЕД (v24.40, 17.05.2023 →). Правила — вики, tools/measured/arena-ranked-history.json:
-   Bronze–Diamond по три ступени (I → III), потом Elite, Champion, Unreal; прогресс — полоса
-   процентов от мест и убийств; Unreal не падает; с v26.00 (25.08.2023) ранг сбрасывается каждый
-   сезон; с 17.04.2026 Elite и Champion тоже делятся на I–III. Сколько процентов даёт матч,
-   Epic не публикует — прирост за заход и точка сброса (нижняя планка по рейтингу) — ОЦЕНКА.
-   Было: восемь рангов без ступеней и без сброса. Сто очков — одна ступень. */
-const CC_RANKS=['Bronze I','Bronze II','Bronze III','Silver I','Silver II','Silver III','Gold I','Gold II','Gold III',
-  'Platinum I','Platinum II','Platinum III','Diamond I','Diamond II','Diamond III','Elite','Champion','Unreal'];
-const CC_RANK_UNREAL=17, CC_RANK_TOP=CC_RANKS.length*100-1;
-/* Порог входа в Victory/Cash Cup — Platinum I. У Epic он свой в правилах каждого капа, общей таблицы
-   на вики нет; Platinum I — единственный названный там (Console Champions Cup, 23.05.2023), и он же
-   стоит на том месте шкалы, где был прежний «Diamond» из восьми рангов (ОЦЕНКА для остальных капов). */
-const CC_RANK_CUP=9;
-const CC_RANK_RESET_FROM='2023-08-25';   // v26.00
-const CC_RANK_SPLIT_FROM='2026-04-17';   // Elite/Champion I–III
-function ccRankFloor(){ const o=(CAREER.player && CAREER.player.ovr)||70; return clamp(Math.round((o-55)*45), 0, CC_RANK_TOP-10); }
-function ccRankPts(){
-  const lf=ccLife();
-  // Сейв старой лесенки (8 рангов по 100) — на 18 ступеней тем же местом шкалы.
-  if(lf.rp!=null && lf.rpV!==2) lf.rp=Math.round(lf.rp*CC_RANKS.length/8);
-  lf.rpV=2;
-  if(lf.rp==null) lf.rp=ccRankFloor();
-  // Сброс в начале каждого сезона с v26.00 — к планке по рейтингу.
-  const day=careerToday();
-  if(day>=CC_RANK_RESET_FROM){
-    const s=careerFncsSeason(day), sid=s ? s.id : null;
-    if(sid && lf.rkSeason!==sid){
-      if(lf.rkSeason!=null){ lf.rp=ccRankFloor(); if(typeof careerNews==='function') careerNews('flat', 'lfNewsRankReset', [sid]); }
-      lf.rkSeason=sid;
-    }
-  }
-  return lf.rp;
-}
-function ccRank(){ return Math.min(CC_RANKS.length-1, Math.floor(ccRankPts()/100)); }
-function ccRankName(i){
-  i=i==null ? ccRank() : i;
-  // С 17.04.2026 Elite и Champion — по три ступени: полоса ранга делится на трети.
-  if((i===15 || i===16) && careerToday()>=CC_RANK_SPLIT_FROM && i===ccRank())
-    return CC_RANKS[i]+' '+['I','II','III'][Math.min(2, Math.floor((ccRankPts()%100)/34))];
-  return CC_RANKS[i];
-}
-function ccRankAdd(n){
-  const lf=ccLife(); const was=ccRank();
-  // Шкала стала в 2.25 раза длиннее (18 ступеней вместо 8) — прирост той же доли пути.
-  n=Math.round(n*CC_RANKS.length/8);
-  if(was>=CC_RANK_UNREAL && n<0) return;   // Unreal не падает
-  lf.rp=clamp(ccRankPts()+n, 0, CC_RANK_TOP);
-  const now=ccRank(); if(now>was) careerNews('good', 'lfNewsRankUp', [ccRankName(now)]); }
-// Нужен ли ранг этому капу: Victory/Cash Cup без приглашения, с Ranked (17.05.2023).
-function ccRankNeed(ev){ return !!ev && !ev.invite && !ev.lan && !ccArenaOn() ? CC_RANK_CUP : 0; }
-
 // ---- Травмы: при выгорании (careerBurnout) растёт риск — запястье или болезнь.
 function ccLifeHurt(day){ const h=ccLife().hurt; return h && (day||careerToday())<=h.until ? h : null; }
 
@@ -118459,11 +118383,6 @@ function ccLifeBan(day){ const b=ccLife().ban; return b && (day||careerToday())<
 function ccLifeWhy(day, kind){
   if(ccLifeHurt(day)) return 'lfWhyHurt';
   if(ccLifeBan(day) && CC_BAN_KINDS.indexOf(kind)>=0) return 'lfWhyBan';
-  if(kind==='victory'){
-    const ev=careerVictoryOn(day);
-    const need=ccRankNeed(ev); if(need && ccRank()<need) return 'lfWhyRank';
-    if(ccArenaNeed(ev) && ccArenaDiv()<CC_ARENA_CHAMP) return 'lfWhyArena';
-  }
   return null;
 }
 
@@ -118490,7 +118409,6 @@ function ccNobleRun(){
   // Соперники сервера играют ту же сессию.
   Object.keys(lf.noble.rows).forEach(h=>{ const r=lf.noble.rows[h]; r.p+=Math.max(0, Math.round(victoryR1Points(1+Math.floor(rng()*of))+rng()*8)); });
   careerNews(place<=10?'good':'flat', 'lfNewsNoble', [sv.name, place, of, kills, pts]);
-  ccRankAdd(Math.round((pct-0.4)*20));
   return {server:sv.name, place, of, kills, pts};
 }
 function ccNobleRivals(sv, wk){
@@ -118568,7 +118486,7 @@ function ccLifeAlertRows(){
   // Почему сегодняшний вечер закрыт — кнопка «Играть» сама причину не пишет.
   const todayEv=(careerYearDays().get(careerToday())||[]);
   const whyK=todayEv.map(e=>ccLifeWhy(careerToday(), e.kind)).find(Boolean);
-  if(whyK) rows.push(`<div class="ch-row"><em>${L().lfToday}</em><b style="color:var(--bad,#f66);">${esc(ccLifeWhyText(whyK))}</b></div>`);
+  if(whyK) rows.push(`<div class="ch-row"><em>${L().lfToday}</em><b style="color:var(--bad,#f66);">${esc(L()[whyK])}</b></div>`);
   // Ранг живёт в плитке «Развитие» (ccDevTileHTML).
   const h=ccLifeHurt(); if(h) rows.push(`<div class="ch-row"><em>${L().lfHurt}</em><b>${L()[h.k==='wrist'?'lfWrist':'lfIll']} · ${L().lfUntil} ${ccFmtDay(h.until)}</b></div>`);
   if(lf.case) rows.push(`<div class="ch-row"><em>${L().lfCaseOpen}</em><b>${L()['lfCase'+lf.case.k]}</b></div>`);
@@ -118617,7 +118535,6 @@ function ccGoalsTileHTML(){
   }
   const wk=ccWeekTag(), f=(lf.focus && lf.focus.wk===wk) ? lf.focus.k : null;
   if(f) rows.push(row(L().lfFocusH, ccAttrFull(f), '+'+Math.round(CC_FOCUS_BONUS*100)+'%', false));
-  const arena=ccArenaGoalRowHTML(); if(arena) rows.unshift(arena);
   const empty=!rows.length ? `<div class="ch-empty">${esc(org ? L().hgNone : L().hgNoClub)}</div>` : '';
   const ask=(!g || g.done || !f) ? `<button class="hg-go" onclick="careerTab('train')">${esc(L().hgSet)}</button>` : '';
   // Срочное сверху: закрытый вечер, травма, бан (ccLifeAlertRows).
@@ -118629,11 +118546,10 @@ function ccDevTileHTML(){
   if(!CAREER || !CAREER.career) return '';
   const six=CAREER.player.attrs || ccOwnAttrs();
   const d=ccHdrSeasonDelta();
-  const rank=(typeof ccLadderRowHTML==='function') ? ccLadderRowHTML() : '';
   return `<div class="ch-tile hd-tile"><h4>${L().hdTitle}</h4>`+
     `<div class="hd-head"><b class="hd-ovr">${ccMyShownOvr()}</b><span><em>${esc(L().ccRoOvr)}</em>`+
     (d ? `<i class="${d>0?'up':'down'}">${d>0?'▲ +'+d:'▼ '+d} · ${esc(L().lfHdrSeason)}</i>` : `<i>${esc(L().lfHdrSeason)}: 0</i>`)+`</span></div>`+
-    rank+ccTrainPanelHTML(six, false)+
+    ccTrainPanelHTML(six, false)+
     `<button class="hg-go" onclick="careerTab('train')">${esc(L().hdToTrain)}</button></div>`;
 }
 /* ОЦЕНКА ЗАНЯТИЯ, как у дриллов в EA FC: D, C, B, A, A+. Множитель прироста — оценка
@@ -118656,160 +118572,6 @@ function ccDrillLast(id){
   const gr=ccLife().gr||{}; const days=Object.keys(gr).sort().reverse();
   for(const d of days){ const r=gr[d].filter(x=>x.id===id).pop(); if(r) return r.g; }
   return '';
-}
-
-/* АРЕНА (Fortnite, v8.20 — 27.03.2019 … v24.40 — 17.05.2023, дальше Ranked). ПРАВИЛА ПО ЭПОХАМ
-   (его слово 30.09: «в других сезонах ranked и arena везде разные поинт системы»). Числа — вики
-   Fortnite, история правок страницы «Competitive (Gamemode)»: tools/measured/arena-ranked-history.json
-   (revid у каждой эпохи). Было: одна таблица v21.10 на все годы и новые пороги с 21.06.2022 —
-   а они пришли с v18.10 (28.09.2021) вместе со сбросом Hype.
-     v10.00 (01.08.2019, Season X) — сброс Hype, 10 дивизионов, старые пороги; очки — «добавки» за
-       топ-25/15/5 и победу (соло), плоские за убийство; автобус 0/0/0/−10/−20/−30/?/−60/−60/−60.
-       Числа с вики-описания C2S5 (январь 2021), вики говорит, что формат жил до C2S7; своей таблицы
-       C2S7 (v17.00) на вики нет — остаётся эта. Автобус див. 7 на вики не назван: берём −30, как у
-       див. 6 (ОЦЕНКА).
-     Сезоны 8–9 (с 27.03.2019) — таблиц на вики нет вовсе: те же числа Season X (ОЦЕНКА).
-     v18.10 (28.09.2021) — сброс Hype, новые пороги, лесенка мест до топ-50/25/15, убийства по лигам,
-       автобус до −80; последняя строка мест в Champion — 0.
-     v21.10 (21.06.2022) — те же места и пороги, дешевле убийства, автобус 0×4, −30…−70.
-   Кэш-капы пускали с Champion League (див. 8). Модель матча — места от рейтинга против уровня
-   дивизиона — оценка режима. */
-const CC_ARENA_OLD=[0,250,500,1000,1500,2500,4000,6000,12000,16000];
-const CC_ARENA_NEW=[0,400,800,1200,2000,3000,5000,7500,10000,15000];
-const CC_ARENA_CHAMP=7;   // индекс дивизиона 8
-const CC_RANKED_FROM='2023-05-17';   // v24.40: Арена снята, пришёл Ranked
-const CC_ARENA_ERAS=[
-  {id:'s8', from:'2019-03-27', upd:'v8.20', guess:true, thr:CC_ARENA_OLD, fare:[0,0,0,10,20,30,30,60,60,60], pts:{
-    1:{teams:100, rows:[[1,60],[5,30],[15,30],[25,60]], elim:20},
-    2:{teams:50,  rows:[[1,60],[3,30],[7,30],[12,60]], elim:10},
-    3:{teams:33,  rows:[[1,60],[2,30],[4,30],[8,60]],  elim:7}}},
-  {id:'x', from:'2019-08-01', upd:'v10.00', reset:true, thr:CC_ARENA_OLD, fare:[0,0,0,10,20,30,30,60,60,60], pts:null},
-  {id:'v18', from:'2021-09-28', upd:'v18.10', reset:true, thr:CC_ARENA_NEW, fare:[0,0,0,10,20,30,50,60,70,80], pts:{
-    1:{teams:100, rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[10,10],[20,15],[25,15],[30,10],[40,10],[50,10]], elim:[20,20,20,15,15,15,15,10,10,10], lastOff:true},
-    2:{teams:50,  rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[10,10],[12,15],[15,15],[17,10],[20,10],[25,10]], elim:[20,20,20,10,10,10,10,10,10,10], lastOff:true},
-    3:{teams:33,  rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[6,10],[7,15],[8,15],[9,10],[10,10],[15,10]], elim:[15,15,15,15,10,10,10,10,10,10], lastOff:true}}},
-  {id:'v21', from:'2022-06-21', upd:'v21.10', thr:CC_ARENA_NEW, fare:[0,0,0,0,30,40,50,60,70,70], pts:{
-    1:{teams:100, rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[10,10],[20,15],[25,15],[30,10],[40,10],[50,10]], elim:[15,15,15,10,10,10,10,5,5,5], lastOff:true},
-    2:{teams:50,  rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[10,10],[12,15],[15,15],[17,10],[20,10],[25,10]], elim:[15,15,15,5,5,5,5,5,5,5], lastOff:true},
-    3:{teams:33,  rows:[[1,50],[2,25],[3,10],[4,10],[5,20],[6,10],[7,15],[8,15],[9,10],[10,10],[15,10]], elim:[10,10,10,10,5,5,5,5,5,5], lastOff:true}}}
-];
-CC_ARENA_ERAS[1].pts=CC_ARENA_ERAS[0].pts;   // Season X — те же числа (у s8 они взяты с неё)
-function ccArenaEra(day){
-  day=day||careerToday();
-  let e=CC_ARENA_ERAS[0];
-  CC_ARENA_ERAS.forEach(x=>{ if(day>=x.from) e=x; });
-  return e;
-}
-// Арена ещё жива в этот день (до v24.40), и кэш-капы спрашивают её лигу.
-function ccArenaOn(day){ return (day||careerToday())<CC_RANKED_FROM; }
-const CC_ARENA_GAMES=5;   // матчей за вечер — оценка режима
-function ccArenaTable(day){ return ccArenaEra(day).thr; }
-function ccArenaFare(div, day){ return ccArenaEra(day).fare[div]||0; }
-function ccArenaHype(){
-  const lf=ccLife();
-  const o=(CAREER.player && CAREER.player.ovr)||70, floor=clamp(Math.round((o-55)*650), 0, 20000);
-  if(lf.hype==null) lf.hype=floor;
-  /* Сброс Hype обновлением (v10.00, v18.10): новая эпоха начинается с нижней планки по рейтингу. */
-  const era=ccArenaEra();
-  if(lf.hypeEra!==era.id){
-    if(lf.hypeEra!=null && era.reset){ lf.hype=floor; if(typeof careerNews==='function') careerNews('flat', 'lfNewsArenaReset', [era.upd]); }
-    lf.hypeEra=era.id;
-  }
-  /* Лига Арены не ниже той, что соответствует рейтингу сейчас. Раньше Hype ставился один раз при
-     первом чтении: карточка 55 навсегда оставалась в Open, даже выросши до 78, а денежные капы
-     2019–2022 пускают только Champion League — в полном прогоне 2019→2026 весь 2021-й прошёл без
-     единого капа (его вопрос 29.09: «как в 21 призы только с финалов»). Арена даёт сверх этого. */
-  if(lf.hype<floor) lf.hype=floor;
-  return lf.hype;
-}
-function ccArenaDiv(h){ const t=ccArenaTable(); h=h==null ? ccArenaHype() : h;
-  let i=0; t.forEach((v,j)=>{ if(h>=v) i=j; }); return i; }
-function ccArenaLeague(i){ return i>=7 ? 'Champion' : i>=4 ? 'Contender' : 'Open'; }
-function ccArenaName(i){ i=i==null ? ccArenaDiv() : i; return ccArenaLeague(i)+' · '+L().lfArenaDiv+' '+(i+1); }
-function ccArenaMatchPts(size, div, place, elims, day){
-  const t=ccArenaEra(day).pts[size];
-  // lastOff: последняя строка мест в Champion League не платит (v18.10 и позже).
-  const pl=t.rows.reduce((s,r,j)=>s+((place<=r[0] && (!t.lastOff || j<t.rows.length-1 || div<CC_ARENA_CHAMP)) ? r[1] : 0), 0);
-  const el=Array.isArray(t.elim) ? t.elim[div] : t.elim;
-  return pl+elims*el-ccArenaFare(div, day);
-}
-function ccArenaRun(){
-  const lf=ccLife(), size=Math.min(3, Math.max(1, careerSquadSize()||1)), t=ccArenaEra().pts[size];
-  const ovr=ccMyShownOvr(), rnd=ccLifeRng('arena');
-  const from=ccArenaHype(), divFrom=ccArenaDiv(from);
-  let h=from, best=t.teams;
-  const games=[];
-  for(let g=0; g<CC_ARENA_GAMES; g++){
-    const div=ccArenaDiv(h);
-    // Уровень дивизиона: рейтинг ~65 держится у границы Champion, про-игроки 85+ — выше.
-    const q=clamp(0.5+(ovr-(50+div*2.2))/30+(rnd()-0.5)*0.7, 0.01, 0.995);
-    const place=clamp(Math.ceil(t.teams*(1-q)), 1, t.teams);
-    const elims=Math.floor(rnd()*(1+q*4));
-    best=Math.min(best, place);
-    const pts=ccArenaMatchPts(size, div, place, elims);
-    games.push({div, place, of:t.teams, elims, pts, fare:ccArenaFare(div)});
-    h=Math.max(0, h+pts);
-  }
-  // Сессия по матчам — для плитки Арены на Центре (ccArenaTileHTML).
-  lf.arenaLast={day:careerToday(), from, to:h, games};
-  lf.hype=h;
-  const divTo=ccArenaDiv(h);
-  careerNews(h>=from ? 'good' : 'bad', 'lfNewsArena', [(h>=from?'+':'')+(h-from), ccArenaName(divTo), best]);
-  if(divTo>divFrom && divTo>=CC_ARENA_CHAMP && divFrom<CC_ARENA_CHAMP) careerNews('good', 'lfNewsArenaChamp', []);
-  return {from, to:h, best};
-}
-// Нужна ли Champion League этому капу: до 2023-го, открытые кэш-капы.
-function ccArenaNeed(ev){ return !!ev && !ev.invite && !ev.lan && ccArenaOn(); }
-/* Сколько до Champion League — числом, для главной и для причины закрытого капа.
-   Вопрос тестера «а как набрать hype» (30.09): порог был только в новостях Арены. */
-function ccArenaGoal(){
-  if(!CAREER || !CAREER.career || !ccArenaOn()) return null;
-  const h=ccArenaHype(), need=ccArenaTable()[CC_ARENA_CHAMP];
-  return {h, need, div:ccArenaDiv(h), ok:h>=need, pct:Math.max(0, Math.min(100, h/need*100))};
-}
-// Текст причины из ccLifeWhy; у Арены — с Hype сейчас и порогом.
-function ccLifeWhyText(k){
-  if(!k) return '';
-  const g=k==='lfWhyArena' ? ccArenaGoal() : null;
-  return L()[k]+(g ? ' · Hype '+ccNum(g.h)+' / '+ccNum(g.need) : '');
-}
-/* ПЛИТКА АРЕНЫ НА ЦЕНТРЕ (его слово 30.09: «арену же играть надо, мб добавить на главном и
-   поинты получать»). Лига и Hype с полосой до Champion League, кнопка — то же занятие дня
-   trSur, что в «Тренировке» (careerPickDay: энергия, закрытый день, травма — там же), и
-   последняя сессия по матчам: место, убийства, очки с вычетом автобуса. */
-function ccArenaPlayWhy(){
-  const act=ccActById('trSur');
-  if(CAREER.career.seasonOver) return L().ccSeasonOver;
-  if(ccLifeHurt()) return L().lfWhyHurt;
-  if(!ccCentreDayOpen() || careerDayClosed()) return L().arTileDayBusy;
-  if(act && careerEnergy()<act.energy) return L().ccNeedEnergy(act.energy-careerEnergy());
-  return '';
-}
-function ccArenaTileHTML(){
-  const g=ccArenaGoal(); if(!g) return '';
-  const T=L(), lf=ccLife(), act=ccActById('trSur'), why=ccArenaPlayWhy();
-  const last=lf.arenaLast;
-  const rows=last && last.games ? last.games.map((m,i)=>
-    `<tr><td>${i+1}</td><td>${esc(ccArenaLeague(m.div))} ${m.div+1}</td><td>#${m.place}<small>/${m.of}</small></td>`+
-    `<td>${m.elims}</td><td>${m.fare ? '−'+m.fare : '0'}</td><td class="${m.pts>=0?'ar-up':'ar-down'}">${m.pts>=0?'+':''}${m.pts}</td></tr>`).join('') : '';
-  const delta=last ? last.to-last.from : 0;
-  return `<div class="ch-tile ar-tile${g.ok?' ok':''}">`+
-    `<h4>${esc(T.hgArena)} <span>${esc(ccArenaName(g.div))} · ${esc(T.arTileRules(ccArenaEra().upd))}</span></h4>`+
-    `<div class="ar-hype"><b>${ccNum(g.h)}</b><em>Hype</em><i>${g.ok ? '✓ '+esc(T.hgArenaOk) : esc(T.arTileLeft(ccNum(g.need-g.h)))}</i></div>`+
-    (g.ok ? '' : `<u class="hg-bar"><s style="width:${Math.round(g.pct)}%"></s></u><div class="hg-hint">${esc(T.hgArenaGo)} · ${ccNum(g.need)}</div>`)+
-    `<button class="btn-primary ar-play" ${why ? 'disabled title="'+esc(why)+'"' : 'onclick="careerPickDay(\'trSur\')"'}>${esc(T.hgArenaBtn)} · ${act ? act.energy : 30}${T.ccEnergyMark}</button>`+
-    (why ? `<div class="hg-hint">${esc(why)}</div>` : '')+
-    (rows ? `<div class="ar-last"><em>${esc(T.arTileLast(ccFmtDay(last.day)))} · <b class="${delta>=0?'ar-up':'ar-down'}">${delta>=0?'+':''}${delta} Hype</b></em>`+
-      `<table><thead><tr><th>#</th><th>${esc(T.arTileDiv)}</th><th>${esc(T.arTilePlace)}</th><th>${esc(T.arTileElims)}</th><th>${esc(T.arTileBus)}</th><th>Hype</th></tr></thead><tbody>${rows}</tbody></table></div>` : '')+
-    `<div class="hg-hint">${esc(T.hgArenaHow)}</div></div>`;
-}
-// Строка «Арена» в плитке целей на главной: полоса до Champion League и кнопка в Арену.
-function ccArenaGoalRowHTML(){
-  const g=ccArenaGoal(); if(!g) return '';
-  return `<div class="hg-row${g.ok?' ok':''}"><div class="hg-top"><em>${esc(L().hgArena)} · ${esc(ccArenaName(g.div))}</em>`+
-    `<b>${esc(g.ok ? L().hgArenaOk : L().hgArenaGo)}</b><i>${g.ok ? '✓' : ccNum(g.h)+' / '+ccNum(g.need)}</i></div>`+
-    (g.ok ? '' : `<u class="hg-bar"><s style="width:${Math.round(g.pct)}%"></s></u>`+
-      `<div class="hg-hint">${esc(L().hgArenaHow)}</div><button class="hg-go" onclick="careerTab('train')">${esc(L().hgArenaBtn)}</button>`)+`</div>`;
 }
 
 /* СВОЯ КАРТА В CREATIVE. Пять вечеров стройки (trMap), потом карта выходит и платит
@@ -118853,18 +118615,6 @@ function ccMapPay(months){
 }
 
 // Ранг в одну строку с полосой — ранкед с 2023-го (ccRank), до него — Арена с Hype.
-function ccLadderRowHTML(){
-  if(ccArenaOn()){
-    const t=ccArenaTable(), h=ccArenaHype(), i=ccArenaDiv(h);
-    const lo=t[i], hi=t[i+1];
-    const pct=hi ? Math.round((h-lo)/(hi-lo)*100) : 100;
-    return `<div class="hd-rank"><em>${esc(L().lfArena)}</em><b>${esc(ccArenaName(i))}</b>`+
-      `<u class="hg-bar"><s style="width:${pct}%"></s></u><i>${ccNum(h)} Hype${hi ? ' / '+ccNum(hi) : ''}</i></div>`;
-  }
-  const p=ccRankPts()%100;
-  return `<div class="hd-rank"><em>${esc(L().lfRank)}</em><b>${esc(ccRankName())}</b>`+
-    `<u class="hg-bar"><s style="width:${ccRank()>=CC_RANKS.length-1?100:p}%"></s></u><i>${ccRank()>=CC_RANKS.length-1?'':p+'/100'}</i></div>`;
-}
 
 function careerAdvanceBody(iso){
   const cr=CAREER.career;
@@ -130054,7 +129804,7 @@ const CC_POST_BY={
   ccNewsResult:'you', ccNewsResultWeek:'you',
   // Жизнь между турнирами (cr.life): Арена, ранг, Noble, травма, жалоба и бан, цель, своя карта,
   // икон-скин, место в Trial, замена — строки о самом игроке. Бан кого-то из сцены — пресса.
-  lfNewsArena:'you', lfNewsArenaChamp:'you', lfNewsArenaReset:'you', lfNewsRankReset:'you', lfNewsBanned:'you', lfNewsCase:'you', lfNewsCleared:'you',
+  lfNewsArena:'you', lfNewsArenaChamp:'you', lfNewsBanned:'you', lfNewsCase:'you', lfNewsCleared:'you',
   lfNewsFined:'you', lfNewsGoal:'you', lfNewsHealed:'you', lfNewsIcon:'you', lfNewsMapOut:'you',
   lfNewsMapPay:'you', lfNewsMapUpd:'you', lfNewsNoble:'you', lfNewsPlaced:'you', lfNewsRankUp:'you',
   lfNewsStandin:'you', lfNewsSceneBan:'press',
@@ -136116,17 +135866,15 @@ function ccTrainWeekHTML(){
     return '<div class="tw-day'+(iso===today?' now':'')+(iso<today?' past':'')+'"><em>'+L().calDows[d]+'</em><b>'+
       new Date(iso+'T00:00:00Z').getUTCDate()+'</b>'+body+'</div>';
   }).join('');
-  return '<div class="ch-tile tw-tile"><h4>'+esc(L().lfTwH)+'</h4>'+ccLadderRowHTML()+'<div class="tw-week">'+cells+'</div>'+ccNobleBoardHTML()+'</div>';
+  return '<div class="ch-tile tw-tile"><h4>'+esc(L().lfTwH)+'</h4><div class="tw-week">'+cells+'</div>'+ccNobleBoardHTML()+'</div>';
 }
 // Где проходит занятие: настоящие карты Creative и плейлисты. Имена — как в игре.
-const CC_DRILL_MAP={trClu:"Enigma's Galaxy 1v1 Arena", trBox:'Clix Box Fights · Pandvil', trZw:'Desert Zone Wars',
+const CC_DRILL_MAP={trClu:"Enigma's Galaxy 1v1 Arena", trBox:'Clix Box Fights · Pandvil', trZw:'Desert Zone Wars', trSur:'Battle Royale',
   };
 function ccDrillPlace(id){
-  if(id==='trSur') return ccArenaOn() ? 'Arena · '+ccArenaName() : 'Ranked · '+ccRankName();
   return CC_DRILL_MAP[id]||'';
 }
 function ccActName(id){
-  if(id==='trSur' && ccArenaOn()) return 'Arena';
   return L()['ccAct'+id]||id;
 }
 function ccTrainCardHTML(a, o){
@@ -141280,7 +141028,7 @@ function ccGalaYouSlide(){
   return '<h4>'+L().lfGalaYouH+'</h4><div class="cc-gala-nums">'+
     ccGalaNum(avg, L().lfAvgRateAll)+ccGalaNum(ccNum(mvp), L().lfMvpAll)+
     ccGalaNum(ccNum(mateList.length), L().lfGalaMates)+
-    ccGalaNum(typeof ccRankName==='function' ? ccRankName() : '—', L().lfRank)+'</div>'+
+'</div>'+
     (best ? '<div class="cc-gala-row"><em>'+L().lfGalaBestNight+'</em><b>'+best.rating.toFixed(1)+' · '+ccLogName(best)+'</b></div>' : '')+
     (mateList.length ? '<div class="cc-gala-row"><em>'+L().lfGalaTopMate+'</em><b>'+esc(mateList[0])+' · '+mates[mateList[0]]+'</b></div>' : '')+
     (lf.icon ? '<div class="cc-gala-row me"><em>'+L().lfIcon+'</em><b>Icon Series</b></div>' : '');
@@ -153433,7 +153181,7 @@ function careerPrAdd(ranked, meta){
     const nr=ccNightRate(ranked);
     if(nr){
       // Ранг двигается раз за вечер: первая таблица дня двигает, следующие раунды — нет.
-      if(!CC_NIGHT_RATE || CC_NIGHT_RATE.day!==nr.day){ ccRankAdd(Math.round(((nr.of>1 ? 1-(nr.place-1)/(nr.of-1) : 1)-0.4)*25)); ccChemBump(3); }
+      if(!CC_NIGHT_RATE || CC_NIGHT_RATE.day!==nr.day){ ccChemBump(3); }
       CC_NIGHT_RATE=nr;
     }
   }catch(e){}
