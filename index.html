@@ -111346,7 +111346,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='67991824';
+const CC_BUILD='f3c758f6';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -112941,7 +112941,9 @@ function ccJoinFromUrl(){
   try{ const u=new URLSearchParams(location.search); code=u.get('join'); y=u.get('y'); r=u.get('r'); }catch(e){ return false; }
   if(!code) return false;
   code=String(code).replace(/[^A-Za-z0-9]/g,'').toUpperCase().slice(0,6);
-  y=(y==='2024'||y==='2025'||y==='2026') ? +y : null;
+  // Любой год карьеры (2019–2026): было только 2024–2026, и хозяин 2019–2023 отдавал ссылку,
+  // по которой друг создавал карьеру в другом году.
+  y=/^20(19|2[0-6])$/.test(String(y||'')) ? +y : null;
   r=(r && typeof CC_REGIONS!=='undefined' && CC_REGIONS.indexOf(String(r))>=0) ? String(r) : null;
   // Адрес чистится сразу: перезагрузка страницы не должна снова тащить в лобби.
   try{ history.replaceState(null, '', location.pathname); }catch(e){}
