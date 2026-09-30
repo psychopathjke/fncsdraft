@@ -111346,7 +111346,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f3c758f6';
+const CC_BUILD='984fcfa3';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -111397,7 +111397,9 @@ const CC_BUILD='f3c758f6';
    раскладывали своё лобби по-разному, а чужие — одинаково: скриншот (страница «neeww») ровно такой — чужие строки таблицы совпадают
    до очка, своя строка разная. И «после смерти на локации всё ломается» —
    это оно: биф рождается в стычке дома (careerBeefNight). */
-const CC_TEAM_KEYS=['seed','day','season','division','diff','tokens','seasonOver','chemSince','beefs',
+// year/year0 — общие (30.09): друг по ссылке хозяина, который уже перешёл в следующий год, оставался
+// в году начала — день приезжал 2021-й, а календарь года стоял 2019-й.
+const CC_TEAM_KEYS=['seed','day','year','year0','season','division','diff','tokens','seasonOver','chemSince','beefs',
                     'sizes','trios','log','mp','region','mates','spots','seasonTurn',
                     'majorSeed','summitSeed','relSeed','gcSeed','duoSplits','exMates','table',
                     'events','d1','major','summit','globals','reload','rel','wf','rc',
