@@ -35,8 +35,8 @@
  * в собранной папке — хеш app.js и настоящие адреса. Файл в репозитории
  * специально нерабочий как воркер — его никто и не регистрирует с file://.
  */
-const V = "ec6213cf";
-const CORE = ["./","./zone-sim.js?v=6893c1d7","./zone-replay.js?v=ddaac440","./mp.js?v=2591bda6","./app.js?v=ec6213cf","./fonts/oswald-cyrillic-ext.woff2","./fonts/oswald-cyrillic.woff2","./fonts/oswald-latin-ext.woff2","./fonts/oswald-latin.woff2"];
+const V = "df41ec69";
+const CORE = ["./","./zone-sim.js?v=6893c1d7","./zone-replay.js?v=ddaac440","./mp.js?v=2591bda6","./app.js?v=df41ec69","./fonts/oswald-cyrillic-ext.woff2","./fonts/oswald-cyrillic.woff2","./fonts/oswald-latin-ext.woff2","./fonts/oswald-latin.woff2"];
 
 const DOC = 'fncsdraft-doc-' + V;      // оболочка: одна на сборку
 const APP = 'fncsdraft-app-' + V;      // скрипты с ?v=: одни на сборку
