@@ -151,7 +151,23 @@ const boot = (who) => `
       careerFfToDay(${JSON.stringify(FF)});
       out.notes.ffVoted=true;
       const tf=Date.now();
-      while(Date.now()-tf<${BUDGET_MS} && (CAREER.career.day<${JSON.stringify(FF)} || CC_FF)) await wait(500);
+      // Застрял — видно, на чём: не шагает день дольше CC_FF_STALL мс — снимок и выход.
+      let lastDay=CAREER.career.day, lastMove=Date.now();
+      while(Date.now()-tf<${BUDGET_MS} && (CAREER.career.day<${JSON.stringify(FF)} || CC_FF)){
+        await wait(500);
+        if(CAREER.career.day!==lastDay){ lastDay=CAREER.career.day; lastMove=Date.now(); }
+        else if(Date.now()-lastMove>${Number(process.env.CC_FF_STALL||240000)}) break;
+      }
+      try{
+        const nx=careerNext();
+        out.notes.stall={day:CAREER.career.day, ff:!!CC_FF, err:(CC_FF&&CC_FF.err)||null, stop:(CC_FF&&CC_FF.stop)||null,
+          why:(typeof ccMpWhy==='function')?ccMpWhy():null, block:(typeof ccMpBlockWhy==='function')?ccMpBlockWhy():null,
+          waiting:MP.waiting||null, gate:!!MP.gate, alone:CC_MP_ALONE, rand:!!CC_MP_RAND,
+          screen:[...document.querySelectorAll('.screen')].filter(e=>e.offsetParent!==null).map(e=>e.id).join(','),
+          next:nx&&{type:nx.type, title:nx.title, day:nx.day}, can:nx?careerCanPlay(nx):null,
+          modal:[...document.querySelectorAll('.cc-evpick-wrap, #ccAskModal[style*="flex"], .landing-picker, .cc-choice')].map(e=>e.className||e.id).join(','),
+          peerHb:MP.peerHb||null, errs:(window.__errs||[]).slice(0,3)};
+      }catch(e){ out.notes.stall={err:String(e)}; }
       out.notes.table=(CAREER.career.log||[]).map(r=>[r.day, r.kind||'cup', r.stage||'', r.place, r.of, r.pts, r.wins, r.elims].join(' '));
       out.notes.split=[...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent);
       if(${process.env.CC_TABLES_DIFFER==='1'}){ for(let i=0;i<300 && CAREER.career.day===${JSON.stringify(DAY)};i++) await wait(300); }   // личный вечер: день шагает, когда отыграет и второй
@@ -303,6 +319,7 @@ async function runOne(tag, who, port){
     console.log(n+': '+(r.fail ? 'FAIL '+r.fail : (r.notes.head||'')) + ' · строк '+((r.notes.table||[]).length)+' · хеш '+hash(r.notes.table)+
       ' · своё '+JSON.stringify(r.notes.mine)+' · броски '+r.notes.rolls+' · pow '+r.notes.youPow+' · скип '+!!r.notes.skipPressed+' · фон '+!!r.notes.hidden+' · перезагрузка '+!!r.notes.reloaded+' · own/other '+r.notes.own+'/'+r.notes.other+' · '+JSON.stringify(r.notes.engine)+' · team '+JSON.stringify(r.notes.team)+' · dbg '+JSON.stringify(r.notes.dbg)+' · f1 '+JSON.stringify(r.notes.f1));
     if(r.notes.split && r.notes.split.length) console.log('   красная строка: '+r.notes.split.join(' || '));
+    if(r.notes.stall) console.log('   стоп перемотки: '+JSON.stringify(r.notes.stall));
     if(r.notes.days && r.notes.days.length>1) console.log('   дни: '+r.notes.days.join(' → '));
     if(r.notes.marks) console.log('   метки: '+r.notes.marks.slice(0, r.notes.split && r.notes.split.length ? 60 : 14).join(' | '));
     if(r.fail && r.notes.trace) console.log('   след:' + String.fromCharCode(10) + '     ' + r.notes.trace.slice(-12).join(String.fromCharCode(10) + '     '));

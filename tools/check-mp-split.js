@@ -64,7 +64,7 @@ const BOOT = `
           ['beefs','chemSince','coach','d1','day','dev','diff','division','duoSplits','duoStreak',
            // exMates — брошенные игроком напарники (ccMateParted, 16.09): едут с днём, как duoSplits.
            'events','ewc','exMates','gcSeed','gclc','gifts','globals','lft','log','major','majorSeed',
-           'mates','mp','rc','region','rel','relSeed','reload','season','seasonOver',
+           'mates','mp','mxDone','rc','region','rel','relSeed','reload','season','seasonOver',
            /* solos/solosBy — квалификация соло-серии: вечер играется в три
               сессии и его допуск общий на команду, как и у solo/soloBy. Поля
               стоят в списке командных (ccTeamState), а спека здесь про них

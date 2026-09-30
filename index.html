@@ -111349,7 +111349,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='c4bd6d50';
+const CC_BUILD='46e4f79f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -111402,7 +111402,7 @@ const CC_BUILD='c4bd6d50';
    это оно: биф рождается в стычке дома (careerBeefNight). */
 // year/year0 — общие (30.09): друг по ссылке хозяина, который уже перешёл в следующий год, оставался
 // в году начала — день приезжал 2021-й, а календарь года стоял 2019-й.
-const CC_TEAM_KEYS=['seed','day','year','year0','season','division','diff','tokens','seasonOver','chemSince','beefs',
+const CC_TEAM_KEYS=['seed','day','year','year0','mxDone','season','division','diff','tokens','seasonOver','chemSince','beefs',
                     'sizes','trios','log','mp','region','mates','spots','seasonTurn',
                     'majorSeed','summitSeed','relSeed','gcSeed','duoSplits','exMates','table',
                     'events','d1','major','summit','globals','reload','rel','wf','rc',
@@ -111552,7 +111552,14 @@ function ccMpGate(kind){
        что двигало её за день — форма, усталость, болезнь, сборы, девайсы,
        режим показа, — обязано уехать до старта. Сокет держит порядок, так что
        напарник получит её раньше, чем сервер объявит вечер. */
-    if(MP.sendCard) MP.sendCard();
+    /* И запомнить её. Живой прогон двоих 30.09 (перемотка 2023): у A напарник LiveB 87, у самого
+       B — 89, сила команды 104 против 105, таблицы разошлись с первой игры. Своя карточка на вечер
+       собиралась заново (careerCard), а напарник считал по той, что приехала, — если между отправкой
+       и стартом рейтинг или форма у кого-то сдвинулись, входы расходились. Теперь свою команду каждый
+       считает по той же карточке, которую видит напарник (ccMpMyCardNow). */
+    CC_MP_MYCARD=(MP.card ? MP.card() : null);
+    if(CC_MP_MYCARD) MP.send({t:'card', card:CC_MP_MYCARD});
+    else if(MP.sendCard) MP.sendCard();
     MP.gate=true;
     // Отмена ожидания старта — перемотка встала у напарника (ccMpFfErrSaw) или он на другом дне.
     var tick=null;
@@ -114463,6 +114470,7 @@ function ccMpApplyRemote(team){
   // Идёт вечер — чужое состояние подождёт: применить его сейчас значит
   // выбросить кэши мира посреди игры. См. careerSave.
   if(CC_MP_RAND) return;
+  if(CC_MX_SOLO_RUN){ CC_MX_PENDING=team; return; }
   /* День команды идёт только вперёд. Отзыв: «после перемотки
      моргает 3 и 4 день туда-сюда… и пятница-суббота у двоих». Перемотку по
      двум подтверждениям крутят ОБА клиента, каждый шаг уезжает напарнику, и
@@ -114476,6 +114484,7 @@ function ccMpApplyRemote(team){
   try{ careerSave(); }finally{ CC_MP_ADVANCE=was; }
   // Приехал итог напарника по соло — и мой уже есть: день шагает отсюда.
   if(typeof ccSoloTeamSettle==='function') try{ ccSoloTeamSettle(); }catch(e){}
+  if(typeof ccMXTeamSettle==='function') try{ ccMXTeamSettle(); }catch(e){}
   if(typeof careerRenderHub==='function' && document.getElementById('chBody'))
     careerRenderHub(CH_TAB||'centre');
 }
@@ -114515,6 +114524,19 @@ function ccApplyTeamState(t){
             трио, бота из списка». Своя роль остаётся своей. */
          if(k==='mp' && t.mp && CAREER.career.mp && CAREER.career.mp.role){
            CAREER.career.mp=Object.assign({}, t.mp, {role:CAREER.career.mp.role});
+           return;
+         }
+         /* Журнал: личные строки (соло-вечер в команде, who=свой ник) у напарника ещё нет — они
+            остаются. Отметки cr.mxDone — объединением. */
+         if(k==='log' && Array.isArray(t.log) && Array.isArray(CAREER.career.log)){
+           const me=hKey(careerCard()), sig=r=>[r.day, r.kind, r.stage, r.who||''].join('|');
+           const have=new Set(t.log.map(sig));
+           const mine=CAREER.career.log.filter(r=>r && r.who===me && r.solo && !have.has(sig(r)));
+           CAREER.career.log=t.log.concat(mine);
+           return;
+         }
+         if(k==='mxDone' && t.mxDone && typeof t.mxDone==='object'){
+           CAREER.career.mxDone=Object.assign({}, CAREER.career.mxDone||{}, t.mxDone);
            return;
          }
          CAREER.career[k]=t[k];
@@ -126190,13 +126212,29 @@ function careerChem(){
    просто никто не читал. Теперь она едет уже посчитанной (formPow — после
    перегруза и пола от машины), и оба берут среднее: у обоих одни и те же два
    числа, значит одна и та же сила. Одиночная карьера — как была. */
+let CC_MP_MYCARD=null;
+// Своя карточка этого вечера — та, что уехала напарнику на гейте. Только внутри командного вечера.
+function ccMpMyCardNow(){
+  return (ccMpOn() && CC_MP_MYCARD && typeof CC_MP_RAND!=='undefined' && CC_MP_RAND) ? CC_MP_MYCARD : null;
+}
 function ccTeamFormPow(){
-  const mine=careerForm();
+  const snap=ccMpMyCardNow();
+  const mine=(snap && isFinite(Number(snap.formPow))) ? Number(snap.formPow) : careerForm();
   if(!ccMpOn() || typeof MP==='undefined' || !MP.peer) return mine;
   const theirs=Number(MP.peer.formPow);
   return (mine+(isFinite(theirs) ? theirs : 0))/2;
 }
 function careerYouTeam(cards){
+  // Своя карточка в командном вечере — из снимка гейта, как у напарника (см. ccMpMyCardNow).
+  /* И напарник — СВЕЖИЙ, из MP.peer. Раннеры берут careerMates() ДО гейта (runCareerCup и др.),
+     а карточка напарника на этот вечер приходит на гейте — в составе у одного оставалась вчерашняя
+     (LiveB 87 против его собственных 89, 30.09). Здесь состав собирается уже после гейта. */
+  const snap=ccMpMyCardNow();
+  if(snap && Array.isArray(cards)){
+    const me=hKey(snap), peer=(typeof MP!=='undefined' && MP.peer) || null, pk=peer ? hKey(peer) : null;
+    cards=cards.map(c=>!c ? c : hKey(c)===me ? JSON.parse(JSON.stringify(snap))
+                              : (pk && hKey(c)===pk) ? peer : c);
+  }
   /* В команде состав — В ОДНОМ ПОРЯДКЕ у обоих.
 
      Каждый клиент собирает свой состав как [я, напарник]: у A это «A & B»,
@@ -142337,6 +142375,11 @@ function ccMajorMyHeat(ev){
 // you have just earned them reads as the mode losing track.
 function ccMajWhyLocked(){
   const ev=careerMajorOn(careerToday()), m=CAREER.career.major;
+  // Соло-Мейджор в команде: свой вечер сыгран, день ждёт напарника (ccMXTeamSettle).
+  if(ev && ev.yx && ccMpTeam() && (ccMXSpec(ev.yx, ev.n)||{}).size===1){
+    const d=CAREER.career.mxDone||{};
+    if(d[hKey(careerCard())]===careerToday()) return L().ccMpSoloWait;
+  }
   return (ev && ev.stage==='lcq' && m && m.n===ev.n && m.ticket)
     ? L().ccMajHaveTicket : L().ccMajLocked;
 }
@@ -147022,10 +147065,54 @@ async function runCareerMajorMX(){
   const sp=ccMXSpec(ev.yx, ev.n);
   const prevEv=CC_EVENT_SIZE;
   CC_EVENT_SIZE=sp.size;
-  try{ await ccMXRun(ev, sp); }
-  finally{ CC_EVENT_SIZE=prevEv; }
+  /* СОЛО-МЕЙДЖОР ВДВОЁМ — ЛИЧНЫЙ ВЕЧЕР (живой прогон двоих 30.09: неделя World Cup Solo 2019 не
+     доигрывалась вовсе — каждый клиент ставил в поле себя одного, таблицы расходились с первой игры,
+     вечер вставал). Открытые квалы World Cup и соло-FNCS 2020 каждый играет сам, как в жизни —
+     в разных лобби; в хитах двое и так в разных комнатах. Итог (журнал, рост, деньги) — свой, день
+     шагает, когда отыграли оба или второму сегодня нечего (ccMXTeamSettle). */
+  const soloTeam=sp.size===1 && ccMpTeam();
+  if(soloTeam){ CC_MP_ALONE=true; CC_MX_SOLO_RUN=true; }
+  try{ await ccMXRun(ev, sp, soloTeam); }
+  finally{
+    CC_EVENT_SIZE=prevEv;
+    if(soloTeam){
+      CC_MX_SOLO_RUN=false; CC_MP_ALONE=false; CC_MP_HOLD=false;
+      const cr=CAREER.career, me=hKey(careerCard());
+      (cr.mxDone=cr.mxDone||{})[me]=careerToday();
+      careerSave();
+      ccMXTeamSettle();
+    }
+  }
 }
-async function ccMXRun(ev, sp){
+/* Личные соло-вечера Мейджора в команде: кто сегодня отыграл (или играть нечего) — cr.mxDone по нику;
+   день шагает, когда отмечены оба. Состояние напарника, приехавшее посреди своего вечера, ждёт
+   (CC_MX_PENDING) — применить его посреди игры значит выбросить кэши мира. */
+let CC_MX_SOLO_RUN=false, CC_MX_PENDING=null, CC_MX_SETTLING=false;
+function ccMXTeamSettle(){
+  if(CC_MX_SETTLING || CC_MX_SOLO_RUN) return false;
+  if(!ccMpTeam() || typeof MP==='undefined' || CC_MP_RAND) return false;
+  if(CC_MX_PENDING){ const t=CC_MX_PENDING; CC_MX_PENDING=null; ccMpApplyRemote(t); }
+  const cr=CAREER && CAREER.career; if(!cr) return false;
+  const today=careerToday(), ev=careerMajorOn(today);
+  if(!ev || !ev.yx) return false;
+  const sp=ccMXSpec(ev.yx, ev.n);
+  if(!sp || sp.size!==1) return false;
+  CC_MX_SETTLING=true;
+  try{
+    const me=hKey(careerCard()), peer=MP.peer ? hKey(MP.peer) : null;
+    const done=cr.mxDone=cr.mxDone||{};
+    // Сам сегодня не играю (не прошёл, уже сыграл) — отмечаюсь, чтобы напарник не ждал.
+    if(done[me]!==today && !careerMajorCan(ev)){ done[me]=today; careerSave(); }
+    if(done[me]!==today) return false;
+    if(peer && done[peer]!==today) return false;
+    CC_MP_ALONE=true;
+    try{ careerAdvanceTo(ccAddDays(today, 1)); }
+    finally{ CC_MP_ALONE=false; }
+    careerSave();
+    return true;
+  } finally { CC_MX_SETTLING=false; }
+}
+async function ccMXRun(ev, sp, soloTeam){
   const cr=CAREER.career; let lastR=0;
   const mpStart=ccMpLock() ? await ccMpGate('major') : null;
   careerCampBonus('major', ev.id||ev.label||'');
@@ -147234,9 +147321,11 @@ async function ccMXRun(ev, sp){
                passed: fin ? cash>0 : through, ovr:CAREER.player.ovr, games:games||spec.games, wins:you.wins||0, elims:you.stageElims||0,
                avg: places.length ? Math.round(places.reduce((s,v)=>s+v,0)/places.length*10)/10 : null,
                mate: (sp.size>1 && mate) ? mate.handle : null, mates: ccLogMates(mates.slice(0, sp.size-1)), prize:ccShareOf(cash, you), kind:'major', stage:fin ? 'final' : wildOut ? 'wild' : ev.stage,
-               size: sp.size, won: fin ? ccStageSeatRow(ranked[0]) : undefined, top: fin ? ccStageTop(ranked, you) : undefined});
+               size: sp.size, won: fin ? ccStageSeatRow(ranked[0]) : undefined, top: fin ? ccStageTop(ranked, you) : undefined,
+               who: soloTeam ? hKey(me) : undefined, solo: soloTeam || undefined});
   await ccMpClose(ranked);
-  careerAdvanceTo(ccAddDays(careerToday(), 1));
+  // Личный соло-вечер в команде день не двигает сам — см. ccMXTeamSettle.
+  if(!soloTeam) careerAdvanceTo(ccAddDays(careerToday(), 1));
   if(ccOffersOpen(place, field.length)){
     CAREER.offers=careerOrgOffers();
     careerOrgOffersToDms();
