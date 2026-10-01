@@ -452,6 +452,7 @@
   // turned a small arrow into a blob. Widths are in screen pixels, which is
   // what non-scaling-stroke means, so the outline stays one crisp pixel-and-a-
   // half at every zoom the camera reaches.
+  var CLUB_COL = '#3fd0ff';   // команды клуба в Fortnite Manager
   function marker(x, y, angle, fill, isYou, scale){
     var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     var where = 'translate(' + x.toFixed(3) + ' ' + y.toFixed(3) + ') ' +
@@ -1175,8 +1176,9 @@
         var who = roster[i] || {};
         var off = fanTo(handle.fan, i, offsetIn(grp, m, scale), since, handle.fanEase);
         at[i] = {x: d.x + off.dx, y: d.y + off.dy};
+        // Команда клуба (Fortnite Manager, isClub) — своим голубым и крупно, как своя.
         handle.svg.appendChild(marker(at[i].x, at[i].y, d.a || 0,
-          who.you ? 'var(--accent)' : colourFor(i), who.you, scale));
+          who.you ? 'var(--accent)' : who.club ? CLUB_COL : colourFor(i), who.you || who.club, scale));
       }
     }
 
@@ -1239,7 +1241,7 @@
           // in full, since the map clips each handle to eleven characters.
           var nm = nameLines(r.name, r.you, true).join(' & ');
           if(!nm) continue;
-          var col = r.you ? 'var(--accent)' : colourFor(k);
+          var col = r.you ? 'var(--accent)' : r.club ? CLUB_COL : colourFor(k);
           // One line per squad, whatever the name costs. The room the map keeps
           // clear for this list is counted as ROW_PX per squad, so a name that
           // wrapped would make the list taller than the space reserved for it

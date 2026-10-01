@@ -271,6 +271,8 @@
     var aspect = opts.aspect, startOf = opts.startOf;
     return teams.map(function(team){
       var p = startOf(team);
+      // Киллы этой игры, видимые приложению по ходу (дуэль «лут с киллов», см. CC_KEY_LOOT в index.html).
+      team._gElims = 0;
       return {
         team: team,
         x: p.x, y: p.y * aspect,
@@ -1086,6 +1088,7 @@
         var loserSize = elimsFor(loser);
 
         winner.elims += loserSize;
+        winner.team._gElims = winner.elims;
         winner.dealt += KILL_DAMAGE * loserSize;
         loser.taken += KILL_DAMAGE * loserSize;
         loser.alive = false;
@@ -1125,6 +1128,7 @@
           var cl = (cw === streaker) ? victim : streaker;
           var clSize = elimsFor(cl);
           cw.elims += clSize;
+          cw.team._gElims = cw.elims;
           cw.dealt += KILL_DAMAGE * clSize;
           cl.taken += KILL_DAMAGE * clSize;
           cl.alive = false; cl.hp = 0; cl.deathCause = cw.team.name; cl.busy = true;
@@ -1644,6 +1648,7 @@
         if(!loser || !loser.alive || !winner || winner === loser) return false;
         var loserSize = elimsFor(loser);
         winner.elims += loserSize;
+        winner.team._gElims = winner.elims;
         winner.dealt += KILL_DAMAGE * loserSize;
         loser.taken += KILL_DAMAGE * loserSize;
         loser.alive = false;
@@ -1753,7 +1758,7 @@
       for(var tp=0; tp<squads.length; tp++)
         totalPlayers += (squads[tp].team.squad && squads[tp].team.squad.length) || 1;
       var roster = squads.map(function(s){
-        return {name: s.team.name, you: !!s.team.isYou,
+        return {name: s.team.name, you: !!s.team.isYou, club: !!s.team.isClub,
                 size: (s.team.squad && s.team.squad.length) || 1};
       });
       roster.totalSquads = (opts.lobbySquads != null) ? opts.lobbySquads : squads.length;
