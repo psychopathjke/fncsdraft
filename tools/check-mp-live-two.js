@@ -203,6 +203,9 @@ const boot = (who) => `
     if(reloadAt>0) setTimeout(function(){ sessionStorage.setItem('cc_reloaded','1'); location.reload(); }, reloadAt);
     const hideAt=${who.hideAt};
     if(hideAt>0) setTimeout(function(){ Object.defineProperty(document, 'hidden', {get:()=>true, configurable:true}); Object.defineProperty(document, 'visibilityState', {get:()=>'hidden', configurable:true}); document.dispatchEvent(new Event('visibilitychange')); out.notes.hidden=true; }, hideAt);
+    // CC_DESYNC_B=мс — нарочно сдвинуть общий поток у B посреди вечера: вечера расходятся, и видно, выходит ли пара из тупика.
+    const desyncAt=${who.desyncAt};
+    if(desyncAt>0) setTimeout(function(){ if(CC_MP_RAND){ for(let i=0;i<7;i++) Math.random(); out.notes.desync=true; } }, desyncAt);
     // След хода вечера: где стоим, чего ждём, что последнее послали.
     out.notes.trace=[]; const sent=[];
     window.__acts=[]; const say0=MP.say; MP.say=function(m){ if(m && m.t==='act' && m.kind!=='hb') window.__acts.push((m.by||'?')+':'+m.kind+(m.payload&&m.payload.q!=null?'#'+m.payload.q:'')); return say0.apply(MP, arguments); };
@@ -263,8 +266,8 @@ const boot = (who) => `
 
 const ccAddDaysNode=(iso, n)=>{ const d=new Date(iso+'T00:00:00Z'); d.setUTCDate(d.getUTCDate()+n); return d.toISOString().slice(0,10); };
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-const A = {nick:process.env.CC_NICK_A||'LiveA', age:17, ageEdge:4, country:'de', close:6, ovr:90, role:'roleIGL', role_mp:'a', money:48000, reach:20000, form:3, grind:12, skipAt:SKIP_A, hideAt:HIDE_A, reloadAt:RELOAD_A};
-const B = {nick:process.env.CC_NICK_B||'LiveB', age:24, ageEdge:0, country:'br', close:1, ovr:86, role:'roleFRG', role_mp:'b', money:0,     reach:0,     form:0, grind:0,  skipAt:SKIP_B, hideAt:HIDE_B, reloadAt:RELOAD_B};
+const A = {nick:process.env.CC_NICK_A||'LiveA', age:17, ageEdge:4, country:'de', close:6, ovr:90, role:'roleIGL', role_mp:'a', money:48000, reach:20000, form:3, grind:12, skipAt:SKIP_A, hideAt:HIDE_A, reloadAt:RELOAD_A, desyncAt:0};
+const B = {nick:process.env.CC_NICK_B||'LiveB', age:24, ageEdge:0, country:'br', close:1, ovr:86, role:'roleFRG', role_mp:'b', money:0,     reach:0,     form:0, grind:0,  skipAt:SKIP_B, hideAt:HIDE_B, reloadAt:RELOAD_B, desyncAt:Number(process.env.CC_DESYNC_B||0)};
 
 function cdp(port){
   return new Promise((res, rej)=>{

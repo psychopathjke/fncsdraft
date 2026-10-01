@@ -111460,7 +111460,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a489a8d8';
+const CC_BUILD='93bdedfe';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -111896,7 +111896,7 @@ function ccMpSeedOn(seed){
   CC_DROP_STAGE_N=0;
   // Красная строка прошлого вечера не должна глушить сегодняшнюю: метка
   // «первое расхождение» — на вечер, а не на вкладку.
-  CC_MP_SPLIT_AT=null; CC_MP_LEAVE=false; CC_MP_PASSED=null;
+  CC_MP_SPLIT_AT=null; CC_MP_LEAVE=false; CC_MP_LEFT=false; CC_MP_PASSED=null;
   try{ document.querySelectorAll('.cc-mp-split').forEach(function(e){ e.remove(); }); }catch(e){}
   /* И мир — заново, у обоих, из одного и того же командного состояния.
 
@@ -113762,7 +113762,7 @@ function ccMpClose(ranked){
       CC_MP_HOLD=true;               // и до того шага наверх ничего не уходит
       /* После выхода из вечера состояния у двоих разные: на хабе оба просят синхронизацию,
          и следующий вечер начинается из одного состояния. См. ccMpSplitLeave. */
-      if(CC_MP_LEAVE){ CC_MP_LEAVE=false; setTimeout(function(){ try{ if(MP.act) MP.act('syncreq', {by:ccMpId()}); }catch(e){} }, 1500); }
+      if(CC_MP_LEAVE){ CC_MP_LEAVE=false; CC_MP_LEFT=false; CC_MP_SKIP_CLOSE=true; setTimeout(function(){ try{ if(MP.act) MP.act('syncreq', {by:ccMpId()}); }catch(e){} }, 1500); }
       res();
     };
     off=MP.on('close', finish);
@@ -113889,8 +113889,18 @@ function ccMpPeerLeft(){
   var hb=MP.peerHb || null;
   return !!(hb && hb.rand===false);
 }
+/* ВЗАИМНОЕ ОЖИДАНИЕ (скрин тестера 1.10, Katowice 2019 вдвоём: «просто зависло»). Вечера разошлись ещё в
+   первой игре, и во второй оба стояли на РАЗНЫХ барьерах — каждый ждал другого у своего вопроса, а пульс
+   у обоих живой, так что потолок тишины (8 мин) не срабатывал. Теперь пульс несёт, у какого вопроса
+   клиент ждёт (w, CC_MP_CUR_Q), и если напарник ждёт у другого вопроса дольше CC_MP_DEADLOCK_MS, это
+   тупик: вечер отпускается сразу, с красной строкой и кнопкой «выйти обоим» (ccMpSplitSeen). Только
+   командная пара: в гонке ждущих много. Ожидание закрытия (onlyLost) не трогается. */
+let CC_MP_CUR_Q='', CC_MP_WAIT_AT=0;
+const CC_MP_DEADLOCK_MS=45000;
+function ccMpWaitingQ(){ return ((new Date()).getTime()-CC_MP_WAIT_AT<3000) ? CC_MP_CUR_Q : ''; }
 function ccMpDeadline(fn, ms){
   var cap=ms||CC_MP_SYNC_MS, start=(new Date()).getTime();
+  var dlKey=null, dlAt=0;
   /* Потолок считается от ПОСЛЕДНЕГО ДВИЖЕНИЯ соседей, а не от начала ожидания: пульс несёт игру
      и номера вопросов (g, q), и пока они меняются, сосед считает, а не стоит. Шесть Chrome на одной
      машине отстают друг от друга на игру, и 4-минутный потолок гонки срезал живое ожидание
@@ -113903,6 +113913,24 @@ function ccMpDeadline(fn, ms){
     if(progress()) start=now;
     var seen=(typeof MP!=='undefined' && MP.peerSeen) ? MP.peerSeen : 0;
     var quiet=now-Math.max(start, seen);
+    if(!fn.onlyLost){
+      CC_MP_WAIT_AT=now;
+      try{
+        var ph=(typeof MP!=='undefined' && MP.peerHb) || null;
+        var team=(typeof ccMpTeam==='function') ? ccMpTeam() : true;
+        var race=(typeof ccRaceOn==='function' && ccRaceOn() && !team);
+        if(!race && ph && ph.w && CC_MP_CUR_Q && ph.w!==CC_MP_CUR_Q && MP.peerSeen && now-MP.peerSeen<25000){
+          var k=ph.w+'|'+CC_MP_CUR_Q;
+          if(dlKey!==k){ dlKey=k; dlAt=now; }
+          else if(now-dlAt>=CC_MP_DEADLOCK_MS){
+            clearInterval(id); ccMpPassed('deadlock');
+            try{ ccMpSplitSeen(CC_MP_GAME||'?', 'deadlock · me '+CC_MP_CUR_Q+' · peer '+ph.w+' · '+CC_BUILD); }catch(e){}
+            try{ fn(); }catch(e){}
+            return;
+          }
+        } else dlKey=null;
+      }catch(e){}
+    }
     var left=!fn.onlyLost && now-start>=CC_MP_LEAVE_MS && ccMpPeerLeft();
     if(left){ try{ ccMpTell(L().ccMpLeft); }catch(e){} }
     if(left || quiet>=cap || now-start>=ccMpSyncMax()){ clearInterval(id); ccMpPassed(left ? 'left' : quiet>=cap ? 'cap' : 'max'); try{ fn(); }catch(e){} }
@@ -113914,7 +113942,7 @@ function ccMpHeartbeat(on){
   if(CC_MP_HB){ clearInterval(CC_MP_HB); CC_MP_HB=null; }
   if(!on || typeof MP==='undefined' || !MP.act) return;
   // Пульс несёт, где напарник: день, игра, номера вопросов, перемотка ли. Показывается в окне ожидания.
-  CC_MP_HB=setInterval(function(){ try{ MP.act('hb', {by:ccMpId(), day:careerToday(), g:CC_MP_GAME||0, ff:!!(typeof CC_FF!=='undefined' && CC_FF), q:ccMpQnLine(), rand:!!CC_MP_RAND}); }catch(e){}
+  CC_MP_HB=setInterval(function(){ try{ MP.act('hb', {by:ccMpId(), day:careerToday(), g:CC_MP_GAME||0, ff:!!(typeof CC_FF!=='undefined' && CC_FF), q:ccMpQnLine(), w:ccMpWaitingQ(), rand:!!CC_MP_RAND}); }catch(e){}
     // Своё предложение перемотки повторяется с пульсом: сосед, чья вкладка спала или связь рвалась, его увидит.
     try{ const p=(typeof ccMpFfPending==='function') ? ccMpFfPending() : null; if(p && p.mine && !(typeof CC_FF!=='undefined' && CC_FF)) MP.act('ff', {by:ccMpId(), day:p.day, until:p.until}); }catch(e){} }, CC_MP_HB_MS);
 }
@@ -113928,7 +113956,7 @@ function ccMpPeerLine(){
   var p=(typeof MP!=='undefined' && MP.peerHb) || null;
   if(!p) return '';
   var age=MP.peerSeen ? Math.round(((new Date()).getTime()-MP.peerSeen)/1000) : null;
-  return '  я '+careerToday()+' g'+String(CC_MP_GAME||0)+' ⇄ '+String(p.day||'?')+' · g'+String(p.g||0)+(p.q ? ' · '+p.q : '')+(p.ff ? ' · ff' : '')+(p.rand===false ? ' · idle' : '')+(age!=null ? ' · '+age+' с' : '');
+  return '  я '+careerToday()+' g'+String(CC_MP_GAME||0)+' ⇄ '+String(p.day||'?')+' · g'+String(p.g||0)+(p.q ? ' · '+p.q : '')+(p.w ? ' · ждёт '+p.w : '')+(p.ff ? ' · ff' : '')+(p.rand===false ? ' · idle' : '')+(age!=null ? ' · '+age+' с' : '');
 }
 /* Вечера разъехались — сказать сразу и назвать игру.
 
@@ -114047,8 +114075,13 @@ function ccMpPeerDone(){
   list.forEach(function(fn){ try{ fn(); }catch(e){} });
 }
 let CC_MP_QN={};
-function ccMpQnReset(){ CC_MP_QN={}; }
-function ccMpQn(kind){ return (CC_MP_QN[kind]=(CC_MP_QN[kind]||0)+1); }
+function ccMpQnReset(){ CC_MP_QN={}; CC_MP_SKIP_CLOSE=false; }
+/* Вечер закрыт ВРОЗЬ (выход обоим или расхождение, CC_MP_LEAVE) — запоздалое 'close' от сервера
+   этого вечера не применяется (см. mp.js): сервер закрывает, когда придут оба хеша, и шлёт состояние
+   ДО шага дня, а день к этому времени уже сдвинут своим шагом. Проба с нарочным расхождением
+   1.10: у второго день откатывался на вчера. Сбрасывается на старте следующего вечера. */
+let CC_MP_SKIP_CLOSE=false;
+function ccMpQn(kind){ const n=(CC_MP_QN[kind]=(CC_MP_QN[kind]||0)+1); CC_MP_CUR_Q=kind+'#'+n; return n; }
 let CC_MP_SPLIT_AT=null;
 /* ПОЧЕМУ Я ПРОШЁЛ БАРЬЕР ОДИН — едет в следующем приходе (game@ … why), и напарник читает это в
    своей красной строке. Скрин тестера 21.09: «Вечера разошлись на игре 1 · peer ahead · game@#2
@@ -114087,23 +114120,40 @@ function ccMpSplitSeen(n, detail){
     d.textContent=L().ccMpSplitAt(String(n||'?'))+(detail ? ' · '+detail : '');
     /* И выход. Отзыв: «если ошибка, просто выйти из матча двоим, чтобы продолжить
        карьеру». Кнопка одна на двоих: нажал один — уходят оба (act 'leave'). */
-    if(!CC_MP_LEAVE && ccMpLock()){
+    if(!CC_MP_LEFT && ccMpLock()){
       var b=document.createElement('button'); b.type='button'; b.textContent=L().ccMpLeaveBtn;
       b.onclick=function(){ ccMpSplitLeave(false); };
       d.appendChild(b);
     }
     document.body.appendChild(d);
   }catch(e){}
+  // Командная пара — врозь сразу (ccMpSplitApart): ждать на барьерах разошедшегося вечера нечего.
+  if(!(typeof ccRaceOn==='function' && ccRaceOn() && !(typeof ccMpTeam==='function' && ccMpTeam()))){ try{ ccMpSplitApart(false); }catch(e){} }
+}
+/* ВРОЗЬ — БЕЗ ОЖИДАНИЙ (скрин тестера 1.10, Katowice 2019 вдвоём: «просто зависло»). После
+   расхождения столы уже не сойдутся, а барьеры продолжали ждать друг друга: у каждого свои
+   вопросы, и каждое ожидание кончалось только потолком тишины — проба с нарочным расхождением
+   (CC_DESYNC_B) шла от второй игры до шестой 25 минут. Теперь пара сразу играет врозь: ожидания
+   отпускаются (ccMpPeerDone), свой стол доигрывается без пропуска, вечер закрывается без сервера,
+   а на хабе оба просят синхронизацию — как после «выйти обоим» (CC_MP_LEAVE), только без перемотки.
+   Напарнику уходит 'apart', чтобы и он не ждал, если сам расхождения ещё не увидел. */
+function ccMpSplitApart(fromPeer){
+  if(CC_MP_LEAVE) return;
+  CC_MP_LEAVE=true; ccMpPassed('split');
+  if(!fromPeer && typeof MP!=='undefined' && MP.act) try{ MP.act('apart', {by:ccMpId()}); }catch(e){}
+  try{ ccMpPeerDone(); }catch(e){}
+  try{ var all=CC_MP_WAITERS.slice(); CC_MP_WAITERS.length=0; all.forEach(function(fn){ try{ fn(); }catch(e){} }); }catch(e){}
 }
 /* ВЫЙТИ ИЗ ВЕЧЕРА ОБОИМ. Разошедшиеся столы не сойдутся, а стоять на барьерах и ждать
    закрытия — значит стоять до потолка. Выход: сказать напарнику (act 'leave'), отпустить все
    ожидания (ccMpPeerDone + ждущие закрытия), доиграть свой стол под пропуском и закрыть вечер
    без сервера — день двигается своим шагом (CC_MP_DAY_DUE). На хабе оба просят синхронизацию
    (syncreq): состояние сходится к одному, и следующий вечер снова идёт в ногу. */
-let CC_MP_LEAVE=false;
+let CC_MP_LEAVE=false, CC_MP_LEFT=false;   // LEAVE — вечер закрывается врозь (и «врозь», и «выйти»); LEFT — нажали «выйти обоим» (с перемоткой)
 function ccMpSplitLeave(fromPeer){
-  if(CC_MP_LEAVE) return;
-  CC_MP_LEAVE=true; ccMpPassed('leave');
+  if(CC_MP_LEFT && CC_MP_LEAVE) return;
+  CC_MP_LEFT=true;
+  if(!CC_MP_LEAVE){ CC_MP_LEAVE=true; ccMpPassed('leave'); }
   if(!fromPeer && typeof MP!=='undefined' && MP.act) try{ MP.act('leave', {by:ccMpId()}); }catch(e){}
   try{ ccMpPeerDone(); }catch(e){}
   try{ var all=CC_MP_WAITERS.slice(); CC_MP_WAITERS.length=0; all.forEach(function(fn){ try{ fn(); }catch(e){} }); }catch(e){}
@@ -125342,6 +125392,7 @@ function ccMpThirdWire(){
     if(m.kind==='ff'){ ccMpFfSaw(m.payload); return; }
     if(m.kind==='fferr'){ ccMpFfErrSaw(m.payload); return; }
     if(m.kind==='leave'){ if(m.payload.by!==ccMpId()) ccMpSplitLeave(true); return; }
+    if(m.kind==='apart'){ if(m.payload.by!==ccMpId()){ try{ ccMpSplitSeen(CC_MP_GAME||'?', 'peer split'); }catch(e){} ccMpSplitApart(true); } return; }
     if(m.kind==='ffno'){ ccMpFfNoSaw(m.payload); return; }
     if(m.kind==='gift'){ ccGiftSaw(m.payload); return; }
     if(m.kind==='syncreq'){ if(m.payload.by!==ccMpId() && !CC_MP_RAND && MP.push) MP.push(ccTeamState()); return; }

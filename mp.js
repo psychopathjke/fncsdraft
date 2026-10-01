@@ -305,7 +305,10 @@ var MP={
       var dup=pq!=null && ACTS.some(function(a){ return a.by===m.by && a.kind===m.kind && a.payload && a.payload.q===pq; });
       if(!dup){ ACTS.push(m); if(ACTS.length>ACTS_MAX) ACTS.shift(); }
     }
-    if(m.t==='close'){ MP.waiting=null; ACTS.length=0; OWN.length=0; PENDING.length=0; ccApplyTeamState(m.team); }
+    if(m.t==='close'){ MP.waiting=null; ACTS.length=0; OWN.length=0; PENDING.length=0;
+      // Вечер уже закрыт врозь и день сдвинут своим шагом — запоздалое закрытие не откатывает его (CC_MP_SKIP_CLOSE в index).
+      if(typeof CC_MP_SKIP_CLOSE!=='undefined' && CC_MP_SKIP_CLOSE){ CC_MP_SKIP_CLOSE=false; return; }
+      ccApplyTeamState(m.team); }
     /* «До свидания» по версии — единственный отказ, из которого не
        переподключаются: пока страница не обновлена, код у нас всё тот же, и
        лобби скажет то же самое. Разрыв дуо ('part') связь не ломает: его
