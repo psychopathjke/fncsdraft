@@ -161,6 +161,24 @@ const boot = (who) => `
       let lastDay=CAREER.career.day, lastMove=Date.now();
       while(Date.now()-tf<${BUDGET_MS} && (CAREER.career.day<${JSON.stringify(FF)} || CC_FF)){
         await wait(500);
+        /* Перемотка встала «некем играть» (трио/сквад этапа, а людей двое) — как игроки: владелец лобби
+           зовёт третьего из писем, напарник соглашается, и оба голосуют за ту же дату снова. */
+        if(!CC_FF && CAREER.career.day<${JSON.stringify(FF)}){
+          try{
+            const nx=careerNext();
+            if(nx && ccFfNoMateWhy(nx)){
+              if((CAREER.career.mp||{}).role==='a' && !window.__thirdAsked){
+                careerSeatTopUp();
+                const t=careerDms().find(x=>x.state==='offer' && x.who && !x.who.org && !x.who.brand);
+                if(t){ window.__thirdAsked=CAREER.career.day; ccMpThirdAsk(t.id); }
+              }
+            } else if(!window.__ffAgain || Date.now()-window.__ffAgain>8000){
+              window.__ffAgain=Date.now(); window.__thirdAsked=null; careerFfToDay(${JSON.stringify(FF)}); lastMove=Date.now();
+            }
+            const yes=document.getElementById('ccAskYes');
+            if(yes && yes.offsetParent!==null && yes.textContent===L().ccMpThirdYes) yes.click();
+          }catch(e){}
+        }
         if(CAREER.career.day!==lastDay){ lastDay=CAREER.career.day; lastMove=Date.now(); }
         else if(Date.now()-lastMove>${Number(process.env.CC_FF_STALL||240000)}) break;
       }
