@@ -111460,7 +111460,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b99bf345';
+const CC_BUILD='fead587a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -111674,7 +111674,7 @@ function ccMpGate(kind){
     CC_MP_MYCARD=(MP.card ? MP.card() : null);
     if(CC_MP_MYCARD) MP.send({t:'card', card:CC_MP_MYCARD});
     else if(MP.sendCard) MP.sendCard();
-    MP.gate=true;
+    MP.gate=true; MP.gateDay=careerToday();   // день ворот: пропуск напарника сверяется с ним, а не с днём вкладки (тот могло сдвинуть состояние напарника)
     // Отмена ожидания старта — перемотка встала у напарника (ccMpFfErrSaw) или он на другом дне.
     var tick=null;
     MP.gateCancel=function(why){ if(off) off(); if(offClash) offClash(); if(tick) clearInterval(tick); MP.gate=false; MP.gateCancel=null; rej(new Error(why||'gate cancelled')); };
@@ -125436,7 +125436,7 @@ function ccMpThirdWire(){
     if(m.kind==='ffskip'){
       if(m.payload.by!==ccMpId() && m.payload.day){
         CC_MP_PEER_SKIPS.add(m.payload.day);
-        if(typeof CC_FF!=='undefined' && CC_FF && MP.gate && careerToday()===m.payload.day && MP.gateCancel){
+        if(typeof CC_FF!=='undefined' && CC_FF && MP.gate && (MP.gateDay||careerToday())===m.payload.day && MP.gateCancel){
           CC_MP_FF_SKIPDAY=m.payload.day; MP.gateCancel('peer skipped '+m.payload.day);
         }
       }
