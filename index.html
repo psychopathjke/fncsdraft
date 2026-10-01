@@ -8140,7 +8140,7 @@ chWkGC:'ГЧ',
 chSquad:'Дуо', ccDuoFindTitle:'Кому написать',
 ccDuoFindHint:'Любому игроку своего региона можно написать первым. Ответит он сам — и не всякий согласится.',
 ccDuoSearchPh:'Поиск по нику',
-ccDuoSortBy:'Сортировать', ccDuoSortOvr:'рейтинг', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoSortBy:'Сортировать', ccDuoSortNear:'мой уровень', ccDuoSortOvr:'рейтинг', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
 ccDuoNat:'Флаг', ccVAltH:'Капы дня', roFirst:d=>'первый турнир — '+d, roGather:'Собрать состав', roFind:'Найти напарника', roWeek:'Собрать можно за неделю до турнира', roSpot:'Спот', roSpotNone:'не выбран — поставить', roNat:'Сборная', roCaptain:'ты капитан', roNatTrial:'Место в сборной — через отбор страны', ccDuoNatAll:'все', ccDuoReg:'Регион',
 ccDuoWrite:'Написать',
 ccDuoFree:'без дуо',
@@ -9145,7 +9145,7 @@ dmLeftYes3:'Не сложилось у них. Го, покажем им',
 dmLeftYes4:'Свободен. Когда играем',
 dmLeftYes:'Свободен. Давай ещё раз',
 dmNo1:(o,d)=>'Не, я '+o+'. Не вариант',
-dmNo2:(o,d)=>'Спасибо, что подумал обо мне, но я '+o+' и играю в Дивизионе '+(d>1?d-1:1)+'. Пока нет',
+dmNo2Nd:(o,d)=>'Спасибо, что подумал обо мне, но я '+o+' — мне нужен кто-то сильнее. Пока нет', dmNoNd:(o,d)=>'Спасибо, но я '+o+' и ищу напарника своего уровня. Пока не вариант.', dmOverRungNd:(d,c)=>'Ты сильнее всех, кто сейчас ищет пару, — выше '+c+' таких нет. Поднимайся в PR, и писать начнут другие люди', dmFanSince1Nd:d=>'Смотрю тебя с самых первых капов', dmFanSince2Nd:d=>'Я тебя ещё с первых капов смотрю. Приятно видеть, куда ты дошёл', dmFanSince3Nd:d=>'Я был подписан, когда тебя никто не знал. Помни это', dmFanSince4Nd:d=>'Ещё недавно никто не знал ника, и вот теперь тут. Быстро', dmSeatRecDivNd:(d,p)=>'Прошлый сезон: лучший кап — '+ccTop(p), dmNo2:(o,d)=>'Спасибо, что подумал обо мне, но я '+o+' и играю в Дивизионе '+(d>1?d-1:1)+'. Пока нет',
 dmNo3:(o,d)=>'Я '+o+' овера. Подтянись и поговорим',
 dmNo4:(o,d)=>o+' против твоего. Разница великовата',
 dmNoDuo1:m=>'У меня '+m+'. Нет',
@@ -10135,7 +10135,7 @@ chWkGC:'GC',
 chSquad:'Duo', ccDuoFindTitle:'Who to write to',
 ccDuoFindHint:'You can write first to anybody in your region. They answer for themselves, and not everybody says yes.',
 ccDuoSearchPh:'Search by name',
-ccDuoSortBy:'Sort by', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoSortBy:'Sort by', ccDuoSortNear:'my level', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
 ccDuoNat:'Flag', ccVAltH:'Cups today', roFirst:d=>'first event — '+d, roGather:'Build roster', roFind:'Find a partner', roWeek:'You can build it a week before', roSpot:'Spot', roSpotNone:'not set — pick one', roNat:'National team', roCaptain:'you are captain', roNatTrial:'Your seat comes through the country trial', ccDuoNatAll:'all', ccDuoReg:'Region',
 ccDuoWrite:'Write',
 ccDuoFree:'no duo',
@@ -11136,7 +11136,7 @@ dmLeftYes3:'It did not work out over there. Come on, let us show them',
 dmLeftYes4:'Free. When',
 dmLeftYes:'Free. Let us try again',
 dmNo1:(o,d)=>'Nah, I am '+o+'. Not for me',
-dmNo2:(o,d)=>'Thanks for thinking of me, but I am '+o+' and playing in Division '+(d>1?d-1:1)+'. Not right now',
+dmNo2Nd:(o,d)=>'Thanks for thinking of me, but I am '+o+' — I need somebody stronger. Not right now', dmNoNd:(o,d)=>'Thanks, but I am '+o+' and looking for a partner at my level. Not right now.', dmOverRungNd:(d,c)=>'You are better than anybody looking for a partner right now — nobody above '+c+'. Climb the PR, and different people start writing', dmFanSince1Nd:d=>'Been watching since your first cups', dmFanSince2Nd:d=>'I have watched you since your first cups. Lovely to see how far it went', dmFanSince3Nd:d=>'I was subscribed when nobody knew you. Remember that', dmFanSince4Nd:d=>'Nobody knew the name not long ago, and now here. Quick', dmSeatRecDivNd:(d,p)=>'Last season: best cup finish — '+ccTop(p), dmNo2:(o,d)=>'Thanks for thinking of me, but I am '+o+' and playing in Division '+(d>1?d-1:1)+'. Not right now',
 dmNo3:(o,d)=>'I am '+o+' OVR. Close the gap and we will talk',
 dmNo4:(o,d)=>o+' against yours. That is a lot of daylight',
 dmNoDuo1:m=>'I have '+m+'. No',
@@ -13031,7 +13031,7 @@ ccNewsVicNoWin:'Victory Cup : Manche 2 sans victoire',
 ccDuoFindTitle:'À qui écrire',
 ccDuoFindHint:'Tu peux écrire en premier à n’importe qui de ta région. Chacun répond pour soi, et tout le monde ne dit pas oui.',
 ccDuoSearchPh:'Chercher par nom',
-ccDuoSortBy:'Trier par', ccDuoSortOvr:'note', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoSortBy:'Trier par', ccDuoSortNear:'mon niveau', ccDuoSortOvr:'note', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
 ccDuoNat:'Drapeau', ccVAltH:'Cups du jour', roFirst:d=>'premier tournoi — '+d, roGather:'Former l’équipe', roFind:'Trouver un coéquipier', roWeek:'À former une semaine avant', roSpot:'Spot', roSpotNone:'pas choisi — en poser un', roNat:'Sélection', roCaptain:'tu es capitaine', roNatTrial:'Ta place passe par la sélection du pays', ccDuoNatAll:'tous', ccDuoReg:'Région',
 ccDuoWrite:'Écrire',
 ccDuoFree:'sans duo',
@@ -13191,7 +13191,7 @@ dmLeftNo3:n=>'Sérieux ? Je viens de partir. Laisse-moi respirer',
 dmLeftNo4:n=>'Non',
 dmLeftNo:n=>'Trop tôt. Redemande dans '+n+' jours',
 dmNo1:(o,d)=>'Nan, je suis '+o+'. C’est pas pour moi',
-dmNo2:(o,d)=>'Merci d’avoir pensé à moi, mais je suis '+o+' et je joue en Division '+(d>1?d-1:1)+'. Pas maintenant',
+dmNo2Nd:(o,d)=>'Merci d’avoir pensé à moi, mais je suis '+o+' — il me faut quelqu’un de plus fort. Pas maintenant', dmNoNd:(o,d)=>'Merci, mais je suis '+o+' et je cherche quelqu’un de mon niveau. Pas maintenant.', dmOverRungNd:(d,c)=>'Tu es meilleur que tous ceux qui cherchent un coéquipier — personne au-dessus de '+c+'. Monte au PR, et d’autres gens commenceront à écrire', dmNo2:(o,d)=>'Merci d’avoir pensé à moi, mais je suis '+o+' et je joue en Division '+(d>1?d-1:1)+'. Pas maintenant',
 dmNo3:(o,d)=>'Je suis '+o+' d’OVR. Réduis l’écart et on en reparle',
 dmNo4:(o,d)=>o+' contre le tien. Ça fait beaucoup d’écart',
 dmNoDuo1:m=>'J’ai '+m+'. Non',
@@ -14872,7 +14872,7 @@ dmLeftNo3:n=>'Davvero? Me ne sono appena andato. Fammi respirare',
 dmLeftNo4:n=>'No',
 dmLeftNo:n=>'Troppo presto. Richiedimelo tra '+n+' giorni',
 dmNo1:(o,d)=>'No, io sono '+o+'. Non fa per me',
-dmNo2:(o,d)=>'Grazie di aver pensato a me, ma sono '+o+' e gioco in Divisione '+(d>1?d-1:1)+'. Non adesso',
+dmNo2Nd:(o,d)=>'Grazie di aver pensato a me, ma sono '+o+' — mi serve qualcuno più forte. Non adesso', dmNoNd:(o,d)=>'Grazie, ma sono '+o+' e cerco qualcuno del mio livello. Non adesso.', dmOverRungNd:(d,c)=>'Sei più forte di chiunque cerchi un compagno ora — nessuno sopra '+c+'. Sali nel PR, e comincerà a scriverti altra gente', dmNo2:(o,d)=>'Grazie di aver pensato a me, ma sono '+o+' e gioco in Divisione '+(d>1?d-1:1)+'. Non adesso',
 dmNo3:(o,d)=>'Sono '+o+' di OVR. Recupera il distacco e ne parliamo',
 dmNo4:(o,d)=>o+' contro il tuo. C\u2019\u00e8 parecchia distanza',
 dmNoDuo1:m=>'Ho '+m+'. No',
@@ -15331,7 +15331,7 @@ ccVicNoWin:"Nessuna vittoria al Round 2 — niente soldi",
 ccNewsVicNoWin:"Victory Cup: Round 2 senza vittorie",
 ccDuoFindTitle:"A chi scrivere",
 ccDuoSearchPh:"Cerca per nome",
-ccDuoSortBy:'Ordina per', ccDuoSortOvr:'valutazione', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoSortBy:'Ordina per', ccDuoSortNear:'mio livello', ccDuoSortOvr:'valutazione', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
 ccDuoNat:'Bandiera', ccVAltH:'Cup di oggi', roFirst:d=>'primo torneo — '+d, roGather:'Forma la squadra', roFind:'Trova un compagno', roWeek:'Si forma una settimana prima', roSpot:'Spot', roSpotNone:'non scelto — sceglilo', roNat:'Nazionale', roCaptain:'sei il capitano', roNatTrial:'Il posto passa dalla selezione del paese', ccDuoNatAll:'tutti', ccDuoReg:'Regione',
 ccDuoWrite:"Scrivi",
 ccDuoFree:"senza duo",
@@ -17392,7 +17392,7 @@ dmLeftNo3:n=>'S\u00e9rio? Acabei de sair. Me deixa respirar',
 dmLeftNo4:n=>'N\u00e3o',
 dmLeftNo:n=>'Cedo demais. Me chama daqui a '+n+' dias',
 dmNo1:(o,d)=>'Nah, eu sou '+o+'. N\u00e3o \u00e9 para mim',
-dmNo2:(o,d)=>'Obrigado por pensar em mim, mas eu sou '+o+' e jogo na Divis\u00e3o '+(d>1?d-1:1)+'. Agora n\u00e3o',
+dmNo2Nd:(o,d)=>'Obrigado por pensar em mim, mas eu sou '+o+' — preciso de alguém mais forte. Agora não', dmNoNd:(o,d)=>'Valeu, mas eu sou '+o+' e procuro alguém do meu nível. Agora não.', dmOverRungNd:(d,c)=>'Você é melhor que todos procurando parceiro agora — ninguém acima de '+c+'. Suba no PR, e outras pessoas começam a escrever', dmNo2:(o,d)=>'Obrigado por pensar em mim, mas eu sou '+o+' e jogo na Divis\u00e3o '+(d>1?d-1:1)+'. Agora n\u00e3o',
 dmNo3:(o,d)=>'Eu sou '+o+' de OVR. Diminui a dist\u00e2ncia e a gente conversa',
 dmNo4:(o,d)=>o+' contra o seu. \u00c9 muita diferen\u00e7a',
 dmNoDuo1:m=>'Tenho '+m+'. N\u00e3o',
@@ -17851,7 +17851,7 @@ ccVicNoWin:"Sem vitórias na Rodada 2 — sem dinheiro",
 ccNewsVicNoWin:"Victory Cup: Rodada 2 sem vitória",
 ccDuoFindTitle:"Para quem escrever",
 ccDuoSearchPh:"Buscar por nome",
-ccDuoSortBy:'Ordenar por', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
+ccDuoSortBy:'Ordenar por', ccDuoSortNear:'meu nível', ccDuoSortOvr:'rating', ccDuoSortPr:'PR', ccDuoPrOf:(pr,rank)=>'PR '+pr+' · #'+rank,
 ccDuoNat:'Bandeira', ccVAltH:'Cups do dia', roFirst:d=>'primeiro torneio — '+d, roGather:'Montar o time', roFind:'Achar parceiro', roWeek:'Monte uma semana antes', roSpot:'Spot', roSpotNone:'não escolhido — escolher', roNat:'Seleção', roCaptain:'você é o capitão', roNatTrial:'A vaga vem pela seletiva do país', ccDuoNatAll:'todos', ccDuoReg:'Região',
 ccDuoWrite:"Escrever",
 ccDuoFree:"sem dupla",
@@ -111460,7 +111460,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8b0d5c72';
+const CC_BUILD='f330a589';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -133521,6 +133521,9 @@ function careerDmPush(t, from, key, args){
   // And in the season's own words: a trio year does not ask anybody to duo. The
   // voice is chosen first, so a duo season keeps all four of them. See ccSquadKey.
   k=ccSquadKey(k);
+  /* Годы без дивизионов (2019–2021 и 2022 до осени, ccNoDivisions) — реплики без слова «дивизион»
+     (его скрин 1.10, 2019: «я 71 и играю в Дивизионе 1»). Вариант с хвостом Nd, где он есть. */
+  try{ if(typeof ccNoDivisions==='function' && ccNoDivisions() && L()[k+'Nd']) k=k+'Nd'; }catch(e){}
   t.msgs.push({from, k:k, a:args||[], season:cr.season, day:careerToday()});
   /* Unread means you have not seen it, and a conversation open on the screen has
      been seen. Their answer used to raise the badge under the player's own eyes:
@@ -136032,8 +136035,12 @@ let CC_DUO_Q='';
 /* Порядок списка: по рейтингу (как было) или по PR — «поиск тиммейта по ярну/пр/плейсам»
    (игрок, страница «bags 13.09»). PR — единственное из трёх, что карьера ведёт по
    каждому человеку (careerPrRows); призовые и места ботов она не пишет. */
-let CC_DUO_SORT='ovr';
-function ccDuoFindSort(v){ CC_DUO_SORT=(v==='pr' ? 'pr' : 'ovr'); ccDuoFindRender(); }
+/* По умолчанию — БЛИЗКИЕ ПО РЕЙТИНГУ (его скрин 1.10: «я 62, а мне предлагают 96 — пусть предлагают с
+   меньшим»). Список шёл сверху по рейтингу и резался на 120 строк, так что 62-й видел одних 90+. Теперь
+   первыми — игроки твоего уровня (ближе к своему рейтингу, при равенстве — сильнее), а «рейтинг» и «PR»
+   остались кнопками. */
+let CC_DUO_SORT='near';
+function ccDuoFindSort(v){ CC_DUO_SORT=(v==='pr' ? 'pr' : v==='ovr' ? 'ovr' : 'near'); ccDuoFindRender(); }
 /* Отбор по флагу. Пусто — все; иначе код страны, как его знает FLAG_CODE.
    Живёт рядом с сортировкой и сбрасывается там же, где строка поиска. */
 let CC_DUO_NAT='', CC_DUO_NAT_OPEN=false;
@@ -136068,7 +136075,7 @@ function ccDuoFindOpen(seat, fmt){
      предложить его может любой из двоих — раньше список молча не открывался
      у второго в лобби, и если роли перепутались, то и у владельца. */
   if(ccMpOn() && ccMpMateRecs().length >= ccMpBotSeats()) return;
-  CC_DUO_Q=''; CC_DUO_NAT=''; CC_DUO_NAT_OPEN=false; CC_DUO_REG='';
+  CC_DUO_Q=''; CC_DUO_NAT=''; CC_DUO_NAT_OPEN=false; CC_DUO_REG=''; CC_DUO_SORT='near';
   CC_DUO_SEAT=(typeof seat==='number' && seat>=0 && seat<careerMateSeats()) ? seat : null;
   ccDuoFindRender();
   document.getElementById('duoFindModal').style.display='flex';
@@ -136133,6 +136140,10 @@ function ccDuoFindRender(keepFocus){
   const prMap=new Map(careerPrRows().map((r,i)=>[hKey(r.name), {pr:r.pr, rank:i+1}]));
   const prOf=new Map(all.map(w=>[w, prMap.get(hKey(w.handle))||null]));
   if(CC_DUO_SORT==='pr') all.sort((a,b)=>((prOf.get(b)||{}).pr||0)-((prOf.get(a)||{}).pr||0) || b.ovr-a.ovr);
+  else if(CC_DUO_SORT==='near'){
+    const me=Math.round((CAREER.player && (CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr))||70);
+    all.sort((a,b)=>Math.abs((a.ovr||0)-me)-Math.abs((b.ovr||0)-me) || (b.ovr||0)-(a.ovr||0));
+  }
   // Сначала флаг, потом набранное имя: флаг сужает, строка ищет внутри.
   const byNat=CC_DUO_NAT ? all.filter(w=>ccDuoNatCode(w)===CC_DUO_NAT) : all;
   const list=(q ? byNat.filter(w=>String(w.handle).toLowerCase().indexOf(q)>=0) : byNat).slice(0, 120);
@@ -136200,7 +136211,7 @@ function ccDuoFindRender(keepFocus){
        </div>${ccRealNamesHere() ? `<select class="cc-duo-regsel" aria-label="${esc(L().ccDuoReg)}" onchange="ccDuoFindReg(this.value)">${
          ((typeof ccYearRegions==='function' ? ccYearRegions() : CC_REGIONS)||[]).map(r=>`<option value="${r}"${r===ccDuoRegNow()?' selected':''}>${esc(L().ccDuoReg)}: ${esc(regionName(r))}</option>`).join('')}</select>` : ''}</div>
      <div class="ch-hint cc-duo-n">${list.length ? L().ccDuoFound(list.length) : L().ccDuoNobody}
-       <span class="cc-duo-sort">${esc(L().ccDuoSortBy)}: <button class="cc-job-h${CC_DUO_SORT==='ovr'?' on':''}" onclick="ccDuoFindSort('ovr')">${esc(L().ccDuoSortOvr)}</button> <button class="cc-job-h${CC_DUO_SORT==='pr'?' on':''}" onclick="ccDuoFindSort('pr')">${esc(L().ccDuoSortPr)}</button></span></div>
+       <span class="cc-duo-sort">${esc(L().ccDuoSortBy)}: <button class="cc-job-h${CC_DUO_SORT==='near'?' on':''}" onclick="ccDuoFindSort('near')">${esc(L().ccDuoSortNear)}</button> <button class="cc-job-h${CC_DUO_SORT==='ovr'?' on':''}" onclick="ccDuoFindSort('ovr')">${esc(L().ccDuoSortOvr)}</button> <button class="cc-job-h${CC_DUO_SORT==='pr'?' on':''}" onclick="ccDuoFindSort('pr')">${esc(L().ccDuoSortPr)}</button></span></div>
      <div class="cc-buys">${rows}</div>`;
   if(keepFocus){
     const f=document.getElementById('duoFindQ');
