@@ -147,6 +147,12 @@ const boot = (who) => `
     };
     if(${JSON.stringify(FF)}){
       // Перемотка на двоих: оба голосуют за дату, ждём, пока календарь дойдёт; сравнивается журнал.
+      // Журнал сети на время перемотки: что ушло и что пришло вокруг ворот — для разбора застревания.
+      window.__mpev=[]; const mpev=x=>{ window.__mpev.push(Math.round(performance.now()/1000)+'s '+CAREER.career.day+' '+x); if(window.__mpev.length>40) window.__mpev.shift(); };
+      ['ready','start','close','state'].forEach(k=>{ try{ MP.on(k, m=>mpev('<'+k+' '+JSON.stringify({day:m&&m.day, ready:m&&m.ready, of:m&&m.of, by:m&&m.by&&String(m.by).slice(-4), resume:m&&m.resume, fresh:m&&m.fresh}))); }catch(e){} });
+      const rd0=MP.ready; MP.ready=function(d,k){ let nx=null; try{ nx=careerNext(); }catch(e){} mpev('>ready '+d+' '+(k||'')+' · '+(nx?nx.type+':'+nx.title:'-')+' alone '+CC_MP_ALONE); return rd0.apply(MP, arguments); };
+      const ps0=ccMpPassed; ccMpPassed=function(w){ mpev('passed '+w+' g'+(CC_MP_GAME||0)+' alone '+CC_MP_ALONE); return ps0.apply(this, arguments); };
+      const pd0=ccMpPeerDone; ccMpPeerDone=function(){ mpev('peerDone g'+(CC_MP_GAME||0)); return pd0.apply(this, arguments); };
       careerRenderHub('calendar'); await wait(300);
       careerFfToDay(${JSON.stringify(FF)});
       out.notes.ffVoted=true;
@@ -167,6 +173,7 @@ const boot = (who) => `
           next:nx&&{type:nx.type, title:nx.title, day:nx.day}, can:nx?careerCanPlay(nx):null,
           modal:[...document.querySelectorAll('.cc-evpick-wrap, #ccAskModal[style*="flex"], .landing-picker, .cc-choice')].map(e=>e.className||e.id).join(','),
           peerHb:MP.peerHb||null, errs:(window.__errs||[]).slice(0,3),
+          mpev:(window.__mpev||[]).slice(-25), ffState:(function(){ try{ return JSON.stringify(CC_FF).slice(0,300); }catch(e){ return '?'; } })(),
           // Отпечатки личного, из чего может собираться поле: какой у двоих разный — там и расхождение.
           dig:(function(){ const h=o=>{ const s=JSON.stringify(o==null?null:o); let x=0; for(let i=0;i<s.length;i++) x=(x*31+s.charCodeAt(i))|0; return (x>>>0).toString(16)+':'+s.length; };
             const cr=CAREER.career||{}, out={};
@@ -177,7 +184,8 @@ const boot = (who) => `
             try{ out.lad=typeof CC_LADDER_SEASON!=='undefined' ? h(CC_LADDER_SEASON) : null; }catch(e){}
             return out; })()};
       }catch(e){ out.notes.stall={err:String(e)}; }
-      out.notes.table=(CAREER.career.log||[]).map(r=>[r.day, r.kind||'cup', r.stage||'', r.place, r.of, r.pts, r.wins, r.elims].join(' '));
+      // Кубок наций — личный (у каждого своя сборная), в сверку общего журнала не идёт.
+      out.notes.table=(CAREER.career.log||[]).filter(r=>r && r.kind!=='nations').map(r=>[r.day, r.kind||'cup', r.stage||'', r.place, r.of, r.pts, r.wins, r.elims].join(' '));
       out.notes.split=[...document.querySelectorAll('.cc-mp-split')].map(e=>e.textContent);
       if(${process.env.CC_TABLES_DIFFER==='1'}){ for(let i=0;i<300 && CAREER.career.day===${JSON.stringify(DAY)};i++) await wait(300); }   // личный вечер: день шагает, когда отыграет и второй
       out.notes.rolls=CC_MP_ROLLS; out.notes.dayAfter=CAREER.career.day; out.notes.dbg={rand:!!CC_MP_RAND, hold:CC_MP_HOLD, alone:CC_MP_ALONE, state:MP.state, teams:window.__teams||0, soloBy:CAREER.career.soloBy, peer:(MP.peer||{}).handle, settle:(typeof ccSoloTeamSettle==='function')?ccSoloTeamSettle():null, dayNow:CAREER.career.day}; out.notes.head='перемотка до '+${JSON.stringify(FF)}+' · строк журнала '+out.notes.table.length;
@@ -304,7 +312,7 @@ async function runOne(tag, who, port){
     await new Promise(r=>setTimeout(r, 1000));
     const r=await c.send('Runtime.evaluate', {expression:"(document.getElementById('__out')||{}).textContent||''", returnByValue:true});
     const txt=(r.result && r.result.result && r.result.result.value) || '';
-    const m=txt.match(/PBEGIN([\s\S]*?)PEND/);
+    const m=txt.match(/PBEGIN([\s\S]*)PEND/);   // до ПОСЛЕДНЕГО маркера: в данных бывает «PENDING», и ленивый разрез ломал JSON
     if(m){ out=JSON.parse(decodeURIComponent(m[1])); break; }
   }
   c.close();

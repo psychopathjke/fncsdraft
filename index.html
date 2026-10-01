@@ -111460,7 +111460,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b0379f71';
+const CC_BUILD='d4a99025';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -114081,6 +114081,9 @@ function ccMpQnReset(){ CC_MP_QN={}; CC_MP_SKIP_CLOSE=false; }
    ДО шага дня, а день к этому времени уже сдвинут своим шагом. Проба с нарочным расхождением
    1.10: у второго день откатывался на вчера. Сбрасывается на старте следующего вечера. */
 let CC_MP_SKIP_CLOSE=false;
+// Дни, которые напарник в перемотке пропустил (ffskip), и день, на котором его пропуск отменил наши ворота.
+const CC_MP_PEER_SKIPS=new Set();
+let CC_MP_FF_SKIPDAY=null;
 function ccMpQn(kind){ const n=(CC_MP_QN[kind]=(CC_MP_QN[kind]||0)+1); CC_MP_CUR_Q=kind+'#'+n; return n; }
 let CC_MP_SPLIT_AT=null;
 /* ПОЧЕМУ Я ПРОШЁЛ БАРЬЕР ОДИН — едет в следующем приходе (game@ … why), и напарник читает это в
@@ -114696,7 +114699,10 @@ function ccApplyTeamState(t){
            const have=new Set(t.log.map(sig));
            // Только личные вечера соло-Мейджора: соло Victory Cup играется общим вечером и пишет строки
            // за обоих — там перезапись, как была (слияние развело журналы, живой прогон 2020).
-           const mine=CAREER.career.log.filter(r=>r && r.who===me && r.solo && r.kind==='major' && !have.has(sig(r)));
+           /* И Кубок наций: у каждого своя сборная (страна игрока), строка личная — годовой прогон
+              вдвоём 1.10: у бразильца строка финала сборной, у немца её нет, и приход журнала
+              напарника стирал её. */
+           const mine=CAREER.career.log.filter(r=>r && !have.has(sig(r)) && ((r.who===me && r.solo && r.kind==='major') || r.kind==='nations'));
            CAREER.career.log=t.log.concat(mine);
            return;
          }
@@ -125392,6 +125398,15 @@ function ccMpThirdWire(){
     if(m.kind==='ff'){ ccMpFfSaw(m.payload); return; }
     if(m.kind==='fferr'){ ccMpFfErrSaw(m.payload); return; }
     if(m.kind==='leave'){ if(m.payload.by!==ccMpId()) ccMpSplitLeave(true); return; }
+    if(m.kind==='ffskip'){
+      if(m.payload.by!==ccMpId() && m.payload.day){
+        CC_MP_PEER_SKIPS.add(m.payload.day);
+        if(typeof CC_FF!=='undefined' && CC_FF && MP.gate && careerToday()===m.payload.day && MP.gateCancel){
+          CC_MP_FF_SKIPDAY=m.payload.day; MP.gateCancel('peer skipped '+m.payload.day);
+        }
+      }
+      return;
+    }
     if(m.kind==='apart'){ if(m.payload.by!==ccMpId()){ try{ ccMpSplitSeen(CC_MP_GAME||'?', 'peer split'); }catch(e){} ccMpSplitApart(true); } return; }
     if(m.kind==='ffno'){ ccMpFfNoSaw(m.payload); return; }
     if(m.kind==='gift'){ ccGiftSaw(m.payload); return; }
@@ -139790,7 +139805,21 @@ async function careerFastForward(days, agreed){
          шагала сама после вечера — у двоих двумя независимыми шагами, и следующий общий вечер
          расходился с первой игры (живой прогон 2019). Здесь она ждёт день от ведущего. */
       const mxSolo=ccMXSoloTeamDay();
-      if(playable){
+      /* ДЕНЬ ИГРАЕТСЯ ОБОИМИ ИЛИ НИКЕМ (годовой прогон вдвоём 1.10, 2024: перемотка встала навсегда
+         на 17 декабря). «Можно ли играть» каждый решает по своим личным условиям — травма или бан
+         (ccLifeWhy), приглашение по PR, флаг страны, — и 8 декабря один сыграл соло-кап, а второй
+         молча шагнул дальше: первый стоял у ворот, ожидая «готов», которого не будет (в перемотке
+         нет пульса, и ccMpGateDayWhy этого не видит). Теперь пропуск турнирного дня уходит
+         напарнику ('ffskip'), и он этот день тоже пропускает — пришёл ли пропуск до ворот или
+         когда он уже у них стоит (ворота отменяются, см. CC_MP_FF_SKIPDAY). */
+      let playNow=playable;
+      if(ccMpOn() && !ccRaceFfOn() && !mxSolo && next && (next.day||day)===day){
+        if(playNow && CC_MP_PEER_SKIPS.has(day)) playNow=false;
+        else if(!playNow && CC_PLAYABLE.indexOf(next.type)>=0 && typeof MP!=='undefined' && MP.act){
+          try{ MP.act('ffskip', {by:ccMpId(), day:day}); }catch(e){}
+        }
+      }
+      if(playNow){
         const had=(cr.log||[]).length;
         await careerPlay();
         const row=(cr.log||[]).slice(-1)[0];
@@ -139808,6 +139837,15 @@ async function careerFastForward(days, agreed){
         step(day);
       }
       }catch(e){
+        // Напарник пропустил этот день, пока мы стояли у ворот: пропускаем и мы (см. ffskip выше).
+        if(CC_MP_FF_SKIPDAY===day){
+          CC_MP_FF_SKIPDAY=null;
+          try{ document.getElementById('majorStages').innerHTML=''; }catch(e2){}
+          if(careerToday()===day) step(day);
+          careerFfProgress(ccDaysBetween(CC_FF.from.day, careerToday()), days);
+          await sleep(0);
+          continue;
+        }
         /* И СТЕК — в пробы. Без него «Cannot read properties of undefined» называет день и вид
            вечера, но не место в коде, и ошибка ищется перебором (прогон 2024, 22 сентября). */
         CC_FF.err={day:day, kind:(next && next.type)||'',
