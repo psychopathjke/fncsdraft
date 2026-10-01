@@ -6707,7 +6707,7 @@
     <section class="hero hero-draft hero-mgr" aria-labelledby="heroMgrTitle">
       <div class="hero-body">
         <span class="dp-tag hero-mode-tag" id="mgHeroTag">Mode 3 · Manager</span>
-        <h2 class="hero-title" id="heroMgrTitle">Build a club. <span>Run it through a season.</span></h2>
+        <h2 class="hero-title" id="heroMgrTitle">Build a club. <em>Run it through a season.</em></h2>
         <p class="hero-sub" id="mgHeroSub"></p>
         <div class="cstrip-chips hero-chips"><span class="cstrip-chip">2019 – 2026</span><span class="cstrip-chip">Real clubs</span><span class="cstrip-chip">Match day</span></div>
         <div class="hero-cta"><button class="hero-btn hero-btn-go" type="button" onclick="mgrStart()"><span id="mgHeroBtn">Become a manager</span></button></div>
@@ -19466,6 +19466,7 @@ function refreshPreRegionLabels(){
 // hardens into a saved preference the user did not actually pick.
 function setLang(lang, persist){
   LANG=lang;
+  setTimeout(function(){ try{ if(typeof mgrHeroText==='function') mgrHeroText(); }catch(e){} }, 0);   // подписи блока Fortnite Manager
   // The year's labels are built once and cached; a language change rebuilds them.
   CC_YEAR_DAYS=null;
   /* Две двери в командную карьеру на карточке карьеры — только когда лобби
@@ -111522,7 +111523,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='0fc9abcf';
+const CC_BUILD='4491e350';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -153835,9 +153836,9 @@ function mgrHome(){ mgrSave(); mgrLeave(); show('screen-mode'); }
 function mgrHeroText(){
   try{ const T=mgrT(); const set=(id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
     set('mgHeroTag', T.heroTag); set('mgHeroSub', T.heroSub); set('mgHeroBtn', T.heroBtn);
-    const h=document.getElementById('heroMgrTitle'); if(h) h.innerHTML=esc(T.heroTitle)+' <span>'+esc(T.heroTitle2)+'</span>'; }catch(e){}
+    const h=document.getElementById('heroMgrTitle'); if(h) h.innerHTML=esc(T.heroTitle)+' <em>'+esc(T.heroTitle2)+'</em>'; }catch(e){}
 }
-document.addEventListener('DOMContentLoaded', ()=>setTimeout(mgrHeroText, 0));
+setTimeout(mgrHeroText, 0);
 function mgrStart(){ mgrLoad(); if(MGR && MGR.club) mgrOpenHub(); else mgrOpenNew(MGR_NEW_YEAR); }
 
 /* ---- Выбор года и клуба ---------------------------------------------------- */
