@@ -191,7 +191,7 @@ const boot = (who) => `
           next:nx&&{type:nx.type, title:nx.title, day:nx.day}, can:nx?careerCanPlay(nx):null,
           modal:[...document.querySelectorAll('.cc-evpick-wrap, #ccAskModal[style*="flex"], .landing-picker, .cc-choice')].map(e=>e.className||e.id).join(','),
           peerHb:MP.peerHb||null, errs:(window.__errs||[]).slice(0,3),
-          mpev:(window.__mpev||[]).slice(-25), ffState:(function(){ try{ return JSON.stringify(CC_FF).slice(0,300); }catch(e){ return '?'; } })(),
+          mpev:(window.__mpev||[]).slice(-25), third:{asked:window.__thirdAsked||null, again:!!window.__ffAgain, mates:(careerMates()||[]).map(c=>c&&c.handle), offers:careerDms().filter(x=>x.state==='offer').length, ask:(document.getElementById('ccAskModal')||{}).style ? document.getElementById('ccAskModal').style.display+' '+((document.getElementById('ccAskModal')||{}).textContent||'').slice(0,160) : null}, ffState:(function(){ try{ return JSON.stringify(CC_FF).slice(0,300); }catch(e){ return '?'; } })(),
           // Отпечатки личного, из чего может собираться поле: какой у двоих разный — там и расхождение.
           dig:(function(){ const h=o=>{ const s=JSON.stringify(o==null?null:o); let x=0; for(let i=0;i<s.length;i++) x=(x*31+s.charCodeAt(i))|0; return (x>>>0).toString(16)+':'+s.length; };
             const cr=CAREER.career||{}, out={};
