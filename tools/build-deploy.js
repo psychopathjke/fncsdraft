@@ -224,6 +224,39 @@ function prefillI18n(dir) {
 }
 const prefilled = prefillI18n(OUT);
 
+/* ---- ОБОЛОЧКА БЕЗ КОММЕНТАРИЕВ И С СЖАТЫМ CSS ---------------------------
+ *
+ * Его вопрос 1.10: «почему у нас такой большой view source». Оболочка весила 620 КБ, из них
+ * 523 КБ — стили как в исходнике (отступы, переносы, 159 КБ комментариев) и 22 КБ HTML-комментариев.
+ * terser сжимал только app.js. Теперь CSS проходит clean-css (уровень 1 — без перестановки правил,
+ * то есть смысл каскада не трогается), а HTML-комментарии вырезаются. Исходник в репо — как был.
+ * Не вышло сжать блок — он остаётся как есть, сборка не падает. */
+(function shrinkShell() {
+  const { execFileSync } = require('child_process');
+  const shellPath = path.join(OUT, 'index.html');
+  let shell = fs.readFileSync(shellPath, 'utf8');
+  const before = Buffer.byteLength(shell);
+  // HTML-комментарии — кроме тех, что внутри <script> (там их нет, но правило дешевле проверки).
+  shell = shell.replace(/(<script\b[\s\S]*?<\/script>)|<!--[\s\S]*?-->/g, (all, sc) => sc || '');
+  const tmpDir = fs.mkdtempSync(path.join(require('os').tmpdir(), 'fdcss-'));
+  let n = 0, failed = 0;
+  shell = shell.replace(/<style>([\s\S]*?)<\/style>/g, (all, css) => {
+    const src = path.join(tmpDir, 'in' + n + '.css'), dst = path.join(tmpDir, 'out' + n + '.css'); n++;
+    fs.writeFileSync(src, css, 'utf8');
+    try {
+      execFileSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['-y', 'clean-css-cli@5', '-O1', '-o', '"' + dst + '"', '"' + src + '"'],
+        { stdio: ['ignore', 'ignore', 'pipe'], shell: true });
+      const min = fs.readFileSync(dst, 'utf8');
+      if (!min.trim() && css.trim()) throw new Error('пусто');
+      return '<style>' + min + '</style>';
+    } catch (e) { failed++; return all; }
+  });
+  fs.rmSync(tmpDir, { recursive: true, force: true });
+  fs.writeFileSync(shellPath, shell, 'utf8');
+  console.log('оболочка: ' + Math.round(before / 1024) + ' → ' + Math.round(Buffer.byteLength(shell) / 1024) + ' КБ' +
+    (failed ? ' (CSS-блоков не сжато: ' + failed + ')' : ''));
+})();
+
 /* ---- ВОРКЕРУ — ВЕРСИЯ И СПИСОК ТОГО, ЧТО КЛАСТЬ СРАЗУ -------------------
  *
  * sw.js в репозитории лежит с метками вместо версии: там ей взяться неоткуда,
