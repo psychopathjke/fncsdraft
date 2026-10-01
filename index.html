@@ -111460,7 +111460,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='d7a635ba';
+const CC_BUILD='f04c62e9';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -113763,7 +113763,7 @@ function ccMpClose(ranked){
       CC_MP_HOLD=true;               // и до того шага наверх ничего не уходит
       /* После выхода из вечера состояния у двоих разные: на хабе оба просят синхронизацию,
          и следующий вечер начинается из одного состояния. См. ccMpSplitLeave. */
-      if(CC_MP_LEAVE){ CC_MP_LEAVE=false; CC_MP_LEFT=false; CC_MP_SKIP_CLOSE=true; setTimeout(function(){ try{ if(MP.act) MP.act('syncreq', {by:ccMpId()}); }catch(e){} }, 1500); }
+      if(CC_MP_LEAVE){ CC_MP_LEAVE=false; CC_MP_LEFT=false; CC_MP_SKIP_CLOSE=true; ccMpSyncAfterApart(); }
       res();
     };
     off=MP.on('close', finish);
@@ -114082,6 +114082,22 @@ function ccMpQnReset(){ CC_MP_QN={}; CC_MP_SKIP_CLOSE=false; }
    ДО шага дня, а день к этому времени уже сдвинут своим шагом. Проба с нарочным расхождением
    1.10: у второго день откатывался на вчера. Сбрасывается на старте следующего вечера. */
 let CC_MP_SKIP_CLOSE=false;
+/* СВЕРКА ПОСЛЕ ВЕЧЕРА ВРОЗЬ — В ОДНУ СТОРОНУ (годовой прогон вдвоём 1.10, 2025: после первого расхождения
+   все вечера до конца сезона расходились на первой игре). Оба просили syncreq, каждый отвечал своим
+   состоянием, и сервер пересылал его другому — двое менялись состояниями и оставались разными. Теперь
+   правда — у владельца лобби (роль a): просит только второй, и просит, пока ответ не придёт (владелец
+   может ещё доигрывать свой стол — тогда он на syncreq молчит). */
+function ccMpSyncAfterApart(){
+  if(typeof MP==='undefined' || !MP.act || ccMpRole()==='a') return;
+  let got=false, n=0, off=null;
+  try{ off=MP.on('team', function(){ got=true; if(off) off(); }); }catch(e){}
+  const ask=function(){
+    if(got || n++>=24){ if(off) try{ off(); }catch(e){} return; }
+    try{ MP.act('syncreq', {by:ccMpId()}); }catch(e){}
+    setTimeout(ask, 5000);
+  };
+  setTimeout(ask, 1500);
+}
 // Дни, которые напарник в перемотке пропустил (ffskip), и день, на котором его пропуск отменил наши ворота.
 const CC_MP_PEER_SKIPS=new Set();
 // Личные вечера в команде (своя сборная, соло-серия сама решает, один или вдвоём): пропуск напарника их не отменяет.
