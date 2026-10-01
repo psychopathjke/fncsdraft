@@ -1753,7 +1753,7 @@
       for(var tp=0; tp<squads.length; tp++)
         totalPlayers += (squads[tp].team.squad && squads[tp].team.squad.length) || 1;
       var roster = squads.map(function(s){
-        return {name: s.team.name, you: !!s.team.isYou,
+        return {name: s.team.name, you: !!s.team.isYou, club: !!s.team.isClub,
                 size: (s.team.squad && s.team.squad.length) || 1};
       });
       roster.totalSquads = (opts.lobbySquads != null) ? opts.lobbySquads : squads.length;
