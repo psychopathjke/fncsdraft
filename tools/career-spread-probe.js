@@ -21,7 +21,8 @@ const { execFileSync } = require('child_process');
 const ROOT = path.resolve(__dirname, '..');
 const GAMES = +(process.argv[2] || 600);
 const OVR = +(process.argv[3] || 86);
-const MULS = (process.argv[4] || '').split(',').map(Number).filter(x => x > 0);
+// Множитель агрессии или «k1.6:0.04» — агрессия 1.6 с лутом 0.04 за килл (CC_KEY_LOOT, 2.10).
+const MULS = (process.argv[4] || '').split(',').map(x => { const m = /^k([\d.]+):([\d.]+)$/.exec(x); return m ? {mul:+m[1], loot:+m[2]} : {mul:+x, loot:0}; }).filter(x => x.mul > 0);
 const CHROME = [
   process.env.CHROME,
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
@@ -50,7 +51,7 @@ const BOOT = `
     const set=ZONE_SETS[ACTIVE_LANDING_SET]?ACTIVE_LANDING_SET:'m2';
     const ratio=MAP_ASPECT[set].split('/'), aspect=Number(ratio[1])/Number(ratio[0]);
     const exponent=DUEL_POW_EXPONENT_BY_MODE[squadSize]||5;
-    const run=(mul)=>{
+    const run=(mul, loot)=>{
       let places=0, wins=0, top10=0, bottom=0, pts=0, sq=0, elims=0;
       for(let g=0; g<GAMES_N; g++){
         const you=careerYouTeam([me]); you.isYou=true; you.name='you';
@@ -60,7 +61,7 @@ const BOOT = `
         field.forEach(t=>{ t._elims=0; t._feed=[];
           t._pf=Math.max(1, t.pow*gameForm()); t._pfBase=t._pf;
           t._pc=Math.max(1, t._pf+(t.closeEdge||0));
-          t._seekMul = t.isYou ? mul : 1; });
+          t._seekMul = t.isYou ? mul : 1; t._keyLoot = t.isYou ? (loot||0) : 0; });
         const game=ZoneSim.simulateZoneGame(field, {
           rng:Math.random, land:ZONE_SETS[set], aspect:aspect, record:false, stepwise:true,
           startOf:t=>{ const z=t.landingZone; return z?{x:z.x+z.w/2,y:z.y+z.h/2}:{x:50,y:50}; },
@@ -79,7 +80,7 @@ const BOOT = `
     };
     const extra=${JSON.stringify(MULS)};
     if(extra.length){
-      extra.forEach(m=>out.rows.push({what:'агрессия ×'+m, mul:m, ...run(m)}));
+      extra.forEach(m=>out.rows.push({what:'агрессия ×'+m.mul+(m.loot ? ' лут '+m.loot : ''), mul:m.mul, ...run(m.mul, m.loot)}));
     } else {
       [0.5, 0.7, 1, 1.4, 2].forEach(m=>out.rows.push({what:'агрессия ×'+m, mul:m, ...run(m)}));
     }

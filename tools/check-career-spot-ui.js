@@ -88,12 +88,13 @@ const BOOT = `
     out.steps.push('клик по прямоугольнику открыл свою карту: '+boxes.length+' коробок Релоада 1');
 
     // ---- выбор локи возвращает в карьеру ------------------------------------
+    const half=Math.floor(careerSpotCarry()/2);
     careerSpotChoose(7);
     // Переезд по обжитой карте спрашивает — отвечаем «да», как игрок.
     if(document.getElementById('ccAskModal').style.display==='flex') ccAskGo(true);
     if(CC_SPOT_OPEN) fail('после выбора карта осталась открытой');
     if(careerSpotList('r1')[0].i!==7) fail('лока не сменилась');
-    if(careerSpotAura('r1',0)!==0) fail('переезд не сжёг ауру этой карты');
+    if(careerSpotAura('r1',0)!==half) fail('переезд дал '+careerSpotAura('r1',0)+', а не половину '+half);
     if(careerSpotAura('m1',0)!==6) fail('переезд задел другую карту');
     t=tile();
     if(!t.querySelector('.cc-spot-cards')) fail('в карьеру не вернулись');
