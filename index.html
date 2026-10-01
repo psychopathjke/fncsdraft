@@ -6277,6 +6277,19 @@
   .mg-rrow b{color:#3fd0ff;min-width:40px;}
   .mg-rrow small{opacity:.75;margin-left:auto;}
   @media(max-width:600px){ .mg-cash{text-align:left;} .mg-list li span{min-width:84px;} }
+  .mg-modal{position:fixed;inset:0;z-index:9000;background:rgba(5,10,30,.72);display:flex;align-items:center;justify-content:center;padding:16px;}
+  .mg-modal-box{width:min(620px,100%);max-height:90vh;overflow:auto;background:#0f1d4d;border:1px solid rgba(63,208,255,.45);border-radius:14px;padding:16px;color:#e6ecff;display:flex;flex-direction:column;gap:10px;}
+  .mg-modal-box h3{margin:0;font:800 18px Oswald,system-ui;text-transform:uppercase;}
+  .mg-mrow{display:flex;flex-direction:column;gap:4px;padding:8px;border-radius:10px;background:rgba(255,255,255,.05);}
+  .mg-mrow small{opacity:.75;font-size:12px;}
+  .mg-seg{display:flex;flex-wrap:wrap;gap:4px;}
+  .mg-seg button,.mg-bar button{background:#1b2a63;color:#cfe;border:1px solid #2c3f86;border-radius:8px;padding:5px 10px;font-weight:700;font-size:12px;cursor:pointer;}
+  .mg-seg button.on,.mg-bar button.on{background:#3fd0ff;color:#04122e;border-color:#3fd0ff;}
+  .mg-tips{background:rgba(255,214,0,.08);border:1px solid rgba(255,214,0,.35);border-radius:10px;padding:8px 10px;}
+  .mg-tips em{font-style:normal;font-size:11px;text-transform:uppercase;color:#ffd600;}
+  .mg-tips p{margin:4px 0;font-size:13px;}
+  .mg-bar{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:8000;display:flex;flex-wrap:wrap;gap:4px;align-items:center;background:rgba(10,20,60,.92);border:1px solid rgba(63,208,255,.4);border-radius:12px;padding:6px 8px;max-width:96vw;}
+  .mg-bar span{font-size:11px;text-transform:uppercase;opacity:.75;margin:0 4px;color:#e6ecff;}
   .fmt-art{position:relative;overflow:hidden;background:#0d1650 center/cover no-repeat;}
   /* Постер формата на всю плитку, подпись внизу на градиенте; остальные сезоны — миниатюры справа сверху. */
   .fmt-wall{position:absolute;top:10px;right:10px;z-index:2;display:flex;gap:4px;align-items:center;}
@@ -99606,9 +99619,11 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
           shownTo=frames.length;
           if(!part.length) return false;
           cutShort=await playReplayGuarded(replay, part,
-            {frameMs: 90, labels: replayLabels, roster: LAST_ZONE_ROSTER,
+            {frameMs: (typeof opts.frameMs==='function' ? opts.frameMs() : opts.frameMs) || 90, labels: replayLabels, roster: LAST_ZONE_ROSTER,
              isSkipped: () => skipAnimation,
-             stopWhen: youOnMap < 0 ? null
+             // Fortnite Manager: показ кончается, когда на карте не осталось ни одной команды клуба (уровни «ключевые»/«расширенный»).
+             stopWhen: (typeof opts.replayStop==='function') ? opts.replayStop(lobby)
+                     : youOnMap < 0 ? null
                                     : f => { const d=f.dots[youOnMap]; return !!d && !d.alive; },
              onFrame: f => onZoneFrame(lobby, f)});
           return cutShort;
@@ -111523,7 +111538,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4491e350';
+const CC_BUILD='a3f8f614';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -153794,7 +153809,7 @@ function mgrT(){
     month:'в месяц', back:'В клуб', nightDone:'Итог вечера', noTeamFmt:'Нет команды этого формата — турнир пропущен',
     season:'Сезон', earned:'Заработано за сезон', none:'Пока ничего', moveUp:'↑', moveDown:'↓', swap:'Поменять местами',
     heroTag:'Режим 3 · Менеджер', heroTitle:'Собери клуб.', heroTitle2:'Веди его через сезон.', heroSub:'Ты Head of Fortnite: настоящий клуб и состав года, турниры по реальному календарю, смотришь вечера и решаешь между играми.',
-    heroBtn:'Стать менеджером', sponsor:'спонсоры', fmt:{2:'дуо', 3:'трио', 4:'сквад'}, focus:'Камера на', resume:'Продолжить сезон'
+    heroBtn:'Стать менеджером', sponsor:'спонсоры', preH:'Перед вечером', style:'Установка', stPlace:'Плейсмент', stBal:'Баланс', stAggr:'Агрессия', view:'Показ', vKey:'Ключевые моменты', vExt:'Расширенный', vFull:'Весь вечер', vRes:'Только итог', speed:'Скорость', start:'Начать вечер', breakH:g=>'Перерыв · после игры '+g, cont:'Продолжить', talk:'Разговор', tkCalm:'Спокойно', tkDemand:'Требовательно', tkPraise:'Похвалить', rankNow:'сейчас', lastG:'прошлая игра', asst:'Ассистент', tDeadEarly:n=>n+' рано вылетает — точку контестят. Уходи в плейсмент или смени спот', tFightLow:n=>n+' много дерётся, а места низкие — переведи на плейсмент', tPlaceNoKill:n=>n+' стабильно доживает, но мало киллов — можно агрессию', tHot:n=>n+' в огне — похвали, не ломай', tCold:n=>n+' две игры подряд мимо — разговор нужен', talkSaid:'сказано', fmt:{2:'дуо', 3:'трио', 4:'сквад'}, focus:'Камера на', resume:'Продолжить сезон'
   } : {
     title:'Fortnite Manager', newH:'New club', year:'Year', region:'Region', pickClub:'Pick a club — its real roster of that year',
     players:'players', avg:'avg', take:'Take over', cash:'Cash', teams:'Teams', bench:'Bench', next:'Next event',
@@ -153803,7 +153818,7 @@ function mgrT(){
     month:'a month', back:'Back to club', nightDone:'Night report', noTeamFmt:'No team in this format — event skipped',
     season:'Season', earned:'Earned this season', none:'Nothing yet', moveUp:'↑', moveDown:'↓', swap:'Swap',
     heroTag:'Mode 3 · Manager', heroTitle:'Build a club.', heroTitle2:'Run it through a season.', heroSub:'You are Head of Fortnite: a real club and its roster of the year, events on the real calendar, you watch the nights and decide between games.',
-    heroBtn:'Become a manager', sponsor:'sponsors', fmt:{2:'duos', 3:'trios', 4:'squads'}, focus:'Camera on', resume:'Continue season'
+    heroBtn:'Become a manager', sponsor:'sponsors', preH:'Before the night', style:'Approach', stPlace:'Placement', stBal:'Balanced', stAggr:'Aggressive', view:'Watch', vKey:'Key moments', vExt:'Extended', vFull:'Full night', vRes:'Result only', speed:'Speed', start:'Start the night', breakH:g=>'Break · after game '+g, cont:'Continue', talk:'Team talk', tkCalm:'Calm', tkDemand:'Demanding', tkPraise:'Praise', rankNow:'now', lastG:'last game', asst:'Assistant', tDeadEarly:n=>n+' die early — the spot is contested. Go placement or change the spot', tFightLow:n=>n+' fight a lot but place low — switch to placement', tPlaceNoKill:n=>n+' survive steadily but get few kills — try aggressive', tHot:n=>n+' are on fire — praise them, do not break it', tCold:n=>n+' missed two games in a row — they need a talk', talkSaid:'said', fmt:{2:'duos', 3:'trios', 4:'squads'}, focus:'Camera on', resume:'Continue season'
   };
 }
 function mgrLoad(){ try{ MGR=ccSaveParse(localStorage.getItem(MGR_KEY)); }catch(e){ MGR=null; } return MGR; }
@@ -153981,6 +153996,104 @@ function mgrSkip(){
   mgrAdvanceTo(nx.day); mgrSave(); mgrOpenHub();
 }
 
+/* ---- Матчевый день как в Football Manager -------------------------------------
+   До вечера — установка каждой команде (плейсмент/баланс/агрессия → _seekMul движка: как часто ищет драку)
+   и уровень показа. Во время — панель: уровень и скорость. Между играми (= перерыв в FM) — таблица своих,
+   подсказки ассистента, смена установки и разговор с командой (на следующую игру ±сила). Во время игры
+   тренеру говорить нельзя — как в настоящем FNCS. */
+const MGR_STYLE={place:0.6, bal:1, aggr:1.5};
+const MGR_VIEW_MS={key:45, ext:70, full:90};
+let MGR_SPEED=1;
+function mgrViewNow(){ return (MGR && MGR.view) || 'key'; }
+function mgrModal(html){
+  return new Promise(res=>{
+    const wrap=document.createElement('div'); wrap.className='mg-modal';
+    wrap.innerHTML='<div class="mg-modal-box">'+html+'</div>';
+    document.body.appendChild(wrap);
+    wrap.addEventListener('click', e=>{
+      const b=e.target.closest('[data-mg]'); if(!b) return;
+      const k=b.dataset.mg, v=b.dataset.v, id=b.dataset.id;
+      if(k==='go'){ wrap.remove(); res(); return; }
+      if(k==='style'){ const t=(MGR_NIGHT||[]).find(x=>x.mgrId===id); if(t) t._mgrStyle=v; }
+      if(k==='talk'){ const t=(MGR_NIGHT||[]).find(x=>x.mgrId===id); if(t) t._mgrTalk=v; }
+      if(k==='view'){ MGR.view=v; }
+      b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b));
+    });
+  });
+}
+let MGR_NIGHT=null;
+function mgrStyleRow(t){
+  const T=mgrT(), st=t._mgrStyle||'bal';
+  return '<div class="mg-seg">'+[['place',T.stPlace],['bal',T.stBal],['aggr',T.stAggr]].map(([k,l])=>'<button data-mg="style" data-id="'+t.mgrId+'" data-v="'+k+'" class="'+(st===k?'on':'')+'">'+l+'</button>').join('')+'</div>';
+}
+function mgrViewRow(){
+  const T=mgrT(), v=mgrViewNow();
+  return '<div class="mg-seg">'+[['key',T.vKey],['ext',T.vExt],['full',T.vFull],['result',T.vRes]].map(([k,l])=>'<button data-mg="view" data-v="'+k+'" class="'+(v===k?'on':'')+'">'+l+'</button>').join('')+'</div>';
+}
+function mgrPlainName(t){ return (t.squad||[]).map(c=>c.handle).join(' & '); }
+async function mgrPreNight(club, evName){
+  const T=mgrT();
+  const rows=club.map(t=>'<div class="mg-mrow"><b>'+esc(mgrPlainName(t))+'</b><small>'+T.style+'</small>'+mgrStyleRow(t)+'</div>').join('');
+  await mgrModal('<h3>'+T.preH+' · '+esc(evName)+'</h3>'+rows+'<div class="mg-mrow"><small>'+T.view+'</small>'+mgrViewRow()+'</div><button class="hero-btn hero-btn-go" data-mg="go">'+T.start+'</button>');
+}
+// Подсказки ассистента по прошлым играм команды.
+function mgrTips(t, lobbyN){
+  const T=mgrT(), log=t.stageLog||[], n=mgrPlainName(t), out=[];
+  const last=log[log.length-1], prev=log[log.length-2];
+  if(!last) return out;
+  const bad=p=>p>lobbyN*0.5, good=p=>p<=Math.max(3, lobbyN*0.15);
+  if(bad(last.place) && last.elims<=1) out.push(T.tDeadEarly(n));
+  else if(bad(last.place) && last.elims>=4) out.push(T.tFightLow(n));
+  else if(good(last.place) && last.elims<=2) out.push(T.tPlaceNoKill(n));
+  if(prev && good(last.place) && good(prev.place)) out.push(T.tHot(n));
+  if(prev && bad(last.place) && bad(prev.place)) out.push(T.tCold(n));
+  return out;
+}
+async function mgrBreak(g, club, field){
+  if(mgrViewNow()==='result') return;
+  const T=mgrT();
+  const ranked=field.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.stageElims||0)-(a.stageElims||0));
+  const lobbyN=Math.min(field.length, 50);
+  const tips=[];
+  const rows=club.map(t=>{
+    const last=(t.stageLog||[])[(t.stageLog||[]).length-1]||{};
+    tips.push(...mgrTips(t, lobbyN));
+    t._mgrTalk=null;
+    return '<div class="mg-mrow"><b>'+esc(mgrPlainName(t))+'</b><small>#'+(ranked.indexOf(t)+1)+' '+T.rankNow+' · '+(t.stagePts||0)+' pts · '+T.lastG+': #'+(last.place||'–')+', '+(last.elims||0)+' elims</small>'+
+      '<small>'+T.style+'</small>'+mgrStyleRow(t)+
+      '<small>'+T.talk+'</small><div class="mg-seg">'+[['calm',T.tkCalm],['demand',T.tkDemand],['praise',T.tkPraise]].map(([k,l])=>'<button data-mg="talk" data-id="'+t.mgrId+'" data-v="'+k+'">'+l+'</button>').join('')+'</div></div>';
+  }).join('');
+  await mgrModal('<h3>'+T.breakH(g)+'</h3>'+rows+(tips.length ? '<div class="mg-tips"><em>'+T.asst+'</em>'+tips.map(x=>'<p>'+esc(x)+'</p>').join('')+'</div>' : '')+
+    '<div class="mg-mrow"><small>'+T.view+'</small>'+mgrViewRow()+'</div><button class="hero-btn hero-btn-go" data-mg="go">'+T.cont+'</button>');
+}
+// Перед игрой: установка → _seekMul; разговор → сила на эту игру (по тому, как прошла прошлая).
+function mgrApplyOrders(club, lobbyN){
+  club.forEach(t=>{
+    // Сила без бонуса точки высадки: его движок кладёт и снимает сам (applyLandingPow / _landingPow).
+    if(t._basePow==null) t._basePow=t.pow-(t._landingPow||0);
+    t._seekMul=MGR_STYLE[t._mgrStyle||'bal']||1;
+    const last=(t.stageLog||[])[(t.stageLog||[]).length-1];
+    const bad=last && last.place>lobbyN*0.5, good=last && last.place<=Math.max(3, lobbyN*0.15);
+    const talk=t._mgrTalk;
+    const bonus=!talk ? 0 : talk==='calm' ? (bad ? 1 : 0) : talk==='demand' ? (bad ? 2 : -1) : (good ? 1 : -1);
+    t.pow=t._basePow+bonus+(t._landingPow||0);
+  });
+}
+// Панель на экране вечера: уровень показа и скорость (×1/×2/×4).
+function mgrBarOn(){
+  mgrBarOff();
+  const T=mgrT(), bar=document.createElement('div'); bar.id='mgBar'; bar.className='mg-bar';
+  const draw=()=>{ const v=mgrViewNow();
+    bar.innerHTML='<span>'+T.view+'</span>'+[['key',T.vKey],['ext',T.vExt],['full',T.vFull],['result',T.vRes]].map(([k,l])=>'<button data-v="'+k+'" class="'+(v===k?'on':'')+'">'+l+'</button>').join('')+
+      '<span>'+T.speed+'</span>'+[1,2,4].map(x=>'<button data-sp="'+x+'" class="'+(MGR_SPEED===x?'on':'')+'">×'+x+'</button>').join(''); };
+  draw();
+  bar.addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return;
+    if(b.dataset.v){ MGR.view=b.dataset.v; if(b.dataset.v==='result'){ skipAnimation=true; } }
+    if(b.dataset.sp) MGR_SPEED=Number(b.dataset.sp)||1;
+    draw(); });
+  document.body.appendChild(bar);
+}
+function mgrBarOff(){ const b=document.getElementById('mgBar'); if(b) b.remove(); }
 /* ---- Матчевый день ----------------------------------------------------------- */
 async function mgrPlay(){
   const ev=mgrEvents()[0]; if(!ev) return;
@@ -154010,10 +154123,25 @@ async function mgrPlay(){
     tm.name=teamLabel(cards); tm.isClub=true; tm.mgrId=t.id; if(i===0) tm.isYou=true; return tm; });
   const vSize=careerVictoryField(false);
   const field=[...club, ...careerCupField(cr, clubCards, Math.max(1, vSize-(club.length-1)), 'mgr|'+ev.id, true)];
+  MGR_NIGHT=club;
+  club.forEach(t=>{ t._mgrStyle=t._mgrStyle||'bal'; });
+  await mgrPreNight(club, ev.name);
+  if(mgrViewNow()==='result') skipAnimation=true;
+  mgrBarOn();
+  const lobbyN=Math.min(field.length, ccVictoryLobby(ev, false)||50);
+  const guardWas=REPLAY_GUARD_MS; REPLAY_GUARD_MS=10*60000;   // весь вечер смотрится целиком — сторож показа 45 с его обрезал бы
+  mgrApplyOrders(club, lobbyN);
   try{
     await simulateGamesLive(field, CC_VICTORY_R1_GAMES, victoryR1Points, CC_VICTORY_R1_KILL, 'stage', 0, null, null,
-      {lobbySize:ccVictoryLobby(ev, false), stageName:ev.name, mapReplay:true, choices:false, stopOnYourDeath:false, together:club});
+      {lobbySize:ccVictoryLobby(ev, false), stageName:ev.name, mapReplay:true, choices:false, stopOnYourDeath:false, together:club,
+       frameMs:()=>Math.max(10, Math.round((MGR_VIEW_MS[mgrViewNow()]||90)/MGR_SPEED)),
+       replayStop:lobby=>{ if(mgrViewNow()==='full') return null; const idx=lobby.map((t,i)=>t.isClub ? i : -1).filter(i=>i>=0); if(!idx.length) return null;
+         return f=>idx.every(i=>{ const d=f.dots[i]; return !d || !d.alive; }); },
+       dropEachGame:async (g)=>{ if(g>1 && !CC_SKIP_RUN){ await mgrBreak(g-1, club, field); if(mgrViewNow()==='result') skipAnimation=true; else skipAnimation=false; } mgrApplyOrders(club, lobbyN); return null; }});
   }catch(e){ if(typeof console!=='undefined') console.error('mgr night', e); }
+  REPLAY_GUARD_MS=guardWas;
+  mgrBarOff();
+  club.forEach(t=>{ if(t._basePow!=null) t.pow=t._basePow+(t._landingPow||0); });
   const ranked=field.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0));
   const row={day:ev.day, kind:'night', name:ev.name, teams:[]};
   let clubGot=0;
