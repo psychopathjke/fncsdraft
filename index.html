@@ -6236,7 +6236,10 @@
   .dp-title{margin:2px 0 0;font-family:var(--font-display);font-size:clamp(30px,4.5vw,44px);font-weight:700;font-style:italic;text-transform:uppercase;line-height:1;color:#fff;}
   .hero-mode-tag{margin-bottom:8px;}
   .hero.hero-draft{margin-top:16px;}
-  .mg-wrap{max-width:980px;margin:0 auto;padding:18px 16px 40px;color:#e6ecff;}
+  /* Свой тёмный фон: контейнер экрана (.ch-stage) у карьеры светлый, а режим менеджера — тёмный. */
+  #screen-manager .ch-stage{background:transparent !important;box-shadow:none !important;border:0 !important;}
+  #screen-manager .ch-body{background:transparent !important;}
+  .mg-wrap{max-width:980px;margin:0 auto;padding:18px 16px 40px;color:#e6ecff;background:linear-gradient(180deg,#13235c,#0b1640);border:1px solid rgba(63,208,255,.25);border-radius:16px;}
   .mg-h{font:800 26px/1.1 Oswald,system-ui,sans-serif;margin:0 0 4px;text-transform:uppercase;}
   .mg-years{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0;}
   .mg-yr{background:#1b2a63;color:#cfe;border:1px solid #2c3f86;border-radius:999px;padding:5px 12px;font-weight:700;cursor:pointer;}
@@ -6277,6 +6280,24 @@
   .mg-rrow b{color:#3fd0ff;min-width:40px;}
   .mg-rrow small{opacity:.75;margin-left:auto;}
   @media(max-width:600px){ .mg-cash{text-align:left;} .mg-list li span{min-width:84px;} }
+  .mg-tabs{display:flex;gap:6px;margin:12px 0 4px;flex-wrap:wrap;}
+  .mg-tab{background:#1b2a63;color:#cfe;border:1px solid #2c3f86;border-radius:999px;padding:6px 14px;font:700 13px Oswald,system-ui;text-transform:uppercase;cursor:pointer;}
+  .mg-tab.on{background:#ffd600;color:#111;border-color:#ffd600;}
+  .mg-board{margin:10px 0 0;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.2);display:flex;flex-direction:column;gap:2px;}
+  .mg-board em{font-style:normal;font-size:11px;text-transform:uppercase;color:#ffd600;}
+  .mg-board small{font-size:12px;opacity:.85;}
+  .mg-pact{display:flex;gap:4px;margin-top:3px;}
+  .mg-move{background:#1b2a63;color:#cfe;border:1px solid #2c3f86;border-radius:6px;font-size:12px;padding:2px 4px;}
+  .mg-mini2{background:none;border:1px solid rgba(255,255,255,.2);color:#cfe;border-radius:6px;padding:2px 8px;font-size:12px;cursor:pointer;}
+  .mg-team.short{border-color:rgba(255,120,120,.6);}
+  .mg-mor{font-style:normal;font-size:11px;padding:0 4px;border-radius:4px;}
+  .mg-mor.up{background:#1f7a4a;} .mg-mor.dn{background:#8a2a2a;}
+  .mg-next.fncs{border-color:#3fd0ff;background:linear-gradient(90deg,rgba(63,208,255,.18),rgba(255,255,255,.04));}
+  .mg-list li.fncs{color:#3fd0ff;}
+  .mg-mkt{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0;}
+  .mg-q{flex:1;min-width:160px;background:#0f1d4d;color:#e6ecff;border:1px solid #2c3f86;border-radius:8px;padding:7px 10px;}
+  .mg-chk{font-size:13px;}
+  .mg-club.done{opacity:.55;}
   .mg-modal{position:fixed;inset:0;z-index:9000;background:rgba(5,10,30,.72);display:flex;align-items:center;justify-content:center;padding:16px;}
   .mg-modal-box{width:min(620px,100%);max-height:90vh;overflow:auto;background:#0f1d4d;border:1px solid rgba(63,208,255,.45);border-radius:14px;padding:16px;color:#e6ecff;display:flex;flex-direction:column;gap:10px;}
   .mg-modal-box h3{margin:0;font:800 18px Oswald,system-ui;text-transform:uppercase;}
@@ -111538,7 +111559,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a3f8f614';
+const CC_BUILD='648eb5f1';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -153898,6 +153919,8 @@ function mgrTake(i){
        teams:[], bench:[], log:[], skipped:[]};
   mgrEnter();
   mgrBuildTeams(c.players);
+  MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h));
+  MGR.inbox=[]; MGR.morale={}; mgrBoardInit();
   mgrSave();
   mgrOpenHub();
 }
@@ -153907,7 +153930,7 @@ function mgrBuildTeams(handles){
   const left=handles.slice();
   const role=h=>{ const c=mgrCard(h); return c ? (attrsFor(c)||{}).roleKey : null; };
   MGR.teams=[];
-  while(left.length>=size && MGR.teams.length<MGR_MAX_TEAMS){
+  while(left.length>=size && MGR.teams.length<MGR_MAX_TEAMS_NOW){
     const team=[left.shift()];
     for(let k=0; k<left.length && team.length<size; ){
       const roles=team.map(role).concat([role(left[k])]).filter(Boolean);
@@ -153929,14 +153952,14 @@ function mgrEvents(){
   const sizes=new Set(MGR.teams.map(t=>t.cards.length));
   const fm={duo:2, trio:3, squad:4};
   // Календарь капов года — тот же, что у карьеры (ccVictoryList: база года + архив Tracker + плейсмент-капы).
-  let all=[]; try{ all=ccVictoryList()||[]; }catch(e){ all=[]; }
+  let all=[]; try{ all=(ccVictoryList()||[]).concat(mgrFncsDays()); }catch(e){ all=[]; }
   return all.filter(ev=>ev && ev.day>=from && ev.day<=to && !ev.invite && !ev.zb && !ev.ewc24 && !ev.reshuffle &&
     !/Console|Playstation|PlayStation|Mobile|Platform|PC|Xbox|Switch|Influencer/i.test(ev.id+' '+(ev.name||'')) &&
     fm[ev.mode] && sizes.has(fm[ev.mode]) && (MGR.skipped||[]).indexOf(ev.id+'|'+ev.day)<0)
     .map(ev=>Object.assign({}, ev, {name:mgrEvName(ev)}))
     .sort((a,b)=>a.day<b.day ? -1 : a.day>b.day ? 1 : 0);
 }
-function mgrEvName(ev){ try{ if(typeof ccVictoryCupName==='function'){ const n=ccVictoryCupName(ev); if(n) return String(n).replace(/<[^>]+>/g, ''); } }catch(e){} return ev.name||ev.title||ev.label||ev.id; }
+function mgrEvName(ev){ if(ev.kind==='fncs') return ev.name; try{ if(typeof ccVictoryCupName==='function'){ const n=ccVictoryCupName(ev); if(n) return String(n).replace(/<[^>]+>/g, ''); } }catch(e){} return ev.name||ev.title||ev.label||ev.id; }
 // Призовые команды за место: таблица Epic (payT) — на игрока × размер; иначе выплата карьеры на состав сезона, приведённая к своему размеру.
 function mgrPrize(ev, place, size){
   if(ev.payT) return ccPay24(ev.payT, place)*size;
@@ -153948,7 +153971,7 @@ function mgrPayMonths(toDay){
   const c=MGR.club, cards=MGR.teams.flatMap(t=>t.cards).concat(MGR.bench||[]);
   let m=c.paidMonth||toDay.slice(0, 7), paid=0;
   while(m<toDay.slice(0, 7)){
-    const wage=cards.reduce((s,h)=>{ const cd=mgrCard(h); return s+(cd ? mgrSalary(cd) : 0); }, 0);
+    const wage=cards.reduce((s,h)=>s+mgrWage(h), 0);
     c.cash+=mgrSponsor()-wage; paid+=wage;
     const [y, mo]=m.split('-').map(Number); m=(mo===12 ? (y+1)+'-01' : y+'-'+String(mo+1).padStart(2, '0'));
   }
@@ -153960,40 +153983,264 @@ function mgrPayMonths(toDay){
 function mgrOpenHub(){
   if(!MGR || !MGR.club){ mgrOpenNew(); return; }
   mgrEnter();
-  const T=mgrT(), cr=CAREER.career, c=MGR.club;
+  if(!MGR.contracts){ MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h)); }
+  if(!MGR.board) mgrBoardInit();
+  MGR.inbox=MGR.inbox||[]; MGR.morale=MGR.morale||{};
+  const T=mgrT(), T2=mgrT2(), cr=CAREER.career, c=MGR.club;
   const evs=mgrEvents(), nx=evs[0];
-  const money=v=>(typeof fmtMoney==='function' ? fmtMoney(v) : '$'+v);
-  const pl=h=>{ const cd=mgrCard(h); const a=cd ? (attrsFor(cd)||{}) : {}; const L0=L();
-    return '<span class="mg-pl">'+(cd && cd.nat ? flagImg(cd.nat, 13)+' ' : '')+'<b>'+esc(h)+'</b><small>'+(cd ? Math.round(ccCardOvr(cd)||0) : '–')+' · '+esc(L0[a.roleKey]||'')+' · '+money(cd ? mgrSalary(cd) : 0)+'</small></span>'; };
-  const teams=MGR.teams.map((t,i)=>'<div class="mg-team"><em>'+(i+1)+' · '+esc(T.fmt[t.cards.length]||'')+'</em>'+t.cards.map(pl).join('')+
-    (i>0 ? '<button class="mg-mini" title="'+T.moveUp+'" onclick="mgrTeamUp('+i+')">'+T.moveUp+'</button>' : '')+'</div>').join('');
-  const bench=(MGR.bench||[]).length ? '<div class="mg-team mg-bench"><em>'+T.bench+'</em>'+MGR.bench.map(pl).join('')+'</div>' : '';
-  const wage=MGR.teams.flatMap(t=>t.cards).concat(MGR.bench||[]).reduce((s,h)=>{ const cd=mgrCard(h); return s+(cd ? mgrSalary(cd) : 0); }, 0);
-  const next=nx ? '<div class="mg-next"><em>'+T.next+'</em><b>'+esc(nx.name)+'</b><small>'+esc(ccDayLabel(nx.day))+' · '+esc(T.fmt[{duo:2,trio:3,squad:4}[nx.mode]]||'')+'</small>'+
-      '<div class="mg-cta"><button class="hero-btn hero-btn-go" onclick="mgrPlay()">'+T.play+'</button><button class="hero-btn hero-btn-alt" onclick="mgrSkip()">'+T.skipEv+'</button></div></div>'
-    : '<div class="mg-next"><i>'+T.noEvent+'</i></div>';
-  const cal=evs.slice(1, 6).map(e=>'<li><span>'+esc(ccDayLabel(e.day))+'</span>'+esc(e.name)+'</li>').join('');
-  const res=(MGR.log||[]).filter(r=>r.kind==='night').slice(0, 6).map(r=>'<li><span>'+esc(ccDayLabel(r.day))+'</span>'+esc(r.name)+' — '+
-      r.teams.map(t=>'#'+t.place+(t.prize ? ' ('+money(t.prize)+')' : '')).join(', ')+'</li>').join('');
+  const unread=MGR.inbox.filter(m=>!m.done).length;
+  const wage=mgrAll().reduce((s,h)=>s+mgrWage(h), 0);
+  const tabs=[['club',T2.tClub],['market',T2.tMarket],['inbox',T2.tInbox+(unread ? ' · '+unread : '')]].map(([k,l])=>'<button class="mg-tab'+(MGR_TAB===k?' on':'')+'" onclick="MGR_TAB=\''+k+'\';mgrOpenHub()">'+esc(l)+'</button>').join('');
+  const b=MGR.board, earnedNow=(c.earned||0)-(b.earned0||0);
+  const board='<div class="mg-board"><em>'+T2.board+'</em><small>'+esc(T2.goalEarn(mgrMoney(b.earn)))+' — '+mgrMoney(earnedNow)+'</small><small>'+esc(T2.goalPlace(b.place))+' — '+(b.best!=null ? '#'+b.best : T2.bestNone)+'</small></div>';
+  let body='';
+  if(MGR_TAB==='market') body=mgrMarketHTML();
+  else if(MGR_TAB==='inbox') body=mgrInboxHTML();
+  else body=mgrClubHTML(evs);
   document.getElementById('mgBody').innerHTML='<div class="mg-wrap">'+
     '<div class="mg-top"><span class="mg-logo big">'+(typeof clubLogoHTML==='function' ? clubLogoHTML(c.name, true) : '')+'</span>'+
       '<div><h2 class="mg-h">'+esc(c.name)+'</h2><small>'+T.season+' '+MGR.year+' · '+esc(MGR.region)+' · '+esc(ccDayLabel(cr.day))+'</small></div>'+
-      '<div class="mg-cash"><em>'+T.cash+'</em><b>'+money(c.cash)+'</b><small>'+T.salaries+' '+money(wage)+' · '+T.sponsor+' +'+money(mgrSponsor())+' '+T.month+' · '+T.earned+' '+money(c.earned||0)+'</small></div></div>'+
-    next+'<h3 class="mg-sub">'+T.teams+'</h3><div class="mg-teams">'+teams+bench+'</div>'+
-    (cal ? '<h3 class="mg-sub">'+T.calendar+'</h3><ul class="mg-list">'+cal+'</ul>' : '')+
-    '<h3 class="mg-sub">'+T.results+'</h3><ul class="mg-list">'+(res || '<li><i>'+T.none+'</i></li>')+'</ul>'+
+      '<div class="mg-cash"><em>'+T.cash+'</em><b>'+mgrMoney(c.cash)+'</b><small>'+T.salaries+' '+mgrMoney(wage)+' · '+T.sponsor+' +'+mgrMoney(mgrSponsor())+' '+T.month+'</small></div></div>'+
+    board+'<div class="mg-tabs">'+tabs+'</div>'+body+
     '<div class="mg-foot"><button class="hero-btn hero-btn-alt" onclick="mgrHome()">'+T.home+'</button><button class="hero-btn hero-btn-alt" onclick="mgrNewClubAsk()">'+T.newClub+'</button></div></div>';
   show('screen-manager');
+}
+function mgrClubHTML(evs){
+  const T=mgrT(), T2=mgrT2(), nx=evs[0];
+  const opts=(h)=>'<select class="mg-move" onchange="mgrMove(\''+esc(String(h).replace(/'/g, ''))+'\', this.value)"><option value="">'+T2.to+'</option>'+
+    MGR.teams.map((t,i)=>'<option value="'+i+'">'+T2.teamWord+' '+(i+1)+'</option>').join('')+'<option value="-1">'+T2.benchWord+'</option></select>';
+  const pl=h=>{ const cd=mgrCard(h); const a=cd ? (attrsFor(cd)||{}) : {}; const mor=mgrMorale(h);
+    return '<span class="mg-pl"><span><b>'+(cd && cd.nat ? flagImg(cd.nat, 13)+' ' : '')+esc(h)+'</b>'+(mor ? ' <i class="mg-mor'+(mor>0?' up':' dn')+'">'+(mor>0?'+':'')+mor+'</i>' : '')+'</span>'+
+      '<small>'+(cd ? Math.round(ccCardOvr(cd)||0) : '–')+' · '+esc(L()[a.roleKey]||'')+' · '+mgrMoney(mgrWage(h))+'</small>'+
+      '<span class="mg-pact">'+opts(h)+'<button class="mg-mini2" onclick="mgrRelease(\''+esc(String(h).replace(/'/g, ''))+'\')">'+T2.release+'</button></span></span>'; };
+  const size=Math.max(2, careerSquadSize());
+  const teams=MGR.teams.map((t,i)=>'<div class="mg-team'+(t.cards.length<size ? ' short' : '')+'"><em>'+(i+1)+' · '+esc(T.fmt[t.cards.length]||t.cards.length)+'</em>'+t.cards.map(pl).join('')+
+    (i>0 ? '<button class="mg-mini" title="'+T.moveUp+'" onclick="mgrTeamUp('+i+')">'+T.moveUp+'</button>' : '')+'</div>').join('');
+  const bench='<div class="mg-team mg-bench"><em>'+T.bench+'</em>'+((MGR.bench||[]).length ? MGR.bench.map(pl).join('') : '<small>'+T.none+'</small>')+
+    (MGR.teams.length<MGR_MAX_TEAMS4 ? '<button class="mg-mini2" onclick="mgrNewTeam()">'+T2.newTeam+'</button>' : '')+'</div>';
+  const next=nx ? '<div class="mg-next'+(nx.kind==='fncs' ? ' fncs' : '')+'"><em>'+T.next+'</em><b>'+esc(nx.name)+'</b><small>'+esc(ccDayLabel(nx.day))+' · '+esc(T.fmt[{duo:2,trio:3,squad:4}[nx.mode]]||'')+'</small>'+
+      '<div class="mg-cta"><button class="hero-btn hero-btn-go" onclick="mgrPlay()">'+T.play+'</button><button class="hero-btn hero-btn-alt" onclick="mgrSkip()">'+T.skipEv+'</button></div></div>'
+    : '<div class="mg-next"><i>'+T2.seasonOver+'</i><div class="mg-cta"><button class="hero-btn hero-btn-go" onclick="mgrSeasonReview()">'+T2.endSeason+'</button></div></div>';
+  const cal=evs.slice(1, 7).map(e=>'<li class="'+(e.kind==='fncs'?'fncs':'')+'"><span>'+esc(ccDayLabel(e.day))+'</span>'+esc(e.name)+'</li>').join('');
+  const res=(MGR.log||[]).filter(r=>r.kind==='night').slice(0, 6).map(r=>'<li class="'+(r.fncs?'fncs':'')+'"><span>'+esc(ccDayLabel(r.day))+'</span>'+esc(r.name)+' — '+
+      r.teams.map(t=>'#'+t.place+(t.prize ? ' ('+mgrMoney(t.prize)+')' : '')).join(', ')+'</li>').join('');
+  return next+'<h3 class="mg-sub">'+T.teams+'</h3><div class="mg-teams">'+teams+bench+'</div>'+
+    (cal ? '<h3 class="mg-sub">'+T.calendar+'</h3><ul class="mg-list">'+cal+'</ul>' : '')+
+    '<h3 class="mg-sub">'+T.results+'</h3><ul class="mg-list">'+(res || '<li><i>'+T.none+'</i></li>')+'</ul>';
+}
+function mgrMarketHTML(){
+  const T2=mgrT2();
+  const rows=mgrMarketList().map(c=>{ const a=attrsFor(c)||{}, bo=mgrBuyout(c);
+    return '<div class="mg-club"><span class="mg-cname"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(c.handle)+' <small>'+Math.round(ccCardOvr(c)||0)+'</small></b>'+
+      '<small>'+esc(L()[a.roleKey]||'')+' · '+esc(c.org || T2.free)+' · '+T2.wage+' '+mgrMoney(mgrSalary(c))+(bo ? ' · '+T2.buyout+' '+mgrMoney(bo) : '')+'</small></span>'+
+      '<button class="hero-btn hero-btn-go mg-take" onclick="mgrSign(\''+esc(String(c.handle).replace(/'/g, ''))+'\')">'+T2.sign+'</button></div>'; }).join('');
+  return '<div class="mg-mkt"><input class="mg-q" placeholder="'+esc(T2.search)+'" value="'+esc(MGR_MKT_Q)+'" onchange="MGR_MKT_Q=this.value;mgrOpenHub()">'+
+    '<label class="mg-chk"><input type="checkbox"'+(MGR_MKT_FREE?' checked':'')+' onchange="MGR_MKT_FREE=this.checked;mgrOpenHub()"> '+T2.onlyFree+'</label></div><div class="mg-clubs">'+rows+'</div>';
+}
+function mgrInboxHTML(){
+  const T2=mgrT2();
+  const list=(MGR.inbox||[]);
+  if(!list.length) return '<p class="mg-hint">'+T2.inboxEmpty+'</p>';
+  return '<div class="mg-clubs">'+list.map(m=>'<div class="mg-club'+(m.done?' done':'')+'"><span class="mg-cname"><b>'+esc(m.text)+'</b><small>'+esc(ccDayLabel(m.day))+(m.done && m.done!=='info' ? ' · '+(m.done==='yes' ? T2.accept : T2.decline) : '')+'</small></span>'+
+    (!m.done ? '<button class="hero-btn hero-btn-go mg-take" onclick="mgrInboxDo(\''+m.id+'\', true)">'+(m.kind==='offer' ? T2.sell : T2.accept)+'</button><button class="hero-btn hero-btn-alt mg-take" onclick="mgrInboxDo(\''+m.id+'\', false)">'+T2.decline+'</button>' : '')+'</div>').join('')+'</div>';
 }
 function mgrTeamUp(i){ if(i<1) return; const t=MGR.teams; [t[i-1], t[i]]=[t[i], t[i-1]]; mgrSave(); mgrOpenHub(); }
 function mgrNewClubAsk(){ ccAsk(mgrT().newClub+'?', ()=>{ MGR=null; try{ localStorage.removeItem(MGR_KEY); }catch(e){} mgrLeave(); mgrOpenNew(); }); }
 function mgrAdvanceTo(day){
-  if(day>CAREER.career.day){ mgrPayMonths(day); CAREER.career.day=day; }
+  if(day>CAREER.career.day){ mgrPayMonths(day); mgrWeekly(CAREER.career.day, day); CAREER.career.day=day; }
 }
 function mgrSkip(){
   const nx=mgrEvents()[0]; if(!nx) return;
   MGR.skipped=(MGR.skipped||[]).concat([nx.id+'|'+nx.day]);
   mgrAdvanceTo(nx.day); mgrSave(); mgrOpenHub();
+}
+
+/* ---- Этапы 2–4: рынок, почта и события, совет директоров, FNCS ---------------
+   Рынок: настоящие игроки года своего региона — свободные и чужие (отступные). Подписывает тот, кому
+   клуб по уровню (рейтинг игрока не выше среднего клуба +4; свободные — +6) и кому хватает кассы.
+   Контракт — зарплата на дату подписания (MGR.contracts). Отпустить — выходное пособие в месяц зарплаты.
+   Почта: раз в неделю — предложения за твоих сильных игроков (продать или отказать → мораль −1),
+   просьбы о прибавке; после хорошего вечера — бонус спонсора и мораль +1. Мораль −2…+2 добавляет силу
+   команде на вечер. Совет: цели сезона по уровню клуба (заработать N и лучшее место ≤ P). Конец сезона —
+   итоги: не выполнены обе — увольнение; иначе следующий год с теми же игроками (их карточки нового года).
+   FNCS: дни финалов сезона (careerMajorOn, stage final) — квалификация (6 игр, проходит топ-33 дуо в
+   пересчёте на формат) и финал (10 игр, призовые majorPrize). */
+const MGR_MAX_TEAMS4=4;
+let MGR_TAB='club', MGR_MKT_Q='', MGR_MKT_FREE=false;
+function mgrT2(){
+  const ru=(typeof LANG!=='undefined' && LANG==='ru');
+  return ru ? {
+    tClub:'Клуб', tMarket:'Рынок', tInbox:'Почта', to:'→', release:'Отпустить', releaseAsk:(n,s)=>'Отпустить '+n+'? Выходное пособие '+s,
+    newTeam:'Собрать команду из запаса', free:'свободен', onlyFree:'только свободные', search:'Поиск по нику', sign:'Подписать',
+    buyout:'отступные', wage:'зарплата', signed:n=>n+' подписан', noMoney:'Не хватает денег', tooGood:n=>n+': «хочу в клуб посильнее»',
+    already:'Уже в клубе', morale:'мораль', inboxEmpty:'Писем нет', accept:'Принять', decline:'Отказать', sell:'Продать',
+    offer:(c,n,s)=>c+' предлагает '+s+' за '+n, raise:(n,s)=>n+' просит прибавку до '+s+' в месяц', sponsorBonus:(s,t)=>'Спонсор доволен вечером ('+t+'): бонус '+s,
+    board:'Совет директоров', goalEarn:s=>'Заработать призовыми не меньше '+s, goalPlace:p=>'Лучшее место в сезоне — '+p+' или выше',
+    endSeason:'Итоги сезона', seasonOver:'Сезон закончен', met:'выполнено', notMet:'не выполнено', fired:'Совет тебя уволил. Найди новый клуб',
+    nextSeason:y=>'Сезон '+y, stay:'Совет доволен — следующий сезон', lastYear:'Это последний год в игре — можно начать с другим клубом',
+    fncsQ:'Квалификация', fncsF:'Финал', qualified:n=>n+' в финале', out:n=>n+' не прошли', best:'лучшее место', bestNone:'—',
+    teamWord:'Команда', benchWord:'Запас', newTeamDone:'Команда собрана', needMore:n=>'Для команды нужно ещё '+n
+  } : {
+    tClub:'Club', tMarket:'Market', tInbox:'Inbox', to:'→', release:'Release', releaseAsk:(n,s)=>'Release '+n+'? Severance '+s,
+    newTeam:'Build a team from the bench', free:'free agent', onlyFree:'free agents only', search:'Search by name', sign:'Sign',
+    buyout:'buyout', wage:'wage', signed:n=>n+' signed', noMoney:'Not enough cash', tooGood:n=>n+': "I want a stronger club"',
+    already:'Already at the club', morale:'morale', inboxEmpty:'No messages', accept:'Accept', decline:'Decline', sell:'Sell',
+    offer:(c,n,s)=>c+' offers '+s+' for '+n, raise:(n,s)=>n+' asks for a raise to '+s+' a month', sponsorBonus:(s,t)=>'The sponsor liked the night ('+t+'): bonus '+s,
+    board:'Board', goalEarn:s=>'Earn at least '+s+' in prize money', goalPlace:p=>'Best finish of the season — '+p+' or better',
+    endSeason:'Season review', seasonOver:'Season over', met:'done', notMet:'missed', fired:'The board fired you. Find a new club',
+    nextSeason:y=>'Season '+y, stay:'The board is happy — next season', lastYear:'This is the last year in the game — start again with another club',
+    fncsQ:'Qualifier', fncsF:'Final', qualified:n=>n+' made the final', out:n=>n+' are out', best:'best finish', bestNone:'—',
+    teamWord:'Team', benchWord:'Bench', newTeamDone:'Team built', needMore:n=>n+' more needed for a team'
+  };
+}
+function mgrMoney(v){ return (typeof fmtMoney==='function' ? fmtMoney(v) : '$'+v); }
+function mgrAll(){ return MGR.teams.flatMap(t=>t.cards).concat(MGR.bench||[]); }
+function mgrWage(h){ const c=(MGR.contracts||{})[hKey(h)]; if(c && c.salary) return c.salary; const cd=mgrCard(h); return cd ? mgrSalary(cd) : 0; }
+function mgrContract(h){ MGR.contracts=MGR.contracts||{}; const cd=mgrCard(h); MGR.contracts[hKey(h)]={salary:cd ? mgrSalary(cd) : 500, since:CAREER.career.day}; }
+function mgrMorale(h){ return ((MGR.morale||{})[hKey(h)])||0; }
+function mgrMoraleAdd(h, d){ MGR.morale=MGR.morale||{}; const k=hKey(h); MGR.morale[k]=Math.max(-2, Math.min(2, (MGR.morale[k]||0)+d)); }
+function mgrBoardInit(){
+  const sp=mgrSponsor(), avg=MGR.club.avg||70;
+  MGR.board={earn:Math.round(sp*2/1000)*1000, place:avg>=90 ? 10 : avg>=82 ? 25 : 50, best:null, earned0:MGR.club.earned||0};
+}
+function mgrToast(text){ try{ if(typeof ccMpTell==='function') ccMpTell(text); }catch(e){} }
+
+// ---- Рынок
+function mgrMarketList(){
+  const own=new Set(mgrAll().map(hKey));
+  let scene=[]; try{ scene=ccSceneRoster(MGR.region)||[]; }catch(e){}
+  const q=MGR_MKT_Q.trim().toLowerCase();
+  return scene.filter(c=>c && c.handle && !own.has(hKey(c)) && (!MGR_MKT_FREE || !c.org) && (!q || String(c.handle).toLowerCase().indexOf(q)>=0))
+    .sort((a,b)=>Math.abs((ccCardOvr(a)||0)-(MGR.club.avg||80))-Math.abs((ccCardOvr(b)||0)-(MGR.club.avg||80)) || (ccCardOvr(b)||0)-(ccCardOvr(a)||0))
+    .slice(0, 80);
+}
+function mgrBuyout(c){ return c.org && c.org!==MGR.club.name ? mgrSalary(c)*8 : 0; }
+function mgrSign(h){
+  const T=mgrT2(), c=mgrCard(h); if(!c) return;
+  if(mgrAll().some(x=>hKey(x)===hKey(h))){ mgrToast(T.already); return; }
+  const r=ccCardOvr(c)||0, cap=(MGR.club.avg||70)+(c.org ? 4 : 6);
+  if(r>cap){ mgrToast(T.tooGood(c.handle)); return; }
+  const cost=mgrBuyout(c)+mgrSalary(c);
+  if(MGR.club.cash<cost){ mgrToast(T.noMoney); return; }
+  MGR.club.cash-=mgrBuyout(c);
+  MGR.bench=(MGR.bench||[]).concat([c.handle]);
+  mgrContract(c.handle);
+  MGR.log.unshift({day:CAREER.career.day, kind:'sign', name:c.handle, sum:mgrBuyout(c)});
+  mgrToast(T.signed(c.handle));
+  mgrSave(); mgrOpenHub();
+}
+function mgrRelease(h){
+  const T=mgrT2(), sev=mgrWage(h);
+  ccAsk(T.releaseAsk(h, mgrMoney(sev)), ()=>{
+    MGR.teams.forEach(t=>{ t.cards=t.cards.filter(x=>hKey(x)!==hKey(h)); });
+    MGR.teams=MGR.teams.filter(t=>t.cards.length);
+    MGR.bench=(MGR.bench||[]).filter(x=>hKey(x)!==hKey(h));
+    MGR.club.cash-=sev;
+    if(MGR.contracts) delete MGR.contracts[hKey(h)];
+    mgrSave(); mgrOpenHub();
+  });
+}
+// Переставить игрока: в команду i (0..) или в запас (-1). Команда с недобором — играть не выходит, пока не полная.
+function mgrMove(h, to){
+  to=Number(to);
+  MGR.teams.forEach(t=>{ t.cards=t.cards.filter(x=>hKey(x)!==hKey(h)); });
+  MGR.bench=(MGR.bench||[]).filter(x=>hKey(x)!==hKey(h));
+  if(to>=0 && MGR.teams[to]) MGR.teams[to].cards.push(h); else MGR.bench.push(h);
+  MGR.teams=MGR.teams.filter(t=>t.cards.length);
+  mgrSave(); mgrOpenHub();
+}
+function mgrNewTeam(){
+  const T=mgrT2(), size=Math.max(2, careerSquadSize());
+  if((MGR.bench||[]).length<size){ mgrToast(T.needMore(size-(MGR.bench||[]).length)); return; }
+  const was=MGR.teams.slice();
+  const pool=MGR.bench.slice();
+  MGR.teams=[];
+  // Тот же сборщик с одним ИГЛом, только из запаса; старые команды — как были.
+  const keep=MGR_MAX_TEAMS; MGR_MAX_TEAMS_NOW=1;
+  mgrBuildTeams(pool);
+  const fresh=MGR.teams[0];
+  MGR.teams=was.concat(fresh ? [Object.assign(fresh, {id:'t'+Date.now().toString(36)})] : []);
+  MGR_MAX_TEAMS_NOW=keep;
+  mgrToast(T.newTeamDone);
+  mgrSave(); mgrOpenHub();
+}
+let MGR_MAX_TEAMS_NOW=3;
+
+// ---- Почта и события (раз в неделю между турнирами)
+function mgrWeekly(fromDay, toDay){
+  const T=mgrT2();
+  MGR.inbox=MGR.inbox||[];
+  for(let d=ccAddDays(fromDay, 7); d<=toDay; d=ccAddDays(d, 7)){
+    const rnd=careerRng(ccHashStr('mgrwk|'+MGR.club.name+'|'+d));
+    const all=mgrAll().map(h=>mgrCard(h)).filter(Boolean).sort((a,b)=>(ccCardOvr(b)||0)-(ccCardOvr(a)||0));
+    if(!all.length) continue;
+    if(rnd()<0.18){
+      const star=all[Math.floor(rnd()*Math.min(3, all.length))];
+      let clubs=[]; try{ clubs=[...new Set((ccSceneRoster(MGR.region)||[]).map(c=>c.org).filter(o=>o && o!==MGR.club.name))]; }catch(e){}
+      if(clubs.length){
+        const from=clubs[Math.floor(rnd()*clubs.length)], sum=Math.round(mgrSalary(star)*10*(0.8+rnd()*0.6)/100)*100;
+        MGR.inbox.unshift({id:'o'+d, day:d, kind:'offer', h:star.handle, from, sum, text:T.offer(from, star.handle, mgrMoney(sum))});
+      }
+    } else if(rnd()<0.12){
+      const p=all[Math.floor(rnd()*all.length)], sum=Math.round(mgrWage(p.handle)*1.25/10)*10;
+      MGR.inbox.unshift({id:'r'+d, day:d, kind:'raise', h:p.handle, sum, text:T.raise(p.handle, mgrMoney(sum))});
+    }
+  }
+  MGR.inbox=MGR.inbox.slice(0, 30);
+}
+function mgrInboxDo(id, ok){
+  const m=(MGR.inbox||[]).find(x=>x.id===id); if(!m || m.done) return;
+  m.done=ok ? 'yes' : 'no';
+  if(m.kind==='offer'){
+    if(ok){ MGR.club.cash+=m.sum; MGR.teams.forEach(t=>{ t.cards=t.cards.filter(x=>hKey(x)!==hKey(m.h)); }); MGR.teams=MGR.teams.filter(t=>t.cards.length);
+            MGR.bench=(MGR.bench||[]).filter(x=>hKey(x)!==hKey(m.h)); if(MGR.contracts) delete MGR.contracts[hKey(m.h)];
+            MGR.log.unshift({day:CAREER.career.day, kind:'sell', name:m.h, sum:m.sum}); }
+    else mgrMoraleAdd(m.h, -1);
+  }
+  if(m.kind==='raise'){
+    if(ok){ MGR.contracts=MGR.contracts||{}; MGR.contracts[hKey(m.h)]={salary:m.sum, since:CAREER.career.day}; mgrMoraleAdd(m.h, 1); }
+    else mgrMoraleAdd(m.h, -1);
+  }
+  mgrSave(); mgrOpenHub();
+}
+
+// ---- Совет и конец сезона
+function mgrSeasonReview(){
+  const T=mgrT2(), b=MGR.board||{}, earned=(MGR.club.earned||0)-(b.earned0||0);
+  const okEarn=earned>=(b.earn||0), okPlace=b.best!=null && b.best<=(b.place||50);
+  const fired=!okEarn && !okPlace;
+  const last=MGR.year>=2026;
+  const html='<h3>'+T.endSeason+' · '+MGR.year+'</h3>'+
+    '<div class="mg-mrow"><b>'+esc(T.board)+'</b><small>'+esc(T.goalEarn(mgrMoney(b.earn||0)))+' — '+mgrMoney(earned)+' · '+(okEarn ? T.met : T.notMet)+'</small>'+
+    '<small>'+esc(T.goalPlace(b.place||50))+' — '+(b.best!=null ? '#'+b.best : T.bestNone)+' · '+(okPlace ? T.met : T.notMet)+'</small></div>'+
+    '<p>'+esc(fired ? T.fired : last ? T.lastYear : T.stay)+'</p><button class="hero-btn hero-btn-go" data-mg="go">'+(fired || last ? mgrT().newClub : T.nextSeason(MGR.year+1))+'</button>';
+  MGR.history=(MGR.history||[]).concat([{year:MGR.year, club:MGR.club.name, earned, best:b.best, fired}]);
+  mgrModal(html).then(()=>{
+    if(fired || last){ const hist=MGR.history; MGR=null; try{ localStorage.removeItem(MGR_KEY); }catch(e){} mgrLeave(); MGR_NEW_YEAR=Math.min(2026, (hist[hist.length-1]||{}).year+1||2024); mgrOpenNew(); return; }
+    mgrNextSeason();
+  });
+}
+function mgrNextSeason(){
+  const y=MGR.year+1, keep=mgrAll().slice();
+  mgrLeave();
+  MGR.year=y; MGR.shadow=mgrShadow(y, MGR.region); MGR.skipped=[]; MGR.club.paidMonth=MGR.shadow.career.day.slice(0, 7);
+  mgrEnter();
+  // Игроки нового года: кто в сцене — остаётся (с новой карточкой), кого нет — ушёл из профи.
+  const alive=keep.filter(h=>{ const c=mgrCard(h); return !!c; });
+  MGR.teams=[]; MGR.bench=[];
+  mgrBuildTeams(alive);
+  mgrBoardInit();
+  mgrSave(); mgrOpenHub();
+}
+
+// ---- FNCS: дни финалов сезона
+function mgrFncsDays(){
+  const out=[], to=ccYearTo();
+  for(let d=CAREER.career.day; d<=to; d=ccAddDays(d, 1)){
+    let mj=null; try{ mj=careerMajorOn(d); }catch(e){ mj=null; }
+    if(mj && mj.stage==='final' && !out.some(x=>x.n===mj.n)) out.push({day:d, kind:'fncs', id:'fncs'+(mj.n||'')+'|'+d, name:(mj.label||'FNCS').replace(/<[^>]+>/g, ''), mode:({2:'duo', 3:'trio', 4:'squad'})[careerSquadSize()]||'duo', n:mj.n});
+  }
+  return out;
 }
 
 /* ---- Матчевый день как в Football Manager -------------------------------------
@@ -154095,17 +154342,27 @@ function mgrBarOn(){
 }
 function mgrBarOff(){ const b=document.getElementById('mgBar'); if(b) b.remove(); }
 /* ---- Матчевый день ----------------------------------------------------------- */
-async function mgrPlay(){
-  const ev=mgrEvents()[0]; if(!ev) return;
-  const T=mgrT(), cr=CAREER.career;
-  const size={duo:2, trio:3, squad:4}[ev.mode];
-  const mine=MGR.teams.filter(t=>t.cards.length===size);
-  if(!mine.length){ ccMpTell && ccMpTell(T.noTeamFmt); MGR.skipped.push(ev.id+'|'+ev.day); mgrSave(); mgrOpenHub(); return; }
-  mgrAdvanceTo(ev.day);
-  const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted, prevSet=ACTIVE_LANDING_SET;
-  const clubCards=mine.flatMap(t=>t.cards.map(mgrCard)).filter(Boolean);
-  CARD_MODE=true; squadSize=size; drafted=clubCards;
-  try{ useLandingSet(/Reload/.test(ev.id) ? ccReloadSetOfYear() : careerBrSet()); }catch(e){}
+// Один этап вечера: панель показа, сторож, установки и перерывы. Возвращает таблицу этапа.
+async function mgrRunStage(field, club, games, ptsFn, kill, stageName, lobbySize){
+  const lobbyN=Math.min(field.length, lobbySize||50);
+  if(mgrViewNow()==='result') skipAnimation=true;
+  mgrBarOn();
+  const guardWas=REPLAY_GUARD_MS; REPLAY_GUARD_MS=10*60000;   // весь вечер смотрится целиком — сторож показа 45 с его обрезал бы
+  mgrApplyOrders(club, lobbyN);
+  try{
+    await simulateGamesLive(field, games, ptsFn, kill, 'stage', 0, null, null,
+      {lobbySize:lobbySize, stageName:stageName, mapReplay:true, choices:false, stopOnYourDeath:false, together:club,
+       frameMs:()=>Math.max(10, Math.round((MGR_VIEW_MS[mgrViewNow()]||90)/MGR_SPEED)),
+       replayStop:lobby=>{ if(mgrViewNow()==='full') return null; const idx=lobby.map((t,i)=>t.isClub ? i : -1).filter(i=>i>=0); if(!idx.length) return null;
+         return f=>idx.every(i=>{ const d=f.dots[i]; return !d || !d.alive; }); },
+       dropEachGame:async (g)=>{ if(g>1 && !CC_SKIP_RUN){ await mgrBreak(g-1, club, field); if(mgrViewNow()==='result') skipAnimation=true; else skipAnimation=false; } mgrApplyOrders(club, lobbyN); return null; }});
+  }catch(e){ if(typeof console!=='undefined') console.error('mgr stage', e); }
+  REPLAY_GUARD_MS=guardWas;
+  mgrBarOff();
+  club.forEach(t=>{ if(t._basePow!=null) t.pow=t._basePow+(t._landingPow||0); });
+  return field.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0));
+}
+function mgrScreenReset(){
   skipAnimation=false; CC_SKIP_RUN=false;
   resetRunRecord();
   document.getElementById('majorStages').innerHTML='';
@@ -154118,55 +154375,125 @@ async function mgrPlay(){
   CAREER_RUN=true;
   show('screen-results');
   ensureSkipButton();
-  // Команды клуба: все в одном лобби (together), подсвечены на карте (isClub); камера — за первой (isYou).
-  const club=mine.map((t,i)=>{ const cards=t.cards.map(mgrCard).filter(Boolean); const tm=careerTeam(cards);
-    tm.name=teamLabel(cards); tm.isClub=true; tm.mgrId=t.id; if(i===0) tm.isYou=true; return tm; });
+}
+// Команды клуба этого формата — объектами движка; мораль игроков — к силе на вечер.
+function mgrClubTeams(size){
+  return MGR.teams.filter(t=>t.cards.length===size).map((t,i)=>{
+    const cards=t.cards.map(mgrCard).filter(Boolean); const tm=careerTeam(cards);
+    tm.name=teamLabel(cards); tm.isClub=true; tm.mgrId=t.id; if(i===0) tm.isYou=true;
+    const mor=cards.length ? Math.round(cards.reduce((s,c)=>s+mgrMorale(c.handle), 0)/cards.length) : 0;
+    tm.pow+=mor;
+    return tm; });
+}
+function mgrReportBox(title, rows, clubGot, note){
+  const T=mgrT();
+  const box=document.createElement('div');
+  box.className='mg-report';
+  box.innerHTML='<h3>'+T.nightDone+' · '+esc(title)+'</h3>'+rows.map(t=>'<div class="mg-rrow"><b>#'+t.place+'</b><span>'+esc(t.name)+'</span><small>'+t.pts+' pts · '+t.elims+' elims'+(t.wins ? ' · '+t.wins+' VR' : '')+(t.prize ? ' · '+mgrMoney(t.prize) : '')+(t.stage ? ' · '+esc(t.stage) : '')+'</small></div>').join('')+
+    (note ? '<p>'+note+'</p>' : '')+'<p>'+T.clubGets+': <b>'+mgrMoney(clubGot)+'</b></p><button class="hero-btn hero-btn-go" onclick="mgrAfterNight()">'+T.back+'</button>';
+  document.getElementById('majorStages').appendChild(box);
+}
+function mgrAfterResults(ev, row, clubGot){
+  const T2=mgrT2();
+  MGR.club.cash+=clubGot; MGR.club.earned=(MGR.club.earned||0)+clubGot;
+  MGR.log.unshift(row);
+  const b=MGR.board||(MGR.board={});
+  row.teams.forEach(t=>{ if(t.final!==false && (b.best==null || t.place<b.best)) b.best=t.place; });
+  // Хороший вечер: бонус спонсора и мораль +1; плохой (все вне топ-50%) — мораль −1.
+  const good=row.teams.filter(t=>t.place<=3);
+  if(good.length){
+    const bonus=Math.round(mgrSponsor()*0.25/100)*100;
+    MGR.club.cash+=bonus;
+    MGR.inbox=(MGR.inbox||[]); MGR.inbox.unshift({id:'b'+ev.day+ev.id, day:ev.day, kind:'info', done:'info', text:T2.sponsorBonus(mgrMoney(bonus), ev.name)});
+    good.forEach(t=>MGR.teams.filter(x=>x.id===t.id).forEach(x=>x.cards.forEach(h=>mgrMoraleAdd(h, 1))));
+  }
+  row.teams.filter(t=>t.place>(t.of||100)*0.5).forEach(t=>MGR.teams.filter(x=>x.id===t.id).forEach(x=>x.cards.forEach(h=>mgrMoraleAdd(h, -1))));
+}
+async function mgrPlay(){
+  const ev=mgrEvents()[0]; if(!ev) return;
+  if(ev.kind==='fncs') return mgrPlayFncs(ev);
+  const T=mgrT(), cr=CAREER.career;
+  const size={duo:2, trio:3, squad:4}[ev.mode];
+  if(!MGR.teams.some(t=>t.cards.length===size)){ mgrToast(T.noTeamFmt); MGR.skipped.push(ev.id+'|'+ev.day); mgrSave(); mgrOpenHub(); return; }
+  mgrAdvanceTo(ev.day);
+  const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted, prevSet=ACTIVE_LANDING_SET;
+  const club=mgrClubTeams(size);
+  const clubCards=club.flatMap(t=>t.squad);
+  CARD_MODE=true; squadSize=size; drafted=clubCards;
+  try{ useLandingSet(/Reload/.test(ev.id) ? ccReloadSetOfYear() : careerBrSet()); }catch(e){}
+  mgrScreenReset();
   const vSize=careerVictoryField(false);
   const field=[...club, ...careerCupField(cr, clubCards, Math.max(1, vSize-(club.length-1)), 'mgr|'+ev.id, true)];
   MGR_NIGHT=club;
   club.forEach(t=>{ t._mgrStyle=t._mgrStyle||'bal'; });
   await mgrPreNight(club, ev.name);
-  if(mgrViewNow()==='result') skipAnimation=true;
-  mgrBarOn();
-  const lobbyN=Math.min(field.length, ccVictoryLobby(ev, false)||50);
-  const guardWas=REPLAY_GUARD_MS; REPLAY_GUARD_MS=10*60000;   // весь вечер смотрится целиком — сторож показа 45 с его обрезал бы
-  mgrApplyOrders(club, lobbyN);
-  try{
-    await simulateGamesLive(field, CC_VICTORY_R1_GAMES, victoryR1Points, CC_VICTORY_R1_KILL, 'stage', 0, null, null,
-      {lobbySize:ccVictoryLobby(ev, false), stageName:ev.name, mapReplay:true, choices:false, stopOnYourDeath:false, together:club,
-       frameMs:()=>Math.max(10, Math.round((MGR_VIEW_MS[mgrViewNow()]||90)/MGR_SPEED)),
-       replayStop:lobby=>{ if(mgrViewNow()==='full') return null; const idx=lobby.map((t,i)=>t.isClub ? i : -1).filter(i=>i>=0); if(!idx.length) return null;
-         return f=>idx.every(i=>{ const d=f.dots[i]; return !d || !d.alive; }); },
-       dropEachGame:async (g)=>{ if(g>1 && !CC_SKIP_RUN){ await mgrBreak(g-1, club, field); if(mgrViewNow()==='result') skipAnimation=true; else skipAnimation=false; } mgrApplyOrders(club, lobbyN); return null; }});
-  }catch(e){ if(typeof console!=='undefined') console.error('mgr night', e); }
-  REPLAY_GUARD_MS=guardWas;
-  mgrBarOff();
-  club.forEach(t=>{ if(t._basePow!=null) t.pow=t._basePow+(t._landingPow||0); });
-  const ranked=field.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0));
+  const ranked=await mgrRunStage(field, club, CC_VICTORY_R1_GAMES, victoryR1Points, CC_VICTORY_R1_KILL, ev.name, ccVictoryLobby(ev, false));
   const row={day:ev.day, kind:'night', name:ev.name, teams:[]};
   let clubGot=0;
   club.forEach(tm=>{
-    const place=ranked.indexOf(tm)+1;
-    const prize=mgrPrize(ev, place, size);
-    const cut=Math.round(prize*MGR_CUT);
-    clubGot+=cut;
-    row.teams.push({id:tm.mgrId, name:(tm.squad||[]).map(c=>c.handle).join(' & '), place, of:ranked.length, pts:tm.stagePts||0, elims:tm.stageElims||0, wins:tm.wins||0, prize});
+    const place=ranked.indexOf(tm)+1, prize=mgrPrize(ev, place, size);
+    clubGot+=Math.round(prize*MGR_CUT);
+    row.teams.push({id:tm.mgrId, name:mgrPlainName(tm), place, of:ranked.length, pts:tm.stagePts||0, elims:tm.stageElims||0, wins:tm.wins||0, prize});
   });
-  MGR.club.cash+=clubGot; MGR.club.earned=(MGR.club.earned||0)+clubGot;
-  MGR.log.unshift(row);
   try{ careerPrAdd(ranked, {div:1, kind:'victory'}); }catch(e){}
-  // Итог: таблица (своя первая команда как «ты») и карточка менеджера по всем командам клуба.
+  mgrAfterResults(ev, row, clubGot);
   const focus=club[0];
   const shell=createStageCardShell(ev.name+' — '+ranked.length);
   try{ await revealStageLog(focus, shell, true); finalizeStageCard(shell, ranked.indexOf(focus)+1, ranked.length, focus.stagePts||0, null, focus.gotVR, ''); }catch(e){}
   try{ await revealStandings(shell, ranked, focus, 0, null, null, p=>mgrPrize(ev, p, size)); }catch(e){}
   removeSkipButton();
-  const money=v=>(typeof fmtMoney==='function' ? fmtMoney(v) : '$'+v);
-  const box=document.createElement('div');
-  box.className='mg-report';
-  box.innerHTML='<h3>'+T.nightDone+' · '+esc(ev.name)+'</h3>'+row.teams.map(t=>'<div class="mg-rrow"><b>#'+t.place+'</b><span>'+esc(t.name)+'</span><small>'+t.pts+' pts · '+t.elims+' elims'+(t.wins ? ' · '+t.wins+' VR' : '')+(t.prize ? ' · '+money(t.prize) : '')+'</small></div>').join('')+
-    '<p>'+T.clubGets+': <b>'+money(clubGot)+'</b></p><button class="hero-btn hero-btn-go" onclick="mgrAfterNight()">'+T.back+'</button>';
-  document.getElementById('majorStages').appendChild(box);
+  mgrReportBox(ev.name, row.teams, clubGot);
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; try{ useLandingSet(prevSet); }catch(e){}
+  CAREER_RUN=false;
+  mgrSave();
+}
+// FNCS: квалификация (6 игр, топ-33 дуо в пересчёте на формат) → финал (10 игр, призовые финала сезона).
+async function mgrPlayFncs(ev){
+  const T=mgrT(), T2=mgrT2(), cr=CAREER.career;
+  const size={duo:2, trio:3, squad:4}[ev.mode]||careerSquadSize();
+  if(!MGR.teams.some(t=>t.cards.length===size)){ mgrToast(T.noTeamFmt); MGR.skipped.push(ev.id+'|'+ev.day); mgrSave(); mgrOpenHub(); return; }
+  mgrAdvanceTo(ev.day);
+  const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted, prevSet=ACTIVE_LANDING_SET;
+  const club=mgrClubTeams(size), clubCards=club.flatMap(t=>t.squad);
+  CARD_MODE=true; squadSize=size; drafted=clubCards;
+  try{ useLandingSet(careerBrSet()); }catch(e){}
+  mgrScreenReset();
+  const qSize=ccTeams(100);
+  const qField=[...club, ...careerCupField(cr, clubCards, Math.max(1, qSize-(club.length-1)), 'mgrq|'+ev.id, true, (typeof CC_FIELD_SHARP!=='undefined' && CC_FIELD_SHARP.final) || undefined)];
+  MGR_NIGHT=club;
+  club.forEach(t=>{ t._mgrStyle=t._mgrStyle||'bal'; });
+  await mgrPreNight(club, ev.name+' · '+T2.fncsQ);
+  const qRanked=await mgrRunStage(qField, club, 6, victoryR1Points, CC_VICTORY_R1_KILL, ev.name+' · '+T2.fncsQ, qField.length);
+  const cut=ccTeams(33);
+  const finalists=qRanked.slice(0, cut);
+  const rows=[]; let clubGot=0, note=[];
+  club.forEach(tm=>{ const p=qRanked.indexOf(tm)+1; if(p>cut){ note.push(T2.out(mgrPlainName(tm))); rows.push({id:tm.mgrId, name:mgrPlainName(tm), place:p, of:qRanked.length, pts:tm.stagePts||0, elims:tm.stageElims||0, wins:tm.wins||0, prize:0, stage:T2.fncsQ, final:false}); } });
+  const inFinal=club.filter(tm=>finalists.indexOf(tm)>=0);
+  let ranked=qRanked;
+  if(inFinal.length){
+    inFinal.forEach(tm=>note.push(T2.qualified(mgrPlainName(tm))));
+    finalists.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.stageLog=[]; t.wins=0; });
+    inFinal.forEach((t,i)=>{ t.isYou=(i===0); });
+    finalists.forEach(t=>{ if(club.indexOf(t)<0) t.isYou=false; });
+    MGR_NIGHT=inFinal;
+    const prevDay=CC_PRIZE_DAY; CC_PRIZE_DAY=ev.day;
+    ranked=await mgrRunStage(finalists, inFinal, 10, majorPoints, CC_M24_KILL, ev.name+' · '+T2.fncsF, finalists.length);
+    inFinal.forEach(tm=>{
+      const place=ranked.indexOf(tm)+1; let prize=0; try{ prize=Math.round(majorPrize(place)/Math.max(1, careerSquadSize())*size); }catch(e){}
+      clubGot+=Math.round(prize*MGR_CUT);
+      rows.push({id:tm.mgrId, name:mgrPlainName(tm), place, of:ranked.length, pts:tm.stagePts||0, elims:tm.stageElims||0, wins:tm.wins||0, prize, stage:T2.fncsF});
+    });
+    try{ careerPrAdd(ranked, {div:1, kind:'major', stage:'final'}); }catch(e){}
+    const focus=inFinal[0];
+    const shell=createStageCardShell(ev.name+' · '+T2.fncsF+' — '+ranked.length);
+    try{ await revealStageLog(focus, shell, true); finalizeStageCard(shell, ranked.indexOf(focus)+1, ranked.length, focus.stagePts||0, null, focus.gotVR, ''); }catch(e){}
+    try{ await revealStandings(shell, ranked, focus, 0, null, null, p=>{ try{ return Math.round(majorPrize(p)/Math.max(1, careerSquadSize())*size); }catch(e){ return 0; } }); }catch(e){}
+    CC_PRIZE_DAY=prevDay;
+  }
+  const row={day:ev.day, kind:'night', name:ev.name, fncs:true, teams:rows};
+  mgrAfterResults(ev, row, clubGot);
+  removeSkipButton();
+  mgrReportBox(ev.name, rows, clubGot, note.map(esc).join(' · '));
   CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; try{ useLandingSet(prevSet); }catch(e){}
   CAREER_RUN=false;
   mgrSave();
