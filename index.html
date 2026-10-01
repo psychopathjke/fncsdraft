@@ -6314,6 +6314,8 @@
   .mg-fat{position:relative;margin:10px 0;height:22px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;}
   .mg-fat i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#1f7a4a,#c9a227,#a33);}
   .mg-fat em{position:relative;z-index:1;font-style:normal;font-size:12px;padding:0 10px;line-height:22px;}
+  .mg-talk button{flex:1 1 45%;}
+  .mg-talk button:disabled{opacity:.5;}
   .mg-staff{display:flex;flex-direction:column;gap:4px;padding:10px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);}
   .mg-staff small{opacity:.8;font-size:12px;}
   .mg-staff .mg-seg{flex-wrap:wrap;}
@@ -111587,7 +111589,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='9bb1af34';
+const CC_BUILD='855ea7b0';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -154119,9 +154121,9 @@ function mgrClubHTML(evs){
   const pl=h=>{ const cd=mgrCard(h); const a=cd ? (attrsFor(cd)||{}) : {}; const mor=mgrMorale(h);
     return '<span class="mg-pl"><span><b>'+(cd && cd.nat ? flagImg(cd.nat, 13)+' ' : '')+esc(h)+'</b>'+(mor ? ' <i class="mg-mor'+(mor>0?' up':' dn')+'">'+(mor>0?'+':'')+mor+'</i>' : '')+'</span>'+
       '<small>'+(cd ? Math.round(ccCardOvr(cd)||0) : '–')+(MGR.dev && MGR.dev[hKey(h)] ? ' <i class="mg-up">+'+MGR.dev[hKey(h)]+'</i>' : '')+' · '+esc(L()[a.roleKey]||'')+' · '+mgrMoney(mgrWage(h))+' · '+esc(mgrT4().contractTo(mgrUntil(h)))+' · '+mgrT4().pot+' '+mgrPotText(h)+'</small>'+
-      '<span class="mg-pact">'+opts(h)+'<button class="mg-mini2" onclick="mgrRelease(\''+esc(String(h).replace(/'/g, ''))+'\')">'+T2.release+'</button></span></span>'; };
+      '<span class="mg-pact">'+opts(h)+'<button class="mg-mini2" onclick="mgrTalk(\''+esc(String(h).replace(/'/g, ''))+'\')">'+mgrT5().talk+'</button><button class="mg-mini2" onclick="mgrRelease(\''+esc(String(h).replace(/'/g, ''))+'\')">'+T2.release+'</button></span></span>'; };
   const size=Math.max(2, careerSquadSize());
-  const teams=MGR.teams.map((t,i)=>'<div class="mg-team'+(t.cards.length<size ? ' short' : '')+'"><em>'+(i+1)+' · '+esc(T.fmt[t.cards.length]||t.cards.length)+'</em>'+t.cards.map(pl).join('')+
+  const teams=MGR.teams.map((t,i)=>'<div class="mg-team'+(t.cards.length<size ? ' short' : '')+'"><em>'+(i+1)+' · '+esc(T.fmt[t.cards.length]||t.cards.length)+' · '+mgrT5().chem+' '+mgrChem(t.cards)+'/10</em>'+t.cards.map(pl).join('')+
     (i>0 ? '<button class="mg-mini" title="'+T.moveUp+'" onclick="mgrTeamUp('+i+')">'+T.moveUp+'</button>' : '')+'</div>').join('');
   const bench='<div class="mg-team mg-bench"><em>'+T.bench+'</em>'+((MGR.bench||[]).length ? MGR.bench.map(pl).join('') : '<small>'+T.none+'</small>')+
     (MGR.teams.length<MGR_MAX_TEAMS4 ? '<button class="mg-mini2" onclick="mgrNewTeam()">'+T2.newTeam+'</button>' : '')+'</div>';
@@ -154134,7 +154136,7 @@ function mgrClubHTML(evs){
   const acad='<h3 class="mg-sub">'+T.acad+' <small class="mg-hint">'+T.acadHint+'</small></h3><div class="mg-teams"><div class="mg-team mg-bench">'+((MGR.academy||[]).length ? MGR.academy.map(h=>{ const cd=mgrCard(h);
       return '<span class="mg-pl"><span><b>'+(cd && cd.nat ? flagImg(cd.nat, 13)+' ' : '')+esc(h)+'</b></span><small>'+(cd ? Math.round(ccCardOvr(cd)||0) : '–')+(MGR.dev && MGR.dev[hKey(h)] ? ' <i class="mg-up">+'+MGR.dev[hKey(h)]+'</i>' : '')+' · '+mgrMoney(mgrWage(h))+'</small>'+
         '<span class="mg-pact"><button class="mg-mini2" onclick="mgrPromote(\''+esc(String(h).replace(/\'/g, ''))+'\')">'+T.promote+'</button><button class="mg-mini2" onclick="mgrRelease(\''+esc(String(h).replace(/\'/g, ''))+'\')">'+T2.release+'</button></span></span>'; }).join('') : '<small>'+T.none+'</small>')+'</div></div>';
-  return next+'<h3 class="mg-sub">'+T.teams+'</h3><div class="mg-teams">'+teams+bench+'</div>'+acad+
+  return next+'<h3 class="mg-sub">'+T.teams+'</h3><div class="mg-teams">'+teams+bench+'</div>'+acad+mgrPromisesHTML()+
     (cal ? '<h3 class="mg-sub">'+T.calendar+'</h3><ul class="mg-list">'+cal+'</ul>' : '')+
     '<h3 class="mg-sub">'+T.results+'</h3><ul class="mg-list">'+(res || '<li><i>'+T.none+'</i></li>')+'</ul>';
 }
@@ -154157,7 +154159,7 @@ function mgrInboxHTML(){
   const list=(MGR.inbox||[]);
   if(!list.length) return '<p class="mg-hint">'+T2.inboxEmpty+'</p>';
   return '<div class="mg-clubs">'+list.map(m=>'<div class="mg-club'+(m.done?' done':'')+'"><span class="mg-cname"><b>'+esc(m.text)+'</b><small>'+esc(ccDayLabel(m.day))+(m.done && m.done!=='info' ? ' · '+(m.done==='yes' ? T2.accept : T2.decline) : '')+'</small></span>'+
-    (!m.done ? '<button class="hero-btn hero-btn-go mg-take" onclick="mgrInboxDo(\''+m.id+'\', true)">'+(m.kind==='offer' ? T2.sell : T2.accept)+'</button><button class="hero-btn hero-btn-alt mg-take" onclick="mgrInboxDo(\''+m.id+'\', false)">'+T2.decline+'</button>' : '')+'</div>').join('')+'</div>';
+    (!m.done ? '<button class="hero-btn hero-btn-go mg-take" onclick="mgrInboxDo(\''+m.id+'\', true)">'+(m.kind==='offer' ? T2.sell : m.kind==='wantplay' ? mgrT5().promiseBtn : m.kind==='leave' ? mgrT5().sellBtn : T2.accept)+'</button><button class="hero-btn hero-btn-alt mg-take" onclick="mgrInboxDo(\''+m.id+'\', false)">'+(m.kind==='wantplay' ? mgrT5().waitBtn : m.kind==='leave' ? mgrT5().keepBtn : T2.decline)+'</button>' : '')+'</div>').join('')+'</div>';
 }
 function mgrTeamUp(i){ if(i<1) return; const t=MGR.teams; [t[i-1], t[i]]=[t[i], t[i-1]]; mgrSave(); mgrOpenHub(); }
 function mgrNewClubAsk(){ ccAsk(mgrT().newClub+'?', ()=>{ MGR=null; try{ localStorage.removeItem(MGR_KEY); }catch(e){} mgrLeave(); mgrOpenNew(); }); }
@@ -154308,6 +154310,7 @@ function mgrWeekly(fromDay, toDay){
   for(let d=ccAddDays(fromDay, 7); d<=toDay; d=ccAddDays(d, 7)){
     const rnd=careerRng(ccHashStr('mgrwk|'+MGR.club.name+'|'+d));
     mgrTrainWeek();
+    mgrPeopleWeek(d);
     if(mgrStaff('psych')) mgrAll().forEach(h=>{ if(mgrMorale(h)<0 && careerRng(ccHashStr('psy|'+h+'|'+d))()<0.3*mgrStaff('psych')) mgrMoraleAdd(h, 1); });
     const all=mgrAll().map(h=>mgrCard(h)).filter(Boolean).sort((a,b)=>(ccCardOvr(b)||0)-(ccCardOvr(a)||0));
     if(!all.length) continue;
@@ -154348,6 +154351,14 @@ function mgrInboxDo(id, ok){
     if(ok){ MGR.club.cash+=m.sum; MGR.teams.forEach(t=>{ t.cards=t.cards.filter(x=>hKey(x)!==hKey(m.h)); }); MGR.teams=MGR.teams.filter(t=>t.cards.length);
             MGR.bench=(MGR.bench||[]).filter(x=>hKey(x)!==hKey(m.h)); if(MGR.contracts) delete MGR.contracts[hKey(m.h)];
             MGR.log.unshift({day:CAREER.career.day, kind:'sell', name:m.h, sum:m.sum}); }
+    else mgrMoraleAdd(m.h, -1);
+  }
+  if(m.kind==='wantplay'){
+    if(ok){ MGR.promises=(MGR.promises||[]).concat([{h:m.h, kind:'start', made:CAREER.career.day, due:ccAddDays(CAREER.career.day, MGR_PROMISE_DAYS), base:mgrWage(m.h), bar:MGR.club.avg||70}]); mgrMoraleAdd(m.h, 1); }
+    else mgrMoraleAdd(m.h, -1);
+  }
+  if(m.kind==='leave'){
+    if(ok){ MGR.club.cash+=m.sum; mgrDrop(m.h); MGR.log.unshift({day:CAREER.career.day, kind:'sell', name:m.h, sum:m.sum}); }
     else mgrMoraleAdd(m.h, -1);
   }
   if(m.kind==='scout'){ if(ok){ m.done='yes'; mgrSave(); mgrToAcad(m.h, true); return; } }
@@ -154595,6 +154606,139 @@ function mgrReportHTML(field, club){
   return '<div class="mg-tips"><em>'+T4.report+' · '+T4.strong+'</em>'+top.map(t=>'<p>'+esc((t.squad||[]).map(c=>c.handle).join(' & '))+' — '+Math.round(t.pow||0)+'</p>').join('')+'</div>';
 }
 
+/* ---- Этап 9: разговоры, обещания, химия (пункт 6 его списка FIFA/FM) -----------
+   Разговор с игроком — раз в неделю: похвалить, покритиковать, пообещать (место в основе / прибавку /
+   усиление состава к сроку). Сдержал — мораль +1; не сдержал к сроку — мораль −2 и просьба о продаже.
+   Запас: четыре недели без игры — игрок сам просит место. Химия: каждый вечер вместе +1 паре (до 10),
+   команда получает силу от средней химии пар (до +2); разлучённые пары химию теряют медленно (−1 в неделю). */
+function mgrT5(){
+  const ru=(typeof LANG!=='undefined' && LANG==='ru');
+  return ru ? {
+    talk:'Говорить', talkH:n=>'Разговор · '+n, praise:'Похвалить', crit:'Покритиковать', pStart:'Обещать место в основе', pRaise:'Обещать прибавку', pSign:'Обещать усиление',
+    once:'С ним уже говорили на этой неделе', mood:m=>'Настроение: '+(m>=2 ? 'отличное' : m>=1 ? 'хорошее' : m<=-2 ? 'хочет уйти' : m<0 ? 'недоволен' : 'ровное'),
+    rPraiseOk:'Доволен: мораль +1', rPraiseMeh:'Принял сдержанно — похвала без повода', rCritOk:'Собрался: команда сильнее на ближайший вечер', rCritBad:'Обиделся: мораль −1',
+    rPromise:d=>'Поверил. Срок — '+d, dup:'Такое обещание уже дано',
+    kept:n=>'Обещание '+n+' выполнено — мораль +1', broken:n=>n+': «обещали — не сделали». Мораль −2, просит продать',
+    wantPlay:n=>n+' месяц в запасе и просит место в команде', promiseBtn:'Пообещать место', waitBtn:'Пусть ждёт',
+    wantLeave:(n,s)=>n+' просит продать его. Есть покупатель за '+s, sellBtn:'Продать', keepBtn:'Оставить',
+    chem:'химия', promises:'Обещания', due:d=>'до '+d,
+    kStart:'место в основе', kRaise:'прибавка', kSign:'усиление состава'
+  } : {
+    talk:'Talk', talkH:n=>'Talk · '+n, praise:'Praise', crit:'Criticise', pStart:'Promise a starting spot', pRaise:'Promise a raise', pSign:'Promise a signing',
+    once:'Already talked to them this week', mood:m=>'Mood: '+(m>=2 ? 'great' : m>=1 ? 'good' : m<=-2 ? 'wants out' : m<0 ? 'unhappy' : 'steady'),
+    rPraiseOk:'Pleased: morale +1', rPraiseMeh:'Took it coolly — praise without a reason', rCritOk:'Fired up: the team is stronger next night', rCritBad:'Offended: morale −1',
+    rPromise:d=>'Believes you. Deadline — '+d, dup:'That promise is already made',
+    kept:n=>'Promise to '+n+' kept — morale +1', broken:n=>n+': "you promised and didn\'t deliver". Morale −2, wants a transfer',
+    wantPlay:n=>n+' has spent a month on the bench and wants a spot', promiseBtn:'Promise a spot', waitBtn:'Tell them to wait',
+    wantLeave:(n,s)=>n+' wants a transfer. A buyer offers '+s, sellBtn:'Sell', keepBtn:'Keep',
+    chem:'chemistry', promises:'Promises', due:d=>'by '+d,
+    kStart:'starting spot', kRaise:'raise', kSign:'signing'
+  };
+}
+const MGR_PROMISE_DAYS=28;
+function mgrInTeam(h){ return MGR.teams.some(t=>t.cards.some(x=>hKey(x)===hKey(h))); }
+function mgrPairKey(a, b){ return [hKey(a), hKey(b)].sort().join('|'); }
+function mgrChem(cards){
+  const ch=MGR.chem||{}; let s=0, n=0;
+  for(let i=0;i<cards.length;i++) for(let j=i+1;j<cards.length;j++){ s+=ch[mgrPairKey(cards[i], cards[j])]||0; n++; }
+  return n ? Math.round(s/n) : 0;
+}
+function mgrChemPow(cards){ return mgrChem(cards)/5; }   // 10 химии = +2 силы
+function mgrChemNight(cards){
+  MGR.chem=MGR.chem||{};
+  for(let i=0;i<cards.length;i++) for(let j=i+1;j<cards.length;j++){ const k=mgrPairKey(cards[i], cards[j]); MGR.chem[k]=Math.min(10, (MGR.chem[k]||0)+1); }
+}
+function mgrChemWeek(){   // пары, которые больше не вместе, остывают
+  const ch=MGR.chem||{}, together=new Set();
+  MGR.teams.forEach(t=>{ for(let i=0;i<t.cards.length;i++) for(let j=i+1;j<t.cards.length;j++) together.add(mgrPairKey(t.cards[i], t.cards[j])); });
+  Object.keys(ch).forEach(k=>{ if(!together.has(k)){ ch[k]-=1; if(ch[k]<=0) delete ch[k]; } });
+}
+function mgrTalk(h){
+  const T5=mgrT5(), d=CAREER.career.day;
+  MGR.talked=MGR.talked||{};
+  const last=MGR.talked[hKey(h)];
+  if(last && last>ccAddDays(d, -7)){ mgrToast(T5.once); return; }
+  const bench=!mgrInTeam(h);
+  const opts=[['praise',T5.praise],['crit',T5.crit]].concat(bench ? [['start',T5.pStart]] : []).concat([['raise',T5.pRaise],['sign',T5.pSign]]);
+  const box=document.createElement('div'); box.className='mg-modal'; box.id='mgTalk';
+  box.innerHTML='<div class="mg-modal-box"><h3>'+esc(T5.talkH(h))+'</h3><small>'+esc(T5.mood(mgrMorale(h)))+'</small><div class="mg-seg mg-talk">'+
+    opts.map(([k,l])=>'<button data-k="'+k+'">'+esc(l)+'</button>').join('')+'</div><p class="mg-negmsg" id="mgTalkRes"></p><button class="hero-btn hero-btn-alt" data-k="close">'+mgrT().back+'</button></div>';
+  document.body.appendChild(box);
+  box.addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    const k=b.dataset.k;
+    if(k==='close'){ box.remove(); mgrOpenHub(); return; }
+    if(box.dataset.done) return;
+    const res=mgrTalkDo(h, k);
+    if(res==null) return;
+    box.dataset.done='1';
+    box.querySelectorAll('.mg-talk button').forEach(x=>x.disabled=true);
+    document.getElementById('mgTalkRes').textContent=res;
+  });
+}
+function mgrTalkDo(h, k){
+  const T5=mgrT5(), d=CAREER.career.day, mor=mgrMorale(h);
+  // Был ли у игрока хороший вечер недавно — по последней строке его команды в журнале.
+  const lastNight=(MGR.log||[]).find(r=>r.kind==='night' && r.teams.some(t=>t.kills && Object.keys(t.kills).some(x=>hKey(x)===hKey(h))));
+  const good=lastNight && lastNight.teams.some(t=>t.kills && Object.keys(t.kills).some(x=>hKey(x)===hKey(h)) && t.place<=Math.max(5, (t.of||100)*0.2));
+  let out='';
+  if(k==='praise'){ if(good || mor<0){ mgrMoraleAdd(h, 1); out=T5.rPraiseOk; } else out=T5.rPraiseMeh; }
+  else if(k==='crit'){ if(mor>=1){ MGR.focus=MGR.focus||{}; MGR.focus[hKey(h)]=1; out=T5.rCritOk; } else { mgrMoraleAdd(h, -1); out=T5.rCritBad; } }
+  else {
+    MGR.promises=MGR.promises||[];
+    if(MGR.promises.some(p=>p.kind===k && hKey(p.h)===hKey(h))){ mgrToast(T5.dup); return null; }
+    const p={h, kind:k, made:d, due:ccAddDays(d, MGR_PROMISE_DAYS), base:mgrWage(h), bar:MGR.club.avg||70};
+    MGR.promises.push(p); mgrMoraleAdd(h, 1);
+    out=T5.rPromise(ccDayLabel(p.due));
+  }
+  MGR.talked=MGR.talked||{}; MGR.talked[hKey(h)]=d;
+  mgrSave();
+  return out;
+}
+function mgrPromiseKept(p){
+  if(!MGR.promises) return false;
+  if(p.kind==='start') return mgrInTeam(p.h);
+  if(p.kind==='raise') return mgrWage(p.h)>p.base;
+  if(p.kind==='sign') return (MGR.log||[]).some(r=>r.kind==='sign' && r.day>=p.made && (()=>{ const c=mgrCard(r.name); return c && (ccCardOvr(c)||0)>=p.bar; })());
+  return false;
+}
+// Раз в неделю (из mgrWeekly): обещания, запас, химия.
+function mgrPeopleWeek(d){
+  const T5=mgrT5();
+  MGR.inbox=MGR.inbox||[];
+  const own=new Set(mgrAllAcad().map(hKey));
+  MGR.promises=(MGR.promises||[]).filter(p=>{
+    if(!own.has(hKey(p.h))) return false;
+    if(mgrPromiseKept(p)){ mgrMoraleAdd(p.h, 1); MGR.inbox.unshift({id:'pk'+d+hKey(p.h), day:d, kind:'info', done:'info', text:T5.kept(p.h)}); return false; }
+    if(d>p.due){
+      mgrMoraleAdd(p.h, -2);
+      MGR.inbox.unshift({id:'pb'+d+hKey(p.h), day:d, kind:'info', done:'info', text:T5.broken(p.h)});
+      mgrLeaveAsk(p.h, d);
+      return false;
+    }
+    return true;
+  });
+  MGR.benchW=MGR.benchW||{};
+  (MGR.bench||[]).forEach(h=>{
+    const k=hKey(h); MGR.benchW[k]=(MGR.benchW[k]||0)+1;
+    if(MGR.benchW[k]===4 && !(MGR.promises||[]).some(p=>hKey(p.h)===k && p.kind==='start'))
+      MGR.inbox.unshift({id:'w'+d+k, day:d, kind:'wantplay', h, text:T5.wantPlay(h)});
+  });
+  MGR.teams.forEach(t=>t.cards.forEach(h=>{ delete MGR.benchW[hKey(h)]; }));
+  mgrChemWeek();
+}
+function mgrLeaveAsk(h, d){
+  const c=mgrCard(h); if(!c) return;
+  const sum=Math.round(mgrSalary(c)*7/100)*100;
+  MGR.inbox.unshift({id:'l'+d+hKey(h), day:d, kind:'leave', h, sum, text:mgrT5().wantLeave(h, mgrMoney(sum))});
+}
+function mgrPromisesHTML(){
+  const T5=mgrT5(), list=MGR.promises||[];
+  if(!list.length) return '';
+  const nm={start:T5.kStart, raise:T5.kRaise, sign:T5.kSign};
+  return '<h3 class="mg-sub">'+T5.promises+'</h3><ul class="mg-list">'+list.map(p=>'<li><span>'+esc(T5.due(ccDayLabel(p.due)))+'</span>'+esc(p.h)+' — '+esc(nm[p.kind]||p.kind)+'</li>').join('')+'</ul>';
+}
+
 /* ---- Матчевый день как в Football Manager -------------------------------------
    До вечера — установка каждой команде (плейсмент/баланс/агрессия → _seekMul движка: как часто ищет драку)
    и уровень показа. Во время — панель: уровень и скорость. Между играми (= перерыв в FM) — таблица своих,
@@ -154741,7 +154885,8 @@ function mgrClubTeams(size){
     const cards=t.cards.map(mgrCard).filter(Boolean); const tm=careerTeam(cards);
     tm.name=teamLabel(cards); tm.isClub=true; tm.mgrId=t.id; if(i===0) tm.isYou=true;
     const mor=cards.length ? Math.round(cards.reduce((s,c)=>s+mgrMorale(c.handle), 0)/cards.length) : 0;
-    tm.pow+=mor+mgrNightPow();
+    const foc=cards.filter(c=>(MGR.focus||{})[hKey(c.handle)]).length*0.5;
+    tm.pow+=mor+mgrNightPow()+mgrChemPow(t.cards)+foc;
     return tm; });
 }
 function mgrKillsOf(tm){ const out={}; (tm.squad||[]).forEach(c=>{ try{ out[c.handle]=ccMemberKills(tm, c.handle); }catch(e){ out[c.handle]=0; } }); return out; }
@@ -154784,6 +154929,8 @@ function mgrAfterResults(ev, row, clubGot){
   MGR.club.cash+=clubGot; MGR.club.earned=(MGR.club.earned||0)+clubGot;
   MGR.log.unshift(row);
   MGR.fatigue=Math.min(100, mgrFatigue()+(row.fncs || row.ewc ? 8 : 4));
+  if(!row.ewc) row.teams.forEach(t=>{ const x=MGR.teams.find(y=>y.id===t.id); if(x) mgrChemNight(x.cards); });
+  MGR.focus={};
   const b=MGR.board||(MGR.board={});
   row.teams.forEach(t=>{ if(t.final!==false && (b.best==null || t.place<b.best)) b.best=t.place; });
   // Хороший вечер: бонус спонсора и мораль +1; плохой (все вне топ-50%) — мораль −1.
