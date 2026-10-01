@@ -111460,7 +111460,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f04c62e9';
+const CC_BUILD='b99bf345';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -139854,7 +139854,7 @@ async function careerFastForward(days, agreed){
       let playNow=playable;
       if(ccMpOn() && !ccRaceFfOn() && !mxSolo && next && (next.day||day)===day){
         if(playNow && CC_MP_PEER_SKIPS.has(day) && CC_FF_PERSONAL.indexOf(next.type)<0) playNow=false;
-        else if(!playNow && CC_PLAYABLE.indexOf(next.type)>=0 && CC_FF_PERSONAL.indexOf(next.type)<0 && typeof MP!=='undefined' && MP.act){
+        else if(!playNow && CC_PLAYABLE.indexOf(next.type)>=0 && typeof MP!=='undefined' && MP.act){
           try{ MP.act('ffskip', {by:ccMpId(), day:day}); }catch(e){}
         }
       }
@@ -139880,7 +139880,8 @@ async function careerFastForward(days, agreed){
         if(CC_MP_FF_SKIPDAY===day){
           CC_MP_FF_SKIPDAY=null;
           try{ document.getElementById('majorStages').innerHTML=''; }catch(e2){}
-          if(careerToday()===day) step(day);
+          // Личный вечер (соло-серия) — переиграть день одному; общий — пропустить вместе с напарником.
+          if(careerToday()===day && !(next && CC_FF_PERSONAL.indexOf(next.type)>=0)) step(day);
           careerFfProgress(ccDaysBetween(CC_FF.from.day, careerToday()), days);
           await sleep(0);
           continue;
@@ -153032,7 +153033,9 @@ async function runCareerSoloSeries(){
      прошёл этап или уже отыграл; тогда день шагает через ccSoloTeamSettle. */
   const peerCard=(ccMpTeam() && typeof MP!=='undefined' && MP.peer) ? MP.peer : null;
   const peerIn=!!(peerCard && careerSoloSeriesCanFor(ev, ccSoloStateOf(ev, peerCard)));
-  const alone=ccMpTeam() && !peerIn;
+  /* Напарник этот день в перемотке пропустил (ffskip) — его карточка может говорить «может играть», но
+     к воротам он не придёт: вечер одиночный (годовой прогон вдвоём 2020, соло-серия 16 ноября). */
+  const alone=ccMpTeam() && (!peerIn || CC_MP_PEER_SKIPS.has(careerToday()));
   if(alone) CC_MP_ALONE=true;
   const mpStart=ccMpLock() ? await ccMpGate('solo') : null;
   const two=ccMpOn() && peerIn;
