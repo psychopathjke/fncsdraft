@@ -6326,6 +6326,7 @@
   .mg-staff .mg-seg{flex-wrap:wrap;}
   .mg-pot{font-weight:400;opacity:.75;} .mg-pot.sc{color:#3fd0ff;opacity:1;}
   .mg-board.open{border-color:#3fd0ff;}
+  .hero-mgr[hidden]{display:none !important;}
   .mg-modal{position:fixed;inset:0;z-index:9000;background:rgba(5,10,30,.72);display:flex;align-items:center;justify-content:center;padding:16px;}
   .mg-modal-box{width:min(620px,100%);max-height:90vh;overflow:auto;background:#0f1d4d;border:1px solid rgba(63,208,255,.45);border-radius:14px;padding:16px;color:#e6ecff;display:flex;flex-direction:column;gap:10px;}
   .mg-modal-box h3{margin:0;font:800 18px Oswald,system-ui;text-transform:uppercase;}
@@ -6766,7 +6767,7 @@
       </div>
     </section>
     <!-- Fortnite Manager (1.10): третий режим — клуб и сезон, вечера как в Football Manager. -->
-    <section class="hero hero-draft hero-mgr" aria-labelledby="heroMgrTitle">
+    <section class="hero hero-draft hero-mgr" aria-labelledby="heroMgrTitle" hidden>
       <div class="hero-body">
         <span class="dp-tag hero-mode-tag" id="mgHeroTag">Mode 3 · Manager</span>
         <h2 class="hero-title" id="heroMgrTitle">Build a club. <em>Run it through a season.</em></h2>
@@ -111615,7 +111616,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='92b21247';
+const CC_BUILD='3eb24442';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -153977,7 +153978,14 @@ function mgrHeroText(){
     const h=document.getElementById('heroMgrTitle'); if(h) h.innerHTML=esc(T.heroTitle)+' <em>'+esc(T.heroTitle2)+'</em>'; }catch(e){}
 }
 setTimeout(mgrHeroText, 0);
-function mgrStart(){ mgrLoad(); if(MGR && MGR.club) mgrOpenHub(); else mgrOpenNew(MGR_NEW_YEAR); }
+/* Только debug (его слово 2.10: «fortnite manager не надо деплоить»). Вход виден на debug.fncsdraft.pages.dev,
+   localhost и с диска; на fncsdraft.com, fncsdraft.pages.dev и зеркале GitHub секции нет. */
+function mgrAllowed(host){
+  const h=String(host!=null ? host : (location.hostname||'')).toLowerCase();
+  return !h || h==='localhost' || h==='127.0.0.1' || h==='debug.fncsdraft.pages.dev';
+}
+setTimeout(()=>{ try{ const sec=document.querySelector('.hero-mgr'); if(sec && mgrAllowed()) sec.hidden=false; }catch(e){} }, 0);
+function mgrStart(){ if(!mgrAllowed()) return; mgrLoad(); if(MGR && MGR.club) mgrOpenHub(); else mgrOpenNew(MGR_NEW_YEAR); }
 
 /* ---- Выбор года и клуба ---------------------------------------------------- */
 let MGR_NEW_YEAR=2024, MGR_NEW_REGION='EU';
