@@ -111460,7 +111460,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='66a7591e';
+const CC_BUILD='d7a635ba';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -125377,6 +125377,19 @@ function ccMpThirdAsk(id){
   /* Пустое третье кресло — терять нечего, как и в одиночной карьере (careerDmAcceptAsk): в команде
      напарник есть всегда, и вопрос «потеряете место на ЛАНе?» вставал на каждую посадку третьего в
      трио-этап (годовой прогон вдвоём 2020: перемотка стояла на Llobeti Cup, окно ждало ответа). */
+  /* Роль — ДО вопроса напарнику. Второй ИГЛ в составе не садится (careerDmAccept), и раньше это
+     выяснялось уже после его «да»: напарник жал «Берём», и ничего не происходило. Теперь конфликт
+     ролей сразу открывает ветку с выбором, кто пересядет (тот же разговор, что в одиночной карьере). */
+  try{
+    const t=careerDms().find(x=>x.id===id);
+    const roles=[ccRoleNow()].concat(careerMates().filter(Boolean).map(m=>attrsFor(m).roleKey));
+    if(t && t.who && t.who.role && !(t.fmt && t.fmt!==careerSquadSize()) && !ccSquadRoleFits(roles.concat([t.who.role]), careerSquadSize())){
+      CC_MP_THIRD_OK=true;
+      try{ careerDmAccept(id); } finally{ CC_MP_THIRD_OK=false; }
+      careerDmOpen(id);
+      return;
+    }
+  }catch(e){}
   if(!careerPartnerCard() || careerMates().filter(Boolean).length<careerMateSeats()){ go(); return; }
   ccSlotAsk(go);
 }

@@ -169,7 +169,9 @@ const boot = (who) => `
             if(nx && ccFfNoMateWhy(nx)){
               if((CAREER.career.mp||{}).role==='a' && !window.__thirdAsked){
                 careerSeatTopUp();
-                const t=careerDms().find(x=>x.state==='offer' && x.who && !x.who.org && !x.who.brand);
+                // Третий — той роли, что составу подходит (один ИГЛ): иначе посадку отобьёт проверка ролей уже после «да» напарника.
+                const roles=[ccRoleNow()].concat(careerMates().filter(Boolean).map(m=>attrsFor(m).roleKey));
+                const t=careerDms().find(x=>x.state==='offer' && x.who && !x.who.org && !x.who.brand && (!x.who.role || ccSquadRoleFits(roles.concat([x.who.role]), careerSquadSize())));
                 if(t){ window.__thirdAsked=CAREER.career.day; ccMpThirdAsk(t.id); }
               }
             } else if(!window.__ffAgain || Date.now()-window.__ffAgain>8000){
