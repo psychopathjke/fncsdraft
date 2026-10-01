@@ -111460,7 +111460,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='fead587a';
+const CC_BUILD='8b0d5c72';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -139767,8 +139767,12 @@ async function careerFastForward(days, agreed){
   // is honest about what a fast-forward is: the player pressing skip.
   const holdSkip=setInterval(()=>{ skipAnimation=true; }, 10);
   let guard=0;
+  /* Карьера перемотки — та, с которой она начата (его ошибка 1.10: «Cannot read properties of null
+     (reading 'career') at careerFfDigest»). Вышел из карьеры, открыл другой слот или новую посреди
+     перемотки — она останавливается и итог не рисует: иначе доигрывала бы вечера уже в чужом сейве. */
+  const ffCareer=CAREER;
   try{
-    while(careerToday()<until && !cr.seasonOver && guard++<400){
+    while(CAREER===ffCareer && careerToday()<until && !cr.seasonOver && guard++<400){
       const day=careerToday();
       const next=careerNext();
       if(CC_FF.stop){ CC_FF.err={day:day, kind:'', text:CC_FF.stop.text}; break; }
@@ -139921,6 +139925,7 @@ async function careerFastForward(days, agreed){
        runs exactly as it did. */
     const done=CC_FF;
     CC_FF=null;
+    if(CAREER!==ffCareer || !CAREER){ try{ const b=document.getElementById('ccFfBox'); if(b) b.remove(); ccFfClose(); }catch(e){} return; }
     careerSave();
     show('screen-career-hub');
     careerRenderHub('centre');
@@ -139969,6 +139974,7 @@ function ccFfTile(i){
 function careerFfDigest(ff){
   const el=document.getElementById('ccFfBox'); if(el) el.remove();
   ccFfClose();
+  if(!CAREER || !CAREER.career || !ff) return;
   const cr=CAREER.career, pl=CAREER.player;
   const now=(pl.ovrExact!=null?pl.ovrExact:pl.ovr);
   /* «Призовые» — то, что лежит на плитках, а не разница cr.earnings.
