@@ -68,11 +68,13 @@ const BOOT = `
     setY('2026-03-08', 2026);
     const lf=ccLife();
     check('кап открыт без ранга', careerCanPlayKind('victory') && ccLifeWhy(careerToday(),'victory')==null, ccLifeWhy(careerToday(),'victory'));
-    // 2. Травма закрывает вечер и тренировки.
+    // 2. Травм нет (сняты 2.10): даже старая травма из сейва вечер не закрывает,
+    //    а тик выгорания новую не садит.
     lf.hurt={k:'wrist', until:ccAddDays(careerToday(), 3)};
-    check('травма закрывает вечер', !careerCanPlayKind('victory'));
-    check('травма закрывает тренировку', careerDoAct('trAim')===null);
-    lf.hurt=null;
+    check('травма из сейва не закрывает вечер', careerCanPlayKind('victory') && ccLifeHurt()===null);
+    CAREER.career.grind=999; lf.tick=ccAddDays(careerToday(), -60); ccLifeTick();
+    check('выгорание не даёт травму', !lf.hurt, JSON.stringify(lf.hurt||null));
+    CAREER.career.grind=0; lf.hurt=null;
     // 3. Бан закрывает открытые турниры.
     lf.ban=ccAddDays(careerToday(), 5);
     check('бан закрывает кап', !careerCanPlayKind('victory'));

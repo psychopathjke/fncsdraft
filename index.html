@@ -119026,8 +119026,9 @@ function careerAdvanceTo(iso){
 function ccLife(){ const cr=CAREER.career; if(!cr.life) cr.life={}; return cr.life; }
 function ccLifeRng(tag){ return careerRng(ccHashStr('life|'+tag+'|'+(CAREER.player.nick||'')+'|'+careerToday())); }
 
-// ---- Травмы: при выгорании (careerBurnout) растёт риск — запястье или болезнь.
-function ccLifeHurt(day){ const h=ccLife().hurt; return h && (day||careerToday())<=h.until ? h : null; }
+// ---- Травм нет: запястье от выгорания закрывало FNCS-вечера подряд, механику сняли.
+// Функция осталась, чтобы вызовы не ломались.
+function ccLifeHurt(day){ return null; }
 
 // ---- Скандалы: жалоба → разбор → оправдан / штраф / бан открытых турниров.
 const CC_BAN_KINDS=['cup','final','victory','solo','eval','reload'];
@@ -119088,15 +119089,8 @@ function ccLifeTick(){
   const days=Math.min(60, Math.max(0, ccDaysBetween(from, today)));
   for(let i=1;i<=days;i++){
     const d=ccAddDays(from, i), rng=careerRng(ccHashStr('lifeday|'+d+'|'+(CAREER.player.nick||'')));
-    // Выздоровление.
-    if(lf.hurt && d>lf.hurt.until){ careerNews('good', 'lfNewsHealed', []); lf.hurt=null; }
-    // Травма от выгорания.
-    const b=careerBurnout();
-    if(!lf.hurt && b>0 && rng()<0.02*b){
-      const wrist=true, n=3+Math.floor(rng()*8);   // болезнь у карьеры своя (sickUntil) — здесь только запястье
-      lf.hurt={k:wrist?'wrist':'ill', until:ccAddDays(d, n)};
-      careerNews('bad', wrist?'lfNewsWrist':'lfNewsIll', [n]);
-    }
+    // Травм больше нет — старая из сейва просто снимается.
+    if(lf.hurt) lf.hurt=null;
     // Разбор жалобы.
     if(lf.case && d>=lf.case.until){
       const r=rng(), k=lf.case.k; lf.case=null;
@@ -136736,11 +136730,10 @@ function ccTrainPanelHTML(six, wide){
   const cr=CAREER.career, grind=cr.grind||0, top=CC_GRIND_FREE+CC_GRIND_MAX/CC_GRIND_STEP;
   const fat=Math.max(0, Math.min(100, grind/top*100)), burn=careerBurnout();
   const state=burn>=1 ? 'lfFatBurn' : grind>CC_GRIND_FREE ? 'lfFatTired' : 'lfFatFresh';
-  const risk=burn>0 ? Math.round(2*burn*10)/10 : 0;
   return '<div class="cc-tpanel"><div class="cc-act-grp">'+(L().ccActGrpTrain||'')+'</div>'+
     '<div class="cc-ta-grid">'+chips+'</div>'+
     '<div class="cc-fat"><span>'+L().lfFatigue+'</span><span class="cc-fat-bar s-'+state+'"><i style="width:'+fat.toFixed(0)+'%"></i></span>'+
-      '<b>'+L()[state]+(risk ? ' · '+L().lfInjuryRisk(risk) : '')+'</b></div></div>';
+      '<b>'+L()[state]+'</b></div></div>';
 }
 // Своя карта: стройка (вечер из пяти) или обновление вышедшей; ниже — игры и деньги.
 function ccMapCardHTML(a, o){
