@@ -128535,6 +128535,26 @@ function careerWindowNext(iso){
    Четверть — на глаз это «иногда», а по смыслу столько, чтобы такой контракт
    был событием, а не нормой: в окне их два-три, и один из них парный. */
 const CC_ORG_DUO_SHARE=0.25;
+/* КЛУБ ЗОВЁТ ЗА РЕЗУЛЬТАТ, А НЕ ЗА ЦИФРУ НА КАРТОЧКЕ.
+
+   Его слово 2.10: «как-то в оргу слишком быстро добавить можно». Так и было: ворота
+   спрашивали только рейтинг, и новичок с 65+ получал три контракта после первого же
+   капа, где он мог занять сотое место. Плитка свободного агента при этом давно
+   обещает «предложение приходит после результата» — код этого не делал.
+
+   Результат — то, о чём сцена говорит: топ-10 или верхние 5% поля. Нужно два таких
+   вечера за карьеру. Кто уже играл за клуб (карточка настоящего игрока, прошлый
+   контракт — cr.orgs), сцене известен и ждать не должен. */
+const CC_ORG_PROOF=2;
+function ccOrgResult(r){
+  return !!(r && r.place>0 && (r.place<=10 || (r.of>0 && r.place<=r.of*0.05)));
+}
+function ccOrgProven(){
+  const cr=CAREER && CAREER.career;
+  if(!cr) return false;
+  if((cr.orgs||[]).length) return true;
+  return (cr.log||[]).filter(ccOrgResult).length>=CC_ORG_PROOF;
+}
 function careerOrgOffers(){
   // Свой клуб закрывает рынок: играть под своим флагом и получать чужую зарплату нельзя.
   if(typeof careerClub==='function' && careerClub()) return [];
@@ -128565,6 +128585,7 @@ function careerOrgOffers(){
   // And clubs are not signing in March. What is already on the table stays
   // there until its own deadline; this only stops new ones arriving.
   if(!careerWindowNow()) return CAREER.offers||[];
+  if(!ccOrgProven()) return CAREER.offers||[];
   const rnd=careerRng(careerSeed(cr,'org'));
   // Somebody whose job it is gets you looked at by clubs that would not have
   // looked. See careerAgent.

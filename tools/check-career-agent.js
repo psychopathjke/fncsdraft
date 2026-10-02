@@ -29,7 +29,9 @@ const BOOT = `
       player:{nick:'Probe', ovr:ovr, ovrExact:ovr, region:'EU', role:'roleIGL', country:'de',
               age:18, attrs:ccRookieAttrs(ovr,'roleIGL')},
       career:{season:1, day:'2026-02-02', division:2, earnings:0, balance:0, wages:0,
-              reach:50000, tokens:[], log:[], news:[], form:0, grind:0},
+              reach:50000, tokens:[], news:[],
+              // Два сильных вечера: клубы пишут после результата (ccOrgProven, 2.10).
+              log:[{place:3, of:150}, {place:8, of:150}], form:0, grind:0},
       dms:[], partner:null, org:null, agent:null, gear:{own:[], train:0}}; };
 
     // ---- nobody represents a career nobody is looking at --------------------
