@@ -4693,6 +4693,7 @@
   .cc-ff-box{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:9000;
     background:rgba(8,12,16,.94);border:1px solid var(--line);border-radius:8px;
     padding:12px 20px;display:flex;gap:12px;align-items:baseline;
+    flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 32px);box-sizing:border-box;
     box-shadow:0 8px 30px rgba(0,0,0,.55);pointer-events:none;}
   .cc-ff-box b{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);}
   .cc-ff-box span{font-size:13px;color:var(--ink-dim);}
@@ -9185,6 +9186,7 @@ ccSimAuto:'Только смотрю', ccSimAutoHint:'Матч идёт на к�
 ccFfCap:'Сыграть за меня', ccFfWeek:'Неделю', ccFfMonth:'Месяц', ccFfConfirm:d=>'Прожить '+d+' дн. за один раз? Турниры будут отыграны, дни потрачены, предложения могут протухнуть.',
 ccFfHint:'Сыграет турниры за тебя и потратит свободные дни на лучшую тренировку. Предложения от клубов и дуо останутся ждать в почте',
 ccFfRunning:'Перемотка', ccFfDays:(d,t)=>d+' из '+ruDays(t),
+ccFfTime:s=>s<60 ? s+' с' : Math.round(s/60)+' мин', ccFfEta:t=>'Займёт ≈ '+t+'. Вкладку можно свернуть — в фоне перемотка не тормозит.', ccFfLeft:t=>'осталось ≈ '+t,
 ccCoWin:['так держать','это было чисто','заслужил','лучший вечер недели','вот это класс','поздравляю!'],
 ccCoPod:['красиво','хорошо зашли','ещё чуть-чуть','достойно','неплохо вышло'],
 ccCoMid:['бывает','нормально отыграл','в следующий раз','терпимо','ну ок'],
@@ -11179,6 +11181,7 @@ ccSimAuto:'I just watch', ccSimAutoHint:'The match runs on the map and asks noth
 ccFfCap:'Play it for me', ccFfWeek:'A week', ccFfMonth:'A month', ccFfConfirm:d=>'Live through '+d+' days in one press? The tournaments get played, the days get spent, and offers can expire.',
 ccFfHint:'Plays the tournaments for you and spends the free days on the best training. Offers from clubs and duos stay in the inbox',
 ccFfRunning:'Fast-forward', ccFfDays:(d,t)=>d+' of '+t+' days',
+ccFfTime:s=>s<60 ? s+' s' : Math.round(s/60)+' min', ccFfEta:t=>'Takes about '+t+'. You can switch tabs — it does not slow down in the background.', ccFfLeft:t=>'about '+t+' left',
 ccCoWin:['well played','that was clean','deserved','best run of the week','class','congrats!'],
 ccCoPod:['nice one','good run','so close','solid','that was decent'],
 ccCoMid:['happens','fine run','next time','not bad','ok then'],
@@ -12390,6 +12393,7 @@ ccResBest:(p,n)=>'meilleur '+ccTop(p)+' · '+n+' tournoi'+(n===1?'':'s'),
 ccResPlayed:n=>n+' tournoi'+(n===1?'':'s'),
 ccResMore:n=>'et '+n+' de plus',
 ccFfDays:(d,t)=>d+' jours sur '+t,
+ccFfTime:s=>s<60 ? s+' s' : Math.round(s/60)+' min', ccFfEta:t=>'Environ '+t+'. Tu peux changer d’onglet — en arrière-plan ça ne ralentit pas.', ccFfLeft:t=>'encore ≈ '+t,
 ccCoWin:['bien joué','c’était propre','mérité','le meilleur run de la semaine','la classe','félicitations !'],
 ccCoPod:['joli','bon run','tout près','solide','pas mal du tout'],
 ccCoMid:['ça arrive','run correct','la prochaine fois','pas mal','ok'],
@@ -14971,6 +14975,7 @@ ccResMore:n=>'e altri '+n,
 calFfAsk:(d,n,e)=>'Giocare fino al '+d+'? Sono '+n+(n===1?' giorno':' giorni')+(e?' e '+e+(e===1?' torneo':' tornei'):' senza nulla in programma'),
 ccFfConfirm:d=>'Vivere '+d+' giorni con una pressione? I tornei vengono giocati, le giornate spese, e le offerte possono scadere.',
 ccFfDays:(d,t)=>d+' di '+t+' giorni',
+ccFfTime:s=>s<60 ? s+' s' : Math.round(s/60)+' min', ccFfEta:t=>'Circa '+t+'. Puoi cambiare scheda — in background non rallenta.', ccFfLeft:t=>'mancano ≈ '+t,
 ccCoMore:n=>'altri '+n,
 ccFfDone:d=>d+' giorni saltati',
 ccFfPlayed:n=>'Tornei giocati: '+n,
@@ -17492,6 +17497,7 @@ ccResMore:n=>'e mais '+n,
 calFfAsk:(d,n,e)=>'Jogar at\u00e9 '+d+'? S\u00e3o '+n+(n===1?' dia':' dias')+(e?' e '+e+(e===1?' torneio':' torneios'):' sem nada marcado'),
 ccFfConfirm:d=>'Viver '+d+' dias num aperto s\u00f3? Os torneios s\u00e3o jogados, os dias s\u00e3o gastos, e propostas podem expirar.',
 ccFfDays:(d,t)=>d+' de '+t+' dias',
+ccFfTime:s=>s<60 ? s+' s' : Math.round(s/60)+' min', ccFfEta:t=>'Leva cerca de '+t+'. Pode trocar de aba — em segundo plano não fica mais lento.', ccFfLeft:t=>'faltam ≈ '+t,
 ccCoMore:n=>'mais '+n,
 ccFfDone:d=>d+' dias pulados',
 ccFfPlayed:n=>'Torneios jogados: '+n,
@@ -122532,7 +122538,7 @@ function careerCalendarHTML(){
     // The day that was picked, and the press that actually runs it. A month of
     // a career is too much to hand to one click on a screen people scroll.
     (CH_FF_ASK && CH_FF_ASK>careerToday() && !cr.seasonOver ? `<div class="cal-ask">
-      <span>${L().calFfAsk(ccDayLabel(CH_FF_ASK), ccFfDays(CH_FF_ASK), ccFfEvents(CH_FF_ASK))}</span>
+      <span>${L().calFfAsk(ccDayLabel(CH_FF_ASK), ccFfDays(CH_FF_ASK), ccFfEvents(CH_FF_ASK))} ${ccFfEtaText(CH_FF_ASK)}</span>
       ${ccMpOn() && ccMpFfPending() && ccMpFfPending().mine && ccMpFfPending().until===CH_FF_ASK
         ? `<span class="ch-hint" style="margin:0;">${L().ccMpFfWait(ccDayLabel(CH_FF_ASK))}</span>`
         : `<button class="ch-sign" onclick="careerFfToDay(\'${CH_FF_ASK}\')">${ccMpOn() ? L().ccMpFfYes : L().calFfGo}</button>`}
@@ -139727,10 +139733,46 @@ function ccAskGo(yes){
   if(yes){ if(typeof go==='function') go(); }
   else if(typeof no==='function') no();
 }
+/* СКОЛЬКО ЖДАТЬ — СКАЗАНО ДО НАЖАТИЯ И ВО ВРЕМЯ.
+
+   Твит тестера 2.10: «162 дня перематываются больше пяти минут». Мгновенной перемотки не
+   бывает — каждый вечер по дороге честно играется движком, — но ожидание без числа читается
+   как зависание. Поэтому вопрос перед перемоткой называет время, а счётчик — остаток.
+
+   Время вечера меряется на ЭТОМ устройстве (телефон и ПК различаются в разы) и хранится
+   средним в localStorage; до первого замера — 1,5 с. Командная перемотка не меряется: там
+   в вечер входит ожидание напарника. */
+const CC_FF_MS_KEY='fncsdraft_ff_ms';
+function ccFfEveningMs(){
+  try{ const v=Number(localStorage.getItem(CC_FF_MS_KEY)); if(v>50 && v<120000) return v; }catch(e){}
+  return 1500;
+}
+function ccFfEveningSaw(ms){
+  if(!(ms>0)) return;
+  try{ const old=ccFfEveningMs(); localStorage.setItem(CC_FF_MS_KEY, String(Math.round(old*0.7+ms*0.3))); }catch(e){}
+}
+// Секунды на перемотку от from (не включая) до iso: вечера по дороге и мелочь на пустые дни.
+/* Вечером считается турнирный день календаря, сыграется он или нет (квалы, дивизион) —
+   замер делится на тот же счёт, поэтому средняя сама учитывает и пропущенные. */
+function ccFfSpan(iso, from){
+  const days=careerEvents(); let ev=0, n=0;
+  for(let d=ccAddDays(from||careerToday(),1); d<=iso; d=ccAddDays(d,1)){
+    n++;
+    if((days.get(d)||[]).some(e=>CC_PLAYABLE.indexOf(e.kind)>=0)) ev++;
+  }
+  return {ev:ev, n:n};
+}
+const CC_FF_DAY_MS=30;
+function ccFfEtaSec(iso, from){
+  const s=ccFfSpan(iso, from);
+  return Math.max(1, Math.round((s.ev*ccFfEveningMs()+s.n*CC_FF_DAY_MS)/1000));
+}
+function ccFfEtaText(iso){ return L().ccFfEta(L().ccFfTime(ccFfEtaSec(iso))); }
 function careerFfConfirm(days){
   if(!(days>0)) return;
-  if(ccMpOn() || ccRaceFfOn()){ ccAsk(L().ccFfConfirm(days), ()=>careerFfToDay(ccAddDays(careerToday(), days))); return; }
-  ccAsk(L().ccFfConfirm(days), ()=>careerFastForward(days));
+  const ask=L().ccFfConfirm(days)+' '+ccFfEtaText(ccAddDays(careerToday(), days));
+  if(ccMpOn() || ccRaceFfOn()){ ccAsk(ask, ()=>careerFfToDay(ccAddDays(careerToday(), days))); return; }
+  ccAsk(ask, ()=>careerFastForward(days));
 }
 /* На каком острове играется этот вечер.
 
@@ -140012,6 +140054,8 @@ async function careerFastForward(days, agreed){
          from:{day:careerToday(), div:cr.division, balance:cr.balance||0,
                earnings:cr.earnings||0, reach:careerReach(),
                ovr:(pl.ovrExact!=null?pl.ovrExact:pl.ovr)}};
+  // Замер вечера на этом устройстве — см. ccFfEveningMs. Счёт вечеров тот же, что у оценки.
+  const ffSpan=ccFfSpan(until), ffT0=(typeof performance!=='undefined' ? performance.now() : Date.now());
   careerFfProgress(0, days);
   // The skip button, held down. Every runner turns skipAnimation off when it
   // starts, so this turns it back on rather than editing eight of them — and it
@@ -140176,6 +140220,11 @@ async function careerFastForward(days, agreed){
        runs exactly as it did. */
     const done=CC_FF;
     CC_FF=null;
+    /* Только целая одиночная перемотка: встала посреди или шла вдвоём — в её времени не вечера. */
+    if(done && !done.err && !ccMpOn() && !ccRaceFfOn() && ffSpan.ev>0 && CAREER===ffCareer && careerToday()>=until){
+      const spent=(typeof performance!=='undefined' ? performance.now() : Date.now())-ffT0;
+      ccFfEveningSaw(Math.max(100, (spent-ffSpan.n*CC_FF_DAY_MS)/ffSpan.ev));
+    }
     if(CAREER!==ffCareer || !CAREER){ try{ const b=document.getElementById('ccFfBox'); if(b) b.remove(); ccFfClose(); }catch(e){} return; }
     careerSave();
     show('screen-career-hub');
@@ -140193,7 +140242,10 @@ function careerFfProgress(done, total){
     box.id='ccFfBox'; box.className='cc-ff-box';
     document.body.appendChild(box);
   }
-  box.innerHTML='<b>'+L().ccFfRunning+'</b><span>'+L().ccFfDays(done, total)+'</span>';
+  // Остаток — от сегодняшнего дня до конца перемотки, той же оценкой, что в вопросе.
+  let left='';
+  try{ if(CC_FF && CC_FF.until && CC_FF.until>careerToday()) left=L().ccFfLeft(L().ccFfTime(ccFfEtaSec(CC_FF.until))); }catch(e){}
+  box.innerHTML='<b>'+L().ccFfRunning+'</b><span>'+L().ccFfDays(done, total)+'</span>'+(left ? '<span>'+left+'</span>' : '');
 }
 /* Арт под плитку вечера. По типу события, потому что тип — единственное, что
    у записи в журнале есть, и его достаточно: кубок это кубок, Reload это
