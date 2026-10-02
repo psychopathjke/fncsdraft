@@ -98411,6 +98411,22 @@ function ccMpHurry(){
   return typeof MP!=='undefined' && typeof ccMpOn==='function' && ccMpLock() &&
          typeof MP.waitingOnMe==='function' && !!MP.waitingOnMe();
 }
+/* Отдать поток между играми. Видимая вкладка — таймер, как было: между задачами браузер рисует.
+   Скрытая — сообщение через MessageChannel: таймеры там зажаты до раза в секунду (а через пять
+   минут — до раза в минуту), и перемотка, пока игрок ждёт её в другой вкладке, стояла на каждом
+   уступе. Твит тестера 2.10: «162 дня перематываются больше пяти минут». Замер: 8 дней в скрытом
+   окне — 54 с, в видимом — 4 с. */
+let CC_YIELD_CH=null;
+function ccYield(){
+  if(typeof document==='undefined' || document.hidden!==true || typeof MessageChannel==='undefined')
+    return new Promise(res=>setTimeout(res, 0));
+  if(!CC_YIELD_CH){
+    CC_YIELD_CH=new MessageChannel();
+    CC_YIELD_CH.q=[];
+    CC_YIELD_CH.port1.onmessage=function(){ const f=CC_YIELD_CH.q.shift(); if(f) f(); };
+  }
+  return new Promise(res=>{ CC_YIELD_CH.q.push(res); CC_YIELD_CH.port2.postMessage(0); });
+}
 function sleep(ms){
   const gen=runGeneration;
   return ccMpIdle(new Promise((res,rej)=>{
@@ -99184,6 +99200,9 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
      Теперь два прохода: сперва читаются все новые прямоугольники, потом
      пишутся все стили. Картинка та же, порядок работы — нет. */
   function animatedRerender(){
+    /* Под пропуском (перемотка, «пропустить») строки не едут: замер 2.10 — месяц перемотки
+       ставил ~780 пар кадров и столько же таймеров уборки ради анимации, которую никто не видит. */
+    if(skipAnimation){ renderRows(); return; }
     const oldRects=new Map();
     Array.from(body.children).forEach(tr=>{ oldRects.set(tr.dataset.uid, tr.getBoundingClientRect()); });
     renderRows();
@@ -99640,7 +99659,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
           score(order);
           ccMpMark('riv');
           if(performance.now()-lastYield > 24){
-            await ccMpIdle(new Promise(res=>setTimeout(res, 0)));
+            await ccMpIdle(ccYield());
             if(yieldGen!==runGeneration) throw RUN_ABANDONED;
             lastYield=performance.now();
           }
@@ -99652,7 +99671,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
           score(off);
           ccMpMark('oth');
           if(performance.now()-lastYield > 24){
-            await ccMpIdle(new Promise(res=>setTimeout(res, 0)));
+            await ccMpIdle(ccYield());
             if(yieldGen!==runGeneration) throw RUN_ABANDONED;
             lastYield=performance.now();
           }
@@ -100434,7 +100453,7 @@ async function simulateGamesRandomLobbies(teams, numGames, lobbySize, pointsFn, 
         // Not sleep(): sleep returns straight away while a stage is being
         // skipped, and a resolved promise is a microtask, which the browser
         // will not paint between. A real timeout is what hands the thread back.
-        await ccMpIdle(new Promise(res=>setTimeout(res, 0)));
+        await ccMpIdle(ccYield());
         if(!runIsCurrent()) throw RUN_ABANDONED;
         lastYield=performance.now();
       }
