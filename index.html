@@ -6321,6 +6321,14 @@
   .mg-fat em{position:relative;z-index:1;font-style:normal;font-size:12px;padding:0 10px;line-height:22px;}
   .mg-talk button{flex:1 1 45%;}
   .mg-talk button:disabled{opacity:.5;}
+  .mg-club.ev{flex-wrap:wrap;} .mg-club.ev .mg-cname{flex:1 1 100%;} .mg-club.ev .mg-take{flex:1 1 auto;}
+  .mg-conf{position:relative;margin-top:6px;height:18px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;}
+  .mg-conf span{position:relative;z-index:1;font-size:11px;padding:0 8px;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;}
+  .mg-conf i{position:absolute;left:0;top:0;bottom:0;} .mg-conf i.hi{background:rgba(31,122,74,.7);} .mg-conf i.mid{background:rgba(201,162,39,.6);} .mg-conf i.lo{background:rgba(163,51,51,.7);}
+  .mg-newopts{display:flex;flex-direction:column;gap:6px;margin:8px 0;}
+  .mg-newopts .mg-seg button small{opacity:.7;margin-left:4px;}
+  .mg-ch{margin-bottom:6px;}
+  .mg-evf{margin-top:12px;}
   .mg-staff{display:flex;flex-direction:column;gap:4px;padding:10px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);}
   .mg-staff small{opacity:.8;font-size:12px;}
   .mg-staff .mg-seg{flex-wrap:wrap;}
@@ -111616,7 +111624,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='3eb24442';
+const CC_BUILD='98c62a3b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -154016,11 +154024,21 @@ function mgrOpenNew(year){
   MGR_NEW_LIST=clubs;
   document.getElementById('mgBody').innerHTML='<div class="mg-wrap"><h2 class="mg-h">'+T.title+' · '+T.newH+'</h2>'+
     '<div class="mg-years">'+years+'<label class="mg-reg">'+T.region+' <select onchange="MGR_NEW_REGION=this.value;mgrOpenNew()">'+regs+'</select></label></div>'+
+    mgrNewOptsHTML()+
     '<p class="mg-hint">'+T.pickClub+'</p><div class="mg-clubs">'+(rows || '<i>'+T.none+'</i>')+'</div>'+
     '<div class="mg-foot"><button class="hero-btn hero-btn-alt" onclick="mgrHome()">'+T.home+'</button></div></div>';
   show('screen-manager');
 }
 let MGR_NEW_LIST=[];
+function mgrNewOptsHTML(){
+  const T7=mgrT7();
+  if(MGR_CARRY) return '';   // после увольнения — с того же дня, без выбора точки
+  let pts=[]; try{ pts=mgrStartPoints(MGR_NEW_YEAR, MGR_NEW_REGION); }catch(e){ pts=[]; }
+  if(!pts.some(p=>p.k===MGR_NEW_START)) MGR_NEW_START=0;
+  return '<div class="mg-newopts"><div class="mg-mrow"><small>'+T7.start+'</small><div class="mg-seg">'+pts.map(p=>'<button class="'+(p.k===MGR_NEW_START?'on':'')+'" onclick="MGR_NEW_START='+p.k+';mgrOpenNew()">'+esc(p.label)+(p.day ? ' <small>'+esc(ccDayLabel(p.day))+'</small>' : '')+'</button>').join('')+'</div></div>'+
+    '<label class="mg-mrow"><small>'+T7.ch+'</small><select class="mg-move" onchange="MGR_NEW_CH=this.value"><option value="">'+T7.chNone+'</option>'+
+      MGR_CHALLENGES.map(id=>'<option value="'+id+'"'+(MGR_NEW_CH===id?' selected':'')+'>'+esc(T7.chNames[id])+'</option>').join('')+'</select></label></div>';
+}
 function mgrTake(i){
   const c=MGR_NEW_LIST[i]; if(!c) return;
   const sh=mgrShadow(MGR_NEW_YEAR, MGR_NEW_REGION);
@@ -154033,6 +154051,13 @@ function mgrTake(i){
   MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h));
   MGR.fncsCal=mgrFncsDays().map(x=>x.day);
   MGR.inbox=[]; MGR.morale={}; mgrBoardInit();
+  mgrRivalsInit();
+  if(MGR_NEW_CH && mgrChallengesFor(c.avg).includes(MGR_NEW_CH)) MGR.challenge={id:MGR_NEW_CH, cash0:MGR.club.cash, year:MGR.year};
+  if(MGR_CARRY){
+    MGR.history=MGR_CARRY.history||[]; MGR.trophies=MGR_CARRY.trophies||[];
+    if(MGR_CARRY.day>CAREER.career.day && MGR_CARRY.day<=ccYearTo()){ CAREER.career.day=MGR_CARRY.day; MGR.season0=MGR_CARRY.day; MGR.club.paidMonth=MGR_CARRY.day.slice(0, 7); MGR.fncsCal=(MGR.fncsCal||[]).filter(d=>d>MGR_CARRY.day); }
+    MGR_CARRY=null;
+  } else if(MGR_NEW_START) mgrApplyStart(MGR_NEW_START);
   mgrSave();
   mgrOpenHub();
 }
@@ -154160,6 +154185,8 @@ function mgrPayMonths(toDay){
     const wage=cards.reduce((s,h)=>s+mgrWage(h), 0);
     c.cash+=mgrSponsor()-wage-mgrStaffWage(); paid+=wage+mgrStaffWage();
     try{ mgrDevelop(m); }catch(e){}
+    try{ mgrRivalMonth(m); mgrJobMonth(m); }catch(e){}
+    if(c.cash<0) mgrConfAdd(-8);
     const [y, mo]=m.split('-').map(Number); m=(mo===12 ? (y+1)+'-01' : y+'-'+String(mo+1).padStart(2, '0'));
   }
   c.paidMonth=m;
@@ -154179,13 +154206,13 @@ function mgrOpenHub(){
   const wage=mgrAll().reduce((s,h)=>s+mgrWage(h), 0);
   const tabs=[['club',T2.tClub],['market',T2.tMarket],['inbox',T2.tInbox+(unread ? ' · '+unread : '')],['train',mgrT4().tTrain],['stats',T.tStats]].map(([k,l])=>'<button class="mg-tab'+(MGR_TAB===k?' on':'')+'" onclick="MGR_TAB=\''+k+'\';mgrOpenHub()">'+esc(l)+'</button>').join('');
   const b=MGR.board, earnedNow=(c.earned||0)-(b.earned0||0);
-  const board='<div class="mg-board"><em>'+T2.board+'</em><small>'+esc(T2.goalEarn(mgrMoney(b.earn)))+' — '+mgrMoney(earnedNow)+'</small><small>'+esc(T2.goalPlace(b.place))+' — '+(b.best!=null ? '#'+b.best : T2.bestNone)+'</small></div>';
+  const board=mgrChallengeHTML()+'<div class="mg-board"><em>'+T2.board+'</em>'+mgrConfHTML()+'<small>'+esc(T2.goalEarn(mgrMoney(b.earn)))+' — '+mgrMoney(earnedNow)+'</small><small>'+esc(T2.goalPlace(b.place))+' — '+(b.best!=null ? '#'+b.best : T2.bestNone)+'</small></div>';
   let body='';
   if(MGR_TAB==='market') body=mgrMarketHTML();
-  else if(MGR_TAB==='stats') body=mgrStatsHTML();
+  else if(MGR_TAB==='stats') body=mgrStatsHTML()+mgrRivalsHTML()+mgrTrophiesHTML();
   else if(MGR_TAB==='inbox') body=mgrInboxHTML();
   else if(MGR_TAB==='train') body=mgrTrainHTML();
-  else body=mgrClubHTML(evs);
+  else body=mgrClubHTML(evs)+mgrEvFreqHTML();
   document.getElementById('mgBody').innerHTML='<div class="mg-wrap">'+
     '<div class="mg-top"><span class="mg-logo big">'+(typeof clubLogoHTML==='function' ? clubLogoHTML(c.name, true) : '')+'</span>'+
       '<div><h2 class="mg-h">'+esc(c.name)+'</h2><small>'+T.season+' '+MGR.year+' · '+esc(MGR.region)+' · '+esc(ccDayLabel(cr.day))+'</small></div>'+
@@ -154238,8 +154265,8 @@ function mgrInboxHTML(){
   const T2=mgrT2();
   const list=(MGR.inbox||[]);
   if(!list.length) return '<p class="mg-hint">'+T2.inboxEmpty+'</p>';
-  return '<div class="mg-clubs">'+list.map(m=>'<div class="mg-club'+(m.done?' done':'')+'"><span class="mg-cname"><b>'+esc(m.text)+'</b><small>'+esc(ccDayLabel(m.day))+(m.done && m.done!=='info' ? ' · '+(m.done==='yes' ? T2.accept : T2.decline) : '')+'</small></span>'+
-    (!m.done ? '<button class="hero-btn hero-btn-go mg-take" onclick="mgrInboxDo(\''+m.id+'\', true)">'+(m.kind==='offer' ? T2.sell : m.kind==='wantplay' ? mgrT5().promiseBtn : m.kind==='leave' ? mgrT5().sellBtn : T2.accept)+'</button><button class="hero-btn hero-btn-alt mg-take" onclick="mgrInboxDo(\''+m.id+'\', false)">'+(m.kind==='wantplay' ? mgrT5().waitBtn : m.kind==='leave' ? mgrT5().keepBtn : T2.decline)+'</button>' : '')+'</div>').join('')+'</div>';
+  return '<div class="mg-clubs">'+list.map(m=>'<div class="mg-club'+(m.done?' done':'')+(m.kind==='event'?' ev':'')+'"><span class="mg-cname"><b>'+esc(m.text)+'</b><small>'+esc(ccDayLabel(m.day))+(m.done && m.done!=='info' ? ' · '+esc(m.kind==='event' ? (m.done==='a' ? m.a : m.b) : (m.done==='yes' ? T2.accept : T2.decline)) : '')+'</small></span>'+
+    (!m.done ? '<button class="hero-btn hero-btn-go mg-take" onclick="mgrInboxDo(\''+m.id+'\', true)">'+esc(m.kind==='event' ? m.a : m.kind==='job' ? mgrT7().jobBtn : m.kind==='offer' ? T2.sell : m.kind==='wantplay' ? mgrT5().promiseBtn : m.kind==='leave' ? mgrT5().sellBtn : T2.accept)+'</button><button class="hero-btn hero-btn-alt mg-take" onclick="mgrInboxDo(\''+m.id+'\', false)">'+esc(m.kind==='event' ? m.b : m.kind==='job' ? mgrT7().stayBtn : m.kind==='wantplay' ? mgrT5().waitBtn : m.kind==='leave' ? mgrT5().keepBtn : T2.decline)+'</button>' : '')+'</div>').join('')+'</div>';
 }
 function mgrTeamUp(i){ if(i<1) return; const t=MGR.teams; [t[i-1], t[i]]=[t[i], t[i-1]]; mgrSave(); mgrOpenHub(); }
 function mgrNewClubAsk(){ ccAsk(mgrT().newClub+'?', ()=>{ MGR=null; try{ localStorage.removeItem(MGR_KEY); }catch(e){} mgrLeave(); mgrOpenNew(); }); }
@@ -154308,6 +154335,7 @@ function mgrToAcad(h, free){
   mgrSave(); mgrOpenHub();
 }
 function mgrPromote(h){
+  MGR.promoted=(MGR.promoted||[]).concat([h]);
   MGR.academy=(MGR.academy||[]).filter(x=>hKey(x)!==hKey(h));
   MGR.bench=(MGR.bench||[]).concat([h]);
   const c=mgrCard(h); MGR.contracts=MGR.contracts||{}; MGR.contracts[hKey(h)]=Object.assign({}, MGR.contracts[hKey(h)]||{}, {salary:c ? mgrSalary(c) : 500, since:CAREER.career.day});
@@ -154323,7 +154351,7 @@ function mgrMoraleAdd(h, d){ MGR.morale=MGR.morale||{}; const k=hKey(h); MGR.mor
 function mgrBoardInit(){
   const sp=mgrSponsor(), avg=MGR.club.avg||70;
   MGR.board={earn:Math.round(sp/1000)*1000,   /* цель = месяц спонсоров: прогон сезона 1.10 — средний клуб (75) брал призовыми $7,6 тыс. при цели вдвое выше */
-          place:avg>=90 ? 10 : avg>=82 ? 25 : 50, best:null, earned0:MGR.club.earned||0};
+          place:avg>=90 ? 10 : avg>=82 ? 25 : 50, best:null, earned0:MGR.club.earned||0, conf:60};
 }
 function mgrToast(text){ try{ if(typeof ccMpTell==='function') ccMpTell(text); }catch(e){} }
 
@@ -154391,6 +154419,7 @@ function mgrWeekly(fromDay, toDay){
     const rnd=careerRng(ccHashStr('mgrwk|'+MGR.club.name+'|'+d));
     mgrTrainWeek();
     mgrPeopleWeek(d);
+    mgrEventWeek(d);
     if(mgrStaff('psych')) mgrAll().forEach(h=>{ if(mgrMorale(h)<0 && careerRng(ccHashStr('psy|'+h+'|'+d))()<0.3*mgrStaff('psych')) mgrMoraleAdd(h, 1); });
     const all=mgrAll().map(h=>mgrCard(h)).filter(Boolean).sort((a,b)=>(ccCardOvr(b)||0)-(ccCardOvr(a)||0));
     if(!all.length) continue;
@@ -154426,6 +154455,8 @@ function mgrWeekly(fromDay, toDay){
 }
 function mgrInboxDo(id, ok){
   const m=(MGR.inbox||[]).find(x=>x.id===id); if(!m || m.done) return;
+  if(m.kind==='event'){ if(!mgrEventDo(m, ok)) return; m.done=ok ? 'a' : 'b'; mgrSave(); mgrOpenHub(); return; }
+  if(m.kind==='job'){ m.done=ok ? 'yes' : 'no'; if(ok) mgrSwitchClub(m.club); mgrSave(); mgrOpenHub(); return; }
   m.done=ok ? 'yes' : 'no';
   if(m.kind==='offer'){
     if(ok){ MGR.club.cash+=m.sum; MGR.teams.forEach(t=>{ t.cards=t.cards.filter(x=>hKey(x)!==hKey(m.h)); }); MGR.teams=MGR.teams.filter(t=>t.cards.length);
@@ -154459,8 +154490,14 @@ function mgrSeasonReview(){
     '<div class="mg-mrow"><b>'+esc(T.board)+'</b><small>'+esc(T.goalEarn(mgrMoney(b.earn||0)))+' — '+mgrMoney(earned)+' · '+(okEarn ? T.met : T.notMet)+'</small>'+
     '<small>'+esc(T.goalPlace(b.place||50))+' — '+(b.best!=null ? '#'+b.best : T.bestNone)+' · '+(okPlace ? T.met : T.notMet)+'</small></div>'+
     (!fired && !last ? mgrRenewHTML() : '')+
+    (chS ? '<div class="mg-mrow"><b>'+esc(chS.name)+'</b><small>'+(chS.done ? '🏆 '+mgrT7().chDone : mgrT7().chFail)+' · '+esc(chS.prog)+'</small></div>' : '')+
     '<p>'+esc(fired ? T.fired : last ? T.lastYear : T.stay)+'</p><button class="hero-btn hero-btn-go" data-mg="go">'+(fired || last ? mgrT().newClub : T.nextSeason(MGR.year+1))+'</button>';
   MGR.history=(MGR.history||[]).concat([{year:MGR.year, club:MGR.club.name, earned, best:b.best, fired}]);
+  const chS=mgrChallengeState();
+  if(chS && !MGR.challenge.closed){
+    MGR.challenge.closed=true;
+    if(chS.done){ MGR.trophies=(MGR.trophies||[]).concat([{year:MGR.year, club:MGR.club.name, name:mgrT7().trophyCh(chS.name)}]); MGR.club.rep=Math.min(100, (MGR.club.rep||50)+10); }
+  }
   mgrModal(html).then(()=>{
     if(fired || last){ const hist=MGR.history; MGR=null; try{ localStorage.removeItem(MGR_KEY); }catch(e){} mgrLeave(); MGR_NEW_YEAR=Math.min(2026, (hist[hist.length-1]||{}).year+1||2024); mgrOpenNew(); return; }
     mgrNextSeason();
@@ -154492,6 +154529,9 @@ function mgrNextSeason(){
   MGR.teams=[]; MGR.bench=[];
   mgrBuildTeams(alive);
   mgrBoardInit();
+  if(MGR.challenge) MGR.challenge={id:MGR.challenge.id, cash0:MGR.club.cash, year:y};
+  MGR.gradNights=0; MGR.sackShown=false;
+  if(!MGR.rivals) mgrRivalsInit();
   mgrSave(); mgrOpenHub();
 }
 
@@ -154819,6 +154859,236 @@ function mgrPromisesHTML(){
   return '<h3 class="mg-sub">'+T5.promises+'</h3><ul class="mg-list">'+list.map(p=>'<li><span>'+esc(T5.due(ccDayLabel(p.due)))+'</span>'+esc(p.h)+' — '+esc(nm[p.kind]||p.kind)+'</li>').join('')+'</ul>';
 }
 
+/* ---- Этап 10: как в EA FC 26, карьера тренера (его слово 2.10: «делай это в карьере менеджера») ------
+   1) Live Start Points — старт с точки сезона: начало / после Мейджора 1 / после Мейджора 2.
+   2) Live Challenges — испытание на сезон (требл, два состава в гранд-финале, EWC, воспитанник, прибыль,
+      андердог); выполнил — репутация +10 и кубок в шкафу (MGR.trophies).
+   3) Рынок менеджеров — у клубов региона настоящие менеджеры (CC_AGENTS) со стилем (тихо/баланс/агрессия),
+      он ставит _seekMul их командам в твоих вечерах; раз в месяц кого-то увольняют или переманивают.
+      Тебя самого зовут клубы посильнее, если репутация и доверие высокие.
+   4) Совет смотрит не только на трофеи: доверие 0–100 (MGR.board.conf) по цели, репутации и характеру клуба
+      (результат / молодёжь / бизнес). Упало до 10 — увольнение посреди сезона.
+   5) Неожиданные события раз в неделю с двумя ответами; частота — выкл/редко/обычно/часто.
+   Все числа — оценки режима, не замер. */
+function mgrT7(){
+  const ru=(typeof LANG!=='undefined' && LANG==='ru');
+  return ru ? {
+    start:'Точка старта', s0:'Начало сезона', s1:'После Мейджора 1', s2:'После Мейджора 2',
+    ch:'Испытание', chNone:'Без испытания', chDone:'Испытание выполнено', chFail:'Испытание провалено', chProg:'Испытание',
+    trophies:'Шкаф', conf:'Доверие совета', id:'Характер клуба', idResults:'результат', idYouth:'молодёжь', idBusiness:'бизнес',
+    idResultsN:'совет ждёт мест', idYouthN:'совет ждёт игроков из академии', idBusinessN:'совет ждёт прибыли',
+    sacked:c=>'Совет '+c+' уволил тебя посреди сезона: доверие упало до нуля', sackedBtn:'Искать клуб',
+    jobOffer:(c,a)=>c+' зовёт тебя менеджером (средний '+a+')', jobBtn:'Перейти', stayBtn:'Остаться', moved:c=>'Ты теперь менеджер '+c,
+    mgrSacked:(m,c,n)=>c+' уволил менеджера '+m+(n ? '. Новый — '+n : ''), mgrPoached:(m,c,f)=>m+' уходит из '+f+' в '+c,
+    rivals:'Менеджеры клубов', stPlace:'тихо', stBal:'баланс', stAggr:'агрессия',
+    ev:'События', evOff:'выкл', evRare:'редко', evNorm:'обычно', evOften:'часто',
+    eSick:h=>h+' заболел перед вечером', eSickA:'Играет через силу', eSickB:'Отдых — мораль +1',
+    eSponsor:s=>'Энергетик предлагает '+s+' за рекламу в стримах', eSponsorA:'Взять (репутация −3)', eSponsorB:'Отказать (репутация +2)',
+    eTweet:h=>h+' сорвался в твиттере после вечера', eTweetA:'Оштрафовать (мораль −1, репутация +2)', eTweetB:'Защитить (мораль +1, репутация −3)',
+    eCustom:'Стример зовёт команду на кастомку с призом', eCustomA:'Сыграть (+$, репутация +2, усталость +8)', eCustomB:'Отказаться',
+    eFeud:(a,b)=>a+' и '+b+' поругались в войсе', eFeudA:'Поговорить (химия −2)', eFeudB:'Пусть сами (химия −5, мораль −1)',
+    eLeak:(h,c)=>'Пресса пишет: '+c+' хочет '+h, eLeakA:'«Не продаётся» (мораль +1, репутация +1)', eLeakB:'Промолчать (мораль −1)',
+    ePc:h=>'У '+h+' сгорел ПК', ePcA:'Купить новый ($1 500, мораль +1)', ePcB:'Пусть играет на старом (сила −2 на вечер)',
+    trophyCh:n=>'Испытание: '+n, chNames:{treble:'Требл — три победы за сезон', grands2:'Два состава в одном гранд-финале FNCS', ewc:'Топ-3 на Esports World Cup',
+      academy:'Воспитанник академии — 5 вечеров в основе', profit:'Касса ×1,5 к концу сезона', underdog:'Андердог — топ-5 на любом турнире'}
+  } : {
+    start:'Start point', s0:'Season start', s1:'After Major 1', s2:'After Major 2',
+    ch:'Challenge', chNone:'No challenge', chDone:'Challenge complete', chFail:'Challenge failed', chProg:'Challenge',
+    trophies:'Cabinet', conf:'Board confidence', id:'Club identity', idResults:'results', idYouth:'youth', idBusiness:'business',
+    idResultsN:'the board wants finishes', idYouthN:'the board wants academy players', idBusinessN:'the board wants profit',
+    sacked:c=>c+' sacked you mid-season: board confidence hit zero', sackedBtn:'Find a club',
+    jobOffer:(c,a)=>c+' wants you as manager (avg '+a+')', jobBtn:'Move', stayBtn:'Stay', moved:c=>'You now manage '+c,
+    mgrSacked:(m,c,n)=>c+' sacked '+m+(n ? '. New manager — '+n : ''), mgrPoached:(m,c,f)=>m+' leaves '+f+' for '+c,
+    rivals:'Club managers', stPlace:'quiet', stBal:'balanced', stAggr:'aggressive',
+    ev:'Events', evOff:'off', evRare:'rare', evNorm:'normal', evOften:'often',
+    eSick:h=>h+' is sick before the night', eSickA:'Plays through it', eSickB:'Rest — morale +1',
+    eSponsor:s=>'An energy drink offers '+s+' for stream ads', eSponsorA:'Take it (reputation −3)', eSponsorB:'Decline (reputation +2)',
+    eTweet:h=>h+' lost it on Twitter after the night', eTweetA:'Fine them (morale −1, reputation +2)', eTweetB:'Back them (morale +1, reputation −3)',
+    eCustom:'A streamer invites the team to a prize custom', eCustomA:'Play (+$, reputation +2, fatigue +8)', eCustomB:'Decline',
+    eFeud:(a,b)=>a+' and '+b+' fell out in voice', eFeudA:'Talk it out (chemistry −2)', eFeudB:'Let them sort it (chemistry −5, morale −1)',
+    eLeak:(h,c)=>'Press: '+c+' wants '+h, eLeakA:'"Not for sale" (morale +1, reputation +1)', eLeakB:'Say nothing (morale −1)',
+    ePc:h=>h+'\'s PC died', ePcA:'Buy a new one ($1,500, morale +1)', ePcB:'Play on the old one (power −2 next night)',
+    trophyCh:n=>'Challenge: '+n, chNames:{treble:'Treble — three wins in a season', grands2:'Two squads in one FNCS grand final', ewc:'Top 3 at the Esports World Cup',
+      academy:'Academy graduate — 5 nights in the line-up', profit:'Cash ×1.5 by season end', underdog:'Underdog — top 5 at any event'}
+  };
+}
+
+// ---- 1) Точки старта: дни после финалов FNCS в теневой карьере года.
+function mgrStartPoints(year, region){
+  const sh=mgrShadow(year, region), was=CAREER; CAREER=sh;
+  let days=[]; try{ ccWorldReset(); days=mgrFncsDays().map(x=>x.day); }catch(e){ days=[]; }
+  CAREER=was; try{ ccWorldReset(); }catch(e){}
+  const T7=mgrT7(), out=[{k:0, label:T7.s0, day:null}];
+  if(days[0]) out.push({k:1, label:T7.s1, day:ccAddDays(days[0], 1)});
+  if(days[1]) out.push({k:2, label:T7.s2, day:ccAddDays(days[1], 1)});
+  return out;
+}
+let MGR_NEW_START=0, MGR_NEW_CH='';
+function mgrApplyStart(k){
+  const p=mgrStartPoints(MGR.year, MGR.region).find(x=>x.k===k);
+  if(!p || !p.day) return;
+  const from=CAREER.career.day;
+  const left=Math.max(0.2, 1-(Date.parse(p.day)-Date.parse(from))/(330*864e5));
+  CAREER.career.day=p.day; MGR.season0=p.day; MGR.club.paidMonth=p.day.slice(0, 7);
+  MGR.live=k;
+  if(MGR.board){ MGR.board.earn=Math.round(MGR.board.earn*left/500)*500; }
+  // Середина сезона — окно открыто три недели, как зимнее.
+  MGR.fncsCal=(MGR.fncsCal||[]).filter(d=>d>p.day);
+}
+// ---- 2) Испытания.
+const MGR_CHALLENGES=['treble', 'grands2', 'ewc', 'academy', 'profit', 'underdog'];
+function mgrChallengesFor(avg){ return MGR_CHALLENGES.filter(id=>id!=='underdog' || avg<=78).filter(id=>id!=='ewc' || (typeof EWC24!=='undefined')); }
+function mgrNights(){ return (MGR.log||[]).filter(r=>r.kind==='night'); }
+function mgrChallengeState(){
+  const c=MGR.challenge; if(!c) return null;
+  const T7=mgrT7(), n=mgrNights();
+  let done=false, prog='';
+  if(c.id==='treble'){ const w=n.filter(r=>r.teams.some(t=>t.place===1)).length; done=w>=3; prog=w+'/3'; }
+  else if(c.id==='grands2'){ done=n.some(r=>r.fncs && r.teams.filter(t=>t.stage===mgrT2().fncsF).length>=2); prog=done ? '✓' : '0/1'; }
+  else if(c.id==='ewc'){ const r=n.find(r=>r.ewc); done=!!(r && r.teams.some(t=>t.place<=3)); prog=r ? '#'+Math.min(...r.teams.map(t=>t.place)) : '—'; }
+  else if(c.id==='academy'){ const k=MGR.gradNights||0; done=k>=5; prog=k+'/5'; }
+  else if(c.id==='profit'){ const need=Math.round((c.cash0||0)*1.5); done=MGR.club.cash>=need; prog=mgrMoney(MGR.club.cash)+' / '+mgrMoney(need); }
+  else if(c.id==='underdog'){ const b=Math.min(99, ...n.map(r=>Math.min(...r.teams.map(t=>t.place)))); done=b<=5; prog=b<99 ? '#'+b : '—'; }
+  return {id:c.id, name:T7.chNames[c.id]||c.id, done, prog};
+}
+function mgrChallengeHTML(){
+  const s=mgrChallengeState(); if(!s) return '';
+  const T7=mgrT7();
+  return '<div class="mg-board mg-ch'+(s.done?' open':'')+'"><em>'+T7.chProg+'</em><small><b>'+esc(s.name)+'</b> — '+esc(s.prog)+(s.done ? ' · '+T7.chDone : '')+'</small></div>';
+}
+// ---- 4) Характер клуба и доверие.
+function mgrIdentity(){ const a=MGR.club.avg||75; return a>=86 ? 'results' : a<=76 ? 'youth' : 'business'; }
+function mgrConf(){ const b=MGR.board||{}; return b.conf==null ? 60 : b.conf; }
+function mgrConfAdd(d){ MGR.board=MGR.board||{}; MGR.board.conf=Math.max(0, Math.min(100, mgrConf()+d)); }
+function mgrConfNight(row, clubGot){
+  const id=mgrIdentity(), b=MGR.board||{};
+  const best=Math.min(...row.teams.map(t=>t.place)), bad=row.teams.every(t=>t.place>(t.of||100)*0.5);
+  let d=0;
+  if(id==='results') d=best<=(b.place||25) ? 6 : bad ? -6 : 0;
+  else if(id==='business') d=clubGot>0 ? 4 : bad ? -4 : -1;
+  else { const grads=row.teams.reduce((s,t)=>s+Object.keys(t.kills||{}).filter(h=>(MGR.promoted||[]).some(x=>hKey(x)===hKey(h))).length, 0);
+         d=grads ? 4 : bad ? -4 : 0; }
+  d+=((MGR.club.rep||50)>=70 ? 1 : (MGR.club.rep||50)<=30 ? -1 : 0);
+  mgrConfAdd(d);
+}
+function mgrConfHTML(){
+  const T7=mgrT7(), c=mgrConf(), id=mgrIdentity();
+  return '<div class="mg-conf"><span>'+T7.conf+' <b>'+c+'</b> · '+T7.id+': '+esc(T7['id'+id[0].toUpperCase()+id.slice(1)])+' — '+esc(T7['id'+id[0].toUpperCase()+id.slice(1)+'N'])+'</span><i style="width:'+c+'%" class="'+(c<30?'lo':c<60?'mid':'hi')+'"></i></div>';
+}
+// Проверка увольнения — после вечера и раз в месяц. Первые 30 дней совет терпит.
+function mgrSackCheck(){
+  if(mgrConf()>10 || !MGR.season0 || CAREER.career.day<ccAddDays(MGR.season0, 30) || MGR.sackShown) return false;
+  MGR.sackShown=true;
+  const T7=mgrT7(), old=MGR.club.name;
+  MGR.history=(MGR.history||[]).concat([{year:MGR.year, club:old, earned:(MGR.club.earned||0)-((MGR.board||{}).earned0||0), best:(MGR.board||{}).best, fired:true, mid:true}]);
+  mgrSave();
+  mgrModal('<h3>'+esc(T7.sacked(old))+'</h3><button class="hero-btn hero-btn-go" data-mg="go">'+T7.sackedBtn+'</button>').then(()=>{
+    const hist=MGR.history, troph=MGR.trophies||[], y=MGR.year, day=CAREER.career.day, reg=MGR.region;
+    MGR=null; try{ localStorage.removeItem(MGR_KEY); }catch(e){} mgrLeave();
+    MGR_CARRY={history:hist, trophies:troph, day};
+    MGR_NEW_YEAR=y; MGR_NEW_REGION=reg; mgrOpenNew(y);
+  });
+  return true;
+}
+let MGR_CARRY=null;   // история, шкаф и день после увольнения — в новый клуб того же года
+
+// ---- 3) Рынок менеджеров.
+function mgrAgentPool(){ return (typeof CC_AGENTS!=='undefined' ? CC_AGENTS : []).map(a=>a.name).filter(Boolean); }
+function mgrStyleOf(name){ const x=careerRng(ccHashStr('mgrst|'+name))(); return x<0.3 ? 'place' : x<0.7 ? 'bal' : 'aggr'; }
+function mgrRivalsInit(){
+  const pool=mgrAgentPool(); MGR.rivals={};
+  let orgs=[]; try{ orgs=[...new Set((ccSceneRoster(MGR.region)||[]).map(c=>c.org).filter(o=>o && o!==MGR.club.name))]; }catch(e){}
+  orgs.forEach((o,i)=>{ if(pool.length) MGR.rivals[o]=pool[(ccHashStr(o)+i)%pool.length]; });
+}
+function mgrRivalMonth(monthKey){
+  const T7=mgrT7(), pool=mgrAgentPool(), rnd=careerRng(ccHashStr('mgrmk|'+MGR.club.name+'|'+monthKey));
+  const clubs=Object.keys(MGR.rivals||{}); if(clubs.length<2 || rnd()>0.45) return;
+  const c=clubs[Math.floor(rnd()*clubs.length)], m=MGR.rivals[c];
+  MGR.inbox=MGR.inbox||[];
+  if(rnd()<0.5){
+    const used=new Set(Object.values(MGR.rivals)), free=pool.filter(n=>!used.has(n)), n=free.length ? free[Math.floor(rnd()*free.length)] : null;
+    MGR.rivals[c]=n||m;
+    MGR.inbox.unshift({id:'ms'+monthKey, day:CAREER.career.day, kind:'info', done:'info', text:T7.mgrSacked(m, c, n)});
+  } else {
+    const to=clubs[Math.floor(rnd()*clubs.length)]; if(to===c) return;
+    const old=MGR.rivals[to]; MGR.rivals[to]=m; MGR.rivals[c]=old;
+    MGR.inbox.unshift({id:'mp'+monthKey, day:CAREER.career.day, kind:'info', done:'info', text:T7.mgrPoached(m, to, c)});
+  }
+}
+// Стиль менеджера — командам его клуба в твоём вечере.
+function mgrRivalStyles(field){
+  const mul={place:0.8, bal:1, aggr:1.25};
+  field.forEach(t=>{ if(t.isClub) return; const org=(t.squad||[]).map(c=>c.org).find(Boolean); const m=org && (MGR.rivals||{})[org]; if(m) t._seekMul=mul[mgrStyleOf(m)]||1; });
+}
+// Тебя зовут: репутация от 65, доверие от 60, клуб сильнее твоего.
+function mgrJobMonth(monthKey){
+  if((MGR.club.rep||50)<65 || mgrConf()<60) return;
+  const rnd=careerRng(ccHashStr('mgrjob|'+MGR.club.name+'|'+monthKey)); if(rnd()>0.3) return;
+  let list=[]; try{ list=mgrClubsFor(MGR.year, MGR.region).filter(c=>c.name!==MGR.club.name && c.avg>(MGR.club.avg||70) && c.n>=4); }catch(e){}
+  if(!list.length) return;
+  const c=list[Math.floor(rnd()*Math.min(4, list.length))];
+  MGR.inbox.unshift({id:'j'+monthKey, day:CAREER.career.day, kind:'job', club:c.name, avg:c.avg, text:mgrT7().jobOffer(c.name, c.avg)});
+}
+function mgrSwitchClub(name){
+  let c=null; try{ c=mgrClubsFor(MGR.year, MGR.region).find(x=>x.name===name); }catch(e){}
+  if(!c) return;
+  const old=MGR.club;
+  MGR.history=(MGR.history||[]).concat([{year:MGR.year, club:old.name, earned:(old.earned||0)-((MGR.board||{}).earned0||0), best:(MGR.board||{}).best, fired:false, left:true}]);
+  MGR.club={name:c.name, avg:c.avg, cash:Math.round(20000+Math.max(0, c.avg-70)*4000), earned:0, paidMonth:CAREER.career.day.slice(0, 7), rep:old.rep};
+  MGR.teams=[]; MGR.bench=[]; MGR.academy=[]; MGR.morale={}; MGR.dev={}; MGR.chem={}; MGR.promises=[]; MGR.challenge=null; MGR.sackShown=false;
+  mgrBuildTeams(c.players);
+  MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h));
+  mgrBoardInit(); mgrRivalsInit();
+  mgrToast(mgrT7().moved(c.name));
+}
+// ---- 5) События.
+const MGR_EV_P={off:0, rare:0.08, norm:0.15, often:0.3};
+function mgrEvFreq(){ return MGR.evFreq||'norm'; }
+function mgrEventWeek(d){
+  const p=MGR_EV_P[mgrEvFreq()]||0; if(!p) return;
+  const rnd=careerRng(ccHashStr('mgrev|'+MGR.club.name+'|'+d));
+  if(rnd()>p) return;
+  const T7=mgrT7(), all=mgrAll(); if(!all.length) return;
+  const pick=()=>all[Math.floor(rnd()*all.length)];
+  const kinds=['sick', 'sponsor', 'tweet', 'custom', 'feud', 'leak', 'pc'];
+  const k=kinds[Math.floor(rnd()*kinds.length)];
+  const m={id:'e'+d, day:d, kind:'event', ev:k};
+  if(k==='sick'){ m.h=pick(); m.text=T7.eSick(m.h); m.a=T7.eSickA; m.b=T7.eSickB; }
+  else if(k==='sponsor'){ m.sum=Math.round(mgrSponsor()*0.6/100)*100; m.text=T7.eSponsor(mgrMoney(m.sum)); m.a=T7.eSponsorA; m.b=T7.eSponsorB; }
+  else if(k==='tweet'){ m.h=pick(); m.text=T7.eTweet(m.h); m.a=T7.eTweetA; m.b=T7.eTweetB; }
+  else if(k==='custom'){ m.sum=Math.round(mgrSponsor()*0.3/100)*100; m.text=T7.eCustom; m.a=T7.eCustomA; m.b=T7.eCustomB; }
+  else if(k==='feud'){ const t=MGR.teams.find(t=>t.cards.length>=2); if(!t) return; m.h=t.cards[0]; m.h2=t.cards[1]; m.text=T7.eFeud(m.h, m.h2); m.a=T7.eFeudA; m.b=T7.eFeudB; }
+  else if(k==='leak'){ m.h=pick(); const cl=Object.keys(MGR.rivals||{}); m.club=cl.length ? cl[Math.floor(rnd()*cl.length)] : '—'; m.text=T7.eLeak(m.h, m.club); m.a=T7.eLeakA; m.b=T7.eLeakB; }
+  else { m.h=pick(); m.text=T7.ePc(m.h); m.a=T7.ePcA; m.b=T7.ePcB; }
+  MGR.inbox.unshift(m);
+}
+function mgrEventDo(m, ok){
+  const c=MGR.club; c.rep=(c.rep!=null ? c.rep : 50);
+  const rep=d=>{ c.rep=Math.max(0, Math.min(100, c.rep+d)); };
+  const mod=(h, d)=>{ MGR.nightMod=MGR.nightMod||{}; MGR.nightMod[hKey(h)]=(MGR.nightMod[hKey(h)]||0)+d; };
+  if(m.ev==='sick'){ if(ok) mod(m.h, -2); else { mgrMoraleAdd(m.h, 1); mod(m.h, -1); } }
+  else if(m.ev==='sponsor'){ if(ok){ c.cash+=m.sum; rep(-3); } else rep(2); }
+  else if(m.ev==='tweet'){ if(ok){ mgrMoraleAdd(m.h, -1); rep(2); } else { mgrMoraleAdd(m.h, 1); rep(-3); } }
+  else if(m.ev==='custom'){ if(ok){ c.cash+=m.sum; rep(2); MGR.fatigue=Math.min(100, mgrFatigue()+8); } }
+  else if(m.ev==='feud'){ const k=mgrPairKey(m.h, m.h2); MGR.chem=MGR.chem||{}; MGR.chem[k]=Math.max(0, (MGR.chem[k]||0)-(ok ? 2 : 5)); if(!ok){ mgrMoraleAdd(m.h, -1); mgrMoraleAdd(m.h2, -1); } }
+  else if(m.ev==='leak'){ if(ok){ mgrMoraleAdd(m.h, 1); rep(1); } else mgrMoraleAdd(m.h, -1); }
+  else if(m.ev==='pc'){ if(ok){ if(c.cash<1500){ mgrToast(mgrT2().noMoney); return false; } c.cash-=1500; mgrMoraleAdd(m.h, 1); } else mod(m.h, -2); }
+  return true;
+}
+function mgrEvFreqHTML(){
+  const T7=mgrT7(), f=mgrEvFreq();
+  return '<div class="mg-mrow mg-evf"><small>'+T7.ev+'</small><div class="mg-seg">'+[['off',T7.evOff],['rare',T7.evRare],['norm',T7.evNorm],['often',T7.evOften]].map(([k,l])=>'<button class="'+(f===k?'on':'')+'" onclick="MGR.evFreq=\''+k+'\';mgrSave();mgrOpenHub()">'+l+'</button>').join('')+'</div></div>';
+}
+function mgrRivalsHTML(){
+  const T7=mgrT7(), r=MGR.rivals||{}, ks=Object.keys(r).slice(0, 16); if(!ks.length) return '';
+  const st={place:T7.stPlace, bal:T7.stBal, aggr:T7.stAggr};
+  return '<h3 class="mg-sub">'+T7.rivals+'</h3><ul class="mg-list">'+ks.map(c=>'<li><span>'+esc(c)+'</span>'+esc(r[c])+' · '+esc(st[mgrStyleOf(r[c])])+'</li>').join('')+'</ul>';
+}
+function mgrTrophiesHTML(){
+  const t=MGR.trophies||[]; if(!t.length) return '';
+  return '<h3 class="mg-sub">'+mgrT7().trophies+'</h3><ul class="mg-list">'+t.map(x=>'<li><span>'+x.year+'</span>🏆 '+esc(x.name)+' · '+esc(x.club)+'</li>').join('')+'</ul>';
+}
+
 /* ---- Матчевый день как в Football Manager -------------------------------------
    До вечера — установка каждой команде (плейсмент/баланс/агрессия → _seekMul движка: как часто ищет драку)
    и уровень показа. Во время — панель: уровень и скорость. Между играми (= перерыв в FM) — таблица своих,
@@ -154932,6 +155202,7 @@ async function mgrRunStage(field, club, games, ptsFn, kill, stageName, lobbySize
   mgrBarOn();
   const guardWas=REPLAY_GUARD_MS; REPLAY_GUARD_MS=10*60000;   // весь вечер смотрится целиком — сторож показа 45 с его обрезал бы
   mgrApplyOrders(club, lobbyN);
+  try{ mgrRivalStyles(field); }catch(e){}
   try{
     await simulateGamesLive(field, games, ptsFn, kill, 'stage', 0, null, null,
       {lobbySize:lobbySize, stageName:stageName, mapReplay:true, choices:false, stopOnYourDeath:false, together:club,
@@ -154966,7 +155237,8 @@ function mgrClubTeams(size){
     tm.name=teamLabel(cards); tm.isClub=true; tm.mgrId=t.id; if(i===0) tm.isYou=true;
     const mor=cards.length ? Math.round(cards.reduce((s,c)=>s+mgrMorale(c.handle), 0)/cards.length) : 0;
     const foc=cards.filter(c=>(MGR.focus||{})[hKey(c.handle)]).length*0.5;
-    tm.pow+=mor+mgrNightPow()+mgrChemPow(t.cards)+foc;
+    const evMod=cards.reduce((s,c)=>s+((MGR.nightMod||{})[hKey(c.handle)]||0), 0)/Math.max(1, cards.length);
+    tm.pow+=mor+mgrNightPow()+mgrChemPow(t.cards)+foc+evMod;
     return tm; });
 }
 function mgrKillsOf(tm){ const out={}; (tm.squad||[]).forEach(c=>{ try{ out[c.handle]=ccMemberKills(tm, c.handle); }catch(e){ out[c.handle]=0; } }); return out; }
@@ -155010,7 +155282,9 @@ function mgrAfterResults(ev, row, clubGot){
   MGR.log.unshift(row);
   MGR.fatigue=Math.min(100, mgrFatigue()+(row.fncs || row.ewc ? 8 : 4));
   if(!row.ewc) row.teams.forEach(t=>{ const x=MGR.teams.find(y=>y.id===t.id); if(x) mgrChemNight(x.cards); });
-  MGR.focus={};
+  MGR.focus={}; MGR.nightMod={};
+  mgrConfNight(row, clubGot);
+  if((MGR.promoted||[]).length && row.teams.some(t=>Object.keys(t.kills||{}).some(h=>MGR.promoted.some(x=>hKey(x)===hKey(h))))) MGR.gradNights=(MGR.gradNights||0)+1;
   const b=MGR.board||(MGR.board={});
   row.teams.forEach(t=>{ if(t.final!==false && (b.best==null || t.place<b.best)) b.best=t.place; });
   // Хороший вечер: бонус спонсора и мораль +1; плохой (все вне топ-50%) — мораль −1.
@@ -155116,7 +155390,7 @@ async function mgrPlayFncs(ev){
 function mgrAfterNight(){
   document.documentElement.classList.remove('ev-pal', 'ev-classic', 'ev-light');
   if(CAREER && CAREER.career){ CAREER.career.day=ccAddDays(CAREER.career.day, 1); }
-  mgrSave(); mgrOpenHub();
+  mgrSave(); mgrOpenHub(); mgrSackCheck();
 }
 
 function careerBackToHub(){
