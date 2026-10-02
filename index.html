@@ -151501,6 +151501,20 @@ function ewc24Team(t, you, reg){
   const squad=t.p.filter(h=>!mineH.has(String(h).toLowerCase())).map(h=>ewc24Card(h, reg));
   return {name:squad.map(c=>c.handle).join(' & '), squad, pow:ewc24Pow(squad), label:t.n, real:true};
 }
+// Добивка отбора: n четвёрок из сильнейших свободных карточек 2024-го региона (не в составах отбора и не у тебя).
+function ewc24FillTeams(n, reg, you, busy){
+  const taken=new Set((busy||[]).concat(you.squad.map(c=>c.handle)).map(h=>String(h||'').toLowerCase()));
+  const seen=new Set(), pool=[];
+  PLAYERS.filter(p=>p && /^f\d$/.test(String(p.cardSet||'')) && (EWC24_QREG[p.region]||p.region)===reg)
+    .sort((a,b)=>(b.rating||0)-(a.rating||0))
+    .forEach(p=>{ const k=String(p.handle||'').toLowerCase(); if(!k || taken.has(k) || seen.has(k)) return; seen.add(k); pool.push(p); });
+  const out=[];
+  for(let i=0; i<n && pool.length>=4; i++){
+    const squad=pool.splice(0, 4);
+    out.push({name:squad.map(c=>c.handle).join(' & '), squad, pow:ewc24Pow(squad), label:'Team '+squad[0].handle});
+  }
+  return out;
+}
 function ewc24State(){ const cr=CAREER.career; return cr.ewc24 || (cr.ewc24={}); }
 // Путёвка в Эр-Рияд есть — отбор не нужен; нет — на сам EWC не зовут.
 function ewc24Invited(ev){
@@ -151636,6 +151650,9 @@ async function ewc24RunQual(ev){
   const card=ewc24Begin();
   const size=Q.teams.length>=15 ? 16 : 8;
   let field=Q.teams.filter(t=>!held.has(String(t.n).toLowerCase())).map(t=>ewc24Team(t, you, reg));
+  // Путёвщики Dallas выбывают из отбора — сетка на 8/16 пустеет (NAC 15−4 = 11 + ты), группа
+  // выходит из трёх и ewc24Group падает на t[3]. Пустые места — свободные четвёрки региона.
+  if(field.length<size-1) field=field.concat(ewc24FillTeams(size-1-field.length, reg, you, busy));
   field=field.slice().sort((a,b)=>b.pow-a.pow).slice(0, size-1).concat([you]);
   card(T.ewc24QTitle(reg), '<div class="stage-detail">'+esc(T.ewc24QIntro(Q.slots))+'</div>'+ewc24RosterLine(you));
   if(!skipAnimation) await sleep(700);

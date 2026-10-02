@@ -84,6 +84,16 @@ const BOOT = `
     out.steps.push('Qual: '+h2+' · #'+(l2&&l2.place)+' · EU '+JSON.stringify(s2.quals&&s2.quals.EU)+' you '+JSON.stringify(s2.you));
     check('отбор EU дал две путёвки', s2.quals && s2.quals.EU && s2.quals.EU.length===2, JSON.stringify(s2.quals));
     check('в отборе нет держателей Dallas', !(s2.quals.EU||[]).some(n=>n!=='YOU' && (s2.dallas||[]).indexOf(n)>=0), JSON.stringify(s2));
+    // Отбор NAC, когда четыре его команды уже с путёвкой Dallas: 15−4 = 11 + ты, сетка на 16
+    // раньше падала на «reading 'isYou'» (жалоба игрока 3.10). Пустые места добиваются.
+    { const e0=out.errs.length;
+      seed('2024-07-05', {ewc24:{dallas:['XSET','Dignitas','Stride Esports','Capybaras','Team Falcons','FNATIC'], played:{dallas:true}}}, {c:'us', r:'NAC'});
+      let hq=null, why=null; try{ hq=await playThrough('Qualifier NAC'); }catch(e){ why=String(e.message||e); }
+      const sq=st();
+      out.steps.push('Qual NAC: '+hq+' · '+JSON.stringify(sq.quals&&sq.quals.NAC));
+      check('отбор NAC доигран', !!hq && sq.quals && sq.quals.NAC && sq.quals.NAC.length===2, why||JSON.stringify(sq.quals));
+      check('отбор NAC без ошибок', out.errs.length===e0, out.errs.slice(e0).join(' | '));
+      check('в отборе NAC нет держателей Dallas', !(sq.quals&&sq.quals.NAC||[]).some(n=>['XSET','Dignitas','Stride Esports','Capybaras'].indexOf(n)>=0), JSON.stringify(sq.quals)); }
     // Эр-Рияд: путёвка своя (если отбор не дал — через Dallas-слот 3).
     const tk=s2.you ? s2 : Object.assign({}, s2, {you:{via:'dallas', place:3}, dallas:(s2.dallas||[]).map((n,i)=>i===2 ? 'YOU' : (n==='YOU' ? 'Karmine Corp' : n))});
     seed('2024-08-08', {ewc24:tk}, {c:'de'});
