@@ -16,3 +16,12 @@ class_name = "Lobby"
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["Lobby"]
+
+# Общая таблица карьер (2.10): один объект на сайт, строки в SQLite. См. src/board.js.
+[[durable_objects.bindings]]
+name = "BOARD"
+class_name = "Board"
+
+[[migrations]]
+tag = "v2"
+new_sqlite_classes = ["Board"]

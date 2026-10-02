@@ -18,6 +18,7 @@
  * сокетов не хранится вовсе: его отдаёт платформа (getWebSockets), а кто
  * есть кто, лежит в attachment самого сокета. */
 import { createLobby } from './lobby.js';
+import { createBoard, REGIONS, TOP } from './board.js';
 
 export class Lobby {
   // Тридцать дней тишины — и лобби убирается. См. touch/alarm ниже.
@@ -151,9 +152,74 @@ export class Lobby {
   }
 }
 
+/* Общая таблица карьер — один объект на весь сайт, строки в его SQLite.
+ *
+ * id карьеры — секрет клиента: по нему строка обновляется и удаляется, поэтому
+ * наружу он не уходит никогда. Свою строку клиент узнаёт, передав id в ?me=,
+ * и получает в ответ только флаг и место. Решения о строке — в board.js. */
+export class Board {
+  constructor(state, env){
+    this.state=state; this.env=env; this.board=createBoard();
+    this.sql=state.storage.sql;
+    this.sql.exec(`CREATE TABLE IF NOT EXISTS rows(
+      id TEXT PRIMARY KEY, nick TEXT, region TEXT, country TEXT, seasons INTEGER, earn INTEGER,
+      ovr INTEGER, div INTEGER, titles INTEGER, year INTEGER, best TEXT, bestEv TEXT, at INTEGER)`);
+    this.sql.exec('CREATE INDEX IF NOT EXISTS rows_earn ON rows(earn DESC)');
+  }
+  one(id){ return this.sql.exec('SELECT * FROM rows WHERE id=?', id).toArray()[0]||null; }
+  async fetch(req){
+    const url=new URL(req.url);
+    if(req.method==='POST'){
+      let e=null; try{ e=await req.json(); }catch(err){ return json({err:'json'}, 400); }
+      if(e && e.del){
+        if(/^[a-z0-9-]{16,40}$/.test(String(e.id||''))) this.sql.exec('DELETE FROM rows WHERE id=?', String(e.id));
+        return json({ok:true});
+      }
+      const now=Date.now();
+      const r=this.board.accept(e, this.one(String((e&&e.id)||'')), now);
+      if(r.err) return json({err:r.err}, 400);
+      if(r.skip) return json({ok:true, skip:r.skip});
+      const w=r.row;
+      this.sql.exec(`INSERT OR REPLACE INTO rows(id,nick,region,country,seasons,earn,ovr,div,titles,year,best,bestEv,at)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`, w.id, w.nick, w.region, w.country, w.seasons, w.earn,
+        w.ovr, w.div, w.titles, w.year, w.best, w.bestEv, w.at);
+      return json({ok:true});
+    }
+    const region=REGIONS.indexOf(url.searchParams.get('region'))>=0 ? url.searchParams.get('region') : null;
+    const me=String(url.searchParams.get('me')||'');
+    const where=region ? ' WHERE region=?' : '';
+    const args=region ? [region] : [];
+    const rows=this.sql.exec('SELECT * FROM rows'+where+' ORDER BY earn DESC, at ASC LIMIT '+TOP, ...args).toArray();
+    const total=this.sql.exec('SELECT COUNT(*) AS n FROM rows'+where, ...args).toArray()[0].n;
+    let you=null;
+    const mine=/^[a-z0-9-]{16,40}$/.test(me) ? this.one(me) : null;
+    if(mine && (!region || mine.region===region)){
+      const above=this.sql.exec('SELECT COUNT(*) AS n FROM rows WHERE (earn>? OR (earn=? AND at<?))'+(region?' AND region=?':''),
+        mine.earn, mine.earn, mine.at, ...args).toArray()[0].n;
+      you={rank:above+1, row:strip(mine)};
+    }
+    return json({total, rows:rows.map(r=>Object.assign(strip(r), r.id===me ? {you:true} : {})), you});
+  }
+}
+function strip(r){ const o=Object.assign({}, r); delete o.id; return o; }
+const CORS={'Access-Control-Allow-Origin':'*', 'Access-Control-Allow-Methods':'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers':'Content-Type'};
+function json(o, status){
+  return new Response(JSON.stringify(o), {status:status||200,
+    headers:Object.assign({'Content-Type':'application/json', 'Cache-Control':'no-store'}, CORS)});
+}
+
 export default {
   async fetch(req, env){
     const url=new URL(req.url);
+    if(url.pathname==='/board'){
+      if(req.method==='OPTIONS') return new Response(null, {status:204, headers:CORS});
+      if(req.method!=='GET' && req.method!=='POST') return new Response('no', {status:405, headers:CORS});
+      // Тело не больше пары килобайт: строка карьеры столько и весит.
+      if(req.method==='POST' && Number(req.headers.get('Content-Length')||0) > 4096) return json({err:'size'}, 413);
+      const stub=env.BOARD.get(env.BOARD.idFromName('global'));
+      return stub.fetch(req);
+    }
     const m=url.pathname.match(/^\/lobby\/([A-Z0-9]{6})$/);
     if(!m) return new Response('no', {status:404});
     if(req.headers.get('Upgrade')!=='websocket')

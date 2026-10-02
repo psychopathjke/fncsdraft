@@ -3443,6 +3443,18 @@
   .ch-subtab{border:0;cursor:pointer;font:inherit;font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;
     padding:8px 14px;border-radius:999px;color:#cfd8ff;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);}
   .ch-subtab.on{color:#0b1a3a;background:#ffdd00;box-shadow:none;}
+  /* Игроки сайта (careerWorldHTML): регионы чипами, своя строка жёлтой полосой, на телефоне таблица листается вбок. */
+  .lb-top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:0 0 8px;}
+  .lb-regs{display:flex;gap:4px;flex-wrap:wrap;}
+  .lb-regs .ch-subtab{padding:6px 10px;font-size:11px;}
+  .lb-you{margin:10px 0;font-weight:900;font-size:15px;color:#ffdd00;}
+  .lb-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:8px;border-radius:12px;box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);}
+  .lb-table{width:100%;border-collapse:collapse;font-size:13px;min-width:560px;}
+  .lb-table th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#9fb0e0;padding:8px 10px;background:rgba(255,255,255,.05);}
+  .lb-table td{padding:7px 10px;border-top:1px solid rgba(180,200,255,.1);white-space:nowrap;}
+  .lb-table td small{color:#8fa1cc;font-size:11px;}
+  .lb-table tr.lb-me td{background:rgba(255,221,0,.14);font-weight:800;}
+  .lb-table tr.lb-gap td{text-align:center;color:#8fa1cc;}
   .mc-block{margin:6px 0 12px;} .mc-head{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:8px;font-weight:900;font-size:13px;}
   .mc-head span:last-child{text-align:right;} .mc-head em{font-style:italic;color:#ffdd00;margin-left:4px;} .mc-head i{font-style:normal;font-size:10px;color:#8094c4;text-transform:uppercase;}
   .mc-row{display:grid;grid-template-columns:30px 1fr 64px 1fr 30px;gap:8px;align-items:center;margin:6px 0;font-size:13px;}
@@ -8592,7 +8604,7 @@ ccContestTitle:'К кому летим',
 ccContestHint:'Занятые точки — выбирай, кого выбивать',
 ccContestNote:(p,l)=>'сила '+p+' · с точки +'+l,
 ccDropTitle:'Оффспавн — куда падаем',
-ccStyleT:'Стиль игры', ccStyleChill:'Спокойно', ccStyleNorm:'Обычно', ccStyleKey:'W-key', ccStyleKeyNote:'Агрессивно, в каждую драку: каждый килл — лут и сила до конца игры. Сильным — игры с киллами, слабым — ранняя смерть', ccStyleChillNote:'Меньше драк, ставка на место', ccStyleMp:'В командной карьере стиль общий — не меняется',
+ccStyleKeyHand:(n,m)=>'рука набита '+n+'/'+m, ccStyleT:'Стиль игры', ccStyleChill:'Спокойно', ccStyleNorm:'Обычно', ccStyleKey:'W-key', ccStyleKeyNote:'Агрессивно, в каждую драку: каждый килл — лут и сила до конца игры. Сильным — игры с киллами, слабым — ранняя смерть', ccStyleChillNote:'Меньше драк, ставка на место', ccStyleMp:'В командной карьере стиль общий — не меняется',
 ccDropHint:'До первой зоны есть время решить: сесть на своё место или лететь к чужому',
 ccDropQuiet:'Сесть спокойно', ccDropQuietNote:'Свободная точка с лучшим лутом — собраться без драки',
 ccDropHome:'На свою локацию', ccDropHomeNote:(a,n)=>(a?('Дом, аура '+a):'Дом, ауры пока нет')+' · '+(n>0?('сегодня к тебе летят '+n):'сегодня никто не летит'),
@@ -9187,6 +9199,7 @@ ccFfCap:'Сыграть за меня', ccFfWeek:'Неделю', ccFfMonth:'Ме
 ccFfHint:'Сыграет турниры за тебя и потратит свободные дни на лучшую тренировку. Предложения от клубов и дуо останутся ждать в почте',
 ccFfRunning:'Перемотка', ccFfDays:(d,t)=>d+' из '+ruDays(t),
 ccFfTime:s=>s<60 ? s+' с' : Math.round(s/60)+' мин', ccFfEta:t=>'Займёт ≈ '+t+'. Вкладку можно свернуть — в фоне перемотка не тормозит.', ccFfLeft:t=>'осталось ≈ '+t,
+lbTab:'Игроки сайта', lbAll:'Все', lbYou:(n,t)=>'Ты — '+n+'-й из '+t, lbNote:'Карьеры игроков сайта по призовым. Строку присылает сама игра, раз в 10 минут, — проверить её сервер не может.', lbHide:'Не показывать меня', lbShow:'Показывать меня', lbHidden:'Твоей карьеры в таблице нет.', lbLoad:'Загрузка…', lbErr:'Таблица не отвечает — попробуй позже.', lbEmpty:'Пока никого.', lbCols:['#','Игрок','Регион','Призовые','Рейтинг','Див.','Титулы','Лучшее'], lbSeasons:n=>n+' сез.',
 ccCoWin:['так держать','это было чисто','заслужил','лучший вечер недели','вот это класс','поздравляю!'],
 ccCoPod:['красиво','хорошо зашли','ещё чуть-чуть','достойно','неплохо вышло'],
 ccCoMid:['бывает','нормально отыграл','в следующий раз','терпимо','ну ок'],
@@ -10589,7 +10602,7 @@ ccContestTitle:'Who are we landing on',
 ccContestHint:'Taken spots — pick who you are clearing out',
 ccContestNote:(p,l)=>'power '+p+' · spot +'+l,
 ccDropTitle:'Off spawn — where do we land',
-ccStyleT:'Playstyle', ccStyleChill:'Chill', ccStyleNorm:'Normal', ccStyleKey:'W-key', ccStyleKeyNote:'More fights: every kill is loot and power for the rest of the game. Strong teams get high-kill wins, weak ones die early', ccStyleChillNote:'Fewer fights, play for placement', ccStyleMp:'In a team career the style is shared and stays normal',
+ccStyleKeyHand:(n,m)=>'practice '+n+'/'+m+' games', ccStyleT:'Playstyle', ccStyleChill:'Chill', ccStyleNorm:'Normal', ccStyleKey:'W-key', ccStyleKeyNote:'More fights: every kill is loot and power for the rest of the game. Strong teams get high-kill wins, weak ones die early', ccStyleChillNote:'Fewer fights, play for placement', ccStyleMp:'In a team career the style is shared and stays normal',
 ccDropHint:'There is time before the first circle: take your own ground or fly at somebody else',
 ccDropQuiet:'Land quiet', ccDropQuietNote:'The best free spot — loot up without a fight',
 ccDropHome:'Onto your spot', ccDropHomeNote:(a,n)=>(a?('Home, aura '+a):'Home, no aura yet')+' · '+(n>0?(n+' squad'+(n>1?'s':'')+' coming today'):'nobody is coming today'),
@@ -11182,6 +11195,7 @@ ccFfCap:'Play it for me', ccFfWeek:'A week', ccFfMonth:'A month', ccFfConfirm:d=
 ccFfHint:'Plays the tournaments for you and spends the free days on the best training. Offers from clubs and duos stay in the inbox',
 ccFfRunning:'Fast-forward', ccFfDays:(d,t)=>d+' of '+t+' days',
 ccFfTime:s=>s<60 ? s+' s' : Math.round(s/60)+' min', ccFfEta:t=>'Takes about '+t+'. You can switch tabs — it does not slow down in the background.', ccFfLeft:t=>'about '+t+' left',
+lbTab:'Site players', lbAll:'All', lbYou:(n,t)=>'You are #'+n+' of '+t, lbNote:'Careers of players on this site, by prize money. The game sends its own row every 10 minutes — the server cannot verify it.', lbHide:'Hide me', lbShow:'Show me', lbHidden:'Your career is not on the board.', lbLoad:'Loading…', lbErr:'The board is not answering — try again later.', lbEmpty:'Nobody yet.', lbCols:['#','Player','Region','Prize money','Rating','Div','Titles','Best'], lbSeasons:n=>n+' seas.',
 ccCoWin:['well played','that was clean','deserved','best run of the week','class','congrats!'],
 ccCoPod:['nice one','good run','so close','solid','that was decent'],
 ccCoMid:['happens','fine run','next time','not bad','ok then'],
@@ -12394,6 +12408,7 @@ ccResPlayed:n=>n+' tournoi'+(n===1?'':'s'),
 ccResMore:n=>'et '+n+' de plus',
 ccFfDays:(d,t)=>d+' jours sur '+t,
 ccFfTime:s=>s<60 ? s+' s' : Math.round(s/60)+' min', ccFfEta:t=>'Environ '+t+'. Tu peux changer d’onglet — en arrière-plan ça ne ralentit pas.', ccFfLeft:t=>'encore ≈ '+t,
+lbTab:'Joueurs du site', lbAll:'Tous', lbYou:(n,t)=>'Tu es '+n+'e sur '+t, lbNote:'Carrières des joueurs du site, par gains. Le jeu envoie sa ligne toutes les 10 minutes — le serveur ne peut pas la vérifier.', lbHide:'Me cacher', lbShow:'Me montrer', lbHidden:'Ta carrière n’est pas dans le classement.', lbLoad:'Chargement…', lbErr:'Le classement ne répond pas — réessaie plus tard.', lbEmpty:'Personne pour l’instant.', lbCols:['#','Joueur','Région','Gains','Note','Div','Titres','Meilleur'], lbSeasons:n=>n+' sais.',
 ccCoWin:['bien joué','c’était propre','mérité','le meilleur run de la semaine','la classe','félicitations !'],
 ccCoPod:['joli','bon run','tout près','solide','pas mal du tout'],
 ccCoMid:['ça arrive','run correct','la prochaine fois','pas mal','ok'],
@@ -12717,7 +12732,7 @@ ccContestTitle:'Sur qui on tombe',
 ccContestHint:'Spots occupés — choisis qui tu nettoies',
 ccContestNote:(p,l)=>'puissance '+p+' · spot +'+l,
 ccDropTitle:'Off spawn — on tombe où',
-ccStyleT:'Style', ccStyleChill:'Tranquille', ccStyleNorm:'Normal', ccStyleKey:'W-key', ccStyleKeyNote:'Plus de fights : chaque kill donne du loot et de la force jusqu’à la fin de la game. Les forts gagnent avec des kills, les faibles meurent tôt', ccStyleChillNote:'Moins de fights, on joue le placement', ccStyleMp:'En carrière à deux, le style reste normal',
+ccStyleKeyHand:(n,m)=>'entraînement '+n+'/'+m+' parties', ccStyleT:'Style', ccStyleChill:'Tranquille', ccStyleNorm:'Normal', ccStyleKey:'W-key', ccStyleKeyNote:'Plus de fights : chaque kill donne du loot et de la force jusqu’à la fin de la game. Les forts gagnent avec des kills, les faibles meurent tôt', ccStyleChillNote:'Moins de fights, on joue le placement', ccStyleMp:'En carrière à deux, le style reste normal',
 ccDropHint:'Il reste du temps avant la première zone : ton terrain ou celui d’un autre',
 ccDropQuiet:'Atterrir tranquille', ccDropQuietNote:'Le meilleur spot libre — looter sans bagarre',
 ccDropHome:'Sur ton spot', ccDropHomeNote:(a,n)=>(a?('Maison, aura '+a):'Maison, pas encore d’aura')+' · '+(n>0?(n+' équipe'+(n>1?'s':'')+' arrivent'):'personne ne vient'),
@@ -14976,6 +14991,7 @@ calFfAsk:(d,n,e)=>'Giocare fino al '+d+'? Sono '+n+(n===1?' giorno':' giorni')+(
 ccFfConfirm:d=>'Vivere '+d+' giorni con una pressione? I tornei vengono giocati, le giornate spese, e le offerte possono scadere.',
 ccFfDays:(d,t)=>d+' di '+t+' giorni',
 ccFfTime:s=>s<60 ? s+' s' : Math.round(s/60)+' min', ccFfEta:t=>'Circa '+t+'. Puoi cambiare scheda — in background non rallenta.', ccFfLeft:t=>'mancano ≈ '+t,
+lbTab:'Giocatori del sito', lbAll:'Tutti', lbYou:(n,t)=>'Sei '+n+'° su '+t, lbNote:'Carriere dei giocatori del sito, per montepremi. Il gioco invia la sua riga ogni 10 minuti — il server non può verificarla.', lbHide:'Nascondimi', lbShow:'Mostrami', lbHidden:'La tua carriera non è in classifica.', lbLoad:'Caricamento…', lbErr:'La classifica non risponde — riprova più tardi.', lbEmpty:'Ancora nessuno.', lbCols:['#','Giocatore','Regione','Montepremi','Valutazione','Div','Titoli','Migliore'], lbSeasons:n=>n+' stag.',
 ccCoMore:n=>'altri '+n,
 ccFfDone:d=>d+' giorni saltati',
 ccFfPlayed:n=>'Tornei giocati: '+n,
@@ -16030,7 +16046,7 @@ ccDiffLegend:"Leggenda",
 ccContestTitle:"Su chi atterriamo",
 ccContestHint:"Punti occupati — scegli chi vai a sgomberare",
 ccDropTitle:"Fuori dallo spawn — dove atterriamo",
-ccStyleT:"Stile", ccStyleChill:"Tranquillo", ccStyleNorm:"Normale", ccStyleKey:"W-key", ccStyleKeyNote:"Più scontri: ogni kill dà loot e forza fino a fine partita. I forti vincono con tante kill, i deboli muoiono presto", ccStyleChillNote:"Meno scontri, si gioca per il piazzamento", ccStyleMp:"Nella carriera in coppia lo stile resta normale",
+ccStyleKeyHand:(n,m)=>'allenamento '+n+'/'+m+' partite', ccStyleT:"Stile", ccStyleChill:"Tranquillo", ccStyleNorm:"Normale", ccStyleKey:"W-key", ccStyleKeyNote:"Più scontri: ogni kill dà loot e forza fino a fine partita. I forti vincono con tante kill, i deboli muoiono presto", ccStyleChillNote:"Meno scontri, si gioca per il piazzamento", ccStyleMp:"Nella carriera in coppia lo stile resta normale",
 ccDropHint:"C'è tempo prima del primo cerchio: prenditi la tua zona o vola addosso a qualcuno",
 ccDropQuiet:"Atterra tranquillo",
 ccDropQuietNote:"Il miglior punto libero — lootti senza combattere",
@@ -17498,6 +17514,7 @@ calFfAsk:(d,n,e)=>'Jogar at\u00e9 '+d+'? S\u00e3o '+n+(n===1?' dia':' dias')+(e?
 ccFfConfirm:d=>'Viver '+d+' dias num aperto s\u00f3? Os torneios s\u00e3o jogados, os dias s\u00e3o gastos, e propostas podem expirar.',
 ccFfDays:(d,t)=>d+' de '+t+' dias',
 ccFfTime:s=>s<60 ? s+' s' : Math.round(s/60)+' min', ccFfEta:t=>'Leva cerca de '+t+'. Pode trocar de aba — em segundo plano não fica mais lento.', ccFfLeft:t=>'faltam ≈ '+t,
+lbTab:'Jogadores do site', lbAll:'Todos', lbYou:(n,t)=>'Você é o '+n+'º de '+t, lbNote:'Carreiras dos jogadores do site, por premiação. O jogo envia sua linha a cada 10 minutos — o servidor não pode verificá-la.', lbHide:'Me esconder', lbShow:'Me mostrar', lbHidden:'Sua carreira não está na tabela.', lbLoad:'Carregando…', lbErr:'A tabela não responde — tente mais tarde.', lbEmpty:'Ninguém ainda.', lbCols:['#','Jogador','Região','Premiação','Rating','Div','Títulos','Melhor'], lbSeasons:n=>n+' temp.',
 ccCoMore:n=>'mais '+n,
 ccFfDone:d=>d+' dias pulados',
 ccFfPlayed:n=>'Torneios jogados: '+n,
@@ -18552,7 +18569,7 @@ ccDiffLegend:"Lenda",
 ccContestTitle:"Em cima de quem a gente pousa",
 ccContestHint:"Pontos ocupados — escolha quem você vai tirar dali",
 ccDropTitle:"Saindo do ônibus — onde a gente pousa",
-ccStyleT:"Estilo", ccStyleChill:"Tranquilo", ccStyleNorm:"Normal", ccStyleKey:"W-key", ccStyleKeyNote:"Mais lutas: cada kill dá loot e força até o fim da partida. Os fortes vencem com muitos kills, os fracos morrem cedo", ccStyleChillNote:"Menos lutas, jogar pela colocação", ccStyleMp:"Na carreira em dupla o estilo fica normal",
+ccStyleKeyHand:(n,m)=>'treino '+n+'/'+m+' partidas', ccStyleT:"Estilo", ccStyleChill:"Tranquilo", ccStyleNorm:"Normal", ccStyleKey:"W-key", ccStyleKeyNote:"Mais lutas: cada kill dá loot e força até o fim da partida. Os fortes vencem com muitos kills, os fracos morrem cedo", ccStyleChillNote:"Menos lutas, jogar pela colocação", ccStyleMp:"Na carreira em dupla o estilo fica normal",
 ccDropHint:"Dá tempo antes do primeiro círculo: pegue seu próprio chão ou voe em cima de alguém",
 ccDropQuiet:"Pousar tranquilo",
 ccDropQuietNote:"O melhor ponto livre — lootar sem briga",
@@ -114952,6 +114969,7 @@ function careerSave(){
      снимается на закрытии (CC_MP_RAND). */
   if(ccMpOn() && !CC_MP_ADVANCE && !CC_MP_RAND && !CC_MP_HOLD && typeof MP!=='undefined' && MP.push)
     MP.push(ccTeamState());
+  try{ ccBoardSoon(); }catch(e){}
   const key=LS_SLOT(ccSlotMine());   // в свой слот, а не в тот, куда указывает другая вкладка
   /* НЕ ВЛЕЗЛО — СЖАТЬ, А НЕ РЕЗАТЬ (его скрин 1.10, iPhone: «This career is not being saved
      (QuotaExceededError)»). Safari даёт сайту около 5 МБ, строки там по два байта, а полгода карьеры —
@@ -115718,10 +115736,122 @@ function ccHdrSeasonDelta(){
   const cr=CAREER.career, first=(cr.log||[]).find(r=>r.season===cr.season && r.ovr!=null);
   return first ? Math.round((CAREER.player.ovr||0)-first.ovr) : 0;
 }
-// Подвкладки объединённых вкладок: «Медиа» = соцсети + стримы, «Таблицы» = PR/призовые + моя статистика.
+/* ===== Игроки сайта: общая таблица карьер =====================================
+
+   Его выбор 2.10 из списка «чего не хватает»: таблица, где своя карьера стоит
+   среди чужих. Строку карьеры игра шлёт сама (ccBoardSend) на воркер mp.fncsdraft.com
+   (/board, см. server/src/board.js): не чаще раза в 10 минут и только когда что-то
+   поменялось. id карьеры — случайный и наружу не уходит: по нему строка
+   обновляется и прячется. С file:// (пробы, сторожа) не шлётся ничего, если хост
+   не задан явно (MP.host), — иначе каждая проверка писала бы в живую таблицу.
+
+   Проверить строку сервер не может — карьера считается в браузере, — и вкладка
+   так и пишет. Пустая таблица и упавший сервер — не ошибка игры: вкладка говорит
+   «не отвечает», карьера идёт дальше. */
+const CC_BOARD_EVERY=10*60000;
+let CC_BOARD_T=null, CC_BOARD_REGION=null, CC_BOARD_DATA=null;
+function ccBoardBase(){
+  const h=(typeof MP!=='undefined' && MP.host) || '';
+  if(!h && location.protocol==='file:') return null;
+  return String(h||'wss://mp.fncsdraft.com').replace(/^wss:/, 'https:').replace(/^ws:/, 'http:')+'/board';
+}
+function ccBoardOn(){
+  const cr=CAREER && CAREER.career;
+  return !!(cr && !CAREER._mgr && !(cr.board && cr.board.off) && ccBoardBase());
+}
+function ccBoardId(){
+  const cr=CAREER.career;
+  cr.board=cr.board||{};
+  if(!cr.board.id){
+    let id='';
+    try{ id=crypto.randomUUID(); }catch(e){ id=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2); }
+    cr.board.id=String(id).toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 40);
+  }
+  return cr.board.id;
+}
+// Строка карьеры: то, что о ней видно всем.
+function ccBoardRow(){
+  const pl=CAREER.player, cr=CAREER.career, log=cr.log||[];
+  let best=null;
+  log.forEach(r=>{ if(!(r && r.place>0 && r.of>0)) return;
+    if(!best || r.place<best.place || (r.place===best.place && r.of>best.of)) best=r; });
+  return {id:ccBoardId(), nick:String(pl.nick||pl.handle||'').slice(0, 24), region:ccCareerRegion(),
+          country:String(pl.country||'').toLowerCase().slice(0, 2), seasons:Math.max(1, cr.season||1),
+          earn:Math.max(0, Math.round(cr.earnings||0)), ovr:Math.round(ccMyShownOvr()||pl.ovr||1),
+          div:Math.min(5, Math.max(1, cr.division||5)), titles:log.filter(r=>r && r.place===1).length,
+          year:(typeof ccCalYear==='function' ? ccCalYear() : 2026),
+          best: best ? best.place+'/'+best.of : '', bestEv: best ? String(best.kind||'cup') : ''};
+}
+// После сохранения — отложенно, чтобы десять сохранений вечера дали одну отправку.
+function ccBoardSoon(){
+  if(!ccBoardOn()) return;
+  clearTimeout(CC_BOARD_T);
+  CC_BOARD_T=setTimeout(()=>{ try{ ccBoardSend(false); }catch(e){} }, 3000);
+}
+function ccBoardSend(force){
+  if(!ccBoardOn()) return Promise.resolve(false);
+  const cr=CAREER.career, row=ccBoardRow();
+  const key=[row.nick, row.region, row.earn, row.div, row.titles, row.best, row.seasons].join('|');
+  const b=cr.board;
+  if(!force && b.key===key) return Promise.resolve(false);
+  if(!force && b.sent && Date.now()-b.sent < CC_BOARD_EVERY) return Promise.resolve(false);
+  b.sent=Date.now(); b.key=key;
+  return fetch(ccBoardBase(), {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(row)})
+    .then(r=>r.ok).catch(()=>false);
+}
+function ccBoardToggle(){
+  const cr=CAREER.career; cr.board=cr.board||{};
+  const id=ccBoardId();
+  cr.board.off=!cr.board.off;
+  careerSave();
+  const base=ccBoardBase();
+  const done=()=>{ CC_BOARD_DATA=null; careerTab('world'); };
+  if(!base){ done(); return; }
+  (cr.board.off ? fetch(base, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:id, del:true})})
+                : ccBoardSend(true)).catch(()=>{}).then(done, done);
+}
+function ccBoardRegion(r){ CC_BOARD_REGION=r||null; CC_BOARD_DATA=null; careerTab('world'); }
+function ccBoardLoad(){
+  const base=ccBoardBase();
+  if(!base) return Promise.resolve({err:true});
+  const cr=CAREER.career;
+  const q='?'+(CC_BOARD_REGION ? 'region='+encodeURIComponent(CC_BOARD_REGION)+'&' : '')+
+          'me='+encodeURIComponent((cr.board && cr.board.id) || '');
+  return fetch(base+q).then(r=>r.ok ? r.json() : {err:true}).catch(()=>({err:true}));
+}
+function careerWorldHTML(){
+  const T=L(), cr=CAREER.career, off=!!(cr.board && cr.board.off);
+  const regs=[[null, T.lbAll]].concat(['EU','NAC','NAW','BR','ASIA','ME','OCE'].map(r=>[r, r]));
+  const head='<div class="lb-top"><div class="lb-regs">'+regs.map(([k,t])=>
+      '<button class="ch-subtab'+(CC_BOARD_REGION===k?' on':'')+'" onclick="ccBoardRegion('+(k?'\''+k+'\'':'null')+')">'+esc(t)+'</button>').join('')+
+    '</div><button class="ch-swap" onclick="ccBoardToggle()">'+esc(off ? T.lbShow : T.lbHide)+'</button></div>'+
+    '<div class="ch-hint">'+esc(T.lbNote)+'</div>';
+  const d=CC_BOARD_DATA;
+  if(!d){
+    // Сначала своя строка (чтобы таблица увидела сегодняшние деньги), потом чтение.
+    ccBoardSend(false).then(()=>ccBoardLoad()).then(x=>{ CC_BOARD_DATA=x||{err:true}; if(CH_TAB==='world') careerTab('world'); });
+    return head+'<div class="ch-hint">'+esc(T.lbLoad)+'</div>';
+  }
+  if(d.err) return head+'<div class="ch-hint">'+esc(T.lbErr)+'</div>';
+  const rows=d.rows||[];
+  const me=d.you ? '<div class="lb-you">'+esc(T.lbYou(d.you.rank, d.total))+'</div>'
+                 : (off ? '<div class="ch-hint">'+esc(T.lbHidden)+'</div>' : '');
+  if(!rows.length) return head+me+'<div class="ch-hint">'+esc(T.lbEmpty)+'</div>';
+  const c=T.lbCols;
+  const flag=cc=>cc ? '<img class="ch-bio-flag" src="flags/w20/'+esc(ccCountryOf(cc))+'.png" alt="" onerror="this.remove()"> ' : '';
+  const evw=k=>{ try{ return ccFfKindWord(k)||''; }catch(e){ return ''; } };
+  const tr=(r,i)=>'<tr class="'+(r.you?'lb-me':'')+'"><td>'+(i+1)+'</td><td>'+flag(r.country)+esc(r.nick)+
+    '<small> · '+esc(T.lbSeasons(r.seasons))+'</small></td><td>'+esc(r.region)+'</td><td>$'+ccNum(r.earn)+
+    '</td><td>'+r.ovr+'</td><td>'+r.div+'</td><td>'+r.titles+'</td><td>'+(r.best ? esc(r.best)+(r.bestEv ? ' <small>'+esc(evw(r.bestEv))+'</small>' : '') : '—')+'</td></tr>';
+  let body=rows.map(tr).join('');
+  if(d.you && !rows.some(r=>r.you)) body+='<tr class="lb-gap"><td colspan="8">…</td></tr>'+tr(Object.assign({you:true}, d.you.row), d.you.rank-1);
+  return head+me+'<div class="lb-wrap"><table class="lb-table"><thead><tr>'+c.map(x=>'<th>'+esc(x)+'</th>').join('')+
+    '</tr></thead><tbody>'+body+'</tbody></table></div>';
+}
+// Подвкладки объединённых вкладок: «Медиа» = соцсети + стримы, «Таблицы» = PR/призовые + моя статистика + игроки сайта.
 function ccSubTabsHTML(group){
   const list=group==='media' ? [['social', L().chTabSocial], ['streams', L().chTabStreams]]
-                             : [['table', L().lfSubPrMoney], ['stats', L().chTabStats]];
+                             : [['table', L().lfSubPrMoney], ['stats', L().chTabStats], ['world', L().lbTab]];
   return '<div class="ch-subtabs">'+list.map(([k,t])=>'<button class="ch-subtab'+(CH_TAB===k?' on':'')+'" onclick="careerTab(\''+k+'\')">'+esc(t)+'</button>').join('')+'</div>';
 }
 function careerRenderHubBody(tab){
@@ -115837,7 +115967,7 @@ function careerRenderHubBody(tab){
 
   document.querySelectorAll('#screen-career-hub .ch-tab').forEach(b=>{
     // Стримы живут внутри «Медиа», статистика — внутри «Таблиц».
-    b.classList.toggle('on', b.dataset.tab===({streams:'social', stats:'table'}[CH_TAB]||CH_TAB));
+    b.classList.toggle('on', b.dataset.tab===({streams:'social', stats:'table', world:'table'}[CH_TAB]||CH_TAB));
   });
   // The unread dot is the lobby's own notification mark — it is the only thing
   // on this screen that asks to be clicked.
@@ -115868,6 +115998,7 @@ function careerRenderHubBody(tab){
   if(CH_TAB==='log'){ body.innerHTML=careerProfileHTML(); return; }
   if(CH_TAB==='hist'){ body.innerHTML=careerHistoryHTML(); return; }
   if(CH_TAB==='stats'){ body.innerHTML=ccSubTabsHTML('boards')+careerStatsHTML(); return; }
+  if(CH_TAB==='world'){ body.innerHTML=ccSubTabsHTML('boards')+careerWorldHTML(); return; }
   if(CH_TAB==='streams'){ body.innerHTML=ccSubTabsHTML('media')+careerStreamsHTML(); return; }
   // Two standings on one tab: the division's season table, which only Division 1
   // has, and the money, which everybody is in.
@@ -145694,28 +145825,44 @@ function ccSoloHomeZoneOf(t){
 let CC_STYLE_TEAM=null;
 function ccStyleShared(){ return (typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRaceLock==='function' && ccRaceLock()); }
 function ccPlayStyle(){ const cr=CAREER && CAREER.career; return (!ccStyleShared() && cr && cr.playStyle) || 'norm'; }
+/* НАБИТАЯ РУКА: «after you troll for so many games you get high kill wins» (тот же отзыв, вторая
+   половина). Каждая игра в «кейить» — в cr.keyGames; за CC_KEY_MASTER_GAMES игр лут с килла растёт
+   с CC_KEY_LOOT до CC_KEY_LOOT_MASTER. Замер 2.10 (career-spread-probe.js, 600 игр, очки · победы):
+     97: обычно 39.1 · 4.5% | 0.01 44.6 · 6.5% | 0.015 46.1 · 8.3%
+     86: обычно 29.4 · 0.5% | 0.01 25.9 · 0.7% | 0.015 29.3 · 1.7%
+     78: обычно 19.1 · 0.2% | 0.01 16.7 · 0.0% | 0.015 20.1 · 0.0%
+   Набитая агрессия — прибавка сильному и ноль в среднем слабому: не подарок всем (0.02 им был). */
+const CC_KEY_MASTER_GAMES=100, CC_KEY_LOOT_MASTER=0.015;
+function ccKeyGames(){ const cr=CAREER && CAREER.career; return (cr && cr.keyGames) || 0; }
+function ccKeyMastery(){ return Math.min(1, ccKeyGames()/CC_KEY_MASTER_GAMES); }
 function ccApplyPlayStyle(t){
   if(!t) return; const st=ccPlayStyle();
   t._seekMul = st==='key' ? CC_KEY_SEEK : st==='chill' ? CC_CHILL_SEEK : 1;
-  t._keyLoot = st==='key' ? CC_KEY_LOOT : 0;
+  t._keyLoot = st==='key' ? CC_KEY_LOOT+(CC_KEY_LOOT_MASTER-CC_KEY_LOOT)*ccKeyMastery() : 0;
+}
+function ccKeyNote(st){
+  if(st==='key') return L().ccStyleKeyNote+' · '+L().ccStyleKeyHand(Math.min(CC_KEY_MASTER_GAMES, ccKeyGames()), CC_KEY_MASTER_GAMES);
+  return st==='chill' ? L().ccStyleChillNote : '';
 }
 function ccSetPlayStyle(st, btn){
   const cr=CAREER && CAREER.career; if(!cr || ccStyleShared()) return;
   cr.playStyle=st; ccApplyPlayStyle(CC_STYLE_TEAM);
   try{ careerSave(); }catch(e){}
   const row=btn && btn.closest('.cc-style'); if(row){ row.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.st===st));
-    const n=row.querySelector('.cc-style-note'); if(n) n.textContent=st==='key' ? L().ccStyleKeyNote : st==='chill' ? L().ccStyleChillNote : ''; }
+    const n=row.querySelector('.cc-style-note'); if(n) n.textContent=ccKeyNote(st); }
 }
 function ccPlayStyleHTML(){
   if(ccStyleShared()) return '';
   const st=ccPlayStyle();
   return '<span class="cc-style" onclick="event.stopPropagation()"><em>'+esc(L().ccStyleT)+'</em>'+
     [['chill',L().ccStyleChill],['norm',L().ccStyleNorm],['key',L().ccStyleKey]].map(([k,t])=>'<button type="button" data-st="'+k+'" class="'+(st===k?'on':'')+'" onclick="ccSetPlayStyle(\''+k+'\', this)">'+esc(t)+'</button>').join('')+
-    '<small class="cc-style-note">'+esc(st==='key' ? L().ccStyleKeyNote : st==='chill' ? L().ccStyleChillNote : '')+'</small></span>';
+    '<small class="cc-style-note">'+esc(ccKeyNote(st))+'</small></span>';
 }
 async function careerLandingPick(field, you, title, kinds, o){
   o=o||{};
-  if(!o.tag || !ccStyleShared()){ CC_STYLE_TEAM=you; ccApplyPlayStyle(you); }
+  if(!o.tag || !ccStyleShared()){ CC_STYLE_TEAM=you; ccApplyPlayStyle(you);
+    // Игра в «кейить» — в счёт набитой руки (ccKeyMastery). Сила ставится ДО счёта: эта игра идёт с тем, что было.
+    if(!o.tag && ccPlayStyle()==='key' && CAREER && CAREER.career) CAREER.career.keyGames=(CAREER.career.keyGames||0)+1; }
   /* Общая комната гонки: две команды людей, у каждой свой дроп, и порядок вопросов
      один у обоих клиентов — по адресу (mpTag), как у двоих в соло (ccSoloDrops).
      Раннер зовёт пик для своей команды без адреса; здесь он превращается в два
