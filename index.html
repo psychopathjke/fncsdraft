@@ -137972,6 +137972,11 @@ function careerWorldFinals(fromISO, toISO){
     try{ careerMoneyAdd(ranked, prize); } finally { CC_PRIZE_DAY=null; }
     careerPrAdd(ranked, meta);
     const w=ranked[0];
+    // Финал своего Мейджора без игрока — в Историю тем, кем он сыгран (careerArchiveSeason).
+    if(kind==='major' && w){
+      const aw=cr.arcWorld=cr.arcWorld||{};
+      aw[key]={day:day, won:ccStageSeatRow(w), top:ccStageTop(ranked, null)};
+    }
     CC_POST_DAY=day;   // лента датируется днём вечера, а не днём, с которого ушёл игрок
     try{
       if(w && typeof L().ccNewsWorldWon==='function')
@@ -156483,20 +156488,35 @@ function ccArcRoster(reg){ return ccSceneRoster(reg); }
    тем же правилом, что и пул: записанные в ростере пары, сильнейшие первыми,
    никто не стоит в двух. Кэш (CC_ARC_PAIRS) объявлен рядом с CC_NOW_CARDS:
    он держит карточки того же роастера и чистится вместе с ним. */
-function ccArcPairs(reg){
-  if(reg===ccPoolRegion()){
+/* ПАРЫ СВОЕГО ГОДА (y — календарный год сезона архива).
+
+   Тестер, 5 октября (Notion «05»): «баганная таблица победителей турниров — на
+   Америке одни и те же победители и итоги ФНКС в каждом новом сезоне». Так и
+   было: пары чужого региона собирались из ВСЕХ записанных пар всех лет и
+   кэшировались на регион, без сезона, — то есть каждый сезон Истории садил одну
+   и ту же очередь сильнейших пар, и верх сцены не менялся никогда. Замер
+   (tools/probe-arc-cont.js, карьера 2022-го, NAC): в 2022, 2023 и 2024 году
+   чемпионами и верхом таблиц ходили одни и те же Clix & Higgs, Kwanti & Bylah,
+   Khanada & Boltz.
+
+   Теперь первыми встают пары, сыгранные В ГОД ЭТОГО СЕЗОНА (карточки этого
+   года), — у кого из этой сцены они есть, — а остальные записанные пары идут
+   за ними. Год сезона другой — и сцена другая, как и было в жизни. Свой регион
+   в идущем году (и в годах того же календаря) — всё ещё живой пул карьеры. */
+function ccArcPairs(reg, y){
+  if(reg===ccPoolRegion() && (y==null || y===ccArcCalYear(CAREER.career.season))){
     const pool=careerPools(), inPair=new Set();
     (pool.duos||[]).forEach(d=>d.cards.forEach(c=>inPair.add(hKey(c))));
     return {pairs:(pool.duos||[]).map(d=>({cards:d.cards.slice(), avg:d.avg})),
             singles:(pool.players||[]).filter(c=>!inPair.has(hKey(c)))
                       .slice().sort((a,b)=>ccCardOvr(b)-ccCardOvr(a))};
   }
-  if(CC_ARC_PAIRS[reg]) return CC_ARC_PAIRS[reg];
+  const ck=reg+'|'+(y||'');
+  if(CC_ARC_PAIRS[ck]) return CC_ARC_PAIRS[ck];
   const roster=ccArcRoster(reg), by=new Map();
   roster.forEach(c=>by.set(hKey(c), c));
   const seen=new Map();
-  PLAYERS.forEach(p=>{
-    if((p.region||'')!==reg) return;
+  const take=p=>{
     rosterEntriesOf(p).forEach(function(e){
       // Тройки 2025-го записаны в той же форме; здесь нужна пара.
       if(!e.entry || e.entry.duo.length!==2) return;
@@ -156504,17 +156524,19 @@ function ccArcPairs(reg){
       if(seen.has(id)) return;
       const a=by.get(ks[0]), b=by.get(ks[1]);
       if(!a || !b) return;
-      seen.set(id, {cards:[a, b], avg:(ccCardOvr(a)+ccCardOvr(b))/2});
+      seen.set(id, {cards:[a, b], avg:(ccCardOvr(a)+ccCardOvr(b))/2, yr:!!(y && ccCardYear(p)===y)});
     });
-  });
+  };
+  if(y) PLAYERS.forEach(p=>{ if((p.region||'')===reg && ccCardYear(p)===y) take(p); });
+  PLAYERS.forEach(p=>{ if((p.region||'')===reg) take(p); });
   const taken=new Set(), pairs=[];
-  [...seen.values()].sort((x,y)=>y.avg-x.avg).forEach(d=>{
+  [...seen.values()].sort((a,b)=>(b.yr-a.yr) || (b.avg-a.avg)).forEach(d=>{
     const ka=hKey(d.cards[0]), kb=hKey(d.cards[1]);
     if(taken.has(ka) || taken.has(kb)) return;
     taken.add(ka); taken.add(kb); pairs.push(d);
   });
-  CC_ARC_PAIRS[reg]={pairs:pairs, singles:roster.filter(c=>!taken.has(hKey(c)))};
-  return CC_ARC_PAIRS[reg];
+  CC_ARC_PAIRS[ck]={pairs:pairs, singles:roster.filter(c=>!taken.has(hKey(c)))};
+  return CC_ARC_PAIRS[ck];
 }
 // Третий к записанной паре — тем же броском, каким его сажает живое лобби:
 // сезон, дивизион 1 и сами эти двое. См. coreRnd в careerCupField; ключ общий,
@@ -156525,10 +156547,10 @@ function ccArcCoreRnd(sn, cards){
 }
 // A champion team out of a region: a recorded pair off the top of the scene,
 // and the seat beside it chosen for the pair it is joining.
-function ccArcTeam(reg, size, rng, skip){
+function ccArcTeam(reg, size, rng, skip, y){
   const roster=ccArcRoster(reg);
   if(!roster.length) return null;
-  const src=ccArcPairs(reg);
+  const src=ccArcPairs(reg, y);
   const out=h=>(skip && skip.has(hKey(h)));
   const has=h=>team.some(c=>hKey(c)===hKey(h)) || out(h);
   /* Из верхней полосы сцены, а не из одной точки: полоса — это команды, из
@@ -156623,6 +156645,32 @@ function ccArcMajorOf(day, sn){
   if(y===2020) return m<=4 ? 1 : m<=8 ? 2 : 3;       // C2S2, C2S3, C2S4       // март, май, август
   return m<=6 ? 1 : 2;                                // май, август
 }
+/* НАСТОЯЩИЙ ГРАНД-ФИНАЛ В ИСТОРИИ.
+
+   Сезон, который играется людьми ТОГО ЖЕ года (первый сезон карьеры 2019–2025),
+   — это настоящий год, и его Мейджоры у Epic уже сыграны: финальные таблицы
+   лежат в наборах карточек (_T[set][reg].G — та самая доска, по которой
+   считались рейтинги). Чужой регион мир карьеры не играет, и вместо выдуманного
+   чемпиона сцены строка называет настоящего, а таблица открывается настоящей:
+   Америка 2024-го — Acorn & Cold, потом дважды Peterbot & Pollo, как и было.
+   Год, где люди другие (карьера дожила до него своим миром), — по-прежнему
+   реконструкция: настоящих команд того года в таком мире нет. */
+function ccArcRealSet(y, n){
+  const sp=(typeof ccMXSpec==='function') ? ccMXSpec(y, n) : null;
+  if(sp && sp.set) return sp.set;
+  const pre={2021:'j', 2022:'k', 2023:'e', 2024:'f', 2025:'t'}[y];
+  const set=pre ? pre+n : null;
+  return set && T_SETS.indexOf(set)>=0 ? set : null;
+}
+function ccArcRealGf(sn, n, reg){
+  const y=ccArcCalYear(sn);
+  if(y>=2026 || ccNowYear()!==y) return null;
+  const set=ccArcRealSet(y, n);
+  const b=set && _T[set] && _T[set][reg] && _T[set][reg].G;
+  if(!b || !b.length) return null;
+  const rows=b.slice().sort((p,q)=>p.rank-q.rank);
+  return {set:set, rows:rows, team:rows[0].duo.map(h=>ccStageCardFrom({h:h, r:reg}))};
+}
 function careerArchiveSeason(sn){
   const cr=CAREER.career;
   // What that season was actually played in, not what its number implies.
@@ -156650,6 +156698,15 @@ function careerArchiveSeason(sn){
     // national cap тоже там и соло, крупные турниры крч».
     if(e.kind==='nations' && e.stage==='final') me.nations=e;
     if(e.kind==='solo' && e.stage==='final') me.solo=e;
+  });
+  /* Финал своего Мейджора, до которого игрок не дошёл, мир всё равно сыграл
+     (careerWorldFinals) — с победителем в ленте и деньгами в доске. Его запись
+     (cr.arcWorld) встаёт на место записи журнала: История называет того же
+     чемпиона и ту же таблицу, а не выдуманную сцену. */
+  const aw=cr.arcWorld||{};
+  Object.keys(aw).forEach(k=>{
+    const m=/^(\d+)\|major(\d)$/.exec(k);
+    if(m && +m[1]===sn && !me.majors[+m[2]]) me.majors[+m[2]]=aw[k];
   });
   const won=e=>(e && e.place===1) ? meTeam(e) : null;
   /* Что игрок ВИДЕЛ своими глазами.
@@ -156690,7 +156747,7 @@ function careerArchiveSeason(sn){
     const rng=seed('scene|'+r.code);
     const teams=[]; const used=new Set();
     for(let i=0;i<3;i++){
-      const t=ccArcTeam(r.code, size, rng, used);
+      const t=ccArcTeam(r.code, size, rng, used, ccArcCalYear(sn));
       if(t && t.length===size){ t.forEach(c=>used.add(hKey(c))); teams.push(t); }
     }
     // The champions of the year's majors, drawn from that one scene: the
@@ -156722,8 +156779,11 @@ function careerArchiveSeason(sn){
       // Свой мейджор игрок отыграл: чемпион там тот, кого он видел, а не
       // тот, кого вычислила сцена. См. seenWin.
       const mSeen=r.code===mine ? seenWin(me.majors[n]) : null;
+      // Где был свой вечер (журнал или мир карьеры) — он и остаётся правдой.
+      const real=(own || mSeen || (r.code===mine && me.majors[n])) ? null : ccArcRealGf(sn, n, r.code);
       perReg[r.code]=own ? {name:wins.majors[n], you:true, team}
                    : mSeen ? {name:mSeen.name, team:mSeen.team}
+                   : real ? {name:ccArcName(real.team), team:real.team, real:real}
                          : {name:ccArcName(team), team};
     });
     return {label:ccArcMajorLabel(sn, n), perReg, mi, n, mine:me.majors[n]||null};
@@ -156967,7 +157027,7 @@ function ccArcCount(size, duos){ return size===3 ? Math.round(duos*2/3) : duos; 
    ccPickThird — because a Grand Finals field and a cup field are the same
    question asked twice. */
 function ccArcField(reg, size, n, rng, champ, skip, sn){
-  const roster=ccArcRoster(reg), src=ccArcPairs(reg);
+  const roster=ccArcRoster(reg), src=ccArcPairs(reg, sn!=null ? ccArcCalYear(sn) : null);
   const taken=new Set(), teams=[];
   // The player's own seat, where they were in this one. It is spoken for: the
   // room had a partner of yours in it playing beside somebody else otherwise,
@@ -157156,6 +157216,20 @@ function careerArchiveFinal(sn, key){
       cfg=Object.assign({}, cfg, {field:arcY===2021 ? 33 : 50});
       evPrize=tier(t);
     }
+  }
+  // Настоящий Гранд-финал (см. ccArcRealGf) — доска Epic как есть, без переигровки.
+  const realW=kind==='major' && a.regional.find(r=>r.n===+p[1]).perReg[reg].real;
+  if(realW){
+    const prz=evPrize || ccArcPrize(kind, reg);
+    // Ник — как его пишет сцена (тот же, что в строке чемпиона), а не как его набрала доска.
+    const rows=realW.rows.map((e,i)=>({p:i+1, name:e.duo.map(h=>ccStageCardFrom({h:h, r:reg}).handle).join(' & '), reg:reg, pts:e.pts||0, wins:e.wins||0,
+      elims:Math.round((e.avgElims||0)*(e.matches||0)), prize:prz(i+1)}));
+    const ws=realW.rows[0].duo.length;
+    const word=ws===1 ? L().lfWordSolo : ws===4 ? L().lfWordSquads : ws===3 ? L().ccWordTrios : L().ccWordDuos;
+    const games=Math.max.apply(null, realW.rows.map(e=>e.matches||0)) || cfg.games;
+    const out={cap:label, sub:L().arcTable(ccNum(rows.length), word, games), lan:false, rows};
+    CH_ARC_TBL[ck]=out;
+    return out;
   }
   /* РАЗМЕР СОСТАВА У ЭТИХ ДВУХ — СВОЙ, А НЕ СЕЗОНА.
 
