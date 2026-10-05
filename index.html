@@ -1592,6 +1592,8 @@
   .cc-aw-cat{margin-top:10px;} .cc-aw-cat h5{margin:0 0 4px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; opacity:.7;}
   .cc-ps{margin-top:10px;}
   .cc-ps-head{font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; opacity:.65; margin:8px 0 5px;}
+  /* Подпись половины счётчика FNCS: настоящее или сыгранное в этой карьере (ccFncsBlockHTML). */
+  .cc-ps-sub{font-size:10px; font-style:italic; opacity:.6; margin:2px 0 4px;}
   .cc-ps-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:2px 14px;}
   .cc-ps-grid div{display:flex; justify-content:space-between; gap:8px; font-size:11px; border-bottom:1px dashed rgba(255,255,255,.14); padding:2px 0;}
   .cc-ps-grid span{opacity:.75;} .cc-ps-grid b{font-weight:800; white-space:nowrap;}
@@ -9527,7 +9529,7 @@ dmMeTalkrole:(m,y)=>'По ролям: ты '+m+', я '+y+'. Норм?',
 dmMateTalkrole:(m,y)=>'Норм. Ты зовёшь ротации, я беру первый контакт. Так и играем',
 dmMeTalklife:'Как сам?',
 dmMateTalklife:'Нормально. Спал мало, но настрой есть. Погнали вечером',
-ccPsTitle:'Сезон в этой карьере', ccPsPr:'Power Ranking', ccPsPrize:'Призовые за год', ccPsEvents:'Турниров', ccPsWins:'Побед (VR)', ccPsElims:'Килов', ccPsAvg:'Среднее место', ccPsBest:'Лучшее место', ccPsPodiums:'Подиумов', ccPsLast:'Последние вечера', ccStTitle:'Статистика', ccStEmpty:'Сыграй первый турнир — здесь появятся числа', ccStEvents:'Турниров', ccStGames:'Матчей',
+ccPsTitle:'Сезон в этой карьере', ccPsPr:'Power Ranking', ccPsPrize:'Призовые за год', ccPsEvents:'Турниров', ccPsWins:'Побед (VR)', ccPsElims:'Килов', ccPsAvg:'Среднее место', ccPsBest:'Лучшее место', ccPsPodiums:'Подиумов', ccPsLast:'Последние вечера', ccPsFncs:'FNCS за всю карьеру игрока', ccPsFncsReal:'Настоящие турниры — Tracker и Liquipedia', ccPsFncsN:'Турниров FNCS', ccPsFncsGf:'Гранд-финалов', ccPsFncsBest:'Лучший финал', ccPsFncsTitles:'Титулов', ccPsFncsGc:'Глобалы', ccPsFncsMine:n=>'В этой карьере — из последних '+n+' вечеров', ccPsFncsNights:'Вечеров FNCS', ccPsFncsWon:'Побед', ccStTitle:'Статистика', ccStEmpty:'Сыграй первый турнир — здесь появятся числа', ccStEvents:'Турниров', ccStGames:'Матчей',
 ccStWins:'Побед', ccStElims:'Элиминаций', ccStPerGame:'за матч', ccStAvg:'Среднее место', ccStPodiums:'Подиумов', ccStTop10:'Топ-10',
 ccStPromos:'Квалификаций', ccStPrize:'Призовых', ccStWages:'Зарплат', ccStSide:'Подработок и кастомок', ccStBestNight:'Лучший вечер',
 ccStBestElims:'Больше всего элимов', ccStByKind:'По турнирам', ccStBySeason:'По сезонам', ccStSeason:'Сезон', ccStBest:'Лучшее',
@@ -11515,7 +11517,7 @@ dmMeTalkrole:(m,y)=>'On roles: you are '+m+', I am '+y+'. Good?',
 dmMateTalkrole:(m,y)=>'Good. You call the rotations, I take first contact. That is how we play',
 dmMeTalklife:'How are you doing?',
 dmMateTalklife:'Fine. Slept badly, but the mood is there. Let us go tonight',
-ccPsTitle:'This career, this season', ccPsPr:'Power Ranking', ccPsPrize:'Prize money this year', ccPsEvents:'Events', ccPsWins:'Wins (VR)', ccPsElims:'Elims', ccPsAvg:'Average place', ccPsBest:'Best place', ccPsPodiums:'Podiums', ccPsLast:'Latest nights', ccStTitle:'Stats', ccStEmpty:'Play a first tournament and the numbers appear here', ccStEvents:'Tournaments', ccStGames:'Matches',
+ccPsTitle:'This career, this season', ccPsPr:'Power Ranking', ccPsPrize:'Prize money this year', ccPsEvents:'Events', ccPsWins:'Wins (VR)', ccPsElims:'Elims', ccPsAvg:'Average place', ccPsBest:'Best place', ccPsPodiums:'Podiums', ccPsLast:'Latest nights', ccPsFncs:'FNCS over the whole career', ccPsFncsReal:'Real events — Tracker and Liquipedia', ccPsFncsN:'FNCS events', ccPsFncsGf:'Grand Finals', ccPsFncsBest:'Best final', ccPsFncsTitles:'Titles', ccPsFncsGc:'Global Championships', ccPsFncsMine:n=>'In this career — from the last '+n+' nights', ccPsFncsNights:'FNCS nights', ccPsFncsWon:'Wins', ccStTitle:'Stats', ccStEmpty:'Play a first tournament and the numbers appear here', ccStEvents:'Tournaments', ccStGames:'Matches',
 ccStWins:'Wins', ccStElims:'Eliminations', ccStPerGame:'per match', ccStAvg:'Average place', ccStPodiums:'Podiums', ccStTop10:'Top 10s',
 ccStPromos:'Qualifications', ccStPrize:'Prize money', ccStWages:'Wages', ccStSide:'Side jobs and customs', ccStBestNight:'Best night',
 ccStBestElims:'Most eliminations', ccStByKind:'By tournament', ccStBySeason:'By season', ccStSeason:'Season', ccStBest:'Best',
@@ -13937,7 +13939,7 @@ dmMeTalkrole:(m,y)=>'Les rôles : toi '+m+', moi '+y+'. Ça va ?',
 dmMateTalkrole:(m,y)=>'Ça va. Tu appelles les rotations, je prends le premier contact. On joue comme ça',
 dmMeTalklife:'Ça va toi ?',
 dmMateTalklife:'Ça va. Mal dormi, mais le moral est là. On y va ce soir',
-ccPsTitle:'Cette carrière, cette saison', ccPsPr:'Power Ranking', ccPsPrize:'Gains de l\'année', ccPsEvents:'Tournois', ccPsWins:'Victoires (VR)', ccPsElims:'Élims', ccPsAvg:'Place moyenne', ccPsBest:'Meilleure place', ccPsPodiums:'Podiums', ccPsLast:'Dernières soirées', ccStTitle:'Statistiques', ccStEmpty:'Joue un premier tournoi et les chiffres apparaîtront ici', ccStEvents:'Tournois', ccStGames:'Parties',
+ccPsTitle:'Cette carrière, cette saison', ccPsPr:'Power Ranking', ccPsPrize:'Gains de l\'année', ccPsEvents:'Tournois', ccPsWins:'Victoires (VR)', ccPsElims:'Élims', ccPsAvg:'Place moyenne', ccPsBest:'Meilleure place', ccPsPodiums:'Podiums', ccPsLast:'Dernières soirées', ccPsFncs:'La FNCS sur toute sa carrière', ccPsFncsReal:'Vrais tournois — Tracker et Liquipedia', ccPsFncsN:'Tournois FNCS', ccPsFncsGf:'Grandes finales', ccPsFncsBest:'Meilleure finale', ccPsFncsTitles:'Titres', ccPsFncsGc:'Global Championships', ccPsFncsMine:n=>'Dans cette carrière — sur les '+n+' dernières soirées', ccPsFncsNights:'Soirées FNCS', ccPsFncsWon:'Victoires', ccStTitle:'Statistiques', ccStEmpty:'Joue un premier tournoi et les chiffres apparaîtront ici', ccStEvents:'Tournois', ccStGames:'Parties',
 ccStWins:'Victoires', ccStElims:'Éliminations', ccStPerGame:'par partie', ccStAvg:'Place moyenne', ccStPodiums:'Podiums', ccStTop10:'Top 10',
 ccStPromos:'Qualifications', ccStPrize:'Gains', ccStWages:'Salaires', ccStSide:'Petits boulots et customs', ccStBestNight:'Meilleure soirée',
 ccStBestElims:'Record d\'éliminations', ccStByKind:'Par tournoi', ccStBySeason:'Par saison', ccStSeason:'Saison', ccStBest:'Meilleur',
@@ -14277,7 +14279,7 @@ dmMeTalkrole:(m,y)=>"Sui ruoli: tu "+m+", io "+y+". Va bene?",
 dmMateTalkrole:(m,y)=>"Va bene. Tu chiami le rotazioni, io prendo il primo contatto. Giochiamo così",
 dmMeTalklife:"Come va?",
 dmMateTalklife:"Bene. Ho dormito poco, ma il morale c'è. Andiamo stasera",
-ccPsTitle:'Questa carriera, questa stagione', ccPsPr:'Power Ranking', ccPsPrize:'Montepremi dell\'anno', ccPsEvents:'Tornei', ccPsWins:'Vittorie (VR)', ccPsElims:'Elim.', ccPsAvg:'Piazzamento medio', ccPsBest:'Miglior piazzamento', ccPsPodiums:'Podi', ccPsLast:'Ultime serate', ccStTitle:"Statistiche", ccStEmpty:"Gioca il primo torneo e qui compariranno i numeri", ccStEvents:"Tornei", ccStGames:"Partite",
+ccPsTitle:'Questa carriera, questa stagione', ccPsPr:'Power Ranking', ccPsPrize:'Montepremi dell\'anno', ccPsEvents:'Tornei', ccPsWins:'Vittorie (VR)', ccPsElims:'Elim.', ccPsAvg:'Piazzamento medio', ccPsBest:'Miglior piazzamento', ccPsPodiums:'Podi', ccPsLast:'Ultime serate', ccPsFncs:'La FNCS in tutta la carriera', ccPsFncsReal:'Tornei reali — Tracker e Liquipedia', ccPsFncsN:'Tornei FNCS', ccPsFncsGf:'Grand Finals', ccPsFncsBest:'Miglior finale', ccPsFncsTitles:'Titoli', ccPsFncsGc:'Global Championship', ccPsFncsMine:n=>'In questa carriera — dalle ultime '+n+' serate', ccPsFncsNights:'Serate FNCS', ccPsFncsWon:'Vittorie', ccStTitle:"Statistiche", ccStEmpty:"Gioca il primo torneo e qui compariranno i numeri", ccStEvents:"Tornei", ccStGames:"Partite",
 ccStWins:"Vittorie", ccStElims:"Eliminazioni", ccStPerGame:"a partita", ccStAvg:"Piazzamento medio", ccStPodiums:"Podi", ccStTop10:"Top 10",
 ccStPromos:"Qualificazioni", ccStPrize:"Montepremi", ccStWages:"Stipendi", ccStSide:"Lavoretti e custom", ccStBestNight:"Serata migliore",
 ccStBestElims:"Record di eliminazioni", ccStByKind:"Per torneo", ccStBySeason:"Per stagione", ccStSeason:"Stagione", ccStBest:"Migliore",
@@ -16802,7 +16804,7 @@ dmMeTalkrole:(m,y)=>"Sobre funções: você "+m+", eu "+y+". Beleza?",
 dmMateTalkrole:(m,y)=>"Beleza. Você chama as rotações, eu pego o primeiro contato. É assim que jogamos",
 dmMeTalklife:"E aí, como você está?",
 dmMateTalklife:"De boa. Dormi pouco, mas o ânimo está aí. Bora hoje à noite",
-ccPsTitle:'Esta carreira, esta temporada', ccPsPr:'Power Ranking', ccPsPrize:'Prêmios do ano', ccPsEvents:'Torneios', ccPsWins:'Vitórias (VR)', ccPsElims:'Elims', ccPsAvg:'Posição média', ccPsBest:'Melhor posição', ccPsPodiums:'Pódios', ccPsLast:'Últimas noites', ccStTitle:"Estatísticas", ccStEmpty:"Jogue o primeiro torneio e os números aparecem aqui", ccStEvents:"Torneios", ccStGames:"Partidas",
+ccPsTitle:'Esta carreira, esta temporada', ccPsPr:'Power Ranking', ccPsPrize:'Prêmios do ano', ccPsEvents:'Torneios', ccPsWins:'Vitórias (VR)', ccPsElims:'Elims', ccPsAvg:'Posição média', ccPsBest:'Melhor posição', ccPsPodiums:'Pódios', ccPsLast:'Últimas noites', ccPsFncs:'FNCS em toda a carreira', ccPsFncsReal:'Torneios reais — Tracker e Liquipedia', ccPsFncsN:'Torneios FNCS', ccPsFncsGf:'Grandes finais', ccPsFncsBest:'Melhor final', ccPsFncsTitles:'Títulos', ccPsFncsGc:'Global Championships', ccPsFncsMine:n=>'Nesta carreira — das últimas '+n+' noites', ccPsFncsNights:'Noites FNCS', ccPsFncsWon:'Vitórias', ccStTitle:"Estatísticas", ccStEmpty:"Jogue o primeiro torneio e os números aparecem aqui", ccStEvents:"Torneios", ccStGames:"Partidas",
 ccStWins:"Vitórias", ccStElims:"Eliminações", ccStPerGame:"por partida", ccStAvg:"Colocação média", ccStPodiums:"Pódios", ccStTop10:"Top 10",
 ccStPromos:"Classificações", ccStPrize:"Premiação", ccStWages:"Salários", ccStSide:"Bicos e customs", ccStBestNight:"Melhor noite",
 ccStBestElims:"Recorde de eliminações", ccStByKind:"Por torneio", ccStBySeason:"Por temporada", ccStSeason:"Temporada", ccStBest:"Melhor",
@@ -108429,7 +108431,7 @@ function openCardPeek(pl){
   if(!body) return;
   // В карьере под листом карточки — её сезон в этой карьере (careerPlayerStatsHTML).
   const inCareer=(typeof CAREER!=='undefined' && CAREER && CAREER.career) && ((typeof CAREER_RUN!=='undefined' && CAREER_RUN) || /career/.test(String(typeof SHOWN_SCREEN!=='undefined' ? SHOWN_SCREEN : '')));
-  body.innerHTML=playerStatSheetHTML(team, idx, pl)+(inCareer && typeof careerPlayerStatsHTML==='function' ? careerPlayerStatsHTML(pl.handle) : '');
+  body.innerHTML=playerStatSheetHTML(team, idx, pl)+(inCareer && typeof careerPlayerStatsHTML==='function' ? careerPlayerStatsHTML(pl.handle, pl.region) : '');
   document.getElementById('cardPeekModal').style.display='flex';
 }
 function closeCardPeek(){
@@ -132045,7 +132047,7 @@ function careerWhoHTML(h){
         : `<button class="x-act" onclick="careerVouch(\'${esh}\')">${L().ccPostVouchBtn}</button>`) : ''}
     </div>
     ${ccCardShotHTML(h)}
-    ${careerPlayerStatsHTML(h)}
+    ${careerPlayerStatsHTML(h, card && card.region)}
     <div class="x-timeline">${posts.length
       ? posts.slice(0, 20).map(ccPostHTML).join('')
       : `<div class="ch-empty">${L().xNoPosts}</div>`}</div>
@@ -156223,7 +156225,85 @@ function careerPlogAdd(name, meta, place, of, team, you){
    турниров/побед/килов, среднее и лучшее место, подиумы и последние вечера строками.
    Всё из cr.plog, ПР-доски и доски призовых; открывается из профиля в соцсети, из лупы на
    карточке и из таблицы вечера (имена кликаются, ccNamesPeekHTML). Пусто — не рисуется. */
-function careerPlayerStatsHTML(h){
+/* СЧЁТЧИК FNCS У КАЖДОГО ИГРОКА СЦЕНЫ (5.10, Notion «05», испанский игрок: «mas contador de
+   fncs de todos los jugadores»). Две половины и обе подписаны, чтобы настоящее не путалось с
+   сыгранным:
+   — НАСТОЯЩЕЕ: карточки игрока (PLAYERS — одна на этап турнира, с местом placement, из Tracker и
+     Liquipedia) плюс строки финалов RANKED. Турнир = название до « — » («FNCS 2025 Major 3»), этапы
+     одного турнира — один турнир; место берётся с самого глубокого этапа (финал > полуфинал/неделя >
+     квалификация). Титул — 1-е место в Гранд-финале или на Глобалах. Ничего не досчитывается: чего
+     нет в данных, того нет и в счётчике.
+   — В ЭТОЙ КАРЬЕРЕ: вечера FNCS из cr.plog (Мейджоры, Саммит, Глобалы, финалы недели, ЛАН-этапы);
+     журнал хранит последние CC_PLOG_KEEP вечеров на человека, о чём и сказано в подписи.
+   Регион: тёзки в разных регионах — разные люди (см. память про тёзок), поэтому карточки берутся
+   своего региона; не назван — регион, где у ника больше всего FNCS-карточек. */
+const CC_FNCS_KINDS=['major','summit','globals','final','gc'];
+function ccFncsStageRank(stage){
+  const s=String(stage||'');
+  if(/Grand Finals|Grand Royale|Lyon|Fort Worth|^Finals?$/i.test(s)) return 3;
+  if(/Semi|Week( \d)? Finals|Group|Upper|Play-In|Heat|Event \d/i.test(s)) return 2;
+  return 1;
+}
+function ccFncsRecord(h, reg){
+  const k=hKey(h);
+  const all=(typeof PLAYERS!=='undefined' ? PLAYERS : []).filter(p=>p && p.handle && hKey(p.handle)===k && /^FNCS /.test(String(p.event||'')));
+  if(!reg && all.length){
+    const n={}; all.forEach(p=>{ n[p.region]=(n[p.region]||0)+1; });
+    reg=Object.keys(n).sort((a,b)=>n[b]-n[a])[0];
+  }
+  const ev={};
+  const put=(name, stage, place)=>{
+    if(!name) return;
+    const r=ccFncsStageRank(stage), e=ev[name]||(ev[name]={name, rank:0, place:null, gf:false, gc:/Global Championship/.test(name)});
+    const p=Number(place);
+    if(r>e.rank || (r===e.rank && p>0 && (e.place==null || p<e.place))){ e.rank=r; e.place=p>0 ? p : e.place; }
+    if(r===3) e.gf=true;
+  };
+  all.filter(p=>!reg || p.region===reg).forEach(p=>{
+    const m=String(p.event).split(/\s+—\s+/);
+    put(m[0].trim(), (m[1]||'').replace(/\s*\(.*$/,''), p.placement);
+  });
+  (typeof RANKED!=='undefined' ? RANKED : []).forEach(x=>{
+    if((reg && x.region && x.region!==reg) || !String(x.duo||'').split(/\s*[&+]\s*/).some(n=>hKey(n)===k)) return;
+    const m=String(x.event||'').split(/\s+—\s+/);
+    if(/^FNCS /.test(m[0])) put(m[0].trim(), (m[1]||'').replace(/\s*\(.*$/,''), x.rank);
+  });
+  const list=Object.values(ev);
+  const years=list.map(e=>+((e.name.match(/\b(20\d\d)\b/)||[])[1])).filter(Boolean);
+  const gfs=list.filter(e=>e.gf && e.place>0);
+  const titles=gfs.filter(e=>e.place===1).map(e=>e.name);
+  const best=gfs.length ? gfs.slice().sort((a,b)=>a.place-b.place)[0] : null;
+  return {region:reg||null, events:list.length, from:years.length ? Math.min(...years) : null, to:years.length ? Math.max(...years) : null,
+          finals:gfs.length, best:best ? {place:best.place, name:best.name} : null, titles,
+          gc:list.filter(e=>e.gc && e.gf && e.place>0).map(e=>({name:e.name, place:e.place}))};
+}
+// Вечера FNCS этой карьеры у ника — из его журнала (последние CC_PLOG_KEEP).
+function ccFncsCareer(rows){
+  const f=(rows||[]).filter(e=>CC_FNCS_KINDS.indexOf(String(e[1]).split(':')[0])>=0);
+  return {n:f.length, best:f.length ? Math.min.apply(null, f.map(e=>e[2])) : null, wins:f.filter(e=>e[2]===1).length};
+}
+function ccFncsBlockHTML(h, reg, rows){
+  const T=L(), rec=ccFncsRecord(h, reg), mine=ccFncsCareer(rows);
+  if(!rec.events && !mine.n) return '';
+  const cell=(a,b)=>'<div><span>'+a+'</span><b>'+b+'</b></div>';
+  const short=n=>esc(String(n).replace(/^FNCS\s+/,''));
+  const real=rec.events
+    ? '<div class="cc-ps-sub">'+esc(T.ccPsFncsReal)+'</div><div class="cc-ps-grid">'+
+        cell(T.ccPsFncsN, rec.events+(rec.from ? ' · '+(rec.from===rec.to ? rec.from : rec.from+'–'+rec.to) : ''))+
+        cell(T.ccPsFncsGf, rec.finals)+
+        (rec.best ? cell(T.ccPsFncsBest, '#'+rec.best.place+' · '+short(rec.best.name)) : '')+
+        cell(T.ccPsFncsTitles, rec.titles.length)+
+        (rec.gc.length ? cell(T.ccPsFncsGc, rec.gc.map(g=>'#'+g.place+' '+short(g.name).replace(/\s*Global Championship/,'')).join(', ')) : '')+
+      '</div>'+
+      (rec.titles.length ? '<div class="cc-ps-list"><div>🏆 '+rec.titles.map(short).join(' · ')+'</div></div>' : '')
+    : '';
+  const own=mine.n
+    ? '<div class="cc-ps-sub">'+esc(T.ccPsFncsMine(CC_PLOG_KEEP))+'</div><div class="cc-ps-grid">'+
+        cell(T.ccPsFncsNights, mine.n)+cell(T.ccPsBest, '#'+mine.best)+cell(T.ccPsFncsWon, mine.wins)+'</div>'
+    : '';
+  return '<div class="cc-ps-head">'+esc(T.ccPsFncs)+'</div>'+real+own;
+}
+function careerPlayerStatsHTML(h, reg){
   const cr=CAREER && CAREER.career; if(!cr || !h) return '';
   const T=L(), k=hKey(h);
   const key=Object.keys(cr.plog||{}).find(n=>hKey(n)===k);
@@ -156231,7 +156311,8 @@ function careerPlayerStatsHTML(h){
   let prRank=null, pr=0;
   try{ const prs=careerPrRows(); for(let i=0;i<prs.length;i++) if(hKey(prs[i].name)===k){ prRank=i+1; pr=prs[i].pr; break; } }catch(e){}
   let money=null; try{ money=(careerMoneyRows('year')||[]).find(r=>hKey(r.name)===k)||null; }catch(e){}
-  if(!rows.length && !prRank && !money) return '';
+  let fncs=''; try{ fncs=ccFncsBlockHTML(h, reg, rows); }catch(e){}
+  if(!rows.length && !prRank && !money) return fncs ? '<div class="cc-ps">'+fncs+'</div>' : '';
   const sum=i=>rows.reduce((a,e)=>a+(e[i]||0), 0);
   const avg=rows.length ? (rows.reduce((a,e)=>a+e[2], 0)/rows.length).toFixed(1) : '—';
   const best=rows.length ? Math.min.apply(null, rows.map(e=>e[2])) : null;
@@ -156245,7 +156326,7 @@ function careerPlayerStatsHTML(h){
   const line=e=>{ const kind=String(e[1]).split(':')[0]; let name=''; try{ name=ccLogName({kind:kind, day:e[0], div:e[7]}); }catch(x){ name=esc(kind); }
     return '<div><i>'+esc(ccDayLabel(e[0]))+'</i>'+name+' · <b>#'+e[2]+'</b>/'+e[3]+' · '+e[4]+' VR · '+e[5]+' E</div>'; };
   return '<div class="cc-ps"><div class="cc-ps-head">'+esc(T.ccPsTitle)+'</div><div class="cc-ps-grid">'+grid+'</div>'+
-    (rows.length ? '<div class="cc-ps-head">'+esc(T.ccPsLast)+'</div><div class="cc-ps-list">'+rows.slice(0, 8).map(line).join('')+'</div>' : '')+'</div>';
+    (rows.length ? '<div class="cc-ps-head">'+esc(T.ccPsLast)+'</div><div class="cc-ps-list">'+rows.slice(0, 8).map(line).join('')+'</div>' : '')+fncs+'</div>';
 }
 // Имена команды в таблице вечера — ссылками на лист (только в карьере, только у кого есть карточки).
 function ccNamesPeekHTML(t){
