@@ -345,45 +345,35 @@
   /* The wordmark and the support button share a line and wrap together when
      there is no room for both. */
   .logo-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-  /* 5.10, «support kofi тоже в таком стиле как карьера и соц сети»: тот же
-     параллелограмм, что у X/телеграма и кнопок героя. Поддержка — жёлтой
-     заливкой, как «Карьера» (--go), Ko-fi — своим коралловым. */
-  .support-top{display:inline-flex;align-items:center;gap:7px;padding:8px 15px 7px;
-    border:1.5px solid var(--go);border-radius:0;background:linear-gradient(180deg,#ffe94d 0%,var(--go) 55%,#e6c600 100%);
-    color:var(--go-ink);text-decoration:none;font-family:var(--font-display);font-size:13px;font-weight:600;
-    letter-spacing:.06em;text-transform:uppercase;line-height:1;white-space:nowrap;transform:skewX(-8deg);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.45), 0 3px 0 rgba(0,0,0,.45);
-    transition:border-color .15s,background .15s,transform .15s,filter .15s;}
-  .support-top>*{transform:skewX(8deg);}
-  .support-top:hover,.support-top:focus-visible{border-color:#fff;transform:skewX(-8deg) translateY(-1px);filter:brightness(1.06);}
-  @media (prefers-reduced-motion:reduce){ .support-top,.support-top:hover,.support-top:focus-visible{transition:none;transform:skewX(-8deg);} }
+  /* 5.10, «support kofi тоже в таком стиле как карьера и соц сети», потом
+     уточнил: «как в карьере такие округлённые». Пилюля подвкладок хаба
+     (.ch-subtab): radius 999, жирный капс 12px, тот же отступ; заливка своя —
+     поддержка жёлтая, как «Карьера» (--go), Ko-fi коралловая. */
+  .support-top{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;
+    border:0;border-radius:999px;background:var(--go);color:var(--go-ink);text-decoration:none;
+    font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;line-height:1;white-space:nowrap;
+    transition:background .15s,filter .15s;}
+  .support-top:hover,.support-top:focus-visible{filter:brightness(1.06);}
   .support-top>span:first-child{font-size:13px;line-height:1;}
   /* Валюта — приписка на самой кнопке, отбитая чертой её же цвета: она отвечает
      на единственный вопрос, который у этой пары возникает, — «какая моя». */
   .pay-cur{font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.06em;
     opacity:.6;border-left:1px solid currentColor;padding-left:7px;margin-left:2px;}
   /* Ko-fi своим цветом, как X и телеграм — своими. */
-  .kofi-top{border-color:#ff5e5b;color:#fff;background:linear-gradient(180deg,#ff8583 0%,#ff5e5b 55%,#e04946 100%);}
-  .kofi-top:hover,.kofi-top:focus-visible{border-color:#fff;}
+  .kofi-top{color:#fff;background:#ff5e5b;}
   /* Фирменные цвета — отзыв: X в своём чёрном, телеграм в
      своём синем. Белая обводка на ховере вместо акцента сайта: кнопка бренда
      подсвечивается собой, а не нашей бирюзой. */
-  /* 5.10, его «сделай в стиле фортнайта» (обвёл X и телеграм в шапке): тот же
-     крой, что у кнопок героя — параллелограмм skewX(-8deg), текст выпрямлен,
-     шрифт заголовков капсом, светлый блик по верхней грани и тень-ступенька
-     снизу, как у плашек лобби игры. Цвета брендов остались. */
-  .x-top{display:inline-flex;align-items:center;gap:7px;padding:8px 15px 7px;
-    border:1.5px solid #3a3a3a;border-radius:0;background:linear-gradient(180deg,#1c1c1c 0%,#000 55%);color:#fff;
-    text-decoration:none;font-family:var(--font-display);font-size:13px;font-weight:600;
-    letter-spacing:.06em;text-transform:uppercase;line-height:1;
-    white-space:nowrap;transform:skewX(-8deg);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 3px 0 rgba(0,0,0,.45);
-    transition:border-color .15s,background .15s,transform .15s,filter .15s;}
-  .x-top>*{transform:skewX(8deg);}
-  .x-top:hover,.x-top:focus-visible{border-color:#fff;transform:skewX(-8deg) translateY(-1px);filter:brightness(1.12);}
-  .tg-top{background:linear-gradient(180deg,#3fb5ec 0%,#229ED9 55%,#1b8cc2 100%);border-color:#229ED9;}
-  .tg-top:hover,.tg-top:focus-visible{border-color:#fff;}
-  @media (prefers-reduced-motion:reduce){ .x-top,.x-top:hover,.x-top:focus-visible{transition:none;transform:skewX(-8deg);} }
+  /* 5.10, «в стиле фортнайта» → «как в карьере такие округлённые»: X и
+     телеграм той же пилюлей, что подвкладки хаба, в цветах брендов. Контур на
+     наведении — общий с пилюлями навбара (см. .nav-pill:hover). */
+  .x-top{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;
+    border:0;border-radius:999px;background:#000;color:#fff;text-decoration:none;
+    font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;line-height:1;
+    white-space:nowrap;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);transition:background .15s;}
+  .x-top:hover,.x-top:focus-visible{outline:3px solid rgba(255,255,255,.92);outline-offset:0;}
+  .tg-top{background:#229ED9;box-shadow:none;}
+  .tg-top:hover,.tg-top:focus-visible{background:#1f8fc4;}
   @media(max-width:560px){
     /* On a phone the wordmark already fills the line, so the two of them take
        the next one — and the handle drops to its mark, which is the part
