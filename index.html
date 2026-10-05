@@ -99676,15 +99676,13 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
        5.10, игрок (Notion «05»): «started a career in 2025 and it won't let me select it… only
        lets me do that in FNCS». Первый раунд капов — раздача без вопроса, careerLandingPick
        там не зовётся, и «кейить» молча не работал. Тут ставится всем вечерам; где вопрос
-       есть, careerLandingPick поставит то же самое и посчитает игру в набитую руку сам. */
-    if(CAREER_RUN && typeof ccApplyPlayStyle==='function' && typeof CAREER!=='undefined' && CAREER && CAREER.career){
-      /* Каждой команде людей — её стиль (ccTeamStyles): свой, напарника, соперников гонки.
-         У обоих клиентов одно и то же: стили приходят по проводу и считаются одинаково. */
-      teams.forEach(t=>{ if(t && !t.isYou && (t.isRival || t.isMate)) ccApplyPlayStyle(t); });
-      const meT=teams.find(t=>t && t.isYou);
-      CC_STYLE_ASK=!!meT;   // первый вопрос этой игры покажет переключатель (ccPlayStyleOnce)
-      if(meT){ CC_STYLE_TEAM=meT; ccApplyPlayStyle(meT);
-        if(typeof opts.dropEachGame!=='function' && ccPlayStyle()==='key') CAREER.career.keyGames=(CAREER.career.keyGames||0)+1; }
+       есть, careerLandingPick поставит то же самое.
+       5.10 вечером: «пусть перед каждой игрой везде» — стиль спрашивается своим вопросом здесь, перед
+       каждой игрой (ccStyleAskGame); в команде и в гонке — через ccMpChoose, одинаково у всех. */
+    if(CAREER_RUN && typeof ccStyleAskGame==='function' && typeof CAREER!=='undefined' && CAREER && CAREER.career){
+      // Команды людей без вопроса (в общем вечере их стиль приходит ответом) — сперва по проводу.
+      teams.forEach(t=>{ if(t && !t.isYou && (t.isRival || t.isMate)){ t._styleGame=null; ccApplyPlayStyle(t); } });
+      await ccStyleAskGame(teams);
     }
     if(typeof opts.dropEachGame==='function'){
       // Спрашивают, глядя на остров, а не на последний круг прошлой игры:
@@ -106718,9 +106716,7 @@ function ccChoiceBox(title, hint, options, onMap, side, kind){
         `</div>`
       : '';
     const mateLine=mate ? `<div class="cc-choice-mate"><i>${esc(mate.name)}</i> ${esc(mate.text)}</div>` : '';
-    // Стиль игры — в первом вопросе игры, если высадку не спрашивали (ccPlayStyleOnce).
-    const styleLine=(typeof ccPlayStyleOnce==='function' && CAREER_RUN) ? ccPlayStyleOnce() : '';
-    box.innerHTML=`<div class="cc-choice-head"><b>${ccChoiceDial(th)}<span class="cc-choice-t">${esc(title)}</span></b>${sub}${mateLine}${styleLine ? '<div class="cc-choice-style">'+styleLine+'</div>' : ''}${ccGameHowHTML()}</div>`+
+    box.innerHTML=`<div class="cc-choice-head"><b>${ccChoiceDial(th)}<span class="cc-choice-t">${esc(title)}</span></b>${sub}${mateLine}${ccGameHowHTML()}</div>`+
       `<div class="cc-choice-row">${options.map((o,i)=>
         `<button class="cc-choice-btn${o.art?' has-art':''}${o.icon?' has-ico':''}${o===dflt && options.length>1?' def':''}${mate && o===mate.pick?' mate':''}" data-at="${i}"${mate && o===mate.pick ? ' data-mate="'+esc(mate.name)+'"' : ''}>
            ${o.art||''}<span class="cc-choice-tt">${o.icon?'<i class="cc-choice-ico'+(o.icoCls?' '+o.icoCls:'')+'">'+o.icon+'</i>':''}<b>${esc(o.title)}</b></span>${o.pack ? ccPackSlotsHTML(o.pack) : ''}${ccChoiceOdds(o.note)}<em>${o.note||''}</em></button>`).join('')}</div>`+
@@ -146356,7 +146352,9 @@ const CC_KEY_MASTER_GAMES=100, CC_KEY_LOOT_MASTER=0.015;
 function ccKeyGames(){ const cr=CAREER && CAREER.career; return (cr && cr.keyGames) || 0; }
 function ccKeyMastery(){ return Math.min(1, ccKeyGames()/CC_KEY_MASTER_GAMES); }
 function ccApplyPlayStyle(t){
-  const ws=ccTeamStyles(t); if(!ws || !ws.length) return;
+  let ws=ccTeamStyles(t); if(!ws || !ws.length) return;
+  // Стиль, выбранный на эту игру (ccStyleAskGame), — для всех людей команды; набитая рука у каждого своя.
+  if(CC_STYLE_IDS.indexOf(t._styleGame)>=0) ws=ws.map(w=>({s:t._styleGame, m:w.m}));
   const seek=w=>w.s==='key' ? CC_KEY_SEEK : w.s==='chill' ? CC_CHILL_SEEK : 1;
   const loot=w=>w.s==='key' ? CC_KEY_LOOT+(CC_KEY_LOOT_MASTER-CC_KEY_LOOT)*Math.min(1, Math.max(0, Number(w.m)||0)) : 0;
   // Среднее в устойчивом порядке: сумма с плавающей точкой у обоих клиентов одна.
@@ -146377,12 +146375,45 @@ function ccSetPlayStyle(st, btn){
   const row=btn && btn.closest('.cc-style'); if(row){ row.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.st===st));
     const n=row.querySelector('.cc-style-note'); if(n) n.textContent=ccKeyNote(st); }
 }
-/* ПЕРЕД КАЖДОЙ ИГРОЙ. Переключатель ездил только в вопросе высадки, а его задают не везде: открытые
-   раунды Кубка мира 2019, первый раунд капов — раздача без вопроса. 5.10: «так раньше же перед каждой
-   игрой писало это» — в 2019-м пропал. Раннер ставит метку на каждую игру (simulateGamesLive), и
-   первый вопрос игры — высадка или любой другой (лут, фарм, ротация) — несёт переключатель один раз. */
-let CC_STYLE_ASK=false;
-function ccPlayStyleOnce(){ if(!CC_STYLE_ASK) return ''; CC_STYLE_ASK=false; return ccPlayStyleHTML(); }
+/* ВОПРОС «СТИЛЬ ИГРЫ» ПЕРЕД КАЖДОЙ ИГРОЙ, ВЕЗДЕ. 5.10: «так раньше же перед каждой игрой писало это…
+   пусть перед каждой игрой везде». Переключатель ездил в вопросе высадки, а его задают не везде
+   (открытые раунды Кубка мира 2019, первый раунд капов). Теперь — свой вопрос, его зовёт
+   simulateGamesLive перед каждой игрой карьеры, в любом режиме.
+   В командной карьере и в общей комнате гонки — через ccMpChoose, как высадка: у каждой команды людей
+   свой адрес ('style'+mpTag), отвечает тот, чей вопрос (ccMpMine), ответ едет остальным, и все ставят
+   команде одно и то же (t._styleGame поверх ccTeamStyles). Набитая рука считается здесь же. */
+const CC_STYLE_IDS=['chill', 'norm', 'key'];
+function ccStyleLabel(s){ return ({chill:L().ccStyleChill, norm:L().ccStyleNorm, key:L().ccStyleKey})[s]||''; }
+function ccTeamStyleNow(t){
+  if(t && t.isYou) return ccPlayStyle();
+  if(t && CC_STYLE_IDS.indexOf(t._styleGame)>=0) return t._styleGame;
+  const ws=ccTeamStyles(t); return (ws && ws[0] && CC_STYLE_IDS.indexOf(ws[0].s)>=0) ? ws[0].s : 'norm';
+}
+async function ccStyleBox(cur){
+  const o=await ccChoiceBox(L().ccStyleT, '', CC_STYLE_IDS.map(id=>({id:id, title:ccStyleLabel(id),
+    note:id==='norm' ? '' : ccKeyNote(id), def:id===cur})), null, null, 'style');
+  return (o && o.id) || cur;
+}
+async function ccStyleAskGame(teams){
+  const cr=CAREER && CAREER.career; if(!cr) return;
+  const shared=ccStyleShared();
+  const tagOf=t=>String(t.mpTag||'');
+  const hs=teams.filter(t=>t && (t.isYou || (shared && (t.isRival || t.isMate))))
+                .sort((a,b)=>tagOf(a)<tagOf(b) ? -1 : tagOf(a)>tagOf(b) ? 1 : 0);
+  for(const t of hs){
+    const cur=ccTeamStyleNow(t);
+    const r=await ccMpChoose('style'+tagOf(t), ()=>t.isYou ? ccStyleBox(cur) : cur, ccStyleLabel);
+    const s=(r && CC_STYLE_IDS.indexOf(r.v)>=0) ? r.v : cur;
+    t._styleGame=s; ccApplyPlayStyle(t);
+    if(t.isYou){
+      CC_STYLE_TEAM=t;
+      // Выбор запоминается как стиль по умолчанию (переключатель на Центре показывает его же).
+      cr.playStyle=s;
+      // Игра в «кейить» — в счёт набитой руки (ccKeyMastery). Сила ставится ДО счёта: эта игра идёт с тем, что было.
+      if(s==='key') cr.keyGames=(cr.keyGames||0)+1;
+    }
+  }
+}
 function ccPlayStyleHTML(){
   if(ccStyleLocked()) return '';
   const st=ccPlayStyle();
@@ -146392,10 +146423,8 @@ function ccPlayStyleHTML(){
 }
 async function careerLandingPick(field, you, title, kinds, o){
   o=o||{};
-  { if(!o.tag){ CC_STYLE_TEAM=you; CC_STYLE_ASK=true; }   // вопрос высадки несёт переключатель всегда
-    ccApplyPlayStyle(you);
-    // Игра в «кейить» — в счёт набитой руки (ccKeyMastery). Сила ставится ДО счёта: эта игра идёт с тем, что было.
-    if(!o.tag && ccPlayStyle()==='key' && CAREER && CAREER.career) CAREER.career.keyGames=(CAREER.career.keyGames||0)+1; }
+  // Стиль на игру спрашивается отдельно, перед каждой игрой (ccStyleAskGame); здесь — только поставить его.
+  { if(!o.tag) CC_STYLE_TEAM=you; ccApplyPlayStyle(you); }
   /* Общая комната гонки: две команды людей, у каждой свой дроп, и порядок вопросов
      один у обоих клиентов — по адресу (mpTag), как у двоих в соло (ccSoloDrops).
      Раннер зовёт пик для своей команды без адреса; здесь он превращается в два
@@ -146602,7 +146631,7 @@ async function careerLandingPick(field, you, title, kinds, o){
     if(CC_FF) return home ? {id:'home', at:ALL_LANDING_ZONES.indexOf(home)} : {id:'quiet', at:-1};
     const p=await ccChoiceBox(L().ccDropTitle,
       // Чужие объявления — прямо в подсказке: решение принимается здесь.
-      L().ccDropHint+(calls ? ' · '+L().ccDropCalls+' '+calls : '')+ccPlayStyleOnce(),
+      L().ccDropHint+(calls ? ' · '+L().ccDropCalls+' '+calls : ''),
       /* Картинки — ВНУТРИ кнопок, отзыв: «внутри квадратика
          типа картинки эти». У «своей локации» — квадратик своей точки, у
          «законтестить» — остров целиком с рамкой на ней. Маленькие, слева от

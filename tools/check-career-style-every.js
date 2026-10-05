@@ -56,19 +56,23 @@ const BOOT = `
     const html=ccPlayStyleHTML();
     check('переключатель собирается', /cc-style/.test(html) && /data-st="key"/.test(html));
     out.steps.push('кейить без вопроса высадки: seek '+CC_KEY_SEEK+', рука '+k0+'→'+(k0+1));
-    // Перед каждой игрой: игра без вопроса высадки — переключатель в ПЕРВОМ вопросе игры, и только в нём
-    // (5.10: «так раньше же перед каждой игрой писало это» — открытые раунды 2019 года).
+    // Вопрос «Стиль игры» перед каждой игрой (5.10: «пусть перед каждой игрой везде»): окно с тремя
+    // кнопками, по умолчанию — текущий стиль; ответ ставится команде, запоминается и считается в руку.
     skipAnimation=false; CC_SKIP_RUN=false; CAREER_RUN=true;
     let host=document.getElementById('majorStages'); if(!host){ host=document.createElement('div'); host.id='majorStages'; document.body.appendChild(host); }
-    CC_STYLE_ASK=true;
-    const ask=()=>{ const p=ccChoiceBox('t', 'h', [{id:'a', title:'A'}, {id:'b', title:'B'}], null, null, 'loot');
-      const box=[...document.querySelectorAll('.cc-choice')].pop(); const has=!!(box && box.querySelector('.cc-style'));
-      const b=box && box.querySelector('button[data-at], .cc-choice-opt, button:not([data-st])'); if(b) b.click(); return has; };
-    const first=ask(), second=ask();
-    check('первый вопрос игры без высадки несёт стиль', first);
-    check('второй вопрос той же игры — без стиля', !second);
+    cr.playStyle='norm'; you._styleGame=null; const k1=cr.keyGames||0;
+    const pend=ccStyleAskGame([you]);
+    const box=[...document.querySelectorAll('.cc-choice')].pop();
+    const btns=box ? [...box.querySelectorAll('.cc-choice-btn')] : [];
+    check('окно стиля перед игрой', btns.length===3, btns.length);
+    check('по умолчанию — текущий', !!(btns[1] && btns[1].classList.contains('def')));
+    if(btns[2]) btns[2].click();
+    await pend;
+    check('ответ ставится на игру', you._styleGame==='key' && you._seekMul===CC_KEY_SEEK, you._styleGame+'/'+you._seekMul);
+    check('ответ запоминается', cr.playStyle==='key', cr.playStyle);
+    check('игра в W-key — в руку', (cr.keyGames||0)===k1+1, k1+'→'+cr.keyGames);
     CAREER_RUN=false;
-    out.steps.push('стиль в первом вопросе игры: '+first+', во втором: '+second);
+    out.steps.push('вопрос стиля перед игрой: 3 кнопки, выбран W-key → seek '+you._seekMul);
   }catch(e){ out.fails.push('исключение: '+String(e && e.stack || e).slice(0,300)); }
   out.errs=window.__errs;
   document.getElementById('__out').textContent='BE'+'GIN'+encodeURIComponent(JSON.stringify(out))+'END';
