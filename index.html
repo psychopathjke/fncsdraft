@@ -126810,6 +126810,19 @@ function careerGrowthMax(){ return CAREER_GROWTH_MAX; }
 // What a year of a career's life is worth to it, on the difficulty it is on.
 // The curve is the curve; this is how much of it a career is given.
 function careerDevelopNow(age){ return careerDevelopBase(age)*careerDiff().age; }
+/* Своя карьера после тридцати идёт вниз. 5.10, его ответ игроку «after 30,
+   your rating starts to drop» и потом «может после 30 уже снижение идёт»: до
+   этого база росла до 36 и падала только с 37. Ступени 31–33 / 34–36, с 37 —
+   прежние −0.06. Только своя карьера: сцена растёт по careerDevelopBase и
+   откалибрована под неё (CC_SCENE_AGE_W), её не трогаем. Результаты вечера
+   идут сверху, так что тридцатилетний на хорошей форме ещё может расти. */
+const CC_MY_FADE=[[30, null], [33, -0.02], [36, -0.04]];
+function careerMyDevelopNow(age){
+  const a=Number(age);
+  if(isFinite(a) && a>CC_MY_FADE[0][0] && a<=CC_MY_FADE[2][0])
+    return (a<=CC_MY_FADE[1][0] ? CC_MY_FADE[1][1] : CC_MY_FADE[2][1])*careerDiff().age;
+  return careerDevelopNow(age);
+}
 // A career from before the setting existed played the easy one, because that
 // was the only one there was.
 function careerMigrateDiff(){
@@ -127317,7 +127330,7 @@ function careerApplyGrowth(place, total, you, field){
   // rating did not carry: the seat was worth half of every result and nothing
   // at all of the growth. Half a point of partner is a point of learning, and
   // the pull is capped both ways so a duo cannot replace playing well.
-  const develop = careerDevelopNow(ccPlayerAge())*(careerDevelopNow(ccPlayerAge())>0 ? taper : 1)
+  const develop = careerMyDevelopNow(ccPlayerAge())*(careerMyDevelopNow(ccPlayerAge())>0 ? taper : 1)
                   * careerMateFactor(before);
   /* The difficulty is on the whole of the arithmetic, not on the half that goes
      up.
