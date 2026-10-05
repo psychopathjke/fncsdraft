@@ -99682,6 +99682,8 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
     if(CAREER_RUN && typeof ccStyleAskGame==='function' && typeof CAREER!=='undefined' && CAREER && CAREER.career){
       // Команды людей без вопроса (в общем вечере их стиль приходит ответом) — сперва по проводу.
       teams.forEach(t=>{ if(t && !t.isYou && (t.isRival || t.isMate)){ t._styleGame=null; ccApplyPlayStyle(t); } });
+      // Вопрос лежит на острове (CC_RUN_MAP) — остров целиком, а не последний круг прошлой игры.
+      if(replay && ZoneReplay.whole) ZoneReplay.whole(replay);
       await ccStyleAskGame(teams);
     }
     if(typeof opts.dropEachGame==='function'){
@@ -111850,7 +111852,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='de705faa';
+const CC_BUILD='5f2d3fb4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -146391,7 +146393,9 @@ function ccTeamStyleNow(t){
 }
 async function ccStyleBox(cur){
   const o=await ccChoiceBox(L().ccStyleT, '', CC_STYLE_IDS.map(id=>({id:id, title:ccStyleLabel(id),
-    note:id==='norm' ? '' : ccKeyNote(id), def:id===cur})), null, null, 'style');
+    note:id==='norm' ? '' : ccKeyNote(id), def:id===cur})),
+    // На острове, как высадка и остальные выборы игры (его «почему не на карте показывает»).
+    (typeof CC_RUN_MAP!=='undefined' && CC_RUN_MAP && CC_RUN_MAP.isConnected) ? CC_RUN_MAP : null, null, 'style');
   return (o && o.id) || cur;
 }
 async function ccStyleAskGame(teams){

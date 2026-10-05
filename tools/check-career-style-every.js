@@ -71,8 +71,16 @@ const BOOT = `
     check('ответ ставится на игру', you._styleGame==='key' && you._seekMul===CC_KEY_SEEK, you._styleGame+'/'+you._seekMul);
     check('ответ запоминается', cr.playStyle==='key', cr.playStyle);
     check('игра в W-key — в руку', (cr.keyGames||0)===k1+1, k1+'→'+cr.keyGames);
+    // На острове, как высадка и остальные выборы (его «почему не на карте показывает»).
+    const fakeMap=document.createElement('div'); fakeMap.className='zone-replay'; document.body.appendChild(fakeMap);
+    CC_RUN_MAP=fakeMap;
+    const pend2=ccStyleAskGame([you]);
+    const onMap=fakeMap.querySelector('.cc-choice');
+    check('вопрос стиля — на карте', !!onMap && /cc-choice-map/.test(onMap.className), onMap ? onMap.className : 'нет на карте');
+    const b2=onMap && onMap.querySelector('.cc-choice-btn'); if(b2) b2.click();
+    await pend2; CC_RUN_MAP=null; fakeMap.remove();
     CAREER_RUN=false;
-    out.steps.push('вопрос стиля перед игрой: 3 кнопки, выбран W-key → seek '+you._seekMul);
+    out.steps.push('вопрос стиля перед игрой: 3 кнопки, выбран W-key → seek '+you._seekMul+'; на карте: '+!!onMap);
   }catch(e){ out.fails.push('исключение: '+String(e && e.stack || e).slice(0,300)); }
   out.errs=window.__errs;
   document.getElementById('__out').textContent='BE'+'GIN'+encodeURIComponent(JSON.stringify(out))+'END';
