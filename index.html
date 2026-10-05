@@ -99682,6 +99682,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
          У обоих клиентов одно и то же: стили приходят по проводу и считаются одинаково. */
       teams.forEach(t=>{ if(t && !t.isYou && (t.isRival || t.isMate)) ccApplyPlayStyle(t); });
       const meT=teams.find(t=>t && t.isYou);
+      CC_STYLE_ASK=!!meT;   // первый вопрос этой игры покажет переключатель (ccPlayStyleOnce)
       if(meT){ CC_STYLE_TEAM=meT; ccApplyPlayStyle(meT);
         if(typeof opts.dropEachGame!=='function' && ccPlayStyle()==='key') CAREER.career.keyGames=(CAREER.career.keyGames||0)+1; }
     }
@@ -106717,7 +106718,9 @@ function ccChoiceBox(title, hint, options, onMap, side, kind){
         `</div>`
       : '';
     const mateLine=mate ? `<div class="cc-choice-mate"><i>${esc(mate.name)}</i> ${esc(mate.text)}</div>` : '';
-    box.innerHTML=`<div class="cc-choice-head"><b>${ccChoiceDial(th)}<span class="cc-choice-t">${esc(title)}</span></b>${sub}${mateLine}${ccGameHowHTML()}</div>`+
+    // Стиль игры — в первом вопросе игры, если высадку не спрашивали (ccPlayStyleOnce).
+    const styleLine=(typeof ccPlayStyleOnce==='function' && CAREER_RUN) ? ccPlayStyleOnce() : '';
+    box.innerHTML=`<div class="cc-choice-head"><b>${ccChoiceDial(th)}<span class="cc-choice-t">${esc(title)}</span></b>${sub}${mateLine}${styleLine ? '<div class="cc-choice-style">'+styleLine+'</div>' : ''}${ccGameHowHTML()}</div>`+
       `<div class="cc-choice-row">${options.map((o,i)=>
         `<button class="cc-choice-btn${o.art?' has-art':''}${o.icon?' has-ico':''}${o===dflt && options.length>1?' def':''}${mate && o===mate.pick?' mate':''}" data-at="${i}"${mate && o===mate.pick ? ' data-mate="'+esc(mate.name)+'"' : ''}>
            ${o.art||''}<span class="cc-choice-tt">${o.icon?'<i class="cc-choice-ico'+(o.icoCls?' '+o.icoCls:'')+'">'+o.icon+'</i>':''}<b>${esc(o.title)}</b></span>${o.pack ? ccPackSlotsHTML(o.pack) : ''}${ccChoiceOdds(o.note)}<em>${o.note||''}</em></button>`).join('')}</div>`+
@@ -146374,6 +146377,12 @@ function ccSetPlayStyle(st, btn){
   const row=btn && btn.closest('.cc-style'); if(row){ row.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.st===st));
     const n=row.querySelector('.cc-style-note'); if(n) n.textContent=ccKeyNote(st); }
 }
+/* ПЕРЕД КАЖДОЙ ИГРОЙ. Переключатель ездил только в вопросе высадки, а его задают не везде: открытые
+   раунды Кубка мира 2019, первый раунд капов — раздача без вопроса. 5.10: «так раньше же перед каждой
+   игрой писало это» — в 2019-м пропал. Раннер ставит метку на каждую игру (simulateGamesLive), и
+   первый вопрос игры — высадка или любой другой (лут, фарм, ротация) — несёт переключатель один раз. */
+let CC_STYLE_ASK=false;
+function ccPlayStyleOnce(){ if(!CC_STYLE_ASK) return ''; CC_STYLE_ASK=false; return ccPlayStyleHTML(); }
 function ccPlayStyleHTML(){
   if(ccStyleLocked()) return '';
   const st=ccPlayStyle();
@@ -146383,7 +146392,8 @@ function ccPlayStyleHTML(){
 }
 async function careerLandingPick(field, you, title, kinds, o){
   o=o||{};
-  { if(!o.tag) CC_STYLE_TEAM=you; ccApplyPlayStyle(you);
+  { if(!o.tag){ CC_STYLE_TEAM=you; CC_STYLE_ASK=true; }   // вопрос высадки несёт переключатель всегда
+    ccApplyPlayStyle(you);
     // Игра в «кейить» — в счёт набитой руки (ccKeyMastery). Сила ставится ДО счёта: эта игра идёт с тем, что было.
     if(!o.tag && ccPlayStyle()==='key' && CAREER && CAREER.career) CAREER.career.keyGames=(CAREER.career.keyGames||0)+1; }
   /* Общая комната гонки: две команды людей, у каждой свой дроп, и порядок вопросов
@@ -146592,7 +146602,7 @@ async function careerLandingPick(field, you, title, kinds, o){
     if(CC_FF) return home ? {id:'home', at:ALL_LANDING_ZONES.indexOf(home)} : {id:'quiet', at:-1};
     const p=await ccChoiceBox(L().ccDropTitle,
       // Чужие объявления — прямо в подсказке: решение принимается здесь.
-      L().ccDropHint+(calls ? ' · '+L().ccDropCalls+' '+calls : '')+ccPlayStyleHTML(),
+      L().ccDropHint+(calls ? ' · '+L().ccDropCalls+' '+calls : '')+ccPlayStyleOnce(),
       /* Картинки — ВНУТРИ кнопок, отзыв: «внутри квадратика
          типа картинки эти». У «своей локации» — квадратик своей точки, у
          «законтестить» — остров целиком с рамкой на ней. Маленькие, слева от

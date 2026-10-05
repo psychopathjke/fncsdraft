@@ -56,6 +56,19 @@ const BOOT = `
     const html=ccPlayStyleHTML();
     check('переключатель собирается', /cc-style/.test(html) && /data-st="key"/.test(html));
     out.steps.push('кейить без вопроса высадки: seek '+CC_KEY_SEEK+', рука '+k0+'→'+(k0+1));
+    // Перед каждой игрой: игра без вопроса высадки — переключатель в ПЕРВОМ вопросе игры, и только в нём
+    // (5.10: «так раньше же перед каждой игрой писало это» — открытые раунды 2019 года).
+    skipAnimation=false; CC_SKIP_RUN=false; CAREER_RUN=true;
+    let host=document.getElementById('majorStages'); if(!host){ host=document.createElement('div'); host.id='majorStages'; document.body.appendChild(host); }
+    CC_STYLE_ASK=true;
+    const ask=()=>{ const p=ccChoiceBox('t', 'h', [{id:'a', title:'A'}, {id:'b', title:'B'}], null, null, 'loot');
+      const box=[...document.querySelectorAll('.cc-choice')].pop(); const has=!!(box && box.querySelector('.cc-style'));
+      const b=box && box.querySelector('button[data-at], .cc-choice-opt, button:not([data-st])'); if(b) b.click(); return has; };
+    const first=ask(), second=ask();
+    check('первый вопрос игры без высадки несёт стиль', first);
+    check('второй вопрос той же игры — без стиля', !second);
+    CAREER_RUN=false;
+    out.steps.push('стиль в первом вопросе игры: '+first+', во втором: '+second);
   }catch(e){ out.fails.push('исключение: '+String(e && e.stack || e).slice(0,300)); }
   out.errs=window.__errs;
   document.getElementById('__out').textContent='BE'+'GIN'+encodeURIComponent(JSON.stringify(out))+'END';
