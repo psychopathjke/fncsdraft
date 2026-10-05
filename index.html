@@ -99677,7 +99677,10 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
        lets me do that in FNCS». Первый раунд капов — раздача без вопроса, careerLandingPick
        там не зовётся, и «кейить» молча не работал. Тут ставится всем вечерам; где вопрос
        есть, careerLandingPick поставит то же самое и посчитает игру в набитую руку сам. */
-    if(CAREER_RUN && typeof ccApplyPlayStyle==='function' && typeof CAREER!=='undefined' && CAREER && CAREER.career && !ccStyleShared()){
+    if(CAREER_RUN && typeof ccApplyPlayStyle==='function' && typeof CAREER!=='undefined' && CAREER && CAREER.career){
+      /* Каждой команде людей — её стиль (ccTeamStyles): свой, напарника, соперников гонки.
+         У обоих клиентов одно и то же: стили приходят по проводу и считаются одинаково. */
+      teams.forEach(t=>{ if(t && !t.isYou && (t.isRival || t.isMate)) ccApplyPlayStyle(t); });
       const meT=teams.find(t=>t && t.isYou);
       if(meT){ CC_STYLE_TEAM=meT; ccApplyPlayStyle(meT);
         if(typeof opts.dropEachGame!=='function' && ccPlayStyle()==='key') CAREER.career.keyGames=(CAREER.career.keyGames||0)+1; }
@@ -113130,6 +113133,7 @@ function careerRaceSend(){
   const card=careerRaceCard();
   if(!card) return false;
   try{ MP.act('race', card); }catch(e){ return false; }
+  CC_STYLE_SENT=card.ps||null;   // своя команда в общем вечере — по отправленному (ccStyleOwnSent)
   return true;
 }
 function careerRaceWire(){
@@ -113535,6 +113539,7 @@ function ccRaceMyLine(){
           // Свой бот-напарник, отставленный на время пары: соперники вычитают его из пула, как напарников (иначе поле разойдётся).
           bench:undefined,   // бот пары не на скамейке, а свободен (careerRacePairFree) — вычитать нечего
           edge:(ev && CC_RACE_EDGE_NOW!=null) ? CC_RACE_EDGE_NOW : null, kr:CC_RACE_MY_KR,
+          ps:(typeof ccStyleWire==='function') ? ccStyleWire() : null,   // стиль игры — соперники ставят его нашей команде (ccTeamStyles)
           // Понедельник Дивизиона 1 (cr.d1) — отпечатком: вторник от разных понедельников врозь (ccRaceApartWhy 'table').
           d1h:(CAREER.career.d1 && CAREER.career.d1.monday===careerMonday(careerToday())) ? String(ccHashStr(JSON.stringify(CAREER.career.d1))) : null,
           // И список вторника (cr.wf.cut) — финал недели от разных вторников врозь (та же причина 'table').
@@ -146298,11 +146303,45 @@ function ccSoloHomeZoneOf(t){
 }
 /* Стиль игры своей команды (2.10, Notion «02»): спокойно / обычно / кейить. Хранится в карьере
    (cr.playStyle), ставится на команду перед каждой игрой. «Кейить» — агрессия CC_KEY_SEEK и лут с
-   киллов CC_KEY_LOOT (см. ccKeyBoost); «спокойно» — CC_CHILL_SEEK. В командной карьере и в общей
-   комнате гонки выключен: оба клиента считают одну игру, разный стиль развёл бы их. */
+   киллов CC_KEY_LOOT (см. ccKeyBoost); «спокойно» — CC_CHILL_SEEK.
+   В командной карьере и в общей комнате гонки стиль ездит по проводу (5.10: «стиль игры не во всех
+   режимах… wkey и тд»): свой — в MP.card (ps) и в строке гонки (ps), и оба клиента ставят каждой
+   команде людей одно и то же — среднее по её людям (ccTeamStyles). Менять можно до вечера, не внутри:
+   строка ушла на старте, и смена посреди вечера развела бы клиентов. */
 let CC_STYLE_TEAM=null;
-function ccStyleShared(){ return (typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRaceLock==='function' && ccRaceLock()); }
-function ccPlayStyle(){ const cr=CAREER && CAREER.career; return (!ccStyleShared() && cr && cr.playStyle) || 'norm'; }
+function ccStyleShared(){ return (typeof ccMpOn==='function' && ccMpOn()) || (typeof ccRaceLock==='function' && ccRaceLock()) || (typeof ccRaceLive==='function' && ccRaceLive()); }
+function ccStyleLocked(){ return ccStyleShared() && typeof CAREER_RUN!=='undefined' && !!CAREER_RUN; }
+function ccPlayStyle(){ const cr=CAREER && CAREER.career; return (cr && cr.playStyle) || 'norm'; }
+// Свой стиль для провода: мастерство округлено — у себя считается то же число, что видит сосед.
+function ccStyleWire(){ return {s:ccPlayStyle(), m:Math.round(ccKeyMastery()*100)/100}; }
+/* То, что ушло соседям последним (карточка или строка гонки). Набитая рука растёт с каждой игрой
+   (keyGames), а сосед знает только отправленное: в общем вечере своя команда считается по нему. */
+let CC_STYLE_SENT=null;   // ставит careerRaceSend; в дуо — CC_MP_MYCARD.ps (карточка, ушедшая на старте вечера)
+function ccStyleOwnSent(){
+  if(typeof ccRaceLock==='function' && ccRaceLock() && CC_STYLE_SENT) return CC_STYLE_SENT;
+  if(typeof ccMpOn==='function' && ccMpOn() && typeof CC_MP_MYCARD!=='undefined' && CC_MP_MYCARD && CC_MP_MYCARD.ps) return CC_MP_MYCARD.ps;
+  return null;
+}
+// Люди команды — их стили в проводном виде; null — команда без людей (стиль не трогается).
+function ccTeamStyles(t){
+  if(!t) return null;
+  const row=id=>(id && typeof CC_RACE_PEERS!=='undefined' && CC_RACE_PEERS[id]) || null;
+  const peerPs=()=>(typeof MP!=='undefined' && MP.peer && MP.peer.ps) || {s:'norm', m:0};
+  if(t.isYou){
+    const ws=[ccStyleOwnSent() || ccStyleWire()];
+    if(typeof ccMpOn==='function' && ccMpOn() && careerSquadSize()>1) ws.push(peerPs());
+    if(typeof ccRaceLock==='function' && ccRaceLock() && typeof ccRacePairOn==='function' && ccRacePairOn()){
+      const r=row(ccRacePairId()); ws.push((r && r.ps) || {s:'norm', m:0}); }
+    return ws;
+  }
+  if(t.isRival && t.raceId){
+    const r=row(t.raceId); const ws=[(r && r.ps) || {s:'norm', m:0}];
+    if(r && r.pair){ const q=row(r.pair); if(q && q.pair===r.id) ws.push(q.ps || {s:'norm', m:0}); }
+    return ws;
+  }
+  if(t.isMate && typeof ccMpOn==='function' && ccMpOn()) return [peerPs()];   // соло вдвоём: напарник — своя команда
+  return null;
+}
 /* НАБИТАЯ РУКА: «after you troll for so many games you get high kill wins» (тот же отзыв, вторая
    половина). Каждая игра в «кейить» — в cr.keyGames; за CC_KEY_MASTER_GAMES игр лут с килла растёт
    с CC_KEY_LOOT до CC_KEY_LOOT_MASTER. Замер 2.10 (career-spread-probe.js, 600 игр, очки · победы):
@@ -146314,23 +146353,29 @@ const CC_KEY_MASTER_GAMES=100, CC_KEY_LOOT_MASTER=0.015;
 function ccKeyGames(){ const cr=CAREER && CAREER.career; return (cr && cr.keyGames) || 0; }
 function ccKeyMastery(){ return Math.min(1, ccKeyGames()/CC_KEY_MASTER_GAMES); }
 function ccApplyPlayStyle(t){
-  if(!t) return; const st=ccPlayStyle();
-  t._seekMul = st==='key' ? CC_KEY_SEEK : st==='chill' ? CC_CHILL_SEEK : 1;
-  t._keyLoot = st==='key' ? CC_KEY_LOOT+(CC_KEY_LOOT_MASTER-CC_KEY_LOOT)*ccKeyMastery() : 0;
+  const ws=ccTeamStyles(t); if(!ws || !ws.length) return;
+  const seek=w=>w.s==='key' ? CC_KEY_SEEK : w.s==='chill' ? CC_CHILL_SEEK : 1;
+  const loot=w=>w.s==='key' ? CC_KEY_LOOT+(CC_KEY_LOOT_MASTER-CC_KEY_LOOT)*Math.min(1, Math.max(0, Number(w.m)||0)) : 0;
+  // Среднее в устойчивом порядке: сумма с плавающей точкой у обоих клиентов одна.
+  const mean=f=>ws.map(f).sort((a,b)=>a-b).reduce((a,b)=>a+b, 0)/ws.length;
+  t._seekMul=mean(seek); t._keyLoot=mean(loot);
 }
 function ccKeyNote(st){
   if(st==='key') return L().ccStyleKeyNote+' · '+L().ccStyleKeyHand(Math.min(CC_KEY_MASTER_GAMES, ccKeyGames()), CC_KEY_MASTER_GAMES);
   return st==='chill' ? L().ccStyleChillNote : '';
 }
 function ccSetPlayStyle(st, btn){
-  const cr=CAREER && CAREER.career; if(!cr || ccStyleShared()) return;
+  const cr=CAREER && CAREER.career; if(!cr || ccStyleLocked()) return;
   cr.playStyle=st; ccApplyPlayStyle(CC_STYLE_TEAM);
   try{ careerSave(); }catch(e){}
+  // Соседям — сразу: напарник и соперники ставят нашей команде то же, что и мы.
+  if(ccStyleShared()){ try{ if(typeof MP!=='undefined' && MP.sendCard) MP.sendCard(); }catch(e){}
+                       try{ if(typeof careerRaceSend==='function') careerRaceSend(); }catch(e){} }
   const row=btn && btn.closest('.cc-style'); if(row){ row.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.st===st));
     const n=row.querySelector('.cc-style-note'); if(n) n.textContent=ccKeyNote(st); }
 }
 function ccPlayStyleHTML(){
-  if(ccStyleShared()) return '';
+  if(ccStyleLocked()) return '';
   const st=ccPlayStyle();
   return '<span class="cc-style" onclick="event.stopPropagation()"><em>'+esc(L().ccStyleT)+'</em>'+
     [['chill',L().ccStyleChill],['norm',L().ccStyleNorm],['key',L().ccStyleKey]].map(([k,t])=>'<button type="button" data-st="'+k+'" class="'+(st===k?'on':'')+'" onclick="ccSetPlayStyle(\''+k+'\', this)">'+esc(t)+'</button>').join('')+
@@ -146338,7 +146383,7 @@ function ccPlayStyleHTML(){
 }
 async function careerLandingPick(field, you, title, kinds, o){
   o=o||{};
-  if(!o.tag || !ccStyleShared()){ CC_STYLE_TEAM=you; ccApplyPlayStyle(you);
+  { if(!o.tag) CC_STYLE_TEAM=you; ccApplyPlayStyle(you);
     // Игра в «кейить» — в счёт набитой руки (ccKeyMastery). Сила ставится ДО счёта: эта игра идёт с тем, что было.
     if(!o.tag && ccPlayStyle()==='key' && CAREER && CAREER.career) CAREER.career.keyGames=(CAREER.career.keyGames||0)+1; }
   /* Общая комната гонки: две команды людей, у каждой свой дроп, и порядок вопросов

@@ -99,6 +99,8 @@ const boot = (who) => `
       partners:[]}));
     const s=JSON.parse(localStorage.getItem('fncsdraft_career'));
     Object.assign(s.career, ${JSON.stringify(CAREER_PATCH)}||{});
+    // Стиль игры одному из двоих (CC_STYLE_LIVEA=key): вечер с разными стилями обязан сойтись.
+    if(${JSON.stringify(process.env['CC_STYLE_'+String(who.nick).toUpperCase()]||'')}) s.career.playStyle=${JSON.stringify(process.env['CC_STYLE_'+String(who.nick).toUpperCase()]||'')};
     s.player.attrs=ccRookieAttrs(${who.ovr}, ${JSON.stringify(who.role)});
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
     careerEntry();

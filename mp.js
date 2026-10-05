@@ -207,6 +207,9 @@ var MP={
       if(box) sh={i:sh.i, cx:box.x+box.w/2, cy:box.y+box.h/2};
     }
     out.soloHome = sh ? {i:sh.i, cx:sh.cx, cy:sh.cy} : null;
+    /* Стиль игры (спокойно / обычно / W-key) — напарник ставит его нашей общей команде
+       так же, как мы (среднее по людям, см. ccTeamStyles в index.html). */
+    out.ps = (typeof ccStyleWire==='function') ? ccStyleWire() : null;
     return out;
   },
 
