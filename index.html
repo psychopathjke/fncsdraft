@@ -119133,7 +119133,8 @@ function ccLifeHurt(day){ return null; }
 
 // ---- Скандалы: жалоба → разбор → оправдан / штраф / бан открытых турниров.
 const CC_BAN_KINDS=['cup','final','victory','solo','eval','reload'];
-function ccLifeBan(day){ const b=ccLife().ban; return b && (day||careerToday())<=b ? b : null; }
+// Своего бана нет с 5.10 (см. ccLifeTick): старый из сейва вечер не закрывает.
+function ccLifeBan(day){ return null; }
 
 function ccLifeWhy(day, kind){
   if(ccLifeHurt(day)) return 'lfWhyHurt';
@@ -119192,16 +119193,22 @@ function ccLifeTick(){
     const d=ccAddDays(from, i), rng=careerRng(ccHashStr('lifeday|'+d+'|'+(CAREER.player.nick||'')));
     // Травм больше нет — старая из сейва просто снимается.
     if(lf.hurt) lf.hurt=null;
+    /* Бана своего больше нет — так же, как травм (03.10). Игрок 5.10 (Notion
+       «05»): «why i always got banned from open events in fncs draft». Жалоба
+       падала сама, игрок ничего не делал, а 15% разборов закрывали ВСЕ открытые
+       вечера на две недели; день сеется датой и ником — новая карьера с тем же
+       ником ловила бан в те же дни, отсюда «always». Жалоба теперь кончается
+       снятием или штрафом; бан из старого сейва снимается. */
+    if(lf.ban) lf.ban=null;
     // Разбор жалобы.
     if(lf.case && d>=lf.case.until){
       const r=rng(), k=lf.case.k; lf.case=null;
-      if(r<0.55) careerNews('good', 'lfNewsCleared', [L()['lfCase'+k]]);
-      else if(r<0.85){ const fine=Math.max(100, Math.round((cr.balance||0)*0.05/50)*50); cr.balance=Math.max(0,(cr.balance||0)-fine);
+      if(r<0.6) careerNews('good', 'lfNewsCleared', [L()['lfCase'+k]]);
+      else { const fine=Math.max(100, Math.round((cr.balance||0)*0.05/50)*50); cr.balance=Math.max(0,(cr.balance||0)-fine);
         careerNews('bad', 'lfNewsFined', [L()['lfCase'+k], ccMoney(fine)]); }
-      else { lf.ban=ccAddDays(d, 14); careerNews('bad', 'lfNewsBanned', [L()['lfCase'+k], 14]); careerReachAdd(-Math.round(careerReach()*0.05), true); }
     }
     // Новая жалоба: редко, чаще с большим охватом.
-    if(!lf.case && !ccLifeBan(d) && rng()<(1+Math.min(3, careerReach()/200000))/240){
+    if(!lf.case && rng()<(1+Math.min(3, careerReach()/200000))/240){
       const k=['team','snipe','toxic'][Math.floor(rng()*3)];
       lf.case={k, until:ccAddDays(d, 3+Math.floor(rng()*5))};
       careerNews('bad', 'lfNewsCase', [L()['lfCase'+k]]);

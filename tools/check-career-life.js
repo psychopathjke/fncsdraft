@@ -75,9 +75,15 @@ const BOOT = `
     CAREER.career.grind=999; lf.tick=ccAddDays(careerToday(), -60); ccLifeTick();
     check('выгорание не даёт травму', !lf.hurt, JSON.stringify(lf.hurt||null));
     CAREER.career.grind=0; lf.hurt=null;
-    // 3. Бан закрывает открытые турниры.
+    // 3. Своего бана нет (снят 5.10, «why i always got banned from open events»):
+    //    старый из сейва кап не закрывает, а год жалоб при большом охвате не даёт ни одного.
     lf.ban=ccAddDays(careerToday(), 5);
-    check('бан закрывает кап', !careerCanPlayKind('victory'));
+    check('бан из сейва не закрывает кап', careerCanPlayKind('victory') && ccLifeWhy(careerToday(),'victory')==null);
+    { const reach0=CAREER.career.reach; CAREER.career.reach=2000000; let bans=0, cases=0;
+      for(let i=0;i<6;i++){ lf.tick=ccAddDays(careerToday(), -60); ccLifeTick(); if(lf.ban) bans++; if(lf.case) cases++; }
+      const banNews=(CAREER.career.news||[]).filter(n=>n.k==='lfNewsBanned').length;
+      check('жалобы не кончаются баном', !bans && !banNews, bans+'/'+banNews);
+      CAREER.career.reach=reach0; lf.case=null; }
     lf.ban=null;
     // 4. Noble: день — сессия, строка недели.
     setY('2026-03-10', 2026);
