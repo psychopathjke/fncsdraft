@@ -3186,6 +3186,19 @@
     font-size:13px;padding:9px 22px;cursor:pointer;}
   .cc-tvs-ok:hover{background:#a970ff;}
   #screen-career-hub .tv-sum{background:#0e0e10;border-top:1px solid #26262c;color:#efeff1;}
+  /* Коллабы по предложению (ccColabPanelHTML): строка креатора — аватар, ник, Twitch и шанс, кнопка. */
+  #screen-career-hub .tv-colab{background:#0e0e10;border-top:1px solid #26262c;color:#efeff1;padding:0 0 8px;}
+  #screen-career-hub .tv-colab .tw-h{font-size:11px;font-weight:800;letter-spacing:.06em;
+    text-transform:uppercase;color:#adadb8;padding:10px 12px 0;}
+  #screen-career-hub .tv-colab-hint{font-size:11.5px;color:#adadb8;padding:4px 12px 6px;}
+  #screen-career-hub .tv-colab-row{display:flex;align-items:center;gap:8px;padding:5px 12px;}
+  #screen-career-hub .tv-colab-in{flex:1;min-width:0;display:flex;flex-direction:column;}
+  #screen-career-hub .tv-colab-in b{font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  #screen-career-hub .tv-colab-in em{font-style:normal;font-size:11px;color:#adadb8;}
+  #screen-career-hub .tv-colab-go{border:0;border-radius:999px;background:#9147ff;color:#fff;font-weight:800;
+    font-size:11.5px;padding:6px 12px;cursor:pointer;white-space:nowrap;}
+  #screen-career-hub .tv-colab-go:disabled{background:#3a3a3d;color:#adadb8;cursor:default;}
+  #screen-career-hub .tv-colab-deal{font-size:11.5px;font-weight:800;color:#bf94ff;white-space:nowrap;}
   #screen-career-hub .tv-sum .tw-h{font-size:11px;font-weight:800;letter-spacing:.06em;
     text-transform:uppercase;color:#adadb8;padding:10px 12px 0;}
   #screen-career-hub .tv-sum .cc-tvs-tiles{border-bottom:none;margin-top:6px;}
@@ -4244,6 +4257,15 @@
   .ct-drop{color:#ff7d70;}
   .ct-note{margin-top:10px;font-size:11px;color:#7d92bd;font-weight:600;line-height:1.5;}
   .x-bio{display:block;font-size:11.5px;color:#8ea6d6;font-weight:700;margin-top:3px;}
+  /* Своё био (ccBioOwnHTML): текст игрока строкой, кнопка правки, поле с тремя кнопками. */
+  .x-bio-own{margin-top:4px;font-size:12.5px;line-height:1.35;}
+  .x-bio-txt{display:block;color:inherit;white-space:pre-wrap;word-break:break-word;}
+  .x-bio-edit{border:0;background:none;color:#8ea6d6;font-size:11px;font-weight:700;padding:2px 0;cursor:pointer;}
+  .x-bio-in{width:100%;box-sizing:border-box;font:inherit;font-size:12.5px;padding:6px 8px;border-radius:8px;
+    border:1px solid rgba(180,200,255,.3);background:rgba(8,18,50,.5);color:inherit;resize:vertical;}
+  .x-bio-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+  .x-bio-btns button{border-radius:999px;padding:5px 12px;font-size:11.5px;font-weight:800;cursor:pointer;
+    border:1px solid rgba(180,200,255,.3);background:rgba(255,255,255,.06);color:inherit;}
   .x-counts{display:flex;flex-wrap:wrap;gap:6px 22px;padding:11px 2px 12px;
     border-bottom:1px solid #1d2942;margin-bottom:2px;}
   .x-counts span{display:inline-flex;align-items:baseline;gap:5px;font-size:11.5px;
@@ -9472,7 +9494,14 @@ ccTwGoalHours:'Часов эфира', ccTwGoalAvg:'Средний онлайн'
 ccNewsTwAffiliate:()=>'Twitch дал компаньона. Теперь тут можно зарабатывать.',
 ccNewsTwPartner:()=>'Партнёрка. Галочка на канале.', ccNewsSacPay:(c,m)=>'Код поддержки '+c+': за месяц $'+m, ccNewsTwSubbed:(w,p)=>'Подписался на '+w+' — $'+p+' в месяц', ccSacTitle:'Код поддержки автора', ccSacBio:c=>'Код поддержки: '+c+' #ad', ccSacLocked:n=>'Код поддержки откроется с '+n+' фолловеров или с партнёрки', ccTwFollowOn:'Отслеживаешь', ccTwSubOn:'Подписан', ccTwSubPrice:p=>'Подписаться · $'+p+'/мес', ccTwSubsCost:m=>'Подписки на каналы: $'+m+' в месяц',
 ccStreamChatLines:['погнали','+','го зону','лучший дроп','w','изи','ня','опять третьят','ставь метку','кто это','пусть падают','го рефреш','респект','имба','ну и ну','лови хайграунд','вниз не иди','го квал','сколько очков','ты в топ 50'],
-ccNewsStreamColab:(h,f,g)=>'Стримили вдвоём с @'+h+' — '+f+' на Twitch. Пришло '+g+' зрителей',
+ccNewsStreamColab:(h,f,g,x)=>'Стримили вдвоём с @'+h+' — '+f+' на Twitch. Пришло '+g+' зрителей'+(x?', а у @'+h+' +'+x+' от наших':''),
+ccColabTitle:'Коллабы', ccColabHint:'Предложи креатору совместный эфир. Чем больше твоя аудитория рядом с его, тем охотнее соглашаются; с одним и тем же каждый следующий раз даёт меньше.',
+ccColabAsk:'Предложить', ccColabAsked:'Сегодня уже предлагал', ccColabOdds:p=>'шанс '+p+'%',
+ccColabDeal:d=>'Договорились · до '+d, ccColabTimes:n=>'коллабов: '+n,
+ccNewsColabYes:h=>'@'+h+' согласился на коллаб — стримим вдвоём на этой неделе',
+ccNewsColabNo:h=>'Предложил коллаб @'+h+' — пока отказал',
+ccBioEdit:'Изменить био', ccBioSave:'Сохранить', ccBioAuto:'Как было (авто)', ccBioCancel:'Отмена',
+ccBioPh:n=>'Пара строк о себе, до '+n+' символов',
 ccNewsResultWf:(p,t,pts)=>'Кубок Див 1: '+ccTop(p)+' из '+t+', '+pts+' очков — проход в финал недели',
 ccNewsResultWeekWf:(p,t,pts,g)=>'Кубок Див 1, итог недели: '+ccTop(p)+' из '+t+', '+pts+' очков за '+g+' игр — проход в финал недели',
 ccLanQual:c=>'квал на ЛАН · '+c,
@@ -11460,7 +11489,14 @@ ccTwGoalHours:'Hours streamed', ccTwGoalAvg:'Average viewers',
 ccNewsTwAffiliate:()=>'Twitch made me an affiliate. The channel earns now.',
 ccNewsTwPartner:()=>'Partner. The tick is on the channel.', ccNewsSacPay:(c,m)=>'Creator code '+c+': $'+m+' for the month', ccNewsTwSubbed:(w,p)=>'Subscribed to '+w+' — $'+p+' a month', ccSacTitle:'Support-A-Creator code', ccSacBio:c=>'Creator code: '+c+' #ad', ccSacLocked:n=>'The creator code unlocks at '+n+' followers or at partner', ccTwFollowOn:'Following', ccTwSubOn:'Subscribed', ccTwSubPrice:p=>'Subscribe · $'+p+'/mo', ccTwSubsCost:m=>'Channel subs: $'+m+' a month',
 ccStreamChatLines:['lets go','+','take the zone','best drop','w','ez','no way','third partied again','call the drop','who is that','let them land','go refresh','respect','insane','oh my','take high ground','do not go low','qual it','how many points','you are top 50'],
-ccNewsStreamColab:(h,f,g)=>'Streamed with @'+h+' — '+f+' on Twitch. '+g+' viewers came over',
+ccNewsStreamColab:(h,f,g,x)=>'Streamed with @'+h+' — '+f+' on Twitch. '+g+' viewers came over'+(x?', and @'+h+' got +'+x+' from ours':''),
+ccColabTitle:'Collabs', ccColabHint:'Pitch a joint stream to a creator. The closer your audience is to theirs, the likelier a yes; each repeat with the same creator brings less.',
+ccColabAsk:'Pitch', ccColabAsked:'Already pitched today', ccColabOdds:p=>p+'% chance',
+ccColabDeal:d=>'Deal · until '+d, ccColabTimes:n=>'collabs: '+n,
+ccNewsColabYes:h=>'@'+h+' said yes to a collab — streaming together this week',
+ccNewsColabNo:h=>'Pitched a collab to @'+h+' — a no for now',
+ccBioEdit:'Edit bio', ccBioSave:'Save', ccBioAuto:'Back to auto', ccBioCancel:'Cancel',
+ccBioPh:n=>'A line or two about you, up to '+n+' characters',
 ccNewsResultWf:(p,t,pts)=>'Div 1 Cup: '+ccTop(p)+' of '+t+', '+pts+' points — through to the Weekly Final',
 ccNewsResultWeekWf:(p,t,pts,g)=>'Div 1 Cup, week total: '+ccTop(p)+' of '+t+', '+pts+' points from '+g+' games — through to the Weekly Final',
 ccLanQual:c=>'LAN qualified · '+c,
@@ -13884,7 +13920,14 @@ ccTwGoalHours:'Heures de stream', ccTwGoalAvg:'Spectateurs moyens',
 ccNewsTwAffiliate:()=>'Twitch m\'a passé affilié. La chaîne rapporte enfin.',
 ccNewsTwPartner:()=>'Partenaire. La chaîne a sa coche.',
 ccStreamChatLines:['on y va','+','prends la zone','meilleur drop','w','ez','sérieux','third party encore','appelle le drop','c est qui','laisse-les poser','va au refresh','respect','énorme','oh la la','prends le haut','descends pas','qualifie-toi','combien de points','tu es top 50'],
-ccNewsStreamColab:(h,f,g)=>'Stream à deux avec @'+h+' — '+f+' sur Twitch. '+g+' spectateurs arrivés',
+ccNewsStreamColab:(h,f,g,x)=>'Stream à deux avec @'+h+' — '+f+' sur Twitch. '+g+' spectateurs arrivés'+(x?', et @'+h+' gagne +'+x+' des nôtres':''),
+ccColabTitle:'Collabs', ccColabHint:'Propose un live commun à un créateur. Plus ton audience est proche de la sienne, plus il dit oui ; chaque nouvelle collab avec le même rapporte moins.',
+ccColabAsk:'Proposer', ccColabAsked:'Déjà proposé aujourd’hui', ccColabOdds:p=>p+' % de chances',
+ccColabDeal:d=>'Accord · jusqu’au '+d, ccColabTimes:n=>'collabs : '+n,
+ccNewsColabYes:h=>'@'+h+' accepte la collab — live à deux cette semaine',
+ccNewsColabNo:h=>'Collab proposée à @'+h+' — refus pour l’instant',
+ccBioEdit:'Modifier la bio', ccBioSave:'Enregistrer', ccBioAuto:'Revenir à l’auto', ccBioCancel:'Annuler',
+ccBioPh:n=>'Une ou deux lignes sur toi, '+n+' caractères max',
 ccNewsResultWf:(p,t,pts)=>'Coupe Div 1 : '+ccTop(p)+' sur '+t+', '+pts+' points — qualifié pour la Finale hebdo',
 ccNewsResultWeekWf:(p,t,pts,g)=>'Coupe Div 1, total de la semaine : '+ccTop(p)+' sur '+t+', '+pts+' points en '+g+' parties — qualifié pour la Finale hebdo',
 ccLanQual:c=>'qualifié LAN · '+c,
@@ -14224,7 +14267,14 @@ ccTwGoalHours:"Ore in diretta", ccTwGoalAvg:"Spettatori medi",
 ccNewsTwAffiliate:()=>"Twitch mi ha fatto affiliato. Ora il canale rende.",
 ccNewsTwPartner:()=>"Partner. La spunta è sul canale.",
 ccStreamChatLines:["andiamo","+","prendi la zona","miglior drop","w","ez","ma dai","third party di nuovo","chiama il drop","chi e quello","falli atterrare","vai di refresh","rispetto","assurdo","oh no","prendi l alto","non andare sotto","qualificati","quanti punti","sei top 50"],
-ccNewsStreamColab:(h,f,g)=>'Diretta in due con @'+h+' — '+f+' su Twitch. '+g+' spettatori arrivati',
+ccNewsStreamColab:(h,f,g,x)=>'Diretta in due con @'+h+' — '+f+' su Twitch. '+g+' spettatori arrivati'+(x?', e @'+h+' prende +'+x+' dai nostri':''),
+ccColabTitle:"Collab", ccColabHint:"Proponi una diretta insieme a un creator. Più il tuo pubblico è vicino al suo, più è probabile un sì; ogni collab ripetuta con lo stesso rende meno.",
+ccColabAsk:"Proponi", ccColabAsked:"Già proposto oggi", ccColabOdds:p=>p+'% di probabilità',
+ccColabDeal:d=>'Accordo · fino al '+d, ccColabTimes:n=>'collab: '+n,
+ccNewsColabYes:h=>'@'+h+' ha accettato la collab — in diretta insieme questa settimana',
+ccNewsColabNo:h=>'Proposta una collab a @'+h+' — per ora no',
+ccBioEdit:"Modifica bio", ccBioSave:"Salva", ccBioAuto:"Torna all'automatica", ccBioCancel:"Annulla",
+ccBioPh:n=>'Una o due righe su di te, massimo '+n+' caratteri',
 ccNewsResultWf:(p,t,pts)=>"Coppa Div 1: "+ccTop(p)+" su "+t+", "+pts+" punti — alla finale settimanale",
 ccNewsResultWeekWf:(p,t,pts,g)=>"Coppa Div 1, totale settimana: "+ccTop(p)+" su "+t+", "+pts+" punti in "+g+" partite — alla finale settimanale",
 ccLanQual:c=>"qualificato LAN · "+c,
@@ -16749,7 +16799,14 @@ ccTwGoalHours:"Horas de live", ccTwGoalAvg:"Média de espectadores",
 ccNewsTwAffiliate:()=>"A Twitch me deu afiliado. Agora o canal rende.",
 ccNewsTwPartner:()=>"Parceiro. O canal ganhou o selo.",
 ccStreamChatLines:["bora","+","pega a zona","melhor drop","w","ez","nao acredito","third party de novo","chama o drop","quem e esse","deixa pousar","vai de refresh","respeito","absurdo","eita","pega o alto","nao desce","classifica","quantos pontos","voce e top 50"],
-ccNewsStreamColab:(h,f,g)=>'Live a dois com @'+h+' — '+f+' na Twitch. '+g+' espectadores vieram',
+ccNewsStreamColab:(h,f,g,x)=>'Live a dois com @'+h+' — '+f+' na Twitch. '+g+' espectadores vieram'+(x?', e @'+h+' ganhou +'+x+' dos nossos':''),
+ccColabTitle:"Collabs", ccColabHint:"Proponha uma live juntos a um criador. Quanto mais seu público se aproxima do dele, maior a chance de sim; cada collab repetida com o mesmo rende menos.",
+ccColabAsk:"Propor", ccColabAsked:"Já propôs hoje", ccColabOdds:p=>p+'% de chance',
+ccColabDeal:d=>'Acordo · até '+d, ccColabTimes:n=>'collabs: '+n,
+ccNewsColabYes:h=>'@'+h+' topou a collab — live juntos esta semana',
+ccNewsColabNo:h=>'Propus collab a @'+h+' — por enquanto não',
+ccBioEdit:"Editar bio", ccBioSave:"Salvar", ccBioAuto:"Voltar ao automático", ccBioCancel:"Cancelar",
+ccBioPh:n=>'Uma ou duas linhas sobre você, até '+n+' caracteres',
 ccNewsResultWf:(p,t,pts)=>"Copa Div 1: "+ccTop(p)+" de "+t+", "+pts+" pontos — passou para a final semanal",
 ccNewsResultWeekWf:(p,t,pts,g)=>"Copa Div 1, total da semana: "+ccTop(p)+" de "+t+", "+pts+" pontos em "+g+" partidas — passou para a final semanal",
 ccLanQual:c=>"vaga na LAN · "+c,
@@ -116837,7 +116894,48 @@ function careerTopHonour(){
   const m=careerAwardsWon('month');  if(m) return L().ccAwardMonth+' ×'+m;
   return '';
 }
+/* СВОЁ БИО (5.10, Notion «05», испанский игрок: «edición de biografía»). Авто-строка ниже
+   остаётся по умолчанию; написанное игроком встаёт на её место в профиле (ccBioLine) и
+   отдельной строкой в шапке соцсети. Текст — только текст: чистится от управляющих символов,
+   режется по CC_BIO_MAX и выводится через esc (память: поверхность self-XSS — свои поля). */
+const CC_BIO_MAX=160;
+function ccBioClean(v){
+  return String(v==null ? '' : v).replace(/[\u0000-\u001f\u007f\u2028\u2029]/g, ' ')
+    .replace(/\s+/g, ' ').trim().slice(0, CC_BIO_MAX);
+}
+function ccMyBio(){ const cr=CAREER && CAREER.career; return cr ? ccBioClean(cr.bio) : ''; }
+function careerBioSet(v){
+  const cr=CAREER && CAREER.career; if(!cr) return '';
+  const t=ccBioClean(v);
+  cr.bio=t || null;
+  try{ careerSave(); }catch(e){}
+  return t;
+}
+function ccBioOwnHTML(){
+  const b=ccMyBio();
+  return (b ? `<span class="x-bio-txt">${esc(b)}</span>` : '')+
+    `<button class="x-bio-edit" type="button" onclick="careerBioEdit()">✎ ${esc(L().ccBioEdit)}</button>`;
+}
+function careerBioEdit(){
+  const box=document.getElementById('xBioOwn'); if(!box) return false;
+  const T=L();
+  box.innerHTML=`<textarea id="xBioIn" class="x-bio-in" maxlength="${CC_BIO_MAX}" rows="2"
+      placeholder="${esc(T.ccBioPh(CC_BIO_MAX))}">${esc(ccMyBio())}</textarea>
+    <div class="x-bio-btns"><button class="ch-sign" type="button" onclick="careerBioCommit(false)">${esc(T.ccBioSave)}</button>
+      <button type="button" onclick="careerBioCommit(true)">${esc(T.ccBioAuto)}</button>
+      <button type="button" onclick="careerBioCancel()">${esc(T.ccBioCancel)}</button></div>`;
+  const inp=document.getElementById('xBioIn'); if(inp) inp.focus();
+  return true;
+}
+function careerBioCommit(reset){
+  const inp=document.getElementById('xBioIn');
+  careerBioSet(reset ? '' : (inp ? inp.value : ''));
+  careerBioCancel();
+}
+function careerBioCancel(){ const box=document.getElementById('xBioOwn'); if(box) box.innerHTML=ccBioOwnHTML(); }
 function careerBioHTML(){
+  // Своё био, если написано, — вместо собранного.
+  if(ccMyBio()) return esc(ccMyBio());
   const pl=CAREER.player, cr=CAREER.career, org=CAREER.org, on=careerAgent();
   const bits=[];
   const age=ccPlayerAge();
@@ -118856,11 +118954,16 @@ function careerDoAct(id){
     careerReachAdd(act.reach*per*(sk.reach||1));
     if(sk.mate){
       const cm=ccStreamMate();
-      const from=(cm && typeof ccProAmReachFrom==='function') ? ccProAmReachFrom(cm.name) : 0;
+      // Повторы с тем же креатором дают меньше; ему уходит своя доля (см. CC_COLAB_*).
+      const from=(cm && typeof ccColabFrom==='function') ? ccColabFrom(cm.name) : 0;
       if(from){
+        const give=ccColabGive();
         careerReachAdd(from, true);
+        cr.colabN=cr.colabN||{}; cr.colabN[hKey(cm.name)]=(cr.colabN[hKey(cm.name)]||0)+1;
+        cr.colabGave=cr.colabGave||{}; cr.colabGave[hKey(cm.name)]=(cr.colabGave[hKey(cm.name)]||0)+give;
+        if(cm.deal) cr.colabWith=null;   // договор — на один эфир
         careerNews('good', 'ccNewsStreamColab',
-                   [ccHandle(cm.name), ccNum((cm.tw && cm.tw[1])||0), ccNum(from)]);
+                   [ccHandle(cm.name), ccNum((cm.tw && cm.tw[1])||0), ccNum(from), give ? ccNum(give) : '']);
       }
     }
     /* And a stream pays, which is the other half of what an audience is for.
@@ -130937,7 +131040,7 @@ const CC_POST_BY={
   ccNewsSceneDuo:'by', ccNewsSceneRise:'press', ccNewsSceneFall:'press',
   ccNewsProAmCash:'you', ccNewsProAmOut:'you', ccNewsProAmReach:'you',
   // Коллаб-стрим — свой вечер, свой пост. См. careerStreamGo.
-  ccNewsStreamColab:'you',
+  ccNewsStreamColab:'you', ccNewsColabYes:'you', ccNewsColabNo:'you',
   // И эфир с турнира — тоже свой. Денег в строке нет намеренно: правка 23
   // августа сняла из ленты денежные твиты эфира, отчёт вечера с заработком
   // живёт в панели дня. См. ccStreamCupAfter.
@@ -136355,7 +136458,8 @@ function careerSocialHTML(){
     <div class="x-profile-head">
       ${meAv('x-av-big')}
       <div><b>${esc(me.nick)}</b><span>@${esc(meHandle)}</span>
-        <span class="x-bio">${CAREER.org?esc(CAREER.org.name)+' · ':''}${careerTopHonour() ? careerTopHonour()+' · ' : ''}${L().ccDivision} ${CAREER.career.division} · ${L().ccRoOvr} ${ccMyShownOvr()}</span></div>
+        <span class="x-bio">${CAREER.org?esc(CAREER.org.name)+' · ':''}${careerTopHonour() ? careerTopHonour()+' · ' : ''}${L().ccDivision} ${CAREER.career.division} · ${L().ccRoOvr} ${ccMyShownOvr()}</span>
+        <div class="x-bio-own" id="xBioOwn">${ccBioOwnHTML()}</div></div>
     </div>
     <div class="x-counts">
       <span><b>${ccFollowers(careerReach())}</b>${L().xFollowers}</span>
@@ -158414,8 +158518,67 @@ let CC_STREAM_KIND='grind';
 /* С кем сегодня можно стримить вдвоём. Берётся из того же пула креаторов, что
    и Про-Ам, и меняется каждый день: сегодня свободен один, завтра другой —
    так это и работает, коллаб назначают, а не выбирают из всех сразу. */
+/* КОЛЛАБ ПО ПРЕДЛОЖЕНИЮ (5.10, Notion «05», испанский игрок: «ampliación en la parte de
+   Content creator y cosas como colaboraciones con otros influencers»). Раньше напарника эфира
+   назначал день; теперь можно самому предложить креатору из списка. Он соглашается тем охотнее,
+   чем твоя аудитория ближе к его (CC_COLAB_ASK, доля охвата к его фолловерам на Twitch), спросить
+   можно раз в день. Согласие — договор на CC_COLAB_DAYS дней: кнопка «Коллаб» берёт его, а не
+   креатора дня. Каждый следующий коллаб с тем же креатором приносит меньше (CC_COLAB_REPEAT —
+   его чат тебя уже видел), а ему уходит своя доля твоей аудитории (CC_COLAB_GIVE, с потолком). */
+const CC_COLAB_ASK={base:0.15, per:6, lo:0.05, hi:0.9};
+// Доля, что уходит креатору, — зеркало прихода к тебе (CC_PROAM_REACH_SHARE / _CAP): та же
+// тысячная аудитории и тот же потолок, только от твоей.
+const CC_COLAB_DAYS=7, CC_COLAB_REPEAT=0.5, CC_COLAB_GIVE={share:0.001, cap:8000};
+function ccColabDeal(){
+  const cr=CAREER && CAREER.career, d=cr && cr.colabWith;
+  return (d && d.name && d.until && careerToday()<=d.until) ? d : null;
+}
+function ccColabTimes(name){ const cr=CAREER && CAREER.career; return (cr && cr.colabN && cr.colabN[hKey(name)]) || 0; }
+function ccColabOdds(name){
+  const fol=(typeof ccProAmFollowers==='function') ? ccProAmFollowers(name) : 0;
+  const ratio=fol>0 ? careerReach()/fol : 1;
+  return Math.max(CC_COLAB_ASK.lo, Math.min(CC_COLAB_ASK.hi, CC_COLAB_ASK.base+CC_COLAB_ASK.per*ratio));
+}
+// Сколько приходит от коллаба с ним сейчас: его доля аудитории, урезанная повторами.
+function ccColabFrom(name){
+  const base=(typeof ccProAmReachFrom==='function') ? ccProAmReachFrom(name) : 0;
+  return Math.round(base/(1+CC_COLAB_REPEAT*ccColabTimes(name)));
+}
+function ccColabGive(){ return Math.min(CC_COLAB_GIVE.cap, Math.round(careerReach()*CC_COLAB_GIVE.share)); }
+function careerColabAsk(name){
+  const cr=CAREER && CAREER.career; if(!cr || !name) return false;
+  if(cr.colabAskDay===careerToday() || ccColabDeal()) return false;
+  if((typeof ccProAmCreators==='function' ? ccProAmCreators() : []).indexOf(name)<0) return false;
+  cr.colabAskDay=careerToday();
+  const rnd=careerRng(ccHashStr('colabask|'+careerToday()+'|'+name+'|'+(CAREER.player.nick||'')));
+  const yes=rnd()<ccColabOdds(name);
+  if(yes){ cr.colabWith={name:name, until:ccAddDays(careerToday(), CC_COLAB_DAYS)};
+           careerNews('good', 'ccNewsColabYes', [ccHandle(name)]); }
+  else careerNews('flat', 'ccNewsColabNo', [ccHandle(name)]);
+  try{ careerSave(); }catch(e){}
+  try{ careerRenderHub('streams'); }catch(e){}
+  return yes;
+}
+function ccColabPanelHTML(){
+  const cr=CAREER && CAREER.career; if(!cr) return '';
+  const list=(typeof ccProAmCreators==='function') ? ccProAmCreators().slice(0, 8) : [];
+  if(!list.length) return '';
+  const T=L(), deal=ccColabDeal(), asked=cr.colabAskDay===careerToday();
+  return `<div class="tv-colab"><div class="tw-h">${esc(T.ccColabTitle)}</div>
+    <div class="tv-colab-hint">${esc(T.ccColabHint)}</div>${list.map(n=>{
+      const ava=(typeof ccProAmAvatar==='function') ? ccProAmAvatar(n) : null, times=ccColabTimes(n);
+      const mine=deal && deal.name===n;
+      const act = mine ? `<span class="tv-colab-deal">${esc(T.ccColabDeal(ccDayLabel(deal.until)))}</span>`
+        : (deal || asked) ? `<button class="tv-colab-go" disabled>${esc(asked && !deal ? T.ccColabAsked : T.ccColabAsk)}</button>`
+        : `<button class="tv-colab-go" onclick="careerColabAsk('${esc(n).replace(/'/g,"\\'")}')">${esc(T.ccColabAsk)}</button>`;
+      return `<div class="tv-colab-row"><span class="tv-av">${ava?`<img src="${ava}" alt="" loading="lazy" onerror="this.remove()">`:esc(n.slice(0,2).toUpperCase())}</span>
+        <div class="tv-colab-in"><b>@${esc(ccHandle(n))}</b><em>${ccFollowers(ccProAmFollowers(n))} Twitch · ${esc(T.ccColabOdds(Math.round(ccColabOdds(n)*100)))}${times?' · '+esc(T.ccColabTimes(times)):''}</em></div>
+        ${act}</div>`; }).join('')}</div>`;
+}
 function ccStreamMate(){
   const cr=CAREER && CAREER.career; if(!cr) return null;
+  const deal=ccColabDeal();
+  if(deal) return {name:deal.name, tw:(typeof ccProAmTwitch==='function' ? ccProAmTwitch(deal.name) : null), deal:true};
   const list=(typeof ccProAmCreators==='function') ? ccProAmCreators() : [];
   if(!list.length) return null;
   const rnd=careerRng(ccHashStr('colab|'+(cr.season||1)+'|'+careerToday()));
@@ -159842,6 +160005,7 @@ function careerStreamsHTML(){
       ${cr.streamLast && cr.streamLast.sum ? `<div class="tv-sum"><div class="tw-h">${esc(T.ccTvSumTitle)}${
           cr.streamLast.label?' · '+esc(cr.streamLast.label):''}${cr.streamLast.day?' · '+esc(ccStamp({day:cr.streamLast.day})):''}</div>${
           ccTvSumTilesHTML(cr.streamLast.sum)}${ccTvSumChartHTML(cr.streamLast.sum)}</div>` : ''}
+      ${live ? '' : ccColabPanelHTML()}
       ${careerTwBarHTML()}
     </main>
     <aside class="tv-chat">
