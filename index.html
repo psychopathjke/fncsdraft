@@ -106622,6 +106622,7 @@ function ccMateOpinion(options, dflt){
    можно было сравнить взглядом, а не читать три строки. */
 const CC_CHOICE_ZONES=11;
 const CC_CHOICE_THEME={
+  style: {th:'#ffd600', zone:1},    // стиль игры перед игрой — жёлтый W-key
   drop:  {th:'#5ec8ff', zone:1},    // автобус и небо
   site:  {th:'#ffc93c', zone:1},    // золото сундука
   loot:  {th:'#b46bff', zone:3},    // эпик из лестницы редкости
@@ -111852,7 +111853,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5f2d3fb4';
+const CC_BUILD='d8b7e80d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -146392,8 +146393,10 @@ function ccTeamStyleNow(t){
   const ws=ccTeamStyles(t); return (ws && ws[0] && CC_STYLE_IDS.indexOf(ws[0].s)>=0) ? ws[0].s : 'norm';
 }
 async function ccStyleBox(cur){
+  // Значки — как у остальных выборов игры (его «значков не хватает или картинки»): тихо / компас / драка.
+  const ico={chill:CC_CHOICE_ICON.quiet, norm:CC_CHOICE_ICON.stay, key:CC_CHOICE_ICON.fight};
   const o=await ccChoiceBox(L().ccStyleT, '', CC_STYLE_IDS.map(id=>({id:id, title:ccStyleLabel(id),
-    note:id==='norm' ? '' : ccKeyNote(id), def:id===cur})),
+    note:id==='norm' ? '' : ccKeyNote(id), def:id===cur, icon:ico[id]})),
     // На острове, как высадка и остальные выборы игры (его «почему не на карте показывает»).
     (typeof CC_RUN_MAP!=='undefined' && CC_RUN_MAP && CC_RUN_MAP.isConnected) ? CC_RUN_MAP : null, null, 'style');
   return (o && o.id) || cur;
