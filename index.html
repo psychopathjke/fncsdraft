@@ -99597,6 +99597,16 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
     const humanLobbies=(gameLobbies && ccRaceSplitLobbies())
       ? gameLobbies.filter(l=>l.some(t=>t.isYou||t.isRival)) : (myLobby ? [myLobby] : []);
     if(typeof CC_RACE_DBG!=='undefined' && CC_RACE_DBG && gameLobbies) CC_RACE_DBG.split=humanLobbies.length+'/'+gameLobbies.length;
+    /* Стиль игры — на КАЖДУЮ игру карьеры, а не только туда, где спрашивают высадку.
+       5.10, игрок (Notion «05»): «started a career in 2025 and it won't let me select it… only
+       lets me do that in FNCS». Первый раунд капов — раздача без вопроса, careerLandingPick
+       там не зовётся, и «кейить» молча не работал. Тут ставится всем вечерам; где вопрос
+       есть, careerLandingPick поставит то же самое и посчитает игру в набитую руку сам. */
+    if(CAREER_RUN && typeof ccApplyPlayStyle==='function' && typeof CAREER!=='undefined' && CAREER && CAREER.career && !ccStyleShared()){
+      const meT=teams.find(t=>t && t.isYou);
+      if(meT){ CC_STYLE_TEAM=meT; ccApplyPlayStyle(meT);
+        if(typeof opts.dropEachGame!=='function' && ccPlayStyle()==='key') CAREER.career.keyGames=(CAREER.career.keyGames||0)+1; }
+    }
     if(typeof opts.dropEachGame==='function'){
       // Спрашивают, глядя на остров, а не на последний круг прошлой игры:
       // карта возвращается к целому виду до вопроса. См. ZoneReplay.whole.
@@ -116355,7 +116365,10 @@ function careerCentreHTML(card, a){
              L().ccStreamCupGo}</button>`+
              /* Цена эфира — строкой под кнопкой, а не только во всплывающей
                 подсказке: отзыв «и это должно быть написано». */
-             `<div class="ch-hint ch-live-hint">${esc(why||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}</div>`; })() : '')
+             `<div class="ch-hint ch-live-hint">${esc(why||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}</div>`; })() : '')+
+        /* Стиль игры прямо у «Играть» — на любой вечер (5.10: «only lets me do that in
+           FNCS»). Тот же переключатель, что в вопросе высадки; в команде/гонке пустой. */
+        (onToday ? ccPlayStyleHTML() : '')
       : `<button class="ch-play" onclick="careerSkipAsk()" title="${esc(
             ccRaceModeWhy() ? ccRaceModeWhy()
           /* Арена, ранг, травма, бан (ccLifeWhy) закрывают вечер в careerCanPlayKindOn, а сюда
