@@ -789,6 +789,8 @@
   .fut-ovr{font-family:var(--font-display);font-style:italic;
     font-weight:900;letter-spacing:-.02em;line-height:.9;
     text-shadow:0 2px 0 rgba(0,0,0,.5), 0 0 14px rgba(0,0,0,.45);}
+  .fut-ovr-split{color:rgba(255,255,255,.78);font-weight:700;white-space:nowrap;
+    margin-top:2px;letter-spacing:.02em;text-shadow:0 1px 0 rgba(0,0,0,.5);}
   .fut-name{font-family:var(--font-display);font-style:italic;
     font-weight:900;text-transform:uppercase;letter-spacing:.005em;line-height:1.1;
     text-shadow:0 2px 0 rgba(0,0,0,.42), 0 0 10px rgba(0,0,0,.35);word-break:break-word;}
@@ -94829,6 +94831,16 @@ function futCardHTML(p, opts){
      still print what each edge is worth, and the number itself says the whole
      sum in a sentence on hover. */
   const shownOvr = extra ? Math.min(CAREER_SCALE_TOP, Math.round(a.ovr + extra)) : a.ovr;
+  /* Разбивка под числом вернулась, но не второй «базой»: «68 +6 +4» — база и
+     две прибавки, те же, что строки PNG и AGE ниже. Тестер 5.10: «чтобы на
+     карточке показывался настоящий рейтинг, а не с учётом плюсов за страну и
+     возраст, путает это». Большое число остаётся суммой (решение 21.08), а
+     откуда она — видно без наведения: на iPhone title не всплывает. */
+  const sgn = v => (v<0 ? '−'+Math.abs(Math.round(v)) : '+'+Math.round(v));
+  const ovrSplit = extra
+    ? `<div class="fut-ovr-split" style="font-size:${wide?9:8}px;" title="${esc(L().cardOvrFull)}">${Math.round(a.ovr)} ${
+        [p._pingEdge, p._ageEdge].filter(v=>Math.round(v||0)).map(sgn).join(' ')}</div>`
+    : '';
   // The rarity, in the language the page is in. It used to print the skin's own
   // tag, which is the English word baked into CARD_SKIN beside the gradient —
   // fine as a key, wrong on screen, and on the card the player looks at most.
@@ -94855,7 +94867,7 @@ function futCardHTML(p, opts){
     box-shadow:0 0 0 1px rgba(255,255,255,.42) inset, 0 8px 22px rgba(0,0,0,.55), 0 0 30px -8px ${skin.glow}, 0 0 0 2.5px ${skin.glow};"${peekAttr}>
     <div style="display:flex;gap:${wide?12:9}px;align-items:flex-start;">
       <div style="text-align:center;min-width:${wide?54:46}px;">
-        <div class="fut-ovr" style="font-size:${wide?40:33}px;color:#fff;" title="${esc(L().cardOvrFull)}">${shownOvr}</div>
+        <div class="fut-ovr" style="font-size:${wide?40:33}px;color:#fff;" title="${esc(L().cardOvrFull)}">${shownOvr}</div>${ovrSplit}
         <div class="fut-role" style="font-size:${wide?10:9}px;">${L()[a.roleKey]}</div>
         <div style="margin-top:6px;height:${wide?18:15}px;">${flag}</div>
         <div class="fut-meta" style="font-size:${wide?9:8}px;margin-top:4px;">${regionName(p.region)}</div>
