@@ -126287,15 +126287,34 @@ function ccDevLTrim(){
    записях не значит, что он бросил, мы пишем не все турниры. */
 // Год начинается в декабре, первый Мейджор — в марте: ~90 дней = половина разницы, к концу сезона ~90%.
 const CC_REAL_PULL_HALF=90;
+/* МЕЖСЕЗОНЬЕ ДВИГАЕТ РЕЙТИНГ СРАЗУ.
+
+   Тестер, страница «05» (5.10): «рейтинг кстати не меняется, когда новый сезон
+   начинается». Так и было: в первый день года подтяжка была ноль, и сцена
+   стояла на прошлогодних числах шесть недель, пока набегала хотя бы единица.
+   Замер (tools/p05-pull.js, Европа 2024→2025): разница с рейтингом 2025-го у
+   330 человек в среднем 9.7, у 233 — пять и больше; в день стыка изменилось 0
+   из 834, через шесть недель — в среднем на единицу. Теперь стык сам закрывает
+   треть разницы (как обновление рейтингов к новому сезону), остальное идёт
+   постепенно, как шло. */
+const CC_REAL_PULL_OPEN=1/3;
 let CC_NOW_YEAR_FORCE=0;
 const CC_REAL_TARGETS={};
 function ccRealPullStep(){
   if(typeof CAREER==='undefined' || !CAREER || !CAREER.career || !ccContinuity()) return 0;
   return 1+Math.floor(ccDaysBetween(ccYearFrom(), careerToday())/7);
 }
+function ccRealPullCurve(step){
+  return CC_REAL_PULL_OPEN+(1-CC_REAL_PULL_OPEN)*(1-Math.pow(0.5, (step-1)*7/CC_REAL_PULL_HALF));
+}
 function ccRealPullFrac(){
   const step=ccRealPullStep();
-  return step ? 1-Math.pow(0.5, (step-1)*7/CC_REAL_PULL_HALF) : 0;
+  if(!step) return 0;
+  /* Календарь после 2026-го — снова 2026-й (ccSeasonYear), и до этой правки
+     подтяжка начиналась с нуля каждый такой сезон: дошедшие за год до своего
+     2026-го откатывались назад на стыке. Год 2026 уже прожит — цель держится. */
+  if(ccCalYear()>=2026 && ccYearShift()>0) return ccRealYearEndFrac(2026);
+  return ccRealPullCurve(step);
 }
 // Рейтинг каждого человека в году year — так, как его считает свежая карьера того года.
 // reg — регион сцены (по умолчанию тот, чей пул сейчас строится).
@@ -126373,7 +126392,7 @@ function ccRealYearSpan(y){
 }
 function ccRealYearEndFrac(y){
   const s=ccRealYearSpan(y), step=1+Math.floor(ccDaysBetween(s[0], s[1])/7);
-  return 1-Math.pow(0.5, (step-1)*7/CC_REAL_PULL_HALF);
+  return ccRealPullCurve(step);
 }
 function ccRealPull(c){
   if(!c || !ccRealPullStep()) return 0;
@@ -131596,15 +131615,36 @@ function ccWhoAloneSince(handle, memo){
    не бывает. Настоящий ответ у careerPools: там пары уже пересобраны, половинки
    распавшихся стоят врозь, а трансферы сведены заново. */
 function ccPairMateOf(handle){
+  return ccSquadMatesOf(handle)[0] || null;
+}
+/* Весь состав человека, а не только пара.
+
+   Тестер, страница «05» (5.10): «малибука без сквада почему-то, когда из 5 главы
+   в 6 переходишь». В трио-год карьеры, перешедшей из 2024-го, Malibuca —
+   ТРЕТИЙ у P1ng & Wox (настоящая тройка 2025-го, cr.trios), а список «Кому
+   написать», статус в ленте и объявления спрашивали только пары пула — и
+   третий читался свободным. Теперь третий — в составе своей пары, а у пары
+   в составе её третий. */
+function ccSquadMatesOf(handle){
   const k=hKey(handle);
   let duos=[];
-  try{ duos=(careerPools()||{}).duos||[]; }catch(e){ return null; }
+  try{ duos=(careerPools()||{}).duos||[]; }catch(e){ return []; }
+  const trios=(careerSquadSize()===3 && CAREER && CAREER.career && CAREER.career.trios) || {};
+  const keyOf=d=>(d.cards||[]).map(c=>hKey(c)).sort().join('+');
   for(let i=0;i<duos.length;i++){
     const cs=duos[i].cards||[];
     if(!cs.some(c=>hKey(c)===k)) continue;
-    return cs.find(c=>hKey(c)!==k) || null;
+    const out=cs.filter(c=>c && hKey(c)!==k);
+    const third=trios[keyOf(duos[i])];
+    if(third && third!==k){ const tc=ccWhoCard(third); if(tc) out.push(tc); }
+    return out;
   }
-  return null;
+  const core=Object.keys(trios).find(key=>trios[key]===k);
+  if(core){
+    const d=duos.find(x=>keyOf(x)===core);
+    if(d) return (d.cards||[]).filter(Boolean);
+  }
+  return [];
 }
 /* Статус человека на сегодня. Свободен — только если он И правда один: пара
    могла собраться обратно, и тогда старая запись о разводе ничего не значит. */
@@ -136653,9 +136693,9 @@ function ccDuoFindRender(keepFocus){
        ccSceneMateOf, то есть на ростере Epic, и человек, развёдшийся неделю
        назад, всё ещё читался занятым — писать ему было незачем. См.
        ccPairMateOf. */
-    const mate=ccPairMateOf(w.handle);
+    const mates=ccSquadMatesOf(w.handle), mate=mates[0]||null;
     const prc=prOf.get(w);
-    const under=[L()[w.role]||'', mate ? ccSay("ccDuoWith", esc(mate.handle||"")) : ccSay("ccDuoFree"),
+    const under=[L()[w.role]||'', mate ? ccSay("ccDuoWith", esc(mates.map(c=>c.handle||"").join(" & "))) : ccSay("ccDuoFree"),
                  w.club ? esc(w.club) : '',
                  prc && prc.pr ? esc(L().ccDuoPrOf(ccNum(Math.round(prc.pr)), prc.rank||'–')) : ''].filter(Boolean).join(' · ');
     /* Объявление человека — второй строкой, его же словами: кого ищет и с
@@ -143890,7 +143930,18 @@ function careerTableAdd(ranked){
        Rows written before this fix keep their name as the key and stay where
        they are; the merge is not retroactive, because a split that already
        happened cannot be told from two teams. */
-    const key=team.isYou ? '__you__' : name;
+    /* И у тройки ключ — её ядро, а не имя.
+
+       Тестер, страница «05» (5.10): «в 6 главе двое свиззи стало». Третий у
+       настоящей тройки 2025-го меняется со снимком сезона (ccRealSnap), и
+       «SwizzY & Queasy & Merstach» с «SwizzY & Queasy & Rad3on» вставали в
+       таблицу двумя строками — замер года (tools/p05-ff.js): 33-я и 37-я, и
+       так у каждого второго ядра сцены. Ядро — первые двое состава (пара
+       пула, к ней садится третий), оно сезон и держит. */
+    const sq=team.squad||[];
+    const key=team.isYou ? '__you__'
+            : (sq.length>=3 && sq[0] && sq[1]) ? 'core:'+[hKey(sq[0]), hKey(sq[1])].sort().join('+')
+            : name;
     const row=t.rows[key] || (t.rows[key]={pts:0, weeks:0, best:null, wins:0});
     // The name is carried rather than keyed on, so the table still prints the
     // duo the player is in now.

@@ -101,21 +101,25 @@ const BOOT = `
     };
     const first=pot(CC_YEAR_2025_FROM), early=pot('2025-03-15'), late=pot('2025-09-20');
     out.notes.potential={first:{frac:first.frac, gapNow:first.gapNow}, early, late};
-    check('потенциал: в первый день сезона рейтинги свои', first.frac===0 && first.gapNow===first.gapStart, JSON.stringify(first));
+    // 5.10 (тестер, «05»: «рейтинг не меняется, когда новый сезон начинается»): стык сам закрывает CC_REAL_PULL_OPEN разницы.
+    check('потенциал: в первый день сезона закрыта доля CC_REAL_PULL_OPEN', Math.abs(first.frac-CC_REAL_PULL_OPEN)<0.01 && first.toward>=first.n*0.8
+      && first.gapNow<first.gapStart && first.gapNow>=first.gapStart*(1-CC_REAL_PULL_OPEN)-0.6, JSON.stringify(first));
     check('потенциал: есть люди с целью', early.n>=30, String(early.n));
-    check('потенциал: к первому Мейджору — около половины', early.frac>=0.4 && early.frac<=0.65 && early.toward>=early.n*0.8, early.frac+', '+early.toward+'/'+early.n);
+    check('потенциал: к первому Мейджору — больше, чем в день стыка', early.frac>first.frac+0.15 && early.frac<0.85 && early.toward>=early.n*0.8, early.frac+', '+early.toward+'/'+early.n);
     check('потенциал: к концу сезона почти всё', late.frac>=0.8 && late.gapNow<=late.gapStart*0.25, late.frac+', '+early.gapNow+' → '+late.gapNow);
     // 1в. Цепочка: 2026-й карьеры 2024-го начинается с того, чем кончился 2025-й (S1neD: 80, а не 76).
     seed({season:3, size:2, year:2026, year0:2024, day:CC_YEAR_FROM, sizes:{1:2, 2:3}});
     {
-      const T25=ccRealTargets(2025), P=careerPools(), fe=ccRealYearEndFrac(2025);
+      const T25=ccRealTargets(2025), T26=ccRealTargets(2026), P=careerPools(), fe=ccRealYearEndFrac(2025), f0=ccRealPullFrac();
       const base=new Map(); ccEuCards().forEach(c=>{ const cur=base.get(c._k); if(ccCardYear(c)===2024 && (cur==null || c._ovr>cur)) base.set(c._k, c._ovr); });
       let n=0, ok=0; const bad=[];
       // Только настоящие составы: у добора из ростера база — самая свежая карточка, а не сильнейшая.
       P.duos.filter(d=>d._real).forEach(d=>d.cards.forEach(c=>{
         const k=c._k||hKey(c), t=T25.get(k), b=base.get(k);
         if(t==null || b==null || Math.abs(t-b)<3) return;
-        n++; const want=Math.round(b+(t-b)*fe);
+        // Конец 2025-го, и сверху — доля стыка к 2026-му (CC_REAL_PULL_OPEN), если у него есть карточка 2026-го.
+        const s=b+(t-b)*fe, t6=T26.get(k);
+        n++; const want=Math.round(t6!=null ? s+(t6-s)*f0 : s);
         if(Math.abs(c._ovr-want)<=1) ok++; else if(bad.length<3) bad.push(c.handle+' '+c._ovr+' ждали '+want);
       }));
       out.notes.chain={n, ok, bad};
