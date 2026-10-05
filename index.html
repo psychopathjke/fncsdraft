@@ -111853,7 +111853,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='d8b7e80d';
+const CC_BUILD='ae50cbaa';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -146393,8 +146393,12 @@ function ccTeamStyleNow(t){
   const ws=ccTeamStyles(t); return (ws && ws[0] && CC_STYLE_IDS.indexOf(ws[0].s)>=0) ? ws[0].s : 'norm';
 }
 async function ccStyleBox(cur){
-  // Значки — как у остальных выборов игры (его «значков не хватает или картинки»): тихо / компас / драка.
-  const ico={chill:CC_CHOICE_ICON.quiet, norm:CC_CHOICE_ICON.stay, key:CC_CHOICE_ICON.fight};
+  /* Значки свои (его «может W букву просто и иконки других не нравятся»): W-key — клавиша с буквой W,
+     спокойно — щит (меньше драк, ставка на место), обычно — весы (ни туда ни сюда). */
+  const ico={
+    chill:'<svg viewBox="0 0 24 24"><path d="M12 2.5l8 3v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6z" fill="#3ddc9a" fill-opacity=".18" stroke="#3ddc9a" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.5 12l2.4 2.4 4.6-4.8" fill="none" stroke="#e8eef6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    norm:'<svg viewBox="0 0 24 24"><path d="M12 3v17M7 20h10M4.5 7h15" stroke="#e8eef6" stroke-width="1.8" stroke-linecap="round"/><path d="M4.5 7L2 13h5zM19.5 7L17 13h5z" fill="#9fb3c8" fill-opacity=".35" stroke="#9fb3c8" stroke-width="1.4" stroke-linejoin="round"/><circle cx="12" cy="4" r="1.6" fill="#e8eef6"/></svg>',
+    key:'<svg viewBox="0 0 24 24"><path d="M2.5 4.5l4.2 15 5.3-11 5.3 11 4.2-15" fill="none" stroke="#ffd600" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>'};
   const o=await ccChoiceBox(L().ccStyleT, '', CC_STYLE_IDS.map(id=>({id:id, title:ccStyleLabel(id),
     note:id==='norm' ? '' : ccKeyNote(id), def:id===cur, icon:ico[id]})),
     // На острове, как высадка и остальные выборы игры (его «почему не на карте показывает»).
