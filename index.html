@@ -9049,6 +9049,7 @@ ccBornHint:'Дата рождения — по желанию. Укажи, и в
 ccNewsCongrats:(n,ev)=>'Поздравляем '+n+' с победой — '+ev+'! 🏆',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'РАЗБОР · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' игр, среднее место '+avg+', элимов '+el+' ('+epg+' за игру). Очки: '+plp+' за места, '+elp+' за элимы. По элимам в лобби — '+ccTop(er)+'.',
 ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'лидеры вечера',
+ccNewsEliteFlop:(ev,t,p,n,x,tags)=>'ПРОВАЛ ВЕЧЕРА · '+(ev!=null?ev+': ':'')+t+' — фавориты (#'+x+' по силе поля), а место только '+p+'-е из '+n+'. '+(tags||''),
 ccLeadCap:'лидеры вечера',
 ccMyStatsBtn:'Моя статистика',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
@@ -11047,6 +11048,7 @@ ccBornHint:'Date of birth — optional. Fill it in and the scene wishes you a ha
 ccNewsCongrats:(n,ev)=>'Congratulations to '+n+' on the win — '+ev+'! 🏆',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
 ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
+ccNewsEliteFlop:(ev,t,p,n,x,tags)=>'FLOP OF THE NIGHT · '+(ev!=null?ev+': ':'')+t+' came in as favourites (#'+x+' on paper) and finished '+p+' of '+n+'. '+(tags||''),
 ccLeadCap:'stats leaders',
 ccMyStatsBtn:'My stats',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
@@ -12326,6 +12328,7 @@ ccBornHint:'Date de naissance — facultative. Renseigne-la et le jour venu, on 
 ccNewsCongrats:(n,ev)=>'Félicitations à '+n+' pour la victoire — '+ev+' ! 🏆',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
 ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
+ccNewsEliteFlop:(ev,t,p,n,x,tags)=>'FLOP DE LA SOIRÉE · '+(ev!=null?ev+' : ':'')+t+', favoris (n°'+x+' sur le papier), finissent seulement '+p+'e sur '+n+'. '+(tags||''),
 ccLeadCap:'stats leaders',
 ccMyStatsBtn:'Mes stats',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
@@ -14894,6 +14897,7 @@ ccPostBdayEpic:(h,a)=>'Buon compleanno @'+h+' — '+a+' anni oggi. Buona stagion
 ccNewsCongrats:(n,ev)=>'Complimenti a '+n+' per la vittoria — '+ev+'! \ud83c\udfc6',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
 ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
+ccNewsEliteFlop:(ev,t,p,n,x,tags)=>'FLOP DELLA SERATA · '+(ev!=null?ev+': ':'')+t+', favoriti (#'+x+' sulla carta), chiudono solo '+p+'° su '+n+'. '+(tags||''),
 ccLeadCap:'stats leaders',
 ccMyStatsBtn:'Le mie statistiche',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:''; return ['ABBIAMO VINTO \ud83c\udfc6 '+ev+a, ev+'. TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6 '+ev+a, ev+' \u00e8 nostro'+a][(v||0)%4];},
@@ -17418,6 +17422,7 @@ ccPostBdayEpic:(h,a)=>'Feliz anivers\u00e1rio @'+h+' — '+a+' hoje. Boa tempora
 ccNewsCongrats:(n,ev)=>'Parab\u00e9ns a '+n+' pela vit\u00f3ria — '+ev+'! \ud83c\udfc6',
 ccNewsKinch:(ev,p,g,avg,el,epg,plp,elp,er)=>'BREAKDOWN · '+(ev!=null?ev+': ':'')+ccTop(p)+'. '+g+' games, avg placement '+avg+', '+el+' elims ('+epg+' per game). Points: '+plp+' placement, '+elp+' elims. Elims in the lobby: '+ccTop(er)+'.',
 ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
+ccNewsEliteFlop:(ev,t,p,n,x,tags)=>'FRACASSO DA NOITE · '+(ev!=null?ev+': ':'')+t+', favoritos (#'+x+' no papel), terminam só em '+p+'º de '+n+'. '+(tags||''),
 ccLeadCap:'stats leaders',
 ccMyStatsBtn:'Minhas estatísticas',
 ccPostWon:(ev,m,v)=>{const a=m?' @'+m:''; return ['GANHAMOS \ud83c\udfc6 '+ev+a, ev+'. TOP 1 \ud83c\udfc6'+a, 'W \ud83c\udfc6 '+ev+a, ev+' \u00e9 nosso'+a][(v||0)%4];},
@@ -130784,6 +130789,7 @@ const CC_POST_BY={
   ccNewsPromoted:'press', ccNewsWinner:'press',
   ccNewsKinch:'analyst',
   ccNewsStatBoard:'analyst',
+  ccNewsEliteFlop:'analyst',
   // The Performance Evaluation is a Division 1 night, so the press gate let
   // these through — but what they say is where the player finished, and a
   // scene account does not post "I went out in Round 1". Same rule that moved
@@ -137696,6 +137702,7 @@ function ccStatMine(ranked, you){
 function ccBoardAfter(ranked, you, label){
   ccKinchPost(ranked, you, label);
   ccStatBoardPost(ranked, label);
+  ccEliteFlopPost(ranked, label);
   ccMyStatsButton(ranked, you, label);
 }
 /* Кнопка под итогом вечера. Отзыв: после каждого финала — грандов,
@@ -137713,6 +137720,42 @@ function ccMyStatsButton(ranked, you, label){
   d.innerHTML=`<summary>${esc(L().ccMyStatsBtn)}</summary>`+ccLeadHTML({cap:label, rows:rows, mine:true});
   card.appendChild(d);
 }
+/* ПРОВАЛ ЭЛИТЫ (5.10, Notion «05», испанский игрок: «flops de la elite»). После вечера
+   аналитик называет фаворита, который провалился: команда из первых CC_FLOP_FAV по силе
+   поля (t.pow — то, с чем она вышла) закончила ниже max(CC_FLOP_MIN_PLACE, доли поля).
+   Один пост на вечер — самый большой разрыв ожидания и места; не больше CC_FLOP_WEEK за
+   семь дней и одна и та же команда — не чаще раза в неделю. Своя команда и люди гонки
+   (isYou/isRival) не в счёт: свой вечер игрок разбирает сам (ccKinchPost).
+   Замер (check-career-elite-flops, 120 полей Д1 по 50, 12 игр): фаворит в нижней половине —
+   22% вечеров; при 0.4 поля было 27% — «неожиданно» читалось как каждый четвёртый вечер. */
+const CC_FLOP_FAV=3, CC_FLOP_MIN_PLACE=15, CC_FLOP_SHARE=0.5, CC_FLOP_WEEK=2;
+function ccEliteFlop(ranked){
+  const n=(ranked||[]).length;
+  if(n<20) return null;
+  const bare=t=>String(t.name||'').replace(/<[^>]*>/g,'').trim();
+  const byPow=ranked.slice().sort((a,b)=>(b.pow||0)-(a.pow||0));
+  const cut=Math.max(CC_FLOP_MIN_PLACE, Math.ceil(n*CC_FLOP_SHARE));
+  let best=null;
+  byPow.slice(0, CC_FLOP_FAV).forEach(function(t, i){
+    if(!t || t.isYou || t.isRival || !bare(t)) return;
+    const cards=(t._cards||t.cards||t.squad||[]).filter(c=>c && c.handle);
+    if(!cards.length) return;
+    const place=ranked.indexOf(t)+1, exp=i+1;
+    if(place<cut) return;
+    if(!best || place-exp>best.place-best.exp) best={t, place, exp, n, name:bare(t), cards};
+  });
+  return best;
+}
+function ccEliteFlopPost(ranked, label){
+  const cr=CAREER && CAREER.career; if(!cr) return;
+  const f=ccEliteFlop(ranked); if(!f) return;
+  const today=careerToday(), from=ccAddDays(today, -6);
+  const recent=(cr.news||[]).filter(e=>e && e.k==='ccNewsEliteFlop' && e.day>=from && e.day<=today);
+  if(recent.length>=CC_FLOP_WEEK) return;
+  if(recent.some(e=>(e.a||[])[1]===f.name)) return;
+  const tags=f.cards.map(c=>'@'+ccHandle(c.handle)).join(' ');
+  careerNews('flat', 'ccNewsEliteFlop', [label, f.name, f.place, f.n, f.exp, tags]);
+}
 function ccStatBoardPost(ranked, label){
   const rows=ccStatLeaders(ranked);
   if(rows.length<4) return;
@@ -137722,6 +137765,7 @@ function careerCongrats(ranked, you, label){
   if(!ranked || !ranked.length) return;
   ccKinchPost(ranked, you, label);
   ccStatBoardPost(ranked, label);
+  ccEliteFlopPost(ranked, label);
   ccMyStatsButton(ranked, you, label);
   const w=ranked[0];
   const bare=t=>String(t.name||'').replace(/<[^>]*>/g,'');
