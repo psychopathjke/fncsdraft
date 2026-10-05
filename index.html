@@ -5336,9 +5336,15 @@
   #screen-career-hub .x-nav{font-family:var(--font-display);font-weight:600;font-size:15px;
     letter-spacing:.06em;text-transform:uppercase;color:#c9dfe0;border-radius:999px;
     padding:9px 16px;transform:none;border:1px solid transparent;clip-path:none;}
-  #screen-career-hub .x-nav>*{transform:skewX(8deg);}
+  /* 5.10, его «странно выглядят шрифт» (скрин рельса FEED/NOTIFICATIONS/DMS/PROFILE):
+     у пилюли наклона давно нет (transform:none), а выпрямляющий skewX(8deg) у детей
+     остался — буквы и значки кривились в обратную сторону. И .on просил вес 900,
+     а Oswald загружен 200–700: браузер дорисовывал жирность сам, буквы плыли.
+     Наклон у детей снят, вес — настоящий 700, синтетическая жирность запрещена. */
+  #screen-career-hub .x-nav>*{transform:none;}
+  #screen-career-hub .x-nav{font-synthesis-weight:none;}
   #screen-career-hub .x-nav:hover{background:rgba(126,240,221,.1);border-color:#7ef0dd;color:#fff;}
-  #screen-career-hub .x-nav.on{background:var(--go);color:var(--go-ink);border-color:var(--go);}
+  #screen-career-hub .x-nav.on{background:var(--go);color:var(--go-ink);border-color:var(--go);font-weight:700;}
   #screen-career-hub .x-nav i{background:#7ef0dd;}
   #screen-career-hub .x-nav.on i{background:var(--go-ink);}
   #screen-career-hub .x-me{background:rgba(4,20,26,.6);border:1px solid rgba(126,240,221,.18);
