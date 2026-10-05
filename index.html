@@ -9321,6 +9321,7 @@ dmPromoted4:(d,o)=>'Д'+d+'. Я '+o+', свободен на сезон',
 dmYes:'Го. Я свободен.',
 dmNo:(o,d)=>'Спасибо, но я '+o+' и сижу в Дивизионе '+(d>1?d-1:1)+'. Пока не вариант.',
 dmNoDuo:m=>'Спасибо, но у меня дуо с '+m+' — мы продолжаем.',
+ccDuoViewPlayers:"Игроки", ccDuoViewPairs:"Пары", ccJoinPairBtn:"Попроситься третьим", ccJoinPairThird:h=>"третий: "+h, ccJoinPairOpen:"ищут третьего", ccJoinPairHint:"Готовые пары твоего региона: третьего нет или он слабее тебя. Согласятся — садятся к тебе оба.", ccJoinPairNone:"Пар, куда можно попроситься третьим, сейчас нет.", ccJoinPairOwnReg:"Пары — только твоего региона.", dmJoinAsk:m=>'Привет! Вижу, вы с '+m+' играете вдвоём. Возьмёте меня третьим?', dmJoinYes:m=>'Обсудили с '+m+' — залетай, будешь третьим.', dmJoinNo:m=>'Поговорил с '+m+' — пока нет, третьего подберём сами.', dmJoinRole:r=>'Третьим нам нужен '+r+'. Пересядешь — пиши.',
 dmFmtAsk:(f,d)=>'Привет! Собираю состав на '+f+' — первый кап '+d+'. Сыграем вместе?', dmFmtPair:(m,f,d)=>'Мы с '+m+' ищем третьего на '+f+' — первый кап '+d+'. Залетай к нам?', roClubAsk:'Позвать в клуб', roClubNo:(o,d)=>o+' не берёт '+d+' — не их уровень', dmRealTeam:e=>'Новый сезон, '+e+' — играем тем составом, что был в жизни. Я в деле.',
 dmNoPartner:o=>'Слышал, ты без напарника. Я '+o+', тоже свободен. Скинемся?',
 dmSeatSour:(o,m)=>'С '+m+' сезон не идёт, ищу куда уйти. Я '+o+' — если у тебя место свободно, я в деле',
@@ -11315,6 +11316,7 @@ dmPromoted4:(d,o)=>'D'+d+'. I am '+o+', free for the season',
 dmYes:'Yeah, I am free. Let us do it.',
 dmNo:(o,d)=>'Thanks, but I am '+o+' and sitting in Division '+(d>1?d-1:1)+'. Not right now.',
 dmNoDuo:m=>'Thanks, but I have a duo with '+m+' — we are running it back.',
+ccDuoViewPlayers:"Players", ccDuoViewPairs:"Pairs", ccJoinPairBtn:"Ask to be third", ccJoinPairThird:h=>"third: "+h, ccJoinPairOpen:"looking for a third", ccJoinPairHint:"Standing pairs in your region with no third, or a third weaker than you. If they say yes, both join you.", ccJoinPairNone:"No pairs to ask right now.", ccJoinPairOwnReg:"Pairs are from your own region only.", dmJoinAsk:m=>'Hey! I see you and '+m+' play as a duo. Take me as your third?', dmJoinYes:m=>'Talked it over with '+m+' — you are in, you are our third.', dmJoinNo:m=>'Talked to '+m+' — not for now, we will find a third ourselves.', dmJoinRole:r=>'We need a '+r+' as the third. Switch and write again.',
 dmFmtAsk:(f,d)=>'Hey! Building a roster for '+f+' — first cup '+d+'. Play together?', dmFmtPair:(m,f,d)=>m+' and I need a third for '+f+' — first cup '+d+'. Want in?', roClubAsk:'Bring to the club', roClubNo:(o,d)=>o+' pass on '+d+' — not their level', dmRealTeam:e=>'New season, '+e+' — let’s play it with our real roster. I’m in.',
 dmNoPartner:o=>'Heard you have no duo. I am '+o+' and free. Want to run it?',
 dmSeatSour:(o,m)=>'The season with '+m+' is not working and I am looking to move. I am '+o+' — if your seat is open, I am in',
@@ -13372,6 +13374,7 @@ dmPromoted3:(d,o)=>'Division '+d+', il était temps. Je suis '+o+' et il me faut
 dmPromoted4:(d,o)=>'D'+d+'. Je suis '+o+', libre pour la saison',
 dmNo:(o,d)=>'Merci, mais je suis '+o+' et je suis en Division '+(d>1?d-1:1)+'. Pas maintenant.',
 dmNoDuo:m=>'Merci, mais j’ai un duo avec '+m+' — on repart ensemble.',
+ccDuoViewPlayers:"Joueurs", ccDuoViewPairs:"Duos", ccJoinPairBtn:"Demander à être 3e", ccJoinPairThird:h=>"3e : "+h, ccJoinPairOpen:"cherchent un 3e", ccJoinPairHint:"Les duos de ta région sans 3e, ou avec un 3e plus faible que toi. S’ils acceptent, les deux te rejoignent.", ccJoinPairNone:"Aucun duo à solliciter pour l’instant.", ccJoinPairOwnReg:"Duos de ta région uniquement.", dmJoinAsk:m=>'Salut ! Je vois que tu joues en duo avec '+m+'. Vous me prenez en 3e ?', dmJoinYes:m=>'On en a parlé avec '+m+' — c’est bon, tu es notre 3e.', dmJoinNo:m=>'J’ai parlé avec '+m+' — pas pour l’instant, on trouvera un 3e nous-mêmes.', dmJoinRole:r=>'Il nous faut un '+r+' en 3e. Change de rôle et réécris.',
 dmFmtAsk:(f,d)=>'Salut ! Je monte une équipe pour '+f+' — première cup '+d+'. On joue ensemble ?', dmFmtPair:(m,f,d)=>'Avec '+m+' on cherche un troisième pour '+f+' — première cup '+d+'. Tu viens ?', roClubAsk:'Faire venir au club', roClubNo:(o,d)=>o+' ne prend pas '+d+' — pas leur niveau', dmRealTeam:e=>'Nouvelle saison, '+e+' — on la joue avec notre vraie équipe. Je suis partant.',
 dmNoPartner:o=>'J’ai entendu que tu n’avais pas de duo. Je suis '+o+' et libre. On tente ?',
 dmSeatSour:(o,m)=>'La saison avec '+m+' ne marche pas et je cherche à bouger. Je suis '+o+' — si ta place est libre, je suis là',
@@ -15055,6 +15058,7 @@ dmPromoted3:(d,o)=>'Divisione '+d+', era ora. Sono '+o+' e mi serve qualcuno a q
 dmPromoted4:(d,o)=>'D'+d+'. Sono '+o+', libero per la stagione',
 dmNo:(o,d)=>'Grazie, ma sono '+o+' e sto in Divisione '+(d>1?d-1:1)+'. Non adesso.',
 dmNoDuo:m=>'Grazie, ma ho un duo con '+m+' — continuiamo insieme.',
+ccDuoViewPlayers:"Giocatori", ccDuoViewPairs:"Coppie", ccJoinPairBtn:"Chiedi di fare il terzo", ccJoinPairThird:h=>"terzo: "+h, ccJoinPairOpen:"cercano un terzo", ccJoinPairHint:"Coppie della tua regione senza terzo, o con un terzo più debole di te. Se accettano, entrano entrambi con te.", ccJoinPairNone:"Nessuna coppia a cui chiedere, per ora.", ccJoinPairOwnReg:"Solo coppie della tua regione.", dmJoinAsk:m=>'Ciao! Vedo che giochi in duo con '+m+'. Mi prendete come terzo?', dmJoinYes:m=>'Ne ho parlato con '+m+' — sei dentro, sei il nostro terzo.', dmJoinNo:m=>'Ho sentito '+m+' — per ora no, il terzo lo troviamo noi.', dmJoinRole:r=>'Ci serve un '+r+' come terzo. Cambia ruolo e riscrivi.',
 dmFmtAsk:(f,d)=>'Ciao! Formo una squadra per '+f+' — prima cup '+d+'. Giochiamo insieme?', dmFmtPair:(m,f,d)=>'Io e '+m+' cerchiamo un terzo per '+f+' — prima cup '+d+'. Ci stai?', roClubAsk:'Porta nel club', roClubNo:(o,d)=>o+' non prende '+d+' — non è il loro livello', dmRealTeam:e=>'Nuova stagione, '+e+' — giochiamola con la nostra vera squadra. Io ci sono.',
 dmNoPartner:o=>'Ho sentito che sei senza duo. Sono '+o+' e libero. Proviamo?',
 dmSeatSour:(o,m)=>'La stagione con '+m+' non funziona e sto cercando di muovermi. Sono '+o+' — se il tuo posto \u00e8 libero, ci sto',
@@ -17578,6 +17582,7 @@ dmPromoted3:(d,o)=>'Divis\u00e3o '+d+', at\u00e9 que enfim. Eu sou '+o+' e preci
 dmPromoted4:(d,o)=>'D'+d+'. Eu sou '+o+', livre para a temporada',
 dmNo:(o,d)=>'Valeu, mas eu sou '+o+' e estou na Divis\u00e3o '+(d>1?d-1:1)+'. Agora n\u00e3o.',
 dmNoDuo:m=>'Valeu, mas tenho dupla com '+m+' — vamos seguir juntos.',
+ccDuoViewPlayers:"Jogadores", ccDuoViewPairs:"Duplas", ccJoinPairBtn:"Pedir para ser o terceiro", ccJoinPairThird:h=>"terceiro: "+h, ccJoinPairOpen:"procuram um terceiro", ccJoinPairHint:"Duplas da sua região sem terceiro, ou com um terceiro mais fraco que você. Se aceitarem, os dois entram com você.", ccJoinPairNone:"Nenhuma dupla para pedir agora.", ccJoinPairOwnReg:"Só duplas da sua região.", dmJoinAsk:m=>'E aí! Vi que você joga em dupla com '+m+'. Me levam de terceiro?', dmJoinYes:m=>'Falei com '+m+' — pode vir, você é o nosso terceiro.', dmJoinNo:m=>'Falei com '+m+' — agora não, a gente acha um terceiro.', dmJoinRole:r=>'Precisamos de um '+r+' como terceiro. Troca e escreve de novo.',
 dmFmtAsk:(f,d)=>'Salve! Montando time para '+f+' — primeira cup '+d+'. Bora jogar junto?', dmFmtPair:(m,f,d)=>'Eu e '+m+' procuramos um terceiro para '+f+' — primeira cup '+d+'. Topa?', roClubAsk:'Levar ao clube', roClubNo:(o,d)=>o+' não contrata '+d+' — não é o nível deles', dmRealTeam:e=>'Nova temporada, '+e+' — bora jogar com o nosso time de verdade. Tô dentro.',
 dmNoPartner:o=>'Soube que voc\u00ea est\u00e1 sem dupla. Eu sou '+o+' e estou livre. Bora?',
 dmSeatSour:(o,m)=>'A temporada com '+m+' n\u00e3o est\u00e1 funcionando e estou querendo mudar. Eu sou '+o+' — se a sua vaga estiver aberta, eu topo',
@@ -134982,7 +134987,7 @@ function careerDmWrite(handle, seat, fmt){
     if(!aged){ careerDmOpen(existing.id); return; }
     CH_DM=existing.id;
     if(typeof seat==='number') existing.seat=seat;
-    existing.fmt=fmt||null;
+    existing.fmt=fmt||null; existing.joinPair=null; existing.joinKey=null; existing.joinThird=null;
     careerDmPush(existing, 'you', 'dmAsk');
     existing.args=0;
     existing.pending=null;
@@ -135005,7 +135010,7 @@ function careerDmWrite(handle, seat, fmt){
      by then — the thread is the only thing left that remembers which card the
      player was looking at when he wrote. Null means nobody was named. */
   t.seat=(typeof seat==='number') ? seat : null;
-  t.fmt=fmt||null;
+  t.fmt=fmt||null; t.joinPair=null; t.joinKey=null; t.joinThird=null;   // обычное письмо — не просьба в пару (ccJoinAsk)
   CH_DM=t.id;
   careerDmPush(t, 'you', 'dmAsk');
   /* And they answer. His rule, 17 August: a player writing to a player is a
@@ -135294,6 +135299,20 @@ function careerDmAccept(id){
      ИГЛа нельзя, как нельзя остаться и без единого, — сначала пересаживаешься
      сам (кнопка в карьере, пока место рядом свободно), потом зовёшь. Место, из
      которого человек уходит, при подсчёте уже пустое. */
+  // Попросился третьим к паре (ccJoinAsk) в трио-год — садятся оба, своим правилом ролей.
+  if(t.joinPair && !(t.fmt && t.fmt!==careerSquadSize())){
+    const ok=ccJoinSeat(t);
+    if(ok){
+      t.state='partner'; t.unread=false;
+      careerDmSquadTidy();
+      const tags=careerMates().filter(Boolean).map(m=>'@'+ccHandle(m.handle)).join(' ');
+      careerNews('good', 'ccNewsSquadNew', ['TRIO', tags]);
+      careerEvent('tlDuo', [t.who.handle]);
+      careerSave();
+      careerRenderHub('social');
+    } else { careerSave(); careerDmOpen(id); }
+    return;
+  }
   const seatOut=ccSeatLeaving(typeof t.seat==='number' ? t.seat : null);
   const roles=[ccRoleNow()].concat(
     careerMates().map((m,i)=>i===seatOut ? null : attrsFor(m).roleKey)).filter(Boolean);
@@ -136622,7 +136641,7 @@ function ccDuoFindOpen(seat, fmt){
      предложить его может любой из двоих — раньше список молча не открывался
      у второго в лобби, и если роли перепутались, то и у владельца. */
   if(ccMpOn() && ccMpMateRecs().length >= ccMpBotSeats()) return;
-  CC_DUO_Q=''; CC_DUO_NAT=''; CC_DUO_NAT_OPEN=false; CC_DUO_REG=''; CC_DUO_SORT='near';
+  CC_DUO_Q=''; CC_DUO_NAT=''; CC_DUO_NAT_OPEN=false; CC_DUO_REG=''; CC_DUO_SORT='near'; CC_DUO_PAIRS=false;
   CC_DUO_SEAT=(typeof seat==='number' && seat>=0 && seat<careerMateSeats()) ? seat : null;
   ccDuoFindRender();
   document.getElementById('duoFindModal').style.display='flex';
@@ -136641,6 +136660,108 @@ function ccDuoFindKey(e){ if(e.key==='Escape') ccDuoFindClose(); }
 function ccDuoFindQ(v){ CC_DUO_Q=String(v||''); ccDuoFindRender(true); }
 // Read the seat before closing, because closing is what clears it.
 function ccDuoFindWrite(handle){ const seat=CC_DUO_SEAT, fmt=CC_DUO_FMT; ccDuoFindClose(); careerDmWrite(handle, seat, fmt); }
+/* ---- Попроситься третьим к готовой паре ------------------------------------
+   Игрок, Notion «05» (5.10): «for trios, you could go to the other two people
+   instead of one person necessarily having to come to you». До этого трио
+   собиралось только к тебе: звал по одному, а пара сама писала «нужен третий»
+   (careerFmtSeatDms). Теперь в поиске трио есть вид «Пары» — дуо своей сцены, у
+   которых третьего нет или он слабее тебя, — и кнопка «Попроситься третьим».
+   Пара отвечает той же арифметикой, что одиночка (careerDmMargin против её
+   среднего рейтинга), плюс CC_TRIO_THIRD_PULL, если третий у неё уже есть. Да —
+   садятся оба (в состав формата — через t.fmtPair, в состав трио-года — оба
+   кресла), их бывший третий свободен (cr.trios). В игре вдвоём и в гонке вида
+   нет: состав там общий и решается рукопожатием (ccMpThirdAsk). */
+let CC_DUO_PAIRS=false;
+function ccDuoPairsOn(){
+  if(!CAREER || !CAREER.career) return false;
+  if(typeof ccMpOn==='function' && ccMpOn()) return false;
+  if(typeof ccRaceOn==='function' && ccRaceOn()) return false;
+  if(!ccRealNamesHere()) return false;
+  const f=CC_DUO_FMT || careerSquadSize();
+  return f===3;
+}
+function ccDuoFindView(v){ CC_DUO_PAIRS=(v==='pairs'); ccDuoFindRender(); }
+function ccJoinMeOvr(){
+  const pl=CAREER.player;
+  return Math.round(pl.ovrExact!=null ? pl.ovrExact : pl.ovr);
+}
+// Пары своей сцены, к которым можно попроситься. Третий — из cr.trios (трио-год).
+function ccJoinPairs(){
+  if(!ccDuoPairsOn()) return [];
+  let duos=[];
+  try{ duos=(careerPools()||{}).duos||[]; }catch(e){ return []; }
+  const mine=ccMyPeople(), me=ccJoinMeOvr();
+  const trios=(careerSquadSize()===3 && CAREER.career.trios) || {};
+  const out=[], seen=new Set();
+  duos.forEach(d=>{
+    const cs=(d.cards||[]).filter(Boolean);
+    if(cs.length<2) return;
+    const a=cs[0], b=cs[1];
+    const key=cs.map(c=>hKey(c)).sort().join('+');
+    if(seen.has(key)) return; seen.add(key);
+    if(mine.has(hKey(a)) || mine.has(hKey(b))) return;
+    if(ccBlocked(a.handle) || ccBlocked(b.handle)) return;
+    const thirdK=trios[key] || null;
+    const third=thirdK ? ccWhoCard(thirdK) : null;
+    if(third && mine.has(hKey(third))) return;
+    const tOvr=third ? Math.round(ccCardOvr(third)) : null;
+    if(third && tOvr>=me) return;
+    const ao=Math.round(ccCardOvr(a)), bo=Math.round(ccCardOvr(b));
+    out.push({key, a, b, ao, bo, avg:(ao+bo)/2, third, thirdKey:thirdK, tOvr});
+  });
+  return out.sort((x,y)=>Math.abs(x.avg-me)-Math.abs(y.avg-me) || y.avg-x.avg);
+}
+// Ответ пары: тот же запас, что у одиночки её среднего рейтинга; занятое третье место — дороже.
+function ccJoinMargin(p){
+  const m=careerDmMargin({handle:'\u0000pair', ovr:p.avg});
+  return m-(p.third ? CC_TRIO_THIRD_PULL : 0);
+}
+function ccJoinWho(card){
+  return {handle:card.handle, ovr:Math.round(ccCardOvr(card)), nat:card.nat, role:attrsFor(card).roleKey,
+          roster:true, card, cardRegion:card.region||ccCareerRegion(), club:card.org||null, pay:0};
+}
+function ccJoinAsk(key){
+  const p=ccJoinPairs().find(x=>x.key===key);
+  if(!p) return;
+  const fmt=CC_DUO_FMT;
+  ccDuoFindClose();
+  const old=careerDmFind(p.a.handle);
+  const t=(old && old.state!=='partner') ? old : careerDmThread(ccJoinWho(p.a));
+  t.who=t.who||ccJoinWho(p.a);
+  t.fmt=fmt||null; t.seat=null;
+  t.joinPair=p.b.handle; t.joinThird=p.thirdKey||null; t.joinKey=p.key;
+  t.fmtPair=fmt ? p.b.handle : null;
+  t.args=0; t.pending=null;
+  CH_DM=t.id;
+  careerDmPush(t, 'you', 'dmJoinAsk', ['@'+ccHandle(p.b.handle)]);
+  if(ccJoinMargin(p)>=0){ careerDmPush(t, 'them', 'dmJoinYes', ['@'+ccHandle(p.b.handle)]); t.state='offer'; }
+  else { careerDmPush(t, 'them', 'dmJoinNo', ['@'+ccHandle(p.b.handle)]); t.state='declined'; }
+  careerSave();
+  careerRenderHub('social');
+}
+/* Согласие на вступление в трио-год: пара садится в оба кресла, прежние напарники уходят
+   (как при замене — с новостью и отдачей их места), бывший третий пары свободен. */
+function ccJoinSeat(t){
+  const b=careerRosterNowEU().find(x=>hKey(x)===hKey(t.joinPair));
+  const a=t.who && (t.who.card || careerRosterNowEU().find(x=>hKey(x)===hKey(t.who.handle)));
+  if(!a || !b) return false;
+  const roles=[ccRoleNow(), attrsFor(a).roleKey, attrsFor(b).roleKey].filter(Boolean);
+  if(!ccSquadRoleFits(roles, 3)){
+    // Пара не пересаживается — она уже пара. Нужная роль — та, которой у неё нет.
+    const need=[a, b].some(c=>attrsFor(c).roleKey==='roleIGL') ? 'roleFRG' : 'roleIGL';
+    careerDmPush(t, 'them', 'dmJoinRole', [L()[need]||'']);
+    return null;
+  }
+  careerMates().forEach(m=>{ if(!m) return; careerSlotGiveUp(m.handle); careerNews('bad', 'ccNewsDropped', [m.handle]); });
+  (CAREER.partners||[]).forEach(r=>{ if(r) ccMateParted(r); });
+  CAREER.partners=[];
+  const rec=c=>({handle:c.handle, cardRegion:c.region||ccCareerRegion(), patience:CAREER_PATIENCE_START, since:careerToday()});
+  careerMateSeat(rec(a), 0);
+  careerMateSeat(rec(b), 1);
+  const cr=CAREER.career;
+  if(t.joinKey && cr.trios && cr.trios[t.joinKey]) delete cr.trios[t.joinKey];
+  return true;
+}
 /* ---- Объявление свободного агента ------------------------------------------
 
    В настоящей ленте «ищу дуо» — это анкета с требованиями, а не крик в пустоту.
@@ -136742,9 +136863,25 @@ function ccDuoFindRender(keepFocus){
         : `<button class="cc-job-h cc-duo-fr" onclick="careerFriendAsk('${esc(w.handle).replace(/'/g,"\\'")}')">${L().ccFriendAdd}</button>`}
     </div>`;
   }).join('');
+  // Вид «Пары» (ccJoinPairs): готовые дуо сцены, к которым можно попроситься третьим.
+  const pairsOk=ccDuoPairsOn(), pairsView=pairsOk && CC_DUO_PAIRS;
+  const pairsList=pairsView ? ccJoinPairs().filter(p=>!q || [p.a.handle, p.b.handle].some(h=>String(h).toLowerCase().indexOf(q)>=0)).slice(0, 60) : [];
+  const face=c=>{ const u=photoURL(c); return `<span class="cc-buy-img cc-buy-face cc-buy-mono cc-duo-ava">${esc(String(c.handle||'?').slice(0,2).toUpperCase())}${
+    u ? `<img src="${u}" alt="" loading="lazy" onerror="this.remove()">` : ''}</span>`; };
+  const pairRows=pairsList.map(p=>{
+    const th=careerDmFind(p.a.handle), asked=!!(th && th.joinKey===p.key && th.state!=='open');
+    const under=[p.third ? esc(L().ccJoinPairThird(String(p.third.handle||'')+' '+p.tOvr)) : esc(L().ccJoinPairOpen),
+                 p.a.org ? esc(p.a.org) : ''].filter(Boolean).join(' · ');
+    return `<div class="cc-buy cc-join-pair" data-key="${esc(p.key)}">${face(p.a)}${face(p.b)}
+      <div class="cc-buy-in"><b>${esc(p.a.handle)} <i>${p.ao}</i> &amp; ${esc(p.b.handle)} <i>${p.bo}</i></b><i>${under}</i></div>
+      ${asked ? `<span class="cc-owned">${L().ccDuoYouWrote}</span>`
+              : `<button class="ch-sign cc-join-ask" onclick="ccJoinAsk('${esc(p.key).replace(/'/g,"\\'")}')">${esc(L().ccJoinPairBtn)}</button>`}
+    </div>`;
+  }).join('');
   document.getElementById('duoFindBody').innerHTML=
     `<h4 class="cc-pick-h">${CC_DUO_FMT ? esc(L().rsFindTitle(CC_DUO_FMT)) : L().ccDuoFindTitle}</h4>
-     <div class="ch-hint">${L().ccDuoFindHint}</div>
+     ${pairsOk ? `<div class="cc-duo-sort cc-duo-view"><button class="cc-job-h${pairsView?'':' on'}" onclick="ccDuoFindView('players')">${esc(L().ccDuoViewPlayers)}</button> <button class="cc-job-h cc-join-tab${pairsView?' on':''}" onclick="ccDuoFindView('pairs')">${esc(L().ccDuoViewPairs)}</button></div>` : ''}
+     <div class="ch-hint">${pairsView ? esc(L().ccJoinPairHint)+(ccDuoRegNow()!==ccCareerRegion() ? ' '+esc(L().ccJoinPairOwnReg) : '') : L().ccDuoFindHint}</div>
      <div class="cc-duo-bar"><input id="duoFindQ" class="cc-duo-q" type="text" autocomplete="off"
             placeholder="${esc(L().ccDuoSearchPh)}" value="${esc(CC_DUO_Q)}"
             oninput="ccDuoFindQ(this.value)">
@@ -136757,9 +136894,9 @@ function ccDuoFindRender(keepFocus){
          </div>` : ''}
        </div>${ccRealNamesHere() ? `<select class="cc-duo-regsel" aria-label="${esc(L().ccDuoReg)}" onchange="ccDuoFindReg(this.value)">${
          ((typeof ccYearRegions==='function' ? ccYearRegions() : CC_REGIONS)||[]).map(r=>`<option value="${r}"${r===ccDuoRegNow()?' selected':''}>${esc(L().ccDuoReg)}: ${esc(regionName(r))}</option>`).join('')}</select>` : ''}</div>
-     <div class="ch-hint cc-duo-n">${list.length ? L().ccDuoFound(list.length) : L().ccDuoNobody}
+     <div class="ch-hint cc-duo-n">${pairsView ? (pairsList.length ? esc(L().ccDuoViewPairs)+': '+pairsList.length : esc(L().ccJoinPairNone)) : list.length ? L().ccDuoFound(list.length) : L().ccDuoNobody}
        <span class="cc-duo-sort">${esc(L().ccDuoSortBy)}: <button class="cc-job-h${CC_DUO_SORT==='near'?' on':''}" onclick="ccDuoFindSort('near')">${esc(L().ccDuoSortNear)}</button> <button class="cc-job-h${CC_DUO_SORT==='ovr'?' on':''}" onclick="ccDuoFindSort('ovr')">${esc(L().ccDuoSortOvr)}</button> <button class="cc-job-h${CC_DUO_SORT==='pr'?' on':''}" onclick="ccDuoFindSort('pr')">${esc(L().ccDuoSortPr)}</button></span></div>
-     <div class="cc-buys">${rows}</div>`;
+     <div class="cc-buys">${pairsView ? pairRows : rows}</div>`;
   if(keepFocus){
     const f=document.getElementById('duoFindQ');
     if(f){ f.focus(); f.setSelectionRange(f.value.length, f.value.length); }
