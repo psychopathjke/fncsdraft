@@ -121154,7 +121154,13 @@ const CC_CUP_WEEKS_2025=[
    before anything else about a trio season is worth building. */
 const CC_MAJOR_STAGE_2025={
   playin  :{games:10, days:2, cut:99},   // cumulative over both days, top 99 EU
-  group   :{games:5,  cut:5},            // per group, plus every Victory Royale
+  /* Ten a group: five Victory Royales and five more on points. The cut counts
+     the winners inside it — a group win is 944 points (majorHeatPoints), so the
+     top of the table IS the winners. At cut 5 the five winners took every seat,
+     nobody came through on points, and the groups sent 15 to a 33-trio final
+     (tester, 5 Oct: «проходят только те, кто выиграл игру… в финалах всего 17»).
+     3 × 10 = 30 is what majorFormat measured for t1–t3, + 3 Lobby winners = 33. */
+  group   :{games:5,  cut:10},
   lcq     :{games:10, cut:33},
   lclobby :{games:3,  cut:0},            // a Victory Royale is the ticket
   final   :{games:6,  days:2, cut:0}
@@ -142721,7 +142727,7 @@ function ccMajorHeats(){ if(ccIs2025()) return 3; return DEEP_MAJOR_REGIONS.has(
    первый; свой номер раннер подставляет сам. См. runCareerMajor. */
 function ccMajorHeat(n, heatNo){
   const reg=ccCareerRegion();
-  // 2025: групповой этап — пять игр, топ-5 группы плюс каждая победа; счёт уже в трио (raw).
+  // 2025: групповой этап — пять игр, топ-10 группы: пять побед (944 очка ставят их наверх) и пять по очкам; счёт уже в трио (raw).
   if(ccIs2025()) return {games:CC_MAJOR_STAGE_2025.group.games, cut:CC_MAJOR_STAGE_2025.group.cut, raw:true};
   if(DEEP_MAJOR_REGIONS.has(reg)) return {games:5, cut:15};
   const six = (n===1 && heatNo===2 &&

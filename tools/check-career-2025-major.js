@@ -80,7 +80,15 @@ const BOOT = `
     check('плей-ин: 20 игр, 99 трио дальше', sp.games===20 && sp.cut===99, sp.games+'/'+sp.cut);
     check('LCQ: 10 игр, 33 трио дальше', sl.games===10 && sl.cut===33, sl.games+'/'+sl.cut);
     check('финал: 12 игр, 33 трио', sf.games===12 && sf.field===33, sf.games+'/'+sf.field);
-    check('группа: 5 игр, топ-5', ccMajorHeat(1,1).games===5 && ccMajorHeat(1,1).cut===5 && ccMajorHeat(1,1).raw===true);
+    /* Группа: пять игр, топ-10 — пять побед и пять по очкам. Победа стоит 944 и
+       сама ставит победителя наверх, поэтому отсечка считает победителей ВНУТРИ
+       себя. На отсечке 5 из группы выходили ровно пятеро победителей, по очкам
+       не проходил никто, и группы давали 15 на финал из 33 (тестер, 5 октября:
+       «проходят только те, кто выиграл игру… в финалах всего 17»). */
+    check('группа: 5 игр, топ-10', ccMajorHeat(1,1).games===5 && ccMajorHeat(1,1).cut===10 && ccMajorHeat(1,1).raw===true,
+          JSON.stringify(ccMajorHeat(1,1)));
+    check('из трёх групп выходит 30, лобби добирает до 33',
+          ccMajorHeat(1,1).cut*ccMajorHeats() + LCQ_WINNERS_2025.EU === ccScaleStage(ccMajorStageSpec('final')).field);
     // Ярлыки календаря — с именами 2026-го и своими словами для групп и лобби.
     const lbl=id=>ccYearLabel(id, '2025-02-02', '2025-02-02');
     check('ярлык плей-ина — из 2026-х имён', /плей-ин|Play-In/i.test(lbl('Major1_2025_PlayIn')) && !/2025/.test(lbl('Major1_2025_PlayIn')), lbl('Major1_2025_PlayIn'));
@@ -103,6 +111,20 @@ const BOOT = `
     check('плей-ин записан', r1 && r1.kind==='major' && r1.stage==='playin', JSON.stringify(r1||null));
     check('плей-ин: 20 игр', r1 && r1.games===20, String(r1 && r1.games));
     out.steps.push('play-in: '+p1.head+' · rows '+p1.rows);
+    /* Группа мира живьём: из неё выходят пятеро победителей И пятеро по очкам. */
+    if(s.majorSeed && s.majorSeed.rows){
+      const mineG=ccMajorMyHeat(careerMajorOn(d.g1));
+      const other=[1,2,3].find(k=>k!==mineG);
+      const before=(CAREER.career.majorSeed.through||[]).length;
+      const wins0=[];
+      const sg=window.simulateGamesStopOnWin;
+      window.simulateGamesStopOnWin=function(room){ const r=sg.apply(this, arguments); room.forEach(t=>{ if(t.gotVR) wins0.push(t); }); return r; };
+      try{ ccMajorWorldHeats(dayOf(1,'heats',other)); } finally { window.simulateGamesStopOnWin=sg; }
+      const add=CAREER.career.majorSeed.through.length-before;
+      out.notes.worldGroup={group:other, through:add, winners:wins0.length};
+      check('группа мира отдаёт десять', add===10, JSON.stringify(out.notes.worldGroup));
+      check('и победителей в ней пятеро — остальные пятеро прошли по очкам', wins0.length===5, JSON.stringify(out.notes.worldGroup));
+    }
     // Группа — только в свой день.
     seed(1, d.g1, {n:1, got:'playin', pass:'playin', ticket:false});
     const cr=CAREER.career;
