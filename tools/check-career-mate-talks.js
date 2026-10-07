@@ -111,6 +111,50 @@ try{
     check('о чём уже говорили — кнопки нет', careerMateTopics().indexOf('life')<0 && careerMateTopics().indexOf('role')<0, careerMateTopics().join(','));
     CAREER.career.day=ccAddDays(CAREER.career.day, 1);
     check('назавтра тема снова есть', careerMateTopics().indexOf('life')>=0, careerMateTopics().join(','));
+
+    // ---- тон разбора после плохого вечера
+    const pr=()=>careerMateRec();
+    CAREER.career.log.push({season:1, day:CAREER.career.day, kind:'cup', place:600, of:700, passed:false, mate:'TalkMate'});
+    check('после плохого вечера — тема разбора', careerMateTopics().indexOf('review')>=0, careerMateTopics().join(','));
+    careerMateTalk('review');
+    check('разбор спрашивает тон', careerMateThread().revAsk===true);
+    const v=ccVoiceOf('TalkMate'), b0=pr().patience;
+    careerMateReview('blame');
+    const dBlame=pr().patience-b0;
+    out.notes.review={voice:v, blame:dBlame, want:CC_REV_TONE.blame[v]};
+    check('наезд — минус к настрою по характеру', dBlame===CC_REV_TONE.blame[v], JSON.stringify(out.notes.review));
+    check('разбор этого вечера — один раз', careerMateTopics().indexOf('review')<0);
+
+    // ---- план на вечер
+    let cupDay=null; careerEvents().forEach((l, d)=>{ if(!cupDay && d>CAREER.career.day && (l||[]).some(e=>e && e.kind && e.kind!=='nations')) cupDay=d; });
+    if(cupDay){
+      CAREER.career.day=cupDay;
+      check('в день турнира — тема плана', careerMateTopics().indexOf('plan')>=0, careerMateTopics().join(','));
+      careerMatePlanSet('aggr'); CAREER.career.playStyle='key';
+      const p1=pr().patience; careerMatePlanAfter();
+      check('сыграли как договорились — плюс', pr().patience===p1+CC_PLAN_KEPT && careerMateThread().msgs.some(m=>m.k==='dmPlanKept'), p1+' -> '+pr().patience);
+      check('план на день — один раз', careerMateTopics().indexOf('plan')<0);
+      CAREER.career.day=ccAddDays(cupDay, 7);
+      let d2=null; careerEvents().forEach((l, d)=>{ if(!d2 && d>=CAREER.career.day && (l||[]).some(e=>e && e.kind && e.kind!=='nations')) d2=d; });
+      if(d2){ CAREER.career.day=d2; careerMatePlanSet('zone'); CAREER.career.playStyle='key'; const p2=pr().patience; careerMatePlanAfter();
+        check('договорились от зоны, а сыграли агрессивно — минус', pr().patience===Math.max(0, p2+CC_PLAN_BROKEN), p2+' -> '+pr().patience); }
+    } else out.fails.push('нет дня с турниром для плана');
+
+    // ---- честно о переманивании
+    let hu=null;
+    for(let i=0; i<400 && !hu; i++){
+      pr().patience=CC_POACH_SAFE-5; pr().headsUp=null;
+      CAREER.career.day=ccAddDays('2026-03-01', i);
+      const th=careerMatePoach(1, 50, true);
+      if(th && th.state==='headsup') hu=th;
+    }
+    check('чуть не хватило настроя — сначала честно говорит', !!hu);
+    if(hu){
+      const p3=pr().patience; careerMateHeadsUp(true);
+      out.notes.headsup={before:p3, after:pr().patience, still:!!careerPartnerCard()};
+      check('«останься» — остаётся и настрой выше', !!careerPartnerCard() && pr().patience===Math.min(100, p3+CC_HEADSUP_KEEP), JSON.stringify(out.notes.headsup));
+      check('раз в сезон', careerMatePoach(1, 50, true)===null || careerMateThread().state!=='headsup');
+    }
   }
 }catch(e){ out.fails.push(String(e.stack||e)); }
 document.getElementById('__out').textContent='@@B@@'+encodeURIComponent(JSON.stringify(out))+'@@E@@'; }, 500));<\/script>`;
