@@ -263,6 +263,31 @@ const SECTIONS=[
     mgrScoutFire(sc.id); check('скауты: уволен', (MGR.scouts||[]).length===0);
     MGR_SUB.transfers='market';
   `},
+  {name:'молодёжь', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    const w0=mgrStaffWage(); mgrYScoutHire('fr');
+    check('молодёжь: скаут нанят', (MGR.yscouts||[]).length===1 && MGR.yscouts[0].nat==='fr');
+    check('молодёжь: зарплата в штабе', mgrStaffWage()===w0+MGR_YSCOUT_COST);
+    mgrYouthMonth('2024-01'); mgrYouthMonth('2024-02');
+    const ys=(MGR.ylist||[]).map(h=>mgrCard(h)).filter(Boolean);
+    check('молодёжь: найдены', ys.length>=2 && ys.length<=4, String(ys.length));
+    check('молодёжь: 15–17 лет', ys.every(c=>c._youth && c.age>=15 && c.age<=17), ys.map(c=>c.age).join());
+    check('молодёжь: рейтинг 50–68', ys.every(c=>{ const r=ccCardOvr(c)||0; return r>=50 && r<=68; }), ys.map(c=>ccCardOvr(c)).join());
+    check('молодёжь: потенциал 70–94', ys.every(c=>mgrPot(c.handle)>=70 && mgrPot(c.handle)<=94), ys.map(c=>mgrPot(c.handle)).join());
+    check('молодёжь: страна скаута', ys.every(c=>c.nat==='fr'), ys.map(c=>c.nat).join());
+    MGR.club.wageCap=mgrWageBill()+100000;
+    const y0=ys[0].handle; mgrToAcad(y0, true);
+    check('молодёжь: в академии', (MGR.academy||[]).some(x=>hKey(x)===hKey(y0)));
+    mgrSave(); const saved=localStorage.getItem('fncsdraft_manager'); mgrLoad();
+    check('молодёжь: карточка цела после загрузки', !!mgrCard(y0) && mgrCard(y0)._youth);
+    MGR_SUB.club='youth'; mgrRenderHub('club');
+    const B=document.getElementById('mgBody');
+    check('молодёжь '+lang+': подвкладка', !B.querySelector('.cc-ffo-err') && !bad(B.innerHTML) && B.querySelectorAll('.mgy-row').length>=1, (B.querySelector('.cc-ffo-err')||{}).textContent+' | '+(B.innerHTML.match(/.{60}(undefined|NaN).{30}/)||[''])[0]+' | rows '+B.querySelectorAll('.mgy-row').length);
+    mgrRenderHub('squad'); const card=[...document.querySelectorAll('#mgBody .mgs-card')].find(x=>x.dataset.h===y0);
+    check('молодёжь: в составе карточкой', !!card);
+    if(card){ card.click(); check('молодёжь: лист открылся', !document.getElementById('mgSheet').hidden); mgrSheetClose(); }
+    MGR_SUB.club='train';
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
