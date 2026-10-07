@@ -188,6 +188,54 @@ const SECTIONS=[
     check('свой 2021 ME создан', mgrCreateOwn({name:'Desert Kings', color:'#ff5a5a', shape:'hex', region:'ME', tier:'rookie'})===true);
     await season('2021 ME свой');
   `},
+  {name:'ревью', once:true, code:String.raw`
+    // 1. Свой клуб после увольнения сохраняет историю, шкаф и день.
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_START=0;
+    MGR_CARRY={history:[{year:2024, club:'X'}], trophies:[{id:'t'}], day:'2024-06-15'};
+    check('увольнение → свой клуб создан', mgrCreateOwn({name:'After Sack', color:'#ff5a5a', shape:'round', region:'EU', tier:'mid'})===true);
+    check('увольнение → история цела', (MGR.history||[]).length===1 && (MGR.trophies||[]).length===1, JSON.stringify([MGR.history, MGR.trophies]));
+    check('увольнение → день не откатился', CAREER.career.day==='2024-06-15', CAREER.career.day);
+    check('увольнение → перенос снят', MGR_CARRY===null);
+    localStorage.removeItem('fncsdraft_manager'); MGR=null; mgrLeave();
+    // 2. Продления: кто не влезает в бюджет — помечен заранее, по умолчанию уходит.
+    MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    mgrAllAcad().forEach(h=>{ MGR.contracts[hKey(h)].until=MGR.year; });
+    MGR.club.wageCap=mgrWageBill();
+    const rh=mgrRenewHTML();
+    check('продление сверх бюджета — помечено', /mg-capno/.test(rh), rh.slice(0,200));
+    check('продление сверх бюджета — по умолчанию уходит', Object.keys(MGR_RENEW).some(h=>MGR_RENEW[h]===false));
+    // 3. Прибавка из почты, перевод из академии и приём в академию — тоже под потолком.
+    MGR.club.wageCap=mgrWageBill();
+    const h0=mgrAll()[0], s0=mgrWage(h0);
+    MGR.inbox.unshift({id:'rz', day:CAREER.career.day, kind:'raise', h:h0, sum:s0+5000, text:'raise'}); mgrInboxDo('rz', true);
+    check('прибавка сверх потолка — не прошла', mgrWage(h0)===s0, s0+' → '+mgrWage(h0));
+    MGR_MKT_YOUNG=true; const young=mgrMarketList().find(c=>(ccCardOvr(c)||0)<=75); MGR_MKT_YOUNG=false;
+    out.notes.youngFound=!!young;
+    if(young){ MGR.club.wageCap=mgrWageBill(); const nA=(MGR.academy||[]).length; mgrToAcad(young.handle, true);
+      check('академия сверх потолка — не взят', (MGR.academy||[]).length===nA);
+      MGR.club.wageCap=mgrWageBill()+100000; mgrToAcad(young.handle, true);
+      MGR.club.wageCap=mgrWageBill(); mgrPromote(young.handle);
+      check('перевод из академии сверх потолка — остался в академии', (MGR.academy||[]).some(x=>hKey(x)===hKey(young.handle))); }
+    // 4. Трансферный бюджет: отступные сверх него совет не пропускает; продажа его пополняет.
+    MGR.club.wageCap=mgrWageBill()+100000; MGR.club.cash=10000000; MGR.club.transfer=1000;
+    const nAll=mgrAll().length;
+    mgrSignFinal({h:'ПробаОтступные', buyDeal:5000, years:1, acad:false}, 1);
+    check('отступные сверх трансферного — отказ', mgrAll().length===nAll);
+    const sold=mgrAll()[0];
+    MGR.inbox.unshift({id:'sl', day:CAREER.career.day, kind:'offer', h:sold, sum:20000, from:'Team Falcons', text:'offer'});
+    const tr0=MGR.club.transfer; mgrInboxDo('sl', true);
+    check('продажа пополняет трансферный', MGR.club.transfer===tr0+20000, tr0+' → '+MGR.club.transfer);
+    // 5. Лист игрока прокручивается (кнопки не обрезаны на маленьком экране).
+    mgrRenderHub('squad'); mgrSheetOpen(mgrAll()[0]);
+    const inn=document.querySelector('#mgSheet .mgs-in');
+    check('лист прокручивается', inn && getComputedStyle(inn).overflowY==='auto', inn && getComputedStyle(inn).overflowY);
+    mgrSheetClose();
+    // 6. У всех вкладок своя иконка, не залитый квадрат.
+    for(const t of ['squad','transfers','inbox','tables']){
+      const b=document.querySelector('#mgTabs .ch-tab[data-tab="'+t+'"]');
+      const ic=b ? getComputedStyle(b).getPropertyValue('--ic').trim() : '';
+      check('иконка вкладки '+t, ic.length>10, ic.slice(0,40)); }
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');

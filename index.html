@@ -6301,7 +6301,7 @@
   .mgn-reg{font-size:12px;display:flex;gap:6px;align-items:center;color:#fff;}
   .mgn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:8px;}
   .mgn-club{cursor:pointer;display:flex;flex-direction:column;gap:4px;}
-  .mgn-club:hover{border-color:#ffd400;}
+  #screen-manager .mgn-club:hover{border-color:#ffd400;}
   .mgn-head{display:flex;gap:8px;align-items:center;min-width:0;}
   .mgn-head .mg-logo{flex:0 0 auto;width:34px;height:34px;}
   .mgn-name{display:flex;flex-direction:column;min-width:0;}
@@ -6334,7 +6334,7 @@
   .mgc-going{display:flex;flex-direction:column;gap:2px;margin-bottom:10px;}
   .mgc-next .ch-play{width:100%;}
   .mgc-skip{width:100%;margin-top:6px;}
-  .mgc-next.fncs{box-shadow:inset 0 0 0 2px #b07dff;}
+  #screen-manager .mgc-next.fncs{box-shadow:inset 0 0 0 2px #b07dff;}
   .mgc-item{display:flex;flex-direction:column;padding:7px 0;border-top:1px solid rgba(255,255,255,.1);cursor:pointer;color:#fff;font-size:13px;}
   .mgc-item small{font-size:10px;color:rgba(255,255,255,.55);}
   .mgc-item.open span{font-weight:700;}
@@ -6347,7 +6347,7 @@
   .mgs-wrap{display:flex;flex-direction:column;gap:16px;margin-bottom:16px;}
   .mgs-team h4{display:flex;align-items:center;gap:8px;}
   .mgs-team h4 small{font-size:12px;font-style:normal;font-weight:600;opacity:.75;}
-  .mgs-team.short{box-shadow:inset 0 0 0 2px rgba(255,90,90,.6);}
+  #screen-manager .mgs-team.short{box-shadow:inset 0 0 0 2px rgba(255,90,90,.6);}
   .mgs-up{margin-left:auto;background:none;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;cursor:pointer;padding:2px 8px;}
   .mgs-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;}
   .mgs-card{position:relative;width:150px;cursor:pointer;}
@@ -6359,7 +6359,7 @@
   .mgs-sheet{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:16px;}
   .mgs-sheet[hidden]{display:none;}
   .mgs-in{max-width:560px;width:100%;max-height:90vh;overflow:auto;position:relative;}
-  #screen-manager .mgs-sheet .mgs-in{background:#0f1a3a;}
+  #screen-manager .mgs-sheet .mgs-in{background:#0f1a3a;overflow:auto;max-height:90vh;}
   .mgs-x{position:absolute;top:10px;right:10px;z-index:2;background:none;border:0;color:#fff;font-size:18px;cursor:pointer;}
   .mgs-top{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;}
   .mgs-big{width:200px;flex:0 0 auto;}
@@ -155134,7 +155134,12 @@ function mgrCreateOwn(o){
   MGR.fncsCal=mgrFncsDays().map(x=>x.day);
   MGR.inbox=[]; MGR.morale={}; mgrBoardInit();
   mgrRivalsInit();
-  if(MGR_NEW_START) mgrApplyStart(MGR_NEW_START);
+  // После увольнения — тот же перенос, что у настоящего клуба (mgrTake): история, шкаф и день.
+  if(MGR_CARRY){
+    MGR.history=MGR_CARRY.history||[]; MGR.trophies=MGR_CARRY.trophies||[];
+    if(MGR_CARRY.day>CAREER.career.day && MGR_CARRY.day<=ccYearTo()){ CAREER.career.day=MGR_CARRY.day; MGR.season0=MGR_CARRY.day; MGR.club.paidMonth=MGR_CARRY.day.slice(0, 7); MGR.fncsCal=(MGR.fncsCal||[]).filter(d=>d>MGR_CARRY.day); }
+    MGR_CARRY=null;
+  } else if(MGR_NEW_START) mgrApplyStart(MGR_NEW_START);
   mgrSave();
   return true;
 }
@@ -155217,6 +155222,8 @@ function mgrClubBudget(name, wageNow, avg){
 }
 function mgrWageBill(){ return mgrAll().concat(MGR.academy||[]).reduce((s,h)=>s+mgrWage(h), 0); }
 function mgrWageRoom(){ return ((MGR.club && MGR.club.wageCap)||0)-mgrWageBill(); }
+// Трансферный бюджет пополняют продажи целиком и призовые наполовину (доля, решённая советом).
+function mgrTransferAdd(v){ if(MGR && MGR.club && MGR.club.transfer!=null && v>0) MGR.club.transfer+=Math.round(v); }
 // Старый сейв (до бюджетов) досчитывает их от того, что у клуба есть сейчас.
 function mgrBudgetMigrate(){
   const c=MGR && MGR.club; if(!c || c.wageCap!=null) return;
@@ -155226,7 +155233,7 @@ function mgrBudgetMigrate(){
 function mgrT9(){
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
   return ru ? {
-    overCap:s=>'Совет против: потолок зарплат '+s+' в месяц', transfer:'Трансферный бюджет', wageCap:'Бюджет зарплат',
+    overCap:s=>'Совет против: потолок зарплат '+s+' в месяц', overTransfer:s=>'Совет против: в трансферном бюджете '+s, capNo:'Не влезает в бюджет зарплат — по умолчанию уходит', transfer:'Трансферный бюджет', wageCap:'Бюджет зарплат',
     renewCap:h=>h+' уходит: продление не влезло в бюджет зарплат',
     real:'Настоящий клуб', own:'Создать свой', star:'Звезда состава', byStars:'По звёздам', byBudget:'По бюджету',
     expect:{title:'Совет ждёт титул', final:'Совет ждёт финал', survive:'Совет ждёт удержаться'},
@@ -155240,7 +155247,7 @@ function mgrT9(){
     market:'Рынок', short:'Шортлист', deals:'Переговоры', shortEmpty:'Отметь игроков звёздочкой на рынке', dealsEmpty:'Переговоров и предложений нет', offersIn:'Предложения и просьбы', negNow:'Идут переговоры', open:'Открыть', wageRoom:'Свободно под потолком',
     train:'Тренировки и штаб', base:'База', sponsor:'Спонсор', press:'Пресса и события', stats:'Статистика', trophies:'Трофеи', managers:'Менеджеры'
   } : {
-    overCap:s=>'The board says no: wage budget '+s+' a month', transfer:'Transfer budget', wageCap:'Wage budget',
+    overCap:s=>'The board says no: wage budget '+s+' a month', overTransfer:s=>'The board says no: transfer budget is '+s, capNo:'Does not fit the wage budget — leaves by default', transfer:'Transfer budget', wageCap:'Wage budget',
     renewCap:h=>h+' leaves: the new deal did not fit the wage budget',
     real:'Real club', own:'Create your own', star:'Star player', byStars:'By stars', byBudget:'By budget',
     expect:{title:'Board expects a title', final:'Board expects a final', survive:'Board expects to survive'},
@@ -155358,6 +155365,7 @@ function mgrPayMonths(toDay){
    цели, кнопки). Экран менеджера получает их копией с «#screen-manager» один раз за страницу —
    тогда интерфейс один и тот же, а правка стиля карьеры сама доезжает до менеджера. */
 let MGR_CSS_DONE=false;
+const MGR_TAB_ICON={squad:'me', transfers:'shop', inbox:'social', tables:'table'};
 function mgrCloneHubCss(){
   if(MGR_CSS_DONE) return; MGR_CSS_DONE=true;
   const out=[];
@@ -155365,7 +155373,10 @@ function mgrCloneHubCss(){
     if(r.cssRules && r.media){ walk(r.cssRules, '@media '+r.media.mediaText); continue; }
     if(r.cssRules && r.conditionText!=null && !r.selectorText){ walk(r.cssRules, '@supports '+r.conditionText); continue; }
     const sel=r.selectorText; if(!sel || sel.indexOf('#screen-career-hub')<0) continue;
-    const parts=sel.split(',').map(s=>s.trim()).filter(s=>s.indexOf('#screen-career-hub')>=0).map(s=>s.split('#screen-career-hub').join('#screen-manager'));
+    let parts=sel.split(',').map(s=>s.trim()).filter(s=>s.indexOf('#screen-career-hub')>=0).map(s=>s.split('#screen-career-hub').join('#screen-manager'));
+    // Иконки вкладок: у менеджера свои ключи — берут значок близкой вкладки карьеры.
+    parts=parts.concat(parts.flatMap(s=>Object.keys(MGR_TAB_ICON).filter(k=>s.indexOf('[data-tab="'+MGR_TAB_ICON[k]+'"]')>=0)
+      .map(k=>s.split('[data-tab="'+MGR_TAB_ICON[k]+'"]').join('[data-tab="'+k+'"]'))));
     if(!parts.length) continue;
     const txt=parts.join(',')+'{'+r.style.cssText+'}';
     out.push(wrap ? wrap+'{'+txt+'}' : txt);
@@ -155403,7 +155414,6 @@ function mgrHdrHTML(){
 }
 // Тело вкладки. Задачи плана меняют ветки по одной; до них — прежние блоки менеджера.
 function mgrTabBody(tab){
-  const evs=mgrEvents();
   if(tab==='squad') return mgrSquadHTML();
   if(tab==='transfers') return mgrTransfersHTML();
   const T9=mgrT9();
@@ -155421,7 +155431,7 @@ function mgrRenderHub(tab){
   mgrEnter(); mgrCloneHubCss();
   if(!MGR.contracts){ MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h)); }
   if(!MGR.board) mgrBoardInit();
-  mgrBudgetMigrate();
+  try{ mgrBudgetMigrate(); }catch(e){ console.error('mgrBudgetMigrate', e); }
   MGR.inbox=MGR.inbox||[]; MGR.morale=MGR.morale||{};
   MGR_TAB=MGR_TABS.indexOf(tab)>=0 ? tab : (MGR_TABS.indexOf(MGR_TAB)>=0 ? MGR_TAB : 'centre');
   const body=document.getElementById('mgBody');
@@ -155690,11 +155700,15 @@ function mgrToAcad(h, free){
   if(mgrAllAcad().some(x=>hKey(x)===hKey(h))) return;
   const bo=free ? 0 : mgrBuyout(c);
   if(MGR.club.cash<bo){ mgrToast(mgrT2().noMoney); return; }
-  MGR.club.cash-=bo; MGR.academy.push(c.handle);
+  if(MGR.club.wageCap!=null && Math.round(mgrSalary(c)*MGR_ACAD_WAGE)>mgrWageRoom()){ mgrToast(mgrT9().overCap(mgrMoney(MGR.club.wageCap))); return; }
+  if(MGR.club.transfer!=null && bo>MGR.club.transfer){ mgrToast(mgrT9().overTransfer(mgrMoney(MGR.club.transfer))); return; }
+  MGR.club.cash-=bo; if(MGR.club.transfer!=null) MGR.club.transfer-=bo; MGR.academy.push(c.handle);
   MGR.contracts=MGR.contracts||{}; MGR.contracts[hKey(c.handle)]={salary:Math.round(mgrSalary(c)*MGR_ACAD_WAGE), since:CAREER.career.day, until:MGR.year+1, clause:0};
   mgrSave(); mgrOpenHub();
 }
 function mgrPromote(h){
+  { const c0=mgrCard(h), full=c0 ? mgrSalary(c0) : 500;
+    if(MGR.club.wageCap!=null && full-mgrWage(h)>mgrWageRoom()){ mgrToast(mgrT9().overCap(mgrMoney(MGR.club.wageCap))); return; } }
   MGR.promoted=(MGR.promoted||[]).concat([h]);
   MGR.academy=(MGR.academy||[]).filter(x=>hKey(x)!==hKey(h));
   MGR.bench=(MGR.bench||[]).concat([h]);
@@ -155792,7 +155806,7 @@ function mgrWeekly(fromDay, toDay){
       let clubs=[]; try{ clubs=[...new Set((ccSceneRoster(MGR.region)||[]).map(c=>c.org).filter(o=>o && o!==MGR.club.name))]; }catch(e){}
       if(cand.length && clubs.length){
         const p=cand[Math.floor(rnd()*cand.length)], by=clubs[Math.floor(rnd()*clubs.length)], sum=MGR.contracts[hKey(p)].clause;
-        MGR.club.cash+=sum; mgrDrop(p.handle); MGR.moves=MGR.moves||{}; MGR.moves[hKey(p)]=by;
+        MGR.club.cash+=sum; mgrTransferAdd(sum); mgrDrop(p.handle); MGR.moves=MGR.moves||{}; MGR.moves[hKey(p)]=by;
         MGR.log.unshift({day:d, kind:'sell', name:p.handle, sum});
         MGR.inbox.unshift({id:'c'+d, day:d, kind:'info', done:'info', text:mgrT4().clauseHit(by, p.handle, mgrMoney(sum))});
         continue;
@@ -155821,7 +155835,7 @@ function mgrInboxDo(id, ok){
   if(m.kind==='job'){ m.done=ok ? 'yes' : 'no'; if(ok) mgrSwitchClub(m.club); mgrSave(); mgrOpenHub(); return; }
   m.done=ok ? 'yes' : 'no';
   if(m.kind==='offer'){
-    if(ok){ MGR.club.cash+=m.sum; MGR.teams.forEach(t=>{ t.cards=t.cards.filter(x=>hKey(x)!==hKey(m.h)); }); MGR.teams=MGR.teams.filter(t=>t.cards.length);
+    if(ok){ MGR.club.cash+=m.sum; mgrTransferAdd(m.sum); MGR.teams.forEach(t=>{ t.cards=t.cards.filter(x=>hKey(x)!==hKey(m.h)); }); MGR.teams=MGR.teams.filter(t=>t.cards.length);
             MGR.bench=(MGR.bench||[]).filter(x=>hKey(x)!==hKey(m.h)); if(MGR.contracts) delete MGR.contracts[hKey(m.h)];
             MGR.log.unshift({day:CAREER.career.day, kind:'sell', name:m.h, sum:m.sum}); MGR.moves=MGR.moves||{}; MGR.moves[hKey(m.h)]=m.from||null; }
     else mgrMoraleAdd(m.h, -1);
@@ -155831,11 +155845,12 @@ function mgrInboxDo(id, ok){
     else mgrMoraleAdd(m.h, -1);
   }
   if(m.kind==='leave'){
-    if(ok){ MGR.club.cash+=m.sum; mgrDrop(m.h); MGR.log.unshift({day:CAREER.career.day, kind:'sell', name:m.h, sum:m.sum}); }
+    if(ok){ MGR.club.cash+=m.sum; mgrTransferAdd(m.sum); mgrDrop(m.h); MGR.log.unshift({day:CAREER.career.day, kind:'sell', name:m.h, sum:m.sum}); }
     else mgrMoraleAdd(m.h, -1);
   }
   if(m.kind==='scout'){ if(ok){ m.done='yes'; mgrSave(); mgrToAcad(m.h, true); return; } }
   if(m.kind==='raise'){
+    if(ok && MGR.club.wageCap!=null && m.sum-mgrWage(m.h)>mgrWageRoom()){ mgrToast(mgrT9().overCap(mgrMoney(MGR.club.wageCap))); return; }
     if(ok){ MGR.contracts=MGR.contracts||{}; MGR.contracts[hKey(m.h)]=Object.assign({}, MGR.contracts[hKey(m.h)]||{}, {salary:m.sum}); mgrMoraleAdd(m.h, 1); }
     else mgrMoraleAdd(m.h, -1);
   }
@@ -155873,8 +155888,16 @@ function mgrRenewAsk(h){ const cd=mgrCard(h); const base=cd ? mgrSalary(cd) : mg
 function mgrRenewHTML(){
   const T4=mgrT4(), list=mgrAllAcad().filter(h=>mgrUntil(h)<=MGR.year);
   MGR_RENEW={}; if(!list.length) return '';
-  return '<div class="mg-mrow"><b>'+T4.expiring+'</b>'+list.map(h=>{ const no=mgrMorale(h)<=-2; MGR_RENEW[h]=!no;
-    return no ? '<small>'+esc(T4.leaves(h))+'</small>' : '<small>'+esc(T4.renew(h, mgrMoney(mgrRenewAsk(h))))+'</small><div class="mg-seg"><button data-mg="renew" data-id="'+esc(h)+'" data-v="1" class="on">✓</button><button data-mg="renew" data-id="'+esc(h)+'" data-v="0">'+esc(T4.walk)+'</button></div>'; }).join('')+'</div>';
+  /* Бюджет зарплат — на этом же экране: прибавки раскладываются по порядку, кто не влезает,
+     помечен и по умолчанию уходит — решает менеджер, а не порядок ключей в конце сезона. */
+  let room=mgrWageRoom();
+  return '<div class="mg-mrow"><b>'+T4.expiring+'</b>'+list.map(h=>{ const no=mgrMorale(h)<=-2;
+    let capNo=false;
+    if(!no && MGR.club.wageCap!=null){ const raise=mgrRenewAsk(h)-mgrWage(h); if(raise>room) capNo=true; else room-=raise; }
+    MGR_RENEW[h]=!no && !capNo;
+    return no ? '<small>'+esc(T4.leaves(h))+'</small>' : '<small>'+esc(T4.renew(h, mgrMoney(mgrRenewAsk(h))))+'</small>'+
+      (capNo ? '<small class="mg-capno">'+esc(mgrT9().capNo)+'</small>' : '')+
+      '<div class="mg-seg"><button data-mg="renew" data-id="'+esc(h)+'" data-v="1"'+(capNo ? '' : ' class="on"')+'>✓</button><button data-mg="renew" data-id="'+esc(h)+'" data-v="0"'+(capNo ? ' class="on"' : '')+'>'+esc(T4.walk)+'</button></div>'; }).join('')+'</div>';
 }
 function mgrNextSeason(){
   Object.keys(MGR_RENEW).forEach(h=>{ if(MGR_RENEW[h]){ const k=(MGR.contracts||{})[hKey(h)]||{}; const sal=mgrRenewAsk(h);
@@ -156053,6 +156076,7 @@ function mgrSignFinal(n, wage){
   const box=document.getElementById('mgNeg'); if(box) box.remove();
   if(MGR.club.cash<n.buyDeal){ mgrToast(mgrT2().noMoney); MGR_NEG=null; return; }
   if(MGR.club.wageCap!=null && wage>mgrWageRoom()){ mgrToast(mgrT9().overCap(mgrMoney(MGR.club.wageCap))); MGR_NEG=null; return; }
+  if(MGR.club.transfer!=null && n.buyDeal>MGR.club.transfer){ mgrToast(mgrT9().overTransfer(mgrMoney(MGR.club.transfer))); MGR_NEG=null; return; }
   MGR.club.cash-=n.buyDeal;
   if(MGR.club.transfer!=null) MGR.club.transfer=Math.max(0, MGR.club.transfer-n.buyDeal);
   if(n.acad){ MGR.academy=(MGR.academy||[]).concat([n.h]); } else MGR.bench=(MGR.bench||[]).concat([n.h]);
@@ -156768,7 +156792,7 @@ function mgrReportBox(title, rows, clubGot, note){
 }
 function mgrAfterResults(ev, row, clubGot){
   const T2=mgrT2();
-  MGR.club.cash+=clubGot; MGR.club.earned=(MGR.club.earned||0)+clubGot;
+  MGR.club.cash+=clubGot; mgrTransferAdd(Math.round(clubGot*0.5)); MGR.club.earned=(MGR.club.earned||0)+clubGot;
   MGR.log.unshift(row);
   MGR.fatigue=Math.min(100, mgrFatigue()+(row.fncs || row.ewc ? 8 : 4));
   if(!row.ewc) row.teams.forEach(t=>{ const x=MGR.teams.find(y=>y.id===t.id); if(x) mgrChemNight(x.cards); });
