@@ -128543,15 +128543,20 @@ function ccOrgEarn(name){
   return v==null ? null : v;
 }
 function ccOrgEarnLevel(usd){ return 82+8*Math.log10(usd/1e5); }
-/* Ростерный уровень + призовые → уровень клуба. n — сколько людей в снимке. */
+/* Ростерный уровень + призовые → уровень клуба. n — сколько людей в снимке.
+
+   Правка 8.10 (его «почему BIG так далеко» → «делай» для карьеры): BIG 2026 (vic0 + Malibuca) выходил ≈85 —
+   два человека считались «малым составом», а $31.5k призовых (клуб в Fortnite недавно, последнее место топ-100)
+   тянули ядро к 78. Теперь как в менеджере (mgrClubLevel):
+   — срез к полу 78 (половина лишнего) — только когда людей МЕНЬШЕ, чем выходит на турнир (дуо 2, трио 3);
+   — призовые — история клуба: смешиваются пополам, но только поднимают (Sentinels с одним Bugha — да,
+     действующий сильный дуэт без истории — не опускают). */
 function ccOrgTier(name, roster, n){
   const usd=ccOrgEarn(name);
-  let t;
-  if(usd!=null) t=(roster+ccOrgEarnLevel(usd))/2;
-  else{
-    const w=n>=6 ? 0 : n>=3 ? 0.25 : 0.5;
-    t=roster-Math.max(0, roster-CC_ORG_EARN_FLOOR)*w;
-  }
+  const size=(typeof careerSquadSize==='function' && CAREER && CAREER.career) ? careerSquadSize() : 2;
+  let t=roster;
+  if(n<size) t-=Math.max(0, roster-CC_ORG_EARN_FLOOR)*0.5;
+  if(usd!=null) t=Math.max(t, (t+ccOrgEarnLevel(usd))/2);
   return Math.min(96, Math.round(t));
 }
 /* Контракты годичные, и часть игроков каждое межсезонье меняет орг.
