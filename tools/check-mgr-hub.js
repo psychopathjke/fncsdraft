@@ -777,6 +777,29 @@ const SECTIONS=[
     (document.getElementById('mgNeg')||{remove(){}}).remove(); MGR_NEG=null;
     check('агент: сильнее соглашаются', mgrSignCap(true)===mgrSignCapBase(true)+3);
   `},
+  {name:'мир', once:true, code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    // Полный календарь: все события сцены месяца, как в карьере.
+    MGR_MONTH=null; mgrRenderHub('calendar');
+    const t=new Date(CAREER.career.day+'T00:00:00Z'), y=t.getUTCFullYear(), m=t.getUTCMonth();
+    let all=0; careerEvents().forEach((list, d)=>{ const dd=new Date(d+'T00:00:00Z'); if(dd.getUTCFullYear()===y && dd.getUTCMonth()===m) all+=list.length; });
+    const shown=document.querySelectorAll('#mgBody .cal-ev').length;
+    check('календарь: все события сцены', shown>=all && all>0, shown+' из '+all);
+    // Мир досчитывает пропущенные турниры.
+    for(let i=0;i<10 && (MGR.results||[]).length<3;i++) mgrSkip();   // пропуск может остановиться на дедлайне — это не турнир
+    const res=MGR.results||[];
+    check('мир: таблицы пропущенных турниров', res.length>=3 && res.every(r=>(r.rows||[]).length>=20), res.length+' '+res.map(r=>(r.rows||[]).length).join());
+    check('мир: у строк места и клубы', res[0] && res[0].rows.every((r,i)=>r.place===i+1) && res[0].rows.some(r=>r.orgs && r.orgs.length));
+    check('мир: рейтинг клубов', mgrClubTable().length>=5 && mgrClubTable()[0].prize>0);
+    check('мир: медиа — победители', (MGR.wfeed||[]).some(p=>p.kind==='win'));
+    MGR_SUB.tables='events'; mgrRenderHub('tables'); const B=document.getElementById('mgBody');
+    check('мир '+lang+': вкладка турниров', B.querySelectorAll('.mgw-ev').length>=3 && !bad(B.innerHTML));
+    MGR_SUB.tables='clubs'; mgrRenderHub('tables');
+    check('мир '+lang+': вкладка клубов', B.querySelectorAll('.mgw-club').length>=5 && !bad(B.innerHTML));
+    MGR_SUB.inbox='world'; mgrRenderHub('inbox');
+    check('мир '+lang+': медиа мира', B.querySelectorAll('.mgp-post').length>=1 && !bad(B.innerHTML));
+    MGR_SUB.inbox='mail'; MGR_SUB.tables='stats';
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
