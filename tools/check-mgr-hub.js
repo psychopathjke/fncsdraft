@@ -136,6 +136,24 @@ const SECTIONS=[
     const h=MGR.teams[0].cards[0]; mgrSheetOpen(h); mgrSheetClose(); mgrMove(h, '-1');
     check('лист: перестановка в запас', (MGR.bench||[]).indexOf(h)>=0 && MGR_TAB==='squad');
   `},
+  {name:'трансферы', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    MGR_SUB.transfers='market'; mgrRenderHub('transfers');
+    const B=document.getElementById('mgBody');
+    check('трансферы '+lang+': три подвкладки', B.querySelectorAll('.ch-subtabs .ch-subtab').length===3, String(B.querySelectorAll('.ch-subtabs .ch-subtab').length));
+    check('трансферы '+lang+': бюджеты на виду', B.querySelector('.mgt-bud') && (B.querySelector('.mgt-bud').textContent.match(/\$/g)||[]).length>=3);
+    check('трансферы: звёздочка шортлиста в рынке', !!B.querySelector('.mgt-star'));
+    const first=mgrMarketList()[0]; mgrShortToggle(first.handle);
+    MGR_SUB.transfers='short'; mgrRenderHub('transfers');
+    check('шортлист: игрок там', B.textContent.indexOf(first.handle)>=0, first.handle);
+    check('шортлист: число на подвкладке', /·\s*1/.test(B.querySelector('.ch-subtabs').textContent));
+    mgrShortToggle(first.handle); check('шортлист: снят', (MGR.short||[]).indexOf(first.handle)<0);
+    MGR_SUB.transfers='deals'; mgrRenderHub('transfers');
+    check('переговоры '+lang+': без undefined/NaN', !bad(B.innerHTML));
+    MGR.inbox.unshift({id:'of1', day:CAREER.career.day, kind:'offer', text:'ПробноеПредложение'}); mgrRenderHub('transfers');
+    check('переговоры: предложение за своего видно', B.textContent.indexOf('ПробноеПредложение')>=0);
+    MGR_SUB.transfers='market';
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');

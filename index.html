@@ -6338,6 +6338,11 @@
   .mgc-item{display:flex;flex-direction:column;padding:7px 0;border-top:1px solid rgba(255,255,255,.1);cursor:pointer;color:#fff;font-size:13px;}
   .mgc-item small{font-size:10px;color:rgba(255,255,255,.55);}
   .mgc-item.open span{font-weight:700;}
+  /* Трансферы менеджера. */
+  .mgt-bud{display:flex;flex-wrap:wrap;gap:6px 24px;margin:10px 0;}
+  .mgt-bud .mgn-row{flex:1 1 220px;color:#fff;}
+  .mgt-star{background:none;border:0;color:#ffd400;font-size:20px;cursor:pointer;padding:0 6px;line-height:1;}
+  .mgt-star:not(.on){color:rgba(255,255,255,.45);}
   /* Состав менеджера: карточки FUT рядами, лист игрока. */
   .mgs-wrap{display:flex;flex-direction:column;gap:16px;margin-bottom:16px;}
   .mgs-team h4{display:flex;align-items:center;gap:8px;}
@@ -155227,7 +155232,8 @@ function mgrT9(){
     tabs:{centre:'Центр', squad:'Состав', transfers:'Трансферы', inbox:'Входящие', club:'Клуб', tables:'Таблицы'},
     conf:'Доверие совета', morale:'Мораль состава', board:'Совет', teamOvr:'Первая команда',
     goals:'Цели совета', dev:'Развитие', devNone:'Рост виден раз в месяц', fatigue:'Усталость', news:'Новости клуба', toTables:'Трофеи и статистика', toTrain:'К тренировкам',
-    role:'Роль', until:'Контракт', where:'Где играет', moveTo:'Перевести…'
+    role:'Роль', until:'Контракт', where:'Где играет', moveTo:'Перевести…',
+    market:'Рынок', short:'Шортлист', deals:'Переговоры', shortEmpty:'Отметь игроков звёздочкой на рынке', dealsEmpty:'Переговоров и предложений нет', offersIn:'Предложения и просьбы', negNow:'Идут переговоры', open:'Открыть', wageRoom:'Свободно под потолком'
   } : {
     overCap:s=>'The board says no: wage budget '+s+' a month', transfer:'Transfer budget', wageCap:'Wage budget',
     renewCap:h=>h+' leaves: the new deal did not fit the wage budget',
@@ -155239,7 +155245,8 @@ function mgrT9(){
     tabs:{centre:'Centre', squad:'Squad', transfers:'Transfers', inbox:'Inbox', club:'Club', tables:'Tables'},
     conf:'Board trust', morale:'Squad morale', board:'Board', teamOvr:'First team',
     goals:'Board goals', dev:'Development', devNone:'Growth shows once a month', fatigue:'Fatigue', news:'Club news', toTables:'Trophies and stats', toTrain:'To training',
-    role:'Role', until:'Contract', where:'Plays in', moveTo:'Move to…'
+    role:'Role', until:'Contract', where:'Plays in', moveTo:'Move to…',
+    market:'Market', short:'Shortlist', deals:'Negotiations', shortEmpty:'Star players on the market to shortlist them', dealsEmpty:'No talks or offers', offersIn:'Offers and requests', negNow:'Talks in progress', open:'Open', wageRoom:'Room under the cap'
   };
 }
 
@@ -155392,7 +155399,7 @@ function mgrHdrHTML(){
 function mgrTabBody(tab){
   const evs=mgrEvents();
   if(tab==='squad') return mgrSquadHTML();
-  if(tab==='transfers') return mgrMarketHTML();
+  if(tab==='transfers') return mgrTransfersHTML();
   if(tab==='inbox') return mgrInboxHTML();
   if(tab==='club') return mgrTrainHTML()+mgrFacHTML()+mgrDealHTML()+mgrEvFreqHTML();
   if(tab==='tables') return mgrStatsHTML()+mgrRivalsHTML()+mgrTrophiesHTML();
@@ -155524,6 +155531,44 @@ function mgrSheetOpen(h){
   el.hidden=false;
 }
 function mgrSheetClose(){ const el=document.getElementById('mgSheet'); if(el){ el.hidden=true; el.innerHTML=''; } }
+/* ТРАНСФЕРЫ — подвкладки «Рынок / Шортлист / Переговоры», сверху оба бюджета, как в FC. */
+function mgrSubTabsHTML(group, list){
+  return '<div class="ch-subtabs">'+list.map(([k,t])=>'<button class="ch-subtab'+(MGR_SUB[group]===k ? ' on' : '')+'" onclick="MGR_SUB.'+group+'=\''+k+'\';mgrRenderHub()">'+esc(t)+'</button>').join('')+'</div>';
+}
+function mgrShortToggle(h){
+  MGR.short=MGR.short||[];
+  const i=MGR.short.findIndex(x=>hKey(x)===hKey(h));
+  if(i<0) MGR.short.push(h); else MGR.short.splice(i, 1);
+  mgrSave();
+}
+function mgrShortHas(h){ return (MGR.short||[]).some(x=>hKey(x)===hKey(h)); }
+function mgrShortHTML(){
+  const T2=mgrT2(), T4=mgrT4(), T9=mgrT9();
+  const list=(MGR.short||[]).map(h=>mgrCard(h)).filter(Boolean);
+  if(!list.length) return '<div class="ch-tile"><div class="ch-empty">'+esc(T9.shortEmpty)+'</div></div>';
+  return '<div class="mg-clubs">'+list.map(c=>{ const hq=esc(String(c.handle).replace(/'/g, ''));
+    return '<div class="mg-club"><span class="mg-cname"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(c.handle)+' <small>'+Math.round(ccCardOvr(c)||0)+'</small></b>'+
+      '<small>'+esc(mgrOrgOf(c)||T2.free)+' · '+esc(T4.pot)+' '+esc(mgrPotText(c.handle))+' · '+esc(T2.wage)+' '+mgrMoney(mgrSalary(c))+'</small></span>'+
+      '<button class="mgt-star on" title="'+esc(T9.short)+'" onclick="mgrShortToggle(\''+hq+'\');mgrRenderHub()">★</button>'+
+      '<button class="hero-btn hero-btn-go mg-take" onclick="mgrSign(\''+hq+'\')">'+esc(T2.sign)+'</button></div>'; }).join('')+'</div>';
+}
+function mgrDealsHTML(){
+  const T9=mgrT9();
+  const offers=(MGR.inbox||[]).filter(m=>!m.done && (m.kind==='offer' || m.kind==='leave' || m.kind==='raise'));
+  const neg=MGR_NEG ? '<div class="ch-tile"><h4>'+esc(T9.negNow)+'</h4><div class="mgn-row"><em>'+esc(MGR_NEG.h||'')+'</em>'+
+      '<button class="hg-go" onclick="mgrNegDraw()">'+esc(T9.open)+'</button></div></div>' : '';
+  const off=offers.length ? '<div class="ch-tile"><h4>'+esc(T9.offersIn)+'</h4>'+offers.map(m=>'<div class="mgc-item open" onclick="mgrRenderHub(\'inbox\')"><small>'+esc(ccDayLabel(m.day))+'</small><span>'+esc(m.text||'')+'</span></div>').join('')+'</div>' : '';
+  return (neg+off) || '<div class="ch-tile"><div class="ch-empty">'+esc(T9.dealsEmpty)+'</div></div>';
+}
+function mgrTransfersHTML(){
+  const T9=mgrT9(), n=(MGR.short||[]).length;
+  const top=mgrSubTabsHTML('transfers', [['market', T9.market], ['short', T9.short+(n ? ' · '+n : '')], ['deals', T9.deals]]);
+  const bud='<div class="ch-tile mgt-bud"><div class="mgn-row"><em>'+esc(T9.transfer)+'</em><b>'+mgrMoney(MGR.club.transfer||0)+'</b></div>'+
+    '<div class="mgn-row"><em>'+esc(T9.wageCap)+'</em><b>'+mgrMoney(mgrWageBill())+' / '+mgrMoney(MGR.club.wageCap||0)+' '+esc(mgrT().month)+'</b></div>'+
+    '<div class="mgn-row"><em>'+esc(T9.wageRoom)+'</em><b>'+mgrMoney(Math.max(0, mgrWageRoom()))+'</b></div></div>';
+  const s=MGR_SUB.transfers;
+  return top+bud+(s==='short' ? mgrShortHTML() : s==='deals' ? mgrDealsHTML() : mgrMarketHTML());
+}
 function mgrClubHTML(evs){
   const T=mgrT(), T2=mgrT2(), nx=evs[0];
   const opts=(h)=>'<select class="mg-move" onchange="mgrMove(\''+esc(String(h).replace(/'/g, ''))+'\', this.value)"><option value="">'+T2.to+'</option>'+
@@ -155558,6 +155603,7 @@ function mgrMarketHTML(){
     return '<div class="mg-club"><span class="mg-cname"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(c.handle)+' <small>'+Math.round(ccCardOvr(c)||0)+'</small> <small class="mg-pot'+(sc?' sc':'')+'">'+T4.pot+' '+mgrPotText(c.handle)+'</small></b>'+
       '<small>'+esc(L()[a.roleKey]||'')+' · '+esc(mgrOrgOf(c) || T2.free)+' · '+T2.wage+' '+mgrMoney(mgrSalary(c))+(bo ? ' · '+T2.buyout+' ~'+mgrMoney(bo) : '')+'</small></span>'+
       (!sc ? '<button class="hero-btn hero-btn-alt mg-take" onclick="mgrScout(\''+hq+'\')">'+esc(T4.scoutCost(mgrMoney(mgrScoutCost())))+'</button>' : '')+
+      '<button class="mgt-star'+(mgrShortHas(c.handle) ? ' on' : '')+'" title="'+esc(mgrT9().short)+'" onclick="mgrShortToggle(\''+hq+'\');mgrRenderHub()">'+(mgrShortHas(c.handle) ? '★' : '☆')+'</button>'+
       ((ccCardOvr(c)||0)<=75 ? '<button class="hero-btn hero-btn-alt mg-take" onclick="mgrNegotiate(\''+esc(String(c.handle).replace(/'/g, ''))+'\', true)">'+mgrT().toAcad+'</button>' : '')+
       '<button class="hero-btn hero-btn-go mg-take" onclick="mgrSign(\''+esc(String(c.handle).replace(/'/g, ''))+'\')">'+T2.sign+'</button></div>'; }).join('');
   return win+'<div class="mg-mkt"><input class="mg-q" placeholder="'+esc(T2.search)+'" value="'+esc(MGR_MKT_Q)+'" onchange="MGR_MKT_Q=this.value;mgrOpenHub()">'+
