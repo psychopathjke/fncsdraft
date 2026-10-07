@@ -485,6 +485,7 @@ const SECTIONS=[
     check('штаб '+lang+': настоящие коучи на выбор', CC_COACHES.every(c=>B.innerHTML.indexOf(esc(c.name))>=0));
     check('штаб '+lang+': настоящие SMM на выбор', CC_SMM.every(m=>B.innerHTML.indexOf(esc(m.name))>=0));
     check('штаб: фото', B.querySelectorAll('.mgf-person img').length>=CC_COACHES.length+CC_SMM.length);
+    check('штаб: At0m — EU', CC_COACHES.find(c=>c.id==='at0m').reg==='EU');
     const w0=mgrStaffWage();
     mgrHirePerson('coach', 'bloodx'); mgrHirePerson('smm', 'sweety');
     check('штаб: коуч нанят', (MGR.staffWho||{}).coach==='bloodx' && mgrStaff('coach')>=1 && mgrStaff('coach')<=3, JSON.stringify(MGR.staffWho)+' '+mgrStaff('coach'));
