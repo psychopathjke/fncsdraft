@@ -155247,7 +155247,7 @@ function mgrPlanWeek(d){
   Object.keys(plan).forEach(k=>{ const p=plan[k]; if(!p || !p.role) return;
     if(ccDaysBetween(p.since, d)>=MGR_PLAN_DAYS){
       MGR.roles[k]=p.role;
-      const h=mgrAllAcad().find(x=>hKey(x)===k)||k;
+      const h=mgrOwned().find(x=>hKey(x)===k)||k;
       MGR.inbox=MGR.inbox||[]; MGR.inbox.unshift({id:'pl'+k+d, day:d, kind:'info', done:'info', plan:true, text:mgrT9().planDone(h, L()[p.role]||'')});
       p.role=null; } });
 }
@@ -155671,7 +155671,7 @@ function mgrDealsHTML(){
 function mgrYScoutHire(nat){
   MGR.yscouts=MGR.yscouts||[];
   if(MGR.yscouts.length>=MGR_YSCOUT_MAX) return;
-  MGR.yscouts.push({id:'y'+Date.now().toString(36)+MGR.yscouts.length, nat:mgrNatName(nat)});
+  MGR.yscouts.push({id:'y'+(MGR.sid=(MGR.sid||0)+1), nat:mgrNatName(nat)});
   mgrSave();
 }
 function mgrYScoutFire(id){ MGR.yscouts=(MGR.yscouts||[]).filter(s=>s.id!==id); mgrSave(); }
@@ -155698,7 +155698,7 @@ function mgrYouthMonth(monthKey){
     for(let i=0; i<n; i++){
       const h=mgrYouthName(rnd, taken), r=50+Math.floor(rnd()*19), role=rnd()<0.5 ? 'roleIGL' : 'roleFRG';
       MGR.ext[hKey(h)]={handle:h, nat:s.nat||null, region:MGR.region, org:null, tier:'ladder', event:'Youth', date:'—', placement:null,
-        rating:r, _targetOvr:r, _attrs:ccRookieAttrs(r, role), _youth:true, age:15+Math.floor(rnd()*3), _pot:70+Math.floor(rnd()*25)};
+        rating:r, _targetOvr:r, _attrs:ccRookieAttrs(r, role), _youth:true, ageYear:MGR.year, age:15+Math.floor(rnd()*3), _pot:70+Math.floor(rnd()*25)};
       MGR.ylist.push(h); got.push(h);
     }
     MGR.inbox.unshift({id:'yo'+s.id+monthKey, day:CAREER.career.day, kind:'info', done:'info', text:mgrT9().youthRep(got.join(', '))});
@@ -155712,11 +155712,13 @@ function mgrYouthHTML(){
     (cur && nats.indexOf(cur)<0 ? [cur].concat(nats) : nats).map(n=>'<option value="'+esc(n)+'"'+(n===cur ? ' selected' : '')+'>'+esc(n)+'</option>').join('')+'</select>';
   const list=ys.map(s=>'<div class="mgx-scout"><b>'+(s.nat ? flagImg(s.nat, 13)+' ' : '')+esc(T9.yscout)+'</b>'+natSel(s.id, s.nat)+
     '<button class="hg-go mgs-bad" onclick="mgrYScoutFire(\''+s.id+'\');mgrRenderHub()">'+esc(T9.fire)+'</button></div>').join('');
-  const hire=ys.length<MGR_YSCOUT_MAX ? '<div class="mgx-hire"><button class="hg-go" onclick="mgrYScoutHire(\''+esc(nats[0]||'')+'\');mgrRenderHub()">'+
+  // По умолчанию — страна лучшего игрока клуба, а не первая в списке.
+  const natDef=((mgrCard(mgrAll()[0])||{}).nat)||nats[0]||'';
+  const hire=ys.length<MGR_YSCOUT_MAX ? '<div class="mgx-hire"><button class="hg-go" onclick="mgrYScoutHire(\''+esc(natDef)+'\');mgrRenderHub()">'+
     esc(T9.yHire)+' · '+mgrMoney(MGR_YSCOUT_COST)+' '+esc(mgrT().month)+'</button></div>' : '';
   const own=new Set(mgrOwned().map(hKey));
   const rows=(MGR.ylist||[]).slice().reverse().map(h=>{ const c=mgrCard(h); if(!c) return ''; const hq=esc(String(h).replace(/'/g, ''));
-    return '<div class="mg-club mgy-row"><span class="mg-cname"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(h)+' <small>'+Math.round(ccCardOvr(c)||0)+' · '+esc(T9.age(c.age))+'</small></b>'+
+    return '<div class="mg-club mgy-row"><span class="mg-cname"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(h)+' <small>'+Math.round(ccCardOvr(c)||0)+' · '+esc(T9.age(mgrAgeNow(h)))+'</small></b>'+
       '<small>'+esc(T9.potW)+' '+mgrStarsHTML(mgrStarsOf(mgrPot(h)))+' · '+esc(T4.pot)+' '+esc(mgrPotText(h))+' · '+esc(L()[(attrsFor(c)||{}).roleKey]||'')+'</small></span>'+
       (own.has(hKey(h)) ? '<small>'+esc(mgrT().acad)+'</small>' : '<button class="hero-btn hero-btn-go mg-take" onclick="mgrToAcad(\''+hq+'\', true)">'+esc(T9.toAcad)+'</button>')+'</div>'; }).join('');
   return '<div class="ch-tile mgx"><h4>'+esc(T9.youth)+' <small>'+ys.length+'/'+MGR_YSCOUT_MAX+'</small></h4>'+(list || '<div class="ch-empty">'+esc(T9.noYScouts)+'</div>')+hire+'</div>'+
@@ -155865,8 +155867,12 @@ function mgrOnLoan(h){ return (MGR.loanOut||[]).some(x=>hKey(x)===hKey(h)); }
 function mgrLoan(h){
   const fromAcad=mgrInAcad(h), fromBench=(MGR.bench||[]).some(x=>hKey(x)===hKey(h));
   if(!fromAcad && !fromBench) return false;
-  let clubs=[]; try{ clubs=[...new Set((ccSceneRoster(MGR.region)||[]).map(c=>mgrOrgOf(c)).filter(o=>o && o!==MGR.club.name))]; }catch(e){}
-  const to=clubs.length ? clubs[ccHashStr(hKey(h)+CAREER.career.day)%clubs.length] : '—';
+  // Клуб слабее своего (средний рейтинг шестёрки ниже нашего) — там игрок и правда играет.
+  const by={}; try{ (ccSceneRoster(MGR.region)||[]).forEach(c=>{ const o=mgrOrgOf(c); if(o && o!==MGR.club.name) (by[o]=by[o]||[]).push(ccCardOvr(c)||0); }); }catch(e){}
+  const avgOf=o=>{ const v=by[o].sort((a,b)=>b-a).slice(0, 6); return v.reduce((s,x)=>s+x, 0)/v.length; };
+  const all=Object.keys(by), weaker=all.filter(o=>avgOf(o)<(MGR.club.avg||0));
+  const clubs=weaker.length ? weaker : all;
+  const to=clubs.length ? clubs[Math.abs(ccHashStr(hKey(h)+CAREER.career.day))%clubs.length] : '—';
   MGR.bench=(MGR.bench||[]).filter(x=>hKey(x)!==hKey(h));
   MGR.academy=(MGR.academy||[]).filter(x=>hKey(x)!==hKey(h));
   MGR.loanOut=(MGR.loanOut||[]).concat([h]);
@@ -155940,6 +155946,7 @@ function mgrDrop(h){
   MGR.teams=MGR.teams.filter(t=>t.cards.length);
   MGR.bench=(MGR.bench||[]).filter(x=>hKey(x)!==hKey(h));
   MGR.academy=(MGR.academy||[]).filter(x=>hKey(x)!==hKey(h));
+  MGR.loanOut=(MGR.loanOut||[]).filter(x=>hKey(x)!==hKey(h)); if(MGR.loans) delete MGR.loans[hKey(h)];
   if(MGR.contracts) delete MGR.contracts[hKey(h)];
 }
 function mgrRelease(h){
@@ -156066,6 +156073,7 @@ function mgrSeasonReview(){
   const dealNote=MGR.dealNoteYear===MGR.year ? MGR.dealNote : mgrDealSeasonEnd();
   MGR.dealNote=dealNote; MGR.dealNoteYear=MGR.year;
   const chS=mgrChallengeState();
+  mgrAwardsMonth(CAREER.career.day.slice(0, 7));   // последний месяц сезона paidMonth уже не закроет
   mgrAwardsSeason(okEarn && okPlace);
   const aw=(MGR.awards||[]).filter(x=>x.year===MGR.year && x.kind!=='pom');
   const awHTML=aw.length ? '<div class="mg-mrow"><b>'+esc(mgrT9().awards)+'</b>'+aw.map(x=>'<small>🏆 '+esc(mgrT9()[x.kind](x.h||MGR.year))+'</small>').join('')+'</div>' : '';
@@ -156095,7 +156103,7 @@ function mgrKillsBy(rows){
   return by;
 }
 function mgrTopKiller(by, ok){ return Object.keys(by).filter(h=>!ok || ok(h)).sort((x,y)=>by[y]-by[x])[0]||null; }
-function mgrAgeNow(h){ const c=mgrCard(h); return (c && c._youth && c.age) ? c.age : ccAgeOf(h, CAREER.career.day); }
+function mgrAgeNow(h){ const c=mgrCard(h); return (c && c._youth && c.age) ? c.age+Math.max(0, MGR.year-(c.ageYear||MGR.year)) : ccAgeOf(h, CAREER.career.day); }
 function mgrAwardsMonth(monthKey){
   MGR.awards=MGR.awards||[];
   if(MGR.awards.some(x=>x.kind==='pom' && x.month===monthKey)) return;
@@ -156120,7 +156128,7 @@ let MGR_RENEW={};
 // Истекающие контракты (until ≤ год): просит +10%, с плохой моралью +25%; при морали −2 не продлевает.
 function mgrRenewAsk(h){ const cd=mgrCard(h); const base=cd ? mgrSalary(cd) : mgrWage(h); return Math.round(Math.max(base, mgrWage(h))*(mgrMorale(h)<0 ? 1.25 : 1.1)/50)*50; }
 function mgrRenewHTML(){
-  const T4=mgrT4(), list=mgrAllAcad().filter(h=>mgrUntil(h)<=MGR.year);
+  const T4=mgrT4(), list=mgrOwned().filter(h=>mgrUntil(h)<=MGR.year);
   MGR_RENEW={}; if(!list.length) return '';
   /* Бюджет зарплат — на этом же экране: прибавки раскладываются по порядку, кто не влезает,
      помечен и по умолчанию уходит — решает менеджер, а не порядок ключей в конце сезона. */
@@ -156148,6 +156156,7 @@ function mgrNextSeason(){
   MGR.year=y; MGR.shadow=mgrShadow(y, MGR.region); MGR.skipped=[]; MGR.club.paidMonth=MGR.shadow.career.day.slice(0, 7);
   MGR.season0=MGR.shadow.career.day; MGR.fncsCal=null; MGR.fatigue=0;
   mgrEnter();
+  mgrExtRefresh();
   MGR.fncsCal=mgrFncsDays().map(x=>x.day);
   MGR.academy=keepAcad.filter(h=>!!mgrCard(h));
   // Игроки нового года: кто в сцене — остаётся (с новой карточкой), кого нет — ушёл из профи.
@@ -156245,7 +156254,7 @@ function mgrScoutHire(lv){
   MGR.scouts=MGR.scouts||[];
   if(MGR.scouts.length>=MGR_SCOUT_MAX || !MGR_SCOUT_LV[lv]) return;
   const a=MGR.club.avg||0;   // стартовый порог — по уровню клуба: без него скаут приносит людей на 40 ниже состава
-  MGR.scouts.push({id:'s'+Date.now().toString(36)+MGR.scouts.length, lv:lv, region:MGR.region, role:'', age:0, min:a>=90 ? 88 : a>=82 ? 80 : a>=74 ? 70 : 0});
+  MGR.scouts.push({id:'s'+(MGR.sid=(MGR.sid||0)+1), lv:lv, region:MGR.region, role:'', age:0, min:a>=90 ? 88 : a>=82 ? 80 : a>=74 ? 70 : 0});
   mgrSave();
 }
 function mgrScoutFire(id){ MGR.scouts=(MGR.scouts||[]).filter(s=>s.id!==id); mgrSave(); }
@@ -156288,6 +156297,15 @@ function mgrScoutWeek(d){
   }
 }
 const MGR_SREP_MAX=60;
+// Новый год: свои из чужих регионов получают карточку нового года из сцены своего региона (снимок обновляется).
+function mgrExtRefresh(){
+  const ext=MGR.ext||{}, own=new Set(mgrOwned().map(hKey));
+  Object.keys(ext).forEach(k=>{
+    const c=ext[k]; if(!c || c._youth || !own.has(k) || !c.region || c.region===MGR.region) return;
+    let fresh=null; try{ fresh=(ccSceneRoster(c.region)||[]).find(x=>hKey(x)===k); }catch(e){}
+    if(fresh) ext[k]=mgrSnap(fresh);
+  });
+}
 function mgrScoutCost(){ return mgrStaff('analyst') ? 300 : 600; }
 function mgrScout(h){ if(MGR.club.cash<mgrScoutCost()){ mgrToast(mgrT2().noMoney); return; } MGR.club.cash-=mgrScoutCost(); MGR.scouted=MGR.scouted||{}; MGR.scouted[hKey(h)]=1; mgrSave(); mgrOpenHub(); }
 

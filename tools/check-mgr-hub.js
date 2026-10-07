@@ -419,6 +419,42 @@ const SECTIONS=[
     mgrWeekly(CAREER.career.day, ccAddDays(CAREER.career.day, 7));
     check('почта: невыполненное письмо цело', (MGR.inbox||[]).some(m=>m.id==='keep'));
   `},
+  {name:'мелочи', once:true, code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    MGR.club.wageCap=mgrWageBill()+100000; MGR.club.transfer=1e7; MGR.club.cash=1e7;
+    // 1. Молодые стареют с сезонами.
+    mgrYScoutHire('fr'); mgrYouthMonth('2024-04');
+    const y=MGR.ylist[MGR.ylist.length-1], a0=mgrAgeNow(y);
+    MGR.year+=1; check('молодые стареют', mgrAgeNow(y)===a0+1, a0+' → '+mgrAgeNow(y)); MGR.year-=1;
+    // 2. Контракт игрока в аренде попадает в продления.
+    const bh=(MGR.bench||[])[0];
+    if(bh){ mgrLoan(bh); MGR.contracts[hKey(bh)].until=MGR.year;
+      mgrRenewHTML(); check('аренда: контракт в продлениях', Object.keys(MGR_RENEW).some(h=>hKey(h)===hKey(bh))); }
+    // 3. Клуб аренды слабее своего.
+    if(bh){ const l=MGR.loans[hKey(bh)]; const avgOf=o=>{ const ps=(ccSceneRoster(MGR.region)||[]).filter(c=>mgrOrgOf(c)===o).map(c=>ccCardOvr(c)||0).sort((a,b)=>b-a).slice(0,6); return ps.length ? ps.reduce((s,v)=>s+v,0)/ps.length : 0; };
+      check('аренда: клуб слабее', avgOf(l.to)<(MGR.club.avg||0), l.to+' '+Math.round(avgOf(l.to))+' vs '+MGR.club.avg); }
+    // 4. Id скаутов не совпадают при найме подряд.
+    MGR.scouts=[]; mgrScoutHire(1); mgrScoutHire(1); mgrScoutFire(MGR.scouts[0].id); mgrScoutHire(1);
+    check('id скаутов уникальны', new Set(MGR.scouts.map(s=>s.id)).size===MGR.scouts.length, MGR.scouts.map(s=>s.id).join());
+    MGR.scouts=[];
+    // 5. Последний месяц сезона получает игрока месяца на итогах.
+    const a=mgrAll()[0], mk=CAREER.career.day.slice(0,7);
+    MGR.log.unshift({day:CAREER.career.day, kind:'night', name:'Last', teams:[{place:2, prize:0, kills:{[a]:7}}]});
+    MGR.board.earn=0; MGR.board.best=1; MGR.board.place=10;
+    try{ mgrSeasonReview(); }catch(e){}
+    document.querySelectorAll('.mg-modal').forEach(m=>m.remove());
+    check('последний месяц: игрок месяца', (MGR.awards||[]).some(x=>x.kind==='pom' && x.month===mk));
+    // 6. Подписанный из чужого региона в новом году получает карточку нового года.
+    const ext=Object.values(MGR.ext||{}).find(c=>!c._youth);
+    MGR.scouts=[]; mgrScoutHire(3); mgrScoutSet(MGR.scouts[0].id, 'region', 'NAC'); mgrScoutSet(MGR.scouts[0].id, 'min', '80');
+    mgrScoutWeek(ccAddDays(CAREER.career.day, 7));
+    const f=Object.values(MGR.srep).find(r=>r.region==='NAC');
+    if(f){ MGR.bench.push(f.h); mgrContract(f.h);
+      const y0=mgrCard(f.h).date; MGR.year=2025; MGR.shadow=mgrShadow(2025, MGR.region); MGR_ACTIVE=false; mgrEnter();
+      mgrExtRefresh();
+      const y1=mgrCard(f.h).date;
+      check('иностранец: карточка нового года', String(y1)!==String(y0) || ccCardYear(mgrCard(f.h))===2025, y0+' → '+y1); }
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
