@@ -30,6 +30,8 @@ try{
   const r1=CAREER.career.reach; careerPayWages('2026-03-15', '2026-05-15'); out.notes.month=CAREER.career.reach-r1;
   check('два месяца — две медийки клуба', CAREER.career.reach-r1===2*ccOrgMediaMonth('Team Falcons', 90), String(CAREER.career.reach-r1));
   const tile=careerOrgTileHTML(); check('на карточке клуба — подписчики и медийка', tile.indexOf(L().ccOrgFans)>=0 && tile.indexOf(ccOrgFolText(ccOrgFollowers('Team Falcons', 90)))>=0 && tile.indexOf(L().ccOrgMedia)>=0);
+  check('подписчики игрока: настоящее — без ≈', ccFollowText('Malibuca', 93).charAt(0)!=='≈' && ccFollowText('Нет Такого', 80).charAt(0)==='≈', ccFollowText('Malibuca', 93)+' / '+ccFollowText('Нет Такого', 80));
+  check('профиль игрока показывает подписчиков', careerWhoHTML('Malibuca').indexOf('👥 '+ccFollowText('Malibuca'))>=0);
 }catch(e){ out.fails.push(String(e.stack||e)); }
 document.getElementById('__out').textContent='@@B@@'+encodeURIComponent(JSON.stringify(out))+'@@E@@'; }, 500));<\/script>`;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'orgtier-')), tmp = path.join(dir, 'index.html');

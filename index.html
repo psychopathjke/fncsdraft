@@ -117240,7 +117240,7 @@ function ccCoachPickOpen(){
            words the shop already uses for it. A coach is a purchase like the
            desk is, so it reads like one. -->
       <div class="cc-buy-in"><b>${esc(c.name)}</b>
-        <i>${c.at?'@'+esc(c.at)+' · ':''}${what}</i>
+        <i>${c.at?'@'+esc(c.at)+' · ':''}${CC_COACH_X[c.at] ? '👥 '+ccFollowers(CC_COACH_X[c.at])+' · ' : ''}${what}</i>
         <span>${L().ccShopTrain} +${Math.round(c.train*100)}%${
           c.chem?' · '+L().ccCoachChem(c.chem):''} · ${L().ccShopMonth}</span></div>
       ${on ? `<span class="cc-owned">${L().ccShopUntil(ccDayLabel(CAREER.coach.until))}</span>`
@@ -128384,7 +128384,7 @@ function ccOrgFollowers(name, tier){
   const lg=earn ? 1.963+0.607*Math.log10(earn) : -4.654+0.1068*(tier||78);
   return {n:Math.max(500, Math.min(400000, Math.round(Math.pow(10, lg)/100)*100)), est:true, asOf:null};
 }
-function ccOrgFolText(f){ return (f.est ? '≈' : '')+ccNum(f.n); }
+function ccOrgFolText(f){ return (f.est ? '≈' : '')+ccFollowers(f.n); }
 /* Медийка клуба для игрока (оценка режима): объявление о подписании — 0.3% аудитории клуба (от 300 до 15 000),
    дальше клуб постит тебя каждый месяц — 0.05% (от 20 до 2 000). Академия — вдвое меньше: её постят реже. */
 function ccOrgMediaSign(name, tier, academy){
@@ -130084,13 +130084,13 @@ const CC_SHOP_ORDER=[
   'v1nteroFN','SweetyyFN','SandoraFN','CmLumos','UgoComm','Pyp4ingS','veltrixx10','Lair_Fn',
   // Marketing
   'PyraxMGMT','Goalkikermng','KaizenMNG','murlotron',
-  // Coaches
-  // Thomas5x — игрок с титулом Globals, но коуч без описанной специализации:
-  // после генералистов с результатами, перед специалистами. Ссылка.
-  'RazZzero0oFN','SvenSE_','Coach_F0x','tallami1','diaspaulin_','Thomas5x_','stormyrite',
-  'BoopNL_','At0m_GG','kha0rz','xpl0t','Gripeyy','ValentaynL','EgeXJerG',
-  'Rabidfn','CoachEsteh','ZykomaTV','spidryx','PeanutBrainTS'
+  // Coaches — ПО ПОДПИСЧИКАМ В X (его слово 8.10: «коучей по фоловерам твитера сделать список»), числа в CC_COACH_X.
+  // Было его ручное от 20.08 (генералисты, потом специалисты); место по-прежнему задаёт цену и силу (ccRankPull).
+  'RazZzero0oFN','BoopNL_','stormyrite','BloodxEU','SvenSE_','Gripeyy','diaspaulin_','tallami1','Rabidfn','At0m_GG','Coach_F0x','kha0rz','PeanutBrainTS','Thomas5x_','EgeXJerG','ZykomaTV','xpl0t','ValentaynL','spidryx','CoachEsteh','Flaireeeee','CoachNassimm'
 ];
+/* Подписчики коучей в X, сняты 8.10.2026 через api.fxtwitter.com по их же адресам (at) — каждый сверен по имени и
+   описанию; у Boop, Stormyrite, Gripey, Spidryx, Zykoma тёзки отброшены. */
+const CC_COACH_X={RazZzero0oFN:418315, BoopNL_:127598, stormyrite:98460, BloodxEU:82759, SvenSE_:26955, Gripeyy:22316, diaspaulin_:18474, tallami1:17589, Rabidfn:13220, At0m_GG:12350, Coach_F0x:9342, kha0rz:9246, PeanutBrainTS:6675, Thomas5x_:6498, EgeXJerG:4403, ZykomaTV:4329, xpl0t:3852, ValentaynL:3072, spidryx:2609, CoachEsteh:2343, Flaireeeee:742, CoachNassimm:478};
 const CC_SHOP_RANK=(function(){
   const m={};
   CC_SHOP_ORDER.forEach((h,i)=>{ m[String(h).toLowerCase()]=i; });
@@ -132086,6 +132086,12 @@ function ccReachOf(ovr, handle){
   const o=Math.max(55, Math.min(99, ovr||72));
   return Math.round(200*Math.pow(o-55, 1.5));
 }
+/* Подписчики человека на экране (его слово 8.10: «у игроков тоже можно писать фоловеров»): настоящее число из
+   CC_XFOLLOW, иначе — та же кривая по рейтингу, что считает просмотры ленты, со знаком «≈». */
+function ccFollowText(handle, ovr){
+  const real=ccFollowOf(handle);
+  return real ? ccFollowers(real) : '≈'+ccFollowers(ccReachOf(ovr, null));
+}
 const CC_POST_W={good:1, flat:0.42, bad:0.72};
 function ccPostStats(e, who){
   const f = who.you ? (e.f!=null ? e.f : careerReach())
@@ -132761,7 +132767,7 @@ function careerWhoHTML(h){
   return `<div class="ch-tile x-profile">
     <div class="x-profile-head">
       ${ccAvatar(who)}
-      <div><b>${esc(h)}</b>${ccWhoChipHTML(h)}${ccRegChipHTML(card)}<span>@${esc(ccHandle(h))}</span>
+      <div><b>${esc(h)}</b>${ccWhoChipHTML(h)}${ccRegChipHTML(card)}<span>@${esc(ccHandle(h))} · 👥 ${ccFollowText(h, card ? ccCardOvr(card) : null)}</span>
         <span class="x-bio">${ccBioLine(h)}</span></div>
     </div>
     <div class="x-acts2">
@@ -136947,11 +136953,12 @@ function careerSocialHTML(){
         <span>${open.who.agent
           ? [L().ccAgentTag, open.who.at ? '@'+open.who.at : ''].filter(Boolean).join(' · ')
           : open.who.org
-          ? `${L().ccOrg}${open.offer ? ' · '+(open.offer.academy?L().ccAcademy:L().ccMainRoster) : ''}`
+          ? `${L().ccOrg}${open.offer ? ' · '+(open.offer.academy?L().ccAcademy:L().ccMainRoster) : ''} · 👥 ${ccOrgFolText(ccOrgFollowers(open.who.handle, open.offer && open.offer.tier))}`
           : open.who.hater ? L().dmSechaters
           : open.who.fan ? L().dmSecfans
           : [L()[open.who.role]||'', L().ccRoOvr+' '+open.who.ovr,
              (()=>{ const a=ccAgeNow(open.who.handle); return a ? L().ccYearsOld(a) : ''; })(),
+             '👥 '+ccFollowText(open.who.handle, open.who.ovr),
              ccDuoFormLabel(open.who.handle),
              open.who.club ? esc(open.who.club) : '',
              ccPayLabel(open.who.pay)].filter(Boolean).join(' · ')}</span></div>
