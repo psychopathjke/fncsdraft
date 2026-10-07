@@ -17,8 +17,11 @@ const SECTIONS=[
     out.notes.na19=na.slice(0, 6).map(c=>c.name+' '+c.avg+'/'+c.sq+' n'+c.n);
     check('клубы: Sentinels 2019 — не ниже 4★', sen && mgrClubStars(sen.avg)>=4, sen && (sen.avg+' ★'+mgrClubStars(sen.avg)));
     check('клубы: Liquid 2019 — не ниже 4★', liq && mgrClubStars(liq.avg)>=4, liq && String(liq.avg));
-    for(const [y, r] of [[2021,'EU'],[2023,'EU'],[2024,'EU']]){ const top=mgrClubsFor(y, r).slice(0, 3);
+    for(const [y, r] of [[2021,'EU']]){ /* трио-год: двое — неполный состав */ const top=mgrClubsFor(y, r).slice(0, 3);
       check('клубы: в топ-3 '+y+' '+r+' нет клуба из двоих без призовых', !top.some(c=>c.n<=2 && ccOrgEarn(c.name)==null), top.map(c=>c.name+' n'+c.n).join(', ')); }
+    { const big=mgrClubsFor(2026, 'EU').find(c=>c.name==='BIG'); out.notes.big=big && big.avg;
+      check('клубы: BIG 2026 (vic0 + Malibuca) — в верхушке, дуэт не режется за «малый состав»', big && big.avg>=94, big && String(big.avg)); }
+    check('клубы: призовые не опускают сильное ядро', mgrClubLevel('BIG', [96, 96], 2026)===96 && mgrClubLevel('Sentinels', [95, 72, 70], 2019)>mgrClubLevel('Нет Такого', [95, 72, 70], 2019));
     check('клубы: переименованный находит призовые', ccOrgEarn('Falcons Esports')===ccOrgEarn('Team Falcons') && ccOrgEarn('Lazarus Esports')!=null);
     // Подписчики: настоящее число, оценка со знаком, плитка, шапка, рост и спонсор.
     const fz=mgrOrgFollowers('FaZe Clan', 90), no=mgrOrgFollowers('Нет Такого Клуба', 80);

@@ -112579,7 +112579,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='10143f15';
+const CC_BUILD='f246d64b';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -156016,9 +156016,7 @@ function mgrClubsFor(year, region){
        ядро — три лучших; клубу из топ-100 по призовым Fortnite (esportsearnings) ядро смешивается с весом клуба
        пополам, клубу без призовых малый состав прижимается к полу 78 (двое — наполовину, трое-пятеро — на четверть).
        Призовые — снимок 30.08.2026 за всё время, поэтому для ранних годов это вес клуба «вообще», а не на тот год. */
-    const core=ps.slice(0, 3).map(c=>ccCardOvr(c)||0);
-    const coreAvg=core.length ? core.reduce((s,v)=>s+v, 0)/core.length : 0;
-    const avg=typeof ccOrgTier==='function' ? ccOrgTier(name, coreAvg, ps.length) : sq;
+    const avg=mgrClubLevel(name, ps.map(c=>ccCardOvr(c)||0), year);
     return {name, players:ps.map(c=>c.handle), n:ps.length, avg, sq, star:ps[0] ? ps[0].handle : null,
             budget:mgrClubBudget(name, ps.slice(0, 6).reduce((s,c)=>s+mgrSalary(c), 0), avg)};
   }).filter(c=>c.n>=2).sort((a,b)=>b.avg-a.avg || b.n-a.n).slice(0, 40)
@@ -156053,6 +156051,23 @@ function mgrFansNight(row){
   const best=Math.min(...((row && row.teams)||[]).map(t=>t.place)); if(!isFinite(best)) return;
   const k=best===1 ? 0.03 : best<=3 ? 0.015 : best<=10 ? 0.005 : 0;
   if(k) MGR.club.fans=Math.round(mgrFans()*(1+k));
+}
+/* УРОВЕНЬ КЛУБА (его вопрос 8.10: «почему BIG так далеко»). Первая версия брала ccOrgTier карьеры как есть, и сильный
+   действующий дуэт BIG (vic0 + Malibuca, ядро 96) получал 87: два человека считались «малым составом», а $31.5k
+   призовых (клуб в Fortnite недавно) тянули к 78. Теперь:
+   — ядро = лучшие столько, сколько выходит на турнир года (дуо 2, трио 3; ccYearRosterSize);
+   — срез к полу 78 — только когда людей МЕНЬШЕ, чем нужно на турнир (половина лишнего над 78 при одном не хватающем);
+   — призовые — история клуба: смешиваются с ядром пополам, но только поднимают, не опускают
+     (Sentinels 2019: ядро 78 + вес $3.3M → 86; BIG 2026: остаётся 96). */
+function mgrClubLevel(name, ovrs, year){
+  const size=ccYearRosterSize(Math.min(year||2026, 2026));
+  const top=ovrs.slice().sort((a,b)=>b-a).slice(0, size);
+  if(!top.length) return 0;
+  let core=top.reduce((s,v)=>s+v, 0)/top.length;
+  if(top.length<size) core-=Math.max(0, core-CC_ORG_EARN_FLOOR)*0.5;
+  const usd=typeof ccOrgEarn==='function' ? ccOrgEarn(name) : null;
+  const lvl=usd!=null ? Math.max(core, (core+ccOrgEarnLevel(usd))/2) : core;
+  return Math.min(96, Math.round(lvl));
 }
 // Уровень клуба звёздами, как в FC: 60 → 0.5, 95 → 5, шаг 0.5 (оценка режима).
 function mgrClubStars(avg){ return Math.max(0.5, Math.min(5, Math.round(((avg-60)/35*4.5+0.5)*2)/2)); }
