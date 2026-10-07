@@ -117,6 +117,25 @@ const SECTIONS=[
     check('пропуск: день сдвинулся', CAREER.career.day>=d0);
     check('пропуск: снова Центр', MGR_TAB==='centre' && !!document.querySelector('#mgTabs .ch-tab.on[data-tab="centre"]'));
   `},
+  {name:'состав', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    mgrRenderHub('squad');
+    const B=document.getElementById('mgBody');
+    const cards=B.querySelectorAll('.mgs-card');
+    check('состав '+lang+': карточки всех игроков', cards.length===mgrAll().length+(MGR.academy||[]).length, cards.length+'/'+mgrAll().length);
+    check('состав '+lang+': карточки FUT', B.querySelectorAll('.mgs-card .fut-card').length===cards.length);
+    check('состав '+lang+': без undefined/NaN', !bad(B.innerHTML));
+    cards[0].click();
+    const sh=document.getElementById('mgSheet');
+    check('лист '+lang+': открылся', sh && !sh.hidden && /mgrTalk/.test(sh.innerHTML) && /mgrRelease/.test(sh.innerHTML));
+    check('лист '+lang+': без undefined', !bad(sh.innerHTML));
+    check('лист: про того игрока', sh.textContent.indexOf(cards[0].dataset.h)>=0, cards[0].dataset.h);
+    mgrSheetClose();
+    check('лист: закрылся', document.getElementById('mgSheet').hidden);
+    // Перестановка из листа: игрок первой команды уходит в запас и состав перерисован.
+    const h=MGR.teams[0].cards[0]; mgrSheetOpen(h); mgrSheetClose(); mgrMove(h, '-1');
+    check('лист: перестановка в запас', (MGR.bench||[]).indexOf(h)>=0 && MGR_TAB==='squad');
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
