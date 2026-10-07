@@ -112424,7 +112424,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='d7dda655';
+const CC_BUILD='90a98eef';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -156844,7 +156844,10 @@ function mgrInboxHTML(){
   const list=(MGR.inbox||[]);
   if(!list.length) return '<p class="mg-hint">'+T2.inboxEmpty+'</p>';
   return '<div class="mg-clubs">'+list.map(m=>'<div class="mg-club'+(m.done?' done':'')+(m.kind==='event'?' ev':'')+'"><span class="mg-cname"><b>'+esc(m.text)+'</b><small>'+esc(ccDayLabel(m.day))+(m.done && m.done!=='info' ? ' · '+esc(m.kind==='event' ? (m.done==='a' ? m.a : m.b) : (m.done==='yes' ? T2.accept : T2.decline)) : '')+'</small></span>'+
-    (!m.done ? '<button class="hero-btn hero-btn-go mg-take" onclick="mgrInboxDo(\''+m.id+'\', true)">'+esc(m.kind==='event' ? m.a : m.kind==='job' ? mgrT7().jobBtn : m.kind==='offer' ? T2.sell : m.kind==='wantplay' ? mgrT5().promiseBtn : m.kind==='leave' ? mgrT5().sellBtn : T2.accept)+'</button><button class="hero-btn hero-btn-alt mg-take" onclick="mgrInboxDo(\''+m.id+'\', false)">'+esc(m.kind==='event' ? m.b : m.kind==='job' ? mgrT7().stayBtn : m.kind==='wantplay' ? mgrT5().waitBtn : m.kind==='leave' ? mgrT5().keepBtn : T2.decline)+'</button>' : '')+'</div>').join('')+'</div>';
+    (!m.done ? '<button class="hero-btn hero-btn-go mg-take" onclick="mgrInboxDo(\''+m.id+'\', true)">'+esc(m.kind==='event' ? m.a : m.kind==='job' ? mgrT7().jobBtn : m.kind==='natjob' ? mgrT10().natBtn : m.kind==='offer' ? T2.sell : m.kind==='wantplay' ? mgrT5().promiseBtn : m.kind==='leave' ? mgrT5().sellBtn : T2.accept)+'</button><button class="hero-btn hero-btn-alt mg-take" onclick="mgrInboxDo(\''+m.id+'\', false)">'+esc(m.kind==='event' ? m.b : m.kind==='job' ? mgrT7().stayBtn : m.kind==='wantplay' ? mgrT5().waitBtn : m.kind==='leave' ? mgrT5().keepBtn : T2.decline)+'</button>' : '')+
+    // Согласился собрать сборную — до кубка состав можно поправить отсюда же.
+    (m.kind==='natjob' && m.done==='yes' && mgrNatJob() && !mgrNatJob().res ? '<button class="hero-btn hero-btn-go mg-take" onclick="mgrNatPickOpen()">'+esc(mgrT10().natSquadBtn)+' · '+mgrNatJob().squad.length+'/'+MGR_NAT_SIZE+'</button>' : '')+
+    '</div>').join('')+'</div>';
 }
 function mgrTeamUp(i){ if(i<1) return; const t=MGR.teams; [t[i-1], t[i]]=[t[i], t[i-1]]; mgrSave(); mgrOpenHub(); }
 function mgrNewClubAsk(){ ccAsk(mgrT().newClub+'?', ()=>{ MGR=null; try{ localStorage.removeItem(MGR_KEY); }catch(e){} mgrLeave(); mgrOpenNew(); }); }
@@ -156852,6 +156855,7 @@ function mgrAdvanceTo(day){
   const was=CAREER.career.day;
   if(day>CAREER.career.day){ mgrPayMonths(day); mgrWeekly(CAREER.career.day, day); CAREER.career.day=day; }
   try{ mgrDeadlineCheck(was, day); }catch(e){ console.error('mgrDeadlineCheck', e); }
+  try{ const nd=mgrNationsDay(), od=ccAddDays(nd, -MGR_NAT_OFFER_DAYS); if(od>was && od<=day) mgrNatJobOffer(od); if(nd>was && nd<=day) mgrNatJobPlay(nd); }catch(e){ console.error('mgrNatJob', e); }
   try{ const nd=mgrNationsDay(); if(nd>was && nd<=day) mgrNationsCall(nd); }catch(e){ console.error('mgrNationsCall', e); }
   try{ mgrLoanWeek(day); }catch(e){}   // возврат из аренды — по дате, а не только на недельном тике
 }
@@ -157239,6 +157243,7 @@ function mgrInboxDo(id, ok){
   const m=(MGR.inbox||[]).find(x=>x.id===id); if(!m || m.done) return;
   if(m.kind==='event'){ if(!mgrEventDo(m, ok)) return; m.done=ok ? 'a' : 'b'; mgrSave(); mgrOpenHub(); return; }
   if(m.kind==='job'){ m.done=ok ? 'yes' : 'no'; if(ok) mgrSwitchClub(m.club); mgrSave(); mgrOpenHub(); return; }
+  if(m.kind==='natjob'){ const j=mgrNatJob(); m.done=ok ? 'yes' : 'no'; if(j) j.state=ok ? 'yes' : 'no'; mgrSave(); mgrOpenHub(); if(ok) mgrNatPickOpen(); return; }
   m.done=ok ? 'yes' : 'no';
   if(m.kind==='offer'){
     // Игрока уже нет в клубе (продан, отпущен, ушёл) — предложение пустое: денег нет, письмо закрывается.
@@ -157642,6 +157647,103 @@ function mgrNationsCall(day){
   MGR.inbox=MGR.inbox||[]; MGR.inbox.unshift({id:'nat'+MGR.year, day:day, kind:'info', done:'info', nat:true, text:txt});
   if(typeof mgrFeedPost==='function') mgrFeedPost('award', {text:txt});
   return out;
+}
+/* СБОРНАЯ ПОД ТВОИМ РУКОВОДСТВОМ (его слово 7.10: «в карьере менеджера сделать, что сборные могут предлагать
+   менеджером, чтоб собрать сборную перед nation капом»). За MGR_NAT_OFFER_DAYS до Кубка наций федерация страны, чьих
+   игроков в клубе больше всех, зовёт тебя собрать сборную. Согласился — окно с игроками этой страны со всей сцены
+   (семь регионов), берёшь MGR_NAT_SIZE. В день кубка сборная играет против остальных стран (их сила — средний
+   рейтинг их топ-4), место — по силе состава с разбросом; гонорар федерации клубу и мораль вызванным. Не собрал —
+   федерация добирает сама. Поле, разброс и гонорары — оценка режима. */
+const MGR_NAT_OFFER_DAYS=10, MGR_NAT_SIZE=4, MGR_NAT_FIELD=32;
+const MGR_NAT_FEE=[[1,50000],[4,20000],[8,10000],[32,3000]];
+function mgrT10(){
+  const ru=(typeof LANG!=='undefined' && LANG==='ru');
+  return ru ? {
+    natOffer:(n,d)=>'Федерация ('+n+'): соберите сборную на Кубок наций '+d+'. Состав — четверо, выбираете вы',
+    natBtn:'Собрать сборную', natSquadBtn:'Состав сборной', natTitle:n=>'Сборная: '+n, natPicked:(k,n)=>'В составе '+k+' из '+n,
+    natAdd:'Вызвать', natDrop:'Убрать', natFull:'Состав полный — сначала уберите кого-то',
+    natResult:(n,p,of,fee)=>'Кубок наций: '+n+' под вашим руководством — '+p+' место из '+of+'. Гонорар федерации '+fee,
+    natFilled:'Федерация добрала состав сама'
+  } : {
+    natOffer:(n,d)=>'Federation ('+n+'): build the national team for the Nations Cup on '+d+'. Four players, your pick',
+    natBtn:'Build the team', natSquadBtn:'National team squad', natTitle:n=>'National team: '+n, natPicked:(k,n)=>k+' of '+n+' picked',
+    natAdd:'Call up', natDrop:'Drop', natFull:'Squad is full — drop someone first',
+    natResult:(n,p,of,fee)=>'Nations Cup: '+n+' under your lead — '+p+' of '+of+'. Federation fee '+fee,
+    natFilled:'The federation filled the squad itself'
+  };
+}
+function mgrNatOfClub(){
+  const cnt={}; mgrAll().forEach(h=>{ const c=mgrCard(h); if(c && c.nat) cnt[c.nat]=(cnt[c.nat]||0)+1; });
+  return Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a] || (a<b ? -1 : 1))[0] || null;
+}
+// Игроки страны со всей сцены, сильные сверху.
+function mgrNatPool(nat){
+  const seen=new Set(), out=[];
+  CC_REGIONS.forEach(r=>{ let ro=[]; try{ ro=ccSceneRoster(r)||[]; }catch(e){}
+    ro.forEach(c=>{ if(c && c.nat===nat && !seen.has(hKey(c))){ seen.add(hKey(c)); out.push(c); } }); });
+  return out.sort((a,b)=>(ccCardOvr(b)||0)-(ccCardOvr(a)||0));
+}
+function mgrNatJob(){ return (MGR.natJob||{})[MGR.year]||null; }
+function mgrNatJobOffer(day){
+  MGR.natJob=MGR.natJob||{};
+  if(MGR.natJob[MGR.year]) return;
+  const nat=mgrNatOfClub(); if(!nat || mgrNatPool(nat).length<MGR_NAT_SIZE) return;
+  MGR.natJob[MGR.year]={nat, state:'offer', squad:[]};
+  MGR.inbox=MGR.inbox||[];
+  MGR.inbox.unshift({id:'nj'+MGR.year, day, kind:'natjob', nat, text:mgrT10().natOffer(nat, ccDayLabel(mgrNationsDay()))});
+}
+function mgrNatPickOpen(){
+  const j=mgrNatJob(); if(!j || j.state!=='yes' || j.res) return;
+  const T=mgrT10(), on=new Set(j.squad.map(x=>hKey(x.h)));
+  const cards=mgrNatPool(j.nat).slice(0, 24).map(c=>{ const sel=on.has(hKey(c));
+    return '<div class="mgf-person'+(sel ? ' on' : '')+'">'+mgrAvaHTML(c)+
+      '<span><b>'+esc(c.handle)+'</b><small>'+Math.round(ccCardOvr(c)||0)+' · '+esc(c.region||'')+' · '+esc(mgrOrgOf(c)||mgrT2().free)+'</small></span>'+
+      '<button class="hg-go'+(sel ? ' mgs-bad' : '')+'" onclick="mgrNatPick(\''+esc(String(c.handle).replace(/'/g, ''))+'\')">'+esc(sel ? T.natDrop : T.natAdd)+'</button></div>'; }).join('');
+  const el=document.getElementById('mgSheet'); if(!el) return;
+  el.innerHTML='<div class="ch-tile mgs-in mgs-wide"><h4>'+esc(T.natTitle(j.nat))+'</h4><button class="mgs-x" onclick="mgrSheetClose()">✕</button>'+
+    '<p class="mg-hint">'+esc(T.natPicked(j.squad.length, MGR_NAT_SIZE))+'</p><div class="mgf-people">'+cards+'</div></div>';
+  el.hidden=false;
+}
+function mgrNatPick(handle){
+  const j=mgrNatJob(); if(!j || j.state!=='yes' || j.res) return;
+  const k=hKey(handle), at=j.squad.findIndex(x=>hKey(x.h)===k);
+  if(at>=0) j.squad.splice(at, 1);
+  else {
+    if(j.squad.length>=MGR_NAT_SIZE){ mgrToast(mgrT10().natFull); return; }
+    const c=mgrNatPool(j.nat).find(x=>hKey(x)===k); if(!c) return;
+    j.squad.push({h:c.handle, ovr:Math.round(ccCardOvr(c)||0), org:mgrOrgOf(c)||null});
+  }
+  mgrSave(); mgrNatPickOpen();
+}
+// День кубка: состав (недобор — федерация), сила против остальных стран, место, гонорар, мораль.
+function mgrNatJobPlay(day){
+  const j=mgrNatJob(); if(!j || j.state!=='yes' || j.res) return;
+  const pool=mgrNatPool(j.nat);
+  if(j.squad.length<MGR_NAT_SIZE){
+    const have=new Set(j.squad.map(x=>hKey(x.h)));
+    pool.forEach(c=>{ if(j.squad.length<MGR_NAT_SIZE && !have.has(hKey(c))) j.squad.push({h:c.handle, ovr:Math.round(ccCardOvr(c)||0), org:mgrOrgOf(c)||null, fed:true}); });
+  }
+  const avg=j.squad.reduce((s,x)=>s+(x.ovr||0), 0)/Math.max(1, j.squad.length);
+  // Сыгранность: пары из одного клуба (+1 за пару, до +3).
+  let chem=0; for(let a=0; a<j.squad.length; a++) for(let b=a+1; b<j.squad.length; b++) if(j.squad[a].org && j.squad[a].org===j.squad[b].org) chem++;
+  const me=avg+Math.min(3, chem);
+  // Остальные страны: средний рейтинг их топ-4.
+  const by={};
+  CC_REGIONS.forEach(r=>{ let ro=[]; try{ ro=ccSceneRoster(r)||[]; }catch(e){}
+    ro.forEach(c=>{ if(c && c.nat && c.nat!==j.nat) (by[c.nat]=by[c.nat]||new Map()).set(hKey(c), ccCardOvr(c)||0); }); });
+  const others=Object.keys(by).map(n=>{ const v=[...by[n].values()].sort((a,b)=>b-a).slice(0, 4); return v.length>=4 ? v.reduce((s,x)=>s+x, 0)/4 : null; })
+    .filter(v=>v!=null).sort((a,b)=>b-a).slice(0, MGR_NAT_FIELD-1);
+  const rnd=careerRng(ccHashStr('mgrnatjob|'+MGR.club.name+'|'+MGR.year+'|'+j.nat));
+  const mine=me+(rnd()-0.5)*8;
+  const place=1+others.filter(v=>v+(rnd()-0.5)*8>mine).length, of=others.length+1;
+  const fee=(MGR_NAT_FEE.find(x=>place<=x[0])||[0,0])[1];
+  MGR.club.cash+=fee;
+  const own=new Set(mgrAll().map(hKey));
+  j.squad.forEach(x=>{ if(own.has(hKey(x.h))) mgrMoraleAdd(x.h, place<=8 ? 2 : 0); });
+  j.res={place, of, fee, day};
+  const T=mgrT10(), txt=T.natResult(j.nat, place, of, mgrMoney(fee))+(j.squad.some(x=>x.fed) ? '. '+T.natFilled : '');
+  MGR.inbox=MGR.inbox||[]; MGR.inbox.unshift({id:'njr'+MGR.year, day, kind:'info', done:'info', nat:true, text:txt});
+  if(typeof mgrFeedPost==='function') mgrFeedPost('award', {text:txt});
 }
 function mgrDeadlineSoon(){ const w=mgrWindowNow(); if(!w) return null; const left=ccDaysBetween(CAREER.career.day, w.to); return left<=3 ? {left, to:w.to} : null; }
 function mgrWindowNext(){ const d=CAREER.career.day; return mgrWindows().find(w=>w.from>d)||null; }
