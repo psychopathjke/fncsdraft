@@ -36,6 +36,14 @@ try{
     const b=audit(ccMXOf(y, n), 'спросили посреди сезона');
     out.notes[tag]=a+' · '+b;
   });
+  // Его «а типо если не квал»: не прошёл полуфинал недели — очки за своё место в полуфинале всё равно есть.
+  { seed(2019, '2019-10-20'); const sp=ccMXSpec(2019, 4), w=sp.weeks[1], m=ccMXState(2019, 4);
+    const semi=ccM23World(200, 'semi-probe').slice(0, 60).map(ccMajorSeatRow); semi.splice(39, 0, 'you');
+    m.youKey='YOU-KEY'; m.q[w]={semi:semi, r2:semi.slice(0, ccMXWeekCut(sp)).filter(r=>r!=='you')};
+    CAREER.career.day=ccAddDays(ccMXWeekEnd(2019, 4, w), 1);
+    ccMXSettleWeek(m, w);
+    const p=m.series['YOU-KEY']||0; out.notes.semiFail40=p;
+    if(!(p>0)) out.fails.push('не прошёл полуфинал недели (40-й) — очков за неделю 0'); }
 }catch(e){ out.fails.push(String(e.stack||e)); }
 document.getElementById('__out').textContent='@@B@@'+encodeURIComponent(JSON.stringify(out))+'@@E@@'; }, 500));<\/script>`;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'mxhp-')), tmp = path.join(dir, 'index.html');
