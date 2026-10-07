@@ -873,6 +873,17 @@ const SECTIONS=[
     check('аватарки: в отчётах скаутов', !document.querySelector('#mgBody .mgx-rep') || !!document.querySelector('#mgBody .mgx-rep .mgm-ava'));
     MGR_SUB.transfers='market';
   `},
+  {name:'рядом с карьерой', once:true, code:String.raw`
+    const secs=[...document.querySelectorAll('#screen-mode section.hero')];
+    const iCar=secs.findIndex(s=>s.querySelector('[onclick*="careerStart"]') && !s.classList.contains('hero-mgr')), iMgr=secs.findIndex(s=>s.classList.contains('hero-mgr'));
+    check('рядом: блок менеджера сразу после карьеры игрока', iCar>=0 && iMgr===iCar+1, iCar+' / '+iMgr);
+    check('рядом: виден на debug/локально', iMgr>=0 && !secs[iMgr].hidden);
+    const btn=secs[iCar] && secs[iCar].querySelector('.hero-mgr-btn');
+    check('рядом: кнопка «Карьера менеджера» в блоке карьеры', !!btn && !btn.hidden && /mgrStart/.test(btn.getAttribute('onclick')||''));
+    const nav=document.querySelector('.nav-pill[data-nav="manager"]');
+    check('рядом: пункт в верхнем меню', !!nav && !nav.hidden);
+    check('рядом: на проде скрыто', mgrAllowed('fncsdraft.com')===false);
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');

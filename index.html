@@ -6886,6 +6886,7 @@
          «давай» на «шапка сайта как навбар игры». -->
     <nav class="site-nav" aria-label="site">
       <button class="nav-pill" data-nav="career" type="button" onclick="careerStart()" data-i18n="navCareer"></button>
+      <button class="nav-pill" data-nav="manager" type="button" onclick="mgrStart()" hidden><span id="mgNavBtn">Manager</span></button>
       <button class="nav-pill on" data-nav="draft" type="button" onclick="requestReset()" data-i18n="navDraft"></button>
       <button class="nav-pill" data-nav="history" type="button" onclick="openHistoryScreen()" data-i18n="navHistory"></button>
     </nav>
@@ -6930,6 +6931,7 @@
         </div>
         <div class="hero-cta">
           <button class="hero-btn hero-btn-go" type="button" onclick="careerStart()"><span data-i18n="heroCareer"></span></button>
+          <button class="hero-btn hero-btn-alt hero-mgr-btn" type="button" onclick="mgrStart()" hidden><span id="mgCareerBtn">Manager career</span></button>
           <button class="hero-btn hero-btn-alt" type="button" onclick="homeOpenDraft()"><span data-i18n="heroDraft"></span></button>
         </div>
         <div class="hero-about"><a href="about.html"><span data-i18n="aboutLink"></span></a></div>
@@ -6943,6 +6945,17 @@
         </div>
       </div>
       <div class="hero-art" style="background-image:url(art/fncs-2026-major1.jpg);cursor:pointer" role="img" aria-label="FNCS 2026 Major 1" onclick="careerStart()"></div>
+    </section>
+    <!-- Карьера менеджера — сразу за карьерой игрока (его слово 7.10: «чтоб рядом с карьерой игрока была карьера менеджера»). -->
+    <section class="hero hero-draft hero-mgr" aria-labelledby="heroMgrTitle" hidden>
+      <div class="hero-body">
+        <span class="dp-tag hero-mode-tag" id="mgHeroTag">Mode 3 · Manager</span>
+        <h2 class="hero-title" id="heroMgrTitle">Build a club. <em>Run it through a season.</em></h2>
+        <p class="hero-sub" id="mgHeroSub"></p>
+        <div class="cstrip-chips hero-chips"><span class="cstrip-chip">2019 – 2026</span><span class="cstrip-chip">Real clubs</span><span class="cstrip-chip">Match day</span></div>
+        <div class="hero-cta"><button class="hero-btn hero-btn-go" type="button" onclick="mgrStart()"><span id="mgHeroBtn">Become a manager</span></button></div>
+      </div>
+      <div class="hero-art" style="background:url(art/mode-major1.jpg) center/cover;cursor:pointer" role="img" aria-label="Fortnite Manager" onclick="mgrStart()"></div>
     </section>
     <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Скриншот (красная рамка вокруг всех рядов): «с этими
          прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
@@ -6970,17 +6983,6 @@
       <div class="hero-art hd-logos" style="cursor:pointer" role="img" aria-label="FNCS · World Cup 2019–2026" onclick="homeOpenDraft()">
         <div class="hd-wall"><figure class="hd-logo hd-wide"><img src="art/fncs-2019.jpg" alt="" loading="lazy"><figcaption>WC 2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f10.jpg" alt="" loading="lazy"><figcaption>2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f11.jpg" alt="" loading="lazy"><figcaption>2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f12.jpg" alt="" loading="lazy"><figcaption>2020</figcaption></figure><figure class="hd-logo"><img src="art/cups/f14.jpg" alt="" loading="lazy"><figcaption>2020</figcaption></figure><figure class="hd-logo"><img src="art/cups/f15.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f17.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f18gr.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f19.jpg" alt="" loading="lazy"><figcaption>2022</figcaption></figure><figure class="hd-logo"><img src="art/cups/f22inv.jpg" alt="" loading="lazy"><figcaption>2022</figcaption></figure><figure class="hd-logo"><img src="art/cups/f23.jpg" alt="" loading="lazy"><figcaption>2023</figcaption></figure><figure class="hd-logo"><img src="art/cups/f25.jpg" alt="" loading="lazy"><figcaption>2023</figcaption></figure><figure class="hd-logo"><img src="art/cups/f28.jpg" alt="" loading="lazy"><figcaption>2024</figcaption></figure><figure class="hd-logo hd-wide"><img src="art/mode-major1-2025.jpg" alt="" loading="lazy"><figcaption>2025</figcaption></figure><figure class="hd-logo hd-wide"><img src="art/fncs-2026.jpg" alt="" loading="lazy"><figcaption>2026</figcaption></figure></div>
       </div>
-    </section>
-    <!-- Fortnite Manager (1.10): третий режим — клуб и сезон, вечера как в Football Manager. -->
-    <section class="hero hero-draft hero-mgr" aria-labelledby="heroMgrTitle" hidden>
-      <div class="hero-body">
-        <span class="dp-tag hero-mode-tag" id="mgHeroTag">Mode 3 · Manager</span>
-        <h2 class="hero-title" id="heroMgrTitle">Build a club. <em>Run it through a season.</em></h2>
-        <p class="hero-sub" id="mgHeroSub"></p>
-        <div class="cstrip-chips hero-chips"><span class="cstrip-chip">2019 – 2026</span><span class="cstrip-chip">Real clubs</span><span class="cstrip-chip">Match day</span></div>
-        <div class="hero-cta"><button class="hero-btn hero-btn-go" type="button" onclick="mgrStart()"><span id="mgHeroBtn">Become a manager</span></button></div>
-      </div>
-      <div class="hero-art" style="background:url(art/mode-major1.jpg) center/cover;cursor:pointer" role="img" aria-label="Fortnite Manager" onclick="mgrStart()"></div>
     </section>
     <section class="modes-panel dp-shut" id="draftPanel">
     <div class="dp-years" id="dpYears"></div>
@@ -155006,7 +155008,7 @@ function mgrT(){
     calendar:'Календарь', results:'Результаты', place:'место', prize:'призовые', clubGets:'клубу', salaries:'Зарплаты',
     month:'в месяц', back:'В клуб', nightDone:'Итог вечера', noTeamFmt:'Нет команды этого формата — турнир пропущен',
     season:'Сезон', earned:'Заработано за сезон', none:'Пока ничего', moveUp:'↑', moveDown:'↓', swap:'Поменять местами',
-    heroTag:'Режим 3 · Менеджер', heroTitle:'Собери клуб.', heroTitle2:'Веди его через сезон.', heroSub:'Ты Head of Fortnite: настоящий клуб и состав года, турниры по реальному календарю, смотришь вечера и решаешь между играми.',
+    heroTag:'Режим 1 · Карьера менеджера', careerBtn:'Карьера менеджера', navBtn:'Менеджер', heroTitle:'Собери клуб.', heroTitle2:'Веди его через сезон.', heroSub:'Ты Head of Fortnite: настоящий клуб и состав года, турниры по реальному календарю, смотришь вечера и решаешь между играми.',
     heroBtn:'Стать менеджером', sponsor:'спонсоры', drop:'Высадка', dQuiet:'Тихая', dNorm:'Обычная', dHot:'Горячая', press:'Пресс-конференция', prPraise:'Похвалить команду', prCrit:'Раскритиковать', prNone:'Без комментариев', prDone:'Сказано', rep:'Репутация', tStats:'Статистика', stNights:'вечеров', stKills:'киллов', stBest:'лучшее', stPrize:'призовые', talents:'таланты ≤75', dev:'рост', ewcNeed4:'На EWC нужна четвёрка — в клубе меньше четырёх игроков', ewcNoSlot:'Клуба нет среди 16 EWC, а слот региона держит команда сильнее — EWC без нас', ewcIn:(s)=>'Клуб едет в Эр-Рияд: слот «'+s+'»', ewcPlace:p=>'Место на EWC: '+p, acad:'Академия', acadHint:'До 4 талантов: четверть зарплаты, растут вдвое быстрее, в турнирах не играют', toAcad:'В академию', promote:'В основу', acadFull:'Академия полна', acadOnly:'В академию берут только до 75', scout:(n,r)=>'Скаут: нашёл талант '+n+' ('+r+') — забрать в академию?', preH:'Перед вечером', style:'Установка', stPlace:'Плейсмент', stBal:'Баланс', stAggr:'Агрессия', view:'Показ', vKey:'Ключевые моменты', vExt:'Расширенный', vFull:'Весь вечер', vRes:'Только итог', speed:'Скорость', start:'Начать вечер', breakH:g=>'Перерыв · после игры '+g, cont:'Продолжить', talk:'Разговор', tkCalm:'Спокойно', tkDemand:'Требовательно', tkPraise:'Похвалить', rankNow:'сейчас', lastG:'прошлая игра', asst:'Ассистент', tDeadEarly:n=>n+' рано вылетает — точку контестят. Уходи в плейсмент или смени спот', tFightLow:n=>n+' много дерётся, а места низкие — переведи на плейсмент', tPlaceNoKill:n=>n+' стабильно доживает, но мало киллов — можно агрессию', tHot:n=>n+' в огне — похвали, не ломай', tCold:n=>n+' две игры подряд мимо — разговор нужен', talkSaid:'сказано', fmt:{2:'дуо', 3:'трио', 4:'сквад'}, focus:'Камера на', resume:'Продолжить сезон'
   } : {
     title:'Fortnite Manager', newH:'New club', year:'Year', region:'Region', pickClub:'Pick a club — its real roster of that year',
@@ -155015,7 +155017,7 @@ function mgrT(){
     calendar:'Calendar', results:'Results', place:'place', prize:'prize', clubGets:'to the club', salaries:'Wages',
     month:'a month', back:'Back to club', nightDone:'Night report', noTeamFmt:'No team in this format — event skipped',
     season:'Season', earned:'Earned this season', none:'Nothing yet', moveUp:'↑', moveDown:'↓', swap:'Swap',
-    heroTag:'Mode 3 · Manager', heroTitle:'Build a club.', heroTitle2:'Run it through a season.', heroSub:'You are Head of Fortnite: a real club and its roster of the year, events on the real calendar, you watch the nights and decide between games.',
+    heroTag:'Mode 1 · Manager career', careerBtn:'Manager career', navBtn:'Manager', heroTitle:'Build a club.', heroTitle2:'Run it through a season.', heroSub:'You are Head of Fortnite: a real club and its roster of the year, events on the real calendar, you watch the nights and decide between games.',
     heroBtn:'Become a manager', sponsor:'sponsors', drop:'Drop', dQuiet:'Quiet', dNorm:'Normal', dHot:'Hot', press:'Press conference', prPraise:'Praise the team', prCrit:'Criticise', prNone:'No comment', prDone:'Said', rep:'Reputation', tStats:'Stats', stNights:'nights', stKills:'kills', stBest:'best', stPrize:'prize', talents:'talents ≤75', dev:'growth', ewcNeed4:'EWC needs a squad of four — the club has fewer than four players', ewcNoSlot:'The club is not among the 16 EWC teams and a stronger team holds the region slot — no EWC for us', ewcIn:(s)=>'The club goes to Riyadh: slot "'+s+'"', ewcPlace:p=>'EWC finish: '+p, acad:'Academy', acadHint:'Up to 4 talents: a quarter of the wage, grow twice as fast, do not play events', toAcad:'To the academy', promote:'Promote', acadFull:'The academy is full', acadOnly:'Only players up to 75 go to the academy', scout:(n,r)=>'Scout: found a talent '+n+' ('+r+') — take them into the academy?', preH:'Before the night', style:'Approach', stPlace:'Placement', stBal:'Balanced', stAggr:'Aggressive', view:'Watch', vKey:'Key moments', vExt:'Extended', vFull:'Full night', vRes:'Result only', speed:'Speed', start:'Start the night', breakH:g=>'Break · after game '+g, cont:'Continue', talk:'Team talk', tkCalm:'Calm', tkDemand:'Demanding', tkPraise:'Praise', rankNow:'now', lastG:'last game', asst:'Assistant', tDeadEarly:n=>n+' die early — the spot is contested. Go placement or change the spot', tFightLow:n=>n+' fight a lot but place low — switch to placement', tPlaceNoKill:n=>n+' survive steadily but get few kills — try aggressive', tHot:n=>n+' are on fire — praise them, do not break it', tCold:n=>n+' missed two games in a row — they need a talk', talkSaid:'said', fmt:{2:'duos', 3:'trios', 4:'squads'}, focus:'Camera on', resume:'Continue season'
   };
 }
@@ -155055,7 +155057,7 @@ function mgrLeave(){
 function mgrHome(){ mgrSave(); mgrLeave(); show('screen-mode'); }
 function mgrHeroText(){
   try{ const T=mgrT(); const set=(id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
-    set('mgHeroTag', T.heroTag); set('mgHeroSub', T.heroSub); set('mgHeroBtn', T.heroBtn);
+    set('mgHeroTag', T.heroTag); set('mgHeroSub', T.heroSub); set('mgHeroBtn', T.heroBtn); set('mgCareerBtn', T.careerBtn); set('mgNavBtn', T.navBtn);
     const h=document.getElementById('heroMgrTitle'); if(h) h.innerHTML=esc(T.heroTitle)+' <em>'+esc(T.heroTitle2)+'</em>'; }catch(e){}
 }
 setTimeout(mgrHeroText, 0);
@@ -155065,7 +155067,7 @@ function mgrAllowed(host){
   const h=String(host!=null ? host : (location.hostname||'')).toLowerCase();
   return !h || h==='localhost' || h==='127.0.0.1' || h==='debug.fncsdraft.pages.dev';
 }
-setTimeout(()=>{ try{ const sec=document.querySelector('.hero-mgr'); if(sec && mgrAllowed()) sec.hidden=false; }catch(e){} }, 0);
+setTimeout(()=>{ try{ if(!mgrAllowed()) return; document.querySelectorAll('.hero-mgr, .hero-mgr-btn, .nav-pill[data-nav="manager"]').forEach(el=>{ el.hidden=false; }); }catch(e){} }, 0);
 function mgrStart(){ if(!mgrAllowed()) return; mgrLoad(); if(MGR && MGR.club) mgrOpenHub(); else mgrOpenNew(MGR_NEW_YEAR); }
 
 /* ---- Выбор года и клуба ---------------------------------------------------- */
