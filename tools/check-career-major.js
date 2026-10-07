@@ -130,7 +130,8 @@ const BOOT = `
     // whole ladder may enter, and the four matches are the lobby after it.
     if (S.lcq.games !== 11) fail('the Last Chance qualifier is eleven matches');
     if (S.lcq.cut !== CAREER_CUP_CUT) fail('fifty come through it');
-    if (CC_MAJOR_LC_LOBBY_GAMES !== 4) fail('the Last Chance Lobby is four matches');
+    // Liquipedia 2026 (сверка 7.10): «Teams have 5 set-lobby games» в обоих Мейджорах (было 4).
+    if (CC_MAJOR_LC_LOBBY_GAMES !== 5) fail('the Last Chance Lobby is five matches');
     if (S.lcq.field !== careerLadderEntrants())
       fail('the Last Chance seats the whole ladder, got ' + S.lcq.field +
            ' against ' + careerLadderEntrants());
