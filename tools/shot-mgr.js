@@ -20,7 +20,8 @@ window.addEventListener('load', ()=>setTimeout(()=>{ try{
     if(sub==='guest'){ const t=MGR.teams[0]; mgrMove(t.cards[t.cards.length-1], '-1'); mgrGuestAdd(t.id, mgrGuestCands(t)[0].handle); }
     if(sub==='youth'){ mgrYScoutHire('fr'); mgrYouthMonth('2024-01'); mgrYouthMonth('2024-02'); }
     mgrRenderHub(tab);
-    if(sub==='sheet'){ const c=document.querySelector('#mgBody .mgs-card'); if(c) c.click(); } }
+    if(sub==='sheet'){ const c=document.querySelector('#mgBody .mgs-card'); if(c) c.click(); }
+    if(sub==='coachpick'){ mgrTeamCoachSet(MGR.teams[0].id,'bloodx'); mgrRenderHub('squad'); mgrTeamCoachOpen(MGR.teams[0].id); } }
   window.scrollTo(0,0);
 }catch(e){ document.body.insertAdjacentHTML('afterbegin','<pre style="color:red;font-size:20px">'+e.stack+'</pre>'); } }, 300));
 <\/script>`;

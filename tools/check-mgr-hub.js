@@ -817,6 +817,20 @@ const SECTIONS=[
     MGR_MONTH=null; mgrRenderHub('calendar');
     check('перемотка: клик по дню в календаре', document.querySelectorAll('#mgBody .cal-day.cal-go[onclick*="mgrFfAsk"]').length>=5);
   `},
+  {name:'выбор тренера', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    mgrRenderHub('squad');
+    const tile=document.querySelector('#mgBody .mgs-team');
+    check('выбор тренера: кнопка вместо системного списка', !!tile.querySelector('.mgs-coach .mgs-coach-btn') && !tile.querySelector('.mgs-coach select'));
+    tile.querySelector('.mgs-coach-btn').click();
+    const sh=document.getElementById('mgSheet');
+    check('выбор тренера '+lang+': окно с карточками коучей', !sh.hidden && sh.querySelectorAll('.mgf-person').length>=CC_COACHES.length-1 && !bad(sh.innerHTML));
+    check('выбор тренера: без пустых точек у региона', !/·\s*·/.test(sh.textContent));
+    const pick=sh.querySelector('.mgf-person button[onclick*="mgrTeamCoachPick"]'); pick.click();
+    check('выбор тренера: назначен и окно закрыто', !!mgrTeamCoach(MGR.teams[0].id) && document.getElementById('mgSheet').hidden);
+    MGR_SUB.transfers='market'; mgrRenderHub('transfers'); const st=getComputedStyle(document.querySelector('#mgBody select.mgs-move')||document.body);
+    check('списки в тёмной теме', /dark/.test(st.colorScheme||'') , st.colorScheme);
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
