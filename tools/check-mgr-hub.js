@@ -572,6 +572,24 @@ const SECTIONS=[
     mgrSheetClose();
     check('характер: значок на карточке', !!document.querySelector('#mgBody .mgs-card .mgs-trait'));
   `},
+  {name:'дедлайн', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    const w=mgrWindows()[0];
+    CAREER.career.day=ccAddDays(w.to, -2); mgrRenderHub('centre');
+    check('дедлайн '+lang+': баннер за 2 дня', !!document.querySelector('#mgBody .mgc-dl'));
+    const n0=(MGR.inbox||[]).length;
+    mgrAdvanceTo(w.to);
+    const dl=(MGR.inbox||[]).filter(m=>m.dl);
+    check('дедлайн: предложения и срочные варианты', dl.length>=3, String(dl.length));
+    check('дедлайн: есть предложения за своих', dl.some(m=>m.kind==='offer'));
+    const ks=Object.keys(MGR.dlDeal||{});
+    check('дедлайн: скидка на срочных', ks.length>=2);
+    if(ks.length){ const c=mgrMarketList().find(x=>hKey(x)===ks[0]) || mgrCardBase(ks[0]);
+      if(c && mgrOrgOf(c)) check('дедлайн: отступные со скидкой 30%', mgrBuyout(c)===Math.round(mgrSalary(c)*8*0.7), mgrBuyout(c)+' vs '+mgrSalary(c)*8); }
+    mgrAdvanceTo(ccAddDays(w.to, 7));
+    check('дедлайн: скидка сгорела после окна', !Object.keys(MGR.dlDeal||{}).length);
+    check('дедлайн: один раз за окно', (MGR.inbox||[]).filter(m=>m.dl).length===dl.length);
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
