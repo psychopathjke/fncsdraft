@@ -100491,18 +100491,37 @@ function finalizeStageCard(shell, rank, total, points, passed, vr, note){
 // Размытие лобби по очкам: доля разброса счёта, в пределах которой соседние
 // лобби перемешиваются (см. жеребьёвку в simulateGamesLive, 13.09).
 const CC_LOBBY_MIX=0.15;
+/* ЛОББИ НАБИРАЮТСЯ ДО ПОЛНОГО, как у Epic (его вопрос 7.10: «везде все игроки в полном лобби играют?»). Раньше
+   поле делилось поровну: 310 команд — семь лобби по 44–45, 430 — девять по 47–48, трио 2410 — по 32 из 33, то есть
+   неполным было почти каждое. Теперь лобби полные, остаток — последним; хвост меньше четверти лобби делится
+   пополам с соседним (комнаты на три команды не бывает). Человек (ты, сосед по гонке, напарник) в неполном лобби
+   меняется местами с ботом соседнего полного. Сторож tools/check-lobby-full.js. */
 function splitIntoLobbies(teams, maxSize){
   const n=teams.length;
   if(n<2) return [];
   if(n<=maxSize) return [teams.slice()];
-  const count=Math.ceil(n/maxSize);
+  const full=Math.floor(n/maxSize), r=n%maxSize;
+  const sizes=[];
+  if(!r) for(let i=0;i<full;i++) sizes.push(maxSize);
+  else if(r>=Math.ceil(maxSize/4)){ for(let i=0;i<full;i++) sizes.push(maxSize); sizes.push(r); }
+  else { for(let i=0;i<full-1;i++) sizes.push(maxSize); const t=maxSize+r; sizes.push(Math.ceil(t/2), Math.floor(t/2)); }
   const lobbies=[];
   let start=0;
-  for(let i=0;i<count;i++){
-    const size=Math.floor((n-start)/(count-i));
-    lobbies.push(teams.slice(start, start+size));
-    start+=size;
-  }
+  sizes.forEach(s=>{ lobbies.push(teams.slice(start, start+s)); start+=s; });
+  const human=t=>!!(t && (t.isYou || t.isRival || t.isMate));
+  lobbies.forEach((l, i)=>{
+    if(l.length===maxSize) return;
+    l.forEach((t, k)=>{
+      if(!human(t)) return;
+      // Ближайшее полное лобби, в нём — последний бот (по очкам он ближе всех к этому лобби).
+      for(let d=1; d<lobbies.length; d++){
+        const j=[i-d, i+d].find(x=>x>=0 && x<lobbies.length && lobbies[x].length===maxSize && lobbies[x].some(o=>!human(o)));
+        if(j==null) continue;
+        const L2=lobbies[j]; let m=L2.length-1; while(m>=0 && human(L2[m])) m--;
+        const bot=L2[m]; L2[m]=t; l[k]=bot; return;
+      }
+    });
+  });
   return lobbies.filter(l=>l.length>=2);
 }
 
