@@ -11,6 +11,28 @@ const CHROME=[process.env.CHROME, 'C:/Program Files/Google/Chrome/Application/ch
 if(!CHROME) throw new Error('Chrome not found');
 
 const SECTIONS=[
+  {name:'бюджет', once:true, code:String.raw`
+    const big=mgrClubBudget('Cooler Esport', 20000), none=mgrClubBudget('Нет Такого Клуба', 3000);
+    check('бюджет: большой клуб больше пустого', big.turnover>none.turnover, big.turnover+' vs '+none.turnover);
+    check('бюджет: пол у клуба вне списка', none.turnover>=MGR_TURNOVER_FLOOR, String(none.turnover));
+    check('бюджет: трансферный 40%', big.transfer===Math.round(big.turnover*0.4));
+    check('бюджет: потолок зарплат вмещает состав с запасом 15%', big.wageCap>=Math.round(20000/0.85)-1, String(big.wageCap));
+    check('бюджет: числа целые', [big.turnover,big.transfer,big.wageCap,none.wageCap].every(Number.isInteger));
+    out.notes.budgetCooler=big; out.notes.budgetNone=none;
+    // Старый сейв без бюджетов: хаб досчитывает.
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; mgrOpenNew(2024); mgrTake(0);
+    check('бюджет: у взятого клуба есть', Number.isInteger(MGR.club.wageCap) && Number.isInteger(MGR.club.transfer), JSON.stringify(MGR.club));
+    check('бюджет: состав помещается', mgrWageRoom()>=0, String(mgrWageRoom()));
+    delete MGR.club.wageCap; delete MGR.club.transfer; mgrOpenHub();
+    check('бюджет: старый сейв досчитан', Number.isInteger(MGR.club.wageCap) && MGR.club.wageCap>0);
+    // Подписание сверх потолка зарплат совет не пропускает, в пределах — пропускает и тратит трансферный.
+    const n0=mgrAll().length, tr0=MGR.club.transfer;
+    mgrSignFinal({h:'ПробаДорогой', buyDeal:0, years:1, acad:false}, mgrWageRoom()+1000);
+    check('бюджет: сверх потолка — отказ', mgrAll().length===n0, String(mgrAll().length-n0));
+    MGR.club.cash+=5000; mgrSignFinal({h:'ПробаДешёвый', buyDeal:5000, years:1, acad:false}, 1);
+    check('бюджет: в пределах — подписан', mgrAll().length===n0+1);
+    check('бюджет: отступные из трансферного', MGR.club.transfer===Math.max(0, tr0-5000), tr0+' → '+MGR.club.transfer);
+  `},
 ];
 
 const only=process.argv[2]||'';

@@ -154955,6 +154955,8 @@ function mgrTake(i){
   MGR.season0=sh.career.day;
   mgrBuildTeams(c.players);
   MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h));
+  { const b=mgrClubBudget(c.name, mgrWageBill());
+    Object.assign(MGR.club, {turnover:b.turnover, transfer:b.transfer, wageCap:b.wageCap, cash:Math.max(MGR.club.cash, b.transfer)}); }
   MGR.fncsCal=mgrFncsDays().map(x=>x.day);
   MGR.inbox=[]; MGR.morale={}; mgrBoardInit();
   mgrRivalsInit();
@@ -155007,6 +155009,37 @@ function mgrDevelop(monthKey){
   });
 }
 function mgrSalary(c){ return careerClubSalary(Math.round(ccCardOvr(c)||70)); }
+/* БЮДЖЕТ КЛУБА — из его призовых в Fortnite за всё время (CC_ORG_EARN, esportsearnings; по годам
+   этих чисел нет, поэтому год их не меняет). Оборот = K × призовые с полом; K=0.15 — оценка режима:
+   Cooler (3.3 млн) → ~$500к в год, клуб вне списка — пол. Как в FC, два бюджета: трансферный (40%
+   оборота, тратится отступными) и потолок зарплат в месяц — не ниже нынешней ведомости с запасом 15%
+   и не ниже половины оборота на 12 месяцев. Подписание сверх потолка совет не пропускает. */
+const MGR_TURNOVER_K=0.15, MGR_TURNOVER_FLOOR=60000;
+function mgrClubBudget(name, wageNow){
+  const earn=(name && typeof ccOrgEarn==='function' ? ccOrgEarn(name) : 0)||0;
+  const turnover=Math.max(MGR_TURNOVER_FLOOR, Math.round(earn*MGR_TURNOVER_K/1000)*1000);
+  const transfer=Math.round(turnover*0.4);
+  const wageCap=Math.max(Math.round((wageNow||0)/0.85), Math.round(turnover*0.5/12/100)*100);
+  return {turnover, transfer, wageCap};
+}
+function mgrWageBill(){ return mgrAll().concat(MGR.academy||[]).reduce((s,h)=>s+mgrWage(h), 0); }
+function mgrWageRoom(){ return ((MGR.club && MGR.club.wageCap)||0)-mgrWageBill(); }
+// Старый сейв (до бюджетов) досчитывает их от того, что у клуба есть сейчас.
+function mgrBudgetMigrate(){
+  const c=MGR && MGR.club; if(!c || c.wageCap!=null) return;
+  const b=mgrClubBudget(c.own ? '' : c.name, mgrWageBill());
+  c.turnover=b.turnover; c.transfer=b.transfer; c.wageCap=b.wageCap;
+}
+function mgrT9(){
+  const ru=(typeof LANG!=='undefined' && LANG==='ru');
+  return ru ? {
+    overCap:s=>'Совет против: потолок зарплат '+s+' в месяц', transfer:'Трансферный бюджет', wageCap:'Бюджет зарплат',
+    renewCap:h=>h+' уходит: продление не влезло в бюджет зарплат'
+  } : {
+    overCap:s=>'The board says no: wage budget '+s+' a month', transfer:'Transfer budget', wageCap:'Wage budget',
+    renewCap:h=>h+' leaves: the new deal did not fit the wage budget'
+  };
+}
 
 /* ---- Календарь: капы года из архива Tracker, в формате команд клуба ---------- */
 function mgrEvents(){
@@ -155107,6 +155140,7 @@ function mgrOpenHub(){
   mgrEnter();
   if(!MGR.contracts){ MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h)); }
   if(!MGR.board) mgrBoardInit();
+  mgrBudgetMigrate();
   MGR.inbox=MGR.inbox||[]; MGR.morale=MGR.morale||{};
   const T=mgrT(), T2=mgrT2(), cr=CAREER.career, c=MGR.club;
   const evs=mgrEvents(), nx=evs[0];
@@ -155426,6 +155460,11 @@ function mgrRenewHTML(){
 }
 function mgrNextSeason(){
   Object.keys(MGR_RENEW).forEach(h=>{ if(MGR_RENEW[h]){ const k=(MGR.contracts||{})[hKey(h)]||{}; const sal=mgrRenewAsk(h);
+      // Прибавка сверх бюджета зарплат — совет не продлевает (как в FC).
+      if(MGR.club.wageCap!=null && sal-(k.salary||mgrWage(h))>mgrWageRoom()){
+        mgrDrop(h); MGR.log.unshift({day:CAREER.career.day, kind:'leave', name:h, sum:0});
+        MGR.inbox=MGR.inbox||[]; MGR.inbox.unshift({id:'rc'+hKey(h)+CAREER.career.day, day:CAREER.career.day, kind:'info', done:'info', text:mgrT9().renewCap(h)});
+        return; }
       MGR.contracts[hKey(h)]=Object.assign({}, k, {salary:sal, until:MGR.year+2, clause:Math.round(sal*12/1000)*1000}); }
     else { mgrDrop(h); MGR.log.unshift({day:CAREER.career.day, kind:'leave', name:h, sum:0}); } });
   MGR_RENEW={};
@@ -155595,7 +155634,9 @@ function mgrNegOffer(){
 function mgrSignFinal(n, wage){
   const box=document.getElementById('mgNeg'); if(box) box.remove();
   if(MGR.club.cash<n.buyDeal){ mgrToast(mgrT2().noMoney); MGR_NEG=null; return; }
+  if(MGR.club.wageCap!=null && wage>mgrWageRoom()){ mgrToast(mgrT9().overCap(mgrMoney(MGR.club.wageCap))); MGR_NEG=null; return; }
   MGR.club.cash-=n.buyDeal;
+  if(MGR.club.transfer!=null) MGR.club.transfer=Math.max(0, MGR.club.transfer-n.buyDeal);
   if(n.acad){ MGR.academy=(MGR.academy||[]).concat([n.h]); } else MGR.bench=(MGR.bench||[]).concat([n.h]);
   MGR.contracts=MGR.contracts||{};
   MGR.contracts[hKey(n.h)]={salary:wage, since:CAREER.career.day, until:MGR.year+n.years-1, clause:n.clause ? mgrClauseOf(n) : 0};
@@ -155950,6 +155991,8 @@ function mgrSwitchClub(name){
   MGR.teams=[]; MGR.bench=[]; MGR.academy=[]; MGR.morale={}; MGR.dev={}; MGR.chem={}; MGR.promises=[]; MGR.challenge=null; MGR.sackShown=false; MGR.deal=null; MGR.fac={};
   mgrBuildTeams(c.players);
   MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h));
+  { const b=mgrClubBudget(c.name, mgrWageBill());
+    Object.assign(MGR.club, {turnover:b.turnover, transfer:b.transfer, wageCap:b.wageCap, cash:Math.max(MGR.club.cash, b.transfer)}); }
   mgrBoardInit(); mgrRivalsInit();
   mgrToast(mgrT7().moved(c.name));
 }
