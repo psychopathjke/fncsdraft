@@ -94,6 +94,24 @@ try{
   check('в день — не больше '+CC_DM_ASKS_DAY+' предложений в дуо', asked===CC_DM_ASKS_DAY, String(asked));
   CAREER.career.day=ccAddDays(CAREER.career.day, 1);
   check('назавтра снова можно', ccDmAsksLeft()===CC_DM_ASKS_DAY, String(ccDmAsksLeft()));
+  // ---- разговор с тиммейтом: тема раз в день, настрой — от первого разговора (Notion 7.10: «одинаковые сообщения и можно спамить»)
+  {
+    const card={handle:'TalkMate', region:'EU', rating:80, _ovr:80, nat:'de', tier:'ladder', event:'ladder', placement:null, rarity:'common', partner:null};
+    localStorage.setItem('fncsdraft_career', JSON.stringify({v:1,
+      player:{nick:'Talk', age:18, source:'rookie', country:'de', countryPing:15, closeRangeEdge:0, region:'EU', ovr:80, role:'roleIGL', attrs:ccRookieAttrs(80,'roleIGL'), ageEdge:0, photo:null, handle:null, cardRegion:null, nat:null},
+      career:{season:1, day:'2026-02-10', division:1, earnings:0, balance:0, reach:500, tokens:[], log:[], news:[]},
+      partner:{card:card, patience:40, since:'2026-01-01', dev:0}, partners:[{card:card, patience:40, since:'2026-01-01', dev:0}]}));
+    careerLoad();
+    const pat=()=>(careerMateRec()||{}).patience;
+    const p0=pat(), ok1=careerMateTalk('life'), p1=pat(), ok2=careerMateTalk('life'), p2=pat(), ok3=careerMateTalk('role'), p3=pat();
+    out.notes.talk={p0, p1, p2, p3, ok1, ok2, ok3, topics:careerMateTopics()};
+    check('первая «как сам?» — настрой вырос', ok1 && p1>p0, JSON.stringify(out.notes.talk));
+    check('вторая за день — не проходит', ok2===false && p2===p1);
+    check('другая тема в тот же день — можно, но без настроя', ok3===true && p3===p2);
+    check('о чём уже говорили — кнопки нет', careerMateTopics().indexOf('life')<0 && careerMateTopics().indexOf('role')<0, careerMateTopics().join(','));
+    CAREER.career.day=ccAddDays(CAREER.career.day, 1);
+    check('назавтра тема снова есть', careerMateTopics().indexOf('life')>=0, careerMateTopics().join(','));
+  }
 }catch(e){ out.fails.push(String(e.stack||e)); }
 document.getElementById('__out').textContent='@@B@@'+encodeURIComponent(JSON.stringify(out))+'@@E@@'; }, 500));<\/script>`;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'mtalk-')), tmp = path.join(dir, 'index.html');
