@@ -15,6 +15,12 @@ try{
     career:{season:1, day:'2026-02-10', division:1, earnings:0, balance:0, reach:500, tokens:[], log:[], news:[]},
     partner:{card:card, patience:40, since:'2026-01-01', dev:0}, partners:[{card:card, patience:40, since:'2026-01-01', dev:0}]}));
   careerLoad();
+  // с первого дня: напарник есть — есть и переписка с его приветствием (его слово 7.10)
+  careerSocialHTML();
+  const hi=careerDmFind('PinMate'); out.notes.hi=hi ? hi.msgs.map(m=>m.k) : null;
+  check('тиммейт с первого дня — переписка уже есть', hi && hi.msgs.length===1 && /^dmMateHi/.test(hi.msgs[0].k), JSON.stringify(out.notes.hi));
+  careerSocialHTML();
+  check('и приветствие не повторяется', careerDmFind('PinMate').msgs.length===1);
   const fan=careerDmThread({handle:'PinFan', ovr:null, roster:false, fan:true}); careerDmPush(fan, 'them', 'dmAgent', [10, 2]);
   const club=careerDmThread({handle:'PinClub', ovr:null, roster:false, org:true}); careerDmPush(club, 'them', 'dmAgent', [10, 2]);
   const mine=CC_AGENTS[0], other=CC_AGENTS[1];
