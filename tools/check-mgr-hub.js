@@ -608,6 +608,20 @@ const SECTIONS=[
     check('кап академий: письмо', (MGR.inbox||[]).some(m=>m.acadCup));
     mgrRenderHub('squad'); check('кап академий '+lang+': итог в плитке академии', /#\d+/.test(document.querySelector('#mgBody .mgs-acad').textContent));
   `},
+  {name:'сборные', once:true, code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    const day=mgrNationsDay();
+    check('сборные: день вызова в сезоне', day && day>=MGR.season0 && day<=ccYearTo(), day);
+    const f0=mgrFatigue();
+    const called=mgrNationsCall(day);
+    check('сборные: кто-то вызван', called.length>=1, JSON.stringify(called));
+    check('сборные: вызваны лучшие своей страны', called.every(x=>x.rank<=4));
+    check('сборные: усталость выросла', mgrFatigue()>f0);
+    check('сборные: письмо', (MGR.inbox||[]).some(m=>m.nat));
+    check('сборные: раз в сезон', mgrNationsCall(day).length===0);
+    mgrAdvanceTo(ccAddDays(day, 1));
+    check('сборные: шаг через день вызова не дублирует', (MGR.inbox||[]).filter(m=>m.nat).length===1);
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
