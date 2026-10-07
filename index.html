@@ -148796,7 +148796,9 @@ function ccMXWeekEnd(y, n, w){
   ccYearRows().forEach(r=>{ if(r[2].indexOf(ccMXRowId(y, n, 'W'+w+'R'))===0 && (!last || r[0]>last)) last=r[0]; });
   return last;
 }
-const ccMXKey=r=>r==='you' ? 'you' : JSON.stringify(r);
+// Команда — по никам, а не по всей записи: у игроков лестницы в записи рейтинг, и за неделю он сдвигается — одна команда
+// выглядела двумя и могла сесть в хиты дважды (сверка 7.10).
+const ccMXKey=r=>r==='you' ? 'you' : (Array.isArray(r) ? r : [r]).map(c=>hKey((c && c.h) || c)).sort().join('+');
 /* ПРЯМЫЕ МЕСТА НЕДЕЛИ (Liquipedia, его вопрос 7.10 «2019 по очкам за несколько недель?»): финал каждой недели сам
    отправляет свой верх в хиты — Season X «Top 8 trios», C2S1 «Top 10 squads», C2S2 «Top 20 duos», C2S3 «Top 50
    players», C2S4 «Top 15 teams»; уже прошедший отдаёт место следующему. Остаток хитов — «top performers that didn't
@@ -148806,6 +148808,25 @@ function ccMXSeriesAdd(m, ranked, rowOf, w){
   if(w!=null){ (m.wf=m.wf||{})[w]=ranked.map(rowOf); m.heats=null; }
   const n=ranked.length;
   ranked.forEach((t,i)=>{ const k=ccSeatKey(t); m.series[k]=(m.series[k]||0)+(n-i); if(!m.seriesRows[k]) m.seriesRows[k]=rowOf(t); });
+}
+/* ТАБЛИЦА НЕДЕЛИ = ФИНАЛ, ПОТОМ ПОЛУФИНАЛ (его вопрос 7.10 «а типо если не квал»). Очки недели — не только финалистам:
+   «top performers» Epic — это и полуфиналисты. Без этого не прошедший полуфинал игрок получал за неделю ноль, а мир —
+   очки. Финалисты — по месту в финале, дальше полуфиналисты по месту в полуфинале (Q.semi — твой настоящий
+   полуфинал, если ты его играл), до размера ccMXWeekSize. */
+function ccMXWeekCut(sp){ const R=sp.rounds.length, F=ccMXLobby(sp.size); return (R>1 && sp.rounds[R-2].cut) || F; }
+function ccMXWeekSize(sp){ const F=ccMXLobby(sp.size); return Math.max(F, (sp.heats||[]).length*F, 2*ccMXWeekCut(sp)); }
+function ccMXSemiTail(m, Q, keys, size, list){
+  ((Q && Q.semi)||[]).forEach(r=>{
+    if(list.length>=size) return;
+    const key=r==='you' ? m.youKey : ccSeatKey(ccMajorTeamFrom(r));
+    if(!key || keys.has(key)) return;
+    keys.add(key); list.push({key, row:r});
+  });
+}
+function ccMXSeriesAddList(m, list, w, nFinal){
+  (m.wf=m.wf||{})[w]=list.slice(0, nFinal).map(x=>x.row); m.heats=null;
+  const n=list.length;
+  list.forEach((x,i)=>{ m.series[x.key]=(m.series[x.key]||0)+(n-i); if(!m.seriesRows[x.key]) m.seriesRows[x.key]=x.row; });
 }
 function ccMXSeriesRank(m, key){
   const keys=Object.keys(m.series).sort((a,b)=>m.series[b]-m.series[a]);
@@ -148835,17 +148856,31 @@ function ccMXSettleWeek(m, w){
   /* И не меньше всего поля хитов: приглашённые — «top performers» сезона, их очки идут и из полуфиналов недели, а финал
      у C2S1/2020 — 25–100 команд. Без этого очки за недели были у 43 из 100 (C2S1), 58 из 200 (C2S2), 118 из 400 (C2S3),
      39 из 132 (C2S4), остальное поле хитов садилось без очков. Модель режима: таблица недели мира = полуфинал+финал. */
-  const size=Math.max(F, (R>1 && sp.rounds[R-2].cut) || F, (sp.heats||[]).length*F);
+  const size=ccMXWeekSize(sp), cut=ccMXWeekCut(sp);
   ccWithEventSize(sp.size, ()=>{
-    let room=(Q['r'+(R-1)]||[]).filter(r=>r!=='you').map(ccMajorTeamFrom);
-    if(room.length<size){
-      const seen=new Set(room.map(ccSeatKey));
-      ccM23World(size+Math.ceil(size/3), 'mx|'+m.y+'|'+m.n+'|'+w).forEach(t=>{ if(room.length>=size || seen.has(ccSeatKey(t))) return; seen.add(ccSeatKey(t)); room.push(t); });
+    let finals=(Q['r'+(R-1)]||[]).filter(r=>r!=='you').map(ccMajorTeamFrom), semis=null;
+    const seen=new Set(finals.map(ccSeatKey));
+    if(!finals.length && !Q.semi){
+      // Неделю не играл никто из людей: полуфинал мира (лобби по F), его верх — в финал.
+      /* Зал недели — не одни и те же каждую неделю: верхняя половина — сильнейшие, остальное — жребий недели из круга
+         втрое шире. Иначе в 2020 очки получали ровно 200/400 команд — ровно поле хитов, и проходил любой с очком. */
+      const wide=ccM23World(size*3, 'mx|'+m.y+'|'+m.n+'|'+w), half=Math.ceil(size/2), rnd=careerRng(ccHashStr('mxpool|'+m.season+'|'+m.y+'|'+m.n+'|'+w));
+      const rest=wide.slice(half);
+      for(let i=rest.length-1; i>0; i--){ const j=Math.floor(rnd()*(i+1)); const tmp=rest[i]; rest[i]=rest[j]; rest[j]=tmp; }
+      const pool=wide.slice(0, half).concat(rest).slice(0, size);
+      pool.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
+      ccWorldRun('mxs|'+m.season+'|'+m.y+'|'+m.n+'|'+w, ()=>splitIntoLobbies(pool, F).forEach(l=>simulateGames(l, sp.rounds[Math.max(0, R-2)].games, ccM24Points, CC_M24_KILL)));
+      semis=ccM24Rank(pool); finals=semis.slice(0, cut); finals.forEach(t=>seen.add(ccSeatKey(t)));
+    } else if(finals.length<cut){
+      ccM23World(cut+20, 'mx|'+m.y+'|'+m.n+'|'+w).forEach(t=>{ if(finals.length>=cut || seen.has(ccSeatKey(t))) return; seen.add(ccSeatKey(t)); finals.push(t); });
     }
-    room=room.slice(0, size);
-    room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
-    ccWorldRun('mxq|'+m.season+'|'+m.y+'|'+m.n+'|'+w, ()=>splitIntoLobbies(room, F).forEach(l=>simulateGames(l, last.games, ccM24Points, CC_M24_KILL)));
-    ccMXSeriesAdd(m, ccM24Rank(room), ccMajorSeatRow, w);
+    finals.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
+    ccWorldRun('mxq|'+m.season+'|'+m.y+'|'+m.n+'|'+w, ()=>splitIntoLobbies(finals, F).forEach(l=>simulateGames(l, last.games, ccM24Points, CC_M24_KILL)));
+    const fr=ccM24Rank(finals), list=fr.map(t=>({key:ccSeatKey(t), row:ccMajorSeatRow(t)})), keys=new Set(list.map(x=>x.key));
+    if(semis) semis.forEach(t=>{ const k=ccSeatKey(t); if(list.length>=size || keys.has(k)) return; keys.add(k); list.push({key:k, row:ccMajorSeatRow(t)}); });
+    else ccMXSemiTail(m, Q, keys, size, list);
+    if(list.length<size) ccM23World(size*2, 'mxt|'+m.y+'|'+m.n+'|'+w).forEach(t=>{ const k=ccSeatKey(t); if(list.length>=size || keys.has(k)) return; keys.add(k); list.push({key:k, row:ccMajorSeatRow(t)}); });
+    ccMXSeriesAddList(m, list, w, fr.length);
   });
   Q.done=true;
 }
@@ -149149,7 +149184,10 @@ async function ccMXRun(ev, sp, soloTeam){
             ranked.map(seedOf).filter(r=>r==='you' || !done.has(ccMXWcRowKey(r))).slice(0, spec.cut);
         }
         else {
-          ccMXSeriesAdd(m, ranked, seedOf, ev.w);
+          m.youKey=ccSeatKey(you);
+          const wl=ranked.map(t=>({key:ccSeatKey(t), row:seedOf(t)})), wk=new Set(wl.map(x=>x.key));
+          ccMXSemiTail(m, Q, wk, ccMXWeekSize(sp), wl);
+          ccMXSeriesAddList(m, wl, ev.w, ranked.length);
           /* Хиты берут верх серии: хитов × лобби (ccMXHeats). Карточка финала недели ставила «не
              прошёл» всегда — через неё шла только путёвка World Cup (его правка 29.09: «в финалах
              нет плашки, что квал в хиты»). В последнюю неделю место уже окончательное — «в хитах»,
@@ -149168,6 +149206,7 @@ async function ccMXRun(ev, sp, soloTeam){
         // Следующий раунд открытый — зал не нужен, только отметка «прошёл».
         const nextOpen=!!(sp.rounds[r] && sp.rounds[r].open);
         Q['r'+r]=nextOpen ? (through ? ['you'] : []) : ranked.slice(0, spec.cut).map(seedOf);
+        if(r===R-1 && sp.kind!=='wc'){ m.youKey=ccSeatKey(you); Q.semi=ranked.slice(0, ccMXWeekSize(sp)).map(seedOf); }
       }
       m.youKey=ccSeatKey(you);
       note = (r===R) ? (wc ? (through ? L().ccYrXWcIn(spec.cut) : L().ccRelFail(spec.cut))
