@@ -101323,7 +101323,9 @@ function buildBotLandingAssignment(bots, opts){
     const bookKey=(book && !t.isYou && !t.isRival) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;   // хеш: в кубке тысячи дуо, сейв не резиновый
     const booked=bookKey ? ccSeatZone(book.at[bookKey]) : null;
     const moving=booked ? ccDropBookMoves(bookKey) : false;
-    if(booked && !moving && (!CC_SEATS_REMIX || (zoneGroups.get(booked)||[]).length<bookCrowd) &&
+    // Плотность держится во ВСЕХ лобби (тестер 7.10: «баг не до конца пофиксился» — в финале FNCS без перемешивания
+    // хозяев одной точки по книге садилось 6–8: «там уже 6 команд — придётся победить всех»).
+    if(booked && !moving && (zoneGroups.get(booked)||[]).length<bookCrowd &&
        !(CC_SPOT_FEAR_MAP && (CC_SPOT_FEAR_MAP.get(booked)||0)>0) &&
        !(t._mgrDrop==='quiet' || t._mgrDrop==='hot')){
       t.landingZone=booked; t.landingResult=null; t.landingRival=null;
@@ -101339,7 +101341,7 @@ function buildBotLandingAssignment(bots, opts){
        следующий «дом» (дома — жирные точки, почти всегда занятые): иначе вместо одного
        неизбежного контеста получалось два. Книга не переписывается — в другом лобби он
        снова у себя. Замер career-drop-games-probe, поле 100 лобби по 50. */
-    const bumped=booked && !moving && CC_SEATS_REMIX && (zoneGroups.get(booked)||[]).length>=bookCrowd;
+    const bumped=booked && !moving && (zoneGroups.get(booked)||[]).length>=bookCrowd;
     if(bumped){
       let free=null, freeScore=-Infinity;
       ALL_LANDING_ZONES.forEach(z=>{
@@ -101437,6 +101439,41 @@ function buildBotLandingAssignment(bots, opts){
       t.landingZone=to; t.landingResult=null; t.landingRival=null;
       applyLandingPow(t, to.points);
       zoneGroups.set(to, [t]);
+      if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
+    }
+  }
+
+  /* И НЕ ТОЛПОЙ. Пустых коробок уже нет, а на одной стоит больше команд, чем плотность поля
+     (ceil(команд/коробок), не меньше двух), — лишний (гость раньше хозяина, слабый раньше сильного)
+     переходит в ближайшую коробку, где стоит меньше плотности. Тестер 7.10: «там уже 6 команд —
+     придётся победить всех». Сторож tools/check-drop-crowd.js. */
+  {
+    const keyOfT=t=>(book && !t.isYou && !t.isRival) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
+    const movable=t=>t && !t.isYou && !t.isRival && !t.isMate && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
+    const feared=z=>CC_SPOT_FEAR_MAP && (CC_SPOT_FEAR_MAP.get(z)||0)>0;
+    const d2=(a,b)=>((a.x||0)-(b.x||0))**2+((a.y||0)-(b.y||0))**2;
+    let total=0; zoneGroups.forEach(g=>{ total+=g.length; });
+    const dens=Math.max(2, Math.ceil(total/Math.max(1, ALL_LANDING_ZONES.length)));
+    for(let guard=0; guard<total; guard++){
+      const room=ALL_LANDING_ZONES.filter(z=>!feared(z) && (zoneGroups.get(z)||[]).length<dens);
+      if(!room.length) break;
+      let best=null;
+      zoneGroups.forEach((g, z)=>{
+        if(g.length<=dens) return;
+        g.filter(movable).forEach(t=>{
+          const k=keyOfT(t), owner=k && book && book.at[k]===ccSeatKeyOf(z);
+          const to=room.reduce((a,b)=>((zoneGroups.get(b)||[]).length<(zoneGroups.get(a)||[]).length || ((zoneGroups.get(b)||[]).length===(zoneGroups.get(a)||[]).length && d2(z,b)<d2(z,a))) ? b : a);
+          const cost=(owner ? 1e6 : 0)+((t.pow||0)+(t.closeEdge||0))*100+d2(z,to);
+          if(!best || cost<best.cost) best={t, from:z, to, cost};
+        });
+      });
+      if(!best) break;
+      const {t, from, to}=best;
+      zoneGroups.set(from, zoneGroups.get(from).filter(o=>o!==t));
+      t.landingZone=to; t.landingResult=null; t.landingRival=null;
+      applyLandingPow(t, to.points);
+      if(!zoneGroups.has(to)) zoneGroups.set(to, []);
+      zoneGroups.get(to).push(t);
       if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
     }
   }
