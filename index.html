@@ -155038,7 +155038,7 @@ function mgrOpenNew(year){
   const side='<div class="ch-subtabs mgn-side">'+sub(MGR_NEW_SIDE==='real', "MGR_NEW_SIDE='real';mgrOpenNew()", T9.real)+
     sub(MGR_NEW_SIDE==='own', "MGR_NEW_SIDE='own';mgrOpenNew()", T9.own)+'</div>';
   const tile=(c,i)=>'<div class="ch-tile mgn-club" data-i="'+i+'" onclick="mgrTake('+i+')">'+
-    '<div class="mgn-head"><span class="mg-logo">'+(typeof clubLogoHTML==='function' ? clubLogoHTML(c.name) : '')+'</span>'+
+    '<div class="mgn-head"><span class="mg-logo">'+mgrLogo(c.name, false)+'</span>'+
       '<span class="mgn-name"><b>'+esc(c.name)+'</b>'+mgrStarsHTML(mgrClubStars(c.avg))+'</span><b class="mgn-ovr">'+c.avg+'</b></div>'+
     '<div class="mgn-row"><em>'+esc(T9.transfer)+'</em><b>'+mgrMoney(c.budget.transfer)+'</b></div>'+
     '<div class="mgn-row"><em>'+esc(T9.wageCap)+'</em><b>'+mgrMoney(c.budget.wageCap)+' '+esc(T.month)+'</b></div>'+

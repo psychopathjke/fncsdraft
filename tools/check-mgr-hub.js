@@ -169,6 +169,25 @@ const SECTIONS=[
     check('входящие: точка на вкладке', !!document.querySelector('#mgTabs [data-tab="inbox"] .ch-dot'));
     check('входящие '+lang+': без undefined/NaN', !bad(B.innerHTML));
   `},
+  {name:'сезон', once:true, code:String.raw`
+    const season=async (label)=>{
+      let guard=0;
+      while(mgrEvents().length && guard++<120){ mgrSkip(); }
+      check(label+': дошёл до конца сезона', guard<120, String(guard));
+      mgrRenderHub('centre');
+      const B=document.getElementById('mgBody');
+      check(label+': Центр без плашки', !B.querySelector('.cc-ffo-err'), (B.querySelector('.cc-ffo-err')||{}).textContent);
+      check(label+': кнопка итогов', /mgrSeasonReview/.test((B.querySelector('.ch-play')||{getAttribute:()=>''}).getAttribute('onclick')||''));
+      for(const t of ['squad','transfers','inbox','club','tables']){ mgrRenderHub(t); check(label+': '+t+' в конце сезона', !B.querySelector('.cc-ffo-err') && !bad(B.innerHTML)); }
+      out.notes[label]={cash:MGR.club.cash, cap:MGR.club.wageCap, bill:mgrWageBill(), n:mgrAll().length, inbox:(MGR.inbox||[]).length};
+    };
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    await season('2024 EU настоящий');
+    localStorage.removeItem('fncsdraft_manager'); MGR=null; mgrLeave();
+    MGR_NEW_YEAR=2021; MGR_NEW_REGION='ME';
+    check('свой 2021 ME создан', mgrCreateOwn({name:'Desert Kings', color:'#ff5a5a', shape:'hex', region:'ME', tier:'rookie'})===true);
+    await season('2021 ME свой');
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
