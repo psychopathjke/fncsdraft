@@ -757,6 +757,26 @@ const SECTIONS=[
     check('напарник '+lang+': в составе с пометкой клуба', !!document.querySelector('#mgBody .mgs-guest') && document.getElementById('mgBody').textContent.indexOf(mgrOrgOf(g)||mgrT2().free)>=0, !!document.querySelector('#mgBody .mgs-guest')+' | '+(mgrOrgOf(g)||mgrT2().free)+' | '+JSON.stringify(t.guests)+' | '+mgrTeamSize(t));
     mgrGuestRemove(t.id, g.handle); check('напарник: убран', mgrTeamSize(t)===careerSquadSize()-1);
   `},
+  {name:'менеджер по трансферам', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    MGR.club.cash=1e7; MGR.club.transfer=1e7;
+    MGR_SUB.club='train'; mgrRenderHub('club');
+    const B=document.getElementById('mgBody');
+    check('агент '+lang+': настоящие менеджеры на выбор', CC_AGENTS.slice(0,5).every(a=>B.innerHTML.indexOf(esc(a.name))>=0));
+    const c=mgrMarketList().find(x=>mgrOrgOf(x));
+    MGR_NEG=null; mgrNegotiate(c.handle, false); const ask0=MGR_NEG && MGR_NEG.buyAsk, wage0=MGR_NEG && MGR_NEG.wageAsk; (document.getElementById('mgNeg')||{remove(){}}).remove(); MGR_NEG=null;
+    const top=CC_AGENTS.slice().sort((a,b)=>(b.x||0)-(a.x||0))[0];
+    const w0=mgrStaffWage();
+    mgrHirePerson('agent', top.name);
+    check('агент: нанят', (MGR.staffWho||{}).agent===top.name && mgrStaff('agent')===3, mgrStaff('agent'));
+    check('агент: ставка в штабе', mgrStaffWage()>w0);
+    check('агент: не ведёт соперника', !Object.values(MGR.rivals||{}).includes(top.name));
+    mgrNegotiate(c.handle, false);
+    check('агент: отступные ниже', MGR_NEG && MGR_NEG.buyAsk<ask0, ask0+' → '+(MGR_NEG && MGR_NEG.buyAsk));
+    check('агент: зарплата ниже', MGR_NEG && MGR_NEG.wageAsk<wage0, wage0+' → '+(MGR_NEG && MGR_NEG.wageAsk));
+    (document.getElementById('mgNeg')||{remove(){}}).remove(); MGR_NEG=null;
+    check('агент: сильнее соглашаются', mgrSignCap(true)===mgrSignCapBase(true)+3);
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');

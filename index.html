@@ -155342,7 +155342,7 @@ function mgrT9(){
     goals:'Цели совета', dev:'Развитие', devNone:'Рост виден раз в месяц', fatigue:'Усталость', news:'Новости клуба', toTables:'Трофеи и статистика', toTrain:'К тренировкам',
     role:'Роль', until:'Контракт', where:'Где играет', moveTo:'Перевести…',
     market:'Рынок', short:'Шортлист', deals:'Переговоры', shortEmpty:'Отметь игроков звёздочкой на рынке', dealsEmpty:'Переговоров и предложений нет', offersIn:'Предложения и просьбы', negNow:'Идут переговоры', open:'Открыть', wageRoom:'Свободно под потолком',
-    trait:'Характер', traits:{ambitious:'Амбициозный', loyal:'Лояльный', star:'Звезда', pro:'Профи', hothead:'Вспыльчивый', calm:'Спокойный'}, traitN:{ambitious:'просит больше, подиум поднимает мораль', loyal:'продлевается дешевле', star:'в запасе мораль падает', pro:'команда меньше устаёт', hothead:'химия с ним ниже', calm:'мораль не ниже −1'}, dlOffer:(c,h,s)=>'Дедлайн: '+c+' срочно предлагает '+s+' за '+h, dlAvail:(h,c,s)=>'Дедлайн: '+h+' ('+c+') срочно доступен — отступные '+s+' (−30%)', dlSoon:n=>n ? 'До дедлайна трансферов: '+n+' дн.' : 'Сегодня дедлайн трансферов!', natCall:l=>'Вызов в сборные: '+l, acadCup:(p,h)=>'Кап академий: #'+p+' из 32'+(h ? ' — '+h+' прибавил' : ''), lastCup:'Последний кап академий', fReg:'Регион', fNat:'Любая страна', fOmin:'Рейтинг от', fOmax:'Рейтинг до', fPmin:'Потенциал от', fClub:'Любой клуб', sFit:'Под уровень клуба', sOvr:'По рейтингу', sPot:'По потенциалу', sAge:'Моложе', sWage:'Дешевле зарплата', sBuyout:'Дешевле отступные', fReset:'Сбросить фильтры', fFound:n=>'Найдено: '+n, fNone:'Никого — ослабь фильтры', guest:'Гость', guestOut:'Убрать из состава', guestAdd:'Напарник из другой организации', guestPick:'Выбрать (★ — его настоящий тиммейт)', teamCoach:'Тренер состава', noCoach:'Без личного тренера (главный)', mail:'Почта', feed:'Лента клуба', feedEmpty:'Постов пока нет', post:{sign:d=>'Добро пожаловать, '+d.h+'! 🤝', sell:d=>d.h+' переходит'+(d.club ? ' в '+d.club : '')+'. Спасибо за всё!', night:d=>d.ev+': лучшее место команды — #'+d.place, award:d=>'🏆 '+d.text, creator:d=>d.h+' теперь с нами! 🎥', rumor:d=>'Слух: '+d.club+' интересуется '+d.h+' 👀', deadline:d=>'⏰ Дедлайн трансферов! Последний день окна', retire:d=>d.h+' завершает карьеру. Легенда клуба'}, retired:(h,a)=>h+' завершил карьеру ('+a+' лет)', creators:'Криэйторы', crNet:'чистыми', crFee:'Ставка', crInc:'Доход', crSign:'Подписать', crDrop:'Расторгнуть', crNo:n=>n+': «пока не наш уровень» — нужна репутация повыше', hire:'Нанять', train:'Тренировки и штаб', base:'База', sponsor:'Спонсор', press:'Пресса и события', stats:'Статистика', trophies:'Трофеи', managers:'Менеджеры',
+    trait:'Характер', traits:{ambitious:'Амбициозный', loyal:'Лояльный', star:'Звезда', pro:'Профи', hothead:'Вспыльчивый', calm:'Спокойный'}, traitN:{ambitious:'просит больше, подиум поднимает мораль', loyal:'продлевается дешевле', star:'в запасе мораль падает', pro:'команда меньше устаёт', hothead:'химия с ним ниже', calm:'мораль не ниже −1'}, dlOffer:(c,h,s)=>'Дедлайн: '+c+' срочно предлагает '+s+' за '+h, dlAvail:(h,c,s)=>'Дедлайн: '+h+' ('+c+') срочно доступен — отступные '+s+' (−30%)', dlSoon:n=>n ? 'До дедлайна трансферов: '+n+' дн.' : 'Сегодня дедлайн трансферов!', natCall:l=>'Вызов в сборные: '+l, acadCup:(p,h)=>'Кап академий: #'+p+' из 32'+(h ? ' — '+h+' прибавил' : ''), lastCup:'Последний кап академий', fReg:'Регион', fNat:'Любая страна', fOmin:'Рейтинг от', fOmax:'Рейтинг до', fPmin:'Потенциал от', fClub:'Любой клуб', sFit:'Под уровень клуба', sOvr:'По рейтингу', sPot:'По потенциалу', sAge:'Моложе', sWage:'Дешевле зарплата', sBuyout:'Дешевле отступные', fReset:'Сбросить фильтры', fFound:n=>'Найдено: '+n, fNone:'Никого — ослабь фильтры', guest:'Гость', guestOut:'Убрать из состава', guestAdd:'Напарник из другой организации', guestPick:'Выбрать (★ — его настоящий тиммейт)', sAgent:'Менеджер по трансферам', sAgentN:'договаривается с клубами и игроками: дешевле отступные и зарплаты, соглашаются сильнее', teamCoach:'Тренер состава', noCoach:'Без личного тренера (главный)', mail:'Почта', feed:'Лента клуба', feedEmpty:'Постов пока нет', post:{sign:d=>'Добро пожаловать, '+d.h+'! 🤝', sell:d=>d.h+' переходит'+(d.club ? ' в '+d.club : '')+'. Спасибо за всё!', night:d=>d.ev+': лучшее место команды — #'+d.place, award:d=>'🏆 '+d.text, creator:d=>d.h+' теперь с нами! 🎥', rumor:d=>'Слух: '+d.club+' интересуется '+d.h+' 👀', deadline:d=>'⏰ Дедлайн трансферов! Последний день окна', retire:d=>d.h+' завершает карьеру. Легенда клуба'}, retired:(h,a)=>h+' завершил карьеру ('+a+' лет)', creators:'Криэйторы', crNet:'чистыми', crFee:'Ставка', crInc:'Доход', crSign:'Подписать', crDrop:'Расторгнуть', crNo:n=>n+': «пока не наш уровень» — нужна репутация повыше', hire:'Нанять', train:'Тренировки и штаб', base:'База', sponsor:'Спонсор', press:'Пресса и события', stats:'Статистика', trophies:'Трофеи', managers:'Менеджеры',
     scouting:'Скаутинг', scouts:'Скауты', reports:'Отчёты скаутов', noScouts:'Скаутов нет — найми, и они поедут по регионам', noReports:'Отчёты приходят раз в неделю', fire:'Уволить', anyRole:'Любая роль', anyAge:'Любой возраст', ageTo:n=>'до '+n+' лет', anyOvr:'Любой рейтинг', now:'Сейчас', potW:'Потенциал', views:n=>'отчётов: '+n, scoutLv:[null,'Скаут','Опытный скаут','Главный скаут'], scoutRep:(r,l)=>'Скаут ('+r+'): '+l,
     youth:'Молодёжь', yscout:'Молодёжный скаут', yHire:'Нанять молодёжного скаута', noYScouts:'Молодёжных скаутов нет', found:'Найденные таланты', noYouth:'Находки приходят раз в месяц', toAcad:'В академию', age:n=>n+' лет', youthRep:l=>'Молодёжный скаут нашёл: '+l,
     plan:'План развития', planRole:'Роль-цель', planNone:'Без смены роли', planFocus:'Упор в рост', planOn:'Вкл', planOff:'Выкл', planLeft:n=>'осталось '+n+' дн.', planDone:(h,r)=>h+' переучился: теперь '+r,
@@ -155361,7 +155361,7 @@ function mgrT9(){
     goals:'Board goals', dev:'Development', devNone:'Growth shows once a month', fatigue:'Fatigue', news:'Club news', toTables:'Trophies and stats', toTrain:'To training',
     role:'Role', until:'Contract', where:'Plays in', moveTo:'Move to…',
     market:'Market', short:'Shortlist', deals:'Negotiations', shortEmpty:'Star players on the market to shortlist them', dealsEmpty:'No talks or offers', offersIn:'Offers and requests', negNow:'Talks in progress', open:'Open', wageRoom:'Room under the cap',
-    trait:'Personality', traits:{ambitious:'Ambitious', loyal:'Loyal', star:'Star', pro:'Professional', hothead:'Hothead', calm:'Calm'}, traitN:{ambitious:'asks for more, a podium lifts morale', loyal:'renews cheaper', star:'loses morale on the bench', pro:'team tires less', hothead:'lower chemistry with him', calm:'morale never below −1'}, dlOffer:(c,h,s)=>'Deadline: '+c+' urgently offer '+s+' for '+h, dlAvail:(h,c,s)=>'Deadline: '+h+' ('+c+') is available now — buyout '+s+' (−30%)', dlSoon:n=>n ? 'Transfer deadline in '+n+' days' : 'Transfer deadline day!', natCall:l=>'National team call-ups: '+l, acadCup:(p,h)=>'Academy cup: #'+p+' of 32'+(h ? ' — '+h+' improved' : ''), lastCup:'Last academy cup', fReg:'Region', fNat:'Any country', fOmin:'Rating from', fOmax:'Rating to', fPmin:'Potential from', fClub:'Any club', sFit:'Fits the club', sOvr:'By rating', sPot:'By potential', sAge:'Youngest', sWage:'Cheapest wage', sBuyout:'Cheapest buyout', fReset:'Reset filters', fFound:n=>'Found: '+n, fNone:'Nobody — loosen the filters', guest:'Guest', guestOut:'Remove from the team', guestAdd:'Teammate from another org', guestPick:'Pick (★ — real teammate)', teamCoach:'Team coach', noCoach:'No team coach (head coach)', mail:'Mail', feed:'Club feed', feedEmpty:'No posts yet', post:{sign:d=>'Welcome, '+d.h+'! 🤝', sell:d=>d.h+' moves on'+(d.club ? ' to '+d.club : '')+'. Thank you for everything!', night:d=>d.ev+': best team finish — #'+d.place, award:d=>'🏆 '+d.text, creator:d=>d.h+' joins us! 🎥', rumor:d=>'Rumour: '+d.club+' are interested in '+d.h+' 👀', deadline:d=>'⏰ Transfer deadline day! Last day of the window', retire:d=>d.h+' retires. A club legend'}, retired:(h,a)=>h+' retired (age '+a+')', creators:'Creators', crNet:'net', crFee:'Fee', crInc:'Income', crSign:'Sign', crDrop:'Release', crNo:n=>n+': "not our level yet" — needs more reputation', hire:'Hire', train:'Training and staff', base:'Facilities', sponsor:'Sponsor', press:'Press and events', stats:'Stats', trophies:'Trophies', managers:'Managers',
+    trait:'Personality', traits:{ambitious:'Ambitious', loyal:'Loyal', star:'Star', pro:'Professional', hothead:'Hothead', calm:'Calm'}, traitN:{ambitious:'asks for more, a podium lifts morale', loyal:'renews cheaper', star:'loses morale on the bench', pro:'team tires less', hothead:'lower chemistry with him', calm:'morale never below −1'}, dlOffer:(c,h,s)=>'Deadline: '+c+' urgently offer '+s+' for '+h, dlAvail:(h,c,s)=>'Deadline: '+h+' ('+c+') is available now — buyout '+s+' (−30%)', dlSoon:n=>n ? 'Transfer deadline in '+n+' days' : 'Transfer deadline day!', natCall:l=>'National team call-ups: '+l, acadCup:(p,h)=>'Academy cup: #'+p+' of 32'+(h ? ' — '+h+' improved' : ''), lastCup:'Last academy cup', fReg:'Region', fNat:'Any country', fOmin:'Rating from', fOmax:'Rating to', fPmin:'Potential from', fClub:'Any club', sFit:'Fits the club', sOvr:'By rating', sPot:'By potential', sAge:'Youngest', sWage:'Cheapest wage', sBuyout:'Cheapest buyout', fReset:'Reset filters', fFound:n=>'Found: '+n, fNone:'Nobody — loosen the filters', guest:'Guest', guestOut:'Remove from the team', guestAdd:'Teammate from another org', guestPick:'Pick (★ — real teammate)', sAgent:'Transfer manager', sAgentN:'negotiates with clubs and players: cheaper buyouts and wages, stronger players agree', teamCoach:'Team coach', noCoach:'No team coach (head coach)', mail:'Mail', feed:'Club feed', feedEmpty:'No posts yet', post:{sign:d=>'Welcome, '+d.h+'! 🤝', sell:d=>d.h+' moves on'+(d.club ? ' to '+d.club : '')+'. Thank you for everything!', night:d=>d.ev+': best team finish — #'+d.place, award:d=>'🏆 '+d.text, creator:d=>d.h+' joins us! 🎥', rumor:d=>'Rumour: '+d.club+' are interested in '+d.h+' 👀', deadline:d=>'⏰ Transfer deadline day! Last day of the window', retire:d=>d.h+' retires. A club legend'}, retired:(h,a)=>h+' retired (age '+a+')', creators:'Creators', crNet:'net', crFee:'Fee', crInc:'Income', crSign:'Sign', crDrop:'Release', crNo:n=>n+': "not our level yet" — needs more reputation', hire:'Hire', train:'Training and staff', base:'Facilities', sponsor:'Sponsor', press:'Press and events', stats:'Stats', trophies:'Trophies', managers:'Managers',
     scouting:'Scouting', scouts:'Scouts', reports:'Scout reports', noScouts:'No scouts — hire one and send them out', noReports:'Reports arrive once a week', fire:'Fire', anyRole:'Any role', anyAge:'Any age', ageTo:n=>'up to '+n, anyOvr:'Any rating', now:'Now', potW:'Potential', views:n=>'reports: '+n, scoutLv:[null,'Scout','Senior scout','Chief scout'], scoutRep:(r,l)=>'Scout ('+r+'): '+l,
     youth:'Youth', yscout:'Youth scout', yHire:'Hire a youth scout', noYScouts:'No youth scouts', found:'Talents found', noYouth:'Finds arrive once a month', toAcad:'To academy', age:n=>'age '+n, youthRep:l=>'Youth scout found: '+l,
     plan:'Development plan', planRole:'Target role', planNone:'Keep role', planFocus:'Growth focus', planOn:'On', planOff:'Off', planLeft:n=>n+' days left', planDone:(h,r)=>h+' retrained: now '+r,
@@ -156548,7 +156548,7 @@ function mgrT4(){
 }
 const MGR_STAFF_COST=[0, 1500, 3500, 7000];
 function mgrStaff(k){ return ((MGR.staff||{})[k])||0; }
-function mgrStaffWage(){ return ['coach','analyst','psych','smm'].reduce((s,k)=>s+(mgrStaff(k) ? (((MGR.staffCost||{})[k])||MGR_STAFF_COST[mgrStaff(k)]) : 0), 0)+mgrScoutWage()+mgrTeamCoachWage(); }
+function mgrStaffWage(){ return ['coach','analyst','psych','smm','agent'].reduce((s,k)=>s+(mgrStaff(k) ? (((MGR.staffCost||{})[k])||MGR_STAFF_COST[mgrStaff(k)]) : 0), 0)+mgrScoutWage()+mgrTeamCoachWage(); }
 function mgrHire(k, t){ MGR.staff=MGR.staff||{}; MGR.staff[k]=Math.max(0, Math.min(3, t)); if(MGR.staffWho) delete MGR.staffWho[k]; if(MGR.staffCost) delete MGR.staffCost[k]; mgrSave(); mgrOpenHub(); }
 
 // ---- 3) Потенциал: скрытый потолок, у молодых/слабых шире. Вилка без скаута.
@@ -156729,15 +156729,15 @@ function mgrNegotiate(h, acad){
   if(mgrOwned().some(x=>hKey(x)===hKey(h))){ mgrToast(T2.already); return; }
   const corg=mgrOrgOf(c), owned=corg && corg!==MGR.club.name;
   if(owned && !mgrWindowNow()){ mgrToast(T4.outWindow); return; }
-  const r=ccCardOvr(c)||0, cap=(MGR.club.avg||70)+(corg ? 4 : 6)+(MGR.club.rep>70 ? 2 : 0);
+  const r=ccCardOvr(c)||0, cap=mgrSignCap(!!corg);
   if(!acad && r>cap){ mgrToast(T2.tooGood(c.handle)); return; }
   if(acad && (MGR.academy||[]).length>=MGR_ACAD_MAX){ mgrToast(mgrT().acadFull); return; }
   if(acad && r>75){ mgrToast(mgrT().acadOnly); return; }
   const rnd=careerRng(ccHashStr('mgrneg|'+hKey(h)+'|'+CAREER.career.day));
   const base=mgrSalary(c)*(acad ? MGR_ACAD_WAGE : 1);
   MGR_NEG={h:c.handle, acad:!!acad, owned, club:corg, step:owned ? 'club' : 'player',
-    buyAsk:owned ? Math.round(mgrSalary(c)*8*(0.85+rnd()*0.5)*((MGR.dlDeal||{})[hKey(c)]||1)/500)*500 : 0, buyCounter:false, buyDeal:0,
-    wageAsk:Math.max(100, Math.round(base*(0.95+rnd()*0.3)/50)*50), wageCounter:false, years:2, clause:true, msg:''};
+    buyAsk:owned ? Math.round(mgrSalary(c)*8*(0.85+rnd()*0.5)*((MGR.dlDeal||{})[hKey(c)]||1)*(1-0.05*mgrStaff('agent'))/500)*500 : 0, buyCounter:false, buyDeal:0,
+    wageAsk:Math.max(100, Math.round(base*(0.95+rnd()*0.3)*(1-0.03*mgrStaff('agent'))/50)*50), wageCounter:false, years:2, clause:true, msg:''};
   mgrNegDraw();
 }
 function mgrNegDraw(){
@@ -156774,14 +156774,14 @@ function mgrNegOffer(){
   if(n.step==='club'){
     const v=Number((document.getElementById('mgNegBuy')||{}).value)||0;
     if(v>=n.buyAsk){ if(MGR.club.cash<v){ n.msg=mgrT2().noMoney; mgrNegDraw(); return; } n.buyDeal=v; n.step='player'; n.msg=T4.accepted; mgrNegDraw(); return; }
-    if(!n.buyCounter && v>=n.buyAsk*0.75){ n.buyAsk=Math.round((n.buyAsk+v)/2/500)*500; n.buyCounter=true; n.msg=T4.counter(mgrMoney(n.buyAsk)); mgrNegDraw(); return; }
+    if(!n.buyCounter && v>=n.buyAsk*(0.75-0.05*mgrStaff('agent'))){ n.buyAsk=Math.round((n.buyAsk+v)/2/500)*500; n.buyCounter=true; n.msg=T4.counter(mgrMoney(n.buyAsk)); mgrNegDraw(); return; }
     n.msg=T4.refused; MGR_NEG.step='closed'; mgrNegDraw(); setTimeout(()=>{ const b=document.getElementById('mgNeg'); if(b) b.remove(); MGR_NEG=null; }, 1400); return;
   }
   if(n.step!=='player') return;
   const w=Number((document.getElementById('mgNegWage')||{}).value)||0;
   const need=Math.round(n.wageAsk*(n.years===3 ? 0.95 : n.years===1 ? 1.08 : 1)*(n.clause ? 1 : 1.1));   // без отступных просит больше
   if(w>=need){ mgrSignFinal(n, w); return; }
-  if(!n.wageCounter && w>=need*0.85){ n.wageAsk=Math.round((need+w)/2/50)*50; n.wageCounter=true; n.msg=T4.counter(mgrMoney(n.wageAsk)); mgrNegDraw(); return; }
+  if(!n.wageCounter && w>=need*(0.85-0.03*mgrStaff('agent'))){ n.wageAsk=Math.round((need+w)/2/50)*50; n.wageCounter=true; n.msg=T4.counter(mgrMoney(n.wageAsk)); mgrNegDraw(); return; }
   n.msg=T4.refused; n.step='closed'; mgrNegDraw(); setTimeout(()=>{ const b=document.getElementById('mgNeg'); if(b) b.remove(); MGR_NEG=null; }, 1400);
 }
 function mgrSignFinal(n, wage){
@@ -156819,35 +156819,51 @@ function mgrNightPow(){   // прибавка/штраф силы на вече�
    Те же люди, что в карьере (CC_COACHES, CC_SMM): фото, ник, условия. Уровень для эффектов штаба
    (mgrStaff: 1–3) — по их месту в своём списке: у коучей — треть списка, у SMM — охват в X (ccSmmPull).
    Ставка — его собственная (коуч — cost строки, SMM — ccSmmTermsOf). */
-const MGR_PERSON_LIST={coach:()=>CC_COACHES, smm:()=>CC_SMM};
-function mgrPersonCost(k, p){ return k==='smm' ? ccSmmTermsOf(p).cost : (p.cost||MGR_STAFF_COST[2]); }
+/* МЕНЕДЖЕР ПО ТРАНСФЕРАМ (его слово 7.10: «у организации ещё же менеджеры должны быть, чтоб они
+   договаривались с игроками»): настоящие менеджеры/агенты сцены из карьеры (CC_AGENTS — ник, X, фото,
+   подписчики). Уровень — по охвату в X (8000+ — 3, 2500+ — 2), ставка $1500/$3000/$5000. В переговорах:
+   отступные ×(1−0.05·ур.), зарплата ×(1−0.03·ур.), клуб и игрок соглашаются на встречное с меньшей
+   суммы, и игроки на ур. сильнее идут в клуб. Нанятый уходит из менеджеров клубов-соперников. */
+const MGR_PERSON_LIST={coach:()=>CC_COACHES, smm:()=>CC_SMM, agent:()=>(typeof CC_AGENTS!=='undefined' ? CC_AGENTS : [])};
+const MGR_AGENT_COST=[0, 1500, 3000, 5000];
+function mgrPid(p){ return p ? (p.id||p.name) : null; }
+function mgrPersonCost(k, p){ return k==='smm' ? ccSmmTermsOf(p).cost : k==='agent' ? MGR_AGENT_COST[mgrPersonTier(k, p)] : (p.cost||MGR_STAFF_COST[2]); }
 function mgrPersonTier(k, p){
   if(k==='smm'){ const x=ccSmmPull(p.x); return x==null ? 1 : x>=0.66 ? 3 : x>=0.33 ? 2 : 1; }
+  if(k==='agent'){ const x=p.x||0; return x>=8000 ? 3 : x>=2500 ? 2 : 1; }
   const list=CC_COACHES, i=Math.max(0, list.indexOf(p)), n=list.length;
   return i<n/3 ? 3 : i<2*n/3 ? 2 : 1;
 }
 function mgrHirePerson(k, id){
   MGR.staff=MGR.staff||{}; MGR.staffWho=MGR.staffWho||{}; MGR.staffCost=MGR.staffCost||{};
-  const p=id ? (MGR_PERSON_LIST[k]()||[]).find(x=>x.id===id) : null;
+  const p=id ? (MGR_PERSON_LIST[k]()||[]).find(x=>mgrPid(x)===id) : null;
   if(!p){ MGR.staff[k]=0; delete MGR.staffWho[k]; delete MGR.staffCost[k]; mgrSave(); return; }
-  if(k==='coach' && MGR.teamCoach) Object.keys(MGR.teamCoach).forEach(t=>{ if(MGR.teamCoach[t]===p.id) delete MGR.teamCoach[t]; });   // из состава — в главные
-  MGR.staff[k]=mgrPersonTier(k, p); MGR.staffWho[k]=p.id; MGR.staffCost[k]=mgrPersonCost(k, p);
+  if(k==='coach' && MGR.teamCoach) Object.keys(MGR.teamCoach).forEach(t=>{ if(MGR.teamCoach[t]===mgrPid(p)) delete MGR.teamCoach[t]; });   // из состава — в главные
+  if(k==='agent' && MGR.rivals){   // нанятый уходит из клуба-соперника — там его заменяет другой из сцены
+    const used=new Set(Object.values(MGR.rivals).concat([p.name]));
+    const free=mgrAgentPool().filter(n=>!used.has(n));
+    Object.keys(MGR.rivals).forEach(o=>{ if(MGR.rivals[o]===p.name) MGR.rivals[o]=free.shift()||null; });
+  }
+  MGR.staff[k]=mgrPersonTier(k, p); MGR.staffWho[k]=mgrPid(p); MGR.staffCost[k]=mgrPersonCost(k, p);
   mgrSave();
 }
 function mgrPersonsHTML(k){
   const T4=mgrT4(), T9=mgrT9(), who=(MGR.staffWho||{})[k];
   return '<div class="mgf-people">'+(MGR_PERSON_LIST[k]()||[]).map(p=>{
-    const on=who===p.id, tier=mgrPersonTier(k, p);
+    const id=mgrPid(p), on=who===id, tier=mgrPersonTier(k, p);
     return '<div class="mgf-person'+(on ? ' on' : '')+'"><img src="photos/'+esc(p.photo||'')+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">'+
       '<span><b>'+esc(p.name)+'</b><small>@'+esc(p.at||'')+(p.reg ? ' · '+esc(p.reg) : '')+(p.x ? ' · '+ccNum(p.x)+' X' : '')+'</small>'+
       '<small>'+esc(T4.tier(tier))+' · '+mgrMoney(mgrPersonCost(k, p))+' '+esc(mgrT().month)+'</small></span>'+
       (on ? '<button class="hg-go mgs-bad" onclick="mgrHirePerson(\''+k+'\', null);mgrRenderHub()">'+esc(T4.fire)+'</button>'
-          : '<button class="hg-go" onclick="mgrHirePerson(\''+k+'\', \''+esc(p.id)+'\');mgrRenderHub()">'+esc(T9.hire)+'</button>')+'</div>'; }).join('')+'</div>';
+          : '<button class="hg-go" onclick="mgrHirePerson(\''+k+'\', \''+esc(String(id).replace(/'/g, ''))+'\');mgrRenderHub()">'+esc(T9.hire)+'</button>')+'</div>'; }).join('')+'</div>';
 }
+// Потолок рейтинга, кого клуб может позвать: уровень клуба +4 (у чужого клуба) / +6 (свободный), репутация, менеджер.
+function mgrSignCapBase(owned){ return (MGR.club.avg||70)+(owned ? 4 : 6)+((MGR.club.rep||0)>70 ? 2 : 0); }
+function mgrSignCap(owned){ return mgrSignCapBase(owned)+mgrStaff('agent'); }
 function mgrTrainHTML(){
   const T4=mgrT4(), t=mgrTrain(), f=mgrFatigue();
   const opts=[['scrims',T4.trScrims,T4.trScrimsN],['creative',T4.trCreative,T4.trCreativeN],['vod',T4.trVod,T4.trVodN],['rest',T4.trRest,T4.trRestN]];
-  const staff=[['coach',T4.sCoach,T4.sCoachN],['analyst',T4.sAnalyst,T4.sAnalystN],['psych',T4.sPsych,T4.sPsychN],['smm',T4.sSmm,T4.sSmmN]];
+  const staff=[['coach',T4.sCoach,T4.sCoachN],['agent',mgrT9().sAgent,mgrT9().sAgentN],['analyst',T4.sAnalyst,T4.sAnalystN],['psych',T4.sPsych,T4.sPsychN],['smm',T4.sSmm,T4.sSmmN]];
   return '<h3 class="mg-sub">'+T4.trainH+'</h3><div class="mg-train">'+opts.map(([k,l,nn])=>'<button class="mg-trb'+(t===k?' on':'')+'" onclick="MGR.train=\''+k+'\';mgrSave();mgrOpenHub()"><b>'+l+'</b><small>'+nn+'</small></button>').join('')+'</div>'+
     '<div class="mg-fat"><em>'+T4.fatigue+' '+f+'%</em><i style="width:'+f+'%"></i></div>'+
     '<h3 class="mg-sub">'+T4.staff+'</h3><div class="mg-clubs">'+staff.map(([k,l,nn])=>{ const lv=mgrStaff(k);
