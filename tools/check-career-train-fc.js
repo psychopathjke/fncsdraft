@@ -73,13 +73,16 @@ const BOOT = `
     out.steps.push('карта: '+(m&&m.name)+' · '+(m&&m.code)+' · $'+paid);
 
     // ---- Экраны.
-    careerRenderHub('centre');
-    const body=document.getElementById('chBody');
-    check('на главной плитка «Цели»', !!body.querySelector('.hg-tile'));
-    check('на главной плитка «Развитие» с Ареной', !!body.querySelector('.hd-tile') && body.innerHTML.indexOf('Hype')>=0);
+    // «Цели» и «Развитие» живут во вкладке «Тренировка» (CH_TAB train), смена ника и фото — в «Профиле» (me).
+    careerRenderHub('train');
+    let body=document.getElementById('chBody');
+    check('в «Тренировке» плитка «Цели»', !!body.querySelector('.hg-tile'));
+    // Арену с Hype убрали (выше: «функций Арены и ранга нет») — плитка «Развитие» без неё.
+    check('в «Тренировке» плитка «Развитие»', !!body.querySelector('.hd-tile'));
+    careerRenderHub('centre'); body=document.getElementById('chBody');
     check('профиля соцсети на главной больше нет', !body.querySelector('.ch-tile-me'));
-    careerRenderHub('log');
-    check('ник и фото меняются во вкладке «Профиль»', !!document.querySelector('#chBody .ch-tile-me'));
+    careerRenderHub('me');
+    check('ник и фото меняются во вкладке «Профиль»', !!document.querySelector('#chBody .ch-me-edit') && !!document.getElementById('chPhotoInput'));
     careerRenderHub('train');
     check('полоса недели: семь дней', document.querySelectorAll('#chBody .tw-day').length===7);
     check('в полосе сегодня видны сделанные занятия', !!document.querySelector('#chBody .tw-day.now .tw-did i'));

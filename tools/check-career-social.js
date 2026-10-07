@@ -99,6 +99,8 @@ const BOOT = `
 
     // 4. Анкета в поиске дуо и закрытая кнопка, когда не проходишь по PR.
     ccDuoFindOpen();
+    // Список — первые 120, по умолчанию ближайшие по рейтингу: про-игрока новичок находит по нику, как в жизни.
+    CC_DUO_Q = who.handle; ccDuoFindRender();
     var find = document.getElementById('duoFindBody').innerHTML;
     out.steps.push('в поиске: анкета=' + (find.indexOf('cc-buy-ad') >= 0) +
                    ' отказ=' + (find.indexOf('cc-ad-no') >= 0));
