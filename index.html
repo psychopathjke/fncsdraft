@@ -112424,7 +112424,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='90a98eef';
+const CC_BUILD='90a9ca93';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -157690,7 +157690,7 @@ function mgrNatJobOffer(day){
   const nat=mgrNatOfClub(); if(!nat || mgrNatPool(nat).length<MGR_NAT_SIZE) return;
   MGR.natJob[MGR.year]={nat, state:'offer', squad:[]};
   MGR.inbox=MGR.inbox||[];
-  MGR.inbox.unshift({id:'nj'+MGR.year, day, kind:'natjob', nat, text:mgrT10().natOffer(nat, ccDayLabel(mgrNationsDay()))});
+  MGR.inbox.unshift({id:'nj'+MGR.year, day, kind:'natjob', country:nat, text:mgrT10().natOffer(nat, ccDayLabel(mgrNationsDay()))});
 }
 function mgrNatPickOpen(){
   const j=mgrNatJob(); if(!j || j.state!=='yes' || j.res) return;
@@ -157742,7 +157742,7 @@ function mgrNatJobPlay(day){
   j.squad.forEach(x=>{ if(own.has(hKey(x.h))) mgrMoraleAdd(x.h, place<=8 ? 2 : 0); });
   j.res={place, of, fee, day};
   const T=mgrT10(), txt=T.natResult(j.nat, place, of, mgrMoney(fee))+(j.squad.some(x=>x.fed) ? '. '+T.natFilled : '');
-  MGR.inbox=MGR.inbox||[]; MGR.inbox.unshift({id:'njr'+MGR.year, day, kind:'info', done:'info', nat:true, text:txt});
+  MGR.inbox=MGR.inbox||[]; MGR.inbox.unshift({id:'njr'+MGR.year, day, kind:'info', done:'info', natjob:true, text:txt});
   if(typeof mgrFeedPost==='function') mgrFeedPost('award', {text:txt});
 }
 function mgrDeadlineSoon(){ const w=mgrWindowNow(); if(!w) return null; const left=ccDaysBetween(CAREER.career.day, w.to); return left<=3 ? {left, to:w.to} : null; }
