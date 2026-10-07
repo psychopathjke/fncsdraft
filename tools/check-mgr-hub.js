@@ -182,7 +182,15 @@ const SECTIONS=[
       out.notes[label]={cash:MGR.club.cash, cap:MGR.club.wageCap, bill:mgrWageBill(), n:mgrAll().length, inbox:(MGR.inbox||[]).length};
     };
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    // Всё из части 2 включено: скаут в чужом регионе, молодёжный скаут, план, аренда.
+    mgrScoutHire(3); mgrScoutSet(MGR.scouts[0].id, 'region', 'BR'); mgrYScoutHire('de');
+    mgrPlanSet(mgrAll()[0], 'focus', true); mgrPlanSet(mgrAll()[0], 'role', 'roleFRG');
+    if((MGR.bench||[]).length) mgrLoan(MGR.bench[0]);
     await season('2024 EU настоящий');
+    check('сезон: отчёты скаута', Object.keys(MGR.srep||{}).length>=5, String(Object.keys(MGR.srep||{}).length));
+    check('сезон: молодёжь найдена', (MGR.ylist||[]).length>=5, String((MGR.ylist||[]).length));
+    check('сезон: аренда вернулась', !(MGR.loanOut||[]).length);
+    check('сезон: игроки месяца', (MGR.awards||[]).filter(x=>x.kind==='pom').length>=0);
     localStorage.removeItem('fncsdraft_manager'); MGR=null; mgrLeave();
     MGR_NEW_YEAR=2021; MGR_NEW_REGION='ME';
     check('свой 2021 ME создан', mgrCreateOwn({name:'Desert Kings', color:'#ff5a5a', shape:'hex', region:'ME', tier:'rookie'})===true);
@@ -261,12 +269,16 @@ const SECTIONS=[
     mgrScoutSet(sc.id, 'min', '99'); mgrScoutWeek(ccAddDays(d, 7));
     check('скауты: пустое задание без исключения', true);
     mgrScoutFire(sc.id); check('скауты: уволен', (MGR.scouts||[]).length===0);
+    MGR.club.avg=95; mgrScoutHire(1); check('скауты: стартовый «рейтинг от» по уровню клуба', MGR.scouts[0].min===88, String(MGR.scouts[0].min)); mgrScoutFire(MGR.scouts[0].id);
+    mgrYScoutHire('br'); MGR_SUB.club='youth'; mgrRenderHub('club');
+    const opt=document.querySelector('#mgBody .mgx-scout select option:checked');
+    check('молодёжный скаут: его страна выбрана в списке', opt && opt.value===ccNatOf('br'), opt && opt.value); MGR_SUB.club='train';
     MGR_SUB.transfers='market';
   `},
   {name:'молодёжь', code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     const w0=mgrStaffWage(); mgrYScoutHire('fr');
-    check('молодёжь: скаут нанят', (MGR.yscouts||[]).length===1 && MGR.yscouts[0].nat==='fr');
+    check('молодёжь: скаут нанят', (MGR.yscouts||[]).length===1 && MGR.yscouts[0].nat===ccNatOf('fr'));
     check('молодёжь: зарплата в штабе', mgrStaffWage()===w0+MGR_YSCOUT_COST);
     mgrYouthMonth('2024-01'); mgrYouthMonth('2024-02');
     const ys=(MGR.ylist||[]).map(h=>mgrCard(h)).filter(Boolean);
@@ -274,7 +286,7 @@ const SECTIONS=[
     check('молодёжь: 15–17 лет', ys.every(c=>c._youth && c.age>=15 && c.age<=17), ys.map(c=>c.age).join());
     check('молодёжь: рейтинг 50–68', ys.every(c=>{ const r=ccCardOvr(c)||0; return r>=50 && r<=68; }), ys.map(c=>ccCardOvr(c)).join());
     check('молодёжь: потенциал 70–94', ys.every(c=>mgrPot(c.handle)>=70 && mgrPot(c.handle)<=94), ys.map(c=>mgrPot(c.handle)).join());
-    check('молодёжь: страна скаута', ys.every(c=>c.nat==='fr'), ys.map(c=>c.nat).join());
+    check('молодёжь: страна скаута', ys.every(c=>c.nat===ccNatOf('fr')), ys.map(c=>c.nat).join());
     MGR.club.wageCap=mgrWageBill()+100000;
     const y0=ys[0].handle; mgrToAcad(y0, true);
     check('молодёжь: в академии', (MGR.academy||[]).some(x=>hKey(x)===hKey(y0)));

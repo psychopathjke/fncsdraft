@@ -14,6 +14,8 @@ window.addEventListener('load', ()=>setTimeout(()=>{ try{
   else if(tab==='own'){ MGR_NEW_SIDE='own'; mgrOpenNew(2024); }
   else { MGR_NEW_SIDE='real'; mgrOpenNew(2024); mgrTake(0);
     if(sub){ const g={transfers:'transfers', club:'club', tables:'tables'}[tab]; if(g) MGR_SUB[g]=sub; }
+    if(sub==='scout'){ mgrScoutHire(2); mgrScoutSet(MGR.scouts[0].id,'region','NAC'); let d=CAREER.career.day; for(let i=0;i<3;i++){ d=ccAddDays(d,7); mgrScoutWeek(d); } }
+    if(sub==='youth'){ mgrYScoutHire('fr'); mgrYouthMonth('2024-01'); mgrYouthMonth('2024-02'); }
     mgrRenderHub(tab);
     if(sub==='sheet'){ const c=document.querySelector('#mgBody .mgs-card'); if(c) c.click(); } }
   window.scrollTo(0,0);

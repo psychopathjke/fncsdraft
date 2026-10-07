@@ -6346,7 +6346,7 @@
   .mgx-scout .hg-go{width:auto;margin-top:0;}
   .mgx-hire{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
   .mgx-hire .hg-go{flex:1 1 180px;width:auto;margin-top:0;}
-  .mgx-rep .mgn-stars{display:inline-flex;vertical-align:middle;}
+  .mgx-rep .mgn-stars,.mgy-row .mgn-stars{display:inline-flex;vertical-align:middle;}
   /* Трансферы менеджера. */
   .mgt-bud{display:flex;flex-wrap:wrap;gap:6px 24px;margin:10px 0;}
   .mgt-bud .mgn-row{flex:1 1 220px;color:#fff;}
@@ -155651,11 +155651,13 @@ function mgrDealsHTML(){
 function mgrYScoutHire(nat){
   MGR.yscouts=MGR.yscouts||[];
   if(MGR.yscouts.length>=MGR_YSCOUT_MAX) return;
-  MGR.yscouts.push({id:'y'+Date.now().toString(36)+MGR.yscouts.length, nat:String(nat||'').toLowerCase()});
+  MGR.yscouts.push({id:'y'+Date.now().toString(36)+MGR.yscouts.length, nat:mgrNatName(nat)});
   mgrSave();
 }
 function mgrYScoutFire(id){ MGR.yscouts=(MGR.yscouts||[]).filter(s=>s.id!==id); mgrSave(); }
-function mgrYScoutSet(id, nat){ const s=(MGR.yscouts||[]).find(x=>x.id===id); if(s){ s.nat=String(nat||'').toLowerCase(); mgrSave(); } }
+function mgrYScoutSet(id, nat){ const s=(MGR.yscouts||[]).find(x=>x.id===id); if(s){ s.nat=mgrNatName(nat); mgrSave(); } }
+// Флаг в данных — название страны («Украина»); код («fr») переводится тем же ccNatOf, что у карточек.
+function mgrNatName(v){ const s=String(v||''); return (/^[a-z]{2,3}$/i.test(s) && typeof ccNatOf==='function' && ccNatOf(s.toLowerCase())) || s || null; }
 function mgrYouthName(rnd, taken){
   const real=ccRealNames();
   for(let g=0; g<60; g++){
@@ -155687,7 +155689,7 @@ function mgrYouthHTML(){
   const T9=mgrT9(), T4=mgrT4(), ys=MGR.yscouts||[];
   let nats=[]; try{ nats=[...new Set(careerNatPool().filter(n=>typeof n==='string' && n))].slice(0, 40); }catch(e){ nats=['de','fr','gb','pl','es','it']; }
   const natSel=(id, cur)=>'<select class="mgs-move" onchange="mgrYScoutSet(\''+id+'\', this.value);mgrRenderHub()">'+
-    nats.map(n=>'<option value="'+esc(n)+'"'+(n===cur ? ' selected' : '')+'>'+esc(ccCountryName(n)||n.toUpperCase())+'</option>').join('')+'</select>';
+    (cur && nats.indexOf(cur)<0 ? [cur].concat(nats) : nats).map(n=>'<option value="'+esc(n)+'"'+(n===cur ? ' selected' : '')+'>'+esc(n)+'</option>').join('')+'</select>';
   const list=ys.map(s=>'<div class="mgx-scout"><b>'+(s.nat ? flagImg(s.nat, 13)+' ' : '')+esc(T9.yscout)+'</b>'+natSel(s.id, s.nat)+
     '<button class="hg-go mgs-bad" onclick="mgrYScoutFire(\''+s.id+'\');mgrRenderHub()">'+esc(T9.fire)+'</button></div>').join('');
   const hire=ys.length<MGR_YSCOUT_MAX ? '<div class="mgx-hire"><button class="hg-go" onclick="mgrYScoutHire(\''+esc(nats[0]||'')+'\');mgrRenderHub()">'+
@@ -156218,7 +156220,8 @@ function mgrStarsOf(v){ return Math.max(1, Math.min(5, Math.round((1+((v||60)-60
 function mgrScoutHire(lv){
   MGR.scouts=MGR.scouts||[];
   if(MGR.scouts.length>=MGR_SCOUT_MAX || !MGR_SCOUT_LV[lv]) return;
-  MGR.scouts.push({id:'s'+Date.now().toString(36)+MGR.scouts.length, lv:lv, region:MGR.region, role:'', age:0, min:0});
+  const a=MGR.club.avg||0;   // стартовый порог — по уровню клуба: без него скаут приносит людей на 40 ниже состава
+  MGR.scouts.push({id:'s'+Date.now().toString(36)+MGR.scouts.length, lv:lv, region:MGR.region, role:'', age:0, min:a>=90 ? 88 : a>=82 ? 80 : a>=74 ? 70 : 0});
   mgrSave();
 }
 function mgrScoutFire(id){ MGR.scouts=(MGR.scouts||[]).filter(s=>s.id!==id); mgrSave(); }
