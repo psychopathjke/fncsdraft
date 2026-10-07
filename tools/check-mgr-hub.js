@@ -141,7 +141,7 @@ const SECTIONS=[
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     MGR_SUB.transfers='market'; mgrRenderHub('transfers');
     const B=document.getElementById('mgBody');
-    check('трансферы '+lang+': три подвкладки', B.querySelectorAll('.ch-subtabs .ch-subtab').length===3, String(B.querySelectorAll('.ch-subtabs .ch-subtab').length));
+    check('трансферы '+lang+': четыре подвкладки', B.querySelectorAll('.ch-subtabs .ch-subtab').length===4, String(B.querySelectorAll('.ch-subtabs .ch-subtab').length));
     check('трансферы '+lang+': бюджеты на виду', B.querySelector('.mgt-bud') && (B.querySelector('.mgt-bud').textContent.match(/\$/g)||[]).length>=3);
     check('трансферы: звёздочка шортлиста в рынке', !!B.querySelector('.mgt-star'));
     const first=mgrMarketList()[0]; mgrShortToggle(first.handle);
@@ -235,6 +235,33 @@ const SECTIONS=[
       const b=document.querySelector('#mgTabs .ch-tab[data-tab="'+t+'"]');
       const ic=b ? getComputedStyle(b).getPropertyValue('--ic').trim() : '';
       check('иконка вкладки '+t, ic.length>10, ic.slice(0,40)); }
+  `},
+  {name:'скауты', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    const w0=mgrStaffWage();
+    mgrScoutHire(2);
+    check('скауты: нанят', (MGR.scouts||[]).length===1 && MGR.scouts[0].lv===2);
+    check('скауты: зарплата в штабе', mgrStaffWage()===w0+MGR_SCOUT_LV[2].cost, w0+' → '+mgrStaffWage());
+    const sc=MGR.scouts[0]; mgrScoutSet(sc.id, 'region', 'NAC'); mgrScoutSet(sc.id, 'min', '70');
+    let d=CAREER.career.day;
+    for(let i=0;i<3;i++){ d=ccAddDays(d, 7); mgrScoutWeek(d); }
+    const reps=Object.values(MGR.srep||{});
+    check('скауты: отчёты есть', reps.length>=2, String(reps.length));
+    check('скауты: из NAC', reps.length && reps.every(r=>r.region==='NAC'));
+    check('скауты: карточки найдутся', reps.every(r=>!!mgrCard(r.h)));
+    check('скауты: рейтинг по заданию', reps.every(r=>(ccCardOvr(mgrCard(r.h))||0)>=70));
+    const r0=reps[0], wide=(t=>{ const [a,b]=t.split('–').map(Number); return b-a; });
+    const before=wide(mgrPotText(r0.h)); r0.views=(r0.views||1)+2;
+    check('скауты: повторные отчёты сужают вилку', wide(mgrPotText(r0.h))<before, before+' → '+wide(mgrPotText(r0.h)));
+    check('скауты: письмо об отчёте', (MGR.inbox||[]).some(m=>m.kind==='info' && m.srep));
+    check('звёзды', mgrStarsOf(95)===5 && mgrStarsOf(60)===1 && mgrStarsOf(78)%0.5===0);
+    MGR_SUB.transfers='scout'; mgrRenderHub('transfers');
+    const B=document.getElementById('mgBody');
+    check('скаутинг '+lang+': подвкладка рисуется', !B.querySelector('.cc-ffo-err') && !bad(B.innerHTML) && B.querySelectorAll('.mgx-rep').length===reps.length, B.querySelectorAll('.mgx-rep').length+'/'+reps.length);
+    mgrScoutSet(sc.id, 'min', '99'); mgrScoutWeek(ccAddDays(d, 7));
+    check('скауты: пустое задание без исключения', true);
+    mgrScoutFire(sc.id); check('скауты: уволен', (MGR.scouts||[]).length===0);
+    MGR_SUB.transfers='market';
   `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
