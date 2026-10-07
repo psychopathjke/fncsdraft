@@ -155301,7 +155301,7 @@ function mgrT9(){
     ownName:'Название клуба', crest:'Герб', tier:'Уровень старта', ownGo:'Основать клуб',
     tiers:{rookie:'Новичок', mid:'Средний', amb:'Амбициозный'},
     tierHint:{rookie:'Малый бюджет, свободные агенты 65–72', mid:'Средний бюджет, свободные агенты 72–78', amb:'Большой бюджет, свободные агенты 78–84, совет строже'},
-    tabs:{centre:'Центр', squad:'Состав', transfers:'Трансферы', inbox:'Входящие', club:'Клуб', tables:'Таблицы'},
+    tabs:{centre:'Центр', squad:'Состав', transfers:'Трансферы', inbox:'Входящие', club:'Клуб', calendar:'Календарь', tables:'Таблицы'}, calNext:'Ближайшие турниры', toCal:'Весь календарь',
     conf:'Доверие совета', morale:'Мораль состава', board:'Совет', teamOvr:'Первая команда',
     goals:'Цели совета', dev:'Развитие', devNone:'Рост виден раз в месяц', fatigue:'Усталость', news:'Новости клуба', toTables:'Трофеи и статистика', toTrain:'К тренировкам',
     role:'Роль', until:'Контракт', where:'Где играет', moveTo:'Перевести…',
@@ -155320,7 +155320,7 @@ function mgrT9(){
     ownName:'Club name', crest:'Crest', tier:'Starting level', ownGo:'Found the club',
     tiers:{rookie:'Rookie', mid:'Mid', amb:'Ambitious'},
     tierHint:{rookie:'Small budget, free agents 65–72', mid:'Mid budget, free agents 72–78', amb:'Big budget, free agents 78–84, stricter board'},
-    tabs:{centre:'Centre', squad:'Squad', transfers:'Transfers', inbox:'Inbox', club:'Club', tables:'Tables'},
+    tabs:{centre:'Centre', squad:'Squad', transfers:'Transfers', inbox:'Inbox', club:'Club', calendar:'Calendar', tables:'Tables'}, calNext:'Upcoming events', toCal:'Full calendar',
     conf:'Board trust', morale:'Squad morale', board:'Board', teamOvr:'First team',
     goals:'Board goals', dev:'Development', devNone:'Growth shows once a month', fatigue:'Fatigue', news:'Club news', toTables:'Trophies and stats', toTrain:'To training',
     role:'Role', until:'Contract', where:'Plays in', moveTo:'Move to…',
@@ -155458,7 +155458,7 @@ function mgrCloneHubCss(){
   const st=document.createElement('style'); st.id='mgrHubCss'; st.textContent=out.join('\n');
   document.head.appendChild(st);
 }
-const MGR_TABS=['centre','squad','transfers','inbox','club','tables'];
+const MGR_TABS=['centre','squad','transfers','inbox','club','calendar','tables'];
 let MGR_SUB={transfers:'market', club:'train', tables:'stats'};
 let MGR_DREW=null;
 function mgrGrade(c){ return c>=85 ? 'A' : c>=70 ? 'B' : c>=55 ? 'C' : c>=40 ? 'D' : c>=25 ? 'E' : 'F'; }
@@ -155487,6 +155487,7 @@ function mgrHdrHTML(){
 }
 // Тело вкладки. Задачи плана меняют ветки по одной; до них — прежние блоки менеджера.
 function mgrTabBody(tab){
+  if(tab==='calendar') return mgrCalendarHTML();
   if(tab==='squad') return mgrSquadHTML();
   if(tab==='transfers') return mgrTransfersHTML();
   const T9=mgrT9();
@@ -155581,7 +155582,10 @@ function mgrCentreHTML(){
     (items.length ? items.map(it=>'<div class="mgc-item'+(it.open ? ' open' : '')+'" onclick="mgrRenderHub(\'inbox\')"><small>'+esc(ccDayLabel(it.day))+'</small><span>'+esc(it.text||'')+'</span></div>').join('')
                   : '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div>';
   const deal=(!MGR.deal || MGR.deal.year!==MGR.year) ? mgrDealHTML() : '';
-  return strip+deal+'<div class="ch-grid mgc-grid"><div class="mgc-col">'+next+devTile+'</div><div class="mgc-col">'+goals+'</div>'+news+'</div>';
+  const calList='<div class="ch-tile mgc-cal"><h4>'+esc(T9.calNext)+'</h4>'+
+    (evs.slice(1, 7).map(e=>'<div class="mgn-row"><em>'+esc(ccDayLabel(e.day))+'</em><b>'+esc(e.name)+'</b></div>').join('') || '<div class="ch-empty">'+esc(T.noEvent)+'</div>')+
+    '<button class="hg-go" onclick="MGR_MONTH=null;mgrRenderHub(\'calendar\')">'+esc(T9.toCal)+'</button></div>';
+  return strip+deal+'<div class="ch-grid mgc-grid"><div class="mgc-col">'+next+devTile+'</div><div class="mgc-col">'+goals+calList+'</div>'+news+'</div>';
 }
 /* СОСТАВ — команды карточками FUT (как в драфте), запас и академия; клик по карточке — лист игрока. */
 function mgrCardTileHTML(h){
@@ -155754,6 +155758,45 @@ function mgrTransfersHTML(){
     '<div class="mgn-row"><em>'+esc(T9.wageRoom)+'</em><b>'+mgrMoney(Math.max(0, mgrWageRoom()))+'</b></div></div>';
   const s=MGR_SUB.transfers;
   return top+bud+(s==='short' ? mgrShortHTML() : s==='deals' ? mgrDealsHTML() : s==='scout' ? mgrScoutingHTML() : mgrMarketHTML());
+}
+/* КАЛЕНДАРЬ — сетка месяца, как вкладка «Календарь» карьеры (те же cal-* классы): турниры клуба,
+   сыгранные вечера с местами команд, листание месяцев внутри сезона. */
+let MGR_MONTH=null;
+function mgrMonthBounds(){
+  const a=new Date((MGR.season0||CAREER.career.day)+'T00:00:00Z'), b=new Date(ccYearTo()+'T00:00:00Z');
+  return {from:a.getUTCFullYear()*12+a.getUTCMonth(), to:b.getUTCFullYear()*12+b.getUTCMonth()};
+}
+function mgrMonthShift(d){
+  const b=mgrMonthBounds(), cur=MGR_MONTH ? MGR_MONTH.y*12+MGR_MONTH.m : null;
+  const n=Math.max(b.from, Math.min(b.to, (cur==null ? b.from : cur)+d));
+  MGR_MONTH={y:Math.floor(n/12), m:n%12};
+  mgrRenderHub('calendar');
+}
+function mgrCalendarHTML(){
+  const T=mgrT(), today=careerToday();
+  if(!MGR_MONTH){ const t=new Date(today+'T00:00:00Z'); MGR_MONTH={y:t.getUTCFullYear(), m:t.getUTCMonth()}; }
+  const b=mgrMonthBounds(), idx=MGR_MONTH.y*12+MGR_MONTH.m;
+  const evs=new Map(); mgrEvents().forEach(e=>{ (evs.get(e.day)||evs.set(e.day, []).get(e.day)).push(e); });
+  const nights=new Map(); (MGR.log||[]).filter(r=>r.kind==='night').forEach(r=>{ (nights.get(r.day)||nights.set(r.day, []).get(r.day)).push(r); });
+  const y=MGR_MONTH.y, m=MGR_MONTH.m, daysIn=new Date(Date.UTC(y, m+1, 0)).getUTCDate(), lead=(new Date(Date.UTC(y, m, 1)).getUTCDay()+6)%7;
+  const wkFrom=careerMonday(today), wkTo=ccAddDays(wkFrom, 6);
+  let cells='';
+  for(let i=0; i<lead; i++) cells+='<div class="cal-day cal-void"></div>';
+  for(let d=1; d<=daysIn; d++){
+    const k=dateKey(new Date(Date.UTC(y, m, d))), list=evs.get(k)||[], done=nights.get(k)||[];
+    const kind=list.length ? (list[0].kind==='fncs' ? 'major' : list[0].kind==='ewc' ? 'gc' : 'victory') : (done.length ? 'victory' : '');
+    cells+='<div class="cal-day'+(list.length||done.length ? ' has' : '')+(k>=wkFrom && k<=wkTo ? ' now' : '')+(k===today ? ' mgc-today' : '')+'">'+
+      '<span class="cal-n">'+d+'</span>'+
+      list.map(e=>'<span class="cal-ev cal-'+kind+'">'+esc(e.name)+'</span>').join('')+
+      done.map(r=>'<span class="cal-ev cal-victory mgc-done">'+esc(r.name)+' · '+(r.teams||[]).map(t=>'#'+t.place).join(', ')+'</span>').join('')+'</div>';
+  }
+  return '<div class="cal-stage"><div class="cal-bar">'+
+      '<button class="cal-nav" '+(idx<=b.from ? 'disabled' : '')+' onclick="mgrMonthShift(-1)" aria-label="prev">'+CC_BTN_ICON.prev+'</button>'+
+      '<h4>'+esc(L().calMonths[m])+' '+y+'</h4>'+
+      '<button class="cal-nav" '+(idx>=b.to ? 'disabled' : '')+' onclick="mgrMonthShift(1)" aria-label="next">'+CC_BTN_ICON.next+'</button>'+
+      '<button class="cal-today" onclick="MGR_MONTH=null;mgrRenderHub(\'calendar\')">'+esc(L().calNow)+'</button></div>'+
+    '<div class="cal-wrap"><div class="cal-month"><div class="cal-dow">'+L().calDows.map(x=>'<span>'+esc(x)+'</span>').join('')+'</div>'+
+    '<div class="cal-grid">'+cells+'</div></div></div></div>';
 }
 function mgrClubHTML(evs){
   const T=mgrT(), T2=mgrT2(), nx=evs[0];

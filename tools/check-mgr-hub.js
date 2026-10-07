@@ -455,6 +455,23 @@ const SECTIONS=[
       const y1=mgrCard(f.h).date;
       check('иностранец: карточка нового года', String(y1)!==String(y0) || ccCardYear(mgrCard(f.h))===2025, y0+' → '+y1); }
   `},
+  {name:'календарь', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    MGR_MONTH=null; mgrRenderHub('calendar');
+    const B=document.getElementById('mgBody');
+    check('календарь '+lang+': вкладка есть', !!document.querySelector('#mgTabs .ch-tab[data-tab="calendar"]'));
+    check('календарь '+lang+': сетка месяца', B.querySelectorAll('.cal-day:not(.cal-void)').length>=28, String(B.querySelectorAll('.cal-day').length));
+    check('календарь '+lang+': без undefined/NaN', !bad(B.innerHTML) && !B.querySelector('.cc-ffo-err'));
+    const nx=mgrEvents()[0];
+    // Листаем до месяца ближайшего турнира — он там подписан.
+    for(let i=0;i<12 && B.innerHTML.indexOf(esc(nx.name))<0;i++){ mgrMonthShift(1); }
+    check('календарь: ближайший турнир в сетке', B.innerHTML.indexOf(esc(nx.name))>=0, nx.name);
+    // Сыгранный вечер — с местом.
+    MGR.log.unshift({day:CAREER.career.day, kind:'night', name:'ПробныйВечер', teams:[{place:4, prize:0}]});
+    MGR_MONTH=null; mgrRenderHub('calendar');
+    check('календарь: прошедший вечер с местом', /#4/.test(B.textContent) && B.textContent.indexOf('ПробныйВечер')>=0);
+    check('центр: список ближайших турниров', (mgrRenderHub('centre'), !!document.querySelector('#mgBody .mgc-cal')));
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
