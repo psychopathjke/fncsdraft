@@ -556,6 +556,22 @@ const SECTIONS=[
     check('лента '+lang+': подвкладка', !B.querySelector('.cc-ffo-err') && !bad(B.innerHTML) && B.querySelectorAll('.mgp-post').length>=3);
     MGR_SUB.inbox='mail';
   `},
+  {name:'характер', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    const scene=(ccSceneRoster('EU')||[]).slice(0, 120).map(c=>c.handle), kinds={};
+    scene.forEach(h=>{ const t=mgrTrait(h); kinds[t]=(kinds[t]||0)+1; });
+    check('характер: шесть видов встречаются', Object.keys(kinds).length===6 && Object.values(kinds).every(n=>n>=5), JSON.stringify(kinds));
+    check('характер: постоянный', scene.every(h=>mgrTrait(h)===mgrTrait(h)));
+    const amb=scene.find(h=>mgrTrait(h)==='ambitious'), loy=scene.find(h=>mgrTrait(h)==='loyal');
+    check('характер: амбициозный просит больше лояльного', mgrTraitRenewMul(amb)>mgrTraitRenewMul(loy));
+    const hot=scene.find(h=>mgrTrait(h)==='hothead'), calm=scene.filter(h=>mgrTrait(h)==='calm');
+    MGR.chem={}; MGR.chem[mgrPairKey(calm[0], calm[1])]=6; MGR.chem[mgrPairKey(calm[0], hot)]=6; MGR.chem[mgrPairKey(calm[1], hot)]=6;
+    check('характер: вспыльчивый снижает химию', mgrChem([calm[0], calm[1], hot])<6, String(mgrChem([calm[0], calm[1], hot])));
+    const h=mgrAll()[0]; mgrRenderHub('squad'); mgrSheetOpen(h);
+    check('характер '+lang+': в листе', document.getElementById('mgSheet').textContent.indexOf(mgrT9().traits[mgrTrait(h)])>=0);
+    mgrSheetClose();
+    check('характер: значок на карточке', !!document.querySelector('#mgBody .mgs-card .mgs-trait'));
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
