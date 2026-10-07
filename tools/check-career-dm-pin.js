@@ -51,6 +51,12 @@ try{
   const box=document.querySelector('#chBody .dm-msgs');
   out.notes.scroll=box ? [box.scrollTop, box.scrollHeight, box.clientHeight] : null;
   check('окно переписки на последнем сообщении', box && box.scrollHeight>box.clientHeight && box.scrollTop+box.clientHeight>=box.scrollHeight-2, JSON.stringify(out.notes.scroll));
+  // нажал на переписку — остался в личке, а не уехал на ленту (его слово 7.10)
+  careerDms().forEach(x=>{ x.unread=false; }); mt.unread=true; CH_SOCIAL=null;
+  careerDmOpen(mt.id);
+  check('после выбора переписки — личка, не лента', CH_SOCIAL==='dms' && !!document.querySelector('#chBody .dm-msgs'), String(CH_SOCIAL));
+  CH_SOCIAL=null; careerDmKind('clubs');
+  check('вкладка раздела лички — тоже личка', CH_SOCIAL==='dms');
   CAREER.agent=null; CH_DMKIND=null;
   const noAg=order(careerSocialHTML()); out.notes.noAgent=noAg;
   check('без менеджера закреплён только тиммейт', noAg && noAg[1]==='PinMate' && noAg[2]!==mine.name, noAg && noAg.join(' | '));

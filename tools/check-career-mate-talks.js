@@ -103,12 +103,23 @@ try{
       partner:{card:card, patience:40, since:'2026-01-01', dev:0}, partners:[{card:card, patience:40, since:'2026-01-01', dev:0}]}));
     careerLoad();
     const pat=()=>(careerMateRec()||{}).patience;
-    const p0=pat(), ok1=careerMateTalk('life'), p1=pat(), ok2=careerMateTalk('life'), p2=pat(), ok3=careerMateTalk('role'), p3=pat();
+    const p0=pat(), ok1=careerMateTalk('life'), p1=pat(), ok2=careerMateTalk('life'), p2=pat(), ok3=careerMateTalk('night'), p3=pat();
     out.notes.talk={p0, p1, p2, p3, ok1, ok2, ok3, topics:careerMateTopics()};
     check('первая «как сам?» — настрой вырос', ok1 && p1>p0, JSON.stringify(out.notes.talk));
     check('вторая за день — не проходит', ok2===false && p2===p1);
     check('другая тема в тот же день — можно, но без настроя', ok3===true && p3===p2);
-    check('о чём уже говорили — кнопки нет', careerMateTopics().indexOf('life')<0 && careerMateTopics().indexOf('role')<0, careerMateTopics().join(','));
+    check('о чём уже говорили — кнопки нет', careerMateTopics().indexOf('life')<0 && careerMateTopics().indexOf('night')<0, careerMateTopics().join(','));
+    check('темы «про роли» больше нет', careerMateTopics().indexOf('role')<0 && CC_MATE_TOPICS.indexOf('role')<0);
+    check('без PR соперников не называет', !ccMateRival() && careerMateTopics().indexOf('rival')<0);
+    const ad=ccAbsDay(CAREER.career.season, careerToday());
+    CAREER.career.pr={rows:{TalkMate:{v:[[9000,ad]],n:2}, Peterbot:{v:[[7000,ad]],n:2}, Talk:{v:[[500,ad]],n:2,you:true}}};
+    const rv=ccMateRival(); out.notes.rival=rv;
+    if(rv){ CAREER.career.day=ccAddDays(CAREER.career.day, 1);
+      check('про соперников — есть, когда есть PR', careerMateTopics().indexOf('rival')>=0, careerMateTopics().join(','));
+      careerMateTalk('rival'); const lm=careerMateThread().msgs.slice(-1)[0];
+      check('напарник называет соперника и место', lm && lm.k==='dmMateTalkrival' && lm.a && lm.a[0]===rv.name && lm.a[1]===rv.place, JSON.stringify(lm));
+      check('соперник — не ты и не он', !/^(Talk|TalkMate)$/.test(rv.name)); }
+    else out.notes.noPr=true;
     CAREER.career.day=ccAddDays(CAREER.career.day, 1);
     check('назавтра тема снова есть', careerMateTopics().indexOf('life')>=0, careerMateTopics().join(','));
 
