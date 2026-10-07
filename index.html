@@ -6324,6 +6324,22 @@
   .mgh-money small{font-size:11px;}
   .mgh-money .down{color:#ff6b6b;} .mgh-money .up{color:#6bdc8a;}
   #mgTop[hidden],#mgTabs[hidden]{display:none;}
+  /* Центр менеджера. */
+  .mgc-strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:12px;}
+  .mgc-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.2fr);}
+  .mgc-col{display:flex;flex-direction:column;gap:16px;}
+  .mgc-next .mgc-ev{display:flex;flex-direction:column;margin:6px 0;}
+  .mgc-next .mgc-ev b{font-size:20px;font-weight:900;color:#fff;}
+  .mgc-next .mgc-ev small,.mgc-going{font-size:12px;color:rgba(255,255,255,.7);}
+  .mgc-going{display:flex;flex-direction:column;gap:2px;margin-bottom:10px;}
+  .mgc-next .ch-play{width:100%;}
+  .mgc-skip{width:100%;margin-top:6px;}
+  .mgc-next.fncs{box-shadow:inset 0 0 0 2px #b07dff;}
+  .mgc-item{display:flex;flex-direction:column;padding:7px 0;border-top:1px solid rgba(255,255,255,.1);cursor:pointer;color:#fff;font-size:13px;}
+  .mgc-item small{font-size:10px;color:rgba(255,255,255,.55);}
+  .mgc-item.open span{font-weight:700;}
+  .hd-tile .mgn-row b.up{color:#1f9d55;} .hd-tile .mgn-row b.down{color:#d64545;}
+  @media (max-width:900px){ .mgc-grid{grid-template-columns:minmax(0,1fr);} .mgc-strip{grid-template-columns:repeat(7,minmax(44px,1fr));overflow-x:auto;} }
   .mgn-own{display:flex;flex-direction:column;gap:10px;max-width:520px;}
   .mgn-field{display:flex;flex-direction:column;gap:6px;}
   .mgn-field em{font-style:normal;font-size:11px;opacity:.7;text-transform:uppercase;}
@@ -154977,6 +154993,7 @@ function mgrStarsHTML(s){ let h=''; for(let i=1;i<=5;i++) h+='<i class="mgn-st'+
 let MGR_NEW_SIDE='real', MGR_NEW_SORT='stars';
 function mgrOpenNew(year){
   MGR_NEW_YEAR=year||MGR_NEW_YEAR;
+  mgrCloneHubCss();
   const T=mgrT(), T9=mgrT9();
   { const top=document.getElementById('mgTop'), tabs=document.getElementById('mgTabs'), foot=document.getElementById('mgFoot');
     if(top) top.hidden=true; if(tabs) tabs.hidden=true; if(foot) foot.innerHTML=''; MGR_DREW=null; }
@@ -155181,7 +155198,8 @@ function mgrT9(){
     tiers:{rookie:'Новичок', mid:'Средний', amb:'Амбициозный'},
     tierHint:{rookie:'Малый бюджет, свободные агенты 65–72', mid:'Средний бюджет, свободные агенты 72–78', amb:'Большой бюджет, свободные агенты 78–84, совет строже'},
     tabs:{centre:'Центр', squad:'Состав', transfers:'Трансферы', inbox:'Входящие', club:'Клуб', tables:'Таблицы'},
-    conf:'Доверие совета', morale:'Мораль состава', board:'Совет', teamOvr:'Первая команда'
+    conf:'Доверие совета', morale:'Мораль состава', board:'Совет', teamOvr:'Первая команда',
+    goals:'Цели совета', dev:'Развитие', devNone:'Рост виден раз в месяц', fatigue:'Усталость', news:'Новости клуба', toTables:'Трофеи и статистика', toTrain:'К тренировкам'
   } : {
     overCap:s=>'The board says no: wage budget '+s+' a month', transfer:'Transfer budget', wageCap:'Wage budget',
     renewCap:h=>h+' leaves: the new deal did not fit the wage budget',
@@ -155191,7 +155209,8 @@ function mgrT9(){
     tiers:{rookie:'Rookie', mid:'Mid', amb:'Ambitious'},
     tierHint:{rookie:'Small budget, free agents 65–72', mid:'Mid budget, free agents 72–78', amb:'Big budget, free agents 78–84, stricter board'},
     tabs:{centre:'Centre', squad:'Squad', transfers:'Transfers', inbox:'Inbox', club:'Club', tables:'Tables'},
-    conf:'Board trust', morale:'Squad morale', board:'Board', teamOvr:'First team'
+    conf:'Board trust', morale:'Squad morale', board:'Board', teamOvr:'First team',
+    goals:'Board goals', dev:'Development', devNone:'Growth shows once a month', fatigue:'Fatigue', news:'Club news', toTables:'Trophies and stats', toTrain:'To training'
   };
 }
 
@@ -155293,6 +155312,26 @@ function mgrPayMonths(toDay){
    Шапка (герб, строка клуба, рейтинг первой команды, полоски доверия совета и морали, касса),
    шесть вкладок .ch-tab, тело #mgBody. Ошибка одной вкладки — красная плашка с кнопкой на Центр,
    как в careerRenderHub, а не мёртвый экран; прокрутка той же вкладки сохраняется. */
+/* Стили хаба карьеры — около 650 правил вида «#screen-career-hub .x» (тёмные плитки, полоса недели,
+   цели, кнопки). Экран менеджера получает их копией с «#screen-manager» один раз за страницу —
+   тогда интерфейс один и тот же, а правка стиля карьеры сама доезжает до менеджера. */
+let MGR_CSS_DONE=false;
+function mgrCloneHubCss(){
+  if(MGR_CSS_DONE) return; MGR_CSS_DONE=true;
+  const out=[];
+  const walk=(rules, wrap)=>{ for(const r of rules){
+    if(r.cssRules && r.media){ walk(r.cssRules, '@media '+r.media.mediaText); continue; }
+    if(r.cssRules && r.conditionText!=null && !r.selectorText){ walk(r.cssRules, '@supports '+r.conditionText); continue; }
+    const sel=r.selectorText; if(!sel || sel.indexOf('#screen-career-hub')<0) continue;
+    const parts=sel.split(',').map(s=>s.trim()).filter(s=>s.indexOf('#screen-career-hub')>=0).map(s=>s.split('#screen-career-hub').join('#screen-manager'));
+    if(!parts.length) continue;
+    const txt=parts.join(',')+'{'+r.style.cssText+'}';
+    out.push(wrap ? wrap+'{'+txt+'}' : txt);
+  } };
+  for(const sh of document.styleSheets){ try{ walk(sh.cssRules, ''); }catch(e){} }
+  const st=document.createElement('style'); st.id='mgrHubCss'; st.textContent=out.join('\n');
+  document.head.appendChild(st);
+}
 const MGR_TABS=['centre','squad','transfers','inbox','club','tables'];
 let MGR_SUB={transfers:'market', club:'train', tables:'stats'};
 let MGR_DREW=null;
@@ -155328,13 +155367,11 @@ function mgrTabBody(tab){
   if(tab==='inbox') return mgrInboxHTML();
   if(tab==='club') return mgrTrainHTML()+mgrFacHTML()+mgrDealHTML()+mgrEvFreqHTML();
   if(tab==='tables') return mgrStatsHTML()+mgrRivalsHTML()+mgrTrophiesHTML();
-  const b=MGR.board, T2=mgrT2(), earnedNow=(MGR.club.earned||0)-(b.earned0||0);
-  return mgrChallengeHTML()+'<div class="mg-board"><em>'+T2.board+'</em>'+mgrConfHTML()+'<small>'+esc(T2.goalEarn(mgrMoney(b.earn)))+' — '+mgrMoney(earnedNow)+'</small></div>'+
-    mgrClubHTML(evs);
+  return mgrCentreHTML();
 }
 function mgrRenderHub(tab){
   if(!MGR || !MGR.club){ mgrOpenNew(); return; }
-  mgrEnter();
+  mgrEnter(); mgrCloneHubCss();
   if(!MGR.contracts){ MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h)); }
   if(!MGR.board) mgrBoardInit();
   mgrBudgetMigrate();
@@ -155366,6 +155403,55 @@ function mgrOpenHub(){
   if(!MGR || !MGR.club){ mgrOpenNew(); return; }
   const legacy={club:'centre', market:'transfers', train:'club', stats:'tables'};
   mgrRenderHub(legacy[MGR_TAB]||MGR_TAB);
+}
+/* ЦЕНТР — как «Центр» карьеры: полоса недели, ближайший турнир с жёлтой кнопкой, цели совета
+   (плитка «Цели» карьеры), развитие состава (плитка «Развитие»), новости клуба. */
+function mgrCentreHTML(){
+  const T=mgrT(), T2=mgrT2(), T9=mgrT9(), cr=CAREER.career, evs=mgrEvents(), nx=evs[0];
+  const byDay=new Map(); evs.forEach(e=>{ if(!byDay.has(e.day)) byDay.set(e.day, e); });
+  const monday=careerMonday(careerToday());
+  const strip='<div class="ch-strip mgc-strip">'+[0,1,2,3,4,5,6].map(d=>{
+    const iso=ccAddDays(monday, d), e=byDay.get(iso), today=iso===careerToday();
+    const head='<em>'+esc((L().calDows||[])[d]||'')+(today ? ' · '+esc(L().chToday) : '')+'</em><b>'+Number(iso.slice(8, 10))+'</b>';
+    return '<div class="ch-week ch-day'+(e ? (e===nx ? ' now' : '') : ' ch-day-free')+(today ? ' ch-today' : '')+'">'+head+
+      '<span class="ch-day-what">'+(e ? '<i class="ch-pip ch-pip-'+(e.kind==='fncs' ? 'major' : e.kind==='ewc' ? 'gc' : 'victory')+'">'+ccKindIconSVG(e.kind==='fncs' ? 'major' : 'victory')+'</i>'+esc(e.name) : esc(L().chDayFree))+'</span></div>';
+  }).join('')+'</div>';
+  const size={duo:2, trio:3, squad:4};
+  const going=nx ? MGR.teams.map((t,i)=>({t, i})).filter(x=>x.t.cards.length===size[nx.mode]) : [];
+  const next=nx
+    ? '<div class="ch-tile mgc-next'+(nx.kind==='fncs'||nx.kind==='ewc' ? ' fncs' : '')+'"><h4>'+esc(T.next)+'</h4>'+
+        '<div class="mgc-ev"><b>'+esc(nx.name)+'</b><small>'+esc(ccDayLabel(nx.day))+' · '+esc(T.fmt[size[nx.mode]]||'')+'</small></div>'+
+        '<div class="mgc-going">'+(going.length ? going.map(x=>'<span>'+esc(T2.teamWord)+' '+(x.i+1)+': '+x.t.cards.map(h=>esc(h)).join(' · ')+'</span>').join('') : '<span class="ch-empty">'+esc(T.noTeamFmt)+'</span>')+'</div>'+
+        '<button class="ch-play" onclick="mgrPlay()">'+esc(T.play)+'</button>'+
+        '<button class="cc-back mgc-skip" onclick="mgrSkip()">'+esc(T.skipEv)+'</button></div>'
+    : '<div class="ch-tile mgc-next"><h4>'+esc(T2.seasonOver)+'</h4><button class="ch-play" onclick="mgrSeasonReview()">'+esc(T2.endSeason)+'</button></div>';
+  // Цели совета — строками плитки «Цели» карьеры.
+  const b=MGR.board||{}, earnedNow=(MGR.club.earned||0)-(b.earned0||0);
+  const row=(who, what, state, ok, bar)=>'<div class="hg-row'+(ok ? ' ok' : '')+'"><div class="hg-top"><em>'+esc(who)+'</em><b>'+esc(what)+'</b><i>'+state+'</i></div>'+
+    (bar!=null ? '<u class="hg-bar"><s style="width:'+Math.max(0, Math.min(100, Math.round(bar)))+'%"></s></u>' : '')+'</div>';
+  const goals='<div class="ch-tile hg-tile"><h4>'+esc(T9.goals)+'</h4>'+
+    row(T9.board, T2.goalEarn(mgrMoney(b.earn||0)), esc(mgrMoney(earnedNow)), earnedNow>=(b.earn||0), b.earn ? earnedNow/b.earn*100 : 0)+
+    row(T9.board, T2.goalPlace(b.place||'—'), b.best!=null ? '#'+b.best : esc(T2.bestNone), b.best!=null && b.best<=b.place)+
+    row(T9.conf, mgrGrade(mgrConf()), String(Math.round(mgrConf())), mgrConf()>=55, mgrConf())+
+    mgrChallengeHTML()+
+    '<button class="hg-go" onclick="mgrRenderHub(\'tables\')">'+esc(T9.toTables)+'</button></div>';
+  // Развитие: рейтинг первой команды, кто вырос и кто устал.
+  const dev=Object.keys(MGR.dev||{}).map(k=>({k, v:MGR.dev[k]})).filter(x=>x.v).sort((a,b)=>b.v-a.v);
+  const name=k=>{ const h=mgrAll().concat(MGR.academy||[]).find(x=>hKey(x)===k); return h || k; };
+  const devTile='<div class="ch-tile hd-tile"><h4>'+esc(T9.dev)+'</h4>'+
+    '<div class="hd-head"><b class="hd-ovr">'+mgrTeamAvg()+'</b><span><em>'+esc(T9.teamOvr)+'</em><i>'+esc(T9.fatigue)+' '+Math.round(mgrFatigue())+'%</i></span></div>'+
+    '<u class="hg-bar"><s style="width:'+Math.round(mgrFatigue())+'%"></s></u>'+
+    (dev.length ? dev.slice(0, 4).map(x=>'<div class="mgn-row"><em>'+esc(name(x.k))+'</em><b class="'+(x.v>0 ? 'up' : 'down')+'">'+(x.v>0 ? '▲ +' : '▼ ')+x.v+'</b></div>').join('') : '<div class="ch-empty">'+esc(T9.devNone)+'</div>')+
+    '<button class="hg-go" onclick="mgrRenderHub(\'club\')">'+esc(T9.toTrain)+'</button></div>';
+  // Новости: письма и события клуба, последние вечера.
+  const items=(MGR.inbox||[]).slice(0, 6).map(m=>({day:m.day, text:m.text, open:!m.done}))
+    .concat((MGR.log||[]).filter(r=>r.kind==='night').slice(0, 3).map(r=>({day:r.day, text:r.name+' — '+r.teams.map(t=>'#'+t.place).join(', ')})))
+    .sort((a,b)=>String(b.day).localeCompare(String(a.day))).slice(0, 7);
+  const news='<div class="ch-tile mgc-news"><h4>'+esc(T9.news)+'</h4>'+
+    (items.length ? items.map(it=>'<div class="mgc-item'+(it.open ? ' open' : '')+'" onclick="mgrRenderHub(\'inbox\')"><small>'+esc(ccDayLabel(it.day))+'</small><span>'+esc(it.text||'')+'</span></div>').join('')
+                  : '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div>';
+  const deal=(!MGR.deal || MGR.deal.year!==MGR.year) ? mgrDealHTML() : '';
+  return strip+deal+'<div class="ch-grid mgc-grid"><div class="mgc-col">'+next+devTile+'</div><div class="mgc-col">'+goals+'</div>'+news+'</div>';
 }
 function mgrClubHTML(evs){
   const T=mgrT(), T2=mgrT2(), nx=evs[0];
