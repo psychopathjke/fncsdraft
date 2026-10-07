@@ -683,6 +683,27 @@ const SECTIONS=[
     check('уволен в 2027: история перенесена', MGR_CARRY && (MGR_CARRY.history||[]).length>=hist);
     MGR_CARRY=null;
   `},
+  {name:'тренер состава', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    if(MGR.teams.length<2 && (MGR.bench||[]).length){ mgrNewTeam(); }
+    const t0=MGR.teams[0], t1=MGR.teams[1];
+    const w0=mgrStaffWage();
+    check('тренер состава: назначен', mgrTeamCoachSet(t0.id, 'bloodx')===true && mgrTeamCoach(t0.id)==='bloodx');
+    check('тренер состава: один тренер — один состав', !t1 || mgrTeamCoachSet(t1.id, 'bloodx')===false);
+    if(t1) check('тренер состава: второму свой', mgrTeamCoachSet(t1.id, 'flaire')===true);
+    const add=mgrPersonCost('coach', CC_COACHES.find(c=>c.id==='bloodx'))+(t1 ? mgrPersonCost('coach', CC_COACHES.find(c=>c.id==='flaire')) : 0);
+    check('тренер состава: ставки в штабе', mgrStaffWage()===w0+add, w0+' → '+mgrStaffWage()+' (+'+add+')');
+    const h=t0.cards[0];
+    check('тренер состава: уровень для игрока — его тренера', mgrCoachTierOf(h)===mgrPersonTier('coach', CC_COACHES.find(c=>c.id==='bloodx')));
+    const bh=(MGR.bench||[])[0]; if(bh) check('тренер состава: запас — у главного тренера', mgrCoachTierOf(bh)===mgrStaff('coach'));
+    MGR.chem={}; const ch0=mgrChem(t0.cards.filter(x=>mgrTrait(x)!=='hothead'));
+    check('тренер состава: химия выше', mgrTeamChem(t0)>=ch0+1, ch0+' → '+mgrTeamChem(t0));
+    mgrRenderHub('squad');
+    const tile=document.querySelector('#mgBody .mgs-team');
+    check('тренер состава '+lang+': в плитке состава', tile && tile.querySelector('.mgs-coach') && tile.textContent.indexOf('Bloodx')>=0);
+    check('тренер состава '+lang+': без undefined', !bad(document.getElementById('mgBody').innerHTML));
+    mgrTeamCoachSet(t0.id, null); check('тренер состава: снят', !mgrTeamCoach(t0.id));
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
