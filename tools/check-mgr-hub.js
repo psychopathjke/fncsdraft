@@ -490,6 +490,32 @@ const SECTIONS=[
     mgrHirePerson('coach', null); check('штаб: уволен', !mgrStaff('coach') && !(MGR.staffWho||{}).coach);
     check('штаб '+lang+': без undefined', !bad(B.innerHTML));
   `},
+  {name:'после 2026', once:true, code:String.raw`
+    MGR_NEW_YEAR=2026; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2026); mgrTake(0);
+    MGR.board.earn=0; MGR.board.best=1; MGR.board.place=10;
+    let e=null; try{ mgrSeasonReview(); }catch(x){ e=x; }
+    const go=document.querySelector('.mg-modal [data-mg="go"]'); if(go) go.click();
+    await wait(300);
+    check('2026 → 2027: без ошибки', !e && !out.errs.length, (e&&String(e))||out.errs.join(' | '));
+    check('2026 → 2027: тот же клуб, год 2027', MGR && MGR.year===2027, MGR && MGR.year);
+    if(MGR){
+      check('2027: турниры есть', mgrEvents().length>=5, String(mgrEvents().length));
+      check('2027: состав на месте', mgrAll().length>=2);
+      mgrRenderHub('centre'); check('2027: хаб', !document.querySelector('#mgBody .cc-ffo-err') && document.getElementById('mgWho').textContent.indexOf('2027')>=0, document.getElementById('mgWho').textContent);
+      check('2027: данные года — 2026', mgrDataYear()===2026);
+      // Старение: 33-летний за год заметно падает, 20-летний — нет.
+      const old=mgrAll()[0];
+      MGR.ageFix={[hKey(old)]:34}; MGR.dev={};
+      for(let m=1;m<=12;m++) mgrAgeMonth('2027-'+String(m).padStart(2,'0'));
+      check('старение: 34-летний упал', (MGR.dev[hKey(old)]||0)<=-2, String(MGR.dev[hKey(old)]));
+      // Уход из профи на стыке: 36-летний почти всегда.
+      let gone=0; for(let i=0;i<20;i++){ if(mgrRetireRoll('x'+i, 36)) gone++; }
+      check('уход: 36 лет — чаще половины', gone>=10, String(gone));
+      let young=0; for(let i=0;i<20;i++){ if(mgrRetireRoll('y'+i, 22)) young++; }
+      check('уход: 22 года — никогда', young===0);
+    }
+    document.querySelectorAll('.mg-modal').forEach(m=>m.remove());
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
