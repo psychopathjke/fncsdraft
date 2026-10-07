@@ -308,6 +308,25 @@ const SECTIONS=[
     const sh=document.getElementById('mgSheet');
     check('план '+lang+': в листе', /mgrPlanSet/.test(sh.innerHTML) && !bad(sh.innerHTML)); mgrSheetClose();
   `},
+  {name:'аренда', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    const h=(MGR.bench||[])[0] || mgrAll()[mgrAll().length-1];
+    if(MGR.bench.indexOf(h)<0) mgrMove(h, '-1');
+    const w=mgrWage(h);
+    check('аренда: из команды нельзя', mgrLoan(MGR.teams[0].cards[0])===false);
+    check('аренда: отдан', mgrLoan(h)===true);
+    check('аренда: нет в составе', mgrAll().every(x=>hKey(x)!==hKey(h)) && !(MGR.academy||[]).some(x=>hKey(x)===hKey(h)));
+    check('аренда: платим половину', mgrWage(h)===Math.round(w*0.5), w+' → '+mgrWage(h));
+    check('аренда: в ведомости', mgrWageBill()>=Math.round(w*0.5));
+    mgrRenderHub('squad');
+    check('аренда '+lang+': плитка «В аренде»', !!document.querySelector('#mgBody .mgs-loan') && document.getElementById('mgBody').textContent.indexOf(h)>=0);
+    let d=CAREER.career.day; mgrLoanWeek(ccAddDays(d, 21));
+    check('аренда: 21 день — ещё в аренде', (MGR.loanOut||[]).some(x=>hKey(x)===hKey(h)));
+    mgrLoanWeek(ccAddDays(d, 28));
+    check('аренда: 28 дней — вернулся в запас', (MGR.bench||[]).some(x=>hKey(x)===hKey(h)) && !(MGR.loanOut||[]).length);
+    check('аренда: полная зарплата снова', mgrWage(h)===w);
+    check('аренда: письмо о возвращении', (MGR.inbox||[]).some(m=>m.loan));
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
