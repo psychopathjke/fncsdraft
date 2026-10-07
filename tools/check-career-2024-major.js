@@ -164,12 +164,15 @@ const BOOT = `
                           tickets:(up.tickets||[]).length,
                           lowerDay2:ccM24LowerRoom(m24(), 2).length,
                           lowerR1:(low.r1||[]).length};
-      check('наверху остаётся тридцать пять', (up.r1||[]).length===35, JSON.stringify(out.notes.relegate));
-      check('остальные падают вниз',
-            down.length===50-35-((up.tickets||[]).length), JSON.stringify(out.notes.relegate));
-      check('и второй день нижней сажает их к своим',
-            ccM24LowerRoom(m24(), 2).length===(low.r1||[]).length+down.length,
-            JSON.stringify(out.notes.relegate));
+      /* 7.10: по Liquipedia каждый день верхней — 50 (team_number=50): места 1–25 без билетчиков остаются,
+         26–50 падают, пустые места верхней занимают лучшие нижней (ccM24Promo). Было «35 остаются». */
+      const kept=(up.r1||[]).length, tk=(up.tickets||[]).length, promo=ccM24Promo(m24(), 1).length;
+      check('наверху остаются места 1–25 без билетчиков', kept<=25 && kept>=25-tk, JSON.stringify(out.notes.relegate));
+      check('остальные падают вниз', kept+down.length+tk===50 && down.length<=25, JSON.stringify(out.notes.relegate));
+      check('и второй день нижней сажает их к своим (без поднятых наверх)',
+            ccM24LowerRoom(m24(), 2).length===(low.r1||[]).length-promo+down.length,
+            JSON.stringify(Object.assign({promo}, out.notes.relegate)));
+      check('второй день верхней снова полсотни', ccM24Room(m24(), 'upper', 2).length===50, String(ccM24Room(m24(), 'upper', 2).length));
     } else {
       check('нижняя, день 1: десять игр, топ-100', r.games===10 && r.of===200, r.games+'/'+r.of);
     }

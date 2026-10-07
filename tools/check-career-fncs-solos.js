@@ -18,7 +18,7 @@
 //     there nobody goes home;
 //   * a Heat counts its 29 among the players who did NOT take a Victory Royale,
 //     and 36th-50th fall to the LCQ Final;
-//   * the LCQ Final is a room of 70 and the Finals a room of 100, over 12
+//   * the LCQ Final is a room of 100 (70 from LCQ Round 1 + 36th-50th of both Heats; Liquipedia «players: 100», сверка 7.10) and the Finals a room of 100, over 12
 //     matches, paying the region's own table: the EU pot is 253,500 and NAC's
 //     174,750;
 //   * a stage is played once and a new season hands the road back.
@@ -197,15 +197,15 @@ const BOOT = `
     if(cr.solos.seat && cr.solos.seat!=='lcqf') fail('LCQ Round 1 seated somebody outside the LCQ Final');
     out.steps.push('LCQ round 1: '+l1.place+' of '+l1.of+' over 11 matches to '+(cr.solos.seat||'out'));
 
-    // ---- the LCQ Final: a room of 70 ---------------------------------------
+    // ---- the LCQ Final: a room of 100 --------------------------------------
     cr.solos={got:'lcq1', seat:'lcqf'};
     cr.day='2026-10-20'; careerSave();
     await runCareerSoloSeries();
     const ll=cr.log[cr.log.length-1];
     if(!ll || ll.stage!=='lcqf') fail('the LCQ Final did not run');
-    if(ll.of!==70) fail('the LCQ Final was a room of '+ll.of+', Epic says 70');
+    if(ll.of!==100) fail('the LCQ Final was a room of '+ll.of+', Liquipedia says 100');
     if(ll.games!==5) fail('the LCQ Final played '+ll.games+' matches, Epic says 5');
-    out.steps.push('LCQ final: '+ll.place+' of 70 over 5 matches to '+(cr.solos.seat||'out'));
+    out.steps.push('LCQ final: '+ll.place+' of 100 over 5 matches to '+(cr.solos.seat||'out'));
 
     // ---- the Finals: 12 matches, and the room banks the whole pot ----------
     cr.solos={got:'lcqf', seat:'final'};
