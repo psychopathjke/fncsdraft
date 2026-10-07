@@ -327,6 +327,40 @@ const SECTIONS=[
     check('аренда: полная зарплата снова', mgrWage(h)===w);
     check('аренда: письмо о возвращении', (MGR.inbox||[]).some(m=>m.loan));
   `},
+  {name:'награды', once:true, code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    const [a, b]=mgrAll(), day=CAREER.career.day, mk=day.slice(0, 7);
+    MGR.log.unshift({day, kind:'night', name:'N1', teams:[{place:3, prize:0, kills:{[a]:9, [b]:2}}]});
+    MGR.log.unshift({day, kind:'night', name:'N2', teams:[{place:5, prize:0, kills:{[a]:4, [b]:3}}]});
+    mgrAwardsMonth(mk);
+    const pom=(MGR.awards||[]).filter(x=>x.kind==='pom');
+    check('награды: игрок месяца', pom.length===1 && pom[0].h===a && pom[0].kills===13, JSON.stringify(pom));
+    mgrAwardsMonth(mk); check('награды: месяц не дублируется', (MGR.awards||[]).filter(x=>x.kind==='pom').length===1);
+    check('награды: письмо', (MGR.inbox||[]).some(m=>m.award));
+    let err=null; try{ mgrSeasonReview(); }catch(e){ err=e; }
+    check('итоги сезона открываются', !err, err && String(err));
+    document.querySelectorAll('.mg-modal, [data-mg]').forEach(x=>{ const m=x.closest('.mg-modal-wrap,.mg-modal'); if(m) m.remove(); });
+    const yr=(MGR.awards||[]).filter(x=>x.kind==='poy');
+    check('награды: игрок года', yr.length===1 && yr[0].h===a, JSON.stringify(yr));
+    try{ mgrSeasonReview(); }catch(e){}
+    check('награды: год не дублируется', (MGR.awards||[]).filter(x=>x.kind==='poy').length===1);
+    check('награды: в шкафу трофеев', (MGR.trophies||[]).some(t=>String(t.name).indexOf(a)>=0));
+    document.querySelectorAll('.mg-modal').forEach(m=>m.remove());
+    MGR_SUB.tables='trophies'; mgrRenderHub('tables');
+    check('награды: видны в «Трофеях»', document.getElementById('mgBody').textContent.indexOf(a)>=0);
+    MGR_SUB.tables='stats';
+    // Итоги → следующий сезон: кнопка в окне ведёт в новый год, хаб открывается.
+    MGR.board.earn=0; MGR.board.best=1; MGR.board.place=10;   // цели выполнены — не увольняют
+    const y0=MGR.year, n0=mgrAll().length; let e2=null;
+    try{ mgrSeasonReview(); }catch(e){ e2=e; }
+    const go=document.querySelector('.mg-modal [data-mg="go"]'); if(go) go.click();
+    await wait(300);
+    check('следующий сезон: без ошибки', !e2 && !out.errs.length, (e2 && String(e2))||out.errs.join(' | '));
+    check('следующий сезон: год +1', MGR && MGR.year===y0+1, MGR && MGR.year);
+    check('следующий сезон: состав на месте', MGR && mgrAll().length>=1, MGR && mgrAll().length+' из '+n0);
+    if(MGR){ mgrRenderHub('centre'); check('следующий сезон: хаб', !document.querySelector('#mgBody .cc-ffo-err')); }
+    document.querySelectorAll('.mg-modal').forEach(m=>m.remove());
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
