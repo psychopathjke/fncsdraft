@@ -101480,6 +101480,49 @@ function buildBotLandingAssignment(bots, opts){
     }
   }
 
+  /* СЛАБЫЕ НЕ САДЯТСЯ НА САМЫХ СИЛЬНЫХ. Тестер 7.10: «чтобы на самых сильных не падали слабые, а то не
+     реалистично, особенно когда их убивают»; ответ ему — «меньше падали, но оффспавн рандом». Замер
+     check-drop-weak-on-strong: 9,4 встречи «нижняя половина поля на точке топ-10» на лобби из 50.
+     Теперь такой слабый меняется местами с командой посильнее (не из топа, не из нижней половины) из коробки,
+     где топа нет: число команд в коробках то же, так что толпа и пустые точки не ломаются. Гость уходит раньше
+     хозяина, книга не переписывается. Люди, напарник и приказ менеджера на высадку не трогаются. */
+  {
+    const movable=t=>t && !t.isYou && !t.isRival && !t.isMate && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
+    const keyOfT=t=>(book && !t.isYou && !t.isRival) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
+    const str=t=>((t.pow||0)-(t._landingPow||0))+(t.closeEdge||0);
+    const all=[]; zoneGroups.forEach(g=>g.forEach(t=>all.push(t)));
+    if(all.length>=8){
+      const ranked=all.slice().sort((a,b)=>str(b)-str(a));
+      const top=new Set(ranked.slice(0, Math.ceil(all.length/5))), weak=new Set(ranked.slice(Math.ceil(all.length/2)));
+      const zoneOf=new Map(); zoneGroups.forEach((g,z)=>g.forEach(t=>zoneOf.set(t, z)));
+      for(let guard=0; guard<all.length; guard++){
+        let best=null;
+        zoneGroups.forEach((g, z)=>{
+          if(!g.some(t=>top.has(t))) return;
+          g.filter(t=>weak.has(t) && movable(t)).forEach(w=>{
+            const k=keyOfT(w), owner=k && book && book.at[k]===ccSeatKeyOf(z);
+            all.forEach(x=>{
+              if(top.has(x) || weak.has(x) || !movable(x)) return;
+              const z2=zoneOf.get(x); if(!z2 || z2===z || (zoneGroups.get(z2)||[]).some(o=>top.has(o))) return;
+              const cost=(owner ? 1e6 : 0)+str(w)*100-str(x);
+              if(!best || cost<best.cost) best={w, x, z, z2, cost};
+            });
+          });
+        });
+        if(!best) break;
+        const {w, x, z, z2}=best;
+        zoneGroups.set(z, zoneGroups.get(z).map(o=>o===w ? x : o));
+        zoneGroups.set(z2, zoneGroups.get(z2).map(o=>o===x ? w : o));
+        zoneOf.set(w, z2); zoneOf.set(x, z);
+        [[w, z2], [x, z]].forEach(([t, to])=>{
+          t.landingZone=to; t.landingResult=null; t.landingRival=null;
+          applyLandingPow(t, to.points);
+          if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
+        });
+      }
+    }
+  }
+
   // The old guarantee: shuffle squads off the emptiest box until two boxes are
   // free, so the player always had somewhere quiet to land. It is off unless a
   // caller asks for it — a lobby where the last qualifier is left choosing
