@@ -150892,7 +150892,9 @@ async function runCareerMajor(){
            Пул без себя сортируется у всех одинаково, а своё место в хите — последнее,
            тем же правилом, что в Reload (см. ccStageRoom). Соперника досадит
            ccRaceFieldSync, как и всегда. */
-        const pool=careerCupField(lobbyCr, drafted, st.field*ccMajorHeats(), null, false, sharp);
+        // careerCupField отдаёт поле без своего места (N−1); в гонке себя в посев не кладут — одна команда сверху,
+        // иначе один из трёх хитов садился на 49 (замер 7.10: 20 из 60 хитов).
+        const pool=careerCupField(lobbyCr, drafted, st.field*ccMajorHeats()+(ccRaceLock() ? 1 : 0), null, false, sharp);
         const seeded = rows
           ? rows.map(r=>r==='you' ? you : ccMajorTeamFrom(r))
           : (ccRaceLock() ? pool.slice() : [you, ...pool]).sort((a,b)=>(b.pow||0)-(a.pow||0));

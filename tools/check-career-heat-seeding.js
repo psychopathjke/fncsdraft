@@ -81,7 +81,8 @@ const BOOT = `
     // Строки турнирной таблицы: первая клетка — «#место».
     const names=[...document.querySelectorAll('#majorStages .stage-card table.lobby-table tbody tr')]
       .filter(tr=>/^#/.test((tr.children[0]||{}).textContent||''))
-      .map(tr=>(tr.children[1]||{}).textContent||'').filter(Boolean);
+      // Без страны вместо флага — плашка региона «EU» текстом (cardFlag); она не часть ника.
+      .map(tr=>{ const c=(tr.children[1]||document.createElement('td')).cloneNode(true); c.querySelectorAll('.reg-badge').forEach(b=>b.remove()); return c.textContent||''; }).filter(Boolean);
     card.querySelector('button[onclick*="careerBackToHub"]').click();
     return {head:head, names:names};
   };
