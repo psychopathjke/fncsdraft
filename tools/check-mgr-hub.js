@@ -33,6 +33,23 @@ const SECTIONS=[
     check('бюджет: в пределах — подписан', mgrAll().length===n0+1);
     check('бюджет: отступные из трансферного', MGR.club.transfer===Math.max(0, tr0-5000), tr0+' → '+MGR.club.transfer);
   `},
+  {name:'выбор', code:String.raw`
+    MGR_NEW_SIDE='real'; MGR_NEW_REGION='EU';
+    for(const y of [2019, 2022, 2024, 2026]){ mgrOpenNew(y);
+      const html=document.getElementById('mgBody').innerHTML, tiles=document.querySelectorAll('#mgBody .mgn-club');
+      check('выбор '+y+' '+lang+': плитки есть', tiles.length>=3, String(tiles.length));
+      check('выбор '+y+' '+lang+': без undefined/NaN', !bad(html));
+      check('выбор '+y+': у плиток бюджеты', tiles.length && [...tiles].every(t=>/\$/.test(t.textContent)));
+      check('выбор '+y+': звёзды', document.querySelectorAll('#mgBody .mgn-stars').length===tiles.length);
+      check('выбор '+y+': ожидание совета', [...tiles].every(t=>t.querySelector('.mgn-exp') && t.querySelector('.mgn-exp').textContent.trim().length>3)); }
+    check('звёзды', mgrClubStars(95)===5 && mgrClubStars(60)===0.5 && mgrClubStars(80)%0.5===0, [mgrClubStars(95),mgrClubStars(60),mgrClubStars(80)].join());
+    MGR_NEW_SORT='budget'; mgrOpenNew(2024);
+    const bs=MGR_NEW_LIST.map(c=>c.budget.transfer);
+    check('сортировка по бюджету', bs.every((v,i)=>!i || bs[i-1]>=v), bs.slice(0,5).join());
+    MGR_NEW_SORT='stars'; mgrOpenNew(2024);
+    document.querySelector('#mgBody .mgn-club').click();
+    check('клик по плитке берёт клуб', MGR && MGR.club && MGR.club.name===MGR_NEW_LIST[0].name, MGR && MGR.club && MGR.club.name);
+  `},
 ];
 
 const only=process.argv[2]||'';

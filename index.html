@@ -6295,6 +6295,25 @@
   /* Свой тёмный фон: контейнер экрана (.ch-stage) у карьеры светлый, а режим менеджера — тёмный. */
   #screen-manager .ch-stage{background:transparent !important;box-shadow:none !important;border:0 !important;}
   #screen-manager .ch-body{background:transparent !important;}
+  /* Выбор клуба как в FC: плитки настоящих клубов со звёздами и бюджетами. */
+  .mgn-headtile{display:flex;flex-direction:column;gap:8px;}
+  .mgn-reg{font-size:12px;display:flex;gap:6px;align-items:center;}
+  .mgn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:8px;}
+  .mgn-club{cursor:pointer;display:flex;flex-direction:column;gap:4px;}
+  .mgn-club:hover{border-color:#ffd400;}
+  .mgn-head{display:flex;gap:8px;align-items:center;min-width:0;}
+  .mgn-head .mg-logo{flex:0 0 auto;width:34px;height:34px;}
+  .mgn-name{display:flex;flex-direction:column;min-width:0;}
+  .mgn-name b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mgn-ovr{margin-left:auto;font-size:26px;font-weight:900;}
+  .mgn-row{display:flex;justify-content:space-between;gap:8px;font-size:12px;}
+  .mgn-row em{opacity:.7;font-style:normal;}
+  .mgn-stars{display:flex;gap:1px;font-size:12px;}
+  .mgn-st{color:#555;font-style:normal;}
+  .mgn-st.on,.mgn-st.half{color:#ffd400;}
+  .mgn-st.half{opacity:.5;}
+  .mgn-exp{font-size:11px;opacity:.8;margin-top:2px;}
+  @media (max-width:480px){ .mgn-grid{grid-template-columns:1fr;} }
   .mg-wrap{max-width:980px;margin:0 auto;padding:18px 16px 40px;color:#e6ecff;background:linear-gradient(180deg,#13235c,#0b1640);border:1px solid rgba(63,208,255,.25);border-radius:16px;}
   .mg-h{font:800 26px/1.1 Oswald,system-ui,sans-serif;margin:0 0 4px;text-transform:uppercase;}
   .mg-years{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0;}
@@ -154915,24 +154934,44 @@ function mgrClubsFor(year, region){
     const ps=by[name].slice().sort((a,b)=>(ccCardOvr(b)||0)-(ccCardOvr(a)||0));
     const top=ps.slice(0, 6).map(c=>ccCardOvr(c)||0);
     const avg=top.length ? Math.round(top.reduce((s,v)=>s+v, 0)/top.length) : 0;
-    return {name, players:ps.map(c=>c.handle), n:ps.length, avg};
-  }).filter(c=>c.n>=2).sort((a,b)=>b.avg-a.avg || b.n-a.n).slice(0, 40);
+    return {name, players:ps.map(c=>c.handle), n:ps.length, avg, star:ps[0] ? ps[0].handle : null,
+            budget:mgrClubBudget(name, ps.slice(0, 6).reduce((s,c)=>s+mgrSalary(c), 0))};
+  }).filter(c=>c.n>=2).sort((a,b)=>b.avg-a.avg || b.n-a.n).slice(0, 40)
+    .map((c,i,all)=>Object.assign(c, {expect:mgrExpect(i, all.length)}));
 }
+// Уровень клуба звёздами, как в FC: 60 → 0.5, 95 → 5, шаг 0.5 (оценка режима).
+function mgrClubStars(avg){ return Math.max(0.5, Math.min(5, Math.round(((avg-60)/35*4.5+0.5)*2)/2)); }
+// Ожидание совета — по месту клуба по силе в своём регионе: верх 15% — титул, верхняя половина — финал.
+function mgrExpect(rank, n){ return rank<Math.max(1, Math.round(n*0.15)) ? 'title' : rank<Math.round(n*0.5) ? 'final' : 'survive'; }
+function mgrStarsHTML(s){ let h=''; for(let i=1;i<=5;i++) h+='<i class="mgn-st'+(s>=i?' on':s>=i-0.5?' half':'')+'">★</i>'; return '<span class="mgn-stars">'+h+'</span>'; }
+let MGR_NEW_SIDE='real', MGR_NEW_SORT='stars';
 function mgrOpenNew(year){
   MGR_NEW_YEAR=year||MGR_NEW_YEAR;
-  const T=mgrT();
+  const T=mgrT(), T9=mgrT9();
   const clubs=mgrClubsFor(MGR_NEW_YEAR, MGR_NEW_REGION);
-  const years=[2019,2020,2021,2022,2023,2024,2025,2026].map(y=>'<button class="mg-yr'+(y===MGR_NEW_YEAR?' on':'')+'" onclick="mgrOpenNew('+y+')">'+y+'</button>').join('');
-  const regs=['EU','NAC','BR','OCE','ASIA','ME'].map(r=>'<option'+(r===MGR_NEW_REGION?' selected':'')+'>'+r+'</option>').join('');
-  const rows=clubs.map((c,i)=>'<div class="mg-club"><span class="mg-logo">'+(typeof clubLogoHTML==='function' ? clubLogoHTML(c.name) : '')+'</span>'+
-    '<span class="mg-cname"><b>'+esc(c.name)+'</b><small>'+c.n+' '+T.players+' · '+T.avg+' '+c.avg+' · '+esc(c.players.slice(0, 4).join(', '))+'</small></span>'+
-    '<button class="hero-btn hero-btn-go mg-take" onclick="mgrTake('+i+')">'+T.take+'</button></div>').join('');
+  if(MGR_NEW_SORT==='budget') clubs.sort((a,b)=>b.budget.transfer-a.budget.transfer);
   MGR_NEW_LIST=clubs;
-  document.getElementById('mgBody').innerHTML='<div class="mg-wrap"><h2 class="mg-h">'+T.title+' · '+T.newH+'</h2>'+
-    '<div class="mg-years">'+years+'<label class="mg-reg">'+T.region+' <select onchange="MGR_NEW_REGION=this.value;mgrOpenNew()">'+regs+'</select></label></div>'+
-    mgrNewOptsHTML()+
-    '<p class="mg-hint">'+T.pickClub+'</p><div class="mg-clubs">'+(rows || '<i>'+T.none+'</i>')+'</div>'+
-    '<div class="mg-foot"><button class="hero-btn hero-btn-alt" onclick="mgrHome()">'+T.home+'</button></div></div>';
+  const sub=(on, click, label)=>'<button class="ch-subtab'+(on?' on':'')+'" onclick="'+click+'">'+esc(label)+'</button>';
+  const years=[2019,2020,2021,2022,2023,2024,2025,2026].map(y=>sub(y===MGR_NEW_YEAR, 'mgrOpenNew('+y+')', String(y))).join('');
+  const regs=['EU','NAC','BR','OCE','ASIA','ME'].map(r=>'<option'+(r===MGR_NEW_REGION?' selected':'')+'>'+r+'</option>').join('');
+  const side='<div class="ch-subtabs mgn-side">'+sub(MGR_NEW_SIDE==='real', "MGR_NEW_SIDE='real';mgrOpenNew()", T9.real)+
+    sub(MGR_NEW_SIDE==='own', "MGR_NEW_SIDE='own';mgrOpenNew()", T9.own)+'</div>';
+  const tile=(c,i)=>'<div class="ch-tile mgn-club" data-i="'+i+'" onclick="mgrTake('+i+')">'+
+    '<div class="mgn-head"><span class="mg-logo">'+(typeof clubLogoHTML==='function' ? clubLogoHTML(c.name) : '')+'</span>'+
+      '<span class="mgn-name"><b>'+esc(c.name)+'</b>'+mgrStarsHTML(mgrClubStars(c.avg))+'</span><b class="mgn-ovr">'+c.avg+'</b></div>'+
+    '<div class="mgn-row"><em>'+esc(T9.transfer)+'</em><b>'+mgrMoney(c.budget.transfer)+'</b></div>'+
+    '<div class="mgn-row"><em>'+esc(T9.wageCap)+'</em><b>'+mgrMoney(c.budget.wageCap)+' '+esc(T.month)+'</b></div>'+
+    '<div class="mgn-row"><em>'+esc(T9.star)+'</em><b>'+esc(c.star||'—')+' · '+c.n+' '+esc(T.players)+'</b></div>'+
+    '<div class="mgn-exp">'+esc(T9.expect[c.expect])+'</div></div>';
+  const real='<div class="ch-subtabs mgn-sort">'+sub(MGR_NEW_SORT==='stars', "MGR_NEW_SORT='stars';mgrOpenNew()", T9.byStars)+
+      sub(MGR_NEW_SORT==='budget', "MGR_NEW_SORT='budget';mgrOpenNew()", T9.byBudget)+'</div>'+
+    '<div class="mgn-grid">'+(clubs.map(tile).join('') || '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div>';
+  const own=typeof mgrOwnFormHTML==='function' ? mgrOwnFormHTML() : '';
+  document.getElementById('mgBody').innerHTML='<div class="ch-tile mgn-headtile"><h4>'+esc(T.title)+' · '+esc(T.newH)+'</h4>'+
+    '<div class="ch-subtabs mgn-years">'+years+'</div>'+
+    '<label class="mgn-reg">'+esc(T.region)+' <select onchange="MGR_NEW_REGION=this.value;mgrOpenNew()">'+regs+'</select></label>'+side+'</div>'+
+    mgrNewOptsHTML()+(MGR_NEW_SIDE==='own' ? own : real)+
+    '<div class="ch-foot"><button class="cc-back" onclick="mgrHome()">'+esc(T.home)+'</button></div>';
   show('screen-manager');
 }
 let MGR_NEW_LIST=[];
@@ -155034,10 +155073,14 @@ function mgrT9(){
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
   return ru ? {
     overCap:s=>'Совет против: потолок зарплат '+s+' в месяц', transfer:'Трансферный бюджет', wageCap:'Бюджет зарплат',
-    renewCap:h=>h+' уходит: продление не влезло в бюджет зарплат'
+    renewCap:h=>h+' уходит: продление не влезло в бюджет зарплат',
+    real:'Настоящий клуб', own:'Создать свой', star:'Звезда состава', byStars:'По звёздам', byBudget:'По бюджету',
+    expect:{title:'Совет ждёт титул', final:'Совет ждёт финал', survive:'Совет ждёт удержаться'}
   } : {
     overCap:s=>'The board says no: wage budget '+s+' a month', transfer:'Transfer budget', wageCap:'Wage budget',
-    renewCap:h=>h+' leaves: the new deal did not fit the wage budget'
+    renewCap:h=>h+' leaves: the new deal did not fit the wage budget',
+    real:'Real club', own:'Create your own', star:'Star player', byStars:'By stars', byBudget:'By budget',
+    expect:{title:'Board expects a title', final:'Board expects a final', survive:'Board expects to survive'}
   };
 }
 
