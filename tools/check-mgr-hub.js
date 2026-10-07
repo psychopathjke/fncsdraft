@@ -704,6 +704,39 @@ const SECTIONS=[
     check('тренер состава '+lang+': без undefined', !bad(document.getElementById('mgBody').innerHTML));
     mgrTeamCoachSet(t0.id, null); check('тренер состава: снят', !mgrTeamCoach(t0.id));
   `},
+  {name:'поиск', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    mgrMktReset();
+    const all=mgrMarketList();
+    const nat=all.map(c=>c.nat).filter(Boolean)[0];
+    MGR_MKT.nat=nat; const byNat=mgrMarketList();
+    check('поиск: по стране', byNat.length>=1 && byNat.every(c=>c.nat===nat), nat+' '+byNat.length);
+    mgrMktReset(); MGR_MKT.role='roleIGL'; check('поиск: по роли', mgrMarketList().every(c=>(attrsFor(c)||{}).roleKey==='roleIGL'));
+    mgrMktReset(); MGR_MKT.omin=80; MGR_MKT.omax=85; const rr=mgrMarketList();
+    check('поиск: рейтинг от–до', rr.length && rr.every(c=>{ const r=ccCardOvr(c)||0; return r>=80 && r<=85; }), String(rr.length));
+    mgrMktReset(); MGR_MKT.amax=19; check('поиск: возраст до', mgrMarketList().every(c=>{ const a=ccAgeOf(c.handle, CAREER.career.day); return a!=null && a<=19; }));
+    mgrMktReset(); MGR_MKT.pmin=90; check('поиск: потенциал от', mgrMarketList().every(c=>(mgrPot(c.handle)||0)>=90));
+    mgrMktReset(); const club=all.map(c=>mgrOrgOf(c)).filter(Boolean)[0]; MGR_MKT.club=club; check('поиск: по клубу', mgrMarketList().length && mgrMarketList().every(c=>mgrOrgOf(c)===club), club);
+    mgrMktReset(); MGR_MKT.sort='pot'; const sp=mgrMarketList().map(c=>mgrPot(c.handle)||0); check('поиск: сортировка по потенциалу', sp.every((v,i)=>!i || sp[i-1]>=v));
+    mgrMktReset(); MGR_MKT.reg='NAC'; const na=mgrMarketList();
+    check('поиск: другой регион', na.length>=10 && na.every(c=>c.region==='NAC'), String(na.length)+' '+(na[0]||{}).region);
+    const f=na.find(c=>!mgrOrgOf(c)) || na[0]; MGR_NEG=null; mgrSign(f.handle);
+    check('поиск: игрок другого региона — переговоры открылись', !!MGR_NEG && hKey(MGR_NEG.h)===hKey(f.handle) && !!mgrCard(f.handle));
+    const box=document.getElementById('mgNeg'); if(box) box.remove(); MGR_NEG=null;
+    mgrMktReset(); MGR_SUB.transfers='market'; mgrRenderHub('transfers');
+    const B=document.getElementById('mgBody');
+    check('поиск '+lang+': панель фильтров', B.querySelectorAll('.mgm-filters select').length>=7 && !bad(B.innerHTML), String(B.querySelectorAll('.mgm-filters select').length));
+  `},
+  {name:'потенциал', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    const day=CAREER.career.day, groups={y:[], m:[], o:[]};
+    (ccSceneRoster('EU')||[]).forEach(c=>{ const a=ccAgeOf(c.handle, day), r=ccCardOvr(c)||0; if(a==null || r<70 || r>84) return;
+      const room=(mgrPot(c.handle)||r)-r; (a<=18 ? groups.y : a<=23 ? groups.m : a>=26 ? groups.o : []).push(room); });
+    const avg=v=>v.length ? v.reduce((s,x)=>s+x,0)/v.length : 0;
+    out.notes.potRoom={young:+avg(groups.y).toFixed(1), mid:+avg(groups.m).toFixed(1), old:+avg(groups.o).toFixed(1), n:[groups.y.length, groups.m.length, groups.o.length]};
+    check('потенциал: младше — выше запас', avg(groups.y)>avg(groups.m) && (!groups.o.length || avg(groups.m)>avg(groups.o)), JSON.stringify(out.notes.potRoom));
+    check('потенциал: не выше 98', (ccSceneRoster('EU')||[]).every(c=>(mgrPot(c.handle)||0)<=98));
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
