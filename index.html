@@ -19585,6 +19585,102 @@ Object.assign(I18N.it, {hmCareerTag:'Modalità 1 · Carriera', hmCareerTitle:'Ca
 Object.assign(I18N.pt, {hmCareerTag:'Modo 1 · Carreira', hmCareerTitle:'Carreira', hmCareerSub:'Um jogador, temporada após temporada no calendário real 2019–2026: divisões, Majors, clubes, LANs', hmPlay:'Jogar',
   hmDraftTag:'Modo 2 · Draft', hmDraftTitle:'Draft', hmDraftSub:'Monte um time de cartas reais e jogue o torneio: qualquer ano 2019–2026, All FNCS, duplas, trios, squads',
   dpFormats:'All FNCS · formatos', dpBack:'Voltar', dpRealCards:'Cartas reais', dpPastDesc:'Cartas dos jogadores pelos resultados reais neste evento. Play-In, heats e final.'});
+/* Переговоры с тиммейтом (7.10): аргументы «играли вместе / земляки / свой клуб / буткемп», условия «пересядь» и «пробный кап». */
+Object.assign(I18N.ru, {
+  dmArghistoryBtn:'Мы уже играли вместе', dmArghistoryWhat:'Напомнить общие вечера — помнит, как было',
+  dmArgnatBtn:'Мы земляки', dmArgnatWhat:'Одна страна, один язык — в коммах проще',
+  dmArgclubBtn:'Зову в свой клуб', dmArgclubWhat:'Ты в основе клуба — это весомо',
+  dmArgcampBtn:'Буткемп за мой счёт', dmArgcampWhat:'$1,000 с твоего баланса — убеждает сильно',
+  dmArgHistory:n=>'Мы уже сыграли вместе '+n+' вечер(а). Ты знаешь, как я играю',
+  dmArgNat:c=>'Мы оба из страны «'+c+'». Коммы на родном языке — это плюс',
+  dmArgClub:c=>'Я в основе '+c+'. Пойдёшь со мной — поговорю, чтобы взяли и тебя',
+  dmArgCamp:v=>'Беру буткемп на себя: $'+v+'. Неделя вместе — сыграемся',
+  dmCondRole:r=>'Слушай, давай так: я в деле, если '+r+' будешь ты. Двух одинаковых нам не надо',
+  dmCondTrial:'Почти уговорил. Давай сначала один кап вместе — посмотрим, как сыграемся',
+  dmCondRoleHint:'Он согласен, если ты сменишь роль', dmCondTrialHint:'Он согласен на пробу: один кап вместе, потом решит',
+  dmCondRoleBtn:'Пересяду', dmCondTrialBtn:'Давай пробный кап', dmCondNoBtn:'Нет, не подходит',
+  dmCondNo:'Не, так не пойдёт', dmCondNoBack:'Ну, твоё дело. Если что — пиши',
+  dmCondRoleOk:r=>'Договорились, '+r+' — моё', dmCondTrialOk:'Давай. Один кап — и решаем',
+  dmCondTrialYes:'Идёт. Ближайший кап играем вместе, по итогу скажу',
+  dmTrialStay:p=>'Ну что, '+ccTop(p)+' вместе. Остаюсь, играем дальше',
+  dmTrialGo:p=>ccTopC(p)+'. Не сыграемся, честно. Без обид, ищи дальше',
+  ccNewsTrialGone:h=>'Проба не задалась: @'+ccHandle(h)+' ушёл после первого капа'});
+Object.assign(I18N.en, {
+  dmArghistoryBtn:'We have played together', dmArghistoryWhat:'Remind them of the nights you shared — they remember how it went',
+  dmArgnatBtn:'Same country', dmArgnatWhat:'One country, one language — comms are easier',
+  dmArgclubBtn:'Bring them to my club', dmArgclubWhat:'You are on a club main roster — that carries weight',
+  dmArgcampBtn:'Bootcamp on me', dmArgcampWhat:'$1,000 from your balance — very convincing',
+  dmArgHistory:n=>'We already played '+n+' night(s) together. You know how I play',
+  dmArgNat:c=>'We are both from '+c+'. Comms in our own language is a plus',
+  dmArgClub:c=>'I am on the '+c+' main roster. Come with me and I will push for them to sign you too',
+  dmArgCamp:v=>'Bootcamp is on me: $'+v+'. A week together and we will click',
+  dmCondRole:r=>'Look, here is the deal: I am in if you play '+r+'. We do not need two of the same',
+  dmCondTrial:'You almost have me. Let us play one cup together first — see how we click',
+  dmCondRoleHint:'They are in if you switch roles', dmCondTrialHint:'They want a trial: one cup together, then they decide',
+  dmCondRoleBtn:'I will switch', dmCondTrialBtn:'Trial cup it is', dmCondNoBtn:'No, that does not work',
+  dmCondNo:'Nah, that does not work for me', dmCondNoBack:'Your call. Hit me up if anything changes',
+  dmCondRoleOk:r=>'Deal, '+r+' is mine', dmCondTrialOk:'Let us do it. One cup and we decide',
+  dmCondTrialYes:'Done. We play the next cup together and I will tell you after',
+  dmTrialStay:p=>ccTopC(p)+' together. I am staying, let us keep going',
+  dmTrialGo:p=>ccTopC(p)+'. Honestly we do not click. No hard feelings, keep looking',
+  ccNewsTrialGone:h=>'The trial did not work out: @'+ccHandle(h)+' left after the first cup'});
+Object.assign(I18N.fr, {
+  dmArghistoryBtn:'On a déjà joué ensemble', dmArghistoryWhat:'Rappeler vos soirées communes — il s\u2019en souvient',
+  dmArgnatBtn:'Même pays', dmArgnatWhat:'Même pays, même langue — les comms sont plus simples',
+  dmArgclubBtn:'Je t\u2019emmène dans mon club', dmArgclubWhat:'Tu es dans l\u2019équipe principale d\u2019un club — ça pèse',
+  dmArgcampBtn:'Bootcamp à mes frais', dmArgcampWhat:'1 000 $ de ton solde — très convaincant',
+  dmArgHistory:n=>'On a déjà joué '+n+' soirée(s) ensemble. Tu sais comment je joue',
+  dmArgNat:c=>'On vient tous les deux de : '+c+'. Les comms dans notre langue, c\u2019est un plus',
+  dmArgClub:c=>'Je suis dans l\u2019équipe principale de '+c+'. Viens avec moi, je pousse pour qu\u2019ils te signent aussi',
+  dmArgCamp:v=>'Le bootcamp est pour moi : $'+v+'. Une semaine ensemble et ça va matcher',
+  dmCondRole:r=>'Écoute, voilà le deal : je suis partant si c\u2019est toi qui joues '+r+'. Pas besoin de deux pareils',
+  dmCondTrial:'Tu m\u2019as presque convaincu. Faisons d\u2019abord une cup ensemble — on verra si ça matche',
+  dmCondRoleHint:'Il est partant si tu changes de rôle', dmCondTrialHint:'Il veut un essai : une cup ensemble, puis il décide',
+  dmCondRoleBtn:'Je change', dmCondTrialBtn:'Va pour la cup d\u2019essai', dmCondNoBtn:'Non, ça ne me va pas',
+  dmCondNo:'Non, ça ne va pas le faire', dmCondNoBack:'Comme tu veux. Écris-moi si ça change',
+  dmCondRoleOk:r=>'Deal, '+r+' c\u2019est moi', dmCondTrialOk:'Allez. Une cup et on décide',
+  dmCondTrialYes:'Ça marche. On joue la prochaine cup ensemble et je te dis après',
+  dmTrialStay:p=>ccTopC(p)+' ensemble. Je reste, on continue',
+  dmTrialGo:p=>ccTopC(p)+'. Franchement, ça ne matche pas. Sans rancune, cherche encore',
+  ccNewsTrialGone:h=>'L\u2019essai n\u2019a pas marché : @'+ccHandle(h)+' est parti après la première cup'});
+Object.assign(I18N.it, {
+  dmArghistoryBtn:'Abbiamo già giocato insieme', dmArghistoryWhat:'Ricordagli le serate insieme — si ricorda com\u2019è andata',
+  dmArgnatBtn:'Stesso paese', dmArgnatWhat:'Stesso paese, stessa lingua — le comms sono più facili',
+  dmArgclubBtn:'Ti porto nel mio club', dmArgclubWhat:'Sei nel roster principale di un club — conta',
+  dmArgcampBtn:'Bootcamp a mie spese', dmArgcampWhat:'$1.000 dal tuo saldo — convince parecchio',
+  dmArgHistory:n=>'Abbiamo già giocato '+n+' serata/e insieme. Sai come gioco',
+  dmArgNat:c=>'Veniamo tutti e due da: '+c+'. Le comms nella nostra lingua sono un vantaggio',
+  dmArgClub:c=>'Sono nel roster principale di '+c+'. Vieni con me e spingo perché prendano anche te',
+  dmArgCamp:v=>'Il bootcamp lo pago io: $'+v+'. Una settimana insieme e ci troviamo',
+  dmCondRole:r=>'Senti, facciamo così: ci sto se '+r+' lo fai tu. Due uguali non ci servono',
+  dmCondTrial:'Mi hai quasi convinto. Prima una cup insieme — vediamo come ci troviamo',
+  dmCondRoleHint:'Ci sta se cambi ruolo', dmCondTrialHint:'Vuole una prova: una cup insieme, poi decide',
+  dmCondRoleBtn:'Cambio ruolo', dmCondTrialBtn:'Vada per la cup di prova', dmCondNoBtn:'No, non va',
+  dmCondNo:'No, così non va', dmCondNoBack:'Come vuoi. Scrivimi se cambia qualcosa',
+  dmCondRoleOk:r=>'Affare fatto, '+r+' lo faccio io', dmCondTrialOk:'Andiamo. Una cup e decidiamo',
+  dmCondTrialYes:'Fatto. Giochiamo insieme la prossima cup e poi ti dico',
+  dmTrialStay:p=>ccTopC(p)+' insieme. Resto, andiamo avanti',
+  dmTrialGo:p=>ccTopC(p)+'. Sinceramente non ci troviamo. Niente di personale, cerca ancora',
+  ccNewsTrialGone:h=>'La prova non è andata: @'+ccHandle(h)+' se n\u2019è andato dopo la prima cup'});
+Object.assign(I18N.pt, {
+  dmArghistoryBtn:'A gente já jogou junto', dmArghistoryWhat:'Lembrar das noites juntos — ele lembra como foi',
+  dmArgnatBtn:'Somos do mesmo país', dmArgnatWhat:'Mesmo país, mesma língua — call mais fácil',
+  dmArgclubBtn:'Te levo pro meu clube', dmArgclubWhat:'Você tá no time principal de um clube — isso pesa',
+  dmArgcampBtn:'Bootcamp por minha conta', dmArgcampWhat:'$1.000 do seu saldo — convence bastante',
+  dmArgHistory:n=>'A gente já jogou '+n+' noite(s) junto. Você sabe como eu jogo',
+  dmArgNat:c=>'Nós dois somos de: '+c+'. Call na nossa língua é vantagem',
+  dmArgClub:c=>'Tô no time principal da '+c+'. Vem comigo que eu forço pra te contratarem também',
+  dmArgCamp:v=>'O bootcamp é por minha conta: $'+v+'. Uma semana junto e a gente se acerta',
+  dmCondRole:r=>'Olha, fechado assim: eu topo se o '+r+' for você. Dois iguais não dá',
+  dmCondTrial:'Quase me convenceu. Bora jogar uma cup junto primeiro — ver se encaixa',
+  dmCondRoleHint:'Ele topa se você trocar de função', dmCondTrialHint:'Ele quer um teste: uma cup junto, depois decide',
+  dmCondRoleBtn:'Eu troco', dmCondTrialBtn:'Bora a cup de teste', dmCondNoBtn:'Não, assim não dá',
+  dmCondNo:'Não, assim não rola', dmCondNoBack:'Você que sabe. Se mudar algo, chama',
+  dmCondRoleOk:r=>'Fechado, '+r+' fico eu', dmCondTrialOk:'Bora. Uma cup e a gente decide',
+  dmCondTrialYes:'Fechou. A próxima cup a gente joga junto e depois te falo',
+  dmTrialStay:p=>ccTopC(p)+' juntos. Fico, bora seguir',
+  dmTrialGo:p=>ccTopC(p)+'. Sinceramente não encaixou. Sem ressentimento, segue procurando',
+  ccNewsTrialGone:h=>'O teste não deu certo: @'+ccHandle(h)+' saiu depois da primeira cup'});
 /* Переговоры с клубом поинтереснее (7.10): размер просьбы, встречное, доля с призовых, бонус за подпись, козырь. */
 Object.assign(I18N.ru, {ccAskMoneyLbl:'Деньги', ccAskTermsLbl:'Условия', ccAsk_small:'Чуть больше', ccAsk_fair:'Больше', ccAsk_hard:'Жёстко', ccAskCut:'Меньше доли с призовых', ccAskBonus:'Бонус за подпись',
   ccAskLever:'Сказать про другое предложение', ccAskLeverWhat:'У тебя на руках другой оффер — следующая просьба пройдёт легче', ccSignBonusRow:'Бонус за подпись',
@@ -135493,7 +135589,20 @@ const CC_DM_DAYS=1, CC_DM_ARGS=2;
    into either a closed door or a free yes. See careerDmMargin. */
 const CC_TRIO_THIRD_PULL=5;
 // Осталось одно: роль больше не аргумент, её меняют кнопкой в профиле.
-const CC_ARG_GAIN={form:4};
+/* ПЕРЕГОВОРЫ С ТИММЕЙТОМ ЖИВЕЕ (его слово 7.10: «а переговоры с потенциальным тимейтом как»; без раздела призовых —
+   «призовые 60/40 не надо»). Аргументы после отказа — только правдивые: «играли вместе» (по журналу), «земляки»
+   (одна страна), «зову в свой клуб» (ты в основе клуба), «буткемп за мой счёт» (платишь CC_ARG_CAMP). Встречное
+   вместо отказа, когда не хватило немного (CC_DM_COND): одна роль — «пойду, если пересядешь ты»; иначе — «сначала
+   один кап вместе». Пробный кап решается по первому вечеру вместе (careerDmTrialDays). Числа — оценка режима. */
+const CC_ARG_GAIN={form:4, history:3, nat:2, club:2, camp:3};
+const CC_ARG_CAMP=1000;
+const CC_DM_COND=3;               // насколько «не хватило», чтобы вместо отказа было условие
+// Сколько вечеров ты уже играл с этим человеком (журнал карьеры).
+function ccDmPlayedWith(handle){
+  const k=hKey(handle);
+  return ((CAREER.career && CAREER.career.log)||[]).filter(r=>
+    (r.mate && hKey(r.mate)===k) || (r.mates||[]).some(m=>hKey(m)===k)).length;
+}
 // The margin, as a number rather than a yes or no, so an argument has something
 // to move. Positive is a yes.
 function careerDmMargin(who){
@@ -135679,7 +135788,8 @@ function careerDmAnswer(t, boost){
   t.boost=boost||0;
   // Свежий разрыв тянет ответ вниз — см. CC_MATE_COOL.
   CAREER.dmBoost=(boost||0)-ccMateCold(gone);
-  const yes=careerDmMargin(who)>=0;
+  const margin=careerDmMargin(who);
+  const yes=margin>=0;
   CAREER.dmBoost=0;
   if(yes){
     // Coming back is not the same as being asked for the first time, so it is
@@ -135689,6 +135799,20 @@ function careerDmAnswer(t, boost){
     return true;
   }
   const mate=careerDmMateOf(who);
+  // Не хватило немного — не «нет», а условие. Один раз на разговор.
+  if(!t.condUsed && !(mate && careerDuoBeatsYou(who)) && margin>=-CC_DM_COND && !ccMpOn()){
+    t.condUsed=true;
+    const his=(who.card ? attrsFor(who.card) : attrsFor(who)||{}).roleKey;
+    const can=(typeof ccRoleSwapCan==='function') ? ccRoleSwapCan() : {ok:false};
+    if(his && his===ccRoleNow() && can.ok){
+      t.state='cond'; t.cond='role';
+      careerDmPush(t, 'them', 'dmCondRole', [L()[ccRoleOther(his)]||'']);
+    } else {
+      t.state='cond'; t.cond='trial';
+      careerDmPush(t, 'them', 'dmCondTrial');
+    }
+    return false;
+  }
   if(mate && careerDuoBeatsYou(who)) careerDmPush(t, 'them', 'dmNoDuo', [mate.handle]);
   else careerDmPush(t, 'them', 'dmNo', [who.ovr, CAREER.career.division]);
   t.state='declined';
@@ -135700,6 +135824,7 @@ function careerDmAnswer(t, boost){
 // still lands rather than hanging in the inbox for the rest of the career.
 function careerDmDays(fromISO, toISO){
   if(!(toISO>fromISO)) return;
+  try{ careerDmTrialDays(); }catch(e){}
   careerDms().forEach(t=>{
     if(!t.pending || t.pending.kind!=='duo' || t.pending.due>toISO) return;
     const boost=t.pending.boost||0;
@@ -135714,9 +135839,48 @@ function careerDmArgs(t){
   const cr=CAREER.career;
   const out=[];
   if(!used.form && (cr.log||[]).length) out.push('form');
+  if(!used.history && t.who && ccDmPlayedWith(t.who.handle)>0) out.push('history');
+  if(!used.nat && t.who && CAREER.player && CAREER.player.country && ccDuoNatCode(t.who)===String(CAREER.player.country).toLowerCase()) out.push('nat');
+  if(!used.club && CAREER.org && !CAREER.org.academy) out.push('club');
+  if(!used.camp && (cr.balance||0)>=CC_ARG_CAMP) out.push('camp');
   /* «Я пересяду» отсюда убрано вместе с тем же правилом: роль меняет игрок и
      только себе, а не переговоры за него. См. careerRoleSwap. */
   return out;
+}
+function careerDmCond(id, ok){
+  const t=careerDms().find(x=>x.id===id);
+  if(!t || t.state!=='cond') return;
+  if(!ok){ careerDmPush(t, 'you', 'dmCondNo'); t.state='declined'; careerDmPush(t, 'them', 'dmCondNoBack'); }
+  else if(t.cond==='role'){
+    const was=ccRoleNow();
+    careerRoleSwap();
+    if(ccRoleNow()!==was){ careerDmPush(t, 'you', 'dmCondRoleOk', [L()[ccRoleNow()]||'']); careerDmPush(t, 'them', 'dmYes'); t.state='offer'; }
+    else { careerDmPush(t, 'them', 'dmNo', [t.who.ovr, CAREER.career.division]); t.state='declined'; }
+  } else {
+    careerDmPush(t, 'you', 'dmCondTrialOk');
+    careerDmPush(t, 'them', 'dmCondTrialYes');
+    t.state='offer'; t.trial=true;
+  }
+  careerSave(); careerRenderHub('social');
+}
+/* Пробный кап: по первому вечеру, сыгранному вместе после того, как он сел. Вышли в верхние 40 % поля или прошли
+   дальше — остаётся; иначе — «не то», и уходит (как разрыв: careerMateLeftMark). */
+function careerDmTrialDays(){
+  careerDms().forEach(t=>{
+    if(!t.trial || t.trialDone || t.state!=='partner' || !t.who) return;
+    if(!t.trialFrom){ t.trialFrom=careerToday(); return; }
+    const k=hKey(t.who.handle);
+    const r=((CAREER.career && CAREER.career.log)||[]).find(x=>x.day>=t.trialFrom &&
+      ((x.mate && hKey(x.mate)===k) || (x.mates||[]).some(m=>hKey(m)===k)));
+    if(!r) return;
+    t.trialDone=true;
+    const good=r.passed || (r.place && r.of && r.place<=Math.ceil(r.of*0.4));
+    if(good){ careerDmPush(t, 'them', 'dmTrialStay', [r.place||0]); t.trial=false; return; }
+    careerDmPush(t, 'them', 'dmTrialGo', [r.place||0]);
+    careerMateDrop(t.who.handle);
+    careerMateLeftMark(t.who.handle);
+    careerNews('flat', 'ccNewsTrialGone', [t.who.handle]);
+  });
 }
 function careerDmArgue(id, kind){
   const t=careerDms().find(x=>x.id===id);
@@ -135732,6 +135896,10 @@ function careerDmArgue(id, kind){
     boost = beat>=0.7 ? CC_ARG_GAIN.form : -2;
     careerDmPush(t, 'you', 'dmArgForm', [last?last.place:0, last?last.of:0]);
   }
+  else if(kind==='history') careerDmPush(t, 'you', 'dmArgHistory', [ccDmPlayedWith(t.who.handle)]);
+  else if(kind==='nat') careerDmPush(t, 'you', 'dmArgNat', [(t.who && (t.who.nat || (t.who.card && t.who.card.nat))) || '']);
+  else if(kind==='club') careerDmPush(t, 'you', 'dmArgClub', [CAREER.org.name]);
+  else if(kind==='camp'){ cr.balance=(cr.balance||0)-CC_ARG_CAMP; careerDmPush(t, 'you', 'dmArgCamp', [ccNum(CC_ARG_CAMP)]); }
   // And the answer to the argument comes back in the conversation too, on the
   // same rule as the first one.
   t.state='open';
@@ -136821,6 +136989,9 @@ function careerSocialHTML(){
          не контракт, а приглашение — свои кнопки ниже. */
       : (open.who.org || open.who.brand) && !open.proam
         ? `<div class="dm-foot dm-foot-done">${L().dmOfferGone}</div>`
+      : open.state==='cond' ? `<div class="dm-foot"><div class="dm-asked">${L()[open.cond==='role' ? 'dmCondRoleHint' : 'dmCondTrialHint']}</div>
+          <div class="dm-ask"><button class="ch-sign" onclick="careerDmCond('${open.id}', true)">${L()[open.cond==='role' ? 'dmCondRoleBtn' : 'dmCondTrialBtn']}</button>
+          <button class="cc-back" onclick="careerDmCond('${open.id}', false)">${L().dmCondNoBtn}</button></div></div>`
       : open.state==='declined' ? (()=>{
           // A no is a starting position, and what is left to say is on the
           // buttons rather than in a paragraph.
