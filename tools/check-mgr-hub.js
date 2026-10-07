@@ -11,6 +11,32 @@ const CHROME=[process.env.CHROME, 'C:/Program Files/Google/Chrome/Application/ch
 if(!CHROME) throw new Error('Chrome not found');
 
 const SECTIONS=[
+  {name:'клубы', once:true, code:String.raw`
+    // Рейтинг клуба как в карьере (его слово 8.10): вес клуба по призовым, два человека без призовых не правят списком.
+    const na=mgrClubsFor(2019, 'NAC'), sen=na.find(c=>c.name==='Sentinels'), liq=na.find(c=>c.name==='Team Liquid');
+    out.notes.na19=na.slice(0, 6).map(c=>c.name+' '+c.avg+'/'+c.sq+' n'+c.n);
+    check('клубы: Sentinels 2019 — не ниже 4★', sen && mgrClubStars(sen.avg)>=4, sen && (sen.avg+' ★'+mgrClubStars(sen.avg)));
+    check('клубы: Liquid 2019 — не ниже 4★', liq && mgrClubStars(liq.avg)>=4, liq && String(liq.avg));
+    for(const [y, r] of [[2021,'EU'],[2023,'EU'],[2024,'EU']]){ const top=mgrClubsFor(y, r).slice(0, 3);
+      check('клубы: в топ-3 '+y+' '+r+' нет клуба из двоих без призовых', !top.some(c=>c.n<=2 && ccOrgEarn(c.name)==null), top.map(c=>c.name+' n'+c.n).join(', ')); }
+    check('клубы: переименованный находит призовые', ccOrgEarn('Falcons Esports')===ccOrgEarn('Team Falcons') && ccOrgEarn('Lazarus Esports')!=null);
+    // Подписчики: настоящее число, оценка со знаком, плитка, шапка, рост и спонсор.
+    const fz=mgrOrgFollowers('FaZe Clan', 90), no=mgrOrgFollowers('Нет Такого Клуба', 80);
+    check('подписчики: FaZe — настоящее число', !fz.est && fz.n>1000000 && fz.asOf==='2026-10', JSON.stringify(fz));
+    check('подписчики: неизвестный — оценка', no.est && no.n>=500 && mgrFolText(no).charAt(0)==='≈', JSON.stringify(no));
+    check('подписчики: выше уровень — больше оценка', mgrOrgFollowers('Нет Такого Клуба', 90).n>no.n);
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; mgrOpenNew(2024);
+    const tiles=[...document.querySelectorAll('.mgn-club')];
+    check('подписчики: на каждой плитке', tiles.length>0 && tiles.every(t=>/X|Подписчики/.test(t.textContent)), String(tiles.length));
+    const fi=MGR_NEW_LIST.findIndex(c=>c.name==='Team Falcons'); mgrTake(fi>=0 ? fi : 0); mgrOpenHub();
+    const f0=mgrFans(); out.notes.fans={club:MGR.club.name, f0};
+    check('подписчики: в шапке хаба', (document.getElementById('mgWho').textContent||'').indexOf('👥')>=0);
+    const sp0=mgrSponsorBase(); mgrFansNight({teams:[{place:1}]});
+    check('подписчики: победа вечера +3%', mgrFans()===Math.round(f0*1.03), f0+' → '+mgrFans());
+    mgrFansNight({teams:[{place:40}]}); check('подписчики: 40-е место — без роста', mgrFans()===Math.round(f0*1.03));
+    MGR.club.fans=1000; const lo=mgrSponsorBase(); MGR.club.fans=3000000; const hi=mgrSponsorBase();
+    check('подписчики: большая аудитория — спонсор щедрее', hi>lo && hi<=lo*1.25/0.8+100, lo+' vs '+hi);
+  `},
   {name:'бюджет', once:true, code:String.raw`
     const big=mgrClubBudget('Cooler Esport', 20000, 88), none=mgrClubBudget('Нет Такого Клуба', 3000, 70);
     // Клубы без призовых в списке различаются силой состава, а призовые поднимают бюджет при равной силе.
@@ -832,7 +858,7 @@ const SECTIONS=[
     check('списки в тёмной теме', /dark/.test(st.colorScheme||'') , st.colorScheme);
   `},
   {name:'неполный состав', code:String.raw`
-    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); { const k=MGR_NEW_LIST.findIndex(c=>c.n===3); mgrTake(k>=0 ? k : 0); }   // одна команда + запасной: не зависит от того, кто первый в списке
     const size=careerSquadSize(), t=MGR.teams[0];
     // 1) Ушёл игрок, в запасе есть — перед вечером запас встаёт в состав сам.
     const gone=t.cards[t.cards.length-1]; mgrDrop(gone);
@@ -932,8 +958,8 @@ const BOOT=`
 const dir=fs.mkdtempSync(path.join(os.tmpdir(),'mgrhub-')), tmp=path.join(dir,'index.html');
 fs.writeFileSync(tmp,'<base href="file:///'+ROOT+'/">'+fs.readFileSync(path.join(ROOT,'index.html'),'utf8')+BOOT);
 const dom=execFileSync(CHROME,['--headless=new','--disable-gpu','--no-sandbox','--allow-file-access-from-files',
-  '--virtual-time-budget=900000','--dump-dom','file:///'+tmp.split(String.fromCharCode(92)).join('/')],
-  {maxBuffer:1<<30, encoding:'utf8', stdio:['ignore','pipe','ignore'], timeout:1500000});
+  '--virtual-time-budget=1800000','--dump-dom','file:///'+tmp.split(String.fromCharCode(92)).join('/')],
+  {maxBuffer:1<<30, encoding:'utf8', stdio:['ignore','pipe','ignore'], timeout:2700000});
 fs.rmSync(dir,{recursive:true, force:true});
 const m=dom.match(/BEGIN([\s\S]*?)END/);
 if(!m){ console.log('FAIL нет вывода'); process.exit(2); }

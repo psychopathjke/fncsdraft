@@ -112579,7 +112579,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5f25b34e';
+const CC_BUILD='10143f15';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -156024,6 +156024,36 @@ function mgrClubsFor(year, region){
   }).filter(c=>c.n>=2).sort((a,b)=>b.avg-a.avg || b.n-a.n).slice(0, 40)
     .map((c,i,all)=>Object.assign(c, {expect:mgrExpect(i, all.length)}));
 }
+/* ПОДПИСЧИКИ КЛУБОВ (его слово 8.10: «добавь фоловеров оргам»). Основной аккаунт клуба в X: число и месяц снимка.
+   Сняты 8.10.2026 через api.fxtwitter.com (профиль X без входа) и проверены по имени и описанию аккаунта; NRG и
+   Gambit — последние найденные (2023-07). Чужие аккаунты с тем же именем (Wave, BIG, Kungarna, Valiant…) не взяты.
+   Клуб без числа получает ОЦЕНКУ (на экране «≈»), подобранную по этим же 91 клубу: с призовыми топ-100 —
+   lg f = 1.963 + 0.607·lg(призовые) (50 клубов), без них — lg f = −4.654 + 0.1068·уровень клуба (41 клуб). */
+const MGR_ORG_FOL={"100 Thieves":[1204938,'2026-10'],"7VEN CLUB":[49700,'2026-10'],"9z Team":[310905,'2026-10'],"A2":[22277,'2026-10'],"AIGHT":[34700,'2026-10'],"Absolute First":[6421,'2026-10'],"Agent Gaming":[26400,'2026-10'],"Armour Esports":[2322,'2026-10'],"Become Legends":[92685,'2026-10'],"Bravado Gaming":[14700,'2026-10'],"COOLER Esport":[22615,'2026-10'],"Chiefs Esports Club":[29120,'2026-10'],"Cloud9":[1114040,'2026-10'],"Complexity Gaming":[268957,'2026-10'],"Copenhagen Flames":[22666,'2026-10'],"Crazy Raccoon":[1241481,'2026-10'],"Delta Esports":[414,'2026-10'],"DetonatioN FocusMe":[190098,'2026-10'],"Dignitas":[260599,'2026-10'],"Dynamind":[478,'2026-10'],"Elite Esports":[60951,'2026-10'],"Enterprise Gaming":[23669,'2026-10'],"EvozA eSport":[11300,'2026-10'],"Executors One":[1052,'2026-10'],"F4TALITY":[9932,'2026-10'],"FOKUS":[60760,'2026-10'],"FOKUS CLAN":[60760,'2026-10'],"FURIA Esports":[621200,'2026-10'],"FaZe Clan":[5300000,'2026-10'],"Falcons Esports":[703512,'2026-10'],"Fluxo W7M":[433323,'2026-10'],"Fnatic":[1662760,'2026-10'],"G2 Esports":[1623788,'2026-10'],"Galaxy Racer":[196952,'2026-10'],"Gambit Esports":[138400,'2023-07'],"Gen.G Esports":[223300,'2026-10'],"Gentle Mates":[344900,'2026-10'],"Ghost Gaming":[246051,'2026-10'],"Glory Esports":[1063,'2026-10'],"Godsent":[92805,'2026-10'],"Grizi Esport":[60469,'2026-10'],"Guild Esports":[107603,'2026-10'],"HEROIC":[191282,'2026-10'],"HarD Gaming Pro":[1999,'2026-10'],"Hero Base":[102231,'2026-10'],"JFT Esports":[13445,'2026-10'],"Karmine Corp":[568236,'2026-10'],"LND Esports":[2381,'2026-10'],"LOUD":[1814509,'2026-10'],"LYNX e-sports":[53400,'2026-10'],"Lestream Esport":[32574,'2026-10'],"Leviatán":[176200,'2026-10'],"Loyal Esports":[5410,'2026-10'],"Lyost Esport":[17300,'2026-10'],"M10 eSports":[56466,'2026-10'],"Manchester City Esports":[53874,'2026-10'],"NRG":[868144,'2023-07'],"Natus Vincere":[876741,'2026-10'],"Newbee":[47550,'2026-10'],"Ninjas in Pyjamas":[514855,'2026-10'],"Northern Star Gaming":[5358,'2026-10'],"OBI E-sports":[3526,'2026-10'],"Optimal Ambition":[17835,'2026-10'],"Ovation eSports":[33575,'2026-10'],"Overt":[10383,'2026-10'],"Raised By Kings":[13800,'2026-10'],"Renegades":[57607,'2026-10'],"Ry2 Esports":[2052,'2026-10'],"SCYTES":[4023,'2026-10'],"Sentinels":[1053314,'2026-10'],"ShindeN":[30800,'2026-10'],"Siko Esports":[7072,'2026-10'],"SmokeSolid Gaming":[1591,'2026-10'],"Solary":[333644,'2026-10'],"Spectrum Esc":[2450,'2026-10'],"Supremacy":[38467,'2026-10'],"T1":[369435,'2026-10'],"TSM":[1899008,'2026-10'],"TT9 Esports":[19800,'2026-10'],"Team Atlantic":[12342,'2026-10'],"Team Envy":[517448,'2026-10'],"Team Falcons":[703512,'2026-10'],"Team Heretics":[1059691,'2026-10'],"Team Liquid":[737797,'2026-10'],"Team SAQR":[19300,'2026-10'],"Team Secret":[576689,'2026-10'],"Team TRIBE":[1726,'2026-10'],"Team Vitality":[853862,'2026-10'],"Tempo Storm":[164235,'2026-10'],"Ultimate Warriors":[2764,'2026-10'],"Virtus.pro":[247989,'2026-10'],"XSET":[200049,'2026-10'],"ZETA DIVISION":[640793,'2026-10']};
+let MGR_ORG_FOL_KEYS=null;
+function mgrOrgFollowers(name, rate){
+  if(!MGR_ORG_FOL_KEYS){ MGR_ORG_FOL_KEYS=new Map(); Object.keys(MGR_ORG_FOL).forEach(k=>MGR_ORG_FOL_KEYS.set(ccOrgEarnKey(k), MGR_ORG_FOL[k])); }
+  const hit=MGR_ORG_FOL_KEYS.get(ccOrgEarnKey(name));
+  if(hit) return {n:hit[0], est:false, asOf:hit[1]};
+  const earn=typeof ccOrgEarn==='function' ? ccOrgEarn(name) : null;
+  const lg=earn ? 1.963+0.607*Math.log10(earn) : -4.654+0.1068*(rate||78);
+  return {n:Math.max(500, Math.min(400000, Math.round(Math.pow(10, lg)/100)*100)), est:true, asOf:null};
+}
+function mgrFolText(f){ return (f.est ? '≈' : '')+ccNum(f.n); }
+/* Подписчики своего клуба живут в сейве (MGR.club.fans) и растут от результатов: победа вечера +3%, подиум +1.5%,
+   топ-10 +0.5% (оценка режима). Свой новый клуб начинает с тысячи. Спонсору аудитория важна: множитель
+   0.85 + 0.1·lg(подписчики / 30 тыс.), от 0.8 до 1.25 (оценка режима). */
+function mgrFans(){
+  const c=MGR && MGR.club; if(!c) return 0;
+  if(c.fans==null){ c.fans=c.own ? 1000 : mgrOrgFollowers(c.name, c.avg).n; c.fansEst=c.own ? false : mgrOrgFollowers(c.name, c.avg).est; }
+  return c.fans;
+}
+function mgrFansMul(){ const f=mgrFans(); return f>0 ? Math.max(0.8, Math.min(1.25, 0.85+0.1*Math.log10(f/30000))) : 1; }
+function mgrFansNight(row){
+  const best=Math.min(...((row && row.teams)||[]).map(t=>t.place)); if(!isFinite(best)) return;
+  const k=best===1 ? 0.03 : best<=3 ? 0.015 : best<=10 ? 0.005 : 0;
+  if(k) MGR.club.fans=Math.round(mgrFans()*(1+k));
+}
 // Уровень клуба звёздами, как в FC: 60 → 0.5, 95 → 5, шаг 0.5 (оценка режима).
 function mgrClubStars(avg){ return Math.max(0.5, Math.min(5, Math.round(((avg-60)/35*4.5+0.5)*2)/2)); }
 // Ожидание совета — по месту клуба по силе в своём регионе: верх 15% — титул, верхняя половина — финал.
@@ -156049,6 +156079,7 @@ function mgrOpenNew(year){
       '<span class="mgn-name"><b>'+esc(c.name)+'</b>'+mgrStarsHTML(mgrClubStars(c.avg))+'</span><b class="mgn-ovr">'+c.avg+'</b></div>'+
     '<div class="mgn-row"><em>'+esc(T9.transfer)+'</em><b>'+mgrMoney(c.budget.transfer)+'</b></div>'+
     '<div class="mgn-row"><em>'+esc(T9.wageCap)+'</em><b>'+mgrMoney(c.budget.wageCap)+' '+esc(T.month)+'</b></div>'+
+    '<div class="mgn-row"><em>'+esc(T9.fans)+'</em><b'+(mgrOrgFollowers(c.name, c.avg).est ? ' title="'+esc(T9.fansEst)+'"' : '')+'>'+mgrFolText(mgrOrgFollowers(c.name, c.avg))+'</b></div>'+
     '<div class="mgn-row"><em>'+esc(T9.star)+'</em><b>'+esc(c.star||'—')+' · '+c.n+' '+esc(T.players)+'</b></div>'+
     '<div class="mgn-exp">'+esc(T9.expect[c.expect])+'</div></div>';
   const real='<div class="ch-subtabs mgn-sort">'+sub(MGR_NEW_SORT==='stars', "MGR_NEW_SORT='stars';mgrOpenNew()", T9.byStars)+
@@ -156288,6 +156319,7 @@ function mgrBudgetMigrate(){
 function mgrT9(){
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
   return ru ? {
+    fans:'Подписчики X', fansEst:'Оценка: точного числа не нашли',
     overCap:s=>'Совет против: потолок зарплат '+s+' в месяц', overTransfer:s=>'Совет против: в трансферном бюджете '+s, capNo:'Не влезает в бюджет зарплат — по умолчанию уходит', transfer:'Трансферный бюджет', wageCap:'Бюджет зарплат',
     renewCap:h=>h+' уходит: продление не влезло в бюджет зарплат',
     real:'Настоящий клуб', own:'Создать свой', star:'Звезда состава', byStars:'По звёздам', byBudget:'По бюджету',
@@ -156307,6 +156339,7 @@ function mgrT9(){
     loanH:'В аренде', toLoan:'Отдать в аренду на 4 недели', loanTo:(c,d)=>'в '+c+' до '+d, loanBack:(h,c,g)=>h+' вернулся из аренды ('+c+')'+(g>0 ? ': +'+g+' к рейтингу' : ''),
     awards:'Награды сезона', pom:(h,k)=>'Игрок месяца: '+h+' ('+k+' киллов)', poy:h=>'Игрок года: '+h, ypy:h=>'Молодой игрок года: '+h, moy:y=>'Менеджер года '+y
   } : {
+    fans:'X followers', fansEst:'Estimate: no exact number found',
     overCap:s=>'The board says no: wage budget '+s+' a month', overTransfer:s=>'The board says no: transfer budget is '+s, capNo:'Does not fit the wage budget — leaves by default', transfer:'Transfer budget', wageCap:'Wage budget',
     renewCap:h=>h+' leaves: the new deal did not fit the wage budget',
     real:'Real club', own:'Create your own', star:'Star player', byStars:'By stars', byBudget:'By budget',
@@ -156429,7 +156462,7 @@ function mgrPrize(ev, place, size){
 }
 // Спонсоры: настоящие орги живут не с призовых, а с контрактов. Уровень клуба — средний рейтинг состава при входе.
 function mgrSponsor(){ return Math.round(mgrSponsorBase()*mgrDealMul()/100)*100; }
-function mgrSponsorBase(){ const base=Math.max(3000, Math.max(0, (MGR.club.avg||70)-60)*600); const rep=(MGR.club.rep!=null ? MGR.club.rep : 50); return Math.round(base*(0.8+rep/250)*(1+0.08*mgrStaff('smm'))/100)*100; }
+function mgrSponsorBase(){ const base=Math.max(3000, Math.max(0, (MGR.club.avg||70)-60)*600); const rep=(MGR.club.rep!=null ? MGR.club.rep : 50); return Math.round(base*mgrFansMul()*(0.8+rep/250)*(1+0.08*mgrStaff('smm'))/100)*100; }
 function mgrPayMonths(toDay){
   const c=MGR.club, cards=mgrAllAcad().concat(MGR.loanOut||[]);
   let m=c.paidMonth||toDay.slice(0, 7), paid=0;
@@ -156501,7 +156534,7 @@ function mgrHdrHTML(){
   const net=mgrNetMonth();
   document.getElementById('mgWho').innerHTML='<span class="ch-face mgh-crest">'+mgrLogo(c.name, true)+'</span>'+
     '<div><div class="ch-name">'+esc(c.name)+'</div><div class="ch-sub">'+
-    [String(MGR.year), esc(MGR.region), esc(T.rep)+' '+(c.rep!=null ? c.rep : 50), esc(T9.board)+' '+mgrGrade(mgrConf()), esc(ccDayLabel(cr.day))].join(' · ')+'</div></div>';
+    [String(MGR.year), esc(MGR.region), esc(T.rep)+' '+(c.rep!=null ? c.rep : 50), '👥 '+(c.fansEst ? '≈' : '')+ccNum(mgrFans()), esc(T9.board)+' '+mgrGrade(mgrConf()), esc(ccDayLabel(cr.day))].join(' · ')+'</div></div>';
   document.getElementById('mgOvr').innerHTML=mgrTeamAvg()+'<span class="ch-ovr-side"><small>'+esc(T9.teamOvr)+'</small></span>';
   document.getElementById('mgPurseNow').innerHTML=mgrBar(T9.conf, '🏛', mgrConf(), 35)+mgrBar(T9.morale, '🤝', mor, 35);
   document.getElementById('mgPurse').innerHTML='<div class="mgh-money"><em>'+esc(T.cash)+'</em><b>'+mgrMoney(c.cash)+'</b>'+
@@ -158838,6 +158871,7 @@ function mgrAfterResults(ev, row, clubGot){
   MGR.focus={}; MGR.nightMod={};
   mgrConfNight(row, clubGot);
   try{ mgrDealNight(ev, row); }catch(e){}
+  try{ mgrFansNight(row); }catch(e){}
   if((MGR.promoted||[]).length && row.teams.some(t=>Object.keys(t.kills||{}).some(h=>MGR.promoted.some(x=>hKey(x)===hKey(h))))) MGR.gradNights=(MGR.gradNights||0)+1;
   const b=MGR.board||(MGR.board={});
   row.teams.forEach(t=>{ if(t.final!==false && (b.best==null || t.place<b.best)) b.best=t.place; });
