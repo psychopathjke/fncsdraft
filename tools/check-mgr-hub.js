@@ -186,10 +186,16 @@ const SECTIONS=[
     mgrScoutHire(3); mgrScoutSet(MGR.scouts[0].id, 'region', 'BR'); mgrYScoutHire('de');
     mgrPlanSet(mgrAll()[0], 'focus', true); mgrPlanSet(mgrAll()[0], 'role', 'roleFRG');
     if((MGR.bench||[]).length) mgrLoan(MGR.bench[0]);
+    MGR.club.rep=70; mgrCreatorSign(mgrCreatorList().sort((a,b)=>a.followers-b.followers)[0].name);
     await season('2024 EU настоящий');
     check('сезон: отчёты скаута', Object.keys(MGR.srep||{}).length>=5, String(Object.keys(MGR.srep||{}).length));
     check('сезон: молодёжь найдена', (MGR.ylist||[]).length>=5, String((MGR.ylist||[]).length));
     check('сезон: аренда вернулась', !(MGR.loanOut||[]).length);
+    check('сезон: лента живая', (MGR.feed||[]).length>=5, String((MGR.feed||[]).length));
+    out.notes.nat={day:mgrNationsDay(), now:CAREER.career.day, to:ccYearTo(), done:MGR.natDone};
+    MGR.board.earn=0; MGR.board.best=1; try{ mgrSeasonReview(); }catch(e){} document.querySelectorAll('.mg-modal').forEach(m=>m.remove());
+    check('сезон: вызов в сборные был (к итогам)', !!(MGR.natDone||{})[MGR.year], JSON.stringify(out.notes.nat));
+    check('сезон: дедлайн был', Object.keys(MGR.dlDone||{}).length>=1);
 
     localStorage.removeItem('fncsdraft_manager'); MGR=null; mgrLeave();
     MGR_NEW_YEAR=2021; MGR_NEW_REGION='ME';

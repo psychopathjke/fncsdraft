@@ -156226,6 +156226,7 @@ function mgrSeasonReview(){
   MGR.dealNote=dealNote; MGR.dealNoteYear=MGR.year;
   const chS=mgrChallengeState();
   mgrAwardsMonth(CAREER.career.day.slice(0, 7));   // последний месяц сезона paidMonth уже не закроет
+  try{ if(!(MGR.natDone||{})[MGR.year]){ const nd=mgrNationsDay(); if(nd<=ccYearTo()) mgrNationsCall(nd); } }catch(e){}   // Кубок наций после последнего турнира клуба
   mgrAwardsSeason(okEarn && okPlace);
   const aw=(MGR.awards||[]).filter(x=>x.year===MGR.year && x.kind!=='pom');
   const awHTML=aw.length ? '<div class="mg-mrow"><b>'+esc(mgrT9().awards)+'</b>'+aw.map(x=>'<small>🏆 '+esc(mgrT9()[x.kind](x.h||MGR.year))+'</small>').join('')+'</div>' : '';
