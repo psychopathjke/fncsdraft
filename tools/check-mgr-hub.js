@@ -590,6 +590,24 @@ const SECTIONS=[
     check('дедлайн: скидка сгорела после окна', !Object.keys(MGR.dlDeal||{}).length);
     check('дедлайн: один раз за окно', (MGR.inbox||[]).filter(m=>m.dl).length===dl.length);
   `},
+  {name:'кап академий', once:true, code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    MGR.club.wageCap=mgrWageBill()+100000;
+    mgrAcadCupMonth('2024-01');
+    check('кап академий: без академии не играется', !(MGR.acadCups||[]).length);
+    mgrYScoutHire('fr'); for(let m=1;m<=3;m++) mgrYouthMonth('2024-0'+m);
+    MGR.ylist.slice(0, 3).forEach(h=>mgrToAcad(h, true));
+    check('кап академий: в академии трое', (MGR.academy||[]).length>=2, String((MGR.academy||[]).length));
+    let top=0, n=0; MGR.dev={};
+    for(let m=1;m<=12;m++){ mgrAcadCupMonth('2025-'+String(m).padStart(2,'0')); }
+    const cups=MGR.acadCups||[];
+    check('кап академий: раз в месяц', cups.length===12, String(cups.length));
+    check('кап академий: место 1–32', cups.every(c=>c.place>=1 && c.place<=32));
+    const grew=cups.filter(c=>c.place<=3).length;
+    check('кап академий: топ-3 даёт рост', !grew || Object.values(MGR.dev).some(v=>v>0), grew+' '+JSON.stringify(MGR.dev));
+    check('кап академий: письмо', (MGR.inbox||[]).some(m=>m.acadCup));
+    mgrRenderHub('squad'); check('кап академий '+lang+': итог в плитке академии', /#\d+/.test(document.querySelector('#mgBody .mgs-acad').textContent));
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
