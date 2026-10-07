@@ -628,6 +628,60 @@ const SECTIONS=[
     mgrAdvanceTo(ccAddDays(day, 1));
     check('сборные: шаг через день вызова не дублирует', (MGR.inbox||[]).filter(m=>m.nat).length===1);
   `},
+  {name:'ревью3', once:true, code:String.raw`
+    MGR_NEW_YEAR=2026; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2026); mgrTake(0);
+    MGR.club.wageCap=mgrWageBill()+100000; MGR.club.transfer=1e7; MGR.club.cash=1e7;
+    // Подложим «прошлогодние» записи с теми же датами, что будут в 2027-м.
+    const w=mgrWindows()[0], mk=CAREER.career.day.slice(0,7);
+    MGR.dlDone={[w.to]:true}; MGR.acadCups=[{month:mk, place:5}]; MGR.awards=[{kind:'pom', month:mk, h:'x'}];
+    MGR.log.unshift({day:CAREER.career.day, kind:'night', name:'Old', teams:[{place:1, kills:{OLD:99}}]});
+    // Переход в 2027.
+    const bh=(MGR.bench||[])[0]; if(bh) mgrLoan(bh);
+    const pl=mgrAll()[0]; mgrPlanSet(pl, 'role', 'roleFRG');
+    MGR.board.earn=0; MGR.board.best=1; MGR.board.place=10;
+    try{ mgrSeasonReview(); }catch(e){} const go=document.querySelector('.mg-modal [data-mg="go"]'); if(go) go.click(); await wait(300);
+    document.querySelectorAll('.mg-modal').forEach(m=>m.remove());
+    check('2027: год', MGR && MGR.year===2027, MGR && MGR.year);
+    check('2027: аренды вернулись на стыке', !(MGR.loanOut||[]).length);
+    const p=(MGR.plan||{})[hKey(pl)];
+    check('2027: план не завис (since в новом сезоне)', !p || !p.role || p.since>=MGR.season0, p && p.since);
+    // Дедлайн, кап академий и игрок месяца работают и в 2027-м.
+    const w2=mgrWindows()[0];
+    CAREER.career.day=ccAddDays(w2.to, -1); mgrAdvanceTo(w2.to);
+    check('2027: дедлайн сработал', (MGR.inbox||[]).some(m=>m.dl && m.day===w2.to));
+    mgrYScoutHire('fr'); mgrYouthMonth('2026-01'); mgrYouthMonth('2026-02'); MGR.ylist.slice(0,2).forEach(h=>mgrToAcad(h, true));
+    const mk2=CAREER.career.day.slice(0,7);
+    mgrAcadCupMonth(mk2); check('2027: кап академий сыгран', (MGR.acadCups||[]).some(c=>c.month===mk2 && c.year===2027));
+    const a=mgrAll()[0];
+    MGR.log.unshift({day:CAREER.career.day, year:2027, kind:'night', name:'N', teams:[{place:2, kills:{[a]:3}}]});
+    mgrAwardsMonth(mk2); check('2027: игрок месяца', (MGR.awards||[]).some(x=>x.kind==='pom' && x.month===mk2 && x.year===2027 && x.h===a));
+    check('2027: в итогах сезона только ночи сезона', mgrTopKiller(mgrKillsBy(mgrSeasonNights()))!=='OLD');
+    // I1: пропуск останавливается в день дедлайна (окно второе).
+    const w3=mgrWindows().find(x=>x.to>CAREER.career.day);
+    if(w3){ let g=0; while(CAREER.career.day<w3.to && g++<40) mgrSkip();
+      check('пропуск: стоп на дедлайне', CAREER.career.day===w3.to, CAREER.career.day+' vs '+w3.to); }
+    // I2: скидка доходит до переговоров.
+    const c=mgrMarketList().find(x=>mgrOrgOf(x)); if(c){ MGR.dlDeal={[hKey(c)]:0.7}; MGR_NEG=null; mgrNegotiate(c.handle, false);
+      check('скидка в переговорах', MGR_NEG && MGR_NEG.buyAsk<=Math.round(mgrSalary(c)*8*1.35*0.7/500)*500+500, MGR_NEG && MGR_NEG.buyAsk); document.getElementById('mgNeg') && document.getElementById('mgNeg').remove(); MGR_NEG=null; }
+    // I3: предложение за ушедшего не платит.
+    const cash0=MGR.club.cash; MGR.inbox.unshift({id:'ghost', day:CAREER.career.day, kind:'offer', h:'НетТакого', sum:50000, from:'X', text:'x'});
+    mgrInboxDo('ghost', true); check('предложение за чужого не платит', MGR.club.cash===cash0, cash0+' → '+MGR.club.cash);
+    // I4: криэйторы при низкой репутации в минус, репутация от них не выше 70.
+    MGR.creators=[]; MGR.club.rep=60; mgrCreatorSign(mgrCreatorList().sort((x,y)=>x.followers-y.followers)[0].name);
+    MGR.club.rep=10; check('криэйторы: низкая репутация — в минус', mgrCreatorNet()<0, String(mgrCreatorNet()));
+    MGR.club.rep=70; mgrCreatorsMonth('2026-05'); check('криэйторы: репутация не выше 70', MGR.club.rep<=70, String(MGR.club.rep));
+    // I6: почта не растёт без предела.
+    for(let i=0;i<400;i++) MGR.inbox.push({id:'n'+i, day:CAREER.career.day, kind:'info', done:'info', text:'n'});
+    mgrWeekly(CAREER.career.day, ccAddDays(CAREER.career.day, 7));
+    check('почта: не больше 200 прочитанных', (MGR.inbox||[]).filter(m=>m.done).length<=200, String(MGR.inbox.length));
+    // I5: уволен после 2026 — новый клуб того же года, история сохранена.
+    MGR.board.earn=1e9; MGR.board.best=null; const hist=(MGR.history||[]).length;
+    try{ mgrSeasonReview(); }catch(e){} const go2=document.querySelector('.mg-modal [data-mg="go"]'); if(go2) go2.click(); await wait(300);
+    document.querySelectorAll('.mg-modal').forEach(m=>m.remove());
+    check('уволен в 2027: новый клуб в 2028, а не в 2026', MGR_NEW_YEAR===2028, MGR_NEW_YEAR);
+    check('уволен в 2027: история перенесена', MGR_CARRY && (MGR_CARRY.history||[]).length>=hist);
+    MGR_CARRY=null;
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
