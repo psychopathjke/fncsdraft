@@ -536,6 +536,26 @@ const SECTIONS=[
     mgrCreatorDrop(small.name); check('криэйторы: расторгнут', !(MGR.creators||[]).length);
     MGR_SUB.club='train';
   `},
+  {name:'лента', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    MGR.club.wageCap=mgrWageBill()+100000; MGR.club.transfer=1e7; MGR.club.cash=1e7;
+    mgrSignFinal({h:'ПробаЛента', buyDeal:0, years:1, acad:false}, 100);
+    check('лента: пост о подписании', (MGR.feed||[]).some(p=>p.kind==='sign' && p.text.indexOf('ПробаЛента')>=0));
+    const a=mgrAll()[0];
+    MGR.log.unshift({day:CAREER.career.day, kind:'night', name:'Ночь', teams:[{place:1, prize:0, kills:{[a]:5}}]});
+    mgrAwardsMonth(CAREER.career.day.slice(0,7));
+    check('лента: пост о награде', (MGR.feed||[]).some(p=>p.kind==='award'));
+    mgrFeedNight({name:'Кап', teams:[{place:2, name:'T1'}]});
+    check('лента: пост о вечере', (MGR.feed||[]).some(p=>p.kind==='night'));
+    let d=CAREER.career.day; for(let i=0;i<30;i++){ d=ccAddDays(d, 7); mgrFeedWeek(d); }
+    check('лента: слухи бывают', (MGR.feed||[]).some(p=>p.kind==='rumor'));
+    check('лента: лайки числом', (MGR.feed||[]).every(p=>Number.isInteger(p.likes) && p.likes>0));
+    check('лента: не больше 60 постов', (MGR.feed||[]).length<=60);
+    MGR_SUB.inbox='feed'; mgrRenderHub('inbox');
+    const B=document.getElementById('mgBody');
+    check('лента '+lang+': подвкладка', !B.querySelector('.cc-ffo-err') && !bad(B.innerHTML) && B.querySelectorAll('.mgp-post').length>=3);
+    MGR_SUB.inbox='mail';
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
