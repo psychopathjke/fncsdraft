@@ -1,154 +1,846 @@
-{"dm":{
-"dmMateGood":["{Top0}, così si gioca. Pulito","{Top0}. Questa sì che è una partita fatta bene","{Top0} — ecco come si fa. Bella"],
-"dmMateGood1":["{Top0}. Ok così","{Top0}. Buona","{Top0}. Ci sta"],
-"dmMateGood2":["{Top0}, così si gioca! Davvero bella stasera, grande","{Top0} — partita bellissima, sono contento di come abbiamo giocato","{Top0}. Che serata, giocata proprio pulita, bravo"],
-"dmMateGood3":["{Top0}. Te l'avevo detto che ce la facevamo","{Top0}. Sapevo che la portavamo a casa","{Top0}. Facile, come avevo detto io"],
-"dmMateGood4":["{Top0}. Ok","{Top0}. Accettabile","{Top0}. Va bene"],
-"dmMateBad":["{Top0} su {a1}. Così non saliamo da nessuna parte","{Top0} su {a1}. Di questo passo restiamo fermi","{Top0} su {a1}. Così non andiamo lontano, serve altro"],
-"dmMateBad1":["{Top0}. Male","{Top0}. Non va","{Top0}. Brutta"],
-"dmMateBad2":["{Top0} su {a1}. Dobbiamo rivederla insieme, così non saliamo","{Top0} su {a1}. Riguardiamo i replay con calma, così non andiamo da nessuna parte","{Top0} su {a1}. Dai, analizziamo cosa non è andato, altrimenti restiamo qui"],
-"dmMateBad3":["{Top0} su {a1}. Da solo non posso caricarmi tutto","{Top0} su {a1}. Non posso fare il carry da solo ogni volta","{Top0} su {a1}. Io gioco anche per te, ma così non basta"],
-"dmMateBad4":["{Top0}/{a1}. Niente da dire","{Top0}/{a1}. Passo","{Top0}/{a1}. Prossima"],
-"dmMateLeaving":["Senti. Mi hanno proposto di giocare con un altro e ci sto pensando","Ascolta. Ho un'offerta da un altro duo e la sto valutando","Senti, devo dirtelo: mi hanno chiesto di giocare con loro e sto pensando di accettare"],
-"dmMateLeaving1":["Mi hanno chiesto di giocare con un altro. Ci penso","Ho un'offerta. Valuto","Un altro mi vuole. Ci penso"],
-"dmMateLeaving2":["Senti, non voglio farlo alle tue spalle. Mi hanno proposto un altro duo e ci sto pensando seriamente","Preferisco dirtelo subito, mi sembra giusto: ho ricevuto una proposta da un altro e sto pensando di accettare","Ascolta, ci tengo a essere sincero con te. Mi hanno chiesto di giocare con loro e sto valutando"],
-"dmMateLeaving3":["Un altro duo mi vuole. Dammi un motivo per restare","Mi cercano altri. Convincimi a restare","Ho la fila per giocare con me. Perché dovrei restare?"],
-"dmMateLeaving4":["Ho un'offerta da altri. La sto valutando","Proposta da un altro duo. In valutazione","Mi hanno contattato altri. Sto considerando"],
-"dmKeepStay":["Va bene. Resto, andiamo avanti","Ok, resto. Continuiamo","Dai, resto. Si gioca ancora insieme"],
-"dmKeepGo":["No, ho deciso. Grazie per le partite","No, la mia scelta è fatta. Grazie di tutto","Ormai ho deciso, vado. Grazie per i game"],
-"dmKeepMaybe":["Mah... non so. Convincimi ancora","Boh... dammi un altro motivo","Non lo so. Serve qualcosa in più"],
-"dmMateTalknight":["Sì, ho visto i replay. Le zone centrali erano nostre, poi le abbiamo regalate. Si sistema","Sì, replay guardati. A metà partita eravamo avanti, poi abbiamo mollato la zona. Lo sistemiamo","Sì, ho riguardato tutto. Mid game perfetto, poi la zona l'abbiamo buttata noi. Ci lavoriamo"],
-"dmMateTalkspot":["Mi piace. Il loot è costante, i vicini li abbiamo cacciati — restiamo lì","Per me va bene. Loot stabile e nessuno ci contesta più, si resta","Mi trovo bene. Loot sicuro, i vicini hanno cambiato spot — teniamo quello"],
-"dmMateTalkrole":["Ok. Tu chiami le rotazioni, io prendo il primo contatto. Si gioca così","Va bene. Rotazioni a te, primo fight a me. Funziona","Per me ok. Tu fai le call sulle rotazioni, io entro per primo. Così"],
-"dmMateTalklife":["Tutto ok. Ho dormito poco ma la voglia c'è. Stasera si va","Bene dai. Poche ore di sonno, però sono carico. Ci vediamo stasera","Normale. Stanco, ma motivato. Stasera spingiamo"],
-"dmMatePoachStay":["Dopo il {top0} mi hanno scritto con un'offerta. Ho detto di no, andiamo avanti","Dopo il {top0} qualcuno mi ha cercato. Ho rifiutato, restiamo noi","Mi è arrivata una proposta dopo il {top0}. Rifiutata, si continua"],
-"dmMatePoachGo":["Dopo il {top0} mi hanno scritto. Accetto, grazie per le partite","Mi hanno cercato dopo il {top0}. Vado, grazie di tutto","Dopo il {top0} è arrivata un'offerta e la prendo. Grazie per i game"],
-"dmNoDuo":["Grazie, ma sono in duo con {a0} — continuiamo.","Grazie, ma io e {a0} andiamo avanti insieme.","Apprezzo, ma ho già il duo con {a0} e restiamo così."],
-"dmNoDuo1":["Ho {a0}. No","Gioco con {a0}. No","{a0}. Già preso"],
-"dmNoDuo2":["Grazie davvero, ma io e {a0} continuiamo. In bocca al lupo per la ricerca","Grazie del pensiero, ma resto con {a0}. Spero tu trovi presto qualcuno","Che gentile, grazie. Però con {a0} andiamo avanti, buona fortuna!"],
-"dmNoDuo3":["Gioco con {a0}. Stiamo bene così","Ho già {a0}, e non cambio","Io e {a0} funzioniamo. Non mi serve altro"],
-"dmNoDuo4":["Occupato. {a0}","Già in duo. {a0}","No. Gioco con {a0}"],
-"dmNo":["Grazie, ma sono {a0} e gioco in una divisione più alta. Per ora no.","Grazie, ma con {a0} di overall sto in un'altra divisione. Non adesso.","Apprezzo, ma sono {a0} e siamo in divisioni diverse. Per ora non se ne fa niente."],
-"dmNo1":["No, sono {a0}. Non fa per me","Sono {a0}. No","Nah, {a0}. Non ci sta"],
-"dmNo2":["Grazie per aver pensato a me, davvero, ma sono {a0} e gioco in un'altra divisione. Per ora no","Mi fa piacere la proposta, ma con {a0} sto in una divisione più alta. Magari più avanti","Grazie mille, ma sono {a0} e la divisione è diversa. Per adesso non riesco"],
-"dmNo3":["Sono {a0} OVR. Recupera il gap e ne parliamo","{a0} OVR io. Sali un po' e poi riscrivimi","Io sto a {a0} OVR. Torna quando ci arrivi vicino"],
-"dmNo4":["{a0} contro il tuo. Troppa differenza","{a0} contro il tuo overall. Distanza eccessiva","{a0} io. Il divario è troppo"],
-"dmNoPartner":["Ho sentito che sei senza duo. Io sono {a0}, libero anch'io. Facciamo coppia?","Mi dicono che sei rimasto solo. Sono {a0} e libero, proviamo?","Sei senza compagno? Io sono {a0} e sono libero. Giochiamo insieme?"],
-"dmNoPartner1":["Libero. {a0} OVR","{a0} OVR. Libero","Sono libero. {a0}"],
-"dmNoPartner2":["Ho sentito che sei rimasto senza duo. Io sono {a0} e sono libero, ti va di provare insieme?","Ciao! So che cerchi un compagno: sono {a0} e libero anch'io, che ne dici di provarci?","Mi dispiace per il tuo duo. Io sono {a0} e senza compagno, se ti va proviamo"],
-"dmNoPartner3":["Sono {a0}. Fortunato tu che adesso sono senza duo","{a0} OVR e libero. Un'occasione così non ricapita","Io sono {a0}. Ti conviene prendermi finché sono libero"],
-"dmNoPartner4":["Senza duo? Anch'io. {a0} OVR","Sei libero? Pure io. {a0} OVR","Niente duo? Idem. {a0}"],
-"dmLeftNo":["Troppo presto. Richiedimelo tra {a0} giorni","Presto. Riparliamone tra {a0} giorni","Non ancora. Fra {a0} giorni magari"],
-"dmLeftNo1":["L'abbiamo già fatto. No","Già visto. No","Ci siamo già passati. No"],
-"dmLeftNo2":["Senti, è finita male e mi sono appena sistemato. Richiedimelo tra {a0} giorni se ti va ancora","Mi spiace, è ancora fresca e mi sto ambientando. Riscrivimi tra {a0} giorni, se vuoi","Capisco, ma mi sono appena sistemato. Facciamo che ne riparliamo tra {a0} giorni"],
-"dmLeftNo3":["Sul serio? Me ne sono appena andato. Fammi respirare","Di già? Sono uscito ieri, calma","Ma dai, ho appena lasciato. Lasciami vivere"],
-"dmLeftNo4":["Negativo","No, grazie","Non se ne parla"],
-"dmPoach":["Visto il vostro {top0}. Sono {a0} OVR e libero — se pensi di cambiare, scrivimi.","Ho visto il {top0}. Io sono {a0} OVR, libero: se mai vuoi cambiare, sai dove trovarmi.","Bel {top0}. Sono {a0} OVR e senza duo — se cambi qualcosa, fammi sapere."],
-"dmPoach1":["Visto il {top0}. Sono {a0}, libero","{Top0}, visto. {a0}, libero","Bel {top0}. {a0}, libero"],
-"dmPoach2":["Ho guardato il vostro {top0}, giocato benissimo. Sono {a0} e libero, se mai volessi cambiare scrivimi pure","Complimenti per il {top0}, davvero pulito. Io sono {a0} e sono libero, se ti serve sai dove trovarmi","Che bel {top0} ragazzi. Sono {a0}, libero, se un giorno vuoi cambiare scrivimi senza problemi"],
-"dmPoach3":["{Top0} con quel compagno? Io sono {a0}. Pensaci","Un {top0} nonostante il tuo duo? Con me, a {a0}, faresti di più","{Top0} con lui? Immagina con me, {a0}. Rifletti"],
-"dmPoach4":["Visto {top0}. {a0} OVR, libero","{Top0}. {a0} OVR. Disponibile","Visto il {top0}. {a0} OVR, senza duo"],
-"dmReachUp":["Ho visto il tuo {top0}. Sono {a0} OVR — di solito non scrivo, ma tu giochi sopra il tuo rating. Proviamo insieme?","Guardato il tuo {top0}. Con {a0} OVR non scrivo spesso per primo, ma stai giocando sopra il tuo livello. Ti va di provare?","Il tuo {top0} mi ha colpito. Sono {a0} OVR e normalmente non scrivo io, ma stai andando oltre il tuo rating. Facciamo duo?"],
-"dmReachUp1":["{Top0}, bravo. Sono {a0}. Giochiamo?","Bel {top0}. {a0}. Duo?","{Top0}, ottimo. Sono {a0}. Proviamo?"],
-"dmReachUp2":["Ho guardato il tuo {top0} — di solito non scrivo per primo, ma stai giocando sopra il tuo rating. Sono {a0}, ti va di provare insieme?","Complimenti per il {top0}, davvero. Non è da me scrivere per primo, ma giochi meglio di quanto dica il tuo rating. Sono {a0}, proviamo?","Ciao! Ho visto il tuo {top0} e mi è piaciuto tantissimo. Sono {a0} e mi farebbe piacere provare in duo con te, se ti va"],
-"dmReachUp3":["Sono {a0} OVR e ti scrivo io per primo. Capisci cosa significa? Il {top0} era buono","Uno da {a0} OVR che scrive per primo a te. Prendilo come un complimento. Bel {top0}","Di solito sono gli altri a scrivermi, e sono {a0} OVR. Il tuo {top0} però merita"],
-"dmReachUp4":["{Top0}. Sono {a0}. Interessato","{Top0}. {a0} OVR. Disponibile per un duo","{Top0}. Io {a0}. Interesse c'è"],
-"dmPromoted":["Complimenti per la Divisione {a0}. Sono {a1}, cerco un duo per questa stagione.","Bella la promozione in Divisione {a0}. Io sono {a1} e cerco un compagno per la stagione.","Divisione {a0}, complimenti. Sono {a1} e mi serve un duo per la stagione."],
-"dmPromoted1":["Complimenti per la D{a0}. {a1}, cerco duo","D{a0}, bravo. Sono {a1}, cerco","GG per la D{a0}. {a1}, libero"],
-"dmPromoted2":["Complimenti per la Divisione {a0}, meritatissima. Sono {a1} e cerco un compagno per la stagione","Che bello vederti in Divisione {a0}, te la sei guadagnata. Io sono {a1} e cerco un duo per la stagione, se ti va","Congratulazioni per la Divisione {a0}! Sono {a1} e mi piacerebbe giocare la stagione con te"],
-"dmPromoted3":["Divisione {a0}, era ora. Sono {a1} e mi serve qualcuno a questo livello","Finalmente in Divisione {a0}. Io sono {a1}, ora possiamo parlare","Divisione {a0}, ce ne hai messo di tempo. Sono {a1}, cerco qualcuno all'altezza"],
-"dmPromoted4":["D{a0}. Sono {a1}, libero per la stagione","D{a0}. {a1}. Disponibile per la stagione","Divisione {a0}. {a1}, cerco duo"],
-"dmProps":["{Top0} su {a1}. mostri","{Top0} su {a1}. W enorme","{Top0} su {a1}. pazzeschi"],
-"dmProps1":["W","ww","bravi"],
-"dmProps2":["{Top0} su {a1}. siete dei goat","{Top0} su {a1}, troppo forti, complimenti","{Top0} su {a1}. goat veri, bravissimi"],
-"dmProps3":["meritato, niente da dire","ve lo siete guadagnato, zero dubbi","meritatissimo, punto"],
-"dmProps4":["siete nel vostro prime adesso, è un dato","momento migliore della vostra carriera, oggettivamente","siete al picco, davvero"],
-"dmLfd":["Visto il tuo post. Sono {a0}, ho posto — proviamo?","Ho letto il post. Io sono {a0} e ho spazio, ci proviamo?","Ho visto che cerchi: sono {a0}, ho un posto libero. Facciamo una prova?"],
-"dmSeatSour":["Con {a1} la stagione non va, cerco dove andare. Sono {a0} — se il tuo posto è libero, ci sto","Con {a1} non funziona, sto guardando altrove. Io sono {a0}: se hai il posto libero, sono dentro","La stagione con {a1} è da buttare, voglio cambiare. Sono {a0} — se ti manca qualcuno, ci sono"],
-"dmThanksBack":["Figurati, vai avanti così","Di niente, spacca anche la prossima","Quando vuoi, forza"],
-"dmThanksBack1":["Figurati","Di niente","Tranquillo"],
-"dmThanksBack2":["Oddio, mi hai risposto. Grazie, continuerò a seguirti","Non ci credo, hai risposto! Grazie mille, ti seguo sempre","Wow, una risposta. Grazie davvero, tifo per te"],
-"dmThanksBack3":["Ovvio che guardo. Vai a prenderti la prossima","E certo che seguo. Ora vinci la prossima","Chiaro che guardo, che domande. Dai, la prossima è tua"],
-"dmThanksBack4":["Ricevuto. In bocca al lupo","Ok. Buona fortuna","Preso nota. Auguri"],
-"dmQBack1":["Grazie, chiaro","Ok, grazie","Capito, grazie"],
-"dmQBack2":["Grazie mille per la risposta. Sinceramente non me l'aspettavo","Grazie davvero per avermi risposto, non ci speravo","Che gentile a rispondere, grazie di cuore. Non me l'aspettavo proprio"],
-"dmQBack3":["Ricevuto. Ci vediamo in lobby tra un anno","Ok. Tra un anno ti trovo in lobby","Perfetto. L'anno prossimo ci becchiamo in lobby"],
-"dmQBack4":["Chiaro. Grazie","Ok. Grazie","Inteso. Grazie"],
-"dmClapbackBack":["AHAHAH","LOL ok","ahahah ci sta"],
-"dmClapbackBack1":["LMAO","ahah","XD"],
-"dmClapbackBack2":["Oh, risponde pure. Va bene, buona fortuna","Ah, quindi rispondi anche. Ok dai, in bocca al lupo","Wow, mi hai risposto davvero. Va bene, buona fortuna allora"],
-"dmClapbackBack3":["Davvero stai lì a rispondere agli hater? Dice tutto","Rispondi agli hater? Ok, ho capito che tipo sei","Hai tempo per rispondere a me ma non per vincere. Interessante"],
-"dmClapbackBack4":["Certo","Sì sì","Come no"],
-"dmHateTurn1":["Ok, giù il cappello","Va bene, chapeau","Ok. Rispetto"],
-"dmHateTurn2":["Quella volta ti ho scritto una cattiveria. Mi sbagliavo, stasera eri il migliore in mappa","Ti avevo mandato un messaggio brutto. Ho sbagliato, oggi sei stato il più forte della lobby","Scusa per quello che ti ho scritto. Avevo torto, stasera nessuno giocava come te"],
-"dmHateTurn3":["Va bene, va bene. Il mio hate ha funzionato, guarda come giochi adesso","Ok ok. Merito mio che ti ho spronato, vedi?","Dai, ammettilo: senza i miei commenti non giocavi così"],
-"dmHateTurn4":["Ammetto, mi sbagliavo","Errore mio. Lo riconosco","Avevo torto. Preso atto"],
-"dmRoleNo":["No, {a0} non fa per me. Io non gioco così","Nah, {a0} non è il mio ruolo. Non gioco in quel modo","No, fare {a0} non è roba mia. Gioco diversamente"],
-"dmRoleYes":["Va bene, posso fare {a0}. Proviamo","Ok, faccio {a0}. Vediamo come va","Ci sta, posso giocare {a0}. Tentiamo"],
-"dmJoinYes":["Ne ho parlato con {a0} — sei dentro, sei il nostro terzo.","Sentito {a0}: entra pure, sei il terzo.","Deciso con {a0}: benvenuto, sei il nostro terzo."],
-"dmJoinNo":["Ho parlato con {a0} — per ora no, il terzo lo troviamo da soli.","Sentito {a0}: al momento no, cerchiamo noi il terzo.","Ne ho parlato con {a0} — non adesso, il terzo lo scegliamo noi."],
-"dmMovedWith":["Valigie fatte. Grazie per avermi portato in {a0}","Ho fatto le valigie. Grazie che mi porti in {a0}","Pronto a partire. Grazie per avermi preso con te in {a0}"],
-"dmAgentYes":["Perfetto. Da oggi con i club parlo io.","Bene. D'ora in poi le trattative con i club le gestisco io.","Ottimo. Da adesso sono io a parlare con le squadre."],
-"dmAgentBrought":["Si sono fatti avanti {a0} club per te: {a1}. Le condizioni sono nella sezione Carriera — guarda e decidi","{a0} club ti vogliono: {a1}. Trovi le offerte nella scheda Carriera, dagli un'occhiata","Ci hanno contattato {a0} club: {a1}. I termini sono nella sezione Carriera, valuta tu"],
-"dmPitchOk":["Capito. Sento tutti quelli a cui puoi arrivare, e qualcuno un po' sopra. Dammi un paio di settimane","Ok. Contatto tutti i club alla tua portata e anche qualcuno più in alto. Due settimane e ti aggiorno","Ricevuto. Faccio il giro di tutti quelli che puoi puntare, più qualcuno sopra. Serve un paio di settimane"],
-"dmPitchOkClub":["Va bene, vado a parlarci. Ti faccio sapere","Ok, vado da {a0}. Ti aggiorno appena finisco","Perfetto, li incontro. Ti riferisco appena ho parlato"],
-"dmPitchYes":["{a0} sono disposti a valutarti — aspettati un'offerta in questa finestra","{a0} vogliono vederti: l'offerta dovrebbe arrivare in questa finestra","Da {a0} c'è interesse — in questa finestra arriva la proposta"],
-"dmPitchNo":["Da {a0} dicono che il roster è completo. Proviamo con un altro","{a0} hanno la squadra al completo. Passiamo al prossimo","Niente da fare con {a0}, roster pieno. Ne sento un altro"],
-"dmPitchTalked":["Ho parlato con {a0}.","Trattativa con {a0} fatta.","Incontro con {a0} concluso."],
-"dmOrgYesMoreAgent":["Chiuso. ${a0} a stagione, puoi firmare.","Fatto. ${a0} per la stagione, si può firmare.","Accordo trovato: ${a0} a stagione. Firma pure."],
-"dmOrgNoMoreAgent":["Di più non danno. Restano su ${a0} — decidi tu se ne vale la pena.","Il loro massimo è ${a0}. Sta a te capire se ti va bene.","Non si muovono da ${a0}. A te la scelta se accettare."],
-"dmOrgYesPerkAgent":["Il setup lo pagano loro. Io firmerei.","Attrezzatura a carico loro. Firmerei.","Setup coperto da loro. Per me si firma."],
-"dmOrgNoPerkAgent":["Sull'attrezzatura hanno detto no. Soldi uguali, il resto invariato.","Niente setup. Stipendio uguale, tutto il resto come prima.","Il setup non lo coprono. Cifra invariata, resto uguale."],
-"dmOrgWaitAgent":["Inoltrato. Rispondono entro {date0}.","Passato a loro. Risposta entro {date0}.","Proposta girata. Faranno sapere entro {date0}."],
-"dmOrgExpiredAgent":["{a0} hanno chiuso il posto. Continuo a cercare.","Da {a0} il posto non c'è più. Cerco altro.","{a0} hanno riempito il ruolo. Vado avanti con la ricerca."],
-"dmOrgWelcomeAgent":["Firmato con {a0}. Complimenti — ora si lavora.","Contratto con {a0} chiuso. Bravo — adesso sotto con il lavoro.","Sei di {a0}, firmato. Congratulazioni, ora testa al lavoro."],
-"dmOrgWithdrawAgent":["{a0} hanno ritirato l'offerta.","L'offerta di {a0} non c'è più.","{a0} si sono tirati indietro."],
-"dmOrgPromotedAgent":["{a0} ti portano in prima squadra, {a1} al mese. Ho già approvato.","{a0} ti promuovono nel roster principale, {a1} al mese. Tutto concordato.","Prima squadra con {a0}: {a1} al mese. Ho chiuso io."],
-"dmOrgRaiseAgent":["Ho rinegoziato il tuo contratto con {a0}. Ora sono {a1} al mese.","Contratto con {a0} rivisto: adesso prendi {a1} al mese.","Ho riaperto l'accordo con {a0}. Si sale a {a1} al mese."],
-"dmOrgYesMore":["Va bene, ${a0} a stagione. Ti aspettiamo","Ok, ${a0} per la stagione. Ci vediamo al bootcamp","Affare fatto: ${a0} a stagione. Benvenuto a bordo"],
-"dmOrgNoMore":["Di più non possiamo. ${a0} è il nostro tetto","Oltre non arriviamo. Il massimo è ${a0}","Non riusciamo a salire. ${a0} è il limite"],
-"dmOrgYesPerk":["Affare fatto, il setup lo copriamo noi","Ok, l'attrezzatura è a carico nostro","D'accordo, al setup pensiamo noi"],
-"dmOrgNoPerk":["Con l'attrezzatura non possiamo aiutarti, solo lo stipendio","Il setup non riusciamo a coprirlo, c'è solo lo stipendio","Niente attrezzatura da parte nostra, solo la paga"],
-"dmOrgWithdraw":["{a0}: allora cerchiamo qualcun altro. In bocca al lupo","{a0}: ok, guardiamo altrove. Buona fortuna","{a0}: a questo punto puntiamo su altri. Auguri"],
-"dmOrgPromoted":["{a0}: ti portiamo in prima squadra. ${a1} al mese.","{a0}: sali nel roster principale. ${a1} al mese.","{a0}: promozione in prima squadra, ${a1} al mese."],
-"dmOrgRaise":["{a0}: rivediamo il tuo contratto. ${a1} al mese.","{a0}: aggiorniamo il tuo accordo. ${a1} al mese.","{a0}: ritocchiamo il contratto, ora ${a1} al mese."],
-"dmOrgMain":["{a0}: ti vogliamo nel roster principale. ${a1} al mese.","{a0}: ti prendiamo in prima squadra. ${a1} al mese.","{a0}: c'è un posto in prima squadra per te, ${a1} al mese."],
-"dmAgentOrgMain":["Ho parlato con {a0}. Prima squadra, ${a1} al mese. Che ne dici?","Sentito {a0}: ti vogliono nel roster principale a ${a1} al mese. Che pensi?","{a0} ti offrono la prima squadra, ${a1} al mese. Come la vedi?"],
-"dmOrgAcademy":["{a0}: vieni nella nostra academy. ${a1} al mese, e se ti fai valere sali in prima squadra.","{a0}: ti vogliamo in academy. ${a1} al mese, la prima squadra te la guadagni.","{a0}: posto in academy, ${a1} al mese. Dimostra quanto vali e ti promuoviamo."],
-"dmAgentOrgAcademy":["Ho parlato con {a0}. Per ora academy, ${a1} al mese, ma la porta per la prima squadra è aperta.","Sentito {a0}: academy a ${a1} al mese, con la possibilità di salire.","{a0} propongono l'academy, ${a1} al mese. La prima squadra resta un'opzione."],
-"dmOrgWelcome":["Benvenuto in {a0}.","Benvenuto nella famiglia {a0}.","{a0} ti dà il benvenuto."],
-"dmOrgWait":["Ne parliamo con la dirigenza, risposta entro {date0}.","Lo portiamo ai piani alti, ti rispondiamo entro {date0}.","Valutiamo internamente, ti facciamo sapere entro {date0}."],
-"dmOrgExpired":["{a0}: non possiamo più aspettare, ritiriamo l'offerta.","{a0}: il tempo è scaduto, l'offerta non è più valida.","{a0}: non teniamo il posto oltre, offerta ritirata."]
-},
-"co":{
-"ccCoWin":["grande così","partita pulitissima","strameritato","miglior serata della settimana","roba di classe","complimenti!!"],
-"ccCoPod":["bella","bella run","per un pelo","dignitoso","niente male","c'eri quasi"],
-"ccCoMid":["capita","partita ok","alla prossima","si può fare meglio","vabbè","ci sta"],
-"ccCoNews":["WWW","bomba","complimenti","daje","👀🔥","meritato"],
-"ccCoBad":["non mollare","lobby tosta","riposa e riparti","c'è tempo","poteva andare peggio","sfiga"],
-"ccCoPro":["hai talento","ti ho seguito oggi","scrivimi se cerchi un duo","farai strada","giochi forte","occhio a questo"],
-"ccCoProt":["hai del talento","ti ho guardato stasera","se cerchi un trio scrivimi","andrai lontano","giochi davvero bene","ne sentiremo parlare"],
-"ccCoLfd":["V V","prendetelo ora","con lui ci giocherei","V 🐐🐐","non resta libero a lungo","fortissimo, dm"],
-"ccCoBday":["buon compleanno 🐐","auguri! 🎂","tanti auguri leggenda","hbd re","auguri, che sia una stagione enorme","🎂🎉"],
-"ccCoHype":["LETSGOOO","era ora","quando?","oddiooo","e i server?","ancora quei giorni 😭"],
-"ccCoDuo":["coppia paurosa","lobby finita","W duo","fortissimi","in bocca al lupo 🤝","questi fanno top 1"],
-"ccCoSign":["meritato","W firma","benvenuto","complimenti 🎉","era ora","mossa enorme"],
-"ccCoLeft":["in bocca al lupo","grazie di tutto","peccato","il prossimo team sarà meglio","🙏🙏","aspettiamo news"],
-"ccCoTable":["gara apertissima","sempre gli stessi in cima","manca tanto","top 3 bloccata","punto sui primi","si decide all'ultima"],
-"ccCoStream":["link pls","arrivo subito","W live","entro","sto guardando","fai la review dopo?"],
-"ccCoDrop":["atterriamo lì anche noi 😭","non prenderlo","sarà conteso","gl sullo spot","coraggioso","ci sono già tre team"],
-"ccCoCust":["posso entrare?","PR troppo basso 😭","ti scrivo","vai","anche in duo?","taglio severo"],
-"ccCoBye":["leggenda","grazie per questi anni","🫡🫡","che tristezza","rispetto","GOAT vero"],
-"ccCoBan":["assurdo","non ci credo","lo sapevo","che peccato","che vergogna","c'è tutto nel video"],
-"ccCoMateUp":["🐐🐐","fiero di te","IGL del secolo 🐐","di nuovo la prossima","fino alla fine","numero uno 🔥"],
-"ccCoMateDown":["ci rifacciamo","colpa anche mia","rivediamo e avanti","alla prossima","tieni duro","non è finita"],
-"ccCoOrg":["il nostro ragazzo 💙","W","orgogliosi 👏","così si fa","non è finita","💙💙💙"],
-"ccCoTy":["grazie ❤️","🙏🙏","ty raga","grazie a tutti","❤️❤️","vi voglio bene"],
-"ccCoHate":["lobby ez","carriato","solo fortuna","non giocavi tu","botta di fortuna","la prossima è una L"],
-"ccCoHateBad":["finito","washed","di nuovo","chi ti vuole","toglietelo","L enorme"],
-"ccCoTroll":["te l'avevo detto","a martedì","sai l'indirizzo","ancora tu","ci vediamo in lobby","come sempre"],
-"ccCoProWin":["gg wp","meritato 🐐","pulito","lobby ez 😭","fortissimo","mostro"],
-"ccCoProBad":["sfortunato fra","alla prossima","capita","tornerai","tieni duro","succede a tutti"],
-"ccCoProLfd":["V","V 🐐","prendetelo, non ve ne pentirete","V, ci ho giocato","forte","scelta sicura"],
-"ccCoSad":["non separatevi 😭","eravate i migliori","che tristezza leggere questo","F","fine di un'era","no dai…"]
-}}
+{
+ "dm": {
+  "dmMateGood": [
+   "{Top0}, così si gioca. Pulito",
+   "{Top0}. Questa sì che è una partita fatta bene",
+   "{Top0} — ecco come si fa. Bella"
+  ],
+  "dmMateGood1": [
+   "{Top0}. Ok così",
+   "{Top0}. Buona",
+   "{Top0}. Ci sta"
+  ],
+  "dmMateGood2": [
+   "{Top0}, così si gioca! Davvero bella stasera, grande",
+   "{Top0} — partita bellissima, sono contento di come abbiamo giocato",
+   "{Top0}. Che serata, giocata proprio pulita, bravo"
+  ],
+  "dmMateGood3": [
+   "{Top0}. Te l'avevo detto che ce la facevamo",
+   "{Top0}. Sapevo che la portavamo a casa",
+   "{Top0}. Facile, come avevo detto io"
+  ],
+  "dmMateGood4": [
+   "{Top0}. Ok",
+   "{Top0}. Accettabile",
+   "{Top0}. Va bene"
+  ],
+  "dmMateBad": [
+   "{Top0} su {a1}. Così non saliamo da nessuna parte",
+   "{Top0} su {a1}. Di questo passo restiamo fermi",
+   "{Top0} su {a1}. Così non andiamo lontano, serve altro"
+  ],
+  "dmMateBad1": [
+   "{Top0}. Male",
+   "{Top0}. Non va",
+   "{Top0}. Brutta"
+  ],
+  "dmMateBad2": [
+   "{Top0} su {a1}. Dobbiamo rivederla insieme, così non saliamo",
+   "{Top0} su {a1}. Riguardiamo i replay con calma, così non andiamo da nessuna parte",
+   "{Top0} su {a1}. Dai, analizziamo cosa non è andato, altrimenti restiamo qui"
+  ],
+  "dmMateBad3": [
+   "{Top0} su {a1}. Da solo non posso caricarmi tutto",
+   "{Top0} su {a1}. Non posso fare il carry da solo ogni volta",
+   "{Top0} su {a1}. Io gioco anche per te, ma così non basta"
+  ],
+  "dmMateBad4": [
+   "{Top0}/{a1}. Niente da dire",
+   "{Top0}/{a1}. Passo",
+   "{Top0}/{a1}. Prossima"
+  ],
+  "dmMateLeaving": [
+   "Senti. Mi hanno proposto di giocare con un altro e ci sto pensando",
+   "Ascolta. Ho un'offerta da un altro duo e la sto valutando",
+   "Senti, devo dirtelo: mi hanno chiesto di giocare con loro e sto pensando di accettare"
+  ],
+  "dmMateLeaving1": [
+   "Mi hanno chiesto di giocare con un altro. Ci penso",
+   "Ho un'offerta. Valuto",
+   "Un altro mi vuole. Ci penso"
+  ],
+  "dmMateLeaving2": [
+   "Senti, non voglio farlo alle tue spalle. Mi hanno proposto un altro duo e ci sto pensando seriamente",
+   "Preferisco dirtelo subito, mi sembra giusto: ho ricevuto una proposta da un altro e sto pensando di accettare",
+   "Ascolta, ci tengo a essere sincero con te. Mi hanno chiesto di giocare con loro e sto valutando"
+  ],
+  "dmMateLeaving3": [
+   "Un altro duo mi vuole. Dammi un motivo per restare",
+   "Mi cercano altri. Convincimi a restare",
+   "Ho la fila per giocare con me. Perché dovrei restare?"
+  ],
+  "dmMateLeaving4": [
+   "Ho un'offerta da altri. La sto valutando",
+   "Proposta da un altro duo. In valutazione",
+   "Mi hanno contattato altri. Sto considerando"
+  ],
+  "dmKeepStay": [
+   "Va bene. Resto, andiamo avanti",
+   "Ok, resto. Continuiamo",
+   "Dai, resto. Si gioca ancora insieme"
+  ],
+  "dmKeepGo": [
+   "No, ho deciso. Grazie per le partite",
+   "No, la mia scelta è fatta. Grazie di tutto",
+   "Ormai ho deciso, vado. Grazie per i game"
+  ],
+  "dmKeepMaybe": [
+   "Mah... non so. Convincimi ancora",
+   "Boh... dammi un altro motivo",
+   "Non lo so. Serve qualcosa in più"
+  ],
+  "dmMateTalknight": [
+   "Sì, ho visto i replay. Le zone centrali erano nostre, poi le abbiamo regalate. Si sistema",
+   "Sì, replay guardati. A metà partita eravamo avanti, poi abbiamo mollato la zona. Lo sistemiamo",
+   "Sì, ho riguardato tutto. Mid game perfetto, poi la zona l'abbiamo buttata noi. Ci lavoriamo"
+  ],
+  "dmMateTalkspot": [
+   "Mi piace. Il loot è costante, i vicini li abbiamo cacciati — restiamo lì",
+   "Per me va bene. Loot stabile e nessuno ci contesta più, si resta",
+   "Mi trovo bene. Loot sicuro, i vicini hanno cambiato spot — teniamo quello"
+  ],
+  "dmMateTalkrole": [
+   "Ok. Tu chiami le rotazioni, io prendo il primo contatto. Si gioca così",
+   "Va bene. Rotazioni a te, primo fight a me. Funziona",
+   "Per me ok. Tu fai le call sulle rotazioni, io entro per primo. Così"
+  ],
+  "dmMateTalklife": [
+   "Tutto ok. Ho dormito poco ma la voglia c'è. Stasera si va",
+   "Bene dai. Poche ore di sonno, però sono carico. Ci vediamo stasera",
+   "Normale. Stanco, ma motivato. Stasera spingiamo"
+  ],
+  "dmMatePoachStay": [
+   "Dopo il {top0} mi hanno scritto con un'offerta. Ho detto di no, andiamo avanti",
+   "Dopo il {top0} qualcuno mi ha cercato. Ho rifiutato, restiamo noi",
+   "Mi è arrivata una proposta dopo il {top0}. Rifiutata, si continua"
+  ],
+  "dmMatePoachGo": [
+   "Dopo il {top0} mi hanno scritto. Accetto, grazie per le partite",
+   "Mi hanno cercato dopo il {top0}. Vado, grazie di tutto",
+   "Dopo il {top0} è arrivata un'offerta e la prendo. Grazie per i game"
+  ],
+  "dmNoDuo": [
+   "Grazie, ma sono in duo con {a0} — continuiamo.",
+   "Grazie, ma io e {a0} andiamo avanti insieme.",
+   "Apprezzo, ma ho già il duo con {a0} e restiamo così."
+  ],
+  "dmNoDuo1": [
+   "Ho {a0}. No",
+   "Gioco con {a0}. No",
+   "{a0}. Già preso"
+  ],
+  "dmNoDuo2": [
+   "Grazie davvero, ma io e {a0} continuiamo. In bocca al lupo per la ricerca",
+   "Grazie del pensiero, ma resto con {a0}. Spero tu trovi presto qualcuno",
+   "Che gentile, grazie. Però con {a0} andiamo avanti, buona fortuna!"
+  ],
+  "dmNoDuo3": [
+   "Gioco con {a0}. Stiamo bene così",
+   "Ho già {a0}, e non cambio",
+   "Io e {a0} funzioniamo. Non mi serve altro"
+  ],
+  "dmNoDuo4": [
+   "Occupato. {a0}",
+   "Già in duo. {a0}",
+   "No. Gioco con {a0}"
+  ],
+  "dmNo": [
+   "Grazie, ma sono {a0} e gioco in una divisione più alta. Per ora no.",
+   "Grazie, ma con {a0} di overall sto in un'altra divisione. Non adesso.",
+   "Apprezzo, ma sono {a0} e siamo in divisioni diverse. Per ora non se ne fa niente."
+  ],
+  "dmNo1": [
+   "No, sono {a0}. Non fa per me",
+   "Sono {a0}. No",
+   "Nah, {a0}. Non ci sta"
+  ],
+  "dmNo2": [
+   "Grazie per aver pensato a me, davvero, ma sono {a0} e gioco in un'altra divisione. Per ora no",
+   "Mi fa piacere la proposta, ma con {a0} sto in una divisione più alta. Magari più avanti",
+   "Grazie mille, ma sono {a0} e la divisione è diversa. Per adesso non riesco"
+  ],
+  "dmNo3": [
+   "Sono {a0} OVR. Recupera il gap e ne parliamo",
+   "{a0} OVR io. Sali un po' e poi riscrivimi",
+   "Io sto a {a0} OVR. Torna quando ci arrivi vicino"
+  ],
+  "dmNo4": [
+   "{a0} contro il tuo. Troppa differenza",
+   "{a0} contro il tuo overall. Distanza eccessiva",
+   "{a0} io. Il divario è troppo"
+  ],
+  "dmNoPartner": [
+   "Ho sentito che sei senza duo. Io sono {a0}, libero anch'io. Facciamo coppia?",
+   "Mi dicono che sei rimasto solo. Sono {a0} e libero, proviamo?",
+   "Sei senza compagno? Io sono {a0} e sono libero. Giochiamo insieme?"
+  ],
+  "dmNoPartner1": [
+   "Libero. {a0} OVR",
+   "{a0} OVR. Libero",
+   "Sono libero. {a0}"
+  ],
+  "dmNoPartner2": [
+   "Ho sentito che sei rimasto senza duo. Io sono {a0} e sono libero, ti va di provare insieme?",
+   "Ciao! So che cerchi un compagno: sono {a0} e libero anch'io, che ne dici di provarci?",
+   "Mi dispiace per il tuo duo. Io sono {a0} e senza compagno, se ti va proviamo"
+  ],
+  "dmNoPartner3": [
+   "Sono {a0}. Fortunato tu che adesso sono senza duo",
+   "{a0} OVR e libero. Un'occasione così non ricapita",
+   "Io sono {a0}. Ti conviene prendermi finché sono libero"
+  ],
+  "dmNoPartner4": [
+   "Senza duo? Anch'io. {a0} OVR",
+   "Sei libero? Pure io. {a0} OVR",
+   "Niente duo? Idem. {a0}"
+  ],
+  "dmLeftNo": [
+   "Troppo presto. Richiedimelo tra {a0} giorni",
+   "Presto. Riparliamone tra {a0} giorni",
+   "Non ancora. Fra {a0} giorni magari"
+  ],
+  "dmLeftNo1": [
+   "L'abbiamo già fatto. No",
+   "Già visto. No",
+   "Ci siamo già passati. No"
+  ],
+  "dmLeftNo2": [
+   "Senti, è finita male e mi sono appena sistemato. Richiedimelo tra {a0} giorni se ti va ancora",
+   "Mi spiace, è ancora fresca e mi sto ambientando. Riscrivimi tra {a0} giorni, se vuoi",
+   "Capisco, ma mi sono appena sistemato. Facciamo che ne riparliamo tra {a0} giorni"
+  ],
+  "dmLeftNo3": [
+   "Sul serio? Me ne sono appena andato. Fammi respirare",
+   "Di già? Sono uscito ieri, calma",
+   "Ma dai, ho appena lasciato. Lasciami vivere"
+  ],
+  "dmLeftNo4": [
+   "Negativo",
+   "No, grazie",
+   "Non se ne parla"
+  ],
+  "dmPoach": [
+   "Visto il vostro {top0}. Sono {a0} OVR e libero — se pensi di cambiare, scrivimi.",
+   "Ho visto il {top0}. Io sono {a0} OVR, libero: se mai vuoi cambiare, sai dove trovarmi.",
+   "Bel {top0}. Sono {a0} OVR e senza duo — se cambi qualcosa, fammi sapere."
+  ],
+  "dmPoach1": [
+   "Visto il {top0}. Sono {a0}, libero",
+   "{Top0}, visto. {a0}, libero",
+   "Bel {top0}. {a0}, libero"
+  ],
+  "dmPoach2": [
+   "Ho guardato il vostro {top0}, giocato benissimo. Sono {a0} e libero, se mai volessi cambiare scrivimi pure",
+   "Complimenti per il {top0}, davvero pulito. Io sono {a0} e sono libero, se ti serve sai dove trovarmi",
+   "Che bel {top0} ragazzi. Sono {a0}, libero, se un giorno vuoi cambiare scrivimi senza problemi"
+  ],
+  "dmPoach3": [
+   "{Top0} con quel compagno? Io sono {a0}. Pensaci",
+   "Un {top0} nonostante il tuo duo? Con me, a {a0}, faresti di più",
+   "{Top0} con lui? Immagina con me, {a0}. Rifletti"
+  ],
+  "dmPoach4": [
+   "Visto {top0}. {a0} OVR, libero",
+   "{Top0}. {a0} OVR. Disponibile",
+   "Visto il {top0}. {a0} OVR, senza duo"
+  ],
+  "dmReachUp": [
+   "Ho visto il tuo {top0}. Sono {a0} OVR — di solito non scrivo, ma tu giochi sopra il tuo rating. Proviamo insieme?",
+   "Guardato il tuo {top0}. Con {a0} OVR non scrivo spesso per primo, ma stai giocando sopra il tuo livello. Ti va di provare?",
+   "Il tuo {top0} mi ha colpito. Sono {a0} OVR e normalmente non scrivo io, ma stai andando oltre il tuo rating. Facciamo duo?"
+  ],
+  "dmReachUp1": [
+   "{Top0}, bravo. Sono {a0}. Giochiamo?",
+   "Bel {top0}. {a0}. Duo?",
+   "{Top0}, ottimo. Sono {a0}. Proviamo?"
+  ],
+  "dmReachUp2": [
+   "Ho guardato il tuo {top0} — di solito non scrivo per primo, ma stai giocando sopra il tuo rating. Sono {a0}, ti va di provare insieme?",
+   "Complimenti per il {top0}, davvero. Non è da me scrivere per primo, ma giochi meglio di quanto dica il tuo rating. Sono {a0}, proviamo?",
+   "Ciao! Ho visto il tuo {top0} e mi è piaciuto tantissimo. Sono {a0} e mi farebbe piacere provare in duo con te, se ti va"
+  ],
+  "dmReachUp3": [
+   "Sono {a0} OVR e ti scrivo io per primo. Capisci cosa significa? Il {top0} era buono",
+   "Uno da {a0} OVR che scrive per primo a te. Prendilo come un complimento. Bel {top0}",
+   "Di solito sono gli altri a scrivermi, e sono {a0} OVR. Il tuo {top0} però merita"
+  ],
+  "dmReachUp4": [
+   "{Top0}. Sono {a0}. Interessato",
+   "{Top0}. {a0} OVR. Disponibile per un duo",
+   "{Top0}. Io {a0}. Interesse c'è"
+  ],
+  "dmPromoted": [
+   "Complimenti per la Divisione {a0}. Sono {a1}, cerco un duo per questa stagione.",
+   "Bella la promozione in Divisione {a0}. Io sono {a1} e cerco un compagno per la stagione.",
+   "Divisione {a0}, complimenti. Sono {a1} e mi serve un duo per la stagione."
+  ],
+  "dmPromoted1": [
+   "Complimenti per la D{a0}. {a1}, cerco duo",
+   "D{a0}, bravo. Sono {a1}, cerco",
+   "GG per la D{a0}. {a1}, libero"
+  ],
+  "dmPromoted2": [
+   "Complimenti per la Divisione {a0}, meritatissima. Sono {a1} e cerco un compagno per la stagione",
+   "Che bello vederti in Divisione {a0}, te la sei guadagnata. Io sono {a1} e cerco un duo per la stagione, se ti va",
+   "Congratulazioni per la Divisione {a0}! Sono {a1} e mi piacerebbe giocare la stagione con te"
+  ],
+  "dmPromoted3": [
+   "Divisione {a0}, era ora. Sono {a1} e mi serve qualcuno a questo livello",
+   "Finalmente in Divisione {a0}. Io sono {a1}, ora possiamo parlare",
+   "Divisione {a0}, ce ne hai messo di tempo. Sono {a1}, cerco qualcuno all'altezza"
+  ],
+  "dmPromoted4": [
+   "D{a0}. Sono {a1}, libero per la stagione",
+   "D{a0}. {a1}. Disponibile per la stagione",
+   "Divisione {a0}. {a1}, cerco duo"
+  ],
+  "dmProps": [
+   "{Top0} su {a1}. mostri",
+   "{Top0} su {a1}. W enorme",
+   "{Top0} su {a1}. pazzeschi"
+  ],
+  "dmProps1": [
+   "W",
+   "ww",
+   "bravi"
+  ],
+  "dmProps2": [
+   "{Top0} su {a1}. siete dei goat",
+   "{Top0} su {a1}, troppo forti, complimenti",
+   "{Top0} su {a1}. goat veri, bravissimi"
+  ],
+  "dmProps3": [
+   "meritato, niente da dire",
+   "ve lo siete guadagnato, zero dubbi",
+   "meritatissimo, punto"
+  ],
+  "dmProps4": [
+   "siete nel vostro prime adesso, è un dato",
+   "momento migliore della vostra carriera, oggettivamente",
+   "siete al picco, davvero"
+  ],
+  "dmLfd": [
+   "Visto il tuo post. Sono {a0}, ho posto — proviamo?",
+   "Ho letto il post. Io sono {a0} e ho spazio, ci proviamo?",
+   "Ho visto che cerchi: sono {a0}, ho un posto libero. Facciamo una prova?"
+  ],
+  "dmSeatSour": [
+   "Con {a1} la stagione non va, cerco dove andare. Sono {a0} — se il tuo posto è libero, ci sto",
+   "Con {a1} non funziona, sto guardando altrove. Io sono {a0}: se hai il posto libero, sono dentro",
+   "La stagione con {a1} è da buttare, voglio cambiare. Sono {a0} — se ti manca qualcuno, ci sono"
+  ],
+  "dmThanksBack": [
+   "Figurati, vai avanti così",
+   "Di niente, spacca anche la prossima",
+   "Quando vuoi, forza"
+  ],
+  "dmThanksBack1": [
+   "Figurati",
+   "Di niente",
+   "Tranquillo"
+  ],
+  "dmThanksBack2": [
+   "Oddio, mi hai risposto. Grazie, continuerò a seguirti",
+   "Non ci credo, hai risposto! Grazie mille, ti seguo sempre",
+   "Wow, una risposta. Grazie davvero, tifo per te"
+  ],
+  "dmThanksBack3": [
+   "Ovvio che guardo. Vai a prenderti la prossima",
+   "E certo che seguo. Ora vinci la prossima",
+   "Chiaro che guardo, che domande. Dai, la prossima è tua"
+  ],
+  "dmThanksBack4": [
+   "Ricevuto. In bocca al lupo",
+   "Ok. Buona fortuna",
+   "Preso nota. Auguri"
+  ],
+  "dmQBack1": [
+   "Grazie, chiaro",
+   "Ok, grazie",
+   "Capito, grazie"
+  ],
+  "dmQBack2": [
+   "Grazie mille per la risposta. Sinceramente non me l'aspettavo",
+   "Grazie davvero per avermi risposto, non ci speravo",
+   "Che gentile a rispondere, grazie di cuore. Non me l'aspettavo proprio"
+  ],
+  "dmQBack3": [
+   "Ricevuto. Ci vediamo in lobby tra un anno",
+   "Ok. Tra un anno ti trovo in lobby",
+   "Perfetto. L'anno prossimo ci becchiamo in lobby"
+  ],
+  "dmQBack4": [
+   "Chiaro. Grazie",
+   "Ok. Grazie",
+   "Inteso. Grazie"
+  ],
+  "dmClapbackBack": [
+   "AHAHAH",
+   "LOL ok",
+   "ahahah ci sta"
+  ],
+  "dmClapbackBack1": [
+   "LMAO",
+   "ahah",
+   "XD"
+  ],
+  "dmClapbackBack2": [
+   "Oh, risponde pure. Va bene, buona fortuna",
+   "Ah, quindi rispondi anche. Ok dai, in bocca al lupo",
+   "Wow, mi hai risposto davvero. Va bene, buona fortuna allora"
+  ],
+  "dmClapbackBack3": [
+   "Davvero stai lì a rispondere agli hater? Dice tutto",
+   "Rispondi agli hater? Ok, ho capito che tipo sei",
+   "Hai tempo per rispondere a me ma non per vincere. Interessante"
+  ],
+  "dmClapbackBack4": [
+   "Certo",
+   "Sì sì",
+   "Come no"
+  ],
+  "dmHateTurn1": [
+   "Ok, giù il cappello",
+   "Va bene, chapeau",
+   "Ok. Rispetto"
+  ],
+  "dmHateTurn2": [
+   "Quella volta ti ho scritto una cattiveria. Mi sbagliavo, stasera eri il migliore in mappa",
+   "Ti avevo mandato un messaggio brutto. Ho sbagliato, oggi sei stato il più forte della lobby",
+   "Scusa per quello che ti ho scritto. Avevo torto, stasera nessuno giocava come te"
+  ],
+  "dmHateTurn3": [
+   "Va bene, va bene. Il mio hate ha funzionato, guarda come giochi adesso",
+   "Ok ok. Merito mio che ti ho spronato, vedi?",
+   "Dai, ammettilo: senza i miei commenti non giocavi così"
+  ],
+  "dmHateTurn4": [
+   "Ammetto, mi sbagliavo",
+   "Errore mio. Lo riconosco",
+   "Avevo torto. Preso atto"
+  ],
+  "dmRoleNo": [
+   "No, {a0} non fa per me. Io non gioco così",
+   "Nah, {a0} non è il mio ruolo. Non gioco in quel modo",
+   "No, fare {a0} non è roba mia. Gioco diversamente"
+  ],
+  "dmRoleYes": [
+   "Va bene, posso fare {a0}. Proviamo",
+   "Ok, faccio {a0}. Vediamo come va",
+   "Ci sta, posso giocare {a0}. Tentiamo"
+  ],
+  "dmJoinYes": [
+   "Ne ho parlato con {a0} — sei dentro, sei il nostro terzo.",
+   "Sentito {a0}: entra pure, sei il terzo.",
+   "Deciso con {a0}: benvenuto, sei il nostro terzo."
+  ],
+  "dmJoinNo": [
+   "Ho parlato con {a0} — per ora no, il terzo lo troviamo da soli.",
+   "Sentito {a0}: al momento no, cerchiamo noi il terzo.",
+   "Ne ho parlato con {a0} — non adesso, il terzo lo scegliamo noi."
+  ],
+  "dmMovedWith": [
+   "Valigie fatte. Grazie per avermi portato in {a0}",
+   "Ho fatto le valigie. Grazie che mi porti in {a0}",
+   "Pronto a partire. Grazie per avermi preso con te in {a0}"
+  ],
+  "dmAgentYes": [
+   "Perfetto. Da oggi con i club parlo io.",
+   "Bene. D'ora in poi le trattative con i club le gestisco io.",
+   "Ottimo. Da adesso sono io a parlare con le squadre."
+  ],
+  "dmAgentBrought": [
+   "Si sono fatti avanti {a0} club per te: {a1}. Le condizioni sono nella sezione Carriera — guarda e decidi",
+   "{a0} club ti vogliono: {a1}. Trovi le offerte nella scheda Carriera, dagli un'occhiata",
+   "Ci hanno contattato {a0} club: {a1}. I termini sono nella sezione Carriera, valuta tu"
+  ],
+  "dmPitchOk": [
+   "Capito. Sento tutti quelli a cui puoi arrivare, e qualcuno un po' sopra. Dammi un paio di settimane",
+   "Ok. Contatto tutti i club alla tua portata e anche qualcuno più in alto. Due settimane e ti aggiorno",
+   "Ricevuto. Faccio il giro di tutti quelli che puoi puntare, più qualcuno sopra. Serve un paio di settimane"
+  ],
+  "dmPitchOkClub": [
+   "Va bene, vado a parlarci. Ti faccio sapere",
+   "Ok, vado da {a0}. Ti aggiorno appena finisco",
+   "Perfetto, li incontro. Ti riferisco appena ho parlato"
+  ],
+  "dmPitchYes": [
+   "{a0} sono disposti a valutarti — aspettati un'offerta in questa finestra",
+   "{a0} vogliono vederti: l'offerta dovrebbe arrivare in questa finestra",
+   "Da {a0} c'è interesse — in questa finestra arriva la proposta"
+  ],
+  "dmPitchNo": [
+   "Da {a0} dicono che il roster è completo. Proviamo con un altro",
+   "{a0} hanno la squadra al completo. Passiamo al prossimo",
+   "Niente da fare con {a0}, roster pieno. Ne sento un altro"
+  ],
+  "dmPitchTalked": [
+   "Ho parlato con {a0}.",
+   "Trattativa con {a0} fatta.",
+   "Incontro con {a0} concluso."
+  ],
+  "dmOrgYesMoreAgent": [
+   "Chiuso. ${a0} al mese, puoi firmare.",
+   "Fatto. ${a0} per lal mese, si può firmare.",
+   "Accordo trovato: ${a0} al mese. Firma pure."
+  ],
+  "dmOrgNoMoreAgent": [
+   "Di più non danno. Restano su ${a0} — decidi tu se ne vale la pena.",
+   "Il loro massimo è ${a0}. Sta a te capire se ti va bene.",
+   "Non si muovono da ${a0}. A te la scelta se accettare."
+  ],
+  "dmOrgYesPerkAgent": [
+   "Il setup lo pagano loro. Io firmerei.",
+   "Attrezzatura a carico loro. Firmerei.",
+   "Setup coperto da loro. Per me si firma."
+  ],
+  "dmOrgNoPerkAgent": [
+   "Sull'attrezzatura hanno detto no. Soldi uguali, il resto invariato.",
+   "Niente setup. Stipendio uguale, tutto il resto come prima.",
+   "Il setup non lo coprono. Cifra invariata, resto uguale."
+  ],
+  "dmOrgWaitAgent": [
+   "Inoltrato. Rispondono entro {date0}.",
+   "Passato a loro. Risposta entro {date0}.",
+   "Proposta girata. Faranno sapere entro {date0}."
+  ],
+  "dmOrgExpiredAgent": [
+   "{a0} hanno chiuso il posto. Continuo a cercare.",
+   "Da {a0} il posto non c'è più. Cerco altro.",
+   "{a0} hanno riempito il ruolo. Vado avanti con la ricerca."
+  ],
+  "dmOrgWelcomeAgent": [
+   "Firmato con {a0}. Complimenti — ora si lavora.",
+   "Contratto con {a0} chiuso. Bravo — adesso sotto con il lavoro.",
+   "Sei di {a0}, firmato. Congratulazioni, ora testa al lavoro."
+  ],
+  "dmOrgWithdrawAgent": [
+   "{a0} hanno ritirato l'offerta.",
+   "L'offerta di {a0} non c'è più.",
+   "{a0} si sono tirati indietro."
+  ],
+  "dmOrgPromotedAgent": [
+   "{a0} ti portano in prima squadra, {a1} al mese. Ho già approvato.",
+   "{a0} ti promuovono nel roster principale, {a1} al mese. Tutto concordato.",
+   "Prima squadra con {a0}: {a1} al mese. Ho chiuso io."
+  ],
+  "dmOrgRaiseAgent": [
+   "Ho rinegoziato il tuo contratto con {a0}. Ora sono {a1} al mese.",
+   "Contratto con {a0} rivisto: adesso prendi {a1} al mese.",
+   "Ho riaperto l'accordo con {a0}. Si sale a {a1} al mese."
+  ],
+  "dmOrgYesMore": [
+   "Va bene, ${a0} al mese. Ti aspettiamo",
+   "Ok, ${a0} per lal mese. Ci vediamo al bootcamp",
+   "Affare fatto: ${a0} al mese. Benvenuto a bordo"
+  ],
+  "dmOrgNoMore": [
+   "Di più non possiamo. ${a0} è il nostro tetto",
+   "Oltre non arriviamo. Il massimo è ${a0}",
+   "Non riusciamo a salire. ${a0} è il limite"
+  ],
+  "dmOrgYesPerk": [
+   "Affare fatto, il setup lo copriamo noi",
+   "Ok, l'attrezzatura è a carico nostro",
+   "D'accordo, al setup pensiamo noi"
+  ],
+  "dmOrgNoPerk": [
+   "Con l'attrezzatura non possiamo aiutarti, solo lo stipendio",
+   "Il setup non riusciamo a coprirlo, c'è solo lo stipendio",
+   "Niente attrezzatura da parte nostra, solo la paga"
+  ],
+  "dmOrgWithdraw": [
+   "{a0}: allora cerchiamo qualcun altro. In bocca al lupo",
+   "{a0}: ok, guardiamo altrove. Buona fortuna",
+   "{a0}: a questo punto puntiamo su altri. Auguri"
+  ],
+  "dmOrgPromoted": [
+   "{a0}: ti portiamo in prima squadra. ${a1} al mese.",
+   "{a0}: sali nel roster principale. ${a1} al mese.",
+   "{a0}: promozione in prima squadra, ${a1} al mese."
+  ],
+  "dmOrgRaise": [
+   "{a0}: rivediamo il tuo contratto. ${a1} al mese.",
+   "{a0}: aggiorniamo il tuo accordo. ${a1} al mese.",
+   "{a0}: ritocchiamo il contratto, ora ${a1} al mese."
+  ],
+  "dmOrgMain": [
+   "{a0}: ti vogliamo nel roster principale. ${a1} al mese.",
+   "{a0}: ti prendiamo in prima squadra. ${a1} al mese.",
+   "{a0}: c'è un posto in prima squadra per te, ${a1} al mese."
+  ],
+  "dmAgentOrgMain": [
+   "Ho parlato con {a0}. Prima squadra, ${a1} al mese. Che ne dici?",
+   "Sentito {a0}: ti vogliono nel roster principale a ${a1} al mese. Che pensi?",
+   "{a0} ti offrono la prima squadra, ${a1} al mese. Come la vedi?"
+  ],
+  "dmOrgAcademy": [
+   "{a0}: vieni nella nostra academy. ${a1} al mese, e se ti fai valere sali in prima squadra.",
+   "{a0}: ti vogliamo in academy. ${a1} al mese, la prima squadra te la guadagni.",
+   "{a0}: posto in academy, ${a1} al mese. Dimostra quanto vali e ti promuoviamo."
+  ],
+  "dmAgentOrgAcademy": [
+   "Ho parlato con {a0}. Per ora academy, ${a1} al mese, ma la porta per la prima squadra è aperta.",
+   "Sentito {a0}: academy a ${a1} al mese, con la possibilità di salire.",
+   "{a0} propongono l'academy, ${a1} al mese. La prima squadra resta un'opzione."
+  ],
+  "dmOrgWelcome": [
+   "Benvenuto in {a0}.",
+   "Benvenuto nella famiglia {a0}.",
+   "{a0} ti dà il benvenuto."
+  ],
+  "dmOrgWait": [
+   "Ne parliamo con la dirigenza, risposta entro {date0}.",
+   "Lo portiamo ai piani alti, ti rispondiamo entro {date0}.",
+   "Valutiamo internamente, ti facciamo sapere entro {date0}."
+  ],
+  "dmOrgExpired": [
+   "{a0}: non possiamo più aspettare, ritiriamo l'offerta.",
+   "{a0}: il tempo è scaduto, l'offerta non è più valida.",
+   "{a0}: non teniamo il posto oltre, offerta ritirata."
+  ]
+ },
+ "co": {
+  "ccCoWin": [
+   "grande così",
+   "partita pulitissima",
+   "strameritato",
+   "miglior serata della settimana",
+   "roba di classe",
+   "complimenti!!"
+  ],
+  "ccCoPod": [
+   "bella",
+   "bella run",
+   "per un pelo",
+   "dignitoso",
+   "niente male",
+   "c'eri quasi"
+  ],
+  "ccCoMid": [
+   "capita",
+   "partita ok",
+   "alla prossima",
+   "si può fare meglio",
+   "vabbè",
+   "ci sta"
+  ],
+  "ccCoNews": [
+   "WWW",
+   "bomba",
+   "complimenti",
+   "daje",
+   "👀🔥",
+   "meritato"
+  ],
+  "ccCoBad": [
+   "non mollare",
+   "lobby tosta",
+   "riposa e riparti",
+   "c'è tempo",
+   "poteva andare peggio",
+   "sfiga"
+  ],
+  "ccCoPro": [
+   "hai talento",
+   "ti ho seguito oggi",
+   "scrivimi se cerchi un duo",
+   "farai strada",
+   "giochi forte",
+   "occhio a questo"
+  ],
+  "ccCoProt": [
+   "hai del talento",
+   "ti ho guardato stasera",
+   "se cerchi un trio scrivimi",
+   "andrai lontano",
+   "giochi davvero bene",
+   "ne sentiremo parlare"
+  ],
+  "ccCoLfd": [
+   "V V",
+   "prendetelo ora",
+   "con lui ci giocherei",
+   "V 🐐🐐",
+   "non resta libero a lungo",
+   "fortissimo, dm"
+  ],
+  "ccCoBday": [
+   "buon compleanno 🐐",
+   "auguri! 🎂",
+   "tanti auguri leggenda",
+   "hbd re",
+   "auguri, che sia una stagione enorme",
+   "🎂🎉"
+  ],
+  "ccCoHype": [
+   "LETSGOOO",
+   "era ora",
+   "quando?",
+   "oddiooo",
+   "e i server?",
+   "ancora quei giorni 😭"
+  ],
+  "ccCoDuo": [
+   "coppia paurosa",
+   "lobby finita",
+   "W duo",
+   "fortissimi",
+   "in bocca al lupo 🤝",
+   "questi fanno top 1"
+  ],
+  "ccCoSign": [
+   "meritato",
+   "W firma",
+   "benvenuto",
+   "complimenti 🎉",
+   "era ora",
+   "mossa enorme"
+  ],
+  "ccCoLeft": [
+   "in bocca al lupo",
+   "grazie di tutto",
+   "peccato",
+   "il prossimo team sarà meglio",
+   "🙏🙏",
+   "aspettiamo news"
+  ],
+  "ccCoTable": [
+   "gara apertissima",
+   "sempre gli stessi in cima",
+   "manca tanto",
+   "top 3 bloccata",
+   "punto sui primi",
+   "si decide all'ultima"
+  ],
+  "ccCoStream": [
+   "link pls",
+   "arrivo subito",
+   "W live",
+   "entro",
+   "sto guardando",
+   "fai la review dopo?"
+  ],
+  "ccCoDrop": [
+   "atterriamo lì anche noi 😭",
+   "non prenderlo",
+   "sarà conteso",
+   "gl sullo spot",
+   "coraggioso",
+   "ci sono già tre team"
+  ],
+  "ccCoCust": [
+   "posso entrare?",
+   "PR troppo basso 😭",
+   "ti scrivo",
+   "vai",
+   "anche in duo?",
+   "taglio severo"
+  ],
+  "ccCoBye": [
+   "leggenda",
+   "grazie per questi anni",
+   "🫡🫡",
+   "che tristezza",
+   "rispetto",
+   "GOAT vero"
+  ],
+  "ccCoBan": [
+   "assurdo",
+   "non ci credo",
+   "lo sapevo",
+   "che peccato",
+   "che vergogna",
+   "c'è tutto nel video"
+  ],
+  "ccCoMateUp": [
+   "🐐🐐",
+   "fiero di te",
+   "IGL del secolo 🐐",
+   "di nuovo la prossima",
+   "fino alla fine",
+   "numero uno 🔥"
+  ],
+  "ccCoMateDown": [
+   "ci rifacciamo",
+   "colpa anche mia",
+   "rivediamo e avanti",
+   "alla prossima",
+   "tieni duro",
+   "non è finita"
+  ],
+  "ccCoOrg": [
+   "il nostro ragazzo 💙",
+   "W",
+   "orgogliosi 👏",
+   "così si fa",
+   "non è finita",
+   "💙💙💙"
+  ],
+  "ccCoTy": [
+   "grazie ❤️",
+   "🙏🙏",
+   "ty raga",
+   "grazie a tutti",
+   "❤️❤️",
+   "vi voglio bene"
+  ],
+  "ccCoHate": [
+   "lobby ez",
+   "carriato",
+   "solo fortuna",
+   "non giocavi tu",
+   "botta di fortuna",
+   "la prossima è una L"
+  ],
+  "ccCoHateBad": [
+   "finito",
+   "washed",
+   "di nuovo",
+   "chi ti vuole",
+   "toglietelo",
+   "L enorme"
+  ],
+  "ccCoTroll": [
+   "te l'avevo detto",
+   "a martedì",
+   "sai l'indirizzo",
+   "ancora tu",
+   "ci vediamo in lobby",
+   "come sempre"
+  ],
+  "ccCoProWin": [
+   "gg wp",
+   "meritato 🐐",
+   "pulito",
+   "lobby ez 😭",
+   "fortissimo",
+   "mostro"
+  ],
+  "ccCoProBad": [
+   "sfortunato fra",
+   "alla prossima",
+   "capita",
+   "tornerai",
+   "tieni duro",
+   "succede a tutti"
+  ],
+  "ccCoProLfd": [
+   "V",
+   "V 🐐",
+   "prendetelo, non ve ne pentirete",
+   "V, ci ho giocato",
+   "forte",
+   "scelta sicura"
+  ],
+  "ccCoSad": [
+   "non separatevi 😭",
+   "eravate i migliori",
+   "che tristezza leggere questo",
+   "F",
+   "fine di un'era",
+   "no dai…"
+  ]
+ }
+}

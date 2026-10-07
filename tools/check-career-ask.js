@@ -112,9 +112,13 @@ const BOOT = `
           t.asks === 2, String(t.asks));
     check('and it can move the wage again', t.offer.salary >= after,
           after + ' -> ' + t.offer.salary);
+    // 7.10: вариантов торга стало больше (размер просьбы, доля, бонус) — просьб на предложение три (CC_ASK_MAX).
+    careerAskMore(t.id);
+    answer();
+    check('a third ask is allowed too', t.asks === 3, String(t.asks));
     const twice = t.offer.salary;
     careerAskMore(t.id);
-    check('a third does nothing', t.offer.salary === twice && !t.pending,
+    check('a fourth does nothing', t.offer.salary === twice && !t.pending,
           twice + ' -> ' + t.offer.salary);
     check('and the thread says the conversation is over', t.asked === true);
     // Read at the club's own standard, where the odds are not against a clamp:
