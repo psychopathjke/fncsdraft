@@ -82,6 +82,18 @@ try{
     const b0=CAREER.career.balance; careerDmArgue(t.id, 'camp');
     check('буткемп списывает $1000', CAREER.career.balance===b0-CC_ARG_CAMP, b0+' -> '+CAREER.career.balance);
   } else out.fails.push('нет кандидата далеко от порога');
+  // ---- без спама (его слово 7.10: «просто так можно бесконечно спамить и роли»)
+  seed(70);
+  const r0=ccRoleNow(); careerRoleSwap(); const r1=ccRoleNow(); careerRoleSwap(); const r2=ccRoleNow();
+  out.notes.roleSpam={r0, r1, r2, cool:ccRoleCooldown()};
+  check('роль сменилась один раз, вторая смена подряд — нет', r1!==r0 && r2===r1 && ccRoleCooldown()>0, JSON.stringify(out.notes.roleSpam));
+  const names=careerDuoSearchPool(true).filter(w=>w && w.handle).slice(0, 6).map(w=>w.handle);
+  names.forEach(h=>careerDmWrite(h));
+  const asked=names.filter(h=>{ const t=careerDmFind(h); return t && t.msgs.some(m=>m.from==='you'); }).length;
+  out.notes.asked=asked;
+  check('в день — не больше '+CC_DM_ASKS_DAY+' предложений в дуо', asked===CC_DM_ASKS_DAY, String(asked));
+  CAREER.career.day=ccAddDays(CAREER.career.day, 1);
+  check('назавтра снова можно', ccDmAsksLeft()===CC_DM_ASKS_DAY, String(ccDmAsksLeft()));
 }catch(e){ out.fails.push(String(e.stack||e)); }
 document.getElementById('__out').textContent='@@B@@'+encodeURIComponent(JSON.stringify(out))+'@@E@@'; }, 500));<\/script>`;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'mtalk-')), tmp = path.join(dir, 'index.html');
