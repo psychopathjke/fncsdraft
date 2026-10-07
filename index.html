@@ -142250,6 +142250,19 @@ function careerSeasonTurn(season){
   if(cr.seasonTurn===season.id) return null;
   cr.seasonTurn=season.id;
   careerMetaStart(season.id);   // новый остров и пул: три дня разбора меты
+  /* В командной карьере первое кресло — живой друг из лобби (careerPartnerCard
+     отдаёт MP.peer), а бросок стыка читает запись бота из сейва — её там нет,
+     и выходило 'none': каждый стык сезона писал «Расходимся с @друг» и звал
+     искать напарника на занятое место (тестер, Notion «fncsdraft» 7.10:
+     «команды сплитятся в начале сезона в 6 главе» — в 2025-м стыков четыре).
+     Друг уходит только сам, из лобби; бросок ему не судья. */
+  if(typeof ccMpTeam==='function' && ccMpTeam()){
+    const peer=(typeof MP!=='undefined' && MP.peer) ? MP.peer : null;
+    if(peer) careerNews('good', 'ccNewsDuoAgain', [season.id, ccHandle(peer.handle)]);
+    careerWorldDuos(season);
+    careerSave();
+    return {season:season.id, split:false, from:peer?peer.handle:null};
+  }
   const mate=careerPartnerCard();
   const verdict=careerDuoHolds();
   let out={season:season.id, split:false, from:mate?mate.handle:null};
