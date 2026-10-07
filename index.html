@@ -148973,7 +148973,13 @@ function ccMXWeekEnd(y, n, w){
   return last;
 }
 const ccMXKey=r=>r==='you' ? 'you' : JSON.stringify(r);
-function ccMXSeriesAdd(m, ranked, rowOf){
+/* ПРЯМЫЕ МЕСТА НЕДЕЛИ (Liquipedia, его вопрос 7.10 «2019 по очкам за несколько недель?»): финал каждой недели сам
+   отправляет свой верх в хиты — Season X «Top 8 trios», C2S1 «Top 10 squads», C2S2 «Top 20 duos», C2S3 «Top 50
+   players», C2S4 «Top 15 teams»; уже прошедший отдаёт место следующему. Остаток хитов — «top performers that didn't
+   qualify», то есть сумма очков недель (m.series). Раньше всё поле хитов шло только по сумме. */
+const CC_MX_WEEK_DIRECT={h3:8, h4:10, i1:20, i2:50, i3:15};
+function ccMXSeriesAdd(m, ranked, rowOf, w){
+  if(w!=null){ (m.wf=m.wf||{})[w]=ranked.map(rowOf); m.heats=null; }
   const n=ranked.length;
   ranked.forEach((t,i)=>{ const k=ccSeatKey(t); m.series[k]=(m.series[k]||0)+(n-i); if(!m.seriesRows[k]) m.seriesRows[k]=rowOf(t); });
 }
@@ -149007,17 +149013,27 @@ function ccMXSettleWeek(m, w){
     room=room.slice(0, F);
     room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
     ccWorldRun('mxq|'+m.season+'|'+m.y+'|'+m.n+'|'+w, ()=>simulateGames(room, last.games, ccM24Points, CC_M24_KILL));
-    ccMXSeriesAdd(m, ccM24Rank(room), ccMajorSeatRow);
+    ccMXSeriesAdd(m, ccM24Rank(room), ccMajorSeatRow, w);
   });
   Q.done=true;
 }
 function ccMXSettleWeeks(m){ (ccMXSpec(m.y, m.n).weeks||[]).forEach(w=>ccMXSettleWeek(m, w)); }
+// Кто сейчас в поле хитов: прямые места недель по порядку недель, потом сумма очков. Без кэша — для плашки недели.
+function ccMXHeatList(m){
+  const sp=ccMXSpec(m.y, m.n), plan=sp.heats||[], F=ccMXLobby(sp.size);
+  const need=plan.length*F, direct=CC_MX_WEEK_DIRECT[sp.set]||0;
+  const list=[], seen=new Set();
+  const push=r=>{ const key=ccMXKey(r); if(list.length>=need || seen.has(key)) return false; seen.add(key); list.push(r); return true; };
+  if(direct) (sp.weeks||[]).forEach(w=>{ let got=0; ((m.wf||{})[w]||[]).forEach(r=>{ if(got<direct && push(r)) got++; }); });
+  Object.keys(m.series).sort((a,b)=>m.series[b]-m.series[a]).forEach(k=>push(m.seriesRows[k]));
+  return {list, need};
+}
 function ccMXHeats(m){
   if(m.heats) return m.heats;
   ccMXSettleWeeks(m);
   const sp=ccMXSpec(m.y, m.n), plan=sp.heats||[], F=ccMXLobby(sp.size);
   const H=plan.length, need=H*F;
-  const list=[], seen=new Set();
+  const pre=ccMXHeatList(m), list=pre.list, seen=new Set(list.map(ccMXKey));
   const push=r=>{ const key=ccMXKey(r); if(list.length>=need || seen.has(key)) return; seen.add(key); list.push(r); };
   Object.keys(m.series).sort((a,b)=>m.series[b]-m.series[a]).forEach(k=>push(m.seriesRows[k]));
   if(list.length<need) ccWithEventSize(sp.size, ()=>ccM23World(need*2, 'mxh|'+m.y+'|'+m.n).forEach(t=>push(ccMajorSeatRow(t))));
@@ -149298,16 +149314,16 @@ async function ccMXRun(ev, sp, soloTeam){
             ranked.map(seedOf).filter(r=>r==='you' || !done.has(ccMXWcRowKey(r))).slice(0, spec.cut);
         }
         else {
-          ccMXSeriesAdd(m, ranked, seedOf);
+          ccMXSeriesAdd(m, ranked, seedOf, ev.w);
           /* Хиты берут верх серии: хитов × лобби (ccMXHeats). Карточка финала недели ставила «не
              прошёл» всегда — через неё шла только путёвка World Cup (его правка 29.09: «в финалах
              нет плашки, что квал в хиты»). В последнюю неделю место уже окончательное — «в хитах»,
              раньше — «в зоне хитов» по текущей серии. */
           if((sp.heats||[]).length){
             Q.done=true; ccMXSettleWeeks(m);
-            const need=sp.heats.length*F, sr=ccMXSeriesRank(m, ccSeatKey(you));
+            const hl=ccMXHeatList(m), need=hl.need;
             const lastWeek=ev.w===(sp.weeks||[])[(sp.weeks||[]).length-1];
-            through=sr>0 && sr<=need;
+            through=hl.list.indexOf('you')>=0;
             heatsNote=through ? (lastWeek ? L().ccYrXHeatsIn(need) : L().ccYrXHeatsZone(need)) : L().ccYrXHeatsOut(need);
           }
         }
