@@ -472,6 +472,24 @@ const SECTIONS=[
     check('календарь: прошедший вечер с местом', /#4/.test(B.textContent) && B.textContent.indexOf('ПробныйВечер')>=0);
     check('центр: список ближайших турниров', (mgrRenderHub('centre'), !!document.querySelector('#mgBody .mgc-cal')));
   `},
+  {name:'штаб', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    MGR_SUB.club='train'; mgrRenderHub('club');
+    const B=document.getElementById('mgBody');
+    check('штаб '+lang+': настоящие коучи на выбор', CC_COACHES.every(c=>B.innerHTML.indexOf(esc(c.name))>=0));
+    check('штаб '+lang+': настоящие SMM на выбор', CC_SMM.every(m=>B.innerHTML.indexOf(esc(m.name))>=0));
+    check('штаб: фото', B.querySelectorAll('.mgf-person img').length>=CC_COACHES.length+CC_SMM.length);
+    const w0=mgrStaffWage();
+    mgrHirePerson('coach', 'bloodx'); mgrHirePerson('smm', 'sweety');
+    check('штаб: коуч нанят', (MGR.staffWho||{}).coach==='bloodx' && mgrStaff('coach')>=1 && mgrStaff('coach')<=3, JSON.stringify(MGR.staffWho)+' '+mgrStaff('coach'));
+    check('штаб: SMM нанят', (MGR.staffWho||{}).smm==='sweety' && mgrStaff('smm')>=1);
+    const cc=CC_COACHES.find(c=>c.id==='bloodx'), sm=ccSmmTermsOf(CC_SMM.find(m=>m.id==='sweety'));
+    check('штаб: ставка — его условия', mgrStaffWage()===w0+cc.cost+sm.cost, w0+' → '+mgrStaffWage()+' (ждали +'+(cc.cost+sm.cost)+')');
+    check('штаб: лучший коуч выше уровнем слабого', mgrPersonTier('coach', CC_COACHES[0])>=mgrPersonTier('coach', CC_COACHES[CC_COACHES.length-1]));
+    mgrRenderHub('club'); check('штаб: нанятый подсвечен', !!B.querySelector('.mgf-person.on'));
+    mgrHirePerson('coach', null); check('штаб: уволен', !mgrStaff('coach') && !(MGR.staffWho||{}).coach);
+    check('штаб '+lang+': без undefined', !bad(B.innerHTML));
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');

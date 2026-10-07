@@ -6338,6 +6338,15 @@
   .mgc-item{display:flex;flex-direction:column;padding:7px 0;border-top:1px solid rgba(255,255,255,.1);cursor:pointer;color:#fff;font-size:13px;}
   .mgc-item small{font-size:10px;color:rgba(255,255,255,.55);}
   .mgc-item.open span{font-weight:700;}
+  /* Настоящие коучи и SMM в штабе. */
+  .mgf-people{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;margin-top:8px;}
+  .mgf-person{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#fff;}
+  #screen-manager .mgf-person.on{border-color:#ffd400;background:rgba(255,212,0,.08);}
+  .mgf-person img{width:44px;height:44px;border-radius:50%;object-fit:cover;flex:0 0 auto;background:rgba(255,255,255,.1);}
+  .mgf-person span{display:flex;flex-direction:column;min-width:0;flex:1 1 auto;}
+  .mgf-person span b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mgf-person small{font-size:11px;opacity:.75;}
+  .mgf-person .hg-go{width:auto;margin-top:0;flex:0 0 auto;}
   /* Скаутинг. */
   #screen-manager .mgx{margin-bottom:16px;}
   .mgx-scout{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 0;border-top:1px solid rgba(255,255,255,.1);color:#fff;}
@@ -155306,7 +155315,7 @@ function mgrT9(){
     goals:'Цели совета', dev:'Развитие', devNone:'Рост виден раз в месяц', fatigue:'Усталость', news:'Новости клуба', toTables:'Трофеи и статистика', toTrain:'К тренировкам',
     role:'Роль', until:'Контракт', where:'Где играет', moveTo:'Перевести…',
     market:'Рынок', short:'Шортлист', deals:'Переговоры', shortEmpty:'Отметь игроков звёздочкой на рынке', dealsEmpty:'Переговоров и предложений нет', offersIn:'Предложения и просьбы', negNow:'Идут переговоры', open:'Открыть', wageRoom:'Свободно под потолком',
-    train:'Тренировки и штаб', base:'База', sponsor:'Спонсор', press:'Пресса и события', stats:'Статистика', trophies:'Трофеи', managers:'Менеджеры',
+    hire:'Нанять', train:'Тренировки и штаб', base:'База', sponsor:'Спонсор', press:'Пресса и события', stats:'Статистика', trophies:'Трофеи', managers:'Менеджеры',
     scouting:'Скаутинг', scouts:'Скауты', reports:'Отчёты скаутов', noScouts:'Скаутов нет — найми, и они поедут по регионам', noReports:'Отчёты приходят раз в неделю', fire:'Уволить', anyRole:'Любая роль', anyAge:'Любой возраст', ageTo:n=>'до '+n+' лет', anyOvr:'Любой рейтинг', now:'Сейчас', potW:'Потенциал', views:n=>'отчётов: '+n, scoutLv:[null,'Скаут','Опытный скаут','Главный скаут'], scoutRep:(r,l)=>'Скаут ('+r+'): '+l,
     youth:'Молодёжь', yscout:'Молодёжный скаут', yHire:'Нанять молодёжного скаута', noYScouts:'Молодёжных скаутов нет', found:'Найденные таланты', noYouth:'Находки приходят раз в месяц', toAcad:'В академию', age:n=>n+' лет', youthRep:l=>'Молодёжный скаут нашёл: '+l,
     plan:'План развития', planRole:'Роль-цель', planNone:'Без смены роли', planFocus:'Упор в рост', planOn:'Вкл', planOff:'Выкл', planLeft:n=>'осталось '+n+' дн.', planDone:(h,r)=>h+' переучился: теперь '+r,
@@ -155325,7 +155334,7 @@ function mgrT9(){
     goals:'Board goals', dev:'Development', devNone:'Growth shows once a month', fatigue:'Fatigue', news:'Club news', toTables:'Trophies and stats', toTrain:'To training',
     role:'Role', until:'Contract', where:'Plays in', moveTo:'Move to…',
     market:'Market', short:'Shortlist', deals:'Negotiations', shortEmpty:'Star players on the market to shortlist them', dealsEmpty:'No talks or offers', offersIn:'Offers and requests', negNow:'Talks in progress', open:'Open', wageRoom:'Room under the cap',
-    train:'Training and staff', base:'Facilities', sponsor:'Sponsor', press:'Press and events', stats:'Stats', trophies:'Trophies', managers:'Managers',
+    hire:'Hire', train:'Training and staff', base:'Facilities', sponsor:'Sponsor', press:'Press and events', stats:'Stats', trophies:'Trophies', managers:'Managers',
     scouting:'Scouting', scouts:'Scouts', reports:'Scout reports', noScouts:'No scouts — hire one and send them out', noReports:'Reports arrive once a week', fire:'Fire', anyRole:'Any role', anyAge:'Any age', ageTo:n=>'up to '+n, anyOvr:'Any rating', now:'Now', potW:'Potential', views:n=>'reports: '+n, scoutLv:[null,'Scout','Senior scout','Chief scout'], scoutRep:(r,l)=>'Scout ('+r+'): '+l,
     youth:'Youth', yscout:'Youth scout', yHire:'Hire a youth scout', noYScouts:'No youth scouts', found:'Talents found', noYouth:'Finds arrive once a month', toAcad:'To academy', age:n=>'age '+n, youthRep:l=>'Youth scout found: '+l,
     plan:'Development plan', planRole:'Target role', planNone:'Keep role', planFocus:'Growth focus', planOn:'On', planOff:'Off', planLeft:n=>n+' days left', planDone:(h,r)=>h+' retrained: now '+r,
@@ -156267,8 +156276,8 @@ function mgrT4(){
 }
 const MGR_STAFF_COST=[0, 1500, 3500, 7000];
 function mgrStaff(k){ return ((MGR.staff||{})[k])||0; }
-function mgrStaffWage(){ return ['coach','analyst','psych','smm'].reduce((s,k)=>s+MGR_STAFF_COST[mgrStaff(k)], 0)+mgrScoutWage(); }
-function mgrHire(k, t){ MGR.staff=MGR.staff||{}; MGR.staff[k]=Math.max(0, Math.min(3, t)); mgrSave(); mgrOpenHub(); }
+function mgrStaffWage(){ return ['coach','analyst','psych','smm'].reduce((s,k)=>s+(mgrStaff(k) ? (((MGR.staffCost||{})[k])||MGR_STAFF_COST[mgrStaff(k)]) : 0), 0)+mgrScoutWage(); }
+function mgrHire(k, t){ MGR.staff=MGR.staff||{}; MGR.staff[k]=Math.max(0, Math.min(3, t)); if(MGR.staffWho) delete MGR.staffWho[k]; if(MGR.staffCost) delete MGR.staffCost[k]; mgrSave(); mgrOpenHub(); }
 
 // ---- 3) Потенциал: скрытый потолок, у молодых/слабых шире. Вилка без скаута.
 function mgrPot(h){
@@ -156455,6 +156464,34 @@ function mgrNightPow(){   // прибавка/штраф силы на вече�
   const f=mgrFatigue();
   return (mgrTrain()==='scrims' ? 1 : 0)-(f>80 ? 2 : f>60 ? 1 : 0)+mgrStaff('analyst')*0.4+0.3*mgrFac('lab');
 }
+/* НАСТОЯЩИЕ КОУЧИ И SMM в штаб (его слово 7.10: «смм коучи же есть у нас, можно их на выбор добавить»).
+   Те же люди, что в карьере (CC_COACHES, CC_SMM): фото, ник, условия. Уровень для эффектов штаба
+   (mgrStaff: 1–3) — по их месту в своём списке: у коучей — треть списка, у SMM — охват в X (ccSmmPull).
+   Ставка — его собственная (коуч — cost строки, SMM — ccSmmTermsOf). */
+const MGR_PERSON_LIST={coach:()=>CC_COACHES, smm:()=>CC_SMM};
+function mgrPersonCost(k, p){ return k==='smm' ? ccSmmTermsOf(p).cost : (p.cost||MGR_STAFF_COST[2]); }
+function mgrPersonTier(k, p){
+  if(k==='smm'){ const x=ccSmmPull(p.x); return x==null ? 1 : x>=0.66 ? 3 : x>=0.33 ? 2 : 1; }
+  const list=CC_COACHES, i=Math.max(0, list.indexOf(p)), n=list.length;
+  return i<n/3 ? 3 : i<2*n/3 ? 2 : 1;
+}
+function mgrHirePerson(k, id){
+  MGR.staff=MGR.staff||{}; MGR.staffWho=MGR.staffWho||{}; MGR.staffCost=MGR.staffCost||{};
+  const p=id ? (MGR_PERSON_LIST[k]()||[]).find(x=>x.id===id) : null;
+  if(!p){ MGR.staff[k]=0; delete MGR.staffWho[k]; delete MGR.staffCost[k]; mgrSave(); return; }
+  MGR.staff[k]=mgrPersonTier(k, p); MGR.staffWho[k]=p.id; MGR.staffCost[k]=mgrPersonCost(k, p);
+  mgrSave();
+}
+function mgrPersonsHTML(k){
+  const T4=mgrT4(), T9=mgrT9(), who=(MGR.staffWho||{})[k];
+  return '<div class="mgf-people">'+(MGR_PERSON_LIST[k]()||[]).map(p=>{
+    const on=who===p.id, tier=mgrPersonTier(k, p);
+    return '<div class="mgf-person'+(on ? ' on' : '')+'"><img src="photos/'+esc(p.photo||'')+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">'+
+      '<span><b>'+esc(p.name)+'</b><small>@'+esc(p.at||'')+(p.reg ? ' · '+esc(p.reg) : '')+(p.x ? ' · '+ccNum(p.x)+' X' : '')+'</small>'+
+      '<small>'+esc(T4.tier(tier))+' · '+mgrMoney(mgrPersonCost(k, p))+' '+esc(mgrT().month)+'</small></span>'+
+      (on ? '<button class="hg-go mgs-bad" onclick="mgrHirePerson(\''+k+'\', null);mgrRenderHub()">'+esc(T4.fire)+'</button>'
+          : '<button class="hg-go" onclick="mgrHirePerson(\''+k+'\', \''+esc(p.id)+'\');mgrRenderHub()">'+esc(T9.hire)+'</button>')+'</div>'; }).join('')+'</div>';
+}
 function mgrTrainHTML(){
   const T4=mgrT4(), t=mgrTrain(), f=mgrFatigue();
   const opts=[['scrims',T4.trScrims,T4.trScrimsN],['creative',T4.trCreative,T4.trCreativeN],['vod',T4.trVod,T4.trVodN],['rest',T4.trRest,T4.trRestN]];
@@ -156462,6 +156499,7 @@ function mgrTrainHTML(){
   return '<h3 class="mg-sub">'+T4.trainH+'</h3><div class="mg-train">'+opts.map(([k,l,nn])=>'<button class="mg-trb'+(t===k?' on':'')+'" onclick="MGR.train=\''+k+'\';mgrSave();mgrOpenHub()"><b>'+l+'</b><small>'+nn+'</small></button>').join('')+'</div>'+
     '<div class="mg-fat"><em>'+T4.fatigue+' '+f+'%</em><i style="width:'+f+'%"></i></div>'+
     '<h3 class="mg-sub">'+T4.staff+'</h3><div class="mg-clubs">'+staff.map(([k,l,nn])=>{ const lv=mgrStaff(k);
+      if(MGR_PERSON_LIST[k]) return '<div class="mg-staff mgf-staff"><b>'+l+'</b><small>'+nn+'</small>'+mgrPersonsHTML(k)+'</div>';
       return '<div class="mg-staff"><b>'+l+(lv ? ' · '+T4.tier(lv) : '')+'</b><small>'+nn+(lv ? ' · '+mgrMoney(MGR_STAFF_COST[lv])+' '+mgrT().month : '')+'</small><div class="mg-seg">'+
         [1,2,3].map(t=>'<button class="'+(lv===t?'on':'')+'" onclick="mgrHire(\''+k+'\','+t+')">'+T4.tier(t)+' · '+mgrMoney(MGR_STAFF_COST[t])+'</button>').join('')+
         (lv ? '<button onclick="mgrHire(\''+k+'\',0)">'+T4.fire+'</button>' : '')+'</div></div>'; }).join('')+'</div>';
