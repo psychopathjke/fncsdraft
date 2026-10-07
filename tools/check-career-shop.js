@@ -140,7 +140,8 @@ const BOOT = `
     careerDoAct('trAim');
     const bareGain = CAREER.player.attrs.aim - bare.aim;
     out.notes.aimlab = bareGain.toFixed(3) + ' -> ' + aimGain.toFixed(3);
-    check('a mechanics coach speeds mechanics up', aimGain > bareGain * 1.3,
+    // Тренер ниже верха даёт +28 % (CC_COACH_LOW.train), верхний +35 % — порог «быстрее» +20 %, а не +30.
+    check('a mechanics coach speeds mechanics up', aimGain > bareGain * 1.2,
           out.notes.aimlab);
     // The endgame analyst does nothing for an aim day.
     fresh(20000); careerHireCoach(NOAIM.id); CAREER.career.spentOn = null;
@@ -223,7 +224,8 @@ JSON.parse(JSON.stringify(out.notes)); // notes are plain data
 const imgs = (fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8')
   .match(/img:'([^']+)'/g) || []).map(s => s.slice(5, -1));
 imgs.forEach(f => {
-  if (!fs.existsSync(path.join(ROOT, 'devices', f))) { console.error('FAIL missing devices/' + f); missing++; }
+  // Картинки карт EWC (art/ewc/…) лежат от корня, девайсы — в devices/.
+  if (!fs.existsSync(path.join(ROOT, 'devices', f)) && !(f.indexOf('art/') === 0 && fs.existsSync(path.join(ROOT, f)))) { console.error('FAIL missing devices/' + f); missing++; }
 });
 if (out.fails.length) { out.fails.forEach(f => console.error('FAIL ' + f)); }
 if (out.fails.length || missing) process.exit(1);

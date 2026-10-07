@@ -95,7 +95,8 @@ const BOOT = `
       careerPhotoSet(null);
 
       // ---- кнопки на экране ----------------------------------------------
-      careerRenderHub();
+      // Ник и фото меняются под своей карточкой во вкладке «Профиль» (ccMeEditHTML, CH_TAB me).
+      careerRenderHub('me');
       const html=document.body.innerHTML;
       out.notes.btnNick=html.indexOf(L().ccNickAsk)>=0;
       out.notes.btnPhoto=html.indexOf(L().ccPhotoPick)>=0;

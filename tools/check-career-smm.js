@@ -67,7 +67,7 @@ const BOOT = [
 '',
 '      // Его слово 21.09: без денег список всё равно открывается, выключены только кнопки найма.',
 '      fresh(0);',
-'      careerRenderHub("me");',
+'      careerRenderHub("club");   // плитка SMM живёт во вкладке «Клуб» (careerClubTabHTML), не в «Профиле»',
 '      check("the tile button opens the list even at zero balance", !!document.querySelector("#screen-career-hub button[onclick*=ccSmmPickOpen]:not([disabled])"));',
 '      ccSmmPickOpen();',
 '      check("and every hire button inside is disabled at zero", [...document.querySelectorAll("#smmPickBody .ch-sign")].length === CC_SMM.length && [...document.querySelectorAll("#smmPickBody .ch-sign")].every(function(b){ return b.disabled; }));',
