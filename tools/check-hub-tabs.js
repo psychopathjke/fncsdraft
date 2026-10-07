@@ -50,7 +50,13 @@ const BOOT = `
       tabs.forEach(function(t){
         const r = t.getBoundingClientRect();
         rows[Math.round(r.top)] = 1;
-        if (r.right > vw + 1 || r.left < -1)
+        // За краем, но в прокручиваемой полосе (.ch-tabs, overflow-x:auto) — достаётся свайпом, это не «недоступна».
+        var sc = false;
+        for (var el = t.parentElement; el; el = el.parentElement) {
+          var cs = getComputedStyle(el);
+          if (/auto|scroll/.test(cs.overflowX) && el.scrollWidth > el.clientWidth) { sc = true; break; }
+        }
+        if ((r.right > vw + 1 || r.left < -1) && !sc)
           unreachable.push((t.innerText || '').trim());
       });
       out.notes.width = vw;
