@@ -516,6 +516,26 @@ const SECTIONS=[
     }
     document.querySelectorAll('.mg-modal').forEach(m=>m.remove());
   `},
+  {name:'криэйторы', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    const list=mgrCreatorList();
+    check('криэйторы: настоящие из Про-Ама региона', list.length>=10 && list.every(c=>CC_PROAM_TWITCH[c.name]), String(list.length));
+    const small=list.slice().sort((a,b)=>a.followers-b.followers)[0], big=list.slice().sort((a,b)=>b.followers-a.followers)[0];
+    check('криэйторы: крупный дороже', mgrCreatorFee(big)>mgrCreatorFee(small));
+    MGR.club.rep=10;
+    check('криэйторы: звезда не идёт в клуб без репутации', mgrCreatorSign(big.name)===false);
+    MGR.club.rep=60;
+    check('криэйторы: небольшой подписан', mgrCreatorSign(small.name)===true && (MGR.creators||[]).length===1);
+    const cash0=MGR.club.cash, rep0=MGR.club.rep, net=mgrCreatorNet();
+    mgrCreatorsMonth('2024-01');
+    check('криэйторы: месяц — деньги', MGR.club.cash===cash0+net, cash0+' → '+MGR.club.cash+' (net '+net+')');
+    check('криэйторы: месяц — репутация +1', MGR.club.rep===rep0+1);
+    MGR_SUB.club='creators'; mgrRenderHub('club');
+    const B=document.getElementById('mgBody');
+    check('криэйторы '+lang+': подвкладка', !B.querySelector('.cc-ffo-err') && !bad(B.innerHTML) && B.querySelectorAll('.mgf-person').length>=10 && !!B.querySelector('.mgf-person.on'));
+    mgrCreatorDrop(small.name); check('криэйторы: расторгнут', !(MGR.creators||[]).length);
+    MGR_SUB.club='train';
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');

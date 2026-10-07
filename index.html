@@ -155322,7 +155322,7 @@ function mgrT9(){
     goals:'Цели совета', dev:'Развитие', devNone:'Рост виден раз в месяц', fatigue:'Усталость', news:'Новости клуба', toTables:'Трофеи и статистика', toTrain:'К тренировкам',
     role:'Роль', until:'Контракт', where:'Где играет', moveTo:'Перевести…',
     market:'Рынок', short:'Шортлист', deals:'Переговоры', shortEmpty:'Отметь игроков звёздочкой на рынке', dealsEmpty:'Переговоров и предложений нет', offersIn:'Предложения и просьбы', negNow:'Идут переговоры', open:'Открыть', wageRoom:'Свободно под потолком',
-    retired:(h,a)=>h+' завершил карьеру ('+a+' лет)', hire:'Нанять', train:'Тренировки и штаб', base:'База', sponsor:'Спонсор', press:'Пресса и события', stats:'Статистика', trophies:'Трофеи', managers:'Менеджеры',
+    retired:(h,a)=>h+' завершил карьеру ('+a+' лет)', creators:'Криэйторы', crNet:'чистыми', crFee:'Ставка', crInc:'Доход', crSign:'Подписать', crDrop:'Расторгнуть', crNo:n=>n+': «пока не наш уровень» — нужна репутация повыше', hire:'Нанять', train:'Тренировки и штаб', base:'База', sponsor:'Спонсор', press:'Пресса и события', stats:'Статистика', trophies:'Трофеи', managers:'Менеджеры',
     scouting:'Скаутинг', scouts:'Скауты', reports:'Отчёты скаутов', noScouts:'Скаутов нет — найми, и они поедут по регионам', noReports:'Отчёты приходят раз в неделю', fire:'Уволить', anyRole:'Любая роль', anyAge:'Любой возраст', ageTo:n=>'до '+n+' лет', anyOvr:'Любой рейтинг', now:'Сейчас', potW:'Потенциал', views:n=>'отчётов: '+n, scoutLv:[null,'Скаут','Опытный скаут','Главный скаут'], scoutRep:(r,l)=>'Скаут ('+r+'): '+l,
     youth:'Молодёжь', yscout:'Молодёжный скаут', yHire:'Нанять молодёжного скаута', noYScouts:'Молодёжных скаутов нет', found:'Найденные таланты', noYouth:'Находки приходят раз в месяц', toAcad:'В академию', age:n=>n+' лет', youthRep:l=>'Молодёжный скаут нашёл: '+l,
     plan:'План развития', planRole:'Роль-цель', planNone:'Без смены роли', planFocus:'Упор в рост', planOn:'Вкл', planOff:'Выкл', planLeft:n=>'осталось '+n+' дн.', planDone:(h,r)=>h+' переучился: теперь '+r,
@@ -155341,7 +155341,7 @@ function mgrT9(){
     goals:'Board goals', dev:'Development', devNone:'Growth shows once a month', fatigue:'Fatigue', news:'Club news', toTables:'Trophies and stats', toTrain:'To training',
     role:'Role', until:'Contract', where:'Plays in', moveTo:'Move to…',
     market:'Market', short:'Shortlist', deals:'Negotiations', shortEmpty:'Star players on the market to shortlist them', dealsEmpty:'No talks or offers', offersIn:'Offers and requests', negNow:'Talks in progress', open:'Open', wageRoom:'Room under the cap',
-    retired:(h,a)=>h+' retired (age '+a+')', hire:'Hire', train:'Training and staff', base:'Facilities', sponsor:'Sponsor', press:'Press and events', stats:'Stats', trophies:'Trophies', managers:'Managers',
+    retired:(h,a)=>h+' retired (age '+a+')', creators:'Creators', crNet:'net', crFee:'Fee', crInc:'Income', crSign:'Sign', crDrop:'Release', crNo:n=>n+': "not our level yet" — needs more reputation', hire:'Hire', train:'Training and staff', base:'Facilities', sponsor:'Sponsor', press:'Press and events', stats:'Stats', trophies:'Trophies', managers:'Managers',
     scouting:'Scouting', scouts:'Scouts', reports:'Scout reports', noScouts:'No scouts — hire one and send them out', noReports:'Reports arrive once a week', fire:'Fire', anyRole:'Any role', anyAge:'Any age', ageTo:n=>'up to '+n, anyOvr:'Any rating', now:'Now', potW:'Potential', views:n=>'reports: '+n, scoutLv:[null,'Scout','Senior scout','Chief scout'], scoutRep:(r,l)=>'Scout ('+r+'): '+l,
     youth:'Youth', yscout:'Youth scout', yHire:'Hire a youth scout', noYScouts:'No youth scouts', found:'Talents found', noYouth:'Finds arrive once a month', toAcad:'To academy', age:n=>'age '+n, youthRep:l=>'Youth scout found: '+l,
     plan:'Development plan', planRole:'Target role', planNone:'Keep role', planFocus:'Growth focus', planOn:'On', planOff:'Off', planLeft:n=>n+' days left', planDone:(h,r)=>h+' retrained: now '+r,
@@ -155438,6 +155438,7 @@ function mgrPayMonths(toDay){
     try{ mgrYouthMonth(m); }catch(e){ console.error('mgrYouthMonth', e); }
     try{ mgrAwardsMonth(m); }catch(e){ console.error('mgrAwardsMonth', e); }
     try{ mgrAgeMonth(m); }catch(e){ console.error('mgrAgeMonth', e); }
+    try{ mgrCreatorsMonth(m); }catch(e){ console.error('mgrCreatorsMonth', e); }
     try{ mgrRivalMonth(m); mgrJobMonth(m); }catch(e){}
     if(c.cash<0) mgrConfAdd(-8);
     const [y, mo]=m.split('-').map(Number); m=(mo===12 ? (y+1)+'-01' : y+'-'+String(mo+1).padStart(2, '0'));
@@ -155510,8 +155511,8 @@ function mgrTabBody(tab){
   const T9=mgrT9();
   if(tab==='inbox') return '<div class="ch-tile mgi"><h4>'+esc(T9.tabs.inbox)+'</h4>'+mgrInboxHTML()+'</div>';
   if(tab==='club'){ const s=MGR_SUB.club;
-    return mgrSubTabsHTML('club', [['train', T9.train], ['youth', T9.youth], ['base', T9.base], ['sponsor', T9.sponsor], ['press', T9.press]])+
-      '<div class="mgk-body">'+(s==='youth' ? mgrYouthHTML() : s==='base' ? mgrFacHTML() : s==='sponsor' ? mgrDealHTML() : s==='press' ? mgrEvFreqHTML() : mgrTrainHTML())+'</div>'; }
+    return mgrSubTabsHTML('club', [['train', T9.train], ['youth', T9.youth], ['creators', T9.creators], ['base', T9.base], ['sponsor', T9.sponsor], ['press', T9.press]])+
+      '<div class="mgk-body">'+(s==='creators' ? mgrCreatorsHTML() : s==='youth' ? mgrYouthHTML() : s==='base' ? mgrFacHTML() : s==='sponsor' ? mgrDealHTML() : s==='press' ? mgrEvFreqHTML() : mgrTrainHTML())+'</div>'; }
   if(tab==='tables'){ const s=MGR_SUB.tables;
     return mgrSubTabsHTML('tables', [['stats', T9.stats], ['trophies', T9.trophies], ['managers', T9.managers]])+
       '<div class="mgk-body">'+(s==='trophies' ? mgrTrophiesHTML() : s==='managers' ? mgrRivalsHTML() : mgrStatsHTML())+'</div>'; }
@@ -155744,6 +155745,42 @@ function mgrYouthHTML(){
       (own.has(hKey(h)) ? '<small>'+esc(mgrT().acad)+'</small>' : '<button class="hero-btn hero-btn-go mg-take" onclick="mgrToAcad(\''+hq+'\', true)">'+esc(T9.toAcad)+'</button>')+'</div>'; }).join('');
   return '<div class="ch-tile mgx"><h4>'+esc(T9.youth)+' <small>'+ys.length+'/'+MGR_YSCOUT_MAX+'</small></h4>'+(list || '<div class="ch-empty">'+esc(T9.noYScouts)+'</div>')+hire+'</div>'+
     '<div class="ch-tile mgx"><h4>'+esc(T9.found)+'</h4>'+(rows ? '<div class="mg-clubs">'+rows+'</div>' : '<div class="ch-empty">'+esc(T9.noYouth)+'</div>')+'</div>';
+}
+/* КРИЭЙТОРЫ КЛУБА (его выбор 7.10, пункт 2): настоящие стримеры Про-Ама своего региона, подписчики
+   Twitch — CC_PROAM_TWITCH, аватарки — ccProAmAvatar. До трёх. Охват по логарифму подписчиков:
+   ставка 500 + охват³×20000 в месяц, доход (мерч, спонсоры) ×1.6 на репутацию клуба, +1 репутации
+   за каждого в месяц; звезда не идёт в клуб, где репутация ниже охват×60. Числа — оценка режима. */
+const MGR_CREATOR_MAX=3;
+function mgrCreatorList(){
+  const names=(CC_PROAM_CREATORS_BY_REGION[MGR.region]||[]).filter(n=>CC_PROAM_TWITCH[n]);
+  return names.map(n=>({name:n, followers:CC_PROAM_TWITCH[n][1]||0, login:CC_PROAM_TWITCH[n][0], ava:ccProAmAvatar(n)}));
+}
+function mgrCreatorPull(c){ return Math.max(0, Math.min(1, Math.log10(Math.max(1000, c.followers||0)/1000)/Math.log10(20000))); }
+function mgrCreatorFee(c){ return Math.round((500+Math.pow(mgrCreatorPull(c), 3)*20000)/100)*100; }
+function mgrCreatorIncome(c){ const rep=MGR.club.rep!=null ? MGR.club.rep : 50; return Math.round(mgrCreatorFee(c)*1.6*(0.8+rep/250)/100)*100; }
+function mgrCreatorNet(){ return (MGR.creators||[]).reduce((s,n)=>{ const c=mgrCreatorList().find(x=>x.name===n); return c ? s+mgrCreatorIncome(c)-mgrCreatorFee(c) : s; }, 0); }
+function mgrCreatorSign(name){
+  MGR.creators=MGR.creators||[];
+  const c=mgrCreatorList().find(x=>x.name===name);
+  if(!c || MGR.creators.indexOf(name)>=0 || MGR.creators.length>=MGR_CREATOR_MAX) return false;
+  if((MGR.club.rep!=null ? MGR.club.rep : 50)<mgrCreatorPull(c)*60){ mgrToast(mgrT9().crNo(name)); return false; }
+  MGR.creators.push(name); if(typeof mgrFeedPost==='function') mgrFeedPost('creator', {h:name}); mgrSave(); return true;
+}
+function mgrCreatorDrop(name){ MGR.creators=(MGR.creators||[]).filter(n=>n!==name); mgrSave(); }
+function mgrCreatorsMonth(monthKey){
+  if(!(MGR.creators||[]).length) return;
+  MGR.club.cash+=mgrCreatorNet();
+  MGR.club.rep=Math.min(100, (MGR.club.rep!=null ? MGR.club.rep : 50)+MGR.creators.length);
+}
+function mgrCreatorsHTML(){
+  const T9=mgrT9(), mine=MGR.creators||[];
+  return '<div class="ch-tile mgx"><h4>'+esc(T9.creators)+' <small>'+mine.length+'/'+MGR_CREATOR_MAX+' · '+esc(T9.crNet)+' '+(mgrCreatorNet()>=0 ? '+' : '')+mgrMoney(mgrCreatorNet())+' '+esc(mgrT().month)+'</small></h4>'+
+    '<div class="mgf-people">'+mgrCreatorList().sort((a,b)=>b.followers-a.followers).map(c=>{ const on=mine.indexOf(c.name)>=0, nq=esc(c.name.replace(/'/g, ''));
+      return '<div class="mgf-person'+(on ? ' on' : '')+'">'+(c.ava ? '<img src="'+esc(c.ava)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '<img alt="">')+
+        '<span><b>'+esc(c.name)+'</b><small>twitch.tv/'+esc(c.login)+' · '+ccNum(c.followers)+'</small>'+
+        '<small>'+esc(T9.crFee)+' '+mgrMoney(mgrCreatorFee(c))+' · '+esc(T9.crInc)+' '+mgrMoney(mgrCreatorIncome(c))+'</small></span>'+
+        (on ? '<button class="hg-go mgs-bad" onclick="mgrCreatorDrop(\''+nq+'\');mgrRenderHub()">'+esc(T9.crDrop)+'</button>'
+            : '<button class="hg-go" onclick="mgrCreatorSign(\''+nq+'\');mgrRenderHub()">'+esc(T9.crSign)+'</button>')+'</div>'; }).join('')+'</div></div>';
 }
 function mgrScoutingHTML(){
   const T9=mgrT9(), T2=mgrT2(), T4=mgrT4(), sc=MGR.scouts||[];
