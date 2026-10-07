@@ -12,7 +12,13 @@ if(!CHROME) throw new Error('Chrome not found');
 
 const SECTIONS=[
   {name:'бюджет', once:true, code:String.raw`
-    const big=mgrClubBudget('Cooler Esport', 20000), none=mgrClubBudget('Нет Такого Клуба', 3000);
+    const big=mgrClubBudget('Cooler Esport', 20000, 88), none=mgrClubBudget('Нет Такого Клуба', 3000, 70);
+    // Клубы без призовых в списке различаются силой состава, а призовые поднимают бюджет при равной силе.
+    const strong=mgrClubBudget('Нет Такого Клуба', 3000, 95), kc=mgrClubBudget('Karmine Corp', 3000, 95);
+    check('бюджет: сильный клуб без призовых богаче слабого', strong.turnover>none.turnover, strong.turnover+' vs '+none.turnover);
+    check('бюджет: призовые поднимают при равной силе', kc.turnover>strong.turnover, kc.turnover+' vs '+strong.turnover);
+    { mgrOpenNew(2024); const t=MGR_NEW_LIST.map(c=>c.budget.transfer); const uniq=new Set(t).size;
+      check('бюджет: у клубов 2024 EU разные бюджеты', uniq>=Math.min(8, t.length-2), uniq+' из '+t.length); }
     check('бюджет: большой клуб больше пустого', big.turnover>none.turnover, big.turnover+' vs '+none.turnover);
     check('бюджет: пол у клуба вне списка', none.turnover>=MGR_TURNOVER_FLOOR, String(none.turnover));
     check('бюджет: трансферный 40%', big.transfer===Math.round(big.turnover*0.4));
@@ -69,6 +75,23 @@ const SECTIONS=[
     check('свой: пустое имя — отказ', mgrCreateOwn({name:'  <>  ', color:'#fff000', shape:'round', region:'EU', tier:'rookie'})!==true);
     check('герб svg', /^<svg[\s\S]*<\/svg>$/.test(mgrCrestSVG({color:'#f00000',shape:'round',ini:'TK'}, 40)));
     MGR_NEW_SIDE='real';
+  `},
+  {name:'каркас', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024);
+    check('выбор: шапка хаба спрятана', document.getElementById('mgTop') && document.getElementById('mgTop').hidden);
+    mgrTake(0);
+    for(const t of ['centre','squad','transfers','inbox','club','tables']){ mgrRenderHub(t);
+      const all=document.getElementById('screen-manager').innerHTML, err=document.querySelector('#mgBody .cc-ffo-err');
+      check('вкладка '+t+' '+lang+': без плашки ошибки', !err, err && err.textContent);
+      check('вкладка '+t+' '+lang+': без undefined/NaN', !bad(all));
+      check('вкладка '+t+': активная подсвечена', !!document.querySelector('#mgTabs .ch-tab.on[data-tab="'+t+'"]')); }
+    check('шапка: две полоски', document.querySelectorAll('#mgPurseNow .ch-en').length===2);
+    check('шапка: рейтинг команды', /\d/.test(document.getElementById('mgOvr').textContent));
+    check('шапка: касса', document.getElementById('mgPurse').textContent.indexOf('$')>=0);
+    check('оценка совета', mgrGrade(90)==='A' && mgrGrade(60)==='C' && mgrGrade(10)==='F');
+    const saved=mgrTabBody; mgrTabBody=()=>{ throw new Error('проба'); }; mgrRenderHub('centre');
+    check('ошибка вкладки → плашка', !!document.querySelector('#mgBody .cc-ffo-err')); mgrTabBody=saved;
+    MGR_TAB='market'; mgrOpenHub(); check('старый ключ market → трансферы', MGR_TAB==='transfers');
   `},
 ];
 

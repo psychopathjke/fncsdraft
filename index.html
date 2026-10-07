@@ -6296,8 +6296,9 @@
   #screen-manager .ch-stage{background:transparent !important;box-shadow:none !important;border:0 !important;}
   #screen-manager .ch-body{background:transparent !important;}
   /* Выбор клуба как в FC: плитки настоящих клубов со звёздами и бюджетами. */
-  .mgn-headtile{display:flex;flex-direction:column;gap:8px;}
-  .mgn-reg{font-size:12px;display:flex;gap:6px;align-items:center;}
+  .mgn-headtile{display:flex;flex-direction:column;gap:8px;color:#fff;margin-bottom:8px;}
+  .mgn-headtile h4{margin:0;font-family:Oswald,sans-serif;font-size:22px;text-transform:uppercase;letter-spacing:.02em;}
+  .mgn-reg{font-size:12px;display:flex;gap:6px;align-items:center;color:#fff;}
   .mgn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:8px;}
   .mgn-club{cursor:pointer;display:flex;flex-direction:column;gap:4px;}
   .mgn-club:hover{border-color:#ffd400;}
@@ -6314,6 +6315,15 @@
   .mgn-st.half{opacity:.5;}
   .mgn-exp{font-size:11px;opacity:.8;margin-top:2px;}
   @media (max-width:480px){ .mgn-grid{grid-template-columns:1fr;} }
+  /* Шапка хаба менеджера — классы хаба карьеры, своё только герб и касса. */
+  .mgh-crest{display:flex;align-items:center;justify-content:center;background:none;}
+  .mgh-crest svg,.mgh-crest img{width:100%;height:100%;object-fit:contain;}
+  .mgh-money{display:flex;flex-direction:column;align-items:flex-end;line-height:1.1;}
+  .mgh-money em{font-style:normal;font-size:9px;opacity:.7;text-transform:uppercase;}
+  .mgh-money b{font-size:20px;font-weight:900;}
+  .mgh-money small{font-size:11px;}
+  .mgh-money .down{color:#ff6b6b;} .mgh-money .up{color:#6bdc8a;}
+  #mgTop[hidden],#mgTabs[hidden]{display:none;}
   .mgn-own{display:flex;flex-direction:column;gap:10px;max-width:520px;}
   .mgn-field{display:flex;flex-direction:column;gap:6px;}
   .mgn-field em{font-style:normal;font-size:11px;opacity:.7;text-transform:uppercase;}
@@ -7246,7 +7256,17 @@
 
   <!-- Three careers, side by side. The mode used to hold exactly one save, so
        trying a different player meant deleting the one you had. -->
-  <div class="screen" id="screen-manager"><div class="ch-stage"><div class="ch-body" id="mgBody"></div></div></div>
+  <!-- Fortnite Manager: та же разметка, что хаб карьеры (его слово 7.10 «чтоб привычный интерфейс был»),
+       свои id — careerRenderHub их не трогает. -->
+  <div class="screen" id="screen-manager"><div class="ch-stage">
+    <div class="ch-facets"><i class="cc-f1"></i><i class="cc-f2"></i><i class="cc-f3"></i><i class="cc-f4"></i></div>
+    <div class="ch-top" id="mgTop" hidden><div class="ch-who" id="mgWho"></div><div class="ch-ovr" id="mgOvr"></div>
+      <div class="ch-purse ch-purse-now" id="mgPurseNow"></div><div class="ch-spacer"></div><div class="ch-purse" id="mgPurse"></div></div>
+    <div class="ch-tabs" id="mgTabs" hidden></div>
+    <div class="ch-body" id="mgBody"></div>
+    <div class="ch-foot" id="mgFoot"></div>
+    <div class="mgs-sheet" id="mgSheet" hidden></div>
+  </div></div>
   <div class="screen" id="screen-career-slots">
     <div class="ch-stage">
       <div class="ch-facets"><i class="cc-f1"></i><i class="cc-f2"></i><i class="cc-f3"></i><i class="cc-f4"></i></div>
@@ -154945,7 +154965,7 @@ function mgrClubsFor(year, region){
     const top=ps.slice(0, 6).map(c=>ccCardOvr(c)||0);
     const avg=top.length ? Math.round(top.reduce((s,v)=>s+v, 0)/top.length) : 0;
     return {name, players:ps.map(c=>c.handle), n:ps.length, avg, star:ps[0] ? ps[0].handle : null,
-            budget:mgrClubBudget(name, ps.slice(0, 6).reduce((s,c)=>s+mgrSalary(c), 0))};
+            budget:mgrClubBudget(name, ps.slice(0, 6).reduce((s,c)=>s+mgrSalary(c), 0), avg)};
   }).filter(c=>c.n>=2).sort((a,b)=>b.avg-a.avg || b.n-a.n).slice(0, 40)
     .map((c,i,all)=>Object.assign(c, {expect:mgrExpect(i, all.length)}));
 }
@@ -154958,6 +154978,8 @@ let MGR_NEW_SIDE='real', MGR_NEW_SORT='stars';
 function mgrOpenNew(year){
   MGR_NEW_YEAR=year||MGR_NEW_YEAR;
   const T=mgrT(), T9=mgrT9();
+  { const top=document.getElementById('mgTop'), tabs=document.getElementById('mgTabs'), foot=document.getElementById('mgFoot');
+    if(top) top.hidden=true; if(tabs) tabs.hidden=true; if(foot) foot.innerHTML=''; MGR_DREW=null; }
   const clubs=mgrClubsFor(MGR_NEW_YEAR, MGR_NEW_REGION);
   if(MGR_NEW_SORT==='budget') clubs.sort((a,b)=>b.budget.transfer-a.budget.transfer);
   MGR_NEW_LIST=clubs;
@@ -154977,7 +154999,7 @@ function mgrOpenNew(year){
       sub(MGR_NEW_SORT==='budget', "MGR_NEW_SORT='budget';mgrOpenNew()", T9.byBudget)+'</div>'+
     '<div class="mgn-grid">'+(clubs.map(tile).join('') || '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div>';
   const own=typeof mgrOwnFormHTML==='function' ? mgrOwnFormHTML() : '';
-  document.getElementById('mgBody').innerHTML='<div class="ch-tile mgn-headtile"><h4>'+esc(T.title)+' · '+esc(T.newH)+'</h4>'+
+  document.getElementById('mgBody').innerHTML='<div class="mgn-headtile"><h4>'+esc(T.title)+' · '+esc(T.newH)+'</h4>'+
     '<div class="ch-subtabs mgn-years">'+years+'</div>'+
     '<label class="mgn-reg">'+esc(T.region)+' <select onchange="MGR_NEW_REGION=this.value;mgrOpenNew()">'+regs+'</select></label>'+side+'</div>'+
     mgrNewOptsHTML()+(MGR_NEW_SIDE==='own' ? own : real)+
@@ -155004,7 +155026,7 @@ function mgrTake(i){
   MGR.season0=sh.career.day;
   mgrBuildTeams(c.players);
   MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h));
-  { const b=mgrClubBudget(c.name, mgrWageBill());
+  { const b=mgrClubBudget(c.name, mgrWageBill(), c.avg);
     Object.assign(MGR.club, {turnover:b.turnover, transfer:b.transfer, wageCap:b.wageCap, cash:Math.max(MGR.club.cash, b.transfer)}); }
   MGR.fncsCal=mgrFncsDays().map(x=>x.day);
   MGR.inbox=[]; MGR.morale={}; mgrBoardInit();
@@ -155054,7 +155076,7 @@ function mgrCreateOwn(o){
   mgrBuildTeams(pick.map(c=>c.handle));
   MGR.club.avg=pick.length ? Math.round(pick.reduce((s,c)=>s+(ccCardOvr(c)||0), 0)/pick.length) : tier.lo;
   MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h));
-  { const b=mgrClubBudget('', mgrWageBill());
+  { const b=mgrClubBudget("", mgrWageBill(), MGR.club.avg);
     Object.assign(MGR.club, {turnover:Math.round(b.turnover*tier.k), transfer:Math.round(b.transfer*tier.k), wageCap:Math.max(b.wageCap, Math.round(b.wageCap*tier.k))}); }
   MGR.fncsCal=mgrFncsDays().map(x=>x.day);
   MGR.inbox=[]; MGR.morale={}; mgrBoardInit();
@@ -155128,10 +155150,14 @@ function mgrSalary(c){ return careerClubSalary(Math.round(ccCardOvr(c)||70)); }
    Cooler (3.3 млн) → ~$500к в год, клуб вне списка — пол. Как в FC, два бюджета: трансферный (40%
    оборота, тратится отступными) и потолок зарплат в месяц — не ниже нынешней ведомости с запасом 15%
    и не ниже половины оборота на 12 месяцев. Подписание сверх потолка совет не пропускает. */
-const MGR_TURNOVER_K=0.15, MGR_TURNOVER_FLOOR=60000;
-function mgrClubBudget(name, wageNow){
+/* Призовые в списке есть у меньшинства клубов года (у Karmine Corp $259к, у HEROIC нет), и одна доля
+   призовых давала сорок клубов на одном полу. Поэтому оборот = база + доля призовых + надбавка за
+   силу состава (за сильный состав кто-то платит, даже если призовые клуба в Fortnite малы). */
+const MGR_TURNOVER_K=0.15, MGR_TURNOVER_FLOOR=40000, MGR_TURNOVER_BASE=20000, MGR_TURNOVER_PER_OVR=3000;
+function mgrClubBudget(name, wageNow, avg){
   const earn=(name && typeof ccOrgEarn==='function' ? ccOrgEarn(name) : 0)||0;
-  const turnover=Math.max(MGR_TURNOVER_FLOOR, Math.round(earn*MGR_TURNOVER_K/1000)*1000);
+  const strength=Math.max(0, (avg||70)-70)*MGR_TURNOVER_PER_OVR;
+  const turnover=Math.max(MGR_TURNOVER_FLOOR, Math.round((MGR_TURNOVER_BASE+earn*MGR_TURNOVER_K+strength)/1000)*1000);
   const transfer=Math.round(turnover*0.4);
   const wageCap=Math.max(Math.round((wageNow||0)/0.85), Math.round(turnover*0.5/12/100)*100);
   return {turnover, transfer, wageCap};
@@ -155141,7 +155167,7 @@ function mgrWageRoom(){ return ((MGR.club && MGR.club.wageCap)||0)-mgrWageBill()
 // Старый сейв (до бюджетов) досчитывает их от того, что у клуба есть сейчас.
 function mgrBudgetMigrate(){
   const c=MGR && MGR.club; if(!c || c.wageCap!=null) return;
-  const b=mgrClubBudget(c.own ? '' : c.name, mgrWageBill());
+  const b=mgrClubBudget(c.own ? '' : c.name, mgrWageBill(), c.avg);
   c.turnover=b.turnover; c.transfer=b.transfer; c.wageCap=b.wageCap;
 }
 function mgrT9(){
@@ -155153,7 +155179,9 @@ function mgrT9(){
     expect:{title:'Совет ждёт титул', final:'Совет ждёт финал', survive:'Совет ждёт удержаться'},
     ownName:'Название клуба', crest:'Герб', tier:'Уровень старта', ownGo:'Основать клуб',
     tiers:{rookie:'Новичок', mid:'Средний', amb:'Амбициозный'},
-    tierHint:{rookie:'Малый бюджет, свободные агенты 65–72', mid:'Средний бюджет, свободные агенты 72–78', amb:'Большой бюджет, свободные агенты 78–84, совет строже'}
+    tierHint:{rookie:'Малый бюджет, свободные агенты 65–72', mid:'Средний бюджет, свободные агенты 72–78', amb:'Большой бюджет, свободные агенты 78–84, совет строже'},
+    tabs:{centre:'Центр', squad:'Состав', transfers:'Трансферы', inbox:'Входящие', club:'Клуб', tables:'Таблицы'},
+    conf:'Доверие совета', morale:'Мораль состава', board:'Совет', teamOvr:'Первая команда'
   } : {
     overCap:s=>'The board says no: wage budget '+s+' a month', transfer:'Transfer budget', wageCap:'Wage budget',
     renewCap:h=>h+' leaves: the new deal did not fit the wage budget',
@@ -155161,7 +155189,9 @@ function mgrT9(){
     expect:{title:'Board expects a title', final:'Board expects a final', survive:'Board expects to survive'},
     ownName:'Club name', crest:'Crest', tier:'Starting level', ownGo:'Found the club',
     tiers:{rookie:'Rookie', mid:'Mid', amb:'Ambitious'},
-    tierHint:{rookie:'Small budget, free agents 65–72', mid:'Mid budget, free agents 72–78', amb:'Big budget, free agents 78–84, stricter board'}
+    tierHint:{rookie:'Small budget, free agents 65–72', mid:'Mid budget, free agents 72–78', amb:'Big budget, free agents 78–84, stricter board'},
+    tabs:{centre:'Centre', squad:'Squad', transfers:'Transfers', inbox:'Inbox', club:'Club', tables:'Tables'},
+    conf:'Board trust', morale:'Squad morale', board:'Board', teamOvr:'First team'
   };
 }
 
@@ -155258,34 +155288,84 @@ function mgrPayMonths(toDay){
   if(paid) MGR.log.unshift({day:toDay, kind:'wage', sum:paid});
 }
 
-/* ---- Хаб клуба ------------------------------------------------------------- */
-function mgrOpenHub(){
+/* ---- Хаб клуба — разметка и поведение хаба карьеры ------------------------------
+   Его слово 7.10: «дизайн подкрутить как в карьере за игрока, чтоб привычный интерфейс был».
+   Шапка (герб, строка клуба, рейтинг первой команды, полоски доверия совета и морали, касса),
+   шесть вкладок .ch-tab, тело #mgBody. Ошибка одной вкладки — красная плашка с кнопкой на Центр,
+   как в careerRenderHub, а не мёртвый экран; прокрутка той же вкладки сохраняется. */
+const MGR_TABS=['centre','squad','transfers','inbox','club','tables'];
+let MGR_SUB={transfers:'market', club:'train', tables:'stats'};
+let MGR_DREW=null;
+function mgrGrade(c){ return c>=85 ? 'A' : c>=70 ? 'B' : c>=55 ? 'C' : c>=40 ? 'D' : c>=25 ? 'E' : 'F'; }
+function mgrTeamAvg(){
+  const t=(MGR.teams[0]||{cards:[]}).cards;
+  return t.length ? Math.round(t.reduce((s,h)=>s+(ccCardOvr(mgrCard(h))||0), 0)/t.length) : 0;
+}
+function mgrBar(label, mark, v, low){
+  const w=Math.max(0, Math.min(100, Math.round(v)));
+  return '<div class="ch-en"><em>'+esc(label)+'</em><div class="ch-en-row"><span class="ch-en-mark">'+mark+'</span>'+
+    '<span class="ch-en-bar'+(w<low ? ' low' : '')+'"><i style="width:'+w+'%"></i></span><b>'+w+'</b></div></div>';
+}
+function mgrNetMonth(){ return mgrSponsor()-mgrWageBill()-(mgrStaffWage()||0)-(mgrFacUpkeep()||0); }
+function mgrHdrHTML(){
+  const T=mgrT(), T9=mgrT9(), c=MGR.club, cr=CAREER.career;
+  const all=mgrAll();
+  const mor=all.length ? (all.reduce((s,h)=>s+mgrMorale(h), 0)/all.length+2)/4*100 : 50;
+  const net=mgrNetMonth();
+  document.getElementById('mgWho').innerHTML='<span class="ch-face mgh-crest">'+mgrLogo(c.name, true)+'</span>'+
+    '<div><div class="ch-name">'+esc(c.name)+'</div><div class="ch-sub">'+
+    [String(MGR.year), esc(MGR.region), esc(T.rep)+' '+(c.rep!=null ? c.rep : 50), esc(T9.board)+' '+mgrGrade(mgrConf()), esc(ccDayLabel(cr.day))].join(' · ')+'</div></div>';
+  document.getElementById('mgOvr').innerHTML=mgrTeamAvg()+'<span class="ch-ovr-side"><small>'+esc(T9.teamOvr)+'</small></span>';
+  document.getElementById('mgPurseNow').innerHTML=mgrBar(T9.conf, '🏛', mgrConf(), 35)+mgrBar(T9.morale, '🤝', mor, 35);
+  document.getElementById('mgPurse').innerHTML='<div class="mgh-money"><em>'+esc(T.cash)+'</em><b>'+mgrMoney(c.cash)+'</b>'+
+    '<small class="'+(net<0 ? 'down' : 'up')+'">'+(net<0 ? '−'+mgrMoney(-net) : '+'+mgrMoney(net))+' '+esc(T.month)+'</small></div>';
+}
+// Тело вкладки. Задачи плана меняют ветки по одной; до них — прежние блоки менеджера.
+function mgrTabBody(tab){
+  const evs=mgrEvents();
+  if(tab==='squad') return mgrClubHTML(evs);
+  if(tab==='transfers') return mgrMarketHTML();
+  if(tab==='inbox') return mgrInboxHTML();
+  if(tab==='club') return mgrTrainHTML()+mgrFacHTML()+mgrDealHTML()+mgrEvFreqHTML();
+  if(tab==='tables') return mgrStatsHTML()+mgrRivalsHTML()+mgrTrophiesHTML();
+  const b=MGR.board, T2=mgrT2(), earnedNow=(MGR.club.earned||0)-(b.earned0||0);
+  return mgrChallengeHTML()+'<div class="mg-board"><em>'+T2.board+'</em>'+mgrConfHTML()+'<small>'+esc(T2.goalEarn(mgrMoney(b.earn)))+' — '+mgrMoney(earnedNow)+'</small></div>'+
+    mgrClubHTML(evs);
+}
+function mgrRenderHub(tab){
   if(!MGR || !MGR.club){ mgrOpenNew(); return; }
   mgrEnter();
   if(!MGR.contracts){ MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h)); }
   if(!MGR.board) mgrBoardInit();
   mgrBudgetMigrate();
   MGR.inbox=MGR.inbox||[]; MGR.morale=MGR.morale||{};
-  const T=mgrT(), T2=mgrT2(), cr=CAREER.career, c=MGR.club;
-  const evs=mgrEvents(), nx=evs[0];
-  const unread=MGR.inbox.filter(m=>!m.done).length;
-  const wage=mgrAll().reduce((s,h)=>s+mgrWage(h), 0);
-  const tabs=[['club',T2.tClub],['market',T2.tMarket],['inbox',T2.tInbox+(unread ? ' · '+unread : '')],['train',mgrT4().tTrain],['stats',T.tStats]].map(([k,l])=>'<button class="mg-tab'+(MGR_TAB===k?' on':'')+'" onclick="MGR_TAB=\''+k+'\';mgrOpenHub()">'+esc(l)+'</button>').join('');
-  const b=MGR.board, earnedNow=(c.earned||0)-(b.earned0||0);
-  const board=mgrChallengeHTML()+'<div class="mg-board"><em>'+T2.board+'</em>'+mgrConfHTML()+'<small>'+esc(T2.goalEarn(mgrMoney(b.earn)))+' — '+mgrMoney(earnedNow)+'</small><small>'+esc(T2.goalPlace(b.place))+' — '+(b.best!=null ? '#'+b.best : T2.bestNone)+'</small></div>';
-  let body='';
-  if(MGR_TAB==='market') body=mgrMarketHTML();
-  else if(MGR_TAB==='stats') body=mgrStatsHTML()+mgrRivalsHTML()+mgrTrophiesHTML();
-  else if(MGR_TAB==='inbox') body=mgrInboxHTML();
-  else if(MGR_TAB==='train') body=mgrTrainHTML()+mgrFacHTML();
-  else body=mgrDealHTML()+mgrClubHTML(evs)+mgrEvFreqHTML();
-  document.getElementById('mgBody').innerHTML='<div class="mg-wrap">'+
-    '<div class="mg-top"><span class="mg-logo big">'+mgrLogo(c.name, true)+'</span>'+
-      '<div><h2 class="mg-h">'+esc(c.name)+'</h2><small>'+T.season+' '+MGR.year+' · '+esc(MGR.region)+' · '+esc(ccDayLabel(cr.day))+'</small></div>'+
-      '<div class="mg-cash"><em>'+T.cash+'</em><b>'+mgrMoney(c.cash)+'</b><small>'+T.salaries+' '+mgrMoney(wage)+' · '+T.sponsor+' +'+mgrMoney(mgrSponsor())+' '+T.month+' · '+T.rep+' '+(c.rep!=null ? c.rep : 50)+(mgrStaffWage() ? ' · '+mgrT4().staff+' '+mgrMoney(mgrStaffWage()) : '')+(mgrFacUpkeep() ? ' · '+mgrT8().fac+' '+mgrMoney(mgrFacUpkeep()) : '')+' · '+mgrT4().fatigue+' '+mgrFatigue()+'%</small></div></div>'+
-    board+'<div class="mg-tabs">'+tabs+'</div>'+body+
-    '<div class="mg-foot"><button class="hero-btn hero-btn-alt" onclick="mgrHome()">'+T.home+'</button><button class="hero-btn hero-btn-alt" onclick="mgrNewClubAsk()">'+T.newClub+'</button></div></div>';
+  MGR_TAB=MGR_TABS.indexOf(tab)>=0 ? tab : (MGR_TABS.indexOf(MGR_TAB)>=0 ? MGR_TAB : 'centre');
+  const body=document.getElementById('mgBody');
+  const keep=(MGR_DREW===MGR_TAB) ? [body.scrollTop, window.scrollY] : null;
+  document.getElementById('mgTop').hidden=false;
+  const tabs=document.getElementById('mgTabs'); tabs.hidden=false;
+  const T9=mgrT9(), unread=MGR.inbox.filter(m=>!m.done).length;
+  tabs.innerHTML=MGR_TABS.map(k=>'<button class="ch-tab'+(MGR_TAB===k ? ' on' : '')+'" data-tab="'+k+'" onclick="mgrRenderHub(\''+k+'\')">'+
+    esc(T9.tabs[k])+(k==='inbox' && unread ? '<i class="ch-dot on"></i>' : '')+'</button>').join('');
+  try{ mgrHdrHTML(); body.innerHTML=mgrTabBody(MGR_TAB); }
+  catch(e){
+    console.error('mgrRenderHub сломался на вкладке '+MGR_TAB+':', e);
+    body.innerHTML='<div class="cc-ffo-err"><b>'+esc(L().ccHubBroke)+'</b><span>'+esc(String((e && e.message) || e))+'</span>'+
+      '<span class="cc-ffo-build">'+esc('FNCS Draft '+(typeof CC_BUILD!=='undefined' ? CC_BUILD : '?')+' · manager · '+MGR_TAB)+'</span></div>'+
+      '<button class="ch-play" onclick="mgrRenderHub(\'centre\')">'+esc(L().ccHubBackCentre)+'</button>';
+  }
+  const T=mgrT();
+  document.getElementById('mgFoot').innerHTML='<button class="cc-back" onclick="mgrHome()">'+esc(T.home)+'</button>'+
+    '<button class="cc-back" onclick="mgrNewClubAsk()">'+esc(T.newClub)+'</button>';
+  MGR_DREW=MGR_TAB;
   show('screen-manager');
+  if(keep){ try{ body.scrollTop=keep[0]; window.scrollTo(0, keep[1]); }catch(e){} }
+}
+// Вход в хаб. Старые ключи вкладок (из сейва и прежних кнопок) ведут в новые.
+function mgrOpenHub(){
+  if(!MGR || !MGR.club){ mgrOpenNew(); return; }
+  const legacy={club:'centre', market:'transfers', train:'club', stats:'tables'};
+  mgrRenderHub(legacy[MGR_TAB]||MGR_TAB);
 }
 function mgrClubHTML(evs){
   const T=mgrT(), T2=mgrT2(), nx=evs[0];
@@ -156115,7 +156195,7 @@ function mgrSwitchClub(name){
   MGR.teams=[]; MGR.bench=[]; MGR.academy=[]; MGR.morale={}; MGR.dev={}; MGR.chem={}; MGR.promises=[]; MGR.challenge=null; MGR.sackShown=false; MGR.deal=null; MGR.fac={};
   mgrBuildTeams(c.players);
   MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h));
-  { const b=mgrClubBudget(c.name, mgrWageBill());
+  { const b=mgrClubBudget(c.name, mgrWageBill(), c.avg);
     Object.assign(MGR.club, {turnover:b.turnover, transfer:b.transfer, wageCap:b.wageCap, cash:Math.max(MGR.club.cash, b.transfer)}); }
   mgrBoardInit(); mgrRivalsInit();
   mgrToast(mgrT7().moved(c.name));
