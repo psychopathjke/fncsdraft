@@ -116446,6 +116446,9 @@ function careerRenderHub(tab){
     if(b && b.parentElement && at.p) b.parentElement.scrollTop=at.p;
     if(at.w) window.scrollTo(0, at.w);
   }catch(e){}
+  /* Переписка — к последнему сообщению (его слово 7.10: «когда отправляю сообщение не сразу перекидывает на
+     сообщение, нужно листать»). Окно .dm-msgs со своей прокруткой собирается заново и вставало в начало. */
+  try{ document.querySelectorAll('#chBody .dm-msgs').forEach(m=>{ m.scrollTop=m.scrollHeight; }); }catch(e){}
 }
 /* Число с карточки — одно на все экраны. Карточка и шапка хаба печатают
    рейтинг плюс пинг и возраст (см. shownOvr), а профиль соцсети и лист

@@ -38,6 +38,13 @@ try{
   CH_DMKIND='duos';
   const duos=order(careerSocialHTML()); out.notes.duos=duos;
   check('во вкладке раздела закрепа нет, тиммейт в своём разделе', duos && duos.indexOf('#PIN')<0 && duos.indexOf('PinMate')>=0, duos && duos.join(' | '));
+  // после отправки переписка стоит на последнем сообщении (его слово 7.10: «нужно листать»)
+  CH_DMKIND=null; for(let i=0; i<25; i++) careerDmPush(mt, i%2 ? 'them' : 'you', 'dmAgent', [10, 2]);
+  careerSave(); careerEntry();
+  CH_TAB='social'; careerDmOpen(careerMateThread().id); careerMateTalk('life');
+  const box=document.querySelector('#chBody .dm-msgs');
+  out.notes.scroll=box ? [box.scrollTop, box.scrollHeight, box.clientHeight] : null;
+  check('окно переписки на последнем сообщении', box && box.scrollHeight>box.clientHeight && box.scrollTop+box.clientHeight>=box.scrollHeight-2, JSON.stringify(out.notes.scroll));
   CAREER.agent=null; CH_DMKIND=null;
   const noAg=order(careerSocialHTML()); out.notes.noAgent=noAg;
   check('без менеджера закреплён только тиммейт', noAg && noAg[1]==='PinMate' && noAg[2]!==mine.name, noAg && noAg.join(' | '));
