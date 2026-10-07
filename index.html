@@ -6977,6 +6977,10 @@
       <div class="hero-art" style="background:url(art/mode-major1.jpg) center/cover;cursor:pointer" role="img" aria-label="Fortnite Manager" onclick="mgrStart()"></div>
     </section>
     </div>
+    <!-- Две колонки сразу (его скрин 8.10: «когда захожу на сайт вот так показывает, потом 2 колонки»): блок менеджера
+         открывался из app.js после загрузки 9 МБ, и до этого главная стояла в одну колонку. Тот же список хостов,
+         что в mgrAllowed. -->
+    <script>(function(){var h=(location.hostname||"").toLowerCase();if(!h||h==="localhost"||h==="127.0.0.1"||h==="debug.fncsdraft.pages.dev")document.querySelectorAll('.hero-mgr, .hero-mgr-btn, .nav-pill[data-nav="manager"]').forEach(function(el){el.hidden=false;});})();</script>
     <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Скриншот (красная рамка вокруг всех рядов): «с этими
          прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
          первый выделяется». -->
@@ -112575,7 +112579,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ca7f6924';
+const CC_BUILD='5f25b34e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
