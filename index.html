@@ -20898,6 +20898,8 @@ function pushCard(card){
   // Написание чистится ЗДЕСЬ, до ключа склейки: иначе «Japko » и «Japko» с
   // одного турнира лягут двумя карточками. См. hKey.
   card.handle=String(card.handle||'').trim();
+  // Ник без единой буквы («04 06 03», «14.04.2027») в лобби читается как «куча цифр вместо ника».
+  if(!/\p{L}/u.test(card.handle)) return;
   const key=card.handle+'|'+card.event+'|'+card.placement;
   if(cardKeys.has(key)) return;
   cardKeys.add(key);
@@ -105340,9 +105342,11 @@ function ccYouKillSplit(you){
 }
 const CC_KILL_ROLE_W={roleFRG:1.5, roleIGL:0.75};
 function ccKillWeights(sq){
+  const roles=[];
   return ccKillRankBoost(sq.map(c=>{ const a=(typeof attrsFor==='function') ? attrsFor(c) : null;
     const aim=(a && a.aim) || 50;
-    return Math.pow(aim/60, 4)*(CC_KILL_ROLE_W[a && a.roleKey]||1); }));
+    roles.push(a && a.roleKey);
+    return Math.pow(aim/60, 4)*(CC_KILL_ROLE_W[a && a.roleKey]||1); }), roles);
 }
 /* РОЛЬ ВНУТРИ КОМАНДЫ (второй отзыв игрока 30.09: «почти всегда одинаковое число киллов»). Роль карточки
    одна на всю сцену, и у двух фраггеров (или двух ИГЛов) с близким AIM элимы снова шли поровну — так
@@ -105350,10 +105354,20 @@ function ccKillWeights(sq){
    тянет ×1,6, дальше по убыванию ×1 / ×0,75 / ×0,6. Порядок при равенстве — место в составе, то есть
    у обоих клиентов одинаковый. Оценка режима, не замер. */
 const CC_KILL_RANK=[1.6, 1, 0.75, 0.6];
-function ccKillRankBoost(w){
-  const ord=w.map((v,i)=>i).sort((a,b)=>(w[b]-w[a]) || (a-b));
+/* ФРАГГЕР ВПЕРЕДИ (тестер 7.10: «чтобы у фрагера больше киллов было»). AIM в четвёртой степени
+   перебивал роль: ИГЛ с AIM 99 забирал 70 % элимов у фраггера с AIM 76 — на карточке «Фраггер», а
+   выбивает напарник. Теперь фраггер первым встаёт в очередь на ×1,6 и весит не меньше 1,25 лучшего
+   из нефраггеров. Два фраггера (или ни одного) по-прежнему решает AIM. Оценка режима, не замер. */
+const CC_KILL_FRG_LEAD=1.25;
+function ccKillRankBoost(w, roles){
+  const frg=i=>!!(roles && roles[i]==='roleFRG');
+  const ord=w.map((v,i)=>i).sort((a,b)=>(frg(b)-frg(a)) || (w[b]-w[a]) || (a-b));
   const out=w.slice();
   ord.forEach((i,r)=>{ out[i]=w[i]*(CC_KILL_RANK[r]!=null ? CC_KILL_RANK[r] : 0.6); });
+  if(roles && w.some((v,i)=>frg(i)) && w.some((v,i)=>!frg(i))){
+    const top=Math.max(...out.filter((v,i)=>!frg(i)));
+    out.forEach((v,i)=>{ if(frg(i) && v<top*CC_KILL_FRG_LEAD) out[i]=top*CC_KILL_FRG_LEAD; });
+  }
   return out;
 }
 // Доля элимов отряда у одного из его людей (журнал игроков, фраггер года) — то же правило.
@@ -108401,11 +108415,11 @@ const CC_STAT_SUP=new Set(['assists','healthHealed','shieldHealed','revived','re
   'stoneFarmed','metalFarmed','matsCollected','woodCollected','stoneCollected','metalCollected']);
 const CC_STAT_NEU=new Set(['dmgFrom','gotRevived','gotRebooted','stormDmg','surge','overshield']);
 function playerRoleShares(team, table){
-  const base=playerShares(team), sq=team.squad||[];
+  const base=playerShares(team), sq=team.squad||[], roles=[];
   let raw=base.map((b,i)=>{ let r=null; try{ r=(attrsFor(sq[i])||{}).roleKey; }catch(e){}
-    return b*((table && table[r])||1); });
+    roles.push(r); return b*((table && table[r])||1); });
   // Боевые статы — тот же главный по дракам, что у элимов (ccKillRankBoost).
-  if(table===CC_KILL_ROLE_W && raw.length>1) raw=ccKillRankBoost(raw);
+  if(table===CC_KILL_ROLE_W && raw.length>1) raw=ccKillRankBoost(raw, roles);
   const sum=raw.reduce((a,b)=>a+b,0)||1;
   return raw.map(v=>v/sum);
 }
