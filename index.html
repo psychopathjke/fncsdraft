@@ -6532,6 +6532,17 @@
   .mg-pot{font-weight:400;opacity:.75;} .mg-pot.sc{color:#3fd0ff;opacity:1;}
   .mg-board.open{border-color:#3fd0ff;}
   .hero-mgr[hidden]{display:none !important;}
+  /* Пара: карьера игрока слева, менеджера справа; арт уходит под текст. Кнопка «Карьера менеджера» в блоке игрока
+     тогда лишняя — дверь рядом. На телефоне — одна под другой, как было. */
+  .hero-pair:has(.hero-mgr:not([hidden])) .hero-mgr-btn{display:none !important;}
+  @media(min-width:901px){
+    .hero-pair:has(.hero-mgr:not([hidden])){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:0 0 10px;}
+    .hero-pair:has(.hero-mgr:not([hidden]))>.hero{grid-template-columns:1fr;margin:0;min-height:480px;}
+    .hero-pair:has(.hero-mgr:not([hidden]))>.hero>.hero-art{position:absolute;inset:0;min-height:0;clip-path:none;opacity:.2;}
+    .hero-pair:has(.hero-mgr:not([hidden]))>.hero>.hero-art::after{background:linear-gradient(180deg,rgba(8,40,44,.2),rgba(8,40,44,.75));}
+    .hero-pair:has(.hero-mgr:not([hidden])) .hero-body{padding:32px 28px 30px;}
+    .hero-pair:has(.hero-mgr:not([hidden])) .hero-title{font-size:clamp(28px,3vw,44px);}
+  }
   .mg-modal{position:fixed;inset:0;z-index:9000;background:rgba(5,10,30,.72);display:flex;align-items:center;justify-content:center;padding:16px;}
   .mg-modal-box{width:min(620px,100%);max-height:90vh;overflow:auto;background:#0f1d4d;border:1px solid rgba(63,208,255,.45);border-radius:14px;padding:16px;color:#e6ecff;display:flex;flex-direction:column;gap:10px;}
   .mg-modal-box h3{margin:0;font:800 18px Oswald,system-ui;text-transform:uppercase;}
@@ -6917,6 +6928,8 @@
          (вдвоём, гонка, по коду; ходят за флагом CC_MP_OPEN в setLang).
          Id кнопок cstripDuo/cstripRace/cstripCode сохранены: на них смотрят
          check-mp-doors и setLang. Арт — ключевой арт Major 1, один. -->
+    <!-- Карьера игрока и карьера менеджера — ОДНОЙ строкой, две половины (его скрин 7.10: красные рамки слева и справа). -->
+    <div class="hero-pair">
     <section class="hero hero-career" aria-labelledby="heroTitle">
       <div class="hero-body">
         <span class="dp-tag hero-mode-tag" data-i18n="hmCareerTag"></span>
@@ -6957,6 +6970,7 @@
       </div>
       <div class="hero-art" style="background:url(art/mode-major1.jpg) center/cover;cursor:pointer" role="img" aria-label="Fortnite Manager" onclick="mgrStart()"></div>
     </section>
+    </div>
     <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Скриншот (красная рамка вокруг всех рядов): «с этими
          прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
          первый выделяется». -->
