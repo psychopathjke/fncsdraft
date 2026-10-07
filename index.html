@@ -6379,6 +6379,8 @@
   .mgm-filters .mg-q{flex:1 1 200px;}
   .mgm-filters .mgs-move{flex:0 1 160px;}
   .mgm-filters .hg-go{width:auto;margin-top:0;}
+  .mgm-ava{flex:0 0 auto;width:40px;height:40px;border-radius:50%;overflow:hidden;background:rgba(255,255,255,.08);margin-right:6px;}
+  .mgm-ava img{width:100%;height:100%;object-fit:cover;}
   .mgm-count{font-size:12px;opacity:.7;color:#fff;margin:4px 0 8px;}
   .mgt-bud{display:flex;flex-wrap:wrap;gap:6px 24px;margin:10px 0;}
   .mgt-bud .mgn-row{flex:1 1 220px;color:#fff;}
@@ -155778,7 +155780,7 @@ function mgrShortHTML(){
   const list=(MGR.short||[]).map(h=>mgrCard(h)).filter(Boolean);
   if(!list.length) return '<div class="ch-tile"><div class="ch-empty">'+esc(T9.shortEmpty)+'</div></div>';
   return '<div class="mg-clubs">'+list.map(c=>{ const hq=esc(String(c.handle).replace(/'/g, ''));
-    return '<div class="mg-club"><span class="mg-cname"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(c.handle)+' <small>'+Math.round(ccCardOvr(c)||0)+'</small></b>'+
+    return '<div class="mg-club">'+mgrAvaHTML(c)+'<span class="mg-cname"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(c.handle)+' <small>'+Math.round(ccCardOvr(c)||0)+'</small></b>'+
       '<small>'+esc(mgrOrgOf(c)||T2.free)+' · '+esc(T4.pot)+' '+esc(mgrPotText(c.handle))+' · '+esc(T2.wage)+' '+mgrMoney(mgrSalary(c))+'</small></span>'+
       '<button class="mgt-star on" title="'+esc(T9.short)+'" onclick="mgrShortToggle(\''+hq+'\');mgrRenderHub()">★</button>'+
       '<button class="hero-btn hero-btn-go mg-take" onclick="mgrSign(\''+hq+'\')">'+esc(T2.sign)+'</button></div>'; }).join('')+'</div>';
@@ -156008,7 +156010,7 @@ function mgrScoutingHTML(){
     '<button class="hg-go mgs-bad" onclick="mgrScoutFire(\''+s.id+'\');mgrRenderHub()">'+esc(T9.fire)+'</button></div>').join('');
   const reps=Object.values(MGR.srep||{}).sort((a,b)=>String(b.day).localeCompare(String(a.day))).slice(0, 40);
   const rows=reps.map(r=>{ const c=mgrCard(r.h); if(!c) return ''; const hq=esc(String(r.h).replace(/'/g, '')), pot=mgrPot(r.h)||0;
-    return '<div class="mg-club mgx-rep"><span class="mg-cname"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(r.h)+' <small>'+Math.round(ccCardOvr(c)||0)+' · '+esc(r.region)+'</small></b>'+
+    return '<div class="mg-club mgx-rep">'+mgrAvaHTML(c)+'<span class="mg-cname"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(r.h)+' <small>'+Math.round(ccCardOvr(c)||0)+' · '+esc(r.region)+'</small></b>'+
       '<small>'+esc(T9.now)+' '+mgrStarsHTML(mgrStarsOf(ccCardOvr(c)))+' '+esc(T9.potW)+' '+mgrStarsHTML(mgrStarsOf(pot))+' · '+esc(T4.pot)+' '+esc(mgrPotText(r.h))+
       ' · '+esc(mgrOrgOf(c)||T2.free)+' · '+esc(T9.views(r.views))+'</small></span>'+
       '<button class="mgt-star'+(mgrShortHas(r.h) ? ' on' : '')+'" onclick="mgrShortToggle(\''+hq+'\');mgrRenderHub()">'+(mgrShortHas(r.h) ? '★' : '☆')+'</button>'+
@@ -156104,7 +156106,7 @@ function mgrMarketHTML(){
   const win='<div class="mg-board'+(w?' open':'')+'"><small>'+esc(w ? T4.windowOpen(ccDayLabel(w.to)) : wn ? T4.windowShut(ccDayLabel(wn.from)) : T4.windowShutNone)+'</small></div>';
   const rows=mgrMarketList().map(c=>{ const a=attrsFor(c)||{}, bo=mgrBuyout(c);
     const sc=(MGR.scouted||{})[hKey(c)], hq=esc(String(c.handle).replace(/'/g, ''));
-    return '<div class="mg-club"><span class="mg-cname"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(c.handle)+' <small>'+Math.round(ccCardOvr(c)||0)+'</small> <small class="mg-pot'+(sc?' sc':'')+'">'+T4.pot+' '+mgrPotText(c.handle)+'</small></b>'+
+    return '<div class="mg-club">'+mgrAvaHTML(c)+'<span class="mg-cname"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(c.handle)+' <small>'+Math.round(ccCardOvr(c)||0)+'</small> <small class="mg-pot'+(sc?' sc':'')+'">'+T4.pot+' '+mgrPotText(c.handle)+'</small></b>'+
       '<small>'+esc(L()[a.roleKey]||'')+' · '+esc(mgrOrgOf(c) || T2.free)+' · '+T2.wage+' '+mgrMoney(mgrSalary(c))+(bo ? ' · '+T2.buyout+' ~'+mgrMoney(bo) : '')+'</small></span>'+
       (!sc ? '<button class="hero-btn hero-btn-alt mg-take" onclick="mgrScout(\''+hq+'\')">'+esc(T4.scoutCost(mgrMoney(mgrScoutCost())))+'</button>' : '')+
       '<button class="mgt-star'+(mgrShortHas(c.handle) ? ' on' : '')+'" title="'+esc(mgrT9().short)+'" onclick="mgrShortToggle(\''+hq+'\');mgrRenderHub()">'+(mgrShortHas(c.handle) ? '★' : '☆')+'</button>'+
@@ -156375,6 +156377,11 @@ function mgrMarketList(){
   return list.sort(by[m.sort]||by.fit).slice(0, 100);
 }
 // Человек чужого региона — снимок карточки в сейв до переговоров, иначе mgrCard его не найдёт.
+// Аватарка игрока в строке трансферов (его слово 7.10): фото из photos/, у кого нет — стандартный портрет новичка.
+function mgrAvaHTML(c){
+  const u=(typeof photoURL==='function' ? photoURL(c) : null);
+  return '<span class="mgm-ava">'+(u ? '<img src="'+esc(u)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '')+'</span>';
+}
 function mgrMktEnsure(h){
   if(mgrMktRegion()===MGR.region || mgrCardBase(h)) return;
   const c=mgrMktPool().find(x=>hKey(x)===hKey(h)); if(c){ MGR.ext=MGR.ext||{}; MGR.ext[hKey(c)]=mgrSnap(c); }

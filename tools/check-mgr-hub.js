@@ -861,6 +861,18 @@ const SECTIONS=[
     check('отступные: не больше одного за окно', worst<=1, String(worst));
     check('отступные: клуб не остаётся без состава', below===0, String(below));
   `},
+  {name:'аватарки рынка', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    MGR_SUB.transfers='market'; mgrRenderHub('transfers');
+    const rows=document.querySelectorAll('#mgBody .mg-clubs .mg-club');
+    check('аватарки '+lang+': у каждой строки рынка', rows.length>=10 && [...rows].every(r=>r.querySelector('.mgm-ava')), rows.length+' / '+document.querySelectorAll('#mgBody .mgm-ava').length);
+    check('аватарки: у тех, у кого есть фото, — фото', document.querySelectorAll('#mgBody .mgm-ava img').length>=3);
+    mgrShortToggle(mgrMarketList()[0].handle); MGR_SUB.transfers='short'; mgrRenderHub('transfers');
+    check('аватарки: в шортлисте', !!document.querySelector('#mgBody .mg-club .mgm-ava'));
+    mgrScoutHire(1); mgrScoutWeek(ccAddDays(CAREER.career.day, 7)); MGR_SUB.transfers='scout'; mgrRenderHub('transfers');
+    check('аватарки: в отчётах скаутов', !document.querySelector('#mgBody .mgx-rep') || !!document.querySelector('#mgBody .mgx-rep .mgm-ava'));
+    MGR_SUB.transfers='market';
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
