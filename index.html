@@ -4937,6 +4937,10 @@
   /* Going back to a club about their offer, before signing it. */
   .dm-ask{display:flex;gap:8px;margin:8px 0 4px;flex-wrap:wrap;}
   .dm-ask .cc-back{font-size:11px;padding:6px 12px;}
+  /* Торг с клубом — два ряда с подписью: деньги и условия (7.10). */
+  .dm-ask-neg{flex-direction:column;gap:6px;}
+  .dm-ask-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .dm-ask-row>em{width:100%;font-style:normal;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim,#9fb0d8);}
   .dm-asked{font-size:11px;color:var(--ink-dimmer);margin:8px 0 4px;font-style:italic;}
   /* Выбор напарника на Про-Ам: имя и под ним его аудитория — по ней и
      выбирают, поэтому число стоит отдельной строкой, а не липнет к нику. */
@@ -6863,7 +6867,7 @@
      файл и разойдётся с напарником. -->
 <script src="mp.js?v=066b92f3"></script>
 <!-- Дополнительные реплики лички и реплаев (tools/build-lines-more.js), грузятся после страницы. -->
-<script src="lines-more.js?v=2996d9a4" defer></script>
+<script src="lines-more.js?v=5aebca09" defer></script>
 <!-- lz-string 1.5.0 (MIT, (c) 2013 pieroxy) — сжатие сейва карьеры, когда браузеру не хватает места (Safari: 5 МБ на сайт). -->
 <script>var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",e={};function t(r,o){if(!e[r]){e[r]={};for(var n=0;n<r.length;n++)e[r][r.charAt(n)]=n}return e[r][o]}var i={compressToBase64:function(r){if(null==r)return"";var n=i._compress(r,6,function(r){return o.charAt(r)});switch(n.length%4){default:case 0:return n;case 1:return n+"===";case 2:return n+"==";case 3:return n+"="}},decompressFromBase64:function(r){return null==r?"":""==r?null:i._decompress(r.length,32,function(n){return t(o,r.charAt(n))})},compressToUTF16:function(o){return null==o?"":i._compress(o,15,function(o){return r(o+32)})+" "},decompressFromUTF16:function(r){return null==r?"":""==r?null:i._decompress(r.length,16384,function(o){return r.charCodeAt(o)-32})},compressToUint8Array:function(r){for(var o=i.compress(r),n=new Uint8Array(2*o.length),e=0,t=o.length;e<t;e++){var s=o.charCodeAt(e);n[2*e]=s>>>8,n[2*e+1]=s%256}return n},decompressFromUint8Array:function(o){if(null==o)return i.decompress(o);for(var n=new Array(o.length/2),e=0,t=n.length;e<t;e++)n[e]=256*o[2*e]+o[2*e+1];var s=[];return n.forEach(function(o){s.push(r(o))}),i.decompress(s.join(""))},compressToEncodedURIComponent:function(r){return null==r?"":i._compress(r,6,function(r){return n.charAt(r)})},decompressFromEncodedURIComponent:function(r){return null==r?"":""==r?null:(r=r.replace(/ /g,"+"),i._decompress(r.length,32,function(o){return t(n,r.charAt(o))}))},compress:function(o){return i._compress(o,16,function(o){return r(o)})},_compress:function(r,o,n){if(null==r)return"";var e,t,i,s={},u={},a="",p="",c="",l=2,f=3,h=2,d=[],m=0,v=0;for(i=0;i<r.length;i+=1)if(a=r.charAt(i),Object.prototype.hasOwnProperty.call(s,a)||(s[a]=f++,u[a]=!0),p=c+a,Object.prototype.hasOwnProperty.call(s,p))c=p;else{if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++),s[p]=f++,c=String(a)}if(""!==c){if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++)}for(t=2,e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;for(;;){if(m<<=1,v==o-1){d.push(n(m));break}v++}return d.join("")},decompress:function(r){return null==r?"":""==r?null:i._decompress(r.length,32768,function(o){return r.charCodeAt(o)})},_decompress:function(o,n,e){var t,i,s,u,a,p,c,l=[],f=4,h=4,d=3,m="",v=[],g={val:e(0),position:n,index:1};for(t=0;t<3;t+=1)l[t]=t;for(s=0,a=Math.pow(2,2),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 2:return""}for(l[3]=c,i=c,v.push(c);;){if(g.index>o)return"";for(s=0,a=Math.pow(2,d),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(c=s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 2:return v.join("")}if(0==f&&(f=Math.pow(2,d),d++),l[c])m=l[c];else{if(c!==h)return null;m=i+i.charAt(0)}v.push(m),l[h++]=i+m.charAt(0),i=m,0==--f&&(f=Math.pow(2,d),d++)}}};return i}();"function"==typeof define&&define.amd?define(function(){return LZString}):"undefined"!=typeof module&&null!=module?module.exports=LZString:"undefined"!=typeof angular&&null!=angular&&angular.module("LZString",[]).factory("LZString",function(){return LZString});</script>
 </head>
@@ -8542,7 +8546,7 @@ ccRelBanked:'Сессия 1 в зачёт — отбор решает втора
 dmOrgWait:d=>'Обсудим с руководством, ответим к '+ccDayLabel(d)+'.',
 dmOrgDeadline:d=>'Предложение в силе до '+ccDayLabel(d)+'.',
 dmAgentDeadline:(c,d)=>c+' держит место до '+ccDayLabel(d)+'.',
-dmOrgYesMoreAgent:v=>'Договорился. $'+v+' за сезон, можно подписывать.',
+dmOrgYesMoreAgent:v=>'Договорился. $'+v+' в месяц, можно подписывать.',
 dmOrgNoMoreAgent:v=>'Больше не дают. Держатся за $'+v+' — решай, стоит оно того или нет.',
 dmOrgYesPerkAgent:'Сетап берут на себя. Я бы подписывал.',
 dmOrgNoPerkAgent:'По железу отказали. Деньги те же, остальное без изменений.',
@@ -9342,10 +9346,10 @@ ccIvSaidblamet4:(m,p)=>'Свою часть я отработал'+(m?', '+m:'')
 ccAskMore:'Просить больше', ccAskPerk:'Просить железо',
 ccAskOdds:p=>'Шанс, что согласятся: '+p+'%',
 ccAskedAlready:'Ты уже торговался по этому контракту',
-dmAskMore:v=>'Спасибо за предложение. Готов подписать за $'+v+' за сезон',
-dmAskMoreAgent:v=>'Мой менеджер вернётся к вам. Мы говорим о $'+v+' за сезон',
+dmAskMore:v=>'Спасибо за предложение. Готов подписать за $'+v+' в месяц',
+dmAskMoreAgent:v=>'Мой менеджер вернётся к вам. Мы говорим о $'+v+' в месяц',
 dmAskPerk:'Готов подписать, если закроете сетап',
-dmOrgYesMore:v=>'Хорошо, $'+v+' за сезон. Ждём тебя',
+dmOrgYesMore:v=>'Хорошо, $'+v+' в месяц. Ждём тебя',
 dmOrgNoMore:v=>'Больше не потянем. $'+v+' — это наш потолок',
 dmOrgYesPerk:'Договорились, сетап за нами',
 dmOrgNoPerk:'С железом помочь не сможем, только зарплата',
@@ -10549,7 +10553,7 @@ ccRelBanked:'Session 1 banked — the second session decides the cut',
 dmOrgWait:d=>'We will take it upstairs and come back to you by '+ccDayLabel(d)+'.',
 dmOrgDeadline:d=>'The offer stands until '+ccDayLabel(d)+'.',
 dmAgentDeadline:(c,d)=>c+' hold the seat until '+ccDayLabel(d)+'.',
-dmOrgYesMoreAgent:v=>'Got it done. $'+v+' a season, you can sign.',
+dmOrgYesMoreAgent:v=>'Got it done. $'+v+' a month, you can sign.',
 dmOrgNoMoreAgent:v=>'That is their limit. They are holding at $'+v+' — your call whether it is worth it.',
 dmOrgYesPerkAgent:'The setup is on them. I would sign.',
 dmOrgNoPerkAgent:'No on the gear. Money unchanged, everything else as it was.',
@@ -11348,10 +11352,10 @@ ccIvSaidblamet4:(m,p)=>'I did my third'+(m?', '+m:''),
 ccAskMore:'Ask for more', ccAskPerk:'Ask for the gear',
 ccAskOdds:p=>'Odds they say yes: '+p+'%',
 ccAskedAlready:'You have already been back to them on this one',
-dmAskMore:v=>'Thanks for the offer. I would sign at $'+v+' a season',
-dmAskMoreAgent:v=>'My manager will come back to you. We are talking $'+v+' a season',
+dmAskMore:v=>'Thanks for the offer. I would sign at $'+v+' a month',
+dmAskMoreAgent:v=>'My manager will come back to you. We are talking $'+v+' a month',
 dmAskPerk:'I would sign if the setup is on you',
-dmOrgYesMore:v=>'All right — $'+v+' a season. See you at the bootcamp',
+dmOrgYesMore:v=>'All right — $'+v+' a month. See you at the bootcamp',
 dmOrgNoMore:v=>'That is past what we have. $'+v+' is the ceiling',
 dmOrgYesPerk:'Done, the setup is on us',
 dmOrgNoPerk:'We cannot cover gear, only the wage',
@@ -13443,7 +13447,7 @@ dmAgentBroughtOne:(n,who)=>who+' s’est manifesté. Les conditions sont sur l�
 dmOrgWait:d=>'On en parle en interne et on revient vers toi d’ici le '+ccDayLabel(d)+'.',
 dmOrgDeadline:d=>'L’offre tient jusqu’au '+ccDayLabel(d)+'.',
 dmAgentDeadline:(c,d)=>c+' garde la place jusqu’au '+ccDayLabel(d)+'.',
-dmOrgYesMoreAgent:v=>'C’est réglé. '+v+' par saison, tu peux signer.',
+dmOrgYesMoreAgent:v=>'C’est réglé. '+v+' par mois, tu peux signer.',
 dmOrgNoMoreAgent:v=>'C’est leur limite. Ils restent à '+v+' — à toi de voir si ça vaut le coup.',
 dmOrgWaitAgent:d=>'Transmis. Ils répondent d’ici le '+ccDayLabel(d)+'.',
 dmOrgExpiredAgent:c=>c+' a fermé la place. Je continue de chercher.',
@@ -13552,9 +13556,9 @@ dmHateMoney1:e=>e+' au total',
 dmHateMoney2:e=>'Tu as gagné '+e+' dans ta carrière. Je fais ça en un mois et je suis pas pro',
 dmHateMoney3:e=>e+' de gains. Va dire à ta mère que c’est un métier',
 dmHateMoney4:e=>'Total : '+e+'. Bien sûr',
-dmAskMore:v=>'Merci pour l’offre. Je signerais à '+v+' par saison',
-dmAskMoreAgent:v=>'Mon manager revient vers vous. On parle de '+v+' par saison',
-dmOrgYesMore:v=>'D’accord — '+v+' par saison. On se voit au bootcamp',
+dmAskMore:v=>'Merci pour l’offre. Je signerais à '+v+' par mois',
+dmAskMoreAgent:v=>'Mon manager revient vers vous. On parle de '+v+' par mois',
+dmOrgYesMore:v=>'D’accord — '+v+' par mois. On se voit au bootcamp',
 dmOrgNoMore:v=>'C’est au-delà de ce qu’on a. '+v+', c’est le plafond',
 dmOrgWithdraw:n=>n+' : on cherchera ailleurs, alors. Bonne chance',
 dmOrgPromoted:(club,pay)=>club+' : tu montes sur le roster principal. '+pay+' par mois.',
@@ -14820,7 +14824,7 @@ ccBankedCarry:(p,g)=>p+' punti da '+g+' partite entrano nella settimana',
 dmOrgWait:d=>'Ne parliamo di sopra e ti rispondiamo entro '+ccDayLabel(d)+'.',
 dmOrgDeadline:d=>'L\u2019offerta resta valida fino al '+ccDayLabel(d)+'.',
 dmAgentDeadline:(c,d)=>c+' tiene il posto fino al '+ccDayLabel(d)+'.',
-dmOrgYesMoreAgent:v=>'Fatto. $'+v+' a stagione, puoi firmare.',
+dmOrgYesMoreAgent:v=>'Fatto. $'+v+' al mese, puoi firmare.',
 dmOrgNoMoreAgent:v=>'\u00c8 il loro limite. Si fermano a $'+v+' — decidi tu se ne vale la pena.',
 dmOrgWaitAgent:d=>'Ho girato la richiesta. Rispondono entro '+ccDayLabel(d)+'.',
 dmOrgExpiredAgent:c=>c+' ha chiuso il posto. Continuo a cercare.',
@@ -15206,9 +15210,9 @@ ccIvSaidblamet2:(m,p)=>'Portata io. '+ccTopC(p),
 ccIvSaidblamet3:(m,p)=>'Con un\u2019altra squadra si sale',
 ccIvSaidblamet4:(m,p)=>'Il mio terzo l\u2019ho fatto'+(m?', '+m:''),
 ccAskOdds:p=>'Probabilit\u00e0 che dicano s\u00ec: '+p+'%',
-dmAskMore:v=>'Grazie dell\u2019offerta. Firmerei a $'+v+' a stagione',
-dmAskMoreAgent:v=>'Vi risponder\u00e0 il mio manager. Parliamo di $'+v+' a stagione',
-dmOrgYesMore:v=>'Va bene — $'+v+' a stagione. Ci vediamo al bootcamp',
+dmAskMore:v=>'Grazie dell\u2019offerta. Firmerei a $'+v+' al mese',
+dmAskMoreAgent:v=>'Vi risponder\u00e0 il mio manager. Parliamo di $'+v+' al mese',
+dmOrgYesMore:v=>'Va bene — $'+v+' al mese. Ci vediamo al bootcamp',
 dmOrgNoMore:v=>'\u00c8 oltre quello che abbiamo. $'+v+' \u00e8 il tetto',
 dmOrgWithdraw:n=>n+': allora guardiamo altrove. Buona fortuna',
 ccNewsOfferGone:n=>'L\u2019offerta di '+n+' non c\u2019\u00e8 pi\u00f9',
@@ -17352,7 +17356,7 @@ ccBankedCarry:(p,g)=>p+' pontos de '+g+' partidas entram na semana',
 dmOrgWait:d=>'Vamos levar para cima e te respondemos at\u00e9 '+ccDayLabel(d)+'.',
 dmOrgDeadline:d=>'A proposta vale at\u00e9 '+ccDayLabel(d)+'.',
 dmAgentDeadline:(c,d)=>c+' segura a vaga at\u00e9 '+ccDayLabel(d)+'.',
-dmOrgYesMoreAgent:v=>'Resolvido. $'+v+' por temporada, pode assinar.',
+dmOrgYesMoreAgent:v=>'Resolvido. $'+v+' por mês, pode assinar.',
 dmOrgNoMoreAgent:v=>'\u00c9 o limite deles. Ficaram em $'+v+' — voc\u00ea decide se vale.',
 dmOrgWaitAgent:d=>'Passei adiante. Eles respondem at\u00e9 '+ccDayLabel(d)+'.',
 dmOrgExpiredAgent:c=>c+' fechou a vaga. Sigo procurando.',
@@ -17738,9 +17742,9 @@ ccIvSaidblamet2:(m,p)=>'Carreguei essa. '+ccTopC(p),
 ccIvSaidblamet3:(m,p)=>'Com outro time isso sobe',
 ccIvSaidblamet4:(m,p)=>'Fiz o meu ter\u00e7o'+(m?', '+m:''),
 ccAskOdds:p=>'Chance de dizerem sim: '+p+'%',
-dmAskMore:v=>'Obrigado pela proposta. Eu assinaria por $'+v+' por temporada',
-dmAskMoreAgent:v=>'Meu empres\u00e1rio volta a falar com voc\u00eas. Estamos falando de $'+v+' por temporada',
-dmOrgYesMore:v=>'Fechado — $'+v+' por temporada. Te vejo no bootcamp',
+dmAskMore:v=>'Obrigado pela proposta. Eu assinaria por $'+v+' por mês',
+dmAskMoreAgent:v=>'Meu empres\u00e1rio volta a falar com voc\u00eas. Estamos falando de $'+v+' por mês',
+dmOrgYesMore:v=>'Fechado — $'+v+' por mês. Te vejo no bootcamp',
 dmOrgNoMore:v=>'Isso passa do que temos. $'+v+' \u00e9 o teto',
 dmOrgWithdraw:n=>n+': ent\u00e3o vamos procurar em outro lugar. Boa sorte',
 ccNewsOfferGone:n=>'A proposta do '+n+' saiu da mesa',
@@ -19581,6 +19585,78 @@ Object.assign(I18N.it, {hmCareerTag:'Modalità 1 · Carriera', hmCareerTitle:'Ca
 Object.assign(I18N.pt, {hmCareerTag:'Modo 1 · Carreira', hmCareerTitle:'Carreira', hmCareerSub:'Um jogador, temporada após temporada no calendário real 2019–2026: divisões, Majors, clubes, LANs', hmPlay:'Jogar',
   hmDraftTag:'Modo 2 · Draft', hmDraftTitle:'Draft', hmDraftSub:'Monte um time de cartas reais e jogue o torneio: qualquer ano 2019–2026, All FNCS, duplas, trios, squads',
   dpFormats:'All FNCS · formatos', dpBack:'Voltar', dpRealCards:'Cartas reais', dpPastDesc:'Cartas dos jogadores pelos resultados reais neste evento. Play-In, heats e final.'});
+/* Переговоры с клубом поинтереснее (7.10): размер просьбы, встречное, доля с призовых, бонус за подпись, козырь. */
+Object.assign(I18N.ru, {ccAskMoneyLbl:'Деньги', ccAskTermsLbl:'Условия', ccAsk_small:'Чуть больше', ccAsk_fair:'Больше', ccAsk_hard:'Жёстко', ccAskCut:'Меньше доли с призовых', ccAskBonus:'Бонус за подпись',
+  ccAskLever:'Сказать про другое предложение', ccAskLeverWhat:'У тебя на руках другой оффер — следующая просьба пройдёт легче', ccSignBonusRow:'Бонус за подпись',
+  dmAskSmall:v=>'Предложение нравится. Если подтянете до $'+v+' в месяц — подписываю сразу',
+  dmAskHard:v=>'Буду честен: меньше $'+v+' в месяц не рассматриваю. Я знаю, сколько стою',
+  dmAskCut:p=>'По деньгам почти сошлись. Но доля клуба с призовых высоковата — давайте '+p+'%',
+  dmAskBonus:v=>'Готов подписать. Но хочу бонус за подпись — $'+v+' сразу',
+  dmAskLever:c=>'Скажу прямо: '+c+' тоже на меня вышли. Решаю на этой неделе',
+  dmOrgLever:c=>'Понимаем. Про '+c+' слышали — постараемся сделать так, чтобы выбор был очевиден',
+  dmOrgCounter:(w,m)=>'$'+w+' в месяц не потянем. Можем $'+m+' — это честная середина',
+  dmOrgYesCut:p=>'Ладно, '+p+'% с призовых. Для тебя сделаем',
+  dmOrgNoCut:'Доля с призовых у нас одна для всех. Тут не двигаемся',
+  dmOrgYesBonus:v=>'Договорились: $'+v+' бонусом при подписании',
+  dmOrgNoBonus:'Бонус за подпись не даём никому. Зарплата — вот наш аргумент',
+  tlSignBonus:(c,v)=>c+': бонус за подпись $'+v});
+Object.assign(I18N.en, {ccAskMoneyLbl:'Money', ccAskTermsLbl:'Terms', ccAsk_small:'A bit more', ccAsk_fair:'More', ccAsk_hard:'Hardball', ccAskCut:'Smaller prize cut', ccAskBonus:'Signing bonus',
+  ccAskLever:'Mention the other offer', ccAskLeverWhat:'You have another offer on the table — your next ask lands easier', ccSignBonusRow:'Signing bonus',
+  dmAskSmall:v=>'I like the offer. Bring it to $'+v+' a month and I sign right away',
+  dmAskHard:v=>'I will be straight with you: nothing under $'+v+' a month. I know what I am worth',
+  dmAskCut:p=>'We are close on money. But the club cut of prize money is steep — let us make it '+p+'%',
+  dmAskBonus:v=>'Ready to sign. But I want a signing bonus — $'+v+' up front',
+  dmAskLever:c=>'Being honest: '+c+' reached out too. I am deciding this week',
+  dmOrgLever:c=>'Understood. We heard about '+c+' — we will make the choice an easy one',
+  dmOrgCounter:(w,m)=>'$'+w+' a month is too much for us. We can do $'+m+' — that is a fair middle',
+  dmOrgYesCut:p=>'Fine, '+p+'% of prize money. We will make it work for you',
+  dmOrgNoCut:'The prize cut is the same for everyone here. We will not move on that',
+  dmOrgYesBonus:v=>'Deal: $'+v+' as a signing bonus',
+  dmOrgNoBonus:'We do not do signing bonuses for anyone. The salary is our argument',
+  tlSignBonus:(c,v)=>c+': signing bonus $'+v});
+Object.assign(I18N.fr, {ccAskMoneyLbl:'Argent', ccAskTermsLbl:'Conditions', ccAsk_small:'Un peu plus', ccAsk_fair:'Plus', ccAsk_hard:'Sans concession', ccAskCut:'Moins de part sur les gains', ccAskBonus:'Prime à la signature',
+  ccAskLever:'Parler de l\u2019autre offre', ccAskLeverWhat:'Tu as une autre offre en main — ta prochaine demande passera plus facilement', ccSignBonusRow:'Prime à la signature',
+  dmAskSmall:v=>'L\u2019offre me plaît. Montez à $'+v+' par mois et je signe direct',
+  dmAskHard:v=>'Je vais être franc : rien en dessous de $'+v+' par mois. Je sais ce que je vaux',
+  dmAskCut:p=>'On est proches sur l\u2019argent. Mais la part du club sur les gains est élevée — passons à '+p+' %',
+  dmAskBonus:v=>'Prêt à signer. Mais je veux une prime à la signature — $'+v+' tout de suite',
+  dmAskLever:c=>'Pour être honnête : '+c+' m\u2019a contacté aussi. Je décide cette semaine',
+  dmOrgLever:c=>'Compris. On a entendu parler de '+c+' — on va rendre le choix évident',
+  dmOrgCounter:(w,m)=>'$'+w+' par mois, c\u2019est trop pour nous. On peut faire $'+m+' — un juste milieu',
+  dmOrgYesCut:p=>'D\u2019accord, '+p+' % des gains. On fait un effort pour toi',
+  dmOrgNoCut:'La part sur les gains est la même pour tout le monde. On ne bouge pas là-dessus',
+  dmOrgYesBonus:v=>'Marché conclu : $'+v+' de prime à la signature',
+  dmOrgNoBonus:'Pas de prime à la signature, pour personne. Le salaire, c\u2019est notre argument',
+  tlSignBonus:(c,v)=>c+' : prime à la signature $'+v});
+Object.assign(I18N.it, {ccAskMoneyLbl:'Soldi', ccAskTermsLbl:'Condizioni', ccAsk_small:'Un po\u2019 di più', ccAsk_fair:'Di più', ccAsk_hard:'Linea dura', ccAskCut:'Meno quota sui premi', ccAskBonus:'Bonus alla firma',
+  ccAskLever:'Parla dell\u2019altra offerta', ccAskLeverWhat:'Hai un\u2019altra offerta in mano — la prossima richiesta passa più facilmente', ccSignBonusRow:'Bonus alla firma',
+  dmAskSmall:v=>'L\u2019offerta mi piace. Arrivate a $'+v+' al mese e firmo subito',
+  dmAskHard:v=>'Sarò diretto: sotto i $'+v+' al mese non ci penso. So quanto valgo',
+  dmAskCut:p=>'Sui soldi ci siamo quasi. Ma la quota del club sui premi è alta — facciamo '+p+'%',
+  dmAskBonus:v=>'Pronto a firmare. Ma voglio un bonus alla firma — $'+v+' subito',
+  dmAskLever:c=>'Ti dico la verità: mi ha cercato anche '+c+'. Decido questa settimana',
+  dmOrgLever:c=>'Capito. Di '+c+' abbiamo sentito — faremo in modo che la scelta sia facile',
+  dmOrgCounter:(w,m)=>'$'+w+' al mese per noi è troppo. Possiamo arrivare a $'+m+' — una via di mezzo onesta',
+  dmOrgYesCut:p=>'Va bene, '+p+'% dei premi. Per te facciamo un\u2019eccezione',
+  dmOrgNoCut:'La quota sui premi è uguale per tutti. Su questo non ci muoviamo',
+  dmOrgYesBonus:v=>'Affare fatto: $'+v+' di bonus alla firma',
+  dmOrgNoBonus:'Bonus alla firma non ne diamo a nessuno. L\u2019argomento è lo stipendio',
+  tlSignBonus:(c,v)=>c+': bonus alla firma $'+v});
+Object.assign(I18N.pt, {ccAskMoneyLbl:'Dinheiro', ccAskTermsLbl:'Condições', ccAsk_small:'Um pouco mais', ccAsk_fair:'Mais', ccAsk_hard:'Jogo duro', ccAskCut:'Menos parte da premiação', ccAskBonus:'Bônus de assinatura',
+  ccAskLever:'Falar da outra proposta', ccAskLeverWhat:'Você tem outra proposta na mão — o próximo pedido passa mais fácil', ccSignBonusRow:'Bônus de assinatura',
+  dmAskSmall:v=>'Gostei da proposta. Chegando em $'+v+' por mês, eu assino na hora',
+  dmAskHard:v=>'Vou ser direto: abaixo de $'+v+' por mês nem considero. Sei quanto valho',
+  dmAskCut:p=>'No dinheiro a gente quase fechou. Mas a parte do clube na premiação tá alta — vamos de '+p+'%',
+  dmAskBonus:v=>'Pronto pra assinar. Mas quero bônus de assinatura — $'+v+' na hora',
+  dmAskLever:c=>'Vou ser sincero: a '+c+' também me procurou. Decido essa semana',
+  dmOrgLever:c=>'Entendido. A gente soube da '+c+' — vamos deixar a escolha fácil',
+  dmOrgCounter:(w,m)=>'$'+w+' por mês fica pesado pra gente. Dá pra fazer $'+m+' — meio-termo justo',
+  dmOrgYesCut:p=>'Fechado, '+p+'% da premiação. Pra você a gente faz',
+  dmOrgNoCut:'A parte da premiação é igual pra todo mundo. Nisso a gente não mexe',
+  dmOrgYesBonus:v=>'Fechado: $'+v+' de bônus de assinatura',
+  dmOrgNoBonus:'Bônus de assinatura a gente não dá pra ninguém. O salário é o nosso argumento',
+  tlSignBonus:(c,v)=>c+': bônus de assinatura $'+v});
+
 // Строка «клуб» в шапке карьеры (check-i18n: ключа не было ни в одном языке, на русском стояло «Club»).
 Object.assign(I18N.ru,{chOrg:'Клуб'}); Object.assign(I18N.en,{chOrg:'Club'}); Object.assign(I18N.fr,{chOrg:'Club'}); Object.assign(I18N.it,{chOrg:'Club'}); Object.assign(I18N.pt,{chOrg:'Clube'});
 /* Своя организация: основание, штат, отделы (29.09). */
@@ -136101,7 +136177,16 @@ const CC_ASK_WALK=1/3;
    first: a second ask costs four days of a fourteen-day offer, and a club that
    is doing you a favour can walk in the middle of it. */
 const CC_ASK_DAYS=2;              // how long a club takes to come back
-const CC_ASK_MAX=2;               // asks per offer
+/* ПЕРЕГОВОРЫ ПОИНТЕРЕСНЕЕ (его слово 7.10: «для переговоров мб сделать диалоги поинтересней, реализм»). Было: одна
+   кнопка «больше» на один и тот же шаг и «да/нет». Теперь: размер просьбы (чуть / честно / жёстко — шаг и шанс свои),
+   встречное «можем посередине» вместо голого отказа, торг за долю клуба с призовых и бонус за подпись, и козырь —
+   другое предложение на руках (только если оно правда есть). Шаги и множители — оценка режима, не замер. */
+const CC_ASK_MAX=3;               // asks per offer
+const CC_ASK_SIZES={small:{raise:0.10, odds:1.25}, fair:{raise:0.20, odds:1}, hard:{raise:0.35, odds:0.6}};
+const CC_ASK_COUNTER=0.5;         // отказ по деньгам — шанс встречного «посередине»
+const CC_ASK_CUT=0.05;            // на сколько просят срезать долю клуба с призовых
+const CC_SIGN_BONUS=0.10;         // бонус за подпись — доля сезонной зарплаты
+const CC_ASK_LEVER=0.15;          // козырь (другое предложение) к шансу
 const CC_ASK_AGAIN=-0.15;         // what the second one costs in odds
 const CC_OFFER_DAYS=14;           // how long an offer stands
 function ccOrgGap(offer){
@@ -136111,17 +136196,23 @@ function ccOrgGap(offer){
 }
 // asks — how many have already been sent on this offer. The second one is
 // harder, because the first one already spent the goodwill.
-function careerAskOdds(offer, asks){
-  return Math.round(clamp(0.5+ccOrgGap(offer)*CC_ASK_STEP+(asks||0)*CC_ASK_AGAIN,
-                          0.05, 0.95)*100);
+function careerAskOdds(offer, asks, mult, lever){
+  const base=0.5+ccOrgGap(offer)*CC_ASK_STEP+(asks||0)*CC_ASK_AGAIN;
+  return Math.round(clamp(base*(mult||1)+(lever ? CC_ASK_LEVER : 0), 0.05, 0.95)*100);
 }
-function ccAskResolve(t, yes, no){
+// Другое предложение на руках — есть ли чем козырнуть.
+function ccAskLeverOrg(t){
+  const other=(CAREER.offers||[]).find(o=>t && t.offer && o.name!==t.offer.name);
+  return other ? other.name : null;
+}
+function ccAskResolve(t, yes, no, p){
   const rnd=careerRng(ccHashStr('ask|'+t.id+'|'+CAREER.career.season+'|'+careerToday()));
   const before=(t.asks||0)-1;
   t.asked=(t.asks||0)>=CC_ASK_MAX;
-  if(rnd()<careerAskOdds(t.offer, before)/100){ yes(); }
+  if(rnd()<careerAskOdds(t.offer, before, p && p.mult, t.lever)/100){ yes(); }
   else {
-    no();
+    // Встречное: клуб не захлопывает дверь, а предлагает своё — тогда и не уходит.
+    if(no(rnd)===true){ careerSave(); careerRenderHub('social'); return; }
     // The club that was reaching down to sign you can decide it is not worth it.
     if(ccOrgGap(t.offer)<CC_ASK_WALK_UNDER && rnd()<CC_ASK_WALK){
       ccOrgSay(t, 'dmOrgWithdraw', [t.offer.name]);
@@ -136150,9 +136241,10 @@ function ccAskSend(id, kind){
   t.pending={kind:kind, due:ccAddDays(careerToday(), CC_ASK_DAYS)};
   return t;
 }
-function careerAskMore(id){
+function careerAskMore(id, size){
   const t=careerDms().find(x=>x.id===id);
   if(!careerAskOpen(t)) return;
+  const sz=CC_ASK_SIZES[size] || CC_ASK_SIZES.fair;
   /* And a man whose job it is asks for more than you would.
 
      The agent already makes the offer arrive a fifth better — careerAgentTerms'
@@ -136166,14 +136258,48 @@ function careerAskMore(id){
      had one outcome shaped like a decision. Same spread as the offer itself, on
      the same seed, so the second ask of a thread is not a different club. */
   const on=careerAgent();
-  const step=CC_ASK_RAISE*(on ? careerAgentTerms().wage : 1)
+  const step=sz.raise*(on ? careerAgentTerms().wage : 1)
              *ccOrgWageNoise('ask|'+((t.offer && t.offer.name) || t.who && t.who.org || ''));
   const want=Math.round(t.offer.salary*(1+step)/50)*50;
-  careerDmPush(t, 'you', on ? 'dmAskMoreAgent' : 'dmAskMore', [ccNum(want)]);
-  ccAskSend(id, 'more').pending.want=want;
+  const sayKey=on ? 'dmAskMoreAgent' : size==='small' ? 'dmAskSmall' : size==='hard' ? 'dmAskHard' : 'dmAskMore';
+  careerDmPush(t, 'you', sayKey, [ccNum(want)]);
+  const pend=ccAskSend(id, 'more').pending;
+  pend.want=want; pend.mult=sz.odds;
   ccOrgSay(t, 'dmOrgWait', [t.pending.due]);
   careerSave();
   careerRenderHub();
+}
+// Срезать долю клуба с призовых на CC_ASK_CUT.
+function careerAskCut(id){
+  const t=careerDms().find(x=>x.id===id);
+  if(!careerAskOpen(t)) return;
+  const cut=t.offer.cut!=null ? t.offer.cut : careerOrgCutFor(t.offer.tier);
+  if(!(cut>0)) return;
+  const to=Math.max(0, Math.round((cut-CC_ASK_CUT)*100)/100);
+  careerDmPush(t, 'you', 'dmAskCut', [Math.round(to*100)]);
+  const pend=ccAskSend(id, 'cut').pending; pend.to=to; pend.mult=0.9;
+  ccOrgSay(t, 'dmOrgWait', [t.pending.due]);
+  careerSave(); careerRenderHub('social');
+}
+// Бонус за подпись — разовая выплата в день подписания.
+function careerAskBonus(id){
+  const t=careerDms().find(x=>x.id===id);
+  if(!careerAskOpen(t) || t.offer.signBonus) return;
+  const v=Math.max(500, Math.round(t.offer.salary*CC_SIGN_BONUS/50)*50);
+  careerDmPush(t, 'you', 'dmAskBonus', [ccNum(v)]);
+  const pend=ccAskSend(id, 'bonus').pending; pend.v=v; pend.mult=1.1;
+  ccOrgSay(t, 'dmOrgWait', [t.pending.due]);
+  careerSave(); careerRenderHub('social');
+}
+// Козырь: «меня зовут в X». Просьбой не считается, дня не ждёт; один раз на предложение.
+function careerAskLever(id){
+  const t=careerDms().find(x=>x.id===id);
+  if(!t || !t.offer || t.lever) return;
+  const other=ccAskLeverOrg(t); if(!other) return;
+  t.lever=other;
+  careerDmPush(t, 'you', 'dmAskLever', [other]);
+  ccOrgSay(t, 'dmOrgLever', [other]);
+  careerSave(); careerRenderHub('social');
 }
 function careerAskPerk(id){ // same thread, same clock — see careerAskMore
   const t=careerDms().find(x=>x.id===id);
@@ -136197,20 +136323,35 @@ function careerOrgDays(fromISO, toISO){
     if(t.pending && t.pending.due<=toISO){
       const p=t.pending, was=t.offer.salary;
       t.pending=null;
+      const sync=f=>{ const o=(CAREER.offers||[]).find(x=>x.name===t.offer.name); if(o) f(o); f(t.offer); };
       if(p.kind==='more')
         ccAskResolve(t,
-          ()=>{ t.offer.salary=p.want;
-                const o=(CAREER.offers||[]).find(x=>x.name===t.offer.name);
-                if(o) o.salary=p.want;
+          ()=>{ sync(o=>{ o.salary=p.want; });
                 ccOrgSay(t, 'dmOrgYesMore', [ccNum(p.want)]); },
-          ()=>{ ccOrgSay(t, 'dmOrgNoMore', [ccNum(was)]); });
+          rnd=>{
+            // Встречное посередине — не на каждый отказ, и не когда просили чуть-чуть.
+            if(rnd && rnd()<CC_ASK_COUNTER && p.want>was*1.12){
+              const mid=Math.round((was+(p.want-was)/2)/50)*50;
+              sync(o=>{ o.salary=mid; });
+              ccOrgSay(t, 'dmOrgCounter', [ccNum(p.want), ccNum(mid)]);
+              return true;
+            }
+            ccOrgSay(t, 'dmOrgNoMore', [ccNum(was)]); }, p);
+      else if(p.kind==='cut')
+        ccAskResolve(t,
+          ()=>{ sync(o=>{ o.cut=p.to; }); ccOrgSay(t, 'dmOrgYesCut', [Math.round(p.to*100)]); },
+          ()=>{ ccOrgSay(t, 'dmOrgNoCut'); }, p);
+      else if(p.kind==='bonus')
+        ccAskResolve(t,
+          ()=>{ sync(o=>{ o.signBonus=p.v; }); ccOrgSay(t, 'dmOrgYesBonus', [ccNum(p.v)]); },
+          ()=>{ ccOrgSay(t, 'dmOrgNoBonus'); }, p);
       else
         ccAskResolve(t,
           ()=>{ t.offer.perk='gear';
                 const o=(CAREER.offers||[]).find(x=>x.name===t.offer.name);
                 if(o) o.perk='gear';
                 ccOrgSay(t, 'dmOrgYesPerk'); },
-          ()=>{ ccOrgSay(t, 'dmOrgNoPerk'); });
+          ()=>{ ccOrgSay(t, 'dmOrgNoPerk'); }, p);
     }
     // A club does not hold a seat open forever. The thread has carried the date
     // since the offer arrived, so nothing here is a surprise.
@@ -136248,6 +136389,7 @@ function careerSignFromDm(id){
   else careerNews('good', o.academy ? 'ccNewsSignedAcademy' : 'ccNewsSigned',
              [o.name, ccNum(o.salary)], {by:ccOrgBy(o.name)});
   careerEvent(o.academy ? 'tlAcademy' : 'tlSigned', [o.name, ccNum(o.salary)]);
+  if(o.signBonus){ ccPayIn(o.signBonus); careerEvent('tlSignBonus', [o.name, ccNum(o.signBonus)]); }
   if(o.perk==='gear'){ careerOrgKitOut(); careerNews('good', 'ccNewsOrgKit', [o.name]); }
   else if(o.perk==='coach') careerNews('good', 'ccNewsOrgCoach', [o.name]);
   careerSave();
@@ -136575,18 +136717,25 @@ function careerSocialHTML(){
           <span>${open.offer.academy?L().ccAcademy:L().ccMainRoster}</span>
           ${open.offer.duo ? `<span class="ch-perk">${careerSquadSize()===3?L().ccOfferDuoT:L().ccOfferDuo}</span>` : ''}
           ${open.offer.perk ? `<span class="ch-perk">${L()['ccPerk'+open.offer.perk]}</span>` : ''}
+          <span>${L().lfCut}: ${Math.round((open.offer.cut!=null ? open.offer.cut : careerOrgCutFor(open.offer.tier))*100)}%</span>
+          ${open.offer.signBonus ? `<span class="ch-perk">${L().ccSignBonusRow}: ${ccMoney(open.offer.signBonus)}</span>` : ''}
           <span>${careerOrgGoalText(open.offer.goal)}</span>
           ${open.offer.until ? `<span class="dm-until">${L().ccOfferUntil(ccDayLabel(open.offer.until))}</span>` : ''}</div>
         ${open.pending
           ? `<div class="dm-asked">${L().ccAskWaiting(ccDayLabel(open.pending.due))}</div>`
           : (open.asks||0)>=CC_ASK_MAX
           ? `<div class="dm-asked">${L().ccAskedAlready}</div>`
-          : `<div class="dm-ask">
-              <button class="cc-back" onclick="careerAskMore(\'${open.id}\')"
-                title="${esc(L().ccAskOdds(careerAskOdds(open.offer, open.asks||0)))}">${L().ccAskMore}</button>
+          : `<div class="dm-ask dm-ask-neg"><div class="dm-ask-row"><em>${L().ccAskMoneyLbl}</em>
+              ${['small','fair','hard'].map(sz=>`<button class="cc-back" onclick="careerAskMore(\'${open.id}\',\'${sz}\')"
+                title="${esc(L().ccAskOdds(careerAskOdds(open.offer, open.asks||0, CC_ASK_SIZES[sz].odds, open.lever)))}">${L()['ccAsk_'+sz]}</button>`).join('')}</div><div class="dm-ask-row"><em>${L().ccAskTermsLbl}</em>
+              ${(open.offer.cut!=null ? open.offer.cut : careerOrgCutFor(open.offer.tier))>0 ? `<button class="cc-back" onclick="careerAskCut(\'${open.id}\')"
+                title="${esc(L().ccAskOdds(careerAskOdds(open.offer, open.asks||0, 0.9, open.lever)))}">${L().ccAskCut}</button>` : ''}
+              ${open.offer.signBonus ? '' : `<button class="cc-back" onclick="careerAskBonus(\'${open.id}\')"
+                title="${esc(L().ccAskOdds(careerAskOdds(open.offer, open.asks||0, 1.1, open.lever)))}">${L().ccAskBonus}</button>`}
+              ${!open.lever && ccAskLeverOrg(open) ? `<button class="cc-back" onclick="careerAskLever(\'${open.id}\')" title="${esc(L().ccAskLeverWhat)}">${L().ccAskLever}</button>` : ''}
               ${open.offer.perk ? '' : `<button class="cc-back" onclick="careerAskPerk(\'${open.id}\')"
                 title="${esc(L().ccAskOdds(careerAskOdds(open.offer, open.asks||0)))}">${L().ccAskPerk}</button>`}
-            </div>`}
+            </div></div>`}
         <button class="ch-sign" onclick="careerSignFromDm(\'${open.id}\')">${L().ccSign}</button>
       </div>`
       : open.who.hater ? `<div class="dm-foot dm-foot-hate">

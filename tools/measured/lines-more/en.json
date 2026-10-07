@@ -1,156 +1,846 @@
 {
-"dm": {
-"dmMateGood": ["{Top0}. That is our level, keep it there", "{Top0} — rotations were on point tonight. Clean", "{Top0}. More nights like this and we are in grands"],
-"dmMateGood1": ["{Top0}. Nice", "{Top0}. Solid", "{Top0}. Good stuff"],
-"dmMateGood2": ["{Top0} — that is exactly how we want to play. Really clean games tonight", "{Top0}, great work. Every zone felt calm, that was a proper night", "{Top0} — honestly that was beautiful to play. Thank you, let us keep this going"],
-"dmMateGood3": ["{Top0}. Said we would cook them", "{Top0}. Lobby never stood a chance", "{Top0}. What did I tell you"],
-"dmMateGood4": ["{Top0}. Acceptable", "{Top0}. Okay", "{Top0}. As expected"],
-"dmMateBad": ["{Top0} of {a1}. This is not the level we need", "{Top0} of {a1}. Something has to change, fast", "{Top0} of {a1}. We cannot keep ending nights like this"],
-"dmMateBad1": ["{Top0}. Not good", "{Top0}. Rough", "{Top0}. Poor"],
-"dmMateBad2": ["{Top0} of {a1}. Let us sit down with the vods, we cannot keep playing like this", "{Top0} of {a1}. Not blaming anyone, but we need a proper review before next week", "{Top0} of {a1}. We should talk it through calmly, this is not where we want to be"],
-"dmMateBad3": ["{Top0} of {a1}. I am doing my part, where were you", "{Top0} of {a1}. I am not solo carrying the duo every night", "{Top0} of {a1}. Wake up, I cannot do this alone"],
-"dmMateBad4": ["{Top0}/{a1}. Noted", "{Top0}/{a1}. Nothing to add", "{Top0}/{a1}. Moving on"],
-"dmMateLeaving": ["Hey. Got an offer from another player and I am leaning towards it", "Listen. Somebody wants to duo with me and I am seriously thinking about it", "So. Another player reached out about duoing and I am considering it"],
-"dmMateLeaving1": ["Got an offer. Thinking", "Someone asked me to duo. Considering", "Offer from another player. Thinking it over"],
-"dmMateLeaving2": ["Hey, I want to be honest with you. Somebody offered to duo with me and I am thinking it over", "Listen, I would rather you hear it from me. I got an offer from another player and I am considering it", "Look, I do not want to hide anything. Another player asked me to duo and I am honestly thinking about it"],
-"dmMateLeaving3": ["Got another duo knocking. Convince me", "Someone else wants me. Why should I stay", "Other players are asking for me. Your move"],
-"dmMateLeaving4": ["Received an offer from another player. Evaluating", "Another duo offer came in. Thinking it over", "There is an outside offer. Reviewing it"],
-"dmKeepStay": ["Okay. I am staying, let us run it", "Fine, you got me. We keep going", "Alright, I am in. Back to work"],
-"dmKeepGo": ["Sorry, my mind is made up. GG on everything", "No, I am going. Thanks for the run", "I have made my choice. Thanks for everything, gl"],
-"dmKeepMaybe": ["Hm... not sure yet. What else you got", "I mean... still not convinced. Try again", "Maybe. Give me one more reason"],
-"dmMateTalknight": ["Yeah, I went through the vods. We had mid game, then threw it in endgame. We fix it", "Saw the replays. Early zones were fine, we lost it on the late rotates. Fixable", "Watched it back. We were up through mid zones and then gave it all away. We work on it"],
-"dmMateTalkspot": ["Good spot. Loot is consistent and nobody contests us anymore — we keep it", "I am happy there. Steady mats, neighbours backed off — we stay", "Spot is fine. Loot holds up and the contest is gone — not moving"],
-"dmMateTalkrole": ["Works for me. You do the calls, I go in first. That is our game", "Good. You IGL the rotates, I take the first fight. Simple", "Fine by me. You call, I entry. That is how we run it"],
-"dmMateTalklife": ["All good. Bit tired, but I am locked in. Tonight we go", "Okay. Did not sleep much, but I feel good. Let us play", "Fine. Long day, but the mood is there. See you tonight"],
-"dmMatePoachStay": ["Got a message after {top0}. Turned it down, we keep going", "Someone tried to poach me after {top0}. I said no, we are fine", "After {top0} somebody hit me up. Not interested, we run it back"],
-"dmMatePoachGo": ["Got a message after {top0}. I am taking it, thanks for everything", "Someone reached out after {top0}. I said yes. GG on the run", "After {top0} I got an offer and I am going. Thanks for the games"],
-"dmNoDuo": ["Appreciate it, but I am staying with {a0} — we run it back.", "Thanks, but I already have {a0} and we are keeping it.", "Thanks for asking, but {a0} and I are sticking together this season."],
-"dmNoDuo1": ["Got {a0}. No", "No. I have {a0}", "Playing with {a0}. Pass"],
-"dmNoDuo2": ["Thank you for asking, but {a0} and I are staying together. Good luck this season", "Really appreciate it, but I am running it back with {a0}. Hope you find someone great", "Thanks a lot, but I already have {a0} and we want to keep going. Good luck"],
-"dmNoDuo3": ["I have {a0}. We do not need changes", "Already got {a0}. We are good, thanks", "{a0} is my duo. Not looking for an upgrade"],
-"dmNoDuo4": ["Taken by {a0}", "I play with {a0}. No", "{a0}. Taken"],
-"dmNo": ["Thanks, but I am {a0} and in a higher division. Not right now.", "Appreciate it, but I am {a0} and playing a division up. Maybe later.", "Thanks, but at {a0} I am a division ahead of you. Not right now."],
-"dmNo1": ["No, I am {a0}. Pass", "I am {a0}. Not for me", "Nah. {a0}. No"],
-"dmNo2": ["Thank you for the message, but I am {a0} and a division above. Not right now", "Really appreciate you asking, but I am {a0} and playing a division higher. Maybe another time", "Thanks for reaching out, but at {a0} I am a division ahead. Not right now, sorry"],
-"dmNo3": ["{a0} OVR here. Get closer and then ask", "I am {a0}. Climb a bit first", "{a0} OVR. Come back when you are near that"],
-"dmNo4": ["{a0} versus yours. Too big a gap", "{a0} against yours. Does not match", "Me {a0}, you lower. No"],
-"dmNoPartner": ["Saw you have no duo. I am {a0} and free — want to play?", "Heard you are solo right now. I am {a0}, no duo either. Run it?", "You are without a duo, right? I am {a0} and free. Want to try?"],
-"dmNoPartner1": ["{a0}. Free", "Free agent. {a0} OVR", "No duo. {a0}"],
-"dmNoPartner2": ["Heard you are looking for a duo. I am {a0} and free as well, would you like to give it a try?", "Saw you are on your own right now. I am {a0} and also free, want to try a few games together?", "Hey, heard you have no duo. I am {a0} and available too, would love to try it"],
-"dmNoPartner3": ["{a0} OVR and free. Your lucky day", "I am {a0}. You will not get a better offer today", "I am {a0} and somehow still free. Grab me"],
-"dmNoPartner4": ["No duo? Me neither. {a0}", "Same situation. {a0} OVR, free", "Both without duos. {a0}"],
-"dmLeftNo": ["Not yet. Ask again in {a0} days", "Way too early. Try in {a0} days", "Too fresh. Message me in {a0} days"],
-"dmLeftNo1": ["Already tried. No", "We had our run. No", "Done that. No"],
-"dmLeftNo2": ["Honestly it did not end well and I have only just found my feet. Ask me in {a0} days if you still want", "Look, I need some time after how that ended. Write me in {a0} days if you are still keen", "I am just settling in after the split. Give it {a0} days and ask again if you still mean it"],
-"dmLeftNo3": ["Already? I just left. Chill", "You serious? I am barely gone", "Bro I just left. Give me a minute"],
-"dmLeftNo4": ["No.", "Not interested", "Negative"],
-"dmPoach": ["Saw your {top1}. I am {a0} OVR and free — message me if you ever switch it up.", "That {top1} was nice. I am {a0} and available — hit me up if things change.", "Caught your {top1}. I am {a0} OVR, no duo — keep me in mind."],
-"dmPoach1": ["{Top1}, saw it. {a0}, free", "Saw {top1}. {a0}, available", "Nice {top1}. {a0}, free"],
-"dmPoach2": ["Saw your {top1}, really clean games. I am {a0} and free if you ever want to try something new", "Watched your {top1}, you played great. I am {a0} and available whenever you want a change", "Caught your {top1}, very solid. I am {a0} and free, just in case you ever look for someone"],
-"dmPoach3": ["{Top1} with that duo? Imagine with me. {a0}", "{Top1} with that partner. I am {a0}. Do the math", "You got {top1} carrying that guy. I am {a0}. Think about it"],
-"dmPoach4": ["{Top1}. {a0} OVR. Free", "Saw {top1}. {a0}. Available", "{Top1} noted. {a0}, free"],
-"dmReachUp": ["Saw your {top1}. I am {a0} OVR — I usually do not message first, but you are playing above your rating. Want to duo?", "Watched your {top1}. At {a0} I do not often reach out, but you look better than your number. Run it with me?", "Your {top1} got my attention. I am {a0} OVR and you are clearly underrated. Want to play together?"],
-"dmReachUp1": ["{Top1}, nice. {a0}. Duo?", "Saw {top1}. I am {a0}. Play?", "{Top1} was solid. {a0}. Run it?"],
-"dmReachUp2": ["Watched your {top1} — I rarely message first, but you are clearly better than your rating. I am {a0}, would you like to duo?", "Saw your {top1}, really impressive. I do not usually reach out, but I am {a0} and would love to try it with you", "Your {top1} was great — you are playing above your rating. I am {a0}, want to give it a go together?"],
-"dmReachUp3": ["{a0} OVR messaging you first. Do not waste it. {Top1} was good", "I am {a0} and I am the one reaching out. Take the hint. {Top1} was solid", "{a0} OVR in your DMs. That does not happen often. Nice {top1}"],
-"dmReachUp4": ["{Top1}. {a0}. Want to duo", "Saw {top1}. I am {a0}. Interested", "{Top1}. {a0} OVR. Open to it"],
-"dmPromoted": ["GG on Division {a0}. I am {a1} and need a duo this season.", "Congrats on making Division {a0}. I am {a1}, looking for a partner.", "Division {a0}, nice. I am {a1} and still without a duo this season."],
-"dmPromoted1": ["GG on D{a0}. {a1}, looking", "D{a0}, congrats. {a1}, free", "Nice, D{a0}. {a1}, need a duo"],
-"dmPromoted2": ["Huge congrats on Division {a0}, you deserved it. I am {a1} and looking for a duo this season", "Congrats on getting to Division {a0}, really well played. I am {a1} and need a partner this season", "Well done on Division {a0}, earned it fully. I am {a1} and searching for a duo, if you are open"],
-"dmPromoted3": ["Division {a0} finally. I am {a1} and I need someone who can keep up", "Took you long enough to hit Division {a0}. I am {a1}, let us see what you have", "Division {a0}, welcome. I am {a1} and I need a duo who belongs up here"],
-"dmPromoted4": ["D{a0}. {a1}, free this season", "D{a0}. I am {a1}, looking for a duo", "D{a0} noted. {a1}, available"],
-"dmProps": ["{Top0} of {a1}. W", "{Top0} of {a1}. massive", "{Top0} of {a1}. cooked the lobby"],
-"dmProps1": ["W", "gg", "clean"],
-"dmProps2": ["{Top0} of {a1}. goats", "{Top0} of {a1}. insane 🐐", "{Top0} of {a1}. no one close"],
-"dmProps3": ["fully deserved", "you earned that one", "100% earned"],
-"dmProps4": ["you two are peaking rn", "best form of your careers", "you two are unreal right now"],
-"dmLfd": ["Saw your post. I am {a0} and free — want to give it a go?", "Saw you are looking. I am {a0} with a free spot — try it?", "Your post caught my eye. I am {a0} and available — run it?"],
-"dmSeatSour": ["Things with {a1} are not working this season and I want out. I am {a0} — if you have a spot, I am in", "The season with {a1} is a mess and I am looking around. I am {a0} — open seat? Count me in", "It is not going well with {a1} and I want a change. I am {a0} — if your spot is free, I am ready"],
-"dmThanksBack": ["Always, go win it", "Of course, good luck out there", "No problem, go cook them"],
-"dmThanksBack1": ["Np", "All good", "Sure"],
-"dmThanksBack2": ["Wow, you actually answered. Thanks so much, I will keep supporting", "No way you replied. Thank you, I will be watching every game", "Did not expect a reply at all. Thanks, rooting for you"],
-"dmThanksBack3": ["Of course I watch. Win the next one too", "Obviously. Now go take the next lobby", "I always watch. Do not let me down next time"],
-"dmThanksBack4": ["Okay. Good luck", "Received. Gl", "Fine. Good luck"],
-"dmQBack1": ["Thanks, understood", "Got it, thanks", "Okay, thank you"],
-"dmQBack2": ["Thanks a lot for replying. Really did not think you would", "Wow, thank you for taking the time. Did not expect an answer", "Thank you so much, means a lot that you replied"],
-"dmQBack3": ["Got it. See you in lobby next year", "Noted. Be ready, I am coming for your spot", "Understood. We meet in a lobby soon"],
-"dmQBack4": ["Okay. Thanks", "Understood. Thanks", "Fine. Thank you"],
-"dmClapbackBack": ["LMAO", "lol ok", "LOL fair"],
-"dmClapbackBack1": ["lol", "LMAO", "ok lol"],
-"dmClapbackBack2": ["Oh, he answers too. Okay, good luck then", "Did not expect a reply. Fine, gl", "Wow, he actually responds. Alright, good luck"],
-"dmClapbackBack3": ["You really reply to haters? Tells me everything", "Imagine having time to answer haters. Says enough", "Answering haters mid season? Okay pro"],
-"dmClapbackBack4": ["Okay", "Fine", "Right"],
-"dmHateTurn1": ["Okay, respect", "Fair, gg", "Alright, you got me"],
-"dmHateTurn2": ["I sent you something rude before. I was wrong, you were the best in that lobby tonight", "I owe you an apology for what I wrote back then. You were the best player tonight", "Back then I was out of line. Tonight you showed it, you were the best out there"],
-"dmHateTurn3": ["Fine. Clearly my hate made you better, you are welcome", "Okay okay. Guess my hating fueled you, look at you", "Alright. My hate was the best coaching you ever got"],
-"dmHateTurn4": ["I was wrong. Noted", "Wrong call on my part. Admitted", "I was wrong. That is it"],
-"dmRoleNo": ["Nah, {a0} is not my thing. I do not play like that", "No, I am not a {a0}. Not my style", "Sorry, {a0} is not for me. I play differently"],
-"dmRoleYes": ["Okay, I can do {a0}. Let us see", "Fine, I will play {a0}. Let us try", "Sure, {a0} works. Let us give it a shot"],
-"dmJoinYes": ["Talked it through with {a0} — you are in, welcome as our third.", "Spoke with {a0} — we want you. You are our third.", "Checked with {a0} — it is a yes, you are the third."],
-"dmJoinNo": ["Talked with {a0} — not right now, we will find a third ourselves.", "Spoke to {a0} — it is a no for now, we will sort out the third.", "Checked with {a0} — we pass for now, we will look on our own."],
-"dmMovedWith": ["Bags packed. Thanks for bringing me to {a0}", "All packed. Appreciate you taking me to {a0}", "Ready to go. Thanks for {a0}"],
-"dmAgentYes": ["Good. From now on all club talks go through me.", "Done. From today the clubs speak to me.", "Good. I handle the clubs from now on."],
-"dmAgentBrought": ["{a0} clubs reached out for you: {a1}. Terms are on the Career tab — have a look", "We have interest from {a0} clubs: {a1}. Details are on the Career tab", "{a0} clubs want you: {a1}. Check the terms on the Career tab"],
-"dmPitchOk": ["Understood. I will contact everyone in your range and a little higher. Two weeks", "Got it. I will reach out to every club you can get, plus a few above. Give me two weeks", "Okay. I will work through the clubs in reach and some above. Two weeks"],
-"dmPitchOkClub": ["Okay, I will go meet {a0}. Will report back", "Got it, I am meeting {a0}. I will let you know", "Fine, I am going to talk to {a0}. Report soon"],
-"dmPitchYes": ["{a0} are interested — expect an offer this window", "{a0} want to take a look — an offer should come this window", "{a0} are open to it — their offer should land this window"],
-"dmPitchNo": ["{a0} say the roster is set. We try someone else", "{a0} have a full roster. On to the next one", "{a0} have no room. We move on"],
-"dmPitchTalked": ["Talks with {a0} are done.", "I have spoken to {a0}.", "Done talking with {a0}."],
-"dmOrgYesMoreAgent": ["Done. ${a0} a season, you can sign it.", "They agreed. ${a0} a season, ready to sign.", "Got it. ${a0} a season, sign when ready."],
-"dmOrgNoMoreAgent": ["That is as far as they go. ${a0} is their number — your call.", "They will not move past ${a0}. Up to you whether it is enough.", "Their ceiling is ${a0}. Decide if it is worth it."],
-"dmOrgYesPerkAgent": ["They cover the setup. I would sign it.", "Setup is on them. My advice is sign.", "They take care of the setup. I would take it."],
-"dmOrgNoPerkAgent": ["No on the setup. Money stays, rest unchanged.", "They will not cover gear. Wage and terms the same.", "Gear is a no. Everything else stays."],
-"dmOrgWaitAgent": ["Sent it over. Answer by {date0}.", "Passed along. They reply by {date0}.", "Done. Expect their answer by {date0}."],
-"dmOrgExpiredAgent": ["{a0} filled the seat. Still searching.", "{a0} closed it. I keep looking.", "{a0} moved on. Still on it."],
-"dmOrgWelcomeAgent": ["Signed with {a0}. Congrats — now we work.", "Done, you are with {a0}. Congratulations — time to deliver.", "{a0} it is. Congrats — the real work starts now."],
-"dmOrgWithdrawAgent": ["{a0} withdrew the offer.", "{a0} took the offer back.", "{a0} pulled out."],
-"dmOrgPromotedAgent": ["{a0} are promoting you to the main roster, {a1} a month. I signed off on it.", "Main roster at {a0}, {a1} a month. I agreed it.", "{a0} want you on the main team, {a1} a month. Done on my end."],
-"dmOrgRaiseAgent": ["Renegotiated with {a0}. You are on {a1} a month now.", "I reopened the contract with {a0}. Now {a1} a month.", "New terms with {a0}: {a1} a month."],
-"dmOrgYesMore": ["Fine — ${a0} a season. See you at bootcamp", "Deal, ${a0} a season. See you at the bootcamp", "Okay — ${a0} a season. Welcome, see you at bootcamp"],
-"dmOrgNoMore": ["That is over our budget. ${a0} is the max", "We cannot go higher. ${a0} is the limit", "Too much for us. ${a0} is our ceiling"],
-"dmOrgYesPerk": ["Done, we cover the setup", "Agreed, setup is on us", "No problem, we handle the setup"],
-"dmOrgNoPerk": ["We can only pay the wage, not the gear", "Gear is not in the budget, just the wage", "Sorry, wage only, no gear"],
-"dmOrgWithdraw": ["{a0}: then we will look elsewhere. Good luck", "{a0}: understood, we go another way. Good luck", "{a0}: fine, we move on. All the best"],
-"dmOrgPromoted": ["{a0}: you are joining the main roster. ${a1} a month.", "{a0}: main roster call-up. ${a1} a month.", "{a0}: we are promoting you to the main team. ${a1} a month."],
-"dmOrgRaise": ["{a0}: we are reworking your contract. ${a1} a month.", "{a0}: new deal for you. ${a1} a month.", "{a0}: we are raising your pay. ${a1} a month."],
-"dmOrgMain": ["{a0}: we want you on the main team. ${a1} a month.", "{a0}: main roster spot for you. ${a1} a month.", "{a0}: we see you on the main roster. ${a1} a month."],
-"dmAgentOrgMain": ["Talked to {a0}. Main roster, ${a1} a month. Your thoughts?", "{a0} came back. Main team, ${a1} a month. What do you say?", "Had a call with {a0}. Main roster at ${a1} a month. Thoughts?"],
-"dmOrgAcademy": ["{a0}: join our academy. ${a1} a month, main roster if you earn it.", "{a0}: academy spot for you. ${a1} a month, and you can move up.", "{a0}: start in the academy. ${a1} a month, main roster is open if you perform."],
-"dmAgentOrgAcademy": ["Talked to {a0}. Academy for now, ${a1} a month, main roster is possible.", "{a0} offer the academy. ${a1} a month, path to the main roster.", "Spoke with {a0}. Academy first, ${a1} a month, main team open later."],
-"dmOrgWelcome": ["Welcome to {a0}!", "Welcome aboard, {a0}.", "{a0} welcomes you."],
-"dmOrgWait": ["We will discuss it internally and get back to you by {date0}.", "Taking it to management. Answer by {date0}.", "We need to talk it over. You will hear from us by {date0}."],
-"dmOrgExpired": ["{a0}: we could not hold the spot, the offer is closed.", "{a0}: the seat is gone, offer withdrawn.", "{a0}: we had to move on, the offer is off."]
-},
-"co": {
-"ccCoWin": ["gg wp", "clean games", "earned it", "that was a clinic", "huge run", "big W"],
-"ccCoPod": ["good stuff", "close one", "nice games", "decent night", "almost had it", "respectable"],
-"ccCoMid": ["it is what it is", "fine night", "next one", "ok run", "could be worse", "mid but fine"],
-"ccCoNews": ["big W", "lets go", "huge", "👀👀", "earned", "gg"],
-"ccCoBad": ["rough one", "bad lobby", "unlucky night", "bounce back", "long season", "shake it off"],
-"ccCoPro": ["you are cracked", "saw your games today", "dm me if you need a duo", "future pro", "nice gameplay", "keep grinding, you got it"],
-"ccCoProt": ["you are cracked", "saw your games today", "dm me if you need a trio", "future pro", "nice gameplay", "keep grinding, you got it"],
-"ccCoLfd": ["V fr", "someone grab him", "id duo with him", "V 🐐🐐", "gone by tomorrow", "free W for someone"],
-"ccCoBday": ["hbd goat 🐐", "happy bday! 🎂", "hbd king", "hbd 🎉", "hbd, have a big year", "🎂🐐"],
-"ccCoHype": ["LFG", "about time", "when?", "no wayyy", "servers gonna die", "prize pool?"],
-"ccCoDuo": ["cracked duo", "lobby is done", "big W", "dangerous", "gl 🤝", "winning it all"],
-"ccCoSign": ["earned", "huge signing", "welcome in", "congrats 🥳", "finally", "W org"],
-"ccCoLeft": ["gl on the next one", "thanks for the memories", "sad to see", "bigger things ahead", "🫡", "where next?"],
-"ccCoTable": ["so close at the top", "the usual names", "still a lot to play", "top 3 locked", "first takes it", "last week decides it"],
-"ccCoStream": ["link pls", "on my way", "W streamer", "joining", "in chat", "vod?"],
-"ccCoDrop": ["we land there too 😭", "pls no", "hot drop", "gl with that", "bold", "too many teams there"],
-"ccCoCust": ["can i play", "my PR is too low 😭", "dm sent", "im in", "duos too?", "harsh cutoff"],
-"ccCoBye": ["goat", "thanks for everything", "🫡🫡", "end of an era", "big respect", "legend forever"],
-"ccCoBan": ["awful", "no way", "saw it coming", "sad to see", "embarrassing fr", "clips don’t lie"],
-"ccCoMateUp": ["🐐🐐", "so proud", "best IGL 🐐", "run it back", "forever", "🔥🔥"],
-"ccCoMateDown": ["we bounce back", "on me too", "vod and move on", "next week", "heads up", "not over"],
-"ccCoOrg": ["thats our guy 💙", "big W", "so proud 👏", "thats how its done", "only the start", "💙🔥"],
-"ccCoTy": ["thanks ❤️", "🙏🙏", "thx", "thank you all", "❤️❤️", "appreciate you all"],
-"ccCoHate": ["free lobby", "got carried", "pure luck", "his duo did everything", "lucky rng", "L next time"],
-"ccCoHateBad": ["so washed", "fell off hard", "again lol", "bench him", "who even is this", "massive L"],
-"ccCoTroll": ["called it", "see you next week", "you know where", "this guy again", "lobby reunion", "every time"],
-"ccCoProWin": ["big W", "ggs", "earned 🐐", "so clean", "free lobby 😭", "cracked"],
-"ccCoProBad": ["unlucky man", "next time", "it happens", "you’ll bounce back", "heads up", "bad night, it happens"],
-"ccCoProLfd": ["V fr", "V 🐐🐐", "grab him, trust", "V, duo’d with him", "cracked player", "W pickup"],
-"ccCoSad": ["please don’t split 😭", "best duo out there", "this hurts", "F 💔", "era over", "noooo…"]
-}
+ "dm": {
+  "dmMateGood": [
+   "{Top0}. That is our level, keep it there",
+   "{Top0} — rotations were on point tonight. Clean",
+   "{Top0}. More nights like this and we are in grands"
+  ],
+  "dmMateGood1": [
+   "{Top0}. Nice",
+   "{Top0}. Solid",
+   "{Top0}. Good stuff"
+  ],
+  "dmMateGood2": [
+   "{Top0} — that is exactly how we want to play. Really clean games tonight",
+   "{Top0}, great work. Every zone felt calm, that was a proper night",
+   "{Top0} — honestly that was beautiful to play. Thank you, let us keep this going"
+  ],
+  "dmMateGood3": [
+   "{Top0}. Said we would cook them",
+   "{Top0}. Lobby never stood a chance",
+   "{Top0}. What did I tell you"
+  ],
+  "dmMateGood4": [
+   "{Top0}. Acceptable",
+   "{Top0}. Okay",
+   "{Top0}. As expected"
+  ],
+  "dmMateBad": [
+   "{Top0} of {a1}. This is not the level we need",
+   "{Top0} of {a1}. Something has to change, fast",
+   "{Top0} of {a1}. We cannot keep ending nights like this"
+  ],
+  "dmMateBad1": [
+   "{Top0}. Not good",
+   "{Top0}. Rough",
+   "{Top0}. Poor"
+  ],
+  "dmMateBad2": [
+   "{Top0} of {a1}. Let us sit down with the vods, we cannot keep playing like this",
+   "{Top0} of {a1}. Not blaming anyone, but we need a proper review before next week",
+   "{Top0} of {a1}. We should talk it through calmly, this is not where we want to be"
+  ],
+  "dmMateBad3": [
+   "{Top0} of {a1}. I am doing my part, where were you",
+   "{Top0} of {a1}. I am not solo carrying the duo every night",
+   "{Top0} of {a1}. Wake up, I cannot do this alone"
+  ],
+  "dmMateBad4": [
+   "{Top0}/{a1}. Noted",
+   "{Top0}/{a1}. Nothing to add",
+   "{Top0}/{a1}. Moving on"
+  ],
+  "dmMateLeaving": [
+   "Hey. Got an offer from another player and I am leaning towards it",
+   "Listen. Somebody wants to duo with me and I am seriously thinking about it",
+   "So. Another player reached out about duoing and I am considering it"
+  ],
+  "dmMateLeaving1": [
+   "Got an offer. Thinking",
+   "Someone asked me to duo. Considering",
+   "Offer from another player. Thinking it over"
+  ],
+  "dmMateLeaving2": [
+   "Hey, I want to be honest with you. Somebody offered to duo with me and I am thinking it over",
+   "Listen, I would rather you hear it from me. I got an offer from another player and I am considering it",
+   "Look, I do not want to hide anything. Another player asked me to duo and I am honestly thinking about it"
+  ],
+  "dmMateLeaving3": [
+   "Got another duo knocking. Convince me",
+   "Someone else wants me. Why should I stay",
+   "Other players are asking for me. Your move"
+  ],
+  "dmMateLeaving4": [
+   "Received an offer from another player. Evaluating",
+   "Another duo offer came in. Thinking it over",
+   "There is an outside offer. Reviewing it"
+  ],
+  "dmKeepStay": [
+   "Okay. I am staying, let us run it",
+   "Fine, you got me. We keep going",
+   "Alright, I am in. Back to work"
+  ],
+  "dmKeepGo": [
+   "Sorry, my mind is made up. GG on everything",
+   "No, I am going. Thanks for the run",
+   "I have made my choice. Thanks for everything, gl"
+  ],
+  "dmKeepMaybe": [
+   "Hm... not sure yet. What else you got",
+   "I mean... still not convinced. Try again",
+   "Maybe. Give me one more reason"
+  ],
+  "dmMateTalknight": [
+   "Yeah, I went through the vods. We had mid game, then threw it in endgame. We fix it",
+   "Saw the replays. Early zones were fine, we lost it on the late rotates. Fixable",
+   "Watched it back. We were up through mid zones and then gave it all away. We work on it"
+  ],
+  "dmMateTalkspot": [
+   "Good spot. Loot is consistent and nobody contests us anymore — we keep it",
+   "I am happy there. Steady mats, neighbours backed off — we stay",
+   "Spot is fine. Loot holds up and the contest is gone — not moving"
+  ],
+  "dmMateTalkrole": [
+   "Works for me. You do the calls, I go in first. That is our game",
+   "Good. You IGL the rotates, I take the first fight. Simple",
+   "Fine by me. You call, I entry. That is how we run it"
+  ],
+  "dmMateTalklife": [
+   "All good. Bit tired, but I am locked in. Tonight we go",
+   "Okay. Did not sleep much, but I feel good. Let us play",
+   "Fine. Long day, but the mood is there. See you tonight"
+  ],
+  "dmMatePoachStay": [
+   "Got a message after {top0}. Turned it down, we keep going",
+   "Someone tried to poach me after {top0}. I said no, we are fine",
+   "After {top0} somebody hit me up. Not interested, we run it back"
+  ],
+  "dmMatePoachGo": [
+   "Got a message after {top0}. I am taking it, thanks for everything",
+   "Someone reached out after {top0}. I said yes. GG on the run",
+   "After {top0} I got an offer and I am going. Thanks for the games"
+  ],
+  "dmNoDuo": [
+   "Appreciate it, but I am staying with {a0} — we run it back.",
+   "Thanks, but I already have {a0} and we are keeping it.",
+   "Thanks for asking, but {a0} and I are sticking together this season."
+  ],
+  "dmNoDuo1": [
+   "Got {a0}. No",
+   "No. I have {a0}",
+   "Playing with {a0}. Pass"
+  ],
+  "dmNoDuo2": [
+   "Thank you for asking, but {a0} and I are staying together. Good luck this season",
+   "Really appreciate it, but I am running it back with {a0}. Hope you find someone great",
+   "Thanks a lot, but I already have {a0} and we want to keep going. Good luck"
+  ],
+  "dmNoDuo3": [
+   "I have {a0}. We do not need changes",
+   "Already got {a0}. We are good, thanks",
+   "{a0} is my duo. Not looking for an upgrade"
+  ],
+  "dmNoDuo4": [
+   "Taken by {a0}",
+   "I play with {a0}. No",
+   "{a0}. Taken"
+  ],
+  "dmNo": [
+   "Thanks, but I am {a0} and in a higher division. Not right now.",
+   "Appreciate it, but I am {a0} and playing a division up. Maybe later.",
+   "Thanks, but at {a0} I am a division ahead of you. Not right now."
+  ],
+  "dmNo1": [
+   "No, I am {a0}. Pass",
+   "I am {a0}. Not for me",
+   "Nah. {a0}. No"
+  ],
+  "dmNo2": [
+   "Thank you for the message, but I am {a0} and a division above. Not right now",
+   "Really appreciate you asking, but I am {a0} and playing a division higher. Maybe another time",
+   "Thanks for reaching out, but at {a0} I am a division ahead. Not right now, sorry"
+  ],
+  "dmNo3": [
+   "{a0} OVR here. Get closer and then ask",
+   "I am {a0}. Climb a bit first",
+   "{a0} OVR. Come back when you are near that"
+  ],
+  "dmNo4": [
+   "{a0} versus yours. Too big a gap",
+   "{a0} against yours. Does not match",
+   "Me {a0}, you lower. No"
+  ],
+  "dmNoPartner": [
+   "Saw you have no duo. I am {a0} and free — want to play?",
+   "Heard you are solo right now. I am {a0}, no duo either. Run it?",
+   "You are without a duo, right? I am {a0} and free. Want to try?"
+  ],
+  "dmNoPartner1": [
+   "{a0}. Free",
+   "Free agent. {a0} OVR",
+   "No duo. {a0}"
+  ],
+  "dmNoPartner2": [
+   "Heard you are looking for a duo. I am {a0} and free as well, would you like to give it a try?",
+   "Saw you are on your own right now. I am {a0} and also free, want to try a few games together?",
+   "Hey, heard you have no duo. I am {a0} and available too, would love to try it"
+  ],
+  "dmNoPartner3": [
+   "{a0} OVR and free. Your lucky day",
+   "I am {a0}. You will not get a better offer today",
+   "I am {a0} and somehow still free. Grab me"
+  ],
+  "dmNoPartner4": [
+   "No duo? Me neither. {a0}",
+   "Same situation. {a0} OVR, free",
+   "Both without duos. {a0}"
+  ],
+  "dmLeftNo": [
+   "Not yet. Ask again in {a0} days",
+   "Way too early. Try in {a0} days",
+   "Too fresh. Message me in {a0} days"
+  ],
+  "dmLeftNo1": [
+   "Already tried. No",
+   "We had our run. No",
+   "Done that. No"
+  ],
+  "dmLeftNo2": [
+   "Honestly it did not end well and I have only just found my feet. Ask me in {a0} days if you still want",
+   "Look, I need some time after how that ended. Write me in {a0} days if you are still keen",
+   "I am just settling in after the split. Give it {a0} days and ask again if you still mean it"
+  ],
+  "dmLeftNo3": [
+   "Already? I just left. Chill",
+   "You serious? I am barely gone",
+   "Bro I just left. Give me a minute"
+  ],
+  "dmLeftNo4": [
+   "No.",
+   "Not interested",
+   "Negative"
+  ],
+  "dmPoach": [
+   "Saw your {top1}. I am {a0} OVR and free — message me if you ever switch it up.",
+   "That {top1} was nice. I am {a0} and available — hit me up if things change.",
+   "Caught your {top1}. I am {a0} OVR, no duo — keep me in mind."
+  ],
+  "dmPoach1": [
+   "{Top1}, saw it. {a0}, free",
+   "Saw {top1}. {a0}, available",
+   "Nice {top1}. {a0}, free"
+  ],
+  "dmPoach2": [
+   "Saw your {top1}, really clean games. I am {a0} and free if you ever want to try something new",
+   "Watched your {top1}, you played great. I am {a0} and available whenever you want a change",
+   "Caught your {top1}, very solid. I am {a0} and free, just in case you ever look for someone"
+  ],
+  "dmPoach3": [
+   "{Top1} with that duo? Imagine with me. {a0}",
+   "{Top1} with that partner. I am {a0}. Do the math",
+   "You got {top1} carrying that guy. I am {a0}. Think about it"
+  ],
+  "dmPoach4": [
+   "{Top1}. {a0} OVR. Free",
+   "Saw {top1}. {a0}. Available",
+   "{Top1} noted. {a0}, free"
+  ],
+  "dmReachUp": [
+   "Saw your {top1}. I am {a0} OVR — I usually do not message first, but you are playing above your rating. Want to duo?",
+   "Watched your {top1}. At {a0} I do not often reach out, but you look better than your number. Run it with me?",
+   "Your {top1} got my attention. I am {a0} OVR and you are clearly underrated. Want to play together?"
+  ],
+  "dmReachUp1": [
+   "{Top1}, nice. {a0}. Duo?",
+   "Saw {top1}. I am {a0}. Play?",
+   "{Top1} was solid. {a0}. Run it?"
+  ],
+  "dmReachUp2": [
+   "Watched your {top1} — I rarely message first, but you are clearly better than your rating. I am {a0}, would you like to duo?",
+   "Saw your {top1}, really impressive. I do not usually reach out, but I am {a0} and would love to try it with you",
+   "Your {top1} was great — you are playing above your rating. I am {a0}, want to give it a go together?"
+  ],
+  "dmReachUp3": [
+   "{a0} OVR messaging you first. Do not waste it. {Top1} was good",
+   "I am {a0} and I am the one reaching out. Take the hint. {Top1} was solid",
+   "{a0} OVR in your DMs. That does not happen often. Nice {top1}"
+  ],
+  "dmReachUp4": [
+   "{Top1}. {a0}. Want to duo",
+   "Saw {top1}. I am {a0}. Interested",
+   "{Top1}. {a0} OVR. Open to it"
+  ],
+  "dmPromoted": [
+   "GG on Division {a0}. I am {a1} and need a duo this season.",
+   "Congrats on making Division {a0}. I am {a1}, looking for a partner.",
+   "Division {a0}, nice. I am {a1} and still without a duo this season."
+  ],
+  "dmPromoted1": [
+   "GG on D{a0}. {a1}, looking",
+   "D{a0}, congrats. {a1}, free",
+   "Nice, D{a0}. {a1}, need a duo"
+  ],
+  "dmPromoted2": [
+   "Huge congrats on Division {a0}, you deserved it. I am {a1} and looking for a duo this season",
+   "Congrats on getting to Division {a0}, really well played. I am {a1} and need a partner this season",
+   "Well done on Division {a0}, earned it fully. I am {a1} and searching for a duo, if you are open"
+  ],
+  "dmPromoted3": [
+   "Division {a0} finally. I am {a1} and I need someone who can keep up",
+   "Took you long enough to hit Division {a0}. I am {a1}, let us see what you have",
+   "Division {a0}, welcome. I am {a1} and I need a duo who belongs up here"
+  ],
+  "dmPromoted4": [
+   "D{a0}. {a1}, free this season",
+   "D{a0}. I am {a1}, looking for a duo",
+   "D{a0} noted. {a1}, available"
+  ],
+  "dmProps": [
+   "{Top0} of {a1}. W",
+   "{Top0} of {a1}. massive",
+   "{Top0} of {a1}. cooked the lobby"
+  ],
+  "dmProps1": [
+   "W",
+   "gg",
+   "clean"
+  ],
+  "dmProps2": [
+   "{Top0} of {a1}. goats",
+   "{Top0} of {a1}. insane 🐐",
+   "{Top0} of {a1}. no one close"
+  ],
+  "dmProps3": [
+   "fully deserved",
+   "you earned that one",
+   "100% earned"
+  ],
+  "dmProps4": [
+   "you two are peaking rn",
+   "best form of your careers",
+   "you two are unreal right now"
+  ],
+  "dmLfd": [
+   "Saw your post. I am {a0} and free — want to give it a go?",
+   "Saw you are looking. I am {a0} with a free spot — try it?",
+   "Your post caught my eye. I am {a0} and available — run it?"
+  ],
+  "dmSeatSour": [
+   "Things with {a1} are not working this season and I want out. I am {a0} — if you have a spot, I am in",
+   "The season with {a1} is a mess and I am looking around. I am {a0} — open seat? Count me in",
+   "It is not going well with {a1} and I want a change. I am {a0} — if your spot is free, I am ready"
+  ],
+  "dmThanksBack": [
+   "Always, go win it",
+   "Of course, good luck out there",
+   "No problem, go cook them"
+  ],
+  "dmThanksBack1": [
+   "Np",
+   "All good",
+   "Sure"
+  ],
+  "dmThanksBack2": [
+   "Wow, you actually answered. Thanks so much, I will keep supporting",
+   "No way you replied. Thank you, I will be watching every game",
+   "Did not expect a reply at all. Thanks, rooting for you"
+  ],
+  "dmThanksBack3": [
+   "Of course I watch. Win the next one too",
+   "Obviously. Now go take the next lobby",
+   "I always watch. Do not let me down next time"
+  ],
+  "dmThanksBack4": [
+   "Okay. Good luck",
+   "Received. Gl",
+   "Fine. Good luck"
+  ],
+  "dmQBack1": [
+   "Thanks, understood",
+   "Got it, thanks",
+   "Okay, thank you"
+  ],
+  "dmQBack2": [
+   "Thanks a lot for replying. Really did not think you would",
+   "Wow, thank you for taking the time. Did not expect an answer",
+   "Thank you so much, means a lot that you replied"
+  ],
+  "dmQBack3": [
+   "Got it. See you in lobby next year",
+   "Noted. Be ready, I am coming for your spot",
+   "Understood. We meet in a lobby soon"
+  ],
+  "dmQBack4": [
+   "Okay. Thanks",
+   "Understood. Thanks",
+   "Fine. Thank you"
+  ],
+  "dmClapbackBack": [
+   "LMAO",
+   "lol ok",
+   "LOL fair"
+  ],
+  "dmClapbackBack1": [
+   "lol",
+   "LMAO",
+   "ok lol"
+  ],
+  "dmClapbackBack2": [
+   "Oh, he answers too. Okay, good luck then",
+   "Did not expect a reply. Fine, gl",
+   "Wow, he actually responds. Alright, good luck"
+  ],
+  "dmClapbackBack3": [
+   "You really reply to haters? Tells me everything",
+   "Imagine having time to answer haters. Says enough",
+   "Answering haters mid season? Okay pro"
+  ],
+  "dmClapbackBack4": [
+   "Okay",
+   "Fine",
+   "Right"
+  ],
+  "dmHateTurn1": [
+   "Okay, respect",
+   "Fair, gg",
+   "Alright, you got me"
+  ],
+  "dmHateTurn2": [
+   "I sent you something rude before. I was wrong, you were the best in that lobby tonight",
+   "I owe you an apology for what I wrote back then. You were the best player tonight",
+   "Back then I was out of line. Tonight you showed it, you were the best out there"
+  ],
+  "dmHateTurn3": [
+   "Fine. Clearly my hate made you better, you are welcome",
+   "Okay okay. Guess my hating fueled you, look at you",
+   "Alright. My hate was the best coaching you ever got"
+  ],
+  "dmHateTurn4": [
+   "I was wrong. Noted",
+   "Wrong call on my part. Admitted",
+   "I was wrong. That is it"
+  ],
+  "dmRoleNo": [
+   "Nah, {a0} is not my thing. I do not play like that",
+   "No, I am not a {a0}. Not my style",
+   "Sorry, {a0} is not for me. I play differently"
+  ],
+  "dmRoleYes": [
+   "Okay, I can do {a0}. Let us see",
+   "Fine, I will play {a0}. Let us try",
+   "Sure, {a0} works. Let us give it a shot"
+  ],
+  "dmJoinYes": [
+   "Talked it through with {a0} — you are in, welcome as our third.",
+   "Spoke with {a0} — we want you. You are our third.",
+   "Checked with {a0} — it is a yes, you are the third."
+  ],
+  "dmJoinNo": [
+   "Talked with {a0} — not right now, we will find a third ourselves.",
+   "Spoke to {a0} — it is a no for now, we will sort out the third.",
+   "Checked with {a0} — we pass for now, we will look on our own."
+  ],
+  "dmMovedWith": [
+   "Bags packed. Thanks for bringing me to {a0}",
+   "All packed. Appreciate you taking me to {a0}",
+   "Ready to go. Thanks for {a0}"
+  ],
+  "dmAgentYes": [
+   "Good. From now on all club talks go through me.",
+   "Done. From today the clubs speak to me.",
+   "Good. I handle the clubs from now on."
+  ],
+  "dmAgentBrought": [
+   "{a0} clubs reached out for you: {a1}. Terms are on the Career tab — have a look",
+   "We have interest from {a0} clubs: {a1}. Details are on the Career tab",
+   "{a0} clubs want you: {a1}. Check the terms on the Career tab"
+  ],
+  "dmPitchOk": [
+   "Understood. I will contact everyone in your range and a little higher. Two weeks",
+   "Got it. I will reach out to every club you can get, plus a few above. Give me two weeks",
+   "Okay. I will work through the clubs in reach and some above. Two weeks"
+  ],
+  "dmPitchOkClub": [
+   "Okay, I will go meet {a0}. Will report back",
+   "Got it, I am meeting {a0}. I will let you know",
+   "Fine, I am going to talk to {a0}. Report soon"
+  ],
+  "dmPitchYes": [
+   "{a0} are interested — expect an offer this window",
+   "{a0} want to take a look — an offer should come this window",
+   "{a0} are open to it — their offer should land this window"
+  ],
+  "dmPitchNo": [
+   "{a0} say the roster is set. We try someone else",
+   "{a0} have a full roster. On to the next one",
+   "{a0} have no room. We move on"
+  ],
+  "dmPitchTalked": [
+   "Talks with {a0} are done.",
+   "I have spoken to {a0}.",
+   "Done talking with {a0}."
+  ],
+  "dmOrgYesMoreAgent": [
+   "Done. ${a0} a month, you can sign it.",
+   "They agreed. ${a0} a month, ready to sign.",
+   "Got it. ${a0} a month, sign when ready."
+  ],
+  "dmOrgNoMoreAgent": [
+   "That is as far as they go. ${a0} is their number — your call.",
+   "They will not move past ${a0}. Up to you whether it is enough.",
+   "Their ceiling is ${a0}. Decide if it is worth it."
+  ],
+  "dmOrgYesPerkAgent": [
+   "They cover the setup. I would sign it.",
+   "Setup is on them. My advice is sign.",
+   "They take care of the setup. I would take it."
+  ],
+  "dmOrgNoPerkAgent": [
+   "No on the setup. Money stays, rest unchanged.",
+   "They will not cover gear. Wage and terms the same.",
+   "Gear is a no. Everything else stays."
+  ],
+  "dmOrgWaitAgent": [
+   "Sent it over. Answer by {date0}.",
+   "Passed along. They reply by {date0}.",
+   "Done. Expect their answer by {date0}."
+  ],
+  "dmOrgExpiredAgent": [
+   "{a0} filled the seat. Still searching.",
+   "{a0} closed it. I keep looking.",
+   "{a0} moved on. Still on it."
+  ],
+  "dmOrgWelcomeAgent": [
+   "Signed with {a0}. Congrats — now we work.",
+   "Done, you are with {a0}. Congratulations — time to deliver.",
+   "{a0} it is. Congrats — the real work starts now."
+  ],
+  "dmOrgWithdrawAgent": [
+   "{a0} withdrew the offer.",
+   "{a0} took the offer back.",
+   "{a0} pulled out."
+  ],
+  "dmOrgPromotedAgent": [
+   "{a0} are promoting you to the main roster, {a1} a month. I signed off on it.",
+   "Main roster at {a0}, {a1} a month. I agreed it.",
+   "{a0} want you on the main team, {a1} a month. Done on my end."
+  ],
+  "dmOrgRaiseAgent": [
+   "Renegotiated with {a0}. You are on {a1} a month now.",
+   "I reopened the contract with {a0}. Now {a1} a month.",
+   "New terms with {a0}: {a1} a month."
+  ],
+  "dmOrgYesMore": [
+   "Fine — ${a0} a month. See you at bootcamp",
+   "Deal, ${a0} a month. See you at the bootcamp",
+   "Okay — ${a0} a month. Welcome, see you at bootcamp"
+  ],
+  "dmOrgNoMore": [
+   "That is over our budget. ${a0} is the max",
+   "We cannot go higher. ${a0} is the limit",
+   "Too much for us. ${a0} is our ceiling"
+  ],
+  "dmOrgYesPerk": [
+   "Done, we cover the setup",
+   "Agreed, setup is on us",
+   "No problem, we handle the setup"
+  ],
+  "dmOrgNoPerk": [
+   "We can only pay the wage, not the gear",
+   "Gear is not in the budget, just the wage",
+   "Sorry, wage only, no gear"
+  ],
+  "dmOrgWithdraw": [
+   "{a0}: then we will look elsewhere. Good luck",
+   "{a0}: understood, we go another way. Good luck",
+   "{a0}: fine, we move on. All the best"
+  ],
+  "dmOrgPromoted": [
+   "{a0}: you are joining the main roster. ${a1} a month.",
+   "{a0}: main roster call-up. ${a1} a month.",
+   "{a0}: we are promoting you to the main team. ${a1} a month."
+  ],
+  "dmOrgRaise": [
+   "{a0}: we are reworking your contract. ${a1} a month.",
+   "{a0}: new deal for you. ${a1} a month.",
+   "{a0}: we are raising your pay. ${a1} a month."
+  ],
+  "dmOrgMain": [
+   "{a0}: we want you on the main team. ${a1} a month.",
+   "{a0}: main roster spot for you. ${a1} a month.",
+   "{a0}: we see you on the main roster. ${a1} a month."
+  ],
+  "dmAgentOrgMain": [
+   "Talked to {a0}. Main roster, ${a1} a month. Your thoughts?",
+   "{a0} came back. Main team, ${a1} a month. What do you say?",
+   "Had a call with {a0}. Main roster at ${a1} a month. Thoughts?"
+  ],
+  "dmOrgAcademy": [
+   "{a0}: join our academy. ${a1} a month, main roster if you earn it.",
+   "{a0}: academy spot for you. ${a1} a month, and you can move up.",
+   "{a0}: start in the academy. ${a1} a month, main roster is open if you perform."
+  ],
+  "dmAgentOrgAcademy": [
+   "Talked to {a0}. Academy for now, ${a1} a month, main roster is possible.",
+   "{a0} offer the academy. ${a1} a month, path to the main roster.",
+   "Spoke with {a0}. Academy first, ${a1} a month, main team open later."
+  ],
+  "dmOrgWelcome": [
+   "Welcome to {a0}!",
+   "Welcome aboard, {a0}.",
+   "{a0} welcomes you."
+  ],
+  "dmOrgWait": [
+   "We will discuss it internally and get back to you by {date0}.",
+   "Taking it to management. Answer by {date0}.",
+   "We need to talk it over. You will hear from us by {date0}."
+  ],
+  "dmOrgExpired": [
+   "{a0}: we could not hold the spot, the offer is closed.",
+   "{a0}: the seat is gone, offer withdrawn.",
+   "{a0}: we had to move on, the offer is off."
+  ]
+ },
+ "co": {
+  "ccCoWin": [
+   "gg wp",
+   "clean games",
+   "earned it",
+   "that was a clinic",
+   "huge run",
+   "big W"
+  ],
+  "ccCoPod": [
+   "good stuff",
+   "close one",
+   "nice games",
+   "decent night",
+   "almost had it",
+   "respectable"
+  ],
+  "ccCoMid": [
+   "it is what it is",
+   "fine night",
+   "next one",
+   "ok run",
+   "could be worse",
+   "mid but fine"
+  ],
+  "ccCoNews": [
+   "big W",
+   "lets go",
+   "huge",
+   "👀👀",
+   "earned",
+   "gg"
+  ],
+  "ccCoBad": [
+   "rough one",
+   "bad lobby",
+   "unlucky night",
+   "bounce back",
+   "long season",
+   "shake it off"
+  ],
+  "ccCoPro": [
+   "you are cracked",
+   "saw your games today",
+   "dm me if you need a duo",
+   "future pro",
+   "nice gameplay",
+   "keep grinding, you got it"
+  ],
+  "ccCoProt": [
+   "you are cracked",
+   "saw your games today",
+   "dm me if you need a trio",
+   "future pro",
+   "nice gameplay",
+   "keep grinding, you got it"
+  ],
+  "ccCoLfd": [
+   "V fr",
+   "someone grab him",
+   "id duo with him",
+   "V 🐐🐐",
+   "gone by tomorrow",
+   "free W for someone"
+  ],
+  "ccCoBday": [
+   "hbd goat 🐐",
+   "happy bday! 🎂",
+   "hbd king",
+   "hbd 🎉",
+   "hbd, have a big year",
+   "🎂🐐"
+  ],
+  "ccCoHype": [
+   "LFG",
+   "about time",
+   "when?",
+   "no wayyy",
+   "servers gonna die",
+   "prize pool?"
+  ],
+  "ccCoDuo": [
+   "cracked duo",
+   "lobby is done",
+   "big W",
+   "dangerous",
+   "gl 🤝",
+   "winning it all"
+  ],
+  "ccCoSign": [
+   "earned",
+   "huge signing",
+   "welcome in",
+   "congrats 🥳",
+   "finally",
+   "W org"
+  ],
+  "ccCoLeft": [
+   "gl on the next one",
+   "thanks for the memories",
+   "sad to see",
+   "bigger things ahead",
+   "🫡",
+   "where next?"
+  ],
+  "ccCoTable": [
+   "so close at the top",
+   "the usual names",
+   "still a lot to play",
+   "top 3 locked",
+   "first takes it",
+   "last week decides it"
+  ],
+  "ccCoStream": [
+   "link pls",
+   "on my way",
+   "W streamer",
+   "joining",
+   "in chat",
+   "vod?"
+  ],
+  "ccCoDrop": [
+   "we land there too 😭",
+   "pls no",
+   "hot drop",
+   "gl with that",
+   "bold",
+   "too many teams there"
+  ],
+  "ccCoCust": [
+   "can i play",
+   "my PR is too low 😭",
+   "dm sent",
+   "im in",
+   "duos too?",
+   "harsh cutoff"
+  ],
+  "ccCoBye": [
+   "goat",
+   "thanks for everything",
+   "🫡🫡",
+   "end of an era",
+   "big respect",
+   "legend forever"
+  ],
+  "ccCoBan": [
+   "awful",
+   "no way",
+   "saw it coming",
+   "sad to see",
+   "embarrassing fr",
+   "clips don’t lie"
+  ],
+  "ccCoMateUp": [
+   "🐐🐐",
+   "so proud",
+   "best IGL 🐐",
+   "run it back",
+   "forever",
+   "🔥🔥"
+  ],
+  "ccCoMateDown": [
+   "we bounce back",
+   "on me too",
+   "vod and move on",
+   "next week",
+   "heads up",
+   "not over"
+  ],
+  "ccCoOrg": [
+   "thats our guy 💙",
+   "big W",
+   "so proud 👏",
+   "thats how its done",
+   "only the start",
+   "💙🔥"
+  ],
+  "ccCoTy": [
+   "thanks ❤️",
+   "🙏🙏",
+   "thx",
+   "thank you all",
+   "❤️❤️",
+   "appreciate you all"
+  ],
+  "ccCoHate": [
+   "free lobby",
+   "got carried",
+   "pure luck",
+   "his duo did everything",
+   "lucky rng",
+   "L next time"
+  ],
+  "ccCoHateBad": [
+   "so washed",
+   "fell off hard",
+   "again lol",
+   "bench him",
+   "who even is this",
+   "massive L"
+  ],
+  "ccCoTroll": [
+   "called it",
+   "see you next week",
+   "you know where",
+   "this guy again",
+   "lobby reunion",
+   "every time"
+  ],
+  "ccCoProWin": [
+   "big W",
+   "ggs",
+   "earned 🐐",
+   "so clean",
+   "free lobby 😭",
+   "cracked"
+  ],
+  "ccCoProBad": [
+   "unlucky man",
+   "next time",
+   "it happens",
+   "you’ll bounce back",
+   "heads up",
+   "bad night, it happens"
+  ],
+  "ccCoProLfd": [
+   "V fr",
+   "V 🐐🐐",
+   "grab him, trust",
+   "V, duo’d with him",
+   "cracked player",
+   "W pickup"
+  ],
+  "ccCoSad": [
+   "please don’t split 😭",
+   "best duo out there",
+   "this hurts",
+   "F 💔",
+   "era over",
+   "noooo…"
+  ]
+ }
 }
