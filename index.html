@@ -148828,15 +148828,23 @@ function ccMXSettleWeek(m, w){
   const end=ccMXWeekEnd(m.y, m.n, w);
   if(!end || careerToday()<=end) return;
   const R=sp.rounds.length, last=sp.rounds[R-1], F=ccMXLobby(sp.size);
+  /* ФИНАЛ НЕДЕЛИ — ВЕСЬ, А НЕ ОДНО ЛОББИ (его вопрос 7.10 «а очки считаются у всех?»). Был срез до одного лобби (33
+     трио), и почти каждую неделю — одни и те же сильнейшие: за пять недель Season X очки набрали 37 команд на 132
+     места в хитах, остальные 95 добирались сценой без очков. У Epic в финал недели выходит отсечка полуфинала —
+     Season X «Top 150 trios will advance to Finals», C2S1 — 25 сквадов; играется лобби по F, таблица общая. */
+  /* И не меньше всего поля хитов: приглашённые — «top performers» сезона, их очки идут и из полуфиналов недели, а финал
+     у C2S1/2020 — 25–100 команд. Без этого очки за недели были у 43 из 100 (C2S1), 58 из 200 (C2S2), 118 из 400 (C2S3),
+     39 из 132 (C2S4), остальное поле хитов садилось без очков. Модель режима: таблица недели мира = полуфинал+финал. */
+  const size=Math.max(F, (R>1 && sp.rounds[R-2].cut) || F, (sp.heats||[]).length*F);
   ccWithEventSize(sp.size, ()=>{
     let room=(Q['r'+(R-1)]||[]).filter(r=>r!=='you').map(ccMajorTeamFrom);
-    if(room.length<F){
+    if(room.length<size){
       const seen=new Set(room.map(ccSeatKey));
-      ccM23World(F+20, 'mx|'+m.y+'|'+m.n+'|'+w).forEach(t=>{ if(room.length>=F || seen.has(ccSeatKey(t))) return; seen.add(ccSeatKey(t)); room.push(t); });
+      ccM23World(size+Math.ceil(size/3), 'mx|'+m.y+'|'+m.n+'|'+w).forEach(t=>{ if(room.length>=size || seen.has(ccSeatKey(t))) return; seen.add(ccSeatKey(t)); room.push(t); });
     }
-    room=room.slice(0, F);
+    room=room.slice(0, size);
     room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
-    ccWorldRun('mxq|'+m.season+'|'+m.y+'|'+m.n+'|'+w, ()=>simulateGames(room, last.games, ccM24Points, CC_M24_KILL));
+    ccWorldRun('mxq|'+m.season+'|'+m.y+'|'+m.n+'|'+w, ()=>splitIntoLobbies(room, F).forEach(l=>simulateGames(l, last.games, ccM24Points, CC_M24_KILL)));
     ccMXSeriesAdd(m, ccM24Rank(room), ccMajorSeatRow, w);
   });
   Q.done=true;
@@ -148853,8 +148861,11 @@ function ccMXHeatList(m){
   return {list, need};
 }
 function ccMXHeats(m){
-  if(m.heats) return m.heats;
+  /* Сначала досчитать прошедшие недели, потом отдавать кэш: спрошенное посреди сезона поле хитов запоминалось без
+     последних недель (замер 7.10: недели 3–5 Season X — 0 из 8 прямых мест). Новая неделя сбрасывает кэш
+     (ccMXSeriesAdd с номером недели). */
   ccMXSettleWeeks(m);
+  if(m.heats) return m.heats;
   const sp=ccMXSpec(m.y, m.n), plan=sp.heats||[], F=ccMXLobby(sp.size);
   const H=plan.length, need=H*F;
   const pre=ccMXHeatList(m), list=pre.list, seen=new Set(list.map(ccMXKey));
