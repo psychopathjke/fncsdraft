@@ -831,6 +831,36 @@ const SECTIONS=[
     MGR_SUB.transfers='market'; mgrRenderHub('transfers'); const st=getComputedStyle(document.querySelector('#mgBody select.mgs-move')||document.body);
     check('списки в тёмной теме', /dark/.test(st.colorScheme||'') , st.colorScheme);
   `},
+  {name:'неполный состав', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    const size=careerSquadSize(), t=MGR.teams[0];
+    // 1) Ушёл игрок, в запасе есть — перед вечером запас встаёт в состав сам.
+    const gone=t.cards[t.cards.length-1]; mgrDrop(gone);
+    check('запас: был неполный', !MGR.teams.some(x=>mgrTeamSize(x)===size) && (MGR.bench||[]).length>=1);
+    check('запас: заполнено автоматически', mgrAutoFill(size)===true && MGR.teams.some(x=>mgrTeamSize(x)===size));
+    // 2) Запаса нет — окно с выбором, а не молчаливый уход.
+    MGR.bench=[]; const t2=MGR.teams[0]; mgrDrop(t2.cards[t2.cards.length-1]);
+    check('без запаса: неполный', !MGR.teams.some(x=>mgrTeamSize(x)===size));
+    await mgrPlay(); await wait(50);
+    const box=document.querySelector('.mg-modal.mgq-short');
+    check('без запаса '+lang+': окно с выбором', !!box && box.querySelectorAll('button').length>=3 && !bad(box.innerHTML));
+    const g=box && box.querySelector('button[onclick*="mgrShortGuest"]'); if(g) g.click(); await wait(50);
+    check('без запаса: гость поставлен', MGR.teams.some(x=>mgrTeamSize(x)===size) && (MGR.teams[0].guests||[]).length===1);
+    document.querySelectorAll('.mg-modal').forEach(m=>m.remove());
+    check('текст не врёт про пропуск', !/пропущен|skipped/i.test(mgrT9().shortTitle(1, 2)));
+  `},
+  {name:'отступные', once:true, code:String.raw`
+    let worst=0, below=0;
+    for(let s=0;s<12;s++){
+      localStorage.removeItem('fncsdraft_manager'); MGR=null; mgrLeave();
+      MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(s);
+      const w=mgrWindows()[0]; mgrWeekly(MGR.season0, w.to);
+      const sold=(MGR.log||[]).filter(r=>r.kind==='sell').length; worst=Math.max(worst, sold);
+      if(mgrAll().length<careerSquadSize()) below++;
+    }
+    check('отступные: не больше одного за окно', worst<=1, String(worst));
+    check('отступные: клуб не остаётся без состава', below===0, String(below));
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
