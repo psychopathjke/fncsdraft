@@ -155195,15 +155195,35 @@ function mgrBuildTeams(handles){
 }
 function mgrCardBase(h){
   // Люди вне сцены своего региона (отчёт скаута о чужом регионе, выдуманная молодёжь) — снимком в сейве.
-  const ext=MGR && MGR.ext && MGR.ext[hKey(h)]; if(ext) return ext;
-  try{ return careerRosterNowEU().find(x=>hKey(x)===hKey(h)) || ccSceneRoster(MGR.region).find(x=>hKey(x)===hKey(h)) || PLAYERS.find(x=>hKey(x)===hKey(h)) || null; }catch(e){ return null; }
+  // Своя сцена — первой: тёзка из чужого региона не подменяет своего, подписанный получает карточку нового года.
+  const ext=MGR && MGR.ext && MGR.ext[hKey(h)];
+  if(ext && ext._youth) return ext;
+  try{
+    const own=careerRosterNowEU().find(x=>hKey(x)===hKey(h)) || ccSceneRoster(MGR.region).find(x=>hKey(x)===hKey(h));
+    if(own) return own;
+  }catch(e){}
+  if(ext) return ext;
+  try{ return PLAYERS.find(x=>hKey(x)===hKey(h)) || null; }catch(e){ return null; }
+}
+/* Снимок карточки для сейва — без тяжёлых полей таблиц (у карточки года ~10 КБ на _t1 и соседях):
+   то, что нужно для силы, роли, флага и клуба. Атрибуты считаются один раз и кладутся в _attrs. */
+function mgrSnap(c){
+  const a=Object.assign({}, attrsFor(c));
+  return {handle:c.handle, nat:c.nat||null, region:c.region||null, org:c.org||null, rating:c.rating, _targetOvr:Math.round(ccCardOvr(c)||c.rating||0),
+          _attrs:a, _roleKey:a.roleKey, date:c.date||'—', event:c.event||'', tier:c.tier||null, rarity:c.rarity||null, placement:c.placement||null};
 }
 function mgrCard(h){
   const c=mgrCardBase(h);
   // Рост в клубе (MGR.dev, единицы рейтинга) — тем же подъёмом, что у напарников карьеры.
   const dv=MGR && MGR.dev ? (MGR.dev[hKey(h)]||0) : 0;
   let out=c;
-  if(c && dv && typeof ccMateLift==='function'){ try{ out=ccMateLift(c, dv); }catch(e){} }
+  // Выдуманному молодому подъём собирает профиль заново той же ролью: ccMateLift снимает _attrs,
+  // а восстановить его выдуманной карточке не из чего (роль слетала, атрибуты становились ровными).
+  if(c && dv && c._youth){
+    const r=Math.min(99, (c._targetOvr||c.rating||50)+dv), rk=(c._attrs||{}).roleKey||'roleFRG';
+    out=Object.assign({}, c, {rating:r, _targetOvr:r, _attrs:ccRookieAttrs(r, rk)});
+  }
+  else if(c && dv && typeof ccMateLift==='function'){ try{ out=ccMateLift(c, dv); }catch(e){} }
   // План развития сменил роль — карточка играет новую половину (attrsFor читает _roleKey).
   const role=MGR && MGR.roles ? MGR.roles[hKey(h)] : null;
   // _attrs закэширован на карточке с прежней ролью — копия атрибутов с новой.
@@ -155694,7 +155714,7 @@ function mgrYouthHTML(){
     '<button class="hg-go mgs-bad" onclick="mgrYScoutFire(\''+s.id+'\');mgrRenderHub()">'+esc(T9.fire)+'</button></div>').join('');
   const hire=ys.length<MGR_YSCOUT_MAX ? '<div class="mgx-hire"><button class="hg-go" onclick="mgrYScoutHire(\''+esc(nats[0]||'')+'\');mgrRenderHub()">'+
     esc(T9.yHire)+' · '+mgrMoney(MGR_YSCOUT_COST)+' '+esc(mgrT().month)+'</button></div>' : '';
-  const own=new Set(mgrAllAcad().map(hKey));
+  const own=new Set(mgrOwned().map(hKey));
   const rows=(MGR.ylist||[]).slice().reverse().map(h=>{ const c=mgrCard(h); if(!c) return ''; const hq=esc(String(h).replace(/'/g, ''));
     return '<div class="mg-club mgy-row"><span class="mg-cname"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(h)+' <small>'+Math.round(ccCardOvr(c)||0)+' · '+esc(T9.age(c.age))+'</small></b>'+
       '<small>'+esc(T9.potW)+' '+mgrStarsHTML(mgrStarsOf(mgrPot(h)))+' · '+esc(T4.pot)+' '+esc(mgrPotText(h))+' · '+esc(L()[(attrsFor(c)||{}).roleKey]||'')+'</small></span>'+
@@ -155785,6 +155805,7 @@ function mgrTeamUp(i){ if(i<1) return; const t=MGR.teams; [t[i-1], t[i]]=[t[i], 
 function mgrNewClubAsk(){ ccAsk(mgrT().newClub+'?', ()=>{ MGR=null; try{ localStorage.removeItem(MGR_KEY); }catch(e){} mgrLeave(); mgrOpenNew(); }); }
 function mgrAdvanceTo(day){
   if(day>CAREER.career.day){ mgrPayMonths(day); mgrWeekly(CAREER.career.day, day); CAREER.career.day=day; }
+  try{ mgrLoanWeek(day); }catch(e){}   // возврат из аренды — по дате, а не только на недельном тике
 }
 function mgrSkip(){
   const nx=mgrEvents()[0]; if(!nx) return;
@@ -155833,6 +155854,8 @@ function mgrT2(){
 function mgrMoney(v){ return (typeof fmtMoney==='function' ? fmtMoney(v) : '$'+v); }
 function mgrAll(){ return MGR.teams.flatMap(t=>t.cards).concat(MGR.bench||[]); }
 function mgrAllAcad(){ return mgrAll().concat(MGR.academy||[]); }
+// Все свои, включая отданных в аренду: рынок, скауты и приём проверяют по ним — иначе арендованного берут второй раз.
+function mgrOwned(){ return mgrAllAcad().concat(MGR.loanOut||[]); }
 function mgrInAcad(h){ return (MGR.academy||[]).some(x=>hKey(x)===hKey(h)); }
 /* АРЕНДЫ, как в FC: игрока из запаса или академии отдают на 4 недели в клуб послабее — за нас он не
    играет, но растёт быстрее (×1.3, игровая практика), клуб платит половину зарплаты; через 28 дней
@@ -155858,7 +155881,7 @@ function mgrLoanWeek(d){
     const l=(MGR.loans||{})[hKey(h)]; if(!l || d<l.until) return true;
     if(l.acad) MGR.academy=(MGR.academy||[]).concat([h]); else MGR.bench=(MGR.bench||[]).concat([h]);
     const grew=((MGR.dev||{})[hKey(h)]||0)-(l.dev0||0);
-    MGR.inbox=MGR.inbox||[]; MGR.inbox.unshift({id:'ln'+hKey(h)+d, day:d, kind:'info', done:'info', loan:true, text:mgrT9().loanBack(h, l.to, grew)});
+    MGR.inbox=MGR.inbox||[]; MGR.inbox.unshift({id:'ln'+hKey(h)+d, day:l.until, kind:'info', done:'info', loan:true, text:mgrT9().loanBack(h, l.to, grew)});
     delete MGR.loans[hKey(h)];
     return false;
   });
@@ -155869,7 +155892,7 @@ function mgrToAcad(h, free){
   MGR.academy=MGR.academy||[];
   if(MGR.academy.length>=MGR_ACAD_MAX){ mgrToast(T.acadFull); return; }
   if((ccCardOvr(c)||0)>75){ mgrToast(T.acadOnly); return; }
-  if(mgrAllAcad().some(x=>hKey(x)===hKey(h))) return;
+  if(mgrOwned().some(x=>hKey(x)===hKey(h))) return;
   const bo=free ? 0 : mgrBuyout(c);
   if(MGR.club.cash<bo){ mgrToast(mgrT2().noMoney); return; }
   if(MGR.club.wageCap!=null && Math.round(mgrSalary(c)*MGR_ACAD_WAGE)>mgrWageRoom()){ mgrToast(mgrT9().overCap(mgrMoney(MGR.club.wageCap))); return; }
@@ -155903,7 +155926,7 @@ function mgrToast(text){ try{ if(typeof ccMpTell==='function') ccMpTell(text); }
 
 // ---- Рынок
 function mgrMarketList(){
-  const own=new Set(mgrAllAcad().map(hKey));
+  const own=new Set(mgrOwned().map(hKey));
   let scene=[]; try{ scene=ccSceneRoster(MGR.region)||[]; }catch(e){}
   const q=MGR_MKT_Q.trim().toLowerCase();
   return scene.filter(c=>c && c.handle && !own.has(hKey(c)) && (!MGR_MKT_FREE || !mgrOrgOf(c)) && (!MGR_MKT_YOUNG || (ccCardOvr(c)||0)<=75) && (!q || String(c.handle).toLowerCase().indexOf(q)>=0))
@@ -155995,14 +156018,15 @@ function mgrWeekly(fromDay, toDay){
         MGR.inbox.unshift({id:'o'+d, day:d, kind:'offer', h:star.handle, from, sum, text:T.offer(from, star.handle, mgrMoney(sum))});
       }
     } else if(rnd()<0.12 && (MGR.academy||[]).length<MGR_ACAD_MAX){
-      let pool=[]; try{ const own=new Set(mgrAllAcad().map(hKey)); pool=(ccSceneRoster(MGR.region)||[]).filter(c=>c && !mgrOrgOf(c) && !own.has(hKey(c)) && (ccCardOvr(c)||0)<=72 && (ccCardOvr(c)||0)>=60); }catch(e){}
+      let pool=[]; try{ const own=new Set(mgrOwned().map(hKey)); pool=(ccSceneRoster(MGR.region)||[]).filter(c=>c && !mgrOrgOf(c) && !own.has(hKey(c)) && (ccCardOvr(c)||0)<=72 && (ccCardOvr(c)||0)>=60); }catch(e){}
       if(pool.length){ const p=pool[Math.floor(rnd()*pool.length)]; MGR.inbox.unshift({id:'s'+d, day:d, kind:'scout', h:p.handle, text:mgrT().scout(p.handle, Math.round(ccCardOvr(p)||0))}); }
     } else if(rnd()<0.12){
       const p=all[Math.floor(rnd()*all.length)], sum=Math.round(mgrWage(p.handle)*1.25/10)*10;
       MGR.inbox.unshift({id:'r'+d, day:d, kind:'raise', h:p.handle, sum, text:T.raise(p.handle, mgrMoney(sum))});
     }
   }
-  MGR.inbox=MGR.inbox.slice(0, 30);
+  // Обрезается только прочитанное: предложение или просьба без ответа не уходит под отчёты скаутов.
+  { let keep=0; MGR.inbox=MGR.inbox.filter(m=>!m.done || (keep++)<30); }
 }
 function mgrInboxDo(id, ok){
   const m=(MGR.inbox||[]).find(x=>x.id===id); if(!m || m.done) return;
@@ -156204,7 +156228,7 @@ function mgrPot(h){
 }
 function mgrPotText(h){
   const p=mgrPot(h); if(p==null) return '–';
-  if((MGR.scouted||{})[hKey(h)] || mgrAllAcad().some(x=>hKey(x)===hKey(h))) return (p-2)+'–'+Math.min(99, p+2);
+  if((MGR.scouted||{})[hKey(h)] || mgrOwned().some(x=>hKey(x)===hKey(h))) return (p-2)+'–'+Math.min(99, p+2);
   const rep=(MGR.srep||{})[hKey(h)];
   if(rep){ const w=Math.max(1, MGR_SCOUT_LV[rep.lv||1].width-2*((rep.views||1)-1)); return (p-w)+'–'+Math.min(99, p+w); }
   return (p-8)+'–'+Math.min(99, p+8);
@@ -156236,7 +156260,7 @@ function mgrScoutSet(id, field, v){
 function mgrScoutWeek(d){
   if(!(MGR.scouts||[]).length) return;
   MGR.srep=MGR.srep||{}; MGR.ext=MGR.ext||{}; MGR.inbox=MGR.inbox||[];
-  const own=new Set(mgrAllAcad().map(hKey));
+  const own=new Set(mgrOwned().map(hKey));
   MGR.scouts.forEach(s=>{
     let pool=[]; try{ pool=(ccSceneRoster(s.region)||[]).filter(c=>c && c.handle && !own.has(hKey(c)) && mgrOrgOf(c)!==MGR.club.name); }catch(e){ pool=[]; }
     pool=pool.filter(c=>{
@@ -156252,11 +156276,18 @@ function mgrScoutWeek(d){
     got.forEach(c=>{
       const k=hKey(c), r=MGR.srep[k];
       MGR.srep[k]={h:c.handle, region:s.region, views:(r ? r.views : 0)+1, lv:Math.max(s.lv, r ? r.lv : 0), day:d};
-      if(s.region!==MGR.region) MGR.ext[k]=Object.assign({}, c);
+      if(s.region!==MGR.region) MGR.ext[k]=mgrSnap(c);
     });
     if(got.length) MGR.inbox.unshift({id:'sr'+s.id+d, day:d, kind:'info', done:'info', srep:true, text:mgrT9().scoutRep(s.region, got.map(c=>c.handle).join(', '))});
   });
+  // Отчёты — последние MGR_SREP_MAX; старые уходят вместе со снимками, если человек не свой и не в шортлисте.
+  const keys=Object.keys(MGR.srep).sort((a,b)=>String(MGR.srep[b].day).localeCompare(String(MGR.srep[a].day)));
+  if(keys.length>MGR_SREP_MAX){
+    const keepH=new Set(mgrOwned().concat(MGR.short||[]).map(hKey));
+    keys.slice(MGR_SREP_MAX).forEach(k=>{ delete MGR.srep[k]; if(!keepH.has(k) && MGR.ext[k] && !MGR.ext[k]._youth) delete MGR.ext[k]; });
+  }
 }
+const MGR_SREP_MAX=60;
 function mgrScoutCost(){ return mgrStaff('analyst') ? 300 : 600; }
 function mgrScout(h){ if(MGR.club.cash<mgrScoutCost()){ mgrToast(mgrT2().noMoney); return; } MGR.club.cash-=mgrScoutCost(); MGR.scouted=MGR.scouted||{}; MGR.scouted[hKey(h)]=1; mgrSave(); mgrOpenHub(); }
 
@@ -156275,7 +156306,7 @@ function mgrWindowNext(){ const d=CAREER.career.day; return mgrWindows().find(w=
 let MGR_NEG=null;
 function mgrNegotiate(h, acad){
   const T4=mgrT4(), T2=mgrT2(), c=mgrCard(h); if(!c) return;
-  if(mgrAllAcad().some(x=>hKey(x)===hKey(h))){ mgrToast(T2.already); return; }
+  if(mgrOwned().some(x=>hKey(x)===hKey(h))){ mgrToast(T2.already); return; }
   const corg=mgrOrgOf(c), owned=corg && corg!==MGR.club.name;
   if(owned && !mgrWindowNow()){ mgrToast(T4.outWindow); return; }
   const r=ccCardOvr(c)||0, cap=(MGR.club.avg||70)+(corg ? 4 : 6)+(MGR.club.rep>70 ? 2 : 0);
@@ -156482,7 +156513,7 @@ function mgrPromiseKept(p){
 function mgrPeopleWeek(d){
   const T5=mgrT5();
   MGR.inbox=MGR.inbox||[];
-  const own=new Set(mgrAllAcad().map(hKey));
+  const own=new Set(mgrOwned().map(hKey));
   MGR.promises=(MGR.promises||[]).filter(p=>{
     if(!own.has(hKey(p.h))) return false;
     if(mgrPromiseKept(p)){ mgrMoraleAdd(p.h, 1); MGR.inbox.unshift({id:'pk'+d+hKey(p.h), day:d, kind:'info', done:'info', text:T5.kept(p.h)}); return false; }
@@ -156788,7 +156819,7 @@ function mgrAiTransfersWeek(d){
   const rnd=careerRng(ccHashStr('mgrai|'+MGR.region+'|'+d));
   if(rnd()>0.6) return;
   let scene=[]; try{ scene=ccSceneRoster(MGR.region)||[]; }catch(e){}
-  const own=new Set(mgrAllAcad().map(hKey));
+  const own=new Set(mgrOwned().map(hKey));
   const ovr=c=>ccCardOvr(c)||0;
   // Сила клуба — средний топ-4 его нынешних игроков.
   const by={}; scene.forEach(c=>{ const o=mgrOrgOf(c); if(o && o!==MGR.club.name && !own.has(hKey(c))) (by[o]=by[o]||[]).push(c); });

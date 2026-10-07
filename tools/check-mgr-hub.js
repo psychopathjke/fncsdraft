@@ -190,7 +190,7 @@ const SECTIONS=[
     check('сезон: отчёты скаута', Object.keys(MGR.srep||{}).length>=5, String(Object.keys(MGR.srep||{}).length));
     check('сезон: молодёжь найдена', (MGR.ylist||[]).length>=5, String((MGR.ylist||[]).length));
     check('сезон: аренда вернулась', !(MGR.loanOut||[]).length);
-    check('сезон: игроки месяца', (MGR.awards||[]).filter(x=>x.kind==='pom').length>=0);
+
     localStorage.removeItem('fncsdraft_manager'); MGR=null; mgrLeave();
     MGR_NEW_YEAR=2021; MGR_NEW_REGION='ME';
     check('свой 2021 ME создан', mgrCreateOwn({name:'Desert Kings', color:'#ff5a5a', shape:'hex', region:'ME', tier:'rookie'})===true);
@@ -372,6 +372,52 @@ const SECTIONS=[
     check('следующий сезон: состав на месте', MGR && mgrAll().length>=1, MGR && mgrAll().length+' из '+n0);
     if(MGR){ mgrRenderHub('centre'); check('следующий сезон: хаб', !document.querySelector('#mgBody .cc-ffo-err')); }
     document.querySelectorAll('.mg-modal').forEach(m=>m.remove());
+  `},
+  {name:'ревью2', once:true, code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    // 1. Игрок в аренде — свой: не на рынке, второй раз не берётся.
+    MGR_MKT_YOUNG=true; const yc=mgrMarketList().find(c=>(ccCardOvr(c)||0)<=75); MGR_MKT_YOUNG=false;
+    MGR.club.wageCap=mgrWageBill()+100000; MGR.club.transfer=1e7; MGR.club.cash=1e7;
+    if(yc){ mgrToAcad(yc.handle, true); mgrLoan(yc.handle);
+      check('аренда: не на рынке', !mgrMarketList().some(c=>hKey(c)===hKey(yc)) && !(MGR_MKT_YOUNG=true, mgrMarketList()).some(c=>hKey(c)===hKey(yc))); MGR_MKT_YOUNG=false;
+      mgrToAcad(yc.handle, true);
+      check('аренда: второй раз в академию не берётся', !(MGR.academy||[]).some(x=>hKey(x)===hKey(yc))); }
+    // 2. Снимок скаута маленький.
+    mgrScoutHire(3); mgrScoutSet(MGR.scouts[0].id, 'region', 'NAC'); mgrScoutSet(MGR.scouts[0].id, 'min', '0');
+    mgrScoutWeek(ccAddDays(CAREER.career.day, 7));
+    const ks=Object.keys(MGR.ext||{});
+    check('скаут: снимки есть', ks.length>=1);
+    check('скаут: снимок маленький', ks.every(k=>JSON.stringify(MGR.ext[k]).length<2500), ks.map(k=>JSON.stringify(MGR.ext[k]).length).join());
+    check('скаут: снимок играет', ks.every(k=>(ccCardOvr(mgrCard(MGR.ext[k].handle))||0)>0));
+    mgrScoutHire(3); mgrScoutHire(3); MGR.scouts.forEach(s=>{ s.region='BR'; s.min=0; });
+    for(let i=0;i<40;i++) mgrScoutWeek(ccAddDays(CAREER.career.day, 7*(i+2)));
+    check('скаут: отчётов не больше 60', Object.keys(MGR.srep).length<=60, String(Object.keys(MGR.srep).length));
+    check('скаут: снимков не больше отчётов', Object.keys(MGR.ext).filter(k=>!MGR.ext[k]._youth).length<=60, String(Object.keys(MGR.ext).length));
+    check('скаут: сейв меньше 400 КБ', JSON.stringify(MGR).length<400000, String(JSON.stringify(MGR).length));
+    MGR.scouts=[];
+    // 3. Молодой при росте сохраняет роль и профиль.
+    MGR.yscouts=[]; mgrYScoutHire('fr'); mgrYouthMonth('2024-03');
+    const y=MGR.ylist[MGR.ylist.length-1], yc0=mgrCard(y), role=attrsFor(yc0).roleKey, r0=ccCardOvr(yc0);
+    MGR.dev=MGR.dev||{}; MGR.dev[hKey(y)]=3;
+    const yc1=mgrCard(y);
+    check('молодой: роль при росте', attrsFor(yc1).roleKey===role, role+' → '+attrsFor(yc1).roleKey);
+    check('молодой: рейтинг вырос на 3', Math.round(ccCardOvr(yc1))===Math.round(r0)+3, r0+' → '+ccCardOvr(yc1));
+    // 4. Аренда — ровно 28 дней, даже если дни идут не неделями.
+    const bh=(MGR.bench||[])[0];
+    if(bh){ const d0=CAREER.career.day; mgrLoan(bh); for(let s=5; s<=30; s+=5) mgrAdvanceTo(ccAddDays(d0, s));
+      check('аренда: вернулся к 30-му дню', !mgrOnLoan(bh));
+      const m=(MGR.inbox||[]).find(x=>x.loan && x.text.indexOf(bh)>=0);
+      check('аренда: письмо датой возвращения', m && m.day===ccAddDays(d0, 28), m && m.day); }
+    // 5. Тёзка из чужого региона не подменяет своего.
+    const eu=mgrAll()[0], real=ccCardOvr(mgrCardBase(eu));
+    MGR.ext[hKey(eu)]={handle:eu, region:'BR', rating:41, _targetOvr:41, _attrs:ccRookieAttrs(41, 'roleIGL')};
+    check('тёзка: свой игрок не подменён', ccCardOvr(mgrCardBase(eu))===real, real+' → '+ccCardOvr(mgrCardBase(eu)));
+    delete MGR.ext[hKey(eu)];
+    // 6. Невыполненные письма не вытесняются отчётами.
+    MGR.inbox.unshift({id:'keep', day:CAREER.career.day, kind:'offer', h:eu, sum:1, text:'ВажноеПредложение'});
+    for(let i=0;i<40;i++) MGR.inbox.unshift({id:'i'+i, day:CAREER.career.day, kind:'info', done:'info', text:'шум '+i});
+    mgrWeekly(CAREER.career.day, ccAddDays(CAREER.career.day, 7));
+    check('почта: невыполненное письмо цело', (MGR.inbox||[]).some(m=>m.id==='keep'));
   `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
