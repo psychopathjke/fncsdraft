@@ -63,7 +63,11 @@ const BOOT = `
             nowSix.sur > wasSix.sur && nowSix.end > wasSix.end && nowSix.aim < wasSix.aim,
             JSON.stringify(nowSix));
       // Twice is back where he started, which is what "a choice you can take
-      // back" has to mean.
+      // back" has to mean. 7.10: но не в тот же день — роль меняют не чаще раза в CC_ROLE_SWAP_DAYS
+      // («просто так можно бесконечно спамить и роли»). Сразу — нельзя, через две недели — можно.
+      careerRoleSwap();
+      check('сразу обратно нельзя', ccRoleNow() === 'roleIGL' && ccRoleSwapCan().why === 'cool', ccRoleNow());
+      CAREER.career.day = ccAddDays(CAREER.career.day, CC_ROLE_SWAP_DAYS);
       careerRoleSwap();
       out.notes.builtBack = {role: ccRoleNow(), six: six()};
       check('and switching back is switching back', ccRoleNow() === 'roleFRG', String(ccRoleNow()));

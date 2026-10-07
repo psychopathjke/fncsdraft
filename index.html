@@ -19586,7 +19586,7 @@ Object.assign(I18N.pt, {hmCareerTag:'Modo 1 · Carreira', hmCareerTitle:'Carreir
   hmDraftTag:'Modo 2 · Draft', hmDraftTitle:'Draft', hmDraftSub:'Monte um time de cartas reais e jogue o torneio: qualquer ano 2019–2026, All FNCS, duplas, trios, squads',
   dpFormats:'All FNCS · formatos', dpBack:'Voltar', dpRealCards:'Cartas reais', dpPastDesc:'Cartas dos jogadores pelos resultados reais neste evento. Play-In, heats e final.'});
 /* Переговоры с тиммейтом (7.10): аргументы «играли вместе / земляки / свой клуб / буткемп», условия «пересядь» и «пробный кап». */
-Object.assign(I18N.ru, {
+Object.assign(I18N.ru, {ccRoleCool:d=>'Роль недавно менялась — снова можно через '+d+' дн.', ccDuoLimit:'Сегодня уже написал троим — завтра',
   dmArghistoryBtn:'Мы уже играли вместе', dmArghistoryWhat:'Напомнить общие вечера — помнит, как было',
   dmArgnatBtn:'Мы земляки', dmArgnatWhat:'Одна страна, один язык — в коммах проще',
   dmArgclubBtn:'Зову в свой клуб', dmArgclubWhat:'Ты в основе клуба — это весомо',
@@ -19605,7 +19605,7 @@ Object.assign(I18N.ru, {
   dmTrialStay:p=>'Ну что, '+ccTop(p)+' вместе. Остаюсь, играем дальше',
   dmTrialGo:p=>ccTopC(p)+'. Не сыграемся, честно. Без обид, ищи дальше',
   ccNewsTrialGone:h=>'Проба не задалась: @'+ccHandle(h)+' ушёл после первого капа'});
-Object.assign(I18N.en, {
+Object.assign(I18N.en, {ccRoleCool:d=>'Role changed recently — again in '+d+' d', ccDuoLimit:'Already asked three today — tomorrow',
   dmArghistoryBtn:'We have played together', dmArghistoryWhat:'Remind them of the nights you shared — they remember how it went',
   dmArgnatBtn:'Same country', dmArgnatWhat:'One country, one language — comms are easier',
   dmArgclubBtn:'Bring them to my club', dmArgclubWhat:'You are on a club main roster — that carries weight',
@@ -19624,7 +19624,7 @@ Object.assign(I18N.en, {
   dmTrialStay:p=>ccTopC(p)+' together. I am staying, let us keep going',
   dmTrialGo:p=>ccTopC(p)+'. Honestly we do not click. No hard feelings, keep looking',
   ccNewsTrialGone:h=>'The trial did not work out: @'+ccHandle(h)+' left after the first cup'});
-Object.assign(I18N.fr, {
+Object.assign(I18N.fr, {ccRoleCool:d=>'Rôle changé récemment — de nouveau dans '+d+' j', ccDuoLimit:'Déjà trois demandes aujourd\u2019hui — demain',
   dmArghistoryBtn:'On a déjà joué ensemble', dmArghistoryWhat:'Rappeler vos soirées communes — il s\u2019en souvient',
   dmArgnatBtn:'Même pays', dmArgnatWhat:'Même pays, même langue — les comms sont plus simples',
   dmArgclubBtn:'Je t\u2019emmène dans mon club', dmArgclubWhat:'Tu es dans l\u2019équipe principale d\u2019un club — ça pèse',
@@ -19643,7 +19643,7 @@ Object.assign(I18N.fr, {
   dmTrialStay:p=>ccTopC(p)+' ensemble. Je reste, on continue',
   dmTrialGo:p=>ccTopC(p)+'. Franchement, ça ne matche pas. Sans rancune, cherche encore',
   ccNewsTrialGone:h=>'L\u2019essai n\u2019a pas marché : @'+ccHandle(h)+' est parti après la première cup'});
-Object.assign(I18N.it, {
+Object.assign(I18N.it, {ccRoleCool:d=>'Ruolo cambiato da poco — di nuovo tra '+d+' g', ccDuoLimit:'Già tre richieste oggi — domani',
   dmArghistoryBtn:'Abbiamo già giocato insieme', dmArghistoryWhat:'Ricordagli le serate insieme — si ricorda com\u2019è andata',
   dmArgnatBtn:'Stesso paese', dmArgnatWhat:'Stesso paese, stessa lingua — le comms sono più facili',
   dmArgclubBtn:'Ti porto nel mio club', dmArgclubWhat:'Sei nel roster principale di un club — conta',
@@ -19662,7 +19662,7 @@ Object.assign(I18N.it, {
   dmTrialStay:p=>ccTopC(p)+' insieme. Resto, andiamo avanti',
   dmTrialGo:p=>ccTopC(p)+'. Sinceramente non ci troviamo. Niente di personale, cerca ancora',
   ccNewsTrialGone:h=>'La prova non è andata: @'+ccHandle(h)+' se n\u2019è andato dopo la prima cup'});
-Object.assign(I18N.pt, {
+Object.assign(I18N.pt, {ccRoleCool:d=>'Função trocada há pouco — de novo em '+d+' d', ccDuoLimit:'Já chamou três hoje — amanhã',
   dmArghistoryBtn:'A gente já jogou junto', dmArghistoryWhat:'Lembrar das noites juntos — ele lembra como foi',
   dmArgnatBtn:'Somos do mesmo país', dmArgnatWhat:'Mesmo país, mesma língua — call mais fácil',
   dmArgclubBtn:'Te levo pro meu clube', dmArgclubWhat:'Você tá no time principal de um clube — isso pesa',
@@ -110803,7 +110803,18 @@ function ccRoleSwitch(want){
   out.bestAttr=bestPlayAttr(out);
   pl.attrs=out;
   pl.role=want;
+  // День смены — от него считается пауза до следующей (ccRoleCooldown).
+  try{ if(CAREER.career) CAREER.career.roleDay=careerToday(); }catch(e){}
   return true;
+}
+/* РОЛЬ НЕ МЕНЯЮТ ТУДА-СЮДА (его слово 7.10: «просто так можно бесконечно спамить и роли»): сменил — следующая смена
+   через CC_ROLE_SWAP_DAYS. Смена при подписании (двое одной роли) идёт своей дорогой и не запрещается, но паузу
+   тоже ставит. Сколько дней осталось — 0, если можно. */
+const CC_ROLE_SWAP_DAYS=14;
+function ccRoleCooldown(){
+  const d=CAREER && CAREER.career && CAREER.career.roleDay;
+  if(!d) return 0;
+  return Math.max(0, CC_ROLE_SWAP_DAYS-ccDaysBetween(d, careerToday()));
 }
 /* ---- Один ИГЛ на команду ---------------------------------------------------
  *
@@ -110920,6 +110931,8 @@ function ccRoleSwapMate(want){
 // Можно ли пересесть самому. Возвращает причину отказа, чтобы кнопка могла её
 // сказать, а не просто погаснуть.
 function ccRoleSwapCan(){
+  const cool=ccRoleCooldown();
+  if(cool>0) return {ok:false, want:ccRoleOther(ccRoleNow()), why:'cool', days:cool};
   const want=ccRoleOther(ccRoleNow());
   const roles=ccSquadRoles();
   if(!roles.length) return {ok:false, why:null};
@@ -117678,7 +117691,7 @@ function careerMeHTML(){
       // Погасшая кнопка обязана сказать, почему: команда уже собрана, и
       // пересесть значит оставить её с двумя ИГЛами или без единого.
       (roleCan.ok ? '' : `<div class="ch-hint">${
-        roleCan.why==='two' ? L().ccRoleLockedTwo : L().ccRoleLockedNone}</div>`) : ''}
+        roleCan.why==='cool' ? L().ccRoleCool(roleCan.days) : roleCan.why==='two' ? L().ccRoleLockedTwo : L().ccRoleLockedNone}</div>`) : ''}
     </div>`];
   /* One button per chair, under the card sitting in it.
 
@@ -135678,6 +135691,19 @@ function careerDmMargin(who){
   }
   return pull-(who.ovr-CAREER_DM_REACH);
 }
+/* НЕ ПОДРЯД ПО ВСЕМУ ПОИСКУ (его слово 7.10: «просто так можно бесконечно спамить»): ответ приходит сразу, и можно
+   было писать всем подряд, пока кто-то не скажет «да». Предложений в дуо — CC_DM_ASKS_DAY в день; открыть уже
+   начатый разговор можно всегда. */
+const CC_DM_ASKS_DAY=3;
+function ccDmAsksLeft(){
+  const cr=CAREER && CAREER.career; if(!cr) return CC_DM_ASKS_DAY;
+  const a=cr.dmAsks; return (a && a.day===careerToday()) ? Math.max(0, CC_DM_ASKS_DAY-a.n) : CC_DM_ASKS_DAY;
+}
+function ccDmAsksUse(){
+  const cr=CAREER.career, today=careerToday();
+  if(!cr.dmAsks || cr.dmAsks.day!==today) cr.dmAsks={day:today, n:0};
+  cr.dmAsks.n++;
+}
 function careerDmWrite(handle, seat, fmt){
   /* Написать самому — это и есть разблокировать.
 
@@ -135700,7 +135726,9 @@ function careerDmWrite(handle, seat, fmt){
       ? existing.msgs.filter(m=>m.from==='them').slice(-1)[0] : null;
     const aged = lastNo && lastNo.day
       && ccDaysBetween(lastNo.day, careerToday())>=CC_ASK_AGAIN_DAYS;
-    if(!aged){ careerDmOpen(existing.id); return; }
+    if(!aged || ccDmAsksLeft()<=0){ careerDmOpen(existing.id); return; }
+    ccDmAsksUse();
+    existing.condUsed=false;   // новый разговор через две недели — новое условие возможно
     CH_DM=existing.id;
     if(typeof seat==='number') existing.seat=seat;
     existing.fmt=fmt||null; existing.joinPair=null; existing.joinKey=null; existing.joinThird=null;
@@ -135712,6 +135740,7 @@ function careerDmWrite(handle, seat, fmt){
     careerRenderHub('social');
     return;
   }
+  if(ccDmAsksLeft()<=0){ careerRenderHub('social'); return; }
   const who=(existing && existing.who)
     || careerDmPool().find(w=>hKey(w.handle)===hKey(handle))
     // Anybody in the region, which is what the search offers. See careerDuoSearchPool.
@@ -135740,6 +135769,7 @@ function careerDmWrite(handle, seat, fmt){
      and the two arguments still cost what they cost. See careerDmArgue. */
   t.args=0;
   t.pending=null;
+  ccDmAsksUse();
   careerDmAnswer(t, 0);
   careerSave();
   careerRenderHub('social');
@@ -137709,6 +137739,7 @@ function ccDuoFindRender(keepFocus){
         ad ? `<i class="cc-buy-ad${fits?'':' no'}">${esc(L().ccAdWant(L()[ad.want]||'', ad.div, ad.pr))}</i>` : ''}</div>
       ${wrote ? `<span class="cc-owned">${L().ccDuoYouWrote}</span>`
               : !fits ? `<span class="cc-owned cc-ad-no">${L().ccAdNoFit(ad.pr)}</span>`
+              : ccDmAsksLeft()<=0 ? `<span class="cc-owned cc-ad-no">${L().ccDuoLimit}</span>`
               : `<button class="ch-sign" onclick="ccDuoFindWrite('${esc(w.handle).replace(/'/g,"\\'")}')">${L().ccDuoWrite}</button>`}
       ${(CAREER.career.friends||[]).indexOf(w.handle)>=0
         ? `<span class="cc-owned">${L().ccFriendIs}</span>`
