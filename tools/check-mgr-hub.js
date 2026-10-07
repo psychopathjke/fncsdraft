@@ -737,6 +737,26 @@ const SECTIONS=[
     check('потенциал: младше — выше запас', avg(groups.y)>avg(groups.m) && (!groups.o.length || avg(groups.m)>avg(groups.o)), JSON.stringify(out.notes.potRoom));
     check('потенциал: не выше 98', (ccSceneRoster('EU')||[]).every(c=>(mgrPot(c.handle)||0)<=98));
   `},
+  {name:'напарник', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    const n0=mgrEvents().length, t0=MGR.teams[0], out1=t0.cards[t0.cards.length-1];
+    mgrMove(out1, '-1');   // состав стал неполным
+    check('неполный состав: сезон не кончился', mgrEvents().length>=Math.min(5, n0), n0+' → '+mgrEvents().length);
+    mgrRenderHub('centre');
+    check('неполный состав: на Центре не «итоги сезона»', !/mgrSeasonReview/.test((document.querySelector('#mgBody .ch-play')||{getAttribute:()=>''}).getAttribute('onclick')||''));
+    const t=MGR.teams[0];
+    const cands=mgrGuestCands(t);
+    check('напарник: кандидаты из других организаций', cands.length>=5 && cands.every(c=>!mgrOwned().some(x=>hKey(x)===hKey(c)) && mgrOrgOf(c)!==MGR.club.name), String(cands.length));
+    const g=cands[0], bill0=mgrWageBill();
+    check('напарник: добавлен', mgrGuestAdd(t.id, g.handle)===true && mgrTeamSize(t)===careerSquadSize());
+    check('напарник: не наш — без зарплаты', mgrWageBill()===bill0 && !mgrOwned().some(x=>hKey(x)===hKey(g)));
+    check('напарник: команда играет', mgrClubTeams(careerSquadSize()).length>=1 && mgrClubTeams(careerSquadSize())[0].squad.some(c=>hKey(c)===hKey(g)));
+    check('напарник: клубу доля только своих', Math.abs(mgrOwnShare(t.id)-(t.cards.length/mgrTeamSize(t)))<1e-9);
+    check('напарник: второй сверх формата не влезает', mgrGuestAdd(t.id, cands[1].handle)===false);
+    mgrRenderHub('squad');
+    check('напарник '+lang+': в составе с пометкой клуба', !!document.querySelector('#mgBody .mgs-guest') && document.getElementById('mgBody').textContent.indexOf(mgrOrgOf(g)||mgrT2().free)>=0, !!document.querySelector('#mgBody .mgs-guest')+' | '+(mgrOrgOf(g)||mgrT2().free)+' | '+JSON.stringify(t.guests)+' | '+mgrTeamSize(t));
+    mgrGuestRemove(t.id, g.handle); check('напарник: убран', mgrTeamSize(t)===careerSquadSize()-1);
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');

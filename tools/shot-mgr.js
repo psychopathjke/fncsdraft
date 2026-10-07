@@ -16,6 +16,7 @@ window.addEventListener('load', ()=>setTimeout(()=>{ try{
     if(sub){ const g={transfers:'transfers', club:'club', tables:'tables'}[tab]; if(g) MGR_SUB[g]=sub; }
     if(sub==='scout'){ mgrScoutHire(2); mgrScoutSet(MGR.scouts[0].id,'region','NAC'); let d=CAREER.career.day; for(let i=0;i<3;i++){ d=ccAddDays(d,7); mgrScoutWeek(d); } }
     if(sub==='staff'){ MGR_SUB.club='train'; mgrHirePerson('coach','flaire'); }
+    if(sub==='guest'){ const t=MGR.teams[0]; mgrMove(t.cards[t.cards.length-1], '-1'); mgrGuestAdd(t.id, mgrGuestCands(t)[0].handle); }
     if(sub==='youth'){ mgrYScoutHire('fr'); mgrYouthMonth('2024-01'); mgrYouthMonth('2024-02'); }
     mgrRenderHub(tab);
     if(sub==='sheet'){ const c=document.querySelector('#mgBody .mgs-card'); if(c) c.click(); } }
