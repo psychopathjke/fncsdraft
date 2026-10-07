@@ -128526,12 +128526,20 @@ const CC_ORG_EARN_FLOOR=78;   // уровень 100-й команды списк
 let CC_ORG_EARN_KEYS=null;
 function ccOrgKey(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,''); }
 // Призовые клуба по Fortnite или null, если его нет в топ-100.
+/* Ключ для призовых мягче, чем ccOrgKey (его слово 8.10 «орги рейтинг … обнови если не так»): переименованный клуб
+   терял свои призовые — Falcons Esports (2021) ≠ Team Falcons, Lazarus Esports ≠ Lazarus, FURIA Esports ≠ FURIA.
+   Без «team» спереди и «esports/esport/gaming/clan/club» сзади — с обеих сторон, поэтому совпадения не шире смысла. */
+function ccOrgEarnKey(s){
+  let k=ccOrgKey(s);
+  for(let i=0; i<2; i++) k=k.replace(/^team(?=.{3})/, '').replace(/(esports|esport|gaming|clan|club)$/, '');
+  return k;
+}
 function ccOrgEarn(name){
   if(!CC_ORG_EARN_KEYS){
     CC_ORG_EARN_KEYS=new Map();
-    Object.keys(CC_ORG_EARN).forEach(k=>CC_ORG_EARN_KEYS.set(ccOrgKey(k), CC_ORG_EARN[k]));
+    Object.keys(CC_ORG_EARN).forEach(k=>CC_ORG_EARN_KEYS.set(ccOrgEarnKey(k), CC_ORG_EARN[k]));
   }
-  const v=CC_ORG_EARN_KEYS.get(ccOrgKey(name));
+  const v=CC_ORG_EARN_KEYS.get(ccOrgEarnKey(name));
   return v==null ? null : v;
 }
 function ccOrgEarnLevel(usd){ return 82+8*Math.log10(usd/1e5); }
