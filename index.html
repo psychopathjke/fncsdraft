@@ -19413,6 +19413,157 @@ Object.assign(I18N.it, {hmCareerTag:'Modalità 1 · Carriera', hmCareerTitle:'Ca
 Object.assign(I18N.pt, {hmCareerTag:'Modo 1 · Carreira', hmCareerTitle:'Carreira', hmCareerSub:'Um jogador, temporada após temporada no calendário real 2019–2026: divisões, Majors, clubes, LANs', hmPlay:'Jogar',
   hmDraftTag:'Modo 2 · Draft', hmDraftTitle:'Draft', hmDraftSub:'Monte um time de cartas reais e jogue o torneio: qualquer ano 2019–2026, All FNCS, duplas, trios, squads',
   dpFormats:'All FNCS · formatos', dpBack:'Voltar', dpRealCards:'Cartas reais', dpPastDesc:'Cartas dos jogadores pelos resultados reais neste evento. Play-In, heats e final.'});
+/* Разговор с тиммейтом (7.10): тон разбора, план на вечер, честно о переманивании. */
+Object.assign(I18N.ru, {dmMateBtnreview:'Поговорить о сливе',
+  dmMateWhatreview:'После плохого вечера — каким тоном, решаешь ты',
+  dmMateBtnplan:'План на вечер',
+  dmMateWhatplan:'Договориться, как играем сегодня',
+  dmRevHint:'Каким тоном говорить?',
+  dmRevBtn_support:'Поддержать',
+  dmRevBtn_analyze:'Разобрать ошибки',
+  dmRevBtn_blame:'Наехать',
+  dmRevYou_support:(p,o)=>'Вчера не зашло, бывает. Мы сильнее этого, следующий наш',
+  dmRevYou_analyze:(p,o)=>ccTopC(p)+' из '+o+'. Давай по пунктам: где отдали зону и почему первый файт был наш',
+  dmRevYou_blame:(p,o)=>ccTopC(p)+' из '+o+'. Честно — ты вчера был не в игре',
+  dmRevGood:(p,o)=>'Спасибо. Именно это и нужно было услышать. Завтра отыграем',
+  dmRevOk:(p,o)=>'Ок, принято. Работаем',
+  dmRevBad:(p,o)=>'Серьёзно? Я тоже не один там играл',
+  dmPlanHint:'Как играем сегодня?',
+  dmPlanBtn_aggr:'Агрессивно',
+  dmPlanBtn_zone:'От зоны',
+  dmPlanYou_aggr:'Сегодня играем агрессивно: контесты, файты, килы',
+  dmPlanYou_zone:'Сегодня спокойно: от зоны, без лишних файтов',
+  dmPlanOk_aggr:'Го. Беру первый контакт, ты за мной',
+  dmPlanOk_zone:'Ок. Ротации ранние, файты только на своих условиях',
+  dmPlanKept:'Вот это я понимаю — сыграли как договорились',
+  dmPlanBroken:'Мы же договаривались по-другому. Зачем тогда план?',
+  dmHeadsUp:p=>'Хочу, чтобы ты знал раньше всех: после '+ccTop(p)+' мне написали с предложением. Думаю. Скажи что-нибудь',
+  dmHeadsUpHint:'Его зовут в другую команду — он ждёт твоего слова',
+  dmHeadsUpStayBtn:'Останься, договоримся',
+  dmHeadsUpGoBtn:'Решай сам',
+  dmHeadsUpStayYou:'Спасибо, что сказал. Ты мне нужен — давай договоримся, что поменять',
+  dmHeadsUpGoYou:'Решай сам. Держать не буду',
+  dmHeadsUpStays:'Ладно. Раз так — остаюсь. Но давай правда что-то менять'});
+Object.assign(I18N.en, {dmMateBtnreview:'Talk about the bad night',
+  dmMateWhatreview:'After a bad night — you pick the tone',
+  dmMateBtnplan:'Plan for tonight',
+  dmMateWhatplan:'Agree how you play today',
+  dmRevHint:'What tone?',
+  dmRevBtn_support:'Back them up',
+  dmRevBtn_analyze:'Go over the mistakes',
+  dmRevBtn_blame:'Call them out',
+  dmRevYou_support:(p,o)=>'Yesterday did not land, it happens. We are better than that, next one is ours',
+  dmRevYou_analyze:(p,o)=>ccTopC(p)+' of '+o+'. Point by point: where we lost zone and why the first fight was ours',
+  dmRevYou_blame:(p,o)=>ccTopC(p)+' of '+o+'. Honestly — you were not in the game yesterday',
+  dmRevGood:(p,o)=>'Thanks. That is exactly what I needed to hear. We bounce back tomorrow',
+  dmRevOk:(p,o)=>'Ok, noted. Back to work',
+  dmRevBad:(p,o)=>'Seriously? I was not playing alone out there',
+  dmPlanHint:'How do we play today?',
+  dmPlanBtn_aggr:'Aggressive',
+  dmPlanBtn_zone:'Play zone',
+  dmPlanYou_aggr:'Tonight we go aggressive: contests, fights, kills',
+  dmPlanYou_zone:'Tonight we play it calm: zone first, no extra fights',
+  dmPlanOk_aggr:'Let us go. I take first contact, you follow',
+  dmPlanOk_zone:'Ok. Early rotations, fights only on our terms',
+  dmPlanKept:'That is what I am talking about — played it exactly like we said',
+  dmPlanBroken:'We agreed on something else. Why make a plan then?',
+  dmHeadsUp:p=>'I want you to hear it first: after '+ccTop(p)+' I got an offer. I am thinking. Say something',
+  dmHeadsUpHint:'Another team wants them — they are waiting for your word',
+  dmHeadsUpStayBtn:'Stay, we will sort it out',
+  dmHeadsUpGoBtn:'Your call',
+  dmHeadsUpStayYou:'Thanks for telling me. I need you — let us agree what to change',
+  dmHeadsUpGoYou:'Your call. I will not hold you',
+  dmHeadsUpStays:'Alright. If that is how it is — I stay. But let us actually change something'});
+Object.assign(I18N.fr, {dmMateBtnreview:'Parler de la mauvaise soirée',
+  dmMateWhatreview:'Après une mauvaise soirée — à toi de choisir le ton',
+  dmMateBtnplan:'Plan pour ce soir',
+  dmMateWhatplan:'Se mettre d\u2019accord sur le jeu du jour',
+  dmRevHint:'Sur quel ton ?',
+  dmRevBtn_support:'Soutenir',
+  dmRevBtn_analyze:'Revoir les erreurs',
+  dmRevBtn_blame:'Recadrer',
+  dmRevYou_support:(p,o)=>'Hier ça n\u2019a pas souri, ça arrive. On vaut mieux que ça, la prochaine est pour nous',
+  dmRevYou_analyze:(p,o)=>ccTopC(p)+' sur '+o+'. Point par point : où on a perdu la zone et pourquoi le premier fight était à nous',
+  dmRevYou_blame:(p,o)=>ccTopC(p)+' sur '+o+'. Franchement — hier tu n\u2019étais pas dans le match',
+  dmRevGood:(p,o)=>'Merci. C\u2019est exactement ce que j\u2019avais besoin d\u2019entendre. On se rattrape demain',
+  dmRevOk:(p,o)=>'Ok, noté. On bosse',
+  dmRevBad:(p,o)=>'Sérieux ? Je ne jouais pas seul non plus',
+  dmPlanHint:'On joue comment aujourd\u2019hui ?',
+  dmPlanBtn_aggr:'Agressif',
+  dmPlanBtn_zone:'Jouer la zone',
+  dmPlanYou_aggr:'Ce soir on joue agressif : contests, fights, kills',
+  dmPlanYou_zone:'Ce soir on joue calme : la zone d\u2019abord, pas de fights en trop',
+  dmPlanOk_aggr:'Go. Je prends le premier contact, tu suis',
+  dmPlanOk_zone:'Ok. Rotations tôt, fights seulement à nos conditions',
+  dmPlanKept:'Là je reconnais — joué exactement comme prévu',
+  dmPlanBroken:'On avait dit autre chose. À quoi bon un plan alors ?',
+  dmHeadsUp:p=>'Je veux que tu le saches en premier : après le '+ccTop(p)+' on m\u2019a fait une offre. Je réfléchis. Dis quelque chose',
+  dmHeadsUpHint:'Une autre équipe le veut — il attend ta réponse',
+  dmHeadsUpStayBtn:'Reste, on va s\u2019arranger',
+  dmHeadsUpGoBtn:'C\u2019est ton choix',
+  dmHeadsUpStayYou:'Merci de me l\u2019avoir dit. J\u2019ai besoin de toi — voyons ce qu\u2019on change',
+  dmHeadsUpGoYou:'C\u2019est ton choix. Je ne te retiens pas',
+  dmHeadsUpStays:'Bon. Si c\u2019est comme ça — je reste. Mais changeons vraiment quelque chose'});
+Object.assign(I18N.it, {dmMateBtnreview:'Parlare della serata storta',
+  dmMateWhatreview:'Dopo una serata storta — scegli tu il tono',
+  dmMateBtnplan:'Piano per stasera',
+  dmMateWhatplan:'Mettersi d\u2019accordo su come giocare oggi',
+  dmRevHint:'Con che tono?',
+  dmRevBtn_support:'Sostenerlo',
+  dmRevBtn_analyze:'Rivedere gli errori',
+  dmRevBtn_blame:'Fargli una ramanzina',
+  dmRevYou_support:(p,o)=>'Ieri non è andata, capita. Siamo meglio di così, la prossima è nostra',
+  dmRevYou_analyze:(p,o)=>ccTopC(p)+' su '+o+'. Punto per punto: dove abbiamo perso la zona e perché il primo fight era nostro',
+  dmRevYou_blame:(p,o)=>ccTopC(p)+' su '+o+'. Sinceramente — ieri non eri in partita',
+  dmRevGood:(p,o)=>'Grazie. Era proprio quello che mi serviva sentire. Domani ci rifacciamo',
+  dmRevOk:(p,o)=>'Ok, ricevuto. Al lavoro',
+  dmRevBad:(p,o)=>'Sul serio? Non giocavo mica da solo',
+  dmPlanHint:'Come giochiamo oggi?',
+  dmPlanBtn_aggr:'Aggressivi',
+  dmPlanBtn_zone:'Giocare la zona',
+  dmPlanYou_aggr:'Stasera aggressivi: contest, fight, kill',
+  dmPlanYou_zone:'Stasera tranquilli: prima la zona, niente fight inutili',
+  dmPlanOk_aggr:'Andiamo. Prendo io il primo contatto, tu dietro',
+  dmPlanOk_zone:'Ok. Rotazioni presto, fight solo alle nostre condizioni',
+  dmPlanKept:'Così mi piace — giocato esattamente come avevamo detto',
+  dmPlanBroken:'Avevamo deciso diversamente. A che serve un piano allora?',
+  dmHeadsUp:p=>'Voglio che tu lo sappia per primo: dopo il '+ccTop(p)+' mi hanno fatto un\u2019offerta. Ci sto pensando. Di\u2019 qualcosa',
+  dmHeadsUpHint:'Un\u2019altra squadra lo vuole — aspetta una tua parola',
+  dmHeadsUpStayBtn:'Resta, ci accordiamo',
+  dmHeadsUpGoBtn:'Decidi tu',
+  dmHeadsUpStayYou:'Grazie di avermelo detto. Mi servi — vediamo cosa cambiare',
+  dmHeadsUpGoYou:'Decidi tu. Non ti trattengo',
+  dmHeadsUpStays:'Va bene. Se è così — resto. Ma cambiamo davvero qualcosa'});
+Object.assign(I18N.pt, {dmMateBtnreview:'Falar da noite ruim',
+  dmMateWhatreview:'Depois de uma noite ruim — você escolhe o tom',
+  dmMateBtnplan:'Plano pra hoje',
+  dmMateWhatplan:'Combinar como vocês jogam hoje',
+  dmRevHint:'Em que tom?',
+  dmRevBtn_support:'Apoiar',
+  dmRevBtn_analyze:'Rever os erros',
+  dmRevBtn_blame:'Dar uma bronca',
+  dmRevYou_support:(p,o)=>'Ontem não encaixou, acontece. A gente é melhor que isso, a próxima é nossa',
+  dmRevYou_analyze:(p,o)=>ccTopC(p)+' de '+o+'. Ponto por ponto: onde perdemos a zona e por que a primeira luta era nossa',
+  dmRevYou_blame:(p,o)=>ccTopC(p)+' de '+o+'. Sinceramente — ontem você não tava no jogo',
+  dmRevGood:(p,o)=>'Valeu. Era exatamente isso que eu precisava ouvir. Amanhã a gente recupera',
+  dmRevOk:(p,o)=>'Ok, anotado. Bora trabalhar',
+  dmRevBad:(p,o)=>'Sério? Eu não tava jogando sozinho lá',
+  dmPlanHint:'Como a gente joga hoje?',
+  dmPlanBtn_aggr:'Agressivo',
+  dmPlanBtn_zone:'Jogar de zona',
+  dmPlanYou_aggr:'Hoje é agressivo: contest, luta, kill',
+  dmPlanYou_zone:'Hoje é tranquilo: zona primeiro, sem luta à toa',
+  dmPlanOk_aggr:'Bora. Eu pego o primeiro contato, você vem atrás',
+  dmPlanOk_zone:'Ok. Rotação cedo, luta só nos nossos termos',
+  dmPlanKept:'Assim que é — jogamos exatamente como combinamos',
+  dmPlanBroken:'A gente combinou outra coisa. Pra que plano então?',
+  dmHeadsUp:p=>'Quero que você saiba antes de todo mundo: depois do '+ccTop(p)+' me fizeram uma proposta. Tô pensando. Fala alguma coisa',
+  dmHeadsUpHint:'Outro time quer ele — ele espera sua palavra',
+  dmHeadsUpStayBtn:'Fica, a gente se acerta',
+  dmHeadsUpGoBtn:'Você decide',
+  dmHeadsUpStayYou:'Valeu por me contar. Preciso de você — bora combinar o que mudar',
+  dmHeadsUpGoYou:'Você decide. Não vou te segurar',
+  dmHeadsUpStays:'Beleza. Se é assim — eu fico. Mas vamos mudar alguma coisa de verdade'});
 /* Переговоры с тиммейтом (7.10): аргументы «играли вместе / земляки / свой клуб / буткемп», условия «пересядь» и «пробный кап». */
 Object.assign(I18N.ru, {dmMateTalkDone:'Сегодня уже поговорили — завтра', ccRoleCool:d=>'Роль недавно менялась — снова можно через '+d+' дн.', ccDuoLimit:'Сегодня уже написал троим — завтра',
   dmArghistoryBtn:'Мы уже играли вместе', dmArghistoryWhat:'Напомнить общие вечера — помнит, как было',
@@ -131452,7 +131603,7 @@ const CC_POST_BY={
   // когда добавляли саму кнопку; check-career-feed поймал.
   ccNewsMovedTogether:'you',
   // The seat beside you changing hands is the player's own news, both ways.
-  ccNewsMateLeftFor:'you',
+  ccNewsMateLeftFor:'you', ccNewsTrialGone:'you',
   ccNewsBoughtOut:'you',
   ccNewsStreamAd:'you',
   // The rivalry is the player's own running commentary on their season.
@@ -134796,6 +134947,15 @@ function careerMatePoach(place, of, passed){
   // Their own patience, which is the seat's rather than the squad's.
   const patience=risk.patience;
   const stays=patience>=CC_POACH_SAFE;
+  // Чуть не хватило — он не уходит молча, а говорит тебе (раз в сезон, только напарник с перепиской).
+  if(!stays && patience>=CC_POACH_SAFE-CC_HEADSUP_BAND && risk.rec && risk.rec.headsUp!==cr.season && !ccMpOn() &&
+     careerPartnerCard() && hKey(careerPartnerCard().handle)===hKey(mate.handle)){
+    risk.rec.headsUp=cr.season;
+    careerDmPush(t, 'them', 'dmHeadsUp', [place]);
+    t.state='headsup'; t.headsPlace=place;
+    careerSave();
+    return t;
+  }
   careerDmPush(t, 'them', stays ? 'dmMatePoachStay' : 'dmMatePoachGo', [place]);
   if(!stays){
     careerMateDrop(mate.handle);
@@ -134938,6 +135098,7 @@ function careerDmInbound(place, total, passed, from){
   // And the seat beside you, which is the one thing on this screen that can be
   // taken from you rather than offered to you.
   careerMatePoach(place, total, passed);
+  try{ careerMatePlanAfter(); }catch(e){}
   // And the one sitting next to you, who has more to say than anybody.
   careerMateDm(place, total, passed);
   /* Who writes to you, and the door that was shut.
@@ -136779,6 +136940,9 @@ function careerSocialHTML(){
       : (careerPartnerCard() && hKey(open.who.handle)===hKey(careerPartnerCard().handle))
         ? `<div class="dm-foot dm-foot-mate">
             <span>${esc(L().dmMateFoot)}</span>
+            ${open.state==='headsup' ? `<div class="dm-asked">${esc(L().dmHeadsUpHint)}</div><div class="dm-ask"><button class="ch-sign" onclick="careerMateHeadsUp(true)">${esc(L().dmHeadsUpStayBtn)}</button><button class="cc-back" onclick="careerMateHeadsUp(false)">${esc(L().dmHeadsUpGoBtn)}</button></div>` : ''}
+            ${open.revAsk ? `<div class="dm-asked">${esc(L().dmRevHint)}</div><div class="dm-ask">${['support','analyze','blame'].map(x=>`<button class="cc-back" onclick="careerMateReview('${x}')">${esc(L()['dmRevBtn_'+x])}</button>`).join('')}</div>` : ''}
+            ${open.planAsk ? `<div class="dm-asked">${esc(L().dmPlanHint)}</div><div class="dm-ask">${['aggr','zone'].map(x=>`<button class="cc-back" onclick="careerMatePlanSet('${x}')">${esc(L()['dmPlanBtn_'+x])}</button>`).join('')}</div>` : ''}
             ${careerMateTopics().length ? '' : `<div class="dm-asked">${esc(L().dmMateTalkDone)}</div>`}
             <div class="dm-ask">${careerMateTopics().map(k=>
               `<button class="cc-back" onclick="careerMateTalk(\'${k}\')"
@@ -159167,15 +159331,85 @@ function careerMateTopics(){
   const cr=CAREER.career;
   const last=(cr.log||[]).slice(-1)[0];
   const done=ccMateTalkedToday(careerMateRec());
-  return CC_MATE_TOPICS.filter(k=>{
+  const extra=[];
+  // Разбор — после плохого вечера, один раз на этот вечер.
+  if(last && ccMateBadNight(last) && (careerMateRec()||{}).revDay!==last.day) extra.push('review');
+  // План — в день, когда есть что играть, один раз.
+  if(ccMateHasNightToday() && !(cr.matePlan && cr.matePlan.day===careerToday())) extra.push('plan');
+  return extra.concat(CC_MATE_TOPICS.filter(k=>{
     if(done.indexOf(k)>=0) return false;
     if(k==='night') return !!last;
     if(k==='spot')  return !!careerSpotOn();
     return true;
-  });
+  }));
+}
+/* ТРИ НОВЫХ РАЗГОВОРА С ТИММЕЙТОМ (его «делай» 7.10 на список «что ещё добавить»). Числа — оценка режима.
+   1) РАЗБОР ПЛОХОГО ВЕЧЕРА — каким тоном: поддержать / разобрать ошибки / наехать. Отклик зависит от характера
+      («голос» ccVoiceOf: 1 сдержанный, 2 тёплый, 3 дерзкий, 4 сухой): тёплому нужна поддержка, сухому — разбор,
+      наезд не любит никто, дерзкий — меньше всех.
+   2) ПЛАН НА ВЕЧЕР — «агрессивно» (W-key) или «от зоны» (спокойно). Играешь вечер тем стилем, о котором
+      договорились, — плюс к настрою; другим — минус (careerMatePlanAfter после вечера).
+   3) ЧЕСТНО О ПЕРЕМАНИВАНИИ — если его зовут, а настроя чуть не хватает, он сначала говорит тебе. «Останься,
+      договоримся» поднимает настрой и держит его; «решай сам» — уходит (см. careerMatePoach). */
+const CC_REV_TONE={support:{0:5,1:4,2:8,3:2,4:3}, analyze:{0:5,1:6,2:3,3:-2,4:7}, blame:{0:-6,1:-4,2:-8,3:-10,4:-3}};
+const CC_PLAN_KEPT=4, CC_PLAN_BROKEN=-4, CC_HEADSUP_BAND=15, CC_HEADSUP_KEEP=12;
+function ccMateBadNight(r){ return !!r && !r.passed && r.of>1 && r.place>r.of*0.5; }
+function ccMateHasNightToday(){
+  try{ return (careerEvents().get(careerToday())||[]).some(e=>e && e.kind && e.kind!=='nations'); }catch(e){ return false; }
+}
+function careerMateReview(tone){
+  const rec=careerMateRec(), t=careerMateThread(), cr=CAREER.career; if(!rec || !t || !CC_REV_TONE[tone]) return;
+  const last=(cr.log||[]).slice(-1)[0]; if(!last || rec.revDay===last.day) return;
+  rec.revDay=last.day; t.revAsk=false;
+  const mate=careerPartnerCard(), v=mate ? ccVoiceOf(mate.handle) : 0;
+  const by=CC_REV_TONE[tone][v]!=null ? CC_REV_TONE[tone][v] : CC_REV_TONE[tone][0];
+  careerDmPush(t, 'you', 'dmRevYou_'+tone, [last.place, last.of]);
+  careerDmPush(t, 'them', by>=5 ? 'dmRevGood' : by>0 ? 'dmRevOk' : 'dmRevBad', [last.place, last.of]);
+  careerMateRecords().forEach(pr=>{ pr.patience=clamp((pr.patience||0)+by, 0, 100); });
+  careerSave(); careerRenderHub('social');
+}
+function careerMatePlanSet(style){
+  const t=careerMateThread(), cr=CAREER.career; if(!t || (style!=='aggr' && style!=='zone')) return;
+  cr.matePlan={day:careerToday(), style, done:false}; t.planAsk=false;
+  careerDmPush(t, 'you', 'dmPlanYou_'+style);
+  careerDmPush(t, 'them', 'dmPlanOk_'+style);
+  careerSave(); careerRenderHub('social');
+}
+// После вечера: сыграли тем стилем, о котором договорились?
+function careerMatePlanAfter(){
+  const cr=CAREER.career, p=cr && cr.matePlan; if(!p || p.done || p.day!==careerToday()) return;
+  const t=careerMateThread(); if(!t) return;
+  p.done=true;
+  const st=(typeof ccPlayStyle==='function') ? ccPlayStyle() : 'norm';
+  const kept=(p.style==='aggr' && st==='key') || (p.style==='zone' && st==='chill');
+  careerMateRecords().forEach(pr=>{ pr.patience=clamp((pr.patience||0)+(kept ? CC_PLAN_KEPT : CC_PLAN_BROKEN), 0, 100); });
+  careerDmPush(t, 'them', kept ? 'dmPlanKept' : 'dmPlanBroken');
+}
+function careerMateHeadsUp(stay){
+  const t=careerMateThread(); if(!t || t.state!=='headsup') return;
+  const mate=careerPartnerCard(); if(!mate){ t.state='open'; return; }
+  if(stay){
+    careerDmPush(t, 'you', 'dmHeadsUpStayYou');
+    careerMateRecords().forEach(pr=>{ pr.patience=clamp((pr.patience||0)+CC_HEADSUP_KEEP, 0, 100); });
+    careerDmPush(t, 'them', 'dmHeadsUpStays');
+    t.state='open';
+  } else {
+    careerDmPush(t, 'you', 'dmHeadsUpGoYou');
+    careerDmPush(t, 'them', 'dmMatePoachGo', [t.headsPlace||0]);
+    careerMateDrop(mate.handle);
+    t.state='declined'; t.left=careerToday();
+    careerNews('bad', 'ccNewsMateLeftFor', [mate.handle]);
+    careerEvent('tlDuoPoached', [mate.handle]);
+  }
+  careerSave(); careerRenderHub('social');
 }
 function careerMateTalk(kind){
   const mate=careerPartnerCard(); if(!mate) return false;
+  if(kind==='review' || kind==='plan'){
+    const t0=careerMateThread(); if(!t0) return false;
+    if(kind==='review') t0.revAsk=true; else t0.planAsk=true;
+    careerSave(); careerRenderHub('social'); return true;
+  }
   const rec=careerMateRec(); if(!rec) return false;
   const cr=CAREER.career, t=careerMateThread(); if(!t) return false;
   if(ccMateTalkedToday(rec).indexOf(kind)>=0) return false;
