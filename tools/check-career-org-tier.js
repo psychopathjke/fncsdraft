@@ -18,6 +18,18 @@ try{
   check('история клуба поднимает слабый состав', ccOrgTier('Sentinels', 78, 4)>78, String(ccOrgTier('Sentinels', 78, 4)));
   const big=careerOrgPool().find(o=>o.name==='BIG'); out.notes.big=big && {tier:big.tier, roster:big.roster, n:big.n};
   check('BIG 2026 в карьере — по составу, не ~85', big && big.tier>=Math.round(big.roster)-0.5, JSON.stringify(out.notes.big));
+  // Подписчики клуба и его медийка (его слово 8.10: «пусть фоловеры рядом с клубом пишет, типо даёт клуб медийку»).
+  const fz=ccOrgFollowers('FaZe Clan', 90), unk=ccOrgFollowers('Нет Такого Клуба', 80);
+  check('FaZe — настоящее число', !fz.est && fz.n>1000000, JSON.stringify(fz));
+  check('неизвестный — оценка со знаком', unk.est && ccOrgFolText(unk).charAt(0)==='≈');
+  check('большой клуб даёт больше медийки', ccOrgMediaMonth('FaZe Clan', 90)>ccOrgMediaMonth('Нет Такого Клуба', 70) && ccOrgMediaSign('FaZe Clan', 90)>ccOrgMediaSign('Нет Такого Клуба', 70));
+  check('академия — вдвое меньше', ccOrgMediaMonth('FaZe Clan', 90, true)===Math.round(ccOrgMediaMonth('FaZe Clan', 90)/2));
+  const r0=CAREER.career.reach; CAREER.offers=[{name:'Team Falcons', tier:90, salary:5000, goal:'top', academy:false}]; careerSign(0);
+  out.notes.sign=CAREER.career.reach-r0;
+  check('подписал — объявление клуба от его аудитории', CAREER.career.reach-r0===ccOrgMediaSign('Team Falcons', 90), String(CAREER.career.reach-r0));
+  const r1=CAREER.career.reach; careerPayWages('2026-03-15', '2026-05-15'); out.notes.month=CAREER.career.reach-r1;
+  check('два месяца — две медийки клуба', CAREER.career.reach-r1===2*ccOrgMediaMonth('Team Falcons', 90), String(CAREER.career.reach-r1));
+  const tile=careerOrgTileHTML(); check('на карточке клуба — подписчики и медийка', tile.indexOf(L().ccOrgFans)>=0 && tile.indexOf(ccOrgFolText(ccOrgFollowers('Team Falcons', 90)))>=0 && tile.indexOf(L().ccOrgMedia)>=0);
 }catch(e){ out.fails.push(String(e.stack||e)); }
 document.getElementById('__out').textContent='@@B@@'+encodeURIComponent(JSON.stringify(out))+'@@E@@'; }, 500));<\/script>`;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'orgtier-')), tmp = path.join(dir, 'index.html');
