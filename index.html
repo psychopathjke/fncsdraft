@@ -6314,6 +6314,16 @@
   .mgn-st.half{opacity:.5;}
   .mgn-exp{font-size:11px;opacity:.8;margin-top:2px;}
   @media (max-width:480px){ .mgn-grid{grid-template-columns:1fr;} }
+  .mgn-own{display:flex;flex-direction:column;gap:10px;max-width:520px;}
+  .mgn-field{display:flex;flex-direction:column;gap:6px;}
+  .mgn-field em{font-style:normal;font-size:11px;opacity:.7;text-transform:uppercase;}
+  .mgn-field input{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.25);color:inherit;}
+  .mgn-field input.err{border-color:#ff5a5a;}
+  .mgn-cols,.mgn-shapes{display:flex;gap:8px;flex-wrap:wrap;}
+  .mgn-col{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;}
+  .mgn-col.on{border-color:#fff;}
+  .mgn-shape{background:none;border:2px solid transparent;border-radius:8px;padding:2px;cursor:pointer;}
+  .mgn-shape.on{border-color:#ffd400;}
   .mg-wrap{max-width:980px;margin:0 auto;padding:18px 16px 40px;color:#e6ecff;background:linear-gradient(180deg,#13235c,#0b1640);border:1px solid rgba(63,208,255,.25);border-radius:16px;}
   .mg-h{font:800 26px/1.1 Oswald,system-ui,sans-serif;margin:0 0 4px;text-transform:uppercase;}
   .mg-years{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0;}
@@ -155008,6 +155018,71 @@ function mgrTake(i){
   mgrSave();
   mgrOpenHub();
 }
+/* СВОЙ КЛУБ (его слово 7.10: «выбрать реальную или создать… у каждой свой бюджет»). Три уровня
+   старта — оценка режима: полоса рейтинга свободных агентов, касса, множитель бюджета. Состав —
+   свободные агенты года и региона (без клуба по mgrOrgOf), сильнейшие в полосе; если в полосе не
+   хватает на команду формата — из всех свободных. */
+const MGR_OWN_TIERS={rookie:{lo:65, hi:72, cash:40000, k:1}, mid:{lo:72, hi:78, cash:90000, k:1.8}, amb:{lo:78, hi:84, cash:180000, k:3}};
+const MGR_CREST_SHAPES={shield:'M20 2 L36 8 V20 C36 30 28 36 20 39 C12 36 4 30 4 20 V8 Z', round:'M20 2 A18 18 0 1 1 19.9 2 Z', hex:'M20 2 L36 11 V29 L20 38 L4 29 V11 Z'};
+const MGR_CREST_COLORS=['#ffd400','#ff5a5a','#7aa2ff','#8be9fd','#b07dff','#6bdc8a'];
+function mgrCrestSVG(cr, size){
+  cr=cr||{};
+  const s=size||40, col=/^#[0-9a-f]{6}$/i.test(cr.color||'') ? cr.color : '#ffd400';
+  const d=MGR_CREST_SHAPES[cr.shape]||MGR_CREST_SHAPES.shield, ini=esc(String(cr.ini||'').slice(0, 3).toUpperCase());
+  return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 40 40"><path d="'+d+'" fill="'+col+'" stroke="rgba(0,0,0,.5)" stroke-width="1.5"/>'+
+    '<text x="20" y="25" text-anchor="middle" font-family="Oswald,sans-serif" font-weight="700" font-size="12" fill="#111">'+ini+'</text></svg>';
+}
+function mgrLogo(name, big){
+  if(MGR && MGR.club && MGR.club.own && MGR.club.name===name) return mgrCrestSVG(MGR.club.crest, big ? 44 : 26);
+  return typeof clubLogoHTML==='function' ? clubLogoHTML(name, big) : '';
+}
+function mgrCleanName(s){ return String(s||'').replace(/[\u0000-\u001f<>"'`\\]/g, '').replace(/\s+/g, ' ').trim().slice(0, 24); }
+function mgrCreateOwn(o){
+  const name=mgrCleanName(o && o.name); if(!name) return 'name';
+  const tier=MGR_OWN_TIERS[o.tier]||MGR_OWN_TIERS.rookie, region=o.region||MGR_NEW_REGION;
+  const sh=mgrShadow(MGR_NEW_YEAR, region);
+  const ini=name.split(' ').map(w=>w[0]||'').join('').slice(0, 3) || name.slice(0, 2);
+  MGR={v:1, year:MGR_NEW_YEAR, region:region, shadow:sh,
+       club:{name:name, own:true, crest:{color:o.color, shape:o.shape, ini:ini}, avg:0, cash:tier.cash, earned:0, paidMonth:sh.career.day.slice(0, 7), rep:30},
+       teams:[], bench:[], log:[], skipped:[]};
+  mgrEnter();
+  MGR.season0=sh.career.day;
+  const size=Math.max(2, careerSquadSize());
+  let free=[]; try{ free=(ccSceneRoster(region)||[]).filter(c=>c && c.handle && !mgrOrgOf(c)); }catch(e){ free=[]; }
+  const inBand=free.filter(c=>{ const v=ccCardOvr(c)||0; return v>=tier.lo && v<=tier.hi; });
+  const pick=(inBand.length>=size ? inBand : free).slice().sort((a,b)=>(ccCardOvr(b)||0)-(ccCardOvr(a)||0)).slice(0, size*2);
+  mgrBuildTeams(pick.map(c=>c.handle));
+  MGR.club.avg=pick.length ? Math.round(pick.reduce((s,c)=>s+(ccCardOvr(c)||0), 0)/pick.length) : tier.lo;
+  MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h));
+  { const b=mgrClubBudget('', mgrWageBill());
+    Object.assign(MGR.club, {turnover:Math.round(b.turnover*tier.k), transfer:Math.round(b.transfer*tier.k), wageCap:Math.max(b.wageCap, Math.round(b.wageCap*tier.k))}); }
+  MGR.fncsCal=mgrFncsDays().map(x=>x.day);
+  MGR.inbox=[]; MGR.morale={}; mgrBoardInit();
+  mgrRivalsInit();
+  if(MGR_NEW_START) mgrApplyStart(MGR_NEW_START);
+  mgrSave();
+  return true;
+}
+let MGR_OWN_PICK={color:'#ffd400', shape:'shield', tier:'rookie'};
+function mgrOwnFormHTML(){
+  const T9=mgrT9(), p=MGR_OWN_PICK;
+  const nm=(document.getElementById('mgnName')||{}).value||'';
+  const cols=MGR_CREST_COLORS.map(c=>'<button class="mgn-col'+(p.color===c?' on':'')+'" style="background:'+c+'" onclick="MGR_OWN_PICK.color=\''+c+'\';mgrOpenNew()"></button>').join('');
+  const shapes=Object.keys(MGR_CREST_SHAPES).map(s=>'<button class="mgn-shape'+(p.shape===s?' on':'')+'" onclick="MGR_OWN_PICK.shape=\''+s+'\';mgrOpenNew()">'+
+    mgrCrestSVG({color:p.color, shape:s, ini:''}, 30)+'</button>').join('');
+  const tiers=Object.keys(MGR_OWN_TIERS).map(k=>'<button class="ch-subtab'+(p.tier===k?' on':'')+'" onclick="MGR_OWN_PICK.tier=\''+k+'\';mgrOpenNew()">'+esc(T9.tiers[k])+'</button>').join('');
+  return '<div class="ch-tile mgn-own"><h4>'+esc(T9.own)+'</h4>'+
+    '<label class="mgn-field"><em>'+esc(T9.ownName)+'</em><input id="mgnName" maxlength="24" value="'+esc(nm)+'" oninput="this.classList.remove(\'err\')"></label>'+
+    '<div class="mgn-field"><em>'+esc(T9.crest)+'</em><div class="mgn-cols">'+cols+'</div><div class="mgn-shapes">'+shapes+'</div></div>'+
+    '<div class="mgn-field"><em>'+esc(T9.tier)+'</em><div class="ch-subtabs">'+tiers+'</div><small>'+esc(T9.tierHint[p.tier])+'</small></div>'+
+    '<button class="ch-play" onclick="mgrOwnGo()">'+esc(T9.ownGo)+'</button></div>';
+}
+function mgrOwnGo(){
+  const el=document.getElementById('mgnName');
+  const r=mgrCreateOwn(Object.assign({name:el ? el.value : '', region:MGR_NEW_REGION}, MGR_OWN_PICK));
+  if(r!==true){ if(el) el.classList.add('err'); return; }
+  mgrOpenHub();
+}
 // Команды — из настоящего состава клуба: сильнейшие по рейтингу, по размеру формата сезона; остальные в запас.
 function mgrBuildTeams(handles){
   const size=Math.max(2, careerSquadSize());
@@ -155075,12 +155150,18 @@ function mgrT9(){
     overCap:s=>'Совет против: потолок зарплат '+s+' в месяц', transfer:'Трансферный бюджет', wageCap:'Бюджет зарплат',
     renewCap:h=>h+' уходит: продление не влезло в бюджет зарплат',
     real:'Настоящий клуб', own:'Создать свой', star:'Звезда состава', byStars:'По звёздам', byBudget:'По бюджету',
-    expect:{title:'Совет ждёт титул', final:'Совет ждёт финал', survive:'Совет ждёт удержаться'}
+    expect:{title:'Совет ждёт титул', final:'Совет ждёт финал', survive:'Совет ждёт удержаться'},
+    ownName:'Название клуба', crest:'Герб', tier:'Уровень старта', ownGo:'Основать клуб',
+    tiers:{rookie:'Новичок', mid:'Средний', amb:'Амбициозный'},
+    tierHint:{rookie:'Малый бюджет, свободные агенты 65–72', mid:'Средний бюджет, свободные агенты 72–78', amb:'Большой бюджет, свободные агенты 78–84, совет строже'}
   } : {
     overCap:s=>'The board says no: wage budget '+s+' a month', transfer:'Transfer budget', wageCap:'Wage budget',
     renewCap:h=>h+' leaves: the new deal did not fit the wage budget',
     real:'Real club', own:'Create your own', star:'Star player', byStars:'By stars', byBudget:'By budget',
-    expect:{title:'Board expects a title', final:'Board expects a final', survive:'Board expects to survive'}
+    expect:{title:'Board expects a title', final:'Board expects a final', survive:'Board expects to survive'},
+    ownName:'Club name', crest:'Crest', tier:'Starting level', ownGo:'Found the club',
+    tiers:{rookie:'Rookie', mid:'Mid', amb:'Ambitious'},
+    tierHint:{rookie:'Small budget, free agents 65–72', mid:'Mid budget, free agents 72–78', amb:'Big budget, free agents 78–84, stricter board'}
   };
 }
 
@@ -155199,7 +155280,7 @@ function mgrOpenHub(){
   else if(MGR_TAB==='train') body=mgrTrainHTML()+mgrFacHTML();
   else body=mgrDealHTML()+mgrClubHTML(evs)+mgrEvFreqHTML();
   document.getElementById('mgBody').innerHTML='<div class="mg-wrap">'+
-    '<div class="mg-top"><span class="mg-logo big">'+(typeof clubLogoHTML==='function' ? clubLogoHTML(c.name, true) : '')+'</span>'+
+    '<div class="mg-top"><span class="mg-logo big">'+mgrLogo(c.name, true)+'</span>'+
       '<div><h2 class="mg-h">'+esc(c.name)+'</h2><small>'+T.season+' '+MGR.year+' · '+esc(MGR.region)+' · '+esc(ccDayLabel(cr.day))+'</small></div>'+
       '<div class="mg-cash"><em>'+T.cash+'</em><b>'+mgrMoney(c.cash)+'</b><small>'+T.salaries+' '+mgrMoney(wage)+' · '+T.sponsor+' +'+mgrMoney(mgrSponsor())+' '+T.month+' · '+T.rep+' '+(c.rep!=null ? c.rep : 50)+(mgrStaffWage() ? ' · '+mgrT4().staff+' '+mgrMoney(mgrStaffWage()) : '')+(mgrFacUpkeep() ? ' · '+mgrT8().fac+' '+mgrMoney(mgrFacUpkeep()) : '')+' · '+mgrT4().fatigue+' '+mgrFatigue()+'%</small></div></div>'+
     board+'<div class="mg-tabs">'+tabs+'</div>'+body+

@@ -50,6 +50,26 @@ const SECTIONS=[
     document.querySelector('#mgBody .mgn-club').click();
     check('клик по плитке берёт клуб', MGR && MGR.club && MGR.club.name===MGR_NEW_LIST[0].name, MGR && MGR.club && MGR.club.name);
   `},
+  {name:'свой клуб', code:String.raw`
+    MGR_NEW_SIDE='own'; mgrOpenNew(2024);
+    check('свой '+lang+': форма', !!document.getElementById('mgnName') && !bad(document.getElementById('mgBody').innerHTML));
+    for(const [y,reg,tier] of [[2024,'EU','rookie'],[2021,'ME','amb'],[2019,'OCE','mid']]){
+      MGR_NEW_YEAR=y; MGR_NEW_REGION=reg;
+      const r=mgrCreateOwn({name:'Тест <"Клуб">', color:'#ffd400', shape:'shield', region:reg, tier});
+      check('свой '+y+reg+': создан', r===true, String(r));
+      if(r!==true) continue;
+      check('свой '+y+reg+': название чистое', MGR.club.name.indexOf('<')<0 && MGR.club.name.indexOf('"')<0 && MGR.club.own===true, MGR.club.name);
+      check('свой '+y+reg+': бюджеты числа', Number.isInteger(MGR.club.wageCap) && MGR.club.wageCap>0 && Number.isInteger(MGR.club.transfer));
+      check('свой '+y+reg+': есть игроки', mgrAll().length>=2, String(mgrAll().length));
+      check('свой '+y+reg+': игроки без чужого клуба', mgrAll().every(h=>{ const o=mgrOrgOf(mgrCard(h)); return !o || o===MGR.club.name; }));
+      check('свой '+y+reg+': герб в хабе', /<svg/.test(mgrLogo(MGR.club.name, true)));
+      mgrOpenHub(); check('свой '+y+reg+': хаб открылся', !bad(document.getElementById('mgBody').innerHTML));
+      out.notes['own'+y+reg]={n:mgrAll().length, avg:MGR.club.avg, cash:MGR.club.cash, cap:MGR.club.wageCap};
+      localStorage.removeItem('fncsdraft_manager'); MGR=null; mgrLeave(); }
+    check('свой: пустое имя — отказ', mgrCreateOwn({name:'  <>  ', color:'#fff000', shape:'round', region:'EU', tier:'rookie'})!==true);
+    check('герб svg', /^<svg[\s\S]*<\/svg>$/.test(mgrCrestSVG({color:'#f00000',shape:'round',ini:'TK'}, 40)));
+    MGR_NEW_SIDE='real';
+  `},
 ];
 
 const only=process.argv[2]||'';
