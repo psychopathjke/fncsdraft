@@ -540,10 +540,11 @@ const SECTIONS=[
       mgrRenderHub('centre'); check('2027: хаб', !document.querySelector('#mgBody .cc-ffo-err') && document.getElementById('mgWho').textContent.indexOf('2027')>=0, document.getElementById('mgWho').textContent);
       check('2027: данные года — 2026', mgrDataYear()===2026);
       // Старение: 33-летний за год заметно падает, 20-летний — нет.
-      const old=mgrAll()[0];
-      MGR.ageFix={[hKey(old)]:34}; MGR.dev={};
+      // Бросок помесячный (35% в 33+), поэтому смотрим среднее по составу, а не одного: один может вытянуть −1.
+      const olds=mgrOwned(); MGR.ageFix={}; olds.forEach(h=>{ MGR.ageFix[hKey(h)]=34; }); MGR.dev={};
       for(let m=1;m<=12;m++) mgrAgeMonth('2027-'+String(m).padStart(2,'0'));
-      check('старение: 34-летний упал', (MGR.dev[hKey(old)]||0)<=-2, String(MGR.dev[hKey(old)]));
+      const drop=olds.reduce((t,h)=>t+(MGR.dev[hKey(h)]||0), 0)/Math.max(1, olds.length);
+      check('старение: 34-летние в среднем упали', olds.length>0 && drop<=-2, drop.toFixed(2)+' на '+olds.length);
       // Уход из профи на стыке: 36-летний почти всегда.
       let gone=0; for(let i=0;i<20;i++){ if(mgrRetireRoll('x'+i, 36)) gone++; }
       check('уход: 36 лет — чаще половины', gone>=10, String(gone));
