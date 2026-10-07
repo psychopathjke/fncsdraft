@@ -800,6 +800,23 @@ const SECTIONS=[
     check('мир '+lang+': медиа мира', B.querySelectorAll('.mgp-post').length>=1 && !bad(B.innerHTML));
     MGR_SUB.inbox='mail'; MGR_SUB.tables='stats';
   `},
+  {name:'перемотка', once:true, code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    const d0=CAREER.career.day, target=ccAddDays(d0, 40);
+    const clubEv=mgrEvents().filter(e=>e.day<=target && e.kind!=='ewc');
+    const nights0=(MGR.log||[]).filter(r=>r.kind==='night').length, cash0=MGR.club.cash;
+    let guard=0; while(CAREER.career.day<target && guard++<10) mgrFastForward(target);
+    check('перемотка: дошла до даты (с остановками на дедлайне)', CAREER.career.day===target, CAREER.career.day+' vs '+target);
+    const nights=(MGR.log||[]).filter(r=>r.kind==='night').length-nights0;
+    check('перемотка: турниры клуба сыграны сами', nights>=Math.max(1, clubEv.length-1) && nights<=clubEv.length, nights+' из '+clubEv.length);
+    check('перемотка: таблицы есть', (MGR.results||[]).length>=nights);
+    check('перемотка: призовые пришли', MGR.club.earned>0 || MGR.club.cash!==cash0);
+    check('перемотка: без ошибок', !out.errs.length, out.errs.join(' | '));
+    mgrRenderHub('centre');
+    check('перемотка '+lang+': кнопки на Центре', document.querySelectorAll('#mgBody .mgc-ff button').length>=2);
+    MGR_MONTH=null; mgrRenderHub('calendar');
+    check('перемотка: клик по дню в календаре', document.querySelectorAll('#mgBody .cal-day.cal-go[onclick*="mgrFfAsk"]').length>=5);
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
