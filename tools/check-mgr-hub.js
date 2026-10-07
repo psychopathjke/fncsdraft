@@ -288,6 +288,26 @@ const SECTIONS=[
     if(card){ card.click(); check('молодёжь: лист открылся', !document.getElementById('mgSheet').hidden); mgrSheetClose(); }
     MGR_SUB.club='train';
   `},
+  {name:'план', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    const h=mgrAll()[0], was=attrsFor(mgrCard(h)).roleKey, want=was==='roleIGL' ? 'roleFRG' : 'roleIGL';
+    mgrPlanSet(h, 'role', want);
+    check('план: записан', MGR.plan && MGR.plan[hKey(h)] && MGR.plan[hKey(h)].role===want);
+    check('план: роль ещё прежняя', attrsFor(mgrCard(h)).roleKey===was);
+    let d=CAREER.career.day; for(let i=0;i<7;i++){ d=ccAddDays(d, 7); mgrPlanWeek(d); }
+    check('план: за 7 недель ещё не сменилась', attrsFor(mgrCard(h)).roleKey===was);
+    d=ccAddDays(d, 7); mgrPlanWeek(d);
+    check('план: через 8 недель роль сменилась', attrsFor(mgrCard(h)).roleKey===want, attrsFor(mgrCard(h)).roleKey);
+    check('план: письмо', (MGR.inbox||[]).some(m=>m.plan));
+    // Упор в рост ускоряет развитие (замер на 300 месяцах на молодом игроке).
+    const g=mgrAll().map(x=>({x, r:ccCardOvr(mgrCard(x))||99})).sort((a,b)=>a.r-b.r)[0].x;
+    const grow=(focus)=>{ MGR.dev={}; mgrPlanSet(g, 'focus', focus); let n=0; for(let m=0;m<300;m++){ const before=(MGR.dev[hKey(g)]||0); MGR.dev[hKey(g)]=0; mgrDevelop('t'+m+'-'+(focus?1:0)); n+=(MGR.dev[hKey(g)]||0); MGR.dev[hKey(g)]=before; } return n; };
+    const slow=grow(false), fast=grow(true);
+    check('план: упор ускоряет рост', fast>slow*1.2, slow+' → '+fast);
+    mgrRenderHub('squad'); mgrSheetOpen(h);
+    const sh=document.getElementById('mgSheet');
+    check('план '+lang+': в листе', /mgrPlanSet/.test(sh.innerHTML) && !bad(sh.innerHTML)); mgrSheetClose();
+  `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');

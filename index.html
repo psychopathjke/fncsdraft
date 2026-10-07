@@ -6374,6 +6374,10 @@
   .mgs-big{width:200px;flex:0 0 auto;}
   .mgs-facts{flex:1 1 200px;display:flex;flex-direction:column;gap:6px;color:#fff;}
   .mgs-act{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .mgs-plan{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px;color:#fff;}
+  .mgs-plan em{font-style:normal;font-size:11px;opacity:.7;text-transform:uppercase;flex:1 0 100%;}
+  .mgs-plan .hg-go{width:auto;margin-top:0;flex:1 1 140px;}
+  #screen-manager .mgs-plan .hg-go.on{border-color:#ffd400;color:#ffd400;}
   .mgs-act .hg-go{width:auto;flex:1 1 140px;margin-top:0;}
   .mgs-move{flex:1 1 140px;font:inherit;font-size:12px;padding:8px;border-radius:10px;background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.18);}
   .mgs-move option{color:#000;}
@@ -155198,8 +155202,34 @@ function mgrCard(h){
   const c=mgrCardBase(h);
   // Рост в клубе (MGR.dev, единицы рейтинга) — тем же подъёмом, что у напарников карьеры.
   const dv=MGR && MGR.dev ? (MGR.dev[hKey(h)]||0) : 0;
-  if(c && dv && typeof ccMateLift==='function'){ try{ return ccMateLift(c, dv); }catch(e){} }
-  return c;
+  let out=c;
+  if(c && dv && typeof ccMateLift==='function'){ try{ out=ccMateLift(c, dv); }catch(e){} }
+  // План развития сменил роль — карточка играет новую половину (attrsFor читает _roleKey).
+  const role=MGR && MGR.roles ? MGR.roles[hKey(h)] : null;
+  // _attrs закэширован на карточке с прежней ролью — копия атрибутов с новой.
+  if(out && role) out=Object.assign({}, out, {_roleKey:role, _attrs:Object.assign({}, attrsFor(out), {roleKey:role})});
+  return out;
+}
+/* ПЛАН РАЗВИТИЯ, как в FC: роль-цель — через 8 недель тренировок карточка играет новую роль;
+   «упор в рост» — шанс роста в mgrDevelop ×1.5. По отдельным атрибутам карточки не хранятся,
+   поэтому упор — это скорость, а не атрибут (решение части 2). */
+const MGR_PLAN_DAYS=56, MGR_PLAN_FOCUS=1.5;
+function mgrPlanSet(h, field, v){
+  MGR.plan=MGR.plan||{};
+  const k=hKey(h), p=MGR.plan[k]||{};
+  if(field==='role'){ p.role=(v==='roleIGL'||v==='roleFRG') ? v : null; p.since=CAREER.career.day; }
+  else if(field==='focus') p.focus=!!v;
+  MGR.plan[k]=p; mgrSave();
+}
+function mgrPlanLeft(h){ const p=(MGR.plan||{})[hKey(h)]; return p && p.role ? Math.max(0, MGR_PLAN_DAYS-ccDaysBetween(p.since, CAREER.career.day)) : null; }
+function mgrPlanWeek(d){
+  const plan=MGR.plan||{}; MGR.roles=MGR.roles||{};
+  Object.keys(plan).forEach(k=>{ const p=plan[k]; if(!p || !p.role) return;
+    if(ccDaysBetween(p.since, d)>=MGR_PLAN_DAYS){
+      MGR.roles[k]=p.role;
+      const h=mgrAllAcad().find(x=>hKey(x)===k)||k;
+      MGR.inbox=MGR.inbox||[]; MGR.inbox.unshift({id:'pl'+k+d, day:d, kind:'info', done:'info', plan:true, text:mgrT9().planDone(h, L()[p.role]||'')});
+      p.role=null; } });
 }
 /* Раз в месяц: игроки растут — чем ниже рейтинг, тем вероятнее (+1), с моралью выше; топы держат уровень.
    Таланты (≤75) с рынка — главная ставка: дешёвые и растут быстрее всех. Оценка режима, не замер. */
@@ -155209,7 +155239,7 @@ function mgrDevelop(monthKey){
     const c=mgrCard(h); if(!c) return;
     const r=ccCardOvr(c)||70, rnd=careerRng(ccHashStr('mgrdev|'+h+'|'+monthKey))();
     // Академия растёт почти вдвое быстрее: тренируется каждый день, а не ездит по турнирам.
-    const p=((r<76 ? 0.6 : r<84 ? 0.4 : r<90 ? 0.2 : 0.06)+mgrMorale(h)*0.05)*(mgrInAcad(h) ? 1.6 : 1)*(mgrTrain()==='creative' ? 1.3 : 1)*(1+0.15*mgrStaff('coach'))*(1+0.1*mgrFac('house'))*(mgrFatigue()>80 ? 0.6 : 1);
+    const p=((r<76 ? 0.6 : r<84 ? 0.4 : r<90 ? 0.2 : 0.06)+mgrMorale(h)*0.05)*(mgrInAcad(h) ? 1.6 : 1)*(mgrTrain()==='creative' ? 1.3 : 1)*(1+0.15*mgrStaff('coach'))*(1+0.1*mgrFac('house'))*(mgrFatigue()>80 ? 0.6 : 1)*(((MGR.plan||{})[hKey(h)]||{}).focus ? MGR_PLAN_FOCUS : 1);
     if(rnd<p && r<Math.min(97, mgrPot(h)||97)){ MGR.dev[hKey(h)]=(MGR.dev[hKey(h)]||0)+1; }
   });
 }
@@ -155258,7 +155288,8 @@ function mgrT9(){
     market:'Рынок', short:'Шортлист', deals:'Переговоры', shortEmpty:'Отметь игроков звёздочкой на рынке', dealsEmpty:'Переговоров и предложений нет', offersIn:'Предложения и просьбы', negNow:'Идут переговоры', open:'Открыть', wageRoom:'Свободно под потолком',
     train:'Тренировки и штаб', base:'База', sponsor:'Спонсор', press:'Пресса и события', stats:'Статистика', trophies:'Трофеи', managers:'Менеджеры',
     scouting:'Скаутинг', scouts:'Скауты', reports:'Отчёты скаутов', noScouts:'Скаутов нет — найми, и они поедут по регионам', noReports:'Отчёты приходят раз в неделю', fire:'Уволить', anyRole:'Любая роль', anyAge:'Любой возраст', ageTo:n=>'до '+n+' лет', anyOvr:'Любой рейтинг', now:'Сейчас', potW:'Потенциал', views:n=>'отчётов: '+n, scoutLv:[null,'Скаут','Опытный скаут','Главный скаут'], scoutRep:(r,l)=>'Скаут ('+r+'): '+l,
-    youth:'Молодёжь', yscout:'Молодёжный скаут', yHire:'Нанять молодёжного скаута', noYScouts:'Молодёжных скаутов нет', found:'Найденные таланты', noYouth:'Находки приходят раз в месяц', toAcad:'В академию', age:n=>n+' лет', youthRep:l=>'Молодёжный скаут нашёл: '+l
+    youth:'Молодёжь', yscout:'Молодёжный скаут', yHire:'Нанять молодёжного скаута', noYScouts:'Молодёжных скаутов нет', found:'Найденные таланты', noYouth:'Находки приходят раз в месяц', toAcad:'В академию', age:n=>n+' лет', youthRep:l=>'Молодёжный скаут нашёл: '+l,
+    plan:'План развития', planRole:'Роль-цель', planNone:'Без смены роли', planFocus:'Упор в рост', planOn:'Вкл', planOff:'Выкл', planLeft:n=>'осталось '+n+' дн.', planDone:(h,r)=>h+' переучился: теперь '+r
   } : {
     overCap:s=>'The board says no: wage budget '+s+' a month', overTransfer:s=>'The board says no: transfer budget is '+s, capNo:'Does not fit the wage budget — leaves by default', transfer:'Transfer budget', wageCap:'Wage budget',
     renewCap:h=>h+' leaves: the new deal did not fit the wage budget',
@@ -155274,7 +155305,8 @@ function mgrT9(){
     market:'Market', short:'Shortlist', deals:'Negotiations', shortEmpty:'Star players on the market to shortlist them', dealsEmpty:'No talks or offers', offersIn:'Offers and requests', negNow:'Talks in progress', open:'Open', wageRoom:'Room under the cap',
     train:'Training and staff', base:'Facilities', sponsor:'Sponsor', press:'Press and events', stats:'Stats', trophies:'Trophies', managers:'Managers',
     scouting:'Scouting', scouts:'Scouts', reports:'Scout reports', noScouts:'No scouts — hire one and send them out', noReports:'Reports arrive once a week', fire:'Fire', anyRole:'Any role', anyAge:'Any age', ageTo:n=>'up to '+n, anyOvr:'Any rating', now:'Now', potW:'Potential', views:n=>'reports: '+n, scoutLv:[null,'Scout','Senior scout','Chief scout'], scoutRep:(r,l)=>'Scout ('+r+'): '+l,
-    youth:'Youth', yscout:'Youth scout', yHire:'Hire a youth scout', noYScouts:'No youth scouts', found:'Talents found', noYouth:'Finds arrive once a month', toAcad:'To academy', age:n=>'age '+n, youthRep:l=>'Youth scout found: '+l
+    youth:'Youth', yscout:'Youth scout', yHire:'Hire a youth scout', noYScouts:'No youth scouts', found:'Talents found', noYouth:'Finds arrive once a month', toAcad:'To academy', age:n=>'age '+n, youthRep:l=>'Youth scout found: '+l,
+    plan:'Development plan', planRole:'Target role', planNone:'Keep role', planFocus:'Growth focus', planOn:'On', planOff:'Off', planLeft:n=>n+' days left', planDone:(h,r)=>h+' retrained: now '+r
   };
 }
 
@@ -155563,6 +155595,12 @@ function mgrSheetOpen(h){
       row(T2.wage, mgrMoney(mgrWage(h))+' '+esc(T.month))+row(T9.until, esc(T4.contractTo(mgrUntil(h))))+
       row(T2.morale, (mgrMorale(h)>0 ? '+' : '')+mgrMorale(h))+
       row(T9.where, esc(inAcad ? T.acad : team>=0 ? T2.teamWord+' '+(team+1) : T2.benchWord))+'</div></div>'+
+    (()=>{ const p=(MGR.plan||{})[hKey(h)]||{}, left=mgrPlanLeft(h);
+      return '<div class="mgs-plan"><em>'+esc(T9.plan)+'</em>'+
+        '<select class="mgs-move" onchange="mgrPlanSet(\''+hq+'\', \'role\', this.value);mgrSheetOpen(\''+hq+'\')">'+
+          [['', T9.planNone], ['roleIGL', L().roleIGL], ['roleFRG', L().roleFRG]].map(([v,l])=>'<option value="'+v+'"'+((p.role||'')===v ? ' selected' : '')+'>'+esc(T9.planRole+': '+l)+'</option>').join('')+'</select>'+
+        (left!=null ? '<small>'+esc(T9.planLeft(left))+'</small>' : '')+
+        '<button class="hg-go'+(p.focus ? ' on' : '')+'" onclick="mgrPlanSet(\''+hq+'\', \'focus\', '+(p.focus ? 'false' : 'true')+');mgrSheetOpen(\''+hq+'\')">'+esc(T9.planFocus)+': '+esc(p.focus ? T9.planOn : T9.planOff)+'</button></div>'; })()+
     '<div class="mgs-act"><button class="hg-go" onclick="mgrSheetClose();mgrTalk(\''+hq+'\')">'+esc(mgrT5().talk)+'</button>'+move+
       '<button class="hg-go mgs-bad" onclick="mgrSheetClose();mgrRelease(\''+hq+'\')">'+esc(T2.release)+'</button></div></div>';
   el.hidden=false;
@@ -155890,6 +155928,7 @@ function mgrWeekly(fromDay, toDay){
     mgrPeopleWeek(d);
     mgrEventWeek(d);
     try{ mgrScoutWeek(d); }catch(e){ console.error('mgrScoutWeek', e); }
+    try{ mgrPlanWeek(d); }catch(e){ console.error('mgrPlanWeek', e); }
     try{ mgrAiTransfersWeek(d); }catch(e){}
     if(mgrStaff('psych')) mgrAll().forEach(h=>{ if(mgrMorale(h)<0 && careerRng(ccHashStr('psy|'+h+'|'+d))()<0.3*mgrStaff('psych')) mgrMoraleAdd(h, 1); });
     const all=mgrAll().map(h=>mgrCard(h)).filter(Boolean).sort((a,b)=>(ccCardOvr(b)||0)-(ccCardOvr(a)||0));
