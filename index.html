@@ -155105,7 +155105,11 @@ function mgrCrestSVG(cr, size){
 }
 function mgrLogo(name, big){
   if(MGR && MGR.club && MGR.club.own && MGR.club.name===name) return mgrCrestSVG(MGR.club.crest, big ? 44 : 26);
-  return typeof clubLogoHTML==='function' ? clubLogoHTML(name, big) : '';
+  const logo=typeof clubLogoHTML==='function' ? clubLogoHTML(name, big) : '';
+  if(logo) return logo;
+  // Логотипа в файлах нет — герб с инициалами, цвет от названия (тот же у клуба всегда).
+  const ini=String(name||'').split(/\s+/).filter(Boolean).map(w=>w[0]).join('').slice(0, 3) || '?';
+  return mgrCrestSVG({color:MGR_CREST_COLORS[ccHashStr(String(name))%MGR_CREST_COLORS.length], shape:'shield', ini:ini}, big ? 44 : 26);
 }
 function mgrCleanName(s){ return String(s||'').replace(/[\u0000-\u001f<>"'`\\]/g, '').replace(/\s+/g, ' ').trim().slice(0, 24); }
 function mgrCreateOwn(o){
@@ -155233,7 +155237,8 @@ function mgrT9(){
     conf:'Доверие совета', morale:'Мораль состава', board:'Совет', teamOvr:'Первая команда',
     goals:'Цели совета', dev:'Развитие', devNone:'Рост виден раз в месяц', fatigue:'Усталость', news:'Новости клуба', toTables:'Трофеи и статистика', toTrain:'К тренировкам',
     role:'Роль', until:'Контракт', where:'Где играет', moveTo:'Перевести…',
-    market:'Рынок', short:'Шортлист', deals:'Переговоры', shortEmpty:'Отметь игроков звёздочкой на рынке', dealsEmpty:'Переговоров и предложений нет', offersIn:'Предложения и просьбы', negNow:'Идут переговоры', open:'Открыть', wageRoom:'Свободно под потолком'
+    market:'Рынок', short:'Шортлист', deals:'Переговоры', shortEmpty:'Отметь игроков звёздочкой на рынке', dealsEmpty:'Переговоров и предложений нет', offersIn:'Предложения и просьбы', negNow:'Идут переговоры', open:'Открыть', wageRoom:'Свободно под потолком',
+    train:'Тренировки и штаб', base:'База', sponsor:'Спонсор', press:'Пресса и события', stats:'Статистика', trophies:'Трофеи', managers:'Менеджеры'
   } : {
     overCap:s=>'The board says no: wage budget '+s+' a month', transfer:'Transfer budget', wageCap:'Wage budget',
     renewCap:h=>h+' leaves: the new deal did not fit the wage budget',
@@ -155246,7 +155251,8 @@ function mgrT9(){
     conf:'Board trust', morale:'Squad morale', board:'Board', teamOvr:'First team',
     goals:'Board goals', dev:'Development', devNone:'Growth shows once a month', fatigue:'Fatigue', news:'Club news', toTables:'Trophies and stats', toTrain:'To training',
     role:'Role', until:'Contract', where:'Plays in', moveTo:'Move to…',
-    market:'Market', short:'Shortlist', deals:'Negotiations', shortEmpty:'Star players on the market to shortlist them', dealsEmpty:'No talks or offers', offersIn:'Offers and requests', negNow:'Talks in progress', open:'Open', wageRoom:'Room under the cap'
+    market:'Market', short:'Shortlist', deals:'Negotiations', shortEmpty:'Star players on the market to shortlist them', dealsEmpty:'No talks or offers', offersIn:'Offers and requests', negNow:'Talks in progress', open:'Open', wageRoom:'Room under the cap',
+    train:'Training and staff', base:'Facilities', sponsor:'Sponsor', press:'Press and events', stats:'Stats', trophies:'Trophies', managers:'Managers'
   };
 }
 
@@ -155400,9 +155406,14 @@ function mgrTabBody(tab){
   const evs=mgrEvents();
   if(tab==='squad') return mgrSquadHTML();
   if(tab==='transfers') return mgrTransfersHTML();
-  if(tab==='inbox') return mgrInboxHTML();
-  if(tab==='club') return mgrTrainHTML()+mgrFacHTML()+mgrDealHTML()+mgrEvFreqHTML();
-  if(tab==='tables') return mgrStatsHTML()+mgrRivalsHTML()+mgrTrophiesHTML();
+  const T9=mgrT9();
+  if(tab==='inbox') return '<div class="ch-tile mgi"><h4>'+esc(T9.tabs.inbox)+'</h4>'+mgrInboxHTML()+'</div>';
+  if(tab==='club'){ const s=MGR_SUB.club;
+    return mgrSubTabsHTML('club', [['train', T9.train], ['base', T9.base], ['sponsor', T9.sponsor], ['press', T9.press]])+
+      '<div class="mgk-body">'+(s==='base' ? mgrFacHTML() : s==='sponsor' ? mgrDealHTML() : s==='press' ? mgrEvFreqHTML() : mgrTrainHTML())+'</div>'; }
+  if(tab==='tables'){ const s=MGR_SUB.tables;
+    return mgrSubTabsHTML('tables', [['stats', T9.stats], ['trophies', T9.trophies], ['managers', T9.managers]])+
+      '<div class="mgk-body">'+(s==='trophies' ? mgrTrophiesHTML() : s==='managers' ? mgrRivalsHTML() : mgrStatsHTML())+'</div>'; }
   return mgrCentreHTML();
 }
 function mgrRenderHub(tab){

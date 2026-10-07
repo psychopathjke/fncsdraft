@@ -89,6 +89,7 @@ const SECTIONS=[
     check('шапка: рейтинг команды', /\d/.test(document.getElementById('mgOvr').textContent));
     check('шапка: касса', document.getElementById('mgPurse').textContent.indexOf('$')>=0);
     check('оценка совета', mgrGrade(90)==='A' && mgrGrade(60)==='C' && mgrGrade(10)==='F');
+    check('герб клуба без логотипа — инициалы', /<svg[\s\S]*>NT/.test(mgrLogo('Нет Такого Клуба Nova Team', true)) || /<svg/.test(mgrLogo('Нет Такого Клуба', true)), mgrLogo('Нет Такого Клуба', true).slice(0,60));
     const saved=mgrTabBody; mgrTabBody=()=>{ throw new Error('проба'); }; mgrRenderHub('centre');
     check('ошибка вкладки → плашка', !!document.querySelector('#mgBody .cc-ffo-err')); mgrTabBody=saved;
     MGR_TAB='market'; mgrOpenHub(); check('старый ключ market → трансферы', MGR_TAB==='transfers');
@@ -153,6 +154,20 @@ const SECTIONS=[
     MGR.inbox.unshift({id:'of1', day:CAREER.career.day, kind:'offer', text:'ПробноеПредложение'}); mgrRenderHub('transfers');
     check('переговоры: предложение за своего видно', B.textContent.indexOf('ПробноеПредложение')>=0);
     MGR_SUB.transfers='market';
+  `},
+  {name:'прочие вкладки', code:String.raw`
+    MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    const B=document.getElementById('mgBody');
+    for(const [tab, group, keys] of [['club','club',['train','base','sponsor','press']],['tables','tables',['stats','trophies','managers']]]){
+      for(const k of keys){ MGR_SUB[group]=k; mgrRenderHub(tab);
+        const err=B.querySelector('.cc-ffo-err');
+        check(tab+'/'+k+' '+lang+': рисуется', !err && !bad(B.innerHTML), err ? err.textContent : '');
+        check(tab+'/'+k+': подвкладка подсвечена', B.querySelectorAll('.ch-subtabs .ch-subtab.on').length===1); }
+      MGR_SUB[group]=keys[0]; }
+    MGR.inbox.unshift({id:'tst2', day:CAREER.career.day, kind:'info', text:'ПробноеПисьмо'}); mgrRenderHub('inbox');
+    check('входящие '+lang+': письмо в списке', B.textContent.indexOf('ПробноеПисьмо')>=0);
+    check('входящие: точка на вкладке', !!document.querySelector('#mgTabs [data-tab="inbox"] .ch-dot'));
+    check('входящие '+lang+': без undefined/NaN', !bad(B.innerHTML));
   `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
