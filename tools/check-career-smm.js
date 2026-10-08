@@ -70,7 +70,7 @@ const BOOT = [
 '      careerRenderHub("club");   // плитка SMM живёт во вкладке «Клуб» (careerClubTabHTML), не в «Профиле»',
 '      check("the tile button opens the list even at zero balance", !!document.querySelector("#screen-career-hub [onclick*=ccSmmPickOpen]:not([disabled])"));',
 '      ccSmmPickOpen();',
-'      check("and every hire button inside is disabled at zero", [...document.querySelectorAll("#smmPickBody .ch-sign")].length === CC_SMM.length && [...document.querySelectorAll("#smmPickBody .ch-sign")].every(function(b){ return b.disabled; }));',
+'      check("and every hire button inside is disabled at zero", [...document.querySelectorAll("#smmPickBody .ch-sign")].length >= CC_SMM.length && [...document.querySelectorAll("#smmPickBody .ch-sign")].every(function(b){ return b.disabled; }));',
 '      fresh(3000);',
 '      check("a career starts without one", ccSmm() === null);',
 '      check("and can hire", careerHireSmm(DEAR.id) === true);',

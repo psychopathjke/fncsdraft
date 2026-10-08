@@ -38,6 +38,19 @@ try{
   const ph=careerStaffPanelHTML(); check('штаб: нанятые с рейтингом, пустые — нанять', ph.indexOf('cc-staff-rt')>=0 && ph.indexOf(L().ccStaffHire)>=0 && ph.indexOf(ccStaff2('analyst').name)>=0);
   check('вкладка «Клуб» — со штабом', careerClubTabHTML().indexOf('cc-staff-wrap')>=0);
   check('коуч ушёл с «Карьеры»', careerMeHTML().indexOf('ch-tile-coach')<0);
+  // Год и автопродление (его слова 8.10).
+  { const mc=ccStaff2Cost('analyst', CC_ANALYSTS.find(p=>p.id==='vivid')); CAREER.career.balance=100000; const b1=CAREER.career.balance;
+    careerHireStaff2('analyst','vivid',12); const a=ccStaff2('analyst');
+    check('найм на год: цена ×12 со скидкой и срок 360 дней', CAREER.career.balance===b1-ccStaffTermCost(mc,12) && a.months===12 && a.until===ccAddDays(careerToday(),360), (b1-CAREER.career.balance)+' / '+a.until);
+    careerHireStaff2('psych','val'); const p0=CAREER.psych.until, b2=CAREER.career.balance;
+    ccStaffAutoRenew(ccAddDays(p0,1));
+    check('автопродление: месяц продлён и оплачен', CAREER.psych.until===ccAddDays(p0,30) && CAREER.career.balance===b2-CAREER.psych.cost, CAREER.psych.until+' '+(b2-CAREER.career.balance));
+    CAREER.career.balance=0; const p1=CAREER.psych.until; ccStaffAutoRenew(ccAddDays(p1,1));
+    check('нет денег — ушёл, новость одна', CAREER.psych.gone===true && CAREER.psych.until===p1 && (CAREER.career.news||[]).filter(n=>n.k==='ccNewsStaffGone').length===1);
+    ccStaffAutoRenew(ccAddDays(p1,40)); check('и не пишет второй раз', (CAREER.career.news||[]).filter(n=>n.k==='ccNewsStaffGone').length===1);
+    CAREER.career.balance=100000; careerHireSmm(ccByHand(CC_SMM)[0].id); CAREER.autoRenew=false; const s0=CAREER.smm.until; ccStaffAutoRenew(ccAddDays(s0,1));
+    check('автопродление выключено — не продлевает', CAREER.smm.until===s0);
+    CAREER.autoRenew=true; CAREER.analyst=null; }
   CAREER.career.day=ccAddDays(CAREER.career.day, 31); check('месяц прошёл — аналитик ушёл', ccStaff2('analyst')===null && ccAnalystPow()===0);
 }catch(e){ out.fails.push(String(e.stack||e)); }
 document.getElementById('__out').textContent='@@B@@'+encodeURIComponent(JSON.stringify(out))+'@@E@@'; }, 500));<\/script>`;
