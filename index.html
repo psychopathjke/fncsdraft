@@ -147708,7 +147708,7 @@ function ccVictoryAltsHTML(){
   if(alts.length<2) return '';
   const cur=careerVictoryOn(careerToday());
   // Капы на разных платформах в один день называются одинаково — платформа из id.
-  const plat=id=>/Mobile/i.test(id) ? 'Mobile' : /Console|Xbox|Playstation/i.test(id) ? 'Console' : /_PC|_PC$/.test(id) ? 'PC' : '';
+  const plat=id=>/Mobile/i.test(id) ? 'Mobile' : /Console|Xbox|Playstation/i.test(id) ? 'Console' : /_PC\b|_PC$/.test(id) ? 'PC' : '';
   const name=v=>{ const n=v.lan ? v.lan : (v.name||'Cup'), p=plat(v.id); return p && n.indexOf(p)<0 ? n+' · '+p : n; };
   return '<div class="cc-valts"><em>'+esc(L().ccVAltH)+'</em>'+alts.map(v=>'<button class="cc-valt'+(cur && v.id===cur.id ? ' on' : '')+'" onclick="ccVictoryPick(\''+esc(v.id)+'\')">'+esc(name(v))+'</button>').join('')+'</div>';
 }
@@ -157121,6 +157121,7 @@ function mgrShadow(year, region){
 function mgrEnter(){
   if(!MGR_ACTIVE){ MGR_PREV_CAREER=CAREER; MGR_ACTIVE=true; }
   if(MGR && MGR.shadow){ MGR.shadow._mgr=true; CAREER=MGR.shadow; try{ ccWorldReset(); }catch(e){} }
+  if(MGR && MGR.tswap){ try{ mgrTeamOut(); }catch(e){ MGR.tswap=null; } }
 }
 function mgrLeave(){
   if(!MGR_ACTIVE) return;
@@ -157591,10 +157592,11 @@ function mgrEvents(){
   // Календарь капов года — тот же, что у карьеры (ccVictoryList: база года + архив Tracker + плейсмент-капы).
   let all=[]; try{ all=(ccVictoryList()||[]).concat(mgrFncsDays()); }catch(e){ all=[]; }
   return all.filter(ev=>ev && ev.day>=from && ev.day<=to && !ev.invite && !ev.zb && !ev.ewc24 && !ev.reshuffle &&
-    !/Console|Playstation|PlayStation|Mobile|Platform|PC|Xbox|Switch|Influencer/i.test(ev.id+' '+(ev.name||'')) &&
-    fm[ev.mode] && sizes.has(fm[ev.mode]) && (MGR.skipped||[]).indexOf(ev.id+'|'+ev.day)<0)
+    !/Console|Playstation|PlayStation|Mobile|Platform|PC\b|Xbox|Switch|Influencer/i.test(ev.id+' '+(ev.name||'')) &&
+    fm[ev.mode] && sizes.has(fm[ev.mode]) && ev.kind!=='fncs' && (MGR.skipped||[]).indexOf(ev.id+'|'+ev.day)<0)
     .map(ev=>Object.assign({}, ev, {name:mgrEvName(ev)}))
     .concat(mgrEwcEvents(all, from, to))
+    .concat(mgrCarEvents(from, to))
     .sort((a,b)=>a.day<b.day ? -1 : a.day>b.day ? 1 : 0);
 }
 /* EWC 2024 клубами (Esports World Cup — клубный зачёт): основное событие года (ev.ewc24===true, не отборы).
@@ -158802,6 +158804,7 @@ function mgrFfStep(toDay){
   }
   if(mgrDeadlineStop(nx.day)) return {stop:true};
   mgrAdvanceTo(nx.day);
+  if(nx.kind==='car') return {kind:'car', ev:nx, defer:true};
   try{ mgrAutoNight(nx); }catch(e){ console.error('mgrAutoNight', e); MGR.skipped=(MGR.skipped||[]).concat([nx.id+'|'+nx.day]); }
   return {kind:'club', ev:nx};
 }
@@ -158810,7 +158813,8 @@ function mgrFastForward(toDay){
   const last=ccYearTo(); if(toDay>last) toDay=last;
   const snap0=mgrFfSnap();
   let stopped=false;
-  try{ for(let g=0; g<800; g++){ const st=mgrFfStep(toDay); if(!st){ break; } if(st.stop){ stopped=true; break; } } }
+  // Синхронная перемотка (только пробы) раннер карьеры ждать не может — турнир карьеры отмечается пропущенным.
+  try{ for(let g=0; g<800; g++){ const st=mgrFfStep(toDay); if(!st){ break; } if(st.stop){ stopped=true; break; } if(st.defer) MGR.skipped=(MGR.skipped||[]).concat([st.ev.id+'|'+st.ev.day]); } }
   finally{ if(!stopped){ mgrSave(); mgrOpenHub(); try{ mgrSackCheck(); }catch(e){} } try{ mgrFfSummary(snap0); }catch(e){ console.error('mgrFfSummary', e); } }
 }
 // Живая перемотка (кнопки и календарь): прогресс «Симуляция 12/40 · кап», кадр после каждого капа — как в карьере.
@@ -158826,6 +158830,7 @@ async function mgrFastForwardLive(toDay, quiet){
   try{
     for(let g=0; g<800; g++){
       const st=mgrFfStep(toDay); if(!st) break; if(st.stop){ stopped=true; break; }
+      if(st.defer){ try{ await mgrCarAuto(st.ev); }catch(e){ console.error('mgrCarAuto', e); mgrTeamOut(); MGR.skipped=(MGR.skipped||[]).concat([st.ev.id+'|'+st.ev.day]); } }
       done++; mgrFfBar(done, Math.max(total, done), st.ev && st.ev.name);
       await mgrYield();
     }
@@ -160805,6 +160810,7 @@ async function mgrPlay(){
   if(mgrDeadlineStop(ev.day)) return;
   if(ev.kind==='fncs') return mgrPlayFncs(ev);
   if(ev.kind==='ewc') return mgrPlayEwc(ev);
+  if(ev.kind==='car') return mgrPlayCar(ev);
   const T=mgrT(), cr=CAREER.career;
   const size={duo:2, trio:3, squad:4}[ev.mode];
   if(!mgrAutoFill(size)){ mgrShortAsk(ev, size); return; }   // неполный: запас встаёт сам, иначе — окно выбора
@@ -160841,6 +160847,148 @@ async function mgrPlay(){
   CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; try{ useLandingSet(prevSet); }catch(e){}
   CAREER_RUN=false;
   mgrSave();
+}
+
+/* ВСЕ ТУРНИРЫ — КАК В КАРЬЕРЕ ИГРОКА (его слово 8.10: «хочу сделать как в карьере игрока все турниры»; план одобрен:
+   «хорошо, делай»). Victory-капы и EWC клуб играет своим вечером (все команды клуба в одном лобби), а Мейджоры, финалы,
+   кубки дивизионов, Саммит, Глобалы, Reload, оценка — теми же раннерами, что карьера игрока: та же карта, вопросы по ходу,
+   квалификации по раундам, таблицы и призы.
+   Раннер карьеры играет за CAREER.player с напарниками CAREER.partners, а прогресс (кто куда прошёл, журнал, жетоны, форма)
+   лежит в CAREER.career. Поэтому у каждой команды клуба — свой прогресс (MGR.tcar[id], поля MGR_TEAM_KEYS): перед вечером
+   команда садится в теневую карьеру (mgrTeamIn), после — встаёт (mgrTeamOut), мир (сцена, PR, высадки, лента) общий.
+   Пока команда сидит, MGR.tswap хранит, что было: вкладку закрыли посреди вечера — mgrEnter вернёт как было. */
+const MGR_TEAM_KEYS=['log','tokens','major','major21','major22','major23','major24','majorx','majorxs','majorLc','globals','gclc',
+  'summit','reload','rc','gc23','gcSim','div22','div23','d1','division','solo','solos','solosBy','soloSpots','soloBy','proam','proamInvs',
+  'ewc24','ewc','mxDone','evSeen','evPicked','spots','form','energy','playStyle','table','noDiv','placed','keyGames','medals','lan','vpick',
+  'balance','earnings','orgCut'];
+const MGR_CAR_KINDS=['cup','final','eval','major','summit','globals','reload','gc'];   // соло, Про-Ам, сборные — у клуба свои
+function mgrTeamIn(tm){
+  if(MGR.tswap) mgrTeamOut();
+  const cr=CAREER.career, keep={};
+  MGR_TEAM_KEYS.forEach(k=>{ keep[k]=cr[k]; delete cr[k]; });
+  const st=(MGR.tcar=MGR.tcar||{})[tm.mgrId];
+  if(st) Object.assign(cr, st);
+  else { cr.division=keep.division||1; cr.log=[]; cr.tokens=[]; }
+  cr.balance=cr.balance||0; cr.earnings=cr.earnings||0;
+  const sq=tm.squad||[], c0=sq[0]||{};
+  let at=null; try{ at=Object.assign({}, attrsFor(c0)); delete at._floored; }catch(e){}
+  MGR.tswap={id:tm.mgrId, c:keep, pl:CAREER.player, partners:CAREER.partners, log0:(cr.log||[]).length, earn0:cr.earnings, n:sq.length};
+  CAREER.player=Object.assign({}, CAREER.player, {handle:c0.handle, nick:c0.handle, cardRegion:c0.region, attrs:at,
+    ovr:Math.round(ccCardOvr(c0)||50), photo:null, role:null});
+  CAREER.partners=sq.slice(1).map(c=>({handle:c.handle, card:c}));
+}
+function mgrTeamOut(){
+  const sw=MGR.tswap; if(!sw) return null;
+  const cr=CAREER.career, st={};
+  const rows=(cr.log||[]).slice(sw.log0), got=Math.max(0, (cr.earnings||0)-(sw.earn0||0))*(sw.n||1);
+  MGR_TEAM_KEYS.forEach(k=>{ if(cr[k]!==undefined) st[k]=cr[k]; delete cr[k]; });
+  if(st.log && st.log.length>120) st.log=st.log.slice(-120);
+  (MGR.tcar=MGR.tcar||{})[sw.id]=st;
+  Object.keys(sw.c).forEach(k=>{ if(sw.c[k]!==undefined) cr[k]=sw.c[k]; });
+  CAREER.player=sw.pl; CAREER.partners=sw.partners; MGR.tswap=null;
+  return {rows, got};
+}
+// Турниры карьеры, куда проходит хоть одна команда клуба: {kind:'car', ck, id, day, name, mode, teams}.
+let MGR_CAR_CACHE=null;
+function mgrCarEvents(from, to){
+  if(!MGR || !MGR.teams || MGR.tswap) return [];
+  const cr=CAREER.career, size=careerSquadSize();
+  const club=mgrClubTeams(size); if(!club.length) return [];
+  const key=[MGR.year, from, to, size, club.map(t=>t.mgrId+':'+(t.squad||[]).map(c=>c.handle).join(',')).join('|'), (MGR.skipped||[]).length, JSON.stringify(MGR.tcar||{}).length].join('#');
+  if(MGR_CAR_CACHE && MGR_CAR_CACHE.key===key) return MGR_CAR_CACHE.list.map(e=>Object.assign({}, e));
+  const byDay=new Map(), day0=cr.day;
+  let days=null; try{ days=careerEvents(); }catch(e){ days=new Map(); }
+  club.forEach(tm=>{
+    mgrTeamIn(tm);
+    try{
+      [...days.keys()].filter(d=>d>=from && d<=to).sort().forEach(d=>{
+        const list=(days.get(d)||[]).filter(e=>MGR_CAR_KINDS.indexOf(e.kind)>=0 && (CC_D1_ONLY.indexOf(e.kind)<0 || cr.division===1));
+        if(!list.length) return;
+        const rank=e=>{ const i=CC_KIND_RANK.indexOf(e.kind); return i<0 ? 99 : i; };
+        const e=list.slice().sort((a,b)=>rank(a)-rank(b)).find(x=>{ try{ return careerCanPlayKindOn(d, x.kind); }catch(err){ return false; } });
+        if(!e || (MGR.skipped||[]).indexOf('car:'+e.id+'|'+d)>=0) return;
+        const k=d+'|'+e.id;
+        if(!byDay.has(k)) byDay.set(k, {kind:'car', ck:e.kind, id:'car:'+e.id, cid:e.id, day:d, name:String(e.label||e.id).replace(/<[^>]+>/g, ''), art:e.art||null,
+                                       mode:({2:'duo', 3:'trio', 4:'squad'})[size]||'duo', teams:[]});
+        byDay.get(k).teams.push(tm.mgrId);
+      });
+    } finally { mgrTeamOut(); cr.day=day0; }
+  });
+  const list=[...byDay.values()].sort((a,b)=>a.day<b.day ? -1 : a.day>b.day ? 1 : 0);
+  MGR_CAR_CACHE={key, list};
+  return list.map(e=>Object.assign({}, e));
+}
+// Один вечер одной команды раннером карьеры. quiet — без вопросов; fast — ещё и без анимации (перемотка, вторые команды).
+async function mgrCarRun(ev, tm, quiet, fast){
+  const cr=CAREER.career;
+  cr.day=ev.day;
+  mgrTeamIn(tm);
+  let res=null, hold=null;
+  const next={type:ev.ck, id:ev.cid, title:ev.name, label:ev.name, sub:'', day:ev.day};
+  try{
+    if(!careerCanPlayKindOn(ev.day, ev.ck)) return null;
+    if(quiet) CC_FF={until:ccAddDays(ev.day, 1), played:[], trained:0, from:{day:ev.day, div:cr.division, balance:cr.balance||0, earnings:cr.earnings||0, reach:0, ovr:CAREER.player.ovr}};
+    if(fast){ skipAnimation=true; hold=setInterval(()=>{ skipAnimation=true; }, 10); }
+    // Как careerPlay, но без окон «метка высадки» и «состав сборной»: их ответ пришёл бы, когда команда уже встала.
+    try{ const set=careerNightSet(next); useLandingSet((set && ZONE_SETS[set]) ? set : careerBrSet()); }catch(e){ try{ useLandingSet(careerBrSet()); }catch(e2){} }
+    CC_MP_NIGHT=String(next.type)+':'+String(next.id||'');
+    try{ ccEvDeltaStart(ccEvKey(next, ev.day)); }catch(e){}
+    await careerPlayRun(next);
+  } finally {
+    if(hold) clearInterval(hold);
+    if(quiet) CC_FF=null;
+    res=mgrTeamOut();
+    cr.day=ev.day;
+  }
+  return res;
+}
+// Итог вечера команды — в журнал клуба, кассу, мораль и ленту (как у Victory-капа, mgrAfterResults).
+function mgrCarHarvest(ev, parts){
+  const row={day:ev.day, kind:'night', name:ev.name, car:ev.ck, teams:[]};
+  let clubGot=0;
+  parts.forEach(p=>{
+    const tm=p.tm, last=(p.res && p.res.rows || []).slice(-1)[0];
+    if(!last) return;
+    const prize=Math.round(p.res.got||0);
+    clubGot+=Math.round(prize*MGR_CUT*mgrOwnShare(tm.mgrId));
+    const kills={}; (tm.squad||[]).forEach(c=>{ kills[c.handle]=0; });
+    row.teams.push({id:tm.mgrId, name:mgrPlainName(tm), place:last.place||0, of:last.of||0, pts:last.pts||0, elims:last.elims||0, wins:last.wins||0, prize,
+                    kills, stage:last.stage||null, passed:last.passed, final:!last.stage || last.stage==='final'});
+  });
+  MGR.skipped=(MGR.skipped||[]).concat([ev.id+'|'+ev.day]);
+  MGR_CAR_CACHE=null;
+  if(row.teams.length) mgrAfterResults(ev, row, clubGot);
+  return {row, clubGot};
+}
+function mgrCarTeams(ev){
+  const club=mgrClubTeams(mgrEvSize(ev));
+  return (ev.teams||[]).map(id=>club.find(t=>t.mgrId===id)).filter(Boolean);
+}
+// Перемотка: все команды — без вопросов и анимации.
+async function mgrCarAuto(ev){
+  const parts=[];
+  for(const tm of mgrCarTeams(ev)){ const res=await mgrCarRun(ev, tm, true, true); parts.push({tm, res}); try{ document.getElementById('majorStages').innerHTML=''; }catch(e){} }
+  mgrCarHarvest(ev, parts);
+  mgrSave();
+}
+// «Играть» / «Симулировать»: остальные команды клуба — быстро, выбранная — на карте (Играть — с вопросами).
+async function mgrPlayCar(ev){
+  await mgrWorldCatchUpLive(ev.day);
+  mgrAdvanceTo(ev.day);
+  const teams=mgrCarTeams(ev);
+  if(!teams.length){ MGR.skipped=(MGR.skipped||[]).concat([ev.id+'|'+ev.day]); MGR_CAR_CACHE=null; mgrSave(); mgrOpenHub(); return; }
+  const you=(teams.length>1 && !MGR_SIM_MODE) ? await mgrPickTeam(teams) : teams[0];
+  mgrScreenReset();
+  const parts=[];
+  for(const tm of teams) if(tm!==you){ parts.push({tm, res:await mgrCarRun(ev, tm, true, true)}); }
+  try{ document.getElementById('majorStages').innerHTML=''; }catch(e){}
+  parts.push({tm:you, res:await mgrCarRun(ev, you, !!MGR_SIM_MODE, false)});
+  removeSkipButton();
+  const h=mgrCarHarvest(ev, parts);
+  CAREER_RUN=false;
+  mgrSave();
+  // Экран раннера уже нарисовал свою кнопку «в карьеру» (careerBackToHub → mgrAfterNight); итог клуба — под ним.
+  if(h.row.teams.length) mgrReportBox(ev.name, h.row.teams, h.clubGot);
 }
 // FNCS: квалификация (6 игр, топ-33 дуо в пересчёте на формат) → финал (10 игр, призовые финала сезона).
 async function mgrPlayFncs(ev){

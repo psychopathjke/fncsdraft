@@ -859,7 +859,7 @@ const SECTIONS=[
   {name:'перемотка', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     const d0=CAREER.career.day, target=ccAddDays(d0, 40);
-    const clubEv=mgrEvents().filter(e=>e.day<=target && e.kind!=='ewc');
+    const clubEv=mgrEvents().filter(e=>e.day<=target && e.kind!=='ewc' && e.kind!=='car');   // турниры карьеры — асинхронные, их проверяет check-mgr-car
     const nights0=(MGR.log||[]).filter(r=>r.kind==='night').length, cash0=MGR.club.cash;
     let guard=0; while(CAREER.career.day<target && guard++<10) mgrFastForward(target);
     check('перемотка: дошла до даты (с остановками на дедлайне)', CAREER.career.day===target, CAREER.career.day+' vs '+target);
