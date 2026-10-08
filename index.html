@@ -161295,7 +161295,7 @@ async function mgrRunLive(field, club, games, ptsFn, kill, stageName, lobbySize)
 // «За кого играешь?» — если у клуба несколько команд этого формата.
 function mgrPickTeam(club){
   return new Promise(res=>{
-    if(club.length<2 || MGR_SIM_MODE){ res(club[0]); return; }
+    if(club.length<2){ res(club[0]); return; }   // и при «Симулировать» — тоже спрашивает (его слово 8.10)
     const ru=(typeof LANG!=='undefined' && LANG==='ru');
     const box=document.createElement('div'); box.className='mg-modal mgq-pick';
     box.innerHTML='<div class="mg-modal-box"><h3>'+esc(ru ? 'За каким составом смотреть?' : ({fr:()=>('Quelle équipe suivre ?'), it:()=>('Quale squadra seguire?'), pt:()=>('Qual time acompanhar?'), de:()=>('Welchem Squad zusehen?'), es:()=>('¿Qué equipo quieres ver?')}[LANG]||(()=>('Which squad do you watch?')))())+'</h3><div class="mgq-teams">'+
