@@ -275,8 +275,12 @@
   #screen-manager .mgp-ver{display:inline-flex;width:15px;height:15px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:9px;align-items:center;justify-content:center;}
   #screen-manager .mgp-clubav{display:flex;align-items:center;justify-content:center;width:34px;height:34px;flex:none;}
   /* Состав 8.10: все игроки на одном экране */
-  #screen-manager .mgs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;align-items:start;}
-  #screen-manager .mgs-grid2{margin-top:12px;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));}
+  /* две команды в строке, ниже — прокруткой (его слово 8.10: «составы маленькими выглядят — две на строчке»)
+     */
+  #screen-manager .mgs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start;}
+  @media (max-width:820px){ #screen-manager .mgs-grid{grid-template-columns:minmax(0,1fr);} }
+  #screen-manager .mgs-grid2{margin-top:12px;}
+  #screen-manager .mgs-grid2 .mgs-card{zoom:.62 !important;}
   #screen-manager .mgs-compact{margin:0;padding:12px;}
   #screen-manager .mgs-compact h4{font-size:16px;margin:0 0 8px;}
   #screen-manager .mgs-th{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
@@ -292,9 +296,13 @@
   #screen-manager .mgs-chip em{position:absolute;right:-4px;bottom:-4px;font-style:normal;font-size:9px;font-weight:900;background:#0b1a3a;color:#9fb3e6;border-radius:6px;padding:0 3px;}
   #screen-manager .mgs-chip:hover{border-color:#ffdd00;}
   #screen-manager .mgs-compact .mgs-row{display:flex;flex-wrap:wrap;gap:6px;}
-  #screen-manager .mgs-compact .mgs-card{zoom:.62;}
+  #screen-manager .mgs-compact .mgs-card{zoom:.85;}
   #screen-manager .mfc-evart{width:100%;max-width:260px;aspect-ratio:16/9;border-radius:8px;overflow:hidden;box-shadow:0 8px 24px rgba(11,26,58,.35);border:2px solid rgba(11,26,58,.35);}
   #screen-manager .mfc-evart img{width:100%;height:100%;object-fit:cover;display:block;}
+  #screen-manager .mfc-play-main{display:flex;gap:8px;width:100%;max-width:300px;}
+  #screen-manager .mfc-play-main button{flex:1;border:none;border-radius:999px;padding:9px 10px;font-weight:900;font-size:12px;text-transform:uppercase;cursor:pointer;background:rgba(11,26,58,.85);color:#ffdd00;white-space:nowrap;}
+  #screen-manager .mfc-play-main button.go{background:#0b1a3a;color:#fff;}
+  #screen-manager .mfc-play-main button:hover{filter:brightness(1.2);}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -7242,7 +7250,7 @@
          «давай» на «шапка сайта как навбар игры». -->
     <nav class="site-nav" aria-label="site">
       <button class="nav-pill" data-nav="career" type="button" onclick="careerStart()" data-i18n="navCareer"></button>
-      <button class="nav-pill" data-nav="manager" type="button" onclick="mgrStart()" hidden><span id="mgNavBtn">Manager</span></button>
+      <button class="nav-pill" data-nav="manager" type="button" onclick="mgrStart()" hidden><span id="mgNavBtn" data-i18n="hmMgrNav"></span></button>
       <button class="nav-pill on" data-nav="draft" type="button" onclick="requestReset()" data-i18n="navDraft"></button>
       <button class="nav-pill" data-nav="history" type="button" onclick="openHistoryScreen()" data-i18n="navHistory"></button>
     </nav>
@@ -7291,7 +7299,7 @@
         </div>
         <div class="hero-cta">
           <button class="hero-btn hero-btn-go" type="button" onclick="careerStart()"><span data-i18n="heroCareer"></span></button>
-          <button class="hero-btn hero-btn-alt hero-mgr-btn" type="button" onclick="mgrStart()" hidden><span id="mgCareerBtn">Manager career</span></button>
+          <button class="hero-btn hero-btn-alt hero-mgr-btn" type="button" onclick="mgrStart()" hidden><span id="mgCareerBtn" data-i18n="hmMgrCareer"></span></button>
           <button class="hero-btn hero-btn-alt" type="button" onclick="homeOpenDraft()"><span data-i18n="heroDraft"></span></button>
         </div>
         <div class="hero-about"><a href="about.html"><span data-i18n="aboutLink"></span></a></div>
@@ -7310,11 +7318,11 @@
     <section class="hero hero-draft hero-mgr" aria-labelledby="heroMgrTitle" hidden>
       <div class="hero-collage hc-orgs" aria-hidden="true"><span><img src="logos/FaZe_Clan.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Team_Liquid.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/TSM.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/G2_Esports.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Fnatic.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Cloud9.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Team_Falcons.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Gentle_Mates.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/BIG.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/XSET.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Team_Vitality.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Natus_Vincere.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Dignitas.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Solary.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/T1.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Team_Spirit.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/MOUZ.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Virtus.pro.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Gambit_Esports.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/XP42.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Aurora_Gaming.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Wave_Esports.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Gen.G_Esports.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Twisted_Minds.png" alt="" loading="lazy" onerror="this.remove()"></span></div>
       <div class="hero-body">
-        <span class="dp-tag hero-mode-tag" id="mgHeroTag">Mode 3 · Manager</span>
-        <h2 class="hero-title" id="heroMgrTitle">Build a club. <em>Run it through a season.</em></h2>
-        <p class="hero-sub" id="mgHeroSub"></p>
+        <span class="dp-tag hero-mode-tag" id="mgHeroTag" data-i18n="hmMgrTag"></span>
+        <h2 class="hero-title" id="heroMgrTitle" data-i18n="hmMgrTitle"></h2>
+        <p class="hero-sub" id="mgHeroSub" data-i18n="hmMgrSub"></p>
         <div class="cstrip-chips hero-chips"><span class="cstrip-chip">2019 – 2026</span><span class="cstrip-chip">Real clubs</span><span class="cstrip-chip">Match day</span></div>
-        <div class="hero-cta"><button class="hero-btn hero-btn-go" type="button" onclick="mgrStart()"><span id="mgHeroBtn">Become a manager</span></button></div>
+        <div class="hero-cta"><button class="hero-btn hero-btn-go" type="button" onclick="mgrStart()"><span id="mgHeroBtn" data-i18n="hmMgrBtn"></span></button></div>
       </div>
       <div class="hero-art" style="background:url(art/mode-major1.jpg) center/cover;cursor:pointer" role="img" aria-label="Fortnite Manager" onclick="mgrStart()"></div>
     </section>
@@ -19934,19 +19942,19 @@ Object.assign(I18N.en, {hcHeroTitle:'Go pro. <em>Season after season.</em>', hdH
 Object.assign(I18N.fr, {hcHeroTitle:'Deviens pro. <em>Saison après saison.</em>', hdHeroTitle:'Monte ton équipe. <em>N’importe quelle année FNCS.</em>', hdChipFormats:'Duos · Trios · Squads', hdPlay:'Jouer le draft'});
 Object.assign(I18N.it, {hcHeroTitle:'Diventa pro. <em>Stagione dopo stagione.</em>', hdHeroTitle:'Crea la squadra. <em>Qualsiasi anno FNCS.</em>', hdChipFormats:'Duo · Trio · Squad', hdPlay:'Gioca il draft'});
 Object.assign(I18N.pt, {hcHeroTitle:'Vire pro. <em>Temporada após temporada.</em>', hdHeroTitle:'Monte o time. <em>Qualquer ano do FNCS.</em>', hdChipFormats:'Duplas · Trios · Squads', hdPlay:'Jogar o draft'});
-Object.assign(I18N.ru, {hmCareerTag:'Режим 1 · Карьера', hmCareerTitle:'Карьера', hmCareerSub:'Один игрок, сезон за сезоном по настоящему календарю 2019–2026: дивизионы, Мейджоры, клубы, ЛАНы', hmPlay:'Играть',
+Object.assign(I18N.ru, {hmMgrNav:"Менеджер", hmMgrCareer:"Карьера менеджера", hmMgrTag:"Режим 1 · Карьера менеджера", hmMgrTitle:"Собери клуб. <em>Веди его через сезон.</em>", hmMgrSub:"Ты Head of Fortnite: настоящий клуб и состав года, турниры по реальному календарю, смотришь вечера и решаешь между играми.", hmMgrBtn:"Стать менеджером", hmCareerTag:'Режим 1 · Карьера', hmCareerTitle:'Карьера', hmCareerSub:'Один игрок, сезон за сезоном по настоящему календарю 2019–2026: дивизионы, Мейджоры, клубы, ЛАНы', hmPlay:'Играть',
   hmDraftTag:'Режим 2 · Драфт', hmDraftTitle:'Драфт', hmDraftSub:'Собери команду из реальных карточек и пройди турнир: любой год 2019–2026, All FNCS, дуо, трио, сквады',
   dpFormats:'All FNCS · форматы', dpBack:'Назад', dpRealCards:'Реальные карточки', dpPastDesc:'Карточки игроков по их настоящим результатам на этом турнире. Круг — Play-In, хиты и финал.'});
-Object.assign(I18N.en, {hmCareerTag:'Mode 1 · Career', hmCareerTitle:'Career', hmCareerSub:'One player, season after season on the real 2019–2026 calendar: divisions, Majors, clubs, LANs', hmPlay:'Play',
+Object.assign(I18N.en, {hmMgrNav:"Manager", hmMgrCareer:"Manager career", hmMgrTag:"Mode 1 · Manager career", hmMgrTitle:"Build a club. <em>Run it through a season.</em>", hmMgrSub:"You are Head of Fortnite: a real club and its roster of the year, events on the real calendar, you watch the nights and decide between games.", hmMgrBtn:"Become a manager", hmCareerTag:'Mode 1 · Career', hmCareerTitle:'Career', hmCareerSub:'One player, season after season on the real 2019–2026 calendar: divisions, Majors, clubs, LANs', hmPlay:'Play',
   hmDraftTag:'Mode 2 · Draft', hmDraftTitle:'Draft', hmDraftSub:'Build a team from real cards and run the tournament: any year 2019–2026, All FNCS, duos, trios, squads',
   dpFormats:'All FNCS · formats', dpRealCards:'Real cards', dpBack:'Back', dpPastDesc:'Player cards built from their real results at this event. The run is Play-In, Heats and Finals.'});
-Object.assign(I18N.fr, {hmCareerTag:'Mode 1 · Carrière', hmCareerTitle:'Carrière', hmCareerSub:'Un joueur, saison après saison sur le vrai calendrier 2019–2026 : divisions, Majors, clubs, LAN', hmPlay:'Jouer',
+Object.assign(I18N.fr, {hmMgrNav:"Manager", hmMgrCareer:"Carrière de manager", hmMgrTag:"Mode 1 · Carrière de manager", hmMgrTitle:"Bâtis un club. <em>Mène-le toute la saison.</em>", hmMgrSub:"Tu es Head of Fortnite : un vrai club et son roster de l’année, les tournois du vrai calendrier, tu regardes les soirées et décides entre les games.", hmMgrBtn:"Devenir manager", hmCareerTag:'Mode 1 · Carrière', hmCareerTitle:'Carrière', hmCareerSub:'Un joueur, saison après saison sur le vrai calendrier 2019–2026 : divisions, Majors, clubs, LAN', hmPlay:'Jouer',
   hmDraftTag:'Mode 2 · Draft', hmDraftTitle:'Draft', hmDraftSub:'Monte une équipe de vraies cartes et joue le tournoi : n\'importe quelle année 2019–2026, All FNCS, duos, trios, squads',
   dpFormats:'All FNCS · formats', dpRealCards:'Vraies cartes', dpBack:'Retour', dpPastDesc:'Cartes des joueurs d\'après leurs vrais résultats sur cet événement. Play-In, heats et finale.'});
-Object.assign(I18N.it, {hmCareerTag:'Modalità 1 · Carriera', hmCareerTitle:'Carriera', hmCareerSub:'Un giocatore, stagione dopo stagione sul vero calendario 2019–2026: divisioni, Major, club, LAN', hmPlay:'Gioca',
+Object.assign(I18N.it, {hmMgrNav:"Manager", hmMgrCareer:"Carriera da manager", hmMgrTag:"Modalità 1 · Carriera da manager", hmMgrTitle:"Costruisci un club. <em>Guidalo per tutta la stagione.</em>", hmMgrSub:"Sei Head of Fortnite: un vero club e il suo roster dell’anno, i tornei del calendario reale, guardi le serate e decidi tra le partite.", hmMgrBtn:"Diventa manager", hmCareerTag:'Modalità 1 · Carriera', hmCareerTitle:'Carriera', hmCareerSub:'Un giocatore, stagione dopo stagione sul vero calendario 2019–2026: divisioni, Major, club, LAN', hmPlay:'Gioca',
   hmDraftTag:'Modalità 2 · Draft', hmDraftTitle:'Draft', hmDraftSub:'Crea una squadra di carte reali e gioca il torneo: qualsiasi anno 2019–2026, All FNCS, duo, trio, squad',
   dpFormats:'All FNCS · formati', dpBack:'Indietro', dpRealCards:'Carte reali', dpPastDesc:'Carte dei giocatori dai loro veri risultati a questo evento. Play-In, heat e finale.'});
-Object.assign(I18N.pt, {hmCareerTag:'Modo 1 · Carreira', hmCareerTitle:'Carreira', hmCareerSub:'Um jogador, temporada após temporada no calendário real 2019–2026: divisões, Majors, clubes, LANs', hmPlay:'Jogar',
+Object.assign(I18N.pt, {hmMgrNav:"Manager", hmMgrCareer:"Carreira de manager", hmMgrTag:"Modo 1 · Carreira de manager", hmMgrTitle:"Monte um clube. <em>Conduza-o pela temporada.</em>", hmMgrSub:"Você é Head of Fortnite: um clube real e seu elenco do ano, torneios no calendário real, você assiste às noites e decide entre as partidas.", hmMgrBtn:"Virar manager", hmCareerTag:'Modo 1 · Carreira', hmCareerTitle:'Carreira', hmCareerSub:'Um jogador, temporada após temporada no calendário real 2019–2026: divisões, Majors, clubes, LANs', hmPlay:'Jogar',
   hmDraftTag:'Modo 2 · Draft', hmDraftTitle:'Draft', hmDraftSub:'Monte um time de cartas reais e jogue o torneio: qualquer ano 2019–2026, All FNCS, duplas, trios, squads',
   dpFormats:'All FNCS · formatos', dpBack:'Voltar', dpRealCards:'Cartas reais', dpPastDesc:'Cartas dos jogadores pelos resultados reais neste evento. Play-In, heats e final.'});
 /* Разговор с тиммейтом (7.10): тон разбора, план на вечер, честно о переманивании. */
@@ -157852,8 +157860,8 @@ function mgrTableRows(){
 }
 function mgrCentreHTML(){
   const T=mgrT(), T2=mgrT2(), T9=mgrT9(), W=mgrTW(), ru=(typeof LANG!=='undefined' && LANG==='ru');
-  const X=ru ? {play:'Играть', notes:'Уведомления', none:'Новых нет', table:'Таблица', ev:'Тур', sched:'Расписание на неделю', dev:'Развитие', devTxt:'Помогайте игрокам развиваться и раскрыть свой потенциал', news:'Новости', teams:n=>n+' команд', season:'Сезон окончен'}
-             : {play:'Play', notes:'Notifications', none:'Nothing new', table:'Table', ev:'Ev', sched:'Weekly schedule', dev:'Development', devTxt:'Help your players grow and reach their potential', news:'News', teams:n=>n+' teams', season:'Season over'};
+  const X=ru ? {watch:'Играть', sim:'Симулировать', play:'Играть', notes:'Уведомления', none:'Новых нет', table:'Таблица', ev:'Тур', sched:'Расписание на неделю', dev:'Развитие', devTxt:'Помогайте игрокам развиваться и раскрыть свой потенциал', news:'Новости', teams:n=>n+' команд', season:'Сезон окончен'}
+             : {watch:'Play', sim:'Simulate', play:'Play', notes:'Notifications', none:'Nothing new', table:'Table', ev:'Ev', sched:'Weekly schedule', dev:'Development', devTxt:'Help your players grow and reach their potential', news:'News', teams:n=>n+' teams', season:'Season over'};
   const evs=mgrEvents(), nx=evs[0], c=MGR.club, size={duo:2, trio:3, squad:4};
   const dayLong=iso=>{ const d=new Date(iso+'T00:00:00Z'); return (L().calDows||[])[(d.getUTCDay()+6)%7]+' '+d.getUTCDate()+' '+((L().calMonthsShort||[])[d.getUTCMonth()]||'')+' '+d.getUTCFullYear(); };
   // ИГРАТЬ
@@ -157866,6 +157874,7 @@ function mgrCentreHTML(){
           '<small class="mfc-going">'+(going.length ? going.map(x=>esc(T2.teamWord)+' '+(x.i+1)+': '+x.t.cards.map(esc).join(' · ')).join('<br>') : esc(T.noTeamFmt))+'</small></div>'+
         // Логотип турнира вместо «VS / N команд» (его слово 8.10: «нет логотипа турнира, и vs 100 teams лишнее»).
         '<div class="mfc-play-r"><span class="mfc-evart"><img src="'+esc(mgrEvArt(nx))+'" alt="" loading="lazy"></span>'+
+          '<span class="mfc-play-main"><button class="go" onclick="mgrPlay()">▶ '+esc(X.watch)+'</button><button onclick="mgrSimNext()">⏩ '+esc(X.sim)+'</button></span>'+
           '<span class="mfc-play-btns"><button onclick="mgrSkip()">'+esc(T.skipEv)+'</button><button onclick="mgrFastForwardLive(ccAddDays(CAREER.career.day, 7))">'+esc(T9.ffWeek)+'</button><button onclick="mgrFastForwardLive(ccAddDays(CAREER.career.day, 30))">'+esc(T9.ffMonth)+'</button></span></div></div>'
     : '<div class="mfc-tile mfc-play" onclick="mgrSeasonReview()"><div class="mfc-play-l"><b class="mfc-title">'+esc(X.season)+'</b><em>'+esc(T2.endSeason)+'</em></div></div>';
   // НОВОСТИ
@@ -157911,6 +157920,20 @@ function mgrEvArt(ev){
   if(ev && ev.art) return ev.art;
   try{ const list=careerEvents().get(ev.day)||[]; const e=list.find(x=>x.art && (String(x.label||'').replace(/<[^>]+>/g,'')===ev.name)) || list.find(x=>x.art); if(e) return e.art; }catch(e){}
   return 'art/fncs-'+Math.min(2026, MGR.year)+'.jpg';
+}
+// Симулировать ближайший вечер клуба: мир доигрывается до него, вечер — движком без просмотра, потом сводка.
+async function mgrSimNext(){
+  const nx=mgrEvents()[0]; if(!nx || MGR_FF_BUSY) return;
+  if(mgrDeadlineStop(nx.day)) return;
+  if(nx.kind!=='ewc'){ const size={duo:2, trio:3, squad:4}[nx.mode]; if(size && !mgrAutoFill(size)){ mgrShortAsk(nx, size); return; } }
+  if(nx.kind==='ewc') return mgrPlayEwc(nx);   // EWC — сериями, только просмотром
+  const snap=mgrFfSnap();
+  await mgrWorldCatchUpLive(nx.day);
+  mgrAdvanceTo(nx.day);
+  mgrFfBar(1, 1, nx.name); await mgrYield();
+  try{ mgrAutoNight(nx); }catch(e){ console.error('mgrSimNext', e); }
+  mgrFfBarOff(); mgrSave(); mgrOpenHub(); try{ mgrSackCheck(); }catch(e){}
+  try{ mgrFfSummary(snap); }catch(e){}
 }
 function mgrIcoCal(){ return '<svg viewBox="0 0 48 48" width="56" height="56" fill="none" stroke="currentColor" stroke-width="3"><rect x="7" y="10" width="34" height="31" rx="3"/><path d="M7 19h34M16 6v8M32 6v8M15 27h18M15 34h12"/><circle cx="24" cy="27" r="2.5" fill="currentColor"/><circle cx="30" cy="34" r="2.5" fill="currentColor"/></svg>'; }
 function mgrIcoDev(){ return '<svg viewBox="0 0 48 48" width="56" height="56" fill="currentColor"><circle cx="19" cy="14" r="8"/><path d="M4 42c0-9 7-15 15-15 4 0 7 1 9 3-3 3-4 6-4 9 0 1 0 2 .3 3z"/><circle cx="36" cy="36" r="10"/><path d="M36 30l-5 6h3.2v5h3.6v-5H41z" fill="#0b1a3a"/></svg>'; }
