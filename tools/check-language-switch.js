@@ -92,6 +92,17 @@ const BOOT = `
         if(document.getElementById("ccAskYes") && document.getElementById("ccAskYes").textContent===L().ccSpotGateSet){ careerSpotEnsure(); document.getElementById("ccAskModal").style.display="none"; careerPlay(); return; }
       }
     }, 20);
+    /* Сезон теперь начинается раньше первого капа (15 декабря, кап — 5 января): кнопка хаба — «До турнира»
+       с вопросом «Пропустить N дней?». Сначала перемотка к капу, потом «Играть». */
+    for (let i = 0; i < 3; i++) {
+      const pb = document.querySelector('#screen-career-hub .ch-play');
+      if (!pb || !pb.classList.contains('ch-skipto')) break;
+      pb.click(); await wait(60);
+      const yes = document.getElementById('ccAskYes');
+      if (yes) yes.click();
+      await wait(300);
+      careerRenderHub('centre'); await wait(60);
+    }
     document.querySelector('#screen-career-hub .ch-play').click();
     let card = null;
     for (let i = 0; i < 6000 && !card; i++) {

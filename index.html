@@ -79524,6 +79524,29 @@ pushCard({handle:'Vicens', nat:'Мексика', natSource:'x', region:'NAC',
 pushCard({handle:'Infinix', nat:'Франция', natSource:'x', region:'EU',
           event:'FNCS 2026 Solos (Europe)', date:'6 окт 2026', placement:null, note:'',
           tier:'cardmode', cardSet:'d4', org:'Team Eldia', rarity:rarityForRating(72), rating:72});
+/* Shimo, состав — его просьба 9.10 (у клуба не было игроков в данных). Из ленты x.com/ShimoCrew (api.fxtwitter.com, 9.10.2026):
+   игроки с «Player for @ShimoCrew» в профиле и посты «Qual FNCS round 2» 5–6.10 — Xeno (@Xenofnrr, 14, Франция, «Div 2, 100$»),
+   hydra (@hydra_yhyh, 14, Франция), Kyzёn (@Kyzenn12, Финляндия, «$3k»; ник Kyzenn — Kyzen уже занят французом),
+   Хелена (@Helenaaaaa444, флаги Боснии и Сербии), новая игрок Ariaa (@Ariaa1l, 6.10) и Lix из академии (@K1NGSLixzq, 7.10).
+   Профилей Tracker нет — рейтинги ОЦЕНКА по уровню: Kyzenn ($3k) 74, Xeno (дивизион 2) 72, hydra 71, Helena 70, Lix 66, Ariaa 62. */
+pushCard({handle:'Kyzenn', nat:'Финляндия', natSource:'x', region:'EU',
+          event:'FNCS 2026 Solos — Round 2 (Europe)', date:'6 окт 2026', placement:null, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Shimo', rarity:rarityForRating(74), rating:74});
+pushCard({handle:'Xeno', nat:'Франция', natSource:'x', region:'EU',
+          event:'FNCS 2026 Solos — Round 2 (Europe)', date:'6 окт 2026', placement:null, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Shimo', rarity:rarityForRating(72), rating:72});
+pushCard({handle:'hydra', nat:'Франция', natSource:'x', region:'EU',
+          event:'FNCS 2026 Solos — Round 2 (Europe)', date:'6 окт 2026', placement:null, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Shimo', rarity:rarityForRating(71), rating:71});
+pushCard({handle:'Helena', nat:'Босния и Герцеговина', natSource:'x', region:'EU',
+          event:'FNCS 2026 Solos — Round 2 (Europe)', date:'6 окт 2026', placement:null, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Shimo', rarity:rarityForRating(70), rating:70});
+pushCard({handle:'Lix', nat:'Франция', natSource:'x', region:'EU',
+          event:'FNCS 2026 Solos (Europe)', date:'7 окт 2026', placement:null, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Shimo', rarity:rarityForRating(66), rating:66});
+pushCard({handle:'Ariaa', nat:'Франция', natSource:'x', region:'EU',
+          event:'FNCS 2026 Solos (Europe)', date:'6 окт 2026', placement:null, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Shimo', rarity:rarityForRating(62), rating:62});
 
 /* Один человек — одно написание.
 
@@ -95636,7 +95659,8 @@ const PLAYER_PHOTO={
   // ==== /Portraits by strongest card ====
   // Team Eldia (30.09): аватары из X — @magmafavelado и @emilfn12.
   "Chainsaw mag@BR":"Chainsaw_mag.jpg", "Chapofn1@EU":"Chapofn1.jpg",
-  "serkkovv@ME":"serkkovv.jpg", "luk3@BR":"luk3.jpg", "Vicens@NAC":"Vicens.jpg", "Infinix@EU":"Infinix.jpg"   // Team Eldia, X-аватарки 8.10
+  "serkkovv@ME":"serkkovv.jpg", "luk3@BR":"luk3.jpg", "Vicens@NAC":"Vicens.jpg", "Infinix@EU":"Infinix.jpg",   // Team Eldia, X-аватарки 8.10
+  "Kyzenn@EU":"Kyzenn.jpg", "Xeno@EU":"Xeno.jpg", "hydra@EU":"hydra.jpg", "Helena@EU":"Helena.jpg", "Lix@EU":"Lix.jpg", "Ariaa@EU":"Ariaa.jpg"   // Shimo, X-аватарки 9.10
 };
 
 // Strip a leading team tag ("S8UL KAAN BABA" -> "KAAN BABA") so the monogram
@@ -132387,15 +132411,43 @@ const CAREER_NEWS_KEEP=120;
 function ccZoneName(z){
   return (typeof z==='number' && isFinite(z)) ? L().landingZoneSuffix(z) : String(z==null?'':z);
 }
+/* Название турнира в аргументах поста. Ключ поста переводится на показе, а имя вечера раннеры отдают уже готовой
+   строкой (ccBoardAfter(ranked, you, ev.label) — «Дуо Виктори Кап 1»), и после смены языка пост читался
+   «Дуо Виктори Кап 1 — stats leaders» (сторож check-language-switch, 9.10). Строка, которая начинается со строки словаря
+   любого загруженного языка (дальше — конец, пробел, «·», двоеточие, запятая или цифра), получает её перевод на текущий,
+   хвост («1», «· Даллас») остаётся как есть. Индекс — по первым трём буквам, самое длинное совпадение первым. */
+let CC_ARG_REV=null;
+function ccArgLive(a){
+  if(typeof a!=='string' || a.length<6 || a.length>120 || a.charAt(0)==='@') return a;
+  const nLang=Object.keys(I18N).length;
+  if(!CC_ARG_REV || CC_ARG_REV.n!==nLang){
+    const key=new Map(), by=new Map();
+    Object.keys(I18N).forEach(lg=>{ const d=I18N[lg]||{}; Object.keys(d).forEach(k=>{ const v=d[k];
+      if(typeof v!=='string' || v.length<6 || v.length>60 || v.indexOf('<')>=0 || key.has(v)) return;
+      key.set(v, k); const p=v.slice(0, 3); (by.get(p)||by.set(p, []).get(p)).push(v); }); });
+    by.forEach(list=>list.sort((x,y)=>y.length-x.length));
+    CC_ARG_REV={n:nLang, key, by};
+  }
+  const list=CC_ARG_REV.by.get(a.slice(0, 3)); if(!list) return a;
+  const cur=L();
+  for(const v of list){
+    if(a.length<v.length || a.slice(0, v.length)!==v) continue;
+    const nx=a.charAt(v.length); if(nx && !/[\s·:,\d]/.test(nx)) continue;
+    const now=cur[CC_ARG_REV.key.get(v)];
+    return (typeof now==='string' && now!==v) ? now+a.slice(v.length) : a;
+  }
+  return a;
+}
 function ccText(e){
   if(e && e.k){
+    const args=(e.a||[]).map(ccArgLive);
     // Вариант реплики (m.vi от careerDmPush): 0 — исходная, дальше — CC_LINES_MORE.dm своего языка.
     if(e.vi!=null){
       const ex=((CC_LINES_MORE[LANG]||{}).dm||{})[e.k];
-      if(ex && ex.length){ const i=e.vi%(ex.length+1); if(i>0) return ccMoreFill(ex[i-1], e.a); }
+      if(ex && ex.length){ const i=e.vi%(ex.length+1); if(i>0) return ccMoreFill(ex[i-1], args); }
     }
     const line=L()[e.k];
-    if(typeof line==='function') return line.apply(null, e.a||[]);
+    if(typeof line==='function') return line.apply(null, args);
     if(typeof line==='string') return line;
   }
   /* Строка без ключа: либо написанная игроком (careerPostWrite), либо
@@ -158209,6 +158261,8 @@ function mgrOpenHub(){
   if(!MGR || !MGR.club){ mgrOpenNew(); return; }
   try{ const own=new Set(mgrOwned().map(hKey)); MGR.teams.forEach(t=>{ if(t.guests) t.guests=t.guests.filter(g=>!own.has(hKey(g))); }); }catch(e){}
   try{ mgrGuestAuto(); }catch(e){ console.error('mgrGuestAuto', e); }
+  try{ mgrProAmTick(); }catch(e){ console.error('mgrProAmTick', e); }
+  try{ mgrVisaTick(); }catch(e){ console.error('mgrVisaTick', e); }
   const legacy={club:'centre', market:'transfers', train:'club', stats:'tables'};
   mgrRenderHub(legacy[MGR_TAB]||MGR_TAB);
 }
@@ -161042,6 +161096,8 @@ function mgrEventDo(m, ok){
   else if(m.ev==='custom'){ if(ok){ c.cash+=m.sum; rep(2); MGR.fatigue=Math.min(100, mgrFatigue()+8); } }
   else if(m.ev==='feud'){ const k=mgrPairKey(m.h, m.h2); MGR.chem=MGR.chem||{}; MGR.chem[k]=Math.max(0, (MGR.chem[k]||0)-(ok ? 2 : 5)); if(!ok){ mgrMoraleAdd(m.h, -1); mgrMoraleAdd(m.h2, -1); } }
   else if(m.ev==='leak'){ if(ok){ mgrMoraleAdd(m.h, 1); rep(1); } else mgrMoraleAdd(m.h, -1); }
+  else if(m.ev==='visa'){ if(!mgrVisaApply(m, ok)) return false; }
+  else if(m.ev==='proam'){ mgrProAmAnswer(m, ok); }
   else if(m.ev==='pc'){ if(ok){ if(c.cash<1500){ mgrToast(mgrT2().noMoney); return false; } c.cash-=1500; mgrMoraleAdd(m.h, 1); } else mod(m.h, -2); }
   return true;
 }
@@ -161679,17 +161735,18 @@ function mgrCarEvents(from, to){
         const list=(days.get(d)||[]).filter(e=>kinds.indexOf(e.kind)>=0 && (CC_D1_ONLY.indexOf(e.kind)<0 || cr.division===1) && (tsize===1 && e.kind==='major' ? evSize(d, e.kind)===1 : (!evSize(d, e.kind) || evSize(d, e.kind)===tsize)));
         if(!list.length) return;
         const rank=e=>{ const i=CC_KIND_RANK.indexOf(e.kind); return i<0 ? 99 : i; };
-        const e=list.slice().sort((a,b)=>rank(a)-rank(b)).find(x=>{ try{ return careerCanPlayKindOn(d, x.kind); }catch(err){ return false; } });
-        if(!e || (MGR.skipped||[]).indexOf('car:'+e.id+'|'+d)>=0) return;
-        const k=d+'|'+e.id;
-        if(!byDay.has(k)) byDay.set(k, {kind:'car', ck:e.kind, id:'car:'+e.id, cid:e.id, day:d, name:String(e.label||e.id).replace(/<[^>]+>/g, ''), art:e.art||null,
+        const e=list.slice().sort((a,b)=>rank(a)-rank(b)).find(x=>{ try{ return x.kind==='proam' ? mgrProAmCanOn(d) : careerCanPlayKindOn(d, x.kind); }catch(err){ return false; } });
+        const eid=e ? 'car:'+e.id+(e.kind==='proam' ? '@'+tm.mgrId : '') : '';
+        if(!e || (MGR.skipped||[]).indexOf(eid+'|'+d)>=0) return;
+        const k=d+'|'+eid;
+        if(!byDay.has(k)) byDay.set(k, {kind:'car', ck:e.kind, id:eid, cid:e.id, day:d, name:String(e.label||e.id).replace(/<[^>]+>/g, '')+(e.kind==='proam' ? ' · '+tm.name : ''), art:e.art||null,
                                        mode, teams:[]});
         byDay.get(k).teams.push(tm.mgrId);
       });
     } finally { mgrTeamOut(); cr.day=day0; }
   });
   pass(club, MGR_CAR_KINDS, ({2:'duo', 3:'trio', 4:'squad'})[size]||'duo', size);
-  pass(solo, ['solo', 'major'], 'solo', 1);   // соло-неделя Мейджора (World Cup Solo) — тоже поодиночке
+  pass(solo, ['solo', 'major', 'proam'], 'solo', 1);   // соло-неделя Мейджора (World Cup Solo) — тоже поодиночке; Про-Ам — приглашённый с креатором
   const list=[...byDay.values()].sort((a,b)=>a.day<b.day ? -1 : a.day>b.day ? 1 : 0);
   MGR_CAR_CACHE={key, list};
   return list.map(e=>Object.assign({}, e));
@@ -161867,9 +161924,193 @@ function mgrCarHarvest(ev, parts){
   if(row.teams.length) mgrAfterResults(ev, row, clubGot);
   return {row, clubGot};
 }
+/* ПРО-АМ В МЕНЕДЖЕРЕ (его слово 9.10: «делай, только травмы не надо» — Про-Ам был в списке несделанного). Как в карьере
+   игрока (runCareerProAm, CC_PROAM_EVENTS): пишет сам Fortnite за CC_PROAM_INVITE_DAYS до остановки, зовёт громкие имена —
+   здесь это игроки клуба, которые по рейтингу входят в девятнадцать про, из которых собирается поле Про-Ама
+   (ccProAmField берёт сцену сверху: careerRealPlayers по убыванию овера). Клуб решает, отпускать ли; креатора игрок
+   выбирает сам (его слово 8.10: «он сам решает, с кем играть») — первым из списка карьеры (свой регион, потом аудитория),
+   двое из клуба одного креатора не берут. Вечер — раннером карьеры, у каждого свой (пара «про + креатор», не общее
+   лобби клуба); приз — половина пары, как у ccShareOf; клубу — его доля, как с любого вечера. */
+function mgrTProAm(){
+  return ({
+    ru:{ask:(h,ev,c,d,m)=>'Fortnite зовёт '+h+' на '+ev+' ('+c+', '+d+'): пара «про + креатор», с кем — решит сам, хочет '+m+'. Отпустить?', a:'Отпустить', b:'Не отпускать'},
+    fr:{ask:(h,ev,c,d,m)=>'Fortnite invite '+h+' au '+ev+' ('+c+', '+d+') : duo « pro + créateur », il choisit lui-même — il veut '+m+'. Le laisser partir ?', a:'Accepter', b:'Refuser'},
+    it:{ask:(h,ev,c,d,m)=>'Fortnite invita '+h+' al '+ev+' ('+c+', '+d+'): coppia «pro + creator», sceglie lui — vuole '+m+'. Lasciarlo andare?', a:'Lascia andare', b:'Rifiuta'},
+    pt:{ask:(h,ev,c,d,m)=>'A Fortnite convida '+h+' para o '+ev+' ('+c+', '+d+'): dupla «pro + criador», ele escolhe — quer '+m+'. Liberar?', a:'Liberar', b:'Recusar'},
+    de:{ask:(h,ev,c,d,m)=>'Fortnite lädt '+h+' zum '+ev+' ein ('+c+', '+d+'): Duo „Pro + Creator", er wählt selbst — er will '+m+'. Freigeben?', a:'Freigeben', b:'Ablehnen'},
+    es:{ask:(h,ev,c,d,m)=>'Fortnite invita a '+h+' al '+ev+' ('+c+', '+d+'): dúo «pro + creador», elige él — quiere a '+m+'. ¿Dejarle ir?', a:'Dejar ir', b:'Rechazar'}
+  })[LANG] || {ask:(h,ev,c,d,m)=>'Fortnite invites '+h+' to '+ev+' ('+c+', '+d+'): a pro + creator duo, he picks the creator himself — he wants '+m+'. Let him go?', a:'Let him go', b:'Decline'};
+}
+// Остановка Про-Ама в этот день, и игрок этого «соло-состава» (теневая карьера сидит) принял приглашение и ещё не ездил.
+function mgrProAmCanOn(d){
+  const ev=careerProAmOn(d); if(!ev) return false;
+  const label=ccProAmKey(ev);
+  if(ccProAmDone(label)) return false;
+  const inv=careerProAmInv(label);
+  return !!inv && inv.state==='yes';
+}
+function mgrProAmTick(){
+  if(!MGR || !MGR.club || MGR.tswap || !CAREER || !CAREER.career) return;
+  const today=CAREER.career.day; let day=today, ev=null;
+  for(let i=0; i<=CC_PROAM_INVITE_DAYS; i++){ ev=careerProAmOn(day); if(ev) break; day=ccAddDays(day, 1); }
+  if(!ev) return;
+  const label=ccProAmKey(ev), tag=CAREER.career.season+'|'+label;
+  MGR.proam=MGR.proam||{}; if(MGR.proam[tag]) return;
+  MGR.proam[tag]={sent:today};
+  let pool=[]; try{ pool=careerRealPlayers(new Set(), careerRng(ccHashStr('mgrproam|'+tag+'|'+MGR.year)), 'all'); }catch(e){ pool=[]; }
+  const ovrs=pool.map(p=>ccCardOvr(p)||0).sort((a,b)=>b-a);
+  const bar=ovrs.length ? ovrs[Math.min(ovrs.length, CC_PROAM_TEAMS-1)-1] : 999;
+  const mine=MGR.teams.flatMap(t=>t.cards).map(h=>({h, o:ccCardOvr(mgrCard(h))||0})).filter(x=>x.o>=bar).sort((a,b)=>b.o-a.o).slice(0, 3);
+  if(!mine.length) return;
+  const T=mgrTProAm(), P=ccProAmEvent(label), city=(L().ccCity && L().ccCity[P.city]) || P.city;
+  let picks=[]; try{ picks=careerProAmPickList(); }catch(e){ picks=ccProAmCreators(); }
+  MGR.inbox=MGR.inbox||[];
+  mine.forEach((x, i)=>{ const mate=picks[i]; if(!mate) return;
+    MGR.inbox.unshift({id:'proam|'+tag+'|'+hKey(x.h), day:today, kind:'event', ev:'proam', h:x.h, label, pday:day, mate, a:T.a, b:T.b,
+      text:T.ask(x.h, (L()[ev.label]||ev.label), city, ccDayLabel(day), mate)}); });
+}
+function mgrProAmAnswer(m, ok){
+  if(!ok) return true;
+  const id='s:'+hKey(m.h);
+  const st=(MGR.tcar=MGR.tcar||{})[id]=(MGR.tcar[id]||{division:(CAREER.career.division||1), log:[], tokens:[]});
+  st.proamInvs=st.proamInvs||{};
+  st.proamInvs[m.label]={season:CAREER.career.season, state:'yes', mate:m.mate, day:m.pday, label:m.label};
+  MGR_CAR_CACHE=null;
+  return true;
+}
+/* ВИЗЫ НА ЛАН (его слово 9.10: «делай, только травмы не надо» — визы из списка «как в FIFA»). Состав прошёл на ЛАН
+   (Саммит, Глобалы, Reload в Париже, финал World Cup 2019 в Нью-Йорке) — игроку с паспортом, которому нужна виза в страну
+   ЛАНа, клуб подаёт её сам: сбор платит касса, решение приходит до вылета, могут отказать. Без визы игрок не летит —
+   состав пропускает ЛАН (на ЛАН не берут замену с улицы). Гости из других клубов оформляют визы сами.
+   Данные, а не догадка:
+   - США: кому нужна виза — всем, кроме безвизовой программы VWP и Канады; доля отказов — Госдеп США, «Adjusted refusal
+     rate — B-visas only, FY2025» (adoption.state.gov/content/dam/visas/Statistics/Non-Immigrant-Statistics/RefusalRates/
+     FY25.pdf, снят 9.10.2026, столбцы выровнены pdftotext -table). Сбор MRV за визу B1/B2 — $185 (с июня 2023).
+   - Шенген (Германия, Бельгия, Франция, Дания, Польша, Швеция, Испания, Нидерланды, Италия): кому нужна виза — правила ЕС
+     2024; отказы за 2024 — Россия 7.5 %, Турция 14.5 %, Марокко 20.1 %, остальным — средний по миру 14.8 % (статистика
+     Еврокомиссии за 2024, пересказ в прессе); сбор €90 ≈ $97 — ОЦЕНКА курса.
+   - Остальные страны залов (Япония, Сербия, Бразилия, Корея, Канада, Австралия, Мексика, ОАЭ, Турция, Сингапур,
+     Великобритания, Саудовская Аравия) — визы не моделируются: на ЛАН летят все.
+   Срок решения — 14 дней (ОЦЕНКА); если до ЛАНа меньше — ускоренная запись, решение накануне вылета. Виза — на сезон. */
+const MGR_VISA_US={ru:40.38, ua:33.92, by:26.58, kz:51.75, uz:52.46, kg:59.02, ge:45.57, am:56.37, az:20.91, md:44.76,
+  br:14.87, ar:7.47, mx:21.36, co:32.84, cl:16.38, pe:20.90, ec:42.24, uy:2.59, py:18.71, bo:29.83, ve:48.22, do:36.40,
+  cr:16.14, gt:39.21, pa:6.51, sv:58.22, hn:46.52, ni:53.15, cu:70.86, ht:50.26, jm:44.26, tt:14.92,
+  tr:22.25, ma:26.91, dz:51.23, tn:25.89, eg:47.61, sa:5.98, ae:2.17, kw:6.06, om:3.14, bh:24.01, jo:56.63, lb:39.42,
+  iq:39.86, ir:62.44, sy:50.69, in:22.04, pk:52.32, bd:61.45, cn:20.21, th:25.67, vn:22.08, ph:30.76, id:26.69, my:7.92,
+  rs:15.20, ba:14.89, al:37.32, mk:25.55, me:33.41, bg:5.11, cy:2.55, za:11.66, ng:57.00};
+const MGR_VISA_SCH={ru:7.5, tr:14.5, ma:20.1, by:null, dz:null, tn:null, eg:null, sa:null, kw:null, om:null, bh:null, qa:null,
+  jo:null, lb:null, iq:null, ir:null, sy:null, in:null, pk:null, bd:null, cn:null, th:null, vn:null, ph:null, id:null,
+  kz:null, uz:null, kg:null, az:null, am:null, ec:null, bo:null, do:null, cu:null, ht:null, jm:null, za:null, ng:null};
+const MGR_VISA_SCH_AVG=14.8, MGR_VISA_FEE={us:185, sch:97}, MGR_VISA_DAYS=14, MGR_SCHENGEN=['de','be','fr','dk','pl','se','es','nl','it'];
+function mgrTVisa(){
+  const ze={us:'US visa', sch:'Schengen visa'};
+  return ({
+    ru:{z:{us:'виза в США', sch:'шенгенская виза'}, ask:(h,n,v,ev,c,f,p)=>h+' ('+n+') едет на '+ev+' в '+c+' — нужна '+v+'. Сбор '+f+', отказывают '+p+'% заявителей',
+        a:f=>'Подать — '+f, b:'Не подавать', ok:(h,v)=>h+': '+v+' одобрена', no:(h,v,ev)=>h+': в визе отказали ('+v+') — на '+ev+' не летит',
+        miss:(t,ev,hs)=>t+' пропускает '+ev+': без визы — '+hs, money:'Не хватает денег на визовый сбор'},
+    fr:{z:{us:'visa américain', sch:'visa Schengen'}, ask:(h,n,v,ev,c,f,p)=>h+' ('+n+') part pour '+ev+' à '+c+' — il faut un '+v+'. Frais '+f+', '+p+'% de refus',
+        a:f=>'Déposer — '+f, b:'Ne pas déposer', ok:(h,v)=>h+' : '+v+' accordé', no:(h,v,ev)=>h+' : '+v+' refusé — ne part pas pour '+ev,
+        miss:(t,ev,hs)=>t+' manque '+ev+' : sans visa — '+hs, money:'Pas assez d\'argent pour les frais de visa'},
+    it:{z:{us:'visto USA', sch:'visto Schengen'}, ask:(h,n,v,ev,c,f,p)=>h+' ('+n+') va a '+ev+' a '+c+' — serve il '+v+'. Tassa '+f+', rifiutato al '+p+'%',
+        a:f=>'Richiedi — '+f, b:'Non richiedere', ok:(h,v)=>h+': '+v+' approvato', no:(h,v,ev)=>h+': '+v+' rifiutato — salta '+ev,
+        miss:(t,ev,hs)=>t+' salta '+ev+': senza visto — '+hs, money:'Soldi insufficienti per la tassa del visto'},
+    pt:{z:{us:'visto dos EUA', sch:'visto Schengen'}, ask:(h,n,v,ev,c,f,p)=>h+' ('+n+') vai para '+ev+' em '+c+' — precisa de '+v+'. Taxa '+f+', recusa de '+p+'%',
+        a:f=>'Solicitar — '+f, b:'Não solicitar', ok:(h,v)=>h+': '+v+' aprovado', no:(h,v,ev)=>h+': '+v+' negado — fica fora de '+ev,
+        miss:(t,ev,hs)=>t+' perde '+ev+': sem visto — '+hs, money:'Sem dinheiro para a taxa do visto'},
+    de:{z:{us:'US-Visum', sch:'Schengen-Visum'}, ask:(h,n,v,ev,c,f,p)=>h+' ('+n+') fliegt zu '+ev+' nach '+c+' — braucht ein '+v+'. Gebühr '+f+', '+p+'% Ablehnungen',
+        a:f=>'Beantragen — '+f, b:'Nicht beantragen', ok:(h,v)=>h+': '+v+' erteilt', no:(h,v,ev)=>h+': '+v+' abgelehnt — verpasst '+ev,
+        miss:(t,ev,hs)=>t+' verpasst '+ev+': ohne Visum — '+hs, money:'Nicht genug Geld für die Visagebühr'},
+    es:{z:{us:'visado de EE. UU.', sch:'visado Schengen'}, ask:(h,n,v,ev,c,f,p)=>h+' ('+n+') viaja a '+ev+' en '+c+' — necesita '+v+'. Tasa '+f+', '+p+'% de rechazos',
+        a:f=>'Solicitar — '+f, b:'No solicitar', ok:(h,v)=>h+': '+v+' aprobado', no:(h,v,ev)=>h+': '+v+' denegado — se pierde '+ev,
+        miss:(t,ev,hs)=>t+' se pierde '+ev+': sin visado — '+hs, money:'No hay dinero para la tasa del visado'}
+  })[LANG] || {z:ze, ask:(h,n,v,ev,c,f,p)=>h+' ('+n+') is heading to '+ev+' in '+c+' — needs a '+v+'. Fee '+f+', '+p+'% of applicants refused',
+        a:f=>'Apply — '+f, b:'Don\'t apply', ok:(h,v)=>h+': '+v+' approved', no:(h,v,ev)=>h+': '+v+' refused — misses '+ev,
+        miss:(t,ev,hs)=>t+' misses '+ev+': no visa — '+hs, money:'Not enough money for the visa fee'};
+}
+// Где ЛАН вечера: {key, nat} города из CC_LAN_HOSTS, или null — вечер онлайн.
+function mgrLanHost(ev){
+  if(!ev || ev.kind!=='car') return null;
+  let key=null;
+  try{
+    const lk=ccLanKindOf(ev.cid, ev.ck);
+    if(ev.ck==='proam'){ const P=CC_PROAM_EVENTS[ev.cid]; const nat=P && ({Dal:'us', Sao:'br', Par:'fr', Seo:'kr'})[P.city]; return nat ? {key:P.city, nat} : null; }
+    if(lk) key=ccLanHostKey(lk);
+    else if(/^Major\d_2019_Final$/.test(String(ev.cid||''))){ const m=String(ev.cid).match(/^Major(\d)/); const sp=ccMXSpec(2019, +m[1]); if(sp && sp.kind==='wc') key='Nyc'; }
+  }catch(e){ return null; }
+  const h=key && CC_LAN_HOSTS.find(x=>x.key===key);
+  return h ? {key:h.key, nat:h.nat} : null;
+}
+function mgrVisaZone(nat){ return nat==='us' ? 'us' : MGR_SCHENGEN.indexOf(nat)>=0 ? 'sch' : null; }
+function mgrNatCode(h){
+  const c=mgrCard(h), n=c && c.nat; if(!n) return null;
+  const k=(typeof FLAG_CODE!=='undefined' && FLAG_CODE[n]) || (/^[a-z]{2}$/i.test(String(n)) ? n : null);
+  return k ? String(k).toLowerCase() : null;
+}
+function mgrVisaRate(h, zone){
+  const n=mgrNatCode(h); if(!n) return null;
+  if(zone==='us') return MGR_VISA_US[n]!=null ? MGR_VISA_US[n] : null;
+  if(zone==='sch') return (n in MGR_VISA_SCH) ? (MGR_VISA_SCH[n]!=null ? MGR_VISA_SCH[n] : MGR_VISA_SCH_AVG) : null;
+  return null;
+}
+const mgrVisaKey=(zone, h)=>zone+'|'+((CAREER.career && CAREER.career.season)||1)+'|'+hKey(h);
+function mgrVisaOk(h, zone){ if(mgrVisaRate(h, zone)==null) return true; const v=(MGR.visa||{})[mgrVisaKey(zone, h)]; return !!(v && v.st==='ok'); }
+// Свои игроки вечера (без гостей): по составу клуба или соло-«составу» s:ник.
+function mgrEvPeople(id){
+  if(String(id).indexOf('s:')===0){ const k=String(id).slice(2); const h=MGR.teams.flatMap(t=>t.cards).find(x=>hKey(x)===k); return h ? [h] : []; }
+  const t=MGR.teams.find(x=>x.id===id); return t ? (t.cards||[]).slice() : [];
+}
+// Решения по поданным визам — в день готовности; письма о визах — для ЛАНов в ближайшие 75 дней.
+function mgrVisaTick(){
+  if(!MGR || !MGR.club || MGR.tswap || !CAREER || !CAREER.career) return;
+  const V=mgrTVisa(), today=CAREER.career.day, vs=MGR.visa=MGR.visa||{};
+  MGR.inbox=MGR.inbox||[];
+  Object.keys(vs).forEach(k=>{ const v=vs[k];
+    if(v.st!=='wait' || v.ready>today) return;
+    const ok=careerRng(ccHashStr('visa|'+k+'|'+MGR.year))()>=(v.rate||0)/100;
+    v.st=ok ? 'ok' : 'no';
+    MGR.inbox.unshift({id:'visar|'+k, day:v.ready, kind:'info', done:'info', h:v.h, text:ok ? V.ok(v.h, V.z[v.zone]) : V.no(v.h, V.z[v.zone], v.ev||'')});
+  });
+  let evs=[]; try{ evs=mgrCarEvents(today, ccAddDays(today, 75)); }catch(e){ evs=[]; }
+  evs.forEach(ev=>{
+    const host=mgrLanHost(ev), zone=host && mgrVisaZone(host.nat); if(!zone) return;
+    const city=(L().ccCity && L().ccCity[host.key]) || host.key;
+    (ev.teams||[]).forEach(id=>mgrEvPeople(id).forEach(h=>{
+      const rate=mgrVisaRate(h, zone), k=mgrVisaKey(zone, h);
+      if(rate==null || vs[k] || MGR.inbox.some(m=>m.id==='visa|'+k)) return;
+      const f=mgrMoney(MGR_VISA_FEE[zone]);
+      MGR.inbox.unshift({id:'visa|'+k, day:today, kind:'event', ev:'visa', h, zone, key:k, rate, lan:ev.day, evName:ev.name,
+        a:V.a(f), b:V.b, text:V.ask(h, natDisplay(mgrNatName((mgrCard(h)||{}).nat)||''), V.z[zone], ev.name, city, f, String(rate))});
+    }));
+  });
+}
+function mgrVisaApply(m, ok){
+  const vs=MGR.visa=MGR.visa||{};
+  if(!ok){ vs[m.key]={st:'skip', h:m.h, zone:m.zone}; return true; }
+  const fee=MGR_VISA_FEE[m.zone]||0;
+  if(MGR.club.cash<fee){ mgrToast(mgrTVisa().money); return false; }
+  MGR.club.cash-=fee;
+  const today=CAREER.career.day, left=m.lan ? ccDaysBetween(today, m.lan) : MGR_VISA_DAYS+1;
+  const ready=ccAddDays(today, Math.max(0, Math.min(MGR_VISA_DAYS, left-1)));
+  vs[m.key]={st:'wait', ready, rate:m.rate, h:m.h, zone:m.zone, ev:m.evName||''};
+  mgrVisaTick();
+  return true;
+}
 function mgrCarTeams(ev){
   const club=mgrClubTeams(mgrEvSize(ev));
-  return (ev.teams||[]).map(id=>club.find(t=>t.mgrId===id)).filter(Boolean);
+  const teams=(ev.teams||[]).map(id=>club.find(t=>t.mgrId===id)).filter(Boolean);
+  // ЛАН: состав, где у своего игрока нет визы, не летит (письмо в почту один раз за вечер).
+  let host=null; try{ host=mgrLanHost(ev); }catch(e){}
+  const zone=host && mgrVisaZone(host.nat); if(!zone) return teams;
+  try{ mgrVisaTick(); }catch(e){}
+  const V=mgrTVisa();
+  return teams.filter(tm=>{
+    const miss=mgrEvPeople(tm.mgrId).filter(h=>!mgrVisaOk(h, zone));
+    if(!miss.length) return true;
+    const id='visam|'+ev.id+'|'+ev.day+'|'+tm.mgrId;
+    MGR.inbox=MGR.inbox||[];
+    if(!MGR.inbox.some(m=>m.id===id)) MGR.inbox.unshift({id, day:ev.day, kind:'info', done:'info', h:miss[0], text:V.miss(mgrPlainName(tm), ev.name, miss.join(', '))});
+    return false;
+  });
 }
 // Перемотка: все команды — без вопросов и анимации.
 async function mgrCarAuto(ev){
