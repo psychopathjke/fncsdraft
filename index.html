@@ -157606,7 +157606,18 @@ function mgrDevelop(monthKey){
     if(rnd<p && r<Math.min(97, mgrPot(h)||97)){ MGR.dev[hKey(h)]=(MGR.dev[hKey(h)]||0)+1; }
   });
 }
-function mgrSalary(c){ return careerClubSalary(Math.round(ccCardOvr(c)||70)); }
+/* ЗАРПЛАТА ИГРОКА В МЕСЯЦ (его слово 8.10: «зп более реалистичные, баланс — фортнайт цены»). Публичных контрактов
+   Fortnite почти нет; опоры — сводные оценки (headphonesaddict / wealthvieu, 2026): низовой про ≈ $27,5 тыс. в год
+   (≈ $2 300/мес), средний ≈ $46,9 тыс. (≈ $3 900), топ ≈ $77 тыс. (≈ $6 400), верх первого эшелона — до $150 тыс. в год
+   (≈ $12 500). Точки рейтинга под них (80 / 87 / 93 / 99) — оценка режима; ниже 70 — академический уровень. Было
+   (рейтинг−70)×$240 из карьеры: $200 профи и $7 тыс. потолок. */
+const MGR_WAGE_PTS=[[60,400],[70,700],[80,2300],[87,3900],[93,6400],[99,12500]];
+function mgrSalary(c){
+  const a=Math.round(ccCardOvr(c)||70), p=MGR_WAGE_PTS;
+  if(a<=p[0][0]) return p[0][1];
+  for(let i=1;i<p.length;i++){ const [x0,y0]=p[i-1], [x1,y1]=p[i]; if(a<=x1) return Math.round((y0+(y1-y0)*(a-x0)/(x1-x0))/50)*50; }
+  return p[p.length-1][1];
+}
 /* БЮДЖЕТ КЛУБА — из его призовых в Fortnite за всё время (CC_ORG_EARN, esportsearnings; по годам
    этих чисел нет, поэтому год их не меняет). Оборот = K × призовые с полом; K=0.15 — оценка режима:
    Cooler (3.3 млн) → ~$500к в год, клуб вне списка — пол. Как в FC, два бюджета: трансферный (40%
@@ -158011,7 +158022,10 @@ function mgrPayMonths(toDay){
   let m=c.paidMonth||toDay.slice(0, 7), paid=0;
   while(m<toDay.slice(0, 7)){
     const wage=cards.reduce((s,h)=>s+mgrWage(h), 0);
-    c.cash+=mgrSponsor()-wage-mgrStaffWage()-mgrFacUpkeep(); paid+=wage+mgrStaffWage()+mgrFacUpkeep();
+    // Бюджет организации на дивизион Fortnite (8.10): зарплаты в оргах платит организация, а не призовые. Совет переводит
+    // 1/12 годового оборота клуба (MGR.club.turnover — его же бюджетная модель, mgrClubBudget) каждый месяц.
+    const budget=Math.round((c.turnover||0)/12);
+    c.cash+=budget+mgrSponsor()-wage-mgrStaffWage()-mgrFacUpkeep(); paid+=wage+mgrStaffWage()+mgrFacUpkeep(); c.budgetGot=(c.budgetGot||0)+budget;
     if(MGR.deal && MGR.deal.year===MGR.year) MGR.deal.paid=(MGR.deal.paid||0)+mgrSponsor();
     try{ mgrDevelop(m); }catch(e){}
     try{ mgrYouthMonth(m); }catch(e){ console.error('mgrYouthMonth', e); }
@@ -158077,7 +158091,9 @@ function mgrBar(label, mark, v, low){
   return '<div class="ch-en"><em>'+esc(label)+'</em><div class="ch-en-row"><span class="ch-en-mark">'+mark+'</span>'+
     '<span class="ch-en-bar'+(w<low ? ' low' : '')+'"><i style="width:'+w+'%"></i></span><b>'+w+'</b></div></div>';
 }
-function mgrNetMonth(){ return mgrSponsor()-mgrWageBill()-(mgrStaffWage()||0)-(mgrFacUpkeep()||0)+(typeof mgrCreatorNet==='function' ? mgrCreatorNet() : 0); }
+function mgrBudgetMonth(){ return Math.round(((MGR && MGR.club && MGR.club.turnover)||0)/12); }
+const MGR_BUDGET_T={ru:'Бюджет организации', en:'Organisation budget', fr:'Budget de l’organisation', it:'Budget dell’organizzazione', pt:'Orçamento da organização', de:'Budget der Organisation', es:'Presupuesto de la organización'};
+function mgrNetMonth(){ return mgrBudgetMonth()+mgrSponsor()-mgrWageBill()-(mgrStaffWage()||0)-(mgrFacUpkeep()||0)+(typeof mgrCreatorNet==='function' ? mgrCreatorNet() : 0); }
 function mgrHdrHTML(){
   const T=mgrT(), T9=mgrT9(), c=MGR.club, cr=CAREER.career;
   const all=mgrAll();
@@ -161105,7 +161121,7 @@ function mgrSponsorsTabHTML(){
   const row=(k,v,cls)=>'<div class="mgn-row"><em>'+esc(k)+'</em><b'+(cls ? ' class="'+cls+'"' : '')+'>'+v+'</b></div>';
   const sp=mgrSponsor(), w=mgrWageBill(), st=mgrStaffWage()||0, fac=(mgrFacUpkeep()||0), crn=(typeof mgrCreatorNet==='function' ? mgrCreatorNet() : 0), net=mgrNetMonth();
   const money='<div class="ch-tile"><h4>'+esc(T.money)+'</h4>'+
-    row(T.sp, '+'+mgrMoney(sp), 'up')+row(T.wages, '−'+mgrMoney(w), 'dn')+row(T.staff, st ? '−'+mgrMoney(st) : mgrMoney(0), st ? 'dn' : '')+
+    row(MGR_BUDGET_T[LANG]||MGR_BUDGET_T.en, '+'+mgrMoney(mgrBudgetMonth()), 'up')+row(T.sp, '+'+mgrMoney(sp), 'up')+row(T.wages, '−'+mgrMoney(w), 'dn')+row(T.staff, st ? '−'+mgrMoney(st) : mgrMoney(0), st ? 'dn' : '')+
     (fac ? row(T.base, '−'+mgrMoney(fac), 'dn') : '')+(crn ? row(T.cr, (crn<0 ? '−' : '+')+mgrMoney(Math.abs(crn)), crn<0 ? 'dn' : 'up') : '')+
     row(T.net, (net<0 ? '−' : '+')+mgrMoney(Math.abs(net)), net<0 ? 'dn' : 'up')+'</div>';
   const fans=typeof mgrFans==='function' ? mgrFans() : 0;
