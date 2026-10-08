@@ -131040,8 +131040,9 @@ function ccShopKey(x){ return String((x&&x.at)||(x&&x.id)||'').toLowerCase(); }
    ведёт, по его же описанию в X (сняты 8.10.2026) и картам этой базы; рейтинг = p − 6, от 60 до 95. У кого клиенты
    не названы или их нет в базе — по подписчикам: 60 + 6·lg(подписчики/1000), не выше 76. Условия (доля, охват,
    прибавка, цена) идут от рейтинга, а не от места в списке; порядок окна — по рейтингу. Формула — оценка режима. */
-const CC_STAFF_X={"JoaovEU":2868, "ElyxxM":16747, "50taruns":18989, "alhasarda":3166, "OliverChesses":1459, "NaaxoMNG":846, "PixelzMNG":2441, "Kiinywz0":821, "Yeekzie7":3078, "F0C8S":4584, "ClapMNG":4127, "AlybiSaCE":3315, "IdziU97":3204, "Th0masNL":2361, "RemssMNG":2157, "DamlosMNG":1667, "ZedroxMNG":1367, "errieMNG":1304, "Raziaa_":954, "LC7_MNG":922, "ArtinMNG":846, "yaleblan":768, "DrazoxMNG":703, "Skyforcemng272":464, "Zerkomng":503, "askebott":276, "v1nteroFN":2137, "SweetyyFN":1991, "SandoraFN":1014, "baderwtw":885, "Pyp4ingS":613, "UgoComm":548, "Lair_Fn":594, "veltrixx10":481, "CmLumos":357, "MetiDark_":49, "murlotron":3007, "Goalkikermng":1104, "KaizenMNG":785, "PyraxMGMT":433};
+const CC_STAFF_X={"roxogg":2989, "JoaovEU":2868, "ElyxxM":16747, "50taruns":18989, "alhasarda":3166, "OliverChesses":1459, "NaaxoMNG":846, "PixelzMNG":2441, "Kiinywz0":821, "Yeekzie7":3078, "F0C8S":4584, "ClapMNG":4127, "AlybiSaCE":3315, "IdziU97":3204, "Th0masNL":2361, "RemssMNG":2157, "DamlosMNG":1667, "ZedroxMNG":1367, "errieMNG":1304, "Raziaa_":954, "LC7_MNG":922, "ArtinMNG":846, "yaleblan":768, "DrazoxMNG":703, "Skyforcemng272":464, "Zerkomng":503, "askebott":276, "v1nteroFN":2137, "SweetyyFN":1991, "SandoraFN":1014, "baderwtw":885, "Pyp4ingS":613, "UgoComm":548, "Lair_Fn":594, "veltrixx10":481, "CmLumos":357, "MetiDark_":49, "murlotron":3007, "Goalkikermng":1104, "KaizenMNG":785, "PyraxMGMT":433};
 const CC_STAFF_RES={
+  "roxogg":{p:86, who:["Phzin","Seeyun","edson","pardal"]},   // 8.10: его описание в X — Phzin, edson, 916Gon, Seeyun, pardal и др.; четыре лучших
   "PixelzMNG":{p:81, who:["matice","Shadox","Seili"]},
   "ClapMNG":{p:90, who:["Kyzen","Salko","Twek","Turtl3"]},
   "IdziU97":{p:92, who:["Shadow","Nxthan","G13ras","Blacha"]},
@@ -131436,6 +131437,10 @@ const CC_AGENTS=[
   {name:'IdziU',        at:'IdziU97',       nat:'pl', photo:'IdziU97.jpg',       x:3110},
   // Esports talent agent, and the only one here whose own line is a management
   // service rather than a roster of names.
+  /* x.com/roxogg, 2 989 фолловеров, 8 октября (его просьба «добавить менеджера»). «Roxo» — агент в @oneshotmidia, раньше
+     @futesportsgg; ведёт phzinfps1, edsonmalado, 916gon, blxckoutz, nightftn, seeyun5, pardalflexlolo «& more» —
+     бразильская сцена. Страны в профиле нет — nat пустой. По фолловерам — перед Th0masNL. */
+  {name:'Roxo',         at:'roxogg',        nat:null, photo:'roxogg.jpg',        x:2989},
   {name:'Th0masNL',     at:'Th0masNL',      nat:'nl', photo:'Th0masNL.jpg',      x:2311},
   // Head of Fortnite for Lyost.
   {name:'Lyost Remss',  at:'RemssMNG',      nat:null, photo:'RemssMNG.jpg',      x:2085},
