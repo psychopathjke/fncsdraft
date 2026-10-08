@@ -32,6 +32,12 @@ try{
   check('окно выбора — все аналитики', rows===CC_ANALYSTS.length, String(rows));
   check('Youenn нет', !CC_PSYCHS.some(p=>/youenn/i.test(p.name)));
   const dj=CC_COACHES.find(c=>c.id==='destiny'); check('DestinysJesus в коучах с рейтингом', dj && dj.rating>=60, dj && String(dj.rating));
+  // Штаб: шесть карточек, нанятые — с рейтингом и эффектом, пустые — «Нанять»; коуч больше не на «Карьере».
+  const cards=ccStaffCards(); out.notes.staff=cards.map(c=>c.role+(c.name?':'+c.r:''));
+  check('штаб — шесть ролей', cards.length===6, String(cards.length));
+  const ph=careerStaffPanelHTML(); check('штаб: нанятые с рейтингом, пустые — нанять', ph.indexOf('cc-staff-rt')>=0 && ph.indexOf(L().ccStaffHire)>=0 && ph.indexOf(ccStaff2('analyst').name)>=0);
+  check('вкладка «Клуб» — со штабом', careerClubTabHTML().indexOf('cc-staff-wrap')>=0);
+  check('коуч ушёл с «Карьеры»', careerMeHTML().indexOf('ch-tile-coach')<0);
   CAREER.career.day=ccAddDays(CAREER.career.day, 31); check('месяц прошёл — аналитик ушёл', ccStaff2('analyst')===null && ccAnalystPow()===0);
 }catch(e){ out.fails.push(String(e.stack||e)); }
 document.getElementById('__out').textContent='@@B@@'+encodeURIComponent(JSON.stringify(out))+'@@E@@'; }, 500));<\/script>`;
