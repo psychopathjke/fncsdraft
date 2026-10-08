@@ -112,7 +112,8 @@ const BOOT = `
       seed(sd);
       CAREER.career.division = 2;
       CAREER.career.day = '2026-01-05';   // inside a transfer window
-      if (withAgent) careerSignAgentFromDm(careerAgentDm().id);
+      // Лучший по рейтингу, а не тот, кого вытянул бросок: со слабейшим (+2 охвата) разница тонет в раскладе.
+      if (withAgent){ const top=ccByHand(CC_AGENTS)[0], t=ccAgentThreadOf(top.name, true); t.state='agent'; careerSignAgentFromDm(t.id); }
       const o = careerOrgOffers() || [];
       return {n: o.length, top: o.length ? Math.max.apply(null, o.map(x=>x.tier)) : 0,
               pay: o.length ? Math.max.apply(null, o.map(x=>x.salary)) : 0};

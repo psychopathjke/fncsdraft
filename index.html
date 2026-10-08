@@ -130292,19 +130292,42 @@ function ccShopKey(x){ return String((x&&x.at)||(x&&x.id)||'').toLowerCase(); }
    Matched by handle rather than by identity, because a signed agent is a copy
    held in the save. Anybody not in the list gets null, which is the plain-terms
    fallback each window already has. */
+/* РЕЙТИНГ ЛЮДЕЙ ИЗ МАГАЗИНА — менеджеры, SMM, маркетинг (его «может и с другими так сделать, менеджеры, смм», 8.10;
+   коучи — ccCoachRatingOf). Результат человека — его клиенты: средний рейтинг четырёх лучших игроков, которых он
+   ведёт, по его же описанию в X (сняты 8.10.2026) и картам этой базы; рейтинг = p − 6, от 60 до 95. У кого клиенты
+   не названы или их нет в базе — по подписчикам: 60 + 6·lg(подписчики/1000), не выше 76. Условия (доля, охват,
+   прибавка, цена) идут от рейтинга, а не от места в списке; порядок окна — по рейтингу. Формула — оценка режима. */
+const CC_STAFF_X={"JoaovEU":2868, "ElyxxM":16747, "50taruns":18989, "alhasarda":3166, "OliverChesses":1459, "NaaxoMNG":846, "PixelzMNG":2441, "Kiinywz0":821, "Yeekzie7":3078, "F0C8S":4584, "ClapMNG":4127, "AlybiSaCE":3315, "IdziU97":3204, "Th0masNL":2361, "RemssMNG":2157, "DamlosMNG":1667, "ZedroxMNG":1367, "errieMNG":1304, "Raziaa_":954, "LC7_MNG":922, "ArtinMNG":846, "yaleblan":768, "DrazoxMNG":703, "Skyforcemng272":464, "Zerkomng":503, "askebott":276, "v1nteroFN":2137, "SweetyyFN":1991, "SandoraFN":1014, "baderwtw":885, "Pyp4ingS":613, "UgoComm":548, "Lair_Fn":594, "veltrixx10":481, "CmLumos":357, "MetiDark_":49, "murlotron":3007, "Goalkikermng":1104, "KaizenMNG":785, "PyraxMGMT":433};
+const CC_STAFF_RES={
+  "PixelzMNG":{p:81, who:["matice","Shadox","Seili"]},
+  "ClapMNG":{p:90, who:["Kyzen","Salko","Twek","Turtl3"]},
+  "IdziU97":{p:92, who:["Shadow","Nxthan","G13ras","Blacha"]},
+  "ArtinMNG":{p:79.3, who:["Karmy","3R8","Pligz","Trikshotz"]},
+  "askebott":{p:84, who:["jax"]},
+  "SweetyyFN":{p:95.8, who:["Flickzy","Pixie","MariusCOW","Tjino"]},
+  "SandoraFN":{p:96, who:["Vanyak3kk"]},
+  "baderwtw":{p:95, who:["Eomzo","PXMP"]},
+  "veltrixx10":{p:89.7, who:["SkyJump","Werex","Akiira"]},
+  "Goalkikermng":{p:89.7, who:["Upl","F1n4ik","Predage"]},
+  "PyraxMGMT":{p:92, who:["SkyJump"]}};
+function ccStaffRating(x){
+  if(!x) return 60;
+  // Коуч узнаётся по своим полям: обращение к CC_COACHES отсюда падает на загрузке (константа ниже по файлу, TDZ).
+  if(x.train!=null && x.keys){ try{ return ccCoachRatingOf(x); }catch(e){ return x.rating||60; } }
+  const r=CC_STAFF_RES[x.at];
+  // Один-два клиента — ещё не результат: −2 за каждого недостающего до четырёх.
+  if(r) return Math.max(60, Math.min(95, Math.round(r.p-6-2*Math.max(0, 4-(r.who||[]).length))));
+  const f=CC_STAFF_X[x.at]!=null ? CC_STAFF_X[x.at] : (x.x||500);
+  return Math.max(60, Math.min(76, Math.round(60+6*Math.log10(Math.max(1000, f)/1000))));
+}
 function ccRankPull(list, item){
   if(!item || !list || list.length<2) return null;
-  const key=ccShopKey(item);
-  const rows=ccByHand(list);
-  const i=rows.findIndex(r=>ccShopKey(r)===key);
-  if(i<0) return null;
-  return (rows.length-1-i)/(rows.length-1);
+  // Не из списка (вписанный руками, чужой) — без места, обычные условия, как было.
+  const key=ccShopKey(item); if(!list.some(r=>ccShopKey(r)===key)) return null;
+  return Math.max(0, Math.min(1, (ccStaffRating(item)-60)/35));
 }
 function ccByHand(list){
-  const rank=x=>{
-    const i=CC_SHOP_RANK[ccShopKey(x)];
-    return i==null ? CC_SHOP_ORDER.length : i;
-  };
+  const rank=x=>-ccStaffRating(x)*1e7-(CC_STAFF_X[x.at]!=null ? CC_STAFF_X[x.at] : (x.x||0));
   // Index carried alongside, so everyone unplaced keeps their own table’s order
   // rather than whatever the sort happens to do with equal keys.
   return list.map((x,i)=>({x:x,i:i}))
@@ -130374,7 +130397,7 @@ function ccMktPickOpen(){
       ${m.photo ? `<img class="cc-buy-img cc-buy-face" src="${PHOTO_DIR}${esc(m.photo)}" alt=""
            loading="lazy" onerror="this.remove()">` : ''}
       <div class="cc-buy-in"><b>${esc(m.name)}</b>
-        <i>@${esc(m.at)}${m.x ? ' · '+ccFollowers(m.x) : ''}</i>
+        <i>${L().ccRoOvr} ${ccStaffRating(m)} · @${esc(m.at)}${m.x ? ' · '+ccFollowers(m.x) : ''}</i>
         <span>${L().ccMktRate} +${Math.round((t.rate-1)*100)}% · ${L().ccShopMonth}</span></div>
       ${mine ? `<span class="cc-owned">${L().ccAgentYours}</span>`
              : `<button class="ch-sign"${can?'':' disabled'} onclick="careerHireMkt(\'${m.id}\')">$${
@@ -130950,7 +130973,7 @@ function ccAgentPickOpen(){
       ${a.photo ? `<img class="cc-buy-img cc-buy-face" src="${PHOTO_DIR}${esc(a.photo)}" alt=""
            loading="lazy" onerror="this.remove()">` : ''}
       <div class="cc-buy-in"><b>${esc(a.name)}</b>
-        <i>${a.at ? '@'+esc(a.at) : ''}${
+        <i>${L().ccRoOvr} ${ccStaffRating(a)} · ${a.at ? '@'+esc(a.at) : ''}${
           a.x ? ' · '+ccFollowers(a.x)+' '+L().xFollowers.toLowerCase() : ''}</i>
         <span>${L().ccAgentCutRow} ${Math.round(cut*100)}% · ${
           L().ccAgentReachRow} +${reach} · ${L().ccAgentWageRow} +${
@@ -131973,6 +131996,8 @@ const CC_SMM=[
      быть, и это не повод опускать пол — аккаунту четыре месяца. */
   {id:'metidark', name:'NOW MetiDark',    at:'MetiDark_',  photo:'MetiDark_.jpg',  x:46}
 ];
+// Подписчики в окнах — свежие (CC_STAFF_X, 8.10.2026), где снимок есть.
+[CC_AGENTS, CC_SMM, CC_MARKETING].forEach(list=>list.forEach(x=>{ if(CC_STAFF_X[x.at]!=null) x.x=CC_STAFF_X[x.at]; }));
 // Where an account sits between the smallest of them and the biggest, 0 to 1.
 function ccSmmPull(x){
   if(!(x>0)) return null;
@@ -132072,7 +132097,7 @@ function ccSmmPickOpen(){
       <img class="cc-buy-img cc-buy-face" src="${PHOTO_DIR}${esc(m.photo)}" alt=""
            loading="lazy" onerror="this.remove()">
       <div class="cc-buy-in"><b>${esc(m.name)}</b>
-        <i>@${esc(m.at)}${m.x ? ' · '+ccFollowers(m.x) : ''}${
+        <i>${L().ccRoOvr} ${ccStaffRating(m)} · @${esc(m.at)}${m.x ? ' · '+ccFollowers(m.x) : ''}${
           m.org ? ' · '+esc(m.org) : ''}</i>
         <span>${L().ccSmmGain} +${Math.round(t.boost*100)}% · ${L().ccShopMonth}</span></div>
       ${on ? `<span class="cc-owned">${L().ccShopUntil(ccDayLabel(CAREER.smm.until))}</span>`
