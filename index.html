@@ -158157,6 +158157,7 @@ function mgrRenderHub(tab){
 // Вход в хаб. Старые ключи вкладок (из сейва и прежних кнопок) ведут в новые.
 function mgrOpenHub(){
   if(!MGR || !MGR.club){ mgrOpenNew(); return; }
+  try{ const own=new Set(mgrOwned().map(hKey)); MGR.teams.forEach(t=>{ if(t.guests) t.guests=t.guests.filter(g=>!own.has(hKey(g))); }); }catch(e){}
   try{ mgrGuestAuto(); }catch(e){ console.error('mgrGuestAuto', e); }
   const legacy={club:'centre', market:'transfers', train:'club', stats:'tables'};
   mgrRenderHub(legacy[MGR_TAB]||MGR_TAB);
@@ -159119,7 +159120,8 @@ function mgrFfSummary(a){
                  mail:n=>'Neue Nachrichten: '+n, toMail:'Posteingang', ok:'OK'}), es:()=>({title:'Resumen del avance rápido', days:(n,f,t)=>n+' días: '+f+' → '+t, nights:'Torneos', none:'Sin torneos del club', prize:'Premios del club', cash:'Caja',
                  mail:n=>'Mensajes nuevos: '+n, toMail:'Bandeja de entrada', ok:'OK'})}[LANG]||(()=>({title:'Fast-forward summary', days:(n,f,t)=>n+' days: '+f+' → '+t, nights:'Tournaments', none:'No club tournaments', prize:'Club prize money', cash:'Cash',
                  mail:n=>'New messages: '+n, toMail:'Inbox', ok:'OK'})))();
-  const rows=(MGR.log||[]).slice(a.log);
+  // MGR.log пишется unshift'ом — новые строки В НАЧАЛЕ (его Notion 8.10: в итогах недели стояли январские вечера).
+  const rows=(MGR.log||[]).slice(0, Math.max(0, (MGR.log||[]).length-a.log)).filter(r=>r.day>=a.day);
   const nights=rows.filter(r=>r.kind==='night');
   const prize=nights.reduce((sum,r)=>sum+(r.teams||[]).reduce((x,t)=>x+(t.prize||0), 0), 0);
   const mail=(MGR.inbox||[]).slice(0, Math.max(0, b.inbox-a.inbox));
@@ -159248,7 +159250,7 @@ function mgrSkip(){
    итоги: не выполнены обе — увольнение; иначе следующий год с теми же игроками (их карточки нового года).
    FNCS: дни финалов сезона (careerMajorOn, stage final) — квалификация (6 игр, проходит топ-33 дуо в
    пересчёте на формат) и финал (10 игр, призовые majorPrize). */
-const MGR_MAX_TEAMS4=4;
+const MGR_MAX_TEAMS4=8;   // было 4 — его вопрос 8.10 «почему я не могу больше 4 команд создать»; у оргов бывает и больше составов
 let MGR_TAB='club', MGR_MKT_Q='', MGR_MKT_FREE=false, MGR_MKT_YOUNG=false;
 function mgrT2(){
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
@@ -159510,6 +159512,7 @@ function mgrRelease(h){
    составы заняты, он остаётся «вне состава». Старый запас при открытии хаба расходится по командам сам. */
 function mgrPlaceNew(h){
   if(!h) return;
+  (MGR.teams||[]).forEach(t=>{ if(t.guests) t.guests=t.guests.filter(g=>hKey(g)!==hKey(h)); });   // был гостем — теперь наш (Notion 8.10: t3eny в двух составах)
   const size=Math.max(2, careerSquadSize());
   MGR.bench=(MGR.bench||[]).filter(x=>hKey(x)!==hKey(h));
   const t=MGR.teams.find(x=>x.cards.length+((x.guests||[]).length)<size);
@@ -161631,13 +161634,17 @@ let MGR_CAR_JOIN=null;
 const MGR_CAR_COPY=['tokens','major','major21','major22','major23','major24','majorx','majorxs','majorLc','globals','gclc','summit','reload','rc',
   'gc23','gcSim','div22','div23','d1','division','solo','solos','solosBy','soloSpots','soloBy','proam','proamInvs','ewc24','ewc','mxDone','evSeen','spots','table','noDiv','vpick'];
 const mgrCarKey=t=>(t && t.squad || []).map(c=>hKey((c && c.handle) || c)).sort().join('|');
-function mgrCarJoinField(field){
+const mgrCarIsHeat=o=>/heat|хит/i.test(String((o && o.stageName)||''));
+function mgrCarJoinField(field, opts){
   const J=MGR_CAR_JOIN; if(!J || !Array.isArray(field) || !field.some(t=>t && t.isYou)) return;
+  /* Хиты (его Notion 8.10: «почему-то все один хит играли»): у хита своё лобби по правилам турнира — состав клуба остаётся
+     там, где его посадил жребий; в твоём хите он только если раннер сам его туда посадил. */
+  const heat=mgrCarIsHeat(opts);
   J.teams.forEach(x=>{
     const k=mgrCarKey(x);
     const same=field.findIndex(t=>t && !t.isYou && mgrCarKey(t)===k);
     if(same>=0){ const t=field[same]; t.isClub=true; t.mgrId=x.mgrId; t.name=x.name; J.obj[x.mgrId]=t; return; }
-    if(J.injected[x.mgrId]) return;   // выбыл на прошлой стадии вечера — дальше его нет
+    if(J.injected[x.mgrId] || heat) return;   // выбыл на прошлой стадии вечера — дальше его нет; в хит не подсаживаем
     const mem=new Set((x.squad||[]).map(c=>hKey(c.handle)));
     let i=field.findIndex(t=>t && !t.isYou && !t.isClub && (t.squad||[]).some(c=>mem.has(hKey((c && c.handle) || c))));
     if(i<0){ let bd=1e9; field.forEach((t,j)=>{ if(!t || t.isYou || t.isClub) return; const d=Math.abs((t.pow||0)-(x.pow||0)); if(d<bd){ bd=d; i=j; } }); }
@@ -161679,10 +161686,10 @@ function mgrCarJoinRecord(field, opts){
 function mgrCarHooks(on){
   if(on && !mgrCarHooks.sim){
     const sim=simulateGamesLive, money=careerMoneyAdd; mgrCarHooks.sim=sim; mgrCarHooks.money=money;
-    simulateGamesLive=async function(teams){ try{ mgrCarJoinField(teams); }catch(e){ console.error('mgrCarJoinField', e); }
+    simulateGamesLive=async function(teams){ try{ mgrCarJoinField(teams, arguments[8]); }catch(e){ console.error('mgrCarJoinField', e); }
       // Составы клуба — в ОДНОЙ сотне большого поля (его слово 8.10: «все должны играть в одном лобби»; исключение — разные
       // хиты или не прошедшие: их просто нет в этом поле). opts.together — тот же механизм, что держит вместе людей гонки.
-      try{ const o=arguments[8]; const tg=(teams||[]).filter(t=>t && (t.isYou || t.isClub)); if(o && tg.length>1) o.together=tg; }catch(e){}
+      try{ const o=arguments[8]; const tg=(teams||[]).filter(t=>t && (t.isYou || t.isClub)); if(o && tg.length>1 && !mgrCarIsHeat(o)) o.together=tg; }catch(e){}
       const res=await sim.apply(this, arguments); try{ mgrCarJoinRecord(teams, arguments[8]); mgrCarMaybeSwap(teams); }catch(e){ console.error('mgrCarMaybeSwap', e); } return res; };
     careerMoneyAdd=function(ranked, prize){ try{ const J=MGR_CAR_JOIN; if(J && ranked) Object.keys(J.obj).forEach(id=>{ const i=ranked.indexOf(J.obj[id]); if(i<0) return;
         J.rec[id]=Object.assign(J.rec[id]||{}, {place:i+1, of:ranked.length, prize:Math.round(prize(i+1, J.obj[id])||0), final:true}); }); }catch(e){}
