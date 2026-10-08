@@ -159074,7 +159074,8 @@ function mgrAutoNight(ev){
       ranked=fin.slice().sort(mgrRankCmp);
       CC_PRIZE_DAY=ev.day;
     } else {
-      const field=club.concat(careerCupField(cr, clubCards, Math.max(1, (careerVictoryField(false)||50)-(club.length-1)), 'mgrff|'+ev.id+'|'+MGR.year, true)||[]);
+      const nF=Math.max(1, (careerVictoryField(size===1)||50)-(club.length-1));   // соло — поле одиночек, как у мира (mgrCupFieldOf)
+      const field=club.concat((size===1 ? careerSoloField(cr, clubCards, nF, true) : careerCupField(cr, clubCards, nF, 'mgrff|'+ev.id+'|'+MGR.year, true))||[]);
       ranked=mgrEngineRank(field, CC_VICTORY_R1_GAMES, victoryR1Points, CC_VICTORY_R1_KILL, ccVictoryLobby(ev, false)||50, seed, club);
     }
   }catch(e){ console.error('mgrAutoNight engine', e); if(!ranked.length) ranked=club.slice(); }
@@ -161539,8 +161540,8 @@ async function mgrPlay(){
   CARD_MODE=true; squadSize=size; drafted=clubCards;
   try{ useLandingSet(/Reload/.test(ev.id) ? ccReloadSetOfYear() : careerBrSet()); }catch(e){}
   mgrScreenReset();
-  const vSize=careerVictoryField(false);
-  const field=[...club, ...careerCupField(cr, clubCards, Math.max(1, vSize-(club.length-1)), 'mgr|'+ev.id, true)];
+  const vSize=careerVictoryField(size===1);
+  const field=[...club, ...((size===1 ? careerSoloField(cr, clubCards, Math.max(1, vSize-(club.length-1)), true) : careerCupField(cr, clubCards, Math.max(1, vSize-(club.length-1)), 'mgr|'+ev.id, true))||[])];
   MGR_NIGHT=club;
   club.forEach(t=>{ t._mgrStyle=t._mgrStyle||'bal'; });
   mgrSetYou(club, await mgrPickTeam(club));
