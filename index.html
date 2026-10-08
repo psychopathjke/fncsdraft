@@ -159689,7 +159689,11 @@ function careerBackToHub(){
   if(MGR_ACTIVE){ mgrAfterNight(); return; }   // вечер менеджера — назад в клуб
   document.documentElement.classList.remove('ev-pal', 'ev-classic', 'ev-light');
   show('screen-career-hub');
+  /* После матча — наверх (его слово 8.10: «после матча меня вниз скролит, нужно подниматься наверх к вкладкам»):
+     перерисовка хаба восстанавливала прокрутку «как была», а была — низ экрана результатов. */
+  CH_DREW=null;
   careerRenderHub('centre');
+  try{ window.scrollTo(0, 0); const b=document.getElementById('chBody'); if(b){ b.scrollTop=0; if(b.parentElement) b.parentElement.scrollTop=0; } }catch(e){}
 }
 
 /* ---- History, in the shape of a player profile ----------------------------
