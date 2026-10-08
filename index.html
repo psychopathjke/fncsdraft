@@ -158247,7 +158247,14 @@ function mgrCentreHTML(){
     show.map(r=>{ const i=rows.indexOf(r); return '<div class="mfc-trow'+(r.org===c.name ? ' mine' : '')+'"><i>'+(i+1)+'</i><span><span class="mfc-tcrest">'+mgrLogo(r.org, false, 18)+'</span>'+esc(r.org)+'</span><em>'+r.ev+'</em><em>'+(r.prize ? mgrMoney(r.prize) : '0')+'</em></div>'; }).join('')+'</div>';
   // РАСПИСАНИЕ НА НЕДЕЛЮ
   const clubK=new Set(evs.map(e=>e.id+'|'+e.day));
-  const wl=mgrWorldEvents(careerToday(), ccAddDays(careerToday(), 7)).filter(e=>!mgrWorldDone(e)).slice(0, 3);
+  /* Неделя — и турниры клуба (★), и мира (его Notion 8.10: «нет турниров почему-то тут» — плитка смотрела только мир на 7 дней).
+     Пустая неделя — ближайшие по датам; «турниров нет» — только когда сезон правда кончился. */
+  const wk=ccAddDays(careerToday(), 7);
+  const clubWk=evs.filter(e=>e.day<=wk);
+  const worldWk=mgrWorldEvents(careerToday(), wk).filter(e=>!mgrWorldDone(e) && !clubK.has(e.id+'|'+e.day));
+  let wl=clubWk.concat(worldWk).sort((a,b)=>a.day<b.day ? -1 : a.day>b.day ? 1 : 0).slice(0, 3);
+  if(!wl.length) wl=evs.slice(0, 2).concat(mgrWorldEvents(careerToday(), ccYearTo()).filter(e=>!mgrWorldDone(e) && !clubK.has(e.id+'|'+e.day)).slice(0, 1))
+    .sort((a,b)=>a.day<b.day ? -1 : a.day>b.day ? 1 : 0).slice(0, 3);
   const sched='<div class="mfc-tile mfc-sched" onclick="if(!event.target.closest(\'button\')){ MGR_MONTH=null; mgrRenderHub(\'calendar\'); }"><b class="mfc-title">'+esc(X.sched)+'</b>'+
     '<span class="mfc-ico">'+mgrIcoCal()+'</span>'+
     '<div class="mfc-list">'+(wl.map(e=>{ const k=e.id+'|'+e.day, kq=esc(k.replace(/\'/g, '')), my=clubK.has(k);
