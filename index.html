@@ -51,6 +51,9 @@
   .mgq-ff-row i.up{font-style:normal;color:#6fe3b0;} .mgq-ff-row i.dn{font-style:normal;color:#ff8f8f;}
   .mgq-ff-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:6px;}
   .mgs-tstaff{display:flex;flex-direction:column;gap:6px;}
+  .mg-sp-top{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px;}
+  @media (max-width:700px){ .mg-sp-top{grid-template-columns:1fr;} }
+  .mg-sp-tab .mgn-row b.up{color:#6fe3b0;} .mg-sp-tab .mgn-row b.dn{color:#ff9f9f;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -156853,7 +156856,7 @@ function mgrT9(){
     ownName:'Название клуба', crest:'Герб', tier:'Уровень старта', ownGo:'Основать клуб',
     tiers:{rookie:'Новичок', mid:'Средний', amb:'Амбициозный'},
     tierHint:{rookie:'Малый бюджет, свободные агенты 65–72', mid:'Средний бюджет, свободные агенты 72–78', amb:'Большой бюджет, свободные агенты 78–84, совет строже'},
-    tabs:{centre:'Центр', squad:'Состав', transfers:'Трансферы', inbox:'Входящие', club:'Клуб', calendar:'Календарь', tables:'Таблицы'}, calNext:'Ближайшие турниры', toCal:'Весь календарь',
+    tabs:{centre:'Центр', squad:'Состав', transfers:'Трансферы', inbox:'Входящие', sponsors:'Спонсоры', club:'Клуб', calendar:'Календарь', tables:'Таблицы'}, calNext:'Ближайшие турниры', toCal:'Весь календарь',
     conf:'Доверие совета', morale:'Мораль состава', board:'Совет', teamOvr:'Первая команда',
     goals:'Цели совета', dev:'Развитие', devNone:'Рост виден раз в месяц', fatigue:'Усталость', news:'Новости клуба', toTables:'Трофеи и статистика', toTrain:'К тренировкам',
     role:'Роль', until:'Контракт', where:'Где играет', moveTo:'Перевести…',
@@ -156873,7 +156876,7 @@ function mgrT9(){
     ownName:'Club name', crest:'Crest', tier:'Starting level', ownGo:'Found the club',
     tiers:{rookie:'Rookie', mid:'Mid', amb:'Ambitious'},
     tierHint:{rookie:'Small budget, free agents 65–72', mid:'Mid budget, free agents 72–78', amb:'Big budget, free agents 78–84, stricter board'},
-    tabs:{centre:'Centre', squad:'Squad', transfers:'Transfers', inbox:'Inbox', club:'Club', calendar:'Calendar', tables:'Tables'}, calNext:'Upcoming events', toCal:'Full calendar',
+    tabs:{centre:'Centre', squad:'Squad', transfers:'Transfers', inbox:'Inbox', sponsors:'Sponsors', club:'Club', calendar:'Calendar', tables:'Tables'}, calNext:'Upcoming events', toCal:'Full calendar',
     conf:'Board trust', morale:'Squad morale', board:'Board', teamOvr:'First team',
     goals:'Board goals', dev:'Development', devNone:'Growth shows once a month', fatigue:'Fatigue', news:'Club news', toTables:'Trophies and stats', toTrain:'To training',
     role:'Role', until:'Contract', where:'Plays in', moveTo:'Move to…',
@@ -157039,7 +157042,7 @@ function mgrCloneHubCss(){
   const st=document.createElement('style'); st.id='mgrHubCss'; st.textContent=out.join('\n');
   document.head.appendChild(st);
 }
-const MGR_TABS=['centre','squad','transfers','inbox','club','calendar','tables'];
+const MGR_TABS=['centre','squad','transfers','inbox','sponsors','club','calendar','tables'];
 let MGR_SUB={transfers:'market', club:'train', tables:'stats', inbox:'mail'};
 let MGR_DREW=null;
 function mgrGrade(c){ return c>=85 ? 'A' : c>=70 ? 'B' : c>=55 ? 'C' : c>=40 ? 'D' : c>=25 ? 'E' : 'F'; }
@@ -157068,13 +157071,14 @@ function mgrHdrHTML(){
 }
 // Тело вкладки. Задачи плана меняют ветки по одной; до них — прежние блоки менеджера.
 function mgrTabBody(tab){
+  if(tab==='sponsors') return mgrSponsorsTabHTML();
   if(tab==='calendar') return mgrCalendarHTML();
   if(tab==='squad') return mgrSquadHTML();
   if(tab==='transfers') return mgrTransfersHTML();
   const T9=mgrT9();
   if(tab==='inbox') return mgrSubTabsHTML('inbox', [['mail', T9.mail], ['feed', T9.feed], ['world', T9.wMedia]])+(MGR_SUB.inbox==='world' ? mgrWorldFeedHTML() : MGR_SUB.inbox==='feed' ? mgrFeedHTML() : '<div class="ch-tile mgi"><h4>'+esc(T9.tabs.inbox)+'</h4>'+mgrInboxHTML()+'</div>');
   if(tab==='club'){ const s=MGR_SUB.club;
-    return mgrSubTabsHTML('club', [['train', T9.train], ['youth', T9.youth], ['creators', T9.creators], ['base', T9.base], ['sponsor', T9.sponsor], ['press', T9.press]])+
+    return mgrSubTabsHTML('club', [['train', T9.train], ['youth', T9.youth], ['creators', T9.creators], ['base', T9.base], ['press', T9.press]])+
       '<div class="mgk-body">'+(s==='creators' ? mgrCreatorsHTML() : s==='youth' ? mgrYouthHTML() : s==='base' ? mgrFacHTML() : s==='sponsor' ? mgrDealHTML() : s==='press' ? mgrEvFreqHTML() : mgrTrainHTML())+'</div>'; }
   if(tab==='tables'){ const s=MGR_SUB.tables;
     return mgrSubTabsHTML('tables', [['stats', T9.stats], ['events', T9.wEvents], ['clubs', T9.wClubs], ['trophies', T9.trophies], ['managers', T9.managers]])+
@@ -157679,9 +157683,29 @@ function mgrAutoNight(ev){
   const club=mgrClubTeams(size), clubCards=club.flatMap(t=>t.squad); drafted=clubCards;
   let field=club;
   try{ field=club.concat(careerCupField(cr, clubCards, Math.max(1, (careerVictoryField(false)||50)-(club.length-1)), 'mgrff|'+ev.id+'|'+MGR.year, true)||[]); }catch(e){}
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
   const rnd=careerRng(ccHashStr('mgrauto|'+ev.id+'|'+ev.day+'|'+MGR.year));
-  const ranked=field.map(t=>({t, s:(t.pow||0)+(rnd()-0.5)*10})).sort((a,b)=>b.s-a.s).map(x=>x.t);
+  /* ВЕЧЕР ДВИЖКОМ, КАК В КАРЬЕРЕ (его слово 8.10: «почему не симулируются турниры как в карьере игрока»). Было: место
+     = сила + случайность, киллы — по месту. Теперь лобби клуба играется настоящим движком без экрана (simulateGames —
+     те же игры, очки и элиминации, что в обычном вечере): клуб и соперники из поля в лобби размера турнира, место в
+     поле — по месту в лобби. Остальное поле, как и раньше, — по силе (мир не смотрят). */
+  let lobbyPlace=null;
+  try{
+    const lobbyN=Math.max(club.length+1, Math.min(field.length, (typeof ccVictoryLobby==='function' ? ccVictoryLobby(ev, false) : 0)||100));
+    const others=field.filter(t=>club.indexOf(t)<0).map(t=>({t, k:rnd()})).sort((a,b)=>a.k-b.k).slice(0, lobbyN-club.length).map(x=>x.t);
+    const lobby=club.concat(others);
+    const games=ev.kind==='fncs' ? 10 : CC_VICTORY_R1_GAMES;
+    simulateGames(lobby, games, victoryR1Points, CC_VICTORY_R1_KILL);
+    const order=lobby.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0));
+    lobbyPlace=new Map(order.map((t,i)=>[t, i+1])); lobbyPlace.n=order.length;
+  }catch(e){ console.error('mgrAutoNight engine', e); lobbyPlace=null; }
+  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
+  let ranked=field.map(t=>({t, s:(t.pow||0)+(rnd()-0.5)*10})).sort((a,b)=>b.s-a.s).map(x=>x.t);
+  if(lobbyPlace){   // клуб — на место по лобби, остальные вокруг по силе
+    const of=ranked.length, rest=ranked.filter(t=>club.indexOf(t)<0);
+    const want=club.map(t=>({t, p:Math.max(1, Math.min(of, Math.round((lobbyPlace.get(t)-0.5)/lobbyPlace.n*of)))})).sort((a,b)=>a.p-b.p);
+    want.forEach(w=>{ rest.splice(Math.min(rest.length, w.p-1), 0, w.t); });
+    ranked=rest;
+  }
   const row={day:ev.day, kind:'night', name:ev.name, auto:true, fncs:ev.kind==='fncs', teams:[]};
   let clubGot=0;
   club.forEach(tm=>{
@@ -157691,9 +157715,11 @@ function mgrAutoNight(ev){
     else prize=mgrPrize(ev, place, size);
     clubGot+=Math.round(prize*MGR_CUT*mgrOwnShare(tm.mgrId));
     // Киллы без просмотра — по месту: верх таблицы бьёт больше; делятся по составу с разбросом.
-    const total=Math.max(0, Math.round((1-place/of)*14+rnd()*5)), kills={};
-    (tm.squad||[]).forEach((c,i,a)=>{ kills[c.handle]=i===a.length-1 ? total-Object.values(kills).reduce((s,v)=>s+v, 0) : Math.round(total*(0.2+rnd()*0.5)/Math.max(1, a.length-1)); });
-    row.teams.push({id:tm.mgrId, name:mgrPlainName(tm), place, of, pts:0, elims:total, wins:0, prize, kills});
+    let total, kills={};
+    if(lobbyPlace && tm.stageLog && tm.stageLog.length){ total=tm.stageElims||0; kills=mgrKillsOf(tm); }
+    else { total=Math.max(0, Math.round((1-place/of)*14+rnd()*5));
+      (tm.squad||[]).forEach((c,i,a)=>{ kills[c.handle]=i===a.length-1 ? total-Object.values(kills).reduce((s,v)=>s+v, 0) : Math.round(total*(0.2+rnd()*0.5)/Math.max(1, a.length-1)); }); }
+    row.teams.push({id:tm.mgrId, name:mgrPlainName(tm), place, of, pts:tm.stagePts||0, elims:total, wins:tm.wins||0, prize, kills});
   });
   mgrAfterResults(ev, row, clubGot);
   try{ mgrWorldStore(ev, ranked, true); }catch(e){}
@@ -159270,6 +159296,30 @@ function mgrDealPick(id){
   MGR.deal={id, name:MGR_SP_NAMES[id], paid:0, year:MGR.year};
   mgrSave(); mgrOpenHub();
 }
+/* ВКЛАДКА «СПОНСОРЫ» (его слово 8.10: «спонсоры вкладка тоже должна быть, это самое основное — заработок организации»).
+   Было подвкладкой «Клуба». Теперь отдельно и на первом плане: сколько клуб получает и тратит в месяц (спонсор, зарплаты,
+   штаб, база, криэйторы, итог), из чего складывается сумма спонсора (уровень клуба, репутация, аудитория, SMM, сделка)
+   и сам контракт — выбор сделки или текущая с бонусами. */
+function mgrSponsorsTabHTML(){
+  const ru=(typeof LANG!=='undefined' && LANG==='ru');
+  const T=ru ? {money:'Деньги клуба в месяц', sp:'Спонсоры', wages:'Зарплаты игроков', staff:'Штаб', base:'База', cr:'Криэйторы', net:'Итог в месяц',
+                 why:'Из чего сумма спонсора', lvl:'Уровень клуба', rep:'Репутация', fans:'Аудитория (подписчики X)', smm:'SMM в штабе', deal:'Условия сделки', deal0:'Контракт'}
+             : {money:'Club money per month', sp:'Sponsors', wages:'Player wages', staff:'Staff', base:'Facilities', cr:'Creators', net:'Net per month',
+                 why:'What the sponsor money is made of', lvl:'Club level', rep:'Reputation', fans:'Audience (X followers)', smm:'SMM on staff', deal:'Deal terms', deal0:'Contract'};
+  const row=(k,v,cls)=>'<div class="mgn-row"><em>'+esc(k)+'</em><b'+(cls ? ' class="'+cls+'"' : '')+'>'+v+'</b></div>';
+  const sp=mgrSponsor(), w=mgrWageBill(), st=mgrStaffWage()||0, fac=(mgrFacUpkeep()||0), crn=(typeof mgrCreatorNet==='function' ? mgrCreatorNet() : 0), net=mgrNetMonth();
+  const money='<div class="ch-tile"><h4>'+esc(T.money)+'</h4>'+
+    row(T.sp, '+'+mgrMoney(sp), 'up')+row(T.wages, '−'+mgrMoney(w), 'dn')+row(T.staff, st ? '−'+mgrMoney(st) : mgrMoney(0), st ? 'dn' : '')+
+    (fac ? row(T.base, '−'+mgrMoney(fac), 'dn') : '')+(crn ? row(T.cr, (crn<0 ? '−' : '+')+mgrMoney(Math.abs(crn)), crn<0 ? 'dn' : 'up') : '')+
+    row(T.net, (net<0 ? '−' : '+')+mgrMoney(Math.abs(net)), net<0 ? 'dn' : 'up')+'</div>';
+  const fans=typeof mgrFans==='function' ? mgrFans() : 0;
+  const why='<div class="ch-tile"><h4>'+esc(T.why)+'</h4>'+
+    row(T.lvl, String(MGR.club.avg||'—'))+row(T.rep, String(MGR.club.rep!=null ? MGR.club.rep : 50))+
+    row(T.fans, (MGR.club.fansEst ? '≈' : '')+ccFollowers(fans)+(typeof mgrFansMul==='function' ? ' · ×'+mgrFansMul().toFixed(2) : ''))+
+    row(T.smm, mgrStaff('smm') ? '+'+(8*mgrStaff('smm'))+'%' : '—')+
+    row(T.deal, '×'+(typeof mgrDealMul==='function' ? mgrDealMul().toFixed(2) : '1.00'))+'</div>';
+  return '<div class="mgk-body mg-sp-tab"><div class="mg-sp-top">'+money+why+'</div><div class="ch-tile"><h4>'+esc(T.deal0)+'</h4>'+mgrDealHTML()+'</div></div>';
+}
 function mgrDealHTML(){
   const T8=mgrT8(), base=mgrSponsorBase(), bs=mgrBonusSums();
   if(MGR.deal && MGR.deal.year===MGR.year){
@@ -159630,7 +159680,9 @@ async function mgrPlayFncs(ev){
 function mgrAfterNight(){
   document.documentElement.classList.remove('ev-pal', 'ev-classic', 'ev-light');
   if(CAREER && CAREER.career){ CAREER.career.day=ccAddDays(CAREER.career.day, 1); }
+  MGR_DREW=null;   // после матча — наверх, а не туда, где кончился экран результатов (его слово 8.10)
   mgrSave(); mgrOpenHub(); mgrSackCheck();
+  try{ window.scrollTo(0, 0); const b=document.getElementById('mgBody'); if(b) b.scrollTop=0; }catch(e){}
 }
 
 function careerBackToHub(){
