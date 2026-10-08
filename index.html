@@ -157601,7 +157601,6 @@ async function mgrPlayEwc(ev){
   const rng=careerRng(ccHashStr('mgrewc|'+MGR.club.name+'|'+ev.day));
   if(typeof EWC24_LIVE_BIG!=='undefined') EWC24_LIVE_BIG=true;
   const card=ewc24Begin();
-  if(mgrViewNow()==='result'){ skipAnimation=true; }
   card(L0.ewc24Title||ev.name, '<div class="stage-detail">'+esc(T3.ewcIn(EWC24.teams[slot].n))+'</div>'+ewc24RosterLine(you));
   const gRes={};
   for(const g of ['A','B','C','D']){
@@ -160577,6 +160576,12 @@ let MGR_WATCH=false;   // смотрим чужой кап: без устано�
    нажимаешь, такую же, как в карьере игрока»): играешь за выбранную команду (isYou) — карта, выбор точки и вопросы по
    ходу игры (choices), остальные команды клуба — в том же поле. Чужой кап «Смотреть» — тот же показ без вопросов. */
 async function mgrRunLive(field, club, games, ptsFn, kill, stageName, lobbySize){
+  /* Каждый этап — с анимацией, как в карьере (его слово 8.10: «во втором этапе и вообще — просто таблица, а не симуляция»):
+     «Скип» действует на вечер, но перед следующим этапом вечер спрашивает «симулировать / всё / играть» (ccRoundChoiceMaybe);
+     «играть» — анимация возвращается. */
+  if(!MGR_WATCH){ try{ await ccRoundChoiceMaybe(); }catch(e){} }
+  if(!CC_SKIP_RUN) skipAnimation=false;
+  ensureSkipButton();
   try{ mgrRivalStyles(field); }catch(e){}
   try{ await simulateGamesLive(field, games, ptsFn, kill, 'stage', 0, null, null, {lobbySize:lobbySize, stageName:stageName, mapReplay:true, choices:!MGR_WATCH, together:club}); }
   catch(e){ if(typeof console!=='undefined') console.error('mgr live', e); }
@@ -160695,7 +160700,7 @@ function mgrWorldTileHTML(){
     '<button class="hg-go" onclick="MGR_MONTH=null;mgrRenderHub(\'calendar\')">'+esc(T9.toCal)+'</button></div>';
 }
 function mgrScreenReset(){
-  skipAnimation=false; CC_SKIP_RUN=false;
+  skipAnimation=false; CC_SKIP_RUN=false; try{ CC_SKIP_ALL=false; }catch(e){}
   resetRunRecord();
   document.getElementById('majorStages').innerHTML='';
   const rsPrev=document.getElementById('runSummary'); if(rsPrev) rsPrev.innerHTML='';
