@@ -22,8 +22,9 @@ try{
   await mgrFastForwardLive(ev.day, true);
   out.notes.day=CAREER.career.day;
   const row=(MGR.log||[]).find(r=>r.car==='major');
-  out.notes.row=row && JSON.stringify(row.teams[0]).slice(0,200);
+  out.notes.row=row && JSON.stringify(row.teams.map(t=>[t.name,t.place,t.of,t.passed])); out.notes.tcar=Object.keys(MGR.tcar||{}).map(k=>k+':'+((MGR.tcar[k].log||[]).slice(-1)[0]||{}).place);
   check('Мейджор сыгран раннером карьеры', !!row && row.teams[0].of>100, JSON.stringify((MGR.log||[]).slice(0,2)).slice(0,300));
+  check('все составы клуба — в одном лобби', !row || row.teams.length<2 || (row.teams.every(t=>t.of===row.teams[0].of) && new Set(row.teams.map(t=>t.place)).size===row.teams.length), row && JSON.stringify(row.teams.map(t=>[t.name,t.place,t.of])));
   check('прогресс команды сохранён', Object.keys(MGR.tcar||{}).length>0 && Object.values(MGR.tcar).some(t=>(t.log||[]).some(x=>x.kind==='major')));
   check('теневая карьера чистая', !MGR.tswap && !CAREER.player.handle && !(CAREER.career.log||[]).some(x=>x.kind==='major'));
   check('рейтинг команды — её карточки, не новичка', !row || (MGR.tcar[row.teams[0].id].log||[]).slice(-1)[0].ovr>70, row && (MGR.tcar[row.teams[0].id].log||[]).slice(-1)[0].ovr);

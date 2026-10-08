@@ -161030,6 +161030,79 @@ function mgrCarEvents(from, to){
   MGR_CAR_CACHE={key, list};
   return list.map(e=>Object.assign({}, e));
 }
+
+/* ВСЕ СОСТАВЫ КЛУБА — В ОДНОМ ЛОББИ (его слово 8.10: «у каждого состава одновременно должны проходить квалификации, они же
+   в одном лобби»). Вечер играет один раннер карьеры — за состав, за которым смотришь (ведущий); остальные составы клуба
+   садятся в то же поле (MGR_CAR_JOIN): если их пара уже в поле по составу (прошли раунд в таблице мира) — помечаются
+   клубными, иначе встают вместо команды той же силы. Место — из итоговой таблицы вечера (careerMoneyAdd отдаёт и
+   ранжирование, и призы раннера), иначе — по очкам последней стадии. Прогресс гостевого состава: исход тот же, что у
+   ведущего (оба прошли / оба нет), — копия его записей квалификаций; спорный случай (ведущий прошёл, а состав ниже
+   него, или наоборот) — свой быстрый вечер раннером только ради прогресса, строка и приз — из общего вечера. */
+let MGR_CAR_JOIN=null;
+const MGR_CAR_COPY=['tokens','major','major21','major22','major23','major24','majorx','majorxs','majorLc','globals','gclc','summit','reload','rc',
+  'gc23','gcSim','div22','div23','d1','division','solo','solos','solosBy','soloSpots','soloBy','proam','proamInvs','ewc24','ewc','mxDone','evSeen','spots','table','noDiv','vpick'];
+const mgrCarKey=t=>(t && t.squad || []).map(c=>hKey((c && c.handle) || c)).sort().join('|');
+function mgrCarJoinField(field){
+  const J=MGR_CAR_JOIN; if(!J || !Array.isArray(field) || !field.some(t=>t && t.isYou)) return;
+  J.teams.forEach(x=>{
+    const k=mgrCarKey(x);
+    const same=field.findIndex(t=>t && !t.isYou && mgrCarKey(t)===k);
+    if(same>=0){ const t=field[same]; t.isClub=true; t.mgrId=x.mgrId; t.name=x.name; J.obj[x.mgrId]=t; return; }
+    if(J.injected[x.mgrId]) return;   // выбыл на прошлой стадии вечера — дальше его нет
+    const mem=new Set((x.squad||[]).map(c=>hKey(c.handle)));
+    let i=field.findIndex(t=>t && !t.isYou && !t.isClub && (t.squad||[]).some(c=>mem.has(hKey((c && c.handle) || c))));
+    if(i<0){ let bd=1e9; field.forEach((t,j)=>{ if(!t || t.isYou || t.isClub) return; const d=Math.abs((t.pow||0)-(x.pow||0)); if(d<bd){ bd=d; i=j; } }); }
+    if(i<0) return;
+    ['stagePts','stageElims','wins','gamesLog','dead'].forEach(p=>{ delete x[p]; });
+    x.isClub=true; field[i]=x; J.injected[x.mgrId]=true; J.obj[x.mgrId]=x;
+  });
+}
+function mgrCarJoinRecord(field, opts){
+  const J=MGR_CAR_JOIN; if(!J || !Array.isArray(field)) return;
+  const sorted=field.slice().sort(mgrRankCmp);
+  Object.keys(J.obj).forEach(id=>{ const t=J.obj[id], i=sorted.indexOf(t); if(i<0) return;
+    J.rec[id]=Object.assign(J.rec[id]||{}, {place:i+1, of:field.length, pts:Math.round(t.stagePts||0), elims:t.stageElims||0, wins:t.wins||0, stage:(opts && opts.stageName)||''}); });
+}
+function mgrCarHooks(on){
+  if(on && !mgrCarHooks.sim){
+    const sim=simulateGamesLive, money=careerMoneyAdd; mgrCarHooks.sim=sim; mgrCarHooks.money=money;
+    simulateGamesLive=async function(teams){ try{ mgrCarJoinField(teams); }catch(e){ console.error('mgrCarJoinField', e); }
+      const res=await sim.apply(this, arguments); try{ mgrCarJoinRecord(teams, arguments[8]); }catch(e){} return res; };
+    careerMoneyAdd=function(ranked, prize){ try{ const J=MGR_CAR_JOIN; if(J && ranked) Object.keys(J.obj).forEach(id=>{ const i=ranked.indexOf(J.obj[id]); if(i<0) return;
+        J.rec[id]=Object.assign(J.rec[id]||{}, {place:i+1, of:ranked.length, prize:Math.round(prize(i+1, J.obj[id])||0), final:true}); }); }catch(e){}
+      return money.apply(this, arguments); };
+  } else if(!on && mgrCarHooks.sim){ simulateGamesLive=mgrCarHooks.sim; careerMoneyAdd=mgrCarHooks.money; mgrCarHooks.sim=null; mgrCarHooks.money=null; }
+}
+// Один вечер клуба: ведущий состав раннером, остальные — в его лобби. Возвращает части для mgrCarHarvest.
+async function mgrCarNight(ev, teams, you, quiet, fast){
+  const extras=teams.filter(t=>t!==you);
+  MGR_CAR_JOIN={teams:extras, obj:{}, rec:{}, injected:{}, before:null, after:null};
+  mgrCarHooks(true);
+  let lead=null;
+  try{ lead=await mgrCarRun(ev, you, quiet, fast); } finally { mgrCarHooks(false); }
+  const J=MGR_CAR_JOIN; MGR_CAR_JOIN=null;
+  const parts=[{tm:you, res:lead}];
+  const lrow=lead && (lead.rows||[]).slice(-1)[0];
+  for(const tm of extras){
+    const rec=J.rec[tm.mgrId];
+    if(!rec || !lrow){ parts.push({tm, res:await mgrCarRun(ev, tm, true, true)}); continue; }   // в общий вечер не попал — свой
+    const lp=lrow.place||0, lpass=lrow.passed;
+    let same=(lpass==null) || (lpass && rec.place<=lp) || (!lpass && rec.place>=lp);
+    // Ведущий прошёл, а состав ниже него: прошёл ли и он — видно по таблице следующего раунда в записях ведущего (ники пары
+    // появились там после вечера).
+    if(!same && lpass && J.after){ const b=JSON.stringify(J.before||{}), a=JSON.stringify(J.after);
+      const hs=(tm.squad||[]).map(c=>JSON.stringify(String(c.handle)));
+      if(hs.length && hs.every(h=>a.indexOf(h)>=0) && !hs.every(h=>b.indexOf(h)>=0)) same=true; }
+    const st=(MGR.tcar=MGR.tcar||{})[tm.mgrId]=(MGR.tcar[tm.mgrId]||{division:(CAREER.career.division||1), log:[], tokens:[]});
+    if(same && J.after){ MGR_CAR_COPY.forEach(k=>{ if(JSON.stringify(J.before[k])!==JSON.stringify(J.after[k])) st[k]=J.after[k]===undefined ? undefined : JSON.parse(JSON.stringify(J.after[k])); }); }
+    else { await mgrCarRun(ev, tm, true, true); try{ document.getElementById('majorStages').innerHTML=''; }catch(e){} }
+    const row={season:CAREER.career.season, day:ev.day, place:rec.place, of:rec.of, pts:rec.pts||0, elims:rec.elims||0, wins:rec.wins||0,
+               kind:ev.ck, stage:lrow.stage, passed:same ? lpass : undefined, prize:Math.round((rec.prize||0)/Math.max(1, (tm.squad||[]).length)), shared:true};
+    const s2=MGR.tcar[tm.mgrId]; s2.log=(s2.log||[]).filter(x=>!(x.day===ev.day && x.kind===ev.ck)).concat([row]).slice(-120);
+    parts.push({tm, res:{rows:[row], got:rec.prize||0}});
+  }
+  return parts;
+}
 // Один вечер одной команды раннером карьеры. quiet — без вопросов; fast — ещё и без анимации (перемотка, вторые команды).
 async function mgrCarRun(ev, tm, quiet, fast){
   const cr=CAREER.career;
@@ -161045,7 +161118,9 @@ async function mgrCarRun(ev, tm, quiet, fast){
     try{ const set=careerNightSet(next); useLandingSet((set && ZONE_SETS[set]) ? set : careerBrSet()); }catch(e){ try{ useLandingSet(careerBrSet()); }catch(e2){} }
     CC_MP_NIGHT=String(next.type)+':'+String(next.id||'');
     try{ ccEvDeltaStart(ccEvKey(next, ev.day)); }catch(e){}
+    if(MGR_CAR_JOIN) MGR_CAR_JOIN.before=JSON.parse(JSON.stringify(MGR_CAR_COPY.reduce((o,k)=>{ o[k]=cr[k]; return o; }, {})));
     await careerPlayRun(next);
+    if(MGR_CAR_JOIN) MGR_CAR_JOIN.after=JSON.parse(JSON.stringify(MGR_CAR_COPY.reduce((o,k)=>{ o[k]=cr[k]; return o; }, {})));
   } finally {
     if(hold) clearInterval(hold);
     if(quiet) CC_FF=null;
@@ -161078,8 +161153,9 @@ function mgrCarTeams(ev){
 }
 // Перемотка: все команды — без вопросов и анимации.
 async function mgrCarAuto(ev){
-  const parts=[];
-  for(const tm of mgrCarTeams(ev)){ const res=await mgrCarRun(ev, tm, true, true); parts.push({tm, res}); try{ document.getElementById('majorStages').innerHTML=''; }catch(e){} }
+  const teams=mgrCarTeams(ev);
+  const parts=teams.length ? await mgrCarNight(ev, teams, teams[0], true, true) : [];
+  try{ document.getElementById('majorStages').innerHTML=''; }catch(e){}
   mgrCarHarvest(ev, parts);
   mgrSave();
 }
@@ -161091,10 +161167,7 @@ async function mgrPlayCar(ev){
   if(!teams.length){ MGR.skipped=(MGR.skipped||[]).concat([ev.id+'|'+ev.day]); MGR_CAR_CACHE=null; mgrSave(); mgrOpenHub(); return; }
   const you=(teams.length>1 && !MGR_SIM_MODE) ? await mgrPickTeam(teams) : teams[0];
   mgrScreenReset();
-  const parts=[];
-  for(const tm of teams) if(tm!==you){ parts.push({tm, res:await mgrCarRun(ev, tm, true, true)}); }
-  try{ document.getElementById('majorStages').innerHTML=''; }catch(e){}
-  parts.push({tm:you, res:await mgrCarRun(ev, you, !!MGR_SIM_MODE, false)});
+  const parts=await mgrCarNight(ev, teams, you, !!MGR_SIM_MODE, false);
   removeSkipButton();
   const h=mgrCarHarvest(ev, parts);
   CAREER_RUN=false;
