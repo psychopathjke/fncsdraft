@@ -41,7 +41,14 @@ const SECTIONS=[
     { const d0=CAREER.career.day; mgrFastForward(ccAddDays(d0, 30)); const box=document.querySelector('.mgq-ff');
       check('перемотка: день сдвинулся', CAREER.career.day>d0, d0+' → '+CAREER.career.day);
       check('перемотка: окно итогов с днями, турнирами и кассой', !!box && /→/.test(box.textContent) && box.querySelectorAll('.mgq-ff-row').length>=2, box && box.textContent.slice(0,160));
+      const played=(MGR.log||[]).some(r=>r.kind==='night' && r.day>d0);
+      check('перемотка: игроки — вечеров, лучшее место, заработал', !played || (!!box && /Игроки|Players/.test(box.textContent) && /$/.test(box.textContent)), box && box.textContent.slice(0,300));
       document.querySelectorAll('.mgq-ff').forEach(x=>x.remove()); }
+    // Гость сам уходит после трёх плохих вечеров (его слово 8.10)
+    { const t=MGR.teams[0]; t.guests=['ZZguest']; t.gdrop=[]; t.gbad=0;
+      for(let i=0;i<3;i++) mgrGuestNight({day:CAREER.career.day, teams:[{id:t.id, place:90, of:100}]});
+      check('напарник после трёх слабых вечеров меняется сам', (t.guests||[]).indexOf('ZZguest')<0 && (t.gdrop||[]).indexOf(hKey('ZZguest'))>=0, JSON.stringify(t.guests));
+      t.guests=[]; t.gdrop=[]; }
     // Штаб состава (его слово 8.10): у каждой команды свои коуч/аналитик/психолог, один человек — в нескольких составах.
     { if(MGR.teams.length<2) MGR.teams.push({id:'tX', cards:[]}); const t1=MGR.teams[0], t2=MGR.teams[1];
       const co=CC_COACHES[0].id, an=CC_ANALYSTS[0].id, ps=CC_PSYCHS[0].id;
@@ -803,15 +810,18 @@ const SECTIONS=[
     const t=MGR.teams[0];
     const cands=mgrGuestCands(t);
     check('напарник: кандидаты из других организаций', cands.length>=5 && cands.every(c=>!mgrOwned().some(x=>hKey(x)===hKey(c)) && mgrOrgOf(c)!==MGR.club.name), String(cands.length));
-    const g=cands[0], bill0=mgrWageBill();
-    check('напарник: добавлен', mgrGuestAdd(t.id, g.handle)===true && mgrTeamSize(t)===careerSquadSize());
+    const bill0=mgrWageBill(), in0=(MGR.inbox||[]).length;
+    mgrGuestAuto();   // напарника зовёт сам игрок (его Notion 8.10)
+    const g=mgrCard((t.guests||[])[0]);
+    check('напарник: игрок позвал сам', !!g && mgrTeamSize(t)===careerSquadSize() && mgrOrgOf(g)!==MGR.club.name, JSON.stringify(t.guests));
+    check('напарник: письмо, кого позвал', (MGR.inbox||[]).some(x=>(x.text||'').indexOf(g.handle)>=0 && /напарник|teammate/.test(x.text)), (MGR.inbox[0]||{}).text);
     check('напарник: не наш — без зарплаты', mgrWageBill()===bill0 && !mgrOwned().some(x=>hKey(x)===hKey(g)));
     check('напарник: команда играет', mgrClubTeams(careerSquadSize()).length>=1 && mgrClubTeams(careerSquadSize())[0].squad.some(c=>hKey(c)===hKey(g)));
     check('напарник: клубу доля только своих', Math.abs(mgrOwnShare(t.id)-(t.cards.length/mgrTeamSize(t)))<1e-9);
-    check('напарник: второй сверх формата не влезает', mgrGuestAdd(t.id, cands[1].handle)===false);
+    check('напарник: второй сверх формата не влезает', mgrGuestAdd(t.id, cands[0].handle)===false);
     mgrRenderHub('squad');
     check('напарник '+lang+': в составе с пометкой клуба', !!document.querySelector('#mgBody .mgs-guest') && document.getElementById('mgBody').textContent.indexOf(mgrOrgOf(g)||mgrT2().free)>=0, !!document.querySelector('#mgBody .mgs-guest')+' | '+(mgrOrgOf(g)||mgrT2().free)+' | '+JSON.stringify(t.guests)+' | '+mgrTeamSize(t));
-    mgrGuestRemove(t.id, g.handle); check('напарник: убран', mgrTeamSize(t)===careerSquadSize()-1);
+    check('напарник: менеджер не выбирает и не выгоняет', !document.querySelector('#mgBody .mgs-gpick select') && !document.querySelector('#mgBody .mgs-gx'));
   `},
   {name:'менеджер по трансферам', code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
