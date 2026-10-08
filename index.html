@@ -358,6 +358,8 @@
   .mgq-ff .mgq-ff-ev{margin:4px 0 8px;} .mgq-ff .mgq-ff-sub{padding-left:14px;opacity:.9;font-size:12px;}
   .mgq-ff .mgq-ff-head{opacity:.6;font-size:11px;text-transform:uppercase;letter-spacing:.05em;}
   .mgq-ff .mgq-ff-guest i{font-style:normal;font-size:10px;color:#9fb3e6;margin-left:4px;}
+  .mgq-ff .mgq-ff-ev .mgq-ff-row span{display:flex;align-items:center;gap:8px;}
+  .mgq-ff .mgq-ff-art{width:40px;height:24px;object-fit:cover;border-radius:4px;flex:0 0 40px;background:#0b1a3a;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -157555,6 +157557,13 @@ function mgrCard(h){
   const role=MGR && MGR.roles ? MGR.roles[hKey(h)] : null;
   // _attrs закэширован на карточке с прежней ролью — копия атрибутов с новой.
   if(out && role) out=Object.assign({}, out, {_roleKey:role, _attrs:Object.assign({}, attrsFor(out), {roleKey:role})});
+  /* Клуб на карточке — наш, если игрок подписан (его Notion 8.10: «я подписал игрока, у него не сменилось лого клуба»);
+     у чужих — клуб после трансферов мира (MGR.moves). Карточка года помнила клуб года. */
+  if(out && MGR && MGR.club){
+    let org;
+    try{ org=mgrOwned().some(x=>hKey(x)===hKey(h)) ? MGR.club.name : mgrOrgOf(out); }catch(e){ org=out.org; }
+    if(org!==out.org) out=Object.assign({}, out, {org:org||null});
+  }
   return out;
 }
 /* ПЛАН РАЗВИТИЯ, как в FC: роль-цель — через 8 недель тренировок карточка играет новую роль;
@@ -159086,7 +159095,7 @@ function mgrFfSummary(a){
   box.innerHTML='<div class="mg-modal-box"><h3>'+esc(T.title)+'</h3>'+
     '<p class="mgq-ff-days">'+esc(T.days(n, ccDayLabel(a.day), ccDayLabel(b.day)))+'</p>'+
     mgrFfPlayersHTML(nights, ru)+
-    '<div class="mgq-ff-sec"><b>'+esc(T.nights)+'</b>'+(nights.length ? nights.map(r=>'<div class="mgq-ff-ev"><div class="mgq-ff-row"><span>'+esc(ccDayLabel(r.day))+' · '+esc(r.name||'')+'</span></div>'+
+    '<div class="mgq-ff-sec"><b>'+esc(T.nights)+'</b>'+(nights.length ? nights.map(r=>'<div class="mgq-ff-ev"><div class="mgq-ff-row"><span><img class="mgq-ff-art" src="'+esc(r.art || (function(){ try{ return mgrEvArt({day:r.day, name:r.name}); }catch(e){ return ''; } })())+'" alt="" loading="lazy" onerror="this.remove()">'+esc(ccDayLabel(r.day))+' · '+esc(r.name||'')+'</span></div>'+
         (r.teams||[]).map(t=>'<div class="mgq-ff-row mgq-ff-sub"><span>'+esc(t.name||'')+'</span><em>#'+t.place+(t.of ? '/'+t.of : '')+(t.prize ? ' · '+mgrMoney(t.prize) : '')+'</em></div>').join('')+'</div>').join('') : '<div class="mgq-ff-row"><span>'+esc(T.none)+'</span></div>')+'</div>'+
     (prize ? '<div class="mgq-ff-row"><span>'+esc(T.prize)+'</span><em>'+mgrMoney(prize)+'</em></div>' : '')+
     '<div class="mgq-ff-row"><span>'+esc(T.cash)+'</span><em>'+mgrMoney(a.cash)+' → '+mgrMoney(b.cash)+' <i class="'+(d<0 ? 'dn' : 'up')+'">'+(d<0 ? '−'+mgrMoney(-d) : '+'+mgrMoney(d))+'</i></em></div>'+
@@ -161436,7 +161445,8 @@ function mgrReportBox(title, rows, clubGot, note){
 function mgrAfterResults(ev, row, clubGot){
   const T2=mgrT2();
   MGR.club.cash+=clubGot; mgrTransferAdd(Math.round(clubGot*0.5)); MGR.club.earned=(MGR.club.earned||0)+clubGot;
-  row.year=MGR.year; MGR.log.unshift(row); try{ mgrFeedNight(row); }catch(e){}
+  row.year=MGR.year; try{ if(!row.art) row.art=mgrEvArt(ev); }catch(e){}   // логотип турнира — в итоги и журнал (Notion 8.10)
+  MGR.log.unshift(row); try{ mgrFeedNight(row); }catch(e){}
   try{ mgrGuestNight(row); }catch(e){ console.error('mgrGuestNight', e); }
   (row.teams||[]).forEach(t=>{ if(t.place>3) return; const x=MGR.teams.find(y=>y.id===t.id); if(x) x.cards.forEach(h=>{ if(mgrTrait(h)==='ambitious') mgrMoraleAdd(h, 1); }); });   // амбициозному подиум — праздник
   MGR.fatigue=Math.min(100, mgrFatigue()+(row.fncs || row.ewc ? 8 : 4));
@@ -161453,7 +161463,7 @@ function mgrAfterResults(ev, row, clubGot){
   if(good.length){
     const bonus=Math.round(mgrSponsor()*0.25/100)*100;
     MGR.club.cash+=bonus;
-    MGR.inbox=(MGR.inbox||[]); MGR.inbox.unshift({id:'b'+ev.day+ev.id, day:ev.day, kind:'info', done:'info', text:T2.sponsorBonus(mgrMoney(bonus), ev.name)});
+    if(bonus>0) MGR.inbox=(MGR.inbox||[]), MGR.inbox.unshift({id:'b'+ev.day+ev.id, day:ev.day, kind:'info', done:'info', text:T2.sponsorBonus(mgrMoney(bonus), ev.name)});
     good.forEach(t=>MGR.teams.filter(x=>x.id===t.id).forEach(x=>x.cards.forEach(h=>mgrMoraleAdd(h, 1))));
   }
   row.teams.filter(t=>t.place>(t.of||100)*0.5).forEach(t=>MGR.teams.filter(x=>x.id===t.id).forEach(x=>x.cards.forEach(h=>mgrMoraleAdd(h, -1))));
