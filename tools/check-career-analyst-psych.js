@@ -51,6 +51,18 @@ try{
     CAREER.career.balance=100000; careerHireSmm(ccByHand(CC_SMM)[0].id); CAREER.autoRenew=false; const s0=CAREER.smm.until; ccStaffAutoRenew(ccAddDays(s0,1));
     check('автопродление выключено — не продлевает', CAREER.smm.until===s0);
     CAREER.autoRenew=true; CAREER.analyst=null; }
+  // Попросить клуб оплатить штаб (его слово 8.10).
+  { CAREER.org={name:'Team Falcons', tier:80, salary:3000, since:1, paid:0}; CAREER.analyst=null; CAREER.psych=null; CAREER.career.balance=50000;
+    let yes=null, no=null, d0=CAREER.career.day;
+    for(let i=0;i<40 && (!yes || !no);i++){ CAREER.org.pays={}; CAREER.org.payNo={}; CAREER.career.day=ccAddDays(d0, i); const r=careerOrgPayAsk('analyst'); if(r) yes=yes||CAREER.career.day; else no=no||CAREER.career.day; }
+    check('клуб иногда соглашается, иногда отказывает', !!yes && !!no, yes+' / '+no);
+    CAREER.career.day=no; CAREER.org.pays={}; CAREER.org.payNo={}; careerOrgPayAsk('analyst');
+    check('отказ — повтор через 30 дней', !!ccOrgPayAskUntil('analyst') && careerOrgPayAsk('analyst')===false && ccStaffCards()[4].pay.indexOf('cc-staff-until')>=0);
+    CAREER.career.day=yes; CAREER.org.pays={}; CAREER.org.payNo={}; careerOrgPayAsk('analyst');
+    const b0=CAREER.career.balance; careerHireStaff2('analyst', CC_ANALYSTS[0].id);
+    check('клуб платит — найм аналитика бесплатный', ccStaff2('analyst') && CAREER.career.balance===b0, (b0-CAREER.career.balance)+'');
+    check('в штабе — «платит клуб»', ccStaffCards()[4].pay.indexOf('cc-staff-paid')>=0);
+    CAREER.org=null; CAREER.analyst=null; }
   CAREER.career.day=ccAddDays(CAREER.career.day, 31); check('месяц прошёл — аналитик ушёл', ccStaff2('analyst')===null && ccAnalystPow()===0);
 }catch(e){ out.fails.push(String(e.stack||e)); }
 document.getElementById('__out').textContent='@@B@@'+encodeURIComponent(JSON.stringify(out))+'@@E@@'; }, 500));<\/script>`;
