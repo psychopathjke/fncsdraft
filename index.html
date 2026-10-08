@@ -159123,6 +159123,9 @@ function mgrFfSummary(a){
 }
 // Одна единица работы перемотки: чужой кап движком или вечер клуба. null — дошли; {stop} — встали (дедлайн).
 function mgrFfStep(toDay){
+  // Неполный состав зовёт напарника и посреди перемотки (Notion 8.10: «другой состав перестал играть турниры» — гость
+  // приходил только при открытии хаба, и подписанный без пары пропускал все вечера перемотки).
+  try{ mgrGuestAuto(); }catch(e){}
   const nx=mgrEvents()[0];
   const lim=nx && nx.day<=toDay ? nx.day : ccAddDays(toDay, 1);
   const w=mgrWorldPending(lim)[0];
@@ -161486,6 +161489,7 @@ function mgrAfterResults(ev, row, clubGot){
   row.teams.filter(t=>t.place>(t.of||100)*0.5).forEach(t=>MGR.teams.filter(x=>x.id===t.id).forEach(x=>x.cards.forEach(h=>mgrMoraleAdd(h, -1))));
 }
 async function mgrPlay(){
+  try{ mgrGuestAuto(); }catch(e){}
   const ev=mgrEvents()[0]; if(!ev) return;
   if(mgrDeadlineStop(ev.day)) return;
   if(ev.kind==='fncs') return mgrPlayFncs(ev);
