@@ -42,11 +42,16 @@ const BOOT = `
       CAREER.mkt = {id:'probe', name:'Probe', at:null, photo:null, cost:0, rate:1,
                     from:'2026-01-05', until:'2026-12-31'}; };
 
-    // Without one, nothing is on the table however big the audience is.
+    // 8.10 (его слово «от 50к нет ни одного спонсора»): без маркетолога бренд всё равно предлагает — по ставке ×CC_SP_NOMKT.
     fresh(200000);
     CAREER.mkt = null;
-    check('no marketing manager, no offer', ccSponsorOffer() === null);
-    check('and nothing can be signed', careerSignSponsor(tier(200000).id) === false);
+    const bare = ccSponsorOffer();
+    check('no marketing manager still brings an offer', !!bare && bare.id === tier(200000).id, JSON.stringify(bare));
+    check('at the lower rate', bare && bare.pay === Math.round(ccSponsorRate(tier(200000), 200000)*CC_SP_NOMKT), JSON.stringify(bare));
+    check('and it can be signed', careerSignSponsor(tier(200000).id) === true);
+    // слоты по подписчикам: 200 тыс. — три
+    check('two hundred thousand gives three slots', ccSpSlots() === 3, String(ccSpSlots()));
+    check('a second brand fills the second slot', careerSignSponsor(CC_SPONSORS[0].id) === true && ccSponsorsAll().length === 2);
 
     // Nobody offers to an unknown career.
     fresh(0);
@@ -70,8 +75,8 @@ const BOOT = `
        stream. */
     fresh(50000, 4);
     check('signing works', careerSignSponsor(tier(50000).id) === true);
-    // A save signed under the old name still finds its deal.
-    CAREER.sponsor.id = 'drink';
+    // A save signed under the old name still finds its deal (and moves into the first slot).
+    CAREER.sponsor = {id:'drink', pay:CAREER.sponsor.pay, since:1, paid:0}; delete CAREER.sponsors;
     check('an old save keeps its deal', (ccSponsor()||{}).id === tier(50000).id);
     check('and it is the one working', (ccSponsor()||{}).id === tier(50000).id);
     const idle = CAREER.career.balance;
@@ -140,7 +145,11 @@ const BOOT = `
     CAREER.career.reach = 150000;
     check('outgrowing the deal brings a better one', (ccSponsorOffer()||{}).id === tier(150000).id);
     CAREER.career.reach = 50000;
-    check('and a smaller one is not offered back', ccSponsorOffer() === null);
+    // меньший бренд предлагается только в свободный слот, а не на замену
+    const back = ccSponsorOffer();
+    check('and a smaller one is not offered as a replacement', !back || (!back.replaces && ccSponsorsAll().length < ccSpSlots()), JSON.stringify(back));
+    CAREER.career.reach = 40000;
+    check('with the only slot taken, a smaller one is not offered', ccSponsorOffer() === null, JSON.stringify(ccSponsorOffer()));
 
     // A club pays on the first and a brand pays on the night, and the two
     // land in one balance without being the same money.
