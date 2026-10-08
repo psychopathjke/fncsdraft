@@ -143412,8 +143412,15 @@ function careerDuoHolds(){
      division from them. That is the point at which this scene moves on, and at
      that gap somebody better is already saying yes to you. */
   // И «перерос» — тоже не раньше, чем пара побыла вместе (свои статы 99 на старте давали разрыв на первом же стыке).
-  const togetherDays=pr.since ? ccDaysBetween(pr.since, careerToday()) : 999;
-  if(mine-theirs>CC_DUO_BEHIND && togetherDays>=CC_DUO_MIN_DAYS) return {hold:false, why:'behind'};
+  /* И не раньше, чем вы сыграли вместе (его слово 8.10: «скипаю месяц в 2019 за Монграла, и тиммейт сразу бросает после
+     перемотки»). За реальную карточку пара приходит из снимка с датой их настоящего дуэта (Mongraal + Mitr0 — с ноября 2018),
+     и «вместе» уже набиралось; разрыв в ступень решал стык S8 28 февраля, хотя вы не сыграли ни одного вечера. Теперь дни
+     вместе — не раньше старта карьеры, и нужен хотя бы один турнир вдвоём, как у броска стыка ниже. */
+  const crB=CAREER.career, startB=(typeof careerStartDay==='function') ? careerStartDay() : null;
+  const sinceB=(pr.since && startB && pr.since<startB) ? startB : pr.since;
+  const togetherDays=sinceB ? ccDaysBetween(sinceB, careerToday()) : 999;
+  const playedB=(crB.log||[]).some(r=>r && (!sinceB || r.day>=sinceB) && (r.mate===mate.handle || (Array.isArray(r.mates) && r.mates.indexOf(mate.handle)>=0)));
+  if(mine-theirs>CC_DUO_BEHIND && togetherDays>=CC_DUO_MIN_DAYS && playedB) return {hold:false, why:'behind'};
   /* And then it is a decision, not the absence of a complaint.
 
      His year, 17 August: a Division 5 career simulated a whole season and kept
