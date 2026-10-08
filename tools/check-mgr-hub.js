@@ -945,7 +945,7 @@ const SECTIONS=[
     check('рядом: кнопка «Карьера менеджера» в блоке карьеры', !!btn && !btn.hidden && /mgrStart/.test(btn.getAttribute('onclick')||''));
     const nav=document.querySelector('.nav-pill[data-nav="manager"]');
     check('рядом: пункт в верхнем меню', !!nav && !nav.hidden);
-    check('рядом: на проде скрыто', mgrAllowed('fncsdraft.com')===false);
+    check('рядом: открыт и на проде (8.10)', mgrAllowed('fncsdraft.com')===true);
   `},
   {name:'вечер', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
