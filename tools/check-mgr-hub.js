@@ -158,22 +158,21 @@ const SECTIONS=[
   {name:'центр', code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('centre');
-    const B=document.getElementById('mgBody'), play=B.querySelector('.ch-play');
+    // Центр как в FIFA (8.10): плитки «Играть», «Новости», «Уведомления», «Таблица», «Расписание», «Развитие».
+    const B=document.getElementById('mgBody'), play=B.querySelector('.mfc-play');
     check('центр '+lang+': главная кнопка', !!play && /mgrPlay|mgrSeasonReview/.test(play.getAttribute('onclick')||''), play && play.outerHTML.slice(0,120));
-    check('центр '+lang+': плитка турнира', !!B.querySelector('.mgc-hero'));
-    check('центр '+lang+': цели совета', !!B.querySelector('.hg-tile'));
-    check('центр '+lang+': сводка клуба (развитие, касса, доверие)', !!B.querySelector('.mgc-snap'));
-    check('центр '+lang+': новости', !!B.querySelector('.mgc-news'));
-    check('центр '+lang+': полоса недели', B.querySelectorAll('.ch-day').length===7, String(B.querySelectorAll('.ch-day').length));
+    check('центр '+lang+': плитка турнира', !!B.querySelector('.mfc-play'));
+    check('центр '+lang+': сводка клуба (развитие, касса, доверие)', !!B.querySelector('.mfc-dev') && !!B.querySelector('.mfc-table') && !!B.querySelector('.mfc-news'));
+    check('центр '+lang+': уведомления и расписание', !!B.querySelector('.mfc-notes') && !!B.querySelector('.mfc-sched'));
     check('центр '+lang+': без undefined/NaN', !bad(B.innerHTML));
     // Стили хаба карьеры доходят до менеджера: текст на белой плитке не белый, кнопка «Пропустить» видна.
     const col=el=>el ? getComputedStyle(el).color : '';
     const bgc=el=>el ? getComputedStyle(el).backgroundColor : '';
-    check('центр: плитка тёмная, как в карьере (белый текст читается)', bgc(B.querySelector('.hg-tile'))!=='rgb(251, 252, 252)', bgc(B.querySelector('.hg-tile'))+' / '+col(B.querySelector('.hg-top b')));
+    check('центр: плитка тёмная (белый текст читается)', bgc(B.querySelector('.mfc-table'))!=='rgb(251, 252, 252)' && col(B.querySelector('.mfc-trow span'))!=='rgb(11, 26, 58)', bgc(B.querySelector('.mfc-table'))+' / '+col(B.querySelector('.mfc-trow span')));
     check('центр: правила карьеры размножены', [...document.styleSheets].some(s=>{ try{ return [...s.cssRules].some(r=>/#screen-manager \.ch-tile/.test(r.cssText||'')); }catch(e){ return false; } }));
     // Новость клуба видна на Центре.
     MGR.inbox.unshift({id:'tst', day:CAREER.career.day, kind:'info', done:'info', text:'ПробнаяНовость'}); mgrRenderHub('centre');
-    check('центр: письмо в новостях', B.querySelector('.mgc-news').textContent.indexOf('ПробнаяНовость')>=0);
+    check('центр: письмо в новостях', B.querySelector('.mfc-news').textContent.indexOf('ПробнаяНовость')>=0);
     // Пропуск турнира остаётся на Центре.
     const d0=CAREER.career.day; mgrSkip();
     check('пропуск: день сдвинулся', CAREER.career.day>=d0);
@@ -242,7 +241,7 @@ const SECTIONS=[
       mgrRenderHub('centre');
       const B=document.getElementById('mgBody');
       check(label+': Центр без плашки', !B.querySelector('.cc-ffo-err'), (B.querySelector('.cc-ffo-err')||{}).textContent);
-      check(label+': кнопка итогов', /mgrSeasonReview/.test((B.querySelector('.ch-play')||{getAttribute:()=>''}).getAttribute('onclick')||''));
+      check(label+': кнопка итогов', /mgrSeasonReview/.test((B.querySelector('.mfc-play')||{getAttribute:()=>''}).getAttribute('onclick')||''));
       for(const t of ['squad','transfers','inbox','club','tables']){ mgrRenderHub(t); check(label+': '+t+' в конце сезона', !B.querySelector('.cc-ffo-err') && !bad(B.innerHTML)); }
       out.notes[label]={cash:MGR.club.cash, cap:MGR.club.wageCap, bill:mgrWageBill(), n:mgrAll().length, inbox:(MGR.inbox||[]).length};
     };
@@ -541,7 +540,7 @@ const SECTIONS=[
     MGR.log.unshift({day:CAREER.career.day, kind:'night', name:'ПробныйВечер', teams:[{place:4, prize:0}]});
     MGR_MONTH=null; mgrRenderHub('calendar');
     check('календарь: прошедший вечер с местом', /#4/.test(B.textContent) && B.textContent.indexOf('ПробныйВечер')>=0);
-    check('центр: список ближайших турниров', (mgrRenderHub('centre'), !!document.querySelector('#mgBody .mgw-tile')));
+    check('центр: список ближайших турниров', (mgrRenderHub('centre'), !!document.querySelector('#mgBody .mfc-sched')));
   `},
   {name:'штаб', code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
@@ -810,7 +809,7 @@ const SECTIONS=[
     mgrMove(out1, '-1');   // состав стал неполным
     check('неполный состав: сезон не кончился', mgrEvents().length>=Math.min(5, n0), n0+' → '+mgrEvents().length);
     mgrRenderHub('centre');
-    check('неполный состав: на Центре не «итоги сезона»', !/mgrSeasonReview/.test((document.querySelector('#mgBody .ch-play')||{getAttribute:()=>''}).getAttribute('onclick')||''));
+    check('неполный состав: на Центре не «итоги сезона»', !/mgrSeasonReview/.test((document.querySelector('#mgBody .mfc-play')||{getAttribute:()=>''}).getAttribute('onclick')||''));
     const t=MGR.teams[0];
     const cands=mgrGuestCands(t);
     check('напарник: кандидаты из других организаций', cands.length>=5 && cands.every(c=>!mgrOwned().some(x=>hKey(x)===hKey(c)) && mgrOrgOf(c)!==MGR.club.name), String(cands.length));
@@ -880,7 +879,7 @@ const SECTIONS=[
     check('перемотка: призовые пришли', MGR.club.earned>0 || MGR.club.cash!==cash0);
     check('перемотка: без ошибок', !out.errs.length, out.errs.join(' | '));
     mgrRenderHub('centre');
-    check('перемотка '+lang+': кнопки на Центре', document.querySelectorAll('#mgBody .mgc-act2 button').length>=2);
+    check('перемотка '+lang+': кнопки на Центре', document.querySelectorAll('#mgBody .mfc-play-btns button').length>=2);
     MGR_MONTH=null; mgrRenderHub('calendar');
     check('перемотка: клик по дню в календаре', document.querySelectorAll('#mgBody .cal-day.cal-go[onclick*="mgrFfAsk"]').length>=5);
   `},
@@ -959,7 +958,7 @@ const SECTIONS=[
       const go=document.querySelector('[data-mg="go"]'); if(go) go.click();
       const sk=document.getElementById('majorSkipBtn'); if(sk && !sk.disabled) sk.click();
     }, 30);
-    document.querySelector('#mgBody .ch-play').click();
+    document.querySelector('#mgBody .mfc-play').click();
     let back=null;
     for(let i=0; i<20000 && !back; i++){ await wait(30); back=[...document.querySelectorAll('button')].find(b=>/careerBackToHub|mgrAfterNight/.test(b.getAttribute('onclick')||'') && b.offsetParent); }
     clearInterval(tick);
@@ -967,7 +966,7 @@ const SECTIONS=[
     if(back){ back.click(); await wait(50);
       check('вечер: записан', (MGR.log||[]).filter(r=>r.kind==='night').length===n0+1);
       check('вечер: вернулся на Центр', MGR_TAB==='centre' && !!document.querySelector('#mgTabs .ch-tab.on[data-tab="centre"]') && document.getElementById('screen-manager').classList.contains('active'));
-      check('вечер: результат в новостях', /#\d/.test(document.querySelector('#mgBody .mgc-news').textContent)); }
+      check('вечер: результат в новостях', /#\d/.test(document.querySelector('#mgBody .mfc-news').textContent)); }
   `},
 ];
 

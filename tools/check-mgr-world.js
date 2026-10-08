@@ -45,8 +45,9 @@ try{
   check('кнопка «К нашим»', !mineRes || document.querySelectorAll('#mgBody .mgw-jump').length>=1);
   // Центр: плитка «Турниры мира» со «Смотреть / Симулировать»
   mgrRenderHub('centre');
-  const btns=[...document.querySelectorAll('#mgBody .mgw-tile .mgc-wbtn button')];
-  check('Центр: турниры мира с кнопками', btns.some(b=>/mgrWatchWorld/.test(b.getAttribute('onclick'))) && btns.some(b=>/mgrSimWorld/.test(b.getAttribute('onclick'))), btns.length);
+  const btns=[...document.querySelectorAll('#mgBody .mfc-sched .mfc-srow button')];
+  const wk=mgrWorldEvents(CAREER.career.day, ccAddDays(CAREER.career.day, 7)).filter(e=>!mgrWorldDone(e) && !mgrEvents().some(c=>c.id===e.id && c.day===e.day));
+  check('Центр: расписание недели с «смотреть / симулировать»', !wk.length || (btns.some(b=>/mgrWatchWorld/.test(b.getAttribute('onclick'))) && btns.some(b=>/mgrSimWorld/.test(b.getAttribute('onclick')))), btns.length+' / '+wk.length);
   // Симулировать
   const club=new Set(mgrEvents().map(e=>e.id+'|'+e.day));
   const nxt=mgrWorldEvents(CAREER.career.day, ccYearTo()).filter(e=>!mgrWorldDone(e) && !club.has(e.id+'|'+e.day));
