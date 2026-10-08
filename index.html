@@ -157029,7 +157029,52 @@ function mgrT(){
     season:'Сезон', earned:'Заработано за сезон', none:'Пока ничего', moveUp:'↑', moveDown:'↓', swap:'Поменять местами',
     heroTag:'Режим 1 · Карьера менеджера', careerBtn:'Карьера менеджера', navBtn:'Менеджер', heroTitle:'Собери клуб.', heroTitle2:'Веди его через сезон.', heroSub:'Ты Head of Fortnite: настоящий клуб и состав года, турниры по реальному календарю, смотришь вечера и решаешь между играми.',
     heroBtn:'Стать менеджером', sponsor:'спонсоры', drop:'Высадка', dQuiet:'Тихая', dNorm:'Обычная', dHot:'Горячая', press:'Пресс-конференция', prPraise:'Похвалить команду', prCrit:'Раскритиковать', prNone:'Без комментариев', prDone:'Сказано', rep:'Репутация', tStats:'Статистика', stNights:'вечеров', stKills:'киллов', stBest:'лучшее', stPrize:'призовые', talents:'таланты ≤75', dev:'рост', ewcNeed4:'На EWC нужна четвёрка — в клубе меньше четырёх игроков', ewcNoSlot:'Клуба нет среди 16 EWC, а слот региона держит команда сильнее — EWC без нас', ewcIn:(s)=>'Клуб едет в Эр-Рияд: слот «'+s+'»', ewcPlace:p=>'Место на EWC: '+p, acad:'Академия', acadHint:'До 4 талантов: четверть зарплаты, растут вдвое быстрее, в турнирах не играют', toAcad:'В академию', promote:'В основу', acadFull:'Академия полна', acadOnly:'В академию берут только до 75', scout:(n,r)=>'Скаут: нашёл талант '+n+' ('+r+') — забрать в академию?', preH:'Перед вечером', style:'Установка', stPlace:'Плейсмент', stBal:'Баланс', stAggr:'Агрессия', view:'Показ', vKey:'Ключевые моменты', vExt:'Расширенный', vFull:'Весь вечер', vRes:'Только итог', speed:'Скорость', start:'Начать вечер', breakH:g=>'Перерыв · после игры '+g, cont:'Продолжить', talk:'Разговор', tkCalm:'Спокойно', tkDemand:'Требовательно', tkPraise:'Похвалить', rankNow:'сейчас', lastG:'прошлая игра', asst:'Ассистент', tDeadEarly:n=>n+' рано вылетает — точку контестят. Уходи в плейсмент или смени спот', tFightLow:n=>n+' много дерётся, а места низкие — переведи на плейсмент', tPlaceNoKill:n=>n+' стабильно доживает, но мало киллов — можно агрессию', tHot:n=>n+' в огне — похвали, не ломай', tCold:n=>n+' две игры подряд мимо — разговор нужен', talkSaid:'сказано', fmt:{2:'дуо', 3:'трио', 4:'сквад'}, focus:'Камера на', resume:'Продолжить сезон'
-  } : {
+  } : ({fr:()=>({
+    title:'Fortnite Manager', newH:'Nouveau club', year:'Année', region:'Région', pickClub:'Choisis un club — son vrai effectif de cette année',
+    players:'joueurs', avg:'moy.', take:'Reprendre', cash:'Cash', teams:'Équipes', bench:'Banc', next:'Prochain événement',
+    play:'Jour de match', skipEv:'Passer cet événement', noEvent:'Plus d’événements cette saison', home:'Accueil', newClub:'Un autre club',
+    calendar:'Calendrier', results:'Résultats', place:'place', prize:'gain', clubGets:'pour le club', salaries:'Salaires',
+    month:'par mois', back:'Retour au club', nightDone:'Bilan de la soirée', noTeamFmt:'Aucune équipe dans ce format — événement passé',
+    season:'Saison', earned:'Gagné cette saison', none:'Rien pour l’instant', moveUp:'↑', moveDown:'↓', swap:'Échanger',
+    heroTag:'Mode 1 · Carrière de manager', careerBtn:'Carrière de manager', navBtn:'Manager', heroTitle:'Construis un club.', heroTitle2:'Mène-le pendant une saison.', heroSub:'Tu es Head of Fortnite : un vrai club et son effectif de l’année, des événements au vrai calendrier, tu regardes les soirées et tu décides entre les games.',
+    heroBtn:'Devenir manager', sponsor:'sponsors', drop:'Drop', dQuiet:'Calme', dNorm:'Normal', dHot:'Chaud', press:'Conférence de presse', prPraise:'Féliciter l’équipe', prCrit:'Critiquer', prNone:'Sans commentaire', prDone:'Dit', rep:'Réputation', tStats:'Stats', stNights:'soirées', stKills:'kills', stBest:'meilleur', stPrize:'gains', talents:'talents ≤75', dev:'progression', ewcNeed4:'L’EWC demande une squad de quatre — le club a moins de quatre joueurs', ewcNoSlot:'Le club n’est pas parmi les 16 équipes de l’EWC et une équipe plus forte tient la place de la région — pas d’EWC pour nous', ewcIn:(s)=>'Le club part à Riyad : place « '+s+' »', ewcPlace:p=>'Résultat EWC : '+p, acad:'Académie', acadHint:'Jusqu’à 4 talents : un quart du salaire, progressent deux fois plus vite, ne jouent pas les événements', toAcad:'À l’académie', promote:'Promouvoir', acadFull:'L’académie est pleine', acadOnly:'Seuls les joueurs jusqu’à 75 vont à l’académie', scout:(n,r)=>'Scout : talent trouvé '+n+' ('+r+') — l’intégrer à l’académie ?', preH:'Avant la soirée', style:'Approche', stPlace:'Placement', stBal:'Équilibré', stAggr:'Agressif', view:'Regarder', vKey:'Moments clés', vExt:'Étendu', vFull:'Soirée complète', vRes:'Résultat seul', speed:'Vitesse', start:'Lancer la soirée', breakH:g=>'Pause · après la game '+g, cont:'Continuer', talk:'Discours d’équipe', tkCalm:'Calme', tkDemand:'Exigeant', tkPraise:'Éloges', rankNow:'maintenant', lastG:'dernière game', asst:'Assistant', tDeadEarly:n=>n+' meurent tôt — le spot est disputé. Passe en placement ou change de spot', tFightLow:n=>n+' se battent beaucoup mais finissent bas — passe en placement', tPlaceNoKill:n=>n+' survivent bien mais font peu de kills — essaie l’agressif', tHot:n=>n+' sont en feu — félicite-les, ne casse pas la dynamique', tCold:n=>n+' ont raté deux games de suite — il faut leur parler', talkSaid:'dit', fmt:{2:'duos', 3:'trios', 4:'squads'}, focus:'Caméra sur', resume:'Reprendre la saison'
+  }), it:()=>({
+    title:'Fortnite Manager', newH:'Nuovo club', year:'Anno', region:'Regione', pickClub:'Scegli un club — il suo vero roster di quell’anno',
+    players:'giocatori', avg:'media', take:'Rileva', cash:'Cash', teams:'Squadre', bench:'Panchina', next:'Prossimo evento',
+    play:'Giorno di gara', skipEv:'Salta questo evento', noEvent:'Niente più eventi in questa stagione', home:'Home', newClub:'Un altro club',
+    calendar:'Calendario', results:'Risultati', place:'posto', prize:'premio', clubGets:'al club', salaries:'Stipendi',
+    month:'al mese', back:'Torna al club', nightDone:'Resoconto della serata', noTeamFmt:'Nessuna squadra in questo formato — evento saltato',
+    season:'Stagione', earned:'Guadagnato in stagione', none:'Ancora niente', moveUp:'↑', moveDown:'↓', swap:'Scambia',
+    heroTag:'Modalità 1 · Carriera da manager', careerBtn:'Carriera da manager', navBtn:'Manager', heroTitle:'Costruisci un club.', heroTitle2:'Guidalo per una stagione.', heroSub:'Sei Head of Fortnite: un vero club e il suo roster dell’anno, eventi nel calendario reale, guardi le serate e decidi tra una partita e l’altra.',
+    heroBtn:'Diventa manager', sponsor:'sponsor', drop:'Drop', dQuiet:'Tranquillo', dNorm:'Normale', dHot:'Caldo', press:'Conferenza stampa', prPraise:'Elogia la squadra', prCrit:'Critica', prNone:'Nessun commento', prDone:'Detto', rep:'Reputazione', tStats:'Statistiche', stNights:'serate', stKills:'kill', stBest:'migliore', stPrize:'premi', talents:'talenti ≤75', dev:'crescita', ewcNeed4:'L’EWC richiede una squad da quattro — il club ha meno di quattro giocatori', ewcNoSlot:'Il club non è tra le 16 squadre dell’EWC e una squadra più forte ha il posto della regione — niente EWC per noi', ewcIn:(s)=>'Il club va a Riyad: slot «'+s+'»', ewcPlace:p=>'Piazzamento EWC: '+p, acad:'Accademia', acadHint:'Fino a 4 talenti: un quarto dello stipendio, crescono il doppio più in fretta, non giocano gli eventi', toAcad:'In accademia', promote:'Promuovi', acadFull:'L’accademia è piena', acadOnly:'In accademia vanno solo giocatori fino a 75', scout:(n,r)=>'Scout: trovato un talento '+n+' ('+r+') — lo porti in accademia?', preH:'Prima della serata', style:'Approccio', stPlace:'Piazzamento', stBal:'Equilibrato', stAggr:'Aggressivo', view:'Guarda', vKey:'Momenti chiave', vExt:'Esteso', vFull:'Serata completa', vRes:'Solo risultato', speed:'Velocità', start:'Inizia la serata', breakH:g=>'Pausa · dopo la partita '+g, cont:'Continua', talk:'Discorso alla squadra', tkCalm:'Calmo', tkDemand:'Esigente', tkPraise:'Elogio', rankNow:'ora', lastG:'ultima partita', asst:'Assistente', tDeadEarly:n=>n+' muoiono presto — lo spot è conteso. Vai di piazzamento o cambia spot', tFightLow:n=>n+' combattono tanto ma si piazzano in basso — passa al piazzamento', tPlaceNoKill:n=>n+' sopravvivono con costanza ma fanno poche kill — prova l’aggressivo', tHot:n=>n+' sono in fiamme — elogiali, non rompere il ritmo', tCold:n=>n+' hanno mancato due partite di fila — serve parlarci', talkSaid:'detto', fmt:{2:'duo', 3:'trio', 4:'squad'}, focus:'Camera su', resume:'Riprendi la stagione'
+  }), pt:()=>({
+    title:'Fortnite Manager', newH:'Novo clube', year:'Ano', region:'Região', pickClub:'Escolha um clube — o elenco real dele naquele ano',
+    players:'jogadores', avg:'média', take:'Assumir', cash:'Cash', teams:'Times', bench:'Reservas', next:'Próximo evento',
+    play:'Dia de jogo', skipEv:'Pular este evento', noEvent:'Não há mais eventos nesta temporada', home:'Início', newClub:'Outro clube',
+    calendar:'Calendário', results:'Resultados', place:'lugar', prize:'prêmio', clubGets:'para o clube', salaries:'Salários',
+    month:'por mês', back:'Voltar ao clube', nightDone:'Relatório da noite', noTeamFmt:'Nenhum time neste formato — evento pulado',
+    season:'Temporada', earned:'Ganho na temporada', none:'Nada ainda', moveUp:'↑', moveDown:'↓', swap:'Trocar',
+    heroTag:'Modo 1 · Carreira de manager', careerBtn:'Carreira de manager', navBtn:'Manager', heroTitle:'Monte um clube.', heroTitle2:'Comande-o por uma temporada.', heroSub:'Você é o Head of Fortnite: um clube real e o elenco dele no ano, eventos no calendário real, você assiste às noites e decide entre as partidas.',
+    heroBtn:'Virar manager', sponsor:'patrocinadores', drop:'Drop', dQuiet:'Tranquilo', dNorm:'Normal', dHot:'Quente', press:'Coletiva de imprensa', prPraise:'Elogiar o time', prCrit:'Criticar', prNone:'Sem comentários', prDone:'Dito', rep:'Reputação', tStats:'Stats', stNights:'noites', stKills:'kills', stBest:'melhor', stPrize:'prêmios', talents:'talentos ≤75', dev:'evolução', ewcNeed4:'A EWC exige uma squad de quatro — o clube tem menos de quatro jogadores', ewcNoSlot:'O clube não está entre os 16 times da EWC e um time mais forte ocupa a vaga da região — sem EWC para nós', ewcIn:(s)=>'O clube vai a Riade: vaga "'+s+'"', ewcPlace:p=>'Resultado na EWC: '+p, acad:'Academia', acadHint:'Até 4 talentos: um quarto do salário, evoluem duas vezes mais rápido, não jogam eventos', toAcad:'Para a academia', promote:'Promover', acadFull:'A academia está cheia', acadOnly:'Só jogadores até 75 vão para a academia', scout:(n,r)=>'Scout: achou um talento '+n+' ('+r+') — levar para a academia?', preH:'Antes da noite', style:'Abordagem', stPlace:'Posicionamento', stBal:'Equilibrado', stAggr:'Agressivo', view:'Assistir', vKey:'Momentos-chave', vExt:'Estendido', vFull:'Noite completa', vRes:'Só o resultado', speed:'Velocidade', start:'Começar a noite', breakH:g=>'Intervalo · após a partida '+g, cont:'Continuar', talk:'Conversa com o time', tkCalm:'Calma', tkDemand:'Exigente', tkPraise:'Elogio', rankNow:'agora', lastG:'última partida', asst:'Assistente', tDeadEarly:n=>n+' morrem cedo — o spot está disputado. Jogue no posicionamento ou mude de spot', tFightLow:n=>n+' brigam muito mas terminam mal — mude para posicionamento', tPlaceNoKill:n=>n+' sobrevivem bem mas fazem poucos kills — tente o agressivo', tHot:n=>n+' estão pegando fogo — elogie, não quebre o ritmo', tCold:n=>n+' perderam duas partidas seguidas — precisam de uma conversa', talkSaid:'dito', fmt:{2:'duos', 3:'trios', 4:'squads'}, focus:'Câmera em', resume:'Continuar a temporada'
+  }), de:()=>({
+    title:'Fortnite Manager', newH:'Neuer Club', year:'Jahr', region:'Region', pickClub:'Wähle einen Club — sein echter Kader aus diesem Jahr',
+    players:'Spieler', avg:'Ø', take:'Übernehmen', cash:'Cash', teams:'Teams', bench:'Bank', next:'Nächstes Event',
+    play:'Spieltag', skipEv:'Dieses Event überspringen', noEvent:'Keine Events mehr in dieser Saison', home:'Start', newClub:'Anderer Club',
+    calendar:'Kalender', results:'Ergebnisse', place:'Platz', prize:'Preisgeld', clubGets:'für den Club', salaries:'Gehälter',
+    month:'pro Monat', back:'Zurück zum Club', nightDone:'Abendbericht', noTeamFmt:'Kein Team in diesem Format — Event übersprungen',
+    season:'Saison', earned:'Diese Saison verdient', none:'Noch nichts', moveUp:'↑', moveDown:'↓', swap:'Tauschen',
+    heroTag:'Modus 1 · Manager-Karriere', careerBtn:'Manager-Karriere', navBtn:'Manager', heroTitle:'Bau einen Club auf.', heroTitle2:'Führ ihn durch eine Saison.', heroSub:'Du bist Head of Fortnite: ein echter Club mit seinem Kader des Jahres, Events im echten Kalender, du schaust die Abende und entscheidest zwischen den Games.',
+    heroBtn:'Manager werden', sponsor:'Sponsoren', drop:'Drop', dQuiet:'Ruhig', dNorm:'Normal', dHot:'Heiß', press:'Pressekonferenz', prPraise:'Team loben', prCrit:'Kritisieren', prNone:'Kein Kommentar', prDone:'Gesagt', rep:'Ruf', tStats:'Stats', stNights:'Abende', stKills:'Kills', stBest:'Bestes', stPrize:'Preisgeld', talents:'Talente ≤75', dev:'Entwicklung', ewcNeed4:'Die EWC braucht eine Squad aus vier — der Club hat weniger als vier Spieler', ewcNoSlot:'Der Club gehört nicht zu den 16 EWC-Teams und ein stärkeres Team hält den Regionsplatz — keine EWC für uns', ewcIn:(s)=>'Der Club fliegt nach Riad: Platz „'+s+'“', ewcPlace:p=>'EWC-Platzierung: '+p, acad:'Akademie', acadHint:'Bis zu 4 Talente: ein Viertel des Gehalts, wachsen doppelt so schnell, spielen keine Events', toAcad:'In die Akademie', promote:'Hochziehen', acadFull:'Die Akademie ist voll', acadOnly:'Nur Spieler bis 75 kommen in die Akademie', scout:(n,r)=>'Scout: Talent '+n+' gefunden ('+r+') — in die Akademie holen?', preH:'Vor dem Abend', style:'Ansatz', stPlace:'Platzierung', stBal:'Ausgewogen', stAggr:'Aggressiv', view:'Zuschauen', vKey:'Schlüsselmomente', vExt:'Erweitert', vFull:'Ganzer Abend', vRes:'Nur Ergebnis', speed:'Tempo', start:'Abend starten', breakH:g=>'Pause · nach Game '+g, cont:'Weiter', talk:'Teamansprache', tkCalm:'Ruhig', tkDemand:'Fordernd', tkPraise:'Lob', rankNow:'jetzt', lastG:'letztes Game', asst:'Assistent', tDeadEarly:n=>n+' sterben früh — der Spot ist umkämpft. Spiel auf Platzierung oder wechsle den Spot', tFightLow:n=>n+' kämpfen viel, landen aber weit hinten — wechsle auf Platzierung', tPlaceNoKill:n=>n+' überleben stabil, machen aber wenig Kills — probier es aggressiv', tHot:n=>n+' sind on fire — lob sie, bring sie nicht raus', tCold:n=>n+' haben zwei Games in Folge verpatzt — sie brauchen ein Gespräch', talkSaid:'gesagt', fmt:{2:'Duos', 3:'Trios', 4:'Squads'}, focus:'Kamera auf', resume:'Saison fortsetzen'
+  }), es:()=>({
+    title:'Fortnite Manager', newH:'Nuevo club', year:'Año', region:'Región', pickClub:'Elige un club — su plantilla real de ese año',
+    players:'jugadores', avg:'media', take:'Tomar el mando', cash:'Cash', teams:'Equipos', bench:'Banquillo', next:'Próximo evento',
+    play:'Día de partido', skipEv:'Saltar este evento', noEvent:'No quedan más eventos esta temporada', home:'Inicio', newClub:'Otro club',
+    calendar:'Calendario', results:'Resultados', place:'puesto', prize:'premio', clubGets:'para el club', salaries:'Salarios',
+    month:'al mes', back:'Volver al club', nightDone:'Informe de la noche', noTeamFmt:'No hay equipo en este formato — evento saltado',
+    season:'Temporada', earned:'Ganado esta temporada', none:'Nada todavía', moveUp:'↑', moveDown:'↓', swap:'Cambiar',
+    heroTag:'Modo 1 · Carrera de manager', careerBtn:'Carrera de manager', navBtn:'Manager', heroTitle:'Construye un club.', heroTitle2:'Llévalo durante una temporada.', heroSub:'Eres el Head of Fortnite: un club real y su plantilla del año, eventos en el calendario real, ves las noches y decides entre partidas.',
+    heroBtn:'Hacerte manager', sponsor:'patrocinadores', drop:'Drop', dQuiet:'Tranquilo', dNorm:'Normal', dHot:'Caliente', press:'Rueda de prensa', prPraise:'Elogiar al equipo', prCrit:'Criticar', prNone:'Sin comentarios', prDone:'Dicho', rep:'Reputación', tStats:'Stats', stNights:'noches', stKills:'kills', stBest:'mejor', stPrize:'premios', talents:'talentos ≤75', dev:'crecimiento', ewcNeed4:'La EWC pide una squad de cuatro — el club tiene menos de cuatro jugadores', ewcNoSlot:'El club no está entre los 16 equipos de la EWC y un equipo más fuerte tiene la plaza de la región — no hay EWC para nosotros', ewcIn:(s)=>'El club viaja a Riad: plaza «'+s+'»', ewcPlace:p=>'Resultado en la EWC: '+p, acad:'Academia', acadHint:'Hasta 4 talentos: un cuarto del salario, crecen el doble de rápido, no juegan eventos', toAcad:'A la academia', promote:'Ascender', acadFull:'La academia está llena', acadOnly:'Solo jugadores hasta 75 van a la academia', scout:(n,r)=>'Scout: encontró un talento '+n+' ('+r+') — ¿llevarlo a la academia?', preH:'Antes de la noche', style:'Enfoque', stPlace:'Posicionamiento', stBal:'Equilibrado', stAggr:'Agresivo', view:'Ver', vKey:'Momentos clave', vExt:'Ampliado', vFull:'Noche completa', vRes:'Solo resultado', speed:'Velocidad', start:'Empezar la noche', breakH:g=>'Descanso · tras la partida '+g, cont:'Continuar', talk:'Charla de equipo', tkCalm:'Calma', tkDemand:'Exigente', tkPraise:'Elogio', rankNow:'ahora', lastG:'última partida', asst:'Asistente', tDeadEarly:n=>n+' mueren pronto — el spot está disputado. Juega al posicionamiento o cambia de spot', tFightLow:n=>n+' pelean mucho pero acaban abajo — pasa a posicionamiento', tPlaceNoKill:n=>n+' sobreviven con regularidad pero hacen pocos kills — prueba lo agresivo', tHot:n=>n+' están on fire — elógialos, no rompas la racha', tCold:n=>n+' fallaron dos partidas seguidas — necesitan una charla', talkSaid:'dicho', fmt:{2:'duos', 3:'trios', 4:'squads'}, focus:'Cámara en', resume:'Continuar la temporada'
+  })}[LANG]||(()=>({
     title:'Fortnite Manager', newH:'New club', year:'Year', region:'Region', pickClub:'Pick a club — its real roster of that year',
     players:'players', avg:'avg', take:'Take over', cash:'Cash', teams:'Teams', bench:'Bench', next:'Next event',
     play:'Match day', skipEv:'Skip this event', noEvent:'No more events this season', home:'Home', newClub:'Another club',
@@ -157038,7 +157083,7 @@ function mgrT(){
     season:'Season', earned:'Earned this season', none:'Nothing yet', moveUp:'↑', moveDown:'↓', swap:'Swap',
     heroTag:'Mode 1 · Manager career', careerBtn:'Manager career', navBtn:'Manager', heroTitle:'Build a club.', heroTitle2:'Run it through a season.', heroSub:'You are Head of Fortnite: a real club and its roster of the year, events on the real calendar, you watch the nights and decide between games.',
     heroBtn:'Become a manager', sponsor:'sponsors', drop:'Drop', dQuiet:'Quiet', dNorm:'Normal', dHot:'Hot', press:'Press conference', prPraise:'Praise the team', prCrit:'Criticise', prNone:'No comment', prDone:'Said', rep:'Reputation', tStats:'Stats', stNights:'nights', stKills:'kills', stBest:'best', stPrize:'prize', talents:'talents ≤75', dev:'growth', ewcNeed4:'EWC needs a squad of four — the club has fewer than four players', ewcNoSlot:'The club is not among the 16 EWC teams and a stronger team holds the region slot — no EWC for us', ewcIn:(s)=>'The club goes to Riyadh: slot "'+s+'"', ewcPlace:p=>'EWC finish: '+p, acad:'Academy', acadHint:'Up to 4 talents: a quarter of the wage, grow twice as fast, do not play events', toAcad:'To the academy', promote:'Promote', acadFull:'The academy is full', acadOnly:'Only players up to 75 go to the academy', scout:(n,r)=>'Scout: found a talent '+n+' ('+r+') — take them into the academy?', preH:'Before the night', style:'Approach', stPlace:'Placement', stBal:'Balanced', stAggr:'Aggressive', view:'Watch', vKey:'Key moments', vExt:'Extended', vFull:'Full night', vRes:'Result only', speed:'Speed', start:'Start the night', breakH:g=>'Break · after game '+g, cont:'Continue', talk:'Team talk', tkCalm:'Calm', tkDemand:'Demanding', tkPraise:'Praise', rankNow:'now', lastG:'last game', asst:'Assistant', tDeadEarly:n=>n+' die early — the spot is contested. Go placement or change the spot', tFightLow:n=>n+' fight a lot but place low — switch to placement', tPlaceNoKill:n=>n+' survive steadily but get few kills — try aggressive', tHot:n=>n+' are on fire — praise them, do not break it', tCold:n=>n+' missed two games in a row — they need a talk', talkSaid:'said', fmt:{2:'duos', 3:'trios', 4:'squads'}, focus:'Camera on', resume:'Continue season'
-  };
+  })))();
 }
 /* СЛОТЫ МЕНЕДЖЕРА, КАК У КАРЬЕРЫ ИГРОКА (его слово 8.10: «когда нажимаешь стать менеджером, не дают на выбор карьеру и
    сохранять нельзя — нужно по аналогии с карьерой игрока»). Шесть слотов; №1 — прежний ключ fncsdraft_manager, так что
@@ -157076,7 +157121,7 @@ function mgrSave(){
 function mgrSlotT(){
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
   return ru ? {h:'Карьеры менеджера', sub:'Каждая карьера сохраняется сама — в своём слоте', open:'Продолжить', del:'Удалить', sure:'Точно удалить?', nw:'Новая карьера', free:n=>'свободно слотов: '+n, season:'Сезон', cash:'Касса', slots:'Карьеры'}
-            : {h:'Manager careers', sub:'Every career saves itself — in its own slot', open:'Continue', del:'Delete', sure:'Delete for sure?', nw:'New career', free:n=>'free slots: '+n, season:'Season', cash:'Cash', slots:'Careers'};
+            : ({fr:()=>({h:'Carrières de manager', sub:'Chaque carrière se sauvegarde seule — dans son propre slot', open:'Continuer', del:'Supprimer', sure:'Supprimer pour de bon ?', nw:'Nouvelle carrière', free:n=>'slots libres : '+n, season:'Saison', cash:'Cash', slots:'Carrières'}), it:()=>({h:'Carriere da manager', sub:'Ogni carriera si salva da sola — nel suo slot', open:'Continua', del:'Elimina', sure:'Eliminare davvero?', nw:'Nuova carriera', free:n=>'slot liberi: '+n, season:'Stagione', cash:'Cash', slots:'Carriere'}), pt:()=>({h:'Carreiras de manager', sub:'Cada carreira salva sozinha — no próprio slot', open:'Continuar', del:'Excluir', sure:'Excluir de vez?', nw:'Nova carreira', free:n=>'slots livres: '+n, season:'Temporada', cash:'Cash', slots:'Carreiras'}), de:()=>({h:'Manager-Karrieren', sub:'Jede Karriere speichert sich selbst — in ihrem eigenen Slot', open:'Weiter', del:'Löschen', sure:'Wirklich löschen?', nw:'Neue Karriere', free:n=>'freie Slots: '+n, season:'Saison', cash:'Cash', slots:'Karrieren'}), es:()=>({h:'Carreras de manager', sub:'Cada carrera se guarda sola — en su propio slot', open:'Continuar', del:'Eliminar', sure:'¿Eliminar de verdad?', nw:'Nueva carrera', free:n=>'slots libres: '+n, season:'Temporada', cash:'Cash', slots:'Carreras'})}[LANG]||(()=>({h:'Manager careers', sub:'Every career saves itself — in its own slot', open:'Continue', del:'Delete', sure:'Delete for sure?', nw:'New career', free:n=>'free slots: '+n, season:'Season', cash:'Cash', slots:'Careers'})))();
 }
 function mgrOpenSlots(){
   mgrCloneHubCss();
@@ -157292,8 +157337,8 @@ function mgrOpenNew(year){
   const real='<div class="ch-subtabs mgn-sort">'+sub(MGR_NEW_SORT==='stars', "MGR_NEW_SORT='stars';mgrOpenNew()", T9.byStars)+
       sub(MGR_NEW_SORT==='budget', "MGR_NEW_SORT='budget';mgrOpenNew()", T9.byBudget)+'</div>'+
     '<div class="mgn-grid mgn-grid2">'+(clubs.filter(c=>!c.small && !c.requested).map(c=>tileNew(c, clubs.indexOf(c))).join('') || '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div>'+
-    (clubs.some(c=>c.requested) ? '<h3 class="cc-sect-h mgn-small-h">'+esc((typeof LANG!=='undefined' && LANG==='ru') ? 'Без состава в Fortnite — игроков подписываешь сам' : 'No Fortnite roster — you sign the players')+' · '+clubs.filter(c=>c.requested).length+'</h3><div class="mgn-grid mgn-grid2">'+clubs.filter(c=>c.requested).map(c=>tileNew(c, clubs.indexOf(c))).join('')+'</div>' : '')+
-    (clubs.some(c=>c.small) ? '<h3 class="cc-sect-h mgn-small-h">'+esc((typeof LANG!=='undefined' && LANG==='ru') ? 'Небольшие организации' : 'Smaller organisations')+' · '+clubs.filter(c=>c.small).length+'</h3><div class="mgn-grid mgn-grid2 mgn-small">'+clubs.filter(c=>c.small).map(c=>tileNew(c, clubs.indexOf(c))).join('')+'</div>' : '');
+    (clubs.some(c=>c.requested) ? '<h3 class="cc-sect-h mgn-small-h">'+esc((typeof LANG!=='undefined' && LANG==='ru') ? 'Без состава в Fortnite — игроков подписываешь сам' : ({fr:()=>('Pas d’effectif Fortnite — tu signes les joueurs'), it:()=>('Nessun roster Fortnite — firmi tu i giocatori'), pt:()=>('Sem elenco de Fortnite — você contrata os jogadores'), de:()=>('Kein Fortnite-Kader — du verpflichtest die Spieler selbst'), es:()=>('Sin plantilla de Fortnite — tú fichas a los jugadores')}[LANG]||(()=>('No Fortnite roster — you sign the players')))())+' · '+clubs.filter(c=>c.requested).length+'</h3><div class="mgn-grid mgn-grid2">'+clubs.filter(c=>c.requested).map(c=>tileNew(c, clubs.indexOf(c))).join('')+'</div>' : '')+
+    (clubs.some(c=>c.small) ? '<h3 class="cc-sect-h mgn-small-h">'+esc((typeof LANG!=='undefined' && LANG==='ru') ? 'Небольшие организации' : ({fr:()=>('Petites organisations'), it:()=>('Organizzazioni più piccole'), pt:()=>('Organizações menores'), de:()=>('Kleinere Organisationen'), es:()=>('Organizaciones más pequeñas')}[LANG]||(()=>('Smaller organisations')))())+' · '+clubs.filter(c=>c.small).length+'</h3><div class="mgn-grid mgn-grid2 mgn-small">'+clubs.filter(c=>c.small).map(c=>tileNew(c, clubs.indexOf(c))).join('')+'</div>' : '');
   const own=typeof mgrOwnFormHTML==='function' ? mgrOwnFormHTML() : '';
   document.getElementById('mgBody').innerHTML='<div class="mgn-headtile"><h4>'+esc(T.title)+' · '+esc(T.newH)+'</h4>'+
     '<div class="ch-subtabs mgn-years">'+years+'</div>'+
@@ -157551,7 +157596,107 @@ function mgrT9(){
     plan:'План развития', planRole:'Роль-цель', planNone:'Без смены роли', planFocus:'Упор в рост', planOn:'Вкл', planOff:'Выкл', planLeft:n=>'осталось '+n+' дн.', planDone:(h,r)=>h+' переучился: теперь '+r,
     loanH:'В аренде', toLoan:'Отдать в аренду на 4 недели', loanTo:(c,d)=>'в '+c+' до '+d, loanBack:(h,c,g)=>h+' вернулся из аренды ('+c+')'+(g>0 ? ': +'+g+' к рейтингу' : ''),
     awards:'Награды сезона', pom:(h,k)=>'Игрок месяца: '+h+' ('+k+' киллов)', poy:h=>'Игрок года: '+h, ypy:h=>'Молодой игрок года: '+h, moy:y=>'Менеджер года '+y
-  } : {
+  } : ({fr:()=>({
+    fans:'abonnés X', fansEst:'Estimation : pas de chiffre exact trouvé', benchOut:'Dans aucun effectif (tous les effectifs sont pleins)', newRoster:'Nouvel effectif',
+    overCap:s=>'Le board refuse : budget salaires '+s+' par mois', overTransfer:s=>'Le board refuse : le budget transferts est de '+s, capNo:'Ne rentre pas dans le budget salaires — part par défaut', transfer:'Budget transferts', wageCap:'Budget salaires',
+    renewCap:h=>h+' part : le nouveau contrat ne rentrait pas dans le budget salaires',
+    real:'Club réel', own:'Crée le tien', star:'Joueur star', byStars:'Par stars', byBudget:'Par budget',
+    expect:{title:'Le board attend un titre', final:'Le board attend une finale', survive:'Le board attend le maintien'},
+    ownName:'Nom du club', crest:'Blason', tier:'Niveau de départ', ownGo:'Fonder le club',
+    tiers:{rookie:'Débutant', mid:'Moyen', amb:'Ambitieux'},
+    tierHint:{rookie:'Petit budget, agents libres 65–72', mid:'Budget moyen, agents libres 72–78', amb:'Gros budget, agents libres 78–84, board plus strict'},
+    tabs:{centre:'Centre', squad:'Effectif', transfers:'Transferts', inbox:'Messages', sponsors:'Sponsors', club:'Club', calendar:'Calendrier', tables:'Classements'}, calNext:'Événements à venir', toCal:'Calendrier complet',
+    conf:'Confiance du board', morale:'Moral de l’effectif', board:'Board', teamOvr:'Équipe première',
+    goals:'Objectifs du board', dev:'Développement', devNone:'La progression apparaît une fois par mois', fatigue:'Fatigue', news:'Actus du club', toTables:'Trophées et stats', toTrain:'À l’entraînement',
+    role:'Rôle', until:'Contrat', where:'Joue en', moveTo:'Déplacer vers…',
+    market:'Marché', short:'Liste de suivi', deals:'Négociations', shortEmpty:'Des joueurs stars sur le marché pour les mettre en liste de suivi', dealsEmpty:'Pas de négociations ni d’offres', offersIn:'Offres et demandes', negNow:'Négociations en cours', open:'Ouvrir', wageRoom:'Marge sous le plafond',
+    trait:'Personnalité', traits:{ambitious:'Ambitieux', loyal:'Loyal', star:'Star', pro:'Professionnel', hothead:'Tête brûlée', calm:'Calme'}, traitN:{ambitious:'demande plus, un podium booste le moral', loyal:'prolonge à moindre prix', star:'perd du moral sur le banc', pro:'l’équipe se fatigue moins', hothead:'alchimie plus faible avec lui', calm:'moral jamais sous −1'}, dlOffer:(c,h,s)=>'Deadline : '+c+' offrent d’urgence '+s+' pour '+h, dlAvail:(h,c,s)=>'Deadline : '+h+' ('+c+') est disponible maintenant — rachat '+s+' (−30 %)', dlSoon:n=>n ? 'Deadline des transferts dans '+n+' jours' : 'Dernier jour des transferts !', natCall:l=>'Convocations en équipe nationale : '+l, acadCup:(p,h)=>'Coupe de l’académie : #'+p+' sur 32'+(h ? ' — '+h+' a progressé' : ''), lastCup:'Dernière coupe de l’académie', fReg:'Région', fNat:'Tous pays', fOmin:'Note à partir de', fOmax:'Note jusqu’à', fPmin:'Potentiel à partir de', fClub:'Tous clubs', sFit:'Convient au club', sOvr:'Par note', sPot:'Par potentiel', sAge:'Plus jeunes', sWage:'Salaire le plus bas', sBuyout:'Rachat le moins cher', fReset:'Réinitialiser les filtres', fFound:n=>'Trouvés : '+n, fNone:'Personne — assouplis les filtres', ffWeek:'Semaine ▸', ffMonth:'Mois ▸▸', ffHere:'Avancer jusqu’à ce jour', ffAsk:d=>'Avancer jusqu’au '+d+' ? Les événements du club en chemin sont joués sans que tu les regardes.', wEvents:'Événements', wClubs:'Clubs', wMedia:'Médias du monde', wNone:'Vide pour l’instant — les événements de la saison apparaissent à mesure qu’ils sont joués', wPlayed:'joué par le club', wSim:'résultat du monde', wTeam:'Équipe', wOrg:'Club', wPts:'Pts', wClubsH:'Clubs par gains de la saison', wEvN:'Événements', wpost:{win:d=>'🏆 '+d.ev+' : '+d.n+' gagne'+(d.orgs ? ' ('+d.orgs+')' : ''), transfer:d=>'🔁 Transfert : '+d.h+' → '+d.to+(d.from ? ' (depuis '+d.from+')' : '')}, guest:'Invité', guestOut:'Retirer de l’équipe', guestAdd:'Coéquipier d’une autre org', guestPick:'Choisir (★ — vrai coéquipier)', sAgent:'Responsable transferts', sAgentN:'négocie avec les clubs et les joueurs : rachats et salaires moins chers, les joueurs plus forts acceptent', ageH:'Âge', autoIn:h=>h+' rejoint l’équipe', shortTitle:(n,s)=>'Équipe incomplète : '+n+' sur '+s, shortText:e=>'Il manque un joueur pour « '+e+' ». Prendre un coéquipier d’une autre org, composer l’équipe toi-même ou passer l’événement ?', shortGuest:'Prendre un coéquipier d’une autre org', shortSquad:'Ouvrir l’effectif', coachPick:'Choisir un coach', coachChange:'Changer', teamCoach:'Coach de l’équipe', noCoach:'Pas de coach d’équipe (head coach)', mail:'Messages', feed:'Fil du club', feedEmpty:'Pas encore de posts', post:{sign:d=>'Bienvenue, '+d.h+' ! 🤝', sell:d=>d.h+' part'+(d.club ? ' à '+d.club : '')+'. Merci pour tout !', night:d=>(d.names ? d.names+' — ' : '')+d.ev+' : #'+d.place+(d.of ? ' sur '+d.of : '')+(d.pts ? ', '+d.pts+' pts' : '')+(d.kills ? ', '+d.kills+' kills' : '')+(d.mvp ? '. MVP : '+d.mvp : ''), award:d=>'🏆 '+d.text, creator:d=>d.h+' nous rejoint ! 🎥', rumor:d=>'Rumeur : '+d.club+' s’intéresse à '+d.h+' 👀', deadline:d=>'⏰ Dernier jour des transferts ! Dernier jour du mercato', retire:d=>d.h+' prend sa retraite. Une légende du club'}, retired:(h,a)=>h+' prend sa retraite (âge '+a+')', creators:'Créateurs', crNet:'net', crFee:'Frais', crInc:'Revenus', crSign:'Signer', crDrop:'Libérer', crNo:n=>n+' : « pas encore notre niveau » — il faut plus de réputation', hire:'Embaucher', train:'Entraînement et staff', base:'Installations', sponsor:'Sponsor', press:'Presse et événements', stats:'Stats', trophies:'Trophées', managers:'Managers',
+    scouting:'Scouting', scouts:'Scouts', reports:'Rapports de scouts', noScouts:'Pas de scouts — embauches-en un et envoie-le', noReports:'Les rapports arrivent une fois par semaine', fire:'Licencier', anyRole:'Tout rôle', anyAge:'Tout âge', ageTo:n=>'jusqu’à '+n, anyOvr:'Toute note', now:'Actuel', potW:'Potentiel', views:n=>'rapports : '+n, scoutLv:[null,'Scout','Scout senior','Scout en chef'], scoutRep:(r,l)=>'Scout ('+r+') : '+l,
+    youth:'Jeunes', yscout:'Scout jeunes', yHire:'Embaucher un scout jeunes', noYScouts:'Pas de scouts jeunes', found:'Talents trouvés', noYouth:'Les trouvailles arrivent une fois par mois', toAcad:'À l’académie', age:n=>'âge '+n, youthRep:l=>'Le scout jeunes a trouvé : '+l,
+    plan:'Plan de développement', planRole:'Rôle visé', planNone:'Garder le rôle', planFocus:'Axe de progression', planOn:'Activé', planOff:'Désactivé', planLeft:n=>n+' jours restants', planDone:(h,r)=>h+' s’est reconverti : désormais '+r,
+    loanH:'En prêt', toLoan:'Prêter pour 4 semaines', loanTo:(c,d)=>'à '+c+' jusqu’au '+d, loanBack:(h,c,g)=>h+' revient de prêt ('+c+')'+(g>0 ? ' : +'+g+' de note' : ''),
+    awards:'Récompenses de la saison', pom:(h,k)=>'Joueur du mois : '+h+' ('+k+' kills)', poy:h=>'Joueur de l’année : '+h, ypy:h=>'Jeune joueur de l’année : '+h, moy:y=>'Manager de l’année '+y
+  }), it:()=>({
+    fans:'follower su X', fansEst:'Stima: nessun dato esatto trovato', benchOut:'In nessun roster (tutti i roster sono pieni)', newRoster:'Nuovo roster',
+    overCap:s=>'Il board dice no: budget stipendi '+s+' al mese', overTransfer:s=>'Il board dice no: il budget trasferimenti è '+s, capNo:'Non rientra nel budget stipendi — se ne va di default', transfer:'Budget trasferimenti', wageCap:'Budget stipendi',
+    renewCap:h=>h+' se ne va: il nuovo contratto non rientrava nel budget stipendi',
+    real:'Club reale', own:'Creane uno tuo', star:'Giocatore star', byStars:'Per star', byBudget:'Per budget',
+    expect:{title:'Il board si aspetta un titolo', final:'Il board si aspetta una finale', survive:'Il board si aspetta la salvezza'},
+    ownName:'Nome del club', crest:'Stemma', tier:'Livello iniziale', ownGo:'Fonda il club',
+    tiers:{rookie:'Esordiente', mid:'Medio', amb:'Ambizioso'},
+    tierHint:{rookie:'Budget piccolo, free agent 65–72', mid:'Budget medio, free agent 72–78', amb:'Budget grande, free agent 78–84, board più severo'},
+    tabs:{centre:'Centro', squad:'Rosa', transfers:'Trasferimenti', inbox:'Posta', sponsors:'Sponsor', club:'Club', calendar:'Calendario', tables:'Classifiche'}, calNext:'Prossimi eventi', toCal:'Calendario completo',
+    conf:'Fiducia del board', morale:'Morale della rosa', board:'Board', teamOvr:'Prima squadra',
+    goals:'Obiettivi del board', dev:'Sviluppo', devNone:'La crescita compare una volta al mese', fatigue:'Fatica', news:'Notizie del club', toTables:'Trofei e statistiche', toTrain:'All’allenamento',
+    role:'Ruolo', until:'Contratto', where:'Gioca in', moveTo:'Sposta in…',
+    market:'Mercato', short:'Lista osservati', deals:'Trattative', shortEmpty:'Giocatori star sul mercato da mettere in lista', dealsEmpty:'Nessuna trattativa né offerta', offersIn:'Offerte e richieste', negNow:'Trattative in corso', open:'Apri', wageRoom:'Margine sotto il tetto',
+    trait:'Personalità', traits:{ambitious:'Ambizioso', loyal:'Leale', star:'Star', pro:'Professionista', hothead:'Testa calda', calm:'Calmo'}, traitN:{ambitious:'chiede di più, un podio alza il morale', loyal:'rinnova a meno', star:'perde morale in panchina', pro:'la squadra si stanca meno', hothead:'chimica più bassa con lui', calm:'morale mai sotto −1'}, dlOffer:(c,h,s)=>'Deadline: '+c+' offrono d’urgenza '+s+' per '+h, dlAvail:(h,c,s)=>'Deadline: '+h+' ('+c+') è disponibile ora — riscatto '+s+' (−30%)', dlSoon:n=>n ? 'Deadline dei trasferimenti tra '+n+' giorni' : 'Ultimo giorno di mercato!', natCall:l=>'Convocazioni in nazionale: '+l, acadCup:(p,h)=>'Coppa dell’accademia: #'+p+' su 32'+(h ? ' — '+h+' è migliorato' : ''), lastCup:'Ultima coppa dell’accademia', fReg:'Regione', fNat:'Qualsiasi paese', fOmin:'Valutazione da', fOmax:'Valutazione fino a', fPmin:'Potenziale da', fClub:'Qualsiasi club', sFit:'Adatti al club', sOvr:'Per valutazione', sPot:'Per potenziale', sAge:'Più giovani', sWage:'Stipendio più basso', sBuyout:'Riscatto più basso', fReset:'Azzera i filtri', fFound:n=>'Trovati: '+n, fNone:'Nessuno — allarga i filtri', ffWeek:'Settimana ▸', ffMonth:'Mese ▸▸', ffHere:'Avanza fino a questo giorno', ffAsk:d=>'Avanzare fino al '+d+'? Gli eventi del club lungo la strada vengono giocati senza guardarli.', wEvents:'Eventi', wClubs:'Club', wMedia:'Media mondiali', wNone:'Vuoto per ora — gli eventi della stagione compaiono man mano che si giocano', wPlayed:'giocato dal club', wSim:'risultato del mondo', wTeam:'Squadra', wOrg:'Club', wPts:'Pt', wClubsH:'Club per premi della stagione', wEvN:'Eventi', wpost:{win:d=>'🏆 '+d.ev+': '+d.n+' vince'+(d.orgs ? ' ('+d.orgs+')' : ''), transfer:d=>'🔁 Trasferimento: '+d.h+' → '+d.to+(d.from ? ' (da '+d.from+')' : '')}, guest:'Ospite', guestOut:'Togli dalla squadra', guestAdd:'Compagno di un’altra org', guestPick:'Scegli (★ — compagno reale)', sAgent:'Responsabile trasferimenti', sAgentN:'tratta con club e giocatori: riscatti e stipendi più bassi, i giocatori più forti accettano', ageH:'Età', autoIn:h=>h+' entra in squadra', shortTitle:(n,s)=>'Squadra incompleta: '+n+' su '+s, shortText:e=>'Manca un giocatore per «'+e+'». Prendere un compagno da un’altra org, comporre la squadra da solo o saltare l’evento?', shortGuest:'Prendi un compagno da un’altra org', shortSquad:'Apri la rosa', coachPick:'Scegli un coach', coachChange:'Cambia', teamCoach:'Coach della squadra', noCoach:'Nessun coach di squadra (head coach)', mail:'Posta', feed:'Feed del club', feedEmpty:'Ancora nessun post', post:{sign:d=>'Benvenuto, '+d.h+'! 🤝', sell:d=>d.h+' va avanti'+(d.club ? ' a '+d.club : '')+'. Grazie di tutto!', night:d=>(d.names ? d.names+' — ' : '')+d.ev+': #'+d.place+(d.of ? ' su '+d.of : '')+(d.pts ? ', '+d.pts+' pt' : '')+(d.kills ? ', '+d.kills+' kill' : '')+(d.mvp ? '. MVP: '+d.mvp : ''), award:d=>'🏆 '+d.text, creator:d=>d.h+' si unisce a noi! 🎥', rumor:d=>'Voce: '+d.club+' è interessato a '+d.h+' 👀', deadline:d=>'⏰ Ultimo giorno di mercato! Ultimo giorno della finestra', retire:d=>d.h+' si ritira. Una leggenda del club'}, retired:(h,a)=>h+' si è ritirato (età '+a+')', creators:'Creator', crNet:'netto', crFee:'Compenso', crInc:'Entrate', crSign:'Firma', crDrop:'Libera', crNo:n=>n+': «non ancora il nostro livello» — serve più reputazione', hire:'Assumi', train:'Allenamento e staff', base:'Strutture', sponsor:'Sponsor', press:'Stampa ed eventi', stats:'Statistiche', trophies:'Trofei', managers:'Manager',
+    scouting:'Scouting', scouts:'Scout', reports:'Report degli scout', noScouts:'Nessuno scout — assumine uno e mandalo in giro', noReports:'I report arrivano una volta a settimana', fire:'Licenzia', anyRole:'Qualsiasi ruolo', anyAge:'Qualsiasi età', ageTo:n=>'fino a '+n, anyOvr:'Qualsiasi valutazione', now:'Ora', potW:'Potenziale', views:n=>'report: '+n, scoutLv:[null,'Scout','Scout senior','Capo scout'], scoutRep:(r,l)=>'Scout ('+r+'): '+l,
+    youth:'Giovani', yscout:'Scout giovanile', yHire:'Assumi uno scout giovanile', noYScouts:'Nessuno scout giovanile', found:'Talenti trovati', noYouth:'Le scoperte arrivano una volta al mese', toAcad:'In accademia', age:n=>'età '+n, youthRep:l=>'Lo scout giovanile ha trovato: '+l,
+    plan:'Piano di sviluppo', planRole:'Ruolo obiettivo', planNone:'Mantieni il ruolo', planFocus:'Focus di crescita', planOn:'Attivo', planOff:'Spento', planLeft:n=>n+' giorni rimasti', planDone:(h,r)=>h+' si è riqualificato: ora '+r,
+    loanH:'In prestito', toLoan:'Dai in prestito per 4 settimane', loanTo:(c,d)=>'presso '+c+' fino al '+d, loanBack:(h,c,g)=>h+' torna dal prestito ('+c+')'+(g>0 ? ': +'+g+' di valutazione' : ''),
+    awards:'Premi della stagione', pom:(h,k)=>'Giocatore del mese: '+h+' ('+k+' kill)', poy:h=>'Giocatore dell’anno: '+h, ypy:h=>'Giovane giocatore dell’anno: '+h, moy:y=>'Manager dell’anno '+y
+  }), pt:()=>({
+    fans:'seguidores no X', fansEst:'Estimativa: número exato não encontrado', benchOut:'Fora de qualquer elenco (todos os elencos estão cheios)', newRoster:'Novo elenco',
+    overCap:s=>'A diretoria disse não: orçamento salarial de '+s+' por mês', overTransfer:s=>'A diretoria disse não: o orçamento de transferências é '+s, capNo:'Não cabe no orçamento salarial — sai por padrão', transfer:'Orçamento de transferências', wageCap:'Orçamento salarial',
+    renewCap:h=>h+' sai: o novo contrato não coube no orçamento salarial',
+    real:'Clube real', own:'Crie o seu', star:'Jogador estrela', byStars:'Por estrelas', byBudget:'Por orçamento',
+    expect:{title:'A diretoria espera um título', final:'A diretoria espera uma final', survive:'A diretoria espera permanecer'},
+    ownName:'Nome do clube', crest:'Escudo', tier:'Nível inicial', ownGo:'Fundar o clube',
+    tiers:{rookie:'Novato', mid:'Médio', amb:'Ambicioso'},
+    tierHint:{rookie:'Orçamento pequeno, agentes livres 65–72', mid:'Orçamento médio, agentes livres 72–78', amb:'Orçamento grande, agentes livres 78–84, diretoria mais rígida'},
+    tabs:{centre:'Central', squad:'Elenco', transfers:'Transferências', inbox:'Caixa de entrada', sponsors:'Patrocinadores', club:'Clube', calendar:'Calendário', tables:'Tabelas'}, calNext:'Próximos eventos', toCal:'Calendário completo',
+    conf:'Confiança da diretoria', morale:'Moral do elenco', board:'Diretoria', teamOvr:'Time principal',
+    goals:'Metas da diretoria', dev:'Desenvolvimento', devNone:'A evolução aparece uma vez por mês', fatigue:'Cansaço', news:'Notícias do clube', toTables:'Troféus e stats', toTrain:'Ir ao treino',
+    role:'Função', until:'Contrato', where:'Joga em', moveTo:'Mover para…',
+    market:'Mercado', short:'Lista de observação', deals:'Negociações', shortEmpty:'Jogadores estrelas no mercado para pôr na lista', dealsEmpty:'Sem negociações nem ofertas', offersIn:'Ofertas e pedidos', negNow:'Negociações em andamento', open:'Abrir', wageRoom:'Folga sob o teto',
+    trait:'Personalidade', traits:{ambitious:'Ambicioso', loyal:'Leal', star:'Estrela', pro:'Profissional', hothead:'Esquentado', calm:'Calmo'}, traitN:{ambitious:'pede mais, um pódio sobe a moral', loyal:'renova mais barato', star:'perde moral no banco', pro:'o time cansa menos', hothead:'entrosamento menor com ele', calm:'moral nunca abaixo de −1'}, dlOffer:(c,h,s)=>'Prazo final: '+c+' oferecem com urgência '+s+' por '+h, dlAvail:(h,c,s)=>'Prazo final: '+h+' ('+c+') está disponível agora — multa '+s+' (−30%)', dlSoon:n=>n ? 'Prazo das transferências em '+n+' dias' : 'Último dia das transferências!', natCall:l=>'Convocações para a seleção: '+l, acadCup:(p,h)=>'Copa da academia: #'+p+' de 32'+(h ? ' — '+h+' evoluiu' : ''), lastCup:'Última copa da academia', fReg:'Região', fNat:'Qualquer país', fOmin:'Overall a partir de', fOmax:'Overall até', fPmin:'Potencial a partir de', fClub:'Qualquer clube', sFit:'Combina com o clube', sOvr:'Por overall', sPot:'Por potencial', sAge:'Mais jovens', sWage:'Menor salário', sBuyout:'Menor multa', fReset:'Limpar filtros', fFound:n=>'Encontrados: '+n, fNone:'Ninguém — afrouxe os filtros', ffWeek:'Semana ▸', ffMonth:'Mês ▸▸', ffHere:'Avançar até este dia', ffAsk:d=>'Avançar até '+d+'? Os eventos do clube no caminho serão jogados sem você assistir.', wEvents:'Eventos', wClubs:'Clubes', wMedia:'Mídia mundial', wNone:'Vazio por enquanto — os eventos da temporada aparecem conforme são jogados', wPlayed:'jogado pelo clube', wSim:'resultado do mundo', wTeam:'Time', wOrg:'Clube', wPts:'Pts', wClubsH:'Clubes por prêmios da temporada', wEvN:'Eventos', wpost:{win:d=>'🏆 '+d.ev+': '+d.n+' vence'+(d.orgs ? ' ('+d.orgs+')' : ''), transfer:d=>'🔁 Transferência: '+d.h+' → '+d.to+(d.from ? ' (vindo de '+d.from+')' : '')}, guest:'Convidado', guestOut:'Tirar do time', guestAdd:'Companheiro de outra org', guestPick:'Escolher (★ — companheiro real)', sAgent:'Gerente de transferências', sAgentN:'negocia com clubes e jogadores: multas e salários mais baratos, jogadores mais fortes aceitam', ageH:'Idade', autoIn:h=>h+' entra no time', shortTitle:(n,s)=>'Time incompleto: '+n+' de '+s, shortText:e=>'Falta um jogador para "'+e+'". Pegar um companheiro de outra org, montar o time você mesmo ou pular o evento?', shortGuest:'Pegar um companheiro de outra org', shortSquad:'Abrir elenco', coachPick:'Escolher um coach', coachChange:'Trocar', teamCoach:'Coach do time', noCoach:'Sem coach do time (head coach)', mail:'Mensagens', feed:'Feed do clube', feedEmpty:'Ainda sem posts', post:{sign:d=>'Boas-vindas, '+d.h+'! 🤝', sell:d=>d.h+' segue em frente'+(d.club ? ' para '+d.club : '')+'. Obrigado por tudo!', night:d=>(d.names ? d.names+' — ' : '')+d.ev+': #'+d.place+(d.of ? ' de '+d.of : '')+(d.pts ? ', '+d.pts+' pts' : '')+(d.kills ? ', '+d.kills+' kills' : '')+(d.mvp ? '. MVP: '+d.mvp : ''), award:d=>'🏆 '+d.text, creator:d=>d.h+' chegou ao time! 🎥', rumor:d=>'Rumor: '+d.club+' tem interesse em '+d.h+' 👀', deadline:d=>'⏰ Último dia das transferências! Último dia da janela', retire:d=>d.h+' se aposenta. Uma lenda do clube'}, retired:(h,a)=>h+' se aposentou (idade '+a+')', creators:'Creators', crNet:'líquido', crFee:'Cachê', crInc:'Receita', crSign:'Contratar', crDrop:'Dispensar', crNo:n=>n+': "ainda não é o nosso nível" — precisa de mais reputação', hire:'Contratar', train:'Treino e comissão', base:'Estrutura', sponsor:'Patrocinador', press:'Imprensa e eventos', stats:'Stats', trophies:'Troféus', managers:'Managers',
+    scouting:'Scouting', scouts:'Scouts', reports:'Relatórios dos scouts', noScouts:'Sem scouts — contrate um e mande a campo', noReports:'Os relatórios chegam uma vez por semana', fire:'Demitir', anyRole:'Qualquer função', anyAge:'Qualquer idade', ageTo:n=>'até '+n, anyOvr:'Qualquer overall', now:'Agora', potW:'Potencial', views:n=>'relatórios: '+n, scoutLv:[null,'Scout','Scout sênior','Scout-chefe'], scoutRep:(r,l)=>'Scout ('+r+'): '+l,
+    youth:'Base', yscout:'Scout da base', yHire:'Contratar um scout da base', noYScouts:'Sem scouts da base', found:'Talentos encontrados', noYouth:'As descobertas chegam uma vez por mês', toAcad:'Para a academia', age:n=>'idade '+n, youthRep:l=>'O scout da base encontrou: '+l,
+    plan:'Plano de desenvolvimento', planRole:'Função-alvo', planNone:'Manter a função', planFocus:'Foco de evolução', planOn:'Ligado', planOff:'Desligado', planLeft:n=>'faltam '+n+' dias', planDone:(h,r)=>h+' se requalificou: agora '+r,
+    loanH:'Emprestado', toLoan:'Emprestar por 4 semanas', loanTo:(c,d)=>'em '+c+' até '+d, loanBack:(h,c,g)=>h+' voltou do empréstimo ('+c+')'+(g>0 ? ': +'+g+' de overall' : ''),
+    awards:'Prêmios da temporada', pom:(h,k)=>'Jogador do mês: '+h+' ('+k+' kills)', poy:h=>'Jogador do ano: '+h, ypy:h=>'Jovem jogador do ano: '+h, moy:y=>'Manager do ano '+y
+  }), de:()=>({
+    fans:'X-Follower', fansEst:'Schätzung: keine genaue Zahl gefunden', benchOut:'In keinem Kader (alle Kader voll)', newRoster:'Neuer Kader',
+    overCap:s=>'Der Vorstand lehnt ab: Gehaltsbudget '+s+' pro Monat', overTransfer:s=>'Der Vorstand lehnt ab: Transferbudget ist '+s, capNo:'Passt nicht ins Gehaltsbudget — geht standardmäßig', transfer:'Transferbudget', wageCap:'Gehaltsbudget',
+    renewCap:h=>h+' geht: der neue Vertrag passte nicht ins Gehaltsbudget',
+    real:'Echter Club', own:'Eigenen gründen', star:'Starspieler', byStars:'Nach Stars', byBudget:'Nach Budget',
+    expect:{title:'Der Vorstand erwartet einen Titel', final:'Der Vorstand erwartet ein Finale', survive:'Der Vorstand erwartet den Klassenerhalt'},
+    ownName:'Clubname', crest:'Wappen', tier:'Startniveau', ownGo:'Club gründen',
+    tiers:{rookie:'Neuling', mid:'Mittel', amb:'Ehrgeizig'},
+    tierHint:{rookie:'Kleines Budget, Free Agents 65–72', mid:'Mittleres Budget, Free Agents 72–78', amb:'Großes Budget, Free Agents 78–84, strengerer Vorstand'},
+    tabs:{centre:'Zentrale', squad:'Kader', transfers:'Transfers', inbox:'Posteingang', sponsors:'Sponsoren', club:'Club', calendar:'Kalender', tables:'Tabellen'}, calNext:'Kommende Events', toCal:'Voller Kalender',
+    conf:'Vertrauen des Vorstands', morale:'Kadermoral', board:'Vorstand', teamOvr:'Erste Mannschaft',
+    goals:'Ziele des Vorstands', dev:'Entwicklung', devNone:'Wachstum zeigt sich einmal im Monat', fatigue:'Müdigkeit', news:'Club-News', toTables:'Trophäen und Stats', toTrain:'Zum Training',
+    role:'Rolle', until:'Vertrag', where:'Spielt in', moveTo:'Verschieben nach…',
+    market:'Markt', short:'Merkliste', deals:'Verhandlungen', shortEmpty:'Starspieler auf dem Markt, die du auf die Merkliste setzen kannst', dealsEmpty:'Keine Verhandlungen oder Angebote', offersIn:'Angebote und Anfragen', negNow:'Laufende Verhandlungen', open:'Öffnen', wageRoom:'Luft unter dem Limit',
+    trait:'Persönlichkeit', traits:{ambitious:'Ehrgeizig', loyal:'Loyal', star:'Star', pro:'Profi', hothead:'Hitzkopf', calm:'Ruhig'}, traitN:{ambitious:'fordert mehr, ein Podium hebt die Moral', loyal:'verlängert günstiger', star:'verliert auf der Bank an Moral', pro:'das Team wird weniger müde', hothead:'schwächere Chemie mit ihm', calm:'Moral nie unter −1'}, dlOffer:(c,h,s)=>'Deadline: '+c+' bieten dringend '+s+' für '+h, dlAvail:(h,c,s)=>'Deadline: '+h+' ('+c+') ist jetzt verfügbar — Ausstiegsklausel '+s+' (−30 %)', dlSoon:n=>n ? 'Transfer-Deadline in '+n+' Tagen' : 'Transfer-Deadline heute!', natCall:l=>'Nationalmannschaftsnominierungen: '+l, acadCup:(p,h)=>'Akademie-Cup: #'+p+' von 32'+(h ? ' — '+h+' hat sich verbessert' : ''), lastCup:'Letzter Akademie-Cup', fReg:'Region', fNat:'Jedes Land', fOmin:'Wertung ab', fOmax:'Wertung bis', fPmin:'Potenzial ab', fClub:'Jeder Club', sFit:'Passt zum Club', sOvr:'Nach Wertung', sPot:'Nach Potenzial', sAge:'Jüngste', sWage:'Niedrigstes Gehalt', sBuyout:'Günstigste Ablöse', fReset:'Filter zurücksetzen', fFound:n=>'Gefunden: '+n, fNone:'Niemand — lockere die Filter', ffWeek:'Woche ▸', ffMonth:'Monat ▸▸', ffHere:'Bis zu diesem Tag vorspulen', ffAsk:d=>'Bis zum '+d+' vorspulen? Club-Events auf dem Weg werden gespielt, ohne dass du zuschaust.', wEvents:'Events', wClubs:'Clubs', wMedia:'Weltmedien', wNone:'Noch leer — Saison-Events erscheinen, sobald sie gespielt wurden', wPlayed:'vom Club gespielt', wSim:'Weltergebnis', wTeam:'Team', wOrg:'Club', wPts:'Pkt', wClubsH:'Clubs nach Saison-Preisgeld', wEvN:'Events', wpost:{win:d=>'🏆 '+d.ev+': '+d.n+' gewinnt'+(d.orgs ? ' ('+d.orgs+')' : ''), transfer:d=>'🔁 Transfer: '+d.h+' → '+d.to+(d.from ? ' (von '+d.from+')' : '')}, guest:'Gast', guestOut:'Aus dem Team nehmen', guestAdd:'Teamkollege aus einer anderen Org', guestPick:'Wählen (★ — echter Teamkollege)', sAgent:'Transfermanager', sAgentN:'verhandelt mit Clubs und Spielern: günstigere Ablösen und Gehälter, stärkere Spieler sagen zu', ageH:'Alter', autoIn:h=>h+' kommt ins Team', shortTitle:(n,s)=>'Team unvollständig: '+n+' von '+s, shortText:e=>'Für „'+e+'“ fehlt ein Spieler. Einen Teamkollegen aus einer anderen Org nehmen, das Team selbst bauen oder das Event überspringen?', shortGuest:'Teamkollegen aus einer anderen Org nehmen', shortSquad:'Kader öffnen', coachPick:'Coach wählen', coachChange:'Wechseln', teamCoach:'Teamcoach', noCoach:'Kein Teamcoach (Head Coach)', mail:'Post', feed:'Club-Feed', feedEmpty:'Noch keine Posts', post:{sign:d=>'Willkommen, '+d.h+'! 🤝', sell:d=>d.h+' zieht weiter'+(d.club ? ' zu '+d.club : '')+'. Danke für alles!', night:d=>(d.names ? d.names+' — ' : '')+d.ev+': #'+d.place+(d.of ? ' von '+d.of : '')+(d.pts ? ', '+d.pts+' Pkt' : '')+(d.kills ? ', '+d.kills+' Kills' : '')+(d.mvp ? '. MVP: '+d.mvp : ''), award:d=>'🏆 '+d.text, creator:d=>d.h+' stößt zu uns! 🎥', rumor:d=>'Gerücht: '+d.club+' interessiert sich für '+d.h+' 👀', deadline:d=>'⏰ Transfer-Deadline heute! Letzter Tag des Fensters', retire:d=>d.h+' beendet die Karriere. Eine Club-Legende'}, retired:(h,a)=>h+' hat die Karriere beendet (Alter '+a+')', creators:'Creator', crNet:'netto', crFee:'Gage', crInc:'Einnahmen', crSign:'Verpflichten', crDrop:'Freigeben', crNo:n=>n+': „noch nicht unser Niveau“ — braucht mehr Ruf', hire:'Einstellen', train:'Training und Staff', base:'Einrichtungen', sponsor:'Sponsor', press:'Presse und Events', stats:'Stats', trophies:'Trophäen', managers:'Manager',
+    scouting:'Scouting', scouts:'Scouts', reports:'Scout-Berichte', noScouts:'Keine Scouts — stell einen ein und schick ihn los', noReports:'Berichte kommen einmal pro Woche', fire:'Entlassen', anyRole:'Jede Rolle', anyAge:'Jedes Alter', ageTo:n=>'bis '+n, anyOvr:'Jede Wertung', now:'Aktuell', potW:'Potenzial', views:n=>'Berichte: '+n, scoutLv:[null,'Scout','Senior-Scout','Chefscout'], scoutRep:(r,l)=>'Scout ('+r+'): '+l,
+    youth:'Jugend', yscout:'Jugendscout', yHire:'Jugendscout einstellen', noYScouts:'Keine Jugendscouts', found:'Gefundene Talente', noYouth:'Funde kommen einmal im Monat', toAcad:'In die Akademie', age:n=>'Alter '+n, youthRep:l=>'Der Jugendscout hat gefunden: '+l,
+    plan:'Entwicklungsplan', planRole:'Zielrolle', planNone:'Rolle behalten', planFocus:'Wachstumsfokus', planOn:'An', planOff:'Aus', planLeft:n=>'noch '+n+' Tage', planDone:(h,r)=>h+' hat umgeschult: jetzt '+r,
+    loanH:'Verliehen', toLoan:'Für 4 Wochen verleihen', loanTo:(c,d)=>'bei '+c+' bis '+d, loanBack:(h,c,g)=>h+' ist zurück vom Leihen ('+c+')'+(g>0 ? ': +'+g+' Wertung' : ''),
+    awards:'Saison-Auszeichnungen', pom:(h,k)=>'Spieler des Monats: '+h+' ('+k+' Kills)', poy:h=>'Spieler des Jahres: '+h, ypy:h=>'Nachwuchsspieler des Jahres: '+h, moy:y=>'Manager des Jahres '+y
+  }), es:()=>({
+    fans:'seguidores en X', fansEst:'Estimación: no se encontró una cifra exacta', benchOut:'En ninguna plantilla (todas las plantillas están llenas)', newRoster:'Nueva plantilla',
+    overCap:s=>'La directiva dice que no: presupuesto salarial de '+s+' al mes', overTransfer:s=>'La directiva dice que no: el presupuesto de fichajes es '+s, capNo:'No cabe en el presupuesto salarial — se va por defecto', transfer:'Presupuesto de fichajes', wageCap:'Presupuesto salarial',
+    renewCap:h=>h+' se va: el nuevo contrato no cabía en el presupuesto salarial',
+    real:'Club real', own:'Crea el tuyo', star:'Jugador estrella', byStars:'Por estrellas', byBudget:'Por presupuesto',
+    expect:{title:'La directiva espera un título', final:'La directiva espera una final', survive:'La directiva espera mantener la categoría'},
+    ownName:'Nombre del club', crest:'Escudo', tier:'Nivel inicial', ownGo:'Fundar el club',
+    tiers:{rookie:'Novato', mid:'Medio', amb:'Ambicioso'},
+    tierHint:{rookie:'Presupuesto pequeño, agentes libres 65–72', mid:'Presupuesto medio, agentes libres 72–78', amb:'Presupuesto grande, agentes libres 78–84, directiva más estricta'},
+    tabs:{centre:'Centro', squad:'Plantilla', transfers:'Fichajes', inbox:'Bandeja', sponsors:'Patrocinadores', club:'Club', calendar:'Calendario', tables:'Tablas'}, calNext:'Próximos eventos', toCal:'Calendario completo',
+    conf:'Confianza de la directiva', morale:'Moral de la plantilla', board:'Directiva', teamOvr:'Primer equipo',
+    goals:'Objetivos de la directiva', dev:'Desarrollo', devNone:'El crecimiento aparece una vez al mes', fatigue:'Cansancio', news:'Noticias del club', toTables:'Trofeos y stats', toTrain:'Al entrenamiento',
+    role:'Rol', until:'Contrato', where:'Juega en', moveTo:'Mover a…',
+    market:'Mercado', short:'Lista de seguimiento', deals:'Negociaciones', shortEmpty:'Jugadores estrella en el mercado para añadir a la lista', dealsEmpty:'Sin negociaciones ni ofertas', offersIn:'Ofertas y peticiones', negNow:'Negociaciones en curso', open:'Abrir', wageRoom:'Margen bajo el tope',
+    trait:'Personalidad', traits:{ambitious:'Ambicioso', loyal:'Leal', star:'Estrella', pro:'Profesional', hothead:'Cabeza caliente', calm:'Tranquilo'}, traitN:{ambitious:'pide más, un podio sube la moral', loyal:'renueva más barato', star:'pierde moral en el banquillo', pro:'el equipo se cansa menos', hothead:'menos química con él', calm:'moral nunca por debajo de −1'}, dlOffer:(c,h,s)=>'Fecha límite: '+c+' ofrecen con urgencia '+s+' por '+h, dlAvail:(h,c,s)=>'Fecha límite: '+h+' ('+c+') está disponible ahora — cláusula '+s+' (−30 %)', dlSoon:n=>n ? 'Fecha límite de fichajes en '+n+' días' : '¡Último día de fichajes!', natCall:l=>'Convocatorias a la selección: '+l, acadCup:(p,h)=>'Copa de la academia: #'+p+' de 32'+(h ? ' — '+h+' ha mejorado' : ''), lastCup:'Última copa de la academia', fReg:'Región', fNat:'Cualquier país', fOmin:'Valoración desde', fOmax:'Valoración hasta', fPmin:'Potencial desde', fClub:'Cualquier club', sFit:'Encaja en el club', sOvr:'Por valoración', sPot:'Por potencial', sAge:'Más jóvenes', sWage:'Salario más bajo', sBuyout:'Cláusula más barata', fReset:'Restablecer filtros', fFound:n=>'Encontrados: '+n, fNone:'Nadie — afloja los filtros', ffWeek:'Semana ▸', ffMonth:'Mes ▸▸', ffHere:'Avanzar hasta este día', ffAsk:d=>'¿Avanzar hasta el '+d+'? Los eventos del club por el camino se juegan sin que los veas.', wEvents:'Eventos', wClubs:'Clubes', wMedia:'Medios del mundo', wNone:'Vacío por ahora — los eventos de la temporada aparecen a medida que se juegan', wPlayed:'jugado por el club', wSim:'resultado del mundo', wTeam:'Equipo', wOrg:'Club', wPts:'Pts', wClubsH:'Clubes por premios de la temporada', wEvN:'Eventos', wpost:{win:d=>'🏆 '+d.ev+': gana '+d.n+(d.orgs ? ' ('+d.orgs+')' : ''), transfer:d=>'🔁 Fichaje: '+d.h+' → '+d.to+(d.from ? ' (desde '+d.from+')' : '')}, guest:'Invitado', guestOut:'Quitar del equipo', guestAdd:'Compañero de otra org', guestPick:'Elegir (★ — compañero real)', sAgent:'Responsable de fichajes', sAgentN:'negocia con clubes y jugadores: cláusulas y salarios más baratos, los jugadores más fuertes aceptan', ageH:'Edad', autoIn:h=>h+' entra al equipo', shortTitle:(n,s)=>'Equipo incompleto: '+n+' de '+s, shortText:e=>'Falta un jugador para «'+e+'». ¿Tomar un compañero de otra org, armar el equipo tú mismo o saltar el evento?', shortGuest:'Tomar un compañero de otra org', shortSquad:'Abrir plantilla', coachPick:'Elegir un coach', coachChange:'Cambiar', teamCoach:'Coach del equipo', noCoach:'Sin coach de equipo (head coach)', mail:'Correo', feed:'Feed del club', feedEmpty:'Aún no hay posts', post:{sign:d=>'¡Bienvenido, '+d.h+'! 🤝', sell:d=>d.h+' sigue su camino'+(d.club ? ' a '+d.club : '')+'. ¡Gracias por todo!', night:d=>(d.names ? d.names+' — ' : '')+d.ev+': #'+d.place+(d.of ? ' de '+d.of : '')+(d.pts ? ', '+d.pts+' pts' : '')+(d.kills ? ', '+d.kills+' kills' : '')+(d.mvp ? '. MVP: '+d.mvp : ''), award:d=>'🏆 '+d.text, creator:d=>'¡'+d.h+' se une a nosotros! 🎥', rumor:d=>'Rumor: '+d.club+' está interesado en '+d.h+' 👀', deadline:d=>'⏰ ¡Último día de fichajes! Último día de la ventana', retire:d=>d.h+' se retira. Una leyenda del club'}, retired:(h,a)=>h+' se retiró (edad '+a+')', creators:'Creators', crNet:'neto', crFee:'Tarifa', crInc:'Ingresos', crSign:'Fichar', crDrop:'Liberar', crNo:n=>n+': «aún no es nuestro nivel» — necesita más reputación', hire:'Contratar', train:'Entrenamiento y staff', base:'Instalaciones', sponsor:'Patrocinador', press:'Prensa y eventos', stats:'Stats', trophies:'Trofeos', managers:'Managers',
+    scouting:'Scouting', scouts:'Scouts', reports:'Informes de scouts', noScouts:'Sin scouts — contrata uno y mándalo a buscar', noReports:'Los informes llegan una vez por semana', fire:'Despedir', anyRole:'Cualquier rol', anyAge:'Cualquier edad', ageTo:n=>'hasta '+n, anyOvr:'Cualquier valoración', now:'Ahora', potW:'Potencial', views:n=>'informes: '+n, scoutLv:[null,'Scout','Scout sénior','Jefe de scouts'], scoutRep:(r,l)=>'Scout ('+r+'): '+l,
+    youth:'Cantera', yscout:'Scout de cantera', yHire:'Contratar un scout de cantera', noYScouts:'Sin scouts de cantera', found:'Talentos encontrados', noYouth:'Los hallazgos llegan una vez al mes', toAcad:'A la academia', age:n=>'edad '+n, youthRep:l=>'El scout de cantera encontró: '+l,
+    plan:'Plan de desarrollo', planRole:'Rol objetivo', planNone:'Mantener el rol', planFocus:'Foco de crecimiento', planOn:'Activado', planOff:'Desactivado', planLeft:n=>'quedan '+n+' días', planDone:(h,r)=>h+' se reconvirtió: ahora '+r,
+    loanH:'Cedido', toLoan:'Ceder por 4 semanas', loanTo:(c,d)=>'en '+c+' hasta el '+d, loanBack:(h,c,g)=>h+' vuelve de la cesión ('+c+')'+(g>0 ? ': +'+g+' de valoración' : ''),
+    awards:'Premios de la temporada', pom:(h,k)=>'Jugador del mes: '+h+' ('+k+' kills)', poy:h=>'Jugador del año: '+h, ypy:h=>'Jugador joven del año: '+h, moy:y=>'Manager del año '+y
+  })}[LANG]||(()=>({
     fans:'X followers', fansEst:'Estimate: no exact number found', benchOut:'Not in a roster (all rosters full)', newRoster:'New roster',
     overCap:s=>'The board says no: wage budget '+s+' a month', overTransfer:s=>'The board says no: transfer budget is '+s, capNo:'Does not fit the wage budget — leaves by default', transfer:'Transfer budget', wageCap:'Wage budget',
     renewCap:h=>h+' leaves: the new deal did not fit the wage budget',
@@ -157571,7 +157716,7 @@ function mgrT9(){
     plan:'Development plan', planRole:'Target role', planNone:'Keep role', planFocus:'Growth focus', planOn:'On', planOff:'Off', planLeft:n=>n+' days left', planDone:(h,r)=>h+' retrained: now '+r,
     loanH:'On loan', toLoan:'Loan out for 4 weeks', loanTo:(c,d)=>'at '+c+' until '+d, loanBack:(h,c,g)=>h+' is back from loan ('+c+')'+(g>0 ? ': +'+g+' rating' : ''),
     awards:'Season awards', pom:(h,k)=>'Player of the month: '+h+' ('+k+' kills)', poy:h=>'Player of the year: '+h, ypy:h=>'Young player of the year: '+h, moy:y=>'Manager of the year '+y
-  };
+  })))();
 }
 
 /* ---- Календарь: капы года из архива Tracker, в формате команд клуба ---------- */
@@ -157611,11 +157756,11 @@ function mgrGuestAuto(){
     for(let k=0; k<4 && mgrTeamSize(t)<size; k++){
       const c=mgrGuestCands(t)[0]; if(!c) break;
       t.guests=(t.guests||[]).concat([c.handle]); t.gorg=Object.assign({}, t.gorg, {[hKey(c)]:mgrOrgOf(c)||null});
-      const who=t.cards[0], org=mgrOrgOf(c)||(ru ? 'свободный' : 'free agent');
+      const who=t.cards[0], org=mgrOrgOf(c)||(ru ? 'свободный' : ({fr:()=>('agent libre'), it:()=>('free agent'), pt:()=>('agente livre'), de:()=>('Free Agent'), es:()=>('agente libre')}[LANG]||(()=>('free agent')))());
       MGR.inbox=MGR.inbox||[];
       MGR.inbox.unshift({id:'ga'+CAREER.career.day+'_'+hKey(c), day:CAREER.career.day, kind:'info', done:'info',
         text:ru ? who+' сам позвал напарника: '+c.handle+' ('+org+')'+(c._real ? ' — его настоящий тиммейт' : '')
-                : who+' picked a teammate himself: '+c.handle+' ('+org+')'+(c._real ? ' — his real teammate' : '')});
+                : ({fr:()=>(who+' a choisi son coéquipier lui-même : '+c.handle+' ('+org+')'+(c._real ? ' — son vrai coéquipier' : '')), it:()=>(who+' ha scelto da solo il compagno: '+c.handle+' ('+org+')'+(c._real ? ' — il suo vero compagno' : '')), pt:()=>(who+' escolheu o parceiro por conta própria: '+c.handle+' ('+org+')'+(c._real ? ' — seu parceiro de verdade' : '')), de:()=>(who+' hat sich seinen Mitspieler selbst ausgesucht: '+c.handle+' ('+org+')'+(c._real ? ' — sein echter Mitspieler' : '')), es:()=>(who+' eligió a su compañero por su cuenta: '+c.handle+' ('+org+')'+(c._real ? ' — su compañero de verdad' : ''))}[LANG]||(()=>(who+' picked a teammate himself: '+c.handle+' ('+org+')'+(c._real ? ' — his real teammate' : ''))))()});
       n++;
     }
   });
@@ -157640,7 +157785,7 @@ function mgrGuestNight(row){
     const now=(t.guests||[]).join(', ')||'—', who=t.cards[0]||'';
     MGR.inbox=MGR.inbox||[];
     MGR.inbox.unshift({id:'gs'+row.day+'_'+t.id, day:row.day, kind:'info', done:'info',
-      text:ru ? who+' меняет напарника после трёх слабых вечеров: '+gone.join(', ')+' → '+now : who+' changes teammate after three weak nights: '+gone.join(', ')+' → '+now});
+      text:ru ? who+' меняет напарника после трёх слабых вечеров: '+gone.join(', ')+' → '+now : ({fr:()=>(who+' change de coéquipier après trois mauvaises soirées : '+gone.join(', ')+' → '+now), it:()=>(who+' cambia compagno dopo tre serate deboli: '+gone.join(', ')+' → '+now), pt:()=>(who+' troca de parceiro após três noites fracas: '+gone.join(', ')+' → '+now), de:()=>(who+' wechselt den Mitspieler nach drei schwachen Abenden: '+gone.join(', ')+' → '+now), es:()=>(who+' cambia de compañero tras tres noches flojas: '+gone.join(', ')+' → '+now)}[LANG]||(()=>(who+' changes teammate after three weak nights: '+gone.join(', ')+' → '+now)))()});
   });
 }
 function mgrGuestRemove(teamId, h){ const t=MGR.teams.find(x=>x.id===teamId); if(t){ t.guests=(t.guests||[]).filter(x=>hKey(x)!==hKey(h)); mgrSave(); } }
@@ -157757,7 +157902,7 @@ function mgrSpSign(id){
   MGR.sponsors=mgrSpSigned().concat([{id, monthly:mgrSpOffer(b), since:CAREER.career.day}]);
   MGR.inbox=MGR.inbox||[]; const ru=(typeof LANG!=='undefined' && LANG==='ru');
   MGR.inbox.unshift({id:'sp'+id+CAREER.career.day, day:CAREER.career.day, kind:'info', done:'info', sp:id,
-    text:(ru ? b.name+' — новый спонсор клуба: ' : b.name+' is the club\'s new sponsor: ')+mgrMoney(MGR.sponsors.slice(-1)[0].monthly)+(ru ? ' в месяц' : ' a month')});
+    text:(ru ? b.name+' — новый спонсор клуба: ' : ({fr:()=>(b.name+' est le nouveau sponsor du club : '), it:()=>(b.name+' è il nuovo sponsor del club: '), pt:()=>(b.name+' é o novo patrocinador do clube: '), de:()=>(b.name+' ist der neue Sponsor des Clubs: '), es:()=>(b.name+' es el nuevo patrocinador del club: ')}[LANG]||(()=>(b.name+' is the club\'s new sponsor: ')))())+mgrMoney(MGR.sponsors.slice(-1)[0].monthly)+(ru ? ' в месяц' : ({fr:()=>(' par mois'), it:()=>(' al mese'), pt:()=>(' por mês'), de:()=>(' pro Monat'), es:()=>(' al mes')}[LANG]||(()=>(' a month')))())});
   mgrSave(); mgrRenderHub('sponsors'); return true;
 }
 function mgrSpDrop(id){ MGR.sponsors=mgrSpSigned().filter(x=>x.id!==id); mgrSave(); mgrRenderHub('sponsors'); }
@@ -157765,8 +157910,13 @@ function mgrSponsorsBrandsHTML(){
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
   const T=ru ? {slots:'Спонсоры клуба', free:'Свободный слот', lock:n=>'Откроется с '+n+' подписчиков', offers:'Предложения брендов', sign:'Подписать', drop:'Расторгнуть',
                  mo:'в месяц', tier:{1:'начальный',2:'средний',3:'топ'}, need:n=>'нужно '+n+' подписчиков', full:'Все слоты заняты'}
-             : {slots:'Club sponsors', free:'Free slot', lock:n=>'Unlocks at '+n+' followers', offers:'Brand offers', sign:'Sign', drop:'End deal',
-                 mo:'a month', tier:{1:'entry',2:'mid',3:'top'}, need:n=>'needs '+n+' followers', full:'All slots taken'};
+             : ({fr:()=>({slots:'Sponsors du club', free:'Emplacement libre', lock:n=>'Se débloque à '+n+' followers', offers:'Offres de marques', sign:'Signer', drop:'Rompre le contrat',
+                 mo:'par mois', tier:{1:'débutant',2:'moyen',3:'top'}, need:n=>'demande '+n+' followers', full:'Tous les emplacements sont pris'}), it:()=>({slots:'Sponsor del club', free:'Slot libero', lock:n=>'Si sblocca a '+n+' follower', offers:'Offerte dei brand', sign:'Firma', drop:'Termina accordo',
+                 mo:'al mese', tier:{1:'base',2:'medio',3:'top'}, need:n=>'richiede '+n+' follower', full:'Tutti gli slot occupati'}), pt:()=>({slots:'Patrocinadores do clube', free:'Vaga livre', lock:n=>'Libera com '+n+' seguidores', offers:'Ofertas de marcas', sign:'Assinar', drop:'Encerrar contrato',
+                 mo:'por mês', tier:{1:'iniciante',2:'médio',3:'top'}, need:n=>'exige '+n+' seguidores', full:'Todas as vagas ocupadas'}), de:()=>({slots:'Club-Sponsoren', free:'Freier Slot', lock:n=>'Ab '+n+' Followern freigeschaltet', offers:'Angebote von Marken', sign:'Unterschreiben', drop:'Vertrag beenden',
+                 mo:'pro Monat', tier:{1:'Einsteiger',2:'Mittel',3:'Top'}, need:n=>'braucht '+n+' Follower', full:'Alle Slots belegt'}), es:()=>({slots:'Patrocinadores del club', free:'Espacio libre', lock:n=>'Se desbloquea con '+n+' seguidores', offers:'Ofertas de marcas', sign:'Firmar', drop:'Terminar contrato',
+                 mo:'al mes', tier:{1:'básico',2:'medio',3:'top'}, need:n=>'requiere '+n+' seguidores', full:'Todos los espacios ocupados'})}[LANG]||(()=>({slots:'Club sponsors', free:'Free slot', lock:n=>'Unlocks at '+n+' followers', offers:'Brand offers', sign:'Sign', drop:'End deal',
+                 mo:'a month', tier:{1:'entry',2:'mid',3:'top'}, need:n=>'needs '+n+' followers', full:'All slots taken'})))();
   const signed=mgrSpSigned(), slots=mgrSpSlots(), nextAt=mgrSpNextSlotAt();
   const logo=b=>'<span class="mg-sp-logo"><img src="'+mgrSpLogo(b)+'" alt="'+esc(b.name)+'" loading="lazy" onerror="this.replaceWith(document.createTextNode(\''+esc(b.name)+'\'))"></span>';
   let cells='';
@@ -157817,7 +157967,7 @@ function mgrPayMonths(toDay){
       MGR.debtMonths=(MGR.debtMonths||0)+1;
       if(MGR.debtMonths>1) mgrConfAdd(-Math.max(1, Math.min(4, Math.round(debt/turn*2))));
       if(MGR.debtMonths===1){ const ru=(typeof LANG!=='undefined' && LANG==='ru'); MGR.inbox=MGR.inbox||[];
-        MGR.inbox.unshift({id:'debt'+m, day:CAREER.career.day, kind:'info', done:'info', text:ru ? 'Совет: касса в минусе ('+mgrMoney(c.cash)+'). Продай кого-нибудь или выиграй — долгий минус бьёт по доверию' : 'Board: the club is in the red ('+mgrMoney(c.cash)+'). Sell or win — a long debt costs confidence'}); } }
+        MGR.inbox.unshift({id:'debt'+m, day:CAREER.career.day, kind:'info', done:'info', text:ru ? 'Совет: касса в минусе ('+mgrMoney(c.cash)+'). Продай кого-нибудь или выиграй — долгий минус бьёт по доверию' : ({fr:()=>('Direction : le club est dans le rouge ('+mgrMoney(c.cash)+'). Vends ou gagne — une longue dette coûte la confiance'), it:()=>('Dirigenza: il club è in rosso ('+mgrMoney(c.cash)+'). Vendi o vinci — un debito lungo costa fiducia'), pt:()=>('Diretoria: o clube está no vermelho ('+mgrMoney(c.cash)+'). Venda ou vença — dívida longa custa confiança'), de:()=>('Vorstand: Der Club ist im Minus ('+mgrMoney(c.cash)+'). Verkaufe oder gewinne — lange Schulden kosten Vertrauen'), es:()=>('Directiva: el club está en números rojos ('+mgrMoney(c.cash)+'). Vende o gana — una deuda larga cuesta confianza')}[LANG]||(()=>('Board: the club is in the red ('+mgrMoney(c.cash)+'). Sell or win — a long debt costs confidence')))()}); } }
     else { MGR.debtMonths=0; if(mgrConf()<60) mgrConfAdd(2); }
     const [y, mo]=m.split('-').map(Number); m=(mo===12 ? (y+1)+'-01' : y+'-'+String(mo+1).padStart(2, '0'));
   }
@@ -157982,7 +158132,7 @@ function mgrTableRows(){
 function mgrCentreHTML(){
   const T=mgrT(), T2=mgrT2(), T9=mgrT9(), W=mgrTW(), ru=(typeof LANG!=='undefined' && LANG==='ru');
   const X=ru ? {watch:'Играть', sim:'Симулировать', play:'Играть', notes:'Уведомления', none:'Новых нет', table:'Таблица', ev:'Тур', sched:'Расписание на неделю', dev:'Развитие', devTxt:'Помогайте игрокам развиваться и раскрыть свой потенциал', news:'Новости', teams:n=>n+' команд', season:'Сезон окончен'}
-             : {watch:'Play', sim:'Simulate', play:'Play', notes:'Notifications', none:'Nothing new', table:'Table', ev:'Ev', sched:'Weekly schedule', dev:'Development', devTxt:'Help your players grow and reach their potential', news:'News', teams:n=>n+' teams', season:'Season over'};
+             : ({fr:()=>({watch:'Jouer', sim:'Simuler', play:'Jouer', notes:'Notifications', none:'Rien de nouveau', table:'Classement', ev:'Ev', sched:'Programme de la semaine', dev:'Développement', devTxt:'Aide tes joueurs à progresser et à atteindre leur potentiel', news:'Actus', teams:n=>n+' équipes', season:'Saison terminée'}), it:()=>({watch:'Gioca', sim:'Simula', play:'Gioca', notes:'Notifiche', none:'Niente di nuovo', table:'Classifica', ev:'Ev', sched:'Programma settimanale', dev:'Sviluppo', devTxt:'Aiuta i tuoi giocatori a crescere e a raggiungere il loro potenziale', news:'Notizie', teams:n=>n+' squadre', season:'Stagione finita'}), pt:()=>({watch:'Jogar', sim:'Simular', play:'Jogar', notes:'Notificações', none:'Nada de novo', table:'Tabela', ev:'Ev', sched:'Agenda da semana', dev:'Desenvolvimento', devTxt:'Ajude seus jogadores a evoluir e alcançar o potencial', news:'Notícias', teams:n=>n+' times', season:'Temporada encerrada'}), de:()=>({watch:'Spielen', sim:'Simulieren', play:'Spielen', notes:'Benachrichtigungen', none:'Nichts Neues', table:'Tabelle', ev:'Ev', sched:'Wochenplan', dev:'Entwicklung', devTxt:'Hilf deinen Spielern, zu wachsen und ihr Potenzial zu erreichen', news:'News', teams:n=>n+' Teams', season:'Saison vorbei'}), es:()=>({watch:'Jugar', sim:'Simular', play:'Jugar', notes:'Notificaciones', none:'Nada nuevo', table:'Tabla', ev:'Ev', sched:'Horario semanal', dev:'Desarrollo', devTxt:'Ayuda a tus jugadores a crecer y alcanzar su potencial', news:'Noticias', teams:n=>n+' equipos', season:'Temporada terminada'})}[LANG]||(()=>({watch:'Play', sim:'Simulate', play:'Play', notes:'Notifications', none:'Nothing new', table:'Table', ev:'Ev', sched:'Weekly schedule', dev:'Development', devTxt:'Help your players grow and reach their potential', news:'News', teams:n=>n+' teams', season:'Season over'})))();
   const evs=mgrEvents(), nx=evs[0], c=MGR.club, size={duo:2, trio:3, squad:4};
   const dayLong=iso=>{ const d=new Date(iso+'T00:00:00Z'); return (L().calDows||[])[(d.getUTCDay()+6)%7]+' '+d.getUTCDate()+' '+((L().calMonthsShort||[])[d.getUTCMonth()]||'')+' '+d.getUTCFullYear(); };
   // ИГРАТЬ
@@ -158118,7 +158268,7 @@ function mgrGuestTileHTML(t, g){
 function mgrGuestPickHTML(t){
   const T9=mgrT9(), c=mgrGuestCands(t);
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
-  return '<div class="mgs-coach mgs-gpick"><b>'+esc(ru ? 'Напарника игрок выбирает сам' : 'The player picks his own teammate')+'</b></div>';
+  return '<div class="mgs-coach mgs-gpick"><b>'+esc(ru ? 'Напарника игрок выбирает сам' : ({fr:()=>('Le joueur choisit lui-même son coéquipier'), it:()=>('Il giocatore sceglie da solo il compagno'), pt:()=>('O jogador escolhe o próprio parceiro'), de:()=>('Der Spieler sucht sich seinen Mitspieler selbst aus'), es:()=>('El jugador elige a su propio compañero')}[LANG]||(()=>('The player picks his own teammate')))())+'</b></div>';
   return '<div class="mgs-coach mgs-gpick"><b>'+esc(T9.guestAdd)+'</b><select class="mgs-move" onchange="if(this.value){ mgrGuestAdd(\''+esc(t.id)+'\', this.value); mgrRenderHub(); }">'+
     '<option value="">'+esc(T9.guestPick)+'</option>'+c.map(x=>'<option value="'+esc(x.handle)+'">'+esc((x._real ? '★ ' : '')+x.handle+' · '+Math.round(ccCardOvr(x)||0)+' · '+(mgrOrgOf(x)||mgrT2().free))+'</option>').join('')+'</select></div>';
 }
@@ -158279,7 +158429,7 @@ function mgrClubShot(row){
     n:Object.keys(t.kills||{}).join(' & ')||t.name||'—', f:Object.keys(t.kills||{}).map(h=>{ const c=mgrCard(h); return c ? c.nat : null; }).filter(Boolean),
     s:Math.round(t.pts||0), e:t.elims||0, w:t.wins||0, m:null}))};
   tbl.me=(tbl.rows[0]||{}).n;
-  const best=tbl.rows[0], text=best ? (ru ? '#'+best.p+(row.teams[0] && row.teams[0].of ? ' из '+row.teams[0].of : '')+' — '+row.name : '#'+best.p+' — '+row.name) : row.name;
+  const best=tbl.rows[0], text=best ? (ru ? '#'+best.p+(row.teams[0] && row.teams[0].of ? ' из '+row.teams[0].of : '')+' — '+row.name : ({fr:()=>('#'+best.p+' — '+row.name), it:()=>('#'+best.p+' — '+row.name), pt:()=>('#'+best.p+' — '+row.name), de:()=>('#'+best.p+' — '+row.name), es:()=>('#'+best.p+' — '+row.name)}[LANG]||(()=>('#'+best.p+' — '+row.name)))()) : row.name;
   MGR.feed=MGR.feed||[]; MGR.feed.unshift({id:'p'+(MGR.sid=(MGR.sid||0)+1), day:row.day||CAREER.career.day, kind:'shot', text, tbl, likes:Math.round(200+(MGR.club.rep||50)*30), by:'club'});
   MGR.wfeed=MGR.wfeed||[]; MGR.wfeed.unshift({id:'w'+(MGR.sid=(MGR.sid||0)+1), day:row.day||CAREER.career.day, kind:'club', club:MGR.club.name, text, tbl, likes:Math.round(200+(MGR.club.rep||50)*30)});
   MGR.wfeed=MGR.wfeed.slice(0, MGR_WFEED_MAX);
@@ -158415,7 +158565,7 @@ async function mgrWorldCatchUpLive(lim){
 function mgrTW(){
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
   return ru ? {h:'Турниры мира', watch:'Смотреть', sim:'Симулировать', club:'★ клуб', play:'Матчевый день', none:'Турниров больше нет', sim2:'Симуляция', mine:'К нашим ↓', back:'К таблицам', fmt:{solo:'соло', duo:'дуо', trio:'трио', squad:'сквад'}, focus:'Камера на', all:'Все турниры'}
-            : {h:'World tournaments', watch:'Watch', sim:'Simulate', club:'★ club', play:'Match day', none:'No more tournaments', sim2:'Simulating', mine:'Our rows ↓', back:'To tables', fmt:{solo:'solo', duo:'duos', trio:'trios', squad:'squads'}, focus:'Camera on', all:'All tournaments'};
+            : ({fr:()=>({h:'Tournois mondiaux', watch:'Regarder', sim:'Simuler', club:'★ club', play:'Jour de match', none:'Plus de tournois', sim2:'Simulation', mine:'Nos lignes ↓', back:'Aux classements', fmt:{solo:'solo', duo:'duos', trio:'trios', squad:'squads'}, focus:'Caméra sur', all:'Tous les tournois'}), it:()=>({h:'Tornei mondiali', watch:'Guarda', sim:'Simula', club:'★ club', play:'Giorno di gara', none:'Nessun altro torneo', sim2:'Simulazione', mine:'Le nostre righe ↓', back:'Alle classifiche', fmt:{solo:'solo', duo:'duo', trio:'trio', squad:'squad'}, focus:'Camera su', all:'Tutti i tornei'}), pt:()=>({h:'Torneios mundiais', watch:'Assistir', sim:'Simular', club:'★ clube', play:'Dia de jogo', none:'Sem mais torneios', sim2:'Simulando', mine:'Nossas linhas ↓', back:'Para as tabelas', fmt:{solo:'solo', duo:'duos', trio:'trios', squad:'squads'}, focus:'Câmera em', all:'Todos os torneios'}), de:()=>({h:'Weltweite Turniere', watch:'Zuschauen', sim:'Simulieren', club:'★ Club', play:'Spieltag', none:'Keine Turniere mehr', sim2:'Simulation läuft', mine:'Unsere Zeilen ↓', back:'Zu den Tabellen', fmt:{solo:'Solo', duo:'Duos', trio:'Trios', squad:'Squads'}, focus:'Kamera auf', all:'Alle Turniere'}), es:()=>({h:'Torneos mundiales', watch:'Ver', sim:'Simular', club:'★ club', play:'Día de partido', none:'No hay más torneos', sim2:'Simulando', mine:'Nuestras filas ↓', back:'A las tablas', fmt:{solo:'solo', duo:'dúos', trio:'tríos', squad:'squads'}, focus:'Cámara en', all:'Todos los torneos'})}[LANG]||(()=>({h:'World tournaments', watch:'Watch', sim:'Simulate', club:'★ club', play:'Match day', none:'No more tournaments', sim2:'Simulating', mine:'Our rows ↓', back:'To tables', fmt:{solo:'solo', duo:'duos', trio:'trios', squad:'squads'}, focus:'Camera on', all:'All tournaments'})))();
 }
 // Посты игроков мира (его слово 8.10: «медиа, чтоб можно было смотреть за миром — посты игроков и т. д.»): после капа
 // пишут победитель, иногда призёры, кто чуть-чуть не дотянул, и наши игроки. Аватар — портрет карточки.
@@ -158425,10 +158575,25 @@ function mgrTP(){
                pod:[(e,p,m)=>'#'+p+' на '+e+'. Неплохо, но мы за первым '+m, (e,p,m)=>e+': #'+p+' 🥉 '+m],
                near:[(e,p)=>'#'+p+' на '+e+'… чуть-чуть не хватило', (e,p)=>'обидно, #'+p+' на '+e+'. завтра заново'],
                club:[(e,p,m)=>'#'+p+' на '+e+' '+m, (e,p)=>e+' — #'+p+'. работаем 💪']}
-            : {win:[(e,p,m)=>e+' — 1st place 🏆 '+m, (e,p,m)=>'Won '+e+'! '+m+' 🐐', (e,p,m)=>'GG '+e+'. W 🏆 '+m],
+            : ({fr:()=>({win:[(e,p,m)=>e+' — 1re place 🏆 '+m, (e,p,m)=>e+' remporté ! '+m+' 🐐', (e,p,m)=>'GG '+e+'. W 🏆 '+m],
+               pod:[(e,p,m)=>'#'+p+' à '+e+'. Pas mal, on vise la 1re place '+m, (e,p,m)=>e+' : #'+p+' 🥉 '+m],
+               near:[(e,p)=>'#'+p+' à '+e+'… si près', (e,p)=>'dur, #'+p+' à '+e+'. on remet ça demain'],
+               club:[(e,p,m)=>'#'+p+' à '+e+' '+m, (e,p)=>e+' — #'+p+'. retour au boulot 💪']}), it:()=>({win:[(e,p,m)=>e+' — 1º posto 🏆 '+m, (e,p,m)=>'Vinto '+e+'! '+m+' 🐐', (e,p,m)=>'GG '+e+'. W 🏆 '+m],
+               pod:[(e,p,m)=>'#'+p+' a '+e+'. Non male, puntiamo al 1º '+m, (e,p,m)=>e+': #'+p+' 🥉 '+m],
+               near:[(e,p)=>'#'+p+' a '+e+'… così vicini', (e,p)=>'dura, #'+p+' a '+e+'. di nuovo domani'],
+               club:[(e,p,m)=>'#'+p+' a '+e+' '+m, (e,p)=>e+' — #'+p+'. si torna al lavoro 💪']}), pt:()=>({win:[(e,p,m)=>e+' — 1º lugar 🏆 '+m, (e,p,m)=>'Ganhamos '+e+'! '+m+' 🐐', (e,p,m)=>'GG '+e+'. W 🏆 '+m],
+               pod:[(e,p,m)=>'#'+p+' em '+e+'. Nada mal, vamos atrás do 1º '+m, (e,p,m)=>e+': #'+p+' 🥉 '+m],
+               near:[(e,p)=>'#'+p+' em '+e+'… foi por pouco', (e,p)=>'dureza, #'+p+' em '+e+'. amanhã tem mais'],
+               club:[(e,p,m)=>'#'+p+' em '+e+' '+m, (e,p)=>e+' — #'+p+'. de volta ao trabalho 💪']}), de:()=>({win:[(e,p,m)=>e+' — Platz 1 🏆 '+m, (e,p,m)=>e+' gewonnen! '+m+' 🐐', (e,p,m)=>'GG '+e+'. W 🏆 '+m],
+               pod:[(e,p,m)=>'#'+p+' bei '+e+'. Nicht schlecht, wir wollen Platz 1 '+m, (e,p,m)=>e+': #'+p+' 🥉 '+m],
+               near:[(e,p)=>'#'+p+' bei '+e+'… so knapp', (e,p)=>'bitter, #'+p+' bei '+e+'. morgen wieder'],
+               club:[(e,p,m)=>'#'+p+' bei '+e+' '+m, (e,p)=>e+' — #'+p+'. zurück an die Arbeit 💪']}), es:()=>({win:[(e,p,m)=>e+' — 1.er lugar 🏆 '+m, (e,p,m)=>'¡Ganamos '+e+'! '+m+' 🐐', (e,p,m)=>'GG '+e+'. W 🏆 '+m],
+               pod:[(e,p,m)=>'#'+p+' en '+e+'. Nada mal, vamos por el 1.º '+m, (e,p,m)=>e+': #'+p+' 🥉 '+m],
+               near:[(e,p)=>'#'+p+' en '+e+'… por poco', (e,p)=>'duro, #'+p+' en '+e+'. mañana otra vez'],
+               club:[(e,p,m)=>'#'+p+' en '+e+' '+m, (e,p)=>e+' — #'+p+'. a seguir trabajando 💪']})}[LANG]||(()=>({win:[(e,p,m)=>e+' — 1st place 🏆 '+m, (e,p,m)=>'Won '+e+'! '+m+' 🐐', (e,p,m)=>'GG '+e+'. W 🏆 '+m],
                pod:[(e,p,m)=>'#'+p+' at '+e+'. Not bad, coming for 1st '+m, (e,p,m)=>e+': #'+p+' 🥉 '+m],
                near:[(e,p)=>'#'+p+' at '+e+'… so close', (e,p)=>'rough, #'+p+' at '+e+'. again tomorrow'],
-               club:[(e,p,m)=>'#'+p+' at '+e+' '+m, (e,p)=>e+' — #'+p+'. back to work 💪']};
+               club:[(e,p,m)=>'#'+p+' at '+e+' '+m, (e,p)=>e+' — #'+p+'. back to work 💪']})))();
 }
 function mgrWorldPlayerPosts(ev, ranked){
   const P=mgrTP(), rnd=careerRng(ccHashStr('mgrpp|'+ev.id+'|'+ev.day+'|'+MGR.year));
@@ -158851,9 +159016,9 @@ function mgrFfPlayersHTML(nights, ru){
   const rows=Object.values(by).sort((a,b)=>b.prize-a.prize || a.best-b.best);
   if(!rows.length) return '';
   const own=new Set(mgrOwned().map(hKey));
-  return '<div class="mgq-ff-sec"><b>'+esc(ru ? 'Игроки' : 'Players')+'</b>'+
-    '<div class="mgq-ff-row mgq-ff-head"><span>'+esc(ru ? 'Игрок' : 'Player')+'</span><em>'+esc(ru ? 'вечеров · лучшее · заработал' : 'nights · best · earned')+'</em></div>'+
-    rows.map(p=>'<div class="mgq-ff-row'+(own.has(hKey(p.h)) ? '' : ' mgq-ff-guest')+'"><span>'+esc(p.h)+(own.has(hKey(p.h)) ? '' : ' <i>'+esc(ru ? 'напарник' : 'teammate')+'</i>')+'</span><em>'+
+  return '<div class="mgq-ff-sec"><b>'+esc(ru ? 'Игроки' : ({fr:()=>('Joueurs'), it:()=>('Giocatori'), pt:()=>('Jogadores'), de:()=>('Spieler'), es:()=>('Jugadores')}[LANG]||(()=>('Players')))())+'</b>'+
+    '<div class="mgq-ff-row mgq-ff-head"><span>'+esc(ru ? 'Игрок' : ({fr:()=>('Joueur'), it:()=>('Giocatore'), pt:()=>('Jogador'), de:()=>('Spieler'), es:()=>('Jugador')}[LANG]||(()=>('Player')))())+'</span><em>'+esc(ru ? 'вечеров · лучшее · заработал' : ({fr:()=>('soirées · meilleur · gagné'), it:()=>('serate · migliore · guadagnato'), pt:()=>('noites · melhor · ganho'), de:()=>('Abende · Bestes · verdient'), es:()=>('noches · mejor · ganado')}[LANG]||(()=>('nights · best · earned')))())+'</em></div>'+
+    rows.map(p=>'<div class="mgq-ff-row'+(own.has(hKey(p.h)) ? '' : ' mgq-ff-guest')+'"><span>'+esc(p.h)+(own.has(hKey(p.h)) ? '' : ' <i>'+esc(ru ? 'напарник' : ({fr:()=>('coéquipier'), it:()=>('compagno'), pt:()=>('parceiro'), de:()=>('Mitspieler'), es:()=>('compañero')}[LANG]||(()=>('teammate')))())+'</i>')+'</span><em>'+
       p.n+' · #'+p.best+(p.of ? '/'+p.of : '')+' · '+mgrMoney(p.prize)+'</em></div>').join('')+'</div>';
 }
 function mgrFfSummary(a){
@@ -158861,8 +159026,13 @@ function mgrFfSummary(a){
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
   const T=ru ? {title:'Итоги перемотки', days:(n,f,t)=>n+' дн.: '+f+' → '+t, nights:'Турниры', none:'Турниров клуба не было', prize:'Призовые клуба', cash:'Касса',
                  mail:n=>'Новых писем: '+n, toMail:'В почту', ok:'Ок'}
-             : {title:'Fast-forward summary', days:(n,f,t)=>n+' days: '+f+' → '+t, nights:'Tournaments', none:'No club tournaments', prize:'Club prize money', cash:'Cash',
-                 mail:n=>'New messages: '+n, toMail:'Inbox', ok:'OK'};
+             : ({fr:()=>({title:'Résumé de l\'avance rapide', days:(n,f,t)=>n+' jours : '+f+' → '+t, nights:'Tournois', none:'Aucun tournoi du club', prize:'Gains du club', cash:'Trésorerie',
+                 mail:n=>'Nouveaux messages : '+n, toMail:'Boîte de réception', ok:'OK'}), it:()=>({title:'Riepilogo avanzamento rapido', days:(n,f,t)=>n+' giorni: '+f+' → '+t, nights:'Tornei', none:'Nessun torneo del club', prize:'Montepremi del club', cash:'Cassa',
+                 mail:n=>'Nuovi messaggi: '+n, toMail:'Posta', ok:'OK'}), pt:()=>({title:'Resumo do avanço rápido', days:(n,f,t)=>n+' dias: '+f+' → '+t, nights:'Torneios', none:'Sem torneios do clube', prize:'Premiação do clube', cash:'Caixa',
+                 mail:n=>'Novas mensagens: '+n, toMail:'Caixa de entrada', ok:'OK'}), de:()=>({title:'Zusammenfassung des Vorspulens', days:(n,f,t)=>n+' Tage: '+f+' → '+t, nights:'Turniere', none:'Keine Club-Turniere', prize:'Preisgeld des Clubs', cash:'Kasse',
+                 mail:n=>'Neue Nachrichten: '+n, toMail:'Posteingang', ok:'OK'}), es:()=>({title:'Resumen del avance rápido', days:(n,f,t)=>n+' días: '+f+' → '+t, nights:'Torneos', none:'Sin torneos del club', prize:'Premios del club', cash:'Caja',
+                 mail:n=>'Mensajes nuevos: '+n, toMail:'Bandeja de entrada', ok:'OK'})}[LANG]||(()=>({title:'Fast-forward summary', days:(n,f,t)=>n+' days: '+f+' → '+t, nights:'Tournaments', none:'No club tournaments', prize:'Club prize money', cash:'Cash',
+                 mail:n=>'New messages: '+n, toMail:'Inbox', ok:'OK'})))();
   const rows=(MGR.log||[]).slice(a.log);
   const nights=rows.filter(r=>r.kind==='night');
   const prize=nights.reduce((sum,r)=>sum+(r.teams||[]).reduce((x,t)=>x+(t.prize||0), 0), 0);
@@ -159002,7 +159172,62 @@ function mgrT2(){
     nextSeason:y=>'Сезон '+y, stay:'Совет доволен — следующий сезон', lastYear:'Это последний год в игре — можно начать с другим клубом',
     fncsQ:'Квалификация', fncsF:'Финал', qualified:n=>n+' в финале', out:n=>n+' не прошли', best:'лучшее место', bestNone:'—',
     teamWord:'Команда', benchWord:'Запас', newTeamDone:'Команда собрана', needMore:n=>'Для команды нужно ещё '+n
-  } : {
+  } : ({fr:()=>({
+    tClub:'Club', tMarket:'Marché', tInbox:'Messages', to:'→', release:'Libérer', releaseAsk:(n,s)=>'Libérer '+n+' ? Indemnité '+s,
+    newTeam:'Monter une équipe depuis le banc', free:'agent libre', onlyFree:'agents libres uniquement', search:'Rechercher par nom', sign:'Signer',
+    buyout:'rachat', wage:'salaire', signed:n=>n+' a signé', noMoney:'Pas assez de trésorerie', tooGood:n=>n+' : « Je veux un club plus fort »',
+    already:'Déjà au club', morale:'moral', inboxEmpty:'Aucun message', accept:'Accepter', decline:'Refuser', sell:'Vendre',
+    offer:(c,n,s)=>c+' propose '+s+' pour '+n, raise:(n,s)=>n+' demande une augmentation à '+s+' par mois', sponsorBonus:(s,t)=>'Le sponsor a aimé la soirée ('+t+') : bonus '+s,
+    board:'Direction', goalEarn:s=>'Gagner au moins '+s+' de gains', goalPlace:p=>'Meilleur résultat de la saison — '+p+' ou mieux',
+    endSeason:'Bilan de la saison', seasonOver:'Saison terminée', met:'atteint', notMet:'raté', fired:'La direction t\'a viré. Trouve un nouveau club',
+    nextSeason:y=>'Saison '+y, stay:'La direction est contente — saison suivante', lastYear:'C\'est la dernière année du jeu — recommence avec un autre club',
+    fncsQ:'Qualifier', fncsF:'Finale', qualified:n=>n+' sont en finale', out:n=>n+' sont éliminés', best:'meilleur résultat', bestNone:'—',
+    teamWord:'Équipe', benchWord:'Banc', newTeamDone:'Équipe formée', needMore:n=>'Il en manque '+n+' pour une équipe'
+  }), it:()=>({
+    tClub:'Club', tMarket:'Mercato', tInbox:'Posta', to:'→', release:'Svincola', releaseAsk:(n,s)=>'Svincolare '+n+'? Buonuscita '+s,
+    newTeam:'Crea una squadra dalla panchina', free:'free agent', onlyFree:'solo free agent', search:'Cerca per nome', sign:'Firma',
+    buyout:'riscatto', wage:'stipendio', signed:n=>n+' ha firmato', noMoney:'Cassa insufficiente', tooGood:n=>n+': "Voglio un club più forte"',
+    already:'Già nel club', morale:'morale', inboxEmpty:'Nessun messaggio', accept:'Accetta', decline:'Rifiuta', sell:'Vendi',
+    offer:(c,n,s)=>c+' offre '+s+' per '+n, raise:(n,s)=>n+' chiede un aumento a '+s+' al mese', sponsorBonus:(s,t)=>'Lo sponsor ha apprezzato la serata ('+t+'): bonus '+s,
+    board:'Dirigenza', goalEarn:s=>'Guadagna almeno '+s+' di montepremi', goalPlace:p=>'Miglior piazzamento della stagione — '+p+' o meglio',
+    endSeason:'Resoconto stagione', seasonOver:'Stagione finita', met:'fatto', notMet:'mancato', fired:'La dirigenza ti ha licenziato. Trova un nuovo club',
+    nextSeason:y=>'Stagione '+y, stay:'La dirigenza è soddisfatta — prossima stagione', lastYear:'Questo è l\'ultimo anno del gioco — ricomincia con un altro club',
+    fncsQ:'Qualifica', fncsF:'Finale', qualified:n=>n+' in finale', out:n=>n+' eliminati', best:'miglior piazzamento', bestNone:'—',
+    teamWord:'Squadra', benchWord:'Panchina', newTeamDone:'Squadra creata', needMore:n=>'Ne servono ancora '+n+' per una squadra'
+  }), pt:()=>({
+    tClub:'Clube', tMarket:'Mercado', tInbox:'Mensagens', to:'→', release:'Dispensar', releaseAsk:(n,s)=>'Dispensar '+n+'? Multa rescisória '+s,
+    newTeam:'Montar um time com o banco', free:'agente livre', onlyFree:'só agentes livres', search:'Buscar por nome', sign:'Assinar',
+    buyout:'compra', wage:'salário', signed:n=>n+' assinou', noMoney:'Caixa insuficiente', tooGood:n=>n+': "Quero um clube mais forte"',
+    already:'Já está no clube', morale:'moral', inboxEmpty:'Sem mensagens', accept:'Aceitar', decline:'Recusar', sell:'Vender',
+    offer:(c,n,s)=>c+' oferece '+s+' por '+n, raise:(n,s)=>n+' pede aumento para '+s+' por mês', sponsorBonus:(s,t)=>'O patrocinador gostou da noite ('+t+'): bônus '+s,
+    board:'Diretoria', goalEarn:s=>'Ganhe pelo menos '+s+' em premiação', goalPlace:p=>'Melhor colocação da temporada — '+p+' ou melhor',
+    endSeason:'Balanço da temporada', seasonOver:'Temporada encerrada', met:'cumprida', notMet:'não cumprida', fired:'A diretoria te demitiu. Procure um novo clube',
+    nextSeason:y=>'Temporada '+y, stay:'A diretoria está satisfeita — próxima temporada', lastYear:'Este é o último ano do jogo — recomece com outro clube',
+    fncsQ:'Qualificatória', fncsF:'Final', qualified:n=>n+' foram à final', out:n=>n+' estão fora', best:'melhor colocação', bestNone:'—',
+    teamWord:'Time', benchWord:'Banco', newTeamDone:'Time montado', needMore:n=>'Faltam '+n+' para um time'
+  }), de:()=>({
+    tClub:'Club', tMarket:'Markt', tInbox:'Posteingang', to:'→', release:'Entlassen', releaseAsk:(n,s)=>n+' entlassen? Abfindung '+s,
+    newTeam:'Team von der Bank zusammenstellen', free:'Free Agent', onlyFree:'nur Free Agents', search:'Nach Namen suchen', sign:'Verpflichten',
+    buyout:'Ablöse', wage:'Gehalt', signed:n=>n+' verpflichtet', noMoney:'Nicht genug Geld in der Kasse', tooGood:n=>n+': „Ich will einen stärkeren Club“',
+    already:'Schon im Club', morale:'Moral', inboxEmpty:'Keine Nachrichten', accept:'Annehmen', decline:'Ablehnen', sell:'Verkaufen',
+    offer:(c,n,s)=>c+' bietet '+s+' für '+n, raise:(n,s)=>n+' verlangt eine Gehaltserhöhung auf '+s+' pro Monat', sponsorBonus:(s,t)=>'Dem Sponsor hat der Abend gefallen ('+t+'): Bonus '+s,
+    board:'Vorstand', goalEarn:s=>'Verdiene mindestens '+s+' Preisgeld', goalPlace:p=>'Beste Platzierung der Saison — '+p+' oder besser',
+    endSeason:'Saisonbilanz', seasonOver:'Saison vorbei', met:'erreicht', notMet:'verfehlt', fired:'Der Vorstand hat dich entlassen. Such dir einen neuen Club',
+    nextSeason:y=>'Saison '+y, stay:'Der Vorstand ist zufrieden — nächste Saison', lastYear:'Das ist das letzte Jahr im Spiel — fang mit einem anderen Club neu an',
+    fncsQ:'Qualifier', fncsF:'Finale', qualified:n=>n+' im Finale', out:n=>n+' ausgeschieden', best:'beste Platzierung', bestNone:'—',
+    teamWord:'Team', benchWord:'Bank', newTeamDone:'Team zusammengestellt', needMore:n=>'Noch '+n+' für ein Team nötig'
+  }), es:()=>({
+    tClub:'Club', tMarket:'Mercado', tInbox:'Mensajes', to:'→', release:'Liberar', releaseAsk:(n,s)=>'¿Liberar a '+n+'? Indemnización '+s,
+    newTeam:'Armar un equipo desde el banquillo', free:'agente libre', onlyFree:'solo agentes libres', search:'Buscar por nombre', sign:'Fichar',
+    buyout:'traspaso', wage:'salario', signed:n=>n+' fichado', noMoney:'No hay suficiente caja', tooGood:n=>n+': "Quiero un club más fuerte"',
+    already:'Ya está en el club', morale:'moral', inboxEmpty:'Sin mensajes', accept:'Aceptar', decline:'Rechazar', sell:'Vender',
+    offer:(c,n,s)=>c+' ofrece '+s+' por '+n, raise:(n,s)=>n+' pide un aumento a '+s+' al mes', sponsorBonus:(s,t)=>'Al patrocinador le gustó la noche ('+t+'): bono '+s,
+    board:'Directiva', goalEarn:s=>'Gana al menos '+s+' en premios', goalPlace:p=>'Mejor puesto de la temporada — '+p+' o mejor',
+    endSeason:'Balance de la temporada', seasonOver:'Temporada terminada', met:'cumplido', notMet:'fallido', fired:'La directiva te despidió. Busca un club nuevo',
+    nextSeason:y=>'Temporada '+y, stay:'La directiva está contenta — próxima temporada', lastYear:'Este es el último año del juego — empieza de nuevo con otro club',
+    fncsQ:'Clasificatoria', fncsF:'Final', qualified:n=>n+' llegaron a la final', out:n=>n+' quedaron fuera', best:'mejor puesto', bestNone:'—',
+    teamWord:'Equipo', benchWord:'Banquillo', newTeamDone:'Equipo armado', needMore:n=>'Faltan '+n+' para un equipo'
+  })}[LANG]||(()=>({
     tClub:'Club', tMarket:'Market', tInbox:'Inbox', to:'→', release:'Release', releaseAsk:(n,s)=>'Release '+n+'? Severance '+s,
     newTeam:'Build a team from the bench', free:'free agent', onlyFree:'free agents only', search:'Search by name', sign:'Sign',
     buyout:'buyout', wage:'wage', signed:n=>n+' signed', noMoney:'Not enough cash', tooGood:n=>n+': "I want a stronger club"',
@@ -159013,7 +159238,7 @@ function mgrT2(){
     nextSeason:y=>'Season '+y, stay:'The board is happy — next season', lastYear:'This is the last year in the game — start again with another club',
     fncsQ:'Qualifier', fncsF:'Final', qualified:n=>n+' made the final', out:n=>n+' are out', best:'best finish', bestNone:'—',
     teamWord:'Team', benchWord:'Bench', newTeamDone:'Team built', needMore:n=>n+' more needed for a team'
-  };
+  })))();
 }
 function mgrMoney(v){ return (typeof fmtMoney==='function' ? fmtMoney(v) : '$'+v); }
 function mgrAll(){ return MGR.teams.flatMap(t=>t.cards).concat(MGR.bench||[]); }
@@ -159507,7 +159732,77 @@ function mgrT4(){
     sCoach:'Тренер', sAnalyst:'Аналитик', sPsych:'Психолог', sSmm:'SMM',
     sCoachN:'рост игроков', sAnalystN:'разбор соперников перед вечером, +сила', sPsychN:'мораль не ниже −1, восстанавливается', sSmmN:'спонсоры +',
     report:'Разбор соперников', strong:'Сильнейшие в лобби', fresh:'Свободный агент'
-  } : {
+  } : ({fr:()=>({
+    neg:'Négociation', negClub:c=>'Club '+c, negPlayer:'Joueur', yourOffer:'Ton offre', offer:'Offre', ask:'Demande', accepted:'Accepté',
+    counter:s=>'Contre-offre : '+s, refused:'Refusé', walk:'Partir', years:'Durée', season1:'1 saison', season2:'2 saisons', season3:'3 saisons',
+    clause:'Clause de départ', clauseOn:s=>'fixée à '+s, clauseOff:'pas de clause', wage:'Salaire', sign:'Signer',
+    windowOpen:d=>'Mercato ouvert jusqu\'au '+d, windowShut:d=>'Mercato fermé — le prochain : '+d+'. Agents libres uniquement pour l\'instant',
+    windowShutNone:'Mercato fermé jusqu\'à la fin de la saison — agents libres uniquement', outWindow:'Hors mercato, tu ne peux signer que des agents libres',
+    pot:'potentiel', scout:'Scouter', scoutCost:s=>'Scouter '+s, scouted:'scouté', contractTo:y=>'contrat jusqu\'en '+y,
+    expiring:'Contrats expirants', renew:(n,s)=>'Prolonger '+n+' à '+s+' par mois', leaves:n=>n+' part libre', clauseHit:(c,n,s)=>c+' a activé la clause de départ de '+n+' : '+s,
+    tTrain:'Entraînement', trainH:'Priorité de la semaine', trScrims:'Scrims', trCreative:'Creative', trVod:'Analyse VOD', trRest:'Repos',
+    trScrimsN:'+power pour la prochaine soirée, la fatigue monte', trCreativeN:'les joueurs progressent plus vite', trVodN:'moral +, peu fatigant', trRestN:'la fatigue baisse',
+    fatigue:'Fatigue', tired:'Assistant : l\'équipe est fatiguée (plus de 70 %) — la power baisse les soirs de match. Programme une semaine de repos dans l\'onglet Entraînement', staff:'Staff', hire:'Recruter', fire:'Renvoyer', tier:t=>['—','basique','bon','élite'][t]||'—',
+    sCoach:'Coach', sAnalyst:'Analyste', sPsych:'Psychologue', sSmm:'SMM',
+    sCoachN:'progression des joueurs', sAnalystN:'rapport sur les adversaires avant la soirée, +power', sPsychN:'plancher de moral −1, récupère', sSmmN:'sponsors +',
+    report:'Rapport adverse', strong:'Le plus fort du lobby', fresh:'Agent libre'
+  }), it:()=>({
+    neg:'Trattativa', negClub:c=>'Club '+c, negPlayer:'Giocatore', yourOffer:'La tua offerta', offer:'Offerta', ask:'Richiesta', accepted:'Accettato',
+    counter:s=>'Controfferta: '+s, refused:'Rifiutato', walk:'Lascia stare', years:'Durata', season1:'1 stagione', season2:'2 stagioni', season3:'3 stagioni',
+    clause:'Clausola rescissoria', clauseOn:s=>'impostata a '+s, clauseOff:'nessuna clausola', wage:'Stipendio', sign:'Firma',
+    windowOpen:d=>'Mercato aperto fino al '+d, windowShut:d=>'Mercato chiuso — il prossimo: '+d+'. Per ora solo free agent',
+    windowShutNone:'Mercato chiuso fino a fine stagione — solo free agent', outWindow:'Fuori dal mercato puoi firmare solo free agent',
+    pot:'potenziale', scout:'Osserva', scoutCost:s=>'Osserva '+s, scouted:'osservato', contractTo:y=>'contratto fino al '+y,
+    expiring:'Contratti in scadenza', renew:(n,s)=>'Rinnova '+n+' a '+s+' al mese', leaves:n=>n+' se ne va a parametro zero', clauseHit:(c,n,s)=>c+' ha attivato la clausola rescissoria di '+n+': '+s,
+    tTrain:'Allenamento', trainH:'Focus della settimana', trScrims:'Scrims', trCreative:'Creative', trVod:'Analisi VOD', trRest:'Riposo',
+    trScrimsN:'+power per la prossima serata, sale la fatica', trCreativeN:'i giocatori crescono più in fretta', trVodN:'morale +, stanca poco', trRestN:'la fatica cala',
+    fatigue:'Fatica', tired:'Assistente: la squadra è stanca (oltre il 70%) — la power cala nelle serate di gara. Imposta una settimana di riposo nella scheda Allenamento', staff:'Staff', hire:'Assumi', fire:'Licenzia', tier:t=>['—','base','buono','élite'][t]||'—',
+    sCoach:'Coach', sAnalyst:'Analista', sPsych:'Psicologo', sSmm:'SMM',
+    sCoachN:'crescita dei giocatori', sAnalystN:'report sugli avversari prima della serata, +power', sPsychN:'soglia minima del morale −1, si riprende', sSmmN:'sponsor +',
+    report:'Report sugli avversari', strong:'Il più forte della lobby', fresh:'Free agent'
+  }), pt:()=>({
+    neg:'Negociação', negClub:c=>'Clube '+c, negPlayer:'Jogador', yourOffer:'Sua oferta', offer:'Oferta', ask:'Pedido', accepted:'Aceito',
+    counter:s=>'Contraproposta: '+s, refused:'Recusado', walk:'Desistir', years:'Duração', season1:'1 temporada', season2:'2 temporadas', season3:'3 temporadas',
+    clause:'Cláusula de rescisão', clauseOn:s=>'definida em '+s, clauseOff:'sem cláusula', wage:'Salário', sign:'Assinar',
+    windowOpen:d=>'Janela de transferências aberta até '+d, windowShut:d=>'Janela fechada — a próxima: '+d+'. Por enquanto só agentes livres',
+    windowShutNone:'Janela fechada até o fim da temporada — só agentes livres', outWindow:'Fora da janela você só pode assinar agentes livres',
+    pot:'potencial', scout:'Observar', scoutCost:s=>'Observar '+s, scouted:'observado', contractTo:y=>'contrato até '+y,
+    expiring:'Contratos vencendo', renew:(n,s)=>'Renovar '+n+' por '+s+' ao mês', leaves:n=>n+' sai de graça', clauseHit:(c,n,s)=>c+' ativou a cláusula de rescisão de '+n+': '+s,
+    tTrain:'Treino', trainH:'Foco da semana', trScrims:'Scrims', trCreative:'Creative', trVod:'Análise de VOD', trRest:'Descanso',
+    trScrimsN:'+power na próxima noite, o cansaço aumenta', trCreativeN:'os jogadores evoluem mais rápido', trVodN:'moral +, cansa pouco', trRestN:'o cansaço diminui',
+    fatigue:'Cansaço', tired:'Assistente: o time está cansado (acima de 70%) — a power cai nas noites de jogo. Marque uma semana de descanso na aba Treino', staff:'Equipe técnica', hire:'Contratar', fire:'Demitir', tier:t=>['—','básico','bom','elite'][t]||'—',
+    sCoach:'Coach', sAnalyst:'Analista', sPsych:'Psicólogo', sSmm:'SMM',
+    sCoachN:'evolução dos jogadores', sAnalystN:'relatório dos rivais antes da noite, +power', sPsychN:'piso de moral −1, se recupera', sSmmN:'patrocinadores +',
+    report:'Relatório dos rivais', strong:'O mais forte do lobby', fresh:'Agente livre'
+  }), de:()=>({
+    neg:'Verhandlung', negClub:c=>'Club '+c, negPlayer:'Spieler', yourOffer:'Dein Angebot', offer:'Angebot', ask:'Forderung', accepted:'Angenommen',
+    counter:s=>'Gegenangebot: '+s, refused:'Abgelehnt', walk:'Abbrechen', years:'Laufzeit', season1:'1 Saison', season2:'2 Saisons', season3:'3 Saisons',
+    clause:'Ausstiegsklausel', clauseOn:s=>'gesetzt auf '+s, clauseOff:'keine Klausel', wage:'Gehalt', sign:'Verpflichten',
+    windowOpen:d=>'Transferfenster offen bis '+d, windowShut:d=>'Fenster geschlossen — das nächste: '+d+'. Vorerst nur Free Agents',
+    windowShutNone:'Fenster für den Rest der Saison geschlossen — nur Free Agents', outWindow:'Außerhalb des Fensters kannst du nur Free Agents verpflichten',
+    pot:'Potenzial', scout:'Scouten', scoutCost:s=>'Scouten '+s, scouted:'gescoutet', contractTo:y=>'Vertrag bis '+y,
+    expiring:'Auslaufende Verträge', renew:(n,s)=>n+' für '+s+' im Monat verlängern', leaves:n=>n+' geht ablösefrei', clauseHit:(c,n,s)=>c+' hat die Ausstiegsklausel von '+n+' gezogen: '+s,
+    tTrain:'Training', trainH:'Fokus der Woche', trScrims:'Scrims', trCreative:'Creative', trVod:'VOD-Analyse', trRest:'Pause',
+    trScrimsN:'+Power für den nächsten Abend, Müdigkeit steigt', trCreativeN:'Spieler wachsen schneller', trVodN:'Moral +, kaum anstrengend', trRestN:'Müdigkeit sinkt',
+    fatigue:'Müdigkeit', tired:'Assistent: Das Team ist müde (über 70 %) — die Power sinkt an Spielabenden. Plane im Tab Training eine Pausenwoche ein', staff:'Staff', hire:'Einstellen', fire:'Entlassen', tier:t=>['—','Basis','gut','Elite'][t]||'—',
+    sCoach:'Coach', sAnalyst:'Analyst', sPsych:'Psychologe', sSmm:'SMM',
+    sCoachN:'Spielerentwicklung', sAnalystN:'Gegnerbericht vor dem Abend, +Power', sPsychN:'Moral-Untergrenze −1, erholt sich', sSmmN:'Sponsoren +',
+    report:'Gegnerbericht', strong:'Der Stärkste in der Lobby', fresh:'Free Agent'
+  }), es:()=>({
+    neg:'Negociación', negClub:c=>'Club '+c, negPlayer:'Jugador', yourOffer:'Tu oferta', offer:'Oferta', ask:'Pide', accepted:'Aceptado',
+    counter:s=>'Contraoferta: '+s, refused:'Rechazado', walk:'Irte', years:'Duración', season1:'1 temporada', season2:'2 temporadas', season3:'3 temporadas',
+    clause:'Cláusula de rescisión', clauseOn:s=>'fijada en '+s, clauseOff:'sin cláusula', wage:'Salario', sign:'Fichar',
+    windowOpen:d=>'Mercado de fichajes abierto hasta el '+d, windowShut:d=>'Mercado cerrado — el próximo: '+d+'. Por ahora solo agentes libres',
+    windowShutNone:'Mercado cerrado el resto de la temporada — solo agentes libres', outWindow:'Fuera del mercado solo puedes fichar agentes libres',
+    pot:'potencial', scout:'Ojear', scoutCost:s=>'Ojear '+s, scouted:'ojeado', contractTo:y=>'contrato hasta '+y,
+    expiring:'Contratos por vencer', renew:(n,s)=>'Renovar a '+n+' por '+s+' al mes', leaves:n=>n+' se va libre', clauseHit:(c,n,s)=>c+' activó la cláusula de rescisión de '+n+': '+s,
+    tTrain:'Entrenamiento', trainH:'Enfoque de la semana', trScrims:'Scrims', trCreative:'Creative', trVod:'Revisión de VOD', trRest:'Descanso',
+    trScrimsN:'+power para la próxima noche, sube la fatiga', trCreativeN:'los jugadores crecen más rápido', trVodN:'moral +, casi no cansa', trRestN:'baja la fatiga',
+    fatigue:'Fatiga', tired:'Asistente: el equipo está cansado (más del 70 %) — la power baja en las noches de partido. Pon una semana de descanso en la pestaña Entrenamiento', staff:'Staff', hire:'Contratar', fire:'Despedir', tier:t=>['—','básico','bueno','élite'][t]||'—',
+    sCoach:'Coach', sAnalyst:'Analista', sPsych:'Psicólogo', sSmm:'SMM',
+    sCoachN:'crecimiento de los jugadores', sAnalystN:'informe de rivales antes de la noche, +power', sPsychN:'piso de moral −1, se recupera', sSmmN:'patrocinadores +',
+    report:'Informe de rivales', strong:'El más fuerte del lobby', fresh:'Agente libre'
+  })}[LANG]||(()=>({
     neg:'Negotiation', negClub:c=>'Club '+c, negPlayer:'Player', yourOffer:'Your offer', offer:'Offer', ask:'Asking', accepted:'Accepted',
     counter:s=>'Counter: '+s, refused:'Refused', walk:'Walk away', years:'Length', season1:'1 season', season2:'2 seasons', season3:'3 seasons',
     clause:'Release clause', clauseOn:s=>'set '+s, clauseOff:'no clause', wage:'Wage', sign:'Sign',
@@ -159521,7 +159816,7 @@ function mgrT4(){
     sCoach:'Coach', sAnalyst:'Analyst', sPsych:'Psychologist', sSmm:'SMM',
     sCoachN:'player growth', sAnalystN:'opponent report before the night, +power', sPsychN:'morale floor −1, recovers', sSmmN:'sponsors +',
     report:'Opponent report', strong:'Strongest in the lobby', fresh:'Free agent'
-  };
+  })))();
 }
 const MGR_STAFF_COST=[0, 1500, 3500, 7000];
 function mgrStaff(k){ return ((MGR.staff||{})[k])||0; }
@@ -159713,13 +160008,43 @@ function mgrT10(){
     natAdd:'Вызвать', natDrop:'Убрать', natFull:'Состав полный — сначала уберите кого-то',
     natResult:(n,p,of,fee)=>'Кубок наций: '+n+' под вашим руководством — '+p+' место из '+of+'. Гонорар федерации '+fee,
     natFilled:'Федерация добрала состав сама'
-  } : {
+  } : ({fr:()=>({
+    natOffer:(n,d)=>'Fédération ('+n+') : monte l’équipe nationale pour la Nations Cup le '+d+'. Quatre joueurs, ton choix',
+    natBtn:'Monter l’équipe', natSquadBtn:'Effectif de l’équipe nationale', natTitle:n=>'Équipe nationale : '+n, natPicked:(k,n)=>k+' sur '+n+' choisis',
+    natAdd:'Convoquer', natDrop:'Retirer', natFull:'L’effectif est complet — retire quelqu’un d’abord',
+    natResult:(n,p,of,fee)=>'Nations Cup : '+n+' sous ta direction — '+p+' sur '+of+'. Prime de la fédération '+fee,
+    natFilled:'La fédération a complété l’effectif elle-même'
+  }), it:()=>({
+    natOffer:(n,d)=>'Federazione ('+n+'): costruisci la nazionale per la Nations Cup il '+d+'. Quattro giocatori, scegli tu',
+    natBtn:'Costruisci la squadra', natSquadBtn:'Rosa della nazionale', natTitle:n=>'Nazionale: '+n, natPicked:(k,n)=>k+' scelti su '+n,
+    natAdd:'Convoca', natDrop:'Rimuovi', natFull:'La rosa è piena — rimuovi prima qualcuno',
+    natResult:(n,p,of,fee)=>'Nations Cup: '+n+' sotto la tua guida — '+p+' su '+of+'. Compenso della federazione '+fee,
+    natFilled:'La federazione ha completato la rosa da sola'
+  }), pt:()=>({
+    natOffer:(n,d)=>'Federação ('+n+'): monte a seleção para a Nations Cup em '+d+'. Quatro jogadores, você escolhe',
+    natBtn:'Montar a seleção', natSquadBtn:'Elenco da seleção', natTitle:n=>'Seleção: '+n, natPicked:(k,n)=>k+' de '+n+' escolhidos',
+    natAdd:'Convocar', natDrop:'Cortar', natFull:'O elenco está cheio — corte alguém primeiro',
+    natResult:(n,p,of,fee)=>'Nations Cup: '+n+' sob o seu comando — '+p+' de '+of+'. Taxa da federação '+fee,
+    natFilled:'A federação completou o elenco sozinha'
+  }), de:()=>({
+    natOffer:(n,d)=>'Verband ('+n+'): Stell das Nationalteam für den Nations Cup am '+d+' zusammen. Vier Spieler, du wählst',
+    natBtn:'Team zusammenstellen', natSquadBtn:'Nationalteam-Kader', natTitle:n=>'Nationalteam: '+n, natPicked:(k,n)=>k+' von '+n+' gewählt',
+    natAdd:'Berufen', natDrop:'Streichen', natFull:'Der Kader ist voll — streich zuerst jemanden',
+    natResult:(n,p,of,fee)=>'Nations Cup: '+n+' unter deiner Leitung — '+p+' von '+of+'. Verbandsgebühr '+fee,
+    natFilled:'Der Verband hat den Kader selbst aufgefüllt'
+  }), es:()=>({
+    natOffer:(n,d)=>'Federación ('+n+'): arma la selección para la Nations Cup el '+d+'. Cuatro jugadores, tú eliges',
+    natBtn:'Armar el equipo', natSquadBtn:'Plantilla de la selección', natTitle:n=>'Selección: '+n, natPicked:(k,n)=>k+' de '+n+' elegidos',
+    natAdd:'Convocar', natDrop:'Quitar', natFull:'La plantilla está llena — quita a alguien primero',
+    natResult:(n,p,of,fee)=>'Nations Cup: '+n+' bajo tu mando — '+p+' de '+of+'. Tarifa de la federación '+fee,
+    natFilled:'La federación completó la plantilla por su cuenta'
+  })}[LANG]||(()=>({
     natOffer:(n,d)=>'Federation ('+n+'): build the national team for the Nations Cup on '+d+'. Four players, your pick',
     natBtn:'Build the team', natSquadBtn:'National team squad', natTitle:n=>'National team: '+n, natPicked:(k,n)=>k+' of '+n+' picked',
     natAdd:'Call up', natDrop:'Drop', natFull:'Squad is full — drop someone first',
     natResult:(n,p,of,fee)=>'Nations Cup: '+n+' under your lead — '+p+' of '+of+'. Federation fee '+fee,
     natFilled:'The federation filled the squad itself'
-  };
+  })))();
 }
 function mgrNatOfClub(){
   const cnt={}; mgrAll().forEach(h=>{ const c=mgrCard(h); if(c && c.nat) cnt[c.nat]=(cnt[c.nat]||0)+1; });
@@ -160012,7 +160337,57 @@ function mgrT5(){
     wantLeave:(n,s)=>n+' просит продать его. Есть покупатель за '+s, sellBtn:'Продать', keepBtn:'Оставить',
     chem:'химия', promises:'Обещания', due:d=>'до '+d,
     kStart:'место в основе', kRaise:'прибавка', kSign:'усиление состава'
-  } : {
+  } : ({fr:()=>({
+    talk:'Parler', talkH:n=>'Discussion · '+n, praise:'Féliciter', crit:'Critiquer', pStart:'Promettre une place de titulaire', pRaise:'Promettre une augmentation', pSign:'Promettre une recrue',
+    once:'Tu lui as déjà parlé cette semaine', mood:m=>'Moral : '+(m>=2 ? 'excellent' : m>=1 ? 'bon' : m<=-2 ? 'veut partir' : m<0 ? 'mécontent' : 'stable'),
+    rPraiseOk:'Content : moral +1', rPraiseMeh:'Il l’a pris froidement — félicitations sans raison', rCritOk:'Motivé : l’équipe sera plus forte la prochaine nuit', rCritBad:'Vexé : moral −1',
+    rPromise:d=>'Il te croit. Échéance — '+d, dup:'Cette promesse est déjà faite',
+    kept:n=>'Promesse tenue envers '+n+' — moral +1', broken:n=>n+' : « tu avais promis et tu n’as rien fait ». Moral −2, veut un transfert',
+    wantPlay:n=>n+' est sur le banc depuis un mois et veut une place', promiseBtn:'Promettre une place', waitBtn:'Lui dire d’attendre',
+    wantLeave:(n,s)=>n+' veut un transfert. Un acheteur propose '+s, sellBtn:'Vendre', keepBtn:'Garder',
+    chem:'alchimie', promises:'Promesses', due:d=>'avant '+d,
+    kStart:'place de titulaire', kRaise:'augmentation', kSign:'recrue'
+  }), it:()=>({
+    talk:'Parla', talkH:n=>'Colloquio · '+n, praise:'Elogia', crit:'Critica', pStart:'Prometti un posto da titolare', pRaise:'Prometti un aumento', pSign:'Prometti un acquisto',
+    once:'Gli hai già parlato questa settimana', mood:m=>'Umore: '+(m>=2 ? 'ottimo' : m>=1 ? 'buono' : m<=-2 ? 'vuole andarsene' : m<0 ? 'scontento' : 'stabile'),
+    rPraiseOk:'Contento: morale +1', rPraiseMeh:'L’ha presa con freddezza — elogio senza motivo', rCritOk:'Carico: la squadra sarà più forte nella prossima notte', rCritBad:'Offeso: morale −1',
+    rPromise:d=>'Ti crede. Scadenza — '+d, dup:'Questa promessa è già stata fatta',
+    kept:n=>'Promessa a '+n+' mantenuta — morale +1', broken:n=>n+': "avevi promesso e non hai mantenuto". Morale −2, vuole un trasferimento',
+    wantPlay:n=>n+' è in panchina da un mese e vuole un posto', promiseBtn:'Prometti un posto', waitBtn:'Digli di aspettare',
+    wantLeave:(n,s)=>n+' vuole un trasferimento. Un acquirente offre '+s, sellBtn:'Vendi', keepBtn:'Tieni',
+    chem:'intesa', promises:'Promesse', due:d=>'entro '+d,
+    kStart:'posto da titolare', kRaise:'aumento', kSign:'acquisto'
+  }), pt:()=>({
+    talk:'Conversar', talkH:n=>'Conversa · '+n, praise:'Elogiar', crit:'Criticar', pStart:'Prometer vaga de titular', pRaise:'Prometer aumento', pSign:'Prometer contratação',
+    once:'Você já conversou com ele esta semana', mood:m=>'Humor: '+(m>=2 ? 'ótimo' : m>=1 ? 'bom' : m<=-2 ? 'quer sair' : m<0 ? 'insatisfeito' : 'estável'),
+    rPraiseOk:'Satisfeito: moral +1', rPraiseMeh:'Levou na frieza — elogio sem motivo', rCritOk:'Motivado: o time fica mais forte na próxima noite', rCritBad:'Ofendido: moral −1',
+    rPromise:d=>'Ele acredita em você. Prazo — '+d, dup:'Essa promessa já foi feita',
+    kept:n=>'Promessa a '+n+' cumprida — moral +1', broken:n=>n+': "você prometeu e não cumpriu". Moral −2, quer transferência',
+    wantPlay:n=>n+' está no banco há um mês e quer uma vaga', promiseBtn:'Prometer vaga', waitBtn:'Pedir para esperar',
+    wantLeave:(n,s)=>n+' quer uma transferência. Um comprador oferece '+s, sellBtn:'Vender', keepBtn:'Manter',
+    chem:'entrosamento', promises:'Promessas', due:d=>'até '+d,
+    kStart:'vaga de titular', kRaise:'aumento', kSign:'contratação'
+  }), de:()=>({
+    talk:'Gespräch', talkH:n=>'Gespräch · '+n, praise:'Loben', crit:'Kritisieren', pStart:'Stammplatz versprechen', pRaise:'Gehaltserhöhung versprechen', pSign:'Verpflichtung versprechen',
+    once:'Du hast diese Woche schon mit ihm gesprochen', mood:m=>'Stimmung: '+(m>=2 ? 'super' : m>=1 ? 'gut' : m<=-2 ? 'will weg' : m<0 ? 'unzufrieden' : 'stabil'),
+    rPraiseOk:'Zufrieden: Moral +1', rPraiseMeh:'Hat es kühl aufgenommen — Lob ohne Grund', rCritOk:'Angestachelt: Das Team ist in der nächsten Nacht stärker', rCritBad:'Beleidigt: Moral −1',
+    rPromise:d=>'Er glaubt dir. Frist — '+d, dup:'Dieses Versprechen wurde schon gegeben',
+    kept:n=>'Versprechen an '+n+' gehalten — Moral +1', broken:n=>n+': „Du hast es versprochen und nicht geliefert“. Moral −2, will einen Transfer',
+    wantPlay:n=>n+' sitzt seit einem Monat auf der Bank und will einen Platz', promiseBtn:'Platz versprechen', waitBtn:'Warten lassen',
+    wantLeave:(n,s)=>n+' will einen Transfer. Ein Käufer bietet '+s, sellBtn:'Verkaufen', keepBtn:'Behalten',
+    chem:'Chemie', promises:'Versprechen', due:d=>'bis '+d,
+    kStart:'Stammplatz', kRaise:'Gehaltserhöhung', kSign:'Verpflichtung'
+  }), es:()=>({
+    talk:'Hablar', talkH:n=>'Charla · '+n, praise:'Elogiar', crit:'Criticar', pStart:'Prometer un puesto de titular', pRaise:'Prometer un aumento', pSign:'Prometer un fichaje',
+    once:'Ya hablaste con él esta semana', mood:m=>'Ánimo: '+(m>=2 ? 'excelente' : m>=1 ? 'bueno' : m<=-2 ? 'quiere irse' : m<0 ? 'molesto' : 'estable'),
+    rPraiseOk:'Contento: moral +1', rPraiseMeh:'Lo tomó con frialdad — elogio sin motivo', rCritOk:'Motivado: el equipo estará más fuerte la próxima noche', rCritBad:'Ofendido: moral −1',
+    rPromise:d=>'Te cree. Plazo — '+d, dup:'Esa promesa ya está hecha',
+    kept:n=>'Promesa a '+n+' cumplida — moral +1', broken:n=>n+': "prometiste y no cumpliste". Moral −2, quiere un traspaso',
+    wantPlay:n=>n+' lleva un mes en el banquillo y quiere un puesto', promiseBtn:'Prometer un puesto', waitBtn:'Decirle que espere',
+    wantLeave:(n,s)=>n+' quiere un traspaso. Un comprador ofrece '+s, sellBtn:'Vender', keepBtn:'Quedarse',
+    chem:'química', promises:'Promesas', due:d=>'antes de '+d,
+    kStart:'puesto de titular', kRaise:'aumento', kSign:'fichaje'
+  })}[LANG]||(()=>({
     talk:'Talk', talkH:n=>'Talk · '+n, praise:'Praise', crit:'Criticise', pStart:'Promise a starting spot', pRaise:'Promise a raise', pSign:'Promise a signing',
     once:'Already talked to them this week', mood:m=>'Mood: '+(m>=2 ? 'great' : m>=1 ? 'good' : m<=-2 ? 'wants out' : m<0 ? 'unhappy' : 'steady'),
     rPraiseOk:'Pleased: morale +1', rPraiseMeh:'Took it coolly — praise without a reason', rCritOk:'Fired up: the team is stronger next night', rCritBad:'Offended: morale −1',
@@ -160022,7 +160397,7 @@ function mgrT5(){
     wantLeave:(n,s)=>n+' wants a transfer. A buyer offers '+s, sellBtn:'Sell', keepBtn:'Keep',
     chem:'chemistry', promises:'Promises', due:d=>'by '+d,
     kStart:'starting spot', kRaise:'raise', kSign:'signing'
-  };
+  })))();
 }
 const MGR_PROMISE_DAYS=28;
 function mgrInTeam(h){ return MGR.teams.some(t=>t.cards.some(x=>hKey(x)===hKey(h))); }
@@ -160211,7 +160586,102 @@ function mgrT7(){
     ePc:h=>'У '+h+' сгорел ПК', ePcA:'Купить новый ($1 500, мораль +1)', ePcB:'Пусть играет на старом (сила −2 на вечер)',
     trophyCh:n=>'Испытание: '+n, chNames:{treble:'Требл — три победы за сезон', grands2:'Два состава в одном гранд-финале FNCS', ewc:'Топ-3 на Esports World Cup',
       academy:'Воспитанник академии — 5 вечеров в основе', profit:'Касса ×1,5 к концу сезона', underdog:'Андердог — топ-5 на любом турнире'}
-  } : {
+  } : ({fr:()=>({
+    start:'Point de départ', s0:'Début de saison', s1:'Après le Major 1', s2:'Après le Major 2',
+    ch:'Défi', chNone:'Aucun défi', chDone:'Défi réussi', chFail:'Défi raté', chProg:'Défi',
+    trophies:'Vitrine', conf:'Confiance du board', id:'Identité du club', idResults:'résultats', idYouth:'jeunes', idBusiness:'business',
+    idResultsN:'le board veut des places', idYouthN:'le board veut des joueurs de l’académie', idBusinessN:'le board veut du profit',
+    sacked:c=>c+' t’a viré en cours de saison : la confiance du board est tombée à zéro', sackedBtn:'Trouver un club',
+    jobOffer:(c,a)=>c+' te veut comme manager (moy. '+a+')', jobBtn:'Partir', stayBtn:'Rester', moved:c=>'Tu diriges maintenant '+c,
+    mgrSacked:(m,c,n)=>c+' a viré '+m+(n ? '. Nouveau manager — '+n : ''), mgrPoached:(m,c,f)=>m+' quitte '+f+' pour '+c,
+    rivals:'Managers des clubs', stPlace:'discret', stBal:'équilibré', stAggr:'agressif',
+    ev:'Événements', evOff:'désactivés', evRare:'rares', evNorm:'normaux', evOften:'fréquents',
+    eSick:h=>h+' est malade avant la nuit', eSickA:'Joue malgré tout', eSickB:'Repos — moral +1',
+    eSponsor:s=>'Une boisson énergisante propose '+s+' pour des pubs en stream', eSponsorA:'Accepter (réputation −3)', eSponsorB:'Refuser (réputation +2)',
+    eTweet:h=>h+' a pété un câble sur Twitter après la nuit', eTweetA:'L’amender (moral −1, réputation +2)', eTweetB:'Le soutenir (moral +1, réputation −3)',
+    eCustom:'Un streamer invite l’équipe à une custom avec prix', eCustomA:'Jouer (+$, réputation +2, fatigue +8)', eCustomB:'Refuser',
+    eFeud:(a,b)=>a+' et '+b+' se sont embrouillés en vocal', eFeudA:'En discuter (alchimie −2)', eFeudB:'Les laisser régler ça (alchimie −5, moral −1)',
+    eLeak:(h,c)=>'Presse : '+c+' veut '+h, eLeakA:'« Pas à vendre » (moral +1, réputation +1)', eLeakB:'Ne rien dire (moral −1)',
+    ePc:h=>'Le PC de '+h+' a lâché', ePcA:'Acheter un nouveau ($1,500, moral +1)', ePcB:'Jouer sur l’ancien (power −2 la nuit suivante)',
+    trophyCh:n=>'Défi : '+n, chNames:{treble:'Triplé — trois victoires en une saison', grands2:'Deux équipes dans une même grande finale FNCS', ewc:'Top 3 à l’Esports World Cup',
+      academy:'Diplômé de l’académie — 5 nuits dans le onze', profit:'Cash ×1,5 en fin de saison', underdog:'Outsider — top 5 à un événement'}
+  }), it:()=>({
+    start:'Punto di partenza', s0:'Inizio stagione', s1:'Dopo il Major 1', s2:'Dopo il Major 2',
+    ch:'Sfida', chNone:'Nessuna sfida', chDone:'Sfida completata', chFail:'Sfida fallita', chProg:'Sfida',
+    trophies:'Bacheca', conf:'Fiducia della dirigenza', id:'Identità del club', idResults:'risultati', idYouth:'giovani', idBusiness:'business',
+    idResultsN:'la dirigenza vuole piazzamenti', idYouthN:'la dirigenza vuole giocatori dell’academy', idBusinessN:'la dirigenza vuole profitto',
+    sacked:c=>c+' ti ha esonerato a stagione in corso: la fiducia della dirigenza è a zero', sackedBtn:'Trova un club',
+    jobOffer:(c,a)=>c+' ti vuole come manager (media '+a+')', jobBtn:'Trasferisciti', stayBtn:'Resta', moved:c=>'Ora alleni '+c,
+    mgrSacked:(m,c,n)=>c+' ha esonerato '+m+(n ? '. Nuovo manager — '+n : ''), mgrPoached:(m,c,f)=>m+' lascia '+f+' per '+c,
+    rivals:'Manager dei club', stPlace:'tranquillo', stBal:'equilibrato', stAggr:'aggressivo',
+    ev:'Eventi', evOff:'spenti', evRare:'rari', evNorm:'normali', evOften:'frequenti',
+    eSick:h=>h+' sta male prima della notte', eSickA:'Gioca comunque', eSickB:'Riposo — morale +1',
+    eSponsor:s=>'Una bevanda energetica offre '+s+' per pubblicità in stream', eSponsorA:'Accetta (reputazione −3)', eSponsorB:'Rifiuta (reputazione +2)',
+    eTweet:h=>h+' ha perso la testa su Twitter dopo la notte', eTweetA:'Multalo (morale −1, reputazione +2)', eTweetB:'Difendilo (morale +1, reputazione −3)',
+    eCustom:'Uno streamer invita la squadra a una custom con premio', eCustomA:'Gioca (+$, reputazione +2, fatica +8)', eCustomB:'Rifiuta',
+    eFeud:(a,b)=>a+' e '+b+' hanno litigato in vocale', eFeudA:'Chiarite (intesa −2)', eFeudB:'Lascia che se la vedano da soli (intesa −5, morale −1)',
+    eLeak:(h,c)=>'Stampa: '+c+' vuole '+h, eLeakA:'"Non è in vendita" (morale +1, reputazione +1)', eLeakB:'Non dire nulla (morale −1)',
+    ePc:h=>'Il PC di '+h+' è morto', ePcA:'Compra un PC nuovo ($1,500, morale +1)', ePcB:'Gioca con quello vecchio (power −2 la notte dopo)',
+    trophyCh:n=>'Sfida: '+n, chNames:{treble:'Tripletta — tre vittorie in una stagione', grands2:'Due squadre nella stessa finale FNCS', ewc:'Top 3 all’Esports World Cup',
+      academy:'Prodotto dell’academy — 5 notti in formazione', profit:'Cash ×1,5 a fine stagione', underdog:'Outsider — top 5 in un evento qualsiasi'}
+  }), pt:()=>({
+    start:'Ponto de partida', s0:'Início da temporada', s1:'Depois do Major 1', s2:'Depois do Major 2',
+    ch:'Desafio', chNone:'Sem desafio', chDone:'Desafio concluído', chFail:'Desafio falhou', chProg:'Desafio',
+    trophies:'Galeria de troféus', conf:'Confiança da diretoria', id:'Identidade do clube', idResults:'resultados', idYouth:'base', idBusiness:'negócios',
+    idResultsN:'a diretoria quer colocações', idYouthN:'a diretoria quer jogadores da academia', idBusinessN:'a diretoria quer lucro',
+    sacked:c=>c+' demitiu você no meio da temporada: a confiança da diretoria chegou a zero', sackedBtn:'Procurar um clube',
+    jobOffer:(c,a)=>c+' quer você como técnico (média '+a+')', jobBtn:'Mudar', stayBtn:'Ficar', moved:c=>'Agora você comanda o '+c,
+    mgrSacked:(m,c,n)=>c+' demitiu '+m+(n ? '. Novo técnico — '+n : ''), mgrPoached:(m,c,f)=>m+' deixa o '+f+' pelo '+c,
+    rivals:'Técnicos dos clubes', stPlace:'discreto', stBal:'equilibrado', stAggr:'agressivo',
+    ev:'Eventos', evOff:'desligados', evRare:'raros', evNorm:'normais', evOften:'frequentes',
+    eSick:h=>h+' está doente antes da noite', eSickA:'Joga assim mesmo', eSickB:'Descansar — moral +1',
+    eSponsor:s=>'Uma marca de energético oferece '+s+' por anúncios na live', eSponsorA:'Aceitar (reputação −3)', eSponsorB:'Recusar (reputação +2)',
+    eTweet:h=>h+' perdeu a cabeça no Twitter depois da noite', eTweetA:'Multar (moral −1, reputação +2)', eTweetB:'Apoiar (moral +1, reputação −3)',
+    eCustom:'Um streamer convida o time para uma custom com prêmio', eCustomA:'Jogar (+$, reputação +2, cansaço +8)', eCustomB:'Recusar',
+    eFeud:(a,b)=>a+' e '+b+' brigaram no voice', eFeudA:'Conversar (entrosamento −2)', eFeudB:'Deixar que se resolvam (entrosamento −5, moral −1)',
+    eLeak:(h,c)=>'Imprensa: '+c+' quer '+h, eLeakA:'"Não está à venda" (moral +1, reputação +1)', eLeakB:'Não dizer nada (moral −1)',
+    ePc:h=>'O PC de '+h+' morreu', ePcA:'Comprar um novo ($1,500, moral +1)', ePcB:'Jogar no antigo (power −2 na próxima noite)',
+    trophyCh:n=>'Desafio: '+n, chNames:{treble:'Tríplice — três vitórias em uma temporada', grands2:'Dois times na mesma grande final da FNCS', ewc:'Top 3 na Esports World Cup',
+      academy:'Formado na academia — 5 noites no time titular', profit:'Cash ×1,5 até o fim da temporada', underdog:'Zebra — top 5 em qualquer evento'}
+  }), de:()=>({
+    start:'Startpunkt', s0:'Saisonstart', s1:'Nach Major 1', s2:'Nach Major 2',
+    ch:'Herausforderung', chNone:'Keine Herausforderung', chDone:'Herausforderung geschafft', chFail:'Herausforderung verfehlt', chProg:'Herausforderung',
+    trophies:'Trophäenschrank', conf:'Vertrauen des Vorstands', id:'Klubidentität', idResults:'Ergebnisse', idYouth:'Jugend', idBusiness:'Geschäft',
+    idResultsN:'der Vorstand will Platzierungen', idYouthN:'der Vorstand will Akademie-Spieler', idBusinessN:'der Vorstand will Gewinn',
+    sacked:c=>c+' hat dich mitten in der Saison entlassen: Das Vertrauen des Vorstands fiel auf null', sackedBtn:'Klub suchen',
+    jobOffer:(c,a)=>c+' will dich als Manager (Ø '+a+')', jobBtn:'Wechseln', stayBtn:'Bleiben', moved:c=>'Du leitest jetzt '+c,
+    mgrSacked:(m,c,n)=>c+' hat '+m+' entlassen'+(n ? '. Neuer Manager — '+n : ''), mgrPoached:(m,c,f)=>m+' verlässt '+f+' für '+c,
+    rivals:'Klub-Manager', stPlace:'ruhig', stBal:'ausgewogen', stAggr:'aggressiv',
+    ev:'Ereignisse', evOff:'aus', evRare:'selten', evNorm:'normal', evOften:'oft',
+    eSick:h=>h+' ist vor der Nacht krank', eSickA:'Spielt trotzdem', eSickB:'Ausruhen — Moral +1',
+    eSponsor:s=>'Ein Energydrink bietet '+s+' für Stream-Werbung', eSponsorA:'Annehmen (Ruf −3)', eSponsorB:'Ablehnen (Ruf +2)',
+    eTweet:h=>h+' ist nach der Nacht auf Twitter ausgerastet', eTweetA:'Strafe verhängen (Moral −1, Ruf +2)', eTweetB:'Rückendeckung geben (Moral +1, Ruf −3)',
+    eCustom:'Ein Streamer lädt das Team zu einer Custom mit Preisgeld ein', eCustomA:'Mitspielen (+$, Ruf +2, Müdigkeit +8)', eCustomB:'Ablehnen',
+    eFeud:(a,b)=>a+' und '+b+' haben sich im Voice gestritten', eFeudA:'Aussprechen (Chemie −2)', eFeudB:'Sie das selbst klären lassen (Chemie −5, Moral −1)',
+    eLeak:(h,c)=>'Presse: '+c+' will '+h, eLeakA:'„Nicht verkäuflich“ (Moral +1, Ruf +1)', eLeakB:'Nichts sagen (Moral −1)',
+    ePc:h=>'Der PC von '+h+' ist kaputt', ePcA:'Neuen kaufen ($1,500, Moral +1)', ePcB:'Am alten weiterspielen (Power −2 in der nächsten Nacht)',
+    trophyCh:n=>'Herausforderung: '+n, chNames:{treble:'Triple — drei Siege in einer Saison', grands2:'Zwei Teams im selben FNCS-Grand-Final', ewc:'Top 3 beim Esports World Cup',
+      academy:'Akademie-Absolvent — 5 Nächte in der Startaufstellung', profit:'Cash ×1,5 bis Saisonende', underdog:'Außenseiter — Top 5 bei einem beliebigen Event'}
+  }), es:()=>({
+    start:'Punto de partida', s0:'Inicio de temporada', s1:'Tras el Major 1', s2:'Tras el Major 2',
+    ch:'Reto', chNone:'Sin reto', chDone:'Reto completado', chFail:'Reto fallido', chProg:'Reto',
+    trophies:'Vitrina', conf:'Confianza de la directiva', id:'Identidad del club', idResults:'resultados', idYouth:'cantera', idBusiness:'negocio',
+    idResultsN:'la directiva quiere clasificaciones', idYouthN:'la directiva quiere jugadores de la academia', idBusinessN:'la directiva quiere beneficios',
+    sacked:c=>c+' te despidió a mitad de temporada: la confianza de la directiva llegó a cero', sackedBtn:'Buscar un club',
+    jobOffer:(c,a)=>c+' te quiere como manager (media '+a+')', jobBtn:'Mudarse', stayBtn:'Quedarse', moved:c=>'Ahora diriges a '+c,
+    mgrSacked:(m,c,n)=>c+' despidió a '+m+(n ? '. Nuevo manager — '+n : ''), mgrPoached:(m,c,f)=>m+' deja '+f+' por '+c,
+    rivals:'Managers de los clubes', stPlace:'tranquilo', stBal:'equilibrado', stAggr:'agresivo',
+    ev:'Eventos', evOff:'apagados', evRare:'raros', evNorm:'normales', evOften:'frecuentes',
+    eSick:h=>h+' está enfermo antes de la noche', eSickA:'Juega igual', eSickB:'Descansar — moral +1',
+    eSponsor:s=>'Una bebida energética ofrece '+s+' por anuncios en el stream', eSponsorA:'Aceptar (reputación −3)', eSponsorB:'Rechazar (reputación +2)',
+    eTweet:h=>h+' perdió los papeles en Twitter después de la noche', eTweetA:'Multarlo (moral −1, reputación +2)', eTweetB:'Respaldarlo (moral +1, reputación −3)',
+    eCustom:'Un streamer invita al equipo a una custom con premio', eCustomA:'Jugar (+$, reputación +2, cansancio +8)', eCustomB:'Rechazar',
+    eFeud:(a,b)=>a+' y '+b+' se pelearon en el voice', eFeudA:'Hablarlo (química −2)', eFeudB:'Dejar que lo resuelvan solos (química −5, moral −1)',
+    eLeak:(h,c)=>'Prensa: '+c+' quiere a '+h, eLeakA:'"No está en venta" (moral +1, reputación +1)', eLeakB:'No decir nada (moral −1)',
+    ePc:h=>'Se murió el PC de '+h, ePcA:'Comprar uno nuevo ($1,500, moral +1)', ePcB:'Seguir con el viejo (power −2 la próxima noche)',
+    trophyCh:n=>'Reto: '+n, chNames:{treble:'Triplete — tres victorias en una temporada', grands2:'Dos equipos en una misma gran final de FNCS', ewc:'Top 3 en la Esports World Cup',
+      academy:'Graduado de la academia — 5 noches en el once titular', profit:'Cash ×1,5 al final de la temporada', underdog:'Sorpresa — top 5 en cualquier evento'}
+  })}[LANG]||(()=>({
     start:'Start point', s0:'Season start', s1:'After Major 1', s2:'After Major 2',
     ch:'Challenge', chNone:'No challenge', chDone:'Challenge complete', chFail:'Challenge failed', chProg:'Challenge',
     trophies:'Cabinet', conf:'Board confidence', id:'Club identity', idResults:'results', idYouth:'youth', idBusiness:'business',
@@ -160230,7 +160700,7 @@ function mgrT7(){
     ePc:h=>h+'\'s PC died', ePcA:'Buy a new one ($1,500, morale +1)', ePcB:'Play on the old one (power −2 next night)',
     trophyCh:n=>'Challenge: '+n, chNames:{treble:'Treble — three wins in a season', grands2:'Two squads in one FNCS grand final', ewc:'Top 3 at the Esports World Cup',
       academy:'Academy graduate — 5 nights in the line-up', profit:'Cash ×1.5 by season end', underdog:'Underdog — top 5 at any event'}
-  };
+  })))();
 }
 
 // ---- 1) Точки старта: дни после финалов FNCS в теневой карьере года.
@@ -160290,16 +160760,16 @@ function mgrBoardAsk(msg, overBy, retry){
   const turn=Math.max(20000, (MGR.club && MGR.club.turnover) || 100000);
   const pen=Math.max(5, Math.min(25, Math.round(5+overBy/turn*60)));
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
-  const q=ru ? msg+'. Ты главный — подписать всё равно? Доверие совета −'+pen : msg+'. You are the boss — sign anyway? Board confidence −'+pen;
+  const q=ru ? msg+'. Ты главный — подписать всё равно? Доверие совета −'+pen : ({fr:()=>(msg+'. C’est toi le patron — signer quand même ? Confiance du board −'+pen), it:()=>(msg+'. Il capo sei tu — firmare comunque? Fiducia della dirigenza −'+pen), pt:()=>(msg+'. Você é o chefe — contratar mesmo assim? Confiança da diretoria −'+pen), de:()=>(msg+'. Du bist der Boss — trotzdem verpflichten? Vertrauen des Vorstands −'+pen), es:()=>(msg+'. Tú eres el jefe — ¿fichar de todos modos? Confianza de la directiva −'+pen)}[LANG]||(()=>(msg+'. You are the boss — sign anyway? Board confidence −'+pen)))();
   ccAsk(q, ()=>{
     MGR_BOARD_PASS=true;
     try{ retry(); } finally { MGR_BOARD_PASS=false; }
     mgrConfAdd(-pen);
     MGR.inbox=MGR.inbox||[];
     MGR.inbox.unshift({id:'bo'+CAREER.career.day+'_'+Date.now(), day:CAREER.career.day, kind:'info', done:'info',
-      text:ru ? 'Совет недоволен: решение через голову бюджета. Доверие −'+pen : 'The board is unhappy: you went over the budget. Confidence −'+pen});
+      text:ru ? 'Совет недоволен: решение через голову бюджета. Доверие −'+pen : ({fr:()=>('Le board est mécontent : tu as dépassé le budget. Confiance −'+pen), it:()=>('La dirigenza è scontenta: hai superato il budget. Fiducia −'+pen), pt:()=>('A diretoria está insatisfeita: você estourou o orçamento. Confiança −'+pen), de:()=>('Der Vorstand ist unzufrieden: Du hast das Budget überschritten. Vertrauen −'+pen), es:()=>('La directiva está molesta: te pasaste del presupuesto. Confianza −'+pen)}[LANG]||(()=>('The board is unhappy: you went over the budget. Confidence −'+pen)))()});
     mgrSave(); try{ mgrSackCheck(); }catch(e){} mgrOpenHub();
-  }, {yes:ru ? 'Подписать всё равно' : 'Sign anyway', no:ru ? 'Отмена' : 'Cancel'});
+  }, {yes:ru ? 'Подписать всё равно' : ({fr:()=>('Signer quand même'), it:()=>('Firma comunque'), pt:()=>('Contratar mesmo assim'), de:()=>('Trotzdem verpflichten'), es:()=>('Fichar de todos modos')}[LANG]||(()=>('Sign anyway')))(), no:ru ? 'Отмена' : ({fr:()=>('Annuler'), it:()=>('Annulla'), pt:()=>('Cancelar'), de:()=>('Abbrechen'), es:()=>('Cancelar')}[LANG]||(()=>('Cancel')))()});
   return false;
 }
 function mgrConfNight(row, clubGot){
@@ -160456,7 +160926,47 @@ function mgrT8(){
     fac:'Инфраструктура', fHouse:'Геймхаус', fLab:'Дата-отдел', fBoot:'Буткемп-программа',
     fHouseN:'рост +10% и усталость −2 в неделю за уровень', fLabN:'+0.3 силы на каждом вечере за уровень', fBootN:'+1 сила в финалах FNCS',
     lvl:l=>'ур. '+l, buy:(s,u)=>'Построить '+s+' (+'+u+'/мес)', maxed:'максимум', upkeep:'содержание'
-  } : {
+  } : ({fr:()=>({
+    tr:(h,to,from)=>'Transfert : '+h+' → '+to+(from ? ' (depuis '+from+')' : ' (agent libre)'),
+    sp:'Sponsor de la saison', spPick:'Choisis un sponsor pour la saison', spSafe:'Sûr', spBonus:'Bonus', spRisk:'Risqué',
+    spSafeN:s=>s+' par mois, sans conditions', spBonusN:(s,w,t)=>s+' par mois + '+w+' par victoire, '+t+' par top 3', spRiskN:s=>s+' par mois, objectif — top 10 dans une grande finale FNCS ; si raté — rembourser 30 %',
+    spNow:(n,t)=>'Sponsor : '+n+' — '+t, spBonusPaid:(s,e)=>'Bonus du sponsor '+s+' pour '+e, spRiskOk:'Objectif du sponsor atteint', spRiskFail:s=>'Objectif du sponsor raté : rembourser '+s+', réputation −10',
+    fac:'Installations', fHouse:'Gaming house', fLab:'Département data', fBoot:'Programme de bootcamp',
+    fHouseN:'croissance +10 % et fatigue −2 par semaine par niveau', fLabN:'+0,3 power chaque nuit par niveau', fBootN:'+1 power en finales FNCS',
+    lvl:l=>'niv. '+l, buy:(s,u)=>'Construire '+s+' (+'+u+'/mois)', maxed:'max', upkeep:'entretien'
+  }), it:()=>({
+    tr:(h,to,from)=>'Trasferimento: '+h+' → '+to+(from ? ' (da '+from+')' : ' (svincolato)'),
+    sp:'Sponsor stagionale', spPick:'Scegli uno sponsor per la stagione', spSafe:'Sicuro', spBonus:'Bonus', spRisk:'Rischioso',
+    spSafeN:s=>s+' al mese, senza condizioni', spBonusN:(s,w,t)=>s+' al mese + '+w+' a vittoria, '+t+' a top 3', spRiskN:s=>s+' al mese, obiettivo — top 10 in una finale FNCS; se lo manchi — restituisci il 30%',
+    spNow:(n,t)=>'Sponsor: '+n+' — '+t, spBonusPaid:(s,e)=>'Bonus sponsor '+s+' per '+e, spRiskOk:'Obiettivo dello sponsor raggiunto', spRiskFail:s=>'Obiettivo dello sponsor mancato: restituisci '+s+', reputazione −10',
+    fac:'Strutture', fHouse:'Gaming house', fLab:'Reparto dati', fBoot:'Programma di bootcamp',
+    fHouseN:'crescita +10% e fatica −2 a settimana per livello', fLabN:'+0,3 power ogni notte per livello', fBootN:'+1 power nelle finali FNCS',
+    lvl:l=>'liv. '+l, buy:(s,u)=>'Costruisci '+s+' (+'+u+'/mese)', maxed:'al massimo', upkeep:'manutenzione'
+  }), pt:()=>({
+    tr:(h,to,from)=>'Transferência: '+h+' → '+to+(from ? ' (de '+from+')' : ' (agente livre)'),
+    sp:'Patrocinador da temporada', spPick:'Escolha um patrocinador para a temporada', spSafe:'Seguro', spBonus:'Bônus', spRisk:'Arriscado',
+    spSafeN:s=>s+' por mês, sem condições', spBonusN:(s,w,t)=>s+' por mês + '+w+' por vitória, '+t+' por top 3', spRiskN:s=>s+' por mês, meta — top 10 em uma grande final da FNCS; se falhar — devolver 30%',
+    spNow:(n,t)=>'Patrocinador: '+n+' — '+t, spBonusPaid:(s,e)=>'Bônus do patrocinador '+s+' por '+e, spRiskOk:'Meta do patrocinador cumprida', spRiskFail:s=>'Meta do patrocinador falhou: devolver '+s+', reputação −10',
+    fac:'Instalações', fHouse:'Gaming house', fLab:'Departamento de dados', fBoot:'Programa de bootcamp',
+    fHouseN:'crescimento +10% e cansaço −2 por semana por nível', fLabN:'+0,3 de power toda noite por nível', fBootN:'+1 de power nas finais da FNCS',
+    lvl:l=>'nív. '+l, buy:(s,u)=>'Construir '+s+' (+'+u+'/mês)', maxed:'no máximo', upkeep:'manutenção'
+  }), de:()=>({
+    tr:(h,to,from)=>'Transfer: '+h+' → '+to+(from ? ' (von '+from+')' : ' (vereinslos)'),
+    sp:'Saison-Sponsor', spPick:'Wähle einen Sponsor für die Saison', spSafe:'Sicher', spBonus:'Bonus', spRisk:'Riskant',
+    spSafeN:s=>s+' im Monat, ohne Bedingungen', spBonusN:(s,w,t)=>s+' im Monat + '+w+' pro Sieg, '+t+' pro Top 3', spRiskN:s=>s+' im Monat, Ziel — Top 10 in einem FNCS-Grand-Final; verfehlt — 30 % zurückzahlen',
+    spNow:(n,t)=>'Sponsor: '+n+' — '+t, spBonusPaid:(s,e)=>'Sponsor-Bonus '+s+' für '+e, spRiskOk:'Sponsor-Ziel erreicht', spRiskFail:s=>'Sponsor-Ziel verfehlt: '+s+' zurückzahlen, Ruf −10',
+    fac:'Einrichtungen', fHouse:'Gaming House', fLab:'Datenabteilung', fBoot:'Bootcamp-Programm',
+    fHouseN:'Wachstum +10 % und Müdigkeit −2 pro Woche je Stufe', fLabN:'+0,3 Power jede Nacht je Stufe', fBootN:'+1 Power in FNCS-Finals',
+    lvl:l=>'Stufe '+l, buy:(s,u)=>s+' bauen (+'+u+'/Monat)', maxed:'maximal', upkeep:'Unterhalt'
+  }), es:()=>({
+    tr:(h,to,from)=>'Traspaso: '+h+' → '+to+(from ? ' (desde '+from+')' : ' (agente libre)'),
+    sp:'Patrocinador de la temporada', spPick:'Elige un patrocinador para la temporada', spSafe:'Seguro', spBonus:'Bonus', spRisk:'Arriesgado',
+    spSafeN:s=>s+' al mes, sin condiciones', spBonusN:(s,w,t)=>s+' al mes + '+w+' por victoria, '+t+' por top 3', spRiskN:s=>s+' al mes, objetivo — top 10 en una gran final de FNCS; si fallas — devuelves el 30%',
+    spNow:(n,t)=>'Patrocinador: '+n+' — '+t, spBonusPaid:(s,e)=>'Bonus del patrocinador '+s+' por '+e, spRiskOk:'Objetivo del patrocinador cumplido', spRiskFail:s=>'Objetivo del patrocinador fallado: devuelves '+s+', reputación −10',
+    fac:'Instalaciones', fHouse:'Gaming house', fLab:'Departamento de datos', fBoot:'Programa de bootcamp',
+    fHouseN:'crecimiento +10% y cansancio −2 por semana por nivel', fLabN:'+0,3 de power cada noche por nivel', fBootN:'+1 de power en las finales de FNCS',
+    lvl:l=>'nv. '+l, buy:(s,u)=>'Construir '+s+' (+'+u+'/mes)', maxed:'al máximo', upkeep:'mantenimiento'
+  })}[LANG]||(()=>({
     tr:(h,to,from)=>'Transfer: '+h+' → '+to+(from ? ' (from '+from+')' : ' (free agent)'),
     sp:'Season sponsor', spPick:'Pick a sponsor for the season', spSafe:'Safe', spBonus:'Bonus', spRisk:'Risky',
     spSafeN:s=>s+' a month, no strings', spBonusN:(s,w,t)=>s+' a month + '+w+' per win, '+t+' per top 3', spRiskN:s=>s+' a month, target — top 10 in an FNCS grand final; miss it — pay back 30%',
@@ -160464,7 +160974,7 @@ function mgrT8(){
     fac:'Facilities', fHouse:'Gaming house', fLab:'Data department', fBoot:'Bootcamp programme',
     fHouseN:'growth +10% and fatigue −2 a week per level', fLabN:'+0.3 power every night per level', fBootN:'+1 power in FNCS finals',
     lvl:l=>'lvl '+l, buy:(s,u)=>'Build '+s+' (+'+u+'/mo)', maxed:'maxed', upkeep:'upkeep'
-  };
+  })))();
 }
 // ---- 1) Переходы.
 function mgrOrgOf(c){
@@ -160510,8 +161020,13 @@ function mgrSponsorsTabHTML(){
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
   const T=ru ? {money:'Деньги клуба в месяц', sp:'Спонсоры', wages:'Зарплаты игроков', staff:'Штаб', base:'База', cr:'Криэйторы', net:'Итог в месяц',
                  why:'Из чего сумма спонсора', lvl:'Уровень клуба', rep:'Репутация', fans:'Аудитория (подписчики X)', smm:'SMM в штабе', deal:'Условия сделки', deal0:'Контракт'}
-             : {money:'Club money per month', sp:'Sponsors', wages:'Player wages', staff:'Staff', base:'Facilities', cr:'Creators', net:'Net per month',
-                 why:'What the sponsor money is made of', lvl:'Club level', rep:'Reputation', fans:'Audience (X followers)', smm:'SMM on staff', deal:'Deal terms', deal0:'Contract'};
+             : ({fr:()=>({money:'Argent du club par mois', sp:'Sponsors', wages:'Salaires des joueurs', staff:'Staff', base:'Installations', cr:'Créateurs', net:'Net par mois',
+                 why:'D’où vient l’argent des sponsors', lvl:'Niveau du club', rep:'Réputation', fans:'Audience (abonnés X)', smm:'SMM dans le staff', deal:'Conditions du contrat', deal0:'Contrat'}), it:()=>({money:'Soldi del club al mese', sp:'Sponsor', wages:'Stipendi dei giocatori', staff:'Staff', base:'Strutture', cr:'Creator', net:'Netto al mese',
+                 why:'Da cosa derivano i soldi dello sponsor', lvl:'Livello del club', rep:'Reputazione', fans:'Pubblico (follower su X)', smm:'SMM nello staff', deal:'Termini dell’accordo', deal0:'Contratto'}), pt:()=>({money:'Dinheiro do clube por mês', sp:'Patrocinadores', wages:'Salários dos jogadores', staff:'Staff', base:'Instalações', cr:'Criadores', net:'Líquido por mês',
+                 why:'De onde vem o dinheiro do patrocinador', lvl:'Nível do clube', rep:'Reputação', fans:'Audiência (seguidores no X)', smm:'SMM no staff', deal:'Termos do acordo', deal0:'Contrato'}), de:()=>({money:'Klubgeld pro Monat', sp:'Sponsoren', wages:'Spielergehälter', staff:'Staff', base:'Einrichtungen', cr:'Creator', net:'Netto pro Monat',
+                 why:'Woraus sich das Sponsorengeld zusammensetzt', lvl:'Klubstufe', rep:'Ruf', fans:'Reichweite (X-Follower)', smm:'SMM im Staff', deal:'Vertragsbedingungen', deal0:'Vertrag'}), es:()=>({money:'Dinero del club por mes', sp:'Patrocinadores', wages:'Salarios de los jugadores', staff:'Staff', base:'Instalaciones', cr:'Creadores', net:'Neto por mes',
+                 why:'De qué se compone el dinero del patrocinador', lvl:'Nivel del club', rep:'Reputación', fans:'Audiencia (seguidores en X)', smm:'SMM en el staff', deal:'Términos del acuerdo', deal0:'Contrato'})}[LANG]||(()=>({money:'Club money per month', sp:'Sponsors', wages:'Player wages', staff:'Staff', base:'Facilities', cr:'Creators', net:'Net per month',
+                 why:'What the sponsor money is made of', lvl:'Club level', rep:'Reputation', fans:'Audience (X followers)', smm:'SMM on staff', deal:'Deal terms', deal0:'Contract'})))();
   const row=(k,v,cls)=>'<div class="mgn-row"><em>'+esc(k)+'</em><b'+(cls ? ' class="'+cls+'"' : '')+'>'+v+'</b></div>';
   const sp=mgrSponsor(), w=mgrWageBill(), st=mgrStaffWage()||0, fac=(mgrFacUpkeep()||0), crn=(typeof mgrCreatorNet==='function' ? mgrCreatorNet() : 0), net=mgrNetMonth();
   const money='<div class="ch-tile"><h4>'+esc(T.money)+'</h4>'+
@@ -160708,7 +161223,7 @@ function mgrPickTeam(club){
     if(club.length<2 || MGR_SIM_MODE){ res(club[0]); return; }
     const ru=(typeof LANG!=='undefined' && LANG==='ru');
     const box=document.createElement('div'); box.className='mg-modal mgq-pick';
-    box.innerHTML='<div class="mg-modal-box"><h3>'+esc(ru ? 'За кого играешь?' : 'Who do you play as?')+'</h3><div class="mgq-teams">'+
+    box.innerHTML='<div class="mg-modal-box"><h3>'+esc(ru ? 'За кого играешь?' : ({fr:()=>('Avec qui joues-tu ?'), it:()=>('Con chi giochi?'), pt:()=>('Com quem você joga?'), de:()=>('Mit wem spielst du?'), es:()=>('¿Con quién juegas?')}[LANG]||(()=>('Who do you play as?')))())+'</h3><div class="mgq-teams">'+
       club.map((t,i)=>'<button class="mgq-team" data-i="'+i+'"'+(i===0 ? ' data-mg="go"' : '')+'><b>'+esc(mgrT2().teamWord)+' '+(i+1)+'</b>'+
         '<span>'+(t.squad||[]).map(c=>{ let u=null; try{ u=photoURL(c); }catch(e){} return '<i class="mgq-face">'+(u ? '<img src="'+esc(u)+'" alt="" onerror="this.remove()">' : '')+'<small>'+esc(c.handle)+'</small></i>'; }).join('')+'</span>'+
         '<em>'+Math.round(t.pow||0)+'</em></button>').join('')+'</div></div>';
