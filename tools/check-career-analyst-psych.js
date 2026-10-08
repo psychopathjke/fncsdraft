@@ -26,6 +26,7 @@ try{
   check('психолог смягчает провал формы', CAREER.career.form>-1 && CAREER.career.form<0, String(CAREER.career.form));
   careerFormAdd(1, 70); check('и не трогает рост', Math.abs(CAREER.career.form-(out.notes.form+1))<1e-9, String(CAREER.career.form));
   const t1=careerStaff2TileHTML('analyst'), t2=careerStaff2TileHTML('psych');
+  check('кнопка смены — не «Сменить СММ»', t1.indexOf(L().ccSmmChange)<0 && t1.indexOf(L().ccStaffChange)>=0);
   check('плитки показывают рейтинг и эффект', t1.indexOf(String(ccStaff2('analyst').rating))>=0 && t1.indexOf(L().ccAnalyst)>=0 && t2.indexOf('Mia Stellberg')>=0);
   ccStaff2PickOpen('analyst'); const rows=document.querySelectorAll('#staff2PickBody .cc-buy').length; ccStaff2PickClose();
   check('окно выбора — все аналитики', rows===CC_ANALYSTS.length, String(rows));
