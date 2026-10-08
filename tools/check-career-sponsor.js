@@ -52,6 +52,17 @@ const BOOT = `
     // слоты по подписчикам: 200 тыс. — три
     check('two hundred thousand gives three slots', ccSpSlots() === 3, String(ccSpSlots()));
     check('a second brand fills the second slot', careerSignSponsor(CC_SPONSORS[0].id) === true && ccSponsorsAll().length === 2);
+    // рекламный пост: платит долю ставки, кладёт пост с #ad, раз в неделю на бренд
+    { const sp=ccSponsorsAll()[0], b0=CAREER.career.balance||0, n0=(CAREER.career.news||[]).length, pay=ccSpPostPay(sp);
+      check('two brands wait for a post', ccSpPostsReady() === 2, String(ccSpPostsReady()));
+      careerSponsorPost(sp.id);
+      const post=(CAREER.career.news||[]).find(n=>n.sp===sp.id);
+      check('a sponsored post pays', (CAREER.career.balance||0)-b0 === pay && pay > 0, (CAREER.career.balance-b0)+' vs '+pay);
+      check('and lands in the feed with #ad', !!post && /#ad/.test(post.text||''), JSON.stringify(post));
+      careerSponsorPost(sp.id);
+      check('only once a week per brand', (CAREER.career.balance||0)-b0 === pay && ccSpPostWait(sp) === CC_SP_POST_DAYS);
+      CAREER.career.day=ccAddDays(CAREER.career.day, CC_SP_POST_DAYS);
+      check('and again after a week', ccSpPostWait(sp) === 0); }
 
     // Nobody offers to an unknown career.
     fresh(0);
