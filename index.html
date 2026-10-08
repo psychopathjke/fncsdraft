@@ -266,6 +266,7 @@
     #screen-manager .mfc-grid>.mfc-tile{grid-column:1 !important;grid-row:auto !important;}
     #screen-manager .mfc-play{flex-direction:column;} #screen-manager .mfc-news{min-height:260px;}
   }
+  #screen-manager .mgn-small-h{margin:22px 0 10px;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -157067,7 +157068,7 @@ function mgrClubsFor(year, region){
   CAREER=was; try{ ccWorldReset(); }catch(e){}
   const by={};
   scene.forEach(c=>{ const o=mgrOrgOf(c); if(!c || !o) return; (by[o]=by[o]||[]).push(c); });
-  return Object.keys(by).map(name=>{
+  const list=Object.keys(by).map(name=>{
     const ps=by[name].slice().sort((a,b)=>(ccCardOvr(b)||0)-(ccCardOvr(a)||0));
     const top=ps.slice(0, 6).map(c=>ccCardOvr(c)||0);
     const sq=top.length ? Math.round(top.reduce((s,v)=>s+v, 0)/top.length) : 0;
@@ -157080,8 +157081,23 @@ function mgrClubsFor(year, region){
     const avg=mgrClubLevel(name, ps.map(c=>ccCardOvr(c)||0), year);
     return {name, players:ps.map(c=>c.handle), n:ps.length, avg, sq, star:ps[0] ? ps[0].handle : null,
             budget:mgrClubBudget(name, ps.slice(0, 6).reduce((s,c)=>s+mgrSalary(c), 0), avg)};
-  }).filter(c=>c.n>=2).sort((a,b)=>b.avg-a.avg || b.n-a.n).slice(0, 40)
-    .map((c,i,all)=>Object.assign(c, {expect:mgrExpect(i, all.length)}));
+  });
+  /* Сорок сильнейших (от двух игроков) — как раньше, с ожиданием совета по месту среди них; за ними — все остальные
+     организации региона того года, и клуб из одного игрока тоже (его слово 8.10: «и маленькие орги, которые были —
+     их нет, тоже можно добавить»). Небольшим совет ждёт «выжить». */
+  /* Организации, которые он добавлял в карьеру по просьбам игроков (CC_ORG_NEW: Shimo, Drayko Esport, Team Eldia,
+     Loyalty Gamer, TSM, Gambit, Eleven, COOLER, Liquid и др.; его слово 8.10: «я про те, которые я добавлял организации в
+     карьеру, когда меня просили люди»). Своего состава в снимке сцены у них нет — клуб берётся «без состава»: уровень —
+     tier из карьеры, бюджет — по нему, игроков подписываешь сам. Есть в снимке — уже в списке, не дублируется. */
+  try{ (typeof CC_ORG_NEW!=='undefined' ? CC_ORG_NEW : []).forEach(o=>{
+    if(!o || !o.name || list.some(c=>c.name===o.name)) return;
+    list.push({name:o.name, players:[], n:0, avg:o.tier||78, sq:0, star:null, budget:mgrClubBudget(o.name, 0, o.tier||78), requested:true});
+  }); }catch(e){}
+  const all=list.sort((a,b)=>b.avg-a.avg || b.n-a.n);
+  const big=all.filter(c=>c.n>=2).slice(0, 40);
+  big.forEach((c,i)=>Object.assign(c, {expect:mgrExpect(i, big.length)}));
+  const small=all.filter(c=>big.indexOf(c)<0).map(c=>Object.assign(c, {expect:'survive', small:true}));
+  return big.concat(small);
 }
 /* ПОДПИСЧИКИ КЛУБОВ (его слово 8.10: «добавь фоловеров оргам»). Основной аккаунт клуба в X: число и месяц снимка.
    Сняты 8.10.2026 через api.fxtwitter.com (профиль X без входа) и проверены по имени и описанию аккаунта; NRG и
@@ -157165,7 +157181,8 @@ function mgrOpenNew(year){
     '<div class="mgn-exp">'+esc(T9.expect[c.expect])+'</div></div>';
   const real='<div class="ch-subtabs mgn-sort">'+sub(MGR_NEW_SORT==='stars', "MGR_NEW_SORT='stars';mgrOpenNew()", T9.byStars)+
       sub(MGR_NEW_SORT==='budget', "MGR_NEW_SORT='budget';mgrOpenNew()", T9.byBudget)+'</div>'+
-    '<div class="mgn-grid mgn-grid2">'+(clubs.map(tileNew).join('') || '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div>';
+    '<div class="mgn-grid mgn-grid2">'+(clubs.filter(c=>!c.small).map(c=>tileNew(c, clubs.indexOf(c))).join('') || '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div>'+
+    (clubs.some(c=>c.small) ? '<h3 class="cc-sect-h mgn-small-h">'+esc((typeof LANG!=='undefined' && LANG==='ru') ? 'Небольшие организации' : 'Smaller organisations')+' · '+clubs.filter(c=>c.small).length+'</h3><div class="mgn-grid mgn-grid2 mgn-small">'+clubs.filter(c=>c.small).map(c=>tileNew(c, clubs.indexOf(c))).join('')+'</div>' : '');
   const own=typeof mgrOwnFormHTML==='function' ? mgrOwnFormHTML() : '';
   document.getElementById('mgBody').innerHTML='<div class="mgn-headtile"><h4>'+esc(T.title)+' · '+esc(T.newH)+'</h4>'+
     '<div class="ch-subtabs mgn-years">'+years+'</div>'+
@@ -157554,15 +157571,21 @@ function mgrPrize(ev, place, size){
    5 от 1 млн. Уровень бренда открывается аудиторией: средние — от 100 тыс., топ — от 500 тыс. Каждый платит в месяц долю
    базы спонсора клуба (mgrSponsorBase: уровень, репутация, аудитория, SMM): начальный 35%, средний 60%, топ 100%, ±10% у
    бренда. Всё это — оценка режима. Старый одиночный контракт (MGR.deal) в старых сейвах продолжает платить. */
+/* ПОРОГ У КАЖДОГО БРЕНДА (его слово 8.10: «спонсоры от 100к только, хотя пишет, что открывается от 50, но ни одного
+   спонсора от 50к нет»). Было три уровня: начальные с 0, средние сразу со 100 тыс., топ с 500 тыс. — второй слот (50 тыс.)
+   стоял пустым. Теперь у каждого свой порог подписчиков клуба, ступенька каждые ~1,3–1,5 раза; уровень доли (35/60/100%)
+   — от порога. Пороги — оценка режима. */
 const MGR_SP_BRANDS=[
-  {id:'redbull',name:'Red Bull',tier:3},{id:'monster',name:'Monster Energy',tier:3},{id:'intel',name:'Intel',tier:3},
-  {id:'mastercard',name:'Mastercard',tier:3},{id:'bmw',name:'BMW',tier:3},{id:'samsung',name:'Samsung',tier:3},
-  {id:'mercedes',name:'Mercedes-Benz',tier:3},{id:'nvidia',name:'NVIDIA',tier:3},{id:'dhl',name:'DHL',tier:3},
-  {id:'logitech',name:'Logitech G',tier:2},{id:'hyperx',name:'OMEN',tier:2},{id:'razer',name:'Razer',tier:2},
-  {id:'steelseries',name:'SteelSeries',tier:2},{id:'corsair',name:'Corsair',tier:2},{id:'amd',name:'AMD',tier:2},
-  {id:'alienware',name:'Alienware',tier:2},{id:'kitkat',name:'KitKat',tier:2},
-  {id:'secretlab',name:'Secretlab',tier:1},{id:'gfuel',name:'G FUEL',tier:1},{id:'prime',name:'PRIME',tier:1}];
-const MGR_SP_SHARE={1:0.35, 2:0.6, 3:1.0}, MGR_SP_TIER_FANS={1:0, 2:100000, 3:500000};
+  {id:'gfuel',name:'G FUEL',need:0},{id:'prime',name:'PRIME',need:10000},{id:'secretlab',name:'Secretlab',need:25000},
+  {id:'steelseries',name:'SteelSeries',need:50000},{id:'logitech',name:'Logitech G',need:50000},{id:'corsair',name:'Corsair',need:75000},
+  {id:'hyperx',name:'OMEN',need:100000},{id:'razer',name:'Razer',need:100000},{id:'vodafone',name:'Vodafone',need:150000},
+  {id:'kitkat',name:'KitKat',need:150000},{id:'amd',name:'AMD',need:200000},{id:'alienware',name:'Alienware',need:250000},
+  {id:'monster',name:'Monster Energy',need:300000},{id:'intel',name:'Intel',need:400000},{id:'nike',name:'Nike',need:400000},
+  {id:'samsung',name:'Samsung',need:500000},{id:'redbull',name:'Red Bull',need:500000},{id:'nvidia',name:'NVIDIA',need:600000},
+  {id:'dhl',name:'DHL',need:700000},{id:'mastercard',name:'Mastercard',need:800000},{id:'cocacola',name:'Coca-Cola',need:900000},
+  {id:'bmw',name:'BMW',need:1000000},{id:'mercedes',name:'Mercedes-Benz',need:1200000}];
+MGR_SP_BRANDS.forEach(b=>{ b.tier=b.need<50000 ? 1 : b.need<400000 ? 2 : 3; });
+const MGR_SP_SHARE={1:0.35, 2:0.6, 3:1.0};
 function mgrSpLogo(b){ return 'photos/sp_'+b.id+'.png'; }
 function mgrSpSlots(){ const f=typeof mgrFans==='function' ? mgrFans() : 0; return f>=1e6 ? 5 : f>=5e5 ? 4 : f>=2e5 ? 3 : f>=5e4 ? 2 : 1; }
 function mgrSpNextSlotAt(){ const f=typeof mgrFans==='function' ? mgrFans() : 0; return [5e4,2e5,5e5,1e6].find(x=>x>f)||null; }
@@ -157571,7 +157594,7 @@ function mgrSpOffer(b){
   const v=0.9+((ccHashStr('sp|'+b.id+'|'+(MGR.club && MGR.club.name)+'|'+MGR.year)%21)/100);
   return Math.round(mgrSponsorBase()*MGR_SP_SHARE[b.tier]*v/100)*100;
 }
-function mgrSpOpen(b){ return (typeof mgrFans==='function' ? mgrFans() : 0)>=MGR_SP_TIER_FANS[b.tier]; }
+function mgrSpOpen(b){ return (typeof mgrFans==='function' ? mgrFans() : 0)>=(b.need||0); }
 function mgrSpSign(id){
   const b=MGR_SP_BRANDS.find(x=>x.id===id); if(!b || !mgrSpOpen(b)) return false;
   if(mgrSpSigned().some(x=>x.id===id) || mgrSpSigned().length>=mgrSpSlots()) return false;
@@ -157598,11 +157621,12 @@ function mgrSponsorsBrandsHTML(){
     else cells+='<div class="mg-sp-slot lock"><span class="mg-sp-lock">🔒</span><small>'+esc(T.lock(ccFollowers([5e4,2e5,5e5,1e6][i-1]||0)))+'</small></div>';
   }
   const full=signed.length>=slots;
-  const offers=MGR_SP_BRANDS.filter(b=>!signed.some(x=>x.id===b.id)).sort((a,b)=>b.tier-a.tier || mgrSpOffer(b)-mgrSpOffer(a)).map(b=>{
+  const left=MGR_SP_BRANDS.filter(b=>!signed.some(x=>x.id===b.id));
+  const offers=left.filter(mgrSpOpen).sort((a,b)=>b.need-a.need).concat(left.filter(b=>!mgrSpOpen(b)).sort((a,b)=>a.need-b.need)).map(b=>{
     const open=mgrSpOpen(b);
     return '<div class="mg-sp-offer'+(open ? '' : ' lock')+'">'+logo(b)+'<span class="mg-sp-oin"><b>'+esc(b.name)+'</b><small>'+esc(T.tier[b.tier])+' · '+mgrMoney(mgrSpOffer(b))+' '+esc(T.mo)+'</small></span>'+
       (open ? '<button class="ch-sign"'+(full ? ' disabled title="'+esc(T.full)+'"' : '')+' onclick="mgrSpSign(\''+b.id+'\')">'+esc(T.sign)+'</button>'
-            : '<small class="mg-sp-need">'+esc(T.need(ccFollowers(MGR_SP_TIER_FANS[b.tier])))+'</small>')+'</div>'; }).join('');
+            : '<small class="mg-sp-need">'+esc(T.need(ccFollowers(b.need||0)))+'</small>')+'</div>'; }).join('');
   return '<div class="ch-tile"><h4>'+esc(T.slots)+' · '+signed.length+'/'+slots+'</h4><div class="mg-sp-slots">'+cells+'</div></div>'+
     '<div class="ch-tile"><h4>'+esc(T.offers)+'</h4><div class="mg-sp-offers">'+offers+'</div></div>';
 }
@@ -158778,8 +158802,8 @@ function mgrToast(text){ try{ if(typeof ccMpTell==='function') ccMpTell(text); }
    таланты ≤75, ник; сортировка — по близости к уровню клуба, рейтингу, потенциалу, возрасту,
    зарплате, отступным. */
 let MGR_MKT={};
-function mgrMktReset(){ MGR_MKT={q:'', reg:'', nat:'', role:'', omin:0, omax:0, amax:0, pmin:0, club:'', free:false, young:false, sort:'fit'}; MGR_MKT_Q=''; MGR_MKT_FREE=false; MGR_MKT_YOUNG=false; }
-MGR_MKT={q:'', reg:'', nat:'', role:'', omin:0, omax:0, amax:0, pmin:0, club:'', free:false, young:false, sort:'fit'};
+function mgrMktReset(){ MGR_MKT={q:'', reg:'', nat:'', role:'', omin:0, omax:0, amax:0, pmin:0, club:'', free:false, young:false, sort:'ovr'}; MGR_MKT_Q=''; MGR_MKT_FREE=false; MGR_MKT_YOUNG=false; }
+MGR_MKT={q:'', reg:'', nat:'', role:'', omin:0, omax:0, amax:0, pmin:0, club:'', free:false, young:false, sort:'ovr'};
 function mgrMktRegion(){ return MGR_MKT.reg && MGR_REGIONS.indexOf(MGR_MKT.reg)>=0 ? MGR_MKT.reg : MGR.region; }
 function mgrMktPool(){
   const own=new Set(mgrOwned().map(hKey));
@@ -160041,7 +160065,7 @@ function mgrRivalStyles(field){
 function mgrJobMonth(monthKey){
   if((MGR.club.rep||50)<65 || mgrConf()<60) return;
   const rnd=careerRng(ccHashStr('mgrjob|'+MGR.club.name+'|'+monthKey)); if(rnd()>0.3) return;
-  let list=[]; try{ list=mgrClubsFor(mgrDataYear(), MGR.region).filter(c=>c.name!==MGR.club.name && c.avg>(MGR.club.avg||70) && c.n>=4); }catch(e){}
+  let list=[]; try{ list=mgrClubsFor(mgrDataYear(), MGR.region).filter(c=>!c.small && c.name!==MGR.club.name && c.avg>(MGR.club.avg||70) && c.n>=4); }catch(e){}
   if(!list.length) return;
   const c=list[Math.floor(rnd()*Math.min(4, list.length))];
   MGR.inbox.unshift({id:'j'+monthKey, day:CAREER.career.day, kind:'job', club:c.name, avg:c.avg, text:mgrT7().jobOffer(c.name, c.avg)});

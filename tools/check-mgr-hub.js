@@ -57,8 +57,10 @@ const SECTIONS=[
     { MGR.sponsors=[]; MGR.deal=null; MGR.club.fans=60000;
       check('спонсоры: 60K подписчиков — 2 слота', mgrSpSlots()===2, String(mgrSpSlots()));
       check('спонсоры: топ-бренд закрыт без 500K', mgrSpSign('redbull')===false);
-      check('спонсоры: начальный и средний подписываются', mgrSpSign('gfuel')===true && mgrSpSign('logitech')===false && (MGR.club.fans=150000, mgrSpSign('logitech'))===true);
-      check('спонсоры: третий в 2 слота не влезает', mgrSpSign('razer')===false);
+      // 8.10: у каждого бренда свой порог — с 50K открываются SteelSeries и Logitech G (раньше средние — только со 100K).
+      check('спонсоры: на 60K подписываются бренды от 50K', mgrSpSign('gfuel')===true && mgrSpSign('logitech')===true);
+      check('спонсоры: бренд от 100K на 60K закрыт', mgrSpOpen(MGR_SP_BRANDS.find(b=>b.id==='razer'))===false);
+      check('спонсоры: третий в 2 слота не влезает', (MGR.club.fans=150000, mgrSpSign('razer'))===false);
       check('спонсоры: доход — сумма контрактов', mgrSponsor()===mgrSpSigned().reduce((x,y)=>x+y.monthly,0) && mgrSponsor()>0, String(mgrSponsor()));
       MGR.club.fans=2e6; check('спонсоры: 2M — 5 слотов, топ открыт', mgrSpSlots()===5 && mgrSpSign('redbull')===true);
       mgrRenderHub('sponsors'); const h=document.getElementById('mgBody').innerHTML; check('спонсоры: логотипы на вкладке', h.indexOf('sp_redbull.png')>=0 && (h.match(/mg-sp-offer/g)||[]).length>=10);
