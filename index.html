@@ -65,6 +65,26 @@
   .mgi-av i{font-style:normal;font-weight:800;font-size:13px;color:#9fb3e6;}
   .mgi-logo{border-radius:10px;background:rgba(255,255,255,.06);} .mgi-logo img{object-fit:contain;padding:4px;}
   .mgi-ico{font-size:18px;}
+  .mg-sp-slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;}
+  @media (max-width:900px){ .mg-sp-slots{grid-template-columns:repeat(3,minmax(0,1fr));} }
+  @media (max-width:560px){ .mg-sp-slots{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  .mg-sp-slot{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:130px;padding:10px;border-radius:12px;border:1px dashed rgba(255,255,255,.18);background:rgba(8,14,36,.35);text-align:center;}
+  .mg-sp-slot.on{border-style:solid;border-color:rgba(255,255,255,.12);background:rgba(8,14,36,.6);}
+  .mg-sp-slot.lock{opacity:.55;}
+  .mg-sp-slot b{font-size:13px;color:#fff;} .mg-sp-slot small{font-size:11.5px;color:#9fb3e6;}
+  .mg-sp-lock{font-size:20px;}
+  .mg-sp-logo{display:flex;align-items:center;justify-content:center;width:100%;max-width:140px;height:54px;padding:6px 10px;border-radius:10px;background:#fff;box-sizing:border-box;}
+  .mg-sp-logo img{max-width:100%;max-height:100%;object-fit:contain;}
+  .mg-sp-offers{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:8px;}
+  @media (max-width:560px){ .mg-sp-offers{grid-template-columns:1fr;} }
+  .mg-sp-offer{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:rgba(8,14,36,.45);border:1px solid rgba(255,255,255,.08);}
+  .mg-sp-offer.lock{opacity:.5;}
+  .mg-sp-offer .mg-sp-logo{flex:0 0 84px;height:42px;}
+  .mg-sp-oin{flex:1;min-width:0;display:flex;flex-direction:column;} .mg-sp-oin b{font-size:13px;color:#fff;} .mg-sp-oin small{font-size:11.5px;color:#9fb3e6;}
+  .mg-sp-need{font-size:11px;color:#ff9f9f;white-space:nowrap;}
+  .mg-sp-offer .ch-sign{flex:none !important;width:auto !important;min-width:0 !important;margin:0 !important;padding:7px 14px !important;font-size:12px !important;border-radius:999px !important;}
+  .mg-sp-oin b,.mg-sp-oin small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mg-sp-need{flex:none;max-width:110px;white-space:normal !important;text-align:right;line-height:1.2;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -112697,7 +112717,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='493f6b71';
+const CC_BUILD='426f4c16';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -157035,7 +157055,70 @@ function mgrPrize(ev, place, size){
   try{ const per=ccVictoryPayOf(ev, place)/Math.max(1, careerSquadSize()); return Math.round(per*size); }catch(e){ return 0; }
 }
 // Спонсоры: настоящие орги живут не с призовых, а с контрактов. Уровень клуба — средний рейтинг состава при входе.
-function mgrSponsor(){ return Math.round(mgrSponsorBase()*mgrDealMul()/100)*100; }
+/* НАСТОЯЩИЕ СПОНСОРЫ, НЕСКОЛЬКО СЛОТОВ (его слова 8.10: «может настоящих спонсоров добавить с логотипами, и их же
+   несколько может быть, и чем больше фоловеров, тем больше спонсоров» → выбрал вариант «настоящие названия и логотипы»).
+   Бренды — те, что спонсируют киберспорт; букмекеров и крипты нет. Логотипы — из инфобоксов их статей в Википедии
+   (photos/sp_*.png, 8.10.2026). Слоты — по подписчикам клуба (mgrFans): 1 / 2 от 50 тыс. / 3 от 200 тыс. / 4 от 500 тыс. /
+   5 от 1 млн. Уровень бренда открывается аудиторией: средние — от 100 тыс., топ — от 500 тыс. Каждый платит в месяц долю
+   базы спонсора клуба (mgrSponsorBase: уровень, репутация, аудитория, SMM): начальный 35%, средний 60%, топ 100%, ±10% у
+   бренда. Всё это — оценка режима. Старый одиночный контракт (MGR.deal) в старых сейвах продолжает платить. */
+const MGR_SP_BRANDS=[
+  {id:'redbull',name:'Red Bull',tier:3},{id:'monster',name:'Monster Energy',tier:3},{id:'intel',name:'Intel',tier:3},
+  {id:'mastercard',name:'Mastercard',tier:3},{id:'bmw',name:'BMW',tier:3},{id:'samsung',name:'Samsung',tier:3},
+  {id:'mercedes',name:'Mercedes-Benz',tier:3},{id:'nvidia',name:'NVIDIA',tier:3},{id:'dhl',name:'DHL',tier:3},
+  {id:'logitech',name:'Logitech G',tier:2},{id:'hyperx',name:'OMEN',tier:2},{id:'razer',name:'Razer',tier:2},
+  {id:'steelseries',name:'SteelSeries',tier:2},{id:'corsair',name:'Corsair',tier:2},{id:'amd',name:'AMD',tier:2},
+  {id:'alienware',name:'Alienware',tier:2},{id:'kitkat',name:'KitKat',tier:2},
+  {id:'secretlab',name:'Secretlab',tier:1},{id:'gfuel',name:'G FUEL',tier:1},{id:'prime',name:'PRIME',tier:1}];
+const MGR_SP_SHARE={1:0.35, 2:0.6, 3:1.0}, MGR_SP_TIER_FANS={1:0, 2:100000, 3:500000};
+function mgrSpLogo(b){ return 'photos/sp_'+b.id+'.png'; }
+function mgrSpSlots(){ const f=typeof mgrFans==='function' ? mgrFans() : 0; return f>=1e6 ? 5 : f>=5e5 ? 4 : f>=2e5 ? 3 : f>=5e4 ? 2 : 1; }
+function mgrSpNextSlotAt(){ const f=typeof mgrFans==='function' ? mgrFans() : 0; return [5e4,2e5,5e5,1e6].find(x=>x>f)||null; }
+function mgrSpSigned(){ return (MGR.sponsors||[]).filter(x=>MGR_SP_BRANDS.some(b=>b.id===x.id)); }
+function mgrSpOffer(b){
+  const v=0.9+((ccHashStr('sp|'+b.id+'|'+(MGR.club && MGR.club.name)+'|'+MGR.year)%21)/100);
+  return Math.round(mgrSponsorBase()*MGR_SP_SHARE[b.tier]*v/100)*100;
+}
+function mgrSpOpen(b){ return (typeof mgrFans==='function' ? mgrFans() : 0)>=MGR_SP_TIER_FANS[b.tier]; }
+function mgrSpSign(id){
+  const b=MGR_SP_BRANDS.find(x=>x.id===id); if(!b || !mgrSpOpen(b)) return false;
+  if(mgrSpSigned().some(x=>x.id===id) || mgrSpSigned().length>=mgrSpSlots()) return false;
+  MGR.sponsors=mgrSpSigned().concat([{id, monthly:mgrSpOffer(b), since:CAREER.career.day}]);
+  MGR.inbox=MGR.inbox||[]; const ru=(typeof LANG!=='undefined' && LANG==='ru');
+  MGR.inbox.unshift({id:'sp'+id+CAREER.career.day, day:CAREER.career.day, kind:'info', done:'info', sp:id,
+    text:(ru ? b.name+' — новый спонсор клуба: ' : b.name+' is the club\'s new sponsor: ')+mgrMoney(MGR.sponsors.slice(-1)[0].monthly)+(ru ? ' в месяц' : ' a month')});
+  mgrSave(); mgrRenderHub('sponsors'); return true;
+}
+function mgrSpDrop(id){ MGR.sponsors=mgrSpSigned().filter(x=>x.id!==id); mgrSave(); mgrRenderHub('sponsors'); }
+function mgrSponsorsBrandsHTML(){
+  const ru=(typeof LANG!=='undefined' && LANG==='ru');
+  const T=ru ? {slots:'Спонсоры клуба', free:'Свободный слот', lock:n=>'Откроется с '+n+' подписчиков', offers:'Предложения брендов', sign:'Подписать', drop:'Расторгнуть',
+                 mo:'в месяц', tier:{1:'начальный',2:'средний',3:'топ'}, need:n=>'нужно '+n+' подписчиков', full:'Все слоты заняты'}
+             : {slots:'Club sponsors', free:'Free slot', lock:n=>'Unlocks at '+n+' followers', offers:'Brand offers', sign:'Sign', drop:'End deal',
+                 mo:'a month', tier:{1:'entry',2:'mid',3:'top'}, need:n=>'needs '+n+' followers', full:'All slots taken'};
+  const signed=mgrSpSigned(), slots=mgrSpSlots(), nextAt=mgrSpNextSlotAt();
+  const logo=b=>'<span class="mg-sp-logo"><img src="'+mgrSpLogo(b)+'" alt="'+esc(b.name)+'" loading="lazy" onerror="this.replaceWith(document.createTextNode(\''+esc(b.name)+'\'))"></span>';
+  let cells='';
+  for(let i=0;i<5;i++){
+    const x=signed[i], b=x && MGR_SP_BRANDS.find(y=>y.id===x.id);
+    if(b) cells+='<div class="mg-sp-slot on">'+logo(b)+'<b>'+esc(b.name)+'</b><small>'+mgrMoney(x.monthly)+' '+esc(T.mo)+'</small><button class="cc-staff-end" onclick="mgrSpDrop(\''+b.id+'\')">'+esc(T.drop)+'</button></div>';
+    else if(i<slots) cells+='<div class="mg-sp-slot"><span class="cc-staff-plus">＋</span><small>'+esc(T.free)+'</small></div>';
+    else cells+='<div class="mg-sp-slot lock"><span class="mg-sp-lock">🔒</span><small>'+esc(T.lock(ccFollowers([5e4,2e5,5e5,1e6][i-1]||0)))+'</small></div>';
+  }
+  const full=signed.length>=slots;
+  const offers=MGR_SP_BRANDS.filter(b=>!signed.some(x=>x.id===b.id)).sort((a,b)=>b.tier-a.tier || mgrSpOffer(b)-mgrSpOffer(a)).map(b=>{
+    const open=mgrSpOpen(b);
+    return '<div class="mg-sp-offer'+(open ? '' : ' lock')+'">'+logo(b)+'<span class="mg-sp-oin"><b>'+esc(b.name)+'</b><small>'+esc(T.tier[b.tier])+' · '+mgrMoney(mgrSpOffer(b))+' '+esc(T.mo)+'</small></span>'+
+      (open ? '<button class="ch-sign"'+(full ? ' disabled title="'+esc(T.full)+'"' : '')+' onclick="mgrSpSign(\''+b.id+'\')">'+esc(T.sign)+'</button>'
+            : '<small class="mg-sp-need">'+esc(T.need(ccFollowers(MGR_SP_TIER_FANS[b.tier])))+'</small>')+'</div>'; }).join('');
+  return '<div class="ch-tile"><h4>'+esc(T.slots)+' · '+signed.length+'/'+slots+'</h4><div class="mg-sp-slots">'+cells+'</div></div>'+
+    '<div class="ch-tile"><h4>'+esc(T.offers)+'</h4><div class="mg-sp-offers">'+offers+'</div></div>';
+}
+function mgrSponsor(){
+  const brands=mgrSpSigned().reduce((sum,x)=>sum+(x.monthly||0), 0);
+  const legacy=(MGR.deal && MGR.deal.year===MGR.year) ? Math.round(mgrSponsorBase()*mgrDealMul()/100)*100 : 0;
+  return brands || legacy ? brands+legacy : 0;
+}
 function mgrSponsorBase(){ const base=Math.max(3000, Math.max(0, (MGR.club.avg||70)-60)*600); const rep=(MGR.club.rep!=null ? MGR.club.rep : 50); return Math.round(base*mgrFansMul()*(0.8+rep/250)*(1+0.08*mgrStaff('smm'))/100)*100; }
 function mgrPayMonths(toDay){
   const c=MGR.club, cards=mgrAllAcad().concat(MGR.loanOut||[]);
@@ -159427,7 +159510,8 @@ function mgrSponsorsTabHTML(){
     row(T.fans, (MGR.club.fansEst ? '≈' : '')+ccFollowers(fans)+(typeof mgrFansMul==='function' ? ' · ×'+mgrFansMul().toFixed(2) : ''))+
     row(T.smm, mgrStaff('smm') ? '+'+(8*mgrStaff('smm'))+'%' : '—')+
     row(T.deal, '×'+(typeof mgrDealMul==='function' ? mgrDealMul().toFixed(2) : '1.00'))+'</div>';
-  return '<div class="mgk-body mg-sp-tab"><div class="mg-sp-top">'+money+why+'</div><div class="ch-tile"><h4>'+esc(T.deal0)+'</h4>'+mgrDealHTML()+'</div></div>';
+  const legacy=(MGR.deal && MGR.deal.year===MGR.year) ? '<div class="ch-tile"><h4>'+esc(T.deal0)+'</h4>'+mgrDealHTML()+'</div>' : '';
+  return '<div class="mgk-body mg-sp-tab">'+mgrSponsorsBrandsHTML()+'<div class="mg-sp-top">'+money+why+'</div>'+legacy+'</div>';
 }
 function mgrDealHTML(){
   const T8=mgrT8(), base=mgrSponsorBase(), bs=mgrBonusSums();

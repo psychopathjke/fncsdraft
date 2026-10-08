@@ -53,6 +53,16 @@ const SECTIONS=[
       const h=t1.cards[0]; if(h) check('штаб состава: психолог держит пол морали игрока', mgrPsychOf(h)>=1);
       mgrRenderHub('squad'); const html=document.getElementById('mgBody').innerHTML;
       check('штаб состава: в составе три слота', (html.match(/mgs-coach"/g)||[]).length>=3, String((html.match(/mgs-coach"/g)||[]).length)); }
+    // Настоящие спонсоры, слоты по подписчикам (его слово 8.10).
+    { MGR.sponsors=[]; MGR.deal=null; MGR.club.fans=60000;
+      check('спонсоры: 60K подписчиков — 2 слота', mgrSpSlots()===2, String(mgrSpSlots()));
+      check('спонсоры: топ-бренд закрыт без 500K', mgrSpSign('redbull')===false);
+      check('спонсоры: начальный и средний подписываются', mgrSpSign('gfuel')===true && mgrSpSign('logitech')===false && (MGR.club.fans=150000, mgrSpSign('logitech'))===true);
+      check('спонсоры: третий в 2 слота не влезает', mgrSpSign('razer')===false);
+      check('спонсоры: доход — сумма контрактов', mgrSponsor()===mgrSpSigned().reduce((x,y)=>x+y.monthly,0) && mgrSponsor()>0, String(mgrSponsor()));
+      MGR.club.fans=2e6; check('спонсоры: 2M — 5 слотов, топ открыт', mgrSpSlots()===5 && mgrSpSign('redbull')===true);
+      mgrRenderHub('sponsors'); const h=document.getElementById('mgBody').innerHTML; check('спонсоры: логотипы на вкладке', h.indexOf('sp_redbull.png')>=0 && (h.match(/mg-sp-offer/g)||[]).length>=10);
+      MGR.sponsors=[]; }
     MGR.club.fans=1000; const lo=mgrSponsorBase(); MGR.club.fans=3000000; const hi=mgrSponsorBase();
     check('подписчики: большая аудитория — спонсор щедрее', hi>lo && hi<=lo*1.25/0.8+100, lo+' vs '+hi);
   `},
@@ -212,7 +222,7 @@ const SECTIONS=[
     const B=document.getElementById('mgBody');
     // Спонсоры — отдельная вкладка с 8.10 (его слово: «это самое основное — заработок организации»).
     mgrRenderHub('sponsors'); { const body=document.getElementById('mgBody').innerHTML;
-      check('спонсоры: своя вкладка с деньгами в месяц и контрактом', MGR_TAB==='sponsors' && body.indexOf('mg-sp-tab')>=0 && /mg-trb|mg-board/.test(body) && !bad(body), body.slice(0,120)); }
+      check('спонсоры: своя вкладка с деньгами в месяц и контрактом', MGR_TAB==='sponsors' && body.indexOf('mg-sp-tab')>=0 && body.indexOf('mg-sp-slot')>=0 && !bad(body), body.slice(0,120)); }
     for(const [tab, group, keys] of [['club','club',['train','base','press']],['tables','tables',['stats','trophies','managers']]]){
       for(const k of keys){ MGR_SUB[group]=k; mgrRenderHub(tab);
         const err=B.querySelector('.cc-ffo-err');
