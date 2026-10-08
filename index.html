@@ -131961,38 +131961,41 @@ function ccSmmPickKey(e){ if(e.key==='Escape') ccSmmPickClose(); }
    GC 2025; пост @FNCompetitive о составе GC 2024), Kinch — «Official FNCS Data Provider», Osirion — сервис данных;
    психологи — AlwyzPAPPIE («Mental-life-performance mentor», бывший коуч Falcons EU), Val («Préparateur Mental &
    Physique diplômé»), Mia Stellberg (лицензированный психолог и психотерапевт, OG / SK / ENCE; аккаунта X не нашёл).
-   РЕЙТИНГ. Аналитик: 60 + 3·lg(подписчики/1000) + вес роли (CC_ANALYST_ROLE); потолок 95. Психолог: по известным фактам, а не по аудитории — у этой профессии её почти нет
+   РЕЙТИНГ. Аналитик: 60 + работа на FNCS + свои призовые + 1.5·lg(подписчики/1000) (см. CC_ANALYST_ROLE); потолок 95. Психолог: по известным фактам, а не по аудитории — у этой профессии её почти нет
    (Mia 90: лицензия и 19 лет, топ-клубы; AlwyzPAPPIE 80: про-клиенты, бывший коуч Falcons; Val 72: диплом).
    ЭФФЕКТ (оценка режима). Аналитик — разбор соперников перед вечером: +1…+3 к силе своей команды (только в одиночной
    карьере — в командной у двоих сила должна сходиться, как с эфиром, ccStreamPow). Психолог — работа с тильтом: шаг
    формы вниз после плохого вечера мягче на 25…50%. Цена в месяц от рейтинга: аналитик $1 000…2 500, психолог $800…2 500. */
 const CC_STAFF2_DAYS=30;
 const CC_ANALYSTS=[
-  {id:'leven',    name:'Leven',          at:'Leven2k',        photo:'Leven2k.jpg',        x:390709, role:'host',  why:'FNCS host & broadcaster, 3x Broadcaster of the Year'},
-  {id:'vivid',    name:'Vivid',          at:'VividFN',        photo:'VividFN.jpg',        x:285488, role:'desk-pro',  why:'FNCS broadcast, ex-pro'},
-  {id:'tocata',   name:'Tocata',         at:'Tocata',         photo:'Tocata.jpg',         x:101146, role:'desk-pro',  why:'FNCS broadcast, ex-pro NA West'},
-  {id:'kinch',    name:'Kinch Analytics',at:'KinchAnalytics', photo:'KinchAnalytics.jpg', x:96473,  role:'data',  why:'Official FNCS Data Provider'},
-  {id:'kelly',    name:'Kelly Link',     at:'HelloKellyLink', photo:'HelloKellyLink.jpg', x:45902,  role:'desk',  why:'FNCS broadcast NA'},
-  {id:'taco',     name:'TheBestTaco',    at:'thebesttaco',    photo:'thebesttaco.jpg',    x:30937,  role:'caster',  why:'FNCS caster & analyst'},
-  {id:'miniminer',name:'MiniMiner',      at:'MiniMinerYT',    photo:'MiniMinerYT.jpg',    x:14363,  role:'desk',  why:'FNCS presenter & analyst'},
-  {id:'blakeps',  name:'Blakeps',        at:'blakeps',        photo:'blakeps.jpg',        x:236182, role:'indie', why:'ex-pro, analyst'},
-  {id:'reisshub', name:'Reisshub',       at:'Reisshub',       photo:'Reisshub.jpg',       x:65644,  role:'indie', why:'Fortnite analyst'},
-  {id:'osirion',  name:'Osirion',        at:'osirion_gg',     photo:'osirion_gg.jpg',     x:39270,  role:'indie', why:'Fortnite data & AI coach'}
+  {id:'leven',    name:'Leven',          at:'Leven2k',        photo:'Leven2k.jpg',        x:390709, role:'host', earn:0,  why:'FNCS host & broadcaster, 3x Broadcaster of the Year'},
+  {id:'vivid',    name:'Vivid',          at:'VividFN',        photo:'VividFN.jpg',        x:285488, role:'desk', earn:426292,  why:'FNCS broadcast, ex-pro'},
+  {id:'tocata',   name:'Tocata',         at:'Tocata',         photo:'Tocata.jpg',         x:101146, role:'desk', earn:45546,  why:'FNCS broadcast, ex-pro NA West'},
+  {id:'kinch',    name:'Kinch Analytics',at:'KinchAnalytics', photo:'KinchAnalytics.jpg', x:96473,  role:'data', earn:0,  why:'Official FNCS Data Provider'},
+  {id:'kelly',    name:'Kelly Link',     at:'HelloKellyLink', photo:'HelloKellyLink.jpg', x:45902,  role:'desk', earn:0,  why:'FNCS broadcast NA'},
+  {id:'taco',     name:'TheBestTaco',    at:'thebesttaco',    photo:'thebesttaco.jpg',    x:30937,  role:'host', earn:0,  why:'FNCS caster & analyst'},
+  {id:'miniminer',name:'MiniMiner',      at:'MiniMinerYT',    photo:'MiniMinerYT.jpg',    x:14363,  role:'desk', earn:650,  why:'FNCS presenter & analyst'},
+  {id:'blakeps',  name:'Blakeps',        at:'blakeps',        photo:'blakeps.jpg',        x:236182, role:'indie', earn:183493, why:'ex-pro, analyst'},
+  {id:'reisshub', name:'Reisshub',       at:'Reisshub',       photo:'Reisshub.jpg',       x:65644,  role:'indie', earn:2367, why:'Fortnite analyst'},
+  {id:'osirion',  name:'Osirion',        at:'osirion_gg',     photo:'osirion_gg.jpg',     x:39270,  role:'service', earn:0, why:'Fortnite data & AI coach'}
 ];
 const CC_PSYCHS=[
-  {id:'stellberg',name:'Mia Stellberg', at:null,          photo:null,              x:0,     rating:90, why:'licensed psychologist, OG / SK / ENCE'},
+  {id:'stellberg',name:'Mia Stellberg', at:null,          photo:'MiaStellberg.jpg',              x:0,     rating:90, why:'licensed psychologist, OG / SK / ENCE'},
   {id:'pappie',   name:'AlwyzPAPPIE',   at:'AlwyzPAPPIE', photo:'AlwyzPAPPIE.jpg', x:17004, rating:80, why:'mental performance mentor, ex-coach Falcons EU'},
   {id:'val',      name:'Val',           at:'ValentaynL',  photo:'ValentaynL.jpg',  x:3072,  rating:72, why:'certified mental & physical trainer'}
 ];
-/* Вес роли аналитика (его «мне кажется leven не настолько аналитик жёсткий», 8.10): главное — работа, аудитория вдвое
-   легче (3·lg вместо 6·lg). Официальная статистика FNCS +20, бывший про за столом аналитиков трансляции +16, аналитик
-   трансляции +12, независимый аналитик или сервис данных +10, кастер-аналитик +9, ведущий/комментатор +6. */
-const CC_ANALYST_ROLE={data:20, 'desk-pro':16, desk:12, indie:10, caster:9, host:6};
+/* Рейтинг аналитика — по результатам (его слова 8.10: «leven не настолько аналитик жёсткий», «упор на результаты»).
+   Работа: официальная статистика FNCS +20, стол аналитиков трансляции FNCS +12, сервис данных +8, кастер или ведущий
+   трансляции +6, независимый аналитик +4. Своя игра: 4·lg(призовые/10 000$) по Liquipedia (Vivid 26k, Blakeps 83k,
+   Tocata 6k). Аудитория — 1.5·lg(подписчики/1000), почти ничего. */
+const CC_ANALYST_ROLE={data:20, desk:12, service:8, host:6, indie:4};
 const CC_STAFF2={analyst:{list:CC_ANALYSTS, cost:[1000,2500]}, psych:{list:CC_PSYCHS, cost:[800,2500]}};
 function ccStaff2Rating(kind, p){
   if(!p) return 60;
   if(p.rating!=null) return p.rating;
-  return Math.max(60, Math.min(95, Math.round(60+3*Math.log10(Math.max(1000, p.x||0)/1000)+(CC_ANALYST_ROLE[p.role]||0))));
+  // Упор на результаты (его слово 8.10): работа на FNCS + собственные призовые (Liquipedia), аудитория — почти ничего.
+  const play=p.earn>10000 ? 4*Math.log10(p.earn/10000) : 0;
+  return Math.max(60, Math.min(95, Math.round(60+(CC_ANALYST_ROLE[p.role]||0)+play+1.5*Math.log10(Math.max(1000, p.x||0)/1000))));
 }
 function ccStaff2K(kind, p){ return Math.max(0, Math.min(1, (ccStaff2Rating(kind, p)-60)/35)); }
 function ccStaff2Cost(kind, p){ const c=CC_STAFF2[kind].cost; return Math.round((c[0]+(c[1]-c[0])*ccStaff2K(kind, p))/50)*50; }
