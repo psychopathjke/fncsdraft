@@ -271,6 +271,9 @@
   @media (max-width:560px){ #screen-manager .mgx-cards{grid-template-columns:repeat(2,minmax(0,1fr));} }
   #screen-manager .mg-sp-free{cursor:pointer;} #screen-manager .mg-sp-free:hover{border-color:#ffdd00;}
   #mgSheet .mg-sp-offers{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;}
+  #screen-manager .mgp-post .x-shot{max-width:560px;margin:8px 0;}
+  #screen-manager .mgp-ver{display:inline-flex;width:15px;height:15px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:9px;align-items:center;justify-content:center;}
+  #screen-manager .mgp-clubav{display:flex;align-items:center;justify-content:center;width:34px;height:34px;flex:none;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -158102,7 +158105,21 @@ function mgrFeedPost(kind, data){
 }
 // Клуб постит результат КАЖДОЙ своей команды (его слово 7.10: «организация постит результаты своих
 // игроков на турнирах»): ники, место из скольких, очки, киллы и лучший по киллам.
+/* Клуб постит итог вечера картинкой-таблицей своих составов (его слово 8.10: «клуб — скриншоты с таблицы с их
+   игроками или список никнеймов и их плейсы»). */
+function mgrClubShot(row){
+  const ru=(typeof LANG!=='undefined' && LANG==='ru');
+  const tbl={cap:MGR.club.name+' · '+row.name, rows:(row.teams||[]).slice().sort((a,b)=>a.place-b.place).map(t=>({p:t.place,
+    n:Object.keys(t.kills||{}).join(' & ')||t.name||'—', f:Object.keys(t.kills||{}).map(h=>{ const c=mgrCard(h); return c ? c.nat : null; }).filter(Boolean),
+    s:Math.round(t.pts||0), e:t.elims||0, w:t.wins||0, m:null}))};
+  tbl.me=(tbl.rows[0]||{}).n;
+  const best=tbl.rows[0], text=best ? (ru ? '#'+best.p+(row.teams[0] && row.teams[0].of ? ' из '+row.teams[0].of : '')+' — '+row.name : '#'+best.p+' — '+row.name) : row.name;
+  MGR.feed=MGR.feed||[]; MGR.feed.unshift({id:'p'+(MGR.sid=(MGR.sid||0)+1), day:row.day||CAREER.career.day, kind:'shot', text, tbl, likes:Math.round(200+(MGR.club.rep||50)*30), by:'club'});
+  MGR.wfeed=MGR.wfeed||[]; MGR.wfeed.unshift({id:'w'+(MGR.sid=(MGR.sid||0)+1), day:row.day||CAREER.career.day, kind:'club', club:MGR.club.name, text, tbl, likes:Math.round(200+(MGR.club.rep||50)*30)});
+  MGR.wfeed=MGR.wfeed.slice(0, MGR_WFEED_MAX);
+}
 function mgrFeedNight(row){
+  try{ mgrClubShot(row); }catch(e){}
   (row.teams||[]).slice().sort((a,b)=>a.place-b.place).forEach(t=>{
     const k=t.kills||{}, names=Object.keys(k), mvp=names.slice().sort((a,b)=>(k[b]||0)-(k[a]||0))[0];
     const kills=names.reduce((s,n)=>s+(k[n]||0), 0);
@@ -158185,6 +158202,19 @@ function mgrWorldStore(ev, ranked, played, stage){
   rows.forEach(row=>{ if(!row.orgs.length) return; row.orgs.forEach(o=>{ const b=MGR.ctab.by[o]=MGR.ctab.by[o]||{org:o, prize:0, wins:0, top3:0, events:0};
     b.prize+=Math.round((row.prize||0)/row.orgs.length); b.events++; if(row.place===1) b.wins++; if(row.place<=3) b.top3++; }); });
   const w=rows[0]; if(w) mgrWorldPost('win', {ev:ev.name, n:w.n, orgs:w.orgs.join(', ')});
+  /* МЕДИА КАК В КАРЬЕРЕ (его слова 8.10: «Fortnite Competitive нет в медиа, хочу медиа с таблицами, как в карьере игрока»):
+     @FNCompetitive постит итоги капа картинкой-таблицей (ccShotHTML карьеры): топ-10 — флаги, ники, элимы, очки. */
+  try{
+    const tbl={cap:ev.name, mode:(mgrTW().fmt||{})[ev.mode]||'', rows:ranked.slice(0, 10).map((tm,i)=>({p:i+1, n:(tm.squad||[]).map(c=>c.handle).join(' & ')||tm.name||'—',
+      f:(tm.squad||[]).map(c=>c.nat).filter(Boolean), s:Math.round(tm.stagePts||0), e:tm.stageElims||0, m:(tm.stageLog||[]).length||null, w:tm.wins||0}))};
+    const mine=ranked.findIndex(tm=>tm.isClub); if(mine>=10){ const tm=ranked[mine]; tbl.pin={p:mine+1, n:(tm.squad||[]).map(c=>c.handle).join(' & '), s:Math.round(tm.stagePts||0), e:tm.stageElims||0, m:(tm.stageLog||[]).length||null, w:tm.wins||0}; tbl.me=tbl.pin.n; }
+    else if(mine>=0) tbl.me=tbl.rows[mine].n;
+    const ru=(typeof LANG!=='undefined' && LANG==='ru');
+    MGR.wfeed=MGR.wfeed||[];
+    MGR.wfeed.unshift({id:'w'+(MGR.sid=(MGR.sid||0)+1), day:ev.day, kind:'fc', fc:true, text:(ru ? 'Итоги: ' : 'Results: ')+ev.name+' 🏆', tbl,
+      likes:Math.round(4000+careerRng(ccHashStr('fc|'+ev.id+'|'+ev.day))()*9000)});
+    MGR.wfeed=MGR.wfeed.slice(0, MGR_WFEED_MAX);
+  }catch(e){}
   try{ mgrWorldPlayerPosts(ev, ranked); }catch(e){}
 }
 function mgrWorldSim(ev){
@@ -158291,10 +158321,12 @@ function mgrWorldClubsHTML(){
 function mgrWorldFeedHTML(){
   const T9=mgrT9(), list=MGR.wfeed||[];
   if(!list.length) return '<div class="ch-tile"><div class="ch-empty">'+esc(T9.wNone)+'</div></div>';
-  const ava=p=>p.by ? '<span class="mgp-ava mgp-pl">'+(p.photo ? '<img src="'+esc(p.photo)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+'<i>'+esc(String(p.by).slice(0,2).toUpperCase())+'</i></span>'
+  const ava=p=>p.fc ? '<span class="mgp-ava mgp-pl"><img src="'+PHOTO_DIR+CC_PRESS.av+'" alt="" onerror="this.remove()"><i>FC</i></span>'
+    : p.club ? '<span class="mgp-ava mgp-clubav">'+mgrLogo(p.club, false, 30)+'</span>'
+    : p.by ? '<span class="mgp-ava mgp-pl">'+(p.photo ? '<img src="'+esc(p.photo)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+'<i>'+esc(String(p.by).slice(0,2).toUpperCase())+'</i></span>'
                     : '<span class="mgp-ava">'+mgrCrestSVG({color:'#7aa2ff', shape:'round', ini:'FI'}, 26)+'</span>';
   return '<div class="ch-tile mgp"><h4>'+esc(T9.wMedia)+'</h4>'+list.map(p=>'<div class="mgp-post'+(p.by ? ' mgp-player' : '')+'">'+ava(p)+
-    '<div><b>'+esc(p.by||'FNCS Insider')+'</b>'+(p.org ? ' <span class="mgp-org">'+mgrLogo(p.org, false)+'</span>' : '')+' <small>@'+esc(p.by ? String(p.by).replace(/\s+/g,'') : 'FNCSInsider')+' · '+esc(ccDayLabel(p.day))+'</small><p>'+esc(p.text)+'</p><small class="mgp-likes">♥ '+ccNum(p.likes)+'</small></div></div>').join('')+'</div>';
+    '<div><b>'+esc(p.fc ? CC_PRESS.name : p.club ? p.club : (p.by||'FNCS Insider'))+'</b>'+(p.fc ? ' <span class="mgp-ver">✔</span>' : '')+(p.org ? ' <span class="mgp-org">'+mgrLogo(p.org, false)+'</span>' : '')+' <small>@'+esc(p.fc ? CC_PRESS.handle : p.club ? String(p.club).replace(/\s+/g,'') : p.by ? String(p.by).replace(/\s+/g,'') : 'FNCSInsider')+' · '+esc(ccDayLabel(p.day))+'</small><p>'+esc(p.text)+'</p>'+(p.tbl ? ccShotHTML(p.tbl) : '')+'<small class="mgp-likes">♥ '+ccNum(p.likes)+'</small></div></div>').join('')+'</div>';
 }
 function mgrFeedWeek(d){
   const rnd=careerRng(ccHashStr('mgrrumor|'+MGR.club.name+'|'+d));
@@ -158311,7 +158343,7 @@ function mgrFeedHTML(){
     const club=p.by==='club';
     return '<div class="mgp-post"><span class="mgp-ava">'+(club ? mgrLogo(MGR.club.name, false) : mgrCrestSVG({color:'#7aa2ff', shape:'round', ini:'FI'}, 26))+'</span>'+
       '<div><b>'+esc(club ? MGR.club.name : 'FNCS Insider')+'</b> <small>'+esc(club ? '@'+MGR.club.name.replace(/\s+/g, '') : '@FNCSInsider')+' · '+esc(ccDayLabel(p.day))+'</small>'+
-      '<p>'+esc(p.text)+'</p><small class="mgp-likes">♥ '+ccNum(p.likes)+'</small></div></div>'; }).join('')+'</div>';
+      '<p>'+esc(p.text)+'</p>'+(p.tbl ? ccShotHTML(p.tbl) : '')+'<small class="mgp-likes">♥ '+ccNum(p.likes)+'</small></div></div>'; }).join('')+'</div>';
 }
 /* КРИЭЙТОРЫ КЛУБА (его выбор 7.10, пункт 2): настоящие стримеры Про-Ама своего региона, подписчики
    Twitch — CC_PROAM_TWITCH, аватарки — ccProAmAvatar. До трёх. Охват по логарифму подписчиков:
@@ -158366,8 +158398,10 @@ function mgrCreatorRating(c){
   return Math.max(45, Math.min(95, Math.round(r)));
 }
 function mgrCreatorPull(c){ return Math.max(0, Math.min(1, Math.log10(Math.max(1000, c.followers||0)/1000)/Math.log10(20000))); }
-function mgrCreatorFee(c){ return Math.round((500+Math.pow(mgrCreatorPull(c), 3)*20000)/100)*100; }
-function mgrCreatorIncome(c){ const rep=MGR.club.rep!=null ? MGR.club.rep : 50; return Math.round(mgrCreatorFee(c)*(0.6+0.7*rep/100)/100)*100; }   // окупается с репутации ~57, ниже — в минус
+/* Ставка креатора — от рейтинга (его слово 8.10: «креаторам будто мало зп, даже у кого 100к фоловеров — нереалистично»):
+   1 500 × 1,12^(рейтинг−50) в месяц: 50K → ~$4,6k, 500K → ~$14,5k, 5M → ~$45k, 20M → ~$95k. Оценка режима. */
+function mgrCreatorFee(c){ return Math.round(1500*Math.pow(1.12, mgrCreatorRating(c)-50)/100)*100; }
+function mgrCreatorIncome(c){ const rep=MGR.club.rep!=null ? MGR.club.rep : 50; return Math.round(mgrCreatorFee(c)*(0.55+0.6*rep/100)/100)*100; }   // мерч и спонсоры: окупается с репутации 75, ниже — вложение в охват
 function mgrCreatorNet(){ return (MGR.creators||[]).reduce((s,n)=>{ const c=mgrCreatorList().find(x=>x.name===n); return c ? s+mgrCreatorIncome(c)-mgrCreatorFee(c) : s; }, 0); }
 function mgrCreatorSign(name){
   MGR.creators=MGR.creators||[];
