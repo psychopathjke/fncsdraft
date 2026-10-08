@@ -161301,7 +161301,7 @@ function mgrPickTeam(club){
     box.innerHTML='<div class="mg-modal-box"><h3>'+esc(ru ? 'За каким составом смотреть?' : ({fr:()=>('Quelle équipe suivre ?'), it:()=>('Quale squadra seguire?'), pt:()=>('Qual time acompanhar?'), de:()=>('Welchem Squad zusehen?'), es:()=>('¿Qué equipo quieres ver?')}[LANG]||(()=>('Which squad do you watch?')))())+'</h3><div class="mgq-teams">'+
       club.map((t,i)=>'<button class="mgq-team" data-i="'+i+'"'+(i===0 ? ' data-mg="go"' : '')+'><b>'+esc(mgrT2().teamWord)+' '+(i+1)+'</b>'+
         '<span>'+(t.squad||[]).map(c=>{ let u=null; try{ u=photoURL(c); }catch(e){} return '<i class="mgq-face">'+(u ? '<img src="'+esc(u)+'" alt="" onerror="this.remove()">' : '')+'<small>'+esc(c.handle)+'</small></i>'; }).join('')+'</span>'+
-        '<em>'+Math.round(t.pow||0)+'</em></button>').join('')+'</div></div>';
+        '<em>'+esc(mgrT().avg)+' '+Math.round((t.squad||[]).reduce((x,c)=>x+(ccCardOvr(c)||0),0)/Math.max(1,(t.squad||[]).length))+'</em></button>').join('')+'</div></div>';
     box.querySelectorAll('.mgq-team').forEach(b=>b.onclick=()=>{ box.remove(); res(club[+b.dataset.i]); });
     document.body.appendChild(box);
   });
