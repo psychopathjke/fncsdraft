@@ -29,6 +29,10 @@ try{
   check('подписал — объявление клуба от его аудитории', CAREER.career.reach-r0===ccOrgMediaSign('Team Falcons', 90), String(CAREER.career.reach-r0));
   const r1=CAREER.career.reach; careerPayWages('2026-03-15', '2026-05-15'); out.notes.month=CAREER.career.reach-r1;
   check('два месяца — две медийки клуба', CAREER.career.reach-r1===2*ccOrgMediaMonth('Team Falcons', 90), String(CAREER.career.reach-r1));
+  // и в списке предложений (его слово 8.10: «при выборе клуба не пишет фоловеры клуба»)
+  { const keep=CAREER.org; CAREER.org=null; CAREER.offers=[{name:'Team Falcons', tier:90, salary:5000, goal:'top', academy:false}];
+    const ot=careerOrgTileHTML(); check('в предложениях — подписчики клуба и медийка', ot.indexOf(ccOrgFolText(ccOrgFollowers('Team Falcons', 90)))>=0 && ot.indexOf(L().ccOrgMediaRow(ccNum(ccOrgMediaMonth('Team Falcons', 90))))>=0, ot.slice(0,200));
+    CAREER.org=keep; CAREER.offers=null; }
   const tile=careerOrgTileHTML(); check('на карточке клуба — подписчики и медийка', tile.indexOf(L().ccOrgFans)>=0 && tile.indexOf(ccOrgFolText(ccOrgFollowers('Team Falcons', 90)))>=0 && tile.indexOf(L().ccOrgMedia)>=0);
   check('подписчики игрока: настоящее — без ≈', ccFollowText('Malibuca', 93).charAt(0)!=='≈' && ccFollowText('Нет Такого', 80).charAt(0)==='≈', ccFollowText('Malibuca', 93)+' / '+ccFollowText('Нет Такого', 80));
   check('профиль игрока показывает подписчиков', careerWhoHTML('Malibuca').indexOf('👥 '+ccFollowText('Malibuca'))>=0);
