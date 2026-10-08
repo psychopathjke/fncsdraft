@@ -157864,7 +157864,8 @@ function mgrEvents(){
   const cr=CAREER.career, from=cr.day, to=ccYearTo();
   // Формат сезона — всегда: неполный состав не отменяет турниры (раньше убрал игрока — «сезон закончен»).
   const sizes=new Set(MGR.teams.map(mgrTeamSize).concat([careerSquadSize()]));
-  const fm={duo:2, trio:3, squad:4};
+  if(MGR.teams.some(t=>(t.cards||[]).length)) sizes.add(1);   // соло — каждый игрок клуба
+  const fm={solo:1, duo:2, trio:3, squad:4};
   // Календарь капов года — тот же, что у карьеры (ccVictoryList: база года + архив Tracker + плейсмент-капы).
   let all=[]; try{ all=(ccVictoryList()||[]).concat(mgrFncsDays()); }catch(e){ all=[]; }
   return all.filter(ev=>ev && ev.day>=from && ev.day<=to && !ev.invite && !ev.zb && !ev.ewc24 && !ev.reshuffle &&
@@ -159052,7 +159053,7 @@ function mgrDeadlineStop(toDay){
 function mgrAutoNight(ev){
   const size=mgrEvSize(ev);
   MGR.skipped=(MGR.skipped||[]).concat([ev.id+'|'+ev.day]);   // турнир прошёл — из списка ближайших
-  if(ev.kind==='ewc' || !MGR.teams.some(t=>mgrTeamSize(t)===size)){ try{ mgrWorldSim(ev); }catch(e){} return; }
+  if(ev.kind==='ewc' || !mgrClubTeams(size).length){ try{ mgrWorldSim(ev); }catch(e){} return; }
   const cr=CAREER.career, pm=CARD_MODE, ps=squadSize, pd=drafted;
   CARD_MODE=true; squadSize=size;
   const club=mgrClubTeams(size), clubCards=club.flatMap(t=>t.squad); drafted=clubCards;
@@ -161446,6 +161447,11 @@ function mgrScreenReset(){
 }
 // Команды клуба этого формата — объектами движка; мораль игроков — к силе на вечер.
 function mgrClubTeams(size){
+  /* СОЛО (его вопрос 8.10 «а соло работает в карьере?» — нет: клуб брал только дуо/трио/сквады). На сольный кап выходит
+     каждый игрок клуба сам за себя (без гостей и академии), все в одном поле, как составы. */
+  if(size===1) return MGR.teams.flatMap(t=>t.cards).map((h,i)=>{ const c=mgrCard(h); if(!c) return null;
+    const tm=careerTeam([c]); tm.name=c.handle; tm.isClub=true; tm.mgrId='s:'+hKey(h); if(i===0) tm.isYou=true;
+    tm.pow+=mgrMorale(h)+mgrNightPow(); return tm; }).filter(Boolean);
   return MGR.teams.filter(t=>mgrTeamSize(t)===size).map((t,i)=>{
     const cards=mgrTeamPeople(t).map(mgrCard).filter(Boolean); const tm=careerTeam(cards);
     tm.name=teamLabel(cards); tm.isClub=true; tm.mgrId=t.id; if(i===0) tm.isYou=true;
@@ -161524,7 +161530,7 @@ async function mgrPlay(){
   if(ev.kind==='car') return mgrPlayCar(ev);
   const T=mgrT(), cr=CAREER.career;
   const size={duo:2, trio:3, squad:4}[ev.mode];
-  if(!mgrFillShort(size)){ mgrShortAsk(ev, size); return; }   // неполный: запас встаёт сам, иначе — окно выбора
+  if(size>1 && !mgrFillShort(size)){ mgrShortAsk(ev, size); return; }   // неполный: запас встаёт сам, иначе — окно выбора
   await mgrWorldCatchUpLive(ev.day);
   mgrAdvanceTo(ev.day);
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted, prevSet=ACTIVE_LANDING_SET;
@@ -161604,27 +161610,31 @@ let MGR_CAR_CACHE=null;
 function mgrCarEvents(from, to){
   if(!MGR || !MGR.teams || MGR.tswap) return [];
   const cr=CAREER.career, size=careerSquadSize();
-  const club=mgrClubTeams(size); if(!club.length) return [];
-  const key=[MGR.year, from, to, size, club.map(t=>t.mgrId+':'+(t.squad||[]).map(c=>c.handle).join(',')).join('|'), (MGR.skipped||[]).length, JSON.stringify(MGR.tcar||{}).length].join('#');
+  const club=mgrClubTeams(size), solo=mgrClubTeams(1); if(!club.length && !solo.length) return [];
+  const key=[MGR.year, from, to, size, club.concat(solo).map(t=>t.mgrId+':'+(t.squad||[]).map(c=>c.handle).join(',')).join('|'), (MGR.skipped||[]).length, JSON.stringify(MGR.tcar||{}).length].join('#');
   if(MGR_CAR_CACHE && MGR_CAR_CACHE.key===key) return MGR_CAR_CACHE.list.map(e=>Object.assign({}, e));
   const byDay=new Map(), day0=cr.day;
   let days=null; try{ days=careerEvents(); }catch(e){ days=new Map(); }
-  club.forEach(tm=>{
+  /* Соло-турниры карьеры (Solo Series, FNCS Solos — 2025/2026; его слово 8.10 «не надо, чтоб пропускались») — каждый игрок
+     клуба своим «составом из одного» (mgrClubTeams(1)), со своим прогрессом отборов (MGR.tcar['s:ник']). */
+  const pass=(teams, kinds, mode)=>teams.forEach(tm=>{
     mgrTeamIn(tm);
     try{
       [...days.keys()].filter(d=>d>=from && d<=to).sort().forEach(d=>{
-        const list=(days.get(d)||[]).filter(e=>MGR_CAR_KINDS.indexOf(e.kind)>=0 && (CC_D1_ONLY.indexOf(e.kind)<0 || cr.division===1));
+        const list=(days.get(d)||[]).filter(e=>kinds.indexOf(e.kind)>=0 && (CC_D1_ONLY.indexOf(e.kind)<0 || cr.division===1));
         if(!list.length) return;
         const rank=e=>{ const i=CC_KIND_RANK.indexOf(e.kind); return i<0 ? 99 : i; };
         const e=list.slice().sort((a,b)=>rank(a)-rank(b)).find(x=>{ try{ return careerCanPlayKindOn(d, x.kind); }catch(err){ return false; } });
         if(!e || (MGR.skipped||[]).indexOf('car:'+e.id+'|'+d)>=0) return;
         const k=d+'|'+e.id;
         if(!byDay.has(k)) byDay.set(k, {kind:'car', ck:e.kind, id:'car:'+e.id, cid:e.id, day:d, name:String(e.label||e.id).replace(/<[^>]+>/g, ''), art:e.art||null,
-                                       mode:({2:'duo', 3:'trio', 4:'squad'})[size]||'duo', teams:[]});
+                                       mode, teams:[]});
         byDay.get(k).teams.push(tm.mgrId);
       });
     } finally { mgrTeamOut(); cr.day=day0; }
   });
+  pass(club, MGR_CAR_KINDS, ({2:'duo', 3:'trio', 4:'squad'})[size]||'duo');
+  pass(solo, ['solo'], 'solo');
   const list=[...byDay.values()].sort((a,b)=>a.day<b.day ? -1 : a.day>b.day ? 1 : 0);
   MGR_CAR_CACHE={key, list};
   return list.map(e=>Object.assign({}, e));
@@ -161835,7 +161845,7 @@ async function mgrPlayCar(ev){
 async function mgrPlayFncs(ev){
   const T=mgrT(), T2=mgrT2(), cr=CAREER.career;
   const size={duo:2, trio:3, squad:4}[ev.mode]||careerSquadSize();
-  if(!mgrFillShort(size)){ mgrShortAsk(ev, size); return; }   // неполный: запас встаёт сам, иначе — окно выбора
+  if(size>1 && !mgrFillShort(size)){ mgrShortAsk(ev, size); return; }   // неполный: запас встаёт сам, иначе — окно выбора
   await mgrWorldCatchUpLive(ev.day);
   mgrAdvanceTo(ev.day);
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted, prevSet=ACTIVE_LANDING_SET;
