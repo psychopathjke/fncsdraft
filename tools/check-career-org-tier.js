@@ -33,7 +33,7 @@ try{
   { const keep=CAREER.org; CAREER.org=null; CAREER.offers=[{name:'Team Falcons', tier:90, salary:5000, goal:'top', academy:false}];
     const ot=careerOrgTileHTML(); check('в предложениях — подписчики клуба и медийка', ot.indexOf(ccOrgFolText(ccOrgFollowers('Team Falcons', 90)))>=0 && ot.indexOf(L().ccOrgMediaRow(ccNum(ccOrgMediaMonth('Team Falcons', 90))))>=0, ot.slice(0,200));
     CAREER.org=keep; CAREER.offers=null; }
-  const tile=careerOrgTileHTML(); check('на карточке клуба — подписчики и медийка', tile.indexOf(L().ccOrgFans)>=0 && tile.indexOf(ccOrgFolText(ccOrgFollowers('Team Falcons', 90)))>=0 && tile.indexOf(L().ccOrgMedia)>=0);
+  const tile=careerOrgTileHTML(); check('на карточке клуба — подписчики и медийка', tile.indexOf('👥')>=0 && tile.indexOf(ccOrgFolText(ccOrgFollowers('Team Falcons', 90)))>=0 && tile.indexOf(L().ccOrgMedia)>=0);
   check('подписчики игрока: настоящее — без ≈', ccFollowText('Malibuca', 93).charAt(0)!=='≈' && ccFollowText('Нет Такого', 80).charAt(0)==='≈', ccFollowText('Malibuca', 93)+' / '+ccFollowText('Нет Такого', 80));
   check('профиль игрока показывает подписчиков', careerWhoHTML('Malibuca').indexOf('👥 '+ccFollowText('Malibuca'))>=0);
   // «Позвать в клуб» — отказ держится 30 дней (Notion 8.10: «опять спам можно»).
