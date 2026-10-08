@@ -161633,6 +161633,7 @@ function mgrCarJoinField(field){
 function mgrCarJoinRecord(field, opts){
   const J=MGR_CAR_JOIN; if(!J || !Array.isArray(field)) return;
   const sorted=field.slice().sort(mgrRankCmp);
+  { const y=field.find(t=>t && t.isYou); if(y){ const i=sorted.indexOf(y); J.rec._you={place:i+1, of:field.length, pts:Math.round(y.stagePts||0), elims:y.stageElims||0, wins:y.wins||0}; } }
   Object.keys(J.obj).forEach(id=>{ const t=J.obj[id], i=sorted.indexOf(t); if(i<0) return;
     J.rec[id]=Object.assign(J.rec[id]||{}, {place:i+1, of:field.length, pts:Math.round(t.stagePts||0), elims:t.stageElims||0, wins:t.wins||0, stage:(opts && opts.stageName)||''}); });
 }
@@ -161657,12 +161658,17 @@ async function mgrCarNight(ev, teams, you, quiet, fast){
   let lead=null;
   try{ lead=await mgrCarRun(ev, you, quiet, fast); } finally { mgrCarHooks(false); }
   const J=MGR_CAR_JOIN; MGR_CAR_JOIN=null;
+  // Ведущий без строки журнала (сессия отборов) — его место из той же общей таблицы.
+  if(lead && !(lead.rows||[]).length && J.rec._you){ const y=J.rec._you; lead.rows=[{season:CAREER.career.season, day:ev.day, place:y.place, of:y.of, pts:y.pts, elims:y.elims, wins:y.wins, kind:ev.ck, prize:0, shared:true}]; }
   const parts=[{tm:you, res:lead}];
   const lrow=lead && (lead.rows||[]).slice(-1)[0];
   for(const tm of extras){
     const rec=J.rec[tm.mgrId];
-    if(!rec || !lrow){ parts.push({tm, res:await mgrCarRun(ev, tm, true, true)}); continue; }   // в общий вечер не попал — свой
-    const lp=lrow.place||0, lpass=lrow.passed;
+    if(!rec){ parts.push({tm, res:await mgrCarRun(ev, tm, true, true)}); continue; }   // в общий вечер не попал — свой
+    /* Один вечер — одна симуляция (его Notion 8.10: «два раза симулируется кап, надо чтоб один раз»). Ведущий строку не
+       записал (сессия отборов Reload пишет итог в конце) или исход спорный — состав НЕ переигрывает вечер: место — из общей
+       таблицы, прогресс ведущего копируется, только когда исход тот же. */
+    const lp=lrow ? (lrow.place||0) : 0, lpass=lrow ? lrow.passed : undefined;
     let same=(lpass==null) || (lpass && rec.place<=lp) || (!lpass && rec.place>=lp);
     // Ведущий прошёл, а состав ниже него: прошёл ли и он — видно по таблице следующего раунда в записях ведущего (ники пары
     // появились там после вечера).
@@ -161671,9 +161677,8 @@ async function mgrCarNight(ev, teams, you, quiet, fast){
       if(hs.length && hs.every(h=>a.indexOf(h)>=0) && !hs.every(h=>b.indexOf(h)>=0)) same=true; }
     const st=(MGR.tcar=MGR.tcar||{})[tm.mgrId]=(MGR.tcar[tm.mgrId]||{division:(CAREER.career.division||1), log:[], tokens:[]});
     if(same && J.after){ MGR_CAR_COPY.forEach(k=>{ if(JSON.stringify(J.before[k])!==JSON.stringify(J.after[k])) st[k]=J.after[k]===undefined ? undefined : JSON.parse(JSON.stringify(J.after[k])); }); }
-    else { await mgrCarRun(ev, tm, true, true); try{ document.getElementById('majorStages').innerHTML=''; }catch(e){} }
     const row={season:CAREER.career.season, day:ev.day, place:rec.place, of:rec.of, pts:rec.pts||0, elims:rec.elims||0, wins:rec.wins||0,
-               kind:ev.ck, stage:lrow.stage, passed:same ? lpass : undefined, prize:Math.round((rec.prize||0)/Math.max(1, (tm.squad||[]).length)), shared:true};
+               kind:ev.ck, stage:lrow ? lrow.stage : undefined, passed:same ? lpass : undefined, prize:Math.round((rec.prize||0)/Math.max(1, (tm.squad||[]).length)), shared:true};
     const s2=MGR.tcar[tm.mgrId]; s2.log=(s2.log||[]).filter(x=>!(x.day===ev.day && x.kind===ev.ck)).concat([row]).slice(-120);
     parts.push({tm, res:{rows:[row], got:rec.prize||0}});
   }
