@@ -96,12 +96,12 @@ function minifyJs(appPath){
     console.log('ВНИМАНИЕ: terser не отработал (' + String(e.message).slice(0, 120) + ') — ' + name + ' остался с комментариями, ' + before + ' байт');
   }
 }
-/* МЕНЕДЖЕР — ОТДЕЛЬНЫМ ФАЙЛОМ (8.10): код Fortnite Manager (между @@MGR-BEGIN@@ и @@MGR-END@@ в исходнике) уходит
+/* МЕНЕДЖЕР — ОТДЕЛЬНЫМ ФАЙЛОМ (8.10): код Fortnite Manager (между @@MGR-FROM@@ и @@MGR-TILL@@ в исходнике) уходит
    в mgr.js и грузится только при входе в менеджер (mgrStart). app.js — карьере и драфту — легче на код режима. Снаружи
    блока менеджер зовут лишь mgrStart (кнопки) и mgrLeaveIfActive (входы в карьеру) — им заглушки; остальное — через typeof. */
 let appSrc = html.slice(best.from, best.end);
 {
-  const MB = '/*@@MGR-BEGIN@@*/', ME = '/*@@MGR-END@@*/', i = appSrc.indexOf(MB), j = appSrc.indexOf(ME);
+  const MB = '/*@@MGR-FROM@@*/', ME = '/*@@MGR-TILL@@*/', i = appSrc.indexOf(MB), j = appSrc.indexOf(ME);
   if (i >= 0 && j > i) {
     const mgrPath = path.join(OUT, 'mgr.js');
     fs.writeFileSync(mgrPath, appSrc.slice(i + MB.length, j), 'utf8');
