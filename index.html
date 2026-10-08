@@ -133,6 +133,16 @@
   #spPickBody .cc-staff-end{background:none;border:none;color:#ff8f8f;font-weight:700;font-size:11px;text-decoration:underline;cursor:pointer;}
   #spPickBody .cc-spb-list{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));}
   @media (max-width:640px){ #spPickBody .cc-spb-list, #spPickBody .cc-spb-mine{grid-template-columns:minmax(0,1fr);} #spPickBody .cc-spb-row .ch-sign{padding:7px 10px !important;} #spPickBody .cc-spb-logo{flex-basis:64px;} }
+  #screen-manager .mg-slots{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+  #screen-manager .mg-slots .cc-car{background:rgba(30,50,120,.5);border:1px solid rgba(255,255,255,.12);border-radius:14px;}
+  #screen-manager .mg-slots .cc-car.on{border-color:#ffdd00;background:rgba(255,221,0,.10);}
+  #screen-manager .mg-slots .cc-car-id em{color:#9fb3e6;}
+  #screen-manager .mg-slots .cc-car-ovr{color:#dfe8fb;} #screen-manager .mg-slots .cc-car-div{color:#ffdd00;}
+  #screen-manager .mg-slots .cc-car-ovr small, #screen-manager .mg-slots .cc-car-div small{color:#8fa0cc;}
+  #screen-manager .mg-slots .ch-play{background:#ffdd00;color:#0b1a3a;border-radius:999px;}
+  #screen-manager .mg-slots .cc-car-open{border-radius:999px;border-color:rgba(180,200,255,.35);color:#e6ecff;}
+  .mg-slot-logo{display:flex;align-items:center;justify-content:center;background:rgba(8,18,50,.55);border-radius:10px;overflow:hidden;}
+  .mg-slot-logo img, .mg-slot-logo svg{width:78% !important;height:78% !important;max-width:none !important;object-fit:contain;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -116475,6 +116485,7 @@ function ccSlotsFilled(){
    с плитки. Без этого выбор карьеры замыкался на себя: нажатие звало
    careerEntry, тот видел две карьеры и снова рисовал выбор. Отчёт: «подключился по коду, но зайти не могу, continue жму». */
 function careerEntry(direct){
+  mgrLeaveIfActive();
   // Вход одиночной дверью — значит, вдвоём здесь ничего не заводится. См. ccMpNewCancel.
   CC_MP_NEW=null;
   CC_DRAFT_RUN=false;   // карьера — командный код снова в силе (см. ccMpOn)
@@ -116567,6 +116578,7 @@ function careerEnd(){
    career; a full one is opened or deleted, and deleting asks, because a season
    is hours of somebody's evening. */
 function openCareerSlots(){
+  mgrLeaveIfActive();
   careerRenderSlots();
   show('screen-career-slots');
 }
@@ -116645,6 +116657,7 @@ function careerRenderSlots(){
    покрасила четырнадцать проверок из сорока четырёх. Выбор — решение кнопки,
    загрузка — дело careerEntry. */
 function careerStart(){
+  mgrLeaveIfActive();
   CC_MP_NEW=null;
   let has=false;
   for(let n=1; n<=CC_SLOTS && !has; n++) has=!!ccSlotCard(n);
@@ -116652,10 +116665,12 @@ function careerStart(){
   careerEntry();
 }
 function careerSlotOpen(n){
+  mgrLeaveIfActive();
   ccSlotUse(n);
   careerEntry(true);   // выбор уже сделан этой самой кнопкой
 }
 function careerSlotNew(n){
+  mgrLeaveIfActive();
   ccSlotUse(n);
   CAREER=null;
   openCareerCreate();
@@ -156793,12 +156808,83 @@ function mgrT(){
     heroBtn:'Become a manager', sponsor:'sponsors', drop:'Drop', dQuiet:'Quiet', dNorm:'Normal', dHot:'Hot', press:'Press conference', prPraise:'Praise the team', prCrit:'Criticise', prNone:'No comment', prDone:'Said', rep:'Reputation', tStats:'Stats', stNights:'nights', stKills:'kills', stBest:'best', stPrize:'prize', talents:'talents ≤75', dev:'growth', ewcNeed4:'EWC needs a squad of four — the club has fewer than four players', ewcNoSlot:'The club is not among the 16 EWC teams and a stronger team holds the region slot — no EWC for us', ewcIn:(s)=>'The club goes to Riyadh: slot "'+s+'"', ewcPlace:p=>'EWC finish: '+p, acad:'Academy', acadHint:'Up to 4 talents: a quarter of the wage, grow twice as fast, do not play events', toAcad:'To the academy', promote:'Promote', acadFull:'The academy is full', acadOnly:'Only players up to 75 go to the academy', scout:(n,r)=>'Scout: found a talent '+n+' ('+r+') — take them into the academy?', preH:'Before the night', style:'Approach', stPlace:'Placement', stBal:'Balanced', stAggr:'Aggressive', view:'Watch', vKey:'Key moments', vExt:'Extended', vFull:'Full night', vRes:'Result only', speed:'Speed', start:'Start the night', breakH:g=>'Break · after game '+g, cont:'Continue', talk:'Team talk', tkCalm:'Calm', tkDemand:'Demanding', tkPraise:'Praise', rankNow:'now', lastG:'last game', asst:'Assistant', tDeadEarly:n=>n+' die early — the spot is contested. Go placement or change the spot', tFightLow:n=>n+' fight a lot but place low — switch to placement', tPlaceNoKill:n=>n+' survive steadily but get few kills — try aggressive', tHot:n=>n+' are on fire — praise them, do not break it', tCold:n=>n+' missed two games in a row — they need a talk', talkSaid:'said', fmt:{2:'duos', 3:'trios', 4:'squads'}, focus:'Camera on', resume:'Continue season'
   };
 }
-function mgrLoad(){ try{ MGR=ccSaveParse(localStorage.getItem(MGR_KEY)); }catch(e){ MGR=null; } return MGR; }
+/* СЛОТЫ МЕНЕДЖЕРА, КАК У КАРЬЕРЫ ИГРОКА (его слово 8.10: «когда нажимаешь стать менеджером, не дают на выбор карьеру и
+   сохранять нельзя — нужно по аналогии с карьерой игрока»). Шесть слотов; №1 — прежний ключ fncsdraft_manager, так что
+   старый сейв остаётся на месте. Вкладка помнит свой слот (MGR_SLOT_TAB), как CC_SLOT_TAB у карьеры. */
+const MGR_SLOTS=6;
+const MGR_LS_SLOT=n=>n===1 ? MGR_KEY : 'fncsdraft_manager_s'+n;
+const MGR_LS_ACTIVE='fncsdraft_manager_active';
+let MGR_SLOT_TAB=null, MGR_SLOT_ARMED=null;
+function mgrSlot(){
+  if(MGR_SLOT_TAB) return MGR_SLOT_TAB;
+  let n=1; try{ n=parseInt(localStorage.getItem(MGR_LS_ACTIVE)||'1', 10); }catch(e){}
+  return (n>=1 && n<=MGR_SLOTS) ? n : 1;
+}
+function mgrSlotUse(n){ MGR_SLOT_TAB=n; try{ localStorage.setItem(MGR_LS_ACTIVE, String(n)); }catch(e){} }
+function mgrSlotRead(n){ try{ return ccSaveParse(localStorage.getItem(MGR_LS_SLOT(n))); }catch(e){ return null; } }
+function mgrSlotCard(n){
+  const m=mgrSlotRead(n); if(!m || !m.club) return null;
+  const sh=m.shadow||{}, cr=sh.career||{};
+  return {club:m.club.name, own:!!m.club.own, year:m.year, region:m.region, day:cr.day||null, season:cr.season||1,
+          cash:m.club.cash||0, fans:m.club.fans||null, avg:m.club.avg||0, earned:m.club.earned||0};
+}
+function mgrSlotsFilled(){ let k=0; for(let n=1;n<=MGR_SLOTS;n++) if(mgrSlotCard(n)) k++; return k; }
+function mgrLoad(){ try{ MGR=ccSaveParse(localStorage.getItem(MGR_LS_SLOT(mgrSlot()))); }catch(e){ MGR=null; } return MGR; }
 function mgrSave(){
   if(!MGR) return;
-  try{ localStorage.setItem(MGR_KEY, JSON.stringify(MGR)); }
-  catch(e){ try{ localStorage.setItem(MGR_KEY, CC_SAVE_LZ+LZString.compressToUTF16(JSON.stringify(MGR))); }catch(e2){} }
+  const key=MGR_LS_SLOT(mgrSlot());
+  try{ localStorage.setItem(key, JSON.stringify(MGR)); }
+  catch(e){ try{ localStorage.setItem(key, CC_SAVE_LZ+LZString.compressToUTF16(JSON.stringify(MGR))); }catch(e2){} }
 }
+function mgrSlotT(){
+  const ru=(typeof LANG!=='undefined' && LANG==='ru');
+  return ru ? {h:'Карьеры менеджера', sub:'Каждая карьера сохраняется сама — в своём слоте', open:'Продолжить', del:'Удалить', sure:'Точно удалить?', nw:'Новая карьера', free:n=>'свободно слотов: '+n, season:'Сезон', cash:'Касса', slots:'Карьеры'}
+            : {h:'Manager careers', sub:'Every career saves itself — in its own slot', open:'Continue', del:'Delete', sure:'Delete for sure?', nw:'New career', free:n=>'free slots: '+n, season:'Season', cash:'Cash', slots:'Careers'};
+}
+function mgrOpenSlots(){
+  mgrCloneHubCss();
+  const T=mgrSlotT(), here=mgrSlot();
+  { const top=document.getElementById('mgTop'), tabs=document.getElementById('mgTabs');
+    if(top) top.hidden=true; if(tabs) tabs.hidden=true; MGR_DREW=null; }
+  const cells=[]; let free=0, firstFree=0;
+  for(let n=1;n<=MGR_SLOTS;n++){
+    const c=mgrSlotCard(n);
+    if(!c){ free++; if(!firstFree) firstFree=n; continue; }
+    const meta=[String(c.year||''), esc(c.region||''), c.day ? esc(ccDayLabel(c.day)) : '', c.fans ? '👥 '+ccFollowers(c.fans) : '', c.earned ? '$'+ccNum(c.earned) : ''].filter(Boolean).join('<span style="opacity:.4"> · </span>');
+    cells.push('<div class="cc-car'+(n===here ? ' on' : '')+'">'+
+      '<span class="cc-car-face mg-slot-logo">'+mgrLogo(c.club, false)+'</span>'+
+      '<div class="cc-car-id"><b>'+esc(c.club)+'</b><em>'+meta+'</em></div>'+
+      '<div class="cc-car-ovr"><small>'+esc(T.cash)+'</small>'+mgrMoney(c.cash)+'</div>'+
+      '<div class="cc-car-div"><small>'+esc(T.season)+'</small>'+c.season+'</div>'+
+      '<div class="cc-car-go"><button class="'+(n===here ? 'ch-play' : 'cc-car-open')+'" onclick="mgrSlotOpen('+n+')">'+esc(T.open)+'</button>'+
+        '<button class="cc-car-del'+(MGR_SLOT_ARMED===n ? ' armed' : '')+'" title="'+esc(T.del)+'" onclick="mgrSlotDrop('+n+')">'+(MGR_SLOT_ARMED===n ? esc(T.sure) : '&times;')+'</button></div></div>');
+  }
+  if(free) cells.push('<button class="cc-car cc-car-new" onclick="mgrSlotNew('+firstFree+')"><span><b>'+esc(T.nw)+'</b><em>'+esc(T.free(free))+'</em></span><span class="cc-car-free">+</span></button>');
+  document.getElementById('mgBody').innerHTML='<div class="mgn-headtile"><h4>Fortnite Manager · '+esc(T.h)+'</h4><div class="ch-hint">'+esc(T.sub)+'</div></div>'+
+    '<div class="cc-slot-grid mg-slots">'+cells.join('')+'</div>';
+  const foot=document.getElementById('mgFoot'); if(foot) foot.innerHTML='<button class="cc-back" onclick="mgrHome()">'+esc(mgrT().home)+'</button>';
+  show('screen-manager');
+  try{ window.scrollTo(0,0); }catch(e){}
+}
+function mgrSlotSwitchOut(){ if(MGR) mgrSave(); mgrLeave(); }
+function mgrSlotOpen(n){
+  mgrSlotSwitchOut(); MGR_SLOT_ARMED=null;
+  mgrSlotUse(n); mgrLoad();
+  if(MGR && MGR.club) mgrOpenHub(); else { MGR=null; mgrOpenNew(MGR_NEW_YEAR); }
+}
+function mgrSlotNew(n){
+  mgrSlotSwitchOut(); MGR_SLOT_ARMED=null;
+  mgrSlotUse(n); MGR=null;
+  mgrOpenNew(MGR_NEW_YEAR);
+}
+function mgrSlotDrop(n){
+  if(MGR_SLOT_ARMED!==n){ MGR_SLOT_ARMED=n; mgrOpenSlots(); return; }
+  MGR_SLOT_ARMED=null;
+  try{ localStorage.removeItem(MGR_LS_SLOT(n)); }catch(e){}
+  if(n===mgrSlot()){ mgrLeave(); MGR=null; }
+  mgrOpenSlots();
+}
+function mgrToSlots(){ mgrSlotSwitchOut(); mgrOpenSlots(); }
 // Теневая карьера года: игрок-заглушка (в поле не выходит), первый день года, первый дивизион.
 /* ПОСЛЕ 2026-ГО (его выбор 7.10, пункт 1): сезоны идут дальше, как в карьере за игрока —
    календарь 2026-го со сдвигом сезона (ccYearShift считает его из season − 1), люди — 2026-го
@@ -156827,6 +156913,7 @@ function mgrLeave(){
   try{ ccWorldReset(); }catch(e){}
 }
 function mgrHome(){ mgrSave(); mgrLeave(); show('screen-mode'); }
+function mgrLeaveIfActive(){ try{ if(MGR_ACTIVE){ if(MGR) mgrSave(); mgrLeave(); } }catch(e){} }
 function mgrHeroText(){
   try{ const T=mgrT(); const set=(id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
     set('mgHeroTag', T.heroTag); set('mgHeroSub', T.heroSub); set('mgHeroBtn', T.heroBtn); set('mgCareerBtn', T.careerBtn); set('mgNavBtn', T.navBtn);
@@ -156840,7 +156927,12 @@ function mgrAllowed(host){
   return !h || h==='localhost' || h==='127.0.0.1' || h==='debug.fncsdraft.pages.dev';
 }
 setTimeout(()=>{ try{ if(!mgrAllowed()) return; document.querySelectorAll('.hero-mgr, .hero-mgr-btn, .nav-pill[data-nav="manager"]').forEach(el=>{ el.hidden=false; }); }catch(e){} }, 0);
-function mgrStart(){ if(!mgrAllowed()) return; mgrLoad(); if(MGR && MGR.club) mgrOpenHub(); else mgrOpenNew(MGR_NEW_YEAR); }
+function mgrStart(){
+  if(!mgrAllowed()) return;
+  // Есть хоть одна карьера — сперва выбор, как у карьеры игрока (careerStart → openCareerSlots).
+  if(mgrSlotsFilled()){ mgrOpenSlots(); return; }
+  mgrSlotUse(1); mgrLoad(); if(MGR && MGR.club) mgrOpenHub(); else mgrOpenNew(MGR_NEW_YEAR);
+}
 
 /* ---- Выбор года и клуба ---------------------------------------------------- */
 let MGR_NEW_YEAR=2024, MGR_NEW_REGION='EU';
@@ -156943,7 +157035,7 @@ function mgrOpenNew(year){
     '<div class="ch-subtabs mgn-years">'+years+'</div>'+
     '<label class="mgn-reg">'+esc(T.region)+' <select onchange="MGR_NEW_REGION=this.value;mgrOpenNew()">'+regs+'</select></label>'+side+'</div>'+
     mgrNewOptsHTML()+(MGR_NEW_SIDE==='own' ? own : real)+
-    '<div class="ch-foot"><button class="cc-back" onclick="mgrHome()">'+esc(T.home)+'</button></div>';
+    '<div class="ch-foot"><button class="cc-back" onclick="mgrHome()">'+esc(T.home)+'</button>'+(mgrSlotsFilled() ? '<button class="cc-back" onclick="mgrToSlots()">'+esc(mgrSlotT().slots)+'</button>' : '')+'</div>';
   show('screen-manager');
 }
 let MGR_NEW_LIST=[];
@@ -157497,6 +157589,7 @@ function mgrRenderHub(tab){
   }
   const T=mgrT();
   document.getElementById('mgFoot').innerHTML='<button class="cc-back" onclick="mgrHome()">'+esc(T.home)+'</button>'+
+    '<button class="cc-back" onclick="mgrToSlots()">'+esc(mgrSlotT().slots)+'</button>'+
     '<button class="cc-back" onclick="mgrNewClubAsk()">'+esc(T.newClub)+'</button>';
   MGR_DREW=MGR_TAB;
   show('screen-manager');
@@ -160138,7 +160231,7 @@ function mgrAfterNight(){
 }
 
 function careerBackToHub(){
-  if(MGR_ACTIVE){ mgrAfterNight(); return; }   // вечер менеджера — назад в клуб
+  if(MGR_ACTIVE && CAREER && CAREER._mgr){ mgrAfterNight(); return; }   // вечер менеджера — назад в клуб
   document.documentElement.classList.remove('ev-pal', 'ev-classic', 'ev-light');
   show('screen-career-hub');
   /* После матча — наверх (его слово 8.10: «после матча меня вниз скролит, нужно подниматься наверх к вкладкам»):
