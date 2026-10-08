@@ -303,6 +303,29 @@
   #screen-manager .mfc-play-main button{flex:1;border:none;border-radius:999px;padding:9px 10px;font-weight:900;font-size:12px;text-transform:uppercase;cursor:pointer;background:rgba(11,26,58,.85);color:#ffdd00;white-space:nowrap;}
   #screen-manager .mfc-play-main button.go{background:#0b1a3a;color:#fff;}
   #screen-manager .mfc-play-main button:hover{filter:brightness(1.2);}
+  /* «Играть» по эвенту: арт турнира фоном, белый текст, без жёлтого (8.10) */
+  #screen-manager .mfc-play.mfc-play-ev{background-color:#0b1a3a;background-size:cover;background-position:center;border-color:rgba(126,240,221,.35);color:#fff;}
+  #screen-manager .mfc-play-ev .mfc-title{color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6);}
+  #screen-manager .mfc-play-ev .mfc-play-l em{color:#7ef0dd;}
+  #screen-manager .mfc-play-ev .mfc-cup i svg{color:#7ef0dd;} #screen-manager .mfc-play-ev .mfc-cup small{color:#cfe0ff;opacity:1;}
+  #screen-manager .mfc-play-ev .mfc-going{color:#cfe0ff;opacity:.9;}
+  #screen-manager .mfc-play-ev .mfc-play-r{justify-content:flex-end;align-items:flex-end;}
+  #screen-manager .mfc-play-ev .mfc-play-main button{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(6px);}
+  #screen-manager .mfc-play-ev .mfc-play-main button.go{background:#fff;color:#0b1a3a;border-color:#fff;}
+  #screen-manager .mfc-play-ev .mfc-play-btns button{background:rgba(6,12,36,.55);color:#dfe8fb;border-color:rgba(255,255,255,.25);}
+  #screen-manager .mfc-play-ev .mfc-play-btns button:hover{background:rgba(255,255,255,.2);}
+  #screen-manager .mfc-play.mfc-play-ev{min-height:250px;padding:20px 22px;}
+  #screen-manager .mfc-play-ev .mfc-title{font-size:42px;}
+  #screen-manager .mfc-play-ev .mfc-cup b{font-size:22px;color:#fff;}
+  #screen-manager .mfc-play-ev .mfc-cup i, #screen-manager .mfc-play-ev .mfc-cup i svg{width:30px;height:30px;color:#fff;fill:currentColor;filter:drop-shadow(0 0 6px rgba(126,240,221,.6));}
+  #screen-manager .mfc-play-ev .mfc-play-r{flex:0 0 auto;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;gap:8px;}
+  #screen-manager .mfc-play-ev .mfc-play-main{max-width:none;width:auto;}
+  #screen-manager .mfc-play-ev .mfc-play-main button{padding:12px 22px;font-size:14px;}
+  #screen-manager .mfc-play-ev .mfc-play-btns{justify-content:flex-end;}
+  #screen-manager .mfc-play.mfc-play-ev{flex-direction:column;gap:14px;}
+  #screen-manager .mfc-play-ev .mfc-play-l{flex:1 1 auto;}
+  #screen-manager .mfc-play-ev .mfc-play-r{flex-direction:row !important;flex-wrap:wrap;justify-content:flex-start !important;align-items:center !important;}
+  #screen-manager .mfc-play-ev .mfc-play-btns{margin:0;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -157868,12 +157891,12 @@ function mgrCentreHTML(){
   const going=nx ? MGR.teams.map((t,i)=>({t, i})).filter(x=>mgrTeamSize(x.t)===size[nx.mode]) : [];
   let field=0; try{ field=nx ? (nx.kind==='fncs' ? ccTeams(100) : careerVictoryField(false)) : 0; }catch(e){}
   const play=nx
-    ? '<div class="mfc-tile mfc-play" onclick="if(!event.target.closest(\'button\')) mgrPlay()">'+
+    ? '<div class="mfc-tile mfc-play mfc-play-ev" style="background-image:linear-gradient(90deg,rgba(6,12,36,.94) 0%,rgba(6,12,36,.78) 45%,rgba(6,12,36,.25) 100%),url('+esc(mgrEvArt(nx))+')" onclick="if(!event.target.closest(\'button\')) mgrPlay()">'+
         '<div class="mfc-play-l"><b class="mfc-title">'+esc(X.play)+'</b><em>'+esc(dayLong(nx.day))+'</em>'+
           '<span class="mfc-cup"><i>'+ccKindIconSVG(nx.kind==='fncs' ? 'major' : 'victory')+'</i><span><small>'+esc(T.fmt[size[nx.mode]]||nx.mode)+'</small><b>'+esc(nx.name)+'</b></span></span>'+
           '<small class="mfc-going">'+(going.length ? going.map(x=>esc(T2.teamWord)+' '+(x.i+1)+': '+x.t.cards.map(esc).join(' · ')).join('<br>') : esc(T.noTeamFmt))+'</small></div>'+
         // Логотип турнира вместо «VS / N команд» (его слово 8.10: «нет логотипа турнира, и vs 100 teams лишнее»).
-        '<div class="mfc-play-r"><span class="mfc-evart"><img src="'+esc(mgrEvArt(nx))+'" alt="" loading="lazy"></span>'+
+        '<div class="mfc-play-r">'+
           '<span class="mfc-play-main"><button class="go" onclick="mgrPlay()">▶ '+esc(X.watch)+'</button><button onclick="mgrSimNext()">⏩ '+esc(X.sim)+'</button></span>'+
           '<span class="mfc-play-btns"><button onclick="mgrSkip()">'+esc(T.skipEv)+'</button><button onclick="mgrFastForwardLive(ccAddDays(CAREER.career.day, 7))">'+esc(T9.ffWeek)+'</button><button onclick="mgrFastForwardLive(ccAddDays(CAREER.career.day, 30))">'+esc(T9.ffMonth)+'</button></span></div></div>'
     : '<div class="mfc-tile mfc-play" onclick="mgrSeasonReview()"><div class="mfc-play-l"><b class="mfc-title">'+esc(X.season)+'</b><em>'+esc(T2.endSeason)+'</em></div></div>';
