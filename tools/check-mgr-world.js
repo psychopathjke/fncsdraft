@@ -45,7 +45,7 @@ try{
   check('кнопка «К нашим»', !mineRes || document.querySelectorAll('#mgBody .mgw-jump').length>=1);
   // Центр: плитка «Турниры мира» со «Смотреть / Симулировать»
   mgrRenderHub('centre');
-  const btns=[...document.querySelectorAll('#mgBody .mgw-tile .mgw-btn')];
+  const btns=[...document.querySelectorAll('#mgBody .mgw-tile .mgc-wbtn button')];
   check('Центр: турниры мира с кнопками', btns.some(b=>/mgrWatchWorld/.test(b.getAttribute('onclick'))) && btns.some(b=>/mgrSimWorld/.test(b.getAttribute('onclick'))), btns.length);
   // Симулировать
   const club=new Set(mgrEvents().map(e=>e.id+'|'+e.day));

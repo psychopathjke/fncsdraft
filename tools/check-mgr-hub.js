@@ -30,7 +30,7 @@ const SECTIONS=[
     check('подписчики: выше уровень — больше оценка', mgrOrgFollowers('Нет Такого Клуба', 90).n>no.n);
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; mgrOpenNew(2024);
     const tiles=[...document.querySelectorAll('.mgn-club')];
-    check('подписчики: на каждой плитке', tiles.length>0 && tiles.every(t=>/X|Подписчики/.test(t.textContent)), String(tiles.length));
+    check('подписчики: на каждой плитке', tiles.length>0 && tiles.every(t=>/👥/.test(t.textContent)), String(tiles.length));
     const fi=MGR_NEW_LIST.findIndex(c=>c.name==='Team Falcons'); mgrTake(fi>=0 ? fi : 0); mgrOpenHub();
     const f0=mgrFans(); out.notes.fans={club:MGR.club.name, f0};
     check('подписчики: в шапке хаба', (document.getElementById('mgWho').textContent||'').indexOf('👥')>=0);
@@ -160,9 +160,9 @@ const SECTIONS=[
     mgrRenderHub('centre');
     const B=document.getElementById('mgBody'), play=B.querySelector('.ch-play');
     check('центр '+lang+': главная кнопка', !!play && /mgrPlay|mgrSeasonReview/.test(play.getAttribute('onclick')||''), play && play.outerHTML.slice(0,120));
-    check('центр '+lang+': плитка турнира', !!B.querySelector('.mgc-next'));
+    check('центр '+lang+': плитка турнира', !!B.querySelector('.mgc-hero'));
     check('центр '+lang+': цели совета', !!B.querySelector('.hg-tile'));
-    check('центр '+lang+': развитие', !!B.querySelector('.hd-tile'));
+    check('центр '+lang+': сводка клуба (развитие, касса, доверие)', !!B.querySelector('.mgc-snap'));
     check('центр '+lang+': новости', !!B.querySelector('.mgc-news'));
     check('центр '+lang+': полоса недели', B.querySelectorAll('.ch-day').length===7, String(B.querySelectorAll('.ch-day').length));
     check('центр '+lang+': без undefined/NaN', !bad(B.innerHTML));
@@ -541,7 +541,7 @@ const SECTIONS=[
     MGR.log.unshift({day:CAREER.career.day, kind:'night', name:'ПробныйВечер', teams:[{place:4, prize:0}]});
     MGR_MONTH=null; mgrRenderHub('calendar');
     check('календарь: прошедший вечер с местом', /#4/.test(B.textContent) && B.textContent.indexOf('ПробныйВечер')>=0);
-    check('центр: список ближайших турниров', (mgrRenderHub('centre'), !!document.querySelector('#mgBody .mgc-cal')));
+    check('центр: список ближайших турниров', (mgrRenderHub('centre'), !!document.querySelector('#mgBody .mgw-tile')));
   `},
   {name:'штаб', code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
@@ -880,7 +880,7 @@ const SECTIONS=[
     check('перемотка: призовые пришли', MGR.club.earned>0 || MGR.club.cash!==cash0);
     check('перемотка: без ошибок', !out.errs.length, out.errs.join(' | '));
     mgrRenderHub('centre');
-    check('перемотка '+lang+': кнопки на Центре', document.querySelectorAll('#mgBody .mgc-ff button').length>=2);
+    check('перемотка '+lang+': кнопки на Центре', document.querySelectorAll('#mgBody .mgc-act2 button').length>=2);
     MGR_MONTH=null; mgrRenderHub('calendar');
     check('перемотка: клик по дню в календаре', document.querySelectorAll('#mgBody .cal-day.cal-go[onclick*="mgrFfAsk"]').length>=5);
   `},

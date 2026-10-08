@@ -162,6 +162,58 @@
   #screen-manager .mgp-pl{position:relative;width:34px;height:34px;border-radius:50%;overflow:hidden;background:#1a2550;display:flex;align-items:center;justify-content:center;flex:none;}
   #screen-manager .mgp-pl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;} #screen-manager .mgp-pl i{font-style:normal;font-size:11px;font-weight:800;color:#9fb3e6;}
   #screen-manager .mgp-org{display:inline-flex;width:16px;height:16px;vertical-align:-3px;} #screen-manager .mgp-org img, #screen-manager .mgp-org svg{width:16px;height:16px;object-fit:contain;}
+  /* Центр менеджера 8.10 */
+  #screen-manager .mgc-row1{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px;margin:14px 0;align-items:stretch;}
+  #screen-manager .mgc-row2{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch;}
+  @media (max-width:980px){ #screen-manager .mgc-row1, #screen-manager .mgc-row2{grid-template-columns:minmax(0,1fr);} }
+  #screen-manager .mgc-row1>.ch-tile, #screen-manager .mgc-row2>.ch-tile{margin:0;display:flex;flex-direction:column;}
+  #screen-manager .mgc-eq-body{flex:1;display:flex;flex-direction:column;}
+  #screen-manager .mgc-eq .hg-go, #screen-manager .mgc-snap .hg-go{margin-top:auto;}
+  #screen-manager .mgc-hero-ev b{display:block;font-family:var(--font-display,inherit);font-size:30px;line-height:1.05;color:#fff;margin:4px 0 8px;}
+  #screen-manager .mgc-chips{display:flex;gap:6px;flex-wrap:wrap;} #screen-manager .mgc-chips i{font-style:normal;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.08);color:#cfe0ff;}
+  #screen-manager .mgc-chips i.hot{background:rgba(255,221,0,.18);color:#ffdd00;}
+  #screen-manager .mgc-squads{display:flex;flex-wrap:wrap;gap:18px;margin:16px 0;}
+  #screen-manager .mgc-squad em{display:block;font-style:normal;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9fb3e6;margin-bottom:6px;}
+  #screen-manager .mgc-squad>div{display:flex;gap:10px;}
+  #screen-manager .mgc-face{position:relative;display:flex;flex-direction:column;align-items:center;width:64px;}
+  #screen-manager .mgc-face img{width:56px;height:56px;border-radius:50%;object-fit:cover;object-position:center 20%;background:#1a2550;border:2px solid rgba(255,255,255,.15);}
+  #screen-manager .mgc-face i{position:absolute;top:0;left:4px;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800;color:#9fb3e6;background:#1a2550;z-index:-1;}
+  #screen-manager .mgc-face small{font-size:11px;font-weight:700;color:#fff;margin-top:4px;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  #screen-manager .mgc-act{margin-top:auto;display:flex;flex-direction:column;gap:8px;}
+  #screen-manager .mgc-act .ch-play{width:100%;margin:0;}
+  #screen-manager .mgc-act2{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;} #screen-manager .mgc-act2 .cc-back{margin:0;width:100%;}
+  #screen-manager .mgc-snap-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  #screen-manager .mgc-snap-crest{flex:0 0 56px;height:56px;display:flex;align-items:center;justify-content:center;}
+  #screen-manager .mgc-snap-id{flex:1;min-width:0;display:flex;flex-direction:column;} #screen-manager .mgc-snap-id b{font-size:17px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} #screen-manager .mgc-snap-id small{color:#9fb3e6;font-size:12px;}
+  #screen-manager .mgc-snap-ovr{display:flex;flex-direction:column;align-items:center;background:#ffdd00;color:#0b1a3a;border-radius:10px;padding:4px 10px;}
+  #screen-manager .mgc-snap-ovr b{font-size:24px;line-height:1;font-weight:900;} #screen-manager .mgc-snap-ovr small{font-size:9px;font-weight:800;letter-spacing:.1em;}
+  #screen-manager .mgc-kv{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0 4px;} #screen-manager .mgc-kv em{font-style:normal;font-size:12px;color:#9fb3e6;} #screen-manager .mgc-kv b{font-size:15px;color:#fff;}
+  #screen-manager .mgc-bar{display:block;height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden;text-decoration:none;}
+  #screen-manager .mgc-bar s{display:block;height:100%;background:#7aa2ff;text-decoration:none;} #screen-manager .mgc-bar.ok s{background:#6fe3b0;} #screen-manager .mgc-bar.bad s{background:#ff8f8f;}
+  #screen-manager .mgc-wrow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07);}
+  #screen-manager .mgc-wrow>span:first-child{flex:1;min-width:0;display:flex;flex-direction:column;}
+  #screen-manager .mgc-wrow em{font-style:normal;font-size:11px;color:#9fb3e6;} #screen-manager .mgc-wrow b{font-size:13px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #screen-manager .mgc-wrow.mine b{color:#ffdd00;}
+  #screen-manager .mgc-wbtn{display:flex;gap:6px;flex:none;}
+  #screen-manager .mgc-wbtn button{width:34px;height:30px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font-size:14px;}
+  #screen-manager .mgc-wbtn button:hover{border-color:#ffdd00;}
+  /* Выбор клуба 8.10 */
+  #screen-manager .mgn-grid2{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+  #screen-manager .mgn-card{padding:14px;gap:10px;}
+  #screen-manager .mgn-top{display:flex;align-items:center;gap:12px;}
+  #screen-manager .mgn-crest{flex:0 0 64px;height:64px;display:flex;align-items:center;justify-content:center;background:rgba(8,18,50,.5);border-radius:14px;padding:6px;box-sizing:border-box;}
+  #screen-manager .mgn-id{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;} #screen-manager .mgn-id b{font-size:17px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} #screen-manager .mgn-id small{font-size:12px;color:#9fb3e6;}
+  #screen-manager .mgn-big{display:flex;flex-direction:column;align-items:center;background:#ffdd00;color:#0b1a3a;border-radius:10px;padding:4px 10px;flex:none;}
+  #screen-manager .mgn-big b{font-size:24px;font-weight:900;line-height:1;} #screen-manager .mgn-big small{font-size:9px;font-weight:800;letter-spacing:.1em;}
+  #screen-manager .mgn-faces{display:flex;gap:8px;}
+  #screen-manager .mgn-face{position:relative;display:flex;flex-direction:column;align-items:center;flex:1 1 0;min-width:0;}
+  #screen-manager .mgn-face img{width:48px;height:48px;border-radius:50%;object-fit:cover;object-position:center 20%;background:#1a2550;position:relative;z-index:1;}
+  #screen-manager .mgn-face i{position:absolute;top:0;width:48px;height:48px;border-radius:50%;background:#1a2550;color:#9fb3e6;font-style:normal;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;}
+  #screen-manager .mgn-face small{font-size:11px;color:#dfe8fb;margin-top:4px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  #screen-manager .mgn-cells{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+  #screen-manager .mgn-cells span{background:rgba(8,18,50,.45);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column;min-width:0;}
+  #screen-manager .mgn-cells small{font-size:10px;color:#9fb3e6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} #screen-manager .mgn-cells b{font-size:13px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #screen-manager .mgn-card .mgn-exp{font-size:12px;color:#ffdd00;font-weight:700;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -157038,6 +157090,19 @@ function mgrOpenNew(year){
   const regs=['EU','NAC','BR','OCE','ASIA','ME'].map(r=>'<option'+(r===MGR_NEW_REGION?' selected':'')+'>'+r+'</option>').join('');
   const side='<div class="ch-subtabs mgn-side">'+sub(MGR_NEW_SIDE==='real', "MGR_NEW_SIDE='real';mgrOpenNew()", T9.real)+
     sub(MGR_NEW_SIDE==='own', "MGR_NEW_SIDE='own';mgrOpenNew()", T9.own)+'</div>';
+  // Лица четырёх сильнейших — чтобы клуб узнавали по людям, а не по строкам.
+  const faces=c=>(c.players||[]).slice(0, 4).map(h=>{ let cd=null; try{ cd=(typeof ccWhoCard==='function' ? ccWhoCard(h) : null); }catch(e){} let u=null; try{ u=cd ? photoURL(cd) : null; }catch(e){}
+    return '<span class="mgn-face">'+(u ? '<img src="'+esc(u)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+'<i>'+esc(String(h).slice(0,2).toUpperCase())+'</i><small>'+esc(h)+'</small></span>'; }).join('');
+  const fansOf=c=>{ const f=mgrOrgFollowers(c.name, c.avg); return (f.est ? '≈' : '')+ccFollowers(f.n); };
+  const tileNew=(c,i)=>'<div class="ch-tile mgn-club mgn-card" data-i="'+i+'" onclick="mgrTake('+i+')">'+
+    '<div class="mgn-top"><span class="mgn-crest">'+mgrLogo(c.name, true, 64)+'</span>'+
+      '<span class="mgn-id"><b>'+esc(c.name)+'</b>'+mgrStarsHTML(mgrClubStars(c.avg))+'<small>👥 '+fansOf(c)+' · '+c.n+' '+esc(T.players)+'</small></span>'+
+      '<span class="mgn-big"><b>'+c.avg+'</b><small>OVR</small></span></div>'+
+    '<div class="mgn-faces">'+faces(c)+'</div>'+
+    '<div class="mgn-cells"><span><small>'+esc(T9.transfer)+'</small><b>'+mgrMoney(c.budget.transfer)+'</b></span>'+
+      '<span><small>'+esc(T9.wageCap)+'</small><b>'+mgrMoney(c.budget.wageCap)+'</b></span>'+
+      '<span><small>'+esc(T9.star)+'</small><b>'+esc(c.star||'—')+'</b></span></div>'+
+    '<div class="mgn-exp">'+esc(T9.expect[c.expect])+'</div></div>';
   const tile=(c,i)=>'<div class="ch-tile mgn-club" data-i="'+i+'" onclick="mgrTake('+i+')">'+
     '<div class="mgn-head"><span class="mg-logo">'+mgrLogo(c.name, false)+'</span>'+
       '<span class="mgn-name"><b>'+esc(c.name)+'</b><span class="mgn-sub">'+mgrStarsHTML(mgrClubStars(c.avg))+(f=>'<em class="mgn-fans"'+(f.est ? ' title="'+esc(T9.fansEst)+'"' : '')+'>👥 '+(f.est ? '≈' : '')+ccFollowers(f.n)+'</em>')(mgrOrgFollowers(c.name, c.avg))+'</span></span><b class="mgn-ovr">'+c.avg+'</b></div>'+
@@ -157048,7 +157113,7 @@ function mgrOpenNew(year){
     '<div class="mgn-exp">'+esc(T9.expect[c.expect])+'</div></div>';
   const real='<div class="ch-subtabs mgn-sort">'+sub(MGR_NEW_SORT==='stars', "MGR_NEW_SORT='stars';mgrOpenNew()", T9.byStars)+
       sub(MGR_NEW_SORT==='budget', "MGR_NEW_SORT='budget';mgrOpenNew()", T9.byBudget)+'</div>'+
-    '<div class="mgn-grid">'+(clubs.map(tile).join('') || '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div>';
+    '<div class="mgn-grid mgn-grid2">'+(clubs.map(tileNew).join('') || '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div>';
   const own=typeof mgrOwnFormHTML==='function' ? mgrOwnFormHTML() : '';
   document.getElementById('mgBody').innerHTML='<div class="mgn-headtile"><h4>'+esc(T.title)+' · '+esc(T.newH)+'</h4>'+
     '<div class="ch-subtabs mgn-years">'+years+'</div>'+
@@ -157105,13 +157170,17 @@ function mgrCrestSVG(cr, size){
   return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 40 40"><path d="'+d+'" fill="'+col+'" stroke="rgba(0,0,0,.5)" stroke-width="1.5"/>'+
     '<text x="20" y="25" text-anchor="middle" font-family="Oswald,sans-serif" font-weight="700" font-size="12" fill="#111">'+ini+'</text></svg>';
 }
-function mgrLogo(name, big){
-  if(MGR && MGR.club && MGR.club.own && MGR.club.name===name) return mgrCrestSVG(MGR.club.crest, big ? 44 : 26);
-  const logo=typeof clubLogoHTML==='function' ? clubLogoHTML(name, big) : '';
-  if(logo) return logo;
+/* Герб клуба (его слово 8.10: «когда организацию выбираешь — нет логотипов, всё в кучке»): брал clubLogoHTML — иконку
+   строки таблицы высотой 10–12 px со встроенным стилем, поэтому на плитках герб был крошкой. Теперь — файл из logos/
+   (если он есть в CAREER_CRESTS) размером px атрибутами (CSS контейнера их перекрывает), иначе — герб с инициалами. */
+function mgrLogo(name, big, px){
+  px=px||(big ? 44 : 26);
+  if(MGR && MGR.club && MGR.club.own && MGR.club.name===name) return mgrCrestSVG(MGR.club.crest, px);
+  const f=name && typeof clubLogoFile==='function' ? clubLogoFile(name) : null;
+  if(f && typeof ccHasCrest==='function' && ccHasCrest(f)) return '<img class="mg-crest-img" src="'+LOGO_DIR+f+'" alt="" width="'+px+'" height="'+px+'" style="object-fit:contain;max-width:100%;max-height:100%;" onerror="this.remove()">';
   // Логотипа в файлах нет — герб с инициалами, цвет от названия (тот же у клуба всегда).
   const ini=String(name||'').split(/\s+/).filter(Boolean).map(w=>w[0]).join('').slice(0, 3) || '?';
-  return mgrCrestSVG({color:MGR_CREST_COLORS[ccHashStr(String(name))%MGR_CREST_COLORS.length], shape:'shield', ini:ini}, big ? 44 : 26);
+  return mgrCrestSVG({color:MGR_CREST_COLORS[ccHashStr(String(name))%MGR_CREST_COLORS.length], shape:'shield', ini:ini}, px);
 }
 function mgrCleanName(s){ return String(s||'').replace(/[\u0000-\u001f<>"'`\\]/g, '').replace(/\s+/g, ' ').trim().slice(0, 24); }
 function mgrCreateOwn(o){
@@ -157623,8 +157692,13 @@ function mgrOpenHub(){
 }
 /* ЦЕНТР — как «Центр» карьеры: полоса недели, ближайший турнир с жёлтой кнопкой, цели совета
    (плитка «Цели» карьеры), развитие состава (плитка «Развитие»), новости клуба. */
+/* ЦЕНТР (его слово 8.10: «дизайн centre нужно изменить, как-то всё разбросано, некрасиво»). Было три столбца разной
+   высоты и плашка выбора спонсора сверху. Теперь как главная FC: полоса недели; ряд 1 — крупный блок ближайшего турнира
+   (2/3: название, дата и формат, наши составы лицами, жёлтая кнопка, пропуск/неделя/месяц) и сводка клуба (1/3: герб,
+   рейтинг, касса, доверие совета, подписчики, усталость); ряд 2 — три равные плитки: цели совета, турниры мира,
+   новости. Выбор спонсора — во вкладке «Спонсоры». */
 function mgrCentreHTML(){
-  const T=mgrT(), T2=mgrT2(), T9=mgrT9(), cr=CAREER.career, evs=mgrEvents(), nx=evs[0];
+  const T=mgrT(), T2=mgrT2(), T9=mgrT9(), W=mgrTW(), evs=mgrEvents(), nx=evs[0];
   const byDay=new Map(); evs.forEach(e=>{ if(!byDay.has(e.day)) byDay.set(e.day, e); });
   const monday=careerMonday(careerToday());
   const strip='<div class="ch-strip mgc-strip">'+[0,1,2,3,4,5,6].map(d=>{
@@ -157634,48 +157708,58 @@ function mgrCentreHTML(){
       '<span class="ch-day-what">'+(e ? '<i class="ch-pip ch-pip-'+(e.kind==='fncs' ? 'major' : e.kind==='ewc' ? 'gc' : 'victory')+'">'+ccKindIconSVG(e.kind==='fncs' ? 'major' : 'victory')+'</i>'+esc(e.name) : esc(L().chDayFree))+'</span></div>';
   }).join('')+'</div>';
   const size={duo:2, trio:3, squad:4};
+  const face=h=>{ let cd=null; try{ cd=mgrCard(h); }catch(e){} let u=null; try{ u=cd ? photoURL(cd) : null; }catch(e){}
+    return '<span class="mgc-face" title="'+esc(h)+'">'+(u ? '<img src="'+esc(u)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+'<i>'+esc(String(h).slice(0,2).toUpperCase())+'</i><small>'+esc(h)+'</small></span>'; };
   const going=nx ? MGR.teams.map((t,i)=>({t, i})).filter(x=>mgrTeamSize(x.t)===size[nx.mode]) : [];
-  const next=nx
-    ? '<div class="ch-tile mgc-next'+(nx.kind==='fncs'||nx.kind==='ewc' ? ' fncs' : '')+'"><h4>'+esc(T.next)+'</h4>'+
-        '<div class="mgc-ev"><b>'+esc(nx.name)+'</b><small>'+esc(ccDayLabel(nx.day))+' · '+esc(T.fmt[size[nx.mode]]||'')+'</small></div>'+
-        '<div class="mgc-going">'+(going.length ? going.map(x=>'<span>'+esc(T2.teamWord)+' '+(x.i+1)+': '+x.t.cards.map(h=>esc(h)).join(' · ')+'</span>').join('') : '<span class="ch-empty">'+esc(T.noTeamFmt)+'</span>')+'</div>'+
-        '<button class="ch-play" onclick="mgrPlay()">'+esc(T.play)+'</button>'+
-        '<button class="cc-back mgc-skip" onclick="mgrSkip()">'+esc(T.skipEv)+'</button>'+
-        '<div class="mgc-ff"><button class="cc-back" onclick="mgrFastForwardLive(ccAddDays(CAREER.career.day, 7))">'+esc(T9.ffWeek)+'</button>'+
-        '<button class="cc-back" onclick="mgrFastForwardLive(ccAddDays(CAREER.career.day, 30))">'+esc(T9.ffMonth)+'</button></div></div>'
-    : '<div class="ch-tile mgc-next"><h4>'+esc(T2.seasonOver)+'</h4><button class="ch-play" onclick="mgrSeasonReview()">'+esc(T2.endSeason)+'</button></div>';
-  // Цели совета — строками плитки «Цели» карьеры.
-  const b=MGR.board||{}, earnedNow=(MGR.club.earned||0)-(b.earned0||0);
-  const row=(who, what, state, ok, bar)=>'<div class="hg-row'+(ok ? ' ok' : '')+'"><div class="hg-top"><em>'+esc(who)+'</em><b>'+esc(what)+'</b><i>'+state+'</i></div>'+
-    (bar!=null ? '<u class="hg-bar"><s style="width:'+Math.max(0, Math.min(100, Math.round(bar)))+'%"></s></u>' : '')+'</div>';
-  const goals='<div class="ch-tile hg-tile"><h4>'+esc(T9.goals)+'</h4>'+
+  const hero=nx
+    ? '<div class="ch-tile mgc-hero'+(nx.kind==='fncs'||nx.kind==='ewc' ? ' fncs' : '')+'"><h4>'+esc(T.next)+'</h4>'+
+        '<div class="mgc-hero-ev"><b>'+esc(nx.name)+'</b><span class="mgc-chips"><i>'+esc(ccDayLabel(nx.day))+'</i><i>'+esc(T.fmt[size[nx.mode]]||nx.mode||'')+'</i>'+(nx.kind==='fncs' ? '<i class="hot">FNCS</i>' : '')+'</span></div>'+
+        '<div class="mgc-squads">'+(going.length ? going.map(x=>'<div class="mgc-squad"><em>'+esc(T2.teamWord)+' '+(x.i+1)+'</em><div>'+x.t.cards.map(face).join('')+'</div></div>').join('') : '<div class="ch-empty">'+esc(T.noTeamFmt)+'</div>')+'</div>'+
+        '<div class="mgc-act"><button class="ch-play" onclick="mgrPlay()">'+esc(T.play)+'</button>'+
+          '<div class="mgc-act2"><button class="cc-back" onclick="mgrSkip()">'+esc(T.skipEv)+'</button>'+
+          '<button class="cc-back" onclick="mgrFastForwardLive(ccAddDays(CAREER.career.day, 7))">'+esc(T9.ffWeek)+'</button>'+
+          '<button class="cc-back" onclick="mgrFastForwardLive(ccAddDays(CAREER.career.day, 30))">'+esc(T9.ffMonth)+'</button></div></div></div>'
+    : '<div class="ch-tile mgc-hero"><h4>'+esc(T2.seasonOver)+'</h4><div class="mgc-act"><button class="ch-play" onclick="mgrSeasonReview()">'+esc(T2.endSeason)+'</button></div></div>';
+  // Сводка клуба: герб, рейтинг первой команды, касса, доверие, подписчики, усталость.
+  const c=MGR.club, conf=Math.round(mgrConf()), fat=Math.round(mgrFatigue());
+  const bar=(v, cls)=>'<u class="mgc-bar'+(cls ? ' '+cls : '')+'"><s style="width:'+Math.max(0, Math.min(100, v))+'%"></s></u>';
+  const snap='<div class="ch-tile mgc-snap"><div class="mgc-snap-top"><span class="mgc-snap-crest">'+mgrLogo(c.name, true, 56)+'</span>'+
+      '<span class="mgc-snap-id"><b>'+esc(c.name)+'</b><small>'+esc(String(MGR.year))+' · '+esc(MGR.region)+'</small></span>'+
+      '<span class="mgc-snap-ovr"><b>'+mgrTeamAvg()+'</b><small>OVR</small></span></div>'+
+    '<div class="mgc-kv"><em>'+esc(T.cash)+'</em><b>'+mgrMoney(c.cash||0)+'</b></div>'+
+    '<div class="mgc-kv"><em>'+esc(T9.conf)+' · '+esc(mgrGrade(mgrConf()))+'</em><b>'+conf+'</b></div>'+bar(conf, conf>=55 ? 'ok' : 'bad')+
+    '<div class="mgc-kv"><em>'+esc(T9.fatigue)+'</em><b>'+fat+'%</b></div>'+bar(fat, fat>=60 ? 'bad' : '')+
+    '<div class="mgc-kv"><em>'+esc(T9.fans)+'</em><b>'+ccFollowers(mgrFans())+'</b></div>'+
+    '<button class="hg-go" onclick="mgrRenderHub(\'club\')">'+esc(T9.toTrain)+'</button></div>';
+  // Цели совета.
+  const b=MGR.board||{}, earnedNow=(c.earned||0)-(b.earned0||0);
+  const row=(who, what, state, ok, pct)=>'<div class="hg-row'+(ok ? ' ok' : '')+'"><div class="hg-top"><em>'+esc(who)+'</em><b>'+esc(what)+'</b><i>'+state+'</i></div>'+
+    (pct!=null ? '<u class="hg-bar"><s style="width:'+Math.max(0, Math.min(100, Math.round(pct)))+'%"></s></u>' : '')+'</div>';
+  const goals='<div class="ch-tile hg-tile mgc-eq"><h4>'+esc(T9.goals)+'</h4><div class="mgc-eq-body">'+
     row(T9.board, T2.goalEarn(mgrMoney(b.earn||0)), esc(mgrMoney(earnedNow)), earnedNow>=(b.earn||0), b.earn ? earnedNow/b.earn*100 : 0)+
     row(T9.board, T2.goalPlace(b.place||'—'), b.best!=null ? '#'+b.best : esc(T2.bestNone), b.best!=null && b.best<=b.place)+
-    row(T9.conf, mgrGrade(mgrConf()), String(Math.round(mgrConf())), mgrConf()>=55, mgrConf())+
-    mgrChallengeHTML()+
+    mgrChallengeHTML()+'</div>'+
     '<button class="hg-go" onclick="mgrRenderHub(\'tables\')">'+esc(T9.toTables)+'</button></div>';
-  // Развитие: рейтинг первой команды, кто вырос и кто устал.
-  const dev=Object.keys(MGR.dev||{}).map(k=>({k, v:MGR.dev[k]})).filter(x=>x.v).sort((a,b)=>b.v-a.v);
-  const name=k=>{ const h=mgrAll().concat(MGR.academy||[]).find(x=>hKey(x)===k); return h || k; };
-  const devTile='<div class="ch-tile hd-tile"><h4>'+esc(T9.dev)+'</h4>'+
-    '<div class="hd-head"><b class="hd-ovr">'+mgrTeamAvg()+'</b><span><em>'+esc(T9.teamOvr)+'</em><i>'+esc(T9.fatigue)+' '+Math.round(mgrFatigue())+'%</i></span></div>'+
-    '<u class="hg-bar"><s style="width:'+Math.round(mgrFatigue())+'%"></s></u>'+
-    (dev.length ? dev.slice(0, 4).map(x=>'<div class="mgn-row"><em>'+esc(name(x.k))+'</em><b class="'+(x.v>0 ? 'up' : 'down')+'">'+(x.v>0 ? '▲ +' : '▼ ')+x.v+'</b></div>').join('') : '<div class="ch-empty">'+esc(T9.devNone)+'</div>')+
-    '<button class="hg-go" onclick="mgrRenderHub(\'club\')">'+esc(T9.toTrain)+'</button></div>';
-  // Новости: письма и события клуба, последние вечера.
+  // Турниры мира — пять ближайших.
+  const clubK=new Set(evs.map(e=>e.id+'|'+e.day));
+  const wl=mgrWorldEvents(careerToday(), ccYearTo()).filter(e=>!mgrWorldDone(e)).slice(0, 5);
+  const world='<div class="ch-tile mgc-eq mgw-tile"><h4>'+esc(W.h)+'</h4><div class="mgc-eq-body">'+
+    (wl.map(e=>{ const k=e.id+'|'+e.day, mine=clubK.has(k), kq=esc(k.replace(/'/g, ''));
+      return '<div class="mgc-wrow'+(mine ? ' mine' : '')+'"><span><em>'+esc(ccDayLabel(e.day))+' · '+esc(W.fmt[e.mode]||e.mode)+(mine ? ' · ★' : '')+'</em><b>'+esc(e.name)+'</b></span>'+
+        (mine ? '' : '<span class="mgc-wbtn"><button title="'+esc(W.watch)+'" onclick="mgrWatchWorld(\''+kq+'\')">👁</button><button title="'+esc(W.sim)+'" onclick="mgrSimWorld(\''+kq+'\')">⏩</button></span>')+'</div>'; }).join('')
+     || '<div class="ch-empty">'+esc(W.none)+'</div>')+'</div>'+
+    '<button class="hg-go" onclick="MGR_MONTH=null;mgrRenderHub(\'calendar\')">'+esc(T9.toCal)+'</button></div>';
+  // Новости.
   const items=(MGR.inbox||[]).slice(0, 6).map(m=>({day:m.day, text:m.text, open:!m.done}))
     .concat((MGR.log||[]).filter(r=>r.kind==='night').slice(0, 3).map(r=>({day:r.day, text:r.name+' — '+r.teams.map(t=>'#'+t.place).join(', ')})))
-    .sort((a,b)=>String(b.day).localeCompare(String(a.day))).slice(0, 7);
-  const news='<div class="ch-tile mgc-news"><h4>'+esc(T9.news)+'</h4>'+
+    .sort((a,b)=>String(b.day).localeCompare(String(a.day))).slice(0, 5);
+  const news='<div class="ch-tile mgc-eq mgc-news"><h4>'+esc(T9.news)+'</h4><div class="mgc-eq-body">'+
     (items.length ? items.map(it=>'<div class="mgc-item'+(it.open ? ' open' : '')+'" onclick="mgrRenderHub(\'inbox\')"><small>'+esc(ccDayLabel(it.day))+'</small><span>'+esc(it.text||'')+'</span></div>').join('')
-                  : '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div>';
-  const deal=(!MGR.deal || MGR.deal.year!==MGR.year) ? mgrDealHTML() : '';
-  const calList='<div class="ch-tile mgc-cal"><h4>'+esc(T9.calNext)+'</h4>'+
-    (evs.slice(1, 7).map(e=>'<div class="mgn-row"><em>'+esc(ccDayLabel(e.day))+'</em><b>'+esc(e.name)+'</b></div>').join('') || '<div class="ch-empty">'+esc(T.noEvent)+'</div>')+
-    '<button class="hg-go" onclick="MGR_MONTH=null;mgrRenderHub(\'calendar\')">'+esc(T9.toCal)+'</button></div>';
+                  : '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div>'+
+    '<button class="hg-go" onclick="mgrRenderHub(\'inbox\')">'+esc(mgrT2().inbox||T9.news)+'</button></div>';
   const dls=mgrDeadlineSoon();
   const dl=dls ? '<div class="ch-tile mgc-dl" onclick="MGR_SUB.transfers=\'market\';mgrRenderHub(\'transfers\')"><b>⏰ '+esc(T9.dlSoon(dls.left))+'</b></div>' : '';
-  return strip+dl+deal+'<div class="ch-grid mgc-grid"><div class="mgc-col">'+next+devTile+'</div><div class="mgc-col">'+goals+mgrWorldTileHTML()+'</div>'+news+'</div>';
+  return strip+dl+'<div class="mgc-row1">'+hero+snap+'</div><div class="mgc-row2">'+goals+world+news+'</div>';
 }
 /* СОСТАВ — команды карточками FUT (как в драфте), запас и академия; клик по карточке — лист игрока. */
 function mgrCardTileHTML(h){
