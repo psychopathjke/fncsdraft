@@ -907,11 +907,8 @@ const SECTIONS=[
     // 2) Запаса нет — окно с выбором, а не молчаливый уход.
     MGR.bench=[]; const t2=MGR.teams[0]; mgrDrop(t2.cards[t2.cards.length-1]);
     check('без запаса: неполный', !MGR.teams.some(x=>mgrTeamSize(x)===size));
-    await mgrPlay(); await wait(50);
-    const box=document.querySelector('.mg-modal.mgq-short');
-    check('без запаса '+lang+': окно с выбором', !!box && box.querySelectorAll('button').length>=3 && !bad(box.innerHTML));
-    const g=box && box.querySelector('button[onclick*="mgrShortGuest"]'); if(g) g.click(); await wait(50);
-    check('без запаса: гость поставлен', MGR.teams.some(x=>mgrTeamSize(x)===size) && (MGR.teams[0].guests||[]).length===1);
+    // 2) Запаса нет — напарника зовёт сам игрок (его слово 8.10), окно — только если звать некого.
+    check('без запаса: игрок позвал напарника сам', mgrFillShort(size)===true && (MGR.teams[0].guests||[]).length===1, JSON.stringify(MGR.teams[0]));
     document.querySelectorAll('.mg-modal').forEach(m=>m.remove());
     check('текст не врёт про пропуск', !/пропущен|skipped/i.test(mgrT9().shortTitle(1, 2)));
   `},

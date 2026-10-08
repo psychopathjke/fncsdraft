@@ -159125,7 +159125,7 @@ function mgrFfSummary(a){
 function mgrFfStep(toDay){
   // Неполный состав зовёт напарника и посреди перемотки (Notion 8.10: «другой состав перестал играть турниры» — гость
   // приходил только при открытии хаба, и подписанный без пары пропускал все вечера перемотки).
-  try{ mgrGuestAuto(); }catch(e){}
+  try{ if(MGR._gaDay!==CAREER.career.day){ MGR._gaDay=CAREER.career.day; mgrGuestAuto(); } }catch(e){}   // раз в день: перебор сцены дорогой
   const nx=mgrEvents()[0];
   const lim=nx && nx.day<=toDay ? nx.day : ccAddDays(toDay, 1);
   const w=mgrWorldPending(lim)[0];
@@ -159196,6 +159196,8 @@ function mgrAutoFill(size){
   mgrSave();
   return MGR.teams.some(x=>mgrTeamSize(x)===size);
 }
+// Неполный состав перед вечером: сперва свой запас (mgrAutoFill), не хватило — игрок сам зовёт напарника (mgrGuestAuto).
+function mgrFillShort(size){ if(mgrAutoFill(size)) return true; try{ mgrGuestAuto(); }catch(e){} return MGR.teams.some(t=>mgrTeamSize(t)===size); }
 let MGR_SHORT=null;
 function mgrShortAsk(ev, size){
   const T9=mgrT9(), t=MGR.teams.slice().sort((a,b)=>mgrTeamSize(b)-mgrTeamSize(a))[0];
@@ -161489,7 +161491,6 @@ function mgrAfterResults(ev, row, clubGot){
   row.teams.filter(t=>t.place>(t.of||100)*0.5).forEach(t=>MGR.teams.filter(x=>x.id===t.id).forEach(x=>x.cards.forEach(h=>mgrMoraleAdd(h, -1))));
 }
 async function mgrPlay(){
-  try{ mgrGuestAuto(); }catch(e){}
   const ev=mgrEvents()[0]; if(!ev) return;
   if(mgrDeadlineStop(ev.day)) return;
   if(ev.kind==='fncs') return mgrPlayFncs(ev);
@@ -161497,7 +161498,7 @@ async function mgrPlay(){
   if(ev.kind==='car') return mgrPlayCar(ev);
   const T=mgrT(), cr=CAREER.career;
   const size={duo:2, trio:3, squad:4}[ev.mode];
-  if(!mgrAutoFill(size)){ mgrShortAsk(ev, size); return; }   // неполный: запас встаёт сам, иначе — окно выбора
+  if(!mgrFillShort(size)){ mgrShortAsk(ev, size); return; }   // неполный: запас встаёт сам, иначе — окно выбора
   await mgrWorldCatchUpLive(ev.day);
   mgrAdvanceTo(ev.day);
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted, prevSet=ACTIVE_LANDING_SET;
@@ -161754,7 +161755,7 @@ async function mgrPlayCar(ev){
 async function mgrPlayFncs(ev){
   const T=mgrT(), T2=mgrT2(), cr=CAREER.career;
   const size={duo:2, trio:3, squad:4}[ev.mode]||careerSquadSize();
-  if(!mgrAutoFill(size)){ mgrShortAsk(ev, size); return; }   // неполный: запас встаёт сам, иначе — окно выбора
+  if(!mgrFillShort(size)){ mgrShortAsk(ev, size); return; }   // неполный: запас встаёт сам, иначе — окно выбора
   await mgrWorldCatchUpLive(ev.day);
   mgrAdvanceTo(ev.day);
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted, prevSet=ACTIVE_LANDING_SET;
