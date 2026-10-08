@@ -158603,7 +158603,7 @@ function mgrClubHTML(evs){
 }
 function mgrMarketHTML(){
   const T2=mgrT2(), T4=mgrT4(), w=mgrWindowNow(), wn=mgrWindowNext();
-  const win='<div class="mg-board'+(w?' open':'')+'"><small>'+esc(w ? T4.windowOpen(ccDayLabel(w.to)) : wn ? T4.windowShut(ccDayLabel(wn.from)) : T4.windowShutNone)+'</small></div>';
+  const win='';   // плашки «окно открыто/закрыто» нет — окон нет (8.10)
   const rows=mgrMarketList().map(c=>{ const a=attrsFor(c)||{}, bo=mgrBuyout(c);
     const sc=(MGR.scouted||{})[hKey(c)], hq=esc(String(c.handle).replace(/'/g, ''));
     return '<div class="mg-club">'+mgrAvaHTML(c)+'<span class="mg-cname"><b>'+(c.nat ? flagImg(c.nat, 13)+' ' : '')+esc(c.handle)+' <small>'+Math.round(ccCardOvr(c)||0)+'</small> <small class="mg-pot'+(sc?' sc':'')+'">'+T4.pot+' '+mgrPotText(c.handle)+'</small></b>'+
@@ -158665,6 +158665,7 @@ function mgrAdvanceTo(day){
 // День дедлайна по дороге к турниру — стоп в этот день (как Deadline Day в FC), иначе прыжок к турниру
 // перескакивал окно и скидки начинались, когда окно уже закрыто.
 function mgrDeadlineStop(toDay){
+  return false;   // дедлайна нет (8.10)
   const today=CAREER.career.day, w=mgrWindows().find(x=>x.to>today && x.to<toDay && !(MGR.dlDone||{})[MGR.year+'|'+x.to]);
   if(!w) return false;
   mgrAdvanceTo(w.to); mgrSave(); mgrToast(mgrT9().dlSoon(0)); mgrOpenHub();
@@ -159476,12 +159477,12 @@ function mgrScoutCost(){ return mgrStaff('analyst') ? 300 : 600; }
 function mgrScout(h){ if(MGR.club.cash<mgrScoutCost()){ mgrToast(mgrT2().noMoney); return; } MGR.club.cash-=mgrScoutCost(); MGR.scouted=MGR.scouted||{}; MGR.scouted[hKey(h)]=1; mgrSave(); mgrOpenHub(); }
 
 // ---- 2) Окна
+/* ТРАНСФЕРНЫХ ОКОН НЕТ (его слово 8.10: «такового трансферного окна нет в Фортнайте, поэтому можно убрать это»):
+   «окно» — весь сезон, подписывать, продавать и отдавать в аренду можно всегда; дедлайна нет. */
 function mgrWindows(){
   if(!MGR.season0) MGR.season0=CAREER.career.day;
   if(!MGR.fncsCal) MGR.fncsCal=mgrFncsDays().map(x=>x.day);
-  const out=[{from:MGR.season0, to:ccAddDays(MGR.season0, 35)}];
-  const second=MGR.fncsCal[1]; if(second) out.push({from:ccAddDays(second, 1), to:ccAddDays(second, 22)});
-  return out;
+  return [{from:MGR.season0, to:ccYearTo()}];
 }
 function mgrWindowNow(){ const d=CAREER.career.day; return mgrWindows().find(w=>d>=w.from && d<=w.to)||null; }
 /* ДЕДЛАЙН ТРАНСФЕРОВ (его выбор 7.10, пункт 5): в последний день окна — предложения за твоих
@@ -159490,6 +159491,7 @@ function mgrWindowNow(){ const d=CAREER.career.day; return mgrWindows().find(w=>
 const MGR_DL_DISCOUNT=0.7;
 function mgrDeadlineCheck(fromDay, toDay){
   MGR.dlDone=MGR.dlDone||{};
+  return;   // дедлайна нет — окон нет (8.10)
   if(MGR.dlDeal && Object.keys(MGR.dlDeal).length && !mgrWindowNow()) MGR.dlDeal={};
   mgrWindows().forEach(w=>{
     const dk=MGR.year+'|'+w.to;   // после 2026-го даты окон повторяются — ключ с сезоном
@@ -159655,7 +159657,7 @@ function mgrNatJobPlay(day){
   MGR.inbox=MGR.inbox||[]; MGR.inbox.unshift({id:'njr'+MGR.year, day, kind:'info', done:'info', natjob:true, text:txt});
   if(typeof mgrFeedPost==='function') mgrFeedPost('award', {text:txt});
 }
-function mgrDeadlineSoon(){ const w=mgrWindowNow(); if(!w) return null; const left=ccDaysBetween(CAREER.career.day, w.to); return left<=3 ? {left, to:w.to} : null; }
+function mgrDeadlineSoon(){ return null; const w=mgrWindowNow(); if(!w) return null; const left=ccDaysBetween(CAREER.career.day, w.to); return left<=3 ? {left, to:w.to} : null; }
 function mgrWindowNext(){ const d=CAREER.career.day; return mgrWindows().find(w=>w.from>d)||null; }
 
 // ---- 1) Переговоры
@@ -160331,9 +160333,8 @@ function mgrOrgOf(c){
   return c.org||null;
 }
 function mgrAiTransfersWeek(d){
-  if(!mgrWindows().some(w=>d>=w.from && d<=w.to)) return;
   const rnd=careerRng(ccHashStr('mgrai|'+MGR.region+'|'+d));
-  if(rnd()>0.6) return;
+  if(rnd()>0.12) return;   // круглый год, но реже: за сезон столько же, сколько было в два окна
   let scene=[]; try{ scene=ccSceneRoster(MGR.region)||[]; }catch(e){}
   const own=new Set(mgrOwned().map(hKey));
   const ovr=c=>ccCardOvr(c)||0;

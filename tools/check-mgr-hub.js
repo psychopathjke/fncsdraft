@@ -262,7 +262,7 @@ const SECTIONS=[
     out.notes.nat={day:mgrNationsDay(), now:CAREER.career.day, to:ccYearTo(), done:MGR.natDone};
     MGR.board.earn=0; MGR.board.best=1; try{ mgrSeasonReview(); }catch(e){} document.querySelectorAll('.mg-modal').forEach(m=>m.remove());
     check('сезон: вызов в сборные был (к итогам)', !!(MGR.natDone||{})[MGR.year], JSON.stringify(out.notes.nat));
-    check('сезон: дедлайн был', Object.keys(MGR.dlDone||{}).length>=1);
+    check('сезон: дедлайна нет (окон нет, 8.10)', !(MGR.inbox||[]).some(m=>m.dl));
 
     localStorage.removeItem('fncsdraft_manager'); MGR=null; mgrLeave();
     MGR_NEW_YEAR=2021; MGR_NEW_REGION='ME';
@@ -651,22 +651,13 @@ const SECTIONS=[
     check('характер: значок на карточке', !!document.querySelector('#mgBody .mgs-card .mgs-trait'));
   `},
   {name:'дедлайн', code:String.raw`
+    // 8.10: трансферных окон нет — рынок открыт весь сезон, дедлайна, баннера и стопа нет.
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
-    const w=mgrWindows()[0];
-    CAREER.career.day=ccAddDays(w.to, -2); mgrRenderHub('centre');
-    check('дедлайн '+lang+': баннер за 2 дня', !!document.querySelector('#mgBody .mgc-dl'));
-    const n0=(MGR.inbox||[]).length;
-    mgrAdvanceTo(w.to);
-    const dl=(MGR.inbox||[]).filter(m=>m.dl);
-    check('дедлайн: предложения и срочные варианты', dl.length>=3, String(dl.length));
-    check('дедлайн: есть предложения за своих', dl.some(m=>m.kind==='offer'));
-    const ks=Object.keys(MGR.dlDeal||{});
-    check('дедлайн: скидка на срочных', ks.length>=2);
-    if(ks.length){ const c=mgrMarketList().find(x=>hKey(x)===ks[0]) || mgrCardBase(ks[0]);
-      if(c && mgrOrgOf(c)) check('дедлайн: отступные со скидкой 30%', mgrBuyout(c)===Math.round(mgrSalary(c)*8*0.7), mgrBuyout(c)+' vs '+mgrSalary(c)*8); }
-    mgrAdvanceTo(ccAddDays(w.to, 7));
-    check('дедлайн: скидка сгорела после окна', !Object.keys(MGR.dlDeal||{}).length);
-    check('дедлайн: один раз за окно', (MGR.inbox||[]).filter(m=>m.dl).length===dl.length);
+    const days=[CAREER.career.day, ccAddDays(CAREER.career.day, 60), ccAddDays(CAREER.career.day, 150)];
+    check('окна: рынок открыт в любой день', days.every(d=>{ const was=CAREER.career.day; CAREER.career.day=d; const ok=!!mgrWindowNow(); CAREER.career.day=was; return ok; }));
+    mgrRenderHub('centre'); check('окна '+lang+': баннера дедлайна нет', !document.querySelector('#mgBody .mgc-dl'));
+    MGR_SUB.transfers='market'; mgrRenderHub('transfers'); check('окна '+lang+': нет плашки окна на рынке', !document.querySelector('#mgBody .mg-board'));
+    mgrAdvanceTo(ccAddDays(CAREER.career.day, 70)); check('окна: писем дедлайна нет', !(MGR.inbox||[]).some(m=>m.dl));
   `},
   {name:'кап академий', once:true, code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
@@ -718,9 +709,6 @@ const SECTIONS=[
     const p=(MGR.plan||{})[hKey(pl)];
     check('2027: план не завис (since в новом сезоне)', !p || !p.role || p.since>=MGR.season0, p && p.since);
     // Дедлайн, кап академий и игрок месяца работают и в 2027-м.
-    const w2=mgrWindows()[0];
-    CAREER.career.day=ccAddDays(w2.to, -1); mgrAdvanceTo(w2.to);
-    check('2027: дедлайн сработал', (MGR.inbox||[]).some(m=>m.dl && m.day===w2.to));
     mgrYScoutHire('fr'); mgrYouthMonth('2026-01'); mgrYouthMonth('2026-02'); MGR.ylist.slice(0,2).forEach(h=>mgrToAcad(h, true));
     const mk2=CAREER.career.day.slice(0,7);
     mgrAcadCupMonth(mk2); check('2027: кап академий сыгран', (MGR.acadCups||[]).some(c=>c.month===mk2 && c.year===2027));
@@ -728,10 +716,6 @@ const SECTIONS=[
     MGR.log.unshift({day:CAREER.career.day, year:2027, kind:'night', name:'N', teams:[{place:2, kills:{[a]:3}}]});
     mgrAwardsMonth(mk2); check('2027: игрок месяца', (MGR.awards||[]).some(x=>x.kind==='pom' && x.month===mk2 && x.year===2027 && x.h===a));
     check('2027: в итогах сезона только ночи сезона', mgrTopKiller(mgrKillsBy(mgrSeasonNights()))!=='OLD');
-    // I1: пропуск останавливается в день дедлайна (окно второе).
-    const w3=mgrWindows().find(x=>x.to>CAREER.career.day);
-    if(w3){ let g=0; while(CAREER.career.day<w3.to && g++<40) mgrSkip();
-      check('пропуск: стоп на дедлайне', CAREER.career.day===w3.to, CAREER.career.day+' vs '+w3.to); }
     // I2: скидка доходит до переговоров.
     const c=mgrMarketList().find(x=>mgrOrgOf(x)); if(c){ MGR.dlDeal={[hKey(c)]:0.7}; MGR_NEG=null; mgrNegotiate(c.handle, false);
       check('скидка в переговорах', MGR_NEG && MGR_NEG.buyAsk<=Math.round(mgrSalary(c)*8*1.35*0.7/500)*500+500, MGR_NEG && MGR_NEG.buyAsk); document.getElementById('mgNeg') && document.getElementById('mgNeg').remove(); MGR_NEG=null; }
