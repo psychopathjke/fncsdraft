@@ -102044,6 +102044,50 @@ function buildBotLandingAssignment(bots, opts){
       }
     }
   }
+  /* СИЛЬНЫЕ НЕ САДЯТСЯ ДРУГ НА ДРУГА (тестер, Notion «0810»: «сильные команды летят на одну локу, и одна из них занимает
+     почти последнее место»; его слово: «посмотри, как работает в реальных играх»). В настоящих FNCS у команд верха свои
+     точки, которые держат весь сезон, и в одну коробку два топа почти не садятся — лишний контест стоит обоим вечера.
+     Замер (check-drop-top-on-top, 36 лобби по 50 дуо): коробок с двумя командами из топ-10 было 0,39 на лобби — и до
+     обмена «слабые с сильных» (7.10) столько же. Теперь более слабый из двух топов меняется местами с середняком из
+     коробки без топа; число команд в коробках то же. Хозяин точки по книге не двигается. */
+  {
+    const movable=t=>t && !t.isYou && !t.isRival && !t.isMate && !t._stageSeated && !(t._mgrDrop==='quiet' || t._mgrDrop==='hot');
+    const keyOfT=t=>(book && !t.isYou && !t.isRival) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null;
+    const str=t=>((t.pow||0)-(t._landingPow||0))+(t.closeEdge||0);
+    const all=[]; zoneGroups.forEach(g=>g.forEach(t=>all.push(t)));
+    if(all.length>=8){
+      const ranked=all.slice().sort((a,b)=>str(b)-str(a));
+      const top=new Set(ranked.slice(0, Math.ceil(all.length/5))), weak=new Set(ranked.slice(Math.ceil(all.length/2)));
+      const zoneOf=new Map(); zoneGroups.forEach((g,z)=>g.forEach(t=>zoneOf.set(t, z)));
+      for(let guard=0; guard<all.length; guard++){
+        let best=null;
+        zoneGroups.forEach((g, z)=>{
+          const tops=g.filter(t=>top.has(t)); if(tops.length<2) return;
+          tops.filter(movable).forEach(w=>{
+            const k=keyOfT(w), owner=k && book && book.at[k]===ccSeatKeyOf(z);
+            if(owner) return;   // хозяин точки по книге сидит на месте всегда (check-drop-sticky)
+            all.forEach(x=>{
+              if(top.has(x) || weak.has(x) || !movable(x)) return;
+              const z2=zoneOf.get(x); if(!z2 || z2===z || (zoneGroups.get(z2)||[]).some(o=>top.has(o))) return;
+              const kx=keyOfT(x); if(kx && book && book.at[kx]===ccSeatKeyOf(z2)) return;   // и середняк-хозяин тоже
+              const cost=(zoneGroups.get(z2)||[]).filter(o=>o!==x && weak.has(o)).length*1e4+str(w)*100-str(x);   // топ уходит туда, где нет слабых
+              if(!best || cost<best.cost) best={w, x, z, z2, cost};
+            });
+          });
+        });
+        if(!best) break;
+        const {w, x, z, z2}=best;
+        zoneGroups.set(z, zoneGroups.get(z).map(o=>o===w ? x : o));
+        zoneGroups.set(z2, zoneGroups.get(z2).map(o=>o===x ? w : o));
+        zoneOf.set(w, z2); zoneOf.set(x, z);
+        [[w, z2], [x, z]].forEach(([t, to])=>{
+          t.landingZone=to; t.landingResult=null; t.landingRival=null;
+          applyLandingPow(t, to.points);
+          if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
+        });
+      }
+    }
+  }
 
   // The old guarantee: shuffle squads off the emptiest box until two boxes are
   // free, so the player always had somewhere quiet to land. It is off unless a
