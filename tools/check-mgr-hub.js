@@ -42,6 +42,17 @@ const SECTIONS=[
       check('перемотка: день сдвинулся', CAREER.career.day>d0, d0+' → '+CAREER.career.day);
       check('перемотка: окно итогов с днями, турнирами и кассой', !!box && /→/.test(box.textContent) && box.querySelectorAll('.mgq-ff-row').length>=2, box && box.textContent.slice(0,160));
       document.querySelectorAll('.mgq-ff').forEach(x=>x.remove()); }
+    // Штаб состава (его слово 8.10): у каждой команды свои коуч/аналитик/психолог, один человек — в нескольких составах.
+    { if(MGR.teams.length<2) MGR.teams.push({id:'tX', cards:[]}); const t1=MGR.teams[0], t2=MGR.teams[1];
+      const co=CC_COACHES[0].id, an=CC_ANALYSTS[0].id, ps=CC_PSYCHS[0].id;
+      check('штаб состава: коуч ставится в первый состав', mgrTeamStaffSet(t1.id,'coach',co)===true && mgrTeamCoach(t1.id)===co);
+      check('штаб состава: тот же коуч — и во второй', mgrTeamStaffSet(t2.id,'coach',co)===true && mgrTeamCoach(t2.id)===co);
+      const w0=mgrTeamCoachWage(); mgrTeamStaffSet(t1.id,'analyst',an); mgrTeamStaffSet(t1.id,'psych',ps);
+      check('штаб состава: аналитик и психолог — свои у состава', mgrTeamTier(t1,'analyst')>=1 && mgrTeamTier(t1,'psych')>=1 && mgrTeamTier(t2,'analyst')===mgrStaff('analyst'));
+      check('штаб состава: ставка за каждый контракт', mgrTeamCoachWage()>w0, w0+' → '+mgrTeamCoachWage());
+      const h=t1.cards[0]; if(h) check('штаб состава: психолог держит пол морали игрока', mgrPsychOf(h)>=1);
+      mgrRenderHub('squad'); const html=document.getElementById('mgBody').innerHTML;
+      check('штаб состава: в составе три слота', (html.match(/mgs-coach"/g)||[]).length>=3, String((html.match(/mgs-coach"/g)||[]).length)); }
     MGR.club.fans=1000; const lo=mgrSponsorBase(); MGR.club.fans=3000000; const hi=mgrSponsorBase();
     check('подписчики: большая аудитория — спонсор щедрее', hi>lo && hi<=lo*1.25/0.8+100, lo+' vs '+hi);
   `},
@@ -730,7 +741,8 @@ const SECTIONS=[
     const t0=MGR.teams[0], t1=MGR.teams[1];
     const w0=mgrStaffWage();
     check('тренер состава: назначен', mgrTeamCoachSet(t0.id, 'bloodx')===true && mgrTeamCoach(t0.id)==='bloodx');
-    check('тренер состава: один тренер — один состав', !t1 || mgrTeamCoachSet(t1.id, 'bloodx')===false);
+    // С 8.10 один тренер может вести несколько составов (его слово: «можно и повторных людей подписывать»).
+    check('тренер состава: тот же тренер — и во втором составе', !t1 || (mgrTeamCoachSet(t1.id, 'bloodx')===true && mgrTeamCoach(t1.id)==='bloodx'));
     if(t1) check('тренер состава: второму свой', mgrTeamCoachSet(t1.id, 'flaire')===true);
     const add=mgrPersonCost('coach', CC_COACHES.find(c=>c.id==='bloodx'))+(t1 ? mgrPersonCost('coach', CC_COACHES.find(c=>c.id==='flaire')) : 0);
     check('тренер состава: ставки в штабе', mgrStaffWage()===w0+add, w0+' → '+mgrStaffWage()+' (+'+add+')');
@@ -867,7 +879,7 @@ const SECTIONS=[
     const sh=document.getElementById('mgSheet');
     check('выбор тренера '+lang+': окно с карточками коучей', !sh.hidden && sh.querySelectorAll('.mgf-person').length>=CC_COACHES.length-1 && !bad(sh.innerHTML));
     check('выбор тренера: без пустых точек у региона', !/·\s*·/.test(sh.textContent));
-    const pick=sh.querySelector('.mgf-person button[onclick*="mgrTeamCoachPick"]'); pick.click();
+    const pick=sh.querySelector('.mgf-person button[onclick*="mgrTeamStaffPick"]'); pick.click();
     check('выбор тренера: назначен и окно закрыто', !!mgrTeamCoach(MGR.teams[0].id) && document.getElementById('mgSheet').hidden);
     MGR_SUB.transfers='market'; mgrRenderHub('transfers'); const st=getComputedStyle(document.querySelector('#mgBody select.mgs-move')||document.body);
     check('списки в тёмной теме', /dark/.test(st.colorScheme||'') , st.colorScheme);

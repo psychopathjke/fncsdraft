@@ -50,6 +50,7 @@
   .mgq-ff-row em{font-style:normal;font-weight:800;white-space:nowrap;}
   .mgq-ff-row i.up{font-style:normal;color:#6fe3b0;} .mgq-ff-row i.dn{font-style:normal;color:#ff8f8f;}
   .mgq-ff-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:6px;}
+  .mgs-tstaff{display:flex;flex-direction:column;gap:6px;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -112682,7 +112683,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='15d6c75f';
+const CC_BUILD='ae4c1d32';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -157182,13 +157183,37 @@ function mgrCardTileHTML(h){
     (dv ? '<i class="mgs-dev">'+(dv>0 ? '▲' : '▼')+Math.abs(dv)+'</i>' : '')+'</div>';
 }
 // Тренер состава — кнопкой и окном с карточками коучей (его слово 7.10 про системный список: «не в нашем стиле»).
-function mgrTeamCoachHTML(t){
+function mgrTeamCoachHTML(t){ return '<div class="mgs-tstaff">'+MGR_TEAM_KINDS.map(k=>mgrTeamStaffSlotHTML(t, k)).join('')+'</div>'; }
+function mgrTeamStaffLabel(k){ const T9=mgrT9(); return k==='coach' ? T9.teamCoach : k==='analyst' ? L().ccAnalyst : L().ccPsych; }
+function mgrTeamStaffSlotHTML(t, k){
+  const T9=mgrT9(), p=mgrTeamStaffPerson(t.id, k);
+  return '<div class="mgs-coach">'+(p ? '<img src="photos/'+esc(p.photo||'')+'" alt="" onerror="this.style.visibility=\'hidden\'"><b>'+esc(p.name)+'</b><small>'+
+      esc([mgrTeamStaffLabel(k), mgrT4().tier(mgrPersonTier(k, p)), mgrMoney(mgrPersonCost(k, p))+' '+mgrT().month].join(' · '))+'</small>'
+      : '<b>'+esc(mgrTeamStaffLabel(k))+'</b><small>'+esc(k==='coach' ? T9.noCoach : k==='analyst' ? L().ccAnalystNone : L().ccPsychNone)+'</small>')+
+    '<button class="hg-go mgs-coach-btn" onclick="mgrTeamStaffOpen(\''+esc(t.id)+'\', \''+k+'\')">'+esc(p ? L().ccStaffChange : (k==='coach' ? T9.coachPick : k==='analyst' ? L().ccAnalystHire : L().ccPsychHire))+'</button></div>';
+}
+function mgrTeamStaffOpen(teamId, k){
+  const T4=mgrT4(), T9=mgrT9(), cur=mgrTeamStaffOf(teamId, k);
+  const list=(MGR_PERSON_LIST[k]()||[]).slice().sort((a,b)=>mgrPersonTier(k, b)-mgrPersonTier(k, a));
+  const cards=list.map(p=>{ const id=mgrPid(p), on=id===cur;
+    return '<div class="mgf-person'+(on ? ' on' : '')+'"><img src="photos/'+esc(p.photo||'')+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">'+
+      '<span><b>'+esc(p.name)+'</b><small>'+esc([p.at ? '@'+p.at : '', p.reg||'', p.why||''].filter(Boolean).join(' · '))+'</small>'+
+      '<small>'+esc(T4.tier(mgrPersonTier(k, p)))+' · '+mgrMoney(mgrPersonCost(k, p))+' '+esc(mgrT().month)+'</small></span>'+
+      (on ? '<button class="hg-go mgs-bad" onclick="mgrTeamStaffPick(\''+esc(teamId)+'\', \''+k+'\', \'\')">'+esc(T4.fire)+'</button>'
+          : '<button class="hg-go" onclick="mgrTeamStaffPick(\''+esc(teamId)+'\', \''+k+'\', \''+esc(String(id).replace(/'/g, ''))+'\')">'+esc(T9.hire)+'</button>')+'</div>'; }).join('');
+  const el=document.getElementById('mgSheet');
+  el.innerHTML='<div class="ch-tile mgs-in mgs-wide"><h4>'+esc(mgrTeamStaffLabel(k))+'</h4><button class="mgs-x" onclick="mgrSheetClose()">✕</button><div class="mgf-people">'+cards+'</div></div>';
+  el.hidden=false;
+}
+function mgrTeamStaffPick(teamId, k, id){ mgrTeamStaffSet(teamId, k, id||null); mgrSheetClose(); mgrRenderHub(); }
+function mgrTeamCoachHTMLOld(t){
   const T9=mgrT9(), cur=mgrTeamCoach(t.id), c=cur ? CC_COACHES.find(x=>x.id===cur) : null;
   return '<div class="mgs-coach">'+(c ? '<img src="photos/'+esc(c.photo||'')+'" alt="" onerror="this.style.visibility=\'hidden\'"><b>'+esc(c.name)+'</b><small>'+esc([c.reg, mgrT4().tier(mgrPersonTier('coach', c)), mgrMoney(mgrPersonCost('coach', c))].filter(Boolean).join(' · '))+'</small>'
       : '<b>'+esc(T9.teamCoach)+'</b><small>'+esc(T9.noCoach)+'</small>')+
     '<button class="hg-go mgs-coach-btn" onclick="mgrTeamCoachOpen(\''+esc(t.id)+'\')">'+esc(c ? T9.coachChange : T9.coachPick)+'</button></div>';
 }
-function mgrTeamCoachOpen(teamId){
+function mgrTeamCoachOpen(teamId){ return mgrTeamStaffOpen(teamId, 'coach'); }
+function mgrTeamCoachOpenOld(teamId){
   const T4=mgrT4(), T9=mgrT9(), cur=mgrTeamCoach(teamId);
   const busy=new Set(Object.keys(MGR.teamCoach||{}).filter(k=>k!==teamId).map(k=>MGR.teamCoach[k]).concat([(MGR.staffWho||{}).coach]));
   const cards=CC_COACHES.filter(x=>!busy.has(x.id)).map(p=>{ const on=p.id===cur;
@@ -157867,7 +157892,7 @@ function mgrContract(h){ MGR.contracts=MGR.contracts||{}; const cd=mgrCard(h), s
   MGR.contracts[hKey(h)]={salary:sal, since:CAREER.career.day, until:MGR.year+yrs-1, clause:Math.round(sal*12/1000)*1000}; }
 function mgrUntil(h){ const c=(MGR.contracts||{})[hKey(h)]; return c && c.until!=null ? c.until : MGR.year; }
 function mgrMorale(h){ return ((MGR.morale||{})[hKey(h)])||0; }
-function mgrMoraleAdd(h, d){ MGR.morale=MGR.morale||{}; const k=hKey(h); MGR.morale[k]=Math.max((mgrStaff('psych') || mgrTrait(h)==='calm') ? -1 : -2, Math.min(2, (MGR.morale[k]||0)+d)); }
+function mgrMoraleAdd(h, d){ MGR.morale=MGR.morale||{}; const k=hKey(h); MGR.morale[k]=Math.max((mgrPsychOf(h) || mgrTrait(h)==='calm') ? -1 : -2, Math.min(2, (MGR.morale[k]||0)+d)); }
 function mgrBoardInit(){
   const sp=mgrSponsor(), avg=MGR.club.avg||70;
   MGR.board={earn:Math.round(sp/1000)*1000,   /* цель = месяц спонсоров: прогон сезона 1.10 — средний клуб (75) брал призовыми $7,6 тыс. при цели вдвое выше */
@@ -158009,7 +158034,7 @@ function mgrWeekly(fromDay, toDay){
     try{ mgrFeedWeek(d); }catch(e){ console.error('mgrFeedWeek', e); }
     (MGR.bench||[]).forEach(h=>{ if(mgrTrait(h)==='star' && careerRng(ccHashStr('star|'+hKey(h)+'|'+d))()<0.3) mgrMoraleAdd(h, -1); });   // звезда в запасе
     try{ mgrAiTransfersWeek(d); }catch(e){}
-    if(mgrStaff('psych')) mgrAll().forEach(h=>{ if(mgrMorale(h)<0 && careerRng(ccHashStr('psy|'+h+'|'+d))()<0.3*mgrStaff('psych')) mgrMoraleAdd(h, 1); });
+    mgrAll().forEach(h=>{ const ps=mgrPsychOf(h); if(ps && mgrMorale(h)<0 && careerRng(ccHashStr('psy|'+h+'|'+d))()<0.3*ps) mgrMoraleAdd(h, 1); });
     const all=mgrAll().map(h=>mgrCard(h)).filter(Boolean).sort((a,b)=>(ccCardOvr(b)||0)-(ccCardOvr(a)||0));
     if(!all.length) continue;
     // Отступные: в окно чужой клуб может выкупить игрока по сумме из контракта — без спроса.
@@ -158658,13 +158683,15 @@ function mgrNightPow(){   // прибавка/штраф силы на вече�
    подписчики). Уровень — по охвату в X (8000+ — 3, 2500+ — 2), ставка $1500/$3000/$5000. В переговорах:
    отступные ×(1−0.05·ур.), зарплата ×(1−0.03·ур.), клуб и игрок соглашаются на встречное с меньшей
    суммы, и игроки на ур. сильнее идут в клуб. Нанятый уходит из менеджеров клубов-соперников. */
-const MGR_PERSON_LIST={coach:()=>CC_COACHES, smm:()=>CC_SMM, agent:()=>(typeof CC_AGENTS!=='undefined' ? CC_AGENTS : [])};
+const MGR_PERSON_LIST={coach:()=>CC_COACHES, smm:()=>CC_SMM, agent:()=>(typeof CC_AGENTS!=='undefined' ? CC_AGENTS : []),
+  analyst:()=>(typeof CC_ANALYSTS!=='undefined' ? CC_ANALYSTS : []), psych:()=>(typeof CC_PSYCHS!=='undefined' ? CC_PSYCHS : [])};
 const MGR_AGENT_COST=[0, 1500, 3000, 5000];
 function mgrPid(p){ return p ? (p.id||p.name) : null; }
-function mgrPersonCost(k, p){ return k==='smm' ? ccSmmTermsOf(p).cost : k==='agent' ? MGR_AGENT_COST[mgrPersonTier(k, p)] : (p.cost||MGR_STAFF_COST[2]); }
+function mgrPersonCost(k, p){ return k==='smm' ? ccSmmTermsOf(p).cost : k==='agent' ? MGR_AGENT_COST[mgrPersonTier(k, p)] : (k==='analyst' || k==='psych') ? ccStaff2Cost(k, p) : (p.cost||MGR_STAFF_COST[2]); }
 function mgrPersonTier(k, p){
   if(k==='smm'){ const x=ccSmmPull(p.x); return x==null ? 1 : x>=0.66 ? 3 : x>=0.33 ? 2 : 1; }
   if(k==='agent'){ const x=p.x||0; return x>=8000 ? 3 : x>=2500 ? 2 : 1; }
+  if(k==='analyst' || k==='psych'){ const r=ccStaff2Rating(k, p); return r>=85 ? 3 : r>=75 ? 2 : 1; }
   const list=CC_COACHES, i=Math.max(0, list.indexOf(p)), n=list.length;
   return i<n/3 ? 3 : i<2*n/3 ? 2 : 1;
 }
@@ -158765,19 +158792,35 @@ function mgrChemPow(cards){ return mgrChem(cards)/5; }   // 10 химии = +2 �
    с главным тренером. Его уровень (mgrPersonTier) — рост игроков состава вместо главного; его химия
    (поле chem коуча, 0–0.4) — +chem×5 к химии состава. Ставка — его собственная. Запас и академия —
    у главного тренера (штаб). */
-function mgrTeamCoach(teamId){ return ((MGR.teamCoach||{})[teamId])||null; }
-function mgrTeamCoachSet(teamId, coachId){
-  MGR.teamCoach=MGR.teamCoach||{};
-  if(!coachId){ delete MGR.teamCoach[teamId]; mgrSave(); return true; }
-  const c=CC_COACHES.find(x=>x.id===coachId); if(!c) return false;
-  const busy=Object.keys(MGR.teamCoach).some(t=>t!==teamId && MGR.teamCoach[t]===coachId) || (MGR.staffWho||{}).coach===coachId;
-  if(busy) return false;
-  MGR.teamCoach[teamId]=coachId; mgrSave(); return true;
+/* ШТАБ СОСТАВА (его слова 8.10: «каждому составу должен быть свой штаб, можно и повторных людей подписывать»,
+   «у состава не важно, соло игрок подписан или целый состав»). У каждой команды клуба — свои коуч, аналитик и
+   психолог (MGR.teamStaff[id] = {coach, analyst, psych}); один и тот же человек может вести несколько составов, ставка
+   платится за каждый контракт. Пустой слот — работает общий штаб клуба. Коуч — рост и химия состава (как личный тренер
+   7.10), аналитик — сила этой команды на вечер, психолог — пол морали и восстановление её игроков. Аналитики и
+   психологи — настоящие люди из карьеры (CC_ANALYSTS, CC_PSYCHS), уровень по их рейтингу: 85+ — 3, 75+ — 2. */
+const MGR_TEAM_KINDS=['coach','analyst','psych'];
+function mgrTeamStaffAll(){
+  if(!MGR.teamStaff){ MGR.teamStaff={}; Object.keys(MGR.teamCoach||{}).forEach(t=>{ MGR.teamStaff[t]={coach:MGR.teamCoach[t]}; }); }
+  return MGR.teamStaff;
 }
+function mgrTeamStaffOf(teamId, k){ const r=mgrTeamStaffAll()[teamId]; return (r && r[k]) || null; }
+function mgrTeamStaffPerson(teamId, k){ const id=mgrTeamStaffOf(teamId, k); return id ? ((MGR_PERSON_LIST[k]()||[]).find(x=>mgrPid(x)===id)||null) : null; }
+function mgrTeamStaffSet(teamId, k, id){
+  const all=mgrTeamStaffAll(); all[teamId]=all[teamId]||{};
+  if(!id){ delete all[teamId][k]; mgrSave(); return true; }
+  if(!(MGR_PERSON_LIST[k]()||[]).some(x=>mgrPid(x)===id)) return false;
+  all[teamId][k]=id; mgrSave(); return true;
+}
+function mgrTeamCoach(teamId){ return mgrTeamStaffOf(teamId, 'coach'); }
+function mgrTeamCoachSet(teamId, coachId){ return mgrTeamStaffSet(teamId, 'coach', coachId); }
 function mgrTeamCoachWage(){
-  const live=new Set(MGR.teams.map(t=>t.id));
-  return Object.keys(MGR.teamCoach||{}).filter(t=>live.has(t)).reduce((s,t)=>{ const c=CC_COACHES.find(x=>x.id===MGR.teamCoach[t]); return s+(c ? mgrPersonCost('coach', c) : 0); }, 0);
+  const live=new Set(MGR.teams.map(t=>t.id)), all=mgrTeamStaffAll();
+  return Object.keys(all).filter(t=>live.has(t)).reduce((sum,t)=>sum+MGR_TEAM_KINDS.reduce((x,k)=>{ const p=mgrTeamStaffPerson(t, k); return x+(p ? mgrPersonCost(k, p) : 0); }, 0), 0);
 }
+// Уровень роли для команды игрока: свой штаб состава, иначе общий клуба.
+function mgrTeamOfPlayer(h){ return MGR.teams.find(x=>x.cards.some(y=>hKey(y)===hKey(h)))||null; }
+function mgrTeamTier(t, k){ const p=t ? mgrTeamStaffPerson(t.id, k) : null; return p ? mgrPersonTier(k, p) : mgrStaff(k); }
+function mgrPsychOf(h){ return mgrTeamTier(mgrTeamOfPlayer(h), 'psych'); }
 function mgrCoachTierOf(h){
   const t=MGR.teams.find(x=>x.cards.some(y=>hKey(y)===hKey(h)));
   const c=t && mgrTeamCoach(t.id) ? CC_COACHES.find(x=>x.id===mgrTeamCoach(t.id)) : null;
@@ -159403,7 +159446,7 @@ function mgrClubTeams(size){
     const mor=cards.length ? Math.round(cards.reduce((s,c)=>s+mgrMorale(c.handle), 0)/cards.length) : 0;
     const foc=cards.filter(c=>(MGR.focus||{})[hKey(c.handle)]).length*0.5;
     const evMod=cards.reduce((s,c)=>s+((MGR.nightMod||{})[hKey(c.handle)]||0), 0)/Math.max(1, cards.length);
-    tm.pow+=mor+mgrNightPow()+mgrTeamChem(t)/5+foc+evMod;
+    tm.pow+=mor+mgrNightPow()+(mgrTeamTier(t, 'analyst')-mgrStaff('analyst'))*0.4+mgrTeamChem(t)/5+foc+evMod;   // аналитик состава вместо общего
     return tm; });
 }
 function mgrKillsOf(tm){ const out={}; (tm.squad||[]).forEach(c=>{ try{ out[c.handle]=ccMemberKills(tm, c.handle); }catch(e){ out[c.handle]=0; } }); return out; }
