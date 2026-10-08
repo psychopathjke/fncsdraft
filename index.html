@@ -159139,6 +159139,7 @@ function mgrAdvanceTo(day){
   try{ const nd=mgrNationsDay(), od=ccAddDays(nd, -MGR_NAT_OFFER_DAYS); if(od>was && od<=day) mgrNatJobOffer(od); if(nd>was && nd<=day) mgrNatJobPlay(nd); }catch(e){ console.error('mgrNatJob', e); }
   try{ const nd=mgrNationsDay(); if(nd>was && nd<=day) mgrNationsCall(nd); }catch(e){ console.error('mgrNationsCall', e); }
   try{ mgrLoanWeek(day); }catch(e){}   // возврат из аренды — по дате, а не только на недельном тике
+  try{ mgrProAmTick(); mgrVisaTick(); }catch(e){ console.error('mgrProAmTick/mgrVisaTick', e); }   // письма о Про-Аме и визах — и по дороге перемотки
 }
 // День дедлайна по дороге к турниру — стоп в этот день (как Deadline Day в FC), иначе прыжок к турниру
 // перескакивал окно и скидки начинались, когда окно уже закрыто.
