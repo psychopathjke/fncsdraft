@@ -157295,7 +157295,7 @@ function mgrClubsFor(year, region){
   scene.forEach(c=>{ const o=mgrOrgOf(c); if(!c || !o) return; (by[o]=by[o]||[]).push(c); });
   /* Клубы-новички по просьбе (CC_ORG_NEW newcomer: Team Eldia, Drayko…) — весь состав из всех регионов (его слово 8.10:
      «нужно добавить всех игроков организации» — у Eldia игроки в EU, ME, BR и NAC, а в EU-выборе было двое). */
-  try{ (typeof CC_ORG_NEW!=='undefined' ? CC_ORG_NEW : []).filter(o=>o && o.newcomer).forEach(o=>{
+  try{ (typeof CC_ORG_NEW!=='undefined' ? CC_ORG_NEW : []).filter(o=>o && o.newcomer && (o.tier||99)<=80).forEach(o=>{   // только любительские (Eldia, Drayko, Shimo, Loyalty), не Falcons/FaZe
     const have=new Set((by[o.name]||[]).map(c=>hKey(c)));
     PLAYERS.filter(p=>p && p.org===o.name && !have.has(hKey(p)) && (typeof ccCardYear!=='function' || ccCardYear(p)<=year)).forEach(p=>{ (by[o.name]=by[o.name]||[]).push(Object.assign({}, p)); have.add(hKey(p)); });
   }); }catch(e){}
