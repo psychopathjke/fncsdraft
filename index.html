@@ -40,6 +40,8 @@
   .cc-staff-rt.bronze{background:linear-gradient(180deg,#e7b48a,#a8693f);color:#24130a;}
   .cc-staff-end{margin-top:auto;background:none;border:none;padding:4px 6px;font-size:11px;font-weight:700;
     color:#ff8f8f;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+  .cc-staff-ask{margin-top:4px;background:rgba(255,214,0,.12);border:1px solid rgba(255,214,0,.4);color:#ffd600;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:800;cursor:pointer;}
+  .cc-staff-paid{font-size:11px;font-weight:800;color:#6fe3b0;}
   .cc-staff-empty{border-style:dashed;border-color:rgba(255,255,255,.18);background:rgba(8,14,36,.3);justify-content:center;}
   .cc-staff-plus{font-size:28px;line-height:1;color:#ffd600;}
   .cc-staff-hire{font-size:12px;font-weight:800;color:#ffd600;}
@@ -19848,7 +19850,7 @@ Object.assign(I18N.pt, {dmMateBtnreview:'Falar da noite ruim',
   dmHeadsUpGoYou:'Você decide. Não vou te segurar',
   dmHeadsUpStays:'Beleza. Se é assim — eu fico. Mas vamos mudar alguma coisa de verdade'});
 /* Переговоры с тиммейтом (7.10): аргументы «играли вместе / земляки / свой клуб / буткемп», условия «пересядь» и «пробный кап». */
-Object.assign(I18N.ru, {ccOrgSignRow:n=>'+'+n+' при подписании', roSpotFrom:d=>'откроется с '+d, roChests:'Сундуки', roSpotPow:'Сила точки', roClubNoUntil:d=>'Клуб отказал · снова с '+d, ccStaffYear:'Год', ccStaffAuto:'Автопродление', ccStaffOn:'вкл', ccStaffOff:'выкл', ccNewsStaffRenew:(r,n,c,m)=>r+' '+n+': контракт продлён на '+(m>=12?'год':'месяц')+(c?' — $'+ccNum(c):' — платит клуб'), ccNewsStaffGone:(r,n)=>r+' '+n+' ушёл: не хватило денег на продление', ccStaffTitle:'Штаб', ccStaffHire:'Нанять', ccStaffRole:{coach:'Коуч', agent:'Менеджер', smm:'SMM', mkt:'Маркетинг', analyst:'Аналитик', psych:'Психолог'}, ccStaffMktFx:r=>'спонсоры ×'+r, ccStaffChange:'Сменить', ccAnalyst:'Аналитик', ccAnalystHint:'Перед вечером разбирает соперников и точки — плюс к силе команды. Только в одиночной карьере', ccAnalystNone:'Аналитика нет', ccAnalystHire:'Посмотреть аналитиков', ccAnalystDoes:'Разбор', ccAnalystPow:p=>'+'+p+' к силе на вечер', ccPsych:'Психолог', ccPsychHint:'Работает с тильтом: после плохого вечера форма падает меньше', ccPsychNone:'Психолога нет', ccPsychHire:'Посмотреть психологов', ccPsychDoes:'Тильт', ccPsychSoft:p=>'провал формы мягче на '+p+'%', ccOrgFans:'Подписчики клуба в X', ccOrgFansEst:'Оценка: точного числа не нашли', ccOrgMedia:'Медийка клуба', ccOrgMediaRow:n=>'+'+n+' подписчиков в месяц', dmMateBtnrival:'Про соперников', dmMateWhatrival:'Кого опасаться сейчас', dmMeTalkrival:()=>'Кто сейчас самый опасный, как думаешь?', dmMateTalkrival:(n,p,m)=>'Смотрю на '+n+' — №'+p+' в PR.'+(m ? ' Мы — №'+m+'.' : '')+' В лейте против них не лезем, зону берём раньше', dmMateHi:'Ну что, теперь вместе. Пиши сюда, если что — договоримся по вечерам.', dmMateHi1:'Привет. Играем вместе — пиши, если что.', dmMateHi2:'Йо! Рад, что играем вместе 🙌 Пиши в любое время, всё обсудим.', dmMateHi3:'Ну всё, с нами теперь считаться придётся. Пиши, когда будешь готов тащить.', dmMateHi4:'Привет. По вечерам — сюда.', dmSecPinned:'Закреплено', dmMateTalkDone:'Сегодня уже поговорили — завтра', ccRoleCool:d=>'Роль недавно менялась — снова можно через '+d+' дн.', ccDuoLimit:'Сегодня уже написал троим — завтра',
+Object.assign(I18N.ru, {ccOrgPayAskBtn:'Попросить клуб оплатить', ccOrgPayNoUntil:d=>'Клуб отказал · снова с '+d, ccNewsOrgPays:(o,r)=>o+' оплачивает тебе: '+r.toLowerCase(), ccNewsOrgPaysNo:(o,r)=>o+' не стал оплачивать: '+r.toLowerCase(), ccOrgSignRow:n=>'+'+n+' при подписании', roSpotFrom:d=>'откроется с '+d, roChests:'Сундуки', roSpotPow:'Сила точки', roClubNoUntil:d=>'Клуб отказал · снова с '+d, ccStaffYear:'Год', ccStaffAuto:'Автопродление', ccStaffOn:'вкл', ccStaffOff:'выкл', ccNewsStaffRenew:(r,n,c,m)=>r+' '+n+': контракт продлён на '+(m>=12?'год':'месяц')+(c?' — $'+ccNum(c):' — платит клуб'), ccNewsStaffGone:(r,n)=>r+' '+n+' ушёл: не хватило денег на продление', ccStaffTitle:'Штаб', ccStaffHire:'Нанять', ccStaffRole:{coach:'Коуч', agent:'Менеджер', smm:'SMM', mkt:'Маркетинг', analyst:'Аналитик', psych:'Психолог'}, ccStaffMktFx:r=>'спонсоры ×'+r, ccStaffChange:'Сменить', ccAnalyst:'Аналитик', ccAnalystHint:'Перед вечером разбирает соперников и точки — плюс к силе команды. Только в одиночной карьере', ccAnalystNone:'Аналитика нет', ccAnalystHire:'Посмотреть аналитиков', ccAnalystDoes:'Разбор', ccAnalystPow:p=>'+'+p+' к силе на вечер', ccPsych:'Психолог', ccPsychHint:'Работает с тильтом: после плохого вечера форма падает меньше', ccPsychNone:'Психолога нет', ccPsychHire:'Посмотреть психологов', ccPsychDoes:'Тильт', ccPsychSoft:p=>'провал формы мягче на '+p+'%', ccOrgFans:'Подписчики клуба в X', ccOrgFansEst:'Оценка: точного числа не нашли', ccOrgMedia:'Медийка клуба', ccOrgMediaRow:n=>'+'+n+' подписчиков в месяц', dmMateBtnrival:'Про соперников', dmMateWhatrival:'Кого опасаться сейчас', dmMeTalkrival:()=>'Кто сейчас самый опасный, как думаешь?', dmMateTalkrival:(n,p,m)=>'Смотрю на '+n+' — №'+p+' в PR.'+(m ? ' Мы — №'+m+'.' : '')+' В лейте против них не лезем, зону берём раньше', dmMateHi:'Ну что, теперь вместе. Пиши сюда, если что — договоримся по вечерам.', dmMateHi1:'Привет. Играем вместе — пиши, если что.', dmMateHi2:'Йо! Рад, что играем вместе 🙌 Пиши в любое время, всё обсудим.', dmMateHi3:'Ну всё, с нами теперь считаться придётся. Пиши, когда будешь готов тащить.', dmMateHi4:'Привет. По вечерам — сюда.', dmSecPinned:'Закреплено', dmMateTalkDone:'Сегодня уже поговорили — завтра', ccRoleCool:d=>'Роль недавно менялась — снова можно через '+d+' дн.', ccDuoLimit:'Сегодня уже написал троим — завтра',
   dmArghistoryBtn:'Мы уже играли вместе', dmArghistoryWhat:'Напомнить общие вечера — помнит, как было',
   dmArgnatBtn:'Мы земляки', dmArgnatWhat:'Одна страна, один язык — в коммах проще',
   dmArgclubBtn:'Зову в свой клуб', dmArgclubWhat:'Ты в основе клуба — это весомо',
@@ -19867,7 +19869,7 @@ Object.assign(I18N.ru, {ccOrgSignRow:n=>'+'+n+' при подписании', ro
   dmTrialStay:p=>'Ну что, '+ccTop(p)+' вместе. Остаюсь, играем дальше',
   dmTrialGo:p=>ccTopC(p)+'. Не сыграемся, честно. Без обид, ищи дальше',
   ccNewsTrialGone:h=>'Проба не задалась: @'+ccHandle(h)+' ушёл после первого капа'});
-Object.assign(I18N.en, {ccOrgSignRow:n=>'+'+n+' on signing', roSpotFrom:d=>'opens on '+d, roChests:'Chests', roSpotPow:'Spot power', roClubNoUntil:d=>'The club said no · ask again from '+d, ccStaffYear:'Year', ccStaffAuto:'Auto-renew', ccStaffOn:'on', ccStaffOff:'off', ccNewsStaffRenew:(r,n,c,m)=>r+' '+n+': contract renewed for a '+(m>=12?'year':'month')+(c?' — $'+ccNum(c):' — the club pays'), ccNewsStaffGone:(r,n)=>r+' '+n+' left: not enough money to renew', ccStaffTitle:'Staff', ccStaffHire:'Hire', ccStaffRole:{coach:'Coach', agent:'Manager', smm:'SMM', mkt:'Marketing', analyst:'Analyst', psych:'Psychologist'}, ccStaffMktFx:r=>'sponsors ×'+r, ccStaffChange:'Change', ccAnalyst:'Analyst', ccAnalystHint:'Breaks down opponents and drops before the night — more team power. Solo career only', ccAnalystNone:'No analyst', ccAnalystHire:'See analysts', ccAnalystDoes:'Prep', ccAnalystPow:p=>'+'+p+' team power for the night', ccPsych:'Psychologist', ccPsychHint:'Works on tilt: a bad night costs less form', ccPsychNone:'No psychologist', ccPsychHire:'See psychologists', ccPsychDoes:'Tilt', ccPsychSoft:p=>'form drops '+p+'% softer', ccOrgFans:'Club followers on X', ccOrgFansEst:'Estimate: no exact number found', ccOrgMedia:'Club exposure', ccOrgMediaRow:n=>'+'+n+' followers a month', dmMateBtnrival:'About rivals', dmMateWhatrival:'Who to watch out for now', dmMeTalkrival:()=>'Who is the most dangerous right now, you think?', dmMateTalkrival:(n,p,m)=>'I am watching '+n+', #'+p+' in PR.'+(m ? ' We are #'+m+'.' : '')+' No late fights with them, we take zone early', dmMateHi:'Alright, we are a team now. Message me here and we will sort out the nights.', dmMateHi1:'Hey. We are playing together, message me if anything comes up.', dmMateHi2:'Yo! Glad we are teaming 🙌 Message me any time, we will talk it all through.', dmMateHi3:'That is it, they will have to deal with us now. Message me when you are ready to carry.', dmMateHi4:'Hey. Nights go here.', dmSecPinned:'Pinned', dmMateTalkDone:'You have already talked today — tomorrow', ccRoleCool:d=>'Role changed recently — again in '+d+' d', ccDuoLimit:'Already asked three today — tomorrow',
+Object.assign(I18N.en, {ccOrgPayAskBtn:'Ask the club to pay', ccOrgPayNoUntil:d=>'The club said no · again from '+d, ccNewsOrgPays:(o,r)=>o+' now pays for your '+r.toLowerCase(), ccNewsOrgPaysNo:(o,r)=>o+' will not pay for your '+r.toLowerCase(), ccOrgSignRow:n=>'+'+n+' on signing', roSpotFrom:d=>'opens on '+d, roChests:'Chests', roSpotPow:'Spot power', roClubNoUntil:d=>'The club said no · ask again from '+d, ccStaffYear:'Year', ccStaffAuto:'Auto-renew', ccStaffOn:'on', ccStaffOff:'off', ccNewsStaffRenew:(r,n,c,m)=>r+' '+n+': contract renewed for a '+(m>=12?'year':'month')+(c?' — $'+ccNum(c):' — the club pays'), ccNewsStaffGone:(r,n)=>r+' '+n+' left: not enough money to renew', ccStaffTitle:'Staff', ccStaffHire:'Hire', ccStaffRole:{coach:'Coach', agent:'Manager', smm:'SMM', mkt:'Marketing', analyst:'Analyst', psych:'Psychologist'}, ccStaffMktFx:r=>'sponsors ×'+r, ccStaffChange:'Change', ccAnalyst:'Analyst', ccAnalystHint:'Breaks down opponents and drops before the night — more team power. Solo career only', ccAnalystNone:'No analyst', ccAnalystHire:'See analysts', ccAnalystDoes:'Prep', ccAnalystPow:p=>'+'+p+' team power for the night', ccPsych:'Psychologist', ccPsychHint:'Works on tilt: a bad night costs less form', ccPsychNone:'No psychologist', ccPsychHire:'See psychologists', ccPsychDoes:'Tilt', ccPsychSoft:p=>'form drops '+p+'% softer', ccOrgFans:'Club followers on X', ccOrgFansEst:'Estimate: no exact number found', ccOrgMedia:'Club exposure', ccOrgMediaRow:n=>'+'+n+' followers a month', dmMateBtnrival:'About rivals', dmMateWhatrival:'Who to watch out for now', dmMeTalkrival:()=>'Who is the most dangerous right now, you think?', dmMateTalkrival:(n,p,m)=>'I am watching '+n+', #'+p+' in PR.'+(m ? ' We are #'+m+'.' : '')+' No late fights with them, we take zone early', dmMateHi:'Alright, we are a team now. Message me here and we will sort out the nights.', dmMateHi1:'Hey. We are playing together, message me if anything comes up.', dmMateHi2:'Yo! Glad we are teaming 🙌 Message me any time, we will talk it all through.', dmMateHi3:'That is it, they will have to deal with us now. Message me when you are ready to carry.', dmMateHi4:'Hey. Nights go here.', dmSecPinned:'Pinned', dmMateTalkDone:'You have already talked today — tomorrow', ccRoleCool:d=>'Role changed recently — again in '+d+' d', ccDuoLimit:'Already asked three today — tomorrow',
   dmArghistoryBtn:'We have played together', dmArghistoryWhat:'Remind them of the nights you shared — they remember how it went',
   dmArgnatBtn:'Same country', dmArgnatWhat:'One country, one language — comms are easier',
   dmArgclubBtn:'Bring them to my club', dmArgclubWhat:'You are on a club main roster — that carries weight',
@@ -19886,7 +19888,7 @@ Object.assign(I18N.en, {ccOrgSignRow:n=>'+'+n+' on signing', roSpotFrom:d=>'open
   dmTrialStay:p=>ccTopC(p)+' together. I am staying, let us keep going',
   dmTrialGo:p=>ccTopC(p)+'. Honestly we do not click. No hard feelings, keep looking',
   ccNewsTrialGone:h=>'The trial did not work out: @'+ccHandle(h)+' left after the first cup'});
-Object.assign(I18N.fr, {ccOrgSignRow:n=>'+'+n+' à la signature', roSpotFrom:d=>'ouvre le '+d, roChests:'Coffres', roSpotPow:'Puissance du spot', roClubNoUntil:d=>'Le club a refusé · redemander dès le '+d, ccStaffYear:'Année', ccStaffAuto:'Renouvellement auto', ccStaffOn:'oui', ccStaffOff:'non', ccNewsStaffRenew:(r,n,c,m)=>r+' '+n+' : contrat prolongé '+(m>=12?'d\u2019un an':'d\u2019un mois')+(c?' — '+ccNum(c)+' $':' — le club paie'), ccNewsStaffGone:(r,n)=>r+' '+n+' est parti : pas assez d\u2019argent pour prolonger', ccStaffTitle:'Staff', ccStaffHire:'Recruter', ccStaffRole:{coach:'Coach', agent:'Agent', smm:'SMM', mkt:'Marketing', analyst:'Analyste', psych:'Psychologue'}, ccStaffMktFx:r=>'sponsors ×'+r, ccStaffChange:'Changer', ccAnalyst:'Analyste', ccAnalystHint:'Analyse les adversaires et les drops avant la soirée — plus de puissance. Carrière solo uniquement', ccAnalystNone:'Pas d\u2019analyste', ccAnalystHire:'Voir les analystes', ccAnalystDoes:'Préparation', ccAnalystPow:p=>'+'+p+' de puissance pour la soirée', ccPsych:'Psychologue', ccPsychHint:'Travaille le tilt : une mauvaise soirée coûte moins de forme', ccPsychNone:'Pas de psychologue', ccPsychHire:'Voir les psychologues', ccPsychDoes:'Tilt', ccPsychSoft:p=>'baisse de forme '+p+'% plus douce', ccOrgFans:'Abonnés du club sur X', ccOrgFansEst:'Estimation : pas de chiffre exact', ccOrgMedia:'Visibilité du club', ccOrgMediaRow:n=>'+'+n+' abonnés par mois', dmMateBtnrival:'Les rivaux', dmMateWhatrival:'De qui se méfier maintenant', dmMeTalkrival:()=>'Qui est le plus dangereux en ce moment, d\u2019après toi ?', dmMateTalkrival:(n,p,m)=>'Je surveille '+n+', n°'+p+' au PR.'+(m ? ' Nous, n°'+m+'.' : '')+' Pas de fights en fin de partie contre eux, on prend la zone tôt', dmMateHi:'Bon, on est une équipe maintenant. Écris-moi ici, on s\u2019organisera pour les soirées.', dmSecPinned:'Épinglé', dmMateTalkDone:'Vous avez déjà parlé aujourd\u2019hui — demain', ccRoleCool:d=>'Rôle changé récemment — de nouveau dans '+d+' j', ccDuoLimit:'Déjà trois demandes aujourd\u2019hui — demain',
+Object.assign(I18N.fr, {ccOrgPayAskBtn:'Demander au club de payer', ccOrgPayNoUntil:d=>'Le club a refusé · de nouveau le '+d, ccNewsOrgPays:(o,r)=>o+' paie ton '+r.toLowerCase(), ccNewsOrgPaysNo:(o,r)=>o+' ne paiera pas ton '+r.toLowerCase(), ccOrgSignRow:n=>'+'+n+' à la signature', roSpotFrom:d=>'ouvre le '+d, roChests:'Coffres', roSpotPow:'Puissance du spot', roClubNoUntil:d=>'Le club a refusé · redemander dès le '+d, ccStaffYear:'Année', ccStaffAuto:'Renouvellement auto', ccStaffOn:'oui', ccStaffOff:'non', ccNewsStaffRenew:(r,n,c,m)=>r+' '+n+' : contrat prolongé '+(m>=12?'d\u2019un an':'d\u2019un mois')+(c?' — '+ccNum(c)+' $':' — le club paie'), ccNewsStaffGone:(r,n)=>r+' '+n+' est parti : pas assez d\u2019argent pour prolonger', ccStaffTitle:'Staff', ccStaffHire:'Recruter', ccStaffRole:{coach:'Coach', agent:'Agent', smm:'SMM', mkt:'Marketing', analyst:'Analyste', psych:'Psychologue'}, ccStaffMktFx:r=>'sponsors ×'+r, ccStaffChange:'Changer', ccAnalyst:'Analyste', ccAnalystHint:'Analyse les adversaires et les drops avant la soirée — plus de puissance. Carrière solo uniquement', ccAnalystNone:'Pas d\u2019analyste', ccAnalystHire:'Voir les analystes', ccAnalystDoes:'Préparation', ccAnalystPow:p=>'+'+p+' de puissance pour la soirée', ccPsych:'Psychologue', ccPsychHint:'Travaille le tilt : une mauvaise soirée coûte moins de forme', ccPsychNone:'Pas de psychologue', ccPsychHire:'Voir les psychologues', ccPsychDoes:'Tilt', ccPsychSoft:p=>'baisse de forme '+p+'% plus douce', ccOrgFans:'Abonnés du club sur X', ccOrgFansEst:'Estimation : pas de chiffre exact', ccOrgMedia:'Visibilité du club', ccOrgMediaRow:n=>'+'+n+' abonnés par mois', dmMateBtnrival:'Les rivaux', dmMateWhatrival:'De qui se méfier maintenant', dmMeTalkrival:()=>'Qui est le plus dangereux en ce moment, d\u2019après toi ?', dmMateTalkrival:(n,p,m)=>'Je surveille '+n+', n°'+p+' au PR.'+(m ? ' Nous, n°'+m+'.' : '')+' Pas de fights en fin de partie contre eux, on prend la zone tôt', dmMateHi:'Bon, on est une équipe maintenant. Écris-moi ici, on s\u2019organisera pour les soirées.', dmSecPinned:'Épinglé', dmMateTalkDone:'Vous avez déjà parlé aujourd\u2019hui — demain', ccRoleCool:d=>'Rôle changé récemment — de nouveau dans '+d+' j', ccDuoLimit:'Déjà trois demandes aujourd\u2019hui — demain',
   dmArghistoryBtn:'On a déjà joué ensemble', dmArghistoryWhat:'Rappeler vos soirées communes — il s\u2019en souvient',
   dmArgnatBtn:'Même pays', dmArgnatWhat:'Même pays, même langue — les comms sont plus simples',
   dmArgclubBtn:'Je t\u2019emmène dans mon club', dmArgclubWhat:'Tu es dans l\u2019équipe principale d\u2019un club — ça pèse',
@@ -19905,7 +19907,7 @@ Object.assign(I18N.fr, {ccOrgSignRow:n=>'+'+n+' à la signature', roSpotFrom:d=>
   dmTrialStay:p=>ccTopC(p)+' ensemble. Je reste, on continue',
   dmTrialGo:p=>ccTopC(p)+'. Franchement, ça ne matche pas. Sans rancune, cherche encore',
   ccNewsTrialGone:h=>'L\u2019essai n\u2019a pas marché : @'+ccHandle(h)+' est parti après la première cup'});
-Object.assign(I18N.it, {ccOrgSignRow:n=>'+'+n+' alla firma', roSpotFrom:d=>'si apre il '+d, roChests:'Forzieri', roSpotPow:'Forza del punto', roClubNoUntil:d=>'Il club ha detto no · di nuovo dal '+d, ccStaffYear:'Anno', ccStaffAuto:'Rinnovo automatico', ccStaffOn:'sì', ccStaffOff:'no', ccNewsStaffRenew:(r,n,c,m)=>r+' '+n+': contratto rinnovato per '+(m>=12?'un anno':'un mese')+(c?' — $'+ccNum(c):' — paga il club'), ccNewsStaffGone:(r,n)=>r+' '+n+' se n\u2019è andato: soldi insufficienti per rinnovare', ccStaffTitle:'Staff', ccStaffHire:'Ingaggia', ccStaffRole:{coach:'Coach', agent:'Manager', smm:'SMM', mkt:'Marketing', analyst:'Analista', psych:'Psicologo'}, ccStaffMktFx:r=>'sponsor ×'+r, ccStaffChange:'Cambia', ccAnalyst:'Analista', ccAnalystHint:'Studia avversari e drop prima della serata — più forza di squadra. Solo carriera singola', ccAnalystNone:'Nessun analista', ccAnalystHire:'Vedi analisti', ccAnalystDoes:'Preparazione', ccAnalystPow:p=>'+'+p+' di forza per la serata', ccPsych:'Psicologo', ccPsychHint:'Lavora sul tilt: una serata storta costa meno forma', ccPsychNone:'Nessuno psicologo', ccPsychHire:'Vedi psicologi', ccPsychDoes:'Tilt', ccPsychSoft:p=>'calo di forma più morbido del '+p+'%', ccOrgFans:'Follower del club su X', ccOrgFansEst:'Stima: nessun numero esatto', ccOrgMedia:'Visibilità del club', ccOrgMediaRow:n=>'+'+n+' follower al mese', dmMateBtnrival:'I rivali', dmMateWhatrival:'Di chi diffidare adesso', dmMeTalkrival:()=>'Chi è il più pericoloso adesso, secondo te?', dmMateTalkrival:(n,p,m)=>'Tengo d\u2019occhio '+n+', n.'+p+' nel PR.'+(m ? ' Noi siamo n.'+m+'.' : '')+' Niente fight a fine partita con loro, zona presa presto', dmMateHi:'Bene, adesso siamo una squadra. Scrivimi qui e ci organizziamo per le serate.', dmSecPinned:'Fissati', dmMateTalkDone:'Avete già parlato oggi — domani', ccRoleCool:d=>'Ruolo cambiato da poco — di nuovo tra '+d+' g', ccDuoLimit:'Già tre richieste oggi — domani',
+Object.assign(I18N.it, {ccOrgPayAskBtn:'Chiedi al club di pagare', ccOrgPayNoUntil:d=>'Il club ha detto no · di nuovo dal '+d, ccNewsOrgPays:(o,r)=>o+' ti paga: '+r.toLowerCase(), ccNewsOrgPaysNo:(o,r)=>o+' non paga: '+r.toLowerCase(), ccOrgSignRow:n=>'+'+n+' alla firma', roSpotFrom:d=>'si apre il '+d, roChests:'Forzieri', roSpotPow:'Forza del punto', roClubNoUntil:d=>'Il club ha detto no · di nuovo dal '+d, ccStaffYear:'Anno', ccStaffAuto:'Rinnovo automatico', ccStaffOn:'sì', ccStaffOff:'no', ccNewsStaffRenew:(r,n,c,m)=>r+' '+n+': contratto rinnovato per '+(m>=12?'un anno':'un mese')+(c?' — $'+ccNum(c):' — paga il club'), ccNewsStaffGone:(r,n)=>r+' '+n+' se n\u2019è andato: soldi insufficienti per rinnovare', ccStaffTitle:'Staff', ccStaffHire:'Ingaggia', ccStaffRole:{coach:'Coach', agent:'Manager', smm:'SMM', mkt:'Marketing', analyst:'Analista', psych:'Psicologo'}, ccStaffMktFx:r=>'sponsor ×'+r, ccStaffChange:'Cambia', ccAnalyst:'Analista', ccAnalystHint:'Studia avversari e drop prima della serata — più forza di squadra. Solo carriera singola', ccAnalystNone:'Nessun analista', ccAnalystHire:'Vedi analisti', ccAnalystDoes:'Preparazione', ccAnalystPow:p=>'+'+p+' di forza per la serata', ccPsych:'Psicologo', ccPsychHint:'Lavora sul tilt: una serata storta costa meno forma', ccPsychNone:'Nessuno psicologo', ccPsychHire:'Vedi psicologi', ccPsychDoes:'Tilt', ccPsychSoft:p=>'calo di forma più morbido del '+p+'%', ccOrgFans:'Follower del club su X', ccOrgFansEst:'Stima: nessun numero esatto', ccOrgMedia:'Visibilità del club', ccOrgMediaRow:n=>'+'+n+' follower al mese', dmMateBtnrival:'I rivali', dmMateWhatrival:'Di chi diffidare adesso', dmMeTalkrival:()=>'Chi è il più pericoloso adesso, secondo te?', dmMateTalkrival:(n,p,m)=>'Tengo d\u2019occhio '+n+', n.'+p+' nel PR.'+(m ? ' Noi siamo n.'+m+'.' : '')+' Niente fight a fine partita con loro, zona presa presto', dmMateHi:'Bene, adesso siamo una squadra. Scrivimi qui e ci organizziamo per le serate.', dmSecPinned:'Fissati', dmMateTalkDone:'Avete già parlato oggi — domani', ccRoleCool:d=>'Ruolo cambiato da poco — di nuovo tra '+d+' g', ccDuoLimit:'Già tre richieste oggi — domani',
   dmArghistoryBtn:'Abbiamo già giocato insieme', dmArghistoryWhat:'Ricordagli le serate insieme — si ricorda com\u2019è andata',
   dmArgnatBtn:'Stesso paese', dmArgnatWhat:'Stesso paese, stessa lingua — le comms sono più facili',
   dmArgclubBtn:'Ti porto nel mio club', dmArgclubWhat:'Sei nel roster principale di un club — conta',
@@ -19924,7 +19926,7 @@ Object.assign(I18N.it, {ccOrgSignRow:n=>'+'+n+' alla firma', roSpotFrom:d=>'si a
   dmTrialStay:p=>ccTopC(p)+' insieme. Resto, andiamo avanti',
   dmTrialGo:p=>ccTopC(p)+'. Sinceramente non ci troviamo. Niente di personale, cerca ancora',
   ccNewsTrialGone:h=>'La prova non è andata: @'+ccHandle(h)+' se n\u2019è andato dopo la prima cup'});
-Object.assign(I18N.pt, {ccOrgSignRow:n=>'+'+n+' na assinatura', roSpotFrom:d=>'abre em '+d, roChests:'Baús', roSpotPow:'Força do ponto', roClubNoUntil:d=>'O clube recusou · de novo a partir de '+d, ccStaffYear:'Ano', ccStaffAuto:'Renovação automática', ccStaffOn:'sim', ccStaffOff:'não', ccNewsStaffRenew:(r,n,c,m)=>r+' '+n+': contrato renovado por '+(m>=12?'um ano':'um mês')+(c?' — $'+ccNum(c):' — o clube paga'), ccNewsStaffGone:(r,n)=>r+' '+n+' saiu: sem dinheiro para renovar', ccStaffTitle:'Staff', ccStaffHire:'Contratar', ccStaffRole:{coach:'Coach', agent:'Empresário', smm:'SMM', mkt:'Marketing', analyst:'Analista', psych:'Psicólogo'}, ccStaffMktFx:r=>'patrocínio ×'+r, ccStaffChange:'Trocar', ccAnalyst:'Analista', ccAnalystHint:'Estuda adversários e drops antes da noite — mais força do time. Só carreira solo', ccAnalystNone:'Sem analista', ccAnalystHire:'Ver analistas', ccAnalystDoes:'Preparação', ccAnalystPow:p=>'+'+p+' de força na noite', ccPsych:'Psicólogo', ccPsychHint:'Trabalha o tilt: noite ruim custa menos forma', ccPsychNone:'Sem psicólogo', ccPsychHire:'Ver psicólogos', ccPsychDoes:'Tilt', ccPsychSoft:p=>'queda de forma '+p+'% mais suave', ccOrgFans:'Seguidores do clube no X', ccOrgFansEst:'Estimativa: sem número exato', ccOrgMedia:'Visibilidade do clube', ccOrgMediaRow:n=>'+'+n+' seguidores por mês', dmMateBtnrival:'Sobre rivais', dmMateWhatrival:'De quem tomar cuidado agora', dmMeTalkrival:()=>'Quem é o mais perigoso agora, você acha?', dmMateTalkrival:(n,p,m)=>'Tô de olho em '+n+', nº'+p+' no PR.'+(m ? ' A gente é nº'+m+'.' : '')+' Nada de luta no fim contra eles, pegamos a zona cedo', dmMateHi:'Beleza, agora somos um time. Me chama aqui e a gente combina as noites.', dmSecPinned:'Fixados', dmMateTalkDone:'Vocês já conversaram hoje — amanhã', ccRoleCool:d=>'Função trocada há pouco — de novo em '+d+' d', ccDuoLimit:'Já chamou três hoje — amanhã',
+Object.assign(I18N.pt, {ccOrgPayAskBtn:'Pedir ao clube para pagar', ccOrgPayNoUntil:d=>'O clube recusou · de novo a partir de '+d, ccNewsOrgPays:(o,r)=>o+' paga seu '+r.toLowerCase(), ccNewsOrgPaysNo:(o,r)=>o+' não vai pagar seu '+r.toLowerCase(), ccOrgSignRow:n=>'+'+n+' na assinatura', roSpotFrom:d=>'abre em '+d, roChests:'Baús', roSpotPow:'Força do ponto', roClubNoUntil:d=>'O clube recusou · de novo a partir de '+d, ccStaffYear:'Ano', ccStaffAuto:'Renovação automática', ccStaffOn:'sim', ccStaffOff:'não', ccNewsStaffRenew:(r,n,c,m)=>r+' '+n+': contrato renovado por '+(m>=12?'um ano':'um mês')+(c?' — $'+ccNum(c):' — o clube paga'), ccNewsStaffGone:(r,n)=>r+' '+n+' saiu: sem dinheiro para renovar', ccStaffTitle:'Staff', ccStaffHire:'Contratar', ccStaffRole:{coach:'Coach', agent:'Empresário', smm:'SMM', mkt:'Marketing', analyst:'Analista', psych:'Psicólogo'}, ccStaffMktFx:r=>'patrocínio ×'+r, ccStaffChange:'Trocar', ccAnalyst:'Analista', ccAnalystHint:'Estuda adversários e drops antes da noite — mais força do time. Só carreira solo', ccAnalystNone:'Sem analista', ccAnalystHire:'Ver analistas', ccAnalystDoes:'Preparação', ccAnalystPow:p=>'+'+p+' de força na noite', ccPsych:'Psicólogo', ccPsychHint:'Trabalha o tilt: noite ruim custa menos forma', ccPsychNone:'Sem psicólogo', ccPsychHire:'Ver psicólogos', ccPsychDoes:'Tilt', ccPsychSoft:p=>'queda de forma '+p+'% mais suave', ccOrgFans:'Seguidores do clube no X', ccOrgFansEst:'Estimativa: sem número exato', ccOrgMedia:'Visibilidade do clube', ccOrgMediaRow:n=>'+'+n+' seguidores por mês', dmMateBtnrival:'Sobre rivais', dmMateWhatrival:'De quem tomar cuidado agora', dmMeTalkrival:()=>'Quem é o mais perigoso agora, você acha?', dmMateTalkrival:(n,p,m)=>'Tô de olho em '+n+', nº'+p+' no PR.'+(m ? ' A gente é nº'+m+'.' : '')+' Nada de luta no fim contra eles, pegamos a zona cedo', dmMateHi:'Beleza, agora somos um time. Me chama aqui e a gente combina as noites.', dmSecPinned:'Fixados', dmMateTalkDone:'Vocês já conversaram hoje — amanhã', ccRoleCool:d=>'Função trocada há pouco — de novo em '+d+' d', ccDuoLimit:'Já chamou três hoje — amanhã',
   dmArghistoryBtn:'A gente já jogou junto', dmArghistoryWhat:'Lembrar das noites juntos — ele lembra como foi',
   dmArgnatBtn:'Somos do mesmo país', dmArgnatWhat:'Mesmo país, mesma língua — call mais fácil',
   dmArgclubBtn:'Te levo pro meu clube', dmArgclubWhat:'Você tá no time principal de um clube — isso pesa',
@@ -99925,7 +99927,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       // The line the evening is played for, drawn under the last qualifying row
       // — the same rule the standings card uses when the stage ends, so a
       // player can read "am I through" off the live table instead of counting.
-      const cls='lobby-row'+(t.isYou?' lobby-you':'')+(t.isMate?' lobby-mate':'')+
+      const cls='lobby-row'+((t.isYou||t.isClub)?' lobby-you':'')+(t.isMate?' lobby-mate':'')+
         (opts.cutAt && t._liveRank===opts.cutAt ? ' lobby-cut' : '');
       if(tr.className!==cls) tr.className=cls;
       // A Victory Royale ends that team's stage, so they stop at whatever game
@@ -99935,7 +99937,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
       const regTag = t.regionRank
         ? ` <span style="color:var(--ink-dimmer);font-size:11px;font-weight:600;">${regionName(t.summitRegion||(t.squad&&t.squad[0]||{}).region||'')} #${t.regionRank}</span>`
         : '';
-      const nameStyled = (t.isYou ? '<b style="color:var(--lb-you);">'+t.name+'</b>' : t.name)
+      const nameStyled = ((t.isYou||t.isClub) ? '<b style="color:var(--lb-you);">'+t.name+'</b>' : t.name)
         + regTag
         // Приз за текущее место — у ника, как в итоговой таблице (его слово 29.09: «во всех таблицах, где есть призы»).
         + (opts.prize ? stPrizeHTML(prizeFor(opts.prize, i+1), (t.squad||[]).length||squadSize) : '')
@@ -105111,8 +105113,8 @@ function renderGcFieldCard(field){
   const card=document.createElement('div');
   card.className='stage-card';
   const group=(route)=>field.filter(t=>t.gcRoute===route);
-  const rowFor=(t,label)=>`<tr class="lobby-row${t.isYou?' lobby-you':''}">
-      <td>${t.isYou?'<b style="color:var(--lb-you);">'+t.name+'</b>':t.name}</td>
+  const rowFor=(t,label)=>`<tr class="lobby-row${(t.isYou||t.isClub)?' lobby-you':''}">
+      <td>${(t.isYou||t.isClub)?'<b style="color:var(--lb-you);">'+t.name+'</b>':t.name}</td>
       <td class="num" style="color:var(--ink-dimmer);font-size:12px;">${label}</td></tr>`;
   const section=(title, teams, label)=>teams.length ? `<div style="margin-top:14px;">
       <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px;">
@@ -105623,8 +105625,8 @@ function renderGc2025FieldCard(field, title, note){
   const card=document.createElement('div');
   card.className='stage-card';
   const group=route=>field.filter(t=>t.gcRoute===route);
-  const rowFor=(t,label)=>`<tr class="lobby-row${t.isYou?' lobby-you':''}">
-      <td>${t.isYou?'<b style="color:var(--lb-you);">'+t.name+'</b>':t.name}</td>
+  const rowFor=(t,label)=>`<tr class="lobby-row${(t.isYou||t.isClub)?' lobby-you':''}">
+      <td>${(t.isYou||t.isClub)?'<b style="color:var(--lb-you);">'+t.name+'</b>':t.name}</td>
       <td class="num" style="color:var(--ink-dimmer);font-size:12px;">${label}</td></tr>`;
   const section=(title, teams, label)=>teams.length ? `<div style="margin-top:14px;">
       <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px;">
@@ -108943,7 +108945,7 @@ function renderLobby(teams, you){
     if(i===0) rowClasses.push('lobby-first');
     if(t.isYou) rowClasses.push('lobby-you');
     tr.className=rowClasses.join(' ');
-    const nameStyled = t.isYou ? '<b style="color:var(--lb-you);">'+t.name+'</b>' : t.name;
+    const nameStyled = (t.isYou||t.isClub) ? '<b style="color:var(--lb-you);">'+t.name+'</b>' : t.name;
     const powerCell = t.pow!=null ? Math.round(t.pow) : (t.displayPower!=null ? t.displayPower : (t.avgRating!=null ? t.avgRating : Math.round(t.squad.reduce((s,p)=>s+p.rating,0)/t.squad.length)));
     const matches = (t.gameLog ? t.gameLog.filter(g=>!g.isLandingBonus).length : (t.stageLog ? t.stageLog.filter(g=>!g.isLandingBonus).length : NUM_GAMES))
                     + (t._carryGames||0);
@@ -109256,7 +109258,7 @@ function renderLandingResultsMap(teams){
   teams.forEach((t,i)=>{
     const row=document.createElement('div');
     row.style.padding='2px 0';
-    const nameStyled = t.isYou ? '<b style="color:var(--lb-you);">'+t.name+'</b>' : t.name;
+    const nameStyled = (t.isYou||t.isClub) ? '<b style="color:var(--lb-you);">'+t.name+'</b>' : t.name;
     const tagInfo=RESULT_TAG[t.landingResult];
     const resultTag=tagInfo?` <span style="color:${tagInfo.color};font-size:11px;">${tagInfo.text}</span>`:'';
     // Same record the standings show, so the two never disagree.
@@ -118101,7 +118103,7 @@ function ccStaffTermRecs(){
     if(c) out.push({key:'coach', rec:CAREER.coach, role:S.coach, name:c.name, month:CAREER.coach.cost||c.cost, free:()=>ccOrgPaysCoach()}); }
   if(CAREER.smm) out.push({key:'smm', rec:CAREER.smm, role:S.smm, name:CAREER.smm.name, month:CAREER.smm.cost||CC_SMM_FROM});
   if(CAREER.mkt) out.push({key:'mkt', rec:CAREER.mkt, role:S.mkt, name:CAREER.mkt.name, month:CAREER.mkt.cost||0});
-  for(const k of ['analyst','psych']) if(CAREER[k]) out.push({key:k, rec:CAREER[k], role:S[k], name:CAREER[k].name, month:CAREER[k].cost||0});
+  for(const k of ['analyst','psych']) if(CAREER[k]) out.push({key:k, rec:CAREER[k], role:S[k], name:CAREER[k].name, month:CAREER[k].cost||0, free:()=>ccOrgPays(k)});
   return out;
 }
 function ccStaffAutoRenew(toISO){
@@ -118159,6 +118161,13 @@ function ccStaffCards(){
                   until:m.until, year:(m.months||1)>=12, open:"ccStaff2PickOpen('"+kind+"')", end:"careerEndStaff2('"+kind+"')"}
                : {role:S[kind], open:"ccStaff2PickOpen('"+kind+"')"});
   }
+  // Коуч, аналитик, психолог — можно попросить свой клуб оплатить (careerOrgPayAsk).
+  const orgOn=CAREER.org && !CAREER.org.own;
+  out.forEach((c,i)=>{ const kind=['coach',null,null,null,'analyst','psych'][i]; if(!kind || !orgOn) return;
+    if(ccOrgPays(kind)) c.pay='<small class="cc-staff-paid">'+esc(L().ccOrgPays(CAREER.org.name))+'</small>';
+    else { const no=ccOrgPayAskUntil(kind);
+      c.pay=no ? '<small class="cc-staff-until">'+esc(L().ccOrgPayNoUntil(ccDayLabel(no)))+'</small>'
+               : '<button class="cc-staff-ask" onclick="event.stopPropagation();careerOrgPayAsk(\''+kind+'\')">'+esc(L().ccOrgPayAskBtn)+'</button>'; } });
   return out;
 }
 function careerStaffPanelHTML(){
@@ -118171,12 +118180,14 @@ function careerStaffPanelHTML(){
         <b class="cc-staff-name">${esc(c.name)}</b>
         <span class="cc-staff-fx">${esc(c.fx)}</span>
         ${c.until ? `<small class="cc-staff-until">${T.ccCoachUntil} ${ccDayLabel(c.until)}${c.year ? ' · '+T.ccStaffYear : ''}${ccAutoRenewOn() ? ' · ↻' : ''}</small>` : ''}
+        ${c.pay ? c.pay : ''}
         ${c.end ? `<button class="cc-staff-end" onclick="event.stopPropagation();${c.end}">${T.ccAgentEnd}</button>` : ''}
       </div>`
     : `<div class="cc-staff-card cc-staff-empty" onclick="${c.open}">
         <span class="cc-staff-plus">＋</span>
         <em class="cc-staff-role">${esc(c.role)}</em>
         <span class="cc-staff-hire">${T.ccStaffHire}</span>
+        ${c.pay ? c.pay : ''}
       </div>`;
   return `<section class="cc-staff-wrap">
     <div class="cc-sect-row"><h3 class="cc-sect-h">${T.ccStaffTitle}</h3>
@@ -130245,7 +130256,32 @@ function careerGearSkill(){
     (it.conf && careerOwns(it.id) && it.conf>v) ? it.conf : v, 0);
 }
 // Whether the club is paying for the coach this month.
-function ccOrgPaysCoach(){ return !!(CAREER.org && CAREER.org.perk==='coach'); }
+function ccOrgPaysCoach(){ return !!(CAREER.org && (CAREER.org.perk==='coach' || (CAREER.org.pays||{}).coach)); }
+/* ПОПРОСИТЬ КЛУБ ОПЛАТИТЬ ШТАБ (его слово 8.10: «в карьере игрока добавить возможность попросить оплатить оргу коуча,
+   аналитика, психолога»). Просьба — к своему клубу (не к своей организации). Согласие — от того, насколько ты ему нужен:
+   рейтинг против уровня клуба, шанс 25…90% (оценка режима), бросок на день и роль — одно и то же нажатие даёт один ответ.
+   «Да» — клуб платит эту роль, пока ты в нём (найм и продления бесплатно). «Нет» — снова спросить через 30 дней. */
+const CC_ORG_PAY_COOL=30;
+function ccOrgPays(kind){
+  const o=CAREER && CAREER.org; if(!o || o.own) return false;
+  return kind==='coach' ? ccOrgPaysCoach() : !!((o.pays||{})[kind]);
+}
+function ccOrgPayAskUntil(kind){
+  const o=CAREER && CAREER.org, m=o && o.payNo, d=m && m[kind];
+  return (d && careerToday()<d) ? d : null;
+}
+function ccOrgPayChance(){
+  const o=CAREER.org, pl=CAREER.player, ovr=pl.ovrExact!=null ? pl.ovrExact : pl.ovr;
+  return Math.max(0.25, Math.min(0.9, 0.5+(ovr-(o.tier||80))*0.05));
+}
+function careerOrgPayAsk(kind){
+  const o=CAREER.org; if(!o || o.own || ccOrgPays(kind) || ccOrgPayAskUntil(kind)) return false;
+  const ok=careerRng(ccHashStr('orgpay|'+o.name+'|'+kind+'|'+careerToday()))()<ccOrgPayChance();
+  const role=L().ccStaffRole[kind];
+  if(ok){ o.pays=o.pays||{}; o.pays[kind]=true; careerNews('good', 'ccNewsOrgPays', [o.name, role]); }
+  else { o.payNo=o.payNo||{}; o.payNo[kind]=ccAddDays(careerToday(), CC_ORG_PAY_COOL); careerNews('bad', 'ccNewsOrgPaysNo', [o.name, role]); }
+  careerSave(); careerRenderHub(); return ok;
+}
 
 // What they want for it. Below Division 1 a club wants the thing the ladder is
 // for: get up a rung. In Division 1 there is no rung left, so they want a
@@ -132431,7 +132467,7 @@ function careerHireStaff2(kind, id, months){
   months=months>=CC_STAFF_YEAR ? CC_STAFF_YEAR : 1;
   const cr=CAREER.career, who=CC_STAFF2[kind].list.find(p=>p.id===id); if(!who) return false;
   if(ccStaff2(kind) && ccStaff2(kind).id===id) return false;
-  const cost=ccStaff2Cost(kind, who), due=ccStaffTermCost(cost, months); if((cr.balance||0)<due) return false;
+  const cost=ccStaff2Cost(kind, who), due=ccOrgPays(kind) ? 0 : ccStaffTermCost(cost, months); if((cr.balance||0)<due) return false;
   cr.balance-=due;
   CAREER[kind]={id:who.id, name:who.name, at:who.at, photo:who.photo, cost, rating:ccStaff2Rating(kind, who), months,
                 from:careerToday(), until:ccAddDays(careerToday(), ccStaffTermDays(months))};
@@ -132465,14 +132501,14 @@ function careerStaff2TileHTML(kind){
 function ccStaff2PickOpen(kind){
   const cr=CAREER.career, T=L(), K=kind==='analyst' ? 'ccAnalyst' : 'ccPsych', on=ccStaff2(kind);
   const rows=ccStaff2List(kind).map(p=>{
-    const r=ccStaff2Rating(kind, p), cost=ccStaff2Cost(kind, p), mine=!!on && on.id===p.id, can=!mine && (cr.balance||0)>=cost;
+    const r=ccStaff2Rating(kind, p), paid=ccOrgPays(kind), cost=ccStaff2Cost(kind, p), mine=!!on && on.id===p.id, can=!mine && (paid || (cr.balance||0)>=cost);
     return `<div class="cc-buy${mine?' own':''}">
       ${p.photo ? `<img class="cc-buy-img cc-buy-face" src="${PHOTO_DIR}${esc(p.photo)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
       <div class="cc-buy-in"><b>${esc(p.name)}</b>
         <i>${T.ccRoOvr} ${r}${p.at ? ' · @'+esc(p.at) : ''}${p.x ? ' · '+ccFollowers(p.x) : ''} · ${esc(p.why)}</i>
         <span>${ccStaff2Effect(kind, r)} · ${T.ccShopMonth}</span></div>
       ${mine ? `<span class="cc-owned">${T.ccShopUntil(ccDayLabel(on.until))}</span>`
-             : ccHireBtns(can, cost, "careerHireStaff2('"+kind+"','"+p.id+"')", "careerHireStaff2('"+kind+"','"+p.id+"',12)")}
+             : ccHireBtns(can, paid ? 0 : cost, "careerHireStaff2('"+kind+"','"+p.id+"')", "careerHireStaff2('"+kind+"','"+p.id+"',12)", paid ? L().ccOrgPays(esc(CAREER.org.name)) : null)}
     </div>`;
   }).join('');
   document.getElementById('staff2PickBody').innerHTML=`<h4 class="cc-pick-h">${T[K]}</h4><div class="ch-hint">${T[K+'Hint']}</div><div class="cc-buys">${rows}</div>`;
