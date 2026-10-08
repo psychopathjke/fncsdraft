@@ -161733,12 +161733,15 @@ async function mgrCarNight(ev, teams, you, quiet, fast){
        записал (сессия отборов Reload пишет итог в конце) или исход спорный — состав НЕ переигрывает вечер: место — из общей
        таблицы, прогресс ведущего копируется, только когда исход тот же. */
     const lp=lrow ? (lrow.place||0) : 0, lpass=lrow ? lrow.passed : undefined;
-    let same=(lpass==null) || (lpass && rec.place<=lp) || (!lpass && rec.place>=lp);
+    /* Исход ведущего неизвестен (строки нет или без passed) — прогресс копируется, только если состав сыграл не хуже
+       ведущего (его слово 8.10: «попадают команды, которые не квалились даже в финалы» — копировали вслепую). */
+    let same=(lpass==null) ? (lp>0 && rec.place<=lp) : ((lpass && rec.place<=lp) || (!lpass && rec.place>=lp));
     // Ведущий прошёл, а состав ниже него: прошёл ли и он — видно по таблице следующего раунда в записях ведущего (ники пары
     // появились там после вечера).
-    if(!same && lpass && J.after){ const b=JSON.stringify(J.before||{}), a=JSON.stringify(J.after);
+    if(!same && lpass!==false && J.after){ const b=JSON.stringify(J.before||{}), a=JSON.stringify(J.after);
       const hs=(tm.squad||[]).map(c=>JSON.stringify(String(c.handle)));
-      if(hs.length && hs.every(h=>a.indexOf(h)>=0) && !hs.every(h=>b.indexOf(h)>=0)) same=true; }
+      const occ=(t,h)=>t.split(h).length-1;   // ники были и в таблице прошлого раунда — считаем, прибавились ли
+      if(hs.length && hs.every(h=>occ(a,h)>occ(b,h))) same=true; }
     const st=(MGR.tcar=MGR.tcar||{})[tm.mgrId]=(MGR.tcar[tm.mgrId]||{division:(CAREER.career.division||1), log:[], tokens:[]});
     if(same && J.after){ MGR_CAR_COPY.forEach(k=>{ if(JSON.stringify(J.before[k])!==JSON.stringify(J.after[k])) st[k]=J.after[k]===undefined ? undefined : JSON.parse(JSON.stringify(J.after[k])); }); }
     const row={season:CAREER.career.season, day:ev.day, place:rec.place, of:rec.of, pts:rec.pts||0, elims:rec.elims||0, wins:rec.wins||0,
