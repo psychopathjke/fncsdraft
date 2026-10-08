@@ -210,7 +210,10 @@ const SECTIONS=[
   {name:'прочие вкладки', code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     const B=document.getElementById('mgBody');
-    for(const [tab, group, keys] of [['club','club',['train','base','sponsor','press']],['tables','tables',['stats','trophies','managers']]]){
+    // Спонсоры — отдельная вкладка с 8.10 (его слово: «это самое основное — заработок организации»).
+    mgrRenderHub('sponsors'); { const body=document.getElementById('mgBody').innerHTML;
+      check('спонсоры: своя вкладка с деньгами в месяц и контрактом', MGR_TAB==='sponsors' && body.indexOf('mg-sp-tab')>=0 && /mg-trb|mg-board/.test(body) && !bad(body), body.slice(0,120)); }
+    for(const [tab, group, keys] of [['club','club',['train','base','press']],['tables','tables',['stats','trophies','managers']]]){
       for(const k of keys){ MGR_SUB[group]=k; mgrRenderHub(tab);
         const err=B.querySelector('.cc-ffo-err');
         check(tab+'/'+k+' '+lang+': рисуется', !err && !bad(B.innerHTML), err ? err.textContent : '');
