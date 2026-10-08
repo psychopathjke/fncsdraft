@@ -3768,6 +3768,11 @@
   .ch-ro-spotcap em{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#6fe3d0;}
   .ch-ro-spotcap b{font:800 20px/1.05 Oswald,system-ui,sans-serif;text-transform:uppercase;color:#fff;letter-spacing:.02em;}
   .ch-ro-spotcap small{font-size:11.5px;font-weight:700;color:#ffd600;}
+  .ch-ro-spotchest{position:absolute;top:7px;right:7px;padding:3px 8px;border-radius:999px;background:rgba(6,10,28,.78);
+    font-size:11px;font-weight:800;color:#ffd27a;border:1px solid rgba(255,210,122,.35);pointer-events:none;}
+  .ch-ro-spotaura{display:flex;align-items:center;gap:6px;margin-top:3px;}
+  .ch-ro-spotaura em{font-size:10px;letter-spacing:.08em;color:#9fb3e6;}
+  .ch-ro-spotaura .cc-aura-row{flex:1 1 auto;max-width:150px;}
   @media (max-width:560px){ .ch-ro.has-spot{flex-direction:column;} .ch-ro-spotcard{flex:none;max-width:none;width:100%;} }
   .ch-ro-spot{display:flex;align-items:baseline;gap:6px;margin-top:4px;padding-top:6px;border-top:1px solid rgba(255,255,255,.1);font-size:12px;font-weight:800;color:#fff;cursor:pointer;}
   .ch-ro-spot em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8fa1cc;}
@@ -118098,9 +118103,14 @@ function ccRostersStripHTML(){
        под ней сила точки и мифическое место. Без метки — прежняя строка «поставить». */
     if(sp){
       const shot=careerSpotShotHTML(sp.i, key, 'ch-ro-shot', 16/7);
+      // И аура (его слово 8.10: «может ауру и ещё что-то добавить туда») — та же полоса, что в «Своей точке»; плюс
+      // сундуки на точке, где счёт настоящий (ccZoneChestsOf — fortnite.gg / вики / Kinch).
+      const chests=ccZoneChestsOf(careerSpotGrid(key), sp.i);
       if(shot) return '<div class="ch-ro-spotcard" onclick="'+go+'">'+shot+
+        (chests!=null ? '<span class="ch-ro-spotchest">'+esc(L().landingChestsN(chests))+'</span>' : '')+
         '<span class="ch-ro-spotcap"><em>'+esc(T.roSpot)+'</em><b>'+esc(L().landingZoneSuffix(sp.i+1))+'</b>'+
-        '<small>'+esc(careerSpotPointsOf(sp.i, key))+(myth ? ' · ⚡ '+esc(myth) : '')+'</small></span></div>';
+        '<small>'+esc(careerSpotPointsOf(sp.i, key))+(myth ? ' · ⚡ '+esc(myth) : '')+'</small>'+
+        '<span class="ch-ro-spotaura"><em>'+esc(T.ccStAura)+'</em>'+careerSpotAuraBarHTML(sp.aura||0)+'</span></span></div>';
     }
     return '<span class="ch-ro-spot" onclick="'+go+'"><em>'+esc(T.roSpot)+'</em>'+txt+'</span>';
   };
