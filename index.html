@@ -161588,7 +161588,8 @@ function mgrTeamIn(tm){
   cr.balance=cr.balance||0; cr.earnings=cr.earnings||0;
   const sq=tm.squad||[], c0=sq[0]||{};
   let at=null; try{ at=Object.assign({}, attrsFor(c0)); delete at._floored; }catch(e){}
-  MGR.tswap={id:tm.mgrId, c:keep, pl:CAREER.player, partners:CAREER.partners, log0:(cr.log||[]).length, earn0:cr.earnings, n:sq.length};
+  MGR.tswap={id:tm.mgrId, c:keep, pl:CAREER.player, partners:CAREER.partners, log0:(cr.log||[]).length, earn0:cr.earnings, n:sq.length, evSize:CC_EVENT_SIZE};
+  if(sq.length===1) CC_EVENT_SIZE=1;   // одиночка: вечер на одного (careerSquadSize/careerNoMate не ждут напарника)
   CAREER.player=Object.assign({}, CAREER.player, {handle:c0.handle, nick:c0.handle, cardRegion:c0.region, attrs:at,
     ovr:Math.round(ccCardOvr(c0)||50), photo:null, role:null});
   CAREER.partners=sq.slice(1).map(c=>({handle:c.handle, card:c}));
@@ -161601,7 +161602,7 @@ function mgrTeamOut(){
   if(st.log && st.log.length>120) st.log=st.log.slice(-120);
   (MGR.tcar=MGR.tcar||{})[sw.id]=st;
   Object.keys(sw.c).forEach(k=>{ if(sw.c[k]!==undefined) cr[k]=sw.c[k]; });
-  CAREER.player=sw.pl; CAREER.partners=sw.partners; MGR.tswap=null;
+  CAREER.player=sw.pl; CAREER.partners=sw.partners; CC_EVENT_SIZE=sw.evSize||0; MGR.tswap=null;
   return {rows, got};
 }
 // Турниры карьеры, куда проходит хоть одна команда клуба: {kind:'car', ck, id, day, name, mode, teams}.
@@ -161616,11 +161617,15 @@ function mgrCarEvents(from, to){
   let days=null; try{ days=careerEvents(); }catch(e){ days=new Map(); }
   /* Соло-турниры карьеры (Solo Series, FNCS Solos — 2025/2026; его слово 8.10 «не надо, чтоб пропускались») — каждый игрок
      клуба своим «составом из одного» (mgrClubTeams(1)), со своим прогрессом отборов (MGR.tcar['s:ник']). */
-  const pass=(teams, kinds, mode)=>teams.forEach(tm=>{
+  /* Размер вечера Мейджора старых лет — из его спецификации (ccMXSpec: World Cup Solo — 1, Duos — 2, FNCS Season X — 3,
+     C2S1 — 4). Тестер 8.10 (2019): «в соло играет дуо» — сольные недели World Cup играл дуо-состав, путёвка в Нью-Йорк
+     писалась не тому, и июльские финалы клуб пропустил. Теперь такой вечер играет состав своего размера. */
+  const evSize=(d, kind)=>{ if(kind!=='major') return 0; try{ const mj=careerMajorOn(d); const sp=mj && mj.yx ? ccMXSpec(mj.yx, mj.n) : null; return (sp && sp.size)||0; }catch(e){ return 0; } };
+  const pass=(teams, kinds, mode, tsize)=>teams.forEach(tm=>{
     mgrTeamIn(tm);
     try{
       [...days.keys()].filter(d=>d>=from && d<=to).sort().forEach(d=>{
-        const list=(days.get(d)||[]).filter(e=>kinds.indexOf(e.kind)>=0 && (CC_D1_ONLY.indexOf(e.kind)<0 || cr.division===1));
+        const list=(days.get(d)||[]).filter(e=>kinds.indexOf(e.kind)>=0 && (CC_D1_ONLY.indexOf(e.kind)<0 || cr.division===1) && (tsize===1 && e.kind==='major' ? evSize(d, e.kind)===1 : (!evSize(d, e.kind) || evSize(d, e.kind)===tsize)));
         if(!list.length) return;
         const rank=e=>{ const i=CC_KIND_RANK.indexOf(e.kind); return i<0 ? 99 : i; };
         const e=list.slice().sort((a,b)=>rank(a)-rank(b)).find(x=>{ try{ return careerCanPlayKindOn(d, x.kind); }catch(err){ return false; } });
@@ -161632,8 +161637,8 @@ function mgrCarEvents(from, to){
       });
     } finally { mgrTeamOut(); cr.day=day0; }
   });
-  pass(club, MGR_CAR_KINDS, ({2:'duo', 3:'trio', 4:'squad'})[size]||'duo');
-  pass(solo, ['solo'], 'solo');
+  pass(club, MGR_CAR_KINDS, ({2:'duo', 3:'trio', 4:'squad'})[size]||'duo', size);
+  pass(solo, ['solo', 'major'], 'solo', 1);   // соло-неделя Мейджора (World Cup Solo) — тоже поодиночке
   const list=[...byDay.values()].sort((a,b)=>a.day<b.day ? -1 : a.day>b.day ? 1 : 0);
   MGR_CAR_CACHE={key, list};
   return list.map(e=>Object.assign({}, e));
@@ -161832,7 +161837,12 @@ async function mgrPlayCar(ev){
   // Вопрос «за каким составом смотреть» — и перед «Симулировать» (его слово 8.10); остальные — в том же лобби, в таблице.
   const you=teams.length>1 ? await mgrPickTeam(teams) : teams[0];
   mgrScreenReset();
-  const parts=await mgrCarNight(ev, teams, you, !!MGR_SIM_MODE, false);
+  let parts=[];
+  try{ parts=await mgrCarNight(ev, teams, you, !!MGR_SIM_MODE, false); }
+  catch(e){   // тестер 8.10: после вечера — пустая страница. Ошибка вечера не должна оставлять экран без клуба.
+    console.error('mgrPlayCar', e); try{ mgrCarHooks(false); }catch(e2){} MGR_CAR_JOIN=null; try{ mgrTeamOut(); }catch(e2){}
+    MGR.skipped=(MGR.skipped||[]).concat([ev.id+'|'+ev.day]); MGR_CAR_CACHE=null; CAREER_RUN=false; removeSkipButton(); mgrSave(); mgrAfterNight(); return;
+  }
   removeSkipButton();
   const h=mgrCarHarvest(ev, parts);
   CAREER_RUN=false;
