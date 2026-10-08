@@ -39,8 +39,8 @@ try{
   check('вкладка «Клуб» — со штабом', careerClubTabHTML().indexOf('cc-staff-wrap')>=0);
   check('коуч ушёл с «Карьеры»', careerMeHTML().indexOf('ch-tile-coach')<0);
   // Год и автопродление (его слова 8.10).
-  { const mc=ccStaff2Cost('analyst', CC_ANALYSTS.find(p=>p.id==='vivid')); CAREER.career.balance=100000; const b1=CAREER.career.balance;
-    careerHireStaff2('analyst','vivid',12); const a=ccStaff2('analyst');
+  { const mc=ccStaff2Cost('analyst', CC_ANALYSTS.find(p=>p.id==='blakeps')); CAREER.career.balance=100000; const b1=CAREER.career.balance;
+    careerHireStaff2('analyst','blakeps',12); const a=ccStaff2('analyst');
     check('найм на год: цена ×12 со скидкой и срок 360 дней', CAREER.career.balance===b1-ccStaffTermCost(mc,12) && a.months===12 && a.until===ccAddDays(careerToday(),360), (b1-CAREER.career.balance)+' / '+a.until);
     careerHireStaff2('psych','val'); const p0=CAREER.psych.until, b2=CAREER.career.balance;
     ccStaffAutoRenew(ccAddDays(p0,1));
