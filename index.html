@@ -117240,7 +117240,7 @@ function ccCoachPickOpen(){
            words the shop already uses for it. A coach is a purchase like the
            desk is, so it reads like one. -->
       <div class="cc-buy-in"><b>${esc(c.name)}</b>
-        <i>${c.at?'@'+esc(c.at)+' · ':''}${CC_COACH_X[c.at] ? '👥 '+ccFollowers(CC_COACH_X[c.at])+' · ' : ''}${what}</i>
+        <i>${L().ccRoOvr} ${c.rating||ccCoachRatingOf(c)} · ${c.at?'@'+esc(c.at)+' · ':''}${CC_COACH_X[c.at] ? '👥 '+ccFollowers(CC_COACH_X[c.at])+' · ' : ''}${what}</i>
         <span>${L().ccShopTrain} +${Math.round(c.train*100)}%${
           c.chem?' · '+L().ccCoachChem(c.chem):''} · ${L().ccShopMonth}</span></div>
       ${on ? `<span class="cc-owned">${L().ccShopUntil(ccDayLabel(CAREER.coach.until))}</span>`
@@ -130084,9 +130084,9 @@ const CC_SHOP_ORDER=[
   'v1nteroFN','SweetyyFN','SandoraFN','CmLumos','UgoComm','Pyp4ingS','veltrixx10','Lair_Fn',
   // Marketing
   'PyraxMGMT','Goalkikermng','KaizenMNG','murlotron',
-  // Coaches — ПО ПОДПИСЧИКАМ В X (его слово 8.10: «коучей по фоловерам твитера сделать список»), числа в CC_COACH_X.
-  // Было его ручное от 20.08 (генералисты, потом специалисты); место по-прежнему задаёт цену и силу (ccRankPull).
-  'RazZzero0oFN','BoopNL_','stormyrite','BloodxEU','SvenSE_','Gripeyy','diaspaulin_','tallami1','Rabidfn','At0m_GG','Coach_F0x','kha0rz','PeanutBrainTS','Thomas5x_','EgeXJerG','ZykomaTV','xpl0t','ValentaynL','spidryx','CoachEsteh','Flaireeeee','CoachNassimm'
+  // Coaches — ПО РЕЙТИНГУ КОУЧА (его слова 8.10: «по фоловерам твитера» → «или по результатам» → «вот и сделай зп и
+  // рейтинг их»): сначала подтверждённые результаты, ниже — по подписчикам. Рейтинг — ccCoachRatingOf, цена от него.
+  'RazZzero0oFN','Thomas5x_','BloodxEU','SvenSE_','Gripeyy','PeanutBrainTS','tallami1','Coach_F0x','Flaireeeee','BoopNL_','stormyrite','diaspaulin_','Rabidfn','At0m_GG','kha0rz','EgeXJerG','ZykomaTV','xpl0t','ValentaynL','spidryx','CoachEsteh','CoachNassimm'
 ];
 /* Подписчики коучей в X, сняты 8.10.2026 через api.fxtwitter.com по их же адресам (at) — каждый сверен по имени и
    описанию; у Boop, Stormyrite, Gripey, Spidryx, Zykoma тёзки отброшены. */
@@ -139720,13 +139720,26 @@ const CC_COACHES=[
    off the man's own line — an endgame analyst is not a worse mechanics coach,
    he is a different one — and it is the thing that still makes the choice a
    choice rather than a price list read top to bottom. */
+/* РЕЙТИНГ КОУЧА — из результатов, а где их нет — из аудитории (его «вот и сделай зп и рейтинг их», 8.10).
+   Результаты — по его же описанию в X (сняты 8.10.2026): t — титулы как коуча (FNCS 1, Global/LAN/EWC 2),
+   p — средний рейтинг четырёх лучших, с кем он работает сейчас, по картам этой базы. Рейтинг = p + t/2 − 6
+   (у F0x игроков в описании нет — p берётся 85), от 60 до 95. Без результатов — 60 + 6·lg(подписчики/1000),
+   не выше 76: коуч без подтверждённых результатов не встаёт выше того, у кого они есть. Формула — оценка режима. */
+const CC_COACH_RES={RazZzero0oFN:{t:12, p:95.3}, Thomas5x_:{t:7, p:97.3}, SvenSE_:{t:2, p:96}, BloodxEU:{t:0, p:98.3}, Gripeyy:{t:2, p:94}, PeanutBrainTS:{t:0, p:94.5}, tallami1:{t:3, p:91}, Coach_F0x:{t:3, p:null}, Flaireeeee:{t:0, p:83.8}};
+function ccCoachRatingOf(c){
+  const r=c && CC_COACH_RES[c.at];
+  if(r) return Math.max(60, Math.min(95, Math.round((r.p!=null ? r.p : 85)+r.t*0.5-6)));
+  const f=(c && CC_COACH_X[c.at])||500;
+  return Math.max(60, Math.min(76, Math.round(60+6*Math.log10(Math.max(1000, f)/1000))));
+}
 const CC_COACH_TOP={cost:3500, train:0.35, chem:0.4};
 const CC_COACH_LOW={cost:2500, train:0.28, chem:0};
 (function ccCoachRankTerms(){
   const span=(a,b,k)=>b+(a-b)*k;
+  // Зарплата и сила — от рейтинга (60 → нижняя, 95 → верхняя), а не от места в списке.
   CC_COACHES.forEach(c=>{
-    const k=ccRankPull(CC_COACHES, c);
-    if(k==null) return;
+    c.rating=ccCoachRatingOf(c);
+    const k=Math.max(0, Math.min(1, (c.rating-60)/35));
     c.cost  = Math.round(span(CC_COACH_TOP.cost,  CC_COACH_LOW.cost,  k)/100)*100;
     c.train = Math.round(span(CC_COACH_TOP.train, CC_COACH_LOW.train, k)*100)/100;
     const chem=Math.round(span(CC_COACH_TOP.chem, CC_COACH_LOW.chem, k)*10)/10;
