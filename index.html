@@ -267,6 +267,10 @@
     #screen-manager .mfc-play{flex-direction:column;} #screen-manager .mfc-news{min-height:260px;}
   }
   #screen-manager .mgn-small-h{margin:22px 0 10px;}
+  #screen-manager .mgx-cards{grid-template-columns:repeat(3,minmax(0,1fr));}
+  @media (max-width:560px){ #screen-manager .mgx-cards{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  #screen-manager .mg-sp-free{cursor:pointer;} #screen-manager .mg-sp-free:hover{border-color:#ffdd00;}
+  #mgSheet .mg-sp-offers{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -157621,7 +157625,7 @@ function mgrSponsorsBrandsHTML(){
   for(let i=0;i<5;i++){
     const x=signed[i], b=x && MGR_SP_BRANDS.find(y=>y.id===x.id);
     if(b) cells+='<div class="mg-sp-slot on">'+logo(b)+'<b>'+esc(b.name)+'</b><small>'+mgrMoney(x.monthly)+' '+esc(T.mo)+'</small><button class="cc-staff-end" onclick="mgrSpDrop(\''+b.id+'\')">'+esc(T.drop)+'</button></div>';
-    else if(i<slots) cells+='<div class="mg-sp-slot"><span class="cc-staff-plus">＋</span><small>'+esc(T.free)+'</small></div>';
+    else if(i<slots) cells+='<div class="mg-sp-slot mg-sp-free" onclick="mgrSpPickOpen()"><span class="cc-staff-plus">＋</span><small>'+esc(T.free)+'</small></div>';
     else cells+='<div class="mg-sp-slot lock"><span class="mg-sp-lock">🔒</span><small>'+esc(T.lock(ccFollowers([5e4,2e5,5e5,1e6][i-1]||0)))+'</small></div>';
   }
   const full=signed.length>=slots;
@@ -157629,11 +157633,15 @@ function mgrSponsorsBrandsHTML(){
   const offers=left.filter(mgrSpOpen).sort((a,b)=>b.need-a.need).concat(left.filter(b=>!mgrSpOpen(b)).sort((a,b)=>a.need-b.need)).map(b=>{
     const open=mgrSpOpen(b);
     return '<div class="mg-sp-offer'+(open ? '' : ' lock')+'">'+logo(b)+'<span class="mg-sp-oin"><b>'+esc(b.name)+'</b><small>'+esc(T.tier[b.tier])+' · '+mgrMoney(mgrSpOffer(b))+' '+esc(T.mo)+'</small></span>'+
-      (open ? '<button class="ch-sign"'+(full ? ' disabled title="'+esc(T.full)+'"' : '')+' onclick="mgrSpSign(\''+b.id+'\')">'+esc(T.sign)+'</button>'
+      (open ? '<button class="ch-sign"'+(full ? ' disabled title="'+esc(T.full)+'"' : '')+' onclick="mgrSheetClose();mgrSpSign(\''+b.id+'\')">'+esc(T.sign)+'</button>'
             : '<small class="mg-sp-need">'+esc(T.need(ccFollowers(b.need||0)))+'</small>')+'</div>'; }).join('');
-  return '<div class="ch-tile"><h4>'+esc(T.slots)+' · '+signed.length+'/'+slots+'</h4><div class="mg-sp-slots">'+cells+'</div></div>'+
-    '<div class="ch-tile"><h4>'+esc(T.offers)+'</h4><div class="mg-sp-offers">'+offers+'</div></div>';
+  MGR_SP_OFFERS_HTML='<div class="ch-tile mgs-in mgs-wide"><h4>'+esc(T.offers)+'</h4><button class="mgs-x" onclick="mgrSheetClose()">✕</button><div class="mg-sp-offers">'+offers+'</div></div>';
+  /* Бренды — только по клику на свободный слот (его слово 8.10: «и бренды тоже можно убрать и показывать, только когда
+     кликаешь на квадратик»). */
+  return '<div class="ch-tile"><h4>'+esc(T.slots)+' · '+signed.length+'/'+slots+'</h4><div class="mg-sp-slots">'+cells+'</div></div>';
 }
+let MGR_SP_OFFERS_HTML='';
+function mgrSpPickOpen(){ mgrSponsorsBrandsHTML(); const el=document.getElementById('mgSheet'); if(!el) return; el.innerHTML=MGR_SP_OFFERS_HTML; el.hidden=false; }
 function mgrSponsor(){
   const brands=mgrSpSigned().reduce((sum,x)=>sum+(x.monthly||0), 0);
   const legacy=(MGR.deal && MGR.deal.year===MGR.year) ? Math.round(mgrSponsorBase()*mgrDealMul()/100)*100 : 0;
@@ -158306,9 +158314,19 @@ function mgrFeedHTML(){
    ставка 500 + охват³×20000 в месяц, доход (мерч, спонсоры) ×1.6 на репутацию клуба, +1 репутации
    за каждого в месяц; звезда не идёт в клуб, где репутация ниже охват×60. Числа — оценка режима. */
 const MGR_CREATOR_MAX=3, MGR_CREATOR_REP_CAP=70;
+/* БОЛЬШЕ КРЕАТОРОВ (его слово 8.10: «и можно больше креаторов добавить список»): к составу Про-Ама региона —
+   известные Fortnite-креаторы и стримеры региона, проверенные на Twitch 8.10.2026 (логин, фолловеры, аватарка —
+   tools/fetch-creators-more.js, photos/creators/). [имя, логин, фолловеры, файл]. EU берёт и СНГ, OCE/ME — Азию. */
+const CC_CREATORS_MORE={"EU":[["Vikkstar123","vikkstar123",757779,"vikkstar123.png"],["Mongraal","mongraal",7192823,"mongraal.png"],["MrSavage","mrsavage",4661672,"mrsavage.png"],["benjyfishy","benjyfishy",4098835,"benjyfishy.png"],["Wolfiez","wolfiez",776969,"wolfiez.png"],["auronplay","auronplay",17110547,"auronplay.png"],["Willyrex","willyrex",1434952,"willyrex.png"],["VEGETTA777","vegetta777",3263193,"vegetta777.png"],["Gotaga","gotaga",4672472,"gotaga.png"],["Michou","michou",2362067,"michou.png"],["Inoxtag","inoxtag",2062855,"inoxtag.png"],["MontanaBlack88","montanablack88",5773562,"montanablack88.png"],["Trymacs","trymacs",3960579,"trymacs.png"],["Papaplatte","papaplatte",3166898,"papaplatte.png"],["rewinside","rewinside",1938822,"rewinside.png"],["POW3R","pow3r",1995708,"pow3r.png"],["Th0masHD","th0mashd",121313,"th0mashd.png"],["kinstaar","kinstaar",433429,"kinstaar.png"],["nayte","nayte",217957,"nayte.png"],["TaySon","tayson",664224,"tayson.png"],["queasy","queasy",367066,"queasy.png"],["Malibuca","malibuca",585167,"malibuca.png"],["Skite","skite",255425,"skite.png"],["Fastroki","fastroki",63316,"fastroki.png"]],"NAC":[["Ninja","ninja",19232683,"ninja.png"],["Tfue","tfue",11525810,"tfue.png"],["SypherPK","sypherpk",7229506,"sypherpk.png"],["NickEh30","nickeh30",5800736,"nickeh30.png"],["Bugha","bugha",5479774,"bugha.png"],["Clix","clix",8684095,"clix.png"],["Myth","myth",7258444,"myth.png"],["DrLupo","drlupo",4381697,"drlupo.png"],["TimTheTatman","timthetatman",7614349,"timthetatman.png"],["CouRageJD","couragejd",2365795,"couragejd.png"],["Cizzorz","cizzorz",1950977,"cizzorz.png"],["LuluLuvely","lululuvely",1344534,"lululuvely.png"],["Valkyrae","valkyrae",1674466,"valkyrae.png"],["Agent00","agent00",3532238,"agent00.png"],["dakotaz","dakotaz",4629027,"dakotaz.png"],["Symfuhny","symfuhny",4125294,"symfuhny.png"],["hamlinz","hamlinz",2493137,"hamlinz.png"],["Zayt","zayt",282889,"zayt.png"],["mero","mero",476719,"mero.png"],["Peterbot","peterbot",1230900,"peterbot.png"],["cooper","cooper",386498,"cooper.png"],["Reet","reet",1112557,"reet.png"],["acorn","acorn",246426,"acorn.png"],["Bizzle","bizzle",345949,"bizzle.png"],["EpikWhale","epikwhale",672950,"epikwhale.png"],["Avery","avery",153790,"avery.png"],["Ajerss","ajerss",118126,"ajerss.png"]],"BR":[["CEROL","cerol",79456,"cerol.png"],["Coringa","coringa",7255867,"coringa.png"],["NOBRU","nobru",3790511,"nobru.png"]],"CIS":[["buster","buster",5267845,"buster.png"],["bratishkinoff","bratishkinoff",3794334,"bratishkinoff.png"],["7ssk7","7ssk7",222081,"7ssk7.png"]],"ASIA":[["muselk","muselk",396900,"muselk.png"],["Fresh","fresh",4364509,"fresh.png"],["Lachlan","lachlan",882860,"lachlan.png"],["Crayator","crayator",807720,"crayator.png"],["Jacque","jacque",109684,"jacque.png"]]};
 function mgrCreatorList(){
-  const names=(CC_PROAM_CREATORS_BY_REGION[MGR.region]||[]).filter(n=>CC_PROAM_TWITCH[n]);
-  return names.map(n=>({name:n, followers:CC_PROAM_TWITCH[n][1]||0, login:CC_PROAM_TWITCH[n][0], ava:ccProAmAvatar(n)}));
+  const reg=MGR.region, key={NAW:'NAC', OCE:'ASIA', ME:'ASIA'}[reg]||reg;
+  const out=[], seen=new Set();
+  (CC_PROAM_CREATORS_BY_REGION[reg]||[]).filter(n=>CC_PROAM_TWITCH[n]).forEach(n=>{ seen.add(String(CC_PROAM_TWITCH[n][0]).toLowerCase()); out.push({name:n, followers:CC_PROAM_TWITCH[n][1]||0, login:CC_PROAM_TWITCH[n][0], ava:ccProAmAvatar(n)}); });
+  ((CC_CREATORS_MORE[key]||[]).concat(key==='EU' ? (CC_CREATORS_MORE.CIS||[]) : [])).forEach(([n, login, f, file])=>{
+    if(seen.has(String(login).toLowerCase())) return; seen.add(String(login).toLowerCase());
+    out.push({name:n, followers:f||0, login, ava:'photos/creators/'+file});
+  });
+  return out;
 }
 function mgrCreatorPull(c){ return Math.max(0, Math.min(1, Math.log10(Math.max(1000, c.followers||0)/1000)/Math.log10(20000))); }
 function mgrCreatorFee(c){ return Math.round((500+Math.pow(mgrCreatorPull(c), 3)*20000)/100)*100; }
@@ -158328,15 +158346,33 @@ function mgrCreatorsMonth(monthKey){
   const r0=MGR.club.rep!=null ? MGR.club.rep : 50;
   if(r0<MGR_CREATOR_REP_CAP) MGR.club.rep=Math.min(MGR_CREATOR_REP_CAP, r0+MGR.creators.length);   // охват поднимает репутацию только до 70
 }
+/* Креаторы — квадратиками, как штаб (его слово 8.10: «и квадратики, как стафф, чтобы не было списка этого»): три слота;
+   занятый — аватар, имя, фолловеры, чистый доход в месяц и «Убрать»; пустой «＋» открывает окно со всеми креаторами. */
 function mgrCreatorsHTML(){
+  const T9=mgrT9(), mine=MGR.creators||[], list=mgrCreatorList();
+  const cards=[];
+  for(let i=0;i<MGR_CREATOR_MAX;i++){
+    const n=mine[i], c=n ? list.find(x=>x.name===n) : null;
+    if(c){ const nq=esc(c.name.replace(/'/g, '')), net=mgrCreatorIncome(c)-mgrCreatorFee(c);
+      cards.push('<div class="cc-staff-card mgx-card"><span class="cc-staff-av">'+(c.ava ? '<img src="'+esc(c.ava)+'" alt="" onerror="this.remove()">' : '')+'<i>'+esc(c.name.slice(0,2).toUpperCase())+'</i></span>'+
+        '<em class="cc-staff-role">'+esc(T9.creators)+'</em><b class="cc-staff-name">'+esc(c.name)+'</b>'+
+        '<span class="cc-staff-fx">👥 '+ccFollowers(c.followers)+'</span><small class="cc-staff-until">'+(net>=0 ? '+' : '')+mgrMoney(net)+' '+esc(mgrT().month)+'</small>'+
+        '<button class="cc-staff-end" onclick="mgrCreatorDrop(\''+nq+'\');mgrRenderHub()">'+esc(T9.crDrop)+'</button></div>'); }
+    else cards.push('<div class="cc-staff-card cc-staff-empty mgx-card" onclick="mgrCreatorPickOpen()"><span class="cc-staff-plus">＋</span><em class="cc-staff-role">'+esc(T9.creators)+'</em><span class="cc-staff-hire">'+esc(T9.crSign)+'</span><small class="cc-staff-until">'+list.length+'</small></div>');
+  }
+  return '<section class="cc-staff-wrap"><h3 class="cc-sect-h">'+esc(T9.creators)+' · '+mine.length+'/'+MGR_CREATOR_MAX+' · '+esc(T9.crNet)+' '+(mgrCreatorNet()>=0 ? '+' : '')+mgrMoney(mgrCreatorNet())+' '+esc(mgrT().month)+'</h3>'+
+    '<div class="cc-staff mgx-cards">'+cards.join('')+'</div></section>';
+}
+function mgrCreatorPickOpen(){
   const T9=mgrT9(), mine=MGR.creators||[];
-  return '<div class="ch-tile mgx"><h4>'+esc(T9.creators)+' <small>'+mine.length+'/'+MGR_CREATOR_MAX+' · '+esc(T9.crNet)+' '+(mgrCreatorNet()>=0 ? '+' : '')+mgrMoney(mgrCreatorNet())+' '+esc(mgrT().month)+'</small></h4>'+
-    '<div class="mgf-people">'+mgrCreatorList().sort((a,b)=>b.followers-a.followers).map(c=>{ const on=mine.indexOf(c.name)>=0, nq=esc(c.name.replace(/'/g, ''));
-      return '<div class="mgf-person'+(on ? ' on' : '')+'">'+(c.ava ? '<img src="'+esc(c.ava)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '<img alt="">')+
-        '<span><b>'+esc(c.name)+'</b><small>twitch.tv/'+esc(c.login)+' · '+ccNum(c.followers)+'</small>'+
-        '<small>'+esc(T9.crFee)+' '+mgrMoney(mgrCreatorFee(c))+' · '+esc(T9.crInc)+' '+mgrMoney(mgrCreatorIncome(c))+'</small></span>'+
-        (on ? '<button class="hg-go mgs-bad" onclick="mgrCreatorDrop(\''+nq+'\');mgrRenderHub()">'+esc(T9.crDrop)+'</button>'
-            : '<button class="hg-go" onclick="mgrCreatorSign(\''+nq+'\');mgrRenderHub()">'+esc(T9.crSign)+'</button>')+'</div>'; }).join('')+'</div></div>';
+  const rows=mgrCreatorList().filter(c=>mine.indexOf(c.name)<0).sort((a,b)=>b.followers-a.followers).map(c=>{ const nq=esc(c.name.replace(/'/g, ''));
+    return '<div class="mgf-person">'+(c.ava ? '<img src="'+esc(c.ava)+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '<img alt="">')+
+      '<span><b>'+esc(c.name)+'</b><small>twitch.tv/'+esc(c.login)+' · '+ccFollowers(c.followers)+'</small>'+
+      '<small>'+esc(T9.crFee)+' '+mgrMoney(mgrCreatorFee(c))+' · '+esc(T9.crInc)+' '+mgrMoney(mgrCreatorIncome(c))+'</small></span>'+
+      '<button class="hg-go" onclick="if(mgrCreatorSign(\''+nq+'\')){ mgrSheetClose(); } mgrRenderHub()">'+esc(T9.crSign)+'</button></div>'; }).join('');
+  const el=document.getElementById('mgSheet');
+  el.innerHTML='<div class="ch-tile mgs-in mgs-wide"><h4>'+esc(T9.creators)+'</h4><button class="mgs-x" onclick="mgrSheetClose()">✕</button><div class="mgf-people">'+rows+'</div></div>';
+  el.hidden=false;
 }
 function mgrScoutingHTML(){
   const T9=mgrT9(), T2=mgrT2(), T4=mgrT4(), sc=MGR.scouts||[];

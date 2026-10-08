@@ -63,7 +63,8 @@ const SECTIONS=[
       check('спонсоры: третий в 2 слота не влезает', (MGR.club.fans=150000, mgrSpSign('razer'))===false);
       check('спонсоры: доход — сумма контрактов', mgrSponsor()===mgrSpSigned().reduce((x,y)=>x+y.monthly,0) && mgrSponsor()>0, String(mgrSponsor()));
       MGR.club.fans=2e6; check('спонсоры: 2M — 5 слотов, топ открыт', mgrSpSlots()===5 && mgrSpSign('redbull')===true);
-      mgrRenderHub('sponsors'); const h=document.getElementById('mgBody').innerHTML; check('спонсоры: логотипы на вкладке', h.indexOf('sp_redbull.png')>=0 && (h.match(/mg-sp-offer/g)||[]).length>=10);
+      mgrRenderHub('sponsors'); const h=document.getElementById('mgBody').innerHTML; check('спонсоры: логотип в слоте, списка брендов на вкладке нет', h.indexOf('sp_redbull.png')>=0 && !/mg-sp-offer/.test(h));
+      mgrSpPickOpen(); check('спонсоры: бренды в окне по клику на слот', document.querySelectorAll('#mgSheet .mg-sp-offer').length>=10); mgrSheetClose();
       MGR.sponsors=[]; }
     MGR.club.fans=1000; const lo=mgrSponsorBase(); MGR.club.fans=3000000; const hi=mgrSponsorBase();
     check('подписчики: большая аудитория — спонсор щедрее', hi>lo && hi<=lo*1.25/0.8+100, lo+' vs '+hi);
@@ -593,7 +594,8 @@ const SECTIONS=[
   {name:'криэйторы', code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     const list=mgrCreatorList();
-    check('криэйторы: настоящие из Про-Ама региона', list.length>=10 && list.every(c=>CC_PROAM_TWITCH[c.name]), String(list.length));
+    // 8.10: к Про-Аму региона — креаторы, проверенные на Twitch (CC_CREATORS_MORE); у всех логин и фолловеры.
+    check('криэйторы: Про-Ам региона и ещё каналы Twitch', list.length>=30 && list.every(c=>c.login && c.followers>0) && list.some(c=>CC_PROAM_TWITCH[c.name]), String(list.length));
     const small=list.slice().sort((a,b)=>a.followers-b.followers)[0], big=list.slice().sort((a,b)=>b.followers-a.followers)[0];
     check('криэйторы: крупный дороже', mgrCreatorFee(big)>mgrCreatorFee(small));
     MGR.club.rep=10;
@@ -606,7 +608,9 @@ const SECTIONS=[
     check('криэйторы: месяц — репутация +1', MGR.club.rep===rep0+1);
     MGR_SUB.club='creators'; mgrRenderHub('club');
     const B=document.getElementById('mgBody');
-    check('криэйторы '+lang+': подвкладка', !B.querySelector('.cc-ffo-err') && !bad(B.innerHTML) && B.querySelectorAll('.mgf-person').length>=10 && !!B.querySelector('.mgf-person.on'));
+    // квадратики, как штаб (8.10); весь список — в окне по «＋»
+    check('криэйторы '+lang+': подвкладка квадратиками', !B.querySelector('.cc-ffo-err') && !bad(B.innerHTML) && B.querySelectorAll('.mgx-card').length===MGR_CREATOR_MAX && B.querySelectorAll('.mgx-card.cc-staff-empty').length===MGR_CREATOR_MAX-1);
+    mgrCreatorPickOpen(); check('криэйторы: окно выбора', document.querySelectorAll('#mgSheet .mgf-person').length>=20); mgrSheetClose();
     mgrCreatorDrop(small.name); check('криэйторы: расторгнут', !(MGR.creators||[]).length);
     MGR_SUB.club='train';
   `},
