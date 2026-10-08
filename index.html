@@ -56,6 +56,10 @@
   .mg-sp-top{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px;}
   @media (max-width:700px){ .mg-sp-top{grid-template-columns:1fr;} }
   .mg-sp-tab .mgn-row b.up{color:#6fe3b0;} .mg-sp-tab .mgn-row b.dn{color:#ff9f9f;}
+  .mg-headstaff{grid-template-columns:repeat(5,minmax(0,1fr));}
+  @media (max-width:1100px){ .mg-headstaff{grid-template-columns:repeat(3,minmax(0,1fr));} }
+  @media (max-width:560px){ .mg-headstaff{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  .mgf-rt{position:static !important;display:inline-flex !important;margin-left:6px;vertical-align:1px;height:20px;min-width:26px;font-size:12px;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -112688,7 +112692,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6a70d7f2';
+const CC_BUILD='0018224f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -158805,6 +158809,44 @@ function mgrPersonsHTML(k){
       (on ? '<button class="hg-go mgs-bad" onclick="mgrHirePerson(\''+k+'\', null);mgrRenderHub()">'+esc(T4.fire)+'</button>'
           : '<button class="hg-go" onclick="mgrHirePerson(\''+k+'\', \''+esc(String(id).replace(/'/g, ''))+'\');mgrRenderHub()">'+esc(T9.hire)+'</button>')+'</div>'; }).join('')+'</div>';
 }
+/* ШТАБ КЛУБА КАРТОЧКАМИ, КАК В КАРЬЕРЕ (его слово 8.10: «пусть в менеджере будет как штаб в карьере игрока — выбираешь,
+   а не списки эти»). Было: пять длинных списков людей с кнопкой у каждого. Теперь — пять карточек (коуч, менеджер,
+   аналитик, психолог, SMM): аватар, роль, рейтинг в цвете (золото 85+, серебро 75+, бронза), что даёт и ставка;
+   пустая — «＋ Нанять». Нажатие — окно выбора с людьми по рейтингу. Рейтинг — тот же, что в карьере. */
+function mgrPersonRating(k, p){
+  if(!p) return 60;
+  if(k==='coach') return p.rating || (typeof ccCoachRatingOf==='function' ? ccCoachRatingOf(p) : 70);
+  if(k==='analyst' || k==='psych') return ccStaff2Rating(k, p);
+  return typeof ccStaffRating==='function' ? ccStaffRating(p) : 70;
+}
+function mgrHeadStaffHTML(staff){
+  const T4=mgrT4(), who=MGR.staffWho||{};
+  const card=([k,l,nn])=>{
+    const id=who[k], p=id ? (MGR_PERSON_LIST[k]()||[]).find(x=>mgrPid(x)===id) : null;
+    if(p){ const r=mgrPersonRating(k, p);
+      return '<div class="cc-staff-card" onclick="mgrHeadStaffOpen(\''+k+'\')">'+ccStaffBadge(r)+
+        '<span class="cc-staff-av">'+(p.photo ? '<img src="photos/'+esc(p.photo)+'" alt="" onerror="this.remove()">' : '')+'<i>'+esc(String(p.name).slice(0,2).toUpperCase())+'</i></span>'+
+        '<em class="cc-staff-role">'+esc(l)+'</em><b class="cc-staff-name">'+esc(p.name)+'</b>'+
+        '<span class="cc-staff-fx">'+esc(nn)+'</span><small class="cc-staff-until">'+mgrMoney(mgrPersonCost(k, p))+' '+esc(mgrT().month)+'</small>'+
+        '<button class="cc-staff-end" onclick="event.stopPropagation();mgrHirePerson(\''+k+'\', null);mgrRenderHub()">'+esc(T4.fire)+'</button></div>'; }
+    return '<div class="cc-staff-card cc-staff-empty" onclick="mgrHeadStaffOpen(\''+k+'\')"><span class="cc-staff-plus">＋</span>'+
+      '<em class="cc-staff-role">'+esc(l)+'</em><span class="cc-staff-hire">'+esc(L().ccStaffHire)+'</span><small class="cc-staff-until">'+esc(nn)+'</small></div>';
+  };
+  return '<section class="cc-staff-wrap"><h3 class="cc-sect-h">'+esc(T4.staff)+'</h3><div class="cc-staff mg-headstaff">'+staff.map(card).join('')+'</div></section>';
+}
+function mgrHeadStaffOpen(k){
+  const T4=mgrT4(), T9=mgrT9(), cur=(MGR.staffWho||{})[k];
+  const list=(MGR_PERSON_LIST[k]()||[]).slice().sort((a,b)=>mgrPersonRating(k, b)-mgrPersonRating(k, a));
+  const cards=list.map(p=>{ const id=mgrPid(p), on=id===cur, r=mgrPersonRating(k, p);
+    return '<div class="mgf-person'+(on ? ' on' : '')+'"><img src="photos/'+esc(p.photo||'')+'" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">'+
+      '<span><b>'+esc(p.name)+' '+ccStaffBadge(r).replace('cc-staff-rt', 'cc-staff-rt mgf-rt')+'</b><small>'+esc([p.at ? '@'+p.at : '', p.reg||'', p.why||'', p.x ? ccFollowers(p.x)+' X' : ''].filter(Boolean).join(' · '))+'</small>'+
+      '<small>'+esc(T4.tier(mgrPersonTier(k, p)))+' · '+mgrMoney(mgrPersonCost(k, p))+' '+esc(mgrT().month)+'</small></span>'+
+      (on ? '<button class="hg-go mgs-bad" onclick="mgrHirePerson(\''+k+'\', null);mgrSheetClose();mgrRenderHub()">'+esc(T4.fire)+'</button>'
+          : '<button class="hg-go" onclick="mgrHirePerson(\''+k+'\', \''+esc(String(id).replace(/'/g, ''))+'\');mgrSheetClose();mgrRenderHub()">'+esc(T9.hire)+'</button>')+'</div>'; }).join('');
+  const el=document.getElementById('mgSheet');
+  el.innerHTML='<div class="ch-tile mgs-in mgs-wide"><h4>'+esc(T4.staff)+'</h4><button class="mgs-x" onclick="mgrSheetClose()">✕</button><div class="mgf-people">'+cards+'</div></div>';
+  el.hidden=false;
+}
 // Потолок рейтинга, кого клуб может позвать: уровень клуба +4 (у чужого клуба) / +6 (свободный), репутация, менеджер.
 function mgrSignCapBase(owned){ return (MGR.club.avg||70)+(owned ? 4 : 6)+((MGR.club.rep||0)>70 ? 2 : 0); }
 function mgrSignCap(owned){ return mgrSignCapBase(owned)+mgrStaff('agent'); }
@@ -158814,7 +158856,7 @@ function mgrTrainHTML(){
   const staff=[['coach',T4.sCoach,T4.sCoachN],['agent',mgrT9().sAgent,mgrT9().sAgentN],['analyst',T4.sAnalyst,T4.sAnalystN],['psych',T4.sPsych,T4.sPsychN],['smm',T4.sSmm,T4.sSmmN]];
   return '<h3 class="mg-sub">'+T4.trainH+'</h3><div class="mg-train">'+opts.map(([k,l,nn])=>'<button class="mg-trb'+(t===k?' on':'')+'" onclick="MGR.train=\''+k+'\';mgrSave();mgrOpenHub()"><b>'+l+'</b><small>'+nn+'</small></button>').join('')+'</div>'+
     '<div class="mg-fat"><em>'+T4.fatigue+' '+f+'%</em><i style="width:'+f+'%"></i></div>'+
-    '<h3 class="mg-sub">'+T4.staff+'</h3><div class="mg-clubs">'+staff.map(([k,l,nn])=>{ const lv=mgrStaff(k);
+    mgrHeadStaffHTML(staff)+'<div hidden>'+staff.map(([k,l,nn])=>{ const lv=mgrStaff(k);
       if(MGR_PERSON_LIST[k]) return '<div class="mg-staff mgf-staff"><b>'+l+'</b><small>'+nn+'</small>'+mgrPersonsHTML(k)+'</div>';
       return '<div class="mg-staff"><b>'+l+(lv ? ' · '+T4.tier(lv) : '')+'</b><small>'+nn+(lv ? ' · '+mgrMoney(MGR_STAFF_COST[lv])+' '+mgrT().month : '')+'</small><div class="mg-seg">'+
         [1,2,3].map(t=>'<button class="'+(lv===t?'on':'')+'" onclick="mgrHire(\''+k+'\','+t+')">'+T4.tier(t)+' · '+mgrMoney(MGR_STAFF_COST[t])+'</button>').join('')+
