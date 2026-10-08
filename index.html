@@ -157104,8 +157104,11 @@ function mgrClubsFor(year, region){
   const all=list.sort((a,b)=>b.avg-a.avg || b.n-a.n);
   const big=all.filter(c=>c.n>=2).slice(0, 40);
   big.forEach((c,i)=>Object.assign(c, {expect:mgrExpect(i, big.length)}));
-  const small=all.filter(c=>big.indexOf(c)<0).map(c=>Object.assign(c, {expect:'survive', small:true}));
-  return big.concat(small);
+  /* Клубы без состава в Fortnite (CC_ORG_NEW: Liquid, Spirit, NaVi…, его слово 8.10: «smaller organisations — Team Spirit,
+     Team Liquid, NaVi не подходят под это определение») — свой раздел, по уровню; совет у крупных ждёт финала. */
+  const req=all.filter(c=>c.requested && big.indexOf(c)<0).map(c=>Object.assign(c, {expect:c.avg>=90 ? 'final' : 'survive'}));
+  const small=all.filter(c=>big.indexOf(c)<0 && !c.requested).map(c=>Object.assign(c, {expect:'survive', small:true}));
+  return big.concat(req, small);
 }
 /* ПОДПИСЧИКИ КЛУБОВ (его слово 8.10: «добавь фоловеров оргам»). Основной аккаунт клуба в X: число и месяц снимка.
    Сняты 8.10.2026 через api.fxtwitter.com (профиль X без входа) и проверены по имени и описанию аккаунта; NRG и
@@ -157189,7 +157192,8 @@ function mgrOpenNew(year){
     '<div class="mgn-exp">'+esc(T9.expect[c.expect])+'</div></div>';
   const real='<div class="ch-subtabs mgn-sort">'+sub(MGR_NEW_SORT==='stars', "MGR_NEW_SORT='stars';mgrOpenNew()", T9.byStars)+
       sub(MGR_NEW_SORT==='budget', "MGR_NEW_SORT='budget';mgrOpenNew()", T9.byBudget)+'</div>'+
-    '<div class="mgn-grid mgn-grid2">'+(clubs.filter(c=>!c.small).map(c=>tileNew(c, clubs.indexOf(c))).join('') || '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div>'+
+    '<div class="mgn-grid mgn-grid2">'+(clubs.filter(c=>!c.small && !c.requested).map(c=>tileNew(c, clubs.indexOf(c))).join('') || '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div>'+
+    (clubs.some(c=>c.requested) ? '<h3 class="cc-sect-h mgn-small-h">'+esc((typeof LANG!=='undefined' && LANG==='ru') ? 'Без состава в Fortnite — игроков подписываешь сам' : 'No Fortnite roster — you sign the players')+' · '+clubs.filter(c=>c.requested).length+'</h3><div class="mgn-grid mgn-grid2">'+clubs.filter(c=>c.requested).map(c=>tileNew(c, clubs.indexOf(c))).join('')+'</div>' : '')+
     (clubs.some(c=>c.small) ? '<h3 class="cc-sect-h mgn-small-h">'+esc((typeof LANG!=='undefined' && LANG==='ru') ? 'Небольшие организации' : 'Smaller organisations')+' · '+clubs.filter(c=>c.small).length+'</h3><div class="mgn-grid mgn-grid2 mgn-small">'+clubs.filter(c=>c.small).map(c=>tileNew(c, clubs.indexOf(c))).join('')+'</div>' : '');
   const own=typeof mgrOwnFormHTML==='function' ? mgrOwnFormHTML() : '';
   document.getElementById('mgBody').innerHTML='<div class="mgn-headtile"><h4>'+esc(T.title)+' · '+esc(T.newH)+'</h4>'+
