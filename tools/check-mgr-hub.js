@@ -37,6 +37,11 @@ const SECTIONS=[
     const sp0=mgrSponsorBase(); mgrFansNight({teams:[{place:1}]});
     check('подписчики: победа вечера +3%', mgrFans()===Math.round(f0*1.03), f0+' → '+mgrFans());
     mgrFansNight({teams:[{place:40}]}); check('подписчики: 40-е место — без роста', mgrFans()===Math.round(f0*1.03));
+    // Итоги перемотки (его слово 8.10: «не понятно, что произошло за этот месяц»).
+    { const d0=CAREER.career.day; mgrFastForward(ccAddDays(d0, 30)); const box=document.querySelector('.mgq-ff');
+      check('перемотка: день сдвинулся', CAREER.career.day>d0, d0+' → '+CAREER.career.day);
+      check('перемотка: окно итогов с днями, турнирами и кассой', !!box && /→/.test(box.textContent) && box.querySelectorAll('.mgq-ff-row').length>=2, box && box.textContent.slice(0,160));
+      document.querySelectorAll('.mgq-ff').forEach(x=>x.remove()); }
     MGR.club.fans=1000; const lo=mgrSponsorBase(); MGR.club.fans=3000000; const hi=mgrSponsorBase();
     check('подписчики: большая аудитория — спонсор щедрее', hi>lo && hi<=lo*1.25/0.8+100, lo+' vs '+hi);
   `},
