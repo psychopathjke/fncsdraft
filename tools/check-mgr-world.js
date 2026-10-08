@@ -62,6 +62,11 @@ try{
   // матчевый день сперва доигрывает мир до своего дня
   const ce2=mgrEvents()[0];
   if(ce2){ await mgrWorldCatchUpLive(ce2.day); check('перед матчевым днём мир доигран', !mgrWorldPending(ce2.day).length); }
+  // сейв: большой — сразу сжатым, читается обратно без потерь
+  { const big=JSON.stringify(MGR); mgrSave(); const st=localStorage.getItem(MGR_LS_SLOT(mgrSlot()))||'';
+    out.notes.save=big.length+' → '+st.length;
+    check('сейв больше порога — в LZ', big.length<=MGR_SAVE_LZ_FROM || st.slice(0,3)===CC_SAVE_LZ, out.notes.save);
+    check('сейв читается обратно', JSON.stringify(ccSaveParse(st))===big); }
   check('без ошибок', !out.errs.length, out.errs.slice(0,3).join(' | '));
 }catch(e){ out.fails.push(String(e.stack||e)); }
 document.getElementById('__out').textContent='@@B@@'+encodeURIComponent(JSON.stringify(out))+'@@E@@'; }, 500));<\/script>`;

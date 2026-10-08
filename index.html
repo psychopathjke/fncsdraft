@@ -157040,11 +157040,16 @@ function mgrSlotCard(n){
 }
 function mgrSlotsFilled(){ let k=0; for(let n=1;n<=MGR_SLOTS;n++) if(mgrSlotCard(n)) k++; return k; }
 function mgrLoad(){ try{ MGR=ccSaveParse(localStorage.getItem(MGR_LS_SLOT(mgrSlot()))); }catch(e){ MGR=null; } return MGR; }
+const MGR_SAVE_LZ_FROM=60000;
 function mgrSave(){
   if(!MGR) return;
   const key=MGR_LS_SLOT(mgrSlot());
-  try{ localStorage.setItem(key, JSON.stringify(MGR)); }
-  catch(e){ try{ localStorage.setItem(key, CC_SAVE_LZ+LZString.compressToUTF16(JSON.stringify(MGR))); }catch(e2){} }
+  /* Сжатие сразу, а не когда кончилась квота (8.10): таблицы мира — до 60 капов по ~5,5 КБ, сейв за сезон ~350 КБ,
+     в lz-string — в 7 раз меньше (замер 120 дней: 177 КБ → 25 КБ). Шесть слотов менеджера и шесть карьер делят одни
+     5 МБ localStorage — маленький сейв так и пишется обычным JSON. */
+  const raw=JSON.stringify(MGR), lz=raw.length>MGR_SAVE_LZ_FROM && typeof LZString!=='undefined';
+  try{ localStorage.setItem(key, lz ? CC_SAVE_LZ+LZString.compressToUTF16(raw) : raw); }
+  catch(e){ try{ localStorage.setItem(key, CC_SAVE_LZ+LZString.compressToUTF16(raw)); }catch(e2){} }
 }
 function mgrSlotT(){
   const ru=(typeof LANG!=='undefined' && LANG==='ru');
