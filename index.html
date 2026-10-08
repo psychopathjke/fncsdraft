@@ -79498,6 +79498,26 @@ pushCard({handle:'Chainsaw mag', nat:'Бразилия', natSource:'x', region:'
 pushCard({handle:'Chapofn1', nat:'Дания', natSource:'x', region:'EU',
           event:'FNCS 2026 Division 2 Practice — Event 4 (Europe)', date:'14 сен 2026', placement:null, note:'',
           tier:'cardmode', cardSet:'d4', org:'Team Eldia', rarity:rarityForRating(75), rating:75});
+/* Team Eldia, весь состав — его просьба 8.10 («нужно добавить всех игроков организации»). Из ленты клуба
+   (api.fxtwitter.com/2/profile/Team_Eldia/statuses, 8.10.2026): пост «notre roster est sur le jeu» называет
+   @emilfn12 @magmafavelado @serkkovv @luk3fnn; анонсы 3–4.10 — @serkkovv (15, Испания, квалы на Ближнем Востоке:
+   «qualifier pour la manche 3 en Middle East»), @luk3fnn (16, Аргентина), @NwVicens (16, Мексика, «Div 1», «+7 000 PR»);
+   в посте 6.10 — @Infinixontop (14, Франция, «Player for @Team_eldia»). @Erenfvv ушёл 8.10 — не берём.
+   Ник — имя профиля X. Профилей Tracker под этими именами нет — рейтинги ОЦЕНКА уровня, как у Chapofn1:
+   Vicens — дивизион 1 (76), serkkovv — раунд 3 FNCS Solos ME, топ-200 (75), luk3 — прошёл раунд (74),
+   Infinix — не прошёл, 14 лет (72). Регион luk3 — BR (южноамериканский сервер) — тоже оценка. */
+pushCard({handle:'serkkovv', nat:'Испания', natSource:'x', region:'ME',
+          event:'FNCS 2026 Solos — Round 3 (Middle East)', date:'3 окт 2026', placement:null, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Team Eldia', rarity:rarityForRating(75), rating:75});
+pushCard({handle:'luk3', nat:'Аргентина', natSource:'x', region:'BR',
+          event:'FNCS 2026 Solos (Brazil)', date:'7 окт 2026', placement:null, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Team Eldia', rarity:rarityForRating(74), rating:74});
+pushCard({handle:'Vicens', nat:'Мексика', natSource:'x', region:'NAC',
+          event:'FNCS 2026 Division 1 (NA Central)', date:'7 окт 2026', placement:null, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Team Eldia', rarity:rarityForRating(76), rating:76});
+pushCard({handle:'Infinix', nat:'Франция', natSource:'x', region:'EU',
+          event:'FNCS 2026 Solos (Europe)', date:'6 окт 2026', placement:null, note:'',
+          tier:'cardmode', cardSet:'d4', org:'Team Eldia', rarity:rarityForRating(72), rating:72});
 
 /* Один человек — одно написание.
 
@@ -95609,7 +95629,8 @@ const PLAYER_PHOTO={
   "Toadslayer@OCE": "Toadslayer.png",   // Twitch
   // ==== /Portraits by strongest card ====
   // Team Eldia (30.09): аватары из X — @magmafavelado и @emilfn12.
-  "Chainsaw mag@BR":"Chainsaw_mag.jpg", "Chapofn1@EU":"Chapofn1.jpg"
+  "Chainsaw mag@BR":"Chainsaw_mag.jpg", "Chapofn1@EU":"Chapofn1.jpg",
+  "serkkovv@ME":"serkkovv.jpg", "luk3@BR":"luk3.jpg", "Vicens@NAC":"Vicens.jpg", "Infinix@EU":"Infinix.jpg"   // Team Eldia, X-аватарки 8.10
 };
 
 // Strip a leading team tag ("S8UL KAAN BABA" -> "KAAN BABA") so the monogram
@@ -129140,7 +129161,8 @@ const CC_ORG_NEW=[
   {name:'Drayko Esport',  tier:78, n:0, newcomer:true},   // герб logos/Drayko_Esport.png с аватара
   /* Team Eldia — по просьбе 30.09 (x.com/Team_Eldia, «Team amateur fortnite», открыт 26.09.2026).
      Любительский клуб: ни esportsearnings, ни Liquipedia — уровень пола списка, как у Drayko.
-     Состав из их же анонсов: Chainsaw mag (@magmafavelado, Бразилия) и Chapofn1 (@emilfn12, Дания). */
+     Состав из их же анонсов: Chainsaw mag (@magmafavelado, Бразилия) и Chapofn1 (@emilfn12, Дания); с 8.10 — ещё
+     serkkovv, luk3, Vicens, Infinix (см. pushCard Team Eldia). */
   {name:'Team Eldia',     tier:78, n:0, newcomer:true},   // герб logos/Team_Eldia.jpg с аватара
   /* Его четыре, 30 августа («на рабочем столе орги, добавил новые»): гербы
      легли в logos/. Уровни — по тому же ряду призовых esportsearnings, что и
@@ -157271,6 +157293,12 @@ function mgrClubsFor(year, region){
   CAREER=was; try{ ccWorldReset(); }catch(e){}
   const by={};
   scene.forEach(c=>{ const o=mgrOrgOf(c); if(!c || !o) return; (by[o]=by[o]||[]).push(c); });
+  /* Клубы-новички по просьбе (CC_ORG_NEW newcomer: Team Eldia, Drayko…) — весь состав из всех регионов (его слово 8.10:
+     «нужно добавить всех игроков организации» — у Eldia игроки в EU, ME, BR и NAC, а в EU-выборе было двое). */
+  try{ (typeof CC_ORG_NEW!=='undefined' ? CC_ORG_NEW : []).filter(o=>o && o.newcomer).forEach(o=>{
+    const have=new Set((by[o.name]||[]).map(c=>hKey(c)));
+    PLAYERS.filter(p=>p && p.org===o.name && !have.has(hKey(p)) && (typeof ccCardYear!=='function' || ccCardYear(p)<=year)).forEach(p=>{ (by[o.name]=by[o.name]||[]).push(Object.assign({}, p)); have.add(hKey(p)); });
+  }); }catch(e){}
   const list=Object.keys(by).map(name=>{
     const ps=by[name].slice().sort((a,b)=>(ccCardOvr(b)||0)-(ccCardOvr(a)||0));
     const top=ps.slice(0, 6).map(c=>ccCardOvr(c)||0);
