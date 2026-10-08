@@ -161642,13 +161642,36 @@ function mgrCarJoinField(field){
     let i=field.findIndex(t=>t && !t.isYou && !t.isClub && (t.squad||[]).some(c=>mem.has(hKey((c && c.handle) || c))));
     if(i<0){ let bd=1e9; field.forEach((t,j)=>{ if(!t || t.isYou || t.isClub) return; const d=Math.abs((t.pow||0)-(x.pow||0)); if(d<bd){ bd=d; i=j; } }); }
     if(i<0) return;
-    ['stagePts','stageElims','wins','gamesLog','dead'].forEach(p=>{ delete x[p]; });
-    x.isClub=true; field[i]=x; J.injected[x.mgrId]=true; J.obj[x.mgrId]=x;
+    // В поле — копия: смена камеры (mgrCarMaybeSwap) переписывает объекты поля, а сам состав клуба нужен целым для раскладки.
+    const y=Object.assign({}, x); ['stagePts','stageElims','wins','gamesLog','dead'].forEach(p=>{ delete y[p]; });
+    y.isClub=true; field[i]=y; J.injected[x.mgrId]=true; J.obj[x.mgrId]=y;
   });
+}
+/* КАМЕРА — НА ПРОШЕДШИЙ СОСТАВ (его слово 8.10: «ты следишь за командой, она не проходит в финал, а другая из твоего клуба
+   прошла — её второй этап не смотрится»). Раннер карьеры играет следующую стадию вечера, только если прошёл тот, за кем он
+   следит (you). Поэтому после стадии, если свой состав ниже 30% поля, а другой состав клуба выше него, они меняются местами:
+   объект you получает состав и очки прошедшего, раннер идёт дальше уже с ним. Строки, призы и прогресс отборов потом
+   раскладываются обратно по составам (mgrCarNight, J.swap). Один раз за вечер. */
+function mgrCarMaybeSwap(field){
+  const J=MGR_CAR_JOIN; if(!J || J.swap || !Array.isArray(field)) return;
+  const a=field.find(t=>t && t.isYou); if(!a) return;
+  const sorted=field.slice().sort(mgrRankCmp), lp=sorted.indexOf(a)+1;
+  if(lp<=Math.ceil(field.length*0.3)) return;
+  let best=null, bp=lp;
+  Object.keys(J.obj).forEach(id=>{ const t=J.obj[id], p=sorted.indexOf(t)+1; if(p>0 && p<bp){ bp=p; best=id; } });
+  if(!best) return;
+  const b=J.obj[best], ta=Object.assign({}, a), tb=Object.assign({}, b);
+  Object.keys(a).forEach(k=>{ delete a[k]; }); Object.keys(b).forEach(k=>{ delete b[k]; });
+  Object.assign(a, tb); a.isYou=true; a.isClub=false; delete a.mgrId;
+  Object.assign(b, ta); b.isYou=false; b.isClub=true; b.mgrId=J.leadId;
+  delete J.obj[best]; J.obj[J.leadId]=b;
+  const r1=J.rec[best]; J.rec[J.leadId]=J.rec._you; if(r1) J.rec._you=r1; delete J.rec[best];
+  J.swap={from:J.leadId, to:best};
 }
 function mgrCarJoinRecord(field, opts){
   const J=MGR_CAR_JOIN; if(!J || !Array.isArray(field)) return;
   const sorted=field.slice().sort(mgrRankCmp);
+  if(J.swap && field.indexOf(J.obj[J.swap.from])>=0) J.fromAlive=true;   // свой состав тоже прошёл — его прогресс не откатывать
   { const y=field.find(t=>t && t.isYou); if(y){ const i=sorted.indexOf(y); J.rec._you={place:i+1, of:field.length, pts:Math.round(y.stagePts||0), elims:y.stageElims||0, wins:y.wins||0}; } }
   Object.keys(J.obj).forEach(id=>{ const t=J.obj[id], i=sorted.indexOf(t); if(i<0) return;
     J.rec[id]=Object.assign(J.rec[id]||{}, {place:i+1, of:field.length, pts:Math.round(t.stagePts||0), elims:t.stageElims||0, wins:t.wins||0, stage:(opts && opts.stageName)||''}); });
@@ -161660,7 +161683,7 @@ function mgrCarHooks(on){
       // Составы клуба — в ОДНОЙ сотне большого поля (его слово 8.10: «все должны играть в одном лобби»; исключение — разные
       // хиты или не прошедшие: их просто нет в этом поле). opts.together — тот же механизм, что держит вместе людей гонки.
       try{ const o=arguments[8]; const tg=(teams||[]).filter(t=>t && (t.isYou || t.isClub)); if(o && tg.length>1) o.together=tg; }catch(e){}
-      const res=await sim.apply(this, arguments); try{ mgrCarJoinRecord(teams, arguments[8]); }catch(e){} return res; };
+      const res=await sim.apply(this, arguments); try{ mgrCarJoinRecord(teams, arguments[8]); mgrCarMaybeSwap(teams); }catch(e){ console.error('mgrCarMaybeSwap', e); } return res; };
     careerMoneyAdd=function(ranked, prize){ try{ const J=MGR_CAR_JOIN; if(J && ranked) Object.keys(J.obj).forEach(id=>{ const i=ranked.indexOf(J.obj[id]); if(i<0) return;
         J.rec[id]=Object.assign(J.rec[id]||{}, {place:i+1, of:ranked.length, prize:Math.round(prize(i+1, J.obj[id])||0), final:true}); }); }catch(e){}
       return money.apply(this, arguments); };
@@ -161669,16 +161692,34 @@ function mgrCarHooks(on){
 // Один вечер клуба: ведущий состав раннером, остальные — в его лобби. Возвращает части для mgrCarHarvest.
 async function mgrCarNight(ev, teams, you, quiet, fast){
   const extras=teams.filter(t=>t!==you);
-  MGR_CAR_JOIN={teams:extras, obj:{}, rec:{}, injected:{}, before:null, after:null};
+  MGR_CAR_JOIN={teams:extras, obj:{}, rec:{}, injected:{}, before:null, after:null, leadId:you.mgrId};
   mgrCarHooks(true);
   let lead=null;
   try{ lead=await mgrCarRun(ev, you, quiet, fast); } finally { mgrCarHooks(false); }
   const J=MGR_CAR_JOIN; MGR_CAR_JOIN=null;
   // Ведущий без строки журнала (сессия отборов) — его место из той же общей таблицы.
   if(lead && !(lead.rows||[]).length && J.rec._you){ const y=J.rec._you; lead.rows=[{season:CAREER.career.season, day:ev.day, place:y.place, of:y.of, pts:y.pts, elims:y.elims, wins:y.wins, kind:ev.ck, prize:0, shared:true}]; }
-  const parts=[{tm:you, res:lead}];
+  let parts=[{tm:you, res:lead}], rest=extras;
+  if(J.swap){
+    // Раннер дальше шёл за другим составом: его строки — прошедшему; свой — место из общей таблицы, прогресс — как до вечера.
+    const to=extras.find(t=>t.mgrId===J.swap.to);
+    if(to){
+      const stTo=(MGR.tcar=MGR.tcar||{})[to.mgrId]=(MGR.tcar[to.mgrId]||{division:(CAREER.career.division||1), log:[], tokens:[]});
+      if(J.after) MGR_CAR_COPY.forEach(k=>{ if(JSON.stringify(J.before[k])!==JSON.stringify(J.after[k])) stTo[k]=J.after[k]===undefined ? undefined : JSON.parse(JSON.stringify(J.after[k])); });
+      stTo.log=(stTo.log||[]).filter(x=>!(x.day===ev.day && x.kind===ev.ck)).concat((lead && lead.rows)||[]).slice(-120);
+      const stFrom=MGR.tcar[you.mgrId]||{};
+      if(J.before && !J.fromAlive) MGR_CAR_COPY.forEach(k=>{ if(J.before[k]===undefined) delete stFrom[k]; else stFrom[k]=JSON.parse(JSON.stringify(J.before[k])); });
+      const y=J.rec[J.swap.from]||{};
+      const own={season:CAREER.career.season, day:ev.day, place:y.place||0, of:y.of||0, pts:y.pts||0, elims:y.elims||0, wins:y.wins||0, kind:ev.ck, prize:Math.round((y.prize||0)/Math.max(1,(you.squad||[]).length)), passed:J.fromAlive ? undefined : false, shared:true};
+      stFrom.log=(stFrom.log||[]).filter(x=>!(x.day===ev.day && x.kind===ev.ck)).concat([own]).slice(-120);
+      MGR.tcar[you.mgrId]=stFrom;
+      parts=[{tm:to, res:lead}, {tm:you, res:{rows:[own], got:y.prize||0}}];
+      rest=extras.filter(t=>t!==to);
+      delete J.rec[J.swap.from];
+    }
+  }
   const lrow=lead && (lead.rows||[]).slice(-1)[0];
-  for(const tm of extras){
+  for(const tm of rest){
     const rec=J.rec[tm.mgrId];
     if(!rec){ parts.push({tm, res:await mgrCarRun(ev, tm, true, true)}); continue; }   // в общий вечер не попал — свой
     /* Один вечер — одна симуляция (его Notion 8.10: «два раза симулируется кап, надо чтоб один раз»). Ведущий строку не
