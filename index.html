@@ -100614,7 +100614,9 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
        есть, careerLandingPick поставит то же самое.
        5.10 вечером: «пусть перед каждой игрой везде» — стиль спрашивается своим вопросом здесь, перед
        каждой игрой (ccStyleAskGame); в команде и в гонке — через ccMpChoose, одинаково у всех. */
-    if(CAREER_RUN && typeof ccStyleAskGame==='function' && typeof CAREER!=='undefined' && CAREER && CAREER.career){
+    // Менеджер: «Симулировать» и просмотр чужого капа — без вопросов, и без этого тоже (8.10).
+    const mgrQuiet=(typeof MGR_SIM_MODE!=='undefined' && MGR_SIM_MODE) || (typeof MGR_WATCH!=='undefined' && MGR_WATCH);
+    if(CAREER_RUN && !mgrQuiet && typeof ccStyleAskGame==='function' && typeof CAREER!=='undefined' && CAREER && CAREER.career){
       // Команды людей без вопроса (в общем вечере их стиль приходит ответом) — сперва по проводу.
       teams.forEach(t=>{ if(t && !t.isYou && (t.isRival || t.isMate)){ t._styleGame=null; ccApplyPlayStyle(t); } });
       // Вопрос лежит на острове (CC_RUN_MAP) — остров целиком, а не последний круг прошлой игры.
@@ -157947,19 +157949,12 @@ function mgrEvArt(ev){
   try{ const list=careerEvents().get(ev.day)||[]; const e=list.find(x=>x.art && (String(x.label||'').replace(/<[^>]+>/g,'')===ev.name)) || list.find(x=>x.art); if(e) return e.art; }catch(e){}
   return 'art/fncs-'+Math.min(2026, MGR.year)+'.jpg';
 }
-// Симулировать ближайший вечер клуба: мир доигрывается до него, вечер — движком без просмотра, потом сводка.
+/* «Симулировать» — как правая кнопка в карьере (его слово 8.10: «симуляция не работает, где анимация»): вечер идёт
+   на карте с анимацией, но без вопросов — смотришь. Мгновенный итог — «Скип» и перемотка неделя/месяц. */
+let MGR_SIM_MODE=false;
 async function mgrSimNext(){
-  const nx=mgrEvents()[0]; if(!nx || MGR_FF_BUSY) return;
-  if(mgrDeadlineStop(nx.day)) return;
-  if(nx.kind!=='ewc'){ const size={duo:2, trio:3, squad:4}[nx.mode]; if(size && !mgrAutoFill(size)){ mgrShortAsk(nx, size); return; } }
-  if(nx.kind==='ewc') return mgrPlayEwc(nx);   // EWC — сериями, только просмотром
-  const snap=mgrFfSnap();
-  await mgrWorldCatchUpLive(nx.day);
-  mgrAdvanceTo(nx.day);
-  mgrFfBar(1, 1, nx.name); await mgrYield();
-  try{ mgrAutoNight(nx); }catch(e){ console.error('mgrSimNext', e); }
-  mgrFfBarOff(); mgrSave(); mgrOpenHub(); try{ mgrSackCheck(); }catch(e){}
-  try{ mgrFfSummary(snap); }catch(e){}
+  MGR_SIM_MODE=true;
+  try{ await mgrPlay(); } finally { MGR_SIM_MODE=false; }
 }
 function mgrIcoCal(){ return '<svg viewBox="0 0 48 48" width="56" height="56" fill="none" stroke="currentColor" stroke-width="3"><rect x="7" y="10" width="34" height="31" rx="3"/><path d="M7 19h34M16 6v8M32 6v8M15 27h18M15 34h12"/><circle cx="24" cy="27" r="2.5" fill="currentColor"/><circle cx="30" cy="34" r="2.5" fill="currentColor"/></svg>'; }
 function mgrIcoDev(){ return '<svg viewBox="0 0 48 48" width="56" height="56" fill="currentColor"><circle cx="19" cy="14" r="8"/><path d="M4 42c0-9 7-15 15-15 4 0 7 1 9 3-3 3-4 6-4 9 0 1 0 2 .3 3z"/><circle cx="36" cy="36" r="10"/><path d="M36 30l-5 6h3.2v5h3.6v-5H41z" fill="#0b1a3a"/></svg>'; }
@@ -160583,14 +160578,14 @@ async function mgrRunLive(field, club, games, ptsFn, kill, stageName, lobbySize)
   if(!CC_SKIP_RUN) skipAnimation=false;
   ensureSkipButton();
   try{ mgrRivalStyles(field); }catch(e){}
-  try{ await simulateGamesLive(field, games, ptsFn, kill, 'stage', 0, null, null, {lobbySize:lobbySize, stageName:stageName, mapReplay:true, choices:!MGR_WATCH, together:club}); }
+  try{ await simulateGamesLive(field, games, ptsFn, kill, 'stage', 0, null, null, {lobbySize:lobbySize, stageName:stageName, mapReplay:true, choices:!MGR_WATCH && !MGR_SIM_MODE, together:club}); }
   catch(e){ if(typeof console!=='undefined') console.error('mgr live', e); }
   return field.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0));
 }
 // «За кого играешь?» — если у клуба несколько команд этого формата.
 function mgrPickTeam(club){
   return new Promise(res=>{
-    if(club.length<2){ res(club[0]); return; }
+    if(club.length<2 || MGR_SIM_MODE){ res(club[0]); return; }
     const ru=(typeof LANG!=='undefined' && LANG==='ru');
     const box=document.createElement('div'); box.className='mg-modal mgq-pick';
     box.innerHTML='<div class="mg-modal-box"><h3>'+esc(ru ? 'За кого играешь?' : 'Who do you play as?')+'</h3><div class="mgq-teams">'+
