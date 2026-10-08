@@ -85,6 +85,8 @@
   .mg-sp-offer .ch-sign{flex:none !important;width:auto !important;min-width:0 !important;margin:0 !important;padding:7px 14px !important;font-size:12px !important;border-radius:999px !important;}
   .mg-sp-oin b,.mg-sp-oin small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .mg-sp-need{flex:none;max-width:110px;white-space:normal !important;text-align:right;line-height:1.2;}
+  .mgn-club{min-width:0;} .mgn-row{min-width:0;} .mgn-row b{text-align:right;min-width:0;overflow-wrap:anywhere;}
+  .mgn-name{flex:1 1 auto;} .mgn-sub{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;min-width:0;} .mgn-fans{font-style:normal;font-size:12px;font-weight:800;color:#7fe7ff;white-space:nowrap;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -156670,10 +156672,10 @@ function mgrOpenNew(year){
     sub(MGR_NEW_SIDE==='own', "MGR_NEW_SIDE='own';mgrOpenNew()", T9.own)+'</div>';
   const tile=(c,i)=>'<div class="ch-tile mgn-club" data-i="'+i+'" onclick="mgrTake('+i+')">'+
     '<div class="mgn-head"><span class="mg-logo">'+mgrLogo(c.name, false)+'</span>'+
-      '<span class="mgn-name"><b>'+esc(c.name)+'</b>'+mgrStarsHTML(mgrClubStars(c.avg))+'</span><b class="mgn-ovr">'+c.avg+'</b></div>'+
+      '<span class="mgn-name"><b>'+esc(c.name)+'</b><span class="mgn-sub">'+mgrStarsHTML(mgrClubStars(c.avg))+(f=>'<em class="mgn-fans"'+(f.est ? ' title="'+esc(T9.fansEst)+'"' : '')+'>👥 '+(f.est ? '≈' : '')+ccFollowers(f.n)+'</em>')(mgrOrgFollowers(c.name, c.avg))+'</span></span><b class="mgn-ovr">'+c.avg+'</b></div>'+
     '<div class="mgn-row"><em>'+esc(T9.transfer)+'</em><b>'+mgrMoney(c.budget.transfer)+'</b></div>'+
     '<div class="mgn-row"><em>'+esc(T9.wageCap)+'</em><b>'+mgrMoney(c.budget.wageCap)+' '+esc(T.month)+'</b></div>'+
-    '<div class="mgn-row"><em>'+esc(T9.fans)+'</em><b'+(mgrOrgFollowers(c.name, c.avg).est ? ' title="'+esc(T9.fansEst)+'"' : '')+'>'+mgrFolText(mgrOrgFollowers(c.name, c.avg))+'</b></div>'+
+    '<div class="mgn-row"><em>'+esc(T9.fans)+'</em><b'+(mgrOrgFollowers(c.name, c.avg).est ? ' title="'+esc(T9.fansEst)+'"' : '')+'>'+(mgrOrgFollowers(c.name, c.avg).est ? '≈' : '')+ccFollowers(mgrOrgFollowers(c.name, c.avg).n)+'</b></div>'+
     '<div class="mgn-row"><em>'+esc(T9.star)+'</em><b>'+esc(c.star||'—')+' · '+c.n+' '+esc(T.players)+'</b></div>'+
     '<div class="mgn-exp">'+esc(T9.expect[c.expect])+'</div></div>';
   const real='<div class="ch-subtabs mgn-sort">'+sub(MGR_NEW_SORT==='stars', "MGR_NEW_SORT='stars';mgrOpenNew()", T9.byStars)+
