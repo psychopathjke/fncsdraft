@@ -19,7 +19,10 @@ try{
   check('после подсчёта команда встала', !MGR.tswap && !CAREER.player.handle);
   // перемотка до первого Мейджора и через него — раннером карьеры
   const ev=car.find(e=>e.ck==='major');
+  const togOrig=ccLobbiesTogether; let tog=0, togN=0; ccLobbiesTogether=function(l,t){ const r=togOrig(l,t); togN++; if(t.length>1 && l.some(x=>t.every(y=>x.indexOf(y)>=0))) tog++; return r; };
   await mgrFastForwardLive(ev.day, true);
+  ccLobbiesTogether=togOrig; out.notes.together=tog+'/'+togN;
+  check('составы клуба — в одной сотне поля', car[0].teams.length<2 || tog>0, tog+'/'+togN);
   out.notes.day=CAREER.career.day;
   const row=(MGR.log||[]).find(r=>r.car==='major');
   out.notes.row=row && JSON.stringify(row.teams.map(t=>[t.name,t.place,t.of,t.passed])); out.notes.tcar=Object.keys(MGR.tcar||{}).map(k=>k+':'+((MGR.tcar[k].log||[]).slice(-1)[0]||{}).place);

@@ -360,6 +360,13 @@
   .mgq-ff .mgq-ff-guest i{font-style:normal;font-size:10px;color:#9fb3e6;margin-left:4px;}
   .mgq-ff .mgq-ff-ev .mgq-ff-row span{display:flex;align-items:center;gap:8px;}
   .mgq-ff .mgq-ff-art{width:40px;height:24px;object-fit:cover;border-radius:4px;flex:0 0 40px;background:#0b1a3a;}
+  /* Сумма бренда — своей строкой (его Notion 8.10: «не видно, сколько денег будут давать» — обрезалась многоточием) */
+  .mg-sp-offer .mg-sp-oin{min-width:0;display:flex;flex-direction:column;gap:1px;flex:1;}
+  .mg-sp-offer .mg-sp-oin b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mg-sp-offer .mg-sp-pay{font-style:normal;font-weight:900;font-size:14px;color:#ffdd00;white-space:nowrap;}
+  .mg-sp-offer .mg-sp-logo{flex:0 0 64px !important;height:36px !important;}
+  .mg-sp-offer .mg-sp-oin small{font-size:10px;opacity:.75;}
+  .mg-sp-offer .mg-sp-need{white-space:nowrap;text-align:right;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -157983,10 +157990,10 @@ function mgrSponsorsBrandsHTML(){
   const left=MGR_SP_BRANDS.filter(b=>!signed.some(x=>x.id===b.id));
   const offers=left.filter(mgrSpOpen).sort((a,b)=>b.need-a.need).concat(left.filter(b=>!mgrSpOpen(b)).sort((a,b)=>a.need-b.need)).map(b=>{
     const open=mgrSpOpen(b);
-    return '<div class="mg-sp-offer'+(open ? '' : ' lock')+'">'+logo(b)+'<span class="mg-sp-oin"><b>'+esc(b.name)+'</b><small>'+esc(T.tier[b.tier])+' · '+mgrMoney(mgrSpOffer(b))+' '+esc(T.mo)+'</small></span>'+
+    return '<div class="mg-sp-offer'+(open ? '' : ' lock')+'">'+logo(b)+'<span class="mg-sp-oin"><b>'+esc(b.name)+'</b><em class="mg-sp-pay">'+mgrMoney(mgrSpOffer(b))+'</em><small>'+esc(T.tier[b.tier])+'</small></span>'+
       (open ? '<button class="ch-sign"'+(full ? ' disabled title="'+esc(T.full)+'"' : '')+' onclick="mgrSheetClose();mgrSpSign(\''+b.id+'\')">'+esc(T.sign)+'</button>'
             : '<small class="mg-sp-need">'+esc(T.need(ccFollowers(b.need||0)))+'</small>')+'</div>'; }).join('');
-  MGR_SP_OFFERS_HTML='<div class="ch-tile mgs-in mgs-wide"><h4>'+esc(T.offers)+'</h4><button class="mgs-x" onclick="mgrSheetClose()">✕</button><div class="mg-sp-offers">'+offers+'</div></div>';
+  MGR_SP_OFFERS_HTML='<div class="ch-tile mgs-in mgs-wide"><h4>'+esc(T.offers)+' · $ '+esc(T.mo)+'</h4><button class="mgs-x" onclick="mgrSheetClose()">✕</button><div class="mg-sp-offers">'+offers+'</div></div>';
   /* Бренды — только по клику на свободный слот (его слово 8.10: «и бренды тоже можно убрать и показывать, только когда
      кликаешь на квадратик»). */
   return '<div class="ch-tile"><h4>'+esc(T.slots)+' · '+signed.length+'/'+slots+'</h4><div class="mg-sp-slots">'+cells+'</div></div>';
@@ -158544,16 +158551,26 @@ function mgrCupFieldOf(ev, n, salt){
   const cr=CAREER.career;
   return (mgrEvSize(ev)===1 ? careerSoloField(cr, [], n, true) : careerCupField(cr, [], n, salt, true))||[];
 }
-function mgrWorldPrize(ev, place, size, stage){
+/* ПРИЗ КАПА, КАК В КАРЬЕРЕ (его Notion 8.10: «не пишет призовые» — таблица «Клубы по призовым» стояла в $0). Victory Cup без
+   сетки призов (ev.pay/payT/placement) платит не за место, а за каждую победу: ev.cash на игрока или CC_VICTORY_CASH_* —
+   тем же правилом, что runCareerVictoryNight (cash=wins*rate). Сетка есть — по месту (mgrPrize). */
+function mgrCupPrize(ev, place, size, wins){
+  if(!ev) return 0;
+  if(ev.pay || ev.payT || ev.placement) return mgrPrize(ev, place, size)||0;
+  const solo=ev.mode==='solo';
+  const rate=ev.cash ? ev.cash*(solo ? 1 : size) : (solo ? CC_VICTORY_CASH_SOLO : Math.round(CC_VICTORY_CASH_DUO*size/2));
+  return Math.round((wins||0)*rate);
+}
+function mgrWorldPrize(ev, place, size, stage, wins){
   if(ev.kind==='fncs'){ if(stage) return 0; try{ return Math.round(majorPrize(place)/Math.max(1, careerSquadSize())*size); }catch(e){ return 0; } }
-  return mgrPrize(ev, place, size)||0;
+  return mgrCupPrize(ev, place, size, wins);
 }
 function mgrWorldRow(tm, place, ev, size, stage){
   const sq=tm.squad||[];
   const orgs=[...new Set(sq.map(c=>mgrOrgOf(c)).filter(Boolean))];
   return {place, n:sq.map(c=>c.handle).join(' & ')||tm.name||'—', orgs,
           pts:tm.stagePts!=null ? Math.round(tm.stagePts) : null, el:tm.stageElims!=null ? tm.stageElims : null,
-          prize:mgrWorldPrize(ev, place, size, stage), mine:!!tm.isClub || orgs.indexOf(MGR.club.name)>=0};
+          prize:mgrWorldPrize(ev, place, size, stage, tm.wins), mine:!!tm.isClub || orgs.indexOf(MGR.club.name)>=0};
 }
 function mgrWorldStore(ev, ranked, played, stage){
   const size=mgrEvSize(ev);
@@ -159042,7 +159059,7 @@ function mgrAutoNight(ev){
   club.forEach(tm=>{
     const out=ev.kind==='fncs' && fin.indexOf(tm)<0;
     const place=out ? qRanked.indexOf(tm)+1 : ranked.indexOf(tm)+1, of=out ? qRanked.length : ranked.length;
-    const prize=out ? 0 : mgrWorldPrize(ev, place, size);
+    const prize=out ? 0 : mgrWorldPrize(ev, place, size, null, tm.wins);
     clubGot+=Math.round(prize*MGR_CUT*mgrOwnShare(tm.mgrId));
     row.teams.push({id:tm.mgrId, name:mgrPlainName(tm), place, of, pts:tm.stagePts||0, elims:tm.stageElims||0, wins:tm.wins||0, prize, kills:mgrKillsOf(tm),
                     stage:ev.kind==='fncs' ? (out ? mgrT2().fncsQ : mgrT2().fncsF) : undefined, final:out ? false : undefined});
@@ -161355,7 +161372,7 @@ async function mgrWatchWorld(key){
     if(focus){
       const shell=createStageCardShell(ev.name+' — '+ranked.length+' · '+W.focus+' '+mgrPlainName(focus));
       try{ await revealStageLog(focus, shell, true); finalizeStageCard(shell, ranked.indexOf(focus)+1, ranked.length, focus.stagePts||0, null, focus.gotVR, ''); }catch(e){}
-      try{ await revealStandings(shell, ranked.slice(0, 100), focus, 0, null, null, p=>mgrWorldPrize(ev, p, size)); }catch(e){}
+      try{ await revealStandings(shell, ranked.slice(0, 100), focus, 0, null, null, p=>mgrWorldPrize(ev, p, size, null, (ranked[p-1]||{}).wins)); }catch(e){}
     }
   }catch(e){ console.error('mgrWatchWorld', e); }
   if(focus) focus.isYou=false;
@@ -161495,7 +161512,7 @@ async function mgrPlay(){
   const row={day:ev.day, kind:'night', name:ev.name, teams:[]};
   let clubGot=0;
   club.forEach(tm=>{
-    const place=ranked.indexOf(tm)+1, prize=mgrPrize(ev, place, size);
+    const place=ranked.indexOf(tm)+1, prize=mgrCupPrize(ev, place, size, tm.wins);
     clubGot+=Math.round(prize*MGR_CUT*mgrOwnShare(tm.mgrId));   // гостям из других клубов — их доля
     row.teams.push({id:tm.mgrId, name:mgrPlainName(tm), place, of:ranked.length, pts:tm.stagePts||0, elims:tm.stageElims||0, wins:tm.wins||0, prize, kills:mgrKillsOf(tm)});
   });
@@ -161504,7 +161521,7 @@ async function mgrPlay(){
   const focus=club.find(t=>t.isYou) || club[0];
   const shell=createStageCardShell(ev.name+' — '+ranked.length);
   try{ await revealStageLog(focus, shell, true); finalizeStageCard(shell, ranked.indexOf(focus)+1, ranked.length, focus.stagePts||0, null, focus.gotVR, ''); }catch(e){}
-  try{ await revealStandings(shell, ranked, focus, 0, null, null, p=>mgrPrize(ev, p, size)); }catch(e){}
+  try{ await revealStandings(shell, ranked, focus, 0, null, null, p=>mgrCupPrize(ev, p, size, (ranked[p-1]||{}).wins)); }catch(e){}
   removeSkipButton();
   mgrReportBox(ev.name, row.teams, clubGot);
   CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted; try{ useLandingSet(prevSet); }catch(e){}
@@ -161618,6 +161635,9 @@ function mgrCarHooks(on){
   if(on && !mgrCarHooks.sim){
     const sim=simulateGamesLive, money=careerMoneyAdd; mgrCarHooks.sim=sim; mgrCarHooks.money=money;
     simulateGamesLive=async function(teams){ try{ mgrCarJoinField(teams); }catch(e){ console.error('mgrCarJoinField', e); }
+      // Составы клуба — в ОДНОЙ сотне большого поля (его слово 8.10: «все должны играть в одном лобби»; исключение — разные
+      // хиты или не прошедшие: их просто нет в этом поле). opts.together — тот же механизм, что держит вместе людей гонки.
+      try{ const o=arguments[8]; const tg=(teams||[]).filter(t=>t && (t.isYou || t.isClub)); if(o && tg.length>1) o.together=tg; }catch(e){}
       const res=await sim.apply(this, arguments); try{ mgrCarJoinRecord(teams, arguments[8]); }catch(e){} return res; };
     careerMoneyAdd=function(ranked, prize){ try{ const J=MGR_CAR_JOIN; if(J && ranked) Object.keys(J.obj).forEach(id=>{ const i=ranked.indexOf(J.obj[id]); if(i<0) return;
         J.rec[id]=Object.assign(J.rec[id]||{}, {place:i+1, of:ranked.length, prize:Math.round(prize(i+1, J.obj[id])||0), final:true}); }); }catch(e){}
