@@ -326,6 +326,14 @@
   #screen-manager .mfc-play-ev .mfc-play-l{flex:1 1 auto;}
   #screen-manager .mfc-play-ev .mfc-play-r{flex-direction:row !important;flex-wrap:wrap;justify-content:flex-start !important;align-items:center !important;}
   #screen-manager .mfc-play-ev .mfc-play-btns{margin:0;}
+  .mgq-pick .mgq-teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:10px;}
+  .mgq-team{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(8,18,50,.7);color:#fff;cursor:pointer;text-align:left;}
+  .mgq-team:hover{border-color:#ffdd00;}
+  .mgq-team b{font-size:15px;} .mgq-team em{font-style:normal;font-size:12px;color:#9fb3e6;}
+  .mgq-team span{display:flex;gap:8px;}
+  .mgq-face{display:flex;flex-direction:column;align-items:center;font-style:normal;width:56px;}
+  .mgq-face img{width:48px;height:48px;border-radius:50%;object-fit:cover;object-position:center 20%;background:#1a2550;}
+  .mgq-face small{font-size:10px;color:#dfe8fb;max-width:56px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -160565,7 +160573,33 @@ function mgrBarOff(){ const b=document.getElementById('mgBar'); if(b) b.remove()
 /* ---- Матчевый день ----------------------------------------------------------- */
 // Один этап вечера: панель показа, сторож, установки и перерывы. Возвращает таблицу этапа.
 let MGR_WATCH=false;   // смотрим чужой кап: без установок, перерывов и панели менеджера
-async function mgrRunStage(field, club, games, ptsFn, kill, stageName, lobbySize){
+/* ВЕЧЕР КАК В КАРЬЕРЕ ИГРОКА (его Notion 8.10: «убрать это [полосу Смотреть/скорость] и сделай симуляцию, когда
+   нажимаешь, такую же, как в карьере игрока»): играешь за выбранную команду (isYou) — карта, выбор точки и вопросы по
+   ходу игры (choices), остальные команды клуба — в том же поле. Чужой кап «Смотреть» — тот же показ без вопросов. */
+async function mgrRunLive(field, club, games, ptsFn, kill, stageName, lobbySize){
+  try{ mgrRivalStyles(field); }catch(e){}
+  try{ await simulateGamesLive(field, games, ptsFn, kill, 'stage', 0, null, null, {lobbySize:lobbySize, stageName:stageName, mapReplay:true, choices:!MGR_WATCH, together:club}); }
+  catch(e){ if(typeof console!=='undefined') console.error('mgr live', e); }
+  return field.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0));
+}
+// «За кого играешь?» — если у клуба несколько команд этого формата.
+function mgrPickTeam(club){
+  return new Promise(res=>{
+    if(club.length<2){ res(club[0]); return; }
+    const ru=(typeof LANG!=='undefined' && LANG==='ru');
+    const box=document.createElement('div'); box.className='mg-modal mgq-pick';
+    box.innerHTML='<div class="mg-modal-box"><h3>'+esc(ru ? 'За кого играешь?' : 'Who do you play as?')+'</h3><div class="mgq-teams">'+
+      club.map((t,i)=>'<button class="mgq-team" data-i="'+i+'"'+(i===0 ? ' data-mg="go"' : '')+'><b>'+esc(mgrT2().teamWord)+' '+(i+1)+'</b>'+
+        '<span>'+(t.squad||[]).map(c=>{ let u=null; try{ u=photoURL(c); }catch(e){} return '<i class="mgq-face">'+(u ? '<img src="'+esc(u)+'" alt="" onerror="this.remove()">' : '')+'<small>'+esc(c.handle)+'</small></i>'; }).join('')+'</span>'+
+        '<em>'+Math.round(t.pow||0)+'</em></button>').join('')+'</div></div>';
+    box.querySelectorAll('.mgq-team').forEach(b=>b.onclick=()=>{ box.remove(); res(club[+b.dataset.i]); });
+    document.body.appendChild(box);
+  });
+}
+function mgrSetYou(club, you){ club.forEach(t=>{ t.isYou=(t===you); }); }
+function mgrRunStage(field, club, games, ptsFn, kill, stageName, lobbySize){ return mgrRunLive(field, club, games, ptsFn, kill, stageName, lobbySize); }
+// Прежний показ менеджера (полоса «Смотреть/скорость», перерывы) — больше не вызывается.
+async function mgrRunStageOld(field, club, games, ptsFn, kill, stageName, lobbySize){
   const lobbyN=Math.min(field.length, lobbySize||50);
   if(mgrViewNow()==='result') skipAnimation=true;
   if(!MGR_WATCH) mgrBarOn();
@@ -160764,7 +160798,7 @@ async function mgrPlay(){
   const field=[...club, ...careerCupField(cr, clubCards, Math.max(1, vSize-(club.length-1)), 'mgr|'+ev.id, true)];
   MGR_NIGHT=club;
   club.forEach(t=>{ t._mgrStyle=t._mgrStyle||'bal'; });
-  await mgrPreNight(club, ev.name, field);
+  mgrSetYou(club, await mgrPickTeam(club));
   const ranked=await mgrRunStage(field, club, CC_VICTORY_R1_GAMES, victoryR1Points, CC_VICTORY_R1_KILL, ev.name, ccVictoryLobby(ev, false));
   try{ mgrWorldStore(ev, ranked, true); }catch(e){}
   const row={day:ev.day, kind:'night', name:ev.name, teams:[]};
@@ -160776,7 +160810,7 @@ async function mgrPlay(){
   });
   try{ careerPrAdd(ranked, {div:1, kind:'victory'}); }catch(e){}
   mgrAfterResults(ev, row, clubGot);
-  const focus=club[0];
+  const focus=club.find(t=>t.isYou) || club[0];
   const shell=createStageCardShell(ev.name+' — '+ranked.length);
   try{ await revealStageLog(focus, shell, true); finalizeStageCard(shell, ranked.indexOf(focus)+1, ranked.length, focus.stagePts||0, null, focus.gotVR, ''); }catch(e){}
   try{ await revealStandings(shell, ranked, focus, 0, null, null, p=>mgrPrize(ev, p, size)); }catch(e){}
@@ -160803,7 +160837,7 @@ async function mgrPlayFncs(ev){
   const qField=[...club, ...careerCupField(cr, clubCards, Math.max(1, qSize-(club.length-1)), 'mgrq|'+ev.id, true, (typeof CC_FIELD_SHARP!=='undefined' && CC_FIELD_SHARP.final) || undefined)];
   MGR_NIGHT=club;
   club.forEach(t=>{ t._mgrStyle=t._mgrStyle||'bal'; });
-  await mgrPreNight(club, ev.name+' · '+T2.fncsQ, qField);
+  mgrSetYou(club, await mgrPickTeam(club));
   const qRanked=await mgrRunStage(qField, club, 6, victoryR1Points, CC_VICTORY_R1_KILL, ev.name+' · '+T2.fncsQ, qField.length);
   const cut=ccTeams(33);
   const finalists=qRanked.slice(0, cut);
@@ -160814,7 +160848,7 @@ async function mgrPlayFncs(ev){
   if(inFinal.length){
     inFinal.forEach(tm=>note.push(T2.qualified(mgrPlainName(tm))));
     finalists.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.stageLog=[]; t.wins=0; });
-    inFinal.forEach((t,i)=>{ t.isYou=(i===0); });
+    { const me=inFinal.find(t=>t.isYou) || inFinal[0]; inFinal.forEach(t=>{ t.isYou=(t===me); }); }
     finalists.forEach(t=>{ if(club.indexOf(t)<0) t.isYou=false; });
     MGR_NIGHT=inFinal;
     const prevDay=CC_PRIZE_DAY; CC_PRIZE_DAY=ev.day;
@@ -160826,7 +160860,7 @@ async function mgrPlayFncs(ev){
       rows.push({id:tm.mgrId, name:mgrPlainName(tm), place, of:ranked.length, pts:tm.stagePts||0, elims:tm.stageElims||0, wins:tm.wins||0, prize, stage:T2.fncsF, kills:mgrKillsOf(tm)});
     });
     try{ careerPrAdd(ranked, {div:1, kind:'major', stage:'final'}); }catch(e){}
-    const focus=inFinal[0];
+    const focus=inFinal.find(t=>t.isYou) || inFinal[0];
     const shell=createStageCardShell(ev.name+' · '+T2.fncsF+' — '+ranked.length);
     try{ await revealStageLog(focus, shell, true); finalizeStageCard(shell, ranked.indexOf(focus)+1, ranked.length, focus.stagePts||0, null, focus.gotVR, ''); }catch(e){}
     try{ await revealStandings(shell, ranked, focus, 0, null, null, p=>{ try{ return Math.round(majorPrize(p)/Math.max(1, careerSquadSize())*size); }catch(e){ return 0; } }); }catch(e){}
