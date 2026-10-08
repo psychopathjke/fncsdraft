@@ -52,7 +52,7 @@ const SECTIONS=[
       check('штаб состава: ставка за каждый контракт', mgrTeamCoachWage()>w0, w0+' → '+mgrTeamCoachWage());
       const h=t1.cards[0]; if(h) check('штаб состава: психолог держит пол морали игрока', mgrPsychOf(h)>=1);
       mgrRenderHub('squad'); const html=document.getElementById('mgBody').innerHTML;
-      check('штаб состава: в составе три слота', (html.match(/mgs-coach"/g)||[]).length>=3, String((html.match(/mgs-coach"/g)||[]).length)); }
+      check('штаб состава: в составе три слота', (html.match(/mgs-chip/g)||[]).length>=3, String((html.match(/mgs-chip/g)||[]).length)); }
     // Настоящие спонсоры, слоты по подписчикам (его слово 8.10).
     { MGR.sponsors=[]; MGR.deal=null; MGR.club.fans=60000;
       check('спонсоры: 60K подписчиков — 2 слота', mgrSpSlots()===2, String(mgrSpSlots()));
@@ -772,7 +772,7 @@ const SECTIONS=[
     check('тренер состава: химия выше', mgrTeamChem(t0)>=ch0+1, ch0+' → '+mgrTeamChem(t0));
     mgrRenderHub('squad');
     const tile=document.querySelector('#mgBody .mgs-team');
-    check('тренер состава '+lang+': в плитке состава', tile && tile.querySelector('.mgs-coach') && tile.textContent.indexOf('Bloodx')>=0);
+    check('тренер состава '+lang+': в плитке состава', tile && !!tile.querySelector('.mgs-chip[title*="Bloodx"]'));
     check('тренер состава '+lang+': без undefined', !bad(document.getElementById('mgBody').innerHTML));
     mgrTeamCoachSet(t0.id, null); check('тренер состава: снят', !mgrTeamCoach(t0.id));
   `},
@@ -893,8 +893,8 @@ const SECTIONS=[
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
     mgrRenderHub('squad');
     const tile=document.querySelector('#mgBody .mgs-team');
-    check('выбор тренера: кнопка вместо системного списка', !!tile.querySelector('.mgs-coach .mgs-coach-btn') && !tile.querySelector('.mgs-coach select'));
-    tile.querySelector('.mgs-coach-btn').click();
+    check('выбор тренера: кнопка вместо системного списка', !!tile.querySelector('.mgs-chip') && !tile.querySelector('.mgs-tstaff select'));
+    tile.querySelector('.mgs-chip').click();
     const sh=document.getElementById('mgSheet');
     check('выбор тренера '+lang+': окно с карточками коучей', !sh.hidden && sh.querySelectorAll('.mgf-person').length>=CC_COACHES.length-1 && !bad(sh.innerHTML));
     check('выбор тренера: без пустых точек у региона', !/·\s*·/.test(sh.textContent));

@@ -274,6 +274,27 @@
   #screen-manager .mgp-post .x-shot{max-width:560px;margin:8px 0;}
   #screen-manager .mgp-ver{display:inline-flex;width:15px;height:15px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:9px;align-items:center;justify-content:center;}
   #screen-manager .mgp-clubav{display:flex;align-items:center;justify-content:center;width:34px;height:34px;flex:none;}
+  /* Состав 8.10: все игроки на одном экране */
+  #screen-manager .mgs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;align-items:start;}
+  #screen-manager .mgs-grid2{margin-top:12px;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));}
+  #screen-manager .mgs-compact{margin:0;padding:12px;}
+  #screen-manager .mgs-compact h4{font-size:16px;margin:0 0 8px;}
+  #screen-manager .mgs-th{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+  #screen-manager .mgs-th>b{font-family:var(--font-display,inherit);font-size:18px;text-transform:uppercase;color:#fff;}
+  #screen-manager .mgs-th>small{font-size:11px;color:#9fb3e6;}
+  #screen-manager .mgs-th .mgs-tstaff{display:flex !important;flex-direction:row !important;gap:8px;margin:0 0 0 auto;}
+  #screen-manager .mgs-th .mgs-chip{flex:none;margin:0;min-width:0;}
+  #screen-manager .mgs-th .mgs-up{position:static;margin-left:4px;}
+  #screen-manager .mgs-chip{position:relative;width:32px;height:32px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.3);background:rgba(8,18,50,.6);padding:0;cursor:pointer;overflow:visible;display:flex;align-items:center;justify-content:center;}
+  #screen-manager .mgs-chip.on{border-style:solid;border-color:#7ef0dd;}
+  #screen-manager .mgs-chip img{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:cover;}
+  #screen-manager .mgs-chip i{font-style:normal;font-size:12px;font-weight:800;color:#ffdd00;}
+  #screen-manager .mgs-chip em{position:absolute;right:-4px;bottom:-4px;font-style:normal;font-size:9px;font-weight:900;background:#0b1a3a;color:#9fb3e6;border-radius:6px;padding:0 3px;}
+  #screen-manager .mgs-chip:hover{border-color:#ffdd00;}
+  #screen-manager .mgs-compact .mgs-row{display:flex;flex-wrap:wrap;gap:6px;}
+  #screen-manager .mgs-compact .mgs-card{zoom:.62;}
+  #screen-manager .mfc-evart{width:100%;max-width:260px;aspect-ratio:16/9;border-radius:8px;overflow:hidden;box-shadow:0 8px 24px rgba(11,26,58,.35);border:2px solid rgba(11,26,58,.35);}
+  #screen-manager .mfc-evart img{width:100%;height:100%;object-fit:cover;display:block;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -157843,8 +157864,8 @@ function mgrCentreHTML(){
         '<div class="mfc-play-l"><b class="mfc-title">'+esc(X.play)+'</b><em>'+esc(dayLong(nx.day))+'</em>'+
           '<span class="mfc-cup"><i>'+ccKindIconSVG(nx.kind==='fncs' ? 'major' : 'victory')+'</i><span><small>'+esc(T.fmt[size[nx.mode]]||nx.mode)+'</small><b>'+esc(nx.name)+'</b></span></span>'+
           '<small class="mfc-going">'+(going.length ? going.map(x=>esc(T2.teamWord)+' '+(x.i+1)+': '+x.t.cards.map(esc).join(' · ')).join('<br>') : esc(T.noTeamFmt))+'</small></div>'+
-        '<div class="mfc-play-r"><span class="mfc-vs"><span class="mfc-crest">'+mgrLogo(c.name, true, 72)+'</span><i class="mfc-slash">VS</i><span class="mfc-crest mfc-cupico">'+ccKindIconSVG(nx.kind==='fncs' ? 'major' : 'victory')+'</span></span>'+
-          '<span class="mfc-vsl"><b>'+esc(c.name)+'</b><b>'+esc(X.teams(field||'—'))+'</b></span>'+
+        // Логотип турнира вместо «VS / N команд» (его слово 8.10: «нет логотипа турнира, и vs 100 teams лишнее»).
+        '<div class="mfc-play-r"><span class="mfc-evart"><img src="'+esc(mgrEvArt(nx))+'" alt="" loading="lazy"></span>'+
           '<span class="mfc-play-btns"><button onclick="mgrSkip()">'+esc(T.skipEv)+'</button><button onclick="mgrFastForwardLive(ccAddDays(CAREER.career.day, 7))">'+esc(T9.ffWeek)+'</button><button onclick="mgrFastForwardLive(ccAddDays(CAREER.career.day, 30))">'+esc(T9.ffMonth)+'</button></span></div></div>'
     : '<div class="mfc-tile mfc-play" onclick="mgrSeasonReview()"><div class="mfc-play-l"><b class="mfc-title">'+esc(X.season)+'</b><em>'+esc(T2.endSeason)+'</em></div></div>';
   // НОВОСТИ
@@ -157885,6 +157906,12 @@ function mgrCentreHTML(){
   setTimeout(mgrNewsTick, 0);
   return dl+'<div class="mfc-grid">'+play+news+notes+table+sched+dev+'</div>';
 }
+// Картинка турнира: арт этого дня из календаря сцены (как в карьере), иначе — арт сезона FNCS.
+function mgrEvArt(ev){
+  if(ev && ev.art) return ev.art;
+  try{ const list=careerEvents().get(ev.day)||[]; const e=list.find(x=>x.art && (String(x.label||'').replace(/<[^>]+>/g,'')===ev.name)) || list.find(x=>x.art); if(e) return e.art; }catch(e){}
+  return 'art/fncs-'+Math.min(2026, MGR.year)+'.jpg';
+}
 function mgrIcoCal(){ return '<svg viewBox="0 0 48 48" width="56" height="56" fill="none" stroke="currentColor" stroke-width="3"><rect x="7" y="10" width="34" height="31" rx="3"/><path d="M7 19h34M16 6v8M32 6v8M15 27h18M15 34h12"/><circle cx="24" cy="27" r="2.5" fill="currentColor"/><circle cx="30" cy="34" r="2.5" fill="currentColor"/></svg>'; }
 function mgrIcoDev(){ return '<svg viewBox="0 0 48 48" width="56" height="56" fill="currentColor"><circle cx="19" cy="14" r="8"/><path d="M4 42c0-9 7-15 15-15 4 0 7 1 9 3-3 3-4 6-4 9 0 1 0 2 .3 3z"/><circle cx="36" cy="36" r="10"/><path d="M36 30l-5 6h3.2v5h3.6v-5H41z" fill="#0b1a3a"/></svg>'; }
 /* СОСТАВ — команды карточками FUT (как в драфте), запас и академия; клик по карточке — лист игрока. */
@@ -157900,12 +157927,14 @@ function mgrCardTileHTML(h){
 // Тренер состава — кнопкой и окном с карточками коучей (его слово 7.10 про системный список: «не в нашем стиле»).
 function mgrTeamCoachHTML(t){ return '<div class="mgs-tstaff">'+MGR_TEAM_KINDS.map(k=>mgrTeamStaffSlotHTML(t, k)).join('')+'</div>'; }
 function mgrTeamStaffLabel(k){ const T9=mgrT9(); return k==='coach' ? T9.teamCoach : k==='analyst' ? L().ccAnalyst : L().ccPsych; }
+/* Штаб команды кружками (его слово 8.10: «squad дизайн не нравится — хочу открывать и сразу видеть всех своих игроков»):
+   было три строки на команду с длинными кнопками; теперь три значка — фото человека или буква роли, «＋» если пусто;
+   имя, уровень и ставка — в подсказке, клик — тот же выбор. */
 function mgrTeamStaffSlotHTML(t, k){
-  const T9=mgrT9(), p=mgrTeamStaffPerson(t.id, k);
-  return '<div class="mgs-coach">'+(p ? '<img src="photos/'+esc(p.photo||'')+'" alt="" onerror="this.style.visibility=\'hidden\'"><b>'+esc(p.name)+'</b><small>'+
-      esc([mgrTeamStaffLabel(k), mgrT4().tier(mgrPersonTier(k, p)), mgrMoney(mgrPersonCost(k, p))+' '+mgrT().month].join(' · '))+'</small>'
-      : '<b>'+esc(mgrTeamStaffLabel(k))+'</b><small>'+esc(k==='coach' ? T9.noCoach : k==='analyst' ? L().ccAnalystNone : L().ccPsychNone)+'</small>')+
-    '<button class="hg-go mgs-coach-btn" onclick="mgrTeamStaffOpen(\''+esc(t.id)+'\', \''+k+'\')">'+esc(p ? L().ccStaffChange : (k==='coach' ? T9.coachPick : k==='analyst' ? L().ccAnalystHire : L().ccPsychHire))+'</button></div>';
+  const T9=mgrT9(), p=mgrTeamStaffPerson(t.id, k), lab=mgrTeamStaffLabel(k);
+  const tip=p ? [lab, p.name, mgrT4().tier(mgrPersonTier(k, p)), mgrMoney(mgrPersonCost(k, p))+' '+mgrT().month].join(' · ') : lab+' — '+(k==='coach' ? T9.coachPick : k==='analyst' ? L().ccAnalystHire : L().ccPsychHire);
+  return '<button class="mgs-coach mgs-chip'+(p ? ' on' : '')+'" title="'+esc(tip)+'" onclick="mgrTeamStaffOpen(\''+esc(t.id)+'\', \''+k+'\')">'+
+    (p && p.photo ? '<img src="photos/'+esc(p.photo)+'" alt="" onerror="this.remove()">' : '')+'<i>'+(p ? esc(String(p.name).slice(0,1).toUpperCase()) : '＋')+'</i><em>'+esc(lab.slice(0,1))+'</em></button>';
 }
 function mgrTeamStaffOpen(teamId, k){
   const T4=mgrT4(), T9=mgrT9(), cur=mgrTeamStaffOf(teamId, k);
@@ -157957,21 +157986,20 @@ function mgrGuestPickHTML(t){
 }
 function mgrSquadHTML(){
   const T=mgrT(), T2=mgrT2(), T5=mgrT5(), size=Math.max(2, careerSquadSize());
-  const teams=MGR.teams.map((t,i)=>'<div class="ch-tile mgs-team'+(mgrTeamSize(t)<size ? ' short' : '')+'"><h4>'+esc(T2.teamWord)+' '+(i+1)+
-      ' <small>'+esc(T.fmt[mgrTeamSize(t)]||String(mgrTeamSize(t)))+' · '+esc(T5.chem)+' '+mgrTeamChem(t)+'/10</small>'+
-      (i>0 ? '<button class="mgs-up" title="'+esc(T.moveUp)+'" onclick="mgrTeamUp('+i+')">↑</button>' : '')+'</h4>'+
-      mgrTeamCoachHTML(t)+
+  const teams=MGR.teams.map((t,i)=>'<div class="ch-tile mgs-team mgs-compact'+(mgrTeamSize(t)<size ? ' short' : '')+'"><div class="mgs-th"><b>'+esc(T2.teamWord)+' '+(i+1)+'</b>'+
+      '<small>'+esc(T.fmt[mgrTeamSize(t)]||String(mgrTeamSize(t)))+' · '+esc(T5.chem)+' '+mgrTeamChem(t)+'/10</small>'+mgrTeamCoachHTML(t)+
+      (i>0 ? '<button class="mgs-up" title="'+esc(T.moveUp)+'" onclick="mgrTeamUp('+i+')">↑</button>' : '')+'</div>'+
       '<div class="mgs-row">'+t.cards.map(mgrCardTileHTML).join('')+(t.guests||[]).map(g=>mgrGuestTileHTML(t, g)).join('')+'</div>'+
       (mgrTeamSize(t)<size ? mgrGuestPickHTML(t) : '')+'</div>').join('');
-  const bench=(MGR.bench||[]).length ? '<div class="ch-tile mgs-team mgs-bench"><h4>'+esc(mgrT9().benchOut)+'</h4><div class="mgs-row">'+MGR.bench.map(mgrCardTileHTML).join('')+'</div></div>' : '';
+  const bench=(MGR.bench||[]).length ? '<div class="ch-tile mgs-team mgs-compact mgs-bench"><h4>'+esc(mgrT9().benchOut)+'</h4><div class="mgs-row">'+MGR.bench.map(mgrCardTileHTML).join('')+'</div></div>' : '';
   const lc=(MGR.acadCups||[])[0];
-  const acad='<div class="ch-tile mgs-team mgs-acad"><h4>'+esc(T.acad)+' <small>'+esc(T.acadHint)+'</small></h4>'+
+  const acad='<div class="ch-tile mgs-team mgs-compact mgs-acad"><h4>'+esc(T.acad)+' <small>'+esc(T.acadHint)+'</small></h4>'+
       (lc ? '<div class="mgn-row"><em>'+esc(mgrT9().lastCup)+'</em><b>#'+lc.place+' / 32</b></div>' : '')+'<div class="mgs-row">'+
       ((MGR.academy||[]).length ? MGR.academy.map(mgrCardTileHTML).join('') : '<div class="ch-empty">'+esc(T.none)+'</div>')+'</div></div>';
   const T9=mgrT9();
   const loan=(MGR.loanOut||[]).length ? '<div class="ch-tile mgs-team mgs-loan"><h4>'+esc(T9.loanH)+'</h4>'+
       MGR.loanOut.map(h=>{ const l=(MGR.loans||{})[hKey(h)]||{}; return '<div class="mgn-row"><em>'+esc(h)+'</em><b>'+esc(T9.loanTo(l.to||'—', ccDayLabel(l.until||'')))+'</b></div>'; }).join('')+'</div>' : '';
-  return '<div class="mgs-wrap">'+teams+bench+acad+loan+'</div>'+mgrPromisesHTML();
+  return '<div class="mgs-wrap mgs-grid">'+teams+'</div><div class="mgs-wrap mgs-grid mgs-grid2">'+bench+acad+loan+'</div>'+mgrPromisesHTML();
 }
 function mgrSheetOpen(h){
   const T=mgrT(), T2=mgrT2(), T4=mgrT4(), T9=mgrT9(), cd=mgrCard(h); if(!cd) return;
