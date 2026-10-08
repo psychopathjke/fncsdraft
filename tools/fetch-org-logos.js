@@ -36,15 +36,25 @@ function crests() {
 (async () => {
   if (process.argv[2] === '--crests') return crests();
   const src = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
-  const names = (Array.isArray(src) ? src : Object.keys(src)).filter(n => slug(n) && !fs.existsSync(path.join(LOGOS, slug(n) + '.png')));
+  // Псевдонимы ({вариант: наше название}, значения — строки): страница ищется под вариантом, файл — под нашим именем.
+  const alias = (!Array.isArray(src) && Object.values(src).every(v => typeof v === 'string')) ? src : null;
+  const own = n => alias ? alias[n] : n;
+  const names = (Array.isArray(src) ? src : Object.keys(src)).filter(n => slug(own(n)) && !fs.existsSync(path.join(LOGOS, slug(own(n)) + '.png')));
   const cache = fs.existsSync(CACHE) ? JSON.parse(fs.readFileSync(CACHE, 'utf8')) : { file: {}, url: {} };
   console.log('клубов без герба:', names.length);
   // 1. имя файла логотипа из карточки
   const todo = names.filter(n => !(n in cache.file));
   for (let i = 0; i < todo.length; i += 50) {
     const part = todo.slice(i, i + 50);
-    const j = await api('action=query&redirects=1&prop=revisions&rvprop=content&rvslots=main&titles=' + encodeURIComponent(part.join('|')));
-    const q = j.query || {}, back = {};
+    // Текст 50 страниц сразу не влезает в один ответ — API просит продолжение (rvcontinue); без него у половины пачки
+    // «нет логотипа», хотя он есть (Lazarus, 8.10).
+    const base = 'action=query&redirects=1&prop=revisions&rvprop=content&rvslots=main&titles=' + encodeURIComponent(part.join('|'));
+    let j = await api(base); const q = j.query || {}; q.pages = q.pages || {};
+    for (let k = 0; k < 20 && j.continue && j.continue.rvcontinue; k++) {
+      j = await api(base + '&rvcontinue=' + encodeURIComponent(j.continue.rvcontinue));
+      Object.entries((j.query || {}).pages || {}).forEach(([id, p]) => { if (p.revisions) q.pages[id] = p; });
+    }
+    const back = {};
     part.forEach(n => back[n] = n);
     (q.normalized || []).forEach(x => { back[x.to] = back[x.from] || x.from; });
     (q.redirects || []).forEach(x => { back[x.to] = back[x.from] || x.from; });
@@ -74,7 +84,7 @@ function crests() {
   let ok = 0, miss = 0;
   for (const n of names) {
     const u = cache.url[cache.file[n]]; if (!u) { miss++; continue; }
-    const out = path.join(LOGOS, slug(n) + '.png'); if (fs.existsSync(out)) continue;
+    const out = path.join(LOGOS, slug(own(n)) + '.png'); if (fs.existsSync(out)) continue;
     const r = await get(u, true);
     if (r.code === 200 && r.body.length > 200) { fs.writeFileSync(out, r.body); ok++; } else miss++;
     await sleep(300);
