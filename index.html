@@ -6906,7 +6906,29 @@
     border-radius:var(--r-sm);box-shadow:none;}
   #screen-career-slots .cc-hall .ch-row{border-color:rgba(180,200,255,.16);}
   #screen-career-slots .cc-hall .ch-row em{color:var(--fn-dim);}
-  </style>
+  
+  /* НИЖНЯЯ ПАНЕЛЬ ВКЛАДОК НА ТЕЛЕФОНЕ (его слово 8.10: «не удобно с телефона кликать панельки эти»). Правило для
+     телефона стояло раньше в файле, а два более поздних правила темы (.ch-tabs{background:none;padding:…}) снимали с
+     панели фон и отступы: она становилась прозрачной, кнопки — по 30 px и 9.5 px текстом, контент просвечивал. Здесь,
+     в конце стилей, оно не перебивается: сплошной фон, кнопка не ниже 50 px (Apple — от 44), текст 11 px, значок 22 px,
+     справа затухание как подсказка, что панель листается. */
+  @media (max-width:700px){
+    #screen-career-hub .ch-tabs{position:fixed !important;left:0;right:0;bottom:0;z-index:60;display:flex !important;flex-wrap:nowrap !important;
+      overflow-x:auto;gap:4px !important;margin:0 !important;padding:6px 8px calc(6px + env(safe-area-inset-bottom)) !important;
+      background:rgba(8,16,44,.98) !important;box-shadow:0 -1px 0 rgba(180,200,255,.2),0 -10px 24px rgba(0,0,0,.35);
+      -webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;scrollbar-width:none;
+      -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 28px),transparent 100%);
+              mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 28px),transparent 100%);}
+    #screen-career-hub .ch-tabs::-webkit-scrollbar{display:none;}
+    #screen-career-hub .ch-tab{flex:none !important;display:flex !important;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+      min-width:68px;min-height:50px;padding:6px 8px !important;font-size:11px !important;letter-spacing:.04em !important;
+      transform:none !important;border-radius:12px !important;border:none !important;background:transparent !important;color:#b9c7ea !important;
+      scroll-snap-align:start;-webkit-tap-highlight-color:transparent;}
+    #screen-career-hub .ch-tab::before{width:22px !important;height:22px !important;margin:0 !important;}
+    #screen-career-hub .ch-tab.on{background:rgba(255,214,0,.16) !important;color:#ffd600 !important;}
+    #screen-career-hub{padding-bottom:calc(86px + env(safe-area-inset-bottom)) !important;}
+  }
+</style>
 <!-- ?v= — это НЕ украшение, это починка того, что он поймал 24 августа.
 
      Его сообщения: «не работает таблица», «не делается симуляция просто», и
@@ -116696,6 +116718,9 @@ function careerRenderHub(tab){
   /* Переписка — к последнему сообщению (его слово 7.10: «когда отправляю сообщение не сразу перекидывает на
      сообщение, нужно листать»). Окно .dm-msgs со своей прокруткой собирается заново и вставало в начало. */
   try{ document.querySelectorAll('#chBody .dm-msgs').forEach(m=>{ m.scrollTop=m.scrollHeight; }); }catch(e){}
+  // На телефоне панель вкладок листается: открытая — посередине видимой части (его «не удобно с телефона кликать»).
+  try{ const on=document.querySelector('#screen-career-hub .ch-tabs .ch-tab.on'), bar=on && on.parentElement;
+    if(bar && bar.scrollWidth>bar.clientWidth) bar.scrollLeft=Math.max(0, on.offsetLeft-(bar.clientWidth-on.offsetWidth)/2); }catch(e){}
 }
 /* Число с карточки — одно на все экраны. Карточка и шапка хаба печатают
    рейтинг плюс пинг и возраст (см. shownOvr), а профиль соцсети и лист
