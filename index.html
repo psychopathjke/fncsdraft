@@ -118837,6 +118837,7 @@ function careerOrgTileHTML(){
       ${offers.map((o,i)=>`<div class="ch-offer">
         <div class="ch-orghead">${careerCrestImg(o.name,26)}<b>${esc(o.name)}</b></div>
         <div class="ch-offer-terms"><span>${ccMoney(o.salary)}${L().ccPerSeason}</span>
+          ${(f=>`<span title="${f.est ? esc(L().ccOrgFansEst) : ''}">👥 ${ccOrgFolText(f)} · ${esc(L().ccOrgMediaRow(ccNum(ccOrgMediaMonth(o.name, o.tier, o.academy))))}</span>`)(ccOrgFollowers(o.name, o.tier))}
           <span>${L().ccOrgBonusRow}: ${ccMoney(careerOrgBonusFor(o.salary))}</span>
           ${o.perk ? `<span class="ch-perk">${L()['ccPerk'+o.perk]}</span>` : ''}
           <span>${careerOrgGoalText(o.goal)}</span></div>
@@ -131079,7 +131080,7 @@ function ccClubPickOpen(id){
   const rows=careerPitchClubs().map(o=>`<div class="cc-buy">
       <div class="cc-buy-in"><b>${clubLogoHTML(o.name, true)}${esc(o.name)}</b>
         <span>${L().ccPitchTier(o.tier)}${
-          pl ? ' · '+L().ccPitchGap(Math.max(0, Math.round(o.tier-pl.ovr))) : ''}</span></div>
+          pl ? ' · '+L().ccPitchGap(Math.max(0, Math.round(o.tier-pl.ovr))) : ''} · 👥 ${ccOrgFolText(ccOrgFollowers(o.name, o.tier))}</span></div>
       <button class="ch-sign" onclick="ccClubPickAsk('${q(id)}','${q(o.name)}')">${
         L().ccPitchAskBtn}</button>
     </div>`).join('');
