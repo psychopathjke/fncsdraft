@@ -60,6 +60,11 @@
   @media (max-width:1100px){ .mg-headstaff{grid-template-columns:repeat(3,minmax(0,1fr));} }
   @media (max-width:560px){ .mg-headstaff{grid-template-columns:repeat(2,minmax(0,1fr));} }
   .mgf-rt{position:static !important;display:inline-flex !important;margin-left:6px;vertical-align:1px;height:20px;min-width:26px;font-size:12px;}
+  .mgi-av{position:relative;flex:0 0 40px;width:40px;height:40px;border-radius:50%;overflow:hidden;background:#1a2550;display:flex;align-items:center;justify-content:center;margin-right:10px;}
+  .mgi-av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .mgi-av i{font-style:normal;font-weight:800;font-size:13px;color:#9fb3e6;}
+  .mgi-logo{border-radius:10px;background:rgba(255,255,255,.06);} .mgi-logo img{object-fit:contain;padding:4px;}
+  .mgi-ico{font-size:18px;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -112692,7 +112697,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='0018224f';
+const CC_BUILD='493f6b71';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -157682,11 +157687,37 @@ function mgrMarketHTML(){
   const n=mgrMarketList().length;
   return win+mgrMktFiltersHTML()+'<div class="mgm-count">'+esc(mgrT9().fFound(n))+'</div><div class="mg-clubs">'+(rows || '<div class="ch-empty">'+esc(mgrT9().fNone)+'</div>')+'</div>';
 }
+/* АВАТАРКИ И ЛОГОТИПЫ ВО ВХОДЯЩИХ (его слово 8.10: «во входящих сообщениях не хватает аватарок и логотипов»). Иконка
+   по смыслу письма: игрок (m.h, или ник из текста, если он есть в базе) — его фото; клуб (m.club / m.from, или название
+   клуба из текста) — логотип; иначе — значок типа письма (спонсор, совет, событие, сборная). */
+let MGR_INBOX_ORGS=null;
+function mgrInboxIcon(m){
+  const ph=h=>{ let c=null; try{ c=mgrCard(h)||(typeof ccWhoCard==='function' ? ccWhoCard(h) : null); }catch(e){}
+    const u=c ? photoURL(c) : null;
+    return '<span class="mgi-av">'+(u ? '<img src="'+u+'" alt="" loading="lazy" onerror="this.remove()">' : '')+'<i>'+esc(String(h).slice(0,2).toUpperCase())+'</i></span>'; };
+  const logo=o=>{ const l=mgrLogo(o, false); return /<img|<svg/.test(l) ? '<span class="mgi-av mgi-logo">'+l+'</span>' : '<span class="mgi-av"><i>'+esc(String(o).replace(/[^A-Za-zА-Яа-я0-9]/g,'').slice(0,2).toUpperCase())+'</i></span>'; };
+  if(m.h) return ph(m.h);
+  const org=m.club || m.from || m.org;
+  if(org) return logo(org);
+  const txt=String(m.text||'');
+  // ник из текста: первое слово, которое есть в базе игроков
+  const words=txt.match(/[A-Za-z0-9_.]{3,20}/g)||[];
+  for(const w of words){ let c=null; try{ c=typeof ccWhoCard==='function' ? ccWhoCard(w) : null; }catch(e){} if(c && photoURL(c)) return ph(w); }
+  // менеджер сцены по имени (у них есть фото)
+  try{ const ag=(typeof CC_AGENTS!=='undefined' ? CC_AGENTS : []).find(a=>{ const n=String(a.name).split(' ').pop(); return n.length>=3 && txt.indexOf(n)>=0; });
+    if(ag && ag.photo) return '<span class="mgi-av"><img src="photos/'+esc(ag.photo)+'" alt="" onerror="this.remove()"><i>'+esc(String(ag.name).slice(0,2).toUpperCase())+'</i></span>'; }catch(e){}
+  // название клуба из текста
+  if(!MGR_INBOX_ORGS){ const set=new Set(); try{ (PLAYERS||[]).forEach(p=>{ if(p && p.org) set.add(p.org); }); }catch(e){} MGR_INBOX_ORGS=[...set].sort((a,b)=>b.length-a.length); }
+  const o2=MGR_INBOX_ORGS.find(o=>o.length>=3 && txt.indexOf(o)>=0);
+  if(o2) return logo(o2);
+  const ico=m.kind==='event' ? '⚡' : m.kind==='job' ? '🏢' : m.kind==='natjob' ? '🏳' : /спонсор|sponsor/i.test(txt) ? '💰' : /совет|board/i.test(txt) ? '🏛' : '✉';
+  return '<span class="mgi-av mgi-ico">'+ico+'</span>';
+}
 function mgrInboxHTML(){
   const T2=mgrT2();
   const list=(MGR.inbox||[]);
   if(!list.length) return '<p class="mg-hint">'+T2.inboxEmpty+'</p>';
-  return '<div class="mg-clubs">'+list.map(m=>'<div class="mg-club'+(m.done?' done':'')+(m.kind==='event'?' ev':'')+'"><span class="mg-cname"><b>'+esc(m.text)+'</b><small>'+esc(ccDayLabel(m.day))+(m.done && m.done!=='info' ? ' · '+esc(m.kind==='event' ? (m.done==='a' ? m.a : m.b) : (m.done==='yes' ? T2.accept : T2.decline)) : '')+'</small></span>'+
+  return '<div class="mg-clubs">'+list.map(m=>'<div class="mg-club'+(m.done?' done':'')+(m.kind==='event'?' ev':'')+'">'+mgrInboxIcon(m)+'<span class="mg-cname"><b>'+esc(m.text)+'</b><small>'+esc(ccDayLabel(m.day))+(m.done && m.done!=='info' ? ' · '+esc(m.kind==='event' ? (m.done==='a' ? m.a : m.b) : (m.done==='yes' ? T2.accept : T2.decline)) : '')+'</small></span>'+
     (!m.done ? '<button class="hero-btn hero-btn-go mg-take" onclick="mgrInboxDo(\''+m.id+'\', true)">'+esc(m.kind==='event' ? m.a : m.kind==='job' ? mgrT7().jobBtn : m.kind==='natjob' ? mgrT10().natBtn : m.kind==='offer' ? T2.sell : m.kind==='wantplay' ? mgrT5().promiseBtn : m.kind==='leave' ? mgrT5().sellBtn : T2.accept)+'</button><button class="hero-btn hero-btn-alt mg-take" onclick="mgrInboxDo(\''+m.id+'\', false)">'+esc(m.kind==='event' ? m.b : m.kind==='job' ? mgrT7().stayBtn : m.kind==='wantplay' ? mgrT5().waitBtn : m.kind==='leave' ? mgrT5().keepBtn : T2.decline)+'</button>' : '')+
     // Согласился собрать сборную — до кубка состав можно поправить отсюда же.
     (m.kind==='natjob' && m.done==='yes' && mgrNatJob() && !mgrNatJob().res ? '<button class="hero-btn hero-btn-go mg-take" onclick="mgrNatPickOpen()">'+esc(mgrT10().natSquadBtn)+' · '+mgrNatJob().squad.length+'/'+MGR_NAT_SIZE+'</button>' : '')+
