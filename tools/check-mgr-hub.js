@@ -69,6 +69,12 @@ const SECTIONS=[
     const n0=mgrAll().length, tr0=MGR.club.transfer;
     mgrSignFinal({h:'ПробаДорогой', buyDeal:0, years:1, acad:false}, mgrWageRoom()+1000);
     check('бюджет: сверх потолка — отказ', mgrAll().length===n0, String(mgrAll().length-n0));
+    // Его слово 8.10: «я босс» — совет спрашивает, а не запрещает: «подписать всё равно» проводит сделку и бьёт по доверию.
+    { const ask=document.getElementById('ccAskModal'); check('бюджет: сверх потолка — вопрос совета', ask && ask.style.display==='flex' && /всё равно|anyway/i.test(document.getElementById('ccAskYes').textContent), ask && ask.style.display);
+      const c0=mgrConf(); document.getElementById('ccAskYes').click();
+      check('бюджет: «подписать всё равно» — подписан', mgrAll().length===n0+1, String(mgrAll().length-n0));
+      check('бюджет: доверие совета упало', mgrConf()<c0, c0+' → '+mgrConf());
+      mgrRelease && (MGR.bench=(MGR.bench||[]).filter(x=>x!=='ПробаДорогой')); }
     MGR.club.cash+=5000; mgrSignFinal({h:'ПробаДешёвый', buyDeal:5000, years:1, acad:false}, 1);
     check('бюджет: в пределах — подписан', mgrAll().length===n0+1);
     check('бюджет: отступные из трансферного', MGR.club.transfer===Math.max(0, tr0-5000), tr0+' → '+MGR.club.transfer);

@@ -112682,7 +112682,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='815b4a43';
+const CC_BUILD='15d6c75f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -157846,15 +157846,15 @@ function mgrToAcad(h, free){
   if(mgrOwned().some(x=>hKey(x)===hKey(h))) return;
   const bo=free ? 0 : mgrBuyout(c);
   if(MGR.club.cash<bo){ mgrToast(mgrT2().noMoney); return; }
-  if(MGR.club.wageCap!=null && Math.round(mgrSalary(c)*MGR_ACAD_WAGE)>mgrWageRoom()){ mgrToast(mgrT9().overCap(mgrMoney(MGR.club.wageCap))); return; }
-  if(MGR.club.transfer!=null && bo>MGR.club.transfer){ mgrToast(mgrT9().overTransfer(mgrMoney(MGR.club.transfer))); return; }
-  MGR.club.cash-=bo; if(MGR.club.transfer!=null) MGR.club.transfer-=bo; MGR.academy.push(c.handle);
+  if(MGR.club.wageCap!=null && Math.round(mgrSalary(c)*MGR_ACAD_WAGE)>mgrWageRoom() && !mgrBoardAsk(mgrT9().overCap(mgrMoney(MGR.club.wageCap)), Math.round(mgrSalary(c)*MGR_ACAD_WAGE)-mgrWageRoom(), ()=>mgrToAcad(h, free))) return;
+  if(MGR.club.transfer!=null && bo>MGR.club.transfer && !mgrBoardAsk(mgrT9().overTransfer(mgrMoney(MGR.club.transfer)), bo-MGR.club.transfer, ()=>mgrToAcad(h, free))) return;
+  MGR.club.cash-=bo; if(MGR.club.transfer!=null) MGR.club.transfer=Math.max(0, MGR.club.transfer-bo); MGR.academy.push(c.handle);
   MGR.contracts=MGR.contracts||{}; MGR.contracts[hKey(c.handle)]={salary:Math.round(mgrSalary(c)*MGR_ACAD_WAGE), since:CAREER.career.day, until:MGR.year+1, clause:0};
   mgrSave(); mgrOpenHub();
 }
 function mgrPromote(h){
   { const c0=mgrCard(h), full=c0 ? mgrSalary(c0) : 500;
-    if(MGR.club.wageCap!=null && full-mgrWage(h)>mgrWageRoom()){ mgrToast(mgrT9().overCap(mgrMoney(MGR.club.wageCap))); return; } }
+    if(MGR.club.wageCap!=null && full-mgrWage(h)>mgrWageRoom() && !mgrBoardAsk(mgrT9().overCap(mgrMoney(MGR.club.wageCap)), full-mgrWage(h)-mgrWageRoom(), ()=>mgrPromote(h))) return; }
   MGR.promoted=(MGR.promoted||[]).concat([h]);
   MGR.academy=(MGR.academy||[]).filter(x=>hKey(x)!==hKey(h));
   MGR.bench=(MGR.bench||[]).concat([h]);
@@ -158071,7 +158071,7 @@ function mgrInboxDo(id, ok){
   }
   if(m.kind==='scout'){ if(ok){ m.done='yes'; mgrSave(); mgrToAcad(m.h, true); return; } }
   if(m.kind==='raise'){
-    if(ok && MGR.club.wageCap!=null && m.sum-mgrWage(m.h)>mgrWageRoom()){ mgrToast(mgrT9().overCap(mgrMoney(MGR.club.wageCap))); return; }
+    if(ok && MGR.club.wageCap!=null && m.sum-mgrWage(m.h)>mgrWageRoom() && !mgrBoardAsk(mgrT9().overCap(mgrMoney(MGR.club.wageCap)), m.sum-mgrWage(m.h)-mgrWageRoom(), ()=>{ m.done=null; mgrInboxDo(id, ok); })) return;
     if(ok){ MGR.contracts=MGR.contracts||{}; MGR.contracts[hKey(m.h)]=Object.assign({}, MGR.contracts[hKey(m.h)]||{}, {salary:m.sum}); mgrMoraleAdd(m.h, 1); }
     else mgrMoraleAdd(m.h, -1);
   }
@@ -158621,8 +158621,8 @@ function mgrNegOffer(){
 function mgrSignFinal(n, wage){
   const box=document.getElementById('mgNeg'); if(box) box.remove();
   if(MGR.club.cash<n.buyDeal){ mgrToast(mgrT2().noMoney); MGR_NEG=null; return; }
-  if(MGR.club.wageCap!=null && wage>mgrWageRoom()){ mgrToast(mgrT9().overCap(mgrMoney(MGR.club.wageCap))); MGR_NEG=null; return; }
-  if(MGR.club.transfer!=null && n.buyDeal>MGR.club.transfer){ mgrToast(mgrT9().overTransfer(mgrMoney(MGR.club.transfer))); MGR_NEG=null; return; }
+  if(MGR.club.wageCap!=null && wage>mgrWageRoom() && !mgrBoardAsk(mgrT9().overCap(mgrMoney(MGR.club.wageCap)), wage-mgrWageRoom(), ()=>mgrSignFinal(n, wage))){ MGR_NEG=null; return; }
+  if(MGR.club.transfer!=null && n.buyDeal>MGR.club.transfer && !mgrBoardAsk(mgrT9().overTransfer(mgrMoney(MGR.club.transfer)), n.buyDeal-MGR.club.transfer, ()=>mgrSignFinal(n, wage))){ MGR_NEG=null; return; }
   MGR.club.cash-=n.buyDeal;
   if(MGR.club.transfer!=null) MGR.club.transfer=Math.max(0, MGR.club.transfer-n.buyDeal);
   if(n.acad){ MGR.academy=(MGR.academy||[]).concat([n.h]); } else MGR.bench=(MGR.bench||[]).concat([n.h]);
@@ -158983,6 +158983,28 @@ function mgrChallengeHTML(){
 function mgrIdentity(){ const a=MGR.club.avg||75; return a>=86 ? 'results' : a<=76 ? 'youth' : 'business'; }
 function mgrConf(){ const b=MGR.board||{}; return b.conf==null ? 60 : b.conf; }
 function mgrConfAdd(d){ MGR.board=MGR.board||{}; MGR.board.conf=Math.max(0, Math.min(100, mgrConf()+d)); }
+/* СОВЕТ ПРОТИВ — НО РЕШАЕШЬ ТЫ (его слово 8.10: «кто такой совет и почему мне запрещают подписать игрока, я босс»).
+   Бюджет совета (трансферный и потолок зарплат, как в FC) был стеной: тост «совет против» и всё. Теперь это вопрос:
+   «подписать всё равно?» — сделка проходит, а доверие совета падает на 5…25 по размеру перерасхода против оборота клуба
+   (оценка режима); при нуле доверия совет увольняет, как и раньше. Денег в кассе это не добавляет: без них — нельзя. */
+let MGR_BOARD_PASS=false;
+function mgrBoardAsk(msg, overBy, retry){
+  if(MGR_BOARD_PASS) return true;
+  const turn=Math.max(20000, (MGR.club && MGR.club.turnover) || 100000);
+  const pen=Math.max(5, Math.min(25, Math.round(5+overBy/turn*60)));
+  const ru=(typeof LANG!=='undefined' && LANG==='ru');
+  const q=ru ? msg+'. Ты главный — подписать всё равно? Доверие совета −'+pen : msg+'. You are the boss — sign anyway? Board confidence −'+pen;
+  ccAsk(q, ()=>{
+    MGR_BOARD_PASS=true;
+    try{ retry(); } finally { MGR_BOARD_PASS=false; }
+    mgrConfAdd(-pen);
+    MGR.inbox=MGR.inbox||[];
+    MGR.inbox.unshift({id:'bo'+CAREER.career.day+'_'+Date.now(), day:CAREER.career.day, kind:'info', done:'info',
+      text:ru ? 'Совет недоволен: решение через голову бюджета. Доверие −'+pen : 'The board is unhappy: you went over the budget. Confidence −'+pen});
+    mgrSave(); try{ mgrSackCheck(); }catch(e){} mgrOpenHub();
+  }, {yes:ru ? 'Подписать всё равно' : 'Sign anyway', no:ru ? 'Отмена' : 'Cancel'});
+  return false;
+}
 function mgrConfNight(row, clubGot){
   const id=mgrIdentity(), b=MGR.board||{};
   const best=Math.min(...row.teams.map(t=>t.place)), bad=row.teams.every(t=>t.place>(t.of||100)*0.5);
