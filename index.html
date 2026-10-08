@@ -117100,9 +117100,9 @@ function careerCentreHTML(card, a){
              /* Цена эфира — строкой под кнопкой, а не только во всплывающей
                 подсказке: отзыв «и это должно быть написано». */
              `<div class="ch-hint ch-live-hint">${esc(why||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}</div>`; })() : '')+
-        /* Стиль игры прямо у «Играть» — на любой вечер (5.10: «only lets me do that in
-           FNCS»). Тот же переключатель, что в вопросе высадки; в команде/гонке пустой. */
-        (onToday ? ccPlayStyleHTML() : '')
+        /* Стиль игры у «Играть» снят (его скрин в Notion 8.10: «убрать стиль игры перед капом, он же есть в самом капе»):
+           внутри вечера он спрашивается перед каждой игрой на любом турнире (ccStyleAskGame), второй переключатель дублировал. */
+        ''
       : `<button class="ch-play" onclick="careerSkipAsk()" title="${esc(
             ccRaceModeWhy() ? ccRaceModeWhy()
           /* Арена, ранг, травма, бан (ccLifeWhy) закрывают вечер в careerCanPlayKindOn, а сюда
