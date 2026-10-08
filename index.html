@@ -13,7 +13,7 @@
     padding:5px 12px;font-size:11.5px;font-weight:800;cursor:pointer;}
   .cc-auto.on{border-color:rgba(111,227,176,.6);color:#6fe3b0;}
   /* Штаб (careerStaffPanelHTML) и верх вкладки «Клуб». */
-  .cc-club-top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px;}
+  .cc-club-top{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px;align-items:start;}
   .cc-club-top>.ch-tile{margin:0;}
   @media (max-width:900px){ .cc-club-top{grid-template-columns:1fr;} }
   .cc-staff-wrap{margin:0 0 14px;}
@@ -118158,8 +118158,8 @@ function ccContractTileHTML(){
 // Доходы карьеры по статьям.
 function ccIncomeTileHTML(){
   const cr=CAREER.career, rows=[];
-  const add=(k,v)=>{ if(v) rows.push(`<div class="ch-row"><em>${L()[k]}</em><b>${ccMoney(v)}</b></div>`); };
-  add('lfPrize', cr.earnings); add('lfWages', cr.wages); add('lfSide', cr.side); add('lfSponsor', cr.sponsored); add('lfOrgCut', cr.orgCut);
+  const add=(k,v,always)=>{ if(v || always) rows.push(`<div class="ch-row"><em>${L()[k]}</em><b>${ccMoney(v||0)}</b></div>`); };
+  add('lfPrize', cr.earnings, true); add('lfWages', cr.wages, true); add('lfSponsor', cr.sponsored, true); add('lfSide', cr.side); add('lfOrgCut', cr.orgCut);
   rows.push(`<div class="ch-row"><em>${L().lfBalance}</em><b>${ccMoney(cr.balance||0)}</b></div>`);
   return `<div class="ch-tile"><h4>${L().lfIncome}</h4>${rows.join('')}</div>`;
 }
