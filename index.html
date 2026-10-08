@@ -157538,22 +157538,25 @@ function mgrOwnGo(){
   if(r!==true){ if(el) el.classList.add('err'); return; }
   mgrOpenHub();
 }
-// Команды — из настоящего состава клуба: сильнейшие по рейтингу, по размеру формата сезона; остальные в запас.
+/* СОСТАВЫ — НАСТОЯЩИЕ ДУО (его слово 8.10: «в оргах, где два игрока или больше, они должны играть со своими дуо, а не с
+   тиммейтами по орге; орги могут взять одного игрока, и он выбирает, с кем играть, как в игре»). Каждый игрок клуба садится
+   со своими настоящими напарниками сезона (ccSquadMatesOf): напарник тоже в клубе — один состав; напарник в другой
+   организации — игрок своим составом, напарник придёт гостем сам (mgrGuestAuto: ★ настоящий тиммейт первым). Составов —
+   до MGR_MAX_TEAMS4, лишние в запас. Раньше команды собирались из одноклубников по рейтингу и ролям. */
 function mgrBuildTeams(handles){
   const size=Math.max(2, careerSquadSize());
-  const left=handles.slice();
-  const role=h=>{ const c=mgrCard(h); return c ? (attrsFor(c)||{}).roleKey : null; };
+  const pool=handles.slice().sort((x,y)=>(ccCardOvr(mgrCard(y))||0)-(ccCardOvr(mgrCard(x))||0));
+  const used=new Set();
   MGR.teams=[];
-  while(left.length>=size && MGR.teams.length<MGR_MAX_TEAMS_NOW){
-    const team=[left.shift()];
-    for(let k=0; k<left.length && team.length<size; ){
-      const roles=team.map(role).concat([role(left[k])]).filter(Boolean);
-      if(ccSquadRoleFits(roles, size)){ team.push(left.splice(k, 1)[0]); } else k++;
-    }
-    while(team.length<size && left.length) team.push(left.shift());   // роли не сошлись — всё равно команда
+  pool.forEach(h=>{
+    if(used.has(hKey(h)) || MGR.teams.length>=MGR_MAX_TEAMS4) return;
+    const team=[h]; used.add(hKey(h));
+    let mates=[]; try{ mates=ccSquadMatesOf(h)||[]; }catch(e){ mates=[]; }
+    mates.forEach(c=>{ const m=pool.find(x=>hKey(x)===hKey(c)); if(m && !used.has(hKey(m)) && team.length<size){ team.push(m); used.add(hKey(m)); } });
     MGR.teams.push({id:'t'+(MGR.teams.length+1), cards:team});
-  }
-  MGR.bench=left;
+  });
+  MGR.bench=pool.filter(h=>!used.has(hKey(h)));
+  try{ mgrGuestAuto(); }catch(e){}
 }
 function mgrCardBase(h){
   // Люди вне сцены своего региона (отчёт скаута о чужом регионе, выдуманная молодёжь) — снимком в сейве.

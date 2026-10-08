@@ -193,7 +193,8 @@ const SECTIONS=[
     mgrRenderHub('squad');
     const B=document.getElementById('mgBody');
     const cards=B.querySelectorAll('.mgs-card');
-    check('состав '+lang+': карточки всех игроков', cards.length===mgrAll().length+(MGR.academy||[]).length, cards.length+'/'+mgrAll().length);
+    check('состав '+lang+': карточки всех игроков', cards.length>=mgrAll().length+(MGR.academy||[]).length,   // + гости-напарники настоящих дуо (8.10)
+      cards.length+'/'+mgrAll().length);
     check('состав '+lang+': карточки FUT', B.querySelectorAll('.mgs-card .fut-card').length===cards.length);
     check('состав '+lang+': без undefined/NaN', !bad(B.innerHTML));
     cards[0].click();
@@ -802,6 +803,7 @@ const SECTIONS=[
   `},
   {name:'напарник', code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
+    { const own=mgrAll(); MGR.teams=[{id:'t1', cards:own.slice(0,2)}, {id:'t2', cards:own.slice(2,4)}]; MGR.bench=own.slice(4); }   // раскладка «два своих в составе» — механика гостя
     const n0=mgrEvents().length, t0=MGR.teams[0], out1=t0.cards[t0.cards.length-1];
     mgrMove(out1, '-1');   // состав стал неполным
     check('неполный состав: сезон не кончился', mgrEvents().length>=Math.min(5, n0), n0+' → '+mgrEvents().length);
@@ -899,6 +901,7 @@ const SECTIONS=[
   `},
   {name:'неполный состав', code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); { const k=MGR_NEW_LIST.findIndex(c=>c.n===3); mgrTake(k>=0 ? k : 0); }   // одна команда + запасной: не зависит от того, кто первый в списке
+    { const own=mgrAll(); MGR.teams=[{id:'t1', cards:own.slice(0,2)}]; MGR.bench=own.slice(2); }   // раскладка «состав + запасной» — механика запаса
     const size=careerSquadSize(), t=MGR.teams[0];
     // 1) Ушёл игрок, в запасе есть — перед вечером запас встаёт в состав сам.
     const gone=t.cards[t.cards.length-1]; mgrDrop(gone);
