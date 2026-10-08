@@ -32,6 +32,16 @@ try{
   const tile=careerOrgTileHTML(); check('на карточке клуба — подписчики и медийка', tile.indexOf(L().ccOrgFans)>=0 && tile.indexOf(ccOrgFolText(ccOrgFollowers('Team Falcons', 90)))>=0 && tile.indexOf(L().ccOrgMedia)>=0);
   check('подписчики игрока: настоящее — без ≈', ccFollowText('Malibuca', 93).charAt(0)!=='≈' && ccFollowText('Нет Такого', 80).charAt(0)==='≈', ccFollowText('Malibuca', 93)+' / '+ccFollowText('Нет Такого', 80));
   check('профиль игрока показывает подписчиков', careerWhoHTML('Malibuca').indexOf('👥 '+ccFollowText('Malibuca'))>=0);
+  // «Позвать в клуб» — отказ держится 30 дней (Notion 8.10: «опять спам можно»).
+  { const weak={handle:'WeakMate', region:'EU', rating:60, _ovr:60, nat:'de', tier:'ladder', event:'ladder', placement:null, rarity:'common', partner:null};
+    CAREER.partner={card:weak, patience:50, since:'2026-01-01', dev:0}; CAREER.partners=[CAREER.partner];
+    CAREER.org={name:'Team HavoK', tier:95, salary:1000, since:1, paid:0};
+    const n0=(CAREER.career.news||[]).filter(n=>n.k==='roClubNo').length;
+    ccOrgBringMate('WeakMate'); ccOrgBringMate('WeakMate'); ccOrgBringMate('WeakMate');
+    const n1=(CAREER.career.news||[]).filter(n=>n.k==='roClubNo').length;
+    check('три нажатия — одна новость отказа', n1-n0===1, String(n1-n0));
+    const strip=ccRostersStripHTML(); check('вместо кнопки — «клуб отказал, снова с»', strip.indexOf('ch-ro-clubno')>=0 && strip.indexOf('ccOrgBringMate')<0);
+    CAREER.career.day=ccAddDays(CAREER.career.day, 31); check('через месяц — снова можно', ccRostersStripHTML().indexOf('ccOrgBringMate')>=0); }
 }catch(e){ out.fails.push(String(e.stack||e)); }
 document.getElementById('__out').textContent='@@B@@'+encodeURIComponent(JSON.stringify(out))+'@@E@@'; }, 500));<\/script>`;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'orgtier-')), tmp = path.join(dir, 'index.html');
