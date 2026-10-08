@@ -856,7 +856,7 @@ const SECTIONS=[
     for(let i=0;i<10 && (MGR.results||[]).length<3;i++) mgrSkip();   // пропуск может остановиться на дедлайне — это не турнир
     const res=MGR.results||[];
     check('мир: таблицы пропущенных турниров', res.length>=3 && res.every(r=>(r.rows||[]).length>=20), res.length+' '+res.map(r=>(r.rows||[]).length).join());
-    check('мир: у строк места и клубы', res[0] && res[0].rows.every((r,i)=>r.place===i+1) && res[0].rows.some(r=>r.orgs && r.orgs.length));
+    check('мир: у строк места и клубы', res[0] && res[0].rows.every((r,i)=>i===0 ? r.place===1 : r.place>res[0].rows[i-1].place) && res[0].rows.some(r=>r.orgs && r.orgs.length));
     check('мир: рейтинг клубов', mgrClubTable().length>=5 && mgrClubTable()[0].prize>0);
     check('мир: медиа — победители', (MGR.wfeed||[]).some(p=>p.kind==='win'));
     MGR_SUB.tables='events'; mgrRenderHub('tables'); const B=document.getElementById('mgBody');

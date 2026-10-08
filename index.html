@@ -143,6 +143,25 @@
   #screen-manager .mg-slots .cc-car-open{border-radius:999px;border-color:rgba(180,200,255,.35);color:#e6ecff;}
   .mg-slot-logo{display:flex;align-items:center;justify-content:center;background:rgba(8,18,50,.55);border-radius:10px;overflow:hidden;}
   .mg-slot-logo img, .mg-slot-logo svg{width:78% !important;height:78% !important;max-width:none !important;object-fit:contain;}
+  .mg-ffbar{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:400;width:min(420px,calc(100vw - 32px));}
+  .mg-ffbar-in{background:#0d1a4a;border:1px solid rgba(255,221,0,.5);border-radius:14px;padding:12px 14px;box-shadow:0 12px 40px rgba(0,0,0,.6);display:flex;flex-direction:column;gap:4px;color:#fff;}
+  .mg-ffbar-in b{font-size:13px;} .mg-ffbar-in small{font-size:12px;color:#9fb3e6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mg-ffbar-in u{display:block;height:6px;border-radius:3px;background:rgba(255,255,255,.12);text-decoration:none;overflow:hidden;} .mg-ffbar-in s{display:block;height:100%;background:#ffdd00;text-decoration:none;transition:width .2s;}
+  #screen-manager .mgw-row{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.07);}
+  #screen-manager .mgw-ri{flex:1 1 100% !important;}
+  #screen-manager .mgw-row.mine b{color:#ffdd00;}
+  #screen-manager .mgw-ri{flex:1;min-width:0;display:flex;flex-direction:column;} #screen-manager .mgw-ri em{font-style:normal;font-size:11px;color:#9fb3e6;}
+  #screen-manager .mgw-ri b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} #screen-manager .mgw-ri small{font-size:11px;color:#9fb3e6;}
+  #screen-manager .mgw-btn{flex:none;width:auto;padding:6px 10px;font-size:11px;margin:0;} #screen-manager .mgw-btn.go{background:#ffdd00;color:#0b1a3a;}
+  #screen-manager .mgw-scroll{max-height:460px;overflow-y:auto;margin-top:6px;}
+  #screen-manager .mgw-jump{width:auto;padding:6px 12px;font-size:11px;margin:6px 0 0;}
+  #screen-manager .mgw-t tr.mine td{background:rgba(255,221,0,.14);color:#ffdd00;font-weight:800;}
+  #screen-manager .mgw-t tr.mgw-flash td{background:rgba(255,221,0,.4);}
+  #screen-manager .mgw-t tr.mgw-gap td{text-align:center;color:#6f80b0;padding:2px;}
+  #screen-manager .mgw-minetag{font-style:normal;color:#ffdd00;}
+  #screen-manager .mgp-pl{position:relative;width:34px;height:34px;border-radius:50%;overflow:hidden;background:#1a2550;display:flex;align-items:center;justify-content:center;flex:none;}
+  #screen-manager .mgp-pl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;} #screen-manager .mgp-pl i{font-style:normal;font-size:11px;font-weight:800;color:#9fb3e6;}
+  #screen-manager .mgp-org{display:inline-flex;width:16px;height:16px;vertical-align:-3px;} #screen-manager .mgp-org img, #screen-manager .mgp-org svg{width:16px;height:16px;object-fit:contain;}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -157355,6 +157374,7 @@ function mgrEwcEvents(all, from, to){
 }
 async function mgrPlayEwc(ev){
   const T=mgrT(), T2=mgrT2(), T3=mgrT(), L0=L();
+  await mgrWorldCatchUpLive(ev.day);
   mgrAdvanceTo(ev.day);
   const best=mgrAll().map(mgrCard).filter(Boolean).sort((a,b)=>(ccCardOvr(b)||0)-(ccCardOvr(a)||0)).slice(0, 4);
   const skip=msg=>{ mgrToast(msg); MGR.skipped=(MGR.skipped||[]).concat([ev.id+'|'+ev.day]); mgrSave(); mgrOpenHub(); };
@@ -157399,7 +157419,7 @@ async function mgrPlayEwc(ev){
   CAREER_RUN=false;
   mgrSave();
 }
-function mgrEvName(ev){ if(ev.kind==='fncs') return ev.name; try{ if(typeof ccVictoryCupName==='function'){ const n=ccVictoryCupName(ev); if(n) return String(n).replace(/<[^>]+>/g, ''); } }catch(e){} return ev.name||ev.title||ev.label||ev.id; }
+function mgrEvName(ev){ if(ev.kind==='fncs') return ev.name; { const byMode={solo:'calVictorySolo', duo:'calVictoryDuo', trio:'calVictoryTrio'}[ev.mode]; if(byMode && L()[byMode]) return L()[byMode]; } try{ if(typeof ccVictoryCupName==='function'){ const n=ccVictoryCupName(ev); if(n) return String(n).replace(/<[^>]+>/g, ''); } }catch(e){} return ev.name||ev.title||ev.label||ev.id; }
 // Призовые команды за место: таблица Epic (payT) — на игрока × размер; иначе выплата карьеры на состав сезона, приведённая к своему размеру.
 function mgrPrize(ev, place, size){
   if(ev.payT) return ccPay24(ev.payT, place)*size;
@@ -157621,8 +157641,8 @@ function mgrCentreHTML(){
         '<div class="mgc-going">'+(going.length ? going.map(x=>'<span>'+esc(T2.teamWord)+' '+(x.i+1)+': '+x.t.cards.map(h=>esc(h)).join(' · ')+'</span>').join('') : '<span class="ch-empty">'+esc(T.noTeamFmt)+'</span>')+'</div>'+
         '<button class="ch-play" onclick="mgrPlay()">'+esc(T.play)+'</button>'+
         '<button class="cc-back mgc-skip" onclick="mgrSkip()">'+esc(T.skipEv)+'</button>'+
-        '<div class="mgc-ff"><button class="cc-back" onclick="mgrFastForward(ccAddDays(CAREER.career.day, 7))">'+esc(T9.ffWeek)+'</button>'+
-        '<button class="cc-back" onclick="mgrFastForward(ccAddDays(CAREER.career.day, 30))">'+esc(T9.ffMonth)+'</button></div></div>'
+        '<div class="mgc-ff"><button class="cc-back" onclick="mgrFastForwardLive(ccAddDays(CAREER.career.day, 7))">'+esc(T9.ffWeek)+'</button>'+
+        '<button class="cc-back" onclick="mgrFastForwardLive(ccAddDays(CAREER.career.day, 30))">'+esc(T9.ffMonth)+'</button></div></div>'
     : '<div class="ch-tile mgc-next"><h4>'+esc(T2.seasonOver)+'</h4><button class="ch-play" onclick="mgrSeasonReview()">'+esc(T2.endSeason)+'</button></div>';
   // Цели совета — строками плитки «Цели» карьеры.
   const b=MGR.board||{}, earnedNow=(MGR.club.earned||0)-(b.earned0||0);
@@ -157655,7 +157675,7 @@ function mgrCentreHTML(){
     '<button class="hg-go" onclick="MGR_MONTH=null;mgrRenderHub(\'calendar\')">'+esc(T9.toCal)+'</button></div>';
   const dls=mgrDeadlineSoon();
   const dl=dls ? '<div class="ch-tile mgc-dl" onclick="MGR_SUB.transfers=\'market\';mgrRenderHub(\'transfers\')"><b>⏰ '+esc(T9.dlSoon(dls.left))+'</b></div>' : '';
-  return strip+dl+deal+'<div class="ch-grid mgc-grid"><div class="mgc-col">'+next+devTile+'</div><div class="mgc-col">'+goals+calList+'</div>'+news+'</div>';
+  return strip+dl+deal+'<div class="ch-grid mgc-grid"><div class="mgc-col">'+next+devTile+'</div><div class="mgc-col">'+goals+mgrWorldTileHTML()+'</div>'+news+'</div>';
 }
 /* СОСТАВ — команды карточками FUT (как в драфте), запас и академия; клик по карточке — лист игрока. */
 function mgrCardTileHTML(h){
@@ -157886,33 +157906,144 @@ function mgrFeedNight(row){
    турнира сезона — сыгранного клубом целиком (ranked движка), пропущенного — досчитанного миром по силе
    поля с разбросом (careerCupField, как лобби карьеры); рейтинг клубов по призовым сезона; медиа мира —
    победители и трансферы других клубов. Хранится 40 последних таблиц, 60 постов. */
-const MGR_RESULTS_MAX=40, MGR_WFEED_MAX=60;
-function mgrWorldRow(tm, place, ev, size){
-  const sq=tm.squad||[];
-  return {place, n:sq.map(c=>c.handle).join(' & ')||tm.name||'—', orgs:[...new Set(sq.map(c=>mgrOrgOf(c)).filter(Boolean))],
-          pts:tm.stagePts!=null ? Math.round(tm.stagePts) : null, el:tm.stageElims!=null ? tm.stageElims : null,
-          prize:mgrPrize(ev, place, size)||0, mine:!!tm.isClub};
+/* ВЕСЬ МИР — НАШЕЙ СИМУЛЯЦИЕЙ (его слово 8.10: «чтоб все капы можно было смотреть, симулировать… чтоб все таблицы,
+   хиты и т. д. зависели от нашей симуляции»). Было: пропущенный кап досчитывался «сила + разброс», капы не в формате
+   клуба (соло и др.) не игрались вовсе. Теперь каждый кап года (mgrWorldEvents) играется движком (simulateGames) по
+   лобби: сильнейшие MGR_ENGINE_TOP команд поля — вперемешку по жребию в лобби размера капа, остальные — ниже по силе
+   (верх таблицы, который виден, целиком из движка; замер 8.10: соло-кап на 2659 игроков — 54 лобби ≈ 1,2 с, 500 —
+   ≈ 0,25 с). FNCS — квалификация (6 игр) и финал (10 игр) движком, обе таблицы. Таблица хранит первые
+   MGR_RESULTS_ROWS мест и всех наших; призовые клубов за год копятся отдельно (MGR.ctab), чтобы потолок истории
+   таблиц не срезал рейтинг клубов. */
+const MGR_RESULTS_MAX=60, MGR_WFEED_MAX=150, MGR_RESULTS_ROWS=60, MGR_ENGINE_TOP=500;
+function mgrEvSize(ev){ return {solo:1, duo:2, trio:3, squad:4}[ev && ev.mode]||careerSquadSize(); }
+function mgrEvKey(ev){ return MGR.year+'|'+ev.id+'|'+ev.day; }
+function mgrWorldDone(ev){ return (MGR.wdone||[]).indexOf(mgrEvKey(ev))>=0; }
+function mgrWorldMark(ev){ const k=mgrEvKey(ev); MGR.wdone=MGR.wdone||[]; if(MGR.wdone.indexOf(k)<0) MGR.wdone.push(k); if(MGR.wdone.length>800) MGR.wdone=MGR.wdone.slice(-800); }
+// Все капы мира в окне дат — и соло, и форматы, которых у клуба нет.
+function mgrWorldEvents(from, to){
+  let all=[]; try{ all=(ccVictoryList()||[]).concat(mgrFncsDays()); }catch(e){ all=[]; }
+  return all.filter(ev=>ev && ev.day>=from && ev.day<=to && !ev.invite && !ev.zb && !ev.ewc24 && !ev.reshuffle &&
+    !/Console|Playstation|PlayStation|Mobile|Platform|PC|Xbox|Switch|Influencer/i.test(ev.id+' '+(ev.name||'')) && {solo:1, duo:1, trio:1, squad:1}[ev.mode])
+    .map(ev=>Object.assign({}, ev, {name:mgrEvName(ev)}))
+    .sort((a,b)=>a.day<b.day ? -1 : a.day>b.day ? 1 : 0);
 }
-function mgrWorldStore(ev, ranked, played){
-  const size={duo:2, trio:3, squad:4}[ev.mode]||careerSquadSize();
+// Капы мира, которые пора сыграть: раньше lim, ещё не сыграны и не ждут клуб (их играет матчевый день).
+function mgrWorldPending(lim){
+  if(!MGR.wfrom) MGR.wfrom=CAREER.career.day;   // старый сейв: прошлое не пересчитываем
+  const club=new Set(mgrEvents().map(e=>e.id+'|'+e.day));
+  return mgrWorldEvents(MGR.wfrom, ccAddDays(lim, -1)).filter(ev=>!mgrWorldDone(ev) && !club.has(ev.id+'|'+ev.day));
+}
+function mgrRankCmp(a, b){ return (b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0); }
+// Поле капа движком: сильнейшие MGR_ENGINE_TOP (и все keep — команды клуба) — по лобби, ровными по размеру.
+function mgrEngineRank(field, games, ptsFn, kill, lobbyN, seed, keep){
+  keep=keep||[];
+  const rnd=careerRng(ccHashStr('mgreng|'+seed));
+  const byPow=field.slice().sort((a,b)=>(b.pow||0)-(a.pow||0));
+  const top=byPow.slice(0, MGR_ENGINE_TOP); keep.forEach(t=>{ if(top.indexOf(t)<0) top.push(t); });
+  const rest=byPow.filter(t=>top.indexOf(t)<0);
+  rest.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.wins=0; t.stageLog=[]; });
+  const mixed=top.map(t=>({t, k:rnd()})).sort((a,b)=>a.k-b.k).map(x=>x.t);
+  const want=Math.max(2, lobbyN||50), parts=Math.max(1, Math.ceil(mixed.length/want)), size=Math.ceil(mixed.length/parts);
+  for(let i=0; i<mixed.length; i+=size){ const lob=mixed.slice(i, i+size); if(lob.length>1) simulateGames(lob, games, ptsFn, kill); }
+  return mixed.sort(mgrRankCmp).concat(rest);
+}
+function mgrCupFieldOf(ev, n, salt){
+  const cr=CAREER.career;
+  return (mgrEvSize(ev)===1 ? careerSoloField(cr, [], n, true) : careerCupField(cr, [], n, salt, true))||[];
+}
+function mgrWorldPrize(ev, place, size, stage){
+  if(ev.kind==='fncs'){ if(stage) return 0; try{ return Math.round(majorPrize(place)/Math.max(1, careerSquadSize())*size); }catch(e){ return 0; } }
+  return mgrPrize(ev, place, size)||0;
+}
+function mgrWorldRow(tm, place, ev, size, stage){
+  const sq=tm.squad||[];
+  const orgs=[...new Set(sq.map(c=>mgrOrgOf(c)).filter(Boolean))];
+  return {place, n:sq.map(c=>c.handle).join(' & ')||tm.name||'—', orgs,
+          pts:tm.stagePts!=null ? Math.round(tm.stagePts) : null, el:tm.stageElims!=null ? tm.stageElims : null,
+          prize:mgrWorldPrize(ev, place, size, stage), mine:!!tm.isClub || orgs.indexOf(MGR.club.name)>=0};
+}
+function mgrWorldStore(ev, ranked, played, stage){
+  const size=mgrEvSize(ev);
   MGR.results=MGR.results||[];
-  if(MGR.results.some(r=>r.id===ev.id && r.day===ev.day && r.year===MGR.year)) return;
-  const rows=ranked.slice(0, 50).map((tm,i)=>mgrWorldRow(tm, i+1, ev, size));
-  MGR.results.unshift({id:ev.id, day:ev.day, year:MGR.year, name:ev.name, played:!!played, n:ranked.length, rows});
+  const id=ev.id+(stage ? '#'+stage : '');
+  if(MGR.results.some(r=>r.id===id && r.day===ev.day && r.year===MGR.year)) return;
+  const rows=[];
+  ranked.forEach((tm,i)=>{ if(i<MGR_RESULTS_ROWS || tm.isClub || (tm.squad||[]).some(c=>mgrOrgOf(c)===MGR.club.name)) rows.push(mgrWorldRow(tm, i+1, ev, size, stage)); });
+  MGR.results.unshift({id, day:ev.day, year:MGR.year, name:ev.name+(stage ? ' · '+stage : ''), played:!!played, n:ranked.length, rows, mode:ev.mode});
   MGR.results=MGR.results.slice(0, MGR_RESULTS_MAX);
+  if(stage) return;
+  mgrWorldMark(ev);
+  // Призовые клубов за год — копятся здесь (MGR.ctab), а не из обрезанной истории таблиц.
+  if(!MGR.ctab || MGR.ctab.year!==MGR.year) MGR.ctab={year:MGR.year, by:{}};
+  rows.forEach(row=>{ if(!row.orgs.length) return; row.orgs.forEach(o=>{ const b=MGR.ctab.by[o]=MGR.ctab.by[o]||{org:o, prize:0, wins:0, top3:0, events:0};
+    b.prize+=Math.round((row.prize||0)/row.orgs.length); b.events++; if(row.place===1) b.wins++; if(row.place<=3) b.top3++; }); });
   const w=rows[0]; if(w) mgrWorldPost('win', {ev:ev.name, n:w.n, orgs:w.orgs.join(', ')});
+  try{ mgrWorldPlayerPosts(ev, ranked); }catch(e){}
 }
 function mgrWorldSim(ev){
-  if(!ev || ev.kind==='ewc') return;
-  const size={duo:2, trio:3, squad:4}[ev.mode]||careerSquadSize();
-  const prevMode=CARD_MODE, prevSize=squadSize; CARD_MODE=true; squadSize=size;
-  let field=[];
-  try{ field=careerCupField(CAREER.career, [], Math.max(20, careerVictoryField(false)||50), 'mgrw|'+ev.id+'|'+MGR.year, true) || []; }catch(e){ field=[]; }
-  CARD_MODE=prevMode; squadSize=prevSize;
-  if(!field.length) return;
-  const rnd=careerRng(ccHashStr('mgrwsim|'+ev.id+'|'+ev.day+'|'+MGR.year));
-  const ranked=field.map(t=>({t, s:(t.pow||0)+(rnd()-0.5)*10})).sort((a,b)=>b.s-a.s).map(x=>x.t);
-  mgrWorldStore(ev, ranked, false);
+  if(!ev || ev.kind==='ewc' || mgrWorldDone(ev)) return;
+  const size=mgrEvSize(ev), seed=ev.id+'|'+ev.day+'|'+MGR.year, cr=CAREER.career, d0=cr.day;
+  const pm=CARD_MODE, ps=squadSize, pd=drafted; CARD_MODE=true; squadSize=size; drafted=[];
+  if(ev.day>d0) cr.day=ev.day;   // поле — тем днём, когда кап идёт
+  try{
+    if(ev.kind==='fncs'){
+      const qField=careerCupField(cr, [], ccTeams(100), 'mgrwq|'+seed, true, (typeof CC_FIELD_SHARP!=='undefined' && CC_FIELD_SHARP.final) || undefined)||[];
+      if(qField.length){
+        const q=mgrEngineRank(qField, 6, victoryR1Points, CC_VICTORY_R1_KILL, qField.length, 'q|'+seed, []);
+        mgrWorldStore(ev, q, false, mgrT2().fncsQ);
+        const fin=q.slice(0, ccTeams(33)); simulateGames(fin, 10, majorPoints, CC_M24_KILL);
+        const pDay=CC_PRIZE_DAY; CC_PRIZE_DAY=ev.day; mgrWorldStore(ev, fin.slice().sort(mgrRankCmp), false); CC_PRIZE_DAY=pDay;
+      }
+    } else {
+      const field=mgrCupFieldOf(ev, Math.max(20, careerVictoryField(size===1)||50), 'mgrw|'+ev.id+'|'+MGR.year);
+      if(field.length) mgrWorldStore(ev, mgrEngineRank(field, CC_VICTORY_R1_GAMES, victoryR1Points, CC_VICTORY_R1_KILL, ccVictoryLobby(ev, size===1)||50, seed, []), false);
+    }
+  }catch(e){ console.error('mgrWorldSim', e); }
+  finally{ cr.day=d0; CARD_MODE=pm; squadSize=ps; drafted=pd; }
+  mgrWorldMark(ev);
+}
+function mgrWorldCatchUp(lim){ mgrWorldPending(lim).slice(0, 200).forEach(ev=>{ try{ mgrWorldSim(ev); }catch(e){ mgrWorldMark(ev); } }); }
+function mgrYield(){ return (typeof ccYield==='function') ? ccYield() : new Promise(res=>setTimeout(res, 0)); }
+async function mgrWorldCatchUpLive(lim){
+  const list=mgrWorldPending(lim); if(!list.length) return;
+  for(let i=0; i<list.length; i++){ mgrFfBar(i+1, list.length, list[i].name); try{ mgrWorldSim(list[i]); }catch(e){ mgrWorldMark(list[i]); } await mgrYield(); }
+  mgrFfBarOff();
+}
+function mgrTW(){
+  const ru=(typeof LANG!=='undefined' && LANG==='ru');
+  return ru ? {h:'Турниры мира', watch:'Смотреть', sim:'Симулировать', club:'★ клуб', play:'Матчевый день', none:'Турниров больше нет', sim2:'Симуляция', mine:'К нашим ↓', back:'К таблицам', fmt:{solo:'соло', duo:'дуо', trio:'трио', squad:'сквад'}, focus:'Камера на', all:'Все турниры'}
+            : {h:'World tournaments', watch:'Watch', sim:'Simulate', club:'★ club', play:'Match day', none:'No more tournaments', sim2:'Simulating', mine:'Our rows ↓', back:'To tables', fmt:{solo:'solo', duo:'duos', trio:'trios', squad:'squads'}, focus:'Camera on', all:'All tournaments'};
+}
+// Посты игроков мира (его слово 8.10: «медиа, чтоб можно было смотреть за миром — посты игроков и т. д.»): после капа
+// пишут победитель, иногда призёры, кто чуть-чуть не дотянул, и наши игроки. Аватар — портрет карточки.
+function mgrTP(){
+  const ru=(typeof LANG!=='undefined' && LANG==='ru');
+  return ru ? {win:[(e,p,m)=>e+' — 1-е место 🏆 '+m, (e,p,m)=>'Выиграли '+e+'! '+m+' 🐐', (e,p,m)=>'GG '+e+'. Победа 🏆 '+m],
+               pod:[(e,p,m)=>'#'+p+' на '+e+'. Неплохо, но мы за первым '+m, (e,p,m)=>e+': #'+p+' 🥉 '+m],
+               near:[(e,p)=>'#'+p+' на '+e+'… чуть-чуть не хватило', (e,p)=>'обидно, #'+p+' на '+e+'. завтра заново'],
+               club:[(e,p,m)=>'#'+p+' на '+e+' '+m, (e,p)=>e+' — #'+p+'. работаем 💪']}
+            : {win:[(e,p,m)=>e+' — 1st place 🏆 '+m, (e,p,m)=>'Won '+e+'! '+m+' 🐐', (e,p,m)=>'GG '+e+'. W 🏆 '+m],
+               pod:[(e,p,m)=>'#'+p+' at '+e+'. Not bad, coming for 1st '+m, (e,p,m)=>e+': #'+p+' 🥉 '+m],
+               near:[(e,p)=>'#'+p+' at '+e+'… so close', (e,p)=>'rough, #'+p+' at '+e+'. again tomorrow'],
+               club:[(e,p,m)=>'#'+p+' at '+e+' '+m, (e,p)=>e+' — #'+p+'. back to work 💪']};
+}
+function mgrWorldPlayerPosts(ev, ranked){
+  const P=mgrTP(), rnd=careerRng(ccHashStr('mgrpp|'+ev.id+'|'+ev.day+'|'+MGR.year));
+  MGR.wfeed=MGR.wfeed||[];
+  const say=(tm, place, kind)=>{
+    const sq=(tm && tm.squad)||[]; if(!sq.length) return;
+    const c=sq[Math.floor(rnd()*sq.length)], mates=sq.filter(x=>x!==c).map(x=>'@'+x.handle).join(' ');
+    const list=P[kind], f=list[Math.floor(rnd()*list.length)];
+    let photo=null; try{ photo=photoURL(c)||null; }catch(e){}
+    MGR.wfeed.unshift({id:'w'+(MGR.sid=(MGR.sid||0)+1), day:ev.day, kind:'p', by:c.handle, org:mgrOrgOf(c)||'', photo, text:f(ev.name, place, mates),
+      likes:Math.round((kind==='win' ? 3000 : kind==='pod' ? 1200 : 400)*(0.5+rnd()))});
+  };
+  if(ranked[0]) say(ranked[0], 1, 'win');
+  if(ranked[1] && rnd()<0.6) say(ranked[1], 2, 'pod');
+  if(ranked[2] && rnd()<0.4) say(ranked[2], 3, 'pod');
+  const near=ranked.slice(3, 10); if(near.length && rnd()<0.5){ const t=near[Math.floor(rnd()*near.length)]; say(t, ranked.indexOf(t)+1, 'near'); }
+  ranked.forEach((tm,i)=>{ if(tm.isClub && i>2 && rnd()<0.7) say(tm, i+1, 'club'); });
+  MGR.wfeed=MGR.wfeed.slice(0, MGR_WFEED_MAX);
 }
 function mgrWorldPost(kind, d){
   MGR.wfeed=MGR.wfeed||[];
@@ -157921,6 +158052,7 @@ function mgrWorldPost(kind, d){
   MGR.wfeed=MGR.wfeed.slice(0, MGR_WFEED_MAX);
 }
 function mgrClubTable(){
+  if(MGR.ctab && MGR.ctab.year===MGR.year && Object.keys(MGR.ctab.by).length) return Object.values(MGR.ctab.by).sort((a,b)=>b.prize-a.prize || b.wins-a.wins);
   const by={};
   (MGR.results||[]).filter(r=>r.year===MGR.year).forEach(r=>r.rows.forEach(row=>{
     const orgs=row.orgs.length ? row.orgs : [];
@@ -157929,12 +158061,18 @@ function mgrClubTable(){
   return Object.values(by).sort((a,b)=>b.prize-a.prize || b.wins-a.wins);
 }
 function mgrWorldEventsHTML(){
-  const T9=mgrT9(), list=(MGR.results||[]).filter(r=>r.year===MGR.year);
+  const T9=mgrT9(), W=mgrTW(), list=(MGR.results||[]).filter(r=>r.year===MGR.year);
   if(!list.length) return '<div class="ch-tile"><div class="ch-empty">'+esc(T9.wNone)+'</div></div>';
-  return list.map((r,i)=>'<details class="ch-tile mgw-ev"'+(i===0 ? ' open' : '')+'><summary><b>'+esc(r.name)+'</b> <small>'+esc(ccDayLabel(r.day))+' · '+(r.played ? esc(T9.wPlayed) : esc(T9.wSim))+' · '+r.n+'</small></summary>'+
-    '<table class="mgw-t"><tr><th>#</th><th>'+esc(T9.wTeam)+'</th><th>'+esc(T9.wOrg)+'</th><th>'+esc(T9.wPts)+'</th><th>$</th></tr>'+
-    r.rows.slice(0, 25).map(x=>'<tr class="'+(x.mine || x.orgs.indexOf(MGR.club.name)>=0 ? 'mine' : '')+'"><td>'+x.place+'</td><td>'+esc(x.n)+'</td><td>'+esc(x.orgs.join(', ')||'—')+'</td><td>'+(x.pts!=null ? x.pts : '—')+'</td><td>'+(x.prize ? mgrMoney(x.prize) : '')+'</td></tr>').join('')+
-    '</table></details>').join('');
+  return list.map((r,i)=>{ const mine=r.rows.some(x=>x.mine || x.orgs.indexOf(MGR.club.name)>=0);
+    return '<details class="ch-tile mgw-ev"'+(i===0 ? ' open' : '')+'><summary><b>'+esc(r.name)+'</b> <small>'+esc(ccDayLabel(r.day))+' · '+(r.mode ? esc(W.fmt[r.mode]||r.mode)+' · ' : '')+(r.played ? esc(T9.wPlayed) : esc(T9.wSim))+' · '+r.n+'</small>'+(mine ? ' <i class="mgw-minetag">★</i>' : '')+'</summary>'+
+    (mine ? '<button class="cc-back mgw-jump" onclick="mgrJumpMine(this)">'+esc(W.mine)+'</button>' : '')+
+    '<div class="mgw-scroll"><table class="mgw-t"><tr><th>#</th><th>'+esc(T9.wTeam)+'</th><th>'+esc(T9.wOrg)+'</th><th>'+esc(T9.wPts)+'</th><th>$</th></tr>'+
+    r.rows.map((x,j)=>(j>0 && x.place>r.rows[j-1].place+1 ? '<tr class="mgw-gap"><td colspan="5">…</td></tr>' : '')+'<tr class="'+(x.mine || x.orgs.indexOf(MGR.club.name)>=0 ? 'mine' : '')+'"><td>'+x.place+'</td><td>'+esc(x.n)+'</td><td>'+esc(x.orgs.join(', ')||'—')+'</td><td>'+(x.pts!=null ? x.pts : '—')+'</td><td>'+(x.prize ? mgrMoney(x.prize) : '')+'</td></tr>').join('')+
+    '</table></div></details>'; }).join('');
+}
+function mgrJumpMine(btn){
+  const d=btn.closest('.mgw-ev'), row=d && d.querySelector('tr.mine'), box=d && d.querySelector('.mgw-scroll');
+  if(row && box){ box.scrollTop=Math.max(0, row.offsetTop-box.clientHeight/2); row.classList.add('mgw-flash'); setTimeout(()=>row.classList.remove('mgw-flash'), 1200); }
 }
 function mgrWorldClubsHTML(){
   const T9=mgrT9(), list=mgrClubTable();
@@ -157946,8 +158084,10 @@ function mgrWorldClubsHTML(){
 function mgrWorldFeedHTML(){
   const T9=mgrT9(), list=MGR.wfeed||[];
   if(!list.length) return '<div class="ch-tile"><div class="ch-empty">'+esc(T9.wNone)+'</div></div>';
-  return '<div class="ch-tile mgp"><h4>'+esc(T9.wMedia)+'</h4>'+list.map(p=>'<div class="mgp-post"><span class="mgp-ava">'+mgrCrestSVG({color:'#7aa2ff', shape:'round', ini:'FI'}, 26)+'</span>'+
-    '<div><b>FNCS Insider</b> <small>@FNCSInsider · '+esc(ccDayLabel(p.day))+'</small><p>'+esc(p.text)+'</p><small class="mgp-likes">♥ '+ccNum(p.likes)+'</small></div></div>').join('')+'</div>';
+  const ava=p=>p.by ? '<span class="mgp-ava mgp-pl">'+(p.photo ? '<img src="'+esc(p.photo)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+'<i>'+esc(String(p.by).slice(0,2).toUpperCase())+'</i></span>'
+                    : '<span class="mgp-ava">'+mgrCrestSVG({color:'#7aa2ff', shape:'round', ini:'FI'}, 26)+'</span>';
+  return '<div class="ch-tile mgp"><h4>'+esc(T9.wMedia)+'</h4>'+list.map(p=>'<div class="mgp-post'+(p.by ? ' mgp-player' : '')+'">'+ava(p)+
+    '<div><b>'+esc(p.by||'FNCS Insider')+'</b>'+(p.org ? ' <span class="mgp-org">'+mgrLogo(p.org, false)+'</span>' : '')+' <small>@'+esc(p.by ? String(p.by).replace(/\s+/g,'') : 'FNCSInsider')+' · '+esc(ccDayLabel(p.day))+'</small><p>'+esc(p.text)+'</p><small class="mgp-likes">♥ '+ccNum(p.likes)+'</small></div></div>').join('')+'</div>';
 }
 function mgrFeedWeek(d){
   const rnd=careerRng(ccHashStr('mgrrumor|'+MGR.club.name+'|'+d));
@@ -158159,9 +158299,10 @@ function mgrInboxHTML(){
     '</div>').join('')+'</div>';
 }
 function mgrTeamUp(i){ if(i<1) return; const t=MGR.teams; [t[i-1], t[i]]=[t[i], t[i-1]]; mgrSave(); mgrOpenHub(); }
-function mgrNewClubAsk(){ ccAsk(mgrT().newClub+'?', ()=>{ MGR=null; try{ localStorage.removeItem(MGR_KEY); }catch(e){} mgrLeave(); mgrOpenNew(); }); }
+function mgrNewClubAsk(){ ccAsk(mgrT().newClub+'?', ()=>{ MGR=null; try{ localStorage.removeItem(MGR_LS_SLOT(mgrSlot())); }catch(e){} mgrLeave(); mgrOpenNew(); }); }
 function mgrAdvanceTo(day){
   const was=CAREER.career.day;
+  if(day>CAREER.career.day){ try{ mgrWorldCatchUp(day); }catch(e){ console.error('mgrWorldCatchUp', e); } }
   if(day>CAREER.career.day){ mgrPayMonths(day); mgrWeekly(CAREER.career.day, day); CAREER.career.day=day; }
   try{ mgrDeadlineCheck(was, day); }catch(e){ console.error('mgrDeadlineCheck', e); }
   try{ const nd=mgrNationsDay(), od=ccAddDays(nd, -MGR_NAT_OFFER_DAYS); if(od>was && od<=day) mgrNatJobOffer(od); if(nd>was && nd<=day) mgrNatJobPlay(nd); }catch(e){ console.error('mgrNatJob', e); }
@@ -158181,54 +158322,47 @@ function mgrDeadlineStop(toDay){
    поля лобби (careerCupField), призовые, киллы — по месту, всё в журнал, таблицу мира и ленту.
    EWC без просмотра не играется — пропуск. На дедлайне трансферов перемотка останавливается. */
 function mgrAutoNight(ev){
-  const size={duo:2, trio:3, squad:4}[ev.mode]||careerSquadSize();
+  const size=mgrEvSize(ev);
   MGR.skipped=(MGR.skipped||[]).concat([ev.id+'|'+ev.day]);   // турнир прошёл — из списка ближайших
   if(ev.kind==='ewc' || !MGR.teams.some(t=>mgrTeamSize(t)===size)){ try{ mgrWorldSim(ev); }catch(e){} return; }
-  const cr=CAREER.career, prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted;
+  const cr=CAREER.career, pm=CARD_MODE, ps=squadSize, pd=drafted;
   CARD_MODE=true; squadSize=size;
   const club=mgrClubTeams(size), clubCards=club.flatMap(t=>t.squad); drafted=clubCards;
-  let field=club;
-  try{ field=club.concat(careerCupField(cr, clubCards, Math.max(1, (careerVictoryField(false)||50)-(club.length-1)), 'mgrff|'+ev.id+'|'+MGR.year, true)||[]); }catch(e){}
-  const rnd=careerRng(ccHashStr('mgrauto|'+ev.id+'|'+ev.day+'|'+MGR.year));
-  /* ВЕЧЕР ДВИЖКОМ, КАК В КАРЬЕРЕ (его слово 8.10: «почему не симулируются турниры как в карьере игрока»). Было: место
-     = сила + случайность, киллы — по месту. Теперь лобби клуба играется настоящим движком без экрана (simulateGames —
-     те же игры, очки и элиминации, что в обычном вечере): клуб и соперники из поля в лобби размера турнира, место в
-     поле — по месту в лобби. Остальное поле, как и раньше, — по силе (мир не смотрят). */
-  let lobbyPlace=null;
+  const seed=ev.id+'|'+ev.day+'|'+MGR.year;
+  /* ВЕЧЕР ДВИЖКОМ, КАК В КАРЬЕРЕ (его слова 8.10: «почему не симулируются турниры как в карьере игрока», «чтоб все
+     таблицы зависели от нашей симуляции»): всё поле капа — движком по лобби (mgrEngineRank), клуб — внутри поля, его
+     место — по очкам среди всех лобби. FNCS — квалификация и финал движком. */
+  let ranked=[], qRanked=null, fin=[];
+  const pDay=CC_PRIZE_DAY;
   try{
-    const lobbyN=Math.max(club.length+1, Math.min(field.length, (typeof ccVictoryLobby==='function' ? ccVictoryLobby(ev, false) : 0)||100));
-    const others=field.filter(t=>club.indexOf(t)<0).map(t=>({t, k:rnd()})).sort((a,b)=>a.k-b.k).slice(0, lobbyN-club.length).map(x=>x.t);
-    const lobby=club.concat(others);
-    const games=ev.kind==='fncs' ? 10 : CC_VICTORY_R1_GAMES;
-    simulateGames(lobby, games, victoryR1Points, CC_VICTORY_R1_KILL);
-    const order=lobby.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0));
-    lobbyPlace=new Map(order.map((t,i)=>[t, i+1])); lobbyPlace.n=order.length;
-  }catch(e){ console.error('mgrAutoNight engine', e); lobbyPlace=null; }
-  CARD_MODE=prevMode; squadSize=prevSize; drafted=prevDrafted;
-  let ranked=field.map(t=>({t, s:(t.pow||0)+(rnd()-0.5)*10})).sort((a,b)=>b.s-a.s).map(x=>x.t);
-  if(lobbyPlace){   // клуб — на место по лобби, остальные вокруг по силе
-    const of=ranked.length, rest=ranked.filter(t=>club.indexOf(t)<0);
-    const want=club.map(t=>({t, p:Math.max(1, Math.min(of, Math.round((lobbyPlace.get(t)-0.5)/lobbyPlace.n*of)))})).sort((a,b)=>a.p-b.p);
-    want.forEach(w=>{ rest.splice(Math.min(rest.length, w.p-1), 0, w.t); });
-    ranked=rest;
-  }
+    if(ev.kind==='fncs'){
+      if(mgrFac('boot')) club.forEach(t=>{ t.pow+=1; });
+      const qField=club.concat(careerCupField(cr, clubCards, Math.max(1, ccTeams(100)-(club.length-1)), 'mgrq|'+ev.id, true, (typeof CC_FIELD_SHARP!=='undefined' && CC_FIELD_SHARP.final) || undefined)||[]);
+      qRanked=mgrEngineRank(qField, 6, victoryR1Points, CC_VICTORY_R1_KILL, qField.length, 'q|'+seed, club);
+      try{ mgrWorldStore(ev, qRanked, true, mgrT2().fncsQ); }catch(e){}
+      fin=qRanked.slice(0, ccTeams(33));
+      simulateGames(fin, 10, majorPoints, CC_M24_KILL);
+      ranked=fin.slice().sort(mgrRankCmp);
+      CC_PRIZE_DAY=ev.day;
+    } else {
+      const field=club.concat(careerCupField(cr, clubCards, Math.max(1, (careerVictoryField(false)||50)-(club.length-1)), 'mgrff|'+ev.id+'|'+MGR.year, true)||[]);
+      ranked=mgrEngineRank(field, CC_VICTORY_R1_GAMES, victoryR1Points, CC_VICTORY_R1_KILL, ccVictoryLobby(ev, false)||50, seed, club);
+    }
+  }catch(e){ console.error('mgrAutoNight engine', e); if(!ranked.length) ranked=club.slice(); }
+  CARD_MODE=pm; squadSize=ps; drafted=pd;
   const row={day:ev.day, kind:'night', name:ev.name, auto:true, fncs:ev.kind==='fncs', teams:[]};
   let clubGot=0;
   club.forEach(tm=>{
-    const place=ranked.indexOf(tm)+1, of=ranked.length;
-    let prize=0;
-    if(ev.kind==='fncs'){ try{ prize=Math.round(majorPrize(place)/Math.max(1, careerSquadSize())*size); }catch(e){} }
-    else prize=mgrPrize(ev, place, size);
+    const out=ev.kind==='fncs' && fin.indexOf(tm)<0;
+    const place=out ? qRanked.indexOf(tm)+1 : ranked.indexOf(tm)+1, of=out ? qRanked.length : ranked.length;
+    const prize=out ? 0 : mgrWorldPrize(ev, place, size);
     clubGot+=Math.round(prize*MGR_CUT*mgrOwnShare(tm.mgrId));
-    // Киллы без просмотра — по месту: верх таблицы бьёт больше; делятся по составу с разбросом.
-    let total, kills={};
-    if(lobbyPlace && tm.stageLog && tm.stageLog.length){ total=tm.stageElims||0; kills=mgrKillsOf(tm); }
-    else { total=Math.max(0, Math.round((1-place/of)*14+rnd()*5));
-      (tm.squad||[]).forEach((c,i,a)=>{ kills[c.handle]=i===a.length-1 ? total-Object.values(kills).reduce((s,v)=>s+v, 0) : Math.round(total*(0.2+rnd()*0.5)/Math.max(1, a.length-1)); }); }
-    row.teams.push({id:tm.mgrId, name:mgrPlainName(tm), place, of, pts:tm.stagePts||0, elims:total, wins:tm.wins||0, prize, kills});
+    row.teams.push({id:tm.mgrId, name:mgrPlainName(tm), place, of, pts:tm.stagePts||0, elims:tm.stageElims||0, wins:tm.wins||0, prize, kills:mgrKillsOf(tm),
+                    stage:ev.kind==='fncs' ? (out ? mgrT2().fncsQ : mgrT2().fncsF) : undefined, final:out ? false : undefined});
   });
-  mgrAfterResults(ev, row, clubGot);
   try{ mgrWorldStore(ev, ranked, true); }catch(e){}
+  CC_PRIZE_DAY=pDay;
+  mgrAfterResults(ev, row, clubGot);
 }
 /* ИТОГИ ПЕРЕМОТКИ (его слово 8.10: «когда нажимаю месяц, не идёт симуляция, не понятно, что произошло за этот месяц»).
    Перемотка работала — дни шли, турниры клуба игрались без просмотра, касса и почта менялись, — но экран просто
@@ -158259,26 +158393,59 @@ function mgrFfSummary(a){
     '<button class="hero-btn hero-btn-go" onclick="this.closest(\'.mg-modal\').remove()">'+esc(T.ok)+'</button></div></div>';
   document.body.appendChild(box);
 }
+// Одна единица работы перемотки: чужой кап движком или вечер клуба. null — дошли; {stop} — встали (дедлайн).
+function mgrFfStep(toDay){
+  const nx=mgrEvents()[0];
+  const lim=nx && nx.day<=toDay ? nx.day : ccAddDays(toDay, 1);
+  const w=mgrWorldPending(lim)[0];
+  if(w){ try{ mgrWorldSim(w); }catch(e){ mgrWorldMark(w); } return {kind:'world', ev:w}; }
+  if(!nx || nx.day>toDay){
+    if(mgrDeadlineStop(ccAddDays(toDay, 1))) return {stop:true};
+    mgrAdvanceTo(toDay); return null;
+  }
+  if(mgrDeadlineStop(nx.day)) return {stop:true};
+  mgrAdvanceTo(nx.day);
+  try{ mgrAutoNight(nx); }catch(e){ console.error('mgrAutoNight', e); MGR.skipped=(MGR.skipped||[]).concat([nx.id+'|'+nx.day]); }
+  return {kind:'club', ev:nx};
+}
 function mgrFastForward(toDay){
   if(!toDay || toDay<=CAREER.career.day) return;
   const last=ccYearTo(); if(toDay>last) toDay=last;
   const snap0=mgrFfSnap();
-  try{ mgrFastForwardRun(toDay); } finally { try{ mgrFfSummary(snap0); }catch(e){ console.error('mgrFfSummary', e); } }
+  let stopped=false;
+  try{ for(let g=0; g<800; g++){ const st=mgrFfStep(toDay); if(!st){ break; } if(st.stop){ stopped=true; break; } } }
+  finally{ if(!stopped){ mgrSave(); mgrOpenHub(); try{ mgrSackCheck(); }catch(e){} } try{ mgrFfSummary(snap0); }catch(e){ console.error('mgrFfSummary', e); } }
 }
-function mgrFastForwardRun(toDay){
-  for(let g=0; g<80; g++){
-    const nx=mgrEvents()[0];
-    if(!nx || nx.day>toDay){
-      if(mgrDeadlineStop(ccAddDays(toDay, 1))) return;
-      mgrAdvanceTo(toDay); break;
+// Живая перемотка (кнопки и календарь): прогресс «Симуляция 12/40 · кап», кадр после каждого капа — как в карьере.
+let MGR_FF_BUSY=false;
+async function mgrFastForwardLive(toDay, quiet){
+  if(MGR_FF_BUSY || !toDay || toDay<=CAREER.career.day) return;
+  const last=ccYearTo(); if(toDay>last) toDay=last;
+  MGR_FF_BUSY=true;
+  const snap0=mgrFfSnap();
+  const total=Math.max(1, mgrWorldPending(ccAddDays(toDay, 1)).length+mgrEvents().filter(e=>e.day<=toDay).length);
+  let done=0, stopped=false;
+  mgrFfBar(0, total, '');
+  try{
+    for(let g=0; g<800; g++){
+      const st=mgrFfStep(toDay); if(!st) break; if(st.stop){ stopped=true; break; }
+      done++; mgrFfBar(done, Math.max(total, done), st.ev && st.ev.name);
+      await mgrYield();
     }
-    if(mgrDeadlineStop(nx.day)) return;
-    mgrAdvanceTo(nx.day);
-    try{ mgrAutoNight(nx); }catch(e){ console.error('mgrAutoNight', e); MGR.skipped=(MGR.skipped||[]).concat([nx.id+'|'+nx.day]); }
+  }finally{
+    MGR_FF_BUSY=false; mgrFfBarOff();
+    if(!stopped){ mgrSave(); if(!quiet) mgrOpenHub(); try{ mgrSackCheck(); }catch(e){} }
+    if(!quiet) try{ mgrFfSummary(snap0); }catch(e){ console.error('mgrFfSummary', e); }
   }
-  mgrSave(); mgrOpenHub(); mgrSackCheck();
 }
-function mgrFfAsk(day){ ccAsk(mgrT9().ffAsk(ccDayLabel(day)), ()=>mgrFastForward(day)); }
+function mgrFfBar(done, total, label){
+  let el=document.getElementById('mgFfBar');
+  if(!el){ el=document.createElement('div'); el.id='mgFfBar'; el.className='mg-ffbar'; document.body.appendChild(el); }
+  const pct=Math.max(2, Math.min(100, Math.round(done/Math.max(1, total)*100)));
+  el.innerHTML='<div class="mg-ffbar-in"><b>'+esc(mgrTW().sim2)+' · '+done+'/'+total+'</b><small>'+esc(label||'')+'</small><u><s style="width:'+pct+'%"></s></u></div>';
+}
+function mgrFfBarOff(){ const el=document.getElementById('mgFfBar'); if(el) el.remove(); }
+function mgrFfAsk(day){ ccAsk(mgrT9().ffAsk(ccDayLabel(day)), ()=>mgrFastForwardLive(day)); }
 /* НЕПОЛНЫЙ СОСТАВ ПЕРЕД ВЕЧЕРОМ (его слово 7.10: «пропускается турнир, но симуляция не идёт» — в окно
    игрока выкупали по отступным, и «Матчевый день» молча уходил в «Состав»). Как в FC: сначала в
    неполную команду встают сильнейшие из запаса; если запаса нет — окно: взять напарника из другой
@@ -160024,12 +160191,13 @@ function mgrBarOn(){
 function mgrBarOff(){ const b=document.getElementById('mgBar'); if(b) b.remove(); }
 /* ---- Матчевый день ----------------------------------------------------------- */
 // Один этап вечера: панель показа, сторож, установки и перерывы. Возвращает таблицу этапа.
+let MGR_WATCH=false;   // смотрим чужой кап: без установок, перерывов и панели менеджера
 async function mgrRunStage(field, club, games, ptsFn, kill, stageName, lobbySize){
   const lobbyN=Math.min(field.length, lobbySize||50);
   if(mgrViewNow()==='result') skipAnimation=true;
-  mgrBarOn();
+  if(!MGR_WATCH) mgrBarOn();
   const guardWas=REPLAY_GUARD_MS; REPLAY_GUARD_MS=10*60000;   // весь вечер смотрится целиком — сторож показа 45 с его обрезал бы
-  mgrApplyOrders(club, lobbyN);
+  if(!MGR_WATCH) mgrApplyOrders(club, lobbyN);
   try{ mgrRivalStyles(field); }catch(e){}
   try{
     await simulateGamesLive(field, games, ptsFn, kill, 'stage', 0, null, null,
@@ -160037,12 +160205,87 @@ async function mgrRunStage(field, club, games, ptsFn, kill, stageName, lobbySize
        frameMs:()=>Math.max(10, Math.round((MGR_VIEW_MS[mgrViewNow()]||90)/MGR_SPEED)),
        replayStop:lobby=>{ if(mgrViewNow()==='full') return null; const idx=lobby.map((t,i)=>t.isClub ? i : -1).filter(i=>i>=0); if(!idx.length) return null;
          return f=>idx.every(i=>{ const d=f.dots[i]; return !d || !d.alive; }); },
-       dropEachGame:async (g)=>{ if(g>1 && !CC_SKIP_RUN){ await mgrBreak(g-1, club, field); if(mgrViewNow()==='result') skipAnimation=true; else skipAnimation=false; } mgrApplyOrders(club, lobbyN); return null; }});
+       dropEachGame:async (g)=>{ if(MGR_WATCH) return null; if(g>1 && !CC_SKIP_RUN){ await mgrBreak(g-1, club, field); if(mgrViewNow()==='result') skipAnimation=true; else skipAnimation=false; } mgrApplyOrders(club, lobbyN); return null; }});
   }catch(e){ if(typeof console!=='undefined') console.error('mgr stage', e); }
   REPLAY_GUARD_MS=guardWas;
   mgrBarOff();
   club.forEach(t=>{ if(t._basePow!=null) t.pow=t._basePow+(t._landingPow||0); });
   return field.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0));
+}
+function mgrWorldFind(key){ return mgrWorldEvents(CAREER.career.day, ccYearTo()).find(e=>e.id+'|'+e.day===key)||null; }
+// До дня капа: перемотка до вчера (клуб играет свои по дороге), потом шаг в сам день — капы этого дня ждут.
+async function mgrGoToDay(day){
+  const pre=ccAddDays(day, -1);
+  if(pre>CAREER.career.day) await mgrFastForwardLive(pre, true);
+  if(CAREER.career.day<pre) return false;   // встали на дедлайне
+  if(day>CAREER.career.day) mgrAdvanceTo(day);
+  return true;
+}
+async function mgrSimWorld(key){
+  const ev=mgrWorldFind(key); if(!ev) return;
+  if(!(await mgrGoToDay(ev.day))) return;
+  mgrFfBar(1, 1, ev.name); await mgrYield();
+  try{ mgrWorldSim(ev); }catch(e){ console.error('mgrSimWorld', e); }
+  mgrFfBarOff(); mgrSave();
+  MGR_SUB.tables='events'; mgrOpenHub(); mgrRenderHub('tables');
+}
+async function mgrWatchWorld(key){
+  const ev=mgrWorldFind(key); if(!ev) return;
+  if(!(await mgrGoToDay(ev.day))) return;
+  if(mgrWorldDone(ev)){ MGR_SUB.tables='events'; mgrOpenHub(); mgrRenderHub('tables'); return; }
+  const W=mgrTW(), T2=mgrT2(), size=mgrEvSize(ev), seed=ev.id+'|'+ev.day+'|'+MGR.year, cr=CAREER.career;
+  const pm=CARD_MODE, ps=squadSize, pd=drafted, pSet=ACTIVE_LANDING_SET, pDay=CC_PRIZE_DAY;
+  CARD_MODE=true; squadSize=size; drafted=[];
+  try{ useLandingSet(/Reload/.test(ev.id) ? ccReloadSetOfYear() : careerBrSet()); }catch(e){}
+  mgrScreenReset(); MGR_WATCH=true;
+  let focus=null, ranked=[];
+  const pick=list=>{ if(focus) focus.isYou=false; focus=list.slice().sort((a,b)=>(b.pow||0)-(a.pow||0))[0]||null; if(focus) focus.isYou=true; return focus; };
+  try{
+    if(ev.kind==='fncs'){
+      const qField=careerCupField(cr, [], ccTeams(100), 'mgrwq|'+seed, true, (typeof CC_FIELD_SHARP!=='undefined' && CC_FIELD_SHARP.final) || undefined)||[];
+      pick(qField);
+      const q=await mgrRunStage(qField, [focus], 6, victoryR1Points, CC_VICTORY_R1_KILL, ev.name+' · '+T2.fncsQ, qField.length);
+      mgrWorldStore(ev, q, false, T2.fncsQ);
+      const fin=q.slice(0, ccTeams(33)); fin.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.stageLog=[]; t.wins=0; });
+      pick(fin); CC_PRIZE_DAY=ev.day;
+      ranked=await mgrRunStage(fin, [focus], 10, majorPoints, CC_M24_KILL, ev.name+' · '+T2.fncsF, fin.length);
+    } else {
+      const field=mgrCupFieldOf(ev, Math.max(20, careerVictoryField(size===1)||50), 'mgrw|'+ev.id+'|'+MGR.year);
+      const byPow=field.slice().sort((a,b)=>(b.pow||0)-(a.pow||0)), top=byPow.slice(0, MGR_ENGINE_TOP), rest=byPow.slice(MGR_ENGINE_TOP);
+      rest.forEach(t=>{ t.stagePts=0; t.stageElims=0; t.wins=0; t.stageLog=[]; });
+      pick(top);
+      ranked=(await mgrRunStage(top, [focus], CC_VICTORY_R1_GAMES, victoryR1Points, CC_VICTORY_R1_KILL, ev.name, ccVictoryLobby(ev, size===1)||50)).concat(rest);
+    }
+    mgrWorldStore(ev, ranked, false);
+    if(focus){
+      const shell=createStageCardShell(ev.name+' — '+ranked.length+' · '+W.focus+' '+mgrPlainName(focus));
+      try{ await revealStageLog(focus, shell, true); finalizeStageCard(shell, ranked.indexOf(focus)+1, ranked.length, focus.stagePts||0, null, focus.gotVR, ''); }catch(e){}
+      try{ await revealStandings(shell, ranked.slice(0, 100), focus, 0, null, null, p=>mgrWorldPrize(ev, p, size)); }catch(e){}
+    }
+  }catch(e){ console.error('mgrWatchWorld', e); }
+  if(focus) focus.isYou=false;
+  MGR_WATCH=false; CC_PRIZE_DAY=pDay;
+  CARD_MODE=pm; squadSize=ps; drafted=pd; try{ useLandingSet(pSet); }catch(e){}
+  mgrWorldMark(ev);
+  removeSkipButton();
+  const box=document.createElement('div'); box.className='mg-report';
+  box.innerHTML='<h3>'+esc(ev.name)+'</h3><button class="hero-btn hero-btn-go" onclick="mgrAfterWatch()">'+esc(W.back)+'</button>';
+  document.getElementById('majorStages').appendChild(box);
+  CAREER_RUN=false;
+  mgrSave();
+}
+function mgrAfterWatch(){ MGR_SUB.tables='events'; mgrOpenHub(); mgrRenderHub('tables'); try{ window.scrollTo(0, 0); }catch(e){} }
+// Плитка Центра: ближайшие капы мира — любой можно смотреть или просимулировать; свои — матчевым днём.
+function mgrWorldTileHTML(){
+  const W=mgrTW(), T9=mgrT9(), today=CAREER.career.day, evs=mgrEvents();
+  const club=new Set(evs.map(e=>e.id+'|'+e.day)), nx=evs[0];
+  const list=mgrWorldEvents(today, ccYearTo()).filter(e=>!mgrWorldDone(e)).slice(0, 8);
+  const rows=list.map(e=>{ const k=e.id+'|'+e.day, mine=club.has(k), kq=esc(k.replace(/'/g, ''));
+    return '<div class="mgw-row'+(mine ? ' mine' : '')+'"><span class="mgw-ri"><em>'+esc(ccDayLabel(e.day))+'</em><b>'+esc(e.name)+'</b><small>'+esc(W.fmt[e.mode]||e.mode)+(mine ? ' · '+esc(W.club) : '')+'</small></span>'+
+      (mine ? (nx && nx.id===e.id && nx.day===e.day ? '<button class="cc-back mgw-btn go" onclick="mgrPlay()">'+esc(W.play)+'</button>' : '')
+            : '<button class="cc-back mgw-btn" onclick="mgrWatchWorld(\''+kq+'\')">👁 '+esc(W.watch)+'</button><button class="cc-back mgw-btn" onclick="mgrSimWorld(\''+kq+'\')">⏩ '+esc(W.sim)+'</button>')+'</div>'; }).join('');
+  return '<div class="ch-tile mgc-cal mgw-tile"><h4>'+esc(W.h)+'</h4>'+(rows || '<div class="ch-empty">'+esc(W.none)+'</div>')+
+    '<button class="hg-go" onclick="MGR_MONTH=null;mgrRenderHub(\'calendar\')">'+esc(T9.toCal)+'</button></div>';
 }
 function mgrScreenReset(){
   skipAnimation=false; CC_SKIP_RUN=false;
@@ -160136,6 +160379,7 @@ async function mgrPlay(){
   const T=mgrT(), cr=CAREER.career;
   const size={duo:2, trio:3, squad:4}[ev.mode];
   if(!mgrAutoFill(size)){ mgrShortAsk(ev, size); return; }   // неполный: запас встаёт сам, иначе — окно выбора
+  await mgrWorldCatchUpLive(ev.day);
   mgrAdvanceTo(ev.day);
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted, prevSet=ACTIVE_LANDING_SET;
   const club=mgrClubTeams(size);
@@ -160174,6 +160418,7 @@ async function mgrPlayFncs(ev){
   const T=mgrT(), T2=mgrT2(), cr=CAREER.career;
   const size={duo:2, trio:3, squad:4}[ev.mode]||careerSquadSize();
   if(!mgrAutoFill(size)){ mgrShortAsk(ev, size); return; }   // неполный: запас встаёт сам, иначе — окно выбора
+  await mgrWorldCatchUpLive(ev.day);
   mgrAdvanceTo(ev.day);
   const prevMode=CARD_MODE, prevSize=squadSize, prevDrafted=drafted, prevSet=ACTIVE_LANDING_SET;
   const club=mgrClubTeams(size), clubCards=club.flatMap(t=>t.squad);
