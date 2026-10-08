@@ -76,13 +76,12 @@ while ((m = re.exec(html))) {
 if (!best || best.len < 3e6) throw new Error('не нашёл приложение: крупнейший блок ' + (best && best.len));
 if (best.attrs) throw new Error('у блока приложения появились атрибуты: ' + best.attrs);
 
-fs.writeFileSync(path.join(OUT, 'app.js'), html.slice(best.from, best.end), 'utf8');
 /* Без комментариев и лишних пробелов. Комментарии — треть app.js (8,9 → 6,0 млн байт
    на 27.09), браузеру они не нужны, а размер упирается в линию 9 МБ. Код не трогается:
    terser без compress и mangle только перепечатывает его. Исходник в репо — как был. */
-{
+function minifyJs(appPath){
   const { execFileSync } = require('child_process');
-  const appPath = path.join(OUT, 'app.js'), before = fs.statSync(appPath).size;
+  const before = fs.statSync(appPath).size, name = path.basename(appPath);
   const tmpOut = appPath + '.min';
   try {
     // На Windows с shell:true аргументы склеиваются без кавычек — путь с пробелами («Рабочий стол до 07.09»)
@@ -91,12 +90,31 @@ fs.writeFileSync(path.join(OUT, 'app.js'), html.slice(best.from, best.end), 'utf
     execFileSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['-y', 'terser@5', q(appPath), '--comments', 'false', '-o', q(tmpOut)],
       { stdio: ['ignore', 'ignore', 'inherit'], shell: process.platform === 'win32', timeout: 600000 });
     fs.renameSync(tmpOut, appPath);
-    console.log('app.js без комментариев: ' + before + ' → ' + fs.statSync(appPath).size + ' байт');
+    console.log(name + ' без комментариев: ' + before + ' → ' + fs.statSync(appPath).size + ' байт');
   } catch (e) {
     try { fs.unlinkSync(tmpOut); } catch (_) {}
-    console.log('ВНИМАНИЕ: terser не отработал (' + String(e.message).slice(0, 120) + ') — app.js остался с комментариями, ' + before + ' байт');
+    console.log('ВНИМАНИЕ: terser не отработал (' + String(e.message).slice(0, 120) + ') — ' + name + ' остался с комментариями, ' + before + ' байт');
   }
 }
+/* МЕНЕДЖЕР — ОТДЕЛЬНЫМ ФАЙЛОМ (8.10): код Fortnite Manager (между @@MGR-BEGIN@@ и @@MGR-END@@ в исходнике) уходит
+   в mgr.js и грузится только при входе в менеджер (mgrStart). app.js — карьере и драфту — легче на код режима. Снаружи
+   блока менеджер зовут лишь mgrStart (кнопки) и mgrLeaveIfActive (входы в карьеру) — им заглушки; остальное — через typeof. */
+let appSrc = html.slice(best.from, best.end);
+{
+  const MB = '/*@@MGR-BEGIN@@*/', ME = '/*@@MGR-END@@*/', i = appSrc.indexOf(MB), j = appSrc.indexOf(ME);
+  if (i >= 0 && j > i) {
+    const mgrPath = path.join(OUT, 'mgr.js');
+    fs.writeFileSync(mgrPath, appSrc.slice(i + MB.length, j), 'utf8');
+    minifyJs(mgrPath);
+    const mh = crypto.createHash('sha1').update(fs.readFileSync(mgrPath)).digest('hex').slice(0, 8);
+    const stubs = 'var MGR_LAZY=null;function mgrLazy(fn){if(!MGR_LAZY){MGR_LAZY=new Promise(function(res,rej){var s=document.createElement("script");s.src="mgr.js?v=' + mh + '";s.onload=res;s.onerror=function(){MGR_LAZY=null;rej();};document.head.appendChild(s);});}MGR_LAZY.then(fn,function(){try{alert("Fortnite Manager: файл не загрузился, обнови страницу");}catch(e){}});}' +
+      'function mgrStart(){mgrLazy(function(){mgrStart();});}function mgrLeaveIfActive(){};';
+    appSrc = appSrc.slice(0, i) + stubs + appSrc.slice(j + ME.length);
+    console.log('mgr.js: ' + fs.statSync(mgrPath).size + ' байт, v=' + mh);
+  }
+}
+fs.writeFileSync(path.join(OUT, 'app.js'), appSrc, 'utf8');
+minifyJs(path.join(OUT, 'app.js'));
 const hash = crypto.createHash('sha1').update(fs.readFileSync(path.join(OUT, 'app.js'))).digest('hex').slice(0, 8);
 /* ---- ПОКА app.js ЕДЕТ — СКАЗАТЬ ОБ ЭТОМ ----------------------------------
  *

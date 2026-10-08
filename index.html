@@ -156963,6 +156963,7 @@ function careerBankedCard(place, of, pts, head, games){
   document.getElementById('majorStages').appendChild(box);
   box.scrollIntoView({block:'end', behavior:'smooth'});
 }
+/*@@MGR-BEGIN@@*/
 /* ============================================================================
    FORTNITE MANAGER (его идея 1.10: «режим fortnite manager», «как football manager»). Спека —
    docs/specs/2026-10-01-fortnite-manager.md. Этап 1 (MVP): выбор года и настоящего клуба → команды из его
@@ -160882,8 +160883,9 @@ function mgrAfterNight(){
   try{ window.scrollTo(0, 0); const b=document.getElementById('mgBody'); if(b) b.scrollTop=0; }catch(e){}
 }
 
+/*@@MGR-END@@*/
 function careerBackToHub(){
-  if(MGR_ACTIVE && CAREER && CAREER._mgr){ mgrAfterNight(); return; }   // вечер менеджера — назад в клуб
+  if(typeof MGR_ACTIVE!=='undefined' && MGR_ACTIVE && CAREER && CAREER._mgr){ mgrAfterNight(); return; }   // вечер менеджера — назад в клуб
   document.documentElement.classList.remove('ev-pal', 'ev-classic', 'ev-light');
   show('screen-career-hub');
   /* После матча — наверх (его слово 8.10: «после матча меня вниз скролит, нужно подниматься наверх к вкладкам»):
