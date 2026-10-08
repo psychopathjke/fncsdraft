@@ -157320,8 +157320,14 @@ function mgrClubsFor(year, region){
      Loyalty Gamer, TSM, Gambit, Eleven, COOLER, Liquid и др.; его слово 8.10: «я про те, которые я добавлял организации в
      карьеру, когда меня просили люди»). Своего состава в снимке сцены у них нет — клуб берётся «без состава»: уровень —
      tier из карьеры, бюджет — по нему, игроков подписываешь сам. Есть в снимке — уже в списке, не дублируется. */
+  /* Только организации, которые в этом году уже были (его слово 8.10: «пусть в каждом те организации, которые были в этих
+     годах»): год основания (BetBoom 2022, PARIVISION 2023, Tundra 2021, Drayko и Eldia 2026 — из их профилей и открытых
+     данных); любительские (уровень ≤80) — только в годах, где у них есть игроки в данных. */
+  const MGR_ORG_FROM={'BetBoom Team':2022, 'PARIVISION':2023, 'Tundra Esports':2021, 'Drayko Esport':2026, 'Team Eldia':2026};
   try{ (typeof CC_ORG_NEW!=='undefined' ? CC_ORG_NEW : []).forEach(o=>{
     if(!o || !o.name || list.some(c=>c.name===o.name)) return;
+    if((MGR_ORG_FROM[o.name]||0)>year) return;
+    if((o.tier||99)<=80 && !PLAYERS.some(p=>p && p.org===o.name && (typeof ccCardYear!=='function' || ccCardYear(p)<=year))) return;
     list.push({name:o.name, players:[], n:0, avg:o.tier||78, sq:0, star:null, budget:mgrClubBudget(o.name, 0, o.tier||78), requested:true});
   }); }catch(e){}
   const all=list.sort((a,b)=>b.avg-a.avg || b.n-a.n);
