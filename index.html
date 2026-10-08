@@ -172,7 +172,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"FNCS Draft",
  "url":"https://fncsdraft.com/","applicationCategory":"GameApplication",
- "operatingSystem":"Any (web browser)","inLanguage":["en","ru","fr","it","pt"],
+ "operatingSystem":"Any (web browser)","inLanguage":["en","ru","fr","it","pt","de","es"],
  "about":"Fortnite Champion Series (FNCS) competitive Fortnite",
  "description":"Play a Fortnite career: seasons on the real FNCS calendar, divisions, Majors, Reload and LANs, solo or with a friend. Or draft a squad of real FNCS players and run a simulated tournament.",
  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
@@ -6902,6 +6902,8 @@
         <button id="langFr" onclick="setLang('fr')" style="border:none;background:var(--panel2);color:var(--ink-dim);font-weight:800;font-size:11px;padding:6px 10px;cursor:pointer;">FR</button>
         <button id="langIt" onclick="setLang('it')" style="border:none;background:var(--panel2);color:var(--ink-dim);font-weight:800;font-size:11px;padding:6px 10px;cursor:pointer;">IT</button>
         <button id="langPt" onclick="setLang('pt')" style="border:none;background:var(--panel2);color:var(--ink-dim);font-weight:800;font-size:11px;padding:6px 10px;cursor:pointer;">PT</button>
+        <button id="langDe" onclick="setLang('de')" style="border:none;background:var(--panel2);color:var(--ink-dim);font-weight:800;font-size:11px;padding:6px 10px;cursor:pointer;">DE</button>
+        <button id="langEs" onclick="setLang('es')" style="border:none;background:var(--panel2);color:var(--ink-dim);font-weight:800;font-size:11px;padding:6px 10px;cursor:pointer;">ES</button>
       </div>
     </div>
   </div>
@@ -19350,7 +19352,22 @@ const LS_LANG='fncsdraft_lang';
    two ways a half-finished translation usually shows itself.
 
    Built once and kept, because L() is called on every render of every row. */
-const CC_LANGS=['en','ru','fr','it','pt'];
+const CC_LANGS=['en','ru','fr','it','pt','de','es'];
+/* НЕМЕЦКИЙ И ИСПАНСКИЙ (его слово 8.10: «добавляй немецкий и испанский только»; по Cloudflare Германия 101 тыс. запросов,
+   Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
+   а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
+const CC_LANG_FILES={de:1, es:1};
+let CC_I18N_V={de:'d24063ae', es:'b64fa561'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+const CC_LANG_WAIT={};
+function ccLangLoad(lang, done){
+  if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
+  if(CC_LANG_WAIT[lang]){ CC_LANG_WAIT[lang].push(done); return; }
+  CC_LANG_WAIT[lang]=[done];
+  const el=document.createElement('script');
+  el.src='i18n-'+lang+'.js?v='+(CC_I18N_V[lang]||'0');
+  el.onload=el.onerror=function(){ const q=CC_LANG_WAIT[lang]||[]; delete CC_LANG_WAIT[lang]; CC_L_CACHE={}; q.forEach(f=>{ try{ f && f(); }catch(e){ console.error(e); } }); };
+  document.head.appendChild(el);
+}
 let CC_L_CACHE={};
 let LANG=(function(){
   try{
@@ -19358,46 +19375,7 @@ let LANG=(function(){
     if(CC_LANGS.indexOf(saved)>=0) return saved;
   }catch(e){}
   const nav=String(navigator.language||'').toLowerCase();
-  if(nav.indexOf('ru')===0) return 'ru';
-  if(nav.indexOf('fr')===0) return 'fr';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
-  if(nav.indexOf('it')===0) return 'it';
-  if(nav.indexOf('pt')===0) return 'pt';
+  for(const l of ['ru','fr','it','pt','de','es']) if(nav.indexOf(l)===0) return l;
   return 'en';
 })();
 /* Строки «жизни между турнирами» (оценка вечера, награды, клуб, скримы, тренировка,
@@ -20157,6 +20135,7 @@ function refreshPreRegionLabels(){
 // writing back, so a language merely guessed from navigator.language never
 // hardens into a saved preference the user did not actually pick.
 function setLang(lang, persist){
+  if(CC_LANG_FILES[lang] && !I18N[lang]){ ccLangLoad(lang, function(){ setLang(lang, persist); }); if(LANG!==lang){ LANG=lang; } return; }
   LANG=lang;
   setTimeout(function(){ try{ if(typeof mgrHeroText==='function') mgrHeroText(); }catch(e){} }, 0);   // подписи блока Fortnite Manager
   // The year's labels are built once and cached; a language change rebuilds them.
@@ -90284,22 +90263,22 @@ const LANGUAGE_CLUSTERS={
   ar:      ['Саудовская Аравия','Оман','Кувейт','Бахрейн','Египет'],
 };
 const LANGUAGE_CLUSTER_NAME={
-  ru:      {ru:'русский язык',            en:'Russian'},
-  de:      {ru:'немецкий язык',           en:'German'},
-  en:      {ru:'английский язык',         en:'English'},
-  scandi:  {ru:'скандинавские языки',     en:'Scandinavian'},
-  es:      {ru:'испанский язык',          en:'Spanish'},
-  balkan:  {ru:'южнославянские языки',    en:'South Slavic'},
-  wslavic: {ru:'западнославянские языки', en:'West Slavic'},
-  ro:      {ru:'румынский язык',          en:'Romanian'},
-  ar:      {ru:'арабский язык',           en:'Arabic'},
+  ru:      {ru:'русский язык',            en:'Russian', de:'Russisch', es:'ruso'},
+  de:      {ru:'немецкий язык',           en:'German', de:'Deutsch', es:'alemán'},
+  en:      {ru:'английский язык',         en:'English', de:'Englisch', es:'inglés'},
+  scandi:  {ru:'скандинавские языки',     en:'Scandinavian', de:'Skandinavisch', es:'escandinavo'},
+  es:      {ru:'испанский язык',          en:'Spanish', de:'Spanisch', es:'español'},
+  balkan:  {ru:'южнославянские языки',    en:'South Slavic', de:'Südslawisch', es:'eslavo del sur'},
+  wslavic: {ru:'западнославянские языки', en:'West Slavic', de:'Westslawisch', es:'eslavo occidental'},
+  ro:      {ru:'румынский язык',          en:'Romanian', de:'Rumänisch', es:'rumano'},
+  ar:      {ru:'арабский язык',           en:'Arabic', de:'Arabisch', es:'árabe'},
 };
 function languageClusterOf(nat){
   if(!nat) return null;
   for(const key in LANGUAGE_CLUSTERS){ if(LANGUAGE_CLUSTERS[key].includes(nat)) return key; }
   return null;
 }
-function languageClusterName(key){ return (LANGUAGE_CLUSTER_NAME[key]||{})[LANG] || key; }
+function languageClusterName(key){ const n=LANGUAGE_CLUSTER_NAME[key]||{}; return n[LANG] || n.en || key; }
 
 const EVENT_PHRASE_EN={
   'Профиль игрока (результат на FNCS не опубликован)':'Player profile (FNCS result not published)',
