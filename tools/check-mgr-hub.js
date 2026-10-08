@@ -85,7 +85,7 @@ const SECTIONS=[
       const c0=mgrConf(); document.getElementById('ccAskYes').click();
       check('бюджет: «подписать всё равно» — подписан', mgrAll().length===n0+1, String(mgrAll().length-n0));
       check('бюджет: доверие совета упало', mgrConf()<c0, c0+' → '+mgrConf());
-      mgrRelease && (MGR.bench=(MGR.bench||[]).filter(x=>x!=='ПробаДорогой')); }
+      MGR.bench=(MGR.bench||[]).filter(x=>x!=='ПробаДорогой'); MGR.teams.forEach(t=>{ t.cards=t.cards.filter(x=>x!=='ПробаДорогой'); }); MGR.teams=MGR.teams.filter(t=>t.cards.length); if(MGR.contracts) delete MGR.contracts[hKey('ПробаДорогой')]; }
     MGR.club.cash+=5000; mgrSignFinal({h:'ПробаДешёвый', buyDeal:5000, years:1, acad:false}, 1);
     check('бюджет: в пределах — подписан', mgrAll().length===n0+1);
     check('бюджет: отступные из трансферного', MGR.club.transfer===Math.max(0, tr0-5000), tr0+' → '+MGR.club.transfer);
@@ -186,7 +186,8 @@ const SECTIONS=[
     check('лист: закрылся', document.getElementById('mgSheet').hidden);
     // Перестановка из листа: игрок первой команды уходит в запас и состав перерисован.
     const h=MGR.teams[0].cards[0]; mgrSheetOpen(h); mgrSheetClose(); mgrMove(h, '-1');
-    check('лист: перестановка в запас', (MGR.bench||[]).indexOf(h)>=0 && MGR_TAB==='squad');
+    // Запаса нет (8.10): «в запас» теперь — новый состав из него одного.
+    check('лист: перестановка в новый состав', MGR.teams.some(t=>t.cards.length===1 && t.cards[0]===h) && MGR_TAB==='squad', JSON.stringify(MGR.teams.map(t=>t.cards)));
   `},
   {name:'трансферы', code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
@@ -379,8 +380,8 @@ const SECTIONS=[
   `},
   {name:'аренда', code:String.raw`
     MGR_NEW_YEAR=2024; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2024); mgrTake(0);
-    const h=(MGR.bench||[])[0] || mgrAll()[mgrAll().length-1];
-    if(MGR.bench.indexOf(h)<0) mgrMove(h, '-1');
+    const h=mgrAll()[mgrAll().length-1];
+    if(MGR.teams[0].cards.indexOf(h)>=0) mgrMove(h, '-1');   // из первого состава в аренду нельзя — сначала в отдельный состав
     const w=mgrWage(h);
     check('аренда: из команды нельзя', mgrLoan(MGR.teams[0].cards[0])===false);
     check('аренда: отдан', mgrLoan(h)===true);
@@ -392,7 +393,7 @@ const SECTIONS=[
     let d=CAREER.career.day; mgrLoanWeek(ccAddDays(d, 21));
     check('аренда: 21 день — ещё в аренде', (MGR.loanOut||[]).some(x=>hKey(x)===hKey(h)));
     mgrLoanWeek(ccAddDays(d, 28));
-    check('аренда: 28 дней — вернулся в запас', (MGR.bench||[]).some(x=>hKey(x)===hKey(h)) && !(MGR.loanOut||[]).length);
+    check('аренда: 28 дней — вернулся в клуб', mgrAll().some(x=>hKey(x)===hKey(h)) && !(MGR.loanOut||[]).length);
     check('аренда: полная зарплата снова', mgrWage(h)===w);
     check('аренда: письмо о возвращении', (MGR.inbox||[]).some(m=>m.loan));
   `},
@@ -889,8 +890,8 @@ const SECTIONS=[
     const size=careerSquadSize(), t=MGR.teams[0];
     // 1) Ушёл игрок, в запасе есть — перед вечером запас встаёт в состав сам.
     const gone=t.cards[t.cards.length-1]; mgrDrop(gone);
-    check('запас: был неполный', !MGR.teams.some(x=>mgrTeamSize(x)===size) && (MGR.bench||[]).length>=1);
-    check('запас: заполнено автоматически', mgrAutoFill(size)===true && MGR.teams.some(x=>mgrTeamSize(x)===size));
+    check('без запаса: был неполный', !MGR.teams.some(x=>mgrTeamSize(x)===size) && mgrAll().length>=size, JSON.stringify(MGR.teams.map(t=>t.cards)));
+    check('без запаса: заполнено игроком другого неполного состава', mgrAutoFill(size)===true && MGR.teams.some(x=>mgrTeamSize(x)===size));
     // 2) Запаса нет — окно с выбором, а не молчаливый уход.
     MGR.bench=[]; const t2=MGR.teams[0]; mgrDrop(t2.cards[t2.cards.length-1]);
     check('без запаса: неполный', !MGR.teams.some(x=>mgrTeamSize(x)===size));
