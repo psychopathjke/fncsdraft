@@ -161298,7 +161298,7 @@ function mgrPickTeam(club){
     if(club.length<2 || MGR_SIM_MODE){ res(club[0]); return; }
     const ru=(typeof LANG!=='undefined' && LANG==='ru');
     const box=document.createElement('div'); box.className='mg-modal mgq-pick';
-    box.innerHTML='<div class="mg-modal-box"><h3>'+esc(ru ? 'За кого играешь?' : ({fr:()=>('Avec qui joues-tu ?'), it:()=>('Con chi giochi?'), pt:()=>('Com quem você joga?'), de:()=>('Mit wem spielst du?'), es:()=>('¿Con quién juegas?')}[LANG]||(()=>('Who do you play as?')))())+'</h3><div class="mgq-teams">'+
+    box.innerHTML='<div class="mg-modal-box"><h3>'+esc(ru ? 'За каким составом смотреть?' : ({fr:()=>('Quelle équipe suivre ?'), it:()=>('Quale squadra seguire?'), pt:()=>('Qual time acompanhar?'), de:()=>('Welchem Squad zusehen?'), es:()=>('¿Qué equipo quieres ver?')}[LANG]||(()=>('Which squad do you watch?')))())+'</h3><div class="mgq-teams">'+
       club.map((t,i)=>'<button class="mgq-team" data-i="'+i+'"'+(i===0 ? ' data-mg="go"' : '')+'><b>'+esc(mgrT2().teamWord)+' '+(i+1)+'</b>'+
         '<span>'+(t.squad||[]).map(c=>{ let u=null; try{ u=photoURL(c); }catch(e){} return '<i class="mgq-face">'+(u ? '<img src="'+esc(u)+'" alt="" onerror="this.remove()">' : '')+'<small>'+esc(c.handle)+'</small></i>'; }).join('')+'</span>'+
         '<em>'+Math.round(t.pow||0)+'</em></button>').join('')+'</div></div>';
@@ -161746,7 +161746,8 @@ async function mgrPlayCar(ev){
   mgrAdvanceTo(ev.day);
   const teams=mgrCarTeams(ev);
   if(!teams.length){ MGR.skipped=(MGR.skipped||[]).concat([ev.id+'|'+ev.day]); MGR_CAR_CACHE=null; mgrSave(); mgrOpenHub(); return; }
-  const you=(teams.length>1 && !MGR_SIM_MODE) ? await mgrPickTeam(teams) : teams[0];
+  // Вопрос «за каким составом смотреть» — и перед «Симулировать» (его слово 8.10); остальные — в том же лобби, в таблице.
+  const you=teams.length>1 ? await mgrPickTeam(teams) : teams[0];
   mgrScreenReset();
   const parts=await mgrCarNight(ev, teams, you, !!MGR_SIM_MODE, false);
   removeSkipButton();
