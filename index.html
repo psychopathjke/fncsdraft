@@ -114,6 +114,16 @@
   .cc-spm .cc-spb-logo{flex:0 0 64px;height:32px;}
   .cc-spm-free{background:rgba(255,255,255,.06) !important;border:1px dashed rgba(255,255,255,.25);color:#ffd84d;font-weight:800;}
   .cc-spm-go{margin-top:8px;width:100%;}
+  .hero-collage{display:none;}
+  .hero-pair:has(.hero-mgr:not([hidden]))>.hero{position:relative;overflow:hidden;}
+  .hero-pair:has(.hero-mgr:not([hidden])) .hero-collage{display:grid;position:absolute;inset:0;z-index:0;pointer-events:none;grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);
+    -webkit-mask-image:linear-gradient(100deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.55) 45%,#000 80%);mask-image:linear-gradient(100deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.55) 45%,#000 80%);}
+  .hero-pair:has(.hero-mgr:not([hidden])) .hc-players img{width:100%;height:100%;object-fit:cover;object-position:center 20%;opacity:.34;filter:saturate(.85);}
+  .hero-pair:has(.hero-mgr:not([hidden])) .hc-orgs span{display:flex;align-items:center;justify-content:center;padding:14%;}
+  .hero-pair:has(.hero-mgr:not([hidden])) .hc-orgs img{max-width:100%;max-height:100%;object-fit:contain;opacity:.3;}
+  .hero-pair:has(.hero-mgr:not([hidden]))>.hero>.hero-art{display:none;}
+  .hero-pair:has(.hero-mgr:not([hidden])) .hero-body{position:relative;z-index:2;}
+  .hero-pair:has(.hero-mgr:not([hidden]))>.hero::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(10,20,60,.92) 0%,rgba(10,20,60,.7) 45%,rgba(10,20,60,.25) 100%);}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Заголовок вкладки — он же главное слово поиска. Просьба:
@@ -7095,6 +7105,8 @@
     <!-- Карьера игрока и карьера менеджера — ОДНОЙ строкой, две половины (его скрин 7.10: красные рамки слева и справа). -->
     <div class="hero-pair">
     <section class="hero hero-career" aria-labelledby="heroTitle">
+      <!-- Самые хайповые игроки всех лет позади текста, на менеджере — гербы клубов (его слово 8.10). -->
+      <div class="hero-collage hc-players" aria-hidden="true"><img src="photos/BUGHA.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/aqua.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Mongraal.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Benjyfishy.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Clix.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/MrSavage.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/nyhrox.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Bizzle.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/TaySon.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Mero.png" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Th0masHD.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Setty.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Reet.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Kami.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Edgey.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Khanada.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Queasy.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Malibuca.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Peterbot.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Pollo.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Veno.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/Cooper.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/vic0.jpg" alt="" loading="lazy" onerror="this.remove()"><img src="photos/SwizzY.jpg" alt="" loading="lazy" onerror="this.remove()"></div>
       <div class="hero-body">
         <span class="dp-tag hero-mode-tag" data-i18n="hmCareerTag"></span>
         <h1 class="hero-title" id="heroTitle" data-i18n="hcHeroTitle"></h1>
@@ -7125,6 +7137,7 @@
     </section>
     <!-- Карьера менеджера — сразу за карьерой игрока (его слово 7.10: «чтоб рядом с карьерой игрока была карьера менеджера»). -->
     <section class="hero hero-draft hero-mgr" aria-labelledby="heroMgrTitle" hidden>
+      <div class="hero-collage hc-orgs" aria-hidden="true"><span><img src="logos/FaZe_Clan.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Team_Liquid.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/TSM.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/G2_Esports.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Fnatic.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Cloud9.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Team_Falcons.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Gentle_Mates.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/BIG.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/XSET.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Team_Vitality.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Natus_Vincere.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Dignitas.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Solary.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/T1.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Team_Spirit.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/MOUZ.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Virtus.pro.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Gambit_Esports.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/XP42.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Aurora_Gaming.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Wave_Esports.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Gen.G_Esports.png" alt="" loading="lazy" onerror="this.remove()"></span><span><img src="logos/Twisted_Minds.png" alt="" loading="lazy" onerror="this.remove()"></span></div>
       <div class="hero-body">
         <span class="dp-tag hero-mode-tag" id="mgHeroTag">Mode 3 · Manager</span>
         <h2 class="hero-title" id="heroMgrTitle">Build a club. <em>Run it through a season.</em></h2>
