@@ -75,7 +75,8 @@ const BOOT = `
           seatedPlayIn + ' of ' + playIn.size);
     const avg = Math.round(pools.duos.reduce((s,d)=>s+d.avg, 0) / pools.duos.length * 10) / 10;
     out.snaps[tag] = {duos: pools.duos.length, avg: avg};
-    check(tag + ' reads as Division 1', avg >= 76 && avg <= 82, avg);
+    // Нижняя граница — полоса Дивизиона 2 (75): см. check-career-field, 9.10, 93e4436.
+    check(tag + ' reads as Division 1', avg > 75 && avg <= 82, avg);
   });
 
   // The two snapshots differ — the season turned over. Считается по парам

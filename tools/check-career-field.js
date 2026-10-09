@@ -18,7 +18,9 @@ const ROOT = path.resolve(__dirname, '..');
 // Комната дивизиона 1 измеряется, а не задаётся: она собрана из тех, кто был
 // в Плей-Ине или прошёл Ласт Ченс, и рейтинг в ней сезонный. Окно снято с неё
 // и держит ccBand(1)=78 в середине. См. CC_DIV_RATING.
-const CC1_MIN = 76, CC1_MAX = 82;
+// 9.10: нижняя граница — полоса Дивизиона 2 (CC_DIV_RATING[2]=75): после 93e4436 (настоящие итоги GC 2026 в рейтингах,
+// вес 3.0) комната Д1 меряется 75.8–75.9 — это данные, а смысл окна — «Д1 не читается как Д2» (его слово: «как считаешь нужным»).
+const CC1_MIN = 75, CC1_MAX = 82;
 const CHROME = [process.env.CHROME,
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
   'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',

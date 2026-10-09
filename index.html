@@ -8820,7 +8820,7 @@ dmPitchTalked:c=>'Переговоры с '+c+' провёл.',
 ccPitchWho:'Кому написать:', ccPitchTier:t=>'уровень '+t,
 dmPitchAskClub:c=>'Съезди в '+c+' — я готов подписаться',
 dmPitchOkClub:c=>'Хорошо, поеду к ним. Отвечу, как поговорю',
-dmPitchYes:c=>c+' готовы посмотреть — жди от них предложение в этом окне',
+dmPitchProve:(c,n)=>c+' ждут результатов: ещё '+n+(n===1?' вечер':' вечера')+' в топ-10 (или верхних 5% поля) — и предложение придёт',dmPitchYes:c=>c+' готовы посмотреть — жди от них предложение в этом окне',
 dmPitchNo:c=>'В '+c+' сказали, что состав укомплектован. Попробуем другой',
 ccPitchOn:d=>'клуб напишет '+d, dmPitchAsk:'Обойди клубы, поспрашивай — я готов подписаться',
 dmPitchOk:'Понял. Пройдусь по всем, на кого ты тянешь, и чуть выше. Дай пару недель',
@@ -10828,7 +10828,7 @@ dmPitchTalked:c=>'I have had the talks with '+c+'.',
 ccPitchWho:'Who to write to:', ccPitchTier:t=>'tier '+t,
 dmPitchAskClub:c=>'Go and talk to '+c+' — I am ready to sign',
 dmPitchOkClub:c=>'All right, I am going to see them. I will report back',
-dmPitchYes:c=>c+' are willing to look — expect their offer this window',
+dmPitchProve:(c,n)=>c+' want to see results first: '+n+' more top-10 night'+(n===1?'':'s')+' (or top 5% of the field) and the offer comes',dmPitchYes:c=>c+' are willing to look — expect their offer this window',
 dmPitchNo:c=>c+' say the roster is full. We try another one',
 ccPitchOn:d=>'the club will write on '+d, dmPitchAsk:'Go round the clubs and ask — I am ready to sign',
 dmPitchOk:'Got it. I will go through everyone you can reach, and a bit above. Give me two weeks',
@@ -13817,7 +13817,7 @@ dmPitchTalked:c=>'J’ai mené les négociations avec '+c+'.',
 ccPitchWho:'À qui écrire :', ccPitchTier:t=>'niveau '+t,
 dmPitchAskClub:c=>'Va voir '+c+' — je suis prêt à signer',
 dmPitchOkClub:c=>'D’accord, j’y vais. Je te dis dès que j’ai parlé',
-dmPitchYes:c=>c+' veulent bien regarder — attends leur offre cette fenêtre',
+dmPitchProve:(c,n)=>c+' attendent des résultats : encore '+n+' soirée'+(n===1?'':'s')+' dans le top 10 (ou les 5 % du haut) et l’offre arrive',dmPitchYes:c=>c+' veulent bien regarder — attends leur offre cette fenêtre',
 dmPitchNo:c=>c+' disent que l’effectif est complet. On en essaie un autre',
 ccPitchOn:d=>'le club écrira le '+d, dmPitchAsk:'Fais le tour des clubs, demande — je suis prêt à signer',
 dmPitchOk:'Compris. Je passe voir tous ceux que tu peux viser, et un peu au-dessus. Deux semaines',
@@ -15214,7 +15214,7 @@ dmPitchTalked:c=>'Ho parlato con '+c+'.',
 ccPitchTier:t=>'livello '+t,
 dmPitchAskClub:c=>'Vai a parlare con '+c+' — sono pronto a firmare',
 dmPitchOkClub:c=>'Va bene, vado da loro. Ti faccio sapere',
-dmPitchYes:c=>c+' sono disposti a guardarti — aspettati la loro offerta in questa finestra',
+dmPitchProve:(c,n)=>c+' vogliono vedere risultati: ancora '+n+(n===1?' serata':' serate')+' in top 10 (o nel 5% migliore) e arriva l’offerta',dmPitchYes:c=>c+' sono disposti a guardarti — aspettati la loro offerta in questa finestra',
 dmPitchNo:c=>c+' dicono che il roster \u00e8 pieno. Proviamo un altro',
 ccPitchOn:d=>'il club scriverà il '+d,
 ccAgentOn:n=>'Manager: '+n,
@@ -17746,7 +17746,7 @@ dmPitchTalked:c=>'J\u00e1 conversei com '+c+'.',
 ccPitchTier:t=>'n\u00edvel '+t,
 dmPitchAskClub:c=>'Vai falar com '+c+' — estou pronto para assinar',
 dmPitchOkClub:c=>'Beleza, vou at\u00e9 eles. Depois te falo',
-dmPitchYes:c=>c+' topam dar uma olhada — espere a proposta deles nesta janela',
+dmPitchProve:(c,n)=>c+' querem ver resultados: mais '+n+(n===1?' noite':' noites')+' no top 10 (ou nos 5% do topo) e a proposta chega',dmPitchYes:c=>c+' topam dar uma olhada — espere a proposta deles nesta janela',
 dmPitchNo:c=>c+' dizem que o elenco est\u00e1 cheio. A gente tenta outro',
 ccPitchOn:d=>'o clube vai escrever em '+d,
 ccAgentOn:n=>'Empres\u00e1rio: '+n,
@@ -102385,6 +102385,10 @@ function buildBotLandingAssignment(bots, opts){
         applyLandingPow(t, free.points);
         zoneGroups.set(free,[t]);
         if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(free));
+        /* В постоянном составе (финал, не перемешанное лобби) точку не поделили — опоздавший хозяин переезжает на сезон,
+           как на настоящей дроп-карте финала (9.10, «как в реальной жизни»). В перемешанных капах — нет: там в другом
+           лобби он снова у себя, и дроп-карты у открытых капов не бывает. */
+        if(!CC_SEATS_REMIX) book.at[bookKey]=ccSeatKeyOf(free);
         return;
       }
     }
@@ -102434,7 +102438,8 @@ function buildBotLandingAssignment(bots, opts){
     zoneGroups.get(zone).push(t);
     if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(zone));   // люди комнаты — как свой (см. выше)
     // В книгу — только свой выбор: страх и приказ менеджера на один вечер, переполненный дом не переписывается.
-    if(bookKey && (!booked || moving) &&
+    // И уступивший точку хозяин в постоянном составе, которому не нашлось пустой коробки, — тоже переезд на сезон (9.10, см. bumped).
+    if(bookKey && (!booked || moving || (bumped && !CC_SEATS_REMIX)) &&
        !(t._mgrDrop==='quiet' || t._mgrDrop==='hot')) book.at[bookKey]=ccSeatKeyOf(zone);
   });
 
@@ -102476,6 +102481,9 @@ function buildBotLandingAssignment(bots, opts){
       applyLandingPow(t, to.points);
       zoneGroups.set(to, [t]);
       if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
+      // Хозяина пересадили вынужденно — он переезжает на сезон (9.10, «как в реальной жизни»: дроп-карту финала договаривают
+      // один раз, уступивший точку держит новую весь турнир). Без записи он каждый вечер летел к себе и его снова пересаживали.
+      { const kb=(book && !t.isYou && !t.isRival) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null; if(kb && book.at[kb]===ccSeatKeyOf(from)) book.at[kb]=ccSeatKeyOf(to); }
     }
   }
 
@@ -102511,6 +102519,9 @@ function buildBotLandingAssignment(bots, opts){
       if(!zoneGroups.has(to)) zoneGroups.set(to, []);
       zoneGroups.get(to).push(t);
       if(seats && !t.isYou && !t.isRival) seats.set(ccSeatMapKey(t), ccSeatKeyOf(to));
+      // Хозяина пересадили вынужденно — он переезжает на сезон (9.10, «как в реальной жизни»: дроп-карту финала договаривают
+      // один раз, уступивший точку держит новую весь турнир). Без записи он каждый вечер летел к себе и его снова пересаживали.
+      { const kb=(book && !t.isYou && !t.isRival) ? ccHashStr(ccSeatMapKey(t)).toString(36) : null; if(kb && book.at[kb]===ccSeatKeyOf(from)) book.at[kb]=ccSeatKeyOf(to); }
     }
   }
 
@@ -102535,11 +102546,17 @@ function buildBotLandingAssignment(bots, opts){
         zoneGroups.forEach((g, z)=>{
           if(!g.some(t=>top.has(t))) return;
           g.filter(t=>weak.has(t) && movable(t)).forEach(w=>{
+            /* Хозяин точки по книге не двигается — как в обмене «сильные не на сильных» ниже (его слово 9.10: «сделай как в
+               реальной жизни, посмотри игры, карты»). Дроп-карты финалов Мейджоров 2/3 2023 (eucompetitive × Liquipedia): из 14
+               общих коробок в 5 команда топ-10 делит точку с 25-й и ниже — 1–4 таких встречи на 50 команд, а не ноль; точку
+               держат весь турнир. Слабый хозяин рядом с сильным — обычный контест; уходят только гости точки. */
             const k=keyOfT(w), owner=k && book && book.at[k]===ccSeatKeyOf(z);
+            if(owner) return;
             all.forEach(x=>{
               if(top.has(x) || weak.has(x) || !movable(x)) return;
               const z2=zoneOf.get(x); if(!z2 || z2===z || (zoneGroups.get(z2)||[]).some(o=>top.has(o))) return;
-              const cost=(owner ? 1e6 : 0)+str(w)*100-str(x);
+              const kx=keyOfT(x); if(kx && book && book.at[kx]===ccSeatKeyOf(z2)) return;   // и середняк-хозяин тоже
+              const cost=str(w)*100-str(x);
               if(!best || cost<best.cost) best={w, x, z, z2, cost};
             });
           });
@@ -129576,6 +129593,8 @@ function careerOrgPool(){
 // говорит и подсказка в плитке, и правило ниже: разъехаться им нельзя.
 const CC_CLUBS_FROM=3;
 const CC_WAGE_CAP={5:0, 4:0, 3:100, 2:300};
+// Платят — значит не меньше $50 в месяц (его слово 9.10: Дивизион 3 предлагал $37 — «можно 50 я думаю»).
+const CC_WAGE_FLOOR=50;
 /* ovrOf names whose contract this is. Left out it is the player's own, which
    was every call this had until the roster started quoting what its own people
    are on: a card is not a career — no ovrExact, no log — so asking for somebody
@@ -130513,7 +130532,7 @@ function careerOrgSalary(tier, div, reach, ovrOf){
     if(!cap) return 0;
     // Within the division's band, a better club pays nearer the top of it.
     const share=clamp((tier-64)/26, 0.35, 1);
-    return Math.max(20, Math.round(cap*share/10)*10);
+    return Math.max(CC_WAGE_FLOOR, Math.round(cap*share/10)*10);
   }
   /* Division 1 pays $500 to $15,000 a month, and what moves it is how well you
      play — the user's call, 14 August.
@@ -130780,7 +130799,7 @@ function careerOrgOffers(){
       name:o.name, tier:o.tier, academy:academy,
       // An academy deal pays the bottom of the band. It is a place to be seen,
       // not a job.
-      salary: academy ? Math.max(20, Math.round(wage*0.45/10)*10) : wage,
+      salary: wage>0 ? Math.max(CC_WAGE_FLOOR, academy ? Math.round(wage*0.45/10)*10 : wage) : 0,
       goal: careerOrgGoal(cr.division),
       cut: careerOrgCutFor(o.tier),
       perk: ccOrgPerk(o.tier, academy, rnd),
@@ -131797,6 +131816,12 @@ function careerAgentPitch(id, club){
      отвечал будто сам по себе, и работа менеджера не была видна вовсе. */
   if(t){ careerDmPush(t, 'them', 'dmPitchTalked', [o.name]);
          careerDmPush(t, 'them', ok ? 'dmPitchYes' : 'dmPitchNo', [o.name]); }
+  /* Клуб готов, но игрок ещё не показал результат (правило 2.10, ccOrgProven: два вечера в топ-10) — менеджер говорит
+     это прямо, просьба остаётся в силе (9.10: ответ был «жди предложение», а оно молча не приходило). */
+  if(ok && t && !ccOrgProven()){
+    const have=(CAREER.career.log||[]).filter(ccOrgResult).length;
+    careerDmPush(t, 'them', 'dmPitchProve', [o.name, Math.max(1, CC_ORG_PROOF-have)]);
+  }
   if(!ok) CAREER.pitch=null;
   careerSave();
   careerRenderHub('social');
