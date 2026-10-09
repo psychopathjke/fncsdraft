@@ -121245,7 +121245,8 @@ function ccPhaseFillSeats(size){
   if(picks.length<need){
     const own=[me].concat(mates).filter(Boolean);
     const avg=own.reduce((s,c)=>s+ccCardOvr(c), 0)/Math.max(1, own.length);
-    careerRosterNowEU().slice().sort((a,b)=>Math.abs(ccCardOvr(a)-avg)-Math.abs(ccCardOvr(b)-avg)).forEach(take);
+    // Рейтинг — один раз на карточку: сравнение внутри sort звало ccCardOvr n·log n раз и вешало стык этапа.
+    careerRosterNowEU().map(c=>({c, d:Math.abs(ccCardOvr(c)-avg)})).sort((x,y)=>x.d-y.d).forEach(x=>take(x.c));
   }
   picks.forEach(c=>careerMateSeat({handle:c.handle, cardRegion:c.region||ccCareerRegion(), patience:CAREER_PATIENCE_START, since:careerToday()}));
   if(picks.length){
@@ -137087,7 +137088,9 @@ function careerDmWrite(handle, seat, fmt){
     careerRenderHub('social');
     return;
   }
-  if(ccDmAsksLeft()<=0){ careerRenderHub('social'); return; }
+  /* Лимит на день — вслух (полный прогон 9.10, check-career-cup: кнопка кандидата после трёх писем молчала, и человек
+     так и висел в списке — «нажимаю, ничего не происходит»). */
+  if(ccDmAsksLeft()<=0){ careerRenderHub('social'); try{ ccTell(L().ccDuoLimit); }catch(e){} return; }
   const who=(existing && existing.who)
     || careerDmPool().find(w=>hKey(w.handle)===hKey(handle))
     // Anybody in the region, which is what the search offers. See careerDuoSearchPool.
@@ -138567,6 +138570,7 @@ function careerSocialHTML(){
   const looking=`<div class="dm-side-h">${ccSay('dmLooking')}</div>`+
     (overRung ? `<div class="ch-hint dm-over">${
       L().dmOverRung(CAREER.career.division, ccDivCeil(CAREER.career.division))}</div>` : '')+
+    (ccDmAsksLeft()<=0 && pool.length ? `<div class="ch-hint dm-over">${esc(L().ccDuoLimit)}</div>` : '')+
     pool.slice(0,6).map(w=>`<button class="dm-item dm-new" onclick="careerDmWrite('${esc(w.handle)}')">
       ${avatar(w,30)}
       <span class="dm-item-in"><b>${esc(w.handle)}<i>${w.ovr}</i></b>
@@ -143468,7 +143472,8 @@ function careerSpotEnsure(next){
   const key=careerNightSpotKey(n);
   if(careerSpotList(key).length) return true;
   if(!careerSpotRoom(key)) return false;
-  return careerSpotSet(0, (key==='solo' || key==='nations') ? key : set);
+  // Кап другого формата — своя метка (ccFmtSpotKey): ставится по ключу, как это делает карта по CC_SPOT_SET.
+  return careerSpotSet(0, (key==='solo' || key==='nations' || ccIsFmtSpotKey(key)) ? key : set);
 }
 /* КАК ДЕРЁТСЯ КОМНАТА ЭТОГО ДИВИЗИОНА — по восьми реплеям на дивизион
    (FNCS Divisional Cup S41 EU, tools/real-division-curves.json), отрядов на
@@ -145222,8 +145227,12 @@ function ccRcField(cr, worldCr, drafted, stage, teams){
   const B=draw(CC_RC_SURV.teams, 'rcSurv', seenA);
   const want=(cr.rc && cr.rc.seats && cr.rc.seats[stage]) || null;
   const room = stage==='survival' ? A : A.concat(B);
-  const fill = stage==='survival' ? B
-             : draw(CC_RC_FINAL.teams, 'rcFinal', seenA.concat([].concat(...B.map(cards))));
+  /* B — вторая группа (полный прогон 9.10, check-career-rc-stages: в 2026-м из сорока настоящих пар мимо обеих групп
+     не оставалось никого, и финал садился из двенадцати вместо двадцати). Её прямые путёвки едут в финал, остальные —
+     на сёрвайвл, как на настоящем ЛАНе; свежий бросок — только добор сверху. */
+  const bDirect=ccTeams(CC_RC_GROUP.direct);
+  const fill = stage==='survival' ? B.slice(bDirect).concat(B.slice(0, bDirect))
+             : B.slice(0, bDirect).concat(draw(CC_RC_FINAL.teams, 'rcFinal', seenA.concat([].concat(...B.map(cards)))), B.slice(bDirect));
   /* И здесь комната этого сезона, по той же причине, что этажом выше: без
      сохранённых мест keep — это весь бросок A, то есть двадцать дуо, а лобби
      сёрвайвла в трио тринадцать. need при этом уходил в ноль (двадцать уже

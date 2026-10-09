@@ -118,7 +118,7 @@ const BOOT = `
     // Гейт в соло не спрашивается: раннер ставит CC_MP_ALONE до него.
     const src=document.documentElement.outerHTML; const at=src.indexOf('async function runCareerSoloSeries(');
     const body=src.slice(at, at+20000);
-    check('соло-раннер: локстеп, когда играют оба, одиночный вечер — когда второму нечего', /const alone=ccMpTeam\\(\\) && !peerIn;/.test(body) && body.indexOf('ccSoloTeamSettle()')>=0);
+    check('соло-раннер: локстеп, когда играют оба, одиночный вечер — когда второму нечего', /const alone=ccMpTeam\\(\\) && \\(?!peerIn/.test(body)   /* 673cd19: «|| напарник пропустил день» — тоже в одиночку */ && body.indexOf('ccSoloTeamSettle()')>=0);
     // Из сотни вычитаются ОБА человека (тёзки обоих). Его Sky и Scroll, 29 августа: «diff 1 of 4900: #278 scroll:96 vs sky:96».
     check('сотня строится без обоих людей', body.indexOf('careerSoloField(lobbyCr, mate ? [me, pc]')>=0);
     // Соло-Victory Cup в команде — та же схема: оба человека, тёзки обоих вычтены, вопросы адресные.

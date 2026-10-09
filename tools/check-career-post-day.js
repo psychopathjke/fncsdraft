@@ -69,7 +69,8 @@ const BOOT = `
     out.notes.wrote = news.length;
     out.notes.days = [...new Set(news.map(e => e.day))].sort();
     out.notes.sample = news.slice(0, 6);
-    const off = news.filter(e => e.day !== '2026-02-14');
+    // Поздравления с днём рождения (даты с Liquipedia, 7.10) законно стоят своим днём — это не посты недели.
+    const off = news.filter(e => e.day !== '2026-02-14' && !/^ccPostBday/.test(e.k));
     check('неделя Дивизиона 1 подписана днём, когда она игралась',
           off.length === 0,
           off.map(e => e.k + '@' + e.day).join(', '));

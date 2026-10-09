@@ -42,7 +42,8 @@ const BOOT = `
             mid > logo.top - pill.height && mid < logo.bottom + pill.height,
             JSON.stringify({logo: [Math.round(logo.top), Math.round(logo.bottom)],
                             pill: [Math.round(pill.top), Math.round(pill.bottom)]}));
-      check('and it comes before the languages', pill.right <= langs.left,
+      // Языки могут уйти на вторую строку (узкое окно ~900 px) — тогда они и так после пилюли.
+      check('and it comes before the languages', pill.right <= langs.left || langs.top >= pill.bottom,
             JSON.stringify({pill: Math.round(pill.right), langs: Math.round(langs.left)}));
     } else {
       check('on a phone it keeps its own row', pill.top >= logo.bottom,

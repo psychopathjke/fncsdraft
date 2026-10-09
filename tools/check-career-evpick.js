@@ -72,6 +72,8 @@ const BOOT = `
       const got=[];
       for(const w of pool){
         if(got.length>=n) break;
+        // Лимит «три письма в день» (ccDmAsksLeft) — не предмет этой проверки: счётчик обнуляется на каждое письмо.
+        CAREER.career.dmAsks=null;
         CC_DUO_FMT=fmt; ccDuoFindWrite(w.handle);
         const t=careerDms().find(x=>hKey(x.who && x.who.handle||'')===hKey(w.handle));
         if(t && t.state==='offer'){ careerDmAccept(t.id); got.push(w.handle); }

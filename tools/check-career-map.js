@@ -163,6 +163,10 @@ const BOOT = `
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));
 
     careerEntry(); ccProbeSeat();
+    // Без метки вечер не начинается (правило, careerSpotGate) — метка ставится, как это сделал бы игрок.
+    // Карьера начинается в свободный день (15 декабря) — к первому турниру, как кнопкой «До турнира».
+    { const t = careerSkipTarget(); if (t && t.ev) careerSkipTo(t.day); }
+    careerSpotEnsure(); careerRenderHub('centre');
     const play = document.querySelector('#screen-career-hub .ch-play');
     if (!play || play.disabled) fail('play button is not usable');
 
@@ -186,6 +190,8 @@ const BOOT = `
     let sawMap = false, sawPicker = null;
     const watcher = setInterval(() => {
       if (document.querySelector('.zone-replay')) sawMap = true;
+      // Вопросы посреди игры (стиль, лут, ротация) — первый ответ, как в остальных сторожах.
+      const cb = document.querySelector('.cc-choice-btn'); if (cb) cb.click();
       const heads = [...document.querySelectorAll('#majorStages h4')];
       const picker = heads.find(h => h.textContent.indexOf('высадки') >= 0 ||
                                      h.textContent.toLowerCase().indexOf('landing spot') >= 0);

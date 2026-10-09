@@ -160,7 +160,11 @@ const BOOT = `
     const convos = document.querySelectorAll('#chBody .dm-item:not(.dm-new)').length;
     out.steps.push('wrote to everyone in ' + (guard - 1) + ' clicks, candidates left: ' + left +
       ', conversations: ' + convos);
-    if (left !== 0 || guard > 12) { out.fail = 'the duo list never ran out (' + (guard-1) + ' clicks, ' + left + ' left)'; throw new Error(out.fail); }
+    // Три письма в день (ccDmAsksLeft) — список может не кончиться, но тогда экран обязан сказать про лимит (9.10).
+    const limited = ccDmAsksLeft() <= 0;
+    out.steps.push('asks left today: ' + ccDmAsksLeft());
+    if (limited && !document.querySelector('#chBody .dm-over')) { out.fail = 'out of asks for today and the list does not say so'; throw new Error(out.fail); }
+    if (!limited && (left !== 0 || guard > 12)) { out.fail = 'the duo list never ran out (' + (guard-1) + ' clicks, ' + left + ' left)'; throw new Error(out.fail); }
     careerTab('centre');
 
     // ...and it has to come back for the modes that do have a next draft.

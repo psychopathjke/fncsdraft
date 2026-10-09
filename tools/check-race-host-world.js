@@ -39,7 +39,7 @@ setTimeout(function(){
     check('код, год и регион прочитаны из ссылки', CC_MP_NEW && CC_MP_NEW.code==='ABC123' && CC_MP_NEW.year===2024 && CC_MP_NEW.region==='NAC', JSON.stringify(CC_MP_NEW));
     check('год и регион хозяина стоят', CC.year===2024 && CC.region==='NAC', CC.year+'/'+CC.region);
     const ych=[...document.querySelectorAll('#ccYearChips .cc-chip')];
-    check('чужие годы заперты', ych.filter(b=>b.disabled).length===2 && ych.find(b=>!b.disabled).textContent.indexOf('2024')===0, ych.map(b=>b.textContent.slice(0,4)+(b.disabled?'x':'')).join(','));
+    check('чужие годы заперты', ych.filter(b=>!b.disabled).length===1 && ych.find(b=>!b.disabled).textContent.indexOf('2024')===0   /* все годы, кроме года хозяина (их теперь восемь) */, ych.map(b=>b.textContent.slice(0,4)+(b.disabled?'x':'')).join(','));
     const rch=[...document.querySelectorAll('#ccRegionChips .cc-chip')];
     check('чужие регионы заперты', rch.filter(b=>!b.disabled).length===1, rch.map(b=>b.textContent+(b.disabled?'x':'')).join(','));
     check('подпись говорит, кто задал', document.getElementById('ccYearNote').textContent.indexOf(L().ccMpLockedBy)>=0);

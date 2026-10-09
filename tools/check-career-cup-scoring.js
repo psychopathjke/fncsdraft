@@ -63,7 +63,7 @@ const BOOT = `
   };
   const lastLog=()=>{ const s=JSON.parse(localStorage.getItem('fncsdraft_career')).career; return (s.log||[]).slice(-1)[0]||null; };
   try{
-    const setY=(d,y,extra)=>{ seed(d, extra); const s=JSON.parse(localStorage.getItem('fncsdraft_career')); s.career.year=y; s.career.year0=y; localStorage.setItem('fncsdraft_career', JSON.stringify(s)); careerEntry(); careerRenderHub('centre'); };
+    const setY=(d,y,extra)=>{ seed(d, extra); const s=JSON.parse(localStorage.getItem('fncsdraft_career')); s.career.year=y; s.career.year0=y; s.career.size=ccYearRosterSize(y); s.partners=s.partners.slice(0, s.career.size-1); localStorage.setItem('fncsdraft_career', JSON.stringify(s)); careerEntry(); careerRenderHub('centre'); };   // состав своего года (2021 — трио)
     // 1. Числа известных событий — прямо из правил Epic.
     const at=(fam, r, p)=>{ const sc=ccCupScoreOf(fam, r); return sc ? sc.pts(p) : null; };
     const kl=(fam, r)=>{ const sc=ccCupScoreOf(fam, r); return sc ? sc.kill : null; };

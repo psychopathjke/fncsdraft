@@ -108,7 +108,8 @@ const BOOT = `
     check('и нет строки «войти по коду»', !el('heroCode'));
     const heroCta = document.querySelector('.hero-cta');
     const heroBtns = heroCta ? [...heroCta.querySelectorAll('.hero-btn')] : [];
-    check('у героя карьеры две двери: карьера и драфт', heroBtns.length === 2, String(heroBtns.length));
+    // С 8.10 третья — «Стать менеджером» (его слово: главная сразу с менеджером).
+    check('у героя три двери: карьера, драфт и менеджер', heroBtns.length === 3 && /mgrStart/.test(heroBtns.map(b=>b.getAttribute('onclick')||'').join(' ')), String(heroBtns.length));
     check('первая — одиночная карьера', heroBtns[0] && heroBtns[0].textContent.trim() === L().heroCareer,
           JSON.stringify(heroBtns[0] && heroBtns[0].textContent.trim()));
 

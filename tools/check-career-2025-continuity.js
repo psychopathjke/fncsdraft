@@ -36,8 +36,10 @@ const BOOT = `
     check('дуо', careerSquadSize()===2);
     check('карточки — 2025-го (свой мир)', ccNowYear()===2025 && ccContinuity());
     const now=careerRosterNowEU();
-    const yrs=new Set(now.map(ccCardYear));
-    check('сцена — только карты 2025-го', yrs.size===1 && yrs.has(2025), [...yrs].join(','));
+    // Дебютанты 2026-го (5b6fd46: новички следующих лет входят в сцену на стыке года) — своей карточкой года дебюта, это не утечка.
+    const yrs=new Set(now.filter(c=>!c._debut).map(ccCardYear));
+    out.notes.debut=now.filter(c=>c._debut).length;
+    check('сцена — карты 2025-го и дебютанты', yrs.size===1 && yrs.has(2025) && now.every(c=>ccCardYear(c)===2025 || c._debut===ccCardYear(c)), [...yrs].join(','));
     // Рост за 2025 переносится по нику: берём середняка сцены, даём ему +3 в книге и смотрим в пуле.
     const mid=now.find(p=>p._ovr>=80 && p._ovr<=88);
     CAREER.dev=CAREER.dev||{}; CAREER.dev[hKey(mid)]=3; CC_POOLS=null; CC_NOW_CARDS={};
@@ -48,15 +50,16 @@ const BOOT = `
     check('пары есть и их много (ядра трио + собранные по силе)', pool.duos.length>=60, String(pool.duos.length));
     const lifted=[...pool.duos.reduce((a,d)=>a.concat(d.cards), []), ...pool.players].find(c=>hKey(c)===hKey(mid));
     check('рост за 2025 перенесён в 2026-й (+3 по нику)', lifted && ccCardOvr(lifted)===mid._ovr+3, JSON.stringify({was:mid._ovr, now:lifted && ccCardOvr(lifted)}));
-    const bad=pool.duos.filter(d=>d.cards.some(c=>ccCardYear(c)!==2025));
-    check('в парах нет карт 2026-го', bad.length===0, String(bad.length));
-    const gaps=pool.duos.map(d=>Math.abs(ccCardOvr(d.cards[0])-ccCardOvr(d.cards[1])));
+    const bad=pool.duos.filter(d=>d.cards.some(c=>ccCardYear(c)!==2025 && !c._debut));
+    check('в парах нет карт 2026-го (кроме дебютантов)', bad.length===0, String(bad.length));
+    // Ровность — у пар, собранных по рейтингам 2025-го; дебютанты приходят своими настоящими парами.
+    const gaps=pool.duos.filter(d=>!d.cards.some(c=>c._debut)).map(d=>Math.abs(ccCardOvr(d.cards[0])-ccCardOvr(d.cards[1])));
     const avgGap=gaps.reduce((a,b)=>a+b,0)/gaps.length;
     out.notes.avgGap=+avgGap.toFixed(2);
     check('пары ровные по силе (средний разрыв < 4)', avgGap<4, String(avgGap));
     const room=careerCupField(Object.assign({}, cr, {division:1}), [], 50, 'cont', false, 0);
     check('комната Д1 — 49 пар вокруг игрока', room.length>=45, String(room.length));
-    check('в комнате все с картами 2025-го', room.every(t=>(t.squad||[]).every(c=>!c.event || /2025|ladder/.test(String(c.event)) || c.tier==='ladder')), room.slice(0,3).map(t=>(t.squad||[]).map(c=>c.handle+'|'+c.event).join(' & ')).join(' ; '));
+    check('в комнате все с картами 2025-го', room.every(t=>(t.squad||[]).every(c=>!c.event || /2025|ladder/.test(String(c.event)) || c.tier==='ladder' || c._debut)), room.slice(0,3).map(t=>(t.squad||[]).map(c=>c.handle+'|'+c.event).join(' & ')).join(' ; '));
     // Год целиком скипом — мир 2026-го (Reload, Саммит, Антверпен) на людях 2025-го не падает.
     let guard=0; while(!cr.seasonOver && guard++<400) careerSkipWeek();
     check('год 2026 прошёл', cr.seasonOver, 'дней '+guard);

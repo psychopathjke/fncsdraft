@@ -69,7 +69,9 @@ const BOOT = `
     check('капы с деньгами: 46 своих + архив', kinds.victory>=46, String(kinds.victory));
     check('Duos Cash Cup 9 декабря по имени', /Duos Cash Cup 1/.test((days.get('2023-12-09')||[]).map(e=>e.label).join(' ')), (days.get('2023-12-09')||[]).map(e=>e.label).join(' '));
     // Reload-капы вернулись архивом (выбор «34», 28.09) — проверка снята.
-    check('карт Reload под метку в 2024-м нет', !careerSpotSets().some(s=>/^r/.test(s.grid)), careerSpotSets().map(s=>s.grid).join(','));
+    // Правило 30.09: карта Reload под метку — ровно когда в году есть Reload-вечера (архивные капы).
+    { const rk=ccYearReloadSpotKeys(), hasR=careerSpotSets().some(s=>/^r/.test(s.grid));
+      check('карта Reload под метку — по Reload-вечерам года', hasR===!!(rk.r12||rk.r34), careerSpotSets().map(s=>s.grid).join(',')+' rk='+JSON.stringify(rk)); }
     check('оценка 5 декабря — остров Chapter 5 сезона 1', careerNightSet({type:'eval', day:'2023-12-05'})==='f1', careerNightSet({type:'eval', day:'2023-12-05'}));
     check('оценка: 7 игр', ccEvalR1Games()===7, String(ccEvalR1Games()));
     // Таблицы выплат: Европа и Океания различаются, NA West читает NA Central.
