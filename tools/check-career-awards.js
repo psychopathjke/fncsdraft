@@ -74,7 +74,8 @@ const BOOT = `
     check('плитка номинаций собрана', /cc-aw/.test(tile) && /Игл года|Фраггер года|Дуо года/.test(tile) && /% голосов сцены/.test(tile), tile.replace(/<[^>]+>/g,' ').slice(0,160));
     check('в плитке — тройка с процентами', (tile.match(/cc-goty-row/g)||[]).length>=2, tile.replace(/<[^>]+>/g,' ').slice(0,200));
     const y=ccGalaYear();
-    check('церемония — пять слайдов, номинации перед игроком года', CC_GALA_SLIDES===5 && /cc-aw/.test(ccGalaSlide(3, y)) && /cc-goty/.test(ccGalaSlide(4, y)) && !/cc-aw/.test(ccGalaSlide(4, y)));
+    // Шесть: слайд «Твой год» встал третьим (6004000, 28.09), номинации и игрок года сдвинулись на 4 и 5.
+    check('церемония — шесть слайдов, номинации перед игроком года', CC_GALA_SLIDES===6 && /cc-aw/.test(ccGalaSlide(4, y)) && /cc-goty/.test(ccGalaSlide(5, y)) && !/cc-aw/.test(ccGalaSlide(5, y)));
     out.steps.push('плитка: '+tile.replace(/<[^>]+>/g,' ').replace(/\\s+/g,' ').slice(0,180));
     // ---- свои награды в сводке, новый сезон чистит журнал ------------------------
     check('careerAwardsWon считает номинации', careerAwardsWon('cat')===won.filter(a=>a.you).length);

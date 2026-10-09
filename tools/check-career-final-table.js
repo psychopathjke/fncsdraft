@@ -239,7 +239,8 @@ const BOOT = `
     draw();
     const rows = [...host.querySelectorAll('.arc-row')];
     out.notes.rows = rows.length;
-    check('every line of the tile is pressable', rows.length === 5,
+    // 7 = три ЛАНа + Кубок наций и соло (2c9219c, 24.09: «Кубок наций и соло в Истории») + два Мейджора.
+    check('every line of the tile is pressable', rows.length === 7,
           String(rows.length) + ' rows');
     check('and none of them is open yet', !host.querySelector('.arc-t'));
     const major1 = rows[rows.length - 2];   // Major 1, after the three LANs

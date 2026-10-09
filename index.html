@@ -129160,7 +129160,54 @@ function careerCrestMono(org, px, cls){
 // is right on a card and wrong beside a name. The career draws its own so the
 // crest can sit inline in the identity bar and large in the club tile.
 /* Logos whose background is painted into the file. See careerCrestImg. */
-const CC_LOGO_SOLID=[];
+/* Аватарки клубов из X (9b95fe5, 8136544, e3bcf71) — квадраты с фоном, а список
+   остался пустым с 19.08 (полный прогон 9.10, check-crest-alpha: 221 герб без плашки). */
+const CC_LOGO_SOLID=[
+  '1620_Kings.png','22_E-SPORTS.png','25_Esports.png','38_Esports.png','4elements.png',
+  '4T_Esports.png','9ine.png','9ine_Team.png','A10_Esports.png','ABK_Esports.png','Ace_Esports.png',
+  'Aerial_Unit.png','AION_Esports.png','ALOFT_Gaming.png','Alpine_Gaming.png','Alternative.png',
+  'Aqualix_Esports.png','Aquatic_Esports.png','Arrow_Clan.png','Ascend_eSports.png',
+  'Asteria_Gaming.png','Astronic_Esports.png','Athletix_eSport.png','ATK_Esports.png',
+  'Aventix_Esports.png','Averiour_Gaming.png','AWOL_Esports.png','AXR_Esports.png','AYM_Esports.png',
+  'Azera_Esports.png','beGenius_ESC.png','Behard_Esport.png','BLZ_Esports.png','Ceesp_Gaming.png',
+  'Chiefs_Esports_Club.png','Chrome.png','Claim_Esports.png','Clarity.png','Clarix_Esports.png',
+  'Colors_Esport.png','Control_Gaming.png','Crazy_Himmeen.png','Cream_Esports.png','Crest_Gaming.png',
+  'CRKG_Esports.png','Crucial_Esports.png','Cutlass_Esports.png','Destiny_Esports.png',
+  'Diinasty_Esports.png','Divinity_Esports.png','DNA_Esports.png','Dragon_Blue.png',
+  'Dreags_Esport.png','DTY_Esports.png','Easy_Money_Esports.png','ECL_Gaming.png','ECS_e-Sports.png',
+  'EDGE.png','EKINOX.png','eKod_eSports.png','Element_Esports.png','ELEVATE.png','ENIX_Esport.png',
+  'EOZ_eSport.png','Esports_Psycho.png','eSpuma.png','EvozA_eSport.png','F2_Esport.png','FataL.png',
+  'FataL_Esports.png','Flawless_Esports.png','Frosted_Esports.png','FUT_Esports.png',
+  'GENIUS_e-sports.png','Gray_Hex.png','GRE_E-sports.png','GRY_Esports.png','Hawks_Esports.png',
+  'HwR_Esports.png','Invertice.png','Irg_Team.png','Kairos_Esports.png','Kira_Esports.png',
+  'KmB_Esport.png','Knockout_Esport.png','KnS_Clan.png','Kova_Esports.png','Lane_Esport.png',
+  'LAVIE_Esports.png','Leaf_Esp.png','Legit_Esports.png','Lestream_Esport.png','Liberta_Building.png',
+  'Lizer_Esports.png','LizoR_Esport.png','Lsodya_Esport.png','Luminary_Esport.png',
+  'Magnum_Gaming.png','Marine_Region.png','MBI.png','Mercury_eSports.png','Merge.png',
+  'Meta_Esports.png','Monto_Esports.png','MRKN_Clan.png','MRN.png','Msr_Esport.png','Muse.png',
+  'NEXUS_e-sports_team.png','Nom_Gaming.png','Notorious.png','NRG.png','Oblique.png',
+  'Odious_Esport.png','One_True_Revival.png','ONEUP_ESPORTS.png','ONEUP_FUTURE.png',
+  'OnLy_Esports.png','Optimal_Ambition.png','Oserv_Esport.png','OTX_ESPORT.png','Outplayed.png',
+  'Overtime.png','Overtime_Gaming.png','Pandore_eSport.png','Pap_s_Esport.png','Polarity_Clan.png',
+  'Polestar_Esports.png','Primitive_Esports.png','PTH_E-Sports.png','QLT_Esports.png',
+  'Quantum_Esports.png','Raised_By_Kings.png','RDT.png','Re-Lit_Esports.png','Red_Triad_Esport.png',
+  'REDLINE.png','Refill_Gaming.png','ReLit_e-sports.png','Revile_Esports.png','RGN_E-Sports.png',
+  'RGN_Esports.png','Riot_Squad_Esports.png','RisingStars.png','Rog_Esport.png','RosCey_eSports.png',
+  'Ruls_Esports.png','Sacred_Esports.png','Savant_Esports.png','Savior_Esports.png','SAW_eSports.png',
+  'Shimo.png','SK7_Esports.png','Slide_Esport.png','Solace.png','Solitary.png','Stratum_Esports.png',
+  'Tao_Esports.png','Team_Abstract.png','Team_Abyssal.png','Team_Acy.png','Team_Aex.png',
+  'Team_Aquiver.png','Team_Arrow.png','Team_Axey.png','Team_Aztech.png','Team_Clarity.png',
+  'Team_Corp.png','Team_Defuse.png','Team_Devour.png','Team_Dillusion.png','Team_Dionix.png',
+  'Team_Eldia.jpg','Team_Envious.png','Team_Eronic.png','Team_Exploit.png','Team_Extract.png',
+  'Team_GrayHex.png','Team_Krypto.png','Team_Monarchy.png','Team_Overtime.png','Team_Process.png',
+  'Team_Qnas.png','Team_Quax.png','Team_Spectators.png','Team_Spectralis.png','Team_TRIBE.png',
+  'Team_Trizon.png','Team_Vavory.png','THE_ONE.png','Thrill_Region.png','Timbers_Esports.png',
+  'TLS_E-Sports.png','TRIBE.png','Trident.png','Trident_Esports.png','Tsk_Esports.png','Tt9.png',
+  'Uprise_Region.png','V4_Gaming.png','Validus_Esports.png','VAMOS.png','VCGO.png','Vendetta.png',
+  'Vendetta_Esports.png','Viable.png','Vigilant_Esports.png','Violet_Esports.png','Voltage_Arise.png',
+  'Voltage_Esports.png','Vonix_E-Sports.png','VsBANDITS.png','Wake_eSports.png','Wasp_Esports.png',
+  'WIP_Esports.png','Wiz_ESports.png','XPRT_Esports.png','YJM_Esports.png','Zenco_E-Sports.png',
+  'Zentra_Esports.png','Zyon_E-Sports.png'];
 function ccCrestSolid(f){ return CC_LOGO_SOLID.indexOf(f)>=0; }
 function careerCrestImg(org, px, cls){
   /* Свой клуб — своим гербом: его рисует careerClubCrest, а зовут эту функцию
@@ -132751,6 +132798,12 @@ const CC_POST_BY={
   // What a Reload run paid is the same kind of line as where it finished, and
   // it was the one key in the set nobody had named an author for.
   ccNewsRelCash:'you',
+  /* Ключи 29.09–8.10 без решённого автора (полный прогон 9.10, check-career-feed): свой клуб —
+     гербом, титул EWC — лента сцены, путёвка, MVP, штаб, оплата клуба и отказ клуба взять
+     напарника — своя неделя. */
+  ccNewsClubStaff:'by', ccNewsClubBuyback:'by', ccNewsEwc24Champ:'press',
+  ccNewsEwc24Ticket:'you', ccNewsEwc24Mvp:'you', ccNewsOrgPays:'you', ccNewsOrgPaysNo:'you',
+  ccNewsStaffGone:'you', ccNewsStaffRenew:'you', roClubNo:'you',
   // Leaving a region hands the seat down, and that is the player's own line.
   ccNewsSlotRegion:'you',
   // Подарок напарнику — и полученный, и отправленный — своя строка: вещь

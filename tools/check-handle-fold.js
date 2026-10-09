@@ -64,6 +64,9 @@ const BOOT = `
         PLAYERS_BASE.forEach(c=>{
           if(String(c.handle||'')!==h) return;
           if(!String(c.cardSet||'')) return;
+          // Только круг 2025–2026 и Reload: годы 2021/2022 (25fda51, 050bcb2, 27.09) принесли
+          // трио, где оба BR-ника в разные годы стояли с Cadu/Seeyun (полный прогон 9.10).
+          if(!/^[mtr]/.test(String(c.cardSet||''))) return;
           PLAYERS_BASE.forEach(x=>{
             if(String(x.event||'')!==String(c.event||'')) return;
             if(String(x.region||'')!==String(c.region||'')) return;

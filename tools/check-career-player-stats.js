@@ -52,7 +52,7 @@ const BOOT = `
     const first=(ranked[0].squad||[])[0], firstH=first && first.handle;
     check('журнал есть у первого', !!(cr.plog && firstH && cr.plog[firstH] && cr.plog[firstH].length===1), JSON.stringify(Object.keys(cr.plog||{}).slice(0,3)));
     const e=cr.plog[firstH][0];
-    check('строка журнала: день, вид, место, из, VR, килы, очки, див', e[0]==='2026-02-02' && e[1]==='cup' && e[2]===1 && e[3]===40 && e[4]===2 && e[5]===30 && e[6]===300 && e[7]===1, JSON.stringify(e));
+    check('строка журнала: день, вид, место, из, VR, килы, очки, див', e[0]==='2026-02-02' && e[1]==='cup' && e[2]===1 && e[3]===40 && e[4]===2 && e[5]===ccMemberKills(ranked[0], firstH) && e[5]>0 && e[5]<=30 && /* килы — доля человека, а не отряда (9beb45f, 30.09: «киллы по ролям») */e[6]===300 && e[7]===1, JSON.stringify(e));
     check('в списке вечеров кубок назван с дивизионом', !/undefined/.test(careerPlayerStatsHTML(firstH)));
     const second=(ranked[1].squad||[])[1] || (ranked[1].squad||[])[0];
     check('и у напарника второй команды', !!(second && cr.plog[second.handle] && cr.plog[second.handle][0][2]===2));
