@@ -8320,7 +8320,7 @@ resetConfirmYes:'Выйти',
 resetConfirmNo:'Отмена',
 tagline:'Задрафть сквад из реальных игроков FNCS и разыграй турнир. Или начни карьеру: сезон за сезоном по настоящему календарю, дивизионы, Мейджоры, Reload, ЛАНы. Один или вдвоём с другом.',
 heroTitle:'Задрафть настоящих про. <em>Разыграй сезон.</em>',
-heroCareer:'Начать карьеру',
+heroCareerCont:'Продолжить карьеру', heroCareer:'Начать карьеру',
 heroTeamLbl:'С другом:', heroDuo:'Вдвоём',
 navCareer:'Карьера', navDraft:'Драфт', navHistory:'История',
 ccActGrpTrain:'Тренировки', ccActGrpTeam:'Команда', ccActGrpLife:'Стрим и отдых',
@@ -9967,7 +9967,7 @@ dmPromoted2:(d,o)=>'Поздравляю с Дивизионом '+d+', засл
 dmPromoted3:(d,o)=>'Дивизион '+d+', ну наконец. Я '+o+', и мне нужен кто-то на этом уровне',
 dmPromoted4:(d,o)=>'Д'+d+'. Я '+o+', свободен на сезон',
 dmYes:'Го. Я свободен.',
-dmNo:(o,d)=>'Спасибо, но я '+o+' и сижу в Дивизионе '+(d>1?d-1:1)+'. Пока не вариант.',
+dmNoUp:(o,d)=>'Спасибо, но я пока остаюсь в своём составе', dmNoUp1:(o,d)=>'Не, сейчас не меняюсь. Удачи', dmNoUp2:(o,d)=>'Приятно, правда, но в этом сезоне я со своим дуо', dmNoUp3:(o,d)=>'Сейчас не ищу перемен', dmNoUp4:(o,d)=>'Уважаю, что написал, но остаюсь где есть', dmNo:(o,d)=>'Спасибо, но я '+o+' и сижу в Дивизионе '+(d>1?d-1:1)+'. Пока не вариант.',
 dmNoDuo:m=>'Спасибо, но у меня дуо с '+m+' — мы продолжаем.',
 ccDuoViewPlayers:"Игроки", ccDuoViewPairs:"Пары", ccJoinPairBtn:"Попроситься третьим", ccJoinPairThird:h=>"третий: "+h, ccJoinPairOpen:"ищут третьего", ccJoinPairHint:"Готовые пары твоего региона: третьего нет или он слабее тебя. Согласятся — садятся к тебе оба.", ccJoinPairNone:"Пар, куда можно попроситься третьим, сейчас нет.", ccJoinPairOwnReg:"Пары — только твоего региона.", dmJoinAsk:m=>'Привет! Вижу, вы с '+m+' играете вдвоём. Возьмёте меня третьим?', dmJoinYes:m=>'Обсудили с '+m+' — залетай, будешь третьим.', dmJoinNo:m=>'Поговорил с '+m+' — пока нет, третьего подберём сами.', dmJoinRole:r=>'Третьим нам нужен '+r+'. Пересядешь — пиши.',
 dmFmtAsk:(f,d)=>'Привет! Собираю состав на '+f+' — первый кап '+d+'. Сыграем вместе?', dmFmtPair:(m,f,d)=>'Мы с '+m+' ищем третьего на '+f+' — первый кап '+d+'. Залетай к нам?', roClubAsk:'Позвать в клуб', roClubNo:(o,d)=>o+' не берёт '+d+' — не их уровень', dmRealTeam:e=>'Новый сезон, '+e+' — играем тем составом, что был в жизни. Я в деле.',
@@ -10380,7 +10380,7 @@ major3GcSlotNote:n=>'The top '+n+' of this region fly to the Global Championship
 
 tagline:'Draft a squad of real FNCS players and run the tournament. Or start a career: season after season on the real calendar, divisions, Majors, Reload and LANs. Solo or with a friend.',
 heroTitle:'Draft real pros. <em>Play the season.</em>',
-heroCareer:'Start a career',
+heroCareerCont:'Continue career', heroCareer:'Start a career',
 heroTeamLbl:'With a friend:', heroDuo:'Play as a duo',
 navCareer:'Career', navDraft:'Draft', navHistory:'History',
 ccActGrpTrain:'Training', ccActGrpTeam:'Team', ccActGrpLife:'Stream and rest',
@@ -11971,7 +11971,7 @@ dmPromoted2:(d,o)=>'Congratulations on Division '+d+', well earned. I am '+o+' a
 dmPromoted3:(d,o)=>'Division '+d+', about time. I am '+o+' and I need somebody at this level',
 dmPromoted4:(d,o)=>'D'+d+'. I am '+o+', free for the season',
 dmYes:'Yeah, I am free. Let us do it.',
-dmNo:(o,d)=>'Thanks, but I am '+o+' and sitting in Division '+(d>1?d-1:1)+'. Not right now.',
+dmNoUp:(o,d)=>'Appreciate it, but I am sticking with my current setup for now', dmNoUp1:(o,d)=>'Nah, not switching right now. Good luck though', dmNoUp2:(o,d)=>'Honestly flattered, but I am locked in with my duo this season', dmNoUp3:(o,d)=>'Not looking for a change at the moment', dmNoUp4:(o,d)=>'Respect for asking, but I am staying where I am', dmNo:(o,d)=>'Thanks, but I am '+o+' and sitting in Division '+(d>1?d-1:1)+'. Not right now.',
 dmNoDuo:m=>'Thanks, but I have a duo with '+m+' — we are running it back.',
 ccDuoViewPlayers:"Players", ccDuoViewPairs:"Pairs", ccJoinPairBtn:"Ask to be third", ccJoinPairThird:h=>"third: "+h, ccJoinPairOpen:"looking for a third", ccJoinPairHint:"Standing pairs in your region with no third, or a third weaker than you. If they say yes, both join you.", ccJoinPairNone:"No pairs to ask right now.", ccJoinPairOwnReg:"Pairs are from your own region only.", dmJoinAsk:m=>'Hey! I see you and '+m+' play as a duo. Take me as your third?', dmJoinYes:m=>'Talked it over with '+m+' — you are in, you are our third.', dmJoinNo:m=>'Talked to '+m+' — not for now, we will find a third ourselves.', dmJoinRole:r=>'We need a '+r+' as the third. Switch and write again.',
 dmFmtAsk:(f,d)=>'Hey! Building a roster for '+f+' — first cup '+d+'. Play together?', dmFmtPair:(m,f,d)=>m+' and I need a third for '+f+' — first cup '+d+'. Want in?', roClubAsk:'Bring to the club', roClubNo:(o,d)=>o+' pass on '+d+' — not their level', dmRealTeam:e=>'New season, '+e+' — let’s play it with our real roster. I’m in.',
@@ -14037,7 +14037,7 @@ dmPromoted1:(d,o)=>'Bravo pour la D'+d+'. Je suis '+o+', je cherche',
 dmPromoted2:(d,o)=>'Félicitations pour la Division '+d+', bien méritée. Je suis '+o+' et je cherche un duo cette saison',
 dmPromoted3:(d,o)=>'Division '+d+', il était temps. Je suis '+o+' et il me faut quelqu’un à ce niveau',
 dmPromoted4:(d,o)=>'D'+d+'. Je suis '+o+', libre pour la saison',
-dmNo:(o,d)=>'Merci, mais je suis '+o+' et je suis en Division '+(d>1?d-1:1)+'. Pas maintenant.',
+dmNoUp:(o,d)=>'Merci, mais je reste avec mon équipe actuelle pour l’instant', dmNo:(o,d)=>'Merci, mais je suis '+o+' et je suis en Division '+(d>1?d-1:1)+'. Pas maintenant.',
 dmNoDuo:m=>'Merci, mais j’ai un duo avec '+m+' — on repart ensemble.',
 ccDuoViewPlayers:"Joueurs", ccDuoViewPairs:"Duos", ccJoinPairBtn:"Demander à être 3e", ccJoinPairThird:h=>"3e : "+h, ccJoinPairOpen:"cherchent un 3e", ccJoinPairHint:"Les duos de ta région sans 3e, ou avec un 3e plus faible que toi. S’ils acceptent, les deux te rejoignent.", ccJoinPairNone:"Aucun duo à solliciter pour l’instant.", ccJoinPairOwnReg:"Duos de ta région uniquement.", dmJoinAsk:m=>'Salut ! Je vois que tu joues en duo avec '+m+'. Vous me prenez en 3e ?', dmJoinYes:m=>'On en a parlé avec '+m+' — c’est bon, tu es notre 3e.', dmJoinNo:m=>'J’ai parlé avec '+m+' — pas pour l’instant, on trouvera un 3e nous-mêmes.', dmJoinRole:r=>'Il nous faut un '+r+' en 3e. Change de rôle et réécris.',
 dmFmtAsk:(f,d)=>'Salut ! Je monte une équipe pour '+f+' — première cup '+d+'. On joue ensemble ?', dmFmtPair:(m,f,d)=>'Avec '+m+' on cherche un troisième pour '+f+' — première cup '+d+'. Tu viens ?', roClubAsk:'Faire venir au club', roClubNo:(o,d)=>o+' ne prend pas '+d+' — pas leur niveau', dmRealTeam:e=>'Nouvelle saison, '+e+' — on la joue avec notre vraie équipe. Je suis partant.',
@@ -14352,7 +14352,7 @@ ratingNote:'Une note, c’est toute une saison, pas un seul tournoi. Chaque rés
 supportBtn:'Soutenir',
 tagline:'Compose une équipe de vrais joueurs FNCS et lance le tournoi. Ou commence une carrière : saison après saison sur le vrai calendrier, divisions, Majors, Reload et LAN. Seul ou avec un ami.',
 heroTitle:'Drafte de vrais pros. <em>Joue la saison.</em>',
-heroCareer:'Lancer une carrière',
+heroCareerCont:'Continuer la carrière', heroCareer:'Lancer une carrière',
 heroTeamLbl:'Avec un ami :', cstripChipDivs:'Divisions 5 → 1', cstripChipMajors:'Majors et LAN', cstripChipReload:'Le circuit Reload', cstripChipLife:'Clubs, argent, forme', heroDuo:'Jouer à deux',
 navCareer:'Carrière', navDraft:'Draft', navHistory:'Historique',
 ccActGrpTrain:'Entraînement', ccActGrpTeam:'Équipe', ccActGrpLife:'Stream et repos',
@@ -14719,7 +14719,7 @@ it:{
 supportBtn:"Sostieni",
 tagline:"Crea una squadra di veri giocatori FNCS e gioca il torneo. Oppure inizia una carriera: stagione dopo stagione sul calendario reale, divisioni, Major, Reload e LAN. Da solo o con un amico.",
 heroTitle:"Scegli veri pro. <em>Gioca la stagione.</em>",
-heroCareer:"Inizia la carriera",
+heroCareerCont:"Continua la carriera", heroCareer:"Inizia la carriera",
 heroTeamLbl:"Con un amico:", cstripChipDivs:"Divisioni 5 → 1", cstripChipMajors:"Major e LAN", cstripChipReload:"Il circuito Reload", cstripChipLife:"Club, soldi, forma", heroDuo:"In due",
 navCareer:"Carriera", navDraft:"Draft", navHistory:"Storico",
 ccActGrpTrain:"Allenamento", ccActGrpTeam:"Squadra", ccActGrpLife:"Stream e riposo",
@@ -15736,7 +15736,7 @@ dmPromoted1:(d,o)=>'Complimenti per la D'+d+'. Sono '+o+', cerco',
 dmPromoted2:(d,o)=>'Complimenti per la Divisione '+d+', meritata. Sono '+o+' e cerco un duo per questa stagione',
 dmPromoted3:(d,o)=>'Divisione '+d+', era ora. Sono '+o+' e mi serve qualcuno a questo livello',
 dmPromoted4:(d,o)=>'D'+d+'. Sono '+o+', libero per la stagione',
-dmNo:(o,d)=>'Grazie, ma sono '+o+' e sto in Divisione '+(d>1?d-1:1)+'. Non adesso.',
+dmNoUp:(o,d)=>'Grazie, ma per ora resto con la mia squadra attuale', dmNo:(o,d)=>'Grazie, ma sono '+o+' e sto in Divisione '+(d>1?d-1:1)+'. Non adesso.',
 dmNoDuo:m=>'Grazie, ma ho un duo con '+m+' — continuiamo insieme.',
 ccDuoViewPlayers:"Giocatori", ccDuoViewPairs:"Coppie", ccJoinPairBtn:"Chiedi di fare il terzo", ccJoinPairThird:h=>"terzo: "+h, ccJoinPairOpen:"cercano un terzo", ccJoinPairHint:"Coppie della tua regione senza terzo, o con un terzo più debole di te. Se accettano, entrano entrambi con te.", ccJoinPairNone:"Nessuna coppia a cui chiedere, per ora.", ccJoinPairOwnReg:"Solo coppie della tua regione.", dmJoinAsk:m=>'Ciao! Vedo che giochi in duo con '+m+'. Mi prendete come terzo?', dmJoinYes:m=>'Ne ho parlato con '+m+' — sei dentro, sei il nostro terzo.', dmJoinNo:m=>'Ho sentito '+m+' — per ora no, il terzo lo troviamo noi.', dmJoinRole:r=>'Ci serve un '+r+' come terzo. Cambia ruolo e riscrivi.',
 dmFmtAsk:(f,d)=>'Ciao! Formo una squadra per '+f+' — prima cup '+d+'. Giochiamo insieme?', dmFmtPair:(m,f,d)=>'Io e '+m+' cerchiamo un terzo per '+f+' — prima cup '+d+'. Ci stai?', roClubAsk:'Porta nel club', roClubNo:(o,d)=>o+' non prende '+d+' — non è il loro livello', dmRealTeam:e=>'Nuova stagione, '+e+' — giochiamola con la nostra vera squadra. Io ci sono.',
@@ -17251,7 +17251,7 @@ pt:{
 supportBtn:"Apoiar",
 tagline:"Monte um time de jogadores reais da FNCS e rode o torneio. Ou comece uma carreira: temporada após temporada no calendário real, divisões, Majors, Reload e LANs. Sozinho ou com um amigo.",
 heroTitle:"Convoque os pros. <em>Jogue a temporada.</em>",
-heroCareer:"Começar carreira",
+heroCareerCont:"Continuar carreira", heroCareer:"Começar carreira",
 heroTeamLbl:"Com um amigo:", cstripChipDivs:"Divisões 5 → 1", cstripChipMajors:"Majors e LANs", cstripChipReload:"O circuito Reload", cstripChipLife:"Clubes, dinheiro, forma", heroDuo:"Em dupla",
 navCareer:"Carreira", navDraft:"Draft", navHistory:"Histórico",
 ccActGrpTrain:"Treino", ccActGrpTeam:"Time", ccActGrpLife:"Stream e descanso",
@@ -18268,7 +18268,7 @@ dmPromoted1:(d,o)=>'Parab\u00e9ns pela D'+d+'. Eu sou '+o+', procurando',
 dmPromoted2:(d,o)=>'Parab\u00e9ns pela Divis\u00e3o '+d+', merecido. Eu sou '+o+' e estou procurando dupla nesta temporada',
 dmPromoted3:(d,o)=>'Divis\u00e3o '+d+', at\u00e9 que enfim. Eu sou '+o+' e preciso de algu\u00e9m nesse n\u00edvel',
 dmPromoted4:(d,o)=>'D'+d+'. Eu sou '+o+', livre para a temporada',
-dmNo:(o,d)=>'Valeu, mas eu sou '+o+' e estou na Divis\u00e3o '+(d>1?d-1:1)+'. Agora n\u00e3o.',
+dmNoUp:(o,d)=>'Valeu, mas por enquanto fico com o meu time atual', dmNo:(o,d)=>'Valeu, mas eu sou '+o+' e estou na Divis\u00e3o '+(d>1?d-1:1)+'. Agora n\u00e3o.',
 dmNoDuo:m=>'Valeu, mas tenho dupla com '+m+' — vamos seguir juntos.',
 ccDuoViewPlayers:"Jogadores", ccDuoViewPairs:"Duplas", ccJoinPairBtn:"Pedir para ser o terceiro", ccJoinPairThird:h=>"terceiro: "+h, ccJoinPairOpen:"procuram um terceiro", ccJoinPairHint:"Duplas da sua região sem terceiro, ou com um terceiro mais fraco que você. Se aceitarem, os dois entram com você.", ccJoinPairNone:"Nenhuma dupla para pedir agora.", ccJoinPairOwnReg:"Só duplas da sua região.", dmJoinAsk:m=>'E aí! Vi que você joga em dupla com '+m+'. Me levam de terceiro?', dmJoinYes:m=>'Falei com '+m+' — pode vir, você é o nosso terceiro.', dmJoinNo:m=>'Falei com '+m+' — agora não, a gente acha um terceiro.', dmJoinRole:r=>'Precisamos de um '+r+' como terceiro. Troca e escreve de novo.',
 dmFmtAsk:(f,d)=>'Salve! Montando time para '+f+' — primeira cup '+d+'. Bora jogar junto?', dmFmtPair:(m,f,d)=>'Eu e '+m+' procuramos um terceiro para '+f+' — primeira cup '+d+'. Topa?', roClubAsk:'Levar ao clube', roClubNo:(o,d)=>o+' não contrata '+d+' — não é o nível deles', dmRealTeam:e=>'Nova temporada, '+e+' — bora jogar com o nosso time de verdade. Tô dentro.',
@@ -96029,6 +96029,7 @@ function show(id){
   SHOWN_SCREEN=id;
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  if(id==='screen-mode' && typeof ccHeroCareerText==='function') ccHeroCareerText();   // «Продолжить карьеру», если она есть
   // Навбар: светлая пилюля — тот раздел, чей экран показан.
   try{
     const nav = /career/.test(id) ? 'career' : (id==='screen-history' ? 'history' : 'draft');
@@ -116619,7 +116620,11 @@ function careerNext(){
   for(let d=0; d<1; d++){
     let on=days.get(today)||[];
     if(on.length>1){
-      const rank=e=>{ const i=CC_KIND_RANK.indexOf(e.kind); return i<0 ? 99 : i; };
+      /* ЛАН в тот же день, что кубок или Performance Evaluation, — значительнее их (правило 30.08 «оставить, где больше
+         призов или значительный»; проба всех капов 9.10: Games of the Future 18.12.2025 уступал оценке недели). Ранг — как
+         у Про-Ама; без приглашения день, как и раньше, отходит следующему играбельному вечеру. */
+      const lanToday=(()=>{ try{ const v=careerVictoryOn(today); return !!(v && v.lan); }catch(e){ return false; } })();
+      const rank=e=>{ const i=CC_KIND_RANK.indexOf(e.kind==='victory' && lanToday ? 'proam' : e.kind); return i<0 ? 99 : i; };
       const sorted=on.slice().sort((a,b)=>rank(a)-rank(b));
       // Something enterable beats something merely important: a day that offers a
       // Major nobody can play and a final they can should offer the final.
@@ -117126,7 +117131,17 @@ function ccHubErrCopyOld(text, done){
     done();
   }catch(e){ console.error('скопировать ошибку не вышло:', e); }
 }
+/* КЭШ НА ОДНУ ПЕРЕРИСОВКУ ХАБА (игрок 9.10: «the game lag every clicks»). Замер на телефоне (Playwright, CPU ×6): вкладка
+   «Медиа» 250–430 мс на КАЖДОЕ нажатие, из них ~90% — careerDmPool → careerDuoBeatsYou → ccDuoForm, который на каждого
+   кандидата заново строил всю таблицу сезона. Внутри одной отрисовки таблица не меняется — считается один раз. */
+let CC_RENDER_MEMO=null;
 function careerRenderHub(tab){
+  const outer=!CC_RENDER_MEMO;
+  if(outer) CC_RENDER_MEMO=new Map();
+  try{ return careerRenderHubRaw(tab); }
+  finally{ if(outer) CC_RENDER_MEMO=null; }
+}
+function careerRenderHubRaw(tab){
   // 2019–2020: состав по этапу года (старый сейв со сквадом с апреля тоже сходит на дуо).
   try{ if(typeof ccSyncPhaseRoster==='function') ccSyncPhaseRoster(); }catch(e){}
   /* ОТРИСОВКА НЕ ТРАТИТ БРОСКИ ВЕЧЕРА. Пока идёт сеяный вечер (CC_MP_RAND), хаб всё равно
@@ -135861,7 +135876,10 @@ function ccDuoForm(handle){
   const t=careerTable();
   if(!rows.length || (t.weeks||0)<3) return null;
   const k=hKey({handle:handle});
-  const i=rows.findIndex(r=>String(r.name||'').split(/\s*[+&]\s*/).some(h=>hKey({handle:h})===k));
+  // Указатель «ник → место» — тоже один раз на перерисовку (см. CC_RENDER_MEMO).
+  let idx=CC_RENDER_MEMO && CC_RENDER_MEMO.get('tblIdx');
+  if(!idx){ idx=new Map(); rows.forEach((r,j)=>String(r.name||'').split(/\s*[+&]\s*/).forEach(h=>{ const kk=hKey({handle:h}); if(!idx.has(kk)) idx.set(kk, j); })); if(CC_RENDER_MEMO) CC_RENDER_MEMO.set('tblIdx', idx); }
+  const i=idx.has(k) ? idx.get(k) : -1;
   if(i<0) return null;
   const r=rows[i];
   return {place:i+1, of:rows.length, pts:r.pts, weeks:r.weeks, best:r.best, wins:r.wins};
@@ -137288,7 +137306,7 @@ function careerDmAnswer(t, boost){
     return false;
   }
   if(mate && careerDuoBeatsYou(who)) careerDmPush(t, 'them', 'dmNoDuo', [mate.handle]);
-  else careerDmPush(t, 'them', 'dmNo', [who.ovr, CAREER.career.division]);
+  else careerDmPush(t, 'them', ccDmNoKey(who), [who.ovr, CAREER.career.division]);
   t.state='declined';
   return false;
 }
@@ -137321,6 +137339,12 @@ function careerDmArgs(t){
      только себе, а не переговоры за него. См. careerRoleSwap. */
   return out;
 }
+// Отказ «я сильнее, подтянись» — только от того, кто правда сильнее; остальные отказывают из-за своего состава
+// (игрок 9.10: «ask a player whos a lower rating than u, sometimes they say im 73, get better when ur a 76»).
+function ccDmNoKey(who){
+  const me=CAREER && CAREER.player ? (CAREER.player.ovrExact!=null ? CAREER.player.ovrExact : CAREER.player.ovr) : 0;
+  return (who && who.ovr!=null && who.ovr<=Math.round(me)) ? 'dmNoUp' : 'dmNo';
+}
 function careerDmCond(id, ok){
   const t=careerDms().find(x=>x.id===id);
   if(!t || t.state!=='cond') return;
@@ -137329,7 +137353,7 @@ function careerDmCond(id, ok){
     const was=ccRoleNow();
     careerRoleSwap();
     if(ccRoleNow()!==was){ careerDmPush(t, 'you', 'dmCondRoleOk', [L()[ccRoleNow()]||'']); careerDmPush(t, 'them', 'dmYes'); t.state='offer'; }
-    else { careerDmPush(t, 'them', 'dmNo', [t.who.ovr, CAREER.career.division]); t.state='declined'; }
+    else { careerDmPush(t, 'them', ccDmNoKey(t.who), [t.who.ovr, CAREER.career.division]); t.state='declined'; }
   } else {
     careerDmPush(t, 'you', 'dmCondTrialOk');
     careerDmPush(t, 'them', 'dmCondTrialYes');
@@ -146721,6 +146745,10 @@ function careerTableAdd(ranked){
    22 августа, теперь снята и сама витрина правила. careerTableRows/Place
    живут: ими рисуются скриншоты таблиц в ленте (careerD1Posts). */
 function careerTableRows(){
+  if(CC_RENDER_MEMO){ if(!CC_RENDER_MEMO.has('tbl')) CC_RENDER_MEMO.set('tbl', careerTableRowsRaw()); return CC_RENDER_MEMO.get('tbl').slice(); }
+  return careerTableRowsRaw();
+}
+function careerTableRowsRaw(){
   const t=careerTable();
   return Object.keys(t.rows).map(function(name){
     const r=t.rows[name];
@@ -157513,7 +157541,16 @@ function mgrLeave(){
 }
 function mgrHome(){ mgrSave(); mgrLeave(); show('screen-mode'); }
 function mgrLeaveIfActive(){ try{ if(MGR_ACTIVE){ if(MGR) mgrSave(); mgrLeave(); } }catch(e){} }
+/* Кнопка карьеры на главной: есть сохранённая карьера — «Продолжить», а не «Начать» (игрок 9.10: «closed my browser on my
+   phone and opened it back up and there wasnt an option to continue my career» — кнопка вела к списку карьер, но звалась
+   «Start a career»). */
+function ccHeroCareerText(){
+  try{ let has=false; for(let n=1; n<=CC_SLOTS && !has; n++) has=!!ccSlotCard(n);
+    const el=document.querySelector('.hero-cta .hero-btn-go span[data-i18n]');
+    if(el) el.textContent=(has && L().heroCareerCont) ? L().heroCareerCont : L().heroCareer; }catch(e){}
+}
 function mgrHeroText(){
+  try{ ccHeroCareerText(); }catch(e){}
   try{ const T=mgrT(); const set=(id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
     set('mgHeroTag', T.heroTag); set('mgHeroSub', T.heroSub); set('mgHeroBtn', T.heroBtn); set('mgCareerBtn', T.careerBtn); set('mgNavBtn', T.navBtn);
     const h=document.getElementById('heroMgrTitle'); if(h) h.innerHTML=esc(T.heroTitle)+' <em>'+esc(T.heroTitle2)+'</em>'; }catch(e){}
