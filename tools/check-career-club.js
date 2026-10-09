@@ -101,7 +101,9 @@ const BOOT = `
       const row = careerClub().roster.find(r => r.id === d.id);
       check('в составе с той зарплатой, о которой договорились', row && row.salary === mid.ask,
             row && String(row.salary));
-      check('поиск по нику находит', careerClubFree(d.who[0].slice(0, 3)).length > 0, d.who[0]); }
+      // 11.09 (b34b99b): подписанных в списке свободных нет, ищем по нику ещё не подписанного.
+      const e = careerClubFree().find(x => !careerClub().roster.some(r => r.id === x.id));
+      check('поиск по нику находит', !!e && careerClubFree(e.who[0].slice(0, 3)).some(x => x.id === e.id), e && e.who[0]); }
 
     // ---- доля с призовых ----------------------------------------------------
     careerClubTake();                       // точка отсчёта

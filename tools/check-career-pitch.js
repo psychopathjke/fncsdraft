@@ -49,7 +49,10 @@ const BOOT = `
         closeRangeEdge:6, region:'EU', ovr:90, role:'roleIGL', attrs:null, ageEdge:4,
         photo:null, handle:null, cardRegion:null, nat:null},
       career:{season:1, day:'2026-03-02', division:1, earnings:0, balance:5000, reach:40000,
-              tokens:[], log:[], news:[]},
+              // 2.10 (47f349b, ccOrgProven): клубы пишут после двух вечеров в топ-10 — два таких в логе.
+              tokens:[], news:[],
+              log:[{season:1, day:'2026-02-14', place:4, of:100, passed:true, kind:'cup'},
+                   {season:1, day:'2026-02-21', place:7, of:100, passed:true, kind:'cup'}]},
       partner:null}));
     careerEntry();
     /* Менеджер — это условие просьбы: без него careerAgentPitch не делает

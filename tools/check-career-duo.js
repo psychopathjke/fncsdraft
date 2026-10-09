@@ -37,11 +37,13 @@ const BOOT = `
         closeRangeEdge:6, region:'EU', ovr:80, role:'roleIGL', attrs:null, ageEdge:4,
         photo:null, handle:null, cardRegion:null, nat:null},
       career:{season:1, day:day, division:2, earnings:0, balance:0, reach:0,
-              tokens:[], log:[], news:[]},
+              // 29.09 (8a66d9d): a season turn only rolls for a pair with 8 weeks and a night together.
+              tokens:[], news:[],
+              log:[{season:1, day:'2026-03-10', place:50, of:100, passed:false, kind:'cup', mate:'Buddy'}]},
       partners:[{card:{handle:'Buddy', region:'EU', rating:mateOvr, _ovr:mateOvr,
                      nat:'de', tier:'ladder', event:'ladder', placement:null,
                      rarity:'common', partner:null},
-               patience:patience}]}));
+               patience:patience, since:'2026-01-05'}]}));
     const s = JSON.parse(localStorage.getItem('fncsdraft_career'));
     s.player.attrs = ccRookieAttrs(80, 'roleIGL');
     localStorage.setItem('fncsdraft_career', JSON.stringify(s));

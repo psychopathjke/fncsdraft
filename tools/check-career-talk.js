@@ -238,6 +238,8 @@ const BOOT = `
           JSON.stringify(pool.map(w => w.ovr)));
     careerDmWrite(hard.handle);
     t = careerDmFind(hard.handle);
+    // 7.10 (b4673dd): a near miss is a condition first ("try a cup with me"); turning it down is the no.
+    if (t.state === 'cond') careerDmCond(t.id, false);
     check('and they say no, there and then', t.state === 'declined', t.state);
     const args = careerDmArgs(t);
     out.notes.args = args;
@@ -712,13 +714,17 @@ const BOOT = `
     check('and it is not because the window is shut', careerWindowNow(), 'shut');
     check('the viewers keep theirs too', quiet.indexOf(L().dmSecfans) >= 0);
     // And why everybody writing is worse than you.
-    check('a career above its rung is told so',
-          quiet.indexOf(L().dmOverRung(3, ccDivCeil(3))) >= 0, 'no note');
-    check('and the list really is capped at what the rung holds',
-          careerDmPool().every(w => w.ovr <= ccDivCeil(3)),
+    // 26.09 (2c9219c, his word "a 80 can only play with 61s"): the ceiling is the rung OR your own rating,
+    // whichever is higher, and the over-the-rung note is off (overRung=false) because it no longer binds.
+    check('a career above its rung is not told a ceiling that does not bind',
+          quiet.indexOf(L().dmOverRung(3, ccDivCeil(3))) < 0, 'stale note');
+    check('and the list is capped at the rung or the career, whichever is higher',
+          careerDmPool().every(w => w.ovr <= Math.max(ccDivCeil(3), 96)),
           careerDmPool().map(w => w.ovr).join(','));
     // Inside a window the clubs write, so the note is about the month and not
-    // about the career.
+    // about the career. 2.10 (47f349b): clubs write after two top-10 nights (ccOrgProven).
+    CAREER.career.log = [{season:1, day:'2026-01-10', place:3, of:150, passed:true, kind:'cup'},
+                         {season:1, day:'2026-01-12', place:5, of:150, passed:true, kind:'cup'}];
     CAREER.career.day = '2026-01-15';
     check('and inside a window they do write', careerOrgOffers().length > 0,
           String(careerOrgOffers().length));

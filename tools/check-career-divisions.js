@@ -136,6 +136,9 @@ const BOOT = `
 
         // ---- the club ------------------------------------------------------
         // Seeded inside a signing window, or nothing would arrive at all.
+        // 2.10 (47f349b, ccOrgProven): clubs write after two top-10 nights, so the career has two.
+        CAREER.career.log = [{season:1, day:'2026-01-10', place:3, of:100, passed:true, kind:'cup'},
+                             {season:1, day:'2026-01-12', place:6, of:100, passed:true, kind:'cup'}];
         const offers = careerOrgOffers();
         row.offers = offers.length;
         row.wage = offers.length ? Math.max.apply(null, offers.map(o => o.salary)) : 0;
