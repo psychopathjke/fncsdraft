@@ -8308,6 +8308,7 @@ function ruPlaces(n){ return n+' '+ruPlural(n, 'место', 'места', 'ме
    rather than a statement about the night - a column reading top 3 / top 4 /
    top 5 down its length is one word printed forty times. */
 function ccTop(n){ return (LANG==='ru' ? 'топ ' : 'top ')+n; }
+function ccOrdEn(n){ const v=n%100; return n+((v>=11&&v<=13)?'th':(['th','st','nd','rd'][n%10]||'th')); }
 function ccTopC(n){ return (LANG==='ru' ? 'Топ ' : 'Top ')+n; }
 const I18N={
 ru:{
@@ -8777,7 +8778,7 @@ ccBioPrRank:n=>'#'+n+' по PR', ccBioEvents:n=>n+' турниров',
 ccPostLfdWant:(h,d,pr)=>'LFD. Дивизион '+d+' и выше, PR от '+pr+'. Пишите',
 ccAdWant:(role,d,pr)=>'ищет '+role+' · див '+d+'+ · PR от '+pr,
 ccAdNoFit:pr=>'нужен PR от '+pr,
-ccPostDropCall:(h,z)=>'сегодня сажусь: '+ccZoneName(z)+' 📍', ccDropCalls:'объявили точку:',
+ccPostDropCall:(h,z)=>[ccZoneName(z)+' на финал 📍', 'сегодня сажусь '+ccZoneName(z), ccZoneName(z)+' на финале'][String(h||'').length%3], ccDropCalls:'объявили точку:',
 ccPostOrgWin:(o,who,ev)=>'ЧЕМПИОНЫ. '+who+' берут '+ev+' 🏆',
 ccNewsHub:'Новости',
 ccPostDmBtn:'Написать в ЛС', ccPostVouchBtn:'Воуч',
@@ -8789,8 +8790,8 @@ ccPostThanks:ev=>'спасибо за турнир — '+ev+'. и напарни
 ccPostOneOff:ev=>'одного места не хватило. '+ev+'. я в порядке (нет)',
 // Квал из хитов — свой пост и посты прошедших ботов, с точкой высадки на
 // финал («qual grands, land X» — так пишут после хитов). w: grands | finals.
-ccPostQualGrands:(z,w)=>(w==='finals'?'КВАЛ В ФИНАЛ 🏆':'КВАЛ НА ГРАНДЫ 🏆')+(z?' · сажусь '+ccZoneName(z):''),
-ccPostBotQualGrands:(h,z,w)=>(w==='finals'?'квал финал 🙏':'квал грандс 🙏')+(z?' · лендю '+ccZoneName(z):''),
+ccPostQualGrands:(z,w)=>(w==='finals'?'квал в финал':'квал на гранды')+(z?' · '+ccZoneName(z)+(w==='finals'?' на финал':' на гранды'):'')+' 🙏',
+ccPostBotQualGrands:(h,z,w)=>(w==='finals'?'квал финал':'квал гранды')+(z?' · '+ccZoneName(z)+(w==='finals'?' на финал':' на гранды'):''),
 ccReplyBtn:'Ответить', ccReplyPh:'Ответить…', ccReplySend:'Отправить',
 ccShotVr:'Victory Royale', ccShotTop5:'Топ-5', ccShotTop10:'Топ-10',
 ccRepostBtn:'Репост', ccRepostDone:'Репостнул', ccQuoteBtn:'Цитата',
@@ -9680,17 +9681,17 @@ dmSecblocked:'Заблокированные', dmBlockedSub:'больше не �
 dmEmpty:'Пока никто не писал.',
 dmPickThread:'Выбери переписку слева или напиши первым.',
 dmClose:'Закрыть переписку',
-ccPostClose:(p,m)=>ccTopC(p)+'. опять мимо 😭'+(m?' @'+m:''),
+ccPostMeta:v=>['почините пушки @FNCompetitive', 'фортнайт вообще тестит свою игру?', 'поменяйте мету до капов @FNCompetitive', 'весёлая мета, когда каждая зона в край', 'рандом на оффспавне это что-то 🙃'][(v||0)%5], ccPostNeed:v=>['нужен 1 на релоуд', 'кто на эвал завтра?', 'нужен трио на эвал', '1в1 до скримов'][(v||0)%4], ccPostClose:(p,m)=>p+' место. опять мимо подиума 😭'+(m?' @'+m:''),
 ccPostWins:(n,m)=>n+(n===1?' победа':' победы')+' за вечер 🔥'+(m?' с @'+m:''),
 ccPostOrg:club=>'ещё один вечер за @'+club+' 💙',
 ccPostStreamD1:()=>'разбираю сегодняшние игры на стриме 🔴',
 ccShotPts:'Очки', ccShotCap:d=>'Дивизион '+d+' · кубок',
 xLike:'Нравится', ccPostWhat:'Что у тебя происходит?', ccPostBtn:'Опубликовать', xFollowers:'Подписчики', xFollowing:'Подписки', xPosts:'Постов',
 xNoPosts:'Ты ещё ничего не публиковал',
-ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:'';
-  if(p===1) return ['TOP 1 🏆'+a, 'W 🏆'+a, 'забрали 🐐'+a][(v||0)%3];
-  if(p<=3)  return [''+ccTop(p)+' 💪'+a, ''+ccTop(p)+a+' 🔥', ''+ccTop(p)+', чуть-чуть'+a][(v||0)%3];
-  return [''+ccTop(p)+' — дивизион '+d+a, ''+ccTop(p)+' за неделю'+a+'. дальше выше', ''+ccTop(p)+a+'. работаем'][(v||0)%3];},
+ccPostPlaced:(p,d,m,v,pz)=>{const a=m?' @'+m:''; const o=p+' место', $=pz>0?' (+$'+ccNum(pz)+')':'';
+  if(p===1) return ['1 место'+$+a+' 🏆', 'забрали финал дивизиона '+d+$+a, 'W'+$+a+' 🐐'][(v||0)%3];
+  if(p<=3)  return [o+$+a, o+' в финале дивизиона'+$+' гг'+a, o+$+a+', чуть-чуть'][(v||0)%3];
+  return [o+$+a, o+' в финале дивизиона '+d+$+a, o+$+a+'. дальше выше'][(v||0)%3];},
 ccPostBdayEpic:(h,a)=>'С днём рождения, @'+h+'! Сегодня '+a+'. Хорошего сезона 🎂',
 ccBornHint:'Дата рождения — по желанию. Укажи, и в этот день тебя поздравят. Число сверху — сколько тебе на день старта сезона; день рождения ты встретишь уже в нём.',
 ccNewsCongrats:(n,ev)=>'Поздравляем '+n+' с победой — '+ev+'! 🏆',
@@ -9699,14 +9700,13 @@ ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'лидеры вечера',
 ccNewsEliteFlop:(ev,t,p,n,x,tags)=>'ПРОВАЛ ВЕЧЕРА · '+(ev!=null?ev+': ':'')+t+' — фавориты (#'+x+' по силе поля), а место только '+p+'-е из '+n+'. '+(tags||''),
 ccLeadCap:'лидеры вечера',
 ccMyStatsBtn:'Моя статистика',
-ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
-  return ['ВЗЯЛИ 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' наш'+a][(v||0)%4];},
-ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:'';
-  return [''+ccTopC(p)+' — '+ev+' 💪'+a, ev+': '+ccTop(p)+a+' 🔥',
-          ''+ccTopC(p)+' на '+ev+a][(v||0)%3];},
+ccPostWon:(ev,m,v,pz)=>{const a=m?' @'+m:''; const $=pz>0?' (+$'+ccNum(pz)+')':'';
+  return ['1 место — '+ev+$+a+' 🏆', '🏆 ЧЕМПИОНЫ '+ev+$+a, 'W '+ev+$+a, 'забрали '+ev+$+a+' 🐐'][(v||0)%4];},
+ccPostPodium:(p,ev,m,v,pz)=>{const a=m?' @'+m:''; const $=pz>0?' (+$'+ccNum(pz)+')':'';
+  return [p+' место — '+ev+$+a, p+' место на '+ev+$+a+', гг', p+' место, '+ev+$+a+' 💪'][(v||0)%3];},
 ccNewsD1Table:w=>'Дивизион 1 после '+w+'-й недели — так выглядит гонка за место в сезоне',
 ccPostBday:(h,a)=>'С днём рождения, @'+h+'! Сегодня '+a+' 🎂',
-ccPostBdayMe:a=>'Мне сегодня '+a+' 🎂',
+ccPostBdayMe:a=>a+'🎂🥳',
 ccCongratsTable:'Дивизион 1 · таблица сезона',
 ccCongratsCup:'кубок Дивизиона 1', ccCongratsMajor:n=>'финал Major '+n,
 ccCongratsSummit:c=>'Саммит в '+c,
@@ -10189,9 +10189,9 @@ ccStPartners:'С кем играл', ccStSpots:'Домашние точки', cc
 ccHallTitle:'Зал славы', ccHallRich:'Больше всех заработал', ccHallEarlyD1:'Раньше всех в Дивизионе 1', ccHallMostWins:'Больше всех побед',
 ccHallBestMajor:'Лучший финал Мейджора', ccHallSeasons:'сезонов', ccHallPeak:'пик',
 ccActtrMeta:'Разбор меты', ccNewsMetaNew:v=>'Новый сезон '+v+': остров и пул другие. Три дня разбора меты снимают штраф к форме',
-ccPostLanArrive:v=>'Прилетели в '+v+'. Завтра играем',
+ccPostLanArrive:v=>['✈️ '+v, v+' 🔜', 'прилетели: '+v][String(v).length%3],
 ccNewsOrgBonus:(o,m)=>o+' выплачивает бонус за финал Мейджора: '+m, ccNewsOrgGone:(o,m)=>o+' закрывает состав по Fortnite. На прощание — '+m,
-ccPostLft:'Ищу клуб. Открыт к предложениям (LFT)', ccOrgBonusRow:'Бонус за финал Мейджора',
+ccPostLft:'LFT · лс открыта', ccOrgBonusRow:'Бонус за финал Мейджора',
 ccDayEvmateSpot:'Напарник хочет другую точку', ccDayEvmateSpotSub:'Ему надоело падать в твой дом — просит переехать',
 ccDayEvmateSpotOmove:'Переехать', ccDayEvmateSpotOkeep:'Дом остаётся', ccDayEvmateSpotOtrial:'Неделя пробы',
 ccDayEvmateSpotRmove:'Переехали: старая аура сгорела, напарник доволен', ccDayEvmateSpotRkeep:'Дом остаётся. Напарник недоволен',
@@ -10787,7 +10787,7 @@ ccBioPrRank:n=>'#'+n+' on PR', ccBioEvents:n=>n+' events',
 ccPostLfdWant:(h,d,pr)=>'LFD. Div '+d+' and up, min '+pr+' PR. DMs open',
 ccAdWant:(role,d,pr)=>'wants '+role+' · div '+d+'+ · min '+pr+' PR',
 ccAdNoFit:pr=>'needs '+pr+' PR',
-ccPostDropCall:(h,z)=>'dropping '+ccZoneName(z)+' tonight 📍', ccDropCalls:'called their drop:',
+ccPostDropCall:(h,z)=>[ccZoneName(z)+' in finals 📍', 'landing '+ccZoneName(z)+' tonight', ccZoneName(z)+' for finals'][String(h||'').length%3], ccDropCalls:'called their drop:',
 ccPostOrgWin:(o,who,ev)=>'CHAMPIONS. '+who+' take '+ev+' 🏆',
 ccNewsHub:'News',
 ccPostDmBtn:'Send a DM', ccPostVouchBtn:'Vouch',
@@ -10797,8 +10797,8 @@ ccRev:'V', ccRegl:'gl', ccRehbd:'hbd goat 🐐', ccRew:'W', ccReclap:'🙌',
 ccReDone:t=>'You replied: '+t,
 ccPostThanks:ev=>'thanks for the event — '+ev+'. and my teammates throughout it 🙏',
 ccPostOneOff:ev=>'one spot off. '+ev+'. im fine (im not)',
-ccPostQualGrands:(z,w)=>(w==='finals'?'QUALIFIED TO FINALS 🏆':'QUALIFIED TO GRANDS 🏆')+(z?' · landing '+ccZoneName(z):''),
-ccPostBotQualGrands:(h,z,w)=>(w==='finals'?'qual finals 🙏':'qual grands 🙏')+(z?' land '+ccZoneName(z):''),
+ccPostQualGrands:(z,w)=>(w==='finals'?'Qualed finals':'Qualed grands')+(z?' · '+ccZoneName(z)+' in '+(w==='finals'?'finals':'grands'):'')+' 🙏',
+ccPostBotQualGrands:(h,z,w)=>(w==='finals'?'qualed finals':'qualed grands')+(z?' · '+ccZoneName(z)+' in '+(w==='finals'?'finals':'grands'):''),
 ccReplyBtn:'Reply', ccReplyPh:'Reply…', ccReplySend:'Send',
 ccShotVr:'Victory Royales', ccShotTop5:'Top 5s', ccShotTop10:'Top 10s',
 ccRepostBtn:'Repost', ccRepostDone:'Reposted', ccQuoteBtn:'Quote',
@@ -11687,17 +11687,17 @@ dmSecblocked:'Blocked', dmBlockedSub:'writes to you no more', dmUnblock:'Unblock
 dmEmpty:'Nobody has written yet.',
 dmPickThread:'Pick a conversation, or write to somebody first.',
 dmClose:'Close this thread',
-ccPostClose:(p,m)=>ccTopC(p)+' again 😭'+(m?' @'+m:''),
+ccPostMeta:v=>['fix the guns @FNCompetitive', 'does fortnite even test their game?', 'can we change the meta before cups @FNCompetitive', 'very fun meta when every zone is max', 'offspawn rng is something else 🙃'][(v||0)%5], ccPostNeed:v=>['need 1 for reload', 'anyone eu eval tmrw?', 'need trio for eval', '1v1 reals til scrims'][(v||0)%4], ccPostClose:(p,m)=>ccOrdEn(p)+' again 😭'+(m?' @'+m:'')+' one spot off podium',
 ccPostWins:(n,m)=>n+(n===1?' win':' wins')+' tonight 🔥'+(m?' with @'+m:''),
 ccPostOrg:club=>'another night for @'+club+' 💙',
-ccPostStreamD1:()=>'going back over tonight on stream 🔴',
+ccPostStreamD1:()=>'vod review live 🔴',
 ccShotPts:'Pts', ccShotCap:d=>'Division '+d+' cup',
 xLike:'Like', ccPostWhat:'What is happening?', ccPostBtn:'Post', xFollowers:'Followers', xFollowing:'Following', xPosts:'Posts',
 xNoPosts:'You have not posted anything yet',
-ccPostPlaced:(p,d,m,v)=>{const a=m?' @'+m:'';
-  if(p===1) return ['TOP 1 🏆'+a, 'W 🏆'+a, 'another one 🐐'+a][(v||0)%3];
-  if(p<=3)  return [''+ccTop(p)+' 💪'+a, ''+ccTop(p)+a+' 🔥', ''+ccTop(p)+', so close'+a][(v||0)%3];
-  return [''+ccTop(p)+' — Division '+d+a, ''+ccTop(p)+' this week'+a+'. higher next', ''+ccTop(p)+a+'. we keep going'][(v||0)%3];},
+ccPostPlaced:(p,d,m,v,pz)=>{const a=m?' @'+m:''; const o=ccOrdEn(p), $=pz>0?' ($'+ccNum(pz)+')':'', $2=pz>0?' +'+pz+'$':'';
+  if(p===1) return ['1st'+$+a+' 🏆', '1st div '+d+' finals'+$+a, 'W'+$2+a+' 🐐'][(v||0)%3];
+  if(p<=3)  return [o+$+a, o+' div '+d+' finals'+$2+' ggs'+a, o+$+a+' so close'][(v||0)%3];
+  return [o+$+a, o+' div '+d+' finals'+$+a, o+$2+a+' we go again'][(v||0)%3];},
 ccPostBdayEpic:(h,a)=>'Happy birthday @'+h+' — '+a+' today. Have a good season 🎂',
 ccBornHint:'Date of birth — optional. Fill it in and the scene wishes you a happy birthday on the day. The number above is your age on the day the season starts; the birthday itself falls inside it.',
 ccNewsCongrats:(n,ev)=>'Congratulations to '+n+' on the win — '+ev+'! 🏆',
@@ -11706,14 +11706,13 @@ ccNewsStatBoard:(ev,rows)=>(ev!=null?ev+' — ':'')+'stats leaders',
 ccNewsEliteFlop:(ev,t,p,n,x,tags)=>'FLOP OF THE NIGHT · '+(ev!=null?ev+': ':'')+t+' came in as favourites (#'+x+' on paper) and finished '+p+' of '+n+'. '+(tags||''),
 ccLeadCap:'stats leaders',
 ccMyStatsBtn:'My stats',
-ccPostWon:(ev,m,v)=>{const a=m?' @'+m:'';
-  return ['WE WON IT 🏆 '+ev+a, ev+'. TOP 1 🏆'+a, 'W 🏆 '+ev+a, ev+' is ours'+a][(v||0)%4];},
-ccPostPodium:(p,ev,m,v)=>{const a=m?' @'+m:'';
-  return [''+ccTopC(p)+' — '+ev+' 💪'+a, ev+': '+ccTop(p)+a+' 🔥',
-          ''+ccTopC(p)+' at '+ev+a][(v||0)%3];},
+ccPostWon:(ev,m,v,pz)=>{const a=m?' @'+m:''; const $=pz>0?' ($'+ccNum(pz)+')':'';
+  return ['1st '+ev+$+a+' 🏆', '🏆 '+String(ev).toUpperCase()+' CHAMPIONS'+$+a, 'W '+ev+$+a, 'we won '+ev+$+a+' 🐐'][(v||0)%4];},
+ccPostPodium:(p,ev,m,v,pz)=>{const a=m?' @'+m:''; const o=ccOrdEn(p), $=pz>0?' ($'+ccNum(pz)+')':'';
+  return [o+' '+ev+$+a, o+' '+ev+$+a+' ggs', o+' '+ev+$+a+' 💪'][(v||0)%3];},
 ccNewsD1Table:w=>'Division 1 after week '+w+' — this is how the season race looks',
 ccPostBday:(h,a)=>'Happy birthday @'+h+'! '+a+' today 🎂',
-ccPostBdayMe:a=>a+' today 🎂',
+ccPostBdayMe:a=>a+'🎂🥳',
 ccCongratsTable:'Division 1 · season table',
 ccCongratsCup:'the Division 1 cup', ccCongratsMajor:n=>'the Major '+n+' Finals',
 ccCongratsSummit:c=>'the Summit in '+c,
@@ -12185,9 +12184,9 @@ ccStPartners:'Played with', ccStSpots:'Home spots', ccStSpotBox:'box', ccStAura:
 ccHallTitle:'Hall of fame', ccHallRich:'Highest earner', ccHallEarlyD1:'Earliest into Division 1', ccHallMostWins:'Most wins',
 ccHallBestMajor:'Best Major final', ccHallSeasons:'seasons', ccHallPeak:'peak',
 ccActtrMeta:'Meta review', ccNewsMetaNew:v=>'New season '+v+': new island, new pool. Three days of meta review lift the form penalty',
-ccPostLanArrive:v=>'Landed in '+v+'. We play tomorrow',
+ccPostLanArrive:v=>['✈️ '+v, 'guess who’s in '+v, v+' 🔜'][String(v).length%3],
 ccNewsOrgBonus:(o,m)=>o+' pays the Major final bonus: '+m, ccNewsOrgGone:(o,m)=>o+' is closing its Fortnite roster. Severance: '+m,
-ccPostLft:'Looking for a club. Open to offers (LFT)', ccOrgBonusRow:'Major final bonus',
+ccPostLft:'LFT · dms open', ccOrgBonusRow:'Major final bonus',
 ccDayEvmateSpot:'Your partner wants another drop', ccDayEvmateSpotSub:'They are tired of landing at your home and ask to move',
 ccDayEvmateSpotOmove:'Move', ccDayEvmateSpotOkeep:'Home stays', ccDayEvmateSpotOtrial:'One-week trial',
 ccDayEvmateSpotRmove:'Moved: the old aura is gone, the partner is happy', ccDayEvmateSpotRkeep:'Home stays. The partner is not happy',
@@ -13226,7 +13225,7 @@ ccNewsBoughtOut:(o,c)=>'Racheté mon contrat chez '+o+' pour '+c+'. Sans club',
 ccNewsStreamAd:(v,b)=>'Streamé la soirée. '+v+' $ en subs et '+b+' en pub',
 ccNewsMateWobbling:m=>'@'+m+' pense à partir. Il faut qu’on parle',
 ccNewsClapback:w=>'Répondu à @'+w+' en DM. J’aurais sûrement dû m’abstenir',
-ccPostClose:(p,m)=>ccTopC(p)+' encore 😭'+(m?' @'+m:''),
+ccPostMeta:v=>['fix the guns @FNCompetitive', 'does fortnite even test their game?', 'can we change the meta before cups @FNCompetitive', 'very fun meta when every zone is max', 'offspawn rng is something else 🙃'][(v||0)%5], ccPostNeed:v=>['need 1 for reload', 'anyone eu eval tmrw?', 'need trio for eval', '1v1 reals til scrims'][(v||0)%4], ccPostClose:(p,m)=>ccTopC(p)+' encore 😭'+(m?' @'+m:''),
 ccPostWins:(n,m)=>n+(n===1?' victoire':' victoires')+' ce soir 🔥'+(m?' avec @'+m:''),
 ccPostOrg:club=>'encore une soirée pour @'+club+' 💙',
 ccPostStreamD1:()=>'je repasse la soirée en stream 🔴',
@@ -15563,7 +15562,7 @@ dmHateMoney1:e=>'$'+e+' in totale',
 dmHateMoney2:e=>'In carriera hai fatto $'+e+'. Io li faccio in un mese e non sono un pro',
 dmHateMoney3:e=>'$'+e+' di montepremi. Dillo a tua madre che \u00e8 un lavoro',
 dmHateMoney4:e=>'Totale: $'+e+'. Certo',
-ccPostClose:(p,m)=>ccTopC(p)+' un\u2019altra volta \ud83d\ude2d'+(m?' @'+m:''),
+ccPostMeta:v=>['fix the guns @FNCompetitive', 'does fortnite even test their game?', 'can we change the meta before cups @FNCompetitive', 'very fun meta when every zone is max', 'offspawn rng is something else 🙃'][(v||0)%5], ccPostNeed:v=>['need 1 for reload', 'anyone eu eval tmrw?', 'need trio for eval', '1v1 reals til scrims'][(v||0)%4], ccPostClose:(p,m)=>ccTopC(p)+' un\u2019altra volta \ud83d\ude2d'+(m?' @'+m:''),
 ccPostWins:(n,m)=>n+(n===1?' vittoria':' vittorie')+' stasera \ud83d\udd25'+(m?' con @'+m:''),
 ccPostOrg:club=>'un\u2019altra serata per @'+club+' \ud83d\udc99',
 ccPostStreamD1:()=>'rivediamo la serata in diretta \ud83d\udd34',
@@ -18095,7 +18094,7 @@ dmHateMoney1:e=>'$'+e+' no total',
 dmHateMoney2:e=>'Voc\u00ea fez $'+e+' na carreira. Eu fa\u00e7o isso num m\u00eas e n\u00e3o sou pro',
 dmHateMoney3:e=>'$'+e+' de premia\u00e7\u00e3o. Fala para a sua m\u00e3e que isso \u00e9 emprego',
 dmHateMoney4:e=>'Total: $'+e+'. Claro',
-ccPostClose:(p,m)=>ccTopC(p)+' de novo \ud83d\ude2d'+(m?' @'+m:''),
+ccPostMeta:v=>['fix the guns @FNCompetitive', 'does fortnite even test their game?', 'can we change the meta before cups @FNCompetitive', 'very fun meta when every zone is max', 'offspawn rng is something else 🙃'][(v||0)%5], ccPostNeed:v=>['need 1 for reload', 'anyone eu eval tmrw?', 'need trio for eval', '1v1 reals til scrims'][(v||0)%4], ccPostClose:(p,m)=>ccTopC(p)+' de novo \ud83d\ude2d'+(m?' @'+m:''),
 ccPostWins:(n,m)=>n+(n===1?' vit\u00f3ria':' vit\u00f3rias')+' hoje \ud83d\udd25'+(m?' com @'+m:''),
 ccPostOrg:club=>'mais uma noite pela @'+club+' \ud83d\udc99',
 ccPostStreamD1:()=>'revendo a noite na live \ud83d\udd34',
@@ -132652,6 +132651,11 @@ function careerNews(kind, key, args, opt){
   // Ключа может и не быть: строку, которую игрок написал сам, не из чего
   // переводить — она едет в записи как есть. См. careerPostWrite.
   key=key ? ccSquadKey(key) : undefined;
+  // Вариант фразы — и от автора: иначе шесть победителей недели подряд писали одно «W @… 🐐» (9.10).
+  if((key==='ccPostPlaced' || key==='ccPostWon' || key==='ccPostPodium') && opt && opt.by && opt.by.name && args){
+    const vi=key==='ccPostPlaced' ? 3 : key==='ccPostWon' ? 2 : 3;
+    if(typeof args[vi]==='number') args=args.slice(0, vi).concat([args[vi]+ccHashStr(String(opt.by.name))%7], args.slice(vi+1));
+  }
   // Годы без дивизионов — посты без «Дивизиона» (вариант Nd, как у реплик в личке, см. careerDmPush).
   try{ if(key && typeof ccNoDivisions==='function' && ccNoDivisions() && L()[key+'Nd']) key=key+'Nd'; }catch(e){}
   // The division the line was written in, stamped on the entry: the press gate
@@ -140319,8 +140323,10 @@ function careerCupPosts(ranked, div, v){
     const ovr=c ? (c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr) : null;
     // Nobody posts a result alone: the other half of the duo gets tagged. The
     // variant is offset per place so the top three do not all say "W" together.
+    // Деньги места — как у настоящих: «2nd div 1 finals +$2,500 @…» (ленты Malibuca, Th0masHD, Peterbot, 9.10).
+    let pz=0; try{ pz=(typeof wfPrize==='function') ? (wfPrize(i+1)||0) : 0; }catch(e){ pz=0; }
     careerNews(i===0?'good':'flat', 'ccPostPlaced',
-      [i+1, div, mate?ccHandle(mate.handle):null, (v||0)+i], {
+      [i+1, div, mate?ccHandle(mate.handle):null, (v||0)+i, pz], {
       by:{name: c ? c.handle : ccOneOf(bare(t)), ovr:ovr,
           card: c && c.region ? {handle:c.handle, region:c.region} : null},
       tbl:{div, rows, me:bare(t)}
@@ -140373,6 +140379,12 @@ function careerD1Extras(ranked, iso, label){
          card:withOrg.region?{handle:withOrg.handle, region:withOrg.region}:null}}]);
   // And somebody going back over it on stream.
   if(ranked[1]) out.push(['flat','ccPostStreamD1',[], {by:by(ranked[1]), tbl:shotOf(ranked[1])}]);
+  /* Как пишут настоящие после вечера (ленты Queasy, Peterbot, Th0masHD, Malibuca, Veno, 9.10): кто-то из низа таблицы
+     ругает мету и @FNCompetitive, кто-то ищет состав на следующий турнир. */
+  { const wk=(typeof careerWeek==='function') ? careerWeek() : 0;
+    const low=ranked[Math.min(ranked.length-1, 30+(wk%10))], need=ranked[Math.min(ranked.length-1, 40+(wk%7))];
+    if(low) out.push(['flat','ccPostMeta',[wk], {by:by(low)}]);
+    if(need && need!==low) out.push(['flat','ccPostNeed',[wk], {by:by(need)}]); }
 
   if(!out.length) return [];
   // Rotated on the week number rather than a hash of the date: a hash only has
@@ -140509,7 +140521,7 @@ function careerRegionsWeek(iso){
 
    The player's own goes up too when the career is a real card, from their own
    account rather than the scene's, which is also how it works out there. */
-const CC_BDAY_MAX=2;
+const CC_BDAY_MAX=1, CC_BDAY_TOP=60;
 function careerBirthdays(fromISO, toISO){
   if(!(toISO>fromISO)) return;
   const pool=careerPools().players;
@@ -140522,6 +140534,7 @@ function careerBirthdays(fromISO, toISO){
      чтобы Fortnite поздравлял. Вводится она на экране создания, лежит на
      pl.born, и здесь ей нужна одна строка. */
   const myBorn=(mine ? ccBornOf(mine) : null) || (CAREER.player && CAREER.player.born) || null;
+  let bdayTop=0;
   for(let d=ccAddDays(fromISO,1); d<=toISO; d=ccAddDays(d,1)){
     const md=d.slice(5);
     if(myBorn && myBorn.slice(5)===md){
@@ -140559,6 +140572,10 @@ function careerBirthdays(fromISO, toISO){
                    [ccHandle(who.handle), ccHandle(CAREER.player.nick)], {day:d});
       }
     }
+    /* Дни рождения сцены — как в X (ленты Peterbot «19🎂🥳» и др., 9.10): пишет сам именинник, и только из верха
+       сцены (CC_BDAY_TOP по рейтингу), не больше одного в день. С датами Liquipedia (7.10, 1931 человек) прежнее
+       «двое в день от аккаунта Fortnite» давало два десятка поздравлений подряд. */
+    if(!bdayTop){ const r=pool.map(p=>ccCardOvr(p)||0).sort((a,b)=>b-a); bdayTop=r[Math.min(r.length-1, CC_BDAY_TOP-1)]||0; }
     const seen=new Set();
     let n=0;
     for(const p of pool){
@@ -140567,9 +140584,11 @@ function careerBirthdays(fromISO, toISO){
       if(!born || born.slice(5)!==md) continue;
       const k=hKey(p);
       if(seen.has(k) || (mine && hKey({handle:mine})===k)) continue;
+      if((ccCardOvr(p)||0)<bdayTop) continue;
       seen.add(k); n++;
       // The scene's birthdays age with the career, for the reason ccAgeNow gives.
-      careerNews('good', 'ccPostBday', [ccHandle(p.handle), ccAgeOn(born, d)+ccSeasonsIn()], {day:d});
+      careerNews('good', 'ccPostBdayMe', [ccAgeOn(born, d)+ccSeasonsIn()],
+                 {day:d, by:{name:p.handle, ovr:ccCardOvr(p), card:p.region?{handle:p.handle, region:p.region}:null}});
     }
   }
 }
