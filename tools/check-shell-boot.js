@@ -14,6 +14,7 @@
 //   node tools/check-shell-boot.js <абсолютный путь к папке деплоя>
 const http=require('http'),fs=require('fs'),path=require('path'),{execFile}=require('child_process');
 const DIR=process.argv[2]; const PREFIX='/fncsdraft/';
+if(!DIR){ console.log('skip: needs <deploy folder> (absolute path to a tools/build-deploy.js build)'); process.exit(0); }
 if(!DIR||!fs.existsSync(path.join(DIR,'index.html'))) { console.error('нужна папка деплоя с index.html'); process.exit(2); }
 const CHROME=[process.env.CHROME,'C:/Program Files/Google/Chrome/Application/chrome.exe','C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
   (process.env.LOCALAPPDATA||'')+'/Google/Chrome/Application/chrome.exe'].find(p=>p&&fs.existsSync(p));

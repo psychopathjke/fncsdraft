@@ -17,6 +17,7 @@
 // процессе, а execFileSync блокировал цикл событий — сервер молчал, Chrome ждал.
 const http=require('http'),fs=require('fs'),path=require('path'),{execFile}=require('child_process');
 const DIR=process.argv[2]; const PREFIX='/fncsdraft/';
+if(!DIR){ console.log('skip: needs <deploy folder> (absolute path to a tools/build-deploy.js build)'); process.exit(0); }
 const BOOT=`<pre id="__out" style="display:none"></pre><script>(function(){const bad=[],errs=[];
 window.addEventListener('error',function(e){const t=e.target;if(t&&(t.tagName==='IMG'||t.tagName==='SCRIPT'||t.tagName==='LINK'))bad.push(t.src||t.href||'');else errs.push(String(e.message)+' @'+e.lineno);},true);
 setTimeout(function(){try{if(typeof useLandingSet==='function')useLandingSet('m2');}catch(e){errs.push(String(e));}

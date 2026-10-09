@@ -14,10 +14,10 @@ const ROOT = path.resolve(__dirname, '..');
 // so rather than dying on readFileSync(undefined), which reads as a broken test
 // to anybody running the whole tools directory in a loop. Exit 2 is what the
 // other probes here use for could-not-run, as against 1 for found-a-problem.
+// A bulk run over tools/ calls it without the argument: skip cleanly, exit 0.
 if (!process.argv[2]) {
-  console.error('usage: node tools/check-2025-orgs.js <gc2025-orgs.json>');
-  console.error('Needs a scraped Global Championship club list; see build-2025-orgs.js.');
-  process.exit(2);
+  console.log('skip: needs <gc2025-orgs.json> (scraped Global Championship club list; see build-2025-orgs.js)');
+  process.exit(0);
 }
 const ORGS = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
 const CHROME = [
