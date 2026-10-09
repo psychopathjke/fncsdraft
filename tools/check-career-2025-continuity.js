@@ -53,7 +53,10 @@ const BOOT = `
     const bad=pool.duos.filter(d=>d.cards.some(c=>ccCardYear(c)!==2025 && !c._debut));
     check('в парах нет карт 2026-го (кроме дебютантов)', bad.length===0, String(bad.length));
     // Ровность — у пар, собранных по рейтингам 2025-го; дебютанты приходят своими настоящими парами.
-    const gaps=pool.duos.filter(d=>!d.cards.some(c=>c._debut)).map(d=>Math.abs(ccCardOvr(d.cards[0])-ccCardOvr(d.cards[1])));
+    // С 27.09 (a123267, идея тестера «из 2025 в 2026 — дуо как в жизни») пары года — настоящие дуо 2026-го
+    // (d._real) с настоящим разрывом; по силе собирает только ccContinuityDuos — их и меряем.
+    out.notes.assembled=pool.duos.filter(d=>!d._real && !d.cards.some(c=>c._debut)).length;
+    const gaps=pool.duos.filter(d=>!d._real && !d.cards.some(c=>c._debut)).map(d=>Math.abs(ccCardOvr(d.cards[0])-ccCardOvr(d.cards[1])));
     const avgGap=gaps.reduce((a,b)=>a+b,0)/gaps.length;
     out.notes.avgGap=+avgGap.toFixed(2);
     check('пары ровные по силе (средний разрыв < 4)', avgGap<4, String(avgGap));

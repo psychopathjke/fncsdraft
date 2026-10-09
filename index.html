@@ -78764,9 +78764,13 @@ function buildCardSetRegion(cfg){
      и финал World Cup Duos писал «nyhrox»/«aqua», а квалы — «Nyhrox»/«Aqua»: чемпионы мира
      не находили своей строки финала и читались «не дошли до финала». Ник берётся из первого
      этапа, где он встретился (P, потом L, потом G). */
-  const canon=new Map();
+  /* Пробел по краям чистится и в составе: pushCard режет его у ника карточки (7bc4865), а строка
+     состава оставалась «Dela » — 11 трио 2025-го теряли своего и выпадали из реалистичной симуляции,
+     финалисты с таким ником не находили карточку (полный прогон 9.10, check-realistic: 165 вместо 176).
+     Флаг ищется по исходному написанию (rawNick), в T_NAT он записан с пробелом. */
+  const canon=new Map(), rawNick=new Map();
   ['P','L','G'].forEach(st=>(cfg.stages[st]||[]).forEach(e=>{
-    e.duo=e.duo.map(nm=>{ const k=String(nm).toLowerCase(); if(!canon.has(k)) canon.set(k, nm); return canon.get(k); });
+    e.duo=e.duo.map(raw=>{ const nm=String(raw).trim(); if(nm!==raw && !rawNick.has(nm)) rawNick.set(nm, raw); const k=nm.toLowerCase(); if(!canon.has(k)) canon.set(k, nm); return canon.get(k); });
   }));
   const known=new Set();
   const trios=CARD_TRIOS_BY_SET[cfg.set];
@@ -78780,7 +78784,7 @@ function buildCardSetRegion(cfg){
       if(known.has(nm)) return;
       known.add(nm);
       const rating=Math.round(clamp(cfg.base(st, entry.rank), 30, 99));
-      const code=cfg.nat[nm]||'';
+      const code=cfg.nat[nm]||cfg.nat[rawNick.get(nm)]||'';
       const card={
         handle:nm, nat: code ? (CC_RU[code]||null) : null,
         natSource:'tracker',
@@ -128093,13 +128097,18 @@ function ccRealPull(c){
   return (start-base)+(t-start)*ccRealPullFrac();
 }
 // Карточка роастера, поднятая на то, что эта карьера с ней сделала.
+/* Один раз на карточку (_lifted едет и в копии {...c}): careerPools поднимал копии карточек сцены,
+   а ccSceneRoster их уже поднял — рост и подтяжка к году ложились дважды, и один человек был 87
+   в сцене и 82 в пуле, пары «по силе» расходились после сборки (полный прогон 9.10,
+   check-career-2025-continuity: 147 из 2252 карточек пула не совпадали со сценой). */
 function ccSceneLift(c){
+  if(!c || c._lifted) return c;
   const d=careerDevOf(c)+ccRealPull(c);
-  if(!d || !c) return c;
+  if(!d) return c;
   const base=(c._ovr!=null ? c._ovr : (attrsFor(c)||{}).ovr);
   if(!(base>0)) return c;
   const to=clamp(Math.round(base+d), 40, CAREER_SCALE_TOP);
-  c._ovr=to; c._targetOvr=to;
+  c._ovr=to; c._targetOvr=to; c._lifted=true;
   // Шесть чисел пересчитываются под новый рейтинг: кэш карточки — это её
   // старый вечер. attrsFor поднимает их на _targetOvr сам.
   delete c._attrs; delete c._floored;

@@ -131,12 +131,18 @@ const BOOT = `
          ту» половину было некуда, поэтому её и прятали. Его правка от
          21 августа: «поиск нужно всех игроков, там только противоположная
          роль». Проверяется то, что осталось правдой — порядок. */
-      const firstOther=pool.findIndex(p=>p.role!=='roleIGL');
-      const lastWant=pool.map(p=>p.role).lastIndexOf('roleIGL');
+      /* С 29.09 (61aeadd, его скрин «я 99, а выбрать могу максимум 90») список
+         идёт по рейтингу, а нужная роль — первой только при равном рейтинге. */
+      let bad=null;
+      for(let i=1;i<pool.length && !bad;i++){
+        const a=pool[i-1], b=pool[i];
+        if(a.ovr<b.ovr || (a.ovr===b.ovr && a.role!=='roleIGL' && b.role==='roleIGL')) bad=i;
+      }
+      const firstOther=bad==null ? -1 : bad-1, lastWant=bad==null ? -1 : bad;
       out.notes.poolOrder={firstOther:firstOther, lastWant:lastWant};
       check('the search shows everybody, not only one half',
             pool.some(p=>p.role!=='roleIGL'), out.notes.pool.roles.join(','));
-      check('and the half you are missing comes first',
+      check('and the half you are missing comes first among equal ratings',
             firstOther<0 || lastWant<firstOther, JSON.stringify(out.notes.poolOrder));
 
       // ---- the lobby is cast the same way -------------------------------

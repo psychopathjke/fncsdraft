@@ -35,7 +35,13 @@ const BOOT = `
       // day is measured from a number the card does not hold.
       CAREER.player.ovrExact = ATTR_KEYS.reduce((s,k)=>s+CAREER.player.attrs[k]*ATTR_W[k], 0); };
     const cardAttr = k => { const c = careerCard(); const a = attrsFor(c); return a[k.toLowerCase()]; };
+    /* С 28.09 (b53e7ad, тренировка как в EA FC) каждое занятие получает оценку
+       D…A+ и множитель 0.7…1.3, поэтому «полпункта в день» — это полпункта
+       на оценку дня: оценки собираются здесь и ожидание считается по ним. */
+    const realGrade = ccDrillGrade; let gradeSum = 0;
+    ccDrillGrade = function(id){ const g = realGrade(id); gradeSum += g.mult; return g; };
     const train = (id, days) => {
+      gradeSum = 0;
       for (let i = 0; i < days; i++) {
         CAREER.career.day = ccAddDays(CAREER.career.day, 1);
         CAREER.career.energy = careerEnergyMax();
@@ -49,16 +55,17 @@ const BOOT = `
     const a0 = {save: CAREER.player.attrs.aim, card: cardAttr('aim'), ovr: CAREER.player.ovrExact};
     train('trAim', 10);
     const a1 = {save: CAREER.player.attrs.aim, card: cardAttr('aim'), ovr: CAREER.player.ovrExact};
-    out.notes.rookieAim = {before: a0, after: a1};
+    const aWant = CC_TRAIN_DAY * gradeSum;
+    out.notes.rookieAim = {before: a0, after: a1, want: aWant};
     // Half a point a day on the stat itself — his number, said literally.
     check('ten aim days are five points of aim',
-          Math.abs((a1.save - a0.save) - 5) < 0.05, a0.save + ' -> ' + a1.save);
-    check('and the card shows it', Math.abs((a1.card - a0.card) - 5) <= 1,
+          Math.abs((a1.save - a0.save) - aWant) < 0.05, a0.save + ' -> ' + a1.save + ', want +' + aWant);
+    check('and the card shows it', Math.abs((a1.card - a0.card) - aWant) <= 1,
           a0.card + ' -> ' + a1.card);
     // And the rating moves by the stat's own weight, which is what makes the six
     // buttons different from each other.
     check('and the rating by aim’s own weight',
-          Math.abs((a1.ovr - a0.ovr) - 5*ATTR_W.aim) < 0.05, a0.ovr + ' -> ' + a1.ovr);
+          Math.abs((a1.ovr - a0.ovr) - aWant*ATTR_W.aim) < 0.05, a0.ovr + ' -> ' + a1.ovr);
 
     // ---- his own card: a built IGL up at 84 in Division 1 -----------------
     seed(84, 'roleIGL', 1);
@@ -67,10 +74,11 @@ const BOOT = `
     train('trAim', 10);
     const b1 = {save: CAREER.player.attrs.aim, card: cardAttr('aim'),
                 ovr: CAREER.player.ovrExact, end: cardAttr('end'), clu: cardAttr('clu')};
-    out.notes.highAim = {before: b0, after: b1};
+    const bWant = CC_TRAIN_DAY * gradeSum;
+    out.notes.highAim = {before: b0, after: b1, want: bWant};
     check('the same ten days move an 84 as well',
-          Math.abs((b1.save - b0.save) - 5) < 0.05, b0.save + ' -> ' + b1.save);
-    check('and his card shows it too', Math.abs((b1.card - b0.card) - 5) <= 1,
+          Math.abs((b1.save - b0.save) - bWant) < 0.05, b0.save + ' -> ' + b1.save + ', want +' + bWant);
+    check('and his card shows it too', Math.abs((b1.card - b0.card) - bWant) <= 1,
           b0.card + ' -> ' + b1.card);
     check('the card and the save agree to the point', Math.abs(b1.card - b1.save) <= 1,
           b1.save + ' in the save, ' + b1.card + ' on the card');
