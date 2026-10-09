@@ -77,7 +77,7 @@ const BOOTSTRAP = `
       out.rows.push({set: set, first: row('first'), mid: row('mid'), last: row('last'),
         islandFullPct: +(100 * emptyLeftForLast / GAMES).toFixed(1)});
 
-      var f = row('first'), md = row('mid'), l = row('last');
+      var f = row('first'), md = row('mid'), l = row('last'), r0 = out.rows[out.rows.length - 1];
       // What picking early buys is the spot, and that is the whole rule.
       check(set + ': picking first lands on a better spot than picking last',
         f.spotPts > l.spotPts, 'first ' + f.spotPts + ' pts, last ' + l.spotPts);
@@ -89,8 +89,18 @@ const BOOTSTRAP = `
          головы (замер на t2: голова 2.59, середина 2.85), и старое требование
          «голова обязана быть первой по ценности» меряло не правило, а шум:
          сторож был красным и на коде до правок дня. */
+      /* 9.10: since «no empty box while two share one» (4b6bd07, 6.10, его слово)
+         the last squad finds the island full in every game (before: m2 5.5%), so
+         its leftover is a contest of a decent box, not an empty poor one: by
+         points the tail is head-vs-tail only (m2 measured mid 2.64 vs last 2.60-2.66,
+         a coin flip). On an island with a mythic POI (b53f8f5, 28.09: top value + 3)
+         the tail contests the mythic and the fill-up moves the weaker mid-queue
+         squads into leftover boxes alone — there space is head-vs-tail too
+         (measured t2: points 4.12 / 2.71 / 3.34, alone 79 / 84 / 60%). */
+      var full = r0.islandFullPct >= 50;
+      var myth = !!(CC_MYTHIC_POI && CC_MYTHIC_POI[ACTIVE_LANDING_SET]);
       check(set + ': the tail of the queue gets the leftovers',
-        f.spotPts > l.spotPts && md.spotPts > l.spotPts,
+        f.spotPts > l.spotPts && (full || md.spotPts > l.spotPts),
         'first ' + f.spotPts + ', mid ' + md.spotPts + ', last ' + l.spotPts);
       /* И очередь покупает не только коробку, но и ПОКОЙ. Кто выбирает раньше,
          занимает свой адрес целиком; кому осталось — тот садится рядом с уже
@@ -99,7 +109,7 @@ const BOOTSTRAP = `
          Прежняя формулировка требовала обратного — «хорошие коробки те, что
          контестят», — и была написана до домов у ботов. */
       check(set + ': picking early buys space, not only points',
-        f.alonePct > md.alonePct && md.alonePct > l.alonePct,
+        myth ? f.alonePct > l.alonePct : (f.alonePct > md.alonePct && md.alonePct > l.alonePct),
         'alone: first ' + f.alonePct + '%, mid ' + md.alonePct + '%, last ' + l.alonePct + '%');
 
       // A Heat has a "first through". The Play-In does not: twenty-two games,

@@ -66,13 +66,17 @@ const BOOTSTRAP = `
         var order = all.slice().sort(byQualOrder);
         var ahead = order.slice(0, order.indexOf(you));
         var behind = order.slice(order.indexOf(you) + 1);
-        var groups = buildBotLandingAssignment(ahead).zoneGroups;
+        // Like pickInitialZone (9.10): the queue ahead lands without the full-room
+        // fill-up, which runs once the tail lands after the player.
+        var groups = buildBotLandingAssignment(ahead, {partial: true}).zoneGroups;
         // The player takes the best box still free, which is the best a player
         // reading the map can do.
         var best = null, bestPts = -Infinity;
         ALL_LANDING_ZONES.forEach(function(z){
           var occupied = (groups.get(z) || []).length;
-          var value = z.points - occupied * 3;
+          // A free box first, as the comment above says. Since 28.09 (b53f8f5) a mythic box is
+          // worth 7, and a flat -3 per occupant made contesting it beat every free box.
+          var value = occupied ? z.points - occupied * 3 - 1000 : z.points;
           if (value > bestPts) { bestPts = value; best = z; }
         });
         you.landingZone = best; applyLandingPow(you, best.points);

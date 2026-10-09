@@ -102438,6 +102438,12 @@ function buildBotLandingAssignment(bots, opts){
        !(t._mgrDrop==='quiet' || t._mgrDrop==='hot')) book.at[bookKey]=ccSeatKeyOf(zone);
   });
 
+  /* Досадка ниже (пустые, толпа, слабые/сильные) — про ГОТОВУЮ комнату. Раздача по очереди до игрока
+     (opts.partial, pickInitialZone) её не делает: иначе ahead расползались по всем пустым коробкам ещё
+     до его метки, и «раньше квалифицировался — раньше ставишь метку» ничего не покупало (полный прогон 9.10,
+     check-lan-pick: 22-й на t3 видел свободными 2 коробки из 25 вместо 7). */
+  if(opts && opts.partial) return {zoneGroups};
+
   /* ПУСТЫХ ТОЧЕК НЕ БЫВАЕТ, пока где-то стоят вдвоём. Его слово 6.10: «пустых точек не должно
      быть». Пока на острове есть пустая коробка, а в другой стоят две команды и больше, одна из
      них переходит в ближайшую пустую — гость (точка не её по книге), а из хозяев слабейший.
@@ -102740,8 +102746,9 @@ async function pickInitialZone(you, bots, title, seat, room){
      room — комната, посчитанная снаружи (careerLandingPick). Тогда берётся
      она: иначе число на кнопке было бы от одного броска, а карта от другого. */
   careerSpotFearOn(you);
-  const zoneGroups = room || buildBotLandingAssignment(ahead).zoneGroups;
-  if(!room) buildBotLandingAssignment(behind, {into: zoneGroups});
+  // partial: готовую комнату досаживает раздача хвоста ПОСЛЕ метки (ниже); без хвоста ahead и есть вся комната.
+  const zoneGroups = room || buildBotLandingAssignment(ahead, behind.length ? {partial: true} : undefined).zoneGroups;
+  if(!room) buildBotLandingAssignment(behind, {into: zoneGroups, partial: true});
   careerSpotFearOff();
   // Recorded so the header can say where in the queue you are.
   const pickSeat=ahead.length+1;
