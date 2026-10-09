@@ -53,6 +53,9 @@ const BOOT = `
     const play=document.querySelector('#screen-career-hub .ch-play');
     if(!play) throw new Error(what+': no button at all');
     if((play.getAttribute('onclick')||'').indexOf('careerPlay')<0) throw new Error(what+': the button skips instead of playing: '+play.outerHTML.slice(0,200));
+    // Итог прошлого вечера убирается до нажатия: кап другого формата стартует после окна состава, и цикл ниже
+    // успевал схватить старую карточку (полный прогон 9.10 — «Squid записан как victory» через раз).
+    document.getElementById('majorStages').innerHTML='';
     const sk=setInterval(()=>{ const b=document.getElementById('majorSkipBtn'); if(b && !b.disabled) b.click(); }, 20);
     play.click();
     let c=null;
