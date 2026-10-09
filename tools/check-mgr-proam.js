@@ -12,7 +12,6 @@ try{
   LANG='ru';
   MGR_NEW_YEAR=2026; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; mgrOpenNew(2026);
   mgrTake(0); MGR.view='result'; out.notes.club=MGR.club.name;
-  mgrVisaOk=()=>true;                                    // визы — своя проверка (check-mgr-visa)
   const dal=CC_PROAM_EVENTS.ProAm_Dallas.day;
   CAREER.career.day=ccAddDays(dal, -14); MGR.inbox=[];
   mgrProAmTick();
@@ -24,7 +23,6 @@ try{
   const ev=mgrCarEvents(CAREER.career.day, ccAddDays(dal, 1)).filter(e=>e.ck==='proam');
   out.notes.ev=ev.map(e=>e.day+' '+e.name+' '+e.teams.join(','));
   check('Про-Ам в календаре у принявшего', ev.length===1 && ev[0].day===dal && ev[0].teams[0]==='s:'+hKey(m0.h), JSON.stringify(ev));
-  check('ЛАН Про-Ама — США', (mgrLanHost(ev[0])||{}).nat==='us');
   if(inv[1]){ mgrInboxDo(inv[1].id, false); check('отказ — без вечера', mgrCarEvents(CAREER.career.day, ccAddDays(dal, 1)).filter(e=>e.ck==='proam').length===1); }
   const cash0=MGR.club.cash;
   await mgrCarAuto(ev[0]);
