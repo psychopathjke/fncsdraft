@@ -113107,7 +113107,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='26a2af74';
+const CC_BUILD='e6899315';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -121222,7 +121222,7 @@ function ccSyncPhaseRoster(){
    со сцены; одно правило ИГЛа. Один раз на этап (cr.phaseFilled) — убрать кого-то потом его право. */
 function ccPhaseFillSeats(size){
   const cr=CAREER && CAREER.career;
-  if(!cr || CC_EVENT_SIZE || ccMpOn() || (typeof ccRacePairOn==='function' && ccRacePairOn())) return;
+  if(!cr || CAREER._mgr || CC_EVENT_SIZE || ccMpOn() || (typeof ccRacePairOn==='function' && ccRacePairOn())) return;   // менеджер добирает сам (mgrPhaseSync)
   const done=cr.phaseFilled=cr.phaseFilled||{};
   const tag=cr.season+'|'+size;
   if(done[tag]) return;
@@ -157400,7 +157400,7 @@ function mgrShadow(year, region){
 }
 function mgrEnter(){
   if(!MGR_ACTIVE){ MGR_PREV_CAREER=CAREER; MGR_ACTIVE=true; }
-  if(MGR && MGR.shadow){ MGR.shadow._mgr=true; CAREER=MGR.shadow; try{ ccWorldReset(); }catch(e){} }
+  if(MGR && MGR.shadow){ MGR.shadow._mgr=true; CAREER=MGR.shadow; try{ ccWorldReset(); }catch(e){} try{ if(MGR.teams) mgrPhaseSync(); }catch(e){} }
   if(MGR && MGR.tswap){ try{ mgrTeamOut(); }catch(e){ MGR.tswap=null; } }
 }
 function mgrLeave(){
@@ -158397,10 +158397,11 @@ function mgrCentreHTML(){
   const T=mgrT(), T2=mgrT2(), T9=mgrT9(), W=mgrTW(), ru=(typeof LANG!=='undefined' && LANG==='ru');
   const X=ru ? {watch:'Играть', sim:'Симулировать', play:'Играть', notes:'Уведомления', none:'Новых нет', table:'Таблица', ev:'Тур', sched:'Расписание на неделю', dev:'Развитие', devTxt:'Помогайте игрокам развиваться и раскрыть свой потенциал', news:'Новости', teams:n=>n+' команд', season:'Сезон окончен'}
              : ({fr:()=>({watch:'Jouer', sim:'Simuler', play:'Jouer', notes:'Notifications', none:'Rien de nouveau', table:'Classement', ev:'Ev', sched:'Programme de la semaine', dev:'Développement', devTxt:'Aide tes joueurs à progresser et à atteindre leur potentiel', news:'Actus', teams:n=>n+' équipes', season:'Saison terminée'}), it:()=>({watch:'Gioca', sim:'Simula', play:'Gioca', notes:'Notifiche', none:'Niente di nuovo', table:'Classifica', ev:'Ev', sched:'Programma settimanale', dev:'Sviluppo', devTxt:'Aiuta i tuoi giocatori a crescere e a raggiungere il loro potenziale', news:'Notizie', teams:n=>n+' squadre', season:'Stagione finita'}), pt:()=>({watch:'Jogar', sim:'Simular', play:'Jogar', notes:'Notificações', none:'Nada de novo', table:'Tabela', ev:'Ev', sched:'Agenda da semana', dev:'Desenvolvimento', devTxt:'Ajude seus jogadores a evoluir e alcançar o potencial', news:'Notícias', teams:n=>n+' times', season:'Temporada encerrada'}), de:()=>({watch:'Spielen', sim:'Simulieren', play:'Spielen', notes:'Benachrichtigungen', none:'Nichts Neues', table:'Tabelle', ev:'Ev', sched:'Wochenplan', dev:'Entwicklung', devTxt:'Hilf deinen Spielern, zu wachsen und ihr Potenzial zu erreichen', news:'News', teams:n=>n+' Teams', season:'Saison vorbei'}), es:()=>({watch:'Jugar', sim:'Simular', play:'Jugar', notes:'Notificaciones', none:'Nada nuevo', table:'Tabla', ev:'Ev', sched:'Horario semanal', dev:'Desarrollo', devTxt:'Ayuda a tus jugadores a crecer y alcanzar su potencial', news:'Noticias', teams:n=>n+' equipos', season:'Temporada terminada'})}[LANG]||(()=>({watch:'Play', sim:'Simulate', play:'Play', notes:'Notifications', none:'Nothing new', table:'Table', ev:'Ev', sched:'Weekly schedule', dev:'Development', devTxt:'Help your players grow and reach their potential', news:'News', teams:n=>n+' teams', season:'Season over'})))();
-  const evs=mgrEvents(), nx=evs[0], c=MGR.club, size={duo:2, trio:3, squad:4};
+  const evs=mgrEvents(), nx=evs[0], c=MGR.club, size={solo:1, duo:2, trio:3, squad:4};
   const dayLong=iso=>{ const d=new Date(iso+'T00:00:00Z'); return (L().calDows||[])[(d.getUTCDay()+6)%7]+' '+d.getUTCDate()+' '+((L().calMonthsShort||[])[d.getUTCMonth()]||'')+' '+d.getUTCFullYear(); };
   // ИГРАТЬ
-  const going=nx ? MGR.teams.map((t,i)=>({t, i})).filter(x=>mgrTeamSize(x.t)===size[nx.mode]) : [];
+  // Соло-кап играет каждый игрок клуба (mgrEvents: «соло — каждый игрок клуба»), а не состав размера 1 — «нет команды» писалось зря.
+  const going=!nx ? [] : nx.mode==='solo' ? MGR.teams.filter(t=>(t.cards||[]).length).map((t,i)=>({t, i})) : MGR.teams.map((t,i)=>({t, i})).filter(x=>mgrTeamSize(x.t)===size[nx.mode]);
   let field=0; try{ field=nx ? (nx.kind==='fncs' ? ccTeams(100) : careerVictoryField(false)) : 0; }catch(e){}
   const play=nx
     ? '<div class="mfc-tile mfc-play mfc-play-ev" style="background-image:linear-gradient(90deg,rgba(6,12,36,.94) 0%,rgba(6,12,36,.78) 45%,rgba(6,12,36,.25) 100%),url('+esc(mgrEvArt(nx))+')" onclick="if(!event.target.closest(\'button\')) mgrPlay()">'+
@@ -159223,6 +159224,17 @@ function mgrAdvanceTo(day){
   try{ const nd=mgrNationsDay(); if(nd>was && nd<=day) mgrNationsCall(nd); }catch(e){ console.error('mgrNationsCall', e); }
   try{ mgrLoanWeek(day); }catch(e){}   // возврат из аренды — по дате, а не только на недельном тике
   try{ mgrProAmTick(); }catch(e){ console.error('mgrProAmTick', e); }   // письма о Про-Аме — и по дороге перемотки
+  mgrPhaseSync();
+}
+/* ЭТАП ГОДА В МЕНЕДЖЕРЕ (Notion «0910», скрины 9.10: «не играются трио турниры» — 2 августа 2019-го ближайшим стоял
+   Solo Cash Cup 31 октября). День менеджера идёт мимо careerAdvance, и размер сезона теневой карьеры так и оставался
+   дуо: трио-капы и FNCS Season X выпадали из mgrEvents целиком. Теперь этап (ccPhaseRoster: 1.08.2019 трио, 13.10 сквад,
+   27.08.2020 трио) ставится и здесь, а выросшие составы сразу добирают людей сами (mgrGuestAuto). */
+function mgrPhaseSync(){
+  if(!MGR || !CAREER || !CAREER._mgr || !CAREER.career) return;
+  const was=careerSquadSize();
+  try{ ccSyncPhaseRoster(); }catch(e){ console.error('mgrPhaseSync', e); return; }
+  if(careerSquadSize()>was){ MGR_CAR_CACHE=null; try{ mgrGuestAuto(); }catch(e){} }
 }
 // День дедлайна по дороге к турниру — стоп в этот день (как Deadline Day в FC), иначе прыжок к турниру
 // перескакивал окно и скидки начинались, когда окно уже закрыто.

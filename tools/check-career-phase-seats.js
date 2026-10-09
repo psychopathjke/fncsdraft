@@ -90,6 +90,13 @@ const BOOT = `
     // Слово «Victory Cup» — только с 2023-го.
     seed(2019, '2019-08-05', {size:3});
     check('2019: кубок, не Victory Cup', ccWkVictoryWord()===L().chWkCup);
+    // Менеджер 2019: этап года ставится и в теневой карьере — трио-капы и Season X в списке, составы добирают третьего.
+    MGR_NEW_YEAR=2019; MGR_NEW_REGION='EU'; MGR_NEW_SIDE='real'; MGR_NEW_SORT='stars'; mgrOpenNew(2019); mgrTake(0);
+    CAREER.career.day='2019-08-02'; mgrPhaseSync();
+    check('менеджер 2.08.2019: трио', careerSquadSize()===3, String(careerSquadSize()));
+    check('менеджер: составы по трое', MGR.teams.every(t=>mgrTeamSize(t)===3), MGR.teams.map(t=>mgrTeamSize(t)).join(','));
+    const mev=mgrEvents().slice(0,3).map(e=>e.mode+' '+e.name).join(' | ');
+    check('менеджер: ближайшие — Season X и трио-кап', /trio FNCS Season X/.test(mev) && /Trios Cash Cup/.test(mev), mev);
     check('без ошибок JS', out.errs.length===0, out.errs.slice(0,3).join(' | '));
   }catch(e){ out.err=String(e && e.stack || e); }
   document.getElementById('__out').textContent='PB'+'EGIN'+encodeURIComponent(JSON.stringify(out))+'PE'+'ND';
