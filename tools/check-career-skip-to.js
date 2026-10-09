@@ -56,8 +56,12 @@ const BOOT = `
     const t=careerSkipTarget();
     if(!(t.day>today)) fail('the target is not ahead: '+t.day+' from '+today);
     const evs=(careerEvents().get(t.day)||[]);
-    if(t.day!==CC_YEAR_TO && !evs.some(e=>careerCanPlayKindOn(t.day, e.kind)))
+    // Вечер, закрытый только пустым креслом, — тоже цель (Notion «0910»): на его дне кнопка найти напарника.
+    if(t.day!==CC_YEAR_TO && !evs.some(e=>careerCanPlayKindOn(t.day, e.kind, true)))
       fail('the target day '+t.day+' has nothing this player can open');
+    // И мимо такого вечера прыжок не идёт: ни одного вечера с пустым креслом между сегодня и целью.
+    const passed=[...careerEvents().keys()].filter(d=>d>today && d<t.day).find(d=>(careerEvents().get(d)||[]).some(e=>careerCanPlayKindOn(d, e.kind, true)));
+    if(passed) fail('the skip jumps over '+passed+', a night only an empty seat keeps shut');
     const n=ccFfDays(t.day);
     out.steps.push('from '+today+' the next playable evening is '+t.day+' ('+(t.ev?t.ev.label:'gala')+'), '+n+' days');
 

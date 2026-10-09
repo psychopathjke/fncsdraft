@@ -8730,6 +8730,7 @@ ccDayOverAny:'День уже потрачен. Энергия останетс�
 ccRestFull:'энергия и так полная',
 ccNeedEnergy:n=>'не хватает '+n+'⚡', ccNeedCash:v=>'Не хватает денег: нужно $'+v+' на счету',
 ccNoGain:'сессия уже ничего не даёт',
+ccSaveUnread:'Сейв этой карьеры не прочитался. Он отложен в сторону, а не стёрт — новую карьеру начни в другом слоте.',
 ccSaveFail:v=>'Карьера не сохраняется ('+v+'). В браузере кончилось место под сохранения — '+
   'очисти данные сайта или удали лишний слот карьеры, иначе всё сыгранное пропадёт при перезагрузке',
 ccEnergyMark:'⚡', ccRingEnergy:'Энергия', ccRingFatigue:'Усталость', ccRingMood:'Настрой',
@@ -10739,6 +10740,7 @@ ccDayOverAny:'The day is already spent. The energy keeps until tomorrow — pres
 ccRestFull:'energy is already full',
 ccNeedEnergy:n=>n+'⚡ short', ccNeedCash:v=>'Not enough money: you need $'+v+' in the bank',
 ccNoGain:'this session no longer moves anything',
+ccSaveUnread:'This career save could not be read. It is kept aside, not deleted — start a new career in another slot.',
 ccSaveFail:v=>'This career is not being saved ('+v+'). The browser is out of room for saves — '+
   'clear this site\'s data or delete a career slot you are not using, or everything played will be gone on reload',
 ccEnergyMark:'⚡', ccRingEnergy:'Energy', ccRingFatigue:'Fatigue', ccRingMood:'Morale',
@@ -79505,7 +79507,7 @@ pushCard({handle:'Chapofn1', nat:'Дания', natSource:'x', region:'EU',
    в посте 6.10 — @Infinixontop (14, Франция, «Player for @Team_eldia»). @Erenfvv ушёл 8.10 — не берём.
    Ник — имя профиля X. Профилей Tracker под этими именами нет — рейтинги ОЦЕНКА уровня, как у Chapofn1:
    Vicens — дивизион 1 (76), serkkovv — раунд 3 FNCS Solos ME, топ-200 (75), luk3 — прошёл раунд (74),
-   Infinix — не прошёл, 14 лет (72). Регион luk3 — BR (южноамериканский сервер) — тоже оценка. */
+   Infinix — не прошёл, 14 лет (72; 9.10 по Tracker — 66, академия). Регион luk3 — BR (южноамериканский сервер) — тоже оценка. */
 /* FUT Esports / 7VEN CLUB / LOUD — от их агента Roxo (x.com/roxogg, 8.10.2026): «fut esports: @phzinfps1 and @edsonmalado,
    @7venclub: @pardalflexlolo, @loudgg: @mackftn and @loud_diguera». edson, pardal, Mack — в B1_ORG/B2_ORG; у Phzin карточки
    2026-го в данных нет — заводится здесь, рейтинг его последней карточки (2025: 87), регион BR. */
@@ -79521,9 +79523,12 @@ pushCard({handle:'luk3', nat:'Аргентина', natSource:'x', region:'BR',
 pushCard({handle:'Vicens', nat:'Мексика', natSource:'x', region:'NAC',
           event:'FNCS 2026 Division 1 (NA Central)', date:'7 окт 2026', placement:null, note:'',
           tier:'cardmode', cardSet:'d4', org:'Team Eldia', rarity:rarityForRating(76), rating:76});
+// Infinix — в АКАДЕМИИ Team Eldia, не в основе (сообщение клуба, Notion «0910»: «@Infinixontop is on the academy roster»).
+// Tracker 9.10 (Epic «Eld SaradaLoverǃ», Epic Events, Европа): PR 117, #34 111 EU, $0, 49 событий / 77 сессий, один топ-100,
+// среднее место 4 639. Ниже Xeno (дивизион 2, $100 → 72) — на уровне академиста Lix: 66 (было 72 оценкой без профиля).
 pushCard({handle:'Infinix', nat:'Франция', natSource:'x', region:'EU',
           event:'FNCS 2026 Solos (Europe)', date:'6 окт 2026', placement:null, note:'',
-          tier:'cardmode', cardSet:'d4', org:'Team Eldia', rarity:rarityForRating(72), rating:72});
+          tier:'cardmode', cardSet:'d4', org:'Team Eldia', academy:true, rarity:rarityForRating(66), rating:66});
 /* Shimo, состав — его просьба 9.10 (у клуба не было игроков в данных). Из ленты x.com/ShimoCrew (api.fxtwitter.com, 9.10.2026):
    игроки с «Player for @ShimoCrew» в профиле и посты «Qual FNCS round 2» 5–6.10 — Xeno (@Xenofnrr, 14, Франция, «Div 2, 100$»),
    hydra (@hydra_yhyh, 14, Франция), Kyzёn (@Kyzenn12, Финляндия, «$3k»; ник Kyzenn — Kyzen уже занят французом),
@@ -112936,9 +112941,21 @@ function ccDebugCash(host){
     return true;
   }catch(e){ return false; }
 }
+/* СЕЙВ ЕСТЬ, НО НЕ ПРОЧИТАЛСЯ (Notion «0910», игрок: «обновил браузер — весь прогресс пропал, сохранения нет?»).
+   Было: нечитаемый сейв = «карьеры нет», вход вёл на создание, и новая карьера ложилась поверх старой в тот же
+   слот — потеря без следа. Теперь сырая строка откладывается рядом (<слот>_unread, один раз), а вход ведёт
+   к списку карьер с объяснением, а не к созданию. */
+let CC_LOAD_BAD=null;
 function careerLoad(){
   CC_SLOT_TAB=ccSlotMine();   // слот этой вкладки — с первой загрузки
-  try{ CAREER=ccSaveParse(localStorage.getItem(LS_SLOT(CC_SLOT_TAB))); }catch(e){ CAREER=null; }
+  CC_LOAD_BAD=null;
+  let raw=null;
+  try{ raw=localStorage.getItem(LS_SLOT(CC_SLOT_TAB)); CAREER=ccSaveParse(raw); }catch(e){ CAREER=null; }
+  if(raw && !CAREER){
+    CC_LOAD_BAD={slot:CC_SLOT_TAB};
+    console.error('career save in slot '+CC_SLOT_TAB+' could not be read; kept as '+LS_SLOT(CC_SLOT_TAB)+'_unread');
+    try{ if(!localStorage.getItem(LS_SLOT(CC_SLOT_TAB)+'_unread')) localStorage.setItem(LS_SLOT(CC_SLOT_TAB)+'_unread', raw); }catch(e){}
+  }
   // Снимок роастера носит на себе то, что с ним сделала карьера, которая
   // была открыта до этой. Другая карьера — другая сцена.
   CC_NOW_CARDS={}; CC_ARC_PAIRS={};
@@ -113088,7 +113105,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4826c0cd';
+const CC_BUILD='4c960d8a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -116768,7 +116785,10 @@ function careerCard(raw){
 
 function openCareerHub(){
   CH_MONTH=null;   // календарь закрыт вместе с прошлым визитом; см. careerTab
-  if(!careerLoad()){ openCareerCreate(); return; }
+  if(!careerLoad()){
+    // Нечитаемый сейв — не повод создавать карьеру поверх него (см. CC_LOAD_BAD).
+    if(CC_LOAD_BAD){ openCareerSlots(); try{ ccTell(L().ccSaveUnread || 'This career save could not be read. It is kept aside; start the new career in another slot.'); }catch(e){} return; }
+    openCareerCreate(); return; }
   // A career whose seat is empty finds the offers already in the inbox rather
   // than tomorrow — including a brand new one, which is the whole point.
   careerSeatTopUp();
@@ -116869,7 +116889,8 @@ function careerEndKey(e){ if(e.key==='Escape') careerEndClose(); }
 function careerEnd(){
   careerEndClose();
   if(typeof careerNewsRotStop==='function') careerNewsRotStop();   // лента хаба не должна тикать в пустую карьеру
-  ccSlotWipe(ccSlot());
+  // Слот ЭТОЙ вкладки, а не общий указатель: вторая вкладка могла переставить его на другую карьеру (как 22.09 у записи).
+  ccSlotWipe(ccSlotMine());
   CAREER=null;
   show('screen-mode');
 }
@@ -116988,7 +117009,7 @@ function careerSlotDrop(n){
   }
   CC_SLOT_ARMED=null;
   ccSlotWipe(n);
-  if(n===ccSlot()) CAREER=null;
+  if(n===ccSlotMine()) CAREER=null;
   careerRenderSlots();
 }
 
@@ -117478,7 +117499,7 @@ function careerCentreHTML(card, a){
   // whatever that date actually carries and no schedule is written twice.
   const dayEvents=careerEvents();
   const KIND_WORD={cup:L().chWkCup, final:L().calWeeklyFinal, eval:L().calPerfEval,
-                   victory:L().chWkVictory,
+                   victory:ccWkVictoryWord(),
                    major:ccWkMajorWord(), gc:L().chWkGC, reload:L().chWkReload};
   // The pip under the number, standing in for the reference's icon per fixture.
   // A colour is enough to tell a cup night from a Reload night at a glance, and
@@ -121165,6 +121186,8 @@ function ccWithEventSize(n, fn){
   try{ return fn(); } finally{ CC_EVENT_SIZE=prev; }
 }
 // Тег «Мейджор» в календаре: до 2023-го Мейджоров не было — шли сезоны FNCS (и World Cup).
+// И капы: Victory Cups у Epic — с апреля 2023-го; раньше — просто кубки (Solo Cash Cup, Daily Trios Cup…).
+function ccWkVictoryWord(){ const y=ccCalYear(); return (ccPastYear(y) && y<=2022) ? L().chWkCup : L().chWkVictory; }
 function ccWkMajorWord(){ const y=ccCalYear(); return (ccPastYear(y) && y<=2022) ? 'FNCS' : L().chWkMajor; }
 function careerSquadSize(){
   if(CC_EVENT_SIZE) return CC_EVENT_SIZE;
@@ -121185,6 +121208,49 @@ function ccSyncPhaseRoster(){
   const cr=CAREER && CAREER.career; if(!cr || CC_EVENT_SIZE) return;
   const ps=ccPhaseRoster(); if(ps && cr.size!==ps) cr.size=ps;
   ccRosterSwap();
+  if(ps) ccPhaseFillSeats(ps);
+}
+/* ПУСТОЕ КРЕСЛО НА СТЫКЕ ЭТАПА (Notion «0910», тестер: «квалификации дуо, хиты и финал уже трио»;
+   его слово: «у меня не сыгралось половина капов когда началось трио»). Состав растёт сам — 1 августа
+   2019-го дуо становится трио, 13 октября сквадом, 27 августа 2020-го снова трио, — а новый состав
+   начинался с теми же людьми, то есть с пустым креслом. Пустое кресло закрывает каждый командный
+   вечер (careerNoMate), и «До турнира» с перемоткой проходили их молча: мир доигрывал Season X без
+   игрока. Игрок формат не выбирал — режим сменил его сам, значит и кресло садит режим: сначала
+   настоящих тиммейтов своих людей по записям этого сезона (ccRealMatesOf), потом ближайших по силе
+   со сцены; одно правило ИГЛа. Один раз на этап (cr.phaseFilled) — убрать кого-то потом его право. */
+function ccPhaseFillSeats(size){
+  const cr=CAREER && CAREER.career;
+  if(!cr || CC_EVENT_SIZE || ccMpOn() || (typeof ccRacePairOn==='function' && ccRacePairOn())) return;
+  const done=cr.phaseFilled=cr.phaseFilled||{};
+  const tag=cr.season+'|'+size;
+  if(done[tag]) return;
+  done[tag]=1;
+  const need=careerMatesShort();
+  if(need<=0){ careerSave(); return; }
+  const me=careerCard(), mates=careerMates().filter(Boolean);
+  const team=new Set([me].concat(mates).filter(Boolean).map(hKey));
+  const taken=(typeof ccRaceOn==='function' && ccRaceOn()) ? ccRaceTakenKeys() : new Set();
+  const roles=ccSquadRoles(), picks=[];
+  const take=c=>{
+    if(!c || picks.length>=need) return;
+    const k=hKey(c);
+    if(team.has(k) || taken.has(k)) return;
+    const r=attrsFor(c).roleKey;
+    if(!ccSquadRoleFits(roles.concat(r ? [r] : []), size)) return;
+    team.add(k); picks.push(c); if(r) roles.push(r);
+  };
+  [me].concat(mates).forEach(c=>{ if(c) ccRealMatesOf(c, size-1).forEach(take); });
+  if(picks.length<need){
+    const own=[me].concat(mates).filter(Boolean);
+    const avg=own.reduce((s,c)=>s+ccCardOvr(c), 0)/Math.max(1, own.length);
+    careerRosterNowEU().slice().sort((a,b)=>Math.abs(ccCardOvr(a)-avg)-Math.abs(ccCardOvr(b)-avg)).forEach(take);
+  }
+  picks.forEach(c=>careerMateSeat({handle:c.handle, cardRegion:c.region||ccCareerRegion(), patience:CAREER_PATIENCE_START, since:careerToday()}));
+  if(picks.length){
+    const tags=careerMates().filter(Boolean).map(m=>'@'+ccHandle(m.handle)).join(' ');
+    careerNews('good', 'ccNewsSquadNew', [size===4 ? 'SQUAD' : size===3 ? 'TRIO' : 'DUO', tags]);
+  }
+  careerSave();
 }
 /* ДУО, ТРИО И СКВАД — ОТДЕЛЬНЫЕ СОСТАВЫ.
 
@@ -143047,7 +143113,7 @@ const CC_FF_ART={
    подпись — иначе один турнир назывался бы в календаре и в итоге по-разному. */
 function ccFfKindWord(kind){
   const w={cup:L().chWkCup, final:L().calWeeklyFinal, eval:L().calPerfEval,
-           victory:L().chWkVictory, major:ccWkMajorWord(), gc:L().chWkGC,
+           victory:ccWkVictoryWord(), major:ccWkMajorWord(), gc:L().chWkGC,
            reload:L().chWkReload};
   return w[kind]||'';
 }
@@ -143240,7 +143306,7 @@ function careerCanPlayKind(kind){ return careerCanPlayKindOn(careerToday(), kind
    какой из будущих вечеров игрок сможет открыть (careerSkipTarget). Ответ по
    сегодняшнему состоянию: пропуск ничего не играет, значит по дороге ничего
    и не изменится. */
-function careerCanPlayKindOn(day, kind){
+function careerCanPlayKindOn(day, kind, seatsAside){
   if(CC_PLAYABLE.indexOf(kind)<0) return false;
   // Травма, бан, неоформленная поездка или ранг ниже порога капа (см. ccLifeWhy).
   if(typeof ccLifeWhy==='function' && ccLifeWhy(day, kind)) return false;
@@ -143255,7 +143321,7 @@ function careerCanPlayKindOn(day, kind){
   if(ccMpModeWhy()) return false;
   // И в гонке режим один на комнату. См. ccRaceModeWhy.
   if(typeof ccRaceModeWhy==='function' && ccRaceModeWhy()) return false;
-  if(careerNoMate(kind)) return false;
+  if(!seatsAside && careerNoMate(kind)) return false;
   if(kind==='reload') return careerReloadCan(careerReloadOn(day));
   if(kind==='final')  return careerWeeklyFinalOn(day);
   if(kind==='major')  return careerMajorCan(careerMajorOn(day));
@@ -143685,7 +143751,11 @@ function careerSkipTarget(){
   const list=[...days.keys()].filter(d=>d>today).sort();
   for(const d of list){
     if(d>=ccYearTo()) break;
-    if((days.get(d)||[]).some(e=>careerCanPlayKindOn(d, e.kind))) return {day:d, ev:(days.get(d)||[]).find(e=>careerCanPlayKindOn(d, e.kind))};
+    /* Вечер, закрытый только пустым креслом, — тоже остановка (Notion «0910»: «не сыгралось половина
+       капов, когда началось трио»): прыжок мимо него молча отдавал турнир миру, а на дне вечера
+       панель дня даёт кнопку найти человека. */
+    const ev=(days.get(d)||[]).find(e=>careerCanPlayKindOn(d, e.kind, true));
+    if(ev) return {day:d, ev:ev};
   }
   return {day:ccYearTo(), ev:null};
 }
@@ -144005,6 +144075,9 @@ function careerNewSeason(){
   else if(cr.year===2019) cr.year=2020;
   else if(cr.year===2020) cr.year=2021;   // после C2S4 — календарь 2021-го (трио), люди прошлых лет   // после FNCS C2S1 — календарь 2020-го (трио), люди 2019-го   // после Grand Royale — календарь 2022-го (дуо), люди 2021-го   // после Роли — календарь 2023-го (дуо), люди 2022-го   // после Копенгагена — календарь 2024-го (дуо), люди 2023-го
   cr.season++; cr.day=careerStartDay(); cr.seasonOver=false;
+  /* Календарь — на месяц нового сезона (его слово 9.10: «календарь не обновился в новом сезоне»):
+     открытый месяц помнился с конца прошлого года, и вкладка стояла на ноябре старого сезона. */
+  CH_MONTH=null; CH_FF_ASK=null;
   cr.plog={}; delete cr.plogYou;   // журнал вечеров игроков — по сезону (careerPlayerStatsHTML, фраггер года)
   /* Тройки переживают межсезонье — но не все.
 
@@ -144567,7 +144640,8 @@ function careerBanned(){ return !!(CAREER && CAREER.retired && CAREER.retired.wh
 // screen behind the question is showing.
 function careerWipe(){
   ccAsk(L().ccNewCareerAsk, ()=>{
-    try{ localStorage.removeItem('fncsdraft_career'); }catch(e){}
+    // Свой слот, а не всегда первый: «Новая карьера» на итоге карьеры из слота 3 стирала карьеру слота 1.
+    ccSlotWipe(ccSlotMine());
     CAREER=null;
     show('screen-career-create');
   });
@@ -157348,7 +157422,8 @@ function mgrStart(){
 }
 
 /* ---- Выбор года и клуба ---------------------------------------------------- */
-let MGR_NEW_YEAR=2024, MGR_NEW_REGION='EU';
+// Новый менеджер открывается на текущем годе — 2026 (его слово 9.10: «сразу 24 год пишет, а не 26»); прошлые годы — вкладками.
+let MGR_NEW_YEAR=2026, MGR_NEW_REGION='EU';
 function mgrClubsFor(year, region){
   const sh=mgrShadow(year, region);
   const was=CAREER; CAREER=sh;
@@ -157516,8 +157591,13 @@ function mgrTake(i){
        teams:[], bench:[], log:[], skipped:[]};
   mgrEnter();
   MGR.season0=sh.career.day;
-  mgrBuildTeams(c.players);
+  // Академисты настоящего клуба (карточка academy:true) — в академию, а не в основу (Notion «0910», Team Eldia).
+  const acadOf=h=>{ const k=mgrCard(h); return !!(k && k.academy); };
+  mgrBuildTeams(c.players.filter(h=>!acadOf(h)));
   MGR.contracts={}; mgrAll().forEach(h=>mgrContract(h));
+  MGR.academy=c.players.filter(acadOf).slice(0, MGR_ACAD_MAX).map(h=>{ const k=mgrCard(h);
+    MGR.contracts[hKey(k.handle)]={salary:Math.round(mgrSalary(k)*MGR_ACAD_WAGE), since:CAREER.career.day, until:MGR.year+1, clause:0};
+    return k.handle; });
   { const b=mgrClubBudget(c.name, mgrWageBill(), c.avg);
     Object.assign(MGR.club, {turnover:b.turnover, transfer:b.transfer, wageCap:b.wageCap, cash:Math.max(MGR.club.cash, b.transfer)}); }
   MGR.fncsCal=mgrFncsDays().map(x=>x.day);
@@ -158031,7 +158111,9 @@ async function mgrPlayEwc(ev){
   CAREER_RUN=false;
   mgrSave();
 }
-function mgrEvName(ev){ if(ev.kind==='fncs') return ev.name; { const byMode={solo:'calVictorySolo', duo:'calVictoryDuo', trio:'calVictoryTrio'}[ev.mode]; if(byMode && L()[byMode]) return L()[byMode]; } try{ if(typeof ccVictoryCupName==='function'){ const n=ccVictoryCupName(ev); if(n) return String(n).replace(/<[^>]+>/g, ''); } }catch(e){} return ev.name||ev.title||ev.label||ev.id; }
+/* Настоящее имя капа — первым (его вопрос 9.10: «кап называется solo victory, хотя в те сезоны этого не было»):
+   Victory Cups у Epic с апреля 2023-го, до того Solo Cash Cup, Daily Trios Cup и т. п. Слово режима — только у записи без имени. */
+function mgrEvName(ev){ if(ev.kind==='fncs') return ev.name; if(ev.lan) return ev.lan; if(ev.name) return ev.name+(ev.n ? ' '+ev.n : ''); { const byMode={solo:'calVictorySolo', duo:'calVictoryDuo', trio:'calVictoryTrio'}[ev.mode]; if(byMode && L()[byMode]) return L()[byMode]; } try{ if(typeof ccVictoryCupName==='function'){ const n=ccVictoryCupName(ev); if(n) return String(n).replace(/<[^>]+>/g, ''); } }catch(e){} return ev.name||ev.title||ev.label||ev.id; }
 // Призовые команды за место: таблица Epic (payT) — на игрока × размер; иначе выплата карьеры на состав сезона, приведённая к своему размеру.
 function mgrPrize(ev, place, size){
   if(ev.payT) return ccPay24(ev.payT, place)*size;
@@ -163787,7 +163869,7 @@ function ccLogName(e){
     const onDay=(careerYearDays().get(e.day)||[])
       .find(x=>ID[e.kind] ? x.id===ID[e.kind] : x.kind===e.kind);
     if(onDay && onDay.label) return esc(onDay.label);
-    const W={final:L().calWeeklyFinal, eval:L().calPerfEval, victory:L().chWkVictory,
+    const W={final:L().calWeeklyFinal, eval:L().calPerfEval, victory:ccWkVictoryWord(),
              major:ccWkMajorWord(), gclc:L().chWkGC, globals:L().chWkGC,
              reload:L().chWkReload, summit:L().brk_lan, rc:L().brk_rc,
              solo:'Solo Series'};

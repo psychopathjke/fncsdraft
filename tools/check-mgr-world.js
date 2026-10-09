@@ -28,7 +28,8 @@ try{
   check('соло-капы тоже играются', !wEv.some(e=>e.mode==='solo') || res.some(r=>r.mode==='solo'));
   const soloRes=res.find(r=>r.mode==='solo');
   check('соло-кап — одиночки, а не пары', !soloRes || soloRes.rows.slice(0,20).every(x=>x.n.indexOf(' & ')<0), soloRes && soloRes.rows[0].n);
-  check('соло-кап называется соло', !soloRes || soloRes.name.indexOf(L().calVictorySolo)===0, soloRes && soloRes.name);
+  // Имя — настоящее имя капа из данных, как в календаре карьеры (Notion «0910»: «solo victory, хотя в те сезоны этого не было»).
+  check('соло-кап называется соло', !soloRes || /solo|соло/i.test(soloRes.name), soloRes && soloRes.name);
   const eng=res.filter(r=>r.rows.slice(0, 10).every(x=>x.pts!=null && x.pts>0));
   check('таблицы из движка: у верха очки', eng.length===res.length, eng.length+' / '+res.length);
   check('места по возрастанию', res.every(r=>r.rows.every((x,i)=>i===0 ? x.place===1 : x.place>r.rows[i-1].place)));
