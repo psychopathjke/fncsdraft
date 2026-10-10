@@ -102593,20 +102593,30 @@ function buildBotLandingAssignment(bots, opts){
         let best=null;
         zoneGroups.forEach((g, z)=>{
           const tops=g.filter(t=>top.has(t)); if(tops.length<2) return;
-          tops.filter(movable).forEach(w=>{
+          /* Двое топов — хозяева одной точки по книге (оба сели туда в первый вечер) — делили её весь сезон: обмен хозяина
+             не трогал. Тестер 10.10: «все самые сильные друг другу руинят FNCS, из-за того что падают друг на друга».
+             Теперь уходит и хозяин — слабейший из топов точки, гость раньше хозяина, — и переезжает на сезон (книга ниже). */
+          const strongest=tops.reduce((a,b)=>str(b)>str(a) ? b : a);
+          tops.filter(t=>t!==strongest && movable(t)).forEach(w=>{
             const k=keyOfT(w), owner=k && book && book.at[k]===ccSeatKeyOf(z);
-            if(owner) return;   // хозяин точки по книге сидит на месте всегда (check-drop-sticky)
             all.forEach(x=>{
               if(top.has(x) || weak.has(x) || !movable(x)) return;
               const z2=zoneOf.get(x); if(!z2 || z2===z || (zoneGroups.get(z2)||[]).some(o=>top.has(o))) return;
-              const kx=keyOfT(x); if(kx && book && book.at[kx]===ccSeatKeyOf(z2)) return;   // и середняк-хозяин тоже
-              const cost=(zoneGroups.get(z2)||[]).filter(o=>o!==x && weak.has(o)).length*1e4+str(w)*100-str(x);   // топ уходит туда, где нет слабых
-              if(!best || cost<best.cost) best={w, x, z, z2, cost};
+              /* С книгой хозяин своей точки — почти каждый середняк, и запрет «середняк-хозяин не меняется» не оставлял
+                 обмену никого: замер (поле 50, 12 турниров с книгой) — две коробки с парой топ-10 на лобби, 8–13 пар
+                 вместе 6+ турниров из 12; без книги — ноль. Середняк-хозяин меняется, но после гостей. */
+              const kx=keyOfT(x), xOwner=!!(kx && book && book.at[kx]===ccSeatKeyOf(z2));
+              const cost=(owner ? 1e6 : 0)+(xOwner ? 1e5 : 0)+(zoneGroups.get(z2)||[]).filter(o=>o!==x && weak.has(o)).length*1e4+str(w)*100-str(x);   // топ уходит туда, где нет слабых
+              if(!best || cost<best.cost) best={w, x, z, z2, cost, owner:!!owner, k, xOwner, kx};
             });
           });
         });
         if(!best) break;
         const {w, x, z, z2}=best;
+        // Переезд на сезон, как у уступившего точку в постоянном составе; в перемешанных капах книга не трогается.
+        /* Переезд на сезон у обоих, как у уступившего точку в постоянном составе: иначе перезапуск финала с другой очередью
+           сажал середняка обратно к себе и обмен шёл заново по-другому (check-career-drop-book: 3 из 50 сменили точку). */
+        if(book && !CC_SEATS_REMIX){ if(best.owner) book.at[best.k]=ccSeatKeyOf(z2); if(best.xOwner) book.at[best.kx]=ccSeatKeyOf(z); }
         zoneGroups.set(z, zoneGroups.get(z).map(o=>o===w ? x : o));
         zoneGroups.set(z2, zoneGroups.get(z2).map(o=>o===x ? w : o));
         zoneOf.set(w, z2); zoneOf.set(x, z);
