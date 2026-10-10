@@ -8722,7 +8722,7 @@ chWeek:'Неделя',
 chEarnings:'Призовые', chWages:'Зарплата',
 chNext:'Далее',
 chWkCup:'Кубок', chWkReload:'Reload', chDayFree:'Свободный день',
-ccDayTag:'ДЕНЬ', ccDayMust:'Выбери, на что уходит день', ccDayDone:'Следующий день',
+ccDayTag:'ДЕНЬ', ccDayMust:'Выбери, на что уходит день', ccDayDone:'Следующий день', ccDayBusy:'Считаем день…',
 ccDayBroke:d=>'День '+d+' не прошагался — вот что сломалось',
 ccHubBroke:'Экран карьеры не нарисовался — вот что сломалось', ccHubBackCentre:'Назад на центр',
 ccHubCopy:'Скопировать ошибку', ccHubCopied:'Скопировано — пришли это мне',
@@ -10731,7 +10731,7 @@ chWeek:'Week',
 chEarnings:'Prize money', chWages:'Wages',
 chNext:'Next up',
 chWkCup:'Cup', chWkReload:'Reload', chDayFree:'Free day',
-ccDayTag:'DAY', ccDayMust:'Choose what the day goes on', ccDayDone:'Next day',
+ccDayTag:'DAY', ccDayMust:'Choose what the day goes on', ccDayDone:'Next day', ccDayBusy:'Working out the day…',
 ccDayBroke:d=>'The day '+d+' did not move — here is what broke',
 ccHubBroke:'The career screen did not draw — here is what broke', ccHubBackCentre:'Back to the centre',
 ccHubCopy:'Copy the error', ccHubCopied:'Copied — send it over',
@@ -13762,7 +13762,7 @@ ccEvalNoWin:'Aucune victoire, aucun gain',
 ccNewsEvalNoWin:'Évaluation : Manche 2 sans victoire',
 ccDayTag:'JOUR',
 ccDayMust:'Choisis à quoi passe la journée',
-ccDayDone:'Jour suivant', ccDayBroke:d=>'Le jour '+d+' n’a pas avancé — voici ce qui a cassé',
+ccDayDone:'Jour suivant', ccDayBusy:'Calcul du jour…', ccDayBroke:d=>'Le jour '+d+' n’a pas avancé — voici ce qui a cassé',
 ccDayOverAny:'La journée est déjà passée. L’énergie reste jusqu’à demain — appuie sur Jour suivant',
 ccRestFull:'l’énergie est déjà pleine',
 ccNoGain:'cette séance ne fait plus rien bouger',
@@ -16086,7 +16086,7 @@ ccEvalNoWin:"Nessuna vittoria, nessun soldo",
 ccNewsEvalNoWin:"Evaluation: Round 2 senza vittorie",
 ccDayTag:"GIORNO",
 ccDayMust:"Scegli su cosa spendere la giornata",
-ccDayDone:"Giorno successivo", ccDayBroke:d=>"Il giorno "+d+" non è avanzato — ecco cosa si è rotto",
+ccDayDone:"Giorno successivo", ccDayBusy:"Calcolo del giorno…", ccDayBroke:d=>"Il giorno "+d+" non è avanzato — ecco cosa si è rotto",
 ccDayOverAny:"La giornata è già spesa. L'energia resta per domani — premi Giorno successivo",
 ccRestFull:"l'energia è già piena",
 ccNoGain:"questa sessione non muove più nulla",
@@ -18618,7 +18618,7 @@ ccEvalNoWin:"Sem vitórias, sem dinheiro",
 ccNewsEvalNoWin:"Evaluation: Rodada 2 sem vitória",
 ccDayTag:"DIA",
 ccDayMust:"Escolha no que gastar o dia",
-ccDayDone:"Próximo dia", ccDayBroke:d=>"O dia "+d+" não avançou — foi isto que quebrou",
+ccDayDone:"Próximo dia", ccDayBusy:"Calculando o dia…", ccDayBroke:d=>"O dia "+d+" não avançou — foi isto que quebrou",
 ccDayOverAny:"O dia já foi gasto. A energia fica para amanhã — aperte Próximo dia",
 ccRestFull:"a energia já está cheia",
 ccNoGain:"esta sessão não muda mais nada",
@@ -139854,7 +139854,7 @@ function careerDayPanelHTML(locked){
          отдаёт кнопку сразу. */
       (!spent && !closed
               ? '<div class="cc-day-hint">'+L().ccDayMust+'</div>'
-              : '<button class="ch-play" onclick="careerNextDay()">'+L().ccDayDone+(typeof ccMpNextTag==='function' ? ccMpNextTag() : '')+'</button>')+
+              : '<button class="ch-play" onclick="careerNextDayTap(this)">'+L().ccDayDone+(typeof ccMpNextTag==='function' ? ccMpNextTag() : '')+'</button>')+
       // И «до турнира» — в любой день, решённый или нет: см. careerSkipToBtnHTML.
       (typeof careerSkipToBtnHTML==='function' ? careerSkipToBtnHTML() : '')+
       /* Упавший день говорит, что именно сломалось.
@@ -140954,6 +140954,26 @@ function careerNextDay(){
     console.error('careerNextDay сломался на '+was+':', e);
   }
   careerRenderHub('centre');
+}
+/* Нажатие «Следующий день». Тестер 10.10: «нажимаю следующий день и у меня
+   просто сайт зависает» (телефон, 2023-й, все шесть по 99). Некоторые дни
+   тяжёлые: 13.10.2023 мир доигрывает весь отборочный год под поле Global
+   Championship (ccGcSimYear) — 1,8 с на десктопе, на телефоне во много раз
+   дольше, а экран всё это время стоял как был, без ответа на нажатие. Каждое
+   следующее нажатие вставало в очередь и считало ещё один день. Теперь кнопка
+   сразу гаснет с подписью, расчёт идёт следующим тиком (чтобы подпись успела
+   нарисоваться), повторные нажатия до конца шага не принимаются.
+   careerNextDay остаётся синхронным — его зовут харнессы и перемотка. */
+let CC_DAY_BUSY=false;
+function careerNextDayTap(btn){
+  if(CC_DAY_BUSY) return;
+  if(ccMpOn()) return careerNextDay();             // голос мгновенный, держать нечего
+  CC_DAY_BUSY=true;
+  if(btn){ btn.disabled=true; btn.classList.add('ch-busy'); btn.textContent=L().ccDayBusy; }
+  setTimeout(function(){
+    try{ careerNextDay(); }
+    finally{ CC_DAY_BUSY=false; }
+  }, 40);
 }
 // Последняя упавшая попытка шагнуть день: {day, text}. Живёт до следующего
 // удачного шага и нарочно не сохраняется — это состояние экрана, а не карьеры.
