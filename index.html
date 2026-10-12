@@ -113161,7 +113161,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='b0b34534';
+const CC_BUILD='ff5d0e7f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -136723,9 +136723,14 @@ function careerSeatDmOpen(){
    и кому писать, — а расходиться эти два ответа не должны. */
 function ccLanLocked(){
   const s=new Set();
-  const src=(typeof GC_SUMMIT_DUOS!=='undefined' && GC_SUMMIT_DUOS) || [];
-  src.forEach(d=>{ const arr=(d && d.duo) || d || [];
-    if(arr.forEach) arr.forEach(n=>s.add(hKey({handle:n}))); });
+  /* Места Саммита — сыгранного в этой карьере (summitSeed.gc или симуляция ccLanSummitSim), а не настоящий
+     список GC_SUMMIT_DUOS (его слово 12.10: «все турниры от симуляции»). Саммит ещё не сыгран — мест нет. */
+  const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || null;
+  const sum=(typeof ccSummitCarry==='function') ? ccSummitCarry() : null;
+  const sim=(cr && cr.lanSim && cr.lanSim.season===cr.season && cr.lanSim['summit|all']) || null;
+  const rows=(sum && Array.isArray(sum.gc) && sum.gc.length) ? sum.gc
+           : sim ? sim.slice(0, ccTeams(SUMMIT_GC_SLOTS)).map(p=>{ const q=String(p); return ccLanSimUnpack(q.slice(q.indexOf('#')+1), null); }) : [];
+  rows.forEach(r=>{ if(Array.isArray(r)) r.forEach(x=>{ const h=(x && x.h) || x; if(h) s.add(hKey({handle:h})); }); });
   return s;
 }
 /* Соль карьеры: то, чем один сейв отличается от другого при одинаковых входных
@@ -140801,8 +140806,14 @@ function careerWorldFinals(fromISO, toISO){
     }
     else if(mj && mj.stage==='final'){
       const st=ccScaleStage(ccMajorStageSpec('final', mj.n));
+      // Финал Мейджора 2 без игрока раздаёт места на Глобалы своему региону так же, как с ним (cr.gcSeed, runCareerMajor).
+      const gcDone=mj.n!==2 ? null : ranked=>{
+        const slots=ccTeams(MAJOR2_GC_SLOTS[ccCareerRegion()]||0);
+        if(slots && !(cr.gcSeed && cr.gcSeed.season===cr.season))
+          cr.gcSeed={season:cr.season, size:careerSquadSize(), reg:ccCareerRegion(), m2:ranked.slice(0, slots).map(ccMajorSeatRow)};
+      };
       play(d, 'major'+mj.n, 'major', mj.label||'Major', ()=>ccMajorFinalRoom(stubOf(), lobbyCr, drafted, mj, st, CC_FIELD_SHARP.final),
-           st.games, st.pts||majorPoints, st.kill, ccMajorIsShowdown(mj.n) ? showdownPrize : majorPrize, {div:1, kind:'major', stage:'final'});
+           st.games, st.pts||majorPoints, st.kill, ccMajorIsShowdown(mj.n) ? showdownPrize : majorPrize, {div:1, kind:'major', stage:'final'}, gcDone);
     }
     // Финал круга Reload — из тех, кто вышел из хитов (ccRelWorldHeats).
     const rl=careerReloadOn(d);
@@ -145392,8 +145403,23 @@ function ccRcRealTeams(seated){
   const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || {};
   const key=[cr.season||0, careerSquadSize(), Array.from(seated||[]).sort().join('+')].join('|');
   if(CC_RC_REAL_KEY===key) return CC_RC_REAL;
-  const rows=RC_TEAMS_2026.map(t=>({duo:t.d, reg:t.r}));
-  const built=ccLanSeats(rows, rows.length, null, new Set(seated||[]));
+  /* Его слово 12.10: «все турниры от симуляции». Из сорока настоящих пар берутся только КВОТЫ регионов
+     (EU 12, NAC 8, по четыре остальным) — сами пары садит симулированный отбор Reload каждого региона
+     (ccLanSimSeats 'rc'), в порядке силы, как посев. Настоящий список — запас вне карьеры. */
+  const quota={};
+  RC_TEAMS_2026.forEach(t=>{ quota[t.r]=(quota[t.r]||0)+1; });
+  const room=new Set(seated||[]);
+  let built=[];
+  const mine=(typeof CAREER!=='undefined' && CAREER && CAREER.career) ? [careerCard()].concat(careerMates()).filter(Boolean) : [];
+  Object.keys(quota).forEach(reg=>{
+    const got=ccLanSimSeats(reg, ccTeams(quota[reg]), mine, room, 'rc');
+    if(got) built=built.concat(got);
+  });
+  built.sort((x,y)=>(y.pow||0)-(x.pow||0));
+  if(built.length<RC_TEAMS_2026.length/2){
+    const rows=RC_TEAMS_2026.map(t=>({duo:t.d, reg:t.r}));
+    built=ccLanSeats(rows, rows.length, null, new Set(seated||[]));
+  }
   CC_RC_REAL=(built.length>=RC_TEAMS_2026.length/2) ? built : null;
   CC_RC_REAL_KEY=key;
   return CC_RC_REAL;
@@ -149678,6 +149704,88 @@ function ccLanAwaySeats(reg, n, drafted, seated, tag){
   }
   return out;
 }
+/* ВСЕ ТУРНИРЫ — ОТ СИМУЛЯЦИИ, А НЕ ОТ НАСТОЯЩИХ ДАННЫХ (его слово 12.10).
+
+   Чужие регионы садились на ЛАНы 2026-го настоящими досками (gcRegionFinals m1/m2, GC_MAJOR2_DUOS,
+   GC_SUMMIT_DUOS, сорок пар Парижа RC_TEAMS_2026): кто прошёл в жизни, тот и ехал, как бы ни сложился
+   год карьеры. Теперь у каждого региона свой квал, сыгранный симуляцией: комната региона — его сцена
+   (careerCupField под ccAsRegion: пары карьеры, разводы, трансферы), десять игр движком, порядок финиша.
+   ev — какой это квал: 'm1' (Мейджор 1 → Саммит), 'm2' (Мейджор 2 → Глобалы и добор), 'lcq' (Ласт
+   Ченс), 'rc' (отбор в Париж). Итог пишется в сейв на сезон (cr.lanSim): Саммит идёт три дня, Глобалы
+   два — зал не должен пересобираться между днями, а в гонке у всех один и тот же (ccWorldRun). */
+const CC_LAN_SIM_KEEP=30, CC_LAN_SIM_GAMES=10;
+/* В сейве строка — «ник~рейтинг» на человека (полная запись ccStageSeatRow весила 166 КБ за сезон). */
+function ccLanSimPack(row){ return row.map(x=>String(x.h)+'~'+(x.o||0)).join('|'); }
+function ccLanSimUnpack(str, reg){
+  return String(str||'').split('|').filter(Boolean).map(p=>{ const i=p.lastIndexOf('~');
+    return {h:i>0 ? p.slice(0, i) : p, o:i>0 ? (+p.slice(i+1)||0) : 0, r:reg}; });
+}
+function ccLanSimRanked(reg, ev, drafted){
+  const cr=CAREER && CAREER.career; if(!cr) return null;
+  const size=careerSquadSize();
+  const box=cr.lanSim=(cr.lanSim && cr.lanSim.season===cr.season && cr.lanSim.size===size) ? cr.lanSim : {season:cr.season, size:size};
+  const key=ev+'|'+reg;
+  if(Array.isArray(box[key])) return box[key].map(p=>ccLanSimUnpack(p, reg));
+  const lanCr=Object.assign({}, cr, {division:1});
+  const n=ccTeams(50);
+  const salt='lansim|'+cr.season+'|'+key;
+  let rows=[];
+  ccWorldRun(salt, ()=>{
+    const build=()=>careerCupField(lanCr, drafted||[], n, salt, false, CC_FIELD_SHARP.lan);
+    const room=((reg===ccCareerRegion()) ? build() : ccAsRegion(reg, build)).filter(t=>t && !t.isYou && !t._stub);
+    if(room.length<2) return;
+    room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
+    ccWithEventSize(size, ()=>simulateGames(room, CC_LAN_SIM_GAMES, majorPoints, CC_M24_KILL));
+    rows=room.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0))
+      .slice(0, CC_LAN_SIM_KEEP).map(t=>ccStageSeatRow(t).map(x=>Object.assign(x, {r:reg})));
+  });
+  box[key]=rows.map(ccLanSimPack);
+  return rows;
+}
+// Верх симулированного квала региона, мимо тех, кто уже сидит в зале. null — правило не действует (не карьера).
+function ccLanSimSeats(reg, n, drafted, seated, ev){
+  if(!(n>0)) return [];
+  let rows=null;
+  try{ rows=ccLanSimRanked(reg, ev, drafted); }catch(e){ console.error('ccLanSimRanked', reg, ev, e); rows=null; }
+  if(!rows || !rows.length) return null;
+  const per=careerSquadSize(), out=[];
+  for(const row of rows){
+    if(out.length>=n) break;
+    const keys=row.map(x=>_gcNorm(x.h));
+    if(keys.some(k=>seated.has(k))) continue;
+    const t=ccAsRegion(reg, ()=>ccStageTeamFrom(row));
+    if(!t) continue;
+    keys.forEach(k=>seated.add(k));
+    t.summitRegion=reg; t.lanRegion=reg;
+    t.pow+=(CC_LAN_REGION_EDGE[reg]||0)*(per/2);   // та же поправка региона, что у ccLanTeam
+    out.push(t);
+  }
+  return out;
+}
+// Саммит, сыгранный симуляцией: финальный зал careerSummitField без игрока, восемь игр, порядок финиша.
+function ccLanSummitSim(drafted){
+  const cr=CAREER && CAREER.career; if(!cr) return null;
+  const size=careerSquadSize();
+  const box=cr.lanSim=(cr.lanSim && cr.lanSim.season===cr.season && cr.lanSim.size===size) ? cr.lanSim : {season:cr.season, size:size};
+  // Строка Саммита — «регион#ник~рейтинг|…»: зал мировой, регион у каждой строки свой.
+  if(Array.isArray(box['summit|all'])) return box['summit|all'].map(p=>{
+    const s=String(p), i=s.indexOf('#'); return ccLanSimUnpack(s.slice(i+1), s.slice(0, i)||ccCareerRegion()); });
+  let rows=[];
+  try{
+    ccWorldRun('lansim|'+cr.season+'|summit', ()=>{
+      const stub={name:'—', pow:0, squad:[], _stub:true, isYou:true, stagePts:0};
+      const room=(careerSummitField('final', stub, drafted||[])||[]).filter(t=>t && !t._stub && !t.isYou);
+      if(room.length<2) return;
+      room.forEach(t=>{ t.stagePts=0; t.wins=0; t.stageElims=0; });
+      ccWithEventSize(size, ()=>simulateGames(room, 8, majorPoints, CC_M24_KILL));
+      rows=room.slice().sort((a,b)=>(b.stagePts||0)-(a.stagePts||0) || (b.wins||0)-(a.wins||0) || (b.stageElims||0)-(a.stageElims||0))
+        .slice(0, CC_LAN_SIM_KEEP).map(t=>ccStageSeatRow(t).map(x=>Object.assign(x, {r:x.r||t.summitRegion||t.lanRegion||ccCareerRegion()})));
+    });
+  }catch(e){ console.error('ccLanSummitSim', e); return null; }
+  if(!rows.length) return null;
+  box['summit|all']=rows.map(r=>((r[0] && r[0].r) || ccCareerRegion())+'#'+ccLanSimPack(r));
+  return rows;
+}
 // A written-down list of duos, read the same way a leaderboard is.
 function ccLanRows(list){ return (list||[]).map(d=>({duo:d})); }
 // Nobody plays a LAN they are not in. A room built from allocations can leave
@@ -149872,7 +149980,8 @@ function careerSummitField(stage, you, drafted){
     if(reg===mine) return;
     const n=ccTeams(SUMMIT_SLOTS[reg]||0), m=ccTeams(SUMMIT_SCQ_SLOTS[reg]||0);
     // Трио-год: своей сценой региона (ccLanAwaySeats); иначе — доска Мейджора 1.
-    const teams=ccLanAwaySeats(reg, n+m, drafted, seated, 'summit') || ccLanSeats(gcRegionFinals('m1', reg), n+m, reg, seated);
+    // Симулированный Мейджор 1 региона (ccLanSimSeats); доски — только запас вне карьеры.
+    const teams=ccLanSimSeats(reg, n+m, drafted, seated, 'm1') || ccLanAwaySeats(reg, n+m, drafted, seated, 'summit') || ccLanSeats(gcRegionFinals('m1', reg), n+m, reg, seated);
     main.push(...teams.slice(0, n));
     scq.push(...teams.slice(n));
   });
@@ -150661,6 +150770,12 @@ function ccGcSimYear(year){
       } else if(spec.n){
         pick=ownOf(cr.gfKeep && cr.gfKeep[year+'|'+spec.n]).filter(free).slice(0, need);
       }
+      // Квал региона — симуляцией по его сцене карьеры (его слово 12.10), не настоящими командами года.
+      if(pick.length<need && spec.size===careerSquadSize()){
+        let sim=null;
+        try{ sim=ccLanSimRanked(reg, 'gc|'+name, [careerCard()].concat(careerMates()).filter(Boolean)); }catch(e){ sim=null; }
+        (sim||[]).forEach(r=>{ const row=r.map(x=>x.h); if(pick.length<need && free(row)) pick.push(row); });
+      }
       if(pick.length<need){
         const pool=ccGcRegionTeams(spec, reg).filter(t=>free(t.row) && !pick.some(p=>p.join('+')===t.row.join('+')));
         const rnd=careerRng(ccHashStr('gcsim|'+cr.season+'|'+name+'|'+reg));
@@ -150735,7 +150850,23 @@ function careerGlobalsField(you, drafted, via){
       });
     add(teams.slice(0, ccTeams(SUMMIT_GC_SLOTS)), 'summit');
   }
-  add(ccLanSeats(ccLanRowsReg(GC_SUMMIT_DUOS),
+  /* Саммита в записи нет (карьера пришла после мая, или старый сейв) — места даёт Саммит, сыгранный
+     симуляцией тем же залом, что у живого (careerSummitField), а не настоящий список GC_SUMMIT_DUOS
+     (его слово 12.10: «все турниры от симуляции»). Список — запас вне карьеры. */
+  const sumLeft=ccTeams(SUMMIT_GC_SLOTS)-field.length;
+  const sumSim=sumLeft>0 ? ccLanSummitSim(drafted) : null;
+  if(sumSim){
+    const got=[];
+    for(const row of sumSim){
+      if(got.length>=sumLeft) break;
+      const keys=row.map(x=>_gcNorm(x.h));
+      if(keys.some(k=>seated.has(k))) continue;
+      const t=ccStageTeamFrom(row); if(!t) continue;
+      keys.forEach(k=>seated.add(k)); got.push(t);
+    }
+    add(got, 'summit');
+  }
+  else add(ccLanSeats(ccLanRowsReg(GC_SUMMIT_DUOS),
                  ccTeams(SUMMIT_GC_SLOTS)-field.length, null, seated), 'summit');
   /* Свой регион садится ТЕМ финалом Мейджора 2, который сыграли.
 
@@ -150778,9 +150909,12 @@ function careerGlobalsField(you, drafted, via){
        их досок). Здесь оно теперь стоит и у Глобалов. Запись, когда она есть,
        по-прежнему главнее списка: сыгранный Мейджор 2 — это факт. */
     if(reg===ccCareerRegion()){
-      add(ccGcOwnSeats(slots, drafted, seated, 'gcM2'), 'm2');
+      add(ccLanSimSeats(reg, slots, drafted, seated, 'm2') || ccGcOwnSeats(slots, drafted, seated, 'gcM2'), 'm2');
       return;
     }
+    // Симулированный Мейджор 2 региона (его слово 12.10: «все турниры от симуляции»). См. ccLanSimSeats.
+    const sim=ccLanSimSeats(reg, slots, drafted, seated, 'm2');
+    if(sim){ add(sim, 'm2'); return; }
     // Трио-год: своей сценой региона, а не списком 2026-го. См. ccLanAwaySeats.
     const away=ccLanAwaySeats(reg, slots, drafted, seated, 'gcM2');
     if(away){ add(away, 'm2'); return; }
@@ -150796,8 +150930,10 @@ function careerGlobalsField(you, drafted, via){
   // и свой регион опять же своей сценой, а не доской 2026 года.
   Object.keys(GCLC_GC_SLOTS).forEach(reg=>{
     const n=ccTeams(GCLC_GC_SLOTS[reg]||0);
-    add(reg===ccCareerRegion() ? ccGcOwnSeats(n, drafted, seated, 'gcLcq')
-                               : (ccLanAwaySeats(reg, n, drafted, seated, 'gcLcq') || ccLanSeats(gcRegionFinals('m2', reg), n, reg, seated)), 'lcq');
+    // Ласт Ченс — свой симулированный квал у каждого региона, своего тоже.
+    add(ccLanSimSeats(reg, n, drafted, seated, 'lcq') ||
+        (reg===ccCareerRegion() ? ccGcOwnSeats(n, drafted, seated, 'gcLcq')
+                                : (ccLanAwaySeats(reg, n, drafted, seated, 'gcLcq') || ccLanSeats(gcRegionFinals('m2', reg), n, reg, seated))), 'lcq');
   });
   // Your seat, taken off the route you won it on rather than added to the room.
   const route = via==='summit' ? 'summit' : via==='gclc' ? 'lcq' : 'm2';
@@ -150836,7 +150972,7 @@ function careerGlobalsField(you, drafted, via){
         regions.forEach(reg=>{
           if(field.length>=want) return;
           // Трио-год: добор из сцены региона (и своего тоже); дуо-год — с досок, как было.
-          const got=ccLanAwaySeats(reg, 1, drafted, seated, 'gcFill') || ccLanSeats(gcRegionFinals(set, reg), 1, reg, seated);
+          const got=ccLanSimSeats(reg, 1, drafted, seated, set) || ccLanAwaySeats(reg, 1, drafted, seated, 'gcFill') || ccLanSeats(gcRegionFinals(set, reg), 1, reg, seated);
           if(got.length){ add(got, 'lcq'); gave=true; }
         });
       }

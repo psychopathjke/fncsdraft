@@ -182,7 +182,10 @@ const BOOT = `
        Проверяется поэтому связь, а не число: сколько игрок забрал, на столько
        меньше мест у Саммита и на столько больше у ласт ченса. Всего всё равно
        пятьдесят, и Мейджор 2 своих двадцати пяти не отдаёт. */
-    const brokeBy = (() => {
+    /* С 12.10 («все турниры от симуляции») Саммит без записи играется симуляцией (ccLanSummitSim) без игрока и его
+       напарника — разбивать игроку нечего, пятнадцать мест у Саммита целиком. Настоящий список — только запас. */
+    const simSummit = !!(CAREER.career.lanSim && CAREER.career.lanSim['summit|all']);
+    const brokeBy = simSummit ? 0 : (() => {
       const keys = new Set(mine.map(p => _gcNorm(String((p && p.handle) || ''))));
       return GC_SUMMIT_DUOS.filter(d => d.some(hd => {
         const k = _gcNorm(hd);
