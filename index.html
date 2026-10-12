@@ -2326,6 +2326,9 @@
   .cc-chips{display:flex;gap:6px;}
   .cc-chips-5{gap:4px;}
   .cc-chips-reg{flex-wrap:wrap;gap:4px;}
+  /* Сезоны в Истории — с переносом: в одну строку после девятнадцатого остальные обрезались (Notion 12.10, ПК). */
+  .cc-chips-seasons{flex-wrap:wrap;gap:4px;}
+  .cc-chips-seasons .cc-back{flex:0 0 auto;}
   .cc-chips-reg .cc-chip{flex:0 1 auto;min-width:56px;padding:7px 10px;font-size:11px;}
   /* A region that is not built yet still has to be visible, or the map reads as
      the whole world rather than as one region of it. Struck through so it cannot
@@ -8975,7 +8978,7 @@ ccVicNoInvite:'Турнир по приглашениям — тебя не по
 chSkip:'Пропустить день',
 chSkipAsk:'Пропустить день? Календарь назад не отматывается.',
 chSkipTo:'До турнира', chSkipToHint:(d,n)=>'Пропустить '+n+' '+ruPlural(n,'день','дня','дней')+' до '+d+' — турниры по дороге не играются',
-chSkipEv:'Не играть', chSkipEvAsk:w=>'Не играть «'+w+'»? Турнир пройдёт без тебя, день закончится — назад календарь не листается.', chSkipToAsk:(d,n,w)=>'Пропустить '+n+' '+ruPlural(n,'день','дня','дней')+' до '+d+' ('+w+')? Турниры по дороге не сыграются, календарь назад не отматывается.',
+ccFmtSeatLeft:(w,n)=>'Это состав на '+w+' — пара года остаётся как есть. Свободных мест: '+n+'.', chSkipEv:'Не играть', chSkipEvAsk:w=>'Не играть «'+w+'»? Турнир пройдёт без тебя, день закончится — назад календарь не листается.', chSkipToAsk:(d,n,w)=>'Пропустить '+n+' '+ruPlural(n,'день','дня','дней')+' до '+d+' ('+w+')? Турниры по дороге не сыграются, календарь назад не отматывается.',
 calSkipGo:'Пропустить до этого дня', calSkipHint:'Дни пройдут, турниры по дороге не сыграются',
 ccLadderEvent:'Игрок лестницы (сгенерирован, не участник FNCS)',
 ccCupLive:'Кубок дивизиона',
@@ -10982,7 +10985,7 @@ ccVicNoInvite:'Invite-only event — you were not invited: your Power Ranking is
 chSkip:'Skip the day',
 chSkipAsk:'Skip the day? The calendar does not go back.',
 chSkipTo:'To the tournament', chSkipToHint:(d,n)=>'Skip '+n+' day'+(n===1?'':'s')+' to '+d+' — tournaments on the way are not played',
-chSkipEv:'Sit this one out', chSkipEvAsk:w=>'Sit out '+w+'? It will be played without you and the day ends — the calendar does not go back.', chSkipToAsk:(d,n,w)=>'Skip '+n+' day'+(n===1?'':'s')+' to '+d+' ('+w+')? Tournaments on the way will not be played, and the calendar does not go back.',
+ccFmtSeatLeft:(w,n)=>'This is your '+w+' roster — your season partner stays. Seats left: '+n+'.', chSkipEv:'Sit this one out', chSkipEvAsk:w=>'Sit out '+w+'? It will be played without you and the day ends — the calendar does not go back.', chSkipToAsk:(d,n,w)=>'Skip '+n+' day'+(n===1?'':'s')+' to '+d+' ('+w+')? Tournaments on the way will not be played, and the calendar does not go back.',
 calSkipGo:'Skip to this day', calSkipHint:'The days pass; tournaments on the way are not played',
 ccLadderEvent:'Ladder player (generated, not an FNCS competitor)',
 ccCupLive:'Division cup',
@@ -14325,7 +14328,7 @@ ccVicNoInvite:'Tournoi sur invitation — tu n’as pas été invité : Power Ra
 chSkip:'Passer la journée',
 chSkipAsk:'Passer la journée ? Le calendrier ne revient pas en arrière.',
 chSkipTo:'Jusqu’au tournoi', chSkipToHint:(d,n)=>'Passer '+n+' jour'+(n>1?'s':'')+' jusqu’au '+d+' — les tournois en chemin ne sont pas joués',
-chSkipEv:'Ne pas jouer', chSkipEvAsk:w=>'Ne pas jouer '+w+' ? Le tournoi se jouera sans toi et la journée se termine — le calendrier ne revient pas en arrière.', chSkipToAsk:(d,n,w)=>'Passer '+n+' jour'+(n>1?'s':'')+' jusqu’au '+d+' ('+w+') ? Les tournois en chemin ne seront pas joués, le calendrier ne revient pas en arrière.',
+ccFmtSeatLeft:(w,n)=>'C’est ton effectif '+w+' — ton duo de la saison ne change pas. Places libres : '+n+'.', chSkipEv:'Ne pas jouer', chSkipEvAsk:w=>'Ne pas jouer '+w+' ? Le tournoi se jouera sans toi et la journée se termine — le calendrier ne revient pas en arrière.', chSkipToAsk:(d,n,w)=>'Passer '+n+' jour'+(n>1?'s':'')+' jusqu’au '+d+' ('+w+') ? Les tournois en chemin ne seront pas joués, le calendrier ne revient pas en arrière.',
 calSkipGo:'Passer jusqu’à ce jour', calSkipHint:'Les jours passent, les tournois en chemin ne sont pas joués',
 calGoHere:'Jouer jusqu’à ce jour',
 calFfGo:'Jouer',
@@ -15976,7 +15979,7 @@ ccVicNoInvite:'Torneo su invito — non sei stato invitato: Power Ranking troppo
 chSkip:"Salta il giorno",
 chSkipAsk:"Saltare il giorno? Il calendario non torna indietro.",
 chSkipTo:"Fino al torneo", chSkipToHint:(d,n)=>'Salta '+n+' giorn'+(n===1?'o':'i')+' fino al '+d+' — i tornei lungo la strada non si giocano',
-chSkipEv:'Non giocare', chSkipEvAsk:w=>'Non giocare '+w+'? Il torneo si giocherà senza di te e la giornata finisce — il calendario non torna indietro.', chSkipToAsk:(d,n,w)=>'Saltare '+n+' giorn'+(n===1?'o':'i')+' fino al '+d+' ('+w+')? I tornei lungo la strada non verranno giocati, il calendario non torna indietro.',
+ccFmtSeatLeft:(w,n)=>'È la tua formazione '+w+' — il compagno della stagione resta. Posti liberi: '+n+'.', chSkipEv:'Non giocare', chSkipEvAsk:w=>'Non giocare '+w+'? Il torneo si giocherà senza di te e la giornata finisce — il calendario non torna indietro.', chSkipToAsk:(d,n,w)=>'Saltare '+n+' giorn'+(n===1?'o':'i')+' fino al '+d+' ('+w+')? I tornei lungo la strada non verranno giocati, il calendario non torna indietro.',
 calSkipGo:"Salta fino a questo giorno", calSkipHint:"I giorni passano, i tornei lungo la strada non si giocano",
 evEvent:"Evento",
 evEvents:"Eventi",
@@ -18508,7 +18511,7 @@ ccVicNoInvite:'Torneio por convite — você não foi convidado: Power Ranking b
 chSkip:"Pular o dia",
 chSkipAsk:"Pular o dia? O calendário não volta atrás.",
 chSkipTo:"Até o torneio", chSkipToHint:(d,n)=>'Pular '+n+' dia'+(n===1?'':'s')+' até '+d+' — os torneios no caminho não são jogados',
-chSkipEv:'Não jogar', chSkipEvAsk:w=>'Não jogar '+w+'? O torneio será jogado sem você e o dia acaba — o calendário não volta atrás.', chSkipToAsk:(d,n,w)=>'Pular '+n+' dia'+(n===1?'':'s')+' até '+d+' ('+w+')? Os torneios no caminho não serão jogados, o calendário não volta atrás.',
+ccFmtSeatLeft:(w,n)=>'É a sua formação de '+w+' — a dupla da temporada continua. Vagas: '+n+'.', chSkipEv:'Não jogar', chSkipEvAsk:w=>'Não jogar '+w+'? O torneio será jogado sem você e o dia acaba — o calendário não volta atrás.', chSkipToAsk:(d,n,w)=>'Pular '+n+' dia'+(n===1?'':'s')+' até '+d+' ('+w+')? Os torneios no caminho não serão jogados, o calendário não volta atrás.',
 calSkipGo:"Pular até este dia", calSkipHint:"Os dias passam, os torneios no caminho não são jogados",
 evEvent:"Evento",
 evEvents:"Eventos",
@@ -113161,7 +113164,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ff5d0e7f';
+const CC_BUILD='1681c35d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -127554,6 +127557,9 @@ function ccSlotAsk(go){
 function careerDmAcceptAsk(id){
   // В команде третьего берут вдвоём — предложение уходит напарнику.
   if(ccMpOn()){ ccMpThirdAsk(id); return; }
+  // Состав другого формата пару года не трогает — терять нечего, вопроса про слот нет.
+  const ft=careerDms().find(x=>x.id===id);
+  if(ft && ft.fmt && ft.fmt>1 && ft.fmt!==careerSquadSize()){ careerDmAccept(id); return; }
   // Кресло пустое — терять нечего: место сгорает от ЗАМЕНЫ, а не от посадки. Это и
   // свободное третье кресло: пара, берущая третьего в трио-этап года, не разрывается.
   if(!careerPartnerCard() || careerMates().filter(Boolean).length<careerMateSeats()){ careerDmAccept(id); return; }
@@ -136972,6 +136978,7 @@ function careerSeatDm(tag){
    вдвоём, нужен третий» (согласился — садятся оба, t.fmtPair). Садятся в состав формата (t.fmt,
    CAREER.rosters), состав года не трогается. В игре вдвоём — нет: состав формата общий, решает пара. */
 const CC_FMT_DMS=2;
+function ccFmtWord(f){ return String(({2:L().lfRosterDuo, 3:L().lfRosterTrio, 4:L().lfRosterSquad})[f]||'').toLowerCase(); }
 function careerFmtSeatDms(fromISO, toISO){
   if(!CAREER || !CAREER.career || !CAREER.player) return;
   if(typeof ccMpOn==='function' && ccMpOn()) return;
@@ -138687,7 +138694,17 @@ function careerSocialHTML(){
             </div>`; })()
       : open.msgs.some(m=>m.from==='them') &&
         (open.state==='offer' || careerDmWouldAccept(open.who))
-        ? (()=>{ const held=(careerPartnerCard() && careerMates().filter(Boolean).length>=careerMateSeats()) ? careerSlotHeld() : null;
+        ? (()=>{
+            /* Письмо в состав ДРУГОГО формата (сквад-кап в дуо-год, t.fmt): садится в CAREER.rosters[fmt], пара года не
+               трогается — значит ни «слот уйдёт команде ниже», ни «Взять в дуо» (Notion 12.10: «когда сквад кеш кап, а
+               сезон дуо… пишет, что можно только позвать в дуо»). Кнопка — «Взять в состав», сколько мест осталось. */
+            if(open.fmt && open.fmt>1 && open.fmt!==careerSquadSize()){
+              // Как считает careerDmAccept: состава формата ещё нет — он начинается с напарников года.
+              const have=(((CAREER.rosters||{})[open.fmt]) || (CAREER.partners||[]).slice(0, open.fmt-1)).filter(Boolean).length;
+              return `<div class="dm-foot"><div class="dm-asked">${esc(L().ccFmtSeatLeft(ccFmtWord(open.fmt), Math.max(0, open.fmt-1-have)))}</div>
+                <button class="ch-sign" onclick="careerDmAccept(\'${open.id}\')">${L().dmTakeItt}</button></div>`;
+            }
+            const held=(careerPartnerCard() && careerMates().filter(Boolean).length>=careerMateSeats()) ? careerSlotHeld() : null;
             // The button still works. What it costs is written over it, because
             // this is the one press in the mode that gives a qualification away.
             // And the other button: closing a thread only deleted it, and the
@@ -164262,7 +164279,7 @@ function careerArchiveHTML(){
   return `<div class="ch-tile"><h4>${L().arcTitle}</h4>
     <div class="ch-hint">${L().arcHint}. ${L().arcTapHint}</div>
     ${partial ? `<div class="ch-hint">${L().arcLive}</div>` : ''}
-    <div class="cc-chips">${chipsS}</div>
+    <div class="cc-chips cc-chips-seasons">${chipsS}</div>
     <!-- The label is what the row is, not what the hub tab is called: chSquad is
          the word "Duo" on the tab strip, and a trios season read "Duo · a trios
          season". His report, 20 August. -->
