@@ -5488,6 +5488,8 @@
   #screen-career-hub .ch-play.ch-skipto{background:#3b6fd6;color:#fff;margin-top:6px;margin-left:6px;}
   #screen-career-hub .ch-play.ch-skipto:not(:disabled):hover{background:#5a8af0;color:#fff;}
   #screen-career-hub .ch-play.ch-skipto:disabled{background:rgba(255,255,255,.16);color:#8fa1cc;}
+  #screen-career-hub .ch-play.ch-skipev{background:rgba(255,255,255,.12);color:#cfd8ea;margin-top:6px;margin-left:6px;}
+  #screen-career-hub .ch-play.ch-skipev:hover{background:rgba(255,255,255,.22);color:#fff;}
 
   /* ---- The calendar, in the lobby's colours ---------------------------------
      A month of white squares on a white plate is a spreadsheet. The lobby is
@@ -8973,7 +8975,7 @@ ccVicNoInvite:'Турнир по приглашениям — тебя не по
 chSkip:'Пропустить день',
 chSkipAsk:'Пропустить день? Календарь назад не отматывается.',
 chSkipTo:'До турнира', chSkipToHint:(d,n)=>'Пропустить '+n+' '+ruPlural(n,'день','дня','дней')+' до '+d+' — турниры по дороге не играются',
-chSkipToAsk:(d,n,w)=>'Пропустить '+n+' '+ruPlural(n,'день','дня','дней')+' до '+d+' ('+w+')? Турниры по дороге не сыграются, календарь назад не отматывается.',
+chSkipEv:'Не играть', chSkipEvAsk:w=>'Не играть «'+w+'»? Турнир пройдёт без тебя, день закончится — назад календарь не листается.', chSkipToAsk:(d,n,w)=>'Пропустить '+n+' '+ruPlural(n,'день','дня','дней')+' до '+d+' ('+w+')? Турниры по дороге не сыграются, календарь назад не отматывается.',
 calSkipGo:'Пропустить до этого дня', calSkipHint:'Дни пройдут, турниры по дороге не сыграются',
 ccLadderEvent:'Игрок лестницы (сгенерирован, не участник FNCS)',
 ccCupLive:'Кубок дивизиона',
@@ -10980,7 +10982,7 @@ ccVicNoInvite:'Invite-only event — you were not invited: your Power Ranking is
 chSkip:'Skip the day',
 chSkipAsk:'Skip the day? The calendar does not go back.',
 chSkipTo:'To the tournament', chSkipToHint:(d,n)=>'Skip '+n+' day'+(n===1?'':'s')+' to '+d+' — tournaments on the way are not played',
-chSkipToAsk:(d,n,w)=>'Skip '+n+' day'+(n===1?'':'s')+' to '+d+' ('+w+')? Tournaments on the way will not be played, and the calendar does not go back.',
+chSkipEv:'Sit this one out', chSkipEvAsk:w=>'Sit out '+w+'? It will be played without you and the day ends — the calendar does not go back.', chSkipToAsk:(d,n,w)=>'Skip '+n+' day'+(n===1?'':'s')+' to '+d+' ('+w+')? Tournaments on the way will not be played, and the calendar does not go back.',
 calSkipGo:'Skip to this day', calSkipHint:'The days pass; tournaments on the way are not played',
 ccLadderEvent:'Ladder player (generated, not an FNCS competitor)',
 ccCupLive:'Division cup',
@@ -14323,7 +14325,7 @@ ccVicNoInvite:'Tournoi sur invitation — tu n’as pas été invité : Power Ra
 chSkip:'Passer la journée',
 chSkipAsk:'Passer la journée ? Le calendrier ne revient pas en arrière.',
 chSkipTo:'Jusqu’au tournoi', chSkipToHint:(d,n)=>'Passer '+n+' jour'+(n>1?'s':'')+' jusqu’au '+d+' — les tournois en chemin ne sont pas joués',
-chSkipToAsk:(d,n,w)=>'Passer '+n+' jour'+(n>1?'s':'')+' jusqu’au '+d+' ('+w+') ? Les tournois en chemin ne seront pas joués, le calendrier ne revient pas en arrière.',
+chSkipEv:'Ne pas jouer', chSkipEvAsk:w=>'Ne pas jouer '+w+' ? Le tournoi se jouera sans toi et la journée se termine — le calendrier ne revient pas en arrière.', chSkipToAsk:(d,n,w)=>'Passer '+n+' jour'+(n>1?'s':'')+' jusqu’au '+d+' ('+w+') ? Les tournois en chemin ne seront pas joués, le calendrier ne revient pas en arrière.',
 calSkipGo:'Passer jusqu’à ce jour', calSkipHint:'Les jours passent, les tournois en chemin ne sont pas joués',
 calGoHere:'Jouer jusqu’à ce jour',
 calFfGo:'Jouer',
@@ -15974,7 +15976,7 @@ ccVicNoInvite:'Torneo su invito — non sei stato invitato: Power Ranking troppo
 chSkip:"Salta il giorno",
 chSkipAsk:"Saltare il giorno? Il calendario non torna indietro.",
 chSkipTo:"Fino al torneo", chSkipToHint:(d,n)=>'Salta '+n+' giorn'+(n===1?'o':'i')+' fino al '+d+' — i tornei lungo la strada non si giocano',
-chSkipToAsk:(d,n,w)=>'Saltare '+n+' giorn'+(n===1?'o':'i')+' fino al '+d+' ('+w+')? I tornei lungo la strada non verranno giocati, il calendario non torna indietro.',
+chSkipEv:'Non giocare', chSkipEvAsk:w=>'Non giocare '+w+'? Il torneo si giocherà senza di te e la giornata finisce — il calendario non torna indietro.', chSkipToAsk:(d,n,w)=>'Saltare '+n+' giorn'+(n===1?'o':'i')+' fino al '+d+' ('+w+')? I tornei lungo la strada non verranno giocati, il calendario non torna indietro.',
 calSkipGo:"Salta fino a questo giorno", calSkipHint:"I giorni passano, i tornei lungo la strada non si giocano",
 evEvent:"Evento",
 evEvents:"Eventi",
@@ -18506,7 +18508,7 @@ ccVicNoInvite:'Torneio por convite — você não foi convidado: Power Ranking b
 chSkip:"Pular o dia",
 chSkipAsk:"Pular o dia? O calendário não volta atrás.",
 chSkipTo:"Até o torneio", chSkipToHint:(d,n)=>'Pular '+n+' dia'+(n===1?'':'s')+' até '+d+' — os torneios no caminho não são jogados',
-chSkipToAsk:(d,n,w)=>'Pular '+n+' dia'+(n===1?'':'s')+' até '+d+' ('+w+')? Os torneios no caminho não serão jogados, o calendário não volta atrás.',
+chSkipEv:'Não jogar', chSkipEvAsk:w=>'Não jogar '+w+'? O torneio será jogado sem você e o dia acaba — o calendário não volta atrás.', chSkipToAsk:(d,n,w)=>'Pular '+n+' dia'+(n===1?'':'s')+' até '+d+' ('+w+')? Os torneios no caminho não serão jogados, o calendário não volta atrás.',
 calSkipGo:"Pular até este dia", calSkipHint:"Os dias passam, os torneios no caminho não são jogados",
 evEvent:"Evento",
 evEvents:"Eventos",
@@ -113159,7 +113161,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='1a6a7b12';
+const CC_BUILD='b0b34534';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -117785,7 +117787,11 @@ function careerCentreHTML(card, a){
              `<div class="ch-hint ch-live-hint">${esc(why||L().ccStreamCupHint(CC_STREAM_CUP.energy, CC_STREAM_POW))}</div>`; })() : '')+
         /* Стиль игры у «Играть» снят (его скрин в Notion 8.10: «убрать стиль игры перед капом, он же есть в самом капе»):
            внутри вечера он спрашивается перед каждой игрой на любом турнире (ccStyleAskGame), второй переключатель дублировал. */
-        ''
+        /* «Не играть» — в день турнира (Notion 12.10: «добавите возможность не участвовать в этом турнире? Играть во
+           всех — это так утомительно»). Раньше играемый вечер давал только «Играть»: пропустить его было нечем. В
+           команде и в гонке день двигают вместе — там кнопки нет. */
+        (onToday && !ccMpOn() && !(typeof ccRaceLock==='function' && ccRaceLock())
+          ? `<button class="ch-play ch-skipev" onclick="careerSkipEventAsk()">${L().chSkipEv}</button>` : '')
       : `<button class="ch-play" onclick="careerSkipAsk()" title="${esc(
             ccRaceModeWhy() ? ccRaceModeWhy()
           /* Арена, ранг, травма, бан (ccLifeWhy) закрывают вечер в careerCanPlayKindOn, а сюда
@@ -131225,11 +131231,11 @@ const CC_SHOP_ORDER=[
   'PyraxMGMT','Goalkikermng','KaizenMNG','murlotron',
   // Coaches — ПО РЕЙТИНГУ КОУЧА (его слова 8.10: «по фоловерам твитера» → «или по результатам» → «вот и сделай зп и
   // рейтинг их»): сначала подтверждённые результаты, ниже — по подписчикам. Рейтинг — ccCoachRatingOf, цена от него.
-  'RazZzero0oFN','Thomas5x_','BloodxEU','SvenSE_','Gripeyy','PeanutBrainTS','tallami1','Coach_F0x','Flaireeeee','BoopNL_','stormyrite','diaspaulin_','Rabidfn','At0m_GG','kha0rz','EgeXJerG','ZykomaTV','xpl0t','ValentaynL','spidryx','CoachEsteh','CoachNassimm'
+  'RazZzero0oFN','Thomas5x_','BloodxEU','SvenSE_','Gripeyy','PeanutBrainTS','tallami1','Coach_F0x','Flaireeeee','BoopNL_','stormyrite','diaspaulin_','Rabidfn','At0m_GG','kha0rz','EgeXJerG','ZykomaTV','xpl0t','ValentaynL','spidryx','CoachEsteh','CoachNassimm','coachAchille'
 ];
 /* Подписчики коучей в X, сняты 8.10.2026 через api.fxtwitter.com по их же адресам (at) — каждый сверен по имени и
    описанию; у Boop, Stormyrite, Gripey, Spidryx, Zykoma тёзки отброшены. */
-const CC_COACH_X={DestinysJesus:112065, RazZzero0oFN:418315, BoopNL_:127598, stormyrite:98460, BloodxEU:82759, SvenSE_:26955, Gripeyy:22316, diaspaulin_:18474, tallami1:17589, Rabidfn:13220, At0m_GG:12350, Coach_F0x:9342, kha0rz:9246, PeanutBrainTS:6675, Thomas5x_:6498, EgeXJerG:4403, ZykomaTV:4329, xpl0t:3852, ValentaynL:3072, spidryx:2609, CoachEsteh:2343, Flaireeeee:742, CoachNassimm:478};
+const CC_COACH_X={DestinysJesus:112065, RazZzero0oFN:418315, BoopNL_:127598, stormyrite:98460, BloodxEU:82759, SvenSE_:26955, Gripeyy:22316, diaspaulin_:18474, tallami1:17589, Rabidfn:13220, At0m_GG:12350, Coach_F0x:9342, kha0rz:9246, PeanutBrainTS:6675, Thomas5x_:6498, EgeXJerG:4403, ZykomaTV:4329, xpl0t:3852, ValentaynL:3072, spidryx:2609, CoachEsteh:2343, Flaireeeee:742, CoachNassimm:478, coachAchille:56};
 const CC_SHOP_RANK=(function(){
   const m={};
   CC_SHOP_ORDER.forEach((h,i)=>{ m[String(h).toLowerCase()]=i; });
@@ -138959,11 +138965,17 @@ function careerSocialHTML(){
     </aside>
   </div>`;
 }
+/* Друг — из любого региона (Notion 12.10: «не получается добавлять друзей из другого региона»). Поиск дуо
+   показывает людей всех семи регионов, а запрос и 1на1 искали человека только в ростере своего — по чужому
+   клику ничего не происходило. Теперь свой ростер, а не нашёлся — карточка по нику (ccWhoCard). */
+function ccFriendCard(handle){
+  return careerRosterNowEU().find(x=>x.handle===handle) || ccWhoCard(handle) || null;
+}
 function careerFriendAsk(handle){
   const cr=CAREER.career;
   cr.friends=cr.friends||[];
   if(cr.friends.indexOf(handle)>=0) return;
-  const who=careerRosterNowEU().find(x=>x.handle===handle);
+  const who=ccFriendCard(handle);
   if(!who) return;
   // Дружба проще места в составе: та же арифметика согласия, но с запасом.
   CAREER.dmBoost=10;
@@ -138983,7 +138995,7 @@ function careerFriendAsk(handle){
 function careerFriend1v1(handle){
   const cr=CAREER.career, pl=CAREER.player;
   if(careerDayClosed() || careerEnergy()<20) return;
-  const who=careerRosterNowEU().find(x=>x.handle===handle);
+  const who=ccFriendCard(handle);
   if(!who) return;
   careerSpend(20);
   const mine=pl.ovrExact!=null?pl.ovrExact:pl.ovr;
@@ -141239,7 +141251,11 @@ const CC_COACHES=[
   {id:'nassim', name:'Coach Nassim', at:'CoachNassimm', reg:'EU', cost:3000, train:0.30, keys:ATTR_KEYS.slice(), photo:'CoachNassimm.jpg'},
   /* DestinysJesus — категория Coaches на Liquipedia, курс «Solos Masterclass FNCS Edition» про файты (его слово 8.10).
      Учеников и титулов в описании нет — рейтинг по подписчикам (ccCoachRatingOf). Учит стрельбе и клатчам. */
-  {id:'destiny', name:'DestinysJesus', at:'DestinysJesus', reg:'NA', cost:3000, train:0.30, keys:['aim','clu'], photo:'DestinysJesus.jpg'}
+  {id:'destiny', name:'DestinysJesus', at:'DestinysJesus', reg:'NA', cost:3000, train:0.30, keys:['aim','clu'], photo:'DestinysJesus.jpg'},
+  /* x.com/coachAchille — сам попросился (Notion 12.10). В описании: «coach 🇮🇹 | Coach for Encar | I work/ed with
+     raffabozz_, robymasterato, kijarssf» — Италия, Европа. Чему учит, не сказано — все шесть и без химии, как Flaire
+     и Nassim; рейтинг по подписчикам (56 на 12.10.2026). Аватарка 400×400 оттуда же. */
+  {id:'achille', name:'Achille', at:'coachAchille', reg:'EU', cost:2500, train:0.28, keys:ATTR_KEYS.slice(), photo:'coachAchille.jpg'}
 ];
 /* The coaches run down their list too.
 
@@ -143916,6 +143932,12 @@ function careerSkipWeek(){
 function careerSkipAsk(){
   ccAsk(L().chSkipAsk, ()=>careerSkipWeek());
 }
+// Не играть сегодняшний турнир: тот же шаг на сутки, что «Пропустить день». См. кнопку ch-skipev в хабе.
+function careerSkipEventAsk(){
+  if(ccMpOn()) return;
+  const ev=((careerEvents().get(careerToday())||[]).find(e=>careerCanPlayKindOn(careerToday(), e.kind, true)))||null;
+  ccAsk(L().chSkipEvAsk(ev && ev.label ? ev.label : L().chPlay), ()=>careerSkipWeek());
+}
 /* ПРОПУСТИТЬ ДО ТУРНИРА — одной кнопкой. Игрок: «Добавь пожалуйста
    возможность скипнуть дни без просмотра капов одной кнопкой, а то очень лень
    ждать 102 дня».
@@ -145361,13 +145383,19 @@ const RC_TEAMS_2026=[
    Кого нет в карточках — того пропускаем молча: список настоящий, а набор
    карточек своего года, и пара из чужого года просто не находится. Если
    осталось меньше половины, поле строится по-старому броском. */
-let CC_RC_REAL=null;
+/* Кэш — по сезону, размеру состава и своему составу (Notion 12.10, Kaizen: «trios and duos in the same
+   tournament… still happens sometimes but for reload»). Был один на страницу: зал, собранный в одном сезоне
+   (дуо), садился и в трио-сезон, а свой напарник прошлого сезона мог сидеть в зале чужой парой. */
+let CC_RC_REAL=null, CC_RC_REAL_KEY='';
 function ccRcRealTeams(seated){
   if(ccNowYear()!==2026) return null;
-  if(CC_RC_REAL) return CC_RC_REAL;
+  const cr=(typeof CAREER!=='undefined' && CAREER && CAREER.career) || {};
+  const key=[cr.season||0, careerSquadSize(), Array.from(seated||[]).sort().join('+')].join('|');
+  if(CC_RC_REAL_KEY===key) return CC_RC_REAL;
   const rows=RC_TEAMS_2026.map(t=>({duo:t.d, reg:t.r}));
-  const built=ccLanSeats(rows, rows.length, null, seated||new Set());
+  const built=ccLanSeats(rows, rows.length, null, new Set(seated||[]));
   CC_RC_REAL=(built.length>=RC_TEAMS_2026.length/2) ? built : null;
+  CC_RC_REAL_KEY=key;
   return CC_RC_REAL;
 }
 function ccRcField(cr, worldCr, drafted, stage, teams){
@@ -149512,7 +149540,34 @@ function ccLanTrioThird(cards, reg, room, avg){
   if(c && memo && c.handle && !memo[key]) memo[key]=hKey(c);
   return c;
 }
+/* ПАРА НА ЛАНЕ — ТА, ЧТО НА СЦЕНЕ КАРЬЕРЫ, А НЕ ИЗ НАСТОЯЩЕГО СПИСКА.
+
+   Notion 12.10: «в дуо свизи квалится с ванякеком на глобалы, а играет их всё равно с пикси… чтобы они
+   реально сплитались». Места ЛАНа без записи сыгранного этапа садятся настоящими списками (GC_SUMMIT_DUOS,
+   доски m1/m2, Форт-Уэрт): SwizzY & Pixie, хотя сцена карьеры (careerPools) свела SwizzY с Vanyak3kk.
+   Теперь строка списка сверяется со сценой: если у первого есть пара на сцене и это не второй — едет он со
+   своей парой; иначе так же по второму. Никого на сцене нет — строка как была. */
+function ccLanSceneDuo(duo){
+  if(!Array.isArray(duo) || duo.length!==2 || typeof CAREER==='undefined' || !CAREER || !CAREER.career) return duo;
+  let duos=[];
+  try{ duos=(careerPools()||{}).duos||[]; }catch(e){ return duo; }
+  const mateOf=h=>{
+    const k=hKey(h);
+    for(let i=0;i<duos.length;i++){
+      const cs=(duos[i].cards||[]).filter(Boolean);
+      if(cs.length===2 && cs.some(c=>hKey(c)===k)) return cs.find(c=>hKey(c)!==k) || null;
+    }
+    return null;
+  };
+  const a=mateOf(duo[0]);
+  if(a && hKey(a)===hKey(duo[1])) return duo;
+  if(a && a.handle) return [duo[0], a.handle];
+  const b=mateOf(duo[1]);
+  if(b && b.handle && hKey(b)!==hKey(duo[0])) return [b.handle, duo[1]];
+  return duo;
+}
 function ccLanTeam(duo, region, fallbackOvr, seated){
+  duo=ccLanSceneDuo(duo);
   // Карьера играет свой год — и на ЛАНе тоже. См. gcCardIndex.
   const cards=duo.map(h=>gcFindCard(h, region, fallbackOvr, ccNowYear()));
   if(seated){
