@@ -9860,7 +9860,7 @@ ccFfCap:'Сыграть за меня', ccFfWeek:'Неделю', ccFfMonth:'Ме
 ccFfHint:'Сыграет турниры за тебя и потратит свободные дни на лучшую тренировку. Предложения от клубов и дуо останутся ждать в почте',
 ccFfRunning:'Перемотка', ccFfDays:(d,t)=>d+' из '+ruDays(t),
 ccFfTime:s=>s<60 ? s+' с' : Math.round(s/60)+' мин', ccFfEta:t=>'Займёт ≈ '+t+'. Вкладку можно свернуть — в фоне перемотка не тормозит.', ccFfLeft:t=>'осталось ≈ '+t,
-lbTab:'Игроки сайта', lbAll:'Все', lbYou:(n,t)=>'Ты — '+n+'-й из '+t, lbNote:'Карьеры игроков сайта по призовым. Строку присылает сама игра, раз в 10 минут, — проверить её сервер не может.', lbHide:'Не показывать меня', lbShow:'Показывать меня', lbHidden:'Твоей карьеры в таблице нет.', lbLoad:'Загрузка…', lbErr:'Таблица не отвечает — попробуй позже.', lbEmpty:'Пока никого.', lbCols:['#','Игрок','Регион','Призовые','Рейтинг','Див.','Титулы','Лучшее'], lbSeasons:n=>n+' сез.',
+lbTab:'Игроки сайта', lbAll:'Все', lbYou:(n,t)=>'Ты — '+n+'-й из '+t, lbNote:'Карьеры игроков сайта по призовым. Строку присылает сама игра, раз в 10 минут, — проверить её сервер не может.', lbHide:'Не показывать меня', lbShow:'Показывать меня', lbHidden:'Твоя карьера скрыта из таблицы: нажата «Не показывать меня». Чтобы вернуться, нажми «Показывать меня».', lbLoad:'Загрузка…', lbErr:'Таблица не отвечает — попробуй позже.', lbEmpty:'Пока никого.', lbCols:['#','Игрок','Регион','Призовые','Рейтинг','Див.','Титулы','Лучшее'], lbSeasons:n=>n+' сез.',
 ccCoWin:['так держать','это было чисто','заслужил','лучший вечер недели','вот это класс','поздравляю!'],
 ccCoPod:['красиво','хорошо зашли','ещё чуть-чуть','достойно','неплохо вышло'],
 ccCoMid:['бывает','нормально отыграл','в следующий раз','терпимо','ну ок'],
@@ -11865,7 +11865,7 @@ ccFfCap:'Play it for me', ccFfWeek:'A week', ccFfMonth:'A month', ccFfConfirm:d=
 ccFfHint:'Plays the tournaments for you and spends the free days on the best training. Offers from clubs and duos stay in the inbox',
 ccFfRunning:'Fast-forward', ccFfDays:(d,t)=>d+' of '+t+' days',
 ccFfTime:s=>s<60 ? s+' s' : Math.round(s/60)+' min', ccFfEta:t=>'Takes about '+t+'. You can switch tabs — it does not slow down in the background.', ccFfLeft:t=>'about '+t+' left',
-lbTab:'Site players', lbAll:'All', lbYou:(n,t)=>'You are #'+n+' of '+t, lbNote:'Careers of players on this site, by prize money. The game sends its own row every 10 minutes — the server cannot verify it.', lbHide:'Hide me', lbShow:'Show me', lbHidden:'Your career is not on the board.', lbLoad:'Loading…', lbErr:'The board is not answering — try again later.', lbEmpty:'Nobody yet.', lbCols:['#','Player','Region','Prize money','Rating','Div','Titles','Best'], lbSeasons:n=>n+' seas.',
+lbTab:'Site players', lbAll:'All', lbYou:(n,t)=>'You are #'+n+' of '+t, lbNote:'Careers of players on this site, by prize money. The game sends its own row every 10 minutes — the server cannot verify it.', lbHide:'Hide me', lbShow:'Show me', lbHidden:'Your career is hidden from the board: “Hide me” is on. Press “Show me” to come back.', lbLoad:'Loading…', lbErr:'The board is not answering — try again later.', lbEmpty:'Nobody yet.', lbCols:['#','Player','Region','Prize money','Rating','Div','Titles','Best'], lbSeasons:n=>n+' seas.',
 ccCoWin:['well played','that was clean','deserved','best run of the week','class','congrats!'],
 ccCoPod:['nice one','good run','so close','solid','that was decent'],
 ccCoMid:['happens','fine run','next time','not bad','ok then'],
@@ -13087,7 +13087,7 @@ ccResPlayed:n=>n+' tournoi'+(n===1?'':'s'),
 ccResMore:n=>'et '+n+' de plus',
 ccFfDays:(d,t)=>d+' jours sur '+t,
 ccFfTime:s=>s<60 ? s+' s' : Math.round(s/60)+' min', ccFfEta:t=>'Environ '+t+'. Tu peux changer d’onglet — en arrière-plan ça ne ralentit pas.', ccFfLeft:t=>'encore ≈ '+t,
-lbTab:'Joueurs du site', lbAll:'Tous', lbYou:(n,t)=>'Tu es '+n+'e sur '+t, lbNote:'Carrières des joueurs du site, par gains. Le jeu envoie sa ligne toutes les 10 minutes — le serveur ne peut pas la vérifier.', lbHide:'Me cacher', lbShow:'Me montrer', lbHidden:'Ta carrière n’est pas dans le classement.', lbLoad:'Chargement…', lbErr:'Le classement ne répond pas — réessaie plus tard.', lbEmpty:'Personne pour l’instant.', lbCols:['#','Joueur','Région','Gains','Note','Div','Titres','Meilleur'], lbSeasons:n=>n+' sais.',
+lbTab:'Joueurs du site', lbAll:'Tous', lbYou:(n,t)=>'Tu es '+n+'e sur '+t, lbNote:'Carrières des joueurs du site, par gains. Le jeu envoie sa ligne toutes les 10 minutes — le serveur ne peut pas la vérifier.', lbHide:'Me cacher', lbShow:'Me montrer', lbHidden:'Ta carrière est masquée du classement. Appuie sur le bouton pour la remettre.', lbLoad:'Chargement…', lbErr:'Le classement ne répond pas — réessaie plus tard.', lbEmpty:'Personne pour l’instant.', lbCols:['#','Joueur','Région','Gains','Note','Div','Titres','Meilleur'], lbSeasons:n=>n+' sais.',
 ccCoWin:['bien joué','c’était propre','mérité','le meilleur run de la semaine','la classe','félicitations !'],
 ccCoPod:['joli','bon run','tout près','solide','pas mal du tout'],
 ccCoMid:['ça arrive','run correct','la prochaine fois','pas mal','ok'],
@@ -15686,7 +15686,7 @@ calFfAsk:(d,n,e)=>'Giocare fino al '+d+'? Sono '+n+(n===1?' giorno':' giorni')+(
 ccFfConfirm:d=>'Vivere '+d+' giorni con una pressione? I tornei vengono giocati, le giornate spese, e le offerte possono scadere.',
 ccFfDays:(d,t)=>d+' di '+t+' giorni',
 ccFfTime:s=>s<60 ? s+' s' : Math.round(s/60)+' min', ccFfEta:t=>'Circa '+t+'. Puoi cambiare scheda — in background non rallenta.', ccFfLeft:t=>'mancano ≈ '+t,
-lbTab:'Giocatori del sito', lbAll:'Tutti', lbYou:(n,t)=>'Sei '+n+'° su '+t, lbNote:'Carriere dei giocatori del sito, per montepremi. Il gioco invia la sua riga ogni 10 minuti — il server non può verificarla.', lbHide:'Nascondimi', lbShow:'Mostrami', lbHidden:'La tua carriera non è in classifica.', lbLoad:'Caricamento…', lbErr:'La classifica non risponde — riprova più tardi.', lbEmpty:'Ancora nessuno.', lbCols:['#','Giocatore','Regione','Montepremi','Valutazione','Div','Titoli','Migliore'], lbSeasons:n=>n+' stag.',
+lbTab:'Giocatori del sito', lbAll:'Tutti', lbYou:(n,t)=>'Sei '+n+'° su '+t, lbNote:'Carriere dei giocatori del sito, per montepremi. Il gioco invia la sua riga ogni 10 minuti — il server non può verificarla.', lbHide:'Nascondimi', lbShow:'Mostrami', lbHidden:'La tua carriera è nascosta dalla classifica. Premi il pulsante per rimetterla.', lbLoad:'Caricamento…', lbErr:'La classifica non risponde — riprova più tardi.', lbEmpty:'Ancora nessuno.', lbCols:['#','Giocatore','Regione','Montepremi','Valutazione','Div','Titoli','Migliore'], lbSeasons:n=>n+' stag.',
 ccCoMore:n=>'altri '+n,
 ccFfDone:d=>d+' giorni saltati',
 ccFfPlayed:n=>'Tornei giocati: '+n,
@@ -18218,7 +18218,7 @@ calFfAsk:(d,n,e)=>'Jogar at\u00e9 '+d+'? S\u00e3o '+n+(n===1?' dia':' dias')+(e?
 ccFfConfirm:d=>'Viver '+d+' dias num aperto s\u00f3? Os torneios s\u00e3o jogados, os dias s\u00e3o gastos, e propostas podem expirar.',
 ccFfDays:(d,t)=>d+' de '+t+' dias',
 ccFfTime:s=>s<60 ? s+' s' : Math.round(s/60)+' min', ccFfEta:t=>'Leva cerca de '+t+'. Pode trocar de aba — em segundo plano não fica mais lento.', ccFfLeft:t=>'faltam ≈ '+t,
-lbTab:'Jogadores do site', lbAll:'Todos', lbYou:(n,t)=>'Você é o '+n+'º de '+t, lbNote:'Carreiras dos jogadores do site, por premiação. O jogo envia sua linha a cada 10 minutos — o servidor não pode verificá-la.', lbHide:'Me esconder', lbShow:'Me mostrar', lbHidden:'Sua carreira não está na tabela.', lbLoad:'Carregando…', lbErr:'A tabela não responde — tente mais tarde.', lbEmpty:'Ninguém ainda.', lbCols:['#','Jogador','Região','Premiação','Rating','Div','Títulos','Melhor'], lbSeasons:n=>n+' temp.',
+lbTab:'Jogadores do site', lbAll:'Todos', lbYou:(n,t)=>'Você é o '+n+'º de '+t, lbNote:'Carreiras dos jogadores do site, por premiação. O jogo envia sua linha a cada 10 minutos — o servidor não pode verificá-la.', lbHide:'Me esconder', lbShow:'Me mostrar', lbHidden:'Sua carreira está oculta da tabela. Aperte o botão para voltar.', lbLoad:'Carregando…', lbErr:'A tabela não responde — tente mais tarde.', lbEmpty:'Ninguém ainda.', lbCols:['#','Jogador','Região','Premiação','Rating','Div','Títulos','Melhor'], lbSeasons:n=>n+' temp.',
 ccCoMore:n=>'mais '+n,
 ccFfDone:d=>d+' dias pulados',
 ccFfPlayed:n=>'Torneios jogados: '+n,
@@ -102078,6 +102078,15 @@ function ccSeatZone(xy){
 function ccSeatMapKey(t){
   return ACTIVE_LANDING_SET+'|'+ccDropKey(t);
 }
+/* КТО УХОДИТ С ОБЩЕЙ КОРОБКИ — НЕ ПО СИЛЕ (Notion 13.10, тестер: «все самые сильные контестятся, а к слабым никто не
+   летит»). Досадка в пустые коробки и разгон толпы выселяли слабейшего, и слабые по построению сидели одни. Замер
+   tools/probe-drop-real-tiers.js, доля команд на общей коробке по пятым частям силы (от сильных): настоящие дроп-карты
+   финалов EU 2021–2024 (16 карт, 724 команды) — 31/37/36/40/39, ровно; движок с книгой сезона — 63–66 у сильных,
+   11–28 у слабых. Теперь из одной коробки уходит гость раньше хозяина и ближний к пустой точке, а при равенстве —
+   жребий от команды и точки (повторяемый, одинаковый у соседей по гонке): число в (0, 1), меньше любого шага расстояния. */
+function ccDropTieOf(t, z){
+  return (ccHashStr(ccSeatMapKey(t)+'|'+ccSeatKeyOf(z))%997+1)/999;
+}
 let CC_DROP_SEATS=null, CC_DROP_SEATS_STAGE=null;
 /* Лобби этой игры пересобраны из большого поля (их больше одного) — память точек не
    работает: команды из разных прошлых лобби помнят одни и те же точки, и со второй игры
@@ -102475,7 +102484,7 @@ function buildBotLandingAssignment(bots, opts){
         g.filter(movable).forEach(t=>{
           const k=keyOfT(t), owner=k && book && book.at[k]===ccSeatKeyOf(z);
           const to=empty.reduce((a,b)=>d2(z,b)<d2(z,a) ? b : a);
-          const cost=(owner ? 1e6 : 0)+((t.pow||0)+(t.closeEdge||0))*100+d2(z,to);
+          const cost=(owner ? 1e6 : 0)+d2(z,to)+ccDropTieOf(t, z);   // не по силе: см. ccDropTieOf
           if(!best || cost<best.cost) best={t, from:z, to, cost};
         });
       });
@@ -102512,7 +102521,7 @@ function buildBotLandingAssignment(bots, opts){
         g.filter(movable).forEach(t=>{
           const k=keyOfT(t), owner=k && book && book.at[k]===ccSeatKeyOf(z);
           const to=room.reduce((a,b)=>((zoneGroups.get(b)||[]).length<(zoneGroups.get(a)||[]).length || ((zoneGroups.get(b)||[]).length===(zoneGroups.get(a)||[]).length && d2(z,b)<d2(z,a))) ? b : a);
-          const cost=(owner ? 1e6 : 0)+((t.pow||0)+(t.closeEdge||0))*100+d2(z,to);
+          const cost=(owner ? 1e6 : 0)+d2(z,to)+ccDropTieOf(t, z);
           if(!best || cost<best.cost) best={t, from:z, to, cost};
         });
       });
@@ -117295,6 +117304,8 @@ function ccBoardId(){
     let id='';
     try{ id=crypto.randomUUID(); }catch(e){ id=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2); }
     cr.board.id=String(id).toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 40);
+    // Сразу в сейв: иначе после перезагрузки до следующего сохранения карьера получала новый id и вторую строку.
+    try{ careerSave(); }catch(e){}
   }
   return cr.board.id;
 }
@@ -117362,9 +117373,15 @@ function careerWorldHTML(){
     return head+'<div class="ch-hint">'+esc(T.lbLoad)+'</div>';
   }
   if(d.err) return head+'<div class="ch-hint">'+esc(T.lbErr)+'</div>';
-  const rows=d.rows||[];
+  /* Одна и та же карьера двумя строками (Notion 13.10: «FLC sharko» дважды, все числа одни) — строка ушла
+     с новым id до сохранения сейва. Одинаковые строки показываются один раз. */
+  const seenRow=new Set(), rows=(d.rows||[]).filter(r=>{ if(r.you) return true;
+    const k=[r.nick, r.region, r.country, r.seasons, r.earn, r.titles].join('|');
+    if(seenRow.has(k)) return false; seenRow.add(k); return true; });
+  /* Скрытая карьера — заметно и с кнопкой рядом (Notion 13.10: «меня с таблицы убрали… не обновляется
+     таблица» — у него была нажата «Не показывать меня», а подпись об этом терялась серой строкой). */
   const me=d.you ? '<div class="lb-you">'+esc(T.lbYou(d.you.rank, d.total))+'</div>'
-                 : (off ? '<div class="ch-hint">'+esc(T.lbHidden)+'</div>' : '');
+                 : (off ? '<div class="lb-you">'+esc(T.lbHidden)+' <button class="ch-swap" onclick="ccBoardToggle()">'+esc(T.lbShow)+'</button></div>' : '');
   if(!rows.length) return head+me+'<div class="ch-hint">'+esc(T.lbEmpty)+'</div>';
   const c=T.lbCols;
   const flag=cc=>cc ? '<img class="ch-bio-flag" src="flags/w20/'+esc(ccCountryOf(cc))+'.png" alt="" onerror="this.remove()"> ' : '';
@@ -140153,16 +140170,20 @@ const CC_LEAD_ICO={s_dmgTo:'💥', s_elims:'🎯', s_assists:'💁',
   s_matsFarmed:'⛏️', s_distance:'🏃', s_timeStorm:'🌧️'};
 /* Флаг лидера — его собственный, с карточки: доску читают по людям, а
    человек в этой сцене узнаётся по флагу раньше, чем по нику. */
+// Человек строки — тот же, чьей долей считаются элимы и урон (ccStatSeat): главный по дракам в отряде.
+function ccStatWho(t){
+  const sq=((t && (t.squad||t._cards||t.cards)) || []).filter(Boolean);
+  const sp=sq.length>=2 ? ccStatSeat(t) : null;
+  return sp ? sq[sp.seat] : sq.slice().sort((a,b)=>((b.rating||b._ovr)||0)-((a.rating||a._ovr)||0))[0];
+}
 function ccStatNat(t){
-  const sq=(t && (t.squad||t._cards||t.cards)) || [];
-  const best=sq.slice().sort((a,b)=>((b&&(b.rating||b._ovr))||0)-((a&&(a.rating||a._ovr))||0))[0];
+  const best=ccStatWho(t);
   if(t && t.isYou){ const c=(typeof careerCard==='function') ? careerCard() : null; return (c && c.nat) || (best && best.nat) || null; }
   return (best && best.nat) || null;
 }
 function ccStatFace(t){
   if(t && t.isYou) return ccHandle(CAREER.player.nick);
-  const sq=(t && (t.squad||t._cards||t.cards)) || [];
-  const best=sq.slice().sort((a,b)=>((b&&(b.rating||b._ovr))||0)-((a&&(a.rating||a._ovr))||0))[0];
+  const best=ccStatWho(t);
   return ccHandle((best && best.handle) || ccOneOf(t && t.name) || '');
 }
 function ccMmSs(sec){
@@ -140177,17 +140198,39 @@ function ccMmSs(sec){
    НА ИГРОКА, а не на команду: объёмы делятся на размер состава, а время в
    живых, в шторме и расстояние — нет, их пара проживает вместе (то же правило,
    что в playerShares). Урон в минуту делится вместе с уроном. */
+/* ДОЛЯ ЧЕЛОВЕКА, А НЕ ПОЛОВИНА (Notion 13.10: «в самой катке реалистично киллы распределяются,
+   но в подсчётах общие киллы просто на 2 делятся»). Элимы и урон отряда делятся тем же правилом,
+   что и в катке (ccKillWeights + killShare): у себя — своё место в составе, у чужой команды — главный по дракам
+   (наибольший вес), его ник и флаг и стоят в строке доски (ccStatWho). Ассисты и маты — поровну, как было. */
+function ccStatSeat(t){
+  const sq=((t && (t.squad||t._cards||t.cards))||[]).filter(Boolean);
+  if(sq.length<2) return null;
+  let seat=-1;
+  if(t.isYou){ const sp=ccYouKillSplit(t); seat=sp ? sp.seat : -1; }
+  let w=null; try{ w=ccKillWeights(sq); }catch(e){ return null; }
+  if(seat<0) w.forEach((v,i)=>{ if(seat<0 || v>w[seat]) seat=i; });
+  return {seat:Math.max(0, seat), w};
+}
 function ccStatMetrics(){
   const num=v=>ccNum(Math.round(v));
   const mates=t=>Math.max(1, ((t.squad||t._cards||t.cards)||[]).length||1);
   const per=(f)=>(s,t)=>f(s)/mates(t);
+  const seats=new WeakMap();
+  const seatOf=t=>{ if(!seats.has(t)) seats.set(t, ccStatSeat(t)); return seats.get(t); };
+  const frac=t=>{ const sp=seatOf(t); if(!sp) return 1/mates(t);
+    const sum=sp.w.reduce((a,v)=>a+Math.max(0.01, v||0), 0);
+    return sum>0 ? Math.max(0.01, sp.w[sp.seat]||0)/sum : 1/mates(t); };
+  const own=(f)=>(s,t)=>f(s)*frac(t);
+  const ownElims=(s,t)=>{ const sp=seatOf(t), e=Math.round(s.elims||0);
+    if(!sp || typeof ZoneReplay==='undefined' || !ZoneReplay.killShare) return (s.elims||0)/mates(t);
+    const v=ZoneReplay.killShare(e, sp.w, sp.seat); return v==null ? 0 : v; };
   return [
-    {key:'s_dmgTo',      val:per(s=>s.dmgTo), fmt:num},
-    {key:'s_elims',      val:per(s=>s.elims), fmt:num},
+    {key:'s_dmgTo',      val:own(s=>s.dmgTo), fmt:num},
+    {key:'s_elims',      val:ownElims, fmt:num},
     {key:'s_assists',    val:per(s=>s.assists), fmt:num},
     {key:'s_dmgRatio',   val:s=>s.dmgFrom>0 ? s.dmgTo/s.dmgFrom : 0, fmt:v=>v.toFixed(2), deep:true},
-    {key:'s_dmgNet',     val:per(s=>s.dmgTo-s.dmgFrom), fmt:num},
-    {key:'s_dpm',        val:per(s=>s.timeAlive>0 ? s.dmgTo/(s.timeAlive/60) : 0), fmt:v=>v.toFixed(2), deep:true},
+    {key:'s_dmgNet',     val:(s,t)=>s.dmgTo*frac(t)-s.dmgFrom/mates(t), fmt:num},
+    {key:'s_dpm',        val:own(s=>s.timeAlive>0 ? s.dmgTo/(s.timeAlive/60) : 0), fmt:v=>v.toFixed(2), deep:true},
     {key:'s_matsFarmed', val:per(s=>s.wood+s.stone+s.metal), fmt:num},
     {key:'s_distance',   val:s=>s.dist, fmt:v=>(v/1000).toFixed(2)+' km'},
     {key:'s_timeStorm',  val:s=>s.inStorm, fmt:ccMmSs}
@@ -146554,6 +146597,14 @@ function majorPrize(place){
    денег — нет. Скриншот: слева «Твой состав: Malibuca» 58 вечеров $553k, справа
    «Malibuca» 50 вечеров $324k. */
 const ccBoardName=n=>String(n||'').replace(/<[^>]*>/g, '').replace(/^[^:&+]{1,40}:\s*/, '').trim();
+/* Люди за именем состава. Сборная Кубка наций зовётся «Польша (Darm, demus, Pixx, FRANEK)», и
+   доска делила имя только по «+»/«&» — сборная вставала строкой среди людей, а каждый новый
+   порядок четвёрки давал ещё одну («Польша» трижды; Notion 13.10). Скобки со списком — это люди. */
+function ccMoneyWho(name){
+  const m=/\(([^()]*,[^()]*)\)\s*$/.exec(name);
+  const list=m ? m[1].split(',') : name.split(/\s*[+&]\s*/);
+  return list.map(x=>x.trim()).filter(Boolean);
+}
 function careerMoney(){
   const cr=CAREER.career;
   if(!cr.money) cr.money={rows:{}};
@@ -146569,6 +146620,21 @@ function careerMoney(){
       b.usd=(b.usd||0)+(a.usd||0); b.events=(b.events||0)+(a.events||0); b.you=b.you||a.you;
       ['yr','fs'].forEach(function(w){ a[w]=a[w]||{}; b[w]=b[w]||{};
         Object.keys(a[w]).forEach(function(x){ b[w][x]=(b[w][x]||0)+a[w][x]; }); });
+    });
+  }
+  // Старые сейвы: строки сборных («США (Curve, Peterbot, Ritual, Clix)») расходятся по людям поровну.
+  if(!cr.money.nat){
+    cr.money.nat=1;
+    Object.keys(cr.money.rows).forEach(function(k){
+      const who=ccMoneyWho(k); if(who.length<2) return;
+      const a=cr.money.rows[k], n=who.length;
+      delete cr.money.rows[k];
+      who.forEach(function(h){
+        const b=cr.money.rows[h] || (cr.money.rows[h]={usd:0, events:0, yr:{}, fs:{}});
+        b.usd=(b.usd||0)+Math.round((a.usd||0)/n); b.events=(b.events||0)+(a.events||0); b.you=b.you||a.you;
+        ['yr','fs'].forEach(function(w){ b[w]=b[w]||{};
+          Object.keys(a[w]||{}).forEach(function(x){ b[w][x]=(b[w][x]||0)+Math.round(a[w][x]/n); }); });
+      });
     });
   }
   return cr.money;
@@ -146722,7 +146788,7 @@ function careerMoneyAdd(ranked, prize){
     const name=ccBoardName(t.name);
     if(!name) return;
     // The board is a board of people, so a duo's prize lands on two rows.
-    const who=name.split(/\s*[+&]\s*/).map(x=>x.trim()).filter(Boolean);
+    const who=ccMoneyWho(name);
     const parts=who.length || 1;
     const each=Math.round(usd/parts);
     (who.length ? who : [name]).forEach(function(h){
@@ -155326,7 +155392,8 @@ async function runCareerVictoryNight(){
         {lobbySize:duos.length, stageName:ev.lan+' · '+(g+1)+'/'+games,
          mapReplay:true, choices:true, stopOnYourDeath:true});
       duos.forEach(t=>t._of.forEach(p=>{
-        p.stagePts+=t.stagePts||0; p.stageElims+=Math.round((t.stageElims||0)/2);
+        // Элимы пары — по долям, как в катке (Notion 13.10: «общие киллы просто на 2 делятся»).
+        p.stagePts+=t.stagePts||0; p.stageElims+=Math.round(ccMemberKills(t, p.squad[0]));
         if(t.wins) p.wins=(p.wins||0)+t.wins;
         // Журнал игры — строкой этой игры у каждого из пары (карточка вечера читает stageLog).
         (t.stageLog||[]).forEach(e=>p.stageLog.push(Object.assign({}, e, {game:g+1})));
