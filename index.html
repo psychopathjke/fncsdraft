@@ -117328,16 +117328,30 @@ function ccBoardSoon(){
   clearTimeout(CC_BOARD_T);
   CC_BOARD_T=setTimeout(()=>{ try{ ccBoardSend(false); }catch(e){} }, 3000);
 }
+/* Notion 13.10, 0:41: «таблица не обновляется, с разных акков смотрю, уже как день». Было три дыры:
+   ключ строки записывался ДО ответа сервера — упал запрос или сервер ответил «рано» (skip:'gap'), и
+   строка считалась отправленной до следующих денег; отправка внутри 10 минут просто пропадала, без
+   повтора; а сама таблица читалась один раз за жизнь вкладки (CC_BOARD_DATA). Теперь ключ — только
+   после принятой строки, отложенная отправка дожидается окна, таблица перечитывается при открытии. */
+function ccBoardLater(ms){
+  clearTimeout(CC_BOARD_T);
+  CC_BOARD_T=setTimeout(()=>{ try{ ccBoardSend(false); }catch(e){} }, Math.max(3000, ms));
+}
 function ccBoardSend(force){
   if(!ccBoardOn()) return Promise.resolve(false);
   const cr=CAREER.career, row=ccBoardRow();
   const key=[row.nick, row.region, row.earn, row.div, row.titles, row.best, row.seasons].join('|');
   const b=cr.board;
   if(!force && b.key===key) return Promise.resolve(false);
-  if(!force && b.sent && Date.now()-b.sent < CC_BOARD_EVERY) return Promise.resolve(false);
-  b.sent=Date.now(); b.key=key;
+  if(!force && b.sent && Date.now()-b.sent < CC_BOARD_EVERY){ ccBoardLater(CC_BOARD_EVERY-(Date.now()-b.sent)); return Promise.resolve(false); }
+  b.sent=Date.now();
   return fetch(ccBoardBase(), {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(row)})
-    .then(r=>r.ok).catch(()=>false);
+    .then(r=>r.ok ? r.json().catch(()=>({ok:true})) : null)
+    .then(j=>{
+      if(j && j.ok && !j.skip){ b.key=key; return true; }
+      if(j && j.skip) ccBoardLater(61000);   // сервер берёт строку раз в минуту — повторить после неё
+      return false;
+    }).catch(()=>false);
 }
 function ccBoardToggle(){
   const cr=CAREER.career; cr.board=cr.board||{};
@@ -117366,11 +117380,18 @@ function careerWorldHTML(){
       '<button class="ch-subtab'+(CC_BOARD_REGION===k?' on':'')+'" onclick="ccBoardRegion('+(k?'\''+k+'\'':'null')+')">'+esc(t)+'</button>').join('')+
     '</div><button class="ch-swap" onclick="ccBoardToggle()">'+esc(off ? T.lbShow : T.lbHide)+'</button></div>'+
     '<div class="ch-hint">'+esc(T.lbNote)+'</div>';
-  const d=CC_BOARD_DATA;
-  if(!d){
+  /* Прочитанная таблица живёт минуту и только для своей карьеры: старше — перечитывается при открытии
+     (старая видна, пока идёт новая), другая карьера в слоте — читает свою. */
+  const bid=(cr.board && cr.board.id) || '';
+  let d=CC_BOARD_DATA;
+  if(d && d._for!==bid) d=CC_BOARD_DATA=null;
+  if(!d || (!d._busy && Date.now()-(d._at||0) > 60000)){
+    if(d) d._busy=true;
     // Сначала своя строка (чтобы таблица увидела сегодняшние деньги), потом чтение.
-    ccBoardSend(false).then(()=>ccBoardLoad()).then(x=>{ CC_BOARD_DATA=x||{err:true}; if(CH_TAB==='world') careerTab('world'); });
-    return head+'<div class="ch-hint">'+esc(T.lbLoad)+'</div>';
+    ccBoardSend(false).then(()=>ccBoardLoad()).then(x=>{
+      CC_BOARD_DATA=Object.assign(x||{err:true}, {_at:Date.now(), _for:bid});
+      if(CH_TAB==='world') careerTab('world'); });
+    if(!d) return head+'<div class="ch-hint">'+esc(T.lbLoad)+'</div>';
   }
   if(d.err) return head+'<div class="ch-hint">'+esc(T.lbErr)+'</div>';
   /* Одна и та же карьера двумя строками (Notion 13.10: «FLC sharko» дважды, все числа одни) — строка ушла
