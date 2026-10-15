@@ -3838,3 +3838,4 @@ Object.assign(I18N.de, {hmEarnSub:d=>'Alle Turniere 2026, nicht nur FNCS — lau
 Object.assign(I18N.de, {hmSceneSub2:'Kommende Turniere mit Preisgeld: FNCS laut Kalender, der Rest laut Liquipedia.', hmSceneOther:'Weitere Turniere mit Preisgeld'});
 Object.assign(I18N.de, {hmSceneSub2:'Kommende Epic-Turniere mit Preisgeld: FNCS und Cups.', hmSceneOther:'Epic-Cups'});
 Object.assign(I18N.de, {hmTop50:'Top 50'});
+Object.assign(I18N.de, {hmTimerNext:'Nächstes Epic-Turnier:', hmTimerLive:'Läuft jetzt', hmTimerWatch:'Ansehen', hmTimerToday:'heute', hmTimerTomorrow:'morgen', hmDayShort:'T'});

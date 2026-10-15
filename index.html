@@ -7202,6 +7202,19 @@
   .hs-list li i{font-style:normal;font-weight:800;color:#ffdd00;}
   .hs-list li.live i{color:#0b0f12;background:#ffdd00;border-radius:4px;padding:0 5px;}
   .hs-list li b{font-size:13px;font-weight:700;color:#e6edfb;}
+  /* Таймер до ближайшего турнира Epic. */
+  .home-timer{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:0 0 12px;padding:10px 16px;border-radius:var(--r,14px);
+    background:linear-gradient(90deg,#1a3480,#12245c);box-shadow:inset 0 0 0 1px rgba(255,221,0,.35);color:#e6edfb;font-size:13.5px;}
+  .home-timer[hidden]{display:none;}
+  .home-timer b{color:#fff;font-weight:800;}
+  .ht-lbl{color:#9fe1ff;font-weight:800;font-size:12px;}
+  .ht-when{color:#b9c7ea;font-size:12.5px;}
+  .ht-cd{margin-left:auto;font-family:var(--font-display);font-weight:700;font-size:24px;letter-spacing:.03em;color:#ffdd00;font-variant-numeric:tabular-nums;}
+  .ht-live{background:#ff3d6e;color:#fff;font-weight:900;font-size:11px;letter-spacing:.06em;text-transform:uppercase;border-radius:5px;padding:3px 7px;}
+  .ht-watch{background:#9146ff;color:#fff;font-weight:800;font-size:12.5px;border-radius:999px;padding:6px 12px;text-decoration:none;}
+  .ht-watch:focus-visible{outline:2px solid #ffdd00;outline-offset:2px;}
+  .ht-sep{flex-basis:100%;height:0;}
+  @media(max-width:600px){ .ht-cd{margin-left:0;flex-basis:100%;font-size:22px;} }
   /* Вкладки живого блока на главной (Результаты 2026 / Сцена сейчас / Игроки сайта). */
   .home-tabs{margin-top:16px;}
   #homeLive .hl-pane{display:none;}
@@ -7638,6 +7651,8 @@
          Id кнопок cstripDuo/cstripRace/cstripCode сохранены: на них смотрят
          check-mp-doors и setLang. Арт — ключевой арт Major 1, один. -->
     <!-- Карьера игрока и карьера менеджера — ОДНОЙ строкой, две половины (его скрин 7.10: красные рамки слева и справа). -->
+    <!-- Таймер до ближайшего турнира Epic — рисует homeTimerDraw (16.10). -->
+    <div class="home-timer" id="homeTimer" hidden></div>
     <div class="hero-pair">
     <section class="hero hero-career" aria-labelledby="heroTitle">
       <!-- Самые хайповые игроки всех лет позади текста, на менеджере — гербы клубов (его слово 8.10). -->
@@ -20317,7 +20332,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'cda92d2d', es:'d71b0db2'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'e7491d3b', es:'763be490'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20626,6 +20641,12 @@ Object.assign(I18N.en, {hmTop50:'top 50'});
 Object.assign(I18N.fr, {hmTop50:'top 50'});
 Object.assign(I18N.it, {hmTop50:'top 50'});
 Object.assign(I18N.pt, {hmTop50:'top 50'});
+/* Таймер до турнира Epic. */
+Object.assign(I18N.ru, {hmTimerNext:'Ближайший турнир Epic:', hmTimerLive:'Идёт сейчас', hmTimerWatch:'Смотреть', hmTimerToday:'сегодня', hmTimerTomorrow:'завтра', hmDayShort:'д'});
+Object.assign(I18N.en, {hmTimerNext:'Next Epic event:', hmTimerLive:'Live now', hmTimerWatch:'Watch', hmTimerToday:'today', hmTimerTomorrow:'tomorrow', hmDayShort:'d'});
+Object.assign(I18N.fr, {hmTimerNext:'Prochain tournoi Epic :', hmTimerLive:'En direct', hmTimerWatch:'Regarder', hmTimerToday:'aujourd’hui', hmTimerTomorrow:'demain', hmDayShort:'j'});
+Object.assign(I18N.it, {hmTimerNext:'Prossimo torneo Epic:', hmTimerLive:'In diretta', hmTimerWatch:'Guarda', hmTimerToday:'oggi', hmTimerTomorrow:'domani', hmDayShort:'g'});
+Object.assign(I18N.pt, {hmTimerNext:'Próximo torneio da Epic:', hmTimerLive:'Ao vivo', hmTimerWatch:'Assistir', hmTimerToday:'hoje', hmTimerTomorrow:'amanhã', hmDayShort:'d'});
 /* Главная 15.10: «Продолжить», «С другом», «Сцена сейчас», «Игроки сайта». Остальные языки — английские до доперевода. */
 Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Твои сохранения — с того дня, где остановился.', hmPlayOn:'Играть',
   hmSlotCareer:'Карьера', hmSlotMgr:'Менеджер', hmSlotLine:(s,d,e)=>'Сезон '+s+' · дивизион '+d+' · '+e, hmMgrLine:(s,c)=>'Сезон '+s+' · касса '+c,
@@ -114068,7 +114089,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='2d5ed47f';
+const CC_BUILD='47f306cc';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159067,6 +159088,7 @@ setTimeout(()=>{ try{ if(!mgrAllowed()) return; document.querySelectorAll('.hero
    Рисуется из ccHeroCareerText — то есть на загрузке, на смене языка и при каждом возврате на главную. */
 let HOME_BOARD=null, HOME_BOARD_ALL=false;
 function homeRender(){
+  try{ homeTimerDraw(); }catch(e){}
   try{ homeSceneDraw(); }catch(e){}
   try{ homeBoardDraw(); }catch(e){}
   try{ homeRealDraw(); }catch(e){}
@@ -159085,6 +159107,64 @@ const HOME_SCENE_SKIP={ProAm_Paris:1, ProAm_Seoul:1};
    Капы одной недели в разных регионах — одна строка (p: [[регион, $]…]). Финалы FNCS Solos отсюда дают фонды регионов,
    которых нет в CC_SOLOS_PRIZES-подписи (BR, ASIA, ME, OCE). Обновлять тем же запросом (api.php?action=parse&page=Portal:Tournaments). */
 const HOME_SCHED_LQ=[{"n":"Exposing UNREAL Players Stats with Clix!","f":"2026-07-24","t":"2026-07-24","tier":"Show Matches","loc":"North America","p":[["",780]]},{"n":"Red Bull Reshuffle","f":"2026-08-15","t":"2026-08-15","tier":"Show Matches","loc":"Vienna","p":[["",57837]]},{"n":"Rankly October Zonewars Ladder - Trio","f":"2026-10-01","t":"2026-11-01","tier":"D-Tier","loc":"Europe","p":[["",215]]},{"n":"Rankly October Zonewars Ladder - Duo","f":"2026-10-01","t":"2026-11-01","tier":"D-Tier","loc":"Europe","p":[["",215]]},{"n":"Duo Reload Cash Cup (ZB) - Week 6","f":"2026-10-23","t":"2026-10-23","tier":"C-Tier","loc":"","p":[["EU",4000],["NAC",4000],["NAW",2000],["BR",2000]]},{"n":"FNCS Solos · Grand Finals","f":"2026-10-26","t":"2026-10-27","tier":"S-Tier","loc":"","p":[["OCE",35400],["ME",35400],["ASIA",35400],["BR",72500]]},{"n":"Coupe de France Fortnite 2026","f":"2026-10-28","t":"2026-10-28","tier":"A-Tier","loc":"France, Belgium, Luxembourg, Monaco, Switzerland","p":[["",50000]]},{"n":"Zero Build Championship","f":"2026-10-30","t":"2026-10-30","tier":"C-Tier","loc":"North America","p":[["",5000]]},{"n":"Complete League - Fall Duo #1","f":"2026-11-04","t":"2026-11-18","tier":"D-Tier","loc":"Norway","p":[["",847]]},{"n":"Complete League - Fall Duo #2","f":"2026-11-25","t":"2026-12-09","tier":"D-Tier","loc":"Norway","p":[["",847]]}];
+/* ТАЙМЕР ДО БЛИЖАЙШЕГО ТУРНИРА EPIC (16.10, его «4»). Окна — выгрузка Epic по Европе (tools/measured/event-windows-eu.json,
+   снято 28.09.2026; время UTC, как отдаёт Epic), с 15.10. Показывается по часам браузера. Окно считается идущим три часа
+   с начала — у Epic столько длится раунд капа; у FNCS «Смотреть» ведёт на официальный канал Fortnite. */
+const HOME_WINDOWS=[["2026-10-15T16:00","S42_PerformanceEvaluation_Event8Round1_EU"],["2026-10-15T19:00","S42_PerformanceEvaluation_Event8Round2_EU"],["2026-10-16T17:00","S42_ReloadSoloVictoryCup_Event3_Round1_EU"],["2026-10-16T17:00","S42_ReloadCashCup_DuosZB_Event5Round2_EU"],["2026-10-16T20:00","S42_ReloadSoloVictoryCup_Event3_Round2_EU"],["2026-10-17T15:00","S42_FNCSSolo_HeatsStage_Heat1_EU"],["2026-10-17T16:00","S42_MobileVictoryCup_Event5_Round1_EU"],["2026-10-17T17:00","S42_ConsoleVCC_SolosZB_Event7Round1_EU"],["2026-10-17T17:00","S42_RankedCupDuos_Event7_EU"],["2026-10-17T17:00","S42_RankedCupDuos_ZB_Event7_EU"],["2026-10-17T18:00","S42_MobileVictoryCup_Event5_Round2_EU"],["2026-10-17T20:00","S42_ConsoleVCC_SolosZB_Event7Round2_EU"],["2026-10-18T13:00","S42_ReloadCashCup_DuosZB_Event6Round1_EU"],["2026-10-18T15:00","S42_FNCSSolo_HeatsStage_Heat2_EU"],["2026-10-18T17:00","S42_RankedCupReloadDuos_Event7_EU"],["2026-10-18T17:00","S42_RankedCupReloadDuos_ZB_Event7_EU"],["2026-10-19T17:00","S42_FNCSSolo_LastChanceQualifier_EU"],["2026-10-19T17:00","S42_RankedCupSolo_Event8_EU"],["2026-10-19T17:00","S42_RankedCupSolo_ZB_Event8_EU"],["2026-10-20T17:00","S42_FNCSSolo_LastChanceLobby_EU"],["2026-10-20T17:00","S42_RankedCupSoloReload_Event8_EU"],["2026-10-20T17:00","S42_RankedCupSoloReload_ZB_Event8_EU"],["2026-10-22T16:00","S42_PerformanceEvaluation_Event9Round1_EU"],["2026-10-22T19:00","S42_PerformanceEvaluation_Event9Round2_EU"],["2026-10-23T17:00","S42_ReloadSoloVictoryCup_Event4_Round1_EU"],["2026-10-23T17:00","S42_ReloadCashCup_DuosZB_Event6Round2_EU"],["2026-10-23T20:00","S42_ReloadSoloVictoryCup_Event4_Round2_EU"],["2026-10-24T17:00","S42_ConsoleVCC_SolosZB_Event8Round1_EU"],["2026-10-24T17:00","S42_RankedCupDuos_Event8_EU"],["2026-10-24T17:00","S42_RankedCupDuos_ZB_Event8_EU"],["2026-10-24T20:00","S42_ConsoleVCC_SolosZB_Event8Round2_EU"],["2026-10-25T18:00","S42_RankedCupReloadDuos_Event8_EU"],["2026-10-25T18:00","S42_RankedCupReloadDuos_ZB_Event8_EU"],["2026-10-26T18:00","S42_FNCSSolo_Final_Day1_EU"],["2026-10-27T18:00","S42_FNCSSolo_Final_Day2_EU"]];
+const HOME_LIVE_MS=3*3600e3;
+function homeWinName(k){
+  const r=(k.match(/Round(\d)/)||[])[1], ev=(k.match(/Event(\d+)/)||[])[1];
+  const rnd=r ? ' · Round '+r : '';
+  if(/FNCSSolo_HeatsStage_Heat(\d)/.test(k)) return 'FNCS Solos · Heat '+k.match(/Heat(\d)/)[1];
+  if(/FNCSSolo_Final_Day(\d)/.test(k)) return 'FNCS Solos · Final · Day '+k.match(/Day(\d)/)[1];
+  if(/FNCSSolo_LastChance/.test(k)) return 'FNCS Solos · Last Chance';
+  if(/ReloadSoloVictoryCup/.test(k)) return 'Reload Solo Victory Cup'+rnd;
+  if(/ReloadCashCup_DuosZB/.test(k)) return 'Reload Duo Cash Cup (ZB)'+rnd;
+  if(/ConsoleVCC_SolosZB/.test(k)) return 'Console Victory Cash Cup (ZB)'+rnd;
+  if(/MobileVictoryCup/.test(k)) return 'Mobile Victory Cup'+rnd;
+  if(/RankedCupReloadDuos/.test(k)) return 'Ranked Reload Cup · Duos'+(/_ZB/.test(k) ? ' (ZB)' : '');
+  if(/RankedCupSoloReload/.test(k)) return 'Ranked Reload Cup · Solo'+(/_ZB/.test(k) ? ' (ZB)' : '');
+  if(/RankedCupDuos/.test(k)) return 'Ranked Cup · Duos'+(/_ZB/.test(k) ? ' (ZB)' : '');
+  if(/RankedCupSolo/.test(k)) return 'Ranked Cup · Solo'+(/_ZB/.test(k) ? ' (ZB)' : '');
+  if(/PerformanceEvaluation/.test(k)) return 'Performance Evaluation'+rnd;
+  return k.replace(/^S\d+_/, '').replace(/_EU$/, '').replace(/_/g, ' ');
+}
+function homeTimerPick(now){
+  const at=w=>Date.parse(w[0]+':00Z');
+  // ZB-двойник того же кубка в ту же минуту — одна строка.
+  const live=HOME_WINDOWS.filter(w=>at(w)<=now && now<at(w)+HOME_LIVE_MS);
+  const next=HOME_WINDOWS.find(w=>at(w)>now);
+  return {live:live.filter((w,i)=>!/_ZB/.test(w[1]) || !live.some((v,j)=>j!==i && v[0]===w[0] && v[1]===w[1].replace('_ZB',''))), next, at};
+}
+let HOME_TIMER_T=null;
+function homeTimerDraw(){
+  const box=document.getElementById('homeTimer'); if(!box) return;
+  const T=L(), now=Date.now(), p=homeTimerPick(now);
+  if(!p.next && !p.live.length){ box.hidden=true; return; }
+  const loc=LANG==='ru' ? 'ru-RU' : LANG;
+  const clock=ms=>{ try{ return new Date(ms).toLocaleTimeString(loc, {hour:'2-digit', minute:'2-digit'}); }catch(e){ return ''; } };
+  const dayWord=ms=>{ const d=new Date(ms), t=new Date(); const k=x=>x.getFullYear()+'-'+x.getMonth()+'-'+x.getDate();
+    if(k(d)===k(t)) return T.hmTimerToday; t.setDate(t.getDate()+1); if(k(d)===k(t)) return T.hmTimerTomorrow;
+    try{ return d.toLocaleDateString(loc, {weekday:'short', day:'numeric', month:'short'}); }catch(e){ return ''; } };
+  let html='';
+  if(p.live.length){
+    const w=p.live.find(x=>/FNCS/.test(x[1])) || p.live[0], fncs=/FNCS/.test(w[1]);
+    html+='<span class="ht-live">'+esc(T.hmTimerLive)+'</span><b>'+esc(homeWinName(w[1]))+'</b>'+
+      (fncs ? '<a class="ht-watch" href="https://www.twitch.tv/fortnite" target="_blank" rel="noopener">'+esc(T.hmTimerWatch)+'</a>' : '');
+  }
+  if(p.next){
+    const ms=p.at(p.next), left=Math.max(0, ms-now);
+    const d=Math.floor(left/864e5), h=Math.floor(left/36e5)%24, m=Math.floor(left/6e4)%60, sec=Math.floor(left/1e3)%60;
+    const two=x=>String(x).padStart(2,'0');
+    html+=(p.live.length ? '<span class="ht-sep"></span>' : '<span class="ht-lbl">'+esc(T.hmTimerNext)+'</span>')+
+      '<b>'+esc(homeWinName(p.next[1]))+'</b><span class="ht-when">'+esc(dayWord(ms))+' · '+esc(clock(ms))+'</span>'+
+      '<span class="ht-cd">'+(d ? d+T.hmDayShort+' ' : '')+two(h)+':'+two(m)+':'+two(sec)+'</span>';
+  }
+  box.innerHTML=html; box.hidden=false;
+  // Секундная стрелка — только пока главная на экране.
+  clearTimeout(HOME_TIMER_T);
+  HOME_TIMER_T=setTimeout(()=>{ const sc=document.getElementById('screen-mode'); if(sc && sc.classList.contains('active')) homeTimerDraw(); else HOME_TIMER_T=null; }, 1000);
+}
 function homeSceneDraw(){
   const box=document.getElementById('homeScene'); if(!box) return;
   const T=L(), today=homeToday(), names=T.ccYearNames||{};
