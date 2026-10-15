@@ -7411,6 +7411,23 @@
   html.ev-pal .cc-round-ask .cc-choice-btn.rc-play{background:#fff;border-color:#fff;}
   html.ev-pal .cc-round-ask .cc-choice-btn.rc-play b{color:#11141c;}
   html.ev-pal .cc-round-ask .cc-choice-btn:hover{border-color:#fff;box-shadow:0 0 0 1.5px #fff;}
+  /* «Следующий раунд» — кнопки как в хабе карьеры, без полос (Notion 15.10, скрин 8: «дизайн этих кнопочек как в карьере
+     без полос этих»): ни диагоналей на фоне, ни жёлтой кромки у заголовка, ни подчёркивания у кнопки по умолчанию.
+     Тонкая полоса времени снизу осталась — она говорит, сколько до симуляции. */
+  .cc-round-ask{border-radius:14px;}
+  .cc-round-ask::before{display:none;}
+  .cc-round-ask .cc-choice-head b{box-shadow:none;background:transparent;margin:-4px 0 4px;padding:0;}
+  .cc-round-ask .cc-choice-row{gap:10px;}
+  .cc-round-ask .cc-choice-btn,.cc-round-ask .cc-choice-btn.def,.cc-round-ask .cc-choice-btn.def:hover{box-shadow:none;transform:none;clip-path:none;
+    border-radius:10px;text-align:center;padding:13px 16px;background:rgba(255,255,255,.08);border:1px solid rgba(180,200,255,.28);}
+  .cc-round-ask .cc-choice-btn b{font-family:var(--font-display);font-style:normal;font-weight:700;font-size:17px;letter-spacing:.06em;
+    text-transform:uppercase;color:#fff;}
+  .cc-round-ask .cc-choice-btn:hover{border-color:#fff;}
+  .cc-round-ask .cc-choice-btn.rc-play,.cc-round-ask .cc-choice-btn.rc-play:hover{background:#ffdd00;border-color:#ffdd00;}
+  .cc-round-ask .cc-choice-btn.rc-play b{color:#0b0f12;}
+  .cc-round-ask .cc-choice-btn.rc-play:hover{background:#ffe95c;}
+  .cc-round-ask .cc-choice-bar{margin-top:10px;height:3px;border-radius:2px;}
+  html.ev-pal .cc-round-ask .cc-choice-head b{background:transparent;}
   /* Тема карьеры прошлых лет — палитра сезона (html.yr-pal, ccYearThemeApply). */
   html.yr-pal #screen-career-hub .ch-stage{background:linear-gradient(160deg,color-mix(in srgb,var(--yr-l) 38%,#060a16) 0%,color-mix(in srgb,var(--yr-r) 30%,#060a16) 100%);}
   html.yr-pal #screen-career-hub .ch-top{
@@ -114275,7 +114292,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='ddedd473';
+const CC_BUILD='ec73a266';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
