@@ -7207,7 +7207,8 @@
     background:linear-gradient(90deg,#1a3480,#12245c);box-shadow:inset 0 0 0 1px rgba(255,221,0,.35);color:#e6edfb;font-size:13.5px;}
   .home-timer[hidden]{display:none;}
   .home-timer b{color:#fff;font-weight:800;}
-  .ht-lbl{color:#9fe1ff;font-weight:800;font-size:12px;}
+  .ht-lbl{flex-basis:100%;color:#9fe1ff;font-weight:800;font-size:12px;}
+  .ht-img{flex:0 0 auto;width:60px;height:42px;border-radius:7px;object-fit:cover;background:#0b1640;}
   .ht-when{color:#b9c7ea;font-size:12.5px;}
   .ht-cd{flex-basis:100%;font-family:var(--font-display);font-weight:700;font-size:26px;letter-spacing:.03em;color:#ffdd00;font-variant-numeric:tabular-nums;}
   .ht-live{background:#ff3d6e;color:#fff;font-weight:900;font-size:11px;letter-spacing:.06em;text-transform:uppercase;border-radius:5px;padding:3px 7px;}
@@ -114087,7 +114088,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='29248e4e';
+const CC_BUILD='8a9fa997';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159110,6 +159111,14 @@ const HOME_SCHED_LQ=[{"n":"Exposing UNREAL Players Stats with Clix!","f":"2026-0
    с начала — у Epic столько длится раунд капа; у FNCS «Смотреть» ведёт на официальный канал Fortnite. */
 const HOME_WINDOWS=[["2026-10-15T16:00","S42_PerformanceEvaluation_Event8Round1_EU"],["2026-10-15T19:00","S42_PerformanceEvaluation_Event8Round2_EU"],["2026-10-16T17:00","S42_ReloadSoloVictoryCup_Event3_Round1_EU"],["2026-10-16T17:00","S42_ReloadCashCup_DuosZB_Event5Round2_EU"],["2026-10-16T20:00","S42_ReloadSoloVictoryCup_Event3_Round2_EU"],["2026-10-17T15:00","S42_FNCSSolo_HeatsStage_Heat1_EU"],["2026-10-17T16:00","S42_MobileVictoryCup_Event5_Round1_EU"],["2026-10-17T17:00","S42_ConsoleVCC_SolosZB_Event7Round1_EU"],["2026-10-17T17:00","S42_RankedCupDuos_Event7_EU"],["2026-10-17T17:00","S42_RankedCupDuos_ZB_Event7_EU"],["2026-10-17T18:00","S42_MobileVictoryCup_Event5_Round2_EU"],["2026-10-17T20:00","S42_ConsoleVCC_SolosZB_Event7Round2_EU"],["2026-10-18T13:00","S42_ReloadCashCup_DuosZB_Event6Round1_EU"],["2026-10-18T15:00","S42_FNCSSolo_HeatsStage_Heat2_EU"],["2026-10-18T17:00","S42_RankedCupReloadDuos_Event7_EU"],["2026-10-18T17:00","S42_RankedCupReloadDuos_ZB_Event7_EU"],["2026-10-19T17:00","S42_FNCSSolo_LastChanceQualifier_EU"],["2026-10-19T17:00","S42_RankedCupSolo_Event8_EU"],["2026-10-19T17:00","S42_RankedCupSolo_ZB_Event8_EU"],["2026-10-20T17:00","S42_FNCSSolo_LastChanceLobby_EU"],["2026-10-20T17:00","S42_RankedCupSoloReload_Event8_EU"],["2026-10-20T17:00","S42_RankedCupSoloReload_ZB_Event8_EU"],["2026-10-22T16:00","S42_PerformanceEvaluation_Event9Round1_EU"],["2026-10-22T19:00","S42_PerformanceEvaluation_Event9Round2_EU"],["2026-10-23T17:00","S42_ReloadSoloVictoryCup_Event4_Round1_EU"],["2026-10-23T17:00","S42_ReloadCashCup_DuosZB_Event6Round2_EU"],["2026-10-23T20:00","S42_ReloadSoloVictoryCup_Event4_Round2_EU"],["2026-10-24T17:00","S42_ConsoleVCC_SolosZB_Event8Round1_EU"],["2026-10-24T17:00","S42_RankedCupDuos_Event8_EU"],["2026-10-24T17:00","S42_RankedCupDuos_ZB_Event8_EU"],["2026-10-24T20:00","S42_ConsoleVCC_SolosZB_Event8Round2_EU"],["2026-10-25T18:00","S42_RankedCupReloadDuos_Event8_EU"],["2026-10-25T18:00","S42_RankedCupReloadDuos_ZB_Event8_EU"],["2026-10-26T18:00","S42_FNCSSolo_Final_Day1_EU"],["2026-10-27T18:00","S42_FNCSSolo_Final_Day2_EU"]];
 const HOME_LIVE_MS=3*3600e3;
+// Постер окна — те же постеры, что у таких турниров в карьере: FNCS Solos, Reload-кап (c41r), Victory Cup соло/дуо (c38s/c38d), Cash Cup (c25d).
+function homeWinArt(k){
+  if(/FNCSSolo/.test(k)) return 'art/fncs-solo.jpg';
+  if(/Reload/.test(k)) return 'art/cups/c41r.jpg';
+  if(/Victory|VCC/.test(k)) return /Duo/.test(k) ? 'art/cups/c38d.jpg' : 'art/cups/c38s.jpg';
+  if(/CashCup/.test(k)) return 'art/cups/c25d.jpg';
+  return 'art/fncs-2026.jpg';
+}
 function homeWinName(k){
   const r=(k.match(/Round(\d)/)||[])[1], ev=(k.match(/Event(\d+)/)||[])[1];
   const rnd=r ? ' · Round '+r : '';
@@ -159147,7 +159156,7 @@ function homeTimerDraw(){
   let html='';
   if(p.live.length){
     const w=p.live.find(x=>/FNCS/.test(x[1])) || p.live[0], fncs=/FNCS/.test(w[1]);
-    html+='<span class="ht-live">'+esc(T.hmTimerLive)+'</span><b>'+esc(homeWinName(w[1]))+'</b>'+
+    html+='<img class="ht-img" src="'+homeWinArt(w[1])+'" alt="" onerror="this.remove()"><span class="ht-live">'+esc(T.hmTimerLive)+'</span><b>'+esc(homeWinName(w[1]))+'</b>'+
       (fncs ? '<a class="ht-watch" href="https://www.twitch.tv/fortnite" target="_blank" rel="noopener">'+esc(T.hmTimerWatch)+'</a>' : '');
   }
   if(p.next){
@@ -159155,7 +159164,7 @@ function homeTimerDraw(){
     const d=Math.floor(left/864e5), h=Math.floor(left/36e5)%24, m=Math.floor(left/6e4)%60, sec=Math.floor(left/1e3)%60;
     const two=x=>String(x).padStart(2,'0');
     html+=(p.live.length ? '<span class="ht-sep"></span>' : '<span class="ht-lbl">'+esc(T.hmTimerNext)+'</span>')+
-      '<b>'+esc(homeWinName(p.next[1]))+'</b><span class="ht-when">'+esc(dayWord(ms))+' · '+esc(clock(ms))+'</span>'+
+      '<img class="ht-img" src="'+homeWinArt(p.next[1])+'" alt="" onerror="this.remove()"><b>'+esc(homeWinName(p.next[1]))+'</b><span class="ht-when">'+esc(dayWord(ms))+' · '+esc(clock(ms))+'</span>'+
       '<span class="ht-cd">'+(d ? d+T.hmDayShort+' ' : '')+two(h)+':'+two(m)+':'+two(sec)+'</span>';
   }
   box.innerHTML=html; box.hidden=false;
