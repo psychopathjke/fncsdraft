@@ -3837,3 +3837,4 @@ Object.assign(I18N.es, {hmEarnTitle:'Ganancias 2026', hmEarnSub:'Lo que ganaron 
 Object.assign(I18N.es, {hmEarnSub:d=>'Todos los torneos de 2026, no solo FNCS — según Liquipedia ('+d+'). Toca un jugador.', hmEarnMedals:(a,b,c)=>'Este año: '+a+' primeros puestos, '+b+' segundos, '+c+' terceros.', hmEarnFncs:'De ellos, finales de FNCS (parte del jugador: mitad del premio del dúo):', hmEarnSrc:'Fuente: Liquipedia, Portal:Statistics/2026.'});
 Object.assign(I18N.es, {hmSceneSub2:'Próximos torneos con premios: FNCS según el calendario, el resto según Liquipedia.', hmSceneOther:'Otros torneos con premios'});
 Object.assign(I18N.es, {hmSceneSub2:'Próximos torneos de Epic con premios: FNCS y cups.', hmSceneOther:'Cups de Epic'});
+Object.assign(I18N.es, {hmTop50:'top 50'});

@@ -7138,6 +7138,9 @@
     #homeLive .hl-tabs{display:none;}
     #homeLive .hl-pane:not([hidden]){display:block !important;min-width:0;}
     #homeLive .hl-pane>.home-h{display:block !important;font-size:18px;}
+    /* Подписи колонок — одной высоты, чтобы строки «Призовых 2026» и «Игроков сайта» шли на одном уровне. */
+    #homeLive .hl-pane>.home-sub{min-height:3.7em;}
+    #homeLive .he-row,#homeLive .hb-row{min-height:39px;box-sizing:border-box;}
     #homeLive .hr-list{grid-template-columns:1fr;gap:6px;}
     #homeLive .hr-ev{padding:7px 9px;gap:10px;}
     #homeLive .hr-ev img{width:58px;height:40px;border-radius:6px;}
@@ -20314,7 +20317,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'2487add7', es:'e3f02cac'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'cda92d2d', es:'d71b0db2'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20617,6 +20620,12 @@ Object.assign(I18N.en, {hmSceneSub2:'Upcoming Epic prize events: FNCS and cups.'
 Object.assign(I18N.fr, {hmSceneSub2:'Prochains tournois Epic avec cashprize : FNCS et cups.', hmSceneOther:'Cups Epic'});
 Object.assign(I18N.it, {hmSceneSub2:'Prossimi tornei Epic a premi: FNCS e cup.', hmSceneOther:'Cup Epic'});
 Object.assign(I18N.pt, {hmSceneSub2:'Próximos torneios da Epic com premiação: FNCS e cups.', hmSceneOther:'Cups da Epic'});
+/* Список топ-50 поверх экрана. */
+Object.assign(I18N.ru, {hmTop50:'топ-50'});
+Object.assign(I18N.en, {hmTop50:'top 50'});
+Object.assign(I18N.fr, {hmTop50:'top 50'});
+Object.assign(I18N.it, {hmTop50:'top 50'});
+Object.assign(I18N.pt, {hmTop50:'top 50'});
 /* Главная 15.10: «Продолжить», «С другом», «Сцена сейчас», «Игроки сайта». Остальные языки — английские до доперевода. */
 Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Твои сохранения — с того дня, где остановился.', hmPlayOn:'Играть',
   hmSlotCareer:'Карьера', hmSlotMgr:'Менеджер', hmSlotLine:(s,d,e)=>'Сезон '+s+' · дивизион '+d+' · '+e, hmMgrLine:(s,c)=>'Сезон '+s+' · касса '+c,
@@ -114059,7 +114068,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='786a6940';
+const CC_BUILD='2d5ed47f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159253,16 +159262,16 @@ function homeEarnDraw(){
   const box=document.getElementById('homeReal'); if(!box) return;
   const T=L(), list=HOME_EARN_LQ;
   if(!list.length){ box.hidden=true; return; }
-  const n=HOME_EARN_ALL ? 50 : 10;
+  box.innerHTML='<h2 class="home-h">'+esc(T.hmEarnTitle)+'</h2><p class="home-sub">'+esc(T.hmEarnSub(homeDate(HOME_EARN_AT)))+'</p>'+
+    '<div class="he-list">'+homeEarnRowsHTML(list.slice(0, 10))+'</div>'+
+    (list.length>10 ? '<button class="home-more" type="button" onclick="homeListOpen(\'earn\')">'+esc(T.hmBoardMore(Math.min(50, list.length)))+'</button>' : '');
+  box.hidden=false;
+}
+function homeEarnRowsHTML(list){
   const flag=c=>c ? '<img src="flags/w20/'+esc(c)+'.png" alt="" onerror="this.remove()">' : '';
-  const rows=list.slice(0, n).map((x,i)=>'<button class="he-row" type="button" onclick="homeEarnOpen('+i+')">'+
+  return list.map((x,i)=>'<button class="he-row" type="button" onclick="homeEarnOpen('+i+')">'+
     '<i>'+(i+1)+'</i><b>'+flag(x.c)+esc(x.n)+'<small>🥇'+x.m[0]+' 🥈'+x.m[1]+' 🥉'+x.m[2]+'</small></b>'+
     '<span>$'+ccNum(x.e)+'</span></button>').join('');
-  box.innerHTML='<h2 class="home-h">'+esc(T.hmEarnTitle)+'</h2><p class="home-sub">'+esc(T.hmEarnSub(homeDate(HOME_EARN_AT)))+'</p>'+
-    '<div class="he-list">'+rows+'</div>'+
-    (list.length>10 ? '<button class="home-more" type="button" onclick="HOME_EARN_ALL=!HOME_EARN_ALL; homeEarnDraw(); try{ homeLiveTabs(); }catch(e){}">'+
-      esc(HOME_EARN_ALL ? T.hmBoardLess : T.hmBoardMore(Math.min(50, list.length)))+'</button>' : '');
-  box.hidden=false;
 }
 // Игрок: флаг, сумма за год, медали и — что из этого известно по финалам FNCS (места и доля, homeEarnings).
 function homeEarnOpen(i){
@@ -159351,12 +159360,33 @@ function homeBoardDraw(){
   const seen=new Set(), rows=(d.rows||[]).filter(r=>{ const k=[r.nick, r.region, r.country, r.seasons, r.earn, r.titles].join('|');
     if(seen.has(k)) return false; seen.add(k); return true; });
   if(!rows.length){ box.innerHTML=head+'<p class="home-sub">'+esc(T.lbEmpty)+'</p>'; return; }
-  const n=HOME_BOARD_ALL ? 50 : 10;
-  const flag=c=>c ? '<img src="flags/w20/'+esc(ccCountryOf(c))+'.png" alt="" onerror="this.remove()">' : '';
-  box.innerHTML=head+'<div>'+rows.slice(0, n).map((r,i)=>'<div class="hb-row"><i>'+(i+1)+'</i><b>'+flag(r.country)+esc(r.nick)+
-      '<small>'+esc(r.region||'')+' · '+esc(T.lbSeasons(r.seasons))+'</small></b><span>$'+ccNum(r.earn)+'</span></div>').join('')+'</div>'+
-    (rows.length>10 ? '<button class="home-more" type="button" onclick="HOME_BOARD_ALL=!HOME_BOARD_ALL; homeBoardDraw();">'+
-      esc(HOME_BOARD_ALL ? T.hmBoardLess : T.hmBoardMore(Math.min(50, rows.length)))+'</button>' : '');
+  HOME_BOARD_ROWS=rows;
+  box.innerHTML=head+'<div>'+homeBoardRowsHTML(rows.slice(0, 10))+'</div>'+
+    (rows.length>10 ? '<button class="home-more" type="button" onclick="homeListOpen(\'board\')">'+esc(T.hmBoardMore(Math.min(50, rows.length)))+'</button>' : '');
+}
+let HOME_BOARD_ROWS=[];
+function homeBoardRowsHTML(rows){
+  const T=L(), flag=c=>c ? '<img src="flags/w20/'+esc(ccCountryOf(c))+'.png" alt="" onerror="this.remove()">' : '';
+  return rows.map((r,i)=>'<div class="hb-row"><i>'+(i+1)+'</i><b>'+flag(r.country)+esc(r.nick)+
+    '<small>'+esc(r.region||'')+' · '+esc(T.lbSeasons(r.seasons))+'</small></b><span>$'+ccNum(r.earn)+'</span></div>').join('');
+}
+/* «Показать 50» — списком поверх экрана, а не раскрытием колонки (16.10: «когда жмёшь топ 50, пусть поверх экрана будет список»). */
+function homeListOpen(kind){
+  const T=L(), earn=kind==='earn';
+  const title=earn ? T.hmEarnTitle : T.lbTab;
+  const body=earn ? '<div class="he-list">'+homeEarnRowsHTML(HOME_EARN_LQ.slice(0, 50))+'</div>'
+                  : '<div>'+homeBoardRowsHTML(HOME_BOARD_ROWS.slice(0, 50))+'</div>';
+  let m=document.getElementById('homeRealModal');
+  if(!m){
+    m=document.createElement('div'); m.id='homeRealModal'; m.className='hr-modal';
+    m.addEventListener('click', ev=>{ if(ev.target===m) homeRealClose(); });
+    document.addEventListener('keydown', ev=>{ if(ev.key==='Escape' && document.getElementById('homeRealModal')) homeRealClose(); });
+    document.body.appendChild(m);
+  }
+  m.innerHTML='<div class="hr-box" role="dialog" aria-modal="true" aria-label="'+esc(title)+'">'+
+    '<div class="hr-top"><b>'+esc(title)+' · '+esc(T.hmTop50)+'</b><button type="button" class="hr-x" onclick="homeRealClose()" aria-label="'+esc(T.hmRealClose)+'">✕</button></div>'+
+    '<div class="hr-wrap">'+body+'</div></div>';
+  document.body.classList.add('hr-lock');
 }
 /* Кнопка карьеры на главной: есть сохранённая карьера — «Продолжить», а не «Начать» (игрок 9.10: «closed my browser on my
    phone and opened it back up and there wasnt an option to continue my career» — кнопка вела к списку карьер, но звалась

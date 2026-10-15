@@ -3837,3 +3837,4 @@ Object.assign(I18N.de, {hmEarnTitle:'Preisgeld 2026', hmEarnSub:'Was Spieler die
 Object.assign(I18N.de, {hmEarnSub:d=>'Alle Turniere 2026, nicht nur FNCS — laut Liquipedia ('+d+'). Tippe einen Spieler an.', hmEarnMedals:(a,b,c)=>'Dieses Jahr: '+a+'× Platz 1, '+b+'× Platz 2, '+c+'× Platz 3.', hmEarnFncs:'Davon FNCS-Finals (Anteil des Spielers: halbes Duo-Preisgeld):', hmEarnSrc:'Quelle: Liquipedia, Portal:Statistics/2026.'});
 Object.assign(I18N.de, {hmSceneSub2:'Kommende Turniere mit Preisgeld: FNCS laut Kalender, der Rest laut Liquipedia.', hmSceneOther:'Weitere Turniere mit Preisgeld'});
 Object.assign(I18N.de, {hmSceneSub2:'Kommende Epic-Turniere mit Preisgeld: FNCS und Cups.', hmSceneOther:'Epic-Cups'});
+Object.assign(I18N.de, {hmTop50:'Top 50'});
