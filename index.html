@@ -1816,7 +1816,14 @@
   .cc-choice-mate{padding:4px 14px 8px; font-size:12px; line-height:1.3; opacity:.9;}
   .cc-choice-mate i{font-style:normal; font-weight:700; color:var(--cc-ui-live, #ffd600);}
   .cc-choice-mate i::after{content:':';}
+  .cc-coach-offer{display:flex;flex-direction:column;gap:6px;margin:12px 0;padding:12px;border-radius:12px;background:rgba(75,227,176,.08);border:1px solid rgba(75,227,176,.45);}
+  .cc-coach-offer b{font-size:15px;color:#fff;} .cc-coach-offer span{font-size:12.5px;color:#c3d1f0;line-height:1.45;}
+  .cc-coach-offer .ch-play{align-self:flex-start;}
   .cc-choice-btn.mate{position:relative;}
+  .cc-choice-coach i{color:#4be3b0;}
+  .cc-choice-btn.coach{position:relative;box-shadow:inset 0 0 0 2px rgba(75,227,176,.55);}
+  .cc-choice-btn.coach::before{content:attr(data-coach); position:absolute; top:6px; left:8px; padding:1px 7px; z-index:1;
+    border-radius:8px; font-size:10px; font-weight:700; line-height:1.4; background:#4be3b0; color:#062a1e;}
   /* Метка внутри кнопки, не на её кромке: на кромке её подрезал соседний ряд (снимок 7.09). */
   .cc-choice-btn.mate::after{content:attr(data-mate); position:absolute; top:6px; right:8px; padding:1px 7px; z-index:1;
     border-radius:8px; font-size:10px; font-weight:700; line-height:1.4; background:var(--cc-ui-live, #ffd600); color:#111;}
@@ -20333,7 +20340,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'99bb1ff1', es:'6f59d8ec'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'7c460006', es:'8a0e763a'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20654,6 +20661,12 @@ Object.assign(I18N.en, {hmSceneRecent:'Recent winners'});
 Object.assign(I18N.fr, {hmSceneRecent:'Derniers vainqueurs'});
 Object.assign(I18N.it, {hmSceneRecent:'Vincitori recenti'});
 Object.assign(I18N.pt, {hmSceneRecent:'Vencedores recentes'});
+/* Фидбек 15.10: коуч советует, тренер после карьеры, сверка денег дуо онлайн. */
+Object.assign(I18N.ru, {ccNewsMpPaySync:d=>'Призовые сверены с напарником по общей таблице вечера: '+d, ccCoachLeans:t=>'я бы взял «'+t+'»', ccCoachTag:'коуч', ccRetCoachTitle:'Клубы зовут тебя в тренеры', ccRetCoachSub:'Карьера игрока закончена, но сцена тебя знает. Возьми клуб: состав, расписание, решения между играми.', ccRetCoachBtn:'Стать тренером клуба'});
+Object.assign(I18N.en, {ccNewsMpPaySync:d=>'Prize money matched with your partner by the shared table: '+d, ccCoachLeans:t=>'I’d take «'+t+'»', ccCoachTag:'coach', ccRetCoachTitle:'Clubs want you as a coach', ccRetCoachSub:'Your playing career is over, but the scene knows you. Take a club: roster, schedule, calls between games.', ccRetCoachBtn:'Become a club coach'});
+Object.assign(I18N.fr, {ccNewsMpPaySync:d=>'Gains alignés avec ton coéquipier selon le tableau commun : '+d, ccCoachLeans:t=>'je prendrais «'+t+'»', ccCoachTag:'coach', ccRetCoachTitle:'Des clubs te veulent comme coach', ccRetCoachSub:'Ta carrière de joueur est finie, mais la scène te connaît. Prends un club : roster, calendrier, décisions entre les games.', ccRetCoachBtn:'Devenir coach d’un club'});
+Object.assign(I18N.it, {ccNewsMpPaySync:d=>'Premi allineati col compagno secondo la classifica comune: '+d, ccCoachLeans:t=>'prenderei «'+t+'»', ccCoachTag:'coach', ccRetCoachTitle:'I club ti vogliono come coach', ccRetCoachSub:'La carriera da giocatore è finita, ma la scena ti conosce. Prendi un club: roster, calendario, decisioni tra le partite.', ccRetCoachBtn:'Diventa coach di un club'});
+Object.assign(I18N.pt, {ccNewsMpPaySync:d=>'Prêmios acertados com o parceiro pela tabela comum: '+d, ccCoachLeans:t=>'eu iria de «'+t+'»', ccCoachTag:'coach', ccRetCoachTitle:'Clubes querem você como coach', ccRetCoachSub:'Sua carreira de jogador acabou, mas a cena te conhece. Assuma um clube: elenco, calendário, decisões entre as partidas.', ccRetCoachBtn:'Virar coach de um clube'});
 /* Главная 15.10: «Продолжить», «С другом», «Сцена сейчас», «Игроки сайта». Остальные языки — английские до доперевода. */
 Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Твои сохранения — с того дня, где остановился.', hmPlayOn:'Играть',
   hmSlotCareer:'Карьера', hmSlotMgr:'Менеджер', hmSlotLine:(s,d,e)=>'Сезон '+s+' · дивизион '+d+' · '+e, hmMgrLine:(s,c)=>'Сезон '+s+' · касса '+c,
@@ -108803,6 +108816,21 @@ function ccMateOpinion(options, dflt){
   const say=L().ccMateLeans;
   return {name:m.handle, pick, text: typeof say==='function' ? say(String(pick.title||'').replace(/<[^>]+>/g,'')) : ''};
 }
+/* СОВЕТ КОУЧА (Notion 15.10, фидбек: «the option to get a coach doesn't really do anything»; ответ игроку — «coach
+   suggests…»). Нанятый коуч говорит, что выбрать: где у вариантов есть проценты (ccChoiceOdds — «X% выживают»), он берёт
+   вариант с лучшим последним числом; где чисел нет — ход по умолчанию. Слабый коуч (прирост тренировки < 0.32) ошибается
+   в каждом пятом совете. Онлайн и соло-вечер — молчит: лишний бросок развёл бы два браузера (CC_MP_ROLLS). */
+function ccCoachOpinion(options, dflt){
+  if(!options || options.length<2 || typeof ccCoach!=='function') return null;
+  if(typeof ccMpOn==='function' && ccMpOn()) return null;
+  const c=ccCoach(); if(!c) return null;
+  const last=o=>{ const m=String((o && o.note)||'').replace(/<[^>]+>/g,'').match(/(\d+(?:[.,]\d+)?)\s*%/g); return m ? parseFloat(m[m.length-1]) : null; };
+  const scored=options.filter(o=>o && last(o)!=null);
+  let pick=scored.length>=2 ? scored.reduce((a,b)=>last(b)>last(a) ? b : a) : dflt;
+  if((c.train||0)<0.32 && Math.random()<0.2){ const alt=options.filter(o=>o && o!==pick); pick=alt[Math.floor(Math.random()*alt.length)]||pick; }
+  const say=L().ccCoachLeans;
+  return {name:c.name, pick, text: typeof say==='function' ? say(String(pick.title||'').replace(/<[^>]+>/g,'')) : ''};
+}
 /* ЧЕМ ОДИН ВОПРОС ОТЛИЧАЕТСЯ ОТ ДРУГОГО (отзыв: «в симуляции дизайн докрутить
    каждого выбора по тематике»). До этого все семь остановок вечера выглядели одной и той
    же панелью: синее стекло, жёлтая полоса слева, мелкая иконка. Игрок не видел ни того,
@@ -108889,7 +108917,7 @@ function ccChoiceBox(title, hint, options, onMap, side, kind){
   return ccMpIdle(new Promise(resolve=>{
     const host=onMap || document.getElementById('majorStages');
     const dflt=options.find(o=>o && o.def) || options[0];
-    const mate=ccMateOpinion(options, dflt);
+    const mate=ccMateOpinion(options, dflt), coach=ccCoachOpinion(options, dflt);
     let done=false;
     const answer=o=>{ if(done) return; done=true;
       clearInterval(watch); clearTimeout(bell);
@@ -108917,10 +108945,11 @@ function ccChoiceBox(title, hint, options, onMap, side, kind){
         (side && side.right ? `<div class="cc-choice-mini">${side.right}</div>` : '')+
         `</div>`
       : '';
-    const mateLine=mate ? `<div class="cc-choice-mate"><i>${esc(mate.name)}</i> ${esc(mate.text)}</div>` : '';
+    const mateLine=(mate ? `<div class="cc-choice-mate"><i>${esc(mate.name)}</i> ${esc(mate.text)}</div>` : '')+
+      (coach ? `<div class="cc-choice-mate cc-choice-coach"><i>${esc(coach.name)}</i> ${esc(coach.text)}</div>` : '');
     box.innerHTML=`<div class="cc-choice-head"><b>${ccChoiceDial(th)}<span class="cc-choice-t">${esc(title)}</span></b>${sub}${mateLine}${ccGameHowHTML()}</div>`+
       `<div class="cc-choice-row">${options.map((o,i)=>
-        `<button class="cc-choice-btn${o.art?' has-art':''}${o.icon?' has-ico':''}${o===dflt && options.length>1?' def':''}${mate && o===mate.pick?' mate':''}" data-at="${i}"${mate && o===mate.pick ? ' data-mate="'+esc(mate.name)+'"' : ''}>
+        `<button class="cc-choice-btn${o.art?' has-art':''}${o.icon?' has-ico':''}${o===dflt && options.length>1?' def':''}${mate && o===mate.pick?' mate':''}${coach && o===coach.pick?' coach':''}" data-at="${i}"${mate && o===mate.pick ? ' data-mate="'+esc(mate.name)+'"' : ''}${coach && o===coach.pick ? ' data-coach="'+esc(L().ccCoachTag)+'"' : ''}>
            ${o.art||''}<span class="cc-choice-tt">${o.icon?'<i class="cc-choice-ico'+(o.icoCls?' '+o.icoCls:'')+'">'+o.icon+'</i>':''}<b>${esc(o.title)}</b></span>${o.pack ? ccPackSlotsHTML(o.pack) : ''}${ccChoiceOdds(o.note)}<em>${o.note||''}</em></button>`).join('')}</div>`+
       `<div class="cc-choice-bar"><i></i></div>`;
     host.appendChild(box);
@@ -114096,7 +114125,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='af5332f0';
+const CC_BUILD='8b55db63';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -117360,6 +117389,28 @@ function ccApplyTeamState(t){
               вдвоём 1.10: у бразильца строка финала сборной, у немца её нет, и приход журнала
               напарника стирал её. */
            const mine=CAREER.career.log.filter(r=>r && !have.has(sig(r)) && ((r.who===me && r.solo && r.kind==='major') || r.kind==='nations'));
+           /* ДЕНЬГИ ПО ОБЩЕМУ ИТОГУ (Notion 15.10, дуо онлайн: «на моём экране мы заработали, деньги пришли мне, а другу —
+              ничего»). Каждый браузер платит себе по своей таблице (ccPayIn), а журнал вечера сервер раздаёт от того, кто
+              закрыл первым. Разошлись таблицы — разошлись и деньги. Сверка: по дням последней недели и виду турнира
+              доля из пришедшего журнала против своей; разница доплачивается или списывается, с той же долей клуба, что
+              у ccPayIn, и строкой в новостях. Личные строки (соло-Мейджор, Кубок наций) не сверяются — они свои. */
+           try{
+             const personal=r=>(r.who===me && r.solo && r.kind==='major') || r.kind==='nations';
+             const from=ccAddDays(careerToday(), -7), key=r=>r.day+'|'+r.kind;
+             const sum=(log)=>{ const o={}; log.forEach(r=>{ if(r && r.day>=from && !personal(r)) o[key(r)]=(o[key(r)]||0)+(r.prize||0); }); return o; };
+             const theirs=sum(t.log), ours=sum(CAREER.career.log);
+             let delta=0;
+             // Только вечера, что есть и у себя: вошедший в чужую карьеру по коду не получает её прошлую неделю.
+             Object.keys(theirs).forEach(k=>{ if(ours[k]!==undefined) delta+=theirs[k]-ours[k]; });
+             delta=Math.round(delta);
+             if(delta){
+               const cr=CAREER.career, cut=Math.round(delta*careerOrgCut());
+               cr.earnings=Math.max(0, (cr.earnings||0)+delta);
+               if(cut) cr.orgCut=(cr.orgCut||0)+cut;
+               cr.balance=(cr.balance||0)+(delta-cut);
+               careerNews(delta>0 ? 'good' : 'bad', 'ccNewsMpPaySync', [(delta>0 ? '+$' : '−$')+ccNum(Math.abs(delta))]);
+             }
+           }catch(e){}
            CAREER.career.log=t.log.concat(mine);
            return;
          }
@@ -133806,6 +133857,7 @@ const CC_POST_BY={
   lfNewsStandin:'you', lfNewsSceneBan:'press',
   // Разошедшийся вечер командной игры — своя строка о своём вечере.
   ccNewsMpSplit:'you',
+  ccNewsMpPaySync:'you',
   // LFD is the player saying it out loud. Nobody else posts that for you.
   ccNewsLfd:'you',
   // And so is an injury: a wrist is the player's own week, not a transfer the
@@ -138702,10 +138754,16 @@ function careerDmAccept(id){
     const rec=w.roster ? {handle:w.handle, cardRegion:w.cardRegion||'EU', patience:CAREER_PATIENCE_START, since:careerToday()}
                        : {card:w.card, patience:CAREER_PATIENCE_START, since:careerToday()};
     if(!list.some(r=>hKey((ccMateCardOf(r)||{}).handle||'')===hKey(w.handle))) list.push(rec);
-    // Писала пара («мы вдвоём, нужен третий») — садится и второй (careerFmtSeatDms).
-    if(t.fmtPair && !list.some(r=>hKey((ccMateCardOf(r)||{}).handle||'')===hKey(t.fmtPair))){
+    /* Писала пара («мы вдвоём, нужен третий», careerFmtSeatDms) — ТЫ идёшь третьим к НИМ: состав формата — их пара,
+       а не «твой напарник + тот, кто писал». Notion 15.10, фидбек игрока: «if you accept the person asking, he just
+       joins your current team rather than the player leaving their trio for the other». Раньше второй садился, только
+       если находился в ростере сцены, а иначе на его месте оставался твой напарник года. */
+    if(t.fmtPair){
       const pc=careerRosterNowEU().find(x=>hKey(x)===hKey(t.fmtPair));
-      if(pc) list.push({handle:pc.handle, cardRegion:pc.region||w.cardRegion||'EU', patience:CAREER_PATIENCE_START, since:careerToday()});
+      const mate={handle:pc ? pc.handle : t.fmtPair, cardRegion:(pc && pc.region)||w.cardRegion||'EU', patience:CAREER_PATIENCE_START, since:careerToday()};
+      // В сквад (4) их пары и тебя мало — одно место остаётся за твоим напарником года.
+      const keep=f>3 ? list.filter(r=>{ const h=hKey((ccMateCardOf(r)||{}).handle||''); return h && h!==hKey(w.handle) && h!==hKey(mate.handle); }).slice(0, f-3) : [];
+      list.length=0; list.push(...keep, rec, mate);
     }
     CAREER.rosters[f]=list.slice(-(f-1));
     t.state='partner'; t.unread=false;
@@ -146299,9 +146357,14 @@ function careerRetiredHTML(){
         ? rows.map(r=>`<div class="ch-row"><em>${L().ccBoardSeason(r.season)} · ${
             esc(careerRunLabel(r))}</em><b>${L().ccBoardPlace(r.place, r.of)}</b></div>`).join('')
         : `<div class="ch-empty">${L().ccBoardNone}</div>`; })()}
+    ${/* После карьеры — в тренеры (Notion 15.10: «when you end career I was ready to get a proposition to become a coach»).
+         Дорога туда — режим менеджера клуба: свой состав, расписание, решения между играми. Дисквалифицированному не зовут. */
+      careerBanned() ? '' : `<div class="cc-coach-offer"><b>${esc(L().ccRetCoachTitle)}</b><span>${esc(L().ccRetCoachSub)}</span>
+      <button class="ch-play" onclick="careerToCoach()">${esc(L().ccRetCoachBtn)}</button></div>`}
     <div class="cc-over-act"><button class="ch-play" onclick="careerWipe()">${L().ccNewCareer}</button></div>
   </div></div>`;
 }
+function careerToCoach(){ try{ careerSave(); }catch(e){} show('screen-mode'); mgrStart(); }
 /* Thirty, on the user's call, and it is the scene's own number rather than a
    curve's: FNCS is played by teenagers and won by them, and a competitor who
    is still in it at thirty has had a long career by this game's standards. It

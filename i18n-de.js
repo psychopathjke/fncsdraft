@@ -3840,3 +3840,4 @@ Object.assign(I18N.de, {hmSceneSub2:'Kommende Epic-Turniere mit Preisgeld: FNCS 
 Object.assign(I18N.de, {hmTop50:'Top 50'});
 Object.assign(I18N.de, {hmTimerNext:'Nächstes Epic-Turnier:', hmTimerLive:'Läuft jetzt', hmTimerWatch:'Ansehen', hmTimerToday:'heute', hmTimerTomorrow:'morgen', hmDayShort:'T'});
 Object.assign(I18N.de, {hmSceneRecent:'Letzte Sieger'});
+Object.assign(I18N.de, {ccNewsMpPaySync:d=>'Preisgeld mit dem Partner nach der gemeinsamen Tabelle abgeglichen: '+d, ccCoachLeans:t=>'ich würde «'+t+'» nehmen', ccCoachTag:'Coach', ccRetCoachTitle:'Clubs wollen dich als Coach', ccRetCoachSub:'Deine Spielerkarriere ist vorbei, aber die Szene kennt dich. Übernimm einen Club: Kader, Spielplan, Entscheidungen zwischen den Games.', ccRetCoachBtn:'Coach eines Clubs werden'});
