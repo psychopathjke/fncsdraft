@@ -7049,19 +7049,6 @@
   .home-h{margin:0 0 4px;font-family:var(--font-display);font-weight:700;font-size:21px;letter-spacing:.03em;
     text-transform:uppercase;color:#fff;transform:skewX(-7deg);transform-origin:left;}
   .home-sub{margin:0 0 12px;font-size:12.5px;color:#a9bbe3;line-height:1.45;}
-  .hc-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,380px),1fr));gap:10px;}
-  .hc-card{display:flex;align-items:center;gap:12px;width:100%;padding:10px;border-radius:12px;cursor:pointer;text-align:left;
-    font:inherit;color:inherit;background:rgba(255,255,255,.05);border:1px solid rgba(140,175,255,.22);}
-  .hc-card:hover,.hc-card:focus-visible{border-color:#ffdd00;background:rgba(255,221,0,.06);outline:none;}
-  .hc-face{flex:0 0 auto;width:56px;height:56px;border-radius:10px;object-fit:cover;object-position:50% 20%;background:#0b1640;}
-  .hc-face.crest{object-fit:contain;padding:7px;background:rgba(255,255,255,.07);}
-  .hc-in{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px;}
-  .hc-in em{font-style:normal;font-size:11.5px;font-weight:800;color:#9fe1ff;}
-  .hc-in b{font-family:var(--font-display);font-weight:600;font-size:19px;line-height:1.1;color:#fff;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .hc-in span{font-size:12px;color:#b9c7ea;line-height:1.35;}
-  .hc-go{flex:0 0 auto;font-family:var(--font-display);font-weight:600;font-size:14px;letter-spacing:.05em;text-transform:uppercase;
-    background:#ffdd00;color:#0b0f12;border-radius:999px;padding:9px 14px 8px;}
   .hf-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
   .hf-card{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:12px;border-radius:12px;
     background:rgba(255,255,255,.04);border:1px solid rgba(126,240,221,.22);}
@@ -7160,6 +7147,7 @@
   #homeLive[data-tab="board"] #homeBoard:not([hidden]){display:block;}
   .hl-pane>.home-h{display:none;}
   .hl-tabs{display:flex;gap:6px;margin:0 0 10px;overflow-x:auto;scrollbar-width:none;}
+  .home-tabs{margin-top:10px;}
   .hl-tabs::-webkit-scrollbar{display:none;}
   .hl-tabs button{flex:0 0 auto;font-family:var(--font-display);font-weight:600;font-size:16px;letter-spacing:.03em;text-transform:uppercase;
     padding:8px 14px 7px;border-radius:999px;border:1px solid rgba(140,175,255,.25);background:rgba(255,255,255,.05);color:#c9d6f5;cursor:pointer;}
@@ -7596,8 +7584,6 @@
          Id кнопок cstripDuo/cstripRace/cstripCode сохранены: на них смотрят
          check-mp-doors и setLang. Арт — ключевой арт Major 1, один. -->
     <!-- Карьера игрока и карьера менеджера — ОДНОЙ строкой, две половины (его скрин 7.10: красные рамки слева и справа). -->
-    <!-- «Продолжить» — по сохранениям, рисует homeContinueDraw (15.10). Новичок его не видит. -->
-    <section class="home-block" id="homeContinue" hidden></section>
     <div class="hero-pair">
     <section class="hero hero-career" aria-labelledby="heroTitle">
       <!-- Самые хайповые игроки всех лет позади текста, на менеджере — гербы клубов (его слово 8.10). -->
@@ -113993,7 +113979,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='9a311efb';
+const CC_BUILD='75c94249';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -158991,50 +158977,11 @@ setTimeout(()=>{ try{ if(!mgrAllowed()) return; document.querySelectorAll('.hero
 /* ГЛАВНАЯ 15.10: «Продолжить» по сохранениям, «Сцена сейчас» по настоящему календарю 2026 и «Игроки сайта».
    Рисуется из ccHeroCareerText — то есть на загрузке, на смене языка и при каждом возврате на главную. */
 let HOME_BOARD=null, HOME_BOARD_ALL=false;
-/* Сейвы менеджера — по ключам MGR_LS_SLOT (fncsdraft_manager, fncsdraft_manager_s<n>), как mgrSlotCard: код менеджера
-   лежит в mgr.js и до входа в режим не загружен, а главная должна видеть сейв сразу. */
-const HOME_MGR_SLOTS=10;
-function homeMgrCard(n){
-  let m=null; try{ m=ccSaveParse(localStorage.getItem(n===1 ? 'fncsdraft_manager' : 'fncsdraft_manager_s'+n)); }catch(e){}
-  if(!m || !m.club) return null;
-  const cr=(m.shadow||{}).career||{};
-  return {club:m.club.name, day:cr.day||null, season:cr.season||1, cash:m.club.cash||0};
-}
-function homeMgrOpen(n){
-  if(typeof mgrSlotOpen==='function'){ mgrSlotOpen(n); return; }
-  if(typeof mgrLazy==='function') mgrLazy(function(){ mgrSlotOpen(n); });
-}
 function homeRender(){
-  try{ homeContinueDraw(); }catch(e){}
   try{ homeSceneDraw(); }catch(e){}
   try{ homeBoardDraw(); }catch(e){}
   try{ homeRealDraw(); }catch(e){}
   try{ homeLiveTabs(); }catch(e){}
-}
-function homeContinueDraw(){
-  const box=document.getElementById('homeContinue'); if(!box) return;
-  const T=L(), cards=[];
-  for(let n=1; n<=CC_SLOTS; n++){
-    const c=ccSlotCard(n); if(!c || c.retired) continue;
-    cards.push('<button class="hc-card" type="button" onclick="careerSlotOpen('+n+')">'+
-      (c.face ? '<img class="hc-face" src="'+esc(c.face)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+
-      '<span class="hc-in"><em>'+esc(T.hmSlotCareer)+' · '+esc(homeDate(c.day))+'</em><b>'+esc(c.nick)+'</b>'+
-      '<span>'+esc(T.hmSlotLine(c.season, c.div, '$'+ccNum(c.earnings)))+(c.org ? ' · '+esc(c.org) : '')+'</span></span>'+
-      '<span class="hc-go">'+esc(T.hmPlayOn)+'</span></button>');
-  }
-  if(typeof mgrAllowed==='function' && mgrAllowed()){
-    for(let n=1; n<=HOME_MGR_SLOTS; n++){
-      const m=homeMgrCard(n); if(!m) continue;
-      cards.push('<button class="hc-card" type="button" onclick="homeMgrOpen('+n+')">'+
-        '<img class="hc-face crest" src="logos/'+esc(String(m.club||'').replace(/ /g, '_'))+'.png" alt="" loading="lazy" onerror="this.remove()">'+
-        '<span class="hc-in"><em>'+esc(T.hmSlotMgr)+(m.day ? ' · '+esc(homeDate(m.day)) : '')+'</em><b>'+esc(m.club)+'</b>'+
-        '<span>'+esc(T.hmMgrLine(m.season, '$'+ccNum(m.cash)))+'</span></span>'+
-        '<span class="hc-go">'+esc(T.hmPlayOn)+'</span></button>');
-    }
-  }
-  box.hidden=!cards.length;
-  box.innerHTML=cards.length ? '<h2 class="home-h">'+esc(T.hmContinue)+'</h2><p class="home-sub">'+esc(T.hmContinueSub)+'</p>'+
-    '<div class="hc-list">'+cards.join('')+'</div>' : '';
 }
 function homeDate(k, noYear){
   if(!k) return '';
