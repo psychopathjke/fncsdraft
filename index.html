@@ -7203,13 +7203,13 @@
   .hs-list li.live i{color:#0b0f12;background:#ffdd00;border-radius:4px;padding:0 5px;}
   .hs-list li b{font-size:13px;font-weight:700;color:#e6edfb;}
   /* Таймер до ближайшего турнира Epic. */
-  .home-timer{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:0 0 12px;padding:10px 16px;border-radius:var(--r,14px);
+  .home-timer{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:0 0 12px;padding:10px 12px;border-radius:var(--r,14px);
     background:linear-gradient(90deg,#1a3480,#12245c);box-shadow:inset 0 0 0 1px rgba(255,221,0,.35);color:#e6edfb;font-size:13.5px;}
   .home-timer[hidden]{display:none;}
   .home-timer b{color:#fff;font-weight:800;}
   .ht-lbl{color:#9fe1ff;font-weight:800;font-size:12px;}
   .ht-when{color:#b9c7ea;font-size:12.5px;}
-  .ht-cd{margin-left:auto;font-family:var(--font-display);font-weight:700;font-size:24px;letter-spacing:.03em;color:#ffdd00;font-variant-numeric:tabular-nums;}
+  .ht-cd{flex-basis:100%;font-family:var(--font-display);font-weight:700;font-size:26px;letter-spacing:.03em;color:#ffdd00;font-variant-numeric:tabular-nums;}
   .ht-live{background:#ff3d6e;color:#fff;font-weight:900;font-size:11px;letter-spacing:.06em;text-transform:uppercase;border-radius:5px;padding:3px 7px;}
   .ht-watch{background:#9146ff;color:#fff;font-weight:800;font-size:12.5px;border-radius:999px;padding:6px 12px;text-decoration:none;}
   .ht-watch:focus-visible{outline:2px solid #ffdd00;outline-offset:2px;}
@@ -7651,8 +7651,6 @@
          Id кнопок cstripDuo/cstripRace/cstripCode сохранены: на них смотрят
          check-mp-doors и setLang. Арт — ключевой арт Major 1, один. -->
     <!-- Карьера игрока и карьера менеджера — ОДНОЙ строкой, две половины (его скрин 7.10: красные рамки слева и справа). -->
-    <!-- Таймер до ближайшего турнира Epic — рисует homeTimerDraw (16.10). -->
-    <div class="home-timer" id="homeTimer" hidden></div>
     <div class="hero-pair">
     <section class="hero hero-career" aria-labelledby="heroTitle">
       <!-- Самые хайповые игроки всех лет позади текста, на менеджере — гербы клубов (его слово 8.10). -->
@@ -114089,7 +114087,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='47f306cc';
+const CC_BUILD='29248e4e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159088,8 +159086,8 @@ setTimeout(()=>{ try{ if(!mgrAllowed()) return; document.querySelectorAll('.hero
    Рисуется из ccHeroCareerText — то есть на загрузке, на смене языка и при каждом возврате на главную. */
 let HOME_BOARD=null, HOME_BOARD_ALL=false;
 function homeRender(){
-  try{ homeTimerDraw(); }catch(e){}
   try{ homeSceneDraw(); }catch(e){}
+  try{ homeTimerDraw(); }catch(e){}
   try{ homeBoardDraw(); }catch(e){}
   try{ homeRealDraw(); }catch(e){}
   try{ homeLiveTabs(); }catch(e){}
@@ -159218,7 +159216,8 @@ function homeSceneDraw(){
     return '<li class="hs-li'+(live ? ' live' : '')+'"><img src="'+art+'" alt="" onerror="this.remove()"><div><b>'+esc(x.n)+(x.tier ? ' <em>'+esc(x.tier)+'</em>' : '')+'</b>'+
       '<span><i>'+esc(when)+'</i> · '+esc(dates)+(x.loc ? ' · '+esc(x.loc) : '')+'</span><span class="hs-pm">💰 '+esc(money)+'</span></div></li>';
   }).join('');
-  box.innerHTML='<h2 class="home-h">'+esc(T.hmSceneTitle)+'</h2><p class="home-sub">'+esc(T.hmSceneSub2)+'</p>'+
+  // Таймер до ближайшего турнира — здесь же, в колонке сцены (16.10: «пусть таймер будет где scene»); заполняет homeTimerDraw.
+  box.innerHTML='<h2 class="home-h">'+esc(T.hmSceneTitle)+'</h2><p class="home-sub">'+esc(T.hmSceneSub2)+'</p><div class="home-timer" id="homeTimer" hidden></div>'+
     (rows ? '<div>'+rows+'</div>' : '<p class="home-sub">'+esc(T.hmSceneDone)+'</p>')+
     (other ? '<b class="hs-other">'+esc(T.hmSceneOther)+'</b><ul class="hs-st hs-list">'+other+'</ul>' : '');
   box.hidden=false;
@@ -159418,7 +159417,7 @@ function homeLiveTabs(k){
   bar.innerHTML=panes.map(p=>'<button type="button" role="tab" aria-selected="'+(p[0]===cur)+'" class="'+(p[0]===cur ? 'on' : '')+'" onclick="homeLiveTabs(\''+p[0]+'\')">'+esc(p[2])+'</button>').join('');
   /* Снимок блока — в браузер: при следующем заходе оболочка ставит его сразу (скрипт под разметкой #homeLive),
      не дожидаясь app.js (15.10: «с делеем результаты появляются»). Пишется, только когда таблица сайта уже пришла. */
-  if(HOME_BOARD && HOME_BOARD._at){ try{ localStorage.setItem('fd_home_live', JSON.stringify({lang:LANG, tab:cur, html:box.innerHTML})); }catch(e){} }
+  if(HOME_BOARD && HOME_BOARD._at){ try{ localStorage.setItem('fd_home_live', JSON.stringify({lang:LANG, tab:cur, html:box.innerHTML.replace(/<div class="home-timer" id="homeTimer"[^>]*>[\s\S]*?<\/div>/, '<div class="home-timer" id="homeTimer" hidden></div>')})); }catch(e){} }
 }
 function homeBoardDraw(){
   const box=document.getElementById('homeBoard'); if(!box) return;
