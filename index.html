@@ -9242,6 +9242,17 @@ ccFlatstudio:'Студия',
 ccFlatone:'Однушка',
 ccFlattwo:'Двушка',
 ccFlatthree:'Трёшка',
+ccFlathouse:'Дом',
+ccFlatvilla:'Вилла',
+ccOwnCupTitle:'Свой турнир',
+ccOwnCupHint:'Ты ставишь призовой фонд — сцена играет твой кап. Деньги уходят победителям, тебе остаются подписчики и имя. Не чаще раза в месяц.',
+ccOwnCupFund:n=>'Фонд '+n,
+ccOwnCupAsk:n=>'Провести свой кап с фондом $'+n+'? Деньги уйдут призёрам.',
+ccOwnCupYes:n=>'Провести · $'+n,
+ccOwnCupLast:'Последний',
+ccOwnCupSpent:n=>'Всего вложено ('+n+')',
+ccOwnCupNext:'Следующий можно с',
+ccNewsOwnCup:(who,n,w,f)=>who+' Cup с фондом $'+n+': победил '+w+'. +'+f+' подписчиков',
 ccMoveTitle:'Переезд',
 ccMoveHint:'Пинг решает ближние бои. Паспорт не меняется — меняется только, откуда ты играешь, и за это платится месячная аренда',
 ccMoveWhere:'Живёт',
@@ -11263,6 +11274,17 @@ ccFlatstudio:'Studio',
 ccFlatone:'One bedroom',
 ccFlattwo:'Two bedrooms',
 ccFlatthree:'Three bedrooms',
+ccFlathouse:'House',
+ccFlatvilla:'Villa',
+ccOwnCupTitle:'Host your own cup',
+ccOwnCupHint:'You put up the prize pool and the scene plays your cup. The money goes to the winners; you keep the followers and the name. Once a month at most.',
+ccOwnCupFund:n=>n+' prize pool',
+ccOwnCupAsk:n=>'Host your own cup with a $'+n+' prize pool? The money goes to the winners.',
+ccOwnCupYes:n=>'Host · $'+n,
+ccOwnCupLast:'Last one',
+ccOwnCupSpent:n=>'Put in so far ('+n+')',
+ccOwnCupNext:'Next one from',
+ccNewsOwnCup:(who,n,w,f)=>who+' Cup, $'+n+' prize pool: won by '+w+'. +'+f+' followers',
 ccMoveTitle:'Moving',
 ccMoveHint:'Ping decides close fights. Your passport does not change — only where you play from, and that costs a month of rent',
 ccMoveWhere:'Living in',
@@ -13431,6 +13453,8 @@ ccFlatstudio:'Studio',
 ccFlatone:'Deux pièces',
 ccFlattwo:'Trois pièces',
 ccFlatthree:'Quatre pièces',
+ccFlathouse:'Maison',
+ccFlatvilla:'Villa',
 ccMoveTitle:'Déménagement',
 ccMoveHint:'Le ping décide des combats rapprochés. Ton passeport ne change pas — seulement l’endroit d’où tu joues, et ça coûte un mois de loyer',
 ccMoveWhere:'Habite à',
@@ -16777,6 +16801,8 @@ ccFlatstudio:"Monolocale",
 ccFlatone:"Bilocale",
 ccFlattwo:"Trilocale",
 ccFlatthree:"Quattro locali",
+ccFlathouse:"Casa",
+ccFlatvilla:"Villa",
 ccMoveTitle:"Trasloco",
 ccMoveHint:"Il ping decide gli scontri ravvicinati. Il passaporto non cambia — cambia solo da dove giochi, e costa un mese d'affitto",
 ccMoveWhere:"Vivi a",
@@ -19323,6 +19349,8 @@ ccFlatstudio:"Quitinete",
 ccFlatone:"Um quarto",
 ccFlattwo:"Dois quartos",
 ccFlatthree:"Três quartos",
+ccFlathouse:"Casa",
+ccFlatvilla:"Mansão",
 ccMoveTitle:"Mudança",
 ccMoveHint:"O ping decide as brigas de perto. Seu passaporte não muda — muda só de onde você joga, e isso custa um mês de aluguel",
 ccMoveWhere:"Morando em",
@@ -113476,7 +113504,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='770f88c1';
+const CC_BUILD='9b2e7741';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -142139,7 +142167,13 @@ const CC_FLATS=[
   {id:'studio', m2:30,  mult:40,  cap:0},
   {id:'one',    m2:45,  mult:70,  cap:5},
   {id:'two',    m2:70,  mult:110, cap:10},
-  {id:'three',  m2:100, mult:170, cap:16}
+  {id:'three',  m2:100, mult:170, cap:16},
+  /* Дом и вилла — его просьба 15.10: «что ещё добавить в магазин, у людей много денег» (верх «Игроков сайта»
+     держит по $10M, а дороже трёшки за $68–340K тратить было не на что). Цена тем же правилом — месяцы аренды
+     места: дом $0,3–1,4M, вилла $1,2–6M. Запас сил растёт ступенями поменьше, чем деньги: дом на 4 больше трёшки,
+     вилла ещё на 4 — это роскошь, а не тренировка. */
+  {id:'house',  m2:250, mult:700,  cap:20},
+  {id:'villa',  m2:600, mult:3000, cap:24}
 ];
 function ccFlatOf(id){ return CC_FLATS.find(f=>f.id===id) || null; }
 // Where the career is living, as one key: a country inside Europe, a region
@@ -142559,6 +142593,64 @@ function ccFlatPlaces(){
     out.push({code:r, name:regionName(r), rent:CC_REGION_RENT[r], region:true}));
   return out.sort((a,b)=>a.rent-b.rent || a.name.localeCompare(b.name));
 }
+/* СВОЙ КАП — его просьба 15.10: «что ещё добавить в магазин, у людей много денег». Игрок ставит призовой
+   фонд, сцена его играет, победитель — из верха своего региона. Платит охват, а не рейтинг: фонд/20 подписчиков
+   (через СММ, как любой охват) — $1M дают 50 тысяч, вдвое больше победы на Глобале. Охват почти не
+   возвращается деньгами (эфир — охват/2000 за вечер), так что это трата, а не вклад. Раз в 30 дней. */
+const CC_OWN_CUP_FUNDS=[50000, 250000, 1000000];
+const CC_OWN_CUP_DAYS=30, CC_OWN_CUP_REACH=1/20;
+function ccOwnCupNext(){
+  const c=CAREER.career.ownCup;
+  return (c && c.last) ? ccAddDays(c.last, CC_OWN_CUP_DAYS) : null;
+}
+function ccOwnCupReady(){ const n=ccOwnCupNext(); return !n || careerToday()>=n; }
+function ccOwnCupWinner(fund){
+  let pool=[];
+  try{ pool=ccSceneRoster(ccCareerRegion()).slice().sort((a,b)=>ccCardOvr(b)-ccCardOvr(a)).slice(0, 40); }catch(e){ pool=[]; }
+  const me=CAREER.player && CAREER.player.handle ? hKey(CAREER.player.handle) : '';
+  pool=pool.filter(c=>c && hKey(c)!==me);
+  if(!pool.length) return null;
+  const rnd=careerRng(ccHashStr('owncup|'+(CAREER.player.nick||'')+'|'+careerToday()+'|'+fund));
+  // Верх сцены вероятнее, но выигрывает не всегда первый.
+  return pool[Math.floor(Math.pow(rnd(), 1.6)*pool.length)];
+}
+function careerOwnCup(fund, sure){
+  const cr=CAREER.career;
+  if(CC_OWN_CUP_FUNDS.indexOf(fund)<0 || (cr.balance||0)<fund || !ccOwnCupReady()) return false;
+  if(!sure){
+    ccAsk(L().ccOwnCupAsk(ccNum(fund)), function(){ careerOwnCup(fund, true); }, {yes:L().ccOwnCupYes(ccNum(fund))});
+    return 'ask';
+  }
+  cr.balance-=fund;
+  const got=careerReachAdd(Math.round(fund*CC_OWN_CUP_REACH));
+  const w=ccOwnCupWinner(fund);
+  const wn=w ? '@'+(w.handle||'') : '—';
+  const was=cr.ownCup||{};
+  cr.ownCup={last:careerToday(), n:(was.n||0)+1, spent:(was.spent||0)+fund, win:wn, got:got, fund:fund};
+  careerNews('good', 'ccNewsOwnCup', [CAREER.player.nick||'', ccNum(fund), wn, ccFollowers(got)]);
+  careerSave();
+  careerRenderHub('shop');
+  return true;
+}
+function careerOwnCupHTML(){
+  const T=L(), cr=CAREER.career, c=cr.ownCup||null, ready=ccOwnCupReady();
+  const rows=CC_OWN_CUP_FUNDS.map(fund=>{
+    const can=ready && (cr.balance||0)>=fund;
+    return `<div class="cc-buy">
+      <div class="cc-buy-in"><b>${T.ccOwnCupFund('$'+ccNum(fund))}</b>
+        <span>+${ccFollowers(Math.round(fund*CC_OWN_CUP_REACH))} ${T.xFollowers}</span></div>
+      <button class="ch-sign"${can?'':' disabled'} onclick="careerOwnCup(${fund})">$${ccNum(fund)}</button>
+    </div>`;
+  }).join('');
+  return `<div class="ch-tile cc-shop">
+    <h4>${T.ccOwnCupTitle}</h4>
+    <div class="ch-hint">${T.ccOwnCupHint}</div>
+    ${c ? `<div class="ch-row"><em>${T.ccOwnCupLast}</em><b>${ccDayLabel(c.last)} · $${ccNum(c.fund||0)} · ${esc(c.win||'')}</b></div>
+           <div class="ch-row"><em>${T.ccOwnCupSpent(c.n||1)}</em><b>$${ccNum(c.spent||0)}</b></div>` : ''}
+    ${ready ? '' : `<div class="ch-row"><em>${T.ccOwnCupNext}</em><b>${ccDayLabel(ccOwnCupNext())}</b></div>`}
+    <div class="cc-buys">${rows}</div>
+  </div>`;
+}
 function careerFlatHTML(){
   const cr=CAREER.career, place=ccFlatPlace(), here=ccFlatHere(), any=ccFlat();
   const rent=ccRentBase(place);
@@ -142901,7 +142993,7 @@ function careerShopHTML(){
     rows+'</div>'+
     // The one thing on this tab that is not a thing on a desk. It sits under the
     // desk rather than in it: a rig is a purchase, a move is a decision.
-    careerClubHTML()+careerFlatHTML()+careerMoveHTML()+careerCheatHTML()+'</div>';
+    careerClubHTML()+careerOwnCupHTML()+careerFlatHTML()+careerMoveHTML()+careerCheatHTML()+'</div>';
 }
 
 /* ---- Being asked about it ---------------------------------------------------
