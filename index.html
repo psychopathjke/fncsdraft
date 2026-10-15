@@ -113671,7 +113671,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='af750b11';
+const CC_BUILD='97462084';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -143293,7 +143293,9 @@ function careerCheatHTML(){
    покупка, а не все ступени списком. */
 let CC_SHOP_SEC='gear';
 const CC_SHOP_SLOTS=['mouse','keyboard','headset','monitor','pc','chair','stream'];
-function ccShopSec(k){ CC_SHOP_SEC=k; careerRenderHub('shop'); try{ const g=document.querySelector('#screen-career-hub .cc-shop-head'); if(g) g.scrollIntoView({block:'start'}); }catch(e){} }
+// Без прокрутки (Notion 15.10, скрин 3): scrollIntoView к шапке магазина уводил за верх экрана панель карьеры
+// над ним — «пропала панелька, когда нажал роскошь». Раздел меняется на месте.
+function ccShopSec(k){ CC_SHOP_SEC=k; careerRenderHub('shop'); }
 function ccShopEffect(it){
   return (it.reach ? L().ccShopReach+' +'+Math.round(it.reach*100)+'%'
         : it.conf ? L().ccShopConf+' +'+it.conf
