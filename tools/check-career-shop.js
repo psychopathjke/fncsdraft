@@ -178,6 +178,8 @@ const BOOT = `
     fresh(20000); careerBuy('pcpro');
     // Магазин разделами (15.10): устройства — в «Сетапе», машина — в «Роскоши», карточкой с фото (cc-lad-img).
     CC_SHOP_SEC = 'gear'; let html = careerShopHTML(); CC_SHOP_SEC = 'lux'; html += careerShopHTML(); CC_SHOP_SEC = 'gear';
+    // «Лучшая покупка» повторяет одно устройство из списка — её фото не отдельная строка.
+    html = html.split(ccShopBestHTML()).join('');
     const shown = ccShopVisible();
     out.notes.rows = {shown: shown.length, ofItems: CC_SHOP.length,
                       ids: shown.map(i => i.id).join(',')};
