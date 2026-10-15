@@ -7076,7 +7076,14 @@
   .hs-ev b{color:#fff;font-size:14px;font-weight:800;line-height:1.25;}
   .hs-ev span{font-size:12px;color:#b9c7ea;}
   .hs-ev i{font-style:normal;font-weight:800;color:#ffdd00;}
-  .hs-ev.live i{color:#0b0f12;background:#ffdd00;border-radius:4px;padding:0 5px;}
+  .hs-ev{align-items:flex-start;}
+  .hs-ev img{width:104px;height:70px;}
+  .hs-ev b.hs-t{font-family:var(--font-display);font-weight:600;font-size:18px;letter-spacing:.02em;}
+  .hs-st{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:5px;}
+  .hs-st li{display:flex;flex-direction:column;gap:1px;}
+  .hs-st li b{font-size:13px;font-weight:700;color:#e6edfb;}
+  .hs-st li.live i{color:#0b0f12;background:#ffdd00;border-radius:4px;padding:0 5px;}
+  @media(max-width:420px){ .hs-ev img{width:80px;height:56px;} }
   .hb-row{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:8px;padding:7px 0;
     border-top:1px solid rgba(255,255,255,.08);font-size:13.5px;}
   .hb-row:first-child{border-top:0;padding-top:2px;}
@@ -159154,15 +159161,26 @@ function homeSceneDraw(){
     if(kind==='nations' || HOME_SCENE_SKIP[id] || to<today || seen[id]) return;
     seen[id]=1; list.push({from, to, id});
   });
-  const rows=list.slice(0, 3).map(e=>{
-    const live=e.from<=today;
-    const days=Math.round((Date.parse(e.from+'T00:00:00Z')-Date.parse(today+'T00:00:00Z'))/864e5);
-    const when=live ? T.hmSceneLive : days===1 ? T.hmSceneTomorrow : T.hmSceneIn(days);
-    const name=String(names[e.id]||e.id).replace(/\s*·?\s*\{CITY\}/, '');
-    const art=(typeof CAREER_EV_ART_ID!=='undefined' && CAREER_EV_ART_ID[e.id]) || 'art/fncs-2026.jpg';
-    const dates=homeDate(e.from, true)+(e.to!==e.from ? ' – '+homeDate(e.to, true) : '');
-    return '<div class="hs-ev'+(live ? ' live' : '')+'"><img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.remove()"><div>'+
-      '<b>'+esc(name)+'</b><span><i>'+esc(when)+'</i> · '+esc(dates)+'</span></div></div>';
+  /* Стадии одного турнира — одной карточкой (15.10: три одинаковые обложки FNCS Solos подряд). Турнир — id без стадии:
+     FNCSSolos_Heats → FNCSSolos, ReloadEliteSeries3PlayIn → ReloadEliteSeries3. */
+  const fam=id=>id.replace(/_.*$/, '').replace(/(Opens|PlayIn|Heats|Final)$/, '');
+  const groups=[];
+  list.forEach(e=>{ const f=fam(e.id), g=groups.find(x=>x.f===f); if(g) g.items.push(e); else groups.push({f, items:[e]}); });
+  const rows=groups.slice(0, 2).map(g=>{
+    const first=g.items[0];
+    const full=id=>String(names[id]||id).replace(/\s*·?\s*\{CITY\}/, '');
+    const title=full(first.id).split(' · ')[0];
+    const art=(typeof CAREER_EV_ART_ID!=='undefined' && CAREER_EV_ART_ID[first.id]) || 'art/fncs-2026.jpg';
+    const stages=g.items.slice(0, 4).map(e=>{
+      const live=e.from<=today;
+      const days=Math.round((Date.parse(e.from+'T00:00:00Z')-Date.parse(today+'T00:00:00Z'))/864e5);
+      const when=live ? T.hmSceneLive : days===1 ? T.hmSceneTomorrow : T.hmSceneIn(days);
+      const stage=full(e.id).split(' · ').slice(1).join(' · ') || full(e.id);
+      const dates=homeDate(e.from, true)+(e.to!==e.from ? ' – '+homeDate(e.to, true) : '');
+      return '<li'+(live ? ' class="live"' : '')+'><b>'+esc(stage)+'</b><span><i>'+esc(when)+'</i> · '+esc(dates)+'</span></li>';
+    }).join('');
+    return '<div class="hs-ev"><img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.remove()"><div>'+
+      '<b class="hs-t">'+esc(title)+'</b><ul class="hs-st">'+stages+'</ul></div></div>';
   }).join('');
   box.innerHTML='<h2 class="home-h">'+esc(T.hmSceneTitle)+'</h2><p class="home-sub">'+esc(T.hmSceneSub)+'</p>'+
     (rows ? '<div>'+rows+'</div>' : '<p class="home-sub">'+esc(T.hmSceneDone)+'</p>');
