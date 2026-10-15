@@ -165,6 +165,7 @@ export class Board {
       id TEXT PRIMARY KEY, nick TEXT, region TEXT, country TEXT, seasons INTEGER, earn INTEGER,
       ovr INTEGER, div INTEGER, titles INTEGER, year INTEGER, best TEXT, bestEv TEXT, at INTEGER)`);
     this.sql.exec('CREATE INDEX IF NOT EXISTS rows_earn ON rows(earn DESC)');
+    try{ this.sql.exec('ALTER TABLE rows ADD COLUMN spent INTEGER DEFAULT 0'); }catch(e){}   // 15.10: «Потрачено»
     // Последние отказы (Notion 15.10: строку с >500 титулами сервер молча выбрасывал неделю). Ник и
     // причина видны по GET /board?rejects=1, id не хранится.
     this.sql.exec('CREATE TABLE IF NOT EXISTS rejects(at INTEGER, nick TEXT, err TEXT, body TEXT)');
@@ -188,24 +189,26 @@ export class Board {
       }
       if(r.skip) return json({ok:true, skip:r.skip});
       const w=r.row;
-      this.sql.exec(`INSERT OR REPLACE INTO rows(id,nick,region,country,seasons,earn,ovr,div,titles,year,best,bestEv,at)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`, w.id, w.nick, w.region, w.country, w.seasons, w.earn,
-        w.ovr, w.div, w.titles, w.year, w.best, w.bestEv, w.at);
+      this.sql.exec(`INSERT OR REPLACE INTO rows(id,nick,region,country,seasons,earn,ovr,div,titles,year,best,bestEv,at,spent)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, w.id, w.nick, w.region, w.country, w.seasons, w.earn,
+        w.ovr, w.div, w.titles, w.year, w.best, w.bestEv, w.at, w.spent||0);
       return json({ok:true});
     }
     if(url.searchParams.get('rejects'))
       return json({rejects:this.sql.exec('SELECT at,nick,err,body FROM rejects ORDER BY at DESC LIMIT 50').toArray()});
     const region=REGIONS.indexOf(url.searchParams.get('region'))>=0 ? url.searchParams.get('region') : null;
     const me=String(url.searchParams.get('me')||'');
+    // Сортировка: по призовым (как было) или по тратам. Имя колонки — только из этого списка.
+    const col=url.searchParams.get('sort')==='spent' ? 'spent' : 'earn';
     const where=region ? ' WHERE region=?' : '';
     const args=region ? [region] : [];
-    const rows=this.sql.exec('SELECT * FROM rows'+where+' ORDER BY earn DESC, at ASC LIMIT '+TOP, ...args).toArray();
+    const rows=this.sql.exec('SELECT * FROM rows'+where+' ORDER BY '+col+' DESC, at ASC LIMIT '+TOP, ...args).toArray();
     const total=this.sql.exec('SELECT COUNT(*) AS n FROM rows'+where, ...args).toArray()[0].n;
     let you=null;
     const mine=/^[a-z0-9-]{16,40}$/.test(me) ? this.one(me) : null;
     if(mine && (!region || mine.region===region)){
-      const above=this.sql.exec('SELECT COUNT(*) AS n FROM rows WHERE (earn>? OR (earn=? AND at<?))'+(region?' AND region=?':''),
-        mine.earn, mine.earn, mine.at, ...args).toArray()[0].n;
+      const above=this.sql.exec('SELECT COUNT(*) AS n FROM rows WHERE ('+col+'>? OR ('+col+'=? AND at<?))'+(region?' AND region=?':''),
+        mine[col]||0, mine[col]||0, mine.at, ...args).toArray()[0].n;
       you={rank:above+1, row:strip(mine)};
     }
     return json({total, rows:rows.map(r=>Object.assign(strip(r), r.id===me ? {you:true} : {})), you});

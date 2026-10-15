@@ -3834,6 +3834,7 @@
   .ch-subtab{border:0;cursor:pointer;font:inherit;font-size:12px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;
     padding:8px 14px;border-radius:999px;color:#cfd8ff;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(180,200,255,.18);}
   .ch-subtab.on{color:#0b1a3a;background:#ffdd00;box-shadow:none;}
+  .cc-coll{display:flex; flex-wrap:wrap; gap:8px; font-size:28px; line-height:1; margin:4px 0 8px;}
   /* Игроки сайта (careerWorldHTML): регионы чипами, своя строка жёлтой полосой, на телефоне таблица листается вбок. */
   .lb-top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:0 0 8px;}
   .lb-regs{display:flex;gap:4px;flex-wrap:wrap;}
@@ -9244,6 +9245,37 @@ ccFlattwo:'Двушка',
 ccFlatthree:'Трёшка',
 ccFlathouse:'Дом',
 ccFlatvilla:'Вилла',
+ccMerchTitle:'Свой мерч',
+ccMerchHint:'Запуск стоит один раз, потом каждое первое число платит доля твоей аудитории и приходят новые подписчики. Окупается годами.',
+ccMerch_capsule:'Капсула',
+ccMerch_line:'Линия одежды',
+ccMerch_brand:'Свой бренд',
+ccMerchRate:(p,c)=>p+'% подписчиков в $, до $'+c+'/мес',
+ccMerchAsk:(n,c)=>'Запустить «'+n+'» за $'+c+'?',
+ccMerchMonth:'В месяц сейчас',
+ccMerchEarned:'Заработано на мерче',
+ccNewsMerch:n=>'Запустил мерч: '+n,
+ccCharityTitle:'Благотворительность',
+ccCharityHint:'Деньги уходят фонду, тебе — уважение сцены и подписчики. Не чаще раза в месяц.',
+ccCharityGive:n=>'Пожертвовать '+n,
+ccCharityAsk:n=>'Пожертвовать $'+n+' фонду?',
+ccCharityYes:n=>'Пожертвовать · $'+n,
+ccCharityTotal:n=>'Пожертвовано ('+n+')',
+ccNewsCharity:(n,f)=>'Пожертвовал $'+n+' на благотворительность. +'+f+' подписчиков',
+ccLuxTitle:'Роскошь',
+ccLuxHint:'Ничего не прибавляет к игре — только полка в профиле и строка «Потрачено» в «Игроках сайта».',
+ccLuxNote:'на полку в профиль',
+ccLux_watch:'Часы',
+ccLux_hyper:'Гиперкар',
+ccLux_yacht:'Яхта',
+ccLux_jet:'Частный самолёт',
+ccLuxAsk:(n,c)=>'Купить «'+n+'» за $'+c+'? Силы не прибавит — только полка в профиле.',
+ccNewsLux:n=>'Новая покупка: '+n,
+ccCollTitle:'Коллекция',
+ccCollSpent:'Потрачено на дорогое',
+lbByEarn:'По призовым',
+lbBySpent:'По тратам',
+lbSpentCol:'Потрачено',
 ccOwnCupTitle:'Свой турнир',
 ccOwnCupHint:'Ты ставишь призовой фонд — сцена играет твой кап. Деньги уходят победителям, тебе остаются подписчики и имя. Не чаще раза в месяц.',
 ccOwnCupFund:n=>'Фонд '+n,
@@ -11276,6 +11308,37 @@ ccFlattwo:'Two bedrooms',
 ccFlatthree:'Three bedrooms',
 ccFlathouse:'House',
 ccFlatvilla:'Villa',
+ccMerchTitle:'Your own merch',
+ccMerchHint:'Launching costs once; after that, on the first of every month a share of your audience pays and new followers arrive. Pays back over years.',
+ccMerch_capsule:'Capsule drop',
+ccMerch_line:'Clothing line',
+ccMerch_brand:'Your own brand',
+ccMerchRate:(p,c)=>p+'% of followers in $, up to $'+c+'/mo',
+ccMerchAsk:(n,c)=>'Launch “'+n+'” for $'+c+'?',
+ccMerchMonth:'Per month now',
+ccMerchEarned:'Made from merch',
+ccNewsMerch:n=>'Merch launched: '+n,
+ccCharityTitle:'Charity',
+ccCharityHint:'The money goes to the charity; you get the scene’s respect and followers. Once a month at most.',
+ccCharityGive:n=>'Donate '+n,
+ccCharityAsk:n=>'Donate $'+n+' to charity?',
+ccCharityYes:n=>'Donate · $'+n,
+ccCharityTotal:n=>'Donated ('+n+')',
+ccNewsCharity:(n,f)=>'Donated $'+n+' to charity. +'+f+' followers',
+ccLuxTitle:'Luxury',
+ccLuxHint:'Adds nothing to your game — just a shelf on your profile and the “Spent” line on Site players.',
+ccLuxNote:'goes on your profile shelf',
+ccLux_watch:'Watch',
+ccLux_hyper:'Hypercar',
+ccLux_yacht:'Yacht',
+ccLux_jet:'Private jet',
+ccLuxAsk:(n,c)=>'Buy “'+n+'” for $'+c+'? It adds no strength — only a shelf on your profile.',
+ccNewsLux:n=>'New purchase: '+n,
+ccCollTitle:'Collection',
+ccCollSpent:'Spent on the big stuff',
+lbByEarn:'By prize money',
+lbBySpent:'By spending',
+lbSpentCol:'Spent',
 ccOwnCupTitle:'Host your own cup',
 ccOwnCupHint:'You put up the prize pool and the scene plays your cup. The money goes to the winners; you keep the followers and the name. Once a month at most.',
 ccOwnCupFund:n=>n+' prize pool',
@@ -113504,7 +113567,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='9b2e7741';
+const CC_BUILD='bdb9b092';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -117618,7 +117681,7 @@ function ccHdrSeasonDelta(){
    так и пишет. Пустая таблица и упавший сервер — не ошибка игры: вкладка говорит
    «не отвечает», карьера идёт дальше. */
 const CC_BOARD_EVERY=10*60000;
-let CC_BOARD_T=null, CC_BOARD_REGION=null, CC_BOARD_DATA=null;
+let CC_BOARD_T=null, CC_BOARD_REGION=null, CC_BOARD_DATA=null, CC_BOARD_SORT=null;
 function ccBoardBase(){
   const h=(typeof MP!=='undefined' && MP.host) || '';
   if(!h && location.protocol==='file:') return null;
@@ -117651,7 +117714,8 @@ function ccBoardRow(){
           earn:Math.max(0, Math.round(cr.earnings||0)), ovr:Math.round(ccMyShownOvr()||pl.ovr||1),
           div:Math.min(5, Math.max(1, cr.division||5)), titles:log.filter(r=>r && r.place===1).length,
           year:(typeof ccCalYear==='function' ? ccCalYear() : 2026),
-          best: best ? best.place+'/'+best.of : '', bestEv: best ? String(best.kind||'cup') : ''};
+          best: best ? best.place+'/'+best.of : '', bestEv: best ? String(best.kind||'cup') : '',
+          spent:ccSpentBig()};
 }
 // После сохранения — отложенно, чтобы десять сохранений вечера дали одну отправку.
 function ccBoardSoon(){
@@ -117671,7 +117735,7 @@ function ccBoardLater(ms){
 function ccBoardSend(force){
   if(!ccBoardOn()) return Promise.resolve(false);
   const cr=CAREER.career, row=ccBoardRow();
-  const key=[row.nick, row.region, row.earn, row.div, row.titles, row.best, row.seasons].join('|');
+  const key=[row.nick, row.region, row.earn, row.div, row.titles, row.best, row.seasons, row.spent].join('|');
   const b=cr.board;
   if(!force && b.key===key) return Promise.resolve(false);
   if(!force && b.sent && Date.now()-b.sent < CC_BOARD_EVERY){ ccBoardLater(CC_BOARD_EVERY-(Date.now()-b.sent)); return Promise.resolve(false); }
@@ -117696,12 +117760,14 @@ function ccBoardToggle(){
                 : ccBoardSend(true)).catch(()=>{}).then(done, done);
 }
 function ccBoardRegion(r){ CC_BOARD_REGION=r||null; CC_BOARD_DATA=null; careerTab('world'); }
+// По призовым или по тратам (15.10: роскошь и «Потрачено»).
+function ccBoardSort(k){ CC_BOARD_SORT=k||null; CC_BOARD_DATA=null; careerTab('world'); }
 function ccBoardLoad(){
   const base=ccBoardBase();
   if(!base) return Promise.resolve({err:true});
   const cr=CAREER.career;
   const q='?'+(CC_BOARD_REGION ? 'region='+encodeURIComponent(CC_BOARD_REGION)+'&' : '')+
-          'me='+encodeURIComponent((cr.board && cr.board.id) || '');
+          (CC_BOARD_SORT ? 'sort='+CC_BOARD_SORT+'&' : '')+'me='+encodeURIComponent((cr.board && cr.board.id) || '');
   return fetch(base+q).then(r=>r.ok ? r.json() : {err:true}).catch(()=>({err:true}));
 }
 function careerWorldHTML(){
@@ -117710,6 +117776,8 @@ function careerWorldHTML(){
   const head='<div class="lb-top"><div class="lb-regs">'+regs.map(([k,t])=>
       '<button class="ch-subtab'+(CC_BOARD_REGION===k?' on':'')+'" onclick="ccBoardRegion('+(k?'\''+k+'\'':'null')+')">'+esc(t)+'</button>').join('')+
     '</div><button class="ch-swap" onclick="ccBoardToggle()">'+esc(off ? T.lbShow : T.lbHide)+'</button></div>'+
+    '<div class="lb-regs">'+[[null, T.lbByEarn], ['spent', T.lbBySpent]].map(([k,t])=>
+      '<button class="ch-subtab'+(CC_BOARD_SORT===k?' on':'')+'" onclick="ccBoardSort('+(k?'\''+k+'\'':'null')+')">'+esc(t)+'</button>').join('')+'</div>'+
     '<div class="ch-hint">'+esc(T.lbNote)+'</div>';
   /* Прочитанная таблица живёт минуту и только для своей карьеры: старше — перечитывается при открытии
      (старая видна, пока идёт новая), другая карьера в слоте — читает свою. */
@@ -117735,11 +117803,11 @@ function careerWorldHTML(){
   const me=d.you ? '<div class="lb-you">'+esc(T.lbYou(d.you.rank, d.total))+'</div>'
                  : (off ? '<div class="lb-you">'+esc(T.lbHidden)+' <button class="ch-swap" onclick="ccBoardToggle()">'+esc(T.lbShow)+'</button></div>' : '');
   if(!rows.length) return head+me+'<div class="ch-hint">'+esc(T.lbEmpty)+'</div>';
-  const c=T.lbCols;
+  const c=T.lbCols.slice(); if(CC_BOARD_SORT==='spent') c[3]=T.lbSpentCol;
   const flag=cc=>cc ? '<img class="ch-bio-flag" src="flags/w20/'+esc(ccCountryOf(cc))+'.png" alt="" onerror="this.remove()"> ' : '';
   const evw=k=>{ try{ return ccFfKindWord(k)||''; }catch(e){ return ''; } };
   const tr=(r,i)=>'<tr class="'+(r.you?'lb-me':'')+'"><td>'+(i+1)+'</td><td>'+flag(r.country)+esc(r.nick)+
-    '<small> · '+esc(T.lbSeasons(r.seasons))+'</small></td><td>'+esc(r.region)+'</td><td>$'+ccNum(r.earn)+
+    '<small> · '+esc(T.lbSeasons(r.seasons))+'</small></td><td>'+esc(r.region)+'</td><td>$'+ccNum(CC_BOARD_SORT==='spent' ? (r.spent||0) : r.earn)+
     '</td><td>'+r.ovr+'</td><td>'+r.div+'</td><td>'+r.titles+'</td><td>'+(r.best ? esc(r.best)+(r.bestEv ? ' <small>'+esc(evw(r.bestEv))+'</small>' : '') : '—')+'</td></tr>';
   let body=rows.map(tr).join('');
   if(d.you && !rows.some(r=>r.you)) body+='<tr class="lb-gap"><td colspan="8">…</td></tr>'+tr(Object.assign({you:true}, d.you.row), d.you.rank-1);
@@ -131498,6 +131566,7 @@ function careerPayWages(fromISO, toISO){
   if(!pays.length) return 0;
   const months=pays.filter(d=>d>fromISO && d<=toISO).length;
   try{ if(typeof careerClubMonth==='function') careerClubMonth(months); }catch(e){}   // свой клуб: спонсор, содержание, зарплаты
+  try{ if(typeof careerMerchMonth==='function') careerMerchMonth(months); }catch(e){}   // свой мерч: доля аудитории
   let paid=0;
   if(org && org.salary){
     /* A monthly wage is paid monthly.
@@ -133320,6 +133389,8 @@ const CC_POST_BY={
   // карьерой (ccGiftBuy/ccGiftSaw) и стояло без автора — красное
   // check-career-feed.
   ccNewsGiftSent:'you', ccNewsGiftGot:'you',
+  // Магазин богатых (15.10): свой кап, мерч, взнос и покупка — всё пишет сам игрок.
+  ccNewsOwnCup:'you', ccNewsMerch:'you', ccNewsCharity:'you', ccNewsLux:'you',
   ccNewsWfIn:'you', ccNewsWfCash:'you', ccNewsWfNoCash:'you',
   // ccNewsRelegated больше не пишется — из первого дивизиона не вылетают, см.
   // careerNewSeason, — но ключ остаётся ради старых сейвов, чья лента его уже
@@ -139386,6 +139457,7 @@ function careerSocialHTML(){
     </main>
     <aside class="x-side">
       ${careerTrophiesHTML()}
+      ${careerCollectionHTML()}
       <div class="ch-tile">
         <h4>${ccSay('dmLooking')}</h4>
         ${suggest}
@@ -142651,6 +142723,169 @@ function careerOwnCupHTML(){
     <div class="cc-buys">${rows}</div>
   </div>`;
 }
+/* ДЕНЬГИ БОГАТЫХ КАРЬЕР — его «делай» 15.10 на список «что ещё добавить»: мерч, благотворительность, роскошь.
+   Ни одно не даёт силы (правило «баланс только по данным»): мерч — немного денег и подписчиков в месяц,
+   благотворительность — подписчиков, роскошь — полку в профиле и строку «Потрачено» в «Игроках сайта». */
+
+/* МЕРЧ. Запуск — разовая цена, дальше каждое первое число платит доля аудитории (подписчики × ставка, с потолком
+   ступени) и приходит немного подписчиков. Окупается годами, а не неделями: бренд за $1M при 300K подписчиков
+   даёт $30K в месяц — почти три года. Ступень заменяет ступень, как стол. */
+const CC_MERCH=[
+  {id:'capsule', cost:100000,  rate:0.02, cap:5000,  reach:300},
+  {id:'line',    cost:400000,  rate:0.05, cap:20000, reach:1000},
+  {id:'brand',   cost:1000000, rate:0.10, cap:60000, reach:3000}
+];
+function ccMerchOf(id){ return CC_MERCH.find(m=>m.id===id) || null; }
+function ccMerchNow(){ const m=CAREER.career.merch; return m ? ccMerchOf(m.id) : null; }
+function ccMerchMonthPay(){ const m=ccMerchNow(); return m ? Math.min(m.cap, Math.round(careerReach()*m.rate)) : 0; }
+function careerMerchBuy(id, sure){
+  const it=ccMerchOf(id), cr=CAREER.career, now=ccMerchNow();
+  if(!it || (now && now.cost>=it.cost) || (cr.balance||0)<it.cost) return false;
+  if(!sure){
+    ccAsk(L().ccMerchAsk(L()['ccMerch_'+id], ccNum(it.cost)), function(){ careerMerchBuy(id, true); }, {yes:'$'+ccNum(it.cost)});
+    return 'ask';
+  }
+  cr.balance-=it.cost;
+  cr.merch={id:id, since:careerToday(), earned:(cr.merch&&cr.merch.earned)||0, spent:((cr.merch&&cr.merch.spent)||0)+it.cost, last:0};
+  careerNews('good', 'ccNewsMerch', [L()['ccMerch_'+id]]);
+  careerSave();
+  careerRenderHub('shop');
+  return true;
+}
+// Первое число: зовёт careerPayWages, months — сколько первых чисел пересёк шаг.
+function careerMerchMonth(months){
+  const cr=CAREER && CAREER.career, m=ccMerchNow();
+  if(!m || !(months>0)) return 0;
+  const pay=ccMerchMonthPay()*months;
+  cr.balance=(cr.balance||0)+pay;
+  cr.merch.earned=(cr.merch.earned||0)+pay;
+  cr.merch.last=pay/months;
+  careerReachAdd(m.reach*months);
+  return pay;
+}
+function careerMerchHTML(){
+  const T=L(), cr=CAREER.career, now=ccMerchNow();
+  const rows=CC_MERCH.map(it=>{
+    const own=now && now.id===it.id, under=now && now.cost>it.cost;
+    const can=!own && !under && (cr.balance||0)>=it.cost;
+    return `<div class="cc-buy${own?' own':''}${under?' cc-buy-old':''}">
+      <div class="cc-buy-in"><b>${T['ccMerch_'+it.id]}</b>
+        <span>${T.ccMerchRate(Math.round(it.rate*1000)/10, ccNum(it.cap))} · +${ccFollowers(it.reach)} ${T.xFollowers}${T.ccPerMonth}</span></div>
+      ${own ? `<span class="cc-owned">${T.ccFlatYours}</span>`
+       : under ? `<span class="cc-owned">${T.ccShopOwnedBetter}</span>`
+       : `<button class="ch-sign"${can?'':' disabled'} onclick="careerMerchBuy('${it.id}')">$${ccNum(it.cost)}</button>`}
+    </div>`;
+  }).join('');
+  return `<div class="ch-tile cc-shop">
+    <h4>${T.ccMerchTitle}</h4>
+    <div class="ch-hint">${T.ccMerchHint}</div>
+    ${now ? `<div class="ch-row"><em>${T.ccMerchMonth}</em><b>$${ccNum(ccMerchMonthPay())}</b></div>
+             <div class="ch-row"><em>${T.ccMerchEarned}</em><b>$${ccNum(cr.merch.earned||0)}</b></div>` : ''}
+    <div class="cc-buys">${rows}</div>
+  </div>`;
+}
+
+/* БЛАГОТВОРИТЕЛЬНОСТЬ. Как свой кап, только деньги уходят фонду: подписчики — взнос/25 (чуть меньше, чем кап,
+   у которого есть сам турнир), новость, счётчик в профиле. Раз в 30 дней. */
+const CC_CHARITY_FUNDS=[50000, 250000, 1000000];
+const CC_CHARITY_DAYS=30, CC_CHARITY_REACH=1/25;
+function ccCharityNext(){ const c=CAREER.career.charity; return (c && c.last) ? ccAddDays(c.last, CC_CHARITY_DAYS) : null; }
+function ccCharityReady(){ const n=ccCharityNext(); return !n || careerToday()>=n; }
+function careerCharity(sum, sure){
+  const cr=CAREER.career;
+  if(CC_CHARITY_FUNDS.indexOf(sum)<0 || (cr.balance||0)<sum || !ccCharityReady()) return false;
+  if(!sure){
+    ccAsk(L().ccCharityAsk(ccNum(sum)), function(){ careerCharity(sum, true); }, {yes:L().ccCharityYes(ccNum(sum))});
+    return 'ask';
+  }
+  cr.balance-=sum;
+  const got=careerReachAdd(Math.round(sum*CC_CHARITY_REACH));
+  const was=cr.charity||{};
+  cr.charity={last:careerToday(), n:(was.n||0)+1, spent:(was.spent||0)+sum};
+  careerNews('good', 'ccNewsCharity', [ccNum(sum), ccFollowers(got)]);
+  careerSave();
+  careerRenderHub('shop');
+  return true;
+}
+function careerCharityHTML(){
+  const T=L(), cr=CAREER.career, c=cr.charity||null, ready=ccCharityReady();
+  const rows=CC_CHARITY_FUNDS.map(sum=>{
+    const can=ready && (cr.balance||0)>=sum;
+    return `<div class="cc-buy">
+      <div class="cc-buy-in"><b>${T.ccCharityGive('$'+ccNum(sum))}</b>
+        <span>+${ccFollowers(Math.round(sum*CC_CHARITY_REACH))} ${T.xFollowers}</span></div>
+      <button class="ch-sign"${can?'':' disabled'} onclick="careerCharity(${sum})">$${ccNum(sum)}</button>
+    </div>`;
+  }).join('');
+  return `<div class="ch-tile cc-shop">
+    <h4>${T.ccCharityTitle}</h4>
+    <div class="ch-hint">${T.ccCharityHint}</div>
+    ${c ? `<div class="ch-row"><em>${T.ccCharityTotal(c.n||1)}</em><b>$${ccNum(c.spent||0)}</b></div>` : ''}
+    ${ready ? '' : `<div class="ch-row"><em>${T.ccOwnCupNext}</em><b>${ccDayLabel(ccCharityNext())}</b></div>`}
+    <div class="cc-buys">${rows}</div>
+  </div>`;
+}
+
+/* РОСКОШЬ. Только престиж: вещь встаёт на полку в профиле («Коллекция») и в сумму «Потрачено», которую видно
+   в «Игроках сайта». Силы, энергии и подписчиков не даёт — для этого есть остальной магазин. */
+const CC_LUX=[
+  {id:'watch', cost:1000000,  ico:'⌚'},
+  {id:'hyper', cost:3000000,  ico:'🏎️'},
+  {id:'yacht', cost:10000000, ico:'🛥️'},
+  {id:'jet',   cost:25000000, ico:'✈️'}
+];
+function ccLuxOwns(id){ const x=CAREER.career.lux; return !!(x && (x.ids||[]).indexOf(id)>=0); }
+function careerLuxBuy(id, sure){
+  const it=CC_LUX.find(x=>x.id===id), cr=CAREER.career;
+  if(!it || ccLuxOwns(id) || (cr.balance||0)<it.cost) return false;
+  if(!sure){
+    ccAsk(L().ccLuxAsk(L()['ccLux_'+id], ccNum(it.cost)), function(){ careerLuxBuy(id, true); }, {yes:'$'+ccNum(it.cost)});
+    return 'ask';
+  }
+  cr.balance-=it.cost;
+  const x=cr.lux||{ids:[], spent:0};
+  cr.lux={ids:(x.ids||[]).concat(id), spent:(x.spent||0)+it.cost};
+  careerNews('good', 'ccNewsLux', [L()['ccLux_'+id]]);
+  careerSave();
+  careerRenderHub('shop');
+  return true;
+}
+function careerLuxHTML(){
+  const T=L(), cr=CAREER.career;
+  const rows=CC_LUX.map(it=>{
+    const own=ccLuxOwns(it.id), can=!own && (cr.balance||0)>=it.cost;
+    return `<div class="cc-buy${own?' own':''}">
+      <div class="cc-buy-in"><b>${it.ico} ${T['ccLux_'+it.id]}</b><span>${T.ccLuxNote}</span></div>
+      ${own ? `<span class="cc-owned">${T.ccFlatYours}</span>`
+            : `<button class="ch-sign"${can?'':' disabled'} onclick="careerLuxBuy('${it.id}')">$${ccNum(it.cost)}</button>`}
+    </div>`;
+  }).join('');
+  return `<div class="ch-tile cc-shop">
+    <h4>${T.ccLuxTitle}</h4>
+    <div class="ch-hint">${T.ccLuxHint}</div>
+    <div class="cc-buys">${rows}</div>
+  </div>`;
+}
+// Сколько ушло на дорогое — то, что видно в «Игроках сайта» и на полке профиля.
+function ccSpentBig(){
+  const cr=(CAREER && CAREER.career) || {};
+  return Math.round((cr.spentOnFlat||0)+((cr.ownCup||{}).spent||0)+((cr.charity||{}).spent||0)+
+                    ((cr.merch||{}).spent||0)+((cr.lux||{}).spent||0));
+}
+// Полка в профиле: роскошь значками, плюс благотворительность и свои капы строками. Пусто — плитки нет.
+function careerCollectionHTML(){
+  const T=L(), cr=CAREER.career, have=CC_LUX.filter(x=>ccLuxOwns(x.id));
+  const cup=cr.ownCup, ch=cr.charity, merch=ccMerchNow();
+  if(!have.length && !cup && !ch && !merch) return '';
+  const row=(k, v)=>`<div class="ch-row"><em>${k}</em><b>${v}</b></div>`;
+  return `<div class="ch-tile"><h4>${T.ccCollTitle}</h4>
+    ${have.length ? `<div class="cc-coll">${have.map(x=>`<span title="${esc(T['ccLux_'+x.id])}">${x.ico}</span>`).join('')}</div>` : ''}
+    ${merch ? row(T.ccMerchTitle, esc(T['ccMerch_'+merch.id])) : ''}
+    ${cup ? row(T.ccOwnCupSpent(cup.n||1), '$'+ccNum(cup.spent||0)) : ''}
+    ${ch ? row(T.ccCharityTotal(ch.n||1), '$'+ccNum(ch.spent||0)) : ''}
+    ${row(T.ccCollSpent, '$'+ccNum(ccSpentBig()))}
+  </div>`;
+}
 function careerFlatHTML(){
   const cr=CAREER.career, place=ccFlatPlace(), here=ccFlatHere(), any=ccFlat();
   const rent=ccRentBase(place);
@@ -142993,7 +143228,7 @@ function careerShopHTML(){
     rows+'</div>'+
     // The one thing on this tab that is not a thing on a desk. It sits under the
     // desk rather than in it: a rig is a purchase, a move is a decision.
-    careerClubHTML()+careerOwnCupHTML()+careerFlatHTML()+careerMoveHTML()+careerCheatHTML()+'</div>';
+    careerClubHTML()+careerOwnCupHTML()+careerMerchHTML()+careerCharityHTML()+careerLuxHTML()+careerFlatHTML()+careerMoveHTML()+careerCheatHTML()+'</div>';
 }
 
 /* ---- Being asked about it ---------------------------------------------------

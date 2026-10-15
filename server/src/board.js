@@ -47,12 +47,14 @@ function normalize(e, now){
   const div=int(e.div, 1, 5);
   const titles=int(e.titles||0, 0, 100000);
   const year=int(e.year, 2019, 2100);
-  if(ovr==null || div==null || titles==null || year==null) return {err:'num'};
+  // Потрачено на дорогое (жильё, свой кап, мерч, благотворительность, роскошь) — 15.10; старые клиенты не шлют.
+  const spent=int(e.spent||0, 0, 1e13);
+  if(ovr==null || div==null || titles==null || year==null || spent==null) return {err:'num'};
   // Лучший результат — «1/150» или пусто.
   const bm=/^(\d{1,5})\/(\d{1,6})$/.exec(String(e.best||''));
   const best=(bm && +bm[1]>=1 && +bm[1]<=+bm[2]) ? bm[1]+'/'+bm[2] : '';
   const bestEv=cleanNick(e.bestEv).slice(0, 40);
-  return {row:{id, nick, region, country, seasons, earn, ovr, div, titles, year, best, bestEv, at:now}};
+  return {row:{id, nick, region, country, seasons, earn, ovr, div, titles, year, best, bestEv, spent, at:now}};
 }
 
 function createBoard(){
