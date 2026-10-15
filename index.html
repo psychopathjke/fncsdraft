@@ -113727,7 +113727,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='974c87b1';
+const CC_BUILD='a3adf50e';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -142874,9 +142874,10 @@ function careerOwnCup(fund, sure){
 }
 function careerOwnCupHTML(){
   const T=L(), cr=CAREER.career, c=cr.ownCup||null, ready=ccOwnCupReady();
-  const rows=CC_OWN_CUP_FUNDS.map(fund=>{
+  const rows=CC_OWN_CUP_FUNDS.map((fund, i)=>{
     const can=ready && (cr.balance||0)>=fund;
     return `<div class="cc-buy">
+      <img class="cc-flat-img" src="${CC_DEVICE_DIR}cup-${i+1}.jpg" alt="" loading="lazy" onerror="this.remove()">
       <div class="cc-buy-in"><b>${T.ccOwnCupFund('$'+ccNum(fund))}</b>
         <span>+${ccFollowers(Math.round(fund*CC_OWN_CUP_REACH))} ${T.xFollowers}</span></div>
       <button class="ch-sign"${can?'':' disabled'} onclick="careerOwnCup(${fund})">$${ccNum(fund)}</button>
@@ -142889,8 +142890,11 @@ function careerOwnCupHTML(){
            <div class="ch-row"><em>${T.ccOwnCupSpent(c.n||1)}</em><b>$${ccNum(c.spent||0)}</b></div>` : ''}
     ${ready ? '' : `<div class="ch-row"><em>${T.ccOwnCupNext}</em><b>${ccDayLabel(ccOwnCupNext())}</b></div>`}
     <div class="cc-buys">${rows}</div>
+    <div class="cc-photo-credit">${CC_CUP_CREDIT}</div>
   </div>`;
 }
+// Фото — Wikimedia Commons, по ступени фонда: ЛАН-зал, сцена, арена. Авторы под плиткой.
+const CC_CUP_CREDIT='Photos: Toffelginkgo (CC BY-SA 3.0), DJTechYT (CC BY-SA 4.0), Paul Chaloner (CC BY 2.0) — Wikimedia Commons';
 /* ДЕНЬГИ БОГАТЫХ КАРЬЕР — его «делай» 15.10 на список «что ещё добавить»: мерч, благотворительность, роскошь.
    Ни одно не даёт силы (правило «баланс только по данным»): мерч — немного денег и подписчиков в месяц,
    благотворительность — подписчиков, роскошь — полку в профиле и строку «Потрачено» в «Игроках сайта». */
@@ -142938,6 +142942,7 @@ function careerMerchHTML(){
     const own=now && now.id===it.id, under=now && now.cost>it.cost;
     const can=!own && !under && (cr.balance||0)>=it.cost;
     return `<div class="cc-buy${own?' own':''}${under?' cc-buy-old':''}">
+      <img class="cc-flat-img" src="${CC_DEVICE_DIR}merch-${it.id}.jpg" alt="" loading="lazy" onerror="this.remove()">
       <div class="cc-buy-in"><b>${T['ccMerch_'+it.id]}</b>
         <span>${T.ccMerchRate(Math.round(it.rate*1000)/10, ccNum(it.cap))} · +${ccFollowers(it.reach)} ${T.xFollowers}${T.ccPerMonth}</span></div>
       ${own ? `<span class="cc-owned">${T.ccFlatYours}</span>`
@@ -142951,8 +142956,10 @@ function careerMerchHTML(){
     ${now ? `<div class="ch-row"><em>${T.ccMerchMonth}</em><b>$${ccNum(ccMerchMonthPay())}</b></div>
              <div class="ch-row"><em>${T.ccMerchEarned}</em><b>$${ccNum(cr.merch.earned||0)}</b></div>` : ''}
     <div class="cc-buys">${rows}</div>
+    <div class="cc-photo-credit">${CC_MERCH_CREDIT}</div>
   </div>`;
 }
+const CC_MERCH_CREDIT='Photos: Christian Heilmann (CC BY 2.0), Nielsoncaetanosalmeron (CC BY 4.0), InSapphoWeTrust (CC BY-SA 2.0) — Wikimedia Commons';
 
 /* БЛАГОТВОРИТЕЛЬНОСТЬ. Как свой кап, только деньги уходят фонду: подписчики — взнос/25 (чуть меньше, чем кап,
    у которого есть сам турнир), новость, счётчик в профиле. Раз в 30 дней. */
@@ -142978,9 +142985,10 @@ function careerCharity(sum, sure){
 }
 function careerCharityHTML(){
   const T=L(), cr=CAREER.career, c=cr.charity||null, ready=ccCharityReady();
-  const rows=CC_CHARITY_FUNDS.map(sum=>{
+  const rows=CC_CHARITY_FUNDS.map((sum, i)=>{
     const can=ready && (cr.balance||0)>=sum;
     return `<div class="cc-buy">
+      <img class="cc-flat-img" src="${CC_DEVICE_DIR}charity-${i+1}.jpg" alt="" loading="lazy" onerror="this.remove()">
       <div class="cc-buy-in"><b>${T.ccCharityGive('$'+ccNum(sum))}</b>
         <span>+${ccFollowers(Math.round(sum*CC_CHARITY_REACH))} ${T.xFollowers}</span></div>
       <button class="ch-sign"${can?'':' disabled'} onclick="careerCharity(${sum})">$${ccNum(sum)}</button>
@@ -142992,8 +143000,10 @@ function careerCharityHTML(){
     ${c ? `<div class="ch-row"><em>${T.ccCharityTotal(c.n||1)}</em><b>$${ccNum(c.spent||0)}</b></div>` : ''}
     ${ready ? '' : `<div class="ch-row"><em>${T.ccOwnCupNext}</em><b>${ccDayLabel(ccCharityNext())}</b></div>`}
     <div class="cc-buys">${rows}</div>
+    <div class="cc-photo-credit">${CC_CHARITY_CREDIT}</div>
   </div>`;
 }
+const CC_CHARITY_CREDIT='Photos: Mx. Granger (CC0), Kyle Carlstrom / U.S. Navy (public domain), Dudley Council (CC BY 2.0) — Wikimedia Commons';
 
 /* РОСКОШЬ. Только престиж: вещь встаёт на полку в профиле («Коллекция») и в сумму «Потрачено», которую видно
    в «Игроках сайта». Силы, энергии и подписчиков не даёт — для этого есть остальной магазин. */
