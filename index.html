@@ -1816,6 +1816,14 @@
   .cc-choice-mate{padding:4px 14px 8px; font-size:12px; line-height:1.3; opacity:.9;}
   .cc-choice-mate i{font-style:normal; font-weight:700; color:var(--cc-ui-live, #ffd600);}
   .cc-choice-mate i::after{content:':';}
+  .cc-plan{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:3px;}
+  .cc-plan li{font-size:12.5px;line-height:1.35;} .cc-plan em{font-style:normal;font-weight:800;color:#4be3b0;}
+  .ev-review{margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(140,175,255,.2);}
+  .ev-review h5{margin:0 0 6px;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#9fe1ff;}
+  .ev-review ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;}
+  .ev-review li{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;}
+  .ev-review li em{font-style:normal;color:#a9bbe3;} .ev-review li b{color:#fff;text-align:right;}
+  .ev-tip{margin:8px 0 0;font-size:12.5px;color:#ffe86b;font-weight:700;line-height:1.4;}
   .cc-coach-offer{display:flex;flex-direction:column;gap:6px;margin:12px 0;padding:12px;border-radius:12px;background:rgba(75,227,176,.08);border:1px solid rgba(75,227,176,.45);}
   .cc-coach-offer b{font-size:15px;color:#fff;} .cc-coach-offer span{font-size:12.5px;color:#c3d1f0;line-height:1.45;}
   .cc-coach-offer .ch-play{align-self:flex-start;}
@@ -20340,7 +20348,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'7c460006', es:'8a0e763a'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'c5ccc373', es:'46817caf'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20667,6 +20675,12 @@ Object.assign(I18N.en, {ccNewsMpPaySync:d=>'Prize money matched with your partne
 Object.assign(I18N.fr, {ccNewsMpPaySync:d=>'Gains alignés avec ton coéquipier selon le tableau commun : '+d, ccCoachLeans:t=>'je prendrais «'+t+'»', ccCoachTag:'coach', ccRetCoachTitle:'Des clubs te veulent comme coach', ccRetCoachSub:'Ta carrière de joueur est finie, mais la scène te connaît. Prends un club : roster, calendrier, décisions entre les games.', ccRetCoachBtn:'Devenir coach d’un club'});
 Object.assign(I18N.it, {ccNewsMpPaySync:d=>'Premi allineati col compagno secondo la classifica comune: '+d, ccCoachLeans:t=>'prenderei «'+t+'»', ccCoachTag:'coach', ccRetCoachTitle:'I club ti vogliono come coach', ccRetCoachSub:'La carriera da giocatore è finita, ma la scena ti conosce. Prendi un club: roster, calendario, decisioni tra le partite.', ccRetCoachBtn:'Diventa coach di un club'});
 Object.assign(I18N.pt, {ccNewsMpPaySync:d=>'Prêmios acertados com o parceiro pela tabela comum: '+d, ccCoachLeans:t=>'eu iria de «'+t+'»', ccCoachTag:'coach', ccRetCoachTitle:'Clubes querem você como coach', ccRetCoachSub:'Sua carreira de jogador acabou, mas a cena te conhece. Assuma um clube: elenco, calendário, decisões entre as partidas.', ccRetCoachBtn:'Virar coach de um clube'});
+/* План коуча, разбор вечера, посты по фактам (16.10). */
+Object.assign(I18N.ru, {ccPlanTitle:n=>'План коуча '+n+' на вечер', ccPlanOk:'Принято', ccPlanDrop:'Высадка:', ccPlanDrop_home:'своя точка, без контеста', ccPlanDrop_contest:'контест — забираем точку силой', ccPlanRot:'Ротация:', ccPlanRot_early:'рано, до сужения', ccPlanRot_with:'вместе с зоной', ccPlanFight:'Файты:', ccPlanFight_fight:'берём, когда предлагают', ccPlanFight_avoid:'не лезем, бережём места', ccPlanLate:'Эндгейм:', ccPlanLate_mid:'центр зоны', ccPlanLate_edge:'край зоны', evTitle:'Разбор вечера', evBest:'Лучшая игра', evBestGame:(g,p,e)=>'игра '+g+': '+p+'-е место, '+e+' килл.', evKills:'Киллы', evPerGame:x=>x+' за игру', evDeaths:'Вылеты', evDeathKill:n=>'от игроков ×'+n, evDeathDrop:n=>'на высадке ×'+n, evDeathStorm:n=>'шторм ×'+n, evDeathSurge:n=>'сёрдж ×'+n, evNemesis:'Чаще всех тебя убивал', evPlan:'План коуча', evPlanDone:(a,b)=>'выполнен '+a+' из '+b, evTip_kill:'Больше всего вылетов в файтах — на неделе качай стрельбу и билд.', evTip_drop:'Падаешь на высадке — тренируй старт и выбирай точку спокойнее.', evTip_storm:'Шторм забирает игры — тренируй ротации и выживание.', evTip_surge:'Сёрдж выбивает — нужен урон: файты в середине игры.', ccPostEvKilled:(h,n,m)=>['@'+m+', '+n+' раза за вечер через нас. Ничего личного','сегодня '+n+' раза встретили @'+m+' — каждый раз в нашу пользу','@'+m+' в лобби = плюс киллы для нас ('+n+' за вечер)'][n%3], ccPostEvVR:(g,e,n)=>['Victory Royale в игре '+g+' из '+n+', '+e+' килл. Едем дальше','игра '+g+': корона и '+e+' киллов 👑','взяли игру '+g+'. '+e+' киллов, это было громко'][g%3], ccPostEvKills:(k,n)=>[k+' киллов за '+n+' игр. Лобби запомнит',k+' киллов за вечер, без короны, но громко'][k%2]});
+Object.assign(I18N.en, {ccPlanTitle:n=>n+'’s game plan for tonight', ccPlanOk:'Got it', ccPlanDrop:'Drop:', ccPlanDrop_home:'our own spot, no contest', ccPlanDrop_contest:'contest — take the spot by force', ccPlanRot:'Rotation:', ccPlanRot_early:'early, before it closes', ccPlanRot_with:'with the storm', ccPlanFight:'Fights:', ccPlanFight_fight:'take them when they come', ccPlanFight_avoid:'stay out, protect placement', ccPlanLate:'Endgame:', ccPlanLate_mid:'middle of the zone', ccPlanLate_edge:'edge of the zone', evTitle:'Evening review', evBest:'Best game', evBestGame:(g,p,e)=>'game '+g+': #'+p+', '+e+' elims', evKills:'Elims', evPerGame:x=>x+' per game', evDeaths:'Deaths', evDeathKill:n=>'to players ×'+n, evDeathDrop:n=>'off spawn ×'+n, evDeathStorm:n=>'storm ×'+n, evDeathSurge:n=>'surge ×'+n, evNemesis:'Killed you most', evPlan:'Coach plan', evPlanDone:(a,b)=>a+' of '+b+' followed', evTip_kill:'Most deaths came in fights — train aim and building this week.', evTip_drop:'You die off spawn — train the opening and pick a calmer spot.', evTip_storm:'The storm takes your games — train rotations and survival.', evTip_surge:'Surge knocks you out — you need damage: mid-game fights.', ccPostEvKilled:(h,n,m)=>['@'+m+', '+n+' times through us tonight. Nothing personal','ran into @'+m+' '+n+' times tonight — went our way every time','@'+m+' in the lobby = free elims ('+n+' tonight)'][n%3], ccPostEvVR:(g,e,n)=>['Victory Royale in game '+g+' of '+n+', '+e+' elims. On to the next','game '+g+': crown and '+e+' elims 👑','took game '+g+'. '+e+' elims, that was loud'][g%3], ccPostEvKills:(k,n)=>[k+' elims in '+n+' games. The lobby will remember',k+' elims tonight, no crown but loud'][k%2]});
+Object.assign(I18N.fr, {ccPlanTitle:n=>'Le plan de '+n+' pour ce soir', ccPlanOk:'Compris', ccPlanDrop:'Drop :', ccPlanDrop_home:'notre spot, sans contest', ccPlanDrop_contest:'contest — on prend le spot de force', ccPlanRot:'Rotation :', ccPlanRot_early:'tôt, avant la fermeture', ccPlanRot_with:'avec la zone', ccPlanFight:'Fights :', ccPlanFight_fight:'on les prend quand ils viennent', ccPlanFight_avoid:'on évite, on protège le placement', ccPlanLate:'Endgame :', ccPlanLate_mid:'centre de la zone', ccPlanLate_edge:'bord de la zone', evTitle:'Bilan de la soirée', evBest:'Meilleure game', evBestGame:(g,p,e)=>'game '+g+' : '+p+'e, '+e+' kills', evKills:'Kills', evPerGame:x=>x+' par game', evDeaths:'Morts', evDeathKill:n=>'face aux joueurs ×'+n, evDeathDrop:n=>'au drop ×'+n, evDeathStorm:n=>'tempête ×'+n, evDeathSurge:n=>'surge ×'+n, evNemesis:'T’a le plus tué', evPlan:'Plan du coach', evPlanDone:(a,b)=>a+' sur '+b+' suivis', evTip_kill:'Tu meurs surtout en fight — travaille la visée et le build cette semaine.', evTip_drop:'Tu meurs au drop — travaille l’ouverture et prends un spot plus calme.', evTip_storm:'La tempête te coûte des games — travaille les rotations et la survie.', evTip_surge:'Le surge te sort — il faut des dégâts : fights en milieu de game.', ccPostEvKilled:(h,n,m)=>['@'+m+', '+n+' fois face à nous ce soir. Rien de personnel','croisé @'+m+' '+n+' fois ce soir — à chaque fois pour nous','@'+m+' dans le lobby = kills offerts ('+n+' ce soir)'][n%3], ccPostEvVR:(g,e,n)=>['Top 1 en game '+g+' sur '+n+', '+e+' kills. On continue','game '+g+' : couronne et '+e+' kills 👑','game '+g+' pour nous. '+e+' kills, ça a fait du bruit'][g%3], ccPostEvKills:(k,n)=>[k+' kills en '+n+' games. Le lobby s’en souviendra',k+' kills ce soir, pas de top 1 mais du bruit'][k%2]});
+Object.assign(I18N.it, {ccPlanTitle:n=>'Il piano di '+n+' per stasera', ccPlanOk:'Ricevuto', ccPlanDrop:'Drop:', ccPlanDrop_home:'il nostro spot, niente contest', ccPlanDrop_contest:'contest — prendiamo lo spot con la forza', ccPlanRot:'Rotazione:', ccPlanRot_early:'presto, prima che chiuda', ccPlanRot_with:'con la tempesta', ccPlanFight:'Fight:', ccPlanFight_fight:'li prendiamo quando arrivano', ccPlanFight_avoid:'stiamo fuori, proteggiamo il piazzamento', ccPlanLate:'Endgame:', ccPlanLate_mid:'centro della zona', ccPlanLate_edge:'bordo della zona', evTitle:'Analisi della serata', evBest:'Partita migliore', evBestGame:(g,p,e)=>'partita '+g+': '+p+'°, '+e+' kill', evKills:'Kill', evPerGame:x=>x+' a partita', evDeaths:'Morti', evDeathKill:n=>'contro giocatori ×'+n, evDeathDrop:n=>'al drop ×'+n, evDeathStorm:n=>'tempesta ×'+n, evDeathSurge:n=>'surge ×'+n, evNemesis:'Ti ha ucciso più spesso', evPlan:'Piano del coach', evPlanDone:(a,b)=>a+' su '+b+' seguiti', evTip_kill:'Muori soprattutto nei fight — allena mira e build questa settimana.', evTip_drop:'Muori al drop — allena l’apertura e scegli uno spot più tranquillo.', evTip_storm:'La tempesta ti costa partite — allena rotazioni e sopravvivenza.', evTip_surge:'Il surge ti elimina — servono danni: fight a metà partita.', ccPostEvKilled:(h,n,m)=>['@'+m+', '+n+' volte contro di noi stasera. Niente di personale','incontrato @'+m+' '+n+' volte stasera — sempre a nostro favore','@'+m+' in lobby = kill gratis ('+n+' stasera)'][n%3], ccPostEvVR:(g,e,n)=>['Victory Royale nella partita '+g+' di '+n+', '+e+' kill. Avanti','partita '+g+': corona e '+e+' kill 👑','presa la partita '+g+'. '+e+' kill, rumorosa'][g%3], ccPostEvKills:(k,n)=>[k+' kill in '+n+' partite. La lobby se lo ricorderà',k+' kill stasera, niente corona ma rumore'][k%2]});
+Object.assign(I18N.pt, {ccPlanTitle:n=>'O plano de '+n+' para hoje', ccPlanOk:'Entendido', ccPlanDrop:'Drop:', ccPlanDrop_home:'nosso spot, sem contest', ccPlanDrop_contest:'contest — tomar o spot na força', ccPlanRot:'Rotação:', ccPlanRot_early:'cedo, antes de fechar', ccPlanRot_with:'junto com a tempestade', ccPlanFight:'Fights:', ccPlanFight_fight:'pegamos quando aparecem', ccPlanFight_avoid:'ficamos fora, protegemos a colocação', ccPlanLate:'Endgame:', ccPlanLate_mid:'centro da zona', ccPlanLate_edge:'borda da zona', evTitle:'Resumo da noite', evBest:'Melhor partida', evBestGame:(g,p,e)=>'partida '+g+': '+p+'º, '+e+' abates', evKills:'Abates', evPerGame:x=>x+' por partida', evDeaths:'Mortes', evDeathKill:n=>'para jogadores ×'+n, evDeathDrop:n=>'no drop ×'+n, evDeathStorm:n=>'tempestade ×'+n, evDeathSurge:n=>'surge ×'+n, evNemesis:'Quem mais te matou', evPlan:'Plano do coach', evPlanDone:(a,b)=>a+' de '+b+' seguidos', evTip_kill:'Você morre mais nos fights — treine mira e build esta semana.', evTip_drop:'Você morre no drop — treine a abertura e escolha um spot mais calmo.', evTip_storm:'A tempestade custa partidas — treine rotações e sobrevivência.', evTip_surge:'O surge te elimina — precisa de dano: fights no meio da partida.', ccPostEvKilled:(h,n,m)=>['@'+m+', '+n+' vezes contra nós hoje. Nada pessoal','encontramos @'+m+' '+n+' vezes hoje — sempre a nosso favor','@'+m+' no lobby = abates grátis ('+n+' hoje)'][n%3], ccPostEvVR:(g,e,n)=>['Victory Royale na partida '+g+' de '+n+', '+e+' abates. Seguimos','partida '+g+': coroa e '+e+' abates 👑','levamos a partida '+g+'. '+e+' abates, foi barulhento'][g%3], ccPostEvKills:(k,n)=>[k+' abates em '+n+' partidas. O lobby vai lembrar',k+' abates hoje, sem coroa mas barulhento'][k%2]});
 /* Главная 15.10: «Продолжить», «С другом», «Сцена сейчас», «Игроки сайта». Остальные языки — английские до доперевода. */
 Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Твои сохранения — с того дня, где остановился.', hmPlayOn:'Играть',
   hmSlotCareer:'Карьера', hmSlotMgr:'Менеджер', hmSlotLine:(s,d,e)=>'Сезон '+s+' · дивизион '+d+' · '+e, hmMgrLine:(s,c)=>'Сезон '+s+' · касса '+c,
@@ -101613,6 +101627,11 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
        каждой игрой (ccStyleAskGame); в команде и в гонке — через ccMpChoose, одинаково у всех. */
     // Менеджер: «Симулировать» и просмотр чужого капа — без вопросов, и без этого тоже (8.10).
     const mgrQuiet=(typeof MGR_SIM_MODE!=='undefined' && MGR_SIM_MODE) || (typeof MGR_WATCH!=='undefined' && MGR_WATCH);
+    if(CAREER_RUN){ CC_GAME_PICKS={}; CC_GAME_OPTS={}; }
+    if(CAREER_RUN && !mgrQuiet && g===0 && typeof CAREER!=='undefined' && CAREER && CAREER.career){
+      if(replay && ZoneReplay.whole) ZoneReplay.whole(replay);
+      try{ await ccCoachPlanShow(); }catch(e){ CC_COACH_PLAN=null; }
+    }
     if(CAREER_RUN && !mgrQuiet && typeof ccStyleAskGame==='function' && typeof CAREER!=='undefined' && CAREER && CAREER.career){
       // Команды людей без вопроса (в общем вечере их стиль приходит ответом) — сперва по проводу.
       teams.forEach(t=>{ if(t && !t.isYou && (t.isRival || t.isMate)){ t._styleGame=null; ccApplyPlayStyle(t); } });
@@ -101708,6 +101727,7 @@ async function simulateGamesLive(teams, numGames, pointsFn, killMult, fieldPrefi
           const gamePts=pointsFn(place)+ccKillPts(elims, killMult);
           t[ptsKey]+=gamePts; t[elimsKey]+=elims;
           t[logKey].push({game:g+1, place, elims, pts:gamePts, elimPts:ccKillPts(elims, killMult), label:thresholdLabel(place), feed:t._feed});
+          if(CAREER_RUN && t.isYou) ccEveningRecord(t, g+1, place, elims);
           // Матчевая статистика вечера — здесь же: живой показ копит её наравне с
           // быстрым счётом, иначе доска лидеров после сыгранного вечера пуста.
           accumulateMatchStats(t, place, order.length, pointsFn(place), ccKillPts(elims, killMult));
@@ -102360,6 +102380,8 @@ async function revealStageLog(you, shell, instant){
   const avgElims=matches? Math.round(gameEntries.reduce((s,x)=>s+x.elims,0)/matches*100)/100 : 0;
   const avgPlace=matches? Math.round(gameEntries.reduce((s,x)=>s+x.place,0)/matches*100)/100 : 0;
   shell.summaryEl.innerHTML=`${L().matchesWord}: <b>${matches}</b> · ${L().winsWord}: <b>${you.wins||0}</b> · ${L().avgElimsWord}: <b>${avgElims}</b> · ${L().avgPlaceWord}: <b>${avgPlace}</b>`;
+  // Разбор вечера своей команды — под итогом этапа: эту карточку рисуют все раннеры карьеры (ccEveningReviewHTML).
+  if(typeof CAREER_RUN!=='undefined' && CAREER_RUN && you && you.isYou){ try{ const h=ccEveningReviewHTML(); if(h) shell.summaryEl.insertAdjacentHTML('afterend', h); }catch(e){} }
 }
 
 // The run's own record. Every stage card that gets finalised writes a placement
@@ -108816,17 +108838,141 @@ function ccMateOpinion(options, dflt){
   const say=L().ccMateLeans;
   return {name:m.handle, pick, text: typeof say==='function' ? say(String(pick.title||'').replace(/<[^>]+>/g,'')) : ''};
 }
+/* ВЕЧЕР ПО ФАКТАМ (16.10, его «123»: план коуча, живые твиты, разбор вечера).
+   Одна запись на вечер: CC_EVENING = {day, rows:[…], posted}. Строку кладёт score() в simulateGamesLive для своей команды
+   после каждой игры: место, киллы, от кого/чего погиб (_deathCause движка: ник команды, 'storm', 'surge'), зона, погиб ли
+   на высадке, ротация, и сколько пунктов плана коуча выполнено. Из неё — карточка «Разбор вечера» и посты в ленте. */
+let CC_EVENING=null, CC_GAME_PICKS={}, CC_GAME_OPTS={}, CC_COACH_PLAN=null;
+function ccEveningRows(){
+  const d=(typeof careerToday==='function' && CAREER && CAREER.career) ? careerToday() : '';
+  if(!CC_EVENING || CC_EVENING.day!==d) CC_EVENING={day:d, rows:[], posted:false};
+  return CC_EVENING.rows;
+}
+// Ник из имени команды-убийцы: «Peterbot & Pollo» → Peterbot (первый — тот, кто назван первым).
+function ccEveningKillerHandle(name){
+  const n=String(name||'').replace(/<[^>]+>/g,'').split(/\s*(?:&|\/|\+|,| x )\s*/)[0].trim();
+  return n;
+}
+function ccEveningRecord(t, g, place, elims){
+  if(!t || !t.isYou || !CAREER || !CAREER.career) return;
+  const plan=CC_COACH_PLAN ? ccCoachPlanScore() : null;
+  ccEveningRows().push({g, place, elims, dc:t._deathCause||null, dz:t._zoneReached||null, dd:!!t._droppedOut,
+                        rot:t._rot||null, plan});
+}
+/* ПЛАН КОУЧА. Строится перед первой игрой вечера, если коуч нанят (одиночная игра). Ставка — по дивизиону: в первых двух
+   коуч играет от силы (контест, с зоной, файты, центр в эндгейме), ниже — от выживания (своя точка, рано, без лишних файтов,
+   край зоны). Ротацию «с зоной»/«рано» меняет день: у плана одного коуча нет одной заготовки на весь год. */
+function ccCoachPlanMake(){
+  const c=(typeof ccCoach==='function') ? ccCoach() : null;
+  if(!c || (typeof ccMpOn==='function' && ccMpOn())) return null;
+  const div=(CAREER.career.division||5);
+  const strong=div<=2;
+  const dayOdd=(ccHashStr ? ccHashStr(careerToday()+'|'+c.id) : 0)%2===1;
+  return {coach:c.name, drop:strong ? 'contest' : 'home', rot:strong ? (dayOdd ? 'with' : 'early') : (dayOdd ? 'early' : 'with'),
+          fight:strong ? 'fight' : 'avoid', late:strong ? 'mid' : 'edge'};
+}
+// Какой вариант вопроса — пункт плана. null — у этого вопроса пункта нет.
+function ccCoachPlanTarget(kind, ids){
+  const p=CC_COACH_PLAN; if(!p || !ids) return null;
+  const k=String(kind||'').replace(/:.*$/, ''), has=x=>ids.indexOf(x)>=0 ? x : null;
+  if(k==='drop') return has(p.drop) || (p.drop==='home' ? has('quiet') : null);
+  if(k==='rot') return has(p.rot);
+  if(k==='site') return p.fight==='fight' ? has('fight') : has('leave');
+  if(k==='farm') return p.fight==='fight' ? has('fight') : has('full');
+  if(k==='mid') return p.fight==='fight' ? has('fight') : has('stay');
+  if(k==='late') return has(p.late);
+  return null;
+}
+function ccCoachPlanScore(){
+  let ok=0, n=0;
+  Object.keys(CC_GAME_PICKS).forEach(k=>{ const tg=ccCoachPlanTarget(k, CC_GAME_OPTS[k]); if(!tg) return; n++; if(CC_GAME_PICKS[k]===tg) ok++; });
+  return n ? {ok, n} : null;
+}
+// Карточка плана перед первой игрой — одна кнопка «Принято»; под скипом и симуляцией проходит сама (ccChoiceBox).
+async function ccCoachPlanShow(){
+  CC_COACH_PLAN=ccCoachPlanMake();
+  if(!CC_COACH_PLAN) return;
+  const T=L(), p=CC_COACH_PLAN;
+  const li=(a,b)=>'<li><em>'+esc(a)+'</em> '+esc(b)+'</li>';
+  const hint='<ul class="cc-plan">'+li(T.ccPlanDrop, T['ccPlanDrop_'+p.drop])+li(T.ccPlanRot, T['ccPlanRot_'+p.rot])+
+    li(T.ccPlanFight, T['ccPlanFight_'+p.fight])+li(T.ccPlanLate, T['ccPlanLate_'+p.late])+'</ul>';
+  await ccChoiceBox(T.ccPlanTitle(p.coach), hint, [{id:'ok', title:T.ccPlanOk, def:true}], (typeof CC_RUN_MAP!=='undefined' && CC_RUN_MAP) || null, null, 'plan');
+}
+/* РАЗБОР ВЕЧЕРА — в карточке результата, под оценкой матча (ccNightRateLine). Только то, что было: смерти по причинам,
+   кто чаще всех убивал, лучшая игра, ротации, план коуча; и что из этого следует для тренировки. */
+function ccEveningReviewHTML(){
+  const rows=(CC_EVENING && CC_EVENING.day===careerToday()) ? CC_EVENING.rows : [];
+  if(!rows.length) return '';
+  try{ ccEveningPosts(rows); }catch(e){}
+  const T=L();
+  const deaths={kill:0, storm:0, surge:0, drop:0}, killers={};
+  rows.forEach(r=>{
+    if(r.place===1) return;
+    if(r.dd) deaths.drop++;
+    else if(r.dc==='storm') deaths.storm++;
+    else if(r.dc==='surge') deaths.surge++;
+    else if(r.dc){ deaths.kill++; const h=ccEveningKillerHandle(r.dc); if(h) killers[h]=(killers[h]||0)+1; }
+  });
+  const top=Object.entries(killers).sort((a,b)=>b[1]-a[1])[0];
+  const best=rows.slice().sort((a,b)=>a.place-b.place || b.elims-a.elims)[0];
+  const kills=rows.reduce((n,r)=>n+(r.elims||0), 0);
+  const plan=rows.filter(r=>r.plan);
+  const pOk=plan.reduce((n,r)=>n+r.plan.ok, 0), pN=plan.reduce((n,r)=>n+r.plan.n, 0);
+  const line=(a,b)=>'<li><em>'+esc(a)+'</em><b>'+b+'</b></li>';
+  let html='<div class="ev-review"><h5>'+esc(T.evTitle)+'</h5><ul>';
+  html+=line(T.evBest, esc(T.evBestGame(best.g, best.place, best.elims)));
+  html+=line(T.evKills, esc(String(kills))+' · '+esc(T.evPerGame((kills/rows.length).toFixed(1))));
+  const dl=[];
+  if(deaths.kill) dl.push(T.evDeathKill(deaths.kill));
+  if(deaths.drop) dl.push(T.evDeathDrop(deaths.drop));
+  if(deaths.storm) dl.push(T.evDeathStorm(deaths.storm));
+  if(deaths.surge) dl.push(T.evDeathSurge(deaths.surge));
+  if(dl.length) html+=line(T.evDeaths, esc(dl.join(' · ')));
+  if(top && top[1]>=1) html+=line(T.evNemesis, '@'+esc(top[0])+(top[1]>1 ? ' ×'+top[1] : ''));
+  if(pN) html+=line(T.evPlan, esc(T.evPlanDone(pOk, pN)));
+  html+='</ul>';
+  // Что тренировать: по главной причине вылетов.
+  const main=Object.entries(deaths).sort((a,b)=>b[1]-a[1])[0];
+  if(main && main[1]>0) html+='<p class="ev-tip">'+esc(T['evTip_'+main[0]])+'</p>';
+  return html+'</div>';
+}
+/* ПОСТЫ ПО ФАКТАМ ВЕЧЕРА (Notion 15.10: «the tweets are kinda weird»). Один раз на вечер, только одиночная игра:
+   — тот, кто убил тебя больше всех (дважды и чаще) и есть в базе карточек, пишет об этом сам (автор — arg0);
+   — твой пост про Victory Royale с киллами этой игры;
+   — твой пост, если за вечер вышло много киллов (5+ в среднем за игру нет — порог 3 за игру). */
+function ccEveningPosts(rows){
+  if(!CC_EVENING) return;
+  if(typeof ccMpOn==='function' && ccMpOn()) return;
+  // Каждый вид поста — раз за вечер, но не обязательно после первого раунда: факты копятся (вечер в два раунда).
+  const done=CC_EVENING.posted=(CC_EVENING.posted && typeof CC_EVENING.posted==='object') ? CC_EVENING.posted : {};
+  const me=(CAREER.player && (CAREER.player.nick||CAREER.player.handle)) || '';
+  const killers={};
+  rows.forEach(r=>{ if(r.place!==1 && r.dc && r.dc!=='storm' && r.dc!=='surge' && !r.dd){ const h=ccEveningKillerHandle(r.dc); if(h) killers[h]=(killers[h]||0)+1; } });
+  const top=Object.entries(killers).sort((a,b)=>b[1]-a[1])[0];
+  let posted=false;
+  if(!done.k && top && top[1]>=2 && typeof ccCardsByKey==='function' && (ccCardsByKey().get(hKey(top[0]))||[]).length){
+    careerNews('flat', 'ccPostEvKilled', [top[0], top[1], me]); posted=done.k=true;
+  }
+  const vr=rows.filter(r=>r.place===1).sort((a,b)=>b.elims-a.elims)[0];
+  if(vr && !done.vr){ careerNews('good', 'ccPostEvVR', [vr.g, vr.elims, rows.length]); posted=done.vr=true; }
+  const kills=rows.reduce((n,r)=>n+(r.elims||0), 0);
+  if(!vr && !done.e && rows.length>=4 && kills/rows.length>=3){ careerNews('good', 'ccPostEvKills', [kills, rows.length]); posted=done.e=true; }
+  if(posted){ try{ careerSave(); }catch(e){} }
+}
 /* СОВЕТ КОУЧА (Notion 15.10, фидбек: «the option to get a coach doesn't really do anything»; ответ игроку — «coach
    suggests…»). Нанятый коуч говорит, что выбрать: где у вариантов есть проценты (ccChoiceOdds — «X% выживают»), он берёт
    вариант с лучшим последним числом; где чисел нет — ход по умолчанию. Слабый коуч (прирост тренировки < 0.32) ошибается
    в каждом пятом совете. Онлайн и соло-вечер — молчит: лишний бросок развёл бы два браузера (CC_MP_ROLLS). */
-function ccCoachOpinion(options, dflt){
+function ccCoachOpinion(options, dflt, kind){
   if(!options || options.length<2 || typeof ccCoach!=='function') return null;
   if(typeof ccMpOn==='function' && ccMpOn()) return null;
   const c=ccCoach(); if(!c) return null;
   const last=o=>{ const m=String((o && o.note)||'').replace(/<[^>]+>/g,'').match(/(\d+(?:[.,]\d+)?)\s*%/g); return m ? parseFloat(m[m.length-1]) : null; };
   const scored=options.filter(o=>o && last(o)!=null);
   let pick=scored.length>=2 ? scored.reduce((a,b)=>last(b)>last(a) ? b : a) : dflt;
+  // Есть план вечера — совет по нему (ccCoachPlanTarget); у вопроса без пункта плана — как раньше.
+  const tg=ccCoachPlanTarget(kind, options.map(o=>o && o.id));
+  if(tg){ const o=options.find(x=>x && x.id===tg); if(o) pick=o; }
   if((c.train||0)<0.32 && Math.random()<0.2){ const alt=options.filter(o=>o && o!==pick); pick=alt[Math.floor(Math.random()*alt.length)]||pick; }
   const say=L().ccCoachLeans;
   return {name:c.name, pick, text: typeof say==='function' ? say(String(pick.title||'').replace(/<[^>]+>/g,'')) : ''};
@@ -108917,9 +109063,13 @@ function ccChoiceBox(title, hint, options, onMap, side, kind){
   return ccMpIdle(new Promise(resolve=>{
     const host=onMap || document.getElementById('majorStages');
     const dflt=options.find(o=>o && o.def) || options[0];
-    const mate=ccMateOpinion(options, dflt), coach=ccCoachOpinion(options, dflt);
+    const mate=ccMateOpinion(options, dflt), coach=ccCoachOpinion(options, dflt, kind);
+    // Что спросили и что выбрали — для плана коуча (ccCoachPlanScore). Только карьера.
+    const baseKind=String(kind||'').replace(/:.*$/, '');
+    if(typeof CAREER_RUN!=='undefined' && CAREER_RUN && baseKind) CC_GAME_OPTS[baseKind]=options.map(o=>o && o.id);
     let done=false;
     const answer=o=>{ if(done) return; done=true;
+      if(typeof CAREER_RUN!=='undefined' && CAREER_RUN && baseKind && o) CC_GAME_PICKS[baseKind]=o.id;
       clearInterval(watch); clearTimeout(bell);
       // Чат эфира видел вопрос — видит и ответ. Только там, где вопрос стоял.
       if(box && typeof ccTvOnChosen==='function') ccTvOnChosen(o);
@@ -114125,7 +114275,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8b55db63';
+const CC_BUILD='ddedd473';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -133858,6 +134008,7 @@ const CC_POST_BY={
   // Разошедшийся вечер командной игры — своя строка о своём вечере.
   ccNewsMpSplit:'you',
   ccNewsMpPaySync:'you',
+  ccPostEvKilled:'arg0', ccPostEvVR:'you', ccPostEvKills:'you',
   // LFD is the player saying it out loud. Nobody else posts that for you.
   ccNewsLfd:'you',
   // And so is an injury: a wrist is the player's own week, not a transfer the
