@@ -3832,3 +3832,4 @@ hmSceneIn:n=>'en '+n+' día'+(n===1 ? '' : 's'), hmSceneDone:'La temporada FNCS 
 hmBoardSub:'Las carreras de los jugadores del sitio, por premios.', hmBoardMore:n=>'Mostrar '+n, hmBoardLess:'Mostrar menos', hmHistSub:'Drafts anteriores, récords y premios.',
 ccNewsOwnCup:(who,n,w,f)=>'Cup de '+who+', bolsa de $'+n+': gana '+w+'. +'+f+' seguidores'});
 Object.assign(I18N.es, {hmRealTitle:'Resultados 2026', hmRealSub:'Los resultados reales de los torneos FNCS de este año. Toca uno para ver la tabla completa.', hmRealOpen:'Tabla', hmRealTeam:'Equipo', hmRealReg:'Región', hmRealPts:'Puntos', hmRealPrize:'Premio', hmRealClose:'Cerrar'});
+Object.assign(I18N.es, {hmRealAll:n=>'Tabla completa ('+n+')', hmScenePrize:(r,a,b)=>r+': 1.º $'+a+', bolsa $'+b});
