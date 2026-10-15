@@ -113671,7 +113671,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='0c6edc68';
+const CC_BUILD='af750b11';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -142934,11 +142934,13 @@ function careerCharityHTML(){
 /* РОСКОШЬ. Только престиж: вещь встаёт на полку в профиле («Коллекция») и в сумму «Потрачено», которую видно
    в «Игроках сайта». Силы, энергии и подписчиков не даёт — для этого есть остальной магазин. */
 const CC_LUX=[
-  {id:'watch', cost:1000000,  ico:'⌚'},
-  {id:'hyper', cost:3000000,  ico:'🏎️'},
-  {id:'yacht', cost:10000000, ico:'🛥️'},
-  {id:'jet',   cost:25000000, ico:'✈️'}
+  {id:'watch', cost:1000000,  ico:'⌚', img:'lux-watch.jpg'},
+  {id:'hyper', cost:3000000,  ico:'🏎️', img:'lux-hyper.jpg'},
+  {id:'yacht', cost:10000000, ico:'🛥️', img:'lux-yacht.jpg'},
+  {id:'jet',   cost:25000000, ico:'✈️', img:'lux-jet.jpg'}
 ];
+// Фото — Wikimedia Commons; авторы под плиткой (CC BY-SA требует подписи). Значок остаётся полке в профиле.
+const CC_LUX_CREDIT='Photos: Alesili (CC BY-SA 3.0), MrWalkr (CC BY-SA 4.0), Benoît Prieur (CC0), Bene Riobó (CC BY-SA 4.0) — Wikimedia Commons';
 function ccLuxOwns(id){ const x=CAREER.career.lux; return !!(x && (x.ids||[]).indexOf(id)>=0); }
 function careerLuxBuy(id, sure){
   const it=CC_LUX.find(x=>x.id===id), cr=CAREER.career;
@@ -142960,7 +142962,7 @@ function careerLuxHTML(){
   const rows=CC_LUX.map(it=>{
     const own=ccLuxOwns(it.id), can=!own && (cr.balance||0)>=it.cost;
     return `<div class="cc-buy${own?' own':''}">
-      <span class="cc-lux-ico" aria-hidden="true">${it.ico}</span>
+      ${it.img ? `<img class="cc-flat-img" src="${CC_DEVICE_DIR}${it.img}" alt="" loading="lazy" onerror="this.remove()">` : `<span class="cc-lux-ico" aria-hidden="true">${it.ico}</span>`}
       <div class="cc-buy-in"><b>${T['ccLux_'+it.id]}</b><span>${T.ccLuxNote}</span></div>
       ${own ? `<span class="cc-owned">${T.ccFlatYours}</span>`
             : `<button class="ch-sign"${can?'':' disabled'} onclick="careerLuxBuy('${it.id}')">$${ccNum(it.cost)}</button>`}
@@ -142970,6 +142972,7 @@ function careerLuxHTML(){
     <h4>${T.ccLuxTitle}</h4>
     <div class="ch-hint">${T.ccLuxHint}</div>
     <div class="cc-buys">${rows}</div>
+    <div class="cc-photo-credit">${CC_LUX_CREDIT}</div>
   </div>`;
 }
 // Сколько ушло на дорогое — то, что видно в «Игроках сайта» и на полке профиля.
