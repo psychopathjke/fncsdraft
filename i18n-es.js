@@ -3839,3 +3839,4 @@ Object.assign(I18N.es, {hmSceneSub2:'Próximos torneos con premios: FNCS según 
 Object.assign(I18N.es, {hmSceneSub2:'Próximos torneos de Epic con premios: FNCS y cups.', hmSceneOther:'Cups de Epic'});
 Object.assign(I18N.es, {hmTop50:'top 50'});
 Object.assign(I18N.es, {hmTimerNext:'Próximo torneo de Epic:', hmTimerLive:'En directo', hmTimerWatch:'Ver', hmTimerToday:'hoy', hmTimerTomorrow:'mañana', hmDayShort:'d'});
+Object.assign(I18N.es, {hmSceneRecent:'Últimos ganadores'});

@@ -7078,6 +7078,8 @@
   .hb-row>b{color:#fff;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .hb-row>b img{width:16px;height:auto;vertical-align:-2px;margin-right:5px;}
   .hb-row>b small{color:#8ea6d6;font-weight:600;margin-left:6px;}
+  .hb-row.me{background:rgba(255,221,0,.08);box-shadow:inset 3px 0 0 #ffdd00;padding-left:6px;}
+  .hb-me{margin-top:8px;padding:8px 10px;border-radius:8px;background:rgba(255,221,0,.1);border:1px solid rgba(255,221,0,.4);color:#ffe86b;font-weight:800;font-size:13px;}
   .hb-row>span{color:#ffdd00;font-weight:800;font-variant-numeric:tabular-nums;}
   .home-more{margin-top:8px;background:none;border:0;padding:0;color:#9fe1ff;font:inherit;font-size:13px;font-weight:700;
     cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
@@ -20331,7 +20333,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'e7491d3b', es:'763be490'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'99bb1ff1', es:'6f59d8ec'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20646,6 +20648,12 @@ Object.assign(I18N.en, {hmTimerNext:'Next Epic event:', hmTimerLive:'Live now', 
 Object.assign(I18N.fr, {hmTimerNext:'Prochain tournoi Epic :', hmTimerLive:'En direct', hmTimerWatch:'Regarder', hmTimerToday:'aujourd’hui', hmTimerTomorrow:'demain', hmDayShort:'j'});
 Object.assign(I18N.it, {hmTimerNext:'Prossimo torneo Epic:', hmTimerLive:'In diretta', hmTimerWatch:'Guarda', hmTimerToday:'oggi', hmTimerTomorrow:'domani', hmDayShort:'g'});
 Object.assign(I18N.pt, {hmTimerNext:'Próximo torneio da Epic:', hmTimerLive:'Ao vivo', hmTimerWatch:'Assistir', hmTimerToday:'hoje', hmTimerTomorrow:'amanhã', hmDayShort:'d'});
+/* Победители недавних турниров. */
+Object.assign(I18N.ru, {hmSceneRecent:'Недавно: победители'});
+Object.assign(I18N.en, {hmSceneRecent:'Recent winners'});
+Object.assign(I18N.fr, {hmSceneRecent:'Derniers vainqueurs'});
+Object.assign(I18N.it, {hmSceneRecent:'Vincitori recenti'});
+Object.assign(I18N.pt, {hmSceneRecent:'Vencedores recentes'});
 /* Главная 15.10: «Продолжить», «С другом», «Сцена сейчас», «Игроки сайта». Остальные языки — английские до доперевода. */
 Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Твои сохранения — с того дня, где остановился.', hmPlayOn:'Играть',
   hmSlotCareer:'Карьера', hmSlotMgr:'Менеджер', hmSlotLine:(s,d,e)=>'Сезон '+s+' · дивизион '+d+' · '+e, hmMgrLine:(s,c)=>'Сезон '+s+' · касса '+c,
@@ -114088,7 +114096,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='8a9fa997';
+const CC_BUILD='af5332f0';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159105,7 +159113,9 @@ const HOME_SCENE_SKIP={ProAm_Paris:1, ProAm_Seoul:1};
    Portal:Tournaments, все таблицы «Upcoming» (S/A/B, C, D, отборы, шоу-матчи), снято 16.10.2026; оставлены только с призовыми.
    Капы одной недели в разных регионах — одна строка (p: [[регион, $]…]). Финалы FNCS Solos отсюда дают фонды регионов,
    которых нет в CC_SOLOS_PRIZES-подписи (BR, ASIA, ME, OCE). Обновлять тем же запросом (api.php?action=parse&page=Portal:Tournaments). */
-const HOME_SCHED_LQ=[{"n":"Exposing UNREAL Players Stats with Clix!","f":"2026-07-24","t":"2026-07-24","tier":"Show Matches","loc":"North America","p":[["",780]]},{"n":"Red Bull Reshuffle","f":"2026-08-15","t":"2026-08-15","tier":"Show Matches","loc":"Vienna","p":[["",57837]]},{"n":"Rankly October Zonewars Ladder - Trio","f":"2026-10-01","t":"2026-11-01","tier":"D-Tier","loc":"Europe","p":[["",215]]},{"n":"Rankly October Zonewars Ladder - Duo","f":"2026-10-01","t":"2026-11-01","tier":"D-Tier","loc":"Europe","p":[["",215]]},{"n":"Duo Reload Cash Cup (ZB) - Week 6","f":"2026-10-23","t":"2026-10-23","tier":"C-Tier","loc":"","p":[["EU",4000],["NAC",4000],["NAW",2000],["BR",2000]]},{"n":"FNCS Solos · Grand Finals","f":"2026-10-26","t":"2026-10-27","tier":"S-Tier","loc":"","p":[["OCE",35400],["ME",35400],["ASIA",35400],["BR",72500]]},{"n":"Coupe de France Fortnite 2026","f":"2026-10-28","t":"2026-10-28","tier":"A-Tier","loc":"France, Belgium, Luxembourg, Monaco, Switzerland","p":[["",50000]]},{"n":"Zero Build Championship","f":"2026-10-30","t":"2026-10-30","tier":"C-Tier","loc":"North America","p":[["",5000]]},{"n":"Complete League - Fall Duo #1","f":"2026-11-04","t":"2026-11-18","tier":"D-Tier","loc":"Norway","p":[["",847]]},{"n":"Complete League - Fall Duo #2","f":"2026-11-25","t":"2026-12-09","tier":"D-Tier","loc":"Norway","p":[["",847]]}];
+const HOME_SCHED_LQ=[{"n":"Exposing UNREAL Players Stats with Clix!","f":"2026-07-24","t":"2026-07-24","tier":"Show Matches","loc":"North America","p":[["",780,"Clix"]]},{"n":"Red Bull Reshuffle","f":"2026-08-15","t":"2026-08-15","tier":"Show Matches","loc":"Vienna","p":[["",57837,"Juu"]]},{"n":"Rankly October Zonewars Ladder - Trio","f":"2026-10-01","t":"2026-11-01","tier":"D-Tier","loc":"Europe","p":[["",215]]},{"n":"Rankly October Zonewars Ladder - Duo","f":"2026-10-01","t":"2026-11-01","tier":"D-Tier","loc":"Europe","p":[["",215]]},{"n":"Duo Reload Cash Cup (ZB) - Week 6","f":"2026-10-23","t":"2026-10-23","tier":"C-Tier","loc":"","p":[["EU",4000],["NAC",4000],["NAW",2000],["BR",2000]]},{"n":"FNCS Solos · Grand Finals","f":"2026-10-26","t":"2026-10-27","tier":"S-Tier","loc":"","p":[["OCE",35400],["ME",35400],["ASIA",35400],["BR",72500]]},{"n":"Coupe de France Fortnite 2026","f":"2026-10-28","t":"2026-10-28","tier":"A-Tier","loc":"France, Belgium, Luxembourg, Monaco, Switzerland","p":[["",50000]]},{"n":"Zero Build Championship","f":"2026-10-30","t":"2026-10-30","tier":"C-Tier","loc":"North America","p":[["",5000]]},{"n":"Complete League - Fall Duo #1","f":"2026-11-04","t":"2026-11-18","tier":"D-Tier","loc":"Norway","p":[["",847]]},{"n":"Complete League - Fall Duo #2","f":"2026-11-25","t":"2026-12-09","tier":"D-Tier","loc":"Norway","p":[["",847]]}];
+/* Недавние турниры с победителями (Portal:Tournaments, «Most recent»): p = [[регион, $, победитель]…]. Пишет tools/refresh-home-data.js. */
+const HOME_RECENT_LQ=[{"n":"Red Bull Reshuffle","f":"2026-08-15","t":"2026-08-15","tier":"Show Matches","loc":"Vienna","p":[["",57837,"Juu"]]},{"n":"4v4 ZB vs BR player","f":"2026-10-10","t":"2026-10-10","tier":"C-Tier","loc":"North America","p":[["",10000,"Team ZB"]]},{"n":"World Warrior Tournament - World Final","f":"2026-10-11","t":"2026-10-11","tier":"B-Tier","loc":"World","p":[["",20000,"Knr"]]},{"n":"GirlyBella Gauntlet","f":"2026-10-13","t":"2026-10-13","tier":"C-Tier","loc":"Europe","p":[["",4700,"Regsita & Frxzify"]]},{"n":"Poyo x ParagonTweaks Solo Cup 2026","f":"2026-10-13","t":"2026-10-13","tier":"D-Tier","loc":"Europe","p":[["",1000,"Nova"]]},{"n":"TCS eSports League: 2026 #2","f":"2026-10-14","t":"2026-10-14","tier":"C-Tier","loc":"Europe","p":[["",6005,"Darm & Demus & charyy & Jbot & Repairs & Kaktus & Cringe & Moneymaker & Fnajen & Chap & Flickzy & Rax & Wifi & Matez & Vexi"]]},{"n":"1,000€ Community Cup","f":"2026-10-14","t":"2026-10-14","tier":"D-Tier","loc":"Europe","p":[["",1120,"Retail"]]},{"n":"Pride League 2026 Split-3 Session 3","f":"2026-10-14","t":"2026-10-14","tier":"D-Tier","loc":"Asia","p":[["",64]]}];
 /* ТАЙМЕР ДО БЛИЖАЙШЕГО ТУРНИРА EPIC (16.10, его «4»). Окна — выгрузка Epic по Европе (tools/measured/event-windows-eu.json,
    снято 28.09.2026; время UTC, как отдаёт Epic), с 15.10. Показывается по часам браузера. Окно считается идущим три часа
    с начала — у Epic столько длится раунд капа; у FNCS «Смотреть» ведёт на официальный канал Fortnite. */
@@ -159147,7 +159157,17 @@ let HOME_TIMER_T=null;
 function homeTimerDraw(){
   const box=document.getElementById('homeTimer'); if(!box) return;
   const T=L(), now=Date.now(), p=homeTimerPick(now);
-  if(!p.next && !p.live.length){ box.hidden=true; return; }
+  if(!p.next && !p.live.length){
+    /* Окна Epic с точным временем кончились (их снимают со страниц Tracker руками) — тогда ближайший турнир Epic из
+       расписания Liquipedia, с точностью до дня: «через N дней», без секунд, которых мы не знаем. */
+    const today=homeToday(), EPIC=/Cash Cup|Victory Cup|Reload Elite|FNCS|Eval|Performance Evaluation|Ranked Cup/i;
+    const x=(typeof HOME_SCHED_LQ!=='undefined' ? HOME_SCHED_LQ : []).find(e=>e.f>today && EPIC.test(e.n));
+    if(!x){ box.hidden=true; return; }
+    const days=Math.round((Date.parse(x.f+'T00:00:00Z')-Date.parse(today+'T00:00:00Z'))/864e5);
+    box.innerHTML='<span class="ht-lbl">'+esc(T.hmTimerNext)+'</span><img class="ht-img" src="'+homeWinArt(x.n.replace(/\s/g, ''))+'" alt="" onerror="this.remove()">'+
+      '<b>'+esc(x.n)+'</b><span class="ht-when">'+esc(homeDate(x.f, true))+'</span><span class="ht-cd">'+esc(days===1 ? T.hmTimerTomorrow : T.hmSceneIn(days))+'</span>';
+    box.hidden=false; return;
+  }
   const loc=LANG==='ru' ? 'ru-RU' : LANG;
   const clock=ms=>{ try{ return new Date(ms).toLocaleTimeString(loc, {hour:'2-digit', minute:'2-digit'}); }catch(e){ return ''; } };
   const dayWord=ms=>{ const d=new Date(ms), t=new Date(); const k=x=>x.getFullYear()+'-'+x.getMonth()+'-'+x.getDate();
@@ -159171,6 +159191,19 @@ function homeTimerDraw(){
   // Секундная стрелка — только пока главная на экране.
   clearTimeout(HOME_TIMER_T);
   HOME_TIMER_T=setTimeout(()=>{ const sc=document.getElementById('screen-mode'); if(sc && sc.classList.contains('active')) homeTimerDraw(); else HOME_TIMER_T=null; }, 1000);
+}
+/* Победители турниров Epic, кончившихся за последние три дня (16.10, «победители после турнира»). */
+function homeRecentHTML(T, today, EPIC){
+  const from=new Date(Date.parse(today+'T00:00:00Z')-3*864e5).toISOString().slice(0,10);
+  const list=(typeof HOME_RECENT_LQ!=='undefined' ? HOME_RECENT_LQ : []).filter(x=>x.t<today && x.t>=from && EPIC.test(x.n) && x.p.some(p=>p[2]));
+  if(!list.length) return '';
+  const rows=list.slice().reverse().map(x=>{
+    const art=/FNCS/i.test(x.n) ? 'art/fncs-solo.jpg' : homeWinArt(x.n.replace(/\s/g, ''));
+    const won=x.p.filter(p=>p[2]).map(p=>(p[0] ? p[0]+': ' : '')+p[2]).join(' · ');
+    const dates=homeDate(x.f, true)+(x.t!==x.f ? ' – '+homeDate(x.t, true) : '');
+    return '<li class="hs-li"><img src="'+art+'" alt="" onerror="this.remove()"><div><b>'+esc(x.n)+'</b><span>'+esc(dates)+'</span><span class="hs-pm">🏆 '+esc(won)+'</span></div></li>';
+  }).join('');
+  return '<b class="hs-other">'+esc(T.hmSceneRecent)+'</b><ul class="hs-st hs-list">'+rows+'</ul>';
 }
 function homeSceneDraw(){
   const box=document.getElementById('homeScene'); if(!box) return;
@@ -159228,7 +159261,7 @@ function homeSceneDraw(){
   // Таймер до ближайшего турнира — здесь же, в колонке сцены (16.10: «пусть таймер будет где scene»); заполняет homeTimerDraw.
   box.innerHTML='<h2 class="home-h">'+esc(T.hmSceneTitle)+'</h2><p class="home-sub">'+esc(T.hmSceneSub2)+'</p><div class="home-timer" id="homeTimer" hidden></div>'+
     (rows ? '<div>'+rows+'</div>' : '<p class="home-sub">'+esc(T.hmSceneDone)+'</p>')+
-    (other ? '<b class="hs-other">'+esc(T.hmSceneOther)+'</b><ul class="hs-st hs-list">'+other+'</ul>' : '');
+    (other ? '<b class="hs-other">'+esc(T.hmSceneOther)+'</b><ul class="hs-st hs-list">'+other+'</ul>' : '')+homeRecentHTML(T, today, EPIC);
   box.hidden=false;
 }
 /* РЕЗУЛЬТАТЫ 2026 на главной (15.10, «а таблицу лидеров и реальные турниры»): настоящие итоги прошедших турниров года.
@@ -159428,6 +159461,13 @@ function homeLiveTabs(k){
      не дожидаясь app.js (15.10: «с делеем результаты появляются»). Пишется, только когда таблица сайта уже пришла. */
   if(HOME_BOARD && HOME_BOARD._at){ try{ localStorage.setItem('fd_home_live', JSON.stringify({lang:LANG, tab:cur, html:box.innerHTML.replace(/<div class="home-timer" id="homeTimer"[^>]*>[\s\S]*?<\/div>/, '<div class="home-timer" id="homeTimer" hidden></div>')})); }catch(e){} }
 }
+function homeBoardMe(){
+  try{
+    const order=[ccSlot()]; for(let n=1; n<=CC_SLOTS; n++) if(order.indexOf(n)<0) order.push(n);
+    for(const n of order){ const sv=ccSlotRead(n); const id=sv && sv.career && sv.career.board && !sv.career.board.off && sv.career.board.id; if(id) return id; }
+  }catch(e){}
+  return '';
+}
 function homeBoardDraw(){
   const box=document.getElementById('homeBoard'); if(!box) return;
   const T=L(), base=ccBoardBase();
@@ -159436,7 +159476,9 @@ function homeBoardDraw(){
   const d=HOME_BOARD;
   if(!d || (!d._busy && Date.now()-(d._at||0) > 60000)){
     if(d) d._busy=true; else HOME_BOARD={_busy:true, _at:0};
-    fetch(base).then(r=>r.ok ? r.json() : {err:true}).catch(()=>({err:true})).then(x=>{
+    // Своя строка — по id карьеры из сейва (активный слот первым): сервер отвечает местом (you), как во вкладке карьеры.
+    const me=homeBoardMe();
+    fetch(base+(me ? "?me="+encodeURIComponent(me) : "")).then(r=>r.ok ? r.json() : {err:true}).catch(()=>({err:true})).then(x=>{
       HOME_BOARD=Object.assign(x||{err:true}, {_at:Date.now()});
       homeBoardDraw();
       try{ homeLiveTabs(); }catch(e){}
@@ -159449,13 +159491,14 @@ function homeBoardDraw(){
     if(seen.has(k)) return false; seen.add(k); return true; });
   if(!rows.length){ box.innerHTML=head+'<p class="home-sub">'+esc(T.lbEmpty)+'</p>'; return; }
   HOME_BOARD_ROWS=rows;
-  box.innerHTML=head+'<div>'+homeBoardRowsHTML(rows.slice(0, 10))+'</div>'+
+  const you=d.you && d.you.rank ? '<div class="hb-me">'+esc(T.lbYou(d.you.rank, d.total||rows.length))+'</div>' : '';
+  box.innerHTML=head+'<div>'+homeBoardRowsHTML(rows.slice(0, 10))+'</div>'+you+
     (rows.length>10 ? '<button class="home-more" type="button" onclick="homeListOpen(\'board\')">'+esc(T.hmBoardMore(Math.min(50, rows.length)))+'</button>' : '');
 }
 let HOME_BOARD_ROWS=[];
 function homeBoardRowsHTML(rows){
   const T=L(), flag=c=>c ? '<img src="flags/w20/'+esc(ccCountryOf(c))+'.png" alt="" onerror="this.remove()">' : '';
-  return rows.map((r,i)=>'<div class="hb-row"><i>'+(i+1)+'</i><b>'+flag(r.country)+esc(r.nick)+
+  return rows.map((r,i)=>'<div class="hb-row'+(r.you ? ' me' : '')+'"><i>'+(i+1)+'</i><b>'+flag(r.country)+esc(r.nick)+
     '<small>'+esc(r.region||'')+' · '+esc(T.lbSeasons(r.seasons))+'</small></b><span>$'+ccNum(r.earn)+'</span></div>').join('');
 }
 /* «Показать 50» — списком поверх экрана, а не раскрытием колонки (16.10: «когда жмёшь топ 50, пусть поверх экрана будет список»). */
