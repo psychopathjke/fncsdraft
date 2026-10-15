@@ -36,14 +36,17 @@ function normalize(e, now){
   const region=REGIONS.indexOf(e.region)>=0 ? e.region : null;
   if(!region) return {err:'region'};
   const country=/^[a-z]{2}$/.test(String(e.country||'')) ? e.country : '';
-  const seasons=int(e.seasons, 1, 60);
+  /* Потолки — с запасом на долгие карьеры (Notion 15.10: cxpra, 17-й год, 1228 турниров, пропал из
+     таблицы — титулов стало больше 500, и каждая его строка отбрасывалась как «num»). Титулы — это
+     все первые места журнала, капы тоже: сотни за десяток лет. */
+  const seasons=int(e.seasons, 1, 1000);
   if(seasons==null) return {err:'seasons'};
   const earn=int(e.earn, 0, MAX_EARN_PER_SEASON*seasons);
   if(earn==null) return {err:'earn'};
   const ovr=int(e.ovr, 1, 120);
   const div=int(e.div, 1, 5);
-  const titles=int(e.titles||0, 0, 500);
-  const year=int(e.year, 2019, 2040);
+  const titles=int(e.titles||0, 0, 100000);
+  const year=int(e.year, 2019, 2100);
   if(ovr==null || div==null || titles==null || year==null) return {err:'num'};
   // Лучший результат — «1/150» или пусто.
   const bm=/^(\d{1,5})\/(\d{1,6})$/.exec(String(e.best||''));

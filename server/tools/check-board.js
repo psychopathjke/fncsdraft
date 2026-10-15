@@ -24,6 +24,8 @@ check('заработок больше, чем бывает за сезоны, �
 check('а за два сезона — можно', !!normalize(Object.assign({}, OK, {earn:7000000, seasons:2}), 0).row);
 check('отрицательный заработок — отказ', normalize(Object.assign({}, OK, {earn:-5}), 0).err==='earn');
 check('кривой лучший результат обнуляется', normalize(Object.assign({}, OK, {best:'9/3'}), 0).row.best==='');
+check('долгая карьера: 17 сезонов, 1228 турниров, 600 титулов — принимается (Notion 15.10, cxpra)',
+      !!normalize(Object.assign({}, OK, {seasons:17, earn:10001177, titles:600}), 0).row);
 check('страна не из двух букв — пустая', normalize(Object.assign({}, OK, {country:'<b>'}), 0).row.country==='');
 
 const prev=r.row;
