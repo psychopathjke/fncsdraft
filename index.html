@@ -3899,6 +3899,17 @@
     @keyframes ccJust{0%{box-shadow:0 0 0 3px rgba(255,221,0,.75) inset, 0 0 22px rgba(255,221,0,.45);}100%{box-shadow:0 0 0 1px #ffdd00 inset;}}
   }
   .cc-best .cc-lad{border-color:rgba(255,221,0,.35);background:rgba(255,221,0,.05);}
+  .cc-shop-head-r{margin-top:16px;padding-top:14px;border-top:1px solid rgba(140,175,255,.16);}
+  .cc-deals-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:10px;}
+  .cc-deals-h b{font-family:'Oswald','Arial Narrow',Impact,sans-serif;font-weight:700;font-size:18px;color:#fff;letter-spacing:.02em;}
+  .cc-deals-h span{color:#a9bbe3;font-size:12px;}
+  @media(min-width:900px){
+    .cc-shop-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,600px);gap:28px;align-items:start;}
+    .cc-shop-head-r{margin-top:0;padding-top:0;border-top:none;padding-left:24px;border-left:1px solid rgba(140,175,255,.16);}
+    #screen-career-hub .cc-shop-head .cc-deals{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .cc-shop-head .cc-deal img, .cc-shop-head .cc-deal-ico{aspect-ratio:16/9;}
+    .cc-shop-head .cc-deal b{min-height:0;}
+  }
   /* Витрина дня: три карточки в ряд, скидка на углу, старая цена зачёркнута. */
   .cc-deals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
   .cc-deal{position:relative;display:flex;flex-direction:column;gap:5px;padding:8px;border-radius:10px;
@@ -3917,7 +3928,6 @@
     #screen-career-hub .cc-shop-grid .cc-lads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));}
     #screen-career-hub .cc-shop-grid .cc-shop .cc-buys{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px;}
     #screen-career-hub .cc-shop-grid .cc-best .cc-lads, #screen-career-hub .cc-shop-grid .cc-best .cc-lad{max-width:640px;}
-    #screen-career-hub .cc-shop-grid .cc-deals{grid-template-columns:repeat(3,minmax(0,220px));}
     .cc-shop-why{max-width:70ch;}
   }
   @media(min-width:1400px){
@@ -113717,7 +113727,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='bd5ec1f6';
+const CC_BUILD='974c87b1';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -143376,7 +143386,7 @@ function ccShopDelta(it){
     const cs={}; CC_SHOP.forEach(x=>{ if(x.slot===it.slot && x.skill && careerOwns(x.id) && (!cs._r || x.rank>cs._r)){ cs._r=x.rank; cs.s=x.skill; } });
     Object.keys(it.skill).forEach(k=>{ const g=it.skill[k]-((cs.s||{})[k]||0); if(g<=0) return;
       const lab=T[ATTR_LABEL[k]]||k.toUpperCase();
-      if(a && a[k]!=null) out.push(lab+' '+a[k]+' → '+clamp(a[k]+g, 35, 99)); else out.push(lab+' +'+g); });
+      if(a && a[k]!=null){ const to=clamp(a[k]+g, 35, 99); if(to>a[k]) out.push(lab+' '+a[k]+' → '+to); } else out.push(lab+' +'+g); });
   }
   if(it.cap){ const g=it.cap-held('cap'); if(g>0){ const cur=careerEnergyMax(); out.push(T.ccShopCap+' '+cur+' → '+(cur+g)); } }
   if(it.reach){ const cur=Math.round(held('reach')*100); out.push(T.ccShopReach+' +'+cur+'% → +'+Math.round(it.reach*100)+'%'); }
@@ -143495,7 +143505,8 @@ function ccDealsHTML(){
     '</div>';
   }).join('');
   if(!cards) return '';
-  return '<div class="ch-tile cc-shop cc-deals-tile"><h4>'+T.ccDealsTitle+'</h4><div class="cc-shop-why" style="margin:0 0 10px;">'+T.ccDealsHint+'</div>'+
+  // В шапке магазина, справа от баланса (Notion 15.10, скрин 4: «пусть витрина дня будет там, где красное»).
+  return '<div class="cc-shop-head-r"><div class="cc-deals-h"><b>'+T.ccDealsTitle+'</b><span>'+T.ccDealsHint+'</span></div>'+
     '<div class="cc-deals">'+cards+'</div></div>';
 }
 // Сколько в разделе можно купить прямо сейчас — цифра на чипе.
@@ -143516,7 +143527,7 @@ function careerShopHTML(){
   const secs=[['gear', T.ccSecGear], ['home', T.ccSecHome], ['fame', T.ccSecFame], ['lux', T.ccSecLux], ['club', T.ccSecClub]];
   if(!secs.some(s=>s[0]===CC_SHOP_SEC)) CC_SHOP_SEC='gear';
   const conf=(CAREER.gear && CAREER.gear.conf) || 0;
-  const head='<div class="ch-tile cc-shop-head">'+
+  const head='<div class="ch-tile cc-shop-head"><div class="cc-shop-head-l">'+
     '<div class="cc-shop-bal"><em>'+T.ccBalance+'</em><b>$'+ccNum(cr.balance||0)+'</b></div>'+
     (ccShopJustOn() ? '<div class="cc-shop-just" role="status">'+T.ccShopBought(esc(CC_SHOP_JUST.name))+(CC_SHOP_JUST.delta ? ' · '+esc(CC_SHOP_JUST.delta) : '')+'</div>' : '')+
     '<div class="cc-shop-stats">'+
@@ -143530,7 +143541,7 @@ function careerShopHTML(){
       return '<button class="cc-sec'+(CC_SHOP_SEC===k?' on':'')+'" onclick="ccShopSec(\''+k+'\')">'+esc(t)+
         (n ? '<i>'+n+'</i>' : '')+'</button>'; }).join('')+'</div>'+
     '<div class="cc-shop-why">'+T['ccSecHint_'+CC_SHOP_SEC]+'</div>'+
-  '</div>';
+  '</div>'+ccDealsHTML()+'</div>';
   let body='';
   if(CC_SHOP_SEC==='gear'){
     const rooms=CC_SHOP.filter(x=>!x.slot);
@@ -143544,7 +143555,7 @@ function careerShopHTML(){
   else if(CC_SHOP_SEC==='lux') body='<div class="ch-tile cc-shop"><h4>'+T.ccSlot_car+'</h4><div class="cc-lads">'+ccShopLadderHTML('car', fresh)+'</div>'+
       (conf ? '<div class="ch-hint" style="margin-top:8px;">'+T.ccConfFloor(Math.round((CC_FORM_MAX-conf)*10)/10)+'</div>' : '')+'</div>'+careerLuxHTML();
   else body=careerClubHTML();
-  return '<div class="ch-grid cc-shop-grid" style="grid-template-columns:minmax(0,1fr);">'+head+ccDealsHTML()+body+'</div>';
+  return '<div class="ch-grid cc-shop-grid" style="grid-template-columns:minmax(0,1fr);">'+head+body+'</div>';
 }
 
 /* ---- Being asked about it ---------------------------------------------------
