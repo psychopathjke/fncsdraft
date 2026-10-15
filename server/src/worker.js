@@ -165,6 +165,9 @@ export class Board {
       id TEXT PRIMARY KEY, nick TEXT, region TEXT, country TEXT, seasons INTEGER, earn INTEGER,
       ovr INTEGER, div INTEGER, titles INTEGER, year INTEGER, best TEXT, bestEv TEXT, at INTEGER)`);
     this.sql.exec('CREATE INDEX IF NOT EXISTS rows_earn ON rows(earn DESC)');
+    // Последние отказы (Notion 15.10: строку с >500 титулами сервер молча выбрасывал неделю). Ник и
+    // причина видны по GET /board?rejects=1, id не хранится.
+    this.sql.exec('CREATE TABLE IF NOT EXISTS rejects(at INTEGER, nick TEXT, err TEXT, body TEXT)');
   }
   one(id){ return this.sql.exec('SELECT * FROM rows WHERE id=?', id).toArray()[0]||null; }
   async fetch(req){
@@ -177,7 +180,12 @@ export class Board {
       }
       const now=Date.now();
       const r=this.board.accept(e, this.one(String((e&&e.id)||'')), now);
-      if(r.err) return json({err:r.err}, 400);
+      if(r.err){
+        const b=Object.assign({}, e||{}); delete b.id;
+        this.sql.exec('INSERT INTO rejects(at,nick,err,body) VALUES(?,?,?,?)', now, String((e&&e.nick)||'').slice(0,24), r.err, JSON.stringify(b).slice(0,600));
+        this.sql.exec('DELETE FROM rejects WHERE at < (SELECT MIN(at) FROM (SELECT at FROM rejects ORDER BY at DESC LIMIT 200))');
+        return json({err:r.err}, 400);
+      }
       if(r.skip) return json({ok:true, skip:r.skip});
       const w=r.row;
       this.sql.exec(`INSERT OR REPLACE INTO rows(id,nick,region,country,seasons,earn,ovr,div,titles,year,best,bestEv,at)
@@ -185,6 +193,8 @@ export class Board {
         w.ovr, w.div, w.titles, w.year, w.best, w.bestEv, w.at);
       return json({ok:true});
     }
+    if(url.searchParams.get('rejects'))
+      return json({rejects:this.sql.exec('SELECT at,nick,err,body FROM rejects ORDER BY at DESC LIMIT 50').toArray()});
     const region=REGIONS.indexOf(url.searchParams.get('region'))>=0 ? url.searchParams.get('region') : null;
     const me=String(url.searchParams.get('me')||'');
     const where=region ? ' WHERE region=?' : '';
