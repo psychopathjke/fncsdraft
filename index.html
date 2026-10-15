@@ -7122,6 +7122,36 @@
   .hr-table tr:nth-child(-n+3) td:first-child{color:#ffdd00;}
   .hr-table td:nth-child(2){color:#fff;font-weight:700;}
   body.hr-lock{overflow:hidden;}
+  /* ТРИ КОЛОНКИ (15.10): режимы одним рядом; результаты, сцена и игроки сайта под ними — тоже тремя колонками.
+     На телефоне режимы друг под другом и ниже, живой блок — вкладками. */
+  .hero-pair>.hero.hero-draft{margin:0;}
+  .hero-pair:has(.hero-mgr:not([hidden]))>.hero-draft-main>.hero-art.hd-logos{display:block;position:absolute;inset:0;min-height:0;clip-path:none;opacity:.3;}
+  .hero-pair:has(.hero-mgr:not([hidden]))>.hero-draft-main .hero-body{position:relative;z-index:2;}
+  .hero-pair .hero-career .hero-cta .hero-btn-alt{display:none;}
+  @media(min-width:901px){
+    #screen-mode .hero-pair:has(.hero-mgr:not([hidden])){grid-template-columns:repeat(3,minmax(0,1fr));}
+    #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero{min-height:420px;}
+    #screen-mode .hero-pair:has(.hero-mgr:not([hidden])) .hero-body{padding:26px 22px 24px;}
+    #screen-mode .hero-pair:has(.hero-mgr:not([hidden])) .hero-title{font-size:clamp(26px,2.3vw,36px);}
+    .hero-pair .hero-sub{font-size:13px;}
+    #homeLive{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:start;}
+    #homeLive .hl-tabs{display:none;}
+    #homeLive .hl-pane:not([hidden]){display:block !important;min-width:0;}
+    #homeLive .hl-pane>.home-h{display:block !important;font-size:18px;}
+    #homeLive .hr-list{grid-template-columns:1fr;gap:6px;}
+    #homeLive .hr-ev{padding:7px 9px;gap:10px;}
+    #homeLive .hr-ev img{width:58px;height:40px;border-radius:6px;}
+    #homeLive .hr-go{display:none;}
+    #homeLive .hr-in b{font-size:15px;}
+    #homeLive .hs-ev img{width:66px;height:46px;}
+  }
+  @media(max-width:900px){
+    .hero-pair>.hero{min-height:0;margin:0 0 10px;}
+    .hero-pair .hero-chips,.hero-pair .hero-about{display:none;}
+    .hero-pair .hero-body{padding:18px 18px 18px;gap:10px;}
+    .hero-pair .hero-title{font-size:28px;}
+    .hero-pair .hero-sub{font-size:13px;line-height:1.45;}
+  }
   /* Вкладки живого блока на главной (Результаты 2026 / Сцена сейчас / Игроки сайта). */
   .home-tabs{margin-top:16px;}
   #homeLive .hl-pane{display:none;}
@@ -7602,17 +7632,8 @@
       </div>
       <div class="hero-art" style="background:url(art/mode-major1.jpg) center/cover;cursor:pointer" role="img" aria-label="Fortnite Manager" onclick="mgrStart()"></div>
     </section>
-    </div>
-    <!-- Две колонки сразу (его скрин 8.10: «когда захожу на сайт вот так показывает, потом 2 колонки»): блок менеджера
-         открывался из app.js после загрузки 9 МБ, и до этого главная стояла в одну колонку. Тот же список хостов,
-         что в mgrAllowed. -->
-    <script>(function(){var h=(location.hostname||"").toLowerCase();if(!h||h==="localhost"||h==="127.0.0.1"||h==="debug.fncsdraft.pages.dev")document.querySelectorAll('.hero-mgr, .hero-mgr-btn, .nav-pill[data-nav="manager"]').forEach(function(el){el.hidden=false;});})();</script>
-    <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Скриншот (красная рамка вокруг всех рядов): «с этими
-         прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
-         первый выделяется». -->
-    <!-- ДВА РЕЖИМА (его слово 29.09): два одинаковых больших блока — КАРЬЕРА и ДРАФТ («такого же размера»).
-         Кнопка драфта раскрывает под ним выбор года 2019–2026 и форматов. -->
-    <section class="hero hero-draft" aria-labelledby="heroDraftTitle">
+    <!-- Драфт — третьей колонкой того же ряда (15.10: «всё-таки 3 колонки»). -->
+    <section class="hero hero-draft hero-draft-main" aria-labelledby="heroDraftTitle">
       <div class="hero-body">
         <span class="dp-tag hero-mode-tag" data-i18n="hmDraftTag"></span>
         <h2 class="hero-title" id="heroDraftTitle" data-i18n="hdHeroTitle"></h2>
@@ -7634,6 +7655,16 @@
         <div class="hd-wall"><figure class="hd-logo hd-wide"><img src="art/fncs-2019.jpg" alt="" loading="lazy"><figcaption>WC 2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f10.jpg" alt="" loading="lazy"><figcaption>2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f11.jpg" alt="" loading="lazy"><figcaption>2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f12.jpg" alt="" loading="lazy"><figcaption>2020</figcaption></figure><figure class="hd-logo"><img src="art/cups/f14.jpg" alt="" loading="lazy"><figcaption>2020</figcaption></figure><figure class="hd-logo"><img src="art/cups/f15.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f17.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f18gr.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f19.jpg" alt="" loading="lazy"><figcaption>2022</figcaption></figure><figure class="hd-logo"><img src="art/cups/f22inv.jpg" alt="" loading="lazy"><figcaption>2022</figcaption></figure><figure class="hd-logo"><img src="art/cups/f23.jpg" alt="" loading="lazy"><figcaption>2023</figcaption></figure><figure class="hd-logo"><img src="art/cups/f25.jpg" alt="" loading="lazy"><figcaption>2023</figcaption></figure><figure class="hd-logo"><img src="art/cups/f28.jpg" alt="" loading="lazy"><figcaption>2024</figcaption></figure><figure class="hd-logo hd-wide"><img src="art/mode-major1-2025.jpg" alt="" loading="lazy"><figcaption>2025</figcaption></figure><figure class="hd-logo hd-wide"><img src="art/fncs-2026.jpg" alt="" loading="lazy"><figcaption>2026</figcaption></figure></div>
       </div>
     </section>
+    </div>
+    <!-- Две колонки сразу (его скрин 8.10: «когда захожу на сайт вот так показывает, потом 2 колонки»): блок менеджера
+         открывался из app.js после загрузки 9 МБ, и до этого главная стояла в одну колонку. Тот же список хостов,
+         что в mgrAllowed. -->
+    <script>(function(){var h=(location.hostname||"").toLowerCase();if(!h||h==="localhost"||h==="127.0.0.1"||h==="debug.fncsdraft.pages.dev")document.querySelectorAll('.hero-mgr, .hero-mgr-btn, .nav-pill[data-nav="manager"]').forEach(function(el){el.hidden=false;});})();</script>
+    <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Скриншот (красная рамка вокруг всех рядов): «с этими
+         прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
+         первый выделяется». -->
+    <!-- ДВА РЕЖИМА (его слово 29.09): два одинаковых больших блока — КАРЬЕРА и ДРАФТ («такого же размера»).
+         Кнопка драфта раскрывает под ним выбор года 2019–2026 и форматов. -->
     <section class="modes-panel dp-shut" id="draftPanel">
     <div class="dp-years" id="dpYears"></div>
     <div class="year-row" id="modeYears">
@@ -113950,7 +113981,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='6cf28074';
+const CC_BUILD='21f00f2a';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
