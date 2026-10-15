@@ -7136,6 +7136,42 @@
   .hr-table tr:nth-child(-n+3) td:first-child{color:#ffdd00;}
   .hr-table td:nth-child(2){color:#fff;font-weight:700;}
   body.hr-lock{overflow:hidden;}
+  /* ГЛАВНАЯ ПЛОТНЕЕ (15.10): три режима одним рядом, на телефоне — ниже и без плашек; живые блоки вкладками. */
+  .hero-pair>.hero.hero-draft{margin:0;}
+  .hero-pair:has(.hero-mgr:not([hidden]))>.hero-draft:not(.hero-mgr)>.hero-art.hd-logos{display:block;position:absolute;inset:0;min-height:0;clip-path:none;opacity:.3;}
+  .hero-pair:has(.hero-mgr:not([hidden]))>.hero-draft:not(.hero-mgr) .hero-body{position:relative;z-index:2;}
+  .hero-pair .hero-career .hero-cta .hero-btn-alt{display:none;}
+  @media(min-width:901px){
+    #screen-mode .hero-pair:has(.hero-mgr:not([hidden])){grid-template-columns:repeat(3,minmax(0,1fr));}
+    #screen-mode .hero-pair:has(.hero-mgr:not([hidden]))>.hero{min-height:360px;}
+    #screen-mode .hero-pair:has(.hero-mgr:not([hidden])) .hero-body{padding:26px 22px 24px;}
+    #screen-mode .hero-pair:has(.hero-mgr:not([hidden])) .hero-title{font-size:clamp(26px,2.3vw,36px);}
+    .hero-pair .hero-sub{font-size:13px;}
+  }
+  @media(max-width:900px){
+    .hero-pair>.hero{min-height:0;margin:0 0 10px;}
+    .hero-pair .hero-chips,.hero-pair .hero-about{display:none;}
+    .hero-pair .hero-body{padding:18px 18px 18px;gap:10px;}
+    .hero-pair .hero-title{font-size:28px;}
+    .hero-pair .hero-sub{font-size:13px;line-height:1.45;}
+  }
+  #homeLive .hl-pane{display:none;}
+  #homeLive[data-tab="real"] #homeReal:not([hidden]),#homeLive[data-tab="scene"] #homeScene:not([hidden]),
+  #homeLive[data-tab="board"] #homeBoard:not([hidden]){display:block;}
+  .hl-pane>.home-h{display:none;}
+  .hl-tabs{display:flex;gap:6px;margin:0 0 10px;overflow-x:auto;scrollbar-width:none;}
+  .hl-tabs::-webkit-scrollbar{display:none;}
+  .hl-tabs button{flex:0 0 auto;font-family:var(--font-display);font-weight:600;font-size:16px;letter-spacing:.03em;text-transform:uppercase;
+    padding:8px 14px 7px;border-radius:999px;border:1px solid rgba(140,175,255,.25);background:rgba(255,255,255,.05);color:#c9d6f5;cursor:pointer;}
+  .hl-tabs button.on{background:#ffdd00;border-color:#ffdd00;color:#0b0f12;}
+  .hl-tabs button:focus-visible{outline:2px solid #ffdd00;outline-offset:2px;}
+  .home-hist{padding:12px 16px;}
+  .home-hist .home-h{font-size:17px;}
+  @media(max-width:700px){
+    .hf-card{flex-direction:row;align-items:center;gap:10px;padding:10px;}
+    .hf-card .cstrip-btn{flex:0 0 auto;min-width:128px;}
+    .hf-card p{font-size:12px;}
+  }
   .hero-mgr[hidden]{display:none !important;}
   /* Пара: карьера игрока слева, менеджера справа; арт уходит под текст. Кнопка «Карьера менеджера» в блоке игрока
      тогда лишняя — дверь рядом. На телефоне — одна под другой, как было. */
@@ -7598,16 +7634,7 @@
       </div>
       <div class="hero-art" style="background:url(art/mode-major1.jpg) center/cover;cursor:pointer" role="img" aria-label="Fortnite Manager" onclick="mgrStart()"></div>
     </section>
-    </div>
-    <!-- Две колонки сразу (его скрин 8.10: «когда захожу на сайт вот так показывает, потом 2 колонки»): блок менеджера
-         открывался из app.js после загрузки 9 МБ, и до этого главная стояла в одну колонку. Тот же список хостов,
-         что в mgrAllowed. -->
-    <script>(function(){var h=(location.hostname||"").toLowerCase();if(!h||h==="localhost"||h==="127.0.0.1"||h==="debug.fncsdraft.pages.dev")document.querySelectorAll('.hero-mgr, .hero-mgr-btn, .nav-pill[data-nav="manager"]').forEach(function(el){el.hidden=false;});})();</script>
-    <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Скриншот (красная рамка вокруг всех рядов): «с этими
-         прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
-         первый выделяется». -->
-    <!-- ДВА РЕЖИМА (его слово 29.09): два одинаковых больших блока — КАРЬЕРА и ДРАФТ («такого же размера»).
-         Кнопка драфта раскрывает под ним выбор года 2019–2026 и форматов. -->
+    <!-- Драфт — третьей плиткой того же ряда (15.10: «скомкано, вниз листать надо»). -->
     <section class="hero hero-draft" aria-labelledby="heroDraftTitle">
       <div class="hero-body">
         <span class="dp-tag hero-mode-tag" data-i18n="hmDraftTag"></span>
@@ -7630,6 +7657,16 @@
         <div class="hd-wall"><figure class="hd-logo hd-wide"><img src="art/fncs-2019.jpg" alt="" loading="lazy"><figcaption>WC 2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f10.jpg" alt="" loading="lazy"><figcaption>2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f11.jpg" alt="" loading="lazy"><figcaption>2019</figcaption></figure><figure class="hd-logo"><img src="art/cups/f12.jpg" alt="" loading="lazy"><figcaption>2020</figcaption></figure><figure class="hd-logo"><img src="art/cups/f14.jpg" alt="" loading="lazy"><figcaption>2020</figcaption></figure><figure class="hd-logo"><img src="art/cups/f15.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f17.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f18gr.jpg" alt="" loading="lazy"><figcaption>2021</figcaption></figure><figure class="hd-logo"><img src="art/cups/f19.jpg" alt="" loading="lazy"><figcaption>2022</figcaption></figure><figure class="hd-logo"><img src="art/cups/f22inv.jpg" alt="" loading="lazy"><figcaption>2022</figcaption></figure><figure class="hd-logo"><img src="art/cups/f23.jpg" alt="" loading="lazy"><figcaption>2023</figcaption></figure><figure class="hd-logo"><img src="art/cups/f25.jpg" alt="" loading="lazy"><figcaption>2023</figcaption></figure><figure class="hd-logo"><img src="art/cups/f28.jpg" alt="" loading="lazy"><figcaption>2024</figcaption></figure><figure class="hd-logo hd-wide"><img src="art/mode-major1-2025.jpg" alt="" loading="lazy"><figcaption>2025</figcaption></figure><figure class="hd-logo hd-wide"><img src="art/fncs-2026.jpg" alt="" loading="lazy"><figcaption>2026</figcaption></figure></div>
       </div>
     </section>
+    </div>
+    <!-- Две колонки сразу (его скрин 8.10: «когда захожу на сайт вот так показывает, потом 2 колонки»): блок менеджера
+         открывался из app.js после загрузки 9 МБ, и до этого главная стояла в одну колонку. Тот же список хостов,
+         что в mgrAllowed. -->
+    <script>(function(){var h=(location.hostname||"").toLowerCase();if(!h||h==="localhost"||h==="127.0.0.1"||h==="debug.fncsdraft.pages.dev")document.querySelectorAll('.hero-mgr, .hero-mgr-btn, .nav-pill[data-nav="manager"]').forEach(function(el){el.hidden=false;});})();</script>
+    <!-- Все плитки режимов — в ОДНОЙ панели того же кроя, что герой. Скриншот (красная рамка вокруг всех рядов): «с этими
+         прямоугольниками чет придумать, чтоб они как 1 был по дизайну, а то
+         первый выделяется». -->
+    <!-- ДВА РЕЖИМА (его слово 29.09): два одинаковых больших блока — КАРЬЕРА и ДРАФТ («такого же размера»).
+         Кнопка драфта раскрывает под ним выбор года 2019–2026 и форматов. -->
     <section class="modes-panel dp-shut" id="draftPanel">
     <div class="dp-years" id="dpYears"></div>
     <div class="year-row" id="modeYears">
@@ -7764,6 +7801,14 @@
     </div>
     </section>
 
+    <!-- Настоящий календарь FNCS и «Игроки сайта» — рисуют homeSceneDraw и homeBoardDraw. -->
+    <!-- Результаты, календарь и игроки сайта — одним блоком с вкладками (homeLiveTabs), а не тремя друг под другом. -->
+    <section class="home-block home-tabs" id="homeLive" data-tab="real" hidden>
+      <div class="hl-tabs" role="tablist" id="homeLiveTabs"></div>
+      <section class="hl-pane" id="homeReal" hidden></section>
+      <section class="hl-pane" id="homeScene" hidden></section>
+      <section class="hl-pane" id="homeBoard" hidden></section>
+    </section>
     <!-- «С другом» — своим блоком с пояснением под каждой дверью (15.10). Id дверей и #heroTeam прежние: на них смотрят
          check-mp-doors и setLang (флаг CC_MP_OPEN прячет весь блок). Пояснение — вне кнопки: сторож сверяет подпись. -->
     <section class="home-block home-friends" id="heroTeam">
@@ -7775,13 +7820,6 @@
         <div class="hf-card"><button class="cstrip-btn cstrip-btn-code" id="cstripCode" type="button" onclick="careerMpJoinNew()" data-i18n="ccMpEnter"></button><p data-i18n="hmFriendCode"></p></div>
       </div>
     </section>
-    <!-- Настоящий календарь FNCS и «Игроки сайта» — рисуют homeSceneDraw и homeBoardDraw. -->
-    <div class="home-live">
-      <section class="home-block" id="homeScene" hidden></section>
-      <section class="home-block" id="homeBoard" hidden></section>
-    </div>
-    <!-- Настоящие итоги турниров 2026 — рисует homeRealDraw. -->
-    <section class="home-block" id="homeReal" hidden></section>
     <button class="home-block home-hist" type="button" onclick="openHistoryScreen()">
       <span><span class="home-h" data-i18n="historyBtn"></span><small data-i18n="hmHistSub"></small></span>
       <span id="achievementBadge"></span>
@@ -113955,7 +113993,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5d4d6fa9';
+const CC_BUILD='9a311efb';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -158971,6 +159009,7 @@ function homeRender(){
   try{ homeSceneDraw(); }catch(e){}
   try{ homeBoardDraw(); }catch(e){}
   try{ homeRealDraw(); }catch(e){}
+  try{ homeLiveTabs(); }catch(e){}
 }
 function homeContinueDraw(){
   const box=document.getElementById('homeContinue'); if(!box) return;
@@ -159137,6 +159176,18 @@ function homeRealClose(){
   const m=document.getElementById('homeRealModal'); if(m) m.remove();
   document.body.classList.remove('hr-lock'); HOME_REAL_OPEN=null;
 }
+/* Вкладки живого блока: показаны только те, у которых есть что показать; выбранная помнится в браузере. */
+function homeLiveTabs(k){
+  const box=document.getElementById('homeLive'), bar=document.getElementById('homeLiveTabs'); if(!box || !bar) return;
+  const T=L(), panes=[['real', 'homeReal', T.hmRealTitle], ['scene', 'homeScene', T.hmSceneTitle], ['board', 'homeBoard', T.lbTab]]
+    .filter(p=>{ const e=document.getElementById(p[1]); return e && !e.hidden; });
+  box.hidden=!panes.length; if(!panes.length) return;
+  if(k){ try{ localStorage.setItem('fd_home_tab', k); }catch(e){} }
+  let cur=k; if(!cur){ try{ cur=localStorage.getItem('fd_home_tab'); }catch(e){} }
+  if(!panes.some(p=>p[0]===cur)) cur=panes[0][0];
+  box.dataset.tab=cur;
+  bar.innerHTML=panes.map(p=>'<button type="button" role="tab" aria-selected="'+(p[0]===cur)+'" class="'+(p[0]===cur ? 'on' : '')+'" onclick="homeLiveTabs(\''+p[0]+'\')">'+esc(p[2])+'</button>').join('');
+}
 function homeBoardDraw(){
   const box=document.getElementById('homeBoard'); if(!box) return;
   const T=L(), base=ccBoardBase();
@@ -159148,6 +159199,7 @@ function homeBoardDraw(){
     fetch(base).then(r=>r.ok ? r.json() : {err:true}).catch(()=>({err:true})).then(x=>{
       HOME_BOARD=Object.assign(x||{err:true}, {_at:Date.now()});
       homeBoardDraw();
+      try{ homeLiveTabs(); }catch(e){}
     });
   }
   const head='<h2 class="home-h">'+esc(T.lbTab)+'</h2><p class="home-sub">'+esc(T.hmBoardSub)+'</p>';
