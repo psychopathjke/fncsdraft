@@ -7102,6 +7102,40 @@
   .home-hist #achievementBadge{font-family:var(--font-display);font-size:18px;color:#ffdd00;font-weight:700;white-space:nowrap;}
   @media(max-width:900px){ .home-live{grid-template-columns:1fr;} }
   @media(max-width:700px){ .hf-grid{grid-template-columns:1fr;} .home-h{font-size:19px;} }
+  /* Результаты 2026 на главной и окно полной таблицы. */
+  .hr-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));gap:10px;}
+  .hr-ev{display:flex;align-items:center;gap:12px;width:100%;padding:10px;border-radius:12px;cursor:pointer;text-align:left;
+    font:inherit;color:inherit;background:rgba(255,255,255,.05);border:1px solid rgba(140,175,255,.22);}
+  .hr-ev:hover,.hr-ev:focus-visible{border-color:#ffdd00;background:rgba(255,221,0,.06);outline:none;}
+  .hr-ev img{flex:0 0 auto;width:92px;height:62px;border-radius:8px;object-fit:cover;background:#0b1640;}
+  .hr-in{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .hr-in b{font-family:var(--font-display);font-weight:600;font-size:17px;line-height:1.15;color:#fff;}
+  .hr-in small{font-size:11.5px;color:#8ea6d6;font-weight:700;}
+  .hr-won{font-size:12.5px;color:#ffe86b;font-weight:800;line-height:1.35;}
+  .hr-won{display:flex;gap:6px;align-items:flex-start;} .hr-won i{font-style:normal;} .hr-wl span{display:block;}
+  .hr-won em{font-style:normal;color:#9fe1ff;font-size:11px;}
+  .hr-go{flex:0 0 auto;font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.05em;text-transform:uppercase;
+    color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:999px;padding:8px 12px 7px;}
+  .hr-modal{position:fixed;inset:0;z-index:9500;background:rgba(5,10,30,.78);display:flex;align-items:center;justify-content:center;padding:16px;}
+  .hr-box{width:min(680px,100%);max-height:88vh;display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:14px;
+    background:#0f1d4d;border:1px solid rgba(150,180,255,.35);color:#e6ecff;}
+  .hr-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .hr-top b{font-family:var(--font-display);font-weight:700;font-size:20px;text-transform:uppercase;color:#fff;}
+  .hr-x{flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.06);
+    color:#fff;font-size:15px;cursor:pointer;}
+  .hr-x:focus-visible,.hr-regs button:focus-visible{outline:2px solid #ffdd00;outline-offset:2px;}
+  .hr-regs{display:flex;flex-wrap:wrap;gap:6px;}
+  .hr-regs button{font:700 12px/1 system-ui,sans-serif;padding:7px 11px;border-radius:999px;cursor:pointer;
+    background:rgba(255,255,255,.07);color:#cfd8ff;border:1px solid rgba(180,200,255,.22);}
+  .hr-regs button.on{background:#ffdd00;color:#0b0f12;border-color:#ffdd00;}
+  .hr-wrap{overflow:auto;-webkit-overflow-scrolling:touch;}
+  .hr-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .hr-table th{position:sticky;top:0;background:#0f1d4d;text-align:left;font-size:11px;color:#8ea6d6;padding:6px;border-bottom:1px solid rgba(255,255,255,.12);}
+  .hr-table td{padding:7px 6px;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums;}
+  .hr-table td:first-child{color:#8ea6d6;font-weight:800;width:32px;}
+  .hr-table tr:nth-child(-n+3) td:first-child{color:#ffdd00;}
+  .hr-table td:nth-child(2){color:#fff;font-weight:700;}
+  body.hr-lock{overflow:hidden;}
   .hero-mgr[hidden]{display:none !important;}
   /* Пара: карьера игрока слева, менеджера справа; арт уходит под текст. Кнопка «Карьера менеджера» в блоке игрока
      тогда лишняя — дверь рядом. На телефоне — одна под другой, как было. */
@@ -7746,6 +7780,8 @@
       <section class="home-block" id="homeScene" hidden></section>
       <section class="home-block" id="homeBoard" hidden></section>
     </div>
+    <!-- Настоящие итоги турниров 2026 — рисует homeRealDraw. -->
+    <section class="home-block" id="homeReal" hidden></section>
     <button class="home-block home-hist" type="button" onclick="openHistoryScreen()">
       <span><span class="home-h" data-i18n="historyBtn"></span><small data-i18n="hmHistSub"></small></span>
       <span id="achievementBadge"></span>
@@ -20204,7 +20240,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'25cac415', es:'8f390c2a'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'c00305c4', es:'3f1ecab9'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20471,6 +20507,12 @@ hmSceneTitle:'A cena agora', hmSceneSub:'O calendário real do FNCS 2026.', hmSc
 hmSceneIn:n=>'em '+n+' dia'+(n===1 ? '' : 's'), hmSceneDone:'A temporada FNCS 2026 terminou.',
 hmBoardSub:'As carreiras dos jogadores do site, por prêmios.', hmBoardMore:n=>'Mostrar '+n, hmBoardLess:'Mostrar menos', hmHistSub:'Drafts anteriores, recordes e prêmios.',
 ccNewsOwnCup:(who,n,w,f)=>'Cup de '+who+', premiação de $'+n+': '+w+' venceu. +'+f+' seguidores'});
+/* «Результаты 2026» на главной. */
+Object.assign(I18N.ru, {hmRealTitle:'Результаты 2026', hmRealSub:'Настоящие итоги турниров FNCS этого года. Нажми — откроется вся таблица.', hmRealOpen:'Таблица', hmRealTeam:'Команда', hmRealReg:'Регион', hmRealPts:'Очки', hmRealPrize:'Призовые', hmRealClose:'Закрыть'});
+Object.assign(I18N.en, {hmRealTitle:'2026 results', hmRealSub:'Real results of this year’s FNCS events. Tap one for the full table.', hmRealOpen:'Table', hmRealTeam:'Team', hmRealReg:'Region', hmRealPts:'Points', hmRealPrize:'Prize', hmRealClose:'Close'});
+Object.assign(I18N.fr, {hmRealTitle:'Résultats 2026', hmRealSub:'Les vrais résultats des tournois FNCS de cette année. Touche un tournoi pour le tableau complet.', hmRealOpen:'Tableau', hmRealTeam:'Équipe', hmRealReg:'Région', hmRealPts:'Points', hmRealPrize:'Gains', hmRealClose:'Fermer'});
+Object.assign(I18N.it, {hmRealTitle:'Risultati 2026', hmRealSub:'I veri risultati dei tornei FNCS di quest’anno. Tocca un torneo per la classifica completa.', hmRealOpen:'Classifica', hmRealTeam:'Squadra', hmRealReg:'Regione', hmRealPts:'Punti', hmRealPrize:'Premio', hmRealClose:'Chiudi'});
+Object.assign(I18N.pt, {hmRealTitle:'Resultados 2026', hmRealSub:'Os resultados reais dos torneios FNCS deste ano. Toque em um para a tabela completa.', hmRealOpen:'Tabela', hmRealTeam:'Time', hmRealReg:'Região', hmRealPts:'Pontos', hmRealPrize:'Prêmio', hmRealClose:'Fechar'});
 /* Главная 15.10: «Продолжить», «С другом», «Сцена сейчас», «Игроки сайта». Остальные языки — английские до доперевода. */
 Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Твои сохранения — с того дня, где остановился.', hmPlayOn:'Играть',
   hmSlotCareer:'Карьера', hmSlotMgr:'Менеджер', hmSlotLine:(s,d,e)=>'Сезон '+s+' · дивизион '+d+' · '+e, hmMgrLine:(s,c)=>'Сезон '+s+' · касса '+c,
@@ -80822,6 +80864,7 @@ var RATING_FLOOR={};
     "Cole":50,
     "Maddenv":50
   };
+  try{ window.FD_SUMMIT_RANK=SUMMIT_RANK; }catch(e){}   // «Результаты 2026» на главной (homeRealEvents)
   const M1EU_RANK={
     "Scroll":1,
     "Sky":1,
@@ -90689,6 +90732,7 @@ var RATING_FLOOR={};
     NAW:{ "EpikWhale":42, "PXMP":42, "phoenix":43, "Retro":43 }
   };
   const GC26_BY=Object.assign({}, ...Object.values(GC26_RANK));
+  try{ window.FD_GC26_RANK=GC26_RANK; }catch(e){}   // «Результаты 2026» на главной
   const gc26Stage=reg=>({map:byHandle(GC26_RANK[reg]), weight:3.0, label:'gc26', field:50,
     score:r=>curve(r, 100, 24, 50)});
   Object.keys(S41).forEach(reg=>{ if(GC26_RANK[reg]) S41[reg]=S41[reg].concat([gc26Stage(reg)]); });
@@ -113911,7 +113955,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='3a2bbc71';
+const CC_BUILD='4f75dbd4';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159118,6 +159162,7 @@ function homeRender(){
   try{ homeContinueDraw(); }catch(e){}
   try{ homeSceneDraw(); }catch(e){}
   try{ homeBoardDraw(); }catch(e){}
+  try{ homeRealDraw(); }catch(e){}
 }
 function homeContinueDraw(){
   const box=document.getElementById('homeContinue'); if(!box) return;
@@ -159185,6 +159230,104 @@ function homeSceneDraw(){
   box.innerHTML='<h2 class="home-h">'+esc(T.hmSceneTitle)+'</h2><p class="home-sub">'+esc(T.hmSceneSub)+'</p>'+
     (rows ? '<div>'+rows+'</div>' : '<p class="home-sub">'+esc(T.hmSceneDone)+'</p>');
   box.hidden=false;
+}
+/* РЕЗУЛЬТАТЫ 2026 на главной (15.10, «а таблицу лидеров и реальные турниры»): настоящие итоги прошедших турниров года.
+   Ничего нового не выдумано — это те же таблицы, по которым считаются карточки: финалы Мейджоров (Tracker, по регионам,
+   с очками), Саммит и Антверпен (места по никам из рейтинга карточек, FD_SUMMIT_RANK / FD_GC26_RANK), Reload Championship
+   (Liquipedia, с призовыми). Призовые Антверпена — таблица Epic GC2026_PRIZES. */
+let HOME_REAL_OPEN=null, HOME_REAL_REG='EU';
+const HOME_REAL_REGS=['EU','NAC','NAW','BR','ASIA','ME','OCE'];
+function homeRealRaw(stage, reg){
+  try{
+    if(stage===1) return ({EU:CARD_M1_GF_RAW, NAC:CARD_N1_GF_RAW, NAW:CARD_W1_GF_RAW, BR:CARD_B1_GF_RAW, ASIA:CARD_A1_GF_RAW, ME:CARD_E1_GF_RAW, OCE:CARD_O1_GF_RAW})[reg]||null;
+    return ({EU:CARD_M2_GF_RAW, NAC:CARD_N2_GF_RAW, NAW:CARD_W2_GF_RAW, BR:CARD_B2_GF_RAW, ASIA:CARD_A2_GF_RAW, ME:CARD_E2_GF_RAW, OCE:CARD_O2_GF_RAW})[reg]||null;
+  }catch(e){ return null; }
+}
+// Места по нику → команды: одно место — одна пара; второе написание того же ника (NOCIF/Nociff, ふーくん) не считается.
+function homeRankTeams(rank){
+  const flat=[], add=(o, reg)=>Object.keys(o||{}).forEach(h=>flat.push({h, p:o[h], reg}));
+  const nested=rank && Object.keys(rank).length && Object.values(rank).every(v=>v && typeof v==='object');
+  if(nested) Object.keys(rank).forEach(r=>add(rank[r], r)); else add(rank, null);
+  const by={};
+  flat.forEach(x=>{
+    if(!/^[\x20-\x7e]+$/.test(x.h)) return;
+    const t=by[x.p]=by[x.p]||{p:x.p, reg:x.reg, names:[]};
+    const lo=x.h.toLowerCase();
+    if(t.names.length<2 && !t.names.some(n=>{ const m=n.toLowerCase(); return m===lo || m.indexOf(lo)===0 || lo.indexOf(m)===0; })) t.names.push(x.h);
+  });
+  return Object.values(by).sort((a,b)=>a.p-b.p);
+}
+function homeRealEvents(){
+  const N=L().ccYearNames||{};
+  const nm=(id, city)=>String(N[id]||id).replace(/\{CITY\}/, city||'').replace(/\s*·\s*$/, '');
+  const when=id=>{ const r=CAREER_YEAR.find(x=>x[2]===id); return r ? {from:r[0], to:r[1]} : null; };
+  const art=id=>(typeof CAREER_EV_ART_ID!=='undefined' && CAREER_EV_ART_ID[id]) || 'art/fncs-2026.jpg';
+  const ev=[];
+  if(typeof window!=='undefined' && window.FD_GC26_RANK)
+    ev.push({id:'gc26', key:'GlobalChampionship', name:nm('GlobalChampionship', 'Antwerp'),
+      rows:()=>homeRankTeams(window.FD_GC26_RANK).map(t=>({p:t.p, names:t.names, reg:t.reg, prize:(typeof GC2026_PRIZES!=='undefined' && GC2026_PRIZES[String(t.p)])||0}))});
+  if(typeof RC_TEAMS_2026!=='undefined')
+    ev.push({id:'rc', key:'ReloadChampionshipParis', name:nm('ReloadChampionshipParis', 'Paris'),
+      rows:()=>RC_TEAMS_2026.map(t=>({p:+t.p, names:t.d, reg:t.r, prize:t.c}))});
+  ev.push({id:'m2', key:'Major2_Final', name:nm('Major2_Final'), regs:true,
+    rows:reg=>(homeRealRaw(2, reg)||[]).map(r=>({p:r[0], pts:r[1], names:r.slice(6).filter(x=>typeof x==='string')}))});
+  if(typeof window!=='undefined' && window.FD_SUMMIT_RANK)
+    ev.push({id:'summit', key:'Summit_Final', name:nm('Summit_Final'), rows:()=>homeRankTeams(window.FD_SUMMIT_RANK).map(t=>({p:t.p, names:t.names}))});
+  ev.push({id:'m1', key:'Major1_Final', name:nm('Major1_Final'), regs:true,
+    rows:reg=>(homeRealRaw(1, reg)||[]).map(r=>({p:r[0], pts:r[1], names:r.slice(6).filter(x=>typeof x==='string')}))});
+  // Свои обложки: у этих стадий в календаре карьеры общая заглушка.
+  const own={gc26:'art/mode-all-fncs.jpg', rc:'art/mode-ewc.jpg', m2:'art/fncs-2026.jpg', summit:'art/fncs-2026-major1.jpg', m1:'art/mode-major1.jpg'};
+  ev.forEach(e=>{ e.when=when(e.key); e.art=own[e.id]||art(e.key); });
+  // Только прошедшие: «результаты» турнира, который ещё не сыгран, — это пустая таблица.
+  const today=homeToday();
+  return ev.filter(e=>e.when && e.when.to<today);
+}
+function homeRealDraw(){
+  const box=document.getElementById('homeReal'); if(!box) return;
+  const T=L(), list=homeRealEvents();
+  if(!list.length){ box.hidden=true; return; }
+  const names=a=>(a||[]).map(esc).join(' &amp; ');
+  const rows=list.map(e=>{
+    let won='';
+    if(e.regs){ won=['EU','NAC'].map(r=>{ const w=e.rows(r)[0]; return w ? '<span><em>'+r+'</em> '+names(w.names)+'</span>' : ''; }).join(''); }
+    else { const w=e.rows()[0]; won=w ? '<span>'+names(w.names)+(w.reg ? ' <em>'+esc(w.reg)+'</em>' : '')+'</span>' : ''; }
+    const dates=homeDate(e.when.from, true)+(e.when.to!==e.when.from ? ' – '+homeDate(e.when.to, true) : '');
+    return '<button class="hr-ev" type="button" onclick="homeRealOpen(\''+e.id+'\')">'+
+      '<img src="'+esc(e.art)+'" alt="" onerror="this.remove()">'+
+      '<span class="hr-in"><b>'+esc(e.name)+'</b><small>'+esc(dates)+'</small><span class="hr-won"><i>🏆</i><span class="hr-wl">'+won+'</span></span></span>'+
+      '<span class="hr-go">'+esc(T.hmRealOpen)+'</span></button>';
+  }).join('');
+  box.innerHTML='<h2 class="home-h">'+esc(T.hmRealTitle)+'</h2><p class="home-sub">'+esc(T.hmRealSub)+'</p><div class="hr-list">'+rows+'</div>';
+  box.hidden=false;
+}
+function homeRealOpen(id, reg){
+  HOME_REAL_OPEN=id; if(reg) HOME_REAL_REG=reg;
+  const e=homeRealEvents().find(x=>x.id===id); if(!e) return;
+  const T=L();
+  let m=document.getElementById('homeRealModal');
+  if(!m){
+    m=document.createElement('div'); m.id='homeRealModal'; m.className='hr-modal';
+    m.addEventListener('click', ev=>{ if(ev.target===m) homeRealClose(); });
+    document.addEventListener('keydown', ev=>{ if(ev.key==='Escape' && document.getElementById('homeRealModal')) homeRealClose(); });
+    document.body.appendChild(m);
+  }
+  const rows=e.regs ? e.rows(HOME_REAL_REG) : e.rows();
+  const multi=!e.regs && rows.some(r=>r.reg);
+  const hasPts=rows.some(r=>r.pts!=null), hasPrize=rows.some(r=>r.prize);
+  const chips=e.regs ? '<div class="hr-regs">'+HOME_REAL_REGS.filter(r=>homeRealRaw(id==='m1' ? 1 : 2, r)).map(r=>
+      '<button type="button" class="'+(r===HOME_REAL_REG ? 'on' : '')+'" onclick="homeRealOpen(\''+id+'\', \''+r+'\')">'+r+'</button>').join('')+'</div>' : '';
+  const th='<tr><th>#</th><th>'+esc(T.hmRealTeam)+'</th>'+(multi ? '<th>'+esc(T.hmRealReg)+'</th>' : '')+
+    (hasPts ? '<th>'+esc(T.hmRealPts)+'</th>' : '')+(hasPrize ? '<th>'+esc(T.hmRealPrize)+'</th>' : '')+'</tr>';
+  const body=rows.map(r=>'<tr><td>'+r.p+'</td><td>'+(r.names||[]).map(esc).join(' &amp; ')+'</td>'+(multi ? '<td>'+esc(r.reg||'')+'</td>' : '')+
+    (hasPts ? '<td>'+(r.pts!=null ? r.pts : '')+'</td>' : '')+(hasPrize ? '<td>'+(r.prize ? '$'+ccNum(r.prize) : '—')+'</td>' : '')+'</tr>').join('');
+  m.innerHTML='<div class="hr-box" role="dialog" aria-modal="true" aria-label="'+esc(e.name)+'">'+
+    '<div class="hr-top"><b>'+esc(e.name)+'</b><button type="button" class="hr-x" onclick="homeRealClose()" aria-label="'+esc(T.hmRealClose)+'">✕</button></div>'+
+    chips+'<div class="hr-wrap"><table class="hr-table"><thead>'+th+'</thead><tbody>'+body+'</tbody></table></div></div>';
+  document.body.classList.add('hr-lock');
+}
+function homeRealClose(){
+  const m=document.getElementById('homeRealModal'); if(m) m.remove();
+  document.body.classList.remove('hr-lock'); HOME_REAL_OPEN=null;
 }
 function homeBoardDraw(){
   const box=document.getElementById('homeBoard'); if(!box) return;
