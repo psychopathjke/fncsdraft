@@ -7186,6 +7186,15 @@
   .he-row>b em{font-style:normal;color:#9fe1ff;font-size:11px;font-weight:700;}
   .he-row>b small{color:#8ea6d6;font-weight:600;font-size:11px;margin-left:6px;}
   .he-row>span{color:#ffdd00;font-weight:800;font-variant-numeric:tabular-nums;font-size:13.5px;}
+  .hs-other{display:block;margin:14px 0 6px;font-family:var(--font-display);font-weight:600;font-size:16px;letter-spacing:.02em;color:#fff;}
+  .hs-list li{padding:6px 0;border-top:1px solid rgba(255,255,255,.08);}
+  .hs-list li:first-child{border-top:0;}
+  .hs-list li b em{font-style:normal;font-size:10px;font-weight:800;color:#9fe1ff;margin-left:4px;}
+  .hs-pm{font-size:12px;font-weight:800;color:#ffe86b;}
+  .hs-list li>span{display:block;font-size:12px;color:#b9c7ea;line-height:1.4;}
+  .hs-list li i{font-style:normal;font-weight:800;color:#ffdd00;}
+  .hs-list li.live i{color:#0b0f12;background:#ffdd00;border-radius:4px;padding:0 5px;}
+  .hs-list li b{font-size:13px;font-weight:700;color:#e6edfb;}
   /* Вкладки живого блока на главной (Результаты 2026 / Сцена сейчас / Игроки сайта). */
   .home-tabs{margin-top:16px;}
   #homeLive .hl-pane{display:none;}
@@ -20301,7 +20310,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'c865ec72', es:'e70f5cc1'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'8315d372', es:'f25b72e4'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20592,6 +20601,12 @@ Object.assign(I18N.en, {hmEarnSub:d=>'Every 2026 event, not just FNCS — from L
 Object.assign(I18N.fr, {hmEarnSub:d=>'Tous les tournois 2026, pas seulement la FNCS — d’après Liquipedia ('+d+'). Touche un joueur.', hmEarnMedals:(a,b,c)=>'Cette année : '+a+' victoires, '+b+' deuxièmes places, '+c+' troisièmes.', hmEarnFncs:'Dont finales FNCS (part du joueur : moitié du gain du duo) :', hmEarnSrc:'Source : Liquipedia, Portal:Statistics/2026.'});
 Object.assign(I18N.it, {hmEarnSub:d=>'Tutti i tornei 2026, non solo FNCS — da Liquipedia ('+d+'). Tocca un giocatore.', hmEarnMedals:(a,b,c)=>'Quest’anno: '+a+' primi posti, '+b+' secondi, '+c+' terzi.', hmEarnFncs:'Di cui finali FNCS (quota del giocatore: metà del premio del duo):', hmEarnSrc:'Fonte: Liquipedia, Portal:Statistics/2026.'});
 Object.assign(I18N.pt, {hmEarnSub:d=>'Todos os torneios de 2026, não só o FNCS — pela Liquipedia ('+d+'). Toque num jogador.', hmEarnMedals:(a,b,c)=>'Este ano: '+a+' primeiros lugares, '+b+' segundos, '+c+' terceiros.', hmEarnFncs:'Destes, finais do FNCS (parte do jogador: metade do prêmio da dupla):', hmEarnSrc:'Fonte: Liquipedia, Portal:Statistics/2026.'});
+/* Расписание с Liquipedia (16.10). */
+Object.assign(I18N.ru, {hmSceneSub2:'Ближайшие призовые турниры: FNCS по календарю и остальные — по Liquipedia.', hmSceneOther:'Другие турниры с призовыми'});
+Object.assign(I18N.en, {hmSceneSub2:'Upcoming prize events: FNCS from the calendar, the rest from Liquipedia.', hmSceneOther:'Other prize events'});
+Object.assign(I18N.fr, {hmSceneSub2:'Prochains tournois avec cashprize : la FNCS d’après le calendrier, le reste d’après Liquipedia.', hmSceneOther:'Autres tournois avec cashprize'});
+Object.assign(I18N.it, {hmSceneSub2:'Prossimi tornei a premi: FNCS dal calendario, il resto da Liquipedia.', hmSceneOther:'Altri tornei a premi'});
+Object.assign(I18N.pt, {hmSceneSub2:'Próximos torneios com premiação: FNCS pelo calendário, o resto pela Liquipedia.', hmSceneOther:'Outros torneios com premiação'});
 /* Главная 15.10: «Продолжить», «С другом», «Сцена сейчас», «Игроки сайта». Остальные языки — английские до доперевода. */
 Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Твои сохранения — с того дня, где остановился.', hmPlayOn:'Играть',
   hmSlotCareer:'Карьера', hmSlotMgr:'Менеджер', hmSlotLine:(s,d,e)=>'Сезон '+s+' · дивизион '+d+' · '+e, hmMgrLine:(s,c)=>'Сезон '+s+' · касса '+c,
@@ -114034,7 +114049,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='3b45e6c5';
+const CC_BUILD='a30ce37d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159046,6 +159061,11 @@ function homeDate(k, noYear){
 function homeToday(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 /* Только настоящие события Epic: Кубок наций — выдумка режима, Про-Амы в Париже и Сеуле — наши города (см. CAREER_YEAR). */
 const HOME_SCENE_SKIP={ProAm_Paris:1, ProAm_Seoul:1};
+/* Ближайшие призовые турниры не из календаря карьеры (16.10: «в расписании чёт мало турниров»). Источник — Liquipedia,
+   Portal:Tournaments, все таблицы «Upcoming» (S/A/B, C, D, отборы, шоу-матчи), снято 16.10.2026; оставлены только с призовыми.
+   Капы одной недели в разных регионах — одна строка (p: [[регион, $]…]). Финалы FNCS Solos отсюда дают фонды регионов,
+   которых нет в CC_SOLOS_PRIZES-подписи (BR, ASIA, ME, OCE). Обновлять тем же запросом (api.php?action=parse&page=Portal:Tournaments). */
+const HOME_SCHED_LQ=[{"n":"Exposing UNREAL Players Stats with Clix!","f":"2026-07-24","t":"2026-07-24","tier":"Show Matches","loc":"North America","p":[["",780]]},{"n":"Red Bull Reshuffle","f":"2026-08-15","t":"2026-08-15","tier":"Show Matches","loc":"Vienna","p":[["",57837]]},{"n":"Rankly October Zonewars Ladder - Trio","f":"2026-10-01","t":"2026-11-01","tier":"D-Tier","loc":"Europe","p":[["",215]]},{"n":"Rankly October Zonewars Ladder - Duo","f":"2026-10-01","t":"2026-11-01","tier":"D-Tier","loc":"Europe","p":[["",215]]},{"n":"Duo Reload Cash Cup (ZB) - Week 6","f":"2026-10-23","t":"2026-10-23","tier":"C-Tier","loc":"","p":[["EU",4000],["NAC",4000],["NAW",2000],["BR",2000]]},{"n":"FNCS Solos · Grand Finals","f":"2026-10-26","t":"2026-10-27","tier":"S-Tier","loc":"","p":[["OCE",35400],["ME",35400],["ASIA",35400],["BR",72500]]},{"n":"Coupe de France Fortnite 2026","f":"2026-10-28","t":"2026-10-28","tier":"A-Tier","loc":"France, Belgium, Luxembourg, Monaco, Switzerland","p":[["",50000]]},{"n":"Zero Build Championship","f":"2026-10-30","t":"2026-10-30","tier":"C-Tier","loc":"North America","p":[["",5000]]},{"n":"Complete League - Fall Duo #1","f":"2026-11-04","t":"2026-11-18","tier":"D-Tier","loc":"Norway","p":[["",847]]},{"n":"Complete League - Fall Duo #2","f":"2026-11-25","t":"2026-12-09","tier":"D-Tier","loc":"Norway","p":[["",847]]}];
 function homeSceneDraw(){
   const box=document.getElementById('homeScene'); if(!box) return;
   const T=L(), today=homeToday(), names=T.ccYearNames||{};
@@ -159065,7 +159085,8 @@ function homeSceneDraw(){
   const pool=t=>{ let sum=0, prev=0; (t||[]).forEach(r=>{ sum+=(r[0]-prev)*r[1]; prev=r[0]; }); return sum; };
   const prizeOf=f=>{
     if(f==='FNCSSolos' && typeof CC_SOLOS_PRIZES!=='undefined')
-      return ['EU','NAC'].map(r=>T.hmScenePrize(r, ccNum(CC_SOLOS_PRIZES[r][0][1]), ccNum(pool(CC_SOLOS_PRIZES[r]))));
+      return ['EU','NAC'].map(r=>T.hmScenePrize(r, ccNum(CC_SOLOS_PRIZES[r][0][1]), ccNum(pool(CC_SOLOS_PRIZES[r]))))
+        .concat((HOME_SCHED_LQ.find(x=>/^FNCS Solos/.test(x.n))||{p:[]}).p.length ? [(HOME_SCHED_LQ.find(x=>/^FNCS Solos/.test(x.n))).p.map(p=>p[0]+' $'+ccNum(p[1])).join(' · ')] : []);
     return [];
   };
   const rows=groups.map(g=>{
@@ -159085,8 +159106,18 @@ function homeSceneDraw(){
     return '<div class="hs-ev"><img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.remove()"><div>'+
       '<b class="hs-t">'+esc(title)+'</b>'+money.map(m=>'<span class="hs-money">💰 '+esc(m)+'</span>').join('')+'<ul class="hs-st">'+stages+'</ul></div></div>';
   }).join('');
-  box.innerHTML='<h2 class="home-h">'+esc(T.hmSceneTitle)+'</h2><p class="home-sub">'+esc(T.hmSceneSub)+'</p>'+
-    (rows ? '<div>'+rows+'</div>' : '<p class="home-sub">'+esc(T.hmSceneDone)+'</p>');
+  // Другие турниры с призовыми — Liquipedia; только те, что ещё не кончились.
+  const other=HOME_SCHED_LQ.filter(x=>x.t>=today && !/^FNCS Solos/.test(x.n)).map(x=>{
+    const live=x.f<=today, days=Math.round((Date.parse(x.f+'T00:00:00Z')-Date.parse(today+'T00:00:00Z'))/864e5);
+    const when=live ? T.hmSceneLive : days===1 ? T.hmSceneTomorrow : T.hmSceneIn(days);
+    const dates=homeDate(x.f, true)+(x.t!==x.f ? ' – '+homeDate(x.t, true) : '');
+    const money=x.p.map(p=>(p[0] ? p[0]+' ' : '')+'$'+ccNum(p[1])).join(' · ');
+    return '<li'+(live ? ' class="live"' : '')+'><b>'+esc(x.n)+(x.tier ? ' <em>'+esc(x.tier)+'</em>' : '')+'</b>'+
+      '<span><i>'+esc(when)+'</i> · '+esc(dates)+(x.loc ? ' · '+esc(x.loc) : '')+'</span><span class="hs-pm">💰 '+esc(money)+'</span></li>';
+  }).join('');
+  box.innerHTML='<h2 class="home-h">'+esc(T.hmSceneTitle)+'</h2><p class="home-sub">'+esc(T.hmSceneSub2)+'</p>'+
+    (rows ? '<div>'+rows+'</div>' : '<p class="home-sub">'+esc(T.hmSceneDone)+'</p>')+
+    (other ? '<b class="hs-other">'+esc(T.hmSceneOther)+'</b><ul class="hs-st hs-list">'+other+'</ul>' : '');
   box.hidden=false;
 }
 /* РЕЗУЛЬТАТЫ 2026 на главной (15.10, «а таблицу лидеров и реальные турниры»): настоящие итоги прошедших турниров года.
