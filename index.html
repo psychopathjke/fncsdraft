@@ -7182,6 +7182,7 @@
   .he-row>i{font-style:normal;font-family:var(--font-display);font-weight:700;color:#8ea6d6;}
   .he-row:nth-child(-n+3)>i{color:#ffdd00;}
   .he-row>b{color:#fff;font-weight:700;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .he-row>b img{width:16px;height:auto;vertical-align:-2px;margin-right:6px;}
   .he-row>b em{font-style:normal;color:#9fe1ff;font-size:11px;font-weight:700;}
   .he-row>b small{color:#8ea6d6;font-weight:600;font-size:11px;margin-left:6px;}
   .he-row>span{color:#ffdd00;font-weight:800;font-variant-numeric:tabular-nums;font-size:13.5px;}
@@ -20300,7 +20301,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'3322c8db', es:'0918615c'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'c865ec72', es:'e70f5cc1'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20585,6 +20586,12 @@ Object.assign(I18N.en, {hmEarnTitle:'2026 earnings', hmEarnSub:'What players ear
 Object.assign(I18N.fr, {hmEarnTitle:'Gains 2026', hmEarnSub:'Ce que les joueurs ont gagné en FNCS cette année : finales des Majors, Summit, Reload Championship, Global Championship. Touche un joueur pour le détail.', hmEarnEvents:n=>n+' tournoi'+(n===1?'':'s'), hmEarnEvent:'Tournoi', hmEarnNote:'La part d’un joueur est la moitié du gain du duo. Qualifs et cups non comptées.'});
 Object.assign(I18N.it, {hmEarnTitle:'Guadagni 2026', hmEarnSub:'Quanto hanno guadagnato i giocatori in FNCS quest’anno: finali dei Major, Summit, Reload Championship, Global Championship. Tocca un giocatore per il dettaglio.', hmEarnEvents:n=>n+' torne'+(n===1?'o':'i'), hmEarnEvent:'Torneo', hmEarnNote:'La quota del giocatore è metà del premio del duo. Qualificazioni e cup escluse.'});
 Object.assign(I18N.pt, {hmEarnTitle:'Ganhos 2026', hmEarnSub:'Quanto os jogadores ganharam no FNCS este ano: finais dos Majors, Summit, Reload Championship, Global Championship. Toque num jogador para ver onde.', hmEarnEvents:n=>n+' torneio'+(n===1?'':'s'), hmEarnEvent:'Torneio', hmEarnNote:'A parte do jogador é metade do prêmio da dupla. Classificatórias e cups não contam.'});
+/* Призовые 2026 со всех турниров (Liquipedia). */
+Object.assign(I18N.ru, {hmEarnSub:d=>'Все турниры 2026 года, не только FNCS — по Liquipedia ('+d+'). Нажми на игрока.', hmEarnMedals:(a,b,c)=>'Медали за год: 1-х мест '+a+', 2-х '+b+', 3-х '+c+'.', hmEarnFncs:'Из них финалы FNCS (доля игрока — половина призовых дуо):', hmEarnSrc:'Источник: Liquipedia, Portal:Statistics/2026.'});
+Object.assign(I18N.en, {hmEarnSub:d=>'Every 2026 event, not just FNCS — from Liquipedia ('+d+'). Tap a player.', hmEarnMedals:(a,b,c)=>'This year: '+a+' first places, '+b+' second, '+c+' third.', hmEarnFncs:'FNCS finals among them (a player’s share is half the duo prize):', hmEarnSrc:'Source: Liquipedia, Portal:Statistics/2026.'});
+Object.assign(I18N.fr, {hmEarnSub:d=>'Tous les tournois 2026, pas seulement la FNCS — d’après Liquipedia ('+d+'). Touche un joueur.', hmEarnMedals:(a,b,c)=>'Cette année : '+a+' victoires, '+b+' deuxièmes places, '+c+' troisièmes.', hmEarnFncs:'Dont finales FNCS (part du joueur : moitié du gain du duo) :', hmEarnSrc:'Source : Liquipedia, Portal:Statistics/2026.'});
+Object.assign(I18N.it, {hmEarnSub:d=>'Tutti i tornei 2026, non solo FNCS — da Liquipedia ('+d+'). Tocca un giocatore.', hmEarnMedals:(a,b,c)=>'Quest’anno: '+a+' primi posti, '+b+' secondi, '+c+' terzi.', hmEarnFncs:'Di cui finali FNCS (quota del giocatore: metà del premio del duo):', hmEarnSrc:'Fonte: Liquipedia, Portal:Statistics/2026.'});
+Object.assign(I18N.pt, {hmEarnSub:d=>'Todos os torneios de 2026, não só o FNCS — pela Liquipedia ('+d+'). Toque num jogador.', hmEarnMedals:(a,b,c)=>'Este ano: '+a+' primeiros lugares, '+b+' segundos, '+c+' terceiros.', hmEarnFncs:'Destes, finais do FNCS (parte do jogador: metade do prêmio da dupla):', hmEarnSrc:'Fonte: Liquipedia, Portal:Statistics/2026.'});
 /* Главная 15.10: «Продолжить», «С другом», «Сцена сейчас», «Игроки сайта». Остальные языки — английские до доперевода. */
 Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Твои сохранения — с того дня, где остановился.', hmPlayOn:'Играть',
   hmSlotCareer:'Карьера', hmSlotMgr:'Менеджер', hmSlotLine:(s,d,e)=>'Сезон '+s+' · дивизион '+d+' · '+e, hmMgrLine:(s,c)=>'Сезон '+s+' · касса '+c,
@@ -114027,7 +114034,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='de861f42';
+const CC_BUILD='3b45e6c5';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159191,24 +159198,31 @@ function homeEarnings(){
   HOME_EARN_CACHE={lang:LANG, list};
   return list;
 }
+/* Призовые 2026 со ВСЕХ турниров (16.10: «и призовые вообще за весь год со всех, не ток с фнкс», «и флаги по игрокам»).
+   Источник — Liquipedia, Portal:Statistics/2026, таблица «Money Ranking · By player» (топ-50, снято 16.10.2026):
+   ник, страна, медали 1/2/3 и сумма. Обновлять тем же запросом (api.php?action=parse&page=Portal:Statistics/2026).
+   Поля: n — ник, c — флаг (как в flags/w20), e — $, m — [1-х, 2-х, 3-х мест]. */
+const HOME_EARN_LQ=[{"n":"vic0","c":"at","e":458253,"m":[9,7,6]},{"n":"Malibuca","c":"ru","e":433541,"m":[8,9,9]},{"n":"shxrk","c":"ro","e":359624,"m":[9,13,11]},{"n":"t3eny","c":"si","e":350546,"m":[7,7,7]},{"n":"Pixie","c":"se","e":322786,"m":[8,6,4]},{"n":"SwizzY","c":"ru","e":317725,"m":[5,4,4]},{"n":"Scroll","c":"dk","e":295893,"m":[16,11,7]},{"n":"Sky","c":"dk","e":277037,"m":[13,8,7]},{"n":"Peterbot","c":"us","e":182441,"m":[14,8,3]},{"n":"PabloWingu","c":"dk","e":150323,"m":[3,6,5]},{"n":"Pollo","c":"mx","e":133275,"m":[13,6,3]},{"n":"Boltz","c":"us","e":130050,"m":[4,4,7]},{"n":"Acorn","c":"ca","e":129600,"m":[3,2,6]},{"n":"Clix","c":"us","e":126305,"m":[4,5,5]},{"n":"Cold","c":"us","e":113225,"m":[6,4,2]},{"n":"Momsy","c":"fr","e":108920,"m":[6,1,5]},{"n":"charyy","c":"pl","e":99395,"m":[7,8,7]},{"n":"Th0masHD","c":"dk","e":98300,"m":[7,9,3]},{"n":"SkyJump","c":"fr","e":98026,"m":[3,4,6]},{"n":"Veno","c":"gb","e":96650,"m":[7,2,4]},{"n":"Curve","c":"us","e":96060,"m":[4,5,3]},{"n":"FoCuS","c":"il","e":94816,"m":[12,13,5]},{"n":"Twi","c":"gb","e":92288,"m":[2,4,7]},{"n":"Kami","c":"pl","e":91885,"m":[6,4,6]},{"n":"Chap","c":"ch","e":79485,"m":[13,3,2]},{"n":"Rapid","c":"ca","e":78675,"m":[8,6,3]},{"n":"Flickzy","c":"de","e":78375,"m":[8,2,2]},{"n":"Ritual","c":"us","e":77550,"m":[5,6,5]},{"n":"Tjino","c":"dk","e":77504,"m":[6,6,5]},{"n":"Higgs","c":"us","e":72800,"m":[8,6,5]},{"n":"Ajerss","c":"us","e":69500,"m":[6,4,5]},{"n":"Muz","c":"au","e":66241,"m":[1,6,2]},{"n":"Darm","c":"pl","e":63909,"m":[7,8,6]},{"n":"Demus","c":"pl","e":63871,"m":[5,8,6]},{"n":"Romero","c":"ar","e":58600,"m":[3,3,4]},{"n":"Khanada","c":"us","e":57638,"m":[5,2,4]},{"n":"Lewa","c":"ar","e":57550,"m":[3,2,2]},{"n":"Cr1nge","c":"","e":57201,"m":[3,6,8]},{"n":"VicterV","c":"us","e":56241,"m":[3,3,3]},{"n":"SaLva","c":"sa","e":52138,"m":[3,4,3]},{"n":"Kingaling","c":"us","e":50050,"m":[5,2,3]},{"n":"Vergo","c":"us","e":49185,"m":[6,3,4]},{"n":"Shadow","c":"us","e":48250,"m":[7,1,3]},{"n":"Kraez","c":"us","e":48175,"m":[3,3,1]},{"n":"Syaaz","c":"es","e":47469,"m":[26,13,7]},{"n":"Japko","c":"pl","e":46665,"m":[1,0,0]},{"n":"Sphinx","c":"us","e":42850,"m":[2,3,1]},{"n":"Mshary","c":"kw","e":41472,"m":[6,3,3]},{"n":"Reet","c":"us","e":41125,"m":[4,3,1]},{"n":"josh","c":"ca","e":40625,"m":[7,3,6]}];
+const HOME_EARN_AT='2026-10-16';
 function homeEarnDraw(){
   const box=document.getElementById('homeReal'); if(!box) return;
-  const T=L(), list=homeEarnings();
+  const T=L(), list=HOME_EARN_LQ;
   if(!list.length){ box.hidden=true; return; }
   const n=HOME_EARN_ALL ? 50 : 10;
-  const rows=list.slice(0, n).map((x,i)=>'<button class="he-row" type="button" onclick="homeEarnOpen(\''+esc(x.k).replace(/'/g, '')+'\')">'+
-    '<i>'+(i+1)+'</i><b>'+esc(x.h)+(x.reg ? ' <em>'+esc(x.reg)+'</em>' : '')+'<small>'+esc(T.hmEarnEvents(x.ev.length))+'</small></b>'+
-    '<span>$'+ccNum(Math.round(x.sum))+'</span></button>').join('');
-  box.innerHTML='<h2 class="home-h">'+esc(T.hmEarnTitle)+'</h2><p class="home-sub">'+esc(T.hmEarnSub)+'</p>'+
+  const flag=c=>c ? '<img src="flags/w20/'+esc(c)+'.png" alt="" onerror="this.remove()">' : '';
+  const rows=list.slice(0, n).map((x,i)=>'<button class="he-row" type="button" onclick="homeEarnOpen('+i+')">'+
+    '<i>'+(i+1)+'</i><b>'+flag(x.c)+esc(x.n)+'<small>🥇'+x.m[0]+' 🥈'+x.m[1]+' 🥉'+x.m[2]+'</small></b>'+
+    '<span>$'+ccNum(x.e)+'</span></button>').join('');
+  box.innerHTML='<h2 class="home-h">'+esc(T.hmEarnTitle)+'</h2><p class="home-sub">'+esc(T.hmEarnSub(homeDate(HOME_EARN_AT)))+'</p>'+
     '<div class="he-list">'+rows+'</div>'+
     (list.length>10 ? '<button class="home-more" type="button" onclick="HOME_EARN_ALL=!HOME_EARN_ALL; homeEarnDraw(); try{ homeLiveTabs(); }catch(e){}">'+
       esc(HOME_EARN_ALL ? T.hmBoardLess : T.hmBoardMore(Math.min(50, list.length)))+'</button>' : '');
   box.hidden=false;
 }
-// Где игрок заработал: турниры, места, его доля.
-function homeEarnOpen(k){
-  const x=homeEarnings().find(p=>p.k===k); if(!x) return;
-  const T=L();
+// Игрок: флаг, сумма за год, медали и — что из этого известно по финалам FNCS (места и доля, homeEarnings).
+function homeEarnOpen(i){
+  const x=HOME_EARN_LQ[i]; if(!x) return;
+  const T=L(), fn=homeEarnings().find(p=>p.k===String(x.n).toLowerCase());
   let m=document.getElementById('homeRealModal');
   if(!m){
     m=document.createElement('div'); m.id='homeRealModal'; m.className='hr-modal';
@@ -159216,11 +159230,13 @@ function homeEarnOpen(k){
     document.addEventListener('keydown', ev=>{ if(ev.key==='Escape' && document.getElementById('homeRealModal')) homeRealClose(); });
     document.body.appendChild(m);
   }
-  const body=x.ev.map(e=>'<tr><td>'+e.p+'</td><td>'+esc(e.name)+'</td><td>$'+ccNum(Math.round(e.prize))+'</td></tr>').join('');
-  m.innerHTML='<div class="hr-box" role="dialog" aria-modal="true" aria-label="'+esc(x.h)+'">'+
-    '<div class="hr-top"><b>'+esc(x.h)+' · $'+ccNum(Math.round(x.sum))+'</b><button type="button" class="hr-x" onclick="homeRealClose()" aria-label="'+esc(T.hmRealClose)+'">✕</button></div>'+
-    '<p class="home-sub" style="margin:0">'+esc(T.hmEarnNote)+'</p>'+
-    '<div class="hr-wrap"><table class="hr-table"><thead><tr><th>#</th><th>'+esc(T.hmEarnEvent)+'</th><th>'+esc(T.hmRealPrize)+'</th></tr></thead><tbody>'+body+'</tbody></table></div></div>';
+  const fl=x.c ? '<img src="flags/w20/'+esc(x.c)+'.png" alt="" style="width:22px;vertical-align:-2px;margin-right:8px" onerror="this.remove()">' : '';
+  const body=fn ? fn.ev.map(e=>'<tr><td>'+e.p+'</td><td>'+esc(e.name)+'</td><td>$'+ccNum(Math.round(e.prize))+'</td></tr>').join('') : '';
+  m.innerHTML='<div class="hr-box" role="dialog" aria-modal="true" aria-label="'+esc(x.n)+'">'+
+    '<div class="hr-top"><b>'+fl+esc(x.n)+' · $'+ccNum(x.e)+'</b><button type="button" class="hr-x" onclick="homeRealClose()" aria-label="'+esc(T.hmRealClose)+'">✕</button></div>'+
+    '<p class="home-sub" style="margin:0">'+esc(T.hmEarnMedals(x.m[0], x.m[1], x.m[2]))+'</p>'+
+    (body ? '<b style="font-size:13px;color:#fff">'+esc(T.hmEarnFncs)+'</b><div class="hr-wrap"><table class="hr-table"><thead><tr><th>#</th><th>'+esc(T.hmEarnEvent)+'</th><th>'+esc(T.hmRealPrize)+'</th></tr></thead><tbody>'+body+'</tbody></table></div>' : '')+
+    '<p class="home-sub" style="margin:0">'+esc(T.hmEarnSrc)+'</p></div>';
   document.body.classList.add('hr-lock');
 }
 let HOME_REAL_SEL=null;
