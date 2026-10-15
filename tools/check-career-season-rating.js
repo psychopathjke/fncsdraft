@@ -136,12 +136,33 @@ const BOOT = `
       const scale=REGION_TOP.EU/hiRaw;
       out.notes.stretch={topRaw:Math.round(hiRaw*10)/10, ceiling:REGION_TOP.EU,
                          scale:Math.round(scale*1000)/1000};
+      /* 15.10: год — первая ступень. Дальше рейтинг года как в ФИФЕ, те же доли, что у карточек драфта
+         (FIFA_RATING.cfg): 60% года + 40% чистого прошлого сезона + 1.5 за каждый финал до этого года (до двух),
+         вторая растяжка региона с низом на месте и сжатие верха. Сторож пересчитывает каждую ступень. */
+      const W2=CC_SEASON_WORK, FC=FIFA_RATING.cfg;
+      const s1=W2.stage1.get(many);
+      out.notes.busiest.stage1=Math.round(s1*10)/10;
       check('a busy year is its weighted average, stretched to the region',
-            Math.abs(season.get(many)-Math.round(weighedOf(many)*scale))<=1,
+            Math.abs(s1-weighedOf(many)*scale)<=1,
             JSON.stringify(out.notes.busiest));
       check('and the region tops out where the draft tops out',
             Math.abs(Math.round(hiRaw*scale)-REGION_TOP.EU)<=1,
             JSON.stringify(out.notes.stretch));
+      // Прошлый сезон — на шкале этого года (место среди тех, у кого он есть, перенесено на числа года).
+      const pu=FIFA_RATING.pure[many]||{};
+      const had=pu[CC_NOW_YEAR-1]!=null || pu[CC_NOW_YEAR-2]!=null;
+      const prev=W2.prevAl.has(many) ? W2.prevAl.get(many) : null;
+      check('the previous season is read when there is one', had===(prev!=null), String(had)+' '+prev);
+      const fin=(FIFA_RATING.finals[many]||[]).filter(t=>t<CC_NOW_YEAR).length;
+      const mix=(prev!=null ? (1-FC.prevW)*s1 + FC.prevW*prev : s1) + FC.expPts*Math.min(FC.expCap, fin);
+      out.notes.busiest.fifa={prev, finals:fin, blended:Math.round(W2.blended.get(many)*10)/10};
+      check('then 60% year + 40% previous season + finals experience', Math.abs(mix-W2.blended.get(many))<0.01,
+            JSON.stringify(out.notes.busiest));
+      const lo=W2.lo2.get('EU'), hi=W2.hi2.get('EU'), topEU=REGION_TOP.EU, K=topEU-FC.knee;
+      let y=lo+(W2.blended.get(many)-lo)*(topEU-lo)/(hi-lo);
+      if(y>K) y=K+(topEU-K)*Math.pow(Math.min(1,(y-K)/(topEU-K)), FC.gamma);
+      check('stretched again with the bottom pinned and the top compressed', season.get(many)===Math.round(y),
+            season.get(many)+' vs '+y.toFixed(2));
 
       /* И лишний слабый турнир почти ничего не стоит — то, ради чего раньше
          стояло окно из трёх. Веса решают это иначе: событие с малым весом

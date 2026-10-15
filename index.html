@@ -10318,6 +10318,14 @@ brk_lan:'LAN Summit', brk_rc:'LAN Reload Championship', brk_gc26:'LAN Global Cha
 brk_cup_nth:'неделя', brk_heat_nth:'группа',
 brkBlend:'Сумма / вес',
 brkNormalised:'После нормировки по региону',
+brkFifaTitle:'Рейтинг года как в ФИФЕ',
+brkFifaSeason:'Сезон (события года)',
+brkFifaPrev:'Прошлый сезон, 40%',
+brkFifaExp:'Опыт финалов, +1.5 за каждый (до двух)',
+brkFifaStat:'Статы события, 10%',
+brkFifaFloor:'Титул: 80% своего события',
+brkFifaScale:'После шкалы региона и сжатия верха',
+brkFifaNote:'Доли проверены по местам в финалах FNCS, на ЛАНах и в World Cup 2019–2026: с ними рейтинг до турнира лучше угадывает итог.',
 brkNote:'Каждый этап даёт балл по месту с поправкой на размер поля, дальше — среднее по весам. Вес показывает, насколько этап важен.',
 cardGalleryTitle:'Карточки состава', cardNoStats:'Стата появится после турнира.',
 realTitle:'Плей-ин — реальные данные', realTitleLcq:'Last Chance Qualifier — реальные данные',
@@ -12307,6 +12315,14 @@ brk_lan:'Summit LAN', brk_rc:'Reload Championship LAN', brk_gc26:'Global Champio
 brk_cup_nth:'week', brk_heat_nth:'group',
 brkBlend:'Total / weight',
 brkNormalised:'After the region is normalised',
+brkFifaTitle:'Year rating, FIFA style',
+brkFifaSeason:'Season (events of the year)',
+brkFifaPrev:'Previous season, 40%',
+brkFifaExp:'Finals experience, +1.5 each (up to two)',
+brkFifaStat:'Event stats, 10%',
+brkFifaFloor:'Title: 80% of its own event',
+brkFifaScale:'After the region scale and top compression',
+brkFifaNote:'Each share was checked against placements in FNCS finals, LANs and the World Cup 2019–2026: with it, the rating before an event predicts the result better.',
 brkNote:'Each stage scores the finish against the size of its field, then the stages are averaged by weight. The weight is how much that stage counts.',
 cardGalleryTitle:'Squad cards', cardNoStats:'Stats appear after the tournament.',
 realTitle:'Play-In — real data', realTitleLcq:'Last Chance Qualifier — real data',
@@ -12485,6 +12501,14 @@ brk_cup_nth:'semaine',
 brk_heat_nth:'groupe',
 brkBlend:'Total / poids',
 brkNormalised:'Après normalisation de la région',
+brkFifaTitle:'Note de l’année, façon FIFA',
+brkFifaSeason:'Saison (événements de l’année)',
+brkFifaPrev:'Saison précédente, 40 %',
+brkFifaExp:'Expérience des finales, +1,5 chacune (deux max.)',
+brkFifaStat:'Stats de l’événement, 10 %',
+brkFifaFloor:'Titre : 80 % de son événement',
+brkFifaScale:'Après l’échelle de la région et la compression du haut',
+brkFifaNote:'Chaque part a été vérifiée sur les classements des finales FNCS, des LAN et de la World Cup 2019–2026 : avec elle, la note avant un tournoi prédit mieux le résultat.',
 brkNote:'Chaque étape note le résultat par rapport à la taille de son plateau, puis les étapes sont moyennées selon leur poids. Le poids, c’est ce que cette étape compte.',
 cardNoStats:'Les stats apparaissent après le tournoi.',
 realTitle:'Play-In — données réelles',
@@ -16040,6 +16064,14 @@ brk_cup_nth:"settimana",
 brk_heat_nth:"girone",
 brkBlend:"Totale / peso",
 brkNormalised:"Dopo la normalizzazione della regione",
+brkFifaTitle:"Valutazione dell’anno, stile FIFA",
+brkFifaSeason:"Stagione (eventi dell’anno)",
+brkFifaPrev:"Stagione precedente, 40%",
+brkFifaExp:"Esperienza nelle finali, +1,5 ciascuna (massimo due)",
+brkFifaStat:"Statistiche dell’evento, 10%",
+brkFifaFloor:"Titolo: 80% del proprio evento",
+brkFifaScale:"Dopo la scala della regione e la compressione del vertice",
+brkFifaNote:"Ogni quota è stata verificata sui piazzamenti nelle finali FNCS, nelle LAN e nella World Cup 2019–2026: con essa la valutazione prima di un torneo prevede meglio il risultato.",
 realTitle:"Play-In — dati reali",
 realTitleLcq:"Last Chance Qualifier — dati reali",
 realTitleOpens:"Open — dati reali",
@@ -18572,6 +18604,14 @@ brk_cup_nth:"semana",
 brk_heat_nth:"grupo",
 brkBlend:"Total / peso",
 brkNormalised:"Depois de normalizar a região",
+brkFifaTitle:"Nota do ano, estilo FIFA",
+brkFifaSeason:"Temporada (eventos do ano)",
+brkFifaPrev:"Temporada anterior, 40%",
+brkFifaExp:"Experiência em finais, +1,5 cada (até duas)",
+brkFifaStat:"Estatísticas do evento, 10%",
+brkFifaFloor:"Título: 80% do próprio evento",
+brkFifaScale:"Depois da escala da região e da compressão do topo",
+brkFifaNote:"Cada parcela foi verificada nas colocações das finais da FNCS, das LANs e da World Cup 2019–2026: com ela, a nota antes de um torneio prevê melhor o resultado.",
 realTitle:"Play-In — dados reais",
 realTitleLcq:"Last Chance Qualifier — dados reais",
 realTitleOpens:"Opens — dados reais",
@@ -90664,6 +90704,151 @@ var RATING_FLOOR={};
       }
     });
   });
+  /* ---- РЕЙТИНГ ГОДА КАК В ФИФЕ (15.10) ------------------------------------
+   *
+   * Карточки FNCS 2019–2026 (наборы h, i, j, k, e, f, t, m) считаются одной формулой года поверх
+   * чисел событий (_eventOvr — что вечер стоил сам по себе, до подмесов выше):
+   *
+   *   сезон   = взвешенное среднее событий года (веса этапов: финал 2.0, World Cup 8.0, полуфинал 0.9,
+   *             квалификация 0.5; у книг 2025–2026 каждый Мейджор 2.0). В 2019–2024 карточка не ниже
+   *             своего события («только вверх», как было), в 2025–2026 — среднее года без этого;
+   *   рейтинг = 60% сезона + 40% чистого прошлого сезона (год назад, если его нет — два года назад)
+   *             + 1.5 за каждый прошлый финал (гранд-финал FNCS, World Cup, ЛАН), не больше двух;
+   *             затем 90% этого + 10% статов события (килы за игру, среднее место, доля побед — командные,
+   *             личных в выгрузках нет; перцентиль внутри своего события на его же шкале);
+   *   титул   = чемпион гранд-финала и финалист World Cup не ниже 80% своего события + 20% рейтинга;
+   *   шкала   = растяжка набора по региону до REGION_TOP (низ на месте), верх выше «потолок − 4»
+   *             сжат степенью 2 — 95+ остаются у одной-двух команд набора.
+   *
+   * Каждая доля проверена замером (tools/measure-fifa-rating.js): рейтинг на начало события только по тому,
+   * что было ДО него, против мест в гранд-финалах FNCS, на ЛАНах и в финалах World Cup 2019–2026, средний
+   * Спирмен по годам и бутстрэп по годам. Прошлый сезон 0.40, опыт 1.5×2 и статы 0.10 — лучшие доли сетки;
+   * штраф за неотбор в финал своего региона замер не прошёл и не введён. Сжатие верха — цель по
+   * распределению, а не по метрике.
+   *
+   * Заменяет для этих наборов подтяжку к трём лучшим карточкам за все годы: она брала и БУДУЩИЕ годы,
+   * а рейтинг года знает только своё и прошлое. Наборы недель дивизиона и Reload не трогаются.
+   * Число события (_eventOvr) не меняется — карьера читает его, см. ccSeasonOvr. */
+  (function fifaYearPass(){
+    const CFG={prevW:0.40, expPts:1.5, expCap:2, statMix:0.10, floorW:0.80, knee:4, gamma:2};
+    const SET_T={h1:2019.55, h2:2019.56, h3:2019.75, h4:2019.9, i1:2020.3, i2:2020.55, i3:2020.8,
+      j1:2021.25, j2:2021.45, j3:2021.65, j4:2021.85, k1:2022.2, k2:2022.45, k3:2022.7,
+      e1:2023.25, e2:2023.5, e3:2023.7, f1:2024.2, f2:2024.4, f3:2024.6, t1:2025.15, t2:2025.35, t3:2025.55,
+      m1:2026.2, m2:2026.55};
+    const yearOfSet=s=>Math.floor(SET_T[s]);
+    const isWC=s=>s==='h1' || s==='h2';
+    const ledgerSet=s=>/^[tm]\d$/.test(s);
+    const low=h=>String(h||'').toLowerCase().trim();
+    const keyOf=q=>(q.region||'')+'|'+low(q.handle);
+    const gfOf=q=>{ if(q.realGf && q.realGf.rank) return q.realGf;
+      for(const k in q) if(/^_[a-z]\dGf$/.test(k) && q[k] && q[k].rank) return q[k]; return null; };
+    const stageOf=q=>gfOf(q) ? 'G' : (q._t1Stage==='P' || /^(P|Playin)$/.test(String(q.real && q.real.stage || ''))) ? 'P' : 'L';
+    const stageW=q=>ledgerSet(q.cardSet) ? 2.0 : stageOf(q)==='G' ? (isWC(q.cardSet) ? 8.0 : 2.0)
+      : stageOf(q)==='P' ? (isWC(q.cardSet) ? 0.6 : 0.9) : (isWC(q.cardSet) ? 0.4 : 0.5);
+    const list=PLAYERS_BASE.filter(q=>q.tier==='cardmode' && SET_T[q.cardSet]!=null && q._eventOvr!=null
+      && !(q.rating>100) && !(q._eventOvr>100));
+    const P={};
+    list.forEach(q=>{
+      const k=keyOf(q), y=yearOfSet(q.cardSet);
+      const p=P[k]=P[k] || {years:{}, finals:[], names:new Set()};
+      (p.years[y]=p.years[y] || []).push([q._eventOvr, stageW(q)]);
+      if(gfOf(q)) p.finals.push(SET_T[q.cardSet]);
+      p.names.add(low(q.handle)); if(q.liquiName) p.names.add(low(q.liquiName));
+    });
+    /* ЛАНы: имя → человек. Регион известен — по региону; иначе тот, кто в этом году был в финале. */
+    const byName={};
+    Object.keys(P).forEach(k=>P[k].names.forEach(n=>(byName[n]=byName[n] || []).push(k)));
+    const who=(name, t, reg)=>{
+      let ks=byName[low(name)] || [];
+      if(reg) ks=ks.filter(k=>k.indexOf(reg+'|')===0);
+      if(ks.length>1){ const fin=ks.filter(k=>P[k].finals.some(x=>Math.floor(x)===Math.floor(t))); if(fin.length) ks=fin; }
+      return ks[0] || null;
+    };
+    const split=s=>String(s).split(/\s*&\s*/);
+    const LANS=[
+      {t:2022.87, set:'k3', ev:INV2022_EVENT, rows:INV2022_RANKED.map(e=>({names:split(e.duo), rank:e.rank}))},
+      {t:2023.78, set:'e3', ev:GC2023_EVENT, rows:GC2023_RANKED.map(e=>({names:split(e.duo), rank:e.rank}))},
+      {t:2024.69, set:'f3', ev:GC2024_EVENT, rows:GC2024_RANKED.map(e=>({names:split(e.duo), rank:e.rank}))},
+      {t:2025.68, set:'t3', ev:GC2025_EVENT, rows:GC2025_RANKED.map(e=>({names:split(e.trio), rank:e.rank}))},
+      {t:2026.25, set:'m1', ev:'FNCS 2026 Summit', rows:Object.entries(SUMMIT_RANK).map(([h,r])=>({names:[h], rank:r}))},
+      {t:2026.64, set:'m2', ev:'Reload Championship 2026', rows:Object.entries(RC_RANK).flatMap(([reg,m])=>Object.entries(m).map(([h,r])=>({names:[h], rank:r, reg:reg})))},
+      {t:2026.74, set:'m2', ev:'FNCS Global Championship 2026', rows:Object.entries(GC26_RANK).flatMap(([reg,m])=>Object.entries(m).map(([h,r])=>({names:[h], rank:r, reg:reg})))}
+    ];
+    LANS.forEach(L_=>L_.rows.forEach(e=>{ e.keys=e.names.map(n=>who(n, L_.t, e.reg)).filter(Boolean);
+      e.keys.forEach(k=>{ if(P[k].finals.indexOf(L_.t)<0) P[k].finals.push(L_.t); }); }));
+    const wmean=a=>{ let s=0, w=0; (a||[]).forEach(([v,k])=>{ s+=v*k; w+=k; }); return w ? s/w : null; };
+    /* Статы события: перцентиль внутри своего события, на шкале чисел того же события. */
+    const groups={};
+    list.forEach(q=>{ const g=q.cardSet+'|'+q.region+'|'+String(q.event||'').replace(/\s*\(.*\)$/, ''); (groups[g]=groups[g] || []).push(q); });
+    const statOf=new Map();
+    const STAT_GET=[q=>q.real && q.real.matches ? q.real.avgElims : null,
+                    q=>q.real && q.real.matches && q.real.avgPlace!=null ? -q.real.avgPlace : null,
+                    q=>q.real && q.real.matches ? (q.real.wins||0)/q.real.matches : null];
+    Object.values(groups).forEach(gs=>{
+      const eo=gs.map(q=>q._eventOvr), lo=Math.min(...eo), hi=Math.max(...eo);
+      if(!(hi>lo)) return;
+      const pcts=STAT_GET.map(g=>{ const vals=gs.map(g), ok=vals.filter(v=>v!=null).sort((a,b)=>a-b);
+        return vals.map(v=>{ if(v==null || ok.length<2) return null; let a=0; while(a<ok.length && ok[a]<v) a++;
+          let b=a; while(b<ok.length && ok[b]===v) b++; return ((a+b)/2)/ok.length; }); });
+      gs.forEach((q,i)=>{ const a=pcts.map(p=>p[i]).filter(v=>v!=null);
+        if(a.length) statOf.set(q, lo+(hi-lo)*a.reduce((s,v)=>s+v, 0)/a.length); });
+    });
+    /* Прошлый сезон — на шкалу этого года по месту в очереди: у каждого года своя шкала (в 2025-м квалификация
+       стоит 45, в 2026-м середина сцены около 70), и сырая смесь тянула бы середину вниз за чужую шкалу, а не за
+       игру. Место человека среди тех, у кого есть оба года в регионе, переносится на числа этого года.
+       Замер: 0.524 против 0.521 у сырой смеси — не хуже (78% выборок), а шкалы перестают спорить. */
+    const prevOf=(p, y)=>p.years[y-1] ? [wmean(p.years[y-1]), 1] : p.years[y-2] ? [wmean(p.years[y-2]), 2] : null;
+    const AL={};
+    Object.entries(P).forEach(([k,p])=>{ const reg=k.slice(0, k.indexOf('|'));
+      Object.keys(p.years).forEach(ys=>{ const y=+ys, pr=prevOf(p, y); if(!pr) return;
+        const a=AL[reg+'|'+y+'|'+pr[1]]=AL[reg+'|'+y+'|'+pr[1]] || {a:[], b:[]};
+        a.a.push(pr[0]); a.b.push(wmean(p.years[y])); }); });
+    Object.values(AL).forEach(m=>{ m.a.sort((x,z)=>x-z); m.b.sort((x,z)=>x-z); });
+    const alignPrev=(reg, y, back, v)=>{ const m=AL[reg+'|'+y+'|'+back]; if(!m || m.a.length<10) return v;
+      let i=0; while(i<m.a.length && m.a[i]<v) i++;
+      return m.b[Math.min(m.b.length-1, Math.round(i/(m.a.length-1)*(m.b.length-1)))]; };
+    const raw=new Map();
+    list.forEach(q=>{
+      const p=P[keyOf(q)], y=yearOfSet(q.cardSet);
+      const pure=wmean(p.years[y]);
+      const season=y<=2024 ? Math.max(q._eventOvr, pure) : pure;
+      const pr=prevOf(p, y);
+      const prev=pr ? alignPrev(q.region||'', y, pr[1], pr[0]) : null;
+      let v=prev!=null ? (1-CFG.prevW)*season + CFG.prevW*prev : season;
+      const exp=Math.min(CFG.expCap, p.finals.filter(t=>t<SET_T[q.cardSet]-0.001).length);
+      v+=CFG.expPts*exp;
+      const stat=statOf.get(q);
+      if(stat!=null) v=(1-CFG.statMix)*v + CFG.statMix*stat;
+      const g=gfOf(q);
+      let floor=null;
+      if(g && (g.rank===1 || isWC(q.cardSet))){ floor=CFG.floorW*q._eventOvr + (1-CFG.floorW)*v; if(floor>v) v=floor; else floor=null; }
+      raw.set(q, {v, season, prev, exp, stat, floor});
+    });
+    const bySR={};
+    list.forEach(q=>(bySR[q.cardSet+'|'+q.region]=bySR[q.cardSet+'|'+q.region] || []).push(q));
+    let moved=0;
+    Object.keys(bySR).forEach(sr=>{
+      const qs=bySR[sr], reg=sr.slice(sr.indexOf('|')+1);
+      const top=REGION_TOP[reg]!==undefined ? REGION_TOP[reg] : 85, K=top-CFG.knee;
+      const vals=qs.map(q=>raw.get(q).v), hi=Math.max(...vals), lo=Math.min(...vals);
+      qs.forEach(q=>{
+        const r=raw.get(q);
+        let y=hi>lo ? lo+(r.v-lo)*(top-lo)/(hi-lo) : top;
+        if(y>K) y=K+(top-K)*Math.pow((y-K)/(top-K), CFG.gamma);
+        const fin=Math.round(clamp(y, 30, 100));
+        if(fin!==q.rating) moved++;
+        q._fifa={season:Math.round(r.season*10)/10, prev:r.prev==null ? null : Math.round(r.prev*10)/10, exp:r.exp,
+                 stat:r.stat==null ? null : Math.round(r.stat*10)/10, floor:r.floor==null ? null : Math.round(r.floor*10)/10,
+                 blended:Math.round(r.v*10)/10, top:top};
+        q.rating=fin; q._targetOvr=fin; q.rarity=rarityForRating(fin); q._attrs=null;
+      });
+    });
+    FIFA_RATING={cfg:CFG, setT:SET_T,
+      pure:Object.fromEntries(Object.entries(P).map(([k,p])=>[k, Object.fromEntries(Object.entries(p.years).map(([y,a])=>[y, Math.round(wmean(a)*10)/10]))])),
+      finals:Object.fromEntries(Object.entries(P).map(([k,p])=>[k, p.finals.slice().sort((a,b)=>a-b)]))};
+    if(typeof console!=='undefined' && console.debug)
+      console.debug('fifa year ratings — cards:', list.length, 'moved:', moved);
+  })();
   /* ---- И тот же ledger наружу, для карьеры -------------------------------
    *
    * Карьера считала рейтинг по карточкам: одно событие — одна карточка. Ledger
@@ -90696,6 +90881,9 @@ var RATING_FLOOR={};
 
 
 
+/* Рейтинг года как в ФИФЕ — его доли, чистые числа лет, финалы людей и карточки формы (см. fifaYearPass выше).
+   var без значения по той же причине, что у CC_LEDGER_2026: заполняется выше этой строки. */
+var FIFA_RATING;
 const CARD_DUOS_BY_SET={m2:CARD_DUOS, m1:CARD_DUOS_M1,
                         t1:CARD_TRIOS_BY_SET.t1, t2:CARD_TRIOS_BY_SET.t2, t3:CARD_TRIOS_BY_SET.t3,
                         r1:CARD_DUOS_R.r1, r2:CARD_DUOS_R.r2, r3:CARD_DUOS_R.r3, r4:CARD_DUOS_R.r4};
@@ -109839,7 +110027,8 @@ function realExtraRows(r){
 // the only one you had to take on faith.
 function ratingBreakdownHTML(p, glow){
   const rp=p && p._ratingParts;
-  if(!rp || !rp.parts.length) return '';
+  const fifa=fifaBreakdownHTML(p, glow);
+  if(!rp || !rp.parts.length) return fifa;
   const L_=L();
   const rows=rp.parts.map(x=>{
     const word=L_['brk_'+x.label+'_nth'];
@@ -109861,7 +110050,21 @@ function ratingBreakdownHTML(p, glow){
       <span style="text-transform:none;letter-spacing:0;">${L_.brkBlend}</span>
       <b style="font-variant-numeric:tabular-nums;">${rp.sum.toFixed(1)} / ${rp.w.toFixed(2)} = ${rp.blended.toFixed(1)}</b>
     </div>${norm}
-    <div class="region-note" style="margin-top:6px;font-size:9px;">${L_.brkNote}</div>`;
+    <div class="region-note" style="margin-top:6px;font-size:9px;">${L_.brkNote}</div>`+fifa;
+}
+/* Рейтинг года как в ФИФЕ — строками, из чего он сложен (fifaYearPass кладёт _fifa на карточку). */
+function fifaBreakdownHTML(p, glow){
+  const f=p && p._fifa;
+  if(!f) return '';
+  const L_=L(), C=(typeof FIFA_RATING!=='undefined' && FIFA_RATING && FIFA_RATING.cfg) || {};
+  const row=(name, val)=>`<div class="srow" style="padding:3px 0;"><span style="text-transform:none;letter-spacing:0;">${name}</span><b style="font-variant-numeric:tabular-nums;">${val}</b></div>`;
+  const rows=[row(L_.brkFifaSeason, f.season.toFixed(1)), row(L_.brkFifaPrev, f.prev!=null ? f.prev.toFixed(1) : '—'),
+              row(L_.brkFifaExp, f.exp ? '+'+(f.exp*(C.expPts||1.5)).toFixed(1) : '0')];
+  if(f.stat!=null) rows.push(row(L_.brkFifaStat, f.stat.toFixed(1)));
+  if(f.floor!=null) rows.push(row(L_.brkFifaFloor, f.floor.toFixed(1)));
+  rows.push(row(L_.brkFifaScale, f.blended.toFixed(1)+' → '+p.rating));
+  return `<div class="fut-foot" style="font-size:9px;margin:12px 0 6px;color:${glow};">${L_.brkFifaTitle}</div>${rows.join('')}
+    <div class="region-note" style="margin-top:6px;font-size:9px;">${L_.brkFifaNote}</div>`;
 }
 
 function playerStatSheetHTML(team, idx, p){
@@ -113173,7 +113376,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='5e2bfb1e';
+const CC_BUILD='af4e03b0';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -126020,16 +126223,60 @@ function ccSeasonOvr(){
     const cur=byReg.get(reg);
     if(cur==null || v>cur) byReg.set(reg, v);
   });
+  /* РЕЙТИНГ ГОДА КАК В ФИФЕ — те же доли, что у карточек драфта (fifaYearPass, FIFA_RATING.cfg):
+     год, растянутый по региону, → 60% года + 40% чистого прошлого сезона (год назад, иначе два)
+     + 1.5 за каждый финал до этого года (гранд-финал FNCS, World Cup, ЛАН), не больше двух;
+     снова растяжка региона под потолок и сжатие верха (выше «потолок − 4» степенью 2).
+     Статы события сюда не входят: в году карьеры есть этапы без строк статистики (недели кубка, хиты). */
+  const FR=(typeof FIFA_RATING!=='undefined' && FIFA_RATING) || null, Y=ccNowYear();
+  const topOf=reg=>(typeof REGION_TOP!=='undefined' && REGION_TOP[reg]!==undefined) ? REGION_TOP[reg] : null;
+  const blended=new Map(), hi2=new Map(), lo2=new Map(), stage1=new Map(), prevRaw=new Map(), prevAl=new Map();
   raw.forEach((v, k)=>{
     const reg=String(k).slice(0, String(k).indexOf('|'));
-    const hi=byReg.get(reg);
-    const top=(typeof REGION_TOP!=='undefined' && REGION_TOP[reg]!==undefined) ? REGION_TOP[reg] : null;
-    const scaled=(top!=null && hi>0) ? v*(top/hi) : v;
+    const hi=byReg.get(reg), top=topOf(reg);
+    stage1.set(k, (top!=null && hi>0) ? v*(top/hi) : v);
+    if(FR){ const pu=FR.pure[k] || {};
+      const prev=pu[Y-1]!=null ? pu[Y-1] : pu[Y-2]!=null ? pu[Y-2] : null;
+      if(prev!=null) prevRaw.set(k, prev); }
+  });
+  /* Прошлый сезон — на шкалу этого года по месту в очереди (как у карточек драфта, см. alignPrev в fifaYearPass):
+     место человека среди тех, у кого в регионе есть прошлый сезон, переносится на числа года после растяжки. */
+  { const AL={};
+    prevRaw.forEach((p, k)=>{ const reg=String(k).slice(0, String(k).indexOf('|'));
+      const m=AL[reg]=AL[reg] || {a:[], b:[]}; m.a.push(p); m.b.push(stage1.get(k)); });
+    Object.values(AL).forEach(m=>{ m.a.sort((x,z)=>x-z); m.b.sort((x,z)=>x-z); });
+    prevRaw.forEach((p, k)=>{ const m=AL[String(k).slice(0, String(k).indexOf('|'))];
+      if(!m || m.a.length<10){ prevAl.set(k, p); return; }
+      let i=0; while(i<m.a.length && m.a[i]<p) i++;
+      prevAl.set(k, m.b[Math.min(m.b.length-1, Math.round(i/(m.a.length-1)*(m.b.length-1)))]); }); }
+  stage1.forEach((s1, k)=>{
+    const reg=String(k).slice(0, String(k).indexOf('|'));
+    let b=s1;
+    if(FR){
+      const prev=prevAl.get(k);
+      if(prev!=null) b=(1-FR.cfg.prevW)*b + FR.cfg.prevW*prev;
+      b+=FR.cfg.expPts*Math.min(FR.cfg.expCap, (FR.finals[k] || []).filter(t=>t<Y).length);
+    }
+    blended.set(k, b);
+    if(!(hi2.get(reg)>=b)) hi2.set(reg, b);
+    if(!(lo2.get(reg)<=b)) lo2.set(reg, b);
+  });
+  blended.forEach((b, k)=>{
+    const reg=String(k).slice(0, String(k).indexOf('|'));
+    /* Вторая растяжка — с низом на месте, как у карточек драфта: опыт и прошлый сезон поднимают верх, и умножение
+       от нуля опустило бы под ним всю середину региона. */
+    const top=topOf(reg), hi=hi2.get(reg), lo=lo2.get(reg);
+    let scaled=(top!=null && hi>lo) ? lo+(b-lo)*(top-lo)/(hi-lo) : b;
+    if(FR && top!=null){ const K=top-FR.cfg.knee;
+      if(scaled>K) scaled=K+(top-K)*Math.pow(Math.min(1, (scaled-K)/(top-K)), FR.cfg.gamma); }
     out.set(k, Math.round(clamp(scaled, 30, CAREER_SCALE_TOP)));
   });
   CC_SEASON_OVR=out;
+  // Промежуточные числа — для сторожа (check-career-season-rating): год после первой растяжки, смесь ФИФЫ, края региона.
+  CC_SEASON_WORK={stage1, blended, lo2, hi2, prevAl};
   return out;
 }
+let CC_SEASON_WORK=null;
 let CC_EU_ALL={};
 function ccEuCards(){
   // Карьера, перешедшая в следующий год, держит ещё и дебютантов (ccDebutants) — своим ключом.
