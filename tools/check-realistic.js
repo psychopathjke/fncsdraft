@@ -33,7 +33,11 @@ const BOOTSTRAP = `
     out.dropped = built.dropped;
     out.count = teams.length;
     out.top = teams.slice(0, 3).map(function(t){
-      return {who: t.handles.join(' & '), avg: Math.round(t.avg), stage: t.stage, rank: t.rank};
+      /* Титул или подиум года (гранд-финал, ЛАН, World Cup) — у таких людей есть карточка формы, см. fifaYearPass. */
+      var form = (typeof FIFA_RATING !== 'undefined' && FIFA_RATING && FIFA_RATING.form) || {};
+      var titled = t.members ? t.members.some(function(m){ return !!form[m.id]; })
+        : pool.some(function(p){ return t.handles.indexOf(p.handle) >= 0 && form[p.id]; });
+      return {who: t.handles.join(' & '), avg: Math.round(t.avg), stage: t.stage, rank: t.rank, titled: titled};
     });
     // Ordered, high to low — and where two teams average the same rating, the
     // better finish comes first. Ties are not hypothetical here: pairwise
@@ -277,9 +281,13 @@ if (out.wrongSize) fails.push(out.wrongSize + ' teams are not duos in a duo Majo
  * Настоящая проверка та же по смыслу и не ломается от перекалибровки: верх
  * списка не может занимать команда, вылетевшая рано. Список ведёт кто-то из
  * гранд-финала, и притом из его первой десятки. */
-if (out.top[0] && !(out.top[0].stage === 'Gf' && out.top[0].rank <= 10))
+/* 15.10: рейтинг стал рейтингом ГОДА как в ФИФЕ — в нём прошлый сезон и титулы ЛАНов (Саммит, EWC, Антверпен).
+ * Поэтому вести список может и команда, дошедшая до гранд-финала этого Мейджора без десятки, если её год —
+ * титул или подиум (vic0 & Malibuca: 20-е в финале Мейджора 2, но Саммит и Париж выиграны, Антверпен — третье).
+ * Вылетевшая до гранд-финала команда вести список по-прежнему не может. */
+if (out.top[0] && !(out.top[0].stage === 'Gf' && (out.top[0].rank <= 10 || out.top[0].titled)))
   fails.push('the list is led by ' + out.top[0].who + ' [' + out.top[0].stage + ' #' +
-             out.top[0].rank + '], a team that did not go deep — the order is not the rating');
+             out.top[0].rank + '], a team that did not go deep and won nothing that year — the order is not the rating');
 if (out.draftedHandles.join('|') !== out.targetHandles.join('|'))
   fails.push('taking ' + out.targetHandles.join(' & ') + ' drafted ' + out.draftedHandles.join(' & '));
 if (out.poolStillHasThem)

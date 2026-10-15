@@ -497,6 +497,8 @@
        такой картой ходят контент-мейкеры Про-Ама — они в этой комнате не про и
        не ладдер, у них своя редкость. */
     --exotic:#70C7F8;
+    /* Карточка формы (как TOTW в ФИФЕ): чёрная с золотой каймой, см. CARD_SKIN.form. */
+    --form:#f6c343;
     /* Ambient glows behind the page. Each needs its own transparent twin so the
        gradient fades to the same hue instead of drifting through grey. */
     --glow-a:rgba(18,181,164,.34);  --glow-a0:rgba(18,181,164,0);
@@ -10326,6 +10328,12 @@ brkFifaStat:'Статы события, 10%',
 brkFifaFloor:'Титул: 80% своего события',
 brkFifaScale:'После шкалы региона и сжатия верха',
 brkFifaNote:'Доли проверены по местам в финалах FNCS, на ЛАНах и в World Cup 2019–2026: с ними рейтинг до турнира лучше угадывает итог.',
+brkFormBoost:'Карточка формы',
+formTag:'в форме',
+ccRarityform:'в форме',
+formWhyWin:'чемпион финала',
+formWhyElims:'больше всех килов в топ-10 финала',
+formWhyLan:'призёр ЛАНа',
 brkNote:'Каждый этап даёт балл по месту с поправкой на размер поля, дальше — среднее по весам. Вес показывает, насколько этап важен.',
 cardGalleryTitle:'Карточки состава', cardNoStats:'Стата появится после турнира.',
 realTitle:'Плей-ин — реальные данные', realTitleLcq:'Last Chance Qualifier — реальные данные',
@@ -12323,6 +12331,12 @@ brkFifaStat:'Event stats, 10%',
 brkFifaFloor:'Title: 80% of its own event',
 brkFifaScale:'After the region scale and top compression',
 brkFifaNote:'Each share was checked against placements in FNCS finals, LANs and the World Cup 2019–2026: with it, the rating before an event predicts the result better.',
+brkFormBoost:'In-form card',
+formTag:'in form',
+ccRarityform:'in form',
+formWhyWin:'won the final',
+formWhyElims:'most kills in the final’s top 10',
+formWhyLan:'LAN podium',
 brkNote:'Each stage scores the finish against the size of its field, then the stages are averaged by weight. The weight is how much that stage counts.',
 cardGalleryTitle:'Squad cards', cardNoStats:'Stats appear after the tournament.',
 realTitle:'Play-In — real data', realTitleLcq:'Last Chance Qualifier — real data',
@@ -12509,6 +12523,12 @@ brkFifaStat:'Stats de l’événement, 10 %',
 brkFifaFloor:'Titre : 80 % de son événement',
 brkFifaScale:'Après l’échelle de la région et la compression du haut',
 brkFifaNote:'Chaque part a été vérifiée sur les classements des finales FNCS, des LAN et de la World Cup 2019–2026 : avec elle, la note avant un tournoi prédit mieux le résultat.',
+brkFormBoost:'Carte en forme',
+formTag:'en forme',
+ccRarityform:'en forme',
+formWhyWin:'vainqueur de la finale',
+formWhyElims:'le plus de kills du top 10 de la finale',
+formWhyLan:'podium d’un LAN',
 brkNote:'Chaque étape note le résultat par rapport à la taille de son plateau, puis les étapes sont moyennées selon leur poids. Le poids, c’est ce que cette étape compte.',
 cardNoStats:'Les stats apparaissent après le tournoi.',
 realTitle:'Play-In — données réelles',
@@ -16072,6 +16092,12 @@ brkFifaStat:"Statistiche dell’evento, 10%",
 brkFifaFloor:"Titolo: 80% del proprio evento",
 brkFifaScale:"Dopo la scala della regione e la compressione del vertice",
 brkFifaNote:"Ogni quota è stata verificata sui piazzamenti nelle finali FNCS, nelle LAN e nella World Cup 2019–2026: con essa la valutazione prima di un torneo prevede meglio il risultato.",
+brkFormBoost:"Carta in forma",
+formTag:"in forma",
+ccRarityform:"in forma",
+formWhyWin:"campione della finale",
+formWhyElims:"più kill nella top 10 della finale",
+formWhyLan:"podio di una LAN",
 realTitle:"Play-In — dati reali",
 realTitleLcq:"Last Chance Qualifier — dati reali",
 realTitleOpens:"Open — dati reali",
@@ -18612,6 +18638,12 @@ brkFifaStat:"Estatísticas do evento, 10%",
 brkFifaFloor:"Título: 80% do próprio evento",
 brkFifaScale:"Depois da escala da região e da compressão do topo",
 brkFifaNote:"Cada parcela foi verificada nas colocações das finais da FNCS, das LANs e da World Cup 2019–2026: com ela, a nota antes de um torneio prevê melhor o resultado.",
+brkFormBoost:"Carta em forma",
+formTag:"em forma",
+ccRarityform:"em forma",
+formWhyWin:"campeão da final",
+formWhyElims:"mais abates no top 10 da final",
+formWhyLan:"pódio de uma LAN",
 realTitle:"Play-In — dados reais",
 realTitleLcq:"Last Chance Qualifier — dados reais",
 realTitleOpens:"Opens — dados reais",
@@ -20698,7 +20730,7 @@ const REGIONS=[
 ];
 const RARITY_COLOR={common:'var(--common)',uncommon:'var(--uncommon)',rare:'var(--rare)',epic:'var(--epic)',legendary:'var(--legendary)',mythic:'var(--mythic)',
                     // Контент-мейкер Про-Ама — см. --exotic и shownRarity.
-                    exotic:'var(--exotic)'};
+                    exotic:'var(--exotic)', form:'var(--form)'};
 const FLAG={
   'Австрия':'\u{1F1E6}\u{1F1F9}','Россия':'\u{1F1F7}\u{1F1FA}','США':'\u{1F1FA}\u{1F1F8}',
   'Дания':'\u{1F1E9}\u{1F1F0}','Канада':'\u{1F1E8}\u{1F1E6}','Великобритания':'\u{1F1EC}\u{1F1E7}',
@@ -20776,6 +20808,8 @@ function shownRarity(p){
      про и не ладдер, и рейтинг у него один на всех (67), так что обычная
      лестница по числу сказала бы про всех одно и то же слово. */
   if(p.creator) return 'exotic';
+  // Карточка формы носит свой вид при любом числе — см. ccFormCardsFor.
+  if(p.form) return 'form';
   // Colour follows the number actually printed on the card. For everyone in the
   // roster that is just their rating; for a career player it also carries what
   // country and age are worth, so a 92 reads legendary rather than sitting in
@@ -90843,11 +90877,39 @@ var RATING_FLOOR={};
         q.rating=fin; q._targetOvr=fin; q.rarity=rarityForRating(fin); q._attrs=null;
       });
     });
-    FIFA_RATING={cfg:CFG, setT:SET_T,
+    /* КАРТОЧКИ ФОРМЫ, как TOTW/TOTS в ФИФЕ: лучшие выступления в гранд-финалах FNCS, на ЛАНах и в финалах
+       World Cup — отдельная карточка того же человека с прибавкой. Личной игры на событии в выгрузках нет
+       (Tracker отдаёт командные строки), поэтому выступление — место команды и её килы:
+       чемпион гранд-финала +3, лучшая по килам за игру команда топ-10 финала +2;
+       ЛАН и World Cup: первое место +4, второе и третье +3. Прибавки — допущение, как «+2…+4» в ФИФЕ. */
+    const FORM={};
+    const giveForm=(q, f)=>{ if(!q) return; const r=Math.min(99, q.rating+f.boost); if(r<=q.rating) return;
+      const cur=FORM[q.id]; if(!cur || cur.boost<f.boost) FORM[q.id]=Object.assign({}, f, {boost:r-q.rating}); };
+    const cardIn=(k, set)=>list.find(q=>q.cardSet===set && keyOf(q)===k) || null;
+    const finals={};
+    list.forEach(q=>{ const g=gfOf(q); if(!g) return; (finals[q.cardSet+'|'+q.region]=finals[q.cardSet+'|'+q.region] || []).push({q, g}); });
+    Object.values(finals).forEach(rows=>{
+      if(new Set(rows.map(x=>x.g.rank)).size<10) return;
+      const ev=rows[0].q.gfEvent || String(rows[0].q.event||'').replace(/—.*?\(/, '— Grand Finals (');
+      rows.filter(x=>x.g.rank===1).forEach(x=>giveForm(x.q, {event:ev, place:1, boost:3, why:'win'}));
+      /* Одна команда: больше всех килов за игру среди топ-10 (кроме чемпиона), при равенстве — выше местом.
+         Пустые и нулевые строки килов не в счёт — иначе «лучшими» оказывалась вся десятка разом. */
+      const top10=rows.filter(x=>x.g.rank>1 && x.g.rank<=10 && x.g.avgElims>0 && x.g.matches)
+        .sort((a,b)=>b.g.avgElims-a.g.avgElims || a.g.rank-b.g.rank);
+      if(top10.length){ const r0=top10[0].g.rank;
+        top10.filter(x=>x.g.rank===r0).forEach(x=>giveForm(x.q, {event:ev, place:r0, boost:2, why:'elims'})); }
+    });
+    LANS.forEach(L_=>L_.rows.forEach(e=>{ if(e.rank>3) return;
+      e.keys.forEach(k=>giveForm(cardIn(k, L_.set), {event:L_.ev, place:e.rank, boost:e.rank===1 ? 4 : 3, why:'lan'})); }));
+    ['h1','h2'].forEach(set=>(WC2019_FIELD[set]||[]).slice(0, 3).forEach((names, i)=>names.forEach(n=>{
+      const k=who(n, 2019.57, null);
+      giveForm(k && cardIn(k, set), {event:set==='h1' ? 'Fortnite World Cup 2019 Solo — Finals (New York)' : 'Fortnite World Cup 2019 Duos — Finals (New York)', place:i+1, boost:i===0 ? 4 : 3, why:'lan'});
+    })));
+    FIFA_RATING={cfg:CFG, setT:SET_T, form:FORM,
       pure:Object.fromEntries(Object.entries(P).map(([k,p])=>[k, Object.fromEntries(Object.entries(p.years).map(([y,a])=>[y, Math.round(wmean(a)*10)/10]))])),
       finals:Object.fromEntries(Object.entries(P).map(([k,p])=>[k, p.finals.slice().sort((a,b)=>a-b)]))};
     if(typeof console!=='undefined' && console.debug)
-      console.debug('fifa year ratings — cards:', list.length, 'moved:', moved);
+      console.debug('fifa year ratings — cards:', list.length, 'moved:', moved, 'form cards:', Object.keys(FORM).length);
   })();
   /* ---- И тот же ledger наружу, для карьеры -------------------------------
    *
@@ -93882,7 +93944,10 @@ const CARD_SKIN={
      карточка креатора рисовалась серой: CARD_SKIN[rarity] не находил ключа и
      падал на common. Отчёт — «у карточки цвет не exotic».
      Цвет — тот же #70C7F8 из --exotic, снятый с фортнайтовской вики. */
-  exotic:   {bg:'linear-gradient(155deg,#cdefff 0%,#70c7f8 48%,#186a9e 100%)', glow:'#70c7f8', tag:'EXOTIC'}
+  exotic:   {bg:'linear-gradient(155deg,#cdefff 0%,#70c7f8 48%,#186a9e 100%)', glow:'#70c7f8', tag:'EXOTIC'},
+  /* Карточка формы — как TOTW/TOTS в ФИФЕ: чёрная, с золотой каймой и бликом, чтобы в паке её было видно
+     сразу и не путать с мифической (та золотая целиком). См. fifaYearPass, ccFormCardsFor. */
+  form:     {bg:'linear-gradient(118deg,rgba(255,214,102,0) 38%,rgba(255,214,102,.22) 46%,rgba(255,214,102,0) 54%),linear-gradient(155deg,#3b3f4a 0%,#15181f 46%,#000 100%)', glow:'#f6c343', tag:'IN FORM'}
 };
 
 // Real photos, keyed by handle, for players where we actually have the rights
@@ -96090,7 +96155,9 @@ function futCardHTML(p, opts){
   let evtName=bestEvent ? String(translateEventText(bestEvent)||'')
     .replace(/\s*\([^)]*участ[^)]*\)/i,'')
     .replace(/\s*\([^)]*participant[^)]*\)/i,'') : '';
-  const evt=bestPlace!=null ? `${evtName} · ${ccTopC(bestPlace)}` : evtName;
+  let evt=bestPlace!=null ? `${evtName} · ${ccTopC(bestPlace)}` : evtName;
+  // Карточка формы называет выступление, за которое она дана, — а не событие базовой карточки.
+  if(p.form) evt=`${String(L().formTag||'').toUpperCase()} · ${String(translateEventText(p.form.event)||p.form.event)} · ${ccTopC(p.form.place)}`;
   // The headline number is what the player actually is in a fight: their rating
   // plus what their connection and their age are worth. Rarity, colour and
   // division are still read from the rating alone, so choosing a country can
@@ -96117,7 +96184,9 @@ function futCardHTML(p, opts){
      возраст, путает это». Большое число остаётся суммой (решение 21.08), а
      откуда она — видно без наведения: на iPhone title не всплывает. */
   const sgn = v => (v<0 ? '−'+Math.abs(Math.round(v)) : '+'+Math.round(v));
-  const ovrSplit = extra
+  const ovrSplit = p.form && !extra
+    ? `<div class="fut-ovr-split" style="font-size:${wide?9:8}px;color:${skin.glow};" title="${esc(L().brkFormBoost)}">${p.form.base} +${p.form.boost}</div>`
+    : extra
     ? `<div class="fut-ovr-split" style="font-size:${wide?9:8}px;" title="${esc(L().cardOvrFull)}">${Math.round(a.ovr)} ${
         [p._pingEdge, p._ageEdge].filter(v=>Math.round(v||0)).map(sgn).join(' ')}</div>`
     : '';
@@ -96130,7 +96199,8 @@ function futCardHTML(p, opts){
   // read as their rarity, the same as a ranked card; the qualifier tag belongs
   // to cards that came out of a qualifier.
   const rated = p.tier==='ranked' || p.tier==='ladder';
-  const tag = rated ? (L()[rarityKey]||skin.tag).toUpperCase()
+  const tag = p.form ? (L().formTag||skin.tag).toUpperCase()
+            : rated ? (L()[rarityKey]||skin.tag).toUpperCase()
                     : (L().qualifierTag||'').toUpperCase();
   const portraitH = wide?104:82;
   /* Карьерная карточка — без строки ФНКС-турнира и с лупой, как в драфте.
@@ -97020,6 +97090,32 @@ function packWeightFor(p){
   const exp=c?c.exp:PACK_WEIGHT_EXPONENT, floor=c?c.floor:PACK_WEIGHT_FLOOR;
   return Math.pow(Math.max(1, attrsFor(p).ovr - floor), exp);
 }
+/* КАРТОЧКИ ФОРМЫ В ПАКЕ (как TOTW/TOTS в ФИФЕ). Тот же человек, что базовая карточка, с прибавкой за выступление
+   (FIFA_RATING.form, см. fifaYearPass): чемпион гранд-финала, лучшая по килам команда топ-10 финала, призёры ЛАНов
+   и World Cup. Вес в паке — обычный вес по рейтингу × FORM_PACK_RATE: подобрано под «спецкарточка примерно в каждом
+   десятом паке» (tools/check-fifa-rating.js меряет долю). Взятая карточка формы убирает человека из пула по нику,
+   как любая другая (pick), — базу после неё не предложат. */
+const FORM_PACK_RATE=0.2;
+const CC_FORM_CACHE=new WeakMap();
+function ccFormCardsFor(src){
+  const F=(typeof FIFA_RATING!=='undefined' && FIFA_RATING && FIFA_RATING.form) || null;
+  if(!F) return [];
+  const out=[];
+  src.forEach(p=>{
+    const f=p && p.id!=null ? F[p.id] : null;
+    if(!f || p.form) return;
+    let c=CC_FORM_CACHE.get(p);
+    if(!c || c.form.base!==p.rating){
+      const r=Math.min(99, p.rating+f.boost);
+      if(r<=p.rating) return;
+      c={...p, rating:r, _targetOvr:r, rarity:rarityForRating(r), _attrs:null,
+         form:{event:f.event, place:f.place, why:f.why, boost:r-p.rating, base:p.rating}};
+      CC_FORM_CACHE.set(p, c);
+    }
+    out.push(c);
+  });
+  return out;
+}
 function generatePack(){
   const remaining=squadSize-drafted.length;
   if(remaining<=0) return [];
@@ -97046,6 +97142,8 @@ function generatePack(){
   // You draft before anybody else, so the deal leans hard on rating — but across
   // the whole pool, not a protected slice of it, so a thin pack can still happen.
   let weighted = src.map(p=>({p, w: packWeightFor(p)}));
+  // Карточки формы (как TOTW) — в паке вместе с обычными, но редко; базу и её форму один пак не даёт (hKey ниже).
+  if(CARD_MODE) ccFormCardsFor(src).forEach(c=>weighted.push({p:c, w:packWeightFor(c)*FORM_PACK_RATE}));
   let picks=[];
 
   // No reserved slot for a real partner. One existed briefly, for a field that
@@ -110062,7 +110160,9 @@ function fifaBreakdownHTML(p, glow){
               row(L_.brkFifaExp, f.exp ? '+'+(f.exp*(C.expPts||1.5)).toFixed(1) : '0')];
   if(f.stat!=null) rows.push(row(L_.brkFifaStat, f.stat.toFixed(1)));
   if(f.floor!=null) rows.push(row(L_.brkFifaFloor, f.floor.toFixed(1)));
-  rows.push(row(L_.brkFifaScale, f.blended.toFixed(1)+' → '+p.rating));
+  rows.push(row(L_.brkFifaScale, f.blended.toFixed(1)+' → '+(p.form ? p.form.base : p.rating)));
+  if(p.form){ const w=String(p.form.why||''); const why=L_['formWhy'+w.charAt(0).toUpperCase()+w.slice(1)] || '';
+    rows.push(row(L_.brkFormBoost+(why ? ' · '+why : ''), '+'+p.form.boost+' = '+p.rating)); }
   return `<div class="fut-foot" style="font-size:9px;margin:12px 0 6px;color:${glow};">${L_.brkFifaTitle}</div>${rows.join('')}
     <div class="region-note" style="margin-top:6px;font-size:9px;">${L_.brkFifaNote}</div>`;
 }
@@ -113376,7 +113476,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='af4e03b0';
+const CC_BUILD='8962c32f';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
