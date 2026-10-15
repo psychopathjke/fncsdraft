@@ -3833,3 +3833,4 @@ hmBoardSub:'Las carreras de los jugadores del sitio, por premios.', hmBoardMore:
 ccNewsOwnCup:(who,n,w,f)=>'Cup de '+who+', bolsa de $'+n+': gana '+w+'. +'+f+' seguidores'});
 Object.assign(I18N.es, {hmRealTitle:'Resultados 2026', hmRealSub:'Los resultados reales de los torneos FNCS de este año. Toca uno para ver la tabla completa.', hmRealOpen:'Tabla', hmRealTeam:'Equipo', hmRealReg:'Región', hmRealPts:'Puntos', hmRealPrize:'Premio', hmRealClose:'Cerrar'});
 Object.assign(I18N.es, {hmRealAll:n=>'Tabla completa ('+n+')', hmScenePrize:(r,a,b)=>r+': 1.º $'+a+', bolsa $'+b});
+Object.assign(I18N.es, {hmEarnTitle:'Ganancias 2026', hmEarnSub:'Lo que ganaron los jugadores en FNCS este año: finales de Majors, Summit, Reload Championship, Global Championship. Toca un jugador para ver dónde.', hmEarnEvents:n=>n+' torneo'+(n===1?'':'s'), hmEarnEvent:'Torneo', hmEarnNote:'La parte de un jugador es la mitad del premio del dúo. Clasificatorias y cups no cuentan.'});

@@ -7172,6 +7172,19 @@
   .hr-top10 td:last-child{color:#ffdd00;font-weight:800;}
   .hr-top10 em{font-style:normal;color:#9fe1ff;font-size:11px;}
   .hs-money{display:block;margin:2px 0 0;font-size:12px;font-weight:800;color:#ffe86b;line-height:1.4;}
+  /* Призовые 2026 у игроков. */
+  .he-list{display:flex;flex-direction:column;}
+  .he-row{display:grid;grid-template-columns:26px minmax(0,1fr) auto;align-items:center;gap:8px;width:100%;padding:7px 2px;cursor:pointer;
+    text-align:left;font:inherit;color:inherit;background:none;border:0;border-top:1px solid rgba(255,255,255,.08);}
+  .he-row:first-child{border-top:0;}
+  .he-row:hover b,.he-row:focus-visible b{color:#ffdd00;}
+  .he-row:focus-visible{outline:2px solid #ffdd00;outline-offset:1px;}
+  .he-row>i{font-style:normal;font-family:var(--font-display);font-weight:700;color:#8ea6d6;}
+  .he-row:nth-child(-n+3)>i{color:#ffdd00;}
+  .he-row>b{color:#fff;font-weight:700;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .he-row>b em{font-style:normal;color:#9fe1ff;font-size:11px;font-weight:700;}
+  .he-row>b small{color:#8ea6d6;font-weight:600;font-size:11px;margin-left:6px;}
+  .he-row>span{color:#ffdd00;font-weight:800;font-variant-numeric:tabular-nums;font-size:13.5px;}
   /* Вкладки живого блока на главной (Результаты 2026 / Сцена сейчас / Игроки сайта). */
   .home-tabs{margin-top:16px;}
   #homeLive .hl-pane{display:none;}
@@ -20287,7 +20300,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'39fd688f', es:'446fbe5f'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'3322c8db', es:'0918615c'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20566,6 +20579,12 @@ Object.assign(I18N.en, {hmRealAll:n=>'Full table ('+n+')', hmScenePrize:(r,a,b)=
 Object.assign(I18N.fr, {hmRealAll:n=>'Tableau complet ('+n+')', hmScenePrize:(r,a,b)=>r+' : 1er $'+a+', cagnotte $'+b});
 Object.assign(I18N.it, {hmRealAll:n=>'Classifica completa ('+n+')', hmScenePrize:(r,a,b)=>r+': 1° $'+a+', montepremi $'+b});
 Object.assign(I18N.pt, {hmRealAll:n=>'Tabela completa ('+n+')', hmScenePrize:(r,a,b)=>r+': 1º $'+a+', premiação $'+b});
+/* Призовые 2026 у игроков. */
+Object.assign(I18N.ru, {hmEarnTitle:'Призовые 2026', hmEarnSub:'Сколько игроки заработали на FNCS в этом году: финалы Мейджоров, Саммит, Reload Championship, Мировой чемпионат. Нажми на игрока — где заработал.', hmEarnEvents:n=>n+' '+(n%10===1&&n%100!==11?'турнир':(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20))?'турнира':'турниров'), hmEarnEvent:'Турнир', hmEarnNote:'Доля игрока — половина призовых дуо. Квалификации и капы сюда не входят.'});
+Object.assign(I18N.en, {hmEarnTitle:'2026 earnings', hmEarnSub:'What players earned at FNCS this year: Major finals, Summit, Reload Championship, Global Championship. Tap a player to see where.', hmEarnEvents:n=>n+' event'+(n===1?'':'s'), hmEarnEvent:'Event', hmEarnNote:'A player’s share is half of the duo’s prize. Qualifiers and cups are not counted.'});
+Object.assign(I18N.fr, {hmEarnTitle:'Gains 2026', hmEarnSub:'Ce que les joueurs ont gagné en FNCS cette année : finales des Majors, Summit, Reload Championship, Global Championship. Touche un joueur pour le détail.', hmEarnEvents:n=>n+' tournoi'+(n===1?'':'s'), hmEarnEvent:'Tournoi', hmEarnNote:'La part d’un joueur est la moitié du gain du duo. Qualifs et cups non comptées.'});
+Object.assign(I18N.it, {hmEarnTitle:'Guadagni 2026', hmEarnSub:'Quanto hanno guadagnato i giocatori in FNCS quest’anno: finali dei Major, Summit, Reload Championship, Global Championship. Tocca un giocatore per il dettaglio.', hmEarnEvents:n=>n+' torne'+(n===1?'o':'i'), hmEarnEvent:'Torneo', hmEarnNote:'La quota del giocatore è metà del premio del duo. Qualificazioni e cup escluse.'});
+Object.assign(I18N.pt, {hmEarnTitle:'Ganhos 2026', hmEarnSub:'Quanto os jogadores ganharam no FNCS este ano: finais dos Majors, Summit, Reload Championship, Global Championship. Toque num jogador para ver onde.', hmEarnEvents:n=>n+' torneio'+(n===1?'':'s'), hmEarnEvent:'Torneio', hmEarnNote:'A parte do jogador é metade do prêmio da dupla. Classificatórias e cups não contam.'});
 /* Главная 15.10: «Продолжить», «С другом», «Сцена сейчас», «Игроки сайта». Остальные языки — английские до доперевода. */
 Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Твои сохранения — с того дня, где остановился.', hmPlayOn:'Играть',
   hmSlotCareer:'Карьера', hmSlotMgr:'Менеджер', hmSlotLine:(s,d,e)=>'Сезон '+s+' · дивизион '+d+' · '+e, hmMgrLine:(s,c)=>'Сезон '+s+' · касса '+c,
@@ -114008,7 +114027,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='f74f5ed5';
+const CC_BUILD='1aba544d';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159120,6 +159139,7 @@ function homeRealEvents(){
   return ev.filter(e=>e.when && e.when.to<today);
 }
 function homeRealDraw(){
+  if(HOME_EARN_MODE){ homeEarnDraw(); return; }
   const box=document.getElementById('homeReal'); if(!box) return;
   const T=L(), list=homeRealEvents();
   if(!list.length){ box.hidden=true; return; }
@@ -159143,6 +159163,65 @@ function homeRealDraw(){
     '<table class="hr-table hr-top10"><thead>'+th+'</thead><tbody>'+body+'</tbody></table>'+
     (all.length>10 ? '<button class="home-more" type="button" onclick="homeRealOpen(\''+e.id+'\', \''+reg+'\')">'+esc(T.hmRealAll(all.length))+'</button>' : '');
   box.hidden=false;
+}
+/* ПРИЗОВЫЕ 2026 У ИГРОКОВ (15.10: «мб вместо результатов призовые за год у игроков»). Считается из тех же таблиц, что
+   «Результаты 2026»: финалы Мейджоров 1 и 2 во всех регионах, Саммит, Reload Championship, Мировой чемпионат — у каждой
+   строки там место и призовые дуо. Игроку — половина. Квалификации, Reload Elite Series и капы в данных без призовых по
+   игрокам и сюда не входят — подпись это говорит. Один ник в разных регистрах (shxrk/Shxrk) — один игрок. */
+const HOME_EARN_MODE=true;
+let HOME_EARN_ALL=false, HOME_EARN_CACHE=null;
+function homeEarnings(){
+  if(HOME_EARN_CACHE && HOME_EARN_CACHE.lang===LANG) return HOME_EARN_CACHE.list;
+  const by={};
+  homeRealEvents().forEach(e=>{
+    (e.regs ? HOME_REAL_REGS : [null]).forEach(reg=>{
+      (e.regs ? e.rows(reg) : e.rows()).forEach(r=>{
+        if(!r.prize) return;
+        const share=r.prize/2;
+        (r.names||[]).forEach(h=>{
+          const k=String(h).toLowerCase();
+          const x=by[k]=by[k]||{k, h, reg:r.reg||reg||'', sum:0, ev:[]};
+          x.sum+=share;
+          x.ev.push({name:e.name.split(' · ')[0]+(reg ? ' · '+reg : ''), p:r.p, prize:share});
+        });
+      });
+    });
+  });
+  const list=Object.values(by).sort((a,b)=>b.sum-a.sum || a.h.localeCompare(b.h));
+  HOME_EARN_CACHE={lang:LANG, list};
+  return list;
+}
+function homeEarnDraw(){
+  const box=document.getElementById('homeReal'); if(!box) return;
+  const T=L(), list=homeEarnings();
+  if(!list.length){ box.hidden=true; return; }
+  const n=HOME_EARN_ALL ? 50 : 10;
+  const rows=list.slice(0, n).map((x,i)=>'<button class="he-row" type="button" onclick="homeEarnOpen(\''+esc(x.k).replace(/'/g, '')+'\')">'+
+    '<i>'+(i+1)+'</i><b>'+esc(x.h)+(x.reg ? ' <em>'+esc(x.reg)+'</em>' : '')+'<small>'+esc(T.hmEarnEvents(x.ev.length))+'</small></b>'+
+    '<span>$'+ccNum(Math.round(x.sum))+'</span></button>').join('');
+  box.innerHTML='<h2 class="home-h">'+esc(T.hmEarnTitle)+'</h2><p class="home-sub">'+esc(T.hmEarnSub)+'</p>'+
+    '<div class="he-list">'+rows+'</div>'+
+    (list.length>10 ? '<button class="home-more" type="button" onclick="HOME_EARN_ALL=!HOME_EARN_ALL; homeEarnDraw(); try{ homeLiveTabs(); }catch(e){}">'+
+      esc(HOME_EARN_ALL ? T.hmBoardLess : T.hmBoardMore(Math.min(50, list.length)))+'</button>' : '');
+  box.hidden=false;
+}
+// Где игрок заработал: турниры, места, его доля.
+function homeEarnOpen(k){
+  const x=homeEarnings().find(p=>p.k===k); if(!x) return;
+  const T=L();
+  let m=document.getElementById('homeRealModal');
+  if(!m){
+    m=document.createElement('div'); m.id='homeRealModal'; m.className='hr-modal';
+    m.addEventListener('click', ev=>{ if(ev.target===m) homeRealClose(); });
+    document.addEventListener('keydown', ev=>{ if(ev.key==='Escape' && document.getElementById('homeRealModal')) homeRealClose(); });
+    document.body.appendChild(m);
+  }
+  const body=x.ev.map(e=>'<tr><td>'+e.p+'</td><td>'+esc(e.name)+'</td><td>$'+ccNum(Math.round(e.prize))+'</td></tr>').join('');
+  m.innerHTML='<div class="hr-box" role="dialog" aria-modal="true" aria-label="'+esc(x.h)+'">'+
+    '<div class="hr-top"><b>'+esc(x.h)+' · $'+ccNum(Math.round(x.sum))+'</b><button type="button" class="hr-x" onclick="homeRealClose()" aria-label="'+esc(T.hmRealClose)+'">✕</button></div>'+
+    '<p class="home-sub" style="margin:0">'+esc(T.hmEarnNote)+'</p>'+
+    '<div class="hr-wrap"><table class="hr-table"><thead><tr><th>#</th><th>'+esc(T.hmEarnEvent)+'</th><th>'+esc(T.hmRealPrize)+'</th></tr></thead><tbody>'+body+'</tbody></table></div></div>';
+  document.body.classList.add('hr-lock');
 }
 let HOME_REAL_SEL=null;
 function homeRealSel(id){ HOME_REAL_SEL=id; homeRealDraw(); try{ homeLiveTabs(); }catch(e){} }
@@ -159179,7 +159258,7 @@ function homeRealClose(){
 /* Вкладки живого блока: показаны только те, у которых есть что показать; выбранная помнится в браузере. */
 function homeLiveTabs(k){
   const box=document.getElementById('homeLive'), bar=document.getElementById('homeLiveTabs'); if(!box || !bar) return;
-  const T=L(), panes=[['real', 'homeReal', T.hmRealTitle], ['scene', 'homeScene', T.hmSceneTitle], ['board', 'homeBoard', T.lbTab]]
+  const T=L(), panes=[['real', 'homeReal', HOME_EARN_MODE ? T.hmEarnTitle : T.hmRealTitle], ['scene', 'homeScene', T.hmSceneTitle], ['board', 'homeBoard', T.lbTab]]
     .filter(p=>{ const e=document.getElementById(p[1]); return e && !e.hidden; });
   box.hidden=!panes.length; if(!panes.length) return;
   if(k){ try{ localStorage.setItem('fd_home_tab', k); }catch(e){} }
