@@ -20197,7 +20197,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'32fa77d7', es:'5cdebcb1'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'25cac415', es:'8f390c2a'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20373,6 +20373,97 @@ Object.assign(I18N.en, {pdQual:(i,k)=>'Qualifier · round '+i+' of '+k, pdWeekFi
 Object.assign(I18N.fr, {pdQual:(i,k)=>'Qualificatif · manche '+i+' sur '+k, pdWeekFinal:'Finale de la semaine', pdHeat:h=>'Heat '+h, pdSemis:'Demi-finales', pdFinal:'Grande finale'});
 Object.assign(I18N.it, {pdQual:(i,k)=>'Qualificazione · round '+i+' di '+k, pdWeekFinal:'Finale della settimana', pdHeat:h=>'Heat '+h, pdSemis:'Semifinali', pdFinal:'Gran finale'});
 Object.assign(I18N.pt, {pdQual:(i,k)=>'Classificatória · rodada '+i+' de '+k, pdWeekFinal:'Final da semana', pdHeat:h=>'Heat '+h, pdSemis:'Semifinais', pdFinal:'Grande final'});
+/* Магазин и главная 15.10 — французский, итальянский, португальский (немецкий и испанский — в i18n-de.js / i18n-es.js). */
+Object.assign(I18N.fr, {ccMerchTitle:'Ton propre merch', ccMerchHint:'Le lancement se paie une fois ; ensuite, chaque 1er du mois, une part de ton public achète et de nouveaux abonnés arrivent. Rentable sur des années.',
+ccMerch_capsule:'Collection capsule', ccMerch_line:'Ligne de vêtements', ccMerch_brand:'Ta propre marque',
+ccMerchRate:(p,c)=>p+'% des abonnés en $, jusqu’à $'+c+'/mois', ccMerchAsk:(n,c)=>'Lancer « '+n+' » pour $'+c+' ?',
+ccMerchMonth:'Par mois en ce moment', ccMerchEarned:'Gagné avec le merch', ccNewsMerch:n=>'Merch lancé : '+n,
+ccCharityTitle:'Caritatif', ccCharityHint:'L’argent va à l’association ; toi, tu gagnes le respect de la scène et des abonnés. Une fois par mois maximum.',
+ccCharityGive:n=>'Donner '+n, ccCharityAsk:n=>'Donner $'+n+' à une association ?', ccCharityYes:n=>'Donner · $'+n, ccCharityTotal:n=>'Dons ('+n+')',
+ccNewsCharity:(n,f)=>'$'+n+' donnés à une association. +'+f+' abonnés',
+ccLuxTitle:'Luxe', ccLuxHint:'N’apporte rien à ton jeu — juste une étagère sur ton profil et la ligne « Dépensé » dans Joueurs du site.',
+ccLuxNote:'va sur l’étagère de ton profil', ccLux_watch:'Montre', ccLux_hyper:'Hypercar', ccLux_yacht:'Yacht', ccLux_jet:'Jet privé',
+ccLuxAsk:(n,c)=>'Acheter « '+n+' » pour $'+c+' ? Aucun bonus de niveau — juste une étagère sur ton profil.', ccNewsLux:n=>'Nouvel achat : '+n,
+ccCollTitle:'Collection', ccCollSpent:'Dépensé en gros achats', lbByEarn:'Par gains', lbBySpent:'Par dépenses', lbSpentCol:'Dépensé',
+ccSecGear:'Setup', ccSecHome:'Logement', ccSecFame:'Notoriété', ccSecLux:'Luxe', ccSecClub:'Club',
+ccSecHint_gear:'Le matériel fait monter tes compétences et l’entraînement, les chaises et les pièces ajoutent de l’énergie. Un nouveau palier remplace l’ancien.',
+ccSecHint_home:'Un logement à toi supprime le loyer et ajoute de l’énergie. Le déménagement dans un autre pays ou une autre région est ici aussi.',
+ccSecHint_fame:'Ta propre cup, le merch et le caritatif apportent des abonnés. Le merch rapporte aussi chaque mois.',
+ccSecHint_lux:'La voiture garde ta confiance pendant les mauvaises semaines. Le reste n’ajoute aucun niveau — juste une étagère sur ton profil.',
+ccSecHint_club:'Ta propre organisation : roster, caisse et sponsors. Cher, mais le club est à toi.',
+ccShopRooms:'Pièces et déplacements', ccShopNow:'Actuel', ccShopMaxed:'Au max',
+ccSlot_mouse:'Souris', ccSlot_keyboard:'Clavier', ccSlot_headset:'Casque', ccSlot_monitor:'Écran', ccSlot_pc:'PC', ccSlot_chair:'Chaise', ccSlot_stream:'Stream', ccSlot_car:'Voiture',
+ccShopBest:'Meilleur achat maintenant', ccShopShort:n=>'Il manque '+n, ccShopBought:n=>'Acheté : '+n,
+ccDealsTitle:'Offres du jour', ccDealsHint:'Trois articles en promo. Demain, trois autres.',
+hmContinue:'Continuer', hmContinueSub:'Tes sauvegardes, au jour où tu t’es arrêté.', hmPlayOn:'Jouer', hmSlotCareer:'Carrière', hmSlotMgr:'Manager',
+hmSlotLine:(s,d,e)=>'Saison '+s+' · division '+d+' · '+e, hmMgrLine:(s,c)=>'Saison '+s+' · caisse '+c,
+hmFriendsTitle:'Avec un ami', hmFriendsSub:'Trois façons de ne pas jouer seul.',
+hmFriendDuo:'Une carrière à deux : vous êtes dans la même équipe et les jours avancent ensemble.', hmFriendCode:'Ton ami a déjà créé une équipe ou une course ? Entre son code.',
+hmFriendRace:'Chacun mène sa propre carrière, et un lobby commun montre qui est devant.',
+hmSceneTitle:'La scène en ce moment', hmSceneSub:'Le vrai calendrier FNCS 2026.', hmSceneLive:'en cours', hmSceneTomorrow:'demain',
+hmSceneIn:n=>'dans '+n+' jour'+(n===1 ? '' : 's'), hmSceneDone:'La saison FNCS 2026 est terminée.',
+hmBoardSub:'Les carrières des joueurs du site, par gains.', hmBoardMore:n=>'Afficher '+n, hmBoardLess:'Réduire', hmHistSub:'Drafts passés, records et récompenses.',
+ccNewsOwnCup:(who,n,w,f)=>'Cup '+who+', $'+n+' de cashprize : victoire de '+w+'. +'+f+' abonnés'});
+Object.assign(I18N.it, {ccMerchTitle:'Il tuo merch', ccMerchHint:'Il lancio si paga una volta; poi, il primo di ogni mese, una parte del tuo pubblico compra e arrivano nuovi follower. Si ripaga in anni.',
+ccMerch_capsule:'Capsule', ccMerch_line:'Linea di abbigliamento', ccMerch_brand:'Il tuo brand',
+ccMerchRate:(p,c)=>p+'% dei follower in $, fino a $'+c+'/mese', ccMerchAsk:(n,c)=>'Lanciare “'+n+'” per $'+c+'?',
+ccMerchMonth:'Al mese adesso', ccMerchEarned:'Guadagnato col merch', ccNewsMerch:n=>'Merch lanciato: '+n,
+ccCharityTitle:'Beneficenza', ccCharityHint:'I soldi vanno in beneficenza; tu ottieni il rispetto della scena e follower. Al massimo una volta al mese.',
+ccCharityGive:n=>'Dona '+n, ccCharityAsk:n=>'Donare $'+n+' in beneficenza?', ccCharityYes:n=>'Dona · $'+n, ccCharityTotal:n=>'Donazioni ('+n+')',
+ccNewsCharity:(n,f)=>'Donati $'+n+' in beneficenza. +'+f+' follower',
+ccLuxTitle:'Lusso', ccLuxHint:'Non aggiunge nulla al tuo gioco — solo uno scaffale sul profilo e la riga “Speso” in Giocatori del sito.',
+ccLuxNote:'va sullo scaffale del profilo', ccLux_watch:'Orologio', ccLux_hyper:'Hypercar', ccLux_yacht:'Yacht', ccLux_jet:'Jet privato',
+ccLuxAsk:(n,c)=>'Comprare “'+n+'” per $'+c+'? Non dà forza — solo uno scaffale sul profilo.', ccNewsLux:n=>'Nuovo acquisto: '+n,
+ccCollTitle:'Collezione', ccCollSpent:'Speso in grandi acquisti', lbByEarn:'Per premi', lbBySpent:'Per spese', lbSpentCol:'Speso',
+ccSecGear:'Setup', ccSecHome:'Casa', ccSecFame:'Nome', ccSecLux:'Lusso', ccSecClub:'Club',
+ccSecHint_gear:'Le periferiche alzano abilità e allenamento, sedie e stanze aggiungono energia. Un nuovo livello sostituisce il vecchio.',
+ccSecHint_home:'Una casa tua elimina l’affitto e aggiunge energia. Qui c’è anche il trasloco in un altro paese o regione.',
+ccSecHint_fame:'La tua cup, il merch e la beneficenza portano follower. Il merch paga anche ogni mese.',
+ccSecHint_lux:'L’auto tiene alta la fiducia nelle settimane storte. Il resto non dà forza — solo uno scaffale sul profilo.',
+ccSecHint_club:'La tua organizzazione: roster, cassa e sponsor. Costa, ma il club è tuo.',
+ccShopRooms:'Stanze e trasferte', ccShopNow:'Ora', ccShopMaxed:'Al massimo',
+ccSlot_mouse:'Mouse', ccSlot_keyboard:'Tastiera', ccSlot_headset:'Cuffie', ccSlot_monitor:'Monitor', ccSlot_pc:'PC', ccSlot_chair:'Sedia', ccSlot_stream:'Stream', ccSlot_car:'Auto',
+ccShopBest:'Miglior acquisto adesso', ccShopShort:n=>'Mancano '+n, ccShopBought:n=>'Comprato: '+n,
+ccDealsTitle:'Offerte del giorno', ccDealsHint:'Tre articoli in sconto. Domani, altri tre.',
+hmContinue:'Continua', hmContinueSub:'I tuoi salvataggi, dal giorno in cui ti sei fermato.', hmPlayOn:'Gioca', hmSlotCareer:'Carriera', hmSlotMgr:'Manager',
+hmSlotLine:(s,d,e)=>'Stagione '+s+' · divisione '+d+' · '+e, hmMgrLine:(s,c)=>'Stagione '+s+' · cassa '+c,
+hmFriendsTitle:'Con un amico', hmFriendsSub:'Tre modi per non giocare da solo.',
+hmFriendDuo:'Una carriera in due: siete nella stessa squadra e i giorni vanno avanti insieme.', hmFriendCode:'Il tuo amico ha già creato una squadra o una gara? Inserisci il suo codice.',
+hmFriendRace:'Ognuno porta avanti la sua carriera, e una lobby comune mostra chi è davanti.',
+hmSceneTitle:'La scena adesso', hmSceneSub:'Il vero calendario FNCS 2026.', hmSceneLive:'in corso', hmSceneTomorrow:'domani',
+hmSceneIn:n=>'tra '+n+' giorn'+(n===1 ? 'o' : 'i'), hmSceneDone:'La stagione FNCS 2026 è finita.',
+hmBoardSub:'Le carriere dei giocatori del sito, per premi.', hmBoardMore:n=>'Mostra '+n, hmBoardLess:'Riduci', hmHistSub:'Draft passati, record e premi.',
+ccNewsOwnCup:(who,n,w,f)=>'Cup di '+who+', montepremi $'+n+': vince '+w+'. +'+f+' follower'});
+Object.assign(I18N.pt, {ccMerchTitle:'Seu próprio merch', ccMerchHint:'O lançamento se paga uma vez; depois, todo dia 1º, uma parte do seu público compra e chegam novos seguidores. Se paga em anos.',
+ccMerch_capsule:'Coleção cápsula', ccMerch_line:'Linha de roupas', ccMerch_brand:'Sua própria marca',
+ccMerchRate:(p,c)=>p+'% dos seguidores em $, até $'+c+'/mês', ccMerchAsk:(n,c)=>'Lançar “'+n+'” por $'+c+'?',
+ccMerchMonth:'Por mês agora', ccMerchEarned:'Ganho com merch', ccNewsMerch:n=>'Merch lançado: '+n,
+ccCharityTitle:'Caridade', ccCharityHint:'O dinheiro vai para a caridade; você ganha o respeito da cena e seguidores. No máximo uma vez por mês.',
+ccCharityGive:n=>'Doar '+n, ccCharityAsk:n=>'Doar $'+n+' para a caridade?', ccCharityYes:n=>'Doar · $'+n, ccCharityTotal:n=>'Doações ('+n+')',
+ccNewsCharity:(n,f)=>'Doou $'+n+' para a caridade. +'+f+' seguidores',
+ccLuxTitle:'Luxo', ccLuxHint:'Não acrescenta nada ao seu jogo — só uma prateleira no perfil e a linha “Gasto” em Jogadores do site.',
+ccLuxNote:'vai para a prateleira do perfil', ccLux_watch:'Relógio', ccLux_hyper:'Hipercarro', ccLux_yacht:'Iate', ccLux_jet:'Jato particular',
+ccLuxAsk:(n,c)=>'Comprar “'+n+'” por $'+c+'? Não dá força — só uma prateleira no perfil.', ccNewsLux:n=>'Nova compra: '+n,
+ccCollTitle:'Coleção', ccCollSpent:'Gasto em compras grandes', lbByEarn:'Por prêmios', lbBySpent:'Por gastos', lbSpentCol:'Gasto',
+ccSecGear:'Setup', ccSecHome:'Moradia', ccSecFame:'Nome', ccSecLux:'Luxo', ccSecClub:'Clube',
+ccSecHint_gear:'Periféricos aumentam habilidades e treino, cadeiras e cômodos dão energia. Um novo nível substitui o antigo.',
+ccSecHint_home:'Uma casa sua acaba com o aluguel e dá energia. A mudança para outro país ou região também fica aqui.',
+ccSecHint_fame:'Sua própria cup, o merch e a caridade trazem seguidores. O merch também paga todo mês.',
+ccSecHint_lux:'O carro segura sua confiança nas semanas ruins. O resto não dá força — só uma prateleira no perfil.',
+ccSecHint_club:'Sua própria organização: elenco, caixa e patrocinadores. Caro, mas o clube é seu.',
+ccShopRooms:'Cômodos e viagens', ccShopNow:'Agora', ccShopMaxed:'No máximo',
+ccSlot_mouse:'Mouse', ccSlot_keyboard:'Teclado', ccSlot_headset:'Headset', ccSlot_monitor:'Monitor', ccSlot_pc:'PC', ccSlot_chair:'Cadeira', ccSlot_stream:'Stream', ccSlot_car:'Carro',
+ccShopBest:'Melhor compra agora', ccShopShort:n=>'Faltam '+n, ccShopBought:n=>'Comprado: '+n,
+ccDealsTitle:'Ofertas do dia', ccDealsHint:'Três itens em promoção. Amanhã, outros três.',
+hmContinue:'Continuar', hmContinueSub:'Seus saves, do dia em que você parou.', hmPlayOn:'Jogar', hmSlotCareer:'Carreira', hmSlotMgr:'Manager',
+hmSlotLine:(s,d,e)=>'Temporada '+s+' · divisão '+d+' · '+e, hmMgrLine:(s,c)=>'Temporada '+s+' · caixa '+c,
+hmFriendsTitle:'Com um amigo', hmFriendsSub:'Três jeitos de não jogar sozinho.',
+hmFriendDuo:'Uma carreira para dois: vocês estão no mesmo time e os dias andam juntos.', hmFriendCode:'Seu amigo já criou um time ou uma corrida? Digite o código dele.',
+hmFriendRace:'Cada um leva a própria carreira, e um lobby comum mostra quem está na frente.',
+hmSceneTitle:'A cena agora', hmSceneSub:'O calendário real do FNCS 2026.', hmSceneLive:'ao vivo', hmSceneTomorrow:'amanhã',
+hmSceneIn:n=>'em '+n+' dia'+(n===1 ? '' : 's'), hmSceneDone:'A temporada FNCS 2026 terminou.',
+hmBoardSub:'As carreiras dos jogadores do site, por prêmios.', hmBoardMore:n=>'Mostrar '+n, hmBoardLess:'Mostrar menos', hmHistSub:'Drafts anteriores, recordes e prêmios.',
+ccNewsOwnCup:(who,n,w,f)=>'Cup de '+who+', premiação de $'+n+': '+w+' venceu. +'+f+' seguidores'});
 /* Главная 15.10: «Продолжить», «С другом», «Сцена сейчас», «Игроки сайта». Остальные языки — английские до доперевода. */
 Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Твои сохранения — с того дня, где остановился.', hmPlayOn:'Играть',
   hmSlotCareer:'Карьера', hmSlotMgr:'Менеджер', hmSlotLine:(s,d,e)=>'Сезон '+s+' · дивизион '+d+' · '+e, hmMgrLine:(s,c)=>'Сезон '+s+' · касса '+c,
@@ -113813,7 +113904,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4cfa886d';
+const CC_BUILD='c37744b8';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
