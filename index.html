@@ -20310,7 +20310,7 @@ const CC_LANGS=['en','ru','fr','it','pt','de','es'];
    Аргентина 50 тыс.). Словари — отдельными файлами i18n-de.js / i18n-es.js (tools/build-i18n.js): app.js упирается в 9 МБ,
    а словарь нужен только тем, кто выбрал язык. Пока файл не пришёл, L() показывает английский (он и так под каждым языком). */
 const CC_LANG_FILES={de:1, es:1};
-let CC_I18N_V={de:'8315d372', es:'f25b72e4'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
+let CC_I18N_V={de:'2487add7', es:'e3f02cac'};   // ==== CC_I18N_V (tools/build-i18n.js) ====
 const CC_LANG_WAIT={};
 function ccLangLoad(lang, done){
   if(!CC_LANG_FILES[lang] || (typeof I18N!=='undefined' && I18N[lang])){ done && done(); return; }
@@ -20607,6 +20607,12 @@ Object.assign(I18N.en, {hmSceneSub2:'Upcoming prize events: FNCS from the calend
 Object.assign(I18N.fr, {hmSceneSub2:'Prochains tournois avec cashprize : la FNCS d’après le calendrier, le reste d’après Liquipedia.', hmSceneOther:'Autres tournois avec cashprize'});
 Object.assign(I18N.it, {hmSceneSub2:'Prossimi tornei a premi: FNCS dal calendario, il resto da Liquipedia.', hmSceneOther:'Altri tornei a premi'});
 Object.assign(I18N.pt, {hmSceneSub2:'Próximos torneios com premiação: FNCS pelo calendário, o resto pela Liquipedia.', hmSceneOther:'Outros torneios com premiação'});
+/* Расписание — только Epic (16.10). */
+Object.assign(I18N.ru, {hmSceneSub2:'Ближайшие турниры Epic с призовыми: FNCS и капы.', hmSceneOther:'Капы Epic'});
+Object.assign(I18N.en, {hmSceneSub2:'Upcoming Epic prize events: FNCS and cups.', hmSceneOther:'Epic cups'});
+Object.assign(I18N.fr, {hmSceneSub2:'Prochains tournois Epic avec cashprize : FNCS et cups.', hmSceneOther:'Cups Epic'});
+Object.assign(I18N.it, {hmSceneSub2:'Prossimi tornei Epic a premi: FNCS e cup.', hmSceneOther:'Cup Epic'});
+Object.assign(I18N.pt, {hmSceneSub2:'Próximos torneios da Epic com premiação: FNCS e cups.', hmSceneOther:'Cups da Epic'});
 /* Главная 15.10: «Продолжить», «С другом», «Сцена сейчас», «Игроки сайта». Остальные языки — английские до доперевода. */
 Object.assign(I18N.ru, {hmContinue:'Продолжить', hmContinueSub:'Твои сохранения — с того дня, где остановился.', hmPlayOn:'Играть',
   hmSlotCareer:'Карьера', hmSlotMgr:'Менеджер', hmSlotLine:(s,d,e)=>'Сезон '+s+' · дивизион '+d+' · '+e, hmMgrLine:(s,c)=>'Сезон '+s+' · касса '+c,
@@ -114049,7 +114055,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='a30ce37d';
+const CC_BUILD='95c0c1a7';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159107,7 +159113,9 @@ function homeSceneDraw(){
       '<b class="hs-t">'+esc(title)+'</b>'+money.map(m=>'<span class="hs-money">💰 '+esc(m)+'</span>').join('')+'<ul class="hs-st">'+stages+'</ul></div></div>';
   }).join('');
   // Другие турниры с призовыми — Liquipedia; только те, что ещё не кончились.
-  const other=HOME_SCHED_LQ.filter(x=>x.t>=today && !/^FNCS Solos/.test(x.n)).map(x=>{
+  // Только турниры Epic (16.10: «пусть будут турниры от Epic только»): капы Epic и FNCS; сторонние лиги, лестницы и кубки — нет.
+  const EPIC=/Cash Cup|Victory Cup|Reload Elite|FNCS|Fortnite Champion Series|Eval Cup|Performance Evaluation/i;
+  const other=HOME_SCHED_LQ.filter(x=>x.t>=today && !/^FNCS Solos/.test(x.n) && EPIC.test(x.n)).map(x=>{
     const live=x.f<=today, days=Math.round((Date.parse(x.f+'T00:00:00Z')-Date.parse(today+'T00:00:00Z'))/864e5);
     const when=live ? T.hmSceneLive : days===1 ? T.hmSceneTomorrow : T.hmSceneIn(days);
     const dates=homeDate(x.f, true)+(x.t!==x.f ? ' – '+homeDate(x.t, true) : '');
