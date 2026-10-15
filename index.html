@@ -114027,7 +114027,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='1aba544d';
+const CC_BUILD='de861f42';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159290,11 +159290,11 @@ function homeBoardDraw(){
   const seen=new Set(), rows=(d.rows||[]).filter(r=>{ const k=[r.nick, r.region, r.country, r.seasons, r.earn, r.titles].join('|');
     if(seen.has(k)) return false; seen.add(k); return true; });
   if(!rows.length){ box.innerHTML=head+'<p class="home-sub">'+esc(T.lbEmpty)+'</p>'; return; }
-  const n=HOME_BOARD_ALL ? 50 : 5;
+  const n=HOME_BOARD_ALL ? 50 : 10;
   const flag=c=>c ? '<img src="flags/w20/'+esc(ccCountryOf(c))+'.png" alt="" onerror="this.remove()">' : '';
   box.innerHTML=head+'<div>'+rows.slice(0, n).map((r,i)=>'<div class="hb-row"><i>'+(i+1)+'</i><b>'+flag(r.country)+esc(r.nick)+
       '<small>'+esc(r.region||'')+' · '+esc(T.lbSeasons(r.seasons))+'</small></b><span>$'+ccNum(r.earn)+'</span></div>').join('')+'</div>'+
-    (rows.length>5 ? '<button class="home-more" type="button" onclick="HOME_BOARD_ALL=!HOME_BOARD_ALL; homeBoardDraw();">'+
+    (rows.length>10 ? '<button class="home-more" type="button" onclick="HOME_BOARD_ALL=!HOME_BOARD_ALL; homeBoardDraw();">'+
       esc(HOME_BOARD_ALL ? T.hmBoardLess : T.hmBoardMore(Math.min(50, rows.length)))+'</button>' : '');
 }
 /* Кнопка карьеры на главной: есть сохранённая карьера — «Продолжить», а не «Начать» (игрок 9.10: «closed my browser on my
