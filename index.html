@@ -7191,6 +7191,10 @@
   .hs-list li:first-child{border-top:0;}
   .hs-list li b em{font-style:normal;font-size:10px;font-weight:800;color:#9fe1ff;margin-left:4px;}
   .hs-pm{font-size:12px;font-weight:800;color:#ffe86b;}
+  .hs-list li.hs-li{display:flex;flex-direction:row;align-items:flex-start;gap:10px;}
+  .hs-li img{flex:0 0 auto;width:70px;height:48px;border-radius:7px;object-fit:cover;background:#0b1640;}
+  .hs-li>div{display:flex;flex-direction:column;gap:1px;min-width:0;}
+  .hs-li>div>span{display:block;font-size:12px;color:#b9c7ea;line-height:1.4;}
   .hs-list li>span{display:block;font-size:12px;color:#b9c7ea;line-height:1.4;}
   .hs-list li i{font-style:normal;font-weight:800;color:#ffdd00;}
   .hs-list li.live i{color:#0b0f12;background:#ffdd00;border-radius:4px;padding:0 5px;}
@@ -114055,7 +114059,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='95c0c1a7';
+const CC_BUILD='786a6940';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -159120,8 +159124,10 @@ function homeSceneDraw(){
     const when=live ? T.hmSceneLive : days===1 ? T.hmSceneTomorrow : T.hmSceneIn(days);
     const dates=homeDate(x.f, true)+(x.t!==x.f ? ' – '+homeDate(x.t, true) : '');
     const money=x.p.map(p=>(p[0] ? p[0]+' ' : '')+'$'+ccNum(p[1])).join(' · ');
-    return '<li'+(live ? ' class="live"' : '')+'><b>'+esc(x.n)+(x.tier ? ' <em>'+esc(x.tier)+'</em>' : '')+'</b>'+
-      '<span><i>'+esc(when)+'</i> · '+esc(dates)+(x.loc ? ' · '+esc(x.loc) : '')+'</span><span class="hs-pm">💰 '+esc(money)+'</span></li>';
+    // Постер капа — тот же, что у капов этого вида в карьере (CAREER_EV_ART_ID: c41r — Reload, c38d — Victory Cup, c25d — Cash Cup).
+    const art=/Reload/i.test(x.n) ? 'art/cups/c41r.jpg' : /Victory/i.test(x.n) ? 'art/cups/c38d.jpg' : 'art/cups/c25d.jpg';
+    return '<li class="hs-li'+(live ? ' live' : '')+'"><img src="'+art+'" alt="" onerror="this.remove()"><div><b>'+esc(x.n)+(x.tier ? ' <em>'+esc(x.tier)+'</em>' : '')+'</b>'+
+      '<span><i>'+esc(when)+'</i> · '+esc(dates)+(x.loc ? ' · '+esc(x.loc) : '')+'</span><span class="hs-pm">💰 '+esc(money)+'</span></div></li>';
   }).join('');
   box.innerHTML='<h2 class="home-h">'+esc(T.hmSceneTitle)+'</h2><p class="home-sub">'+esc(T.hmSceneSub2)+'</p>'+
     (rows ? '<div>'+rows+'</div>' : '<p class="home-sub">'+esc(T.hmSceneDone)+'</p>')+
