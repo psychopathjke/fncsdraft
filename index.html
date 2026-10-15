@@ -113955,7 +113955,7 @@ const CC_SAVE_TRIM=[
 /* Метка этой сборки. Ставится tools/stamp-build.js, сверяется
    tools/check-mp-build.js. Лобби не пускает клиента с чужой меткой: локстеп
    держится на том, что обе стороны считают ОДНИМ И ТЕМ ЖЕ кодом. */
-const CC_BUILD='4f75dbd4';
+const CC_BUILD='5d4d6fa9';
 /* `region` — командный, и это не мелочь.
 
    Регион живёт в CAREER.player, то есть личный, а читает его пул, из которого
@@ -158950,6 +158950,230 @@ function careerBankedCard(place, of, pts, head, games){
 // 8.10 вечер — его слово «я хочу уже задеплоить карьеру менеджера»: режим открыт на всех адресах, включая fncsdraft.com.
 function mgrAllowed(host){ return true; }
 setTimeout(()=>{ try{ if(!mgrAllowed()) return; document.querySelectorAll('.hero-mgr, .hero-mgr-btn, .nav-pill[data-nav="manager"]').forEach(el=>{ el.hidden=false; }); }catch(e){} }, 0);
+/* ГЛАВНАЯ 15.10: «Продолжить» по сохранениям, «Сцена сейчас» по настоящему календарю 2026 и «Игроки сайта».
+   Рисуется из ccHeroCareerText — то есть на загрузке, на смене языка и при каждом возврате на главную. */
+let HOME_BOARD=null, HOME_BOARD_ALL=false;
+/* Сейвы менеджера — по ключам MGR_LS_SLOT (fncsdraft_manager, fncsdraft_manager_s<n>), как mgrSlotCard: код менеджера
+   лежит в mgr.js и до входа в режим не загружен, а главная должна видеть сейв сразу. */
+const HOME_MGR_SLOTS=10;
+function homeMgrCard(n){
+  let m=null; try{ m=ccSaveParse(localStorage.getItem(n===1 ? 'fncsdraft_manager' : 'fncsdraft_manager_s'+n)); }catch(e){}
+  if(!m || !m.club) return null;
+  const cr=(m.shadow||{}).career||{};
+  return {club:m.club.name, day:cr.day||null, season:cr.season||1, cash:m.club.cash||0};
+}
+function homeMgrOpen(n){
+  if(typeof mgrSlotOpen==='function'){ mgrSlotOpen(n); return; }
+  if(typeof mgrLazy==='function') mgrLazy(function(){ mgrSlotOpen(n); });
+}
+function homeRender(){
+  try{ homeContinueDraw(); }catch(e){}
+  try{ homeSceneDraw(); }catch(e){}
+  try{ homeBoardDraw(); }catch(e){}
+  try{ homeRealDraw(); }catch(e){}
+}
+function homeContinueDraw(){
+  const box=document.getElementById('homeContinue'); if(!box) return;
+  const T=L(), cards=[];
+  for(let n=1; n<=CC_SLOTS; n++){
+    const c=ccSlotCard(n); if(!c || c.retired) continue;
+    cards.push('<button class="hc-card" type="button" onclick="careerSlotOpen('+n+')">'+
+      (c.face ? '<img class="hc-face" src="'+esc(c.face)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+
+      '<span class="hc-in"><em>'+esc(T.hmSlotCareer)+' · '+esc(homeDate(c.day))+'</em><b>'+esc(c.nick)+'</b>'+
+      '<span>'+esc(T.hmSlotLine(c.season, c.div, '$'+ccNum(c.earnings)))+(c.org ? ' · '+esc(c.org) : '')+'</span></span>'+
+      '<span class="hc-go">'+esc(T.hmPlayOn)+'</span></button>');
+  }
+  if(typeof mgrAllowed==='function' && mgrAllowed()){
+    for(let n=1; n<=HOME_MGR_SLOTS; n++){
+      const m=homeMgrCard(n); if(!m) continue;
+      cards.push('<button class="hc-card" type="button" onclick="homeMgrOpen('+n+')">'+
+        '<img class="hc-face crest" src="logos/'+esc(String(m.club||'').replace(/ /g, '_'))+'.png" alt="" loading="lazy" onerror="this.remove()">'+
+        '<span class="hc-in"><em>'+esc(T.hmSlotMgr)+(m.day ? ' · '+esc(homeDate(m.day)) : '')+'</em><b>'+esc(m.club)+'</b>'+
+        '<span>'+esc(T.hmMgrLine(m.season, '$'+ccNum(m.cash)))+'</span></span>'+
+        '<span class="hc-go">'+esc(T.hmPlayOn)+'</span></button>');
+    }
+  }
+  box.hidden=!cards.length;
+  box.innerHTML=cards.length ? '<h2 class="home-h">'+esc(T.hmContinue)+'</h2><p class="home-sub">'+esc(T.hmContinueSub)+'</p>'+
+    '<div class="hc-list">'+cards.join('')+'</div>' : '';
+}
+function homeDate(k, noYear){
+  if(!k) return '';
+  const o={day:'numeric', month:'short', timeZone:'UTC'}; if(!noYear) o.year='numeric';
+  try{ return new Date(k+'T12:00:00Z').toLocaleDateString(LANG==='ru' ? 'ru-RU' : LANG, o); }catch(e){ return k; }
+}
+function homeToday(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+/* Только настоящие события Epic: Кубок наций — выдумка режима, Про-Амы в Париже и Сеуле — наши города (см. CAREER_YEAR). */
+const HOME_SCENE_SKIP={ProAm_Paris:1, ProAm_Seoul:1};
+function homeSceneDraw(){
+  const box=document.getElementById('homeScene'); if(!box) return;
+  const T=L(), today=homeToday(), names=T.ccYearNames||{};
+  const seen={}, list=[];
+  CAREER_YEAR.slice().sort((a,b)=>a[0]<b[0] ? -1 : a[0]>b[0] ? 1 : 0).forEach(r=>{
+    const from=r[0], to=r[1], id=r[2], kind=r[3];
+    if(kind==='nations' || HOME_SCENE_SKIP[id] || to<today || seen[id]) return;
+    seen[id]=1; list.push({from, to, id});
+  });
+  /* Стадии одного турнира — одной карточкой (15.10: три одинаковые обложки FNCS Solos подряд). Турнир — id без стадии:
+     FNCSSolos_Heats → FNCSSolos, ReloadEliteSeries3PlayIn → ReloadEliteSeries3. */
+  const fam=id=>id.replace(/_.*$/, '').replace(/(Opens|PlayIn|Heats|Final)$/, '');
+  const groups=[];
+  list.forEach(e=>{ const f=fam(e.id), g=groups.find(x=>x.f===f); if(g) g.items.push(e); else groups.push({f, items:[e]}); });
+  const rows=groups.slice(0, 2).map(g=>{
+    const first=g.items[0];
+    const full=id=>String(names[id]||id).replace(/\s*·?\s*\{CITY\}/, '');
+    const title=full(first.id).split(' · ')[0];
+    const art=(typeof CAREER_EV_ART_ID!=='undefined' && CAREER_EV_ART_ID[first.id]) || 'art/fncs-2026.jpg';
+    const stages=g.items.slice(0, 4).map(e=>{
+      const live=e.from<=today;
+      const days=Math.round((Date.parse(e.from+'T00:00:00Z')-Date.parse(today+'T00:00:00Z'))/864e5);
+      const when=live ? T.hmSceneLive : days===1 ? T.hmSceneTomorrow : T.hmSceneIn(days);
+      const stage=full(e.id).split(' · ').slice(1).join(' · ') || full(e.id);
+      const dates=homeDate(e.from, true)+(e.to!==e.from ? ' – '+homeDate(e.to, true) : '');
+      return '<li'+(live ? ' class="live"' : '')+'><b>'+esc(stage)+'</b><span><i>'+esc(when)+'</i> · '+esc(dates)+'</span></li>';
+    }).join('');
+    return '<div class="hs-ev"><img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.remove()"><div>'+
+      '<b class="hs-t">'+esc(title)+'</b><ul class="hs-st">'+stages+'</ul></div></div>';
+  }).join('');
+  box.innerHTML='<h2 class="home-h">'+esc(T.hmSceneTitle)+'</h2><p class="home-sub">'+esc(T.hmSceneSub)+'</p>'+
+    (rows ? '<div>'+rows+'</div>' : '<p class="home-sub">'+esc(T.hmSceneDone)+'</p>');
+  box.hidden=false;
+}
+/* РЕЗУЛЬТАТЫ 2026 на главной (15.10, «а таблицу лидеров и реальные турниры»): настоящие итоги прошедших турниров года.
+   Ничего нового не выдумано — это те же таблицы, по которым считаются карточки: финалы Мейджоров (Tracker, по регионам,
+   с очками), Саммит и Антверпен (места по никам из рейтинга карточек, FD_SUMMIT_RANK / FD_GC26_RANK), Reload Championship
+   (Liquipedia, с призовыми). Призовые Антверпена — таблица Epic GC2026_PRIZES. */
+let HOME_REAL_OPEN=null, HOME_REAL_REG='EU';
+const HOME_REAL_REGS=['EU','NAC','NAW','BR','ASIA','ME','OCE'];
+function homeRealRaw(stage, reg){
+  try{
+    if(stage===1) return ({EU:CARD_M1_GF_RAW, NAC:CARD_N1_GF_RAW, NAW:CARD_W1_GF_RAW, BR:CARD_B1_GF_RAW, ASIA:CARD_A1_GF_RAW, ME:CARD_E1_GF_RAW, OCE:CARD_O1_GF_RAW})[reg]||null;
+    return ({EU:CARD_M2_GF_RAW, NAC:CARD_N2_GF_RAW, NAW:CARD_W2_GF_RAW, BR:CARD_B2_GF_RAW, ASIA:CARD_A2_GF_RAW, ME:CARD_E2_GF_RAW, OCE:CARD_O2_GF_RAW})[reg]||null;
+  }catch(e){ return null; }
+}
+// Места по нику → команды: одно место — одна пара; второе написание того же ника (NOCIF/Nociff, ふーくん) не считается.
+function homeRankTeams(rank){
+  const flat=[], add=(o, reg)=>Object.keys(o||{}).forEach(h=>flat.push({h, p:o[h], reg}));
+  const nested=rank && Object.keys(rank).length && Object.values(rank).every(v=>v && typeof v==='object');
+  if(nested) Object.keys(rank).forEach(r=>add(rank[r], r)); else add(rank, null);
+  const by={};
+  flat.forEach(x=>{
+    if(!/^[\x20-\x7e]+$/.test(x.h)) return;
+    const t=by[x.p]=by[x.p]||{p:x.p, reg:x.reg, names:[]};
+    const lo=x.h.toLowerCase();
+    if(t.names.length<2 && !t.names.some(n=>{ const m=n.toLowerCase(); return m===lo || m.indexOf(lo)===0 || lo.indexOf(m)===0; })) t.names.push(x.h);
+  });
+  return Object.values(by).sort((a,b)=>a.p-b.p);
+}
+function homeRealEvents(){
+  const N=L().ccYearNames||{};
+  const nm=(id, city)=>String(N[id]||id).replace(/\{CITY\}/, city||'').replace(/\s*·\s*$/, '');
+  const when=id=>{ const r=CAREER_YEAR.find(x=>x[2]===id); return r ? {from:r[0], to:r[1]} : null; };
+  const art=id=>(typeof CAREER_EV_ART_ID!=='undefined' && CAREER_EV_ART_ID[id]) || 'art/fncs-2026.jpg';
+  const ev=[];
+  if(typeof window!=='undefined' && window.FD_GC26_RANK)
+    ev.push({id:'gc26', key:'GlobalChampionship', name:nm('GlobalChampionship', 'Antwerp'),
+      rows:()=>homeRankTeams(window.FD_GC26_RANK).map(t=>({p:t.p, names:t.names, reg:t.reg, prize:(typeof GC2026_PRIZES!=='undefined' && GC2026_PRIZES[String(t.p)])||0}))});
+  if(typeof RC_TEAMS_2026!=='undefined')
+    ev.push({id:'rc', key:'ReloadChampionshipParis', name:nm('ReloadChampionshipParis', 'Paris'),
+      rows:()=>RC_TEAMS_2026.map(t=>({p:+t.p, names:t.d, reg:t.r, prize:t.c}))});
+  ev.push({id:'m2', key:'Major2_Final', name:nm('Major2_Final'), regs:true,
+    rows:reg=>(homeRealRaw(2, reg)||[]).map(r=>({p:r[0], pts:r[1], names:r.slice(6).filter(x=>typeof x==='string')}))});
+  if(typeof window!=='undefined' && window.FD_SUMMIT_RANK)
+    ev.push({id:'summit', key:'Summit_Final', name:nm('Summit_Final'), rows:()=>homeRankTeams(window.FD_SUMMIT_RANK).map(t=>({p:t.p, names:t.names}))});
+  ev.push({id:'m1', key:'Major1_Final', name:nm('Major1_Final'), regs:true,
+    rows:reg=>(homeRealRaw(1, reg)||[]).map(r=>({p:r[0], pts:r[1], names:r.slice(6).filter(x=>typeof x==='string')}))});
+  // Свои обложки: у этих стадий в календаре карьеры общая заглушка.
+  const own={gc26:'art/mode-all-fncs.jpg', rc:'art/mode-ewc.jpg', m2:'art/fncs-2026.jpg', summit:'art/fncs-2026-major1.jpg', m1:'art/mode-major1.jpg'};
+  ev.forEach(e=>{ e.when=when(e.key); e.art=own[e.id]||art(e.key); });
+  // Только прошедшие: «результаты» турнира, который ещё не сыгран, — это пустая таблица.
+  const today=homeToday();
+  return ev.filter(e=>e.when && e.when.to<today);
+}
+function homeRealDraw(){
+  const box=document.getElementById('homeReal'); if(!box) return;
+  const T=L(), list=homeRealEvents();
+  if(!list.length){ box.hidden=true; return; }
+  const names=a=>(a||[]).map(esc).join(' &amp; ');
+  const rows=list.map(e=>{
+    let won='';
+    if(e.regs){ won=['EU','NAC'].map(r=>{ const w=e.rows(r)[0]; return w ? '<span><em>'+r+'</em> '+names(w.names)+'</span>' : ''; }).join(''); }
+    else { const w=e.rows()[0]; won=w ? '<span>'+names(w.names)+(w.reg ? ' <em>'+esc(w.reg)+'</em>' : '')+'</span>' : ''; }
+    const dates=homeDate(e.when.from, true)+(e.when.to!==e.when.from ? ' – '+homeDate(e.when.to, true) : '');
+    return '<button class="hr-ev" type="button" onclick="homeRealOpen(\''+e.id+'\')">'+
+      '<img src="'+esc(e.art)+'" alt="" onerror="this.remove()">'+
+      '<span class="hr-in"><b>'+esc(e.name)+'</b><small>'+esc(dates)+'</small><span class="hr-won"><i>🏆</i><span class="hr-wl">'+won+'</span></span></span>'+
+      '<span class="hr-go">'+esc(T.hmRealOpen)+'</span></button>';
+  }).join('');
+  box.innerHTML='<h2 class="home-h">'+esc(T.hmRealTitle)+'</h2><p class="home-sub">'+esc(T.hmRealSub)+'</p><div class="hr-list">'+rows+'</div>';
+  box.hidden=false;
+}
+function homeRealOpen(id, reg){
+  HOME_REAL_OPEN=id; if(reg) HOME_REAL_REG=reg;
+  const e=homeRealEvents().find(x=>x.id===id); if(!e) return;
+  const T=L();
+  let m=document.getElementById('homeRealModal');
+  if(!m){
+    m=document.createElement('div'); m.id='homeRealModal'; m.className='hr-modal';
+    m.addEventListener('click', ev=>{ if(ev.target===m) homeRealClose(); });
+    document.addEventListener('keydown', ev=>{ if(ev.key==='Escape' && document.getElementById('homeRealModal')) homeRealClose(); });
+    document.body.appendChild(m);
+  }
+  const rows=e.regs ? e.rows(HOME_REAL_REG) : e.rows();
+  const multi=!e.regs && rows.some(r=>r.reg);
+  const hasPts=rows.some(r=>r.pts!=null), hasPrize=rows.some(r=>r.prize);
+  const chips=e.regs ? '<div class="hr-regs">'+HOME_REAL_REGS.filter(r=>homeRealRaw(id==='m1' ? 1 : 2, r)).map(r=>
+      '<button type="button" class="'+(r===HOME_REAL_REG ? 'on' : '')+'" onclick="homeRealOpen(\''+id+'\', \''+r+'\')">'+r+'</button>').join('')+'</div>' : '';
+  const th='<tr><th>#</th><th>'+esc(T.hmRealTeam)+'</th>'+(multi ? '<th>'+esc(T.hmRealReg)+'</th>' : '')+
+    (hasPts ? '<th>'+esc(T.hmRealPts)+'</th>' : '')+(hasPrize ? '<th>'+esc(T.hmRealPrize)+'</th>' : '')+'</tr>';
+  const body=rows.map(r=>'<tr><td>'+r.p+'</td><td>'+(r.names||[]).map(esc).join(' &amp; ')+'</td>'+(multi ? '<td>'+esc(r.reg||'')+'</td>' : '')+
+    (hasPts ? '<td>'+(r.pts!=null ? r.pts : '')+'</td>' : '')+(hasPrize ? '<td>'+(r.prize ? '$'+ccNum(r.prize) : '—')+'</td>' : '')+'</tr>').join('');
+  m.innerHTML='<div class="hr-box" role="dialog" aria-modal="true" aria-label="'+esc(e.name)+'">'+
+    '<div class="hr-top"><b>'+esc(e.name)+'</b><button type="button" class="hr-x" onclick="homeRealClose()" aria-label="'+esc(T.hmRealClose)+'">✕</button></div>'+
+    chips+'<div class="hr-wrap"><table class="hr-table"><thead>'+th+'</thead><tbody>'+body+'</tbody></table></div></div>';
+  document.body.classList.add('hr-lock');
+}
+function homeRealClose(){
+  const m=document.getElementById('homeRealModal'); if(m) m.remove();
+  document.body.classList.remove('hr-lock'); HOME_REAL_OPEN=null;
+}
+function homeBoardDraw(){
+  const box=document.getElementById('homeBoard'); if(!box) return;
+  const T=L(), base=ccBoardBase();
+  if(!base){ box.hidden=true; return; }
+  box.hidden=false;
+  const d=HOME_BOARD;
+  if(!d || (!d._busy && Date.now()-(d._at||0) > 60000)){
+    if(d) d._busy=true; else HOME_BOARD={_busy:true, _at:0};
+    fetch(base).then(r=>r.ok ? r.json() : {err:true}).catch(()=>({err:true})).then(x=>{
+      HOME_BOARD=Object.assign(x||{err:true}, {_at:Date.now()});
+      homeBoardDraw();
+    });
+  }
+  const head='<h2 class="home-h">'+esc(T.lbTab)+'</h2><p class="home-sub">'+esc(T.hmBoardSub)+'</p>';
+  if(!d || !d._at){ box.innerHTML=head+'<p class="home-sub">'+esc(T.lbLoad)+'</p>'; return; }
+  if(d.err){ box.innerHTML=head+'<p class="home-sub">'+esc(T.lbErr)+'</p>'; return; }
+  const seen=new Set(), rows=(d.rows||[]).filter(r=>{ const k=[r.nick, r.region, r.country, r.seasons, r.earn, r.titles].join('|');
+    if(seen.has(k)) return false; seen.add(k); return true; });
+  if(!rows.length){ box.innerHTML=head+'<p class="home-sub">'+esc(T.lbEmpty)+'</p>'; return; }
+  const n=HOME_BOARD_ALL ? 50 : 5;
+  const flag=c=>c ? '<img src="flags/w20/'+esc(ccCountryOf(c))+'.png" alt="" onerror="this.remove()">' : '';
+  box.innerHTML=head+'<div>'+rows.slice(0, n).map((r,i)=>'<div class="hb-row"><i>'+(i+1)+'</i><b>'+flag(r.country)+esc(r.nick)+
+      '<small>'+esc(r.region||'')+' · '+esc(T.lbSeasons(r.seasons))+'</small></b><span>$'+ccNum(r.earn)+'</span></div>').join('')+'</div>'+
+    (rows.length>5 ? '<button class="home-more" type="button" onclick="HOME_BOARD_ALL=!HOME_BOARD_ALL; homeBoardDraw();">'+
+      esc(HOME_BOARD_ALL ? T.hmBoardLess : T.hmBoardMore(Math.min(50, rows.length)))+'</button>' : '');
+}
+/* Кнопка карьеры на главной: есть сохранённая карьера — «Продолжить», а не «Начать» (игрок 9.10: «closed my browser on my
+   phone and opened it back up and there wasnt an option to continue my career» — кнопка вела к списку карьер, но звалась
+   «Start a career»). */
+function ccHeroCareerText(){
+  try{ let has=false; for(let n=1; n<=CC_SLOTS && !has; n++) has=!!ccSlotCard(n);
+    const el=document.querySelector('.hero-cta .hero-btn-go span[data-i18n]');
+    if(el) el.textContent=(has && L().heroCareerCont) ? L().heroCareerCont : L().heroCareer; }catch(e){}
+  try{ homeRender(); }catch(e){}
+}
+// Главная рисуется сразу после загрузки app.js (раньше это делал mgrHeroText из mgr.js — то есть никогда до входа в менеджер).
+setTimeout(function(){ try{ ccHeroCareerText(); }catch(e){} }, 0);
 /*@@MGR-FROM@@*/
 /* ============================================================================
    FORTNITE MANAGER (его идея 1.10: «режим fortnite manager», «как football manager»). Спека —
@@ -159155,215 +159379,6 @@ function mgrLeave(){
 }
 function mgrHome(){ mgrSave(); mgrLeave(); show('screen-mode'); }
 function mgrLeaveIfActive(){ try{ if(MGR_ACTIVE){ if(MGR) mgrSave(); mgrLeave(); } }catch(e){} }
-/* ГЛАВНАЯ 15.10: «Продолжить» по сохранениям, «Сцена сейчас» по настоящему календарю 2026 и «Игроки сайта».
-   Рисуется из ccHeroCareerText — то есть на загрузке, на смене языка и при каждом возврате на главную. */
-let HOME_BOARD=null, HOME_BOARD_ALL=false;
-function homeRender(){
-  try{ homeContinueDraw(); }catch(e){}
-  try{ homeSceneDraw(); }catch(e){}
-  try{ homeBoardDraw(); }catch(e){}
-  try{ homeRealDraw(); }catch(e){}
-}
-function homeContinueDraw(){
-  const box=document.getElementById('homeContinue'); if(!box) return;
-  const T=L(), cards=[];
-  for(let n=1; n<=CC_SLOTS; n++){
-    const c=ccSlotCard(n); if(!c || c.retired) continue;
-    cards.push('<button class="hc-card" type="button" onclick="careerSlotOpen('+n+')">'+
-      (c.face ? '<img class="hc-face" src="'+esc(c.face)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+
-      '<span class="hc-in"><em>'+esc(T.hmSlotCareer)+' · '+esc(homeDate(c.day))+'</em><b>'+esc(c.nick)+'</b>'+
-      '<span>'+esc(T.hmSlotLine(c.season, c.div, '$'+ccNum(c.earnings)))+(c.org ? ' · '+esc(c.org) : '')+'</span></span>'+
-      '<span class="hc-go">'+esc(T.hmPlayOn)+'</span></button>');
-  }
-  if(typeof mgrAllowed==='function' && mgrAllowed()){
-    for(let n=1; n<=MGR_SLOTS; n++){
-      const m=mgrSlotCard(n); if(!m) continue;
-      cards.push('<button class="hc-card" type="button" onclick="mgrSlotOpen('+n+')">'+
-        '<img class="hc-face crest" src="logos/'+esc(String(m.club||'').replace(/ /g, '_'))+'.png" alt="" loading="lazy" onerror="this.remove()">'+
-        '<span class="hc-in"><em>'+esc(T.hmSlotMgr)+(m.day ? ' · '+esc(homeDate(m.day)) : '')+'</em><b>'+esc(m.club)+'</b>'+
-        '<span>'+esc(T.hmMgrLine(m.season, '$'+ccNum(m.cash)))+'</span></span>'+
-        '<span class="hc-go">'+esc(T.hmPlayOn)+'</span></button>');
-    }
-  }
-  box.hidden=!cards.length;
-  box.innerHTML=cards.length ? '<h2 class="home-h">'+esc(T.hmContinue)+'</h2><p class="home-sub">'+esc(T.hmContinueSub)+'</p>'+
-    '<div class="hc-list">'+cards.join('')+'</div>' : '';
-}
-function homeDate(k, noYear){
-  if(!k) return '';
-  const o={day:'numeric', month:'short', timeZone:'UTC'}; if(!noYear) o.year='numeric';
-  try{ return new Date(k+'T12:00:00Z').toLocaleDateString(LANG==='ru' ? 'ru-RU' : LANG, o); }catch(e){ return k; }
-}
-function homeToday(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-/* Только настоящие события Epic: Кубок наций — выдумка режима, Про-Амы в Париже и Сеуле — наши города (см. CAREER_YEAR). */
-const HOME_SCENE_SKIP={ProAm_Paris:1, ProAm_Seoul:1};
-function homeSceneDraw(){
-  const box=document.getElementById('homeScene'); if(!box) return;
-  const T=L(), today=homeToday(), names=T.ccYearNames||{};
-  const seen={}, list=[];
-  CAREER_YEAR.slice().sort((a,b)=>a[0]<b[0] ? -1 : a[0]>b[0] ? 1 : 0).forEach(r=>{
-    const from=r[0], to=r[1], id=r[2], kind=r[3];
-    if(kind==='nations' || HOME_SCENE_SKIP[id] || to<today || seen[id]) return;
-    seen[id]=1; list.push({from, to, id});
-  });
-  /* Стадии одного турнира — одной карточкой (15.10: три одинаковые обложки FNCS Solos подряд). Турнир — id без стадии:
-     FNCSSolos_Heats → FNCSSolos, ReloadEliteSeries3PlayIn → ReloadEliteSeries3. */
-  const fam=id=>id.replace(/_.*$/, '').replace(/(Opens|PlayIn|Heats|Final)$/, '');
-  const groups=[];
-  list.forEach(e=>{ const f=fam(e.id), g=groups.find(x=>x.f===f); if(g) g.items.push(e); else groups.push({f, items:[e]}); });
-  const rows=groups.slice(0, 2).map(g=>{
-    const first=g.items[0];
-    const full=id=>String(names[id]||id).replace(/\s*·?\s*\{CITY\}/, '');
-    const title=full(first.id).split(' · ')[0];
-    const art=(typeof CAREER_EV_ART_ID!=='undefined' && CAREER_EV_ART_ID[first.id]) || 'art/fncs-2026.jpg';
-    const stages=g.items.slice(0, 4).map(e=>{
-      const live=e.from<=today;
-      const days=Math.round((Date.parse(e.from+'T00:00:00Z')-Date.parse(today+'T00:00:00Z'))/864e5);
-      const when=live ? T.hmSceneLive : days===1 ? T.hmSceneTomorrow : T.hmSceneIn(days);
-      const stage=full(e.id).split(' · ').slice(1).join(' · ') || full(e.id);
-      const dates=homeDate(e.from, true)+(e.to!==e.from ? ' – '+homeDate(e.to, true) : '');
-      return '<li'+(live ? ' class="live"' : '')+'><b>'+esc(stage)+'</b><span><i>'+esc(when)+'</i> · '+esc(dates)+'</span></li>';
-    }).join('');
-    return '<div class="hs-ev"><img src="'+esc(art)+'" alt="" loading="lazy" onerror="this.remove()"><div>'+
-      '<b class="hs-t">'+esc(title)+'</b><ul class="hs-st">'+stages+'</ul></div></div>';
-  }).join('');
-  box.innerHTML='<h2 class="home-h">'+esc(T.hmSceneTitle)+'</h2><p class="home-sub">'+esc(T.hmSceneSub)+'</p>'+
-    (rows ? '<div>'+rows+'</div>' : '<p class="home-sub">'+esc(T.hmSceneDone)+'</p>');
-  box.hidden=false;
-}
-/* РЕЗУЛЬТАТЫ 2026 на главной (15.10, «а таблицу лидеров и реальные турниры»): настоящие итоги прошедших турниров года.
-   Ничего нового не выдумано — это те же таблицы, по которым считаются карточки: финалы Мейджоров (Tracker, по регионам,
-   с очками), Саммит и Антверпен (места по никам из рейтинга карточек, FD_SUMMIT_RANK / FD_GC26_RANK), Reload Championship
-   (Liquipedia, с призовыми). Призовые Антверпена — таблица Epic GC2026_PRIZES. */
-let HOME_REAL_OPEN=null, HOME_REAL_REG='EU';
-const HOME_REAL_REGS=['EU','NAC','NAW','BR','ASIA','ME','OCE'];
-function homeRealRaw(stage, reg){
-  try{
-    if(stage===1) return ({EU:CARD_M1_GF_RAW, NAC:CARD_N1_GF_RAW, NAW:CARD_W1_GF_RAW, BR:CARD_B1_GF_RAW, ASIA:CARD_A1_GF_RAW, ME:CARD_E1_GF_RAW, OCE:CARD_O1_GF_RAW})[reg]||null;
-    return ({EU:CARD_M2_GF_RAW, NAC:CARD_N2_GF_RAW, NAW:CARD_W2_GF_RAW, BR:CARD_B2_GF_RAW, ASIA:CARD_A2_GF_RAW, ME:CARD_E2_GF_RAW, OCE:CARD_O2_GF_RAW})[reg]||null;
-  }catch(e){ return null; }
-}
-// Места по нику → команды: одно место — одна пара; второе написание того же ника (NOCIF/Nociff, ふーくん) не считается.
-function homeRankTeams(rank){
-  const flat=[], add=(o, reg)=>Object.keys(o||{}).forEach(h=>flat.push({h, p:o[h], reg}));
-  const nested=rank && Object.keys(rank).length && Object.values(rank).every(v=>v && typeof v==='object');
-  if(nested) Object.keys(rank).forEach(r=>add(rank[r], r)); else add(rank, null);
-  const by={};
-  flat.forEach(x=>{
-    if(!/^[\x20-\x7e]+$/.test(x.h)) return;
-    const t=by[x.p]=by[x.p]||{p:x.p, reg:x.reg, names:[]};
-    const lo=x.h.toLowerCase();
-    if(t.names.length<2 && !t.names.some(n=>{ const m=n.toLowerCase(); return m===lo || m.indexOf(lo)===0 || lo.indexOf(m)===0; })) t.names.push(x.h);
-  });
-  return Object.values(by).sort((a,b)=>a.p-b.p);
-}
-function homeRealEvents(){
-  const N=L().ccYearNames||{};
-  const nm=(id, city)=>String(N[id]||id).replace(/\{CITY\}/, city||'').replace(/\s*·\s*$/, '');
-  const when=id=>{ const r=CAREER_YEAR.find(x=>x[2]===id); return r ? {from:r[0], to:r[1]} : null; };
-  const art=id=>(typeof CAREER_EV_ART_ID!=='undefined' && CAREER_EV_ART_ID[id]) || 'art/fncs-2026.jpg';
-  const ev=[];
-  if(typeof window!=='undefined' && window.FD_GC26_RANK)
-    ev.push({id:'gc26', key:'GlobalChampionship', name:nm('GlobalChampionship', 'Antwerp'),
-      rows:()=>homeRankTeams(window.FD_GC26_RANK).map(t=>({p:t.p, names:t.names, reg:t.reg, prize:(typeof GC2026_PRIZES!=='undefined' && GC2026_PRIZES[String(t.p)])||0}))});
-  if(typeof RC_TEAMS_2026!=='undefined')
-    ev.push({id:'rc', key:'ReloadChampionshipParis', name:nm('ReloadChampionshipParis', 'Paris'),
-      rows:()=>RC_TEAMS_2026.map(t=>({p:+t.p, names:t.d, reg:t.r, prize:t.c}))});
-  ev.push({id:'m2', key:'Major2_Final', name:nm('Major2_Final'), regs:true,
-    rows:reg=>(homeRealRaw(2, reg)||[]).map(r=>({p:r[0], pts:r[1], names:r.slice(6).filter(x=>typeof x==='string')}))});
-  if(typeof window!=='undefined' && window.FD_SUMMIT_RANK)
-    ev.push({id:'summit', key:'Summit_Final', name:nm('Summit_Final'), rows:()=>homeRankTeams(window.FD_SUMMIT_RANK).map(t=>({p:t.p, names:t.names}))});
-  ev.push({id:'m1', key:'Major1_Final', name:nm('Major1_Final'), regs:true,
-    rows:reg=>(homeRealRaw(1, reg)||[]).map(r=>({p:r[0], pts:r[1], names:r.slice(6).filter(x=>typeof x==='string')}))});
-  // Свои обложки: у этих стадий в календаре карьеры общая заглушка.
-  const own={gc26:'art/mode-all-fncs.jpg', rc:'art/mode-ewc.jpg', m2:'art/fncs-2026.jpg', summit:'art/fncs-2026-major1.jpg', m1:'art/mode-major1.jpg'};
-  ev.forEach(e=>{ e.when=when(e.key); e.art=own[e.id]||art(e.key); });
-  // Только прошедшие: «результаты» турнира, который ещё не сыгран, — это пустая таблица.
-  const today=homeToday();
-  return ev.filter(e=>e.when && e.when.to<today);
-}
-function homeRealDraw(){
-  const box=document.getElementById('homeReal'); if(!box) return;
-  const T=L(), list=homeRealEvents();
-  if(!list.length){ box.hidden=true; return; }
-  const names=a=>(a||[]).map(esc).join(' &amp; ');
-  const rows=list.map(e=>{
-    let won='';
-    if(e.regs){ won=['EU','NAC'].map(r=>{ const w=e.rows(r)[0]; return w ? '<span><em>'+r+'</em> '+names(w.names)+'</span>' : ''; }).join(''); }
-    else { const w=e.rows()[0]; won=w ? '<span>'+names(w.names)+(w.reg ? ' <em>'+esc(w.reg)+'</em>' : '')+'</span>' : ''; }
-    const dates=homeDate(e.when.from, true)+(e.when.to!==e.when.from ? ' – '+homeDate(e.when.to, true) : '');
-    return '<button class="hr-ev" type="button" onclick="homeRealOpen(\''+e.id+'\')">'+
-      '<img src="'+esc(e.art)+'" alt="" onerror="this.remove()">'+
-      '<span class="hr-in"><b>'+esc(e.name)+'</b><small>'+esc(dates)+'</small><span class="hr-won"><i>🏆</i><span class="hr-wl">'+won+'</span></span></span>'+
-      '<span class="hr-go">'+esc(T.hmRealOpen)+'</span></button>';
-  }).join('');
-  box.innerHTML='<h2 class="home-h">'+esc(T.hmRealTitle)+'</h2><p class="home-sub">'+esc(T.hmRealSub)+'</p><div class="hr-list">'+rows+'</div>';
-  box.hidden=false;
-}
-function homeRealOpen(id, reg){
-  HOME_REAL_OPEN=id; if(reg) HOME_REAL_REG=reg;
-  const e=homeRealEvents().find(x=>x.id===id); if(!e) return;
-  const T=L();
-  let m=document.getElementById('homeRealModal');
-  if(!m){
-    m=document.createElement('div'); m.id='homeRealModal'; m.className='hr-modal';
-    m.addEventListener('click', ev=>{ if(ev.target===m) homeRealClose(); });
-    document.addEventListener('keydown', ev=>{ if(ev.key==='Escape' && document.getElementById('homeRealModal')) homeRealClose(); });
-    document.body.appendChild(m);
-  }
-  const rows=e.regs ? e.rows(HOME_REAL_REG) : e.rows();
-  const multi=!e.regs && rows.some(r=>r.reg);
-  const hasPts=rows.some(r=>r.pts!=null), hasPrize=rows.some(r=>r.prize);
-  const chips=e.regs ? '<div class="hr-regs">'+HOME_REAL_REGS.filter(r=>homeRealRaw(id==='m1' ? 1 : 2, r)).map(r=>
-      '<button type="button" class="'+(r===HOME_REAL_REG ? 'on' : '')+'" onclick="homeRealOpen(\''+id+'\', \''+r+'\')">'+r+'</button>').join('')+'</div>' : '';
-  const th='<tr><th>#</th><th>'+esc(T.hmRealTeam)+'</th>'+(multi ? '<th>'+esc(T.hmRealReg)+'</th>' : '')+
-    (hasPts ? '<th>'+esc(T.hmRealPts)+'</th>' : '')+(hasPrize ? '<th>'+esc(T.hmRealPrize)+'</th>' : '')+'</tr>';
-  const body=rows.map(r=>'<tr><td>'+r.p+'</td><td>'+(r.names||[]).map(esc).join(' &amp; ')+'</td>'+(multi ? '<td>'+esc(r.reg||'')+'</td>' : '')+
-    (hasPts ? '<td>'+(r.pts!=null ? r.pts : '')+'</td>' : '')+(hasPrize ? '<td>'+(r.prize ? '$'+ccNum(r.prize) : '—')+'</td>' : '')+'</tr>').join('');
-  m.innerHTML='<div class="hr-box" role="dialog" aria-modal="true" aria-label="'+esc(e.name)+'">'+
-    '<div class="hr-top"><b>'+esc(e.name)+'</b><button type="button" class="hr-x" onclick="homeRealClose()" aria-label="'+esc(T.hmRealClose)+'">✕</button></div>'+
-    chips+'<div class="hr-wrap"><table class="hr-table"><thead>'+th+'</thead><tbody>'+body+'</tbody></table></div></div>';
-  document.body.classList.add('hr-lock');
-}
-function homeRealClose(){
-  const m=document.getElementById('homeRealModal'); if(m) m.remove();
-  document.body.classList.remove('hr-lock'); HOME_REAL_OPEN=null;
-}
-function homeBoardDraw(){
-  const box=document.getElementById('homeBoard'); if(!box) return;
-  const T=L(), base=ccBoardBase();
-  if(!base){ box.hidden=true; return; }
-  box.hidden=false;
-  const d=HOME_BOARD;
-  if(!d || (!d._busy && Date.now()-(d._at||0) > 60000)){
-    if(d) d._busy=true; else HOME_BOARD={_busy:true, _at:0};
-    fetch(base).then(r=>r.ok ? r.json() : {err:true}).catch(()=>({err:true})).then(x=>{
-      HOME_BOARD=Object.assign(x||{err:true}, {_at:Date.now()});
-      homeBoardDraw();
-    });
-  }
-  const head='<h2 class="home-h">'+esc(T.lbTab)+'</h2><p class="home-sub">'+esc(T.hmBoardSub)+'</p>';
-  if(!d || !d._at){ box.innerHTML=head+'<p class="home-sub">'+esc(T.lbLoad)+'</p>'; return; }
-  if(d.err){ box.innerHTML=head+'<p class="home-sub">'+esc(T.lbErr)+'</p>'; return; }
-  const seen=new Set(), rows=(d.rows||[]).filter(r=>{ const k=[r.nick, r.region, r.country, r.seasons, r.earn, r.titles].join('|');
-    if(seen.has(k)) return false; seen.add(k); return true; });
-  if(!rows.length){ box.innerHTML=head+'<p class="home-sub">'+esc(T.lbEmpty)+'</p>'; return; }
-  const n=HOME_BOARD_ALL ? 50 : 5;
-  const flag=c=>c ? '<img src="flags/w20/'+esc(ccCountryOf(c))+'.png" alt="" onerror="this.remove()">' : '';
-  box.innerHTML=head+'<div>'+rows.slice(0, n).map((r,i)=>'<div class="hb-row"><i>'+(i+1)+'</i><b>'+flag(r.country)+esc(r.nick)+
-      '<small>'+esc(r.region||'')+' · '+esc(T.lbSeasons(r.seasons))+'</small></b><span>$'+ccNum(r.earn)+'</span></div>').join('')+'</div>'+
-    (rows.length>5 ? '<button class="home-more" type="button" onclick="HOME_BOARD_ALL=!HOME_BOARD_ALL; homeBoardDraw();">'+
-      esc(HOME_BOARD_ALL ? T.hmBoardLess : T.hmBoardMore(Math.min(50, rows.length)))+'</button>' : '');
-}
-/* Кнопка карьеры на главной: есть сохранённая карьера — «Продолжить», а не «Начать» (игрок 9.10: «closed my browser on my
-   phone and opened it back up and there wasnt an option to continue my career» — кнопка вела к списку карьер, но звалась
-   «Start a career»). */
-function ccHeroCareerText(){
-  try{ let has=false; for(let n=1; n<=CC_SLOTS && !has; n++) has=!!ccSlotCard(n);
-    const el=document.querySelector('.hero-cta .hero-btn-go span[data-i18n]');
-    if(el) el.textContent=(has && L().heroCareerCont) ? L().heroCareerCont : L().heroCareer; }catch(e){}
-  try{ homeRender(); }catch(e){}
-}
 function mgrHeroText(){
   try{ ccHeroCareerText(); }catch(e){}
   try{ const T=mgrT(); const set=(id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
